@@ -5,7 +5,15 @@ Prerequisites
 =============
 
 Jakarta-ant is used to compile and run the tests. Jakarta-ant version
-1.4.0 was used to compile and run the tests.
+1.4.0 was used to compile and run the tests. The optional
+jakarta-ant-1.4-optional.jar file is required to be in the
+$ANT_HOME/lib directory where ANT_HOME envrironment variable point to
+the directory where you installed jakarta-ant.
+
+The tests cases as well running ant require a JAXP compatible
+parser. Such a parser is placed on the classpath by the shell or batch
+script that invokes ant, namely $ANT_HOME/bin/ant on UNIX and
+%ANT_HOME%/bin/ant.bat on Windows.
 
 The test cases are based on Junit version 3.7+.  
 
@@ -18,7 +26,9 @@ tests. You need to have jakarta.oro.jar property (found in the
 build.properties file) to point to jakarta-oro.jar. See the file
 build.properties.sample for an example of a build.properties file.
 
-Type "ant" to see the available commands.
+Assuming jakarta-ant is installed properly, depending on your platform
+type $ANT_HOME/bin/ant or %ANT_HOME%/bin/ant.bat to see the available
+commands.
 
 ------------------------------------------------------------------------
 NOTE: The compilation and execution of tests must be performed from
