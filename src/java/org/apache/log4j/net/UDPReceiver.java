@@ -47,7 +47,7 @@ public class UDPReceiver extends Receiver implements PortBased, Pauseable {
   private String decoder = "org.apache.log4j.xml.XMLDecoder";
   private Decoder decoderImpl;
   protected boolean paused;
-  private boolean isActive = false;
+  private boolean closed = false;
   private int port;
   private DatagramSocket socket;
   UDPHandlerThread handlerThread;
@@ -61,15 +61,15 @@ public class UDPReceiver extends Receiver implements PortBased, Pauseable {
   }
 
   /**
-      The <b>Encoding</b> option specifies how the bytes are encoded.  If this option is not specified,
-      the system encoding will be used.
-    */
+   * The <b>Encoding</b> option specifies how the bytes are encoded.  If this 
+   * option is not specified, the system encoding will be used.
+   * */
   public void setEncoding(String encoding) {
     this.encoding = encoding;
   }
 
   /**
-     Returns value of the <b>Encoding</b> option.
+   * Returns value of the <b>Encoding</b> option.
    */
   public String getEncoding() {
     return encoding;
@@ -92,17 +92,24 @@ public class UDPReceiver extends Receiver implements PortBased, Pauseable {
   }
 
   public synchronized void shutdown() {
-    isActive = false;
-    handlerThread.interrupt();
-    receiverThread.interrupt();
+    closed = true;
+    try {
+      if(handlerThread != null) {
+        handlerThread.join();
+      }
+      if(receiverThread != null) {
+        receiverThread.join();
+      }
+    } catch(InterruptedException ie) {
+    }
     socket.close();
   }
 
   /**
     Returns true if this receiver is active. */
-  public synchronized boolean isActive() {
-    return isActive;
-  }
+//  public synchronized boolean isActive() {
+//    return isActive;
+//}
 
   public void activateOptions() {
     try {
@@ -121,7 +128,6 @@ public class UDPReceiver extends Receiver implements PortBased, Pauseable {
     }
 
     try {
-      isActive = true;
       socket = new DatagramSocket(port);
       receiverThread = new UDPReceiverThread();
       receiverThread.start();
@@ -145,11 +151,18 @@ public class UDPReceiver extends Receiver implements PortBased, Pauseable {
         list.notify();
       }
     }
+  
+    /**
+     * Allow the UDPHandlerThread to wakeup and exit gracefully.
+     */
+    void close() {
+      list.notify();
+    }
 
     public void run() {
       ArrayList list2 = new ArrayList();
 
-      while (isAlive() && isActive()) {
+      while (!UDPReceiver.this.closed) {
         synchronized (list) {
           try {
             while (list.size() == 0) {
@@ -191,28 +204,21 @@ public class UDPReceiver extends Receiver implements PortBased, Pauseable {
           } catch (InterruptedException ie) {
           }
         }
-      }
-
-      if (!isActive()) {
-        LogLog.debug(
-          UDPReceiver.this.getName()
-          + "'s handler thread is exiting because of shutdown");
-      }
-    }
-  }
+      } // while
+      LogLog.debug(UDPReceiver.this.getName()+ "'s handler thread is exiting");
+    } // run
+  } // UDPHandlerThread
 
   class UDPReceiverThread extends Thread {
     public UDPReceiverThread() {
       setDaemon(true);
     }
-
+    
     public void run() {
-      active = true;
-
       byte[] b = new byte[PACKET_LENGTH];
       DatagramPacket p = new DatagramPacket(b, b.length);
 
-      while (isActive()) {
+      while (!UDPReceiver.this.closed) {
         try {
           socket.receive(p);
 

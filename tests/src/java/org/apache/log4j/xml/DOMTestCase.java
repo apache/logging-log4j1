@@ -5,8 +5,11 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import junit.framework.Test;
 
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Level;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.joran.JoranConfigurator;
 import org.apache.log4j.util.Filter;
 import org.apache.log4j.util.JunitTestRunnerFilter;
 import org.apache.log4j.util.LineNumberFilter;
@@ -55,7 +58,10 @@ public class DOMTestCase extends TestCase {
   }
 
   public void test1() throws Exception {
-    DOMConfigurator.configure("input/xml/DOMTestCase1.xml");
+    //org.apache.log4j.BasicConfigurator.configure();
+    JoranConfigurator jc = new JoranConfigurator();
+    jc.doConfigure("input/xml/DOMTestCase1.xml", LogManager.getLoggerRepository());
+    LogLog.info(""+jc.getExecutionContext().getErrorList());
     common();
 
     ControlFilter cf1 = new ControlFilter(new String[]{TEST1_1A_PAT, TEST1_1B_PAT, 
@@ -65,7 +71,9 @@ public class DOMTestCase extends TestCase {
 					       EXCEPTION1, EXCEPTION2, EXCEPTION3});
 
     Transformer.transform(TEMP_A1, FILTERED_A1, new Filter[] {cf1, 
-							new LineNumberFilter(), new SunReflectFilter(), new JunitTestRunnerFilter()});
+							new LineNumberFilter(), 
+              new SunReflectFilter(), 
+              new JunitTestRunnerFilter()});
 
     Transformer.transform(TEMP_A2, FILTERED_A2, new Filter[] {cf2,
                                       new LineNumberFilter(), new ISO8601Filter(),

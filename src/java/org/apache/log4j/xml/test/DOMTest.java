@@ -20,7 +20,7 @@ import org.apache.log4j.Category;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.apache.log4j.xml.DOMConfigurator;
+import org.apache.log4j.joran.JoranConfigurator;
 
 
 //import org.apache.log4j.xml.examples.ReportParserError;
@@ -52,7 +52,9 @@ public class DOMTest {
   }
 
   static void init(String configFile) {
-    DOMConfigurator.configure(configFile);
+    JoranConfigurator jc = new JoranConfigurator();
+    jc.doConfigure(configFile, LogManager.getLoggerRepository());
+    jc.logErrors();
   }
 
   static void test() {

@@ -20,10 +20,10 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.apache.log4j.joran.JoranConfigurator;
 import org.apache.log4j.util.*;
-import org.apache.log4j.xml.DOMConfigurator;
-
 
 /**
    Tests handling of custom loggers.
@@ -51,7 +51,9 @@ public class XLoggerTestCase extends TestCase {
   }
 
   void common(int number) throws Exception {
-    DOMConfigurator.configure("input/xml/customLogger" + number + ".xml");
+    JoranConfigurator jc = new JoranConfigurator();
+    jc.doConfigure("input/xml/customLogger" + number + ".xml", LogManager.getLoggerRepository());
+    jc.logErrors();
 
     int i = -1;
     Logger root = Logger.getRootLogger();

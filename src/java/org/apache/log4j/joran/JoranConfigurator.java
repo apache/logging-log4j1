@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -34,7 +35,9 @@ import org.apache.joran.action.NestComponentIA;
 import org.apache.joran.action.NewRuleAction;
 import org.apache.joran.action.ParamAction;
 import org.apache.joran.helper.SimpleRuleStore;
-import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+//import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.joran.action.ActionConst;
 import org.apache.log4j.joran.action.AppenderAction;
 import org.apache.log4j.joran.action.AppenderRefAction;
@@ -44,6 +47,7 @@ import org.apache.log4j.joran.action.LayoutAction;
 import org.apache.log4j.joran.action.LevelAction;
 import org.apache.log4j.joran.action.LoggerAction;
 import org.apache.log4j.joran.action.PluginAction;
+import org.apache.log4j.joran.action.PriorityAction;
 import org.apache.log4j.joran.action.RepositoryPropertyAction;
 import org.apache.log4j.joran.action.RootLoggerAction;
 import org.apache.log4j.joran.action.SubstitutionPropertyAction;
@@ -61,12 +65,29 @@ import org.xml.sax.SAXException;
  */
 public class JoranConfigurator
        implements Configurator {
-  Interpreter joranInterpreter;
 
+  Interpreter joranInterpreter;
+  LoggerRepository repository;
+  
+  // The logger will be retreived form the logger repository being
+  // configured
+  private Logger logger;
+  
   public JoranConfigurator() {
     selfInitialize();
   }
 
+  /**
+   * 
+   * 
+   * @param filename
+   */
+ //public static void configure(URL url) {
+   //xx JoranConfigurator jc = new JoranConfigurator();
+    //jc.doConfigure(url, LogManager.getLoggerRepository());
+  //}
+
+  
   public void doConfigure(URL url, LoggerRepository repository) {
     ExecutionContext ec = joranInterpreter.getExecutionContext();
     String errMsg;
@@ -76,34 +97,71 @@ public class JoranConfigurator
       in.close();
     } catch (IOException ioe) {
       errMsg = "Could not open [" + url + "].";
-      LogLog.error(errMsg, ioe);
+      getLogger().error(errMsg, ioe);
       ec.addError(new ErrorItem(errMsg, ioe));
     }
   }
 
+  //Use the instance from {@link #doConfigure(String, LoggingRepository)} instead
+  
+  /**
+   * 
+   * 
+   * @param filename
+   */
+  public static void configure(String filename) {
+    JoranConfigurator jc = new JoranConfigurator();
+    jc.doConfigure(filename, LogManager.getLoggerRepository());
+  }
 
   /**
    * Configure a repository from a configuration file passed as parameter.
    */
   public void doConfigure(String filename, LoggerRepository repository) {
+    this.repository = repository;
     FileInputStream fis = null;
     ExecutionContext ec = joranInterpreter.getExecutionContext();
-    LogLog.info("in JoranConfigurator doConfigure "+filename);
+    getLogger().info("in JoranConfigurator doConfigure "+filename);
     try {
       fis = new FileInputStream(filename);
       doConfigure(fis, repository);
     } catch (IOException ioe) {
       String errMsg = "Could not open [" + filename + "].";
-      LogLog.error(errMsg, ioe);
+      getLogger().error(errMsg, ioe);
       ec.addError(new ErrorItem(errMsg, ioe));
     } finally {
       if (fis != null) {
         try {
           fis.close();
         } catch (java.io.IOException e) {
-          LogLog.error("Could not close [" + filename + "].", e);
+          getLogger().error("Could not close [" + filename + "].", e);
         }
       }
+    }
+  }
+  
+  /**
+   * All doConfigure methods evenually call this form.
+   * */
+  
+  public void doConfigure(InputStream in, LoggerRepository repository) {
+    this.repository = repository;
+    ExecutionContext ec = joranInterpreter.getExecutionContext();
+    ec.pushObject(repository);
+    String errMsg;
+    try {
+      SAXParserFactory spf = SAXParserFactory.newInstance();
+      SAXParser saxParser = spf.newSAXParser();
+      saxParser.parse(in, joranInterpreter);
+    } catch (SAXException e) {
+      // all exceptions should have been recorded already.
+    } catch (ParserConfigurationException pce) {
+      errMsg = "Parser configuration error occured";
+      getLogger().error(errMsg, pce);
+      ec.addError(new ErrorItem(errMsg, pce));
+    } catch (IOException ie) {
+      errMsg = "I/O error occured while parsing xml file";
+      ec.addError(new ErrorItem("Parser configuration error occured", ie));
     }
   }
 
@@ -116,8 +174,10 @@ public class JoranConfigurator
     rs.addRule(new Pattern("log4j:configuration/plugin"), new PluginAction());
     rs.addRule(new Pattern("log4j:configuration/logger"), new LoggerAction());
     rs.addRule(new Pattern("log4j:configuration/logger/level"), new LevelAction());
+    rs.addRule(new Pattern("log4j:configuration/logger/priority"), new PriorityAction());
     rs.addRule(new Pattern("log4j:configuration/root"), new RootLoggerAction());
     rs.addRule(new Pattern("log4j:configuration/root/level"), new LevelAction());
+    rs.addRule(new Pattern("log4j:configuration/root/priority"), new PriorityAction());
     rs.addRule(new Pattern("log4j:configuration/logger/appender-ref"), new AppenderRefAction());
     rs.addRule(new Pattern("log4j:configuration/root/appender-ref"), new AppenderRefAction());
     rs.addRule(new Pattern("log4j:configuration/appender"), new AppenderAction());
@@ -135,30 +195,28 @@ public class JoranConfigurator
     HashMap omap = ec.getObjectMap();
     omap.put(ActionConst.APPENDER_BAG, new HashMap());
   }
-
-
-  public void doConfigure(InputStream in, LoggerRepository repository) {
-    ExecutionContext ec = joranInterpreter.getExecutionContext();
-    ec.pushObject(repository);
-    String errMsg;
-
-    try {
-      SAXParserFactory spf = SAXParserFactory.newInstance();
-      SAXParser saxParser = spf.newSAXParser();
-      saxParser.parse(in, joranInterpreter);
-    } catch (SAXException e) {
-      // all exceptions should have been recorded already.
-    } catch (ParserConfigurationException pce) {
-      errMsg = "Parser configuration error occured";
-      LogLog.error(errMsg, pce);
-      ec.addError(new ErrorItem(errMsg, pce));
-    } catch (IOException ie) {
-      errMsg = "I/O error occured while parsing xml file";
-      ec.addError(new ErrorItem("Parser configuration error occured", ie));
-    }
-  }
   
   public ExecutionContext getExecutionContext() {
     return joranInterpreter.getExecutionContext();
   }
+  
+  public void logErrors() {
+    List errorList = getExecutionContext().getErrorList();
+    if(errorList.size() == 0) {
+      return;
+    }
+    getLogger().warn("Errors occured while parsing the XML configuration file");
+    for(int i = 0; i < errorList.size(); i++) {
+      getLogger().warn(""+errorList.get(i));
+    }
+  }
+  
+  Logger getLogger() {
+    if(logger == null) {
+      logger = repository.getLogger(JoranConfigurator.class.getName());
+    }
+    return logger;
+  }
+  
 }
+

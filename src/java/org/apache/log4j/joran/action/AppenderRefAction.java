@@ -23,6 +23,7 @@ import org.apache.joran.helper.Option;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.Logger;
+import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.AppenderAttachable;
 
 import org.xml.sax.Attributes;
@@ -31,7 +32,7 @@ import java.util.HashMap;
 
 
 public class AppenderRefAction extends Action {
-  static final Logger logger = Logger.getLogger(AppenderRefAction.class);
+  //static final Logger logger = Logger.getLogger(AppenderRefAction.class);
 
   boolean inError = false;
   
@@ -40,7 +41,7 @@ public class AppenderRefAction extends Action {
     // Let us forget about previous errors (in this object)
     inError = false;
 
-    logger.debug("begin called");
+    //logger.debug("begin called");
 
     Object o = ec.peekObject();
 
@@ -49,7 +50,7 @@ public class AppenderRefAction extends Action {
         "Could not find an AppenderAttachable at the top of execution stack. Near <"
         + tagName + "> line " + getLineNumber(ec);
 
-      logger.warn(errMsg);
+      LogLog.warn(errMsg);
       inError = true;
       ec.addError(new ErrorItem(errMsg));
 
@@ -64,7 +65,7 @@ public class AppenderRefAction extends Action {
       // print a meaningful error message and return
       String errMsg = "Missing appender ref attribute in <appender-ref> tag.";
 
-      logger.warn(errMsg);
+      LogLog.warn(errMsg);
       inError = true;
       ec.addError(new ErrorItem(errMsg));
 
@@ -76,7 +77,7 @@ public class AppenderRefAction extends Action {
     Appender appender = (Appender) appenderBag.get(appenderName);
 
     if (appender == null) {
-      logger.warn("Could not find an appender named [" + appenderName + "]");
+      LogLog.warn("Could not find an appender named [" + appenderName + "]");
       inError = true;
       ec.addError(new ErrorItem("Could not find an appender named [" + appenderName + "]"));
 
@@ -84,11 +85,11 @@ public class AppenderRefAction extends Action {
     }
 
     if (appenderAttachable instanceof Logger) {
-      logger.debug(
+      LogLog.debug(
         "Attaching appender named [" + appenderName + "] to logger named ["
         + ((Logger) appenderAttachable).getName() + "].");
     } else {
-      logger.debug(
+      LogLog.debug(
         "Attaching appender named [" + appenderName + "] to "
         + appenderAttachable);
     }

@@ -1,8 +1,8 @@
 
 package org.apache.log4j.xml.examples;
 
-import org.apache.log4j.xml.DOMConfigurator;
-import org.apache.log4j.Category;
+import org.apache.log4j.joran.JoranConfigurator;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 /**
@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
 */
 public class XMLSample {
 
-  static Category cat = Category.getInstance(XMLSample.class.getName());
+  static Logger cat = Logger.getLogger(XMLSample.class.getName());
 
   public
   static
@@ -45,7 +45,9 @@ public class XMLSample {
 
   static
   void init(String configFile) {
-    DOMConfigurator.configure(configFile);
+    JoranConfigurator jc = new JoranConfigurator();
+    jc.doConfigure(configFile, LogManager.getLoggerRepository());
+    jc.logErrors();
   }
 
   static

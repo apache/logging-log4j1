@@ -21,6 +21,8 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.apache.log4j.*;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.joran.JoranConfigurator;
 import org.apache.log4j.util.Compare;
 
 
@@ -48,25 +50,41 @@ public class CustomLevelTestCase extends TestCase {
   }
 
   public void test1() throws Exception {
-    DOMConfigurator.configure("input/xml/customLevel1.xml");
+    org.apache.log4j.BasicConfigurator.configure();
+    JoranConfigurator jc = new JoranConfigurator();
+    jc.doConfigure("input/xml/customLevel1.xml", LogManager.getLoggerRepository());
+    LogLog.info(""+jc.getExecutionContext().getErrorList());
+    
+
     common();
     assertTrue(Compare.compare(TEMP, "witness/customLevel.1"));
   }
 
   public void test2() throws Exception {
-    DOMConfigurator.configure("input/xml/customLevel2.xml");
+    org.apache.log4j.BasicConfigurator.configure();
+    JoranConfigurator jc = new JoranConfigurator();
+    jc.doConfigure("input/xml/customLevel2.xml", LogManager.getLoggerRepository());
+    LogLog.info(""+jc.getExecutionContext().getErrorList());
     common();
     assertTrue(Compare.compare(TEMP, "witness/customLevel.2"));
   }
 
   public void test3() throws Exception {
-    DOMConfigurator.configure("input/xml/customLevel3.xml");
+    org.apache.log4j.BasicConfigurator.configure();
+    JoranConfigurator jc = new JoranConfigurator();
+    jc.doConfigure("input/xml/customLevel3.xml", LogManager.getLoggerRepository());
+    LogLog.info(""+jc.getExecutionContext().getErrorList());
+    
     common();
     assertTrue(Compare.compare(TEMP, "witness/customLevel.3"));
   }
 
   public void test4() throws Exception {
-    DOMConfigurator.configure("input/xml/customLevel4.xml");
+    org.apache.log4j.BasicConfigurator.configure();
+    JoranConfigurator jc = new JoranConfigurator();
+    jc.doConfigure("input/xml/customLevel4.xml", LogManager.getLoggerRepository());
+    LogLog.info(""+jc.getExecutionContext().getErrorList());
+
     common();
     assertTrue(Compare.compare(TEMP, "witness/customLevel.4"));
   }
