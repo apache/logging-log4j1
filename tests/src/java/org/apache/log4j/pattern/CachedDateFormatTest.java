@@ -141,7 +141,7 @@ public final class CachedDateFormatTest
     //     are optimized to reuse previous formatted value
     //     make a couple of nearly spaced calls
     SimpleDateFormat baseFormat =
-         new SimpleDateFormat("EEE, MMM dd, HH:mm:ss.SSS Z", Locale.ENGLISH);
+         new SimpleDateFormat("EEE, MMM dd, HH:mm:ss.SSS z", Locale.ENGLISH);
     DateFormat cachedFormat = new CachedDateFormat(baseFormat, 1000);
     //
     //   use a date in 2000 to attempt to confuse the millisecond locator
@@ -164,7 +164,7 @@ public final class CachedDateFormatTest
     //   subsequent calls within one minute
     //     are optimized to reuse previous formatted value
     //     make a couple of nearly spaced calls
-    Locale thai = new Locale("th");
+    Locale thai = new Locale("th", "TH");
     SimpleDateFormat baseFormat =
          new SimpleDateFormat("EEE, MMM dd, HH:mm:ss.SSS Z", thai);
     DateFormat cachedFormat = new CachedDateFormat(baseFormat, 1000);
@@ -227,7 +227,7 @@ public final class CachedDateFormatTest
    * Test of caching when less than three millisecond digits are specified.
    */
   public void test9() {
-    DateFormat baseFormat = new SimpleDateFormat("yyyy-MMMM-dd HH:mm:ss,SS Z", Locale.US);
+    DateFormat baseFormat = new SimpleDateFormat("yyyy-MMMM-dd HH:mm:ss,SS z", Locale.US);
     DateFormat cachedFormat = new CachedDateFormat(baseFormat, 1000);
     TimeZone cet = TimeZone.getTimeZone("GMT+1");
     cachedFormat.setTimeZone(cet);
@@ -239,14 +239,14 @@ public final class CachedDateFormatTest
     c.setTimeZone(cet);
 
     String s = cachedFormat.format(c.getTime());
-    assertEquals("2004-December-12 20:00:37,23 +0100", s);
+    assertEquals("2004-December-12 20:00:37,23 GMT+01:00", s);
 
     c.set(2005, Calendar.JANUARY, 1, 0, 0);
     c.set(Calendar.SECOND, 13);
     c.set(Calendar.MILLISECOND, 905);
 
     s = cachedFormat.format(c.getTime());
-    assertEquals("2005-January-01 00:00:13,905 +0100", s);
+    assertEquals("2005-January-01 00:00:13,905 GMT+01:00", s);
   }
   
 
