@@ -11,18 +11,18 @@ import org.apache.log4j.Priority;
  */
 public class XPriority extends Priority {
 
-  static final int  TRACE_INT  = 800;
-  static final int  FATAL_INT  = 1;
+  static final int  TRACE_INT   = 10000 - 1;
+  static final int  LETHAL_INT  = 50000 + 1;
 
 
-  // We assimilate FATAL to EMERG on Syslog  
-  static final int SYSLOG_FATAL_INT  = 0;  
-  // We assimilate TRACE to DEBUG on Syslog
-  static final int SYSLOG_TRACE_INT  = 7;
+  private static String TRACE_STR  = "TRACE";
+  private static String LETHAL_STR  = "LETHAL";
 
-  public static final XPriority TRACE = new XPriority(TRACE_INT, "TRACE", 7);
-  public static final XPriority FATAL = new XPriority(FATAL_INT, "FATAL", 
-						      FATAL_INT);
+
+  public static final XPriority TRACE = new XPriority(TRACE_INT, TRACE_STR, 7);
+  public static final XPriority LETHAL = new XPriority(LETHAL_INT, LETHAL_STR, 
+						       0);
+
 
   protected
   XPriority(int level, String strLevel, int syslogEquiv) {
@@ -32,15 +32,18 @@ public class XPriority extends Priority {
   public
   static
   Priority toPriority(String sArg) {
-    if(sArg == null)
-       return XPriority.TRACE;
-    
+    if(sArg == null) {
+      return XPriority.TRACE;
+    }
     String stringVal = sArg.toUpperCase();
     
-    if(stringVal.equals("TRACE")) return XPriority.TRACE; 
-    if(stringVal.equals("FATAL")) return XPriority.FATAL;
-    return Priority.toPriority(sArg);
-    
+    if(stringVal.equals(TRACE_STR)) {
+      return XPriority.TRACE;
+    } else if(stringVal.equals(LETHAL_STR)) {
+      return XPriority.LETHAL;
+    }
+      
+    return Priority.toPriority(sArg);    
   }
 
   public
@@ -48,7 +51,7 @@ public class XPriority extends Priority {
   Priority toPriority(int i) throws  IllegalArgumentException {
     switch(i) {
     case TRACE_INT: return XPriority.TRACE;
-    case FATAL_INT: return XPriority.FATAL;
+    case LETHAL_INT: return XPriority.LETHAL;
     }
     return Priority.toPriority(i);
   }

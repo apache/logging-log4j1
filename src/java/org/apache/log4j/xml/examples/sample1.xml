@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE configuration SYSTEM "log4j.dtd">
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 
-<configuration>
+<log4j:configuration>
 
 	<appender name="STDOUT" class="org.apache.log4j.FileAppender">
            <param name="File" value="System.out" />	
@@ -20,4 +20,4 @@
    	   <appender-ref ref="STDOUT" />
 	</root>
 	
-</configuration>
+</log4j:configuration>

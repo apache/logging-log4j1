@@ -50,13 +50,13 @@ public class Priority {
      The <code>INFO</code> priority designates informational messages
      that highlight the progress of the application at coarse-grained
      level.  */
-  final static public Priority INFO  = new Priority(INFO_INT, "INFO",  5);
+  final static public Priority INFO  = new Priority(INFO_INT, "INFO",  6);
 
   /**
      The <code>DEBUG</code> priority designates fine-grained
      informational events that are most useful to debug an
      application.  */
-  final static public Priority DEBUG = new Priority(DEBUG_INT, "DEBUG", 6);
+  final static public Priority DEBUG = new Priority(DEBUG_INT, "DEBUG", 7);
 
   
   /**
