@@ -514,7 +514,7 @@ public class OptionConverter {
     String filename = url.getFile();
 
     if ((clazz == null) && (filename != null) && filename.endsWith(".xml")) {
-      clazz = "org.apache.log4j.xml.DOMConfigurator";
+      clazz = "org.apache.log4j.joran.JoranConfigurator";
     }
 
     if (clazz != null) {
