@@ -91,11 +91,7 @@ public abstract class PatternConverter {
     int len = s.length();
 
     if (len > max) {
-        if(leftAlign) {
-            output.write(s.substring(0, max));
-        } else {
-            output.write(s.substring(len - max));
-        }
+      output.write(s.substring(len - max));
     } else if (len < min) {
       if (leftAlign) {
         output.write(s.toString());
