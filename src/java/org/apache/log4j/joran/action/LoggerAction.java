@@ -16,6 +16,7 @@
 
 package org.apache.log4j.joran.action;
 
+import org.apache.joran.ErrorItem;
 import org.apache.joran.ExecutionContext;
 import org.apache.joran.action.Action;
 import org.apache.joran.helper.Option;
@@ -52,7 +53,7 @@ public class LoggerAction extends Action {
       String errorMsg = "No 'name' attribute in element " + name + line;
 
       logger.warn(errorMsg);
-      ec.addError(errorMsg);
+      ec.addError(new ErrorItem(errorMsg, ec.getLocator()));
 
       return;
     }
