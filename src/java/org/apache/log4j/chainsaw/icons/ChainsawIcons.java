@@ -146,6 +146,13 @@ public class ChainsawIcons {
   public static final ImageIcon IGNORE_ICON = new ImageIcon(ChainsawIcons.class.getClassLoader().getResource(
       BASE_ICON_PATH + "ZoomOut24.gif"));  
   
+  
+  public static final URL SERVER =
+    ChainsawIcons.class.getClassLoader().getResource(
+      BASE_ICON_PATH + "Server16.gif");
+  
+  public static final ImageIcon ICON_SERVER =  new ImageIcon(SERVER);
+  
   private ChainsawIcons() {
   }
 }
