@@ -49,9 +49,20 @@
 
 package org.apache.log4j.chainsaw;
 
+import org.apache.log4j.chainsaw.color.Colorizer;
+import org.apache.log4j.chainsaw.color.DefaultColorizer;
+import org.apache.log4j.chainsaw.icons.LevelIconFactory;
+import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.SettingsListener;
+import org.apache.log4j.helpers.ISO8601DateFormat;
+import org.apache.log4j.spi.LoggingEvent;
+
 import java.awt.Color;
 import java.awt.Component;
+
 import java.text.DateFormat;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
@@ -62,15 +73,6 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
-
-import org.apache.log4j.chainsaw.color.Colorizer;
-import org.apache.log4j.chainsaw.color.DefaultColorizer;
-import org.apache.log4j.chainsaw.icons.LevelIconFactory;
-import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SettingsListener;
-import org.apache.log4j.helpers.ISO8601DateFormat;
-import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
@@ -95,8 +97,11 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
   private final Color COLOR_ODD = new Color(230, 230, 230);
   private final JLabel idComponent = new JLabel();
   private final JLabel levelComponent = new JLabel();
-  private String levelDisplay = ChainsawConstants.LEVEL_DISPLAY_ICONS;
+
+  //  private String levelDisplay = ChainsawConstants.LEVEL_DISPLAY_ICONS;
+  private boolean levelUseIcons = true;
   private DateFormat dateFormatInUse = DATE_FORMATTER;
+
   /**
    * Creates a new TableColorizingRenderer object.
    */
@@ -113,7 +118,6 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
   }
 
   public void loadSettings(LoadSettingsEvent event) {
-    levelDisplay = event.getSetting(ChainsawConstants.LEVEL_DISPLAY);
   }
 
   public void saveSettings(SaveSettingsEvent event) {
@@ -157,10 +161,7 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
 
       Icon icon = (Icon) iconMap.get(value.toString());
 
-      if (
-        ((levelDisplay != null)
-          && levelDisplay.equals(ChainsawConstants.LEVEL_DISPLAY_ICONS))
-          && (icon != null)) {
+      if (levelUseIcons && (icon != null)) {
         levelComponent.setIcon(icon);
         levelComponent.setText("");
         levelComponent.setToolTipText(value.toString());
@@ -218,23 +219,23 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
         c.setBackground(background);
       }
     }
-    if(foregroundColor!=null){
+
+    if (foregroundColor != null) {
       c.setForeground(foregroundColor);
-    }else {
+    } else {
       c.setForeground(Color.black);
     }
 
     return c;
   }
-  
+
   /**
    * Changes the Date Formatting object to be used for rendering dates.
    * @param formatter
    */
-  void setDateFormatter(DateFormat formatter){
-  	this.dateFormatInUse = formatter;
+  void setDateFormatter(DateFormat formatter) {
+    this.dateFormatInUse = formatter;
   }
-  
 
   /**
    *Format date field
@@ -263,5 +264,23 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
    */
   public Colorizer getColorizer() {
     return colorizer;
+  }
+
+  /**
+   * Returns true if this renderer will use Icons to render the Level
+   * column, otherwise false.
+   * @return
+   */
+  public boolean isLevelUseIcons() {
+    return levelUseIcons;
+  }
+
+  /**
+   * Sets the property which determines whether to use Icons or text
+   * for the Level column
+   * @param levelUseIcons
+   */
+  public void setLevelUseIcons(boolean levelUseIcons) {
+    this.levelUseIcons = levelUseIcons;
   }
 }
