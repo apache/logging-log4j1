@@ -75,7 +75,7 @@
     <property name="classes" value="classes" />
     <property name="stem" value="org/apache/log4j" />
     <property name="build.compiler" value="jikes"/>	
-    <property name="version" value="1.0.3"/>  
+    <property name="version" value="1.0.4"/>  
   </target>
 
 
