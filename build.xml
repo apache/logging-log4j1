@@ -203,6 +203,7 @@
                     ${stem}/jmx/*.java,
                     ${stem}/chainsaw/**/*.java,
                     ${stem}/varia/Log4JAvalonLogger.java,
+                    ${stem}/varia/ExpressionFilter.java,
                     ${stem}/or/jms/*.java"
         deprecation="${deprecation}"
       debug="on">
@@ -303,7 +304,7 @@
     <javac deprecation="${deprecation}"
            srcdir="${java.source.dir}"
      destdir="${javac.dest}"
-     includes="${stem}/chainsaw/**/*.java"
+     includes="${stem}/chainsaw/**/*.java,${stem}/varia/ExpressionFilter.java"
            excludes="">
       <classpath refid="compile.classpath"/>
       <classpath path="${regexp.oro.jar}"/>
