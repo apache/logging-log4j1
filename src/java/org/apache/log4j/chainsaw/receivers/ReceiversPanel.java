@@ -120,6 +120,7 @@ import org.apache.log4j.chainsaw.help.HelpManager;
 import org.apache.log4j.chainsaw.icons.ChainsawIcons;
 import org.apache.log4j.chainsaw.icons.LevelIconFactory;
 import org.apache.log4j.chainsaw.icons.LineIconFactory;
+import org.apache.log4j.chainsaw.messages.MessageCenter;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.net.SocketAppender;
 import org.apache.log4j.net.SocketHubAppender;
@@ -351,7 +352,7 @@ public class ReceiversPanel extends JPanel {
                     }
 
                     updateReceiverTreeInDispatchThread();
-                    logui.getStatusBar().setMessage(
+                    MessageCenter.getInstance().getLogger().info(
                       "All Receivers have been (re)started");
                   }
                 }).start();
@@ -1233,7 +1234,7 @@ public class ReceiversPanel extends JPanel {
         }
       } catch (Exception e) {
         LogLog.error("Error occurred creating the Receiver", e);
-        logui.getStatusBar().setMessage(
+        MessageCenter.getInstance().getLogger().error(
           "Error occurred creating the Receiver ::" + e.getMessage());
 
         return;
