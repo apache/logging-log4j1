@@ -91,10 +91,12 @@
 
   <!-- ================================================================= -->
   <!-- Tests multiple parts of log4j. These tests are much more fragile  -->
-  <!-- unit tests.                                                       -->
+  <!-- unit tests. Regression tests compare output with a previously     -->
+  <!-- created witness file.                                             -->
   <!-- ================================================================= -->  
   <target name="regression" depends="Minimum, Logger, DOM, CustomLevel, 
-                                     CustomLogger, PatternLayout"/>
+                                     CustomLogger, PatternLayout, 
+                                     SocketServer"/>
 
   <!-- ================================================================= -->
   <!-- Unit tests test small parts of log4j for logical programming      -->
@@ -107,7 +109,10 @@
   <!-- Longer unit tests                                                 -->
   <!-- ================================================================= -->
   <target name="longUnit" depends="DRFA"/>
-  
+
+  <!-- ================================================================= -->
+  <!-- =================== Regression Tests follow ===================== -->  
+  <!-- ================================================================= -->
   <target name="Minimum" depends="build">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
@@ -157,8 +162,26 @@
     </junit>
   </target>
 
+  <target name="SocketServer" depends="build">
+    <parallel>
+      <java classname="org.apache.log4j.net.ShortSocketServer" fork="yes">
+	<arg value="input/shortSocketServer1.properties"/> 
+	<classpath refid="tests.classpath"/>
+      </java>
+      <sequential>
+	<sleep seconds="2"/>
+	<junit printsummary="yes" fork="yes" haltonfailure="yes">
+	  <classpath refid="tests.classpath"/>
+	  <formatter type="plain" usefile="false" />
+	  <test name="org.apache.log4j.net.SocketServerTestCase" />
+	</junit>
+      </sequential>
+    </parallel>
+  </target>
 
-
+  <!-- ================================================================= -->
+  <!-- ========================= Unit Tests ============================ -->
+  <!-- ================================================================= -->
   <target name="OptionConverter" depends="build">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
@@ -198,5 +221,6 @@
       <test name="org.apache.log4j.or.ORTestCase" />
     </junit>
   </target>
+
 </project>
 

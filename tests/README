@@ -21,8 +21,8 @@ build.properties.sample for an example of a build.properties file.
 Type "ant" to see the available commands.
 
 ------------------------------------------------------------------------
-NOTE: The compilation and execution of test must be done from the tests/
-      directory, that is from the directory where this README file is
-      located.
+NOTE: The compilation and execution of tests must be performed from
+      within the tests/ directory, that is from the directory where
+      this README file is located.
 ------------------------------------------------------------------------
 
