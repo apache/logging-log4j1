@@ -190,7 +190,9 @@ public class ContextJNDISelector implements RepositorySelector {
             url = new URL(configResourceStr);
           } catch (MalformedURLException ex) {
             // so, resource is not a URL:
-            // attempt to get the resource from the class path
+            // attempt to get the resource from the class loader path
+            // please read the javadocs for Loader.getResource for the exact
+            // algorithm.
             url = Loader.getResource(configResourceStr);
           }
 
