@@ -1,6 +1,6 @@
 
 PKG_DIR :=org/apache/log4j/spi
-DEPTH   :=../../../..
+DEPTH   :=../../../../../..
 JSOURCES:=OptionHandler.java\
 	AppenderAttachable.java\
 	LoggingEvent.java\

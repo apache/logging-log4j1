@@ -1,9 +1,10 @@
  
 PKG_DIR :=org/apache/log4j/xml/test
-DEPTH   :=../../../../..
-JSOURCES:=DOMTest.java DisableOverrideTest.java DisableTest.java \
+DEPTH   :=../../../../../../..
+JSOURCES:=DOMTest.java DisableOverrideTest.java \
 	SubClassTest.java\
 
+#DisableTest.java \
 SUBDIRS :=
 
 # include master-rule file

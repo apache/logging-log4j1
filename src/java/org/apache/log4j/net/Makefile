@@ -1,6 +1,6 @@
 
 PKG_DIR :=org/apache/log4j/net
-DEPTH   :=../../../..
+DEPTH   :=../../../../../..
 JSOURCES:=SyslogAppender.java\
 	JMSAppender.java\
 	JMSSink.java\

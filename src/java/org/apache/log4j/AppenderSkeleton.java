@@ -37,7 +37,6 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
      There is no priority threshold filtering by default.  */
   protected Priority threshold;
 
-
   /** 
       It is assumed and enforced that errorHandler is never null.
   */
@@ -53,6 +52,17 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
      Is this appender closed? 
    */
   protected boolean closed = false;
+
+  /**
+     A string constant used in naming the option for setting the
+     threshold for the appender. See also {@link #setThreshold
+     setThreshold} method. Current value of this string constant is
+     <b>Threshold</b>.
+
+     <p>Note that all option keys are case sensitive.
+     
+  */
+  public static final String THRESHOLD_OPTION = "Threshold";
 
   /**
      Derived appenders should override this method if option structure
@@ -243,6 +253,23 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
   public
   void setName(String name) {
     this.name = name;
+  }
+
+
+  /**
+     All classes derived from {@link AppenderSkeleton} admit the
+     <b>Threshold</b> option. The value of this option is a priority
+     string, such as "DEBUG", "INFO" and so on.  All log events with
+     lower priority than the threshold priority are ignored by the
+     appender.  
+
+     <p>Configurable Appenders should override this method if they
+     admit additional options.  */
+  public
+  void setOption(String key, String value) {
+    if(key.equalsIgnoreCase(THRESHOLD_OPTION)) {
+      threshold = Priority.toPriority(value);
+    }
   }
   
   /**
