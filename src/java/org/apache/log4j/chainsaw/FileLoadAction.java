@@ -171,8 +171,7 @@ class FileLoadAction extends AbstractAction {
       String urltext =
         JOptionPane.showInputDialog(
           parent,
-          "<html>Please type in the <b>complete</b> URL to the remote XML source.</html>",
-          "file://");
+          "<html>Please type in the <b>complete</b> URL to the remote XML source.</html>");
 
       if (urltext != null) {
         try {
