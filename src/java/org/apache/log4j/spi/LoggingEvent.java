@@ -360,7 +360,7 @@ public class LoggingEvent implements java.io.Serializable {
    * Returns the set of of the key values in the MDC for the event.
    * The returned set is unmodifiable by the caller. 
    * 
-   * @return Iterator an iterator to iterate over the MDC keys.
+   * @return Set an unmodifiable set of the MDC keys.
    * @since 1.3
    */
   public Set getMDCKeySet() {
@@ -404,6 +404,21 @@ public class LoggingEvent implements java.io.Serializable {
       return null;
     } else {
       return (String) properties.get(key);
+    }
+  }
+
+  /**
+   * Returns the set of of the key values in the properties
+   * for the event. The returned set is unmodifiable by the caller. 
+   * 
+   * @return Set an unmodifiable set of the property keys.
+   * @since 1.3
+   */
+  public Set getPropertyKeySet() {
+    if (properties != null) {
+      return Collections.unmodifiableSet(properties.keySet());
+    } else {
+      return Collections.EMPTY_SET;
     }
   }
 
