@@ -220,7 +220,7 @@ public class JoranConfigurator extends ConfiguratorBase {
       new Pattern("configuration/appender/layout/conversionRule"),
       new ConversionRuleAction());
     rs.addRule( 
-         new Pattern("log4j:configuration/jndiSubstitutionProperty"), 
+         new Pattern("configuration/jndiSubstitutionProperty"), 
          new JndiSubstitutionPropertyAction());
     rs.addRule(
       new Pattern("configuration/newRule"), new NewRuleAction());
