@@ -84,16 +84,32 @@
     </jar>
   </target>
 
+  <target name="clientConfigFileCheck">
+    <available file="${src.webapp.dir}/WEB-INF/classes/test-log4j.xml"
+           property="client-config-file-present"/>
+
+    <fail unless="client-config-file-present">
+      Could not find the file 
+      ${src.webapp.dir}/WEB-INF/classes/test-log4j.xml
+      Have you forgotten to adapt and rename the test-log4j.xml.sample file?
+    </fail>
+  </target>
   
   <!-- Create the war file -->
-  <target name="war" depends="compile">
+  <target name="war" depends="compile, test-appender.jar, clientConfigFileCheck">
+
     <war warfile="${target.dir}/${project.name.file}.war"
          webxml="${src.webapp.dir}/WEB-INF/web.xml">
-      <fileset dir="${src.webapp.dir}"/>
-      <classes dir="${target.classes.java.dir}"/>   
+      <fileset dir="${src.webapp.dir}">
+        <exclude name="WEB-INF/classes/test-log4j.xml.sample"/>       
+      </fileset>
+      <classes dir="${target.classes.java.dir}">   
+        <exclude name="TestAppender.class"/>
+      </classes>
       <lib file="${target.dir}/test-appender.jar"/>
       <lib file="${javamail.jar}"/>
       <lib file="${activation.jar}"/> 
+      <lib file="${log4j.dir}/log4j-smtp.jar"/> 
     </war>
   </target>
 

@@ -8,10 +8,12 @@
   </appender>
 
 
+  <!-- Please adapt the SMTPHost, From and To fields as appropriate 
+       for your environment. -->
   <appender name="EMAIL" class="org.apache.log4j.net.SMTPAppender">
-    <param name="SMTPHost" value="mail.qos.ch"/>
-    <param name="To" value="ceki@qos.ch"/>
-    <param name="From" value="noreply@qos.ch"/>
+    <param name="SMTPHost" value="MAIL.SERVER.EMAIL-ADDRESS.COM"/>
+    <param name="To" value="SOURCE@EMAIL-ADDRESS.COM"/>
+    <param name="From" value="DESTINATION@EMAIL-ADDRESS.COM"/>
     <param name="BufferSize" value="128"/>
     <param name="Subject" value="${os.name} - %m"/>
     <param name="LocationInfo" value="true"/>
