@@ -343,7 +343,7 @@ public class OptionConverter {
     if (className != null) {
       try {
         Class classObj = Loader.loadClass(className);
-  
+  ;
         if (!superClass.isAssignableFrom(classObj)) {
           getLogger().error(
             "A \"" + className + "\" object is not assignable to a \""
@@ -358,7 +358,10 @@ public class OptionConverter {
   
           return defaultValue;
         }
-  
+
+
+        System.out.println("About to call classObj.newInstance(), "+classObj.getName());
+        
         return classObj.newInstance();
       } catch (Exception e) {
         getLogger().error("Could not instantiate class [" + className + "].", e);
@@ -518,19 +521,22 @@ public class OptionConverter {
     }
 
     if (clazz != null) {
-      getLogger().info("Preferred configurator class: " + clazz);
+      Logger logger = hierarchy.getLogger(OptionConverter.class.getName());
+      logger.info("Preferred configurator class: " + clazz);
+      System.out.println("Before instantiateByClassName");
       configurator =
         (Configurator) instantiateByClassName(clazz, Configurator.class, null);
 
       if (configurator == null) {
-        getLogger().error("Could not instantiate configurator [" + clazz + "].");
-
+        logger.error("Could not instantiate configurator [" + clazz + "].");
+        
         return;
       }
     } else {
       configurator = new PropertyConfigurator();
     }
-
+    
+    System.out.println("Before  configurator.doConfigure()");
     configurator.doConfigure(url, hierarchy);
   }
 }

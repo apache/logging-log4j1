@@ -619,7 +619,7 @@
 	<junit printsummary="yes" fork="yes" haltonfailure="yes">
 	  <classpath refid="tests.classpath"/>
 	  <formatter type="plain" usefile="false"/>
-	  <test name="org.apache.log4j.helpers.MessageFormatterTest" />
+	  <test name="org.apache.ugli.impl.MessageFormatterTest" />
     </junit>
   </target>
 

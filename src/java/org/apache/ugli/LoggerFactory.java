@@ -25,7 +25,9 @@ import org.apache.ugli.impl.NOPLoggerFA;
 
 /**
  * The <code>LoggerFactory</code> can produce Loggers for various logging APIs, 
- * most notably for log4j and JDK 1.4 logging.
+ * most notably for log4j, JDK 1.4 logging. Other implemenations such as 
+ * {@link org.apache.ugli.impl.NOPLogger NOPLogger} and 
+ * {@link org.apache.ugli.impl.SimpleLogger SimpleLogger} are also supported.
  * 
  * @author Ceki G&uuml;lc&uuml;
  */

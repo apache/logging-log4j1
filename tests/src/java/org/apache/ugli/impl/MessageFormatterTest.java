@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.apache.log4j.helpers;
+package org.apache.ugli.impl;
 
-import org.apache.log4j.helpers.MessageFormatter;
+import org.apache.ugli.impl.MessageFormatter;
 
 import junit.framework.TestCase;
 
