@@ -12,6 +12,9 @@
 	
   <!-- The directory where source files are stored. -->
   <property name="version" value="1.0alpha"/>
+  <property name="ugli-simple.jar" value="ugli-simple.jar"/>
+  <property name="ugli-nop.jar" value="ugli-nop.jar"/>
+  <property name="ugli-jdk14.jar" value="ugli-jdk14.jar"/>
 
   <!-- Deprecation warning? --> 
   <property name="deprecation" value="on"/>
@@ -83,7 +86,7 @@
   <!-- Generic target that can build NOP, Simple and JDK14 implementations -->
   <!--  as specified by the "jar-name" and "impl" parameters.              -->
   <!-- =================================================================== -->
-  <target name="ugli-IMPL.jar" depends="init">
+  <target name="ugli-IMPL.jar">
     
     <!-- delete all previously existing files in tmp -->
   	<delete><fileset dir="tmp/" includes="**/*"/></delete>
@@ -122,24 +125,24 @@
    
   </target>
 
-  <target name="ugli-nop.jar">
+  <target name="ugli-nop.jar" depends="init">
     <antcall target="ugli-IMPL.jar">
       <param name="IMPL" value="NOP"/>
-      <param name="jar-name" value="ugli-nop.jar"/>
+      <param name="jar-name" value="${ugli-nop.jar}"/>
     </antcall>
   </target>
 
-  <target name="ugli-simple.jar">
+  <target name="ugli-simple.jar" depends="init">
     <antcall target="ugli-IMPL.jar">
       <param name="IMPL" value="Simple"/>
-      <param name="jar-name" value="ugli-simple.jar"/>
+      <param name="jar-name" value="${ugli-simple.jar}"/>
     </antcall>
   </target>
 
-  <target name="ugli-jdk14.jar" depends="julCheck">
+  <target name="ugli-jdk14.jar" depends="init, julCheck">
     <antcall target="ugli-IMPL.jar">
       <param name="IMPL" value="JDK14"/>
-      <param name="jar-name" value="ugli-jdk14.jar"/>
+      <param name="jar-name" value="${ugli-jdk14.jar}"/>
     </antcall>
   </target>
 
