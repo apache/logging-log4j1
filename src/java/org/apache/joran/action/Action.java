@@ -47,6 +47,12 @@ public abstract class Action {
   public static final String PATTERN_ATTRIBUTE = "pattern";
   public static final String ACTION_CLASS_ATTRIBUTE = "actionClass";
 
+  public static final Action NOP_ACTION = 
+    new Action() {
+      public void begin(ExecutionContext ec, String name, Attributes attributes) {}
+      public void end(ExecutionContext ec, String name) {}
+    };
+
   /*
    * An inststance specific logger. 
    */
