@@ -244,6 +244,25 @@ import org.apache.log4j.helpers.PatternConverter;
      </td>
    </tr>
 
+
+   <tr>
+     <td align=center><b>X</b></td>
+
+     <td> 
+     
+     <p>Used to output the MDC (mapped diagnostic context) associated
+     with the thread that generated the logging event. The <b>X</b>
+     conversion character <em>must</em> be followed by the key for the
+     map placed between braces, as in <b>%X{clientNumber}</b> where
+     <code>clientNumber</code> is the key. The value in the MDC
+     corresponding to the key will be output.</p>
+     
+     <p>See {@link MDC} class for more details.
+     </p>
+     
+     </td>
+   </tr>
+
    <tr>
 
      <td align=center><b>%</b></td>
