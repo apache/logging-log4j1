@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE log4j:configuration>
 
-<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+<log4j:configuration "xmlns:log4j="http://jakarta.apache.org/log4j/">
 
   <newRule pattern="log4j:configuration/hello" actionClass="org.apache.joran.action.HelloAction"></newRule>
 

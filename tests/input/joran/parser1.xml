@@ -14,7 +14,7 @@
   </logger>
     
   <root>
-    <level value ="debug" />
+    <level value ="WARN" />
     <appender-ref ref="A1" />
   </root>
   
