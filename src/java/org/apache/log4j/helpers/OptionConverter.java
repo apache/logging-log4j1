@@ -80,7 +80,7 @@ public class OptionConverter {
     // Get the value of the property in string form
     String className = props.getProperty(key);
     if(className == null) {
-      System.err.println("Could not find value for key " + key);
+      LogLog.error("Could not find value for key " + key);
       return defaultValue;
     }
     // Trim className to avoid trailing spaces that cause problems.
@@ -117,7 +117,7 @@ public class OptionConverter {
 	return Integer.valueOf(s).intValue();
       }
       catch (NumberFormatException e) {
-	System.err.println("[" + s + "] is not in proper int form.");
+	 LogLog.error("[" + s + "] is not in proper int form.");
 	e.printStackTrace();
       }
     }
@@ -151,9 +151,8 @@ public class OptionConverter {
 	return Long.valueOf(s).longValue() * multiplier;
       }
       catch (NumberFormatException e) {
-	System.err.println("[" + s + "] is not in proper int form.");
-	System.err.println("[" + value + "] not in expected format.");		
-	e.printStackTrace();
+	LogLog.error("[" + s + "] is not in proper int form.");
+	LogLog.error("[" + value + "] not in expected format.", e);
       }
     }
     return dEfault;
@@ -193,14 +192,12 @@ public class OptionConverter {
       try {
 	Class classObj = Class.forName(className);
 	if(!superClass.isAssignableFrom(classObj)) 
-	  System.err.println("A \""+className+
-			     "\" object is not assignable to a \""+
-			     superClass.getName() + "\" object.");
+	  LogLog.error("A \""+className+"\" object is not assignable to a \""+
+		       superClass.getName() + "\" object.");
 	return classObj.newInstance();
       }
       catch (Exception e) {
-	System.err.println("Could not instantiate class [" + className + "].");
-	e.printStackTrace();
+	LogLog.error("Could not instantiate class [" + className + "].", e);
       }
     }
     return defaultValue;    

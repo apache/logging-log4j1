@@ -53,7 +53,9 @@ public class Hierarchy {
   public 
   final Hierarchy _default =  new Hierarchy(new RootCategory(Priority.DEBUG));
   
-  private static CategoryFactory defaultFactory = new DefaultCategoryFactory();
+  static 
+  private
+  CategoryFactory defaultFactory = new DefaultCategoryFactory();
 
   Hashtable ht;
   Category root;

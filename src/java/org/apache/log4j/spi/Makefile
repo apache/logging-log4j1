@@ -1,5 +1,5 @@
 
-PKG_DIR :=org.apache.log4j/spi
+PKG_DIR :=org/apache/log4j/spi
 DEPTH   :=../../../..
 JSOURCES:=OptionHandler.java\
 	AppenderAttachable.java\
@@ -11,11 +11,6 @@ JSOURCES:=OptionHandler.java\
 	ErrorCode.java\
 	CategoryFactory.java\
 	Configurator.java\
-
-#ifdef FULL
-#
-#endif
-
 
 SUBDIRS := 
 

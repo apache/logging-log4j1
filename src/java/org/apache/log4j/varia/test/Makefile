@@ -1,5 +1,5 @@
 
-PKG_DIR :=org.apache.log4j/varia/test
+PKG_DIR :=org/apache/log4j/varia/test
 DEPTH   :=../../../../..
 JSOURCES:=Loop.java
 
