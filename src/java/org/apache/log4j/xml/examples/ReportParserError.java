@@ -1,8 +1,6 @@
 
 package org.apache.log4j.xml.examples;
 
-import org.apache.log4j.helpers.LogLog;
-
 /**
 
    This class is needed for validating a log4j.dtd derived XML file.
@@ -15,7 +13,7 @@ import org.apache.log4j.helpers.LogLog;
 public class ReportParserError implements org.xml.sax.ErrorHandler {
   
   void report(String msg, org.xml.sax.SAXParseException e) {
-    LogLog.error(msg+e.getMessage()+ "\n\tat line="+ e.getLineNumber()+
+    System.out.println(msg+e.getMessage()+ "\n\tat line="+ e.getLineNumber()+
 		 " col="+e.getColumnNumber()+ " of "+
 		 "SystemId=\""+e.getSystemId()+
 		 "\" PublicID = \""+e.getPublicId()+'\"');

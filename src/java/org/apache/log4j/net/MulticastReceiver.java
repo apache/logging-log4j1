@@ -16,7 +16,6 @@
 
 package org.apache.log4j.net;
 
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.plugins.Pauseable;
 import org.apache.log4j.plugins.Receiver;
 import org.apache.log4j.spi.Decoder;
@@ -130,11 +129,11 @@ public class MulticastReceiver extends Receiver implements PortBased,
         this.decoderImpl = (Decoder) o;
       }
     } catch (ClassNotFoundException cnfe) {
-      LogLog.warn("Unable to find decoder", cnfe);
+      getLogger().warn("Unable to find decoder", cnfe);
     } catch (IllegalAccessException iae) {
-      LogLog.warn("Could not construct decoder", iae);
+      getLogger().warn("Could not construct decoder", iae);
     } catch (InstantiationException ie) {
-      LogLog.warn("Could not construct decoder", ie);
+      getLogger().warn("Could not construct decoder", ie);
     }
 
     try {
@@ -250,7 +249,7 @@ public class MulticastReceiver extends Receiver implements PortBased,
         }
       }
 
-      LogLog.debug(MulticastReceiver.this.getName() + "'s thread is ending.");
+      getLogger().debug("{}'s thread is ending.", MulticastReceiver.this.getName());
     }
   }
 }
