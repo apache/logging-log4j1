@@ -13,18 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.log4j.joran;
-
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.List;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.joran.ExecutionContext;
 import org.apache.joran.Interpreter;
@@ -34,6 +24,7 @@ import org.apache.joran.action.NestComponentIA;
 import org.apache.joran.action.NewRuleAction;
 import org.apache.joran.action.ParamAction;
 import org.apache.joran.helper.SimpleRuleStore;
+
 import org.apache.log4j.config.ConfiguratorBase;
 import org.apache.log4j.joran.action.ActionConst;
 import org.apache.log4j.joran.action.AppenderAction;
@@ -52,23 +43,36 @@ import org.apache.log4j.joran.util.XMLUtil;
 import org.apache.log4j.spi.ErrorItem;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.xml.Log4jEntityResolver;
+
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import java.net.URL;
+
+import java.util.HashMap;
+import java.util.List;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
 
 /**
- * 
- * A JoranConfigurator instance should not be used more than once to 
+ *
+ * A JoranConfigurator instance should not be used more than once to
  * configure a LoggerRepository.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class JoranConfigurator extends ConfiguratorBase {
-
   Interpreter joranInterpreter;
   LoggerRepository repository;
   boolean listAppnderAttached = false;
-  
+
   public JoranConfigurator() {
     selfInitialize();
   }
@@ -78,6 +82,18 @@ public class JoranConfigurator extends ConfiguratorBase {
     this.repository = repository;
 
     ExecutionContext ec = joranInterpreter.getExecutionContext();
+    List errorList = ec.getErrorList();
+
+    int result = XMLUtil.checkIfWellFormed(url, errorList);
+    switch (result) {
+    case XMLUtil.ILL_FORMED:
+    case XMLUtil.UNRECOVERABLE_ERROR:
+      errorList.add(
+        new ErrorItem(
+          "Problem parsing XML document. See previously reported errors. Abandoning all furhter processing."));
+      return;
+    }
+
     String errMsg;
     try {
       InputStream in = url.openStream();
@@ -93,17 +109,30 @@ public class JoranConfigurator extends ConfiguratorBase {
   public List getErrorList() {
     return getExecutionContext().getErrorList();
   }
-  
+
   /**
    * Configure a repository from a configuration file passed as parameter.
    */
   public void doConfigure(String filename, LoggerRepository repository) {
     // This line is needed here because there is logging from inside this method.
     this.repository = repository;
-    
-    FileInputStream fis = null;
+    getLogger(repository).info(
+      "in JoranConfigurator doConfigure {}", filename);
+
     ExecutionContext ec = joranInterpreter.getExecutionContext();
-    getLogger(repository).info("in JoranConfigurator doConfigure {}", filename);
+    List errorList = ec.getErrorList();
+
+    int result = XMLUtil.checkIfWellFormed(filename, errorList);
+    switch (result) {
+    case XMLUtil.ILL_FORMED:
+    case XMLUtil.UNRECOVERABLE_ERROR:
+      errorList.add(
+        new ErrorItem(
+          "Problem parsing XML document. See previously reported errors. Abandoning all furhter processing."));
+      return;
+    }
+
+    FileInputStream fis = null;
     try {
       fis = new FileInputStream(filename);
       doConfigure(fis, repository);
@@ -116,43 +145,35 @@ public class JoranConfigurator extends ConfiguratorBase {
         try {
           fis.close();
         } catch (java.io.IOException e) {
-          getLogger(repository).error("Could not close [" + filename + "].", e);
+          getLogger(repository).error(
+            "Could not close [" + filename + "].", e);
         }
       }
     }
   }
-  
+
   /**
    * Configure a repository from the input stream passed as parameter
    */
   public void doConfigure(InputStream in, LoggerRepository repository) {
-    List errorList = getErrorList();
-   
-    int result =  XMLUtil.checkIfWellFormed(in, errorList);
-    switch(result) {
-      case XMLUtil.ILL_FORMED:
-        errorList.add(new ErrorItem("Ill formed XML document. Abandoning all furhter processing."));
-        break;
-      case XMLUtil.CANT_SAY:
-      case XMLUtil.WELL_FORMED:
-        doConfigure(new InputSource(in), repository);
-    }
-    
+    doConfigure(new InputSource(in), repository);
   }
 
   /**
    * All doConfigure methods evenually call this form.
-   * */  
-  public void doConfigure(InputSource inputSource, LoggerRepository repository) {
+   * */
+  public void doConfigure(
+    InputSource inputSource, LoggerRepository repository) {
     this.repository = repository;
     ExecutionContext ec = joranInterpreter.getExecutionContext();
     ec.pushObject(repository);
     String errMsg;
     try {
       attachListAppender(repository);
-      
+
       getLogger(repository).debug("Starting to parse input source.");
       SAXParserFactory spf = SAXParserFactory.newInstance();
+
       // we want non-validating parsers
       spf.setValidating(false);
       SAXParser saxParser = spf.newSAXParser();
@@ -173,35 +194,51 @@ public class JoranConfigurator extends ConfiguratorBase {
     }
   }
 
-
-  
   protected void selfInitialize() {
     RuleStore rs = new SimpleRuleStore();
     rs.addRule(new Pattern("log4j:configuration"), new ConfigurationAction());
-    rs.addRule(new Pattern("log4j:configuration/substitutionProperty"), new SubstitutionPropertyAction());
-    rs.addRule(new Pattern("log4j:configuration/repositoryProperty"), new RepositoryPropertyAction());
+    rs.addRule(
+      new Pattern("log4j:configuration/substitutionProperty"),
+      new SubstitutionPropertyAction());
+    rs.addRule(
+      new Pattern("log4j:configuration/repositoryProperty"),
+      new RepositoryPropertyAction());
     rs.addRule(new Pattern("log4j:configuration/plugin"), new PluginAction());
     rs.addRule(new Pattern("log4j:configuration/logger"), new LoggerAction());
-    rs.addRule(new Pattern("log4j:configuration/logger/level"), new LevelAction());
-    rs.addRule(new Pattern("log4j:configuration/logger/priority"), new PriorityAction());
-    rs.addRule(new Pattern("log4j:configuration/root"), new RootLoggerAction());
-    rs.addRule(new Pattern("log4j:configuration/root/level"), new LevelAction());
-    rs.addRule(new Pattern("log4j:configuration/root/priority"), new PriorityAction());
-    rs.addRule(new Pattern("log4j:configuration/logger/appender-ref"), new AppenderRefAction());
-    rs.addRule(new Pattern("log4j:configuration/root/appender-ref"), new AppenderRefAction());
-    rs.addRule(new Pattern("log4j:configuration/appender"), new AppenderAction());
-    rs.addRule(new Pattern("log4j:configuration/appender/layout"), new LayoutAction());
-    rs.addRule(new Pattern("log4j:configuration/appender/layout/conversionRule"), new ConversionRuleAction());
-    rs.addRule(new Pattern("log4j:configuration/newRule"), new NewRuleAction());
+    rs.addRule(
+      new Pattern("log4j:configuration/logger/level"), new LevelAction());
+    rs.addRule(
+      new Pattern("log4j:configuration/logger/priority"), new PriorityAction());
+    rs.addRule(
+      new Pattern("log4j:configuration/root"), new RootLoggerAction());
+    rs.addRule(
+      new Pattern("log4j:configuration/root/level"), new LevelAction());
+    rs.addRule(
+      new Pattern("log4j:configuration/root/priority"), new PriorityAction());
+    rs.addRule(
+      new Pattern("log4j:configuration/logger/appender-ref"),
+      new AppenderRefAction());
+    rs.addRule(
+      new Pattern("log4j:configuration/root/appender-ref"),
+      new AppenderRefAction());
+    rs.addRule(
+      new Pattern("log4j:configuration/appender"), new AppenderAction());
+    rs.addRule(
+      new Pattern("log4j:configuration/appender/layout"), new LayoutAction());
+    rs.addRule(
+      new Pattern("log4j:configuration/appender/layout/conversionRule"),
+      new ConversionRuleAction());
+    rs.addRule(
+      new Pattern("log4j:configuration/newRule"), new NewRuleAction());
     rs.addRule(new Pattern("*/param"), new ParamAction());
 
     joranInterpreter = new Interpreter(rs);
-    
+
     // We need to bother with an entity resolver in order to be compatible
     // with config files written for DOMConfigurator containing the following: 
     // <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
     joranInterpreter.setEntityResolver(new Log4jEntityResolver());
-    
+
     // The following line adds the capability to parse nested components
     joranInterpreter.addImplcitAction(new NestComponentIA());
     ExecutionContext ec = joranInterpreter.getExecutionContext();
@@ -209,9 +246,8 @@ public class JoranConfigurator extends ConfiguratorBase {
     HashMap omap = ec.getObjectMap();
     omap.put(ActionConst.APPENDER_BAG, new HashMap());
   }
-  
+
   public ExecutionContext getExecutionContext() {
     return joranInterpreter.getExecutionContext();
   }
 }
-
