@@ -32,6 +32,7 @@ import java.util.List;
 public class SimpleRuleStore implements RuleStore {
   final static Logger logger = Logger.getLogger(SimpleRuleStore.class);
 
+  // key: Pattern instance, value: ArrayList containing actions
   HashMap rules = new HashMap();
 
   public void addRule(Pattern pattern, Action action) {
