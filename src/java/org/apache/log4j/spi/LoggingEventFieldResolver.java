@@ -98,16 +98,21 @@ public final class LoggingEventFieldResolver {
   	  }
       StringTokenizer tokenizer = new StringTokenizer(replaceText);
       StringBuffer result = new StringBuffer();
+      boolean found = false;
       
       while (tokenizer.hasMoreTokens()) {
           String token = tokenizer.nextToken();
           if (isField(token) || token.toUpperCase().startsWith(PROP_FIELD)) {
               result.append(getValue(token, event).toString());
+              found = true;
           } else { 
               result.append(token);
           }
       }
-      return result.toString();
+      if (found) {
+      	return result.toString();
+      }
+      return null;
   }
 
   public static LoggingEventFieldResolver getInstance() {
