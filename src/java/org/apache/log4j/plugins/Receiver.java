@@ -17,7 +17,6 @@
 package org.apache.log4j.plugins;
 
 import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.Thresholdable;
@@ -120,19 +119,5 @@ public abstract class Receiver extends PluginSkeleton implements Thresholdable {
       // call the loggers appenders to process the event
       localLogger.callAppenders(event);
     }
-  }
-  
-  /**
-   * Return an instance specific logger to be used by the Receiver itself.
-   * This logger is not intended to be used by Mrs. Piggy, our proverbial user,
-   * hence the protected keyword.
-   * 
-   * @return instance specific logger
-   */
-  protected Logger getLogger() {
-    if(logger == null) {
-      logger = LogManager.getLogger(this.getClass().getName());
-    }
-    return logger;
   }
 }
