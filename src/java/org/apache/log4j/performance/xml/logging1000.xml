@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration SYSTEM "log4j.dtd">
+
+<configuration>
+        <appender name="NULL" class="org.log4j.net.SocketAppender">
+           <param name="RemoteHost" value="localhost"/>
+           <param name="Port" value="1000"/>
+           <param name="ReconnectionDelay" value="1000"/>
+	</appender>
+ 
+        <category name="A0123456789">  	
+	   <priority value ="info" />
+        </category>  	
+
+	<root>
+	   <priority value ="debug" />
+   	   <appender-ref ref="NULL" />
+	</root>
+	
+</configuration>

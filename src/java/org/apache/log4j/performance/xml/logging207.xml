@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration SYSTEM "log4j.dtd">
+
+<configuration>
+        <appender name="NULL" class="org.log4j.FileAppender">
+           <param name="File" value="temp"/>
+           <param name="Append" value="false"/>
+           <param name="ImmediateFlush" value="false"/>
+           <layout class="org.log4j.PatternLayout">
+              <param name="ConversionPattern" 
+                     value="%l - %m%n"/>
+	   </layout>
+	</appender>
+ 
+        <category name="A0123456789">  	
+	   <priority value ="info" />
+        </category>  	
+
+	<root>
+	   <priority value ="debug" />
+   	   <appender-ref ref="NULL" />
+	</root>
+	
+</configuration>
