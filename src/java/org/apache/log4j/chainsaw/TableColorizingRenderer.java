@@ -54,6 +54,7 @@ import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
 import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
 import org.apache.log4j.chainsaw.prefs.SettingsListener;
 import org.apache.log4j.helpers.ISO8601DateFormat;
+import org.apache.log4j.spi.LoggingEvent;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -83,6 +84,7 @@ import javax.swing.table.TableModel;
  *
  * @author Claude Duguay
  * @author Scott Deboy <sdeboy@apache.org>
+ * @author Paul Smith <psmith@apache.org>
  *
  */
 public class TableColorizingRenderer extends DefaultTableCellRenderer
@@ -93,7 +95,6 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
   private ColorFilter colorFilter;
   private JTable table;
   private Color background = new Color(255, 255, 254);
-  private Vector v = new Vector();
   private final Color COLOR_ODD = new Color(230, 230, 230);
   private final JLabel idComponent = new JLabel();
   private final JLabel levelComponent = new JLabel();
@@ -224,12 +225,12 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
 
     if ((color == null) && (colorFilter != null)) {
       TableModel model = table.getModel();
-
+      LoggingEvent event = null;
       if (model instanceof EventContainer) {
         EventContainer model2 = (EventContainer) model;
-        v = model2.getRow(row);
+        event = model2.getRow(row);
 
-        if (v == null) {
+        if (event == null) {
           //ignore...probably changed displayed cols
           return c;
         }
@@ -238,7 +239,7 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
           getClass() + " can only support an EventContainer TableModel");
       }
 
-      color = colorFilter.getColor(ChainsawColumns.getColumnsNames(), v);
+      color = colorFilter.getColor(ChainsawColumns.getColumnsNames(), event);
     }
 
     if ((color != null)) {
