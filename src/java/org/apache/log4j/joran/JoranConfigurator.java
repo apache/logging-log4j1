@@ -148,7 +148,7 @@ public class JoranConfigurator extends ConfiguratorBase {
       return;
     }
     
-    JoranDocument document = new JoranDocument(errorList);
+    JoranDocument document = new JoranDocument(errorList, repository);
     
     try {
         action.parse(saxParser, document);

@@ -20,6 +20,9 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.Constants;
 import org.apache.log4j.spi.ErrorItem;
+import org.apache.log4j.spi.LoggerRepository;
+
+import org.apache.ugli.ULogger;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -51,9 +54,11 @@ public final class JoranDocument extends DefaultHandler {
   private final List events = new ArrayList(20);
   private SAXParseException fatalError;
   private Locator location;
+  private final LoggerRepository repository;
 
-  public JoranDocument(final List errorList) {
+  public JoranDocument(final List errorList, LoggerRepository repository) {
     this.errorList = errorList;
+    this.repository = repository;
   }
 
   public void error(final SAXParseException spe) {
@@ -109,7 +114,7 @@ public final class JoranDocument extends DefaultHandler {
       event.replay(handler, replayLocation);
     }
   }
-  
+
   public InputSource resolveEntity(
     final String publicId, final String systemId) throws SAXException {
     //
@@ -118,32 +123,29 @@ public final class JoranDocument extends DefaultHandler {
     //   We aren't validating and do not need anything from
     //       the dtd and do not want a failure if it isn't present.
     if ((systemId != null) && systemId.endsWith("log4j.dtd")) {
-       Logger logger = LogManager.getLogger(this.getClass().getName());
-       logger.warn("The 'log4j.dtd' is no longer used nor needed.");
-       logger.warn("See {}#log4j_dtd for more details.", Constants.CODES_HREF);
+      getLogger().warn("The 'log4j.dtd' is no longer used nor needed.");
+      getLogger().warn("See {}#log4j_dtd for more details.", Constants.CODES_HREF);
       return new InputSource(new ByteArrayInputStream(new byte[0]));
     }
-    
+
     // If the systemId is not for us to handle, we delegate to our super
     // class, at leasts that's the basic idea. However, the code below
     // needs to be more complicated.
-    
     // Due to inexplicable voodoo, the original resolveEntity method in 
     // org.xml.sax.helpers.DefaultHandler declares throwing an IOException, 
     // whereas the org.xml.sax.helpers.DefaultHandler class included in
     // JDK 1.4 masks this exception. In JDK 1.5, the IOException has been
     // put back...
-     
     // In order to compile under JDK 1.4, we are forced to mask the IOException
     // as well. Since its signatures varies, we cannot call our super class' 
     // resolveEntity method. We are forced to implement the default behavior 
     // ourselves, which in this case, is just returning null.
     try {
       return super.resolveEntity(publicId, systemId);
-    } catch(Exception e) {
-      if(e instanceof SAXException) {
+    } catch (Exception e) {
+      if (e instanceof SAXException) {
         throw (SAXException) e;
-      } else if(e instanceof java.io.IOException) {
+      } else if (e instanceof java.io.IOException) {
         // fall back to the default "implementation"
         Logger logger = LogManager.getLogger(this.getClass().getName());
         logger.error("Default entity resolver threw an IOException", e);
@@ -157,6 +159,14 @@ public final class JoranDocument extends DefaultHandler {
 
   public void setDocumentLocator(Locator location) {
     this.location = location;
+  }
+
+  protected ULogger getLogger() {
+    if (repository != null) {
+      return repository.getLogger(this.getClass().getName());
+    } else {
+      return LogManager.SIMPLE_LOGGER_FA.getLogger(this.getClass().getName());
+    }
   }
 
   private abstract static class ElementEvent {
