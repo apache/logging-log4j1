@@ -27,7 +27,7 @@ public class MyCategory extends Category {
 
   // It's usually a good idea to add a dot suffix to the fully
   // qualified class name. This makes caller localization to work
-  // properly even from classes that have the almostthe same fully
+  // properly even from classes that have almost the same fully
   // qualified class name as MyCategory, e.g. MyCategoryTest.
   static String FQCN = MyCategory.class.getName() + ".";
 

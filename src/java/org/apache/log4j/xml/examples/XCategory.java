@@ -33,8 +33,12 @@ import org.apache.log4j.xml.examples.XPriority;
    
  */
 public class XCategory extends Category implements OptionHandler {
-
-  final private static String FQCN = XCategory.class.getName();
+  
+  // It's usually a good idea to add a dot suffix to the fully
+  // qualified class name. This makes caller localization to work
+  // properly even from classes that have almost the same fully
+  // qualified class name as XCategory.
+  private static String FQCN = XCategory.class.getName() + ".";
 
   // It's enough to instantiate a factory once and for all.
   private static XFactory factory = new XFactory();
@@ -64,6 +68,15 @@ public class XCategory extends Category implements OptionHandler {
   public 
   void debug(String message) {
     super.debug(message + " " + suffix);
+  }
+
+
+  /**
+     This makes caller localization to work properly.
+   */
+  protected
+  String getFQCN() {
+    return XCategory.FQCN;
   }
 
   /**
