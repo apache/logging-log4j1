@@ -20,11 +20,30 @@ The test cases are based on Junit version 3.7+.
 IMPORTANT: You need to place junit.jar in your CLASSPATH environment
 variable.
 
-The test cases perform some regular expression based filtering. This
-requires jakarta-oro. Version-2.0.5 was used when writing the
-tests. You need to have jakarta.oro.jar property (found in the
-build.properties file) to point to jakarta-oro.jar. See the file
-build.properties.sample for an example of a build.properties file.
+====================
+
+The test cases are also dependent on other external projects and jars.
+The following jars should be placed in the ./tests/lib directory:
+
+jakarta-oro - http://jakarta.apache.org/oro - The test cases perform some 
+regular expression based filtering. Version-2.0.5 was used when writing the
+tests, but later versions should be compatible.
+
+jetty - http://jetty.mortbay.org/jetty/ - Version 4.2.22 was used when writing
+the tests.  You will need both the org.mortbay.jetty.jar and the 
+org.mortbay.jetty.plus.jar
+
+Optional database testing - For the various DB tests you need to place the
+appropriate JDBC drivers in ./tests/lib/ directory. 
+
+Optional JNDI related testing - Testing JNDIConnectionSource requires 
+JNDI File System Service Provider, 1.2 Beta 3, which can be downloaded from: 
+http://java.sun.com/products/jndi/downloads/index.html. Click on 
+"Download JNDI 1.2.1 & More".  Once you obtained the JNDI File System Service
+provider place the files fscontext.jar and providerutil.jar in the ./tests/lib/
+directory.
+
+====================
 
 Assuming jakarta-ant is installed properly, depending on your platform
 type $ANT_HOME/bin/ant or %ANT_HOME%/bin/ant.bat to see the available

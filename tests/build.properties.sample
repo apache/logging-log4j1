@@ -1,30 +1,4 @@
 deprecation=on
 
-jakarta.oro.jar=../../jakarta-oro-2.0.5/jakarta-oro-2.0.5.jar
-
-
-# Junit test cases
-# ================
-# junit.jar must be on the classpath or in ANT_HOME/lib. It can't  be
-# handled as a property altough this might change in futute versions of ANT.
-
-# We use jetty for some unit tests
-jetty.jar=/java/jetty-4.2.20/lib/org.mortbay.jetty.jar
-
-
-# Database testing
-# ================
-#
-# For the various DB tests you need to place the appropriate 
-# JDBC drivers in ./tests/lib/ directory. 
-#
-# Testing JNDIConnectionSource requires JNDI File System Service 
-# Provider, 1.2 Beta 3, which can be downloaded from: 
-#
-# http://java.sun.com/products/jndi/downloads/index.html
-#
-# Click on "Download JNDI 1.2.1 & More"     
-#
-# Once you obtained the JNDI File System Service Provider place 
-# the files fscontext.jar and providerutil.jar in the ./tests/lib/ 
-# directory.
+# normally other build related properties would be defined here, but for now
+# there are no other required properties.
