@@ -16,9 +16,6 @@
 
 package org.apache.log4j.pattern;
 
-import org.apache.log4j.helpers.LogLog;
-
-
 /**
    FormattingInfo instances contain the information obtained when parsing
    formatting modifiers in conversion modifiers.
@@ -39,7 +36,4 @@ public class FormattingInfo {
     leftAlign = false;
   }
 
-  void dump() {
-    LogLog.debug("min=" + min + ", max=" + max + ", leftAlign=" + leftAlign);
-  }
 }
