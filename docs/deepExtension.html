@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>log4j extensions</title>
+<title>Extending Log4J</title>
 </head>
 
 <body bgcolor="white">
@@ -57,8 +57,8 @@ classes described in both the User Manual and the
 <a href="api/index.html" target="_top">Javadoc API</a>.  To assist in illustrating the
 concepts, a simple case study will be developed along side the
 explanations.  The resulting classes may be used as a template
-for your own extensions.  Condenced (i.e. statements compressed,
-comments removed) snipets of the case study code
+for your own extensions.  Condensed (i.e. statements compressed,
+comments removed) snippets of the case study code
 are included in this document.
 
 <a name="case"><h3>The Case Study</h3></a>
@@ -195,7 +195,7 @@ is that the utility of undocumented code fades exponentially with time.
 Since the log4j product comes with Javadoc comments together with
 the documentation it produces, it makes sense to include Javadoc
 comments in your extensions.  By their very nature, logging tools
-are strong candidates for re-use.  They can only be independently
+are strong candidates for reuse.  They can only be independently
 re-used if they are supported by strong documentation component.
 <p>
 This all having been said, I have elected to remove most comments from
@@ -589,7 +589,7 @@ will obtain the hostname of the machine on which it runs using the
 setters for the attributes introduced, the only method to
 be implemented is the <code>makeNewCategoryInstance</code>.
 <p>
-Below is a snipet from <code>AppServerCategoryFactory</code>
+Below is a snippet from <code>AppServerCategoryFactory</code>
 with getters, setters and comments removed.
 <p>
 <table border=1>
@@ -715,7 +715,7 @@ the log output.  All other attributes are conveyed properly.
 <hr>
 <a name="enhancements"><h2>Further Enhancements</h2></a>
 There are some other directions in which this log4j extension 
-may be enhanced.
+may be enhanced:
 <p>
 <ol>
 <li>The hostname attribute could incorportate a formatting convention
