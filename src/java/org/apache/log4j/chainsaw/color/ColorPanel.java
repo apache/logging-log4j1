@@ -283,7 +283,7 @@ public class ColorPanel extends JPanel {
   }
 
   private void configureTable() {
-    table.setToolTipText("Click to edit");
+    table.setToolTipText("Double click to edit");
     table.setRowHeight(20);
     table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     table.setColumnSelectionAllowed(false);
@@ -369,7 +369,7 @@ public class ColorPanel extends JPanel {
 
     if (result.toString().equals("")) {
       ((ExpressionTableCellRenderer) table.getColumnModel().getColumn(0).getCellRenderer())
-      .setToolTipText("Click to edit");
+      .setToolTipText("Double click to edit");
       statusBar.setText("");
     } else {
       statusBar.setText("Errors - see expression tooltip");

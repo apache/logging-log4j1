@@ -145,7 +145,8 @@ public class ExpressionRule extends AbstractRule {
         }
       }
 
-      if ((stack.size() == 0) || (!(stack.peek() instanceof Rule))) {
+      //stack should contain a single rule if the expression is valid
+      if ((stack.size() != 1) || (!(stack.peek() instanceof Rule))) {
         throw new IllegalArgumentException("invalid expression: " + expression);
       } else {
         return (Rule) stack.pop();

@@ -140,27 +140,12 @@ import org.apache.log4j.spi.LoggingEvent;
  * generated because Logging Events are streamed via a Receiver, or other
  * mechanism.
  *
- * If a system property 'chainsaw.usecyclicbuffer' is set to 'true', each panel
- * will use a cyclic buffer for displaying events and once events reach the
- * buffer limit, the oldest events are removed from the table.
- *
- * If the property is not provided, there is no limit on the table's buffer
- * size.
- *
- * If 'chainsaw.usecyclicbuffer' is set to 'true' and a system property
- * 'chainsaw.cyclicbuffersize' is set to some integer value, that value will be
- * used as the buffer size - if the buffersize is not provided, a default size
- * of 500 is used.
- *
  * @author Scott Deboy <sdeboy@apache.org>
  * @author Paul Smith  <psmith@apache.org>
  *
  */
 public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   private static final String CONFIG_FILE_TO_USE = "config.file";
-  static final String USE_CYCLIC_BUFFER_PROP_NAME = "chainsaw.usecyclicbuffer";
-  static final String CYCLIC_BUFFER_SIZE_PROP_NAME =
-    "chainsaw.cyclicbuffersize";
   private static final String MAIN_WINDOW_HEIGHT = "main.window.height";
   private static final String MAIN_WINDOW_WIDTH = "main.window.width";
   private static final String MAIN_WINDOW_Y = "main.window.y";

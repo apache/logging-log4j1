@@ -147,6 +147,6 @@ public class RuleFactory {
     if (GREATER_THAN_EQUALS_RULE.equals(symbol)) {
       return InequalityRule.getRule(GREATER_THAN_EQUALS_RULE, stack);
     }
-    return null;
+    throw new IllegalArgumentException("Invalid rule: " + symbol);
   }
 }
