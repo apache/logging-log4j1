@@ -51,23 +51,38 @@
  */
 package org.apache.log4j.chainsaw;
 
-import java.awt.FlowLayout;
+import org.apache.log4j.helpers.LogLog;
+
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+
+import java.io.File;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
+import javax.swing.filechooser.FileFilter;
 
 
 /**
@@ -75,23 +90,51 @@ import javax.swing.JTextArea;
  * Receiver's defined, and prompting them to either
  * load a Log4j Log file, search for a Log4j configuration file
  * or use the GUI to define the Receivers
- * 
+ *
  * @author Paul Smith
  */
 class NoReceiversWarningPanel extends JPanel {
+  private final JComboBox previousConfigs = new JComboBox();
+  private final JRadioButton justLoadingFile =
+    new JRadioButton("I'm fine thanks, don't worry");
+  private final JRadioButton searchOption =
+    new JRadioButton("Let me search for a configuration file");
+  private final JRadioButton manualOption =
+    new JRadioButton("Let me define Receivers manually");
+  private final JButton okButton = new JButton("Ok");
+  private final PanelModel model = new PanelModel();
+  final DefaultComboBoxModel configModel = new DefaultComboBoxModel();
+
   NoReceiversWarningPanel() {
     initComponents();
   }
 
   /**
-   *
+   * Returns the current Model/state of the chosen options by the user.
+   * @return
+   */
+  PanelModel getModel() {
+    return model;
+  }
+
+  /**
+   * Clients of this panel can configure the ActionListener to be used
+   * when the user presses the OK button, so they can read
+   * back this Panel's model top determine what to do.
+   * @param actionListener
+   */
+  void setOkActionListener(ActionListener actionListener) {
+    okButton.addActionListener(actionListener);
+  }
+
+  /**
+   * Sets up all the GUI components for this paenl
    */
   private void initComponents() {
     setLayout(new GridBagLayout());
 
     GridBagConstraints gc = new GridBagConstraints();
 
-    //    setBackground(Color.white);
     setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
     gc.gridx = 1;
@@ -101,7 +144,7 @@ class NoReceiversWarningPanel extends JPanel {
 
     JTextArea label =
       new JTextArea(
-        "You have no Receivers defined.\n\nYou will not be able to receive events from a Remote source unless you define one in the Log4J configuration file.\n");
+        "You will not be able to receive events from a Remote source unless you define one in the Log4J configuration file.\n");
     label.setWrapStyleWord(true);
     label.setLineWrap(true);
     label.setEditable(false);
@@ -121,23 +164,20 @@ class NoReceiversWarningPanel extends JPanel {
 
     final ButtonGroup optionGroup = new ButtonGroup();
 
-    final JRadioButton searchOption =
-      new JRadioButton("Let me locate a config file", false);
-
     searchOption.setToolTipText(
       "Allows you to choose a Log4J Configuration file that contains Receiver definitions");
 
-    final JRadioButton manualOption =
-      new JRadioButton("Let me define Receivers manually");
+    searchOption.setMnemonic('S');
 
     manualOption.setToolTipText(
       "Opens the Receivers panel so you can define them via a GUI");
 
-    final JRadioButton justLoadingFile =
-      new JRadioButton("Let me load a Log4j Log file");
+    manualOption.setMnemonic('m');
 
     justLoadingFile.setToolTipText(
       "Use this if you just want to view a Log4J Log file stored somewhere");
+
+    justLoadingFile.setMnemonic('I');
 
     searchOption.setOpaque(false);
     manualOption.setOpaque(false);
@@ -149,34 +189,88 @@ class NoReceiversWarningPanel extends JPanel {
 
     gc.gridy = 3;
 
-    String[] items =
-      new String[] {
-        "", "c:\\blah\blah.xml", "file:///var/doobie/blah/blah.xml",
-      };
+    configModel.removeAllElements();
 
-    final JComboBox previousConfigs = new JComboBox(items);
+    previousConfigs.setModel(configModel);
     previousConfigs.setOpaque(false);
     previousConfigs.setBackground(getBackground());
     previousConfigs.setToolTipText(
       "Previously loaded configurations can be chosen here");
 
+    previousConfigs.setEditable(true);
+
+    previousConfigs.getModel().addListDataListener(
+      new ListDataListener() {
+        private void validateUrl() {
+          okButton.setEnabled(isValidConfigURL());
+        }
+
+        public void contentsChanged(ListDataEvent e) {
+          validateUrl();
+        }
+
+        public void intervalAdded(ListDataEvent e) {
+          validateUrl();
+        }
+
+        public void intervalRemoved(ListDataEvent e) {
+          validateUrl();
+        }
+      });
+
+    previousConfigs.setMaximumSize(
+      new Dimension(200, (int) previousConfigs.getPreferredSize().getHeight()));
+    previousConfigs.setPreferredSize(previousConfigs.getMaximumSize());
+    previousConfigs.getEditor().getEditorComponent().addFocusListener(
+      new FocusListener() {
+        public void focusGained(FocusEvent e) {
+          selectAll();
+        }
+
+        private void selectAll() {
+          previousConfigs.getEditor().selectAll();
+        }
+
+        public void focusLost(FocusEvent e) {
+        }
+      });
+
     final JButton searchButton =
       new JButton(
-        new AbstractAction("...") {
+        new AbstractAction("Browse...") {
           public void actionPerformed(ActionEvent e) {
-            
-//            TODO close this dialog(?) and use the file open action
+            try {
+              URL url = browseForConfig();
+
+              if (url != null) {
+                getModel().configUrl = url;
+                configModel.addElement(url);
+                previousConfigs.getModel().setSelectedItem(url);
+              }
+            } catch (Exception ex) {
+              LogLog.error("Error browswing for Configuration file", ex);
+            }
           }
         });
 
     searchButton.setToolTipText(
-      "Shows a File Open dialog to allow you to find a config file");
+      "Shows a File Open dialog to allow you to find a configuration file");
 
+    /**
+     * This listener activates/deactivates certain controls based on the current
+     * state of the options
+     */
     ActionListener al =
       new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           previousConfigs.setEnabled(e.getSource() == searchOption);
           searchButton.setEnabled(e.getSource() == searchOption);
+
+          if (optionGroup.isSelected(searchOption.getModel())) {
+            okButton.setEnabled(isValidConfigURL());
+          } else {
+            okButton.setEnabled(true);
+          }
         }
       };
 
@@ -186,29 +280,35 @@ class NoReceiversWarningPanel extends JPanel {
 
     justLoadingFile.doClick();
 
-    JPanel searchOptionPanel =
-      new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+    JPanel searchOptionPanel = new JPanel(new GridBagLayout());
+
     searchOptionPanel.setOpaque(false);
 
-    searchOptionPanel.add(searchOption);
-    searchOptionPanel.add(Box.createHorizontalStrut(5));
-    searchOptionPanel.add(previousConfigs);
-    searchOptionPanel.add(Box.createHorizontalStrut(5));
-    searchOptionPanel.add(searchButton);
+    GridBagConstraints searchGCC = new GridBagConstraints();
 
-    optionpanel.add(justLoadingFile);
+    searchGCC.fill = GridBagConstraints.HORIZONTAL;
+    searchGCC.gridx = 1;
+
+    searchOptionPanel.add(searchOption, searchGCC);
+    searchGCC.gridx = 2;
+    searchOptionPanel.add(Box.createHorizontalStrut(5), searchGCC);
+
+    searchGCC.weightx = 0.0;
+    searchGCC.gridx = 3;
+    searchGCC.fill = GridBagConstraints.NONE;
+    searchOptionPanel.add(previousConfigs, searchGCC);
+
+    searchGCC.weightx = 0.0;
+    searchGCC.gridx = 4;
+    searchOptionPanel.add(Box.createHorizontalStrut(5), searchGCC);
+    searchGCC.gridx = 5;
+    searchOptionPanel.add(searchButton, searchGCC);
+
     optionpanel.add(searchOptionPanel);
     optionpanel.add(manualOption);
+    optionpanel.add(justLoadingFile);
 
     add(optionpanel, gc);
-
-    final JButton okButton =
-      new JButton(
-        new AbstractAction("Ok") {
-          public void actionPerformed(ActionEvent e) {
-            // TODO Auto-generated method stub
-          }
-        });
 
     gc.gridy = gc.RELATIVE;
     gc.weightx = 0;
@@ -216,7 +316,64 @@ class NoReceiversWarningPanel extends JPanel {
     gc.anchor = gc.SOUTHEAST;
 
     add(Box.createVerticalStrut(20), gc);
+
+    okButton.setMnemonic('O');
     add(okButton, gc);
+  }
+
+  /**
+   * Returns the URL chosen by the user for a Configuration file
+   * or null if they cancelled.
+   */
+  private URL browseForConfig() throws MalformedURLException {
+    JFileChooser chooser = new JFileChooser();
+    chooser.setDialogTitle("Search for Log4j configuration...");
+    chooser.setDialogType(JFileChooser.OPEN_DIALOG);
+    chooser.setFileFilter(
+      new FileFilter() {
+        public boolean accept(File f) {
+          return f.isDirectory() || f.getName().endsWith(".properties")
+          || f.getName().endsWith(".xml");
+        }
+
+        public String getDescription() {
+          return "Log4j Configuration file";
+        }
+      });
+
+    chooser.showOpenDialog(this);
+
+    File selectedFile = chooser.getSelectedFile();
+
+    if (selectedFile == null) {
+      return null;
+    }
+
+    if (!selectedFile.exists() || !selectedFile.canRead()) {
+      return null;
+    }
+
+    return chooser.getSelectedFile().toURL();
+  }
+
+  /**
+   * Determions if the Configuration URL is a valid url.
+   */
+  private boolean isValidConfigURL() {
+    if (previousConfigs.getSelectedItem() == null) {
+      return false;
+    }
+
+    String urlString = previousConfigs.getSelectedItem().toString();
+
+    try {
+      getModel().configUrl = new URL(urlString);
+
+      return true;
+    } catch (Exception ex) {
+    }
+
+    return false;
   }
 
   public static void main(String[] args) {
@@ -225,5 +382,54 @@ class NoReceiversWarningPanel extends JPanel {
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.pack();
     frame.show();
+  }
+
+  /**
+   * This class represents the model of the chosen options the user
+   * has configured.
+   *
+   */
+  class PanelModel {
+    private URL fileUrl;
+    private URL configUrl;
+
+    boolean isLoadLogFile() {
+      return justLoadingFile.isSelected();
+    }
+
+    boolean isLoadConfig() {
+      return searchOption.isSelected();
+    }
+
+    boolean isManualMode() {
+      return manualOption.isSelected();
+    }
+
+    public Object[] getRememberedConfigs() {
+      Object[] urls = new Object[configModel.getSize()];
+
+      for (int i = 0; i < configModel.getSize(); i++) {
+        urls[i] = configModel.getElementAt(i);
+      }
+
+      return urls;
+    }
+
+    public void setRememberedConfigs(final Object[] configs) {
+      SwingUtilities.invokeLater(
+        new Runnable() {
+          public void run() {
+            configModel.removeAllElements();
+
+            for (int i = 0; i < configs.length; i++) {
+              configModel.addElement(configs[i]);
+            }
+          }
+        });
+    }
+
+    URL getConfigToLoad() {
+      return configUrl;
+    }
   }
 }
