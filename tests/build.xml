@@ -145,9 +145,9 @@
   <!-- ================================================================= -->
   <!-- Rolling unit tests                                                 -->
   <!-- ================================================================= -->
-  <!--	  SizeBasedRolling -->
 
   <target name="Rolling" depends="Compress, 
+	                          SizeBasedRolling,
                                   TimeBasedRolling, Renaming"/>
 
 

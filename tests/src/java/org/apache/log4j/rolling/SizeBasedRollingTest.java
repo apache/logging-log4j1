@@ -20,6 +20,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.apache.log4j.Appender;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -36,38 +37,40 @@ import org.apache.log4j.util.Compare;
  */
 public class SizeBasedRollingTest extends TestCase {
   Logger logger = Logger.getLogger(SizeBasedRollingTest.class);
+  Logger root = Logger.getRootLogger();
 
   public SizeBasedRollingTest(String name) {
     super(name);
   }
 
   public void setUp() {
+    Appender ca = new ConsoleAppender(new PatternLayout());
+    ca.setName("CONSOLE");
+    root.addAppender(ca);    
   }
 
   public void tearDown() {
     LogManager.shutdown();
   }
 
-  public void test1() throws Exception {
-    
-    // this test is invalid because setting the activeFileName variable
-    // is now mandatory.
-    Logger root = Logger.getRootLogger();
-    root.addAppender(new ConsoleAppender(new PatternLayout()));
-
+    /**
+     * Test whether FixedWindowRollingPolicy throws an exception when
+     * the ActiveFileName is not set.
+     */
+  public void test1() throws Exception {    
     // We purposefully use the \n as the line separator. 
     // This makes the regression test system independent.
     PatternLayout layout = new PatternLayout("%m\n");
     RollingFileAppender rfa = new RollingFileAppender();
     rfa.setLayout(layout);
 
-    FixedWindowRollingPolicy swrp = new FixedWindowRollingPolicy();
+    FixedWindowRollingPolicy fwrp = new FixedWindowRollingPolicy();
     SizeBasedTriggeringPolicy sbtp = new SizeBasedTriggeringPolicy();
     sbtp.setMaxFileSize(100);
     sbtp.activateOptions();
-    swrp.setFileNamePattern("output/sizeBased-test1.%i");
+    fwrp.setFileNamePattern("output/sizeBased-test1.%i");
     try {
-      swrp.activateOptions();
+      fwrp.activateOptions();
       fail("The absence of activeFileName option should have caused an exception.");
     } catch(IllegalStateException e) {
       return;
@@ -75,18 +78,19 @@ public class SizeBasedRollingTest extends TestCase {
   }
 
   public void test2() throws Exception {
-    Logger root = Logger.getRootLogger();
-    root.addAppender(new ConsoleAppender(new PatternLayout()));
 
     PatternLayout layout = new PatternLayout("%m\n");
     RollingFileAppender rfa = new RollingFileAppender();
+    rfa.setName("ROLLING"); 
     rfa.setLayout(layout);
 
     FixedWindowRollingPolicy swrp = new FixedWindowRollingPolicy();
     SizeBasedTriggeringPolicy sbtp = new SizeBasedTriggeringPolicy();
 
     sbtp.setMaxFileSize(100);
-    swrp.setActiveFileName("output/sizeBased-test2");
+    swrp.setMinIndex(0);
+    swrp.setActiveFileName("output/sizeBased-test2.log");
+
     swrp.setFileNamePattern("output/sizeBased-test2.%i");
     swrp.activateOptions();
     
@@ -97,11 +101,11 @@ public class SizeBasedRollingTest extends TestCase {
 
     // Write exactly 10 bytes with each log
     for (int i = 0; i < 25; i++) {
-      Thread.sleep(1000);
+      Thread.sleep(100);
       if (i < 10) {
-        logger.debug("Hello   " + i);
+        logger.debug("Hello---" + i);
       } else if (i < 100) {
-        logger.debug("Hello  " + i);
+        logger.debug("Hello--" + i);
       }
     }
 
@@ -109,12 +113,12 @@ public class SizeBasedRollingTest extends TestCase {
 
      if(!isWindows()) {
 
+      assertTrue(Compare.compare("output/sizeBased-test2.log",
+         "witness/rolling/sbr-test2.log"));
+      assertTrue(Compare.compare("output/sizeBased-test2.0",
+         "witness/rolling/sbr-test2.0"));
       assertTrue(Compare.compare("output/sizeBased-test2.1",
-         "witness/sizeBased-test1.1"));
-      assertTrue(Compare.compare("output/sizeBased-test2.2",
-         "witness/sizeBased-test1.2"));
-      assertTrue(Compare.compare("output/sizeBased-test2.3",
-         "witness/sizeBased-test1.3"));
+         "witness/rolling/sbr-test2.1"));
      }
   }
 
@@ -141,7 +145,7 @@ public class SizeBasedRollingTest extends TestCase {
 
      // Write exactly 10 bytes with each log
      for (int i = 0; i < 25; i++) {
-       Thread.sleep(1000);
+       Thread.sleep(500);
        if (i < 10) {
          logger.debug("Hello   " + i);
        } else if (i < 100) {
@@ -154,10 +158,10 @@ public class SizeBasedRollingTest extends TestCase {
     return System.getProperty("os.name").indexOf("Windows") != -1;
   }
 
-  public static Test xsuite() {
+  public static Test suite() {
     TestSuite suite = new TestSuite();
 
-    suite.addTest(new SizeBasedRollingTest("test1"));
+    //suite.addTest(new SizeBasedRollingTest("test1"));
     suite.addTest(new SizeBasedRollingTest("test2"));
     //suite.addTest(new SizeBasedRollingTestCase("test3"));
 
