@@ -1,4 +1,4 @@
-<project name="log4j" default="usage" basedir="." >
+<project name="chainsaw" default="usage" basedir="." >
 
   <!-- When building a Java Web Start distribution of Chainsaw, some Receivers with external dependencies need to be packaged into a seperate Jar -->
   <property name="webstart-dependant-receivers.jar" value="webstart-dependant-receivers.jar-${version}.jar"/>
@@ -9,6 +9,17 @@
     <pathelement location="${vfs.jar}"/>
   </path>
 
+  <path id="runtime.classpath">
+	<fileset dir=".">
+  	  <include name="log4j-*.jar"/>
+  	</fileset>
+	<pathelement location="${vfs.jar}"/>
+  	<pathelement location="${jaxp.parser.jar}"/>
+  	<pathelement location="${jakarta-.oro.jar}"/>
+  	<pathelement location="${jms.jar}"/>
+  </path>
+
+	
    <target name="usage">
      <echo>
         This build file cannot be invoked directly but only through 
@@ -26,6 +37,7 @@
            destdir="${javac.dest}">
       <patternset>
         <include name="${stem}/chainsaw/**/*.java"/>
+      	<include name="${stem}/varia/ListModelAppender.java"/>
         <exclude name="${stem}/chainsaw/vfs/**/*.java" unless="vfs-present"/>
       </patternset>
       <classpath refid="compile.classpath"/>   
@@ -33,13 +45,22 @@
   </target>
 
   <target name="log4jCheck">
-    <available filepath="${base}" file="${log4j.jar}" property="log4j-present"/>
+    <condition property="log4jJarsPresent">
+      <and>
+      	<available filepath="${base}" file="${log4j.jar}"/>
+      	<available filepath="${base}" file="log4j-xml.jar"/>
+      	<available filepath="${base}" file="log4j-optional.jar"/>
+      </and>
+    </condition>
   	
-    <fail unless="log4j-present">  	
-       Log4j jar required here: ${jar.dest}/${log4j.jar}.    	
+  	
+    <fail unless="log4jJarsPresent">  	
+       One or more of the following files are missing:
+    	${log4j.jar}, log4j-xml.jar log4j-optional.jar    	
     </fail>
   </target>
-
+	
+	
   <target name="vfsCheck">
     <available classname="org.apache.commons.vfs.FileObject" property="vfs-present">
       <classpath refid="compile.classpath"/>
@@ -65,9 +86,9 @@
           description="Build and run Chainsaw v2 from jar file (generates Chainsaw jar if necessary)" >
 
     <!-- Need to fork to avoid problems -->
-    <java classname="org.apache.log4j.chainsaw.LogUI" fork="yes"
-          classpath="${jar.dest}/${log4j.jar};${jar.dest}/${log4j-chainsaw.jar};${jaxp.parser.jar};${regexp.oro.jar};${jms.jar}">
+    <java classname="org.apache.log4j.chainsaw.LogUI" fork="yes">
       <sysproperty key="log4j.debug" value="${log4j.debug}"/> 
+      <classpath refid="runtime.classpath"/>   
     </java>
   </target>
 
@@ -112,6 +133,7 @@
              **/resources/*,
              ${stem}/**/*BeanInfo.class,
              ${stem}/chainsaw/**/*.class, 
+    	     ${stem}/varia/ListModelAppender.class,
              ${stem}/chainsaw/layout/*, 
              ${stem}/chainsaw/icons/*.gif, 
              ${stem}/chainsaw/*.jpg, 
@@ -182,7 +204,7 @@
       <zipfileset dir="."> 
         <include name="*.jar"/>
       </zipfileset>
-      <fileset file="${regexp.oro.jar}"/>
+      <fileset file="${jakarta-oro.jar}"/>
       <fileset file="src/chainsaw.bat"/>
     </zip>
   </target>
