@@ -461,8 +461,9 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
   protected
   void setParameter(Element elem, PropertySetter propSetter) {
     String name = subst(elem.getAttribute(NAME_ATTR));
-    String value = subst(elem.getAttribute(VALUE_ATTR));
-    propSetter.setProperty(name, OptionConverter.convertSpecialChars(value));
+    String value = (elem.getAttribute(VALUE_ATTR));
+    value = subst(OptionConverter.convertSpecialChars(value));
+    propSetter.setProperty(name, value);
   }
 
 
@@ -513,12 +514,19 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
 
   public
   void doConfigure(String filename, Hierarchy hierarchy) {
+    FileInputStream fis = null;
     try {
-      doConfigure(new FileInputStream(filename), hierarchy);
+      fis = new FileInputStream(filename);
+      doConfigure(fis, hierarchy);
     } catch(IOException e) {
       LogLog.error("Could not open ["+filename+"].", e);
+    } finally {
+      if (fis != null) {
+        fis.close();
+      }
     }
   }
+  
 
   public
   void doConfigure(URL url, Hierarchy hierarchy) {

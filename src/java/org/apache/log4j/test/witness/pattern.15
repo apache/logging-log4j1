@@ -1,204 +1,226 @@
-<html><body>
-<table border="1" cellpadding="2">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Log4J Log Messages</title>
+<style type="text/css">
+<!--
+body, table {font-family: arial,sans-serif; font-size: x-small;}
+th {background: #336699; color: #FFFFFF; text-align: left;}
+-->
+</style>
+</head>
+<body bgcolor="#FFFFFF" topmargin="6" leftmargin="6">
+<hr size="1" noshade>
+Log session start time Wed May 09 21:32:04 GMT+02:00 2001<br>
+<br>
+<table cellspacing="0" cellpadding="4" border="1" bordercolor="#224466" width="100%">
 <tr>
-<th>Time</th><th>Thread</th><th>Priority</th><th>Category</th><th>NDC</th><th>Message</th></tr>
-
-<tr><td>XXX</td>
-<td>main</td>
-<td>DEBUG</td>
-<td>org.apache.log4j.test.PatternTest</td>
-<td>null</td>
-<td>Message 0</td>
+<th>Time</th>
+<th>Thread</th>
+<th>Priority</th>
+<th>Category</th>
+<th>Message</th>
 </tr>
 
-<tr><td>XXX</td>
-<td>main</td>
-<td>DEBUG</td>
-<td>root</td>
-<td>null</td>
-<td>Message 0</td>
+<tr>
+<td>0</td>
+<td title="main thread">main</td>
+<td title="Priority"><font color="#339933">DEBUG</font></td>
+<td title="org.apache.log4j.test.PatternTest category">org.apache.log4j.test.PatternTest</td>
+<td title="Message">Message 0</td>
 </tr>
 
-<tr><td>XXX</td>
-<td>main</td>
-<td>INFO</td>
-<td>org.apache.log4j.test.PatternTest</td>
-<td>null</td>
-<td>Message 1</td>
+<tr>
+<td>10</td>
+<td title="main thread">main</td>
+<td title="Priority"><font color="#339933">DEBUG</font></td>
+<td title="root category">root</td>
+<td title="Message">Message 0</td>
 </tr>
 
-<tr><td>XXX</td>
-<td>main</td>
-<td>INFO</td>
-<td>root</td>
-<td>null</td>
-<td>Message 1</td>
+<tr>
+<td>10</td>
+<td title="main thread">main</td>
+<td title="Priority">INFO</td>
+<td title="org.apache.log4j.test.PatternTest category">org.apache.log4j.test.PatternTest</td>
+<td title="Message">Message 1</td>
 </tr>
 
-<tr><td>XXX</td>
-<td>main</td>
-<td><font color="#FF0000">WARN</font></td>
-<td>org.apache.log4j.test.PatternTest</td>
-<td>null</td>
-<td>Message 2</td>
+<tr>
+<td>10</td>
+<td title="main thread">main</td>
+<td title="Priority">INFO</td>
+<td title="root category">root</td>
+<td title="Message">Message 1</td>
 </tr>
 
-<tr><td>XXX</td>
-<td>main</td>
-<td><font color="#FF0000">WARN</font></td>
-<td>root</td>
-<td>null</td>
-<td>Message 2</td>
+<tr>
+<td>10</td>
+<td title="main thread">main</td>
+<td title="Priority"><font color="#993300"><strong>WARN</strong></font></td>
+<td title="org.apache.log4j.test.PatternTest category">org.apache.log4j.test.PatternTest</td>
+<td title="Message">Message 2</td>
 </tr>
 
-<tr><td>XXX</td>
-<td>main</td>
-<td><font color="#FF0000">ERROR</font></td>
-<td>org.apache.log4j.test.PatternTest</td>
-<td>null</td>
-<td>Message 3</td>
+<tr>
+<td>10</td>
+<td title="main thread">main</td>
+<td title="Priority"><font color="#993300"><strong>WARN</strong></font></td>
+<td title="root category">root</td>
+<td title="Message">Message 2</td>
 </tr>
 
-<tr><td>XXX</td>
-<td>main</td>
-<td><font color="#FF0000">ERROR</font></td>
-<td>root</td>
-<td>null</td>
-<td>Message 3</td>
+<tr>
+<td>10</td>
+<td title="main thread">main</td>
+<td title="Priority"><font color="#993300"><strong>ERROR</strong></font></td>
+<td title="org.apache.log4j.test.PatternTest category">org.apache.log4j.test.PatternTest</td>
+<td title="Message">Message 3</td>
 </tr>
 
-<tr><td>XXX</td>
-<td>main</td>
-<td><font color="#FF0000">FATAL</font></td>
-<td>org.apache.log4j.test.PatternTest</td>
-<td>null</td>
-<td>Message 4</td>
+<tr>
+<td>20</td>
+<td title="main thread">main</td>
+<td title="Priority"><font color="#993300"><strong>ERROR</strong></font></td>
+<td title="root category">root</td>
+<td title="Message">Message 3</td>
 </tr>
 
-<tr><td>XXX</td>
-<td>main</td>
-<td><font color="#FF0000">FATAL</font></td>
-<td>root</td>
-<td>null</td>
-<td>Message 4</td>
+<tr>
+<td>30</td>
+<td title="main thread">main</td>
+<td title="Priority"><font color="#993300"><strong>FATAL</strong></font></td>
+<td title="org.apache.log4j.test.PatternTest category">org.apache.log4j.test.PatternTest</td>
+<td title="Message">Message 4</td>
 </tr>
 
-<tr><td>XXX</td>
-<td>main</td>
-<td>DEBUG</td>
-<td>org.apache.log4j.test.PatternTest</td>
-<td>null</td>
-<td>Message 5</td>
+<tr>
+<td>30</td>
+<td title="main thread">main</td>
+<td title="Priority"><font color="#993300"><strong>FATAL</strong></font></td>
+<td title="root category">root</td>
+<td title="Message">Message 4</td>
 </tr>
-<tr><td colspan="7">java.lang.Exception: Just testing
+
+<tr>
+<td>30</td>
+<td title="main thread">main</td>
+<td title="Priority"><font color="#339933">DEBUG</font></td>
+<td title="org.apache.log4j.test.PatternTest category">org.apache.log4j.test.PatternTest</td>
+<td title="Message">Message 5</td>
+</tr>
+<tr><td bgcolor="#993300" style="color:White; font-size : xx-small;" colspan="6">java.lang.Exception: Just testing
 <br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)
 <br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)
 </td></tr>
 
-<tr><td>XXX</td>
-<td>main</td>
-<td>DEBUG</td>
-<td>root</td>
-<td>null</td>
-<td>Message 5</td>
+<tr>
+<td>40</td>
+<td title="main thread">main</td>
+<td title="Priority"><font color="#339933">DEBUG</font></td>
+<td title="root category">root</td>
+<td title="Message">Message 5</td>
 </tr>
-<tr><td colspan="7">java.lang.Exception: Just testing
+<tr><td bgcolor="#993300" style="color:White; font-size : xx-small;" colspan="6">java.lang.Exception: Just testing
 <br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)
 <br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)
 </td></tr>
 
-<tr><td>XXX</td>
-<td>main</td>
-<td>INFO</td>
-<td>org.apache.log4j.test.PatternTest</td>
-<td>null</td>
-<td>Message 6</td>
+<tr>
+<td>40</td>
+<td title="main thread">main</td>
+<td title="Priority">INFO</td>
+<td title="org.apache.log4j.test.PatternTest category">org.apache.log4j.test.PatternTest</td>
+<td title="Message">Message 6</td>
 </tr>
-<tr><td colspan="7">java.lang.Exception: Just testing
+<tr><td bgcolor="#993300" style="color:White; font-size : xx-small;" colspan="6">java.lang.Exception: Just testing
 <br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)
 <br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)
 </td></tr>
 
-<tr><td>XXX</td>
-<td>main</td>
-<td>INFO</td>
-<td>root</td>
-<td>null</td>
-<td>Message 6</td>
+<tr>
+<td>40</td>
+<td title="main thread">main</td>
+<td title="Priority">INFO</td>
+<td title="root category">root</td>
+<td title="Message">Message 6</td>
 </tr>
-<tr><td colspan="7">java.lang.Exception: Just testing
+<tr><td bgcolor="#993300" style="color:White; font-size : xx-small;" colspan="6">java.lang.Exception: Just testing
 <br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)
 <br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)
 </td></tr>
 
-<tr><td>XXX</td>
-<td>main</td>
-<td><font color="#FF0000">WARN</font></td>
-<td>org.apache.log4j.test.PatternTest</td>
-<td>null</td>
-<td>Message 7</td>
+<tr>
+<td>40</td>
+<td title="main thread">main</td>
+<td title="Priority"><font color="#993300"><strong>WARN</strong></font></td>
+<td title="org.apache.log4j.test.PatternTest category">org.apache.log4j.test.PatternTest</td>
+<td title="Message">Message 7</td>
 </tr>
-<tr><td colspan="7">java.lang.Exception: Just testing
+<tr><td bgcolor="#993300" style="color:White; font-size : xx-small;" colspan="6">java.lang.Exception: Just testing
 <br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)
 <br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)
 </td></tr>
 
-<tr><td>XXX</td>
-<td>main</td>
-<td><font color="#FF0000">WARN</font></td>
-<td>root</td>
-<td>null</td>
-<td>Message 7</td>
+<tr>
+<td>40</td>
+<td title="main thread">main</td>
+<td title="Priority"><font color="#993300"><strong>WARN</strong></font></td>
+<td title="root category">root</td>
+<td title="Message">Message 7</td>
 </tr>
-<tr><td colspan="7">java.lang.Exception: Just testing
+<tr><td bgcolor="#993300" style="color:White; font-size : xx-small;" colspan="6">java.lang.Exception: Just testing
 <br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)
 <br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)
 </td></tr>
 
-<tr><td>XXX</td>
-<td>main</td>
-<td><font color="#FF0000">ERROR</font></td>
-<td>org.apache.log4j.test.PatternTest</td>
-<td>null</td>
-<td>Message 8</td>
+<tr>
+<td>40</td>
+<td title="main thread">main</td>
+<td title="Priority"><font color="#993300"><strong>ERROR</strong></font></td>
+<td title="org.apache.log4j.test.PatternTest category">org.apache.log4j.test.PatternTest</td>
+<td title="Message">Message 8</td>
 </tr>
-<tr><td colspan="7">java.lang.Exception: Just testing
+<tr><td bgcolor="#993300" style="color:White; font-size : xx-small;" colspan="6">java.lang.Exception: Just testing
 <br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)
 <br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)
 </td></tr>
 
-<tr><td>XXX</td>
-<td>main</td>
-<td><font color="#FF0000">ERROR</font></td>
-<td>root</td>
-<td>null</td>
-<td>Message 8</td>
+<tr>
+<td>40</td>
+<td title="main thread">main</td>
+<td title="Priority"><font color="#993300"><strong>ERROR</strong></font></td>
+<td title="root category">root</td>
+<td title="Message">Message 8</td>
 </tr>
-<tr><td colspan="7">java.lang.Exception: Just testing
+<tr><td bgcolor="#993300" style="color:White; font-size : xx-small;" colspan="6">java.lang.Exception: Just testing
 <br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)
 <br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)
 </td></tr>
 
-<tr><td>XXX</td>
-<td>main</td>
-<td><font color="#FF0000">FATAL</font></td>
-<td>org.apache.log4j.test.PatternTest</td>
-<td>null</td>
-<td>Message 9</td>
+<tr>
+<td>40</td>
+<td title="main thread">main</td>
+<td title="Priority"><font color="#993300"><strong>FATAL</strong></font></td>
+<td title="org.apache.log4j.test.PatternTest category">org.apache.log4j.test.PatternTest</td>
+<td title="Message">Message 9</td>
 </tr>
-<tr><td colspan="7">java.lang.Exception: Just testing
+<tr><td bgcolor="#993300" style="color:White; font-size : xx-small;" colspan="6">java.lang.Exception: Just testing
 <br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)
 <br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)
 </td></tr>
 
-<tr><td>XXX</td>
-<td>main</td>
-<td><font color="#FF0000">FATAL</font></td>
-<td>root</td>
-<td>null</td>
-<td>Message 9</td>
+<tr>
+<td>40</td>
+<td title="main thread">main</td>
+<td title="Priority"><font color="#993300"><strong>FATAL</strong></font></td>
+<td title="root category">root</td>
+<td title="Message">Message 9</td>
 </tr>
-<tr><td colspan="7">java.lang.Exception: Just testing
+<tr><td bgcolor="#993300" style="color:White; font-size : xx-small;" colspan="6">java.lang.Exception: Just testing
 <br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)
 <br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)
-</td></tr></table></body></html>
+</td></tr>
+</table>
+<br>
+</body></html>

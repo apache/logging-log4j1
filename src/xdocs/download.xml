@@ -32,17 +32,17 @@
 -->
 
 
-<section name="log4j version 1.1beta6 (final-release candidate)">
+<section name="log4j version 1.1beta7 (final-release candidate)">
 
-<p>Downlaod version 1.1beta6 (final-release candiate) including
+<p>Downlaod version 1.1beta7 (final-release candiate) including
 <i>full source code</i>, class files and documentation in <a
-href="../jakarta-log4j-1.1b6.tar.gz"><b>TAR.GZ</b></a> format or in <a
-href="../jakarta-log4j-1.1b6.zip"><b>ZIP</b></a> format. You may elect
+href="../jakarta-log4j-1.1b7.tar.gz"><b>TAR.GZ</b></a> format or in <a
+href="../jakarta-log4j-1.1b7.zip"><b>ZIP</b></a> format. You may elect
 to browse log4j <a href="documentation.html"><b>documentation</b></a>
 online. This release candidate should be sanctioned as the official
 1.1 release after a short period of probation.</p>
 
-<p>Version 1.1b6 is the 21st major public release of log4j. It is 100%
+<p>Version 1.1b7 is the 21st major public release of log4j. It is 100%
 backward compatible with log4j version 1.0.x.</p>
 
 <p>We also maintain a list of <a href="earlier.html">earlier
