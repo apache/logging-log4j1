@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.io.FileWriter;
 import java.io.OutputStream;
-import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
 
 import org.apache.log4j.spi.ErrorHandler;
@@ -242,14 +242,14 @@ public class FileAppender extends WriterAppender {
         truncate fileName.  */
   public
   synchronized
-  void setFile(String fileName, boolean append, boolean bufferedIO) 
+  void setFile(String fileName, boolean append) 
                                                             throws IOException {
     LogLog.debug("setFile called: "+fileName+", "+append);
 
     reset();    
     Writer fw = new FileWriter(fileName, append);
     if(bufferedIO) {
-      fw = new BufferedOutputStream(fw);
+      fw = new BufferedWriter(fw);
     }
     this.setQWForFiles(fw);
     //this.tp = new TracerPrintWriter(qw);
