@@ -30,7 +30,7 @@
    console logging functionality of FileAppender. [**]
 
  - The FileAppender now correctly outputs the header and footer of its
-   layout. Thanks to Allan Crooks for reporting this problem. [*]
+   layout. This problem was reported by too many users to list here. [*]
 
  - Appenders and Layouts now get to see the raw message object in LoggingEvent 
    not just its rendered form. The access modifiers of some LoggingEvent fields 

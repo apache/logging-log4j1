@@ -26,11 +26,11 @@ public class Priority {
   String levelStr;
   int syslogEquivalent;
 
-  final static int FATAL_INT = 50000;
-  final static int ERROR_INT = 40000;
-  final static int WARN_INT  = 30000;
-  final static int INFO_INT  = 20000;
-  final static int DEBUG_INT = 10000;
+  public final static int FATAL_INT = 50000;
+  public final static int ERROR_INT = 40000;
+  public final static int WARN_INT  = 30000;
+  public final static int INFO_INT  = 20000;
+  public final static int DEBUG_INT = 10000;
 
   /**
      The <code>FATAL</code> priority designates very severe error
