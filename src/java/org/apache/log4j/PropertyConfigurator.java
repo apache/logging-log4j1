@@ -69,7 +69,7 @@ import java.util.Hashtable;
    then searched in the configuration file being parsed.  The
    corresponding value replaces the ${variableName} sequence. For
    example, if <code>java.home</code> system property is set to
-   <code>/home/xyz</code>, then every occurance of the sequence
+   <code>/home/xyz</code>, then every occurrence of the sequence
    <code>${java.home}</code> will be interpreted as
    <code>/home/xyz</code>.
 
