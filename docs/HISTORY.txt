@@ -18,8 +18,6 @@
 
  - Fixed Bugzilla 18076: setting of firstTime in OnlyOnceErrorHandler. [*]
 
- - Fixed Bugzilla 13900: SMTPAppender doesn't use errorHandler when sending error occurs. [*]
-
  - Implemented Bugzilla 20985: charset support for SMTPAppender [**]
 
  - Implemented Bugzilla 20500: separate registry clearing from doConfigure in PropertyConfigurator
