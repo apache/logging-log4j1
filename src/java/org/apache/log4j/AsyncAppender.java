@@ -94,6 +94,10 @@ public class AsyncAppender extends AppenderSkeleton
     // Get a copy of this thread's MDC.
     event.initializeProperties();
 
+    // we need to get the rendered message in case it changes between now
+    // and handling by the worker thread
+    event.getRenderedMessage();
+    
     if (locationInfo) {
       event.getLocationInformation();
     }
