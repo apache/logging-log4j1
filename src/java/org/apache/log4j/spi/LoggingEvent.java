@@ -12,6 +12,7 @@ import org.apache.log4j.Priority;
 import org.apache.log4j.NDC;
 
 import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.helpers.VersionHelper;
 
 import java.io.StringWriter;
 import java.io.PrintWriter;
@@ -230,7 +231,7 @@ public class LoggingEvent implements java.io.Serializable {
       } else {
 	Method m = (Method) methodCache.get(className);	
 	if(m == null) {
-	  Class clazz = Class.forName(className);
+	  Class clazz = VersionHelper.getInstance().loadClass(className);
 	  m = clazz.getDeclaredMethod(TO_PRIORITY, TO_PRIORITY_PARAMS);
 	  methodCache.put(className, m);
 	}      
