@@ -183,13 +183,13 @@ public class XMLLayout extends Layout {
     Set propertySet = event.getPropertyKeySet();
 
     if ((propertySet != null) && (propertySet.size() > 0)) {
-      output.write("<log4j:properties>");
+      output.write("<log4j:properties>\r\n");
 
       Iterator propIter = propertySet.iterator();
 
       while (propIter.hasNext()) {
         String propName = propIter.next().toString();
-        output.write("<log4j:data name=\"" + propName);
+        output.write("    <log4j:data name=\"" + propName);
 
         String propValue = event.getProperty(propName).toString();
         output.write("\" value=\"" + propValue);
