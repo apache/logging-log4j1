@@ -163,7 +163,7 @@ public class MessageCenter {
   private void setupLogger() {
     logger.addAppender(appender);
     logger.setAdditivity(false);
-    logger.setLevel(Level.DEBUG);
+    logger.setLevel(Boolean.getBoolean("log4j.debug")?Level.DEBUG:Level.INFO);
   }
 
   private void setupComponentPanel() {
