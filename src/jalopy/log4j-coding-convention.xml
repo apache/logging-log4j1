@@ -53,7 +53,7 @@
         </braces>
         <comments>
             <format>
-                <multiline>true</multiline>
+                <multiline>false</multiline>
             </format>
             <javadoc>
                 <check>
@@ -68,7 +68,7 @@
                     <field>0</field>
                     <method>0</method>
                 </generate>
-                <parseComments>true</parseComments>
+                <parseComments>false</parseComments>
                 <tags>
                     <in-line />
                     <standard />
