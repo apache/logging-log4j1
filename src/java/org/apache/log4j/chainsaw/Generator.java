@@ -105,60 +105,18 @@ public class Generator extends Receiver implements Runnable {
           + " g dg sdfa sadf sdf safd fsda asfd sdfa sdaf asfd asdf fasd fasd adfs fasd adfs fads afds afds afsd afsd afsd afsd afsd fasd asfd asfd afsd fasd afsd",
           new Exception("someexception-" + baseString_)));
 
-      //      if (isAsSevereAsThreshold(Level.INFO)) {
-      //        logger1.info(
-      //          "infomsg " + i++, new Exception("someexception-" + baseString_));
-      //      }
-      //
-      //      if (isAsSevereAsThreshold(Level.WARN)) {
-      //        logger1.warn(
-      //          "warnmsg " + i++, new Exception("someexception-" + baseString_));
-      //      }
-      //
-      //      if (isAsSevereAsThreshold(Level.ERROR)) {
-      //        logger1.error(
-      //          "errormsg " + i++, new Exception("someexception-" + baseString_));
-      //      }
-      //
-      //      if (isAsSevereAsThreshold(Level.DEBUG)) {
-      //        logger2.debug(
-      //          "debugmsg " + i++, new Exception("someexception-" + baseString_));
-      //      }
-      //
-      //      if (isAsSevereAsThreshold(Level.INFO)) {
-      //        logger2.info(
-      //          "infomsg " + i++, new Exception("someexception-" + baseString_));
-      //      }
-      //
-      //      if (isAsSevereAsThreshold(Level.WARN)) {
-      //        logger2.warn(
-      //          "warnmsg " + i++, new Exception("someexception-" + baseString_));
-      //      }
-      //
-      //      if (isAsSevereAsThreshold(Level.ERROR)) {
-      //        logger2.error(
-      //          "errormsg " + i++, new Exception("someexception-" + baseString_));
-      //      }
-      //
-      //      if (isAsSevereAsThreshold(Level.DEBUG)) {
-      //        logger3.debug(
-      //          "debugmsg " + i++, new Exception("someexception-" + baseString_));
-      //      }
-      //
-      //      if (isAsSevereAsThreshold(Level.INFO)) {
-      //        logger3.info(
-      //          "infomsg " + i++, new Exception("someexception-" + baseString_));
-      //      }
-      //
-      //      if (isAsSevereAsThreshold(Level.WARN)) {
-      //        logger3.warn(
-      //          "warnmsg " + i++, new Exception("someexception-" + baseString_));
-      //      }
-      //
-      //      if (isAsSevereAsThreshold(Level.ERROR)) {
-      //        logger3.error(
-      //          "errormsg " + i++, new Exception("someexception-" + baseString_));
-      //      }
+     doPost(createEvent(Level.INFO, logger2, "infomsg " + i++, new Exception("someexception-" + baseString_)));
+
+     doPost(createEvent(Level.WARN,logger3,  "warnmsg " + i++, new Exception("someexception-" + baseString_)));
+     doPost(createEvent(Level.ERROR, logger1, "errormsg " + i++, new Exception("someexception-" + baseString_)));
+     doPost(createEvent(Level.DEBUG, logger2,"debugmsg " + i++, new Exception("someexception-" + baseString_)));
+     doPost(createEvent(Level.INFO, logger3,"infomsg " + i++, new Exception("someexception-" + baseString_)));
+     doPost(createEvent(Level.WARN, logger1, "warnmsg " + i++, new Exception("someexception-" + baseString_)));
+     doPost(createEvent(Level.ERROR, logger2, "errormsg " + i++, new Exception("someexception-" + baseString_)));
+     doPost(createEvent(Level.DEBUG, logger3, "debugmsg " + i++, new Exception("someexception-" + baseString_)));
+     doPost(createEvent(Level.INFO, logger1, "infomsg " + i++, new Exception("someexception-" + baseString_)));
+     doPost(createEvent(Level.WARN, logger2, "warnmsg " + i++, new Exception("someexception-" + baseString_)));
+     doPost(createEvent(Level.ERROR, logger3, "errormsg " + i++, new Exception("someexception-" + baseString_)));
       try {
         Thread.sleep(1000);
       } catch (InterruptedException ie) {
