@@ -7,6 +7,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.lbel.comparator.LevelComparator;
 import org.apache.log4j.lbel.comparator.LoggerComparator;
 import org.apache.log4j.lbel.comparator.MessageComparator;
+import org.apache.log4j.lbel.comparator.TimestampComparator;
 
 /**
  * 
@@ -179,6 +180,11 @@ class Parser {
       ts.next();
       literal = getLiteral();
       return new Node(Node.COMPARATOR, new MessageComparator(operator, literal));
+    case Token.TIMESTAMP:
+      ts.next();
+      operator = getOperator();
+      ts.next();
+      return new Node(Node.COMPARATOR, new TimestampComparator(operator, getLong()));
     default: throw new IllegalStateException("Unexpected token " +token);
     }
  	}
@@ -197,7 +203,7 @@ class Parser {
         return new Operator(Operator.GREATER_OR_EQUAL);
       } else if("<".equals(value)) {
         return new Operator(Operator.LESS);
-      } else if(">=".equals(value)) {
+      } else if("<=".equals(value)) {
         return new Operator(Operator.LESS_OR_EQUAL);
       } else if("~".equals(value)) {
         return new Operator(Operator.REGEX_MATCH);
@@ -217,6 +223,16 @@ class Parser {
     Token token = ts.getCurrent();
     if(token.getType() == Token.LITERAL) {
       return (String) token.getValue();
+    } else {
+      throw new ScanError("Expected LITERAL but got "+token);
+    }
+  }
+
+  long getLong() throws ScanError {
+    Token token = ts.getCurrent();
+    if(token.getType() == Token.NUMBER) {
+      Long l = (Long) token.getValue();
+      return l.longValue();
     } else {
       throw new ScanError("Expected LITERAL but got "+token);
     }
