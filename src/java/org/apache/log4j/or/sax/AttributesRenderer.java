@@ -42,11 +42,8 @@ public class AttributesRenderer implements ObjectRenderer {
 	} else {
 	  sbuf.append(", ");
 	}
-	sbuf.append(a.getURI(i));
-	sbuf.append(':');
-	sbuf.append(a.getType(i));
+	sbuf.append(a.getQName(i));
 	sbuf.append('=');
-	sbuf.append(a.getValue(i));
 	sbuf.append(a.getValue(i));
       }
       return sbuf.toString();
