@@ -10,6 +10,13 @@
 
   November 25, 2004
 
+ - Release of version 1.3apha-3
+ 
+ - Classes are built with the javac debug setting on.
+ - Fixed unset activeFile bug in SlidingWindowRollingPolicy.
+ 
+  November 25, 2004
+
  - Release of version 1.3apha-2
  
  - The deprecated DOMConfigrator was mistakenly left as the default
