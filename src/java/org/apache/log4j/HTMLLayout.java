@@ -24,6 +24,8 @@ public class HTMLLayout extends Layout {
   protected final int BUF_SIZE = 256;
   protected final int MAX_CAPACITY = 1024;
 
+  static String TRACE_PREFIX = "<br>&nbsp;&nbsp;&nbsp;&nbsp;";
+
   // output buffer appended to when format() is invoked
   private StringBuffer sbuf = new StringBuffer(BUF_SIZE);
 
@@ -124,15 +126,28 @@ public class HTMLLayout extends Layout {
 
     sbuf.append("</tr>");
 
-    Throwable t = event.throwable; // JVM is a stack machine
-    if(t != null) {
+    String[] s = event.getThrowableStrRep(); 
+    if(s != null) {
       sbuf.append("\r\n<tr><td colspan=\"7\">");
-      sbuf.append(getThrowableAsHTML(t));
+      appendThrowableAsHTML(s, sbuf);
       sbuf.append("</td></tr>");
     }
-
-
     return sbuf.toString();
+  }
+
+  void appendThrowableAsHTML(String[] s, StringBuffer sbuf) {
+    if(s != null) {
+      int len = s.length;
+      if(len == 0) 
+	return;
+      sbuf.append(s[0]);
+      sbuf.append(Layout.LINE_SEP);
+      for(int i = 1; i < len; i++) {
+	sbuf.append(TRACE_PREFIX);
+	sbuf.append(s[i]);
+	sbuf.append(Layout.LINE_SEP);
+      }
+    }
   }
 
   /**
@@ -161,16 +176,6 @@ public class HTMLLayout extends Layout {
   }
   
   
-  String getThrowableAsHTML(Throwable throwable) {
-    if(throwable == null) 
-      return null;
- 
-    StringWriter sw = new StringWriter();
-    HTMLPrintWriter hpw = new HTMLPrintWriter(sw);
-
-    throwable.printStackTrace(hpw);
-    return sw.toString();
-  }
 
 
   /**
@@ -181,34 +186,4 @@ public class HTMLLayout extends Layout {
     return false;
   }
 
-  /**
-     Format exceptions in HTML aware way.
-   */
-  static class HTMLPrintWriter extends PrintWriter {
-    
-    static String TRACE_PREFIX = "<br>&nbsp;&nbsp;&nbsp;&nbsp;";
-
-    public
-    HTMLPrintWriter(Writer writer) {
-      super(writer);
-    }
-
-    /**
-       Some JDKs use println(char[])
-     */
-    public
-    void println(char[] c) {
-      write(TRACE_PREFIX);
-      this.write(c);
-    }
-
-    /**
-       Yet others use println(String). Go figure.
-    */    
-    public
-    void println(String s) {
-      write(TRACE_PREFIX);
-      this.write(s);
-    }    
-  }
 }

@@ -302,14 +302,13 @@ public class WriterAppender extends AppenderSkeleton {
     this.qw.write(this.layout.format(event));
 
     if(layout.ignoresThrowable()) {
-      if(event.throwable != null) {
-	event.throwable.printStackTrace(this.tp);
-      }
-      // in case we received this event from a remote client    
-      else {
-	String tInfo = event.getThrowableInformation();
-	if (tInfo != null) 
-	  this.qw.write(tInfo);
+      String[] s = event.getThrowableStrRep();
+      if (s != null) {
+	int len = s.length;
+	for(int i = 0; i < len; i++) {
+	  this.qw.write(s[i]);
+	  this.qw.write(Layout.LINE_SEP);
+	}
       }
     }
  

@@ -115,10 +115,12 @@ public class XMLLayout extends Layout {
 	 buf.append("]]></log4j:NDC>\r\n");       
        }
 
-       String t = event.getThrowableInformation();
-       if(t != null) {
+       String[] s = event.getThrowableStrRep();
+       if(s != null) {
 	 buf.append("<log4j:throwable><![CDATA[");
-	 buf.append(t);
+	 for(int i = 0; i < s.length; i++) {
+	   buf.append(s[i]);
+	 }
 	 buf.append("]]></log4j:throwable>\r\n");
        }
 

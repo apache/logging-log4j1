@@ -24,7 +24,7 @@ JSOURCES:=HTMLLayout.java\
 	WriterAppender.java\
 	ConsoleAppender.java\
 
-SUBDIRS :=helpers spi config or xml net nt varia test performance examples gui
+SUBDIRS :=helpers spi config or xml net nt varia test performance examples 
 
 # include master-rule file
 include $(DEPTH)/make/make.inc

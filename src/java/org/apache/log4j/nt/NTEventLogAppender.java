@@ -97,17 +97,19 @@ public class NTEventLogAppender extends AppenderSkeleton {
 
   
   public void append(LoggingEvent event) {
-    // First, format the log string so we can send it to NT.
-    StringWriter sw_writer = new StringWriter();
-    PrintWriter pw_writer = new PrintWriter(sw_writer);
-    pw_writer.print(layout.format(event));
-    
-    // And append a throwable if supplied
-    if (event.throwable != null) 
-      event.throwable.printStackTrace(pw_writer);
-    
-    pw_writer.close();
-    
+
+    StringBuffer sbuf = new StringBuffer();    
+
+    sbuf.append(layout.format(event));
+    if(layout.ignoresThrowable()) {
+      String[] s = event.getThrowableStrRep();
+      if (s != null) {
+	int len = s.length;
+	for(int i = 0; i < len; i++) {	
+	  sbuf.append(s[0]);
+	}	
+      }
+    }
     // Normalize the log message priority into the supported categories
     int nt_category = event.priority.toInt();
 
@@ -115,7 +117,7 @@ public class NTEventLogAppender extends AppenderSkeleton {
     //if (nt_category > FATAL || nt_category < DEBUG) {
     //  nt_category = INFO;
     //}
-    reportEvent(_handle, sw_writer.toString(), nt_category);
+    reportEvent(_handle, sbuf.toString(), nt_category);
   }
   
   

@@ -78,18 +78,11 @@ public class LoggingEvent implements java.io.Serializable {
   /** The name of thread in which this logging event was generated. */
   private String threadName;
 
-  /** The throwable associated with this logging event.
 
-      This is field is transient because not all exceptions are
-      serializable. More importantly, the stack information does not
-      survive serialization.
+  /** This 
+      variable contains information about this event's throwable  
   */
-  transient public final Throwable throwable;
-
-  /** This variable contains the string form of the throwable. This
-      field will be serialized if need be.  
-  */
-  private String throwableInformation;
+  private ThrowableInformation throwableInfo;
 
   /** The number of milliseconds elapsed from 1/1/1970 until logging event
       was created. */
@@ -122,9 +115,25 @@ public class LoggingEvent implements java.io.Serializable {
     this.categoryName = category.getName();
     this.priority = priority;
     this.message = message;
-    this.throwable = throwable;
+    if(throwable != null) {
+      this.throwableInfo = new ThrowableInformation(throwable);
+    }
+
     timeStamp = System.currentTimeMillis();
   }  
+
+
+  /**
+     Set the location information for this logging event. The collected
+     information is cached for future use.
+   */
+  public
+  LocationInfo getLocationInformation() {
+    if(locationInfo == null) {
+      locationInfo = new LocationInfo(new Throwable(), fqnOfCategoryClass);
+    }
+    return locationInfo;
+  }
 
 
   /**
@@ -161,7 +170,7 @@ public class LoggingEvent implements java.io.Serializable {
 	 renderedMessage = (String) message;
        else {
 	 renderedMessage=
-                    category.getHierarchy().getRendererMap().findAndRender(message);
+            category.getHierarchy().getRendererMap().findAndRender(message);
        }
      }
      return renderedMessage;
@@ -185,65 +194,17 @@ public class LoggingEvent implements java.io.Serializable {
 
 
   /**
-     Return the throwable's stack trace if any such information is
-     available.  */
+     Return this event's throwable's string[] representaion.
+  */
   public 
-  String getThrowableInformation() {
+  String[] getThrowableStrRep() {
 
-    if(throwableInformation !=  null)
-      return throwableInformation;
-
-    
-    if(throwable == null) {
-       return null;
-    } else {
-      StringWriter sw = new StringWriter();
-      PrintWriter pw = new PrintWriter(sw);
-
-      throwable.printStackTrace(pw);
-      throwableInformation = sw.toString();
-      return throwableInformation;
-    }
+    if(throwableInfo ==  null)
+      return null;
+    else 
+      return throwableInfo.getThrowableStrRep();
   }
 	
-  private
-  void writeObject(ObjectOutputStream oos) throws java.io.IOException {
-    // Aside from returning the current thread name the wgetThreadName
-    // method sets the threadName variable.
-    this.getThreadName();    
-
-    // This sets the renders the message in case it wasn't up to now.
-    this.getRenderedMessage();
-
-    // This call has a side effect of setting this.ndc and
-    // setting ndcLookupRequired to false if not already false.
-    this.getNDC();
-
-    // This sets the throwableInformation variable to the stack trace
-    // of the throwable variable.
-    this.getThrowableInformation();
-
-    oos.defaultWriteObject();
-    
-    // serialize this event's priority
-    writePriority(oos);
-  }
-
-  private 
-  void writePriority(ObjectOutputStream oos) throws java.io.IOException {
-
-    oos.writeInt(priority.toInt());
-
-    Class clazz = priority.getClass();
-    if(clazz == Priority.class) {
-      oos.writeObject(null);
-    } else {
-      // writing directly the Class object would be nicer, except that
-      // serialized a Class object can not be read back by JDK
-      // 1.1.x. We have to resort to this hack instead.
-      oos.writeObject(clazz.getName());
-    }
-  }
 
   private 
   void readPriority(ObjectInputStream ois) 
@@ -270,8 +231,6 @@ public class LoggingEvent implements java.io.Serializable {
     }
   }
 
-
-
   private void readObject(ObjectInputStream ois)
                         throws java.io.IOException, ClassNotFoundException {
     ois.defaultReadObject();    
@@ -282,16 +241,42 @@ public class LoggingEvent implements java.io.Serializable {
       locationInfo = new LocationInfo(null, null);
   }
 
+  private
+  void writeObject(ObjectOutputStream oos) throws java.io.IOException {
+    // Aside from returning the current thread name the wgetThreadName
+    // method sets the threadName variable.
+    this.getThreadName();    
 
-  /**
-     Set the location information for this logging event. The collected
-     information is cached for future use.
-   */
-  public
-  LocationInfo getLocationInformation() {
-    if(locationInfo == null) {
-      locationInfo = new LocationInfo(new Throwable(), fqnOfCategoryClass);
-    }
-    return locationInfo;
+    // This sets the renders the message in case it wasn't up to now.
+    this.getRenderedMessage();
+
+    // This call has a side effect of setting this.ndc and
+    // setting ndcLookupRequired to false if not already false.
+    this.getNDC();
+
+    // This sets the throwable sting representation of the event throwable.
+    this.getThrowableStrRep();
+
+    oos.defaultWriteObject();
+    
+    // serialize this event's priority
+    writePriority(oos);
   }
+
+  private 
+  void writePriority(ObjectOutputStream oos) throws java.io.IOException {
+
+    oos.writeInt(priority.toInt());
+
+    Class clazz = priority.getClass();
+    if(clazz == Priority.class) {
+      oos.writeObject(null);
+    } else {
+      // writing directly the Class object would be nicer, except that
+      // serialized a Class object can not be read back by JDK
+      // 1.1.x. We have to resort to this hack instead.
+      oos.writeObject(clazz.getName());
+    }
+  }
+
 }

@@ -91,7 +91,9 @@
 <td>Message 5</td>
 </tr>
 <tr><td colspan="7">java.lang.Exception: Just testing
-<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)</td></tr>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)
+</td></tr>
 
 <tr><td>XXX</td>
 <td>main</td>
@@ -101,7 +103,9 @@
 <td>Message 5</td>
 </tr>
 <tr><td colspan="7">java.lang.Exception: Just testing
-<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)</td></tr>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)
+</td></tr>
 
 <tr><td>XXX</td>
 <td>main</td>
@@ -111,7 +115,9 @@
 <td>Message 6</td>
 </tr>
 <tr><td colspan="7">java.lang.Exception: Just testing
-<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)</td></tr>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)
+</td></tr>
 
 <tr><td>XXX</td>
 <td>main</td>
@@ -121,7 +127,9 @@
 <td>Message 6</td>
 </tr>
 <tr><td colspan="7">java.lang.Exception: Just testing
-<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)</td></tr>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)
+</td></tr>
 
 <tr><td>XXX</td>
 <td>main</td>
@@ -131,7 +139,9 @@
 <td>Message 7</td>
 </tr>
 <tr><td colspan="7">java.lang.Exception: Just testing
-<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)</td></tr>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)
+</td></tr>
 
 <tr><td>XXX</td>
 <td>main</td>
@@ -141,7 +151,9 @@
 <td>Message 7</td>
 </tr>
 <tr><td colspan="7">java.lang.Exception: Just testing
-<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)</td></tr>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)
+</td></tr>
 
 <tr><td>XXX</td>
 <td>main</td>
@@ -151,7 +163,9 @@
 <td>Message 8</td>
 </tr>
 <tr><td colspan="7">java.lang.Exception: Just testing
-<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)</td></tr>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)
+</td></tr>
 
 <tr><td>XXX</td>
 <td>main</td>
@@ -161,7 +175,9 @@
 <td>Message 8</td>
 </tr>
 <tr><td colspan="7">java.lang.Exception: Just testing
-<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)</td></tr>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)
+</td></tr>
 
 <tr><td>XXX</td>
 <td>main</td>
@@ -171,7 +187,9 @@
 <td>Message 9</td>
 </tr>
 <tr><td colspan="7">java.lang.Exception: Just testing
-<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)</td></tr>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)
+</td></tr>
 
 <tr><td>XXX</td>
 <td>main</td>
@@ -181,4 +199,6 @@
 <td>Message 9</td>
 </tr>
 <tr><td colspan="7">java.lang.Exception: Just testing
-<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)</td></tr></table></body></html>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)
+</td></tr></table></body></html>
