@@ -68,7 +68,7 @@ final class CachedDateFormat extends DateFormat {
     String formatted = formatter.format(slotBeginDate);
     cache.append(formatted);
     millisecondStart = findMillisecondStart(slotBegin, formatted, formatter);
-    System.out.println("millisecondStart="+millisecondStart);
+    //System.out.println("millisecondStart="+millisecondStart);
   } 
     
 
@@ -86,8 +86,8 @@ final class CachedDateFormat extends DateFormat {
     final long time, final String formatted, final DateFormat formatter) {
     String plus987 = formatter.format(new Date(time + 987));
 
-    System.out.println("-formatted="+formatted);
-    System.out.println("plus987="+plus987);
+    //System.out.println("-formatted="+formatted);
+    //System.out.println("plus987="+plus987);
     // find first difference between values
     for (int i = 0; i < formatted.length(); i++) {
       if (formatted.charAt(i) != plus987.charAt(i)) {
@@ -122,7 +122,7 @@ final class CachedDateFormat extends DateFormat {
     
     long now = date.getTime();
     if ((now < (slotBegin + 1000L)) && (now >= slotBegin)) {
-      System.out.println("Using cached val:"+date);
+      //System.out.println("Using cached val:"+date);
 
       // If there are NO_MILLISECONDS we don't bother computing the millisecs.
       if (millisecondStart >= 0) {
@@ -131,13 +131,13 @@ final class CachedDateFormat extends DateFormat {
 
         milliBuf.setLength(0);
         numberFormat.format(millis, milliBuf, fieldPosition);
-        System.out.println("milliBuf="+milliBuf);
+        //System.out.println("milliBuf="+milliBuf);
         for(int j = 0; j < JVM_MAX_MILLI_DIGITS; j++) {
           cache.setCharAt(millisecondStart+j, milliBuf.charAt(j));
         }
       }
     } else {
-      System.out.println("Refreshing the cache: "+date+","+(date.getTime()%1000));
+      //System.out.println("Refreshing the cache: "+date+","+(date.getTime()%1000));
       slotBegin = (now / 1000L) * 1000L;
       int prevLength = cache.length();
       cache.setLength(0);
@@ -146,8 +146,8 @@ final class CachedDateFormat extends DateFormat {
       //   if the length changed then
       //      recalculate the millisecond position
       if (cache.length() != prevLength && (milliDigits > 0)) {
-        System.out.println("Recomputing cached len changed oldLen="+prevLength
-              +", newLen="+cache.length());
+        //System.out.println("Recomputing cached len changed oldLen="+prevLength
+        //      +", newLen="+cache.length());
         //
         //    format the previous integral second
         StringBuffer tempBuffer = new StringBuffer(cache.length());
