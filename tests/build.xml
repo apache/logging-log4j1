@@ -155,10 +155,12 @@
   	                                 LevelOptionConverterTest,
   									 BoundedFIFO, 
                                      Joran,
-                                     Scheduler, 
+                                     SimpleFilter,
+  	                                 Scheduler, 
                                      ThrowableInformation,
                                      LocationInfo,
-                                     CyclicBuffer, OR, VariaLevelMatchFilter, 
+                                     CyclicBuffer, OR, 
+  	                                 VariaLevelMatchFilter, 
                                      VariaLevelRangeFilter, PatternParser,
                                      LevelMatchFilter, DRFA, 
                                      Rolling, 
@@ -378,7 +380,15 @@
       <test name="org.apache.log4j.varia.LevelMatchFilterTestCase" />
     </junit>
   </target>
-  
+
+  <target name="SimpleFilter" depends="check, build, cleanOutputDir">
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+	  <classpath refid="tests.classpath"/>
+	  <formatter type="plain" usefile="false"/>
+	  <test name="org.apache.log4j.filter.SimpleFilterTest" />
+	</junit>
+  </target>
+	
   <target name="ErrorHandler" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
