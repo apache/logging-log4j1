@@ -58,7 +58,6 @@ import java.net.URL;
  * @author Paul Smith
  */
 public interface Log4JConfigurationFinder {
-
   /**
    * Returns the URL of the configuration found according to the
    * underlying implementation

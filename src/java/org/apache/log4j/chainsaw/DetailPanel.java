@@ -94,11 +94,11 @@ class DetailPanel extends JPanel implements ListSelectionListener {
   private final JEditorPane mDetails;
 
   /**
- * Creates a new <code>DetailPanel</code> instance.
- *
- * @param aTable the table to listen for selections on
- * @param aModel the model backing the table
- */
+  * Creates a new <code>DetailPanel</code> instance.
+  *
+  * @param aTable the table to listen for selections on
+  * @param aModel the model backing the table
+  */
   DetailPanel(JTable aTable, final MyTableModel aModel) {
     mModel = aModel;
     setLayout(new BorderLayout());
@@ -144,11 +144,11 @@ class DetailPanel extends JPanel implements ListSelectionListener {
   ////////////////////////////////////////////////////////////////////////////
 
   /**
- * Returns a string representation of a throwable.
- *
- * @param aEvent contains the throwable information
- * @return a <code>String</code> value
- */
+  * Returns a string representation of a throwable.
+  *
+  * @param aEvent contains the throwable information
+  * @return a <code>String</code> value
+  */
   private static String getThrowableStrRep(EventDetails aEvent) {
     final String[] strs = aEvent.getThrowableStrRep();
 
@@ -166,11 +166,11 @@ class DetailPanel extends JPanel implements ListSelectionListener {
   }
 
   /**
- * Escape &lt;, &gt; &amp; and &quot; as their entities. It is very
- * dumb about &amp; handling.
- * @param aStr the String to escape.
- * @return the escaped String
- */
+  * Escape &lt;, &gt; &amp; and &quot; as their entities. It is very
+  * dumb about &amp; handling.
+  * @param aStr the String to escape.
+  * @return the escaped String
+  */
   private String escape(String aStr) {
     if (aStr == null) {
       return null;

@@ -126,6 +126,7 @@ public class DefaultViewer extends JFrame implements ChainsawViewer {
     loadGuiPrefs();
     setVisible(true);
   }
+
   /**
    * Constructs the JTable used for displaying the Events logs
    * @param tableModel

@@ -75,11 +75,11 @@ public class RecentFilesMenu extends JMenu {
   private final XMLFileHandler mHandler;
 
   /**
- *  Construct a RecentFilesMenu object based on the given model.  When a
- *  file is selected from the menu, it will be loaded to the given model.
- *
- *  @param model  the table model
- */
+  *  Construct a RecentFilesMenu object based on the given model.  When a
+  *  file is selected from the menu, it will be loaded to the given model.
+  *
+  *  @param model  the table model
+  */
   public RecentFilesMenu(EventDetailSink eventSink) {
     super("Recent Files");
     this.eventSink = eventSink;
@@ -87,9 +87,9 @@ public class RecentFilesMenu extends JMenu {
   }
 
   /**
- *  Rebuild the menu based on the data in the
- *  {@link org.apache.log4j.chainsaw.Preferences}.
- */
+  *  Rebuild the menu based on the data in the
+  *  {@link org.apache.log4j.chainsaw.Preferences}.
+  */
   public void rebuild() {
     removeAll();
 

@@ -1,6 +1,7 @@
 
 package org.apache.log4j.test;
 
+import org.apache.log4j.LogManager;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.Category;
 import org.apache.log4j.Priority;
@@ -73,6 +74,6 @@ public class PatternTest {
     CAT.log(Priority.FATAL, "Message " + ++i, e);
     root.log(Priority.FATAL, "Message " + i, e);    
     
-    Category.shutdown();
+    LogManager.shutdown();
   }
 }

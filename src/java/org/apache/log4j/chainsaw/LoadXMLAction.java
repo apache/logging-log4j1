@@ -75,9 +75,9 @@ class LoadXMLAction extends AbstractAction {
   private final JFrame mParent;
 
   /**
- * the file chooser - configured to allow only the selection of a
- * single file.
- */
+  * the file chooser - configured to allow only the selection of a
+  * single file.
+  */
   private final JFileChooser mChooser = new JFileChooser();
 
   /** the content handler **/
@@ -89,20 +89,20 @@ class LoadXMLAction extends AbstractAction {
   }
 
   /**
- * Creates a new <code>LoadXMLAction</code> instance.
- *
- * @param aParent the parent frame
- * @param eventSink the eventSink to add events to
- */
+  * Creates a new <code>LoadXMLAction</code> instance.
+  *
+  * @param aParent the parent frame
+  * @param eventSink the eventSink to add events to
+  */
   LoadXMLAction(JFrame aParent, EventDetailSink eventSink) {
     mParent = aParent;
     mHandler = new XMLFileHandler(eventSink);
   }
 
   /**
- * Prompts the user for a file to load events from.
- * @param aIgnore an <code>ActionEvent</code> value
- */
+  * Prompts the user for a file to load events from.
+  * @param aIgnore an <code>ActionEvent</code> value
+  */
   public void actionPerformed(ActionEvent aIgnore) {
     LOG.info("load file called");
 

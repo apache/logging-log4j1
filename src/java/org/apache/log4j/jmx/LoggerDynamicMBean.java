@@ -218,7 +218,7 @@ public class LoggerDynamicMBean extends AbstractDynamicMBean
 	} else {
 	  p = OptionConverter.toLevel(s, p);
 	}
-	logger.setPriority(p);
+	logger.setLevel(p);
       }
     } else {
       throw(new AttributeNotFoundException("Attribute " + name +

@@ -143,9 +143,9 @@ class MyTableModel extends AbstractTableModel implements EventDetailSink {
   private Priority mPriorityFilter = Priority.DEBUG;
 
   /**
- * Creates a new <code>MyTableModel</code> instance.
- *
- */
+  * Creates a new <code>MyTableModel</code> instance.
+  *
+  */
   MyTableModel() {
     final Thread t = new Thread(new Processor());
     t.setDaemon(true);
@@ -208,11 +208,11 @@ class MyTableModel extends AbstractTableModel implements EventDetailSink {
   ////////////////////////////////////////////////////////////////////////////
 
   /**
- * Sets the priority to filter events on. Only events of equal or higher
- * property are now displayed.
- *
- * @param aPriority the priority to filter on
- */
+  * Sets the priority to filter events on. Only events of equal or higher
+  * property are now displayed.
+  *
+  * @param aPriority the priority to filter on
+  */
   public void setPriorityFilter(Priority aPriority) {
     synchronized (mLock) {
       mPriorityFilter = aPriority;
@@ -221,10 +221,10 @@ class MyTableModel extends AbstractTableModel implements EventDetailSink {
   }
 
   /**
- * Set the filter for the thread field.
- *
- * @param aStr the string to match
- */
+  * Set the filter for the thread field.
+  *
+  * @param aStr the string to match
+  */
   public void setThreadFilter(String aStr) {
     synchronized (mLock) {
       mThreadFilter = aStr.trim();
@@ -233,10 +233,10 @@ class MyTableModel extends AbstractTableModel implements EventDetailSink {
   }
 
   /**
- * Set the filter for the message field.
- *
- * @param aStr the string to match
- */
+  * Set the filter for the message field.
+  *
+  * @param aStr the string to match
+  */
   public void setMessageFilter(String aStr) {
     synchronized (mLock) {
       mMessageFilter = aStr.trim();
@@ -245,10 +245,10 @@ class MyTableModel extends AbstractTableModel implements EventDetailSink {
   }
 
   /**
- * Set the filter for the NDC field.
- *
- * @param aStr the string to match
- */
+  * Set the filter for the NDC field.
+  *
+  * @param aStr the string to match
+  */
   public void setNDCFilter(String aStr) {
     synchronized (mLock) {
       mNDCFilter = aStr.trim();
@@ -257,10 +257,10 @@ class MyTableModel extends AbstractTableModel implements EventDetailSink {
   }
 
   /**
- * Set the filter for the category field.
- *
- * @param aStr the string to match
- */
+  * Set the filter for the category field.
+  *
+  * @param aStr the string to match
+  */
   public void setCategoryFilter(String aStr) {
     synchronized (mLock) {
       mCategoryFilter = aStr.trim();
@@ -269,10 +269,10 @@ class MyTableModel extends AbstractTableModel implements EventDetailSink {
   }
 
   /**
- * Add an event to the list.
- *
- * @param aEvent a <code>EventDetails</code> value
- */
+  * Add an event to the list.
+  *
+  * @param aEvent a <code>EventDetails</code> value
+  */
   public void addEvent(EventDetails aEvent) {
     synchronized (mLock) {
       mPendingEvents.add(aEvent);
@@ -280,8 +280,8 @@ class MyTableModel extends AbstractTableModel implements EventDetailSink {
   }
 
   /**
- * Clear the list of all events.
- */
+  * Clear the list of all events.
+  */
   public void clear() {
     synchronized (mLock) {
       mAllEvents.clear();
@@ -306,11 +306,11 @@ class MyTableModel extends AbstractTableModel implements EventDetailSink {
   }
 
   /**
- * Get the throwable information at a specified row in the filtered events.
- *
- * @param aRow the row index of the event
- * @return the throwable information
- */
+  * Get the throwable information at a specified row in the filtered events.
+  *
+  * @param aRow the row index of the event
+  * @return the throwable information
+  */
   public EventDetails getEventDetails(int aRow) {
     synchronized (mLock) {
       return mFilteredEvents[aRow];
@@ -322,11 +322,11 @@ class MyTableModel extends AbstractTableModel implements EventDetailSink {
   ////////////////////////////////////////////////////////////////////////////
 
   /**
- * Update the filtered events data structure.
- * @param aInsertedToFront indicates whether events were added to front of
- *        the events. If true, then the current first event must still exist
- *        in the list after the filter is applied.
- */
+  * Update the filtered events data structure.
+  * @param aInsertedToFront indicates whether events were added to front of
+  *        the events. If true, then the current first event must still exist
+  *        in the list after the filter is applied.
+  */
   private void updateFilteredEvents(boolean aInsertedToFront) {
     final long start = System.currentTimeMillis();
     final List filtered = new ArrayList();
@@ -364,11 +364,11 @@ class MyTableModel extends AbstractTableModel implements EventDetailSink {
   }
 
   /**
- * Returns whether an event matches the filters.
- *
- * @param aEvent the event to check for a match
- * @return whether the event matches
- */
+  * Returns whether an event matches the filters.
+  *
+  * @param aEvent the event to check for a match
+  * @return whether the event matches
+  */
   private boolean matchFilter(EventDetails aEvent) {
     if (
       aEvent.getPriority().isGreaterOrEqual(mPriorityFilter)
@@ -391,9 +391,9 @@ class MyTableModel extends AbstractTableModel implements EventDetailSink {
   }
 
   /**
- * Helper that actually processes incoming events.
- * @author <a href="mailto:oliver@puppycrawl.com">Oliver Burn</a>
- */
+  * Helper that actually processes incoming events.
+  * @author <a href="mailto:oliver@puppycrawl.com">Oliver Burn</a>
+  */
   private class Processor implements Runnable {
     /** loops getting the events **/
     public void run() {
