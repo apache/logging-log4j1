@@ -24,7 +24,9 @@ import org.apache.log4j.helpers.ThreadLocalMap;
    diagnostic context of its parent which is managed independently of
    the parent's context.
 
-   <p>The MDC requires JDK 1.2. It will not work under JDK 1.1.
+   
+
+   <p>The MDC class requires JDK 1.2. It will not work under JDK 1.1.
 
    
    @since 1.2
@@ -32,24 +34,35 @@ import org.apache.log4j.helpers.ThreadLocalMap;
    @author Ceki G&uuml;lc&uuml; */
 public class MDC {
   
-  
   final static ThreadLocalMap context = new ThreadLocalMap();
   
   static final int HT_SIZE = 7;
 
+  /**
+     Put a context value (the <code>o</code> parameter) as identified
+     with the <code>key</code> parameter into the current thread's
+     context map.
+
+     <p>If the current thread does not have a context map it is
+     created as a side effect.
+    
+   */
   static
   public
   void put(String key, Object o) {
     Hashtable ht = (Hashtable) context.get();
     if(ht == null) {
-      //System.out.println("Creating new ht. [" + Thread.currentThread().getName()+
-      //		 "]");
       ht = new Hashtable(HT_SIZE);
       context.set(ht);
     }    
     ht.put(key, o);
   }
   
+  /**
+     Get the context identified by the <code>key</code> parameter.
+
+     <p>This method has no side effects.
+   */
   static 
   public
   Object get(String key) {
