@@ -36,10 +36,10 @@ import org.apache.log4j.joran.action.RootLoggerAction;
 import org.apache.log4j.joran.action.SubstitutionPropertyAction;
 import org.apache.log4j.joran.spi.ExecutionContext;
 import org.apache.log4j.joran.spi.Interpreter;
+import org.apache.log4j.joran.spi.JoranDocument;
 import org.apache.log4j.joran.spi.Pattern;
 import org.apache.log4j.joran.spi.RuleStore;
 import org.apache.log4j.joran.spi.SimpleRuleStore;
-import org.apache.log4j.joran.util.JoranDocument;
 import org.apache.log4j.spi.ErrorItem;
 import org.apache.log4j.spi.LoggerRepository;
 
