@@ -115,6 +115,7 @@ final class LoggerNameTreePanel extends JPanel implements Rule
     new SmallToggleButton();
   private final Set hiddenSet = new HashSet();
   private final Action hideAction;
+  private final LogPanelPreferenceModel preferenceModel;
 
   private final JList ignoreList = new JList();
   private final JScrollPane ignoreListScroll = new JScrollPane(ignoreList);
@@ -145,10 +146,11 @@ final class LoggerNameTreePanel extends JPanel implements Rule
    *
    * @param logTreeModel
    */
-  LoggerNameTreePanel(LogPanelLoggerTreeModel logTreeModel)
+  LoggerNameTreePanel(LogPanelLoggerTreeModel logTreeModel, LogPanelPreferenceModel preferenceModel)
   {
     super();
     this.logTreeModel = logTreeModel;
+    this.preferenceModel = preferenceModel;
 
     setLayout(new BorderLayout());
     setBorder(BorderFactory.createEtchedBorder());
@@ -567,7 +569,7 @@ final class LoggerNameTreePanel extends JPanel implements Rule
       {
         public void actionPerformed(ActionEvent e)
         {
-          LoggerNameTreePanel.this.setVisible(false);
+            preferenceModel.setLogTreePanelVisible(false);
         }
       };
 
@@ -983,14 +985,11 @@ final class LoggerNameTreePanel extends JPanel implements Rule
               public boolean evaluate(LoggingEvent e)
               {
                 boolean isHidden = getHiddenSet().contains(e.getLoggerName());
-                boolean result = !isHidden;
+                boolean result = (e.getLoggerName() != null) && (!isHidden);
 
                 if (result && isFocusOnSelected())
                 {
-                  result =
-                  result
-                    && e.getLoggerName() != null && e.getLoggerName().startsWith(
-                      currentlySelectedLoggerName);
+                  result = result &&  (e.getLoggerName().startsWith(currentlySelectedLoggerName+".") || e.getLoggerName().endsWith(currentlySelectedLoggerName)) ;
                 }
 
                 return result;
