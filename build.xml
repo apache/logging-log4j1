@@ -332,7 +332,8 @@
 		${stem}/or/sax/*.class,
                 ${stem}/or/jms/*.class,
 		${stem}/config/*.class"
-      excludes="**/UnitTest**">
+      excludes="**/UnitTest**,
+                **/selectors/*.class">
 
       <manifest>
 	<attribute name="Manifest-version" value="1.0"/>
