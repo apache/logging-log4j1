@@ -26,6 +26,7 @@ import org.apache.log4j.PatternLayout;
 
 
 import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
 
 
 public class ConversionRuleAction extends Action {
@@ -36,7 +37,7 @@ public class ConversionRuleAction extends Action {
    * Instantiates an layout of the given class and sets its name.
    *
    */
-  public void begin(ExecutionContext ec, String localName, Attributes attributes) {
+  public void begin(ExecutionContext ec, String localName, Attributes attributes, Locator locator) {
     // Let us forget about previous errors (in this object)
     inError = false;
 

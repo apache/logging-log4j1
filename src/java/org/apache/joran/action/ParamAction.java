@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.config.PropertySetter;
 import org.apache.log4j.helpers.OptionConverter;
 import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
 
 
 public class ParamAction extends Action {
@@ -15,7 +16,7 @@ public class ParamAction extends Action {
 	static String NO_NAME = "No name attribute in <param> element";
 	static String NO_VALUE = "No name attribute in <param> element";
 	
-  public void begin(ExecutionContext ec, String localName, Attributes attributes) {
+  public void begin(ExecutionContext ec, String localName, Attributes attributes, Locator locator) {
 		String name = attributes.getValue(NAME_ATTRIBUTE);
 		String value = attributes.getValue(VALUE_ATTRIBUTE);
 
