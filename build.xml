@@ -482,8 +482,7 @@
 
     <jar jarfile="${jar.dest}/${log4j-chainsaw.jar}" basedir="${javac.dest}"
          includes="${stem}/chainsaw/*.class,
-         		${stem}/chainsaw/prefs/*.class, 
-         		${stem}/chainsaw/icons/*.class, 
+         		${stem}/chainsaw/**/*.class, 
           		${stem}/chainsaw/layout/*, 
          		${stem}/chainsaw/icons/*.gif, 
          		${stem}/chainsaw/*.jpg, 
