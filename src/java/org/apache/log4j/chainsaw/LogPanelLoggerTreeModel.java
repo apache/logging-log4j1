@@ -54,6 +54,8 @@ package org.apache.log4j.chainsaw;
 import java.awt.Container;
 import java.awt.Dimension;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.StringTokenizer;
 
@@ -62,7 +64,9 @@ import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeNode;
+import javax.swing.tree.MutableTreeNode;
+
+import org.apache.log4j.helpers.LogLog;
 
 
 /**
@@ -73,15 +77,23 @@ import javax.swing.tree.TreeNode;
  */
 class LogPanelLoggerTreeModel extends DefaultTreeModel
   implements LoggerNameListener {
-
   LogPanelLoggerTreeModel() {
-    super(new DefaultMutableTreeNode("Root Logger"));
+    super(new LogPanelTreeNode("Root Logger"));
   }
 
   /* (non-Javadoc)
    * @see org.apache.log4j.chainsaw.LoggerNameListener#loggerNameAdded(java.lang.String)
    */
-  public void loggerNameAdded(String loggerName) {
+  public void loggerNameAdded(final String loggerName) {
+    SwingUtilities.invokeLater(
+      new Runnable() {
+        public void run() {
+          addLoggerNameInDispatchThread(loggerName);
+        }
+      });
+  }
+
+  private void addLoggerNameInDispatchThread(final String loggerName) {
     String[] packages = tokenize(loggerName);
 
     /**
@@ -91,31 +103,33 @@ class LogPanelLoggerTreeModel extends DefaultTreeModel
      */
     DefaultMutableTreeNode current = (DefaultMutableTreeNode) getRoot();
 
+
 /**
  * This label is used to break out when descending the
  * current tree hierachy, and it has matched a package name
  * with an already existing TreeNode.
  */
-outerFor:    for (int i = 0; i < packages.length; i++) {
+outerFor: 
+    for (int i = 0; i < packages.length; i++) {
       String packageName = packages[i];
       Enumeration enum = current.children();
+
       while (enum.hasMoreElements()) {
         DefaultMutableTreeNode child =
           (DefaultMutableTreeNode) enum.nextElement();
         String childName = child.getUserObject().toString();
 
         if (childName.equals(packageName)) {
-          
           /**
            * This the current known branch to descend
            */
           current = child;
+
           /**
            * we've found it, so break back to the outer
            * for loop to continue processing further
            * down the tree
            */
-
           continue outerFor;
         }
       }
@@ -124,30 +138,31 @@ outerFor:    for (int i = 0; i < packages.length; i++) {
        * So we haven't found this index in the current children,
        * better create the child
        */
-      DefaultMutableTreeNode newChild =
-        new DefaultMutableTreeNode(packageName);
-      current.add(newChild);
-      
-      final TreeNode changedNode = current;
-      final int[] changedIndices = new int[]{current.getIndex(newChild)};
-      SwingUtilities.invokeLater(new Runnable(){
+      final LogPanelTreeNode newChild = new LogPanelTreeNode(packageName);
 
-        public void run()
-        {
-          nodesWereInserted(changedNode, changedIndices);
-          
-        }});
+      final DefaultMutableTreeNode changedNode = current;
+
+      changedNode.add(newChild);
+
+      final int[] changedIndices = new int[changedNode.getChildCount()];
+
+      for (int j = 0; j < changedIndices.length; j++) {
+        changedIndices[j] = j;
+      }
+
+	  nodesWereInserted(changedNode, new int[]{changedNode.getIndex(newChild)});
+      nodesChanged(changedNode, changedIndices);
       current = newChild;
     }
   }
 
   /**
-   * Takes the loggerName and tokenizes it into it's
-   * package name lements returning the elements
-   * via the Stirng[]
-   * @param loggerName
-   * @return array of strings representing the package hierarchy
-   */
+     * Takes the loggerName and tokenizes it into it's
+     * package name lements returning the elements
+     * via the Stirng[]
+     * @param loggerName
+     * @return array of strings representing the package hierarchy
+     */
   private String[] tokenize(String loggerName) {
     StringTokenizer tok = new StringTokenizer(loggerName, ".");
 
@@ -162,48 +177,29 @@ outerFor:    for (int i = 0; i < packages.length; i++) {
     return tokens;
   }
 
-  public static void main(String[] args) {
-    try {
-      JFrame frame = new JFrame("TestBed");
-      frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+  private static class LogPanelTreeNode extends DefaultMutableTreeNode {
+    protected static Comparator nodeComparator =
+      new Comparator() {
+        public int compare(Object o1, Object o2) {
+          return o1.toString().compareToIgnoreCase(o2.toString());
+        }
 
-      Container container = frame.getContentPane();
+        public boolean equals(Object obj) {
+          return false;
+        }
+      };
 
-      final LogPanelLoggerTreeModel model = new LogPanelLoggerTreeModel();
-      JTree tree = new JTree(model);
+    private LogPanelTreeNode(String logName) {
+      super(logName);
+    }
 
-      container.add(tree);
-
-      frame.pack();
-      frame.setSize(new Dimension(640,480));
-      frame.setVisible(true);
-
-      Thread.sleep(2000);
-
-      final String[] packageNames =
-        new String[] {
-          "org.apache.log4j.chainsaw", 
-          "org.apache.log4j", 
-          "au.com.lawlex",
-          "org",
-          "org.apache.log4j.chainsaw.prefs",
-          "com.mycompany",
-          "org.apache.joran",
-        };
-
-      final int delay = 500;
-
-      for (int i = 0; i < packageNames.length; i++) {
-        final int index = i;
-        SwingUtilities.invokeLater(
-          new Runnable() {
-            public void run() {
-              model.loggerNameAdded(packageNames[index]);
-            }
-          });
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
+    public void insert(MutableTreeNode newChild, int childIndex) {
+//      LogLog.debug("[" + this.getUserObject() + "] inserting child " + newChild + " @ index " + childIndex);
+//      LogLog.debug("Children now: " + this.children);
+      super.insert(newChild, childIndex);
+//	  LogLog.debug("Children after insert: " + this.children);
+      Collections.sort(this.children, nodeComparator);
+//	  LogLog.debug("Children after sort: " + this.children);
     }
   }
 }
