@@ -1,16 +1,14 @@
 <?xml version="1.0"?>
 
-<!-- This XSL stylesheet is a get-to-know experiment with the XSL
+<!--
+This XSL stylesheet is a get-to-know experiment with the XSL
 language. Future log4j versions might include different perhaps more
 useful stylesheets. 
-
-
-
 -->
 
 <xsl:stylesheet version="1.0" 
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-  xmlns:log4j="http://log4j.org"
+  xmlns:log4j="http://jakarta.apache.org/log4j"
 >
 
 <xsl:variable name="start">
@@ -25,17 +23,14 @@ useful stylesheets.
    <xsl:value-of select="/log4j:eventSet/@relativeTime"/>
 </xsl:variable>
 
-
 <xsl:template match="/">
   <html>
     <head></head>
     <body bgcolor="white">
       <xsl:apply-templates select="log4j:eventSet"/>
     </body>
-    </html>  
-
+    </html>
 </xsl:template>
-
 
 <xsl:template match="log4j:eventSet">
    <table border="1" cellspacing="2" cellspadding="2">
@@ -45,8 +40,8 @@ useful stylesheets.
                <th>Rel. Time</th>         
             </xsl:when>
             <xsl:otherwise>
-               <th>Time</th>   
-            </xsl:otherwise>         
+               <th>Time</th>
+            </xsl:otherwise>
          </xsl:choose>
 
          <th>Priority</th>
@@ -77,7 +72,8 @@ useful stylesheets.
       <td><font>
          <xsl:choose>
             <xsl:when test="self::node()[@priority='ERROR' or
-                                         @priority='EMERG']"> 
+                                         @priority='EMERG' or
+                                         @priority='FATAL']"> 
               <xsl:attribute name="color">#FF0000</xsl:attribute>   
             </xsl:when>
             <xsl:when test="self::node()[@priority='WARN']"> 
@@ -119,6 +115,5 @@ useful stylesheets.
    <td colspan="8"><pre><xsl:value-of select="."/></pre></td>
  </tr>
 </xsl:template>
- 
 
 </xsl:stylesheet>
