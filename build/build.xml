@@ -94,7 +94,7 @@
     <property name="docs" value="docs" />
     <property name="javadoc.dest" value="${docs}/api" />
     <property name="stem" value="org/apache/log4j" />
-    <property name="version" value="1.1"/>  
+    <property name="version" value="1.1b1"/>  
   </target>
 
   <target name="build" depends="init, build.core, build.swing, build.xml,
@@ -125,10 +125,11 @@
     <copy todir="${javac.dest}/icons" >
       <fileset dir="icons"/>
     </copy>
+
     <javac srcdir="${java.source.dir}"
 	   destdir="${javac.dest}"
-	   includes="${stem}/gui/*.java"
-           excludes="**/JListView.java, **/JTableAppender.java"
+	   includes="${stem}/gui/**/*.java"
+           excludes="${stem}/gui/JListView.java, ${stem}/gui/JTableAppender.java"
            classpath="${classpath}"/>
   </target>
 	
@@ -288,7 +289,7 @@
           ${stem}/nt/MSG00001.bin,${stem}/nt/NTEventLogAppender.lib,
           ${stem}/nt/NTEventLogAppender.exp,${stem}/nt/vc50.idb,
           ${stem}/net/test/loop.log,${stem}/net/test/loop.log.1,
-	  ${jar.dest}/manifest.mf"/>
+	  ${jar.dest}/manifest.mf, ${javac.dest}/*.class"/>
      </fileset>         
     </delete>
 
@@ -313,7 +314,7 @@
          includes="jakarta-log4j-${version}/**" />
 
     	 
-    <delete dir="dist/tmp/jakarta-log4j-${version}" />
+    <delete dir="dist/tmp/" />
 
   </target>
 
