@@ -64,7 +64,8 @@ import java.util.Map;
  * RELATIVETIME
  * MESSAGE
  * *
- *
+ * PROP(key)
+ * 
  * For example,
  *
  * If your file's patternlayout is this:
@@ -73,6 +74,14 @@ import java.util.Map;
  * specify this as the log format:
  * TIMESTAMP LEVEL [THREAD] CLASS (FILE:LINE) - MESSAGE
  *
+ * Only PROPERTIES are supported directly, but an MDC entry (or delimited NDC) can be set as a property
+ * To define a PROPERTY field, use PROP(key)
+ * 
+ * For example, 
+ * 
+ * If you specified a userID field as an MDC entry in the file, 
+ * you can use PROP(userID) in the log format definition to access the userID MDC entry as a property
+ *  
  * If your file's patternlayout is this:
  * %r [%t] %-5p %c %x - %m%n
  *
@@ -88,7 +97,8 @@ import java.util.Map;
  * is followed by a delimiter (-)
  *
  * LIMITATIONS:
- * - no support for ndc, properties or the single-line version of throwable supported by patternlayout
+ * - specify delimited NDC or MDC entries using support for properties
+ * - no support for the single-line version of throwable supported by patternlayout
  * - relativetime is set as a property
  * - loggers with spaces in their names are not supported (but may work if followed by a delimiter,
  *   similar to wildcard example above)
@@ -132,6 +142,8 @@ public class LogFilePatternReceiver extends Receiver {
   public static final String MESSAGE = "MESSAGE";
   public static final String WILDCARD = "*";
   private static final String TAB = "\t";
+  private static final String PROP_PREFIX = "PROP(";
+  private static final String PROP_SUFFIX = ")";
   private final List keywords = new ArrayList();
   private final List logFormatFields = new ArrayList();
   private final Map defaultMap = new HashMap();
@@ -199,7 +211,7 @@ public class LogFilePatternReceiver extends Receiver {
     //parser.initialize();
     //System.out.println("Created event: " + parser.convertToEvent("2004-12-13 22:49:22,820 DEBUG SOME VALUE [Thread-0] Generator2 (Generator2.java:100) - <test>   <test2>something here</test2>   <test3 blah=something/>   <test4>       <test5>something else</test5>   </test4></test>"));
     //parser.initialize("THREAD LEVEL LOGGER - MESSAGE");
-    parser.setLogFormat("RELATIVETIME [THREAD] LEVEL LOGGER * - MESSAGE");
+    parser.setLogFormat("RELATIVETIME PROP(USERID) [THREAD] LEVEL LOGGER * - MESSAGE");
     parser.setFileName(args[0]);
     parser.initialize();
 
@@ -418,13 +430,14 @@ public class LogFilePatternReceiver extends Receiver {
 
     for (int i = 0; i < logFormatFields.size(); i++) {
       String thisField = (String) logFormatFields.get(i);
+      LogLog.info("processing field " + thisField);
 
       //ignore wildcard entries - skip to next field
       if (thisField.equals(WILDCARD)) {
         String nextField = (String) logFormatFields.get(i + 1);
 
         if (logEntry.indexOf(nextField) == -1) {
-          LogLog.info("Couldn't process line, ignoring: " + logEntry);
+          LogLog.info(nextField + " does not exist in line - ignoring: " + logEntry);
 
           return null;
         }
@@ -434,7 +447,7 @@ public class LogFilePatternReceiver extends Receiver {
         String nextField = (String) logFormatFields.get(i + 1);
 
         if (logEntry.indexOf(nextField) == -1) {
-          LogLog.info("Couldn't process line, ignoring: " + logEntry);
+          LogLog.info(nextField + " does not exist in line - ignoring: " + logEntry);
 
           return null;
         }
@@ -455,7 +468,7 @@ public class LogFilePatternReceiver extends Receiver {
         //System.out.println(
         //  "added " + thisField + ":" + fieldMap.get(thisField));
         logEntry = logEntry.substring(length);
-      } else if (keywords.contains(thisField)) {
+      } else if (keywords.contains(thisField) || thisField.startsWith(PROP_PREFIX)) {
         logEntry = logEntry.trim();
 
         if (i < (logFormatFields.size() - 1)) {
@@ -463,7 +476,7 @@ public class LogFilePatternReceiver extends Receiver {
           String nextField = (String) logFormatFields.get(i + 1);
 
           if (logEntry.indexOf(nextField) == -1) {
-            LogLog.info("Couldn't process line, ignoring: " + logEntry);
+          	LogLog.info(nextField + " does not exist in line - ignoring: " + logEntry);
 
             return null;
           }
@@ -586,9 +599,18 @@ public class LogFilePatternReceiver extends Receiver {
     } else {
       info = LocationInfo.NA_LOCATION_INFO;
     }
-
     properties.put(Constants.HOSTNAME_KEY, "file");
     properties.put(Constants.APPLICATION_KEY, shortFileName);
+
+    //add properties 
+    Iterator iter = fieldMap.keySet().iterator();
+    while (iter.hasNext()) {
+    	String key = (String)iter.next();
+    	if (key.startsWith(PROP_PREFIX)) {
+    		String prop = key.substring(PROP_PREFIX.length(), key.length() - 1).trim();
+    		properties.put(prop, fieldMap.get(key));
+    	}
+    }
 
     LoggingEvent event = new LoggingEvent();
     event.setLogger(logger);
@@ -668,14 +690,18 @@ public class LogFilePatternReceiver extends Receiver {
    * @return keyword or null
    */
   private String endsInKeyword(String logFormatFragment) {
+  	String trimmedFragment = logFormatFragment.trim();
     Iterator iter = keywords.iterator();
 
     while (iter.hasNext()) {
       String keyword = (String) iter.next();
 
-      if (logFormatFragment.endsWith(keyword)) {
+      if (trimmedFragment.endsWith(keyword)) {
         return keyword;
       }
+    }
+    if (trimmedFragment.startsWith(PROP_PREFIX) && trimmedFragment.endsWith(PROP_SUFFIX)) {
+    	return trimmedFragment;
     }
 
     return null;
