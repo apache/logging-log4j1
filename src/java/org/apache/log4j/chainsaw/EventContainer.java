@@ -60,7 +60,7 @@ import java.util.Vector;
  * @author Scott Deboy <sdeboy@apache.org>
  * 
  */
-public interface EventContainer extends SortTableModel, FilterChangedListener {
+public interface EventContainer extends SortTableModel, FilterChangedListener, LoggerNameModel {
   /**
    * Adds an EventCountListener, to be notified when the # of events changes
    * @param listener
