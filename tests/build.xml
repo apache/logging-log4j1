@@ -23,9 +23,6 @@
 
   <property name="tests.source.home" value="./src/java/"/>
 
-  
-
-
   <path id="tests.classpath">
     <pathelement location="${project.source.home}"/>
     <pathelement location="${project.classes.home}"/>
@@ -79,7 +76,7 @@
   <!-- Remove all generated (compiled) class files.                      -->
   <!-- ================================================================= -->
   <target name="clean">
-    <delete dir="${./classes}/" />
+    <delete dir="./classes/" />
   </target>
 
   
