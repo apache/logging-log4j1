@@ -65,7 +65,7 @@
     <property name="classes" value="classes" />
     <property name="stem" value="org/apache/log4j" />
     <property name="build.compiler" value="jikes"/>	
-    <property name="version" value="1.0"/>  
+    <property name="version" value="1.0.1 "/>  
   </target>
 
 
@@ -120,7 +120,8 @@
 	   srcdir="${srcdir}"
 	   destdir="${classes}"
 	   includes="${stem}/xml/**/*.java"
-           excludes="${stem}/xml/examples/doc-files/**.java"
+           excludes="${stem}/xml/examples/doc-files/**.java,
+	             ${stem}/xml/Transform.java"
 	   classpath="${classpath}"/>
     <copy file="${stem}/xml/log4j.dtd"
 	  tofile="${classes}/${stem}/xml/log4j.dtd" />
@@ -194,6 +195,9 @@
 
     <copy file="doc/manual.html"
         tofile="javadoc/manual.html" />
+
+    <copy file="doc/deepExtension.html"
+        tofile="javadoc/deepExtension.html" />
 
     <javadoc sourcepath="${srcdir}" 
            destdir="javadoc" 

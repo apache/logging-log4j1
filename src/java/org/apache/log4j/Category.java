@@ -42,7 +42,7 @@ import java.net.MalformedURLException;
   This is the central class in the log4j package. One of the distintive
   features of log4j are hierarchal categories and their evaluation.
 
-  <p>See the <a href="../../manual.html">user manual</a> for an
+  <p>See the <a href="../../../manual.html">user manual</a> for an
   introduction on this class.
 
   @author Ceki G&uuml;lc&uuml;
