@@ -1,0 +1,159 @@
+
+This package is a step by step tutorial on using the log4j make
+environment.
+
+First, it will show you how to adapt the make environment to your
+particular settings.  Once you adapt the make environment for your
+particular system setting, you can compile a few java source files and
+watch the make environment in action.
+
+Then, the tutorial will proceed to show you how to write your own
+Makefiles so that others can compile your code without effort.
+
+Master Rules file
+=================
+
+The master rules file defines the rules that the gnu-make uses in
+order compile your source code. It is located in "make/make.inc".  You
+need not change this file.
+
+The master rules file searches for a file called "make/make.loc" which
+tells it how to resolve local system dependencies.
+
+Local System dependencies
+=========================
+
+The system dependencies are localized into a file called "make.loc"
+located under the "make" directory.
+
+The file make.loc is not part of the log4j distribution. YOU MUST
+CREATE THIS FILE YOURSELF. See make/README on how to do this.
+
+Compiling with gnu-make
+=======================
+
+After you created the make/make.loc file and set the JAVAC,
+JAVAC_FLAGS and CLASS_DIR variables, you can try to compile the java
+files under the "test" directory.
+
+You can test your make environment by issuing the make command form
+within the make directory. Issue the command:
+
+> make lib
+
+which should compile test source code and place the resulting class
+files in CLASS_DIR.  Make sure that Hello.class and X.class were
+created and places in CLASS_DIR/make/test and respectively
+CLASS_DIR/make/test/subdir.
+
+If your compiler complains that "X" cannot be found, it is likely that
+your CLASSPATH is misconfigured.
+
+Remember that your CLASSPATH should contain the the CLASS_DIR
+directory in addition to your *source tree* path.  Otherwise, your
+java compiler will not be able to resolve dependencies in your source
+code.
+
+You can issue the "make lib" command from either from the make or from
+the "test" directory under it.  The make environment is capable of
+recursing into subdirectories.
+
+You probably noticed that "make/test/subdir/X.java" was compiled when
+Hello.java was compiled. The ability to automatically compile required
+classes is a common feature of most java compilers.
+
+Now modify the "X.java" file in test/subdir, for example by adding an
+empty line.  If you issue a "make lib" command, you will see that the
+GNU-make will recurse into the make/test/subdir directory and correctly
+compile X.java.  It will not compile "Hello.java" because it was not
+changed.
+
+
+Compiling the Entire Source Code
+================================
+
+You can compile the entire source code from the directory where you
+extracted the distribution by issuing the command "make lib."
+
+Makefiles
+=========
+
+It is quite easy to add your own code so that it gets automatically
+gets compiled with make.  This is done by adding a Makefile to each
+package of your source code. In java, where each directory corresponds
+to a package, there should be a Makefile in each directory in the
+source code.
+
+This tutorial comes with an "examples" directory containing incomplete
+Makefiles. You should complete these Makefiles as indicated below.
+
+Our Makefiles have the following structure:
+
+# Start Makefile ==================================
+PKG_DIR :=name/of/package/separated/by/forward/slashes 
+DEPTH   :=the_depth_of_your_make_file: e.g. ../.. (for 2 levels deep)
+JSOURCES:=Your.java Sources.java 
+SUBDIRS :=space separated list of subdirs that should be recursed into
+JRMI    :=files.java that.java require.java rmic.java compilation.java
+# include master-rule file
+include $(DEPTH)/make/make.inc
+# End Makefile ====================================
+
+The PKG_DIR variable should be set to the name of the package with
+dots replaced by forward slashes, e.g. for package x.y.z the PKG_DIR
+variable should be set to x/y/z.
+
+The rule for setting the DEPTH variable is as follows:
+
+.         for the top level Makefile
+..        for level 1 packages
+../..     for level 2 packages
+../../..  for level 3 packages, etc.
+          
+The JSOURCES variables should be a space separated list of the java
+source files that you want compiled. If the list of files is too long
+you can place a backward-slash on the end of the line and continue on
+the next line. The continues lines should all contain a space--but not
+a tabulation since tabulation characters have special meaning in make.
+
+For example,
+
+JSOURCES:= XYZ1.java XYZ2.java XYZ3.java XYZ4.java \
+ XYZ5.java XYZ6.java XYZ7.java XYZ8.java \
+ XYZ9.java XYZ10.java XYZ11.java XYZ12.java \
+ XYZ13.java XYZ14.java XYZ15.java\
+ 
+The SUBDIRS variable tell make to recurse into the listed
+subdirectories. Make will apply the make rules in each of those
+directories. The list should be space separated.
+
+The JRMI variable is the space separated list of java files that
+should be compiled by RMI. The sources files in JRMI variable should
+also be repeated in the JSOURCES variable.
+	  
+
+The Makefile for the test package follows:
+# Start Makefile for ackage test====================
+PKG_DIR :=test
+DEPTH   :=..
+JSOURCES:=Hello.java 
+JRMI    :=
+SUBDIRS :=subdir
+
+# include master-rule file
+include $(DEPTH)/make/make.inc
+# End Makefile ====================================
+
+
+As an exercise try to complete the Makefiles in the exercise,
+make/exercise/echo, make/exercise/echo/client,
+make/exercise/echo/server directories.  The correct solutions can be
+found in Makefile.sol files in the respective directories.
+  
+In case you have trouble with your settings, please contact
+cgu@urbanet.ch.
+
+
+
+
+ 
