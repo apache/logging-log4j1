@@ -49,19 +49,9 @@
 
 package org.apache.log4j.chainsaw.messages;
 
-import org.apache.log4j.Layout;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.TTCCLayout;
-import org.apache.log4j.chainsaw.ChainsawConstants;
-import org.apache.log4j.chainsaw.PopupListener;
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-import org.apache.log4j.spi.LoggingEvent;
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -71,8 +61,9 @@ import javax.swing.Action;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
+import javax.swing.JComponent;
 import javax.swing.JList;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
@@ -80,6 +71,16 @@ import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
+
+import org.apache.log4j.Layout;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.TTCCLayout;
+import org.apache.log4j.chainsaw.ChainsawConstants;
+import org.apache.log4j.chainsaw.PopupListener;
+import org.apache.log4j.chainsaw.SmallButton;
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
@@ -109,19 +110,18 @@ public class MessageCenter {
   private final MessageCenterAppender appender = new MessageCenterAppender();
   private ListCellRenderer listCellRenderer =
     new LayoutListCellRenderer(layout);
-  private boolean visible;
   private PropertyChangeSupport propertySupport =
     new PropertyChangeSupport(this);
-  private JFrame window = new JFrame("Message Center");
   private JScrollPane pane = new JScrollPane(messageList);
   private final JToolBar toolbar = new JToolBar();
   private JPopupMenu popupMenu = new JPopupMenu();
   private PopupListener popupListener = new PopupListener(popupMenu);
   private Action clearAction;
+  private final JPanel componentPanel = new JPanel(new BorderLayout());
 
   private MessageCenter() {
     setupActions();
-    setupFrame();
+    setupComponentPanel();
     setupLogger();
     setupListeners();
     setupPopMenu();
@@ -139,7 +139,7 @@ public class MessageCenter {
    *
    */
   private void setupToolbar() {
-    JButton clearButton = new JButton(clearAction);
+    JButton clearButton = new SmallButton(clearAction);
     clearButton.setText(null);
     toolbar.add(clearButton);
 
@@ -158,15 +158,6 @@ public class MessageCenter {
   }
 
   private void setupListeners() {
-    propertySupport.addPropertyChangeListener(
-      "visible",
-      new PropertyChangeListener() {
-        public void propertyChange(PropertyChangeEvent evt) {
-          boolean value = ((Boolean) evt.getNewValue()).booleanValue();
-          window.setVisible(value);
-        }
-      });
-
     propertySupport.addPropertyChangeListener(
       "layout",
       new PropertyChangeListener() {
@@ -208,17 +199,16 @@ public class MessageCenter {
     logger.setLevel(Level.DEBUG);
   }
 
-  private void setupFrame() {
-    window.getContentPane().setLayout(new BorderLayout());
-
+  private void setupComponentPanel() {
     messageList.setModel(appender.getModel());
     messageList.setCellRenderer(listCellRenderer);
 
-    window.getContentPane().add(pane, BorderLayout.CENTER);
-    window.getContentPane().add(toolbar, BorderLayout.NORTH);
-
-    window.setSize(480, 240);
-    window.setIconImage(new ImageIcon(ChainsawIcons.WINDOW_ICON).getImage());
+    componentPanel.add(this.toolbar, BorderLayout.NORTH);
+    componentPanel.add(this.pane, BorderLayout.CENTER);
+  }
+  
+  public final JComponent getGUIComponent() {
+    return componentPanel;
   }
 
   public ListModel getModel() {
@@ -233,11 +223,6 @@ public class MessageCenter {
     logger.info(message);
   }
 
-  public void setVisible(boolean vis) {
-    boolean oldValue = this.visible;
-    this.visible = vis;
-    propertySupport.firePropertyChange("visible", oldValue, this.visible);
-  }
 
   /**
    * @return Returns the layout used by the MessageCenter.
@@ -253,13 +238,6 @@ public class MessageCenter {
     Layout oldValue = this.layout;
     this.layout = layout;
     propertySupport.firePropertyChange("layout", oldValue, this.layout);
-  }
-
-  /**
-   * @return Returns the visible.
-   */
-  public final boolean isVisible() {
-    return visible;
   }
 
   /**

@@ -49,22 +49,13 @@
 
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-import org.apache.log4j.chainsaw.messages.MessageCenter;
-
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-
 import java.text.NumberFormat;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -73,6 +64,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
+
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.chainsaw.messages.MessageCenter;
 
 
 /**
@@ -110,29 +104,11 @@ public class ChainsawStatusBar extends JPanel {
     nf.setGroupingUsed(false);
 
     JPanel statusMsgPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 2, 2));
-    Action showMessageCenterAction = new AbstractAction("...") {
-
-      public void actionPerformed(ActionEvent e) {
-        MessageCenter.getInstance().setVisible(true);
-      }};
-    showMessageCenterAction.putValue(Action.SHORT_DESCRIPTION, "Displays the Message Center");
-    
-    SmallButton showMessageCenter = new SmallButton(showMessageCenterAction);
-    
     
 
     statusMsgPanel.add(statusMsg);
-    statusMsgPanel.add(showMessageCenter);
     statusMsgPanel.setBorder(statusBarComponentBorder);
     
-    statusMsgPanel.addMouseListener(new MouseAdapter() {
-      public void mouseClicked(MouseEvent e) {
-        if(e.getClickCount() >1) {
-          MessageCenter.getInstance().setVisible(!MessageCenter.getInstance().isVisible());
-        }
-      }
-    });
-
     pausedLabel.setBorder(statusBarComponentBorder);
     pausedLabel.setMinimumSize(
       new Dimension(pausedIcon.getIconWidth(), pausedIcon.getIconHeight()));
