@@ -22,11 +22,14 @@ import org.apache.joran.action.*;
 //mport org.apache.log4j.helpers.LogLog;
 
 import org.xml.sax.Attributes;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -72,6 +75,8 @@ public class Interpreter extends DefaultHandler {
   Pattern pattern;
   Locator locator;
 
+  private EntityResolver entityResolver;
+  
   /**
    * The <id>actionListStack</id> contains a list of actions that are
    * executing for the given XML element.
@@ -275,6 +280,33 @@ public class Interpreter extends DefaultHandler {
 
   public void startPrefixMapping(
     java.lang.String prefix, java.lang.String uri) {
+  }
+
+  public EntityResolver getEntityResolver() {
+    return entityResolver;
+  }
+  
+  public void setEntityResolver(EntityResolver entityResolver) {
+    this.entityResolver = entityResolver;
+  }
+
+  
+  /**
+   * If a specific entityResolver is set for this Interpreter instance, then 
+   * we use it to resolve entities. Otherwise, we use the default implementation
+   * offered by the super class.
+   */
+  public InputSource resolveEntity(String publicId, String systemId) throws SAXException {
+    if(entityResolver == null) {
+      return super.resolveEntity(publicId, systemId);
+    } else {
+      try {
+        return entityResolver.resolveEntity(publicId, systemId);
+      } catch(IOException ioe) {
+        // fall back to the default implementation
+        return super.resolveEntity(publicId, systemId);
+      }
+    }
   }
   
 }
