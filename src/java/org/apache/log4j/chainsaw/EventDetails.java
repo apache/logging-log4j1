@@ -49,6 +49,8 @@
 
 package org.apache.log4j.chainsaw;
 
+import java.util.Iterator;
+import java.util.Set;
 import org.apache.log4j.Priority;
 import org.apache.log4j.spi.LoggingEvent;
 
@@ -72,6 +74,9 @@ class EventDetails {
 
   /** the NDC for the event **/
   private final String mNDC;
+
+  /** the MDC for the event **/
+  private final String mMDC;
 
   /** the thread for the event **/
   private final String mThreadName;
@@ -98,12 +103,13 @@ class EventDetails {
    */
   EventDetails(
     long aTimeStamp, Priority aPriority, String aCategoryName, String aNDC,
-    String aThreadName, String aMessage, String[] aThrowableStrRep,
+    String aMDC, String aThreadName, String aMessage, String[] aThrowableStrRep,
     String aLocationDetails) {
     mTimeStamp = aTimeStamp;
     mPriority = aPriority;
     mCategoryName = aCategoryName;
     mNDC = aNDC;
+    mMDC = aMDC;
     mThreadName = aThreadName;
     mMessage = aMessage;
     mThrowableStrRep = aThrowableStrRep;
@@ -118,8 +124,8 @@ class EventDetails {
   EventDetails(LoggingEvent aEvent) {
     this(
       aEvent.timeStamp, aEvent.getLevel(), aEvent.getLoggerName(),
-      aEvent.getNDC(), aEvent.getThreadName(), aEvent.getRenderedMessage(),
-      aEvent.getThrowableStrRep(),
+      aEvent.getNDC(), getEventMDC(aEvent), aEvent.getThreadName(),
+      aEvent.getRenderedMessage(), aEvent.getThrowableStrRep(),
       (aEvent.getLocationInformation() == null) ? null
                                                 : aEvent
       .getLocationInformation().fullInfo);
@@ -145,6 +151,11 @@ class EventDetails {
     return mNDC;
   }
 
+  /** @see #mMDC **/
+  String getMDC() {
+    return mMDC;
+  }
+
   /** @see #mThreadName **/
   String getThreadName() {
     return mThreadName;
@@ -163,5 +174,29 @@ class EventDetails {
   /** @see #mThrowableStrRep **/
   String[] getThrowableStrRep() {
     return mThrowableStrRep;
+  }
+  
+  /**
+    Used internally to convert the MDC contents to a string.
+    
+    @param event The LoggingEvent to use for the MDC contents.
+    @return String The MDC contents in string form. */
+  private static String getEventMDC(LoggingEvent event) {
+    Set keySet = event.getMDCKeySet();
+    if (!keySet.isEmpty()) {
+      String mdcString = "";
+      Iterator keyIter = event.getMDCKeySet().iterator();
+      while (keyIter.hasNext()) {
+        if (mdcString.length() != 0) {
+          mdcString += ',';
+        }
+        String key = (String)keyIter.next();
+        String value = (String)event.getMDC(key);
+        mdcString += key + "=" + value;
+      }
+      return mdcString;
+    }
+    
+    return null;
   }
 }

@@ -103,7 +103,7 @@ class MyTableModel extends AbstractTableModel implements EventDetailSink {
 
   /** names of the columns in the table **/
   private static final String[] COL_NAMES =
-  { "Time", "Priority", "Trace", "Category", "NDC", "Message" };
+  { "Time", "Priority", "Trace", "Category", "NDC", "MDC", "Message" };
 
   /** definition of an empty list **/
   private static final EventDetails[] EMPTY_LIST = new EventDetails[] {  };
@@ -135,6 +135,9 @@ class MyTableModel extends AbstractTableModel implements EventDetailSink {
 
   /** filter for the NDC **/
   private String mNDCFilter = "";
+
+  /** filter for the MDC **/
+  private String mMDCFilter = "";
 
   /** filter for the category **/
   private String mCategoryFilter = "";
@@ -197,6 +200,8 @@ class MyTableModel extends AbstractTableModel implements EventDetailSink {
         return event.getCategoryName();
       } else if (aCol == 4) {
         return event.getNDC();
+      } else if (aCol == 5) {
+        return event.getMDC();
       }
 
       return event.getMessage();
@@ -252,6 +257,18 @@ class MyTableModel extends AbstractTableModel implements EventDetailSink {
   public void setNDCFilter(String aStr) {
     synchronized (mLock) {
       mNDCFilter = aStr.trim();
+      updateFilteredEvents(false);
+    }
+  }
+
+  /**
+  * Set the filter for the MDC field.
+  *
+  * @param aStr the string to match
+  */
+  public void setMDCFilter(String aStr) {
+    synchronized (mLock) {
+      mMDCFilter = aStr.trim();
       updateFilteredEvents(false);
     }
   }
@@ -375,8 +392,11 @@ class MyTableModel extends AbstractTableModel implements EventDetailSink {
         && (aEvent.getThreadName().indexOf(mThreadFilter) >= 0)
         && (aEvent.getCategoryName().indexOf(mCategoryFilter) >= 0)
         && ((mNDCFilter.length() == 0)
-        || ((aEvent.getNDC() != null)
-        && (aEvent.getNDC().indexOf(mNDCFilter) >= 0)))) {
+        || ((aEvent.getNDC() != null) 
+        && (aEvent.getNDC().indexOf(mNDCFilter) >= 0)))
+        && ((mMDCFilter.length() == 0)
+        || ((aEvent.getMDC() != null) 
+        && (aEvent.getMDC().indexOf(mMDCFilter) >= 0)))) {
       final String rm = aEvent.getMessage();
 
       if (rm == null) {
