@@ -43,6 +43,7 @@ import java.util.StringTokenizer;
  * @author Scott Deboy <sdeboy@apache.org>
  */
 public class ExpressionRule extends AbstractRule {
+  static final long serialVersionUID = 5809121703146893729L;
   private static final InFixToPostFix convertor = new InFixToPostFix();
   private static final PostFixExpressionCompiler compiler = new PostFixExpressionCompiler();
   private final Rule rule;

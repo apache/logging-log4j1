@@ -28,6 +28,7 @@ import java.util.Stack;
  * @author Scott Deboy <sdeboy@apache.org>
  */
 public class PartialTextMatchRule extends AbstractRule {
+  static final long serialVersionUID = 6963284773637727558L;
   private static final LoggingEventFieldResolver resolver =
     LoggingEventFieldResolver.getInstance();
   private final String field;

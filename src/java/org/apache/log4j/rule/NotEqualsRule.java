@@ -28,6 +28,7 @@ import java.util.Stack;
  * @author Scott Deboy <sdeboy@apache.org>
  */
 public class NotEqualsRule extends AbstractRule {
+  static final long serialVersionUID = -1135478467213793211L;
   private static final LoggingEventFieldResolver resolver =
     LoggingEventFieldResolver.getInstance();
   private final String field;

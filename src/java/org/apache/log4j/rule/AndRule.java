@@ -29,7 +29,8 @@ import java.util.Stack;
 public class AndRule extends AbstractRule {
   private final Rule firstRule;
   private final Rule secondRule;
-
+  static final long serialVersionUID = -8233444426923854651L;
+  
   private AndRule(Rule firstRule, Rule secondRule) {
     this.firstRule = firstRule;
     this.secondRule = secondRule;
@@ -45,9 +46,8 @@ public class AndRule extends AbstractRule {
         Rule p2 = (Rule) o2;
         Rule p1 = (Rule) o1;
         return new AndRule(p1, p2);
-    } else {
-        throw new IllegalArgumentException("Invalid AND rule: " + o2 + "..." + o1);
     }
+    throw new IllegalArgumentException("Invalid AND rule: " + o2 + "..." + o1);
   }
 
   public static Rule getRule(Rule firstParam, Rule secondParam) {

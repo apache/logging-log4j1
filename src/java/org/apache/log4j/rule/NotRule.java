@@ -26,6 +26,7 @@ import java.util.Stack;
  * @author Scott Deboy <sdeboy@apache.org>
  */
 public class NotRule extends AbstractRule {
+  static final long serialVersionUID = -6827159473117969306L;    
   private final Rule rule;
 
   private NotRule(Rule rule) {
@@ -44,9 +45,8 @@ public class NotRule extends AbstractRule {
       if (o1 instanceof Rule) {
         Rule p1 = (Rule)o1;
         return new NotRule(p1);
-      } else {
-          throw new IllegalArgumentException("Invalid NOT rule: - expected rule but received " + o1);
       }
+      throw new IllegalArgumentException("Invalid NOT rule: - expected rule but received " + o1);
   }
 
   public boolean evaluate(LoggingEvent event) {
