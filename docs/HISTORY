@@ -14,6 +14,9 @@
    makeNewLoggerInstance. This change requires subclasses of Category
    classes to be modified and recompiled. [**]
 
+ - The Level class replaced the Priority class. Priority class now
+   extends Level to preserve backward compatibility. [*]
+
  - The Logger class replaced the Category class. Category class now
    extends Logger to preserve backward compatibility. [*]
 

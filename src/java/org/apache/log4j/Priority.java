@@ -22,11 +22,11 @@ package org.apache.log4j;
  */
 public class Priority extends Level {
 
-  //final static public Priority FATAL = new Priority(FATAL_INT, "FATAL", 0);
-  //final static public Priority ERROR = new Priority(ERROR_INT, "ERROR", 3);
-  //final static public Priority WARN  = new Priority(WARN_INT, "WARN",  4);
-  //final static public Priority INFO  = new Priority(INFO_INT, "INFO",  6);
-  //final static public Priority DEBUG = new Priority(DEBUG_INT, "DEBUG", 7);
+  final static public Priority FATAL = new Priority(FATAL_INT, "FATAL", 0);
+  final static public Priority ERROR = new Priority(ERROR_INT, "ERROR", 3);
+  final static public Priority WARN  = new Priority(WARN_INT, "WARN",  4);
+  final static public Priority INFO  = new Priority(INFO_INT, "INFO",  6);
+  final static public Priority DEBUG = new Priority(DEBUG_INT, "DEBUG", 7);
     
   /**
      Instantiate a level object.
