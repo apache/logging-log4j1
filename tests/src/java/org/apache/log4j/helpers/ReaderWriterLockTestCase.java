@@ -106,8 +106,8 @@ public class ReaderWriterLockTestCase extends TestCase {
   }
 
   public void test1() {
-    int maxReaders = 30;
-    int maxWriters = 20;
+    int maxReaders = 120;
+    int maxWriters = 4;
     Thread[] threads = new Thread[maxReaders + maxWriters];
 
     VerifierThread vt = new VerifierThread(bufferedReader, maxReaders, maxWriters);
