@@ -80,14 +80,13 @@ public class Hierarchy {
 
   /**
      This call will clear all category definitions from the internal
-     hashtable. Invoking this method renders impossible the addition of new
-     categories to the hiearchy.
+     hashtable. Invoking this method will irrevocably mess up the
+     category hiearchy.
      
-     <p>You should really know what you are doing before invoking this
-     method.
+     <p>You should <em>really</em> know what you are doing before
+     invoking this method.
 
-     @since 0.9.0 
-  */
+     @since 0.9.0 */
   public
   void clear() {
     //System.out.println("\n\nAbout to clear internal hash table.");
