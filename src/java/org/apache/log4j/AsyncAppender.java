@@ -108,7 +108,6 @@ public class AsyncAppender extends AppenderSkeleton
     event.getNDC();
     event.getThreadName();
     // Get a copy of this thread's MDC.
-
     event.getMDCCopy();
     if(locationInfo) {
       event.getLocationInformation();

@@ -14,6 +14,8 @@ import org.apache.log4j.spi.LoggerFactory;
   This is the central class in the log4j package. Most logging
   operations, except configuration, are done through this class.
 
+  @since log4j 1.2
+
   @author Ceki G&uuml;lc&uuml; */
 public class Logger extends Category {
 
