@@ -58,7 +58,7 @@ public abstract class CheckListCellRenderer extends JCheckBox
 
 /**
  * @param value
- * @return
+ * @return selected flag
  */
 protected abstract boolean isSelected(Object value);
 }

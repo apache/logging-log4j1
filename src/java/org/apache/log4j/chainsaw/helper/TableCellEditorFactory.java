@@ -35,7 +35,7 @@ public class TableCellEditorFactory
   }
 
   /**
-   * @return
+   * @return table cell editor
    */
   public static Object createLevelTableCellEditor()
   {

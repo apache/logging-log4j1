@@ -43,5 +43,5 @@ public interface EventBatchListener extends EventListener {
    * @param eventBatchEntries List of ChainsawEventBatchEntry instances
    * @param identifier the identifier this list of eventBatchEntrys is associated with
    */
-  public void receiveEventBatch(String identifier, List eventBatchEntrys);
+  public void receiveEventBatch(String identifier, List eventBatchEntries);
 }

@@ -40,7 +40,7 @@ public final class SwingHelper {
   /**
    * Centers the Component on screen.
    *
-   * @param dialog
+   * @param component
    */
   public static void centerOnScreen(Component component) {
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();

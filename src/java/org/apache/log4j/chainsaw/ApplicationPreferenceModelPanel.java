@@ -368,9 +368,6 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
     
     private final JCheckBox okToRemoveSecurityManager = new JCheckBox("Ok to remove SecurityManager");
 
-    /**
-     * @param title
-     */
     public GeneralAllPrefPanel() {
       super("General");
 

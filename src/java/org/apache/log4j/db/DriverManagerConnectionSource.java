@@ -133,7 +133,7 @@ public class DriverManagerConnectionSource extends ConnectionSourceSkeleton {
 
   /**
    * Sets the driver class.
-   * @param driver The driver to set
+   * @param driverClass The driver class to set
    */
   public void setDriverClass(String driverClass) {
     this.driverClass = driverClass;

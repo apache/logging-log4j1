@@ -100,7 +100,7 @@ public class UtilLoggingXMLDecoder implements Decoder {
    * Converts the LoggingEvent data in XML string format into an actual
    * XML Document class instance.
    * @param data
-   * @return
+   * @return dom document
    */
   private Document parse(String data) {
     if (docBuilder == null || data == null) {
@@ -144,7 +144,7 @@ public class UtilLoggingXMLDecoder implements Decoder {
 
   /**
    * Decodes a File into a Vector of LoggingEvents
-   * @param file the file to decode events from
+   * @param url the url of a file containing events to decode
    * @return Vector of LoggingEvents
    * @throws IOException
    */
@@ -180,8 +180,8 @@ public class UtilLoggingXMLDecoder implements Decoder {
   }
 
   /**
-   * Decodes a String with possibly multiple events into a Vector of LoggingEvents
-   * @param String to decode events from
+   * Decodes a String representing a number of events into a Vector of LoggingEvents
+   * @param document to decode events from
    * @return Vector of LoggingEvents
    */
   public Vector decodeEvents(String document) {
@@ -190,36 +190,36 @@ public class UtilLoggingXMLDecoder implements Decoder {
 
       if (document.equals("")) {
         return null;
-      } else {
-      	String newDoc=null;
-      	String newPartialEvent=null;
-      	//separate the string into the last portion ending with </record> (which will
-      	//be processed) and the partial event which will be combined and processed in the next section
+      }
 
+	  	String newDoc=null;
+	  	String newPartialEvent=null;
+	  	//separate the string into the last portion ending with </record> (which will
+	  	//be processed) and the partial event which will be combined and processed in the next section
+	
 		//if the document does not contain a record end, append it to the partial event string
 		if (document.lastIndexOf(RECORD_END) == -1) {
 			partialEvent = partialEvent + document;
 			return null;
 		}
-
-      	if (document.lastIndexOf(RECORD_END) + RECORD_END.length() < document.length()) {
+	
+	  	if (document.lastIndexOf(RECORD_END) + RECORD_END.length() < document.length()) {
 	      	newDoc = document.substring(0, document.lastIndexOf(RECORD_END) + RECORD_END.length());
 			newPartialEvent = document.substring(document.lastIndexOf(RECORD_END) + RECORD_END.length());
-     	} else {
-      		newDoc = document;
-      	}
+	 	} else {
+	  		newDoc = document;
+	  	}
 		if (partialEvent != null) {
 			newDoc=partialEvent + newDoc;
 		}	      		
-      	partialEvent=newPartialEvent;
-      	
-        Document doc = parse(newDoc);
-        if (doc == null) {
-          return null;
-        }
-        return decodeEvents(doc);
-      }
-    }
+	  	partialEvent=newPartialEvent;
+	  	
+	    Document doc = parse(newDoc);
+	    if (doc == null) {
+	      return null;
+	    }
+	    return decodeEvents(doc);
+	  }
     return null;
   }
 
@@ -249,7 +249,7 @@ public class UtilLoggingXMLDecoder implements Decoder {
   /**
    * Given a Document, converts the XML into a Vector of LoggingEvents
    * @param document
-   * @return
+   * @return vector of logging events
    */
   private Vector decodeEvents(Document document) {
     Vector events = new Vector();

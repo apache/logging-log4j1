@@ -73,7 +73,7 @@ public final class HelpManager {
     }
 
     /**
-     * @return
+     * @return URL
      */
     public final URL getHelpURL() {
 
@@ -188,7 +188,7 @@ public final class HelpManager {
      * Determines the most appropriate Help resource for a particular class
      * or returns ChainsawConstants.URL_PAGE_NOT_FOUND if there is no resource located.
      *
-     * @return
+     * @return URL
      */
     public URL getHelpForClass(Class c) {
 

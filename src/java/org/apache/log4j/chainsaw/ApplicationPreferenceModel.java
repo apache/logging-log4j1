@@ -104,7 +104,7 @@ public class ApplicationPreferenceModel implements SettingsListener {
 
     /**
      * @param propertyName
-     * @return
+     * @return listeners flag
      */
     public boolean hasListeners(String propertyName) {
         return propertySupport.hasListeners(propertyName);
@@ -156,7 +156,7 @@ public class ApplicationPreferenceModel implements SettingsListener {
     }
 
     /**
-     * @param showNoReceiverWarning The showNoReceiverWarning to set.
+     * @param newShowNoReceiverWarning The showNoReceiverWarning to set.
      */
     public final void setShowNoReceiverWarning(boolean newShowNoReceiverWarning) {
         boolean oldShowNoReceiverWarning=showNoReceiverWarning;
@@ -208,7 +208,7 @@ public class ApplicationPreferenceModel implements SettingsListener {
 
     /**
      * Takes another model and copies all the values into this model
-     * @param uncommittedPreferenceModel
+     * @param model
      */
     public void apply(ApplicationPreferenceModel model)
     {
@@ -237,7 +237,7 @@ public class ApplicationPreferenceModel implements SettingsListener {
       return responsiveness;
     }
     /**
-     * @param responsiveness The responsiveness to set.
+     * @param newValue The responsiveness to set.
      */
     public final void setResponsiveness(int newValue)
     {
@@ -394,7 +394,7 @@ public class ApplicationPreferenceModel implements SettingsListener {
     }
 
 	/**
-	 * @return
+	 * @return ok to remove security manager flag
 	 */
 	public final boolean isOkToRemoveSecurityManager() {
 		return this.okToRemoveSecurityManager;

@@ -76,7 +76,7 @@ public final class SettingsManager {
 
     /**
      * Returns the singleton instance of the SettingsManager
-     * @return
+     * @return settings manager
      */
     public static final SettingsManager getInstance() {
         return instance;

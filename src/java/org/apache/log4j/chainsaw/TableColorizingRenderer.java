@@ -231,7 +231,7 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer {
   }
 
   /**
-   * @return
+   * @return colorizer
    */
   public Colorizer getColorizer() {
     return colorizer;
@@ -240,7 +240,7 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer {
   /**
    * Returns true if this renderer will use Icons to render the Level
    * column, otherwise false.
-   * @return
+   * @return level use icons flag
    */
   public boolean isLevelUseIcons() {
     return levelUseIcons;

@@ -99,7 +99,7 @@ public class ReceiversHelper {
     /**
      * Returns an unmodifiable list of Class objects which represent all the 'known'
      * Receiver classes.
-     * @return
+     * @return known receiver classes
      */
     public List getKnownReceiverClasses() {
       return Collections.unmodifiableList(receiverClassList);

@@ -237,9 +237,15 @@ public class FileAppender extends WriterAppender {
     or one of its subclasses, set its properties one by one and then
     call activateOptions.</b>
 
-    @param fileName The path to the log file.
+    @param filename The path to the log file.
     @param append   If true will append to fileName. Otherwise will
-        truncate fileName.  */
+        truncate fileName.
+    @param bufferedIO
+    @param bufferSize
+    
+    @throws IOException
+        
+   */
   public synchronized void setFile(
     String filename, boolean append, boolean bufferedIO, int bufferSize)
     throws IOException {

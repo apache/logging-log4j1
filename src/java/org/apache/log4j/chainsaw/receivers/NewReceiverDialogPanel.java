@@ -131,7 +131,7 @@ public class NewReceiverDialogPanel extends JPanel {
      * of a NEW instance of the specified class (which must implement the Receiver
      * interface)
      * @param receiverClass
-     * @return
+     * @return NewReceiverDialogPanel
      * @throws IllegalArgumentException if the specified class is not a Receiver
      */
     public static NewReceiverDialogPanel create(Class receiverClass) {

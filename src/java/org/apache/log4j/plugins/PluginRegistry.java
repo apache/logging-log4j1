@@ -65,7 +65,6 @@ public final class PluginRegistry {
    * an existing Plugin registered within the scope of the specified
    * LoggerRepository.
    * @param name The name to check the repository for
-   * @param repository the repository to check the name against
    * @return true if the name is already in use, otherwise false
    */
   public boolean pluginNameExists(String name) {
@@ -142,7 +141,6 @@ public final class PluginRegistry {
   /**
    * Returns all the plugins for a given repository.
    *
-   * @param repository the logger repository to get the plugins from.
    * @return List list of plugins from the repository.
    */
   public List getPlugins() {
@@ -162,7 +160,6 @@ public final class PluginRegistry {
     Returns all the plugins for a given repository that are instances
     of a certain class.
 
-    @param repository the logger repository to get the plugins from.
     @param pluginClass the class the plugin must implement to be selected.
     @return List list of plugins from the repository. */
   public List getPlugins(Class pluginClass) {
@@ -186,7 +183,6 @@ public final class PluginRegistry {
     Stops a plugin by plugin name and repository.
 
     @param pluginName the name of the plugin to stop.
-    @param repository the repository the plugin should be attached to.
     @return Plugin the plugin, if stopped, or null if the
       the plugin was not found in the registry. */
   public Plugin stopPlugin(String pluginName) {
@@ -212,7 +208,8 @@ public final class PluginRegistry {
   /**
     Stops all plugins in the given logger repository.
 
-    @param repository the logger repository to stop all plugins for. */
+
+   */
   public void stopAllPlugins() {
     synchronized (pluginMap) {
       // remove the listener for this repository

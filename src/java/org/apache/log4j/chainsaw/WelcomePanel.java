@@ -153,7 +153,7 @@ public class WelcomePanel extends JPanel {
   }
 
   /**
-   * @return
+   * @return tooolbar
    */
   public JToolBar getToolbar() {
     return urlToolbar;

@@ -129,7 +129,6 @@ public static final String DEBUG_KEY = "log4j.debug";
   
   /**
    * Dump any errors on System.out.
-   * @param errorList
    */
   public void dumpErrors() {
     List errorList = getErrorList();
