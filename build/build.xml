@@ -243,16 +243,17 @@
     <javadoc sourcepath="${java.source.dir}" 
            destdir="${javadoc.dest}" 
 	   packagenames="org.apache.log4j,
-		         org.apache.log4j.spi,
-		         org.apache.log4j.or,
-                         org.apache.log4j.helpers,
-	                 org.apache.log4j.performance,
-		         org.apache.log4j.xml,
 			 org.apache.log4j.examples,
 			 org.apache.log4j.examples.appserver,
+		         org.apache.log4j.gui,
+                         org.apache.log4j.helpers,
 		         org.apache.log4j.net,
 			 org.apache.log4j.nt,
+		         org.apache.log4j.or,
+	                 org.apache.log4j.performance,
+		         org.apache.log4j.spi,
 			 org.apache.log4j.varia,
+		         org.apache.log4j.xml,
 		         org.apache.log4j.xml.examples"
 	   protected="true"				       
 	   version="true"
