@@ -23,6 +23,7 @@
 package org.apache.log4j.joran.util;
 
 import org.apache.log4j.spi.ErrorItem;
+import org.apache.log4j.xml.Log4jEntityResolver;
 
 import org.xml.sax.InputSource;
 
@@ -100,7 +101,10 @@ public class XMLUtil {
       spf.setValidating(false);
       SAXParser saxParser = spf.newSAXParser();
 
-      saxParser.parse(inputSource, new WellfomednessChecker(errorList));
+      WellfomednessChecker wc = new WellfomednessChecker(errorList);
+      wc.setEntityResolver(new Log4jEntityResolver());
+      
+      saxParser.parse(inputSource, wc);
       result = WELL_FORMED;      
     } catch(org.xml.sax.SAXParseException se) {
       result = ILL_FORMED;

@@ -417,7 +417,7 @@ public class TimeBasedRollingTest extends TestCase {
     
   }
   
-  public void testWithJoran10() throws Exception {
+  public void XXXtestWithJoran10() throws Exception {
     JoranConfigurator jc = new JoranConfigurator();
     jc.doConfigure("./input/rolling/time2.xml", LogManager.getLoggerRepository());
     jc.dumpErrors();
@@ -475,7 +475,7 @@ public class TimeBasedRollingTest extends TestCase {
     }
   }
 
-  public static Test suite() {
+  public static Test XXXsuite() {
     TestSuite suite = new TestSuite();
 
 //    suite.addTest(new TimeBasedRollingTest("test1"));

@@ -6,9 +6,12 @@
  */
 package org.apache.log4j.joran.util;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.apache.log4j.spi.ErrorItem;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -24,6 +27,7 @@ import org.xml.sax.helpers.DefaultHandler;
 public class WellfomednessChecker extends DefaultHandler {
   
   List errorList;
+  EntityResolver entityResolver;
   
   WellfomednessChecker(List errorList) {
     this.errorList = errorList;
@@ -50,4 +54,27 @@ public class WellfomednessChecker extends DefaultHandler {
     errorItem.setColNumber(spe.getColumnNumber());
     errorList.add(errorItem);
   }
+  
+  public EntityResolver getEntityResolver() {
+    return entityResolver;
+  }
+  
+  public void setEntityResolver(EntityResolver entityResolver) {
+    this.entityResolver = entityResolver;
+  }
+
+  public InputSource resolveEntity(String publicId, String systemId) throws SAXException {
+    if(entityResolver == null) {
+      // the default implementation is to return null
+      return null;
+    } else {
+      try {
+        return entityResolver.resolveEntity(publicId, systemId);
+      } catch(IOException ioe) {
+        // fall back to the default "implementation"
+        return null;
+      }
+    }
+  }
+  
 }
