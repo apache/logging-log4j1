@@ -33,10 +33,25 @@ public class JMSAppender extends AppenderSkeleton {
   TopicPublisher  topicPublisher;
 
 
-  static String TOPIC_CONNECTION_FACTORY_BINDING_NAME_OPTION 
+  /**
+     A string constant used in naming the topic connection factory
+     binding name option.  output file. Current value of this string
+     constant is <b>TopicConnectionFactoryBindingName</b>.
+
+     <p>Note that all option keys are case sensitive.
+     
+  */
+  public static final String TOPIC_CONNECTION_FACTORY_BINDING_NAME_OPTION 
                                                  = "TopicConnectionFactoryBindingName";
 
-  static String TOPIC_BINDING_NAME_OPTION = "TopicBindingName";
+  /**
+     A string constant used in naming the topic binding name option.
+     Current value of this string constant is <b>TopicBindingName</b>.
+
+     <p>Note that all option keys are case sensitive.
+     
+  */
+  public static final String TOPIC_BINDING_NAME_OPTION = "TopicBindingName";
 
   String topicBindingName;
   String tcfBindingName;
@@ -99,7 +114,9 @@ public class JMSAppender extends AppenderSkeleton {
     }
   }
 
-
+  /**
+     Close this JMSAppender. Closing relases all resources used by the
+     appender. A closed appender cannot be re-opened. */
   public 
   synchronized // avoid concurrent append and close operations
   void close() {
@@ -123,6 +140,9 @@ public class JMSAppender extends AppenderSkeleton {
     topicConnection = null;
   }
 
+  /**
+     This method called by {@link AppenderSkeleton#doAppend} method to
+     do most of the real appending work.  */
   public
   void append(LoggingEvent event) {
     if(!checkEntryConditions()) {
@@ -140,13 +160,36 @@ public class JMSAppender extends AppenderSkeleton {
   }
 
 
+ /**
+     Retuns the option names for this component, namely the string
+     array {{@link #{TOPIC_BINDING_NAME_OPTION}, {@link
+     #TOPIC_CONNECTION_FACTORY_BINDING_NAME_OPTION}} in addition to
+     the options of its super class {@link AppenderSkeleton}.  
+ */
+  
   public
   String[] getOptionStrings() {
     return OptionConverter.concatanateArrays(super.getOptionStrings(),
           new String[] {TOPIC_BINDING_NAME_OPTION, 
 			  TOPIC_CONNECTION_FACTORY_BINDING_NAME_OPTION});
   }
-  
+
+ /**
+     Set <code>JMSAppender</code> specific options.
+          
+     The options of the super class {@link AppenderSkeleton} are also
+     recognized.
+
+     <p>The <b>TopicConnectionFactoryBindingName</b> option takes a
+     string value. Its value will be used to lookup the approprtate
+     <code>TopicConnectionFactory</code> fron the JNDI context.
+
+     <p>The <b>TopicBindingName</b> option takes a
+     string value. Its value will be used to lookup the approprtate
+     <code>Topic</code> fron the JNDI context.         
+     
+ */
+
   public
   void setOption(String key, String value) {
     if(value == null) return;
