@@ -27,7 +27,7 @@
              projectFile="stylesheets/project.xml"
              excludes="**/stylesheets/**, empty.xml"
              includes="**/*.xml"
-             lastModifiedCheck="false"
+             lastModifiedCheck="true"
              velocityPropertiesFile="${docs.src}/velocity.properties">
         </anakia>
         <!--

@@ -114,6 +114,7 @@ deleteFile $PKG_DIR/org/apache/log4j/net/test/loop.log
 deleteFile $PKG_DIR/org/apache/log4j/net/test/loop.log.1
 deleteFile $PKG_DIR/classes/org/apache/log4j/UnitTestCategory.class
 deleteFile $PKG_DIR/org/apache/log4j/varia/test/temp
+deleteFile $PKG_DIR/org/apache/log4j/xml/test/temp
 
 echo "Cleaning \"classes\" directory."
 find .  -type d -path "./classes/exercise" -exec rm -r {} \;

@@ -10,19 +10,22 @@
  
  - Release of version 1.0.3 (the 20th major release)
 
- - Displaced a number of HTML files under the docs directory. The new
-   structure is compatible with the jakarta site and results in a 
-   more consistent navigation experience. [*]
-
- - Made a few improvements in the javadocs. [*]
+ - Fixed a NullPointerException occuring in AsyncAppedner after
+   invoking Category.shutdown. Thanks to Frank-Olaf Lohmann for
+   reporting this bug. [*]
 
  - Modified the OptionConverter.selectAndConfigure method to take an
    extra argument of type Hierarchy. This method is used internally
    and should not affect most users. [*/**]
 
- - Fixed a NullPointerException occuring in AsyncAppedner after
-   invoking Category.shutdown. Thanks to Frank-Olaf Lohmann for
-   reporting this bug. [*]
+ - Added the warn method to LogLog which is used internally by log4j
+   to report on itself. [*]
+
+ - Displaced a number of HTML files under the docs directory. The new
+   structure is compatible with the jakarta site and results in a 
+   more consistent navigation experience. [*]
+
+ - Made a few improvements in the javadocs. [*]
 
  January 11th, 2001
 
