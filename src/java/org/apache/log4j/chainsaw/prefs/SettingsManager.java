@@ -23,7 +23,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
+import java.net.URLEncoder;
 import java.util.EventListener;
 import java.util.Properties;
 
@@ -152,7 +152,12 @@ public final class SettingsManager {
         InputStream is = null;
 
         File f = new File(getSettingsDirectory(),
-                p.getNamespace() + ".properties");
+        		URLEncoder.encode(p.getNamespace() + ".properties"));
+        
+        if (!f.exists()) {
+        	f = new File(getSettingsDirectory(),
+            		p.getNamespace() + ".properties");        	
+        }
 
         if (f.exists()) {
             try {
@@ -239,7 +244,7 @@ public final class SettingsManager {
                 try {
                     os = new BufferedOutputStream(new FileOutputStream(
                                 new File(settingsDir,
-                                    profileable.getNamespace() + ".properties")));
+                                		 URLEncoder.encode(profileable.getNamespace()) + ".properties")));
                     event.getProperties().store(os, HEADER);
                 } catch (Exception e) {
                     e.printStackTrace();

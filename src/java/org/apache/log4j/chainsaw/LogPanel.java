@@ -50,6 +50,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -1404,24 +1405,36 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
 
     logTreePanel.ignore(event.getSettingsStartingWith("Logger.Ignore."));
 
+    //first attempt to load encoded file
     File f =
       new File(
-        SettingsManager.getInstance().getSettingsDirectory() + File.separator
-        + identifier + COLUMNS_EXTENSION);
+        SettingsManager.getInstance().getSettingsDirectory(), URLEncoder.encode(identifier) + COLUMNS_EXTENSION);
+
+    if (!f.exists()) {
+        f =
+            new File(
+              SettingsManager.getInstance().getSettingsDirectory(), identifier + COLUMNS_EXTENSION);
+    }
 
     if (f.exists()) {
-      loadColumnSettings();
+      loadColumnSettings(f);
     } else {
       loadDefaultColumnSettings(event);
     }
 
+    //first attempt to load encoded file
     File f2 =
       new File(
-        SettingsManager.getInstance().getSettingsDirectory() + File.separator
-        + identifier + COLORS_EXTENSION);
+        SettingsManager.getInstance().getSettingsDirectory(), URLEncoder.encode(identifier) + COLORS_EXTENSION);
+
+    if (!f2.exists()) {
+        f2 =
+            new File(
+              SettingsManager.getInstance().getSettingsDirectory(), identifier + COLORS_EXTENSION);
+    }
 
     if (f2.exists()) {
-      loadColorSettings();
+      loadColorSettings(f2);
     }
   }
 
@@ -2050,10 +2063,10 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
     ObjectOutputStream o = null;
 
     try {
-      File f =
-        new File(
-          SettingsManager.getInstance().getSettingsDirectory()
-          + File.separator + getIdentifier() + COLUMNS_EXTENSION);
+      File f = new File(SettingsManager.getInstance().getSettingsDirectory(),  
+      		URLEncoder.encode(getIdentifier() + COLUMNS_EXTENSION));
+      LogLog.debug("writing columns to file: " + f);
+      
       o = new ObjectOutputStream(
           new BufferedOutputStream(new FileOutputStream(f)));
 
@@ -2096,10 +2109,10 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
     ObjectOutputStream o = null;
 
     try {
-      File f =
-        new File(
-          SettingsManager.getInstance().getSettingsDirectory()
-          + File.separator + getIdentifier() + COLORS_EXTENSION);
+      File f = new File(SettingsManager.getInstance().getSettingsDirectory(), 
+      		URLEncoder.encode(getIdentifier() + COLORS_EXTENSION));
+      LogLog.debug("writing colors to file: " + f);
+      
       o = new ObjectOutputStream(
           new BufferedOutputStream(new FileOutputStream(f)));
 
@@ -2123,12 +2136,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
   /**
    * Load panel column settings
    */
-  private void loadColumnSettings() {
-    File f =
-      new File(
-        SettingsManager.getInstance().getSettingsDirectory() + File.separator
-        + identifier + COLUMNS_EXTENSION);
-
+  private void loadColumnSettings(File f) {
     if (f.exists()) {
       ArrayList newColumns = new ArrayList();
 
@@ -2259,12 +2267,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
   /**
    * Load panel color settings
    */
-  private void loadColorSettings() {
-    File f =
-      new File(
-        SettingsManager.getInstance().getSettingsDirectory() + File.separator
-        + identifier + COLORS_EXTENSION);
-
+  private void loadColorSettings(File f) {
     if (f.exists()) {
       ObjectInputStream s = null;
 
