@@ -9,14 +9,22 @@
   <meta name="keywords" content="java, logging, tracing, component, framework, API, log4j"/>
 <body>
 
-    <section name="log4j version 1.2.2">
-      <p>log4j 1.2.2 is now available in <a
-	href="../jakarta-log4j-1.2.2.tar.gz"><b>TAR.GZ</b></a> format
-	or in <a href="../jakarta-log4j-1.2.2.zip"><b>ZIP</b></a>
+    <section name="log4j version 1.2.3">
+      <p>log4j 1.2.3 is available in <a
+	href="../jakarta-log4j-1.2.3.tar.gz"><b>TAR.GZ</b></a> format
+	or in <a href="../jakarta-log4j-1.2.3.zip"><b>ZIP</b></a>
 	format.
       </p>
 
-      <p>This minor release fixes bug #9155 reported by Nicko
+      <p>Minor release 1.2.2 responds to bug #9305. When loading
+	component classes, log4j will now first attempt to use the
+	Thread Context Loader and if that fails, it will use
+	Class.forName. In log4j 1.2 and 1.2.1, only Class.forName was
+	used and the TCL was ignored. 
+      </p>
+
+
+      <p>The 1.2.1 (minor release) fixed bug #9155 reported by Nicko
 	Cadell. With the exception of this bug fix and some
 	documentation improvements, it is identical to log4j 1.2
 	final.

@@ -175,7 +175,7 @@ public class PropertyConfigurator implements Configurator {
 
     <p>For non-root categories the syntax is almost the same:
     <pre>
-    log4j.logger.logger_name=[level|INHERITED], appenderName, appenderName, ...
+    log4j.logger.logger_name=[level|INHERITED|NULL], appenderName, appenderName, ...
     </pre>
 
     <p>The meaning of the optional level value is discussed above
@@ -187,9 +187,10 @@ public class PropertyConfigurator implements Configurator {
     named logger remains untouched.
 
     <p>By default categories inherit their level from the
-    hierarchy. However, if you set the level of a logger and
-    later decide that that logger should inherit its level, then
-    you should specify INHERITED as the value for the level value.
+    hierarchy. However, if you set the level of a logger and later
+    decide that that logger should inherit its level, then you should
+    specify INHERITED as the value for the level value. NULL is a
+    synonym for INHERITED.
 
     <p>Similar to the root logger syntax, each <i>appenderName</i>
     (separated by commas) will be attached to the named logger.
