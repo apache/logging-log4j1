@@ -89,7 +89,8 @@ public class DBAppender2 extends AppenderSkeleton {
       // if getGeneratedKeys method is not supported, we fallback to batch size
       // of one.
       batchSize = 1;
-      Util.getDialectFromCode(connectionSource.getSQLDialectCode());
+      
+      sqlDialect = Util.getDialectFromCode(connectionSource.getSQLDialectCode());
 
       if (sqlDialect == null) {
         throw new IllegalStateException(
