@@ -25,9 +25,9 @@
  - Added the setQuietMode(booelan) method to LogLog. In quiet mode
    LogLog will not output anything even in case of errors. [*]
 
- - Log4j components are not configured as JavaBeans. The serOption and
-   getOptionString methods have been removed from the OptionHandler
-   interface which is implemented by most log4j components. [**]
+ - Log4j components are now configured as JavaBeans. The setOption and
+   getOptionString methods have been deprecated in OptionHandler
+   interface implemented by most log4j components. [*]
 
  - In XML configuration files, the <configuration> element has been
    deprecated and was replaced by the <log4j:configuration> element. [*]
