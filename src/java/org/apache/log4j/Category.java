@@ -224,18 +224,20 @@ public class Category implements AppenderAttachable {
      If <code>assertion</code> parameter is <code>false</code>, then
      logs <code>msg</code> as an {@link #error(Object) error} statement.
 
+     <p>The <code>assert</code> method has been renamed to
+     <code>assertLog</code> because <code>assert</code> is a language
+     reserved word in JDK 1.4.
+
      @param assertion 
      @param msg The message to print if <code>assertion</code> is
      false.
 
-     @since 0.8.1 */
-  // Assert is a language reserved word in JDK 1.4. We can no longer use it.
-
-  //public
-  //void assert(boolean assertion, String msg) {
-  //if(!assertion)
-  //  this.error(msg);
-  //}
+     @since 1.2 */
+  public
+  void assertLog(boolean assertion, String msg) {
+    if(!assertion)
+      this.error(msg);
+  }
   
 
   /**
@@ -606,6 +608,22 @@ public class Category implements AppenderAttachable {
   String getName() {
     return name;
   }
+
+    
+  /**
+     Returns the parent of this category. Note that the parent of a
+     given category may change during the lifetime of the category.
+     
+     <p>The root category will return <code>null</code>.
+
+     @since 1.2
+  */
+  final
+  public
+  Category getParent() {
+    return this.parent;
+  }
+
     
   /**
      Returns the assigned {@link Priority}, if any, for this Category.  
