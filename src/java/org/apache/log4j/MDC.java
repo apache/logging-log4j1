@@ -33,114 +33,59 @@ import org.apache.log4j.helpers.ThreadLocalMap;
    @author Ceki G&uuml;lc&uuml; */
 public class MDC {
   
-  final static MDC mdc = new MDC();
-  
   static final int HT_SIZE = 7;
+  
+  static private final ThreadLocalMap tlm = new ThreadLocalMap();
+  
+  private MDC() {
+  }
 
-  boolean java1;
-  
-  Object tlm;
-  
-  private
-  MDC() {
-    java1 = Loader.isJava1();
-    if(!java1) {
-      tlm = new ThreadLocalMap();
+  /**
+   * Put a context value (the <code>o</code> parameter) as identified
+   * with the <code>key</code> parameter into the current thread's
+   * context map.
+   *
+   * <p>If the current thread does not have a context map it is
+   * created as a side effect.
+   * */
+  public static void put(String key, Object o) {
+    Hashtable ht = (Hashtable) tlm.get();
+    if(ht == null) {
+      ht = new Hashtable(HT_SIZE);
+      tlm.set(ht);
+    }    
+    ht.put(key, o);
+  }
+
+  /**
+   * Get the context identified by the <code>key</code> parameter.
+   *
+   *  <p>This method has no side effects.  
+   * */  
+  static public Object get(String key) {
+    Hashtable ht = (Hashtable) tlm.get();
+    if(ht != null && key != null) {
+      return ht.get(key);
+    } else {
+      return null;
     }
   }
 
   /**
-     Put a context value (the <code>o</code> parameter) as identified
-     with the <code>key</code> parameter into the current thread's
-     context map.
-
-     <p>If the current thread does not have a context map it is
-     created as a side effect.
-    
-   */
-  static
-  public
-  void put(String key, Object o) {
-    mdc.put0(key, o);
+   * Remove the the context identified by the <code>key</code>
+   * parameter. */
+  public static void remove(String key) {
+    Hashtable ht = (Hashtable) tlm.get();
+    if(ht != null) {
+      ht.remove(key);
+    }
   }
-  
-  /**
-     Get the context identified by the <code>key</code> parameter.
-
-     <p>This method has no side effects.
-   */
-  static 
-  public
-  Object get(String key) {
-    return mdc.get0(key);
-  }
-
-  /**
-     Remove the the context identified by the <code>key</code>
-     parameter.
-
-  */
-  static 
-  public
-  void remove(String key) {
-    mdc.remove0(key);
-  }
-
 
   /**
    * Get the current thread's MDC as a hashtable. This method is
    * intended to be used internally.  
    * */
   public static Hashtable getContext() {
-    return mdc.getContext0();
-  }
-
-
-  private
-  void put0(String key, Object o) {
-    if(java1) {
-      return;
-    } else {
-      Hashtable ht = (Hashtable) ((ThreadLocalMap)tlm).get();
-      if(ht == null) {
-        ht = new Hashtable(HT_SIZE);
-        ((ThreadLocalMap)tlm).set(ht);
-      }    
-      ht.put(key, o);
-    }
-  }
-  
-  private
-  Object get0(String key) {
-    if(java1) {
-      return null;
-    } else {       
-      Hashtable ht = (Hashtable) ((ThreadLocalMap)tlm).get();
-      if(ht != null && key != null) {
-        return ht.get(key);
-      } else {
-        return null;
-      }
-    }
-  }
-
-  private
-  void remove0(String key) {
-    if(!java1) {
-      Hashtable ht = (Hashtable) ((ThreadLocalMap)tlm).get();
-      if(ht != null) {
-        ht.remove(key);
-      } 
-    }
-  }
-
-
-  private
-  Hashtable getContext0() {
-     if(java1) {
-      return null;
-    } else {       
-      return (Hashtable) ((ThreadLocalMap)tlm).get();
-    }
+    return (Hashtable) tlm.get();
   }
 }
