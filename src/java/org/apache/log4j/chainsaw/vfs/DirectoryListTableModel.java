@@ -221,4 +221,15 @@ public class DirectoryListTableModel extends AbstractTableModel implements SortT
 	public boolean isSortEnabled() {
 		return sortEnabled;
 	}
+
+    /**
+     * @param row
+     * @return
+     */
+    public FileObject getFileObject(int row) {
+        if(row >= data.size()) {
+            return null;
+        }
+        return (FileObject) data.get(row);
+    }
 }
