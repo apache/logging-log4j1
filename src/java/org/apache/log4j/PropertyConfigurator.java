@@ -66,7 +66,7 @@ import java.util.Hashtable;
    <p>The value of the substituted variable can be defined as a system
    property or in the configuration file file itself.
 
-   <p>The syntax of variable substituion is similar to that of UNIX
+   <p>The syntax of variable substitution is similar to that of UNIX
    shells. The string between an opening <b>&quot;${&quot;</b> and
    closing <b>&quot;}&quot;</b> is interpreted as a key. Its value is
    searched in the system properties, and if not founf then in the
@@ -98,12 +98,12 @@ public class PropertyConfigurator extends BasicConfigurator
   
   /**
     Read configuration from a file. The existing configuration is not
-    cleared nor reset. If you require a different call, behaviour,
+    cleared nor reset. If you require a different call, behavior,
     then call {@link BasicConfigurator#resetConfiguration
     resetConfiguration} method before calling
     <code>doConfigure</code>.
 
-    <p>The configuration file consists of staments in the format
+    <p>The configuration file consists of statements in the format
     <code>key=value</code>.
 
     <h3>Appender configuration</h3>
@@ -147,7 +147,7 @@ public class PropertyConfigurator extends BasicConfigurator
 
     <p>The root category can be assigned multiple appenders.
     
-    <p>Each <i>appenderName</i> (seperated by commas) will be added to
+    <p>Each <i>appenderName</i> (separated by commas) will be added to
     the root category. The named appender is defined using the
     appender syntax defined above.
 
@@ -172,7 +172,7 @@ public class PropertyConfigurator extends BasicConfigurator
     you should specify INHERITED as the value for the priority value.
     
     <p>Similar to the root category syntax, each <i>appenderName</i>
-    (seperated by commas) will be attached to the named category.
+    (separated by commas) will be attached to the named category.
     
     <p>See the <a href="../../../../manual.html#additivity">appender
     additivity rule</a> in the user manual for the meaning of the
@@ -203,10 +203,10 @@ public class PropertyConfigurator extends BasicConfigurator
 
     <h3>Class Factories</h3>
 
-    In case you are using your own sub-types of the
+    In case you are using your own subtypes of the
     <code>Category</code> class and wish to use configuration files,
     then you <em>must</em> set the <code>categoryFactory</code> for
-    the sub-type that you are using.
+    the subtype that you are using.
     
     <p>The syntax is:
 
@@ -257,7 +257,7 @@ public class PropertyConfigurator extends BasicConfigurator
     # Root category set to DEBUG using the A2 appender defined above.
     log4j.rootCategory=DEBUG, A2
 
-    # Category definions:
+    # Category definitions:
     # The SECURITY category inherits is priority from root. However, it's output
     # will go to A1 appender defined above. It's additivity is non-cumulative.
     log4j.category.SECURITY=INHERIT, A1
@@ -269,7 +269,7 @@ public class PropertyConfigurator extends BasicConfigurator
 
     
     # The category "class.of.the.day" inherits its priority from the
-    # category hierrarchy.  Output will go to the appender's of the root
+    # category hierarchy.  Output will go to the appender's of the root
     # category, A2 in this case.
     log4j.category.class.of.the.day=INHERIT
     </pre>
