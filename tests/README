@@ -84,8 +84,7 @@ Jetty (OPTIONAL)
 We embed jetty to tests log4j within a web-application.
 
 jetty - http://jetty.mortbay.org/jetty/ - Version 4.2.22 was used when
-writing the tests.  You will need both the org.mortbay.jetty.jar and
-org.mortbay.jetty.plus.jar
+writing the tests.  You will need the org.mortbay.jetty.jar.
 
 
 Database testing 
