@@ -1,0 +1,67 @@
+KAL is an Intel Pentium 4 clocked at 2.53 GHz running XP and Sun's JDK 1.4.1.
+
+Results are in microseconds.
+
+NullAppender:
+
+NullAppender:
+
+    4.11 PatternLayout "%p - %m%n"
+    4.11 PatternLayout "%-5p - %m%n"
+   13.52 PatternLayout "%r [%t] %-5p %c{2} %x - %m%n"
+   11.02 PatternLayout "%r [%t] %-5p %.10c %x - %m%n"
+   11.72 PatternLayout "%r [%t] %-5p %.20c %x - %m%n"
+   10.01 PatternLayout "%r [%t] %-5p %c - %m%n"
+   18.53 PatternLayout "%d{ISO8601} [%t] %-5p %c %x - %m%n"
+   18.83 PatternLayout "%d{yyyy-MM-dd HH:mm:ss,SSS} [%t] %-5p %c %x - %m%n"
+  127.18 PatternLayout "%l - %m%n"
+  142.61 PatternLayout "%C.%M.%L - %m%n"
+
+FileAppender:
+
+   10.82 PatternLayout "%p - %m%n"					   
+   11.82 PatternLayout "%-5p - %m%n"					   
+   20.53 PatternLayout "%r [%t] %-5p %c{2} %x - %m%n"			   
+   19.03 PatternLayout "%r [%t] %-5p %.10c %x - %m%n"			   
+   19.63 PatternLayout "%r [%t] %-5p %.20c %x - %m%n"			   
+   17.53 PatternLayout "%r [%t] %-5p %c - %m%n"				   
+   28.74 PatternLayout "%d{ISO8601} [%t] %-5p %c %x - %m%n"		   
+   29.14 PatternLayout "%d{yyyy-MM-dd HH:mm:ss,SSS} [%t] %-5p %c %x - %m%n"
+  162.13 PatternLayout "%l - %m%n"					   
+  198.69 PatternLayout "%C.%M.%L - %m%n"                                     
+
+FileAppender: (ImmediateFlush=false)
+
+   6.31  PatternLayout "%p - %m%n"					   
+   6.01  PatternLayout "%-5p - %m%n"					   
+  14.42  PatternLayout "%r [%t] %-5p %c{2} %x - %m%n"			   
+  14.22  PatternLayout "%r [%t] %-5p %.10c %x - %m%n"			   
+  14.42  PatternLayout "%r [%t] %-5p %.20c %x - %m%n"			   
+  13.02  PatternLayout "%r [%t] %-5p %c - %m%n"				   
+  23.13  PatternLayout "%d{ISO8601} [%t] %-5p %c %x - %m%n"		   
+  23.53  PatternLayout "%d{yyyy-MM-dd HH:mm:ss,SSS} [%t] %-5p %c %x - %m%n"
+ 147.51  PatternLayout "%l - %m%n"					   
+ 166.04  PatternLayout "%C.%M.%L - %m%n"                                     
+
+FileAppender: (BufferedIO=true)
+
+   5.81 PatternLayout "%p - %m%n"					   
+   5.81 PatternLayout "%-5p - %m%n"					   
+  14.12 PatternLayout "%r [%t] %-5p %c{2} %x - %m%n"			   
+  14.22 PatternLayout "%r [%t] %-5p %.10c %x - %m%n"			   
+  13.92 PatternLayout "%r [%t] %-5p %.20c %x - %m%n"			   
+  12.82 PatternLayout "%r [%t] %-5p %c - %m%n"				   
+  22.73 PatternLayout "%d{ISO8601} [%t] %-5p %c %x - %m%n"		   
+  23.23 PatternLayout "%d{yyyy-MM-dd HH:mm:ss,SSS} [%t] %-5p %c %x - %m%n"
+ 149.73 PatternLayout "%l - %m%n"					   
+ 164.46 PatternLayout "%C.%M.%L - %m%n"                                     
+
+Notice the small but noticable performance gain when
+ImmediateFlush=false
+
+Note also that BufferedIO yeilds similar performance to the
+ImmediateFlush case.
+
+
+
+
