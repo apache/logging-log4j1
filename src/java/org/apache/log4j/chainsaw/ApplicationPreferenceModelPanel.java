@@ -45,19 +45,33 @@
  * on  behalf of the Apache Software  Foundation.  For more  information on the
  * Apache Software Foundation, please see <http://www.apache.org/>.
  *
- */package org.apache.log4j.chainsaw;
+ */
+package org.apache.log4j.chainsaw;
 
 import org.apache.log4j.helpers.LogLog;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import java.util.Dictionary;
+import java.util.Hashtable;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
@@ -65,7 +79,7 @@ import javax.swing.tree.TreeModel;
 
 /**
  * A panel used by the user to modify any application-wide preferences.
- * 
+ *
  * @author Paul Smith <psmith@apache.org>
  *
  */
@@ -116,15 +130,16 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
         f.setSize(640, 480);
         f.show();
     }
+
     /**
      * Ensures this panels DISPLAYED model is in sync with
      * the model initially passed to the constructor.
      *
      */
     public void updateModel() {
-      this.uncommittedPreferenceModel.apply(committedPreferenceModel);
+        this.uncommittedPreferenceModel.apply(committedPreferenceModel);
     }
-    
+
     /* (non-Javadoc)
      * @see org.apache.log4j.chainsaw.AbstractPreferencePanel#createTreeModel()
      */
@@ -152,20 +167,86 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
 
         private final JCheckBox showNoReceiverWarning = new JCheckBox(
                 "Prompt me on startup if there are no Receivers defined");
+        private final JSlider responsiveSlider = new JSlider(JSlider.HORIZONTAL,
+                1, 4, 2);
+
+        Dictionary sliderLabelMap = new Hashtable();
 
         /**
          * @param title
          */
         public GeneralAllPrefPanel() {
             super("General");
+
             GeneralAllPrefPanel.this.initComponents();
+
         }
 
         private void initComponents() {
             setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-            showNoReceiverWarning.setSelected(
-                uncommittedPreferenceModel.isShowNoReceiverWarning());
+
+            Box p = new Box(BoxLayout.X_AXIS);
+
+            p.add(showNoReceiverWarning);
+            p.add(Box.createHorizontalGlue());
+
+            setupInitialValues();
+            setupListeners();
+
+            initSliderComponent();
+
+            add(responsiveSlider);
+            add(p);
+            add(Box.createVerticalGlue());
+
+
+        }
+
+        private void initSliderComponent() {
+            responsiveSlider.setToolTipText(
+                "Adjust to set the responsiveness of the app.  How often the view is updated.");
+            responsiveSlider.setSnapToTicks(true);
+            responsiveSlider.setLabelTable(sliderLabelMap);
+            responsiveSlider.setPaintLabels(true);
+            responsiveSlider.setPaintTrack(true);
+
+            responsiveSlider.setBorder(BorderFactory.createTitledBorder(
+                    BorderFactory.createEtchedBorder(), "Responsiveness"));
+
+//            responsiveSlider.setAlignmentY(0);
+//            responsiveSlider.setAlignmentX(0);
+        }
+
+        private void setupListeners() {
+            uncommittedPreferenceModel.addPropertyChangeListener(
+                "showNoReceiverWarning", new PropertyChangeListener() {
+
+                    public void propertyChange(PropertyChangeEvent evt) {
+                        showNoReceiverWarning.setSelected(
+                            ((Boolean) evt.getNewValue()).booleanValue());
+
+                    }
+                });
+            uncommittedPreferenceModel.addPropertyChangeListener(
+                "responsiveness", new PropertyChangeListener() {
+
+                    public void propertyChange(PropertyChangeEvent evt) {
+
+                        int value = ((Integer) evt.getNewValue()).intValue();
+
+                        if (value >= 1000) {
+
+                            int newValue = (value - 750) / 1000;
+                            LogLog.debug(
+                                "Adjusting old Responsiveness value from " +
+                                value + " to " + newValue);
+                            value = newValue;
+                        }
+
+                        responsiveSlider.setValue(value);
+                    }
+                });
             showNoReceiverWarning.addActionListener(new ActionListener() {
 
                     public void actionPerformed(ActionEvent e) {
@@ -174,8 +255,40 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
                     }
                 });
 
-            add(showNoReceiverWarning);
+            responsiveSlider.getModel().addChangeListener(
+                new ChangeListener() {
+                    public void stateChanged(ChangeEvent e) {
 
+                        if (responsiveSlider.getValueIsAdjusting()) {
+
+                            /**
+                             * We'll wait until it stops.
+                             */
+                        } else {
+
+                            int value = responsiveSlider.getValue();
+
+                            if (value == 0) {
+                                value = 1;
+                            }
+
+                            LogLog.debug("Adjust responsiveness to " + value);
+                            uncommittedPreferenceModel.setResponsiveness(
+                                value);
+                        }
+                    }
+                });
+        }
+
+        private void setupInitialValues() {
+            sliderLabelMap.put(new Integer(1), new JLabel("Fastest"));
+            sliderLabelMap.put(new Integer(2), new JLabel("Fast"));
+            sliderLabelMap.put(new Integer(3), new JLabel("Medium"));
+            sliderLabelMap.put(new Integer(4), new JLabel("Slow"));
+
+//          
+            showNoReceiverWarning.setSelected(
+                uncommittedPreferenceModel.isShowNoReceiverWarning());
         }
 
     }
