@@ -45,11 +45,11 @@ import java.util.Hashtable;
    files. You can enable log4j internal logging by defining the
    <b>log4j.debug</b> variable.
 
-   <P>As of log4j version 0.8.5, at the initialization of the Category
-   class, the file <b>log4j.properties</b> will be searched from the
-   search path used to load classes. If the file can be found, then it
-   will be fed to the {@link
-   PropertyConfigurator#configure(java.net.URL)} method.
+   <P>As of log4j version 0.8.5, at class initialization time class,
+   the file <b>log4j.properties</b> will be searched from the search
+   path used to load classes. If the file can be found, then it will
+   be fed to the {@link PropertyConfigurator#configure(java.net.URL)}
+   method.
 
    <p>The <code>PropertyConfigurator</code> does not handle the
    advanced configuration features supported by the {@link
@@ -75,8 +75,6 @@ import java.util.Hashtable;
    configuration file being parsed.  The corresponding value replaces
    the ${variableName} sequence.
 
-
-
    @author Ceki G&uuml;lc&uuml;
    @author Anders Kristensen
    @since 0.8.1 */
@@ -87,20 +85,21 @@ public class PropertyConfigurator extends BasicConfigurator
      Used internally to keep track of configured appenders.
    */
   protected Hashtable registry = new Hashtable(11);
-  protected LoggerFactory categoryFactory = new DefaultCategoryFactory();
+  protected LoggerFactory loggerFactory = new DefaultCategoryFactory();
   
   static final String      CATEGORY_PREFIX = "log4j.category.";
   static final String      LOGGER_PREFIX   = "log4j.logger.";
   static final String       FACTORY_PREFIX = "log4j.factory";
   static final String    ADDITIVITY_PREFIX = "log4j.additivity.";
   static final String ROOT_CATEGORY_PREFIX = "log4j.rootCategory";
+  static final String ROOT_LOGGER_PREFIX   = "log4j.rootLogger";
   static final String      APPENDER_PREFIX = "log4j.appender.";  
   static final String      RENDERER_PREFIX = "log4j.renderer.";
 
   /** Key for specifying the {@link org.apache.log4j.spi.LoggerFactory
       LoggerFactory}.  Currently set to 
       "<code>log4j.categoryFactory</code>".  */
-  public static final String CATEGORY_FACTORY_KEY = "log4j.categoryFactory";
+  public static final String LOGGER_FACTORY_KEY = "log4j.loggerFactory";
 
   static final private String INTERNAL_ROOT_NAME = "root";
   
@@ -413,7 +412,7 @@ public class PropertyConfigurator extends BasicConfigurator
     
     
     configureRootCategory(properties, hierarchy);
-    configureCategoryFactory(properties);
+    configureLoggerFactory(properties);
     parseCatsAndRenderers(properties, hierarchy);
 
     LogLog.debug("Finished configuring.");    
@@ -449,23 +448,23 @@ public class PropertyConfigurator extends BasicConfigurator
   /**
      Check the provided <code>Properties</code> object for a
      {@link org.apache.log4j.spi.LoggerFactory LoggerFactory}
-     entry specified by {@link #CATEGORY_FACTORY_KEY}.  If such an entry
+     entry specified by {@link #LOGGER_FACTORY_KEY}.  If such an entry
      exists, an attempt is made to create an instance using the default
      constructor.  This instance is used for subsequent Category creations
      within this configurator.
 
      @see #parseCatsAndRenderers
    */
-  protected void configureCategoryFactory(Properties props) {
-    String factoryClassName = OptionConverter.findAndSubst(CATEGORY_FACTORY_KEY,
+  protected void configureLoggerFactory(Properties props) {
+    String factoryClassName = OptionConverter.findAndSubst(LOGGER_FACTORY_KEY,
 							   props);    
     if(factoryClassName != null) {
       LogLog.debug("Setting category factory to ["+factoryClassName+"].");
-      categoryFactory = (LoggerFactory) 
+      loggerFactory = (LoggerFactory) 
                   OptionConverter.instantiateByClassName(factoryClassName,
 							 LoggerFactory.class, 
-							 categoryFactory);
-      PropertySetter.setProperties(categoryFactory, props, FACTORY_PREFIX + ".");
+							 loggerFactory);
+      PropertySetter.setProperties(loggerFactory, props, FACTORY_PREFIX + ".");
     }
   }
 
@@ -493,14 +492,20 @@ public class PropertyConfigurator extends BasicConfigurator
   
     
   void configureRootCategory(Properties props, LoggerRepository hierarchy) {
-    String value = OptionConverter.findAndSubst(ROOT_CATEGORY_PREFIX, props);
+    String effectiveFrefix = ROOT_LOGGER_PREFIX;
+    String value = OptionConverter.findAndSubst(ROOT_LOGGER_PREFIX, props);
+    
+    if(value == null) {
+      value = OptionConverter.findAndSubst(ROOT_CATEGORY_PREFIX, props);
+      effectiveFrefix = ROOT_CATEGORY_PREFIX;
+    }
+
     if(value == null) 
-      LogLog.debug("Could not find root category information. Is this OK?");
+      LogLog.debug("Could not find root logger information. Is this OK?");
     else {
       Logger root = hierarchy.getRootLogger();
       synchronized(root) {
-	parseCategory(props, root, ROOT_CATEGORY_PREFIX, INTERNAL_ROOT_NAME, 
-		      value);
+	parseCategory(props, root, effectiveFrefix, INTERNAL_ROOT_NAME, value);
       }
     }        
   }
@@ -522,7 +527,7 @@ public class PropertyConfigurator extends BasicConfigurator
 	  loggerName = key.substring(LOGGER_PREFIX.length());
 	}
 	String value =  OptionConverter.findAndSubst(key, props);
-	Logger logger = hierarchy.getLogger(loggerName, categoryFactory);
+	Logger logger = hierarchy.getLogger(loggerName, loggerFactory);
 	synchronized(logger) {
 	  parseCategory(props, logger, key, loggerName, value);
 	  parseAdditivityForLogger(props, logger, loggerName);

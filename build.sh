@@ -19,13 +19,12 @@ if [ "$OSTYPE" = "cygwin32" ] || [ "$OSTYPE" = "cygwin" ] ; then
    CLASSPATH=`cygpath --path --unix "$CLASSPATH"`
 fi
 
-ANT_JAR='build/lib/ant.jar'
-JAXP_JAR='build/lib/jaxp-1.1.jar'
-PARSER_JAR='build/lib/crimson-1.1.jar'
+for l in build/lib/*.jar 
+do
+echo L=$l
+CLASSPATH=${CLASSPATH}:$l
+done
 
-CLASSPATH=${CLASSPATH}:${ANT_JAR}
-CLASSPATH=${CLASSPATH}:${JAXP_JAR}
-CLASSPATH=${CLASSPATH}:${PARSER_JAR}
 
 # convert the unix path to windows
 if [ "$OSTYPE" = "cygwin32" ] || [ "$OSTYPE" = "cygwin" ] ; then
