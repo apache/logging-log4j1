@@ -19,12 +19,12 @@ JSOURCES:= Shallow.java\
  ShortSocketServer.java\
  DelayedLoop.java\
  SysoutConfigurator.java\
- UnitTestOR.java\
  UnitTestCategory.java\
  UnitTestCyclicBuffer.java\
  UnitTestBoundedFIFO.java\
  UnitTestVarSubst.java\
  SocketAppenderTest.java\
+ UnitTestOR.java\
 
 SUBDIRS :=
 

@@ -68,13 +68,13 @@
     <echo message="JAVAMAIL is present."/>
   </target>
 
+  <!--    <property name="build.compiler" value="jikes"/>	-->
 
   <target name="init">
     <tstamp />
     <property name="srcdir" value="." />
     <property name="classes" value="classes" />
-    <property name="stem" value="org/apache/log4j" />
-    <property name="build.compiler" value="jikes"/>	
+    <property name="stem" value="org/apache/log4j" />	
     <property name="version" value="1.1"/>  
   </target>
 
@@ -99,6 +99,7 @@
 	   excludes="misc/*, **/UnitTest*.java,
 	            **/doc-files/*,
                     ${stem}/xml/**,
+                    ${stem}/gui/**,
 		    ${stem}/net/SMTPAppender.java,
                	    ${stem}/net/JMS*.java,
                	    ${stem}/or/MessageRenderer.java,
@@ -213,6 +214,7 @@
 	                 org.apache.log4j.performance,
 		         org.apache.log4j.xml,
 			 org.apache.log4j.examples,
+			 org.apache.log4j.examples.appserver,
 		         org.apache.log4j.net,
 			 org.apache.log4j.nt,
 			 org.apache.log4j.varia,

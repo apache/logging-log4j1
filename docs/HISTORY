@@ -11,10 +11,11 @@
  - Release of version 1.1 (the 21st major release)
 
  - Logging can now be disabled per Hierarchy. It can also be disabled
-   using configuration files using the "disable" directive.  The disableOverride 
-   directive takes precedence over the disable directive.  As a result of this change
-   the disable family of methods has moved from the BasicConfigurator
-   class to the Hierarchy class. [**]
+   using configuration files using the "disable" directive.  The
+   disableOverride directive takes precedence over the disable
+   directive.  As a result of this change the disable family of
+   methods has moved from the BasicConfigurator class to the Hierarchy
+   class. [**]
 
  - Changed the name of the configuration element to log4j:configuration in the
    log4j.dtd. All configuration files written in XML need to be
@@ -36,9 +37,15 @@
    the static initializer of Category class. Thanks to Calvin Chan for
    supplying a better method. [*]
 
- - Updated the "Adding Conversion Characters to PatternLayout" document to reflect the 
-   latest changes to the code. Also added the org/apache/log4j/examples/appserver 
-   directory containing the associated example code. [*]
+ - Made the instanceFCQN an instance variable instead of a class
+   static in Category.java. In related move, the Category constructor
+   now takes an additional argument setting the instanceFCQN. This
+   makes life less miserable for Category subclasses. [*]
+	
+ - Updated the "Adding Conversion Characters to PatternLayout"
+   document to reflect the latest changes to the code. Also added the
+   org/apache/log4j/examples/appserver directory containing the
+   associated example code. [*]
 
  - Added the BufferSize option to the AsyncAppender. [*]
 
