@@ -46,7 +46,9 @@
  * Apache Software Foundation, please see <http://www.apache.org/>.
  *
  */
+
 package org.apache.log4j.chainsaw;
+
 
 /**
  * Simple interface for objects that can receive/work with EventDetails
@@ -55,6 +57,5 @@ package org.apache.log4j.chainsaw;
  * @version 1.0
  */
 public interface EventDetailSink {
-
   public void addEvent(EventDetails aDetail);
 }

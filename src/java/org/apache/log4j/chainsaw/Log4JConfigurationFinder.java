@@ -46,9 +46,11 @@
  * Apache Software Foundation, please see <http://www.apache.org/>.
  *
  */
+
 package org.apache.log4j.chainsaw;
 
 import java.net.URL;
+
 
 public interface Log4JConfigurationFinder {
   public URL findConfiguration();

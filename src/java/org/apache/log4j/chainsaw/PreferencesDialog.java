@@ -46,11 +46,13 @@
  * Apache Software Foundation, please see <http://www.apache.org/>.
  *
  */
+
 package org.apache.log4j.chainsaw;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;

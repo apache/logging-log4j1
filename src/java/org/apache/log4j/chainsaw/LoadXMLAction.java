@@ -46,9 +46,13 @@
  * Apache Software Foundation, please see <http://www.apache.org/>.
  *
  */
+
 package org.apache.log4j.chainsaw;
 
+import org.apache.log4j.Logger;
+
 import java.awt.event.ActionEvent;
+
 import java.io.File;
 
 import javax.swing.AbstractAction;
@@ -56,7 +60,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import org.apache.log4j.Logger;
 
 /**
  * Encapsulates the action to load an XML file.
@@ -64,66 +67,61 @@ import org.apache.log4j.Logger;
  * @author <a href="mailto:oliver@puppycrawl.com">Oliver Burn</a>
  * @version 1.0
  */
-class LoadXMLAction
-    extends AbstractAction
-{
-    /** use to log messages **/
-    private static final Logger LOG =
-        Logger.getLogger(LoadXMLAction.class);
+class LoadXMLAction extends AbstractAction {
+  /** use to log messages **/
+  private static final Logger LOG = Logger.getLogger(LoadXMLAction.class);
 
-    /** the parent frame **/
-    private final JFrame mParent;
+  /** the parent frame **/
+  private final JFrame mParent;
 
-    /**
-     * the file chooser - configured to allow only the selection of a
-     * single file.
-     */
-    private final JFileChooser mChooser = new JFileChooser();
-    {
-        mChooser.setMultiSelectionEnabled(false);
-        mChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+  /**
+ * the file chooser - configured to allow only the selection of a
+ * single file.
+ */
+  private final JFileChooser mChooser = new JFileChooser();
+
+  /** the content handler **/
+  private final XMLFileHandler mHandler;
+
+  {
+    mChooser.setMultiSelectionEnabled(false);
+    mChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+  }
+
+  /**
+ * Creates a new <code>LoadXMLAction</code> instance.
+ *
+ * @param aParent the parent frame
+ * @param eventSink the eventSink to add events to
+ */
+  LoadXMLAction(JFrame aParent, EventDetailSink eventSink) {
+    mParent = aParent;
+    mHandler = new XMLFileHandler(eventSink);
+  }
+
+  /**
+ * Prompts the user for a file to load events from.
+ * @param aIgnore an <code>ActionEvent</code> value
+ */
+  public void actionPerformed(ActionEvent aIgnore) {
+    LOG.info("load file called");
+
+    if (mChooser.showOpenDialog(mParent) == JFileChooser.APPROVE_OPTION) {
+      LOG.info("Need to load a file");
+
+      final File chosen = mChooser.getSelectedFile();
+
+      try {
+        final int num = mHandler.loadFile(chosen);
+        JOptionPane.showMessageDialog(
+          mParent, "Loaded " + num + " events.", "CHAINSAW",
+          JOptionPane.INFORMATION_MESSAGE);
+      } catch (Exception e) {
+        LOG.warn("caught an exception loading the file", e);
+        JOptionPane.showMessageDialog(
+          mParent, "Error parsing file - " + e.getMessage(), "CHAINSAW",
+          JOptionPane.ERROR_MESSAGE);
+      }
     }
-
-    /** the content handler **/
-    private final XMLFileHandler mHandler;
-
-
-    /**
-     * Creates a new <code>LoadXMLAction</code> instance.
-     *
-     * @param aParent the parent frame
-     * @param eventSink the eventSink to add events to
-     */
-    LoadXMLAction(JFrame aParent, EventDetailSink eventSink)
-    {
-        mParent = aParent;
-        mHandler = new XMLFileHandler(eventSink);
-    }
-
-    /**
-     * Prompts the user for a file to load events from.
-     * @param aIgnore an <code>ActionEvent</code> value
-     */
-    public void actionPerformed(ActionEvent aIgnore) {
-        LOG.info("load file called");
-        if (mChooser.showOpenDialog(mParent) == JFileChooser.APPROVE_OPTION) {
-            LOG.info("Need to load a file");
-            final File chosen = mChooser.getSelectedFile();
-            try {
-                final int num = mHandler.loadFile(chosen);
-                JOptionPane.showMessageDialog(
-                    mParent,
-                    "Loaded " + num + " events.",
-                    "CHAINSAW",
-                    JOptionPane.INFORMATION_MESSAGE);
-            } catch (Exception e) {
-                LOG.warn("caught an exception loading the file", e);
-                JOptionPane.showMessageDialog(
-                    mParent,
-                    "Error parsing file - " + e.getMessage(),
-                    "CHAINSAW",
-                    JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }
+  }
 }

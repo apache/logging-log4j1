@@ -46,7 +46,10 @@
  * Apache Software Foundation, please see <http://www.apache.org/>.
  *
  */
+
 package org.apache.log4j.chainsaw;
+
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,8 +59,6 @@ import java.util.Set;
 
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
-
-import org.apache.log4j.Logger;
 import javax.swing.table.TableModel;
 
 
@@ -89,18 +90,18 @@ class MyTableColumnModel extends DefaultTableColumnModel {
   private final TableModel mTableModel;
 
   /**
-   *  Construct a MyTableColumnModel.
-   *  @param aTableModel table model to work with
-   */
+ *  Construct a MyTableColumnModel.
+ *  @param aTableModel table model to work with
+ */
   public MyTableColumnModel(TableModel aTableModel) {
     mTableModel = aTableModel;
   }
 
   /**
-   *  Load the properties from the
-   *  {@link org.apache.log4j.chainsaw.Preferences} and apply them to the
-   *  model.
-   */
+ *  Load the properties from the
+ *  {@link org.apache.log4j.chainsaw.Preferences} and apply them to the
+ *  model.
+ */
   public void loadPrefs() {
     // Keep a separate list of columns to remove to avoid concurrent
     // modification
@@ -141,9 +142,9 @@ class MyTableColumnModel extends DefaultTableColumnModel {
   }
 
   /**
-   *  Update the {@link org.apache.log4j.chainsaw.Preferences} based on the
-   *  state of the model.
-   */
+ *  Update the {@link org.apache.log4j.chainsaw.Preferences} based on the
+ *  state of the model.
+ */
   public void savePrefs() {
     for (int i = 0; i < getColumnCount(); i++) {
       TableColumn col = getColumn(i);
@@ -182,24 +183,24 @@ class MyTableColumnModel extends DefaultTableColumnModel {
   }
 
   /**
-   *  Get the {@link javax.swing.table.TableColumn}s available for the
-   *  logging event table.  All columns are returned iiregardless of whether
-   *  thay are or are not visible.
-   *
-   *  @return  the set of available columns
-   */
+ *  Get the {@link javax.swing.table.TableColumn}s available for the
+ *  logging event table.  All columns are returned iiregardless of whether
+ *  thay are or are not visible.
+ *
+ *  @return  the set of available columns
+ */
   public Set getAvailableColumns() {
     return mColPrefMap.keySet();
   }
 
   /**
-   *  Get the {@link org.apache.log4j.chainsaw.PrefenceSet} for a given
-   *  column.
-   *
-   *  @param col  the column to get the preferences for
-   *
-   *  @return the set of preferences for the column
-   */
+ *  Get the {@link org.apache.log4j.chainsaw.PrefenceSet} for a given
+ *  column.
+ *
+ *  @param col  the column to get the preferences for
+ *
+ *  @return the set of preferences for the column
+ */
   public PreferenceSet getColumnPreferences(TableColumn col) {
     return (PreferenceSet) mColPrefMap.get(col);
   }

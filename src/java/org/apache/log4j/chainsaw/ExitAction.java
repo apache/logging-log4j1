@@ -46,15 +46,20 @@
  * Apache Software Foundation, please see <http://www.apache.org/>.
  *
  */
+
 package org.apache.log4j.chainsaw;
 
+import org.apache.log4j.Category;
+
 import java.awt.event.ActionEvent;
+
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 import java.util.LinkedList;
+import java.util.List;
+
 import javax.swing.AbstractAction;
-import org.apache.log4j.Category;
+
 
 /**
  * Encapsulates the action to exit.
@@ -62,57 +67,61 @@ import org.apache.log4j.Category;
  * @author <a href="mailto:oliver@puppycrawl.com">Oliver Burn</a>
  * @version 1.0
  */
-class ExitAction
-    extends AbstractAction
-{
-    /** use to log messages **/
-    private static final Category LOG = Category.getInstance(ExitAction.class);
-    /** The instance to share **/
-    public static final ExitAction INSTANCE = new ExitAction();
+class ExitAction extends AbstractAction {
+  /** use to log messages **/
+  private static final Category LOG = Category.getInstance(ExitAction.class);
 
-    /** hooks to call on shutdown */
-    private final List mShutdownHooks =
-        Collections.synchronizedList(new LinkedList());
-    /** flag to indicate if shutting down */
-    private boolean mShuttingDown = false;
+  /** The instance to share **/
+  public static final ExitAction INSTANCE = new ExitAction();
 
-    /** Stop people creating instances **/
-    private ExitAction() {}
+  /** hooks to call on shutdown */
+  private final List mShutdownHooks =
+    Collections.synchronizedList(new LinkedList());
 
-    /**
-     * Will shutdown the application.
-     * @param aIgnore ignored
-     */
-    public void actionPerformed(ActionEvent aIgnore) {
-        LOG.info("shutting down");
-        mShuttingDown = true;
-        for (Iterator i = mShutdownHooks.iterator(); i.hasNext(); ) {
-            try {
-                final Thread t = (Thread) i.next();
-                t.start();
-                t.join(500);
-            } catch (final Throwable t) {
-                // Don't let anything stop us
-                LOG.error(t.getMessage(), t);
-            }
-            try {
-                Preferences.getInstance().save();
-            } catch (final Throwable t) {
-                LOG.error("Could not save preferences: " + t.getMessage(), t);
-            }
-        }
-        System.exit(0);
+  /** flag to indicate if shutting down */
+  private boolean mShuttingDown = false;
+
+  /** Stop people creating instances **/
+  private ExitAction() {
+  }
+
+  /**
+   * Will shutdown the application.
+   * @param aIgnore ignored
+   */
+  public void actionPerformed(ActionEvent aIgnore) {
+    LOG.info("shutting down");
+    mShuttingDown = true;
+
+    for (Iterator i = mShutdownHooks.iterator(); i.hasNext();) {
+      try {
+        final Thread t = (Thread) i.next();
+        t.start();
+        t.join(500);
+      } catch (final Throwable t) {
+        // Don't let anything stop us
+        LOG.error(t.getMessage(), t);
+      }
+
+      try {
+        Preferences.getInstance().save();
+      } catch (final Throwable t) {
+        LOG.error("Could not save preferences: " + t.getMessage(), t);
+      }
     }
 
-    /**
-     *  Register a Thread to fire before the system is shut down.  Use this
-     *  methos instead of Runtime.addShutdownHook() for JDK 1.2.x compatibility.
-     *
-     *  @param aShutdownHook  thread to run upon exit
-     */
-    public void addShutdownHook(Thread aShutdownHook) {
-        if (!mShuttingDown) {
-            mShutdownHooks.add(aShutdownHook);
-        }
+    System.exit(0);
+  }
+
+  /**
+   *  Register a Thread to fire before the system is shut down.  Use this
+   *  methos instead of Runtime.addShutdownHook() for JDK 1.2.x compatibility.
+   *
+   *  @param aShutdownHook  thread to run upon exit
+   */
+  public void addShutdownHook(Thread aShutdownHook) {
+    if (!mShuttingDown) {
+      mShutdownHooks.add(aShutdownHook);
     }
+  }
 }
