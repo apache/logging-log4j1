@@ -22,7 +22,7 @@ Steps performed on the Java Web Server (Servlet Container)
 
      -Dlog4j.repositorySelectorClass=org.apache.log4j.selector.ContextJNDISelector
   
-  or in its equivalent short form
+  or in its equivalent but shorter form
   
      -Dlog4j.repositorySelectorClass=JNDI 
      
@@ -31,11 +31,11 @@ Steps performed on the Java Web Server (Servlet Container)
 
 - Optionally, you can add a configuration file such as log4j.xml or
   log4j.properties in the class directory of your *web-server*. For
-  Tomcat versions 4 or 5, that would be ./server/classes/ directory.
+  Tomcat versions 4 or 5, that would be ./common/classes/ directory.
 
   Thus, when log4j is first loaded into memory, it will configure the
   default logging repository using the configuration file found in
-  ./server/classes/ directory.
+  ./common/classes/ directory.
 
   For Tomcat version 5 (tested on Tomcat 5.0.19), you also need to
   tell Tomcat to use log4j by placing commons-logging.jar in
@@ -45,7 +45,7 @@ Steps performed on the Java Web Server (Servlet Container)
   This way the default (log4j) logger repository will be used by
   Tomcat for its logging and the default logger repository will be
   controlled by the configuration file log4j.xml or log4j.properties
-  found in server/classes/.
+  found in ./common/classes/.
 
 Steps performed per web-application
 ==================================
