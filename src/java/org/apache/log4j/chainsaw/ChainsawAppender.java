@@ -46,15 +46,16 @@
  * Apache Software Foundation, please see <http://www.apache.org/>.
  *
  */
-
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.helpers.OptionConverter;
-import org.apache.log4j.spi.LoggingEvent;
-
+import java.util.ArrayList;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
+
+import org.apache.log4j.Appender;
+import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.helpers.OptionConverter;
 
 
 /**
@@ -64,12 +65,23 @@ import javax.swing.table.TableModel;
  * @author Paul Smith
  * @version 1.0
  */
-public class ChainsawAppender extends AppenderSkeleton
-  implements EventDetailSink, TableModel {
+public class ChainsawAppender
+    extends AppenderSkeleton
+    implements EventDetailSink, TableModel {
+
+  private final ArrayList appenders=new ArrayList();
+  
   /**
    * Shared model used by the shared Appender
    */
   private static MyTableModel sSharedModel;
+
+  /**
+   * The model that is used by this Appender, we ensure
+   * here that we only use a single Model as the current
+   * release is effetively an in-JVM singleton
+   */
+  private final MyTableModel wrappedTableModel = getDefaultModel();
 
   /**
    * The in-JVM singleton instance of the ChainsawAppender.
@@ -78,13 +90,6 @@ public class ChainsawAppender extends AppenderSkeleton
    * initialise wins!
    */
   private static ChainsawAppender sSharedAppender = null;
-
-  /**
-   * The model that is used by this Appender, we ensure
-   * here that we only use a single Model as the current
-   * release is effetively an in-JVM singleton
-   */
-  private final MyTableModel wrappedTableModel = getDefaultModel();
 
   /**
    * The classname of the viewer to create to view the events.
@@ -114,7 +119,6 @@ public class ChainsawAppender extends AppenderSkeleton
     if (sSharedModel == null) {
       sSharedModel = new MyTableModel();
     }
-
     return sSharedModel;
   }
 
@@ -148,6 +152,10 @@ public class ChainsawAppender extends AppenderSkeleton
     return false;
   }
 
+  public void addAppender(Appender appender) {
+    appenders.add(appender);
+  }
+  
   /**
    * Implements the EventDetailSink interface by forwarding the EventDetails
    * object onto an internal Model
@@ -167,6 +175,10 @@ public class ChainsawAppender extends AppenderSkeleton
     synchronized (wrappedTableModel) {
       wrappedTableModel.addEvent(new EventDetails(aEvent));
     }
+        for (int i=0;i<appenders.size();i++) {
+            Appender appender=(Appender)appenders.get(i);
+            appender.doAppend(aEvent);
+        }
   }
 
   /**
@@ -175,13 +187,13 @@ public class ChainsawAppender extends AppenderSkeleton
    */
   public void activateOptions() {
     if (viewerClassname == null) {
-      viewerClassname = DefaultViewer.class.getName();
+      viewerClassname = "org.apache.log4j.chainsaw.DefaultViewer";
     }
-
-    ChainsawViewer viewer =
-      (ChainsawViewer) OptionConverter.instantiateByClassName(
-        viewerClassname, ChainsawViewer.class, null);
-
+      
+    ChainsawViewer viewer = 
+      (ChainsawViewer) OptionConverter.instantiateByClassName(viewerClassname, 
+        ChainsawViewer.class, null);
+        
     if (viewer != null) {
       viewer.activateViewer(this);
     }

@@ -36,9 +36,9 @@ displays them in a table. The events can be filtered based on:</P>
     <P>A picture is worth a thousand words: </P>
 
     <P align=center><A
-      href="doc-files/screen_01.png"><IMG
+      href="doc-files/Chainsawv2.gif"><IMG
       height="50%" alt="Screen shot of chainsaw"
-      src="doc-files/screen_01.png"
+      src="doc-files/Chainsawv2.gif"
       width="50%"></A>.</P> 
 
     <P>Finally, why is it called chainsaw?
@@ -48,52 +48,27 @@ displays them in a table. The events can be filtered based on:</P>
 
     <H2>Requirements</H2> 
 
-    <P>Chainsaw is based on the Swing API which requires JDK 1.2 or later.</P>
+    <P>Chainsaw is based on the Swing API which requires JDK 1.2 or later, and also relies on the <a href="http://jakarta.apache.org/oro/index.html">Jakarta ORO regular
+    expression package</a>.</P>
 
 
     <H2>Running chainsaw</H2>
 
     <H3>Setup</H3>
-    <P>You need to include the <code>log4j.jar</code> in the classpath.
+    <P>You need to include the <code>log4j.jar</code> and the <code>jakarta-oro.jar</code> in the classpath.
 
     <H3>Usage</H3>
 
     <P>The command line usage is:</P>
 
-    <PRE>  java -D&lt;property&gt;=&lt;value&gt; org.apache.log4j.chainsaw.Main </PRE>
-
-    <P>The default behaviour of chainsaw can be changed by setting system properties 
-      using the <CODE>-D&lt;property&gt;=&lt;value&gt;</CODE> arguments to java. The 
-      following table describes what properties can be set:</P>
-
-    <TABLE cellSpacing=0 cellPadding=2 border=1>
-
-      <TR>
-	<TD vAlign=top><B>Property</B></TD>
-	<TD vAlign=top><B>Description</B></TD></TR>
-      <TR>
-	<TD vAlign=top>chainsaw.port</TD>
-	<TD vAlign=top>Indicates which port to listen for connections on. Defaults 
-	  to <SPAN class=default>"4445"</SPAN>.
-	</TD>
-      </TR>
-    </TBODY>
-    </TABLE>
+    <PRE>  java -D&lt;property&gt;=&lt;value&gt; org.apache.log4j.chainsaw.LogUI </PRE>
 
     <H2>Configuring Log4J</H2>
 
     <P>You will need to configure log4j to send logging events to
-      Chainsaw.  Here is a sample <CODE>log4j.properties</CODE> file
-      for sending logging events to Chainsaw.</P>
+      Chainsaw.  There is an example Log4j xml configuration file included with Chainsaw, you can view it inside
+      the Chainsaw GUI by clicking on the button in the welcome screen.</P>
 
-<PRE>
-log4j.rootLogger=DEBUG, CHAINSAW_CLIENT
-
-log4j.appender.CHAINSAW_CLIENT=org.apache.log4j.net.SocketAppender
-log4j.appender.CHAINSAW_CLIENT.RemoteHost=localhost
-log4j.appender.CHAINSAW_CLIENT.Port=4445
-log4j.appender.CHAINSAW_CLIENT.LocationInfo=true
-</PRE>
 
 
 

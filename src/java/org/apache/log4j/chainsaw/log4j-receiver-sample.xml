@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="true">
+   <appender name="A2" class="org.apache.log4j.ConsoleAppender">
+      <layout class="org.apache.log4j.SimpleLayout"/>
+   </appender>
+
+   <plugin name="SocketReceiver" class="org.apache.log4j.net.SocketReceiver">
+      <param name="Port" value="4445"/>
+   </plugin>
+
+   <plugin name="XMLSocketReceiver" class="org.apache.log4j.net.XMLSocketReceiver">
+      <param name="decoder" value="org.apache.log4j.xml.UtilLoggingXMLDecoder"/>
+      <param name="Port" value="2222"/>
+   </plugin>
+
+   <plugin name="UDPReceiver" class="org.apache.log4j.net.UDPReceiver">
+      <param name="Port" value="4446"/>
+   </plugin>
+
+   <plugin name="MulticastReceiver" class="org.apache.log4j.net.MulticastReceiver">
+      <param name="Port" value="4449"/>
+      <param name="Address" value="224.1.1.1"/>      
+   </plugin>
+
+   <root>
+      <level value="debug"/>
+   </root>
+</log4j:configuration>
+

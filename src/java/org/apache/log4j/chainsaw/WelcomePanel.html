@@ -1,0 +1,147 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<style>
+ BODY, TABLE, TD,  {
+  font-size: 10px;
+  color: #000000;
+  font-family: Arial, Tahoma, Helvetica, sans-serif;
+}
+
+H1 {
+
+  font-size: 14px;
+  font-weight: bold;
+}
+
+H2 {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.TableTitle {
+  font-weight: bold;
+  background-color: #000089;
+  color: #FFFFFF;
+}
+
+.HotKey {
+  font-weight: bold;
+}
+</style>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#FF0000" VLINK="#800000" ALINK="#FF00FF" BACKGROUND="?">
+<p><a name="TheTop"></a><table border="0" cellpadding="0" cellspacing="0" width="100%">
+	<tr valign="top">
+		<td><b><font size="+2">Chainsaw v2</font></b> - brought to you by the Log4j Dev team</td>
+		<!--<td rowspan="2" align="right"><img align="top" src="logo.jpg" border="0" alt="Log4j Logo"></td>-->
+	</tr>
+</table></p>
+<!-- Removing this until we can work out why the Anchor tags don't work in Swing... -->
+<!--
+<table border="1" cellspacing="2" cellpadding="2">
+<tr><td><b>Table of Contents</b></td><td rowspan="4" align="left"><img src="logo.jpg" width="105" height="70" border="0" alt="Log4j Logo"></tr>
+<tr><td><a href="#QuickHelp">Quick Help</a></td></tr>
+<tr><td><a href="#FAQ">FAQ</a></td></tr>
+<tr><td><a href="#FilteringColouring">Filtering and Colouring</a></td></tr>
+</table>
+-->
+<p><table border="0" cellspacing="2" cellpadding="2" >
+<tr><td colspan="6" class="TableTitle" bgcolor="#000089"><font color="white">Hot Keys</font></td></tr>
+<tr valign="top">
+	<td nowrap class="HotKey">CTRL-LEFT</td>
+	<td width="50" align="center">-</td>
+	<td>Activate a tab to the left</td>
+	<td nowrap class="HotKey">F1</td>
+	<td width="50" align="center">-</td>
+	<td>Hide/Show Welcome Panel/Help page</td>
+
+</tr>
+<tr valign="top" bgcolor="#EEEEEE">
+	<td nowrap class="HotKey">CTRL-RIGHT</td>
+	<td width="50" align="center">-</td>
+	<td>Activate a tab to the right</td>
+	<td nowrap class="HotKey">F3</td>
+	<td width="50" align="center">-</td>
+	<td>Find Next</td>
+</tr>
+<tr valign="top" >
+	<td nowrap class="HotKey">CTRL-S</td>
+	<td width="50" align="center">-</td>
+	<td>Shows a File Save dialog to save the current tab's events as XML</td>
+	<td nowrap class="HotKey">F6</td>
+	<td width="50" align="center">-</td>
+	<td>Show Receivers Dialog</td>
+</tr>
+<tr valign="top" bgcolor="#EEEEEE">
+	<td nowrap class="HotKey">CTRL-O</td>
+	<td width="50" align="center">-</td>
+	<td>Shows a File Open dialog to open an XML file of events into Chainsaw</td>
+	<td nowrap class="HotKey">F12</td>
+	<td width="50" align="center">-</td>
+	<td>Pause display</td>
+</tr>
+<tr valign="top">
+	<td nowrap class="HotKey">ALT-P</td>
+	<td width="50" align="center">-</td>
+	<td colspan="4">Pause display</td>
+</tr>
+<tr valign="top" bgcolor="#EEEEEE">
+	<td nowrap class="HotKey">ALT-D</td>
+	<td width="50" align="center">-</td>
+	<td colspan="4">Show/Hide the Detail pane</td>
+</tr>
+<tr valign="top">
+	<td nowrap class="HotKey">ALT-X</td>
+	<td width="50" align="center">-</td>
+	<td colspan="4">Exits the Application</td>
+</tr>
+</table></P>
+<!--<p><a href="#TheTop">Back to top</a></p>-->
+<a name="Receivers"></a>
+<h2>Receivers</h2>
+<p>Log4j has a concept of a 'Receiver', an object that receives events
+from some source, and deposits them into the Log4j framework in the local JVM.  
+It useful to think of Log4j's engine as a 'bus' much like the PCI bus in a computer,
+with events being the data placed on the bus.</p>
+
+<p>Since Chainsaw acts just like a Log4j Appender, using a Receiver allows\
+you to receive events from, say, a remote location, and view them within the
+Chainsaw GUI.</p>
+
+<p>Receivers are the complimentary 'sibling' if you will of Log4j Appenders.
+Appenders take an event from the Log4j bus, and output them to some location.
+A Receiver is just the opposite, it takes an external event and
+places it in the local Log4j bus.  A Receiver can be a 'sink' for event
+data, while the Appender is the 'source'.
+</p>
+<a name="UsefulConfigs"></a>
+<h2>Useful Configuration</h2>
+<p>We'll discuss a very useful and common configuration.  If you have
+an application that is using Log4j to log events, you are able to 
+configure a series of appenders, and often this is just a simple FileAppender. 
+An alternative is to configure a SocketAppender that transmits the event
+to a remote location. In this case, Chainsaw becomes this remote location.
+</p>
+<p>Click <a href="http://jakarta.apache.org/log4j/docs/api/org/apache/log4j/net/SocketAppender.html">here</a> to learn more about <a href="http://jakarta.apache.org/log4j/docs/api/org/apache/log4j/net/SocketAppender.html">SocketAppenders</a>.</p>
+<p>Click here to learn more about Receivers (and SocketReceiver in particular).
+</P>
+<a name="FAQ"></a>
+<h2>FAQ</h2>
+<p></p>@todo<p></p>
+<!--<p><a href="#TheTop">Back to top</a></p>-->
+<a name="FilteringColouring"></a>
+<h2>Filtering and Colouring</h2>
+<p>Chainsaw enables you to configure filters that suppress the display of certain logging events, and also highlight the event with a colo(u)r of your choosing.</p>
+<p><a href="#TheTop">Back to top</a></p>
+<h2>Examples of Filtering and Colouring</h2>
+This example will show you how to:
+
+<ul>
+<li>Colo(ur) all Error level logging Red, Warn level Yellow, and Info level grey</li>
+<li>Suppress all levels but INFO/WARN/ERROR</li>
+</ul>
+<!--<p><a href="#TheTop">Back to top</a></p>-->
+</BODY>
+</HTML>
