@@ -271,39 +271,6 @@ public class PluginTestCase extends TestCase {
     assertTrue(Compare.compare(getOutputFile(testName), getWitnessFile(testName)));
   }
 
-    /*
-    System.out.println("creating the sink repository");
-    LoggerRepository repo1 = new Hierarchy(new RootCategory(Level.DEBUG));
-    System.out.println("configuring the sink repository");
-    configurator.doConfigure("input/sink.xml",repo1);
-    
-    System.out.println("creating the source repository");
-    LoggerRepository repo2 = new Hierarchy(new RootCategory(Level.DEBUG));
-    System.out.println("configuring the source repository");
-    configurator.doConfigure("input/source.xml",repo2);
-    
-    System.out.println("sending messages via source loggers");
-    Logger logger = repo2.getLogger("repo2.logger");
-    logger.debug("Message 1");
-    logger.debug("Message 2");
-    logger = repo2.getLogger("repo2.logger2");
-    logger.debug("Message 3");
-    logger.debug("Message 4");
-    
-    System.out.println("sending messages via sink loggers");
-    logger = repo1.getLogger("repo1.logger");
-    logger.debug("Message 5");
-    logger.debug("Message 6");
-    logger = repo1.getLogger("repo1.logger2");
-    logger.debug("Message 7");
-    logger.debug("Message 8");
-    
-    Thread.currentThread().sleep(5000);
-    
-    repo2.shutdown();
-    repo1.shutdown();
-    */
-
   public static Test suite() {
     TestSuite suite = new TestSuite();
     suite.addTest(new PluginTestCase("test1"));
