@@ -428,7 +428,14 @@ public class PatternParser {
     public
     String convert(LoggingEvent event) {
       date.setTime(event.timeStamp);
-      return df.format(date);
+      String converted = null;
+      try {
+        converted = df.format(date);
+      }
+      catch (Exception ex) {
+        LogLog.error("Error occured while converting date. Exception message: " + ex.getMessage() + ".");
+      }
+      return converted;
     }
   }
 
