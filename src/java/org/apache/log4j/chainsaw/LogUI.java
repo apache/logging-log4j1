@@ -258,9 +258,12 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   public static void createChainsawGUI(
     ApplicationPreferenceModel model, Action newShutdownAction) {
     
+    if(model.isOkToRemoveSecurityManager()) {
+        MessageCenter.getInstance().addMessage("User has authorised removal of Java Security Manager via preferences");
+    	System.setSecurityManager(null);
+    }
+    LogLog.info("SecurityManager is now: " + System.getSecurityManager());
     
-    ClassLoader classLoader = PluginClassLoaderFactory.create(new File(SettingsManager.getInstance().getSettingsDirectory() + File.separator + "plugins"));
-    Thread.currentThread().setContextClassLoader(classLoader);
     
     LogUI logUI = new LogUI();
 
@@ -273,17 +276,32 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     logUI.handler.addEventBatchListener(logUI.new NewTabEventBatchReceiver());
     
     
+    /**
+     * TODO until we work out how JoranConfigurator might be able to have
+     * configurable class loader, if at all.  For now we temporarily replace the
+     * TCCL so that Plugins that need access to resources in 
+     * the Plugins directory can find them (this is particularly
+     * important for the Web start version of Chainsaw
+     */ 
+    ClassLoader classLoader = PluginClassLoaderFactory.getInstance().getClassLoader();
+    ClassLoader previousTCCL = Thread.currentThread().getContextClassLoader();
+    
     String config = model.getConfigurationURL();
     if(config!=null && (!(config.trim().equals("")))) {
         config = config.trim();
         LogLog.info("Using '" + config + "' for auto-configuration");
         try {
+          // we temporarily swap the TCCL so that plugins can find resources
+          Thread.currentThread().setContextClassLoader(classLoader);
           JoranConfigurator jc = new JoranConfigurator();
           jc.doConfigure(new URL(config), LogManager.getLoggerRepository());
           jc.logErrors();
         } catch (MalformedURLException e) {
           LogLog.error("Failed to use the auto-configuration file", e);
-        }   
+        }finally{
+            // now switch it back...
+            Thread.currentThread().setContextClassLoader(previousTCCL);
+        }
     }else {
         LogLog.info("No auto-configuration file found within the ApplicationPreferenceModel");
     }
