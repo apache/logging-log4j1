@@ -43,7 +43,10 @@ public class ChainsawConstants {
   public static final URL TUTORIAL_URL =
   ChainsawConstants.class.getClassLoader().getResource(
 	  "org/apache/log4j/chainsaw/help/tutorial.html");
-  
+  public static final URL RELEASE_NOTES_URL =
+      ChainsawConstants.class.getClassLoader().getResource(
+          "org/apache/log4j/chainsaw/help/release-notes.html");
+        
   static final String MAIN_PANEL = "panel";
   static final String LOWER_PANEL = "lower";
   static final String UPPER_PANEL = "upper";
