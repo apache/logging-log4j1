@@ -1,0 +1,66 @@
+
+table {
+  margin-left: 2em;
+  margin-right: 2em;
+}
+
+TR.even {
+  background: #FFFFFF; 
+}
+
+TR.odd { 
+  background: #DADADA;
+}
+
+/*
+TR.WARN TD, TR.ERROR TD, TR.FATAL TD {
+   border-bottom: 1px solid #F00;  
+   border-top:    1px solid #F00;  
+   font-weight: bold;
+}
+*/
+
+TR.warn TD.level, TR.error TD.level, TR.fatal TD.level {
+   font-weight: bold;
+   color: #FF4040
+}
+
+TD {
+  padding-right: 1ex;
+  padding-left: 1ex;
+  border-right: 2px solid #AAA;
+}
+
+TD:first-child {
+  border-left: 2px solid #AAA;
+}
+
+TD.time {
+  text-align: right;
+  font-family: "Courier New", courier, monospace;
+}
+
+TD.thread {
+  text-align: left;
+}
+
+
+TD.level {
+  text-align: right;
+}
+
+TD.logger {
+  text-align: left;
+}
+
+TR.header {
+  background: #9090FF;
+  color: #FFF;
+  font-weight: bold;
+  font-size: larger;
+}
+
+TD.exception {
+  background: #C0C0F0;
+  font-family: "Courier New", courier, monospace;  
+}
