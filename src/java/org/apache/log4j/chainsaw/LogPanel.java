@@ -841,6 +841,23 @@ public class LogPanel extends DockablePanel implements Profileable,
                 }
             });
 
+        final JCheckBoxMenuItem menuItemLoggerTree = new JCheckBoxMenuItem("Logger Tree panel");
+        menuItemLoggerTree.addActionListener(new ActionListener() {
+
+          public void actionPerformed(ActionEvent e)
+          {
+            getPreferenceModel().setLogTreePanelVisible(menuItemLoggerTree.isSelected());
+            
+          }});
+        getPreferenceModel().addPropertyChangeListener("logTreePanelVisible", new PropertyChangeListener() {
+
+          public void propertyChange(PropertyChangeEvent evt)
+          {
+            boolean value = ((Boolean)evt.getNewValue()).booleanValue();
+            menuItemLoggerTree.setSelected(value);
+          }});
+        
+        
         menuItemFocusOn.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent evt) {
                     if (currentPoint != null) {
@@ -974,6 +991,7 @@ public class LogPanel extends DockablePanel implements Profileable,
         p.add(menuItemToggleDetails);
         p.add(menuItemToggleToolTips);
         p.add(menuItemScrollBottom);
+        p.add(menuItemLoggerTree);
 
         p.add(new JSeparator());
         p.add(menuItemToggleDock);
@@ -1385,6 +1403,9 @@ public class LogPanel extends DockablePanel implements Profileable,
             getPreferenceModel().isScrollToBottom());
         event.saveSetting("detailPaneVisible",
             getPreferenceModel().isDetailPaneVisible());
+        event.saveSetting("logTreePanelVisible",
+            getPreferenceModel().isLogTreePanelVisible());
+        
 
         saveColumnSettings();
         saveColorSettings();

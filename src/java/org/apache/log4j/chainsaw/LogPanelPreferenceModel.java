@@ -168,6 +168,7 @@ public class LogPanelPreferenceModel implements Serializable{
     setToolTips(that.isToolTips());
     setScrollToBottom(that.isScrollToBottom());
     setDetailPaneVisible(that.isDetailPaneVisible());
+    setLogTreePanelVisible(that.isLogTreePanelVisible());
 
     /**
      * First, iterate and ADD new columns, (this means notifications of adds go out first
