@@ -1,0 +1,11 @@
+
+Given that Sun's BINARY LICENSE AGREEMENT does now allow us to place
+files under CVS, you have to get the following jar files from the
+log4j distribution. They are not available through CVS. These jar
+files are:
+
+  jmxtools.jar 
+  mail.jar 
+  jms.jar 
+  activation.jar
+  jmxri.jar
