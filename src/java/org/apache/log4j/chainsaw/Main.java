@@ -50,12 +50,11 @@ package org.apache.log4j.chainsaw;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
-import java.util.Properties;
+
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -67,8 +66,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
-import org.apache.log4j.Category;
-import org.apache.log4j.PropertyConfigurator;
+import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
 
 /**
  * The main application.
@@ -78,12 +77,6 @@ import org.apache.log4j.PropertyConfigurator;
 public class Main
     extends JFrame
 {
-    /** the default port number to listen on **/
-    private static final int DEFAULT_PORT = 4445;
-
-    /** name of property for port name **/
-    public static final String PORT_PROP_NAME = "chainsaw.port";
-
     /** Window x-position property */
     public static final String X_POSITION_PROPERTY =
         Preferences.PROP_PREFIX + ".x";
@@ -100,95 +93,25 @@ public class Main
     public static final String DETAILS_SEPARATOR_PROPERTY =
         Preferences.PROP_PREFIX + ".details.separator";
 
-    /** use to log messages **/
-    private static final Category LOG = Category.getInstance(Main.class);
-
     private static final Preferences PREFS = Preferences.getInstance();
 
-    private final JSplitPane aDetailsDivider;
+    private JSplitPane aDetailsDivider;
     private final MyTableColumnModel mColumnModel;
 
     /**
      * Creates a new <code>Main</code> instance.
      */
-    private Main() {
+    public Main() {
         super("CHAINSAW - Log4J Log Viewer");
 
         ExitAction.INSTANCE.addShutdownHook(new Thread(new Shutdown()));
 
-        // create the all important model
-        final MyTableModel model = new MyTableModel();
+        // create the all important models
+        final ChainsawAppender model = ChainsawAppender.getInstance();
         mColumnModel = new MyTableColumnModel(model);
 
-        //Create the menu bar.
-        final JMenuBar menuBar = new JMenuBar();
-        setJMenuBar(menuBar);
-        final JMenu menu = new JMenu("File");
-        menu.setMnemonic('F');
-        menuBar.add(menu);
-
-        try {
-            final LoadXMLAction lxa = new LoadXMLAction(this, model);
-            final JMenuItem loadMenuItem = new JMenuItem("Load file...");
-            loadMenuItem.setMnemonic('L');
-            menu.add(loadMenuItem);
-            loadMenuItem.addActionListener(lxa);
-        } catch (NoClassDefFoundError e) {
-            LOG.info("Missing classes for XML parser", e);
-            JOptionPane.showMessageDialog(
-                this,
-                "XML parser not in classpath - unable to load XML events.",
-                "CHAINSAW",
-                JOptionPane.ERROR_MESSAGE);
-        } catch (Exception e) {
-            LOG.info("Unable to create the action to load XML files", e);
-            JOptionPane.showMessageDialog(
-                this,
-                "Unable to create a XML parser - unable to load XML events.",
-                "CHAINSAW",
-                JOptionPane.ERROR_MESSAGE);
-        }
-
-        final RecentFilesMenu recent = new RecentFilesMenu(model);
-        recent.setMnemonic('R');
-        menu.add(recent);
-        PREFS.setRecentFilesMenu(recent);
-        recent.rebuild();
-
-        final JMenuItem prefsMenuItem = new JMenuItem("Preferences");
-        prefsMenuItem.setMnemonic('P');
-        menu.add(prefsMenuItem);
-        prefsMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                new PreferencesDialog(Main.this, mColumnModel).show();
-            }
-        });
-
-        final JMenuItem exitMenuItem = new JMenuItem("Exit");
-        exitMenuItem.setMnemonic('x');
-        menu.add(exitMenuItem);
-        exitMenuItem.addActionListener(ExitAction.INSTANCE);
-
-        // Add control panel
-        final ControlPanel cp = new ControlPanel(model);
-        getContentPane().add(cp, BorderLayout.NORTH);
-
-        // Create the table
-        final JTable table = new JTable(model, mColumnModel);
-        table.setAutoCreateColumnsFromModel(true);
-        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        final JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBorder(BorderFactory.createTitledBorder("Events: "));
-        scrollPane.setPreferredSize(new Dimension(900, 300));
-
-        // Create the details
-        final JPanel details = new DetailPanel(table, model);
-        details.setPreferredSize(new Dimension(900, 100));
-
-        // Add the table and stack trace into a splitter
-        aDetailsDivider = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
-            scrollPane, details);
-        getContentPane().add(aDetailsDivider, BorderLayout.CENTER);
+        buildMenus(model);
+        buildComponents(model);
 
         addWindowListener(new WindowAdapter() {
                 public void windowClosing(WindowEvent aEvent) {
@@ -199,45 +122,106 @@ public class Main
         loadGuiPrefs();
         setVisible(true);
 
-        setupReceiver(model);
     }
 
     /**
-     * Setup recieving messages.
-     *
-     * @param aModel a <code>MyTableModel</code> value
+     * Constructs the JTable used for displaying the Events logs
+     * @param tableModel
+     * @param tableColumnModel
+     * @return
      */
-    private void setupReceiver(MyTableModel aModel) {
-        int port = DEFAULT_PORT;
-        final String strRep = System.getProperty(PORT_PROP_NAME);
-        if (strRep != null) {
-            try {
-                port = Integer.parseInt(strRep);
-            } catch (NumberFormatException nfe) {
-                LOG.fatal("Unable to parse " + PORT_PROP_NAME +
-                          " property with value " + strRep + ".");
-                JOptionPane.showMessageDialog(
-                    this,
-                    "Unable to parse port number from '" + strRep +
-                    "', quitting.",
-                    "CHAINSAW",
-                    JOptionPane.ERROR_MESSAGE);
-                System.exit(1);
-            }
-        }
+    private JTable buildTable(TableModel tableModel, TableColumnModel tableColumnModel)
+    {
+      final JTable table = new JTable(tableModel, mColumnModel);
+      table.setAutoCreateColumnsFromModel(true);
+      table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+      return table;
+    }
 
-        try {
-            final LoggingReceiver lr = new LoggingReceiver(aModel, port);
-            lr.start();
-        } catch (IOException e) {
-            LOG.fatal("Unable to connect to socket server, quiting", e);
-            JOptionPane.showMessageDialog(
-                this,
-                "Unable to create socket on port " + port + ", quitting.",
-                "CHAINSAW",
-                JOptionPane.ERROR_MESSAGE);
-            System.exit(1);
-        }
+    /**
+     * Constructs all the components required for this frame
+     * and attaches the ChainsawAppender to components that require it
+     * @param model
+     */
+    private void buildComponents(ChainsawAppender model)
+    {
+      // Add control panel
+      final ControlPanel cp = new ControlPanel(model.getWrappedModel());
+      getContentPane().add(cp, BorderLayout.NORTH);
+
+      // Create the table
+      final JTable table = buildTable(model, mColumnModel);
+      final JScrollPane scrollPane = new JScrollPane(table);
+      scrollPane.setBorder(BorderFactory.createTitledBorder("Events: "));
+      scrollPane.setPreferredSize(new Dimension(900, 300));
+
+      // Create the details
+      final JPanel details = new DetailPanel(table, model.getWrappedModel());
+      details.setPreferredSize(new Dimension(900, 100));
+
+      // Add the table and stack trace into a splitter
+      aDetailsDivider = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
+          scrollPane, details);
+      getContentPane().add(aDetailsDivider, BorderLayout.CENTER);
+
+    }
+
+    /**
+     * Initialises the Menu bar for this frame, and bind
+     * actions
+     * @param eventSink
+     */
+    private void buildMenus(EventDetailSink eventSink)
+    {
+      //Create the menu bar.
+      final JMenuBar menuBar = new JMenuBar();
+      setJMenuBar(menuBar);
+      final JMenu menu = new JMenu("File");
+      menu.setMnemonic('F');
+      menuBar.add(menu);
+
+      try {
+          final LoadXMLAction lxa = new LoadXMLAction(this, eventSink);
+          final JMenuItem loadMenuItem = new JMenuItem("Load file...");
+          loadMenuItem.setMnemonic('L');
+          menu.add(loadMenuItem);
+          loadMenuItem.addActionListener(lxa);
+      } catch (NoClassDefFoundError e) {
+          System.err.println("Missing classes for XML parser :" +e );
+          JOptionPane.showMessageDialog(
+              this,
+              "XML parser not in classpath - unable to load XML events.",
+              "CHAINSAW",
+              JOptionPane.ERROR_MESSAGE);
+      } catch (Exception e) {
+          System.err.println("Unable to create the action to load XML files:" + e.getMessage());
+          JOptionPane.showMessageDialog(
+              this,
+              "Unable to create a XML parser - unable to load XML events.",
+              "CHAINSAW",
+              JOptionPane.ERROR_MESSAGE);
+      }
+
+      final RecentFilesMenu recent = new RecentFilesMenu(eventSink);
+      recent.setMnemonic('R');
+      menu.add(recent);
+      PREFS.setRecentFilesMenu(recent);
+      recent.rebuild();
+
+      final JMenuItem prefsMenuItem = new JMenuItem("Preferences");
+      prefsMenuItem.setMnemonic('P');
+      menu.add(prefsMenuItem);
+      prefsMenuItem.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent ae) {
+              new PreferencesDialog(Main.this, mColumnModel).show();
+          }
+      });
+
+      final JMenuItem exitMenuItem = new JMenuItem("Exit");
+      exitMenuItem.setMnemonic('x');
+      menu.add(exitMenuItem);
+      exitMenuItem.addActionListener(ExitAction.INSTANCE);
+
     }
 
     private void loadGuiPrefs() {
@@ -278,31 +262,17 @@ public class Main
     // static methods
     ////////////////////////////////////////////////////////////////////////////
 
-
-    /** initialise log4j **/
-    private static void initLog4J() {
-        final Properties props = new Properties();
-        props.setProperty("log4j.rootCategory", "DEBUG, A1");
-        props.setProperty("log4j.appender.A1",
-                          "org.apache.log4j.ConsoleAppender");
-        props.setProperty("log4j.appender.A1.layout",
-                          "org.apache.log4j.TTCCLayout");
-        PropertyConfigurator.configure(props);
-    }
-
-    /**
-     * The main method.
-     *
-     * @param aArgs ignored
-     */
-    public static void main(String[] aArgs) {
-        initLog4J();
-        new Main();
-    }
-
     private class Shutdown implements Runnable {
         public void run() {
             saveGuiPrefs();
         }
+    }
+
+    /**
+     * @deprecated, should be started from the Start class
+     * @param args
+     */
+    public static void main(String[] args) {
+           Start.main(args);
     }
 }

@@ -56,7 +56,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 /**
  * Encapsulates the action to load an XML file.
@@ -68,8 +68,8 @@ class LoadXMLAction
     extends AbstractAction
 {
     /** use to log messages **/
-    private static final Category LOG =
-        Category.getInstance(LoadXMLAction.class);
+    private static final Logger LOG =
+        Logger.getLogger(LoadXMLAction.class);
 
     /** the parent frame **/
     private final JFrame mParent;
@@ -92,12 +92,12 @@ class LoadXMLAction
      * Creates a new <code>LoadXMLAction</code> instance.
      *
      * @param aParent the parent frame
-     * @param aModel the model to add events to
+     * @param eventSink the eventSink to add events to
      */
-    LoadXMLAction(JFrame aParent, MyTableModel aModel)
+    LoadXMLAction(JFrame aParent, EventDetailSink eventSink)
     {
         mParent = aParent;
-        mHandler = new XMLFileHandler(aModel);
+        mHandler = new XMLFileHandler(eventSink);
     }
 
     /**
@@ -126,5 +126,4 @@ class LoadXMLAction
             }
         }
     }
-
 }

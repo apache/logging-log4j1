@@ -58,6 +58,7 @@ import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
 
 import org.apache.log4j.Logger;
+import javax.swing.table.TableModel;
 
 
 /**
@@ -85,15 +86,14 @@ class MyTableColumnModel extends DefaultTableColumnModel {
 
   /** Map of TableColumns to PreferenceSets */
   private final Map mColPrefMap = new HashMap();
-  private final MyTableModel mTableModel;
+  private final TableModel mTableModel;
 
   /**
    *  Construct a MyTableColumnModel.
-   *
-   *  @param tableModel table model to work with
+   *  @param aTableModel table model to work with
    */
-  public MyTableColumnModel(MyTableModel tableModel) {
-    mTableModel = tableModel;
+  public MyTableColumnModel(TableModel aTableModel) {
+    mTableModel = aTableModel;
   }
 
   /**
