@@ -659,16 +659,7 @@ public class DOMConfigurator implements Configurator {
       DocumentBuilder docBuilder = dbf.newDocumentBuilder();
       docBuilder.setErrorHandler(new SAXErrorHandler());
 
-      Class clazz = this.getClass();
-      URL dtdURL = clazz.getResource("/org/apache/log4j/xml/log4j.dtd");
-      if(dtdURL == null) {
-	LogLog.error("Could not find [log4j.dtd]. Used ["+clazz.getClassLoader()+
-		     "] class loader in the search.");
-      }
-      else {
-	LogLog.debug("URL to log4j.dtd is [" + dtdURL.toString()+"].");
-	inputSource.setSystemId(dtdURL.toString());
-      }
+      docBuilder.setEntityResolver(new Log4jEntityResolver());
       Document doc = docBuilder.parse(inputSource);
       parse(doc.getDocumentElement());
     } catch (Exception e) {
