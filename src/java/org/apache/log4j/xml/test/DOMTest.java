@@ -10,10 +10,10 @@ package org.apache.log4j.xml.test;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.apache.log4j.Category;
 import org.apache.log4j.Priority;
-import org.apache.log4j.xml.examples.ReportParserError;
-import org.apache.xerces.parsers.DOMParser;
-import java.io.FileInputStream;
-import org.xml.sax.InputSource;
+//import org.apache.log4j.xml.examples.ReportParserError;
+//import org.apache.xerces.parsers.DOMParser;
+//import java.io.FileInputStream;
+//import org.xml.sax.InputSource;
 
 /**
    @author Ceki G&uuml;lc&uuml;
@@ -44,19 +44,20 @@ public class DOMTest {
   
   static
   void init(String configFile) {
-    try {
-      DOMParser domParser = new DOMParser();
-      domParser.setFeature("http://xml.org/sax/features/validation", true);
+    DOMConfigurator.configure(configFile);
+    //try {
+      //DOMParser domParser = new DOMParser();
+      //domParser.setFeature("http://xml.org/sax/features/validation", true);
       //domParser.setFeature("http://xml.org/sax/features/namespaces", true); 
-      domParser.setErrorHandler(new ReportParserError());      
-      domParser.parse(new InputSource(configFile));
-      DOMConfigurator.configure(domParser.getDocument().getDocumentElement() );
-    }
-    catch(Exception e) {
-      System.err.println("Could not initialize test program.");
-      e.printStackTrace();
-      System.exit(1);		
-    }
+      //domParser.setErrorHandler(new ReportParserError());      
+      //domParser.parse(new InputSource(configFile));
+      //DOMConfigurator.configure(domParser.getDocument().getDocumentElement() );
+      //}
+    //catch(Exception e) {
+    //System.err.println("Could not initialize test program.");
+    //e.printStackTrace();
+    //System.exit(1);		
+    //}
   }
 
   static
