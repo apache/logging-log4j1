@@ -447,7 +447,7 @@ public class PropertyConfigurator extends BasicConfigurator
     for(int i = 0; i < options.length; i++) {
       value =  OptionConverter.findAndSubst(prefix + options[i], props);
       LogLog.debug(
-         "Option " + options[i] + "=[" + (value == null? "null" : value)+"].");
+         "Option " + options[i] + "=[" + (value == null? "N/A" : value)+"].");
       // Some option handlers assume that null value are not passed to them.
       // So don't remove this check
       if(value != null) {

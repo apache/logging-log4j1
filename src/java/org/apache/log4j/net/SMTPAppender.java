@@ -370,12 +370,10 @@ public class SMTPAppender extends AppenderSkeleton {
                 OptionConverter.instantiateByClassName(value, 
 					   TriggeringEventEvaluator.class,
 						       evaluator);    
-    }
-    else if (option.equals(BUFFER_SIZE_OPTION)) {
+    } else if (option.equals(BUFFER_SIZE_OPTION)) {
       bufferSize = OptionConverter.toInt(value, bufferSize);    
       cb.resize(bufferSize);
-    }
-    else if (option.equals(LOCATION_INFO_OPTION))
+    } else if (option.equals(LOCATION_INFO_OPTION))
       locationInfo = OptionConverter.toBoolean(value, locationInfo);
   }
 }
