@@ -64,6 +64,7 @@ public class T113 {
     ht.put("categoryName", event.categoryName);
     ht.put("renderedMessage", event.getRenderedMessage());
     ht.put("priorityStr", event.priority.toString());
+    ht.put("throwableInfo", event.getThrowableInformation());
     return ht;
   }
    

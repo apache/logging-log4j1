@@ -30,7 +30,7 @@ public class T12 {
 					    ht.get("message"), 
 					    (Throwable) ht.get("throwable"));
       event.getThreadName();
-
+      
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
       ObjectOutputStream oos = new ObjectOutputStream(baos);
       oos.writeObject(event);
@@ -63,6 +63,7 @@ public class T12 {
     ht.put("categoryName", event.categoryName);
     ht.put("renderedMessage", event.getRenderedMessage());
     ht.put("priorityStr", event.level.toString());
+    ht.put("throwableInfo", event.getThrowableInformation());
     return ht;
   }
    

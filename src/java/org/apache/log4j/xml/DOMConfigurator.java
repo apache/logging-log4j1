@@ -747,9 +747,6 @@ public class DOMConfigurator implements Configurator {
     if(!"".equals(thresholdStr) && !"null".equals(thresholdStr)) {
       repository.setThreshold(thresholdStr);
     }
-    
-
-
 
     //Hashtable appenderBag = new Hashtable(11);
 
