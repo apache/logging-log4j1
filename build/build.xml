@@ -373,7 +373,8 @@
 		          src/**, 
 			  docs/**, 
 			  Makefile, 
-			  build/*
+			  build/*, build.bat, build.sh,
+			  build/lib/*.jar,
                           manifest.mf, 
 			  INSTALL, 
 			  LICENSE.APL, 
