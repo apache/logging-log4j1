@@ -212,7 +212,7 @@ public class LogPanel extends DockablePanel implements SettingsListener,
   private final LogPanelLoggerTreeModel logTreeModel =
     new LogPanelLoggerTreeModel();
   private Layout detailPaneLayout = new EventDetailLayout();
-  private Layout toolTipLayout = new EventDetailLayout();
+  private Layout toolTipLayout = detailPaneLayout;
 
   //used for consistency - stays empty - used to allow none set in the colordisplay selector and right click
   Set noneSet = new HashSet();
