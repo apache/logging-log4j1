@@ -14,6 +14,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.joran.action.ActionConst;
 import org.apache.joran.action.AppenderAction;
 import org.apache.joran.action.AppenderRefAction;
+import org.apache.joran.action.LayoutAction;
 import org.apache.joran.action.LevelAction;
 import org.apache.joran.action.LoggerAction;
 import org.apache.joran.action.ParamAction;
@@ -63,7 +64,7 @@ public class JoranParserTest extends TestCase {
 		LogManager.shutdown();
 	}
 
-  public void testLoop() throws Exception {
+  public void xtestLoop() throws Exception {
   	logger.debug("Starting testLoop");
 
 	 DocumentBuilderFactory dbf = null;
@@ -90,7 +91,7 @@ public class JoranParserTest extends TestCase {
   }
 
 	public void testLoop2() throws Exception {
-			logger.debug("Starting testLoop");
+			logger.debug("Starting testLoop2");
 
 		 DocumentBuilderFactory dbf = null;
 
@@ -102,7 +103,6 @@ public class JoranParserTest extends TestCase {
 
 			 Document doc = docBuilder.parse("file:input/joran/parser2.xml");
 			 RuleStore rs = new SimpleRuleStore();
-			 logger.debug("pattern: "+new Pattern("log4j:configuration/logger"));
 			 rs.addRule(new Pattern("log4j:configuration/logger"), new LoggerAction());
 			 rs.addRule(new Pattern("log4j:configuration/logger/level"), new LevelAction());
 			 rs.addRule(new Pattern("log4j:configuration/root"), new RootLoggerAction());
@@ -110,6 +110,7 @@ public class JoranParserTest extends TestCase {
 		   rs.addRule(new Pattern("log4j:configuration/logger/appender-ref"), new AppenderRefAction());
 		   rs.addRule(new Pattern("log4j:configuration/root/appender-ref"), new AppenderRefAction());
 		   rs.addRule(new Pattern("log4j:configuration/appender"), new AppenderAction());
+		   rs.addRule(new Pattern("log4j:configuration/appender/layout"), new LayoutAction());
 	     rs.addRule(new Pattern("*/param"), new ParamAction());
 			 JoranParser jp = new JoranParser(rs);
 			 ExecutionContext ec = jp.getExecutionContext();

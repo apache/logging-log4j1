@@ -126,7 +126,7 @@ public class PropertySetter {
         setProperty(key, value);
       }
     }
-    activate();
+    //activate();
   }
   
   /**
@@ -354,9 +354,9 @@ public class PropertySetter {
     return null;
   }
   
-  public void activate() {
-    if (obj instanceof OptionHandler) {
-      ((OptionHandler) obj).activateOptions();
-    }
-  }
+  //public void activate() {
+    //if (obj instanceof OptionHandler) {
+      //((OptionHandler) obj).activateOptions();
+    //}
+  //}
 }

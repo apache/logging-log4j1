@@ -3,18 +3,14 @@
 
 TODO
 
-- Improve the concurrency model of the Logger class
+- Improve the concurrency model of the Logger class (partially done)
 - Log4j self configuration
-
 
 - Add support for string options in SocketAppender
 - Add a properties file option to log4j:configure in XML.
 
-
 - Graceful congiguration merging
-- Integrate tons of GUI code.
 - JDBCAppender.
-- Time based rolling.
 - SSL logging.
 - Authenticated logging.
 

@@ -258,7 +258,9 @@ public class DOMConfigurator implements Configurator {
         }
       }
 
-      propSetter.activate();
+      if(appender instanceof OptionHandler) {
+       ((OptionHandler)appender).activateOptions();
+      }
 
       return appender;
     }
@@ -407,7 +409,10 @@ public class DOMConfigurator implements Configurator {
         }
       }
 
-      propSetter.activate();
+			if(eh instanceof OptionHandler) {
+			 ((OptionHandler)eh).activateOptions();
+			}
+
       appender.setErrorHandler(eh);
     }
   }
@@ -439,7 +444,11 @@ public class DOMConfigurator implements Configurator {
         }
       }
 
-      propSetter.activate();
+			if(filter instanceof OptionHandler) {
+			 ((OptionHandler)filter).activateOptions();
+			}
+
+
       LogLog.debug(
         "Adding filter of type [" + filter.getClass()
         + "] to appender named [" + appender.getName() + "].");
@@ -551,7 +560,9 @@ public class DOMConfigurator implements Configurator {
       }
     }
 
-    propSetter.activate();
+		if(cat instanceof OptionHandler) {
+		 ((OptionHandler)cat).activateOptions();
+		}
   }
 
   protected void parseRenderer(Element element) {
