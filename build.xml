@@ -324,6 +324,7 @@
 	        ${stem}/helpers/*.class,
 		${stem}/spi/*.class,
 		${stem}/net/*.class,
+		${stem}/jdbc/*.class,
 		${stem}/varia/*.class,
 		${stem}/chainsaw/*.class,
 		${stem}/nt/*.class,

@@ -159,7 +159,7 @@
 	    href="http://jakarta.apache.org/taglibs/index.html">Jakarta
 	    Taglibs</a> project.</dd>
 
-	<!-- ============================================================================== -->
+	<!-- =========================================================================== -->
 
 	<dt><a href="http://www.m2technologies.net/asp/snmpTrapAppender.asp">
 	    <b>SNMPTrapAppender</b></a>
@@ -171,7 +171,7 @@
 	  SNMP trap.
 	</dd>
 
-	<!-- ============================================================================== -->
+	<!-- =========================================================================== -->
 
       </dl>
     </section>
@@ -179,73 +179,87 @@
     <section name="Ports to other languages">
 
       <dl>	
-	<dt><a href="http://sourceforge.net/projects/log4cpp/"><b>log4cpp</b></a></dt>
-	<dd>A library of C++ classes for flexible logging to files, syslog, IDSA and 
-	  other destinations modeled after log4j by Bastiaan Bakker.</dd>
-
-
-	<dt><a href="http://log4cplus.sourceforge.net/"><b>log4cplus</b></a></dt>	
-	<dd>A competing port to C++.</dd>
-	
-
-	<dt><a
-	href="http://www.its4you.at/log4py.php"><b>log4py</b></a></dt>
-
-	<dd>Log4Py is a python logging module similar to log4j. It
-	supports logging to files or to stdout/stderr, variable
-	log-levels, configurable output formats and configuration via
-	configuration files. For an example output see the screenshot
-	below.</dd>
-
-	<dt><a
-	href="http://log4p.sourceforge.net"><b>log4p</b></a></dt>
-	<dd>Another Python translation of log4j. This project no
-	longer seems to be maintained.</dd>
-
-
-
+	<!-- =========================================================================== -->
 	<dt><a
 	href="http://log4c.sourceforge.net"><b>log4c</b></a></dt>
 
 	<dd>ANSI C functions and macros for flexible logging to files
-	and other destinations. It is modeled after the Log for Java
-	library (http://www.log4j.org), staying as close to their API
-	as is reasonable. Intended for use in time-space critical
-	environments.</dd>
+	and other destinations. It is modeled after log4j. It follows
+	the log4j API within the limits of reason. Intended for use in time-space
+	critical environments.</dd> 
 
-
+	<!-- =========================================================================== --> 
+	
+	<dt><a
+	href="http://sourceforge.net/projects/log4cpp/"><b>log4cpp</b></a></dt>
+	<dd>A library of C++ classes for flexible logging to files,
+	syslog, IDSA and other destinations modeled after log4j.</dd>
+	
+	<!-- ========================================================================== --> 
 
 	<dt><a
-	href="http://www.neoworks.com/products/log4net/"><b>log4net</b></a></dt>
+	href="http://log4cplus.sourceforge.net/"><b>log4cplus</b></a></dt>
+	<dd>A competing port to C++.</dd> 
 
-	<dd>The .NET implementation of the popular log4j Java API
-	providing flexible and arbitrarily granular control over log
-	management and configuration.</dd>
-
-	<dt><a
-	href="http://log4r.sourceforge.net"><b>log4r</b></a></dt>
-
-	<dd>A Powerful Logger for Ruby. 
-
-
-	  <p>Log4r features an extremely flexible logging library for
-	    Ruby. Killer features include a heiarchial logging system
-	    of any number of levels, logger inheritance, multiple
-	    output destinations, tracing, custom formatting and more.
-	    Log4r was inspired by log4j. Log4r provides the defining
-	    features of log4j and some of its own features that just
-	    might make log4j users envious.</p>
-
-	    
-	</dd>
-
+	<!-- =========================================================================== -->
+	
 	<dt><a
 	href="http://goanna.sourceforge.net/"><b>log4E</b></a></dt>
 
 	<dd>The Goanna project (Eiffel Web Services) now includes
 	log4E, a complete port of log4j. 
 	</dd>
+	
+	<!-- =========================================================================== -->
+	
+	<dt><a
+	href="http://www.neoworks.com/products/log4net/"><b>log4net</b></a></dt>
 
+	<dd>The .NET implementation of the popular log4j Java API
+	providing flexible and arbitrarily granular control over log
+	management and configuration.</dd>
+	
+	<!-- =========================================================================== -->
+	<dt><a
+	href="http://www.its4you.at/log4py.php"><b>log4py</b></a></dt>
+
+	<dd>Log4Py is a python logging module similar to log4j. It
+	supports logging to files or to stdout/stderr, variable
+	log-levels, configurable output formats and configuration via
+	configuration files. 
+	</dd>
+	
+	<!-- =========================================================================== -->
+	
+	<dt><a
+	href="http://log4p.sourceforge.net"><b>log4p</b></a></dt>
+	<dd>Another Python translation of log4j. This project no
+	longer seems to be maintained.</dd>
+	
+	<!-- =========================================================================== -->
+
+	<dt><a href="http://log4plsql.sourceforge.net/"><b>log4plsql</b></a></dt>
+
+	<dd>Log4plsql is a Oracle PL/SQL logging module similar to
+	log4j. It supports logging out-off transaction. It is useful
+	for logging, benchmarking and monitoring PL/SQL applications.
+	</dd>
+	
+	<!-- =========================================================================== -->
+
+	<dt><a
+	href="http://log4r.sourceforge.net"><b>log4r</b></a></dt>
+	<dd>A Powerful Logger for Ruby. 
+	  <p>Log4r features an extremely flexible logging library for
+	    Ruby. Killer features include a heiarchial logging system
+	    of any number of levels, logger inheritance, multiple
+	    output destinations, tracing, custom formatting and more.
+	    Log4r was inspired by log4j. Log4r provides the defining
+	    features of log4j and some of its own features that just
+	    might make log4j users envious.</p>	    
+	</dd>	
+	
+	<!-- =========================================================================== -->
       </dl>
       
       
