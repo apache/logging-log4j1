@@ -20,21 +20,12 @@ public class ShortSocketServer  {
   static Category cat = Category.getInstance(ShortSocketServer.class.getName());
 
   static int port;
-  static int delay;
-
-  static
-  void delay(int amount) {
-    try {
-      Thread.currentThread().sleep(amount);
-    }
-    catch(Exception e) {}
-  }
   
   public 
   static 
   void main(String argv[]) {
-    if(argv.length == 3) 
-      init(argv[0], argv[1], argv[2]);
+    if(argv.length == 2) 
+      init(argv[0], argv[1]);
     else 
       usage("Wrong number of arguments.");     
     
@@ -66,20 +57,13 @@ public class ShortSocketServer  {
   }
     
   static
-  void init(String portStr, String configFile, String delayStr) {
+  void init(String portStr, String configFile) {
     try {
       port   = Integer.parseInt(portStr);      
     }
     catch(java.lang.NumberFormatException e) {
       e.printStackTrace();
       usage("Could not interpret port number ["+ portStr +"].");
-    }
-    try {
-      delay  = Integer.parseInt(delayStr);
-    }
-    catch(java.lang.NumberFormatException e) {
-      e.printStackTrace();
-      usage("Could not interpret delay number ["+ delayStr +"].");
     }
     PropertyConfigurator.configure(configFile);    
   }
