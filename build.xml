@@ -338,7 +338,7 @@
 
   <target name="chainsaw" depends="build">
     <!-- Need to fork to avoid problems -->
-    <java classname="org.apache.log4j.chainsaw.Main" fork="yes"
+    <java classname="org.apache.log4j.chainsaw.Start" fork="yes"
           classpath="${javac.dest};${ant.home}/lib/crimson.jar">
     </java>
   </target>
@@ -410,7 +410,7 @@
 					<attribute name="Implementation-Version" value="${version}"/>
 					<attribute name="Implementation-Vendor" value="APache Software Foundation"/>
 				</section>
-				<attribute name="Main-Class" value="org.apache.log4j.chainsaw.Main"/>
+				<attribute name="Main-Class" value="org.apache.log4j.chainsaw.Start"/>
 				<attribute name="Class-Path" value="${log4j.jar}"/>
 			</manifest>
 		</jar>
