@@ -1,7 +1,7 @@
 #ifndef NtEventLogAppender_h
 #define NtEventLogAppender_h
-#include "org_log4j_Priority.h"
-#include "org_log4j_nt_NTEventLogAppender.h"
+#include "org_apache_log4j_Priority.h"
+#include "org_apache_log4j_nt_NTEventLogAppender.h"
 #include <windows.h>
 
 // Borrowed unabashedly from the JNI Programmer's Guide
@@ -24,10 +24,10 @@ char *JNU_GetStringNativeChars(JNIEnv *env, jstring jstr) {
   jthrowable exc;
   char *nstr = 0;
   
-  if (env->EnsureLocalCapacity(2) < 0) {
-    // out of memory
-    return 0;
-  }
+  //if (env->EnsureLocalCapacity(2) < 0) {
+  // out of memory
+  //return 0;
+  //}
 
   if (midStringGetBytes == 0) {
     // Lookup and cache the String.getBytes() method id.
@@ -88,18 +88,15 @@ WORD getType(jint priority) {
   WORD ret_val;
   
   switch (priority) {
-  case org_log4j_Priority_EMERG_INT:
-  case org_log4j_Priority_ALERT_INT:
-  case org_log4j_Priority_CRIT_INT:
-  case org_log4j_Priority_ERROR_INT:
+  case org_apache_log4j_Priority_FATAL_INT:
+  case org_apache_log4j_Priority_ERROR_INT:
     ret_val = EVENTLOG_ERROR_TYPE;
     break;
-  case org_log4j_Priority_WARN_INT:
+  case org_apache_log4j_Priority_WARN_INT:
     ret_val = EVENTLOG_WARNING_TYPE;
     break;
-  case org_log4j_Priority_NOTICE_INT:
-  case org_log4j_Priority_INFO_INT:
-  case org_log4j_Priority_DEBUG_INT:
+  case org_apache_log4j_Priority_INFO_INT:
+  case org_apache_log4j_Priority_DEBUG_INT:
   default:
     ret_val = EVENTLOG_INFORMATION_TYPE;
     break;
@@ -154,7 +151,7 @@ void addRegistryInfo(char *source) {
  * Method:    registerEventSource
  * Signature: (Ljava/lang/String;Ljava/lang/String;)I
  */
-JNIEXPORT jint JNICALL Java_org_log4j_nt_NTEventLogAppender_registerEventSource(
+JNIEXPORT jint JNICALL Java_org_apache_log4j_nt_NTEventLogAppender_registerEventSource(
    JNIEnv *env, jobject java_this, jstring server, jstring source) {
   
   char *nserver = 0;
@@ -174,11 +171,11 @@ JNIEXPORT jint JNICALL Java_org_log4j_nt_NTEventLogAppender_registerEventSource(
 }
 
 /*
- * Class:     org_log4j_nt_NTEventLogAppender
+ * Class:     org_apache_log4j_nt_NTEventLogAppender
  * Method:    reportEvent
  * Signature: (ILjava/lang/String;I)V
  */
-JNIEXPORT void JNICALL Java_org_log4j_nt_NTEventLogAppender_reportEvent(
+JNIEXPORT void JNICALL Java_org_apache_log4j_nt_NTEventLogAppender_reportEvent(
    JNIEnv *env, jobject java_this, jint handle, jstring jstr, jint priority) {
   
   jboolean localHandle = JNI_FALSE;
@@ -215,7 +212,7 @@ JNIEXPORT void JNICALL Java_org_log4j_nt_NTEventLogAppender_reportEvent(
  * Method:    deregisterEventSource
  * Signature: (I)V
  */
-JNIEXPORT void JNICALL Java_org_log4j_nt_NTEventLogAppender_deregisterEventSource(
+JNIEXPORT void JNICALL Java_org_apache_log4j_nt_NTEventLogAppender_deregisterEventSource(
 JNIEnv *env, 
 jobject java_this, 
 jint handle)

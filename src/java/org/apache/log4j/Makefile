@@ -21,7 +21,7 @@ JSOURCES:=HTMLLayout.java\
 	Appender.java \
 	Priority.java\
 
-SUBDIRS :=helpers spi or xml gui net nt varia test performance examples 
+SUBDIRS :=helpers spi or xml net nt varia test performance examples gui
 
 
 # include master-rule file

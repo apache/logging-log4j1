@@ -17,7 +17,7 @@ import java.io.*;
    Append to the NT event log system. 
 
    <p><b>WARNING</b> This appender can only be installed and used on a
-   Windows system.
+   Windows system under <b>JDK 1.2</b> or above.
 
    <p>Do not forget to place the file NTEventLogAppender.dll in a
    directory that is on the PATH of the Windows system. Otherwise, you

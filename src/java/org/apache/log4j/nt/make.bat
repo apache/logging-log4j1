@@ -2,13 +2,14 @@
 
 REM This batch file is not intended for general use.
 
-javah org.log4j.nt.NTEventLogAppender
-javah org.log4j.Priority
+javah org.apache.log4j.nt.NTEventLogAppender
+javah org.apache.log4j.Priority
 
 MC EventLogCategories.mc
 
 RC -r -fo EventLogCategories.res EventLogCategories.rc
 
+#SET JDK=c:\java\jdk1.1.7B\
 SET JDK=c:\java\jdk1.3\
 
 @echo "Compiling"

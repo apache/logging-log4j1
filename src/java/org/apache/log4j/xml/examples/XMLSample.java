@@ -4,9 +4,6 @@ package org.apache.log4j.xml.examples;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.apache.log4j.Category;
 import org.apache.log4j.Priority;
-import org.apache.xerces.parsers.DOMParser;
-import java.io.FileInputStream;
-import org.xml.sax.InputSource;
 import java.net.*;
 
 /**
@@ -49,31 +46,7 @@ public class XMLSample {
   
   static
   void init(String configFile) {
-    try {
-      DOMParser domParser = new DOMParser();
-      // We want validation.
-      domParser.setFeature("http://xml.org/sax/features/validation", true);
-      domParser.setErrorHandler(new ReportParserError());
-      InputSource inputSource = new InputSource(new FileInputStream(configFile));
-      // log4j.dtd is placed in org.apache.log4j/xml/log4j.dtd. The
-      // DOMConfigurator class is placed in the same directory and can
-      // find it.
-      URL dtdURL = DOMConfigurator.class.getResource("log4j.dtd");
-      if(dtdURL == null) {
-	System.err.println("Could not find log4j.dtd.");
-      }
-      else {
-	System.err.println("URL to log4j.dtd is " + dtdURL.toString());
-	inputSource.setSystemId(dtdURL.toString());
-      }
-      domParser.parse(inputSource);      
-      DOMConfigurator.configure(domParser.getDocument().getDocumentElement() );
-    }
-    catch(Exception e) {
-      System.err.println("Could not initialize XMLSample program.");
-      e.printStackTrace();
-      System.exit(1);		
-    }
+    DOMConfigurator.configure(configFile);
   }
 
   static
