@@ -4,7 +4,7 @@
   <!-- The build.properties file defines the parth to local jar files -->
   <property file="build.properties"/>
 
-  <property name="version" value="1.3alpha-4"/>
+  <property name="version" value="1.3alpha-5"/>
 
   <!-- The base directory relative to which most targets are built -->
   <property name="base" value="."/>
@@ -57,9 +57,6 @@
   <!-- Some targets needs a more precise stem. -->
   <property name="BSTEM" value="${java.source.dir}/${stem}"/>
 
-  <!-- Original manifest.mf file before filtering. -->
-  <property name="manifest.src" value="build/manifest.mf"/>
-
   <!-- Directory where release images go. -->
   <property name="dist.images"  value="dist/images"/>
 
@@ -82,7 +79,7 @@
     <pathelement location="${servlet-api.jar}"/>
     <pathelement location="${jdbc-stdext.jar}"/>
     <pathelement location="${jndi.jar}"/>
-    <pathelement location="${regexp.oro.jar}"/>
+    <pathelement location="${jakarta-oro.jar}"/>
   </path>
 
   <!-- Construct classpath for building the html pages-->
@@ -102,14 +99,22 @@
 
     These are the targets supported by this ANT build scpript:
 
-    build   - compile all project files, if a certain library is missing,
-              then the compilation of its dependents are skipped.
-
+    build.core - compile core log4j classes
+    
+    build.jms - build classes dependent on the JMS API.
+    build.db - build classes dependent on JDBC API
+    build.smtp - build classes dependent on Java Mail API
+    build.xml - 	
+    build   - compile all project files
+    
+    log4j.jar - build the core log4j jar
+    log4j-'dep'.jar - where 'dep' is one of "jms", "db", "smtp" and "xml".
+    jar     - build all jar files
+    	
     javadoc - build project javadoc files
-
-    jar     - build log4j-core and log4j jar files
-
+    	
     dist    - will create a complete distribution in dist/
+    	
     </echo>
   </target>
 
@@ -147,12 +152,18 @@
     <available classname="org.apache.oro.text.perl.Perl5Util" property="oro-present">
       <classpath refid="compile.classpath"/>
     </available>
+  	
+  	<fail unless="oro-present">
+  	  		
+  	        Missing org.apache.oro.* classes.
+  	  		
+  	        Please make sure to that the "jakarta-oro.jar" poperty in build.properties 
+  	        file is set correctly.
+  	  		
+  	  	</fail>
+    	
   </target>
 
-  <target name="oro" depends="oroCheck" if="oro-present">
-    <echo message="ORO is present."/>
-  </target>
-	  	
   <target name="jmsCheck" depends="jndiCheck">
     <available classname="javax.jms.Message" property="jms-present">
      <classpath refid="compile.classpath"/>
@@ -182,24 +193,33 @@
 
   </target>
 
-
   <target name="servletAPICheck">
     <available classname="javax.servlet.ServletContext" property="servletAPI-present">
-     <classpath refid="compile.classpath"/>
+      <classpath refid="compile.classpath"/>
     </available>
+  	<fail unless="servletAPI-present">
+       Missing javax.servlet.* classes.
+  	  		
+       Please make sure to that the "servlet-api.jar" poperty in build.properties 
+       file is set correctly.
+  	  		
+  	</fail>
   </target>
-  <target name="servletAPI" depends="servletAPICheck" if="servletAPI-present">
-    <echo message="Servlet API is present."/>
-  </target>
+
 
   <target name="jdbcExtensionCheck">
     <available classname="javax.sql.DataSource" property="jdbcExtension-present">
      <classpath refid="compile.classpath"/>
     </available>
+  	<fail unless="jdbcExtension-present">
+  	    Missing javax.sql.* classes.
+  	  	  		
+  	    Please make sure to that the "jdbc-stdext.jar" poperty in build.properties 
+  	    file is set correctly.
+  	  	  		
+  	</fail>
   </target>
-  <target name="jdbcExtension" depends="jdbcExtensionCheck" if="jdbcExtension-present">
-    <echo message="JDBC Standard Extension is present."/>
-  </target>
+
 
   <target name="init">
     <tstamp />
@@ -207,15 +227,10 @@
   	<mkdir dir="${examples.javac.dest}/" />
   </target>
 
-  <target name="build.log4j" description="Compile log4j, but not chainsaw or examples."
-	      depends="init, build.core,  
-	               build.xml, 
-  	               build.servletAPI, 
-  	               build.oro"/>
-
 
   <target name="build" description="Compile all log4j components."
-	      depends="build.log4j, build.examples, build.chainsaw"/>
+	      depends="build.core, build.oro, build.jms, build.smtp, 
+  	               build.examples, build.chainsaw"/>
 
   <target name="requiredepsCheck" 
   	depends="jndiCheck,jmsCheck,oroCheck,javamailCheck,servletAPICheck,jdbcExtensionCheck,jaxpCheck"
@@ -243,7 +258,8 @@
            destdir="${javac.dest}"
            includes="org/apache/ugli/**/*.java,
     	            ${stem}/**/*.java, 
-    	            ${stem}/xml/XMLLayout.java,"
+    	            ${stem}/xml/DOMConfigurator.java,
+    	            ${stem}/xml/XMLLayout.java"
            excludes="org/apache/ugli/impl/JDK14*.java,
     	             **/UnitTest*.java,
                      **/StressCategory.java,
@@ -286,7 +302,7 @@
  <!-- ================================================= -->
  <!--                Compile examples                   -->
  <!-- ================================================= -->
- 
+
   <target name="build.examples" depends="build.core">
     <mkdir dir="${examples.javac.dest}" />
     <javac srcdir="${examples.src}"
@@ -302,22 +318,43 @@
     <rmic base="${examples.javac.dest}" classname="factor.NumberCruncherServer" />
   </target>
 
+  <target name="ugli.jar">
+    <ant antfile="ugli.xml" target="jar"/> 
+  </target>	  
+	
  <target name="build.xml" depends="init, jaxpCheck">
     <javac srcdir="${java.source.dir}"
            destdir="${javac.dest}"
            includes="${stem}/xml/**/*.java"
-           excludes="${stem}/xml/examples/doc-files/**.java,
-                     ${stem}/xml/Transform.java"
+           excludes="${stem}/xml/DOMConfigurator.java,
+    	             ${stem}/xml/examples/doc-files/**.java"
            deprecation="${deprecation}"
            debug="${debug}"
     >
       <classpath refid="compile.classpath"/>
     </javac>
     <copy file="${BSTEM}/xml/log4j.dtd"
-    tofile="${javac.dest}/${stem}/xml/log4j.dtd" />
+      tofile="${javac.dest}/${stem}/xml/log4j.dtd" />
     <copy file="${BSTEM}/xml/logger.dtd"
     tofile="${javac.dest}/${stem}/xml/logger.dtd" />
   </target>
+	
+  <target name="log4j-xml.jar" depends="init, jaxpCheck, build.xml">
+	    <jar jarfile="log4j-xml.jar" basedir="${javac.dest}"
+	         includes="${stem}/xml/*.class,
+	    	           ${stem}/xml/*.dtd"
+	    	  excludes="${stem}/xml/DOMConfigurator.java"
+	    >
+	     <manifest>
+	        <section name="org/apache/log4j/">
+	          <attribute name="Implementation-Title" value="log4j-xml"/>
+	          <attribute name="Implementation-Version" value="${version}"/>
+	          <attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
+	        </section>
+	      </manifest>
+	  	</jar>
+	  </target>
+	
 
   <target name="build.smtp" depends="init, javamailCheck">
     <javac srcdir="${java.source.dir}"
@@ -332,16 +369,24 @@
 
   <target name="log4j-smtp.jar" depends="init, build.smtp"
 	          if="javamail-present">
-    <jar jarfile="log4j-smtp-${version}.jar" basedir="${javac.dest}"
+    <jar jarfile="log4j-smtp.jar" basedir="${javac.dest}"
            includes="${stem}/spi/TriggeringEventEvaluator.class,
     	             ${stem}/net/SMTPAppender.class,
     	             ${stem}/net/DefaultEvaluator.class"
-    	>
+    >
+     <manifest>
+        <section name="org/apache/log4j/">
+          <attribute name="Implementation-Title" value="log4j-jms"/>
+          <attribute name="Implementation-Version" value="${version}"/>
+          <attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
+        </section>
+      </manifest>
   	</jar>
   </target>
-	  
+
+  <!-- Jakarta-ORO dependencies -->	 
 	
-  <target name="build.oro" depends="init, oro" if="oro-present">
+  <target name="build.oro" depends="init, oroCheck">
     <javac srcdir="${java.source.dir}"
            destdir="${javac.dest}"
            deprecation="${deprecation}"
@@ -352,7 +397,25 @@
       <classpath refid="compile.classpath"/>
     </javac>
   </target>
-  
+	
+  <target name="log4j-oro.jar" depends="init, oroCheck, build.oro">
+    <jar jarfile="log4j-oro.jar" basedir="${javac.dest}"
+	     includes="${stem}/varia/LogFilePatternReceiver*.java,
+                  ${stem}/rule/LikeRule.java"
+	 	>
+        <manifest>
+          <section name="org/apache/log4j/">
+            <attribute name="Implementation-Title" value="log4j-oro"/>
+            <attribute name="Implementation-Version" value="${version}"/>
+            <attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
+          </section>
+        </manifest>
+
+  	</jar>
+  </target>
+		
+  <!-- JMS API dependencies -->	 
+	
   <target name="build.jms" depends="init, jmsCheck, jndi">
     <javac srcdir="${java.source.dir}"
            debug="${debug}"
@@ -372,11 +435,17 @@
 	   	             ${stem}/net/JMSReceiver.class,
 	   	             ${stem}/or/jms/*.class"
 	  >
+        <manifest>
+          <section name="org/apache/log4j/">
+            <attribute name="Implementation-Title" value="log4j-jms"/>
+            <attribute name="Implementation-Version" value="${version}"/>
+            <attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
+          </section>
+        </manifest>
 	  </jar>
   </target>
 
-  <target name="build.servletAPI" depends="init, servletAPI"
-          if="servletAPI-present">
+  <target name="build.servletAPI" depends="init, servletAPICheck">
     <javac srcdir="${java.source.dir}"
            destdir="${javac.dest}"
            debug="${debug}"
@@ -386,8 +455,7 @@
     </javac>
   </target>
 
-  <target name="build.db" depends="init, jdbcExtension"
-          if="jdbcExtension-present">
+  <target name="build.db" depends="init, jdbcExtensionCheck">
     <javac srcdir="${java.source.dir}"
            destdir="${javac.dest}"
            deprecation="${deprecation}"
@@ -397,12 +465,37 @@
     </javac>
   </target>
 	
-  <target name="log4j-db.jar" depends="init, jdbcExtension"
-			          if="jdbcExtension-present">
-     <jar jarfile="log4j-db-${version}.jar" basedir="${javac.dest}"
-	       includes="${stem}/db/**.class"/>
+  <target name="log4j-db.jar" depends="init, jdbcExtensionCheck">
+    <jar jarfile="log4j-db.jar" basedir="${javac.dest}"
+	     includes="${stem}/db/**.class"
+  	>
+      <manifest>
+        <section name="org/apache/log4j/">
+          <attribute name="Implementation-Title" value="log4j-db"/>
+          <attribute name="Implementation-Version" value="${version}"/>
+          <attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
+        </section>
+      </manifest>
+    </jar>	
   </target>
   
+  <target name="log4j-optional.jar" depends="init, build.core">
+    <jar jarfile="log4j-optional.jar" basedir="${javac.dest}"
+	     includes="${stem}/net/Multicast*.class,
+                   ${stem}/net/UDP*.class,
+	               ${stem}/net/SocketHub*.class,
+	               ${stem}/net/Telnet*.class"
+	>
+	  <manifest>
+	    <section name="org/apache/log4j/">
+	      <attribute name="Implementation-Title" value="log4j-db"/>
+	      <attribute name="Implementation-Version" value="${version}"/>
+	      <attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
+	    </section>
+	  </manifest>
+	</jar>	
+  </target>
+	
   <!-- ================================================================= -->
   <!-- Remove all generated (compiled) class files.                      -->
   <!-- ================================================================= -->
@@ -410,19 +503,23 @@
     <delete>
   	 <fileset dir="${javac.dest}/" includes="**/*"/>
    	 <fileset dir="${examples.javac.dest}/" includes="**/*"/>
+     <fileset dir="." includes="log4j*.jar"/>
+     <fileset dir="." includes="ugli-*.jar"/>
     </delete>	
   </target>
 
   <!-- ================================================================= -->
   <!-- Actual work is done in the dependencies.                         -->
   <!-- ================================================================= -->
-  <target name="jar" depends="log4j.jar, chainsaw.jar">
+  <target name="jar" depends="ugli.jar, log4j.jar, log4j-optional.jar, 
+  	                          chainsaw.jar, log4j-jms.jar,  log4j-smtp.jar, 
+  	                          log4j-db.jar, log4j-oro.jar, log4j-xml.jar">
   </target>
 
   <!-- ================================================================= -->
   <!-- Create log4j.jar, excluding tests and other odds and ends.        -->
   <!-- ================================================================= -->
-  <target name="log4j.jar" depends="build.log4j">
+  <target name="log4j.jar" depends="build.core, build.servletAPI">
     
     <delete file="${log4j.jar}" verbose="true"/>
     <delete file="${path2ugli.properties}"/>
@@ -444,7 +541,6 @@
                 ${stem}/spi/**/*.class,
                 ${stem}/net/*.class,
                 ${stem}/html/**/*.class,
-                ${stem}/varia/*.class,
                 ${stem}/filter/*.class,    	
                 ${stem}/rule/*.class,    	    	
                 ${stem}/rolling/**/*.class,
@@ -455,17 +551,26 @@
                 ${stem}/pattern/*.class,
                 ${stem}/or/*.class,
                 ${stem}/or/sax/*.class,
-                ${stem}/plugins/*.class,
+    	        ${stem}/varia/ListAppender.class
+    	        ${stem}/plugins/*.class,
                 ${stem}/config/*.class"
       excludes="org/apache/ugli/**/JDK14*.class,
     	         **/UnitTest**, 
+    	        ${stem}/xml/**,
     	        ${stem}/net/SMTPAppender.class,
     	        ${stem}/net/DefaultEvaluator.class,
     	        ${stem}/spi/TriggeringEventEvaluator.class,
     	        ${stem}/net/JMSAppender.class,
     		    ${stem}/net/JMSSink.class,
     		    ${stem}/net/JMSReceiver.class,
-    	        ${stem}/**/*BeanInfo.class,"
+    	        ${stem}/**/*BeanInfo.class
+                ${stem}/varia/LogFilePatternReceiver*.class,
+	            ${stem}/rule/LikeRule.class,
+    	        ${stem}/net/Multicast*.class,
+                ${stem}/net/UDP*.class,
+    	        ${stem}/net/SocketHub*.class,
+    	        ${stem}/net/Telnet*.class,
+    	        ${stem}/DUMMY.java"
     	>
       <manifest>
         <attribute name="Manifest-version" value="1.0"/>
@@ -628,7 +733,8 @@
                build.properties.sample,
                INSTALL,
                LICENSE.txt,
-               ${log4j.jar}"
+      	       ugli-*.jar,
+      	       log4j-*.jar"
                excludes="**/*.bak, 
                **/goEnv.bat,
                docs/pub-support/*,

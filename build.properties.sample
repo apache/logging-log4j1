@@ -26,7 +26,7 @@ logging-site=../logging-site
 
 # Describes the relative or full path to the Jakarta ORO Reg Exp jar file
 # Required if you wish to use LogFilePatternReceiver or LikeRule (regexp)
-#regexp.oro.jar=../oro/jakarta-oro-2.0.8.jar
+#jakarta-oro.jar=../oro/jakarta-oro-2.0.8.jar
 
 # Describes the path to the VFS jar (see http://jakarta.apache.org/commons/sandbox/vfs/)
 # Required if you wish to compile the Chainsaw jar and include the 

@@ -134,5 +134,6 @@
     </antcall>
   </target>
 
+  <target name="jar" depends="ugli-nop.jar, ugli-simple.jar, ugli-jdk14.jar"/> 	
 
 </project>
