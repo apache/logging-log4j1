@@ -47,100 +47,19 @@
  *
  */
 
-package org.apache.log4j.rolling;
-
-import org.apache.log4j.Logger;
-
-import java.io.File;
+package org.apache.log4j.rolling.helpers;
 
 
 /**
- * The SlidingWindowRollingPolicy rolls over files
+ * @author Ceki
  *
- * @author Ceki G&uuml;lc&uuml;
- * @since 1.3
- * */
-public class SlidingWindowRollingPolicy implements RollingPolicy {
-  static Logger logger = Logger.getLogger(SlidingWindowRollingPolicy.class);
-  int maxIndex;
-  int minIndex;
-  String fileNamePattern;
-  String activeFileName;
-
-  public SlidingWindowRollingPolicy() {
-    minIndex = 1;
+ */
+class IntegerTokenConverter extends TokenConverter {
+  public IntegerTokenConverter() {
+    super(TokenConverter.INTEGER);
   }
 
-  public void rollover(File file) {
-    // If maxIndex <= 0, then there is no file renaming to be done.
-    if (maxIndex > 0) {
-      String filename = file.getName();
-
-      // Delete the oldest file, to keep Windows happy.
-      file = new File(filename + '.' + maxIndex);
-
-      if (file.exists()) {
-        file.delete();
-      }
-
-      // Map {(maxBackupIndex - 1), ..., 2, 1} to {maxBackupIndex, ..., 3, 2}
-
-      /* for (int i = maxIndex - 1; i >= 1; i--) {
-         file = new File(filename + "." + i);
-
-        if (file.exists()) {
-          target = new File(filename + '.' + (i + 1));
-          logger.debug("Renaming file " + file + " to " + target);
-          file.renameTo(target);
-        }
-      }
-
-      // Rename fileName to fileName.1
-      target = new File(fileName + "." + 1);
-
-      this.closeFile(); // keep windows happy.
-      */
-    }
-  }
-
-  /**
-   * Return the file name for the i-th file in the sliding window according
-   * to the file name pattern.
-   * */
-  protected String getFilenameInWindow(int i) {
-    return fileNamePattern + i;
-  }
-
-  public File getActiveLogFile(String old) {
-    return new File(old);
-  }
-
-  public String getActiveFileName() {
-    return activeFileName;
-  }
-
-  public String getFileNamePattern() {
-    return fileNamePattern;
-  }
-
- 
-  public int getMaxIndex() {
-    return maxIndex;
-  }
-
-  public int getMinIndex() {
-    return minIndex;
-  }
-
-  public void setFileNamePattern(String fnp) {
-    fileNamePattern = fnp;
-  }
-
-  public void setMaxIndex(int maxIndex) {
-    this.maxIndex = maxIndex;
-  }
-
-  public void setMinIndex(int minIndex) {
-    this.minIndex = minIndex;
+  public String convert(int i) {
+    return Integer.toString(i);
   }
 }
