@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.apache.log4j.helpers.mcomposer;
+package org.apache.log4j.helpers;
 
-import org.apache.log4j.helpers.mcompose.MessageComposer;
+import org.apache.log4j.helpers.MessageFormatter;
 
 import junit.framework.TestCase;
 
@@ -25,37 +25,37 @@ import junit.framework.TestCase;
  * @author Ceki Gulcu
  *
  */
-public class MessageComposerTest extends TestCase {
+public class MessageFormatterTest extends TestCase {
   
   public void test1Param() {
     String result;
     Integer i3 = new Integer(3);
     
-    result = MessageComposer.compose("Value is {}.", i3);
+    result = MessageFormatter.format("Value is {}.", i3);
     assertEquals("Value is 3.", result);
 
-    result = MessageComposer.compose("Value is {", i3);
+    result = MessageFormatter.format("Value is {", i3);
     assertEquals("Value is {", result);
     
-    result = MessageComposer.compose("Value is {}.", null);
+    result = MessageFormatter.format("Value is {}.", null);
     assertEquals("Value is null.", result);
 
-    result = MessageComposer.compose("{} is larger than 2.", i3);
+    result = MessageFormatter.format("{} is larger than 2.", i3);
     assertEquals("3 is larger than 2.", result);
 
-    result = MessageComposer.compose("No subst", i3);
+    result = MessageFormatter.format("No subst", i3);
     assertEquals("No subst", result);
     
-    result = MessageComposer.compose("Incorrect {subst", i3);
+    result = MessageFormatter.format("Incorrect {subst", i3);
     assertEquals("Incorrect {subst", result);
     
-    result = MessageComposer.compose("Escaped \\{} subst", i3);
+    result = MessageFormatter.format("Escaped \\{} subst", i3);
     assertEquals("Escaped \\{} subst", result);
 
-    result = MessageComposer.compose("\\{Escaped", i3);
+    result = MessageFormatter.format("\\{Escaped", i3);
     assertEquals("\\{Escaped", result);
 
-    result = MessageComposer.compose("\\{}Escaped", i3);
+    result = MessageFormatter.format("\\{}Escaped", i3);
     assertEquals("\\{}Escaped", result);
   }
   
@@ -64,15 +64,15 @@ public class MessageComposerTest extends TestCase {
     Integer i1 = new Integer(1);
     Integer i2 = new Integer(2);
     
-    result = MessageComposer.compose("Value {} is larger than {}.", i1, i2);
+    result = MessageFormatter.format("Value {} is larger than {}.", i1, i2);
     assertEquals("Value 1 is larger than 2.", result);
     
-    result = MessageComposer.compose("Value {} is larger than {}", i1, i2);
+    result = MessageFormatter.format("Value {} is larger than {}", i1, i2);
     assertEquals("Value 1 is larger than 2", result);
     
-    result = MessageComposer.compose("{}{}", i1, i2);
+    result = MessageFormatter.format("{}{}", i1, i2);
     assertEquals("12", result);
-    result = MessageComposer.compose("Val1={}, Val2={", i1, i2);
+    result = MessageFormatter.format("Val1={}, Val2={", i1, i2);
     assertEquals("Val1=1, Val2={", result);
   }
 }
