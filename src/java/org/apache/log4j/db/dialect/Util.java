@@ -92,4 +92,33 @@ public class Util {
     }
     return sqlDialect;
   }
+  
+  /**
+   * This method handles cases where the 
+   * {@link DatabaseMetaData#supportsGetGeneratedKeys} method is missing in the
+   * JDBC driver implementation.
+   */
+  static public boolean supportsGetGeneratedKeys(DatabaseMetaData meta) {
+    try {
+      return meta.supportsGetGeneratedKeys();
+    } catch(Throwable e) {
+      LogLog.warn("The following warning is only informative.");
+      LogLog.warn("Could not call supportsGetGeneratedKeys method. This may be recoverable");
+      return false;
+    }
+  }
+  
+/** 
+  * This method handles cases where the 
+  * {@link DatabaseMetaData#supportsBatchUpdates} method is missing in the
+  * JDBC driver implementation.
+  */
+  static public boolean supportsBatchUpdates(DatabaseMetaData meta) {
+    try {
+      return meta.supportsBatchUpdates();
+    } catch(Throwable e) {
+      LogLog.warn("Missing DatabaseMetaData.supportsBatchUpdates method.");
+      return false;
+    }
+  }
 }
