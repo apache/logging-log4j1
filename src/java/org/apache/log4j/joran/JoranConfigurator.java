@@ -53,6 +53,7 @@ import org.apache.log4j.joran.action.SubstitutionPropertyAction;
 import org.apache.log4j.spi.Configurator;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.xml.Log4jEntityResolver;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 
@@ -91,18 +92,10 @@ public class JoranConfigurator
     }
   }
 
-  //Use the instance from {@link #doConfigure(String, LoggingRepository)} instead
-  
-//  public static void configure(String filename) {
-//    JoranConfigurator jc = new JoranConfigurator();
-//    jc.doConfigure(filename, LogManager.getLoggerRepository());
-//  }
-
   /**
    * Configure a repository from a configuration file passed as parameter.
    */
   public void doConfigure(String filename, LoggerRepository repository) {
-    this.repository = repository;
     FileInputStream fis = null;
     ExecutionContext ec = joranInterpreter.getExecutionContext();
     getLogger().info("in JoranConfigurator doConfigure "+filename);
@@ -125,10 +118,16 @@ public class JoranConfigurator
   }
   
   /**
-   * All doConfigure methods evenually call this form.
-   * */
-  
+   * Configure a repository from the input stream passed as parameter
+   */
   public void doConfigure(InputStream in, LoggerRepository repository) {
+    doConfigure(new InputSource(in), repository);
+  }
+
+  /**
+   * All doConfigure methods evenually call this form.
+   * */  
+  public void doConfigure(InputSource inputSource, LoggerRepository repository) {
     this.repository = repository;
     ExecutionContext ec = joranInterpreter.getExecutionContext();
     ec.pushObject(repository);
@@ -136,7 +135,14 @@ public class JoranConfigurator
     try {
       SAXParserFactory spf = SAXParserFactory.newInstance();
       SAXParser saxParser = spf.newSAXParser();
-      saxParser.parse(in, joranInterpreter);
+
+      // we change the system ID to a valid URI so that Crimson won't
+      // complain. Indeed, "log4j.dtd" alone is not a valid URI which
+      // causes Crimson to barf. The Log4jEntityResolver only cares
+      // about the "log4j.dtd" ending.
+      inputSource.setSystemId("dummy://log4j.dtd");
+      
+      saxParser.parse(inputSource, joranInterpreter);
     } catch (SAXException e) {
       // all exceptions should have been recorded already.
     } catch (ParserConfigurationException pce) {
