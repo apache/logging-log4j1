@@ -11,8 +11,8 @@ import org.apache.log4j.Logger;
 
 /**
    
-  Implement this interface to create new instances of Category or
-  a sub-class of Category.
+  Implement this interface to create new instances of Logger or
+  a sub-class of Logger.
 
   <p>See {@link org.apache.log4j.examples.MyCategory} for an example.
 
@@ -20,10 +20,9 @@ import org.apache.log4j.Logger;
   @since version 0.8.5
    
  */
-public interface CategoryFactory {
+public interface LoggerFactory {
 
- 
   public
-  Logger makeNewCategoryInstance(String name);
+  Logger makeNewLoggerInstance(String name);
 
 }
