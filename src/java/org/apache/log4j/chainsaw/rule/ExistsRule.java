@@ -72,6 +72,10 @@ public class ExistsRule extends AbstractRule {
   }
   
   public static Rule getRule(Stack stack) {
+      if (stack.size() < 1) {
+          throw new IllegalArgumentException("Invalid EXISTS rule - expected one rule but provided " + stack.size());
+      }  
+
     return new ExistsRule(stack.pop().toString());
   }
 
