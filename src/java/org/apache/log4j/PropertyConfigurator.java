@@ -648,10 +648,13 @@ public class PropertyConfigurator implements Configurator {
     appender.setName(appenderName);
 
     if (appender instanceof OptionHandler) {
-      if (appender.requiresLayout()) {
+      String layoutClassName = OptionConverter.findAndSubst(layoutPrefix, props);
+      // if there are layout related directives, we process these now
+      if(layoutClassName != null) {
+        // Trim layoutClassName to avoid trailing spaces that cause problems.
         Layout layout =
-          (Layout) OptionConverter.instantiateByKey(
-            props, layoutPrefix, Layout.class, null);
+          (Layout) OptionConverter.instantiateByClassName(layoutClassName.trim(),
+            Layout.class, null);
 
         if (layout != null) {
           appender.setLayout(layout);
@@ -672,7 +675,7 @@ public class PropertyConfigurator implements Configurator {
 
     return appender;
   }
-
+  
   public void activateOptions(Object obj) {
     if (obj instanceof OptionHandler) {
       ((OptionHandler) obj).activateOptions();
