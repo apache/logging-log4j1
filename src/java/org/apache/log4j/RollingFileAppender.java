@@ -17,7 +17,6 @@
 package org.apache.log4j;
 
 import org.apache.log4j.helpers.CountingQuietWriter;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.LoggingEvent;
 
@@ -113,9 +112,9 @@ public class RollingFileAppender extends FileAppender {
     File target;
     File file;
 
-    LogLog.debug(
+    getLogger().debug(
       "rolling over count=" + ((CountingQuietWriter) qw).getCount());
-    LogLog.debug("maxBackupIndex=" + maxBackupIndex);
+    getLogger().debug("maxBackupIndex=" + maxBackupIndex);
 
     // If maxBackups <= 0, then there is no file renaming to be done.
     if (maxBackupIndex > 0) {
@@ -132,7 +131,7 @@ public class RollingFileAppender extends FileAppender {
 
         if (file.exists()) {
           target = new File(fileName + '.' + (i + 1));
-          LogLog.debug("Renaming file " + file + " to " + target);
+          getLogger().debug("Renaming file " + file + " to " + target);
           file.renameTo(target);
         }
       }
@@ -144,7 +143,7 @@ public class RollingFileAppender extends FileAppender {
       this.closeWriter(); 
 
       file = new File(fileName);
-      LogLog.debug("Renaming file " + file + " to " + target);
+      getLogger().debug("Renaming file " + file + " to " + target);
       file.renameTo(target);
     }
 
@@ -153,7 +152,7 @@ public class RollingFileAppender extends FileAppender {
       // close operations are safe.
       this.setFile(fileName, false, bufferedIO, bufferSize);
     } catch (IOException e) {
-      LogLog.error("setFile(" + fileName + ", false) call failed.", e);
+      getLogger().error("setFile(" + fileName + ", false) call failed.", e);
     }
   }
 

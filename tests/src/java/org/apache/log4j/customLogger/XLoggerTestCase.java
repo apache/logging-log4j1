@@ -53,7 +53,6 @@ public class XLoggerTestCase extends TestCase {
   void common(int number) throws Exception {
     JoranConfigurator jc = new JoranConfigurator();
     jc.doConfigure("input/xml/customLogger" + number + ".xml", LogManager.getLoggerRepository());
-    jc.logErrors();
 
     int i = -1;
     Logger root = Logger.getRootLogger();

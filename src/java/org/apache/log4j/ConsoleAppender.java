@@ -16,7 +16,6 @@
 
 package org.apache.log4j;
 
-import org.apache.log4j.helpers.LogLog;
 
 /**
   * ConsoleAppender appends log events to <code>System.out</code> or
@@ -80,8 +79,8 @@ public class ConsoleAppender extends WriterAppender {
   }
 
   void targetWarn(String val) {
-    LogLog.warn("[" + val + "] should be System.out or System.err.");
-    LogLog.warn("Using previously set target, System.out by default.");
+    getLogger().warn("[{}] should be System.out or System.err.", val);
+    getLogger().warn("Using previously set target, System.out by default.");
   }
 
   public void activateOptions() {

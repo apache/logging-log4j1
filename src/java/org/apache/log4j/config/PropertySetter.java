@@ -1,12 +1,12 @@
 /*
  * Copyright 1999,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-
 // Contributors:  Georg Lundesgaard
 package org.apache.log4j.config;
 
 import org.apache.log4j.*;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
 
 import java.beans.BeanInfo;
@@ -55,11 +53,10 @@ import java.util.*;
    @since 1.1
  */
 public class PropertySetter {
-  static Logger logger =
-    Logger.getLogger("LOG4J." + PropertySetter.class.getName());
   public static final int NOT_FOUND = 0;
   public static final int AS_PROPERTY = 1;
   public static final int AS_COLLECTION = 2;
+  Logger logger;
   protected Object obj;
   protected Class objClass;
   protected PropertyDescriptor[] propertyDescriptors;
@@ -86,7 +83,8 @@ public class PropertySetter {
       propertyDescriptors = bi.getPropertyDescriptors();
       methodDescriptors = bi.getMethodDescriptors();
     } catch (IntrospectionException ex) {
-      LogLog.error("Failed to introspect " + obj + ": " + ex.getMessage());
+      getLogger().error(
+        "Failed to introspect " + obj + ": " + ex.getMessage());
       propertyDescriptors = new PropertyDescriptor[0];
       methodDescriptors = new MethodDescriptor[0];
     }
@@ -139,6 +137,13 @@ public class PropertySetter {
     }
   }
 
+  Logger getLogger() {
+    if (logger != null) {
+      logger = LogManager.getLogger(this.getClass().getName());
+    }
+    return logger;
+  }
+
   /**
      Set a property on this PropertySetter's Object. If successful, this
      method will invoke a setter method on the underlying Object. The
@@ -165,13 +170,13 @@ public class PropertySetter {
 
     //LogLog.debug("---------Key: "+name+", type="+prop.getPropertyType());
     if (prop == null) {
-      LogLog.warn(
+      getLogger().warn(
         "No such property [" + name + "] in " + objClass.getName() + ".");
     } else {
       try {
         setProperty(prop, name, value);
       } catch (PropertySetterException ex) {
-        LogLog.warn(
+        getLogger().warn(
           "Failed to set property [" + name + "] to value \"" + value + "\". ",
           ex.rootCause);
       }
@@ -215,7 +220,7 @@ public class PropertySetter {
         "Conversion to type [" + paramTypes[0] + "] failed.");
     }
 
-    LogLog.debug("Setting property [" + name + "] to [" + arg + "].");
+    getLogger().debug("Setting property [{}] to [{}].", name, arg);
 
     try {
       setter.invoke(obj, new Object[] { arg });
@@ -230,8 +235,8 @@ public class PropertySetter {
     Method method = getMethod("add" + cName);
 
     if (method != null) {
-      logger.debug(
-        "Found add" + cName + " method in class " + objClass.getName());
+      getLogger().debug(
+        "Found add {} method in class {}", cName, objClass.getName());
 
       return AS_COLLECTION;
     }
@@ -242,9 +247,9 @@ public class PropertySetter {
       Method setter = propertyDescriptor.getWriteMethod();
 
       if (setter != null) {
-        logger.debug(
-          "Found setter method for property [" + name + "] in class "
-          + objClass.getName());
+        getLogger().debug(
+          "Found setter method for property [{}] in class {}", name,
+          objClass.getName());
 
         return AS_PROPERTY;
       }
@@ -273,26 +278,26 @@ public class PropertySetter {
           try {
             method.invoke(this.obj, new Object[] { childComponent });
           } catch (Exception e) {
-            logger.error(
+            getLogger().error(
               "Could not invoke method " + method.getName() + " in class "
               + obj.getClass().getName() + " with parameter of type "
               + ccc.getName(), e);
           }
         } else {
-          logger.error(
+          getLogger().error(
             "A \"" + ccc.getName() + "\" object is not assignable to a \""
             + params[0].getName() + "\" variable.");
-          logger.error(
+          getLogger().error(
             "The class \"" + params[0].getName() + "\" was loaded by ");
-          logger.error(
+          getLogger().error(
             "[" + params[0].getClassLoader() + "] whereas object of type ");
-          logger.error(
+          getLogger().error(
             "\"" + ccc.getName() + "\" was loaded by [" + ccc.getClassLoader()
             + "].");
         }
       }
     } else {
-      logger.error(
+      getLogger().error(
         "Could not find method [" + "add" + name + "] in class ["
         + objClass.getName() + "].");
     }
@@ -302,7 +307,7 @@ public class PropertySetter {
     PropertyDescriptor propertyDescriptor = getPropertyDescriptor(name);
 
     if (propertyDescriptor == null) {
-      logger.warn(
+      getLogger().warn(
         "Could not find PropertyDescriptor for [" + name + "] in "
         + objClass.getName());
 
@@ -312,7 +317,7 @@ public class PropertySetter {
     Method setter = propertyDescriptor.getWriteMethod();
 
     if (setter == null) {
-      logger.warn(
+      getLogger().warn(
         "Not setter method for property [" + name + "] in "
         + obj.getClass().getName());
 
@@ -322,7 +327,7 @@ public class PropertySetter {
     Class[] paramTypes = setter.getParameterTypes();
 
     if (paramTypes.length != 1) {
-      logger.error(
+      getLogger().error(
         "Wrong number of parameters in setter method for property [" + name
         + "] in " + obj.getClass().getName());
 
@@ -331,15 +336,11 @@ public class PropertySetter {
 
     try {
       setter.invoke(obj, new Object[] { childComponent });
-
-      if (logger.isDebugEnabled()) {
-        logger.debug(
-          "Set child component of type ["
-          + childComponent.getClass().getName() + "] for ["
-          + objClass.getName() + "].");
-      }
+      getLogger().debug(
+        "Set child component of type [{}] for [{}].", objClass.getName(),
+        childComponent.getClass().getName());
     } catch (Exception e) {
-      logger.error(
+      getLogger().error(
         "Could not set component " + obj + " for parent component " + obj, e);
     }
   }

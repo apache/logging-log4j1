@@ -22,7 +22,6 @@ package org.apache.log4j;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.helpers.IntializationUtil;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.or.ObjectRenderer;
 import org.apache.log4j.or.RendererMap;
 import org.apache.log4j.plugins.PluginRegistry;
@@ -80,6 +79,9 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   PluginRegistry pluginRegistry;
   Map properties;
   
+  // the internal logger used by this instance of Hierarchy for its own reporting
+  private Logger myLogger;
+  
   boolean emittedNoAppenderWarning = false;
   boolean emittedNoResourceBundleWarning = false;
   boolean pristine = true;
@@ -119,7 +121,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
     LoggerRepositoryEventListener listener) {
     synchronized (repositoryEventListeners) {
       if (repositoryEventListeners.contains(listener)) {
-        LogLog.warn(
+        getMyLogger().warn(
           "Ignoring attempt to add a previously registerd LoggerRepositoryEventListener.");
       } else {
         repositoryEventListeners.add(listener);
@@ -127,6 +129,13 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
     }
   }
 
+  private Logger getMyLogger() {
+    if(myLogger == null) {
+      myLogger = getLogger(this.getClass().getName());
+    }
+    return myLogger;
+  }
+  
   /**
     Remove a {@link LoggerRepositoryEventListener} from the repository.
     @since 1.3*/
@@ -134,7 +143,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
     LoggerRepositoryEventListener listener) {
     synchronized (repositoryEventListeners) {
       if (!repositoryEventListeners.contains(listener)) {
-        LogLog.warn(
+        getMyLogger().warn(
           "Ignoring attempt to remove a non-registered LoggerRepositoryEventListener.");
       } else {
         repositoryEventListeners.remove(listener);
@@ -149,7 +158,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   public void addLoggerEventListener(LoggerEventListener listener) {
     synchronized (loggerEventListeners) {
       if (loggerEventListeners.contains(listener)) {
-        LogLog.warn(
+        getMyLogger().warn(
           "Ignoring attempt to add a previously registerd LoggerEventListener.");
       } else {
         loggerEventListeners.add(listener);
@@ -163,7 +172,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   public void removeLoggerEventListener(LoggerEventListener listener) {
     synchronized (loggerEventListeners) {
       if (!loggerEventListeners.contains(listener)) {
-        LogLog.warn(
+        getMyLogger().warn(
           "Ignoring attempt to remove a non-registered LoggerEventListener.");
       } else {
         loggerEventListeners.remove(listener);
@@ -188,9 +197,9 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   public void emitNoAppenderWarning(Logger cat) {
     // No appenders in hierarchy, warn user only once.
     if (!this.emittedNoAppenderWarning) {
-      LogLog.warn(
-        "No appenders could be found for logger (" + cat.getName() + ").");
-      LogLog.warn("Please initialize the log4j system properly.");
+//      LogLog.warn(
+//        "No appenders could be found for logger (" + cat.getName() + ").");
+//      LogLog.warn("Please initialize the log4j system properly.");
       this.emittedNoAppenderWarning = true;
     }
   }
@@ -268,7 +277,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
     if (l != null) {
       setThreshold(l);
     } else {
-      LogLog.warn("Could not convert [" + levelStr + "] to Level.");
+      getMyLogger().warn("Could not convert [" + levelStr + "] to Level.");
     }
   }
 

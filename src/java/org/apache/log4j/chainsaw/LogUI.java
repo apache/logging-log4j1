@@ -1878,7 +1878,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
               Thread.currentThread().setContextClassLoader(classLoader);
               JoranConfigurator jc = new JoranConfigurator();
               jc.doConfigure(url, LogManager.getLoggerRepository());
-              jc.logErrors();
             }finally{
                 // now switch it back...
                 Thread.currentThread().setContextClassLoader(previousTCCL);

@@ -17,6 +17,7 @@
 package org.apache.joran;
 
 import org.apache.joran.action.*;
+import org.apache.log4j.config.ErrorItem;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.EntityResolver;

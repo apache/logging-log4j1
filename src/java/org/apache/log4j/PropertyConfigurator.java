@@ -21,11 +21,11 @@
 package org.apache.log4j;
 
 import org.apache.log4j.DefaultCategoryFactory;
+import org.apache.log4j.config.ConfiguratorBase;
+import org.apache.log4j.config.ErrorItem;
 import org.apache.log4j.config.PropertySetter;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.or.RendererMap;
-import org.apache.log4j.spi.Configurator;
 import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.LoggerRepository;
 
@@ -39,8 +39,10 @@ import java.io.InputStream;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
 
 /**
@@ -84,7 +86,7 @@ import java.util.StringTokenizer;
    @author Ceki G&uuml;lc&uuml;
    @author Anders Kristensen
    @since 0.8.1 */
-public class PropertyConfigurator implements Configurator {
+public class PropertyConfigurator extends ConfiguratorBase {
   static final String CATEGORY_PREFIX = "log4j.category.";
   static final String LOGGER_PREFIX = "log4j.logger.";
   static final String FACTORY_PREFIX = "log4j.factory";
@@ -105,7 +107,8 @@ public class PropertyConfigurator implements Configurator {
    */
   protected Hashtable registry = new Hashtable(11);
   protected LoggerFactory loggerFactory = new DefaultCategoryFactory();
-
+  protected List errorList = new Vector();
+  
   /**
     Read configuration from a file. <b>The existing configuration is
     not cleared nor reset.</b> If you require a different behavior,
@@ -299,7 +302,7 @@ public class PropertyConfigurator implements Configurator {
    configuration information is stored.
 
   */
-  public void doConfigure(String configFileName, LoggerRepository hierarchy) {
+  public void doConfigure(String configFileName, LoggerRepository repo) {
     Properties props = new Properties();
 
     try {
@@ -307,15 +310,14 @@ public class PropertyConfigurator implements Configurator {
       props.load(istream);
       istream.close();
     } catch (IOException e) {
-      LogLog.error(
-        "Could not read configuration file [" + configFileName + "].", e);
-      LogLog.error("Ignoring configuration file [" + configFileName + "].");
-
+      String errMsg = "Could not read configuration file [" + configFileName + "].";
+      addError(new ErrorItem(errMsg, e));
+      getLogger(repo).error(errMsg, e);
       return;
     }
 
     // If we reach here, then the config file is alright.
-    doConfigure(props, hierarchy);
+    doConfigure(props, repo);
   }
 
   /**
@@ -351,10 +353,12 @@ public class PropertyConfigurator implements Configurator {
      See {@link #doConfigure(String, LoggerRepository)} for the expected format.
   */
   public void doConfigure(Properties properties, LoggerRepository repository) {
-    String value = properties.getProperty(LogLog.DEBUG_KEY);
+    String value = properties.getProperty(DEBUG_KEY);
 
-    if (value != null) {
-      LogLog.setInternalDebugging(OptionConverter.toBoolean(value, true));
+    boolean attached = false;
+    if (value != null && OptionConverter.toBoolean(value, true)) {
+      attachTemporaryConsoleAppender(repository);
+      attached = true;
     }
 
     // As soon as we start configuration process, the pristine flag is set to 
@@ -366,7 +370,7 @@ public class PropertyConfigurator implements Configurator {
 
     if (thresholdStr != null) {
       repository.setThreshold(OptionConverter.toLevel(thresholdStr, Level.ALL));
-      LogLog.debug(
+      getLogger(repository).debug(
         "Hierarchy threshold set to [" + repository.getThreshold() + "].");
     }
 
@@ -374,8 +378,11 @@ public class PropertyConfigurator implements Configurator {
     configureLoggerFactory(properties);
     parseCatsAndRenderers(properties, repository);
 
-    LogLog.debug("Finished configuring.");
+    getLogger(repository).debug("Finished configuring.");
 
+    if(attached) {
+      detachTemporaryConsoleAppender(repository, errorList);
+    }
     // We don't want to hold references to appenders preventing their
     // garbage collection.
     registry.clear();
@@ -384,23 +391,22 @@ public class PropertyConfigurator implements Configurator {
   /**
      Read configuration options from url <code>configURL</code>.
    */
-  public void doConfigure(java.net.URL configURL, LoggerRepository hierarchy) {
+  public void doConfigure(java.net.URL configURL, LoggerRepository repository) {
     Properties props = new Properties();
-    LogLog.debug("Reading configuration from URL " + configURL);
+    getLogger(repository).debug("Reading configuration from URL {}", configURL);
 
     try {
       InputStream in = configURL.openStream();
       props.load(in);
       in.close();
     } catch (java.io.IOException e) {
-      LogLog.error(
-        "Could not read configuration file from URL [" + configURL + "].", e);
-      LogLog.error("Ignoring configuration file [" + configURL + "].");
-
+      String errMsg = "Could not read configuration file from URL [" + configURL + "].";
+      addError(new ErrorItem(errMsg, e));
+      getLogger(repository).error(errMsg, e);
       return;
     }
 
-    doConfigure(props, hierarchy);
+    doConfigure(props, repository);
   }
 
   // --------------------------------------------------------------------------
@@ -422,7 +428,6 @@ public class PropertyConfigurator implements Configurator {
       OptionConverter.findAndSubst(LOGGER_FACTORY_KEY, props);
 
     if (factoryClassName != null) {
-      LogLog.debug("Setting category factory to [" + factoryClassName + "].");
       loggerFactory =
         (LoggerFactory) OptionConverter.instantiateByClassName(
           factoryClassName, LoggerFactory.class, loggerFactory);
@@ -451,7 +456,7 @@ public class PropertyConfigurator implements Configurator {
     oh.activateOptions();
   }
   */
-  void configureRootCategory(Properties props, LoggerRepository hierarchy) {
+  void configureRootCategory(Properties props, LoggerRepository repository) {
     String effectiveFrefix = ROOT_LOGGER_PREFIX;
     String value = OptionConverter.findAndSubst(ROOT_LOGGER_PREFIX, props);
 
@@ -461,12 +466,12 @@ public class PropertyConfigurator implements Configurator {
     }
 
     if (value == null) {
-      LogLog.debug("Could not find root logger information. Is this OK?");
+      getLogger(repository).debug("Could not find root logger information. Is this OK?");
     } else {
-      Logger root = hierarchy.getRootLogger();
+      Logger root = repository.getRootLogger();
 
       synchronized (root) {
-        parseCategory(props, root, effectiveFrefix, INTERNAL_ROOT_NAME, value);
+        parseCategory(repository, props, root, effectiveFrefix, INTERNAL_ROOT_NAME, value);
       }
     }
   }
@@ -475,7 +480,7 @@ public class PropertyConfigurator implements Configurator {
      Parse non-root elements, such non-root categories and renderers.
   */
   protected void parseCatsAndRenderers(
-    Properties props, LoggerRepository hierarchy) {
+    Properties props, LoggerRepository repository) {
     Enumeration enumeration = props.propertyNames();
 
     while (enumeration.hasMoreElements()) {
@@ -491,19 +496,19 @@ public class PropertyConfigurator implements Configurator {
         }
 
         String value = OptionConverter.findAndSubst(key, props);
-        Logger logger = hierarchy.getLogger(loggerName, loggerFactory);
+        Logger logger = repository.getLogger(loggerName, loggerFactory);
 
         synchronized (logger) {
-          parseCategory(props, logger, key, loggerName, value);
-          parseAdditivityForLogger(props, logger, loggerName);
+          parseCategory(repository, props, logger, key, loggerName, value);
+          parseAdditivityForLogger(repository, props, logger, loggerName);
         }
       } else if (key.startsWith(RENDERER_PREFIX)) {
         String renderedClass = key.substring(RENDERER_PREFIX.length());
         String renderingClass = OptionConverter.findAndSubst(key, props);
 
-        if (hierarchy instanceof RendererSupport) {
+        if (repository instanceof RendererSupport) {
           RendererMap.addRenderer(
-            (RendererSupport) hierarchy, renderedClass, renderingClass);
+            (RendererSupport) repository, renderedClass, renderingClass);
         }
       }
     }
@@ -512,17 +517,17 @@ public class PropertyConfigurator implements Configurator {
   /**
      Parse the additivity option for a non-root category.
    */
-  void parseAdditivityForLogger(
+  void parseAdditivityForLogger(LoggerRepository repository,
     Properties props, Logger cat, String loggerName) {
     String value =
       OptionConverter.findAndSubst(ADDITIVITY_PREFIX + loggerName, props);
-    LogLog.debug(
+    getLogger(repository).debug(
       "Handling " + ADDITIVITY_PREFIX + loggerName + "=[" + value + "]");
 
     // touch additivity only if necessary
     if ((value != null) && (!value.equals(""))) {
       boolean additivity = OptionConverter.toBoolean(value, true);
-      LogLog.debug(
+      getLogger(repository).debug(
         "Setting additivity for \"" + loggerName + "\" to " + additivity);
       cat.setAdditivity(additivity);
     }
@@ -531,11 +536,11 @@ public class PropertyConfigurator implements Configurator {
   /**
      This method must work for the root category as well.
    */
-  void parseCategory(
+  void parseCategory(LoggerRepository repository,
     Properties props, Logger logger, String optionKey, String loggerName,
     String value) {
-    LogLog.debug(
-      "Parsing for [" + loggerName + "] with value=[" + value + "].");
+    getLogger(repository).debug(
+      "Parsing for [{}] with value=[{}].", loggerName, value);
 
     // We must skip over ',' but not white space
     StringTokenizer st = new StringTokenizer(value, ",");
@@ -549,7 +554,7 @@ public class PropertyConfigurator implements Configurator {
       }
 
       String levelStr = st.nextToken();
-      LogLog.debug("Level token is [" + levelStr + "].");
+      getLogger(repository).debug("Level token is [{}].", levelStr);
 
       // If the level value is inherited, set category level value to
       // null. We also check that the user has not specified inherited for the
@@ -558,7 +563,7 @@ public class PropertyConfigurator implements Configurator {
         INHERITED.equalsIgnoreCase(levelStr)
           || NULL.equalsIgnoreCase(levelStr)) {
         if (loggerName.equals(INTERNAL_ROOT_NAME)) {
-          LogLog.warn("The root logger cannot be set to null.");
+          getLogger(repository).warn("The root logger cannot be set to null.");
         } else {
           logger.setLevel(null);
         }
@@ -566,7 +571,7 @@ public class PropertyConfigurator implements Configurator {
         logger.setLevel(OptionConverter.toLevel(levelStr, Level.DEBUG));
       }
 
-      LogLog.debug("Category " + loggerName + " set to " + logger.getLevel());
+      getLogger(repository).debug("Category {} set to {}.", loggerName, logger.getLevel());
     }
 
     // Begin by removing all existing appenders.
@@ -582,8 +587,8 @@ public class PropertyConfigurator implements Configurator {
         continue;
       }
 
-      LogLog.debug("Parsing appender named \"" + appenderName + "\".");
-      appender = parseAppender(props, appenderName);
+      getLogger(repository).debug("Parsing appender named \"{}\".", appenderName);
+      appender = parseAppender(repository, props, appenderName);
 
       if (appender != null) {
         logger.addAppender(appender);
@@ -591,11 +596,11 @@ public class PropertyConfigurator implements Configurator {
     }
   }
 
-  Appender parseAppender(Properties props, String appenderName) {
+  Appender parseAppender(LoggerRepository repository, Properties props, String appenderName) {
     Appender appender = registryGet(appenderName);
 
     if ((appender != null)) {
-      LogLog.debug("Appender \"" + appenderName + "\" was already parsed.");
+      getLogger(repository).debug("Appender \"{}\" was already parsed.", appenderName);
 
       return appender;
     }
@@ -609,9 +614,9 @@ public class PropertyConfigurator implements Configurator {
         props, prefix, org.apache.log4j.Appender.class, null);
 
     if (appender == null) {
-      LogLog.error(
-        "Could not instantiate appender named \"" + appenderName + "\".");
-
+      String errMsg = "Could not instantiate appender named \""+appenderName+"\".";
+      addError(new ErrorItem(errMsg));
+      getLogger(repository).error(errMsg);
       return null;
     }
 
@@ -628,17 +633,17 @@ public class PropertyConfigurator implements Configurator {
 
         if (layout != null) {
           appender.setLayout(layout);
-          LogLog.debug("Parsing layout options for \"" + appenderName + "\".");
+          getLogger(repository).debug("Parsing layout options for \"" + appenderName + "\".");
 
           PropertySetter.setProperties(layout, props, layoutPrefix + ".");
           activateOptions(layout);
-          LogLog.debug("End of parsing for \"" + appenderName + "\".");
+          getLogger(repository).debug("End of parsing for \"" + appenderName + "\".");
         }
       }
 
       PropertySetter.setProperties(appender, props, prefix + ".");
       activateOptions(appender);
-      LogLog.debug("Parsed \"" + appenderName + "\" options.");
+      getLogger(repository).debug("Parsed \"" + appenderName + "\" options.");
     }
 
     registryPut(appender);
@@ -646,7 +651,7 @@ public class PropertyConfigurator implements Configurator {
     return appender;
   }
   
-  public void activateOptions(Object obj) {
+  void activateOptions(Object obj) {
     if (obj instanceof OptionHandler) {
       ((OptionHandler) obj).activateOptions();
     }
@@ -659,4 +664,9 @@ public class PropertyConfigurator implements Configurator {
   Appender registryGet(String name) {
     return (Appender) registry.get(name);
   }
+
+  public List getErrorList() {
+    return errorList;
+  }
+
 }

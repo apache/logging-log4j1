@@ -16,7 +16,6 @@
 
 package org.apache.log4j;
 
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.QuietWriter;
 import org.apache.log4j.spi.ErrorCode;
 
@@ -156,8 +155,8 @@ public class FileAppender extends WriterAppender {
       }
     } else {
       //LogLog.error("File option not set for appender ["+name+"].");
-      LogLog.warn("File option not set for appender [" + name + "].");
-      LogLog.warn("Are you using FileAppender instead of ConsoleAppender?");
+      getLogger().warn("File option not set for appender [{}].", name);
+      getLogger().warn("Are you using FileAppender instead of ConsoleAppender?");
     }
   }
 
@@ -244,7 +243,7 @@ public class FileAppender extends WriterAppender {
   public synchronized void setFile(
     String filename, boolean append, boolean bufferedIO, int bufferSize)
     throws IOException {
-    LogLog.debug("setFile called: " + fileName + ", " + append);
+    getLogger().debug("setFile called: {}, {}", fileName, Boolean.toString(append));
 
     // It does not make sense to have immediate flush and bufferedIO.
     if (bufferedIO) {
@@ -265,7 +264,7 @@ public class FileAppender extends WriterAppender {
     this.fileName = filename;
     this.bufferSize = bufferSize;
     writeHeader();
-    LogLog.debug("setFile ended");
+    getLogger().debug("setFile ended");
   }
 
   /**

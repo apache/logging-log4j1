@@ -17,7 +17,6 @@
 package org.apache.log4j.config;
 
 import org.apache.log4j.Level;
-import org.apache.log4j.helpers.LogLog;
 
 import java.beans.*;
 
@@ -52,7 +51,7 @@ public class PropertyGetter {
     try {
       new PropertyGetter(obj).getProperties(callback, prefix);
     } catch (IntrospectionException ex) {
-      LogLog.error("Failed to introspect object " + obj, ex);
+      //LogLog.error("Failed to introspect object " + obj, ex);
     }
   }
 
@@ -75,7 +74,7 @@ public class PropertyGetter {
           callback.foundProperty(obj, prefix, name, result);
         }
       } catch (Exception ex) {
-        LogLog.warn("Failed to get value of property " + name);
+        //LogLog.warn("Failed to get value of property " + name);
       }
     }
   }
