@@ -117,11 +117,19 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
     }
   }
   
-  public int find(Rule rule, int startLocation) {
+  public int find(Rule rule, int startLocation, boolean searchForward) {
       synchronized(filteredList) {
-        for (int i=startLocation; i<filteredList.size(); i++) {
-            if (rule.evaluate((LoggingEvent)filteredList.get(i))) {
-                return i;
+        if (searchForward) {
+            for (int i = startLocation; i < filteredList.size(); i++) {
+                if (rule.evaluate((LoggingEvent)filteredList.get(i))) {
+                    return i;
+                }
+            }
+        } else {
+            for (int i = startLocation; i > -1; i--) {
+                if (rule.evaluate((LoggingEvent)filteredList.get(i))) {
+                    return i;
+                }
             }
         }
       }

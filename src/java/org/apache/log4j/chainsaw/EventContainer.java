@@ -92,8 +92,9 @@ public interface EventContainer extends SortTableModel, LoggerNameModel {
    * 
    * @param rule
    * @param startRow
+   * @param searchForward
    */
-  int find(Rule rule, int startRow);
+  int find(Rule rule, int startRow, boolean searchForward);
 
   /**
    * Returns a copied list of all the event in the model.
