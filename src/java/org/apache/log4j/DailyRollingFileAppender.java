@@ -64,18 +64,18 @@ import org.apache.log4j.spi.LoggingEvent;
    week depends on the locale.</td>
 
    <td>Assuming the first day of the week is Sunday, on Saturday
-   midnight, June 9th 2000, the file <i>/foo/bar.log</i> will be
-   copied will be copied to /foo/bar.log.2001-23.  Logging for the
-   24th week of 2002 will be output to <code>/foo/bar.log</code> until
-   it is rolled over the next week.
+   midnight, June 9th 2002, the file <i>/foo/bar.log</i> will be
+   copied to <i>/foo/bar.log.2002-23</i>.  Logging for the 24th week
+   of 2002 will be output to <code>/foo/bar.log</code> until it is
+   rolled over the next week.
 
    <tr>
    <td><code>'.'yyyy-MM-dd</code>
 
    <td>Rollover at midnight each day.</td>
 
-   <td>At midnight, on March 9th, 2001, <code>/foo/bar.log</code> will
-   be copied to <code>/foo/bar.log.2001-03-08</code>. Logging for the
+   <td>At midnight, on March 8th, 2002, <code>/foo/bar.log</code> will
+   be copied to <code>/foo/bar.log.2002-03-08</code>. Logging for the
    9th day of March will be output to <code>/foo/bar.log</code> until
    it is rolled over the next day.
 
@@ -84,19 +84,19 @@ import org.apache.log4j.spi.LoggingEvent;
 
    <td>Rollover at midnight and midday of each day.</td>
 
-   <td>At noon, on March 9th, 2001, <code>/foo/bar.log</code> will be
-   copied to <code>/foo/bar.log.2001-03-09-AM</code>. Logging for the
+   <td>At noon, on March 9th, 2002, <code>/foo/bar.log</code> will be
+   copied to <code>/foo/bar.log.2002-03-09-AM</code>. Logging for the
    afternoon of the 9th will be output to <code>/foo/bar.log</code>
-   until it is rolled over the next morning, i.e at midnight 00:00.
+   until it is rolled over at midnight.
 
    <tr>
    <td><code>'.'yyyy-MM-dd-HH</code>
 
    <td>Rollover at the top of every hour.</td>
 
-   <td>At approximately 11:00,000, on March 9th, 2001,
+   <td>At approximately 11:00.000 o'clock on March 9th, 2002,
    <code>/foo/bar.log</code> will be copied to
-   <code>/foo/bar.log.2001-03-09-10</code>. Logging for the 11th hour
+   <code>/foo/bar.log.2002-03-09-10</code>. Logging for the 11th hour
    of the 9th of March will be output to <code>/foo/bar.log</code>
    until it is rolled over at the beginning of the next hour.
 
