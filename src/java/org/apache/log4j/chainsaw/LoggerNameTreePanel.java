@@ -51,13 +51,6 @@
  */
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-import org.apache.log4j.chainsaw.icons.LineIconFactory;
-import org.apache.log4j.chainsaw.rule.AbstractRule;
-import org.apache.log4j.chainsaw.rule.Rule;
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.spi.LoggingEvent;
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -66,14 +59,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -82,11 +74,13 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -107,6 +101,13 @@ import javax.swing.tree.DefaultTreeSelectionModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
+
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.chainsaw.icons.LineIconFactory;
+import org.apache.log4j.chainsaw.rule.AbstractRule;
+import org.apache.log4j.chainsaw.rule.Rule;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
@@ -135,6 +136,9 @@ final class LoggerNameTreePanel extends JPanel implements Rule {
   private final Action focusOnAction;
   private final Action hideAction;
   private final Action clearIgnoreListAction;
+  
+  private final JList ignoreList = new JList();
+  private final JScrollPane ignoreListScroll = new JScrollPane(ignoreList);
 
   //  private final EventListenerList focusOnActionListeners =
   //    new EventListenerList();
@@ -234,6 +238,40 @@ final class LoggerNameTreePanel extends JPanel implements Rule {
 
     add(toolbar, BorderLayout.NORTH);
     add(scrollTree, BorderLayout.CENTER);
+    
+    add(ignoreListScroll, BorderLayout.SOUTH);
+    
+    CheckListCellRenderer cellRenderer = new CheckListCellRenderer(){
+
+      protected boolean isSelected(Object value) {
+        return true;
+      }
+    
+    };
+    
+    ignoreList.setCellRenderer(cellRenderer);
+    
+    ignoreList.addMouseListener(new MouseAdapter(){
+      
+      public void mouseClicked(MouseEvent e) {
+        if (e.getClickCount()>1 && (e.getModifiers() & InputEvent.BUTTON1_MASK)>0) {
+          int index = ignoreList.locationToIndex(e.getPoint());
+
+          if (index>=0) {
+            String string =
+              ignoreList.getModel().getElementAt(index).toString();
+            toggleHiddenLogger(string);
+            fireChangeEvent();
+            /**
+             * TODO this needs to get the node that has this logger and fire a visual update
+             */
+            LoggerNameTreePanel.this.logTreeModel.nodeStructureChanged((TreeNode) LoggerNameTreePanel.this.logTreeModel.getRoot());
+          }
+        }
+      
+      }
+      
+    });
   }
 
   /**
@@ -260,6 +298,7 @@ final class LoggerNameTreePanel extends JPanel implements Rule {
           ignoreLoggerButton.setSelected(false);
           logTreeModel.reload();
           hiddenSet.clear();
+          fireChangeEvent();
         }
       };
 
@@ -576,6 +615,22 @@ final class LoggerNameTreePanel extends JPanel implements Rule {
               firePropertyChange("rule", null, null);
         }
       });
+      
+      addPropertyChangeListener("hiddenSet",new PropertyChangeListener(){
+
+        public void propertyChange(PropertyChangeEvent arg0) {
+
+            DefaultListModel model = new DefaultListModel();
+            
+            List sortedIgnoreList = new ArrayList(getHiddenSet());
+            Collections.sort(sortedIgnoreList);
+            for (Iterator iter = sortedIgnoreList.iterator(); iter.hasNext();) {
+              String string = (String) iter.next();
+              model.addElement(string);
+            }            
+            ignoreList.setModel(model);          
+        }});
+
   }
 
   private void reconfigureMenuText() {
