@@ -57,7 +57,6 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
-import org.apache.log4j.rolling.helpers.Compress;
 import org.apache.log4j.util.Compare;
 
 import java.text.SimpleDateFormat;
