@@ -107,6 +107,14 @@ public class ExternallyRolledFileAppender extends RollingFileAppender {
       LogLog.debug("Port option set to "+port); 
     }
   }
+  
+  public
+  String getOption(String option) {
+    if (option.equalsIgnoreCase(PORT_OPTION)) {
+      return port == 0 ? null : Integer.toString(port);
+    }
+    return super.getOption(option);
+  }
 }
 
 
