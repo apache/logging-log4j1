@@ -1,17 +1,17 @@
-[main] DEBUG org.apache.log4j.PatternLayoutTestCase.common(X): Message 0
-[main] DEBUG org.apache.log4j.PatternLayoutTestCase.common(X): Message 0
-[main] INFO  org.apache.log4j.PatternLayoutTestCase.common(X): Message 1
-[main] INFO  org.apache.log4j.PatternLayoutTestCase.common(X): Message 1
-[main] WARN  org.apache.log4j.PatternLayoutTestCase.common(X): Message 2
-[main] WARN  org.apache.log4j.PatternLayoutTestCase.common(X): Message 2
-[main] ERROR org.apache.log4j.PatternLayoutTestCase.common(X): Message 3
-[main] ERROR org.apache.log4j.PatternLayoutTestCase.common(X): Message 3
-[main] FATAL org.apache.log4j.PatternLayoutTestCase.common(X): Message 4
-[main] FATAL org.apache.log4j.PatternLayoutTestCase.common(X): Message 4
-[main] DEBUG org.apache.log4j.PatternLayoutTestCase.common(X): Message 5
+[main] DEBUG org.apache.log4j.PatternLayoutTest.common(X): Message 0
+[main] DEBUG org.apache.log4j.PatternLayoutTest.common(X): Message 0
+[main] INFO  org.apache.log4j.PatternLayoutTest.common(X): Message 1
+[main] INFO  org.apache.log4j.PatternLayoutTest.common(X): Message 1
+[main] WARN  org.apache.log4j.PatternLayoutTest.common(X): Message 2
+[main] WARN  org.apache.log4j.PatternLayoutTest.common(X): Message 2
+[main] ERROR org.apache.log4j.PatternLayoutTest.common(X): Message 3
+[main] ERROR org.apache.log4j.PatternLayoutTest.common(X): Message 3
+[main] FATAL org.apache.log4j.PatternLayoutTest.common(X): Message 4
+[main] FATAL org.apache.log4j.PatternLayoutTest.common(X): Message 4
+[main] DEBUG org.apache.log4j.PatternLayoutTest.common(X): Message 5
 java.lang.Exception: Just testing
-	at org.apache.log4j.PatternLayoutTestCase.common(X)
-	at org.apache.log4j.PatternLayoutTestCase.test10(X)
+	at org.apache.log4j.PatternLayoutTest.common(X)
+	at org.apache.log4j.PatternLayoutTest.test10(X)
 	at java.lang.reflect.Method.invoke(X)
 	at junit.framework.TestCase.runTest(X)
 	at junit.framework.TestCase.runBare(X)
@@ -21,12 +21,10 @@ java.lang.Exception: Just testing
 	at junit.framework.TestCase.run(X)
 	at junit.framework.TestSuite.runTest(X)
 	at junit.framework.TestSuite.run(X)
-	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(X)
-	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.main(X)
-[main] INFO  org.apache.log4j.PatternLayoutTestCase.common(X): Message 6
+[main] INFO  org.apache.log4j.PatternLayoutTest.common(X): Message 6
 java.lang.Exception: Just testing
-	at org.apache.log4j.PatternLayoutTestCase.common(X)
-	at org.apache.log4j.PatternLayoutTestCase.test10(X)
+	at org.apache.log4j.PatternLayoutTest.common(X)
+	at org.apache.log4j.PatternLayoutTest.test10(X)
 	at java.lang.reflect.Method.invoke(X)
 	at junit.framework.TestCase.runTest(X)
 	at junit.framework.TestCase.runBare(X)
@@ -36,12 +34,10 @@ java.lang.Exception: Just testing
 	at junit.framework.TestCase.run(X)
 	at junit.framework.TestSuite.runTest(X)
 	at junit.framework.TestSuite.run(X)
-	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(X)
-	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.main(X)
-[main] WARN  org.apache.log4j.PatternLayoutTestCase.common(X): Message 7
+[main] WARN  org.apache.log4j.PatternLayoutTest.common(X): Message 7
 java.lang.Exception: Just testing
-	at org.apache.log4j.PatternLayoutTestCase.common(X)
-	at org.apache.log4j.PatternLayoutTestCase.test10(X)
+	at org.apache.log4j.PatternLayoutTest.common(X)
+	at org.apache.log4j.PatternLayoutTest.test10(X)
 	at java.lang.reflect.Method.invoke(X)
 	at junit.framework.TestCase.runTest(X)
 	at junit.framework.TestCase.runBare(X)
@@ -51,12 +47,10 @@ java.lang.Exception: Just testing
 	at junit.framework.TestCase.run(X)
 	at junit.framework.TestSuite.runTest(X)
 	at junit.framework.TestSuite.run(X)
-	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(X)
-	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.main(X)
-[main] ERROR org.apache.log4j.PatternLayoutTestCase.common(X): Message 8
+[main] ERROR org.apache.log4j.PatternLayoutTest.common(X): Message 8
 java.lang.Exception: Just testing
-	at org.apache.log4j.PatternLayoutTestCase.common(X)
-	at org.apache.log4j.PatternLayoutTestCase.test10(X)
+	at org.apache.log4j.PatternLayoutTest.common(X)
+	at org.apache.log4j.PatternLayoutTest.test10(X)
 	at java.lang.reflect.Method.invoke(X)
 	at junit.framework.TestCase.runTest(X)
 	at junit.framework.TestCase.runBare(X)
@@ -66,12 +60,10 @@ java.lang.Exception: Just testing
 	at junit.framework.TestCase.run(X)
 	at junit.framework.TestSuite.runTest(X)
 	at junit.framework.TestSuite.run(X)
-	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(X)
-	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.main(X)
-[main] FATAL org.apache.log4j.PatternLayoutTestCase.common(X): Message 9
+[main] FATAL org.apache.log4j.PatternLayoutTest.common(X): Message 9
 java.lang.Exception: Just testing
-	at org.apache.log4j.PatternLayoutTestCase.common(X)
-	at org.apache.log4j.PatternLayoutTestCase.test10(X)
+	at org.apache.log4j.PatternLayoutTest.common(X)
+	at org.apache.log4j.PatternLayoutTest.test10(X)
 	at java.lang.reflect.Method.invoke(X)
 	at junit.framework.TestCase.runTest(X)
 	at junit.framework.TestCase.runBare(X)
@@ -81,5 +73,3 @@ java.lang.Exception: Just testing
 	at junit.framework.TestCase.run(X)
 	at junit.framework.TestSuite.runTest(X)
 	at junit.framework.TestSuite.run(X)
-	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(X)
-	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.main(X)

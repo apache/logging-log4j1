@@ -54,7 +54,6 @@ package org.apache.log4j.config;
 import org.apache.log4j.*;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
-import org.apache.log4j.spi.OptionHandler;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -170,10 +169,6 @@ public class PropertySetter {
 
         setProperty(key, value);
       }
-    }
-
-    if (obj instanceof OptionHandler) {
-      ((OptionHandler) obj).activateOptions();
     }
   }
 

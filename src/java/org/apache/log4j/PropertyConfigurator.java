@@ -693,7 +693,7 @@ public class PropertyConfigurator implements Configurator {
           LogLog.debug("Parsing layout options for \"" + appenderName + "\".");
 
           PropertySetter.setProperties(layout, props, layoutPrefix + ".");
-          activateOptions(appender);
+          activateOptions(layout);
           LogLog.debug("End of parsing for \"" + appenderName + "\".");
         }
       }
