@@ -30,23 +30,23 @@ import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
 
 /**
-   This class is specialized in retreiving categories by name and
+   This class is specialized in retrieving categories by name and
    also maintaining the category hierarchy.
 
    <p><em>The casual user should not have to deal with this class
-   firectly.</em> In fact, up until version 0.9.0, this class had
+   directly.</em> In fact, up until version 0.9.0, this class had
    default package access. However, if you are in an environment where
    multiple applications run in the same VM, then read on.
 
-   <p>The structure of the category hierachy is maintained by the
-   {@link #getInstance} method. The hierrachy is such that children
+   <p>The structure of the category hierarchy is maintained by the
+   {@link #getInstance} method. The hierarchy is such that children
    link to their parent but parents do not have any pointers to their
    children. Moreover, categories can be instantiated in any order, in
-   particular decendant before ancestor.
+   particular descendant before ancestor.
 
-   <p>In case a decendant is created before a particular ancestor,
+   <p>In case a descendant is created before a particular ancestor,
    then it creates a provision node for the ancestor and adds itself
-   to the provision node. Other decendants of the same ancestor add
+   to the provision node. Other descendants of the same ancestor add
    themselves to the previously created provision node.
 
    <p>See the code below for further details.
@@ -103,7 +103,7 @@ public class Hierarchy {
   /**
      This call will clear all category definitions from the internal
      hashtable. Invoking this method will irrevocably mess up the
-     category hiearchy.
+     category hierarchy.
      
      <p>You should <em>really</em> know what you are doing before
      invoking this method.
@@ -116,7 +116,7 @@ public class Hierarchy {
   }
 
   /**
-     Check if the named category exists in the hirarchy. If so return
+     Check if the named category exists in the hierarchy. If so return
      its reference, otherwise returns <code>null</code>.
      
      @param name The name of the category to search for.
@@ -163,7 +163,7 @@ public class Hierarchy {
 
      <p>The "disable" family of methods are there for speed. They
      allow printing methods such as debug, info, etc. to return
-     immediately after an interger comparison without walking the
+     immediately after an integer comparison without walking the
      category hierarchy. In most modern computers an integer
      comparison is measured in nanoseconds where as a category walk is
      measured in units of microseconds.
@@ -263,7 +263,7 @@ public class Hierarchy {
      returned.  Otherwise, a new category will be instantiated and
      lthen inked with its existing ancestors as well as children.
      
-     @param name The name of the category to retreive.
+     @param name The name of the category to retrieve.
 
  */
   public
@@ -280,7 +280,7 @@ public class Hierarchy {
      <code>factory</code> parameter and linked with its existing
      ancestors as well as children.
      
-     @param name The name of the category to retreive.
+     @param name The name of the category to retrieve.
      @param factory The factory that will make the new category instance.
 
  */
