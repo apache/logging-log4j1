@@ -9,7 +9,7 @@
 <!-- ================================================================= -->
 <project name="log4j" default="usage" basedir=".." >
 
-  <property name="version" value="1.1b3"/>
+  <property name="version" value="1.1b4"/>
 
   <!-- The base directory relative to which most targets are built -->
   <property name="base" value="."/>
@@ -238,7 +238,7 @@
 	 excludes="**/StressCategory*, **/TTCC*, **/SimpleLayout.*, 
 	          **/AsyncAppender.*, **/Dispatcher.*, **/BoundedFIFO.*,
 	          **/Syslog*, **/RelativeTimeDateFormat.*,
-		  ${stem}/gui/**/*.class, **/Loader.class,
+		  ${stem}/gui/**/*.class, 
 		  **/UnitTest*.class, 
 		  ${stem}/or/MessageRenderer.class,
 		  ${stem}/spi/TriggeringEventEvaluator.class

@@ -5,6 +5,22 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
 
+
+ April 20, 2001
+
+ - Release of version 1.1b4
+
+ - Mathias Boagert observed that in version 1.1b3 the search algorithm
+   for the resource used in automatic log4j configuration was
+   different than in 1.0.x. Beta4 uses a more powerful mechanism which
+   is also compatible with 1.0.x. [*]
+
+ - Paul Glezen correctly observed that if log4j is deployed in a
+   client/server mode where multiple log4j clients log to a log4j
+   server, all hosts must be upgraded to version 1.1 in one go because
+   the internal LoggingEvent class used in client/server communication
+   changed in log4j 1.1. 
+ 
  April 18, 2001
 
  - Release of version 1.1b3
