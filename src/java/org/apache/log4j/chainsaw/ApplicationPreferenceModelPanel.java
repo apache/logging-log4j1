@@ -35,6 +35,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSlider;
@@ -362,6 +363,8 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
       new JSlider(JSlider.HORIZONTAL, 1, 4, 2);
     private final JCheckBox confirmExit = new JCheckBox("Confirm Exit");
     Dictionary sliderLabelMap = new Hashtable();
+    
+    private final JCheckBox okToRemoveSecurityManager = new JCheckBox("Ok to remove SecurityManager");
 
     /**
      * @param title
@@ -384,7 +387,7 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
       p.add(Box.createHorizontalGlue());
 
       confirmExit.setToolTipText("Is set, you will be prompted to confirm the exit Chainsaw");
-      
+      okToRemoveSecurityManager.setToolTipText("You will need to tick this to be able to load Receivers/Plugins that require external dependancies.");
       setupInitialValues();
       setupListeners();
 
@@ -406,10 +409,15 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
       Box p3 = new Box(BoxLayout.X_AXIS);
       p3.add(showSplash);
       p3.add(Box.createHorizontalGlue());
+
+      Box ok4 = new Box(BoxLayout.X_AXIS);
+      ok4.add(okToRemoveSecurityManager);
+      ok4.add(Box.createHorizontalGlue());
       
       add(p2);
       add(p3);
-
+      add(ok4);
+      
       JPanel p4 = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
       p4.add(new JLabel("ToolTip Display (millis)"));
@@ -486,6 +494,19 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
           showSplash.setSelected(value);
         }});
       
+      uncommittedPreferenceModel.addPropertyChangeListener("okToRemoveSecurityManager", new PropertyChangeListener() {
+
+		public void propertyChange(PropertyChangeEvent evt) {
+            boolean newValue = ((Boolean) evt.getNewValue()).booleanValue();
+            if(newValue) {
+            okToRemoveSecurityManager.setSelected(newValue);
+            }else {
+                okToRemoveSecurityManager.setSelected(false);
+            }
+            
+		}});
+      
+      
       uncommittedPreferenceModel.addPropertyChangeListener(
         "identifierExpression",
         new PropertyChangeListener() {
@@ -541,6 +562,22 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
         public void actionPerformed(ActionEvent e) {
           uncommittedPreferenceModel.setShowSplash(showSplash.isSelected());
         }});
+      
+      okToRemoveSecurityManager.addActionListener(new ActionListener() {
+
+        public void actionPerformed(ActionEvent e) {
+            
+          if(okToRemoveSecurityManager.isSelected() && JOptionPane.showConfirmDialog(okToRemoveSecurityManager, "By ticking this option, you are authorizing Chainsaw to remove Java's Security Manager.\n\n" +
+                    "This is required under Java Web Start so that it can access Jars/classes locally.  Without this, Receivers like JMSReceiver + DBReceiver that require" +
+                    " specific driver jars will NOT be able to be run.  \n\n" +
+                    "By ticking this, you are saying that this is ok.", "Please Confirm", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+          	uncommittedPreferenceModel.setOkToRemoveSecurityManager(true);
+          }else {
+            uncommittedPreferenceModel.setOkToRemoveSecurityManager(false);
+          }
+                
+        }});
+      
       
       responsiveSlider.getModel().addChangeListener(
         new ChangeListener() {
