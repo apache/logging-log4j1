@@ -14,9 +14,9 @@ The month started with a question by John Armstrong [1] on whether
 log4j offered any guarantees on binary compatibility between various
 versions.  To which Ceki replied by stating [2] the current policy of
 not removing deprecated methods until at least two release cycles are
-complete. This reply did not seem to satisfy John Armstrong and in a
-long discussion ensued. A historical perspective [3] seemed to satisfy
-most people, at least the discussion petered off.
+complete. This reply did not seem to satisfy John Armstrong and a long
+discussion ensued. A historical perspective [3] seemed to satisfy most
+people, at least the discussion petered off.
 
 [1] http://marc.theaimsgroup.com/?l=log4j-dev&m=102335790906496&w=2
 [2] http://marc.theaimsgroup.com/?l=log4j-dev&m=102336327109965&w=2
