@@ -186,8 +186,7 @@ public class AsyncAppender extends AppenderSkeleton
   }
 
   /**
-   * The <code>AsyncAppender</code> does not require a layout. Hence, this
-   * method always returns <code>false</code>.
+   * @deprecated Will be removed with no replacement.
    */
   public boolean requiresLayout() {
     return false;
