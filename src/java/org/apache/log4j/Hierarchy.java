@@ -209,8 +209,8 @@ public class Hierarchy {
      regardless of category. Note that DEBUG messages are also
      disabled.  
 
-     <p>Invoking this method is equivalent to calling {@link #disable}
-     with the argument {@link Priority#INFO}.
+     <p>Invoking this method is equivalent to calling {@link
+     #disable(Priority)} with the argument {@link Priority#INFO}.
 
      @since 0.8.5 */
   public
