@@ -57,23 +57,23 @@ package org.apache.joran;
 
 import junit.framework.TestCase;
 
-import org.apache.joran.action.ActionConst;
-import org.apache.joran.action.AppenderAction;
-import org.apache.joran.action.AppenderRefAction;
-import org.apache.joran.action.ConversionRuleAction;
-import org.apache.joran.action.LayoutAction;
-import org.apache.joran.action.LevelAction;
-import org.apache.joran.action.LoggerAction;
 import org.apache.joran.action.NestComponentIA;
 import org.apache.joran.action.NewRuleAction;
 import org.apache.joran.action.ParamAction;
-import org.apache.joran.action.RootLoggerAction;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
+import org.apache.log4j.joran.action.ActionConst;
+import org.apache.log4j.joran.action.AppenderAction;
+import org.apache.log4j.joran.action.AppenderRefAction;
+import org.apache.log4j.joran.action.ConversionRuleAction;
+import org.apache.log4j.joran.action.LayoutAction;
+import org.apache.log4j.joran.action.LevelAction;
+import org.apache.log4j.joran.action.LoggerAction;
+import org.apache.log4j.joran.action.RootLoggerAction;
 
 import org.w3c.dom.Document;
 
@@ -230,7 +230,7 @@ public class JoranParserTest extends TestCase {
     jp.parse(doc);
   }
 
-  public void xtestNewConversionWord() throws Exception {
+  public void testNewConversionWord() throws Exception {
     logger.debug("Starting testNewConversionWord");
 
     DocumentBuilderFactory dbf = null;

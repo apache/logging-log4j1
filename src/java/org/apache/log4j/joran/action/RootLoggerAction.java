@@ -47,80 +47,53 @@
  *
  */
 
-package org.apache.joran.action;
+package org.apache.log4j.joran.action;
 
 import org.apache.joran.ExecutionContext;
+import org.apache.joran.action.Action;
 
-import org.apache.log4j.Appender;
-import org.apache.log4j.Layout;
 import org.apache.log4j.Logger;
-import org.apache.log4j.helpers.OptionConverter;
-import org.apache.log4j.spi.OptionHandler;
+import org.apache.log4j.spi.LoggerRepository;
 
 import org.w3c.dom.Element;
 
 
-public class LayoutAction extends Action {
-  static final Logger logger = Logger.getLogger(LayoutAction.class);
-  Layout layout;
+public class RootLoggerAction extends Action {
+  static final String NAME_ATTR = "name";
+  static final String CLASS_ATTR = "class";
+  static final String ADDITIVITY_ATTR = "additivity";
+  static final String EMPTY_STR = "";
+  static final Class[] ONE_STRING_PARAM = new Class[] { String.class };
+  Logger logger = Logger.getLogger(RootLoggerAction.class);
+  Logger root;
 
-  /**
-   * Instantiates an layout of the given class and sets its name.
-   *
-   */
-  public void begin(ExecutionContext ec, Element appenderElement) {
-		// Let us forget about previous errors (in this object)
-		inError = false; 
+  public void begin(ExecutionContext ec, Element loggerElement) {
+    inError = false;
+    logger.debug("In begin method");
 
-    String className =
-      appenderElement.getAttribute(ActionConst.CLASS_ATTRIBUTE);
-    try {
-      logger.debug("About to instantiate layout of type [" + className + "]");
+    LoggerRepository repository = (LoggerRepository) ec.getObject(0);
+    root = repository.getRootLogger();
 
-      Object instance =
-        OptionConverter.instantiateByClassName(
-          className, org.apache.log4j.Layout.class, null);
-      layout = (Layout) instance;
-
-      logger.debug("Pushing layout on top of the object stack.");
-      ec.pushObject(layout);
-    } catch (Exception oops) {
-      inError = true;
-      logger.error(
-        "Could not create an Layout. Reported error follows.", oops);
-      ec.addError("Could not create layout of type " + className + "].");
-    }
+    logger.debug("Pushing root logger on stack");
+    ec.pushObject(root);
   }
 
-  /**
-   * Once the children elements are also parsed, now is the time to activate
-   * the appender options.
-   */
   public void end(ExecutionContext ec, Element e) {
+    logger.debug("end() called.");
+
     if (inError) {
       return;
     }
 
-    if (layout instanceof OptionHandler) {
-      ((OptionHandler) layout).activateOptions();
-    }
-
     Object o = ec.peekObject();
 
-    if (o != layout) {
+    if (o != root) {
       logger.warn(
-        "The object on the top the of the stack is not the layout pushed earlier.");
+        "The object on the top the of the stack is not the root logger");
+        logger.warn("It is: "+o);
     } else {
-      logger.warn("Popping layout from the object stack");
+      logger.debug("Removing root logger from top of stack.");
       ec.popObject();
-      
-      try {
-      	logger.debug("About to set the layout of the containing appender.");
-        Appender appender = (Appender) ec.peekObject();
-        appender.setLayout(layout);
-      } catch(Exception ex) {
-      	logger.error("Could not set the layout for containing appender.", ex);
-      }
     }
   }
 

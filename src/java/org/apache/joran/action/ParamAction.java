@@ -16,8 +16,8 @@ public class ParamAction extends Action {
 	static String NO_VALUE = "No name attribute in <param> element";
 	
   public void begin(ExecutionContext ec, Element element) {
-		String name = element.getAttribute(ActionConst.NAME_ATTRIBUTE);
-		String value = (element.getAttribute(ActionConst.VALUE_ATTRIBUTE));
+		String name = element.getAttribute(NAME_ATTRIBUTE);
+		String value = (element.getAttribute(VALUE_ATTRIBUTE));
 
     if(name==null) {
 			inError = true;

@@ -1,6 +1,7 @@
-package org.apache.joran.action;
+package org.apache.log4j.joran.action;
 
 import org.apache.joran.ExecutionContext;
+import org.apache.joran.action.Action;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;

@@ -47,65 +47,49 @@
  *
  */
 
-package org.apache.joran.action;
+package org.apache.log4j.joran.action;
 
 import org.apache.joran.ExecutionContext;
-import org.apache.joran.helper.Option;
+import org.apache.joran.action.Action;
 
 import org.apache.log4j.Appender;
+import org.apache.log4j.Layout;
 import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.OptionHandler;
 
 import org.w3c.dom.Element;
 
-import java.util.HashMap;
 
-
-public class AppenderAction extends Action {
-  static final Logger logger = Logger.getLogger(AppenderAction.class);
-  Appender appender;
+public class LayoutAction extends Action {
+  static final Logger logger = Logger.getLogger(LayoutAction.class);
+  Layout layout;
 
   /**
-   * Instantiates an appender of the given class and sets its name.
+   * Instantiates an layout of the given class and sets its name.
    *
-   * The appender thus generated is placed in the ExecutionContext appender bag.
    */
   public void begin(ExecutionContext ec, Element appenderElement) {
-    String className =
-      appenderElement.getAttribute(ActionConst.CLASS_ATTRIBUTE);
+		// Let us forget about previous errors (in this object)
+		inError = false; 
 
+    String className =
+      appenderElement.getAttribute(CLASS_ATTRIBUTE);
     try {
-      logger.debug(
-        "About to instantiate appender of type [" + className + "]");
+      logger.debug("About to instantiate layout of type [" + className + "]");
 
       Object instance =
         OptionConverter.instantiateByClassName(
-          className, org.apache.log4j.Appender.class, null);
-      appender = (Appender) instance;
+          className, org.apache.log4j.Layout.class, null);
+      layout = (Layout) instance;
 
-      String appenderName =
-        appenderElement.getAttribute(ActionConst.NAME_ATTRIBUTE);
-
-      if (Option.isEmpty(appenderName)) {
-        logger.warn(
-          "No appender name given for appender of type " + className + "].");
-      } else {
-        appender.setName(appenderName);
-        logger.debug("Appender named as [" + appenderName + "]");
-      }
-
-      HashMap appenderBag =
-        (HashMap) ec.getObjectMap().get(ActionConst.APPENDER_BAG);
-      appenderBag.put(appenderName, appender);
-
-      logger.debug("Pushing appender on to the object stack.");
-      ec.pushObject(appender);
+      logger.debug("Pushing layout on top of the object stack.");
+      ec.pushObject(layout);
     } catch (Exception oops) {
       inError = true;
       logger.error(
-        "Could not create an Appender. Reported error follows.", oops);
-      ec.addError("Could not create appender of type " + className + "].");
+        "Could not create an Layout. Reported error follows.", oops);
+      ec.addError("Could not create layout of type " + className + "].");
     }
   }
 
@@ -118,21 +102,26 @@ public class AppenderAction extends Action {
       return;
     }
 
-    if (appender instanceof OptionHandler) {
-      ((OptionHandler) appender).activateOptions();
+    if (layout instanceof OptionHandler) {
+      ((OptionHandler) layout).activateOptions();
     }
 
     Object o = ec.peekObject();
 
-    if (o != appender) {
+    if (o != layout) {
       logger.warn(
-        "The object at the of the stack is not the appender named ["
-        + appender.getName() + "] pushed earlier.");
+        "The object on the top the of the stack is not the layout pushed earlier.");
     } else {
-      logger.warn(
-        "Popping appender named [" + appender.getName()
-        + "] from the object stack");
+      logger.warn("Popping layout from the object stack");
       ec.popObject();
+      
+      try {
+      	logger.debug("About to set the layout of the containing appender.");
+        Appender appender = (Appender) ec.peekObject();
+        appender.setLayout(layout);
+      } catch(Exception ex) {
+      	logger.error("Could not set the layout for containing appender.", ex);
+      }
     }
   }
 

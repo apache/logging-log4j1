@@ -47,53 +47,79 @@
  *
  */
 
-package org.apache.joran.action;
+package org.apache.log4j.joran.action;
 
 import org.apache.joran.ExecutionContext;
+import org.apache.joran.action.Action;
+import org.apache.joran.helper.Option;
 
+import org.apache.log4j.Layout;
 import org.apache.log4j.Logger;
-import org.apache.log4j.spi.LoggerRepository;
+import org.apache.log4j.PatternLayout;
 
 import org.w3c.dom.Element;
 
 
-public class RootLoggerAction extends Action {
-  static final String NAME_ATTR = "name";
-  static final String CLASS_ATTR = "class";
-  static final String ADDITIVITY_ATTR = "additivity";
-  static final String EMPTY_STR = "";
-  static final Class[] ONE_STRING_PARAM = new Class[] { String.class };
-  Logger logger = Logger.getLogger(RootLoggerAction.class);
-  Logger root;
+public class ConversionRuleAction extends Action {
+  static final Logger logger = Logger.getLogger(ConversionRuleAction.class);
+  Layout layout;
 
-  public void begin(ExecutionContext ec, Element loggerElement) {
+  /**
+   * Instantiates an layout of the given class and sets its name.
+   *
+   */
+  public void begin(ExecutionContext ec, Element element) {
+    // Let us forget about previous errors (in this object)
     inError = false;
-    logger.debug("In begin method");
 
-    LoggerRepository repository = (LoggerRepository) ec.getObject(0);
-    root = repository.getRootLogger();
+    String errorMsg;
+    String conversionWord =
+      element.getAttribute(ActionConst.CONVERSION_WORD_ATTRIBUTE);
+    String converterClass =
+      element.getAttribute(ActionConst.CONVERTER_CLASS_ATTRIBUTE);
 
-    logger.debug("Pushing root logger on stack");
-    ec.pushObject(root);
-  }
+    if (Option.isEmpty(conversionWord)) {
+      inError = true;
+      errorMsg = "No 'conversionWord' attribute in <conversionRule>";
+      logger.warn(errorMsg);
+      ec.addError(errorMsg);
 
-  public void end(ExecutionContext ec, Element e) {
-    logger.debug("end() called.");
-
-    if (inError) {
       return;
     }
 
-    Object o = ec.peekObject();
+    if (Option.isEmpty(converterClass)) {
+      inError = true;
+      errorMsg = "No 'converterClass' attribute in <conversionRule>";
+      logger.warn(errorMsg);
+      ec.addError(errorMsg);
 
-    if (o != root) {
-      logger.warn(
-        "The object on the top the of the stack is not the root logger");
-        logger.warn("It is: "+o);
-    } else {
-      logger.debug("Removing root logger from top of stack.");
-      ec.popObject();
+      return;
     }
+
+    try {
+      logger.debug(
+        "About to add conversion rule [" + conversionWord + ", "
+        + converterClass + "] to layout");
+
+      Object o = ec.peekObject();
+
+      if (o instanceof PatternLayout) {
+        PatternLayout patternLayout = (PatternLayout) o;
+        patternLayout.addConversionRule(conversionWord, converterClass);
+      }
+    } catch (Exception oops) {
+      inError = true;
+      errorMsg = "Could not add conversion rule to PatternLayout.";
+      logger.error(errorMsg, oops);
+      ec.addError(errorMsg);
+    }
+  }
+
+  /**
+   * Once the children elements are also parsed, now is the time to activate
+   * the appender options.
+   */
+  public void end(ExecutionContext ec, Element e) {
   }
 
   public void finish(ExecutionContext ec) {

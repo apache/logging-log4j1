@@ -69,6 +69,13 @@ import org.w3c.dom.Element;
  */
 public abstract class Action {
 	
+  public static final String NAME_ATTRIBUTE = "name";
+  public static final String VALUE_ATTRIBUTE = "value";
+  public static final String CLASS_ATTRIBUTE = "class";
+  public static final String PATTERN_ATTRIBUTE = "pattern";
+  public static final String ACTION_CLASS_ATTRIBUTE = "actionClass";
+
+  
 	/** 
 	 * When actions encounter an error condition they set this variable to true. 
 	 */
