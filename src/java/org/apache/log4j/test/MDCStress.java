@@ -9,6 +9,7 @@ import java.util.Random;
 public class MDCStress extends Thread {
 
   static Category root = Category.getRoot();  
+  static Category log = Category.getInstance(MDCStress.class);
 
   static Random random = new Random(17);
 
@@ -30,7 +31,6 @@ public class MDCStress extends Thread {
     if(args.length != 1) {
       usage();
     }
-
     try {
       maxThreads =  Integer.parseInt(args[0]);
     }
@@ -58,7 +58,6 @@ public class MDCStress extends Thread {
 
   }
 
-
   static
   void usage() {
     System.err.println( "Usage: "+MDCStress.class + " maxThreads");
@@ -74,9 +73,7 @@ public class MDCStress extends Thread {
 
     synchronized(MDCStress.class) {
       n = maxThreadsConstained(n);    
-      root.debug("Creating " + n+ " child MDCStress threads.");
       for(int i = 0; i < n; i++) {
-	root.debug("New MDCStress, threadCounter = " + (++threadCounter));
 	new MDCStress(depth+1).start();
       }
     }
@@ -92,10 +89,9 @@ public class MDCStress extends Thread {
   public
   void run() {
     MDC.put("depth", new Integer(depth));
-    System.out.println("depth="+MDC.get("depth"));
+    log.debug("Entered run()");
     
     int loopLength = randomInt(LOOP_LENGTH);
-    root.debug("In run loop.debug( loopLength = "+loopLength);
 
     int createIndex = loopLength/2;
     
@@ -110,7 +106,6 @@ public class MDCStress extends Thread {
       threadCounter--;
       root.debug( "Exiting run loop. " + threadCounter);
       if(threadCounter <= 0) {
-	root.debug( "Notifying [main] thread.");
 	MDCStress.class.notify(); // wake up the main thread
       }
     }     
