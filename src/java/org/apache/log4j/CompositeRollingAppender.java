@@ -32,12 +32,15 @@ import java.io.File;
 import java.io.FilenameFilter;
 
 /**
- *  <p>CompositeRollingAppender combines RollingFileAppender and DailyRollingFileAppender
- *  It can function as either or and do both at the same time (making size
- *  based rolling files like RollingFileAppender until a data/time boundary
- *  is crossed at which time it rolls all of those files as per the DailyRollingFileAppender)
- *  based on the setting for <code>rollingStyle</code>.<br>
- *  <p>A of few additional optional features have been added:<br>
+   <p>CompositeRollingAppender combines RollingFileAppender and
+   DailyRollingFileAppender.  It can function as either or and do both
+   at the same time (making size based rolling files like
+   RollingFileAppender until a data/time boundary is crossed at which
+   time it rolls all of those files as per the
+   DailyRollingFileAppender) * based on the setting for
+   <code>rollingStyle</code>.<br>
+ 
+ <p>A of few additional optional features have been added:<br>
  *  -- Attach date pattern for current log file (@see staticLogFileName)<br>
  *  -- Backup number increments for newer files (@see countDirection)<br>
  *  -- Infinite number of backups by file size (@see masSizeRollBackups)<br>
@@ -56,8 +59,7 @@ import java.io.FilenameFilter;
  *  @author Kevin Steppe
  *  @author Heinz Richter
  *  @author Eirik Lygre
- *  @author Ceki G&uuml;lc&uuml;
- */
+ *  @author Ceki G&uuml;lc&uuml; */
 public class CompositeRollingAppender extends org.apache.log4j.FileAppender {
   // The code assumes that the following 'time' constants are in a increasing
   // sequence.
@@ -440,8 +442,7 @@ public class CompositeRollingAppender extends org.apache.log4j.FileAppender {
     String filter;
     if (staticLogFileName || !rollDate) {
       filter = baseFileName + ".*";
-    }
-    else {
+    } else {
       filter = scheduledFilename + ".*";
     }
     
@@ -473,8 +474,7 @@ public class CompositeRollingAppender extends org.apache.log4j.FileAppender {
 	  LogLog.debug("From file: " + files[i] + " -> " + backup);
 	  if (backup > curSizeRollBackups)
 	    curSizeRollBackups = backup;
-	}
-	catch (Exception e) {
+	} catch (Exception e) {
 	  //this happens when file.log -> file.log.yyyy-mm-dd which is normal
 	  //when staticLogFileName == false
 	  LogLog.debug("Encountered a backup file not ending in .x " + files[i]);
@@ -651,17 +651,16 @@ public class CompositeRollingAppender extends org.apache.log4j.FileAppender {
 	  curSizeRollBackups--;
 	}
 	
-				// Map {(maxBackupIndex - 1), ..., 2, 1} to {maxBackupIndex, ..., 3, 2}
+	// Map {(maxBackupIndex - 1), ..., 2, 1} to {maxBackupIndex, ..., 3, 2}
 	for (int i = curSizeRollBackups; i >= 1; i--) {
-					rollFile((fileName + "." + i), (fileName + '.' + (i + 1)));
+	  rollFile((fileName + "." + i), (fileName + '.' + (i + 1)));
 	}
 	
 	curSizeRollBackups++;
 				// Rename fileName to fileName.1
 	rollFile(fileName, fileName + ".1");
 	
-      }
-      else { //countDirection > 0
+      } else { //countDirection > 0
 	if (curSizeRollBackups >= maxSizeRollBackups && maxSizeRollBackups > 0) {
 	  //delete the first and keep counting up.
 	  int oldestFileIndex = curSizeRollBackups - maxSizeRollBackups + 1;
