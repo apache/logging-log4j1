@@ -33,7 +33,7 @@ public class Util {
   private static final String MYSQL_PART = "mysql";
   private static final String ORACLE_PART = "oracle";
   //private static final String MSSQL_PART = "mssqlserver4";
-  private static final String MSSQL_PART = "microsoft sql server";
+  private static final String MSSQL_PART = "microsoft";
   private static final String HSQL_PART = "hsql";
   
   public static int discoverSQLDialect(DatabaseMetaData meta) {
@@ -42,7 +42,7 @@ public class Util {
     try {
 
       String dbName = meta.getDatabaseProductName().toLowerCase();
-      LogLog.debug("**db name is " + dbName);
+      LogLog.debug("==db name is [" + dbName +"]");
 
       if (dbName.indexOf(POSTGRES_PART) != -1) {
         return ConnectionSource.POSTGRES_DIALECT;
@@ -51,6 +51,7 @@ public class Util {
       } else if (dbName.indexOf(ORACLE_PART) != -1) {
         return ConnectionSource.ORACLE_DIALECT;
       } else if (dbName.indexOf(MSSQL_PART) != -1) {
+        LogLog.info("Selecting MsSQL dialect");
         return ConnectionSource.MSSQL_DIALECT;
       } else if (dbName.indexOf(HSQL_PART) != -1) {
         return ConnectionSource.HSQL_DIALECT;
