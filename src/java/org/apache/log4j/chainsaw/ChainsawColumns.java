@@ -49,8 +49,15 @@
 
 package org.apache.log4j.chainsaw;
 
+import java.awt.Cursor;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.ImageIcon;
+
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
 
 
 /**
@@ -93,6 +100,12 @@ public class ChainsawColumns {
   public static final int INDEX_LINE_COL_NAME = 12;
   public static final int INDEX_PROPERTIES_COL_NAME = 13;
   public static final int INDEX_ID_COL_NAME = 14;
+
+
+ public static final Cursor CURSOR_FOCUS_ON;
+ static{
+ 	CURSOR_FOCUS_ON = Toolkit.getDefaultToolkit().createCustomCursor(new ImageIcon(ChainsawIcons.WINDOW_ICON).getImage(), new Point(3,3), "FocusOn");
+ }
 
   private ChainsawColumns() {
   }
