@@ -242,7 +242,7 @@ public class DailyRollingFileAppender extends FileAppender {
     }
 
     // close current file, and rename it to datedFilename
-    this.closeFile();
+    this.closeWriter();
 
     File target = new File(scheduledFilename);
 
