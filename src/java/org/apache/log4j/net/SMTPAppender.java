@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2005 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -99,14 +99,15 @@ public class SMTPAppender extends AppenderSkeleton {
   /**
      Use <code>evaluator</code> passed as parameter as the {@link
      TriggeringEventEvaluator} for this SMTPAppender.  */
-  public SMTPAppender(TriggeringEventEvaluator evaluator) {
+  public SMTPAppender(final TriggeringEventEvaluator evaluator) {
+    super(false);
     this.evaluator = evaluator;
   }
 
   /**
      Activate the specified options, such as the smtp host, the
      recipient, from, etc. */
-  public void activate() {
+  public void activateOptions() {
     int errorCount = 0;
     Properties props = new Properties(System.getProperties());
 
@@ -151,7 +152,7 @@ public class SMTPAppender extends AppenderSkeleton {
     }
     
     if(errorCount == 0) {
-      super.activate();
+      super.activateOptions();
     }
   }
 

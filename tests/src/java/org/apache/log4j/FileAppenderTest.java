@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,11 +24,11 @@ package org.apache.log4j;
  * @author <a href="http://www.qos.ch/log4j/">Ceki G&uuml;lc&uuml;</a>
  */
 public class FileAppenderTest extends AbstractAppenderTest {
-  protected Appender getAppender() {
+  protected AppenderSkeleton getAppender() {
     return new FileAppender();
   }
 
-  protected Appender getConfiguredAppender() {
+  protected AppenderSkeleton getConfiguredAppender() {
     FileAppender wa = new FileAppender();
     wa.setFile("output/temp");
     wa.setLayout(new DummyLayout());

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2005 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -80,7 +80,7 @@ public class FileAppender extends WriterAppender {
     int bufferSize) throws IOException {
     this.layout = layout;
     this.setFile(filename, append, bufferedIO, bufferSize);
-    activate();
+    activateOptions();
   }
 
   /**
@@ -96,7 +96,7 @@ public class FileAppender extends WriterAppender {
     throws IOException {
     this.layout = layout;
     this.setFile(filename, append, false, bufferSize);
-    activate();
+    activateOptions();
   }
 
   /**
@@ -107,7 +107,7 @@ public class FileAppender extends WriterAppender {
     <p>The file will be appended to.  */
   public FileAppender(Layout layout, String filename) throws IOException {
     this(layout, filename, true);
-    activate();
+    activateOptions();
   }
 
   /**
@@ -144,7 +144,7 @@ public class FileAppender extends WriterAppender {
      <b>Append</b> properties.
 
      @since 0.8.1 */
-  public void activate() {
+  public void activateOptions() {
     int errors = 0;
     if (fileName != null) {
       try {
@@ -160,7 +160,7 @@ public class FileAppender extends WriterAppender {
       getLogger().warn("Are you using FileAppender instead of ConsoleAppender?");
     }
     if(errors == 0) {
-      super.activate();
+      super.activateOptions();
     }
   }
 

@@ -67,6 +67,7 @@ public class WriterAppender extends AppenderSkeleton {
    * The default constructor does nothing.  
    * */
   public WriterAppender() {
+      super(false);
   }
 
   /**
@@ -91,9 +92,10 @@ public class WriterAppender extends AppenderSkeleton {
    * future log4j versions 
    * */
   public WriterAppender(Layout layout, Writer writer) {
+    super(false);
     this.layout = layout;
     this.setWriter(writer);
-    this.activate();
+    this.activateOptions();
   }
 
   /**
@@ -125,7 +127,7 @@ public class WriterAppender extends AppenderSkeleton {
    * Checks that requires parameters are set and if everything is in order, 
    * activates this appender.
   */
-  public void activate() {
+  public void activateOptions() {
     int errors = 0;
     if (this.layout == null) {
       getLogger().error(
@@ -140,7 +142,7 @@ public class WriterAppender extends AppenderSkeleton {
     
     // only error free appenders should be activated
     if(errors == 0) {
-      super.activate();
+      super.activateOptions();
     }
   }
 

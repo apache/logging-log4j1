@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,6 +70,7 @@ public class SyslogAppender extends AppenderSkeleton {
   Layout layout;
   
   public SyslogAppender() {
+      super(false);
   }
 
   /**
@@ -156,7 +157,7 @@ public class SyslogAppender extends AppenderSkeleton {
   /**
    * This method returns immediately as options are activated when they are set.
    * */
-  public void activate() {
+  public void activateOptions() {
     if (facilityStr == null) {
       String errMsg =
         "The Facility option must be set for SyslogAppender named [" + name

@@ -42,7 +42,7 @@ public class AsyncAppenderTestCase extends TestCase {
     vectorAppender = new VectorAppender();
     vectorAppender.setDelay(DELAY);
     asyncAppender.addAppender(vectorAppender);
-    asyncAppender.activate();
+    asyncAppender.activateOptions();
     root.addAppender(asyncAppender);
   }
 

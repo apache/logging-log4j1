@@ -16,12 +16,15 @@ public class MultiplexAppender extends AppenderSkeleton {
 
 	private MultiplexSelector selector;
 
+    public MultiplexAppender() {
+        super(true);
+    }
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see org.apache.log4j.spi.OptionHandler#activateOptions()
 	 */
-	public void activate() {
+	public void activateOptions() {
 
 
 		// check that we have a selector of something at this point

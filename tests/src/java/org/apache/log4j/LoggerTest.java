@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2005 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -108,7 +108,7 @@ public class LoggerTest extends TestCase {
     Logger a = Logger.getLogger("a");
     Logger ab = Logger.getLogger("a.b");
     CountingAppender ca = new CountingAppender();
-    ca.activate();
+    ca.activateOptions();
     a.addAppender(ca);
 
     assertEquals(ca.counter, 0);
@@ -133,9 +133,9 @@ public class LoggerTest extends TestCase {
     Logger x = Logger.getLogger("x");
 
     CountingAppender ca1 = new CountingAppender();
-    ca1.activate();
+    ca1.activateOptions();
     CountingAppender ca2 = new CountingAppender();
-    ca2.activate();  
+    ca2.activateOptions();
     a.addAppender(ca1);
     abc.addAppender(ca2);
 
@@ -167,11 +167,11 @@ public class LoggerTest extends TestCase {
     Logger x = Logger.getLogger("x");
 
     CountingAppender caRoot = new CountingAppender();
-    caRoot.activate();
+    caRoot.activateOptions();
     CountingAppender caA = new CountingAppender();
-    caA.activate();
+    caA.activateOptions();
     CountingAppender caABC = new CountingAppender();
-    caABC.activate();
+    caABC.activateOptions();
     
     root.addAppender(caRoot);
     a.addAppender(caA);
@@ -201,7 +201,7 @@ public class LoggerTest extends TestCase {
 
   public void testDisable1() {
     CountingAppender caRoot = new CountingAppender();
-    caRoot.activate();
+    caRoot.activateOptions();
     Logger root = Logger.getRootLogger();
     root.addAppender(caRoot);
 
@@ -371,6 +371,7 @@ public class LoggerTest extends TestCase {
     int counter;
 
     CountingAppender() {
+      super(true);
       counter = 0;
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 package org.apache.log4j.net;
 
 import org.apache.log4j.AbstractAppenderTest;
-import org.apache.log4j.Appender;
+import org.apache.log4j.AppenderSkeleton;
 
 
 /**
@@ -28,11 +28,11 @@ import org.apache.log4j.Appender;
  *
  */
 public class SMTPAppenderTest extends AbstractAppenderTest {
-  protected Appender getAppender() {
+  protected AppenderSkeleton getAppender() {
     return new SMTPAppender();
   }
 
-  public Appender getConfiguredAppender() {
+  public AppenderSkeleton getConfiguredAppender() {
     SMTPAppender ca = new SMTPAppender();
 
     // set a bogus layout

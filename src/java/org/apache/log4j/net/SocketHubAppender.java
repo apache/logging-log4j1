@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2005 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -118,19 +118,22 @@ public class SocketHubAppender extends AppenderSkeleton {
   private CyclicBuffer buffer = null;
 
   public SocketHubAppender() {
+      super(false);
   }
 
   /**
      Connects to remote server at <code>address</code> and <code>port</code>. */
   public SocketHubAppender(int _port) {
+    super(false);
     port = _port;
-    startServer();
+    activateOptions();
   }
 
   /**
      Set up the socket server on the specified port.  */
   public void activateOptions() {
     startServer();
+    super.activateOptions();
   }
 
   /**

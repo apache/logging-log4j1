@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2005 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -123,32 +123,35 @@ public class SocketAppender extends AppenderSkeleton {
   String application;
 
   public SocketAppender() {
+      super(false);
   }
 
   /**
          Connects to remote server at <code>address</code> and <code>port</code>.
   */
   public SocketAppender(InetAddress address, int port) {
+    super(false);
     this.address = address;
     this.remoteHost = address.getHostName();
     this.port = port;
-    activate();
+    activateOptions();
   }
 
   /**
          Connects to remote server at <code>host</code> and <code>port</code>.
   */
   public SocketAppender(String host, int port) {
+    super(false);
     this.port = port;
     this.address = getAddressByName(host);
     this.remoteHost = host;
-    activate();
+    activateOptions();
   }
 
   /**
          Connect to the specified <b>RemoteHost</b> and <b>Port</b>.
   */
-  public void activate() {
+  public void activateOptions() {
     try {
       hostname = InetAddress.getLocalHost().getHostName();
     } catch (UnknownHostException uhe) {
@@ -167,7 +170,7 @@ public class SocketAppender extends AppenderSkeleton {
       throw new IllegalStateException(err);
     }
     // all is dandy on the eastern front.
-    super.activate();
+    super.activateOptions();
   }
 
   /**

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,6 +38,13 @@ import java.util.List;
  */
 public final class ListAppender extends AppenderSkeleton {
   private List list = new ArrayList();
+
+  /**
+   * Constructs a list appender.
+   */
+  public ListAppender() {
+      super(true);
+  }
 
   /**
    * Returns a writeable, BUT cloned List of all the LoggingEvents that are contained

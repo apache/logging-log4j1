@@ -40,7 +40,7 @@ public class Loop {
     ConsoleAppender a = new ConsoleAppender();
     a.setLayout(new PatternLayout("%d %level %c - %m%n"));
     a.setName("console");
-    a.activate();
+    a.activateOptions();
     j.addAppender(a);
 
     if (args.length == 2) {
