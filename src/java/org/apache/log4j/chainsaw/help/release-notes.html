@@ -9,6 +9,14 @@
 
 <h1>1.99.99</h2>
 
+<h2>7 December 2004</h2>
+<ul>
+<li>Changed the default order of columns in Chainsaw to first display ID, level, logger, message and exception</li>
+<li>Added default level expressions (example: LEVEL == DEBUG) to the 'refine focus' combobox</li>
+<li>Modified Chainsaw initialization logic to load Chainsaw-specified config when specified.  <b>NOTE:</b> Chainsaw will load configurations from BOTH the log4j.configuration system property and Chainsaw's automatic configuration URL if the two are specified</li>
+<li>Corrected date pattern format bug (was displaying minutes where it should be displaying months in the detail panel)</li>
+</ul>
+
 <h2>5 December 2004</h2>
 <ul>
 <li>Added CustomSQLDBReceiver example to log4j-receiver-sample config file, Javadoc help menu and receiver panel.</li>

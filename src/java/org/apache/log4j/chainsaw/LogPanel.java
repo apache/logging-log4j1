@@ -66,7 +66,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Vector;
-
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -109,7 +108,6 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.text.Document;
-
 import org.apache.log4j.Layout;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -897,7 +895,16 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
 
     //hold a reference to the combobox model so that we can check to prevent duplicates
     final Vector v = new Vector();
+    //add (hopefully useful) default filters
+    v.add("LEVEL == TRACE");
+    v.add("LEVEL == DEBUG");
+    v.add("LEVEL == INFO");
+    v.add("LEVEL == WARN");
+    v.add("LEVEL == ERROR");
+    v.add("LEVEL == FATAL");
+    
     final JComboBox filterCombo = new JComboBox(v);
+    filterCombo.setSelectedIndex(-1);
     final JTextField filterText;
 
     if (filterCombo.getEditor().getEditorComponent() instanceof JTextField) {
@@ -2449,7 +2456,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
     }
 
     /**
-     * Update refinement rule based on the entered expression
+     * Update refinement rule based on the entered expression.
      */
     private void setFilter() {
       if (filterText.getText().equals("")) {

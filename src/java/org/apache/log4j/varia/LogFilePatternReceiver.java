@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.Constants;
@@ -373,11 +372,16 @@ public class LogFilePatternReceiver extends Receiver {
    * @return event
    */
   private LoggingEvent buildEvent() {
-    LoggingEvent event = null;
-
     if (currentMap.size() == 0) {
-      return event;
+      if (additionalLines.size() > 0) {
+        for (Iterator iter = additionalLines.iterator();iter.hasNext();) {
+          getLogger().info("found non-matching line: " + iter.next());
+        }
+      }
+      additionalLines.clear();
+      return null;
     }
+    //the current map contains fields - build an event
     int exceptionLine = getExceptionLine();
     String[] exception = buildException(exceptionLine);
 
@@ -386,13 +390,9 @@ public class LogFilePatternReceiver extends Receiver {
       currentMap.put(MESSAGE, buildMessage((String) currentMap.get(MESSAGE),
           exceptionLine));
     }
-
-    if (currentMap.size() > 0) {
-      event = convertToEvent(currentMap, exception);
-    }
+    LoggingEvent event = convertToEvent(currentMap, exception);
     currentMap.clear();
     additionalLines.clear();
-
     return event;
   }
 
@@ -422,6 +422,7 @@ public class LogFilePatternReceiver extends Receiver {
     do {
       while ((line = bufferedReader.readLine()) != null) {
         if (eventMatcher.matches(line, regexpPattern)) {
+          //build an event from the previous match (held in current map)
           LoggingEvent event = buildEvent();
           if (event != null) {
             if (passesExpression(event)) {
@@ -430,6 +431,7 @@ public class LogFilePatternReceiver extends Receiver {
           }
           currentMap.putAll(processEvent(eventMatcher.getMatch()));
         } else {
+          //getLogger().debug("line doesn't match pattern - must be ")
           //may be an exception or additional message lines
           additionalLines.add(line);
         }
@@ -494,7 +496,7 @@ public class LogFilePatternReceiver extends Receiver {
    * @return string
    */
   private String convertTimestamp() {
-    return util.substitute("s/"+VALID_DATEFORMAT_CHAR_PATTERN+"/\\\\w/g", timestampFormat);
+    return util.substitute("s/("+VALID_DATEFORMAT_CHAR_PATTERN+")+/\\\\w+/g", timestampFormat);
   }
 
   /**
@@ -746,14 +748,14 @@ public class LogFilePatternReceiver extends Receiver {
         try {
           reader = new InputStreamReader(new URL(getFileURL()).openStream());
         } catch (IOException ioe) {
-          getLogger().debug("exception", ioe);
+          getLogger().warn("exception", ioe);
           return;
         }
         try {
           process(reader);
         } catch (IOException ioe) {
           //io exception - probably shut down
-          getLogger().debug("stream closed");
+          getLogger().info("stream closed");
         }
       }
     }).start();

@@ -301,10 +301,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     logUI.handler.addFilter(propFilter);
 
     logUI.handler.addEventBatchListener(logUI.new NewTabEventBatchReceiver());
-    //NOTE: this next line MUST be the first place where the logging framework is initialized
-    //if started from the 'main' method
-    LogManager.getRootLogger().setLevel(Level.TRACE);
-    logger = LogManager.getLogger(LogUI.class);
     /**
      * TODO until we work out how JoranConfigurator might be able to have
      * configurable class loader, if at all.  For now we temporarily replace the
@@ -312,22 +308,28 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
      * the Plugins directory can find them (this is particularly
      * important for the Web start version of Chainsaw
      */ 
+    //configuration initialized here
+    logUI.ensureChainsawAppenderHandlerAdded();
+    LogManager.getRootLogger().setLevel(Level.TRACE);
+    logger = LogManager.getLogger(LogUI.class);
     
     String config = model.getConfigurationURL();
     if(config!=null && (!(config.trim().equals("")))) {
         config = config.trim();
-        logger.info("Using '" + config + "' for auto-configuration");
         try {
           URL configURL = new URL(config);
           logUI.loadConfigurationUsingPluginClassLoader(configURL);
         }catch(MalformedURLException e) {
             logger.error("Failed to convert config string to url", e);
         }
-    }else {
-        logger.info("No auto-configuration file found within the ApplicationPreferenceModel");
-        logUI.ensureChainsawAppenderHandlerAdded();
     }
-    
+
+    if (config == null) {
+      logger.info("No auto-configuration file found within the ApplicationPreferenceModel");
+    } else {
+      logger.info("Using '" + config + "' for auto-configuration");
+    }
+
     logUI.activateViewer();
 
     logUI.getApplicationPreferenceModel().apply(model);
