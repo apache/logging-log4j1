@@ -29,7 +29,7 @@ Steps performed on the Java Web Server (Servlet Container)
   For Tomcat, you can add this line directly in ./bin/catalina.sh or
   ./bin/catalina.bat.
 
-   After you start Tomcat, the $TOMCAT_HOME/logs/catalina.out file
+  After you start Tomcat, the $TOMCAT_HOME/logs/catalina.out file
   should contain a line with the following text.
 
   *** Will use ContextJNDISelector **
@@ -42,12 +42,12 @@ Steps performed on the Java Web Server (Servlet Container)
 
   Alternatively, you can instruct Tomcat to run Hello and Tata
   directly form LOG4J_HOME. Here is an excerpt from our 'server.xml'
-  file, that is Tomcat's configrationf file.
+  file, that is Tomcat's configration file.
 
   <Host name="localhost">
-    <Context 
-      docBase="LOG4J_HOME/examples/tiny-webapp/Hello/WebRoot"
-      path="/hello"/>
+
+    <Context docBase="LOG4J_HOME/examples/tiny-webapp/Hello/WebRoot"
+             path="/hello"/>
 
     <Context docBase="LOG4J_HOME/examples/tiny-webapp/Tata/WebRoot"
              path="/tata"/>
@@ -66,8 +66,7 @@ Steps performed on the Java Web Server (Servlet Container)
 
   If you would like Tomcat to use log4j and its default repository,
   you also need to tell Tomcat to use log4j by placing
-  commons-logging.jar in ./common/lib directory. You should also
-  remove the commons-logging-api.jar from the ./bin/ directory.
+  commons-logging.jar in ./common/lib directory.
   
   This way the default (log4j) logger repository will be used by
   Tomcat for its logging and the default logger repository will be
@@ -79,8 +78,7 @@ Steps performed per web-application
 
 - You will need log4j-VERSION.jar to compile the
   web-applications. However, log4j-VERSION.jar file need not and
-  probably should not be included within the web-application's jar
-  file.
+  should not be included within the web-application's WAR file.
  
 - In each web-application's web.ml file add a JNDI environment entry
   for the log4j logging context name. For the "Hello" web-application
@@ -154,7 +152,7 @@ While trying to configure the web-application log4j would search for
 the resource 'log4j.xml' using the thread context classloader.  Thus,
 it would first attempt to locate 'log4j.xml' file using the
 classloader specific to the web-application.  However, if the file
-'log4j.xml' did not exist there (we forgot to put a custom one in
+'log4j.xml' did not exist there (if you forgot to put a custom one in
 WEB-INF/classes), and if the file 'log4j.xml' existed higher up in the
 classloader tree, we could end up in a situation where the logger
 repository for your web-application would be configured using the same
