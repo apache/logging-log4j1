@@ -94,10 +94,12 @@ public class AsyncAppender extends AppenderSkeleton
     dispatcher.start();
   }
   
-  synchronized  
+
   public 
   void addAppender(Appender newAppender) {
-    aai.addAppender(newAppender);
+    synchronized(aai) {
+      aai.addAppender(newAppender);
+    }
   } 
 
   public
@@ -112,7 +114,7 @@ public class AsyncAppender extends AppenderSkeleton
     synchronized(bf) {
       while(bf.isFull()) {
 	try {
-	  //cat.debug("Waiting for free space in buffer.");
+	  //LogLog.debug("Waiting for free space in buffer, "+bf.length());
 	  bf.wait();
 	} catch(InterruptedException e) {
 	  if(!interruptedWarningMessage) {
@@ -161,16 +163,18 @@ public class AsyncAppender extends AppenderSkeleton
     bf = null;
   }
 
-  synchronized
   public
   Enumeration getAllAppenders() {
-    return aai.getAllAppenders();
+    synchronized(aai) {
+      return aai.getAllAppenders();
+    }
   }
 
-  synchronized
   public
   Appender getAppender(String name) {
-    return aai.getAppender(name);
+    synchronized(aai) {
+      return aai.getAppender(name);
+    }
   }
 
   /**
@@ -190,22 +194,26 @@ public class AsyncAppender extends AppenderSkeleton
     return false;
   }
 
-  synchronized
   public
   void removeAllAppenders() {
-    aai.removeAllAppenders();
+    synchronized(aai) {
+      aai.removeAllAppenders();
+    }
   }
   
-  synchronized
+
   public
   void removeAppender(Appender appender) {
-    aai.removeAppender(appender);
+    synchronized(aai) {
+      aai.removeAppender(appender);
+    }
   }
 
-  synchronized
   public
   void removeAppender(String name) {
-    aai.removeAppender(name);
+    synchronized(aai) {
+      aai.removeAppender(name);
+    }
   }
 
   /**
@@ -337,7 +345,7 @@ class Dispatcher extends Thread {
     this.aai = container.aai;
     // set the dispatcher priority to lowest possible value
     this.setPriority(Thread.MIN_PRIORITY);
-    this.setName(container.getName()+"Dispatcher");
+    this.setName("Dispatcher-"+getName());
     // set the dispatcher priority to MIN_PRIORITY plus or minus 2
     // depending on the direction of MIN to MAX_PRIORITY.
     //+ (Thread.MAX_PRIORITY > Thread.MIN_PRIORITY ? 1 : -1)*2);
@@ -399,7 +407,7 @@ class Dispatcher extends Thread {
   
       // The synchronization on parent is necessary to protect against
       // operations on the aai object of the parent
-      synchronized(container) {
+      synchronized(container.aai) {
 	if(aai != null && event != null) {
 	  aai.appendLoopOnAppenders(event);
 	}

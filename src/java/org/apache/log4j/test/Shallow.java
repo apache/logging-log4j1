@@ -13,7 +13,7 @@ import org.apache.log4j.NDC;
 import org.apache.log4j.Priority;
 import java.io.IOException;
 import java.util.Enumeration;
-/**
+/** 
    This class is a shallow test of the various appenders and
    layouts. It also tests their reading of the configuration file.
    @author  Ceki G&uuml;lc&uuml;
