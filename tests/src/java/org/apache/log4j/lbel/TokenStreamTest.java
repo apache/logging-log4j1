@@ -234,4 +234,35 @@ public class TokenStreamTest extends TestCase {
     t = ts.getCurrent();
     assertEquals(Token.EOF, t.getType());
   }
+  
+  public void testProperty() throws IOException, ScanError {
+    StringReader sr = new StringReader(" property.x property.xyz property.");
+    TokenStream ts = new TokenStream(sr);
+
+    ts.next(); t = ts.getCurrent();
+    assertEquals(Token.PROPERTY, t.getType());
+    assertEquals("x", t.getValue());
+
+    ts.next(); t = ts.getCurrent();
+    assertEquals(Token.PROPERTY, t.getType());
+    assertEquals("xyz", t.getValue());
+    
+    try {
+      ts.next();
+      fail("A ScanError should have been thrown");
+    } catch(ScanError e) {
+    }
+  }
+
+  
+  public void testProperty2() throws IOException, ScanError {
+    // TODO: add support for spaces in prooperty keys
+    
+//    StringReader sr = new StringReader(" property.'toto a' etc");
+//    TokenStream ts = new TokenStream(sr);
+//
+//    ts.next(); t = ts.getCurrent();
+//    assertEquals(Token.PROPERTY, t.getType());
+//    assertEquals("toto a", t.getValue());
+  }
 }
