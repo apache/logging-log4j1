@@ -55,6 +55,7 @@
  */
 package org.apache.joran;
 
+import org.apache.joran.action.Action;
 import junit.framework.TestCase;
 
 import org.w3c.dom.Document;
@@ -186,35 +187,33 @@ public class SimpleStoreTestCase extends TestCase {
   }
 
   class XAction extends Action {
-    public void begin(Element e) {
+    public void begin(ExecutionContext ec, Element e) {
     }
 
-    public void end(Element e) {
+    public void end(ExecutionContext ec, Element e) {
     }
 
-    public void finish() {
+    public void finish(ExecutionContext ec) {
     }
   }
 
   class YAction extends Action {
-    public void begin(Element e) {
-    }
+		public void begin(ExecutionContext ec, Element e) {
+		}
 
-    public void end(Element e) {
-    }
+		public void end(ExecutionContext ec, Element e) {
+		}
 
-    public void finish() {
-    }
-  }
+		public void finish(ExecutionContext ec) {
+		}  }
 
   class ZAction extends Action {
-    public void begin(Element e) {
-    }
+		public void begin(ExecutionContext ec, Element e) {
+		}
 
-    public void end(Element e) {
-    }
+		public void end(ExecutionContext ec, Element e) {
+		}
 
-    public void finish() {
-    }
-  }
+		public void finish(ExecutionContext ec) {
+		}  }
 }
