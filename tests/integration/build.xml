@@ -55,7 +55,7 @@
   </target>
 
   <!-- Initialize the build. Must be called by all targets -->
-  <target name="init">
+  <target name="init">  
   </target>
 
   <target name="log4j.jar">
@@ -73,6 +73,17 @@
     </javac>
   </target>
   
+
+  
+  <!-- Create the jar file containing TestAppender-->
+  <target name="test-appender.jar" depends="compile.java">
+
+    <jar jarfile="${target.dir}/test-appender.jar"
+         basedir="${target.classes.java.dir}"
+         includes="TestAppender.class">
+    </jar>
+  </target>
+
   
   <!-- Create the war file -->
   <target name="war" depends="compile">
@@ -80,6 +91,7 @@
          webxml="${src.webapp.dir}/WEB-INF/web.xml">
       <fileset dir="${src.webapp.dir}"/>
       <classes dir="${target.classes.java.dir}"/>   
+      <lib file="${target.dir}/test-appender.jar"/>
     </war>
   </target>
 
@@ -102,7 +114,8 @@
 
 
   <target name="test.prepare" depends="war, compile.test, log4j.jar">
-    
+    <mkdir dir="${target.testreports.dir}"/>
+
     <!-- Cactify the web-app archive -->
     <cactifywar srcfile="${target.dir}/${project.name.file}.war"
                 destfile="${target.dir}/test.war">
