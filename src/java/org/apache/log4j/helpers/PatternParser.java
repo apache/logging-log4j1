@@ -103,7 +103,7 @@ public class PatternParser {
   /**
      The option is expected to be in decimal and positive. In case of
      error, zero is returned.  */
-  private
+  protected
   int extractPrecisionOption() {
     String opt = extractOption();
     int r = 0;
