@@ -1,7 +1,7 @@
 package org.apache.log4j.lbel;
 
 
-public class Token {
+class Token {
 
 	private int type;
 	private Object value;

@@ -1,6 +1,6 @@
 package org.apache.log4j.lbel;
 
-public class Node {
+class Node {
 	
 	public static final int FALSE = 1;
 	public static final int TRUE = 2;
