@@ -58,6 +58,9 @@ public class HTMLLayout extends Layout {
   private boolean internalCSS = false;
   private String url2ExternalCSS = "http://logging.apache.org/log4j/docs/css/eventTable-1.0.css";
   
+  // Does our PatternConverter chain handle throwable on its own? 
+  private boolean chainHandlesThrowable;
+  
   
   // counter keeping track of the rows output
   private long counter = 0;
@@ -76,9 +79,7 @@ public class HTMLLayout extends Layout {
    */
   public HTMLLayout(String pattern) {
     this.pattern = pattern;
-    head =
-      createPatternParser(
-        (pattern == null) ? DEFAULT_CONVERSION_PATTERN : pattern).parse();
+    activateOptions();
   }
 
   /**
@@ -88,7 +89,6 @@ public class HTMLLayout extends Layout {
    */
   public void setConversionPattern(String conversionPattern) {
     pattern = conversionPattern;
-    head = createPatternParser(conversionPattern).parse();
   }
 
   /**
@@ -102,7 +102,8 @@ public class HTMLLayout extends Layout {
    * Does not do anything as options become effective
    */
   public void activateOptions() {
-    // nothing to do.
+    head = createPatternParser(pattern).parse();
+    chainHandlesThrowable = PatternConverter.chainHandlesThrowable(head);
   }
 
   /**
@@ -311,11 +312,14 @@ public class HTMLLayout extends Layout {
     output.write("</tr>");
     output.write(Layout.LINE_SEP);
     
-    String[] s = event.getThrowableStrRep();
-    if (s != null) {
-      output.write("<tr><td class=\"exception\" colspan=\"6\">");
-      appendThrowableAsHTML(s, output);
-      output.write("</td></tr>" + Layout.LINE_SEP);
+    // if the pattern chain handles throwables then no need to do it again here.
+    if(!chainHandlesThrowable) {
+      String[] s = event.getThrowableStrRep();
+      if (s != null) {
+        output.write("<tr><td class=\"exception\" colspan=\"6\">");
+        appendThrowableAsHTML(s, output);
+        output.write("</td></tr>" + Layout.LINE_SEP);
+      }
     }
   }
   
