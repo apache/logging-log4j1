@@ -77,6 +77,10 @@ public class InequalityRule extends AbstractRule {
   }
   
   public static Rule getRule(String inequalitySymbol, Stack stack) {
+      if (stack.size() < 2) {
+          throw new IllegalArgumentException("Invalid " + inequalitySymbol + " rule - expected two rules but provided " + stack.size());
+      }  
+
       String p2 = stack.pop().toString();
       String p1 = stack.pop().toString();
       return getRule(inequalitySymbol, p1, p2);

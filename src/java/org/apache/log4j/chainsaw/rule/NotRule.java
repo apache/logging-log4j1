@@ -70,9 +70,16 @@ public class NotRule extends AbstractRule {
   }
   
   public static Rule getRule(Stack stack) {
-    Rule p1 = (Rule) stack.pop();
-
-    return new NotRule(p1);
+      if (stack.size() < 1) {
+          throw new IllegalArgumentException("Invalid NOT rule - expected one rule but provided " + stack.size());
+      }  
+      Object o1 = stack.pop();
+      if (o1 instanceof Rule) {
+        Rule p1 = (Rule)o1;
+        return new NotRule(p1);
+      } else {
+          throw new IllegalArgumentException("Invalid NOT rule: - expected rule but received " + o1);
+      }
   }
 
   public boolean evaluate(LoggingEvent event) {
