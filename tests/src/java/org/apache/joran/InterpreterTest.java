@@ -22,6 +22,7 @@
  */
 package org.apache.joran;
 
+import joran.implicit.NOPAction;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -160,8 +161,10 @@ public class InterpreterTest extends TestCase {
     logger.debug("Starting testLoop");
 
     RuleStore rs = new SimpleRuleStore();
-    logger.debug("pattern: " + new Pattern("log4j:configuration/logger"));
+    
+    rs.addRule(new Pattern("log4j:configuration"), new NOPAction());
     rs.addRule(new Pattern("log4j:configuration/logger"), new LoggerAction());
+    rs.addRule(new Pattern("*/appender-ref"), new NOPAction());
     rs.addRule(
       new Pattern("log4j:configuration/logger/level"), new LevelAction());
     rs.addRule(
@@ -205,6 +208,7 @@ public class InterpreterTest extends TestCase {
   public void testParsing2() throws Exception {
     logger.debug("Starting testLoop2");
     RuleStore rs = new SimpleRuleStore();
+    rs.addRule(new Pattern("log4j:configuration"), new NOPAction());
     rs.addRule(new Pattern("log4j:configuration/logger"), new LoggerAction());
     rs.addRule(
       new Pattern("log4j:configuration/logger/level"), new LevelAction());
@@ -246,7 +250,7 @@ public class InterpreterTest extends TestCase {
     assertEquals("%-5p %c{2} - %m%n", plBack.getConversionPattern());
     
     a1Back = (FileAppender) rootLogger.getAppender("A1");  
-    
+
     assertEquals(3, ec.getErrorList().size());
     ErrorItem e0 = (ErrorItem) ec.getErrorList().get(0);
     if(!e0.getMessage().startsWith("No 'name' attribute in element")) {
@@ -373,10 +377,10 @@ public class InterpreterTest extends TestCase {
   
   public static Test Xsuite() {
     TestSuite suite = new TestSuite();
-     suite.addTest(new InterpreterTest("testIllFormedXML"));
+     //suite.addTest(new InterpreterTest("testIllFormedXML"));
     //suite.addTest(new InterpreterTest("testBasicLoop"));
     //suite.addTest(new InterpreterTest("testParsing1"));
-    //suite.addTest(new InterpreterTest("testParsing2"));
+    suite.addTest(new InterpreterTest("testParsing2"));
     //suite.addTest(new InterpreterTest("testParsing3"));
     return suite;
   }
