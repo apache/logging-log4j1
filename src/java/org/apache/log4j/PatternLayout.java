@@ -310,18 +310,28 @@ import org.apache.log4j.spi.LoggingEvent;
    </tr>
 
       <tr>
-     <td align=center><b>Y</b></td>
+     <td align=center><b>properties</b></td>
 
      <td>
-
      <p>Used to output the Properties associated
-     with the logging event. The <b>Y</b>
-     conversion character can be followed by the key for the
-     map placed between braces, as in <b>%Y{application}</b> where
+     with the logging event. The <b>properties</b>
+     conversion word can be followed by the key for the
+     map placed between braces, as in <b>%properties{application}</b> where
      <code>application</code> is the key. The value in the Properties bundle
      corresponding to the key will be output. If no additional sub-option
      is specified, then the entire contents of the Properties key value pair set
      is output using a format {{key1,val1},{key2,val2}}</p>
+     </td>
+   </tr>
+
+            <tr>
+     <td align=center><b>throwable</b></td>
+
+     <td>
+     <p>Used to output the Throwable trace that has been bound to the LoggingEvent, by
+     default this will output the full trace as one would normally find by a call to Throwable.printStackTrace(). 
+     The throwable conversion word can be followed by an option in the form <b>%throwable{short}</b>
+     which will only output the first line of the ThrowableInformation.</p>
      </td>
    </tr>
 
