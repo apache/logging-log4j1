@@ -57,7 +57,6 @@ import org.apache.log4j.chainsaw.filter.FilterModel;
 import org.apache.log4j.chainsaw.help.HelpManager;
 import org.apache.log4j.chainsaw.icons.ChainsawIcons;
 import org.apache.log4j.chainsaw.receivers.ReceiversHelper;
-import org.apache.log4j.rule.ExpressionRuleContext;
 
 
 /**

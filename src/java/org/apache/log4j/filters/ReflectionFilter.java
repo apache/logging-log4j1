@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.apache.log4j.varia;
+package org.apache.log4j.filters;
 
 import java.beans.IntrospectionException;
 import java.beans.Introspector;

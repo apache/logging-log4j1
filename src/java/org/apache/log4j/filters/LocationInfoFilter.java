@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.apache.log4j.varia;
+package org.apache.log4j.filters;
 
 import org.apache.log4j.rule.ExpressionRule;
 import org.apache.log4j.rule.Rule;

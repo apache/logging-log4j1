@@ -6,7 +6,7 @@
  * the LICENSE.txt file.
  */
 
-package org.apache.log4j.varia;
+package org.apache.log4j.filters;
 
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.spi.LoggingEvent;

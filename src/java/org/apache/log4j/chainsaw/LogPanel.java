@@ -128,7 +128,6 @@ import org.apache.log4j.chainsaw.prefs.SettingsManager;
 import org.apache.log4j.helpers.Constants;
 import org.apache.log4j.helpers.ISO8601DateFormat;
 import org.apache.log4j.rule.ExpressionRule;
-import org.apache.log4j.rule.ExpressionRuleContext;
 import org.apache.log4j.rule.Rule;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.LoggingEventFieldResolver;
