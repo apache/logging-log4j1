@@ -48,19 +48,14 @@
  */
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-import org.apache.log4j.helpers.LogLog;
-
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -70,7 +65,6 @@ import java.util.Map;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Box;
-import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
@@ -88,6 +82,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
 
 
 /**
@@ -430,55 +426,6 @@ class ChainsawToolBarAndMenus implements ChangeListener {
         viewMenu.add(menuItemClose);
         viewMenu.addSeparator();
 
-        final JMenu lookAndFeelMenu = new JMenu("Look & Feel");
-        lookAndFeelMenu.setMnemonic('L');
-
-        UIManager.LookAndFeelInfo[] lookAndFeels = UIManager.getInstalledLookAndFeels();
-
-        final ButtonGroup lookAndFeelGroup = new ButtonGroup();
-
-        for (int i = 0; i < lookAndFeels.length; i++) {
-            final UIManager.LookAndFeelInfo lfInfo = lookAndFeels[i];
-            final JRadioButtonMenuItem lfItemMenu = new JRadioButtonMenuItem(lfInfo.getName());
-            lfItemMenu.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        SwingUtilities.invokeLater(new Runnable() {
-                                public void run() {
-                                    logui.setLookAndFeel(lfInfo.getClassName());
-                                }
-                            });
-                    }
-                });
-
-            lookAndFeelGroup.add(lfItemMenu);
-            lookAndFeelMenu.add(lfItemMenu);
-            lookAndFeelMenus.add(lfItemMenu);
-        }
-
-        try {
-            final Class gtkLF = Class.forName(
-                    "com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
-            final JRadioButtonMenuItem lfIGTK = new JRadioButtonMenuItem(
-                    "GTK+ 2.0");
-            lfIGTK.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        SwingUtilities.invokeLater(new Runnable() {
-                                public void run() {
-                                    logui.setLookAndFeel(gtkLF.getName());
-                                }
-                            });
-                    }
-                });
-            lookAndFeelGroup.add(lfIGTK);
-            lookAndFeelMenu.add(lfIGTK);
-            lookAndFeelMenus.add(lfIGTK);
-        } catch (Exception e) {
-            LogLog.debug(
-                "Can't find new GTK L&F, might be Windows, or <JDK1.4.2");
-        }
-
-        viewMenu.add(lookAndFeelMenu);
-        viewMenu.addSeparator();
         viewMenu.add(showAppPrefs);
 
         JMenu helpMenu = new JMenu("Help");
