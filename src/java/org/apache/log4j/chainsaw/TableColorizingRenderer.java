@@ -90,8 +90,6 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
   private static final Map iconMap =
     LevelIconFactory.getInstance().getLevelToIconMap();
   private Colorizer colorizer;
-  private final Color background = new Color(255, 255, 254);
-  private final Color COLOR_ODD = new Color(230, 230, 230);
   private final JLabel idComponent = new JLabel();
   private final JLabel levelComponent = new JLabel();
   private boolean levelUseIcons = true;
@@ -230,9 +228,9 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
        * Colourize based on row striping
        */
       if ((row % 2) != 0) {
-        c.setBackground(COLOR_ODD);
+        c.setBackground(ChainsawConstants.COLOR_ODD_ROW);
       } else {
-        c.setBackground(background);
+        c.setBackground(ChainsawConstants.COLOR_EVEN_ROW);
       }
     }
 
