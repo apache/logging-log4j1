@@ -111,7 +111,8 @@ public class LogManager {
     Logger logger = LogManager.getLoggerRepository().getLogger("LOG4J");
     logger.setAdditivity(false);
     logger.addAppender(
-      new ConsoleAppender(new PatternLayout("log4j-internal: %r %-22c{2} - %m%n")));
+      new ConsoleAppender(
+        new PatternLayout("log4j-internal: %r %-22c{2} - %m%n")));
 
     /** Search for the properties file log4j.properties in the CLASSPATH.  */
     String override =
