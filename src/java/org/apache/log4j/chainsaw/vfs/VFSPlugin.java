@@ -27,16 +27,11 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemException;
-import org.apache.commons.vfs.SystemInfo;
-import org.apache.commons.vfs.VFS;
-import org.apache.commons.vfs.impl.StandardFileSystemManager;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.chainsaw.PopupListener;
 import org.apache.log4j.chainsaw.messages.MessageCenter;
 import org.apache.log4j.chainsaw.plugins.GUIPluginSkeleton;
-import org.apache.log4j.helpers.LogLog;
 
 /**
  * GUI interface to the Jarkata Commons VFS project.
@@ -74,6 +69,8 @@ public class VFSPlugin extends GUIPluginSkeleton {
     private final AOChildDirectorScanner aoDirectoryScanner = new AOChildDirectorScanner();
 
     private Set supportedSchemes = new HashSet();
+    
+    private final Logger logger = LogManager.getLogger(VFSPlugin.class);
 
     public VFSPlugin() {
         setName("VFS");
@@ -105,7 +102,7 @@ public class VFSPlugin extends GUIPluginSkeleton {
             this.prefModel = new VFSPluginPreferenceModel();
 
         } catch (FileSystemException e) {
-            LogLog.error("Failed to initialise VFS", e);
+            logger.error("Failed to initialise VFS", e);
             e.printStackTrace();
             setActive(false);
             return;
@@ -150,7 +147,7 @@ public class VFSPlugin extends GUIPluginSkeleton {
                 }
 
             } catch (Exception e) {
-                LogLog.error("error creating local VFS", e);
+                logger.error("error creating local VFS", e);
             }
         }
     }
@@ -163,7 +160,7 @@ public class VFSPlugin extends GUIPluginSkeleton {
         String[] schemes = info.getSchemes();
         supportedSchemes.addAll(Arrays.asList(schemes));
 
-        LogLog.info("Supported schemes: " + supportedSchemes);
+        logger.info("Supported schemes: " + supportedSchemes);
     }
 
     /**

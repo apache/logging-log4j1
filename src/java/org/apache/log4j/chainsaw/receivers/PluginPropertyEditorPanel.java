@@ -15,26 +15,17 @@
  */
 package org.apache.log4j.chainsaw.receivers;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.chainsaw.Generator;
-import org.apache.log4j.chainsaw.helper.TableCellEditorFactory;
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.net.SocketHubReceiver;
-import org.apache.log4j.plugins.Plugin;
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyDescriptor;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -55,6 +46,14 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableModel;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.chainsaw.Generator;
+import org.apache.log4j.chainsaw.helper.TableCellEditorFactory;
+import org.apache.log4j.net.SocketHubReceiver;
+import org.apache.log4j.plugins.Plugin;
+
 
 /**
  * A panel that allows the user to edit a particular Plugin, by using introspection
@@ -71,6 +70,7 @@ public class PluginPropertyEditorPanel extends JPanel {
     private TableModel defaultModel = new DefaultTableModel(
             new String[] { "Property", "Value" }, 1);
 
+    private static final Logger logger = LogManager.getLogger(PluginPropertyEditorPanel.class);
     /**
      *
      */
@@ -117,7 +117,7 @@ public class PluginPropertyEditorPanel extends JPanel {
                             .setCellEditor(new PluginTableCellEditor());
                             propertyTable.setEnabled(true);
                         } catch (Throwable e) {
-                            LogLog.error("Failed to introspect the Plugin", e);
+                            logger.error("Failed to introspect the Plugin", e);
                         }
                     } else {
                         propertyTable.setModel(defaultModel);
@@ -214,7 +214,7 @@ public class PluginPropertyEditorPanel extends JPanel {
 
                 DefaultCellEditor editor =
                     (DefaultCellEditor) editorMap.get(valueClass);
-                LogLog.debug("Located CellEditor for " + valueClass);
+                logger.debug("Located CellEditor for " + valueClass);
                 currentEditor = editor;
 
                 return currentEditor.getTableCellEditorComponent(table, value,
@@ -222,7 +222,7 @@ public class PluginPropertyEditorPanel extends JPanel {
             }
 
             currentEditor = defaultEditor;
-            LogLog.debug("Cell value class " + valueClass +
+            logger.debug("Cell value class " + valueClass +
                 " not know, using default editor");
 
             return defaultEditor.getTableCellEditorComponent(table, value,
@@ -290,7 +290,7 @@ public class PluginPropertyEditorPanel extends JPanel {
                         return object;
                     }
                 } catch (Exception e) {
-                    LogLog.error(
+                    logger.error(
                         "Error reading value for PropertyDescriptor " + d);
                 }
 
@@ -349,7 +349,7 @@ public class PluginPropertyEditorPanel extends JPanel {
 
             if (columnIndex == 1) {
                 aValue = translateValueIfNeeded(rowIndex, aValue);
-                LogLog.debug(
+                logger.debug(
                     "setValueAt, " + rowIndex + ", " + columnIndex +
                     ", value=" + aValue + ", valueClass" + aValue.getClass());
 
@@ -360,7 +360,7 @@ public class PluginPropertyEditorPanel extends JPanel {
                 } catch (IllegalArgumentException e) {
                     // ignore
                 } catch (Exception e) {
-                    LogLog.error(
+                    logger.error(
                         "Failed to modify the Plugin because of Exception", e);
                 }
 
@@ -383,7 +383,7 @@ public class PluginPropertyEditorPanel extends JPanel {
 
                     return Integer.valueOf(value.toString());
                 } catch (Exception e) {
-                    LogLog.error("Failed to convert to Integer type");
+                    logger.error("Failed to convert to Integer type");
                 }
             }
 

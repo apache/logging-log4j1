@@ -16,24 +16,13 @@
 
 package org.apache.log4j.chainsaw.receivers;
 
-import org.apache.log4j.chainsaw.help.HelpManager;
-import org.apache.log4j.chainsaw.helper.OkCancelPanel;
-import org.apache.log4j.chainsaw.messages.MessageCenter;
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.net.SocketHubReceiver;
-import org.apache.log4j.plugins.Plugin;
-import org.apache.log4j.plugins.Receiver;
-
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.io.IOException;
-
 import java.net.URL;
 
 import javax.swing.JDialog;
@@ -43,6 +32,14 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.UIManager;
+
+import org.apache.log4j.LogManager;
+import org.apache.log4j.chainsaw.help.HelpManager;
+import org.apache.log4j.chainsaw.helper.OkCancelPanel;
+import org.apache.log4j.chainsaw.messages.MessageCenter;
+import org.apache.log4j.net.SocketHubReceiver;
+import org.apache.log4j.plugins.Plugin;
+import org.apache.log4j.plugins.Receiver;
 
 
 /**
@@ -150,7 +147,7 @@ public class NewReceiverDialogPanel extends JPanel {
             receiverInstance = (Receiver) receiverClass.newInstance();
 
         } catch (Exception e) {
-            LogLog.error(
+        	LogManager.getLogger(NewReceiverDialogPanel.class).error(
                 "Failed to create a new Receiver instance, this exception is unexpected",
                 e);
         }

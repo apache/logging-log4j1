@@ -27,7 +27,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 
 import org.apache.log4j.LogManager;
-import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.Logger;
 import org.apache.log4j.net.SocketReceiver;
 import org.apache.log4j.plugins.Plugin;
 import org.apache.log4j.plugins.PluginEvent;
@@ -47,6 +47,7 @@ public class ReceiversTreeModel extends DefaultTreeModel
   final DefaultMutableTreeNode NoReceiversNode =
     new DefaultMutableTreeNode("No Receivers defined");
   final DefaultMutableTreeNode RootNode;
+  private final Logger logger = LogManager.getLogger(ReceiversTreeModel.class);
 
   ReceiversTreeModel() {
     super(new DefaultMutableTreeNode(ROOTNODE_LABEL));
@@ -100,7 +101,7 @@ public class ReceiversTreeModel extends DefaultTreeModel
 
       public void propertyChange(PropertyChangeEvent evt)
       {
-        LogLog.debug(evt.toString());
+        logger.debug(evt.toString());
         ReceiversTreeModel.this.fireTreeNodesChanged(item, receiverNode.getPath(), null, null);
         
       }};

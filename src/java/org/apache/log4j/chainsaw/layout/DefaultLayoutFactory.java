@@ -16,13 +16,12 @@
 
 package org.apache.log4j.chainsaw.layout;
 
-import org.apache.log4j.PatternLayout;
-import org.apache.log4j.helpers.LogLog;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-
 import java.net.URL;
+
+import org.apache.log4j.LogManager;
+import org.apache.log4j.PatternLayout;
 
 
 /**
@@ -44,7 +43,7 @@ public class DefaultLayoutFactory {
           "org/apache/log4j/chainsaw/layout/DefaultDetailLayout.html");
 
       if (defaultLayoutURL == null) {
-        LogLog.warn(
+        LogManager.getLogger(DefaultLayoutFactory.class).warn(
           "Could not locate the default Layout for Event Details and Tooltips");
       } else {
         try {

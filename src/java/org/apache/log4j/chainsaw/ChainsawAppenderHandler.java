@@ -28,8 +28,8 @@ import javax.swing.event.EventListenerList;
 
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.Constants;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.net.SocketReceiver;
 import org.apache.log4j.rule.ExpressionRule;
 import org.apache.log4j.rule.Rule;
@@ -59,6 +59,7 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
   private PropertyChangeSupport propertySupport =
     new PropertyChangeSupport(this);
   private Map customExpressionRules = new HashMap();
+  private static final Logger logger = LogManager.getLogger(ChainsawAppenderHandler.class);
 
   public ChainsawAppenderHandler(ChainsawAppender appender) {
     appender.setAppender(this);
@@ -143,10 +144,10 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
 
         public void receiveEventBatch(
           String identifier, List eventBatchEntrys) {
-          LogLog.debug(
+          logger.debug(
             "received batch for '" + identifier + "', list.size()="
             + eventBatchEntrys.size());
-          LogLog.debug(eventBatchEntrys.toString());
+          logger.debug(eventBatchEntrys.toString());
         }
       });
     LogManager.getRootLogger().addAppender(handler);

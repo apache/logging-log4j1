@@ -74,9 +74,10 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.log4j.chainsaw.icons.ChainsawIcons;
 import org.apache.log4j.chainsaw.icons.LineIconFactory;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.rule.AbstractRule;
 import org.apache.log4j.rule.Rule;
 import org.apache.log4j.spi.LoggingEvent;
@@ -122,6 +123,7 @@ final class LoggerNameTreePanel extends JPanel implements Rule
   private final SmallToggleButton ignoreLoggerButton = new SmallToggleButton();
   private final EventListenerList listenerList = new EventListenerList();
   private final JTree logTree;
+  private final Logger logger = LogManager.getLogger(LoggerNameTreePanel.class);
 
   //  private final EventListenerList focusOnActionListeners =
   //    new EventListenerList();
@@ -394,9 +396,9 @@ final class LoggerNameTreePanel extends JPanel implements Rule
    * Ensures the Focus is set to a specific logger name
    * @param logger
    */
-  public void setFocusOn(String logger)
+  public void setFocusOn(String newLogger)
   {
-    DefaultMutableTreeNode node = logTreeModel.lookupLogger(logger);
+    DefaultMutableTreeNode node = logTreeModel.lookupLogger(newLogger);
 
     if (node != null)
     {
@@ -411,7 +413,7 @@ final class LoggerNameTreePanel extends JPanel implements Rule
     }
     else
     {
-      LogLog.error("failed to lookup logger " + logger);
+      logger.error("failed to lookup logger " + newLogger);
     }
   }
 
@@ -542,7 +544,7 @@ final class LoggerNameTreePanel extends JPanel implements Rule
       return;
     }
 
-      LogLog.debug("Collapsing all children of selected node");
+      logger.debug("Collapsing all children of selected node");
 
     for (int i = 0; i < paths.length; i++)
     {
@@ -794,7 +796,7 @@ final class LoggerNameTreePanel extends JPanel implements Rule
 
   private void ensureRootExpanded()
   {
-      LogLog.debug("Ensuring Root node is expanded.");
+      logger.debug("Ensuring Root node is expanded.");
 
     final DefaultMutableTreeNode root =
       (DefaultMutableTreeNode) logTreeModel.getRoot();
@@ -821,7 +823,7 @@ final class LoggerNameTreePanel extends JPanel implements Rule
       return;
     }
 
-      LogLog.debug("Expanding all children of selected node");
+      logger.debug("Expanding all children of selected node");
 
     for (int i = 0; i < paths.length; i++)
     {
@@ -867,7 +869,7 @@ final class LoggerNameTreePanel extends JPanel implements Rule
 
       if (maxDepth > WARN_DEPTH)
       {
-        LogLog.warn("Should warn user, depth=" + maxDepth);
+        logger.warn("Should warn user, depth=" + maxDepth);
       }
 
       depthEnum = treeNode.depthFirstEnumeration();
@@ -883,7 +885,7 @@ final class LoggerNameTreePanel extends JPanel implements Rule
             ((DefaultMutableTreeNode) node.getParent()).getPath();
           TreePath treePath = new TreePath(nodes);
 
-          LogLog.debug("Expanding path:" + treePath);
+          logger.debug("Expanding path:" + treePath);
 
           logTree.expandPath(treePath);
         }
@@ -1036,7 +1038,7 @@ final class LoggerNameTreePanel extends JPanel implements Rule
     //            e.consume();
     //          } else if (e.getClickCount() > 1) {
     //            super.mouseClicked(e);
-    //            LogLog.debug("Ignoring dbl click event " + e);
+    //            logger.debug("Ignoring dbl click event " + e);
     //          }
     //        }
     //      });
@@ -1166,11 +1168,11 @@ final class LoggerNameTreePanel extends JPanel implements Rule
         //        component.setIcon(leaf?null:getDefaultOpenIcon());
         style = style | Font.ITALIC;
 
-        //        LogLog.debug("TreeRenderer: '" + logger + "' is in hiddenSet, italicizing");
+        //        logger.debug("TreeRenderer: '" + logger + "' is in hiddenSet, italicizing");
       }
       else
       {
-        //          LogLog.debug("TreeRenderer: '" + logger + "' is NOT in hiddenSet, leaving plain");
+        //          logger.debug("TreeRenderer: '" + logger + "' is NOT in hiddenSet, leaving plain");
         //        component.setEnabled(true);
       }
 
@@ -1352,7 +1354,7 @@ final class LoggerNameTreePanel extends JPanel implements Rule
      */
     public void mouseMoved(MouseEvent e)
     {
-      //      LogLog.debug(e.toString());
+      //      logger.debug(e.toString());
       if (
         ((e.getModifiers() & InputEvent.CTRL_MASK) > 0)
           && ((e.getModifiers() & InputEvent.SHIFT_MASK) > 0))

@@ -8,8 +8,9 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.log4j.chainsaw.prefs.SettingsManager;
-import org.apache.log4j.helpers.LogLog;
 
 /**
  * A factory class to create a Classloader that can refenerence jars/classes/resources
@@ -24,6 +25,7 @@ import org.apache.log4j.helpers.LogLog;
  */
 public class PluginClassLoaderFactory {
 	private final ClassLoader pluginClassLoader;
+	private static final Logger logger = LogManager.getLogger(PluginClassLoaderFactory.class);
     
     private static final PluginClassLoaderFactory instance = new PluginClassLoaderFactory();
     
@@ -56,7 +58,7 @@ public class PluginClassLoaderFactory {
      */
     private static final ClassLoader create(File pluginDirectory) {
         if(pluginDirectory == null || !pluginDirectory.exists() || !pluginDirectory.canRead()) {
-         LogLog.error("pluginDirectory cannot be null, and it must exist and must be readable, using the normal Classloader");
+         logger.error("pluginDirectory cannot be null, and it must exist and must be readable, using the normal Classloader");
          return PluginClassLoaderFactory.class.getClassLoader();
         }
         
@@ -80,10 +82,10 @@ public class PluginClassLoaderFactory {
 				File file = new File(pluginDirectory, name);
 				try {
 					list.add(file.toURL());
-					LogLog.info("Added " + file.getAbsolutePath()
+					logger.info("Added " + file.getAbsolutePath()
 							+ " to Plugin class loader list");
 				} catch (Exception e) {
-					LogLog.error("Failed to retrieve the URL for file: "
+					logger.error("Failed to retrieve the URL for file: "
 							+ file.getAbsolutePath());
 					throw new RuntimeException(e);
 				}

@@ -111,6 +111,8 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.text.Document;
 
 import org.apache.log4j.Layout;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.chainsaw.color.ColorPanel;
 import org.apache.log4j.chainsaw.color.RuleColorizer;
@@ -127,7 +129,6 @@ import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
 import org.apache.log4j.chainsaw.prefs.SettingsManager;
 import org.apache.log4j.helpers.Constants;
 import org.apache.log4j.helpers.ISO8601DateFormat;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.rule.ExpressionRule;
 import org.apache.log4j.rule.ExpressionRuleContext;
 import org.apache.log4j.rule.Rule;
@@ -231,7 +232,8 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
   static final String COLUMNS_EXTENSION = ".columns";
   static final String COLORS_EXTENSION = ".colors";
   private int previousLastIndex = -1;
-  private final DateFormat timestampExpressionFormat = new SimpleDateFormat(Constants.TIMESTAMP_RULE_FORMAT); 
+  private final DateFormat timestampExpressionFormat = new SimpleDateFormat(Constants.TIMESTAMP_RULE_FORMAT);
+  private final Logger logger = LogManager.getLogger(LogPanel.class);
 
   /**
    * Creates a new LogPanel object.  If a LogPanel with this identifier has
@@ -794,7 +796,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
             table.getSelectedRow(), table.getSelectedColumn());
           if (o == null) {
             //no row selected - ignore
-          	LogLog.debug("no row selected - unable to display throwable popup");
+          	logger.debug("no row selected - unable to display throwable popup");
             return;
           }
           detailDialog.setTitle(
@@ -2080,7 +2082,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
     try {
       File f = new File(SettingsManager.getInstance().getSettingsDirectory(),  
       		URLEncoder.encode(getIdentifier() + COLUMNS_EXTENSION));
-      LogLog.debug("writing columns to file: " + f);
+      logger.debug("writing columns to file: " + f);
       
       o = new ObjectOutputStream(
           new BufferedOutputStream(new FileOutputStream(f)));
@@ -2095,7 +2097,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
             new TableColumnData(
               (String) c.getHeaderValue(), c.getModelIndex(), c.getWidth()));
         } else {
-          LogLog.debug(
+          logger.debug(
             "Not saving col ' " + c.getHeaderValue()
             + "' not part of standard columns");
         }
@@ -2126,7 +2128,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
     try {
       File f = new File(SettingsManager.getInstance().getSettingsDirectory(), 
       		URLEncoder.encode(getIdentifier() + COLORS_EXTENSION));
-      LogLog.debug("writing colors to file: " + f);
+      logger.debug("writing colors to file: " + f);
       
       o = new ObjectOutputStream(
           new BufferedOutputStream(new FileOutputStream(f)));
@@ -2254,7 +2256,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
         int width = Integer.parseInt(element);
 
         if (index > (columnModel.getColumnCount() - 1)) {
-          LogLog.warn(
+          logger.warn(
             "loadsettings - failed attempt to set width for index " + index
             + ", width " + element);
         } else {
@@ -2263,7 +2265,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
 
         index++;
       } catch (NumberFormatException e) {
-        LogLog.error("Error decoding a Table width", e);
+        logger.error("Error decoding a Table width", e);
       }
     }
 
@@ -2389,19 +2391,19 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
                   (System.currentTimeMillis() - lastTimeStamp) < CHECK_PERIOD) {
                   // They typed something since the last check. we ignor
                   // this for a sample period
-                  //                LogLog.debug("Typed something since the last check");
+                  //                logger.debug("Typed something since the last check");
                 } else if (
                   (System.currentTimeMillis() - lastTimeStamp) < (2 * CHECK_PERIOD)) {
                   // they stopped typing recently, but have stopped for at least
                   // 1 sample period. lets apply the filter
-                  //                LogLog.debug("Typed something recently applying filter");
+                  //                logger.debug("Typed something recently applying filter");
                   if (filterText != null && (!(filterText.getText().equals(lastFilterText)))) {
                     lastFilterText = filterText.getText();
                     setFilter();
                   }
                 } else {
                   // they stopped typing a while ago, let's forget about it
-                  //                LogLog.debug(
+                  //                logger.debug(
                   //                  "They stoppped typing a while ago, assuming filter has been applied");
                 }
               }

@@ -16,17 +16,17 @@
 
 package org.apache.log4j.chainsaw.help;
 
-import org.apache.log4j.chainsaw.messages.MessageCenter;
-import org.apache.log4j.helpers.LogLog;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.chainsaw.messages.MessageCenter;
 
 /**
  * A helper class that assists the HelpManager by serving as a collection of
@@ -37,7 +37,7 @@ import java.util.List;
  */
 class HelpLocator {
   private List classLoaders = new ArrayList();
-
+  private static Logger logger = LogManager.getLogger(HelpLocator.class);
   HelpLocator() {
   }
 
@@ -103,8 +103,8 @@ class HelpLocator {
       try {
         URL resourceURL = new URL(root, name);
         URL[] urlArray = new URL[] { root, resourceURL };
-        LogLog.debug("Looking for Help resource at:" + resourceURL.toExternalForm());
-        LogLog.debug("urlArray=" + Arrays.asList(urlArray));
+        logger.debug("Looking for Help resource at:" + resourceURL.toExternalForm());
+        logger.debug("urlArray=" + Arrays.asList(urlArray));
         return new URLClassLoader(
           urlArray).findResource(
           name);

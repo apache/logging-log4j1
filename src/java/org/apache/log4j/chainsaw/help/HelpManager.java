@@ -16,15 +16,15 @@
 
 package org.apache.log4j.chainsaw.help;
 
-import org.apache.log4j.chainsaw.ChainsawConstants;
-import org.apache.log4j.helpers.LogLog;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-
 import java.io.File;
 import java.net.URL;
+
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.chainsaw.ChainsawConstants;
 
 
 /**
@@ -44,6 +44,7 @@ public final class HelpManager {
     private URL helpURL;
     private final PropertyChangeSupport propertySupport =
         new PropertyChangeSupport(this);
+    private final Logger logger = LogManager.getLogger(HelpManager.class);
 
     private HelpManager() {
 
@@ -52,16 +53,16 @@ public final class HelpManager {
         try {
 
             if (System.getProperty("log4j.chainsaw.localDocs") != null) {
-                LogLog.info("Adding HelpLocator for localDocs property=" +
+                logger.info("Adding HelpLocator for localDocs property=" +
                     System.getProperty("log4j.chainsaw.localDocs"));
                 helpLocator.installLocator(new URL(
                         System.getProperty("log4j.chainsaw.localDocs")));
             }else if(new File("docs/api").exists()) {
             	File dir = new File("docs/api");
-            	LogLog.info("Detected Local JavaDocs at " + dir.toString());
+            	logger.info("Detected Local JavaDocs at " + dir.toString());
             	helpLocator.installLocator(dir.toURL());
             } else {
-            	LogLog.warn("Could not find any local JavaDocs, you might want to consider running 'ant javadoc'. The release version will be able to access Javadocs from the Apache website.");
+            	logger.warn("Could not find any local JavaDocs, you might want to consider running 'ant javadoc'. The release version will be able to access Javadocs from the Apache website.");
             }
         } catch (Exception e) {
             // TODO: handle exception
@@ -195,7 +196,7 @@ public final class HelpManager {
         name = name.replace('.', '/') + ".html";
 
         URL url = helpLocator.findResource(name);
-        LogLog.debug("located help resource for '" + name + "' at " +
+        logger.debug("located help resource for '" + name + "' at " +
             ((url == null) ? "" : url.toExternalForm()));
 
         return (url != null) ? url : ChainsawConstants.URL_PAGE_NOT_FOUND;

@@ -33,8 +33,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
 import javax.swing.table.AbstractTableModel;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.Constants;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.rule.Rule;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.location.LocationInfo;
@@ -68,6 +69,7 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
   private List columnNames = new ArrayList(ChainsawColumns.getColumnsNames());
   private boolean sortEnabled = false;
   private boolean reachedCapacity = false;
+  private final Logger logger = LogManager.getLogger(ChainsawCyclicBufferTableModel.class);
 
   //  protected final Object syncLock = new Object();
   private LoggerNameModel loggerNameModelDelegate =
@@ -272,7 +274,7 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
   }
 
   public void sortColumn(int col, boolean ascending) {
-    LogLog.debug("request to sort col=" + col);
+    logger.debug("request to sort col=" + col);
     currentSortAscending = ascending;
     currentSortColumn = col;
     sortEnabled = true;
@@ -372,7 +374,7 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
     }
 
     if (event == null) {
-      LogLog.error("Invalid rowindex=" + rowIndex);
+      logger.error("Invalid rowindex=" + rowIndex);
       throw new NullPointerException("Invalid rowIndex=" + rowIndex);
     }
 
@@ -483,7 +485,7 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
         //add all keys except the 'log4jid' key
         if (!columnNames.contains(key) && !(Constants.LOG4J_ID_KEY.equalsIgnoreCase(key.toString()))) {
           columnNames.add(key);
-          LogLog.debug("Adding col '" + key + "', columNames=" + columnNames);
+          logger.debug("Adding col '" + key + "', columNames=" + columnNames);
           fireNewKeyColumnAdded(
             new NewKeyEvent(
               this, columnNames.indexOf(key), key, e.getProperty(key.toString())));
@@ -645,7 +647,7 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
                       unfilteredList.size() + 1);
                   monitor.setMillisToDecideToPopup(250);
                   monitor.setMillisToPopup(100);
-                  LogLog.debug(
+                  logger.debug(
                     "Changing Model, isCyclic is now " + isCyclic());
 
                   List newUnfilteredList = null;
@@ -695,7 +697,7 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
                 monitor.close();
               }
 
-              LogLog.debug("Model Change completed");
+              logger.debug("Model Change completed");
             }
           });
       thread.setPriority(Thread.MIN_PRIORITY + 1);
