@@ -200,11 +200,11 @@ Events displayed in the event panel can be filtered one of two ways: by focusing
 </ul>
 <p><B>Example expressions:</B></p>
 <table border = 1>
-<tr><td>To display all events with a level of info or greater</td><td><b>LEVEL &gt INFO</b></td></tr>
+<tr><td>To display all events with a level of info or greater</td><td><b>LEVEL &gt= INFO</b></td></tr>
 <tr><td>To display all events associated with the words 'logged in' in the message</td><td> <b>MSG ~= 'logged in'</b></td></tr>
 <tr><td>To display all events which contain an exception</td><td><b>EXCEPTION EXISTS</b></td></tr>
 <tr><td>To display all events associated with an MDC key of USERID with a value of 'tester'</td><td><b>MDC.USERID == tester</b></td></tr>
-<tr><td>'and' the first and second examples together, 'or'd with the third</td><td><b>( LEVEL &gt INFO && MSG ~= 'logged in' ) || EXCEPTION EXISTS</b></td></tr>
+<tr><td>'and' the first and second examples together, 'or'd with the third</td><td><b>( LEVEL &gt= INFO && MSG ~= 'logged in' ) || EXCEPTION EXISTS</b></td></tr>
 </table>
 
 <h2>Shutting down the Tutorial</h2>
