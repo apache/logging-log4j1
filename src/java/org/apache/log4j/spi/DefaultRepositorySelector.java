@@ -19,23 +19,12 @@ package org.apache.log4j.spi;
 public class DefaultRepositorySelector implements RepositorySelector {
   LoggerRepository repository;
 
-  public DefaultRepositorySelector() {
+  public DefaultRepositorySelector(LoggerRepository repository) {
+    this.repository = repository;
   }
 
   public LoggerRepository getLoggerRepository() {
     return repository;
-  }
-  
-  public LoggerRepository getDefaultRepository() {
-    return repository ;
-  }
-  
-  public void setDefaultRepository(LoggerRepository dr) {
-    if(repository == null) {
-      repository = dr;
-    } else {
-       throw new IllegalStateException("default repository already set.");
-    }
   }
   
   /**
@@ -44,7 +33,7 @@ public class DefaultRepositorySelector implements RepositorySelector {
    * @return Always null
    */
   public LoggerRepository detachRepository(String contextName) {
-    // do nothing as the default reposiory cannot be removed
+    // do nothing, as the default repository cannot be removed
     return null;
   }
 }
