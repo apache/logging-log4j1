@@ -5,6 +5,24 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
 
+
+ November 1st, 2004
+
+ - Release of version 1.2.9
+
+  Log4j version 1.2.9, is identical to version 1.2.8, except that
+  several key methods have been deprecated in preparation for version
+  1.3.0, the next major release of log4j. These changes are intended to
+  enforce the rule that client code should never refer to the Category
+  class directly, but use the Logger class instead. Similarly, client
+  code should not refer to the Priority class but to the Level class
+  instead.
+
+  For a more detailed discussion, refer to the document entitled
+  preparing for log4j 1.3 at:
+
+    http://www.qos.ch/logging/preparingFor13.jsp
+
  February 19th, 2003
  
  - Release of version 1.2.8
