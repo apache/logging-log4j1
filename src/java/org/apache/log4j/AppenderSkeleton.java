@@ -126,7 +126,12 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
   */
   public
   void finalize() {
-    LogLog.debug("Closing appender named ["+name+"].");
+    // An appender might be closed then garbage collected. There is no
+    // point in closing twice.
+    if(this.closed) 
+      return;
+
+    LogLog.debug("Finalizing appender named ["+name+"].");
     close();
   }
 

@@ -5,6 +5,9 @@
  * License version 1.1, a copy of which has been included with this
  * distribution in the LICENSE.APL file.  */
 
+// WARNING This class MUST not have a static initiliazer that
+// WARNING references the Category or RootCategory classes neither 
+// WARNING directly nor indirectly.
 
 // Contributors:
 //                Luke Blanshard <luke@quiq.com>

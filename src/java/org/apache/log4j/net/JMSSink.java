@@ -26,8 +26,8 @@ public class JMSSink  {
   static String TOPIC = "MyTopic";
 
   static public void main(String[] args) {
-    //PropertyConfigurator.configure(args[0]);
-    PropertyConfigurator.configure();
+    PropertyConfigurator.configure(args[0]);
+    //PropertyConfigurator.configure();
 
     
 
@@ -41,7 +41,9 @@ public class JMSSink  {
       TopicSession topicSession = topicConnection.createTopicSession(false,
 							Session.AUTO_ACKNOWLEDGE);
       Topic topic = topicSession.createTopic(TOPIC);
-      TopicSubscriber topicSubscriber = topicSession.createSubscriber(topic);
+      //TopicSubscriber topicSubscriber = topicSession.createSubscriber(topic);
+      TopicSubscriber topicSubscriber = 
+           topicSession.createDurableSubscriber(topic, "x");
 
       
       LoggingEvent event;

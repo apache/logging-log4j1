@@ -11,6 +11,7 @@ JSOURCES:=OptionHandler.java\
 	ErrorCode.java\
 	CategoryFactory.java\
 	Configurator.java\
+	TriggeringEventEvaluator.java\
 
 SUBDIRS := 
 
