@@ -24,6 +24,7 @@ import org.apache.log4j.config.ConfiguratorBase;
 import org.apache.log4j.config.PropertySetter;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.or.RendererMap;
+import org.apache.log4j.spi.Configurator;
 import org.apache.log4j.spi.ErrorItem;
 import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.LoggerRepository;
@@ -599,8 +600,8 @@ public class PropertyConfigurator extends ConfiguratorBase {
       // null. We also check that the user has not specified inherited for the
       // root category.
       if (
-        INHERITED.equalsIgnoreCase(levelStr)
-          || NULL.equalsIgnoreCase(levelStr)) {
+        Configurator.INHERITED.equalsIgnoreCase(levelStr)
+          || Configurator.NULL.equalsIgnoreCase(levelStr)) {
         if (loggerName.equals(INTERNAL_ROOT_NAME)) {
           getLogger(repository).warn("The root logger cannot be set to null.");
         } else {
