@@ -32,7 +32,17 @@ package org.apache.log4j;
    @author Ceki G&uuml;lc&uuml;
 
  */
-public class Level extends Priority {
+public class Level {
+  public static final int OFF_INT = Integer.MAX_VALUE;
+  public static final int FATAL_INT = 50000;
+  public static final int ERROR_INT = 40000;
+  public static final int WARN_INT = 30000;
+  public static final int INFO_INT = 20000;
+  public static final int DEBUG_INT = 10000;
+
+  //public final static int FINE_INT = DEBUG_INT;
+  public static final int ALL_INT = Integer.MIN_VALUE;
+  
   /**
      The <code>OFF</code> has the highest possible rank and is
      intended to turn off logging.  */
@@ -71,11 +81,18 @@ public class Level extends Priority {
      turn on all logging.  */
   public static final Level ALL = new Level(ALL_INT, "ALL", 7);
 
+  
+  int level;
+  String levelStr;
+  int syslogEquivalent;
+
   /**
-     Instantiate a Level object.
-   */
+    Instantiate a level object.
+  */ 
   protected Level(int level, String levelStr, int syslogEquivalent) {
-    super(level, levelStr, syslogEquivalent);
+   this.level = level;
+   this.levelStr = levelStr;
+   this.syslogEquivalent = syslogEquivalent;
   }
 
   /**
@@ -94,7 +111,74 @@ public class Level extends Priority {
   public static Level toLevel(int val) {
     return toLevel(val, Level.DEBUG);
   }
+  /**
+   * Two priorities are equal if their level fields are equal.
+   * @since 1.2
+   */
+  public boolean equals(Object o) {
+    if (o instanceof Level) {
+      Level r = (Level) o;
 
+      return (this.level == r.level);
+    } else {
+      return false;
+    }
+  }
+
+  /**
+   * The hashCode        of a Level (i.e. Priority) is its level field.
+   */
+  public int hashCode() {
+    return level;
+  }
+
+  /**
+     Return the syslog equivalent of this priority as an integer.
+   */
+  public final int getSyslogEquivalent() {
+    return syslogEquivalent;
+  }
+
+  /**
+     Returns <code>true</code> if this level has a higher or equal
+     level than the level passed as argument, <code>false</code>
+     otherwise.
+
+     <p>You should think twice before overriding the default
+     implementation of <code>isGreaterOrEqual</code> method.
+
+  */
+  public boolean isGreaterOrEqual(Level r) {
+    return level >= r.level;
+  }
+
+  /**
+  Return all possible priorities as an array of Level objects in
+  descending order.
+
+  @deprecated This method will be removed with no replacement.
+*/
+  public static Level[] getAllPossiblePriorities() {
+    return new Level[] {
+     Level.FATAL, Level.ERROR, Level.WARN, Level.INFO, Level.DEBUG
+ };
+}
+
+
+  /**
+  Returns the string representation of this priority.
+  */
+  public final String toString() {
+    return levelStr;
+  }
+
+  /**
+    Returns the integer representation of this level.
+  */
+  public final int toInt() {
+    return level;
+  }
+  
   /**
     Convert an integer passed as argument to a level. If the
     conversion fails, then this method returns the specified default.

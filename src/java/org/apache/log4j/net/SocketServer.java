@@ -167,7 +167,7 @@ public class SocketServer  {
 
       File configFile = new File(dir, key+CONFIG_FILE_EXT);
       if(configFile.exists()) {
-	Hierarchy h = new Hierarchy(new RootLogger((Level) Priority.DEBUG));
+	Hierarchy h = new Hierarchy(new RootLogger(Level.DEBUG));
 	hierarchyMap.put(inetAddress, h);
 
 	new PropertyConfigurator().doConfigure(configFile.getAbsolutePath(), h);
@@ -184,7 +184,7 @@ public class SocketServer  {
     if(genericHierarchy == null) {
       File f = new File(dir, GENERIC+CONFIG_FILE_EXT);
       if(f.exists()) {
-	genericHierarchy = new Hierarchy(new RootLogger((Level) Priority.DEBUG));
+	genericHierarchy = new Hierarchy(new RootLogger(Level.DEBUG));
 	new PropertyConfigurator().doConfigure(f.getAbsolutePath(), genericHierarchy);
       } else {
 	cat.warn("Could not find config file ["+f+

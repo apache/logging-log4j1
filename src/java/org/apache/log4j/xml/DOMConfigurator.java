@@ -293,15 +293,15 @@ public class DOMConfigurator implements Configurator {
 
       if (hasParamTag(currentElement)) {
         if (debug) {
-          logger.debug(
-            "Configuring parameter [" + currentElement.getAttribute("name")
+          LogLog.debug(
+            "***Configuring parameter [" + currentElement.getAttribute("name")
             + "] for <" + nestedElementTagName + ">.");
         }
 
         setParameter(currentElement, nestedBean);
       } else {
         if (debug) {
-          logger.debug(
+          LogLog.debug(
             "Configuring component " + nestedComponent + " with tagged as <"
             + currentElement.getTagName() + ">.");
         }
@@ -394,7 +394,7 @@ public class DOMConfigurator implements Configurator {
   /**
      Used internally to parse a filter element.
    */
-  protected void parseFilters(Element element, Appender appender) {
+  protected void XXparseFilters(Element element, Appender appender) {
     String clazz = subst(element.getAttribute(CLASS_ATTR));
     Filter filter =
       (Filter) OptionConverter.instantiateByClassName(
@@ -635,6 +635,7 @@ public class DOMConfigurator implements Configurator {
     String name = subst(elem.getAttribute(NAME_ATTR));
     String value = (elem.getAttribute(VALUE_ATTR));
     value = subst(OptionConverter.convertSpecialChars(value));
+    //LogLog.debug("*** value is "+value);
     propSetter.setProperty(name, value);
   }
 

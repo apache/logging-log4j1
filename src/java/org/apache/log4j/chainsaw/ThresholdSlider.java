@@ -17,7 +17,6 @@
 package org.apache.log4j.chainsaw;
 
 import org.apache.log4j.Level;
-import org.apache.log4j.Priority;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -42,20 +41,20 @@ final class ThresholdSlider extends JSlider {
   final List priorityList;
 
   ThresholdSlider() {
-    Priority[] priorities =
+    Level[] levels =
       new Level[] {
         Level.OFF, Level.FATAL, Level.ERROR, Level.WARN, Level.INFO,
         Level.DEBUG, Level.ALL
       };
 
-    priorityList = Arrays.asList(priorities);
+    priorityList = Arrays.asList(levels);
 
     Collections.sort(
       priorityList,
       new Comparator() {
         public int compare(Object o1, Object o2) {
-          Priority p1 = (Priority) o1;
-          Priority p2 = (Priority) o2;
+          Level p1 = (Level) o1;
+          Level p2 = (Level) o2;
 
           if (p1.toInt() == p2.toInt()) {
             return 0;
@@ -74,7 +73,7 @@ final class ThresholdSlider extends JSlider {
     Hashtable labelMap = new Hashtable();
 
     for (Iterator iter = priorityList.iterator(); iter.hasNext();) {
-      Priority item = (Priority) iter.next();
+      Level item = (Level) iter.next();
       labelMap.put(
         new Integer(priorityList.indexOf(item)), new JLabel(item.toString()));
 

@@ -19,7 +19,6 @@ package org.apache.log4j.chainsaw;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
-import org.apache.log4j.Priority;
 import org.apache.log4j.chainsaw.help.HelpManager;
 import org.apache.log4j.chainsaw.help.Tutorial;
 import org.apache.log4j.chainsaw.helper.SwingHelper;
@@ -561,12 +560,12 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     //List utilList = UtilLoggingLevel.getAllPossibleLevels();
     // TODO: Replace the array list creating with the standard way of
     // retreiving the Level set. (TBD)
-    Priority[] priorities =
+    Level[] levels =
       new Level[] { Level.FATAL, Level.ERROR, Level.WARN, Level.INFO, Level.DEBUG };
     List priorityLevels = new ArrayList();
 
-    for (int i = 0; i < priorities.length; i++) {
-      priorityLevels.add(priorities[i].toString());
+    for (int i = 0; i < levels.length; i++) {
+      priorityLevels.add(levels[i].toString());
     }
 
     List utilLevels = new ArrayList();
