@@ -163,4 +163,5 @@ public interface Appender {
    * @since 0.8.4
    */
   public boolean requiresLayout();
+  
 }
