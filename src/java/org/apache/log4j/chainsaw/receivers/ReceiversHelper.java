@@ -22,7 +22,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Properties;
 
 import org.apache.log4j.helpers.LogLog;
 
@@ -46,7 +45,6 @@ public class ReceiversHelper {
      */
     private ReceiversHelper() {
 
-        Properties p = new Properties();
         URL url = this.getClass().getClassLoader().getResource(
             this.getClass().getPackage().getName().replace('.','/') + "/known.receivers");
 
@@ -58,6 +56,9 @@ public class ReceiversHelper {
             while ((line = stream.readLine()) != null) {
 
                 try {
+                    if (line.startsWith("#") || (line.length() == 0)) {
+                        continue;
+                    }
                     Class receiverClass = Class.forName(line);
                     receiverClassList.add(receiverClass);
                     LogLog.debug("Located known Receiver class " + receiverClass.getName());

@@ -1,3 +1,6 @@
+# NOTE: if a receiver is added to this list, also change 
+# tests/src/java/org/apache/log4j/chainsaw/receivers/ReceiversHelperTest.java test case
+
 org.apache.log4j.net.MulticastReceiver
 org.apache.log4j.net.SocketHubReceiver
 org.apache.log4j.net.SocketReceiver
