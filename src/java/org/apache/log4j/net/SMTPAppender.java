@@ -150,7 +150,7 @@ public class SMTPAppender extends AppenderSkeleton {
 
   /**
      The default constructor will instantiate the appender with a
-     {@link TriggeringEventEvaluator} that will tirgger on events with
+     {@link TriggeringEventEvaluator} that will trigger on events with
      priority ERROR or higher.*/
   public
   SMTPAppender() {
@@ -425,7 +425,7 @@ public class SMTPAppender extends AppenderSkeleton {
   
 
   /**
-     The <b>BufferSize</b>option takes a positive integer
+     The <b>BufferSize</b> option takes a positive integer
      representing the maximum number of logging events to collect in a
      cyclic buffer. When the <code>BufferSize</code> is reached,
      oldest events are deleted as new events are added to the
@@ -475,7 +475,7 @@ public class SMTPAppender extends AppenderSkeleton {
   
   /**
      The <b>EvaluatorClass</b> option takes a string value
-     repsenting the name of the class implementing the {@link
+     representing the name of the class implementing the {@link
      TriggeringEventEvaluator} interface. A corresponding object will
      be instantiated and assigned as the triggering event evaluator
      for the SMTPAppender.
@@ -519,7 +519,7 @@ class DefaultEvaluator implements TriggeringEventEvaluator {
      Is this <code>event</code> the e-mail triggering event?
      
      <p>This method returns <code>true</code>, if the event priority
-     has ERROR priority or higher. Otherwisem it returns
+     has ERROR priority or higher. Otherwise it returns
      <code>false</code>. */
   public 
   boolean isTriggeringEvent(LoggingEvent event) {
