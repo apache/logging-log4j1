@@ -29,6 +29,8 @@ import org.apache.log4j.spi.location.LocationInfo;
 
 public class EventEvaluationTest extends TestCase {
 	LoggingEvent event;
+  LoggingEvent nullEvent;
+
 	EventEvaluator evaluator;
   
   public EventEvaluationTest(String arg0) {
@@ -37,6 +39,7 @@ public class EventEvaluationTest extends TestCase {
 
   protected void setUp() throws Exception {
     super.setUp();
+    nullEvent = new LoggingEvent();
     event = new LoggingEvent();
     event.setLevel(Level.INFO);
     event.setMessage("hello world");
@@ -168,8 +171,31 @@ public class EventEvaluationTest extends TestCase {
     
     evaluator = new LBELEventEvaluator("class < org");
     assertTrue(!evaluator.evaluate(event));
+  }
+
+  public void testNull() throws ScanError {
+    evaluator = new LBELEventEvaluator("message = NULL");
+    assertTrue(evaluator.evaluate(nullEvent));
+
+    evaluator = new LBELEventEvaluator("message != NULL");
+    assertTrue(!evaluator.evaluate(nullEvent));
+
+    try {
+      evaluator = new LBELEventEvaluator("message > NULL");
+      assertTrue(evaluator.evaluate(nullEvent));
+      fail("NullPointerException should have been thrown");
+    } catch(NullPointerException ne) {
+    }
+    
+    try {
+      evaluator = new LBELEventEvaluator("message > x");
+      assertTrue(evaluator.evaluate(nullEvent));
+      fail("NullPointerException should have been thrown");
+    } catch(NullPointerException ne) {
+    }
 
   }
+
   
   public static Test XXsuite() {
     TestSuite suite = new TestSuite();
