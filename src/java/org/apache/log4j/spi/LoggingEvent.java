@@ -479,6 +479,18 @@ public class LoggingEvent
     return ndc;
   }
 
+  /**
+   * This method sets the NDC string for this event. 
+   * @throws IllegalStateException if ndc had been already set.
+   * @since 1.3
+   */
+  public void setNDC(String ndcString) {
+    if (this.ndc != null) {
+      throw new IllegalStateException("The ndc has been already set.");
+    }
+    ndcLookupRequired = false;
+    ndc = ndcString;
+  }
 
   /**
    * Returns the the context corresponding to the <code>key</code> parameter.
