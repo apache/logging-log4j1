@@ -17,6 +17,7 @@
 //              Calvin Chan <calvin.chan@hic.gov.au>
 //              Aaron Greenhouse <aarong@cs.cmu.edu>
 //              Beat Meier <bmeier@infovia.com.ar>
+//              Colin Sampaleanu <colinml1@exis.com> 
 
 package org.apache.log4j;
 
