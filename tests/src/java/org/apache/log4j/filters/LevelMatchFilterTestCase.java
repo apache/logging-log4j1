@@ -13,12 +13,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import junit.framework.Test;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.Level;
-import org.apache.log4j.Appender;
-import org.apache.log4j.FileAppender;
-import org.apache.log4j.Layout;
-import org.apache.log4j.SimpleLayout;
+import org.apache.log4j.*;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.apache.log4j.filters.LevelMatchFilter;
@@ -66,7 +61,7 @@ public class LevelMatchFilterTestCase extends TestCase {
   }
 
   public void tearDown() {  
-    root.getLoggerRepository().resetConfiguration();
+    root.getLoggerRepository().resetConfiguration();  
   }
 
   /**

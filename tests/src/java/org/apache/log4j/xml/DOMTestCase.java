@@ -47,7 +47,7 @@ public class DOMTestCase extends TestCase {
     root = Logger.getRootLogger();
     logger = Logger.getLogger(DOMTestCase.class);
   }
-
+ 
   public void tearDown() {  
     root.getLoggerRepository().resetConfiguration();
   }

@@ -5,8 +5,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import junit.framework.Test;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.Level;
+import org.apache.log4j.*;
 import org.apache.log4j.util.Filter;
 import org.apache.log4j.util.LineNumberFilter;
 import org.apache.log4j.util.ControlFilter;
@@ -32,6 +31,9 @@ public class CustomLevelTestCase extends TestCase {
 
   public void tearDown() {  
     root.getLoggerRepository().resetConfiguration();
+    Logger logger = LogManager.getLoggerRepository().getLogger("LOG4J");
+    logger.setAdditivity(false);
+    logger.addAppender(new ConsoleAppender(new PatternLayout("log4j: %-22c{2} - %m%n")));
   }
 
   public void test1() throws Exception {

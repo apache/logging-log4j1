@@ -7,7 +7,7 @@
 <!-- NOTE: all directories are relative to jakarta-log4j/              -->
 <!-- the parent of build/                                              -->
 <!-- ================================================================= -->
-<project name="log4j" default="usage" basedir="." >
+<project name="log4j" default="build" basedir="." >
 
 
   <!-- The build.properties file defines the parth to local jar files -->
@@ -167,8 +167,9 @@
     <tstamp />
   </target>
 
-  <target name="build" depends="init, build.core, build.examples, build.xml,
-                                build.javamail, build.jms, build.jmx"/>
+  <target name="build" description="Compile all log4j components."
+         depends="init, build.core, build.examples, build.xml,
+         build.javamail, build.jms, build.jmx"/>
 
   <target name="build.core" depends="init">
     <mkdir dir="${javac.dest}" />
@@ -264,7 +265,7 @@
   <!-- ================================================================= -->
   <!-- Remove all generated (compiled) class files.                      -->
   <!-- ================================================================= -->
-  <target name="clean" depends="init">
+  <target name="clean" depends="init" description="Delete all compiled files.">
     <delete dir="${javac.dest}/" />
   </target>
 
