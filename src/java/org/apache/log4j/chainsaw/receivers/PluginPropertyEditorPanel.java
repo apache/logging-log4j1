@@ -196,6 +196,8 @@ public class PluginPropertyEditorPanel extends JPanel {
                 TableCellEditorFactory.createBooleanTableCellEditor());
             editorMap.put(Level.class,
                 TableCellEditorFactory.createLevelTableCellEditor());
+            //support primitive boolean parameters with the appropriate editor
+            editorMap.put(boolean.class, TableCellEditorFactory.createBooleanTableCellEditor());
         }
 
         /* (non-Javadoc)
@@ -207,6 +209,7 @@ public class PluginPropertyEditorPanel extends JPanel {
            PluginPropertyTableModel model = (PluginPropertyTableModel) table.getModel();
            PropertyDescriptor descriptor =  model.getDescriptors()[row];
            Class valueClass = descriptor.getPropertyType();
+           
             if (editorMap.containsKey(valueClass)) {
 
                 DefaultCellEditor editor =

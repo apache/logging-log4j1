@@ -85,7 +85,7 @@ public class ChainsawStatusBar extends JPanel {
     receivedEventLabel.setMinimumSize(
       new Dimension(
         receivedEventLabel.getFontMetrics(receivedEventLabel.getFont())
-                          .stringWidth("999.9/s") + 5,
+                          .stringWidth("9999.9/s") + 5,
         (int) receivedEventLabel.getPreferredSize().getHeight()));
 
 	eventCountLabel.setBorder(statusBarComponentBorder);

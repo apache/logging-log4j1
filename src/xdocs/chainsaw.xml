@@ -73,7 +73,7 @@
 			 <li>CVS (<a href="http://www.cygwin.com/">Cygwin</a> is handy for Windows users)</li>
 			</UL>
 			<P>Once you have downloaded and placed this script in a directory where you want Chainsaw v2 installed, you can type:</P>
-			<pre>ant -f install-chansaw.xml</pre>
+			<pre>ant -f install-chainsaw.xml</pre>
 			<P>This will download everything you need to build and run Chainsaw v2.</P>
 			<P>When finally released, we plan to have Chainsaw v2 available via Java WebStart.</P>
     </section>
