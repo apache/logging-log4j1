@@ -74,10 +74,10 @@ import org.apache.log4j.spi.LoggingEvent;
 
    <td>Rollover at midnight each day.</td>
 
-   <td>At midnight, on March 8th, 2002, <code>/foo/bar.log</code> will
-   be copied to <code>/foo/bar.log.2002-03-08</code>. Logging for the
-   9th day of March will be output to <code>/foo/bar.log</code> until
-   it is rolled over the next day.
+   <td>At 00:00 AM March 8th, 2002, <code>/foo/bar.log</code> will be
+   copied to <code>/foo/bar.log.2002-03-07</code>. Logging for the 8th
+   day of March will be output to <code>/foo/bar.log</code> until it
+   is rolled over the next day.
 
    <tr>
    <td><code>'.'yyyy-MM-dd-a</code>
@@ -108,7 +108,7 @@ import org.apache.log4j.spi.LoggingEvent;
 
    <td>At approximately 11:23,000, on March 9th, 2001,
    <code>/foo/bar.log</code> will be copied to
-   <code>/foo/bar.log.2001-03-09-10-22</code>. Logging for the minute
+   <code>/foo/bar.log.2001-03-09-11-22</code>. Logging for the minute
    of 11:23 (9th of March) will be output to
    <code>/foo/bar.log</code> until it is rolled over the next minute.
 
