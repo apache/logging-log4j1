@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2005 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,12 @@
 package org.apache.log4j.rolling;
 
 import java.io.File;
-
+import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.OptionHandler;
 /**
  * A <code>TriggeringPolicy</code> controls the conditions under which rollover
  * occurs. Such conditions include time od day, file size, an 
- * external event or a combination thereof.
+ * external event, the log request or a combination thereof.
  *
  * @author Ceki G&uuml;lc&uuml;
  * @since 1.3
@@ -34,6 +34,8 @@ public interface TriggeringPolicy extends OptionHandler {
    * Should rolllover be triggered at this time?
    * 
    * @param file A reference to the currently active log file. 
-   * */
-  public boolean isTriggeringEvent(File file);
+   * @param event A reference to the currently event. 
+   * @return true if a rollover should occur.
+   */
+  public boolean isTriggeringEvent(final File file, final LoggingEvent event);
 }

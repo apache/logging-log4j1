@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import org.apache.log4j.rolling.helper.DateTokenConverter;
 import org.apache.log4j.rolling.helper.FileNamePattern;
 import org.apache.log4j.rolling.helper.RollingCalendar;
 import org.apache.log4j.rolling.helper.Util;
-
+import org.apache.log4j.spi.LoggingEvent;
 import java.io.File;
 
 import java.util.Date;
@@ -256,7 +256,7 @@ public class TimeBasedRollingPolicy extends RollingPolicyBase implements Trigger
     }
   }
 
-  public boolean isTriggeringEvent(File file) {
+  public boolean isTriggeringEvent(File file, final LoggingEvent event) {
     //getLogger().debug("Is triggering event called");
     long n = System.currentTimeMillis();
 

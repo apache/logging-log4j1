@@ -208,7 +208,9 @@
 
   <target name="Rolling" depends="Compress, 
 	                              SizeBasedRolling,
-                                  TimeBasedRolling, Renaming"/>
+                                  TimeBasedRolling, 
+                                  Renaming,
+                                  FilterBasedRolling"/>
 
 
   <!-- ================================================================= -->
@@ -516,6 +518,14 @@
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
       <test name="org.apache.log4j.rolling.TimeBasedRollingTest" />
+    </junit>
+  </target>
+
+  <target name="FilterBasedRolling" depends="check, build, cleanOutputDir">
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="false"/>
+      <test name="org.apache.log4j.rolling.FilterBasedRollingTest" />
     </junit>
   </target>
 	
