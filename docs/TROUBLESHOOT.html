@@ -11,7 +11,7 @@
 
 <hr>
 
-<p>Here is a list of commonly encoutered problems when using log4j:
+<p>Here is a list of commonly encountered problems when using log4j:
 
 <ul> 
 
@@ -44,7 +44,7 @@ log4j: Please initialize the log4j system properly.
 </pre>
 
 <em>Log4j does not have a default logging target.</em> It is the
-user's responsability to ensure that all categories can inherit an
+user's responsibility to ensure that all categories can inherit an
 appender.  This can be easily achieved by attaching an appender to the
 root category.
 
@@ -63,7 +63,7 @@ will be invoked <i>n</i> times to append to its target.
 
 <p>A slightly different cause is adding different appenders all
 sharing the same underlying output target to some category. In the
-most common occurance of this phenomenon, the
+most common occurrence of this phenomenon, the
 BasicConfigurator.configure() method is invoked multiple times. Each
 time it is invoked, this method adds an appender with a
 <code>System.out</code> target to the root category. 
@@ -72,7 +72,7 @@ time it is invoked, this method adds an appender with a
 cumulatively from the hierarchy. For example, if you add an appender,
 say <code>A</code>, to the root category, all other categories will
 inherit <code>A</code> as an appender. Thus, if you add <code>A</code>
-to a categoy, say <code>C</code>, then an enabled statement of
+to a category, say <code>C</code>, then an enabled statement of
 category <code>C</code>, will print to <code>A</code> twice, once
 because <code>A</code> is in root and once because it is in
 <code>C</code>. 
@@ -96,7 +96,7 @@ spaces.
 
 <p>In log4j version 0.9.0, all spaces are removed from <em>both</em>
 ends of option values. In version 0.9.1 log4j reverted to the old
-behaviour where option values are not all automatically trimmed. 
+behavior where option values are not all automatically trimmed. 
 
 
 <p><a name=jit><h4>Location information is printed as a "?" character.</h4>
@@ -104,8 +104,8 @@ behaviour where option values are not all automatically trimmed.
 Location information is extracted automatically by the PatternLayout
 conversion patterns %C, %F, %M and %L. However, some just-in-time
 (JIT) compilers make it impossible to extract location information. It
-is also possible that the complier that generated the byte code may
-have ommitted the LineNumber table as is done by -O option of javac
+is also possible that the compiler that generated the byte code may
+have omitted the LineNumber table as is done by -O option of javac
 and jikes.  
 
 <p>You can remedy this problem by disabling the JIT compiler and by
@@ -123,7 +123,7 @@ homonyms. For example, the following will systematically throw a
   MyCategory c2 = (MyCategory) MyCategory.getInstance("bad");
 </pre>
 
-where <code>MyCategory</code> is a sub-class of
+where <code>MyCategory</code> is a subclass of
 <code>Category</code>. The problem occurs because the second
 <code>getInstance</code> invocation will retrieve the category created
 in the fist invocation. This instance is a <code>Category</code>
@@ -131,8 +131,8 @@ object and cannot be cast to <code>MyCategory</code>.
 
 <p>By default, the <code>PropertyConfigurator</code> will create and
 configure <code>org.apache.log4j.Category</code> objects. Thus, if you try to
-instantiate a category sub-class for an already existing category, and
-try to cast it to the sub-class type, you will systematically get a
+instantiate a category subclass for an already existing category, and
+try to cast it to the subclass type, you will systematically get a
 <code>ClassCastException</code>.
 
 <p>To address this problem, the <code>PropertyConfigurator</code> admits
@@ -177,11 +177,11 @@ classloaders do not delegate requests to children.
 
 <p>Application servers often use the application loader for its runtime
 classes and create separate classloaders for its webapp and EJB
-containers.  These additional classloaders may decend directly
+containers.  These additional classloaders may descend directly
 from the app server's runtime classloader.  If log4j is placed in the
 classpath of a webapp classloader, another webapp classloader will not
 necessarily see it.  EJBs wouldn't see it either.  If log4j is intended
-to be made availble to all objects participating in the app server, it
+to be made available to all objects participating in the app server, it
 should be included in the classpath of a classloader high enough in the
 classloader hierarchy to be seen by all classloaders.
 
