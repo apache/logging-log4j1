@@ -3,9 +3,9 @@ package org.apache.log4j.test;
 
 import org.apache.log4j.*;
 	
-public class EnableFlagTest {
+public class ThresholdFlagTest {
 
-  static Logger logger = Logger.getLogger(EnableFlagTest.class);
+  static Logger logger = Logger.getLogger(ThresholdFlagTest.class);
 
   public static void main( String[] argv) {
 
@@ -27,7 +27,7 @@ public class EnableFlagTest {
   static
   void Usage(String msg) {
     System.err.println(msg);
-    System.err.println( "Usage: java org.apache.log4j.test.ShippedCodeFlagTest configFile");
+    System.err.println( "Usage: java org.apache.log4j.test.ThresholdFlagTest configFile");
     System.exit(1);
   }
 

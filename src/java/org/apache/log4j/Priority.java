@@ -31,8 +31,8 @@ public class Priority {
 
 
   /**
-     The <code>OFF</code> is used to turn off logging.
-   */
+     The <code>OFF</code> has the highest possible rank and is
+     intended to turn off logging.  */
   final static public Level OFF = new Level(OFF_INT, "OFF", 0);
 
 
@@ -65,8 +65,8 @@ public class Priority {
   final static public Level DEBUG = new Level(DEBUG_INT, "DEBUG", 7);
 
   /**
-     The <code>ALL</code> is used to turn on all logging.
-  */
+     The <code>ALL</code> has the lowest possible rank and is intended to
+     turn on all logging.  */
   final static public Level ALL = new Level(ALL_INT, "ALL", 7);
 
   

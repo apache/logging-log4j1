@@ -9,10 +9,9 @@ import org.apache.log4j.FileAppender;
 	
 public class DefaultInit {
 
-  static Category cat = Category.getInstance(DefaultInit.class.getName());
+  static Category cat = Category.getInstance(DefaultInit.class);
 
   public static void main( String[] argv) {
-
     cat.debug("Hello world");
   }
 

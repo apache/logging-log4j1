@@ -78,7 +78,7 @@ public class DOMConfigurator implements Configurator {
   static final String ERROR_HANDLER_TAG	= "errorHandler";
   static final String REF_ATTR		= "ref";
   static final String ADDITIVITY_ATTR    = "additivity";  
-  static final String ENABLE_ATTR       = "enable";
+  static final String THRESHOLD_ATTR       = "threshold";
   static final String CONFIG_DEBUG_ATTR  = "configDebug";
   static final String INTERNAL_DEBUG_ATTR  = "debug";
   static final String RENDERING_CLASS_ATTR = "renderingClass";
@@ -713,10 +713,10 @@ public class DOMConfigurator implements Configurator {
       LogLog.setInternalDebugging(OptionConverter.toBoolean(confDebug, true));
     }
 
-    String enableStr = subst(element.getAttribute(ENABLE_ATTR));
-    LogLog.debug("Enable =\"" + enableStr +"\".");
-    if(!"".equals(enableStr) && !"null".equals(enableStr)) {
-      hierarchy.enable(enableStr);
+    String thresholdStr = subst(element.getAttribute(THRESHOLD_ATTR));
+    LogLog.debug("Threshold =\"" + thresholdStr +"\".");
+    if(!"".equals(thresholdStr) && !"null".equals(thresholdStr)) {
+      hierarchy.setThreshold(thresholdStr);
     }
     
 

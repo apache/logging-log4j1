@@ -206,7 +206,7 @@ public class UnitTestLogger extends TestCase {
 
     LoggerRepository h = Category.getDefaultHierarchy();
     //h.disableDebug();
-    h.enable(Level.INFO);
+    h.setThreshold(Level.INFO);
     assertEquals(caRoot.counter, 0);     
 
     root.debug(MSG); assertEquals(caRoot.counter, 0);  
@@ -215,7 +215,7 @@ public class UnitTestLogger extends TestCase {
     root.warn(MSG); assertEquals(caRoot.counter, 3);  
 
     //h.disableInfo();
-    h.enable(Level.WARN);
+    h.setThreshold(Level.WARN);
     root.debug(MSG); assertEquals(caRoot.counter, 3);  
     root.info(MSG); assertEquals(caRoot.counter, 3);  
     root.log(Level.WARN, MSG); assertEquals(caRoot.counter, 4);  
@@ -223,7 +223,7 @@ public class UnitTestLogger extends TestCase {
     root.log(Level.ERROR, MSG); assertEquals(caRoot.counter, 6);  
 
     //h.disableAll();
-    h.enable(Level.OFF);
+    h.setThreshold(Level.OFF);
     root.debug(MSG); assertEquals(caRoot.counter, 6);  
     root.info(MSG); assertEquals(caRoot.counter, 6);  
     root.log(Level.WARN, MSG); assertEquals(caRoot.counter, 6);  
@@ -232,7 +232,7 @@ public class UnitTestLogger extends TestCase {
     root.log(Level.FATAL, MSG); assertEquals(caRoot.counter, 6);  
 
     //h.disable(Level.FATAL);
-    h.enable(Level.OFF);
+    h.setThreshold(Level.OFF);
     root.debug(MSG); assertEquals(caRoot.counter, 6);  
     root.info(MSG); assertEquals(caRoot.counter, 6);  
     root.log(Level.WARN, MSG); assertEquals(caRoot.counter, 6);  

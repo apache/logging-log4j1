@@ -3,13 +3,15 @@
 
 . .functions
 
+deleteFile log4j.properties
+
 ./minreg simple || die "minreg simple FAILED.";
 ./minreg ttcc || die "minreg ttcc FAILED.";
 ./shallow || die "shallow test FAILED."
 ./defaultInit || die "defaultInit test FAILED."
 ./propConfig || die "propConfig test FAILED."
 ./getOptions || die "getOptions test FAILED."
-./enableFlagTest || die "enableFlagTest test FAILED."
+./thresholdFlagTest || die "enableFlagTest test FAILED."
 ./multipleAppenders || die "multipleAppenders test FAILED."
 ./confParsing || die "confParsing test FAILED."
 ./customCategory || die "customCategory test FAILED."
