@@ -6,7 +6,8 @@
 elements,appender elements, categories and an optional root
 element. -->
 
-<!ELEMENT log4j:configuration (renderer*, appender*,category*,root?,categoryFactory?)>
+<!ELEMENT log4j:configuration (renderer*, appender*,(category|logger)*,root?,
+                               categoryFactory?)>
 
 <!-- The disable attribute takes a priority value such that all -->
 <!-- logging statements with a prioroty equal or below this value are -->
@@ -35,26 +36,6 @@ element. -->
   configDebug              (true|false|null)  "null"
 >
 
-
-<!-- DEPRECATED DEPRECATED DEPRECATED DEPRECATED DEPRECATED DEPRECATED -->
-<!-- WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING   -->
-<!-- DEPRECATED DEPRECATED DEPRECATED DEPRECATED DEPRECATED DEPRECATED -->
-
-<!-- Use "log4j:configuration" above instead of the "configuration" -->
-<!-- element. -->
-
-<!-- DEPRECATED DEPRECATED DEPRECATED DEPRECATED DEPRECATED DEPRECATED -->
-<!-- WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING   -->
-<!-- DEPRECATED DEPRECATED DEPRECATED DEPRECATED DEPRECATED DEPRECATED -->
-
-<!ELEMENT configuration (renderer*, appender*,category*,root?,categoryFactory?)>
-<!ATTLIST configuration
-  disable                  (debug|info|warn|error|fatal|null)  "null"
-  disableOverride          (true|false|null)  "null"
-  configDebug              (true|false|null)  "null"
->
-
-
 <!-- renderer elements allow the user to customize the conversion of  -->
 <!-- message objects to String.                                       -->
 
@@ -78,8 +59,6 @@ element. -->
   class		CDATA	#REQUIRED
 >
 
-
-
 <!ELEMENT filter (param*)>
 <!ATTLIST filter
   class		CDATA	#REQUIRED
@@ -94,29 +73,46 @@ element. -->
    class        CDATA   #REQUIRED 
 >
 
-
-
 <!ELEMENT param EMPTY>
 <!ATTLIST param
   name		CDATA   #REQUIRED
   value		CDATA	#REQUIRED
 >
 
-<!-- The priority class is org.apache.log4j.Priority by default -->
+
+<!-- The priority class is org.apache.log4j.Level by default -->
 <!ELEMENT priority (param*)>
 <!ATTLIST priority
   class   CDATA	#IMPLIED
   value	  CDATA #REQUIRED
 >
 
-<!-- If no priority element is specified, then the configurator MUST not -->
-<!-- touch the priority of the named category. -->
-<!ELEMENT category (param*, priority?, appender-ref*)>
+<!-- The level class is org.apache.log4j.Level by default -->
+<!ELEMENT level (param*)>
+<!ATTLIST level
+  class   CDATA	#IMPLIED
+  value	  CDATA #REQUIRED
+>
+
+
+<!-- If no level element is specified, then the configurator MUST not -->
+<!-- touch the level of the named category. -->
+<!ELEMENT category (param*,(priority|level)?,appender-ref*)>
 <!ATTLIST category
   class         CDATA   #IMPLIED
   name		CDATA	#REQUIRED
   additivity	(true|false) "true"  
 >
+
+<!-- If no level element is specified, then the configurator MUST not -->
+<!-- touch the level of the named logger. -->
+<!ELEMENT logger (param*,level?,appender-ref*)>
+<!ATTLIST logger
+  class         CDATA   #IMPLIED
+  name		CDATA	#REQUIRED
+  additivity	(true|false) "true"  
+>
+
 
 <!ELEMENT categoryFactory (param*)>
 <!ATTLIST categoryFactory 
@@ -130,8 +126,7 @@ element. -->
 <!-- If no priority element is specified, then the configurator MUST not -->
 <!-- touch the priority of root. -->
 <!-- The root category always exists and cannot be subclassed. -->
-<!ELEMENT root (param*, priority?, appender-ref*)>
-
+<!ELEMENT root (param*, level?, appender-ref*)>
 
 
 <!-- ==================================================================== -->

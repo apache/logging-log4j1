@@ -65,12 +65,14 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
   static final String PARAM_TAG    	= "param";
   static final String LAYOUT_TAG	= "layout";
   static final String CATEGORY		= "category";
+  static final String LOGGER		= "logger";
   static final String CATEGORY_FACTORY_TAG  = "categoryFactory";
   static final String NAME_ATTR		= "name";
   static final String CLASS_ATTR        = "class";
   static final String VALUE_ATTR	= "value";
   static final String ROOT_TAG		= "root";
-  static final String LEVEL_TAG	= "level";
+  static final String LEVEL_TAG	        = "level";
+  static final String PRIORITY_TAG      = "priority";
   static final String FILTER_TAG	= "filter";
   static final String ERROR_HANDLER_TAG	= "errorHandler";
   static final String REF_ATTR		= "ref";
@@ -271,21 +273,21 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
      Used internally to parse an category element.
   */
   protected
-  void parseCategory (Element categoryElement, LoggerRepository hierarchy) {
+  void parseCategory (Element loggerElement, LoggerRepository hierarchy) {
     // Create a new org.apache.log4j.Category object from the <category> element.
-    String catName = subst(categoryElement.getAttribute(NAME_ATTR));
+    String catName = subst(loggerElement.getAttribute(NAME_ATTR));
 
     Logger cat;    
 
-    String className = subst(categoryElement.getAttribute(CLASS_ATTR));
+    String className = subst(loggerElement.getAttribute(CLASS_ATTR));
 
 
     if(EMPTY_STR.equals(className)) {
-      LogLog.debug("Retreiving an instance of org.apache.log4j.Category.");
+      LogLog.debug("Retreiving an instance of org.apache.log4j.Logger.");
       cat = hierarchy.getLogger(catName);
     }
     else {
-      LogLog.debug("Desired category sub-class: ["+className+']');
+      LogLog.debug("Desired logger sub-class: ["+className+']');
        try {	 
 	 Class clazz = Loader.loadClass(className);
 	 Method getInstanceMethod = clazz.getMethod("getLogger", 
@@ -303,12 +305,12 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
     // configuration is in progress.
     synchronized(cat) {
       boolean additivity = OptionConverter.toBoolean(
-                           subst(categoryElement.getAttribute(ADDITIVITY_ATTR)),
+                           subst(loggerElement.getAttribute(ADDITIVITY_ATTR)),
 			   true);
     
       LogLog.debug("Setting ["+cat.getName()+"] additivity to ["+additivity+"].");
       cat.setAdditivity(additivity);
-      parseChildrenOfCategoryElement(categoryElement, cat, false);
+      parseChildrenOfLoggerElement(loggerElement, cat, false);
     }
   }
 
@@ -357,7 +359,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
     Logger root = hierarchy.getRootLogger();
     // category configuration needs to be atomic
     synchronized(root) {    
-      parseChildrenOfCategoryElement(rootElement, root, true);
+      parseChildrenOfLoggerElement(rootElement, root, true);
     }
   }
 
@@ -366,7 +368,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
      Used internally to parse the children of a category element.
   */
   protected
-  void parseChildrenOfCategoryElement(Element catElement,
+  void parseChildrenOfLoggerElement(Element catElement,
 				      Logger cat, boolean isRoot) {
     
     PropertySetter propSetter = new PropertySetter(cat);
@@ -400,6 +402,8 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
 	  
 	} else if(tagName.equals(LEVEL_TAG)) {
 	  parseLevel(currentElement, cat, isRoot);	
+	} else if(tagName.equals(PRIORITY_TAG)) {
+	  parseLevel(currentElement, cat, isRoot);
 	} else if(tagName.equals(PARAM_TAG)) {
           setParameter(currentElement, propSetter);
 	}
@@ -759,7 +763,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
 	currentElement = (Element) currentNode;
 	tagName = currentElement.getTagName();
 
-	if (tagName.equals(CATEGORY)) {
+	if (tagName.equals(CATEGORY) || tagName.equals(LOGGER)) {
 	  parseCategory(currentElement, hierarchy);
 	} else if (tagName.equals(ROOT_TAG)) {
 	  parseRoot(currentElement, hierarchy);
