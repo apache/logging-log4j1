@@ -488,6 +488,7 @@ later. For JDK 1.2, you can get the JNDI API from
                 ${stem}/net/*.class,
                 ${stem}/jdbc/*.class,
 				${stem}/db/**/*.class,
+		        ${stem}/html/**/*.class,
                 ${stem}/varia/*.class,
                 ${stem}/nt/*.class,
                 ${stem}/rolling/**/*.class,
