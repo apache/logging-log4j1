@@ -11,6 +11,9 @@
 
  April, 2004 
 
+ - Log4j now has its own Scheduler which can execute various jobs in a single 
+   thread.[*]
+   
  - Added the "isPristine" falg to LoggerRepository. As soon as a configurator
    starts configuring a repository this flag is set to false.
    
