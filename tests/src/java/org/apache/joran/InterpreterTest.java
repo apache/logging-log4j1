@@ -50,6 +50,7 @@ import org.apache.log4j.joran.action.RootLoggerAction;
 import org.apache.log4j.rolling.RollingFileAppender;
 import org.apache.log4j.rolling.SizeBasedTriggeringPolicy;
 import org.apache.log4j.rolling.SlidingWindowRollingPolicy;
+import org.xml.sax.SAXParseException;
 
 import java.util.HashMap;
 import java.util.Stack;
@@ -98,6 +99,26 @@ public class InterpreterTest extends TestCase {
   SAXParser createParser() throws Exception {
     SAXParserFactory spf = SAXParserFactory.newInstance();
     return spf.newSAXParser();
+  }
+  
+  public void testIllFormedXML() throws Exception {
+    RuleStore rs = new SimpleRuleStore();
+   
+    Interpreter jp = new Interpreter(rs);
+    ExecutionContext ec = jp.getExecutionContext();
+    SAXParser saxParser = createParser();
+    try {
+     saxParser.parse("file:input/joran/illFormed.xml", jp);
+     fail("A parser exception should have occured");
+    } catch(SAXParseException e) {
+      assertEquals(1, ec.getErrorList().size());
+      ErrorItem e0 = (ErrorItem) ec.getErrorList().get(0);
+      String e0msg = e0.getMessage();
+      if(!e0msg.startsWith("Parsing fatal error")) {
+        fail("Expected error string [Parsing fatal error] but got ["+e0msg+"]");
+      }
+      
+    }
   }
   
   /** 
@@ -163,12 +184,12 @@ public class InterpreterTest extends TestCase {
     assertSame(Level.DEBUG, asdLogger.getLevel());
  
     assertEquals(2, ec.getErrorList().size());
-    String e0 = (String) ec.getErrorList().get(0);
-    if(!e0.startsWith("No 'name' attribute in element")) {
+    ErrorItem e0 = (ErrorItem) ec.getErrorList().get(0);
+    if(!e0.getMessage().startsWith("No 'name' attribute in element")) {
       fail("Expected error string [No 'name' attribute in element]");
     }
-    String e1 = (String) ec.getErrorList().get(1);
-    if(!e1.startsWith("For element <level>")) {
+    ErrorItem e1 = (ErrorItem) ec.getErrorList().get(1);
+    if(!e1.getMessage().startsWith("For element <level>")) {
       fail("Expected error string [For element <level>]");
     }
   }
@@ -227,16 +248,16 @@ public class InterpreterTest extends TestCase {
     a1Back = (FileAppender) rootLogger.getAppender("A1");  
     
     assertEquals(3, ec.getErrorList().size());
-    String e0 = (String) ec.getErrorList().get(0);
-    if(!e0.startsWith("No 'name' attribute in element")) {
+    ErrorItem e0 = (ErrorItem) ec.getErrorList().get(0);
+    if(!e0.getMessage().startsWith("No 'name' attribute in element")) {
       fail("Expected error string [No 'name' attribute in element]");
     }
-    String e1 = (String) ec.getErrorList().get(1);
-    if(!e1.startsWith("For element <level>")) {
+    ErrorItem e1 = (ErrorItem) ec.getErrorList().get(1);
+    if(!e1.getMessage().startsWith("For element <level>")) {
       fail("Expected error string [For element <level>]");
     }
-    String e2 = (String) ec.getErrorList().get(2);
-    if(!e2.startsWith("Could not find an AppenderAttachable at the top of execution stack. Near")) {
+    ErrorItem e2 = (ErrorItem) ec.getErrorList().get(2);
+    if(!e2.getMessage().startsWith("Could not find an AppenderAttachable at the top of execution stack. Near")) {
       fail("Expected error string [Could not find an AppenderAttachable at the top of execution stack. Near]");
     }
     
@@ -350,12 +371,13 @@ public class InterpreterTest extends TestCase {
     assertEquals("Hello John Doe.", str);
   }
   
-  public static Test xsuite() {
+  public static Test Xsuite() {
     TestSuite suite = new TestSuite();
+     suite.addTest(new InterpreterTest("testIllFormedXML"));
     //suite.addTest(new InterpreterTest("testBasicLoop"));
     //suite.addTest(new InterpreterTest("testParsing1"));
     //suite.addTest(new InterpreterTest("testParsing2"));
-    suite.addTest(new InterpreterTest("testParsing3"));
+    //suite.addTest(new InterpreterTest("testParsing3"));
     return suite;
   }
 
