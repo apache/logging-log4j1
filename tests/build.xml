@@ -389,7 +389,7 @@
     </junit>
   </target>
 
-  <target name="TimeBasedRolling" depends="build">
+  <target name="TimeBasedRolling" depends="build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
