@@ -47,9 +47,12 @@ public class RuleColorizer implements Colorizer {
   private Map defaultRules = new HashMap();
   private String currentRuleSet = DEFAULT_NAME;
   private Rule findRule;
+  private Rule loggerRule;
   private final Color FIND_FOREGROUND = Color.white;
   private final Color FIND_BACKGROUND = Color.black;
-
+  private final Color LOGGER_FOREGROUND = Color.white;
+  private final Color LOGGER_BACKGROUND = Color.black;
+  
   public RuleColorizer() {
     List rulesList = new ArrayList();
 
@@ -66,7 +69,12 @@ public class RuleColorizer implements Colorizer {
     defaultRules.put(DEFAULT_NAME, rulesList);
     setRules(defaultRules);
   }
-
+  
+  public void setLoggerRule(Rule loggerRule) {
+    this.loggerRule = loggerRule;
+    colorChangeSupport.firePropertyChange("colorrule", false, true);
+  }
+  
   public void setFindRule(Rule findRule) {
     this.findRule = findRule;
     colorChangeSupport.firePropertyChange("colorrule", false, true);
@@ -138,6 +146,10 @@ public class RuleColorizer implements Colorizer {
       return FIND_BACKGROUND;
     }
 
+    if ((loggerRule != null) && loggerRule.evaluate(event)) {
+        return LOGGER_BACKGROUND;
+    }
+
     if (rules.containsKey(currentRuleSet)) {
       List list = (List) rules.get(currentRuleSet);
       Iterator iter = list.iterator();
@@ -157,6 +169,10 @@ public class RuleColorizer implements Colorizer {
   public Color getForegroundColor(LoggingEvent event) {
     if ((findRule != null) && findRule.evaluate(event)) {
       return FIND_FOREGROUND;
+    }
+
+    if ((loggerRule != null) && loggerRule.evaluate(event)) {
+      return LOGGER_FOREGROUND;
     }
 
     if (rules.containsKey(currentRuleSet)) {
