@@ -230,7 +230,10 @@ public class AsyncAppender extends AppenderSkeleton
    * Returns the current value of the <b>BufferSize</b> option.
    */
   public int getBufferSize() {
-    return bf.getMaxSize();
+      // Bugzilla 23912
+      synchronized(bf) {  
+          return bf.getMaxSize();
+      }
   }
 }
 
