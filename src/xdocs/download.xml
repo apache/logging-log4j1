@@ -174,7 +174,13 @@
 	providing flexible and arbitrarily granular control over log
 	management and configuration.</dd>
 
-	
+	<dt><a
+	href="http://goanna.sourceforge.net/"><b>log4e</b></a></dt>
+
+	<dd>The Goanna project (Eiffel Web Services) now includes
+	log4E, a complete port log4j. 
+	</dd>
+
       </dl>
       
       
