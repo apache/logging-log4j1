@@ -133,10 +133,11 @@ public class DBReceiver
    
     public void execute() {
       LogLog.info("DBReceiverJob.execute() called");
+      Connection connection = null;
       try {
         Logger logger;
         LoggerRepository loggerRepository = getLoggerRepository();
-        Connection connection = connectionSource.getConnection();
+        connection = connectionSource.getConnection();
         StringBuffer sql = new StringBuffer();
         sql.append("SELECT ");
         sql.append("sequence_number, ");
@@ -211,10 +212,22 @@ public class DBReceiver
         }
       } catch (SQLException sqle) {
         LogLog.error("Problem receiving events", sqle);
+      } finally {
+        closeConnection(connection);
       }
     }
   }
-
+  
+  void closeConnection(Connection connection) {
+    if(connection != null) {
+      try { 
+        connection.close();
+      } catch(SQLException sqle) {
+        LogLog.warn("Failed to close connection.");
+      }
+    }
+  }
+  
   /**
    * Retrieve the event properties from the logging_event_property table.
    * 

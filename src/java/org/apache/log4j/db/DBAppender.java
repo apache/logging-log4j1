@@ -75,8 +75,9 @@ public class DBAppender extends AppenderSkeleton {
   }
 
   protected void append(LoggingEvent event) {
+    Connection connection = null;
     try {
-      Connection connection = connectionSource.getConnection();
+      connection = connectionSource.getConnection();
       connection.setAutoCommit(false);
 
 
@@ -198,9 +199,20 @@ public class DBAppender extends AppenderSkeleton {
       connection.commit();
     } catch (SQLException sqle) {
       LogLog.error("problem appending event", sqle);
+    } finally {
+      closeConnection(connection);
     }
   }
 
+  void closeConnection(Connection connection) {
+    if(connection != null) {
+      try { 
+        connection.close();
+      } catch(SQLException sqle) {
+        LogLog.warn("Failed to close connection.");
+      }
+    }
+  }
   public void close() {
     // TODO Auto-generated method st  
   }
