@@ -121,8 +121,6 @@ import org.apache.log4j.plugins.PluginEvent;
 import org.apache.log4j.plugins.PluginListener;
 import org.apache.log4j.plugins.PluginRegistry;
 import org.apache.log4j.plugins.Receiver;
-import org.omg.CORBA.portable.ApplicationException;
-
 
 /**
  * The main entry point for Chainsaw, this class represents the first frame
@@ -341,7 +339,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     setSize(
       event.asInt(LogUI.MAIN_WINDOW_WIDTH),
       event.asInt(LogUI.MAIN_WINDOW_HEIGHT));
-
+    
     getToolBarAndMenus().stateChange();
   }
 
@@ -377,7 +375,13 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    */
   public void activateViewer() {
     welcomePanel = new WelcomePanel(this);
-
+    
+    appPreferenceModel.addPropertyChangeListener("identifierExpression", new PropertyChangeListener() {
+		public void propertyChange(PropertyChangeEvent evt) {
+             handler.setIdentifierExpression(evt.getNewValue().toString());
+		}
+	} );
+    
     final SocketNodeEventListener socketListener =
       new SocketNodeEventListener() {
         public void socketOpened(String remoteInfo) {
@@ -744,7 +748,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     if (noReceiversDefined && appPreferenceModel.isShowNoReceiverWarning()) {
       showNoReceiversWarningPanel();
     }
-
+    
+    
     Container container = tutorialFrame.getContentPane();
     final JEditorPane tutorialArea = new JEditorPane();
     tutorialArea.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));

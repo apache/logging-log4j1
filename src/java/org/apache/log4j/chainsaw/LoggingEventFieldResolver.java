@@ -49,11 +49,12 @@
 
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.spi.LocationInfo;
-import org.apache.log4j.spi.LoggingEvent;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
+
+import org.apache.log4j.spi.LocationInfo;
+import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
@@ -128,6 +129,24 @@ public final class LoggingEventFieldResolver {
     keywordList.add(THREAD_FIELD);
     keywordList.add(MDC_FIELD);
     keywordList.add(PROP_FIELD);
+  }
+  
+  public String applyFields(String replaceText, LoggingEvent event) {
+      StringTokenizer tokenizer = new StringTokenizer(replaceText);
+      StringBuffer result = new StringBuffer();
+      
+      while (tokenizer.hasMoreTokens()) {
+          String token = tokenizer.nextToken();
+          System.out.println("examining" + token);
+          if (isField(token)  || (token.toUpperCase().startsWith(MDC_FIELD) || token.toUpperCase().startsWith(PROP_FIELD))) {
+              System.out.println("was token - value is " +getValue(token, event).toString()); 
+              result.append(getValue(token, event).toString());
+          } else { 
+              System.out.println("Was not a token - appending " + token);
+              result.append(token);
+          }
+      }
+      return result.toString();
   }
 
   public static LoggingEventFieldResolver getInstance() {
