@@ -28,7 +28,7 @@ import org.apache.log4j.helpers.LogLog;
   @since 1.3
 */
 public class SocketHubReceiver
-extends Receiver implements SocketNodeEventListener {
+extends Receiver implements SocketNodeEventListener, PortBased {
   
   static final int DEFAULT_RECONNECTION_DELAY   = 30000;
 
