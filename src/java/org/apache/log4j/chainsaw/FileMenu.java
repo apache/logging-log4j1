@@ -26,9 +26,12 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.ImageIcon;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
+
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
 
 
 /**
@@ -53,6 +56,14 @@ class FileMenu extends JMenu {
     loadLog4JAction =
       new FileLoadAction(
         logUI, "org.apache.log4j.xml.XMLDecoder", "Load Log4J File...", false);
+
+      loadLog4JAction.putValue(
+        Action.ACCELERATOR_KEY,
+        KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
+      loadLog4JAction.putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_L));
+      loadLog4JAction.putValue(Action.SHORT_DESCRIPTION, "Loads an XML event file");
+      loadLog4JAction.putValue(Action.SMALL_ICON, new ImageIcon(ChainsawIcons.FILE_OPEN));
+
     loadUtilLoggingAction =
       new FileLoadAction(
         logUI, "org.apache.log4j.xml.UtilLoggingXMLDecoder",

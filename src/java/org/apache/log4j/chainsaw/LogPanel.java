@@ -1524,6 +1524,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
   public boolean updateRule(String ruleText) {
     if (ruleText == null || (ruleText != null && ruleText.equals(""))) {
         findRule = null;
+        colorizer.setFindRule(null);
         bypassScroll = false;
         findField.setToolTipText("Enter expression - right click or ctrl-space for menu");
         return false;
@@ -1532,9 +1533,11 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
         try {
             findField.setToolTipText("Enter expression - right click or ctrl-space for menu");
             findRule = ExpressionRule.getRule(ruleText);
+            colorizer.setFindRule(findRule);
             return true;
         } catch (RuntimeException re) {
             findField.setToolTipText(re.getMessage());
+            colorizer.setFindRule(null);
             return false;            
         }
     }
@@ -1704,46 +1707,50 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
     findField = new JTextField();
     findField.addKeyListener(new ExpressionRuleContext(filterModel, findField));
 
-    findField.getDocument().addDocumentListener(
-      new DocumentListener() {
-        public void insertUpdate(DocumentEvent e) {
-            updateRule(findField.getText());
-        }
-
-        public void removeUpdate(DocumentEvent e) {
-            updateRule(findField.getText());
-        }
-
-        public void changedUpdate(DocumentEvent e) {
-            updateRule(findField.getText());
-        }
-        
-      });
-
-    final Action undockedFindAction =
+    final Action undockedFindNextAction =
       new AbstractAction() {
         public void actionPerformed(ActionEvent e) {
-          find();
+          findNext();
         }
       };
 
-    undockedFindAction.putValue(Action.NAME, "Find");
-    undockedFindAction.putValue(
+    undockedFindNextAction.putValue(Action.NAME, "Find next");
+    undockedFindNextAction.putValue(
       Action.SHORT_DESCRIPTION, "Finds the next occurrence within this view");
-    undockedFindAction.putValue(
-      Action.SMALL_ICON, new ImageIcon(ChainsawIcons.FIND));
+    undockedFindNextAction.putValue(
+      Action.SMALL_ICON, new ImageIcon(ChainsawIcons.DOWN));
 
-    SmallButton undockedFindNextButton = new SmallButton(undockedFindAction);
+    SmallButton undockedFindNextButton = new SmallButton(undockedFindNextAction);
 
-    undockedFindNextButton.setAction(undockedFindAction);
+    undockedFindNextButton.setAction(undockedFindNextAction);
     undockedFindNextButton.setText("");
     undockedFindNextButton.getActionMap().put(
-      undockedFindAction.getValue(Action.NAME), undockedFindAction);
+      undockedFindNextAction.getValue(Action.NAME), undockedFindNextAction);
     undockedFindNextButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-      KeyStroke.getKeyStroke("F3"), undockedFindAction.getValue(Action.NAME));
+      KeyStroke.getKeyStroke("F3"), undockedFindNextAction.getValue(Action.NAME));
 
-    toolbar.add(undockedFindNextButton);
-    
+    final Action undockedFindPreviousAction =
+      new AbstractAction() {
+        public void actionPerformed(ActionEvent e) {
+          findPrevious();
+        }
+      };
+
+    undockedFindPreviousAction.putValue(Action.NAME, "Find next");
+    undockedFindPreviousAction.putValue(
+      Action.SHORT_DESCRIPTION, "Finds the next occurrence within this view");
+      undockedFindPreviousAction.putValue(
+      Action.SMALL_ICON, new ImageIcon(ChainsawIcons.UP));
+
+    SmallButton undockedFindPreviousButton = new SmallButton(undockedFindPreviousAction);
+
+    undockedFindPreviousButton.setAction(undockedFindPreviousAction);
+    undockedFindPreviousButton.setText("");
+    undockedFindPreviousButton.getActionMap().put(
+    undockedFindPreviousAction.getValue(Action.NAME), undockedFindPreviousAction);
+    undockedFindPreviousButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_F3, KeyEvent.SHIFT_DOWN_MASK), undockedFindPreviousAction.getValue(Action.NAME));
+
     Dimension findSize = new Dimension(132, 24);
     Dimension findPanelSize = new Dimension(144, 26);
     findPanel.setPreferredSize(findPanelSize);
@@ -1754,6 +1761,8 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
     findField.setMinimumSize(findSize);
 
     toolbar.add(findPanel);
+    toolbar.add(undockedFindNextButton);
+    toolbar.add(undockedFindPreviousButton);
 
     toolbar.addSeparator();
 
@@ -1829,13 +1838,35 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
    * visible
    * 
    */
-  public void find() {
+  public void findNext() {
+    updateRule(findField.getText());
     if (findRule != null) {
         try {
-            final int nextRow = tableModel.find(findRule, table.getSelectedRow() + 1);
+            final int nextRow = tableModel.find(findRule, table.getSelectedRow() + 1, true);
             if (nextRow > -1) {
                 table.scrollToRow(
                 nextRow, table.columnAtPoint(table.getVisibleRect().getLocation()));
+                findField.setToolTipText("Enter an expression");
+            }
+        } catch (IllegalArgumentException iae) {
+            findField.setToolTipText(iae.getMessage());
+        }
+    }
+  }
+  
+  /**
+   * Finds the previous row matching the current find rule, and ensures it is made
+   * visible
+   * 
+   */
+  public void findPrevious() {
+    updateRule(findField.getText());
+    if (findRule != null) {
+        try {
+            final int previousRow = tableModel.find(findRule, table.getSelectedRow() - 1, false);
+            if (previousRow > -1) {
+                table.scrollToRow(
+                previousRow, table.columnAtPoint(table.getVisibleRect().getLocation()));
                 findField.setToolTipText("Enter an expression");
             }
         } catch (IllegalArgumentException iae) {

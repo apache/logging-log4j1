@@ -16,31 +16,22 @@
 
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.Decoder;
-import org.apache.log4j.Logger;
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-import org.apache.log4j.helpers.Constants;
-
 import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-
 import java.io.File;
 import java.io.IOException;
-
 import java.net.URL;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
+
+import org.apache.log4j.Decoder;
+import org.apache.log4j.Logger;
+import org.apache.log4j.helpers.Constants;
 
 
 /**
@@ -81,12 +72,6 @@ class FileLoadAction extends AbstractAction {
     } catch (InstantiationException ie) {
     }
 
-    putValue(
-      Action.ACCELERATOR_KEY,
-      KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
-    putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_L));
-    putValue(Action.SHORT_DESCRIPTION, "Loads an XML event file");
-    putValue(Action.SMALL_ICON, new ImageIcon(ChainsawIcons.FILE_OPEN));
     this.parent = parent;
   }
 
