@@ -9,21 +9,18 @@ package org.apache.log4j.nt.test;
 
 
 import org.apache.log4j.Category;
-import org.apache.log4j.Layout;
 import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Appender;
 import org.apache.log4j.nt.NTEventLogAppender;
 import org.apache.log4j.Priority;
 import org.apache.log4j.NDC;
-import java.io.IOException;
 
 
 public class NTMin {
-  
+
   static Category cat = Category.getInstance(NTMin.class.getName());
-				     
-  public 
-  static 
+
+  public
+  static
   void main(String argv[]) {
 
     //if(argv.length == 1) {
@@ -35,7 +32,7 @@ public class NTMin {
       test("someHost");
   }
 
-  
+
   static
   void Usage(String msg) {
     System.err.println(msg);
@@ -43,7 +40,7 @@ public class NTMin {
     System.exit(1);
   }
 
-  
+
   static
   void init() {
 

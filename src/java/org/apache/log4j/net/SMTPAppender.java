@@ -8,14 +8,12 @@
 package org.apache.log4j.net;
 
 import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.Layout;
 import org.apache.log4j.Level;
 import org.apache.log4j.helpers.CyclicBuffer;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ErrorCode;
-import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.TriggeringEventEvaluator;
 import java.util.Properties;
 import java.util.Date;
@@ -30,7 +28,6 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.AddressException;
-import javax.mail.internet.MimeUtility;
 
 /**
    Send an e-mail when a specific logging event occurs, typically on
@@ -42,7 +39,7 @@ import javax.mail.internet.MimeUtility;
    <code>BufferSize</code> logging events in its cyclic buffer. This
    keeps memory requirements at a reasonable level while still
    delivering useful application context.
-   
+
    @author Ceki G&uuml;lc&uuml;
    @since 1.0 */
 public class SMTPAppender extends AppenderSkeleton {
@@ -69,11 +66,11 @@ public class SMTPAppender extends AppenderSkeleton {
     this(new DefaultEvaluator());
   }
 
-  
+
   /**
      Use <code>evaluator</code> passed as parameter as the {@link
      TriggeringEventEvaluator} for this SMTPAppender.  */
-  public 
+  public
   SMTPAppender(TriggeringEventEvaluator evaluator) {
     this.evaluator = evaluator;
   }
@@ -88,11 +85,11 @@ public class SMTPAppender extends AppenderSkeleton {
     if (smtpHost != null)
       props.put("mail.smtp.host", smtpHost);
 
-    
+
     Session session = Session.getInstance(props, null);
     //session.setDebug(true);
     msg = new MimeMessage(session);
-     
+
      try {
        if (from != null)
 	 msg.setFrom(getAddress(from));
@@ -106,7 +103,7 @@ public class SMTPAppender extends AppenderSkeleton {
        LogLog.error("Could not activate SMTPAppender options.", e );
      }
   }
-  
+
   /**
      Perform SMTPAppender specific appending actions, mainly adding
      the event to a cyclic buffer and checking if the event triggers
@@ -121,9 +118,9 @@ public class SMTPAppender extends AppenderSkeleton {
     event.getThreadName();
     event.getNDC();
     if(locationInfo) {
-      event.getLocationInformation();	
+      event.getLocationInformation();
     }
-    cb.add(event);    
+    cb.add(event);
     if(evaluator.isTriggeringEvent(event)) {
       sendBuffer();
     }
@@ -131,7 +128,7 @@ public class SMTPAppender extends AppenderSkeleton {
 
  /**
      This method determines if there is a sense in attempting to append.
-     
+
      <p>It checks whether there is a set output target and also if
      there is a set layout. If these checks fail, then the boolean
      value <code>false</code> is returned. */
@@ -148,7 +145,7 @@ public class SMTPAppender extends AppenderSkeleton {
       return false;
     }
 
-    
+
     if(this.layout == null) {
       errorHandler.error("No layout set for appender named ["+name+"].");
       return false;
@@ -193,7 +190,7 @@ public class SMTPAppender extends AppenderSkeleton {
 
 
   /**
-     The <code>SMTPAppender</code> requires a {@link Layout layout}.  
+     The <code>SMTPAppender</code> requires a {@link Layout layout}.
   */
   public
   boolean requiresLayout() {
@@ -208,14 +205,14 @@ public class SMTPAppender extends AppenderSkeleton {
 
     // Note: this code already owns the monitor for this
     // appender. This frees us from needing to synchronize on 'cb'.
-    try {      
+    try {
       MimeBodyPart part = new MimeBodyPart();
 
       StringBuffer sbuf = new StringBuffer();
       String t = layout.getHeader();
       if(t != null)
 	sbuf.append(t);
-      int len =  cb.length(); 
+      int len =  cb.length();
       for(int i = 0; i < len; i++) {
 	//sbuf.append(MimeUtility.encodeText(layout.format(cb.get())));
 	LoggingEvent event = cb.get();
@@ -232,19 +229,19 @@ public class SMTPAppender extends AppenderSkeleton {
       t = layout.getFooter();
       if(t != null)
 	sbuf.append(t);
-      part.setContent(sbuf.toString(), layout.getContentType());      
+      part.setContent(sbuf.toString(), layout.getContentType());
 
       Multipart mp = new MimeMultipart();
       mp.addBodyPart(part);
       msg.setContent(mp);
 
       msg.setSentDate(new Date());
-      Transport.send(msg);      
+      Transport.send(msg);
     } catch(Exception e) {
       LogLog.error("Error occured while sending e-mail notification.", e);
     }
   }
-  
+
 
 
   /**
@@ -254,7 +251,7 @@ public class SMTPAppender extends AppenderSkeleton {
   String getEvaluatorClass() {
     return evaluator == null ? null : evaluator.getClass().getName();
   }
-  
+
   /**
      Returns value of the <b>From</b> option.
    */
@@ -270,7 +267,7 @@ public class SMTPAppender extends AppenderSkeleton {
   String getSubject() {
     return subject;
   }
-  
+
   /**
      The <b>From</b> option takes a string value which should be a
      e-mail address of the sender.
@@ -279,7 +276,7 @@ public class SMTPAppender extends AppenderSkeleton {
   void setFrom(String from) {
     this.from = from;
   }
-  
+
   /**
      The <b>Subject</b> option takes a string value which should be a
      the subject of the e-mail message.
@@ -288,7 +285,7 @@ public class SMTPAppender extends AppenderSkeleton {
   void setSubject(String subject) {
     this.subject = subject;
   }
-  
+
 
   /**
      The <b>BufferSize</b> option takes a positive integer
@@ -302,7 +299,7 @@ public class SMTPAppender extends AppenderSkeleton {
     this.bufferSize = bufferSize;
     cb.resize(bufferSize);
   }
-  
+
   /**
      The <b>SMTPHost</b> option takes a string value which should be a
      the host name of the SMTP server that will send the e-mail message.
@@ -311,7 +308,7 @@ public class SMTPAppender extends AppenderSkeleton {
   void setSMTPHost(String smtpHost) {
     this.smtpHost = smtpHost;
   }
-  
+
   /**
      Returns value of the <b>SMTPHost</b> option.
    */
@@ -329,7 +326,7 @@ public class SMTPAppender extends AppenderSkeleton {
     this.to = to;
   }
 
-  
+
 
   /**
      Returns value of the <b>BufferSize</b> option.
@@ -338,7 +335,7 @@ public class SMTPAppender extends AppenderSkeleton {
   int getBufferSize() {
     return bufferSize;
   }
-  
+
   /**
      The <b>EvaluatorClass</b> option takes a string value
      representing the name of the class implementing the {@link
@@ -348,13 +345,13 @@ public class SMTPAppender extends AppenderSkeleton {
    */
   public
   void setEvaluatorClass(String value) {
-      evaluator = (TriggeringEventEvaluator) 
-                OptionConverter.instantiateByClassName(value, 
+      evaluator = (TriggeringEventEvaluator)
+                OptionConverter.instantiateByClassName(value,
 					   TriggeringEventEvaluator.class,
-						       evaluator);    
+						       evaluator);
   }
-  
-  
+
+
   /**
      The <b>LocationInfo</b> option takes a boolean value. By
      default, it is set to false which means there will be no effort
@@ -362,7 +359,7 @@ public class SMTPAppender extends AppenderSkeleton {
      result, the layout that formats the events as they are sent out
      in an e-mail is likely to place the wrong location information
      (if present in the format).
-     
+
      <p>Location information extraction is comparatively very slow and
      should be avoided unless performance is not a concern.
    */
@@ -370,7 +367,7 @@ public class SMTPAppender extends AppenderSkeleton {
   void setLocationInfo(boolean locationInfo) {
     this.locationInfo = locationInfo;
   }
-  
+
   /**
      Returns value of the <b>LocationInfo</b> option.
    */
@@ -383,12 +380,12 @@ public class SMTPAppender extends AppenderSkeleton {
 class DefaultEvaluator implements TriggeringEventEvaluator {
   /**
      Is this <code>event</code> the e-mail triggering event?
-     
+
      <p>This method returns <code>true</code>, if the event level
      has ERROR level or higher. Otherwise it returns
      <code>false</code>. */
-  public 
+  public
   boolean isTriggeringEvent(LoggingEvent event) {
-    return event.level.isGreaterOrEqual(Level.ERROR); 
+    return event.level.isGreaterOrEqual(Level.ERROR);
   }
 }

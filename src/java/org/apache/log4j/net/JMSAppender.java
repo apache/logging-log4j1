@@ -9,12 +9,9 @@ package org.apache.log4j.net;
 
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.ErrorCode;
 import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.helpers.OptionConverter;
 
-import java.util.Properties;
 import javax.jms.*;
 import javax.naming.InitialContext;
 import javax.naming.Context;
@@ -23,11 +20,11 @@ import javax.naming.NamingException;
 
 /**
    A simple appender based on JMS.
-   
+
    @author Ceki G&uuml;lc&uuml;
 */
 public class JMSAppender extends AppenderSkeleton {
- 
+
   TopicConnection  topicConnection;
   TopicSession topicSession;
   TopicPublisher  topicPublisher;
@@ -35,7 +32,7 @@ public class JMSAppender extends AppenderSkeleton {
   String tcfBindingName;
   boolean locationInfo;
 
-  public 
+  public
   JMSAppender() {
   }
 
@@ -48,7 +45,7 @@ public class JMSAppender extends AppenderSkeleton {
   void setTopicConnectionFactoryBindingName(String tcfBindingName) {
     this.tcfBindingName = tcfBindingName;
   }
-  
+
   /**
      Returns the value of the <b>TopicConnectionFactoryBindingName</b> option.
    */
@@ -56,7 +53,7 @@ public class JMSAppender extends AppenderSkeleton {
   String getTopicConnectionFactoryBindingName() {
     return tcfBindingName;
   }
-  
+
   /**
      The <b>TopicBindingName</b> option takes a
      string value. Its value will be used to lookup the appropriate
@@ -66,7 +63,7 @@ public class JMSAppender extends AppenderSkeleton {
   void setTopicBindingName(String topicBindingName) {
     this.topicBindingName = topicBindingName;
   }
-  
+
   /**
      Returns the value of the <b>TopicBindingName</b> option.
    */
@@ -84,30 +81,30 @@ public class JMSAppender extends AppenderSkeleton {
   boolean getLocationInfo() {
     return locationInfo;
   }
-  
+
   public
   void activateOptions() {
     TopicConnectionFactory  topicConnectionFactory;
 
     try {
-      Context ctx = new InitialContext();      
+      Context ctx = new InitialContext();
       topicConnectionFactory = (TopicConnectionFactory) lookup(ctx, tcfBindingName);
       topicConnection = topicConnectionFactory.createTopicConnection();
       topicConnection.start();
-    
+
       topicSession = topicConnection.createTopicSession(false,
 							Session.AUTO_ACKNOWLEDGE);
-      
+
       Topic topic = (Topic) lookup(ctx, topicBindingName);
       topicPublisher = topicSession.createPublisher(topic);
 
-      ctx.close();      
+      ctx.close();
     } catch(Exception e) {
       errorHandler.error("Error while activating options for appender named ["+name+
 			 "].", e, ErrorCode.GENERIC_FAILURE);
     }
   }
- 
+
   protected
   Object lookup(Context ctx, String name) throws NamingException {
     try {
@@ -115,9 +112,9 @@ public class JMSAppender extends AppenderSkeleton {
     } catch(NameNotFoundException e) {
       LogLog.error("Could not find name ["+name+"].");
       throw e;
-    }    
+    }
   }
-  
+
   protected
   boolean checkEntryConditions() {
     String fail = null;
@@ -128,10 +125,10 @@ public class JMSAppender extends AppenderSkeleton {
       fail = "No TopicSession";
     } else if(this.topicPublisher == null) {
       fail = "No TopicPublisher";
-    } 
+    }
 
     if(fail != null) {
-      errorHandler.error(fail +" for JMSAppender named ["+name+"].");      
+      errorHandler.error(fail +" for JMSAppender named ["+name+"].");
       return false;
     } else {
       return true;
@@ -141,23 +138,23 @@ public class JMSAppender extends AppenderSkeleton {
   /**
      Close this JMSAppender. Closing releases all resources used by the
      appender. A closed appender cannot be re-opened. */
-  public 
+  public
   synchronized // avoid concurrent append and close operations
   void close() {
-    if(this.closed) 
+    if(this.closed)
       return;
 
     LogLog.debug("Closing appender ["+name+"].");
-    this.closed = true;    
+    this.closed = true;
 
     try {
-      if(topicSession != null) 
-	topicSession.close();	
-      if(topicConnection != null) 
+      if(topicSession != null)
+	topicSession.close();
+      if(topicConnection != null)
 	topicConnection.close();
     } catch(Exception e) {
-      LogLog.error("Error while closing JMSAppender ["+name+"].", e);	
-    }   
+      LogLog.error("Error while closing JMSAppender ["+name+"].", e);
+    }
     // Help garbage collection
     topicPublisher = null;
     topicSession = null;
@@ -176,17 +173,17 @@ public class JMSAppender extends AppenderSkeleton {
     try {
       ObjectMessage msg = topicSession.createObjectMessage();
       if(locationInfo) {
-	event.getLocationInformation();	
-      } 
+	event.getLocationInformation();
+      }
       msg.setObject(event);
       topicPublisher.publish(msg);
     } catch(Exception e) {
-      errorHandler.error("Could not publish message in JMSAppender ["+name+"].", e, 
+      errorHandler.error("Could not publish message in JMSAppender ["+name+"].", e,
 			 ErrorCode.GENERIC_FAILURE);
     }
   }
 
-  /** 
+  /**
       If true, the information sent to the remote subscriber will include
       location information. By default no location information is sent
       to the subscriber.  */
@@ -194,10 +191,10 @@ public class JMSAppender extends AppenderSkeleton {
   void setLocationInfo(boolean locationInfo) {
     this.locationInfo = locationInfo;
   }
-  
+
 
   public
   boolean requiresLayout() {
     return false;
-  }  
+  }
 }

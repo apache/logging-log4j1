@@ -9,15 +9,11 @@ package org.apache.log4j;
 
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.LocationInfo;
-import org.apache.log4j.helpers.OptionConverter;
-import java.io.StringWriter;
-import java.io.PrintWriter;
-import java.io.Writer;
 
 /**
    This layout outputs events in a HTML table.
 
-   @author Ceki G&uuml;lc&uuml;   
+   @author Ceki G&uuml;lc&uuml;
  */
 public class HTMLLayout extends Layout {
 
@@ -32,10 +28,10 @@ public class HTMLLayout extends Layout {
   /**
      A string constant used in naming the option for setting the the
      location information flag.  Current value of this string
-     constant is <b>LocationInfo</b>.  
+     constant is <b>LocationInfo</b>.
 
      <p>Note that all option keys are case sensitive.
-     
+
      @deprecated Options are now handled using the JavaBeans paradigm.
      This constant is not longer needed and will be removed in the
      <em>near</em> term.
@@ -46,7 +42,7 @@ public class HTMLLayout extends Layout {
   /**
      A string constant used in naming the option for setting the the
      HTML document title.  Current value of this string
-     constant is <b>Title</b>.  
+     constant is <b>Title</b>.
   */
   public static final String TITLE_OPTION = "Title";
 
@@ -60,7 +56,7 @@ public class HTMLLayout extends Layout {
      default, it is set to false which means there will be no location
      information output by this layout. If the the option is set to
      true, then the file name and line number of the statement
-     at the origin of the log statement will be output. 
+     at the origin of the log statement will be output.
 
      <p>If you are embedding this layout within an {@link
      org.apache.log4j.net.SMTPAppender} then make sure to set the
@@ -70,7 +66,7 @@ public class HTMLLayout extends Layout {
   void setLocationInfo(boolean flag) {
     locationInfo = flag;
   }
-  
+
   /**
      Returns the current value of the <b>LocationInfo</b> option.
    */
@@ -82,7 +78,7 @@ public class HTMLLayout extends Layout {
   /**
     The <b>Title</b> option takes a String value. This option sets the
     document title of the generated HTML document.
-    
+
     <p>Defaults to 'Log4J Log Messages'.
   */
   public
@@ -97,7 +93,7 @@ public class HTMLLayout extends Layout {
   String getTitle() {
     return title;
   }
-  
+
  /**
      Returns the content type output by this layout, i.e "text/html".
   */
@@ -112,18 +108,18 @@ public class HTMLLayout extends Layout {
   public
   void activateOptions() {
   }
-  
-  public 
+
+  public
   String format(LoggingEvent event) {
-    
+
     if(sbuf.capacity() > MAX_CAPACITY) {
       sbuf = new StringBuffer(BUF_SIZE);
     } else {
       sbuf.setLength(0);
     }
-    
+
     sbuf.append(Layout.LINE_SEP + "<tr>" + Layout.LINE_SEP);
- 
+
     sbuf.append("<td>");
     sbuf.append(event.timeStamp - event.getStartTime());
     sbuf.append("</td>" + Layout.LINE_SEP);
@@ -135,15 +131,15 @@ public class HTMLLayout extends Layout {
     sbuf.append("<td title=\"Level\">");
     if (event.level.equals(Level.DEBUG)) {
       sbuf.append("<font color=\"#339933\">");
-      sbuf.append(event.level);      
+      sbuf.append(event.level);
       sbuf.append("</font>");
     }
     else if(event.level.isGreaterOrEqual(Level.WARN)) {
       sbuf.append("<font color=\"#993300\"><strong>");
-      sbuf.append(event.level);      
+      sbuf.append(event.level);
       sbuf.append("</strong></font>");
     } else {
-      sbuf.append(event.level);      
+      sbuf.append(event.level);
     }
     sbuf.append("</td>" + Layout.LINE_SEP);
 
@@ -171,7 +167,7 @@ public class HTMLLayout extends Layout {
       sbuf.append("</td></tr>" + Layout.LINE_SEP);
     }
 
-    String[] s = event.getThrowableStrRep(); 
+    String[] s = event.getThrowableStrRep();
     if(s != null) {
       sbuf.append("<tr><td bgcolor=\"#993300\" style=\"color:White; font-size : xx-small;\" colspan=\"6\">");
       appendThrowableAsHTML(s, sbuf);
@@ -184,7 +180,7 @@ public class HTMLLayout extends Layout {
   void appendThrowableAsHTML(String[] s, StringBuffer sbuf) {
     if(s != null) {
       int len = s.length;
-      if(len == 0) 
+      if(len == 0)
 	return;
       sbuf.append(escapeHTMLTags(s[0]));
       sbuf.append(Layout.LINE_SEP);
@@ -242,7 +238,7 @@ public class HTMLLayout extends Layout {
     sbuf.append("</body></html>");
     return sbuf.toString();
   }
- 
+
   /**
      The HTML layout handles the throwable contained in logging
      events. Hence, this method return <code>false</code>.  */
@@ -263,17 +259,17 @@ public class HTMLLayout extends Layout {
   private String escapeHTMLTags(String input) {
     //Check if the string is null or zero length -- if so, return
     //what was sent in.
-    
+
     if( input == null || input.length() == 0 ) {
       return input;
     }
-    
+
     //Use a StringBuffer in lieu of String concatenation -- it is
     //much more efficient this way.
-    
+
     StringBuffer buf = new StringBuffer(input.length() + 6);
     char ch = ' ';
-    
+
     int len = input.length();
     for(int i=0; i < len; i++) {
       ch = input.charAt(i);

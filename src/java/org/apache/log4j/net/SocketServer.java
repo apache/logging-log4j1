@@ -10,8 +10,6 @@ package org.apache.log4j.net;
 import java.net.Socket;
 import java.net.ServerSocket;
 import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.io.IOException;
 import java.io.File;
 import java.util.Hashtable;
 
@@ -56,7 +54,7 @@ import org.apache.log4j.spi.*;
 
      <p>Having different client hosts log using different hierarchies
      ensures the total independence of the clients with respect to
-     their logging settings. 
+     their logging settings.
 
      <p>Currently, the hierarchy that will be used for a given request
      depends on the IP address of the client host. For example, two
@@ -67,9 +65,9 @@ import org.apache.log4j.spi.*;
      as an example to be enhanced in order to implement more elaborate
      policies.
 
-     
+
     @author  Ceki G&uuml;lc&uuml;
- 
+
     @since 1.0 */
 
 public class SocketServer  {
@@ -77,7 +75,7 @@ public class SocketServer  {
   static String GENERIC = "generic";
   static String CONFIG_FILE_EXT = ".lcf";
 
-  static Category cat = Category.getInstance(SocketServer.class);  
+  static Category cat = Category.getInstance(SocketServer.class);
   static SocketServer server;
   static int port;
 
@@ -86,14 +84,14 @@ public class SocketServer  {
   LoggerRepository genericHierarchy;
   File dir;
 
-  public 
-  static 
+  public
+  static
   void main(String argv[]) {
-    if(argv.length == 3) 
+    if(argv.length == 3)
       init(argv[0], argv[1], argv[2]);
-    else 
-      usage("Wrong number of arguments.");     
-    
+    else
+      usage("Wrong number of arguments.");
+
     try {
       cat.info("Listening on port " + port);
       ServerSocket serverSocket = new ServerSocket(port);
@@ -106,9 +104,9 @@ public class SocketServer  {
 	LoggerRepository h = (LoggerRepository) server.hierarchyMap.get(inetAddress);
 	if(h == null) {
 	  h = server.configureHierarchy(inetAddress);
-	} 
+	}
 
-	cat.info("Starting new socket node.");	
+	cat.info("Starting new socket node.");
 	new Thread(new SocketNode(socket, h)).start();
       }
     }
@@ -117,7 +115,7 @@ public class SocketServer  {
     }
   }
 
-  
+
   static
   void  usage(String msg) {
     System.err.println(msg);
@@ -125,20 +123,20 @@ public class SocketServer  {
       "Usage: java " +SocketServer.class.getName() + " port configFile directory");
     System.exit(1);
   }
-    
+
   static
   void init(String portStr, String configFile, String dirStr) {
     try {
-      port = Integer.parseInt(portStr);      
+      port = Integer.parseInt(portStr);
     }
     catch(java.lang.NumberFormatException e) {
       e.printStackTrace();
       usage("Could not interpret port number ["+ portStr +"].");
     }
-    
+
     PropertyConfigurator.configure(configFile);
-    
-    File dir = new File(dirStr);    
+
+    File dir = new File(dirStr);
     if(!dir.isDirectory()) {
       usage("["+dirStr+"] is not a directory.");
     }
@@ -166,15 +164,15 @@ public class SocketServer  {
       return genericHierarchy();
     } else {
       String key = s.substring(0, i);
-      
+
       File configFile = new File(dir, key+CONFIG_FILE_EXT);
       if(configFile.exists()) {
 	Hierarchy h = new Hierarchy(new RootCategory((Level) Priority.DEBUG));
 	hierarchyMap.put(inetAddress, h);
-	
+
 	new PropertyConfigurator().doConfigure(configFile.getAbsolutePath(), h);
 
-	return h;	
+	return h;
       } else {
 	cat.warn("Could not find config file ["+configFile+"].");
 	return genericHierarchy();

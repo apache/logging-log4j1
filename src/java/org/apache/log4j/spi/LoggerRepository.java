@@ -8,7 +8,6 @@
 package org.apache.log4j.spi;
 
 import org.apache.log4j.*;
-import org.apache.log4j.or.RendererMap;
 import java.util.Enumeration;
 
 /**
@@ -16,7 +15,7 @@ import java.util.Enumeration;
    <code>Loggers</code>. The relation between loggers in a repository
    depends on the repository but typically loggers are arranged in a
    named hierarchy.
-   
+
    <p>In addition to the creational methods, a
    <code>LoggerRepository</code> can be queried for existing loggers,
    can act as a point of registry for events related to loggers.
@@ -26,9 +25,9 @@ import java.util.Enumeration;
 public interface LoggerRepository {
 
   /**
-     Add a {@link HierarchyEventListener} event to the repository.  
+     Add a {@link HierarchyEventListener} event to the repository.
   */
-  public 
+  public
   void addHierarchyEventListener(HierarchyEventListener listener);
 
   /**
@@ -41,18 +40,18 @@ public interface LoggerRepository {
      Set the repository-wide threshold. All logging requests below the
      threshold are immediately dropped. By default, the threshold is
      set to <code>Level.ALL</code> which has the lowest possible rank.  */
-  public 
+  public
   void setThreshold(Level level);
-  
-  /** 
+
+  /**
       Another form of {@link #setThreshold(Level)} accepting a string
       parameter instead of a <code>Level</code>. */
-  public 
+  public
   void setThreshold(String val);
-  
+
   public
   void emitNoAppenderWarning(Category cat);
-  
+
   /**
      Get the repository-wide threshold. See {@link
      #setThreshold(Level)} for an explanation. */
@@ -75,7 +74,7 @@ public interface LoggerRepository {
   public
   abstract
   void shutdown();
-  
+
   public
   Enumeration getCurrentLoggers();
 

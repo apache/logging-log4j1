@@ -3,9 +3,7 @@ package org.apache.log4j.jdbc;
 import org.apache.log4j.*;
 import org.apache.log4j.spi.*;
 import org.apache.log4j.PatternLayout;
-import org.apache.log4j.helpers.OptionConverter;
 
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -17,28 +15,28 @@ import java.sql.SQLException;
 
 /**
   The JDBCAppender provides for sending log events to a database.
- 
+
   <p>Each append call adds to an <code>ArrayList</code> buffer.  When
   the buffer is filled each log event is placed in a sql statement
   (configurable) and executed.
- 
+
   <b>BufferSize</b>, <b>db URL</b>, <b>User</b>, & <b>Password</b> are
   configurable options in the standard log4j ways.
- 
+
   <p>The <code>setSql(String sql)</code> sets the SQL statement to be
   used for logging -- this statement is sent to a
   <code>PatternLayout</code> (either created automaticly by the
   appender or added by the user).  Therefore by default all the
   conversion patterns in <code>PatternLayout</code> can be used
   inside of the statement.  (see the test cases for examples)
- 
+
   <p>Overriding the {@link #getLogStatement} method allows more
   explicit control of the statement used for logging.
- 
+
   <p>For use as a base class:
-  
+
     <ul>
- 
+
     <li>Override <code>getConnection()</code> to pass any connection
     you want.  Typically this is used to enable application wide
     connection pooling.
@@ -48,14 +46,14 @@ import java.sql.SQLException;
      <code>closeConnection</code> to handle the connection you
      generated.  Typically this would return the connection to the
      pool it came from.
- 
+
      <li>Override <code>getLogStatement(LoggingEvent event)</code> to
      produce specialized or dynamic statements. The default uses the
      sql option value.
 
     </ul>
-  
-    @author: Kevin Steppe (<A HREF="mailto:ksteppe@pacbell.net">ksteppe@pacbell.net</A>) 
+
+    @author: Kevin Steppe (<A HREF="mailto:ksteppe@pacbell.net">ksteppe@pacbell.net</A>)
 
 */
 public class JDBCAppender extends org.apache.log4j.AppenderSkeleton

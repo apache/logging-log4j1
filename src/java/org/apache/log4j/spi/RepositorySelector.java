@@ -3,10 +3,9 @@
 
 package org.apache.log4j.spi;
 
-import org.apache.log4j.Logger;
 
 /**
-   
+
    The <code>LogManager</code> uses one (and only one)
    <code>RepositorySelector</code> implementation to select the
    {@link LoggerRepository} for a particular application context.
@@ -29,6 +28,6 @@ public interface RepositorySelector {
      LoggerRepository is returned.
   */
   public
-  LoggerRepository getLoggerRepository();  
+  LoggerRepository getLoggerRepository();
 }
 

@@ -13,8 +13,6 @@ import java.net.Socket;
 import java.net.ServerSocket;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.RollingFileAppender;
-import org.apache.log4j.Layout;
-import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.helpers.LogLog;
 
 /**
@@ -26,7 +24,7 @@ import org.apache.log4j.helpers.LogLog;
 
    <p>This method of triggering roll over has the advantage of being
    operating system independent, fast and reliable.
-   
+
    <p>A simple application {@link Roller} is provided to initiate the
    roll over.
 
@@ -41,7 +39,7 @@ public class ExternallyRolledFileAppender extends RollingFileAppender {
 
   /**
      The string constant sent to initiate a roll over.   Current value of
-     this string constant is <b>RollOver</b>.  
+     this string constant is <b>RollOver</b>.
   */
   static final public String ROLL_OVER = "RollOver";
 
@@ -58,18 +56,18 @@ public class ExternallyRolledFileAppender extends RollingFileAppender {
      The default constructor does nothing but calls its super-class
      constructor.  */
   public
-  ExternallyRolledFileAppender() { 
+  ExternallyRolledFileAppender() {
   }
-  
+
   /**
      The <b>Port</b> [roperty is used for setting the port for
-     listening to external roll over messages.  
+     listening to external roll over messages.
   */
   public
   void setPort(int port) {
     this.port = port;
   }
-  
+
   /**
      Returns value of the <b>Port</b> option.
    */
@@ -77,7 +75,7 @@ public class ExternallyRolledFileAppender extends RollingFileAppender {
   int getPort() {
     return port;
   }
-  
+
   /**
      Start listening on the port specified by a preceding call to
      {@link #setPort}.  */
@@ -88,7 +86,7 @@ public class ExternallyRolledFileAppender extends RollingFileAppender {
       if(hup != null) {
 	hup.interrupt();
       }
-      hup = new HUP(this, port);      
+      hup = new HUP(this, port);
       hup.setDaemon(true);
       hup.start();
     }
@@ -105,11 +103,11 @@ class HUP extends Thread {
     this.er = er;
     this.port = port;
   }
-  
+
   public
   void run() {
     while(!isInterrupted()) {
-      try {	
+      try {
 	ServerSocket serverSocket = new ServerSocket(port);
 	while(true) {
 	  Socket socket = serverSocket.accept();
@@ -120,7 +118,7 @@ class HUP extends Thread {
       catch(Exception e) {
 	e.printStackTrace();
       }
-    } 
+    }
   }
 }
 
@@ -130,7 +128,7 @@ class HUPNode implements Runnable {
   DataInputStream dis;
   DataOutputStream dos;
   ExternallyRolledFileAppender er;
-  
+
   public
   HUPNode(Socket socket, ExternallyRolledFileAppender er) {
     this.socket = socket;
@@ -143,11 +141,11 @@ class HUPNode implements Runnable {
       e.printStackTrace();
     }
   }
-  
+
   public void run() {
     try {
       String line = dis.readUTF();
-      LogLog.debug("Got external roll over signal.");      
+      LogLog.debug("Got external roll over signal.");
       if(ExternallyRolledFileAppender.ROLL_OVER.equals(line)) {
 	synchronized(er) {
 	  er.rollOver();
@@ -161,7 +159,7 @@ class HUPNode implements Runnable {
     }
     catch(Exception e) {
       LogLog.error("Unexpected exception. Exiting HUPNode.", e);
-    }    
+    }
   }
 }
 

@@ -5,40 +5,35 @@ package org.apache.log4j.test;
 
 
 import org.apache.log4j.Category;
-import org.apache.log4j.FileAppender;
-import org.apache.log4j.SimpleLayout;
 import org.apache.log4j.xml.DOMConfigurator;
-import org.apache.log4j.Priority;
-import org.apache.log4j.NDC;
 
 
 import java.util.Random;
-import java.util.Stack;
 
 /**
    Stress test {@link AsyncAppender}.
-   
+
  */
 public class StressAsyncAppender extends Thread {
 
-  static Category root = Category.getRoot();  
+  static Category root = Category.getRoot();
 
   static Random random = new Random(101);
 
   static final int LOOP_LENGTH = 24;
   static final int BRANCHING_FACTOR = 4;
-  
-  static int maxThreads;  
+
+  static int maxThreads;
   static long msgCounter = 0;
-  static int threadCounter = 0;  
+  static int threadCounter = 0;
 
   static double LOG_2 = Math.log(2);
 
   static Object lock = new Object();
 
-  
-  public 
-  static 
+
+  public
+  static
   void main(String args[]) {
     if(args.length != 1) {
       usage();
@@ -53,10 +48,10 @@ public class StressAsyncAppender extends Thread {
       System.err.println(e);
       usage();
     }
-    
+
     while(true) {
       synchronized(lock) {
-	// Adding 1 to ensure that at least 1 child is created. 	
+	// Adding 1 to ensure that at least 1 child is created.
 	createChildren(randomInt(BRANCHING_FACTOR) + 1);
 
 	// wait until all threads are finished
@@ -92,17 +87,17 @@ public class StressAsyncAppender extends Thread {
 
     // half of the way, create new childres
     int createIndex = loopLength/2;
-      
+
     for(int i = 0; i <= loopLength; i++) {
 
       if(i == createIndex)
 	createChildren(randomInt(BRANCHING_FACTOR));
-      
-      synchronized(lock) {      
-	root.debug("Message number " + msgCounter++);	
+
+      synchronized(lock) {
+	root.debug("Message number " + msgCounter++);
       }
       //delay(1+randomInt(4)*100);
-    }    
+    }
 
     synchronized(lock) {
       StressAsyncAppender.threadCounter--;
@@ -122,7 +117,7 @@ public class StressAsyncAppender extends Thread {
       return;
 
     synchronized(lock) {
-      n = maxThreadsConstrained(n);    
+      n = maxThreadsConstrained(n);
       root.debug("Creating " + n+ " child StressAsyncAppender threads.");
       for(int i = 0; i < n; i++) {
 	root.debug("New StressAsyncAppender, threadCounter = " + (++threadCounter));
@@ -134,7 +129,7 @@ public class StressAsyncAppender extends Thread {
   static
   public
   int maxThreadsConstrained(int a) {
-    int maxAllowed = StressAsyncAppender.maxThreads - 
+    int maxAllowed = StressAsyncAppender.maxThreads -
                                                  StressAsyncAppender.threadCounter;
     return a <= maxAllowed ? a : maxAllowed;
   }
@@ -149,12 +144,12 @@ public class StressAsyncAppender extends Thread {
     return r >= 0 ? r : -r;
   }
 
-  
+
   public
   void delay(long millis) {
     try {
       Thread.currentThread().sleep(millis);
     } catch(Exception e) {}
   }
-  
+
 }

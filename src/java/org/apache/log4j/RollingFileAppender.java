@@ -12,35 +12,31 @@ package org.apache.log4j;
 import java.beans.*;
 import java.io.IOException;
 import java.io.Writer;
-import java.io.FileWriter;
 import java.io.File;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import org.apache.log4j.helpers.OptionConverter;
-import org.apache.log4j.helpers.QuietWriter;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.CountingQuietWriter;
 import org.apache.log4j.spi.LoggingEvent;
 
 /**
-   RollingFileAppender extends FileAppender to backup the log files when 
-   they reach a certain size. 
+   RollingFileAppender extends FileAppender to backup the log files when
+   they reach a certain size.
 
    @author Heinz Richter
    @author Ceki G&uuml;lc&uuml;
-   
+
 */
 public class RollingFileAppender extends FileAppender {
 
   /**
-     The default maximum file size is 10MB. 
+     The default maximum file size is 10MB.
   */
-  protected long maxFileSize = 10*1024*1024; 
+  protected long maxFileSize = 10*1024*1024;
 
   /**
      There is one backup file by default.
    */
-  protected int  maxBackupIndex  = 1;    
+  protected int  maxBackupIndex  = 1;
 
   /**
      The default constructor simply calls its {@link
@@ -49,7 +45,7 @@ public class RollingFileAppender extends FileAppender {
   RollingFileAppender() {
     super();
   }
-  
+
   /**
     Instantiate a RollingFileAppender and open the file designated by
     <code>filename</code>. The opened filename will become the ouput
@@ -94,36 +90,36 @@ public class RollingFileAppender extends FileAppender {
   long getMaximumFileSize() {
     return maxFileSize;
   }
-  
+
   /**
      Implements the usual roll over behaviour.
 
      <p>If <code>MaxBackupIndex</code> is positive, then files
      {<code>File.1</code>, ..., <code>File.MaxBackupIndex -1</code>}
-     are renamed to {<code>File.2</code>, ..., 
+     are renamed to {<code>File.2</code>, ...,
      <code>File.MaxBackupIndex</code>}. Moreover, <code>File</code> is
      renamed <code>File.1</code> and closed. A new <code>File</code> is
      created to receive further log output.
 
      <p>If <code>MaxBackupIndex</code> is equal to zero, then the
      <code>File</code> is truncated with no backup files created.
-     
+
    */
   public // synchronization not necessary since doAppend is alreasy synched
   void rollOver() {
-    File target;    
+    File target;
     File file;
 
     LogLog.debug("rolling over count=" + ((CountingQuietWriter) qw).getCount());
     LogLog.debug("maxBackupIndex="+maxBackupIndex);
-    
+
     // If maxBackups <= 0, then there is no file renaming to be done.
     if(maxBackupIndex > 0) {
       // Delete the oldest file, to keep Windows happy.
-      file = new File(fileName + '.' + maxBackupIndex);    
+      file = new File(fileName + '.' + maxBackupIndex);
       if (file.exists())
        file.delete();
-      
+
       // Map {(maxBackupIndex - 1), ..., 2, 1} to {maxBackupIndex, ..., 3, 2}
       for (int i = maxBackupIndex - 1; i >= 1; i--) {
 	file = new File(fileName + "." + i);
@@ -137,13 +133,13 @@ public class RollingFileAppender extends FileAppender {
       // Rename fileName to fileName.1
       target = new File(fileName + "." + 1);
 
-      this.closeFile(); // keep windows happy. 
+      this.closeFile(); // keep windows happy.
 
       file = new File(fileName);
       LogLog.debug("Renaming file " + file + " to " + target);
       file.renameTo(target);
     }
-    
+
     try {
       // This will also close the file. This is OK since multiple
       // close operations are safe.
@@ -156,7 +152,7 @@ public class RollingFileAppender extends FileAppender {
 
   public
   synchronized
-  void setFile(String fileName, boolean append, boolean bufferedIO, int bufferSize) 
+  void setFile(String fileName, boolean append, boolean bufferedIO, int bufferSize)
                                                                  throws IOException {
     super.setFile(fileName, append, this.bufferedIO, this.bufferSize);
     if(append) {
@@ -165,10 +161,10 @@ public class RollingFileAppender extends FileAppender {
     }
   }
 
-  
+
   /**
      Set the maximum number of backup files to keep around.
-     
+
      <p>The <b>MaxBackupIndex</b> option determines how many backup
      files are kept before the oldest is erased. This option takes
      a positive integer value. If set to zero, then there will be no
@@ -177,9 +173,9 @@ public class RollingFileAppender extends FileAppender {
    */
   public
   void setMaxBackupIndex(int maxBackups) {
-    this.maxBackupIndex = maxBackups;    
+    this.maxBackupIndex = maxBackups;
   }
-  
+
   /**
      Set the maximum size that the output file is allowed to reach
      before being rolled over to backup files.
@@ -201,7 +197,7 @@ public class RollingFileAppender extends FileAppender {
   /**
      Set the maximum size that the output file is allowed to reach
      before being rolled over to backup files.
-     
+
      <p>In configuration files, the <b>MaxFileSize</b> option takes an
      long integer in the range 0 - 2^63. You can specify the value
      with the suffixes "KB", "MB" or "GB" so that the integer is
@@ -221,7 +217,7 @@ public class RollingFileAppender extends FileAppender {
 
   /**
      This method differentiates RollingFileAppender from its super
-     class.  
+     class.
 
      @since 0.9.0
   */
@@ -229,7 +225,7 @@ public class RollingFileAppender extends FileAppender {
   void subAppend(LoggingEvent event) {
     super.subAppend(event);
     if((fileName != null) &&
-                     ((CountingQuietWriter) qw).getCount() >= maxFileSize) 
+                     ((CountingQuietWriter) qw).getCount() >= maxFileSize)
       this.rollOver();
    }
 }

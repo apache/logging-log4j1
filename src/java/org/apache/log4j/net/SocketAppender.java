@@ -12,19 +12,12 @@ package org.apache.log4j.net;
 
 import java.net.InetAddress;
 import java.net.Socket;
-import java.io.OutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.StringWriter;
-import java.io.PrintWriter;
 
 import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.Category;
-import org.apache.log4j.Priority;
 import org.apache.log4j.AppenderSkeleton;
 
 /**
@@ -47,13 +40,13 @@ import org.apache.log4j.AppenderSkeleton;
       <p><li>Remote logging uses the TCP protocol. Consequently, if
       the server is reachable, then log events will eventually arrive
       at the server.
-    
+
       <p><li>If the remote server is down, the logging requests are
       simply dropped. However, if and when the server comes back up,
       then event transmission is resumed transparently. This
       transparent reconneciton is performed by a <em>connector</em>
       thread which periodically attempts to connect to the server.
-    
+
       <p><li>Logging events are automatically <em>buffered</em> by the
       native TCP implementation. This means that if the link to server
       is slow but still faster than the rate of (log) event production
@@ -92,7 +85,7 @@ import org.apache.log4j.AppenderSkeleton;
 
 
      </ul>
-    
+
     @author  Ceki G&uuml;lc&uuml;
     @since 0.8.4 */
 
@@ -102,7 +95,7 @@ public class SocketAppender extends AppenderSkeleton {
      The default port number of remote logging server (4560).
   */
   static final int DEFAULT_PORT                 = 4560;
-  
+
   /**
      The default reconnection delay (30000 milliseconds or 30 seconds).
   */
@@ -113,7 +106,7 @@ public class SocketAppender extends AppenderSkeleton {
      InetAddress so that it can be returned via getOption().
   */
   String remoteHost;
-  
+
   InetAddress address;
   int port = DEFAULT_PORT;
   ObjectOutputStream oos;
@@ -122,8 +115,8 @@ public class SocketAppender extends AppenderSkeleton {
 
   private Connector connector;
 
-  int counter = 0; 
-  
+  int counter = 0;
+
 
   // reset the ObjectOutputStream every 70 calls
   //private static final int RESET_FREQUENCY = 70;
@@ -147,15 +140,15 @@ public class SocketAppender extends AppenderSkeleton {
      Connects to remote server at <code>host</code> and <code>port</code>.
   */
   public
-  SocketAppender(String host, int port) { 
+  SocketAppender(String host, int port) {
     this.port = port;
     this.address = getAddressByName(host);
     this.remoteHost = host;
     connect(address, port);
   }
-  
+
   /**
-     Connect to the specified <b>RemoteHost</b> and <b>Port</b>. 
+     Connect to the specified <b>RemoteHost</b> and <b>Port</b>.
   */
   public
   void activateOptions() {
@@ -163,7 +156,7 @@ public class SocketAppender extends AppenderSkeleton {
   }
 
   /**
-     Close this appender. 
+     Close this appender.
      <p>This will mark the appender as closed and
      call then {@link #cleanUp} method.
   */
@@ -181,7 +174,7 @@ public class SocketAppender extends AppenderSkeleton {
      Drop the connection to the remote host and release the underlying
      connector thread if it has been created
    */
-  public 
+  public
   void cleanUp() {
     if(oos != null) {
       try {
@@ -190,10 +183,10 @@ public class SocketAppender extends AppenderSkeleton {
       catch(IOException e) {
 	LogLog.error("Could not close oos.", e);
       }
-      oos = null;      
+      oos = null;
     }
     if(connector != null) {
-      //LogLog.debug("Interrupting the connector.");      
+      //LogLog.debug("Interrupting the connector.");
       connector.interrupted = true;
       connector = null;  // allow gc
     }
@@ -204,7 +197,7 @@ public class SocketAppender extends AppenderSkeleton {
       return;
     try {
       // First, close the previous connection if any.
-      cleanUp();          
+      cleanUp();
       oos = new ObjectOutputStream(new Socket(address, port).getOutputStream());
     }
     catch(IOException e) {
@@ -229,8 +222,8 @@ public class SocketAppender extends AppenderSkeleton {
     if(oos != null) {
       try {
 	if(locationInfo) {
-	   event.getLocationInformation();	
-	} 
+	   event.getLocationInformation();
+	}
 	oos.writeObject(event);
 	//LogLog.debug("=========Flushing.");
 	oos.flush();
@@ -258,15 +251,15 @@ public class SocketAppender extends AppenderSkeleton {
       connector = new Connector();
       connector.setDaemon(true);
       connector.setPriority(Thread.MIN_PRIORITY);
-      connector.start();      
+      connector.start();
     }
   }
-  
+
   static
   InetAddress getAddressByName(String host) {
     try {
       return InetAddress.getByName(host);
-    }	
+    }
     catch(Exception e) {
       LogLog.error("Could not find address of ["+host+"].", e);
       return null;
@@ -291,7 +284,7 @@ public class SocketAppender extends AppenderSkeleton {
     address = getAddressByName(host);
     remoteHost = host;
   }
-  
+
   /**
      Returns value of the <b>RemoteHost</b> option.
    */
@@ -299,7 +292,7 @@ public class SocketAppender extends AppenderSkeleton {
   String getRemoteHost() {
     return remoteHost;
   }
-  
+
   /**
      The <b>Port</b> option takes a positive integer representing
      the port where the server is waiting for connections.
@@ -308,7 +301,7 @@ public class SocketAppender extends AppenderSkeleton {
   void setPort(int port) {
     this.port = port;
   }
-  
+
   /**
      Returns value of the <b>Port</b> option.
    */
@@ -316,7 +309,7 @@ public class SocketAppender extends AppenderSkeleton {
   int getPort() {
     return port;
   }
-  
+
   /**
      The <b>LocationInfo</b> option takes a boolean value. If true,
      the information sent to the remote host will include location
@@ -326,7 +319,7 @@ public class SocketAppender extends AppenderSkeleton {
   void setLocationInfo(boolean locationInfo) {
     this.locationInfo = locationInfo;
   }
-  
+
   /**
      Returns value of the <b>LocationInfo</b> option.
    */
@@ -334,13 +327,13 @@ public class SocketAppender extends AppenderSkeleton {
   boolean getLocationInfo() {
     return locationInfo;
   }
-  
+
   /**
      The <b>ReconnectionDelay</b> option takes a positive integer
      representing the number of milliseconds to wait between each
      failed connection attempt to the server. The default value of
      this option is 30000 which corresponds to 30 seconds.
-     
+
      <p>Setting this option to zero turns off reconnection
      capability.
    */
@@ -348,7 +341,7 @@ public class SocketAppender extends AppenderSkeleton {
   void setReconnectionDelay(int delay) {
     this.reconnectionDelay = delay;
   }
-  
+
   /**
      Returns value of the <b>ReconnectionDelay</b> option.
    */
@@ -356,7 +349,7 @@ public class SocketAppender extends AppenderSkeleton {
   int getReconnectionDelay() {
     return reconnectionDelay;
   }
-  
+
   /**
      The Connector will reconnect when the server becomes available
      again.  It does this by attempting to open a new connection every
@@ -366,7 +359,7 @@ public class SocketAppender extends AppenderSkeleton {
      restart to try reconnect to the server when previpously open
      connection is droppped.
 
-     @author  Ceki G&uuml;lc&uuml; 
+     @author  Ceki G&uuml;lc&uuml;
      @since 0.8.4
   */
   class Connector extends Thread {
@@ -375,14 +368,14 @@ public class SocketAppender extends AppenderSkeleton {
 
     public
     void run() {
-      Socket socket;      
+      Socket socket;
       while(!interrupted) {
 	try {
 	  sleep(reconnectionDelay);
 	  LogLog.debug("Attempting connection to "+address.getHostName());
 	  socket = new Socket(address, port);
 	  synchronized(this) {
-	    oos = new ObjectOutputStream(socket.getOutputStream()); 
+	    oos = new ObjectOutputStream(socket.getOutputStream());
 	    connector = null;
 	    break;
 	  }
@@ -395,14 +388,14 @@ public class SocketAppender extends AppenderSkeleton {
 	  LogLog.debug("Remote host "+address.getHostName()
 		       +" refused connection.");
 	}
-	catch(IOException e) {	  
+	catch(IOException e) {
 	  LogLog.debug("Could not connect to " + address.getHostName()+
 		       ". Exception is " + e);
 	}
       }
       //LogLog.debug("Exiting Connector.run() method.");
     }
-    
+
     /**
        public
        void finalize() {

@@ -9,7 +9,6 @@ package org.apache.log4j;
 
 import java.io.OutputStreamWriter;
 import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.helpers.OptionConverter;
 
 /**
    ConsoleAppender appends log events to <code>System.out</code> or
@@ -28,7 +27,7 @@ public class ConsoleAppender extends WriterAppender {
   /**
      The default constructor does nothing.
    */
-  public ConsoleAppender() {    
+  public ConsoleAppender() {
   }
 
   public ConsoleAppender(Layout layout) {
@@ -37,9 +36,9 @@ public class ConsoleAppender extends WriterAppender {
 
   public ConsoleAppender(Layout layout, String target) {
     this.layout = layout;
-    
+
     if (SYSTEM_OUT.equals(target)) {
-      setWriter(new OutputStreamWriter(System.out));	
+      setWriter(new OutputStreamWriter(System.out));
     } else if (SYSTEM_ERR.equalsIgnoreCase(target)) {
       setWriter(new OutputStreamWriter(System.err));
     } else {
@@ -50,37 +49,37 @@ public class ConsoleAppender extends WriterAppender {
   /**
      Sets the value of the <b>Target</b> option. Recognized values are
      "System.out" and "System.err". Any other value will be ignored.
-  */       
+  */
   public
   void setTarget(String value) {
     String v = value.trim();
-    
+
     if (SYSTEM_OUT.equalsIgnoreCase(v)) {
       target = SYSTEM_OUT;
     } else if (SYSTEM_ERR.equalsIgnoreCase(v)) {
       target = SYSTEM_ERR;
     } else {
       targetWarn(value);
-    }  
+    }
   }
-  
-  /** 
-      Returns the current value of the <b>Target</b> property. The default
-      value of the option is "System.out". 
 
-      See also {@link #setTarget}. 
+  /**
+      Returns the current value of the <b>Target</b> property. The default
+      value of the option is "System.out".
+
+      See also {@link #setTarget}.
 
   */
   public
   String getTarget() {
     return target;
   }
-  
+
   void targetWarn(String val) {
     LogLog.warn("["+val+"] should be System.out or System.err.");
     LogLog.warn("Using System.out (default).");
   }
- 
+
   public
   void activateOptions() {
     if(target.equals(SYSTEM_OUT)) {
@@ -94,7 +93,7 @@ public class ConsoleAppender extends WriterAppender {
      Override the parent method to do nothing.
    */
   protected
-  final 
+  final
   void closeWriter() {
   }
 }

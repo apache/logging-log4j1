@@ -7,17 +7,8 @@
 
 package org.apache.log4j.net;
 
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.DatagramPacket;
-import java.net.UnknownHostException;
-import java.net.SocketException;
-
-import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.Category;
-import org.apache.log4j.Level;
 import org.apache.log4j.Layout;
 import org.apache.log4j.helpers.SyslogWriter;
 import org.apache.log4j.helpers.SyslogQuietWriter;
@@ -27,7 +18,7 @@ import org.apache.log4j.helpers.SyslogQuietWriter;
 
 /**
     Use SyslogAppender to send log messages to a remote syslog daemon.
- 
+
     @author Ceki G&uuml;lc&uuml;
     @author Anders Kristensen
  */
@@ -35,77 +26,77 @@ public class SyslogAppender extends AppenderSkeleton {
   // The following constants are extracted from a syslog.h file
   // copyrighted by the Regents of the University of California
   // I hope nobody at Berkley gets offended.
-  
+
   /** Kernel messages */
-  final static public int LOG_KERN     = 0; 
+  final static public int LOG_KERN     = 0;
   /** Random user-level messages */
-  final static public int LOG_USER     = 1<<3; 
+  final static public int LOG_USER     = 1<<3;
   /** Mail system */
-  final static public int LOG_MAIL     = 2<<3; 
+  final static public int LOG_MAIL     = 2<<3;
   /** System daemons */
-  final static public int LOG_DAEMON   = 3<<3; 
+  final static public int LOG_DAEMON   = 3<<3;
   /** security/authorization messages */
-  final static public int LOG_AUTH     = 4<<3; 
+  final static public int LOG_AUTH     = 4<<3;
   /** messages generated internally by syslogd */
-  final static public int LOG_SYSLOG   = 5<<3; 
-                                               
-  /** line printer subsystem */  
-  final static public int LOG_LPR      = 6<<3; 
+  final static public int LOG_SYSLOG   = 5<<3;
+
+  /** line printer subsystem */
+  final static public int LOG_LPR      = 6<<3;
   /** network news subsystem */
-  final static public int LOG_NEWS     = 7<<3; 
+  final static public int LOG_NEWS     = 7<<3;
   /** UUCP subsystem */
-  final static public int LOG_UUCP     = 8<<3; 
+  final static public int LOG_UUCP     = 8<<3;
   /** clock daemon */
-  final static public int LOG_CRON     = 9<<3; 
+  final static public int LOG_CRON     = 9<<3;
   /** security/authorization  messages (private) */
-  final static public int LOG_AUTHPRIV = 10<<3; 
+  final static public int LOG_AUTHPRIV = 10<<3;
   /** ftp daemon */
-  final static public int LOG_FTP      = 11<<3; 
+  final static public int LOG_FTP      = 11<<3;
 
   // other codes through 15 reserved for system use
   /** reserved for local use */
-  final static public int LOG_LOCAL0 = 16<<3; 
+  final static public int LOG_LOCAL0 = 16<<3;
   /** reserved for local use */
-  final static public int LOG_LOCAL1 = 17<<3; 
+  final static public int LOG_LOCAL1 = 17<<3;
   /** reserved for local use */
-  final static public int LOG_LOCAL2 = 18<<3; 
+  final static public int LOG_LOCAL2 = 18<<3;
   /** reserved for local use */
-  final static public int LOG_LOCAL3 = 19<<3; 
+  final static public int LOG_LOCAL3 = 19<<3;
   /** reserved for local use */
-  final static public int LOG_LOCAL4 = 20<<3; 
+  final static public int LOG_LOCAL4 = 20<<3;
   /** reserved for local use */
-  final static public int LOG_LOCAL5 = 21<<3; 
+  final static public int LOG_LOCAL5 = 21<<3;
   /** reserved for local use */
-  final static public int LOG_LOCAL6 = 22<<3; 
+  final static public int LOG_LOCAL6 = 22<<3;
   /** reserved for local use*/
-  final static public int LOG_LOCAL7 = 23<<3; 
+  final static public int LOG_LOCAL7 = 23<<3;
 
   protected static final int SYSLOG_HOST_OI = 0;
   protected static final int FACILITY_OI = 1;
-  
+
   static final String TAB = "    ";
 
   // Have LOG_USER as default
   int syslogFacility = LOG_USER;
-  String facilityStr;  
+  String facilityStr;
   boolean facilityPrinting = false;
-  
+
   //SyslogTracerPrintWriter stp;
-  SyslogQuietWriter sqw;  
+  SyslogQuietWriter sqw;
   String syslogHost;
-  
+
   public
   SyslogAppender() {
     this.initSyslogFacilityStr();
   }
-  
+
   public
   SyslogAppender(Layout layout, int syslogFacility) {
     this.layout = layout;
-    this.syslogFacility = syslogFacility;    
+    this.syslogFacility = syslogFacility;
     this.initSyslogFacilityStr();
   }
-		 
+
   public
   SyslogAppender(Layout layout, String syslogHost, int syslogFacility) {
     this(layout, syslogFacility);
@@ -122,14 +113,14 @@ public class SyslogAppender extends AppenderSkeleton {
   void close() {
     closed = true;
     // A SyslogWriter is UDP based and needs no opening. Hence, it
-    // can't be closed. We just unset the variables here.    
+    // can't be closed. We just unset the variables here.
     sqw = null;
   }
-  
+
   private
   void initSyslogFacilityStr() {
     facilityStr = getFacilityString(this.syslogFacility);
-    
+
     if (facilityStr == null) {
       System.err.println("\"" + syslogFacility +
                   "\" is an unknown syslog facility. Defaulting to \"USER\".");
@@ -138,7 +129,7 @@ public class SyslogAppender extends AppenderSkeleton {
     } else {
       facilityStr += ":";
     }
-  }	   
+  }
 
   /**
      Returns the specified syslog facility as a lower-case String,
@@ -169,8 +160,8 @@ public class SyslogAppender extends AppenderSkeleton {
     case LOG_LOCAL6:    return "local6";
     case LOG_LOCAL7:    return "local7";
     default:            return null;
-    }	   
-  }	   
+    }
+  }
 
   /**
      Returns the integer value corresponding to the named syslog
@@ -180,7 +171,7 @@ public class SyslogAppender extends AppenderSkeleton {
             AUTH, SYSLOG, LPR, NEWS, UUCP, CRON, AUTHPRIV, FTP, LOCAL0,
             LOCAL1, LOCAL2, LOCAL3, LOCAL4, LOCAL5, LOCAL6, LOCAL7.
             The matching is case-insensitive.
-     
+
      @since 1.1
   */
   public
@@ -233,13 +224,13 @@ public class SyslogAppender extends AppenderSkeleton {
       return -1;
     }
   }
-  
+
   public
   void append(LoggingEvent event) {
 
     if(!isAsSevereAsThreshold(event.level))
       return;
-    
+
     // We must not attempt to append if sqw is null.
     if(sqw == null) {
       errorHandler.error("No syslog host is set for SyslogAppedender named \""+
@@ -250,7 +241,7 @@ public class SyslogAppender extends AppenderSkeleton {
     String buffer = (facilityPrinting? facilityStr : "") +
                           layout.format(event);
 
-    sqw.setLevel(event.level.getSyslogEquivalent());    
+    sqw.setLevel(event.level.getSyslogEquivalent());
     sqw.write(buffer);
 
     String[] s = event.getThrowableStrRep();
@@ -258,10 +249,10 @@ public class SyslogAppender extends AppenderSkeleton {
       int len = s.length;
       if(len > 0) {
 	sqw.write(s[0]);
-      
+
 	for(int i = 1; i < len; i++) {
 	    sqw.write(TAB+s[i].substring(1));
-	}	
+	}
       }
 
     }
@@ -284,22 +275,22 @@ public class SyslogAppender extends AppenderSkeleton {
   boolean requiresLayout() {
     return true;
   }
-  
+
   /**
     The <b>SyslogHost</b> option is the name of the the syslog host
     where log output should go.
 
     <b>WARNING</b> If the SyslogHost is not set, then this appender
-    will fail. 
+    will fail.
    */
   public
   void setSyslogHost(String syslogHost) {
-    this.sqw = new SyslogQuietWriter(new SyslogWriter(syslogHost), 
+    this.sqw = new SyslogQuietWriter(new SyslogWriter(syslogHost),
 				     syslogFacility, errorHandler);
-    //this.stp = new SyslogTracerPrintWriter(sqw);    
+    //this.stp = new SyslogTracerPrintWriter(sqw);
     this.syslogHost = syslogHost;
   }
-  
+
   /**
      Returns the value of the <b>SyslogHost</b> option.
    */
@@ -307,7 +298,7 @@ public class SyslogAppender extends AppenderSkeleton {
   String getSyslogHost() {
     return syslogHost;
   }
-  
+
   /**
      Set the syslog facility. This is the <b>Facility</b> option.
 
@@ -315,20 +306,20 @@ public class SyslogAppender extends AppenderSkeleton {
      strings KERN, USER, MAIL, DAEMON, AUTH, SYSLOG, LPR, NEWS, UUCP,
      CRON, AUTHPRIV, FTP, LOCAL0, LOCAL1, LOCAL2, LOCAL3, LOCAL4,
      LOCAL5, LOCAL6, LOCAL7. Case is unimportant.
-     
+
      @since 0.8.1 */
   public
   void setFacility(String facilityName) {
     if(facilityName == null)
       return;
-    
+
     syslogFacility = getFacility(facilityName);
     if (syslogFacility == -1) {
       System.err.println("["+facilityName +
                   "] is an unknown syslog facility. Defaulting to [USER].");
       syslogFacility = LOG_USER;
     }
-    
+
     this.initSyslogFacilityStr();
 
     // If there is already a sqw, make it use the new facility.
@@ -336,7 +327,7 @@ public class SyslogAppender extends AppenderSkeleton {
       sqw.setSyslogFacility(this.syslogFacility);
     }
   }
-  
+
   /**
      Returns the value of the <b>Facility</b> option.
    */
@@ -344,7 +335,7 @@ public class SyslogAppender extends AppenderSkeleton {
   String getFacility() {
     return getFacilityString(syslogFacility);
   }
-  
+
   /**
     If the <b>FacilityPrinting</b> option is set to true, the printed
     message will include the facility name of the application. It is
@@ -354,7 +345,7 @@ public class SyslogAppender extends AppenderSkeleton {
   void setFacilityPrinting(boolean on) {
     facilityPrinting = on;
   }
-  
+
   /**
      Returns the value of the <b>FacilityPrinting</b> option.
    */

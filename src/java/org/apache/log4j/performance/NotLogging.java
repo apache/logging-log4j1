@@ -1,14 +1,12 @@
-//      Copyright 1996-2000, International Business Machines 
+//      Copyright 1996-2000, International Business Machines
 //      Corporation. All Rights Reserved.
 
 package org.apache.log4j.performance;
 
 
 import org.apache.log4j.Category;
-import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.SimpleLayout;
 import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Layout;
 
 import org.apache.log4j.Level;
 
@@ -45,23 +43,23 @@ public class NotLogging {
 
   static int runLength;
 
-  final static int INITIAL_HASH_SIZE = 101; 
+  final static int INITIAL_HASH_SIZE = 101;
 
   static String  SHORT_MSG = "Hello World";
 
   static Category SHORT_CAT = Category.getInstance("A0123456789");
   static Category MEDIUM_CAT= Category.getInstance("A0123456789.B0123456789");
-  static Category LONG_CAT  = 
+  static Category LONG_CAT  =
                    Category.getInstance("A0123456789.B0123456789.C0123456789");
 
   static Category INEXISTENT_SHORT_CAT = Category.getInstance("I0123456789");
   static Category INEXISTENT_MEDIUM_CAT=
                                 Category.getInstance("I0123456789.B0123456789");
-  static Category INEXISTENT_LONG_CAT= 
+  static Category INEXISTENT_LONG_CAT=
                      Category.getInstance("I0123456789.B0123456789.C0123456789");
 
 
-  static Category[] CAT_ARRAY = new Category[] {SHORT_CAT, MEDIUM_CAT, 
+  static Category[] CAT_ARRAY = new Category[] {SHORT_CAT, MEDIUM_CAT,
 						LONG_CAT, INEXISTENT_SHORT_CAT,
 						INEXISTENT_MEDIUM_CAT,
 						INEXISTENT_LONG_CAT};
@@ -80,91 +78,91 @@ public class NotLogging {
 
     if(argv.length != 2) {
       Usage();
-    }    
+    }
     ProgramInit(argv);
     double delta;
 
-    
+
     System.out.println();
     for(int i = 0; i < CAT_ARRAY.length; i++) {
       delta = SimpleMessage(CAT_ARRAY[i], SHORT_MSG, runLength);
-      System.out.println("Simple argument,          " + delta 
+      System.out.println("Simple argument,          " + delta
 			 + " micros. Cat: " + CAT_ARRAY[i].getName());
     }
 
     System.out.println();
     for(int i = 0; i < CAT_ARRAY.length; i++) {
       delta = FullyOptimizedComplexMessage(CAT_ARRAY[i], runLength);
-      System.out.println("Fully optimized complex,  " + delta + 
+      System.out.println("Fully optimized complex,  " + delta +
 			 " micros. Cat: " + CAT_ARRAY[i].getName());
     }
 
     System.out.println();
     for(int i = 0; i < CAT_ARRAY.length; i++) {
       delta = ComplexMessage(CAT_ARRAY[i], runLength);
-      System.out.println("Complex message argument, " + delta + 
+      System.out.println("Complex message argument, " + delta +
 			 " micros. Cat: " + CAT_ARRAY[i].getName());
     }
-    
+
   }
-  
+
   /**
     Program wide initialization method.  */
   static
   void ProgramInit(String[] args) {
 
     try {
-      runLength = Integer.parseInt(args[1]);      
+      runLength = Integer.parseInt(args[1]);
     }
     catch(java.lang.NumberFormatException e) {
       System.err.println(e);
       Usage();
-    }      
+    }
 
-    
+
     ConsoleAppender appender = new ConsoleAppender(new SimpleLayout());
-    
+
     if("false".equals(args[0])) {
       // nothing to do
     } else if ("true".equals(args[0])) {
       System.out.println("Flagging as shipped code.");
       Category.getDefaultHierarchy().setThreshold((Level) Level.WARN);
-    } else 
+    } else
       Usage();
 
-    SHORT_CAT.setLevel((Level) Level.INFO);      
+    SHORT_CAT.setLevel((Level) Level.INFO);
     Category.getRoot().setLevel((Level) Level.INFO);
 
-  }    
-  
+  }
+
 
   static
-  double SimpleMessage(Category category, String msg, long runLength) { 
+  double SimpleMessage(Category category, String msg, long runLength) {
     long before = System.currentTimeMillis();
     for(int i = 0; i < runLength; i++) {
       category.debug(msg);
     }
-    return (System.currentTimeMillis() - before)*1000.0/runLength;    
+    return (System.currentTimeMillis() - before)*1000.0/runLength;
   }
 
   static
-  double FullyOptimizedComplexMessage(Category category, long runLength) {    
+  double FullyOptimizedComplexMessage(Category category, long runLength) {
     long before = System.currentTimeMillis();
     for(int i = 0; i < runLength; i++) {
       if(category.isDebugEnabled())
-	category.debug("Message" + i + 
+	category.debug("Message" + i +
 		  " bottles of beer standing on the wall.");
-    }    
-    return (System.currentTimeMillis() - before)*1000.0/runLength;    
+    }
+    return (System.currentTimeMillis() - before)*1000.0/runLength;
   }
 
   static
-  double ComplexMessage(Category category, long runLength) {    
+  double ComplexMessage(Category category, long runLength) {
     long before = System.currentTimeMillis();
     for(int i = 0; i < runLength; i++) {
       category.debug("Message" + i +
 		" bottles of beer standing on the wall.");
     }
-    return (System.currentTimeMillis() - before)*1000.0/runLength;    
+    return (System.currentTimeMillis() - before)*1000.0/runLength;
   }
 }

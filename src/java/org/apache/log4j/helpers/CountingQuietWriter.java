@@ -8,10 +8,7 @@
 
 package org.apache.log4j.helpers;
 
-import java.io.File;
 import java.io.Writer;
-import java.io.FileWriter;
-import java.io.FilterWriter;
 import java.io.IOException;
 
 import org.apache.log4j.spi.ErrorHandler;
@@ -32,7 +29,7 @@ public class CountingQuietWriter extends QuietWriter {
   CountingQuietWriter(Writer writer, ErrorHandler eh) {
     super(writer, eh);
   }
-  
+
   public
   void write(String string) {
     try {
@@ -53,5 +50,5 @@ public class CountingQuietWriter extends QuietWriter {
   void setCount(long count) {
     this.count = count;
   }
-  
+
 }

@@ -7,25 +7,7 @@
 
 package org.apache.log4j;
 
-import org.apache.log4j.spi.RootCategory;
-import org.apache.log4j.spi.AppenderAttachable;
 import org.apache.log4j.spi.LoggerFactory;
-import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.helpers.NullEnumeration;
-import org.apache.log4j.helpers.OptionConverter;
-import org.apache.log4j.helpers.AppenderAttachableImpl;
-import org.apache.log4j.helpers.Loader;
-import org.apache.log4j.or.RendererMap;
-import org.apache.log4j.or.ObjectRenderer;
-
-import java.util.Enumeration;
-import java.util.Vector;
-import java.util.MissingResourceException;
-import java.text.MessageFormat;
-import java.util.ResourceBundle;
-import java.net.URL;
-import java.net.MalformedURLException;
 
 
 /**
@@ -36,17 +18,17 @@ import java.net.MalformedURLException;
 public class Logger extends Category {
 
   /**
-     The fully qualified name of the Level class. See also the 
+     The fully qualified name of the Level class. See also the
      getFQCN method. */
   private static final String FQCN = Level.class.getName();
 
 
-  protected 
+  protected
   Logger(String name) {
     super(name);
   }
 
-  /** 
+  /**
     Log a message object with the {@link Level#FINE FINE} level which
     is just an alias for the {@link Level#DEBUG DEBUG} level.
 
@@ -63,33 +45,33 @@ public class Logger extends Category {
     method will print the name of the <code>Throwable</code> but no
     stack trace. To print a stack trace use the {@link #debug(Object,
     Throwable)} form instead.
-    
+
     @param message the message object to log. */
   //public
   //void fine(Object message) {
-  //  if(repository.isDisabled(Level.DEBUG_INT)) 
-  //	return;    
+  //  if(repository.isDisabled(Level.DEBUG_INT))
+  //	return;
   //  if(Level.DEBUG.isGreaterOrEqual(this.getChainedLevel())) {
   //	forcedLog(FQCN, Level.DEBUG, message, null);
   //  }
   //}
-  
 
-  /**  
+
+  /**
    Log a message object with the <code>FINE</code> level including
    the stack trace of the {@link Throwable} <code>t</code> passed as
    parameter.
-   
+
    <p>See {@link #fine(Object)} form for more detailed information.
-   
+
    @param message the message object to log.
-   @param t the exception to log, including its stack trace.  */  
+   @param t the exception to log, including its stack trace.  */
   //public
   //void fine(Object message, Throwable t) {
-  //  if(repository.isDisabled(Level.DEBUG_INT)) 
+  //  if(repository.isDisabled(Level.DEBUG_INT))
   //	return;
   //  if(Level.DEBUG.isGreaterOrEqual(this.getChainedLevel()))
-  //	forcedLog(FQCN, Level.FINE, message, t);    
+  //	forcedLog(FQCN, Level.FINE, message, t);
   //}
 
   /**
@@ -115,7 +97,7 @@ public class Logger extends Category {
      Retrieve the root logger.
    */
   public
-  static 
+  static
   Logger getRootLogger() {
     return LogManager.getRootLogger();
   }
@@ -125,9 +107,9 @@ public class Logger extends Category {
      instantiated depends on the type returned by the {@link
      LoggerFactory#makeNewLoggerInstance} method of the
      <code>factory</code> parameter.
-     
+
      <p>This method is intended to be used by sub-classes.
-     
+
      @param name The name of the logger to retrieve.
 
      @param factory A {@link LoggerFactory} implementation that will
@@ -138,6 +120,6 @@ public class Logger extends Category {
   static
   Logger getLogger(String name, LoggerFactory factory) {
     return LogManager.getLogger(name, factory);
-  }	
+  }
 
 }

@@ -2,7 +2,6 @@
 package org.apache.log4j.jmx;
 
 import java.lang.reflect.Constructor;
-import org.apache.log4j.Hierarchy;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Level;
 import org.apache.log4j.Appender;
@@ -19,19 +18,16 @@ import javax.management.MBeanParameterInfo;
 import javax.management.ObjectName;
 import javax.management.MBeanInfo;
 import javax.management.Attribute;
-import javax.management.MBeanRegistration;
-import javax.management.MBeanServer;
 
 import javax.management.MBeanException;
 import javax.management.AttributeNotFoundException;
 import javax.management.RuntimeOperationsException;
 import javax.management.ReflectionException;
 import javax.management.InvalidAttributeValueException;
-import javax.management.MBeanRegistration;
 import javax.management.NotificationListener;
 import javax.management.Notification;
 
-public class LoggerDynamicMBean extends AbstractDynamicMBean 
+public class LoggerDynamicMBean extends AbstractDynamicMBean
                                   implements NotificationListener {
 
   private MBeanConstructorInfo[] dConstructors = new MBeanConstructorInfo[1];
@@ -40,7 +36,7 @@ public class LoggerDynamicMBean extends AbstractDynamicMBean
   private Vector dAttributes = new Vector();
   private String dClassName = this.getClass().getName();
 
-  private String dDescription = 
+  private String dDescription =
      "This MBean acts as a management facade for a org.apache.log4j.Logger instance.";
 
   // This Logger instance is for logging.
@@ -57,12 +53,12 @@ public class LoggerDynamicMBean extends AbstractDynamicMBean
   public
   void handleNotification(Notification notification, Object handback) {
     cat.debug("Received notification: "+notification.getType());
-    registerAppenderMBean((Appender) notification.getUserData() );    
-    
+    registerAppenderMBean((Appender) notification.getUserData() );
+
 
   }
 
-  private 
+  private
   void buildDynamicMBeanInfo() {
     Constructor[] constructors = this.getClass().getConstructors();
     dConstructors[0] = new MBeanConstructorInfo(
@@ -74,31 +70,31 @@ public class LoggerDynamicMBean extends AbstractDynamicMBean
 					   "The name of this Logger.",
 					   true,
 					   false,
-					   false));    
+					   false));
 
     dAttributes.add(new MBeanAttributeInfo("priority",
 					   "java.lang.String",
 					   "The priority of this logger.",
 					   true,
 					   true,
-					   false));  
+					   false));
 
- 
+
 
 
 
     MBeanParameterInfo[] params = new MBeanParameterInfo[2];
-    params[0] = new MBeanParameterInfo("class name", "java.lang.String", 
+    params[0] = new MBeanParameterInfo("class name", "java.lang.String",
 				       "add an appender to this logger");
-    params[1] = new MBeanParameterInfo("appender name", "java.lang.String", 
+    params[1] = new MBeanParameterInfo("appender name", "java.lang.String",
 				       "name of the appender");
 
     dOperations[0] = new MBeanOperationInfo("addAppender",
 					    "addAppender(): add an appender",
-					    params, 
-					    "void", 
+					    params,
+					    "void",
 					    MBeanOperationInfo.ACTION);
-  }  
+  }
 
   protected
   Logger getLogger() {
@@ -106,7 +102,7 @@ public class LoggerDynamicMBean extends AbstractDynamicMBean
   }
 
 
-  public 
+  public
   MBeanInfo getMBeanInfo() {
     //cat.debug("getMBeanInfo called.");
 
@@ -123,29 +119,29 @@ public class LoggerDynamicMBean extends AbstractDynamicMBean
     return mb;
   }
 
-  public 
+  public
   Object invoke(String operationName, Object params[], String signature[])
     throws MBeanException,
     ReflectionException {
-    
+
     if(operationName.equals("addAppender")) {
-      addAppender((String) params[0], (String) params[1]);      
+      addAppender((String) params[0], (String) params[1]);
       return "Hello world.";
     }
 
     return null;
   }
-  
 
-  public 
-  Object getAttribute(String attributeName) throws AttributeNotFoundException, 
-                                                   MBeanException, 
+
+  public
+  Object getAttribute(String attributeName) throws AttributeNotFoundException,
+                                                   MBeanException,
                                                    ReflectionException {
 
        // Check attributeName is not null to avoid NullPointerException later on
     if (attributeName == null) {
       throw new RuntimeOperationsException(new IllegalArgumentException(
-			"Attribute name cannot be null"), 
+			"Attribute name cannot be null"),
        "Cannot invoke a getter of " + dClassName + " with null attribute name");
     }
 
@@ -166,10 +162,10 @@ public class LoggerDynamicMBean extends AbstractDynamicMBean
 	cat.error("Could not create ObjectName" + attributeName);
       }
     }
-   
-    
+
+
     // If attributeName has not been recognized throw an AttributeNotFoundException
-    throw(new AttributeNotFoundException("Cannot find " + attributeName + 
+    throw(new AttributeNotFoundException("Cannot find " + attributeName +
 					 " attribute in " + dClassName));
 
   }
@@ -177,41 +173,41 @@ public class LoggerDynamicMBean extends AbstractDynamicMBean
 
   void addAppender(String appenderClass, String appenderName) {
     cat.debug("addAppender called with "+appenderClass+", "+appenderName);
-    Appender appender = (Appender) 
+    Appender appender = (Appender)
        OptionConverter.instantiateByClassName(appenderClass,
 					      org.apache.log4j.Appender.class,
 					      null);
     appender.setName(appenderName);
     logger.addAppender(appender);
-    
+
     //appenderMBeanRegistration();
-    
+
   }
 
 
-  public 
+  public
   void setAttribute(Attribute attribute) throws AttributeNotFoundException,
                                                 InvalidAttributeValueException,
-                                                MBeanException, 
+                                                MBeanException,
                                                 ReflectionException {
-    
+
     // Check attribute is not null to avoid NullPointerException later on
     if (attribute == null) {
       throw new RuntimeOperationsException(
-                  new IllegalArgumentException("Attribute cannot be null"), 
-		  "Cannot invoke a setter of " + dClassName + 
+                  new IllegalArgumentException("Attribute cannot be null"),
+		  "Cannot invoke a setter of " + dClassName +
 		  " with null attribute");
     }
     String name = attribute.getName();
     Object value = attribute.getValue();
-    
+
     if (name == null) {
       throw new RuntimeOperationsException(
-                    new IllegalArgumentException("Attribute name cannot be null"), 
+                    new IllegalArgumentException("Attribute name cannot be null"),
 		    "Cannot invoke the setter of "+dClassName+
 		    " with null attribute name");
     }
-    
+
 
     if(name.equals("priority")) {
       if (value instanceof String) {
@@ -226,16 +222,16 @@ public class LoggerDynamicMBean extends AbstractDynamicMBean
       }
     } else {
       throw(new AttributeNotFoundException("Attribute " + name +
-					   " not found in " + 
+					   " not found in " +
 					   this.getClass().getName()));
     }
-  }  
+  }
 
   void appenderMBeanRegistration() {
     Enumeration enum = logger.getAllAppenders();
     while(enum.hasMoreElements()) {
       Appender appender = (Appender) enum.nextElement();
-      registerAppenderMBean(appender);     
+      registerAppenderMBean(appender);
     }
   }
 
@@ -247,21 +243,21 @@ public class LoggerDynamicMBean extends AbstractDynamicMBean
       AppenderDynamicMBean appenderMBean = new AppenderDynamicMBean(appender);
       objectName = new ObjectName("log4j", "appender", name);
       server.registerMBean(appenderMBean, objectName);
-      
+
       dAttributes.add(new MBeanAttributeInfo("appender="+name,
 					     "javax.management.ObjectName",
 					     "The "+name+" appender.",
 					     true,
 					     true,
 					     false));
-      
+
     } catch(Exception e) {
       cat.error("Could not add appenderMBean for ["+name+"].", e);
     }
   }
 
   public
-  void postRegister(java.lang.Boolean registrationDone) {    
+  void postRegister(java.lang.Boolean registrationDone) {
     appenderMBeanRegistration();
-  }   
+  }
 }

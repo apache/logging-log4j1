@@ -22,13 +22,11 @@ import org.apache.log4j.spi.Configurator;
 import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.RendererSupport;
-import org.apache.log4j.or.ObjectRenderer;
 import org.apache.log4j.or.RendererMap;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.helpers.FileWatchdog;
 
-import java.util.NoSuchElementException;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.io.FileInputStream;
@@ -84,14 +82,14 @@ public class PropertyConfigurator implements Configurator {
    */
   protected Hashtable registry = new Hashtable(11);
   protected LoggerFactory loggerFactory = new DefaultCategoryFactory();
-  
+
   static final String      CATEGORY_PREFIX = "log4j.category.";
   static final String      LOGGER_PREFIX   = "log4j.logger.";
   static final String       FACTORY_PREFIX = "log4j.factory";
   static final String    ADDITIVITY_PREFIX = "log4j.additivity.";
   static final String ROOT_CATEGORY_PREFIX = "log4j.rootCategory";
   static final String ROOT_LOGGER_PREFIX   = "log4j.rootLogger";
-  static final String      APPENDER_PREFIX = "log4j.appender.";  
+  static final String      APPENDER_PREFIX = "log4j.appender.";
   static final String      RENDERER_PREFIX = "log4j.renderer.";
   static final String      THRESHOLD_PREFIX = "log4j.threshold";
 
@@ -100,7 +98,7 @@ public class PropertyConfigurator implements Configurator {
   public static final String LOGGER_FACTORY_KEY = "log4j.loggerFactory";
 
   static final private String INTERNAL_ROOT_NAME = "root";
-  
+
   /**
     Read configuration from a file. <b>The existing configuration is
     not cleared nor reset.</b> If you require a different behavior,
@@ -113,7 +111,7 @@ public class PropertyConfigurator implements Configurator {
     elements are discussed below.
 
     <h3>Repository-wide threshold</h3>
-    
+
     <p>The repository-wide threshold filters logging requests by level
     regardless of logger. The syntax is:
 
@@ -127,7 +125,7 @@ public class PropertyConfigurator implements Configurator {
     level#classname. By default the repository-wide threshold is set
     to the lowest possible value, namely the level <code>ALL</code>.
     </p>
-   
+
 
     <h3>Appender configuration</h3>
 
@@ -138,11 +136,11 @@ public class PropertyConfigurator implements Configurator {
     log4j.appender.appenderName=fully.qualified.name.of.appender.class
 
     # Set appender specific options.
-    log4j.appender.appenderName.option1=value1  
+    log4j.appender.appenderName.option1=value1
     ...
     log4j.appender.appenderName.optionN=valueN
     </pre>
-    
+
     For each named appender you can configure its {@link Layout}. The
     syntax for configuring an appender's layout is:
     <pre>
@@ -151,7 +149,7 @@ public class PropertyConfigurator implements Configurator {
     ....
     log4j.appender.appenderName.layout.optionN=valueN
     </pre>
-    
+
     <h3>Configuring loggers</h3>
 
     <p>The syntax for configuring the root logger is:
@@ -166,13 +164,13 @@ public class PropertyConfigurator implements Configurator {
     ERROR, WARN, INFO, DEBUG, ALL or a <em>custom level</em> value. A
     custom level value can be specified in the form
     <code>level#classname</code>.
-    
+
     <p>If a level value is specified, then the root level is set
     to the corresponding level.  If no level value is specified,
     then the root level remains untouched.
 
     <p>The root logger can be assigned multiple appenders.
-    
+
     <p>Each <i>appenderName</i> (separated by commas) will be added to
     the root logger. The named appender is defined using the
     appender syntax defined above.
@@ -194,16 +192,16 @@ public class PropertyConfigurator implements Configurator {
     hierarchy. However, if you set the level of a logger and
     later decide that that logger should inherit its level, then
     you should specify INHERITED as the value for the level value.
-    
+
     <p>Similar to the root logger syntax, each <i>appenderName</i>
     (separated by commas) will be attached to the named logger.
-    
+
     <p>See the <a href="../../../../manual.html#additivity">appender
     additivity rule</a> in the user manual for the meaning of the
     <code>additivity</code> flag.
 
     <h3>ObjectRenderers</h3>
-    
+
     You can customize the way message objects of a given type are
     converted to String before being logged. This is done by
     specifying an {@link org.apache.log4j.or.ObjectRenderer ObjectRenderer}
@@ -232,14 +230,14 @@ public class PropertyConfigurator implements Configurator {
 
     <pre>
 
-    # Set options for appender named "A1". 
+    # Set options for appender named "A1".
     # Appender "A1" will be a SyslogAppender
     log4j.appender.A1=org.apache.log4j.net.SyslogAppender
 
     # The syslog daemon resides on www.abc.net
     log4j.appender.A1.SyslogHost=www.abc.net
 
-    # A1's layout is a PatternLayout, using the conversion pattern 
+    # A1's layout is a PatternLayout, using the conversion pattern
     # <b>%r %-5p %c{2} %M.%L %x - %m\n</b>. Thus, the log output will
     # include # the relative time since the start of the application in
     # milliseconds, followed by the level of the log request,
@@ -247,14 +245,14 @@ public class PropertyConfigurator implements Configurator {
     # followed by the callers method name, followed by the line number,
     # the nested disgnostic context and finally the message itself.
     # Refer to the documentation of {@link PatternLayout} for further information
-    # on the syntax of the ConversionPattern key.    
+    # on the syntax of the ConversionPattern key.
     log4j.appender.A1.layout=org.apache.log4j.PatternLayout
     log4j.appender.A1.layout.ConversionPattern=%-4r %-5p %c{2} %M.%L %x - %m\n
 
     # Set options for appender named "A2"
     # A2 should be a RollingFileAppender, with maximum file size of 10 MB
     # using at most one backup file. A2's layout is TTCC, using the
-    # ISO8061 date format with context printing enabled.    
+    # ISO8061 date format with context printing enabled.
     log4j.appender.A2=org.apache.log4j.RollingFileAppender
     log4j.appender.A2.MaxFileSize=10MB
     log4j.appender.A2.MaxBackupIndex=1
@@ -275,7 +273,7 @@ public class PropertyConfigurator implements Configurator {
     # Output will go to A1.
     log4j.logger.SECURITY.access=WARN
 
-    
+
     # The logger "class.of.the.day" inherits its level from the
     # logger hierarchy.  Output will go to the appender's of the root
     # logger, A2 in this case.
@@ -284,11 +282,11 @@ public class PropertyConfigurator implements Configurator {
 
     <p>Refer to the <b>setOption</b> method in each Appender and
     Layout for class specific options.
-    
+
     <p>Use the <code>#</code> or <code>!</code> characters at the
     beginning of a line for comments.
-   
-   <p> 
+
+   <p>
    @param configFileName The name of the configuration file where the
    configuration information is stored.
 
@@ -313,21 +311,21 @@ public class PropertyConfigurator implements Configurator {
   /**
    */
   static
-  public 
+  public
   void configure(String configFilename) {
-    new PropertyConfigurator().doConfigure(configFilename, 
+    new PropertyConfigurator().doConfigure(configFilename,
 					   LogManager.getLoggerRepository());
   }
 
   /**
      Read configuration options from url <code>configURL</code>.
-     
+
      @since 0.8.2
    */
   public
   static
   void configure(java.net.URL configURL) {
-    new PropertyConfigurator().doConfigure(configURL, 
+    new PropertyConfigurator().doConfigure(configURL,
 					   LogManager.getLoggerRepository());
   }
 
@@ -340,15 +338,15 @@ public class PropertyConfigurator implements Configurator {
   static
   public
   void configure(Properties properties) {
-    new PropertyConfigurator().doConfigure(properties, 
+    new PropertyConfigurator().doConfigure(properties,
 					   LogManager.getLoggerRepository());
   }
 
   /**
      Like {@link #configureAndWatch(String, long)} except that the
      default delay as defined by {@link FileWatchdog#DEFAULT_DELAY} is
-     used. 
-     
+     used.
+
      @param configFilename A file in key=value format.
 
   */
@@ -365,7 +363,7 @@ public class PropertyConfigurator implements Configurator {
      check if <code>configFilename</code> has been created or
      modified. The period is determined by the <code>delay</code>
      argument. If a change or file creation is detected, then
-     <code>configFilename</code> is read to configure log4j.  
+     <code>configFilename</code> is read to configure log4j.
 
       @param configFilename A file in key=value format.
       @param delay The delay in milliseconds to wait between each check.
@@ -393,15 +391,15 @@ public class PropertyConfigurator implements Configurator {
       if(value != null)
 	LogLog.warn("[log4j.configDebug] is deprecated. Use [log4j.debug] instead.");
     }
-    
+
     if(value != null) {
       LogLog.setInternalDebugging(OptionConverter.toBoolean(value, true));
     }
 
-    String thresholdStr = OptionConverter.findAndSubst(THRESHOLD_PREFIX, 
-						       properties);    
+    String thresholdStr = OptionConverter.findAndSubst(THRESHOLD_PREFIX,
+						       properties);
     if(thresholdStr != null) {
-      hierarchy.setThreshold(OptionConverter.toLevel(thresholdStr, 
+      hierarchy.setThreshold(OptionConverter.toLevel(thresholdStr,
 						     (Level) Level.ALL));
       LogLog.debug("Hierarchy threshold set to ["+hierarchy.getThreshold()+"].");
     }
@@ -410,7 +408,7 @@ public class PropertyConfigurator implements Configurator {
     configureLoggerFactory(properties);
     parseCatsAndRenderers(properties, hierarchy);
 
-    LogLog.debug("Finished configuring.");    
+    LogLog.debug("Finished configuring.");
     // We don't want to hold references to appenders preventing their
     // garbage collection.
     registry.clear();
@@ -427,7 +425,7 @@ public class PropertyConfigurator implements Configurator {
       props.load(configURL.openStream());
     }
     catch (java.io.IOException e) {
-      LogLog.error("Could not read configuration file from URL [" + configURL 
+      LogLog.error("Could not read configuration file from URL [" + configURL
 		   + "].", e);
       LogLog.error("Ignoring configuration file [" + configURL +"].");
       return;
@@ -452,12 +450,12 @@ public class PropertyConfigurator implements Configurator {
    */
   protected void configureLoggerFactory(Properties props) {
     String factoryClassName = OptionConverter.findAndSubst(LOGGER_FACTORY_KEY,
-							   props);    
+							   props);
     if(factoryClassName != null) {
       LogLog.debug("Setting category factory to ["+factoryClassName+"].");
-      loggerFactory = (LoggerFactory) 
+      loggerFactory = (LoggerFactory)
 	          OptionConverter.instantiateByClassName(factoryClassName,
-							 LoggerFactory.class, 
+							 LoggerFactory.class,
 							 loggerFactory);
       PropertySetter.setProperties(loggerFactory, props, FACTORY_PREFIX + ".");
     }
@@ -467,7 +465,7 @@ public class PropertyConfigurator implements Configurator {
   void configureOptionHandler(OptionHandler oh, String prefix,
 			      Properties props) {
     String[] options = oh.getOptionStrings();
-    if(options == null) 
+    if(options == null)
       return;
 
     String value;
@@ -484,25 +482,25 @@ public class PropertyConfigurator implements Configurator {
     oh.activateOptions();
   }
   */
-  
-    
+
+
   void configureRootCategory(Properties props, LoggerRepository hierarchy) {
     String effectiveFrefix = ROOT_LOGGER_PREFIX;
     String value = OptionConverter.findAndSubst(ROOT_LOGGER_PREFIX, props);
-    
+
     if(value == null) {
       value = OptionConverter.findAndSubst(ROOT_CATEGORY_PREFIX, props);
       effectiveFrefix = ROOT_CATEGORY_PREFIX;
     }
 
-    if(value == null) 
+    if(value == null)
       LogLog.debug("Could not find root logger information. Is this OK?");
     else {
       Logger root = hierarchy.getRootLogger();
       synchronized(root) {
 	parseCategory(props, root, effectiveFrefix, INTERNAL_ROOT_NAME, value);
       }
-    }        
+    }
   }
 
 
@@ -512,12 +510,12 @@ public class PropertyConfigurator implements Configurator {
   protected
   void parseCatsAndRenderers(Properties props, LoggerRepository hierarchy) {
     Enumeration enum = props.propertyNames();
-    while(enum.hasMoreElements()) {      
+    while(enum.hasMoreElements()) {
       String key = (String) enum.nextElement();
       if(key.startsWith(CATEGORY_PREFIX) || key.startsWith(LOGGER_PREFIX)) {
 	String loggerName = null;
 	if(key.startsWith(CATEGORY_PREFIX)) {
-	  loggerName = key.substring(CATEGORY_PREFIX.length());	
+	  loggerName = key.substring(CATEGORY_PREFIX.length());
 	} else if(key.startsWith(LOGGER_PREFIX)) {
 	  loggerName = key.substring(LOGGER_PREFIX.length());
 	}
@@ -528,33 +526,33 @@ public class PropertyConfigurator implements Configurator {
 	  parseAdditivityForLogger(props, logger, loggerName);
 	}
       } else if(key.startsWith(RENDERER_PREFIX)) {
-	String renderedClass = key.substring(RENDERER_PREFIX.length());	
+	String renderedClass = key.substring(RENDERER_PREFIX.length());
 	String renderingClass = OptionConverter.findAndSubst(key, props);
 	if(hierarchy instanceof RendererSupport) {
 	  RendererMap.addRenderer((RendererSupport) hierarchy, renderedClass,
 				  renderingClass);
 	}
-      }      
+      }
     }
-  }  
+  }
 
   /**
      Parse the additivity option for a non-root category.
    */
   void parseAdditivityForLogger(Properties props, Logger cat,
 				  String loggerName) {
-    String value = OptionConverter.findAndSubst(ADDITIVITY_PREFIX + loggerName, 
+    String value = OptionConverter.findAndSubst(ADDITIVITY_PREFIX + loggerName,
 					     props);
     LogLog.debug("Handling "+ADDITIVITY_PREFIX + loggerName+"=["+value+"]");
-    // touch additivity only if necessary	
+    // touch additivity only if necessary
     if((value != null) && (!value.equals(""))) {
       boolean additivity = OptionConverter.toBoolean(value, true);
       LogLog.debug("Setting additivity for \""+loggerName+"\" to "+
-		   additivity); 
+		   additivity);
       cat.setAdditivity(additivity);
     }
   }
-  
+
   /**
      This method must work for the root category as well.
    */
@@ -564,16 +562,16 @@ public class PropertyConfigurator implements Configurator {
     LogLog.debug("Parsing for [" +loggerName +"] with value=[" + value+"].");
     // We must skip over ',' but not white space
     StringTokenizer st = new StringTokenizer(value, ",");
-     
+
     // If value is not in the form ", appender.." or "", then we should set
     // the level of the loggeregory.
-    
+
     if(!(value.startsWith(",") || value.equals(""))) {
 
       // just to be on the safe side...
       if(!st.hasMoreTokens())
 	return;
-    
+
       String levelStr = st.nextToken();
       LogLog.debug("Level token is [" + levelStr + "].");
 
@@ -591,8 +589,8 @@ public class PropertyConfigurator implements Configurator {
 
     // Begin by removing all existing appenders.
     logger.removeAllAppenders();
-    
-    Appender appender;    
+
+    Appender appender;
     String appenderName;
     while(st.hasMoreTokens()) {
       appenderName = st.nextToken().trim();
@@ -602,8 +600,8 @@ public class PropertyConfigurator implements Configurator {
       appender = parseAppender(props, appenderName);
       if(appender != null) {
 	logger.addAppender(appender);
-      }      
-    }          
+      }
+    }
   }
 
   Appender parseAppender(Properties props, String appenderName) {
@@ -614,7 +612,7 @@ public class PropertyConfigurator implements Configurator {
     }
     // Appender was not previously initialized.
     String prefix = APPENDER_PREFIX + appenderName;
-    String layoutPrefix = prefix + ".layout";    
+    String layoutPrefix = prefix + ".layout";
 
     appender = (Appender) OptionConverter.instantiateByKey(props, prefix,
 					      org.apache.log4j.Appender.class,
@@ -628,16 +626,16 @@ public class PropertyConfigurator implements Configurator {
 
     if(appender instanceof OptionHandler) {
       if(appender.requiresLayout()) {
-	Layout layout = (Layout) OptionConverter.instantiateByKey(props, 
+	Layout layout = (Layout) OptionConverter.instantiateByKey(props,
 								  layoutPrefix,
-								  Layout.class, 
+								  Layout.class,
 								  null);
 	if(layout != null) {
 	  appender.setLayout(layout);
 	  LogLog.debug("Parsing layout options for \"" + appenderName +"\".");
 	  //configureOptionHandler(layout, layoutPrefix + ".", props);
           PropertySetter.setProperties(layout, props, layoutPrefix + ".");
-	  LogLog.debug("End of parsing for \"" + appenderName +"\".");      
+	  LogLog.debug("End of parsing for \"" + appenderName +"\".");
 	}
       }
       //configureOptionHandler((OptionHandler) appender, prefix + ".", props);
@@ -648,11 +646,11 @@ public class PropertyConfigurator implements Configurator {
     return appender;
   }
 
-  
+
   void  registryPut(Appender appender) {
     registry.put(appender.getName(), appender);
   }
-  
+
   Appender registryGet(String name) {
     return (Appender) registry.get(name);
   }
@@ -669,7 +667,7 @@ class PropertyWatchdog extends FileWatchdog {
      <code>filename</code> to reconfigure log4j. */
   public
   void doOnChange() {
-    new PropertyConfigurator().doConfigure(filename, 
+    new PropertyConfigurator().doConfigure(filename,
 					   LogManager.getLoggerRepository());
   }
 }

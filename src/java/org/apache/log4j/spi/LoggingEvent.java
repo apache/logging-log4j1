@@ -10,10 +10,7 @@ package org.apache.log4j.spi;
 import org.apache.log4j.*;
 
 import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.helpers.Loader;
 
-import java.io.StringWriter;
-import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
@@ -29,11 +26,11 @@ import java.util.Hashtable;
    is created. This instance is passed around to the different log4j
    components.
 
-   <p>This class is of concern to those wishing to extend log4j. 
+   <p>This class is of concern to those wishing to extend log4j.
 
    @author Ceki G&uuml;lc&uuml;
    @author James P. Cakalic
-   
+
    @since 0.8.2 */
 public class LoggingEvent implements java.io.Serializable {
 
@@ -43,7 +40,7 @@ public class LoggingEvent implements java.io.Serializable {
   transient public final String fqnOfCategoryClass;
 
   /** The category of the logging event. The category field is not
-  serialized for performance reasons. 
+  serialized for performance reasons.
 
   <p>It is set by the LoggingEvent constructor or set by a remote
   entity after deserialization. */
@@ -51,7 +48,7 @@ public class LoggingEvent implements java.io.Serializable {
 
   /** The category (logger) name. */
   public final String categoryName;
-  
+
   /** Level of logging event. Level cannot be serializable
       because it is a flyweight.  Due to its special seralization it
       cannot be declared final either. */
@@ -89,8 +86,8 @@ public class LoggingEvent implements java.io.Serializable {
   private String threadName;
 
 
-  /** This 
-      variable contains information about this event's throwable  
+  /** This
+      variable contains information about this event's throwable
   */
   private ThrowableInformation throwableInfo;
 
@@ -100,7 +97,7 @@ public class LoggingEvent implements java.io.Serializable {
   /** Location information for the caller. */
   private LocationInfo locationInfo;
 
-  // Serialization 
+  // Serialization
   static final long serialVersionUID = -868428216207166145L;
 
   static final Integer[] PARAM_ARRAY = new Integer[1];
@@ -110,7 +107,7 @@ public class LoggingEvent implements java.io.Serializable {
 
   /**
      Instantiate a LoggingEvent from the supplied parameters.
-     
+
      <p>Except {@link #timeStamp} all the other fields of
      <code>LoggingEvent</code> are filled when actually needed.
      <p>
@@ -118,22 +115,22 @@ public class LoggingEvent implements java.io.Serializable {
      @param level The level of this event.
      @param message  The message of this event.
      @param throwable The throwable of this event.  */
-  public LoggingEvent(String fqnOfCategoryClass, Category logger, 
+  public LoggingEvent(String fqnOfCategoryClass, Category logger,
 		      Priority priority, Object message, Throwable throwable) {
     this.fqnOfCategoryClass = fqnOfCategoryClass;
     this.logger = logger;
     this.categoryName = logger.getName();
-    this.level = priority;   
+    this.level = priority;
     this.message = message;
     if(throwable != null) {
       this.throwableInfo = new ThrowableInformation(throwable);
     }
     timeStamp = System.currentTimeMillis();
-  }  
+  }
 
   /**
      Instantiate a LoggingEvent from the supplied parameters.
-     
+
      <p>Except {@link #timeStamp} all the other fields of
      <code>LoggingEvent</code> are filled when actually needed.
      <p>
@@ -142,20 +139,20 @@ public class LoggingEvent implements java.io.Serializable {
      @param level The level of this event.
      @param message  The message of this event.
      @param throwable The throwable of this event.  */
-  public LoggingEvent(String fqnOfCategoryClass, Category logger, 
-		      long timeStamp, Priority priority, Object message, 
+  public LoggingEvent(String fqnOfCategoryClass, Category logger,
+		      long timeStamp, Priority priority, Object message,
 		      Throwable throwable) {
     this.fqnOfCategoryClass = fqnOfCategoryClass;
     this.logger = logger;
     this.categoryName = logger.getName();
-    this.level = priority;   
+    this.level = priority;
     this.message = message;
     if(throwable != null) {
       this.throwableInfo = new ThrowableInformation(throwable);
     }
 
     this.timeStamp = timeStamp;
-  }  
+  }
 
 
 
@@ -173,12 +170,12 @@ public class LoggingEvent implements java.io.Serializable {
 
 
   /**
-     Return the message for this logging event. 
+     Return the message for this logging event.
 
      <p>Before serialization, the returned object is the message
      passed by the user to generate the logging event. After
      serialization, the returned value equals the String form of the
-     message possibly after object rendering. 
+     message possibly after object rendering.
 
      @since 1.1 */
   public
@@ -196,11 +193,11 @@ public class LoggingEvent implements java.io.Serializable {
       ndcLookupRequired = false;
       ndc = NDC.get();
     }
-    return ndc; 
+    return ndc;
   }
 
 
-  /** 
+  /**
       Retrung the the context corresponding to the <code>key</code>
       parameter. If there is a local MDC copy (probably from a remote
       machine, the search try it first, if that fails then search this
@@ -209,13 +206,13 @@ public class LoggingEvent implements java.io.Serializable {
   public
   Object getMDC(String key) {
     Object r;
-    
+
     if(mdcCopy != null) {
       r = mdcCopy.get(key);
       if(r != null) {
 	return r;
       }
-    } 
+    }
     return MDC.get(key);
   }
 
@@ -233,11 +230,11 @@ public class LoggingEvent implements java.io.Serializable {
   public
   String getRenderedMessage() {
      if(renderedMessage == null && message != null) {
-       if(message instanceof String) 
+       if(message instanceof String)
 	 renderedMessage = (String) message;
        else {
 	 LoggerRepository repository = logger.getHierarchy();
- 
+
 	 if(repository instanceof RendererSupport) {
 	   RendererSupport rs = (RendererSupport) repository;
 	   renderedMessage= rs.getRendererMap().findAndRender(message);
@@ -247,13 +244,13 @@ public class LoggingEvent implements java.io.Serializable {
        }
      }
      return renderedMessage;
-  }  
+  }
 
   /**
      Returns the time when the application started, in milliseconds
      elapsed since 01.01.1970.  */
   public
-  static 
+  static
   long getStartTime() {
     return startTime;
   }
@@ -281,32 +278,32 @@ public class LoggingEvent implements java.io.Serializable {
   /**
      Return this event's throwable's string[] representaion.
   */
-  public 
+  public
   String[] getThrowableStrRep() {
 
     if(throwableInfo ==  null)
       return null;
-    else 
+    else
       return throwableInfo.getThrowableStrRep();
   }
-	
 
-  private 
-  void readLevel(ObjectInputStream ois) 
+
+  private
+  void readLevel(ObjectInputStream ois)
                       throws java.io.IOException, ClassNotFoundException {
 
     int p = ois.readInt();
     try {
-      String className = (String) ois.readObject();      
+      String className = (String) ois.readObject();
       if(className == null) {
 	level = Level.toLevel(p);
       } else {
-	Method m = (Method) methodCache.get(className);	
+	Method m = (Method) methodCache.get(className);
 	if(m == null) {
 	  Class clazz = Class.forName(className);
 	  m = clazz.getDeclaredMethod(TO_LEVEL, TO_LEVEL_PARAMS);
 	  methodCache.put(className, m);
-	}      
+	}
 	PARAM_ARRAY[0] = new Integer(p);
 	level = (Level) m.invoke(null,  PARAM_ARRAY);
       }
@@ -318,7 +315,7 @@ public class LoggingEvent implements java.io.Serializable {
 
   private void readObject(ObjectInputStream ois)
                         throws java.io.IOException, ClassNotFoundException {
-    ois.defaultReadObject();    
+    ois.defaultReadObject();
     readLevel(ois);
 
     // Make sure that no location info is available to Layouts
@@ -330,7 +327,7 @@ public class LoggingEvent implements java.io.Serializable {
   void writeObject(ObjectOutputStream oos) throws java.io.IOException {
     // Aside from returning the current thread name the wgetThreadName
     // method sets the threadName variable.
-    this.getThreadName();    
+    this.getThreadName();
 
     // This sets the renders the message in case it wasn't up to now.
     this.getRenderedMessage();
@@ -347,12 +344,12 @@ public class LoggingEvent implements java.io.Serializable {
     this.getThrowableStrRep();
 
     oos.defaultWriteObject();
-    
+
     // serialize this event's level
     writeLevel(oos);
   }
 
-  private 
+  private
   void writeLevel(ObjectOutputStream oos) throws java.io.IOException {
 
     oos.writeInt(level.toInt());

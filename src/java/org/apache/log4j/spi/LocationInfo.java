@@ -13,15 +13,14 @@ import java.io.StringWriter;
 import java.io.PrintWriter;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.Layout;
-import org.apache.log4j.helpers.Loader;
 
 /**
    The internal representation of caller location information.
-     
+
    @since 0.8.3
 */
 public class LocationInfo implements java.io.Serializable {
-    
+
   /**
      Caller's line number.
   */
@@ -63,7 +62,7 @@ public class LocationInfo implements java.io.Serializable {
       Class dummy = Class.forName("com.ibm.uvm.tools.DebugSupport");
       inVisualAge = true;
       LogLog.debug("Detected IBM VisualAge environment.");
-    } catch(Throwable e) { 
+    } catch(Throwable e) {
       // nothing to do
     }
   }
@@ -107,28 +106,28 @@ public class LocationInfo implements java.io.Serializable {
 
       // This method of searching may not be fastest but it's safer
       // than counting the stack depth which is not guaranteed to be
-      // constant across JVM implementations.      
+      // constant across JVM implementations.
       ibegin = s.lastIndexOf(fqnOfCallingClass);
-      if(ibegin == -1) 
+      if(ibegin == -1)
 	return;
 
 
-      ibegin = s.indexOf(Layout.LINE_SEP, ibegin); 
-      if(ibegin == -1) 
+      ibegin = s.indexOf(Layout.LINE_SEP, ibegin);
+      if(ibegin == -1)
 	return;
       ibegin+= Layout.LINE_SEP_LEN;
-      
+
       // determine end of line
-      iend = s.indexOf(Layout.LINE_SEP, ibegin); 
-      if(iend == -1) 
+      iend = s.indexOf(Layout.LINE_SEP, ibegin);
+      if(iend == -1)
 	return;
 
-      // VA has a different stack trace format which doesn't 
+      // VA has a different stack trace format which doesn't
       // need to skip the inital 'at'
       if(!inVisualAge) {
 	// back up to first blank character
-	ibegin = s.lastIndexOf("at ", iend); 
-	if(ibegin == -1) 
+	ibegin = s.lastIndexOf("at ", iend);
+	if(ibegin == -1)
 	  return;
 	// Add 3 to skip "at ";
 	ibegin += 3;
@@ -142,13 +141,13 @@ public class LocationInfo implements java.io.Serializable {
        logging request.
     */
     public
-    String getClassName() {      
-      if(fullInfo == null) return NA;      
+    String getClassName() {
+      if(fullInfo == null) return NA;
       if(className == null) {
 	// Starting the search from '(' is safer because there is
 	// potentially a dot between the parentheses.
 	int iend = fullInfo.lastIndexOf('(');
-	if(iend == -1) 
+	if(iend == -1)
 	  className = NA;
 	else {
 	  iend =fullInfo.lastIndexOf('.', iend);
@@ -167,7 +166,7 @@ public class LocationInfo implements java.io.Serializable {
 	    ibegin = fullInfo.lastIndexOf(' ', iend)+1;
           }
 
-	  if(iend == -1) 
+	  if(iend == -1)
 	    className = NA;
 	  else
 	    className = this.fullInfo.substring(ibegin, iend);
@@ -181,18 +180,18 @@ public class LocationInfo implements java.io.Serializable {
 
        <p>This information is not always available.
     */
-    public 
+    public
     String getFileName() {
       if(fullInfo == null) return NA;
-      
+
       if(fileName == null) {
-	int iend = fullInfo.lastIndexOf(':');	
+	int iend = fullInfo.lastIndexOf(':');
 	if(iend == -1)
 	  fileName = NA;
 	else {
 	  int ibegin = fullInfo.lastIndexOf('(', iend - 1);
 	  fileName = this.fullInfo.substring(ibegin + 1, iend);
-	}	
+	}
       }
       return fileName;
     }
@@ -200,19 +199,19 @@ public class LocationInfo implements java.io.Serializable {
     /**
        Returns the line number of the caller.
 
-       <p>This information is not always available.       
+       <p>This information is not always available.
     */
-    public 
+    public
     String getLineNumber() {
       if(fullInfo == null) return NA;
-      
+
       if(lineNumber == null) {
-	int iend = fullInfo.lastIndexOf(')');	
+	int iend = fullInfo.lastIndexOf(')');
 	int ibegin = fullInfo.lastIndexOf(':', iend -1);
 	if(ibegin == -1)
 	  lineNumber = NA;
-	else 
-	  lineNumber = this.fullInfo.substring(ibegin + 1, iend);	
+	else
+	  lineNumber = this.fullInfo.substring(ibegin + 1, iend);
       }
       return lineNumber;
     }
@@ -222,14 +221,14 @@ public class LocationInfo implements java.io.Serializable {
     */
     public
     String getMethodName() {
-      if(fullInfo == null) return NA;            
+      if(fullInfo == null) return NA;
       if(methodName == null) {
-	int iend = fullInfo.lastIndexOf('(');	
+	int iend = fullInfo.lastIndexOf('(');
 	int ibegin = fullInfo.lastIndexOf('.', iend);
 	if(ibegin == -1)
 	  methodName = NA;
 	else
-	  methodName = this.fullInfo.substring(ibegin + 1, iend);	
+	  methodName = this.fullInfo.substring(ibegin + 1, iend);
       }
       return methodName;
     }

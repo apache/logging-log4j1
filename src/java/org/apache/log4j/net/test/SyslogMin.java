@@ -9,21 +9,17 @@
 package org.apache.log4j.net.test;
 
 import org.apache.log4j.Category;
-import org.apache.log4j.Layout;
 import org.apache.log4j.PropertyConfigurator;
-import org.apache.log4j.Appender;
-import org.apache.log4j.net.SocketAppender;
 import org.apache.log4j.Priority;
 import org.apache.log4j.NDC;
-import java.io.IOException;
 
 
 public class SyslogMin {
-  
+
   static Category CAT = Category.getInstance(SyslogMin.class.getName());
-				     
-  public 
-  static 
+
+  public
+  static
   void main(String argv[]) {
 
       if(argv.length == 1) {
@@ -35,7 +31,7 @@ public class SyslogMin {
       test("someHost");
   }
 
-  
+
   static
   void Usage(String msg) {
     System.err.println(msg);
@@ -43,7 +39,7 @@ public class SyslogMin {
     System.exit(1);
   }
 
-  
+
   static
   void ProgramInit(String configFile) {
     int port = 0;

@@ -9,7 +9,6 @@ package org.apache.log4j.or;
 
 import org.apache.log4j.spi.RendererSupport;
 import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.helpers.Loader;
 import org.apache.log4j.helpers.OptionConverter;
 import java.util.Hashtable;
 
@@ -34,12 +33,12 @@ public class RendererMap {
   */
   static
   public
-  void addRenderer(RendererSupport repository, String renderedClassName, 
+  void addRenderer(RendererSupport repository, String renderedClassName,
 		   String renderingClassName) {
     LogLog.debug("Rendering class: ["+renderingClassName+"], Rendered class: ["+
 		 renderedClassName+"].");
-    ObjectRenderer renderer = (ObjectRenderer) 
-             OptionConverter.instantiateByClassName(renderingClassName, 
+    ObjectRenderer renderer = (ObjectRenderer)
+             OptionConverter.instantiateByClassName(renderingClassName,
 						    ObjectRenderer.class,
 						    null);
     if(renderer == null) {
@@ -66,7 +65,7 @@ public class RendererMap {
   String findAndRender(Object o) {
     if(o == null)
       return null;
-    else 
+    else
       return get(o.getClass()).doRender(o);
   }
 
@@ -74,19 +73,19 @@ public class RendererMap {
   /**
      Syntactic sugar method that calls {@link #get(Class)} with the
      class of the object parameter. */
-  public 
+  public
   ObjectRenderer get(Object o) {
-    if(o == null) 
+    if(o == null)
       return null;
     else
       return get(o.getClass());
   }
-  
+
 
   /**
      Search the parents of <code>clazz</code> for a renderer. The
      renderer closest in the hierarchy will be returned. If no
-     renderers could be found, then the default renderer is returned.          
+     renderers could be found, then the default renderer is returned.
 
      <p>The search first looks for a renderer configured for
      <code>clazz</code>. If a renderer could not be found, then the
@@ -112,19 +111,19 @@ public class RendererMap {
      <tr><th>Added renderers</th><th>Value returned by <code>get(A2.class)</code></th>
 
      <tr><td><code>A0Renderer</code>
-         <td align="center"><code>A0Renderer</code>  
+         <td align="center"><code>A0Renderer</code>
 
      <tr><td><code>A0Renderer, A1Renderer</code>
-         <td align="center"><code>A1Renderer</code>  
+         <td align="center"><code>A1Renderer</code>
 
      <tr><td><code>X0Renderer</code>
-         <td align="center"><code>X0Renderer</code>  
+         <td align="center"><code>X0Renderer</code>
 
      <tr><td><code>A1Renderer, X0Renderer</code>
-         <td align="center"><code>X0Renderer</code>  
+         <td align="center"><code>X0Renderer</code>
 
      </table>
-     
+
      <p>This search algorithm is not the most natural, although it is
      particularly easy to implement. Future log4j versions
      <em>may</em> implement a more intuitive search
@@ -134,24 +133,24 @@ public class RendererMap {
  */
   public
   ObjectRenderer get(Class clazz) {
-    //System.out.println("\nget: "+clazz);    
+    //System.out.println("\nget: "+clazz);
     ObjectRenderer r = null;
     for(Class c = clazz; c != null; c = c.getSuperclass()) {
       //System.out.println("Searching for class: "+c);
       r = (ObjectRenderer) map.get(c);
       if(r != null) {
 	return r;
-      }      
+      }
       r = searchInterfaces(c);
       if(r != null)
 	return r;
     }
     return defaultRenderer;
-  }  
-  
+  }
+
   ObjectRenderer searchInterfaces(Class c) {
     //System.out.println("Searching interfaces of class: "+c);
-    
+
     ObjectRenderer r = (ObjectRenderer) map.get(c);
     if(r != null) {
       return r;
@@ -160,7 +159,7 @@ public class RendererMap {
       for(int i = 0; i < ia.length; i++) {
 	r = searchInterfaces(ia[i]);
 	if(r != null)
-	  return r; 
+	  return r;
       }
     }
     return null;
@@ -179,7 +178,7 @@ public class RendererMap {
   }
 
   /**
-     Register an {@link ObjectRenderer} for <code>clazz</code>.     
+     Register an {@link ObjectRenderer} for <code>clazz</code>.
   */
   public
   void put(Class clazz, ObjectRenderer or) {

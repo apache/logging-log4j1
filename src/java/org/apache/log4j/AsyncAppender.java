@@ -13,7 +13,6 @@ package org.apache.log4j;
 import org.apache.log4j.Category;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.helpers.BoundedFIFO;
-import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.AppenderAttachable;
 import org.apache.log4j.helpers.AppenderAttachableImpl;
 import org.apache.log4j.helpers.LogLog;
@@ -22,13 +21,13 @@ import java.util.Enumeration;
 /**
    The AsyncAppender lets users log events asynchronously. It uses a
    bounded buffer to store logging events.
-   
+
    <p>The AsyncAppender will collect the events sent to it and then
    dispatch them to all the appenders that are attached to it. You can
    attach multiple appenders to an AsyncAppender.
 
    <p>The AsyncAppender uses a separate thread to serve the events in
-   its bounded buffer. 
+   its bounded buffer.
 
    <p>Refer to the results in {@link org.apache.log4j.performance.Logging}
    for the impact of using this appender.
@@ -40,16 +39,16 @@ import java.util.Enumeration;
    and <a href="xml/examples/doc-files/sample5.xml">sample5.xml</a>.
 
 
-   
+
    @author Ceki G&uuml;lc&uuml;
    @since 0.9.1 */
-public class AsyncAppender extends AppenderSkeleton 
+public class AsyncAppender extends AppenderSkeleton
                                             implements AppenderAttachable {
-  
+
   /**
      A string constant used in naming the option for setting the
      location information flag.  Current value of this string
-     constant is <b>LocationInfo</b>.  
+     constant is <b>LocationInfo</b>.
 
      <p>Note that all option keys are case sensitive.
 
@@ -63,7 +62,7 @@ public class AsyncAppender extends AppenderSkeleton
   /**
      A string constant used in naming the option for setting the size of the
      internal buffer where logging events are stored until they are written.
-     Current value of this string constant is <b>BufferSize</b>.  
+     Current value of this string constant is <b>BufferSize</b>.
 
      <p>Note that all option keys are case sensitive.
 
@@ -94,14 +93,14 @@ public class AsyncAppender extends AppenderSkeleton
     dispatcher = new Dispatcher(bf, this);
     dispatcher.start();
   }
-  
 
-  public 
+
+  public
   void addAppender(Appender newAppender) {
     synchronized(aai) {
       aai.addAppender(newAppender);
     }
-  } 
+  }
 
   public
   void append(LoggingEvent event) {
@@ -113,7 +112,7 @@ public class AsyncAppender extends AppenderSkeleton
 
     event.getMDCCopy();
     if(locationInfo) {
-      event.getLocationInformation();	
+      event.getLocationInformation();
     }
     synchronized(bf) {
       while(bf.isFull()) {
@@ -129,8 +128,8 @@ public class AsyncAppender extends AppenderSkeleton
 	  }
 	}
       }
- 
-      //cat.debug("About to put new event in buffer.");      
+
+      //cat.debug("About to put new event in buffer.");
       bf.put(event);
       if(bf.wasEmpty()) {
 	//cat.debug("Notifying dispatcher to process events.");
@@ -142,16 +141,16 @@ public class AsyncAppender extends AppenderSkeleton
   /**
      Close this <code>AsyncAppender</code> by interrupting the
      dispatcher thread which will process all pending events before
-     exiting. 
+     exiting.
   */
-  public 
+  public
   void close() {
     synchronized(this) {
       if(closed) // avoid multiple close, otherwise one gets NullPointerException
-	return; 
+	return;
       closed = true;
     }
-    
+
     // The following cannot be synchronized on "this" because the
     // dispatcher synchronizes with "this" in its while loop. If we
     // did synchronize we would systematically get deadlocks when
@@ -192,16 +191,16 @@ public class AsyncAppender extends AppenderSkeleton
   /**
      Is the appender passed as parameter attached to this category?
    */
-  public 
+  public
   boolean isAttached(Appender appender) {
     return aai.isAttached(appender);
   }
 
-  
+
   /**
      The <code>AsyncAppender</code> does not require a layout. Hence,
      this method always returns <code>false</code>. */
-  public 
+  public
   boolean requiresLayout() {
     return false;
   }
@@ -212,7 +211,7 @@ public class AsyncAppender extends AppenderSkeleton
       aai.removeAllAppenders();
     }
   }
-  
+
 
   public
   void removeAppender(Appender appender) {
@@ -243,8 +242,8 @@ public class AsyncAppender extends AppenderSkeleton
   void setLocationInfo(boolean flag) {
     locationInfo = flag;
   }
-  
-  
+
+
   /**
      The <b>BufferSize</b> option takes a non-negative integer
      value.  This integer value determines the maximum size of the
@@ -255,13 +254,13 @@ public class AsyncAppender extends AppenderSkeleton
      AsyncAppender, it is safe to set a buffer size smaller than the
      {@link #DEFAULT_BUFFER_SIZE default buffer size} because
      configurators guarantee that an appender cannot be used before
-     being completely configured. 
+     being completely configured.
    */
   public
   void setBufferSize(int size) {
     bf.resize(size);
   }
-  
+
   /**
      Returns the current value of the <b>BufferSize</b> option.
    */
@@ -296,7 +295,7 @@ class Dispatcher extends Thread {
 
   void close() {
     synchronized(bf) {
-      interrupted = true;   
+      interrupted = true;
       // We have a waiting dispacther if and only if bf.length is
       // zero.  In that case, we need to give it a death kiss.
       if(bf.length() == 0) {
@@ -312,7 +311,7 @@ class Dispatcher extends Thread {
      buffer to process. After having processed an event, we release
      the monitor (variable bf) so that new events can be placed in the
      buffer, instead of keeping the monitor and processing the remaining
-     events in the buffer. 
+     events in the buffer.
 
     <p>Other approaches might yield better results.
 
@@ -323,12 +322,12 @@ class Dispatcher extends Thread {
     //Category cat = Category.getInstance(Dispatcher.class.getName());
 
     LoggingEvent event;
-    
+
     while(true) {
       synchronized(bf) {
 	if(bf.length() == 0) {
 	  // Exit loop if interrupted but only if the the buffer is empty.
-	  if(interrupted) { 
+	  if(interrupted) {
 	    //cat.info("Exiting.");
 	    return;
 	  }
@@ -346,7 +345,7 @@ class Dispatcher extends Thread {
 	  bf.notify();
 	}
       } // synchronized
-  
+
       // The synchronization on parent is necessary to protect against
       // operations on the aai object of the parent
       synchronized(container.aai) {

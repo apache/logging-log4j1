@@ -11,14 +11,6 @@
 
 package org.apache.log4j;
 
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.helpers.Loader;
-import org.apache.log4j.helpers.OptionConverter;
-import org.apache.log4j.spi.LoggerRepository;
-import org.apache.log4j.spi.RendererSupport;
-import org.apache.log4j.or.ObjectRenderer;
-import org.apache.log4j.or.RendererMap;
-import java.util.Enumeration;
 
 /**
    Use this class to quickly configure the package.
@@ -61,7 +53,7 @@ public class BasicConfigurator {
      Reset the default hierarchy to its defaut. It is equivalent to
      calling
      <code>Category.getDefaultHierarchy().resetConfiguration()</code>.
- 
+
      See {@link Hierarchy#resetConfiguration()} for more details.  */
   public
   static

@@ -7,10 +7,8 @@
 
 package org.apache.log4j.net;
 
-import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.Category;
-import org.apache.log4j.Hierarchy;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.spi.RendererSupport;
 import org.apache.log4j.spi.LoggerRepository;
@@ -27,7 +25,7 @@ import javax.naming.NamingException;
 
 /**
    A simple application receiving the logging events sent by a JMSAppender.
-   
+
 
    @author Ceki G&uuml;lc&uuml;
 */
@@ -35,47 +33,47 @@ public class JMSSink  {
 
   static public void main(String[] args) {
     if(args.length != 3) {
-      usage("Wrong number of arguments.");     
+      usage("Wrong number of arguments.");
     }
 
     String tcfBindingName = args[0];
     String topicBindingName = args[1];
     PropertyConfigurator.configure(args[2]);
-    
+
     LoggerRepository rep = LogManager.getLoggerRepository();
     if(rep instanceof RendererSupport) {
       ((RendererSupport) rep).setRenderer(Message.class, new MessageRenderer());
     }
 
     try {
-      Context ctx = new InitialContext();      
+      Context ctx = new InitialContext();
       TopicConnectionFactory topicConnectionFactory;
-      topicConnectionFactory = (TopicConnectionFactory) lookup(ctx, 
+      topicConnectionFactory = (TopicConnectionFactory) lookup(ctx,
                                                                tcfBindingName);
 
-      TopicConnection topicConnection = 
-	                        topicConnectionFactory.createTopicConnection(); 
+      TopicConnection topicConnection =
+	                        topicConnectionFactory.createTopicConnection();
       topicConnection.start();
-    
+
       TopicSession topicSession = topicConnection.createTopicSession(false,
                                                        Session.AUTO_ACKNOWLEDGE);
 
       Topic topic = (Topic)ctx.lookup(topicBindingName);
 
       //TopicSubscriber topicSubscriber = topicSession.createSubscriber(topic);
-      TopicSubscriber topicSubscriber = 
+      TopicSubscriber topicSubscriber =
            topicSession.createDurableSubscriber(topic, "x");
 
-      
+
       LoggingEvent event;
-      Category remoteCategory;    
+      Category remoteCategory;
 
       while(true) {
-	ObjectMessage msg = (ObjectMessage)topicSubscriber.receive();      
+	ObjectMessage msg = (ObjectMessage)topicSubscriber.receive();
 	event = (LoggingEvent) msg.getObject();
 	remoteCategory = Category.getInstance(event.categoryName);
-	remoteCategory.callAppenders(event);	
-	
+	remoteCategory.callAppenders(event);
+
 	// dump the JMSMessage
 	// remoteCategory.debug(msg);
 
@@ -94,8 +92,8 @@ public class JMSSink  {
     } catch(NameNotFoundException e) {
       LogLog.error("Could not find name ["+name+"].");
       throw e;
-    }    
-  }  
+    }
+  }
 
 
   static

@@ -9,22 +9,20 @@ package org.apache.log4j.performance;
 
 import org.apache.log4j.Layout;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.Category;
-import org.apache.log4j.Priority;
 import org.apache.log4j.AppenderSkeleton;
 
 /**
    A bogus appender which calls the format method of its layout object
-   but does not write the result anywhere.   
+   but does not write the result anywhere.
  */
 public class NullAppender extends AppenderSkeleton {
 
   public static String s;
-  public String t;	
+  public String t;
 
   public
   NullAppender() {}
-  
+
   public
   NullAppender(Layout layout) {
     this.layout = layout;
@@ -32,7 +30,7 @@ public class NullAppender extends AppenderSkeleton {
 
   public
   void close() {}
-  
+
   public
   void doAppend(LoggingEvent event) {
     if(layout != null) {
@@ -51,5 +49,5 @@ public class NullAppender extends AppenderSkeleton {
   public
   boolean requiresLayout() {
     return true;
-  }  
+  }
 }
