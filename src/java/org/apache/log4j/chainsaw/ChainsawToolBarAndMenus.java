@@ -102,7 +102,6 @@ import org.apache.log4j.chainsaw.icons.ChainsawIcons;
 import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
 import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
 import org.apache.log4j.chainsaw.prefs.SettingsListener;
-import org.apache.log4j.chainsaw.prefs.SettingsManager;
 import org.apache.log4j.helpers.LogLog;
 
 
@@ -220,8 +219,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
                 if (entryEnabled != newEnabled) {
                   ((JCheckBoxMenuItem) panelMenuMap.get(entry.getKey())).getModel()
                    .setEnabled(newEnabled);
-                  panelEnabledMap.put(
-                    entry.getKey(), new Boolean(newEnabled));
+                  panelEnabledMap.put(entry.getKey(), new Boolean(newEnabled));
                 }
               }
             }
@@ -531,31 +529,6 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     viewMenu.add(menuItemClose);
     viewMenu.addSeparator();
 
-    ButtonGroup levelIconGroup = new ButtonGroup();
-    JMenu levelIconMenu = new JMenu("Display Level column as");
-    levelIconMenu.setMnemonic('l');
-
-    levelIconGroup.add(levelDisplayIcon);
-    levelIconGroup.add(levelDisplayText);
-
-    levelDisplayIcon.addActionListener(
-      new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          levelDisplay = ChainsawConstants.LEVEL_DISPLAY_ICONS;
-          SettingsManager.getInstance().saveSettings();
-          SettingsManager.getInstance().loadSettings();
-        }
-      });
-
-    levelDisplayText.addActionListener(
-      new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          levelDisplay = ChainsawConstants.LEVEL_DISPLAY_TEXT;
-          SettingsManager.getInstance().saveSettings();
-          SettingsManager.getInstance().loadSettings();
-        }
-      });
-
     ButtonGroup tabPlacementGroup = new ButtonGroup();
     JMenu tabMenu = new JMenu("Tabs");
     tabMenu.setMnemonic('a');
@@ -634,9 +607,6 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
       LogLog.debug("Can't find new GTK L&F, might be Windows, or <JDK1.4.2");
     }
 
-    levelIconMenu.add(levelDisplayIcon);
-    levelIconMenu.add(levelDisplayText);
-
     if (levelDisplay.equals(ChainsawConstants.LEVEL_DISPLAY_ICONS)) {
       levelDisplayIcon.setSelected(true);
     } else {
@@ -648,7 +618,6 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
 
     viewMenu.add(showTabs);
 
-    viewMenu.add(levelIconMenu);
     viewMenu.add(tabMenu);
     viewMenu.add(responsiveNess);
     viewMenu.add(lookAndFeelMenu);
@@ -798,7 +767,8 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
       Action.SHORT_DESCRIPTION,
       "Shows the currently configured Log4j Receivers");
     action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("F6"));
-    action.putValue(Action.SMALL_ICON, new ImageIcon(ChainsawIcons.ANIM_NET_CONNECT));
+    action.putValue(
+      Action.SMALL_ICON, new ImageIcon(ChainsawIcons.ANIM_NET_CONNECT));
     toggleShowReceiversCheck.setAction(action);
 
     return action;
