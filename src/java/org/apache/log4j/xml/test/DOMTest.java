@@ -53,7 +53,6 @@ public class DOMTest {
   static void init(String configFile) {
     JoranConfigurator jc = new JoranConfigurator();
     jc.doConfigure(configFile, LogManager.getLoggerRepository());
-    jc.logErrors();
   }
 
   static void test() {
