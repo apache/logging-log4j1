@@ -85,23 +85,25 @@ public class SizeBasedRollingTestCase extends TestCase {
     rfa.setLayout(layout);
     SlidingWindowRollingPolicy swrp = new SlidingWindowRollingPolicy();
     SizeBasedTriggeringPolicy sbtp = new SizeBasedTriggeringPolicy();
-    sbtp.setMaxFileSize(1000);
+    sbtp.setMaxFileSize(100);
     swrp.setFileNamePattern("output/test.%i");
     rfa.setRollingPolicy(swrp);
     rfa.setTriggeringPolicy(sbtp);
     //rfa.setFile("test");
     rfa.activateOptions();
-    logger.addAppender(rfa);
+    root.addAppender(rfa);
     
 
-    for (int i = 0; i < 1000; i++) {
+    for (int i = 0; i < 69; i++) {
       try {
         Thread.sleep(10);
       } catch(Exception e) {}
       if (i < 10) {
-        logger.debug("Hello   " + i);
+        logger.debug("Hello---" + i);
+      } else if (i < 100) {
+        logger.debug("Hello--" + i);
       } else {
-        logger.debug("Hello  " + i);
+        logger.debug("Hello-" + i);
       }
     }
   }

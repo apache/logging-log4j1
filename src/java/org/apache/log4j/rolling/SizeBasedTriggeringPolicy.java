@@ -63,7 +63,7 @@ public class SizeBasedTriggeringPolicy implements TriggeringPolicy {
 
   public boolean isTriggeringEvent(File file) {
     System.out.print("Size: "+ file.length());
-    return (file.length() > maxFileSize);
+    return (file.length() >= maxFileSize);
   }
 
   public long getMaxFileSize() {
