@@ -32,21 +32,49 @@ public class Compare {
       lineCounter++;
       String s2 = in2.readLine();
       if(!s1.equals(s2)) {
-	System.out.println("Files ["+file1+"] and ["+file2+"] differ on line " 
+        System.out.println("Files ["+file1+"] and ["+file2+"] differ on line " 
 			   +lineCounter);
-	System.out.println("One reads:  ["+s1+"].");
-	System.out.println("Other reads:["+s2+"].");
-	return false;
+      	System.out.println("One reads:  ["+s1+"].");
+      	System.out.println("Other reads:["+s2+"].");
+      	outputFile(file1);
+      	outputFile(file2);
+      	return false;
       }
     }
     
     // the second file is longer
     if(in2.read() != -1) {
       System.out.println("File ["+file2+"] longer than file ["+file1+"].");
+    	outputFile(file1);
+    	outputFile(file2);
       return false;
     }
     
     return true;
+  }
+  
+  private static void outputFile(String file) throws FileNotFoundException, 
+                                                            IOException {
+    BufferedReader in1 = new BufferedReader(new FileReader(file));
+    
+    String s1;
+    int lineCounter = 0;
+    System.out.println("--------------------------------");
+    System.out.println("Contents of " + file + ":");
+    while((s1 = in1.readLine()) != null) {
+      lineCounter++;
+      System.out.print(lineCounter);
+      if (lineCounter < 10) {
+        System.out.print("   : ");
+      } else if (lineCounter < 100) {
+        System.out.print("  : ");
+      } else if (lineCounter < 1000) {
+        System.out.print(" : ");
+      } else {
+        System.out.print(": ");
+      }
+      System.out.println(s1);
+    }
   }
   
 }
