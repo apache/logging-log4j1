@@ -652,7 +652,9 @@ public class DOMConfigurator implements Configurator {
       
     try {
       dbf.setValidating(true);
+
       DocumentBuilder docBuilder = dbf.newDocumentBuilder();
+
       docBuilder.setErrorHandler(new SAXErrorHandler());      
       docBuilder.setEntityResolver(new Log4jEntityResolver());        
       // we change the system ID to a valid URI so that Crimson won't
