@@ -186,7 +186,7 @@
   </target>
 
   <target name="build" description="Compile all log4j components."
-         depends="init, build.core, build.examples, build.xml,
+         depends="init, build.core, build.chainsaw, build.examples, build.xml,
          build.javamail, build.jms, build.jmx, build.avalonFramework"/>
 
   <target name="build.core" depends="init">
@@ -289,7 +289,7 @@
     </javac>
   </target>
 
- <target name="build.chainsaw" depends="init, check-for-oro, build.core">
+ <target name="build.chainsaw" depends="init, chainsawCheck, build.core" if="chainsaw-libraries-present">
     <javac deprecation="${deprecation}"
            srcdir="${java.source.dir}"
      destdir="${javac.dest}"
@@ -391,18 +391,26 @@
   <!-- Runs Chainsaw                                                     -->
   <!-- ================================================================= -->
 
-  <target name="check-for-oro" >
-    <condition property="external.libraries.oro.present">
+  <target name="oroCheck" >
+    <condition property="chainsaw-libraries-present">
        <and>
           <isset property="regexp.oro.jar" />
           <available file="${regexp.oro.jar}"/>
        </and>
     </condition>
-    
-    <fail unless="external.libraries.oro.present" message="Chainsaw v2 needs Jakarta ORO, and it appears your are missing the Jakarta ORO package.  Please check the build.properties file."/>
+
   </target>
   
-  <target name="chainsaw" depends="build.chainsaw, jar" description="Builds and runs Chainsaw v2">
+  <target name="chainsawCheck" depends="oroCheck" if="chainsaw-libraries-present">
+    <echo message="Chainsaw dependant libraries present."/>
+  </target>
+
+  <target name="chainsawRunCheck" depends="chainsawCheck">
+    <fail unless="chainsaw-libraries-present" message="Chainsaw v2 needs Jakarta ORO, and it appears your are missing the Jakarta ORO package.  Please check the build.properties file."/>
+  </target>
+  
+  <target name="chainsaw" depends="chainsawRunCheck, build.chainsaw, log4j.jar, log4j-chainsaw.jar" description="Builds and runs Chainsaw v2" >
+
     <!-- Need to fork to avoid problems -->
     <java classname="org.apache.log4j.chainsaw.LogUI" fork="yes"
           classpath="${jar.dest}/${log4j.jar};${jar.dest}/${log4j-chainsaw.jar};${ant.home}/lib/crimson.jar;${regexp.oro.jar}">
