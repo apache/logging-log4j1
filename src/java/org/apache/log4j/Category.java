@@ -168,8 +168,7 @@ public class Category implements AppenderAttachable {
 
   /**
      The fully qualified name of the Category class. See also the 
-     getSubclasses should
-     create their own private FQCN variable.  */
+     getFQCN method. */
   private static final String FQCN = Category.class.getName();
   
   protected ResourceBundle resourceBundle;
