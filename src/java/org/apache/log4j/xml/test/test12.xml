@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration SYSTEM "../log4j.dtd">
+
+<configuration configDebug="true">
+
+	<appender name="TEMP" class="org.log4j.FileAppender">
+                <param name="Append" value="false" />
+		<param name="File"   value="temp" />
+		<layout class="org.log4j.PatternLayout">
+ 		    <param name="ConversionPattern"
+		           value="%-5p %c{2} - %m\n"/>
+		</layout>
+		<filter class="org.log4j.varia.PriorityMatchFilter">
+                  <param name="PriorityToMatch" value="WARN" />
+                  <param name="AcceptOnMatch" value="false" />
+		</filter>
+
+
+	</appender>
+ 
+	<root>
+          <appender-ref ref="TEMP" />	       
+	</root>
+</configuration>

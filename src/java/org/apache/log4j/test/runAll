@@ -1,0 +1,15 @@
+. .functions
+
+bash minreg simple || die "minreg simple FAILED.";
+bash minreg ttcc || die "minreg ttcc FAILED.";
+bash shallow || die "shallow test FAILED."
+bash shippedCodeFlag || die "shippedCodeFlag test FAILED."
+bash defaultInit || die "defaultInit test FAILED."
+bash propConfig || die "propConfig test FAILED."
+bash multipleAppenders || die "multipleAppenders test FAILED."
+bash confParsing || die "confParsing test FAILED."
+bash pattern || die "pattern test FAILED."
+bash mycat || die "mycat test FAILED."
+bash l7d || die "L7D test FAILED."
+
+bash unitTest || die "unit test FAILED."

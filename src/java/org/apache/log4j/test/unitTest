@@ -1,0 +1,21 @@
+
+java junit.textui.TestRunner org.log4j.test.UnitTestCategory
+  
+if [ $? != 0 ]; then
+  echo "UnitTestCategory failed."
+  exit 1   
+fi
+
+java junit.textui.TestRunner org.log4j.test.UnitTestVarSubst
+  
+if [ $? != 0 ]; then
+  echo "UnitTestVarSubst failed."
+  exit 1   
+fi
+
+
+java junit.textui.TestRunner org.log4j.test.UnitTestCyclicBuffer  
+if [ $? != 0 ]; then
+  echo "UnitTestCyclicBuffer failed."
+  exit 1   
+fi
