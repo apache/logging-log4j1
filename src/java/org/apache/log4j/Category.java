@@ -621,7 +621,8 @@ public class Category implements AppenderAttachable {
      it from the hierarchy. This is one of the central features of
      log4j.
 
-     @deprecated Please use {@link Logger#getLogger(String)} instead.
+     <b>Deprecated</b> Please use {@link Logger#getLogger(String)}
+     instead.
 
      @param name The name of the category to retrieve.  */
   public
@@ -637,7 +638,7 @@ public class Category implements AppenderAttachable {
     name of the category to retrieve.  See {@link
     #getInstance(String)} for more detailed information.
 
-    @deprecated Please use {@link Logger#getLogger(Class)} instead.
+    <b>Deprecated</b> Please use {@link Logger#getLogger(Class)} instead.
 
     @since 1.0 */
   public
@@ -723,7 +724,7 @@ public class Category implements AppenderAttachable {
      Category.getInstance("root")} does not retrieve the root category 
      but a category just under root named "root".
      
-     @deprecated Use {@link Logger#getRootLogger()} instead.
+     <b>Deprecated</b> Use {@link Logger#getRootLogger()} instead.
    */
   final
   public
