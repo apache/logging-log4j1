@@ -38,6 +38,8 @@ public class DataSourceConnectionSource extends ConnectionSourceSkeleton {
   private static final String POSTGRES_PART = "postgresql";
   private static final String MYSQL_PART = "mysql";
   private static final String ORACLE_PART = "oracle";
+  private static final String MSSQL_PART = "mssqlserver4"; 
+  
   private DataSource dataSource;
   int dialectCode;
   
@@ -100,6 +102,8 @@ public class DataSourceConnectionSource extends ConnectionSourceSkeleton {
         return ConnectionSource.MYSQL_DIALECT;
       } else if (dbName.indexOf(ORACLE_PART) != -1) {
         return ConnectionSource.ORACLE_DIALECT;
+      } else if (dbName.indexOf(MSSQL_PART) != -1) {
+        return ConnectionSource.MSSQL_DIALECT;
       } else {
         return ConnectionSource.UNKNOWN_DIALECT;
       }
