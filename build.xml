@@ -135,23 +135,6 @@
     <echo message="JNDI is present."/>
   </target>
 
-  <target name="jmxCheck" depends="jndiCheck" if="jndi-present">
-    <condition property="jmx-present">
-         <and>
-            <available classname="javax.management.MBeanInfo">
-             <classpath refid="compile.classpath"/>
-            </available>
-            <available classname="com.sun.jdmk.comm.HtmlAdaptorServer">
-             <classpath refid="compile.classpath"/>
-            </available>
-         </and>
-      </condition>
-
-  </target>
-  <target name="jmx" depends="jmxCheck" if="jmx-present">
-    <echo message="JMX is present."/>
-  </target>
-
   <target name="oroCheck" >
     <available classname="org.apache.oro.text.perl.Perl5Util" property="oro-present">
       <classpath refid="compile.classpath"/>
@@ -205,28 +188,28 @@
 
   <target name="build" description="Compile all log4j components."
 	      depends="init, build.core, build.examples, 
-	               build.xml, build.javamail, build.jms, build.jmx, 
+	               build.xml, build.javamail, build.jms,
 	               build.servletAPI, build.db, build.oro, build.chainsaw"/>
 
-  <target name="build.requiredeps" 
-  	depends="jndiCheck,jmsCheck,oroCheck,javamailCheck,servletAPICheck,jdbcExtensionCheck,jmxCheck,jaxpCheck"
+  <target name="requiredepsCheck" 
+  	depends="jndiCheck,jmsCheck,oroCheck,javamailCheck,servletAPICheck,jdbcExtensionCheck,jaxpCheck"
   	description="Compile all log4j components - fail if dependencies do not exist"
   	>
     <condition property="alldeps.exist">
-              <and>
-                <isset property="jndi-present"/>
-                <isset property="oro-present"/>
-                <isset property="jms-present"/>
-                <isset property="javamail-present"/>
-                <isset property="servletAPI-present"/>         	
-                <isset property="jdbcExtension-present"/>
-                <isset property="jmx-present"/>         	
-                <isset property="jaxp-present"/>         	
-              </and>
-          </condition>
-          <fail unless="alldeps.exist">
-              Some jar files required to perform a full compile of log4j are not available on the classpath.  Update build.properties as needed.
-          </fail>	<antcall target="build"/>
+      <and>
+        <isset property="jndi-present"/>
+        <isset property="oro-present"/>
+        <isset property="jms-present"/>
+        <isset property="javamail-present"/>
+        <isset property="servletAPI-present"/>         	
+        <isset property="jdbcExtension-present"/>       	
+        <isset property="jaxp-present"/>         	
+      </and>
+    </condition>
+    <fail unless="alldeps.exist">
+      Some jar files required to perform a full compile of log4j are not 
+       available on the classpath.  Update build.properties as needed.
+    </fail>	
   </target>
 
   <target name="build.core" depends="init, jndiCheck" if="jndi-present" >
@@ -258,17 +241,19 @@
     </javac>
   </target>
 
+
   <target name="build.chainsaw">
-	<ant antfile="build-chainsaw.xml" target="build.chainsaw"/>
+    <ant antfile="build-chainsaw.xml" target="build.chainsaw"/> 
   </target>	
   
   <target name="chainsaw.jar">
-	<ant antfile="build-chainsaw.xml" target="chainsaw.jar"/>
+    <ant antfile="build-chainsaw.xml" target="chainsaw.jar"/> 
   </target>	  
-	 	
+
   <target name="chainsaw" depends="log4j.jar" description="Builds and runs Chainsaw v2" >
-	<ant antfile="build-chainsaw.xml" target="chainsaw"/>
+    <ant antfile="build-chainsaw.xml" target="chainsaw"/>
   </target>	
+
 
  <!-- ================================================= -->
  <!--                Compile examples                   -->
@@ -333,17 +318,6 @@
     </javac>
   </target>
 
- <target name="build.jmx" depends="init, jmx, jndi" if="jmx-present">
-    <javac deprecation="${deprecation}"
-           srcdir="${java.source.dir}"
-    	   debug="${debug}"
-           destdir="${javac.dest}"
-           includes="${stem}/jmx/*.java"
-           excludes="${stem}/jmx/T.java">
-      <classpath refid="compile.classpath"/>
-    </javac>
-  </target>
-
    <target name="build.servletAPI" depends="init, servletAPI"
                 if="servletAPI-present">
     <javac srcdir="${java.source.dir}"
@@ -384,14 +358,14 @@
  <!-- Create log4j.jar, excluding tests and other odds and ends.        -->
  <!-- ================================================================= -->
   <target name="log4j.jar" depends="build">
-    <delete>
-      <fileset dir="${jar.dest}">
-        <include name="${log4j.jar}"/>
-      </fileset>
-    </delete>
+    
+  	<delete file="${log4j.jar}" verbose="true"/>
 
     <jar jarfile="${jar.dest}/${log4j.jar}" basedir="${javac.dest}"
-      includes="${stem}/*.class, ${stem}/xml/log4j.dtd, ${stem}/xml/logger.dtd,
+      includes="org/apache/ugli/**/*.class
+    	        ${stem}/*.class, 
+    	        ${stem}/xml/log4j.dtd, 
+    	        ${stem}/xml/logger.dtd,
                 org/apache/joran/**/*.class,
                 ${stem}/joran/**/*.class,
                 ${stem}/config/*.class,
@@ -414,10 +388,11 @@
                 ${stem}/or/sax/*.class,
                 ${stem}/or/jms/*.class,
                 ${stem}/plugins/*.class,
-                ${stem}/config/*.class,
-  	            org/apache/ugli/**/*.class"
-    				
-      excludes="**/UnitTest**, ${stem}/**/*BeanInfo.class">
+                ${stem}/config/*.class"
+      excludes="org/apache/ugli/**/JDK14*.class,
+    	         **/UnitTest**, 
+    	        ${stem}/**/*BeanInfo.class,"
+    	>
       <manifest>
         <attribute name="Manifest-version" value="1.0"/>
         <section name="org/apache/log4j/">
@@ -525,7 +500,7 @@
  <!-- ================================================================= -->
  <!-- Build a complete distribution. Results go to ${dist.images}       -->
  <!-- ================================================================= -->
-  <target name="dist" depends="init, clean, javadoc, jar, site">
+  <target name="dist" depends="init, clean, requiredepsCheck, javadoc, jar, site">
 
     <delete verbose="true">
       <fileset dir=".">
