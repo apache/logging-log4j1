@@ -16,20 +16,9 @@
 
 package org.apache.log4j.net;
 
-import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.Layout;
-import org.apache.log4j.Level;
-import org.apache.log4j.helpers.CyclicBuffer;
-import org.apache.log4j.helpers.OptionConverter;
-import org.apache.log4j.pattern.PatternConverter;
-import org.apache.log4j.pattern.PatternParser;
-import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.spi.TriggeringEventEvaluator;
-
 import java.io.StringWriter;
 import java.util.Date;
 import java.util.Properties;
-
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
@@ -40,6 +29,18 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.Layout;
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.helpers.CyclicBuffer;
+import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.pattern.PatternConverter;
+import org.apache.log4j.pattern.PatternParser;
+import org.apache.log4j.rule.ExpressionRule;
+import org.apache.log4j.rule.Rule;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.TriggeringEventEvaluator;
 
 
 /**
@@ -52,7 +53,26 @@ import javax.mail.internet.MimeMultipart;
    <code>BufferSize</code> logging events in its cyclic buffer. This
    keeps memory requirements at a reasonable level while still
    delivering useful application context.
-
+   
+   <p>There are three ways in which the trigger is fired, resulting in an email
+   containing the buffered events:
+   
+   <p>* DEFAULT BEHAVIOR: relies on an internal TriggeringEventEvaluator class that 
+   triggers the sending of an email when an event with a severity of ERROR or greater is received.
+   <p>* Set the 'evaluatorClass' param to the fully qualified class name of a class you 
+   have written that implements the TriggeringEventEvaluator interface.
+   <p>* Set the 'expression' param to a valid (infix) expression supported by ExpressionRule and 
+   ExpressionRule's supported operators and operands.
+   
+   As events are received, events are evaluated against the expression rule.  An event
+   that causes the rule to evaluate to true triggers the email send.
+   
+   If both evaluatorClass and expression params are set, the evaluatorClass is used.
+   
+   See org.apache.log4j.rule.ExpressionRule for a more information.
+   
+   <p>
+   
    @author Ceki G&uuml;lc&uuml;
    @since 1.0 */
 public class SMTPAppender extends AppenderSkeleton {
@@ -65,6 +85,7 @@ public class SMTPAppender extends AppenderSkeleton {
   private boolean locationInfo = false;
   protected CyclicBuffer cb = new CyclicBuffer(bufferSize);
   protected MimeMessage msg;
+  private String expression;
   protected TriggeringEventEvaluator evaluator;
   private PatternConverter subjectConverterHead;
   
@@ -296,6 +317,29 @@ public class SMTPAppender extends AppenderSkeleton {
   public String getFrom() {
     return from;
   }
+  
+  /**
+   * Returns the expression
+   * 
+   * @return expression
+   */
+  public String getExpression() {
+    return expression;
+  }
+  
+  /**
+   * Set an expression used to determine when the sending of an email is triggered.
+   * 
+   * Only use an expression to evaluate if the 'evaluatorClass' param is not provided.
+   * @param expression
+   */
+  public void setExpression(String expression) {
+    
+    if (!(evaluator instanceof DefaultEvaluator)) {
+      this.expression = expression;
+      evaluator = new DefaultEvaluator(expression);
+    }
+  }
 
   /**
      Returns value of the <b>Subject</b> option.
@@ -426,6 +470,19 @@ public class SMTPAppender extends AppenderSkeleton {
 
 
 class DefaultEvaluator implements TriggeringEventEvaluator {
+
+  private Rule expressionRule;
+  
+  public DefaultEvaluator() {}
+  
+  public DefaultEvaluator(String expression) {
+    try {
+      expressionRule = ExpressionRule.getRule(expression);
+    } catch (IllegalArgumentException iae) {
+      LogManager.getLogger(SMTPAppender.class).error("Unable to use provided expression - falling back to default behavior (trigger on ERROR or greater severity)", iae);
+    }
+  }
+  
   /**
      Is this <code>event</code> the e-mail triggering event?
 
@@ -433,6 +490,9 @@ class DefaultEvaluator implements TriggeringEventEvaluator {
      has ERROR level or higher. Otherwise it returns
      <code>false</code>. */
   public boolean isTriggeringEvent(LoggingEvent event) {
-    return event.getLevel().isGreaterOrEqual(Level.ERROR);
+    if (expressionRule == null) {
+      return event.getLevel().isGreaterOrEqual(Level.ERROR);
+    }
+    return expressionRule.evaluate(event);
   }
 }
