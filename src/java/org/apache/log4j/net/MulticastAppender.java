@@ -23,7 +23,6 @@ import java.net.MulticastSocket;
 import java.net.UnknownHostException;
 
 import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.LogManager;
 import org.apache.log4j.helpers.Constants;
 import org.apache.log4j.spi.LoggingEvent;
 
@@ -72,23 +71,6 @@ public class MulticastAppender extends AppenderSkeleton implements PortBased {
   private String encoding;
   
   public MulticastAppender() {
-  }
-
-  /**
-     Sends multicast packets to the <code>address</code> and <code>port</code>.
-  */
-  public MulticastAppender(InetAddress address, int port) {
-    this.address = address;
-    this.remoteHost = address.getHostName();
-    this.port = port;
-    connect();
-  }
-
-  /**
-     Sends multicast packets to the <code>address</code> and <code>port</code>.
-  */
-  public MulticastAppender(String host, int port) {
-    this(getAddressByName(host), port);
   }
 
   /**
@@ -204,12 +186,11 @@ public class MulticastAppender extends AppenderSkeleton implements PortBased {
     }
   }
 
-    static InetAddress getAddressByName(String host) {
+  InetAddress getAddressByName(String host) {
     try {
       return InetAddress.getByName(host);
     } catch (Exception e) {
-      LogManager.getLogger(MulticastAppender.class).error("Could not find address of [" + host + "].", e);
-
+      getLogger().error("Could not find address of [" + host + "].", e);
       return null;
     }
   }
