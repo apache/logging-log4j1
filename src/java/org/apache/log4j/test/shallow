@@ -55,7 +55,7 @@ function makeShallowConfigFile {
  echo "$A2_PREFIX.File=$logFile.A2" >> $LCF   
 
  echo "$ROOT_PREFIX=$rootPriority, A1" >> $LCF
- echo "log4j.category.org.apache.log4j.test.Shallow=$shallowPriority, A2" >> $LCF 
+ echo "log4j.logger.org.apache.log4j.test.Shallow=$shallowPriority, A2" >> $LCF 
 
  if [ -n "$additivity" ]; then
    echo "log4j.additivity.org.apache.log4j.test.Shallow=$additivity" >> $LCF
@@ -151,11 +151,11 @@ if [ $TEST -ge $start ]; then
   echo "log4j.appender.A.Append=false" >> socket.lcf
   echo "log4j.appender.A.layout=org.apache.log4j.PatternLayout" >> socket.lcf
   echo "log4j.appender.A.layout.ConversionPattern=%5p %x [%t] %c %m%n" >> socket.lcf
-  echo "log4j.configDebug=true" >> socket.lcf
+  echo "log4j.debug=true" >> socket.lcf
    
   java org.apache.log4j.test.ShortSocketServer $PORT socket.lcf  &
   sleep 3     
-  echo "log4j.rootCategory=DEBUG, A" > $LCF
+  echo "log4j.rootLogger=DEBUG, A" > $LCF
   lecho "log4j.appender.A=org.apache.log4j.net.SocketAppender"
   lecho "log4j.appender.A.Port=$PORT"
   lecho "log4j.appender.A.RemoteHost=localhost"

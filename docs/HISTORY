@@ -5,12 +5,14 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
 
- ??, 2001
+ September 25, 2001
 
  - Release of version 1.2alpha_0
 
+ - Log4j is now configurable using JMX. [*]
+
  - Modified SMTPAppender to allow multiple email sessions. Thanks to
-   Jon Skeet for supplying the relevant patch.
+   Jon Skeet for supplying the relevant patch. [*]
 
  - The CategoryFactory class has been replaced by the LoggerFactory
    class. The makeNewCategoryInstance method has been renamed as
@@ -41,7 +43,7 @@
  - Introduced the Mapped Diagnostic Context or MDC class. This class
    is similar to the NDC except that the diagnistic context is based
    on a map instead of a stack. Moreover the MDC is automatically
-   inherited by child threads under JDK 1.2 and above.
+   inherited by child threads under JDK 1.2 and above. [*]
 
  - Corrected a performance bug in the NDC class as observed by Dan
    Milstein and independently by Ray Millard. [*]
@@ -51,9 +53,9 @@
    is implemented by most log4j appenders and layouts. In particular,
    all appenders and layouts shipped with log4j contain these
    deprecated methods. They have become totally redundant after we
-   moved to JavaBeans style configuration in log4j 1.1.
+   moved to JavaBeans style configuration in log4j 1.1. [**]
 
- - Remoced deprecated method disable(Priority), disableAll,
+ - Removed deprecated methods disable(Priority), disableAll,
    disableDebug, disableInfo and enableAll in BasicConfigurator. [*]
 
  - Added supports java.io.Reader objects in the method doConfigure(),

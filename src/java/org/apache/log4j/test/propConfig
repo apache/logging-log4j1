@@ -29,7 +29,7 @@ LCF=log4j.properties
 
 function createProperties {
   echo "" > $LCF
-  lecho "log4j.rootCategory=DEBUG, A1"
+  lecho "log4j.rootLogger=DEBUG, A1"
   lecho "log4j.appender.A1=org.apache.log4j.FileAppender"
   lecho "log4j.appender.A1.File=$TEMP"
   lecho "log4j.appender.A1.Append=false"
