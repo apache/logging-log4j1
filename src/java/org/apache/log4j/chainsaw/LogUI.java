@@ -83,7 +83,9 @@ import java.util.Vector;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
@@ -330,7 +332,66 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    *
    */
   private void initGUI() {
-    welcomePanel = new WelcomePanel(this);
+    setupHelpSystem();
+    
+    setupReceiverPanel();
+    
+    setToolBarAndMenus(new ChainsawToolBarAndMenus(this));
+    toolbar = getToolBarAndMenus().getToolbar();
+    setJMenuBar(getToolBarAndMenus().getMenubar());
+    setTabbedPane(new ChainsawTabbedPane());
+
+    applicationPreferenceModelPanel.setOkCancelActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            preferencesFrame.setVisible(false);
+          }
+        });
+    
+  }
+
+  private void setupReceiverPanel() {
+    receiversPanel = new ReceiversPanel();
+    receiversPanel.addPropertyChangeListener("visible", new PropertyChangeListener() {
+
+      public void propertyChange(PropertyChangeEvent evt) {
+        messageLogger.debug("Receiver's panel:" + evt.getNewValue());
+          getApplicationPreferenceModel().setReceivers(((Boolean)evt.getNewValue()).booleanValue());
+      }});
+  }
+
+  /**
+   * Initialises the Help system and the WelcomePanel
+   *
+   */
+  private void setupHelpSystem() {
+    welcomePanel = new WelcomePanel();
+    JToolBar tb = welcomePanel.getToolbar();
+    tb.add(
+        new SmallButton(
+            new AbstractAction("Tutorial", new ImageIcon(ChainsawIcons.HELP)) {
+              public void actionPerformed(ActionEvent e) {
+                setupTutorial();
+              }
+            }));
+    tb.addSeparator();
+
+    final Action exampleConfigAction =
+    new AbstractAction("View example Receiver configuration") {
+      public void actionPerformed(ActionEvent e) {
+        HelpManager.getInstance().setHelpURL(ChainsawConstants.EXAMLE_CONFIG_URL);
+      }
+    };
+
+    exampleConfigAction.putValue(
+        Action.SHORT_DESCRIPTION,
+        "Displays an example Log4j configuration file with several Receivers defined.");
+
+    JButton exampleButton = new SmallButton(exampleConfigAction);
+    tb.add(exampleButton);
+
+    tb.add(Box.createHorizontalGlue());
+    
     
     /**
      * Setup a listener on the HelpURL property and automatically change the WelcomePages URL
@@ -345,20 +406,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 			}
 			
 		}});
-    
-    receiversPanel = new ReceiversPanel(this);
-    setToolBarAndMenus(new ChainsawToolBarAndMenus(this));
-    toolbar = getToolBarAndMenus().getToolbar();
-    setJMenuBar(getToolBarAndMenus().getMenubar());
-    setTabbedPane(new ChainsawTabbedPane());
-
-    applicationPreferenceModelPanel.setOkCancelActionListener(
-        new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            preferencesFrame.setVisible(false);
-          }
-        });
-    
   }
 
   /**
@@ -719,7 +766,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
         ((ImageIcon) ChainsawIcons.ICON_PREFERENCES).getImage());
     preferencesFrame.getContentPane().add(applicationPreferenceModelPanel);
 
-    preferencesFrame.setSize(640, 340);
+    preferencesFrame.setSize(640, 480);
     
     Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
     preferencesFrame.setLocation(new Point((screenDimension.width/2)-(preferencesFrame.getSize().width/2),  (screenDimension.height/2)-(preferencesFrame.getSize().height/2)  ));
@@ -848,7 +895,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     container.setLayout(new BorderLayout());
 
     try {
-      tutorialArea.setPage(getWelcomePanel().getTutorialURL());
+      tutorialArea.setPage(ChainsawConstants.TUTORIAL_URL);
       container.add(new JScrollPane(tutorialArea), BorderLayout.CENTER);
     } catch (Exception e) {
       messageLogger.error("Error occurred loading the Tutorial", e);
