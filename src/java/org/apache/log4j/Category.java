@@ -230,7 +230,7 @@ public class Category implements AppenderAttachable {
      <code>this</code>.  If no appenders could be found, emit a
      warning.
 
-     <p>This method always calls all the appenders inherited form the
+     <p>This method calls all the appenders inherited from the
      hierarchy circumventing any evaluation of whether to log or not
      to log the particular log request.
      

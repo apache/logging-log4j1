@@ -1,10 +1,3 @@
-//      Copyright 1996-2000, International Business Machines
-//      Corporation. All Rights Reserved.
-
-//      Copyright 2000, Ceki Gulcu. All Rights Reserved.
-
-//      See the LICENCE file for the terms of usage and distribution.
-
 
 package com.systemsunion.LoggingServer;
 
