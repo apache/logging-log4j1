@@ -145,7 +145,7 @@ public class NTEventLogAppender extends AppenderSkeleton {
       if (s != null) {
 	int len = s.length;
 	for(int i = 0; i < len; i++) {	
-	  sbuf.append(s[0]);
+	  sbuf.append(s[i]);
 	}	
       }
     }
