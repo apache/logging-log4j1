@@ -49,13 +49,9 @@
 
 package org.apache.log4j.helpers;
 
-import junit.framework.TestCase;
-
 import org.apache.oro.text.perl.Perl5Util;
 
 import java.io.BufferedReader;
-import java.io.IOException;
-
 
 /**
  *

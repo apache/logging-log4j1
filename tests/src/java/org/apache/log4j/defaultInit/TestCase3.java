@@ -28,7 +28,7 @@ public class TestCase3 extends TestCase {
     LogManager.shutdown();
   }
 
-  public void propertiesTest() {
+  public void testProperties() {
     Logger root = Logger.getRootLogger();
     boolean rootIsConfigured = root.getAllAppenders().hasMoreElements();
     assertTrue(rootIsConfigured);
@@ -37,11 +37,11 @@ public class TestCase3 extends TestCase {
     assertEquals(appender.getName(), "D3");
   }
 
-  public static Test suite() {
+/**  public static Test suite() {
     TestSuite suite = new TestSuite();
     suite.addTest(new TestCase3("propertiesTest"));
     return suite;
   }
-
+**/
 }
 

@@ -58,6 +58,8 @@
   <target name="prepare">
     <mkdir dir="./classes" />
     <mkdir dir="./output" />
+    <delete file="classes/log4j.xml"/>
+    <delete file="classes/log4j.properties"/>
   </target>
 
   
@@ -111,11 +113,14 @@
                                      XMLLayout, AsyncAppender, ErrorHandler,
                                      OptionConverter, BoundedFIFO, 
                                      Joran,  
+                                     ThrowableInformation,
+                                     LocationInfo,
                                      CyclicBuffer, OR, VariaLevelMatchFilter, 
                                      VariaLevelRangeFilter, PatternParser,
-                                     LevelMatchFilter, DRFA, Plugins, 
+                                     LevelMatchFilter, DRFA, 
                                      SizeBasedRolling, Compress, 
-                                     TimeBasedRolling, ReaderWriterLock"/>
+                                     TimeBasedRolling, ReaderWriterLock,
+                                     Plugins"/>
 
   <!-- ================================================================= -->
   <!-- Longer unit tests                                                 -->
@@ -209,6 +214,8 @@
     <delete file="classes/log4j.xml"/>
 
     <!-- test handling of log4j.defaultInitOverride system property -->
+    <!-- log4j.defaultInitOverride system property NO LONGER SUPPORTED 
+    
     <copy file="input/xml/defaultInit.xml" tofile="classes/log4j.xml"/>
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <jvmarg value="-Dlog4j.defaultInitOverride=true" /> 
@@ -217,7 +224,8 @@
       <test fork="true" name="org.apache.log4j.defaultInit.TestCase1" />
     </junit>
     <delete file="classes/log4j.xml"/>
-
+    -->
+    
     <!-- test default initialization from log4j.xml -->
     <copy file="input/defaultInit3.properties" tofile="classes/log4j.properties"/>
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
@@ -235,6 +243,7 @@
       <formatter type="plain" usefile="false"/>
       <test fork="true" name="org.apache.log4j.defaultInit.TestCase4" />      
     </junit>
+    
     <delete file="classes/log4j.xml"/>
     <delete file="classes/log4j.properties"/>
   </target>
@@ -441,6 +450,22 @@
     </junit>
   </target>
   
+  <target name="ThrowableInformation" depends="build, cleanOutputDir">
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="false"/>
+      <test name="org.apache.log4j.spi.ThrowableInformationTest" />
+    </junit>
+  </target>
+  
+  
+  <target name="LocationInfo" depends="build, cleanOutputDir">
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="false"/>
+      <test name="org.apache.log4j.spi.LocationInfoTest" />
+    </junit>
+  </target>
   
   
 

@@ -28,6 +28,9 @@
   <!-- Destination for compiled files -->
   <property name="javac.dest" value="dist/classes"/>
 
+  <!-- Source directory for the examples/ -->
+  <property name="examples.src" value="examples"/>
+
   <!-- Destination for compiled files for examples/ -->
   <property name="examples.javac.dest" value="examples/classes"/>
 
@@ -231,10 +234,10 @@
  
   <target name="build.examples" depends="build.core">
     <mkdir dir="${examples.javac.dest}" />
-    <javac srcdir="${basedir}"
+    <javac srcdir="${examples.src}"
      destdir="${examples.javac.dest}"
-     includes="examples/**/*.java"
-     excludes="misc/*, examples/jmx/*.java"
+     includes="**/*.java"
+     excludes="jmx/*.java"
      deprecation="${deprecation}"
            debug="on">
       <classpath refid="compile.classpath"/>
@@ -461,6 +464,7 @@
                 ${stem}/rolling/*.class,
                 ${stem}/xml/*.class,
                 ${stem}/jmx/*.class,
+                ${stem}/selector/*.class,
                 ${stem}/pattern/*.class,
                 ${stem}/or/*.class,
                 ${stem}/or/sax/*.class,
@@ -582,6 +586,7 @@
        org.apache.log4j.pattern,
        org.apache.log4j.performance,
        org.apache.log4j.rolling,
+       org.apache.log4j.selector,
        org.apache.log4j.spi,
        org.apache.log4j.varia,
        org.apache.log4j.chainsaw,

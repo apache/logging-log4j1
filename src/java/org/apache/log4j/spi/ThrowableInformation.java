@@ -102,6 +102,40 @@ public class ThrowableInformation implements java.io.Serializable {
   public String[] getThrowableStrRep() {
     return (String[]) rep.clone();
   }
+  
+  public boolean equals(Object o) {
+    if(this == o) {
+      return true;
+    }
+    
+    if(!(o instanceof ThrowableInformation)) {
+      return false;
+    }
+    
+    ThrowableInformation r = (ThrowableInformation) o;
+    
+    if(rep == null) {
+      if(r.rep != null) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+    
+    // at this point we know that both rep and r.rep are non-null.
+    if(rep.length != r.rep.length) {
+      return false;
+    }
+    
+    int len = rep.length;
+    for(int i = 0; i < len; i++) {
+      if(!rep[i].equals(r.rep[i])) {
+        return false;
+      }
+    }
+    
+    return true;
+  }
 }
 
 

@@ -50,8 +50,6 @@
 package customLevel;
 
 import org.apache.log4j.Level;
-import org.apache.log4j.Priority;
-
 
 /**
    This class introduces a new level level called TRACE. TRACE has

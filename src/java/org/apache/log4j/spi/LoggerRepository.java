@@ -87,6 +87,7 @@ public interface LoggerRepository {
     @since 1.3*/
   public void addLoggerEventListener(LoggerEventListener listener);
 
+  
   /**
     Remove a {@link LoggerEventListener} from the repository.
     @since 1.3*/
@@ -98,19 +99,33 @@ public interface LoggerRepository {
      parameter. See also {@link #setThreshold} method.  */
   boolean isDisabled(int level);
 
+
+  /**
+   * Get the name of this logger repository.
+   * @since 1.3
+   */
+  public String getName();
+
+  
+  /**
+   * A logger repository is a named entity.
+   * @since 1.3
+   */
+  public void setName(String repoName);
+
   /**
      Set the repository-wide threshold. All logging requests below the
      threshold are immediately dropped. By default, the threshold is
      set to <code>Level.ALL</code> which has the lowest possible rank.  */
   public void setThreshold(Level level);
-
+  
   /**
       Another form of {@link #setThreshold(Level)} accepting a string
       parameter instead of a <code>Level</code>. */
   public void setThreshold(String val);
 
   public void emitNoAppenderWarning(Category cat);
-
+  
   /**
      Get the repository-wide threshold. See {@link
      #setThreshold(Level)} for an explanation. */

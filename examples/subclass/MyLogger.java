@@ -8,11 +8,7 @@
 package subclass;
 
 import org.apache.log4j.*;
-import org.apache.log4j.spi.LoggerFactory;
-import org.apache.log4j.xml.DOMConfigurator;
 import customLevel.XLevel;
-import org.apache.log4j.PropertyConfigurator;
-import org.apache.log4j.helpers.LogLog;
 
 /**
    A simple example showing logger subclassing. 
