@@ -82,7 +82,8 @@ public class RuleTest extends JFrame {
  *
  * for more information.
  *  
- * 
+ * @author Scott Deboy <sdeboy@apache.org>
+ *
  */
 	private final Vector data = new Vector();
 	private final Vector colnames = new Vector();
@@ -218,12 +219,7 @@ public class RuleTest extends JFrame {
 	
 /**
  * Evaluate a boolean postfix expression.
- * Supports AND (&&) and OR (||).  True is represented as a 'T or t', false is any other character.
- * @author scott
  *
- *example: logger
- * To change the template for this generated type comment go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 	class EvaluateBooleanPostFix {
 		private final Map symbolMap = new HashMap();
@@ -269,8 +265,7 @@ public class RuleTest extends JFrame {
 
 /**
  * precedence: !, &, ^, |, &&, ||
- * Convert an infix expression to postfix.  Supports parentheses and +, -, *, / 
- * @author scott deboy (sdeboy@apache.org)
+ * Convert an infix expression to postfix.  Supports parentheses, ||, &&, == and ~= 
  *
  */
 	public class InFixToPostFix {
