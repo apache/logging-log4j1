@@ -15,10 +15,10 @@
   <property environment="env"/>
 
   <property name="version" value="1.2beta5"/>
-  
+
   <!-- The base directory relative to which most targets are built -->
   <property name="base" value="."/>
- 
+
   <!-- The directory where source files are stored. -->
   <property name="java.source.dir" value="src/java/"/>
 
@@ -37,13 +37,13 @@
 
   <!-- Destination for documentation files generated or not -->
   <property name="docs" value="docs"/>
- 
+
   <!-- Destination for javadoc generated files -->
   <property name="javadoc.dest" value="docs/api"/>
 
   <!-- Icons source directory. -->
   <property name="icons.source" value="icons"/>
-  
+
   <!-- The stem where most log4j source code is located. -->
   <property name="stem" value="org/apache/log4j"/>
 
@@ -64,20 +64,20 @@
   <!-- ================================================================= -->
   <!-- Default target                                                    -->
   <!-- ================================================================= -->
-  
+
   <target name="usage">
     <echo>
 
     These are the targets supported by this ANT build scpript:
 
-    build   - compile all project files, if a certain library is missing, 
+    build   - compile all project files, if a certain library is missing,
 	      then the compilation of its dependents are skipped.
 
     javadoc - build project javadoc files
 
     jar     - build log4j-core and log4j jar files
 
-    dist    - will create a complete distribution in dist/ 
+    dist    - will create a complete distribution in dist/
               Setting the env variable NO_JAVADOC will build the distribution
               without running the javadoc target.
     </echo>
@@ -85,15 +85,15 @@
 
   <target name="junitCheck">
     <available classname="junit.framework.TestCase" property="junit-present"/>
-  </target>   
+  </target>
   <target name="junit" depends="junitCheck" if="junit-present">
     <echo message="JUnit is present."/>
   </target>
 
   <target name="jaxpCheck">
-    <available classname="javax.xml.parsers.DocumentBuilderFactory" 
+    <available classname="javax.xml.parsers.DocumentBuilderFactory"
                           property="jaxp-present"/>
-  </target>   
+  </target>
 
   <target name="jaxp" depends="jaxpCheck" if="jaxp-present">
     <echo message="JAXP present."/>
@@ -102,7 +102,7 @@
 
  <target name="jmxCheck">
     <available classname="javax.management.MBeanInfo" property="jmx-present"/>
-  </target>   
+  </target>
   <target name="jmx" depends="jmxCheck" if="jmx-present">
     <echo message="JMX is present."/>
   </target>
@@ -110,21 +110,21 @@
 
   <target name="jmsCheck">
     <available classname="javax.jms.Message" property="jms-present"/>
-  </target>   
+  </target>
   <target name="jms" depends="jmsCheck" if="jms-present">
     <echo message="JMS is present."/>
   </target>
 
   <target name="jndiCheck">
     <available classname="javax.naming.Context" property="jndi-present"/>
-  </target>   
+  </target>
   <target name="jndi" depends="jndiCheck" if="jndi-present">
     <echo message="JNDI is present."/>
   </target>
 
   <target name="javamailCheck">
     <available classname="javax.mail.Message" property="javamail-present"/>
-  </target>   
+  </target>
   <target name="javamail" depends="javamailCheck" if="javamail-present">
     <echo message="JAVAMAIL is present."/>
   </target>
@@ -137,7 +137,7 @@
     <tstamp />
   </target>
 
-  <target name="build" depends="init, build.core, build.examples, build.xml, 
+  <target name="build" depends="init, build.core, build.examples, build.xml,
                                 build.unitTests, build.javamail, build.jms, build.jmx"/>
 
   <target name="build.core" depends="init">
@@ -156,8 +156,8 @@
                	    ${stem}/net/JMS*.java,
                	    ${stem}/jmx/*.java,
                	    ${stem}/or/jms/MessageRenderer.java,
-		    **/pending/**" 
-	    debug="on"/>			
+		    **/pending/**"
+	    debug="on"/>
   </target>
 
   <target name="build.examples" depends="build.core">
@@ -166,17 +166,17 @@
 	   destdir="${javac.dest}"
 	   includes="examples/**/*.java"
 	   classpath="${classpath}"
-	   excludes="misc/*" 
-	    debug="on"/>			
-    <rmic base="${javac.dest}" 
+	   excludes="misc/*"
+	    debug="on"/>
+    <rmic base="${javac.dest}"
       classname="examples.NumberCruncherServer"
-      />    
+      />
   </target>
 
 
 
 
-  <target name="build.unitTests" depends="init, junit" if="junit-present">   
+  <target name="build.unitTests" depends="init, junit" if="junit-present">
     <javac srcdir="${java.source.dir}"
 	   destdir="${javac.dest}"
 	   includes="**/UnitTest*.java"
@@ -194,22 +194,22 @@
 	  tofile="${javac.dest}/${stem}/xml/log4j.dtd" />
   </target>
 
- <target name="build.javamail" depends="init, javamail" 
-               if="javamail-present">   
+ <target name="build.javamail" depends="init, javamail"
+               if="javamail-present">
     <javac srcdir="${java.source.dir}"
 	   destdir="${javac.dest}"
 	   includes="${stem}/net/SMTPAppender.java"
 	   classpath="${classpath}"/>
   </target>
 
-  <target name="build.jms" depends="init, jms, jndi" if="jms-present">   
+  <target name="build.jms" depends="init, jms, jndi" if="jms-present">
     <javac srcdir="${java.source.dir}"
 	   destdir="${javac.dest}"
 	   includes="${stem}/net/JMS*.java"
 	   classpath="${classpath}"/>
   </target>
 
- <target name="build.jmx" depends="init, jmx, jndi" if="jmx-present">   
+ <target name="build.jmx" depends="init, jmx, jndi" if="jmx-present">
     <javac srcdir="${java.source.dir}"
 	   destdir="${javac.dest}"
 	   includes="${stem}/jmx/*.java"
@@ -226,17 +226,41 @@
   </target>
 
   <!-- ================================================================= -->
+  <!-- Runs checkstyle. Available from http://checkstyle.sf.net          -->
+  <!-- ================================================================= -->
+  <target name="checkstyle" depends="init">
+    <taskdef resource="checkstyletask.properties"
+             classpath="build/lib/checkstyle-all-2.1.jar"/>
+
+    <!-- by default checkstyle supports the Sun coding standard. -->
+    <checkstyle lcurlyMethod="nlow" lcurlyOther="nlow" lcurlyType="nlow">
+      <fileset dir="src/java/org/apache/log4j/chainsaw" includes="**/*.java"/>
+    </checkstyle>
+  </target>
+
+  <!-- ================================================================= -->
+  <!-- Runs Chainsaw                                                     -->
+  <!-- ================================================================= -->
+
+  <target name="chainsaw" depends="build">
+    <!-- Need to fork to avoid problems -->
+    <java classname="org.apache.log4j.chainsaw.Main" fork="yes"
+          classpath="${javac.dest}">
+    </java>
+  </target>
+
+  <!-- ================================================================= -->
   <!-- Remove the temporary manifest file, actual work is done in the    -->
   <!-- dependencies.                                                     -->
-  <!-- ================================================================= -->  
+  <!-- ================================================================= -->
   <target name="jar" depends="log4j.jar">
      <delete file="${jar.dest}/manifest.mf"/>
   </target>
 
   <target name="prejar" depends="build">
-    <mkdir dir="${jar.dest}"/>    
+    <mkdir dir="${jar.dest}"/>
     <filter token="version" value="${version}" />
-    <copy file="${manifest.src}" tofile="${jar.dest}/manifest.mf" 
+    <copy file="${manifest.src}" tofile="${jar.dest}/manifest.mf"
           filtering="true"/>
   </target>
 
@@ -245,27 +269,27 @@
  <!-- ================================================================= -->
   <target name="log4j.jar" depends="prejar">
     <delete>
-      <fileset dir="${jar.dest}"> 
+      <fileset dir="${jar.dest}">
 	<include name="*.jar"/>
       </fileset>
     </delete>
 
     <jar jarfile="${jar.dest}/${jar.filename}" basedir="${javac.dest}"
-	includes="${stem}/*.class, ${stem}/xml/log4j.dtd, 
+	includes="${stem}/*.class, ${stem}/xml/log4j.dtd,
 		  ${stem}/config/*.class,
-	          ${stem}/helpers/*.class, 
-		  ${stem}/spi/*.class,  
+	          ${stem}/helpers/*.class,
+		  ${stem}/spi/*.class,
 		  ${stem}/net/*.class,
-		  ${stem}/varia/*.class, 
+		  ${stem}/varia/*.class,
 		  ${stem}/nt/*.class,
-		  ${stem}/xml/*.class, 
-		  ${stem}/jmx/*.class, 
+		  ${stem}/xml/*.class,
+		  ${stem}/jmx/*.class,
 		  ${stem}/or/*.class,
 		  ${stem}/or/sax/*.class,
 		  ${stem}/config/*.class,
 		  ${stem}/gui/TextPaneAppender.class"
 	excludes="**/StressCategory*, **/UnitTest**"
-        manifest="${jar.dest}/manifest.mf"	
+        manifest="${jar.dest}/manifest.mf"
     />
   </target>
 
@@ -276,9 +300,9 @@
   <target name="javadoc" depends="init" unless="env.NO_JAVADOC">
 
     <mkdir dir="${javadoc.dest}" />
-    
-    <javadoc sourcepath="${java.source.dir}" 
-      destdir="${javadoc.dest}" 
+
+    <javadoc sourcepath="${java.source.dir}"
+      destdir="${javadoc.dest}"
 	   packagenames="org.apache.log4j,
 			 org.apache.log4j.config,
                          org.apache.log4j.helpers,
@@ -295,17 +319,17 @@
 	   version="true"
 	   protected="true"
 	   author="true"
-	   use="true"		   
+	   use="true"
 	   overview="${docs}/overview.html"
 	   doctitle="log4j version ${version}&lt;br&gt;API Specification"
-	   windowtitle="Log4j Version ${version}" 
+	   windowtitle="Log4j Version ${version}"
            header="&lt;b&gt;Log4j ${version}&lt;/b&gt;"
-	   bottom="Copyright 2000-2002 Apache Software Foundation."> 
-		   
-           <link offline="true" 
+	   bottom="Copyright 2000-2002 Apache Software Foundation.">
+
+           <link offline="true"
                  href="http://java.sun.com/products/jdk/1.2/docs/api"
                  packageListLoc="${packaging.dir}"/>
-    </javadoc>		
+    </javadoc>
   </target>
 
  <!-- ================================================================= -->
@@ -314,7 +338,7 @@
   <target name="dist" depends="init, clean, javadoc, jar">
 
     <delete verbose="true">
-      <fileset dir="."> 
+      <fileset dir=".">
         <patternset>
 	   <include name="**/*.bak"/>
 	   <include name="dist/velocity.log"/>
@@ -344,7 +368,7 @@
 	   <include name="${jar.dest}/manifest.mf"/>
 	   <include name="${javac.dest}/*.class"/>
         </patternset>
-     </fileset>         
+     </fileset>
     </delete>
 
     <mkdir  dir="${dist.images}" />
@@ -353,22 +377,22 @@
 
     <copy todir="${dist.tmp}/jakarta-log4j-${version}">
        <fileset dir="${base}"
-                includes="src/java/**, 
-			  docs/**, 
-	                  examples/**, 
+                includes="src/java/**,
+			  docs/**,
+	                  examples/**,
 			  build/*,
 	                  build.bat, build.sh,
 	                  build.xml,
-                          manifest.mf, 
-			  INSTALL, 
-			  LICENSE.APL, 
-			  LICENSE.txt, 
-			  dist/lib/*.jar, 
-		          org/**,  
-			  icons/**, 
-			  dist/classes/**, 
+                          manifest.mf,
+			  INSTALL,
+			  LICENSE.APL,
+			  LICENSE.txt,
+			  dist/lib/*.jar,
+		          org/**,
+			  icons/**,
+			  dist/classes/**,
 			  contribs/**"
-                excludes="make/make.loc, 
+                excludes="make/make.loc,
 		          **/*.bak, **/goEnv.bat,
 		          **/Makefile, **/goEnv.bat,
 	                  docs/pub-support/*,
@@ -377,32 +401,32 @@
 	                  src/java/org/apache/log4j/test/serialization/T/compile,
 	                  src/java/org/apache/log4j/test/serialization/**/*.class,
 	                  src/java/org/apache/log4j/examples/appserver/*,
-			  dist/classes/org/apache/log4j/examples/appserver/*.class, 
+			  dist/classes/org/apache/log4j/examples/appserver/*.class,
 			  **/.#*"/>
     </copy>
 
-    
-    <fixcrlf srcdir="${dist.tmp}/jakarta-log4j-${version}"  
+
+    <fixcrlf srcdir="${dist.tmp}/jakarta-log4j-${version}"
              includes="build.sh" cr="remove"/>
-    <fixcrlf srcdir="${dist.tmp}/jakarta-log4j-${version}"   
+    <fixcrlf srcdir="${dist.tmp}/jakarta-log4j-${version}"
              includes="build.bat" cr="add"/>
-    <chmod   dir="${dist.tmp}/jakarta-log4j-${version}"   
+    <chmod   dir="${dist.tmp}/jakarta-log4j-${version}"
              includes="build.sh" perm="+x"/>
 
-    <tar tarfile="${dist.images}/jakarta-log4j-${version}.tar" 
+    <tar tarfile="${dist.images}/jakarta-log4j-${version}.tar"
          basedir="${dist.tmp}"
          includes="jakarta-log4j-${version}/**" />
 
-    <gzip src="${dist.images}/jakarta-log4j-${version}.tar" 
+    <gzip src="${dist.images}/jakarta-log4j-${version}.tar"
           zipfile="${dist.images}/jakarta-log4j-${version}.tar.gz" />
 
-    <zip zipfile="${dist.images}/jakarta-log4j-${version}.zip" 
+    <zip zipfile="${dist.images}/jakarta-log4j-${version}.zip"
          basedir="${dist.tmp}"
          includes="jakarta-log4j-${version}/**" />
 
-    	 
+
     <delete dir="${dist.tmp}" />
   </target>
- 
+
 </project>
 
