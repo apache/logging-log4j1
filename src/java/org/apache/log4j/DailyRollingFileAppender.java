@@ -28,29 +28,106 @@ import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ErrorCode;
 
 /**
-   DailyRollingFileAppender extends FileAppender to use filenames formatted
-   with date/time information. The filename is recomputed every day at
-   midnight.  Note that the filename doesn't have to change every day,
-   making it possible to have logfiles which are per-week or
-   per-month.
+   DailyRollingFileAppender extends {@link FileAppender} so that the
+   underlying file is rolled over at a user chosen frequency.
 
-   The appender computes the proper filename using the formats
-   specified in {@link SimpleDateFormat}. The format requires
-   that most static text is enclosed in single quotes, which are
-   removed. The examples below show how quotes are used to embed
-   static information in the format.
+   <p>The rolling schedule is specified by the <b>DatePattern</b>
+   option. This pattern should follow the {@link SimpleDateFormat}
+   conventions. In particular, you <em>must</em> escape literal text
+   within a pair of single quotes. A formatted version of the date
+   pattern is used as the suffix for the rolled file name.
 
-   Sample filenames:
+   <p>For example, if the <b>File</b> option is set to
+   <code>/foo/bar.log</code> and the <b>DatePattern</b> set to
+   <code>'.'yyyy-MM-dd</code>, on 2001-02-16 at midnight, the logging
+   file <code>/foo/bar.log</code> will be copied to
+   <code>/foo/bar.log.2001-02-16</code> and logging for 2001-02-17
+   will continue in <code>/foo/bar.log</code> until it is rolled over
+   itself the next day.
+   
+   <p>Is is possible to specify monthly, weekly, half-daily, daily,
+   hourly, or minutely rollover schedules.
 
-<code>
-     Filename pattern                     Filename
-     "'/logs/trace-'yyyy-MM-dd'.log'"     /logs/trace-2000-12-31.log
-     "'/logs/trace-'yyyy-ww'.log'"        /logs/trace-2000-52.log
-</code>
+   <p><table border="1">
+   <tr>
+   <th>DatePatten</th> 
+   <th>rollover schdule</th>
+   <th>example</th>
+
+   <tr>
+   <td><code>'.'yyyy-MM</code>   
+   <td>Rollover at the beginning of each month</td>   
+
+   <td>Assuming the first day of the week is Sunday, at Sunday 00:00,
+   March 25th, 2001, <code>/foo/bar.log</code> will be copied to
+   <code>/foo/bar.log.2001-03</code>. Logging for the month of April
+   will be output to <code>/foo/bar.log</code> until it is rolled over
+   itself at the beginning of May.
+
+   <tr>
+   <td><code>'.'yyyy-ww</code>   
+   
+   <td>Rollover at the first day of each week. The first day of the
+   week depends on the locale.</td>
+   
+   <td>At midnight, on March 31st, 2001, <code>/foo/bar.log</code>
+   will be copied to <code>/foo/bar.log.2001-08</code>. Logging for
+   the 9th week of 2001 will be output to <code>/foo/bar.log</code>
+   until it is rolled over the next week.
+
+   <tr>
+   <td><code>'.'yyyy-MM-dd</code>   
+   
+   <td>Rollover at midnight each day.</td>
+   
+   <td>At midnight, on March 9th, 2001, <code>/foo/bar.log</code> will
+   be copied to <code>/foo/bar.log.2001-03-08</code>. Logging for the
+   9th day of March will be output to <code>/foo/bar.log</code> until
+   it is rolled over the next day.
+
+   <tr>
+   <td><code>'.'yyyy-MM-dd-a</code>   
+   
+   <td>Rollover at midnight and midday of each day.</td>
+   
+   <td>At noon, on March 9th, 2001, <code>/foo/bar.log</code> will be
+   copied to <code>/foo/bar.log.2001-03-09-AM</code>. Logging for the
+   afternoon of the 9th will be output to <code>/foo/bar.log</code>
+   until it is rolled over the next morning, i.e at midnight 00:00.
+
+   <tr>
+   <td><code>'.'yyyy-MM-dd-HH</code>   
+   
+   <td>Rollover at the top of every hour.</td>
+   
+   <td>At approximately 11:00,000, on March 9th, 2001,
+   <code>/foo/bar.log</code> will be copied to
+   <code>/foo/bar.log.2001-03-09-10</code>. Logging for the 11th hour
+   of of the 9th of March will be output to <code>/foo/bar.log</code>
+   until it is rolled over at the beginning of the next hour.
+
+
+   <tr>
+   <td><code>'.'yyyy-MM-dd-HH-mm</code>   
+   
+   <td>Rollover at the beginning of every minutue.</td>
+   
+   <td>At approximately 11:23,000, on March 9th, 2001,
+   <code>/foo/bar.log</code> will be copied to
+   <code>/foo/bar.log.2001-03-09-10-22</code>. Logging for the minutue
+   of 11:23 (9th of March) will be output to
+   <code>/foo/bar.log</code> untill it is rolled over the next minute.
+      
+   </table>
+
+   <p>Do not use the colon ":" character in anywhere in the
+   <b>DatePattern</b> option. The text before the colon is interpeted
+   as the protocol specificaion of a URL which is probably not what
+   you want.
+
 
    @author Eirik Lygre
-   @author Ceki G&uuml;lc&uuml;
-*/
+   @author Ceki G&uuml;lc&uuml; */
 public class DailyRollingFileAppender extends FileAppender {
 
 
@@ -285,13 +362,13 @@ class RollingCalendar extends GregorianCalendar {
     case DailyRollingFileAppender.TOP_OF_MINUTE:
 	this.set(Calendar.SECOND, 0);
 	this.set(Calendar.MILLISECOND, 0);
-	this.add(Calendar.MINUTE, +1); 
+	this.add(Calendar.MINUTE, 1); 
 	break;
     case DailyRollingFileAppender.TOP_OF_HOUR:
 	this.set(Calendar.MINUTE, 0); 
 	this.set(Calendar.SECOND, 0);
 	this.set(Calendar.MILLISECOND, 0);
-	this.add(Calendar.HOUR_OF_DAY, +1); 
+	this.add(Calendar.HOUR_OF_DAY, 1); 
 	break;
     case DailyRollingFileAppender.HALF_DAY:
 	this.set(Calendar.MINUTE, 0); 
@@ -302,7 +379,7 @@ class RollingCalendar extends GregorianCalendar {
 	  this.set(Calendar.HOUR_OF_DAY, 12);
 	} else {
 	  this.set(Calendar.HOUR_OF_DAY, 0);
-	  this.add(Calendar.DAY_OF_MONTH, +1);       
+	  this.add(Calendar.DAY_OF_MONTH, 1);       
 	}
 	break;
     case DailyRollingFileAppender.TOP_OF_DAY:
@@ -310,7 +387,7 @@ class RollingCalendar extends GregorianCalendar {
 	this.set(Calendar.MINUTE, 0); 
 	this.set(Calendar.SECOND, 0);
 	this.set(Calendar.MILLISECOND, 0);
-	this.add(Calendar.DATE, +1);       
+	this.add(Calendar.DATE, 1);       
 	break;
     case DailyRollingFileAppender.TOP_OF_WEEK:
 	this.set(Calendar.DAY_OF_WEEK, getFirstDayOfWeek());
@@ -324,7 +401,7 @@ class RollingCalendar extends GregorianCalendar {
 	this.set(Calendar.HOUR_OF_DAY, 0);
 	this.set(Calendar.SECOND, 0);
 	this.set(Calendar.MILLISECOND, 0);
-	this.add(Calendar.MONTH, +1); 
+	this.add(Calendar.MONTH, 1); 
 	break;
     default:
 	throw new IllegalStateException("Unknown periodicity type.");

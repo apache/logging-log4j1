@@ -277,15 +277,14 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
 
 
   /**
-     Configurable Appenders should override this method if they admit
-     additional options.
-
      All classes derived from {@link AppenderSkeleton} admit the
-     <b>Threshold</b> option, that is the value of the string constant
-     {@link #THRESHOLD_OPTION}.
+     <b>Threshold</b> option. The value of this option is a priority
+     string, such as "DEBUG", "INFO" and so on.  All log events with
+     lower priority than the threshold priority are ignored by the
+     appender.  
 
-     See {@link #setThreshold} method for the meaning of this option.
-  */
+     <p>Configurable Appenders should override this method if they
+     admit additional options.  */
   public
   void setOption(String key, String value) {
     if(key.equalsIgnoreCase(THRESHOLD_OPTION)) {

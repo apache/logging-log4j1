@@ -258,8 +258,8 @@
 			 org.apache.log4j.varia,
 		         org.apache.log4j.xml,
 		         org.apache.log4j.xml.examples"
-	   protected="true"				       
 	   version="true"
+	   protected="true"
 	   author="true"
 	   use="true"		   
 	   overview="${docs}/overview.html"
