@@ -27,3 +27,8 @@ jakarta-site2=../jakarta-site2
 # Required to run Checkstyle. Available from http://checkstyle.sf.net
 checkstyle.jar=/java/checkstyle-2.2/checkstyle-all-2.2.jar
 
+
+
+# The templates for the creation of the web-pages are inherited 
+# from the parent project.
+logging-site=../logging-site
