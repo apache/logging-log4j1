@@ -32,7 +32,7 @@ import java.sql.SQLException;
   conversion patterns in <code>PatternLayout</code> can be used
   inside of the statement.  (see the test cases for examples)
  
-  <p>Overriding the {@link getLogStatement} method allows more
+  <p>Overriding the {@link #getLogStatement} method allows more
   explicit control of the statement used for logging.
  
   <p>For use as a base class:
