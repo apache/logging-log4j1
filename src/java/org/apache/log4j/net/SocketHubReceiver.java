@@ -119,7 +119,9 @@ extends Receiver implements SocketNodeEventListener, PortBased {
      capability.
    */
   public void setReconnectionDelay(int delay) {
+    int oldValue = this.reconnectionDelay;
     this.reconnectionDelay = delay;
+    firePropertyChange("reconnectionDelay", oldValue,this.reconnectionDelay);
   }
 
   /**
