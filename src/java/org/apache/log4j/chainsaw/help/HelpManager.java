@@ -56,6 +56,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
+import java.io.File;
 import java.net.URL;
 
 
@@ -88,6 +89,12 @@ public final class HelpManager {
                     System.getProperty("log4j.chainsaw.localDocs"));
                 helpLocator.installLocator(new URL(
                         System.getProperty("log4j.chainsaw.localDocs")));
+            }else if(new File("docs/api").exists()) {
+            	File dir = new File("docs/api");
+            	LogLog.info("Detected Local JavaDocs at " + dir.toString());
+            	helpLocator.installLocator(dir.toURL());
+            } else {
+            	LogLog.warn("Could not find any local JavaDocs, you might want to consider running 'ant javadoc'. The release version will be able to access Javadocs from the Apache website.");
             }
         } catch (Exception e) {
             // TODO: handle exception
