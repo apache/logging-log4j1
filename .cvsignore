@@ -1,2 +1,8 @@
 goEnv*
 dist
+.classpath
+build.properties
+log4j-1.3alpha.jar
+log4j-chainsaw-1.3alpha.jar
+log4j-lf5-1.3alpha.jar
+.project
