@@ -50,13 +50,13 @@ public class SocketReceiver extends Receiver implements Runnable {
   
   /**
     Get the port to receive logging events on. */
-  protected int getPort() {
+  public int getPort() {
     return port;
   }
   
   /**
     Set the port to receive logging events on. */
-  protected void setPort(int _port) {
+  public void setPort(int _port) {
     port = _port;
   }
   
