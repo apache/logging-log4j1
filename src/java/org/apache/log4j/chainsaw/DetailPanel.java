@@ -82,11 +82,12 @@ class DetailPanel extends JPanel implements ListSelectionListener {
       "<b>Time:</b> <code>{0,time,medium}</code>"
       + "&nbsp;&nbsp;<b>Priority:</b> <code>{1}</code>"
       + "&nbsp;&nbsp;<b>Thread:</b> <code>{2}</code>"
-      + "&nbsp;&nbsp;<b>NDC:</b> <code>{3}</code>"
+      + "<br><b>NDC:</b> <code>{3}</code>"
       + "&nbsp;&nbsp;<b>MDC:</b> <code>{4}</code>"
-      + "<br><b>Category:</b> <code>{5}</code>"
-      + "<br><b>Location:</b> <code>{6}</code>" + "<br><b>Message:</b>"
-      + "<pre>{7}</pre>" + "<b>Throwable:</b>" + "<pre>{8}</pre>");
+      + "&nbsp;&nbsp;<b>Properties:</b> <code>{5}</code>"
+      + "<br><b>Category:</b> <code>{6}</code>"
+      + "<br><b>Location:</b> <code>{7}</code>" + "<br><b>Message:</b>"
+      + "<pre>{8}</pre>" + "<b>Throwable:</b>" + "<pre>{9}</pre>");
 
   /** the model for the data to render **/
   private final MyTableModel mModel;
@@ -131,9 +132,9 @@ class DetailPanel extends JPanel implements ListSelectionListener {
       final Object[] args =
       {
         new Date(e.getTimeStamp()), e.getPriority(), escape(e.getThreadName()),
-        escape(e.getNDC()), escape(e.getMDC()), escape(e.getCategoryName()),
-        escape(e.getLocationDetails()), escape(e.getMessage()),
-        escape(getThrowableStrRep(e))
+        escape(e.getNDC()), escape(e.getMDC()), escape(e.getProperties()), 
+        escape(e.getCategoryName()), escape(e.getLocationDetails()),
+        escape(e.getMessage()), escape(getThrowableStrRep(e))
       };
       mDetails.setText(FORMATTER.format(args));
       mDetails.setCaretPosition(0);

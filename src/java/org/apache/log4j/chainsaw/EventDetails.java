@@ -78,6 +78,9 @@ class EventDetails {
   /** the MDC for the event **/
   private final String mMDC;
 
+  /** the Properties for the event **/
+  private final String mProperties;
+
   /** the thread for the event **/
   private final String mThreadName;
 
@@ -103,13 +106,14 @@ class EventDetails {
    */
   EventDetails(
     long aTimeStamp, Priority aPriority, String aCategoryName, String aNDC,
-    String aMDC, String aThreadName, String aMessage, String[] aThrowableStrRep,
-    String aLocationDetails) {
+    String aMDC, String aProperties, String aThreadName, String aMessage, 
+    String[] aThrowableStrRep, String aLocationDetails) {
     mTimeStamp = aTimeStamp;
     mPriority = aPriority;
     mCategoryName = aCategoryName;
     mNDC = aNDC;
     mMDC = aMDC;
+    mProperties = aProperties;
     mThreadName = aThreadName;
     mMessage = aMessage;
     mThrowableStrRep = aThrowableStrRep;
@@ -124,8 +128,9 @@ class EventDetails {
   EventDetails(LoggingEvent aEvent) {
     this(
       aEvent.timeStamp, aEvent.getLevel(), aEvent.getLoggerName(),
-      aEvent.getNDC(), getEventMDC(aEvent), aEvent.getThreadName(),
-      aEvent.getRenderedMessage(), aEvent.getThrowableStrRep(),
+      aEvent.getNDC(), getEventMDC(aEvent), getEventProperties(aEvent),
+      aEvent.getThreadName(), aEvent.getRenderedMessage(),
+      aEvent.getThrowableStrRep(),
       (aEvent.getLocationInformation() == null) ? null
                                                 : aEvent
       .getLocationInformation().fullInfo);
@@ -154,6 +159,11 @@ class EventDetails {
   /** @see #mMDC **/
   String getMDC() {
     return mMDC;
+  }
+
+  /** @see #mProperties **/
+  String getProperties() {
+    return mProperties;
   }
 
   /** @see #mThreadName **/
@@ -185,7 +195,7 @@ class EventDetails {
     Set keySet = event.getMDCKeySet();
     if (!keySet.isEmpty()) {
       String mdcString = "";
-      Iterator keyIter = event.getMDCKeySet().iterator();
+      Iterator keyIter = keySet.iterator();
       while (keyIter.hasNext()) {
         if (mdcString.length() != 0) {
           mdcString += ',';
@@ -195,6 +205,30 @@ class EventDetails {
         mdcString += key + "=" + value;
       }
       return mdcString;
+    }
+    
+    return null;
+  }
+  
+  /**
+    Used internally to convert the properties contents to a string.
+    
+    @param event The LoggingEvent to use for the properties contents.
+    @return String The properties contents in string form. */
+  private static String getEventProperties(LoggingEvent event) {
+    Set keySet = event.getPropertyKeySet();
+    if (!keySet.isEmpty()) {
+      String propertyString = "";
+      Iterator keyIter = keySet.iterator();
+      while (keyIter.hasNext()) {
+        if (propertyString.length() != 0) {
+          propertyString += ',';
+        }
+        String key = (String)keyIter.next();
+        String value = (String)event.getProperty(key);
+        propertyString += key + "=" + value;
+      }
+      return propertyString;
     }
     
     return null;
