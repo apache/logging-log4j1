@@ -10,14 +10,15 @@
 
  - Release of version 1.1b5
  
- - Corrected a performance bug in LocationInfo.
-  
- - Corrected the incorrect value retutned by LocationInfo.getClassName
+ - Corrected a performance bug in LocationInfo. [*]
+
+ - Corrected the incorrect value returned by LocationInfo.getClassName
    method when running under Visual Age. Thanks to Mathias Rupprecht
-   for supplying the relevant patch.
+   for supplying the relevant patch. [*]
  
  - Corrected a bug where the build.sh file in the distribution would be in 
-   DOS CRLF format. Thanks to ma.darche@free.fr for reporting the problem.
+   DOS CRLF format. Thanks to ma.darche@free.fr for reporting the
+   problem. [*]
   
  April 20, 2001
 
