@@ -94,7 +94,7 @@ class ThrowableRenderPanel extends AbstractCellEditor
     panel.add(lbl, BorderLayout.CENTER);
     panel.add(btn, BorderLayout.EAST);
     lbl.setOpaque(false);
-    btn.setOpaque(false);
+//    btn.setOpaque(false);
     showStackTraceAction =
       new AbstractAction("...") {
           public void actionPerformed(ActionEvent e) {
@@ -119,7 +119,11 @@ class ThrowableRenderPanel extends AbstractCellEditor
    */
   public Component getTableCellEditorComponent(
     JTable table, Object value, boolean isSelected, int row, int column) {
-    lbl.setText(((String[]) value)[0]);
+    if(value!=null){
+	    lbl.setText(((String[]) value)[0]);
+    }else {
+    	lbl.setText("");
+    }
 
     if (isSelected) {
       panel.setBackground(table.getSelectionBackground());
