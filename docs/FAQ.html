@@ -11,40 +11,52 @@
 
 <ul>
 
-<li><p><a href=#whatIs>What is log4j?</a> <br>
-<li><p><a href=#reliable>Is log4j a reliable logging system?</a>
-<li><p><a href=#prerequisites>What are the prerequisites for log4j?</a>
-<li><p><a href=#javadoc>Is there javadoc documentation for log4j?</a>
-<li><p><a href=#alternatives>What other logging packages are there?</a>
-<li><p><a HREF=#usageExample>Is there example code for using log4j?</a>
-<li><p><a href=#features>What are the features of log4j?</a> 
-<li><p><a href=#thread-safety>Is log4j thread-safe?</a> 
-<li><p><a href=#sample>What does log output look like?</a>
-<li><p><a href=#category>What are <em>Categories</em>?</a>
-<li><p><a href=#behavior>How can I change log behavior at runtime?</a>
+<li><p><a href=#whatIs>What is log4j?</a></p>
+
+<li><p><a href=#reliable>Is log4j a reliable logging system?</a></p>
+<li><p><a href=#prerequisites>What are the prerequisites for log4j?</a></p>
+<li><p><a href=#javadoc>Is there javadoc documentation for log4j?</a></p>
+<li><p><a href=#alternatives>What other logging packages are there?</a></p>
+<li><p><a HREF=#usageExample>Is there example code for using log4j?</a></p>
+<li><p><a href=#features>What are the features of log4j?</a></p> 
+<li><p><a href=#thread-safety>Is log4j thread-safe?</a></p> 
+<li><p><a href=#sample>What does log output look like?</a></p>
+<li><p><a href=#category>What are <em>Categories</em>?</a></p>
+<li><p><a href=#behavior>How can I change log behavior at runtime?</a></p>
 <li><p><a HREF=#reduce>How can I reduce the computational cost of
-debug and info statements?</a>
-<li><p><a HREF=#fastLogging>What is the fastest way of (not) logging?</a>
+debug and info statements?</a></p>
+<li><p><a HREF=#fastLogging>What is the fastest way of (not) logging?</a></p>
 <li><p><a HREF=#arrayDebug>What is the use of the <code>debug</code> method
-expecting a <code>String</code> array as one of its parameters?</a>
-<li><p><a href=#introCat>Why was the Category class introduced and how do
-I migrate from the previous String based implementation?</a>
+expecting a <code>String</code> array as one of its parameters?</a></p>
+
+<li><p><a href=#introCat>Why was the Category class introduced and how
+do I migrate from the previous String based implementation?</a></p>
+
 <li><p><a href=#namingCategories>Are there any suggested ways for naming
-categories?</a></br>
+categories?</a></p>
+
 <li><p><a href=#className>How do I get the fully-qualified name of a class in
-a static block?</a>
+a static block?</a></p>
+
 <li><p><a href=#customLayouts>Can the log output format be
-customized?</a>
+customized?</a></p>
+
+<li><p><a href="#options">What are the configurable options for
+<code>ForBarAppender</code>?</a></p>
+
+
 <li><p><a href=#NDC>Can the outputs of multiple client request go to
-different log files?</a>
+different log files?</a></p>
+
+
 <li><p><a href=#rm>Category instances seem to be create only. Why isn't
-there a method to remove category instances?</a>
+there a method to remove category instances?</a></p>
 
 <li><p><a href=#filterByPriority>Is it possible to direct log output
-to different appenders by priority?</a>
+to different appenders by priority?</a></p>
 
 <li><p><a href=#many21>How do I get multiple processes to log to the 
-same file?</a>
+same file?</a></p>
 
 <li><p><a href=#timestamp>If I have many process across multiple hosts
 (possibly across multiple timezones) logging to the same file using the
@@ -52,16 +64,16 @@ method above, what happens to timestamps?
 
 
 <li><p><a href=#tax>Why should I donate my log4j extensions back to the
-project?</a>
-<li><p><a href=#help>What should I keep in mind when contributing code?</a>
+project?</a></p>
+<li><p><a href=#help>What should I keep in mind when contributing code?</a></p>
 
-<li><p><a href=#bugCorrection>How fast do bugs in log4j get fixed?</a>
+<li><p><a href=#bugCorrection>How fast do bugs in log4j get fixed?</a></p>
 
-<li><p><a href=#history>What is the history of log4j?</a>
+<li><p><a href=#history>What is the history of log4j?</a></p>
 
-<li><p><a href=#bugs>How do I report bugs?</a>
+<li><p><a href=#bugs>How do I report bugs?</a></p>
 
-<li><p><a href=#download>Where can I find the latest distribution of log4j?</a>
+<li><p><a href=#download>Where can I find the latest distribution of log4j?</a></p>
 
 </ul>
 
@@ -497,6 +509,26 @@ NDC solution is not sufficient. As of version 0.9.0, log4j supports
 multiple hierarchy trees. Thus, it is possible to log to different
 targets from the same category depending on the current context.
 
+<p><a name="#options"><h4>What are the configurable options for
+FooBarAppender?</h4>
+
+Log4j uses JavaBeans style configuration. 
+
+<p>Thus, any setter method in <code>FooBarAppender</code> corresponds
+to a configurable option. For example, in <a
+href="api\org\apache\log4j\RollingFileAppender.html">RollingFileAppender</a>
+the <a
+href="api/org/apache/log4j/RollingFileAppender.html#setMaxBackupIndex(int)">setMaxBackupIndex(int
+maxBackups)</a> method corresponds to the <code>maxBackupIndex</code>
+option. The first letter of the option can be upper case, i.e.
+<code>MaxBackupIndex</code> and <code>maxBackupIndex</code> are
+equivalent but not <code>MAXBACKUPIndex</code> nor
+<code>mAXBackupIndex</code>.
+
+<p>Layouts options are also defined by their setter methods. Same goes
+for most other log4j components.
+
+<!-- ------------------------------------------------------------------ -->
 
 <p><a name=rm><h4>Category instances seem to be create only. Why isn't
 there a method to remove category instances?</h4>

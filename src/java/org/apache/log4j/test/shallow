@@ -46,7 +46,7 @@ function makeShallowConfigFile {
  echo "$A1_PREFIX.layout.DateFormat=$dateFormat" >> $LCF 
 
  echo "$A2_PREFIX=org.apache.log4j.FileAppender" >> $LCF
- echo "$A2_PREFIX.Append=false" >> $LCF 
+ echo "$A2_PREFIX.append=false" >> $LCF 
  echo "$A2_PREFIX.layout=$layoutClass" >> $LCF
  echo "$A2_PREFIX.layout.DateFormat=$dateFormat" >> $LCF 
  
@@ -147,7 +147,7 @@ if [ $TEST -ge $start ]; then
   echo "log4j.category.org.apache.log4j.test.ShortSocketServer=WARN">> socket.lcf
   echo "log4j.category.org.apache.log4j.net.SocketNode=WARN">> socket.lcf
   echo "log4j.appender.A=org.apache.log4j.FileAppender">> socket.lcf
-  echo "log4j.appender.A.File=  $TEMP" >> socket.lcf
+  echo "log4j.appender.A.file=  $TEMP" >> socket.lcf
   echo "log4j.appender.A.Append=false" >> socket.lcf
   echo "log4j.appender.A.layout=org.apache.log4j.PatternLayout" >> socket.lcf
   echo "log4j.appender.A.layout.ConversionPattern=%5p %x [%t] %c %m%n" >> socket.lcf

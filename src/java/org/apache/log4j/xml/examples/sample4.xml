@@ -9,7 +9,7 @@
 
 	<appender name="TEMP" class="org.apache.log4j.FileAppender">
 		<param name="File" value="temp"/>
-		<layout class="org.apache.log4j.2PatternLayout">
+		<layout class="org.apache.log4j.PatternLayout">
   		     <param name="ConversionPattern" 
                             value="%d %-5p [%t] %C{2} (%F:%L) - %m%n"/>
 		</layout>
