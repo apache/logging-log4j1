@@ -19,9 +19,8 @@ package org.apache.log4j.chainsaw.receivers;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.Map;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -48,7 +47,6 @@ public class ReceiversTreeModel extends DefaultTreeModel
   final DefaultMutableTreeNode NoReceiversNode =
     new DefaultMutableTreeNode("No Receivers defined");
   final DefaultMutableTreeNode RootNode;
-  private Map pluginNodeMap = new HashMap();
 
   ReceiversTreeModel() {
     super(new DefaultMutableTreeNode(ROOTNODE_LABEL));
@@ -139,13 +137,30 @@ public class ReceiversTreeModel extends DefaultTreeModel
       receiver.addPropertyChangeListener(creatPluginPropertyChangeListener(receiver, newNode));
       nodesWereInserted(
         getRootNode(), new int[] { getRootNode().getIndex(newNode) });
-      pluginNodeMap.put(receiver, newNode);
     }
   }
 
 	TreeNode resolvePluginNode(Plugin p){
-		return (TreeNode) pluginNodeMap.get(p);
+		/**
+		 * Lets walk the tree, top-down until we find the node with the plugin
+		 * attached.
+		 * 
+		 * Since the tree hierachy is quite flat, this is should not 
+		 * be a performance issue at all, but if it is,
+		 * then "I have no recollection of that Senator".
+		 */
+		TreeNode treeNode = null;
+		Enumeration e = getRootNode().breadthFirstEnumeration();
+		while(e.hasMoreElements()){
+			DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.nextElement();
+			if(node.getUserObject().equals(p)){
+				treeNode = node;
+				break;
+			}
+		}
+		return treeNode;
 	}
+	
   /* (non-Javadoc)
    * @see org.apache.log4j.plugins.PluginListener#pluginStopped(org.apache.log4j.plugins.PluginEvent)
    */
@@ -159,7 +174,6 @@ public class ReceiversTreeModel extends DefaultTreeModel
             getRootNode().remove(node);
             nodesWereRemoved(
                 getRootNode(), new int[] { index }, new Object[] { node });
-            pluginNodeMap.remove(receiver);
         }
 
       if (getRootNode().getChildCount() == 0) {
