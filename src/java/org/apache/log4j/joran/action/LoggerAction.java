@@ -32,7 +32,6 @@ import java.lang.reflect.Method;
 
 
 public class LoggerAction extends Action {
-  Logger logger = Logger.getLogger(LoggerAction.class);
   boolean inError = false;
   
   public void begin(ExecutionContext ec, String name, Attributes attributes) {
@@ -53,23 +52,23 @@ public class LoggerAction extends Action {
 
       String errorMsg = "No 'name' attribute in element " + name + line;
 
-      logger.warn(errorMsg);
+      getLogger().warn(errorMsg);
       ec.addError(new ErrorItem(errorMsg));
 
       return;
     }
 
-    logger.debug("Logger name is [" + loggerName + "].");
+    getLogger().debug("Logger name is [" + loggerName + "].");
 
     Logger l;
 
     String className = attributes.getValue(CLASS_ATTRIBUTE);
 
     if (Option.isEmpty(className)) {
-      logger.debug("Retreiving an instance of org.apache.log4j.Logger.");
+      getLogger().debug("Retreiving an instance of org.apache.log4j.getLogger().");
       l = repository.getLogger(loggerName);
     } else {
-      logger.debug("Desired logger sub-class: [" + className + ']');
+      getLogger().debug("Desired logger sub-class: [" + className + ']');
 
       try {
         Class clazz = Loader.loadClass(className);
@@ -78,7 +77,7 @@ public class LoggerAction extends Action {
         l = (Logger) getInstanceMethod.invoke(
             null, new Object[] { loggerName });
       } catch (Exception oops) {
-        logger.error(
+        getLogger().error(
           "Could not retrieve category [" + loggerName
           + "]. Reported error follows.", oops);
 
@@ -89,19 +88,19 @@ public class LoggerAction extends Action {
     boolean additivity =
       OptionConverter.toBoolean(
         attributes.getValue(ActionConst.ADDITIVITY_ATTRIBUTE), true);
-    logger.debug(
+    getLogger().debug(
       "Setting [" + l.getName() + "] additivity to [" + additivity + "].");
     l.setAdditivity(additivity);
 
-    logger.debug("Pushing logger named [" + loggerName + "].");
+    getLogger().debug("Pushing logger named [" + loggerName + "].");
     ec.pushObject(l);
   }
 
   public void end(ExecutionContext ec, String e) {
-    logger.debug("end() called.");
+    getLogger().debug("end() called.");
 
     if (!inError) {
-      logger.debug("Removing logger from stack.");
+      getLogger().debug("Removing logger from stack.");
       ec.popObject();
     }
   }

@@ -20,7 +20,6 @@ import org.apache.joran.ExecutionContext;
 import org.apache.joran.action.Action;
 import org.apache.joran.helper.Option;
 
-import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.ErrorItem;
 
@@ -38,7 +37,6 @@ import java.util.Properties;
  * @author Ceki G&uuml;lc&uuml;
  */
 abstract public class PropertyAction extends Action {
-  static final Logger logger = Logger.getLogger(PropertyAction.class);
   static String INVALID_ATTRIBUTES =
     "In <property> element, either the \"file\" attribute or both the \"name\" and \"value\" attributes must be set.";
 

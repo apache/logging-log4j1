@@ -19,7 +19,6 @@ import org.apache.joran.ExecutionContext;
 import org.apache.joran.action.Action;
 import org.apache.joran.helper.Option;
 
-import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.plugins.Plugin;
 import org.apache.log4j.spi.ErrorItem;
@@ -29,7 +28,7 @@ import org.apache.log4j.spi.OptionHandler;
 import org.xml.sax.Attributes;
 
 public class PluginAction extends Action {
-  static final Logger logger = Logger.getLogger(PluginAction.class);
+ 
   Plugin plugin;
   boolean inError = false;
   
@@ -43,7 +42,7 @@ public class PluginAction extends Action {
     String className = attributes.getValue(CLASS_ATTRIBUTE);
 
     try {
-      logger.debug(
+      getLogger().debug(
         "About to instantiate plugin of type [" + className + "]");
 
       Object instance =
@@ -54,11 +53,11 @@ public class PluginAction extends Action {
       String pluginName = attributes.getValue(NAME_ATTRIBUTE);
 
       if (Option.isEmpty(pluginName)) {
-        logger.warn(
+        getLogger().warn(
           "No plugin name given for plugin of type " + className + "].");
       } else {
         plugin.setName(pluginName);
-        logger.debug("plugin named as [" + pluginName + "]");
+        getLogger().debug("plugin named as [" + pluginName + "]");
       }
 
       LoggerRepository repository = (LoggerRepository) ec.getObject(0);
@@ -66,11 +65,11 @@ public class PluginAction extends Action {
       repository.getPluginRegistry().addPlugin(plugin);
 	    plugin.setLoggerRepository(repository);
       
-      logger.debug("Pushing plugin on to the object stack.");
+      getLogger().debug("Pushing plugin on to the object stack.");
       ec.pushObject(plugin);
     } catch (Exception oops) {
       inError = true;
-      logger.error(
+      getLogger().error(
         "Could not create a plugin. Reported error follows.", oops);
       ec.addError(
         new ErrorItem(
@@ -94,11 +93,11 @@ public class PluginAction extends Action {
     Object o = ec.peekObject();
 
     if (o != plugin) {
-      logger.warn(
+      getLogger().warn(
         "The object at the of the stack is not the plugin named ["
         + plugin.getName() + "] pushed earlier.");
     } else {
-      logger.warn(
+      getLogger().warn(
         "Popping plugin named [" + plugin.getName()
         + "] from the object stack");
       ec.popObject();

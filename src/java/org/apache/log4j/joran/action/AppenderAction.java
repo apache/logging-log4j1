@@ -20,7 +20,6 @@ import org.apache.joran.action.Action;
 import org.apache.joran.helper.Option;
 
 import org.apache.log4j.Appender;
-import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.ErrorItem;
 import org.apache.log4j.spi.OptionHandler;
@@ -31,7 +30,7 @@ import java.util.HashMap;
 
 
 public class AppenderAction extends Action {
-  static final Logger logger = Logger.getLogger(AppenderAction.class);
+  
   Appender appender;
 
   private boolean inError = false;
@@ -46,7 +45,7 @@ public class AppenderAction extends Action {
     String className = attributes.getValue(CLASS_ATTRIBUTE);
 
     try {
-      logger.debug(
+      getLogger().debug(
         "About to instantiate appender of type [" + className + "]");
 
       Object instance =
@@ -57,11 +56,11 @@ public class AppenderAction extends Action {
       String appenderName = attributes.getValue(NAME_ATTRIBUTE);
 
       if (Option.isEmpty(appenderName)) {
-        logger.warn(
+        getLogger().warn(
           "No appender name given for appender of type " + className + "].");
       } else {
         appender.setName(appenderName);
-        logger.debug("Appender named as [" + appenderName + "]");
+        getLogger().debug("Appender named as [" + appenderName + "]");
       }
 
       // The execution context contains a bag which contains the appenders
@@ -71,11 +70,11 @@ public class AppenderAction extends Action {
       // add the appender just created to the appender bag.
       appenderBag.put(appenderName, appender);
 
-      logger.debug("Pushing appender on to the object stack.");
+      getLogger().debug("Pushing appender on to the object stack.");
       ec.pushObject(appender);
     } catch (Exception oops) {
       inError = true;
-      logger.error(
+      getLogger().error(
         "Could not create an Appender. Reported error follows.", oops);
       ec.addError(
         new ErrorItem(
@@ -99,11 +98,11 @@ public class AppenderAction extends Action {
     Object o = ec.peekObject();
 
     if (o != appender) {
-      logger.warn(
+      getLogger().warn(
         "The object at the of the stack is not the appender named ["
         + appender.getName() + "] pushed earlier.");
     } else {
-      logger.debug(
+      getLogger().debug(
         "Popping appender named [" + appender.getName()
         + "] from the object stack");
       ec.popObject();
