@@ -5,9 +5,9 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
 
- October ??, 2001
+ ??, 2001
  
- - Release of version 1.2
+ - Release of version 1.2 (ALPHA)
 
  - Improved error reporting in DOMConfigurator. Thanks to Thomas Tuft
    Muller for contributing the enhancement. [*]
