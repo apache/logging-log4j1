@@ -197,15 +197,15 @@ public class Logging {
   void  Usage(String msg) {
     System.err.println(msg);
     System.err.println(
-      "Usage: java org.apache.log4j.test.Logging confFile runLength delay burstLen\n"+
-      "        confFile is a configuration file and\n"+
+      "Usage: java "+Logging.class.getName()+" confFile runLength [delay] [burstLen]\n"+
+      "        confFile is an XML configuration file and\n"+
       "        runLength (integer) is the length of test loop.\n"+
       "        delay is the time in millisecs to wait every bustLen log requests.");
     System.exit(1);
   }
 
   /**
-     <b>Usage:</b> <code>java org.apache.log4j.test.Logging confFile runLength [delay] [burstLen]</code>
+     <b>Usage:</b> <code>java org.apache.log4j.performance.Logging confFile runLength [delay] [burstLen]</code>
 
      <p><code>confFile</code> is an XML configuration file and
       <code>runLength</code> (integer) is the length of test loop,

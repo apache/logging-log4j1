@@ -31,8 +31,11 @@ import java.util.Enumeration;
    for the impact of using this appender.
 
    <p><b>Important note:</b> The <code>AsyncAppender</code> can only
-   be script configured using the {@link org.apache.log4j.xml.DOMConfigurator}.
-
+   be script configured using the {@link
+   org.apache.log4j.xml.DOMConfigurator}. Refer to the
+   <code>org/apache/log4j/performace/xml</code> directory for
+   examples.
+   
    @author Ceki G&uuml;lc&uuml;
    @since version 0.9.1 */
 public class AsyncAppender extends AppenderSkeleton 
@@ -215,10 +218,15 @@ class Dispatcher extends Thread {
 
   }
 
-  synchronized 
   void close() {
-    interrupted = true;
-    bf.notify();
+    synchronized(bf) {
+      interrupted = true;   
+      // We have a waiting dispacther if and only if bf.length is
+      // zero.  In that case, we need to give its death kiss.
+      if(bf.length() == 0) {
+	bf.notify();
+      }
+    }
   }
 
 
@@ -243,8 +251,7 @@ class Dispatcher extends Thread {
     while(true) {
       synchronized(bf) {
 	if(bf.length() == 0) {
-	  // exit loop if we are interrupted but only if the the
-	  // buffer is empty.
+	  // Exit loop if interrupted but only if the the buffer is empty.
 	  if(interrupted) { 
 	    //cat.info("Exiting.");
 	    return;
@@ -253,7 +260,7 @@ class Dispatcher extends Thread {
 	    //cat.debug("Waiting for new event to dispatch.");
 	    bf.wait();
 	  } catch(InterruptedException e) {
-	    //cat.info("Dispatcher interrupted.");
+	    LogLog.error("The dispathcer should not be interrupted.");
 	    break;
 	  }
 	}
@@ -265,7 +272,7 @@ class Dispatcher extends Thread {
 	}
       } // synchronized
       
-      if(aai != null)
+      if(aai != null && event != null)
 	aai.appendLoopOnAppenders(event);
     } // while
   }

@@ -12,6 +12,7 @@ JSOURCES:= Shallow.java\
  PatternTest.java\
  ROFile.java\
  L7D.java\
+ AsyncAppenderTest.java\
  Finalize.java\
  DefaultInit.java\
  CategoryWrapper.java\

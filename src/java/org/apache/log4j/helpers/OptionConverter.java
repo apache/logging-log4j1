@@ -235,7 +235,7 @@ public class OptionConverter {
 
      <p>The variable substitution delimeters are <b>${</b> and <b>}</b>.
      
-     <p>For example, if the system properties contains "key=value", then
+     <p>For example, if the System properties contains "key=value", then
      the call
      <pre>
      String s = OptionConverter.substituteVars("Value of key is ${key}.");
@@ -243,7 +243,7 @@ public class OptionConverter {
   
      will set the variable <code>s</code> to "Value of key is value.".
 
-     If no value could be found for the specified key, then the
+     <p>If no value could be found for the specified key, then the
      <code>props</code> parameter is searched, if the value could not
      be found there, then substitution defaults to the empty string.
 
@@ -295,7 +295,7 @@ public class OptionConverter {
 	  j += DELIM_START_LEN;
 	  String key = val.substring(j, k);
 	  // first try in System properties
-	  String replacement = System.getProperty(key);
+	  String replacement = getSystemProperty(key, null);
 	  // then try props parameter
 	  if(replacement == null && props != null) {
 	    replacement =  props.getProperty(key);
