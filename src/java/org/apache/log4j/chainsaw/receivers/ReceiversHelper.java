@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.log4j.chainsaw.plugins.PluginClassLoaderFactory;
 import org.apache.log4j.helpers.LogLog;
 
 
@@ -54,6 +55,9 @@ public class ReceiversHelper {
 
             stream = new LineNumberReader(new InputStreamReader(url.openStream()));
             String line;
+            // we need the special Classloader, because under Web start, optional jars might be local
+            // to this workstation
+            ClassLoader classLoader = PluginClassLoaderFactory.getInstance().getClassLoader();
 
             while ((line = stream.readLine()) != null) {
             	
@@ -61,7 +65,7 @@ public class ReceiversHelper {
             		if (line.startsWith("#") || (line.length() == 0)) {
             			continue;
             		}
-            		Class receiverClass = Class.forName(line);
+            		Class receiverClass = classLoader.loadClass(line);
             		receiverClassList.add(receiverClass);
             		LogLog.debug("Located known Receiver class " + receiverClass.getName());
             	} catch (Exception e) {
