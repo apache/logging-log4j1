@@ -43,7 +43,7 @@ public class ChainsawConstants {
   public static final String LOG4J_ID_KEY = "log4jid";
   static final String UNKNOWN_TAB_NAME = "Unknown";
   static final String GLOBAL_MATCH = "*";
-  static final String DETAIL_CONTENT_TYPE = "text/html";
+  public static final String DETAIL_CONTENT_TYPE = "text/html";
 
   static final String EVENT_TYPE_KEY = "log4j.eventtype";
   static final String LOG4J_EVENT_TYPE = "log4j";
