@@ -30,7 +30,7 @@ import java.util.Date;
  *
  */
 public class FileNamePattern {
-  static Logger logger = Logger.getLogger(FileNamePattern.class);
+  Logger logger = Logger.getLogger(FileNamePattern.class);
   String pattern;
   int patternLength;
   TokenConverter headTokenConverter;
