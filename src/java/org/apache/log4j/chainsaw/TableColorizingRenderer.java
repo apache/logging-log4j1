@@ -51,9 +51,6 @@ package org.apache.log4j.chainsaw;
 
 import org.apache.log4j.chainsaw.color.Colorizer;
 import org.apache.log4j.chainsaw.icons.LevelIconFactory;
-import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SettingsListener;
 import org.apache.log4j.helpers.ISO8601DateFormat;
 import org.apache.log4j.spi.LoggingEvent;
 
@@ -71,7 +68,6 @@ import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableModel;
 
 
 /**
@@ -83,8 +79,7 @@ import javax.swing.table.TableModel;
  * @author Paul Smith <psmith@apache.org>
  *
  */
-public class TableColorizingRenderer extends DefaultTableCellRenderer
-  implements SettingsListener {
+public class TableColorizingRenderer extends DefaultTableCellRenderer {
   private static final DateFormat DATE_FORMATTER =
     new ISO8601DateFormat(Calendar.getInstance().getTimeZone());
   private static final Map iconMap =
@@ -117,23 +112,16 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
       this.toolTipsVisible = toolTipsVisible;
   }
 
-  public void loadSettings(LoadSettingsEvent event) {
-  }
-
-  public void saveSettings(SaveSettingsEvent event) {
-  }
-
   public Component getTableCellRendererComponent(
     final JTable table, Object value, boolean isSelected, boolean hasFocus,
     int row, int col) {
     value = formatField(value);
 
-    Color backgroundColor = null;
-    Color foregroundColor = null;
+    Color background = null;
+    Color foreground = null;
 
-    Component c =
-      super.getTableCellRendererComponent(
-        table, value, isSelected, hasFocus, row, col);
+    Component c = super.getTableCellRendererComponent(table, value, 
+        isSelected, hasFocus, row, col);
     int colIndex = table.getColumnModel().getColumn(col).getModelIndex() + 1;
 
     switch (colIndex) {
@@ -142,21 +130,15 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
       idComponent.setForeground(c.getForeground());
       idComponent.setBackground(c.getBackground());
       c = idComponent;
-
       break;
 
     case ChainsawColumns.INDEX_THROWABLE_COL_NAME:
-
       if (value instanceof String[]) {
         ((JLabel) c).setText(((String[]) value)[0]);
-      } else {
-        ((JLabel) c).setText("");
       }
-
       break;
 
     case ChainsawColumns.INDEX_LOGGER_COL_NAME:
-
       if (loggerPrecision == 0) {
         break;
       } else {
@@ -173,11 +155,9 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
           ((JLabel) c).setText(logger.substring(startPos + 1));
         }
       }
-
       break;
 
     case ChainsawColumns.INDEX_LEVEL_COL_NAME:
-
       if (levelUseIcons) {
         levelComponent.setIcon((Icon) iconMap.get(value.toString()));
 
@@ -194,11 +174,10 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
         levelComponent.setIcon(null);
         levelComponent.setText(value.toString());
       }
-
-      levelComponent.setBackground(c.getBackground());
       levelComponent.setForeground(c.getForeground());
-      c = levelComponent;
+      levelComponent.setBackground(c.getBackground());
 
+      c = levelComponent;
       break;
 
     default:
@@ -209,46 +188,36 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
       return c;
     }
 
-    if ((backgroundColor == null) && (getColorizer() != null)) {
-      TableModel model = table.getModel();
-      LoggingEvent event = null;
+    if (getColorizer() != null) {
+      EventContainer container = (EventContainer) table.getModel();
+      LoggingEvent event = container.getRow(row);
 
-      if (model instanceof EventContainer) {
-        EventContainer model2 = (EventContainer) model;
-        event = model2.getRow(row);
-
-        if (event == null) {
-          //ignore...probably changed displayed cols
-          return c;
-        }
-      } else {
-        throw new UnsupportedOperationException(
-          getClass() + " can only support an EventContainer TableModel");
+      if (event == null) {
+        //ignore...probably changed displayed cols
+        return c;
       }
-
-      backgroundColor = getColorizer().getBackgroundColor(event);
-      foregroundColor = getColorizer().getForegroundColor(event);
+      background = getColorizer().getBackgroundColor(event);
+      foreground = getColorizer().getForegroundColor(event);
     }
 
-    if ((backgroundColor != null)) {
-      c.setBackground(backgroundColor);
-    } else if (!isSelected) {
-      /**
-       * Colourize based on row striping
-       */
+    /**
+     * Colourize based on row striping
+     */
+    if (background == null) {
       if ((row % 2) != 0) {
-        c.setBackground(ChainsawConstants.COLOR_ODD_ROW);
+        background = ChainsawConstants.COLOR_ODD_ROW;
       } else {
-        c.setBackground(ChainsawConstants.COLOR_EVEN_ROW);
+        background = ChainsawConstants.COLOR_EVEN_ROW;
       }
     }
 
-    if (foregroundColor != null) {
-      c.setForeground(foregroundColor);
-    } else {
-      c.setForeground(Color.black);
+    if (foreground == null) {
+      foreground = Color.black;
     }
-
+    
+    c.setBackground(background);
+    c.setForeground(foreground);
+    
     return c;
   }
 

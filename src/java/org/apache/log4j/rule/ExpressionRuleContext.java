@@ -122,7 +122,12 @@ public class ExpressionRuleContext extends KeyAdapter {
       new KeyAdapter() {
         public void keyPressed(KeyEvent e) {
           if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-            updateField(list.getSelectedValue().toString());
+            String value = list.getSelectedValue().toString();
+            if (getContextKey() != null) {
+              value = "'"+value+"'";
+            }
+                
+            updateField(value);              
             contextMenu.setVisible(false);
           }
         }
@@ -132,7 +137,12 @@ public class ExpressionRuleContext extends KeyAdapter {
       new MouseAdapter() {
         public void mouseClicked(MouseEvent e) {
           if (e.getClickCount() == 2) {
-            updateField(list.getSelectedValue().toString());
+            String value = list.getSelectedValue().toString();
+            if (getContextKey() != null) {
+              value = "'"+value+"'";
+            }
+            
+            updateField(value);
             contextMenu.setVisible(false);
           }
         }
