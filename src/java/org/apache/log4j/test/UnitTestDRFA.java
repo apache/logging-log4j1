@@ -5,7 +5,9 @@
  * License version 1.1, a copy of which has been included with this
  * distribution in the LICENSE.APL file.  */
 
-package org.apache.log4j.test;
+// Altough located under org/apache/log4j/test, org.apache.log4j is
+// the correct package.
+package org.apache.log4j;
 
 import java.util.Calendar;
 import java.util.Date;

@@ -35,10 +35,10 @@ public class Loader extends java.lang.Object {
      with the <code>null</code> (bootstrap) class loader.
 
      <p><li>Search for <code>resource</code> with the class loader
-     that loaded <code>clazz</code>. It that fails, try recursively
-     with the parent class loader, upto and including the bootstrap
-     class loader.
+     that loaded <code>clazz</code>. 
 
+     <pi><li>Try one last time with
+     <code>ClassLoader.getSystemResource(resource)</code> 
      </ol>
      
      
