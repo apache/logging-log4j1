@@ -63,6 +63,13 @@ public class Main
             final JMenuItem loadMenuItem = new JMenuItem("Load file...");
             menu.add(loadMenuItem);
             loadMenuItem.addActionListener(lxa);
+        } catch (NoClassDefFoundError e) {
+            LOG.info("Missing classes for XML parser", e);
+            JOptionPane.showMessageDialog(
+                this,
+                "XML parser not in classpath - unable to load XML events.",
+                "CHAINSAW",
+                JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
             LOG.info("Unable to create the action to load XML files", e);
             JOptionPane.showMessageDialog(
