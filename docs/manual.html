@@ -372,7 +372,7 @@ defined seems to be the best strategy known so far.
 on their category is only part of the picture. Log4j allows logging
 requests to print to multiple destinations. In log4j speak, an output
 destination is called an <em>appender</em>. Currently, appenders exist
-for the console, <a
+for the <a href="api/org/apache/log4j/ConsoleAppender.html">console</a>, <a
 href="api/org/apache/log4j/FileAppender.html">files</a>, GUI
 components, <a
 href="api/org/apache/log4j/net/SocketAppender.html">remote socket</a>
@@ -565,7 +565,7 @@ package <code>com.foo</code>.
 <p>The invocation of the <a
 href="api/org/apache/log4j/BasicConfigurator.html#configure()">BasicConfigurator.configure</a>
 method creates a rather simple log4j setup. This method is hardwired
-to add to the root category a FileAppender printing on the
+to add to the root category a ConsoleAppender printing on the
 console. The output will be formatted using a PatternLayout set to the
 pattern "%-4r [%t] %-5p %c %x - %m%n".
 
@@ -653,8 +653,7 @@ configuration file shows one possible way of achieving this.
 
 <pre>
 log4j.rootCategory=DEBUG, A1
-log4j.appender.A1=org.apache.log4j.FileAppender
-log4j.appender.A1.File=System.out  
+log4j.appender.A1=org.apache.log4j.ConsoleAppender
 log4j.appender.A1.layout=org.apache.log4j.PatternLayout
   
 # <strong>Print the date in ISO 8601 format</strong>
@@ -683,8 +682,7 @@ is suppressed.
 <pre>
 log4j.rootCategory=debug, <strong>stdout, R</strong>
 
-log4j.appender.<strong>stdout</strong>=org.apache.log4j.FileAppender
-log4j.appender.stdout.File=System.out
+log4j.appender.<strong>stdout</strong>=org.apache.log4j.ConsoleAppender
 log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
 
 # Pattern to output the caller's file name and line number.
