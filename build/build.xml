@@ -135,6 +135,7 @@
 	   includes="${stem}/**/*.java, ${stem}/xml/XMLLayout.java,"
 	   classpath="${classpath}"
 	   excludes="misc/*, **/UnitTest*.java,
+                    **/LogManager.java,
 	            **/doc-files/*,
                     ${stem}/xml/**,
                     ${stem}/gui/**,
