@@ -464,6 +464,20 @@ public class LogPanel extends DockablePanel implements SettingsListener,
         }
       };
 
+      PropertyChangeListener loggerPrecisionChangeListener =
+        new PropertyChangeListener() {
+          public void propertyChange(PropertyChangeEvent evt) {
+            LogPanelPreferenceModel model =
+              (LogPanelPreferenceModel) evt.getSource();
+
+              renderer.setLoggerPrecision(model.getLoggerPrecision());
+
+            table.tableChanged(new TableModelEvent(getModel()));
+          }
+        };
+        preferenceModel.addPropertyChangeListener(
+          "loggerPrecision", loggerPrecisionChangeListener);
+
     preferenceModel.addPropertyChangeListener(
       "dateFormatPattern", datePrefsChangeListener);
     preferenceModel.addPropertyChangeListener(

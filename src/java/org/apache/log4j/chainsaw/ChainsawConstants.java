@@ -46,8 +46,8 @@ public class ChainsawConstants {
   public static final String DETAIL_CONTENT_TYPE = "text/html";
 
   static final String EVENT_TYPE_KEY = "log4j.eventtype";
-  static final String LOG4J_EVENT_TYPE = "log4j";
-  static final String UTIL_LOGGING_EVENT_TYPE = "util-logging";
+  public static final String LOG4J_EVENT_TYPE = "log4j";
+  public static final String UTIL_LOGGING_EVENT_TYPE = "util-logging";
 
   static final String LEVEL_DISPLAY = "level.display";
   static final String LEVEL_DISPLAY_ICONS = "icons";

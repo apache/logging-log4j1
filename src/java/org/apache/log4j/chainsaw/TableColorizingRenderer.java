@@ -101,6 +101,7 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
   //  private String levelDisplay = ChainsawConstants.LEVEL_DISPLAY_ICONS;
   private boolean levelUseIcons = true;
   private DateFormat dateFormatInUse = DATE_FORMATTER;
+  private String loggerPrecision = "";
 
   /**
    * Creates a new TableColorizingRenderer object.
@@ -156,6 +157,31 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
       }
 
       break;
+
+      case ChainsawColumns.INDEX_LOGGER_COL_NAME:
+        if (loggerPrecision.equals("")) {
+            break;
+        } else {
+            String logger = value.toString();
+            int precision = 0;
+            try {
+                precision = Integer.parseInt(loggerPrecision);
+            } catch (NumberFormatException nfe){}
+            if (precision < 1) {
+                break;
+            }
+            int startPos = logger.length();
+            for (int i=0;i<precision;i++) {
+                startPos = logger.lastIndexOf(".", startPos - 1);
+            }
+            if (startPos < 0) {
+                break;
+            } else {
+                ((JLabel)c).setText(logger.substring(startPos + 1));
+            }
+        }
+
+        break;
 
     case ChainsawColumns.INDEX_LEVEL_COL_NAME:
 
@@ -235,6 +261,14 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
    */
   void setDateFormatter(DateFormat formatter) {
     this.dateFormatInUse = formatter;
+  }
+
+  /**
+   * Changes the Logger precision.
+   * @param precision
+   */
+  void setLoggerPrecision(String loggerPrecision) {
+    this.loggerPrecision = loggerPrecision;
   }
 
   /**
