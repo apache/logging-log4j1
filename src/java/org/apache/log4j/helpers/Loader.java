@@ -20,6 +20,7 @@ import java.net.URL;
 
 public class Loader extends java.lang.Object { 
 
+  static String JARSTR = "Caught InvalidJarException. This may be innocuous.";
   
   /**
      This method will search for <code>resource</code> in different
@@ -54,19 +55,20 @@ public class Loader extends java.lang.Object {
     // changed to directory separators
     LogLog.debug("Trying to find ["+resource+"] using Class.getResource().");
 
-    try
-    {
+
+
+    try {
       url = clazz.getResource(resource);
-    }
-    catch (sun.misc.InvalidJarIndexException e)
-    {
-      LogLog.warn("Caught InvalidJarException!");
+      if(url != null) 
+	return url;
+    } catch (sun.misc.InvalidJarIndexException e) {
+      LogLog.debug(JARSTR);
     }
 
-    if(url != null) 
-      return url;
 
-    // attempt to get the resource under CLAZZ/resource from the system class path
+    // attempt to get the resource under CLAZZ/resource from the
+    // system class path. The system class loader should not throw
+    // InvalidJarIndexExceptions
     String fullyQualified = resolveName(resource, clazz);
     LogLog.debug("Trying to find ["+fullyQualified+
 		 "] using ClassLoader.getSystemResource().");
@@ -74,18 +76,24 @@ public class Loader extends java.lang.Object {
     if(url != null) 
       return url;
 
-    // Try all the class loaders of clazz and parents looking resource
-    for(ClassLoader loader = clazz.getClassLoader(); loader != null; 
-                                                       loader = loader.getParent()) {
-      LogLog.debug("Trying to find ["+resource+"] using "+loader+" class loader.");
+    // Let the class loader of clazz and parents (by the delagation
+    // property) seearch for resource
+    ClassLoader loader = clazz.getClassLoader();
+    LogLog.debug("Trying to find ["+resource+"] using "+loader
+		 +" class loader.");
+    
+    try {
       url = loader.getResource(resource); 
       if(url != null) 
 	return url;
+    } catch(sun.misc.InvalidJarIndexException e) {
+      LogLog.debug(JARSTR);
     }
+    
 
-
-
-    // attempt to get the resource from the class path
+    // Attempt to get the resource from the class path. It may be the
+    // case that clazz was loaded by the Extentsion class loader which
+    // the parent of the system class loader. Hence the code below.
     LogLog.debug("Trying to find ["+resource+"] using ClassLoader.getSystemResource().");
     url = ClassLoader.getSystemResource(resource);
     return url;
