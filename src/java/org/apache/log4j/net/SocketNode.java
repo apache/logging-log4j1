@@ -17,6 +17,7 @@ import java.io.ObjectInputStream;
 
 
 import org.apache.log4j.Category;
+import org.apache.log4j.Hierarchy;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.Priority;
 import org.apache.log4j.NDC;
@@ -38,13 +39,15 @@ import org.apache.log4j.NDC;
 public class SocketNode implements Runnable {
 
   Socket socket;
+  Hierarchy hierarchy;
   ObjectInputStream ois;
 
   static Category cat = Category.getInstance(SocketNode.class.getName());
 
   public 
-  SocketNode(Socket socket) {
+  SocketNode(Socket socket, Hierarchy hierarchy) {
     this.socket = socket;
+    this.hierarchy = hierarchy;
     try {
       ois = new ObjectInputStream(socket.getInputStream());
     }
@@ -66,7 +69,7 @@ public class SocketNode implements Runnable {
     try {
       while(true) {	
 	event = (LoggingEvent) ois.readObject();	
-	remoteCategory = Category.getInstance(event.categoryName);
+	remoteCategory = hierarchy.getInstance(event.categoryName);
 	if(event.priority.isGreaterOrEqual(remoteCategory.getChainedPriority())) {
 	  remoteCategory.callAppenders(event);	
 	}
