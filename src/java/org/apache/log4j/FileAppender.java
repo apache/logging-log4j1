@@ -10,6 +10,7 @@ package org.apache.log4j;
 import java.io.IOException;
 import java.io.Writer;
 import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
@@ -271,7 +272,7 @@ public class FileAppender extends WriterAppender {
     }
 
     reset();    
-    Writer fw = new FileWriter(fileName, append);
+    Writer fw = createWriter(new FileOutputStream(fileName, append));
     if(bufferedIO) {
       fw = new BufferedWriter(fw);
     }

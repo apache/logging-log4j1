@@ -47,6 +47,13 @@ public class WriterAppender extends AppenderSkeleton {
   protected boolean immediateFlush = true;
 
   /**
+     The encoding to use when opening an InputStream.  <p>The
+     <code>encoding</code> variable is set to <code>null</null> by
+     default which results in the utilization of the system's default
+     encoding.  */
+  protected String encoding;
+
+  /**
      This is the {@link QuietWriter quietWriter} where we will write
      to. 
   */
@@ -189,7 +196,6 @@ public class WriterAppender extends AppenderSkeleton {
     writeFooter();
     reset();
   }
-
   /**
      Close the underlying {@link java.io.Writer}.
   */
@@ -204,6 +210,44 @@ public class WriterAppender extends AppenderSkeleton {
       }
     }
   }
+
+  /**
+     Returns an OutputStreamWriter when passed an OutputStream.  The
+     encoding used will depend on the value of the
+     <code>encoding</code> property.  If the encoding value is
+     specified incorrectly the writer will be opened using the default
+     system encoding (an error message will be printed to the loglog.  */
+  protected 
+  OutputStreamWriter createWriter(OutputStream os) {
+    OutputStreamWriter retval = null;
+    
+    String enc = getEncoding();
+    if(enc != null) {
+      try {
+	retval = new OutputStreamWriter(os, enc);
+      } catch(IOException e) {
+	LogLog.warn("Error initializing output writer.");
+	LogLog.warn("Unsupported encoding?");
+      }
+    }
+    if(retval == null) {
+      retval = new OutputStreamWriter(os);
+    }
+    return retval;
+  }
+
+  public 
+  String getEncoding() {
+    return encoding;
+  }
+
+  public 
+  void setEncoding(String value) {
+    encoding = value;
+  }
+  
+
+
 
   /**
      Set the {@link ErrorHandler} for this FileAppender and also the

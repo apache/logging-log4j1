@@ -14,6 +14,9 @@
 	
  - Log4j is now configurable using JMX. [*]
 
+ - Added support for different encodings in WriterAppender. Thanks to
+   Ben Sandee for submitting the relevant patch. [*]
+
  - Added the FINE level as an alias for the DEBUG level to make migration
    from log4j to j.u.l. and vice versa easier. [*]
 
