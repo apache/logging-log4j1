@@ -194,9 +194,13 @@ public class SocketAppender extends AppenderSkeleton {
       cleanUp();
       oos = new ObjectOutputStream(new Socket(address, port).getOutputStream());
     } catch(IOException e) {
-      LogLog.error("Could not connect to remote log4j server at ["
-		   +address.getHostName()+"]. We will try again later.", e);
-      fireConnector();
+      String msg = "Could not connect to remote log4j server at ["
+	            +address.getHostName()+"].";
+      if(reconnectionDelay > 0) {
+        msg += " We will try again later.";
+	fireConnector(); // fire the connector thread
+      } 
+      LogLog.error(msg, e);
     }
   }
 
