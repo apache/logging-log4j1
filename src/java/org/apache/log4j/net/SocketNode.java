@@ -28,6 +28,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.apache.log4j.plugins.Pauseable;
 import org.apache.log4j.plugins.Receiver;
+import org.apache.log4j.spi.ComponentBase;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.LoggingEvent;
 
@@ -47,11 +48,10 @@ import org.apache.log4j.spi.LoggingEvent;
 
     @since 0.8.4
 */
-public class SocketNode implements Runnable, Pauseable {
-  static Logger logger = Logger.getLogger(SocketNode.class);
+public class SocketNode extends ComponentBase implements Runnable, Pauseable {
+
   private boolean paused;
   private Socket socket;
-  private LoggerRepository hierarchy;
   private Receiver receiver;
   private SocketNodeEventListener listener;
   private List listenerList = Collections.synchronizedList(new ArrayList());
@@ -60,7 +60,7 @@ public class SocketNode implements Runnable, Pauseable {
     Constructor for socket and logger repository. */
   public SocketNode(Socket socket, LoggerRepository hierarchy) {
     this.socket = socket;
-    this.hierarchy = hierarchy;
+    this.repository = hierarchy;
   }
 
   /**
@@ -115,7 +115,7 @@ public class SocketNode implements Runnable, Pauseable {
     } catch (Exception e) {
       ois = null;
       listenerException = e;
-      logger.error("Exception opening ObjectInputStream to " + socket, e);
+      getLogger().error("Exception opening ObjectInputStream to " + socket, e);
     }
 
     if (ois != null) {
@@ -145,7 +145,7 @@ public class SocketNode implements Runnable, Pauseable {
             } else {
               // get a logger from the hierarchy. The name of the logger
               // is taken to be the name contained in the event.
-              remoteLogger = hierarchy.getLogger(event.getLoggerName());
+              remoteLogger = repository.getLogger(event.getLoggerName());
 
               //event.logger = remoteLogger;
               // apply the logger-level filter
@@ -161,17 +161,17 @@ public class SocketNode implements Runnable, Pauseable {
           }
         }
       } catch (java.io.EOFException e) {
-        logger.info("Caught java.io.EOFException closing connection.");
+        getLogger().info("Caught java.io.EOFException closing connection.");
         listenerException = e;
       } catch (java.net.SocketException e) {
-        logger.info("Caught java.net.SocketException closing connection.");
+        getLogger().info("Caught java.net.SocketException closing connection.");
         listenerException = e;
       } catch (IOException e) {
-        logger.info("Caught java.io.IOException: " + e);
-        logger.info("Closing connection.");
+        getLogger().info("Caught java.io.IOException: " + e);
+        getLogger().info("Closing connection.");
         listenerException = e;
       } catch (Exception e) {
-        logger.error("Unexpected exception. Closing connection.", e);
+        getLogger().error("Unexpected exception. Closing connection.", e);
         listenerException = e;
       }
     }
@@ -182,7 +182,7 @@ public class SocketNode implements Runnable, Pauseable {
         ois.close();
       }
     } catch (Exception e) {
-      //logger.info("Could not close connection.", e);
+      //getLogger().info("Could not close connection.", e);
     }
 
     // send event to listener, if configured

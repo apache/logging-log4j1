@@ -65,6 +65,7 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
   int maxIndex;
   int minIndex;
   Util util = new Util();
+  Compress compress = new Compress();
   
   /**
    * It's almost always a bad idea to have a large window size, say over 12. 
@@ -80,9 +81,11 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
   public void activateOptions() {
     // set the LR for our utility object
     util.setLoggerRepository(this.repository);
+    compress.setLoggerRepository(this.repository);
     
     if (fileNamePatternStr != null) {
       fileNamePattern = new FileNamePattern(fileNamePatternStr);
+      fileNamePattern.setLoggerRepository(this.repository);
       determineCompressionMode();
     } else {
       getLogger().warn(FNP_NOT_SET);
@@ -149,10 +152,10 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
           util.rename(activeFileName, fileNamePattern.convert(minIndex));
           break;
       case Compress.GZ:
-          Compress.GZCompress(activeFileName, fileNamePattern.convert(minIndex));
+          compress.GZCompress(activeFileName, fileNamePattern.convert(minIndex));
           break;	  
       case Compress.ZIP:
-	  Compress.ZIPCompress(activeFileName, fileNamePattern.convert(minIndex));
+	  compress.ZIPCompress(activeFileName, fileNamePattern.convert(minIndex));
 	  break;
       }
     }

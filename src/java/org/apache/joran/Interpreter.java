@@ -18,8 +18,10 @@ package org.apache.joran;
 
 import org.apache.joran.action.*;
 import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.log4j.spi.Component;
 import org.apache.log4j.spi.ErrorItem;
+import org.apache.log4j.spi.LoggerRepository;
+import org.apache.ugli.ULogger;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.EntityResolver;
@@ -66,7 +68,7 @@ import java.util.Vector;
  * @author Ceki G&uuml;lcu&uuml;
  *
  */
-public class Interpreter extends DefaultHandler {
+public class Interpreter extends DefaultHandler implements Component  {
   private static List EMPTY_LIST = new Vector(0);
   private RuleStore ruleStore;
   private ExecutionContext ec;
@@ -74,12 +76,12 @@ public class Interpreter extends DefaultHandler {
   Pattern pattern;
   Locator locator;
 
-  Logger logger = LogManager.getLogger(Interpreter.class);
-  
   // The entity resolver is only needed in order to be compatible with
   // XML files written for DOMConfigurator containing the following DOCTYPE
   // <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
   private EntityResolver entityResolver;
+  
+  private LoggerRepository repository;
   
   /**
    * The <id>actionListStack</id> contains a list of actions that are
@@ -126,7 +128,7 @@ public class Interpreter extends DefaultHandler {
       String errMsg =
         "no applicable action for <" + tagName + ">, current pattern is ["
         + pattern+"]";
-      logger.warn(errMsg);
+      getLogger().warn(errMsg);
       ec.addError(new ErrorItem(errMsg));
     }
   }
@@ -262,21 +264,21 @@ public class Interpreter extends DefaultHandler {
 
   public void error(SAXParseException spe) throws SAXException {
     ec.addError(new ErrorItem("Parsing error", spe));
-    logger.error(
+    getLogger().error(
       "Parsing problem on line " + spe.getLineNumber() + " and column "
       + spe.getColumnNumber(), spe);
   }
 
   public void fatalError(SAXParseException spe) throws SAXException {
     ec.addError(new ErrorItem("Parsing fatal error", spe));
-    logger.error(
+    getLogger().error(
       "Parsing problem on line " + spe.getLineNumber() + " and column "
       + spe.getColumnNumber(), spe);
   }
 
   public void warning(SAXParseException spe) throws SAXException {
     ec.addError(new ErrorItem("Parsing warning", spe));
-    logger.warn(
+    getLogger().warn(
       "Parsing problem on line " + spe.getLineNumber() + " and column "
       + spe.getColumnNumber(), spe);
   }
@@ -336,5 +338,16 @@ public class Interpreter extends DefaultHandler {
       }
     }
   }
-  
+
+  public void setLoggerRepository(LoggerRepository repository) {
+    this.repository = repository;
+  }
+
+  protected ULogger getLogger() {
+    if(repository != null) {
+      return repository.getLogger(this.getClass().getName());
+    } else {
+      return LogManager.SIMPLE_LOGGER_FA.getLogger(this.getClass().getName());
+    }
+  } 
 }

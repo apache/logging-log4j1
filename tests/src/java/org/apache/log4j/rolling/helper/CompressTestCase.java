@@ -30,6 +30,8 @@ import junit.framework.TestSuite;
  */
 public class CompressTestCase extends TestCase {
 
+  Compress compress = new Compress();
+  
   /**
    * Constructor for CompressTestCase.
    * @param arg0
@@ -47,19 +49,19 @@ public class CompressTestCase extends TestCase {
   }
   
   public void test1() throws Exception {
-    Compress.GZCompress("input/compress1.txt", "output/compress1.txt.gz");   
+    compress.GZCompress("input/compress1.txt", "output/compress1.txt.gz");   
     assertTrue(Compare.gzCompare("output/compress1.txt.gz",
            "witness/compress1.txt.gz"));  
   }
   
   public void test2() throws Exception {
-     Compress.GZCompress("input/compress2.txt", "output/compress2.txt");   
+     compress.GZCompress("input/compress2.txt", "output/compress2.txt");   
      assertTrue(Compare.gzCompare("output/compress2.txt.gz",
             "witness/compress2.txt.gz"));  
    }
    
   public void test3() throws Exception {
-      Compress.ZIPCompress("input/compress3.txt", "output/compress3.txt");   
+      compress.ZIPCompress("input/compress3.txt", "output/compress3.txt");   
       //assertTrue(Compare.compare("output/compress3.txt.zip",
         //     "witness/compress3.txt.zip"));  
     }

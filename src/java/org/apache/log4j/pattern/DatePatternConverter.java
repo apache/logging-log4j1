@@ -16,7 +16,6 @@
 
 package org.apache.log4j.pattern;
 
-import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.Constants;
 import org.apache.log4j.spi.LoggingEvent;
 import java.text.SimpleDateFormat;
@@ -33,7 +32,7 @@ public class DatePatternConverter extends PatternConverter {
   // We assume that each PatternConveter instance is unique within a layout, 
   // which is unique within an appender. We further assume that calls to the 
   // appender method are serialized (per appender).
-  Logger logger = Logger.getLogger(DatePatternConverter.class);
+
   private CachedDateFormat df;
   private final StringBuffer buf = new StringBuffer(30); 
 
@@ -80,7 +79,7 @@ public class DatePatternConverter extends PatternConverter {
       simpleFormat = new SimpleDateFormat(pattern);
       maximumCacheValidity = CachedDateFormat.getMaximumCacheValidity(pattern);
     } catch (IllegalArgumentException e) {
-      logger.warn(
+      getLogger().warn(
         "Could not instantiate SimpleDateFormat with pattern " + patternOption, e);
       // default to the ISO8601 format
       simpleFormat = new SimpleDateFormat(Constants.ISO8601_PATTERN);

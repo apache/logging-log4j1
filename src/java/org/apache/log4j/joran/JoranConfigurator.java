@@ -230,7 +230,8 @@ public class JoranConfigurator extends ConfiguratorBase {
     rs.addRule(new Pattern("*/param"), new ParamAction());
 
     joranInterpreter = new Interpreter(rs);
-
+    joranInterpreter.setLoggerRepository(repository);
+    
     // The following line adds the capability to parse nested components
     joranInterpreter.addImplicitAction(new NestComponentIA());
     ExecutionContext ec = joranInterpreter.getExecutionContext();

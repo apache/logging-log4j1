@@ -25,7 +25,6 @@ import javax.naming.Context;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
 
-import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.plugins.Plugin;
 import org.apache.log4j.plugins.Receiver;
@@ -48,8 +47,6 @@ import org.apache.log4j.plugins.Receiver;
   @since 1.3
 */
 public class JMSReceiver extends Receiver implements MessageListener {
-
-  private static Logger logger = Logger.getLogger(JMSReceiver.class);
 
   private boolean active = false;
 
@@ -237,7 +234,7 @@ public class JMSReceiver extends Receiver implements MessageListener {
           }
           topicConnection = null;
         }
-        logger.error("Could not start JMSReceiver.", e);
+        getLogger().error("Could not start JMSReceiver.", e);
       }
     }
   }
@@ -273,19 +270,19 @@ public class JMSReceiver extends Receiver implements MessageListener {
         
       	doPost(event);
       } else {
-      	logger.warn("Received message is of type "+message.getJMSType()
+      	getLogger().warn("Received message is of type "+message.getJMSType()
 		    +", was expecting ObjectMessage.");
       }      
     } catch(Exception e) {
-      logger.error("Exception thrown while processing incoming message.", e);
+      getLogger().error("Exception thrown while processing incoming message.", e);
     }
   }
 
-  protected static Object lookup(Context ctx, String name) throws NamingException {
+  protected Object lookup(Context ctx, String name) throws NamingException {
     try {
       return ctx.lookup(name);
     } catch(NameNotFoundException e) {
-      logger.error("Could not find name ["+name+"].");
+      getLogger().error("Could not find name ["+name+"].");
       throw e;
     }
   }

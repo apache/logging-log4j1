@@ -16,9 +16,9 @@
 
 package org.apache.log4j.rolling.helper;
 
-import org.apache.log4j.Logger;
-
 import java.util.Date;
+
+import org.apache.log4j.spi.ComponentBase;
 
 
 /**
@@ -29,8 +29,7 @@ import java.util.Date;
  * @author Ceki G&uuml;lc&uuml;
  *
  */
-public class FileNamePattern {
-  Logger logger = Logger.getLogger(FileNamePattern.class);
+public class FileNamePattern extends ComponentBase {
   String pattern;
   int patternLength;
   TokenConverter headTokenConverter;
@@ -106,7 +105,7 @@ MAIN_LOOP:
             option = pattern.substring(i + 3, optionEnd);
             lastIndex = optionEnd + 1;
           } else {
-            logger.debug("Assuming daily rotation schedule");
+            getLogger().debug("Assuming daily rotation schedule");
             option = "yyyy-MM-dd";
             lastIndex = i+2;
           }
@@ -203,7 +202,7 @@ MAIN_LOOP:
         break;
 
       default:
-        logger.error(
+        getLogger().error(
           "Encountered an unknown TokenConverter type for pattern [" + pattern
           + "].");
       }
@@ -231,7 +230,7 @@ MAIN_LOOP:
         break;
 
       default:
-        logger.error(
+        getLogger().error(
           "Encountered an unknown TokenConverter type for pattern [" + pattern
           + "].");
       }

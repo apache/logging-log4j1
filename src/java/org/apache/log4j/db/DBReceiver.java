@@ -41,7 +41,8 @@ public class DBReceiver extends Receiver implements Pauseable {
   public void activateOptions() {
     if (connectionSource != null) {
       receiverJob = new DBReceiverJob(this);
-
+      receiverJob.setLoggerRepository(repository);
+      
       Scheduler scheduler = LogManager.getSchedulerInstance();
       scheduler.schedule(
         receiverJob, System.currentTimeMillis() + 500, refreshMillis);
