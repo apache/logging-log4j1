@@ -69,6 +69,7 @@ import org.apache.log4j.spi.RendererSupport;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -456,7 +457,9 @@ public class PropertyConfigurator implements Configurator {
     LogLog.debug("Reading configuration from URL " + configURL);
 
     try {
-      props.load(configURL.openStream());
+      InputStream in = configURL.openStream();
+      props.load(in);
+      in.close();
     } catch (java.io.IOException e) {
       LogLog.error(
         "Could not read configuration file from URL [" + configURL + "].", e);
