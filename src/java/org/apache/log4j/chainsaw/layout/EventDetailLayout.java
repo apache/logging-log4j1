@@ -81,6 +81,7 @@ public class EventDetailLayout extends Layout {
 
   public void setConversionPattern(String conversionPattern) {
     patternLayout.setConversionPattern(conversionPattern);
+    patternLayout.activateOptions();
   }
 
   public String getConversionPattern() {
