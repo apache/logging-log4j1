@@ -2,7 +2,7 @@
 <document>
 
   <properties>
-    <author email="cgu@apache.org">Ceki Gulcu</author>
+    <author email="ceki at apache.org">Ceki Gulcu</author>
     <title>Contact us</title>
   </properties>
 
@@ -14,13 +14,13 @@
       <p>Discussion on log4j and logging in general are held on the
 	<em>log4j-user</em> mailing list.  To subscribe to this list
 	send an e-mail to <a
-	HREF="mailto:log4j-user-subscribe@jakarta.apache.org">log4j-user-subscribe@jakarta.apache.org</a>.
+	HREF="mailto:log4j-user-subscribe@logging.apache.org">log4j-user-subscribe@logging.apache.org</a>.
       </p>
 
       <p>Development related discussions are held on the
 	<em>log4j-dev</em> mailing list. To subscribe to this list
 	send an e-mail to <A
-	HREF="mailto:log4j-dev-subscribe@jakarta.apache.org">log4j-dev-subscribe@jakarta.apache.org</A>. All
+	HREF="mailto:log4j-dev-subscribe@logging.apache.org">log4j-dev-subscribe@logging.apache.org</A>. All
 	developers are encouraged to subscribe to the
 	<em>log4j-dev</em> list which will notify the subscribers of
 	any commits to our CVS repository.
@@ -32,7 +32,7 @@
 	  creates needless work for us.</b>
       </p>
 
-      <p>Most Jakarta mailing lists, in particular the log4j mailing
+      <p>Most Logging Services mailing lists, in particular the log4j mailing
 	lists, are archived. Some of the known archives are listed
 	below:
       </p>
@@ -43,9 +43,9 @@
 	  <a href="http://www.mail-archive.com/">http://www.mail-archive.com</a>
 	</li>
 
-	<li>Full mbox archives of all Jakarta lists are available at
+	<li>Full mbox archives of all Logging Services lists are available at
 	    <a
-	    href="http://jakarta.apache.org/mail/">http://jakarta.apache.org/mail/</a>
+	    href="http://logging.apache.org/mail/">http://logging.apache.org/mail/</a>
 	</li>
 
 	<li>
