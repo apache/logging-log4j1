@@ -241,6 +241,12 @@ public class UtilLoggingXMLDecoder implements Decoder {
       	//separate the string into the last portion ending with </record> (which will
       	//be processed) and the partial event which will be combined and processed in the next section
 
+		//if the document does not contain a record end, append it to the partial event string
+		if (document.lastIndexOf(RECORD_END) == -1) {
+			partialEvent = partialEvent + document;
+			return null;
+		}
+
       	if (document.lastIndexOf(RECORD_END) + RECORD_END.length() < document.length()) {
 	      	newDoc = document.substring(0, document.lastIndexOf(RECORD_END) + RECORD_END.length());
 			newPartialEvent = document.substring(document.lastIndexOf(RECORD_END) + RECORD_END.length());
