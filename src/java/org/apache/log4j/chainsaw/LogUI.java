@@ -631,36 +631,98 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     final JEditorPane tutorialArea = new JEditorPane();
     tutorialArea.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
     tutorialArea.setEditable(false);
+    container.setLayout(new BorderLayout());
 
     try {
       tutorialArea.setPage(getWelcomePanel().getTutorialURL());
-      container.add(new JScrollPane(tutorialArea));
+      container.add(new JScrollPane(tutorialArea), BorderLayout.CENTER);
     } catch (Exception e) {
       LogLog.error("Error occurred loading the Tutorial", e);
     }
 
     tutorialFrame.setSize(new Dimension(640, 480));
 
+    final Action startTutorial =
+      new AbstractAction(
+        "Start Tutorial", new ImageIcon(ChainsawIcons.ICON_RESUME_RECEIVER)) {
+        public void actionPerformed(ActionEvent e) {
+          if (
+            JOptionPane.showConfirmDialog(
+                null,
+                "This will start 3 \"Generator\" receivers for use in the Tutorial.  Is that ok?",
+                "Confirm", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            new Thread(new Tutorial()).start();
+            putValue("TutorialStarted", Boolean.TRUE);
+          } else {
+            putValue("TutorialStarted", Boolean.FALSE);
+          }
+        }
+      };
+
+    final Action stopTutorial =
+      new AbstractAction(
+        "Stop Tutorial", new ImageIcon(ChainsawIcons.ICON_STOP_RECEIVER)) {
+        public void actionPerformed(ActionEvent e) {
+          if (
+            JOptionPane.showConfirmDialog(
+                null,
+                "This will stop all of the \"Generator\" receivers used in the Tutorial, but leave any other Receiver untouched.  Is that ok?",
+                "Confirm", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            new Thread(
+              new Runnable() {
+                public void run() {
+                  List list =
+                    PluginRegistry.getPlugins(
+                      LogManager.getLoggerRepository(), Generator.class);
+
+                  for (Iterator iter = list.iterator(); iter.hasNext();) {
+                    Plugin plugin = (Plugin) iter.next();
+                    PluginRegistry.stopPlugin(plugin);
+                  }
+                }
+              }).start();
+            setEnabled(false);
+            startTutorial.putValue("TutorialStarted", Boolean.FALSE);
+          }
+        }
+      };
+
+    stopTutorial.putValue(
+      Action.SHORT_DESCRIPTION,
+      "Removes all of the Tutorials Generator Receivers, leaving all other Receivers untouched");
+    startTutorial.putValue(
+      Action.SHORT_DESCRIPTION,
+      "Begins the Tutorial, starting up some Generator Receivers so you can see Chainsaw in action");
+    stopTutorial.setEnabled(false);
+
+    final SmallToggleButton startButton = new SmallToggleButton(startTutorial);
+    PropertyChangeListener pcl =
+      new PropertyChangeListener() {
+        public void propertyChange(PropertyChangeEvent evt) {
+          stopTutorial.setEnabled(
+            ((Boolean) startTutorial.getValue("TutorialStarted")) == Boolean.TRUE);
+          startButton.setSelected(stopTutorial.isEnabled());
+        }
+      };
+
+    startTutorial.addPropertyChangeListener(pcl);
+    stopTutorial.addPropertyChangeListener(pcl);
+
+    final SmallButton stopButton = new SmallButton(stopTutorial);
+
+    final JToolBar tutorialToolbar = new JToolBar();
+    tutorialToolbar.setFloatable(false);
+    tutorialToolbar.add(startButton);
+    tutorialToolbar.add(stopButton);
+    container.add(tutorialToolbar, BorderLayout.NORTH);
     tutorialArea.addHyperlinkListener(
       new HyperlinkListener() {
         public void hyperlinkUpdate(HyperlinkEvent e) {
           if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
             if (e.getDescription().equals("StartTutorial")) {
-              new Thread(new Tutorial()).start();
+              startTutorial.actionPerformed(null);
             } else if (e.getDescription().equals("StopTutorial")) {
-              new Thread(
-                new Runnable() {
-                  public void run() {
-                    List list =
-                      PluginRegistry.getPlugins(
-                        LogManager.getLoggerRepository(), Generator.class);
-
-                    for (Iterator iter = list.iterator(); iter.hasNext();) {
-                      Plugin plugin = (Plugin) iter.next();
-                      PluginRegistry.stopPlugin(plugin);
-                    }
-                  }
-                }).start();
+              stopTutorial.actionPerformed(null);
             } else {
               try {
                 tutorialArea.setPage(e.getURL());
@@ -1100,6 +1162,14 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    * @param string The FQN of the LookANdFeel
    */
   private void applyLookAndFeel(String lookAndFeelClassName) {
+    if (
+      UIManager.getLookAndFeel().getClass().getName().equals(
+          lookAndFeelClassName)) {
+      LogLog.debug("No need to change L&F, already the same");
+
+      return;
+    }
+
     LogLog.debug("Setting L&F -> " + lookAndFeelClassName);
 
     try {

@@ -53,8 +53,6 @@ import org.apache.log4j.chainsaw.Generator;
 import org.apache.log4j.plugins.Plugin;
 import org.apache.log4j.plugins.PluginRegistry;
 
-import javax.swing.JOptionPane;
-
 
 /**
  * A runnable element that installs into the Log4j environment some fake Receivers
@@ -67,17 +65,11 @@ public class Tutorial implements Runnable {
    * @see java.lang.Runnable#run()
    */
   public void run() {
-    if (
-      JOptionPane.showConfirmDialog(
-          null,
-          "This will start 3 \"Generator\" receivers for use in the Tutorial.  Is that ok?",
-          "Confirm", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
       Plugin p1 = new Generator("Generator 1");
       Plugin p2 = new Generator("Generator 2");
       Plugin p3 = new Generator("Generator 3");
       PluginRegistry.startPlugin(p1);
       PluginRegistry.startPlugin(p2);
       PluginRegistry.startPlugin(p3);
-    }
   }
 }
