@@ -56,7 +56,7 @@
       <p>On an AMD Duron clocked at 800Mhz running JDK 1.3.1, it costs
 	about 5 nanoseconds to determine if a logging statement should
 	be logged or not. Actual logging is also quite fast, ranging
-	from 21 microseconds microseconds using the SimpleLayout, 37
+	from 21 microseconds using the SimpleLayout, 37
 	microseconds using the TTCCLayout.  The performance of the
 	PatternLayout is almost as good as the dedicated layouts,
 	except that it is much more flexible.</p>
