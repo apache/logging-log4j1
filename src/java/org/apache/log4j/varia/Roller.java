@@ -8,7 +8,7 @@
 
 package org.apache.log4j.varia;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import org.apache.log4j.BasicConfigurator;
 
 import java.io.IOException;
@@ -29,7 +29,7 @@ import java.net.Socket;
    @since version 0.9.0 */
 public class Roller {
 
-  static Category cat = Category.getInstance(Roller.class.getName());
+  static Logger logger = Logger.getLogger(Roller.class);
   
 
   static String host;
@@ -87,13 +87,13 @@ public class Roller {
       dos.writeUTF(ExternallyRolledFileAppender.ROLL_OVER);
       String rc = dis.readUTF();
       if(ExternallyRolledFileAppender.OK.equals(rc)) {
-	cat.info("Roll over signal acknowledged by remote appender.");
+	logger.info("Roll over signal acknowledged by remote appender.");
       } else {
-	cat.warn("Unexpected return code "+rc+" from remote entity.");
+        logger.warn("Unexpected return code "+rc+" from remote entity.");
 	System.exit(2);
       }
     } catch(IOException e) {
-      cat.error("Could not send roll signal on host "+host+" port "+port+" .",
+      logger.error("Could not send roll signal on host "+host+" port "+port+" .",
 		e);
       System.exit(2);
     }
