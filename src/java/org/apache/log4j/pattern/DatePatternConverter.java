@@ -64,7 +64,7 @@ public class DatePatternConverter extends PatternConverter {
   public StringBuffer convert(LoggingEvent event) {
     buf.setLength(0);
 
-    date.setTime(event.timeStamp);
+    date.setTime(event.getTimeStamp());
 
     String converted = null;
 

@@ -1,7 +1,12 @@
+# This SQL script creates the required tables by org.apache.log4j.db.DBAppender and 
+# org.apache.log4j.db.DBReceiver.
+#
+# It is intended for Oracle databases.
+
+# WARNING WARNING WARNING 
 # The following SQL script is untested in the sense that it has not
 # been executed against an Oracle database. Thus, it can contain typos
-# or can contain incorrect SQL statements.
-
+# or may even contain incorrect SQL statements.
 
 
 CREATE SEQUENCE logging_event_id_seq MINVALUE 1 START WITH 1;

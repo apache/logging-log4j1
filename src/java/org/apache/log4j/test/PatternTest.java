@@ -4,7 +4,7 @@ package org.apache.log4j.test;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.Category;
-import org.apache.log4j.Priority;
+import org.apache.log4j.Level;
 /**
    This class is a test of the PatternLayout class.
 
@@ -55,8 +55,8 @@ public class PatternTest {
     CAT.error("Message " + ++i);
     root.error("Message " + i);
     
-    CAT.log(Priority.FATAL, "Message " + ++i);
-    root.log(Priority.FATAL, "Message " + i);    
+    CAT.log(Level.FATAL, "Message " + ++i);
+    root.log(Level.FATAL, "Message " + i);    
     
     Exception e = new Exception("Just testing");
     CAT.debug("Message " + ++i, e);
@@ -71,8 +71,8 @@ public class PatternTest {
     CAT.error("Message " + ++i, e);
     root.error("Message " + i, e);    
 
-    CAT.log(Priority.FATAL, "Message " + ++i, e);
-    root.log(Priority.FATAL, "Message " + i, e);    
+    CAT.log(Level.FATAL, "Message " + ++i, e);
+    root.log(Level.FATAL, "Message " + i, e);    
     
     LogManager.shutdown();
   }

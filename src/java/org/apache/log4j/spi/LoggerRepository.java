@@ -20,6 +20,7 @@ import org.apache.log4j.*;
 import org.apache.log4j.plugins.PluginRegistry;
 
 import java.util.Enumeration;
+import java.util.Map;
 
 
 /**
@@ -168,5 +169,23 @@ public interface LoggerRepository {
    * @since 1.3
    */
   public PluginRegistry getPluginRegistry();
+
+  /** 
+   * Get the properties specific for this repository.
+   * @since 1.3
+   */
+  public Map getProperties();
+
+  /** 
+   * Get the property of this repository.
+   * @since 1.3
+   */
+  public String getProperty(String key);
+
+  /** 
+   * Set a property of this repository.
+   * @since 1.3
+   */
+  public void setProperty(String key, String value);
   
 }

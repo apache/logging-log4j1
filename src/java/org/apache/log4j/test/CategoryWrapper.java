@@ -47,7 +47,7 @@ public class CategoryWrapper {
     // method). This is highly unusual. The fqcn of the wrapper is
     // normally sufficient.
 
-    c.log(FQCN+".print", Priority.DEBUG, msg, null);
+    c.log(FQCN+".print", Level.DEBUG, msg, null);
   }
   
   

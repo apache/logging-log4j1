@@ -26,8 +26,8 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.log4j.Category;
-import org.apache.log4j.Priority;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.CyclicBuffer;
 import org.apache.log4j.spi.LoggingEvent;
 
@@ -39,13 +39,13 @@ import org.apache.log4j.spi.LoggingEvent;
 
 */
 public class CyclicBufferTestCase extends TestCase {
-  static Category cat = Category.getInstance("x");
+  static Logger logger = Logger.getLogger("x");
   static int MAX = 1000;
   static LoggingEvent[] e = new LoggingEvent[MAX];
 
   {
     for (int i = 0; i < MAX; i++) {
-      e[i] = new LoggingEvent("", cat, Priority.DEBUG, "e" + i, null);
+      e[i] = new LoggingEvent("", logger, Level.DEBUG, "e" + i, null);
     }
   }
 

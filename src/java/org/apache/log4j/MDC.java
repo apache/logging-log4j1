@@ -49,14 +49,14 @@ public class MDC {
   }
 
   /**
-   * Put a context value (the <code>o</code> parameter) as identified
+   * Put a context value (the <code>val</code> parameter) as identified
    * with the <code>key</code> parameter into the current thread's
    * context map.
    *
    * <p>If the current thread does not have a context map it is
    * created as a side effect.
    * */
-  public static void put(String key, Object o) {
+  public static void put(String key, String val) {
     Hashtable ht = (Hashtable) tlm.get();
 
     if (ht == null) {
@@ -64,7 +64,7 @@ public class MDC {
       tlm.set(ht);
     }
 
-    ht.put(key, o);
+    ht.put(key, val);
   }
 
   /**
@@ -72,11 +72,11 @@ public class MDC {
    *
    *  <p>This method has no side effects.
    * */
-  public static Object get(String key) {
+  public static String get(String key) {
     Hashtable ht = (Hashtable) tlm.get();
 
     if ((ht != null) && (key != null)) {
-      return ht.get(key);
+      return (String) ht.get(key);
     } else {
       return null;
     }

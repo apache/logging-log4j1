@@ -20,7 +20,6 @@ import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.net.SocketReceiver;
-import org.apache.log4j.plugins.PluginRegistry;
 import org.apache.log4j.rule.ExpressionRule;
 import org.apache.log4j.rule.Rule;
 import org.apache.log4j.spi.LoggingEvent;

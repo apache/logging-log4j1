@@ -92,7 +92,7 @@ public class LF5Appender extends AppenderSkeleton {
     String nestedDiagnosticContext = event.getNDC();
     String threadDescription = event.getThreadName();
     String level = event.getLevel().toString();
-    long time = event.timeStamp;
+    long time = event.getTimeStamp();
     LocationInfo locationInfo = event.getLocationInformation();
 
     // Add the logging event information to a LogRecord

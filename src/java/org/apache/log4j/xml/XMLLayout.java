@@ -25,11 +25,7 @@ import org.apache.log4j.spi.LoggingEvent;
 
 import java.io.IOException;
 import java.io.Writer;
-
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 
@@ -105,7 +101,7 @@ public class XMLLayout extends Layout {
     output.write("<log4j:event logger=\"");
     output.write(event.getLoggerName());
     output.write("\" timestamp=\"");
-    output.write(Long.toString(event.timeStamp));
+    output.write(Long.toString(event.getTimeStamp()));
     output.write("\" sequenceNumber=\"");
     output.write(Long.toString(event.getSequenceNumber()));
     output.write("\" level=\"");
@@ -129,34 +125,34 @@ public class XMLLayout extends Layout {
       output.write("]]></log4j:NDC>\r\n");
     }
 
-    Set mdcKeySet = event.getMDCKeySet();
-
-    if ((mdcKeySet != null) && (mdcKeySet.size() > 0)) {
-      /**
-      * Normally a sort isn't required, but for Test Case purposes
-      * we need to guarantee a particular order.
-      *
-      * Besides which, from a human readable point of view, the sorting
-      * of the keys is kinda nice..
-      */
-      List sortedList = new ArrayList(mdcKeySet);
-      Collections.sort(sortedList);
-
-      output.write("<log4j:MDC>\r\n");
-
-      Iterator iter = sortedList.iterator();
-
-      while (iter.hasNext()) {
-        String propName = iter.next().toString();
-	output.write("    <log4j:data name=\"" + propName);
-
-        String propValue = event.getMDC(propName).toString();
-        output.write("\" value=\"" + propValue);
-        output.write("\"/>\r\n");
-      }
-
-      output.write("</log4j:MDC>\r\n");
-    }
+//    Set mdcKeySet = event.getMDCKeySet();
+//
+//    if ((mdcKeySet != null) && (mdcKeySet.size() > 0)) {
+//      /**
+//      * Normally a sort isn't required, but for Test Case purposes
+//      * we need to guarantee a particular order.
+//      *
+//      * Besides which, from a human readable point of view, the sorting
+//      * of the keys is kinda nice..
+//      */
+//      List sortedList = new ArrayList(mdcKeySet);
+//      Collections.sort(sortedList);
+//
+//      output.write("<log4j:MDC>\r\n");
+//
+//      Iterator iter = sortedList.iterator();
+//
+//      while (iter.hasNext()) {
+//        String propName = iter.next().toString();
+//       	output.write("    <log4j:data name=\"" + propName);
+//
+//        String propValue = event.getMDC(propName).toString();
+//        output.write("\" value=\"" + propValue);
+//        output.write("\"/>\r\n");
+//      }
+//
+//      output.write("</log4j:MDC>\r\n");
+//    }
 
     String[] s = event.getThrowableStrRep();
 

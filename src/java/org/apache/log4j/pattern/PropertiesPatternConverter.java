@@ -23,13 +23,13 @@ import java.util.*;
 
 /**
  * Able to handle the contents of the LoggingEvent's Property bundle and either
- * output the entire contents of the properties in a similar format to the java.util.Hashtable.toString()
- * , or to output the value of a specific key within the property bundle
+ * output the entire contents of the properties in a similar format to the
+ * java.util.Hashtable.toString(), or to output the value of a specific key 
+ * within the property bundle
  * when this pattern converter has the option set.
  *
- * @author Paul Smith (but totally based (i.e 'copied') on the MDCPatternConverter by Ceki G&uuml;lc&uuml;)
- * with only minor alterations
- *
+ * @author Paul Smith
+ * @author Ceki G&uuml;lc&uuml;
  *@since 1.3
  */
 public class PropertiesPatternConverter extends PatternConverter {

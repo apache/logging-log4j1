@@ -9,8 +9,8 @@ package org.apache.log4j.net.test;
 
 import org.apache.log4j.Category;
 import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
 import org.apache.log4j.net.SocketAppender;
-import org.apache.log4j.Priority;
 import org.apache.log4j.NDC;
 import java.io.InputStreamReader;
 
@@ -96,7 +96,7 @@ public class SocketMin {
     cat.info( "Message " + i++);
     cat.warn( "Message " + i++);
     cat.error( "Message " + i++);
-    cat.log(Priority.FATAL, "Message " + i++);
+    cat.log(Level.FATAL, "Message " + i++);
     cat.debug("Message " + i++,  new Exception("Just testing."));
   }
 }

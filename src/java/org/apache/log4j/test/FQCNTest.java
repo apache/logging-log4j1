@@ -9,7 +9,7 @@ package org.apache.log4j.test;
 
 import org.apache.log4j.*;
 import org.apache.log4j.spi.*;
-//import org.apache.log4j.xml.examples.XPriority;
+//import org.apache.log4j.xml.examples.XLevel;
 
 /** 
    This class is a shallow test of the various appenders and
@@ -72,12 +72,12 @@ class X1Logger extends Logger {
 
   public 
   void debug1(Object message) {    
-    super.log(FQCN, Priority.DEBUG, message + " world.", null);    
+    super.log(FQCN, Level.DEBUG, message + " world.", null);    
   }
 
   public
   void debug2(Object message) {
-    super.log(FQCN, Priority.DEBUG, message, null); 
+    super.log(FQCN, Level.DEBUG, message, null); 
   }
 
   protected

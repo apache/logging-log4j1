@@ -9,8 +9,8 @@
 package org.apache.log4j.net.test;
 
 import org.apache.log4j.Category;
+import org.apache.log4j.Level;
 import org.apache.log4j.PropertyConfigurator;
-import org.apache.log4j.Priority;
 import org.apache.log4j.NDC;
 
 
@@ -54,7 +54,7 @@ public class SyslogMin {
     CAT.info( "Message " + i++);
     CAT.warn( "Message " + i++);
     CAT.error( "Message " + i++);
-    CAT.log(Priority.FATAL, "Message " + i++);
+    CAT.log(Level.FATAL, "Message " + i++);
     CAT.debug("Message " + i++,  new Exception("Just testing."));
   }
 }

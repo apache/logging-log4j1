@@ -33,7 +33,6 @@ import org.apache.log4j.net.SocketReceiver;
 import org.apache.log4j.plugins.Plugin;
 import org.apache.log4j.plugins.PluginEvent;
 import org.apache.log4j.plugins.PluginListener;
-import org.apache.log4j.plugins.PluginRegistry;
 import org.apache.log4j.plugins.Receiver;
 
 
