@@ -5,6 +5,7 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.apache.log4j.chainsaw.receivers.ReceiversHelper;
+import org.apache.log4j.net.JMSReceiver;
 import org.apache.log4j.net.MulticastReceiver;
 import org.apache.log4j.net.SocketHubReceiver;
 import org.apache.log4j.net.SocketReceiver;
@@ -40,7 +41,8 @@ public class ReceiversHelperTest extends TestCase {
                 SocketReceiver.class,
                 UDPReceiver.class, 
                 XMLSocketReceiver.class,
-                LogFilePatternReceiver.class
+                LogFilePatternReceiver.class,
+                JMSReceiver.class,
             };
 
         for (int i = 0; i < expectedList.length; i++) {
