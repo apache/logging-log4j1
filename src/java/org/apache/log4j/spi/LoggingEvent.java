@@ -49,7 +49,11 @@
 
 package org.apache.log4j.spi;
 
-import org.apache.log4j.*;
+import org.apache.log4j.Category;
+import org.apache.log4j.Level;
+import org.apache.log4j.MDC;
+import org.apache.log4j.NDC;
+import org.apache.log4j.Priority;
 import org.apache.log4j.helpers.Loader;
 import org.apache.log4j.helpers.LogLog;
 
@@ -58,9 +62,9 @@ import java.io.ObjectOutputStream;
 
 import java.lang.reflect.Method;
 
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Set;
-import java.util.Collections;
 
 
 // Contributors:   Nelson Minar <nelson@monkey.org>
@@ -264,6 +268,31 @@ public class LoggingEvent implements java.io.Serializable {
     this.timeStamp = timeStamp;
   }
 
+  
+  /**
+   * Alternate constructor to allow a string array to be passed in as the throwable.
+   */
+  public LoggingEvent(
+    String fqnOfCategoryClass, Category logger, long timeStamp,
+    Priority priority, String threadName, Object message, String ndc,
+    Hashtable mdc, ThrowableInformation ti, LocationInfo li, Hashtable properties) {
+    ndcLookupRequired = false;
+    mdcCopyLookupRequired = false;
+    this.logger = logger;
+    this.categoryName = logger.getName();
+    this.level = priority;
+    this.message = message;
+    this.throwableInfo = ti;
+     
+    this.locationInfo = li;
+    this.fqnOfCategoryClass = fqnOfCategoryClass;
+    this.timeStamp = timeStamp;
+    this.threadName = threadName;
+    this.ndc = ndc;
+    this.mdcCopy = mdc;
+    this.properties = properties;
+  }
+
   /**
    * Set the location information for this logging event. The collected
    * information is cached for future use.
@@ -368,6 +397,7 @@ public class LoggingEvent implements java.io.Serializable {
       return Collections.unmodifiableSet(mdcCopy.keySet());
     } else {
       Hashtable t = (Hashtable) MDC.getContext();
+
       if (t != null) {
         return Collections.unmodifiableSet(t.keySet());
       } else {
@@ -393,7 +423,7 @@ public class LoggingEvent implements java.io.Serializable {
       }
     }
   }
-
+  
   /**
    * Return a previously set property. The return value can be null.
    *

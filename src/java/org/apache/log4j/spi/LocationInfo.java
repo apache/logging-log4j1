@@ -112,6 +112,16 @@ public class LocationInfo implements java.io.Serializable {
      <code>fully.qualified.classname.of.caller.methodName(Filename.java:line)</code>
     */
   public String fullInfo;
+  private boolean locationInfoAvailable;
+
+  public LocationInfo(
+    String fileName, String className, String methodName, String lineNumber) {
+    locationInfoAvailable = true;
+    this.fileName = fileName;
+    this.className = className;
+    this.methodName = methodName;
+    this.lineNumber = lineNumber;
+  }
 
   /**
      Instantiate location information based on a Throwable. We
@@ -195,6 +205,8 @@ public class LocationInfo implements java.io.Serializable {
 
     // everything between is the requested stack item
     this.fullInfo = s.substring(ibegin, iend);
+    
+    locationInfoAvailable = true;
   }
 
   /**
@@ -202,7 +214,7 @@ public class LocationInfo implements java.io.Serializable {
      logging request.
   */
   public String getClassName() {
-    if (fullInfo == null) {
+    if (!locationInfoAvailable) {
       return NA;
     }
 
@@ -247,7 +259,7 @@ public class LocationInfo implements java.io.Serializable {
      <p>This information is not always available.
   */
   public String getFileName() {
-    if (fullInfo == null) {
+    if (!locationInfoAvailable) {
       return NA;
     }
 
@@ -271,7 +283,7 @@ public class LocationInfo implements java.io.Serializable {
      <p>This information is not always available.
   */
   public String getLineNumber() {
-    if (fullInfo == null) {
+    if (!locationInfoAvailable) {
       return NA;
     }
 
@@ -293,7 +305,7 @@ public class LocationInfo implements java.io.Serializable {
      Returns the method name of the caller.
   */
   public String getMethodName() {
-    if (fullInfo == null) {
+    if (!locationInfoAvailable) {
       return NA;
     }
 
