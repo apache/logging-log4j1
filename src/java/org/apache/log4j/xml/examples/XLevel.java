@@ -56,7 +56,7 @@ public class XLevel extends Level {
       return XLevel.LETHAL;
     }
       
-    return Level.toLevel(sArg, defaultValue);    
+    return Level.toLevel(sArg, (Level) defaultValue);    
   }
 
 
