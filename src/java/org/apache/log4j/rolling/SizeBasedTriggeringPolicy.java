@@ -20,10 +20,11 @@ import java.io.File;
 
 
 /**
+ * SizeBasedTriggeringPolicy looks at size of the file being
+ * currently written to.
+ * 
  * @author Ceki G&uuml;lc&uuml;
  *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class SizeBasedTriggeringPolicy implements TriggeringPolicy {
   long maxFileSize = 10 * 1024 * 1024; // let 10 MB the default max size

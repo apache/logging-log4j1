@@ -158,8 +158,8 @@ public class SizeBasedRollingTest extends TestCase {
      if(!isWindows()) {
 
       assertTrue(Compare.compare("output/sbr-test3.log",  "witness/rolling/sbr-test3.log"));
-      assertTrue(Compare.compare("output/sbr-test3.0.gz", "witness/rolling/sbr-test3.0.gz"));
-      assertTrue(Compare.compare("output/sbr-test3.1.gz", "witness/rolling/sbr-test3.1.gz"));
+      assertTrue(Compare.gzCompare("output/sbr-test3.0.gz", "witness/rolling/sbr-test3.0.gz"));
+      assertTrue(Compare.gzCompare("output/sbr-test3.1.gz", "witness/rolling/sbr-test3.1.gz"));
      }
 
 
@@ -172,8 +172,8 @@ public class SizeBasedRollingTest extends TestCase {
   public static Test suite() {
     TestSuite suite = new TestSuite();
 
-    //suite.addTest(new SizeBasedRollingTest("test1"));
-    //suite.addTest(new SizeBasedRollingTest("test2"));
+    suite.addTest(new SizeBasedRollingTest("test1"));
+    suite.addTest(new SizeBasedRollingTest("test2"));
     suite.addTest(new SizeBasedRollingTest("test3"));
 
     return suite;

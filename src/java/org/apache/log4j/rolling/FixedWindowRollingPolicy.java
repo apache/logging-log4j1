@@ -19,6 +19,7 @@ package org.apache.log4j.rolling;
 import org.apache.log4j.rolling.helper.Compress;
 import org.apache.log4j.rolling.helper.IntegerTokenConverter;
 import org.apache.log4j.rolling.helper.Util;
+import org.apache.log4j.rolling.helper.FileNamePattern;
 
 import java.io.File;
 
@@ -94,6 +95,7 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
     }
     
     if (fileNamePatternStr != null) {
+      fileNamePattern = new FileNamePattern(fileNamePatternStr);
       determineCompressionMode();
     }
     
@@ -119,27 +121,28 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
 
       // Map {(maxIndex - 1), ..., minIndex} to {maxIndex, ..., minIndex+1}
       for (int i = maxIndex - 1; i >= minIndex; i--) {
-        
-        Util.rename(
-          fileNamePattern.convert(i), fileNamePattern.convert(i + 1));
+	  String toRenameStr = fileNamePattern.convert(i);  
+	  File toRename = new File(toRenameStr);
+	  // no point in trying to rename an inexistent file
+	  if(toRename.exists()) {
+	      Util.rename(toRenameStr, fileNamePattern.convert(i + 1));
+	  } else {
+	      getLogger().info("Skipping rollover for inexistent file {}", toRenameStr); 
+          }
       }
 
-      if (activeFileName != null) {
-        //move active file name to min
-        switch (compressionMode) {
-        case Compress.NONE:
+
+      //move active file name to min
+      switch (compressionMode) {
+      case Compress.NONE:
           Util.rename(activeFileName, fileNamePattern.convert(minIndex));
           break;
-        case Compress.GZ:
-          Compress.GZCompress(
-            activeFileName, fileNamePattern.convert(minIndex));
-          break;
-        
-        case Compress.ZIP:
-        Compress.ZIPCompress(
-          activeFileName, fileNamePattern.convert(minIndex));
-        break;
-        }
+      case Compress.GZ:
+          Compress.GZCompress(activeFileName, fileNamePattern.convert(minIndex));
+          break;	  
+      case Compress.ZIP:
+	  Compress.ZIPCompress(activeFileName, fileNamePattern.convert(minIndex));
+	  break;
       }
     }
   }
