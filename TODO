@@ -1,0 +1,64 @@
+TODO
+
+- Integrate tons of GUI code.
+
+- E-mail alerts.
+
+- JMSAppender.
+
+- JDBCAppender.
+
+- SAX configurator?
+
+- Time based rolling.
+
+- SSL logging.
+
+- Authenticated logging (research topic).
+
+
+ONGOING TASKS
+
+- Better test suite.
+
+- Better documentation.
+
+	
+DONE
+
+- Automatic configuration file reloading.
+- AsyncAppender.
+- Written a short user manual.
+- Added XMLLayout.
+- In DOMConfigurator added support for sub-classes of Category
+  implementing OptionHandler interface.
+- Added support for Filters and ErrorHandlers.
+- Added support for multiple hierarchy trees.
+- Added support for sub-classing of Category.
+- Socket logging.
+- Integration with NT event logging.
+- File name option form environment.
+- com.ibm.log4j to org.log4j package renaming.
+- DOMConfigurator.
+- PatternLayout replaces TTCCLayout and SimpleLayout.
+- TTCCLayout customizable with any DateFormat.
+- Better control over NDC stack.
+- Act as UNIX syslog client.
+- Make Priority intances flyweights. 
+- ILog.init methods with Layout argument, with Appender argument.
+- Contexts a la Logging Pattern of N. Harrison.
+- Improve catBag lookup speed with wrapper classes.
+- Truncate functionality.
+- ILog facade to LogCreationManager.getSingleton()
+- JAR file
+- New syntactic sugars to log objects  and not strings.
+- Exception --> Throwable
+
+
+
+
+
+
+
+  	
+	
