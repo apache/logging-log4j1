@@ -18,6 +18,10 @@ jms.jar=/java/JMQ1.1/lib/jms.jar
 jmx.jar=/java/jmx/lib/jmxri.jar
 jmx-extra.jar=/java/jmx/lib/jmxtools.jar
 
+# Avalon Framework OPTIONAL; required to build the Avalon Logger facade.
+avalon-framework.jar=/java/avalon-framework/avalon-framework.jar
+
+
 # Checkstyle OPTIONAL; required to run the checkstyle target
 # Available from http://checkstyle.sf.net
 checkstyle.jar=/java/checkstyle-3.0/checkstyle-all-3.0.jar
