@@ -7,9 +7,15 @@
 
  ??, 2002
  
- - Release of version 1.2 (ALPHA)
+ - Release of version 1.2 
 
- (alpha8)
+ (beta1)
+
+ - Source code written for log4j 1.1.3.jar will compile fine with
+   log4j 1.2. However, code compiled with log4j-1.1.3.jar will
+   not run with log4j-1.2.jar. This is because the java compiler is
+   forgiving on the return type of methods whereas the java runtime is
+   not. [?]
 
  - Log4j 1.2 is now backward compatible in serialization of
    LoggingEvents. For example, a 1.1.3 SocketAppedner can write to 1.2

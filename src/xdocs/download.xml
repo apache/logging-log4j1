@@ -58,22 +58,24 @@
 
     </section>
 
-    <section name="log4j version 1.2 alpha7">
+    <section name="log4j version 1.2 beta1">
       <p>An alpha version of log4j 1.2 is now available in in <a
-	href="../jakarta-log4j-1.2alpha7.tar.gz"><b>TAR.GZ</b></a>
+	href="../jakarta-log4j-1.2beta1.tar.gz"><b>TAR.GZ</b></a>
 	format or in <a
-	href="../jakarta-log4j-1.2alpha7.zip"><b>ZIP</b></a> format.
+	href="../jakarta-log4j-1.2beta1.zip"><b>ZIP</b></a> format.
       </p>
 
  
-      <p>Log4j version 1.2 is still in alpha stage. It is not
-	feature-complete, still requries fair amount of testing, nor
-	is the documentation up to date. We have gone to great lengths
-	to ensure that version 1.2 is backward compatible with earlier
-	versions. However, some previously deprecated APIs are now
-	removed. Moreover, users who have written sub-classes of
-	Category will need to modify their code. See the HISTORY file
-	for more details.
+      <p>Log4j version 1.2 is not feature-complete, nor is the
+	documentation up to date.  Some previously deprecated APIs are
+	now removed. Moreover, users who have written sub-classes of
+	Category will need to modify their code. We have gone to great
+	lengths to ensure that version 1.2 is backward compatible with
+	earlier versions. <b>Client source code writen for log4j 1.1.3
+	will compile without any problems using log4j version
+	1.2. Unfortunately however, the resulting class files are not
+	compatible. In other words, class files compiled will log4j
+	1.1.3 will not run with log4j version 1.2.</b>
       </p>
 
     </section>
@@ -89,17 +91,19 @@
 	  href="http://jakarta.apache.org/log4j/docs/api/org/apache/log4j/spi/LoggingEvent.html">LoggingEvent</a>
 	  objects sent using the <a
 	  href="http://jakarta.apache.org/log4j/docs/api/org/apache/log4j/net/SocketAppender.html">SocketAppender</a>
-	  and displays them in a table.
-	</dd>	
+	  and displays them in a table. Chainsaw also supports loading
+	  events from files in the XMLLayout format. 
+	</dd>
 
 	<dt><a href="http://qos.ch/"><b>log4j<em>ME</em></b></a></dt>
-	<dd>Log4j<em>ME</em>, or log4j MicroEdition, is based on the same
-	  code as log4j. However, as the name indicates the micro-edition is
-	  much smaller. It offers the same client interface such that code
-	  compiled for log4jME is 100% compatible with log4j standard
-	  edition. You can choose to upgrade to log4j standard edition at any
-	  time by replacing <em>log4jME.jar</em> with <em>log4j.jar</em> in
-	  your classpath.
+	<dd>Log4j<em>ME</em>, or log4j MicroEdition, is based on the
+	same code as log4j. However, as the name indicates the
+	micro-edition is much smaller. It offers the same client
+	interface such that code compiled for log4jME is 100%
+	compatible with log4j standard edition. You can choose to
+	upgrade to log4j standard edition at any time by replacing
+	<em>log4jME.jar</em> with <em>log4j.jar</em> in your
+	classpath.
 	</dd>
 
 	<dt><a
