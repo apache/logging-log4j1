@@ -51,15 +51,20 @@
  */
 package org.apache.log4j.chainsaw;
 
+import org.apache.log4j.helpers.LogLog;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
+
 
 /**
  *
@@ -69,6 +74,8 @@ import javax.swing.tree.MutableTreeNode;
  */
 class LogPanelLoggerTreeModel extends DefaultTreeModel
   implements LoggerNameListener {
+  private Map fullPackageMap = new HashMap();
+
   LogPanelLoggerTreeModel() {
     super(new LogPanelTreeNode("Root Logger"));
   }
@@ -132,6 +139,19 @@ outerFor:
        */
       final LogPanelTreeNode newChild = new LogPanelTreeNode(packageName);
 
+      StringBuffer fullPackageBuf = new StringBuffer();
+
+      for (int j = 0; j <= i; j++) {
+        fullPackageBuf.append(packages[i]);
+
+        if (j < i) {
+          fullPackageBuf.append(".");
+        }
+      }
+
+      LogLog.debug("Adding to Map " + fullPackageBuf.toString());
+      fullPackageMap.put(fullPackageBuf.toString(), newChild);
+
       final DefaultMutableTreeNode changedNode = current;
 
       changedNode.add(newChild);
@@ -142,10 +162,19 @@ outerFor:
         changedIndices[j] = j;
       }
 
-	  nodesWereInserted(changedNode, new int[]{changedNode.getIndex(newChild)});
+      nodesWereInserted(
+        changedNode, new int[] { changedNode.getIndex(newChild) });
       nodesChanged(changedNode, changedIndices);
       current = newChild;
     }
+  }
+
+  LogPanelTreeNode lookupLogger(String logger) {
+    if (fullPackageMap.containsKey(logger)) {
+      return (LogPanelTreeNode) fullPackageMap.get(logger);
+    }
+
+    return null;
   }
 
   /**
@@ -186,12 +215,14 @@ outerFor:
     }
 
     public void insert(MutableTreeNode newChild, int childIndex) {
-//      LogLog.debug("[" + this.getUserObject() + "] inserting child " + newChild + " @ index " + childIndex);
-//      LogLog.debug("Children now: " + this.children);
+      //      LogLog.debug("[" + this.getUserObject() + "] inserting child " + newChild + " @ index " + childIndex);
+      //      LogLog.debug("Children now: " + this.children);
       super.insert(newChild, childIndex);
-//	  LogLog.debug("Children after insert: " + this.children);
+
+      //	  LogLog.debug("Children after insert: " + this.children);
       Collections.sort(this.children, nodeComparator);
-//	  LogLog.debug("Children after sort: " + this.children);
+
+      //	  LogLog.debug("Children after sort: " + this.children);
     }
   }
 }
