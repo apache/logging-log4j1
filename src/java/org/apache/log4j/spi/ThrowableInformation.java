@@ -64,37 +64,43 @@ import java.util.Vector;
   * correspond the stack trace with the top most entry of the stack
   * corresponding to the second entry of the 'rep' array that is
   * rep[1].
-  *
+  * 
+  * Note that ThrowableInformation does not store the throwable it represents. 
+  * 
   * @author Ceki G&uuml;lc&uuml;
   *
   * */
 public class ThrowableInformation implements java.io.Serializable {
   static final long serialVersionUID = -4748765566864322735L;
-  private transient Throwable throwable;
+  //private transient Throwable throwable;
+  
   private String[] rep;
 
   public ThrowableInformation(Throwable throwable) {
-    this.throwable = throwable;
+    rep = extractStringRep(throwable);
   }
 
   public ThrowableInformation(String[] rep) {
     this.rep = rep;
   }
 
-  public Throwable getThrowable() {
-    return throwable;
+ // public Throwable getThrowable() {
+   // return throwable;
+  //}
+
+  public String[] extractStringRep(Throwable throwable) {
+    VectorWriter vw = new VectorWriter();
+    throwable.printStackTrace(vw);
+    String[] extractedRep = vw.toStringArray();
+    return extractedRep;   
   }
-
+  
+  /**
+   * Retun a clone of the string representation of the exceptopn (throwable)
+   * that this object represents.
+   */
   public String[] getThrowableStrRep() {
-    if (rep != null) {
-      return (String[]) rep.clone();
-    } else {
-      VectorWriter vw = new VectorWriter();
-      throwable.printStackTrace(vw);
-      rep = vw.toStringArray();
-
-      return rep;
-    }
+    return (String[]) rep.clone();
   }
 }
 
