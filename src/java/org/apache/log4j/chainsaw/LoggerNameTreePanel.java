@@ -1051,7 +1051,7 @@ final class LoggerNameTreePanel extends JPanel implements Rule
 
                 if (result && isFocusOnSelected())
                 {
-                  result = result &&  (e.getLoggerName().startsWith(currentlySelectedLoggerName+".") || e.getLoggerName().endsWith(currentlySelectedLoggerName)) ;
+                  result = result &&  (e.getLoggerName() != null && (e.getLoggerName().startsWith(currentlySelectedLoggerName+".") || e.getLoggerName().endsWith(currentlySelectedLoggerName))) ;
                 }
 
                 return result;
