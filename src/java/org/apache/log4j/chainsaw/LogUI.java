@@ -1305,6 +1305,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     try {
       UIManager.setLookAndFeel(lookAndFeelClassName);
       SwingUtilities.updateComponentTreeUI(this);
+      SwingUtilities.updateComponentTreeUI(preferencesFrame);
     } catch (Exception e) {
       LogLog.error("Failed to change L&F", e);
     }
