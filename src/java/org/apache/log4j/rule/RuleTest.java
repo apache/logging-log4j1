@@ -143,14 +143,14 @@ public class RuleTest extends JFrame {
 
           while (iter2.hasNext()) {
             LoggingEvent event = (LoggingEvent) iter2.next();
-            Iterator iter3 = event.getMDCKeySet().iterator();
+            Iterator iter3 = event.getPropertyKeySet().iterator();
             StringBuffer mdc = new StringBuffer();
 
             while (iter3.hasNext()) {
               String mdcKey = (String) iter3.next();
               mdc.append(mdcKey);
               mdc.append(":");
-              mdc.append(event.getMDC(mdcKey));
+              mdc.append(event.getProperty(mdcKey));
             }
 
             results.setText(
