@@ -62,11 +62,18 @@
     <mkdir dir="./output" />
   </target>
 
+  
+  <!-- ================================================================= -->
+  <!-- Build the parent project                                          -->
+  <!-- ================================================================= -->  
+  <target name="parentBuild">
+    <ant dir=".." target="build"/>
+  </target>
 
   <!-- ================================================================= -->
   <!-- Compile test cases and related source files.                      -->
   <!-- ================================================================= -->
-  <target name="build" depends="prepare">
+  <target name="build" depends="parentBuild, prepare">
     <javac srcdir="${tests.source.home}"
 	   destdir="./classes"
            deprecation="${deprecation}"
@@ -89,7 +96,6 @@
       <fileset dir="./output/" includes="**"/>
     </delete>
   </target>
-
 
   <!-- ================================================================= -->
   <!-- Run all tests                                                     -->
