@@ -100,7 +100,7 @@ import org.apache.log4j.helpers.LogLog;
  */
 class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
   private static final String SETTING_RESPONSIVENESS = "Responsiveness";
-  private static final String SETTING_TAB_PLACEMENT = "tab.placement";
+  private static final String SETTING_TAB_PLACEMENT = "tabPlacement";
   private final SmallToggleButton showReceiversButton;
   final JTextField findTextField;
   private final Action changeModelAction;

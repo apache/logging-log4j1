@@ -238,7 +238,7 @@
     <javac srcdir="${examples.src}"
      destdir="${examples.javac.dest}"
      includes="**/*.java"
-     excludes="jmx/*.java"
+     excludes="src/jmx/*.java"
      deprecation="${deprecation}"
            debug="on">
       <classpath refid="compile.classpath"/>
