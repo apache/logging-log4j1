@@ -1,4 +1,4 @@
-<project name="testing-UGLI" default="build.core" basedir="." >
+<project name="testing-UGLI" default="usage" basedir="." >
 
   <!-- The directory where source files are stored. -->
   <property name="tests.source.home" value="./src/java/"/>
