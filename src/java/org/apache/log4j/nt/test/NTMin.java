@@ -8,7 +8,7 @@
 package org.apache.log4j.nt.test;
 
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.nt.NTEventLogAppender;
 import org.apache.log4j.Level;
@@ -17,7 +17,7 @@ import org.apache.log4j.NDC;
 
 public class NTMin {
 
-  static Category cat = Category.getInstance(NTMin.class.getName());
+  static Logger logger = Logger.getLogger(NTMin.class.getName());
 
   public
   static
@@ -51,11 +51,11 @@ public class NTMin {
   void test(String host) {
     NDC.push(host);
     int i  = 0;
-    cat.debug( "Message " + i++);
-    cat.info( "Message " + i++);
-    cat.warn( "Message " + i++);
-    cat.error( "Message " + i++);
-    cat.log(Level.FATAL, "Message " + i++);
-    cat.debug("Message " + i++,  new Exception("Just testing."));
+    logger.debug( "Message " + i++);
+    logger.info( "Message " + i++);
+    logger.warn( "Message " + i++);
+    logger.error( "Message " + i++);
+    logger.log(Level.FATAL, "Message " + i++);
+    logger.debug("Message " + i++,  new Exception("Just testing."));
   }
 }

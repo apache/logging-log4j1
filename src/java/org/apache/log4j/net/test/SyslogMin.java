@@ -8,7 +8,7 @@
 
 package org.apache.log4j.net.test;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import org.apache.log4j.Level;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.NDC;
@@ -16,7 +16,7 @@ import org.apache.log4j.NDC;
 
 public class SyslogMin {
 
-  static Category CAT = Category.getInstance(SyslogMin.class.getName());
+  final static Logger LOG = Logger.getLogger(SyslogMin.class.getName());
 
   public
   static
@@ -50,11 +50,11 @@ public class SyslogMin {
   void test(String host) {
     NDC.push(host);
     int i  = 0;
-    CAT.debug( "Message " + i++);
-    CAT.info( "Message " + i++);
-    CAT.warn( "Message " + i++);
-    CAT.error( "Message " + i++);
-    CAT.log(Level.FATAL, "Message " + i++);
-    CAT.debug("Message " + i++,  new Exception("Just testing."));
+    LOG.debug( "Message " + i++);
+    LOG.info( "Message " + i++);
+    LOG.warn( "Message " + i++);
+    LOG.error( "Message " + i++);
+    LOG.log(Level.FATAL, "Message " + i++);
+    LOG.debug("Message " + i++,  new Exception("Just testing."));
   }
 }
