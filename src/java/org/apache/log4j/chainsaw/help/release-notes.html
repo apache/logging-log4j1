@@ -8,6 +8,13 @@
 <h2>Release Notes</h2>
 
 
+<h2>1.99.99 (25th May 2004 11:00 GMT+10)</h2>
+<ul>
+ <li>Fixed a bug in the SocketNode class that prevented listeners of being notified when the Socket dies.  Unfortunately one
+ of the listeners is usually the Receiver, and it then does not know that it should periodically
+ try to reconnect again!</li>
+</ul>
+
 <h2>1.99.99 (25th May 2004 08:00 GMT+10)</h2>
 <ul>
  <li>Fixed a bug in the Receivers tree panel where restarting a set of receivers would duplicate them visually.  The plugins where stopped and started, but duplicate tree nodes where being added.  Thanks to Stephen Pain for
