@@ -21,7 +21,6 @@ import org.apache.log4j.Priority;
 import org.apache.log4j.Layout;
 import org.apache.log4j.helpers.SyslogWriter;
 import org.apache.log4j.helpers.SyslogQuietWriter;
-import org.apache.log4j.net.SyslogTracerPrintWriter;
 
 // Contributors: Yves Bossel <ybossel@opengets.cl>
 //               Christopher Taylor <cstaylor@pacbell.net>

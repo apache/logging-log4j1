@@ -19,7 +19,7 @@ import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.helpers.QuietWriter;
 import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.helpers.TracerPrintWriter;
+//import org.apache.log4j.helpers.TracerPrintWriter;
 
 // Contibutors: Jens Uwe Pipka <jens.pipka@gmx.de>
 
@@ -282,7 +282,7 @@ public class FileAppender extends WriterAppender {
   void setFile(String fileName, boolean append) throws IOException {
     reset();
     this.setQWForFiles(new FileWriter(fileName, append));
-    this.tp = new TracerPrintWriter(qw);
+    //this.tp = new TracerPrintWriter(qw);
     this.fileName = fileName;
     this.fileAppend = append;
     this.qwIsOurs = true;
@@ -337,7 +337,7 @@ public class FileAppender extends WriterAppender {
       super.reset();    
     } else {
       this.qw = null;
-      this.tp = null;    
+      //this.tp = null;    
     }
   }  
 }

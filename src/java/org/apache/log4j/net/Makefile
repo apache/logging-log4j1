@@ -9,7 +9,6 @@ JSOURCES:=SyslogAppender.java\
 	SocketAppender.java\
 	SMTPAppender.java\
 	SocketNode.java\
-	SyslogTracerPrintWriter.java\
 
 
 SUBDIRS :=test
