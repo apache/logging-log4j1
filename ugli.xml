@@ -15,9 +15,9 @@
   
   <property name="UGLI_STEM" value="org/apache/ugli"/>
   
-  <property name="ugli.properties" value="./classes/ugli.properties"/>
+  <property name="path2ugli.properties" value="./classes/ugli.properties"/>
 
-    <!-- ================================================================= -->
+  <!-- ================================================================= -->
   <!-- Default target                                                    -->
   <!-- ================================================================= -->
   <target name="usage">
@@ -39,7 +39,7 @@
   <!-- ================================================================= -->
   <target name="clean" description="Delete all compiled UGLI files.">
     <delete dir="${javac.dest}/org/apache/ugli" />
-    <delete file="${ugli.properties}"/>
+    <delete file="${path2ugli.properties}"/>
   </target>
 
 
@@ -84,10 +84,10 @@
        as specified by the "jar-name" and "impl" parameters. -->
   <target name="ugli-IMPL.jar" depends="build.core">
     
-    <delete file="${ugli.properties}"/>
+    <delete file="${path2ugli.properties}"/>
 
     <!-- Much depends on setting up ugli.properties file correctly -->
-    <propertyfile file="${ugli.properties}" comment="${impl} Logger implementation">
+    <propertyfile file="${path2ugli.properties}" comment="${impl} Logger implementation">
       <entry key="ugli.factoryAdapterClass" value="org.apache.ugli.impl.${impl}LoggerFA"/>
     </propertyfile>
 
@@ -110,7 +110,7 @@
     </jar>
     
     <!-- remove ugli.properties when done -->
-    <delete file="${ugli.properties}"/>
+    <delete file="${path2ugli.properties}"/>
   </target>
 
   <target name="ugli-nop.jar" depends="build.core">

@@ -66,6 +66,8 @@
   <!-- Directory for temporary files. -->
   <property name="dist.tmp" value="dist/tmp"/>
 
+  <!-- Note that this property is duplicated in ugli.xml -->
+  <property name="path2ugli.properties" value="./classes/ugli.properties"/>
 
   <!-- Construct compile classpath -->
   <path id="compile.classpath">
@@ -359,7 +361,7 @@
   <!-- ================================================================= -->
   <!-- Aactual work is done in the dependencies.                         -->
   <!-- ================================================================= -->
-  <target name="jar" depends="log4j.jar">
+  <target name="jar" depends="log4j.jar, chainsaw.jar">
   </target>
 
   <!-- ================================================================= -->
@@ -368,9 +370,16 @@
   <target name="log4j.jar" depends="build">
     
     <delete file="${log4j.jar}" verbose="true"/>
+    <delete file="${path2ugli.properties}"/>
+
+    <!-- Much depends on setting up ugli.properties file correctly -->
+    <propertyfile file="${path2ugli.properties}" comment="log4j implementation">
+      <entry key="ugli.factoryAdapterClass" value="org.apache.ugli.impl.Log4jLoggerFA"/>
+    </propertyfile>
 
     <jar jarfile="${jar.dest}/${log4j.jar}" basedir="${javac.dest}"
-         includes="org/apache/ugli/**/*.class
+         includes="ugli.properties,
+                org/apache/ugli/**/*.class
                 ${stem}/*.class, 
     	        ${stem}/xml/log4j.dtd, 
     	        ${stem}/xml/logger.dtd,
@@ -410,6 +419,10 @@
         </section>
       </manifest>
     </jar>
+
+    <!-- remove ugli.properties when done -->
+    <delete file="${path2ugli.properties}"/>
+
   </target>
   
   

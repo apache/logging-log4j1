@@ -21,25 +21,35 @@ import org.apache.ugli.LoggerFactoryAdapter;
 import org.apache.ugli.ULogger;
 
 /**
- * @author ceki
+ * This factory adapter relies on log4's {@link LogManager} to do its job.
+ * 
+ * @author Ceki G&uuml;lc&uuml;
  *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class Log4jLoggerFA implements LoggerFactoryAdapter {
 
   public Log4jLoggerFA() {
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.ugli.LoggerFactoryAdapter#getLogger(java.lang.String)
+  /**
+   * Get a {@link ULogger} by name, by delegating all work to log4's 
+   * {@link LogManager}.
+   * 
+   * <p>The implementation is trivial because log4j 
+   * {@link org.apache.log4j.Logger loggers} directly implement the 
+   * {@link ULogger} interface.
    */
   public ULogger getLogger(String name) {
     return LogManager.getLogger(name);  
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.ugli.LoggerFactoryAdapter#getLogger(java.lang.String, java.lang.String)
+  /**
+   * Get a {@link ULogger} by domain and subdomain name, by delegating all work 
+   * to log4's {@link LogManager}.
+   * 
+   * <p>The implementation is trivial because log4j 
+   * {@link org.apache.log4j.Logger loggers} directly implement the 
+   * {@link ULogger} interface.
    */
   public ULogger getLogger(String domainName, String subDomainName) {
     return LogManager.getLogger(domainName);  
