@@ -48,7 +48,7 @@ JAR files
 =========
 
 The log4j distribution comes with one jar file: log4j-VERSION.jar
-under the $LOG4J_HOME/dist/lib/ directory.
+under the LOG4J_HOME/dist/lib/ directory.
 
 This jar file contains all the class files of the log4j project,
 except test cases and classes from the "examples" and
@@ -82,7 +82,8 @@ Log4j is based on JDK 1.1 with the following additional requirements:
 
     The SMTPAppender relies on the JavaMail API. It has been tested with
     JavaMail API version 1.2. The JavaMail API requires the
-    JavaBeans Activation Framework package. You can download the JavaMail API at:
+    JavaBeans Activation Framework package. You can download the
+    JavaMail API at:
 
 	http://java.sun.com/products/javamail/
 

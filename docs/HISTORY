@@ -5,6 +5,116 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
 
+
+ October 9th, 2002
+
+ - Release of version 1.2.7
+
+ - Log4j now searches for the file log4j.xml as well as the file
+   log4j.properties during log4j initialization. [*]
+
+ July 31st, 2002
+
+ - Release of version 1.2.6
+
+ - Addition of new options in JMSAppender and new command line arguments in 
+   JMSSink. [*]
+
+ - Added new method getLoggerName() in LoggingEvent class. The
+   getLoggerName is the preferred way for accessing the logger
+   name. The public access categoryName field should not be accessed
+   directly. Similarly, added the getLevel method which is now the
+   preferred way of accessing the event's level. The public access
+   level field should not be accessed directly.  The javadocs now mark
+   the categoryName and level fields as deprecated.
+
+   Modified existing appenders to comply with these new directives. [*]
+
+ - Log4j now will check if a system property named "log4j.ignoreTCL"
+   is set. If it is set, then it will ignore the Thread Context
+   ClassLoader when loading classes. This solves the irritating
+   "appender is not assignable to Appender" messages observed when
+   log4j.jar is loaded by multiple class loaders. 
+
+   The error reporting for this problem was also improved. [*]
+
+ - Fixed bug #10528 whereby calling the MDC.get method with a null
+   argument would throw a NullPointerException. [*]
+
+ July 5th, 2002
+ 
+ - Release of version 1.2.5
+	
+ - Minor changes and bug fixes in LF5. [*]
+ 
+ - Calling an AsyncAppender close method also closes the embedded
+   appender instances. This resolves bug #10185 submitted by Paul
+   Voutier. [*]
+
+ June 12th, 2002
+
+ - Release of version 1.2.4
+
+ - The JDBCAppender is marked as slated for replacement. Do not build
+   critical software using it. 
+
+ - Added LF5 documentation and examples. Further tests are required
+   for full integration. [*]
+
+ - XMLLayout can now output messages which contain embedded CDATA
+   sections. This resolves bug #9750. Many thanks to Michael
+   A. McAngus for supplying the relevant patch. [*]
+
+ - The dispatcher thread associated with AsyncAppender is now marked
+   as a deamon thread. This resolves bug #9750. [*]
+
+ - Added missing NTEventLogAppender.dll as reported in bug #9606. [*]
+
+ - In response to bug report 9435, the log4j.dtd was changed so that
+   <log4j:event> is now made of logger and level attributes instead of
+   category and priority. Changed XMLLayout to conform to the
+   DTD. Chainsaw was changed to adapt to the XMLLayout. [*]
+
+ - Added missing LevelRangeFilter file. [*]
+
+ May 24th, 2002
+
+ - Release of version 1.2.3
+
+ - Fixed bug #9285 where the SyslogAppender would incorrectly compute
+   the length of the datagram to send to the remote syslogd host.
+   Reported by Mamoru Kadota. [*]
+
+ - Fixed bug #8505 where the stack trace of exception would not be
+   properly printed on the Compaq tru64 Unix platform. Initially
+   reported by Fabrice Claes and later by Espen H. Kolstad who also
+   provided the fix. [*]
+
+ May 22nd, 2002
+
+ - Release of version 1.2.2
+
+ - Log4j configurators take the "NULL" string value as a synonym for
+   "INHERITED". Both of these two strings are legal level values for
+   setting the level of a logger. Both values are case insensitive. [*]
+
+ - When loading component classes, log4j will now first attempt to use
+   the Thread Context Loader and if that fails, it will use
+   Class.forName. In log4j 1.2 and 1.2.1, only Class.forName was used
+   and the TCL was ignored. This change is a response to bug #9305
+   opened by Scott M. Stark. [*]
+
+ May 17th, 2002
+
+ - Release of version 1.2.1
+
+ - This minor release fixes bug #9155 reported by Nicko Cadell.
+   LoggingEvent.getMDCCopy() method now sets mdcCopyLookupRequired
+   instead of ndcLookupRequired.  This bug would cause the wrong MDC
+   information to appear on a log server. It could only occur if the
+   client wrapped an AsyncAppender around a SocketAppender or if the
+   server used an AsyncAppender for its logging. [*]
+
  May, 2002
  
  - Release of version 1.2 

@@ -60,8 +60,8 @@ same file?</a></p>
 (possibly across multiple timezones) logging to the same file using the
 method above, what happens to timestamps?</P>
 
-<LI><P><A HREF="#j2ee">Why can't Log4J find my properties file in a J2EE or WAR application?</P>
-<LI><P><A HREF="#configureandwatch">Is there a way to get Log4J to automatically reload a configuration file if it changes?</P>
+<LI><P><A HREF="#j2ee">Why can't log4j find my properties file in a J2EE or WAR application?</P>
+<LI><P><A HREF="#configureandwatch">Is there a way to get log4j to automatically reload a configuration file if it changes?</P>
 <LI><P><A HREF="#nteventlogproblems">What does the Windows NT Event Viewer complain about missing descriptions for my event messages
 when I use the NTEventLogAppender?</P>
 <LI><P><A HREF="#morenteventlogproblems">Why can't I map my logger names to the loggers that appear in the 
@@ -436,9 +436,8 @@ messages.
 <p>This policy usually best encapsulates what the user actually wants
 to do, as opposed to her mind-projected solution.
 
-<p>See <a
-href="api/org/apache/log4j/examples/doc-files/sort4.lcf">sort4.lcf</a>
-for an example threshold configuration.
+<p>See <i>examples/sort4.lcf</i> for an example threshold
+configuration.
 
 <p>If you must filter events by exact level match, then you can
 attach a <a
@@ -477,10 +476,10 @@ had their timestamp regenerated in the converter.  In this case the timestamps
 seen in the log file would all appear in order, generated at the time they
 arrived at the log server host according to its local clock.
 
-<p><a name=j2ee><h4>Why can't Log4J find my properties file in a J2EE
+<p><a name=j2ee><h4>Why can't log4j find my properties file in a J2EE
 or WAR application?</h4>
 
-The short answer: the Log4J classes and the properties file are not
+The short answer: the log4j classes and the properties file are not
 within the scope of the same classloader.<P>
 
 The long answer (and what to do about it): J2EE or Servlet containers
@@ -490,14 +489,14 @@ arranged in a hierarchial parent-child relationship.  When a child
 classloader needs to find a class or a resource, it first delegates
 the request to the parent. 
 
-<P>Log4J only uses the default <CODE>Class.forName()</code> mechanism
+<P>Log4j only uses the default <CODE>Class.forName()</code> mechanism
 for loading classes.  Resources are handled similarly.  See the
 documentation for <CODE>java.lang.ClassLoader</CODE> for more details.
 
 <P>So, if you're having problems, try loading the class or resource
-yourself.  If you can't find it, neither will Log4J. ;)
+yourself.  If you can't find it, neither will log4j. ;)
 
-<P><A NAME=configureandwatch><H4>Is there a way to get Log4J to
+<P><A NAME=configureandwatch><H4>Is there a way to get log4j to
 automatically reload a configuration file if it changes?</H4>
 
 <P>Yes.  Both the DOMConfigurator and the PropertyConfigurator support
@@ -593,8 +592,8 @@ code?</h4>
 
     <p><li>Take responsibility for your code.
 	
-	<p>Authoring software is like parenting. It takes many
-	years to raise a child. 
+	<p>Authoring software is very much like running a marathon. It
+	takes time and endurance.
 
     <p><li>Did I mention sticking with the indentation style? 
 

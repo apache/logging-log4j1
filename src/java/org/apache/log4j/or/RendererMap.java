@@ -9,6 +9,7 @@ package org.apache.log4j.or;
 
 import org.apache.log4j.spi.RendererSupport;
 import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.helpers.Loader;
 import org.apache.log4j.helpers.OptionConverter;
 import java.util.Hashtable;
 
@@ -46,7 +47,7 @@ public class RendererMap {
       return;
     } else {
       try {
-	Class renderedClass = Class.forName(renderedClassName);
+	Class renderedClass = Loader.loadClass(renderedClassName);
 	repository.setRenderer(renderedClass, renderer);
       } catch(ClassNotFoundException e) {
 	LogLog.error("Could not find class ["+renderedClassName+"].", e);

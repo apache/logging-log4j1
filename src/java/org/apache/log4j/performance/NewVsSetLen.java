@@ -160,7 +160,7 @@ public class NewVsSetLen {
       for(int second = 0; second < 16;) {
 	System.out.println("SECOND loop="+second +", RUN_LENGTH="
 			   +RUN_LENGTH+", len="+len);
-	t = (int)newBuffer(len, second);;
+	t = (int)newBuffer(len, second);
 
 	System.out.print("<td>" + t);
 	t = (int)setLen(len, second);

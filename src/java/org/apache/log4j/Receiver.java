@@ -58,8 +58,8 @@ public abstract class Receiver extends PluginSkeleton {
   	// if the logger level is greater or equal to the level
   	// of the event, use the logger to append the event.
   	if(event.level.isGreaterOrEqual(localLogger.getEffectiveLevel())) {
-      // set the logger for the event
-      event.logger = localLogger;
+      // set the logger for the event 
+      // event.logger = localLogger;
       
       // call the loggers appenders to process the event
   	  localLogger.callAppenders(event);

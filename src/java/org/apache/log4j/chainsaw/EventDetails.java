@@ -73,8 +73,8 @@ class EventDetails {
     EventDetails(LoggingEvent aEvent) {
 
         this(aEvent.timeStamp,
-             aEvent.level,
-             aEvent.categoryName,
+             aEvent.getLevel(),
+             aEvent.getLoggerName(),
              aEvent.getNDC(),
              aEvent.getThreadName(),
              aEvent.getRenderedMessage(),

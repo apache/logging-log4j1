@@ -33,8 +33,8 @@ import java.util.StringTokenizer;
 import java.util.Hashtable;
 
 /**
-   Extends {@link BasicConfigurator} to provide configuration from an
-   external file.  See <b>{@link #doConfigure(String, LoggerRepository)}</b> for the
+   Allows the configuration of log4j from an external file.  See
+   <b>{@link #doConfigure(String, LoggerRepository)}</b> for the
    expected format.
 
    <p>It is sometimes useful to see how log4j is reading configuration
@@ -100,7 +100,7 @@ public class PropertyConfigurator implements Configurator {
   /**
     Read configuration from a file. <b>The existing configuration is
     not cleared nor reset.</b> If you require a different behavior,
-    then call {@link BasicConfigurator#resetConfiguration
+    then call {@link  LogManager#resetConfiguration
     resetConfiguration} method before calling
     <code>doConfigure</code>.
 
@@ -118,7 +118,7 @@ public class PropertyConfigurator implements Configurator {
     </pre>
 
     <p>The level value can consist of the string values OFF, FATAL,
-    ERROR, WARN, INFO, DEBUG, ALL or a <em>custom level</e> value. A
+    ERROR, WARN, INFO, DEBUG, ALL or a <em>custom level</em> value. A
     custom level value can be specified in the form
     level#classname. By default the repository-wide threshold is set
     to the lowest possible value, namely the level <code>ALL</code>.
@@ -175,7 +175,7 @@ public class PropertyConfigurator implements Configurator {
 
     <p>For non-root categories the syntax is almost the same:
     <pre>
-    log4j.logger.logger_name=[level|INHERITED], appenderName, appenderName, ...
+    log4j.logger.logger_name=[level|INHERITED|NULL], appenderName, appenderName, ...
     </pre>
 
     <p>The meaning of the optional level value is discussed above
@@ -187,9 +187,10 @@ public class PropertyConfigurator implements Configurator {
     named logger remains untouched.
 
     <p>By default categories inherit their level from the
-    hierarchy. However, if you set the level of a logger and
-    later decide that that logger should inherit its level, then
-    you should specify INHERITED as the value for the level value.
+    hierarchy. However, if you set the level of a logger and later
+    decide that that logger should inherit its level, then you should
+    specify INHERITED as the value for the level value. NULL is a
+    synonym for INHERITED.
 
     <p>Similar to the root logger syntax, each <i>appenderName</i>
     (separated by commas) will be attached to the named logger.
@@ -576,9 +577,13 @@ public class PropertyConfigurator implements Configurator {
       // If the level value is inherited, set category level value to
       // null. We also check that the user has not specified inherited for the
       // root category.
-      if(levelStr.equalsIgnoreCase(INHERITED) &&
-                                	 !loggerName.equals(INTERNAL_ROOT_NAME)) {
-	logger.setLevel(null);
+      if(INHERITED.equalsIgnoreCase(levelStr) || 
+ 	                                  NULL.equalsIgnoreCase(levelStr)) {
+	if(loggerName.equals(INTERNAL_ROOT_NAME)) {
+	  LogLog.warn("The root logger cannot be set to null.");
+	} else {
+	  logger.setLevel(null);
+	}
       } else {
 	logger.setLevel(OptionConverter.toLevel(levelStr, (Level) Level.DEBUG));
       }

@@ -33,11 +33,7 @@ import java.util.Enumeration;
 
    <p><b>Important note:</b> The <code>AsyncAppender</code> can only
    be script configured using the {@link
-   org.apache.log4j.xml.DOMConfigurator}. Refer to example  configuration
-   files <a href="xml/examples/doc-files/sample4.xml">sample4.xml</a>
-   and <a href="xml/examples/doc-files/sample5.xml">sample5.xml</a>.
-
-
+   org.apache.log4j.xml.DOMConfigurator}.
 
    @author Ceki G&uuml;lc&uuml;
    @since 0.9.1 */
@@ -57,8 +53,7 @@ public class AsyncAppender extends AppenderSkeleton
 
   boolean interruptedWarningMessage = false;
 
-  public
-  AsyncAppender() {
+  public AsyncAppender() {
     // Note: The dispatcher code assumes that the aai is set once and
     // for all.
     aai = new AppenderAttachableImpl();
@@ -67,15 +62,13 @@ public class AsyncAppender extends AppenderSkeleton
   }
 
 
-  public
-  void addAppender(Appender newAppender) {
+  public void addAppender(Appender newAppender) {
     synchronized(aai) {
       aai.addAppender(newAppender);
     }
   }
 
-  public
-  void append(LoggingEvent event) {
+  public void append(LoggingEvent event) {
     // Set the NDC and thread name for the calling thread as these
     // LoggingEvent fields were not set at event creation time.
     event.getNDC();
@@ -114,8 +107,7 @@ public class AsyncAppender extends AppenderSkeleton
      dispatcher thread which will process all pending events before
      exiting.
   */
-  public
-  void close() {
+  public void close() {
     synchronized(this) {
       // avoid multiple close, otherwise one gets NullPointerException
       if(closed) { 
@@ -139,15 +131,13 @@ public class AsyncAppender extends AppenderSkeleton
     bf = null;
   }
 
-  public
-  Enumeration getAllAppenders() {
+  public Enumeration getAllAppenders() {
     synchronized(aai) {
       return aai.getAllAppenders();
     }
   }
 
-  public
-  Appender getAppender(String name) {
+  public Appender getAppender(String name) {
     synchronized(aai) {
       return aai.getAppender(name);
     }
@@ -156,89 +146,80 @@ public class AsyncAppender extends AppenderSkeleton
   /**
      Returns the current value of the <b>LocationInfo</b> option.
   */
-  public
-  boolean getLocationInfo() {
+  public boolean getLocationInfo() {
     return locationInfo;
   }
 
   /**
      Is the appender passed as parameter attached to this category?
    */
-  public
-  boolean isAttached(Appender appender) {
+  public boolean isAttached(Appender appender) {
     return aai.isAttached(appender);
   }
 
 
   /**
      The <code>AsyncAppender</code> does not require a layout. Hence,
-     this method always returns <code>false</code>. */
-  public
-  boolean requiresLayout() {
+     this method always returns <code>false</code>. 
+  */
+  public boolean requiresLayout() {
     return false;
   }
 
-  public
-  void removeAllAppenders() {
+  public void removeAllAppenders() {
     synchronized(aai) {
       aai.removeAllAppenders();
     }
   }
 
 
-  public
-  void removeAppender(Appender appender) {
+  public void removeAppender(Appender appender) {
     synchronized(aai) {
       aai.removeAppender(appender);
     }
   }
 
-  public
-  void removeAppender(String name) {
+  public void removeAppender(String name) {
     synchronized(aai) {
       aai.removeAppender(name);
     }
   }
 
   /**
-     The <b>LocationInfo</b> option takes a boolean value. By
-     default, it is set to false which means there will be no effort
-     to extract the location information related to the event. As a
-     result, the event that will be ultimately logged will likely to
-     contain the wrong location information (if present in the log
-     format).
-
-     <p>Location information extraction is comparatively very slow and
-     should be avoided unless performance is not a concern.
-   */
-  public
-  void setLocationInfo(boolean flag) {
+   * The <b>LocationInfo</b> option takes a boolean value. By default,
+   * it is set to false which means there will be no effort to extract
+   * the location information related to the event. As a result, the
+   * event that will be ultimately logged will likely to contain the
+   * wrong location information (if present in the log format).
+   *
+   * <p>Location information extraction is comparatively very slow and
+   * should be avoided unless performance is not a concern.
+   * */
+  public void setLocationInfo(boolean flag) {
     locationInfo = flag;
   }
 
 
   /**
-     The <b>BufferSize</b> option takes a non-negative integer
-     value.  This integer value determines the maximum size of the
-     bounded buffer. Increasing the size of the buffer is always
-     safe. However, if an existing buffer holds unwritten elements,
-     then <em>decreasing the buffer size will result in event
-     loss.</em> Nevertheless, while script configuring the
-     AsyncAppender, it is safe to set a buffer size smaller than the
-     {@link #DEFAULT_BUFFER_SIZE default buffer size} because
-     configurators guarantee that an appender cannot be used before
-     being completely configured.
-   */
-  public
-  void setBufferSize(int size) {
+   * The <b>BufferSize</b> option takes a non-negative integer value.
+   * This integer value determines the maximum size of the bounded
+   * buffer. Increasing the size of the buffer is always
+   * safe. However, if an existing buffer holds unwritten elements,
+   * then <em>decreasing the buffer size will result in event
+   * loss.</em> Nevertheless, while script configuring the
+   * AsyncAppender, it is safe to set a buffer size smaller than the
+   * {@link #DEFAULT_BUFFER_SIZE default buffer size} because
+   * configurators guarantee that an appender cannot be used before
+   * being completely configured.  
+   * */
+  public void setBufferSize(int size) {
     bf.resize(size);
   }
 
   /**
      Returns the current value of the <b>BufferSize</b> option.
    */
-  public
-  int getBufferSize() {
+  public int getBufferSize() {
     return bf.getMaxSize();
   }
 
@@ -256,10 +237,14 @@ class Dispatcher extends Thread {
   Dispatcher(BoundedFIFO bf, AsyncAppender container) {
     this.bf = bf;
     this.container = container;
-    this.aai = container.aai;
+    this.aai = container.aai;    
+    // It is the user's responsibility to close appenders before
+    // exiting. 
+    this.setDaemon(true);
     // set the dispatcher priority to lowest possible value
     this.setPriority(Thread.MIN_PRIORITY);
     this.setName("Dispatcher-"+getName());
+
     // set the dispatcher priority to MIN_PRIORITY plus or minus 2
     // depending on the direction of MIN to MAX_PRIORITY.
     //+ (Thread.MAX_PRIORITY > Thread.MIN_PRIORITY ? 1 : -1)*2);
@@ -289,8 +274,7 @@ class Dispatcher extends Thread {
     <p>Other approaches might yield better results.
 
   */
-  public
-  void run() {
+  public void run() {
 
     //Category cat = Category.getInstance(Dispatcher.class.getName());
 
@@ -302,7 +286,7 @@ class Dispatcher extends Thread {
 	  // Exit loop if interrupted but only if the the buffer is empty.
 	  if(interrupted) {
 	    //cat.info("Exiting.");
-	    return;
+	    break;
 	  }
 	  try {
 	    //LogLog.debug("Waiting for new event to dispatch.");
@@ -327,5 +311,8 @@ class Dispatcher extends Thread {
 	}
       }
     } // while
+    
+    // close and remove all appenders
+    aai.removeAllAppenders();
   }
 }

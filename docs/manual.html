@@ -814,9 +814,9 @@ control of a web-server.
 
 <ol>
 
- <li>Skip default initialization if the system property
- <b>log4j.defaultInitOverride</b> is set to any value other than
- "false".
+ <li>Setting the <b>log4j.defaultInitOverride</b> system property to
+ any other value then "false" will cause log4j to skip the default
+ initialization procedure (this procedure).
 
  <p><li>Set the <code>resource</code> string variable to the value of
  the <b>log4j.configuration</b> system property.  <em>The preferred

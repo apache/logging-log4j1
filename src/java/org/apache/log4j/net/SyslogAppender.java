@@ -228,7 +228,7 @@ public class SyslogAppender extends AppenderSkeleton {
   public
   void append(LoggingEvent event) {
 
-    if(!isAsSevereAsThreshold(event.level))
+    if(!isAsSevereAsThreshold(event.getLevel()))
       return;
 
     // We must not attempt to append if sqw is null.
@@ -241,7 +241,7 @@ public class SyslogAppender extends AppenderSkeleton {
     String buffer = (facilityPrinting? facilityStr : "") +
                           layout.format(event);
 
-    sqw.setLevel(event.level.getSyslogEquivalent());
+    sqw.setLevel(event.getLevel().getSyslogEquivalent());
     sqw.write(buffer);
 
     String[] s = event.getThrowableStrRep();

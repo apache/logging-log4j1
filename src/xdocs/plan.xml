@@ -3,7 +3,7 @@
 
   <properties>
     <author email="ceki@apache.org">Ceki Gulcu</author>
-    <title>Release plan for log4j 1.2</title>
+    <title>Release plan for log4j 1.3</title>
   </properties>
 
   <body>
@@ -35,10 +35,13 @@
 
     <section name="Workplan for log4j 1.3">
 
-      <p>With log4j 1.2 still in beta, the workplan for log4j 1.3 is
-	obviously not final. It is included here to give you an idea
-	of the future. The items are not listed in any particular
-	order.
+      <p>The workplan for log4j 1.3 is not final. It is included here
+	to give you an idea of the future. The items are not listed in
+	any particular order.  As always, there is no scheduled
+	release date. The lack of schedule suprises and disturbs some
+	people. Writing good software, like good cooking, takes
+	time. If we make you wait, it is to create a better and more
+	reliable product.
       </p>
       
       <table border="1" cellpadding="3" cellspacing="2">
@@ -234,11 +237,7 @@
       
     <section name="Workplan for log4j 1.2">
       <p>
-	Here is workplan for the 1.2 release. As always, there is no
-	scheduled release date. The lack of schedule suprises and
-	disturbs some people. Writing good software, like good
-	cooking, takes time. If we make you wait, it is to create a
-	better and more reliable product.
+	Here is workplan for the 1.2 release.
       </p>
       
       <table border="1" cellpadding="3" cellspacing="2">

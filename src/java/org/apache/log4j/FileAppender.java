@@ -20,14 +20,14 @@ import org.apache.log4j.helpers.LogLog;
 //              Ben Sandee
 
 /**
-   FileAppender appends log events to a file.
-
-   <p>Support for <code>java.io.Writer</code> and console appending
-   has been deprecated and then removed. See the replacement
-   solutions: {@link WriterAppender} and {@link ConsoleAppender}.
-
-
-   @author Ceki G&uuml;lc&uuml; */
+ *  FileAppender appends log events to a file.
+ *
+ *  <p>Support for <code>java.io.Writer</code> and console appending
+ *  has been deprecated and then removed. See the replacement
+ *  solutions: {@link WriterAppender} and {@link ConsoleAppender}.
+ *
+ * @author Ceki G&uuml;lc&uuml; 
+ * */
 public class FileAppender extends WriterAppender {
 
   /** Append to or truncate the file? The default value for this
