@@ -56,7 +56,7 @@ import junit.framework.TestSuite;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
-
+import org.apache.log4j.util.Compare;
 
 /**
  *
@@ -76,7 +76,7 @@ public class SizeBasedRollingTestCase extends TestCase {
   public void tearDown() {
   }
 
-  public void test1() {
+  public void test1() throws Exception {
     Logger root = Logger.getRootLogger();
     root.addAppender(new ConsoleAppender(new PatternLayout()));
     
@@ -87,14 +87,14 @@ public class SizeBasedRollingTestCase extends TestCase {
     rfa.setLayout(layout);
     SlidingWindowRollingPolicy swrp = new SlidingWindowRollingPolicy();
     SizeBasedTriggeringPolicy sbtp = new SizeBasedTriggeringPolicy();
-    sbtp.setMaxFileSize(21);
-    swrp.setFileNamePattern("output/test.%i");
+    sbtp.setMaxFileSize(100);
+    swrp.setFileNamePattern("output/sizeBased-test1.%i");
     rfa.setRollingPolicy(swrp);
     rfa.setTriggeringPolicy(sbtp);
-    //rfa.setFile("test");
     rfa.activateOptions();
     root.addAppender(rfa);
     
+    // Write exactly 10 bytes with each log
     for (int i = 0; i < 22; i++) {
       if (i < 10) {
         logger.debug("Hello---" + i);
@@ -103,11 +103,23 @@ public class SizeBasedRollingTestCase extends TestCase {
       } else {
         logger.debug("Hello-" + i);
       }
-      
-      System.out.flush();
     }
-    
+
+    // The File.length() method is not accurate under Windows    
+    if(!isWindows()) {
+	
+      assertTrue(Compare.compare("output/sizeBased-test1.1", 
+				 "witness/sizeBased-test1.1"));
+      assertTrue(Compare.compare("output/sizeBased-test1.2", 
+				 "witness/sizeBased-test1.2"));
+      assertTrue(Compare.compare("output/sizeBased-test1.3", 
+				 "witness/sizeBased-test1.3"));}
   }
+
+  boolean isWindows() {
+    return System.getProperty("os.name").indexOf("Windows") != -1;
+  }
+
 
   public static Test suite() {
     TestSuite suite = new TestSuite();
@@ -121,4 +133,5 @@ public class SizeBasedRollingTestCase extends TestCase {
     }
     return suite;
   }
+
 }
