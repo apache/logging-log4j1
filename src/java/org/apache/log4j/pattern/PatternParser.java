@@ -176,7 +176,6 @@ public class PatternParser {
   /**
    * Returns the option, null if not in the expected format.
    */
-  private String extractOption() { return null; }
   protected List extractOptions() {
     ArrayList options = null;
     while ((i < patternLength) && (pattern.charAt(i) == '{')) {
