@@ -68,7 +68,7 @@ public class XMLLayoutTestCase extends TestCase {
         new XMLSequenceNumberFilter(),
         new SunReflectFilter()
       });
-    assertTrue(Compare.compare(FILTERED, "witness/xmlLayout.1"));
+    assertTrue(Compare.compare(FILTERED, "witness/xml/xmlLayout.1"));
   }
 
   public void locationInfo() throws Exception {
@@ -85,7 +85,7 @@ public class XMLLayoutTestCase extends TestCase {
         new XMLSequenceNumberFilter(),
         new XMLLineAttributeFilter(), new SunReflectFilter()
       });
-    assertTrue(Compare.compare(FILTERED, "witness/xmlLayout.2"));
+    assertTrue(Compare.compare(FILTERED, "witness/xml/xmlLayout.2"));
   }
 
   public void testCDATA() throws Exception {
@@ -104,7 +104,7 @@ public class XMLLayoutTestCase extends TestCase {
         new XMLSequenceNumberFilter(),
         new XMLLineAttributeFilter(), new SunReflectFilter()
       });
-    assertTrue(Compare.compare(FILTERED, "witness/xmlLayout.3"));
+    assertTrue(Compare.compare(FILTERED, "witness/xml/xmlLayout.3"));
   }
 
   public void testNull() throws Exception {
@@ -122,7 +122,7 @@ public class XMLLayoutTestCase extends TestCase {
           new SunReflectFilter(),
           new XMLTimestampFilter(),  
           new XMLSequenceNumberFilter() });
-    assertTrue(Compare.compare(FILTERED, "witness/xmlLayout.null"));
+    assertTrue(Compare.compare(FILTERED, "witness/xml/xmlLayout.null"));
   }
 
   /**
@@ -145,7 +145,7 @@ public class XMLLayoutTestCase extends TestCase {
           new JunitTestRunnerFilter(),
           new XMLTimestampFilter(), 
           new XMLSequenceNumberFilter()});
-    assertTrue(Compare.compare(FILTERED, "witness/xmlLayout.mdc.1"));
+    assertTrue(Compare.compare(FILTERED, "witness/xml/xmlLayout.mdc.1"));
   }
 
   public void holdTestMDCEscaped() throws Exception {
@@ -163,7 +163,7 @@ public class XMLLayoutTestCase extends TestCase {
           new JunitTestRunnerFilter(),
           new XMLTimestampFilter(),
           new XMLSequenceNumberFilter() });
-    assertTrue(Compare.compare(FILTERED, "witness/xmlLayout.mdc.2"));
+    assertTrue(Compare.compare(FILTERED, "witness/xml/xmlLayout.mdc.2"));
   }
 
   void common() {

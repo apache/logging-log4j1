@@ -55,7 +55,7 @@ public class CustomLevelTestCase extends TestCase {
     jc.dumpErrors();
     
     common();
-    assertTrue(Compare.compare(TEMP, "witness/customLevel.1"));
+    assertTrue(Compare.compare(TEMP, "witness/xml/customLevel.1"));
   }
 
   public void test2() throws Exception {
@@ -65,7 +65,7 @@ public class CustomLevelTestCase extends TestCase {
     jc.dumpErrors();
     
     common();
-    assertTrue(Compare.compare(TEMP, "witness/customLevel.2"));
+    assertTrue(Compare.compare(TEMP, "witness/xml/customLevel.2"));
   }
 
   public void test3() throws Exception {
@@ -75,7 +75,7 @@ public class CustomLevelTestCase extends TestCase {
     jc.dumpErrors();
     
     common();
-    assertTrue(Compare.compare(TEMP, "witness/customLevel.3"));
+    assertTrue(Compare.compare(TEMP, "witness/xml/customLevel.3"));
   }
 
   public void test4() throws Exception {
@@ -85,7 +85,7 @@ public class CustomLevelTestCase extends TestCase {
     jc.dumpErrors();
 
     common();
-    assertTrue(Compare.compare(TEMP, "witness/customLevel.4"));
+    assertTrue(Compare.compare(TEMP, "witness/xml/customLevel.4"));
   }
 
   void common() {

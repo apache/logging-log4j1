@@ -79,8 +79,8 @@ public class DOMTestCase extends TestCase {
                                       new LineNumberFilter(), new ISO8601Filter(),
                                       new SunReflectFilter(), new JunitTestRunnerFilter()});
 
-    assertTrue(Compare.compare(FILTERED_A1, "witness/dom.A1.1"));
-    assertTrue(Compare.compare(FILTERED_A2, "witness/dom.A2.1"));
+    assertTrue(Compare.compare(FILTERED_A1, "witness/xml/dom.A1.1"));
+    assertTrue(Compare.compare(FILTERED_A2, "witness/xml/dom.A2.1"));
   }
 
   void common() {
