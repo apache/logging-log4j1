@@ -20,7 +20,6 @@ jmx-extra.jar=/java/jmx/lib/jmxtools.jar
 checkstyle.jar=/java/checkstyle-2.2/checkstyle-all-2.2.jar
 
 # Jalopy OPTIONAL; required to run the jalpoy targets
-jalopy.stylesheet.location=sunCodingConvention.xml
 jalopy.lib=d:/development/code-opensource/other/jalopy-b10/lib
 
 # jakarta-site2 module is used to transform xml files to html using
