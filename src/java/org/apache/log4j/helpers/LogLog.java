@@ -43,17 +43,6 @@ public class LogLog {
     <p>Note that the search for all option names is case sensitive.  */
   public static final String DEBUG_KEY = "log4j.debug";
 
-  /**
-     Defining this value makes log4j components print log4j-internal
-     debug statements to <code>System.out</code>.
-
-    <p> The value of this string is <b>log4j.configDebug</b>.
-
-    <p>Note that the search for all option names is case sensitive.
-
-    @deprecated Use {@link #DEBUG_KEY} instead.
-  */
-  public static final String CONFIG_DEBUG_KEY = "log4j.configDebug";
   protected static boolean debugEnabled = false;
 
   /**
@@ -67,10 +56,6 @@ public class LogLog {
 
   static {
     String key = OptionConverter.getSystemProperty(DEBUG_KEY, null);
-
-    if (key == null) {
-      key = OptionConverter.getSystemProperty(CONFIG_DEBUG_KEY, null);
-    }
 
     if (key != null) {
       debugEnabled = OptionConverter.toBoolean(key, true);

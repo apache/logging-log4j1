@@ -4,11 +4,14 @@
   [**] Changes that requiring little or no modification to existing
        client code. 
  [***] Changes requiring important modifications to existing client code.
+   
+   [D] Changes affect a method or property which was previously marked as 
+       deprecated.
+   
 
+ April, 2004 
 
- Semptember ?th, 2003 
-
- - Release of version 1.3alpha0
+ - Removed support for the deprecated property "log4j.configDebug". [**/D]
 
  - Added keys() method to the MDC class as requested by Don Isenor.
  
