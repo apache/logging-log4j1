@@ -77,33 +77,26 @@
 
 	<!-- ============================================================================== -->
 
-	<dt><a href="http://www.japhy.de/configLog4j"><b>configLog4j</b></a></dt>
+<!--	<dt><a href="http://www.japhy.de/configLog4j"><b>configLog4j</b></a></dt>
 
 	<dd>A graphical log4j configuration editor by Tobias
 	Dezulian.</dd>
-
+-->
 	<!-- ============================================================================== -->
 
 	<dt>
 	  <a
-	href="http://support.klopotek.de/log4j/jdbc/index.html"><b>JDBCAppender</b></a>
+	href="http://www.mannhaupt.com/danko/projects/"><b>JDBCAppender</b></a>
+	</dt> 
 
-	</dt> <dd>A <code>JDBCAppender</code> by <a
-	href="mailto:t.fenner@klopotek.de">Thomas Fenner</a>. Note
-	that log4j 1.2 ships with another <code>JDBCAppender</code>
-	written by Kevin Steppe.
+        <dd>A powerful <code>JDBCAppender</code> by Danko Mannhaupt
+	  who continues the work of Thomas Fenner. You might find
+	  this JDBCAppender more suitable then the one that ships with
+	  log4j 1.2. 
 	</dd>
 
 	<!-- ============================================================================== -->	
 	
-	<dt><a
-	href="http://developer.jini.org/exchange/projects/log"><b>JINI
-	logging service</b></a> (registration required)</dt>
-
-	<dd>A log4j wrapper for JINI by Jerome Bernard.</dd>
-
-	<!-- ============================================================================== -->
-
 	<dt><a href="http://qos.ch/"><b>log4j<em>ME</em></b></a></dt>
 
 	<dd>Log4j<em>ME</em>, or log4j MiniEdition, is based on the
