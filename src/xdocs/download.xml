@@ -54,16 +54,16 @@
 
     </section>
 
-    <section name="log4j version 1.2 beta3">
-      <p>log4j 1.2 beta 3 is now available in <a
-	href="../jakarta-log4j-1.2beta3.tar.gz"><b>TAR.GZ</b></a>
+    <section name="log4j version 1.2 beta4">
+      <p>log4j 1.2 beta 4 is now available in <a
+	href="../jakarta-log4j-1.2beta4.tar.gz"><b>TAR.GZ</b></a>
 	format or in <a
-	href="../jakarta-log4j-1.2beta3.zip"><b>ZIP</b></a> format.
+	href="../jakarta-log4j-1.2beta4.zip"><b>ZIP</b></a> format.
       </p>
 
 
       <p>In addition to many performance improvements, bug fixes, and
-	other small enhancements, log4j 1.2 beta3 adds JMX support,
+	other small enhancements, log4j 1.2 beta4 adds JMX support,
 	Mapped Diagnostic Contexts, and buffered IO capability. One
 	important change is the replacement of the Category class with
 	Logger class and the Priority with the Level in order to
@@ -71,7 +71,7 @@
       </p>
       
       <p>All changes except the removal of deprecated methods are backward
-	compatible such that log4j 1.2beta3 can be considered a drop in
+	compatible such that log4j 1.2beta4 can be considered a drop in
 	replacement for log4j 1.1.3. </p>
 
     </section>
