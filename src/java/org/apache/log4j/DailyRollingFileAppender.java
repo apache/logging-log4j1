@@ -300,7 +300,7 @@ public class DailyRollingFileAppender extends FileAppender {
     try {
       // This will also close the file. This is OK since multiple
       // close operations are safe.
-      this.setFile(fileName, false);
+      this.setFile(fileName, false, this.bufferedIO, this.bufferSize);
     }
     catch(IOException e) {
       errorHandler.error("setFile("+fileName+", false) call failed.");

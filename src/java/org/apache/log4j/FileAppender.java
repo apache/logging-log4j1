@@ -27,10 +27,9 @@ import org.apache.log4j.helpers.LogLog;
 /**
    FileAppender appends log events to a file. 
    
-   <b>Support for java.io.Writer and console appending has been
-   deprecated and will be removed in the near future.</b> You are
-   strongly encouraged to use the replacement solutions: {@link
-   WriterAppender} and {@link ConsoleAppender}.
+   <p>Support for <code>java.io.Writer</code> and console appending
+   has been deprecated and then removed. See the replacement
+   solutions: {@link WriterAppender} and {@link ConsoleAppender}.
    
 
    @author Ceki G&uuml;lc&uuml; */
@@ -51,15 +50,12 @@ public class FileAppender extends WriterAppender {
   protected String fileName = null;
 
   /**
-     Is the QuietWriter ours or was it created and passed by the user?     
-
-     @deprecated FileAppender will not support streams passed by the
-     user in the future. */
-  protected boolean qwIsOurs = false;
-
-  /**
      Do we do bufferedIO? */
   protected boolean bufferedIO = false;
+
+  /**
+     How big should the IO buffer be? Default is 8K. */
+  protected int bufferSize = 8*1024;
 
 
   /**
@@ -69,37 +65,25 @@ public class FileAppender extends WriterAppender {
   FileAppender() {
   }
 
-
   /**
-     Instantiate a FileAppender and set the output destination to a
-     new {@link OutputStreamWriter} initialized with <code>os</code>
-     as its {@link OutputStream}.  
+    Instantiate a <code>FileAppender</code> and open the file
+    designated by <code>filename</code>. The opened filename will
+    become the output destination for this appender.
 
-     @deprecated <b>The functionality of this constructor form has
-     been replaced by the {@link WriterAppender}. This constructor
-     will be removed in the <em>near</em> term.</b>
+    <p>If the <code>append</code> parameter is true, the file will be
+    appended to. Otherwise, the file designated by
+    <code>filename</code> will be truncated before being opened.
 
+    <p>If the <code>bufferedIO</code> parameter is <code>true</code>,
+    then buffered IO will be used to write to the output file. 
+    
   */
   public
-  FileAppender(Layout layout, OutputStream os) {
-    super(layout, os);
+  FileAppender(Layout layout, String filename, boolean append, boolean bufferedIO, 
+	       int bufferSize) throws IOException {
+    this.layout = layout;
+    this.setFile(filename, append, bufferedIO, bufferSize);
   }
-  
-  /**
-     Instantiate a FileAppender and set the output destination to
-     <code>writer</code>.
-
-     <p>The <code>writer</code> must have been opened by the user.  
-
-     @deprecated <b>The functionality of constructor form has been
-     replaced by the {@link WriterAppender}. This constructor will be
-     removed in the <em>near</em> term.</b>
-  */
-  public
-  FileAppender(Layout layout, Writer writer) {
-    super(layout, writer);
-  }                    
-
 
   /**
     Instantiate a FileAppender and open the file designated by
@@ -111,10 +95,9 @@ public class FileAppender extends WriterAppender {
     <code>filename</code> will be truncated before being opened.
   */
   public
-  FileAppender(Layout layout, String filename, boolean append)
-                                      throws IOException {
+  FileAppender(Layout layout, String filename, boolean append) throws IOException {
     this.layout = layout;
-    this.setFile(filename, append);
+    this.setFile(filename, append, false, bufferSize);
   }
 
   /**
@@ -130,32 +113,18 @@ public class FileAppender extends WriterAppender {
 
   /**
      The <b>File</b> property takes a string value which should be the
-     name of the file to append to. Special values "System.out" or
-     "System.err" are interpreted as the standard out and standard
-     error streams.
+     name of the file to append to. 
 
-     <p><font color="#DD0044"><b>Note that the "System.out" or "System.err"
-     options are deprecated. Please use {@link ConsoleAppender}
-     instead.</b></font>
-
-     <p>If the option is set to "System.out" or "System.err" the
-     output will go to the corresponding stream. Otherwise, if the
-     option is set to the name of a file, then the file will be opened
-     and output will go there.
-     
+     <p><font color="#DD0044"><b>Note that the special values
+     "System.out" or "System.err" are no longer honored.</b></font>
+   
      <p>Note: Actual opening of the file is made when {@link
      #activateOptions} is called, not when the options are set.  */
   public void setFile(String file) {
     // Trim spaces from both ends. The users probably does not want 
     // trailing spaces in file names.
     String val = file.trim();
-    if(val.equalsIgnoreCase("System.out")) {
-      setWriter(new OutputStreamWriter(System.out));
-    } else if(val.equalsIgnoreCase("System.err")) {
-      setWriter(new OutputStreamWriter(System.err));
-    } else {
-      fileName = val;
-    }
+    fileName = val;    
   }
 
   /** 
@@ -172,22 +141,6 @@ public class FileAppender extends WriterAppender {
   String getFile() {
     return fileName;
   }
-  
-  /**
-     The <b>Append</b> option takes a boolean value. It is set to
-     <code>true</code> by default. If true, then <code>File</code>
-     will be opened in append mode by {@link #setFile setFile} (see
-     above). Otherwise, {@link #setFile setFile} will open
-     <code>File</code> in truncate mode.
-
-     <p>Note: Actual opening of the file is made when {@link
-     #activateOptions} is called, not when the options are set.
-   */
-  public
-  void setAppend(boolean flag) {
-    fileAppend = flag;
-  }
-  
 
   /**
      If the value of <b>File</b> is not <code>null</code>, then {@link
@@ -196,10 +149,10 @@ public class FileAppender extends WriterAppender {
 
      @since 0.8.1 */
   public
-  void activateOptions() {    
+  void activateOptions() {
     if(fileName != null) {
       try {
-	setFile(fileName, fileAppend);
+	setFile(fileName, fileAppend, bufferedIO, bufferSize);
       }
       catch(java.io.IOException e) {
 	errorHandler.error("setFile("+fileName+","+fileAppend+") call failed.",
@@ -217,8 +170,7 @@ public class FileAppender extends WriterAppender {
   */
   protected
   void closeFile() {
-    // FIXME (remove qwIsOurs)
-    if(this.qw != null && this.qwIsOurs) {
+    if(this.qw != null) {
       try {
 	this.qw.close();
       }
@@ -229,6 +181,38 @@ public class FileAppender extends WriterAppender {
       }
     }
   }
+
+  /**
+     The <b>Append</b> option takes a boolean value. It is set to
+     <code>true</code> by default. If true, then <code>File</code>
+     will be opened in append mode by {@link #setFile setFile} (see
+     above). Otherwise, {@link #setFile setFile} will open
+     <code>File</code> in truncate mode.
+
+     <p>Note: Actual opening of the file is made when {@link
+     #activateOptions} is called, not when the options are set.
+   */
+  public
+  void setAppend(boolean flag) {
+    fileAppend = flag;
+  }
+  
+  /**
+     The <b>BufferedIO</b> option takes a boolean value. It is set to
+     <code>false</code> by default. If true, then <code>File</code>
+     will be opened and the resulting {@link java.io.Writer} wrapped
+     around a {@link BufferedWriter}.
+
+     BufferedIO will significatnly increase performance on heavily
+     loaded systems.
+
+  */
+  public
+  void setBufferedIO(boolean bufferedIO) {
+    this.bufferedIO = bufferedIO;
+  }
+  
+
 
   /**
     <p>Sets and <i>opens</i> the file where the log output will
@@ -242,9 +226,14 @@ public class FileAppender extends WriterAppender {
         truncate fileName.  */
   public
   synchronized
-  void setFile(String fileName, boolean append) 
+  void setFile(String fileName, boolean append, boolean bufferedIO, int bufferSize) 
                                                             throws IOException {
     LogLog.debug("setFile called: "+fileName+", "+append);
+    
+    // It does not make sense to have immediate flush and bufferedIO.
+    if(bufferedIO) {
+      setImmediateFlush(false);
+    }
 
     reset();    
     Writer fw = new FileWriter(fileName, append);
@@ -252,10 +241,10 @@ public class FileAppender extends WriterAppender {
       fw = new BufferedWriter(fw);
     }
     this.setQWForFiles(fw);
-    //this.tp = new TracerPrintWriter(qw);
     this.fileName = fileName;
     this.fileAppend = append;
-    this.qwIsOurs = true;
+    this.bufferedIO = bufferedIO;
+    this.bufferSize = bufferSize;
     writeHeader();
     LogLog.debug("setFile ended");
   }
@@ -279,12 +268,7 @@ public class FileAppender extends WriterAppender {
   void reset() {
     closeFile();
     this.fileName = null;
-    if(qwIsOurs) {
-      super.reset();    
-    } else {
-      this.qw = null;
-      //this.tp = null;    
-    }
+    super.reset();    
   }  
 }
 

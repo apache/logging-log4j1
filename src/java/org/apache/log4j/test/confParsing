@@ -182,9 +182,8 @@ if [ $TEST -ge $start ]; then
   D_FLAG=""
   echo  "log4j.rootCategory= DEBUG , testAppender" > $LCF
   lecho "log4j.debug=false"
-  lecho "log4j.appender.testAppender=org.apache.log4j.FileAppender"
+  lecho "log4j.appender.testAppender=org.apache.log4j.ConsoleAppender"
   # Note the spaces
-  lecho "log4j.appender.testAppender.File=System.out  "
   lecho "log4j.appender.testAppender.layout=org.apache.log4j.PatternLayout "
   lecho "log4j.appender.testAppender.layout.ConversionPattern=[%t] %p - %m%n"
   echo -n " ConfigurationParsing test $TEST - "
