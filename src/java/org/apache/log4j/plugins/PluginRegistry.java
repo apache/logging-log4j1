@@ -72,15 +72,27 @@ import javax.swing.event.EventListenerList;
   @author Paul Smith
   @since 1.3
 */
-public class PluginRegistry {
-  /** stores the map of plugins for each repository. */
-  private static HashMap repositoryMap = new HashMap();
+public final class PluginRegistry {
+  
+  /**
+   * stores the map of plugins for each repository.
+   */
+  private final static HashMap repositoryMap = new HashMap();
 
-  /** the listener used to listen for repository events. */
-  private static RepositoryListener listener = new RepositoryListener();
-  private static final EventListenerList listenerList =
+  /**
+   * the listener used to listen for repository events.
+   */
+  private final static RepositoryListener listener = new RepositoryListener();
+  
+  private final static EventListenerList listenerList =
     new EventListenerList();
 
+  /**
+   * Private constructor.  No instances of this class are meant
+   * to be instantiated.
+   */
+  private PluginRegistry() { };
+  
   /**
     Starts a Plugin with default logger repository.
 
@@ -164,11 +176,11 @@ public class PluginRegistry {
         Plugin existingPlugin = (Plugin) pluginMap.get(name);
 
         if (existingPlugin != null) {
-          boolean isEqual = existingPlugin.equals(plugin);
+          boolean isEquivalent = existingPlugin.isEquivalent(plugin);
 
           // if the plugins are equivalent and the existing one
           // is still active, just return the existing one now
-          if (isEqual && existingPlugin.isActive()) {
+          if (isEquivalent && existingPlugin.isActive()) {
             return existingPlugin;
           } else {
             existingPlugin.shutdown();
@@ -188,8 +200,10 @@ public class PluginRegistry {
   }
 
   /**
-  * @param plugin
-  */
+   * Calls the pluginStarted method on every registered PluginListener.
+   * 
+   * @param plugin The plugin that has been started.
+   */
   private static void firePluginStarted(Plugin plugin) {
     PluginListener[] listeners =
       (PluginListener[]) listenerList.getListeners(PluginListener.class);
@@ -205,6 +219,11 @@ public class PluginRegistry {
     }
   }
 
+  /**
+   * Calls the pluginStopped method for every registered PluginListner.
+   * 
+   * @param plugin The plugin that has been stopped.
+   */
   private static void firePluginStopped(Plugin plugin) {
     PluginListener[] listeners =
       (PluginListener[]) listenerList.getListeners(PluginListener.class);
@@ -221,10 +240,11 @@ public class PluginRegistry {
   }
 
   /**
-      Returns all the plugins for a given repository.
-
-      @param repository the logger repository to get the plugins from.
-      @return List list of plugins from the repository. */
+   * Returns all the plugins for a given repository.
+   * 
+   * @param repository the logger repository to get the plugins from.
+   * @return List list of plugins from the repository.
+   */
   public static List getPlugins(LoggerRepository repository) {
     synchronized (repositoryMap) {
       // get plugin map for repository
@@ -367,7 +387,7 @@ public class PluginRegistry {
       Iterator iter = pluginMap.values().iterator();
 
       while (iter.hasNext()) {
-		Plugin plugin = (Plugin) iter.next();
+		    Plugin plugin = (Plugin) iter.next();
         plugin.shutdown();
         firePluginStopped(plugin);
       }
