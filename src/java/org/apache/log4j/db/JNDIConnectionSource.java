@@ -26,8 +26,8 @@ import javax.naming.NamingException;
 // import javax.rmi.PortableRemoteObject;
 import javax.sql.DataSource;
 
-import org.apache.log4j.db.dialect.Util;
 import org.apache.log4j.helpers.LogLog;
+
 
 /**
  *  The <id>JNDIConnectionSource</id> is an implementation of
@@ -77,13 +77,8 @@ public class JNDIConnectionSource
       errorHandler.error("No JNDI location specified for JNDIConnectionSource.");
     }
     
-    try {
-      Connection connection = getConnection();
-      dialectCode = Util.discoverSQLDialect(connection);
-    } catch(SQLException se) {
-      LogLog.warn("Could not discover the dialect to use.", se);
-    }
-    
+    discoverConnnectionProperties();
+
   }
   
   /**

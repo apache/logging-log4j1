@@ -34,15 +34,63 @@ import java.util.Set;
 
 
 /**
- *
+ * The DBAppender writes events to a database table. You first need to
+ * create the database tables with the help of SQL scripts found in the
+ * org/apache/log4j/db/dialect/ directory. There exist scripts for the most
+ * popular database systems. If it is missing, you should be able to write
+ * the appropriate script quite quickly.
+ * 
+ * <p>If the JDBC driver you are using supports the getGeneratedKeys method 
+ * introduced in JDBC 3.0 specification, then you are all set. Otherwise,
+ * there must be an {@link SQLDialect} appropriate for your database system.
+ * Currently, we have dialects for PostgreSQL, MySQL, Oracle and MsSQL. As 
+ * mentioed previously, an SQLDialect is required only the JDBC driver for your 
+ * database system does not support the getGeneratedKeys method.
+ * </p>
+ * 
+ * <p><b>Performance</b> Experiments show that writing a single event into the
+ * database takes approximately 50 milliseconds, on a "standard" PC. If pooled
+ * connections are used, this figure drops to under 10 milliseconds. Note that
+ * most JDBC drivers already ship with connection pooling support. 
+ * 
  * @author Ceki G&uuml;lc&uuml;
- *
+ * @author Ray DeCampo
+ * @since 1.3
  */
 public class DBAppender extends AppenderSkeleton {
   ConnectionSource connectionSource;
+  boolean cnxSupportsGetGeneratedKeys = false;
   SQLDialect sqlDialect;
   boolean locationInfo = false;
+  
+  static final String insertPropertiesSQL =
+    "INSERT INTO  logging_event_property (event_id, mapped_key, mapped_value) VALUES (?, ?, ?)";
+  
+  static final String insertExceptionSQL =
+    "INSERT INTO  logging_event_exception (event_id, i, trace_line) VALUES (?, ?, ?)";
+  
+  static final String insertSQL;
 
+  static {StringBuffer sql = new StringBuffer();
+    sql.append("INSERT INTO logging_event (");
+    sql.append("sequence_number, ");
+    sql.append("timestamp, ");
+    sql.append("rendered_message, ");
+    sql.append("logger_name, ");
+    sql.append("level_string, ");
+    sql.append("ndc, ");
+    sql.append("thread_name, ");
+    sql.append("reference_flag, ");
+    sql.append("caller_filename, ");
+    sql.append("caller_class, ");
+    sql.append("caller_method, ");
+    sql.append("caller_line) ");
+    sql.append(" VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    insertSQL = sql.toString();
+  }
+  
+  public DBAppender() {
+  }  
   public void activateOptions() {
     LogLog.debug("DBAppender.activateOptions called");
 
@@ -52,10 +100,11 @@ public class DBAppender extends AppenderSkeleton {
     }
 
     sqlDialect = Util.getDialectFromCode(connectionSource.getSQLDialectCode());
-
-    if (sqlDialect == null) {
+    cnxSupportsGetGeneratedKeys = connectionSource.supportsGetGeneratedKeys();
+    
+    if (!cnxSupportsGetGeneratedKeys && sqlDialect == null) {
       throw new IllegalStateException(
-        "DBAppender cannot function without a determined SQL dialect");
+        "DBAppender cannot function if the JDBC driver does not support getGeneratedKeys method *and* without a specific SQL dialect");
     }
   }
 
@@ -80,35 +129,7 @@ public class DBAppender extends AppenderSkeleton {
       connection = connectionSource.getConnection();
       connection.setAutoCommit(false);
 
-
-      //      sequence_number BIGINT NOT NULL,
-      //      timestamp         BIGINT NOT NULL,
-      //      rendered_message  TEXT NOT NULL,
-      //      logger_name       VARCHAR(254) NOT NULL,
-      //      level_string      VARCHAR(254) NOT NULL,
-      //      ndc               TEXT,
-      //      thread_name       VARCHAR(254),
-      //      id                INT NOT NULL AUTO_INCREMENT PRIMARY KEY
-      StringBuffer sql = new StringBuffer();
-      sql.append("INSERT INTO logging_event (");
-      sql.append("sequence_number, ");
-      sql.append("timestamp, ");
-      sql.append("rendered_message, ");
-      sql.append("logger_name, ");
-      sql.append("level_string, ");
-      sql.append("ndc, ");
-      sql.append("thread_name, ");
-      sql.append("reference_flag, ");
-      sql.append("caller_filename, ");
-      sql.append("caller_class, ");
-      sql.append("caller_method, ");
-      sql.append("caller_line) ");
-
-      sql.append(" VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?, ?, ?)");
-
-
-      PreparedStatement insertStatement =
-        connection.prepareStatement(sql.toString());
+      PreparedStatement insertStatement = connection.prepareStatement(insertSQL);
       insertStatement.setLong(1, event.getSequenceNumber());
       insertStatement.setLong(2, event.getTimeStamp());
       insertStatement.setString(3, event.getRenderedMessage());
@@ -136,35 +157,34 @@ public class DBAppender extends AppenderSkeleton {
         LogLog.warn("Failed to insert loggingEvent");
       }
 
-      // close the statement
-      insertStatement.close();
-      insertStatement = null;
-      
       Statement idStatement = connection.createStatement();
       idStatement.setMaxRows(1);
 
-      ResultSet rs = idStatement.executeQuery(sqlDialect.getSelectInsertId());
+      
+      ResultSet rs = null;
+        if(cnxSupportsGetGeneratedKeys) {
+          rs = insertStatement.getGeneratedKeys();
+        } else {
+         rs = idStatement.executeQuery(sqlDialect.getSelectInsertId());
+        }
       rs.first();
-
       int eventId = rs.getInt(1);
 
-
-      //      LogLog.info("inserted id is " + eventId);
-      //      event_id        INT NOT NULL,
-      //      mapped_key        VARCHAR(254) NOT NULL,
-      //      mapped_value      VARCHAR(254),
+      // we no longer need the insertStatement
+      insertStatement.close();
+      insertStatement = null;
+      
       Set propertiesKeys = event.getPropertyKeySet();
 
       if (propertiesKeys.size() > 0) {
-        String insertPropertiesSQL =
-          "INSERT INTO  logging_event_property (event_id, mapped_key, mapped_value) VALUES (?, ?, ?)";
+
         PreparedStatement insertPropertiesStatement =
           connection.prepareStatement(insertPropertiesSQL);
 
         for (Iterator i = propertiesKeys.iterator(); i.hasNext();) {
           String key = (String) i.next();
           String value = (String) event.getProperty(key);
-          LogLog.info("id " + eventId + ", key " + key + ", value " + value);
+          //LogLog.info("id " + eventId + ", key " + key + ", value " + value);
           insertPropertiesStatement.setInt(1, eventId);
           insertPropertiesStatement.setString(2, key);
           insertPropertiesStatement.setString(3, value);
@@ -181,13 +201,6 @@ public class DBAppender extends AppenderSkeleton {
       if (strRep != null) {
         LogLog.info("Logging an exception");
 
-
-        //        CREATE TABLE logging_event_exception (
-        //          event_id         INT NOT NULL,
-        //          i                SMALLINT NOT NULL,
-        //          trace_line       VARCHAR(254) NOT NULL)
-        String insertExceptionSQL =
-          "INSERT INTO  logging_event_exception (event_id, i, trace_line) VALUES (?, ?, ?)";
         PreparedStatement insertExceptionStatement =
           connection.prepareStatement(insertExceptionSQL);
 
@@ -207,21 +220,13 @@ public class DBAppender extends AppenderSkeleton {
     } catch (SQLException sqle) {
       LogLog.error("problem appending event", sqle);
     } finally {
-      closeConnection(connection);
+      DBHelper.closeConnection(connection);
     }
   }
 
-  void closeConnection(Connection connection) {
-    if(connection != null) {
-      try { 
-        connection.close();
-      } catch(SQLException sqle) {
-        LogLog.warn("Failed to close connection.");
-      }
-    }
-  }
+
   public void close() {
-    // TODO Auto-generated method st  
+    closed = true;
   }
 
   /*

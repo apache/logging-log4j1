@@ -82,15 +82,14 @@ class DBReceiverJob implements Job {
       Statement statement = connection.createStatement();
       ResultSet rs = statement.executeQuery(sql.toString());
       rs.beforeFirst();
-
+      
       while (rs.next()) {
         LoggingEvent event = new LoggingEvent();
-        long id;
+        
         event.setSequenceNumber(rs.getLong(1));
         event.setTimeStamp(rs.getLong(2));
         event.setRenderedMessage(rs.getString(3));
         event.setLoggerName(rs.getString(4));
-
         String levelStr = rs.getString(5);
 
         // TODO CG The conversion of levelStr should be more general
@@ -114,7 +113,8 @@ class DBReceiverJob implements Job {
             new LocationInfo(fileName, className, methodName, lineNumber));
         }
 
-        id = rs.getLong(13);
+        long id = rs.getLong(13);
+        LogLog.info("Received event with id=" +id);
         lastId = id;
         
         // Scott asked for this info to be
@@ -136,7 +136,7 @@ class DBReceiverJob implements Job {
       statement.close();
       statement = null;
     } catch (SQLException sqle) {
-      LogLog.error("Problem receiving events", sqle);
+      LogLog.error("*************Problem receiving events", sqle);
     } finally {
       closeConnection(connection);
     }

@@ -20,6 +20,7 @@ import org.apache.log4j.db.dialect.Util;
 import org.apache.log4j.helpers.LogLog;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 
 import javax.sql.DataSource;
@@ -37,7 +38,7 @@ import javax.sql.DataSource;
 public class DataSourceConnectionSource extends ConnectionSourceSkeleton {
 
   private DataSource dataSource;
-  int dialectCode;
+
   
   public void activateOptions() {
     //LogLog.debug("**********DataSourceConnectionSource.activateOptions called");
@@ -55,10 +56,18 @@ public class DataSourceConnectionSource extends ConnectionSourceSkeleton {
         LogLog.warn("Could not get a connection to discover the dialect to use.", se);
       }
       if(connection != null) {
-        dialectCode = Util.discoverSQLDialect(connection);
+        try {
+          DatabaseMetaData meta = connection.getMetaData();
+          supportsGetGeneratedKeys =   meta.supportsGetGeneratedKeys();
+          if(!supportsGetGeneratedKeys) {
+            dialectCode = Util.discoverSQLDialect(meta);
+          }
+        } catch(SQLException sqle) {
+          LogLog.warn("Could not get a discover connection properties.");
+        }
       } 
-      if(dialectCode == ConnectionSource.UNKNOWN_DIALECT) {
-        LogLog.warn("Could not get a discover the dialect.");
+      if(!supportsGetGeneratedKeys && dialectCode == ConnectionSource.UNKNOWN_DIALECT) {
+        LogLog.warn("Connection does not support GetGeneratedKey method and could not discover the dialect.");
       }
         
     }
@@ -91,7 +100,5 @@ public class DataSourceConnectionSource extends ConnectionSourceSkeleton {
     this.dataSource = dataSource;
   }
 
-  public int getSQLDialectCode() {
-    return dialectCode;
-  }
+
 }

@@ -8,6 +8,7 @@ package org.apache.log4j.db;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.apache.log4j.MDC;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.joran.JoranConfigurator;
 
@@ -42,16 +43,19 @@ public class DBPerfTest extends TestCase {
     //appendConfigFile = "./input/db/append-with-drivermanager1.xml";
     appendConfigFile = "./input/db/append-with-pooled-datasource1.xml";
     //appendConfigFile = "./input/db/append-with-c3p0.xml";
+    
+
     JoranConfigurator jc1 = new JoranConfigurator();
     jc1.doConfigure(appendConfigFile, LogManager.getLoggerRepository());
     
     long startTime = System.currentTimeMillis();
+    MDC.put("key1", "vaelu1");
     int i;
-    for(i = 0; i < 500; i++) {
+    for(i = 0; i < 100; i++) {
       logger.debug("message "+i);
     }
     long endTime = System.currentTimeMillis();
     LogLog.info("writing "+i+" events took "+(endTime-startTime)+" millis.");
-    LogLog.info("or "+(endTime-startTime)/i+" millis per event.");
+    LogLog.info("or "+(double)(endTime-startTime)/i+" millis per event.");
   }
 }

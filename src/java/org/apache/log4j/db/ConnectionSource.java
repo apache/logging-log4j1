@@ -57,9 +57,18 @@ public interface ConnectionSource extends OptionHandler {
   
   /**
    * 
-   * Get the SQL dialect that should be used for this connection.
+   * Get the SQL dialect that should be used for this connection. Note that the
+   * dialect is not needed if the DBC 3.0 getGeneratedKeys is supported.
+   * 
    *
    */
   int getSQLDialectCode();
+  
+  /**
+   * If the connection supports the JDBC 3.0 getGeneratedKeys method, then
+   * we do not need any specific dialect support.
+   * 
+   */
+  boolean supportsGetGeneratedKeys();
   
 }

@@ -19,6 +19,9 @@ package org.apache.log4j.db.dialect;
 /** 
 * The MS SQL Server dialect is untested. 
 * 
+* Note that the dialect is not needed if your JDBC driver supports 
+* the getGeneratedKeys method introduced in JDBC 3.0 specification.
+* 
 * @author James Stauffer 
 */ 
 public class MsSQLDialect implements SQLDialect { 

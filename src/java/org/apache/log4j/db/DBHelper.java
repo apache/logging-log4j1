@@ -16,8 +16,12 @@
 
 package org.apache.log4j.db;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Set;
 
+import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.LoggingEvent;
 
 /**
@@ -29,7 +33,7 @@ public class DBHelper {
   public static short PROPERTIES_EXIST = 0x01;
   public static short EXCEPTION_EXISTS = 0x02;
   
-  static short computeReferenceMask(LoggingEvent event) {
+  public  static short computeReferenceMask(LoggingEvent event) {
     short mask = 0;
     Set propertiesKeys = event.getPropertyKeySet();
     if(propertiesKeys.size() > 0) {
@@ -42,5 +46,22 @@ public class DBHelper {
     return mask;
   }
   
-
+  static public void closeConnection(Connection connection) {
+    if(connection != null) {
+      try { 
+        connection.close();
+      } catch(SQLException sqle) {
+        LogLog.warn("Failed to close connection.");
+      }
+    }
+  }
+  
+  public static void closeStatement(Statement statement) {
+    if(statement != null) {
+      try {
+        statement.close();
+      } catch(SQLException sqle) {
+      }
+    }
+  }
 }
