@@ -6,7 +6,7 @@
 ./minreg simple || die "minreg simple FAILED.";
 ./minreg ttcc || die "minreg ttcc FAILED.";
 ./shallow || die "shallow test FAILED."
-#./shippedCodeFlag || die "shippedCodeFlag test FAILED."
+./shippedCodeFlag || die "shippedCodeFlag test FAILED."
 ./defaultInit || die "defaultInit test FAILED."
 ./propConfig || die "propConfig test FAILED."
 ./propConfig || die "propConfig test FAILED."
