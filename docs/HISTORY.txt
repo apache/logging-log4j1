@@ -30,6 +30,8 @@
 
  - Fixed Bugzilla 30425: tests used old name for Jetty server class.
 
+ - Fixed Bugzilla 23912: unsafe access to BoundedFIFO in AsyncAppender.
+
   November 25, 2004
 
  - Release of version 1.3alpha-3
