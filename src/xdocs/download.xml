@@ -101,6 +101,21 @@
 	  log4j 1.2. 
 	</dd>
 
+       <!-- ============================================================================== -->
+
+	<dt>
+	  <a
+	href="http://just4log.sf.net/"><b>Just4log</b></a>
+	</dt> 
+
+        <dd>Just4Log is a library to enhance dynamically the
+        performance of various logging systems inside a java
+        application. Dynamically because the sourcecode in java is not
+        modified but rather the optimization occurs on the compiled
+        ByteCode files.
+	</dd>
+
+
 
 
     <!-- ============================================================================== -->	
