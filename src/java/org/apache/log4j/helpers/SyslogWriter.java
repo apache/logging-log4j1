@@ -26,7 +26,7 @@ import java.io.IOException;
 public class SyslogWriter extends Writer {
 
   final int SYSLOG_PORT = 514;
-  static String syslogHost;
+  String syslogHost;
   
   private InetAddress address;
   private DatagramSocket ds;
