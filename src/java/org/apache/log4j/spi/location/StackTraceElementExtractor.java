@@ -57,7 +57,7 @@ public class StackTraceElementExtractor {
     } 
   }
 
-  static void extract(LocationInfo li, Throwable t, String fqnOfCallingClass) {
+  static void extract(LocationInfo li, Throwable t, String fqnOfInvokingClass) {
     if (t == null) {
       return;
     }
@@ -69,20 +69,32 @@ public class StackTraceElementExtractor {
       boolean match = false;
       for (int i = 0; i < stes.length; i++) {
         if (((String) getClassName.invoke(stes[i], nullArgs)).equals(
-              fqnOfCallingClass)) {
+            fqnOfInvokingClass)) {
           match = true;
         } else if(match) {
           location = stes[i];
           break;
-        }
+        }        
       }
     } catch (Throwable e) {
-      // some trouble worth announcing...
+      // Extraction failed, not much we could do now. We can't event log this 
+      // failure because if there is one failure, there may be many others which 
+      // are likely to follow. As location extraction is done on a best-effort 
+      // basis, silence is preferable to overwhelming the user...
     }
-    setClassName(li, location);
-    setFileName(li, location);
-    setMethodName(li, location);
-    setLineNumber(li, location);
+    
+    // If we failed to extract the location line, then default to LocationInfo.NA
+    if(location == null) {
+      li.className = LocationInfo.NA;
+      li.fileName = LocationInfo.NA;
+      li.lineNumber = LocationInfo.NA;
+      li.methodName = LocationInfo.NA;
+    } else {  // otherwise, get the real info    
+      setClassName(li, location);
+      setFileName(li, location);
+      setMethodName(li, location);
+      setLineNumber(li, location);
+    }
   }
 
   /**
@@ -93,7 +105,8 @@ public class StackTraceElementExtractor {
     try {
       li.className = (String) getClassName.invoke(location, nullArgs);
     } catch (Throwable e) {
-    } // this should work, shouldn't it?
+      li.className = LocationInfo.NA;
+    } 
   }
 
   static void setFileName(LocationInfo li, Object location) {

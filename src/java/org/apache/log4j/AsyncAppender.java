@@ -85,18 +85,9 @@ public class AsyncAppender extends AppenderSkeleton
   }
 
   public void append(LoggingEvent event) {
-    // Set the NDC and thread name for the calling thread as these
-    // LoggingEvent fields were not set at event creation time.
-    event.getNDC();
-    event.getThreadName();
-
-    // Get a copy of this thread's MDC.
-    event.initializeProperties();
-
-    // we need to get the rendered message in case it changes between now
-    // and handling by the worker thread
-    event.getRenderedMessage();
-    
+    // extract all the thread dependent information now as later it will
+    // be too late.
+    event.prepareForSerialization();
     if (locationInfo) {
       event.getLocationInformation();
     }

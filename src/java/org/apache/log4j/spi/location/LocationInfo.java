@@ -99,15 +99,15 @@ public class LocationInfo implements java.io.Serializable {
        location information, especially between the parentheses.
 
     */
-  public LocationInfo(Throwable t, String fqnOfCallingClass) {
+  public LocationInfo(Throwable t, String fqnOfInvokingClass) {
     if (t == null) {
       return;
     }
     
     if(PlatformInfo.hasStackTraceElement()) {
-      StackTraceElementExtractor.extract(this, t, fqnOfCallingClass);
+      StackTraceElementExtractor.extract(this, t, fqnOfInvokingClass);
     } else {
-      LegacyExtractor.extract(this, t, fqnOfCallingClass);  
+      LegacyExtractor.extract(this, t, fqnOfInvokingClass);  
     }
   }
 

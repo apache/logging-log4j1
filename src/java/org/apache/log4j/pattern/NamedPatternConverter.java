@@ -72,8 +72,6 @@ abstract class NamedPatternConverter extends PatternConverter {
     buf.setLength(0);
 
     String n = getFullyQualifiedName(event);
-    //System.out.println("qname: "+n);
-
     if (precision <= 0) {
       buf.append(n);
     } else {

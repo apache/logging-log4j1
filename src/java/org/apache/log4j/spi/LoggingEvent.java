@@ -85,7 +85,9 @@ public class LoggingEvent
 
   /**
    * Fully qualified name of the calling category class. This field does not
-   * survive serialization.
+   * survive serialization. 
+   * 
+   * <p>Note that the getLocationInfo() method relies on this fact.
    */
   transient String fqnOfLoggerClass;
 
@@ -279,30 +281,6 @@ public class LoggingEvent
     sequenceNumber = sequenceCount++;
   }
 
-
-  // TODO CG Remove these commented out lines
-//  /**
-//   * Alternate constructor to allow a string array to be passed in as the throwable.
-//   */
-//  public LoggingEvent(String fqnOfCategoryClass, Logger logger, long timeStamp, Level level, String threadName,
-//    Object message, String ndc, Hashtable properties, String[] throwableStrRep, LocationInfo li) {
-//    ndcLookupRequired = false;
-//    this.logger = logger;
-//    this.loggerName = logger.getName();
-//    this.level = level;
-//    this.message = message;
-//
-//    if (throwableStrRep != null) {
-//      this.throwableInfo = new ThrowableInformation(throwableStrRep);
-//    }
-//    this.locationInfo = li;
-//    this.fqnOfLoggerClass = fqnOfCategoryClass;
-//    this.timeStamp = timeStamp;
-//    this.threadName = threadName;
-//    this.ndc = ndc;
-//    this.properties = properties;
-//  }
-
   /**
    * Two events are considerd equal if they refer to the same instance, or if
    * both their timestamps and sequence numbers match.
@@ -359,6 +337,8 @@ public class LoggingEvent
    * location information. In that case null is returned.</p>
    */
   public LocationInfo getLocationInformation() {
+    // we rely on the fact that fqnOfLoggerClass does not survive
+    // serialization
     if (locationInfo == null && fqnOfLoggerClass != null) {
       locationInfo = new LocationInfo(new Throwable(), fqnOfLoggerClass);
     }

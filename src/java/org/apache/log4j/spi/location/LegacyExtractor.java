@@ -40,11 +40,11 @@ public class LegacyExtractor {
   private LegacyExtractor() {
   }
 
-  static void extract(LocationInfo li, Throwable t, String fqnOfCallingClass) {
+  static void extract(LocationInfo li, Throwable t, String fqnOfInvokingClass) {
     // on AS400, package path separator in stack trace is not dot '.', 
     // but slash '/'
     if (PlatformInfo.isOnAS400()) {
-      fqnOfCallingClass = fqnOfCallingClass.replace('.', '/');
+      fqnOfInvokingClass = fqnOfInvokingClass.replace('.', '/');
     }
     String s;
 
@@ -67,7 +67,7 @@ public class LegacyExtractor {
     // This method of searching may not be fastest but it's safer
     // than counting the stack depth which is not guaranteed to be
     // constant across JVM implementations.
-    ibegin = s.lastIndexOf(fqnOfCallingClass);
+    ibegin = s.lastIndexOf(fqnOfInvokingClass);
 
     if (ibegin == -1) {
       return;
