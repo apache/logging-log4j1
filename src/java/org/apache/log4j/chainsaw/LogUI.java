@@ -611,7 +611,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     mainReceiverSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
     mainReceiverSplitPane.add(panePanel);
     mainReceiverSplitPane.add(receiversPanel);
-    mainReceiverSplitPane.setDividerLocation(-1);
     
     dividerSize = mainReceiverSplitPane.getDividerSize() + 5;
     mainReceiverSplitPane.setDividerLocation(-1);
@@ -744,8 +743,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     if (applicationPreferenceModel.isReceivers()) {
         showReceiverPanel();
     } else {
-        mainReceiverSplitPane.setDividerSize(0);
-        receiversPanel.setVisible(false);
+        hideReceiverPanel();
     }
 
     removeSplash();
