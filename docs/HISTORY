@@ -11,8 +11,9 @@
 
  (beta5)
 
- - In the Category class, the .getChainedPriority method has been
-   replaced with getEffectiveLevel method. [*]
+ - Added Oliver Burn's chainsaw tool to the core log4j
+   distribution. Visualisation and dynamic filtering of log events is
+   bound to be a very important area of activity in the future. [*]
 
  - Added the org.apache.log4j.jdbc.JDBCAppender which as the name
    indicates sends events to a database using the JDBC API. Thanks to
@@ -21,6 +22,9 @@
  - Added SocketHubAppender class as contributed by Mark Womack. This
    appender sends LoggingEvent objects to a set of remote a log
    servers. [*]
+
+ - In the Category class, the getChainedPriority method has been
+   replaced with getEffectiveLevel method. [*]
 
  (beta4)
 

@@ -12,7 +12,7 @@
 
       <p>The following paragragh was adapted from the <a
 	  href="http://jakarta.apache.org/cactus/todo.html">Cactus
-	  project's roadmap</a>. Permission to quote pending.
+	  project's roadmap</a> with the author's permission.
       </p>
       
       <p>Our users keep inventing better ways and adding new
@@ -36,8 +36,10 @@
     <section name="Workplan for log4j 1.3">
 
       <p>With log4j 1.2 still in beta, the workplan for log4j 1.3 is
-      obviously not final. It is included here to give you an idea of
-      the future.</p>
+	obviously not final. It is included here to give you an idea
+	of the future. The items are not listed in any particular
+	order.
+      </p>
       
       <table border="1" cellpadding="3" cellspacing="2">
 	
@@ -82,8 +84,8 @@
 	      an important drawback in the design of several appenders
 	      such as the the SMTPAppender and the
 	      RollingFileAppenders and its variants.  These appenders
-	      need to delegate certain task to sub-components which we
-	      should be able to configure separately.
+	      need to delegate certain task to sub-components which
+	      are configured separately.
 	    </p>
 
 	    <p>The support for extensible configuration files will be
@@ -112,7 +114,7 @@
 	</tr>
 
 	<tr>
-	  <td>Multiple implementation of Logger</td>
+	  <td>Multiple implementations of Logger</td>
 	  
 	  <td>
 	    <p>Based on <code>RepositorySelectors</code> introduced in
@@ -129,6 +131,43 @@
 	  <td>vaporware</td>
 	</tr>
 
+	<tr>
+	  <td>Improvements to Chainsaw</td>
+	  
+	  <td>
+	    <p>Visualisation and dynamic filtering of logging event is
+	      bound to be a very important area of activity in the
+	      future. A number of important improvements to chainsaw
+	      have been suggested.
+	    </p>
+	    
+	  </td>
+	  <td>Oliver Burn</td>	  
+	  <td>under discusison</td>
+	</tr>
+
+	<tr>
+	  <td>Custom conversion characters in PatternLayout</td>
+	  <td>Users often want to add new conversions characters or
+	  override the existing ones. This should be made easy using
+	  new configuration directives. This feature would use the
+	  extensions to XML configuration language mentioed
+	  above.</td>
+
+	  <td>?</td> 
+	  <td>not started</td>
+	</tr>
+	
+	<tr>
+	  <td>Overture to other programming languages</td>
+
+	  <td>It is higly desriable to allow log4j ports in other languages 
+	    to access log4j services in a language independent way. 
+	  </td>
+
+	  <td>?</td> 
+	  <td>not started</td>
+	</tr>
 
 	<tr>
 	  <td>Strategy based rollovers</td>
@@ -147,7 +186,7 @@
 	    scripts.
 	    </p>
 	  </td>
-	  <td>?</td>	  
+	  <td>Kevin Steppe</td>	  
 	  <td>not started</td>
 	</tr>
 
@@ -184,16 +223,10 @@
 	      more.
 	    </p>
 	    
-	    <p>Their implementation is based on strategies which are
-	    sub-components of appender. We will be able to configure
-	    such sub-components with the new XML configuration
-	    scripts.
-	    </p>
 	  </td>
 	  <td>Ole Dalgaard?</td>	  
 	  <td>initial implementation</td>
 	</tr>
-
       </table>
     </section>
       

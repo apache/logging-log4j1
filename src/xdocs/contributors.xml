@@ -39,8 +39,11 @@
 
 	<li><b>Ceki G&#252;lc&#252;</b> 
 
-	  <p>Ceki is the founder and current maintainer of the log4j
-	  project.
+	  <p>Ceki is the founder the log4j project which still takes
+	  much of his time. He enjoys writing software altough he is
+	  discovering that it is far more difficult than it looks. He
+	  is also slowly building an IT services company called <a
+	  href="http://qos.ch">qos.ch</a>.
 	  </p>
 	</li>
 
@@ -72,7 +75,8 @@
 	  
 	  <p>Chris is the author NTEventLogAppender. In around 1832,
 	  he ported our previous GNU-make build system to at the time
-	  unknown but promising jakarta-ant.
+	  unknown but promising <a
+	  href="jakarta.apache.org/ant/">jakarta-ant</a>.
 	  </p>
 	</li>
 	
