@@ -121,6 +121,7 @@ import org.apache.log4j.helpers.ISO8601DateFormat;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.rule.ExpressionRule;
 import org.apache.log4j.rule.ExpressionRuleContext;
+import org.apache.log4j.rule.Rule;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.LoggingEventFieldResolver;
 
@@ -207,11 +208,14 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
   private double lastDetailPanelSplitLocation = DEFAULT_DETAIL_SPLIT_LOCATION;
   private int previousLogTreePanelSplitLocation;
   private double lastLogTreePanelSplitLocation = DEFAULT_LOG_TREE_SPLIT_LOCATION;
+  private boolean bypassScroll;
 
   private Point currentPoint;
   private boolean scroll;
-  private boolean bypassScroll;
   private boolean paused = false;
+  private Rule findRule;
+  private final JPanel findPanel;
+  private JTextField findField;
 
   /**
    * Creates a new LogPanel object.  If a LogPanel with this identifier has
@@ -227,6 +231,8 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
     setLayout(new BorderLayout());
 
     scroll = true;
+
+    findPanel = new JPanel();
 
     final Map columnNameKeywordMap = new HashMap();
     columnNameKeywordMap.put(
@@ -1266,8 +1272,8 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
     tableModel.notifyCountListeners();
 
     if (rowAdded) {
-      int currentRow = table.getSelectedRow();
 
+      int currentRow = table.getSelectedRow();
       if (tableModel.isSortEnabled()) {
         tableModel.sort();
       }
@@ -1279,9 +1285,12 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
         table.scrollToBottom(
           table.columnAtPoint(table.getVisibleRect().getLocation()));
       } else {
-        table.scrollToRow(
-          currentRow, table.columnAtPoint(
-            table.getVisibleRect().getLocation()));
+        if (!bypassScroll) {
+            table.scrollToRow(
+            currentRow, table.columnAtPoint(
+                table.getVisibleRect().getLocation()));
+        }
+        //always update detail pane (since we may be using a cyclic buffer which is full)
         detailPaneUpdater.setSelectedRow(currentRow);
       }
     }
@@ -1436,21 +1445,14 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
   }
 
   /**
-   * Finds the row with the specified text, and ensures it is made visible
-   *
-   * @param text
-   */
-  void find(String text) {
-    find(table.getSelectedRow(), text);
-  }
-
-  /**
    * Undocks this DockablePanel by removing the panel from the LogUI window
    * and placing it inside it's own JFrame.
    */
   void undock() {
     setDocked(false);
     externalPanel.removeAll();
+    findPanel.removeAll();
+    findPanel.add(findField);
 
     externalPanel.add(undockedToolbar, BorderLayout.NORTH);
     externalPanel.add(nameTreeAndMainPanelSplit, BorderLayout.CENTER);
@@ -1517,6 +1519,25 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
    */
   boolean isCyclic() {
     return tableModel.isCyclic();
+  }
+
+  public boolean updateRule(String ruleText) {
+    if (ruleText == null || (ruleText != null && ruleText.equals(""))) {
+        findRule = null;
+        bypassScroll = false;
+        findField.setToolTipText("Enter expression - right click or ctrl-space for menu");
+        return false;
+    } else {
+        bypassScroll = true;
+        try {
+            findField.setToolTipText("Enter expression - right click or ctrl-space for menu");
+            findRule = ExpressionRule.getRule(ruleText);
+            return true;
+        } catch (RuntimeException re) {
+            findField.setToolTipText(re.getMessage());
+            return false;            
+        }
+    }
   }
 
   /**
@@ -1680,34 +1701,29 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
     toolbar.add(dockClearButton);
     toolbar.addSeparator();
 
-    final JTextField findField = ChainsawToolBarAndMenus.createFindField();
+    findField = new JTextField();
+    findField.addKeyListener(new ExpressionRuleContext(filterModel, findField));
+
     findField.getDocument().addDocumentListener(
       new DocumentListener() {
         public void insertUpdate(DocumentEvent e) {
-          findInUndocked(false);
+            updateRule(findField.getText());
         }
 
         public void removeUpdate(DocumentEvent e) {
-          findInUndocked(false);
+            updateRule(findField.getText());
         }
 
         public void changedUpdate(DocumentEvent e) {
-          findInUndocked(false);
+            updateRule(findField.getText());
         }
-
-        private void findInUndocked(boolean next) {
-          if (next) {
-            findNext(findField.getText());
-          } else {
-            find(findField.getText());
-          }
-        }
+        
       });
 
     final Action undockedFindAction =
       new AbstractAction() {
         public void actionPerformed(ActionEvent e) {
-          findNext(findField.getText());
+          find();
         }
       };
 
@@ -1727,7 +1743,17 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
       KeyStroke.getKeyStroke("F3"), undockedFindAction.getValue(Action.NAME));
 
     toolbar.add(undockedFindNextButton);
-    toolbar.add(findField);
+    
+    Dimension findSize = new Dimension(132, 24);
+    Dimension findPanelSize = new Dimension(144, 26);
+    findPanel.setPreferredSize(findPanelSize);
+    findPanel.setMaximumSize(findPanelSize);
+    findPanel.setMinimumSize(findPanelSize);
+    findField.setPreferredSize(findSize);
+    findField.setMaximumSize(findSize);
+    findField.setMinimumSize(findSize);
+
+    toolbar.add(findPanel);
 
     toolbar.addSeparator();
 
@@ -1799,35 +1825,25 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
   }
 
   /**
-   * Finds the row with the specified text starting at the specified row, and
-   * ensures it is made visible
-   *
-   * @param row
-   * @param text
-   */
-  private void find(int row, String text) {
-    final int newRow = tableModel.find(row, text);
-
-    if (text.length() == 0) {
-      bypassScroll = false;
-    } else {
-      bypassScroll = true;
-    }
-
-    table.scrollToRow(
-      newRow, table.columnAtPoint(table.getVisibleRect().getLocation()));
-  }
-
-  /**
-   * Finds the next row with the specified text, and ensures it is made
+   * Finds the next row matching the current find rule, and ensures it is made
    * visible
-   *
-   * @param text
+   * 
    */
-  private void findNext(String text) {
-    find(table.getSelectedRow() + 1, text);
+  public void find() {
+    if (findRule != null) {
+        try {
+            final int nextRow = tableModel.find(findRule, table.getSelectedRow() + 1);
+            if (nextRow > -1) {
+                table.scrollToRow(
+                nextRow, table.columnAtPoint(table.getVisibleRect().getLocation()));
+                findField.setToolTipText("Enter an expression");
+            }
+        } catch (IllegalArgumentException iae) {
+            findField.setToolTipText(iae.getMessage());
+        }
+    }
   }
-
+  
   /**
    * Docks this DockablePanel by hiding the JFrame and placing the Panel back
    * inside the LogUI window.
@@ -2052,6 +2068,10 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
       });
   }
 
+  public JTextField getFindTextField() {
+    return findField;
+  }
+
   /**
    * Load panel color settings
    */
@@ -2131,7 +2151,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
 
     filterModel.processNewLoggingEvent(eventType, event);
   }
-
+  
   /**
    * This class receives notification when the Refine focus text field is
    * updated, where a backgrounh thread periodically wakes up and checks if
@@ -2147,8 +2167,9 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
     private final Thread delayThread;
     private final long CHECK_PERIOD = 1000;
     private final String defaultToolTip;
+    private String lastFilterText = null;
 
-    private DelayedFilterTextDocumentListener(JTextField filterText) {
+    private DelayedFilterTextDocumentListener(final JTextField filterText) {
       super();
       this.filterText = filterText;
       this.defaultToolTip = filterText.getToolTipText();
@@ -2173,7 +2194,10 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
                   // they stopped typing recently, but have stopped for at least
                   // 1 sample period. lets apply the filter
                   //                LogLog.debug("Typed something recently applying filter");
-                  setFilter();
+                  if (filterText.getText() != lastFilterText) {
+                    lastFilterText = filterText.getText();
+                    setFilter();
+                  }
                 } else {
                   // they stopped typing a while ago, let's forget about it
                   //                LogLog.debug(
@@ -2459,11 +2483,11 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
         LoggingEvent event = tableModel.getRow(selectedRow);
 
         if (event != null) {
-          StringBuffer buf = new StringBuffer();
-          buf.append(detailLayout.getHeader())
-             .append(detailLayout.format(event)).append(
-            detailLayout.getFooter());
-          text = buf.toString();
+            StringBuffer buf = new StringBuffer();
+            buf.append(detailLayout.getHeader())
+               .append(detailLayout.format(event)).append(
+              detailLayout.getFooter());
+            text = buf.toString();
         }
       }
 
