@@ -50,11 +50,27 @@ public class AsyncAppender extends AppenderSkeleton
      <p>Note that all option keys are case sensitive.
   */
   public static final String LOCATION_INFO_OPTION = "LocationInfo";
-  
-  static final int BUFFER_SIZE = 128;
+
+
+  /**
+     A string constant used in naming the option for setting the size of the
+     internal buffer where logging events are stored until they are written.
+     Current value of this string constant is <b>BufferSize</b>.  
+
+     <p>Note that all option keys are case sensitive.
+  */
+  public static final String BUFFER_SIZE_OPTION = "BufferSize";
+
+
+  /**
+     The default buffer size is set to 128 events.
+   */
+  public static final int DEFAULT_BUFFER_SIZE = 128;
+
   //static Category cat = Category.getInstance(AsyncAppender.class.getName());
 
-  BoundedFIFO bf = new BoundedFIFO(BUFFER_SIZE);
+  BoundedFIFO bf = new BoundedFIFO(DEFAULT_BUFFER_SIZE);
+
   AppenderAttachableImpl aai;
   Dispatcher dispatcher;
   boolean locationInfo = false;
@@ -170,12 +186,23 @@ public class AsyncAppender extends AppenderSkeleton
 
  
  /**
-     Set AsyncAppender specific options.
+     Set AsyncAppender specific options:
 
      <p>On top of the options of the super class {@link
-     AppenderSkeleton}, the only recognized options is
-     <b>LocationInfo</b>.
+     AppenderSkeleton}, the only recognized options are
+     <b>BufferSize</b> and <b>LocationInfo</b>.
      
+     <p> The <b>BufferSize</b> option takes a non-negative integer
+     value.  This integer value determines the maximum size of the
+     bounded buffer. Increasing the size of the buffer is always
+     safe. However, if an existing buffer holds unwritten elements,
+     then <em>decreasing the buffer size will result in event
+     loss.</em> Nevertheless, while script configuring the
+     AsyncAppender, it is safe to set a buffer size smaller than the
+     {@link #DEFAULT_BUFFER_SIZE default buffer size} because
+     configurators guarantee that an appender cannot be used before
+     being completely configured. 
+
      <p>The <b>LocationInfo</b> option takes a boolean value. By
      default, it is set to false which means there will be no effort
      to extract the location information related to the event. As a
@@ -194,6 +221,12 @@ public class AsyncAppender extends AppenderSkeleton
 
     if (option.equals(LOCATION_INFO_OPTION))
       locationInfo = OptionConverter.toBoolean(value, locationInfo);
+    else if (option.equals(BUFFER_SIZE_OPTION)) {
+      int newSize = OptionConverter.toInt(value, DEFAULT_BUFFER_SIZE);
+      bf.resize(newSize);
+    }
+    
+
   }
 
 }

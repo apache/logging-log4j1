@@ -21,6 +21,12 @@ if [ $? != 0 ]; then
   exit 1   
 fi
 
+java junit.textui.TestRunner org.apache.log4j.test.UnitTestBoundedFIFO
+if [ $? != 0 ]; then
+  echo "UnitUnitTestBoundedFIFO failed."
+  exit 1   
+fi
+
 java junit.textui.TestRunner org.apache.log4j.test.UnitTestOR
 if [ $? != 0 ]; then
   echo "UnitTestOR failed."

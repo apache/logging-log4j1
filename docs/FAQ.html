@@ -199,7 +199,7 @@ list is not exhaustive.
 The log output can be customized in many ways. Moreover, one can completely
 override the output format by implementing one's own Layout. 
 
-<p>Here is an example output using <em>PattenLayout</em> with
+<p>Here is an example output using <em>PatternLayout</em> with
 the conversion pattern <b>"%r [%t] %-5p %c{2} %x - %m%n"</b>
 
 <pre>
@@ -245,7 +245,7 @@ for more information.
 at runtime. Using configuration files the programmer can define
 categories and set their priorities.
 
-<p>The <code>PropertiesConfigurator</code> defines a particular format
+<p>The <code>PropertyConfigurator</code> defines a particular format
 of a configuration file. See also the
 <code>org.log4j.examples.Sort</code> example and associated
 configuration files.
@@ -264,7 +264,7 @@ messages belonging to a set of priorities. See next item.
 debug and info statements?</h4>
 
 <p>For public releases of your code, calling the
-<codeI>BasicConfigurator.disable(pri)</code> method will disable
+<code>BasicConfigurator.disable(pri)</code> method will disable
 all messages of priority <code>pri</code> and below.
 
 <p>In cases of problems with an application, technical support can
@@ -387,7 +387,7 @@ straightforward approach of defining categories. This approach has
 many benefits:
 
 <ul>
-  <li>It is very simple to implenent.
+  <li>It is very simple to implement.
 
   <li>It is very simple to explain to new developpers.
 
@@ -540,7 +540,7 @@ distribution, you save yourself the unncessary maintanance work.
 
 <p>If your extensions are useful then someone will eventually write an
 extension providing the same or very similar functionality.  Your
-developement effort will be wasted.
+development effort will be wasted.
 
 <p>Unless the proprietary log4j extension is business critical, there
 is little reason for not donating your extensions back to the project.
