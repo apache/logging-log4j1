@@ -161,17 +161,17 @@ public class SocketNode implements Runnable, Pauseable {
           }
         }
       } catch (java.io.EOFException e) {
-        logger.info("Caught java.io.EOFException closing conneciton.");
+        logger.info("Caught java.io.EOFException closing connection.");
         listenerException = e;
       } catch (java.net.SocketException e) {
-        logger.info("Caught java.net.SocketException closing conneciton.");
+        logger.info("Caught java.net.SocketException closing connection.");
         listenerException = e;
       } catch (IOException e) {
         logger.info("Caught java.io.IOException: " + e);
         logger.info("Closing connection.");
         listenerException = e;
       } catch (Exception e) {
-        logger.error("Unexpected exception. Closing connecition.", e);
+        logger.error("Unexpected exception. Closing connection.", e);
         listenerException = e;
       }
     }

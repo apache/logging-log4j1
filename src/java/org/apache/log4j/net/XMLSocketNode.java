@@ -44,7 +44,7 @@ import java.util.List;
     @since 0.8.4
 */
 public class XMLSocketNode implements Runnable {
-  static Logger logger = Logger.getLogger(SocketNode.class);
+  static Logger logger = Logger.getLogger(XMLSocketNode.class);
   Socket socket;
   LoggerRepository hierarchy;
   Receiver receiver;
@@ -134,6 +134,10 @@ public class XMLSocketNode implements Runnable {
             while (true) {
                 byte[] b=new byte[1024];
                 int length = is.read(b);
+                if (length == -1) {
+                	logger.info("no bytes read from stream - closing connection.");
+                	break;
+                }
                 List v= decoder.decodeEvents(new String(b, 0, length));
 
             if (v != null) {
@@ -174,17 +178,17 @@ public class XMLSocketNode implements Runnable {
 
           }
       } catch (java.io.EOFException e) {
-        logger.info("Caught java.io.EOFException closing conneciton.");
+        logger.info("Caught java.io.EOFException closing connection.");
         listenerException = e;
       } catch (java.net.SocketException e) {
-        logger.info("Caught java.net.SocketException closing conneciton.");
+        logger.info("Caught java.net.SocketException closing connection.");
         listenerException = e;
       } catch (IOException e) {
         logger.info("Caught java.io.IOException: " + e);
         logger.info("Closing connection.");
         listenerException = e;
       } catch (Exception e) {
-        logger.error("Unexpected exception. Closing connecition.", e);
+        logger.error("Unexpected exception. Closing connection.", e);
         listenerException = e;
       }
     }
