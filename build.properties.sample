@@ -1,5 +1,5 @@
 # The jaxp interface and a jaxp parser are required to build the
-# DOMConfigurator. However, these are already available since Ant
+# JoranConfigurator. However, these are already available since Ant
 # needs them too.
  
 # jaxp.home=/java/jaxp-1.1 
@@ -18,19 +18,8 @@ jms.jar=/java/JMQ1.1/lib/jms.jar
 jmx.jar=/java/jmx/lib/jmxri.jar
 jmx-extra.jar=/java/jmx/lib/jmxtools.jar
 
-# Avalon Framework OPTIONAL; required to build the Avalon Logger facade.
-avalon-framework.jar=/java/avalon-framework/avalon-framework.jar
-
 # Servlet api
 servlet-api.jar=/java/servlet-api.jar
-
-# Checkstyle OPTIONAL; required to run the checkstyle target
-# Available from http://checkstyle.sf.net
-checkstyle.jar=/java/checkstyle-3.0/checkstyle-all-3.0.jar
-
-# Jalopy OPTIONAL; required to run the jalpoy targets
-# Available from http://jalopy.sourceforge.net/
-jalopy.lib=d:/development/code-opensource/other/jalopy-b10/lib
 
 # The templates for the creation of the web-pages are inherited 
 # from the parent project.
