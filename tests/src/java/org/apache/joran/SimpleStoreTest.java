@@ -23,6 +23,8 @@
 package org.apache.joran;
 
 import org.apache.joran.action.Action;
+import org.apache.joran.helper.SimpleRuleStore;
+
 import junit.framework.TestCase;
 
 import org.w3c.dom.Document;
