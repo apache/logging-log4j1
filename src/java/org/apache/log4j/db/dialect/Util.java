@@ -16,8 +16,9 @@
 
 package org.apache.log4j.db.dialect;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.log4j.db.ConnectionSource;
-import org.apache.log4j.helpers.LogLog;
 
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
@@ -36,13 +37,15 @@ public class Util {
   private static final String MSSQL_PART = "microsoft";
   private static final String HSQL_PART = "hsql";
   
+  static Logger getLogger() {
+    return LogManager.getLogger(Util.class);
+  }
   public static int discoverSQLDialect(DatabaseMetaData meta) {
     int dialectCode = 0;
 
     try {
 
       String dbName = meta.getDatabaseProductName().toLowerCase();
-      LogLog.debug("==db name is [" + dbName +"]");
 
       if (dbName.indexOf(POSTGRES_PART) != -1) {
         return ConnectionSource.POSTGRES_DIALECT;
@@ -51,7 +54,6 @@ public class Util {
       } else if (dbName.indexOf(ORACLE_PART) != -1) {
         return ConnectionSource.ORACLE_DIALECT;
       } else if (dbName.indexOf(MSSQL_PART) != -1) {
-        LogLog.info("Selecting MsSQL dialect");
         return ConnectionSource.MSSQL_DIALECT;
       } else if (dbName.indexOf(HSQL_PART) != -1) {
         return ConnectionSource.HSQL_DIALECT;
@@ -102,8 +104,8 @@ public class Util {
     try {
       return meta.supportsGetGeneratedKeys();
     } catch(Throwable e) {
-      LogLog.warn("The following warning is only informative.");
-      LogLog.warn("Could not call supportsGetGeneratedKeys method. This may be recoverable");
+      getLogger().warn("The following warning is only informative.");
+      getLogger().warn("Could not call supportsGetGeneratedKeys method. This may be recoverable");
       return false;
     }
   }
@@ -117,7 +119,7 @@ public class Util {
     try {
       return meta.supportsBatchUpdates();
     } catch(Throwable e) {
-      LogLog.warn("Missing DatabaseMetaData.supportsBatchUpdates method.");
+      getLogger().warn("Missing DatabaseMetaData.supportsBatchUpdates method.");
       return false;
     }
   }

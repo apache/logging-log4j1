@@ -36,7 +36,7 @@ import org.apache.log4j.spi.OptionHandler;
 public abstract class AppenderSkeleton implements Appender, OptionHandler {
   
   /*
-   * An inststance specific logger. 
+   * An insttance specific logger. 
    */
   private Logger logger;
   
@@ -294,7 +294,7 @@ FILTER_LOOP:
   }
   
   /**
-   * Return an instance specifi logger to be used by the Appender itself.
+   * Return an instance specific logger to be used by the Appender itself.
    * This logger is not intended to be used by Mrs. Piggy, our proverbial user,
    * hence the protected keyword.
    * 
