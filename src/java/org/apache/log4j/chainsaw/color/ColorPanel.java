@@ -49,24 +49,17 @@
 
 package org.apache.log4j.chainsaw.color;
 
-import org.apache.log4j.chainsaw.filter.FilterModel;
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-import org.apache.log4j.chainsaw.rule.ColorRule;
-import org.apache.log4j.chainsaw.rule.ExpressionRule;
-import org.apache.log4j.chainsaw.rule.ExpressionRuleContext;
-import org.apache.log4j.chainsaw.rule.Rule;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -77,6 +70,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultListModel;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
@@ -86,16 +80,23 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
-import javax.swing.ListSelectionModel;
 import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
+
+import org.apache.log4j.chainsaw.filter.FilterModel;
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.chainsaw.rule.ColorRule;
+import org.apache.log4j.chainsaw.rule.ExpressionRule;
+import org.apache.log4j.chainsaw.rule.ExpressionRuleContext;
+import org.apache.log4j.chainsaw.rule.Rule;
 
 
 /**
@@ -139,13 +140,17 @@ public class ColorPanel extends JPanel {
     data.add(data2);
 
     table = buildTable(data);
+    table.sizeColumnsToFit(0);
+    table.getColumnModel().getColumn(1).setPreferredWidth(70);
+    table.getColumnModel().getColumn(2).setPreferredWidth(70);
+    table.getColumnModel().getColumn(1).setMaxWidth(70);
+    table.getColumnModel().getColumn(2).setMaxWidth(70);
     statusBar = new JLabel("Ruleset support not yet implemented");
 
     applyRules("default");
 
     table.setToolTipText("Click to edit");
     table.setRowHeight(20);
-    table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     table.setColumnSelectionAllowed(false);
 
     table.setPreferredScrollableViewportSize(new Dimension(400, 200));
@@ -166,21 +171,25 @@ public class ColorPanel extends JPanel {
 
     JPanel southPanel = new JPanel();
     southPanel.setLayout(new BoxLayout(southPanel, BoxLayout.Y_AXIS));
-    southPanel.add(Box.createVerticalStrut(10));
-
+    southPanel.add(Box.createVerticalStrut(5));
+    southPanel.add(new JSeparator());
+    southPanel.add(Box.createVerticalStrut(5));
     JPanel closePanel = buildClosePanel();
     southPanel.add(closePanel);
 
     JPanel statusPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
     statusPanel.add(statusBar);
     southPanel.add(statusPanel);
-
     rightPanel.add(rulesPanel, BorderLayout.CENTER);
     rightPanel.add(southPanel, BorderLayout.SOUTH);
     rightOuterPanel.add(rightPanel);
 
     add(ruleSetsPanel, BorderLayout.WEST);
     add(rightOuterPanel, BorderLayout.CENTER);
+    if (table.getRowCount() > 0) {
+        table.getSelectionModel().setSelectionInterval(0, 0);
+    }
+
   }
 
   public static void main(String[] args) {
@@ -335,12 +344,12 @@ public class ColorPanel extends JPanel {
     }
 
     if (result.toString().equals("")) {
-      ((JLabel) table.getColumnModel().getColumn(0).getCellRenderer())
+      ((ExpressionTableCellRenderer) table.getColumnModel().getColumn(0).getCellRenderer())
       .setToolTipText("Click to edit");
       statusBar.setText("");
     } else {
       statusBar.setText("Errors - see expression tooltip");
-      ((JLabel) table.getColumnModel().getColumn(0).getCellRenderer())
+      ((ExpressionTableCellRenderer) table.getColumnModel().getColumn(0).getCellRenderer())
       .setToolTipText("<html>" + result.toString() + "</html>");
     }
 
@@ -676,8 +685,11 @@ public class ColorPanel extends JPanel {
   }
 
   class ColorTableCellRenderer extends JPanel implements TableCellRenderer {
-    Border selectedBorder;
-    Border unselectedBorder;
+    Border border;
+    
+    ColorTableCellRenderer() {
+        setOpaque(true);
+    }
 
     public Component getTableCellRendererComponent(
       JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
@@ -685,65 +697,105 @@ public class ColorPanel extends JPanel {
       if (value instanceof Color) {
         setBackground((Color) value);
       }
-
-      if (isSelected) {
-        if (selectedBorder == null) {
-          selectedBorder =
-            BorderFactory.createMatteBorder(
-              2, 5, 2, 5, table.getSelectionBackground());
-        }
-        setBorder(selectedBorder);
-      } else {
-        if (unselectedBorder == null) {
-          unselectedBorder =
-            BorderFactory.createMatteBorder(2, 5, 2, 5, table.getBackground());
-        }
-        setBorder(unselectedBorder);
+      if (border == null) {
+        border = BorderFactory.createMatteBorder(2, 2, 2, 2, table.getBackground());
       }
+
+      setBorder(border);
 
       return this;
     }
   }
 
-  class ExpressionTableCellRenderer extends JLabel implements TableCellRenderer {
-    Border selectedBorder;
-    Border unselectedBorder;
+  class ExpressionTableCellRenderer implements TableCellRenderer {
+    JPanel panel = new JPanel();
+    JLabel expressionLabel = new JLabel();
+    JLabel iconLabel = new JLabel();
+    Icon selectedIcon = new SelectedIcon(true);
+    Icon unselectedIcon = new SelectedIcon(false);
 
     ExpressionTableCellRenderer() {
-      setOpaque(true);
+      panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+      panel.setOpaque(true);
+      panel.add(iconLabel);
+      panel.add(Box.createHorizontalStrut(5));
+      panel.add(expressionLabel);
+    }
+    
+    void setToolTipText(String text) {
+        panel.setToolTipText(text);
     }
 
     public Component getTableCellRendererComponent(
       JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
       int column) {
+
       Vector v = tableModel.getDataVector();
       Vector r = (Vector) v.elementAt(row);
-      setText(value.toString());
+      expressionLabel.setText(value.toString());
 
       if (r.elementAt(1) instanceof Color) {
-        setBackground((Color) r.elementAt(1));
+        expressionLabel.setBackground((Color) r.elementAt(1));
+        panel.setBackground((Color) r.elementAt(1));
       }
 
       if (r.elementAt(2) instanceof Color) {
-        setForeground((Color) r.elementAt(2));
+        expressionLabel.setForeground((Color) r.elementAt(2));
+        panel.setForeground((Color) r.elementAt(2));
       }
 
       if (isSelected) {
-        if (selectedBorder == null) {
-          selectedBorder =
-            BorderFactory.createMatteBorder(
-              2, 5, 2, 5, table.getSelectionBackground());
-        }
-        setBorder(selectedBorder);
+          iconLabel.setIcon(selectedIcon);
       } else {
-        if (unselectedBorder == null) {
-          unselectedBorder =
-            BorderFactory.createMatteBorder(2, 5, 2, 5, table.getBackground());
-        }
-        setBorder(unselectedBorder);
+          iconLabel.setIcon(unselectedIcon);
       }
 
-      return this;
+      return panel;
     }
+  }
+
+  class SelectedIcon implements Icon {
+      private boolean isSelected;
+      private int width = 9;
+      private int height = 18;
+      private int[] xPoints = new int[4];
+      private int[] yPoints = new int[4];
+
+      public SelectedIcon(boolean isSelected) {
+        this.isSelected = isSelected;
+        xPoints[0] = 0;
+        yPoints[0] = -1;
+        xPoints[1] = 0;
+        yPoints[1] = height;
+        xPoints[2] = width;
+        yPoints[2] = height / 2;
+        xPoints[3] = width;
+        yPoints[3] = (height / 2) - 1;
+      }
+
+      public int getIconHeight() {
+        return height;
+      }
+
+      public int getIconWidth() {
+        return width;
+      }
+
+      public void paintIcon(Component c, Graphics g, int x, int y) {
+        if (isSelected) {
+          int length = xPoints.length;
+          int[] newXPoints = new int[length];
+          int[] newYPoints = new int[length];
+
+          for (int i = 0; i < length; i++) {
+            newXPoints[i] = xPoints[i] + x;
+            newYPoints[i] = yPoints[i] + y;
+          }
+
+          g.setColor(Color.black);
+
+          g.fillPolygon(newXPoints, newYPoints, length);
+        }
+      }
   }
 }
