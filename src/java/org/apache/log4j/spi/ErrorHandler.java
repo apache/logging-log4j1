@@ -38,7 +38,7 @@ public interface ErrorHandler extends OptionHandler {
      for the failing appender in view of replacement.
      
      @since 1.2 */
-  void setLogger(Stiring loggerName);
+  void setLogger(String loggerName);
 
 
   /**

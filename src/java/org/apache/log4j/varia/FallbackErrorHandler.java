@@ -45,8 +45,8 @@ public class FallbackErrorHandler implements ErrorHandler {
     if(loggers == null) {
       loggers = new Vector();
     }
-    if(loggerName.equalsIgnoreCase
-    loggers.add(logger);
+    //if(loggerName.equalsIgnoreCase
+    //loggers.add(logger);
   }
 
 
