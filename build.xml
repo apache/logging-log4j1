@@ -9,9 +9,9 @@
 <!-- ================================================================= -->
 <project name="log4j" default="usage" basedir="." >
 
-  
+
   <!-- The build.properties file defines the parth to local jar files -->
-  <property file="build.properties"/>               
+  <property file="build.properties"/>
 
   <!-- Read the system environment variables and stores them in properties, -->
   <!-- prefixed with "env". -->
@@ -178,7 +178,7 @@
 	    debug="on">
       <classpath refid="compile.classpath"/>
     </javac>
-    
+
   </target>
 
   <target name="build.examples" depends="build.core">
@@ -251,7 +251,7 @@
   <!-- ================================================================= -->
   <target name="checkstyle" depends="init">
     <taskdef resource="checkstyletask.properties"
-             classpath="build/lib/checkstyle-all-2.1.jar"/>
+             classpath="${checkstyle.jar}"/>
 
     <!-- by default checkstyle supports the Sun coding standard. -->
     <checkstyle lcurlyMethod="nlow"
@@ -270,7 +270,7 @@
   <target name="chainsaw" depends="build">
     <!-- Need to fork to avoid problems -->
     <java classname="org.apache.log4j.chainsaw.Main" fork="yes"
-          classpath="${javac.dest}">
+          classpath="${javac.dest};${ant.home}/lib/crimson.jar">
     </java>
   </target>
 
@@ -424,7 +424,7 @@
 		          **/Makefile, **/goEnv.bat,
 	                  docs/pub-support/*,
                           dist/classes/org/**,
-	                  src/java/org/apache/log4j/test/**/*,	
+	                  src/java/org/apache/log4j/test/**/*,
 			  **/.#*"/>
     </copy>
 
