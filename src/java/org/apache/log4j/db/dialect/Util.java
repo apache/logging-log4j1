@@ -16,9 +16,8 @@
 
 package org.apache.log4j.db.dialect;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.apache.log4j.db.ConnectionSource;
+import org.apache.log4j.spi.ComponentBase;
 
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
@@ -29,7 +28,7 @@ import java.sql.SQLException;
  * @author Ceki Gulcu
  *
  */
-public class Util {
+public class Util extends ComponentBase {
   private static final String POSTGRES_PART = "postgresql";
   private static final String MYSQL_PART = "mysql";
   private static final String ORACLE_PART = "oracle";
@@ -37,9 +36,6 @@ public class Util {
   private static final String MSSQL_PART = "microsoft";
   private static final String HSQL_PART = "hsql";
   
-  static Logger getLogger() {
-    return LogManager.getLogger(Util.class);
-  }
   public static int discoverSQLDialect(DatabaseMetaData meta) {
     int dialectCode = 0;
 
@@ -100,7 +96,7 @@ public class Util {
    * {@link DatabaseMetaData#supportsGetGeneratedKeys} method is missing in the
    * JDBC driver implementation.
    */
-  static public boolean supportsGetGeneratedKeys(DatabaseMetaData meta) {
+  public boolean supportsGetGeneratedKeys(DatabaseMetaData meta) {
     try {
       return meta.supportsGetGeneratedKeys();
     } catch(Throwable e) {
@@ -115,7 +111,7 @@ public class Util {
   * {@link DatabaseMetaData#supportsBatchUpdates} method is missing in the
   * JDBC driver implementation.
   */
-  static public boolean supportsBatchUpdates(DatabaseMetaData meta) {
+  public boolean supportsBatchUpdates(DatabaseMetaData meta) {
     try {
       return meta.supportsBatchUpdates();
     } catch(Throwable e) {

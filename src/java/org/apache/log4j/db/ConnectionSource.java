@@ -16,6 +16,7 @@
 
 package org.apache.log4j.db;
 
+import org.apache.log4j.spi.Component;
 import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.OptionHandler;
 
@@ -30,7 +31,7 @@ import java.sql.SQLException;
  *
  *  @author <a href="mailto:rdecampo@twcny.rr.com">Ray DeCampo</a>
  */
-public interface ConnectionSource extends OptionHandler {
+public interface ConnectionSource extends Component, OptionHandler {
 
   final int UNKNOWN_DIALECT = 0;
   final int POSTGRES_DIALECT = 1;

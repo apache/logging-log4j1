@@ -16,9 +16,8 @@
 
 package org.apache.log4j.db;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.apache.log4j.db.dialect.Util;
+import org.apache.log4j.spi.ComponentBase;
 import org.apache.log4j.spi.ErrorHandler;
 
 import java.sql.Connection;
@@ -29,7 +28,7 @@ import java.sql.SQLException;
 /**
  * @author Ceki G&uuml;lc&uuml;
  */
-public abstract class ConnectionSourceSkeleton implements ConnectionSource {
+public abstract class ConnectionSourceSkeleton extends ComponentBase implements ConnectionSource {
   protected String user = null;
   protected String password = null;
   protected ErrorHandler errorHandler = null;
@@ -39,22 +38,6 @@ public abstract class ConnectionSourceSkeleton implements ConnectionSource {
   protected boolean supportsGetGeneratedKeys = false;
   protected boolean supportsBatchUpdates = false;
 
-  // Per instance logger
-  private Logger logger;
-
-  /**
-   * Return an instance specific logger to be used by the ConnectionSource
-   * itself. This logger is not intended to be used by Mrs. Piggy, hence the
-   * protected keyword.
-   *
-   * @return instance specific logger
-   */
-  protected Logger getLogger() {
-    if (logger == null) {
-      logger = LogManager.getLogger(this.getClass().getName());
-    }
-    return logger;
-  }
 
   /**
    * Learn relevant information about this connection source.
@@ -64,12 +47,14 @@ public abstract class ConnectionSourceSkeleton implements ConnectionSource {
     try {
       Connection connection = getConnection();
       if (connection == null) {
-        logger.warn("Could not get a conneciton");
+        getLogger().warn("Could not get a conneciton");
         return;
       }
       DatabaseMetaData meta = connection.getMetaData();
-      supportsGetGeneratedKeys = Util.supportsGetGeneratedKeys(meta);
-      supportsBatchUpdates = Util.supportsBatchUpdates(meta);
+      Util util = new Util();
+      util.setLoggerRepository(repository);
+      supportsGetGeneratedKeys = util.supportsGetGeneratedKeys(meta);
+      supportsBatchUpdates = util.supportsBatchUpdates(meta);
       dialectCode = Util.discoverSQLDialect(meta);
     } catch (SQLException se) {
       getLogger().warn("Could not discover the dialect to use.", se);
