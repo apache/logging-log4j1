@@ -67,6 +67,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -167,6 +168,11 @@ public class LogPanelPreferencePanel extends AbstractPreferencePanel {
      * available for the columns etc.
      */
     private class FormattingPanel extends BasicPrefPanel {
+        private final JCheckBox toolTips = new JCheckBox(
+                "Show Event Detail Tooltips");
+        private final JCheckBox detailPanelVisible = new JCheckBox(
+                "Show Event Detail panel");
+
         private FormattingPanel() {
             super("Formatting");
             this.initComponents();
@@ -174,6 +180,9 @@ public class LogPanelPreferencePanel extends AbstractPreferencePanel {
 
         private void initComponents() {
             setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+            add(toolTips);
+            add(detailPanelVisible);
 
             JPanel dateFormatPanel = new JPanel();
             dateFormatPanel.setBorder(BorderFactory.createTitledBorder(
@@ -338,6 +347,36 @@ public class LogPanelPreferencePanel extends AbstractPreferencePanel {
             levelFormatPanel.add(rdLevelText);
 
             add(levelFormatPanel);
+
+            toolTips.setSelected(getModel().isToolTips());
+
+            toolTips.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        getModel().setToolTips(toolTips.isSelected());
+                    }
+                });
+            getModel().addPropertyChangeListener("toolTips",
+                new PropertyChangeListener() {
+                    public void propertyChange(PropertyChangeEvent evt) {
+                        boolean value = ((Boolean) evt.getNewValue()).booleanValue();
+                        toolTips.setSelected(value);
+                    }
+                });
+
+            detailPanelVisible.setSelected(getModel().isDetailPaneVisible());
+            detailPanelVisible.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        getModel().setDetailPaneVisible(detailPanelVisible.isSelected());
+                    }
+                });
+
+            getModel().addPropertyChangeListener("detailPaneVisible",
+                new PropertyChangeListener() {
+                    public void propertyChange(PropertyChangeEvent evt) {
+                        boolean value = ((Boolean) evt.getNewValue()).booleanValue();
+                        detailPanelVisible.setSelected(value);
+                    }
+                });
 
             JPanel loggerFormatPanel = new JPanel();
             loggerFormatPanel.setLayout(new BoxLayout(loggerFormatPanel,
