@@ -66,6 +66,8 @@ import java.net.SocketException;
  * <code>org.apache.log4j.net.SocketAppender.html</code>.
  *
  * @author <a href="mailto:oliver@puppycrawl.com">Oliver Burn</a>
+ * @deprecated Chainsaw now uses the Receiver architecture to receive
+ *   remote logging events from various sources.
  */
 class LoggingReceiver extends Thread {
   /** used to log messages **/
