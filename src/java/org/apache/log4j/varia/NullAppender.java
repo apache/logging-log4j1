@@ -23,12 +23,6 @@ public class NullAppender extends AppenderSkeleton {
   public NullAppender() {
   }
 
-  /** 
-   * There are no options to acticate.
-   * */
-  public void activateOptions() {
-  }
-
   /**
    * Whenever you can, use this method to retreive an instance instead
    * of instantiating a new one with <code>new</code>.
