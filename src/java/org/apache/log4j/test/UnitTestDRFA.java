@@ -7,7 +7,7 @@
 
 
 
-package org.apache.log4j;
+package org.apache.log4j.test;
 
 import java.util.Calendar;
 import java.util.Date;
