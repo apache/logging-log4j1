@@ -501,9 +501,8 @@ public class DOMConfigurator implements Configurator {
       }
     } else {
       String className = subst(element.getAttribute(CLASS_ATTR));      
-      if(EMPTY_STR.equals(className)) {      
-	
-	logger.setLevel(Level.toLevel(priStr));
+      if(EMPTY_STR.equals(className)) {	
+	logger.setLevel(OptionConverter.toLevel(priStr, Level.DEBUG));
       } else {
 	LogLog.debug("Desired Level sub-class: ["+className+']');
 	try {	 
