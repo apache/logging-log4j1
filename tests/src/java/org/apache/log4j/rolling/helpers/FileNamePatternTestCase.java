@@ -58,47 +58,47 @@ import junit.framework.TestSuite;
  * @author Ceki
  *
  */
-public class FileNamePatternParserTestCase extends TestCase {
+public class FileNamePatternTestCase extends TestCase {
   /**
    * Constructor for FileNamePatternParserTestCase.
    * @param arg0
    */
-  public FileNamePatternParserTestCase(String arg0) {
+  public FileNamePatternTestCase(String arg0) {
     super(arg0);
   }
 
   public void test1() {
     //System.out.println("Testing [t]");
-    FileNamePatternParser pp = new FileNamePatternParser("t");
+    FileNamePattern pp = new FileNamePattern("t");
     assertEquals("t", pp.convert(3));
 
     //System.out.println("Testing [foo]");
-    pp = new FileNamePatternParser("foo");
+    pp = new FileNamePattern("foo");
     assertEquals("foo", pp.convert(3));
 
     //System.out.println("Testing [foo%]");
-    pp = new FileNamePatternParser("foo%");
+    pp = new FileNamePattern("foo%");
     assertEquals("foo%", pp.convert(3));
 
-    pp = new FileNamePatternParser("%ifoo");
+    pp = new FileNamePattern("%ifoo");
     assertEquals("3foo", pp.convert(3));
 
-    pp = new FileNamePatternParser("foo%ixixo");
+    pp = new FileNamePattern("foo%ixixo");
     assertEquals("foo3xixo", pp.convert(3));
     
-    pp = new FileNamePatternParser("foo%i.log");
+    pp = new FileNamePattern("foo%i.log");
     assertEquals("foo3.log", pp.convert(3));
 
-    pp = new FileNamePatternParser("foo.%i.log");
+    pp = new FileNamePattern("foo.%i.log");
     assertEquals("foo.3.log", pp.convert(3));
     
-    pp = new FileNamePatternParser("%ifoo%");
+    pp = new FileNamePattern("%ifoo%");
     assertEquals("3foo%", pp.convert(3));
 
-    pp = new FileNamePatternParser("%ifoo%%");
+    pp = new FileNamePattern("%ifoo%%");
     assertEquals("3foo%", pp.convert(3));
 
-    pp = new FileNamePatternParser("%%foo");
+    pp = new FileNamePattern("%%foo");
     assertEquals("%foo", pp.convert(3));
    
   }
@@ -106,17 +106,17 @@ public class FileNamePatternParserTestCase extends TestCase {
 
   public void test2() {
     System.out.println("Testing [foo%ibar%i]");
-    FileNamePatternParser pp = new FileNamePatternParser("foo%ibar%i");
+    FileNamePattern pp = new FileNamePattern("foo%ibar%i");
     assertEquals("foo3bar3", pp.convert(3));
 
-    ///pp = new FileNamePatternParser("%%foo");
+    ///pp = new FileNamePattern("%%foo");
     //assertEquals("%foo", pp.convert(3));
   }
 
   public static Test suite() {
     TestSuite suite = new TestSuite();
-    suite.addTest(new FileNamePatternParserTestCase("test1"));
-    suite.addTest(new FileNamePatternParserTestCase("test2"));
+    suite.addTest(new FileNamePatternTestCase("test1"));
+    suite.addTest(new FileNamePatternTestCase("test2"));
    
     return suite;
   }
