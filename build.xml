@@ -274,29 +274,25 @@
   </target>
 
   <!-- ================================================================= -->
-  <!-- Define Jalopy code formatting task.                               -->
-  <!-- ================================================================= -->
-  <path id="jalopy.path">
-    <fileset dir="${jalopy.lib}">
-      <include name="*.jar" />
-    </fileset>
-  </path>
-  
-  <!-- ================================================================= -->
   <!-- Define the set of files current styled                            -->
   <!-- ================================================================= -->
   <fileset dir="${java.source.dir}" id="styled_files">
   	<include name="**/plugins/*.java"/>
   </fileset>
 
-  <taskdef name="jalopy"
-           classname="de.hunsicker.jalopy.plugin.ant.AntPlugin"
-           classpathref="jalopy.path" />
 
   <!-- ================================================================= -->
   <!-- Runs jalopy.  Available from http://jalopy.sourceforge.net        -->
   <!-- ================================================================= -->
   <target name="runJalopy">
+    <path id="jalopy.path">
+      <fileset dir="${jalopy.lib}">
+        <include name="*.jar" />
+      </fileset>
+    </path>
+    <taskdef name="jalopy"
+             classname="de.hunsicker.jalopy.plugin.ant.AntPlugin"
+             classpathref="jalopy.path" />
     <jalopy backup="true"
             classpathref="compile.classpath"
             convention="${jalopy.stylesheet.location}">
