@@ -613,7 +613,9 @@ not include support for:
        org.apache.joran,
        org.apache.joran.action,
        org.apache.log4j.joran,
-       org.apache.log4j.joran.action"
+       org.apache.log4j.joran.action,
+       org.apache.ugli,
+       org.apache.ugli.impl"
      additionalparam="-breakiterator"
      version="true"
      protected="true"
