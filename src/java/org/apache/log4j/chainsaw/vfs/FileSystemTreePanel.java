@@ -1,8 +1,10 @@
 package org.apache.log4j.chainsaw.vfs;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 
+import javax.swing.Icon;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
@@ -40,32 +42,28 @@ class FileSystemTreePanel extends JPanel {
 		setPreferredSize(new Dimension(150,400));
 		add(new JScrollPane(tree), BorderLayout.CENTER);
 
-        tree.setModel(treeModel);
+        initTree();
+	}
+	
+	/**
+	 * Configures the tree component 
+	 */
+	private void initTree() {
+		tree.setModel(treeModel);
         tree.expandPath(new TreePath(rootNode.getPath()));
         
 		tree.setRootVisible(false);
         tree.putClientProperty("JTree.lineStyle", "Angled");
         tree.setShowsRootHandles(true);
         
-		
-        // TODO need a custom Cell renderer so that the root VFSNodes ALWAYS have the appropriate icons, and
-        // child folders don't get them, but get the normal folder style icon, but for now
-        // we make it easy on ourselves
-        
-        // We make the non-Leaf Icons a nice Server-style icon to represent the repository.
-        DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer) tree.getCellRenderer();
-        renderer.setClosedIcon(ChainsawIcons.ICON_SERVER);
-        renderer.setOpenIcon(ChainsawIcons.ICON_SERVER);
-        renderer.setLeafIcon(null);
-        
-		setToolTipText(TOOLTIP);
-		tree.setToolTipText(TOOLTIP);
+        tree.setCellRenderer(new FileSystemTreeCellRenderer());
 	}
-	
+
 	/**
      * Adds a FileObject with a label to the list of known VFS repositories, and makes sure the 
      * Tree gets updated.
 	 * @param fileObject
+     * @return DefaultMutableTreeNode that was created
 	 */
 	public DefaultMutableTreeNode addFileObject(String name, FileObject fileObject) {
 		VFSNode vfsNode = new VFSNode(name, fileObject);
@@ -86,5 +84,52 @@ class FileSystemTreePanel extends JPanel {
 	JTree getTree() {
 		return this.tree;
 	}
+    
+    /**
+     * Renders the tree by making sure the appropriate icon is used
+     */
+    private static final class FileSystemTreeCellRenderer extends DefaultTreeCellRenderer{
+        private final Icon openFolderIcon;
+        private final Icon closedFolderIcon;
+        private FileSystemTreeCellRenderer() {
+            openFolderIcon = getOpenIcon();
+            closedFolderIcon = getClosedIcon();
+        }
+        
+		/* (non-Javadoc)
+		 * @see javax.swing.tree.TreeCellRenderer#getTreeCellRendererComponent(javax.swing.JTree, java.lang.Object, boolean, boolean, boolean, int, boolean)
+		 */
+		public Component getTreeCellRendererComponent(JTree tree, Object value,
+				boolean sel, boolean expanded, boolean leaf, int row,
+				boolean hasFocus) {
+
+            // start off by doing the default bits 'n pieces
+            Component  c = super.getTreeCellRendererComponent(
+                      tree, value, sel, expanded, leaf, row, hasFocus);
+
+
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
+            Object o = node.getUserObject();
+            TreePath path = new TreePath(node.getPath());
+            if(!(o instanceof VFSNode)) {
+             return c;   
+            }
+            VFSNode vfsNode = (VFSNode) o;
+            setText(o.toString());
+
+            String tooltip = vfsNode.getFileObject().getName().getBaseName();
+
+            setIcon(null);
+            // if the path to root is only 2 length, then this node is a top-level (apart from root)
+            // node, and we consider this the "Repository" root node, so we use the funky Server ICON
+            if(node.getParent().equals(node.getRoot())) {
+               setIcon(ChainsawIcons.ICON_SERVER);
+            }else {
+             setIcon(tree.isExpanded(path)?openFolderIcon:closedFolderIcon);   
+            }
+            
+			return this;
+		}
+    }
 	
 }
