@@ -8,7 +8,12 @@
    [D] Changes affect a method or property which was previously marked as 
        deprecated.
    
-
+ - The location information extraction code has been refactored to use
+   faster alternatives when running on JDK 1.4 or later. The faster mechanism 
+   has been contributed by Martin Schulz. 
+ 
+   See http://marc.theaimsgroup.com/?t=108473346700001&r=1&w=2 for more details. [*]
+   
  - Made ignoresThrowable a settable property. The user can now force a layout
    to ignore the throwable in the event even if the layout knows how to handle
    exceptions. Conversely, an appender can be fooled to believe that a layout
@@ -27,7 +32,7 @@
  - Log4j now has its own Scheduler. It allows jobs to be executed at a certain date
    or even periodically. It only requires just one extra thread. [*]
    
- - Added the "isPristine" falg to LoggerRepository. As soon as a configurator
+ - Added the "isPristine" flag to LoggerRepository. As soon as a configurator
    starts configuring a repository this flag is set to false.
    
  - Removed support for the deprecated property "log4j.configDebug". [**/D]
