@@ -5,16 +5,9 @@ TODO
 
 - Add a properties file option to log4j:configure in XML.
 
-- Really quiet mode for LogLog.
 
-- Deprecate configure element in DTD.
-
-- Support for duplicate appender suppression in configurators.
-- Clean up the association of renderers and hierarchies
-- FailOverAppender
 
 - Graceful congiguration merging
-
 - Integrate tons of GUI code.
 - JDBCAppender.
 - Time based rolling.
@@ -30,6 +23,10 @@ ONGOING TASKS
 	
 DONE
 
+- Really quiet mode for LogLog.
+- Deprecate configure element in DTD.
+- Clean up the association of renderers and hierarchies
+- FailOverAppender
 - Add priority#priorityClass to Configurators
 - log4j: namespace in DTD
 - Mapped Diagnostic Contexts

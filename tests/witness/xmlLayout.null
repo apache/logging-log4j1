@@ -1,0 +1,29 @@
+<log4j:event logger="org.apache.log4j.xml.XMLLayoutTestCase" timestamp="XXX" level="DEBUG" thread="main">
+<log4j:message><![CDATA[hi]]></log4j:message>
+</log4j:event>
+
+<log4j:event logger="org.apache.log4j.xml.XMLLayoutTestCase" timestamp="XXX" level="DEBUG" thread="main">
+<log4j:message><![CDATA[]]></log4j:message>
+</log4j:event>
+
+<log4j:event logger="org.apache.log4j.xml.XMLLayoutTestCase" timestamp="XXX" level="DEBUG" thread="main">
+<log4j:message><![CDATA[hi]]></log4j:message>
+<log4j:throwable><![CDATA[java.lang.Exception
+	at org.apache.log4j.xml.XMLLayoutTestCase.testNull(X)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(X)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(X)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(X)
+	at java.lang.reflect.Method.invoke(X)
+	at junit.framework.TestCase.runTest(X)
+	at junit.framework.TestCase.runBare(X)
+	at junit.framework.TestResult$1.protect(X)
+	at junit.framework.TestResult.runProtected(X)
+	at junit.framework.TestResult.run(X)
+	at junit.framework.TestCase.run(X)
+	at junit.framework.TestSuite.runTest(X)
+	at junit.framework.TestSuite.run(X)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(X)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.main(X)
+]]></log4j:throwable>
+</log4j:event>
+

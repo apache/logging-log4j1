@@ -5,6 +5,20 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
 
+ February 18th, 2003
+ 
+ - Release of version 1.2.8
+
+ - Fixed bug #11570 whereby XMLAppender would throw a
+   NullPointerException if the input message was null. Many thanks to
+   David Vandegrift for reporting the bug and to Hendrik Brummermann for
+   supplying the patch. [*]
+
+ - Fixed bug #12366 whereby various versions of Xerces would not parse
+   log4j configuration scripts expressed in XML format. [*]
+
+ - Fixed bug #15599. SocketAppender now honors ReconnectionDelay of 0.
+   Many thanks to Scott Schram for reporting the bug and providing the fix. [*]
 
  October 9th, 2002
 

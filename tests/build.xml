@@ -338,6 +338,14 @@
     </junit>
   </target>
 
+  <target name="MazeAppender" depends="build, cleanOutputDir">
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="false" />
+      <test name="org.apache.log4j.MazeAppenderTestCase" />
+    </junit>
+  </target>
+
 
   <target name="OR" depends="build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">

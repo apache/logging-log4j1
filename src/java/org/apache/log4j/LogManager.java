@@ -118,7 +118,7 @@ public class LogManager {
 	OptionConverter.selectAndConfigure(url, configuratorClassName, 
 					   LogManager.getLoggerRepository());
       } else {
-	LogLog.debug("Could not find resource: ["+configurationOptionStr+"].");
+	LogLog.debug("Could not find resources to perform automatic configuration.");
       }
     }  
   } 

@@ -71,8 +71,12 @@ public class Transform {
   * @param str The String that is inserted into an existing CDATA Section within buf.  
   * */
   static public void appendEscapingCDATA(StringBuffer buf, String str) {
+    if(str == null) {
+      buf.append("");
+      return;
+    }
+
     int end = str.indexOf(CDATA_END);
-    
     if (end < 0) {
       buf.append(str);
       return;
