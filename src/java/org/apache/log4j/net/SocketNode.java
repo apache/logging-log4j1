@@ -187,7 +187,7 @@ public class SocketNode implements Runnable, Pauseable {
     }
 
     // send event to listener, if configured
-    if (listener != null) {
+    if (listener != null || listenerList.getListenerCount()>0) {
       fireSocketClosedEvent(listenerException);
     }
   }

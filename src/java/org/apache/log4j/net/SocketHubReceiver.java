@@ -200,6 +200,9 @@ extends Receiver implements SocketNodeEventListener, PortBased {
     Listen for a socketClosedEvent from the SocketNode. Reopen the
     socket if this receiver is still active. */
   public void socketClosedEvent(Exception e) {
+  	// we clear the connector object here so that it actually does reconnect if the 
+  	// remote socket dies.
+  	connector = null;
     fireConnector(true);
   }
   
