@@ -78,6 +78,7 @@ class ChainsawToolBarAndMenus implements ChangeListener {
   private final Action showColorPanelAction;
   private final Action showReceiversAction;
   private final Action toggleLogTreeAction;
+  private final Action toggleScrollToBottomAction;
   private final Action toggleDetailPaneAction;
   private final Action toggleToolbarAction;
   private final Action undockAction;
@@ -86,6 +87,8 @@ class ChainsawToolBarAndMenus implements ChangeListener {
   private final JCheckBoxMenuItem toggleShowReceiversCheck =
     new JCheckBoxMenuItem();
   private final JCheckBoxMenuItem toggleLogTreeMenuItem =
+    new JCheckBoxMenuItem();
+  private final JCheckBoxMenuItem toggleScrollToBottomMenuItem =
     new JCheckBoxMenuItem();
   private final JCheckBoxMenuItem toggleDetailMenuItem =
     new JCheckBoxMenuItem();
@@ -102,6 +105,7 @@ class ChainsawToolBarAndMenus implements ChangeListener {
   private final SmallButton clearButton = new SmallButton();
   private final SmallToggleButton detailPaneButton = new SmallToggleButton();
   private final SmallToggleButton logTreePaneButton = new SmallToggleButton();
+  private final SmallToggleButton scrollToBottomButton = new SmallToggleButton();
   private final SmallToggleButton pauseButton = new SmallToggleButton();
   private final SmallToggleButton toggleCyclicButton = new SmallToggleButton();
   private final Action[] logPanelSpecificActions;
@@ -123,6 +127,7 @@ class ChainsawToolBarAndMenus implements ChangeListener {
     showColorPanelAction = createShowColorPanelAction();
     toggleToolbarAction = createToggleToolbarAction();
     toggleLogTreeAction = createToggleLogTreeAction();
+    toggleScrollToBottomAction = createScrollToBottomAction();
     pauseAction = createPauseAction();
     clearAction = createClearAction();
     undockAction = createUndockAction();
@@ -151,7 +156,7 @@ class ChainsawToolBarAndMenus implements ChangeListener {
         pauseAction, findNextAction, findPreviousAction, clearAction,
         fileMenu.getFileSaveAction(), toggleDetailPaneAction,
         showPreferencesAction, showColorPanelAction, undockAction,
-        toggleLogTreeAction, changeModelAction,
+        toggleLogTreeAction, toggleScrollToBottomAction, changeModelAction,
       };
 
     logui.getApplicationPreferenceModel().addPropertyChangeListener(
@@ -219,6 +224,31 @@ class ChainsawToolBarAndMenus implements ChangeListener {
   }
 
   /**
+   * @return
+   */
+   private Action createScrollToBottomAction() {
+     Action action =
+       new AbstractAction("Toggle Scroll to Bottom") {
+         public void actionPerformed(ActionEvent e) {
+           if (logui.getCurrentLogPanel() != null) {
+             logui.getCurrentLogPanel().toggleScrollToBottom();
+           }
+         }
+       };
+
+     action.putValue(Action.SHORT_DESCRIPTION, "Toggles Scroll to Bottom");
+     action.putValue("enabled", Boolean.TRUE);
+     action.putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_B));
+     action.putValue(
+       Action.ACCELERATOR_KEY,
+       KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.CTRL_MASK));
+     action.putValue(
+       Action.SMALL_ICON, new ImageIcon(ChainsawIcons.DOWN));
+
+     return action;
+   }
+
+   /**
    * DOCUMENT ME!
    */
   public void stateChange() {
@@ -351,6 +381,8 @@ class ChainsawToolBarAndMenus implements ChangeListener {
     toggleLogTreeMenuItem.setAction(toggleLogTreeAction);
     toggleLogTreeMenuItem.setSelected(true);
 
+    toggleScrollToBottomMenuItem.setAction(toggleScrollToBottomAction);
+
     final Action toggleStatusBarAction =
       new AbstractAction("Show Status bar") {
         public void actionPerformed(ActionEvent arg0) {
@@ -378,6 +410,7 @@ class ChainsawToolBarAndMenus implements ChangeListener {
     activeTabMenu.addSeparator();
     activeTabMenu.add(new JMenuItem(clearAction));
     activeTabMenu.addSeparator();
+    activeTabMenu.add(toggleScrollToBottomMenuItem);
     activeTabMenu.add(menuItemUseRightMouse);
 
     viewMenu.add(showToolbarCheck);
@@ -630,6 +663,14 @@ class ChainsawToolBarAndMenus implements ChangeListener {
       toggleLogTreeAction.getValue(Action.NAME));
     logTreePaneButton.setText(null);
 
+    scrollToBottomButton.setAction(toggleScrollToBottomAction);
+    scrollToBottomButton.getActionMap().put(
+      toggleScrollToBottomAction.getValue(Action.NAME), toggleScrollToBottomAction);
+    scrollToBottomButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.ALT_MASK),
+      toggleScrollToBottomAction.getValue(Action.NAME));
+    scrollToBottomButton.setText(null);
+
     SmallButton prefsButton = new SmallButton(showPreferencesAction);
     SmallButton undockButton = new SmallButton(undockAction);
     undockButton.setText("");
@@ -640,6 +681,7 @@ class ChainsawToolBarAndMenus implements ChangeListener {
     toolbar.addSeparator();
     toolbar.add(detailPaneButton);
     toolbar.add(logTreePaneButton);
+    toolbar.add(scrollToBottomButton);
     toolbar.add(prefsButton);
     toolbar.addSeparator();
 
@@ -707,6 +749,12 @@ class ChainsawToolBarAndMenus implements ChangeListener {
       logui.getApplicationPreferenceModel().isReceivers());
 
     logTreePaneButton.setSelected(logui.isLogTreePanelVisible());
+    LogPanel panel = logui.getCurrentLogPanel();
+    if (panel != null) {
+    	scrollToBottomButton.setSelected(panel.isScrollToBottom());
+    } else {
+    	scrollToBottomButton.setSelected(false);
+    }
     showReceiversButton.setSelected(
       logui.getApplicationPreferenceModel().isReceivers());
     menuItemClose.setSelected(logui.getTabbedPane().containsWelcomePanel());
@@ -741,6 +789,7 @@ class ChainsawToolBarAndMenus implements ChangeListener {
       toggleCyclicMenuItem.setSelected(logPanel.isCyclic());
       detailPaneButton.getModel().setSelected(logPanel.isDetailVisible());
       toggleLogTreeMenuItem.setSelected(logPanel.isLogTreeVisible());
+      toggleScrollToBottomMenuItem.setSelected(logPanel.isScrollToBottom());
     }
 
     findPanel.invalidate();
