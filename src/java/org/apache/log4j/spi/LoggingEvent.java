@@ -62,18 +62,16 @@ public class LoggingEvent implements java.io.Serializable {
 
 
   /** Have we tried to do an NDC lookup? If we did, there is no need
-      to do it again.  Note that its value is always false when
-      serialized. Thus, a receiving SocketNode will never use it's own
-      (incorrect) NDC. See also writeObject method. */
+   *  to do it again.  Note that its value is always false when
+   *  serialized. Thus, a receiving SocketNode will never use it's own
+   *  (incorrect) NDC. See also writeObject method. */
   private boolean ndcLookupRequired = true;
 
 
- /** Have we tried to do an MDC lookup? If we did, there is no need to
-      do it again.  Note that its value is always false when
-      serialized. Thus, a receiving SocketNode will never use it's own
-      (incorrect) MDC. See also writeObject method. */
-  private boolean mdcLookupRequired = true;
-
+  /** Have we tried to do an MDC lookup? If we did, there is no need
+   *  to do it again.  Note that its value is always false when
+   *  serialized. See also the getMDC and getMDCCopy methods.  */
+  private boolean mdcCopyLookupRequired = true;
 
   /** The application supplied message of logging event. */
   transient private Object message;
@@ -187,6 +185,11 @@ public class LoggingEvent implements java.io.Serializable {
     }
   }
 
+  /**
+   * This method returns the NDC for this event. It will return the
+   * correct content even if the event was generated in a different
+   * thread or even on a different machine. The {@link NDC#get} method
+   * should <em>never</em> be called directly.  */
   public
   String getNDC() {
     if(ndcLookupRequired) {
@@ -199,9 +202,11 @@ public class LoggingEvent implements java.io.Serializable {
 
   /**
       Returns the the context corresponding to the <code>key</code>
-      parameter. If there is a local MDC copy (probably from a remote
-      machine, the we use it, if that fails then the current thread's
-      <code>MDC</code> is used. 
+      parameter. If there is a local MDC copy, possibly because we are
+      in a logging server or running inside AsyncAppender, then we
+      search for the key in MDC copy, if a value is found it is
+      returned. Otherwise, if the search in MDC copy returns a null
+      result, then the current thread's <code>MDC</code> is used.
       
       <p>Note that <em>both</em> the local MDC copy and the current
       thread's MDC are searched.
@@ -223,11 +228,12 @@ public class LoggingEvent implements java.io.Serializable {
 
   /**
      Obtain a copy of this thread's MDC prior to serialization or
-     asynchronous logging.  */
+     asynchronous logging.  
+  */
   public
   void getMDCCopy() {
-    if(mdcLookupRequired) {
-      ndcLookupRequired = false;
+    if(mdcCopyLookupRequired) {
+      mdcCopyLookupRequired = false;
       // the clone call is required for asynchronous logging.
       // See also bug #5932.
       Hashtable t = (Hashtable) MDC.getContext();
