@@ -90,7 +90,7 @@ public class OptionConverter {
   String getSystemProperty(String key, String def) {
     try {
       return System.getProperty(key, def);
-    } catch(SecurityException e) {
+    } catch(Throwable e) { // MS-Java throws com.ms.security.SecurityExceptionEx 
       LogLog.debug("Was not allowed to read system property \""+key+"\".");
       return def;
     }
