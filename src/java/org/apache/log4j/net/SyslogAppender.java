@@ -139,6 +139,7 @@ public class SyslogAppender extends AppenderSkeleton {
 
      @since 0.8.4
    */
+  synchronized
   public
   void close() {
     closed = true;
