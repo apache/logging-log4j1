@@ -60,7 +60,7 @@ import java.util.EventListener;
  * Listeners should <B>NOT</b> perform the action of actual shutting down
  * however (i.e. do not call System.exit()).
  * 
- * @see LogUI.setShutdownAction(Action)
+ * @see LogUI#setShutdownAction(Action)
  * 
  * @author Paul Smith <psmith@apache.org>
  */

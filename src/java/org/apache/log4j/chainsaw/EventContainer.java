@@ -74,34 +74,31 @@ public interface EventContainer extends SortTableModel, FilterChangedListener {
   void clearModel();
 
   /**
-   * Returns true if this model is Cyclic (bounded) or not 
+   * Returns true if this model is Cyclic (bounded) or not. 
    * @return true/false
    */
   public boolean isCyclic();
   
   /**
    * Locates a row number, starting from startRow, containing the text
-   * within any column
+   * within any column.
    * @param startRow
    * @param text
-   * @return
    */
   int find(int startRow, String text);
 
   /**
-   * Returns every event in the model
-   * @return
+   * Returns every event in the model.
    */
   Vector getAllEvents();
 
   /**
-   * Returns the vector representing the row
-   * @return
+   * Returns the vector representing the row.
    */
   Vector getRow(int row);
 
   /**
-   * Adds a row to the model
+   * Adds a row to the model.
    * @param row
    * @param valueIsAdjusting
    * @return flag representing whether or not the row is being displayed (not filtered)

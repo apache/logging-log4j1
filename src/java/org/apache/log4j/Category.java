@@ -78,7 +78,7 @@ import java.util.ResourceBundle;
 
 /**
  * <font color="#AA2222"><b>This class has been deprecated and replaced by the
- * {@link Logger}<em>subclass</em>.</b></font> It will be kept around to
+ * {@link Logger}<em>subclass</em></b></font>. It will be kept around to
  * preserve backward compatibility until mid 2003.
  *
  * <p>
