@@ -6,9 +6,9 @@
  [***] Changes requiring important modifications to existing client code.
 
 
- February ??, 2001
+ February 23, 2001
 
- - Release of version 1.1 (the 21st major release)
+ - Release of version 1.1b1
 
  - Logging can now be disabled per Hierarchy. It can also be disabled
    using configuration files using the "disable" directive.  The
@@ -44,6 +44,15 @@
 
  - Added getOption(key) method to the OptionHandler interface and modified
    implementations of it as appropriate. [*]
+ 
+ - Added the much awaited DailyRollingFileAppender. [*]
+
+ - The structure of the distribution changed somewhat. The log4j.jar
+   files can be found under dist/. The javadoc directory has been
+   moved to docs/api/. We are now totally dependent on ANT to perform
+   all the steps involved in creating a release, in including
+   compilation, jar file creation, generation of the javadocs, and for
+   the creation of the distribution tar and zip files. [*]
 
  - Removed org/apache/log4j/varia/ResilientFileAppender.java which was
    bogus to begin with. [*]
@@ -59,7 +68,7 @@
  - The LoggingEvent class now supports serialization of priorities
    derived from the org.apache.log4j.Priority class. [*]
  
- - Improved the seach method for searching for the "log4j.properties" file in
+ - Improved the search method for finding the "log4j.properties" file in
    the static initializer of Category class. Thanks to Calvin Chan for
    supplying a better method. [*]
 
@@ -79,10 +88,10 @@
 
  - Added the BufferSize option to the AsyncAppender. [*]
 
- - Eliminateed the SecurityExceptions thrown in Applets.  Thanks Timur
+ - Eliminated the SecurityExceptions thrown in Applets.  Thanks Timur
    Zambalayev for reporting this bug. [*]
 
- - Fixed the errouneously thrown IOInterruptedException when the AsyncAppender 
+ - Fixed the erroneously thrown IOInterruptedException when the AsyncAppender 
    was closed. Thanks to Tom Palmer for accurately reporting this bug. [*]
 
  January 12th, 2001
@@ -101,7 +110,7 @@
  
  - Release of version 1.0.3 (the 20th major release)
 
- - Fixed a NullPointerException occuring in AsyncAppedner after
+ - Fixed a NullPointerException occurring in AsyncAppedner after
    invoking Category.shutdown. Thanks to Frank-Olaf Lohmann for
    reporting this bug. [*]
 
@@ -143,7 +152,7 @@
    > perl -p -i.bak -e "s/org.log4j/org.apache.log4j/;" file1.java .. fileN.java
  
  - Added the fatal() family of methods to the Category
-   class.  Moreoever, the EMERG priority has been removed from the
+   class.  Moreover, the EMERG priority has been removed from the
    Priority class.  This priority has been replaced by the FATAL
    priority that is more widely accepted.  This change will
    require EMERG log statements to be replaced by FATAL log
@@ -151,7 +160,7 @@
    have a small but bearable impact on existing client code. 
  
    Moreover, the Unix Syslog priorities ALERT, CRIT and NOTICE are no
-   longer recognized. Support for these priorities was mininal and
+   longer recognized. Support for these priorities was minimal and
    few users should suffer from these changes. [**]
 
  - Removed the methods setRootPriority, getRootPriority as these
