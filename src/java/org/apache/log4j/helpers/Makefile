@@ -18,12 +18,7 @@ JSOURCES:=LogLog.java\
 	CyclicBuffer.java\
 	BoundedFIFO.java\
 	FileWatchdog.java\
-
-ifdef FULL
-  JSOURCES:=$(JSOURCES) Loader.java
-endif
-
-TSOURCES:=UnitTestOptionConverter.java 
+	Loader.java\
 
 SUBDIRS := 
 

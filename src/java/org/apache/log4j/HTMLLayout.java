@@ -35,7 +35,14 @@ public class HTMLLayout extends Layout {
     }
     
     sbuf.append("\r\n\r\n<tr>");
+ 
+    sbuf.append("<td>");
+    sbuf.append(event.timeStamp - event.getStartTime());
+    sbuf.append("</td>\r\n");
 
+    sbuf.append("<td>");
+    sbuf.append(event.getThreadName());
+    sbuf.append("</td>\r\n");
 
     sbuf.append("<td>");
     sbuf.append(event.priority);
@@ -46,8 +53,9 @@ public class HTMLLayout extends Layout {
     sbuf.append("</td>\r\n");
 
     sbuf.append("<td>");
-    sbuf.append(event.threadName);
+    sbuf.append(event.getNDC());
     sbuf.append("</td>\r\n");
+
 
     sbuf.append("<td>");
     sbuf.append(event.message);
@@ -57,7 +65,7 @@ public class HTMLLayout extends Layout {
     sbuf.append("</tr>");
 
     if(event.throwable != null) {
-      sbuf.append("\r\n<tr><td colspan=\"5\">");
+      sbuf.append("\r\n<tr><td colspan=\"6\">");
       sbuf.append(getThrowableAsHTML(event.throwable));
       sbuf.append("</td></tr>");
     }
@@ -82,8 +90,10 @@ public class HTMLLayout extends Layout {
   */
   public
   String getHeader() {
-    return "<html><body>\r\n<table border=\"1\">\r\n<tr>\r\n"+
-     "<th>Priority</th><th>Category</th><th>Thread</th><th>Message</th></tr>";
+    return "<html><body>\r\n"+
+      "<table border=\"1\" cellpadding=\"2\">\r\n<tr>\r\n"+
+      "<th>Time</th><th>Thread</th><th>Priority</th><th>Category</th>"+
+      "<th>NDC</th><th>Message</th></tr>";
   }
 
   /**
