@@ -82,6 +82,7 @@
     <pathelement location="${jms.jar}"/>
     <pathelement location="${jmx.jar}"/>
     <pathelement location="${jmx-extra.jar}"/>
+    <pathelement location="${avalon-framework.jar}"/>
   </path>
 
   <!-- Construct classpath for building the html pages-->
@@ -123,6 +124,17 @@
     <echo message="JAXP present."/>
   </target>
 
+  <target name="avalonFrameworkCheck">
+    <available classname="org.apache.avalon.framework.logger.Logger"
+        property="avalonFramework-present">
+      <classpath>
+        <pathelement location="${avalon-framework.jar}"/>
+      </classpath>
+    </available>
+  </target>
+  <target name="avalonFramework" depends="avalonFrameworkCheck" if="avalonFramework-present">
+    <echo message="Avalon Framework is present."/>
+  </target>
 
   <target name="jmxCheck">
     <available classname="javax.management.MBeanInfo" property="jmx-present">
@@ -175,7 +187,7 @@
 
   <target name="build" description="Compile all log4j components."
          depends="init, build.core, build.examples, build.xml,
-         build.javamail, build.jms, build.jmx"/>
+         build.javamail, build.jms, build.jmx, build.avalonFramework"/>
 
   <target name="build.core" depends="init">
     <mkdir dir="${javac.dest}" />
@@ -190,6 +202,7 @@
 		            ${stem}/net/SMTPAppender.java,
                	    ${stem}/net/JMS*.java,
                	    ${stem}/jmx/*.java,
+                    ${stem}/varia/Log4JAvalonLogger.java,
                	    ${stem}/or/jms/*.java"
   	    deprecation="${deprecation}"
 	    debug="on">
@@ -235,6 +248,15 @@
     </javac>
     <copy file="${BSTEM}/xml/log4j.dtd"
 	  tofile="${javac.dest}/${stem}/xml/log4j.dtd" />
+  </target>
+
+  <target name="build.avalonFramework" depends="init, avalonFramework" if="avalonFramework-present">
+    <javac srcdir="${java.source.dir}"
+      destdir="${javac.dest}"
+      deprecation="${deprecation}"
+      includes="${stem}/varia/Log4JAvalonLogger.java">
+      <classpath refid="compile.classpath"/>
+    </javac>
   </target>
 
  <target name="build.javamail" depends="init, javamail"
@@ -302,7 +324,7 @@
         <include name="*.jar" />
       </fileset>
     </path>
-    
+
     <taskdef name="jalopy"
              classname="de.hunsicker.jalopy.plugin.ant.AntPlugin"
              classpathref="jalopy.path" />
@@ -322,7 +344,7 @@
         <include name="*.jar" />
       </fileset>
     </path>
-    
+
     <java classname="de.hunsicker.jalopy.swing.SettingsDialog"
           classpathref="jalopy.path"
           fork="true" />
@@ -346,7 +368,7 @@
       <!-- allow for lines of 100 chars. These long lines will be
       weeded out by jalopy -->
       <property key="checkstyle.maxlinelen" value="100"/>
-							
+
       <property key="checkstyle.allow.protected" value="true" />
       <property key="checkstyle.maxmethodlen" value="500" />
       <property key="checkstyle.maxconstructorlen" value="500" />
