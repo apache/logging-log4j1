@@ -77,6 +77,10 @@ public class ThrowableInformation implements java.io.Serializable {
     this.throwable = throwable;
   }
 
+  public ThrowableInformation(String[] rep) {
+    this.rep = rep;
+  }
+
   public Throwable getThrowable() {
     return throwable;
   }
