@@ -598,10 +598,11 @@ public class Category implements AppenderAttachable {
    * named category already exists, then the existing instance will be
    * reutrned. Otherwise, a new instance is created. By default, categories
    * do not have a set level but inherit it from the hierarchy. This is one
-   * of the central features of log4j. <b>Deprecated</b> Please use {@link
-   * Logger#getLogger(String)} instead.
+   * of the central features of log4j. 
    *
    * @param name The name of the category to retrieve.
+   * @deprecated Please use the {@link LogManager#getLogger(String)} method 
+   * instead.
    */
   public static Category getInstance(String name) {
     return LogManager.getLogger(name);
@@ -613,7 +614,7 @@ public class Category implements AppenderAttachable {
    * @param clazz The name of <code>clazz</code> will be used as the name of
    *        the category to retrieve.  See {@link #getInstance(String)} for
    *        more detailed information.
-   * @deprecated Please use {@link Logger#getLogger(Class)} instead.
+   * @deprecated Please use {@link LogManager#getLogger(Class)} instead.
    * @since 1.0
    */
   public static Category getInstance(Class clazz) {
