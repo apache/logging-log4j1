@@ -99,6 +99,7 @@ import javax.swing.JWindow;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -985,6 +986,15 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
              handler.setIdentifierExpression(evt.getNewValue().toString());
 		}
 	} );
+
+    applicationPreferenceModel.addPropertyChangeListener("toolTipDisplayMillis", new PropertyChangeListener() {
+        public void propertyChange(PropertyChangeEvent evt) {
+             ToolTipManager.sharedInstance().setDismissDelay(((Integer)evt.getNewValue()).intValue());
+        }
+    } );
+    ToolTipManager.sharedInstance().setDismissDelay(applicationPreferenceModel.getToolTipDisplayMillis());
+    
+
     applicationPreferenceModel.addPropertyChangeListener("responsiveness", new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent evt) {
         int value = ((Integer)evt.getNewValue()).intValue();
@@ -1655,11 +1665,9 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       }
 
       if (!getPanelMap().containsKey(ident)) {
-        final String eventType =
-          ((ChainsawEventBatchEntry) eventBatchEntrys.get(0)).getEventType();
 
         final LogPanel thisPanel =
-          new LogPanel(getStatusBar(), ident, eventType);
+          new LogPanel(getStatusBar(), ident);
 
         thisPanel.addEventCountListener(new TabIconHandler(ident));
 

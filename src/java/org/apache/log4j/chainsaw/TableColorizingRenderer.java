@@ -95,6 +95,7 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
   private boolean levelUseIcons = true;
   private DateFormat dateFormatInUse = DATE_FORMATTER;
   private int loggerPrecision = 0;
+  private boolean toolTipsVisible;
 
   /**
    * Creates a new TableColorizingRenderer object.
@@ -110,6 +111,10 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
     levelComponent.setHorizontalAlignment(JLabel.CENTER);
 
     levelComponent.setText("");
+  }
+  
+  public void setToolTipsVisible(boolean toolTipsVisible) {
+      this.toolTipsVisible = toolTipsVisible;
   }
 
   public void loadSettings(LoadSettingsEvent event) {
@@ -180,7 +185,11 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
           levelComponent.setText("");
         }
 
-        levelComponent.setToolTipText(value.toString());
+        if (toolTipsVisible) {
+            levelComponent.setToolTipText(((JLabel)c).getToolTipText());
+        } else {
+            levelComponent.setToolTipText(value.toString());
+        } 
       } else {
         levelComponent.setIcon(null);
         levelComponent.setText(value.toString());

@@ -73,6 +73,7 @@ public class ApplicationPreferenceModel implements SettingsListener {
     private boolean confirmExit;
     private boolean showSplash;
     private String lookAndFeelClassName;
+    private int toolTipDisplayMillis;
     
     
     private int responsiveness;
@@ -163,12 +164,22 @@ public class ApplicationPreferenceModel implements SettingsListener {
         return identifierExpression;
     }
 
+    public final void setToolTipDisplayMillis(int newToolTipDisplayMillis) {
+        int oldToolTipDisplayMillis = toolTipDisplayMillis;
+        toolTipDisplayMillis = newToolTipDisplayMillis;
+        firePropertyChange("toolTipDisplayMillis", oldToolTipDisplayMillis, newToolTipDisplayMillis);
+    }
+    
+    public final int getToolTipDisplayMillis() {
+        return toolTipDisplayMillis;
+    }
+
     public final void setIdentifierExpression(String newIdentifierExpression) {
         String oldIdentifierExpression=identifierExpression;
         this.identifierExpression = newIdentifierExpression;
         firePropertyChange("identifierExpression", oldIdentifierExpression, newIdentifierExpression);
     }
-    
+
     /**
      * @param showNoReceiverWarning The showNoReceiverWarning to set.
      */
@@ -192,6 +203,7 @@ public class ApplicationPreferenceModel implements SettingsListener {
        setLookAndFeelClassName(event.getSetting("lookAndFeelClassName"));
        setConfirmExit(event.asBoolean("confirmExit"));
        setShowSplash(event.asBoolean("showSplash"));
+       setToolTipDisplayMillis(event.asInt("toolTipDisplayMillis"));
     }
 
     /* (non-Javadoc)
@@ -208,6 +220,7 @@ public class ApplicationPreferenceModel implements SettingsListener {
         event.saveSetting("lookAndFeelClassName", getLookAndFeelClassName());
         event.saveSetting("confirmExit",isConfirmExit());
         event.saveSetting("showSplash", isShowSplash());
+        event.saveSetting("toolTipDisplayMillis", getToolTipDisplayMillis());
     }
 
     /**
@@ -226,6 +239,7 @@ public class ApplicationPreferenceModel implements SettingsListener {
       setLookAndFeelClassName(model.getLookAndFeelClassName());
       setConfirmExit(model.isConfirmExit());
       setShowSplash(model.isShowSplash());
+      setToolTipDisplayMillis(model.getToolTipDisplayMillis());
     }
     /**
      * @return Returns the responsiveness.

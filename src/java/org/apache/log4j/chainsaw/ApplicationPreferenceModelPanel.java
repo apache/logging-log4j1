@@ -93,6 +93,7 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
   private ApplicationPreferenceModel uncommittedPreferenceModel =
     new ApplicationPreferenceModel();
   JTextField identifierExpression;
+  JTextField toolTipDisplayMillis;    
 
   ApplicationPreferenceModelPanel(ApplicationPreferenceModel model) {
     this.committedPreferenceModel = model;
@@ -102,6 +103,12 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
         public void actionPerformed(ActionEvent e) {
           uncommittedPreferenceModel.setIdentifierExpression(
             identifierExpression.getText());
+            try {
+                int millis = Integer.parseInt(toolTipDisplayMillis.getText());
+                if (millis >= 0) {
+                    uncommittedPreferenceModel.setToolTipDisplayMillis(millis);
+                }
+            } catch (NumberFormatException nfe) {}
           committedPreferenceModel.apply(uncommittedPreferenceModel);
           hidePanel();
         }
@@ -391,6 +398,7 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
       setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
       identifierExpression = new JTextField(20);
+      toolTipDisplayMillis = new JTextField(8);
 
       Box p = new Box(BoxLayout.X_AXIS);
 
@@ -423,6 +431,14 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
       
       add(p2);
       add(p3);
+
+      JPanel p4 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+
+      p4.add(new JLabel("ToolTip Display (millis)"));
+      p4.add(Box.createHorizontalStrut(5));
+      p4.add(toolTipDisplayMillis);
+      add(p4);
+
       add(Box.createVerticalGlue());
     }
 
@@ -484,6 +500,14 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
             responsiveSlider.setValue(value);
           }
         });
+
+        uncommittedPreferenceModel.addPropertyChangeListener(
+          "toolTipDisplayMillis",
+          new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent evt) {
+              toolTipDisplayMillis.setText(evt.getNewValue().toString());
+            }
+          });
 
       showNoReceiverWarning.addActionListener(
         new ActionListener() {

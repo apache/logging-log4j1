@@ -68,10 +68,6 @@ public class ColorRule extends AbstractRule implements Serializable {
   private final Color backgroundColor;
   private final String expression;
 
-  public ColorRule(Rule rule, Color backgroundColor) {
-    this(null, rule, backgroundColor, null);
-  }
-
   public ColorRule(String expression, Rule rule, Color backgroundColor, Color foregroundColor) {
     this.expression = expression;
     this.rule = rule;
