@@ -49,14 +49,6 @@
 
 package org.apache.log4j.chainsaw.rule;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.MDC;
-import org.apache.log4j.chainsaw.ChainsawConstants;
-import org.apache.log4j.chainsaw.LoggingEventFieldResolver;
-import org.apache.log4j.chainsaw.filter.FilterModel;
-import org.apache.log4j.spi.LoggingEvent;
-
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.Point;
@@ -65,12 +57,12 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.AbstractAction;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -81,6 +73,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.MDC;
+import org.apache.log4j.chainsaw.ChainsawConstants;
+import org.apache.log4j.chainsaw.LoggingEventFieldResolver;
+import org.apache.log4j.chainsaw.filter.FilterModel;
+import org.apache.log4j.spi.LoggingEvent;
 
 
 public class RuleTest extends JFrame {
@@ -233,11 +233,38 @@ public class RuleTest extends JFrame {
     JPopupMenu contextMenu = new JPopupMenu();
     JList list = new JList();
     final JTextField textField;
+    private DefaultListModel fieldModel = new DefaultListModel();
+    private DefaultListModel operatorModel = new DefaultListModel();
 
     public ContextListener(final JTextField textField) {
       this.textField = textField;
-      list.setVisibleRowCount(5);
+      fieldModel.addElement("LOGGER");
+      fieldModel.addElement("LEVEL");
+      fieldModel.addElement("CLASS");
+      fieldModel.addElement("FILE");
+      fieldModel.addElement("LINE");
+      fieldModel.addElement("METHOD");
+      fieldModel.addElement("MSG");
+      fieldModel.addElement("NDC");
+      fieldModel.addElement("EXCEPTION");
+      fieldModel.addElement("TIMESTAMP");
+      fieldModel.addElement("THREAD");
+      fieldModel.addElement("MDC");
+      fieldModel.addElement("PROP");
 
+      operatorModel.addElement("&&");
+      operatorModel.addElement("||");
+      operatorModel.addElement("!");
+      operatorModel.addElement("!=");
+      operatorModel.addElement("==");
+      operatorModel.addElement("~=");
+      operatorModel.addElement("like");
+      operatorModel.addElement("<");
+      operatorModel.addElement(">");
+      operatorModel.addElement("<=");
+      operatorModel.addElement(">=");
+
+      list.setVisibleRowCount(5);
       PopupListener popupListener = new PopupListener();
       textField.addMouseListener(popupListener);
 
@@ -269,8 +296,8 @@ public class RuleTest extends JFrame {
       String text = textField.getText();
       int position = textField.getCaretPosition();
       textField.setText(
-        text.substring(0, position) + value + text.substring(position));
-      textField.setCaretPosition(position + value.length());
+        text.substring(0, position) + value + " " + text.substring(position));
+      textField.setCaretPosition(position + value.length() + 1);
     }
 
     public void keyPressed(KeyEvent e) {
@@ -289,9 +316,33 @@ public class RuleTest extends JFrame {
         list.setSelectedIndex(0);
 
         Point p = textField.getCaret().getMagicCaretPosition();
-        contextMenu.show(textField, p.x, (p.y + (textField.getHeight() - 6)));
+        contextMenu.show(textField, p.x, (p.y + (textField.getHeight() - 5)));
         list.requestFocus();
-      }
+      } else {
+        if (isOperatorContextValid()) {
+            list.setModel(operatorModel);
+            list.setSelectedIndex(0);
+
+            Point p = textField.getCaret().getMagicCaretPosition();
+            contextMenu.show(textField, p.x, (p.y + (textField.getHeight() - 5)));
+            list.requestFocus();
+        } else if (isFieldContextValid()) {
+            list.setModel(fieldModel);
+            list.setSelectedIndex(0);
+            Point p = textField.getCaret().getMagicCaretPosition();
+            if (p == null) {
+                p = new Point(textField.getLocation().x, (textField.getLocation().y - textField.getHeight() + 5));
+            }
+            contextMenu.show(textField, p.x, (p.y + (textField.getHeight() - 5)));
+            list.requestFocus();
+        }
+        }
+    }
+
+    private boolean isFieldContextValid() {
+        String text = textField.getText();
+        int currentPosition = textField.getCaretPosition();
+        return ((currentPosition == 0) || (text.charAt(currentPosition - 1) == ' '));
     }
 
     private String getContextKey() {
@@ -304,9 +355,38 @@ public class RuleTest extends JFrame {
       return field;
     }
 
+    private boolean isOperatorContextValid() {
+      String text = textField.getText();
+
+      int currentPosition = textField.getCaretPosition();
+
+      if ((currentPosition < 1) || (text.charAt(currentPosition - 1) != ' ')) {
+        return false;
+      }
+
+      int lastFieldPosition = text.lastIndexOf(" ", currentPosition - 1);
+      if (lastFieldPosition == -1) {
+        return false;
+      }
+
+      int lastFieldStartPosition =
+        Math.max(0, text.lastIndexOf(" ", lastFieldPosition - 1));
+      String field =
+        text.substring(lastFieldStartPosition, lastFieldPosition).trim();
+
+      if (field.startsWith("MDC.")) {
+        return true;
+      }
+      if (resolver.isField(field)) {
+        return true;
+      }
+
+      return false;
+    }
     //returns the currently active field which can be used to display a context menu
     //the field returned is the left hand portion of an expression (for example, logger == )
     //logger is the field that is returned
+
     private String getField() {
       String text = textField.getText();
 

@@ -133,10 +133,6 @@ public final class LoggingEventFieldResolver {
     return resolver;
   }
 
-  public List getKeywords() {
-    return keywordList;
-  }
-
   public boolean isField(String fieldName) {
     return ((fieldName != null) && (keywordList.contains(fieldName.toUpperCase())));
   }
