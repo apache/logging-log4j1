@@ -74,7 +74,7 @@
 
   <!-- Construct compile classpath -->
   <path id="compile.classpath">
-    <pathelement location="${javac.dest}/classes"/>
+    <pathelement location="${javac.dest}"/>
     <pathelement location="${javamail.jar}"/>
     <pathelement location="${activation.jar}"/>
     <pathelement location="${jaxp.jaxp.jar}"/>
