@@ -8,13 +8,26 @@
 
  March ??, 2001
 
- - Release of version 1.1b1
+ - Release of version 1.1b2
+
+ - The directory structure has changed to better suit Jakarta
+   conventions as follows:
+
+   org/**   --> src/java/org/**
+   xdocs/** --> src/xdocs/**
+
+   If you have a CVS checked out copy of log4j be sure to check out a
+   fresh copy. [*]
 
  - Added jar files required at build time to build/lib so that it is
    now possible to compile log4j out of the box. [*]
 
  - Added the setQuietMode(booelan) method to LogLog. In quiet mode
    LogLog will not output anything even in case of errors. [*]
+
+ - Log4j components are not configured as JavaBeans. The serOption and
+   getOptionString methods have been removed from the OptionHandler
+   interface which is implemented by most log4j components. [**]
 
  February 23, 2001
 
