@@ -884,12 +884,9 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
         public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand().equals("comboBoxEdited")) {
             try {
-                System.out.println("Examining rule: " + filterCombo.getSelectedItem().toString());
                 //verify the expression is valid
                 ExpressionRule.getRule(filterCombo.getSelectedItem().toString());
-                System.out.println("rule was valid");
             } catch (IllegalArgumentException iae) {
-                System.out.println("rule was not valid");
                 //don't add expressions that aren't valid
                 return;
             } 
