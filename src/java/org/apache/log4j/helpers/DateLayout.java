@@ -45,8 +45,8 @@ abstract public class DateLayout extends Layout {
 
   protected FieldPosition pos = new FieldPosition(0);
 
-  final static public String DATE_FORMAT_OPTION = "DateFormat";
-  final static public String TIMEZONE_OPTION = "TimeZone";  
+  //final static public String DATE_FORMAT_OPTION = "DateFormat";
+  //final static public String TIMEZONE_OPTION = "TimeZone";  
 
   private String timeZoneID;
   private String dateFormatOption;  
@@ -55,24 +55,54 @@ abstract public class DateLayout extends Layout {
   protected Date date = new Date();
 
 
+  /**
+    The value of the <b>DateFormat</b> option should be either an
+    argument to the constructor of {@link SimpleDateFormat} or one of
+    the srings "NULL", "RELATIVE", "ABSOLUTE", "DATE" or "ISO8601.
+   */
+  public
+  void setDateFormat(String dateFormat) {
+    if (dateFormat != null) {
+        dateFormatOption = dateFormat.toUpperCase();
+    }
+    setDateFormat(dateFormatOption, TimeZone.getDefault());
+  }
+
+  /**
+     Returns value of the <b>DateFormat</b> option.
+   */
+  public
+  String getDateFormat() {
+    return dateFormatOption;
+  }
+  
+  /**
+    The <b>TimeZoneID</b> option is a time zone ID string in the format
+    expected by the {@link TimeZone#getTimeZone} method.
+   */
+  public
+  void setTimeZone(String timeZone) {
+    this.timeZoneID = timeZone;
+  }
+  
+  /**
+     Returns value of the <b>TimeZone</b> option.
+   */
+  public
+  String getTimeZone() {
+    return timeZoneID;
+  }
+  
   public
   void activateOptions() {
-    
     setDateFormat(dateFormatOption);
     if(timeZoneID != null && dateFormat != null) {
       dateFormat.setTimeZone(TimeZone.getTimeZone(timeZoneID));
     }
   }
 
-
   public
-  String[] getOptionStrings() {
-    return new String[] {DATE_FORMAT_OPTION, TIMEZONE_OPTION};
-  }
-
-
-  public
-  void  dateFormat(StringBuffer buf, LoggingEvent event) {
+  void dateFormat(StringBuffer buf, LoggingEvent event) {
     if(dateFormat != null) {
       date.setTime(event.timeStamp);
       dateFormat.format(date, buf, this.pos);
@@ -80,11 +110,9 @@ abstract public class DateLayout extends Layout {
     }
   }
 
-
   /**
      Sets the {@link DateFormat} used to format time and date in the
      zone determined by <code>timeZone</code>.
-
    */
   public
   void setDateFormat(DateFormat dateFormat, TimeZone timeZone) {
@@ -92,11 +120,6 @@ abstract public class DateLayout extends Layout {
     this.dateFormat.setTimeZone(timeZone);
   }
   
-  public
-  void setDateFormat(String dateFormatType) {
-    setDateFormat(dateFormatType, TimeZone.getDefault());
-  }
-
   /**
      Sets the DateFormat used to format date and time in the time zone
      determined by <code>timeZone</code> parameter. The {@link DateFormat} used
@@ -110,7 +133,6 @@ abstract public class DateLayout extends Layout {
      <code>dateFormatType</code> is not one of the above, then the
      argument is assumed to be a date pattern for {@link
      SimpleDateFormat}.
-     
   */
   public
   void setDateFormat(String dateFormatType, TimeZone timeZone) {
@@ -135,54 +157,6 @@ abstract public class DateLayout extends Layout {
     } else {
       this.dateFormat = new SimpleDateFormat(dateFormatType);
       this.dateFormat.setTimeZone(timeZone);
-    }
-  }
-
-  /**
-     
-     <p>The DateLayout specific options are:
-     
-    <dl>
-     
-    <p><dt><b>DateFormat</b>
-
-    <dd>The value of this option should be either an argument to the
-    constructor of {@link SimpleDateFormat} or one of the srings
-    "NULL", "RELATIVE", "ABSOLUTE", "DATE" or "ISO8601.
-
-    <p>See also the <b>%d</b> conversion specifier of the {@link
-    org.apache.log4j.PatternLayout PatternLayout}.
-    
-    <p><dt><b>TimeZoneID</b>
-
-    <dd>A time zone ID string in the format expected by the {@link
-    TimeZone#getTimeZone} method.
-
-    </dl>
-
-
-   */
-  public
-  void setOption(String option, String value) {
-    if(option.equalsIgnoreCase(DATE_FORMAT_OPTION)) {
-      dateFormatOption = value.toUpperCase();
-    } else if(option.equalsIgnoreCase(TIMEZONE_OPTION)) {
-      timeZoneID = value;
-    }
-  }
-  
-  /**
-     Returns the current value of the specified option, or null if
-     it is not one of "DateFormat" or "TimeZoneID".
-  */
-  public
-  String getOption(String option) {
-    if(option.equalsIgnoreCase(DATE_FORMAT_OPTION)) {
-      return dateFormatOption;
-    } else if(option.equalsIgnoreCase(TIMEZONE_OPTION)) {
-      return timeZoneID;
-    } else {
-      return null;
     }
   }
 }

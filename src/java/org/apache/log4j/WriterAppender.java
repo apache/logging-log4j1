@@ -30,17 +30,6 @@ import org.apache.log4j.helpers.TracerPrintWriter;
    @author Ceki G&uuml;lc&uuml;
    @since 1.1 */
 public class WriterAppender extends AppenderSkeleton {
-
-  /**
-     A string constant used in naming the option for immediate
-     flushing of the output stream at the end of each append
-     operation. Current value of this string constant is
-     <b>ImmediateFlush</b>.
-
-     <p>Note that all option keys are case sensitive.     
-  */
-  public static final String IMMEDIATE_FLUSH_OPTION = "ImmediateFlush";
-
   /**
      Immediate flush means that the undelying writer or output stream
      will be flushed at the end of each append operation. Immediate
@@ -96,6 +85,32 @@ public class WriterAppender extends AppenderSkeleton {
     this.setWriter(writer);
   }
 
+  /**
+     If the <b>ImmediateFlush</b> option is set to
+     <code>true</code>, the appender will flush at the end of each
+     write. This is the default behaviour. If the option is set to
+     <code>false</code>, then the underlying stream can defer writing
+     to physical medium to a later time. 
+
+     <p>Avoiding the flush operation at the end of each append results in
+     a performance gain of 10 to 20 percent. However, there is safety
+     tradeoff involved in skipping flushing. Indeed, when flushing is
+     skipped, then it is likely that the last few log events will not
+     be recorded on disk when the application exits. This is a high
+     price to pay even for a 20% performance gain.
+   */
+  public
+  void setImmediateFlush(boolean value) {
+    immediateFlush = value;
+  }
+
+  /**
+     Returns value of the <b>ImmediateFlush</b> option.
+   */
+  public
+  boolean getImmediateFlush() {
+    return immediateFlush;
+  }
 
   /**
      Does nothing.
@@ -194,28 +209,7 @@ public class WriterAppender extends AppenderSkeleton {
       }
     }
   }
-
-  public
-  String getOption(String key) {
-    if (key.equalsIgnoreCase(IMMEDIATE_FLUSH_OPTION)) {
-      return immediateFlush ? "true" : "false";
-    } else {
-      return super.getOption(key);
-    }
-  }
-
-
-  /**
-     Returns the option names for this component.
-  */
-  public
-  String[] getOptionStrings() {
-    return OptionConverter.concatanateArrays(super.getOptionStrings(),
-           new String[] {IMMEDIATE_FLUSH_OPTION});
-  }
-
-
-
+  
   /**
      Set the {@link ErrorHandler} for this FileAppender and also the
      underlying {@link QuietWriter} if any. */
@@ -232,37 +226,6 @@ public class WriterAppender extends AppenderSkeleton {
     }    
   }
   
-  
-  /**
-     Set WriterAppender specific options.
-          
-     <p><b>ImmediateFlush</b> If this option is set to
-     <code>true</code>, the appender will flush at the end of each
-     write. This is the default behaviour. If the option is set to
-     <code>false</code>, then the underlying stream can defer writing
-     to physical medium to a later time. 
-
-     <p>Avoiding the flush operation at the end of each append results in
-     a performance gain of 10 to 20 percent. However, there is safety
-     tradeoff involved in skipping flushing. Indeed, when flushing is
-     skipped, then it is likely that the last few log events will not
-     be recorded on disk when the application exits. This is a high
-     price to pay even for a 20% performance gain.
-
-     <b>See</b> Options of the super class {@link
-     org.apache.log4j.AppenderSkeleton}, in particular the
-     <b>Threshold</b> option.
-  */
-  public
-  void setOption(String key, String value) {
-    if(value == null) return;
-    super.setOption(key, value);
-    
-    if (key.equalsIgnoreCase(IMMEDIATE_FLUSH_OPTION)) {
-      immediateFlush = OptionConverter.toBoolean(value, immediateFlush);
-    }
-  }
-
   
   /**
     <p>Sets the Writer where the log output will go. The

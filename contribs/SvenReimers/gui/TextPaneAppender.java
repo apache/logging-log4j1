@@ -177,19 +177,6 @@ public class TextPaneAppender extends AppenderSkeleton {
     return textpane;
   }
   
-  public String getLabel() {
-    return label;
-  }
-
-  public
-  String[] getOptionStrings() {
-    return new String[] {LABEL_OPTION, COLOR_OPTION_FATAL, COLOR_OPTION_ERROR,
-			   COLOR_OPTION_WARN, COLOR_OPTION_INFO, COLOR_OPTION_DEBUG,
-			   COLOR_OPTION_BACKGROUND, FANCY_OPTION,
-			   FONT_NAME_OPTION, FONT_SIZE_OPTION};
-  }
-
-  
   private
   static
   Color parseColor (String v) {
@@ -243,7 +230,82 @@ public class TextPaneAppender extends AppenderSkeleton {
     return c == null ? null : colorToString(c);
   }
   
-  private
+  /////////////////////////////////////////////////////////////////////
+  // option setters and getters
+  
+  public
+  void setLabel(String label) {
+    this.label = label;
+  }
+  public
+  String getLabel() {
+    return label;
+  }
+  
+  public
+  void setColorEmerg(String color) {
+    setColor(Priority.FATAL, color);
+  }
+  public
+  String getColorEmerg() {
+    return getColor(Priority.FATAL);
+  }
+  
+  public
+  void setColorError(String color) {
+    setColor(Priority.ERROR, color);
+  }
+  public
+  String getColorError() {
+    return getColor(Priority.ERROR);
+  }
+  
+  public
+  void setColorWarn(String color) {
+    setColor(Priority.WARN, color);
+  }
+  public
+  String getColorWarn() {
+    return getColor(Priority.WARN);
+  }
+  
+  public
+  void setColorInfo(String color) {
+    setColor(Priority.INFO, color);
+  }
+  public
+  String getColorInfo() {
+    return getColor(Priority.INFO);
+  }
+  
+  public
+  void setColorDebug(String color) {
+    setColor(Priority.DEBUG, color);
+  }
+  public
+  String getColorDebug() {
+    return getColor(Priority.DEBUG);
+  }
+  
+  public
+  void setColorBackground(String color) {
+    textpane.setBackground(parseColor(color));
+  }
+  public
+  String getColorBackground() {
+    return colorToString(textpane.getBackground());
+  }
+  
+  public
+  void setFancy(boolean fancy) {
+    this.fancy = fancy;
+  }
+  public
+  boolean getFancy() {
+    return fancy;
+  }
+  
+  public
   void setFontSize(int size) {
     Enumeration e = attributes.elements();
     while (e.hasMoreElements()) {
@@ -252,13 +314,13 @@ public class TextPaneAppender extends AppenderSkeleton {
     return;
   }
   
-  private
+  public
   int getFontSize() {
     AttributeSet attrSet = (AttributeSet) attributes.get(Priority.INFO);
     return StyleConstants.getFontSize(attrSet);
   }
   
-  private
+  public
   void setFontName(String name) {
     Enumeration e = attributes.elements();
     while (e.hasMoreElements()) {
@@ -267,62 +329,10 @@ public class TextPaneAppender extends AppenderSkeleton {
     return;
   }
   
-  private
+  public
   String getFontName() {
     AttributeSet attrSet = (AttributeSet) attributes.get(Priority.INFO);
     return StyleConstants.getFontFamily(attrSet);
-  }
-  
-  public
-  void setOption(String option, String value) {
-    if (option.equalsIgnoreCase(LABEL_OPTION))
-      this.label=value;
-    if (option.equalsIgnoreCase(COLOR_OPTION_FATAL))
-      setColor(Priority.FATAL,value);
-    if (option.equalsIgnoreCase(COLOR_OPTION_ERROR))
-      setColor(Priority.ERROR,value);
-    if (option.equalsIgnoreCase(COLOR_OPTION_WARN))
-      setColor(Priority.WARN,value);
-    if (option.equalsIgnoreCase(COLOR_OPTION_INFO))
-      setColor(Priority.INFO,value);
-    if (option.equalsIgnoreCase(COLOR_OPTION_DEBUG))
-      setColor(Priority.DEBUG,value);
-    if (option.equalsIgnoreCase(COLOR_OPTION_BACKGROUND))
-      textpane.setBackground(parseColor(value));
-    if (option.equalsIgnoreCase(FANCY_OPTION))
-      fancy = OptionConverter.toBoolean(value, fancy);
-    if (option.equalsIgnoreCase(FONT_SIZE_OPTION))
-      setFontSize(Integer.parseInt(value));
-    if (option.equalsIgnoreCase(FONT_NAME_OPTION))
-      setFontName(value);
-    return;
-  }
-     
-  public
-  String getOption(String key) {
-    if (key.equalsIgnoreCase(LABEL_OPTION)) {
-      return label;
-    } else if (key.equalsIgnoreCase(COLOR_OPTION_FATAL)) {
-      return getColor(Priority.FATAL);
-    } else if (key.equalsIgnoreCase(COLOR_OPTION_ERROR)) {
-      return getColor(Priority.ERROR);
-    } else if (key.equalsIgnoreCase(COLOR_OPTION_WARN)) {
-      return getColor(Priority.WARN);
-    } else if (key.equalsIgnoreCase(COLOR_OPTION_INFO)) {
-      return getColor(Priority.INFO);
-    } else if (key.equalsIgnoreCase(COLOR_OPTION_DEBUG)) {
-      return getColor(Priority.DEBUG);
-    } else if (key.equalsIgnoreCase(COLOR_OPTION_BACKGROUND)) {
-      return colorToString(textpane.getBackground());
-    } else if (key.equalsIgnoreCase(FANCY_OPTION)) {
-      return fancy ? "true" : "false";
-    } else if (key.equalsIgnoreCase(FONT_SIZE_OPTION)) {
-      return Integer.toString(getFontSize());
-    } else if (key.equalsIgnoreCase(FONT_NAME_OPTION)) {
-      return getFontName();
-    } else {
-      return super.getOption(key);
-    }
   }
 
   public

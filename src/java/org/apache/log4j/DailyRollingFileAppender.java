@@ -147,7 +147,7 @@ public class DailyRollingFileAppender extends FileAppender {
      filename pattern. Current value of this string constant is
      <strong>DatePattern</strong>.
    */
-  static final public String DATE_PATTERN_OPTION = "DatePattern";
+  //static final public String DATE_PATTERN_OPTION = "DatePattern";
   
   /**
      The date pattern. By default, the pattern is set to
@@ -191,6 +191,21 @@ public class DailyRollingFileAppender extends FileAppender {
     activateOptions();
   }
 
+  /**
+     The <b>DatePattern</b> takes a string in the same format as
+     expected by {@link SimpleDateFormat}. This options determines the
+     rollover schedule.
+   */
+  public
+  void setDatePattern(String pattern) {
+    datePattern = pattern;
+  }
+  
+  /** Returns the value of the <b>DatePattern</b> option. */
+  public
+  String getDatePattern() {
+    return datePattern;
+  }
 
   public
   void activateOptions() {
@@ -258,19 +273,6 @@ public class DailyRollingFileAppender extends FileAppender {
     return TOP_OF_TROUBLE; // Deliberately head for trouble...
   }
 
-
-  /**
-     Retuns the option names for this component, namely {@link
-     #DATE_PATTERN_OPTION} in
-     addition to the options of {@link FileAppender#getOptionStrings
-     FileAppender}.
-  */
-  public
-  String[] getOptionStrings() {
-    return OptionConverter.concatanateArrays(super.getOptionStrings(),
-		 new String[] {DATE_PATTERN_OPTION});
-  }
-
   /**
      Rollover the current file to a new file.
   */  
@@ -278,8 +280,7 @@ public class DailyRollingFileAppender extends FileAppender {
 
     /* Compute filename, but only if datePattern is specified */
     if (datePattern == null) {
-      errorHandler.error("Missing "+DATE_PATTERN_OPTION+
-			 " option in rollOver().");
+      errorHandler.error("Missing DatePattern option in rollOver().");
       return;
     }
 
@@ -310,28 +311,6 @@ public class DailyRollingFileAppender extends FileAppender {
     scheduledFilename = datedFilename;    
   }
 
-  /**
-     Set the options for the {@link DailyRollingFileAppender}
-     instance.
-
-     <p>The <b>DatePattern</b> takes a string in the same format as
-     expected by {@link SimpleDateFormat}. This options determines the
-     rollover schedule.
-
-     <p>Be sure to refer to the options in the super classes {@link
-     FileAppender}, {@link WriterAppender} and in particular the
-     <b>Threshold</b> option in {@link AppenderSkeleton}.
-     
-     </ul> */
-  public
-  void setOption(String key, String value) {
-    if(value == null) return;
-    super.setOption(key, value);    
-    if(key.equalsIgnoreCase(DATE_PATTERN_OPTION)) {
-      datePattern = value;
-    }
-  }
-  
   /**
      This method differentiates DailyRollingFileAppender from its
      super class.

@@ -16,7 +16,7 @@ function testGetOptions {
    touch $TEMP
  fi
 
- java $1 org.apache.log4j.test.PrintProperties > $TEMP
+ java $1 -Dlog4j.configuration=$LCF org.apache.log4j.test.PrintProperties | sort > $TEMP
 
  check witness/getOptions.$TEST $TEMP; echo "OK."
 }
@@ -24,8 +24,6 @@ function testGetOptions {
 
 
 declare -i TEST
-
-LCF=log4j.properties
 
 function createProperties {
   echo -n "" > $LCF

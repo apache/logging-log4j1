@@ -81,28 +81,6 @@ public class SyslogAppender extends AppenderSkeleton {
   /** reserved for local use*/
   final static public int LOG_LOCAL7 = 23<<3; 
 
-   /**
-     A string constant used in naming the option for setting the
-     syslog server.  Current value of this string constant is
-     <b>SyslogHost</b>.
-     @since 0.8.1 */
-  public static final String SYSLOG_HOST_OPTION = "SyslogHost";
-
-   /**
-     A string constant used in naming the option for setting facility
-     type.  Current value of this string constant is <b>Facility</b>.
-
-     @since 0.8.1 */
-  public static final String FACILITY_OPTION = "Facility";  
-
-   /**
-     A string constant used in naming the option for setting whether
-     the facility name is printed or not.  Current value of this
-     string constant is <b>FacilityPrinting</b>.
-
-     @since 0.8.1 */
-  public static final String FACILITY_PRINTING_OPTION = "FacilityPrinting";  
-
   protected static final int SYSLOG_HOST_OI = 0;
   protected static final int FACILITY_OI = 1;
   
@@ -293,20 +271,6 @@ public class SyslogAppender extends AppenderSkeleton {
   void activateOptions() {
   }
 
-  
-  /**
-     Returns the option names for this component, namely the string
-     array consisting of {{@link #SYSLOG_HOST_OPTION}, {@link
-     #FACILITY_OPTION}, {@link #FACILITY_PRINTING_OPTION}}.
-
-     @since 0.8.1 */
-  public
-  String[] getOptionStrings() {
-    return OptionConverter.concatanateArrays(super.getOptionStrings(),
-		      new String[] {SYSLOG_HOST_OPTION, FACILITY_OPTION,
-			            FACILITY_PRINTING_OPTION});
-  }
-  
   /**
      The SyslogAppender requires a layout. Hence, this method returns
      <code>true</code>.
@@ -318,7 +282,30 @@ public class SyslogAppender extends AppenderSkeleton {
   }
   
   /**
-     Set the syslog facility.
+    The <b>SyslogHost</b> option is the name of the the syslog host
+    where log output should go.
+
+    <b>WARNING</b> If the SyslogHost is not set, then this appender
+    will fail. 
+   */
+  public
+  void setSyslogHost(String syslogHost) {
+    this.sqw = new SyslogQuietWriter(new SyslogWriter(syslogHost), 
+				     syslogFacility, errorHandler);
+    this.stp = new SyslogTracerPrintWriter(sqw);    
+    this.syslogHost = syslogHost;
+  }
+  
+  /**
+     Returns the value of the <b>SyslogHost</b> option.
+   */
+  public
+  String getSyslogHost() {
+    return syslogHost;
+  }
+  
+  /**
+     Set the syslog facility. This is the <b>Facility</b> option.
 
      <p>The <code>facilityName</code> parameter must be one of the
      strings KERN, USER, MAIL, DAEMON, AUTH, SYSLOG, LPR, NEWS, UUCP,
@@ -344,78 +331,31 @@ public class SyslogAppender extends AppenderSkeleton {
     if(sqw != null) {
       sqw.setSyslogFacility(this.syslogFacility);
     }
-
   }
   
   /**
-    Set SyslogAppender specific parameters. 
-
-    <p>The recognized options are <b>SyslogHost</b>, <b>Facility</b> and
-    <b>FacilityPrinting</b>, i.e. the values of the string constants
-    {@link #SYSLOG_HOST_OPTION}, {@link #FACILITY_OPTION} and {@link
-    #FACILITY_PRINTING_OPTION} respectively.
-     
-    <dl>
-
-    <p><dt><b>SyslogHost</b>
-
-    <dd>The host name of the syslog host where log output should
-    go.
-
-    <b>WARNING</b> If the SyslogHost is not set, then this appender
-    will fail. 
-
-
-     <p><dt><b>Facility</b>
-
-     A string representing the syslog facility.
-
-     <p>Acceptable values are in the set {KERN, USER, MAIL, DAEMON,
-     AUTH, SYSLOG, LPR, NEWS, UUCP, CRON, AUTHPRIV, FTP LOCAL0,
-     LOCAL1, LOCAL2, LOCAL3, LOCAL4, LOCAL5, LOCAL6, LOCAL7}.
-    
-    <p><dt><b>FacilityPrinting</b>
-
-    <dd>If set to true, the printed message will include the facility
-    name of the application. Is set to <em>false</em> by default.
-    
-    </dl>
-
-    <p>
-    @since 0.8.1 */
+     Returns the value of the <b>Facility</b> option.
+   */
   public
-  void setOption(String option, String value) {
-    if(value == null) return;
-    
-    super.setOption(option, value);    
-    
-    if(option.equals(SYSLOG_HOST_OPTION)) 
-      this.setSyslogHost(value);
-    else if(option.equals(FACILITY_PRINTING_OPTION))
-      facilityPrinting = OptionConverter.toBoolean(value, facilityPrinting);
-    else if(option.equals(FACILITY_OPTION)) {
-      this.setFacility(value);
-    }
+  String getFacility() {
+    return getFacilityString(syslogFacility);
   }
   
+  /**
+    If the <b>FacilityPrinting</b> option is set to true, the printed
+    message will include the facility name of the application. It is
+    <em>false</em> by default.
+   */
   public
-  String getOption(String option) {
-    if(option.equals(SYSLOG_HOST_OPTION)) {
-      return syslogHost;
-    } else if(option.equals(FACILITY_PRINTING_OPTION)) {
-      return facilityPrinting ? "true" : "false";
-    } else if(option.equals(FACILITY_OPTION)) {
-      return getFacilityString(syslogFacility);
-    } else {
-      return super.getOption(option);
-    }
+  void setFacilityPrinting(boolean on) {
+    facilityPrinting = on;
   }
-
+  
+  /**
+     Returns the value of the <b>FacilityPrinting</b> option.
+   */
   public
-  void setSyslogHost(String syslogHost) {
-    this.sqw = new SyslogQuietWriter(new SyslogWriter(syslogHost), 
-				     syslogFacility, errorHandler);
-    this.stp = new SyslogTracerPrintWriter(sqw);    
-    this.syslogHost = syslogHost;
+  boolean getFacilityPrinting() {
+    return facilityPrinting;
   }
 }

@@ -50,22 +50,32 @@ public class XMLLayout extends Layout {
   private boolean locationInfo = false;
 
   /**
-     This is a string constant to name the option for setting the
-     location information flag. Current value of this string constant
-     is <b>LocationInfo</b>. 
+     The <b>LocationInfo</b> option takes a boolean value. By
+     default, it is set to false which means there will be no location
+     information output by this layout. If the the option is set to
+     true, then the file name and line number of the statement
+     at the origin of the log statement will be output. 
 
-     <p>See the {@link #setOption(java.lang.String, java.lang.String)}
-     method for the meaning of this option.  
-
-     <p>Note all option keys are case sensitive.
-     
-  */
-  public static final String LOCATION_INFO_OPTION = "LocationInfo";
-
+     <p>If you are embedding this layout within an {@link
+     org.apache.log4j.net.SMTPAppender} then make sure to set the
+     <b>LocationInfo</b> option of that appender as well.
+   */
+  public
+  void setLocationInfo(boolean flag) {
+    locationInfo = flag;
+  }
+  
+  /**
+     Returns the current value of the <b>LocationInfo</b> option.
+   */
+  public
+  boolean getLocationInfo() {
+    return locationInfo;
+  }
+  
   public
   void activateOptions() {
   }
-
 
 
   /**
@@ -129,13 +139,7 @@ public class XMLLayout extends Layout {
 
     return buf.toString();
   }
-
-  public
-  String[] getOptionStrings() {
-    return new String[]{LOCATION_INFO_OPTION};
-  }
-
-
+  
   /**
      The XMLLayout prints and does not ignore exceptions. Hence the
      return value <code>false</code>.
@@ -143,33 +147,5 @@ public class XMLLayout extends Layout {
   public
   boolean ignoresThrowable() {
     return false;
-  }
-
-
-  /**
-
-     The XMLLayout specific options are:
-
-     <p>The <b>LocationInfo</b> option takes a boolean value. If true,
-     the output will include location information. By default no
-     location information is sent to the server.
-  
-  */
-  public
-  void setOption(String key, String value) {
-
-    if(value == null) return;
-    if (key.equals(LOCATION_INFO_OPTION)) {
-      locationInfo = OptionConverter.toBoolean(value, locationInfo);    
-    } 
-  }
-  
-  public
-  String getOption(String key) {
-    if (key.equals(LOCATION_INFO_OPTION)) {
-      return locationInfo ? "true" : "false";    
-    } else {
-      return null;
-    }
   }
 }

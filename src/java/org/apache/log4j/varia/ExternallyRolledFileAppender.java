@@ -39,16 +39,6 @@ import org.apache.log4j.helpers.LogLog;
    @since version 0.9.0 */
 public class ExternallyRolledFileAppender extends RollingFileAppender {
 
-
-  /**
-     A string constant used in naming the option for setting the port
-     for listening to external roll over messages. Current value of
-     this string constant is <b>Port</b>.  
-
-     <p>All option keys are case sensitive.  */
-
-  static final public String PORT_OPTION = "Port";
-
   /**
      The string constant sent to initiate a roll over.   Current value of
      this string constant is <b>RollOver</b>.  
@@ -70,7 +60,24 @@ public class ExternallyRolledFileAppender extends RollingFileAppender {
   public
   ExternallyRolledFileAppender() { 
   }
-
+  
+  /**
+     The <b>Port</b> option is used for setting the port for 
+     listening to external roll over messages.
+   */
+  public
+  void setPort(int port) {
+    this.port = port;
+  }
+  
+  /**
+     Returns value of the <b>Port</b> option.
+   */
+  public
+  int getPort() {
+    return port;
+  }
+  
   /**
      Start listening on the port specified by a preceding call to
      {@link #setOption}.  */
@@ -85,46 +92,6 @@ public class ExternallyRolledFileAppender extends RollingFileAppender {
       hup.setDaemon(true);
       hup.start();
     }
-  }
-
-  /**
-     Returns the option names for this component, namely {@link
-     #PORT_OPTION} in addition to the options of its super class {@link
-     RollingFileAppender#getOptionStrings FileAppender}.  */
-  public
-  String[] getOptionStrings() {
-
-    return OptionConverter.concatanateArrays(super.getOptionStrings(),
-		 new String[] {PORT_OPTION});
-  }
-
-  /**
-     Set ExternallyRolledFileAppender specific options.
-
-     In addition to {@link FileAppender#setOption FileAppender
-     options} and {@link RollingFileAppender#setOption RollingFileAppender
-     options}, ExternallyRolledFileAppender recognizes the option
-     <b>Port</b>.
-
-     <p>The <b>Port</b> option is used for setting the port for 
-     listening to external roll over messages.
-
-   */
-  public
-  void setOption(String option, String value) {
-    super.setOption(option, value);    
-    if(option.equalsIgnoreCase(PORT_OPTION)) {
-      port = OptionConverter.toInt(value, port);
-      LogLog.debug("Port option set to "+port); 
-    }
-  }
-  
-  public
-  String getOption(String option) {
-    if (option.equalsIgnoreCase(PORT_OPTION)) {
-      return port == 0 ? null : Integer.toString(port);
-    }
-    return super.getOption(option);
   }
 }
 

@@ -27,32 +27,9 @@ import javax.naming.NamingException;
    @author Ceki G&uuml;lc&uuml;
 */
 public class JMSAppender extends AppenderSkeleton {
-
   TopicConnection  topicConnection;
   TopicSession topicSession;
   TopicPublisher  topicPublisher;
-
-
-  /**
-     A string constant used in naming the topic connection factory
-     binding name option.  output file. Current value of this string
-     constant is <b>TopicConnectionFactoryBindingName</b>.
-
-     <p>Note that all option keys are case sensitive.
-     
-  */
-  public static final String TOPIC_CONNECTION_FACTORY_BINDING_NAME_OPTION 
-                                                 = "TopicConnectionFactoryBindingName";
-
-  /**
-     A string constant used in naming the topic binding name option.
-     Current value of this string constant is <b>TopicBindingName</b>.
-
-     <p>Note that all option keys are case sensitive.
-     
-  */
-  public static final String TOPIC_BINDING_NAME_OPTION = "TopicBindingName";
-
   String topicBindingName;
   String tcfBindingName;
 
@@ -60,15 +37,40 @@ public class JMSAppender extends AppenderSkeleton {
   JMSAppender() {
   }
 
+  /**
+     The <b>TopicConnectionFactoryBindingName</b> option takes a
+     string value. Its value will be used to lookup the appropriate
+     <code>TopicConnectionFactory</code> from the JNDI context.
+   */
+  public
+  void setTopicConnectionFactoryBindingName(String tcfBindingName) {
+    this.tcfBindingName = tcfBindingName;
+  }
   
-  protected
-  Object lookup(Context ctx, String name) throws NamingException {
-    try {
-      return ctx.lookup(name);
-    } catch(NameNotFoundException e) {
-      LogLog.error("Could not find name ["+name+"].");
-      throw e;
-    }    
+  /**
+     Returns the value of the <b>TopicConnectionFactoryBindingName</b> option.
+   */
+  public
+  String getTopicConnectionFactoryBindingName() {
+    return tcfBindingName;
+  }
+  
+  /**
+     The <b>TopicBindingName</b> option takes a
+     string value. Its value will be used to lookup the appropriate
+     <code>Topic</code> from the JNDI context.
+   */
+  public
+  void setTopicBindingName(String topicBindingName) {
+    this.topicBindingName = topicBindingName;
+  }
+  
+  /**
+     Returns the value of the <b>TopicBindingName</b> option.
+   */
+  public
+  String getTopicBindingName() {
+    return topicBindingName;
   }
   
   public
@@ -94,6 +96,16 @@ public class JMSAppender extends AppenderSkeleton {
     }
   }
  
+  protected
+  Object lookup(Context ctx, String name) throws NamingException {
+    try {
+      return ctx.lookup(name);
+    } catch(NameNotFoundException e) {
+      LogLog.error("Could not find name ["+name+"].");
+      throw e;
+    }    
+  }
+  
   protected
   boolean checkEntryConditions() {
     String fail = null;
@@ -156,59 +168,6 @@ public class JMSAppender extends AppenderSkeleton {
     } catch(Exception e) {
       errorHandler.error("Could not publish message in JMSAppender ["+name+"].", e, 
 			 ErrorCode.GENERIC_FAILURE);
-    }
-  }
-
-
- /**
-     Retuns the option names for this component, namely the string
-     array {@link #TOPIC_BINDING_NAME_OPTION}, {@link
-     #TOPIC_CONNECTION_FACTORY_BINDING_NAME_OPTION} in addition to the
-     options of its super class {@link AppenderSkeleton}.  */
-  
-  public
-  String[] getOptionStrings() {
-    return OptionConverter.concatanateArrays(super.getOptionStrings(),
-          new String[] {TOPIC_BINDING_NAME_OPTION, 
-			  TOPIC_CONNECTION_FACTORY_BINDING_NAME_OPTION});
-  }
-
- /**
-     Set <code>JMSAppender</code> specific options.
-          
-     The options of the super class {@link AppenderSkeleton} are also
-     recognized.
-
-     <p>The <b>TopicConnectionFactoryBindingName</b> option takes a
-     string value. Its value will be used to lookup the appropriate
-     <code>TopicConnectionFactory</code> from the JNDI context.
-
-     <p>The <b>TopicBindingName</b> option takes a
-     string value. Its value will be used to lookup the appropriate
-     <code>Topic</code> from the JNDI context.         
-     
- */
-
-  public
-  void setOption(String key, String value) {
-    if(value == null) return;
-    super.setOption(key, value);    
-    
-    if(key.equals(TOPIC_BINDING_NAME_OPTION)) 
-      topicBindingName = value;
-    else if(key.equals(TOPIC_CONNECTION_FACTORY_BINDING_NAME_OPTION)) {
-      tcfBindingName = value;
-    }
-  }
-  
-  public
-  String getOption(String key) {
-    if (key.equals(TOPIC_BINDING_NAME_OPTION)) {
-      return topicBindingName;
-    } else if(key.equals(TOPIC_CONNECTION_FACTORY_BINDING_NAME_OPTION)) {
-      return tcfBindingName;
-    } else {
-      return super.getOption(key);
     }
   }
 

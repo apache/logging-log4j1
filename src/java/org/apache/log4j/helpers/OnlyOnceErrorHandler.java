@@ -52,26 +52,26 @@ public class OnlyOnceErrorHandler implements ErrorHandler {
 
   /**
      Returns <code>null</code> as <code>OnlyOnceErrorHandler</code>
-     has no options.  */
+     has no options.  
   public
   String[] getOptionStrings() {
     return null;
-  }
+  }*/
 
   /**
      No options to set.
-  */
   public
   void setOption(String key, String value) {
   }
+  */
 
   /**
      No options to get.
-  */
   public
   String getOption(String key) {
     return null;
   }
+  */
 
   /**
      Print a the error message passed as parameter on

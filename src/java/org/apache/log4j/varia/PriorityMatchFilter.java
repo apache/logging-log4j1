@@ -30,13 +30,6 @@ import org.apache.log4j.helpers.OptionConverter;
 
    @since 0.9.1 */
 public class PriorityMatchFilter extends Filter {
-
-  
-  public static final String PRIORITY_TO_MATCH_OPTION = "PriorityToMatch";
-
-  /**
-   */
-  public static final String ACCEPT_ON_MATCH_OPTION = "AcceptOnMatch";
   
   /**
      Do we return ACCEPT when a match occurs. Default is
@@ -47,6 +40,26 @@ public class PriorityMatchFilter extends Filter {
    */
   Priority priorityToMatch;
 
+  public
+  void setPriorityToMatch(String priority) {
+    priorityToMatch = Priority.toPriority(priority, null);
+  }
+  
+  public
+  String getPriorityToMatch() {
+    return priorityToMatch == null ? null : priorityToMatch.toString();
+  }
+  
+  public
+  void setAcceptOnMatch(boolean acceptOnMatch) {
+    this.acceptOnMatch = acceptOnMatch;
+  }
+  
+  public
+  boolean getAcceptOnMatch() {
+    return acceptOnMatch;
+  }
+  
 
   /**
      Return the decision of this filter.
@@ -85,31 +98,6 @@ public class PriorityMatchFilter extends Filter {
       return Filter.DENY;
     } else {
       return Filter.ACCEPT;
-    }
-  }
-
-  public
-  String[] getOptionStrings() {
-    return new String[] {PRIORITY_TO_MATCH_OPTION, ACCEPT_ON_MATCH_OPTION};
-  }
-
-  public
-  void setOption(String key, String value) {    
-    if(key.equalsIgnoreCase(PRIORITY_TO_MATCH_OPTION)) {
-      priorityToMatch = Priority.toPriority(value, null);
-    } else if (key.equalsIgnoreCase(ACCEPT_ON_MATCH_OPTION)) {
-      acceptOnMatch = OptionConverter.toBoolean(value, acceptOnMatch);
-    }
-  }
-  
-  public
-  String getOption(String key) {  
-    if(key.equalsIgnoreCase(PRIORITY_TO_MATCH_OPTION)) {
-      return priorityToMatch == null ? null : priorityToMatch.toString();
-    } else if (key.equalsIgnoreCase(ACCEPT_ON_MATCH_OPTION)) {
-      return acceptOnMatch ? "true" : "false";
-    } else {
-      return null;
     }
   }
 }

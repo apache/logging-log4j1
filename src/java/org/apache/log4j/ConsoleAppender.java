@@ -22,10 +22,7 @@ public class ConsoleAppender extends WriterAppender {
   public static final String SYSTEM_OUT = "System.out";
   public static final String SYSTEM_ERR = "System.err";
 
-  public static final String TARGET_OPTION = "Target";
-
-
-  protected String target = "SYSTEM_ERR";
+  protected String target = SYSTEM_ERR;
 
   /**
      The default constructor does nothing.
@@ -39,16 +36,45 @@ public class ConsoleAppender extends WriterAppender {
 
   public ConsoleAppender(Layout layout, String target) {
     this.layout = layout;
-    if(SYSTEM_OUT.equals(target)) {
+    
+    if (SYSTEM_OUT.equals(target)) {
       setWriter(new OutputStreamWriter(System.out));	
-    } else {
-      if(!SYSTEM_ERR.equalsIgnoreCase(target)) {
-	targetWarn(target);
-      }
+    } else if (SYSTEM_ERR.equalsIgnoreCase(target)) {
       setWriter(new OutputStreamWriter(System.err));
+    } else {
+      targetWarn(target);
     }
   }
 
+  /**
+     Sets the value of the <b>Target</b> option.
+     
+     @param value String identifying a console; recognized values are
+                  "System.err" (default) and "System.out"
+   */
+  public
+  void setTarget(String value) {
+    String v = value.trim();
+    
+    if (SYSTEM_OUT.equalsIgnoreCase(v)) {
+      target = SYSTEM_OUT;
+    } else if (SYSTEM_ERR.equalsIgnoreCase(v)) {
+      target = SYSTEM_ERR;
+    } else {
+      targetWarn(value);
+    }  
+  }
+  
+  /** Returns the current value of the <b>Target</b> option. */
+  public
+  String getTarget() {
+    return target;
+  }
+  
+  void targetWarn(String val) {
+    LogLog.warn("["+val+"] should be one of System.out or System.err.");
+    LogLog.warn("Reverting to System.err.");
+  }
  
   public
   void activateOptions() {
@@ -65,50 +91,5 @@ public class ConsoleAppender extends WriterAppender {
   protected
   final 
   void closeWriter() {
-  }
-
-  /**
-     Returns the option names for this component, namely the string
-     array {@link #TARGET_OPTION} and the options of its super class
-     {@link WriterAppender}.  
-
-      <b>See</b> Options of the super classes {@link WriterAppender} and
-      {@link AppenderSkeleton}. In particular the <b>Threshold</b>
-      option. 
-  */
-  public
-  String[] getOptionStrings() {
-    return OptionConverter.concatanateArrays(super.getOptionStrings(),
-          new String[] {TARGET_OPTION});
-  }
-
-  /**
-     Set ConsoleAppender specific options.
-          
-     The <b>Target</b> option is recognized on top of options
-     for the super class {@link WriterAppender}.
-     
-  */
-  public
-  void setOption(String key, String value) {
-    if(value == null) return;
-    super.setOption(key, value);
-    
-    if (key.equalsIgnoreCase(TARGET_OPTION)) {
-      String v = value.trim();
-      if(SYSTEM_OUT.equalsIgnoreCase(v)) {
-	target = SYSTEM_OUT;
-      } else {
-	if(!SYSTEM_ERR.equalsIgnoreCase(v)) {
-	  targetWarn(value);
-	}  
-      }
-    }
-  }
-  
-  
-  void targetWarn(String val) {
-    LogLog.warn("["+val+"] should be one of System.out or System.err.");
-    LogLog.warn("Reverting to System.err.");
   }
 }
