@@ -81,7 +81,7 @@ public class LayoutAction extends Action {
       logger.warn(
         "The object on the top the of the stack is not the layout pushed earlier.");
     } else {
-      logger.warn("Popping layout from the object stack");
+      logger.debug("Popping layout from the object stack");
       ec.popObject();
       
       try {
