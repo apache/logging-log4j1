@@ -396,7 +396,7 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
 
     case ChainsawColumns.INDEX_METHOD_COL_NAME:
       return (info == null) ? "" : info.getMethodName();
-
+    
     default:
 
       if (columnIndex <= columnNames.size()) {
@@ -428,7 +428,11 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
     if ((displayRule == null) || (displayRule.evaluate(e))) {
       synchronized (filteredList) {
         filteredList.add(e);
-        fireTableRowsInserted(filteredList.size(),filteredList.size());
+        if (filteredList.size() < capacity) {
+            fireTableRowsInserted(filteredList.size(), filteredList.size());
+        } else {
+            fireTableDataChanged();
+        }
       }
     }
 
