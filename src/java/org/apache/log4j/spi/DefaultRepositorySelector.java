@@ -16,23 +16,33 @@
 
 package org.apache.log4j.spi;
 
+import org.apache.log4j.helpers.Constants;
+
 public class DefaultRepositorySelector implements RepositorySelector {
-  LoggerRepository repository;
+  LoggerRepository defaultRepository;
 
   public DefaultRepositorySelector(final LoggerRepository repository) {
-    this.repository = repository;
+    this.defaultRepository = repository;
   }
 
-  public LoggerRepository getLoggerRepository() {
-    return repository;
+  public LoggerRepository  getLoggerRepository() {
+    return defaultRepository;
+  }
+  
+  public LoggerRepository getLoggerRepository(final String name) {
+    if(Constants.DEFAULT_REPOSITORY_NAME.equals(name)) {
+      return defaultRepository;
+    } else {
+      return null;
+    }
   }
   
   /**
-   * Does nothing.
+   * Does nothing, always returns null.
    * 
    * @return Always null
    */
-  public LoggerRepository detachRepository(String contextName) {
+  public LoggerRepository detachRepository(final String name) {
     // do nothing, as the default repository cannot be removed
     return null;
   }

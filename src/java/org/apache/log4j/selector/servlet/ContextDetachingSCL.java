@@ -75,8 +75,7 @@ public class ContextDetachingSCL implements ServletContextListener {
       LoggerRepository lr = repositorySelector.detachRepository(loggingContextName);
       if(lr != null) {
         Logger logger = lr.getLogger(this.getClass().getName());
-        logger.debug("About to shutdown logger repository named ["+lr.getName()+
-            "]");
+        logger.debug("About to shutdown logger repository named [{}]", lr.getName());
         lr.shutdown();
       }
     }
