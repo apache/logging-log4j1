@@ -34,24 +34,66 @@ import java.util.Set;
 
 
 /**
- * The DBAppender writes events to a database table. You first need to
- * create the database tables with the help of SQL scripts found in the
- * org/apache/log4j/db/dialect/ directory. There exist scripts for the most
- * popular database systems. If it is missing, you should be able to write
- * the appropriate script quite quickly.
+ * The DBAppender inserts loggin events into three database tables in a format 
+ * independent of the Java programming language. The three tables that DBAppender
+ * inserts to must exists before DBAppender can be used. These tables may be 
+ * created with the help of SQL scripts found in the 
+ * <em>src/java/org/apache/log4j/db/dialect</em> directory. There is a specific
+ * script for each of the most popular database systems. If the script for your
+ * particular type of database system is missing, it should be quite easy to 
+ * write one, taking example on the already existing scripts. If you send them
+ * to us, we will gladly include missing scripts in future releases.
  * 
- * <p>If the JDBC driver you are using supports the getGeneratedKeys method 
- * introduced in JDBC 3.0 specification, then you are all set. Otherwise,
+ * <p>If the JDBC driver you are using supports the {@link java.sql.Statement#getGeneratedKeys} 
+ * method introduced in JDBC 3.0 specification, then you are all set. Otherwise,
  * there must be an {@link SQLDialect} appropriate for your database system.
  * Currently, we have dialects for PostgreSQL, MySQL, Oracle and MsSQL. As 
- * mentioed previously, an SQLDialect is required only the JDBC driver for your 
- * database system does not support the getGeneratedKeys method.
+ * mentioed previously, an SQLDialect is required only if the JDBC driver for 
+ * your  database system does not support the {@link java.sql.Statement#getGeneratedKeys getGeneratedKeys} method. 
  * </p>
  * 
- * <p><b>Performance</b> Experiments show that writing a single event into the
+ * <table border="1" cellpadding="4">
+ *   <tr><th>RDBMS</th>
+ *       <th>supports<br/><code>getGeneratedKeys()</code> method</th>
+ *       <th>specific<br/>SQLDialect support</th>
+ *   <tr>
+ *   <tr>
+ *     <td>PostgreSQL</td>
+ *     <td align="center">NO</td>
+ *     <td> present and used </td>
+ *   <tr>
+ *   <tr>
+ *     <td>MySQL</td>
+ *     <td align="center">YES</td>
+ *     <td> present, but not actually needed or used</td>
+ *   <tr>
+ *   <tr>
+ *     <td>Oracle</td>
+ *     <td align="center">YES</td>
+ *     <td> present, but not actually needed or used</td>
+ *   <tr>
+ *   <tr>
+ *     <td>DB2</td>
+ *     <td align="center">YES</td>
+ *     <td> not present, and not needed or used</td>
+ *   <tr>
+ *   <tr>
+ *     <td>MsSQL</td>
+ *     <td align="center">YES</td>
+ *     <td> not present, and not needed or used</td>
+ *   <tr>
+ * </table>
+ * <p><b>Performance:</b> Experiments show that writing a single event into the
  * database takes approximately 50 milliseconds, on a "standard" PC. If pooled
  * connections are used, this figure drops to under 10 milliseconds. Note that
  * most JDBC drivers already ship with connection pooling support. 
+ * </p>
+ *  
+ * 
+ * 
+ * <p><b>Configuration</b> DBAppender can be configured programmatically, or
+ * using {@link org.apache.log4j.joran.JoranConfigurator JoranConfigurator}.
+ * Example scripts can be found in the <em>tests/input/db</em> directory.
  * 
  * @author Ceki G&uuml;lc&uuml;
  * @author Ray DeCampo
