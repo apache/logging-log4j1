@@ -3,8 +3,8 @@
     <!-- Initialization properties -->
     <property name="project.name"   value="log4j.site"/>
     
-    <property name="docs.src" value="src/xdocs"/>
-    <property name="docs.dest" value="docs"/>
+    <property name="docs.src" value="./src/xdocs"/>
+    <property name="docs.dest" value="./docs"/>
 
     <target name="prepare">    
         <available classname="org.apache.velocity.anakia.AnakiaTask" 
@@ -23,12 +23,12 @@
                  classname="org.apache.velocity.anakia.AnakiaTask"/>
         <anakia basedir="${docs.src}" destdir="${docs.dest}/"
              extension=".html" 
-	     style="./site.vsl"
+	     style="site.vsl"
              projectFile="stylesheets/project.xml"
              excludes="**/stylesheets/**, empty.xml"
              includes="**/*.xml"
              lastModifiedCheck="true"
-             velocityPropertiesFile="${docs.src}/velocity.properties">
+	     templatePath="../jakarta-site2/xdocs/stylesheets">
         </anakia>
         <!--
         <copy todir="${docs.dest}/images" filtering="no">

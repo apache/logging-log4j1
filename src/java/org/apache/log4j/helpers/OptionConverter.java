@@ -158,7 +158,7 @@ public class OptionConverter {
      object.  <p> If <code>value</code> is of form
      "priority#classname", then the specified class' toPriority method
      is called to process the specified priority string; if no '#'
-     character is present, then the default {@link org.log4j.Priority}
+     character is present, then the default {@link org.apache.log4j.Priority}
      class is used to process the priority value.  
 
      <p> If any error occurs while converting the value to a priority,
@@ -207,7 +207,7 @@ public class OptionConverter {
 
       result = (Priority) o;
     } catch(ClassNotFoundException e) {
-      LogLog.error("custom priority class [" + clazz + "] could not be added.");
+      LogLog.error("custom priority class [" + clazz + "] not found.");
     } catch(NoSuchMethodException e) {
       LogLog.error("custom priority class [" + clazz + "]"
         + " does not have a constructor which takes one string parameter", e);

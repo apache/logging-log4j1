@@ -16,6 +16,7 @@ import org.apache.log4j.Appender;
 import org.apache.log4j.Priority;
 import org.apache.log4j.helpers.LogLog;
 
+
 /**
    Used for inferring configuration information for a log4j's component.
    
@@ -32,7 +33,9 @@ public class PropertyGetter {
   
   /**
     Create a new PropertySetter for the specified Object. This is done
-    in prepartion for invoking {@link #getProperties(PropertyCallback,String)} one or more times.
+    in prepartion for invoking {@link
+    #getProperties(PropertyGetter.PropertyCallback, String)} one or
+    more times.
     
     @param obj the object for which to set properties */
   public

@@ -6,7 +6,7 @@
  [***] Changes requiring important modifications to existing client code.
 
 
- April ??, 2001
+ April 17, 2001
 
  - Release of version 1.1b2
 
@@ -21,6 +21,11 @@
 
  - Added jar files required at build time to build/lib so that it is
    now possible to compile log4j out of the box. [*]
+
+ - Whenever a priority parameter is expected in a configuration file
+   one can now use a costom priority class. See OptionConverter.toPriority
+   method for more information. Note that the <priority> element in
+   log4j.dtd remains unaffected by this change. [*]
 
  - Added the setQuietMode(booelan) method to LogLog. In quiet mode
    LogLog will not output anything even in case of errors. [*]
