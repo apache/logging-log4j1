@@ -71,42 +71,53 @@ public class PatternParserTestCase extends TestCase {
     root.debug("starting mdc pattern test");
  
     layout.setConversionPattern(mdcMsgPattern1);
+    layout.activateOptions();
     root.debug("empty mdc, no key specified in pattern");
     
     layout.setConversionPattern(mdcMsgPattern2);
+    layout.activateOptions();
     root.debug("empty mdc, key1 in pattern");
     
     layout.setConversionPattern(mdcMsgPattern3);
+    layout.activateOptions();
     root.debug("empty mdc, key2 in pattern");
     
     layout.setConversionPattern(mdcMsgPattern4);
+    layout.activateOptions();
     root.debug("empty mdc, key3 in pattern");
     
     layout.setConversionPattern(mdcMsgPattern5);
+    layout.activateOptions();
     root.debug("empty mdc, key1, key2, and key3 in pattern");
 
     MDC.put("key1", "value1");
     MDC.put("key2", "value2");
 
     layout.setConversionPattern(mdcMsgPattern1);
+    layout.activateOptions();
     root.debug("filled mdc, no key specified in pattern");
     
     layout.setConversionPattern(mdcMsgPattern2);
+    layout.activateOptions();
     root.debug("filled mdc, key1 in pattern");
     
     layout.setConversionPattern(mdcMsgPattern3);
+    layout.activateOptions();
     root.debug("filled mdc, key2 in pattern");
     
     layout.setConversionPattern(mdcMsgPattern4);
+    layout.activateOptions();
     root.debug("filled mdc, key3 in pattern");
     
     layout.setConversionPattern(mdcMsgPattern5);
+    layout.activateOptions();
     root.debug("filled mdc, key1, key2, and key3 in pattern");
 
     MDC.remove("key1");
     MDC.remove("key2");
 
     layout.setConversionPattern(msgPattern);
+    layout.activateOptions();
     root.debug("finished mdc pattern test");
 
     assertTrue(Compare.compare(OUTPUT_FILE+"_mdc", WITNESS_FILE+"_mdc"));

@@ -506,7 +506,8 @@ public class PatternLayout extends Layout {
   }
 
   /**
-     Does not do anything as options become effective
+    Activates the conversion pattern. Do not forget to call this method after
+    you change the parameters of the PatternLayout instance.
   */
   public void activateOptions() {
     PatternParser patternParser = createPatternParser(conversionPattern);

@@ -299,6 +299,7 @@ public class DOMConfigurator implements Configurator {
 
     Object nestedComponent = null;
 
+    // instantiate the nested component
     try {
       nestedComponent = Loader.loadClass(className).newInstance();
     } catch (Exception e) {
@@ -308,6 +309,8 @@ public class DOMConfigurator implements Configurator {
       return;
     }
 
+    // set the parameters of the nested component and/or configure the
+    // nested compoments nested within
     NodeList children = nestedElement.getChildNodes();
     final int length = children.getLength();
     PropertySetter nestedBean = new PropertySetter(nestedComponent);
@@ -340,6 +343,12 @@ public class DOMConfigurator implements Configurator {
         configureNestedComponent(nestedBean, currentElement);
       }
     }
+    
+    // once all the options are set, activate the nested component
+    if(nestedComponent instanceof OptionHandler) { 
+     ((OptionHandler)nestedComponent).activateOptions(); 
+    } 
+
 
     // Now let us attach the component
     switch (containmentType) {
