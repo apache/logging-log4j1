@@ -47,7 +47,6 @@ public class XMLSample {
   void init(String configFile) {
     JoranConfigurator jc = new JoranConfigurator();
     jc.doConfigure(configFile, LogManager.getLoggerRepository());
-    jc.logErrors();
   }
 
   static
