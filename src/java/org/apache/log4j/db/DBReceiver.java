@@ -127,7 +127,7 @@ public class DBReceiver
    */
   class DBReceiverJob implements Job {
     
-    long lastId = 1;
+    long lastId = 0;
     
    
     public void execute() {
