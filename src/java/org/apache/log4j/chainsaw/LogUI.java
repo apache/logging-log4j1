@@ -361,6 +361,17 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     ChainsawCentral cc = new ChainsawCentral();
     pluginRegistry.addPlugin(cc);
     cc.activateOptions();
+    
+//    TODO this should also be fixed up, as VFS bits and pieces might not be built in an Ant build when they don't have all the VFS jars local
+    try {
+      Class vfsPluginClass = Class.forName("org.apache.log4j.chainsaw.vfs.VFSPlugin");
+      Plugin vfsPlugin = (Plugin) vfsPluginClass.newInstance();
+      vfsPlugin.activateOptions();
+      pluginRegistry.addPlugin(vfsPlugin);
+      MessageCenter.getInstance().getLogger().info("Looks like VFS is available... WooHoo!");
+    } catch (Throwable e) {
+      MessageCenter.getInstance().getLogger().error("Doesn't look like VFS is available", e);
+    }
   }
 
   private void setupReceiverPanel() {
