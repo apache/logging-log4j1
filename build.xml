@@ -87,6 +87,7 @@
     <pathelement location="${avalon-framework.jar}"/>
     <pathelement location="${servlet-api.jar}"/>
     <pathelement location="${jdbc-stdext.jar}"/>
+    <pathelement location="${jndi.jar}"/>
   </path>
 
   <!-- Construct classpath for building the html pages-->
@@ -126,6 +127,24 @@
     <echo message="JAXP present."/>
   </target>
 
+  <target name="jndiCheck">
+    <available classname="javax.naming.Context" property="jndi-present">
+      <classpath refid="compile.classpath"/>
+    </available>
+    <fail unless="jndi-present">
+
+The JNDI API is required to build ContextJNDISelector, which has
+become a core log4j class. The JNDI API ships with JDK 1.3 and
+later. For JDK 1.2, you can get the JNDI API from
+
+   http://java.sun.com/products/jndi/downloads/index.html
+
+</fail>
+  </target>
+  <target name="jndi" depends="jndiCheck" if="jndi-present">
+    <echo message="JNDI is present."/>
+  </target>
+
   <target name="avalonFrameworkCheck">
     <available classname="org.apache.avalon.framework.logger.Logger"
         property="avalonFramework-present">
@@ -136,7 +155,7 @@
     <echo message="Avalon Framework is present."/>
   </target>
 
-  <target name="jmxCheck">
+  <target name="jmxCheck" depends="jndiCheck" if="jndi-present">
     <available classname="javax.management.MBeanInfo" property="jmx-present">
      <classpath refid="compile.classpath"/>
     </available>
@@ -145,20 +164,13 @@
     <echo message="JMX is present."/>
   </target>
 
-  <target name="jmsCheck">
+  <target name="jmsCheck" depends="jndiCheck" if="jndi-present">
     <available classname="javax.jms.Message" property="jms-present">
      <classpath refid="compile.classpath"/>
     </available>
   </target>
   <target name="jms" depends="jmsCheck" if="jms-present">
     <echo message="JMS is present."/>
-  </target>
-
-  <target name="jndiCheck">
-    <available classname="javax.naming.Context" property="jndi-present"/>
-  </target>
-  <target name="jndi" depends="jndiCheck" if="jndi-present">
-    <echo message="JNDI is present."/>
   </target>
 
   <target name="javamailCheck">
@@ -204,7 +216,7 @@
                    build.avalonFramework, build.servletAPI, build.db, 
                    build.chainsaw"/>
 
-  <target name="build.core" depends="init">
+  <target name="build.core" depends="init, jndiCheck" if="jndi-present" >
     <mkdir dir="${javac.dest}" />
     <javac srcdir="${java.source.dir}"
      destdir="${javac.dest}"

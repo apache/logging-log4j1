@@ -43,23 +43,32 @@ logging-site=../logging-site
 # This is required if you wish to use Chainsaw v2
 #regexp.oro.jar=../oro/jakarta-oro-2.0.6.jar
 
-
-# ==================================================================
-# Packages which have been incorporated in JDK 1.4 but optional in
-# JDK 1.3 and 1.2.
-# ==================================================================
-
-
-# JDBC Standdard Extension Binary 2.0 (building with JDK 1.2 and 1.3)
-# ###################################
-
+# DBAppeder/DBReceiver OPTIONAL: 
+#
 # The org.apache.log4j.db package makes use of the
-# javax.sql.DataSource interface which is included in the JDBC
-# standard extension. It ships with JDK 1.4 but not 1.3 or 1.2
+# javax.sql.DataSource interface which is included part of the JDBC
+# standard extensions. These extensions ship with JDK 1.4 and later
+# but not JDK 1.3 or 1.2.
 #
 # Download it from
 #
 #  http://java.sun.com/products/jdbc/download.html#spec
 #
-jdbc-stdext.jar=/java/lib/jdbc2_0-stdext.jar
+#jdbc-stdext.jar=/java/lib/jdbc2_0-stdext.jar
+
+# ---------------------------------------------------
+# JNDI API REQUIRED when building log4j with JDK 1.2)
+# ---------------------------------------------------
+#
+# The JNDI API is required to build ContextJNDISelector, which has
+# become a core log4j class. The JNDI API ships with JDK 1.3 and later,
+# you do not need to load it separately. For JDK 1.2, you can get the
+# JNDI API from
+#
+#     http://java.sun.com/products/jndi/downloads/index.html
+
+#jndi.jar=/java/lib/jndi.jar
+
+
+
 
