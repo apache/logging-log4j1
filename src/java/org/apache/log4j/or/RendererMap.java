@@ -47,7 +47,7 @@ public class RendererMap {
       return;
     } else {
       try {
-	Class renderedClass = Loader.loadClass(renderedClassName);
+	Class renderedClass = Class.forName(renderedClassName);
 	repository.setRenderer(renderedClass, renderer);
       } catch(ClassNotFoundException e) {
 	LogLog.error("Could not find class ["+renderedClassName+"].", e);
