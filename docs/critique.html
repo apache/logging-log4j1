@@ -267,13 +267,14 @@ logic not enabled, and when actually logging.  Please refer to the <a
 href="manual.html#performance">log4j manual</a> for a more detailed
 discussion of logging performance.
 
-<p>When logging is turned on, log4j will be about two three slower to
-decide whether a log statement is enabled or not. This is due to the
-dynamic nature of log4j which requires it to walk the hierarchy. To
-give you an idea about the figures involved, we are talking about 90
-<em>nanoseconds</em> instead of 30 <em>nanoseconds</em> on a 800Mhz
-Intel processor. In other words, one million disabled logging requests
-will cost under a second in both environments.
+<p>When logging is turned on, log4j will be about two to three times
+slower to decide whether a log statement is enabled or not. This is
+due to the dynamic nature of log4j which requires it to walk the
+hierarchy. To give you an idea about the figures involved, under JDK
+1.4 beta, we are talking about 90 <em>nanoseconds</em> instead of 30
+<em>nanoseconds</em> on a 800Mhz Intel processor. In other words, one
+million disabled logging requests will cost under a second in both
+environments.
 
 <p>In a shipped binary, you can turn off logging entirely and both
 APIs will perform identically.  Note that if one is not careful, the
@@ -484,11 +485,17 @@ insightful.
 <li><p><a href="pub-support/KenJarrad.html">Ken Jarrad</a> 
 <li><p><a href="pub-support/ErikBergersjo.html">ErikBergersj&ouml;</a> 
 <li><p><a href="pub-support/CamilleTroillard.html">Camille Troillard</a> <!-- --> 
+<li><p><a href="pub-support/MarcelHeemskerk.html">Marcel Heemskerk</a> 
+<li><p><a href="pub-support/BHA.html">BHA</a> 
 
 <!--
 
-
-
+<li><p><a href="pub-support/.html"></a> 
+<li><p><a href="pub-support/.html"></a> 
+<li><p><a href="pub-support/.html"></a> 
+<li><p><a href="pub-support/.html"></a> 
+<li><p><a href="pub-support/.html"></a> 
+<li><p><a href="pub-support/.html"></a> 
 <li><p><a href="pub-support/.html"></a> 
 <li><p><a href="pub-support/.html"></a> 
 <li><p><a href="pub-support/.html"></a> 

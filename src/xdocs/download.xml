@@ -72,7 +72,7 @@ paleontologist.</p>
   <dt><a href="http://support.klopotek.de/log4j/jdbc/index.html"><b>JDBCAppender</b></a></dt>
   <dd>A JDBCAppender by <a href="mailto:t.fenner@klopotek.de">Thomas Fenner</a>.</dd>
 
-  <dt><a href="http://www.geocities.com/oburn/chainsaw/"><b>Chainsaw</b></a></dt>
+  <dt><a href="http://www.puppycrawl.com/chainsaw"><b>Chainsaw</b></a></dt>
   <dd>Chainsaw is a GUI log viewer and filter for the Log4J package. It listens for <a href="http://jakarta.apache.org/log4j/docs/api/org/apache/log4j/spi/LoggingEvent.html">LoggingEvent</a> objects sent using the <a href="http://jakarta.apache.org/log4j/docs/api/org/apache/log4j/net/SocketAppender.html">SocketAppender</a> and displays them in a table. 
 </dd>
 
