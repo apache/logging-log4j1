@@ -213,6 +213,7 @@
 		  ${stem}/nt/*.class,
 		  ${stem}/xml/*.class, 
 		  ${stem}/or/*.class,
+		  ${stem}/or/sax/*.class,
 		  ${stem}/config/*.class,
 		  ${stem}/gui/TextPaneAppender.class"
 	excludes="**/StressCategory*, **/UnitTest**"
@@ -260,6 +261,7 @@
 		         org.apache.log4j.net,
 			 org.apache.log4j.nt,
 		         org.apache.log4j.or,
+		         org.apache.log4j.or.sax,
 	                 org.apache.log4j.performance,
 		         org.apache.log4j.spi,
 			 org.apache.log4j.varia,
