@@ -89,7 +89,7 @@ public class PatternLayoutTest extends TestCase {
         new LineNumberFilter(), new SunReflectFilter(),
         new JunitTestRunnerFilter()
       });
-    assertTrue(Compare.compare(FILTERED, "witness/patternLayout.1"));
+    assertTrue(Compare.compare(FILTERED, "witness/pattern/patternLayout.1"));
   }
 
   public void test2() throws Exception {
@@ -105,7 +105,7 @@ public class PatternLayoutTest extends TestCase {
         cf1, new LineNumberFilter(), new ISO8601Filter(),
         new SunReflectFilter(), new JunitTestRunnerFilter()
       });
-    assertTrue(Compare.compare(FILTERED, "witness/patternLayout.2"));
+    assertTrue(Compare.compare(FILTERED, "witness/pattern/patternLayout.2"));
   }
 
   public void test3() throws Exception {
@@ -121,7 +121,7 @@ public class PatternLayoutTest extends TestCase {
         cf1, new LineNumberFilter(), new ISO8601Filter(),
         new SunReflectFilter(), new JunitTestRunnerFilter()
       });
-    assertTrue(Compare.compare(FILTERED, "witness/patternLayout.3"));
+    assertTrue(Compare.compare(FILTERED, "witness/pattern/patternLayout.3"));
   }
 
   // Output format:
@@ -139,7 +139,7 @@ public class PatternLayoutTest extends TestCase {
         cf1, new LineNumberFilter(), new AbsoluteDateAndTimeFilter(),
         new SunReflectFilter(), new JunitTestRunnerFilter()
       });
-    assertTrue(Compare.compare(FILTERED, "witness/patternLayout.4"));
+    assertTrue(Compare.compare(FILTERED, "witness/pattern/patternLayout.4"));
   }
 
   public void test5() throws Exception {
@@ -155,7 +155,7 @@ public class PatternLayoutTest extends TestCase {
         cf1, new LineNumberFilter(), new AbsoluteDateAndTimeFilter(),
         new SunReflectFilter(), new JunitTestRunnerFilter()
       });
-    assertTrue(Compare.compare(FILTERED, "witness/patternLayout.5"));
+    assertTrue(Compare.compare(FILTERED, "witness/pattern/patternLayout.5"));
   }
 
   // 18:54:19,201 [main] DEBUG atternLayoutTest - Message 0
@@ -172,7 +172,7 @@ public class PatternLayoutTest extends TestCase {
         cf1, new LineNumberFilter(), new AbsoluteTimeFilter(),
         new SunReflectFilter(), new JunitTestRunnerFilter()
       });
-    assertTrue(Compare.compare(FILTERED, "witness/patternLayout.6"));
+    assertTrue(Compare.compare(FILTERED, "witness/pattern/patternLayout.6"));
   }
 
   public void test7() throws Exception {
@@ -188,7 +188,7 @@ public class PatternLayoutTest extends TestCase {
         cf1, new LineNumberFilter(), new AbsoluteTimeFilter(),
         new SunReflectFilter(), new JunitTestRunnerFilter()
       });
-    assertTrue(Compare.compare(FILTERED, "witness/patternLayout.7"));
+    assertTrue(Compare.compare(FILTERED, "witness/pattern/patternLayout.7"));
   }
 
   public void test8() throws Exception {
@@ -204,7 +204,7 @@ public class PatternLayoutTest extends TestCase {
         cf1, new LineNumberFilter(), new RelativeTimeFilter(),
         new SunReflectFilter(), new JunitTestRunnerFilter()
       });
-    assertTrue(Compare.compare(FILTERED, "witness/patternLayout.8"));
+    assertTrue(Compare.compare(FILTERED, "witness/pattern/patternLayout.8"));
   }
 
   public void test9() throws Exception {
@@ -220,7 +220,7 @@ public class PatternLayoutTest extends TestCase {
         cf1, new LineNumberFilter(), new SunReflectFilter(),
         new JunitTestRunnerFilter()
       });
-    assertTrue(Compare.compare(FILTERED, "witness/patternLayout.9"));
+    assertTrue(Compare.compare(FILTERED, "witness/pattern/patternLayout.9"));
   }
 
   public void test10() throws Exception {
@@ -236,7 +236,7 @@ public class PatternLayoutTest extends TestCase {
         cf1, new LineNumberFilter(), new SunReflectFilter(),
         new JunitTestRunnerFilter()
       });
-    assertTrue(Compare.compare(FILTERED, "witness/patternLayout.10"));
+    assertTrue(Compare.compare(FILTERED, "witness/pattern/patternLayout.10"));
   }
 
   public void test11() throws Exception {
@@ -252,7 +252,7 @@ public class PatternLayoutTest extends TestCase {
         cf1, new LineNumberFilter(), new SunReflectFilter(),
         new JunitTestRunnerFilter()
       });
-    assertTrue(Compare.compare(FILTERED, "witness/patternLayout.11"));
+    assertTrue(Compare.compare(FILTERED, "witness/pattern/patternLayout.11"));
   }
 
   public void test12() throws Exception {
@@ -268,7 +268,7 @@ public class PatternLayoutTest extends TestCase {
         cf1, new LineNumberFilter(), new SunReflectFilter(),
         new JunitTestRunnerFilter()
       });
-    assertTrue(Compare.compare(FILTERED, "witness/patternLayout.12"));
+    assertTrue(Compare.compare(FILTERED, "witness/pattern/patternLayout.12"));
   }
 
   public void test13() throws Exception {
@@ -284,7 +284,7 @@ public class PatternLayoutTest extends TestCase {
         cf1, new LineNumberFilter(), new SunReflectFilter(),
         new JunitTestRunnerFilter()
       });
-    assertTrue(Compare.compare(FILTERED, "witness/patternLayout.13"));
+    assertTrue(Compare.compare(FILTERED, "witness/pattern/patternLayout.13"));
   }
 
   public void test14() throws Exception {
@@ -300,7 +300,7 @@ public class PatternLayoutTest extends TestCase {
         cf1, new LineNumberFilter(), new SunReflectFilter(),
         new JunitTestRunnerFilter()
       });
-    assertTrue(Compare.compare(FILTERED, "witness/patternLayout.14"));
+    assertTrue(Compare.compare(FILTERED, "witness/pattern/patternLayout.14"));
   }
 
   public void testMDC1() throws Exception {
@@ -316,7 +316,7 @@ public class PatternLayoutTest extends TestCase {
         new LineNumberFilter(), new SunReflectFilter(),
         new JunitTestRunnerFilter()
       });
-    assertTrue(Compare.compare(FILTERED, "witness/patternLayout.mdc.1"));
+    assertTrue(Compare.compare(FILTERED, "witness/pattern/patternLayout.mdc.1"));
   }
 
   void common() {
@@ -349,7 +349,7 @@ public class PatternLayoutTest extends TestCase {
     Test case for MDC conversion pattern. */
   public void testMDC2() throws Exception {
     String OUTPUT_FILE   = "output/patternLayout.mdc.2";
-    String WITNESS_FILE  = "witness/patternLayout.mdc.2";
+    String WITNESS_FILE  = "witness/pattern/patternLayout.mdc.2";
     
     String mdcMsgPattern1 = "%m : %X%n";
     String mdcMsgPattern2 = "%m : %X{key1}%n";
