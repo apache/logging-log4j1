@@ -3,12 +3,12 @@
 
   <properties>
     <author email="cgu@apache.org">Ceki Gulcu</author>
-    <title>log4j project</title>
+    <title>Project history</title>
   </properties>
 
 <body>
 
-<section name="Project History">
+<section name="Project history">
 
 <p>The <a href="HISTORY"><b>project history</b></a> gives a brief
 summary of changes and additions. Users frequently report bugs that
