@@ -49,6 +49,8 @@
 
 package org.apache.log4j.chainsaw;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Level;
 import org.apache.log4j.xml.DOMConfigurator;
 
 import java.io.File;
@@ -74,14 +76,23 @@ public class Start {
 
   public static void main(String[] args) {
     initLog4J();
-    new Main();
   }
 
   private static void initLog4J() {
     /** initialise log4j **/
     final FinderStrategies strategies = new FinderStrategies();
     final URL url = strategies.findConfiguration();
-    DOMConfigurator.configure(url);
+    
+    // if a configuration file is specified, use it.
+    if (url != null) {
+      DOMConfigurator.configure(url);
+    // else no configuration specified, create an instance to use
+    } else {
+      LogManager.getLogger("org.apache.log4j.chainsaw").setLevel(Level.INFO);
+      ChainsawAppender appender = new ChainsawAppender();
+      LogManager.getRootLogger().addAppender(appender);
+      appender.activateOptions();
+    }
   }
 
   private static class FinderStrategies implements Log4JConfigurationFinder {
@@ -106,8 +117,7 @@ public class Start {
         }
       }
 
-      throw new RuntimeException(
-        "Failed to locate a Log4J configuration" + " via any means");
+      return null;
     }
   }
 

@@ -46,21 +46,20 @@
  * Apache Software Foundation, please see <http://www.apache.org/>.
  *
  */
-
+ 
 package org.apache.log4j.chainsaw;
 
 /**
- * The main application.
- *
- * @deprecated, should be started from the Start class
- * @author <a href="mailto:oliver@puppycrawl.com">Oliver Burn</a>
- */
-public class Main {
+  Chainsaw compatible gui viewers must implement this interface
+  in order to be opened and configured by the ChainsawAppender class.
+  
+  @author Mark Womack
+*/
+public interface ChainsawViewer {
+  
   /**
-   * @deprecated, should be started from the Start class
-   * @param args
-   */
-  public static void main(String[] args) {
-    Start.main(args);
-  }
+    Called when the viewer should activate.
+    
+    @param model The ChainsawAppender model instance the viewer should use. */
+  void activateViewer(ChainsawAppender model);
 }
