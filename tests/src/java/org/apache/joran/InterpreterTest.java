@@ -46,6 +46,9 @@ import org.apache.log4j.joran.action.LayoutAction;
 import org.apache.log4j.joran.action.LevelAction;
 import org.apache.log4j.joran.action.LoggerAction;
 import org.apache.log4j.joran.action.RootLoggerAction;
+import org.apache.log4j.rolling.RollingFileAppender;
+import org.apache.log4j.rolling.SizeBasedTriggeringPolicy;
+import org.apache.log4j.rolling.SlidingWindowRollingPolicy;
 
 import java.util.HashMap;
 import java.util.Stack;
@@ -247,9 +250,8 @@ public class InterpreterTest extends TestCase {
       new Pattern("log4j:configuration/logger/level"), new LevelAction());
     rs.addRule(
       new Pattern("log4j:configuration/root"), new RootLoggerAction());
-
-    //rs.addRule(
-    //new Pattern("log4j:configuration/root/level"), new LevelAction());
+    rs.addRule(
+      new Pattern("log4j:configuration/root/level"), new LevelAction());
     rs.addRule(
       new Pattern("log4j:configuration/logger/appender-ref"),
       new AppenderRefAction());
@@ -275,6 +277,22 @@ public class InterpreterTest extends TestCase {
     saxParser.parse("file:input/joran/parser3.xml", jp);
 
     // the following assertions depend on the contensts of parser3.xml
+    Logger rootLogger = LogManager.getLoggerRepository().getRootLogger();
+    assertSame(Level.WARN, rootLogger.getLevel());
+ 
+    RollingFileAppender a1Back = (RollingFileAppender) rootLogger.getAppender("A1");  
+    assertFalse("a1.append should be false", a1Back.getAppend());
+    PatternLayout plBack = (PatternLayout) a1Back.getLayout();
+    assertEquals("%-5p %c{2} - %m%n", plBack.getConversionPattern());
+         
+    SlidingWindowRollingPolicy swrp = (SlidingWindowRollingPolicy) a1Back.getRollingPolicy();
+    assertEquals("output/parser3", swrp.getActiveFileName());
+    assertEquals("output/parser3.%i", swrp.getFileNamePattern());
+    
+    SizeBasedTriggeringPolicy sbtp = (SizeBasedTriggeringPolicy) a1Back.getTriggeringPolicy();
+    assertEquals(100, sbtp.getMaxFileSize());
+    
+    //System.out.println(ec.getErrorList());
   }
 
   public void testNewConversionWord() throws Exception {
@@ -308,6 +326,9 @@ public class InterpreterTest extends TestCase {
     PatternLayout pl = (PatternLayout) appender.getLayout();
     assertEquals("org.apache.log4j.toto", pl.getRuleRegistry().get("toto"));
   }
+  
+  
+  
   
   public void testNewRule1() throws Exception {
     logger.debug("Starting testNewConversionWord");

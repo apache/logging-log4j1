@@ -45,7 +45,4 @@ public class HelloAction extends Action {
    */
   public void end(ExecutionContext ec, String name) {
   }
-
-  public void finish(ExecutionContext ec) {
-  }
 }

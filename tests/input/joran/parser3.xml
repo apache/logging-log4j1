@@ -1,40 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE log4j:configuration>
 
-<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
-  1
+<log4j:configuration>
+
   <appender name="A1" class="org.apache.log4j.rolling.RollingFileAppender">
     <param name="File"   value="output/temp.A1" />
     <param name="Append" value="false" />	    
-2
+
     <rollingPolicy class="org.apache.log4j.rolling.SlidingWindowRollingPolicy">
        <param name="activeFileName" value="output/parser3"/>
       <param name="fileNamePattern" value="output/parser3.%i"/>
     </rollingPolicy>
-3    
+
     <triggeringPolicy class="org.apache.log4j.rolling.SizeBasedTriggeringPolicy">
       <param name="maxFileSize" value="100"/>
     </triggeringPolicy>
-4        
+
     <layout class="org.apache.log4j.PatternLayout">
       <param name="ConversionPattern" value="%-5p %c{2} - %m%n"/>
     </layout>	    
   </appender>
-5  
-6  
-  <logger>
-    <level value ="debug" />
-    <appender-ref ref="A1" />
-  </logger>
- 7 
-   <logger name="asd">
-    <level value ="debug" />
-    <appender-ref ref="A1" />
-  </logger>
-8    
+
+
   <root>
-    <level value ="debug" />
+    <level value ="WARN" />
     <appender-ref ref="A1" />
   </root>
-9  
+
 </log4j:configuration>

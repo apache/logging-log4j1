@@ -59,7 +59,7 @@ public abstract class Action {
 
   public abstract void end(ExecutionContext ec, String name);
 
-  public abstract void finish(ExecutionContext ec);
+  //public abstract void finish(ExecutionContext ec);
 
   public String toString() {
     return this.getClass().getName();
