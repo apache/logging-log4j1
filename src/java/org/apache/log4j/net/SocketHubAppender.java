@@ -109,16 +109,14 @@ public class SocketHubAppender extends AppenderSkeleton {
 
   /**
      Connects to remote server at <code>address</code> and <code>port</code>. */
-  public
-  SocketHubAppender(int _port) {
+  public SocketHubAppender(int _port) {
     port = _port;
     startServer();
   }
 
   /**
      Set up the socket server on the specified port.  */
-  public
-  void activateOptions() {
+  public void activateOptions() {
     startServer();
   }
 
@@ -126,9 +124,7 @@ public class SocketHubAppender extends AppenderSkeleton {
      Close this appender. 
      <p>This will mark the appender as closed and
      call then {@link #cleanUp} method. */
-  synchronized
-  public
-  void close() {
+  public synchronized void close() {
     if(closed)
       return;
 
@@ -141,8 +137,7 @@ public class SocketHubAppender extends AppenderSkeleton {
   /**
      Release the underlying ServerMonitor thread, and drop the connections
      to all connected remote servers. */
-  public 
-  void cleanUp() {
+  public void cleanUp() {
     // stop the monitor thread
 	LogLog.debug("stopping ServerSocket");
     serverMonitor.stopMonitor();
@@ -167,8 +162,7 @@ public class SocketHubAppender extends AppenderSkeleton {
 
   /**
     Append an event to all of current connections. */
-  public
-  void append(LoggingEvent event) {
+  public void append(LoggingEvent event) {
 	// if no event or no open connections, exit now
     if(event == null || oosList.size() == 0)
       return;
@@ -198,10 +192,10 @@ public class SocketHubAppender extends AppenderSkeleton {
       try {
       	oos.writeObject(event);
       	oos.flush();
-    	// Failing to reset the object output stream every now and
-    	// then creates a serious memory leak.
-    	// right now we always reset. TODO - set up frequency counter per oos?
-    	oos.reset();
+      	// Failing to reset the object output stream every now and
+      	// then creates a serious memory leak.
+      	// right now we always reset. TODO - set up frequency counter per oos?
+      	oos.reset();
       }
       catch(IOException e) {
       	// there was an io exception so just drop the connection
@@ -217,23 +211,20 @@ public class SocketHubAppender extends AppenderSkeleton {
   /**
      The SocketHubAppender does not use a layout. Hence, this method returns
      <code>false</code>. */
-  public
-  boolean requiresLayout() {
+  public boolean requiresLayout() {
     return false;
   }
   
   /**
      The <b>Port</b> option takes a positive integer representing
      the port where the server is waiting for connections. */
-  public
-  void setPort(int _port) {
+  public void setPort(int _port) {
     port = _port;
   }
   
   /**
      Returns value of the <b>Port</b> option. */
-  public
-  int getPort() {
+  public int getPort() {
     return port;
   }
   
@@ -241,22 +232,19 @@ public class SocketHubAppender extends AppenderSkeleton {
      The <b>LocationInfo</b> option takes a boolean value. If true,
      the information sent to the remote host will include location
      information. By default no location information is sent to the server. */
-  public
-  void setLocationInfo(boolean _locationInfo) {
+  public void setLocationInfo(boolean _locationInfo) {
     locationInfo = _locationInfo;
   }
   
   /**
      Returns value of the <b>LocationInfo</b> option. */
-  public
-  boolean getLocationInfo() {
+  public boolean getLocationInfo() {
     return locationInfo;
   }
   
   /**
     Start the ServerMonitor thread. */
-  private
-  void startServer() {
+  private void startServer() {
     serverMonitor = new ServerMonitor(port, oosList);
   }
   
@@ -264,8 +252,7 @@ public class SocketHubAppender extends AppenderSkeleton {
     This class is used internally to monitor a ServerSocket
     and register new connections in a vector passed in the
     constructor. */
-  private
-  class ServerMonitor implements Runnable {
+  private class ServerMonitor implements Runnable {
     private int port;
     private Vector oosList;
     private boolean keepRunning;
@@ -273,8 +260,7 @@ public class SocketHubAppender extends AppenderSkeleton {
     
     /**
       Create a thread and start the monitor. */
-    public
-    ServerMonitor(int _port, Vector _oosList) {
+    public ServerMonitor(int _port, Vector _oosList) {
       port = _port;
       oosList = _oosList;
       keepRunning = true;
@@ -286,9 +272,7 @@ public class SocketHubAppender extends AppenderSkeleton {
     /**
       Stops the monitor. This method will not return until
       the thread has finished executing. */
-    public
-    synchronized
-    void stopMonitor() {
+    public synchronized void stopMonitor() {
       if (keepRunning) {
     	LogLog.debug("server monitor thread shutting down");
         keepRunning = false;
@@ -308,8 +292,7 @@ public class SocketHubAppender extends AppenderSkeleton {
     /**
       Method that runs, monitoring the ServerSocket and adding connections as
       they connect to the socket. */
-    public
-    void run() {
+    public void run() {
       ServerSocket serverSocket = null;
       try {
         serverSocket = new ServerSocket(port);
