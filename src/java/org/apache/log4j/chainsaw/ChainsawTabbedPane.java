@@ -22,8 +22,6 @@ package org.apache.log4j.chainsaw;
 
 import java.awt.Component;
 
-import java.lang.reflect.Method;
-
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
@@ -51,24 +49,9 @@ class ChainsawTabbedPane extends JTabbedPane {
    *
    * Create the tabbed pane.  
    *
-   * Attempts to call via reflection the 
-   * 'setTabLayoutPolicy' method to use a 'scroll layout'
-   * if method exists (available as of jdk1.4)
-   * 
    */
   public ChainsawTabbedPane() {
     super();
-
-    try {
-      Class tabClass = JTabbedPane.class;
-      Class[] params = new Class[]{Integer.TYPE};
-
-      Method method = tabClass.getMethod("setTabLayoutPolicy", params);
-      Object[] args = new Object[]{new Integer(1)};
-      method.invoke(this, args);
-    } catch (Exception e) {
-      //ignore
-    }
   }
 
   /**
