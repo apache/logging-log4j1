@@ -96,21 +96,21 @@ import java.util.List;
  *
  */
 public final class LoggingEventFieldResolver {
-  private static final List keywordList = new ArrayList();
-  private static final String LOGGER_FIELD = "LOGGER";
-  private static final String LEVEL_FIELD = "LEVEL";
-  private static final String CLASS_FIELD = "CLASS";
-  private static final String FILE_FIELD = "FILE";
-  private static final String LINE_FIELD = "LINE";
-  private static final String METHOD_FIELD = "METHOD";
-  private static final String MSG_FIELD = "MSG";
-  private static final String NDC_FIELD = "NDC";
-  private static final String EXCEPTION_FIELD = "EXCEPTION";
-  private static final String TIMESTAMP_FIELD = "TIMESTAMP";
-  private static final String THREAD_FIELD = "THREAD";
-  private static final String MDC_FIELD = "MDC.";
-  private static final String PROP_FIELD = "PROP.";
-  private static final String EMPTY_STRING = "";
+  public static final List keywordList = new ArrayList();
+  public static final String LOGGER_FIELD = "LOGGER";
+  public static final String LEVEL_FIELD = "LEVEL";
+  public static final String CLASS_FIELD = "CLASS";
+  public static final String FILE_FIELD = "FILE";
+  public static final String LINE_FIELD = "LINE";
+  public static final String METHOD_FIELD = "METHOD";
+  public static final String MSG_FIELD = "MSG";
+  public static final String NDC_FIELD = "NDC";
+  public static final String EXCEPTION_FIELD = "EXCEPTION";
+  public static final String TIMESTAMP_FIELD = "TIMESTAMP";
+  public static final String THREAD_FIELD = "THREAD";
+  public static final String MDC_FIELD = "MDC.";
+  public static final String PROP_FIELD = "PROP.";
+  public static final String EMPTY_STRING = "";
   private static final LoggingEventFieldResolver resolver =
     new LoggingEventFieldResolver();
 

@@ -74,6 +74,9 @@ public class PartialTextMatchRule extends AbstractRule {
   }
 
   public static Rule getRule(Stack stack) {
+      if (stack.size() < 2) {
+          throw new IllegalArgumentException("partial text rule - expected two entries but " + stack.size() + " were provided");
+      }
     String p2 = stack.pop().toString();
     String p1 = stack.pop().toString();
 

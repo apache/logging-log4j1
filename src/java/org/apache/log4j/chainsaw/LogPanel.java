@@ -57,7 +57,6 @@ package org.apache.log4j.chainsaw;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -72,9 +71,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
-import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
@@ -101,7 +98,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -109,16 +105,13 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
-import javax.swing.ComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -159,6 +152,8 @@ import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
 import org.apache.log4j.chainsaw.prefs.SettingsListener;
 import org.apache.log4j.chainsaw.prefs.SettingsManager;
 import org.apache.log4j.chainsaw.rule.AbstractRule;
+import org.apache.log4j.chainsaw.rule.ExpressionRule;
+import org.apache.log4j.chainsaw.rule.ExpressionRuleContext;
 import org.apache.log4j.chainsaw.rule.Rule;
 import org.apache.log4j.helpers.ISO8601DateFormat;
 import org.apache.log4j.helpers.LogLog;
@@ -176,11 +171,9 @@ public class LogPanel extends DockablePanel implements SettingsListener,
   private final JFrame preferencesFrame = new JFrame();
   private final JFrame colorFrame = new JFrame();
   private ThrowableRenderPanel throwableRenderPanel;
-  private MouseFocusOnAdaptor mouseFocusOnAdaptor = new MouseFocusOnAdaptor();
   private boolean paused = false;
   private final FilterModel filterModel = new FilterModel();
   private final RuleMediator ruleMediator = new RuleMediator();
-  private final FocusOnMenu focusOnMenu = new FocusOnMenu();
   final EventContainer tableModel;
   final JEditorPane detail;
   final JSplitPane lowerPanel;
@@ -203,6 +196,7 @@ public class LogPanel extends DockablePanel implements SettingsListener,
   String identifier;
   final Map columnDisplayMap = new HashMap();
   final Map colorDisplayMap = new HashMap();
+  final Map columnNameKeywordMap = new HashMap();
 
   //    final ColorDisplaySelector colorDisplaySelector;
   ScrollToBottom scrollToBottom;
@@ -221,6 +215,18 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     final ChainsawStatusBar statusBar, final String ident, String eventType) {
     identifier = ident;
     this.statusBar = statusBar;
+    
+    columnNameKeywordMap.put(ChainsawConstants.CLASS_COL_NAME, LoggingEventFieldResolver.CLASS_FIELD);
+    columnNameKeywordMap.put(ChainsawConstants.FILE_COL_NAME, LoggingEventFieldResolver.FILE_FIELD);        
+    columnNameKeywordMap.put(ChainsawConstants.LEVEL_COL_NAME, LoggingEventFieldResolver.LEVEL_FIELD);
+    columnNameKeywordMap.put(ChainsawConstants.LINE_COL_NAME, LoggingEventFieldResolver.LINE_FIELD);
+    columnNameKeywordMap.put(ChainsawConstants.LOGGER_COL_NAME, LoggingEventFieldResolver.LOGGER_FIELD);
+    columnNameKeywordMap.put(ChainsawConstants.NDC_COL_NAME, LoggingEventFieldResolver.NDC_FIELD);
+    columnNameKeywordMap.put(ChainsawConstants.PROPERTIES_COL_NAME, LoggingEventFieldResolver.PROP_FIELD);    
+    columnNameKeywordMap.put(ChainsawConstants.MESSAGE_COL_NAME, LoggingEventFieldResolver.MSG_FIELD);    
+    columnNameKeywordMap.put(ChainsawConstants.THREAD_COL_NAME, LoggingEventFieldResolver.THREAD_FIELD);
+    columnNameKeywordMap.put(ChainsawConstants.THROWABLE_COL_NAME, LoggingEventFieldResolver.EXCEPTION_FIELD);
+    columnNameKeywordMap.put(ChainsawConstants.TIMESTAMP_COL_NAME, LoggingEventFieldResolver.TIMESTAMP_FIELD);
 
     preferencesFrame.setTitle("'" + ident + "' Log Panel Preferences");
     preferencesFrame.setIconImage(
@@ -310,24 +316,6 @@ public class LogPanel extends DockablePanel implements SettingsListener,
 
     throwableRenderPanel = new ThrowableRenderPanel(table);
 
-    table.getSelectionModel().addListSelectionListener(
-      new ListSelectionListener() {
-        public void valueChanged(ListSelectionEvent e) {
-          if (e.getValueIsAdjusting() || !isVisible()) {
-            return;
-          }
-
-          LoggingEvent event = null;
-          int row = table.getSelectedRow();
-
-          if (row > -1) {
-            event = tableModel.getRow(row);
-          }
-
-          rebuildFocusOnMenuFromEvent(event);
-        }
-      });
-
     preferenceModel.addPropertyChangeListener(
       "visibleColumns",
       new PropertyChangeListener() {
@@ -393,9 +381,6 @@ public class LogPanel extends DockablePanel implements SettingsListener,
           }
         }
       });
-
-    table.addMouseListener(mouseFocusOnAdaptor);
-    table.addMouseMotionListener(mouseFocusOnAdaptor);
 
     table.setRowHeight(20);
     table.setShowGrid(false);
@@ -513,98 +498,11 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     preferenceModel.addPropertyChangeListener(
       "dateFormatPattern", datePrefsChangeListener);
 
-    //      TODO reload new Display rule for this panel
-    //      displayFilter = loadDisplayFilter(ident);
-    //      tableModel.setDisplayRule(displayFilter);
-    //      displayFilter.addFilterChangedListener(tableModel);
     SettingsManager.getInstance().addSettingsListener(renderer);
 
     table.setDefaultRenderer(Object.class, renderer);
 
-    final ColumnSelector columnSelector =
-      new ColumnSelector(
-        ident, new Vector(ChainsawColumns.getColumnsNames()), table);
-    table.getColumnModel().addColumnModelListener(columnSelector);
 
-    columnSelector.setIconImage(
-      new ImageIcon(ChainsawIcons.WINDOW_ICON).getImage());
-
-    JMenu menuColumnDisplayFilter =
-      new JMenu("Apply display filter for column");
-
-    JMenu menuColumnColorFilter = new JMenu("Apply color filter for column");
-
-    ButtonGroup bg = new ButtonGroup();
-
-    //      TODO fix this menu so that columns can be hidden/displayed
-    //      Iterator iter = logUI.getFilterableColumns().iterator();
-    //
-    //      while (iter.hasNext()) {
-    //        final String colName = (String) iter.next();
-    //        JRadioButtonMenuItem thisItem = new JRadioButtonMenuItem(colName);
-    //        thisItem.setFont(thisItem.getFont().deriveFont(Font.PLAIN));
-    //        thisItem.addActionListener(
-    //          new ActionListener() {
-    //            public void actionPerformed(ActionEvent evt) {
-    //              LoggingEvent lastSelected = null;
-    //
-    //              if (table.getSelectedRow() > -1) {
-    //                lastSelected = tableModel.getRow(table.getSelectedRow());
-    //              }
-    //
-    ////              colorDisplaySelector.applyColorUpdateForColumn(colName);
-    ////              colorDisplaySelector.applyColorFilters(colName);
-    //
-    //              if (lastSelected != null) {
-    //                int newIndex = tableModel.getRowIndex(lastSelected);
-    //
-    //                if (newIndex > -1) {
-    //                  table.scrollToRow(
-    //                    newIndex,
-    //                    table.columnAtPoint(table.getVisibleRect().getLocation()));
-    //                }
-    //              }
-    //            }
-    //          });
-    //        bg.add(thisItem);
-    //        menuColumnColorFilter.add(thisItem);
-    //        colorDisplayMap.put(colName, thisItem);
-    //      }
-    //
-    //      ButtonGroup bg2 = new ButtonGroup();
-    //      Iterator iter2 = logUI.getFilterableColumns().iterator();
-    //
-    //      while (iter2.hasNext()) {
-    //        final String colName = (String) iter2.next();
-    //        JRadioButtonMenuItem thisItem = new JRadioButtonMenuItem(colName);
-    //        thisItem.setFont(thisItem.getFont().deriveFont(Font.PLAIN));
-    //        thisItem.addActionListener(
-    //          new ActionListener() {
-    //            public void actionPerformed(ActionEvent evt) {
-    //              LoggingEvent lastSelected = null;
-    //
-    //              if (table.getSelectedRow() > -1) {
-    //                lastSelected = tableModel.getRow(table.getSelectedRow());
-    //              }
-    //
-    ////              colorDisplaySelector.applyDisplayUpdateForColumn(colName);
-    ////              colorDisplaySelector.applyDisplayFilters(colName);
-    //
-    //              if (lastSelected != null) {
-    //                int newIndex = tableModel.getRowIndex(lastSelected);
-    //
-    //                if (newIndex > -1) {
-    //                  table.scrollToRow(
-    //                    newIndex,
-    //                    table.columnAtPoint(table.getVisibleRect().getLocation()));
-    //                }
-    //              }
-    //            }
-    //          });
-    //        bg2.add(thisItem);
-    //        menuColumnDisplayFilter.add(thisItem);
-    //        columnDisplayMap.put(colName, thisItem);
-    //      }
     table.addMouseMotionListener(
       new MouseMotionAdapter() {
         int currentRow = -1;
@@ -657,11 +555,9 @@ public class LogPanel extends DockablePanel implements SettingsListener,
       new JPanel(new FlowLayout(FlowLayout.CENTER, 3, 0));
     upperLeftPanel.add(filterLabel);
 
-    final JComboBox customFilterList =
-      new JComboBox(ChainsawColumns.getColumnsNames().toArray());
-    customFilterList.setFont(customFilterList.getFont().deriveFont(10f));
-
     final JTextField filterText = new JTextField();
+    filterText.addKeyListener(
+      new ExpressionRuleContext(filterModel, filterText));
 
     ruleMediator.addPropertyChangeListener(
       new PropertyChangeListener() {
@@ -673,20 +569,6 @@ public class LogPanel extends DockablePanel implements SettingsListener,
             RefinementFocusRule refineRule =
               (RefinementFocusRule) ruleMediator.getRefinementRule();
             filterText.setText(refineRule.getExpression());
-
-            ComboBoxModel model = customFilterList.getModel();
-
-            for (int i = 0; i < model.getSize(); i++) {
-              if (
-                model.getElementAt(i).toString().equals(
-                    refineRule.getColumnName())) {
-                customFilterList.setSelectedIndex(i);
-
-                break;
-              }
-            }
-          } else {
-            filterText.setText("");
           }
         }
       });
@@ -706,41 +588,15 @@ public class LogPanel extends DockablePanel implements SettingsListener,
         }
 
         public void setFilter() {
-          LogLog.warn(
-            "setFilter() is not re-implemented in terms of the new Display rule yet");
-
-          //          	TODO Display rule stuff
           if (filterText.getText().equals("")) {
-            //              displayFilter.setCustomFilter(null);
+            ruleMediator.setRefinementRule(null);
           } else {
-            //              detailPaneUpdater.setSelectedRow(-1);
-            //
-            //              displayFilter.setCustomFilter(
-            //                new DisplayFilterEntry(
-            //                  (String) customFilterList.getSelectedItem(),
-            //                  filterText.getText(), ChainsawConstants.GLOBAL_MATCH));
-          }
-        }
-      });
-
-    String evaluator =
-      ExpressionEvaluatorFactory.newInstance().getEvaluatorClassName();
-    filterText.setToolTipText(
-      "See " + evaluator + " documentation for expression rules");
-
-    customFilterList.setMaximumRowCount(15);
-
-    upperLeftPanel.add(customFilterList);
-
-    customFilterList.addActionListener(
-      new ActionListener() {
-        public void actionPerformed(ActionEvent evt) {
-          if (!(filterText.getText().equals(""))) {
-            //            	TODO more Rule implementation here.
-            //              displayFilter.setCustomFilter(
-            //                new DisplayFilterEntry(
-            //                  (String) customFilterList.getSelectedItem(),
-            //                  filterText.getText(), ChainsawConstants.GLOBAL_MATCH));
+              try {
+                ruleMediator.setRefinementRule(ExpressionRule.getRule(filterText.getText()));
+                filterText.setToolTipText("Enter expression");
+              } catch (IllegalArgumentException iae) {
+                  filterText.setToolTipText(iae.getMessage());
+              }
           }
         }
       });
@@ -748,34 +604,9 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     upperPanel.add(filterText, BorderLayout.CENTER);
     upperPanel.add(upperLeftPanel, BorderLayout.WEST);
 
-    //    final JCheckBox override = new JCheckBox();
-    //    override.addActionListener(
-    //      new ActionListener() {
-    //        public void actionPerformed(ActionEvent evt) {
-    //          LoggingEvent lastSelected = null;
-    //
-    //          if (table.getSelectedRow() > -1) {
-    //            lastSelected = tableModel.getRow(table.getSelectedRow());
-    //          }
-    //
-    //          //            displayFilter.setCustomFilterOverride(override.isSelected());
-    //          if (lastSelected != null) {
-    //            int newIndex = tableModel.getRowIndex(lastSelected);
-    //
-    //            if (newIndex > -1) {
-    //              table.scrollToRow(
-    //                newIndex,
-    //                table.columnAtPoint(table.getVisibleRect().getLocation()));
-    //            }
-    //          }
-    //        }
-    //      });
-    //    override.setToolTipText(
-    //      "<html>Unchecked: Apply QuickFilter to displayed rows<br>Checked: Apply QuickFilter to ALL rows (override display filter setting)</html>");
     JPanel upperRightPanel =
       new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
 
-    //    upperRightPanel.add(override);
     upperPanel.add(upperRightPanel, BorderLayout.EAST);
 
     eventsAndStatusPanel = new JPanel();
@@ -790,12 +621,6 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     final JPanel statusLabelPanel = new JPanel();
     statusLabelPanel.setLayout(new BorderLayout());
 
-    //    final JLabel statusPaneLabel = new JLabel();
-    //    statusPaneLabel.setFont(statusPaneLabel.getFont().deriveFont(Font.BOLD));
-    //    statusPaneLabel.setHorizontalAlignment(JLabel.LEFT);
-    //    statusPaneLabel.setVerticalAlignment(JLabel.CENTER);
-    //    statusLabelPanel.add(statusPaneLabel, BorderLayout.WEST);
-    //    statusLabelPanel.setBorder(BorderFactory.createEtchedBorder());
     statusLabelPanel.add(upperPanel, BorderLayout.CENTER);
     eventsAndStatusPanel.add(statusLabelPanel, BorderLayout.NORTH);
 
@@ -1083,7 +908,7 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     menuItemToggleToolTips.setIcon(new ImageIcon(ChainsawIcons.TOOL_TIP));
 
     final JMenuItem menuDefineCustomFilter =
-      new JMenuItem("Custom filter from mouse location");
+      new JMenuItem("Focus on");
     menuDefineCustomFilter.addActionListener(
       new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
@@ -1104,8 +929,38 @@ public class LogPanel extends DockablePanel implements SettingsListener,
               value = table.getValueAt(row, column).toString();
             }
 
-            customFilterList.setSelectedItem(colName);
-            filterText.setText(value);
+            if (columnNameKeywordMap.containsKey(colName)) {
+                filterText.setText(columnNameKeywordMap.get(colName).toString() + " == '" + value +"'");
+            }
+          }
+        }
+      });
+
+    final JMenuItem menuDefineAddCustomFilter =
+      new JMenuItem("Add to focus");
+    menuDefineAddCustomFilter.addActionListener(
+      new ActionListener() {
+        public void actionPerformed(ActionEvent evt) {
+          if (currentPoint != null) {
+            int column = table.columnAtPoint(currentPoint);
+            int row = table.rowAtPoint(currentPoint);
+            String colName = table.getColumnName(column);
+            String value = "";
+
+            if (colName.equalsIgnoreCase(ChainsawConstants.TIMESTAMP_COL_NAME)) {
+              JComponent comp =
+                (JComponent) table.getCellRenderer(row, column);
+
+              if (comp instanceof JLabel) {
+                value = ((JLabel) comp).getText();
+              }
+            } else {
+              value = table.getValueAt(row, column).toString();
+            }
+
+            if (columnNameKeywordMap.containsKey(colName)) {
+                filterText.setText(filterText.getText() + " && " + columnNameKeywordMap.get(colName).toString() + " == '" + value +"'");
+            }
           }
         }
       });
@@ -1121,29 +976,11 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     menuItemScrollBottom.setIcon(
       new ImageIcon(ChainsawIcons.SCROLL_TO_BOTTOM));
 
-    //    JMenuItem menuItemRemoveColorFilter =
-    //      new JMenuItem("Remove all color filters");
-    //    menuItemRemoveColorFilter.addActionListener(
-    //      new ActionListener() {
-    //        public void actionPerformed(ActionEvent evt) {
-    //          //            colorDisplaySelector.clearColors();
-    //          colorFilter.clear();
-    //        }
-    //      });
-    //    JMenuItem menuItemColumnSelector =
-    //      new JMenuItem("Select display columns...");
-    //    menuItemColumnSelector.addActionListener(
-    //      new ActionListener() {
-    //        public void actionPerformed(ActionEvent evt) {
-    //          columnSelector.show();
-    //        }
-    //      });
     JMenuItem menuItemRemoveDisplayFilter =
       new JMenuItem("Remove all display filters");
     menuItemRemoveDisplayFilter.addActionListener(
       new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
-          //            colorDisplaySelector.clearDisplay();
           tableModel.setDisplayRule(null);
         }
       });
@@ -1174,22 +1011,15 @@ public class LogPanel extends DockablePanel implements SettingsListener,
      */
     menuItemToggleDetails.getModel().setSelected(true);
 
-    JMenuItem focusOnLoggerMenuItem =
-      new JMenuItem(focusOnMenu.focusOnLoggerAction);
-    p.add(focusOnLoggerMenuItem);
-    p.add(focusOnMenu);
-
     final Action clearFocusAction =
-      new AbstractAction("Clear refinement focus") {
+      new AbstractAction("Clear focus") {
         public void actionPerformed(ActionEvent e) {
-          focusOnMenu.removeFocus();
+          filterText.setText(null);
+          ruleMediator.setRefinementRule(null);
         }
       };
 
     clearFocusAction.setEnabled(false);
-    clearFocusAction.putValue(
-      Action.SHORT_DESCRIPTION,
-      "Removes any refinement focus you have currently set");
     ruleMediator.addPropertyChangeListener(
       new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
@@ -1199,6 +1029,8 @@ public class LogPanel extends DockablePanel implements SettingsListener,
         }
       });
     p.add(clearFocusAction);
+    p.add(menuDefineCustomFilter);
+    p.add(menuDefineAddCustomFilter);
     p.add(new JSeparator());
 
     p.add(menuItemToggleDetails);
@@ -1208,23 +1040,10 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     p.add(new JSeparator());
     p.add(menuItemToggleDock);
 
-    //	p.add(new JSeparator());
-    //    p.add(menuDefineCustomFilter);
     p.add(new JSeparator());
     p.add(menuItemColorPanel);
     p.add(menuItemLogPanelPreferences);
 
-    //    p.add(menuColumnDisplayFilter);
-    //    p.add(menuColumnColorFilter);
-    //    p.add(new JSeparator());
-    //    JMenu removeSubMenu = new JMenu("Remove");
-    //    JMenu selectSubMenu = new JMenu("Select");
-    //    selectSubMenu.add(menuItemColumnSelector);
-    //    removeSubMenu.add(menuItemRemoveColorFilter);
-    //    removeSubMenu.add(menuItemRemoveDisplayFilter);
-    //    p.add(menuItemColumnSelector);
-    //    p.add(selectSubMenu);
-    //    p.add(removeSubMenu);
     final PopupListener popupListener = new PopupListener(p);
 
     eventsPane.addMouseListener(popupListener);
@@ -1316,13 +1135,6 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     detailDialog.pack();
   }
 
-  /**
-  * @param event
-  */
-  protected void rebuildFocusOnMenuFromEvent(LoggingEvent event) {
-    focusOnMenu.setEvent(event);
-  }
-
   private JToolBar createDockwindowToolbar() {
     final JToolBar toolbar = new JToolBar();
     toolbar.setFloatable(false);
@@ -1366,7 +1178,7 @@ public class LogPanel extends DockablePanel implements SettingsListener,
       };
 
     dockShowPrefsAction.putValue(
-      Action.SHORT_DESCRIPTION, "Define display and color filters...");
+      Action.SHORT_DESCRIPTION, "Define preferences...");
     dockShowPrefsAction.putValue(
       Action.SMALL_ICON, ChainsawIcons.ICON_PREFERENCES);
 
@@ -2038,37 +1850,6 @@ public class LogPanel extends DockablePanel implements SettingsListener,
   }
 
   /**
-   *
-   * @param column the column index matching those in ChainsawColumns class
-   * @param value the value to focus on
-   */
-  private void focusOnColumnValue(int column, final Object value) {
-    if ((column) == ChainsawColumns.INDEX_LOGGER_COL_NAME) {
-      logTreePanel.setFocusOn(value.toString());
-    } else {
-      if (value == null) {
-        ruleMediator.setRefinementRule(null);
-      } else {
-        ruleMediator.setRefinementRule(
-          new RefinementFocusRule(
-            ChainsawColumns.getColumnName(column), value.toString()) {
-            public boolean evaluate(LoggingEvent e) {
-              Object object =
-                LoggingEventFieldResolver.getInstance().getValue(
-                  getColumnName(), e);
-
-              if (object == null) {
-                return false;
-              }
-
-              return object.equals(value);
-            }
-          });
-      }
-    }
-  }
-
-  /**
    * Returns this LogPanels Preerence model currently in Use
    * @return
    */
@@ -2091,157 +1872,6 @@ public class LogPanel extends DockablePanel implements SettingsListener,
 
     public String getExpression() {
       return this.expression;
-    }
-  }
-
-  private class MouseFocusOnAdaptor extends MouseAdapter
-    implements MouseListener, MouseMotionListener {
-    boolean isFocusableColumn(int columnIndex) {
-      TableColumn column = table.getColumnModel().getColumn(columnIndex);
-
-      switch (column.getModelIndex() + 1) {
-      case ChainsawColumns.INDEX_LEVEL_COL_NAME:
-      case ChainsawColumns.INDEX_THREAD_COL_NAME:
-      case ChainsawColumns.INDEX_LOGGER_COL_NAME:
-
-        //			TODO ensure these columns are refine focus filters
-        //			case ChainsawColumns.INDEX_CLASS_COL_NAME:
-        //			case ChainsawColumns.INDEX_FILE_COL_NAME:
-        //			case ChainsawColumns.INDEX_METHOD_COL_NAME:
-        return true;
-
-      default:
-        return false;
-      }
-    }
-
-    public void mouseMoved(MouseEvent e) {
-      //        LogLog.debug(e.toString());
-      int col = table.columnAtPoint(e.getPoint());
-
-      //    TODO This is a Bug or something, but InputEvent.CTRL_DOWN_MASK only works
-      // in JDK 1.4.2 when the LoggerTreePanel is open, if it is closed, it doesn't work... CTRL_DOWN_MASK
-      // is ok though... Strange. Copied the mask from 1.4.2 here
-      if (
-        ((e.getModifiers() & (1 << 7)) > 0)
-          || (((e.getModifiers() & InputEvent.CTRL_MASK) > 0)
-          && isFocusableColumn(col))) {
-        table.setCursor(ChainsawColumns.CURSOR_FOCUS_ON);
-      } else {
-        //          LogLog.debug("MouseMoved,  ((e.getModifiers() & InputEvent.CTRL_MASK) > 0)=" +  ((e.getModifiers() & InputEvent.CTRL_MASK) > 0) + ", isFocusableColumn(col)=" + isFocusableColumn(col));
-        //        LogLog.debug(e.toString());
-        table.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-      }
-    }
-
-    /* (non-Javadoc)
-     * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
-     */
-    public void mouseClicked(MouseEvent e) {
-      if (
-        (e.getClickCount() > 1)
-          && ((e.getModifiers() & InputEvent.CTRL_MASK) > 0)) {
-        int row = table.rowAtPoint(e.getPoint());
-        int col = table.columnAtPoint(e.getPoint());
-        TableColumn column = table.getColumnModel().getColumn(col);
-        Object value = getModel().getValueAt(row, column.getModelIndex());
-
-        if (isFocusableColumn(col)) {
-          LogLog.debug(
-            "Wanted to focus on Column " + col + ", value=" + value);
-          focusOnColumnValue(column.getModelIndex() + 1, value);
-        }
-      }
-    }
-
-    public void mouseDragged(MouseEvent e) {
-    }
-  }
-
-  /**
-   * This class provides a Sub menu so Users can Focus on specific elements of a LoggingEvent.
-   *
-   * The Focus On Logger action is subtle different, it is not visible inside this menu, but is used in an outter menu (Logger focus
-   * is not a real Refinement filter), but it still benefits from being inside this class so that it can change it's display
-   * based on the current event's Logger name.  Not ideal, but there you go.
-   *
-   * @author Paul Smith
-   */
-  private class FocusOnMenu extends JMenu {
-    private Action focusOnLoggerAction =
-      new AbstractAction("...logger...") {
-        public void actionPerformed(ActionEvent e) {
-          if (event != null) {
-            focusOnColumnValue(
-              ChainsawColumns.INDEX_LOGGER_COL_NAME, event.getLoggerName());
-          }
-        }
-      };
-
-    private Action focusOnThreadAction =
-      new FocusOnAction(ChainsawColumns.INDEX_THREAD_COL_NAME);
-    private Action focusOnLevelAction =
-      new FocusOnAction(ChainsawColumns.INDEX_LEVEL_COL_NAME);
-    private Action[] allActions =
-      new Action[] { focusOnLoggerAction, focusOnThreadAction, focusOnLevelAction };
-    private LoggingEvent event;
-
-    private FocusOnMenu() {
-      super("Refine focus on...");
-      setIcon(new ImageIcon(ChainsawIcons.WINDOW_ICON));
-      add(focusOnThreadAction);
-      add(focusOnLevelAction);
-
-      //      TODO add the other refinement focus stuff
-      focusOnLoggerAction.putValue(Action.SMALL_ICON, getIcon());
-    }
-
-    private void removeFocus() {
-      setEvent(null);
-
-      ruleMediator.setRefinementRule(null);
-    }
-
-    private void setEvent(LoggingEvent event) {
-      this.event = event;
-
-      boolean enabled = event != null;
-      setEnabled(enabled);
-
-      for (int i = 0; i < allActions.length; i++) {
-        allActions[i].setEnabled(enabled);
-      }
-
-      focusOnLoggerAction.putValue(
-        Action.NAME,
-        (event == null) ? "Focus on logger..."
-                        : ("Focus on logger '" + event.getLoggerName() + "'"));
-      focusOnThreadAction.putValue(
-        Action.NAME,
-        (event == null) ? "Thread..." : ("Thread '" + event.getThreadName()
-        + "'"));
-
-      focusOnLevelAction.putValue(
-        Action.NAME,
-        (event == null) ? "Level..." : ("Level '" + event.getLevel() + "'"));
-    }
-
-    private class FocusOnAction extends AbstractAction {
-      private int column;
-      private String columnName;
-
-      private FocusOnAction(int column) {
-        this.column = column;
-        this.columnName = ChainsawColumns.getColumnName(this.column);
-      }
-
-      public void actionPerformed(ActionEvent e) {
-        Object value =
-          (event == null) ? null
-                          : LoggingEventFieldResolver.getInstance().getValue(
-            columnName, event);
-        focusOnColumnValue(column, value);
-      }
     }
   }
 

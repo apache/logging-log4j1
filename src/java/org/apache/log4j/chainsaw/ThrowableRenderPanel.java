@@ -55,8 +55,6 @@
  */
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.helpers.LogLog;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;

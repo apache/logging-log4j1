@@ -53,7 +53,6 @@ import org.apache.log4j.chainsaw.icons.ChainsawIcons;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;

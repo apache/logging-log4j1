@@ -149,6 +149,14 @@ public class InFixToPostFix {
     while (tokenizer.hasMoreTokens()) {
       String token = tokenizer.nextToken();
 
+      boolean inText = (token.startsWith("'") && (!token.endsWith("'")));
+      if (inText) {
+          while (inText && tokenizer.hasMoreTokens()) {
+            token = token + " " + tokenizer.nextToken();
+            inText = !(token.endsWith("'"));
+        }
+      }
+
       if ("(".equals(token)) {
         //recurse
         postfix.append(infixToPostFix(tokenizer));

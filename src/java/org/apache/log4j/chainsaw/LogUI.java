@@ -49,25 +49,6 @@
 
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Priority;
-import org.apache.log4j.UtilLoggingLevel;
-import org.apache.log4j.chainsaw.help.Tutorial;
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SettingsListener;
-import org.apache.log4j.chainsaw.prefs.SettingsManager;
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.helpers.OptionConverter;
-import org.apache.log4j.net.SocketNodeEventListener;
-import org.apache.log4j.plugins.Plugin;
-import org.apache.log4j.plugins.PluginEvent;
-import org.apache.log4j.plugins.PluginListener;
-import org.apache.log4j.plugins.PluginRegistry;
-import org.apache.log4j.plugins.Receiver;
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
@@ -84,23 +65,13 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-
 import java.lang.reflect.Method;
-
 import java.net.URL;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -131,6 +102,25 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Priority;
+import org.apache.log4j.UtilLoggingLevel;
+import org.apache.log4j.chainsaw.help.Tutorial;
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.SettingsListener;
+import org.apache.log4j.chainsaw.prefs.SettingsManager;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.net.SocketNodeEventListener;
+import org.apache.log4j.plugins.Plugin;
+import org.apache.log4j.plugins.PluginEvent;
+import org.apache.log4j.plugins.PluginListener;
+import org.apache.log4j.plugins.PluginRegistry;
+import org.apache.log4j.plugins.Receiver;
 
 
 /**
@@ -1241,49 +1231,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     }
 
     return v;
-  }
-
-  /**
-   * Regurgitates a DisplayFilter for a specific machine identifier by
-   * deserializing the settings from a file. DisplayFilter serializes tool tip
-   * fields and enabled flag.
-   *
-   * @param ident
-   * @return
-   */
-  private DisplayFilter loadDisplayFilter(String ident) {
-    DisplayFilter d = null;
-    ObjectInputStream s = null;
-    File f =
-      new File(
-        SettingsManager.getInstance().getSettingsDirectory() + File.separator
-        + ident + ChainsawConstants.SETTINGS_EXTENSION);
-
-    if (f.exists()) {
-      try {
-        s = new ObjectInputStream(
-            new BufferedInputStream(new FileInputStream(f)));
-        d = (DisplayFilter) s.readObject();
-      } catch (IOException ioe) {
-        ioe.printStackTrace();
-      } catch (ClassNotFoundException cnfe) {
-        cnfe.printStackTrace();
-      } finally {
-        if (s != null) {
-          try {
-            s.close();
-          } catch (IOException ioe) {
-            ioe.printStackTrace();
-          }
-        }
-      }
-    }
-
-    if (d == null) {
-      d = new DisplayFilter(ident);
-    }
-
-    return d;
   }
 
   /**
