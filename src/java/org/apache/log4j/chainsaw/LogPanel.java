@@ -55,23 +55,6 @@
  */
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.Layout;
-import org.apache.log4j.PatternLayout;
-import org.apache.log4j.chainsaw.filter.FilterModel;
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-import org.apache.log4j.chainsaw.icons.LineIconFactory;
-import org.apache.log4j.chainsaw.layout.DefaultLayoutFactory;
-import org.apache.log4j.chainsaw.layout.EventDetailLayout;
-import org.apache.log4j.chainsaw.layout.LayoutEditorPane;
-import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SettingsListener;
-import org.apache.log4j.chainsaw.prefs.SettingsManager;
-import org.apache.log4j.chainsaw.rule.AbstractRule;
-import org.apache.log4j.chainsaw.rule.Rule;
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.spi.LoggingEvent;
-
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Cursor;
@@ -94,10 +77,8 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.EOFException;
@@ -109,9 +90,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-
 import java.text.NumberFormat;
-
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -131,7 +111,6 @@ import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ComboBoxModel;
 import javax.swing.ImageIcon;
-import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -162,9 +141,27 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableColumnModelEvent;
 import javax.swing.event.TableColumnModelListener;
-import javax.swing.event.TableModelListener;
+import javax.swing.event.TableModelEvent;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+
+import org.apache.log4j.Layout;
+import org.apache.log4j.PatternLayout;
+import org.apache.log4j.chainsaw.filter.FilterModel;
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.chainsaw.icons.LineIconFactory;
+import org.apache.log4j.chainsaw.layout.DefaultLayoutFactory;
+import org.apache.log4j.chainsaw.layout.EventDetailLayout;
+import org.apache.log4j.chainsaw.layout.LayoutEditorPane;
+import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.SettingsListener;
+import org.apache.log4j.chainsaw.prefs.SettingsManager;
+import org.apache.log4j.chainsaw.rule.AbstractRule;
+import org.apache.log4j.chainsaw.rule.Rule;
+import org.apache.log4j.helpers.ISO8601DateFormat;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
@@ -192,6 +189,8 @@ public class LogPanel extends DockablePanel implements SettingsListener,
   final DockablePanel externalPanel;
   final Action dockingAction;
   final JSortTable table;
+  private final LogPanelPreferenceModel preferenceModel =
+    new LogPanelPreferenceModel();
   private String profileName = null;
   private final JDialog detailDialog = new JDialog((JFrame) null, true);
   final JPanel detailPanel = new JPanel(new BorderLayout());
@@ -337,8 +336,87 @@ public class LogPanel extends DockablePanel implements SettingsListener,
             });
         }
       });
+      
+    /***
+     * Setup a popup menu triggered for Timestamp column to allow time stamp format changes
+     */
+
+    final JPopupMenu dateFormatChangePopup = new JPopupMenu();
+    final JRadioButtonMenuItem isoButton =
+      new JRadioButtonMenuItem(
+        new AbstractAction("Use ISO8601Format") {
+          public void actionPerformed(ActionEvent e) {
+            preferenceModel.setUseISO8601Format(true);
+          }
+        });
+    final JRadioButtonMenuItem simpleTimeButton =
+      new JRadioButtonMenuItem(
+        new AbstractAction("Use simple time") {
+          public void actionPerformed(ActionEvent e) {
+            preferenceModel.setUseISO8601Format(false);
+            preferenceModel.setAlternateDateFormatPattern("HH:mm:ss");
+          }
+        });
+
+    ButtonGroup dfBG = new ButtonGroup();
+    dfBG.add(isoButton);
+    dfBG.add(simpleTimeButton);
+    isoButton.setSelected(true);
+    dateFormatChangePopup.add(isoButton);
+    dateFormatChangePopup.add(simpleTimeButton);
 
     setLayout(new BorderLayout());
+    table.getTableHeader().addMouseListener(
+      new MouseAdapter() {
+        public void mouseClicked(MouseEvent e) {
+          checkEvent(e);
+        }
+
+        public void mousePressed(MouseEvent e) {
+          checkEvent(e);
+        }
+
+        public void mouseReleased(MouseEvent e) {
+          checkEvent(e);
+        }
+
+        private void checkEvent(MouseEvent e) {
+          if (e.isPopupTrigger()) {
+            TableColumnModel colModel = table.getColumnModel();
+            int index = colModel.getColumnIndexAtX(e.getX());
+            int modelIndex = colModel.getColumn(index).getModelIndex();
+
+            if ((modelIndex + 1) == ChainsawColumns.INDEX_TIMESTAMP_COL_NAME) {
+              dateFormatChangePopup.show(e.getComponent(), e.getX(), e.getY());
+            }
+          }
+        }
+      });
+
+    PropertyChangeListener datePrefsChangeListener =
+      new PropertyChangeListener() {
+        public void propertyChange(PropertyChangeEvent evt) {
+          LogPanelPreferenceModel model =
+            (LogPanelPreferenceModel) evt.getSource();
+
+          isoButton.setSelected(model.isUseISO8601Format());
+          simpleTimeButton.setSelected(!model.isUseISO8601Format());
+
+          if (model.isUseISO8601Format()) {
+            renderer.setDateFormatter(new ISO8601DateFormat());
+          } else {
+            renderer.setDateFormatter(
+              new SimpleDateFormat(model.getAlternateDateFormatPattern()));
+          }
+
+          table.tableChanged(new TableModelEvent(getModel()));
+        }
+      };
+
+    preferenceModel.addPropertyChangeListener(
+      "useISO8601Format", datePrefsChangeListener);
+    preferenceModel.addPropertyChangeListener(
+      "alternateDateFormatPattern", datePrefsChangeListener);
 
     //      TODO reload new Display rule for this panel
     //      displayFilter = loadDisplayFilter(ident);
@@ -1901,20 +1979,20 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     }
 
     public void mouseMoved(MouseEvent e) {
-//        LogLog.debug(e.toString());
+      //        LogLog.debug(e.toString());
       int col = table.columnAtPoint(e.getPoint());
 
-
-//    TODO This is a Bug or something, but InputEvent.CTRL_DOWN_MASK only works
-// in JDK 1.4.2 when the LoggerTreePanel is open, if it is closed, it doesn't work... CTRL_DOWN_MASK
-// is ok though... Strange. Copied the mask from 1.4.2 here
+      //    TODO This is a Bug or something, but InputEvent.CTRL_DOWN_MASK only works
+      // in JDK 1.4.2 when the LoggerTreePanel is open, if it is closed, it doesn't work... CTRL_DOWN_MASK
+      // is ok though... Strange. Copied the mask from 1.4.2 here
       if (
-        ((e.getModifiers() & (1 << 7))> 0) || ((e.getModifiers() & InputEvent.CTRL_MASK)> 0)
-          && isFocusableColumn(col)) {
+        ((e.getModifiers() & (1 << 7)) > 0)
+          || (((e.getModifiers() & InputEvent.CTRL_MASK) > 0)
+          && isFocusableColumn(col))) {
         table.setCursor(ChainsawColumns.CURSOR_FOCUS_ON);
       } else {
-//          LogLog.debug("MouseMoved,  ((e.getModifiers() & InputEvent.CTRL_MASK) > 0)=" +  ((e.getModifiers() & InputEvent.CTRL_MASK) > 0) + ", isFocusableColumn(col)=" + isFocusableColumn(col));
-//        LogLog.debug(e.toString());
+        //          LogLog.debug("MouseMoved,  ((e.getModifiers() & InputEvent.CTRL_MASK) > 0)=" +  ((e.getModifiers() & InputEvent.CTRL_MASK) > 0) + ", isFocusableColumn(col)=" + isFocusableColumn(col));
+        //        LogLog.debug(e.toString());
         table.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
       }
     }
