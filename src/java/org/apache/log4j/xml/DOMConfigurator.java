@@ -25,6 +25,7 @@ import org.apache.log4j.Hierarchy;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.Filter;
+import org.apache.log4j.config.PropertySetter;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.helpers.FileWatchdog;
 import org.xml.sax.InputSource;
@@ -51,6 +52,7 @@ import javax.xml.parsers.FactoryConfigurationError;
    
    @author <a href=mailto:cstaylor@pacbell.net>Christopher Taylor</a>
    @author Ceki G&uuml;lc&uuml;
+   @author Anders Kristensen
 
    @since 0.8.3 */
 public class DOMConfigurator extends BasicConfigurator implements Configurator {
@@ -147,6 +149,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
     try {
       Object instance 	= Class.forName(className).newInstance();
       Appender appender	= (Appender)instance;
+      PropertySetter propSetter = new PropertySetter(appender);
 
       appender.setName(subst(appenderElement.getAttribute(NAME_ATTR)));
       
@@ -162,9 +165,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
 
 	  // Parse appender parameters 
 	  if (currentElement.getTagName().equals(PARAM_TAG)) {
-	    if(appender instanceof OptionHandler) {
-	      parseParameters(currentElement, (OptionHandler) appender);
-	    }
+            setParameter(currentElement, propSetter);
 	  }
 	  // Set appender layout
 	  else if (currentElement.getTagName().equals(LAYOUT_TAG)) {
@@ -192,9 +193,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
 	  }
 	}
       }
-      if(appender instanceof OptionHandler) {
-	((OptionHandler) appender).activateOptions();
-      }
+      propSetter.activate();
       return appender;
     }
     /* Yes, it's ugly.  But all of these exceptions point to the same
@@ -215,7 +214,9 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
                                        subst(element.getAttribute(CLASS_ATTR)),
                                        org.apache.log4j.spi.ErrorHandler.class, 
  				       null);
+    
     if(eh != null) {
+      PropertySetter propSetter = new PropertySetter(eh);
       NodeList children = element.getChildNodes();
       final int length 	= children.getLength();
 
@@ -225,27 +226,15 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
 	  Element currentElement = (Element) currentNode;
 	  String tagName = currentElement.getTagName();
 	  if(tagName.equals(PARAM_TAG)) {
-	    parseParameters(currentElement, eh);
+            setParameter(currentElement, propSetter);
 	  }
 	}
       }
+      propSetter.activate();
       appender.setErrorHandler(eh);
     }
   }
   
-  /**
-     Used internally to parse an <code>param</code> element.
-   */
-  protected
-  void parseParameters(Element elem, OptionHandler oh) {
-    String name = subst(elem.getAttribute(NAME_ATTR));
-    String value = subst(elem.getAttribute(VALUE_ATTR));
-    LogLog.debug("Handling parameter \""+name+ "="+value+'\"');	   
-    if(oh instanceof OptionHandler && value != null) {
-      oh.setOption(name, OptionConverter.convertSpecialChars(value));
-    }
-  }
-
   /**
      Used internally to parse a filter element.
    */
@@ -256,6 +245,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
                                                 Filter.class, null);
     
     if(filter != null) {
+      PropertySetter propSetter = new PropertySetter(filter);
       NodeList children = element.getChildNodes();
       final int length 	= children.getLength();
 
@@ -265,10 +255,11 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
 	  Element currentElement = (Element) currentNode;
 	  String tagName = currentElement.getTagName();
 	  if(tagName.equals(PARAM_TAG)) {
-	    parseParameters(currentElement, filter);
+            setParameter(currentElement, propSetter);
 	  }
 	}
       }
+      propSetter.activate();
       appender.addFilter(filter);
     }    
   }
@@ -338,7 +329,9 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
   protected
   void parseChildrenOfCategoryElement(Element catElement,
 				      Category cat, boolean isRoot) {
-				      
+    
+    PropertySetter propSetter = new PropertySetter(cat);
+    
     // Remove all existing appenders from cat. They will be
     // reconstructed if need be.
     cat.removeAllAppenders();
@@ -369,14 +362,11 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
 	} else if(tagName.equals(PRIORITY_TAG)) {
 	  parsePriority(currentElement, cat, isRoot);	
 	} else if(tagName.equals(PARAM_TAG)) {
-	  if(cat instanceof OptionHandler) {
-	    OptionHandler oh = (OptionHandler) cat;
-	    parseParameters(currentElement, oh);
-	    oh.activateOptions();
-	  }
+          setParameter(currentElement, propSetter);
 	}
       }
     }
+    propSetter.activate();
   }
 
   /**
@@ -389,6 +379,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
     try {
       Object instance 	= Class.forName(className).newInstance();
       Layout layout   	= (Layout)instance;
+      PropertySetter propSetter = new PropertySetter(layout);
       
       NodeList params 	= layout_element.getChildNodes();
       final int length 	= params.getLength();
@@ -399,13 +390,12 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
 	  Element currentElement = (Element) currentNode;
 	  String tagName = currentElement.getTagName();
 	  if(tagName.equals(PARAM_TAG)) {
-	    parseParameters(currentElement, layout);
+            setParameter(currentElement, propSetter);
 	  }
 	}
       }
-
-      /* Now make those options take effect */
-      layout.activateOptions();
+      
+      propSetter.activate();
       return layout;
     }
     catch (Exception oops) {
@@ -463,7 +453,14 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
 	}
       }
     }
-    LogLog.debug(catName +" priority set to " +cat.getPriority());    
+    LogLog.debug(catName + " priority set to " + cat.getPriority());    
+  }
+
+  protected
+  void setParameter(Element elem, PropertySetter propSetter) {
+    String name = subst(elem.getAttribute(NAME_ATTR));
+    String value = subst(elem.getAttribute(VALUE_ATTR));
+    propSetter.setProperty(name, OptionConverter.convertSpecialChars(value));
   }
 
 
@@ -492,8 +489,6 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
   void configureAndWatch(String configFilename) {
     configureAndWatch(configFilename, FileWatchdog.DEFAULT_DELAY);
   }
-
-
 
   /**
      Read the configuration file <code>configFilename</code> if it
@@ -531,7 +526,6 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
       LogLog.error("Could not open ["+url+"].", e);
     }
   }
-
 
   /**
      Configure log4j by reading in a log4j.dtd compliant XML

@@ -15,6 +15,8 @@ package org.apache.log4j;
 import org.apache.log4j.Category;
 import org.apache.log4j.Priority;
 import org.apache.log4j.DefaultCategoryFactory;
+import org.apache.log4j.config.PropertySetter;
+import org.apache.log4j.config.PropertySetterException;
 import org.apache.log4j.spi.OptionHandler;
 import org.apache.log4j.spi.Configurator;
 import org.apache.log4j.spi.CategoryFactory;
@@ -74,6 +76,7 @@ import java.util.Hashtable;
 
 
    @author Ceki G&uuml;lc&uuml;
+   @author Anders Kristensen
    @since 0.8.1 */
 public class PropertyConfigurator extends BasicConfigurator
            implements Configurator {
@@ -437,6 +440,7 @@ public class PropertyConfigurator extends BasicConfigurator
     }
   }
 
+  /*
   void configureOptionHandler(OptionHandler oh, String prefix,
 			      Properties props) {
     String[] options = oh.getOptionStrings();
@@ -456,6 +460,7 @@ public class PropertyConfigurator extends BasicConfigurator
     }
     oh.activateOptions();
   }
+  */
   
     
   void configureRootCategory(Properties props, Hierarchy hierarchy) {
@@ -595,11 +600,13 @@ public class PropertyConfigurator extends BasicConfigurator
 	if(layout != null) {
 	  appender.setLayout(layout);
 	  LogLog.debug("Parsing layout options for \"" + appenderName +"\".");
-	  configureOptionHandler(layout, layoutPrefix + ".", props);
+	  //configureOptionHandler(layout, layoutPrefix + ".", props);
+          PropertySetter.setProperties(layout, props, layoutPrefix + ".");
 	  LogLog.debug("End of parsing for \"" + appenderName +"\".");      
 	}
       }
-      configureOptionHandler((OptionHandler) appender, prefix + ".", props);
+      //configureOptionHandler((OptionHandler) appender, prefix + ".", props);
+      PropertySetter.setProperties(appender, props, prefix + ".");
       LogLog.debug("Parsed \"" + appenderName +"\" options.");
     }
     registryPut(appender);
