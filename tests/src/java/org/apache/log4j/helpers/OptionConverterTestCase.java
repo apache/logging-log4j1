@@ -91,7 +91,6 @@ public class OptionConverterTestCase extends TestCase {
 
   public
   void varSubstTest5() {
-    System.out.println("-----------------------------------------");
     Properties props = new Properties();
     props.put("p1", "x1");
     props.put("p2", "${p1}");
