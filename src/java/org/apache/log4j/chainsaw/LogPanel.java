@@ -210,7 +210,8 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
   private double lastDetailPanelSplitLocation = DEFAULT_DETAIL_SPLIT_LOCATION;
   private double lastLogTreePanelSplitLocation =
     DEFAULT_LOG_TREE_SPLIT_LOCATION;
-  private boolean bypassScroll;
+  private boolean bypassScrollFind;
+  private boolean bypassScrollSelection;
   private Point currentPoint;
   private boolean scroll;
   private boolean paused = false;
@@ -222,6 +223,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
   static final String TABLE_COLUMN_WIDTHS = "table.columns.widths";
   static final String COLUMNS_EXTENSION = ".columns";
   static final String COLORS_EXTENSION = ".colors";
+  private int previousSelectedIndex = -1;
 
   /**
    * Creates a new LogPanel object.  If a LogPanel with this identifier has
@@ -703,6 +705,12 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
               && (evt.getFirstIndex() > 0)) || (evt.getValueIsAdjusting())) {
             return;
           }
+          if (previousSelectedIndex > -1) {
+                bypassScrollSelection = (!bypassScrollSelection && (evt.getLastIndex() == (table.getRowCount() - 1)) 
+                &&
+                (!((previousSelectedIndex == evt.getFirstIndex()) && (evt.getLastIndex() == (table.getRowCount() - 1)))));
+          }
+          previousSelectedIndex = evt.getLastIndex();
 
           final ListSelectionModel lsm = (ListSelectionModel) evt.getSource();
 
@@ -1327,7 +1335,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
       tableModel.fireTableEvent(
         first, tableModel.getLastAdded(), eventBatchEntrys.size());
 
-      if (scroll && !bypassScroll) {
+      if (scroll && !bypassScrollFind && !bypassScrollSelection) {
         table.scrollToBottom(
           table.columnAtPoint(table.getVisibleRect().getLocation()));
       }
@@ -1570,13 +1578,13 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
     if ((ruleText == null) || ((ruleText != null) && ruleText.equals(""))) {
       findRule = null;
       colorizer.setFindRule(null);
-      bypassScroll = false;
+      bypassScrollFind = false;
       findField.setToolTipText(
         "Enter expression - right click or ctrl-space for menu");
 
       return false;
     } else {
-      bypassScroll = true;
+      bypassScrollFind = true;
 
       try {
         findField.setToolTipText(
