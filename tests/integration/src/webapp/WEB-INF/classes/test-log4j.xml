@@ -3,6 +3,10 @@
 
 <configuration debug="false" xmlns='http://logging.apache.org/'>
   
+  <appender name="TEST" class="TestAppender">
+    <param name="bogus" value="bogus"/>
+  </appender>
+
   <appender name="FILE" class="org.apache.log4j.FileAppender">
 
     <param name="File" value="server-side.log"/>
@@ -11,8 +15,6 @@
     <layout class="org.apache.log4j.PatternLayout">
       <param name="ConversionPattern" value="%-5p %c - %m%n"/>
     </layout>     
-
-
   </appender>
 
   <logger name="org.apache.log4j.joran.action"> <level value="INFO"/></logger>
@@ -22,5 +24,6 @@
   <root>
     <level value="DEBUG"/>
     <appender-ref ref="FILE" />
+    <appender-ref ref="TEST" />
   </root>
 </configuration>
