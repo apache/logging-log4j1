@@ -90,6 +90,41 @@ public class TokenStreamTest extends TestCase {
     assertEquals(Token.EOF, t.getType());
   }
 
+  public void testRegex() throws IOException, ScanError {
+    StringReader sr = new StringReader(" time ~ x");
+    TokenStream ts = new TokenStream(sr);
+    
+    ts.next(); t = ts.getCurrent();
+    assertEquals(Token.LITERAL, t.getType());
+    assertEquals("time", t.getValue());
+    
+    ts.next(); t = ts.getCurrent();
+    assertEquals(Token.OPERATOR, t.getType());
+    assertEquals("~", t.getValue());
+    
+    ts.next(); t = ts.getCurrent();
+    assertEquals(Token.LITERAL, t.getType());
+    assertEquals("x", t.getValue());
+  }
+
+  public void testNotRegex() throws IOException, ScanError {
+    StringReader sr = new StringReader(" t !~ x");
+    TokenStream ts = new TokenStream(sr);
+    
+    ts.next(); t = ts.getCurrent();
+    assertEquals(Token.LITERAL, t.getType());
+    assertEquals("t", t.getValue());
+    
+    ts.next(); t = ts.getCurrent();
+    assertEquals(Token.OPERATOR, t.getType());
+    assertEquals("!~", t.getValue());
+    
+    ts.next(); t = ts.getCurrent();
+    assertEquals(Token.LITERAL, t.getType());
+    assertEquals("x", t.getValue());
+  }
+
+  
   public void testFull() throws IOException, ScanError {
     StringReader sr = new StringReader(" time >= 19 NOT \"hello world\" ");
     TokenStream ts = new TokenStream(sr);

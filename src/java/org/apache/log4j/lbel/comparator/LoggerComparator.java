@@ -52,14 +52,18 @@ public class LoggerComparator implements Comparator {
 
   public boolean compare(LoggingEvent event) {
     if(operator.isRegex()) {
-      boolean match = matcher.matches(event.getLoggerName(), rightSidePattern);
+      boolean match = matcher.contains(event.getLoggerName(), rightSidePattern);
       if(operator.getCode() == Operator.REGEX_MATCH) {
         return match;
       } else {
         return !match;
       }
     }
-    
+
+    if(operator.getCode() == Operator.CHILDOF) {
+      return event.getLoggerName().startsWith(rightSide);
+    }
+  
     int compResult = event.getLoggerName().compareTo(rightSide);
     switch(operator.getCode()) {
     case Operator.EQUAL: return compResult == 0;   
