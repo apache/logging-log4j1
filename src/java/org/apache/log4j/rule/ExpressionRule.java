@@ -111,6 +111,16 @@ public class ExpressionRule extends AbstractRule {
           stack.push(token);
         }
       }
+      
+      if ((stack.size() == 1) && (!(stack.peek() instanceof Rule))) {
+      	//while this may be an attempt at creating an expression,
+      	//for ease of use, convert this single entry to a partial-text 
+      	//match on the MSG field
+      	Object o = stack.pop();
+      	stack.push("MSG");
+      	stack.push(o);
+      	return factory.getRule("~=", stack);
+      }
 
       //stack should contain a single rule if the expression is valid
       if ((stack.size() != 1) || (!(stack.peek() instanceof Rule))) {
