@@ -1,0 +1,66 @@
+Appender        : NetSendAppender
+Creation Date   : December 12/2002
+Author          : jay.funnell@shaw.ca
+
+Overview
+--------
+
+What is NET SEND?  If you have a Windows (98,2k,XP) machine, try it:
+
+c:\> NET SEND %computername% This is a test
+
+If it worked, you should see a popup box on your screen with the message:
+
+               -----------------------------------------------------------
+              |  Message from <computername> to <computername> on <date>  |
+              |  This is a test                                           |
+              |                                                           |
+              |                            OK                             |
+               -----------------------------------------------------------
+
+The NetSendAppender is a log4j appender that uses the popular Windows NET SEND command to announce log events.
+This is handy for situations where immediate notification is required for critical log events.  It's extremely
+unhandy for low-priority log messages because it will quickly annoy the user(s) receiving them.
+
+This appender is like the NTEventLogAppender in that it requires a JNI Dll.  Make sure that "NetSendAppender.dll"
+is in your path or the appender will not work.
+
+Build
+-----
+
+There are three important files required to build the NetSendAppender.
+
+NetSendAppender.java
+   - This is the Java component of the Appender.  It has a native method that is implemented
+     within the JNI Dll.
+
+<package>_NetSendAppender.h
+   - This file must be generated using javah against the NetSendAppender class.
+
+NetSendAppender.cpp
+   - This file is required to build the JNI NetSendAppender dll
+
+I used Visual Studio 6 to build the JNI component.  Specifically, a win32 DLL project was used.  It must include
+references to the Sun JDK "include" and "include\win32" directories.  It must also include a library reference to 
+"jvm.lib"
+
+Options
+-------
+
+This appender requires you to set some parameters.  
+
+- "from" is the user name that will be used for sending the message.
+- "to" is the destination user.
+- "computer" is the destination computer.
+
+Here is a sample configuration that creates an "emergency" category that announces log messages
+to Fred on machine sideshow-bob.
+
+log4j.logger.emergency=DEBUG, netsend
+log4j.appender.netsend=org.apache.log4j.net.NetSendAppender
+log4j.appender.netsend.computer=sideshow-bob
+log4j.appender.netsend.to=fred
+log4j.appender.netsend.from=Emergency Monitor
+log4j.appender.netsend.layout=org.apache.log4j.PatternLayout
+log4j.appender.netsend.layout.ConversionPattern=%-5p %c{1} - %m%n
+
