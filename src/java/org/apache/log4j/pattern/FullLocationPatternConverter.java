@@ -40,7 +40,9 @@ public class FullLocationPatternConverter extends PatternConverter {
     buf.setLength(0);
 
 	  LocationInfo locationInfo = event.getLocationInformation();
-    buf.append(locationInfo.fullInfo);
+    if (locationInfo!=null) {
+			buf.append(locationInfo.fullInfo);
+		}
 
     return buf;
   }

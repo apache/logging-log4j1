@@ -40,7 +40,9 @@ public class LineLocationPatternConverter extends PatternConverter {
     buf.setLength(0);
 
 	  LocationInfo locationInfo = event.getLocationInformation();
-    buf.append(locationInfo.getLineNumber());
+    if (locationInfo!=null) {
+			buf.append(locationInfo.getLineNumber());
+		}
 
     return buf;
   }
