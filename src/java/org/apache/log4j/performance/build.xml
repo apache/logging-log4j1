@@ -1,0 +1,9 @@
+
+<!DOCTYPE project [
+  <!ENTITY package "org/apache/log4j/performance">
+  <!ENTITY inc SYSTEM "../../../../build.inc">
+]>
+
+<project  name="log4j" default="Usage" basedir="../../../../" >
+  &inc;
+</project>

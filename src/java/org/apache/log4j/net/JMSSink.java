@@ -45,9 +45,11 @@ public class JMSSink  {
     try {
       Context ctx = new InitialContext();      
       TopicConnectionFactory topicConnectionFactory;
-      topicConnectionFactory = (TopicConnectionFactory) lookup(ctx, tcfBindingName);
+      topicConnectionFactory = (TopicConnectionFactory) lookup(ctx, 
+							       tcfBindingName);
 
-      TopicConnection topicConnection = topicConnectionFactory.createTopicConnection(); 
+      TopicConnection topicConnection = 
+	                        topicConnectionFactory.createTopicConnection(); 
       topicConnection.start();
     
       TopicSession topicSession = topicConnection.createTopicSession(false,
@@ -70,7 +72,7 @@ public class JMSSink  {
 	remoteCategory.callAppenders(event);	
 	
 	// dump the JMSMessage
-	remoteCategory.debug(msg);
+	// remoteCategory.debug(msg);
 
       }
     } catch(Exception e) {
@@ -95,7 +97,7 @@ public class JMSSink  {
   void usage(String msg) {
     System.err.println(msg);
     System.err.println("Usage: java " + JMSSink.class.getName()
-	       + " TopicConnectionFactoryBindingName TopicBindingName configFile");
+            + " TopicConnectionFactoryBindingName TopicBindingName configFile");
     System.exit(1);
   }
 }

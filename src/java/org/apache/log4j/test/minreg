@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Regression test script.
 
 # Something is fishy if file $1.minreg != current.minreg

@@ -25,6 +25,12 @@ public class RendererMap {
     map = new Hashtable();
   }
 
+  /**
+     Find the appropriate renderer for the class type of the
+     <code>o</code> parameter. This is accimplished by calling the
+     {@link #get(Class)} method. Once a renderer is found, it is
+     applied on the object <code>o</code> and the result is returned
+     as a {@link String}. */
   public
   String findAndRender(Object o) {
     if(o == null)
@@ -51,13 +57,49 @@ public class RendererMap {
      renderer closest in the hierarchy will be returned. If no
      renderers could be found, then the default renderer is returned.          
 
-     <p>The search first looks for a renderer configured for clazz. If
-     a renderer could not be found, then the search continues by
-     looking at the interfaces implemented by clazz. If a renderer
-     cannot be found, then the search looks for a renderer defined for
-     the parent of clazz. If that fails, then it then looks at the
-     interfaces implemented by the parent of clazz and so on.
+     <p>The search first looks for a renderer configured for
+     <code>clazz</code>. If a renderer could not be found, then the
+     search continues by looking at all the interfaces implemented by
+     <code>clazz</code> including the super-interfaces of each
+     interface.  If a renderer cannot be found, then the search looks
+     for a renderer defined for the parent (superclass) of
+     <code>clazz</code>. If that fails, then all the interfaces
+     implemented by the parent of <code>clazz</code> are searched and
+     so on.
+
+     <p>For example, if A0, A1, A2 are classes and X0, X1, X2, Y0, Y1
+     are interfaces where A2 extends A1 which in turn extends A0 and
+     similarly X2 extends X1 which extends X0 and Y1 extends Y0. Let
+     us also assume that A1 implements the Y0 interface and that A2
+     implements the X2 interface.
+
+     <p>The table below shows the results returned by the
+     <code>get(A2.class)</code> method depending on the renderers
+     added to the map.
+
+     <table>
+     <tr><th>Added renderers</th><th>Value returned by <code>get(A2.class)</code></th>
+
+     <tr><td><code>A0Renderer</code>
+         <td><code>A0Renderer</code>  
+
+     <tr><td><code>A0Renderer, A1Renderer</code>
+         <td><code>A1Renderer</code>  
+
+     <tr><td><code>X0Renderer</code>
+         <td><code>X0Renderer</code>  
+
+     <tr><td><code>A1Renderer, X0Renderer</code>
+         <td><code>X0Renderer</code>  
+
+     </table>
      
+     This search algorithm is not the most natural. although it is
+     particularly easy to implement. Future log4j versions
+     <em>may</em> implement a more intuitive search
+     algorithm. However, the present algorithm should be acceptable in
+     the vast majority of circumstances.
+
  */
   public
   ObjectRenderer get(Class clazz) {
