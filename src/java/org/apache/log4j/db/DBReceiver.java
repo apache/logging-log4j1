@@ -196,7 +196,6 @@ public class DBReceiver
           id = rs.getLong(13);
           lastId = id;
           
-          //event.setProperty("id", Long.toString(id));
           if ((mask & DBHelper.PROPERTIES_EXIST) != 0) {
             getProperties(connection, id, event);
           }
