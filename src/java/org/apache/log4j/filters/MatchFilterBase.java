@@ -60,10 +60,20 @@ import org.apache.log4j.helpers.LogLog;
 */
 public abstract class MatchFilterBase extends Filter {
   
+  /** Chain policy constant = AcceptOnMatch. */
   public static final String ACCEPT_ON_MATCH    = "AcceptOnMatch";
+
+  /** Chain policy constant = DenyOnMatch. */
   public static final String DENY_ON_MATCH      = "DenyOnMatch";
+
+  /** Chain policy constant = AcceptOnNomatch. */
   public static final String ACCEPT_ON_NOMATCH  = "AcceptOnNomatch";
+
+  /** Chain policy constant = DenyOnNomatch. */
   public static final String DENY_ON_NOMATCH    = "DenyOnNomatch";
+
+  /** Chain policy constant = UnknownPolicy. */
+  public static final String UNKNOWN_POLICY     = "UnknownPolicy";
   
   /**
     The value that will be returned upon a successful match. */
@@ -87,20 +97,7 @@ public abstract class MatchFilterBase extends Filter {
       LogLog.error("invalid matchReturnValue: " + filterReturnValue);
     }
   }
-  
-  /**
-    Set the value to return upon a successful match. Valid
-    int values come from the Filter base class, ACCEPT,
-    DENY, and NEUTRAL. */
-  public void setMatchReturnValue(int filterReturnValue) {
-    if (filterReturnValue < DENY || filterReturnValue > ACCEPT) {
-      LogLog.error("invalid matchReturnValue: " + filterReturnValue);
-      return;
-    }
     
-    matchReturnValue = filterReturnValue;
-  }
-  
   /**
     Gets the value that will be returned upon a successful
     match. */
@@ -166,7 +163,29 @@ public abstract class MatchFilterBase extends Filter {
       LogLog.error("invalid chainPolicy: " + policyStr);
     }
   }
-  
+
+  /**
+    Gets the chain policy string value that matches the current
+    settings of matchReturnValue and noMatchReturn value. If the
+    current values do not match a known policy setting, then the
+    value of UNKNOWN_PLOCY is returned.
+    Valid return values for the policy string are defined as
+    constants for this class: ACCEPT_ON_MATCH, DENY_ON_MATCH, 
+    ACCEPT_ON_NOMATCH, DENY_ON_NOMATCH, and UNKNOWN_POLICY. */
+  public String getChainPolicy() {
+    if (matchReturnValue == ACCEPT && noMatchReturnValue == NEUTRAL) {
+      return ACCEPT_ON_MATCH;
+    } else if (matchReturnValue == DENY && noMatchReturnValue == NEUTRAL) {
+      return DENY_ON_MATCH;
+    } else if (matchReturnValue == NEUTRAL && noMatchReturnValue == ACCEPT) {
+      return ACCEPT_ON_NOMATCH;
+    } else if (matchReturnValue == NEUTRAL && noMatchReturnValue == DENY) {
+      return DENY_ON_NOMATCH;
+    } else {
+      return UNKNOWN_POLICY;
+    }
+  }
+ 
   /**
     Implementation that calls the canMatch() and match() methods
     of subclasses. If a match test can be performed (canMatch()
