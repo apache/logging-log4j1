@@ -22,10 +22,11 @@ import org.apache.log4j.joran.spi.ExecutionContext;
 
 
 /**
- * This action set new substitution property for the execution context by name, 
- * value pair, or adds all the properties found in the specified file.
+ * This action sets new substitution properties for the execution context by 
+ * name, value pair, or adds all the properties passed in the {@link Properties}
+ * argument.
  * 
- * @author Ceki G&uuml;lc&uuml;
+ * @author <a href="http://www.qos.ch/log4j/">Ceki G&uuml;lc&uuml;</a>
  */
 public class SubstitutionPropertyAction extends PropertyAction {
 
