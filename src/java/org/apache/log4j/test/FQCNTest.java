@@ -80,7 +80,6 @@ class X1Category extends Category {
     super.log(FQCN, Priority.DEBUG, message, null); 
   }
 
-  
   protected
   String getFQCN() {
     return X1Category.FQCN;

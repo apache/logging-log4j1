@@ -22,7 +22,8 @@ properly.</a>
 
 <li><p><a href=#space>Options are not parsed correctly.</a>
 
-<li><p><a href=#jit>Location information is printed as a "?" character.</a>
+<li><p><a href=#jit>Caller location information is printed as a "?"
+character.</a>
 
 <li><p><a href=#cce>ClassCastException when instantiating a Category subclasses.</a>
 
@@ -96,12 +97,8 @@ invisible spaces at the end of the example shown above. Thus, some of
 the options might not be interpreted correctly due to trailing
 spaces. 
 
-<p>In log4j version 0.9.0, all spaces are removed from <em>both</em>
-ends of option values. In version 0.9.1 log4j reverted to the old
-behavior where option values are not all automatically trimmed. 
-
-
-<p><a name=jit><h3>Location information is printed as a "?" character.</h3>
+<p><a name=jit><h3>Caller location information is printed as a "?"
+character.</h3>
 
 Location information is extracted automatically by the PatternLayout
 conversion patterns %C, %F, %M and %L. However, some just-in-time
@@ -112,6 +109,26 @@ and jikes.
 
 <p>You can remedy this problem by disabling the JIT compiler and by
 compiling the code without the -O option.
+
+<p><b>In wrappers or subclasses of Category </b>
+
+<p>Wrappers or subclasses of <code>Category</code> need supply their
+fully qualified class name to the <code>Category.log</code> method or
+to <code>Category.forcedLog</code> methods so that the caller location
+information can be extracted correctly.
+
+<p>This approach will work correctly in all cases except if the class
+invoking the extended category instance has the same prefix as the
+extended category class. For example, calling an instance of
+<code>com.foo.BarCategory</code> from the
+<code>com.foo.BarCategoryTest</code> class will not yield the correct
+caller information. To circumvent this "bug", either perform the tests
+from a class with a different name or add a dot to the fully qualified
+name of the extending class that you supply to
+<code>Category.log</code> to <code>Category.forcedLog</code>
+methods. For the <code>com.foo.BarCategory</code> example, supply the
+string <code>"com.foo.BarCategory."</code>.
+
 
 <p><a name=cce><h3><code>ClassCastException</code> when instantiating
 a <code>Category</code> subclasses.</a></h3>
