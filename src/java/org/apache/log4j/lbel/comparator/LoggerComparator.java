@@ -60,7 +60,7 @@ public class LoggerComparator implements Comparator {
       }
     }
     
-    int compResult = rightSide.compareTo(event.getLoggerName());
+    int compResult = event.getLoggerName().compareTo(rightSide);
     switch(operator.getCode()) {
     case Operator.EQUAL: return compResult == 0;   
     case Operator.NOT_EQUAL: return compResult != 0;      
