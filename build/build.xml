@@ -20,7 +20,7 @@
 
     ant jar     - build log4j-core and log4j jar files
 
-    ant distib  - will make a distribution in ../dump directory
+    ant distib  - will make a distribution in ../../dump/ 
 
     </echo>
   </target>
