@@ -14,7 +14,7 @@
   <!-- prefixed with "env". -->
   <property environment="env"/>
 
-  <property name="version" value="1.2beta1"/>
+  <property name="version" value="1.2beta2"/>
   
   <!-- The base directory relative to which most targets are built -->
   <property name="base" value="."/>
@@ -74,7 +74,7 @@
 
     dist    - will create a complete distribution in dist/ 
               Setting the env variable NO_JAVADOC will build the distribution
-              with running the javadoc target.
+              without running the javadoc target.
     </echo>
   </target>
 

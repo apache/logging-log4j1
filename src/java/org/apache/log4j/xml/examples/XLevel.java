@@ -2,6 +2,7 @@
 package org.apache.log4j.xml.examples;
 
 import org.apache.log4j.Level;
+import org.apache.log4j.Priority;
 
 
 /**
@@ -36,13 +37,13 @@ public class XLevel extends Level {
   public
   static
   Level toLevel(String sArg) {
-    return toLevel(sArg, XLevel.TRACE);
+    return (Level) toLevel(sArg, XLevel.TRACE);
   }
 
 
   public
   static
-  Level toLevel(String sArg, Level defaultValue) {
+  Priority toLevel(String sArg, Priority defaultValue) {
 
     if(sArg == null) {
       return defaultValue;

@@ -58,10 +58,8 @@ import java.util.ResourceBundle;
    <p>For example, the following are all legal and will work as expected.
 
    <pre>
-   &nbsp;&nbsp;&nbsp;// Deprecated forms:
+   &nbsp;&nbsp;&nbsp;// Deprecated form:
    &nbsp;&nbsp;&nbsp;Category cat = Category.getInstance("foo.bar")
-   &nbsp;&nbsp;&nbsp;Logger logger = Logger.getInstance("foo.bar")
-   &nbsp;&nbsp;&nbsp;Category cat = Logger.getLogger("foo.bar")
 
    &nbsp;&nbsp;&nbsp;// Preferred form for retrieving loggers:
    &nbsp;&nbsp;&nbsp;Logger logger = Logger.getLogger("foo.bar")
@@ -600,7 +598,7 @@ public class Category implements AppenderAttachable {
   final
   public
   static
-  Logger getRoot() {
+  Category getRoot() {
     return LogManager.getRootLogger();
   }
 
@@ -791,18 +789,18 @@ public class Category implements AppenderAttachable {
 
      @since 0.8.4 */
   public
-  void l7dlog(Level level, String key, Throwable t) {
-    if(repository.isDisabled(level.level)) {
+  void l7dlog(Priority priority, String key, Throwable t) {
+    if(repository.isDisabled(priority.level)) {
       return;
     }
-    if(level.isGreaterOrEqual(this.getChainedLevel())) {
+    if(priority.isGreaterOrEqual(this.getChainedLevel())) {
       String msg = getResourceBundleString(key);
       // if message corresponding to 'key' could not be found in the
       // resource bundle, then default to 'key'.
       if(msg == null) {
 	msg = key;
       }
-      forcedLog(FQCN, level, msg, t);
+      forcedLog(FQCN, priority, msg, t);
     }
   }
   /**
@@ -815,18 +813,18 @@ public class Category implements AppenderAttachable {
      @since 0.8.4
   */
   public
-  void l7dlog(Level level, String key,  Object[] params, Throwable t) {
-    if(repository.isDisabled(level.level)) {
+  void l7dlog(Priority priority, String key,  Object[] params, Throwable t) {
+    if(repository.isDisabled(priority.level)) {
       return;
     }    
-    if(level.isGreaterOrEqual(this.getChainedLevel())) {
+    if(priority.isGreaterOrEqual(this.getChainedLevel())) {
       String pattern = getResourceBundleString(key);
       String msg;
       if(pattern == null) 
 	msg = key;
       else 
 	msg = java.text.MessageFormat.format(pattern, params);
-      forcedLog(FQCN, level, msg, t);
+      forcedLog(FQCN, priority, msg, t);
     }
   }
   
@@ -834,24 +832,24 @@ public class Category implements AppenderAttachable {
      This generic form is intended to be used by wrappers.
    */
   public
-  void log(Priority level, Object message, Throwable t) {
-    if(repository.isDisabled(level.level)) {
+  void log(Priority priority, Object message, Throwable t) {
+    if(repository.isDisabled(priority.level)) {
       return;
     }
-    if(level.isGreaterOrEqual(this.getChainedLevel())) 
-      forcedLog(FQCN, level, message, t);
+    if(priority.isGreaterOrEqual(this.getChainedLevel())) 
+      forcedLog(FQCN, priority, message, t);
   }
   
  /**
     This generic form is intended to be used by wrappers. 
  */
   public
-  void log(Priority level, Object message) {
-    if(repository.isDisabled(level.level)) {
+  void log(Priority priority, Object message) {
+    if(repository.isDisabled(priority.level)) {
       return;
     }
-    if(level.isGreaterOrEqual(this.getChainedLevel()))
-      forcedLog(FQCN, level, message, null);
+    if(priority.isGreaterOrEqual(this.getChainedLevel()))
+      forcedLog(FQCN, priority, message, null);
   }
 
   /**
@@ -864,7 +862,7 @@ public class Category implements AppenderAttachable {
      @param message The message of the logging request.
      @param t The throwable of the logging request, may be null.  */
   public
-  void log(String callerFQCN, Level level, Object message, Throwable t) {
+  void log(String callerFQCN, Priority level, Object message, Throwable t) {
     if(repository.isDisabled(level.level)) {
       return;
     }

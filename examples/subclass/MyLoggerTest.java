@@ -3,9 +3,9 @@
  *
  * This software is published under the terms of the Apache Software
  * License version 1.1, a copy of which has been included with this
- * distribution in the LICENSE.APL file.  */
+ * distribution in the LICENSE.txt file.  */
 
-package org.apache.log4j.examples;
+package examples.subclass;
 
 import org.apache.log4j.*;
 import org.apache.log4j.spi.LoggerFactory;
@@ -44,7 +44,7 @@ public class MyLoggerTest {
       // Note that the appender is added to root but that the log
       // request is made to an instance of MyLogger. The output still
       // goes to System.out.
-      Logger root = Logger.getRoot();
+      Logger root = Logger.getRootLogger();
       Layout layout = new PatternLayout("%p [%t] %c (%F:%L) - %m%n");
       root.addAppender(new ConsoleAppender(layout, ConsoleAppender.SYSTEM_OUT));
     }

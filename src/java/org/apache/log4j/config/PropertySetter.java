@@ -225,7 +225,7 @@ public class PropertySetter {
         return Boolean.FALSE;
       }
     } else if (Priority.class.isAssignableFrom(type)) {
-      return OptionConverter.toLevel(v, Level.DEBUG);
+      return OptionConverter.toLevel(v, (Level) Level.DEBUG);
     }
     return null;
   }

@@ -152,7 +152,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   */
   public 
   void setThreshold(String levelStr) {
-    Level l = Level.toLevel(levelStr, null);
+    Level l = (Level) Level.toLevel(levelStr, null);
     if(l != null) {
       setThreshold(l);
     } else {
@@ -369,7 +369,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   public
   void resetConfiguration() {
 
-    getRootLogger().setLevel(Level.DEBUG);
+    getRootLogger().setLevel((Level) Level.DEBUG);
     root.setResourceBundle(null);
     setThreshold(Level.ALL);
     

@@ -93,7 +93,7 @@ public class Logger extends Category {
   //}
 
   /**
-     Same as calling {@link LogManager#getLogger(String)}.
+     Retrieve a logger by name.
   */
   static
   public
@@ -102,7 +102,7 @@ public class Logger extends Category {
   }
 
   /**
-     Same as calling {@link LogManager#getLogger(Class)}.
+     Same as calling <code>getLogger(clazz.getName())</code>.
    */
   static
   public
@@ -112,7 +112,7 @@ public class Logger extends Category {
 
 
   /**
-     Same as calling {@link LogManager#getRootLogger()}.     
+     Retrieve the root logger.
    */
   public
   static 

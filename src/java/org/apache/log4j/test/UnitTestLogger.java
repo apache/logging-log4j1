@@ -25,7 +25,7 @@ import java.util.Locale;
 */
 public class UnitTestLogger extends TestCase {
 
-  Logger cat;
+  Logger logger;
   Appender a1;
   Appender a2;
 
@@ -68,12 +68,12 @@ public class UnitTestLogger extends TestCase {
   */
   public
   void testAppender1() {
-    cat = Category.getInstance("test");
+    logger = Logger.getLogger("test");
     a1 = new FileAppender();
     a1.setName("testAppender1");             
-    cat.addAppender(a1);
+    logger.addAppender(a1);
 
-    Enumeration enum = cat.getAllAppenders();
+    Enumeration enum = logger.getAllAppenders();
     Appender aHat = (Appender) enum.nextElement();    
     assertEquals(a1, aHat);    
   }
@@ -89,11 +89,11 @@ public class UnitTestLogger extends TestCase {
     a2 = new FileAppender();
     a2.setName("testAppender2.2");           
 
-    cat = Category.getInstance("test");
-    cat.addAppender(a1);
-    cat.addAppender(a2);    
-    cat.removeAppender("testAppender2.1");
-    Enumeration enum = cat.getAllAppenders();
+    logger = Logger.getLogger("test");
+    logger.addAppender(a1);
+    logger.addAppender(a2);    
+    logger.removeAppender("testAppender2.1");
+    Enumeration enum = logger.getAllAppenders();
     Appender aHat = (Appender) enum.nextElement();    
     assertEquals(a2, aHat);
     assert(!enum.hasMoreElements());
@@ -104,8 +104,8 @@ public class UnitTestLogger extends TestCase {
    */
   public
   void testAdditivity1() {
-    Logger a = Category.getInstance("a");
-    Logger ab = Category.getInstance("a.b");
+    Logger a = Logger.getLogger("a");
+    Logger ab = Logger.getLogger("a.b");
     CountingAppender ca = new CountingAppender();
     a.addAppender(ca);
     
@@ -125,10 +125,10 @@ public class UnitTestLogger extends TestCase {
   public
   void testAdditivity2() {
     
-    Logger a = Category.getInstance("a");
-    Logger ab = Category.getInstance("a.b");
-    Logger abc = Category.getInstance("a.b.c");
-    Logger x   = Category.getInstance("x");
+    Logger a = Logger.getLogger("a");
+    Logger ab = Logger.getLogger("a.b");
+    Logger abc = Logger.getLogger("a.b.c");
+    Logger x   = Logger.getLogger("x");
 
     CountingAppender ca1 = new CountingAppender();
     CountingAppender ca2 = new CountingAppender();
@@ -159,11 +159,11 @@ public class UnitTestLogger extends TestCase {
   public
   void testAdditivity3() {
 
-    Logger root = Category.getRoot();    
-    Logger a = Category.getInstance("a");
-    Logger ab = Category.getInstance("a.b");
-    Logger abc = Category.getInstance("a.b.c");
-    Logger x   = Category.getInstance("x");
+    Logger root = Logger.getRootLogger();    
+    Logger a = Logger.getLogger("a");
+    Logger ab = Logger.getLogger("a.b");
+    Logger abc = Logger.getLogger("a.b.c");
+    Logger x   = Logger.getLogger("x");
 
     CountingAppender caRoot = new CountingAppender();
     CountingAppender caA = new CountingAppender();
@@ -201,12 +201,12 @@ public class UnitTestLogger extends TestCase {
   public
   void testDisable1() {
     CountingAppender caRoot = new CountingAppender();
-    Logger root = Category.getRoot();    
+    Logger root = Logger.getRootLogger();    
     root.addAppender(caRoot);
 
     LoggerRepository h = Category.getDefaultHierarchy();
     //h.disableDebug();
-    h.setThreshold(Level.INFO);
+    h.setThreshold((Level) Level.INFO);
     assertEquals(caRoot.counter, 0);     
 
     root.debug(MSG); assertEquals(caRoot.counter, 0);  
@@ -215,7 +215,7 @@ public class UnitTestLogger extends TestCase {
     root.warn(MSG); assertEquals(caRoot.counter, 3);  
 
     //h.disableInfo();
-    h.setThreshold(Level.WARN);
+    h.setThreshold((Level) Level.WARN);
     root.debug(MSG); assertEquals(caRoot.counter, 3);  
     root.info(MSG); assertEquals(caRoot.counter, 3);  
     root.log(Level.WARN, MSG); assertEquals(caRoot.counter, 4);  
@@ -244,14 +244,14 @@ public class UnitTestLogger extends TestCase {
 
   public
   void testRB1() {
-    Logger root = Category.getRoot(); 
+    Logger root = Logger.getRootLogger(); 
     root.setResourceBundle(rbUS);
     ResourceBundle t = root.getResourceBundle();
     assertSame(t, rbUS);
 
-    Logger x = Category.getInstance("x");
-    Logger x_y = Category.getInstance("x.y");
-    Logger x_y_z = Category.getInstance("x.y.z");
+    Logger x = Logger.getLogger("x");
+    Logger x_y = Logger.getLogger("x.y");
+    Logger x_y_z = Logger.getLogger("x.y.z");
 
     t = x.getResourceBundle();     assertSame(t, rbUS);
     t = x_y.getResourceBundle();   assertSame(t, rbUS);
@@ -260,14 +260,14 @@ public class UnitTestLogger extends TestCase {
 
   public
   void testRB2() {
-    Logger root = Category.getRoot(); 
+    Logger root = Logger.getRootLogger(); 
     root.setResourceBundle(rbUS);
     ResourceBundle t = root.getResourceBundle();
     assertSame(t, rbUS);
 
-    Logger x = Category.getInstance("x");
-    Logger x_y = Category.getInstance("x.y");
-    Logger x_y_z = Category.getInstance("x.y.z");
+    Logger x = Logger.getLogger("x");
+    Logger x_y = Logger.getLogger("x.y");
+    Logger x_y_z = Logger.getLogger("x.y.z");
 
     x_y.setResourceBundle(rbFR);
     t = x.getResourceBundle();     assertSame(t, rbUS);
@@ -278,14 +278,14 @@ public class UnitTestLogger extends TestCase {
 
   public
   void testRB3() {
-    Logger root = Category.getRoot(); 
+    Logger root = Logger.getRootLogger(); 
     root.setResourceBundle(rbUS);
     ResourceBundle t = root.getResourceBundle();
     assertSame(t, rbUS);
 
-    Logger x = Category.getInstance("x");
-    Logger x_y = Category.getInstance("x.y");
-    Logger x_y_z = Category.getInstance("x.y.z");
+    Logger x = Logger.getLogger("x");
+    Logger x_y = Logger.getLogger("x.y");
+    Logger x_y_z = Logger.getLogger("x.y.z");
 
     x_y.setResourceBundle(rbFR);
     x_y_z.setResourceBundle(rbCH);
@@ -296,9 +296,9 @@ public class UnitTestLogger extends TestCase {
 
   public
   void testExists() {
-    Logger a = Category.getInstance("a");
-    Logger a_b = Category.getInstance("a.b");
-    Logger a_b_c = Category.getInstance("a.b.c");
+    Logger a = Logger.getLogger("a");
+    Logger a_b = Logger.getLogger("a.b");
+    Logger a_b_c = Logger.getLogger("a.b.c");
     
     Logger t;
     t = Logger.exists("xx");    assertNull(t);
@@ -309,7 +309,7 @@ public class UnitTestLogger extends TestCase {
 
   public
   void testHierarchy1() {
-    Hierarchy h = new Hierarchy( new RootCategory(Level.ERROR));
+    Hierarchy h = new Hierarchy(new RootCategory((Level) Level.ERROR));
     Logger a0 = h.getLogger("a");
     assertEquals("a", a0.getName());
     assertNull(a0.getLevel());

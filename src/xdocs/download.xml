@@ -40,16 +40,12 @@
 	href="../jakarta-log4j-1.1.3.tar.gz"><b>TAR.GZ</b></a> format
 	or in <a href="../jakarta-log4j-1.1.3.zip"><b>ZIP</b></a>
 	format. You may elect to browse log4j <a
-	href="documentation.html"><b>documentation</b></a> online.
-      </p>
-
- 
-      <p><a
-	  href="http://www.javaworld.com/javaworld/jw-05-2001/jw-0504-finalists.html"><img
-	  src="images/ecaward_finalist_logo.gif" align="right"
-	  border="0"/></a>Version 1.1.3 is the 21st major public
-	  release of log4j. It is backward compatible with log4j
-	  version 1.0.x.</p>
+	href="documentation.html"><b>documentation</b></a> online.  <a
+	href="http://www.javaworld.com/javaworld/jw-05-2001/jw-0504-finalists.html"><img
+	src="images/ecaward_finalist_logo.gif" align="right"
+	border="0"/></a>Version 1.1.3 is the 21st major public release
+	of log4j. It is backward compatible with log4j version
+	1.0.x.</p>
 
 
       <p>We also maintain a list of <a href="earlier.html">earlier
@@ -58,11 +54,11 @@
 
     </section>
 
-<!--    <section name="log4j version 1.2 beta1">
-      <p>An alpha version of log4j 1.2 is now available in in <a
-	href="../jakarta-log4j-1.2beta1.tar.gz"><b>TAR.GZ</b></a>
+    <section name="log4j version 1.2 beta2">
+      <p>log4j 1.2 is now available in in <a
+	href="../jakarta-log4j-1.2beta2.tar.gz"><b>TAR.GZ</b></a>
 	format or in <a
-	href="../jakarta-log4j-1.2beta1.zip"><b>ZIP</b></a> format.
+	href="../jakarta-log4j-1.2beta2.zip"><b>ZIP</b></a> format.
       </p>
 
  
@@ -71,15 +67,16 @@
 	now removed. Moreover, users who have written sub-classes of
 	Category will need to modify their code. We have gone to great
 	lengths to ensure that version 1.2 is backward compatible with
-	earlier versions. <b>Client source code writen for log4j 1.1.3
+	earlier versions. Client source code writen for log4j 1.1.3
 	will compile without any problems using log4j version
-	1.2. Unfortunately however, the resulting class files are not
-	compatible. In other words, class files compiled will log4j
-	1.1.3 will not run with log4j version 1.2.</b>
+	1.2. Unfortunately however, code compiled for log4j 1.1.3
+	would systematically throw "java.lang.NoSuchMethodError"
+	runtime exceptions with log4j 1.2 prior to beta2. This problem
+	has been corrected in beta2.
       </p>
 
     </section>
--->
+
     <section name="Third-party extensions">
 
       <dl>

@@ -12,7 +12,7 @@ declare -i TEST
 function testSubclassing {
  
  echo -n "Subclassing test $TEST - "
- java org.apache.log4j.examples.MyCategoryTest $LCF
+ java examples.subclass.MyLoggerTest $LCF
  check witness/mycat.$TEST $TEMP; echo "OK."
 }
 
@@ -52,6 +52,6 @@ if [ $TEST -ge $start ]; then
   lecho "log4j.appender.A1.layout=org.apache.log4j.PatternLayout "
   lecho "log4j.appender.A1.layout.ConversionPattern=%c %p - %m%n"  
   lecho "log4j.category.some.cat=DEBUG"  
-  lecho "log4j.loggerFactory=org.apache.log4j.examples.MyCategoryFactory"  
+  lecho "log4j.loggerFactory=examples.subclass.MyLoggerFactory"  
   testSubclassing
 fi

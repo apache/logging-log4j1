@@ -25,13 +25,6 @@ precautionary steps should you file a bug report.</p>
 
 <section name="Mailing lists">
 
-<p>New releases and important bug-fixes are announced at the
-<em>log4j-announce</em> list.  You can subscribe to the log4j-announce
-list, or change your existing subscription <a
-href="http://lists.sourceforge.net/mailman/listinfo/log4j-announce">online</a>.
-The traffic on this list is extremely low and you are encouraged to
-subscribe to this list if you are using log4j.</p>
-
 <p>Discussion on log4j and logging in general are held on the
 <em>log4j-user</em> mailing list.  To subscribe to
 this list send an e-mail to <A
@@ -46,8 +39,8 @@ HREF="mailto:log4j-dev-subscribe@jakarta.apache.org">log4j-dev-subscribe@jakarta
 commits to the repository.  To subscribe to this list send an e-mail
 to <A
 HREF="mailto:log4j-cvs-subscribe@jakarta.apache.org">log4j-cvs-subscribe@jakarta.apache.org</A>.
-Committers <em>must</em> subscribe to this with their Apache mail
-address.</p>
+Committers <em>should</em> subscribe to this list with their Apache
+e-mail address.</p>
 
 <p><b>To prevent spam, we expect you to be subscribed to a list before
 posting to it. Otherwise, your mail needs to be approved by an
