@@ -115,6 +115,7 @@
                                      XMLLayout, AsyncAppender, ErrorHandler,
                                      OptionConverter, BoundedFIFO, 
                                      Joran,  
+                                     Scheduler, 
                                      ThrowableInformation,
                                      LocationInfo,
                                      CyclicBuffer, OR, VariaLevelMatchFilter, 
@@ -460,6 +461,15 @@
       <test name="org.apache.joran.InterpreterTest" />
     </junit>
   </target>
+  
+  <target name="Scheduler" depends="build, cleanOutputDir">
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="false" />
+      <test name="org.apache.log4j.scheduler.SchedulerTest" />
+    </junit>
+  </target>
+  
   
   <target name="ThrowableInformation" depends="build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
