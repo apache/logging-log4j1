@@ -71,9 +71,9 @@ import java.util.Hashtable;
    <p>The syntax of variable substitution is similar to that of UNIX
    shells. The string between an opening <b>&quot;${&quot;</b> and
    closing <b>&quot;}&quot;</b> is interpreted as a key. Its value is
-   searched in the system properties, and if not founf then in the
-   configuration file being parsed.  The corresponding value replaces
-   the ${variableName} sequence.
+   searched in the system properties, and if not found there, it is
+   searched in the configuration file being parsed.  The corresponding
+   value replaces the ${variableName} sequence.
 
    @author Ceki G&uuml;lc&uuml;
    @author Anders Kristensen
@@ -589,7 +589,7 @@ public class PropertyConfigurator implements Configurator {
       LogLog.debug("Category " + loggerName + " set to " + logger.getLevel());
     }
 
-    // Remove all existing appenders. They will be reconstructed below.
+    // Begin by removing all existing appenders.
     logger.removeAllAppenders();
     
     Appender appender;    
