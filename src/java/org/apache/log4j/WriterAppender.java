@@ -1,21 +1,64 @@
 /*
- * Copyright (C) The Apache Software Foundation. All rights reserved.
+ * ============================================================================
+ *                   The Apache Software License, Version 1.1
+ * ============================================================================
  *
- * This software is published under the terms of the Apache Software
- * License version 1.1, a copy of which has been included with this
- * distribution in the LICENSE.txt file.  */
+ *    Copyright (C) 1999 The Apache Software Foundation. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modifica-
+ * tion, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of  source code must  retain the above copyright  notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * 3. The end-user documentation included with the redistribution, if any, must
+ *    include  the following  acknowledgment:  "This product includes  software
+ *    developed  by the  Apache Software Foundation  (http://www.apache.org/)."
+ *    Alternately, this  acknowledgment may  appear in the software itself,  if
+ *    and wherever such third-party acknowledgments normally appear.
+ *
+ * 4. The names "log4j" and  "Apache Software Foundation"  must not be used to
+ *    endorse  or promote  products derived  from this  software without  prior
+ *    written permission. For written permission, please contact
+ *    apache@apache.org.
+ *
+ * 5. Products  derived from this software may not  be called "Apache", nor may
+ *    "Apache" appear  in their name,  without prior written permission  of the
+ *    Apache Software Foundation.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS  FOR A PARTICULAR  PURPOSE ARE  DISCLAIMED.  IN NO  EVENT SHALL  THE
+ * APACHE SOFTWARE  FOUNDATION  OR ITS CONTRIBUTORS  BE LIABLE FOR  ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL,  EXEMPLARY, OR CONSEQUENTIAL  DAMAGES (INCLU-
+ * DING, BUT NOT LIMITED TO, PROCUREMENT  OF SUBSTITUTE GOODS OR SERVICES; LOSS
+ * OF USE, DATA, OR  PROFITS; OR BUSINESS  INTERRUPTION)  HOWEVER CAUSED AND ON
+ * ANY  THEORY OF LIABILITY,  WHETHER  IN CONTRACT,  STRICT LIABILITY,  OR TORT
+ * (INCLUDING  NEGLIGENCE OR  OTHERWISE) ARISING IN  ANY WAY OUT OF THE  USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * This software  consists of voluntary contributions made  by many individuals
+ * on  behalf of the Apache Software  Foundation.  For more  information on the
+ * Apache Software Foundation, please see <http://www.apache.org/>.
+ *
+ */
 
 package org.apache.log4j;
 
-import java.io.IOException;
-import java.io.Writer;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.helpers.QuietWriter;
 import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.helpers.QuietWriter;
-import org.apache.log4j.helpers.LogLog;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+
 
 // Contibutors: Jens Uwe Pipka <jens.pipka@gmx.de>
 //              Ben Sandee
@@ -27,8 +70,6 @@ import org.apache.log4j.helpers.LogLog;
    @author Ceki G&uuml;lc&uuml;
    @since 1.1 */
 public class WriterAppender extends AppenderSkeleton {
-
-
   /**
      Immediate flush means that the underlying writer or output stream
      will be flushed at the end of each append operation. Immediate
@@ -57,19 +98,16 @@ public class WriterAppender extends AppenderSkeleton {
   */
   protected QuietWriter qw;
 
-
   /**
      This default constructor does nothing.  */
-  public
-  WriterAppender() {
+  public WriterAppender() {
   }
 
   /**
      Instantiate a WriterAppender and set the output destination to a
      new {@link OutputStreamWriter} initialized with <code>os</code>
      as its {@link OutputStream}.  */
-  public
-  WriterAppender(Layout layout, OutputStream os) {
+  public WriterAppender(Layout layout, OutputStream os) {
     this(layout, new OutputStreamWriter(os));
   }
 
@@ -79,8 +117,7 @@ public class WriterAppender extends AppenderSkeleton {
 
      <p>The <code>writer</code> must have been previously opened by
      the user.  */
-  public
-  WriterAppender(Layout layout, Writer writer) {
+  public WriterAppender(Layout layout, Writer writer) {
     this.layout = layout;
     this.setWriter(writer);
   }
@@ -99,26 +136,22 @@ public class WriterAppender extends AppenderSkeleton {
      be recorded on disk when the application exits. This is a high
      price to pay even for a 20% performance gain.
    */
-  public
-  void setImmediateFlush(boolean value) {
+  public void setImmediateFlush(boolean value) {
     immediateFlush = value;
   }
 
   /**
      Returns value of the <b>ImmediateFlush</b> option.
    */
-  public
-  boolean getImmediateFlush() {
+  public boolean getImmediateFlush() {
     return immediateFlush;
   }
 
   /**
      Does nothing.
   */
-  public
-  void activateOptions() {
+  public void activateOptions() {
   }
-
 
   /**
      This method is called by the {@link AppenderSkeleton#doAppend}
@@ -132,9 +165,7 @@ public class WriterAppender extends AppenderSkeleton {
      layout.
 
   */
-  public
-  void append(LoggingEvent event) {
-
+  public void append(LoggingEvent event) {
     // Reminder: the nesting of calls is:
     //
     //    doAppend()
@@ -143,12 +174,12 @@ public class WriterAppender extends AppenderSkeleton {
     //      - append();
     //        - checkEntryConditions();
     //        - subAppend();
-
-    if(!checkEntryConditions()) {
+    if (!checkEntryConditions()) {
       return;
     }
+
     subAppend(event);
-   }
+  }
 
   /**
      This method determines if there is a sense in attempting to append.
@@ -156,26 +187,29 @@ public class WriterAppender extends AppenderSkeleton {
      <p>It checks whether there is a set output target and also if
      there is a set layout. If these checks fail, then the boolean
      value <code>false</code> is returned. */
-  protected
-  boolean checkEntryConditions() {
-    if(this.closed) {
+  protected boolean checkEntryConditions() {
+    if (this.closed) {
       LogLog.warn("Not allowed to write to a closed appender.");
+
       return false;
     }
 
-    if(this.qw == null) {
-      errorHandler.error("No output stream or file set for the appender named ["+
-			name+"].");
+    if (this.qw == null) {
+      errorHandler.error(
+        "No output stream or file set for the appender named [" + name + "].");
+
       return false;
     }
 
-    if(this.layout == null) {
-      errorHandler.error("No layout set for the appender named ["+ name+"].");
+    if (this.layout == null) {
+      errorHandler.error(
+        "No layout set for the appender named [" + name + "].");
+
       return false;
     }
+
     return true;
   }
-
 
   /**
      Close this appender instance. The underlying stream or writer is
@@ -185,11 +219,11 @@ public class WriterAppender extends AppenderSkeleton {
 
      @see #setWriter
      @since 0.8.4 */
-  public
-  synchronized
-  void close() {
-    if(this.closed)
+  public synchronized void close() {
+    if (this.closed) {
       return;
+    }
+
     this.closed = true;
     writeFooter();
     reset();
@@ -199,13 +233,13 @@ public class WriterAppender extends AppenderSkeleton {
    * Close the underlying {@link java.io.Writer}.
    * */
   protected void closeWriter() {
-    if(qw != null) {
+    if (qw != null) {
       try {
-	qw.close();
-      } catch(IOException e) {
-	// There is do need to invoke an error handler at this late
-	// stage.
-	LogLog.error("Could not close " + qw, e);
+        qw.close();
+      } catch (IOException e) {
+        // There is do need to invoke an error handler at this late
+        // stage.
+        LogLog.error("Could not close " + qw, e);
       }
     }
   }
@@ -216,22 +250,24 @@ public class WriterAppender extends AppenderSkeleton {
      <code>encoding</code> property.  If the encoding value is
      specified incorrectly the writer will be opened using the default
      system encoding (an error message will be printed to the loglog.  */
-  protected
-  OutputStreamWriter createWriter(OutputStream os) {
+  protected OutputStreamWriter createWriter(OutputStream os) {
     OutputStreamWriter retval = null;
 
     String enc = getEncoding();
-    if(enc != null) {
+
+    if (enc != null) {
       try {
-	retval = new OutputStreamWriter(os, enc);
-      } catch(IOException e) {
-	LogLog.warn("Error initializing output writer.");
-	LogLog.warn("Unsupported encoding?");
+        retval = new OutputStreamWriter(os, enc);
+      } catch (IOException e) {
+        LogLog.warn("Error initializing output writer.");
+        LogLog.warn("Unsupported encoding?");
       }
     }
-    if(retval == null) {
+
+    if (retval == null) {
       retval = new OutputStreamWriter(os);
     }
+
     return retval;
   }
 
@@ -243,19 +279,17 @@ public class WriterAppender extends AppenderSkeleton {
     encoding = value;
   }
 
-
-
-
   /**
      Set the {@link ErrorHandler} for this WriterAppender and also the
      underlying {@link QuietWriter} if any. */
   public synchronized void setErrorHandler(ErrorHandler eh) {
-    if(eh == null) {
+    if (eh == null) {
       LogLog.warn("You have tried to set a null error-handler.");
     } else {
       this.errorHandler = eh;
-      if(this.qw != null) {
-	this.qw.setErrorHandler(eh);
+
+      if (this.qw != null) {
+        this.qw.setErrorHandler(eh);
       }
     }
   }
@@ -275,10 +309,10 @@ public class WriterAppender extends AppenderSkeleton {
   public synchronized void setWriter(Writer writer) {
     reset();
     this.qw = new QuietWriter(writer, errorHandler);
+
     //this.tp = new TracerPrintWriter(qw);
     writeHeader();
   }
-
 
   /**
      Actual writing occurs here.
@@ -287,34 +321,32 @@ public class WriterAppender extends AppenderSkeleton {
      override this method.
 
      @since 0.9.0 */
-  protected
-  void subAppend(LoggingEvent event) {
+  protected void subAppend(LoggingEvent event) {
     this.qw.write(this.layout.format(event));
 
-    if(layout.ignoresThrowable()) {
+    if (layout.ignoresThrowable()) {
       String[] s = event.getThrowableStrRep();
+
       if (s != null) {
-	int len = s.length;
-	for(int i = 0; i < len; i++) {
-	  this.qw.write(s[i]);
-	  this.qw.write(Layout.LINE_SEP);
-	}
+        int len = s.length;
+
+        for (int i = 0; i < len; i++) {
+          this.qw.write(s[i]);
+          this.qw.write(Layout.LINE_SEP);
+        }
       }
     }
 
-    if(this.immediateFlush) {
+    if (this.immediateFlush) {
       this.qw.flush();
     }
   }
-
-
 
   /**
      The WriterAppender requires a layout. Hence, this method returns
      <code>true</code>.
   */
-  public
-  boolean requiresLayout() {
+  public boolean requiresLayout() {
     return true;
   }
 
@@ -323,24 +355,23 @@ public class WriterAppender extends AppenderSkeleton {
 
      Subclasses can override this method for an alternate closing
      behavior.  */
-  protected
-  void reset() {
+  protected void reset() {
     closeWriter();
     this.qw = null;
+
     //this.tp = null;
   }
-
 
   /**
      Write a footer as produced by the embedded layout's {@link
      Layout#getFooter} method.  */
-  protected
-  void writeFooter() {
-    if(layout != null) {
+  protected void writeFooter() {
+    if (layout != null) {
       String f = layout.getFooter();
-      if(f != null && this.qw != null) {
-	this.qw.write(f);
-	this.qw.flush();
+
+      if ((f != null) && (this.qw != null)) {
+        this.qw.write(f);
+        this.qw.flush();
       }
     }
   }
@@ -348,12 +379,13 @@ public class WriterAppender extends AppenderSkeleton {
   /**
      Write a header as produced by the embedded layout's {@link
      Layout#getHeader} method.  */
-  protected
-  void writeHeader() {
-    if(layout != null) {
+  protected void writeHeader() {
+    if (layout != null) {
       String h = layout.getHeader();
-      if(h != null && this.qw != null)
-	this.qw.write(h);
+
+      if ((h != null) && (this.qw != null)) {
+        this.qw.write(h);
+      }
     }
   }
 }

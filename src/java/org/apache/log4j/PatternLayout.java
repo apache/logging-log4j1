@@ -1,17 +1,58 @@
 /*
- * Copyright (C) The Apache Software Foundation. All rights reserved.
+ * ============================================================================
+ *                   The Apache Software License, Version 1.1
+ * ============================================================================
  *
- * This software is published under the terms of the Apache Software License
- * version 1.1, a copy of which has been included  with this distribution in
- * the LICENSE file.
+ *    Copyright (C) 1999 The Apache Software Foundation. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modifica-
+ * tion, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of  source code must  retain the above copyright  notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * 3. The end-user documentation included with the redistribution, if any, must
+ *    include  the following  acknowledgment:  "This product includes  software
+ *    developed  by the  Apache Software Foundation  (http://www.apache.org/)."
+ *    Alternately, this  acknowledgment may  appear in the software itself,  if
+ *    and wherever such third-party acknowledgments normally appear.
+ *
+ * 4. The names "log4j" and  "Apache Software Foundation"  must not be used to
+ *    endorse  or promote  products derived  from this  software without  prior
+ *    written permission. For written permission, please contact
+ *    apache@apache.org.
+ *
+ * 5. Products  derived from this software may not  be called "Apache", nor may
+ *    "Apache" appear  in their name,  without prior written permission  of the
+ *    Apache Software Foundation.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS  FOR A PARTICULAR  PURPOSE ARE  DISCLAIMED.  IN NO  EVENT SHALL  THE
+ * APACHE SOFTWARE  FOUNDATION  OR ITS CONTRIBUTORS  BE LIABLE FOR  ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL,  EXEMPLARY, OR CONSEQUENTIAL  DAMAGES (INCLU-
+ * DING, BUT NOT LIMITED TO, PROCUREMENT  OF SUBSTITUTE GOODS OR SERVICES; LOSS
+ * OF USE, DATA, OR  PROFITS; OR BUSINESS  INTERRUPTION)  HOWEVER CAUSED AND ON
+ * ANY  THEORY OF LIABILITY,  WHETHER  IN CONTRACT,  STRICT LIABILITY,  OR TORT
+ * (INCLUDING  NEGLIGENCE OR  OTHERWISE) ARISING IN  ANY WAY OUT OF THE  USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * This software  consists of voluntary contributions made  by many individuals
+ * on  behalf of the Apache Software  Foundation.  For more  information on the
+ * Apache Software Foundation, please see <http://www.apache.org/>.
+ *
  */
 
 package org.apache.log4j;
 
 import org.apache.log4j.Layout;
-import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.helpers.PatternParser;
 import org.apache.log4j.helpers.PatternConverter;
+import org.apache.log4j.helpers.PatternParser;
+import org.apache.log4j.spi.LoggingEvent;
 
 
 // Contributors:   Nelson Minar <nelson@monkey.org>
@@ -109,32 +150,32 @@ import org.apache.log4j.helpers.PatternConverter;
      </tr>
 
    <tr> <td align=center><b>d</b></td> <td>Used to output the date of
-	 the logging event. The date conversion specifier may be
-	 followed by a <em>date format specifier</em> enclosed between
-	 braces. For example, <b>%d{HH:mm:ss,SSS}</b> or
-	 <b>%d{dd&nbsp;MMM&nbsp;yyyy&nbsp;HH:mm:ss,SSS}</b>.  If no
-	 date format specifier is given then ISO8601 format is
-	 assumed.
+         the logging event. The date conversion specifier may be
+         followed by a <em>date format specifier</em> enclosed between
+         braces. For example, <b>%d{HH:mm:ss,SSS}</b> or
+         <b>%d{dd&nbsp;MMM&nbsp;yyyy&nbsp;HH:mm:ss,SSS}</b>.  If no
+         date format specifier is given then ISO8601 format is
+         assumed.
 
-	 <p>The date format specifier admits the same syntax as the
-	 time pattern string of the {@link
-	 java.text.SimpleDateFormat}. Although part of the standard
-	 JDK, the performance of <code>SimpleDateFormat</code> is
-	 quite poor.
+         <p>The date format specifier admits the same syntax as the
+         time pattern string of the {@link
+         java.text.SimpleDateFormat}. Although part of the standard
+         JDK, the performance of <code>SimpleDateFormat</code> is
+         quite poor.
 
-	 <p>For better results it is recommended to use the log4j date
-	 formatters. These can be specified using one of the strings
-	 "ABSOLUTE", "DATE" and "ISO8601" for specifying {@link
-	 org.apache.log4j.helpers.AbsoluteTimeDateFormat
-	 AbsoluteTimeDateFormat}, {@link
-	 org.apache.log4j.helpers.DateTimeDateFormat DateTimeDateFormat}
-	 and respectively {@link
-	 org.apache.log4j.helpers.ISO8601DateFormat
-	 ISO8601DateFormat}. For example, <b>%d{ISO8601}</b> or
-	 <b>%d{ABSOLUTE}</b>.
+         <p>For better results it is recommended to use the log4j date
+         formatters. These can be specified using one of the strings
+         "ABSOLUTE", "DATE" and "ISO8601" for specifying {@link
+         org.apache.log4j.helpers.AbsoluteTimeDateFormat
+         AbsoluteTimeDateFormat}, {@link
+         org.apache.log4j.helpers.DateTimeDateFormat DateTimeDateFormat}
+         and respectively {@link
+         org.apache.log4j.helpers.ISO8601DateFormat
+         ISO8601DateFormat}. For example, <b>%d{ISO8601}</b> or
+         <b>%d{ABSOLUTE}</b>.
 
-	 <p>These dedicated date formatters perform significantly
-	 better than {@link java.text.SimpleDateFormat}.
+         <p>These dedicated date formatters perform significantly
+         better than {@link java.text.SimpleDateFormat}.
      </td>
    </tr>
 
@@ -248,18 +289,18 @@ import org.apache.log4j.helpers.PatternConverter;
    <tr>
      <td align=center><b>X</b></td>
 
-     <td> 
-     
+     <td>
+
      <p>Used to output the MDC (mapped diagnostic context) associated
      with the thread that generated the logging event. The <b>X</b>
      conversion character <em>must</em> be followed by the key for the
      map placed between braces, as in <b>%X{clientNumber}</b> where
      <code>clientNumber</code> is the key. The value in the MDC
      corresponding to the key will be output.</p>
-     
+
      <p>See {@link MDC} class for more details.
      </p>
-     
+
      </td>
    </tr>
 
@@ -384,28 +425,21 @@ import org.apache.log4j.helpers.PatternConverter;
 
    @since 0.8.2 */
 public class PatternLayout extends Layout {
-
-
   /** Default pattern string for log output. Currently set to the
       string <b>"%m%n"</b> which just prints the application supplied
       message. */
-  public final static String DEFAULT_CONVERSION_PATTERN ="%m%n";
+  public static final String DEFAULT_CONVERSION_PATTERN = "%m%n";
 
   /** A conversion pattern equivalent to the TTCCCLayout.
       Current value is <b>%r [%t] %p %c %x - %m%n</b>. */
-  public final static String TTCC_CONVERSION_PATTERN
-                                             = "%r [%t] %p %c %x - %m%n";
-
-
-  protected final int BUF_SIZE = 256;
-  protected final int MAX_CAPACITY = 1024;
-
+  public static final String TTCC_CONVERSION_PATTERN =
+    "%r [%t] %p %c %x - %m%n";
+  protected static final int BUF_SIZE = 256;
+  protected static final int MAX_CAPACITY = 1024;
 
   // output buffer appended to when format() is invoked
   private StringBuffer sbuf = new StringBuffer(BUF_SIZE);
-
   private String pattern;
-
   private PatternConverter head;
 
   /**
@@ -422,17 +456,17 @@ public class PatternLayout extends Layout {
   */
   public PatternLayout(String pattern) {
     this.pattern = pattern;
-    head = createPatternParser((pattern == null) ? DEFAULT_CONVERSION_PATTERN :
-			     pattern).parse();
+    head =
+      createPatternParser(
+        (pattern == null) ? DEFAULT_CONVERSION_PATTERN : pattern).parse();
   }
 
-   /**
-     Set the <b>ConversionPattern</b> option. This is the string which
-     controls formatting and consists of a mix of literal content and
-     conversion specifiers.
-   */
-  public
-  void setConversionPattern(String conversionPattern) {
+  /**
+    Set the <b>ConversionPattern</b> option. This is the string which
+    controls formatting and consists of a mix of literal content and
+    conversion specifiers.
+  */
+  public void setConversionPattern(String conversionPattern) {
     pattern = conversionPattern;
     head = createPatternParser(conversionPattern).parse();
   }
@@ -440,27 +474,24 @@ public class PatternLayout extends Layout {
   /**
      Returns the value of the <b>ConversionPattern</b> option.
    */
-  public
-  String getConversionPattern() {
+  public String getConversionPattern() {
     return pattern;
   }
 
   /**
      Does not do anything as options become effective
   */
-  public
-  void activateOptions() {
+  public void activateOptions() {
     // nothing to do.
   }
 
- /**
-     The PatternLayout does not handle the throwable contained within
-     {@link LoggingEvent LoggingEvents}. Thus, it returns
-     <code>true</code>.
+  /**
+      The PatternLayout does not handle the throwable contained within
+      {@link LoggingEvent LoggingEvents}. Thus, it returns
+      <code>true</code>.
 
-     @since 0.8.4 */
-  public
-  boolean ignoresThrowable() {
+      @since 0.8.4 */
+  public boolean ignoresThrowable() {
     return true;
   }
 
@@ -475,13 +506,12 @@ public class PatternLayout extends Layout {
     return new PatternParser(pattern);
   }
 
-
   /**
      Produces a formatted string as specified by the conversion pattern.
   */
   public String format(LoggingEvent event) {
     // Reset working stringbuffer
-    if(sbuf.capacity() > MAX_CAPACITY) {
+    if (sbuf.capacity() > MAX_CAPACITY) {
       sbuf = new StringBuffer(BUF_SIZE);
     } else {
       sbuf.setLength(0);
@@ -489,10 +519,11 @@ public class PatternLayout extends Layout {
 
     PatternConverter c = head;
 
-    while(c != null) {
+    while (c != null) {
       c.format(sbuf, event);
       c = c.next;
     }
+
     return sbuf.toString();
   }
 }

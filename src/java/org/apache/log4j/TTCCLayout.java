@@ -1,18 +1,60 @@
 /*
- * Copyright (C) The Apache Software Foundation. All rights reserved.
+ * ============================================================================
+ *                   The Apache Software License, Version 1.1
+ * ============================================================================
  *
- * This software is published under the terms of the Apache Software License
- * version 1.1, a copy of which has been included  with this distribution in
- * the LICENSE.txt file.
+ *    Copyright (C) 1999 The Apache Software Foundation. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modifica-
+ * tion, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of  source code must  retain the above copyright  notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * 3. The end-user documentation included with the redistribution, if any, must
+ *    include  the following  acknowledgment:  "This product includes  software
+ *    developed  by the  Apache Software Foundation  (http://www.apache.org/)."
+ *    Alternately, this  acknowledgment may  appear in the software itself,  if
+ *    and wherever such third-party acknowledgments normally appear.
+ *
+ * 4. The names "log4j" and  "Apache Software Foundation"  must not be used to
+ *    endorse  or promote  products derived  from this  software without  prior
+ *    written permission. For written permission, please contact
+ *    apache@apache.org.
+ *
+ * 5. Products  derived from this software may not  be called "Apache", nor may
+ *    "Apache" appear  in their name,  without prior written permission  of the
+ *    Apache Software Foundation.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS  FOR A PARTICULAR  PURPOSE ARE  DISCLAIMED.  IN NO  EVENT SHALL  THE
+ * APACHE SOFTWARE  FOUNDATION  OR ITS CONTRIBUTORS  BE LIABLE FOR  ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL,  EXEMPLARY, OR CONSEQUENTIAL  DAMAGES (INCLU-
+ * DING, BUT NOT LIMITED TO, PROCUREMENT  OF SUBSTITUTE GOODS OR SERVICES; LOSS
+ * OF USE, DATA, OR  PROFITS; OR BUSINESS  INTERRUPTION)  HOWEVER CAUSED AND ON
+ * ANY  THEORY OF LIABILITY,  WHETHER  IN CONTRACT,  STRICT LIABILITY,  OR TORT
+ * (INCLUDING  NEGLIGENCE OR  OTHERWISE) ARISING IN  ANY WAY OUT OF THE  USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * This software  consists of voluntary contributions made  by many individuals
+ * on  behalf of the Apache Software  Foundation.  For more  information on the
+ * Apache Software Foundation, please see <http://www.apache.org/>.
+ *
  */
+
 
 // Contributors: Christopher Williams
 //               Mathias Bogaert
-
 package org.apache.log4j;
 
 import org.apache.log4j.helpers.DateLayout;
 import org.apache.log4j.spi.LoggingEvent;
+
 
 /**
  TTCC layout format consists of time, thread, category and nested
@@ -63,15 +105,11 @@ import org.apache.log4j.spi.LoggingEvent;
 
 */
 public class TTCCLayout extends DateLayout {
-
   // Internal representation of options
-  private boolean threadPrinting    = true;
+  private boolean threadPrinting = true;
   private boolean categoryPrefixing = true;
-  private boolean contextPrinting   = true;
-
-
+  private boolean contextPrinting = true;
   protected final StringBuffer buf = new StringBuffer(256);
-
 
   /**
      Instantiate a TTCCLayout object with {@link
@@ -82,7 +120,6 @@ public class TTCCLayout extends DateLayout {
   public TTCCLayout() {
     this.setDateFormat(RELATIVE_TIME_DATE_FORMAT, null);
   }
-
 
   /**
      Instantiate a TTCCLayout object using the local time zone. The
@@ -96,21 +133,18 @@ public class TTCCLayout extends DateLayout {
     this.setDateFormat(dateFormatType);
   }
 
-
   /**
      The <b>ThreadPrinting</b> option specifies whether the name of the
      current thread is part of log output or not. This is true by default.
    */
-  public
-  void setThreadPrinting(boolean threadPrinting) {
+  public void setThreadPrinting(boolean threadPrinting) {
     this.threadPrinting = threadPrinting;
   }
 
   /**
      Returns value of the <b>ThreadPrinting</b> option.
    */
-  public
-  boolean getThreadPrinting() {
+  public boolean getThreadPrinting() {
     return threadPrinting;
   }
 
@@ -118,16 +152,14 @@ public class TTCCLayout extends DateLayout {
      The <b>CategoryPrefixing</b> option specifies whether {@link Category}
      name is part of log output or not. This is true by default.
    */
-  public
-  void setCategoryPrefixing(boolean categoryPrefixing) {
+  public void setCategoryPrefixing(boolean categoryPrefixing) {
     this.categoryPrefixing = categoryPrefixing;
   }
 
   /**
      Returns value of the <b>CategoryPrefixing</b> option.
    */
-  public
-  boolean getCategoryPrefixing() {
+  public boolean getCategoryPrefixing() {
     return categoryPrefixing;
   }
 
@@ -136,16 +168,14 @@ public class TTCCLayout extends DateLayout {
      the nested context information belonging to the current thread.
      This is true by default.
    */
-  public
-  void setContextPrinting(boolean contextPrinting) {
+  public void setContextPrinting(boolean contextPrinting) {
     this.contextPrinting = contextPrinting;
   }
 
   /**
      Returns value of the <b>ContextPrinting</b> option.
    */
-  public
-  boolean getContextPrinting() {
+  public boolean getContextPrinting() {
     return contextPrinting;
   }
 
@@ -157,49 +187,49 @@ public class TTCCLayout extends DateLayout {
    <p>Time, thread, category and diagnostic context are printed
    depending on options.
   */
-  public
-  String format(LoggingEvent event) {
-
+  public String format(LoggingEvent event) {
     // Reset buf
     buf.setLength(0);
 
     dateFormat(buf, event);
 
-    if(this.threadPrinting) {
+    if (this.threadPrinting) {
       buf.append('[');
       buf.append(event.getThreadName());
       buf.append("] ");
     }
+
     buf.append(event.getLevel().toString());
     buf.append(' ');
 
-    if(this.categoryPrefixing) {
+    if (this.categoryPrefixing) {
       buf.append(event.getLoggerName());
       buf.append(' ');
     }
 
-    if(this.contextPrinting) {
-       String ndc = event.getNDC();
+    if (this.contextPrinting) {
+      String ndc = event.getNDC();
 
-      if(ndc != null) {
-	buf.append(ndc);
-	buf.append(' ');
+      if (ndc != null) {
+        buf.append(ndc);
+        buf.append(' ');
       }
     }
+
     buf.append("- ");
     buf.append(event.getRenderedMessage());
     buf.append(LINE_SEP);
+
     return buf.toString();
   }
 
- /**
-     The TTCCLayout does not handle the throwable contained within
-     {@link LoggingEvent LoggingEvents}. Thus, it returns
-     <code>true</code>.
+  /**
+      The TTCCLayout does not handle the throwable contained within
+      {@link LoggingEvent LoggingEvents}. Thus, it returns
+      <code>true</code>.
 
-     @since version 0.8.4 */
-  public
-  boolean ignoresThrowable() {
+      @since version 0.8.4 */
+  public boolean ignoresThrowable() {
     return true;
   }
 }
