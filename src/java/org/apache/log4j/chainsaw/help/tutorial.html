@@ -5,18 +5,63 @@
 </HEAD>
 
 <BODY>
-<table width="100%">
-<tr><td class="TableTitle" bgcolor="#000089"><font color="white">Tutorial</font></td></tr>
-</table>
-<p>Welcome to the Chainsaw v2 Tutorial.  Here you will learn how to effectively utilise the many features of Chainsaw</p>
+<p>Welcome to the Chainsaw v2 Tutorial.  Here you will learn how to effectively utilise the many features of Chainsaw.</p>
 </p>
-<h2>What you will need</h2>
-<ol>
-<li>1 cup of your favourite brew</li>
-</ol>
 <h2>Outline</h2>
 <p>The built-in tutorial installs several "pretend" Receiver plugins that generate some example LoggingEvents and post
-them into Log4j just like a real Receiver.  If you would like to read more about Receivers first, then <!--<a href="Receivers.html">-->click here.<!--</a>--> (TODO)</p>
-<p>When you are ready to begin the tutorial, <a href="StartTutorial">click here.</a>
+them into Log4j just like a real Receiver.  </p>
+<ul>
+<li>If you would like to read more about Receivers first, then click here. <font color="red"><b>(TODO)</b></font></li>
+<li>When you are ready to begin the tutorial, <a href="StartTutorial">click here</a>.</li>
+</ul>
+<h2>Receivers</h2>
+<p>After you have said yes to the confirmation dialog, you should see 3 new tabs appear 
+in the main GUI. This is because the tutorial has installed 3 'Generator' Receivers into the Log4j engine.  
+</p>
+<ul>
+<li>Confirm
+this by showing the Receivers panel accessible either via the toolbar or the menu. The icon for this action is <img src="../icons/channelexplorer_satellite.gif"></li>
+</ul>
+<p>
+Any installed receiver installed into Log4j, either via an external configuration file, or via the GUI, is shown in this panel.  You 
+can create new Receivers, stop existing ones, or adjust their threshold.  
+<ul>
+<li>Try right clicking on a specific receiver and looking at the available menu options, but don't change anything just yet.</li>
+<li>When you are finished looking at the Receiver panel, hide it by clicking the 'X" close icon in the top right corner, 
+or toggling the Receivers panel by clicking the icon in the toolbar, or using the menu.</li>
+</ul>
+</p>
+<h2>Tabs</h2>
+<p>
+You may have noticed that each of the tabs have specific names ("Generator X").  Chainsaw automatically looks inside
+each received LoggingEvent for a special Application property to determine which tab to route an event to.  If it cannot find
+this property, it attempts to use a secondary property usually added via the SocketAppender or SocketHubAppender which
+identify the remote host of these events.  If neither of these are found, Chainsaw routes events to a default "Unknown" tab.  You can learn more about
+this whole process here.  <font color="red"><b>TODO</b></font>
+</p>
+<p>
+You may also notice that the tabs have the receiver icon (<img src="../icons/channelexplorer_satellite.gif">).  This is to indicate that new events are arriving for this tab.  Additionally
+if new events are not arriving, but there are events newer than the last time you looked at this tab, then the <img src="../icons/Information16.gif"> icon is shown.
+<ul>
+<li>Click on each tab and see how the icons shown in the tabs change.</li>
+<li>When you click on a specific tab, you should notice the events are streaming in.</li>
+</ul>
+</p>
+<h2>Log Tabs</h2>
+<p>Each tab contains a series of LoggingEvents routed to it via the Chainsaw internals. This visual panel
+is known as the <b>Log Panel</b>. It contains 3 main areas:
+<ol>
+<li><b>Logger Tree Panel</b> - the left hand panel contains all the distinct loggers known from the
+received LoggingEvents represented in the natural dotted hierarchy.</li>
+<li><b>Events Panel</b> - The top/central panel contains a table of all the events received.</li>
+<li><b>Event Detail Panel</b> - The bottom/central panel contains more details information of the currently selected event in the table.</li>
+</ol>
+The Logger Tree & Event Detail panels can be hidden by clicking on the 'X' close icon in their respective top left corners, or
+by using the toolbar or menus.  They are also containing within a Split area, so you can adjust the amount
+of visual space they take up to your liking.
+<ul>
+<li>Try hiding/showing/resizing the Logger Tree and Event Detail panels to see how they affect your viewing area.
+</ul>
+</p>
 </body>
 </html>
