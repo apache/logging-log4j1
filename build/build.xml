@@ -305,7 +305,6 @@
 	   packagenames="org.apache.log4j,
 			 org.apache.log4j.examples,
 			 org.apache.log4j.examples.appserver,
-		         org.apache.log4j.gui,
                          org.apache.log4j.helpers,
 		         org.apache.log4j.net,
 			 org.apache.log4j.nt,
