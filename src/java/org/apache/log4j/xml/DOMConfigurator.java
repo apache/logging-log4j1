@@ -732,7 +732,9 @@ public class DOMConfigurator implements Configurator {
 
   public void doConfigure(URL url, LoggerRepository repository) {
     try {
-      doConfigure(url.openStream(), repository);
+     InputStream in = url.openStream();
+     doConfigure(in, repository);
+     in.close();
     } catch (IOException e) {
       LogLog.error("Could not open [" + url + "].", e);
     }
