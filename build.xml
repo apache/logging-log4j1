@@ -281,7 +281,7 @@
  <!-- ================================================================= -->
  <!-- Build a complete distribution. Results go to ${dist.images}       -->
  <!-- ================================================================= -->
-  <target name="dist" depends="init, clean, jar, javadoc">
+  <target name="dist" depends="init, clean, jar">
 
     <delete verbose="true">
       <fileset dir="."> 
@@ -323,12 +323,13 @@
 
     <copy todir="${dist.tmp}/jakarta-log4j-${version}">
        <fileset dir="${base}"
-                includes="make/**,
-		          src/**, 
+                includes="src/java/**, 
 			  docs/**, 
-			  Makefile, 
-			  build/*, build.bat, build.sh,
-			  build/lib/*.jar,
+			  build/*,
+	                  build.bat, build.sh,
+	                  build/lib/ant-1.4.jar,
+			  build/lib/jaxp-1.1.jar,
+			  build/lib/crimson-1.1.jar,
                           manifest.mf, 
 			  INSTALL, 
 			  LICENSE.APL, 
@@ -340,8 +341,11 @@
 			  contribs/**"
                 excludes="make/make.loc, 
 		          **/*.bak, **/goEnv.bat,
+		          **/Makefile, **/goEnv.bat,
 	                  src/docbook/docbkx412/**,
 	                  src/docbook/docbook-xsl-1.45/**,
+	                  src/java/org/apache/log4j/examples/appserver/*,
+			  dist/classes/org/apache/log4j/examples/appserver/*.class, 
 			  **/.#*"/>
     </copy>
 

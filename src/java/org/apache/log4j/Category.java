@@ -70,8 +70,8 @@ import java.util.ResourceBundle;
    <p>The first tree forms are deprecated and should be avoided.
   
    <p><b>There is absolutely no need for new client code to use or
-   refer to the <code>Category</code> class.</b> Please avoid
-   referring to it or using it.
+   refer to the <code>Category</code> class.</b> Whenever possible,
+   please avoid referring to it or using it.
    
 
   @author Ceki G&uuml;lc&uuml;
@@ -465,7 +465,7 @@ public class Category implements AppenderAttachable {
   /**
      Return the default Hierarchy instance.
 
-     @deprecated Please use {@link LogManager.getLoggerRepository()} instead. 
+     @deprecated Please use {@link LogManager#getLoggerRepository()} instead. 
 
      @since 1.0
    */
