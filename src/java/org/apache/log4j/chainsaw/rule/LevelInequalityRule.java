@@ -49,78 +49,84 @@
 
 package org.apache.log4j.chainsaw.rule;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.UtilLoggingLevel;
+import org.apache.log4j.chainsaw.LoggingEventFieldResolver;
+import org.apache.log4j.spi.LoggingEvent;
+
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.UtilLoggingLevel;
-import org.apache.log4j.chainsaw.LoggingEventFieldResolver;
-import org.apache.log4j.spi.LoggingEvent;
+
 /**
  * A Rule class implementing inequality evaluation for Levels (log4j and util.logging) using the toInt method.
  * 
  * @author Scott Deboy <sdeboy@apache.org>
  */
-
 class LevelInequalityRule extends AbstractRule {
-    LoggingEventFieldResolver resolver = LoggingEventFieldResolver.getInstance();
+  LoggingEventFieldResolver resolver = LoggingEventFieldResolver.getInstance();
+  Level levelFirstParam;
+  String levelSecondParam;
+  List utilList = new LinkedList();
+  List levelList = new LinkedList();
+  String inequalitySymbol;
 
-	Level levelFirstParam;
-      String levelSecondParam;
-      List utilList = new LinkedList();
-      List levelList = new LinkedList();
-      String inequalitySymbol;
+  private LevelInequalityRule(
+    String inequalitySymbol, String levelFirstParam, String levelSecondParam) {
+    levelList.add(Level.FATAL.toString());
+    levelList.add(Level.ERROR.toString());
+    levelList.add(Level.WARN.toString());
+    levelList.add(Level.INFO.toString());
+    levelList.add(Level.DEBUG.toString());
 
-      private LevelInequalityRule(String inequalitySymbol, String levelFirstParam, String levelSecondParam) {
-          levelList.add(Level.FATAL.toString());
-          levelList.add(Level.ERROR.toString());
-          levelList.add(Level.WARN.toString());
-          levelList.add(Level.INFO.toString());
-          levelList.add(Level.DEBUG.toString());
+    Iterator iter = UtilLoggingLevel.getAllPossibleLevels().iterator();
 
-          Iterator iter = UtilLoggingLevel.getAllPossibleLevels().iterator();
-          while (iter.hasNext()) {
-              utilList.add(((UtilLoggingLevel)iter.next()).toString());
-          }
+    while (iter.hasNext()) {
+      utilList.add(((UtilLoggingLevel) iter.next()).toString());
+    }
 
-        if (levelList.contains(levelFirstParam)) {
-            this.levelFirstParam = Level.toLevel(levelFirstParam);
-        } else {
-            this.levelFirstParam = UtilLoggingLevel.toLevel(levelFirstParam);
-        }
-        this.inequalitySymbol = inequalitySymbol;
-        this.levelSecondParam = levelSecondParam;
-      }
+    if (levelList.contains(levelFirstParam)) {
+      this.levelFirstParam = Level.toLevel(levelFirstParam);
+    } else {
+      this.levelFirstParam = UtilLoggingLevel.toLevel(levelFirstParam);
+    }
 
-      static Rule getRule(String inequalitySymbol, Stack stack) {
-          String p1 = stack.pop().toString();
-          String p2 = stack.pop().toString();
-          return new LevelInequalityRule(inequalitySymbol, p1, p2);
-      }
-      
-      public boolean evaluate(LoggingEvent event) {
-        //use the type of the first level to access the static toLevel method on the second param
-        Level level2 = levelFirstParam.toLevel(resolver.getValue(levelSecondParam, event).toString());
-        System.out.println("lessthan level op " + levelFirstParam + ".." + level2);
-
-        boolean result = false;
-        int first = levelFirstParam.toInt();
-        int second = level2.toInt();
-        
-        if ("<".equals(inequalitySymbol)) {
-            result = first < second;
-        } else if (">".equals(inequalitySymbol)) {
-            result = first > second;
-        } else if ("<=".equals(inequalitySymbol)){
-            result = first <= second;
-        } else if (">=".equals(inequalitySymbol)) {
-            result = first >= second;
-        }
-        System.out.println("result is " + result);
-
-        return result;
-      }
-      
+    this.inequalitySymbol = inequalitySymbol;
+    this.levelSecondParam = levelSecondParam;
   }
+
+  static Rule getRule(String inequalitySymbol, Stack stack) {
+    String p1 = stack.pop().toString();
+    String p2 = stack.pop().toString();
+
+    return new LevelInequalityRule(inequalitySymbol, p1, p2);
+  }
+
+  public boolean evaluate(LoggingEvent event) {
+    //use the type of the first level to access the static toLevel method on the second param
+    Level level2 =
+      levelFirstParam.toLevel(
+        resolver.getValue(levelSecondParam, event).toString());
+    System.out.println("lessthan level op " + levelFirstParam + ".." + level2);
+
+    boolean result = false;
+    int first = level2.toInt();
+    int second = levelFirstParam.toInt();
+
+    if ("<".equals(inequalitySymbol)) {
+      result = first < second;
+    } else if (">".equals(inequalitySymbol)) {
+      result = first > second;
+    } else if ("<=".equals(inequalitySymbol)) {
+      result = first <= second;
+    } else if (">=".equals(inequalitySymbol)) {
+      result = first >= second;
+    }
+
+    System.out.println("result is " + result);
+
+    return result;
+  }
+}

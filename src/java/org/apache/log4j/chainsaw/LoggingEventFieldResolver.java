@@ -49,10 +49,10 @@
 
 package org.apache.log4j.chainsaw;
 
+import org.apache.log4j.spi.LoggingEvent;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
@@ -64,25 +64,25 @@ import org.apache.log4j.spi.LoggingEvent;
  * The only available method is Object getField(String fieldName, LoggingEvent event).
  *
  * Here is a description of the mapping of field names in the grammar
- * to fields on the logging event.  While the getField method returns an Object, the 
- * individual types returned per field are described here: 
+ * to fields on the logging event.  While the getField method returns an Object, the
+ * individual types returned per field are described here:
  *
- * Field Name                Field value (String representation		Return type
- * LOGGER                    category name (logger)					String
- * LEVEL                     level									Level
- * CLASS                     locationInformation's class name		String
- * FILE                      locationInformation's file name		String
- * LINE                      locationInformation's line number		String
- * METHOD                    locationInformation's method name		String
- * MSG                       message								Object
- * NDC                       NDC									String
- * EXCEPTION                 throwable string representation		ThrowableInformation
- * TIMESTAMP                 timestamp								Long
- * THREAD                    thread									String
- * MDC.keyName               entry in the MDC hashtable 			Object
- * 							 mapped to key 'keyName' 			
- * PROP.keyName              entry in the Property hashtable 		String
- * 							 mapped to the key 'keyName' 	
+ * Field Name                Field value (String representation                Return type
+ * LOGGER                    category name (logger)                                        String
+ * LEVEL                     level                                                                        Level
+ * CLASS                     locationInformation's class name                String
+ * FILE                      locationInformation's file name                String
+ * LINE                      locationInformation's line number                String
+ * METHOD                    locationInformation's method name                String
+ * MSG                       message                                                                Object
+ * NDC                       NDC                                                                        String
+ * EXCEPTION                 throwable string representation                ThrowableInformation
+ * TIMESTAMP                 timestamp                                                                Long
+ * THREAD                    thread                                                                        String
+ * MDC.keyName               entry in the MDC hashtable                         Object
+ *                                                          mapped to key 'keyName'
+ * PROP.keyName              entry in the Property hashtable                 String
+ *                                                          mapped to the key 'keyName'
 
  * NOTE:  the values for the 'keyName' portion of the MDC and PROP mappings must
  * be an exact match to the key in the hashTable (case sensitive).
@@ -97,7 +97,6 @@ import org.apache.log4j.spi.LoggingEvent;
  */
 public final class LoggingEventFieldResolver {
   private static final List keywordList = new ArrayList();
-    
   private static final String LOGGER_FIELD = "LOGGER";
   private static final String LEVEL_FIELD = "LEVEL";
   private static final String CLASS_FIELD = "CLASS";
@@ -111,12 +110,10 @@ public final class LoggingEventFieldResolver {
   private static final String THREAD_FIELD = "THREAD";
   private static final String MDC_FIELD = "MDC.";
   private static final String PROP_FIELD = "PROP.";
-  
   private static final String EMPTY_STRING = "";
-
   private static final LoggingEventFieldResolver resolver =
     new LoggingEventFieldResolver();
-  
+
   private LoggingEventFieldResolver() {
     keywordList.add(LOGGER_FIELD);
     keywordList.add(LEVEL_FIELD);
@@ -144,7 +141,7 @@ public final class LoggingEventFieldResolver {
   public boolean isField(String fieldName) {
     return keywordList.contains(fieldName);
   }
-  
+
   public Object getValue(String fieldName, LoggingEvent event) {
     if (fieldName == null) {
       return EMPTY_STRING;
@@ -167,21 +164,28 @@ public final class LoggingEventFieldResolver {
     } else if (MSG_FIELD.equals(upperField)) {
       return event.getMessage();
     } else if (NDC_FIELD.equals(upperField)) {
-      return event.getNDC();
+      String ndcValue = event.getNDC();
+
+      return ((ndcValue == null) ? "" : ndcValue);
     } else if (EXCEPTION_FIELD.equals(upperField)) {
-	  return event.getThrowableInformation();
+      return event.getThrowableInformation();
     } else if (TIMESTAMP_FIELD.equals(upperField)) {
       return new Long(event.timeStamp);
     } else if (THREAD_FIELD.equals(upperField)) {
       return event.getThreadName();
     } else if (upperField.startsWith(MDC_FIELD)) {
       //note: need to use actual fieldname since case matters
-      return event.getMDC(fieldName.substring(4));
+      Object mdcValue = event.getMDC(fieldName.substring(4));
+
+      return ((mdcValue == null) ? "" : mdcValue.toString());
     } else if (upperField.startsWith(PROP_FIELD)) {
-		//note: need to use actual fieldname since case matters
-      return event.getProperty(fieldName.substring(5));
+      //note: need to use actual fieldname since case matters
+      String propValue = event.getProperty(fieldName.substring(5));
+
+      return ((propValue == null) ? "" : propValue);
     }
-	//there wasn't a match, so just return the passed-in name
+
+    //there wasn't a match, so just return the passed-in name
     return fieldName;
   }
 }
