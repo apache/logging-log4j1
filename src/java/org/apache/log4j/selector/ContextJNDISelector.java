@@ -172,7 +172,7 @@ public class ContextJNDISelector implements RepositorySelector {
     if (loggingContextName == null) {
       return defaultRepository;
     } else {
-      System.out.println("loggingContextName is ["+loggingContextName+"]");
+      //System.out.println("loggingContextName is ["+loggingContextName+"]");
       Hierarchy hierarchy = (Hierarchy) hierMap.get(loggingContextName);
 
       if (hierarchy == null) {
