@@ -341,9 +341,9 @@ public class PropertyConfigurator {
   */
   protected
   void parseCats(Properties props, Hierarchy hierarchy) {
-    Enumeration enum = props.propertyNames();
-    while(enum.hasMoreElements()) {      
-      String key = (String) enum.nextElement();
+    Enumeration enumeration = props.propertyNames();
+    while(enumeration.hasMoreElements()) {      
+      String key = (String) enumeration.nextElement();
       if(key.startsWith(CATEGORY_PREFIX)) {
 	String categoryName = key.substring(CATEGORY_PREFIX.length());	
 	String value =  props.getProperty(key);
