@@ -87,7 +87,7 @@ public class AsyncAppender extends AppenderSkeleton
   public void append(LoggingEvent event) {
     // extract all the thread dependent information now as later it will
     // be too late.
-    event.prepareForSerialization();
+    event.prepareForDeferredProcessing();
     if (locationInfo) {
       event.getLocationInformation();
     }

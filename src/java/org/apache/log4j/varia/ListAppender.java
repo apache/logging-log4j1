@@ -59,7 +59,7 @@ public final class ListAppender extends AppenderSkeleton {
    * @see org.apache.log4j.AppenderSkeleton#append(org.apache.log4j.spi.LoggingEvent)
    */
   protected void append(LoggingEvent event) {
-    event.prepareForSerialization();
+    event.prepareForDeferredProcessing();
     
     // Extract location info now. Later it might not be possible.
     event.getLocationInformation();

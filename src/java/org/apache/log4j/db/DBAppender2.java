@@ -115,7 +115,7 @@ public class DBAppender2 extends AppenderSkeleton {
   }
 
   protected void append(LoggingEvent event) {
-    event.prepareForSerialization();
+    event.prepareForDeferredProcessing();
     eventsBuffer.add(event);
 
     if (eventsBuffer.size() >= batchSize) {
