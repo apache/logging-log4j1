@@ -59,8 +59,9 @@ public abstract class ConnectionSourceSkeleton implements ConnectionSource {
   boolean supportsGetGeneratedKeys(DatabaseMetaData meta) {
     try {
       return meta.supportsGetGeneratedKeys();
-    } catch(Exception e) {
-      LogLog.warn("Could not call supportsGetGeneratedKeys method.", e);
+    } catch(Throwable e) {
+      LogLog.warn("The following warning is only informative.");
+      LogLog.warn("Could not call supportsGetGeneratedKeys method. This may be recoverable", e);
       return false;
     }
   }
