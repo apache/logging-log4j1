@@ -49,33 +49,35 @@
 
 package org.apache.log4j.chainsaw.rule;
 
+import org.apache.log4j.chainsaw.LoggingEventFieldResolver;
 import org.apache.log4j.spi.LoggingEvent;
 
 import java.util.Stack;
 
 /**
- * A Rule class implementing logical not. 
+ * A Rule class implementing a not null (and not empty string) check.
  * 
  * @author Scott Deboy <sdeboy@apache.org>
  */
-public class NotRule extends AbstractRule {
-  private final Rule rule;
+public class ExistsRule extends AbstractRule {
+  private static final LoggingEventFieldResolver resolver = LoggingEventFieldResolver.getInstance();
+  private final String field;
 
-  private NotRule(Rule rule) {
-    this.rule = rule;
+  private ExistsRule(String field) {
+    this.field = field;
   }
 
-  public static Rule getRule(Rule rule) {
-      return new NotRule(rule);
+  public static Rule getRule(String field) {
+      return new ExistsRule(field);
   }
   
   public static Rule getRule(Stack stack) {
-    Rule p1 = (Rule) stack.pop();
-
-    return new NotRule(p1);
+    return new ExistsRule(stack.pop().toString());
   }
 
   public boolean evaluate(LoggingEvent event) {
-    return !(rule.evaluate(event));
+    String p2 = resolver.getValue(field, event).toString();
+
+    return (!(p2.equals("")));
   }
 }

@@ -107,6 +107,7 @@ public class ExpressionRuleContext extends KeyAdapter {
     operatorModel.addElement("==");
     operatorModel.addElement("~=");
     operatorModel.addElement("LIKE");
+    operatorModel.addElement("EXISTS");
     operatorModel.addElement("<");
     operatorModel.addElement(">");
     operatorModel.addElement("<=");
@@ -296,7 +297,6 @@ public class ExpressionRuleContext extends KeyAdapter {
     if (text.substring(0, currentPosition).toUpperCase().endsWith("MDC.")) {
       return "MDC";
     }
-
     return null;
   }
 

@@ -69,6 +69,7 @@ public class RuleFactory {
   private static final String EQUALS_RULE = "==";
   private static final String PARTIAL_TEXT_MATCH_RULE = "~=";
   private static final String LIKE_RULE = "like";
+  private static final String EXISTS_RULE = "exists";
   private static final String LESS_THAN_RULE = "<";
   private static final String GREATER_THAN_RULE = ">";
   private static final String LESS_THAN_EQUALS_RULE = "<=";
@@ -81,6 +82,7 @@ public class RuleFactory {
     rules.add(EQUALS_RULE);
     rules.add(PARTIAL_TEXT_MATCH_RULE);
     rules.add(LIKE_RULE);
+    rules.add(EXISTS_RULE);
     rules.add(LESS_THAN_RULE);
     rules.add(GREATER_THAN_RULE);
     rules.add(LESS_THAN_EQUALS_RULE);
@@ -124,6 +126,10 @@ public class RuleFactory {
 
     if (LIKE_RULE.equalsIgnoreCase(symbol)) {
       return LikeRule.getRule(stack);
+    }
+
+    if (EXISTS_RULE.equalsIgnoreCase(symbol)) {
+      return ExistsRule.getRule(stack);
     }
 
     if (LESS_THAN_RULE.equals(symbol)) {

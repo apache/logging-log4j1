@@ -60,12 +60,12 @@ import java.util.Stack;
  * @author Scott Deboy <sdeboy@apache.org>
  */
 public class AndRule extends AbstractRule {
-  private final Rule firstParam;
-  private final Rule secondParam;
+  private final Rule firstRule;
+  private final Rule secondRule;
 
-  private AndRule(Rule firstParam, Rule secondParam) {
-    this.firstParam = firstParam;
-    this.secondParam = secondParam;
+  private AndRule(Rule firstRule, Rule secondRule) {
+    this.firstRule = firstRule;
+    this.secondRule = secondRule;
   }
 
   public static Rule getRule(Stack stack) {
@@ -80,6 +80,6 @@ public class AndRule extends AbstractRule {
   }
 
   public boolean evaluate(LoggingEvent event) {
-    return (firstParam.evaluate(event) && secondParam.evaluate(event));
+    return (firstRule.evaluate(event) && secondRule.evaluate(event));
   }
 }
