@@ -251,10 +251,15 @@ public class ApplicationPreferenceModel implements SettingsListener {
     /**
      * @param responsiveness The responsiveness to set.
      */
-    public final void setResponsiveness(int responsiveness)
+    public final void setResponsiveness(int newValue)
     {
-      int oldvalue = this.responsiveness;
-      this.responsiveness = responsiveness;
+      int oldvalue = responsiveness;
+      
+      if (newValue >= 1000) {
+        responsiveness = (newValue - 750) / 1000;
+      } else {
+        responsiveness = newValue;
+      }
       firePropertyChange("responsiveness", oldvalue, responsiveness);
     }
 
