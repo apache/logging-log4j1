@@ -19,9 +19,9 @@ package org.apache.joran.action;
 import org.apache.joran.ExecutionContext;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.config.ErrorItem;
 import org.apache.log4j.config.PropertySetter;
 import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.spi.ErrorItem;
 
 import org.xml.sax.Attributes;
 

@@ -22,8 +22,8 @@ import org.apache.joran.action.Action;
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.Logger;
-import org.apache.log4j.config.ErrorItem;
 import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.spi.ErrorItem;
 import org.apache.log4j.spi.OptionHandler;
 
 import org.xml.sax.Attributes;

@@ -17,6 +17,7 @@
 package org.apache.log4j.db;
 
 import org.apache.log4j.LogManager;
+import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.plugins.Pauseable;
 import org.apache.log4j.plugins.Receiver;
 import org.apache.log4j.scheduler.Scheduler;

@@ -18,8 +18,8 @@ package org.apache.joran;
 
 //import org.apache.log4j.helpers.OptionConverter;
 
-import org.apache.log4j.config.ErrorItem;
 import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.spi.ErrorItem;
 import org.xml.sax.Locator;
 
 import java.util.HashMap;

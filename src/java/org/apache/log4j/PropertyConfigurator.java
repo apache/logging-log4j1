@@ -22,10 +22,10 @@ package org.apache.log4j;
 
 import org.apache.log4j.DefaultCategoryFactory;
 import org.apache.log4j.config.ConfiguratorBase;
-import org.apache.log4j.config.ErrorItem;
 import org.apache.log4j.config.PropertySetter;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.or.RendererMap;
+import org.apache.log4j.spi.ErrorItem;
 import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.LoggerRepository;
 
