@@ -121,8 +121,8 @@ public class AppenderAttachableImpl implements AppenderAttachable {
 
 
   /**
-     Remove all previously attached appenders.
-  */
+   * Remove and close all previously attached appenders.
+   * */
   public
   void removeAllAppenders() {
     if(appenderList != null) {

@@ -77,9 +77,6 @@ public class Category implements AppenderAttachable {
   //final Hierarchy defaultHierarchy = new Hierarchy(new
   //					   RootCategory(Level.DEBUG));
 
-
-  static int nooptimize;
-
   /**
      The name of this category.
   */
@@ -431,9 +428,10 @@ public class Category implements AppenderAttachable {
   }
 
   /**
-
-     @deprecated Has been replaced by the {@link #getEffectiveLevel}
-     method.  */
+    *
+    * @deprecated Please use the the {@link #getEffectiveLevel} method
+    * instead.  
+    * */
   public
   Priority getChainedPriority() {
     for(Category c = this; c != null; c=c.parent) {
@@ -513,7 +511,6 @@ public class Category implements AppenderAttachable {
   public
   static
   Category getInstance(String name) {
-     nooptimize++;
     return LogManager.getLogger(name);
   }
 
@@ -530,7 +527,6 @@ public class Category implements AppenderAttachable {
   public
   static
   Category getInstance(Class clazz) {
-    nooptimize++;
     return LogManager.getLogger(clazz);
   }
 

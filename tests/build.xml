@@ -51,9 +51,7 @@
     build  - compile all project files, if a certain library is missing, 
 	      then the compilation of its dependents are skipped.
 
-    regression - Run regression ests which check large parts of log4j.
-    unit       - Run unit tests which check one component at a time.
-    longUnit   - Run long unit tests which check one component at a time.
+    regression - Run regression tests which check large parts of log4j.
 
     runAll     - run all available tests
     </echo>
@@ -101,8 +99,8 @@
                                      HierarchyThreshold, SocketServer, 
                                      XMLLayout, AsyncAppender, 
                                      OptionConverter, BoundedFIFO, 
-                                     CyclicBuffer, OR, LevelMatchFilter, 
-                                     DRFA"/>
+                                     CyclicBuffer, PatternParser, OR, 
+                                     LevelMatchFilter, DRFA"/>
 
   <!-- ================================================================= -->
   <!-- Longer unit tests                                                 -->
@@ -172,7 +170,7 @@
   <target name="SocketServer" depends="build">
     <parallel>
       <java classname="org.apache.log4j.net.ShortSocketServer" fork="yes">
-	<arg value="4"/> 
+	<arg value="8"/> 
 	<arg value="input/socketServer"/> 
 	<classpath refid="tests.classpath"/>
       </java>
@@ -212,6 +210,13 @@
     </junit>
   </target>
 
+  <target name="ErrorHandler" depends="build">
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="false" />
+      <test name="org.apache.log4j.varia.ErrorHandlerTestCase" />
+    </junit>
+  </target>
 
   <target name="OptionConverter" depends="build">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
@@ -234,6 +239,14 @@
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
       <test name="org.apache.log4j.helpers.CyclicBufferTestCase" />
+    </junit>
+  </target>
+
+  <target name="PatternParser" depends="build">
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="false"/>
+      <test name="org.apache.log4j.helpers.PatternParserTestCase" />
     </junit>
   </target>
 
