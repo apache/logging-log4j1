@@ -383,27 +383,6 @@ later. For JDK 1.2, you can get the JNDI API from
     <include name="**/chainsaw/*.java"/>
   </fileset>
 
-
-  <!-- ================================================================= -->
-  <!-- Runs jalopy.  Available from http://jalopy.sourceforge.net        -->
-  <!-- ================================================================= -->
-  <target name="runJalopy">
-    <path id="jalopy.path">
-      <fileset dir="${jalopy.lib}">
-        <include name="*.jar" />
-      </fileset>
-    </path>
-
-    <taskdef name="jalopy"
-             classname="de.hunsicker.jalopy.plugin.ant.AntPlugin"
-             classpathref="jalopy.path" />
-    <jalopy backup="true"
-            classpathref="compile.classpath"
-            convention="src/jalopy/log4j-coding-convention.xml">
-      <fileset refid="styled_files"/>
-    </jalopy>
-  </target>
-
   <!-- ================================================================= -->
   <!-- Runs jalopy preferences editor.                                   -->
   <!-- ================================================================= -->
