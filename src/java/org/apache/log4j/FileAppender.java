@@ -243,7 +243,7 @@ public class FileAppender extends WriterAppender {
   public synchronized void setFile(
     String filename, boolean append, boolean bufferedIO, int bufferSize)
     throws IOException {
-    getLogger().debug("setFile called: {}, {}", fileName, Boolean.toString(append));
+    getLogger().debug("setFile called: {}, {}", fileName, append?"true":"false");
 
     // It does not make sense to have immediate flush and bufferedIO.
     if (bufferedIO) {
