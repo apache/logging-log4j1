@@ -108,6 +108,44 @@ public class Logger extends Category {
   public static Logger getLogger(String name, LoggerFactory factory) {
     return LogManager.getLogger(name, factory);
   }
+  
+  /**
+   * Log a message object with the {@link Level#TRACE TRACE} level.
+   *
+   * @param message the message object to log.
+   * @see #debug(Object) for an explanation of the logic applied.
+   * @since 1.3
+   */
+  public void trace(Object message) {
+    if (repository.isDisabled(Level.TRACE_INT)) {
+      return;
+    }
+
+    if (Level.TRACE.isGreaterOrEqual(this.getEffectiveLevel())) {
+      forcedLog(FQCN, Level.TRACE, message, null);
+    }
+  }
+
+  /**
+   * Log a message object with the <code>TRACE</code> level including the
+   * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
+   *
+   * <p>
+   * See {@link #debug(Object)} form for more detailed information.
+   * </p>
+   *
+   * @param message the message object to log.
+   * @param t the exception to log, including its stack trace.
+   */
+  public void trace(Object message, Throwable t) {
+    if (repository.isDisabled(Level.TRACE_INT)) {
+      return;
+    }
+
+    if (Level.TRACE.isGreaterOrEqual(this.getEffectiveLevel())) {
+      forcedLog(FQCN, Level.TRACE, message, t);
+    }
+  }
 
   /**
    * Log a message with the <code>TRACE</code> level with message formatting
@@ -165,38 +203,6 @@ public class Logger extends Category {
 
   /**
    * Log a message with the <code>DEBUG</code> level with message formatting
-   * done according to the value of <code>messagePattern</code> and 
-   * <code>arg</code> parameters.
-   * <p>
-   * This form avoids superflous parameter construction. Whenever possible,
-   * you should use this form instead of constructing the message parameter 
-   * using string concatenation.
-   * 
-   * @param messagePattern The message pattern which will be parsed and formatted
-   * @param arg The argument to replace the formatting element, i,e, 
-   * the '{}' pair within <code>messagePattern</code>.
-   * @since 1.3
-   */
-  public void debug(Object messagePattern, Object arg) {
-    if (repository.isDisabled(Level.DEBUG_INT)) {
-      return;
-    }
-
-    if (Level.DEBUG.isGreaterOrEqual(this.getEffectiveLevel())) {
-      if (messagePattern instanceof String){
-        String msgStr = (String) messagePattern;
-        msgStr = MessageFormatter.format(msgStr, arg);
-        forcedLog(FQCN, Level.DEBUG, msgStr, null);
-      } else {
-        // To be failsafe, we handle the case where 'messagePattern' is not
-        // a String. Unless the user makes a mistake, this should never happen.
-        forcedLog(FQCN, Level.DEBUG, messagePattern, null);
-      }
-    }
-  }
-  
-  /**
-   * Log a message with the <code>DEBUG</code> level with message formatting
    * done according to the messagePattern and the arguments arg1 and arg2.
    * <p>
    * This form avoids superflous parameter construction. Whenever possible,
@@ -215,38 +221,6 @@ public class Logger extends Category {
     if (Level.DEBUG.isGreaterOrEqual(this.getEffectiveLevel())) {
       messagePattern = MessageFormatter.format(messagePattern, arg1, arg2);
       forcedLog(FQCN, Level.DEBUG, messagePattern, null);
-    }
-  }
-  
-  /**
-   * Log a message with the <code>INFO</code> level with message formatting
-   * done according to the value of <code>messagePattern</code> and 
-   * <code>arg</code> parameters.
-   * <p>
-   * This form avoids superflous parameter construction. Whenever possible,
-   * you should use this form instead of constructing the message parameter 
-   * using string concatenation.
-   * 
-   * @param messagePattern The message pattern which will be parsed and formatted
-   * @param arg The argument to replace the formatting element, i,e, 
-   * the '{}' pair within <code>messagePattern</code>.
-   * @since 1.3
-   */
-  public void info(Object messagePattern, Object arg) {
-    if (repository.isDisabled(Level.INFO_INT)) {
-      return;
-    }
-
-    if (Level.INFO.isGreaterOrEqual(this.getEffectiveLevel())) {
-      if (messagePattern instanceof String){
-        String msgStr = (String) messagePattern;
-        msgStr = MessageFormatter.format(msgStr, arg);
-        forcedLog(FQCN, Level.INFO, msgStr, null);
-      } else {
-        // To be failsafe, we handle the case where 'messagePattern' is not
-        // a String. Unless the user makes a mistake, this should never happen.
-        forcedLog(FQCN, Level.INFO, messagePattern, null);
-      }
     }
   }
   
@@ -273,37 +247,6 @@ public class Logger extends Category {
     }
   }
   
-  /**
-   * Log a message with the <code>WARN</code> level with message formatting
-   * done according to the value of <code>messagePattern</code> and 
-   * <code>arg</code> parameters.
-   * <p>
-   * This form avoids superflous parameter construction. Whenever possible,
-   * you should use this form instead of constructing the message parameter 
-   * using string concatenation.
-   * 
-   * @param messagePattern The message pattern which will be parsed and formatted
-   * @param arg The argument to replace the formatting element, i,e, 
-   * the '{}' pair within <code>messagePattern</code>.
-   * @since 1.3
-   */
-  public void warn(Object messagePattern, Object arg) {
-    if (repository.isDisabled(Level.WARN_INT)) {
-      return;
-    }
-
-    if (Level.WARN.isGreaterOrEqual(this.getEffectiveLevel())) {
-      if (messagePattern instanceof String){
-        String msgStr = (String) messagePattern;
-        msgStr = MessageFormatter.format(msgStr, arg);
-        forcedLog(FQCN, Level.WARN, msgStr, null);
-      } else {
-        // To be failsafe, we handle the case where 'messagePattern' is not
-        // a String. Unless the user makes a mistake, this should never happen.
-        forcedLog(FQCN, Level.WARN, messagePattern, null);
-      }
-    }
-  }
   
   /**
    * Log a message with the <code>WARN</code> level with message formatting
@@ -328,37 +271,7 @@ public class Logger extends Category {
     }
   }
   
-  /**
-   * Log a message with the <code>ERROR</code> level with message formatting
-   * done according to the value of <code>messagePattern</code> and 
-   * <code>arg</code> parameters.
-   * <p>
-   * This form avoids superflous parameter construction. Whenever possible,
-   * you should use this form instead of constructing the message parameter 
-   * using string concatenation.
-   * 
-   * @param messagePattern The message pattern which will be parsed and formatted
-   * @param arg The argument to replace the formatting element, i,e, 
-   * the '{}' pair within <code>messagePattern</code>.
-   * @since 1.3
-   */
-  public void error(Object messagePattern, Object arg) {
-    if (repository.isDisabled(Level.ERROR_INT)) {
-      return;
-    }
 
-    if (Level.ERROR.isGreaterOrEqual(this.getEffectiveLevel())) {
-      if (messagePattern instanceof String){
-        String msgStr = (String) messagePattern;
-        msgStr = MessageFormatter.format(msgStr, arg);
-        forcedLog(FQCN, Level.ERROR, msgStr, null);
-      } else {
-        // To be failsafe, we handle the case where 'messagePattern' is not
-        // a String. Unless the user makes a mistake, this should never happen.
-        forcedLog(FQCN, Level.ERROR, messagePattern, null);
-      }
-    }
-  }
   
   /**
    * Log a message with the <code>ERROR</code> level with message formatting
@@ -380,38 +293,6 @@ public class Logger extends Category {
     if (Level.ERROR.isGreaterOrEqual(this.getEffectiveLevel())) {
       messagePattern = MessageFormatter.format(messagePattern, arg1, arg2);
       forcedLog(FQCN, Level.ERROR, messagePattern, null);
-    }
-  }
-  
-  /**
-   * Log a message with the <code>FATAL</code> level with message formatting
-   * done according to the value of <code>messagePattern</code> and 
-   * <code>arg</code> parameters.
-   * <p>
-   * This form avoids superflous parameter construction. Whenever possible,
-   * you should use this form instead of constructing the message parameter 
-   * using string concatenation.
-   * 
-   * @param messagePattern The message pattern which will be parsed and formatted
-   * @param arg The argument to replace the formatting element, i,e, 
-   * the '{}' pair within <code>messagePattern</code>.
-   * @since 1.3
-   */
-  public void fatal(Object messagePattern, Object arg) {
-    if (repository.isDisabled(Level.FATAL_INT)) {
-      return;
-    }
-
-    if (Level.FATAL.isGreaterOrEqual(this.getEffectiveLevel())) {
-      if (messagePattern instanceof String){
-        String msgStr = (String) messagePattern;
-        msgStr = MessageFormatter.format(msgStr, arg);
-        forcedLog(FQCN, Level.FATAL, msgStr, null);
-      } else {
-        // To be failsafe, we handle the case where 'messagePattern' is not
-        // a String. Unless the user makes a mistake, this should never happen.
-        forcedLog(FQCN, Level.FATAL, messagePattern, null);
-      }
     }
   }
   
