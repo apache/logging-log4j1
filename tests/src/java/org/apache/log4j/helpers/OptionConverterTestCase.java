@@ -83,10 +83,22 @@ public class OptionConverterTestCase extends TestCase {
     catch(IllegalArgumentException e) {
       String errorMsg = e.getMessage();
       //System.out.println('['+errorMsg+']');
-      assertEquals('"'+val+ "\" has no closing brace. Opening brace at position 6.", errorMsg);
+      assertEquals('"'+val
+		   + "\" has no closing brace. Opening brace at position 6.", 
+		   errorMsg);
     }
   }
 
+  public
+  void varSubstTest5() {
+    System.out.println("-----------------------------------------");
+    Properties props = new Properties();
+    props.put("p1", "x1");
+    props.put("p2", "${p1}");
+    String res = OptionConverter.substVars("${p2}", props);
+    System.out.println("Result is ["+res+"].");
+    assertEquals(res, "x1");
+  }
 
   public
   void toLevelTest1() {
@@ -128,10 +140,12 @@ public class OptionConverterTestCase extends TestCase {
   static
   Test suite() {
     TestSuite suite = new TestSuite();
+    suite.addTest(new OptionConverterTestCase("varSubstTest5"));
     suite.addTest(new OptionConverterTestCase("varSubstTest1"));
     suite.addTest(new OptionConverterTestCase("varSubstTest2"));
     suite.addTest(new OptionConverterTestCase("varSubstTest3"));
     suite.addTest(new OptionConverterTestCase("varSubstTest4"));
+
 
     suite.addTest(new OptionConverterTestCase("toLevelTest1"));
     suite.addTest(new OptionConverterTestCase("toLevelTest2"));

@@ -34,7 +34,7 @@ public class Compare {
       if(!s1.equals(s2)) {
 	System.out.println("Files ["+file1+"] and ["+file2+"] differ on line " 
 			   +lineCounter);
-	System.out.println("One  reads: ["+s1+"].");
+	System.out.println("One reads:  ["+s1+"].");
 	System.out.println("Other reads:["+s2+"].");
 	return false;
       }

@@ -306,8 +306,10 @@ fi
 #  Remote logging
 # ===============================================================
 TEST=1000
+#RL=1000
+RL=20000
 if [ $TEST -ge $start ]; then
-   java org.apache.log4j.performance.Logging xml/logging$TEST.xml 10000 100 100
+   java org.apache.log4j.performance.Logging xml/logging$TEST.xml $RL 100 100
    #multiRun 4 "SocketAppender" $SHORTRUN $DELAY
 fi
 

@@ -33,8 +33,6 @@ public class OptionConverter {
   static int DELIM_START_LEN = 2;
   static int DELIM_STOP_LEN  = 1;
 
-  static StringBuffer sbuf = new StringBuffer();
-
   /** OptionConverter is a static class. */
   private OptionConverter() {}
 
@@ -315,8 +313,7 @@ public class OptionConverter {
 	  return defaultValue;
 	}
 	return classObj.newInstance();
-      }
-      catch (Exception e) {
+      } catch (Exception e) {
 	LogLog.error("Could not instantiate class [" + className + "].", e);
       }
     }
@@ -363,7 +360,8 @@ public class OptionConverter {
   public static
   String substVars(String val, Properties props) throws
                         IllegalArgumentException {
-    sbuf.setLength(0);
+
+    StringBuffer sbuf = new StringBuffer();
 
     int i = 0;
     int j, k;
@@ -371,22 +369,21 @@ public class OptionConverter {
     while(true) {
       j=val.indexOf(DELIM_START, i);
       if(j == -1) {
-	if(i==0)
+	// no more variables
+	if(i==0) { // this is a simple string
 	  return val;
-	else {
+	} else { // add the tail string which contails no variables and return the result.
 	  sbuf.append(val.substring(i, val.length()));
 	  return sbuf.toString();
 	}
-      }
-      else {
+      } else {
 	sbuf.append(val.substring(i, j));
 	k = val.indexOf(DELIM_STOP, j);
 	if(k == -1) {
 	  throw new IllegalArgumentException('"'+val+
 		      "\" has no closing brace. Opening brace at position " + j
 					     + '.');
-	}
-	else {
+	} else {
 	  j += DELIM_START_LEN;
 	  String key = val.substring(j, k);
 	  // first try in System properties
@@ -396,8 +393,15 @@ public class OptionConverter {
 	    replacement =  props.getProperty(key);
 	  }
 
-	  if(replacement != null)
-	    sbuf.append(replacement);
+	  if(replacement != null) {
+	    // Do variable substitution on the replacement string
+	    // such that we can solve "Hello ${x2}" as "Hello p1" 
+            // the where the properties are
+	    // x1=p1
+            // x2=${x1}
+	    String recursiveReplacement = substVars(replacement, props);
+	    sbuf.append(recursiveReplacement);
+	  }
 	  i = k + DELIM_STOP_LEN;
 	}
       }

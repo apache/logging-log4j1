@@ -9,6 +9,21 @@
  
  - Release of version 1.2 
 
+ - Added support for recursive variable substiuton as requested by
+   Eric Chastan. [*]
+
+ - SocketNode now used a BufferedInputStream as suggested by Kok Chong
+   in bug report #3933. [*]
+
+ - Fixed a problem with DailiyRollingAppender which would not
+   correctly compute the rollover period in certain timezones. See bug
+   report #7550. [*]
+
+ - Fixed documentation bug #2726 in FAQ.html. [*]
+
+ - In WriterAppender, fixed bug #2383 by adding a flush statement in the
+   writeFooter method. [*]
+   
  - In XMLLayout, Fixed bug #7550 by escaping the method attribute. The 
    XMLLayout also outputs each item of a stack trace in a separate
    line. [*]

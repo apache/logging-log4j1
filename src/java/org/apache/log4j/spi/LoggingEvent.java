@@ -308,6 +308,12 @@ public class LoggingEvent implements java.io.Serializable {
 	Method m = (Method) methodCache.get(className);
 	if(m == null) {
 	  Class clazz = Class.forName(className);
+	  // Note that we use Class.getDeclaredMethod instead of
+	  // Class.getMethod. This assumes that the Level subclass
+	  // implements the toLevel(int) method which is a
+	  // requirement. Actually, it does not make sense for Level
+	  // subclasses NOT to implement this method. Also note that
+	  // only Level can be subclassed and not Priority.
 	  m = clazz.getDeclaredMethod(TO_LEVEL, TO_LEVEL_PARAMS);
 	  methodCache.put(className, m);
 	}

@@ -12,7 +12,7 @@ import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
 
 /**
@@ -21,12 +21,9 @@ import org.apache.log4j.spi.LoggingEvent;
  *
  * @author <a href="mailto:oliver@puppycrawl.com">Oliver Burn</a>
  */
-class LoggingReceiver
-    extends Thread
-{
+class LoggingReceiver extends Thread {
     /** used to log messages **/
-    private static final Category LOG =
-        Category.getInstance(LoggingReceiver.class);
+    private static final Logger logger = Logger.getLogger(LoggingReceiver.class);
 
     /**
      * Helper that actually processes a client connection. It receives events
@@ -34,9 +31,7 @@ class LoggingReceiver
      *
      * @author <a href="mailto:oliver@puppycrawl.com">Oliver Burn</a>
      */
-    private class Slurper
-        implements Runnable
-    {
+    private class Slurper implements Runnable {
         /** socket connection to read events from **/
         private final Socket mClient;
 
@@ -51,7 +46,7 @@ class LoggingReceiver
 
         /** loops getting the events **/
         public void run() {
-            LOG.debug("Starting to get data");
+            logger.debug("Starting to get data");
             try {
                 final ObjectInputStream ois =
                     new ObjectInputStream(mClient.getInputStream());
@@ -60,19 +55,19 @@ class LoggingReceiver
                     mModel.addEvent(new EventDetails(event));
                 }
             } catch (EOFException e) {
-                LOG.info("Reached EOF, closing connection");
+                logger.info("Reached EOF, closing connection");
             } catch (SocketException e) {
-                LOG.info("Caught SocketException, closing connection");
+                logger.info("Caught SocketException, closing connection");
             } catch (IOException e) {
-                LOG.warn("Got IOException, closing connection", e);
+                logger.warn("Got IOException, closing connection", e);
             } catch (ClassNotFoundException e) {
-                LOG.warn("Got ClassNotFoundException, closing connection", e);
+                logger.warn("Got ClassNotFoundException, closing connection", e);
             }
 
             try {
                 mClient.close();
             } catch (IOException e) {
-                LOG.warn("Error closing connection", e);
+                logger.warn("Error closing connection", e);
             }
         }
     }
@@ -90,9 +85,7 @@ class LoggingReceiver
      * @param aPort port to listen on
      * @throws IOException if an error occurs
      */
-    LoggingReceiver(MyTableModel aModel, int aPort)
-        throws IOException
-    {
+    LoggingReceiver(MyTableModel aModel, int aPort) throws IOException {
         setDaemon(true);
         mModel = aModel;
         mSvrSock = new ServerSocket(aPort);
@@ -100,19 +93,19 @@ class LoggingReceiver
 
     /** Listens for client connections **/
     public void run() {
-        LOG.info("Thread started");
+        logger.info("Thread started");
         try {
             while (true) {
-                LOG.debug("Waiting for a connection");
+                logger.debug("Waiting for a connection");
                 final Socket client = mSvrSock.accept();
-                LOG.debug("Got a connection from " +
+                logger.debug("Got a connection from " +
                           client.getInetAddress().getHostName());
                 final Thread t = new Thread(new Slurper(client));
                 t.setDaemon(true);
                 t.start();
             }
         } catch (IOException e) {
-            LOG.error("Error in accepting connections, stopping.", e);
+            logger.error("Error in accepting connections, stopping.", e);
         }
     }
 }

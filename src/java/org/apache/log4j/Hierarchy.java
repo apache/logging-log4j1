@@ -98,7 +98,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
     if(listeners.contains(listener)) {
       LogLog.warn("Ignoring attempt to add an existent listener.");
     } else {
-      listeners.add(listener);
+      listeners.addElement(listener);
     }
   }
 
