@@ -20,9 +20,12 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Stack;
 
+import org.apache.log4j.helpers.LogLog;
+
 /**
  * A Factory class which, given a string representation of the rule, and a context stack, will
- * return a Rule ready for evaluation against events. 
+ * return a Rule ready for evaluation against events.  If an operator is requested that isn't supported, 
+ * or if a LIKE rule is requested and the ORO package is not available, an IllegalArgumentException is thrown. 
  * 
  * @author Scott Deboy <sdeboy@apache.org>
  */
@@ -41,6 +44,7 @@ public class RuleFactory {
   private static final String GREATER_THAN_RULE = ">";
   private static final String LESS_THAN_EQUALS_RULE = "<=";
   private static final String GREATER_THAN_EQUALS_RULE = ">=";
+  
   static {
     rules.add(AND_RULE);
     rules.add(OR_RULE);
@@ -48,7 +52,13 @@ public class RuleFactory {
     rules.add(NOT_EQUALS_RULE);
     rules.add(EQUALS_RULE);
     rules.add(PARTIAL_TEXT_MATCH_RULE);
-    rules.add(LIKE_RULE);
+    try {
+    	Class.forName("org.apache.oro.text.regex.Perl5Compiler");
+    	rules.add(LIKE_RULE);
+    } catch (Exception e) {
+    	LogLog.info("ORO classes not found - Like rule not supported");
+    }
+    	
     rules.add(EXISTS_RULE);
     rules.add(LESS_THAN_RULE);
     rules.add(GREATER_THAN_RULE);
@@ -91,7 +101,7 @@ public class RuleFactory {
       return PartialTextMatchRule.getRule(stack);
     }
 
-    if (LIKE_RULE.equalsIgnoreCase(symbol)) {
+    if (rules.contains(LIKE_RULE) && LIKE_RULE.equalsIgnoreCase(symbol)) {
       return LikeRule.getRule(stack);
     }
 
