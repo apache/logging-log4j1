@@ -408,17 +408,18 @@ public class LogFilePatternReceiver extends Receiver {
       throw new RuntimeException("Bad pattern: " + regexp);
     }
 
+    Perl5Matcher eventMatcher = new Perl5Matcher(); 
     String line = null;
     do {
       while ((line = bufferedReader.readLine()) != null) {
-        if (matcher.matches(line, regexpPattern)) {
+        if (eventMatcher.matches(line, regexpPattern)) {
           LoggingEvent event = buildEvent();
           if (event != null) {
             if (passesExpression(event)) {
               doPost(event);
             }
           }
-          currentMap.putAll(processEvent(matcher.getMatch()));
+          currentMap.putAll(processEvent(eventMatcher.getMatch()));
         } else {
           //may be an exception or additional message lines
           additionalLines.add(line);
