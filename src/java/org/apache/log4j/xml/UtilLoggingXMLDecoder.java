@@ -25,6 +25,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 
@@ -82,8 +83,6 @@ public class UtilLoggingXMLDecoder implements Decoder {
     } catch (ParserConfigurationException pce) {
       System.err.println("Unable to get document builder");
     }
-
-    additionalProperties.put("log4j.eventtype", "util-logging");
   }
 
   /**
@@ -354,9 +353,16 @@ public class UtilLoggingXMLDecoder implements Decoder {
         if (properties == null) {
           properties = new Hashtable(additionalProperties);
         } else {
-          properties.putAll(additionalProperties);
+          Iterator i = additionalProperties.entrySet().iterator();
+          while (i.hasNext()) {
+            Map.Entry e = (Map.Entry) i.next();
+            if (!(properties.containsKey(e.getKey()))) {
+            	properties.put(e.getKey(), e.getValue());
+            }
+          }
         }
       }
+
       LocationInfo info = null;
       if ((fileName != null) || (className != null) || (methodName != null) || (lineNumber != null)) {
           info = new LocationInfo(fileName, className, methodName, lineNumber);
