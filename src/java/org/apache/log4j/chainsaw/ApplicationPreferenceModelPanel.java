@@ -61,7 +61,8 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
   private ApplicationPreferenceModel uncommittedPreferenceModel =
     new ApplicationPreferenceModel();
   private JTextField identifierExpression;
-  private JTextField toolTipDisplayMillis;    
+  private JTextField toolTipDisplayMillis;
+  private JTextField cyclicBufferSize;    
   private final JTextField configurationURL = new JTextField(25);
 
   ApplicationPreferenceModelPanel(ApplicationPreferenceModel model) {
@@ -77,6 +78,12 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
                 int millis = Integer.parseInt(toolTipDisplayMillis.getText());
                 if (millis >= 0) {
                     uncommittedPreferenceModel.setToolTipDisplayMillis(millis);
+                }
+            } catch (NumberFormatException nfe) {}
+            try {
+                int bufferSize = Integer.parseInt(cyclicBufferSize.getText());
+                if (bufferSize >= 0) {
+                    uncommittedPreferenceModel.setCyclicBufferSize(bufferSize);
                 }
             } catch (NumberFormatException nfe) {}
           committedPreferenceModel.apply(uncommittedPreferenceModel);
@@ -370,7 +377,7 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
 
       identifierExpression = new JTextField(20);
       toolTipDisplayMillis = new JTextField(8);
-
+      cyclicBufferSize = new JTextField(8);
       Box p = new Box(BoxLayout.X_AXIS);
 
       p.add(showNoReceiverWarning);
@@ -412,11 +419,23 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
 
       JPanel p5 = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
-      p5.add(new JLabel("Automatic Configuration"));
+      p5.add(new JLabel("Cyclic buffer size"));
       p5.add(Box.createHorizontalStrut(5));
-      p5.add(configurationURL);
+      p5.add(cyclicBufferSize);
       add(p5);
 
+      JPanel p6 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+
+      p6.add(new JLabel("Automatic Configuration"));
+      p6.add(Box.createHorizontalStrut(5));
+      p6.add(configurationURL);
+      add(p6);
+
+      JPanel p7 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+      p7.add(
+        new JLabel(
+          "Cyclic buffer size change will apply the next time you start Chainsaw"));
+      add(p7);
 
       add(Box.createVerticalGlue());
       
@@ -498,6 +517,14 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
           new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
               toolTipDisplayMillis.setText(evt.getNewValue().toString());
+            }
+          });
+
+        uncommittedPreferenceModel.addPropertyChangeListener(
+          "cyclicBufferSize",
+          new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent evt) {
+              cyclicBufferSize.setText(evt.getNewValue().toString());
             }
           });
 

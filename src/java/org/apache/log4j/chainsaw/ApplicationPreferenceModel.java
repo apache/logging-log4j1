@@ -40,9 +40,8 @@ public class ApplicationPreferenceModel implements SettingsListener {
     private boolean showSplash;
     private String lookAndFeelClassName;
     private int toolTipDisplayMillis;
+    private int cyclicBufferSize;
     private String lastUsedVersion;
-    
-    
     private int responsiveness;
     
     private String identifierExpression = Constants.HOSTNAME_KEY + " - " + Constants.APPLICATION_KEY; 
@@ -129,6 +128,16 @@ public class ApplicationPreferenceModel implements SettingsListener {
         return identifierExpression;
     }
 
+    public final void setCyclicBufferSize(int newCyclicBufferSize) {
+        int oldCyclicBufferSize = cyclicBufferSize;
+        cyclicBufferSize = newCyclicBufferSize;
+        firePropertyChange("cyclicBufferSize", oldCyclicBufferSize, newCyclicBufferSize);
+    }
+    
+    public final int getCyclicBufferSize() {
+        return cyclicBufferSize;
+    }
+
     public final void setToolTipDisplayMillis(int newToolTipDisplayMillis) {
         int oldToolTipDisplayMillis = toolTipDisplayMillis;
         toolTipDisplayMillis = newToolTipDisplayMillis;
@@ -169,6 +178,7 @@ public class ApplicationPreferenceModel implements SettingsListener {
        setConfirmExit(event.asBoolean("confirmExit"));
        setShowSplash(event.asBoolean("showSplash"));
        setToolTipDisplayMillis(event.asInt("toolTipDisplayMillis"));
+       setCyclicBufferSize(event.asInt("cyclicBufferSize"));
        setConfigurationURL(event.getSetting("configurationURL"));
        setLastUsedVersion(event.getSetting("lastUsedVersion"));
     }
@@ -188,6 +198,7 @@ public class ApplicationPreferenceModel implements SettingsListener {
         event.saveSetting("confirmExit",isConfirmExit());
         event.saveSetting("showSplash", isShowSplash());
         event.saveSetting("toolTipDisplayMillis", getToolTipDisplayMillis());
+        event.saveSetting("cyclicBufferSize", getCyclicBufferSize());
         event.saveSetting("configurationURL", getConfigurationURL());
         event.saveSetting("lastUsedVersion", getLastUsedVersion());
     }
@@ -209,6 +220,7 @@ public class ApplicationPreferenceModel implements SettingsListener {
       setConfirmExit(model.isConfirmExit());
       setShowSplash(model.isShowSplash());
       setToolTipDisplayMillis(model.getToolTipDisplayMillis());
+      setCyclicBufferSize(model.getCyclicBufferSize());
       setConfigurationURL(model.getConfigurationURL());
       setLastUsedVersion(model.getLastUsedVersion());
     }
