@@ -20,15 +20,10 @@
       <p>Development related discussions are held on the
 	<em>log4j-dev</em> mailing list. To subscribe to this list
 	send an e-mail to <A
-	HREF="mailto:log4j-dev-subscribe@jakarta.apache.org">log4j-dev-subscribe@jakarta.apache.org</A>.</p>
-
-      <p>All developers are encouraged to subscribe to the
-	<em>log4j-cvs</em> list which will notify the subscribers of
-	CVS any commits to the repository.  To subscribe to this list
-	send an e-mail to <A
-	HREF="mailto:log4j-cvs-subscribe@jakarta.apache.org">log4j-cvs-subscribe@jakarta.apache.org</A>.
-	Committers <em>should</em> subscribe to this list with their
-	Apache e-mail address.
+	HREF="mailto:log4j-dev-subscribe@jakarta.apache.org">log4j-dev-subscribe@jakarta.apache.org</A>. All
+	developers are encouraged to subscribe to the
+	<em>log4j-dev</em> list which will notify the subscribers of
+	any commits to our CVS repository.
       </p>
 
       <p><b>To prevent spam, we expect you to be subscribed to a list
