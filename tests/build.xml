@@ -114,7 +114,8 @@
                                      OptionConverter, BoundedFIFO, 
                                      CyclicBuffer, OR, VariaLevelMatchFilter, 
                                      VariaLevelRangeFilter, PatternParser,
-                                     LevelMatchFilter, FiltersLevelMatchFilter, DRFA"/>
+                                     LevelMatchFilter, FiltersLevelMatchFilter, DRFA,
+                                     Plugins"/>
 
   <!-- ================================================================= -->
   <!-- Longer unit tests                                                 -->
@@ -352,6 +353,14 @@
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
       <test name="org.apache.log4j.DRFATestCase" />
+    </junit>
+  </target>
+
+  <target name="Plugins" depends="build, cleanOutputDir">
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="false"/>
+      <test name="org.apache.log4j.plugins.PluginTestCase" />
     </junit>
   </target>
 
