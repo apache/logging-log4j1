@@ -36,17 +36,27 @@ class FileSystemTreePanel extends JPanel {
 	 * 
 	 */
 	private void initGUI() {
-		tree.setModel(treeModel);
-        tree.expandPath(new TreePath(rootNode.getPath()));
-        
-		tree.setRootVisible(false);
 		setLayout(new BorderLayout());
 		setPreferredSize(new Dimension(150,400));
 		add(new JScrollPane(tree), BorderLayout.CENTER);
+
+        tree.setModel(treeModel);
+        tree.expandPath(new TreePath(rootNode.getPath()));
+        
+		tree.setRootVisible(false);
+        tree.putClientProperty("JTree.lineStyle", "Angled");
+        tree.setShowsRootHandles(true);
+        
 		
-        // We make the Leaf Icons a nice Server-style icon to represent the repository.
+        // TODO need a custom Cell renderer so that the root VFSNodes ALWAYS have the appropriate icons, and
+        // child folders don't get them, but get the normal folder style icon, but for now
+        // we make it easy on ourselves
+        
+        // We make the non-Leaf Icons a nice Server-style icon to represent the repository.
         DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer) tree.getCellRenderer();
-        renderer.setLeafIcon(ChainsawIcons.ICON_SERVER);
+        renderer.setClosedIcon(ChainsawIcons.ICON_SERVER);
+        renderer.setOpenIcon(ChainsawIcons.ICON_SERVER);
+        renderer.setLeafIcon(null);
         
 		setToolTipText(TOOLTIP);
 		tree.setToolTipText(TOOLTIP);
@@ -57,7 +67,7 @@ class FileSystemTreePanel extends JPanel {
      * Tree gets updated.
 	 * @param fileObject
 	 */
-	public void addFileObject(String name, FileObject fileObject) {
+	public DefaultMutableTreeNode addFileObject(String name, FileObject fileObject) {
 		VFSNode vfsNode = new VFSNode(name, fileObject);
 		final DefaultMutableTreeNode node = new DefaultMutableTreeNode(vfsNode);
 		SwingUtilities.invokeLater(new Runnable() {
@@ -66,6 +76,15 @@ class FileSystemTreePanel extends JPanel {
 				rootNode.add(node);
                 tree.makeVisible(new TreePath(node.getPath()));
 			}});
+        
+        return node;
+	}
+
+	/**
+	 * @return
+	 */
+	JTree getTree() {
+		return this.tree;
 	}
 	
 }
