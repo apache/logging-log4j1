@@ -5,13 +5,15 @@
  * License version 1.1, a copy of which has been included with this
  * distribution in the LICENSE.APL file.  */
 
+// Contributors: Mathias Rupprecht <mmathias.rupprecht@fja.com>
 
 package org.apache.log4j.spi;
 
 import java.io.StringWriter;
 import java.io.PrintWriter;
 import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.Layout;;
+import org.apache.log4j.Layout;
+
 /**
    The internal representation of caller location information.
      
@@ -148,10 +150,25 @@ public class LocationInfo implements java.io.Serializable {
 	  className = NA;
 	else {
 	  iend = fullInfo.lastIndexOf('.', iend);
+
+	  // This is because a stack trace in VisualAge looks like:
+
+          //java.lang.RuntimeException
+	  //  java.lang.Throwable()
+	  //  java.lang.Exception()
+	  //  java.lang.RuntimeException()
+	  //  void test.test.B.print()
+	  //  void test.test.A.printIndirect()
+	  //  void test.test.Run.main(java.lang.String [])
+          int ibegin = 0;
+	  if (inVisualAge) {
+	    ibegin = fullInfo.lastIndexOf(' ', iend)+1;
+          }
+
 	  if(iend == -1) 
 	    className = NA;
 	  else
-	    className = this.fullInfo.substring(0, iend);
+	    className = this.fullInfo.substring(ibegin, iend);
 	}
       }
       return className;

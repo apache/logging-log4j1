@@ -6,6 +6,16 @@
  [***] Changes requiring important modifications to existing client code.
 
 
+ April 22, 2001
+
+ - Release of version 1.1b5
+ 
+ - 
+  
+ - Corrected the incorrect value retutned by LocationInfo.getClassName
+   method when running under Visual Age. Thanks to Mathias Rupprecht
+   for supplying the relevant patch.
+ 
  April 20, 2001
 
  - Release of version 1.1b4
