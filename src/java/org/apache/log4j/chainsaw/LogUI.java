@@ -183,7 +183,8 @@ import javax.swing.table.TableModel;
  * @author Paul Smith <psmith@apache.org>
  *
  */
-public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
+public class LogUI extends JFrame implements ChainsawViewer, SettingsListener,
+  EventBatchListener {
   private static final String CONFIG_FILE_TO_USE = "config.file";
   private static final String USE_CYCLIC_BUFFER_PROP_NAME =
     "chainsaw.usecyclicbuffer";
@@ -311,13 +312,15 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
     LogUI logUI = new LogUI();
 
-    logUI.handler = new ChainsawAppenderHandler(logUI);
+    logUI.handler = new ChainsawAppenderHandler();
+    logUI.handler.addEventBatchListener(logUI);
     LogManager.getRootLogger().addAppender(logUI.handler);
     logUI.activateViewer();
   }
 
   public void activateViewer(ChainsawAppender appender) {
-    handler = new ChainsawAppenderHandler(this, appender);
+    handler = new ChainsawAppenderHandler(appender);
+    handler.addEventBatchListener(this);
     activateViewer();
   }
 
@@ -940,128 +943,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     }
   }
 
-  /**
-   * Determines an appropriate title for the Tab for the Tab Pane
-   * by locating a the log4jmachinename property
-   * @param v
-   * @return
-   */
-  String getTabIdentifier(Vector v) {
-    int fieldIndex =
-      ChainsawColumns.getColumnsNames().indexOf(
-        ChainsawConstants.PROPERTIES_COL_NAME);
-
-    if (fieldIndex < 0) {
-      return ChainsawConstants.UNKNOWN_TAB_NAME;
-    }
-
-    String properties = (String) v.get(fieldIndex);
-
-    String machinekey = ChainsawConstants.LOG4J_MACHINE_KEY + "=";
-    String machinename = null;
-    int machineposition = properties.indexOf(machinekey) + machinekey.length();
-    int machinelength = properties.indexOf(",", machineposition);
-
-    if (machinelength == -1) {
-      machinelength = properties.length();
-    }
-
-    if (machineposition >= machinekey.length()) {
-      machinename = properties.substring(machineposition, machinelength);
-
-      int dotposition = machinename.indexOf(".");
-      boolean isnumeric = true;
-
-      if (dotposition > -1) {
-        char[] firstdotpart =
-          machinename.substring(0, dotposition).toCharArray();
-
-        for (int i = 0; i < firstdotpart.length; i++) {
-          isnumeric = isnumeric && Character.isDigit(firstdotpart[i]);
-        }
-
-        if (!isnumeric) {
-          machinename = machinename.substring(0, dotposition);
-        }
-      }
-    }
-
-    String appkey = ChainsawConstants.LOG4J_APP_KEY + "=";
-    String appname = null;
-    int appposition = properties.indexOf(appkey) + appkey.length();
-
-    if (appposition >= appkey.length()) {
-      int applength = properties.indexOf(",", appposition);
-
-      if (applength == -1) {
-        applength = properties.length();
-      }
-
-      appname = properties.substring(appposition, applength);
-    }
-
-    StringBuffer ident = new StringBuffer();
-
-    if (machinename != null) {
-      ident.append(machinename);
-    }
-
-    if (appname != null) {
-      ident.append("-");
-      ident.append(appname);
-    }
-
-    if (ident.length() == 0) {
-      /**
-           * Maybe there's a Remote Host entry?
-           */
-      String remoteHostKey = ChainsawConstants.LOG4J_REMOTEHOST_KEY + "=";
-      String remoteHost = null;
-      int rhposition =
-        properties.indexOf(remoteHostKey) + remoteHostKey.length();
-
-      if (rhposition >= remoteHostKey.length()) {
-        int rhlength = properties.indexOf(":", rhposition);
-
-        if (rhlength == -1) {
-          rhlength = properties.length();
-        }
-
-        remoteHost = properties.substring(rhposition, rhlength);
-      }
-
-      if (remoteHost != null) {
-        ident.append(remoteHost);
-      }
-    }
-
-    if (ident.length() == 0) {
-      ident.append(ChainsawConstants.UNKNOWN_TAB_NAME);
-    }
-
-    return ident.toString();
-  }
-
-  /**
-   * Receives a ChainsawEventBatch object and passes each identifiers
-   * collection of events in sequence, to allow a Single tab
-   * to receive as many events in a single hit as possible.
-   *
-   * This method (actually the internal addRows method) takes these
-   * Collection of events and uses the value adjusting property
-   * to ensure table Listeners don't constantly get notified of every single event, but
-   * wait until the sequence is complete
-   * @param eventBatch
-   */
-  void receiveEventBatch(ChainsawEventBatch eventBatch) {
-    for (Iterator iter = eventBatch.identifierIterator(); iter.hasNext();) {
-      String ident = (String) iter.next();
-
-      if (!pausedList.contains(ident)) {
-        addRows(ident, eventBatch.entrySet(ident));
-      }
-    }
-  }
 
   /**
    * Formats the individual elements of an LoggingEvent by ensuring that
@@ -1129,7 +1010,12 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    * @param ident
    * @param v
    */
-  private void addRows(final String ident, final List eventBatchEntrys) {
+  public void receiveEventBatch(
+    final String ident, final List eventBatchEntrys) {
+    if (eventBatchEntrys.size() == 0) {
+      return;
+    }
+
     EventContainer tableModel;
     JSortTable table;
     ScrollToBottom scrollToBottom;
@@ -1159,7 +1045,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       table = (JSortTable) tableMap.get(ident);
     } else {
       final String eventType =
-        ((ChainsawEventBatch.Entry) eventBatchEntrys.get(0)).getEventType();
+        ((ChainsawEventBatchEntry) eventBatchEntrys.get(0)).getEventType();
 
       int bufferSize = 500;
 
@@ -1215,7 +1101,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     }
 
     for (Iterator iter = eventBatchEntrys.iterator(); iter.hasNext();) {
-      ChainsawEventBatch.Entry entry = (ChainsawEventBatch.Entry) iter.next();
+      ChainsawEventBatchEntry entry = (ChainsawEventBatchEntry) iter.next();
       Vector v = formatFields(entry.getEventVector());
       final String eventType = entry.getEventType();
       String level =
@@ -1342,6 +1228,14 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     }
 
     return getCurrentLogPanel().isLogTreePanelVisible();
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.log4j.chainsaw.EventBatchListener#getInterestedIdentifier()
+   */
+  public String getInterestedIdentifier() {
+    //    this instance is interested in ALL event batches, as we determine how to route things
+    return null;
   }
 
   /**
