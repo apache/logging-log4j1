@@ -36,10 +36,6 @@ final class CachedDateFormat extends DateFormat {
   private NumberFormat numberFormat;
   private static final int UNRECOGNIZED_MILLISECOND_PATTERN = -2;
   private static final int NO_MILLISECOND_PATTERN = -1;
-
-
-  
-
   
   public CachedDateFormat(final DateFormat formatter) {
     if (formatter == null) {
