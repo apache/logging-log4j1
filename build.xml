@@ -286,11 +286,12 @@
     <ant antfile="build-chainsaw.xml" target="build.chainsaw"/> 
   </target>	
   
-  <target name="chainsaw.jar" depends="build.core">
+  <target name="chainsaw.jar" depends="log4j.jar, log4j-xml.jar">
     <ant antfile="build-chainsaw.xml" target="chainsaw.jar"/> 
   </target>	  
 
-  <target name="chainsaw" depends="log4j.jar" description="Builds and runs Chainsaw v2" >
+  <target name="chainsaw" depends="log4j.jar, log4j-xml.jar, log4j-optional.jar" 
+  	      description="Builds and runs Chainsaw v2" >
     <ant antfile="build-chainsaw.xml" target="chainsaw"/>
   </target>	
 	
@@ -570,6 +571,7 @@
                 ${stem}/net/UDP*.class,
     	        ${stem}/net/SocketHub*.class,
     	        ${stem}/net/Telnet*.class,
+    	        ${stem}/pattern/StackPatternConverter.class,
     	        ${stem}/DUMMY.java"
     	>
       <manifest>
