@@ -27,6 +27,7 @@ import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.RepositorySelector;
 import org.apache.log4j.spi.RootLogger;
+import org.apache.ugli.impl.SimpleLoggerFA;
 
 import java.util.Enumeration;
 
@@ -44,7 +45,14 @@ public class LogManager {
   private static Object guard = null;
   private static RepositorySelector repositorySelector;
   private static Scheduler schedulerInstance = null;
-  
+
+  /**
+   * Log4j components resort to this instance of {@link SimpleLoggerFA} in case 
+   * an appropriate LoggerRepository was not set or could not be found. It is
+   * used only in exceptional cases.
+   */
+  public final static SimpleLoggerFA  SIMPLE_LOGGER_FA = new SimpleLoggerFA();
+
   static {
     //System.out.println("**Start of LogManager static initializer");
     Hierarchy defaultHierarchy = new Hierarchy(new RootLogger(Level.DEBUG));
@@ -88,9 +96,6 @@ public class LogManager {
       repositorySelector.setDefaultRepository(defaultHierarchy);
     }
     
-    // configure log4j internal logging for the default hierarchy
-    IntializationUtil.log4jInternalConfiguration(defaultHierarchy);
-
     //  Attempt to perform automatic configuration of the default hierarchy
     String configuratorClassName =
       OptionConverter.getSystemProperty(
@@ -108,7 +113,7 @@ public class LogManager {
       }
     }
 
-    //System.out.println("*** configurationOptionStr=" + configurationOptionStr);
+    System.out.println("*** configurationOptionStr=" + configurationOptionStr);
 
     IntializationUtil.initialConfiguration(
       defaultHierarchy, configurationOptionStr, configuratorClassName);
