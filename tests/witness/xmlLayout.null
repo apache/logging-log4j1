@@ -10,9 +10,6 @@
 <log4j:message><![CDATA[hi]]></log4j:message>
 <log4j:throwable><![CDATA[java.lang.Exception
 	at org.apache.log4j.xml.XMLLayoutTestCase.testNull(X)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(X)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(X)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(X)
 	at java.lang.reflect.Method.invoke(X)
 	at junit.framework.TestCase.runTest(X)
 	at junit.framework.TestCase.runBare(X)
