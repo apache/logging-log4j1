@@ -10,7 +10,7 @@ public class VFSPluginPreferenceModel {
 //    Some of these preferences might need to be VFS Repository specific
     
     private boolean loadAllRootsOnStart = true;
-    private int previewSize;
+    private int previewSize = 50;
     
 	/**
 	 * @return Returns the loadAllRootsOnStart.
