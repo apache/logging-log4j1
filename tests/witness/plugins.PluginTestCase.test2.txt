@@ -1,0 +1,63 @@
+INFO - test 2.1 - starting plugins in multiple repositories
+INFO - starting plugin1-id1 in repository1
+DEBUG - plugin plugin1-id1 is inactive
+DEBUG - plugin plugin1-id1 activated
+INFO - returned plugin is plugin1-id1 in repository1
+INFO - starting plugin2-id2 in repository2
+DEBUG - plugin plugin2-id2 is inactive
+DEBUG - plugin plugin2-id2 activated
+INFO - returned plugin is plugin2-id2 in repository2
+INFO - test 2.2 - stopping plugins in multiple repositories
+INFO - stopping plugin1-id1 in repository1
+DEBUG - plugin plugin1-id1 shutdown
+INFO - returned plugin is plugin1-id1 in repository1
+INFO - stopping plugin2-id2 in repository2
+DEBUG - plugin plugin2-id2 shutdown
+INFO - returned plugin is plugin2-id2 in repository2
+INFO - test 2.3 - restarting plugins in different repositories
+INFO - starting plugin1-id1 in repository2
+DEBUG - plugin plugin1-id1 is inactive
+DEBUG - plugin plugin1-id1 activated
+INFO - returned plugin is plugin1-id1 in repository2
+INFO - starting plugin2-id2 in repository1
+DEBUG - plugin plugin2-id2 is inactive
+DEBUG - plugin plugin2-id2 activated
+INFO - returned plugin is plugin2-id2 in repository1
+INFO - test 2.4 - stopping plugins using stopAll
+INFO - stopping all plugins in repository1
+DEBUG - plugin plugin2-id2 shutdown
+INFO - stopping all plugins in repository2
+DEBUG - plugin plugin1-id1 shutdown
+INFO - test 2.5 - starting a plugin already active in another repository
+INFO - starting plugin1-id1 in repository1
+DEBUG - plugin plugin1-id1 is inactive
+DEBUG - plugin plugin1-id1 activated
+INFO - returned plugin is plugin1-id1 in repository1
+INFO - starting plugin2-id2 in repository2
+DEBUG - plugin plugin2-id2 is inactive
+DEBUG - plugin plugin2-id2 activated
+INFO - returned plugin is plugin2-id2 in repository2
+INFO - restarting plugin1-id1 in repository2
+DEBUG - plugin plugin1-id1 is active
+INFO - returned plugin is plugin1-id1 in repository1
+INFO - restarting plugin2-id2 in repository1
+DEBUG - plugin plugin2-id2 is active
+INFO - returned plugin is plugin2-id2 in repository2
+INFO - test 2.6 - handle repository reset
+INFO - resetting repository1
+DEBUG - plugin plugin1-id1 shutdown
+INFO - resetting repository2
+DEBUG - plugin plugin2-id2 shutdown
+INFO - test 2.7 - handle repository shutdown
+INFO - starting plugin1-id1 in repository1
+DEBUG - plugin plugin1-id1 is inactive
+DEBUG - plugin plugin1-id1 activated
+INFO - returned plugin is plugin1-id1 in repository1
+INFO - starting plugin2-id2 in repository2
+DEBUG - plugin plugin2-id2 is inactive
+DEBUG - plugin plugin2-id2 activated
+INFO - returned plugin is plugin2-id2 in repository2
+INFO - shutting down repository1
+DEBUG - plugin plugin1-id1 shutdown
+INFO - shutting down repository2
+DEBUG - plugin plugin2-id2 shutdown
