@@ -1830,7 +1830,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
         dockToggleScrollToBottomAction.putValue(Action.SHORT_DESCRIPTION, "Toggles Scroll to Bottom");
         dockToggleScrollToBottomAction.putValue("enabled", Boolean.TRUE);
         dockToggleScrollToBottomAction.putValue(
-          Action.SMALL_ICON, new ImageIcon(ChainsawIcons.DOWN));
+          Action.SMALL_ICON, new ImageIcon(ChainsawIcons.SCROLL_TO_BOTTOM));
 
       final SmallToggleButton toggleScrollToBottomButton =
         new SmallToggleButton(dockToggleScrollToBottomAction);
