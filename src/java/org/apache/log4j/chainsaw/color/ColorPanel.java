@@ -84,6 +84,7 @@ import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
+import javax.swing.ListSelectionModel;
 import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 import javax.swing.event.ListSelectionEvent;
@@ -151,6 +152,7 @@ public class ColorPanel extends JPanel {
 
     table.setToolTipText("Click to edit");
     table.setRowHeight(20);
+    table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     table.setColumnSelectionAllowed(false);
 
     table.setPreferredScrollableViewportSize(new Dimension(400, 200));
