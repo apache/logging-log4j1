@@ -36,6 +36,11 @@
    deprecated methods. They have become totally redundant after we
    moved to JavaBeans style configuration in log4j 1.1.
 
+ - Added supports java.io.Reader objects in the method doConfigure(),
+   instead of only InputStream. Thanks to Mark Womack for submitting
+   the relevant patch. [*]
+
+
  June 19, 2001
 
  - Release of version 1.1.3

@@ -33,11 +33,14 @@ import org.apache.log4j.helpers.Loader;
 import org.xml.sax.InputSource;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.Reader;
 import java.io.IOException;
 import java.net.URL;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.FactoryConfigurationError;
+
+// Contributors:   Mark Womack <mwomack@bevocal.com> 
 
 
 /**
@@ -594,6 +597,28 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
   public
   void doConfigure(InputStream inputStream, Hierarchy hierarchy) 
                                           throws FactoryConfigurationError {
+    doConfigure(new InputSource(inputStream), hierarchy);
+  }
+
+  /**
+     Configure log4j by reading in a log4j.dtd compliant XML
+     configuration file.
+
+  */
+  public
+  void doConfigure(Reader reader, Hierarchy hierarchy) 
+                                          throws FactoryConfigurationError {
+    doConfigure(new InputSource(reader), hierarchy);
+  }
+
+  /**
+     Configure log4j by reading in a log4j.dtd compliant XML
+     configuration file.
+
+  */
+  protected
+  void doConfigure(InputSource inputSource, Hierarchy hierarchy) 
+                                          throws FactoryConfigurationError {
     DocumentBuilderFactory dbf = null;
     try { 
       LogLog.debug("System property is :"+
@@ -616,7 +641,6 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
       DocumentBuilder docBuilder = dbf.newDocumentBuilder();
       //docBuilder.setErrorHandler(new ReportParserError());
 
-      InputSource inputSource = new InputSource(inputStream);
       Class clazz = this.getClass();
       URL dtdURL = clazz.getResource("/org/apache/log4j/xml/log4j.dtd");
       if(dtdURL == null) {
@@ -631,7 +655,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
       parse(doc.getDocumentElement(), hierarchy);
     } catch (Exception e) {
       // I know this is miserable...
-      LogLog.error("Could not parse input stream ["+inputStream+"].", e);
+      LogLog.error("Could not parse input source ["+inputSource+"].", e);
     }
   }
 
