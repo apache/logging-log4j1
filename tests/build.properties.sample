@@ -2,8 +2,9 @@ deprecation=on
 
 jakarta.oro.jar=../../jakarta-oro-2.0.5/jakarta-oro-2.0.5.jar
 
-
-# junit must be on the classpath or in ANT_HOME/lib. It can't  be
+# Junit test cases
+# ================
+# junit.jar must be on the classpath or in ANT_HOME/lib. It can't  be
 # handled as a property.
 
 
@@ -21,4 +22,5 @@ jakarta.oro.jar=../../jakarta-oro-2.0.5/jakarta-oro-2.0.5.jar
 # Click on "Download JNDI 1.2.1 & More"     
 #
 # Once you obtained the JNDI File System Service Provider place 
-# the file fscontext.jar in the ./tests/lib/ directory.
+# the files fscontext.jar and providerutil.jar in the ./tests/lib/ 
+# directory.

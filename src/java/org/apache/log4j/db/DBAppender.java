@@ -17,11 +17,10 @@
 package org.apache.log4j.db;
 
 import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.db.dialect.MySQLDialect;
-import org.apache.log4j.db.dialect.OracleDialect;
-import org.apache.log4j.db.dialect.PostgreSQLDialect;
 import org.apache.log4j.db.dialect.SQLDialect;
+import org.apache.log4j.db.dialect.Util;
 import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
 
 import java.sql.Connection;
@@ -42,6 +41,7 @@ import java.util.Set;
 public class DBAppender extends AppenderSkeleton {
   ConnectionSource connectionSource;
   SQLDialect sqlDialect;
+  boolean locationInfo = false;
 
   public void activateOptions() {
     LogLog.debug("DBAppender.activateOptions called");
@@ -51,20 +51,9 @@ public class DBAppender extends AppenderSkeleton {
         "DBAppender cannot function without a connection source");
     }
 
-    switch (connectionSource.getSQLDialect()) {
-    case ConnectionSource.POSTGRES_DIALECT:
-      sqlDialect = new PostgreSQLDialect();
+    sqlDialect = Util.getDialectFromCode(connectionSource.getSQLDialectCode());
 
-      break;
-    case ConnectionSource.MYSQL_DIALECT:
-      sqlDialect = new MySQLDialect();
-
-      break;
-    case ConnectionSource.ORACLE_DIALECT:
-      sqlDialect = new OracleDialect();
-
-      break;
-    default:
+    if (sqlDialect == null) {
       throw new IllegalStateException(
         "DBAppender cannot function without a determined SQL dialect");
     }
@@ -101,10 +90,21 @@ public class DBAppender extends AppenderSkeleton {
       //      id                INT NOT NULL AUTO_INCREMENT PRIMARY KEY
       StringBuffer sql = new StringBuffer();
       sql.append("INSERT INTO logging_event (");
-      sql.append("sequence_number, timestamp, rendered_message, ");
-      sql.append(
-        "logger_name, level_string, ndc, thread_name, reference_flag) ");
-      sql.append(" VALUES (?, ?, ? ,?, ?, ?, ?, ?)");
+      sql.append("sequence_number, ");
+      sql.append("timestamp, ");
+      sql.append("rendered_message, ");
+      sql.append("logger_name, ");
+      sql.append("level_string, ");
+      sql.append("ndc, ");
+      sql.append("thread_name, ");
+      sql.append("reference_flag, ");
+      sql.append("caller_filename, ");
+      sql.append("caller_class, ");
+      sql.append("caller_method, ");
+      sql.append("caller_line) ");
+
+      sql.append(" VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
 
       PreparedStatement insertStatement =
         connection.prepareStatement(sql.toString());
@@ -116,6 +116,19 @@ public class DBAppender extends AppenderSkeleton {
       insertStatement.setString(6, event.getNDC());
       insertStatement.setString(7, event.getThreadName());
       insertStatement.setShort(8, DBHelper.computeReferenceMask(event));
+
+      LocationInfo li;
+
+      if (event.locationInformationExists() || locationInfo) {
+        li = event.getLocationInformation();
+      } else {
+        li = LocationInfo.NA_LOCATION_INFO;
+      }
+
+      insertStatement.setString(9, li.getFileName());
+      insertStatement.setString(10, li.getClassName());
+      insertStatement.setString(11, li.getMethodName());
+      insertStatement.setString(12, li.getLineNumber());
 
       int updateCount = insertStatement.executeUpdate();
 
@@ -197,5 +210,22 @@ public class DBAppender extends AppenderSkeleton {
    */
   public boolean requiresLayout() {
     return false;
+  }
+
+  /**
+   * Returns value of the <b>LocationInfo</b> property which determines whether
+   * caller's location info is written to the database.
+   * */
+  public boolean getLocationInfo() {
+    return locationInfo;
+  }
+
+  /**
+   * If true, the information written to the database will include
+   * caller's location information. Due to performance concerns, by default no
+   * location information is written to the database.
+   * */
+  public void setLocationInfo(boolean locationInfo) {
+    this.locationInfo = locationInfo;
   }
 }

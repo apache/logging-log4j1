@@ -16,16 +16,16 @@
 
 package org.apache.log4j.db.dialect;
 
+import org.apache.log4j.db.ConnectionSource;
+import org.apache.log4j.helpers.LogLog;
+
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 
-import org.apache.log4j.db.ConnectionSource;
-import org.apache.log4j.helpers.LogLog;
-
 
 /**
- * 
+ *
  * @author Ceki Gulcu
  *
  */
@@ -33,20 +33,19 @@ public class Util {
   private static final String POSTGRES_PART = "postgresql";
   private static final String MYSQL_PART = "mysql";
   private static final String ORACLE_PART = "oracle";
-  private static final String MSSQL_PART = "mssqlserver4"; 
-  
-  
-  static public int discoverSQLDialect(Connection connection ) {
+  private static final String MSSQL_PART = "mssqlserver4";
+
+  public static int discoverSQLDialect(Connection connection) {
     int dialectCode = 0;
 
     try {
-      
       DatabaseMetaData meta = connection.getMetaData();
       String dbName = meta.getDatabaseProductName().toLowerCase();
       LogLog.debug("**db name is " + dbName);
 
       if (dbName.indexOf(POSTGRES_PART) != -1) {
-        LogLog.debug("POSTGRESQL dialect selected"); 
+        LogLog.debug("POSTGRESQL dialect selected");
+
         return ConnectionSource.POSTGRES_DIALECT;
       } else if (dbName.indexOf(MYSQL_PART) != -1) {
         return ConnectionSource.MYSQL_DIALECT;
@@ -62,5 +61,33 @@ public class Util {
     }
 
     return dialectCode;
+  }
+
+  public static SQLDialect getDialectFromCode(int dialectCode) {
+    SQLDialect sqlDialect = null;
+
+    switch (dialectCode) {
+    case ConnectionSource.POSTGRES_DIALECT:
+      sqlDialect = new PostgreSQLDialect();
+
+      break;
+    case ConnectionSource.MYSQL_DIALECT:
+      sqlDialect = new MySQLDialect();
+
+      break;
+    case ConnectionSource.ORACLE_DIALECT:
+      sqlDialect = new OracleDialect();
+
+      break;
+    case ConnectionSource.MSSQL_DIALECT:
+      sqlDialect = new MsSQLDialect();
+
+      break;
+    case ConnectionSource.HSQLDB_DIALECT:
+      sqlDialect = new HSQLDBDialect();
+
+      break;
+    }
+    return sqlDialect;
   }
 }

@@ -31,14 +31,23 @@ import org.apache.log4j.VectorAppender;
 import org.apache.log4j.helpers.IntializationUtil;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.joran.JoranConfigurator;
+import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.RootLogger;
 
 
 /**
- * @author Ceki G&uuml;lc&uuml;
- *
+ * This test case writes a few events into a databases and reads them
+ * back comparing the event written and read back.
+ * 
+ * <p>It relies heavily on the proper configuration of its environment
+ * in joran config files as well system properties.
+ * </p>
+ * 
+ * <p>See also the Ant build file in the tests/ directory.</p> 
+ * 
+ * @author Ceki G&uuml;lc&uuml
  */
 public class FullCycleDBTest
        extends TestCase {
@@ -116,32 +125,6 @@ public class FullCycleDBTest
     readBack(readConfigFile, startTime);
 
   }
-//
-//  public void testDataSource()
-//         throws Exception {
-//
-//    LogLog.setInternalDebugging(true);
-//    JoranConfigurator jc1 = new JoranConfigurator();
-//    jc1.doConfigure("input/db/append-with-datasource1.xml", lrWrite);
-//  
-//    
-//    long startTime = System.currentTimeMillis();
-//    LogLog.info("startTime is  "+startTime);
-//    
-//    // Write out just one log message
-//    Logger out = lrWrite.getLogger("testSingleOutput.out");
-//    out.debug("some message"+startTime);
-//
-//    VectorAppender witnessAppender = (VectorAppender) lrWrite.getRootLogger().getAppender("VECTOR");
-//    witnessEvents = witnessAppender.getVector();
-//    assertEquals(1, witnessEvents.size());    
-//    
-//    LogLog.info("----------------------------------------------");
-//    // now read it back
-//    readBack("input/db/read-with-datasource1.xml", startTime);
-//  }
-  
-
 
   /**
    * This test starts by writing a single event to a DB using DBAppender
@@ -187,7 +170,6 @@ public class FullCycleDBTest
 
 
   void readBack(String configfile, long startTime) {
-    // now read it back
     JoranConfigurator jc2 = new JoranConfigurator();
     jc2.doConfigure(configfile, lrRead);
     
@@ -224,6 +206,7 @@ public class FullCycleDBTest
         assertEquals(le.getProperties(), re.getProperties());
       }
       comprareStringArrays( le.getThrowableStrRep(),  re.getThrowableStrRep());
+      compareLocationInfo(le, re);
     } 
   }
   
@@ -237,7 +220,14 @@ public class FullCycleDBTest
     }
   }
   
-
+  void compareLocationInfo(LoggingEvent l, LoggingEvent r) {
+    if(l.locationInformationExists()) {
+      assertEquals(l.getLocationInformation(), r.getLocationInformation());
+    } else {
+      assertEquals(LocationInfo.NA_LOCATION_INFO, r.getLocationInformation());
+    }
+  }
+  
   Vector getRelevantEventsFromVA(VectorAppender va, long startTime) {
     assertNotNull(va);
     Vector v = va.getVector();
@@ -254,29 +244,11 @@ public class FullCycleDBTest
     }
     return r;
   }
-  
-  
-//  public void xtestJNDI()
-//         throws Exception {
-//    Hashtable env = new Hashtable();
-//
-//    env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.fscontext.RefFSContextFactory");
-//    env.put(Context.PROVIDER_URL, "file:///home/jndi");
-//
-//    Context ctx = new InitialContext(env);
-//
-//    //ctx.addToEnvironment("toto", new Integer(1));
-//    ctx.bind("toto", new Integer(1));
-//  }
-  
-  public static Test suite() {
+
+  public static Test XXsuite() {
     TestSuite suite = new TestSuite();
-    //suite.addTest(new FullCycleDBTest("test1"));
     suite.addTest(new FullCycleDBTest("testSingleOutput"));
-    //suite.addTest(new FullCycleDBTest("testAllFields"));
-    //suite.addTest(new FullCycleDBTest("testDataSource"));
-
-
+    suite.addTest(new FullCycleDBTest("testAllFields"));
     return suite;
   }
 }

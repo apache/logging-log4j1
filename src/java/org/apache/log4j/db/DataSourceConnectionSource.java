@@ -84,7 +84,7 @@ public class DataSourceConnectionSource extends ConnectionSourceSkeleton {
     this.dataSource = dataSource;
   }
 
-  public int getSQLDialect() {
+  public int getSQLDialectCode() {
     return dialectCode;
   }
 }

@@ -71,6 +71,7 @@ public class DriverManagerConnectionSource
   static private final String MYSQL_PART = "mysql";
   static private final String ORACLE_PART = "oracle";
   static private final String MSSQL_PART = "mssql"; 
+  static private final String HSQLDB_PART = "hsqldb"; 
   
   private String driverClass = null;
   protected String url = null;
@@ -141,7 +142,7 @@ public class DriverManagerConnectionSource
   }
 
 
-  public int getSQLDialect() {
+  public int getSQLDialectCode() {
     int dialectCode = 0;
 
     if (url == null) {
@@ -156,6 +157,8 @@ public class DriverManagerConnectionSource
       return ConnectionSource.ORACLE_DIALECT;
     } else if (url.indexOf(MSSQL_PART) != -1) {
       return ConnectionSource.MSSQL_DIALECT;
+    } else if (url.indexOf(HSQLDB_PART) != -1) {
+      return ConnectionSource.HSQLDB_DIALECT;
     } else {
       return ConnectionSource.UNKNOWN_DIALECT;
     }

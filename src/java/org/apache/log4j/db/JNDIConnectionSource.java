@@ -17,7 +17,6 @@ package org.apache.log4j.db;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Hashtable;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -146,22 +145,14 @@ public class JNDIConnectionSource
   }
 
 
-  public int getSQLDialect() {
+  public int getSQLDialectCode() {
     return dialectCode;
   }
   
   private DataSource lookupDataSource()
          throws NamingException, SQLException {
     DataSource ds;
-
-    Hashtable env = new Hashtable(11);
-//    env.put(Context.INITIAL_CONTEXT_FACTORY,
-//            "com.sun.jndi.fscontext.RefFSContextFactory");
-//    env.put(Context.PROVIDER_URL,
-//            "file:///home/jndi");
     Context ctx = new InitialContext();
-    
-    //Context ctx = new InitialContext();
     Object obj = ctx.lookup(jndiLocation);
     ds = (DataSource)PortableRemoteObject.narrow(obj, DataSource.class);
 
