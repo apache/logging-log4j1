@@ -137,9 +137,9 @@ public final class CachedDateFormatTest
   }
 
   public void test4() {
-    //   subsequent calls within one minute
-    //     are optimized to reuse previous formatted value
-    //     make a couple of nearly spaced calls
+    //  subsequent calls within one minute are optimized to reuse previous 
+    //  formatted value. make a couple of nearly spaced calls
+    // (Note: 'Z' is JDK 1.4, using 'z' instead.)
     SimpleDateFormat baseFormat =
          new SimpleDateFormat("EEE, MMM dd, HH:mm:ss.SSS z", Locale.ENGLISH);
     DateFormat cachedFormat = new CachedDateFormat(baseFormat, 1000);
@@ -164,9 +164,10 @@ public final class CachedDateFormatTest
     //   subsequent calls within one minute
     //     are optimized to reuse previous formatted value
     //     make a couple of nearly spaced calls
+    // (Note: 'Z' is JDK 1.4, using 'z' instead.)
     Locale thai = new Locale("th", "TH");
     SimpleDateFormat baseFormat =
-         new SimpleDateFormat("EEE, MMM dd, HH:mm:ss.SSS Z", thai);
+         new SimpleDateFormat("EEE, MMM dd, HH:mm:ss.SSS z", thai);
     DateFormat cachedFormat = new CachedDateFormat(baseFormat, 1000);
     //
     // use a date in the year 2000 CE to attempt to confuse the millisecond locator
@@ -227,6 +228,7 @@ public final class CachedDateFormatTest
    * Test of caching when less than three millisecond digits are specified.
    */
   public void test9() {
+    // (Note: 'Z' is JDK 1.4, using 'z' instead.)
     DateFormat baseFormat = new SimpleDateFormat("yyyy-MMMM-dd HH:mm:ss,SS z", Locale.US);
     DateFormat cachedFormat = new CachedDateFormat(baseFormat, 1000);
     TimeZone cet = TimeZone.getTimeZone("GMT+1");
