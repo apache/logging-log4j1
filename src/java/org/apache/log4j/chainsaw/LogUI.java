@@ -1784,4 +1784,15 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   {
     return applicationPreferenceModel;
   }
+  /* (non-Javadoc)
+   * @see java.awt.Window#processWindowEvent(java.awt.event.WindowEvent)
+   */
+  protected void processWindowEvent(WindowEvent e) {
+    
+    if(e.getID() == WindowEvent.WINDOW_CLOSING) {
+      exit();
+      return;
+    }
+    super.processWindowEvent(e);
+  }
 }
