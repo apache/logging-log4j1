@@ -32,7 +32,8 @@ public class Util {
   private static final String POSTGRES_PART = "postgresql";
   private static final String MYSQL_PART = "mysql";
   private static final String ORACLE_PART = "oracle";
-  private static final String MSSQL_PART = "mssqlserver4";
+  //private static final String MSSQL_PART = "mssqlserver4";
+  private static final String MSSQL_PART = "microsoft sql server";
   private static final String HSQL_PART = "hsql";
   
   public static int discoverSQLDialect(DatabaseMetaData meta) {
@@ -44,8 +45,6 @@ public class Util {
       LogLog.debug("**db name is " + dbName);
 
       if (dbName.indexOf(POSTGRES_PART) != -1) {
-        LogLog.debug("POSTGRESQL dialect selected");
-
         return ConnectionSource.POSTGRES_DIALECT;
       } else if (dbName.indexOf(MYSQL_PART) != -1) {
         return ConnectionSource.MYSQL_DIALECT;
