@@ -33,6 +33,8 @@ import java.util.HashMap;
 public class AppenderRefAction extends Action {
   static final Logger logger = Logger.getLogger(AppenderRefAction.class);
 
+  boolean inError = false;
+  
   public void begin(
     ExecutionContext ec, String tagName, Attributes attributes) {
     // Let us forget about previous errors (in this object)

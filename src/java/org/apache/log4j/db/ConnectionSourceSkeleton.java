@@ -2,7 +2,6 @@ package org.apache.log4j.db;
 
 import org.apache.log4j.spi.ErrorHandler;
 
-
 /**
  * @author Ceki G&uuml;lc&uuml;
  */

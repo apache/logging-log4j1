@@ -3,9 +3,11 @@
 #
 # It is intended for PostgreSQL databases.
 
-DROP TABLE    mdc;
-DROP TABLE    logging_event;
+DROP TABLE    logging_event_property;
+DROP TABLE    logging_event_exception;
 DROP SEQUENCE logging_event_id_seq;
+DROP TABLE    logging_event;
+
 
 CREATE SEQUENCE logging_event_id_seq MINVALUE 1 START 1;
 
@@ -29,7 +31,7 @@ CREATE TABLE logging_event_property
     mapped_key        VARCHAR(254) NOT NULL,
     mapped_value      VARCHAR(1024),
     PRIMARY KEY(event_id, mapped_key),
-    FOREIGN KEY (event_id) REFERENCES logging_event(id)
+    FOREIGN KEY (event_id) REFERENCES logging_event(event_id)
   );
 
 CREATE TABLE logging_event_exception
@@ -38,5 +40,5 @@ CREATE TABLE logging_event_exception
     i                SMALLINT NOT NULL,
     trace_line       VARCHAR(254) NOT NULL,
     PRIMARY KEY(event_id, i),
-    FOREIGN KEY (event_id) REFERENCES logging_event(id)
+    FOREIGN KEY (event_id) REFERENCES logging_event(event_id)
   );

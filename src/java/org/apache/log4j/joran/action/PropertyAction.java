@@ -79,6 +79,8 @@ abstract public class PropertyAction extends Action {
       !(Option.isEmpty(name) || Option.isEmpty(value))
         && Option.isEmpty(fileName)) {
       value = OptionConverter.convertSpecialChars(value);
+      // now remove both leading and trailing spaces
+      value = value.trim();
       setProperty(ec, name, value);
     } else {
       LogLog.error(INVALID_ATTRIBUTES);

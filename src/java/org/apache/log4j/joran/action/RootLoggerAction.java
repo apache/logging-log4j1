@@ -32,7 +32,8 @@ public class RootLoggerAction extends Action {
   static final Class[] ONE_STRING_PARAM = new Class[] { String.class };
   Logger logger = Logger.getLogger(RootLoggerAction.class);
   Logger root;
-
+  boolean inError = false;
+  
   public void begin(ExecutionContext ec, String name, Attributes attributes) {
     inError = false;
     logger.debug("In begin method");

@@ -1,0 +1,27 @@
+# If you would like to test DBAppender/DBReceiver with PostgreSQL, then
+# set the url and user parameters for your local environment and
+# copy this file to "postgresql.properties".
+
+# The JDBC driver class for PostgreSQL
+driverClass=org.postgresql.Driver
+
+# The DataSource class for PostgreSQL
+dataSourceClass=org.postgresql.jdbc2.optional.SimpleDataSource
+
+
+
+# =======================================================
+# The following parameters should be set for your machine.
+# =======================================================
+
+# you need to set both the url and serverName and databaseName
+# this is redundant but allows the same properties file to be used
+# in different config files
+url=jdbc:postgresql://gil/test
+serverName=gil
+databaseName=test
+
+
+user=pg
+password=pg
+

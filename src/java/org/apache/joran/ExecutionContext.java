@@ -114,12 +114,17 @@ public class ExecutionContext {
    * If the property exists already, it is overwritten.
    */
   public void addProperty(String key, String value) {
+    if(key == null || value == null) {
+      return;
+    }
     if (substitutionProperties.contains(key)) {
       LogLog.warn(
         "key [" + key
         + "] already contained in the EC properties. Overwriting.");
     }
 
+    // values with leading or trailing spaces are bad. We remove them now.
+    value = value.trim();
     substitutionProperties.put(key, value);
   }
 
@@ -136,6 +141,9 @@ public class ExecutionContext {
   }
 
   public String subst(String value) {
+    if(value == null) {
+      return null;
+    }
     try {
       return OptionConverter.substVars(value, substitutionProperties);
     } catch (IllegalArgumentException e) {

@@ -33,7 +33,8 @@ import java.lang.reflect.Method;
 
 public class LoggerAction extends Action {
   Logger logger = Logger.getLogger(LoggerAction.class);
-
+  boolean inError = false;
+  
   public void begin(ExecutionContext ec, String name, Attributes attributes) {
     // Let us forget about previous errors (in this object)
     inError = false;

@@ -6,7 +6,7 @@
 <!-- ================================================================= -->
 <!-- NOTE: all directories are relative to jakarta-log4j/tests         -->
 <!-- ================================================================= -->
-<project name="log4j" default="usage" basedir="." >
+<project name="log4j-tests" default="usage" basedir="." >
 
   <property file="build.properties"/>
 
@@ -31,8 +31,12 @@
     <pathelement location="./classes"/>
     <pathelement location="./resources"/>
     <pathelement location="${jakarta.oro.jar}"/>
+     <fileset dir="./lib/">
+      <include name="*.jar"/>
+    </fileset>
   </path>
 
+  
   <!-- ================================================================= -->
   <!--                        TARGETS                                    -->
   <!-- ================================================================= -->
@@ -492,9 +496,68 @@
   </target>
   
   
-
   <!-- ================================================================= -->
-  <!-- ========================= Very long Tests ======================= -->
+  <!-- ========================= DB Tests ======================= -->
+  <!-- ================================================================= -->
+
+  <!-- These tests follow the same pattern. They will be run if a property file 
+       defining access as well as necessary class files are available. Otherwise,
+       the test is skipped.
+       --> 
+       
+  <target name="mysqlCheck">
+    <condition property="mysql-present">
+    <and>
+      <available file="./input/db/mysql.properties" />
+      <available classname="com.mysql.jdbc.Driver">
+        <classpath refid="tests.classpath"/>
+      </available>
+    </and>
+    </condition>
+  </target>
+   
+   
+  <target name="mysql" depends="mysqlCheck, build" if="mysql-present">
+    
+    <delete file="./input/db/db.properties"/>
+    <echo message="MySQL available"/>
+    <copy file="./input/db/mysql.properties" tofile="./input/db/db.properties"/>
+    
+    <junit printsummary="yes" fork="no" haltonfailure="yes"> 
+      <sysproperty key="runLen" value="100"/>     
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="false"/>
+      <test name="org.apache.log4j.db.FullCycleDBTest" />
+    </junit>
+  </target>
+
+
+  <target name="postgresqlCheck">
+    <condition property="postgresql-present">
+    <and>
+      <available file="./input/db/postgresql.properties" />
+      <available classname="org.postgresql.Driver">
+        <classpath refid="tests.classpath"/>
+      </available>
+    </and>
+    </condition>
+  </target>
+   
+  <target name="postgresql" depends="postgresqlCheck, build" if="postgresql-present">
+    <delete file="./input/db/db.properties"/>
+    <echo message="PostgreSQL available"/>
+    <copy file="./input/db/postgresql.properties" tofile="./input/db/db.properties"/>
+    
+    <junit printsummary="yes" fork="no" haltonfailure="yes"> 
+      <sysproperty key="runLen" value="100"/>     
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="false"/>
+      <test name="org.apache.log4j.db.FullCycleDBTest" />
+    </junit>
+  </target>
+  
+  <!-- ================================================================= -->
+  <!-- =========================   long Tests  ========================= -->
   <!-- ================================================================= -->
   
  
