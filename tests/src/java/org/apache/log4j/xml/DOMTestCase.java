@@ -44,10 +44,8 @@ public class DOMTestCase extends TestCase {
   }
 
   public void setUp() {
-    System.out.println("===================SETUP======================");
     root = Logger.getRootLogger();
     logger = Logger.getLogger(DOMTestCase.class);
-  
   }
 
   public void test1() throws Exception {

@@ -5,7 +5,7 @@
  * License version 1.1, a copy of which has been included with this
  * distribution in the LICENSE.txt file.  */
 
-package org.apache.log4j.test;
+package org.apache.log4j;
 
 import org.apache.log4j.*;
 import org.apache.log4j.spi.*;
@@ -23,7 +23,7 @@ import java.util.Locale;
    @author Ceki G&uuml;lc&uuml;
 
 */
-public class UnitTestLogger extends TestCase {
+public class LoggerTestCase extends TestCase {
 
   Logger logger;
   Appender a1;
@@ -37,7 +37,7 @@ public class UnitTestLogger extends TestCase {
   static String MSG = "M";
   
 
-  public UnitTestLogger(String name) {
+  public LoggerTestCase(String name) {
     super(name);
   }
 
@@ -327,17 +327,17 @@ public class UnitTestLogger extends TestCase {
   static
   Test suite() {
     TestSuite suite = new TestSuite();
-    suite.addTest(new UnitTestLogger("testAppender1"));
-    suite.addTest(new UnitTestLogger("testAppender2"));
-    suite.addTest(new UnitTestLogger("testAdditivity1"));        
-    suite.addTest(new UnitTestLogger("testAdditivity2"));        
-    suite.addTest(new UnitTestLogger("testAdditivity3"));        
-    suite.addTest(new UnitTestLogger("testDisable1"));        
-    suite.addTest(new UnitTestLogger("testRB1"));        
-    suite.addTest(new UnitTestLogger("testRB2"));        
-    suite.addTest(new UnitTestLogger("testRB3"));        
-    suite.addTest(new UnitTestLogger("testExists"));        
-    suite.addTest(new UnitTestLogger("testHierarchy1"));        
+    suite.addTest(new LoggerTestCase("testAppender1"));
+    suite.addTest(new LoggerTestCase("testAppender2"));
+    suite.addTest(new LoggerTestCase("testAdditivity1"));        
+    suite.addTest(new LoggerTestCase("testAdditivity2"));        
+    suite.addTest(new LoggerTestCase("testAdditivity3"));        
+    suite.addTest(new LoggerTestCase("testDisable1"));        
+    suite.addTest(new LoggerTestCase("testRB1"));        
+    suite.addTest(new LoggerTestCase("testRB2"));        
+    suite.addTest(new LoggerTestCase("testRB3"));        
+    suite.addTest(new LoggerTestCase("testExists"));        
+    suite.addTest(new LoggerTestCase("testHierarchy1"));        
     return suite;
   }
 

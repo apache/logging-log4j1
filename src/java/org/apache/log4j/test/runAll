@@ -5,8 +5,6 @@
 
 deleteFile log4j.properties
 
-./minreg simple || die "minreg simple FAILED.";
-./minreg ttcc || die "minreg ttcc FAILED.";
 ./shallow || die "shallow test FAILED."
 ./defaultInit || die "defaultInit test FAILED."
 ./propConfig || die "propConfig test FAILED."
@@ -20,6 +18,4 @@ deleteFile log4j.properties
 ./mycat || die "mycat test FAILED."
 ./l7d || die "L7D test FAILED."
 ./fqcn || die "FQCN test FAILED."
-./extSupport || die "Extension support test FAILED."
-
-./unitTest || die "unit test FAILED."
+#./extSupport || die "Extension support test FAILED."

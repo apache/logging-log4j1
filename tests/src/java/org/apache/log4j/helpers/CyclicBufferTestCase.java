@@ -3,7 +3,7 @@
  *
  * This software is published under the terms of the Apache Software
  * License version 1.1, a copy of which has been included with this
- * distribution in the LICENSE.APL file.  */
+ * distribution in the LICENSE.txt file.  */
 
 //
 // Log4j uses the JUnit framework for internal unit testing. JUnit
@@ -12,7 +12,7 @@
 //     http://www.junit.org
 
 
-package org.apache.log4j.test;
+package org.apache.log4j.helpers;
 
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.Category;
@@ -27,12 +27,10 @@ import junit.framework.Test;
 /**
    Unit test the {@link CyclicBuffer}.
 
-   @author Ceki G&uuml;lc&uuml;</a> 
+   @author Ceki G&uuml;lc&uuml;
 
-
-   @since 0.9.0
 */
-public class UnitTestCyclicBuffer extends TestCase {
+public class CyclicBufferTestCase extends TestCase {
 
   static Category cat = Category.getInstance("x");
 
@@ -47,7 +45,7 @@ public class UnitTestCyclicBuffer extends TestCase {
   }
 
 
-  public UnitTestCyclicBuffer(String name) {
+  public CyclicBufferTestCase(String name) {
     super(name);
   }
 
@@ -153,9 +151,9 @@ public class UnitTestCyclicBuffer extends TestCase {
   static
   Test suite() {
     TestSuite suite = new TestSuite();
-    suite.addTest(new UnitTestCyclicBuffer("test0"));
-    suite.addTest(new UnitTestCyclicBuffer("test1"));
-    suite.addTest(new UnitTestCyclicBuffer("testResize"));
+    suite.addTest(new CyclicBufferTestCase("test0"));
+    suite.addTest(new CyclicBufferTestCase("test1"));
+    suite.addTest(new CyclicBufferTestCase("testResize"));
     return suite;
   }
 }
