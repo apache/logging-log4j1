@@ -162,15 +162,18 @@ public class OptionConverter {
      character is present, then the default {@link org.apache.log4j.Priority}
      class is used to process the priority value.  
 
-     <p> If any error occurs while converting the value to a priority,
-     the dflt value (which may be null) is returned.  
+     <p>As a special case, if the <code>value</code> parameter is
+     equal to the string "NULL", then the value <code>null</code> will
+     be returned.
 
-     <p> Case of
-     value is unimportant for the priority level, but is significant
-     for any class name part present.  
+     <p> If any error occurs while converting the value to a priority,
+     the <code>defaultValue</code> parameter, which may be
+     <code>null</code>, is returned.
+
+     <p> Case of <code>value</code> is insignificant for the priority level, but is
+     significant for the class name part, if present.
      
-     @since 1.1
-  */
+     @since 1.1 */
   public
   static
   Priority toPriority(String value, Priority defaultValue) {
@@ -179,14 +182,23 @@ public class OptionConverter {
 
     int hashIndex = value.indexOf('#');
     if (hashIndex == -1) {
-      // no class name specified : use standard Priority class
-      return Priority.toPriority(value, defaultValue);
+      if("NULL".equalsIgnoreCase(value)) {
+	return null;
+      } else {
+	// no class name specified : use standard Priority class
+	return Priority.toPriority(value, defaultValue);
+      }
     }
 
     Priority result = defaultValue;
 
     String clazz = value.substring(hashIndex+1);
     String priorityName = value.substring(0, hashIndex);
+    
+    // This is degenerate case but you never know.
+    if("NULL".equalsIgnoreCase(priorityName)) {
+	return null;
+    }
 
     LogLog.debug("toPriority" + ":class=[" + clazz + "]" 
 		 + ":pri=[" + priorityName + "]");
