@@ -116,7 +116,13 @@
 	</dd>
 
      <!-- ============================================================================== -->	
-	
+	<dt><a href="http://purl.net/jware/antx/"><b>log4Ant</b></a></dt>
+
+	<dd>log4Ant includes a complete bridge to the Log4J logging systemfor a robust build monitoring system. 
+	These Ant components let you capture, map, and send Ant log messages and stdio output through your Log4J installation.  Contact <a href="maito:contact@jware.info">contact@jware.info</a>
+        </dd>
+     <!-- ============================================================================== -->	
+
 	<dt><a href="http://log4j400.sourceforge.net/"><b>log4j400</b></a></dt>
 
 	<dd>Log4J400 includes MessageQueue and DataQueue Appenders for
