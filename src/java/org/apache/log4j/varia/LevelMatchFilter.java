@@ -1,16 +1,27 @@
 /*
- * Copyright (C) The Apache Software Foundation. All rights reserved.
+ * Copyright 1999,2004 The Apache Software Foundation.
  *
- * This software is published under the terms of the Apache Software
- * License version 1.1, a copy of which has been included with this
- * distribution in the LICENSE.txt file.  */
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package org.apache.log4j.varia;
 
 import org.apache.log4j.Level;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.helpers.OptionConverter;
+
 
 /**
    This is a very simple filter based on level matching.
@@ -28,7 +39,6 @@ import org.apache.log4j.helpers.OptionConverter;
 
    @since 1.2 */
 public class LevelMatchFilter extends Filter {
-  
   /**
      Do we return ACCEPT when a match occurs. Default is
      <code>true</code>.  */
@@ -38,27 +48,23 @@ public class LevelMatchFilter extends Filter {
    */
   Level levelToMatch;
 
- 
-  public
-  void setLevelToMatch(String level) {
+  public void setLevelToMatch(String level) {
     levelToMatch = OptionConverter.toLevel(level, null);
+    LogLog.debug("***Level to match set to " + levelToMatch);
   }
-  
-  public
-  String getLevelToMatch() {
-    return levelToMatch == null ? null : levelToMatch.toString();
+
+  public String getLevelToMatch() {
+    return (levelToMatch == null) ? null : levelToMatch.toString();
   }
-  
-  public
-  void setAcceptOnMatch(boolean acceptOnMatch) {
+
+  public void setAcceptOnMatch(boolean acceptOnMatch) {
     this.acceptOnMatch = acceptOnMatch;
   }
-  
-  public
-  boolean getAcceptOnMatch() {
+
+  public boolean getAcceptOnMatch() {
     return acceptOnMatch;
   }
-  
+
 
   /**
      Return the decision of this filter.
@@ -71,22 +77,28 @@ public class LevelMatchFilter extends Filter {
      <b>AcceptOnMatch</b> property is set to false.
 
   */
-  public
-  int decide(LoggingEvent event) {
-    if(this.levelToMatch == null) {
+  public int decide(LoggingEvent event) {
+    if (this.levelToMatch == null) {
       return Filter.NEUTRAL;
     }
-    
-    boolean matchOccured = false;
-    if(this.levelToMatch.equals(event.getLevel())) {
-      matchOccured = true;
-    } 
 
-    if(matchOccured) {  
-      if(this.acceptOnMatch)
-	  return Filter.ACCEPT;
-      else
-	  return Filter.DENY;
+    LogLog.debug(
+      "*** levelToMatch is " + levelToMatch + ", event.level is "
+      + event.getLevel());
+
+    boolean matchOccured = false;
+
+    if (this.levelToMatch.equals(event.getLevel())) {
+      LogLog.debug("**********matchOccured");
+      matchOccured = true;
+    }
+
+    if (matchOccured) {
+      if (this.acceptOnMatch) {
+        return Filter.ACCEPT;
+      } else {
+        return Filter.DENY;
+      }
     } else {
       return Filter.NEUTRAL;
     }

@@ -501,7 +501,7 @@ public class Category implements AppenderAttachable {
   /**
    * @deprecated Please use the the {@link #getEffectiveLevel} method instead.
    */
-  public Priority getChainedPriority() {
+  public Level getChainedPriority() {
     for (Category c = this; c != null; c = c.parent) {
       if (c.level != null) {
         return c.level;
@@ -830,6 +830,13 @@ public class Category implements AppenderAttachable {
   }
 
   /**
+   * @deprecated Use the alternate form taking a parameter of type Level.
+   */
+  public boolean isEnabledFor(Priority level) {
+    return isEnabledFor((Level) level);
+  }
+  
+  /**
    * Check whether this category is enabled for the info Level. See also
    * {@link #isDebugEnabled}.
    *
@@ -899,6 +906,13 @@ public class Category implements AppenderAttachable {
   }
 
   /**
+   * @deprecated Use the form taking in a Level as a parameter.
+   */
+  public void log(Priority level, Object message, Throwable t) {
+    log((Level) level, message, t);
+  }
+  
+  /**
    * This generic form is intended to be used by wrappers.
    */
   public void log(Level level, Object message, Throwable t) {
@@ -912,9 +926,18 @@ public class Category implements AppenderAttachable {
   }
 
   /**
-   * This generic form is intended to be used by wrappers.
+   * @deprecated Use the form taking in a Level as a parameter.
    */
-  public void log(Level level, Object message) {
+  public void log(Priority level, Object message) {
+    log((Level) level, message);
+   }
+  
+  /**
+   * This generic form is intended to be used by wrappers. For the extraction
+   * of caller information, use the most generic form {@link #log(
+    String callerFQCN, Level level, Object message, Throwable t)}.
+   */
+   public void log(Level level, Object message) {
     if (repository.isDisabled(level.level)) {
       return;
     }
@@ -944,6 +967,16 @@ public class Category implements AppenderAttachable {
     }
   }
 
+  /**
+   * @deprecated Use the form taking in a Level as a parameter.
+   */
+  public void log(
+      String callerFQCN, Priority level, Object message, Throwable t) {
+    log(callerFQCN, (Level) level, message, t);
+  }
+  
+
+  
   /**
    * Remove all previously added appenders from this Category instance.
    * <p>Removed appenders are closed.</p>

@@ -223,7 +223,7 @@ public class LayoutDynamicMBean extends AbstractDynamicMBean {
       Object[] o = new Object[1];
 
       Class[] params = mu.writeMethod.getParameterTypes();
-      if(params[0] == org.apache.log4j.Priority.class) {
+      if(params[0] == org.apache.log4j.Level.class) {
 	value = OptionConverter.toLevel((String) value,
 					(Level) getAttribute(name));
       }
