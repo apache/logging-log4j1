@@ -45,7 +45,7 @@
       </pre>
       
       <p>The example above illustrates the typical usage pattern for
-      UGLI. Note the use of parametized log messages on line 15. See
+      UGLI. Note the use of parameterized log messages on line 15. See
       the question <a
       href="http://logging.apache.org/log4j/docs/faq.html#2.3">
       "What is the fastest way of (not) logging?"</a> in the log4j
@@ -62,21 +62,56 @@
         is NOP, Simple, JDK 1.4 logging and log4j, respectively.
         </p>
 
-        <p>Authors of widely-distributed components and librarires may
+        <p>Authors of widely-distributed components and libraries may
         code against the UGLI interface in order to avoid imposing an
         logging API implementation on the end-user.  At deployment
         time, the end-user may choose the desired logging API
         implementation by inserting the corresponding jar file in her
         classpath. This stupid, simple and relatively robust approach
         avoids many of the painful bugs associated with dynamic
-        discovery processes based on fragile classloader hacks.
+        discovery processes based on fragile classloader hacks. Life
+        is too short to be spending it resolving classloader bugs.
         </p>
      
-        <p>Small applications where configuing log4j can be somewhat
+        <p>Small applications where configuring log4j can be somewhat
         of an overkill can drop in <em>ugli-simple.jar</em> in place
         of <em>log4j.jar</em>. 
         </p>
 
+        <h2>Simplicity</h2>
+
+        <p>The UGLI interfaces and their various adapters are
+        extremely simple. Most developers familiar with the Java
+        language should be able to read and fully understand the code
+        in less than one hour.
+        </p>           
+
+        <p>Just as importantly, UGLI does not rely on any
+        classloader tricks. Every variant of
+        <em>ugli-&lt;impl&gt;.jar</em> is hardwired to use one
+        specific implementation.</p>
+
+        
+        <p>The simplicity of the UGLI interfaces and the deployment
+        model make it easy for developers of other logging APIs to
+        easily conform to the UGLI model.
+        </p>
+
+        <h2>Built-in support in log4j</h2>
+
+        <p>The <code>Logger</code> class in log4j directly implements
+        UGLI's <code>ULogger</code> interface. Moreover, log4j makes
+        extensive use of UGLI internally.
+        </p>
+        
+        <p>Log4j's built-in support for UGLI means that the adapter
+        for log4j does not need to wrap log4j objects in order to make
+        them conform to UGLI's <code>ULogger</code> interface. A log4j
+        <code>Logger</code> <em>is</em> a <code>ULogger</code>. Thus,
+        using UGLI in conjunction with log4j involves strictly zero
+        memory overhead and near-zero computational overhead. The
+        computational overhead is so small as to be unobservable.
+        </p>
 
         <h2>Summary</h2>
 
@@ -87,9 +122,29 @@
           </tr>
 
           <tr>
+            <td>Fail-safe operation</td>
+            <td>Assuming the appropriate jar file is available on the
+            classpath, under no circumstances will UGLI cause your
+            application to fail. This is because no UGLI class loaded
+            in memory will <em>ever</em> throw an exception.
+
+            <p>Contrast this with
+            <code>LogConfigurationException</code> thrown by
+            commons-logging which will cause your otherwise
+            functioning application to fail. Commons-logging will
+            throw a <code>LogConfigurationException</code> in case the
+            <a
+            href="http://jakarta.apache.org/commons/logging/api/org/apache/commons/logging/Log.html">Log</a>
+            interface and its dynamically discovered implementation
+            are loaded by different class loaders.
+            </p>
+            </td>
+          </tr>
+
+          <tr>
             <td>Swappable logging API implementations</td>
             <td>The desired logging API can be plugged in at
-            deployment time by insterting the appropriate jar file on
+            deployment time by inserting the appropriate jar file on
             the classpath.
             </td>
           </tr>
@@ -98,65 +153,25 @@
             <td>Adapter implementations for the most popular APIs
             </td>
 
-            <td>UGLI already supports the most popular logging APIs,
-            namely log4j, JDK 1.4 logging, Simple logging and NOP.
+            <td>UGLI supports the most popular logging APIs, namely
+            log4j, JDK 1.4 logging, Simple logging and NOP.
             </td>
           </tr>
 
           <tr>
             <td>Support for parameterized log messages</td>
 
-            <td>UGLI adapters, for all APIs and not just log4j,
-            support parametrized log messages.
-            </td>
+            <td>All UGLI adapters support parameterized log messages.</td>
           </tr>
 
 
           <tr>
-            <td>Built-in support</td>
+            <td>Built-in support in log4j</td>
 
-            <td>Log4j has built-in support for UGLI. Actually, log4j
-            internally makes extensive use of UGLI. The
-            <code>Logger</code> class in log4j directly implements
-            UGLI's <code>ULogger</code> interface. Moreover, all log4j
-            components fallback on <code>SimpleLogger</code>
-            implementation for log messages genereted internally by
-            log4j in case of incorrect configuration.
+            <td>Log4j's built-in support for UGLI directly translates
+            into smaller memory footprint and better CPU efficiency.
             </td>
           </tr>
-
-          <tr>
-            <td>Simplicity</td>
-            <td>
-              <p>The UGLI interfaces and their various adapters are
-              extremely simple. Most developers familiar with the Java
-              language should be able to read and fully understand the
-              code in less than one hour.
-              </p>           
-
-              <p>Just as importantly, UGLI does not rely on any
-              classloader tricks. Every variant of
-              <em>ugli-&lt;impl&gt;.jar</em> is hardwired to use one
-              specific implementation.</p>
-            </td>
-
-            <tr>
-              <td>Ease of implemenation</td>
-
-              <td>The simplicity of the UGLI interfaces and the
-              deployment model make it easy for developers of other
-              logging APIs to easily conform to the UGLI model.
-              </td>
-            </tr>
-          </tr>
-
-          <tr>
-            <td>No dynamic discovery</td>
-            
-            <td>Life is too short to deal with classloader
-            hacks.</td>
-          </tr>
-
         </table>
         
   </body>  
