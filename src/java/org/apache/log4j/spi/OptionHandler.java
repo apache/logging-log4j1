@@ -38,7 +38,7 @@ public interface OptionHandler {
      
      @deprecated We now use JavaBeans style getters/setters.
    */
-  String[] getOptionStrings();
+  //  String[] getOptionStrings();
 
   /**
      Set <code>option</code> to <code>value</code>.
@@ -50,5 +50,5 @@ public interface OptionHandler {
      
      @deprecated We now use JavaBeans style getters/setters.
   */
-  void setOption(String option, String value);
+  //void setOption(String option, String value);
 }

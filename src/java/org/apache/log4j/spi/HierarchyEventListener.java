@@ -8,22 +8,28 @@
 package org.apache.log4j.spi;
 
 import org.apache.log4j.Category;
+import org.apache.log4j.Appender;
 
 /**
-   
-  Implement this interface to create new instances of Category or
-  a sub-class of Category.
+   Listen to events occuring within a {@link
+   org.apache.log4j.Hierarchy Hierarchy}.
 
-  <p>See {@link org.apache.log4j.examples.MyCategory} for an example.
-
-  @author Ceki G&uuml;lc&uuml;
-  @since version 0.8.5
+   @author Ceki G&uuml;lc&uuml;
+   @since 1.2
    
  */
 public interface HierarchyEventListener {
 
  
+  //public
+  //void categoryCreationEvent(Category cat);
+
+
   public
-  void categoryCreationEvent(Category cat);
+  void addAppenderEvent(Category cat, Appender appender);
+
+  public
+  void removeAppenderEvent(Category cat, Appender appender);
+
 
 }
