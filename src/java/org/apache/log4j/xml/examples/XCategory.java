@@ -36,9 +36,6 @@ public class XCategory extends Category implements OptionHandler {
 
   // It's enough to instantiate a factory once and for all.
   private static XFactory factory = new XFactory();
-
-
-  static String instanceFQCN = XCategory.class.getName();
   
   public static final String SUFFIX_OPTION = "Suffix";
 
@@ -47,8 +44,8 @@ public class XCategory extends Category implements OptionHandler {
   /**
      Just calls the parent constuctor.
    */
-  public XCategory(String name) {
-    super(name);
+  protected XCategory(String name, String instanceFQN) {
+    super(name, instanceFQN);
   }
 
   /** 
@@ -64,7 +61,7 @@ public class XCategory extends Category implements OptionHandler {
   */
   public 
   void debug(String message) {
-    log(instanceFQCN, Priority.DEBUG, message + " " + suffix, null);
+    super.debug(message + " " + suffix);
   }
 
   /**
@@ -108,7 +105,7 @@ public class XCategory extends Category implements OptionHandler {
     if(hierarchy.isDisabled(XPriority.LETHAL_INT)) 
       return;
     if(XPriority.LETHAL.isGreaterOrEqual(this.getChainedPriority()))
-      forcedLog(instanceFQN, XPriority.LETHAL, message, t);
+      forcedLog(instanceFQCN, XPriority.LETHAL, message, t);
   }
 
   /**
@@ -120,7 +117,7 @@ public class XCategory extends Category implements OptionHandler {
     if(hierarchy.isDisabled(XPriority.LETHAL_INT)) 
       return;
     if(XPriority.LETHAL.isGreaterOrEqual(this.getChainedPriority()))
-      forcedLog(instanceFQN, XPriority.LETHAL, message, null);
+      forcedLog(instanceFQCN, XPriority.LETHAL, message, null);
   }
 
 
@@ -150,7 +147,7 @@ public class XCategory extends Category implements OptionHandler {
     if(hierarchy.isDisabled(XPriority.TRACE_INT))
       return;   
     if(XPriority.TRACE.isGreaterOrEqual(this.getChainedPriority()))
-      forcedLog(instanceFQN, XPriority.TRACE, message, t);
+      forcedLog(instanceFQCN, XPriority.TRACE, message, t);
   }
 
   /**
@@ -171,12 +168,15 @@ public class XCategory extends Category implements OptionHandler {
   // Any sub-class of Category must also have its own implementation of 
   // CategoryFactory.
   public static class XFactory implements CategoryFactory {
+    
+    static String INSTANCE_FQCN = XCategory.class.getName();
+
     public XFactory() {
     }
 
     public
     Category makeNewCategoryInstance(String name) {
-      return new XCategory(name);
+      return new XCategory(name, INSTANCE_FQCN);
     }
   }
 }

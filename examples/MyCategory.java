@@ -80,8 +80,8 @@ public class MyCategory extends Category {
   /**
      Just calls the parent constuctor.
    */
-  public MyCategory(String name) {
-    super(name);
+  public MyCategory(String name, String instanceFQCN) {
+    super(name, instanceFQCN);
   }
 
 

@@ -36,6 +36,10 @@
    the static initializer of Category class. Thanks to Calvin Chan for
    supplying a better method. [*]
 
+ - Updated the "Adding Conversion Characters to PatternLayout" document to reflect the 
+   latest changes to the code. Also added the org/apache/log4j/examples/appserver 
+   directory containing the associated example code. [*]
+
  - Added the BufferSize option to the AsyncAppender. [*]
 
  - Eliminateed the SecurityExceptions thrown in Applets.  Thanks Timur

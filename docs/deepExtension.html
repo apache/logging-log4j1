@@ -18,7 +18,7 @@
 
 <p>
 This article describes a systematic way to extend the
-<a href="http://log4j.org">log4j</a> API in order include
+<a href="http://jakarta.apache.org/log4j">log4j</a> API in order include
 additional attributes that can be formatted using the
 <code><a href="../javadoc/org/apache/log4j/PatternLayout.html">PatternLayout</a></code> 
 class.
@@ -54,7 +54,7 @@ class.
 This article assumes familiarity with the log4j
 <a href="manual.html">User Manual</a>.  It builds on fundamental
 classes described in both the User Manual and the
-<a href="index.html">Javadoc</a>.  To assist in illustrating the
+<a href="../javadoc/index.html">Javadoc</a>.  To assist in illustrating the
 concepts, a simple case study will be developed along side the
 explanations.  The resulting classes may be used as a template
 for your own extensions.  Condenced (i.e. statements compressed,
@@ -230,7 +230,7 @@ public class AppServerLoggingEvent extends LoggingEvent
    public AppServerLoggingEvent( String    fqnOfCategoryClass, 
                                  AppServerCategory  category, 
                                  Priority  priority, 
-                                 String    message, 
+                                 Object    message, 
                                  Throwable throwable) 
    {
       super( fqnOfCategoryClass,
@@ -472,6 +472,9 @@ The following tasks are involved in overridding
 	<code>AppServerLoggingEvent</code> is instantiated rather than
 	the default <code>LoggingEvent</code>.
 <p>
+<li>Override the <code>l7dlog</code> methods since by default they
+	do not call the <code>forcedLog</code> method.
+<p>
 <li>Override the <code>getInstance</code> method to use our
 	<code>CategoryFactory</code> (described in the next step).  This will
 	require that we hold a static reference to our factory and provide a
@@ -526,6 +529,7 @@ public class AppServerCategory extends Category
                                  String version )
    {
       super( categoryName );
+      <b>instanceFQN = "org.apache.log4j.examples.appserver.AppServerCategory";</b>
       
       this.hostname  = hostname;
       this.server    = server;
@@ -612,6 +616,7 @@ public class AppServerCategoryFactory implements CategoryFactory
    protected String server;
    protected String component;
    protected String version;
+   protected ResourceBundle messageBundle;
 
    protected  AppServerCategoryFactory( String serverName,
                                         String componentName,
@@ -637,11 +642,22 @@ public class AppServerCategoryFactory implements CategoryFactory
     */
    public Category makeNewCategoryInstance(String name)
    {
-       return new AppServerCategory(name, hostname, server, component, version);
+       Category result = new AppServerCategory(name, hostname, server, component, version);
+       if ( messageBundle != null )
+          result.setResourceBundle( messageBundle );
+       return result;
    }
+
+   public void setMessageBundle(ResourceBundle bundle)
+   { messageBundle = bundle; }
 }
 </pre>
 </table>
+<p>
+Notice that we have also added the ability to set the message catalog
+<code>ResourceBundle</code> on the factory so that all subsequent
+<code>Category</code> creations will have it set automatically for use
+with the <code>l7dlog</code> methods.
 <p>
 <hr>
 <a name="usage"><h2>Usage</h2></a>
@@ -721,7 +737,12 @@ There are some direction in which this log4j extension may be enhanced.
 	similar to that of class and category names whereby only a certain
 	number of the more significant components are displayed.  But
 	whereas with class and category names, the most significant component
-	is on the right, with host names, it is on the right.
+	is on the right, with host names, it is on the left.
+<p>
+<li>Allow one to set a ResourceBundle on a factory so that categories
+	are created with the message bundle already set (in preparation
+	for using the <code>l7dlog</code> methods).
+<p>
 <li>Specifying a version number could be dangerous since programmers
 	are apt to change versions of the code without changing the 
 	string constant in the code which specifies the version.  Some
