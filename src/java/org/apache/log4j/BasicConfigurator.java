@@ -12,6 +12,7 @@
 package org.apache.log4j;
 
 import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.helpers.VersionHelper;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.or.ObjectRenderer;
 import org.apache.log4j.or.RendererMap;
@@ -109,7 +110,7 @@ public class BasicConfigurator {
       return;
     } else {
       try {
-	Class renderedClass = Class.forName(renderedClassName);
+	Class renderedClass = VersionHelper.getInstance().loadClass(renderedClassName);
 	hierarchy.rendererMap.put(renderedClass, renderer);
       } catch(ClassNotFoundException e) {
 	LogLog.error("Could not find class ["+renderedClassName+"].", e);

@@ -16,6 +16,7 @@ import org.apache.log4j.Priority;
 import org.apache.log4j.spi.Configurator;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.helpers.VersionHelper;
 
 // Contributors:   Avy Sharell (sharell@online.fr)
 //                 Anders Kristensen
@@ -191,7 +192,7 @@ public class OptionConverter {
 		 + ":pri=[" + priorityName + "]");
 
     try {
-      Class customPriority = Class.forName(clazz);
+      Class customPriority = VersionHelper.getInstance().loadClass(clazz);
 
       // get a ref to the specified class' static method
       // toPriority(String, org.apache.log4j.Priority)
@@ -298,7 +299,7 @@ public class OptionConverter {
 				Object defaultValue) {
     if(className != null) {
       try {
-	Class classObj = Class.forName(className);
+	Class classObj = VersionHelper.getInstance().loadClass(className);
 	if(!superClass.isAssignableFrom(classObj)) {
 	  LogLog.error("A \""+className+"\" object is not assignable to a \""+
 		       superClass.getName() + "\" variable.");
