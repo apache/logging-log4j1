@@ -84,7 +84,7 @@
     <pathelement location="${jmx-extra.jar}"/>
   </path>
 
-  <!-- Construct compile classpath -->
+  <!-- Construct classpath for building the html pages-->
   <path id="site2.classpath">
     <fileset dir="${jakarta-site2}/lib">
       <include name="*.jar"/>
