@@ -163,8 +163,11 @@ public class JMSReceiver extends Receiver implements MessageListener {
       JMSReceiver receiver = (JMSReceiver)testPlugin;
       
       // check for same topic name and super class equivalency
-      return (topicFactoryName.equals(receiver.getTopicFactoryName()) &&
-        super.isEquivalent(testPlugin));
+      return (
+            topicFactoryName.equals(receiver.getTopicFactoryName()) && 
+            (jndiPath == null || jndiPath.equals(receiver.getJndiPath())) && 
+            super.isEquivalent(testPlugin)
+            );
     }
     
     return false;
