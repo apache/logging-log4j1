@@ -407,7 +407,7 @@ public class PatternParser {
         if (
           dateFormatStr.equalsIgnoreCase(
               AbsoluteTimeDateFormat.ISO8601_DATE_FORMAT)) {
-          option = "yyyy-mm-dd HH:mm:ss,SSS";
+          option = "yyyy-MM-dd HH:mm:ss,SSS";
 
           //System.out.println("optin is " + option);
         } else if (
