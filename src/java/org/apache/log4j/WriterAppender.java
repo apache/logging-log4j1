@@ -251,7 +251,7 @@ public class WriterAppender extends AppenderSkeleton {
 
 
   /**
-     Set the {@link ErrorHandler} for this FileAppender and also the
+     Set the {@link ErrorHandler} for this WriterAppender and also the
      underlying {@link QuietWriter} if any. */
   public
   synchronized 
