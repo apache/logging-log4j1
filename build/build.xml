@@ -356,7 +356,6 @@
 	   <include name="${BSTEM}/nt/*.h"/>
 	   <include name="${BSTEM}/nt/*.obj"/>
 	   <include name="${BSTEM}/nt/*.idb"/>
-	   <include name="${BSTEM}/nt/goEnv.bat"/>
 	   <include name="${BSTEM}/nt/EventLogCategories.rc"/>
 	   <include name="${BSTEM}/nt/EventLogCategories.RES"/>
 	   <include name="${BSTEM}/nt/EventLogCategories.res"/>
@@ -393,7 +392,7 @@
 			  dist/classes/**, 
 			  contribs/**"
                 excludes="make/make.loc, 
-		          **/*.bak, 
+		          **/*.bak, **/goEnv.bat,
 			  **/.#*"/>
     </copy>
 
