@@ -35,11 +35,17 @@ import java.io.Serializable;
    @since 1.0 */
 public class UnitTestOR extends TestCase {
 
+  static UTObjectRenderer aor;
+  static UTObjectRenderer bor;
+  static UTObjectRenderer xor;
+  static UTObjectRenderer yor;
+
   static UTObjectRenderer oor;
   static UTObjectRenderer nor;
   static UTObjectRenderer ior;
   static UTObjectRenderer cor;
   static UTObjectRenderer sor;
+
 
 
   public UnitTestOR(String name) {
@@ -49,11 +55,16 @@ public class UnitTestOR extends TestCase {
 
   public
   void setUp() {
+    aor = new UTObjectRenderer("A");
+    bor = new UTObjectRenderer("B");
+    xor = new UTObjectRenderer("X");    
+    yor = new UTObjectRenderer("Y");    
+
     oor = new UTObjectRenderer("Object");
     nor = new UTObjectRenderer("Number");
     ior = new UTObjectRenderer("Integer");
     cor = new UTObjectRenderer("Comparable");
-    sor = new UTObjectRenderer("Serializable");    
+    sor = new UTObjectRenderer("Serializable");
   }
 
   // Add: no renderer
@@ -124,6 +135,47 @@ public class UnitTestOR extends TestCase {
     assertEquals(r, nor);
   }
 
+  // Add: Comparable
+  // Expect: Comparable
+  public
+  void test7() {
+    RendererMap map = new RendererMap();
+    map.put(Comparable.class, cor);
+    ObjectRenderer r = map.get(Integer.class);
+    assertEquals(r, cor);
+  }
+
+
+  // Add: Serializable
+  // Expect: Serializablee
+  public
+  void test8() {
+    RendererMap map = new RendererMap();
+    map.put(Serializable.class, sor); 
+    ObjectRenderer r = map.get(Integer.class);
+    assertEquals(r, sor);
+  }
+
+  // Add: Y
+  // Expect: Y
+  public
+  void test9() {
+    RendererMap map = new RendererMap();
+    map.put(Y.class, yor); 
+    ObjectRenderer r = map.get(B.class);
+    assertEquals(r, yor);
+  }
+
+  // Add: X
+  // Expect: X
+  public
+  void test10() {
+    RendererMap map = new RendererMap();
+    map.put(X.class, xor); 
+    ObjectRenderer r = map.get(B.class);
+    assertEquals(r, xor);
+  }
+
 
 
 
@@ -137,8 +189,15 @@ public class UnitTestOR extends TestCase {
     suite.addTest(new UnitTestOR("test4"));
     suite.addTest(new UnitTestOR("test5"));
     suite.addTest(new UnitTestOR("test6"));
+    suite.addTest(new UnitTestOR("test7"));
+    suite.addTest(new UnitTestOR("test8"));
+    suite.addTest(new UnitTestOR("test9"));
+    suite.addTest(new UnitTestOR("test10"));
     return suite;
   }
+
+
+
 }
 
 class UTObjectRenderer implements ObjectRenderer {
@@ -158,4 +217,18 @@ class UTObjectRenderer implements ObjectRenderer {
   String toString() {
     return("UTObjectRenderer: "+name);
   }
+}
+
+
+interface X  {
+}
+
+interface Y extends X {
+}
+
+
+class A implements Y  {
+}
+
+class B extends A  {
 }

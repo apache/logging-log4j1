@@ -38,8 +38,8 @@ public class ThreadGroupRenderer implements ObjectRenderer {
   */
   public
   String  doRender(Object o) {
-    StringBuffer sbuf = new StringBuffer();
     if(o instanceof ThreadGroup) {
+      StringBuffer sbuf = new StringBuffer();
       ThreadGroup tg = (ThreadGroup) o;
       sbuf.append("java.lang.ThreadGroup[name=");
       sbuf.append(tg.getName());
@@ -58,10 +58,10 @@ public class ThreadGroupRenderer implements ObjectRenderer {
 	sbuf.append(t[i].isDaemon());
 	sbuf.append("]");
       }
+      return sbuf.toString();
     } else {
       // this is the best we can do
-      sbuf.append(o);
-    }
-    return sbuf.toString();
+      return o.toString();
+    }    
   }
 }  

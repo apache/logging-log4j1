@@ -55,7 +55,7 @@ on JDK 1.1 with the following exceptions:
     The DOMConfigurator.configure(String filename) method and its variants
     require a JAXP compatible XMLparser, for example the Apache Xerces
     parser. Compiling the DOMConfigurator requires the presence of a
-    JAXP parser in the classpath.
+    JAXP parser in the classpath.  
 
     ------------
     SMTPAppender
@@ -70,6 +70,12 @@ on JDK 1.1 with the following exceptions:
     and the JavaBeans Activation Framework at:
 
 	http://java.sun.com/beans/glasgow/jaf.html
+
+    -----------
+    JMSAppender
+    -----------
+  
+    The JMSAppender requires the JMS API as well as JNDI.
 
     ----------------
     TextPaneAppender

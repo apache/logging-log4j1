@@ -47,23 +47,52 @@ public class RendererMap {
   
 
   /**
-     Search the parents (classes not interfaces) of <code>clazz</code>
-     for a renderer. The renderer closest in the hierarchy will be
-     returned. If no renderers could be found, then the default
-     renderer is returned.
+     Search the parents of <code>clazz</code> for a renderer. The
+     renderer closest in the hierarchy will be returned. If no
+     renderers could be found, then the default renderer is returned.          
+
+     <p>The search first looks for a renderer configured for clazz. If
+     a renderer could not be found, then the search continues by
+     looking at the interfaces implemented by clazz. If a renderer
+     cannot be found, then the search looks for a renderer defined for
+     the parent of clazz. If that fails, then it then looks at the
+     interfaces implemented by the parent of clazz and so on.
      
  */
   public
   ObjectRenderer get(Class clazz) {
-    ObjectRenderer r;
+    //System.out.println("\nget: "+clazz);    
+    ObjectRenderer r = null;
     for(Class c = clazz; c != null; c = c.getSuperclass()) {
+      //System.out.println("Searching for class: "+c);
       r = (ObjectRenderer) map.get(c);
+      if(r != null) {
+	return r;
+      }      
+      r = searchInterfaces(c);
       if(r != null)
 	return r;
     }
     return defaultRenderer;
+  }  
+  
+  ObjectRenderer searchInterfaces(Class c) {
+    //System.out.println("Searching interfaces of class: "+c);
     
+    ObjectRenderer r = (ObjectRenderer) map.get(c);
+    if(r != null) {
+      return r;
+    } else {
+      Class[] ia = c.getInterfaces();
+      for(int i = 0; i < ia.length; i++) {
+	r = searchInterfaces(ia[i]);
+	if(r != null)
+	  return r; 
+      }
+    }
+    return null;
   }
+
 
   public
   ObjectRenderer getDefaultRenderer() {
@@ -86,10 +115,10 @@ public class RendererMap {
   */
   public
   void put(Class clazz, ObjectRenderer or) {
-    if(clazz.isInterface()) {
-      throw new IllegalArgumentException(clazz +
-     " is an interface. Only classes allowed to regiter object renderers.");
-    }
+    //if(clazz.isInterface()) {
+    //throw new IllegalArgumentException(clazz +
+    //" is an interface. Only classes allowed to regiter object renderers.");
+    //}
     map.put(clazz, or);
   }
 }

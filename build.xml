@@ -8,6 +8,7 @@
 		<tstamp />
 		<property name="srcdir" value="." />
 		<property name="classes" value="classes" />
+		<property name="stem" value="org/apache/log4j" />
 		<property name="build.compiler" value="jikes"/>	
 		<property name="version" value="1.0"/>
 
@@ -17,8 +18,14 @@
 	        <available classname="org.apache.xerces.parsers.DOMParser"
  	                   property="xerces-present"/>
 
-	        <available classname="test.framework.TestCase"
+	        <available classname="junit.framework.TestCase"
  	                   property="junit-present"/>
+
+                <available classname="javax.jms.Message"
+ 	                   property="jms-present"/>
+
+                <available classname="javax.naming.Context"
+ 	                   property="jndi-present"/>
 
 	        <available classname="javax.mail.Message"
  	                   property="javamail-present"/>
@@ -31,23 +38,25 @@
 					compile.swing,
 					compile.unitTests,
 					compile.xml,
-					compile.javamail"/>
+					compile.javamail,
+					compile.jms"/>
 
 	<target name="compile.core" depends="init">
 		<mkdir dir="${classes}" />
 		<javac srcdir="${srcdir}"
 		       destdir="${classes}"
-		       includes="org/log4j/**/*.java"
+		       includes="${stem}/**/*.java, ${stem}/xml/XMLLayout.java,"
 		       classpath="${classpath}"
 		       excludes="misc/*, **/UnitTest*.java,
 		                 **/doc-files/*,
-               		         org/log4j/xml/**,
-               		         org/log4j/net/SMTPAppender.java,
+               		         ${stem}/xml/**,
+				 ${stem}/net/SMTPAppender.java,
+               		         ${stem}/net/JMS*.java,
 				 **/pending/**" 
 		       debug="on"
 		       optimize="on"/>
-		<copy file="org/log4j/xml/log4j.dtd"
-		          tofile="${classes}/org/log4j/xml/log4j.dtd" />
+		<copy file="${stem}/xml/log4j.dtd"
+		          tofile="${classes}/${stem}/xml/log4j.dtd" />
 		
          </target>
 
@@ -59,8 +68,8 @@
             </copy>
 	    <javac srcdir="${srcdir}"
 		   destdir="${classes}"
-		   includes="org/log4j/gui/**"
-                    excludes="**/JListView.java, **/JTableAppender.java"
+		   includes="${stem}/gui/*.java"
+                   excludes="**/JListView.java, **/JTableAppender.java"
 		   classpath="${classpath}"/>
 	</target>
 	
@@ -77,8 +86,8 @@
 	    <javac 
 		   srcdir="${srcdir}"
 		   destdir="${classes}"
-		   includes="org/log4j/xml/**/*.java"
-                   excludes="org/log4j/xml/examples/doc-files/**.java"
+		   includes="${stem}/xml/**/*.java"
+                   excludes="${stem}/xml/examples/doc-files/**.java"
 		   classpath="${classpath}"/>
 	</target>
 
@@ -88,7 +97,16 @@
 	    <javac 
 		   srcdir="${srcdir}"
 		   destdir="${classes}"
-		   includes="org/log4j/net/SMTPAppender.java"
+		   includes="${stem}/net/SMTPAppender.java"
+		   classpath="${classpath}"/>
+	</target>
+
+         <target name="compile.jms" depends="init" if="jms-present">   
+            <echo message="Really compiling JMS dependent code." />
+	    <javac 
+		   srcdir="${srcdir}"
+		   destdir="${classes}"
+		   includes="${stem}/net/JMS*.java"
 		   classpath="${classpath}"/>
 	</target>
 
@@ -112,7 +130,7 @@
 		          **/Syslog*, **/RelativeTimeDateFormat.*,
 			  **/gui/**/*.class, **/Loader.class,
 			  **/UnitTest*.class, 
-			  org/log4j/helpers/CyclicBuffer.class"
+			  org/apache/log4j/helpers/CyclicBuffer.class"
                 manifest="manifest.mf"
 		/>
 	</target>
@@ -122,7 +140,7 @@
 	<target name="log4j.jar" depends="compile">
 		<delete file="log4j.jar"/>
 		<jar jarfile="log4j.jar" basedir="${classes}"
-		includes="**/log4j/*.class, org/log4j/xml/log4j.dtd, 
+		includes="**/log4j/*.class, ${stem}/xml/log4j.dtd, 
 		          **/log4j/helpers/*.class, icons/**,
 			  **/log4j/spi/*.class,  **/log4j/net/*.class,
 			  **/log4j/varia/*.class, **/log4j/nt/*.class,

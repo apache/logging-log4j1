@@ -10,6 +10,8 @@ package org.apache.log4j.net;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.Category;
+import org.apache.log4j.Hierarchy;
+import org.apache.log4j.or.MessageRenderer;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.helpers.LogLog;
 
@@ -28,9 +30,6 @@ import javax.naming.NamingException;
 */
 public class JMSSink  {
 
-  static int PORT = 22000;
-  static String TOPIC = "MyTopic";
-
   static public void main(String[] args) {
     if(args.length != 3) {
       usage("Wrong number of arguments.");     
@@ -40,6 +39,8 @@ public class JMSSink  {
     String topicBindingName = args[1];
     PropertyConfigurator.configure(args[2]);
 
+    Category.getDefaultHierarchy().addRenderer(Message.class, 
+					       new MessageRenderer());
 
     try {
       Context ctx = new InitialContext();      
@@ -67,6 +68,10 @@ public class JMSSink  {
 	event = (LoggingEvent) msg.getObject();
 	remoteCategory = Category.getInstance(event.categoryName);
 	remoteCategory.callAppenders(event);	
+	
+	// dump the JMSMessage
+	remoteCategory.debug(msg);
+
       }
     } catch(Exception e) {
       LogLog.error("Could not read JMS message.", e);
