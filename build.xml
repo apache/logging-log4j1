@@ -323,16 +323,11 @@
     <taskdef resource="checkstyletask.properties"
              classpath="${checkstyle.jar}"/>
 
-		<property name="checkstyle.lcurly.method" value="nlow" />
-		<property name="checkstyle.lcurly.type" value="nlow" />
-		<property name="checkstyle.lcurly.other" value="nlow" />
-		<property name="checkstyle.maxmethodlen" value="500" />
-		<property name="checkstyle.maxconstructorlen" value="500" />
-		<property name="checkstyle.ignore.public.in.interface" value="true" />
-
     <!-- by default checkstyle supports the Sun coding standard. -->
     <checkstyle>
       <fileset refid="styled_files"/>
+			<property key="checkstyle.ignore.public.in.interface" value="true" />
+			<property key="checkstyle.allow.protected" value="true" />
     </checkstyle>
   </target>
 
