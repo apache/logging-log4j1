@@ -175,11 +175,8 @@ public class SocketServer  {
 	Hierarchy h = new Hierarchy(new RootCategory(Priority.DEBUG));
 	hierarchyMap.put(inetAddress, h);
 	
-	try {
-	  new PropertyConfigurator().doConfigure(configFile.toURL(), h);
-	} catch(MalformedURLException e) {
-	  cat.error("Could not convert"+configFile+" to a URL.", e);
-	}
+	new PropertyConfigurator().doConfigure(configFile.getAbsolutePath(), h);
+
 	return h;	
       } else {
 	cat.warn("Could not find config file ["+configFile+"].");
@@ -193,14 +190,7 @@ public class SocketServer  {
       File f = new File(dir, GENERIC+CONFIG_FILE_EXT);
       if(f.exists()) {
 	genericHierarchy = new Hierarchy(new RootCategory(Priority.DEBUG));
-	try {
-	  new PropertyConfigurator().doConfigure(f.toURL(),
-					       genericHierarchy);
-	} catch(MalformedURLException e) {
-	  cat.error("Could not convert"+f
-		    +" to a URL. Reverting to default hierarchy", e);	  
-	  genericHierarchy = Category.getDefaultHierarchy();
-	}
+	new PropertyConfigurator().doConfigure(f.getAbsolutePath(), genericHierarchy);
       } else {
 	cat.warn("Could not find config file ["+f+
 		 "]. Will use the default hierarchy.");
