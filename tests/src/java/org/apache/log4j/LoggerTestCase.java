@@ -335,7 +335,7 @@ public class LoggerTestCase extends TestCase {
   }
 
   public void testHierarchy1() {
-    Hierarchy h = new Hierarchy(new RootCategory((Level) Level.ERROR));
+    Hierarchy h = new Hierarchy(new RootLogger((Level) Level.ERROR));
     Logger a0 = h.getLogger("a");
     assertEquals("a", a0.getName());
     assertNull(a0.getLevel());

@@ -156,4 +156,8 @@ public class JoranConfigurator
       ec.addError(new ErrorItem("Parser configuration error occured", ie));
     }
   }
+  
+  public ExecutionContext getExecutionContext() {
+    return joranInterpreter.getExecutionContext();
+  }
 }

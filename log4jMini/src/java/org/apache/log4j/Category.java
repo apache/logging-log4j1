@@ -21,7 +21,7 @@
 package org.apache.log4j;
 
 import org.apache.log4j.Priority;
-import org.apache.log4j.spi.RootCategory;
+import org.apache.log4j.spi.RootLogger;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.helpers.LogLog;
 

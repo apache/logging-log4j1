@@ -27,7 +27,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
 import org.apache.log4j.spi.LoggerRepository;
-import org.apache.log4j.spi.RootCategory;
+import org.apache.log4j.spi.RootLogger;
 import org.apache.log4j.util.Compare;
 
 import java.beans.PropertyChangeEvent;
@@ -222,8 +222,8 @@ public class PluginTestCase extends TestCase {
 //        PluginTester plugin1 = new PluginTester1("plugin1", 1);
 //        PluginTester plugin2 = new PluginTester1("plugin2", 2);
 //        PluginTester retPlugin;
-//        LoggerRepository repo1 = new Hierarchy(new RootCategory(Level.DEBUG));
-//        LoggerRepository repo2 = new Hierarchy(new RootCategory(Level.DEBUG));
+//        LoggerRepository repo1 = new Hierarchy(new RootLogger(Level.DEBUG));
+//        LoggerRepository repo2 = new Hierarchy(new RootLogger(Level.DEBUG));
 //        
 //        PluginRegistry pr1 = repo1.getPluginRegistry();
 //        PluginRegistry pr2 = repo2.getPluginRegistry();
@@ -438,7 +438,7 @@ public class PluginTestCase extends TestCase {
         LoggerRepository oldValue = plugin.getLoggerRepository();
         plugin.addPropertyChangeListener("loggerRepository", l);
 
-        LoggerRepository rep = new Hierarchy(new RootCategory(Level.DEBUG));
+        LoggerRepository rep = new Hierarchy(new RootLogger(Level.DEBUG));
         plugin.setLoggerRepository(rep);
 
         assertTrue("Should be notified of LoggerRepository property change",
