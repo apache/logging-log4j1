@@ -19,10 +19,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -128,8 +128,8 @@ public class LoggingEvent
   private String ndc;
 
   /**
-   * <p>The properties map is specific for this event.</p> 
-   * 
+   * <p>The properties map is specific for this event.</p>
+   *
    * <p>When serialized, it contains a copy of MDC properties as well
    * as LoggerRepository properties.
    * </p>
@@ -316,7 +316,7 @@ public class LoggingEvent
    * the higher 32 bits of timeStamp;
    */
   public int hashCode() {
-    return (int)( (timeStamp >> 32) ^ (sequenceNumber & 0xFFFFFFFF) );
+    return (int)((timeStamp >> 32) ^ (sequenceNumber & 0xFFFFFFFF));
   }
 
 
@@ -343,21 +343,22 @@ public class LoggingEvent
 
 
   /**
-   * Return the level of this event. 
+   * Return the level of this event.
    */
   public Level getLevel() {
     return (Level)level;
   }
 
+
   /**
    * Set the level of this event. The level can be set at most once.
-   * 
+   *
    * @param level The level to set.
    * @throws IllegalStateException if the level has been already set.
    * @since 1.3
    */
   public void setLevel(Level level) {
-    if(this.level != null) {
+    if (this.level != null) {
       throw new IllegalStateException("The level has been already set for this event.");
     }
     this.level = level;
@@ -376,32 +377,31 @@ public class LoggingEvent
 
 
   /**
-   * Set the logger of this event. Calling this method also sets the <code>loggerName</code> 
+   * Set the logger of this event. Calling this method also sets the <code>loggerName</code>
    * for the event. The logger can be set at most once.
-   * 
+   *
    * Moreover, if the loggerName has been already set, this method will throw
    * an {@link IllegalStateException}.
-   * 
+   *
    * @throws IllegalStateException
    */
   public void setLogger(Logger logger) {
-    if(this.logger != null) {
-      throw new IllegalStateException("logger has been already set to [" 
-          + this.logger.getName() + "].");
+    if (this.logger != null) {
+      throw new IllegalStateException("logger has been already set to [" + this.logger.getName() + "].");
     }
-    
-    if(this.loggerName != null) {
-      throw new IllegalStateException("loggerName has been already set to [" 
-          + this.loggerName + "], logger "+logger.getName()+"] is invalid");
+
+    if (this.loggerName != null) {
+      throw new IllegalStateException("loggerName has been already set to [" + this.loggerName + "], logger "
+        + logger.getName() + "] is invalid");
     }
-    
+
     this.logger = logger;
     this.loggerName = logger.getName();
   }
 
 
   /**
-   * Return the name of the logger. 
+   * Return the name of the logger.
    */
   public String getLoggerName() {
     return loggerName;
@@ -410,15 +410,15 @@ public class LoggingEvent
 
   /**
    * Set the loggerName for this event. The loggerName can be set at most once.
-   * 
+   *
    * @param loggerName The loggerName to set.
    * @throws IllegalStateException if loggerName is already set
    * @since 1.3
    */
-  public void setLoggerName(String loggerName) throws IllegalStateException {
+  public void setLoggerName(String loggerName)
+         throws IllegalStateException {
     if (this.loggerName != null) {
-      throw new IllegalStateException("loggerName has been already set to [" 
-          + this.loggerName + "].");
+      throw new IllegalStateException("loggerName has been already set to [" + this.loggerName + "].");
     } else {
       this.loggerName = loggerName;
     }
@@ -445,17 +445,19 @@ public class LoggingEvent
     }
   }
 
+
   /**
-   * Set the message for this event. The 
+   * Set the message for this event. The
    * @param message The message to set.
    * @since 1.3
    */
   public void setMessage(Object message) {
-    if(this.message != null) {
+    if (this.message != null) {
       throw new IllegalStateException("The message for this event has been set alredy.");
     }
+
     // After serialisation, message will be null and renderedMessage will be non-null. 
-    if(this.renderedMessage != null) {
+    if (this.renderedMessage != null) {
       throw new IllegalStateException("The message cannot be set if the renderedMessage has been set.");
     }
     this.message = message;
@@ -557,10 +559,13 @@ public class LoggingEvent
    */
   public void createProperties() {
     if (properties == null) {
-      properties = new HashMap();
-      properties.putAll(MDC.getContext());
-      if(logger != null) {
-        properties.putAll(logger.getLoggerRepository().getProperties());  
+      properties = new TreeMap();
+      Map mdcMap = MDC.getContext();
+      if(mdcMap != null) {
+        properties.putAll(mdcMap);
+      }
+      if (logger != null) {
+        properties.putAll(logger.getLoggerRepository().getProperties());
       }
     }
   }
@@ -568,7 +573,7 @@ public class LoggingEvent
 
   /**
    * Return a property for this event. The return value can be null.
-   * 
+   *
    * <p>The property is searched first in the properties map specific for this
    * event, then in the MDC, then in the logger repository containing the logger
    * of this event.
@@ -576,21 +581,26 @@ public class LoggingEvent
    */
   public String getProperty(String key) {
     String value = null;
+
     if (properties != null) {
-      value = (String) properties.get(key);
-      if(value != null) {
+      value = (String)properties.get(key);
+
+      if (value != null) {
         return value;
-      }
-    } else { // properties is null
-      value = MDC.get(key);
-      if(value != null) {
-        return value;
-      }
-      
-      if(logger != null) {
-         value = logger.getLoggerRepository().getProperty(key);
       }
     }
+
+    // if the key was not found in this even't properties, try the MDC
+    value = MDC.get(key);
+    if (value != null) {
+      return value;
+    }
+
+    // if still not found try, the properties in the logger repository
+    if (logger != null) {
+      value = logger.getLoggerRepository().getProperty(key);
+    }
+
     return value;
   }
 
@@ -638,18 +648,21 @@ public class LoggingEvent
     return renderedMessage;
   }
 
+
   /**
-   * 
+   *
    * @param renderedMessage The renderedMessage to set.
    * @throws IllegalStateException if renderedMessage  has been already set.
    * @since 1.3
    */
-  public void setRenderedMessage(String renderedMessage) throws IllegalStateException {
-    if(this.renderedMessage != null) {
-       throw new IllegalStateException("renderedMessage has been already set."); 
+  public void setRenderedMessage(String renderedMessage)
+         throws IllegalStateException {
+    if (this.renderedMessage != null) {
+      throw new IllegalStateException("renderedMessage has been already set.");
     }
     this.renderedMessage = renderedMessage;
   }
+
 
   /**
    * Returns the time when the application started, in milliseconds elapsed
@@ -686,18 +699,20 @@ public class LoggingEvent
     return threadName;
   }
 
-   /**
-     * @param threadName The threadName to set.
-     * @throws IllegalStateException If threadName has been already set.
-   */
-   public void setThreadName(String threadName) throws IllegalStateException {
-    if(this.threadName != null) {
+
+  /**
+    * @param threadName The threadName to set.
+    * @throws IllegalStateException If threadName has been already set.
+  */
+  public void setThreadName(String threadName)
+         throws IllegalStateException {
+    if (this.threadName != null) {
       throw new IllegalStateException("threadName has been already set");
     }
     this.threadName = threadName;
-   }
-  
-  
+  }
+
+
   /**
    * Returns the throwable information contained within this event. May be
    * <code>null</code> if there is no such information.
@@ -772,8 +787,9 @@ public class LoggingEvent
     }
   }
 
+
   /**
-   * @return Returns the properties specific for this event. The returned 
+   * @return Returns the properties specific for this event. The returned
    * value can be null.
    * @since 1.3
    */
@@ -788,6 +804,7 @@ public class LoggingEvent
   public void setProperties(Hashtable properties) {
     this.properties = properties;
   }
+
 
   /**
    * Set a string property using a key and a string value.  since 1.3
