@@ -49,23 +49,16 @@
 
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Hashtable;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.StringTokenizer;
 import java.util.Vector;
 
 import javax.swing.SwingUtilities;
@@ -91,82 +84,28 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
   private final int INITIAL_CAPACITY = 1024;
   final List unfilteredList;
   final List filteredList;
-  private static final DateFormat DATE_FORMATTER =
-    new SimpleDateFormat(ChainsawConstants.DATETIME_FORMAT);
   private Vector countListeners = new Vector();
   private boolean currentSortAscending;
   private int currentSortColumn;
+
+  /**
+   * @deprecated should use new filtering stuff
+   */
   private DisplayFilter displayFilter;
   private final FilterChangeExecutor filterExecutor =
     new FilterChangeExecutor();
   private boolean sortEnabled = false;
   protected final Object syncLock = new Object();
+  private LoggerNameModel loggerNameModelDelegate =
+    new LoggerNameModelSupport();
 
-  private LoggerNameModel loggerNameModelDelegate = new LoggerNameModelSupport();
-  
   //because we may be using a cyclic buffer, if an ID is not provided in the property, 
   //use and increment this row counter as the ID for each received row
   int uniqueRow;
 
-  /**
-   * @param l
-   */
-  public void removeLoggerNameListener(LoggerNameListener l)
-  {
-    loggerNameModelDelegate.removeLoggerNameListener(l);
-  }
-
-  /* (non-Javadoc)
-   * @see java.lang.Object#hashCode()
-   */
-  public int hashCode()
-  {
-    return loggerNameModelDelegate.hashCode();
-  }
-
-  /**
-   * @param loggerName
-   * @return
-   */
-  public boolean addLoggerName(String loggerName)
-  {
-    return loggerNameModelDelegate.addLoggerName(loggerName);
-  }
-
-  /* (non-Javadoc)
-   * @see java.lang.Object#toString()
-   */
-  public String toString()
-  {
-    return loggerNameModelDelegate.toString();
-  }
-
-  /**
-   * @param l
-   */
-  public void addLoggerNameListener(LoggerNameListener l)
-  {
-    loggerNameModelDelegate.addLoggerNameListener(l);
-  }
-
-  /**
-   * @return
-   */
-  public Collection getLoggerNames()
-  {
-    return loggerNameModelDelegate.getLoggerNames();
-  }
-
-  /* (non-Javadoc)
-   * @see java.lang.Object#equals(java.lang.Object)
-   */
-  public boolean equals(Object obj)
-  {
-    return loggerNameModelDelegate.equals(obj);
-  }
-
   public ChainsawCyclicBufferTableModel(boolean isCyclic, int bufferSize) {
     this.cyclic = isCyclic;
+
     if (isCyclic) {
       unfilteredList = new CyclicBufferList(bufferSize);
       filteredList = new CyclicBufferList(bufferSize);
@@ -174,6 +113,56 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
       unfilteredList = new ArrayList(INITIAL_CAPACITY);
       filteredList = new ArrayList(INITIAL_CAPACITY);
     }
+  }
+
+  /**
+   * @param l
+   */
+  public void removeLoggerNameListener(LoggerNameListener l) {
+    loggerNameModelDelegate.removeLoggerNameListener(l);
+  }
+
+  /* (non-Javadoc)
+   * @see java.lang.Object#hashCode()
+   */
+  public int hashCode() {
+    return loggerNameModelDelegate.hashCode();
+  }
+
+  /**
+   * @param loggerName
+   * @return
+   */
+  public boolean addLoggerName(String loggerName) {
+    return loggerNameModelDelegate.addLoggerName(loggerName);
+  }
+
+  /* (non-Javadoc)
+   * @see java.lang.Object#toString()
+   */
+  public String toString() {
+    return loggerNameModelDelegate.toString();
+  }
+
+  /**
+   * @param l
+   */
+  public void addLoggerNameListener(LoggerNameListener l) {
+    loggerNameModelDelegate.addLoggerNameListener(l);
+  }
+
+  /**
+   * @return
+   */
+  public Collection getLoggerNames() {
+    return loggerNameModelDelegate.getLoggerNames();
+  }
+
+  /* (non-Javadoc)
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  public boolean equals(Object obj) {
+    return loggerNameModelDelegate.equals(obj);
   }
 
   public void addEventCountListener(EventCountListener listener) {
@@ -196,7 +185,10 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
   }
 
   public void setDisplayFilter(DisplayFilter displayFilter) {
-    this.displayFilter = displayFilter;
+    LogLog.warn(
+      "Currently ignoring Display filter change while in Vector->LoggingEvent model changeover");
+
+    //    this.displayFilter = displayFilter;
   }
 
   /* (non-Javadoc)
@@ -214,57 +206,10 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
 
   public void sortColumn(
     JSortTable table, int col, int row, boolean ascending) {
-    System.out.println(
+    LogLog.debug(
       "request to sort col=" + col + ", which is "
       + ChainsawColumns.getColumnsNames().get(col));
     SwingUtilities.invokeLater(new SortExecutor(table, col, row, ascending));
-  }
-
-  /**
-   * Escape &lt;, &gt; &amp; and &quot; as their entities. It is very
-   * dumb about &amp; handling.
-   * @param aStr the String to escape.
-   * @return the escaped String
-   */
-  String escape(String string) {
-    if (string == null) {
-      return null;
-    }
-
-    final StringBuffer buf = new StringBuffer();
-
-    for (int i = 0; i < string.length(); i++) {
-      char c = string.charAt(i);
-
-      switch (c) {
-      case '<':
-        buf.append("&lt;");
-
-        break;
-
-      case '>':
-        buf.append("&gt;");
-
-        break;
-
-      case '\"':
-        buf.append("&quot;");
-
-        break;
-
-      case '&':
-        buf.append("&amp;");
-
-        break;
-
-      default:
-        buf.append(c);
-
-        break;
-      }
-    }
-
-    return buf.toString();
   }
 
   /* (non-Javadoc)
@@ -321,143 +266,145 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
     return -1;
   }
 
-  public Vector getAllEvents() {
-    Vector v = new Vector();
-    synchronized (syncLock) {
-      Iterator iter = unfilteredList.iterator();
+  public List getAllEvents() {
+    List list = new ArrayList(unfilteredList.size());
 
-      while (iter.hasNext()) {
-        v.add(getEvent((Vector)iter.next()));
-      }
+    synchronized (syncLock) {
+      list.addAll(unfilteredList);
     }
 
-    return v;
+    return list;
   }
 
-public LoggingEvent getEvent(Vector v) {
-	Integer ID = new Integer(v.get(ChainsawColumns.getColumnsNames().indexOf(ChainsawConstants.ID_COL_NAME)).toString());
-    ListIterator iter = ChainsawColumns.getColumnsNames().listIterator();
-    String column = null;
-    int index = -1;
-
-    //iterate through all column names and set the value from the unfiltered event 
-    long timeStamp = 0L;
-    Logger logger = null;
-    String level = null;
-    String threadName = "";
-    Object message = null;
-    String ndc = "";
-    Hashtable mdc = null;
-    String[] exception = null;
-    String className = "";
-    String methodName = "";
-    String fileName = "";
-    String lineNumber = "";
-    Hashtable properties = null;
-    boolean hadIDProperty = false;
-
-    String value = null;
-
-    while (iter.hasNext()) {
-      column = (String) iter.next();
-      index = ChainsawColumns.getColumnsNames().indexOf(column);
-      value = v.get(index).toString();
-
-      if (column.equalsIgnoreCase(ChainsawConstants.LOGGER_COL_NAME)) {
-        logger = Logger.getLogger(value);
-      }
-
-      if (column.equalsIgnoreCase(ChainsawConstants.TIMESTAMP_COL_NAME)) {
-        try {
-          timeStamp = DATE_FORMATTER.parse(value).getTime();
-        } catch (ParseException pe) {
-          pe.printStackTrace();
-
-          //ignore...leave as 0L
-        }
-      }
-
-      if (column.equalsIgnoreCase(ChainsawConstants.LEVEL_COL_NAME)) {
-        level = value;
-      }
-
-      if (column.equalsIgnoreCase(ChainsawConstants.THREAD_COL_NAME)) {
-        threadName = value;
-      }
-
-      if (column.equalsIgnoreCase(ChainsawConstants.NDC_COL_NAME)) {
-        ndc = value;
-      }
-
-      if (column.equalsIgnoreCase(ChainsawConstants.MESSAGE_COL_NAME)) {
-        message = value;
-      }
-
-      if (column.equalsIgnoreCase(ChainsawConstants.MDC_COL_NAME)) {
-        mdc = new Hashtable();
-
-        StringTokenizer t = new StringTokenizer(value, ",");
-
-        while (t.hasMoreElements()) {
-          StringTokenizer t2 = new StringTokenizer(t.nextToken(), "=");
-          mdc.put(t2.nextToken(), t2.nextToken());
-        }
-      }
-
-      if (column.equalsIgnoreCase(ChainsawConstants.THROWABLE_COL_NAME)) {
-        exception = new String[] { value };
-      }
-
-      if (column.equalsIgnoreCase(ChainsawConstants.CLASS_COL_NAME)) {
-        className = value;
-      }
-
-      if (column.equalsIgnoreCase(ChainsawConstants.METHOD_COL_NAME)) {
-        methodName = value;
-      }
-
-      if (column.equalsIgnoreCase(ChainsawConstants.FILE_COL_NAME)) {
-        fileName = value;
-      }
-
-      if (column.equalsIgnoreCase(ChainsawConstants.LINE_COL_NAME)) {
-        lineNumber = value;
-      }
-
-      if (column.equalsIgnoreCase(ChainsawConstants.PROPERTIES_COL_NAME)) {
-        properties = new Hashtable();
-
-        StringTokenizer t = new StringTokenizer(value, ",");
-
-        while (t.hasMoreElements()) {
-          StringTokenizer t2 = new StringTokenizer(t.nextToken(), "=");
-          String propertyName = t2.nextToken();
-
-          if (propertyName.equalsIgnoreCase(ChainsawConstants.LOG4J_ID_KEY)) {
-            hadIDProperty = true;
-          }
-
-          properties.put(propertyName, t2.nextToken());
-        }
-      }
-    }
-
-    //if log4jid property did not exist, set it (will be used during reconstruction)
-    if (!hadIDProperty) {
-      properties.put(ChainsawConstants.LOG4J_ID_KEY, ID.toString());
-    }
-
-    Level levelImpl = Level.toLevel(level);
-
-    return new LoggingEvent(
-      logger.getName(), logger, timeStamp, levelImpl, threadName, message, ndc,
-      mdc, exception,
-      new LocationInfo(fileName, className, methodName, lineNumber), properties);
-  }
-
-  public int getRowIndex(Vector v) {
+  //TODO DO we need this method, I can find no references anywhere, but
+  // left as is since it's such a large method....
+  //  public LoggingEvent getEvent(Vector v) {
+  //    Integer ID =
+  //      new Integer(
+  //        v.get(
+  //          ChainsawColumns.getColumnsNames().indexOf(
+  //            ChainsawConstants.ID_COL_NAME)).toString());
+  //    ListIterator iter = ChainsawColumns.getColumnsNames().listIterator();
+  //    String column = null;
+  //    int index = -1;
+  //
+  //    //iterate through all column names and set the value from the unfiltered event 
+  //    long timeStamp = 0L;
+  //    Logger logger = null;
+  //    String level = null;
+  //    String threadName = "";
+  //    Object message = null;
+  //    String ndc = "";
+  //    Hashtable mdc = null;
+  //    String[] exception = null;
+  //    String className = "";
+  //    String methodName = "";
+  //    String fileName = "";
+  //    String lineNumber = "";
+  //    Hashtable properties = null;
+  //    boolean hadIDProperty = false;
+  //
+  //    String value = null;
+  //
+  //    while (iter.hasNext()) {
+  //      column = (String) iter.next();
+  //      index = ChainsawColumns.getColumnsNames().indexOf(column);
+  //      value = v.get(index).toString();
+  //
+  //      if (column.equalsIgnoreCase(ChainsawConstants.LOGGER_COL_NAME)) {
+  //        logger = Logger.getLogger(value);
+  //      }
+  //
+  //      if (column.equalsIgnoreCase(ChainsawConstants.TIMESTAMP_COL_NAME)) {
+  //        try {
+  //          timeStamp = DATE_FORMATTER.parse(value).getTime();
+  //        } catch (ParseException pe) {
+  //          pe.printStackTrace();
+  //
+  //          //ignore...leave as 0L
+  //        }
+  //      }
+  //
+  //      if (column.equalsIgnoreCase(ChainsawConstants.LEVEL_COL_NAME)) {
+  //        level = value;
+  //      }
+  //
+  //      if (column.equalsIgnoreCase(ChainsawConstants.THREAD_COL_NAME)) {
+  //        threadName = value;
+  //      }
+  //
+  //      if (column.equalsIgnoreCase(ChainsawConstants.NDC_COL_NAME)) {
+  //        ndc = value;
+  //      }
+  //
+  //      if (column.equalsIgnoreCase(ChainsawConstants.MESSAGE_COL_NAME)) {
+  //        message = value;
+  //      }
+  //
+  //      if (column.equalsIgnoreCase(ChainsawConstants.MDC_COL_NAME)) {
+  //        mdc = new Hashtable();
+  //
+  //        StringTokenizer t = new StringTokenizer(value, ",");
+  //
+  //        while (t.hasMoreElements()) {
+  //          StringTokenizer t2 = new StringTokenizer(t.nextToken(), "=");
+  //          mdc.put(t2.nextToken(), t2.nextToken());
+  //        }
+  //      }
+  //
+  //      if (column.equalsIgnoreCase(ChainsawConstants.THROWABLE_COL_NAME)) {
+  //        exception = new String[] { value };
+  //      }
+  //
+  //      if (column.equalsIgnoreCase(ChainsawConstants.CLASS_COL_NAME)) {
+  //        className = value;
+  //      }
+  //
+  //      if (column.equalsIgnoreCase(ChainsawConstants.METHOD_COL_NAME)) {
+  //        methodName = value;
+  //      }
+  //
+  //      if (column.equalsIgnoreCase(ChainsawConstants.FILE_COL_NAME)) {
+  //        fileName = value;
+  //      }
+  //
+  //      if (column.equalsIgnoreCase(ChainsawConstants.LINE_COL_NAME)) {
+  //        lineNumber = value;
+  //      }
+  //
+  //      if (column.equalsIgnoreCase(ChainsawConstants.PROPERTIES_COL_NAME)) {
+  //        properties = new Hashtable();
+  //
+  //        StringTokenizer t = new StringTokenizer(value, ",");
+  //
+  //        while (t.hasMoreElements()) {
+  //          StringTokenizer t2 = new StringTokenizer(t.nextToken(), "=");
+  //          String propertyName = t2.nextToken();
+  //
+  //          if (propertyName.equalsIgnoreCase(ChainsawConstants.LOG4J_ID_KEY)) {
+  //            hadIDProperty = true;
+  //          }
+  //
+  //          properties.put(propertyName, t2.nextToken());
+  //        }
+  //      }
+  //    }
+  //
+  //    //if log4jid property did not exist, set it (will be used during reconstruction)
+  //    if (!hadIDProperty) {
+  //      properties.put(ChainsawConstants.LOG4J_ID_KEY, ID.toString());
+  //    }
+  //
+  //    Level levelImpl = Level.toLevel(level);
+  //
+  //    return new LoggingEvent(
+  //      logger.getName(), logger, timeStamp, levelImpl, threadName, message, ndc,
+  //      mdc, exception,
+  //      new LocationInfo(fileName, className, methodName, lineNumber), properties);
+  //  }
+  public int getRowIndex(LoggingEvent e) {
     synchronized (syncLock) {
-      return filteredList.indexOf(v);
+      return filteredList.indexOf(e);
     }
   }
 
@@ -469,54 +416,8 @@ public LoggingEvent getEvent(Vector v) {
     return ChainsawColumns.getColumnsNames().get(column).toString();
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.log4j.chainsaw.EventContainer#getDetailText(int)
-   */
-  public String getDetailText(int row) {
-    boolean pastFirst = false;
-    StringBuffer detail = new StringBuffer(128);
-    detail.append("<html><body><table cellspacing=0 cellpadding=0>");
-
-    List columnNames = ChainsawColumns.getColumnsNames();
-
-    Vector v;
-
-    synchronized (syncLock) {
-      v = (Vector) filteredList.get(row);
-    }
-
-    if (v == null) {
-      return "";
-    }
-
-    ListIterator iter = displayFilter.getDetailColumns().listIterator();
-    String column = null;
-    int index = -1;
-
-    while (iter.hasNext()) {
-      column = (String) iter.next();
-      index = columnNames.indexOf(column);
-
-      if (index > -1) {
-        if (pastFirst) {
-          detail.append("</td></tr>");
-        }
-
-        detail.append("<tr><td valign=\"top\"><b>");
-        detail.append(column);
-        detail.append(": </b></td><td>");
-        detail.append(escape(v.get(index).toString()));
-        pastFirst = true;
-      }
-    }
-
-    detail.append("</table></body></html>");
-
-    return detail.toString();
-  }
-
-  public Vector getRow(int row) {
-    return (Vector) filteredList.get(row);
+  public LoggingEvent getRow(int row) {
+    return (LoggingEvent) filteredList.get(row);
   }
 
   public int getRowCount() {
@@ -526,90 +427,136 @@ public LoggingEvent getEvent(Vector v) {
   }
 
   public Object getValueAt(int rowIndex, int columnIndex) {
-    Vector row = (Vector) filteredList.get(rowIndex);
+    LoggingEvent event = (LoggingEvent) filteredList.get(rowIndex);
+    LocationInfo info = event.getLocationInformation();
 
-    if (row == null) {
+    if (event == null) {
       LogLog.error("Invalid rowindex=" + rowIndex);
       throw new NullPointerException("Invalid rowIndex=" + rowIndex);
     }
 
-    return row.get(columnIndex);
+    switch (columnIndex + 1) {
+    case ChainsawColumns.INDEX_ID_COL_NAME:
+
+      Object id = event.getProperty(ChainsawConstants.LOG4J_ID_KEY);
+
+      if (id != null) {
+        return id;
+      }
+      return new Integer(rowIndex);
+
+    case ChainsawColumns.INDEX_LEVEL_COL_NAME:
+      return event.getLevel();
+
+    case ChainsawColumns.INDEX_LOGGER_COL_NAME:
+      return event.getLoggerName();
+
+    case ChainsawColumns.INDEX_TIMESTAMP_COL_NAME:
+      return new Date(event.timeStamp);
+
+    case ChainsawColumns.INDEX_MESSAGE_COL_NAME:
+      return event.getRenderedMessage();
+
+    case ChainsawColumns.INDEX_MDC_COL_NAME:
+      return event.getMDCKeySet();
+
+    case ChainsawColumns.INDEX_NDC_COL_NAME:
+      return event.getNDC();
+
+    case ChainsawColumns.INDEX_PROPERTIES_COL_NAME:
+      return event.getPropertyKeySet();
+
+    case ChainsawColumns.INDEX_THREAD_COL_NAME:
+      return event.getThreadName();
+
+    case ChainsawColumns.INDEX_THROWABLE_COL_NAME:
+      return event.getThrowableStrRep();
+
+    case ChainsawColumns.INDEX_CLASS_COL_NAME:
+      return (info != null) ? info.getClassName() : "";
+
+    case ChainsawColumns.INDEX_FILE_COL_NAME:
+      return (info != null) ? info.getFileName() : "";
+
+    case ChainsawColumns.INDEX_LINE_COL_NAME:
+      return (info != null) ? info.getLineNumber() : "";
+
+    case ChainsawColumns.INDEX_METHOD_COL_NAME:
+      return (info != null) ? info.getMethodName() : "";
+
+    default:
+      return "";
+    }
   }
 
-  public boolean isAddRow(Vector row, boolean valueIsAdjusting) {
+  public boolean isAddRow(LoggingEvent e, boolean valueIsAdjusting) {
     boolean rowAdded = false;
 
     synchronized (syncLock) {
-      //set the last field to the 'unfilteredevents size + 1 - an ID based on reception order
-      int propertiesIndex =
-        ChainsawColumns.getColumnsNames().indexOf(
-          ChainsawConstants.PROPERTIES_COL_NAME);
-      String props = (String) row.get(propertiesIndex);
-      Integer thisInt = null;
+      Object id = e.getProperty(ChainsawConstants.LOG4J_ID_KEY);
 
-      if (props.indexOf(ChainsawConstants.LOG4J_ID_KEY) > -1) {
-        StringBuffer newProps = new StringBuffer();
-        StringTokenizer t = new StringTokenizer(props, ",");
-
-        while (t.hasMoreElements()) {
-          StringTokenizer t2 = new StringTokenizer(t.nextToken(), "=");
-          String propertyName = t2.nextToken();
-
-          if (propertyName.equalsIgnoreCase(ChainsawConstants.LOG4J_ID_KEY)) {
-            thisInt = new Integer(t2.nextToken());
-          } else {
-            if (newProps.length() > 0) {
-              newProps.append(",");
-            }
-
-            newProps.append(propertyName);
-            newProps.append("=");
-            newProps.append(t2.nextToken());
-          }
-        }
-
-        //strip off the ID property - not needed now that it's reloaded
-        row.set(propertiesIndex, newProps.toString());
+      if (id == null) {
+        id = new Integer(++uniqueRow);
+        e.setProperty(ChainsawConstants.LOG4J_ID_KEY, id.toString());
       }
-
-      if (thisInt == null) {
-        thisInt = new Integer(++uniqueRow);
-      }
-
-      row.add(thisInt);
 
       //prevent duplicate rows
-      if (unfilteredList.contains(row)) {
+      if (unfilteredList.contains(e)) {
         return false;
       }
 
-      unfilteredList.add(row);
+      unfilteredList.add(e);
 
-      if ((displayFilter == null) || (displayFilter.isDisplayed(row))) {
-        filteredList.add(row);
+      //    TODO hook up the new display filter stuff once converted
+      rowAdded = true;
+      filteredList.add(e);
 
-        rowAdded = true;
-      }
+      //      if ((displayFilter == null) || (displayFilter.isDisplayed(e))) {
+      //        filteredList.add(e);
+      //
+      //        rowAdded = true;
+      //      }
     }
 
     if (!valueIsAdjusting) {
       notifyCountListeners();
     }
 
-    int newRow = filteredList.indexOf(row);
+    int newRow = filteredList.size() - 1;
 
-    if(!isCyclic()) {
+    if (!isCyclic()) {
       fireTableRowsInserted(newRow, newRow);
     } else {
-      if(unfilteredList.size()==((CyclicBufferList)unfilteredList).getMaxSize()){
+      if (
+        unfilteredList.size() == ((CyclicBufferList) unfilteredList)
+          .getMaxSize()) {
         fireTableDataChanged();
       } else {
         fireTableRowsInserted(newRow, newRow);
       }
     }
-    
 
     return rowAdded;
+  }
+
+  /**
+   * Returns true if this model is Cyclic (bounded) or not
+   * @return true/false
+   */
+  public boolean isCyclic() {
+    return cyclic;
+  }
+
+  /**
+   * @return
+   */
+  protected int getMaxSize() {
+    if (!isCyclic()) {
+      throw new IllegalStateException(
+        "You cannot call getMaxSize() when the model is not cyclic");
+    }
+
+    return ((CyclicBufferList) unfilteredList).getMaxSize();
   }
 
   class SortExecutor implements Runnable {
@@ -631,10 +578,10 @@ public LoggingEvent getEvent(Vector v) {
 
     public void run() {
       synchronized (syncLock) {
-        Vector v = null;
+        LoggingEvent v = null;
 
         if ((currentRow > -1) && (currentRow < filteredList.size())) {
-          v = (Vector) filteredList.get(currentRow);
+          v = (LoggingEvent) filteredList.get(currentRow);
         }
 
         sortEnabled = true;
@@ -666,15 +613,16 @@ public LoggingEvent getEvent(Vector v) {
 
     public void run() {
       synchronized (syncLock) {
-        filteredList.clear();
+        //          TODO change when filtering refactor done.
+        if (displayFilter != null) {
+          filteredList.clear();
 
-        Vector v2 = null;
-        Iterator iter = unfilteredList.iterator();
+          Vector v2 = null;
+          Iterator iter = unfilteredList.iterator();
 
-        while (iter.hasNext()) {
-          v2 = (Vector) iter.next();
+          while (iter.hasNext()) {
+            v2 = (Vector) iter.next();
 
-          if (displayFilter != null) {
             if (displayFilter.isDisplayed(v2)) {
               filteredList.add(v2);
             }
@@ -690,23 +638,4 @@ public LoggingEvent getEvent(Vector v) {
       notifyCountListeners();
     }
   }
-  /**
-   * Returns true if this model is Cyclic (bounded) or not 
-   * @return true/false
-   */
-  public boolean isCyclic() {
-    return cyclic;
-  }
-
-  /**
-   * @return
-   */
-  protected int getMaxSize() {
-    if(!isCyclic()){
-      throw new IllegalStateException("You cannot call getMaxSize() when the model is not cyclic");
-    }
-    return ((CyclicBufferList)unfilteredList).getMaxSize();
-  }
-
-
 }
