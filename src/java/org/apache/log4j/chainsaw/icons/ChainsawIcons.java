@@ -160,6 +160,9 @@ public class ChainsawIcons
       
       
   public static final URL ICON_INACTIVE_RECEIVER = PAUSE;
+  public static final URL ICON_COLLAPSE =    ChainsawIcons.class.getClassLoader().getResource(
+  BASE_ICON_PATH + "ZoomOut16.gif");;
+;
 
   //~ Constructors ============================================================
 
