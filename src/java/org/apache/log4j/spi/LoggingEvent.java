@@ -230,7 +230,10 @@ public class LoggingEvent implements java.io.Serializable {
       ndcLookupRequired = false;
       // the clone call is required for asynchronous logging.
       // See also bug #5932.
-      mdcCopy = (Hashtable) MDC.getContext().clone();
+      Hashtable t = (Hashtable) MDC.getContext();
+      if(t != null) {
+	mdcCopy = (Hashtable) t.clone();
+      }
     }
   }
 

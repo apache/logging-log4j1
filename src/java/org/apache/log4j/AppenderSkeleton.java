@@ -201,8 +201,9 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
   void doAppend(LoggingEvent event) {
     if(closed) {
       LogLog.error("Attempted to append to closed appender named ["+name+"].");
+      return;
     }
-
+    
     if(!isAsSevereAsThreshold(event.level)) {
       return;
     }

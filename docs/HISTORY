@@ -9,6 +9,10 @@
  
  - Release of version 1.2 
 
+
+ - AsyncAppender throws NullPointerException problem. The bug was actually in
+   AppenderSkeleton. See bug #5444 for more details. [*]
+
  - Added support for recursive variable substiuton as requested by
    Eric Chastan. [*]
 

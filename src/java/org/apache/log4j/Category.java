@@ -263,15 +263,6 @@ public class Category implements AppenderAttachable {
       forcedLog(FQCN, Level.DEBUG, message, t);
   }
 
-  //public
-  //void dump() {
-  //  System.out.println("Category " + name + " dump -----");
-  //  for(Category c = this; c != null; c=c.parent)
-  //	System.out.println("("+c.name+", "+c.level+") ->");
-  //  System.out.println("---------------------------");
-  //
-  //}
-
   /**
     Log a message object with the {@link Level#ERROR ERROR} Level.
 

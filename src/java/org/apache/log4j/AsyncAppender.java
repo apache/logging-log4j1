@@ -44,33 +44,6 @@ import java.util.Enumeration;
 public class AsyncAppender extends AppenderSkeleton
                                             implements AppenderAttachable {
 
-  /**
-     A string constant used in naming the option for setting the
-     location information flag.  Current value of this string
-     constant is <b>LocationInfo</b>.
-
-     <p>Note that all option keys are case sensitive.
-
-     @deprecated Options are now handled using the JavaBeans paradigm.
-     This constant is not longer needed and will be removed in the
-     <em>near</em> term.
-  */
-  public static final String LOCATION_INFO_OPTION = "LocationInfo";
-
-
-  /**
-     A string constant used in naming the option for setting the size of the
-     internal buffer where logging events are stored until they are written.
-     Current value of this string constant is <b>BufferSize</b>.
-
-     <p>Note that all option keys are case sensitive.
-
-     @deprecated Options are now handled using the JavaBeans paradigm.
-     This constant is not longer needed and will be removed in the
-     <em>near</em> term.
-  */
-  public static final String BUFFER_SIZE_OPTION = "BufferSize";
-
   /** The default buffer size is set to 128 events. */
   public static final int DEFAULT_BUFFER_SIZE = 128;
 
@@ -144,8 +117,10 @@ public class AsyncAppender extends AppenderSkeleton
   public
   void close() {
     synchronized(this) {
-      if(closed) // avoid multiple close, otherwise one gets NullPointerException
+      // avoid multiple close, otherwise one gets NullPointerException
+      if(closed) { 
 	return;
+      }
       closed = true;
     }
 
