@@ -128,6 +128,20 @@
     </antcall>
   </target>	
 
-  
-  
+	<!-- ============================================= -->
+	<!-- ============= Logging loop ================== -->
+	<target name="loggingLoop">
+	  <java classname="org.apache.log4j.performance.LoggingLoop" 
+		  fork="yes" failonerror="true">
+	      <classpath refid="perf.classpath"/>
+	      <arg line="10000000 ${configFile}"/>
+	   </java>
+	 </target>
+	
+	<target name="loggingGroup">
+	    <antcall target="loggingLoop">
+	      <param name="configFile" value="input/performance/null-appender-info.xml"/>
+	    </antcall>
+    </target>
+		
 </project>
