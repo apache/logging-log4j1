@@ -25,8 +25,11 @@ import org.apache.log4j.spi.location.LocationInfo;
 
 /**
  * This layout outputs events in a HTML table.
+ *
+ * @deprecated  HTMLLayout is replaced by the much more flexible 
+ * {@link org.apache.log4j.html.HTMLLayout}.
  * 
- * @author Ceki G&uuml;lc&uuml;
+ *  @author Ceki G&uuml;lc&uuml;
  */
 public class HTMLLayout extends Layout {
 
