@@ -22,7 +22,7 @@
    few users should suffer from these changes. [**]
 
  - Removed the methods setRootPriority, getRootPriority as these
-   methods are redundant and had been previously deprecated. [**]
+   methods were redundant and had been previously deprecated. [**]
 
  - Removed the DOM Level 2 dependency in DOMConfigurator. This makes
    log4j XML configurable using Sun's parser or Apache's Xerces. [*]

@@ -19,3 +19,9 @@ if [ $? != 0 ]; then
   echo "UnitTestCyclicBuffer failed."
   exit 1   
 fi
+
+java junit.textui.TestRunner org.apache.log4j.test.UnitTestOR
+if [ $? != 0 ]; then
+  echo "UnitTestOR failed."
+  exit 1   
+fi

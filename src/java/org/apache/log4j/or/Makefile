@@ -5,6 +5,7 @@ JSOURCES:= ObjectRenderer.java\
 	RendererMap.java\
 	DefaultRenderer.java\
 	ThreadGroupRenderer.java\
+	MessageRenderer.java\
 
 
 #ifdef FULL
