@@ -10,7 +10,8 @@
 
  - Release of version 1.1b5
 
- - In HTMLLayout, the Title option sets the HTML document title (<title>...<title>).
+ - In HTMLLayout, the Title option sets the HTML document 
+   title (<title>...<title>). [*]
  
  - Corrected an important performance bug in LocationInfo. Hein Couwet
    and kr@it-practice.dk have independently identified the bug. This is
@@ -96,10 +97,10 @@
 
    perl -p -i.bak -e "s/configuration/log4j:configuration/;" file1.xml .. fileN.xml
 
-  - The "log4j.configDebug" system property has been replaced with the
-    "log4j.debug" system property although it is still available.
-    Similarly, the "configDebug" attribute has been deprecated and
-    replaced with the "debug" attribute in log4j.dtd. [*]
+ - The "log4j.configDebug" system property has been replaced with the
+   "log4j.debug" system property although it is still available.
+   Similarly, the "configDebug" attribute has been deprecated and
+   replaced with the "debug" attribute in log4j.dtd. [*]
 
 	
  February 23, 2001
@@ -816,7 +817,7 @@ Corrected a bug where the internal prtar tzvf iority integer
 
    one will write
 
-       CAT.debug("Some message.");
+        CAT.debug("Some message.");
 
    Arndt Schoenewald <arndt@ibm23093i821.mc.schoenewald.de> observed that
    one could use the Category objects directly for logging. 
@@ -839,8 +840,8 @@ Corrected a bug where the internal prtar tzvf iority integer
  - Changes in the documentation to reflect the API changes. 
 
  - The NDC.cloneStack and inherit methods now tolerate null-stacks. [*]
-
     
+
  January 29, 2000
 
  - Release of version 0.7.5.
