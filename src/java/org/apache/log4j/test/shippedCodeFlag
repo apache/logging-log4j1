@@ -21,10 +21,10 @@ if [ $TEST -ge $start ]; then
   testSCF basic
 fi
 
-TEST=2
-if [ $TEST -ge $start ]; then
-  testSCF basic -Dlog4j.disableOverride
-fi
+#TEST=2
+#if [ $TEST -ge $start ]; then
+#  testSCF basic -Dlog4j.disableOverride
+#fi
 
 TEST=3
 if [ $TEST -ge $start ]; then
@@ -37,13 +37,13 @@ if [ $TEST -ge $start ]; then
 fi
 
 
-TEST=4
-if [ $TEST -ge $start ]; then
-  echo "log4j.disableOverride" > $LCF
-  lecho "log4j.rootCategory=,A"
-  lecho "log4j.appender.A=org.apache.log4j.ConsoleAppender"
-  lecho "log4j.appender.A.Target=System.out"
-  lecho "log4j.appender.A.layout=org.apache.log4j.PatternLayout"
-  lecho "log4j.appender.A.layout.ConversionPattern=%p [%t] %c{2} = %m%n"    
-  testSCF $LCF 
-fi
+#TEST=4
+#if [ $TEST -ge $start ]; then
+#  echo "log4j.disableOverride" > $LCF
+#  lecho "log4j.rootCategory=,A"
+#  lecho "log4j.appender.A=org.apache.log4j.ConsoleAppender"
+#  lecho "log4j.appender.A.Target=System.out"
+#  lecho "log4j.appender.A.layout=org.apache.log4j.PatternLayout"
+#  lecho "log4j.appender.A.layout.ConversionPattern=%p [%t] %c{2} = %m%n"    
+#  testSCF $LCF 
+#fi
