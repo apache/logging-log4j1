@@ -114,6 +114,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
@@ -710,18 +711,18 @@ class ReceiversPanel extends JPanel {
 	addSeparator();
 	
 	  final Receiver r = getCurrentlySelectedReceiver();
-	  add(createLevelCheckBoxMenuItem(r, Level.DEBUG));
-	  add(createLevelCheckBoxMenuItem(r, Level.INFO));
-	  add(createLevelCheckBoxMenuItem(r, Level.WARN));
-	  add(createLevelCheckBoxMenuItem(r, Level.ERROR));
+	  add(createLevelRadioButton(r, Level.DEBUG));
+	  add(createLevelRadioButton(r, Level.INFO));
+	  add(createLevelRadioButton(r, Level.WARN));
+	  add(createLevelRadioButton(r, Level.ERROR));
 	  addSeparator();
-	  add(createLevelCheckBoxMenuItem(r, Level.OFF));
-	  add(createLevelCheckBoxMenuItem(r, Level.ALL));
+	  add(createLevelRadioButton(r, Level.OFF));
+	  add(createLevelRadioButton(r, Level.ALL));
 	  
     }
 
 
-	private JCheckBoxMenuItem createLevelCheckBoxMenuItem(final Receiver r, final Level l) {
+	private JRadioButtonMenuItem createLevelRadioButton(final Receiver r, final Level l) {
 		Map levelIconMap = LevelIconFactory.getInstance().getLevelToIconMap();
 
 		Action action = new AbstractAction(l.toString(),(Icon)levelIconMap.get(l.toString())){
@@ -733,7 +734,7 @@ class ReceiversPanel extends JPanel {
 					}
 				}
 		};
-		JCheckBoxMenuItem item = new JCheckBoxMenuItem(action);
+		JRadioButtonMenuItem item = new JRadioButtonMenuItem(action);
 		item.setSelected(r.getThreshold() == l);
 		return item;
 	}
