@@ -10,6 +10,7 @@ package org.apache.log4j.examples;
 import org.apache.log4j.*;
 import org.apache.log4j.spi.CategoryFactory;
 import org.apache.log4j.xml.DOMConfigurator;
+import org.apache.log4j.xml.examples.XPriority;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.helpers.LogLog;
 
@@ -87,7 +88,6 @@ public class MyCategory extends Category {
     super(name);
   }
 
-
   /**
      Overrides the standard debug method by appending " world" at the
      end of each message.  */
@@ -104,6 +104,11 @@ public class MyCategory extends Category {
   static
   Category getInstance(String name) {
     return Category.getInstance(name, myFactory); 
+  }
+
+  public
+  void trace(String message) {
+    super.log(XPriority.TRACE, message);
   }
 }
 

@@ -5,6 +5,15 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
 
+ May 20, 2001
+
+ - Release of version 1.1.1.
+
+ - Added missing custom priority support in PropertyConfigurator. [*]
+
+ - Made a number of fields protected instead of default access in
+   SMTPAppender. [*]
+
  May 19, 2001
 
  - Release of version 1.1.
