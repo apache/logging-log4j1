@@ -1390,7 +1390,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     if (
       UIManager.getLookAndFeel().getClass().getName().equals(
           lookAndFeelClassName)) {
-      MessageCenter.getInstance().getLogger().debug("No need to change L&F, already the same");
+      //MessageCenter.getInstance().getLogger().debug("No need to change L&F, already the same");
 
       return;
     }
@@ -1402,9 +1402,9 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     }
     try {
       UIManager.setLookAndFeel(lookAndFeelClassName);
-      MessageCenter.getInstance().getLogger().debug("Setting L&F -> " + lookAndFeelClassName);
+      //MessageCenter.getInstance().getLogger().debug("Setting L&F -> " + lookAndFeelClassName);
      } catch (Exception e) {
-      MessageCenter.getInstance().getLogger().error("Failed to change L&F", e);
+      //MessageCenter.getInstance().getLogger().error("Failed to change L&F", e);
     }
   }
 
