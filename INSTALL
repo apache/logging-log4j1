@@ -60,6 +60,9 @@ on JDK 1.1 with the following additional requirements:
     parser. Compiling the DOMConfigurator requires the presence of a
     JAXP parser in the classpath.  
 
+    Log4j is shipped with jaxp.jar and parser.jar files under the
+    build/lib/ directory.
+
     ------------
     SMTPAppender
     ------------
@@ -101,6 +104,8 @@ Like most java appilicatios today, log4j relies on ANT as its build
 tool. ANT is availale from "http://jakarta.apache.org/ant/".  ANT
 requires a build file called build.xml which is part of this
 distribution.
+
+Log4j is shipped with ant.jar file under the build/lib/ directory.
 
 Alternatively, you might wish to use the GNU-Make build/compile
 environment included with the package. In that case, you need to
