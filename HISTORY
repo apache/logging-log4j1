@@ -8,6 +8,8 @@
  January 8th, 2001
 
  - Release of version 1.0 (the 20th public release)
+
+ - Package hierarchy now starts at org.apache.log4j. [***]
  
  - Added the fatal() family of methods to the Category
    class.  Moreoever, the EMERG priority has been removed from the
@@ -34,7 +36,7 @@
    property. [*]
 
  - Enhanced the PropertyConfigurator and DOMConfigurator to support
-   customization of independent Hierarchies. The
+   customization of independent Hierarchy instances.  The
    org.apache.log4j.net.SocketServer has been enhanced to take
    advantage of this functionality. The old code of SocketServer has
    been moved to SimpleSocketServer. [**]
