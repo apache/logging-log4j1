@@ -93,8 +93,8 @@
     </available>
 
     <fail unless="junit-present">
-      Is junit.jar missing? See the documentation for the
-      junit task in the Apache Ant Manual.
+      Could not find junit classes. Is the file junit.jar missing? 
+      See the documentation for the junit task in the Apache Ant Manual.
     </fail>
   </target>
   
