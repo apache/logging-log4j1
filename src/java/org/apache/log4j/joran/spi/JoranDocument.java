@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.apache.log4j.joran.util;
+package org.apache.log4j.joran.spi;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.helpers.Constants;
