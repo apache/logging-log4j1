@@ -4,13 +4,13 @@ public class Node {
 	
 	public static final int FALSE = 1;
 	public static final int TRUE = 2;
+  public static final int COMPARATOR = 3;
 
 	public static final int OR = 1000;
 	public static final int AND = 1100;
 	public static final int NOT = 1200;
 	
   Node left;
-	//Node middle;
 	Node right;
 
   final int type;
@@ -42,16 +42,8 @@ public class Node {
 		}
 		this.left = leftSide;
 	}
-	//public Node getMiddle() {
-		//return middle;
-	//}
-	//public void setMiddle(Node middle) {
-		//if(this.middle != null) {
-		  //throw new IllegalStateException("The middle already set. (old="+this.middle+", new="+middle+")");
-		//}
-		//this.middle = middle;
-	//}
-	public Node getRight() {
+
+  public Node getRight() {
 		return right;
 	}
 	public void setRight(Node rightSide) {

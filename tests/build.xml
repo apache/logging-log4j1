@@ -177,6 +177,7 @@
   	                                 LevelOptionConverterTest,
   				                     BoundedFIFO, 
                                      Joran,
+  	                                 LBEL,
                                      SimpleFilter,
   	                                 Scheduler, 
                                      ThrowableInformation,
@@ -220,6 +221,11 @@
                                 JoranConfigurator"/>
 
 
+  <!-- ================================================================= -->
+  <!-- LBEL related tests                                                -->
+  <!-- ================================================================= -->
+  <target name="LBEL" depends="TokenStream, CoreParser, EventEvaluation"/>
+	
   <!-- ================================================================= -->
   <!-- ============== Regression and Unit Tests follow ================= -->  
   <!-- ================================================================= -->
@@ -417,14 +423,6 @@
 	</junit>
   </target>
 	
-  <target name="ErrorHandler" depends="check, build, cleanOutputDir">
-    <junit printsummary="yes" fork="yes" haltonfailure="yes">
-      <classpath refid="tests.classpath"/>
-      <formatter type="plain" usefile="false" />
-      <test name="org.apache.log4j.varia.ErrorHandlerTestCase" />
-    </junit>
-  </target>
-  
   <target name="OptionSubstitutionTest" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
@@ -598,6 +596,29 @@
     </junit>
   </target>
 
+  <target name="TokenStream" depends="check, build, cleanOutputDir">
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+	  <classpath refid="tests.classpath"/>
+	  <formatter type="plain" usefile="false" />
+	  <test name="org.apache.log4j.lbel.TokenStreamTest" />
+	</junit>
+  </target>	
+	
+  <target name="CoreParser" depends="check, build, cleanOutputDir">
+	<junit printsummary="yes" fork="yes" haltonfailure="yes">
+	  <classpath refid="tests.classpath"/>
+	  <formatter type="plain" usefile="false" />
+	  <test name="org.apache.log4j.lbel.CoreParserTest" />
+	</junit>
+  </target>
+	
+  <target name="EventEvaluation" depends="check, build, cleanOutputDir">
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+	  <classpath refid="tests.classpath"/>
+	  <formatter type="plain" usefile="false" />
+	  <test name="org.apache.log4j.lbel.EventEvaluationTest" />
+	</junit>
+  </target>	
 
   <target name="Scheduler" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">

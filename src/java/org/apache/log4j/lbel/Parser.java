@@ -3,6 +3,12 @@ package org.apache.log4j.lbel;
 import java.io.IOException;
 import java.util.Stack;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.lbel.comparator.Comparator;
+import org.apache.log4j.lbel.comparator.LevelComparator;
+import org.apache.log4j.lbel.comparator.LoggerComparator;
+import org.apache.log4j.spi.LoggingEvent;
+
 /**
  * 
 
@@ -70,7 +76,7 @@ public class Parser {
 	Node bexpTail() throws IOException, ScanError {
     Token token = ts.getCurrent();
     switch(token.getType()) {
-    case TokenStream.OR:
+    case Token.OR:
     	ts.next();
     	Node or = new Node(Node.OR, "OR");
       
@@ -104,7 +110,7 @@ public class Parser {
 	Node btermTail() throws IOException, ScanError {
     Token token = ts.getCurrent();
     switch(token.getType()) {
-    case TokenStream.AND:
+    case Token.AND:
     	ts.next();
   	  Node and = new Node(Node.AND, "AND");
       Node bfactor = bfactor();
@@ -124,7 +130,7 @@ public class Parser {
 	Node bfactor() throws IOException, ScanError {
     Token token = ts.getCurrent();
     switch(token.getType()) {
-    case TokenStream.NOT:
+    case Token.NOT:
     	ts.next();
       Node result = new Node(Node.NOT, "NOT");
       Node bsubfactor = bsubfactor();
@@ -136,59 +142,94 @@ public class Parser {
 	}
 	
 	Node bsubfactor() throws IOException, ScanError {
-
-		Node result;
     Token token = ts.getCurrent();
+    Operator operator;
+    String literal;
     switch(token.getType()) {
-    case TokenStream.TRUE:
+    case Token.TRUE:
     	ts.next();
-      result = new Node(Node.TRUE, "TRUE");
-      break;
-    case TokenStream.FALSE:
+      return new Node(Node.TRUE, "TRUE");
+    case Token.FALSE:
     	ts.next();
-      result = new Node(Node.FALSE, "FALSE");
-      break;
-    case   TokenStream.LP:
+      return new Node(Node.FALSE, "FALSE");
+    case   Token.LP:
     	ts.next();
-      result = bexp();
+      Node result = bexp();
       Token token2 = ts.getCurrent();
-      if(token2.getType() == TokenStream.RP) {
+      if(token2.getType() == Token.RP) {
       	ts.next();
       } else {
       	throw new IllegalStateException("Expected right parantheses but got" +token);
       }
-      break;
-    default: throw new IllegalStateException("Excpected DIGIT but got" +token);
+      return result;
+    case Token.LOGGER:
+      ts.next();
+      operator = getOperator();
+      ts.next();
+      literal = getIdentifier();
+      return new Node(Node.COMPARATOR, new LoggerComparator(operator, literal));
+    case Token.LEVEL:
+      ts.next();
+      operator = getOperator();
+      ts.next();
+      int levelInt = getLevelInt();
+      return new Node(Node.COMPARATOR, new LevelComparator(operator, levelInt));
+    default: throw new IllegalStateException("Unexpected token " +token);
     }
-    return result;
 	}
+  
+  Operator getOperator() throws ScanError {
+    Token token = ts.getCurrent();
+    if(token.getType() == Token.OPERATOR) {
+      String value = (String) token.getValue();
+      if("=".equals(value)) {
+        return new Operator(Operator.EQUAL);
+      } else if("!=".equals(value)) {
+        return new Operator(Operator.NOT_EQUAL);
+      } else if(">".equals(value)) {
+        return new Operator(Operator.GREATER);
+      } else if(">=".equals(value)) {
+        return new Operator(Operator.GREATER_OR_EQUAL);
+      } else if("<".equals(value)) {
+        return new Operator(Operator.LESS);
+      } else if(">=".equals(value)) {
+        return new Operator(Operator.LESS_OR_EQUAL);
+      } else if("~".equals(value)) {
+        return new Operator(Operator.REGEX_MATCH);
+      } else if("!~".equals(value)) {
+        return new Operator(Operator.NOT_REGEX_MATCH);
+      } else if("childof".equals(value)) {
+        return new Operator(Operator.CHILDOF);
+      } else {
+        throw new ScanError("Unknown operator type ["+value+"]");
+      }
+    } else {
+      throw new ScanError("Expected operator token");
+    }
+  }
 	
-	public boolean evaluate(Node node) {
-		int type = node.getType();
-		boolean left;
-		switch(type) {
-		case Node.TRUE:
-			return true;
-		case Node.FALSE:
-			return false;
-		case Node.OR:
-			left = evaluate(node.getLeft());
-		  if(left == true) {
-		  	return true;
-		  } else {
-		  	return evaluate(node.getRight());
-		  }
-		case Node.AND:
-		  left = evaluate(node.getLeft());
-	    if(left == false) {
-	  	  return false;
-	    } else {
-	  	  return evaluate(node.getRight());
-	    }
-    case Node.NOT:
-    	return !evaluate(node.getLeft());
-		}
-		return false;
-	}
+  String getIdentifier() throws ScanError {
+    Token token = ts.getCurrent();
+    if(token.getType() == Token.LITERAL) {
+      return (String) token.getValue();
+    } else {
+      throw new ScanError("Expected identifier token but got "+token);
+    }
+  }
+  
+  int getLevelInt() throws ScanError {
+    String levelStr = getIdentifier();
 
+    if("DEBUG".equalsIgnoreCase(levelStr)) {
+      return Level.DEBUG_INT;
+    } else if("INFO".equalsIgnoreCase(levelStr)) {
+      return Level.INFO_INT;
+    } else if("WARN".equalsIgnoreCase(levelStr)) {
+      return Level.WARN_INT;
+    } else if("ERROR".equalsIgnoreCase(levelStr)) {
+      return Level.ERROR_INT;
+    } else {
+      throw new ScanError("Expected a level stirng got "+levelStr);
+    }
+  }
 }
