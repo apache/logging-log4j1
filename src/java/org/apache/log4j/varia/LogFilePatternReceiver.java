@@ -1,19 +1,19 @@
 /*
  * Copyright 1999,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 package org.apache.log4j.varia;
 
 import org.apache.log4j.Level;
@@ -41,16 +41,16 @@ import java.util.Map;
 
 
 /**
- * A receiver which supports the definition of the log format using keywords, the 
+ * A receiver which supports the definition of the log format using keywords, the
  * contained timestamp using SimpleDateFormat's format support, and the file name
- * 
+ *
  * FEATURES:
  * specify the file to be processed
  * specify the timestamp format (if one exists)
  * specify the layout used in the log file
  * define your file's layout using these keywords along with any text being added as delimiters
  * supports the conversion of exceptions found in the file
- * 
+ *
  * TIMESTAMP
  * LOGGER
  * LEVEL
@@ -62,59 +62,58 @@ import java.util.Map;
  * RELATIVETIME
  * MESSAGE
  * *
- * 
+ *
  * For example,
- * 
+ *
  * If your file's patternlayout is this:
  * %d %-5p [%t] %C{2} (%F:%L) - %m%n
- * 
+ *
  * specify this as the log format:
  * TIMESTAMP LEVEL [THREAD] CLASS (FILE:LINE) - MESSAGE
- * 
+ *
  * If your file's patternlayout is this:
  * %r [%t] %-5p %c %x - %m%n
- * 
+ *
  * specify this as the log format:
  * RELATIVETIME [THREAD] LEVEL LOGGER * - MESSAGE
- * 
+ *
  * Note the * - it can be used to ignore a single word or sequence of words in the log file
  * (in order for the wildcard to ignore a sequence of words, the text being ignored must be
  *  followed by some delimiter, like '-' or '[')
- * 
- * Note how keywords may be surrounded by delimiters, and in the second example, 
- * ndc is ignored (even multiple words in the ndc in this case, since the keyword 
+ *
+ * Note how keywords may be surrounded by delimiters, and in the second example,
+ * ndc is ignored (even multiple words in the ndc in this case, since the keyword
  * is followed by a delimiter (-)
- * 
+ *
  * LIMITATIONS:
  * - no support for mdc, ndc, properties or the single-line version of throwable supported by patternlayout
  * - relativetime is set as a property
- * - loggers with spaces in their names are not supported (but may work if followed by a delimiter, 
+ * - loggers with spaces in their names are not supported (but may work if followed by a delimiter,
  *   similar to wildcard example above)
  * - messages must appear at the end of the line
- * - note the explanation above describing the rules for ignoring text using the wildcard 
+ * - note the explanation above describing the rules for ignoring text using the wildcard
  *   keyword
  * - exceptions will be converted if the exception stack trace lines (other than the first line)
  *   are stored in the log file with a tab as the first character
- * 
+ *
  * EXAMPLE RECEIVER CONFIGURATION (add these as params, specifying a LogFilePatternReceiver 'plugin'
- * 
+ *
  * param: "timestampFormat" value="yyyy-MM-d HH:mm:ss,SSS"
  * param: "logFormat" value="RELATIVETIME [THREAD] LEVEL LOGGER * - MESSAGE"
  * param: "fileName" value="c:/logs/A4.log"
- * 
+ *
  * NOTE: in our example file content below, the timestampFormat entry defined above
  * is not required, but included as an example of how to specify the format.  See SimpleDateFormat
  * for more information.
- * 
+ *
  * This configuration will be able to process these sample events:
  * 710    [       Thread-0] DEBUG                   first.logger first - <test>   <test2>something here</test2>   <test3 blah=something/>   <test4>       <test5>something else</test5>   </test4></test>
  * 880    [       Thread-2] DEBUG                   first.logger third - <test>   <test2>something here</test2>   <test3 blah=something/>   <test4>       <test5>something else</test5>   </test4></test>
  * 880    [       Thread-0] INFO                    first.logger first - infomsg-0
  * java.lang.Exception: someexception-first
  *     at Generator2.run(Generator2.java:102)
- * 
+ *
  */
-
 public class LogFilePatternReceiver extends Receiver {
   public static final String TIMESTAMP = "TIMESTAMP";
   public static final String LOGGER = "LOGGER";
@@ -132,7 +131,7 @@ public class LogFilePatternReceiver extends Receiver {
   private final List logFormatFields = new ArrayList();
   private final Map defaultMap = new HashMap();
   private SimpleDateFormat dateFormat;
-  private String timestampFormat;
+  private String timestampFormat = "yyyy-MM-d HH:mm:ss,SSS";
   private String logFormat;
   private String fileName;
   private String shortFileName;
@@ -146,11 +145,8 @@ public class LogFilePatternReceiver extends Receiver {
 
     //supported keyword replacements are expected to be single words, except for the MESSAGE keyword,
     //which is expected to appear at the end of each entry in the log file
-    
     //since throwable, mdc, ndc and properties can all have spaces, they're not yet supported
-    
     //while loggers may containspaces, only loggers without spaces are currently supported
-    
     //fullinfo pattern is not supported directly - build from individual keywords instead
     keywords.add(TIMESTAMP);
     keywords.add(LOGGER);
@@ -224,11 +220,11 @@ public class LogFilePatternReceiver extends Receiver {
   /**
    * Mutator
    *
-   * @param fileName 
+   * @param fileName
    */
   public void setFileName(String fileName) {
     this.fileName = fileName;
-    shortFileName=new File(fileName).getName();
+    shortFileName = new File(fileName).getName();
   }
 
   /**
@@ -252,12 +248,12 @@ public class LogFilePatternReceiver extends Receiver {
   /**
    * Mutator
    *
-   * @param timestampFormat 
+   * @param timestampFormat
    */
   public void setTimestampFormat(String timestampFormat) {
     this.timestampFormat = timestampFormat;
   }
-
+  
   /**
    * Accessor
    *
@@ -270,9 +266,9 @@ public class LogFilePatternReceiver extends Receiver {
   /**
    * Convert a reader into a buffered reader, reading lines and converting lines into log events
    *
-   * @param unbufferedReader 
+   * @param unbufferedReader
    *
-   * @throws IOException 
+   * @throws IOException
    */
   public void process(Reader unbufferedReader) throws IOException {
     BufferedReader reader = new BufferedReader(unbufferedReader);
@@ -325,6 +321,7 @@ public class LogFilePatternReceiver extends Receiver {
 
           //GENERATE EXCEPTION EVENT
           LoggingEvent event = convertToEvent(firstLine, exception);
+
           //System.out.println(
           //  "created event with exception " + event.getLoggerName() + ".."
           //  + event.getMessage());
@@ -332,6 +329,7 @@ public class LogFilePatternReceiver extends Receiver {
         } else {
           //GENERATE NON-EXCEPTION EVENT
           LoggingEvent event = convertToEvent((String) list.remove(0));
+
           //System.out.println(
           //  "Created event " + event.getLoggerName() + ".."
           //  + event.getMessage());
@@ -349,6 +347,7 @@ public class LogFilePatternReceiver extends Receiver {
       if ((s != null) && (s.length() > 0)) {
         //GENERATE NON-EXCEPTION EVENT
         LoggingEvent event = convertToEvent(s);
+
         //System.out.println(
         //  "cleanup - Created non-exception event " + event.getLoggerName()
         //  + ".." + event.getMessage());
@@ -474,7 +473,7 @@ public class LogFilePatternReceiver extends Receiver {
     String lineNumber = null;
     Hashtable properties = new Hashtable();
 
-    if (dateFormat != null && fieldMap.containsKey(TIMESTAMP)) {
+    if ((dateFormat != null) && fieldMap.containsKey(TIMESTAMP)) {
       try {
         timeStamp =
           dateFormat.parse((String) fieldMap.get(TIMESTAMP)).getTime();
