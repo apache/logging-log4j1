@@ -2,8 +2,8 @@
 package org.apache.log4j.test;
 
 import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
-import org.apache.log4j.Category;
 import org.apache.log4j.Level;
 /**
    This class is a test of the PatternLayout class.
@@ -11,8 +11,8 @@ import org.apache.log4j.Level;
    @author Ceki G&uuml;lc&uuml;
 */
 public class PatternTest {
-  static Category CAT = Category.getInstance(PatternTest.class);
-
+  final static Logger logger = Logger.getLogger(PatternTest.class);
+  
 
   public 
   static 
@@ -41,37 +41,37 @@ public class PatternTest {
   static
   void test() {
     int i = -1;
-    Category root = Category.getRoot();
+    Logger root = Logger.getRootLogger();
     
-    CAT.debug("Message " + ++i);
+    logger.debug("Message " + ++i);
     root.debug("Message " + i);        
 
-    CAT.info ("Message " + ++i);
+    logger.info ("Message " + ++i);
     root.info("Message " + i);        
 
-    CAT.warn ("Message " + ++i);
+    logger.warn ("Message " + ++i);
     root.warn("Message " + i);        
 
-    CAT.error("Message " + ++i);
+    logger.error("Message " + ++i);
     root.error("Message " + i);
     
-    CAT.log(Level.FATAL, "Message " + ++i);
+    logger.log(Level.FATAL, "Message " + ++i);
     root.log(Level.FATAL, "Message " + i);    
     
     Exception e = new Exception("Just testing");
-    CAT.debug("Message " + ++i, e);
+    logger.debug("Message " + ++i, e);
     root.debug("Message " + i, e);
     
-    CAT.info("Message " + ++i, e);
+    logger.info("Message " + ++i, e);
     root.info("Message " + i, e);    
 
-    CAT.warn("Message " + ++i , e);
+    logger.warn("Message " + ++i , e);
     root.warn("Message " + i , e);    
 
-    CAT.error("Message " + ++i, e);
+    logger.error("Message " + ++i, e);
     root.error("Message " + i, e);    
 
-    CAT.log(Level.FATAL, "Message " + ++i, e);
+    logger.log(Level.FATAL, "Message " + ++i, e);
     root.log(Level.FATAL, "Message " + i, e);    
     
     LogManager.shutdown();

@@ -99,7 +99,7 @@ public class PropertyPrinter implements PropertyGetter.PropertyCallback {
       }
       appenderString += ", " + name;
     }
-    String catKey = (cat == Category.getRoot())
+    String catKey = (cat == Logger.getRootLogger())
         ? "log4j.rootCategory"
         : "log4j.category." + cat.getName();
     if (appenderString != "") {

@@ -4,7 +4,7 @@
 package org.apache.log4j.test;
 
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
 
@@ -16,7 +16,7 @@ import java.util.Random;
  */
 public class StressAsyncAppender extends Thread {
 
-  static Category root = Category.getRoot();
+  static Logger root = Logger.getRootLogger();
 
   static Random random = new Random(101);
 

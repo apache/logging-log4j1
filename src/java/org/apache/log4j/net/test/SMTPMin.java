@@ -11,8 +11,8 @@ import org.apache.log4j.*;
 
 public class SMTPMin {
 
-  static Category cat = Category.getInstance(SMTPMin.class);
-
+  final static Logger logger = Logger.getLogger(SMTPMin.class);
+  
   public
   static
   void main(String argv[]) {
@@ -42,12 +42,12 @@ public class SMTPMin {
   static
   void test() {
     int i  = 0;
-    cat.debug( "Message " + i++);
-    cat.debug("Message " + i++,  new Exception("Just testing."));
-    cat.info( "Message " + i++);
-    cat.warn( "Message " + i++);
-    cat.error( "Message " + i++);
-    cat.log(Level.FATAL, "Message " + i++);
+    logger.debug( "Message " + i++);
+    logger.debug("Message " + i++,  new Exception("Just testing."));
+    logger.info( "Message " + i++);
+    logger.warn( "Message " + i++);
+    logger.error( "Message " + i++);
+    logger.log(Level.FATAL, "Message " + i++);
     LogManager.shutdown();
     Thread.currentThread().getThreadGroup().list();
   }

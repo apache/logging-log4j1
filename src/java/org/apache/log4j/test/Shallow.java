@@ -10,6 +10,7 @@ import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.apache.log4j.Category;
 import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.log4j.NDC;
 import org.apache.log4j.Level;
 /**
@@ -19,7 +20,7 @@ import org.apache.log4j.Level;
 */
 public class Shallow {
 
-  static Category cat = Category.getInstance(Shallow.class);
+  static Category cat = Logger.getLogger(Shallow.class);
 
   public
   static
@@ -50,7 +51,7 @@ public class Shallow {
   void test() {
     int i = -1;
     NDC.push("NDC");
-    Category root = Category.getRoot();
+    Logger root = Logger.getRootLogger();
     cat.debug("Message " + ++i);
     root.debug("Message " + i);
 

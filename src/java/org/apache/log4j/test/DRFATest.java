@@ -7,8 +7,8 @@
 
 package org.apache.log4j.test;
 import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Category;
 import org.apache.log4j.Layout;
+import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.DailyRollingFileAppender;
 
@@ -19,7 +19,7 @@ import org.apache.log4j.DailyRollingFileAppender;
 */
 public class DRFATest {
 
-  static Category cat = Category.getInstance(DRFATest.class);
+  static Logger cat = Logger.getLogger(DRFATest.class);
 
   static int limit;
 

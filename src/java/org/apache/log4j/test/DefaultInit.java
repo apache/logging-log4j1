@@ -2,10 +2,11 @@
 package org.apache.log4j.test;
 
 import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 public class DefaultInit {
 
-  static Category cat = Category.getInstance(DefaultInit.class);
+  static Category cat = Logger.getLogger(DefaultInit.class);
 
   public static void main( String[] argv) {
     cat.debug("Hello world");
