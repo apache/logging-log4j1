@@ -16,6 +16,7 @@
 
 package org.apache.log4j.chainsaw.help;
 
+import org.apache.log4j.LogManager;
 import org.apache.log4j.chainsaw.Generator;
 import org.apache.log4j.plugins.Plugin;
 import org.apache.log4j.plugins.PluginRegistry;
@@ -35,8 +36,10 @@ public class Tutorial implements Runnable {
       Plugin p1 = new Generator("Generator 1");
       Plugin p2 = new Generator("Generator 2");
       Plugin p3 = new Generator("Generator 3");
-      PluginRegistry.startPlugin(p1);
-      PluginRegistry.startPlugin(p2);
-      PluginRegistry.startPlugin(p3);
+      
+      PluginRegistry pluginRegistry = LogManager.getLoggerRepository().getPluginRegistry();
+      pluginRegistry.startPlugin(p1);
+      pluginRegistry.startPlugin(p2);
+      pluginRegistry.startPlugin(p3);
   }
 }

@@ -181,6 +181,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    */
   private EventListenerList shutdownListenerList = new EventListenerList();
   private WelcomePanel welcomePanel;
+  private PluginRegistry pluginRegistry;
 
   /**
    * Constructor which builds up all the visual elements of the frame including
@@ -468,6 +469,42 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    * table columns, and sets itself viewable.
    */
   public void activateViewer() {
+    
+      getSettingsManager().configure(
+              new SettingsListener() {
+                public void loadSettings(LoadSettingsEvent event) {
+                  String configFile = event.getSetting(LogUI.CONFIG_FILE_TO_USE);
+
+                  //if both a config file are defined and a log4j.configuration property
+                  // are set,
+                  //don't use configFile's configuration
+                  if (
+                    (configFile != null) && !configFile.trim().equals("")
+                      && (System.getProperty("log4j.configuration") == null)) {
+                    try {
+                      URL url = new URL(configFile);
+                      OptionConverter.selectAndConfigure(
+                        url, null, LogManager.getLoggerRepository());
+
+                      if (LogUI.this.getStatusBar() != null) {
+                        MessageCenter.getInstance().getLogger().info(
+                          "Configured Log4j using remembered URL :: " + url);
+                      }
+
+                      LogUI.this.configURLToUse = url;
+                    } catch (Exception e) {
+                      MessageCenter.getInstance().getLogger().error(
+                        "error occurred initializing log4j", e);
+                    }
+                  }
+                }
+
+                public void saveSettings(SaveSettingsEvent event) {
+                  //required because of SettingsListener interface..not used during load
+                }
+              });
+
+    this.pluginRegistry = LogManager.getLoggerRepository().getPluginRegistry();  
     initGUI();
 
     initPrefModelListeners();
@@ -490,43 +527,10 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
         }
       });
 
+
+
     initSocketConnectionListener();
 
-    getSettingsManager().configure(
-      new SettingsListener() {
-        public void loadSettings(LoadSettingsEvent event) {
-          String configFile = event.getSetting(LogUI.CONFIG_FILE_TO_USE);
-
-          //if both a config file are defined and a log4j.configuration property
-          // are set,
-          //don't use configFile's configuration
-          if (
-            (configFile != null) && !configFile.trim().equals("")
-              && (System.getProperty("log4j.configuration") == null)) {
-            try {
-              URL url = new URL(configFile);
-              OptionConverter.selectAndConfigure(
-                url, null, LogManager.getLoggerRepository());
-
-              if (LogUI.this.getStatusBar() != null) {
-                MessageCenter.getInstance().getLogger().info(
-                  "Configured Log4j using remembered URL :: " + url);
-              }
-
-              LogUI.this.configURLToUse = url;
-            } catch (Exception e) {
-              MessageCenter.getInstance().getLogger().error(
-                "error occurred initializing log4j", e);
-            }
-          }
-        }
-
-        public void saveSettings(SaveSettingsEvent event) {
-          //required because of SettingsListener interface..not used during load
-        }
-      });
-
-    final PluginRegistry pluginRegistry = LogManager.getLoggerRepository().getPluginRegistry();
     if (pluginRegistry.getPlugins(Receiver.class).size() == 0) {
       noReceiversDefined = true;
     }
