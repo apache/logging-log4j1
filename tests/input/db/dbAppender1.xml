@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration>
+
+<!-- This file is used to test DBAppender. It assumes the existence of a local 
+  MySQL or PostgreSQL databases.
+	  -->
+	  
+<log4j:configuration debug="true">
+	  
+  <plugin name="DB1" class="org.apache.log4j.db.DBAppender">
+     <connectionSource class="org.apache.log4j.db.DBReceiver">
+       <param name="driverClass" value="com.mysql.jdbc.Driver"/>
+       <param name="url" value="jdbc:mysql:///test"/>
+       <param name="user" value="root"/>
+     </connectionSource>
+  </plugin>
+
+
+  <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+     <layout class="org.apache.log4j.PatternLayout"/>
+       <param name="ConversionPattern" value="%relative %level %logger - %message%n"/>
+     </layout>
+  </appender>
+  
+<!--
+   <appender name="CS" class="org.apache.log4j.chainsaw.ChainsawAppender">
+  </appender>
+  -->
+  <root>
+    <level value ="debug"/>
+    <appender-ref ref="CONSOLE" />
+  </root>  
+</log4j:configuration>
+
+
+
