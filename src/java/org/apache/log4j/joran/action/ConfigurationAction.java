@@ -45,12 +45,7 @@ public class ConfigurationAction extends ActionBase {
     }
   }
 
-
-
-  public void finish(ExecutionContext ec) {
-  }
-
-  public void end(ExecutionContext ec, String e) {
+  public void end(ExecutionContext ec, String name) {
     if (attachment) {
       LoggerRepository repository = (LoggerRepository) ec.getObject(0);
       List errorList = ec.getErrorList();

@@ -63,6 +63,7 @@ public class TimeBasedRollingPolicy extends RollingPolicySkeleton
           fileNamePattern = new FileNamePattern(fileNamePatternStr.substring(0, len -4));
           compressionMode = Compress.GZ;
         } else {
+          logger.debug("No compression will be used");
           fileNamePattern = new FileNamePattern(fileNamePatternStr);
           compressionMode = Compress.NONE;
         }
