@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+  <appender name="A1" class="org.apache.log4j.FileAppender">
+    <param name="File"   value="output/filters.LevelMatchFilter.test4.txt" />
+    <param name="Append" value="true" />
+        
+    <layout class="org.apache.log4j.SimpleLayout"/>
+    
+    <filter class="org.apache.log4j.filters.LevelMatchFilter">
+      <param name="MatchReturnValue" value="accept"/>
+      <param name="NoMatchReturnValue" value="deny"/>
+      <param name="LevelToMatch" value="warn"/>
+    </filter>
+  </appender>
+    
+  <root>
+    <priority value ="debug" />
+    <appender-ref ref="A1" />
+  </root>
+  
+</log4j:configuration>
