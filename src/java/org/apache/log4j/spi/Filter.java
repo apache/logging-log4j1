@@ -1,9 +1,51 @@
 /*
- * Copyright (C) The Apache Software Foundation. All rights reserved.
+ * ============================================================================
+ *                   The Apache Software License, Version 1.1
+ * ============================================================================
  *
- * This software is published under the terms of the Apache Software
- * License version 1.1, a copy of which has been included with this
- * distribution in the LICENSE.txt file.  */
+ *    Copyright (C) 1999 The Apache Software Foundation. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modifica-
+ * tion, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of  source code must  retain the above copyright  notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * 3. The end-user documentation included with the redistribution, if any, must
+ *    include  the following  acknowledgment:  "This product includes  software
+ *    developed  by the  Apache Software Foundation  (http://www.apache.org/)."
+ *    Alternately, this  acknowledgment may  appear in the software itself,  if
+ *    and wherever such third-party acknowledgments normally appear.
+ *
+ * 4. The names "log4j" and  "Apache Software Foundation"  must not be used to
+ *    endorse  or promote  products derived  from this  software without  prior
+ *    written permission. For written permission, please contact
+ *    apache@apache.org.
+ *
+ * 5. Products  derived from this software may not  be called "Apache", nor may
+ *    "Apache" appear  in their name,  without prior written permission  of the
+ *    Apache Software Foundation.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS  FOR A PARTICULAR  PURPOSE ARE  DISCLAIMED.  IN NO  EVENT SHALL  THE
+ * APACHE SOFTWARE  FOUNDATION  OR ITS CONTRIBUTORS  BE LIABLE FOR  ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL,  EXEMPLARY, OR CONSEQUENTIAL  DAMAGES (INCLU-
+ * DING, BUT NOT LIMITED TO, PROCUREMENT  OF SUBSTITUTE GOODS OR SERVICES; LOSS
+ * OF USE, DATA, OR  PROFITS; OR BUSINESS  INTERRUPTION)  HOWEVER CAUSED AND ON
+ * ANY  THEORY OF LIABILITY,  WHETHER  IN CONTRACT,  STRICT LIABILITY,  OR TORT
+ * (INCLUDING  NEGLIGENCE OR  OTHERWISE) ARISING IN  ANY WAY OUT OF THE  USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * This software  consists of voluntary contributions made  by many individuals
+ * on  behalf of the Apache Software  Foundation.  For more  information on the
+ * Apache Software Foundation, please see <http://www.apache.org/>.
+ *
+ */
 
 package org.apache.log4j.spi;
 
@@ -29,7 +71,7 @@ import org.apache.log4j.spi.LoggingEvent;
 
    <p>If the value {@link #DENY} is returned, then the log event is
    dropped immediately without consulting with the remaining
-   filters. 
+   filters.
 
    <p>If the value {@link #NEUTRAL} is returned, then the next filter
    in the chain is consulted. If there are no more filters in the
@@ -37,10 +79,10 @@ import org.apache.log4j.spi.LoggingEvent;
    filters, the default behaviour is to log all logging events.
 
    <p>If the value {@link #ACCEPT} is returned, then the log
-   event is logged without consulting the remaining filters. 
+   event is logged without consulting the remaining filters.
 
    <p>The philosophy of log4j filters is largely inspired from the
-   Linux ipchains. 
+   Linux ipchains.
 
    <p>Note that filtering is only supported by the {@link
    org.apache.log4j.xml.DOMConfigurator DOMConfigurator}. The {@link
@@ -50,17 +92,11 @@ import org.apache.log4j.spi.LoggingEvent;
    @author Ceki G&uuml;lc&uuml;
    @since 0.9.0 */
 public abstract class Filter implements OptionHandler {
-
-  /**
-     Points to the next filter in the filter chain.
-   */
-  public Filter next;
-
   /**
      The log event must be dropped immediately without consulting
      with the remaining filters, if any, in the chain.  */
-  public static final int DENY    = -1;
-  
+  public static final int DENY = -1;
+
   /**
      This filter is neutral with respect to the log event. The
      remaining filters, if any, should be consulted for a final decision.
@@ -70,20 +106,21 @@ public abstract class Filter implements OptionHandler {
   /**
      The log event must be logged immediately without consulting with
      the remaining filters, if any, in the chain.  */
-  public static final int ACCEPT  = 1;
+  public static final int ACCEPT = 1;
 
+  /**
+     Points to the next filter in the filter chain.
+   */
+  private Filter next;
 
   /**
      Usually filters options become active when set. We provide a
      default do-nothing implementation for convenience.
   */
-  public
-  void activateOptions() {
+  public void activateOptions() {
   }
 
-
-
-  /**     
+  /**
      <p>If the decision is <code>DENY</code>, then the event will be
      dropped. If the decision is <code>NEUTRAL</code>, then the next
      filter, if any, will be invoked. If the decision is ACCEPT then
@@ -92,8 +129,19 @@ public abstract class Filter implements OptionHandler {
 
      @param event The LoggingEvent to decide upon.
      @param decision The decision of the filter.  */
-  abstract
-  public
-  int decide(LoggingEvent event);
-
+  public abstract int decide(LoggingEvent event);
+ 
+  /**
+   * Set the next filter pointer.
+   */ 
+  public void setNext(Filter next) {
+    this.next = next;
+  }
+ 
+  /**
+   * Return the pointer to the next filter;
+   */ 
+  public Filter getNext() {
+        return next;
+  }
 }
