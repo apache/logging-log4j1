@@ -167,7 +167,8 @@
   <!-- created witness file.                                             -->
   <!-- ================================================================= -->  
   
-  <target name="regression" depends="Minimum, Logger, DOM, CustomLevel, 
+  <target name="regression" depends="Minimum, Logger, AppenderContract,
+  	                                 DOM, CustomLevel, 
                                      CustomLogger, PatternLayout, 
                                      HierarchyThreshold, DefaultInit, 
                                      SocketServer,
@@ -265,7 +266,15 @@
       <test name="org.apache.log4j.LoggerTest" />
     </junit>
   </target>
-  
+
+  <target name="AppenderContract" depends="check, build, cleanOutputDir">
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="false"/>
+      <test name="org.apache.log4j.AbstractAppenderTest" />
+    </junit>
+  </target>
+	
   <target name="PatternLayout" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="${haltonfailure}">
       <classpath refid="tests.classpath"/>
