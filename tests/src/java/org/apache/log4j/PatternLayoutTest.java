@@ -53,15 +53,13 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.MDC;
 import org.apache.log4j.util.AbsoluteDateAndTimeFilter;
 import org.apache.log4j.util.AbsoluteTimeFilter;
 import org.apache.log4j.util.Compare;
 import org.apache.log4j.util.ControlFilter;
 import org.apache.log4j.util.Filter;
 import org.apache.log4j.util.ISO8601Filter;
+import org.apache.log4j.util.JunitTestRunnerFilter;
 import org.apache.log4j.util.LineNumberFilter;
 import org.apache.log4j.util.RelativeTimeFilter;
 import org.apache.log4j.util.SunReflectFilter;
@@ -83,18 +81,18 @@ public class PatternLayoutTest extends TestCase {
   static String PAT5 =
     "\\[main]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* : Message \\d{1,2}";
   static String PAT6 =
-    "\\[main]\\ (DEBUG|INFO |WARN |ERROR|FATAL) org.apache.log4j.PatternLayoutTestCase.common\\(PatternLayoutTestCase.java:\\d{1,4}\\): Message \\d{1,2}";
+    "\\[main]\\ (DEBUG|INFO |WARN |ERROR|FATAL) org.apache.log4j.PatternLayoutTest.common\\(PatternLayoutTest.java:\\d{1,4}\\): Message \\d{1,2}";
   static String PAT11a =
-    "^(DEBUG|INFO |WARN |ERROR|FATAL) \\[main]\\ log4j.PatternLayoutTestCase: Message \\d{1,2}";
+    "^(DEBUG|INFO |WARN |ERROR|FATAL) \\[main]\\ log4j.PatternLayoutTest: Message \\d{1,2}";
   static String PAT11b =
     "^(DEBUG|INFO |WARN |ERROR|FATAL) \\[main]\\ root: Message \\d{1,2}";
   static String PAT12 =
     "^\\[main]\\ (DEBUG|INFO |WARN |ERROR|FATAL) "
-    + "org.apache.log4j.PatternLayoutTestCase.common\\(PatternLayoutTestCase.java:\\d{3}\\): "
+    + "org.apache.log4j.PatternLayoutTest.common\\(PatternLayoutTest.java:\\d{3}\\): "
     + "Message \\d{1,2}";
   static String PAT13 =
     "^\\[main]\\ (DEBUG|INFO |WARN |ERROR|FATAL) "
-    + "apache.log4j.PatternLayoutTestCase.common\\(PatternLayoutTestCase.java:\\d{3}\\): "
+    + "apache.log4j.PatternLayoutTest.common\\(PatternLayoutTest.java:\\d{3}\\): "
     + "Message \\d{1,2}";
   static String PAT14 =
     "^(DEBUG| INFO| WARN|ERROR|FATAL)\\ \\d{1,2}\\ *- Message \\d{1,2}";
@@ -120,7 +118,10 @@ public class PatternLayoutTest extends TestCase {
     common();
     Transformer.transform(
       TEMP, FILTERED,
-      new Filter[] { new LineNumberFilter(), new SunReflectFilter() });
+      new Filter[] {
+        new LineNumberFilter(), new SunReflectFilter(),
+        new JunitTestRunnerFilter()
+      });
     assertTrue(Compare.compare(FILTERED, "witness/patternLayout.1"));
   }
 
@@ -135,7 +136,7 @@ public class PatternLayoutTest extends TestCase {
       TEMP, FILTERED,
       new Filter[] {
         cf1, new LineNumberFilter(), new ISO8601Filter(),
-        new SunReflectFilter()
+        new SunReflectFilter(), new JunitTestRunnerFilter()
       });
     assertTrue(Compare.compare(FILTERED, "witness/patternLayout.2"));
   }
@@ -151,13 +152,13 @@ public class PatternLayoutTest extends TestCase {
       TEMP, FILTERED,
       new Filter[] {
         cf1, new LineNumberFilter(), new ISO8601Filter(),
-        new SunReflectFilter()
+        new SunReflectFilter(), new JunitTestRunnerFilter()
       });
     assertTrue(Compare.compare(FILTERED, "witness/patternLayout.3"));
   }
 
   // Output format:
-  // 06 avr. 2002 18:30:58,937 [main] DEBUG rnLayoutTestCase - Message 0  
+  // 06 avr. 2002 18:30:58,937 [main] DEBUG atternLayoutTest - Message 0  
   public void test4() throws Exception {
     PropertyConfigurator.configure("input/patternLayout4.properties");
     common();
@@ -169,7 +170,7 @@ public class PatternLayoutTest extends TestCase {
       TEMP, FILTERED,
       new Filter[] {
         cf1, new LineNumberFilter(), new AbsoluteDateAndTimeFilter(),
-        new SunReflectFilter()
+        new SunReflectFilter(), new JunitTestRunnerFilter()
       });
     assertTrue(Compare.compare(FILTERED, "witness/patternLayout.4"));
   }
@@ -185,12 +186,12 @@ public class PatternLayoutTest extends TestCase {
       TEMP, FILTERED,
       new Filter[] {
         cf1, new LineNumberFilter(), new AbsoluteDateAndTimeFilter(),
-        new SunReflectFilter()
+        new SunReflectFilter(), new JunitTestRunnerFilter()
       });
     assertTrue(Compare.compare(FILTERED, "witness/patternLayout.5"));
   }
 
-  // 18:54:19,201 [main] DEBUG rnLayoutTestCase - Message 0
+  // 18:54:19,201 [main] DEBUG atternLayoutTest - Message 0
   public void test6() throws Exception {
     PropertyConfigurator.configure("input/patternLayout6.properties");
     common();
@@ -202,7 +203,7 @@ public class PatternLayoutTest extends TestCase {
       TEMP, FILTERED,
       new Filter[] {
         cf1, new LineNumberFilter(), new AbsoluteTimeFilter(),
-        new SunReflectFilter()
+        new SunReflectFilter(), new JunitTestRunnerFilter()
       });
     assertTrue(Compare.compare(FILTERED, "witness/patternLayout.6"));
   }
@@ -218,7 +219,7 @@ public class PatternLayoutTest extends TestCase {
       TEMP, FILTERED,
       new Filter[] {
         cf1, new LineNumberFilter(), new AbsoluteTimeFilter(),
-        new SunReflectFilter()
+        new SunReflectFilter(), new JunitTestRunnerFilter()
       });
     assertTrue(Compare.compare(FILTERED, "witness/patternLayout.7"));
   }
@@ -234,7 +235,7 @@ public class PatternLayoutTest extends TestCase {
       TEMP, FILTERED,
       new Filter[] {
         cf1, new LineNumberFilter(), new RelativeTimeFilter(),
-        new SunReflectFilter()
+        new SunReflectFilter(), new JunitTestRunnerFilter()
       });
     assertTrue(Compare.compare(FILTERED, "witness/patternLayout.8"));
   }
@@ -248,7 +249,10 @@ public class PatternLayoutTest extends TestCase {
         new String[] { PAT5, EXCEPTION1, EXCEPTION2, EXCEPTION3 });
     Transformer.transform(
       TEMP, FILTERED,
-      new Filter[] { cf1, new LineNumberFilter(), new SunReflectFilter() });
+      new Filter[] {
+        cf1, new LineNumberFilter(), new SunReflectFilter(),
+        new JunitTestRunnerFilter()
+      });
     assertTrue(Compare.compare(FILTERED, "witness/patternLayout.9"));
   }
 
@@ -261,7 +265,10 @@ public class PatternLayoutTest extends TestCase {
         new String[] { PAT6, EXCEPTION1, EXCEPTION2, EXCEPTION3 });
     Transformer.transform(
       TEMP, FILTERED,
-      new Filter[] { cf1, new LineNumberFilter(), new SunReflectFilter() });
+      new Filter[] {
+        cf1, new LineNumberFilter(), new SunReflectFilter(),
+        new JunitTestRunnerFilter()
+      });
     assertTrue(Compare.compare(FILTERED, "witness/patternLayout.10"));
   }
 
@@ -274,7 +281,10 @@ public class PatternLayoutTest extends TestCase {
         new String[] { PAT11a, PAT11b, EXCEPTION1, EXCEPTION2, EXCEPTION3 });
     Transformer.transform(
       TEMP, FILTERED,
-      new Filter[] { cf1, new LineNumberFilter(), new SunReflectFilter() });
+      new Filter[] {
+        cf1, new LineNumberFilter(), new SunReflectFilter(),
+        new JunitTestRunnerFilter()
+      });
     assertTrue(Compare.compare(FILTERED, "witness/patternLayout.11"));
   }
 
@@ -287,7 +297,10 @@ public class PatternLayoutTest extends TestCase {
         new String[] { PAT12, EXCEPTION1, EXCEPTION2, EXCEPTION3 });
     Transformer.transform(
       TEMP, FILTERED,
-      new Filter[] { cf1, new LineNumberFilter(), new SunReflectFilter() });
+      new Filter[] {
+        cf1, new LineNumberFilter(), new SunReflectFilter(),
+        new JunitTestRunnerFilter()
+      });
     assertTrue(Compare.compare(FILTERED, "witness/patternLayout.12"));
   }
 
@@ -300,7 +313,10 @@ public class PatternLayoutTest extends TestCase {
         new String[] { PAT13, EXCEPTION1, EXCEPTION2, EXCEPTION3 });
     Transformer.transform(
       TEMP, FILTERED,
-      new Filter[] { cf1, new LineNumberFilter(), new SunReflectFilter() });
+      new Filter[] {
+        cf1, new LineNumberFilter(), new SunReflectFilter(),
+        new JunitTestRunnerFilter()
+      });
     assertTrue(Compare.compare(FILTERED, "witness/patternLayout.13"));
   }
 
@@ -313,7 +329,10 @@ public class PatternLayoutTest extends TestCase {
         new String[] { PAT14, EXCEPTION1, EXCEPTION2, EXCEPTION3 });
     Transformer.transform(
       TEMP, FILTERED,
-      new Filter[] { cf1, new LineNumberFilter(), new SunReflectFilter() });
+      new Filter[] {
+        cf1, new LineNumberFilter(), new SunReflectFilter(),
+        new JunitTestRunnerFilter()
+      });
     assertTrue(Compare.compare(FILTERED, "witness/patternLayout.14"));
   }
 
@@ -326,7 +345,10 @@ public class PatternLayoutTest extends TestCase {
 
     Transformer.transform(
       TEMP, FILTERED,
-      new Filter[] { new LineNumberFilter(), new SunReflectFilter() });
+      new Filter[] {
+        new LineNumberFilter(), new SunReflectFilter(),
+        new JunitTestRunnerFilter()
+      });
     assertTrue(Compare.compare(FILTERED, "witness/patternLayout.mdc.1"));
   }
 
@@ -359,7 +381,8 @@ public class PatternLayoutTest extends TestCase {
   public static Test suite() {
     TestSuite suite = new TestSuite();
     suite.addTest(new PatternLayoutTest("test1"));
-    /*suite.addTest(new PatternLayoutTest("test2"));
+
+    suite.addTest(new PatternLayoutTest("test2"));
     suite.addTest(new PatternLayoutTest("test3"));
     suite.addTest(new PatternLayoutTest("test4"));
     suite.addTest(new PatternLayoutTest("test5"));
@@ -373,7 +396,7 @@ public class PatternLayoutTest extends TestCase {
     suite.addTest(new PatternLayoutTest("test13"));
     suite.addTest(new PatternLayoutTest("test14"));
     suite.addTest(new PatternLayoutTest("testMDCAllowAllKeys"));
-    */
+    
     return suite;
   }
 }
