@@ -12,8 +12,20 @@
       <item name="Download"       href="/download.html"/>
       <item name="Documentation"  href="/documentation.html"/>
       <item name="Contact us"     href="/contactUs.html"/>
+      <item name="Contributors"   href="/contributors.html"/>
       <item name="History"        href="/history.html"/>
     </menu>
-    
+
+    <menu name="Jakarta (parent project)">
+      <item name="Home page" href="http://jakarta.apache.org/"/>
+      <item name="News" href="http://jakarta.apache.org/site/news.html"/>
+      <item name="Mission" href="http://jakarta.apache.org/site/mission.html"/>
+      <item name="Guidelines" href="http://jakarta.apache.org/site/guidelines.html"/>
+      <item name="FAQs" href="http://jakarta.apache.org/site/faqs.html"/>
+    </menu>
+
+    <menu name="Translations">
+      <item name="Japanese" href="http://www.ingrid.org/jajakarta/log4j/"/>
+    </menu>
   </body>
 </project>

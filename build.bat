@@ -4,7 +4,7 @@ REM --------------------------------------------
 REM No need to edit anything past here
 REM --------------------------------------------
 set _BUILDFILE=%BUILDFILE%
-set BUILDFILE=build\build.xml
+set BUILDFILE=build.xml
 
 :final
 
@@ -13,7 +13,7 @@ set _CLASSPATH=%CLASSPATH%
 if "%JAVA_HOME%" == "" goto javahomeerror
 if exist %JAVA_HOME%\lib\tools.jar set CLASSPATH=%CLASSPATH%;%JAVA_HOME%\lib\tools.jar
 
-set CLASSPATH=%CLASSPATH%;build\lib\ant.jar;
+set CLASSPATH=%CLASSPATH%;build\lib\ant-1.4.jar;
 set CLASSPATH=%CLASSPATH%;build\lib\crimson-1.1.jar;
 set CLASSPATH=%CLASSPATH%;build\lib\jaxp-1.1.jar;
 set CLASSPATH=%CLASSPATH%;build\lib\activation.jar;

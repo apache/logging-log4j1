@@ -57,11 +57,11 @@
 
     </section>
 
-    <section name="log4j version 1.2 alpha2">
+    <section name="log4j version 1.2 alpha5">
       <p>An alpha version of log4j 1.2 is now available in in <a
-	href="../jakarta-log4j-1.2alpha2.tar.gz"><b>TAR.GZ</b></a>
+	href="../jakarta-log4j-1.2alpha5.tar.gz"><b>TAR.GZ</b></a>
 	format or in <a
-	href="../jakarta-log4j-1.2alpha2.zip"><b>ZIP</b></a> format.
+	href="../jakarta-log4j-1.2alpha5.zip"><b>ZIP</b></a> format.
       </p>
 
  
@@ -77,7 +77,7 @@
 
     </section>
 
-    <section name="Third-party software">
+    <section name="Third-party extensions">
 
       <dl>
 	<dt><a href="http://qos.ch/"><b>log4j<em>ME</em></b></a></dt>
@@ -89,19 +89,23 @@
 	  time by replacing <em>log4jME.jar</em> with <em>log4j.jar</em> in
 	  your classpath.
 	</dd>
-	
-	<dt><a href="http://sourceforge.net/projects/log4cpp/"><b>log4cpp</b></a></dt>
-	<dd>A library of C++ classes for flexible logging to files, syslog, IDSA and 
-	  other destinations modeled after log4j by Bastiaan Bakker.</dd>
-	
-	<dt><a href="http://log4p.sourceforge.net"><b>log4p</b></a></dt>
-	<dd>A Python translation of log4j by Igor Poteryaev.</dd>
+
+	<dt><a
+	    href="http://traxel.com/lumbermill/"><b>Lumbermill</b></a></dt>
+	<dd>Lumbermill is a Swing(tm) log processing and distribution
+	  system for Log4j. </dd>
 	
 	<dt><a href="http://support.klopotek.de/log4j/jdbc/index.html"><b>JDBCAppender</b></a></dt>
 	<dd>A JDBCAppender by <a href="mailto:t.fenner@klopotek.de">Thomas Fenner</a>.</dd>
 	
 	<dt><a href="http://www.puppycrawl.com/chainsaw"><b>Chainsaw</b></a></dt>
-	<dd>Chainsaw is a GUI log viewer and filter for the Log4J package. It listens for <a href="http://jakarta.apache.org/log4j/docs/api/org/apache/log4j/spi/LoggingEvent.html">LoggingEvent</a> objects sent using the <a href="http://jakarta.apache.org/log4j/docs/api/org/apache/log4j/net/SocketAppender.html">SocketAppender</a> and displays them in a table. 
+	
+	<dd>Chainsaw is a GUI log viewer and filter for the Log4J
+	  package. It listens for <a
+	    href="http://jakarta.apache.org/log4j/docs/api/org/apache/log4j/spi/LoggingEvent.html">LoggingEvent</a>
+	  objects sent using the <a
+	    href="http://jakarta.apache.org/log4j/docs/api/org/apache/log4j/net/SocketAppender.html">SocketAppender</a>
+	  and displays them in a table.
 	</dd>
 	
 	<dt><a href="http://www.servidium.com/site/logfactor5/index.html"><b>LogFactor5</b></a></dt>
@@ -120,6 +124,56 @@
 	
 	<dt><a href="http://developer.jini.org/exchange/projects/log"><b>JINI logging service</b></a> (registration required)</dt>
 	<dd>A log4j wrapper for JINI Jerome Bernard.</dd>
+	
+      </dl>
+    </section>
+    
+    <section name="Ports to other languages">
+
+      <dl>	
+	<dt><a href="http://sourceforge.net/projects/log4cpp/"><b>log4cpp</b></a></dt>
+	<dd>A library of C++ classes for flexible logging to files, syslog, IDSA and 
+	  other destinations modeled after log4j by Bastiaan Bakker.</dd>
+
+
+	<dt><a href="http://log4cplus.sourceforge.net/"><b>log4cplus</b></a></dt>	
+	<dd>A competing port to C++.</dd>
+	
+
+	<dt><a
+	href="http://www.its4you.at/log4py.php"><b>log4py</b></a></dt>
+
+	<dd>Log4Py is a python logging module similar to log4j. It
+	supports logging to files or to stdout/stderr, variable
+	log-levels, configurable output formats and configuration via
+	configuration files. For an example output see the screenshot
+	below.</dd>
+
+	<dt><a
+	href="http://log4p.sourceforge.net"><b>log4p</b></a></dt>
+	<dd>Another Python translation of log4j. This project no
+	longer seems to be maintained.</dd>
+
+
+
+	<dt><a
+	href="http://log4c.sourceforge.net"><b>log4c</b></a></dt>
+
+	<dd>ANSI C functions and macros for flexible logging to files
+	and other destinations. It is modeled after the Log for Java
+	library (http://www.log4j.org), staying as close to their API
+	as is reasonable. Intended for use in time-space critical
+	environments.</dd>
+
+
+
+	<dt><a
+	href="http://www.neoworks.com/products/log4net/"><b>log4net</b></a></dt>
+
+	<dd>The .NET implementation of the popular log4j Java API
+	providing flexible and arbitrarily granular control over log
+	management and configuration.</dd>
+
 	
       </dl>
       

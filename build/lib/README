@@ -10,5 +10,6 @@ files are:
   activation.jar
   jmxri.jar
 
-We no longer include them in the log4j distribution either because of
-liability issues with Sun's binary license.
+Moreover, we no longer include them in the standard log4j distribution
+either because of liability issues with Sun's binary license. Sorry
+for the inconvenience and thank you for your understanding.

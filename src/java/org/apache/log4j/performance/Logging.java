@@ -175,7 +175,9 @@ import java.util.Enumeration;
 
    <p><li>Extracting location information is comparatively slow. It
    implies at least a ten fold increase in logging time!  It should be
-   avoided unless performace is not a concern.
+   avoided unless performace is not a concern. It has been reported
+   from a trusted source that logging with location information on AIX
+   machines will <em>kill</em> your application's performance.
 
    </ol>
 

@@ -10,14 +10,23 @@ if test -z "${JAVA_HOME}" ; then
     exit
 fi
 
-if test -f ${JAVA_HOME}/lib/tools.jar ; then
-    CLASSPATH=${CLASSPATH}:${JAVA_HOME}/lib/tools.jar
+# Set the sperator to ; on cygwin and to the usual : on real Unix.
+if ["$OSTYPE" = "cygwin32" ] || [ "$OSTYPE" = "cygwin" ]
+then
+  SEP='\;'
+else
+  SEP=':'
 fi
+
+if test -f ${JAVA_HOME}/lib/tools.jar ; then
+    CLASSPATH=${CLASSPATH}$SEP${JAVA_HOME}/lib/tools.jar
+fi
+
 
 for l in build/lib/*.jar 
 do
-echo "Adding $l to CLASSPATH."
-CLASSPATH=${CLASSPATH}:$l
+  echo "Adding $l to CLASSPATH."
+  CLASSPATH=${CLASSPATH}$SEP$l
 done
 
 # convert the unix path to windows
@@ -25,8 +34,8 @@ if [ "$OSTYPE" = "cygwin32" ] || [ "$OSTYPE" = "cygwin" ] ; then
    CLASSPATH=`cygpath --path --windows "$CLASSPATH"`
 fi
 
-echo "--$CLASSPATH--"
-BUILDFILE=build/build.xml
+echo "Classpath is [$CLASSPATH]"
+BUILDFILE=build.xml
 
 ${JAVA_HOME}/bin/java -classpath ${CLASSPATH} \
                        org.apache.tools.ant.Main \
