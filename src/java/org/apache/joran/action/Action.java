@@ -47,63 +47,45 @@
  *
  */
 
-package org.apache.joran;
+package org.apache.joran.action;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
-import org.apache.joran.action.*;
+import org.apache.joran.ExecutionContext;
+import org.w3c.dom.Element;
 
 
-public class SimpleRuleStore implements RuleStore {
-  HashMap rules = new HashMap();
-
-  public void addRule(Pattern pattern, Action action) {
-    //System.out.println("pattern to add is:" + pattern + "hashcode:" + pattern.hashCode());
-    List a4p = (List) rules.get(pattern);
-
-    if (a4p == null) {
-      a4p = new ArrayList();
-      rules.put(pattern, a4p);
-    }
-
-    a4p.add(action);
-  }
-
-  public List matchActions(Pattern pattern) {
-    //System.out.println("pattern to search for:" + pattern + ", hashcode: " + pattern.hashCode());
-    //System.out.println("rules:" + rules);
-    ArrayList a4p = (ArrayList) rules.get(pattern);
-
-    if (a4p != null) {
-      return a4p;
-    } else {
-      Iterator patternsIterator = rules.keySet().iterator();
-      int max = 0;
-      Pattern longestMatch = null;
-
-      while (patternsIterator.hasNext()) {
-        Pattern p = (Pattern) patternsIterator.next();
-
-        if ((p.size() > 1) && p.get(0).equals("*")) {
-          int r = pattern.tailMatch(p);
-
-          //System.out.println("tailMatch " +r);
-          if (r > max) {
-            //System.out.println("New longest match "+p);
-            max = r;
-            longestMatch = p;
-          }
-        }
-      }
-
-      if (longestMatch != null) {
-        return (ArrayList) rules.get(longestMatch);
-      } else {
-        return null;
-      }
-    }
-  }
+/**
+ *
+ * Most of the work for configuring log4j is done by Actions.
+ *
+ * Methods of an Action are invoked while an XML file is parsed through.
+ *
+ * This class is largely copied from the relevant class in the commons-digester
+ * project of the Apache Software Foundation.
+ *
+ * @author Craig McClanahan
+ * @authro Christopher Lenz
+ * @author Ceki G&uuml;lc&uuml;
+ *
+ */
+public abstract class Action {
+	
+	/** 
+	 * When actions encounter an error condition they set this variable to true. 
+	 */
+	protected boolean inError = false;
+	
+	
+	/**
+	 * Called when the parser first encounters an element.
+	 * 
+	 * The return value indicates whether child elements should be processed. If 
+	 * the returned value is 'false', then child elements are ignored.
+	 */
+  public abstract void begin(ExecutionContext ec, Element e);
+  public abstract void end(ExecutionContext ec, Element e);
+  public abstract void finish(ExecutionContext ec);
+	
+	public String toString() {
+	  return this.getClass().getName();
+	}
 }
