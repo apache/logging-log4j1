@@ -220,6 +220,12 @@
 		  ${stem}/config/PropertySetterException.class"
 
 	 excludes="**/StressCategory*, **/TTCC*, **/SimpleLayout.*, 
+                  ${stem}/DailyRollingFileAppender.class,
+                  ${stem}/Rolling*.class,
+                  ${stem}/HTMLLayout.class,
+                  ${stem}/helpers/CountingQuietWriter.class,
+                  ${stem}/helpers/DateLayout.class,
+                  ${stem}/or/ThreadGroupRenderer.class,
 	          **/AsyncAppender.*, **/Dispatcher.*, **/BoundedFIFO.*,
 	          **/Syslog*, **/RelativeTimeDateFormat.*,
 		  ${stem}/gui/**/*.class, 
