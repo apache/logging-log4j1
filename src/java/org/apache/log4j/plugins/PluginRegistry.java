@@ -22,11 +22,18 @@ import org.apache.log4j.spi.LoggerRepositoryEventListener;
   @since 1.3
 */
 public class PluginRegistry {
+  /** stores the map of plugins for each repository. */
   private static HashMap repositoryMap = new HashMap();
+  
+  /** the listener used to listen for repository events. */
   private static RepositoryListener listener = new RepositoryListener();
   
   /**
-    Starts a Plugin with default logger repository. */
+    Starts a Plugin with default logger repository. 
+    
+    @param plugin the plugin to start. 
+    @return Plugin the plugin parameter or a plugin that was already
+      active and was equal to the original plugin. */
   public static Plugin startPlugin(Plugin plugin) {
     // if repository already set in plugin, use it
     LoggerRepository repository = plugin.getLoggerRepository();
@@ -40,18 +47,25 @@ public class PluginRegistry {
   }
 
   /**
-    Starts a plugin with a given logger repository. */
+    Starts a plugin with a given logger repository. 
+    
+    @param plugin the plugin to start.
+    @param repository the logger repository to attach the plugin to.
+    @return Plugin the plugin parameter or a plugin that was already
+      active and was equal to the original plugin. */
   public static Plugin startPlugin(Plugin plugin,
-  LoggerRepository repository) {
+  LoggerRepository repository)
+  {
     
     // if the plugin is already active, just return it
-    if (plugin.isActive())
+    if (plugin.isActive()) {
       return plugin;
+    }
       
     // put plugin into the repository's reciever map
-    synchronized(repositoryMap) {
+    synchronized (repositoryMap) {
       // get plugin map for repository
-      HashMap pluginMap = (HashMap)repositoryMap.get(repository);
+      HashMap pluginMap = (HashMap) repositoryMap.get(repository);
       
       String name = plugin.getName();
 
@@ -63,9 +77,8 @@ public class PluginRegistry {
         pluginMap = new HashMap();
         repositoryMap.put(repository, pluginMap);
         repository.addLoggerRepositoryEventListener(listener);
-      }
-      else {
-        Plugin existingPlugin = (Plugin)pluginMap.get(name);
+      } else {
+        Plugin existingPlugin = (Plugin) pluginMap.get(name);
         if (existingPlugin != null) {
           boolean isEqual = existingPlugin.equals(plugin);
           
@@ -90,34 +103,50 @@ public class PluginRegistry {
   }
   
   /**
-    Stops a plugin by plugin object. */
+    Stops a plugin by plugin object. 
+    
+    @param plugin the plugin to stop.
+    @return Plugin the plugin parameter, if stopped, or null if the
+      the plugin was not found in the registry. */
   public static Plugin stopPlugin(Plugin plugin) {
     return stopPlugin(plugin.getName(), plugin.getLoggerRepository());
   }
   
   /**
-    Stops a plugin by plugin name using default repository. */
+    Stops a plugin by plugin name using default repository.
+    
+    @param pluginName name of the plugin to stop.
+    @return Plugin the plugin, if stopped, or null if the
+      the plugin was not found in the registry. */
   public static Plugin stopPlugin(String pluginName) {
     return stopPlugin(pluginName, LogManager.getLoggerRepository());
   }
 
   /**
-    Stops a plugin by plugin name and repository. */
-  public static Plugin stopPlugin(String pluginName,
-  LoggerRepository repository) {
+    Stops a plugin by plugin name and repository. 
+    
+    @param pluginName the name of the plugin to stop.
+    @param repository the repository the plugin should be attached to.
+    @return Plugin the plugin, if stopped, or null if the
+      the plugin was not found in the registry. */
+  public static Plugin stopPlugin(String pluginName, 
+  LoggerRepository repository) 
+  {
     // if a null repository, exit now
     if (repository == null) {
       return null;
     }
 
-    synchronized(repositoryMap) {
-      HashMap pluginMap = (HashMap)repositoryMap.get(repository);
-      if (pluginMap == null)
+    synchronized (repositoryMap) {
+      HashMap pluginMap = (HashMap) repositoryMap.get(repository);
+      if (pluginMap == null) {
         return null;
+      }
         
-      Plugin plugin = (Plugin)pluginMap.get(pluginName);
-      if (plugin == null)
+      Plugin plugin = (Plugin) pluginMap.get(pluginName);
+      if (plugin == null) {
         return null;
+      }
       
       // shutdown the plugin
       plugin.shutdown();
@@ -144,19 +173,22 @@ public class PluginRegistry {
   }
   
   /**
-    Stops all plugins in the given logger repository. */
+    Stops all plugins in the given logger repository. 
+    
+    @param repository the logger repository to stop all plugins for. */
   public static void stopAllPlugins(LoggerRepository repository) {    
-    synchronized(repositoryMap) {
-      HashMap pluginMap = (HashMap)repositoryMap.get(repository);
-      if (pluginMap == null)
+    synchronized (repositoryMap) {
+      HashMap pluginMap = (HashMap) repositoryMap.get(repository);
+      if (pluginMap == null) {
         return;
+      }
         
       // remove the listener for this repository
       repository.removeLoggerRepositoryEventListener(listener);
 
       Iterator iter = pluginMap.values().iterator();
-      while(iter.hasNext()) {
-        ((Plugin)iter.next()).shutdown();
+      while (iter.hasNext()) {
+        ((Plugin) iter.next()).shutdown();
       }
       
       // since no more plugins, remove plugin map from
@@ -168,21 +200,28 @@ public class PluginRegistry {
   /**
     Internal class used to handle listener events from repositories. */
   private static class RepositoryListener
-  implements LoggerRepositoryEventListener {
+  implements LoggerRepositoryEventListener 
+  {
     /**
-      Stops all plugins associated with the repository being reset. */
+      Stops all plugins associated with the repository being reset. 
+      
+      @param repository the repository that was reset. */
     public void configurationResetEvent(LoggerRepository repository) {
       PluginRegistry.stopAllPlugins(repository);
     }
   
     /**
-      Called when the repository configuration is changed. */
+      Called when the repository configuration is changed. 
+      
+      @param repository the repository that was changed. */
     public void configurationChangedEvent(LoggerRepository repository) {
       // do nothing with this event
     }
   
     /**
-      Stops all plugins associated with the repository being shutdown. */
+      Stops all plugins associated with the repository being shutdown. 
+      
+      @param repository the repository being shutdown. */
     public void shutdownEvent(LoggerRepository repository) {
       PluginRegistry.stopAllPlugins(repository);
     }

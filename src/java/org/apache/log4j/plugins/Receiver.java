@@ -17,7 +17,7 @@ import org.apache.log4j.spi.LoggingEvent;
   environment (to files, to smtp, to sockets, etc), Receivers bring
   logging events inside the log4j environment.
   
-  <p>Receivers are primarily meant to support the receiving of
+  <p>Receivers are meant to support the receiving of
   remote logging events from another process. For example, 
   SocketAppender "appends" a logging event to a socket, configured 
   for a specific host and port number.  On the receiving side of 
@@ -32,9 +32,7 @@ import org.apache.log4j.spi.LoggingEvent;
   logging packages into the log4j environment.
   
   <p>Receivers can be configured to post events to a given
-  LoggerRepository. If a repository is not specified, then the
-  default repository value returned by
-  LogManager.getLoggerRepository() should be used.
+  LoggerRepository.
   
   <p>Subclasses of Receiver must implement the isActive(),
   activateOptions(), and shutdown() methods. The doPost() method
@@ -42,6 +40,7 @@ import org.apache.log4j.spi.LoggingEvent;
   the repository.
   
   @author Mark Womack
+  @author Ceki G&uuml;lc&uuml;
   @since 1.3
 */
 public abstract class Receiver extends PluginSkeleton {
@@ -57,9 +56,6 @@ public abstract class Receiver extends PluginSkeleton {
   	// if the logger level is greater or equal to the level
   	// of the event, use the logger to append the event.
   	if(event.getLevel().isGreaterOrEqual(localLogger.getEffectiveLevel())) {
-      // set the logger for the event 
-      // event.logger = localLogger;
-      
       // call the loggers appenders to process the event
   	  localLogger.callAppenders(event);
   	}
