@@ -23,7 +23,7 @@ import junit.framework.TestSuite;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-import org.apache.log4j.rolling.helpers.RollingCalendar;
+import org.apache.log4j.rolling.helper.RollingCalendar;
 
 
 /**

@@ -14,27 +14,22 @@
  * limitations under the License.
  */
 
-package org.apache.log4j.rolling.helpers;
+package org.apache.log4j.rolling.helper;
 
 
 /**
  *
- * The TokenConverter offer some basic functionality for more specific token converters. 
- * It basically sets up the chained architecture.
+ * The TokenConverter offer some basic functionality for more specific token 
+ * converters. 
+ * <p>
+ * It basically sets up the chained architecture for tokens.
  * 
  * @author Ceki
- *
+ * @since 1.3
  */
 public class TokenConverter {
-  /**
-   * @author Ceki
-   *
-   * To change the template for this generated type comment go to
-   * Window>Preferences>Java>Code Generation>Code and Comments
-   */
-  protected class IndentityTokenConverter {
-
-  }
+  
+  
   static final int IDENTITY = 0;
   static final int INTEGER = 1;
   static final int DATE = 1;

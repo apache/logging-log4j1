@@ -16,10 +16,10 @@
 
 package org.apache.log4j.rolling;
 
-import org.apache.log4j.rolling.helpers.Compress;
-import org.apache.log4j.rolling.helpers.DateTokenConverter;
-import org.apache.log4j.rolling.helpers.RollingCalendar;
-import org.apache.log4j.rolling.helpers.Util;
+import org.apache.log4j.rolling.helper.Compress;
+import org.apache.log4j.rolling.helper.DateTokenConverter;
+import org.apache.log4j.rolling.helper.RollingCalendar;
+import org.apache.log4j.rolling.helper.Util;
 
 import java.io.File;
 
@@ -27,7 +27,7 @@ import java.util.Date;
 
 
 /**
- *
+ * 
  *
  * If configuring programatically, do not forget to call {@link #activateOptions}
  * method before using this policy. Moreover, {@link #activateOptions} of
