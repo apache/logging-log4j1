@@ -9,6 +9,10 @@
  
  - Release of version 1.2 
 
+ - In XMLLayout, Fixed bug #7550 by escaping the method attribute. The 
+   XMLLayout also outputs each item of a stack trace in a separate
+   line. [*]
+
  (rc1)
 
   - The ANT build script was modified to use jar files specified in
