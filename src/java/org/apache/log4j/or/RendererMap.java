@@ -27,7 +27,7 @@ public class RendererMap {
 
   /**
      Find the appropriate renderer for the class type of the
-     <code>o</code> parameter. This is accimplished by calling the
+     <code>o</code> parameter. This is accomplished by calling the
      {@link #get(Class)} method. Once a renderer is found, it is
      applied on the object <code>o</code> and the result is returned
      as a {@link String}. */
@@ -77,24 +77,24 @@ public class RendererMap {
      <code>get(A2.class)</code> method depending on the renderers
      added to the map.
 
-     <table>
+     <p><table border="1">
      <tr><th>Added renderers</th><th>Value returned by <code>get(A2.class)</code></th>
 
      <tr><td><code>A0Renderer</code>
-         <td><code>A0Renderer</code>  
+         <td align="center"><code>A0Renderer</code>  
 
      <tr><td><code>A0Renderer, A1Renderer</code>
-         <td><code>A1Renderer</code>  
+         <td align="center"><code>A1Renderer</code>  
 
      <tr><td><code>X0Renderer</code>
-         <td><code>X0Renderer</code>  
+         <td align="center"><code>X0Renderer</code>  
 
      <tr><td><code>A1Renderer, X0Renderer</code>
-         <td><code>X0Renderer</code>  
+         <td align="center"><code>X0Renderer</code>  
 
      </table>
      
-     This search algorithm is not the most natural. although it is
+     <p>This search algorithm is not the most natural, although it is
      particularly easy to implement. Future log4j versions
      <em>may</em> implement a more intuitive search
      algorithm. However, the present algorithm should be acceptable in
@@ -148,19 +148,10 @@ public class RendererMap {
   }
 
   /**
-     Register an {@link ObjectRenderer} for <code>clazz</code>.
-
-     <b>Warning:</b>Interfaces cannot have object renderers. If clazz
-     is an interface, then a {@link IllegalArgumentException} will be
-     thrown.
-     
+     Register an {@link ObjectRenderer} for <code>clazz</code>.     
   */
   public
   void put(Class clazz, ObjectRenderer or) {
-    //if(clazz.isInterface()) {
-    //throw new IllegalArgumentException(clazz +
-    //" is an interface. Only classes allowed to regiter object renderers.");
-    //}
     map.put(clazz, or);
   }
 }

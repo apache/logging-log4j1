@@ -16,8 +16,8 @@ import javax.jms.DeliveryMode;
 import java.util.Enumeration;
 
 /**
-   Render {@link ThreadGroup} objects in a format similar to the
-   information output by the {@link ThreadGroup#list} method.
+   Render <code>javax.jms.Message</code> objects.
+
    @author Ceki G&uuml;lc&uuml;
    @since 1.0 */
 public class MessageRenderer implements ObjectRenderer {

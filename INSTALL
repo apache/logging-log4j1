@@ -16,7 +16,7 @@ Using log4j
    
 4) You can now test your installation. To do this issue the command:
 
-   java org.log4j.test.Hello
+   java org.apache.log4j.test.Hello
   
    You should see log statements appearing on the console.
 
