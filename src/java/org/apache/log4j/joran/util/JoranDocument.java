@@ -109,7 +109,7 @@ public final class JoranDocument extends DefaultHandler {
       event.replay(handler, replayLocation);
     }
   }
-
+  
   public InputSource resolveEntity(
     final String publicId, final String systemId) throws SAXException {
     //
@@ -123,7 +123,36 @@ public final class JoranDocument extends DefaultHandler {
        logger.warn("See {}#log4j_dtd for more details.", Constants.CODES_HREF);
       return new InputSource(new ByteArrayInputStream(new byte[0]));
     }
-    return super.resolveEntity(publicId, systemId);
+    
+    // If the systemId is not for us to handle, we delegate to our super
+    // class, at leasts that's the basic idea. However, the code below
+    // needs to be more complicated.
+    
+    // Due to inexplicable voodoo, the original resolveEntity method in 
+    // org.xml.sax.helpers.DefaultHandler declares throwing an IOException, 
+    // whereas the org.xml.sax.helpers.DefaultHandler class included in
+    // JDK 1.4 masks this exception. In JDK 1.5, the IOException has been
+    // put back...
+     
+    // In order to compile under JDK 1.4, we are forced to mask the IOException
+    // as well. Since its signatures varies, we cannot call our super class' 
+    // resolveEntity method. We are forced to implement the default behavior 
+    // ourselves, which in this case, is just returning null.
+    try {
+      return super.resolveEntity(publicId, systemId);
+    } catch(Exception e) {
+      if(e instanceof SAXException) {
+        throw (SAXException) e;
+      } else if(e instanceof java.io.IOException) {
+        // fall back to the default "implementation"
+        Logger logger = LogManager.getLogger(this.getClass().getName());
+        logger.error("Default entity resolver threw an IOException", e);
+        return null;
+      } else {
+        // This point should can never be reached.
+        return null;
+      }
+    }
   }
 
   public void setDocumentLocator(Locator location) {
