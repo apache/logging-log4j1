@@ -18,14 +18,14 @@
       <ul>
 	<p>
 	  <a
-	  href="https://www.qos.ch/shop/products/clm_t.jsp"><img
+	  href="http://www.qos.ch/shop/products/clm_t.jsp"><img
 	  align="right" src="images/coverSmall.png"></img></a> <li><a
 	  href="manual.html"><b>short manual</b></a>,
 	  </li>
 	</p>
 
 	<p>
-	  <li><a href="https://www.qos.ch/shop/products/clm_t.jsp"><b>complete manual</b></a> (commercial), 
+	  <li><a href="http://www.qos.ch/shop/products/clm_t.jsp"><b>complete manual</b></a> (commercial), 
 	  </li>
 	</p>
 	
@@ -36,7 +36,7 @@
 	</p>
 
 	<p>
-	  <li>
+	  <li> 
 	    <a href="lf5/overview.html"><b>LogFactor5 documentation</b></a>,
 	  </li>
 	</p>
@@ -111,17 +111,35 @@
             </li>
          </p>
 
-	<p><li> <a href="http://www.jug-l.org/log4j.html">Advanced
-	  Log4j</a> Louisville JUG presentation by Jonathan Cowherd </li></p>
+	
       </ul> 
+    </section>
+   
+    <section name="Log4j presentations">
+       <ul>
 
-      <p>If you would like your log4j-relateed article to be listed
+
+        <p><li> <a href="http://www.jug-l.org/log4j.html">Advanced
+	  Log4j</a> Louisville JUG presentation by Jonathan Cowherd </li></p>
+
+        <p><li><a href="http://www.johnmunsch.com/projects/Presentations/">Log4J
+        In 30 Minutes Or Less</a> by John Munsch</li></p>
+
+        <p><li><a href="https://www.qos.ch/ac2001/F11-10.html">Log4j, a logging package for the Java language</a> by Ceki G&#252;lc&#252;</li></p>
+
+        <p><li><a
+        href="http://www.ejug.org/OpenSource%20Log4j2_files/frame.htm">Log4j presentation by the</a>
+        Edmonton Java Users Group</li></p>
+
+        <p><li><a href="http://www.ociweb.com/javasig/knowledgebase/January2001/Log4J.ppt">Log4j</a> by Brent Twenter
+        </li></p>
+      </ul>
+
+      <p><b>If you would like your log4j-relateed article to be listed
 	  here, then please send a note to the <a
 	  href="mailto:log4j-user@jakarta.apache.org">log4j-user@jakarta.apache.org</a>
-	  list.
+	  list.</b>
       </p>
-
-
     </section>
 </body>
 </document>
