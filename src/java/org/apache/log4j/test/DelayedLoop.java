@@ -1,0 +1,62 @@
+// Copyright (c) 2000 Ceki Gulcu. All Rights Reserved.
+// See the LICENCE file for the terms of usage and distribution.
+
+package org.log4j.test; 
+
+import org.log4j.Category;
+import org.log4j.PropertyConfigurator;
+import org.log4j.xml.DOMConfigurator;
+
+/**
+   This test program sits in a loop and logs things. Its logging is
+   configured by a configuration file. Changes to this configuration
+   file are monitored and when a change occurs, the config file is re-read.
+
+   
+   @author Ceki G&uuml;lc&uuml; */
+public class DelayedLoop {
+
+  static Category cat = Category.getInstance(DelayedLoop.class.getName());
+  static int loopLength;
+
+  public 
+  static 
+  void main(String argv[]) {
+
+    if(argv.length == 1) 
+      init(argv[0]);
+    else 
+      usage("Wrong number of arguments.");
+    test();
+  }
+
+
+  static
+  void usage(String msg) {
+    System.err.println(msg);
+    System.err.println( "Usage: java " + DelayedLoop.class.getName() +
+			"configFile");
+    System.exit(1);
+  }
+
+  
+  static
+  void init(String configFile) {
+    if(configFile.endsWith("xml")) {
+      DOMConfigurator.configureAndWatch(configFile, 3000);
+    } else {
+      PropertyConfigurator.configureAndWatch(configFile, 3000);
+    }
+  }
+
+  static
+  void test() {
+    int i = 0;
+    while(true) {
+      cat.debug("MSG "+i++);
+      try {
+	Thread.currentThread().sleep(1000);
+      } catch(Exception e) {}
+    }
+  }
+}

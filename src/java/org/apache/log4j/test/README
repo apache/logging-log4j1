@@ -1,0 +1,9 @@
+
+The log4j test suite has been verfied to run on both Windows NT/2000
+and Linux. However, the suite requires the bash shell and perl. On
+most Unix systems these are included by default. On Windows systems
+you nedd to install the Cygwin tools from
+  
+   http://sources.redhat.com/cygwin
+
+In case of problems please contact Ceki Gulcu (cgu at freesurf.ch)
