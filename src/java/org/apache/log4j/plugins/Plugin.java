@@ -69,36 +69,39 @@ import java.beans.PropertyChangeListener;
   allow for a repository to be reconfigured when some "watched"
   configuration data changes.
 
-  @author Mark Womack
+  @author Mark Womack <mwomack@apache.org>
   @author Nicko Cadell
   @author Paul Smith <psmith@apache.org>
   @since 1.3
 */
 public interface Plugin extends OptionHandler {
   /**
-    Gets the name of the plugin.
-
-    @return String the name of the plugin. */
+   * Gets the name of the plugin.
+   * 
+   * @return String the name of the plugin.
+   */
   public String getName();
 
   /**
-    Sets the name of the plugin.
-
-    @param name the name of the plugin. */
+   * Sets the name of the plugin.
+   * 
+   * @param name the name of the plugin.
+   */
   public void setName(String name);
 
   /**
-    Gets the logger repository for this plugin.
-
-    @return LoggerRepository the logger repository this plugin is
-      attached to. */
+   * Gets the logger repository for this plugin.
+   * 
+   * @return LoggerRepository the logger repository this plugin is attached to.
+   */
   public LoggerRepository getLoggerRepository();
 
   /**
-    Sets the logger repository used by this plugin. This
-    repository will be used by the plugin functionality.
-
-    @param repository the logger repository to attach this plugin to. */
+   * Sets the logger repository used by this plugin. This
+   * repository will be used by the plugin functionality.
+   * 
+   * @param repository the logger repository to attach this plugin to.
+   */
   public void setLoggerRepository(LoggerRepository repository);
 
   /**
@@ -113,15 +116,17 @@ public interface Plugin extends OptionHandler {
   /**
    * Adds a PropertyChangeListener that will be notified of all property
    * changes.
-   * @param l
+   * 
+   * @param l The listener to add.
    */
   public void addPropertyChangeListener(PropertyChangeListener l);
 
   /**
    * Removes a specific PropertyChangeListener from this instances
    * registry that has been mapped to be notified of all property
-   * changes..
-   * @param l
+   * changes.
+   * 
+   * @param l The listener to remove.
    */
   public void removePropertyChangeListener(PropertyChangeListener l);
 
@@ -136,12 +141,33 @@ public interface Plugin extends OptionHandler {
     String propertyName, PropertyChangeListener l);
 
   /**
-    True if the plugin is active and running.
-
-    @return boolean true if the plugin is currently active. */
+   * True if the plugin is active and running.
+   * 
+   * @return boolean true if the plugin is currently active.
+   */
   public boolean isActive();
 
   /**
-    Call when the plugin should be stopped. */
+   * Returns true if the testPlugin is considered to be "equivalent" to the
+   * this plugin.  The equivalency test is at the discretion of the plugin
+   * implementation.  The PluginRegistry will use this method when starting
+   * new plugins to see if a given plugin is considered equivalent to an
+   * already running plugin with the same name.  If they are considered to
+   * be equivalent, the currently running plugin will be left in place, and
+   * the new plugin will not be started.
+   * 
+   * It is possible to override the equals() method, however this has
+   * more meaning than is required for this simple test and would also
+   * require the overriding of the hashCode() method as well.  All of this
+   * is more work than is needed, so this simple method is used instead.
+   * 
+   * @param testPlugin The plugin to test equivalency against.
+   * @return Returns true if testPlugin is considered to be equivelent.
+   */
+  public boolean isEquivalent(Plugin testPlugin);
+  
+  /**
+   * Call when the plugin should be stopped.
+   */
   public void shutdown();
 }

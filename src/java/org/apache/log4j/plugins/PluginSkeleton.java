@@ -69,7 +69,7 @@ import java.beans.PropertyChangeSupport;
 
   Contributors: Nicko Cadell
 
-  @author Mark Womack
+  @author Mark Womack <mwomack@apache.org>
   @author Paul Smith <psmith@apache.org>
   @since 1.3
 */
@@ -131,6 +131,19 @@ public abstract class PluginSkeleton implements Plugin {
    */
   public synchronized boolean isActive() {
     return active;
+  }
+
+  /**
+   * Returns true if the plugin has the same name and logger repository as the
+   * testPlugin passed in.
+   * 
+   * @param testPlugin The plugin to test equivalency against.
+   * @return Returns true if testPlugin is considered to be equivalent.
+   */
+  public boolean isEquivalent(Plugin testPlugin) {
+    return (repository == testPlugin.getLoggerRepository()) &&
+      ((this.name == null && testPlugin.getName() == null) ||
+       (this.name != null && name.equals(testPlugin.getName())));
   }
 
   /**
