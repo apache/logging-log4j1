@@ -266,14 +266,33 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    */
   public static void main(String[] args) {
 
+    createChainsawGUI(true,null);
+  }
+
+    /**
+     * Creates, activates, and then shows the Chainsaw GUI, optionally showing
+     * the splash screen, and using the passed shutdown action when the user
+     * requests to exit the application (if null, then Chainsaw will exit the vm)
+     * 
+     * @param showSplash
+     */
+  public static void createChainsawGUI(boolean showSplash, Action shutdownAction)
+  {
     LogUI logUI = new LogUI();
-    showSplash(logUI);
+    if (showSplash)
+    {
+      showSplash(logUI);
+    }
 
     logUI.handler = new ChainsawAppenderHandler();
     logUI.handler.addEventBatchListener(logUI.new NewTabEventBatchReceiver());
     LogManager.getRootLogger().addAppender(logUI.handler);
     logUI.activateViewer();
+    
+    if (shutdownAction!=null) {
+	    logUI.setShutdownAction(shutdownAction);
   }
+}
 
   public void activateViewer(ChainsawAppender appender) {
     handler = new ChainsawAppenderHandler(appender);
