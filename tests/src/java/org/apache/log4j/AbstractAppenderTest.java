@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2005 The Apache Software Foundation.
+ * Copyright 1999,2004 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.apache.log4j;
 
 import java.io.Writer;
 
+import org.apache.log4j.net.SMTPAppenderTest;
 import org.apache.log4j.spi.LoggingEvent;
 
 import junit.framework.Test;
@@ -27,52 +28,49 @@ import junit.framework.TestSuite;
 
 /**
  * An abstract test case which can be subclassed to derived to check the
- * certain (limited) aspects of Appender implementations.
- *
+ * certain (limited) aspects of Appender implementations. 
+ * 
  * @author <a href="http://www.qos.ch/log4j/">Ceki G&uuml;lc&uuml;</a>
  *
  */
 abstract public class AbstractAppenderTest extends TestCase {
-
-  abstract protected AppenderSkeleton getAppender();
-  abstract protected AppenderSkeleton getConfiguredAppender();
-
+  
+  abstract protected Appender getAppender();
+  abstract protected Appender getConfiguredAppender();
+  
   public class DummyLayout extends Layout {
-    public void format(Writer output, LoggingEvent event) {}
-    public void activateOptions() {}
-  }
-
-  protected boolean isImmediatelyActive() {
-      return false;
-  }
-
+    public void format(Writer output, LoggingEvent event) {} 
+    public void activateOptions() {} 
+  } 
+  
   public void testNewAppender() {
-    // most newly constructed appenders whould be inactive
-    AppenderSkeleton appender = getAppender();
-    assertEquals(isImmediatelyActive(), appender.isActive());
+    // new appenders whould be inactive
+    Appender appender = getAppender();
+    assertFalse(appender.isActive());
     assertFalse(appender.isClosed());
-
+    
     appender.close();
     assertTrue(appender.isClosed());
   }
-
+  
   public void testConfiguredAppender() {
-    AppenderSkeleton appender = getConfiguredAppender();
+    Appender appender = getConfiguredAppender();
     appender.activate();
     assertTrue(appender.isActive());
     assertFalse(appender.isClosed());
-
+    
     appender.close();
     assertTrue(appender.isClosed());
   }
-
-
+ 
+  
   public static Test suite() {
     TestSuite suite = new TestSuite();
     suite.addTestSuite(WriterAppenderTest.class);
     suite.addTestSuite(ConsoleAppenderTest.class);
     suite.addTestSuite(FileAppenderTest.class);
+    suite.addTestSuite(SMTPAppenderTest.class);
     return suite;
   }
-
+  
 }

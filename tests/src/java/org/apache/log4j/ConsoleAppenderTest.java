@@ -25,11 +25,11 @@ package org.apache.log4j;
  *
  */
 public class ConsoleAppenderTest extends AbstractAppenderTest {
-  protected AppenderSkeleton getAppender() {
+  protected Appender getAppender() {
     return new ConsoleAppender();
   }
 
-  protected AppenderSkeleton getConfiguredAppender() {
+  protected Appender getConfiguredAppender() {
     ConsoleAppender ca = new ConsoleAppender();
 
     // set a bogus layout

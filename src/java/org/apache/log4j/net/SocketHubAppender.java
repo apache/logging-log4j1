@@ -118,7 +118,6 @@ public class SocketHubAppender extends AppenderSkeleton {
   private CyclicBuffer buffer = null;
 
   public SocketHubAppender() {
-     super(false);
   }
 
   /**
@@ -130,10 +129,8 @@ public class SocketHubAppender extends AppenderSkeleton {
 
   /**
      Set up the socket server on the specified port.  */
-  public void activate() {
+  public void activateOptions() {
     startServer();
-    
-    super.activate();
   }
 
   /**

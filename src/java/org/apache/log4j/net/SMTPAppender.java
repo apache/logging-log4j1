@@ -100,7 +100,6 @@ public class SMTPAppender extends AppenderSkeleton {
      Use <code>evaluator</code> passed as parameter as the {@link
      TriggeringEventEvaluator} for this SMTPAppender.  */
   public SMTPAppender(TriggeringEventEvaluator evaluator) {
-    super(false);
     this.evaluator = evaluator;
   }
 

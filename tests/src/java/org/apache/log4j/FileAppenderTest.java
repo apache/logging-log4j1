@@ -24,11 +24,11 @@ package org.apache.log4j;
  * @author <a href="http://www.qos.ch/log4j/">Ceki G&uuml;lc&uuml;</a>
  */
 public class FileAppenderTest extends AbstractAppenderTest {
-  protected AppenderSkeleton getAppender() {
+  protected Appender getAppender() {
     return new FileAppender();
   }
 
-  protected AppenderSkeleton getConfiguredAppender() {
+  protected Appender getConfiguredAppender() {
     FileAppender wa = new FileAppender();
     wa.setFile("output/temp");
     wa.setLayout(new DummyLayout());

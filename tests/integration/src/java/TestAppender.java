@@ -4,9 +4,6 @@ import org.apache.log4j.spi.LoggingEvent;
 
 
 public class TestAppender extends AppenderSkeleton {
-  public TestAppender() {
-     super(false);
-  }
 
   public void activateOptions() {
     getLogger().debug("Activate options called for appender named {}.", 

@@ -59,13 +59,6 @@ public class TelnetAppender extends AppenderSkeleton {
   private int port = 23;
 
   /**
-   *  Creates a new TelnetAppender.
-   */
-  public TelnetAppender() {
-     super(false);
-  }
-  
-  /**
       This appender requires a layout to format the text to the
       attached client(s). */
   public boolean requiresLayout() {

@@ -35,7 +35,6 @@ public class NullAppender extends AppenderSkeleton {
   public String t;
 
   public NullAppender() {
-     super(true);
   }
 
   public NullAppender(Layout layout) {

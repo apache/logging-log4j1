@@ -143,7 +143,6 @@ public class DBAppender extends AppenderSkeleton {
   boolean locationInfo = false;
 
   public DBAppender() {
-     super(false);
   }
 
   public void activate() {
