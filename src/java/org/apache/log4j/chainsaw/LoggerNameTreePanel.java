@@ -51,10 +51,6 @@
  */
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-import org.apache.log4j.chainsaw.icons.LineIconFactory;
-import org.apache.log4j.helpers.LogLog;
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -63,10 +59,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -87,6 +81,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.JTree;
+import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
@@ -98,6 +93,10 @@ import javax.swing.tree.DefaultTreeSelectionModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
+
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.chainsaw.icons.LineIconFactory;
+import org.apache.log4j.helpers.LogLog;
 
 
 /**
@@ -159,20 +158,22 @@ final class LoggerNameTreePanel extends JPanel {
     //	============================================
     logTreeModel.addTreeModelListener(
       new TreeModelListener() {
+      	private boolean latched = false;
         public void treeNodesChanged(TreeModelEvent e) {
-          ensureRootExpanded();
+          
         }
 
         public void treeNodesInserted(TreeModelEvent e) {
-          ensureRootExpanded();
+          if (!latched) {
+			ensureRootExpanded();
+			latched = true;
+		}
         }
 
         public void treeNodesRemoved(TreeModelEvent e) {
-          ensureRootExpanded();
         }
 
         public void treeStructureChanged(TreeModelEvent e) {
-          ensureRootExpanded();
         }
       });
 
@@ -228,36 +229,8 @@ final class LoggerNameTreePanel extends JPanel {
   }
 
   private void toggleFocusOnState() {
-    Object checked = focusOnAction.getValue("checked");
-
-    if (checked == null) {
-      focusOnAction.putValue("checked", Boolean.TRUE);
-    } else {
-      focusOnAction.putValue("checked", null);
-    }
+  	setFocusOnSelected(!isFocusOnSelected());
   }
-
-  //  /**
-  //   * @param e
-  //   */
-  //  private void fireFocusOnEvent(ActionEvent e) {
-  //    ActionListener[] listeners =
-  //      (ActionListener[]) focusOnActionListeners.getListeners(
-  //        ActionListener.class);
-  //
-  //    for (int i = 0; i < listeners.length; i++) {
-  //      ActionListener listener = listeners[i];
-  //      listener.actionPerformed(e);
-  //    }
-  //  }
-  //  /**
-  //   * Interested parties register themselves here to be notified when the FocusOn action
-  //   * has been invoked.
-  //   * @param l
-  //   */
-  //  void addFocusOnActionListener(ActionListener l) {
-  //    focusOnActionListeners.add(ActionListener.class, l);
-  //  }
 
   /**
    * Returns the full name of the Logger that is represented by
@@ -303,15 +276,15 @@ final class LoggerNameTreePanel extends JPanel {
     return null;
   }
 
-  //  /**
-  //   * Can remove a listener from being notified of FocusOn events
-  //   * @param l
-  //   */
-  //  void removeFocusOnActionListener(ActionListener l) {
-  //    focusOnActionListeners.remove(ActionListener.class, l);
-  //  }
   private void ensureRootExpanded() {
-    logTree.expandRow(0);
+  	LogLog.debug("Ensuring Root node is expanded.");
+    final DefaultMutableTreeNode root = (DefaultMutableTreeNode) logTreeModel.getRoot();
+    SwingUtilities.invokeLater(new Runnable(){
+
+		public void run() {
+		    logTree.expandPath(new TreePath(root));
+			
+		}});
   }
 
   /**
@@ -366,10 +339,17 @@ final class LoggerNameTreePanel extends JPanel {
       new TreeSelectionListener() {
         public void valueChanged(TreeSelectionEvent e) {
           TreePath path = e.getNewLeadSelectionPath();
-          expandAction.setEnabled(path != null);
-          TreeNode node = (TreeNode) path.getLastPathComponent();
+          TreeNode node=null;
+          if(path!=null){
+          	node = (TreeNode) path.getLastPathComponent();
+          }
           //          editLoggerAction.setEnabled(path != null);
-          focusOnAction.setEnabled(path != null && node.getParent()!=null);
+          focusOnAction.setEnabled(path != null && node!=null && node.getParent()!=null);
+          
+          if(!focusOnAction.isEnabled()){
+          	setFocusOnSelected(false);
+          }
+          expandAction.setEnabled(path != null);
           collapseAction.setEnabled(path != null);
           
           reconfigureFocusOnText();
@@ -399,20 +379,21 @@ final class LoggerNameTreePanel extends JPanel {
     logTree.addMouseListener(
       new MouseAdapter() {
         public void mouseClicked(MouseEvent e) {
-          super.mouseClicked(e);
 
           if (
             (e.getClickCount() > 1)
               && ((e.getModifiers() & InputEvent.CTRL_MASK) > 0)
               && ((e.getModifiers() & InputEvent.BUTTON1_MASK) > 0)) {
             expandCurrentlySelectedNode();
+            e.consume();
           } else if (e.getClickCount() > 1) {
+          super.mouseClicked(e);
             LogLog.debug("Ignoring dbl click event " + e);
           }
         }
       });
   }
-
+ 
 
     private void reconfigureFocusOnText() {
         String logger = getCurrentlySelectedLoggerName();
@@ -433,7 +414,15 @@ final class LoggerNameTreePanel extends JPanel {
   boolean isFocusOnSelected() {
     return focusOnAction.getValue("checked") != null;
   }
-  
+  void setFocusOnSelected(boolean selected){
+
+	if (selected) {
+	  focusOnAction.putValue("checked", Boolean.TRUE);
+	} else {
+	  focusOnAction.putValue("checked", null);
+	}
+
+  }
   void addFocusOnPropertyChangeListener(PropertyChangeListener l) {
       focusOnAction.addPropertyChangeListener(l);
   }
@@ -546,6 +535,15 @@ final class LoggerNameTreePanel extends JPanel {
 
     for (int i = 0; i < paths.length; i++) {
       TreePath path = paths[i];
+      /**
+       * Handle an expansion of the Root node by only doing the first level.  
+       * Safe...
+       */
+      if(path.getPathCount()==1){
+      	logTree.expandPath(path);
+      	return;
+      }
+      
       DefaultMutableTreeNode treeNode =
         (DefaultMutableTreeNode) path.getLastPathComponent();
 
