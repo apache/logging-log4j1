@@ -1407,6 +1407,13 @@ public class LogPanel extends DockablePanel implements Profileable,
             getPreferenceModel().isLogTreePanelVisible());
         
 
+        Set set = logTreePanel.getHiddenSet();
+        int index = 0;
+        for (Iterator iter = set.iterator(); iter.hasNext(); )
+        {
+          Object logger = (Object) iter.next();
+          event.saveSetting("Logger.Ignore." + index++, logger.toString() );
+        }
         saveColumnSettings();
         saveColorSettings();
     }
@@ -1497,6 +1504,8 @@ public class LogPanel extends DockablePanel implements Profileable,
 
         lowerPanel.setDividerLocation(0.5d);
 
+        logTreePanel.ignore(event.getSettingsStartingWith("Logger.Ignore."));
+        
         File f = new File(SettingsManager.getInstance().getSettingsDirectory() +
                 File.separator + identifier + LogUI.COLUMNS_EXTENSION);
 
