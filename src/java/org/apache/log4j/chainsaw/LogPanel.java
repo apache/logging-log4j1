@@ -49,28 +49,6 @@
 
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.Layout;
-import org.apache.log4j.PatternLayout;
-import org.apache.log4j.chainsaw.color.ColorPanel;
-import org.apache.log4j.chainsaw.color.RuleColorizer;
-import org.apache.log4j.chainsaw.filter.FilterModel;
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-import org.apache.log4j.chainsaw.icons.LineIconFactory;
-import org.apache.log4j.chainsaw.layout.DefaultLayoutFactory;
-import org.apache.log4j.chainsaw.layout.EventDetailLayout;
-import org.apache.log4j.chainsaw.layout.LayoutEditorPane;
-import org.apache.log4j.chainsaw.messages.MessageCenter;
-import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SettingsListener;
-import org.apache.log4j.chainsaw.prefs.SettingsManager;
-import org.apache.log4j.helpers.ISO8601DateFormat;
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.rule.ExpressionRule;
-import org.apache.log4j.rule.ExpressionRuleContext;
-import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.spi.LoggingEventFieldResolver;
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
@@ -92,10 +70,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.EOFException;
@@ -107,10 +83,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -120,6 +94,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -129,6 +104,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
@@ -161,6 +137,28 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import org.apache.log4j.Layout;
+import org.apache.log4j.PatternLayout;
+import org.apache.log4j.chainsaw.color.ColorPanel;
+import org.apache.log4j.chainsaw.color.RuleColorizer;
+import org.apache.log4j.chainsaw.filter.FilterModel;
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.chainsaw.icons.LineIconFactory;
+import org.apache.log4j.chainsaw.layout.DefaultLayoutFactory;
+import org.apache.log4j.chainsaw.layout.EventDetailLayout;
+import org.apache.log4j.chainsaw.layout.LayoutEditorPane;
+import org.apache.log4j.chainsaw.messages.MessageCenter;
+import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.SettingsListener;
+import org.apache.log4j.chainsaw.prefs.SettingsManager;
+import org.apache.log4j.helpers.ISO8601DateFormat;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.rule.ExpressionRule;
+import org.apache.log4j.rule.ExpressionRuleContext;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.LoggingEventFieldResolver;
+
 /**
  * A LogPanel provides a view to a collection of LoggingEvents.<br>
  * <br>
@@ -170,56 +168,47 @@ import javax.swing.table.TableColumnModel;
  * individual LogPanels which  match each event's resolved expression.<br>
  * <br>
  * The LogPanel's capabilities can be broken up into four areas:<br>
- * - toolbar<br>
- * - logger tree<br>
- * - table<br>
- * - detail panel<br>
- * <br>
- * The toolbar provides 'find' and 'refine focus' features<br>
- * <br>
- * The logger tree displays a tree of the logger hierarchy which can be used
- * to filter the display<br>
- * <br>
- * The table displays the events which pass the filtering rules<br>
- * <br>
- * The detail panel displays information about the currently selected event<br>
- * <br>
+ * <ul><li> toolbar - provides 'find' and 'refine focus' features
+ * <li> logger tree - displays a tree of the logger hierarchy, which can be used
+ * to filter the display
+ * <li> table - displays the events which pass the filtering rules
+ * <li>detail panel - displays information about the currently selected event
+ * </ul>
  * Here is a complete list of LogPanel's capabilities:<br>
- * <br>
- * - display selected LoggingEvent row number and total LoggingEvent count<br>
- * - pause or unpause reception of LoggingEvents<br>
- * - configure, load and save column settings (displayed columns, order, width)<br>
- * - configure, load and save color rules<br>
- * - filter displayed LoggingEvents based on the logger tree settings<br>
- * - filter displayed LoggingEvents based on a 'refine focus' expression
- * (evaluates only those LoggingEvents which pass the logger tree filter<br>
- * - colorize LoggingEvents based on expressions <br>
- * - hide, show and configure the detail pane and tooltip<br>
- * - configure the formatting of the logger, level and timestamp fields<br>
- * - dock or undock<br>
- * - table displays first line of exception, but when cell is clicked, a
- * popup opens to display the full stack trace<br>
- * - find<br>
- * - scroll to bottom<br>
- * - sort<br>
- * - provide a context menu which can be used to build color or display expressions<br>
- * - hide or show the logger tree<br>
- * - toggle the container storing the LoggingEvents to use either a
+ * <ul><li>display selected LoggingEvent row number and total LoggingEvent count
+ * <li>pause or unpause reception of LoggingEvents
+ * <li>configure, load and save column settings (displayed columns, order, width)
+ * <li>configure, load and save color rules
+ * filter displayed LoggingEvents based on the logger tree settings
+ * <li>filter displayed LoggingEvents based on a 'refine focus' expression
+ * (evaluates only those LoggingEvents which pass the logger tree filter
+ * <li>colorize LoggingEvents based on expressions
+ * <li>hide, show and configure the detail pane and tooltip
+ * <li>configure the formatting of the logger, level and timestamp fields
+ * <li>dock or undock
+ * <li>table displays first line of exception, but when cell is clicked, a
+ * popup opens to display the full stack trace
+ * <li>find
+ * <li>scroll to bottom
+ * <li>sort
+ * <li>provide a context menu which can be used to build color or display expressions
+ * <li>hide or show the logger tree
+ * <li>toggle the container storing the LoggingEvents to use either a
  * CyclicBuffer (defaults to max size of 5000,  but configurable  through
- * CHAINSAW_CAPACITY system property) or ArrayList (no max size)<br>
- * - use the mouse context menu to 'best-fit' columns, define display
+ * CHAINSAW_CAPACITY system property) or ArrayList (no max size)
+ * <li>use the mouse context menu to 'best-fit' columns, define display
  * expression filters based on mouse location and access other capabilities
+ *</ul>
  *
- * @author Scott Deboy (sdeboy at apache.org)
- * @author Paul Smith (psmith at apache.org)
+ *@see org.apache.log4j.chainsaw.color.ColorPanel
+ *@see org.apache.log4j.rule.ExpressionRule
+ *@see org.apache.log4j.spi.LoggingEventFieldResolver
  *
- * @see org.apache.log4j.spi.LoggingEventFieldResolver
- * @see org.apache.log4j.chainsaw.color.ColorPanel
- * @see org.apache.log4j.rule.ExpressionRule
- * @see org.apache.log4j.chainsaw.LoggerNameTreePanel
+ *@author Scott Deboy (sdeboy at apache.org)
+ *@author Paul Smith (psmith at apache.org)
+ *
  */
-public class LogPanel extends DockablePanel implements SettingsListener,
-  EventBatchListener {
+public class LogPanel extends DockablePanel implements EventBatchListener, SettingsListener {
   private final String identifier;
   private final ChainsawStatusBar statusBar;
   private final JFrame preferencesFrame = new JFrame();
@@ -877,14 +866,49 @@ public class LogPanel extends DockablePanel implements SettingsListener,
       new JPanel(new FlowLayout(FlowLayout.CENTER, 3, 0));
     upperLeftPanel.add(filterLabel);
 
-    final JTextField filterText = new JTextField();
-    filterText.addKeyListener(
-      new ExpressionRuleContext(filterModel, filterText));
+    //hold a reference to the combobox model so that we can check to prevent duplicates
+    final Vector v = new Vector();
+    final JComboBox filterCombo = new JComboBox(v);
+    final JTextField filterText;
 
-    filterText.getDocument().addDocumentListener(
-      new DelayedFilterTextDocumentListener(filterText));
-
-    upperPanel.add(filterText, BorderLayout.CENTER);
+    if (filterCombo.getEditor().getEditorComponent() instanceof JTextField) {
+        String comboToolTipText = "Enter an expression, press enter to add to list";
+        filterText = (JTextField)filterCombo.getEditor().getEditorComponent();
+        filterText.setToolTipText(comboToolTipText);
+        filterText.addKeyListener(
+          new ExpressionRuleContext(filterModel, filterText));
+        filterText.getDocument().addDocumentListener(
+          new DelayedFilterTextDocumentListener(filterText));
+        filterCombo.setEditable(true);
+        filterCombo.addActionListener(new AbstractAction() {
+        public void actionPerformed(ActionEvent e) {
+        if (e.getActionCommand().equals("comboBoxEdited")) {
+            try {
+                System.out.println("Examining rule: " + filterCombo.getSelectedItem().toString());
+                //verify the expression is valid
+                ExpressionRule.getRule(filterCombo.getSelectedItem().toString());
+                System.out.println("rule was valid");
+            } catch (IllegalArgumentException iae) {
+                System.out.println("rule was not valid");
+                //don't add expressions that aren't valid
+                return;
+            } 
+            //should be 'valid expression' check
+            if (!(v.contains(filterCombo.getSelectedItem()))) {
+                filterCombo.addItem(filterCombo.getSelectedItem());
+            }
+        }
+        }});
+        upperPanel.add(filterCombo, BorderLayout.CENTER);
+    } else {
+        filterText = new JTextField();
+        filterText.setToolTipText("Enter an expression");
+        filterText.addKeyListener(
+          new ExpressionRuleContext(filterModel, filterText));
+        filterText.getDocument().addDocumentListener(
+          new DelayedFilterTextDocumentListener(filterText));
+        upperPanel.add(filterText, BorderLayout.CENTER);
+    }
     upperPanel.add(upperLeftPanel, BorderLayout.WEST);
 
     JPanel upperRightPanel =
@@ -2148,10 +2172,12 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     private long lastTimeStamp = System.currentTimeMillis();
     private final Thread delayThread;
     private final long CHECK_PERIOD = 1000;
+    private final String defaultToolTip;
 
     private DelayedFilterTextDocumentListener(JTextField filterText) {
       super();
       this.filterText = filterText;
+      this.defaultToolTip = filterText.getToolTipText();
 
       this.delayThread =
         new Thread(
@@ -2227,11 +2253,12 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     private void setFilter() {
       if (filterText.getText().equals("")) {
         ruleMediator.setRefinementRule(null);
+        filterText.setToolTipText(defaultToolTip);
       } else {
         try {
           ruleMediator.setRefinementRule(
             ExpressionRule.getRule(filterText.getText()));
-          filterText.setToolTipText("Enter expression");
+          filterText.setToolTipText(defaultToolTip);
         } catch (IllegalArgumentException iae) {
           filterText.setToolTipText(iae.getMessage());
         }
