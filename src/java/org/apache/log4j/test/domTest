@@ -1,0 +1,88 @@
+#!/bin/bash
+
+# A regression test to check the PatternLayout code.
+
+# Read the .functions 
+. .functions
+
+
+# If set, allows to skip tests 
+declare -i start=$1
+
+echo "start=$start TEMP=$TEMP OUTPUT=$OUTPUT"
+# ==================================================================
+function testDOM {
+
+ configFile=$1
+ layoutA1=$2
+ layoutA2=$3 
+
+ deleteFile temp.A1 > /dev/null; deleteFile output.A1 > /dev/null ;
+ deleteFile temp.A2 > /dev/null; deleteFile output.A2 > /dev/null;
+ touch temp.A1 temp.A2 
+ 
+ echo -n "DOM test $TEST - "
+ #java org.apache.log4j.xml.test.DOMTest $configFile
+ java -Dlog4j.configDebug org.apache.log4j.xml.test.DOMTest $configFile
+
+ $PERL filter.pl temp.A1 output.A1 DOMTest $layoutA1
+ if [ $? != 0 ]; then
+  echo "The output(1) is not in expected format. See the file [output.A1]."
+  exit 1   
+ fi
+
+ $PERL filter.pl temp.A2 output.A2 DOMTest $layoutA2
+ if [ $? != 0 ]; then
+  echo "The output(2) is not in expected format. See the file [output.A2]."
+  exit 1   
+ fi
+
+
+ check witness/domTest.A1.$TEST output.A1; echo -n "-"
+ check witness/domTest.A2.$TEST output.A2; echo " OK" 
+
+}
+# ==================================================================
+function simpleTest {
+
+ configFile=$1
+
+ echo -n "DOM test $TEST - "
+ java org.apache.log4j.xml.test.DOMTest $configFile
+ #java -Dlog4j.configDebug org.apache.log4j.xml.test.DOMTest $configFile
+ $PERL filter.pl $TEMP $OUTPUT DOMTest LINE_NUMBER
+
+ check witness/domTest.$TEST $OUTPUT;  echo " OK" 
+
+}
+# ==================================================================
+
+
+setPERL
+
+declare -i TEST
+
+TEST=1
+if [ $TEST -ge $start ]; then
+  testDOM xml/domTest$TEST.xml LINE_NUMBER ISO8601
+fi
+
+TEST=2
+if [ $TEST -ge $start ]; then
+  echo "THIS TEST WILL ECHO WARNINGS (BUT DOES NOT THROW EXCEPTIONS)."
+  testDOM xml/domTest$TEST.xml LINE_NUMBER ISO8601
+fi
+
+TEST=3
+if [ $TEST -ge $start ]; then
+  testDOM xml/domTest$TEST.xml RELATIVE RELATIVE
+fi
+
+for TEST in 4 5 6 7 8 9 10 11 12
+do
+  if [ $TEST -ge $start ]; then
+    simpleTest xml/domTest$TEST.xml 
+  fi   
+done
+
+
