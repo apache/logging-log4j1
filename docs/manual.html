@@ -108,7 +108,7 @@ developer-chosen criteria.
 <p>This observation led us to choose <em>category</em> as the central
 concept of the package.  The category notion is embodied in the
 <code><a
-href="../javadoc/org/apache/log4j/Category.html">org.apache.log4j.Category</a></code>
+href="api/org/apache/log4j/Category.html">org.apache.log4j.Category</a></code>
 class. Categories are named entities. Category names are
 case-sensitive. They follow the hierarchical naming rule:
 
@@ -141,10 +141,10 @@ is exceptional in two ways:
 <li> it cannot be retrieved by name. 
 </ol>
 <p>Invoking the class static <a
-href="../javadoc/org/apache/log4j/Category.html#getRoot()">Category.getRoot</a>
+href="api/org/apache/log4j/Category.html#getRoot()">Category.getRoot</a>
 method retrieves it. All other categories are instantiated and
 retrieved with the class static <a
-href="../javadoc/org/apache/log4j/Category.html#getRoot()">Category.getInstance</a>
+href="api/org/apache/log4j/Category.html#getRoot()">Category.getInstance</a>
 method. This method takes the name of the desired category as a
 parameter. Some of the basic methods in the Category class are listed
 below.
@@ -172,14 +172,14 @@ below.
 <p>Categories <em>may</em> be assigned priorities. The set of possible
 priorities, that is 
 
-<a href="../javadoc/org/apache/log4j/Priority.html#DEBUG">DEBUG</a>, 
-<a href="../javadoc/org/apache/log4j/Priority.html#DEBUG">INFO</a>, 
-<a href="../javadoc/org/apache/log4j/Priority.html#DEBUG">WARN</a>, 
-<a href="../javadoc/org/apache/log4j/Priority.html#DEBUG">ERROR</a> and 
-<a href="../javadoc/org/apache/log4j/Priority.html#DEBUG">FATAL</a> 
+<a href="api/org/apache/log4j/Priority.html#DEBUG">DEBUG</a>, 
+<a href="api/org/apache/log4j/Priority.html#DEBUG">INFO</a>, 
+<a href="api/org/apache/log4j/Priority.html#DEBUG">WARN</a>, 
+<a href="api/org/apache/log4j/Priority.html#DEBUG">ERROR</a> and 
+<a href="api/org/apache/log4j/Priority.html#DEBUG">FATAL</a> 
 
 are defined in the <code><a
-href="../javadoc/org/apache/log4j/Priority.html">org.apache.log4j.Priority</a></code>
+href="api/org/apache/log4j/Priority.html">org.apache.log4j.Priority</a></code>
 class. The rationale behind this seemingly restricted set
 is to promote the use of the more flexible category hierarchy rather
 than a static (even if large) set of priorities.  One may however
@@ -257,28 +257,28 @@ resulting inherited priorities according to the above rule.
 of a category instance. These printing methods are 
 
 <code>
-<a href="../javadoc/org/apache/log4j/Category.html#debug(java.lang.Object)">debug</a>
+<a href="api/org/apache/log4j/Category.html#debug(java.lang.Object)">debug</a>
 </code>,
 
 <code>
-<a href="../javadoc/org/apache/log4j/Category.html#info(java.lang.Object)">info</a>
+<a href="api/org/apache/log4j/Category.html#info(java.lang.Object)">info</a>
 </code>, 
 
 <code>
-<a href="../javadoc/org/apache/log4j/Category.html#warn(java.lang.Object)">warn</a>
+<a href="api/org/apache/log4j/Category.html#warn(java.lang.Object)">warn</a>
 </code>, 
 
 <code>
-<a href="../javadoc/org/apache/log4j/Category.html#error(java.lang.Object)">error</a>
+<a href="api/org/apache/log4j/Category.html#error(java.lang.Object)">error</a>
 </code>, 
 
 <code>
-<a href="../javadoc/org/apache/log4j/Category.html#fatal(java.lang.Object)">fatal</a>
+<a href="api/org/apache/log4j/Category.html#fatal(java.lang.Object)">fatal</a>
 </code>, 
 and
 
 <code>
-<a href="../javadoc/org/apache/log4j/Category.html#log(org.apache.log4j.Priority, java.lang.Object)">log</a></code>. 
+<a href="api/org/apache/log4j/Category.html#log(org.apache.log4j.Priority, java.lang.Object)">log</a></code>. 
 
 
 By definition, the printing method determines the
@@ -366,16 +366,16 @@ on their category is only part of the picture. Log4j allows logging
 requests to print to multiple destinations. In log4j speak, an output
 destination is called an <em>appender</em>. Currently, appenders exist
 for the console, <a
-href="../javadoc/org/apache/log4j/FileAppender.html">files</a>, GUI
+href="api/org/apache/log4j/FileAppender.html">files</a>, GUI
 components, <a
-href="../javadoc/org/apache/log4j/net/SocketAppender.html">remote socket</a>
-servers, <a href="../javadoc/org/apache/log4j/nt/NTEventLogAppender.html"> NT
+href="api/org/apache/log4j/net/SocketAppender.html">remote socket</a>
+servers, <a href="api/org/apache/log4j/nt/NTEventLogAppender.html"> NT
 Event Loggers</a>, and remote UNIX <a
-href="../javadoc/org/apache/log4j/net/SyslogAppender.html">Syslog</a>
-daemons. It is also possible to log <a href="../javadoc/org/apache/log4j/AsyncAppender.html">asyncronously</a>.
+href="api/org/apache/log4j/net/SyslogAppender.html">Syslog</a>
+daemons. It is also possible to log <a href="api/org/apache/log4j/AsyncAppender.html">asyncronously</a>.
  
 <p>A category may refer to multiple appenders. The <a
-href="../javadoc/org/apache/log4j/Category.html#addAppender(org.apache.log4j.Appender)">addAppender</a>
+href="api/org/apache/log4j/Category.html#addAppender(org.apache.log4j.Appender)">addAppender</a>
 method adds an appender to a given category.
 
 Each enabled logging
@@ -389,7 +389,7 @@ console. If in addition a file appender is added to a category, say
 <em>C</em>'s children will print on a file <em>and</em> on the
 console. It is possible to override this default behavior so that
 appender accumulation is no longer additive by <a
-href="../javadoc/org/apache/log4j/Category.html#setAdditivity(boolean)">setting
+href="api/org/apache/log4j/Category.html#setAdditivity(boolean)">setting
 the additivity flag</a> to <code>false</code>.
 
 <p>The rules govening appender addivity are sumarized below.
@@ -486,7 +486,7 @@ fruits including oranges will be rendered by the
 specific <code>OrangeRenderer</code>.
 
 <p>Object renderers have to implement the
-<a href="../javadoc/org/apache/log4j/or/ObjectRenderer.html">ObjectRenderer</a>
+<a href="api/org/apache/log4j/or/ObjectRenderer.html">ObjectRenderer</a>
 interface.
 
 
@@ -556,7 +556,7 @@ package <code>com.foo</code>.
 
 
 <p>The invocation of the <a
-href="../javadoc/org/apache/log4j/BasicConfigurator.html#configure()">BasicConfigurator.configure</a>
+href="api/org/apache/log4j/BasicConfigurator.html#configure()">BasicConfigurator.configure</a>
 method creates a rather simple log4j setup. This method is hardwired
 to add to the root category a FileAppender printing on the
 console. The output will be formatted using a PatternLayout set to the
@@ -801,9 +801,9 @@ claims to be fast and flexible: speed first, flexibility second.
   <li>Logging performance when logging is turned off.
 
    <p>When logging is <a
-   href="../javadoc/org/apache/log4j/BasicConfigurator.html#disableAll()">turned
+   href="api/org/apache/log4j/BasicConfigurator.html#disableAll()">turned
    off entirely</a> or just for a <a
-   href="../javadoc/org/apache/log4j/BasicConfigurator.html#disable(org.apache.log4j.Priority)">set
+   href="api/org/apache/log4j/BasicConfigurator.html#disable(org.apache.log4j.Priority)">set
    of priorities</a>, the cost of a log request consists of a method
    invocation plus an integer comparison.  On a 233 MHz Pentium II
    machine this cost is typically in the 5 to 50 nano-second range.
@@ -888,7 +888,7 @@ hierarchies.
    about 100 to 300 microseconds.
 
    See <a
-   href="../javadoc/org/apache/log4j/performance/Logging.html">org.apache.log4.performance.Logging</a>
+   href="api/org/apache/log4j/performance/Logging.html">org.apache.log4.performance.Logging</a>
    for actual figures.
 
 </ol>
@@ -898,7 +898,7 @@ Some log4j components have been rewritten many times to improve
 performance.  Nevertheless, contributors frequently come up with new
 optimizations. You should be pleased to know that when configured with
 the <a
-href="../javadoc/org/apache/log4j/SimpleLayout.html">SimpleLayout</a>
+href="api/org/apache/log4j/SimpleLayout.html">SimpleLayout</a>
 performance tests have shown log4j to log as quickly as
 <code>System.out.println</code>.
 
