@@ -64,7 +64,9 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -83,6 +85,9 @@ import javax.swing.JToolBar;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.EventListenerList;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionEvent;
@@ -114,12 +119,15 @@ final class LoggerNameTreePanel extends JPanel {
   private final JButton closeButton = new SmallButton();
   private final SmallToggleButton focusOnLoggerButton =
     new SmallToggleButton();
+  private final SmallToggleButton ignoreLoggerButton = new SmallToggleButton();
   private final JButton editLoggerButton = new SmallButton();
   private final Action expandAction;
   private final Action collapseAction;
   private final Action closeAction;
   private final Action editLoggerAction;
   private final Action focusOnAction;
+  private final Action hideAction;
+  private final Action clearIgnoreListAction;
 
   //  private final EventListenerList focusOnActionListeners =
   //    new EventListenerList();
@@ -128,6 +136,8 @@ final class LoggerNameTreePanel extends JPanel {
     new LoggerNameTreeCellRenderer();
   private final LoggerTreePopupMenu popupMenu;
   private final PopupListener popupListener;
+  private final Set hiddenSet = new HashSet();
+  private final EventListenerList listenerList = new EventListenerList();
 
   /**
    * @param logTreeModel
@@ -148,7 +158,13 @@ final class LoggerNameTreePanel extends JPanel {
 
             TreePath path = logTree.getPathForLocation(ev.getX(), ev.getY());
 
-            return getLoggerName(path);
+            String loggerName = getLoggerName(path);
+
+            if (hiddenSet.contains(loggerName)) {
+              loggerName += " (you are ignoring this logger)";
+            }
+
+            return loggerName;
           }
         };
 
@@ -158,16 +174,16 @@ final class LoggerNameTreePanel extends JPanel {
     //	============================================
     logTreeModel.addTreeModelListener(
       new TreeModelListener() {
-      	private boolean latched = false;
+        private boolean latched = false;
+
         public void treeNodesChanged(TreeModelEvent e) {
-          
         }
 
         public void treeNodesInserted(TreeModelEvent e) {
           if (!latched) {
-			ensureRootExpanded();
-			latched = true;
-		}
+            ensureRootExpanded();
+            latched = true;
+          }
         }
 
         public void treeNodesRemoved(TreeModelEvent e) {
@@ -194,6 +210,8 @@ final class LoggerNameTreePanel extends JPanel {
     closeAction = createCloseAction();
     collapseAction = createCollapseAction();
     focusOnAction = createFocusOnAction();
+    hideAction = createIgnoreAction();
+    clearIgnoreListAction = createClearIgnoreListAction();
 
     popupMenu = new LoggerTreePopupMenu();
     popupListener = new PopupListener(popupMenu);
@@ -203,6 +221,90 @@ final class LoggerNameTreePanel extends JPanel {
 
     add(toolbar, BorderLayout.NORTH);
     add(scrollTree, BorderLayout.CENTER);
+  }
+
+  /**
+   * Adds a change Listener to this LoggerNameTreePanel to be notfied
+   * when the State of the Focus or Hidden details have changed.
+   *
+   * @param l
+   */
+  public void addChangeListener(ChangeListener l) {
+    listenerList.add(ChangeListener.class, l);
+  }
+
+  public void removeChangeListener(ChangeListener l) {
+    listenerList.remove(ChangeListener.class, l);
+  }
+
+  /**
+  * @return
+  */
+  private Action createClearIgnoreListAction() {
+    Action action =
+      new AbstractAction("Clear Ignore list", null) {
+        public void actionPerformed(ActionEvent e) {
+          ignoreLoggerButton.setSelected(false);
+          logTreeModel.reload();
+          hiddenSet.clear();
+        }
+      };
+
+    action.putValue(
+      Action.SHORT_DESCRIPTION,
+      "Removes all entries from the Ignore list so you can see their events in the view");
+
+    return action;
+  }
+
+  /**
+    * @return
+    */
+  private Action createIgnoreAction() {
+    Action action =
+      new AbstractAction(
+        "Ignore this Logger", new ImageIcon(ChainsawIcons.ICON_COLLAPSE)) {
+        public void actionPerformed(ActionEvent e) {
+          String logger = getCurrentlySelectedLoggerName();
+
+          if (logger != null) {
+            toggleHiddenLogger(logger);
+            logTreeModel.nodeChanged(
+              (TreeNode) logTree.getSelectionPath().getLastPathComponent());
+            ignoreLoggerButton.setSelected(hiddenSet.contains(logger));
+            focusOnAction.setEnabled(!hiddenSet.contains(logger));
+            popupMenu.hideCheck.setSelected(hiddenSet.contains(logger));
+          }
+          fireChangeEvent();
+        }
+      };
+
+    action.putValue(
+      Action.SHORT_DESCRIPTION,
+      "Adds the selected Logger to your Ignore list, filtering those events from view");
+
+    return action;
+  }
+
+  /**
+   * @param logger
+   */
+  protected void toggleHiddenLogger(String logger) {
+    if (!hiddenSet.contains(logger)) {
+      hiddenSet.add(logger);
+    } else {
+      hiddenSet.remove(logger);
+    }
+
+    firePropertyChange("hiddenSet", (Object) null, (Object) null);
+  }
+
+  /**
+   * Returns an unmodifiable set of those Loggers marked as hidden.
+   * @return
+   */
+  Set getHiddenSet() {
+    return Collections.unmodifiableSet(hiddenSet);
   }
 
   /**
@@ -229,7 +331,7 @@ final class LoggerNameTreePanel extends JPanel {
   }
 
   private void toggleFocusOnState() {
-  	setFocusOnSelected(!isFocusOnSelected());
+    setFocusOnSelected(!isFocusOnSelected());
   }
 
   /**
@@ -277,14 +379,16 @@ final class LoggerNameTreePanel extends JPanel {
   }
 
   private void ensureRootExpanded() {
-  	LogLog.debug("Ensuring Root node is expanded.");
-    final DefaultMutableTreeNode root = (DefaultMutableTreeNode) logTreeModel.getRoot();
-    SwingUtilities.invokeLater(new Runnable(){
+    LogLog.debug("Ensuring Root node is expanded.");
 
-		public void run() {
-		    logTree.expandPath(new TreePath(root));
-			
-		}});
+    final DefaultMutableTreeNode root =
+      (DefaultMutableTreeNode) logTreeModel.getRoot();
+    SwingUtilities.invokeLater(
+      new Runnable() {
+        public void run() {
+          logTree.expandPath(new TreePath(root));
+        }
+      });
   }
 
   /**
@@ -339,19 +443,34 @@ final class LoggerNameTreePanel extends JPanel {
       new TreeSelectionListener() {
         public void valueChanged(TreeSelectionEvent e) {
           TreePath path = e.getNewLeadSelectionPath();
-          TreeNode node=null;
-          if(path!=null){
-          	node = (TreeNode) path.getLastPathComponent();
+          TreeNode node = null;
+
+          if (path != null) {
+            node = (TreeNode) path.getLastPathComponent();
           }
+
           //          editLoggerAction.setEnabled(path != null);
-          focusOnAction.setEnabled(path != null && node!=null && node.getParent()!=null);
-          
-          if(!focusOnAction.isEnabled()){
-          	setFocusOnSelected(false);
+          String logger = getCurrentlySelectedLoggerName();
+          focusOnAction.setEnabled(
+            (path != null) && (node != null) && (node.getParent() != null) && !hiddenSet.contains(logger));
+          hideAction.setEnabled(
+            (path != null) && (node != null) && (node.getParent() != null));
+
+          if (!focusOnAction.isEnabled()) {
+            setFocusOnSelected(false);
           }
+
+
           expandAction.setEnabled(path != null);
+
+          if (logger != null) {
+            boolean isHidden = hiddenSet.contains(logger);
+            popupMenu.hideCheck.setSelected(isHidden);
+            ignoreLoggerButton.setSelected(isHidden);
+          }
+
           collapseAction.setEnabled(path != null);
-          
+
           reconfigureFocusOnText();
         }
       });
@@ -360,15 +479,20 @@ final class LoggerNameTreePanel extends JPanel {
 
     /**
      * This listener ensures the Tool bar toggle button and popup menu check box
-     * stay in sync
+     * stay in sync, plus notifies all the ChangeListeners that
+     * an effective filter criteria has been modified
      */
     focusOnAction.addPropertyChangeListener(
       new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           popupMenu.focusOnCheck.setSelected(isFocusOnSelected());
           focusOnLoggerButton.setSelected(isFocusOnSelected());
-          logTreeModel.nodeChanged(
-            (TreeNode) logTree.getSelectionPath().getLastPathComponent());
+
+          if (logTree.getSelectionPath() != null) {
+            logTreeModel.nodeChanged(
+              (TreeNode) logTree.getSelectionPath().getLastPathComponent());
+          }
+          fireChangeEvent();
         }
       });
 
@@ -379,7 +503,6 @@ final class LoggerNameTreePanel extends JPanel {
     logTree.addMouseListener(
       new MouseAdapter() {
         public void mouseClicked(MouseEvent e) {
-
           if (
             (e.getClickCount() > 1)
               && ((e.getModifiers() & InputEvent.CTRL_MASK) > 0)
@@ -387,50 +510,56 @@ final class LoggerNameTreePanel extends JPanel {
             expandCurrentlySelectedNode();
             e.consume();
           } else if (e.getClickCount() > 1) {
-          super.mouseClicked(e);
+            super.mouseClicked(e);
             LogLog.debug("Ignoring dbl click event " + e);
           }
         }
       });
   }
- 
 
-    private void reconfigureFocusOnText() {
-        String logger = getCurrentlySelectedLoggerName();
-        if(logger == null || logger.length()==0) {
-            focusOnAction.putValue(Action.NAME, "Focus On...");
-        } else {
-            focusOnAction.putValue(Action.NAME, "Focus On '" + logger + "'");
-        }
-        
-        // need to ensure the button doens't update itself with the text, looks stupid otherwise
-        focusOnLoggerButton.setText(null);
+  private void reconfigureFocusOnText() {
+    String logger = getCurrentlySelectedLoggerName();
+
+    if ((logger == null) || (logger.length() == 0)) {
+      focusOnAction.putValue(Action.NAME, "Focus On...");
+    } else {
+      focusOnAction.putValue(Action.NAME, "Focus On '" + logger + "'");
     }
-    
-    /**
-     * Returns true if the FocusOn element has been selected
-     * @return true if the FocusOn action/lement has been selected
-     */
+
+    // need to ensure the button doens't update itself with the text, looks stupid otherwise
+    focusOnLoggerButton.setText(null);
+  }
+
+  /**
+   * Returns true if the FocusOn element has been selected
+   * @return true if the FocusOn action/lement has been selected
+   */
   boolean isFocusOnSelected() {
     return focusOnAction.getValue("checked") != null;
   }
-  void setFocusOnSelected(boolean selected){
 
-	if (selected) {
-	  focusOnAction.putValue("checked", Boolean.TRUE);
-	} else {
-	  focusOnAction.putValue("checked", null);
-	}
-
-  }
-  void addFocusOnPropertyChangeListener(PropertyChangeListener l) {
-      focusOnAction.addPropertyChangeListener(l);
+  void setFocusOnSelected(boolean selected) {
+    if (selected) {
+      focusOnAction.putValue("checked", Boolean.TRUE);
+    } else {
+      focusOnAction.putValue("checked", null);
+    }
   }
 
-  void removeFocusOnPropertyChangeListener(PropertyChangeListener l) {
-    focusOnAction.removePropertyChangeListener(l);    
+  private void fireChangeEvent() {
+    ChangeListener[] listeners =
+      (ChangeListener[]) listenerList.getListeners(ChangeListener.class);
+    ChangeEvent e = null;
+
+    for (int i = 0; i < listeners.length; i++) {
+      if (e == null) {
+        e = new ChangeEvent(this);
+      }
+
+      listeners[i].stateChanged(e);
+    }
   }
-  
+
   private Action createEditLoggerAction() {
     Action action =
       new AbstractAction() {
@@ -535,15 +664,17 @@ final class LoggerNameTreePanel extends JPanel {
 
     for (int i = 0; i < paths.length; i++) {
       TreePath path = paths[i];
+
       /**
-       * Handle an expansion of the Root node by only doing the first level.  
+       * Handle an expansion of the Root node by only doing the first level.
        * Safe...
        */
-      if(path.getPathCount()==1){
-      	logTree.expandPath(path);
-      	return;
+      if (path.getPathCount() == 1) {
+        logTree.expandPath(path);
+
+        return;
       }
-      
+
       DefaultMutableTreeNode treeNode =
         (DefaultMutableTreeNode) path.getLastPathComponent();
 
@@ -602,6 +733,8 @@ final class LoggerNameTreePanel extends JPanel {
     collapseButton.setText(null);
     focusOnLoggerButton.setAction(focusOnAction);
     focusOnLoggerButton.setText(null);
+    ignoreLoggerButton.setAction(hideAction);
+    ignoreLoggerButton.setText(null);
 
     expandButton.setFont(expandButton.getFont().deriveFont(Font.BOLD));
     collapseButton.setFont(collapseButton.getFont().deriveFont(Font.BOLD));
@@ -615,7 +748,9 @@ final class LoggerNameTreePanel extends JPanel {
     toolbar.add(collapseButton);
     toolbar.addSeparator();
     toolbar.add(focusOnLoggerButton);
-    toolbar.add(editLoggerButton);
+    toolbar.add(ignoreLoggerButton);
+
+    //    toolbar.add(editLoggerButton);
     toolbar.addSeparator();
 
     toolbar.add(Box.createHorizontalGlue());
@@ -661,12 +796,24 @@ final class LoggerNameTreePanel extends JPanel {
         component.setFont(originalFont.deriveFont(Font.PLAIN));
       }
 
+      originalFont = component.getFont();
+
+      String logger =
+        ((DefaultMutableTreeNode) value).getUserObject().toString();
+
+      if (hiddenSet.contains(logger)) {
+        component.setEnabled(false);
+      } else {
+        component.setEnabled(true);
+      }
+
       return component;
     }
   }
 
   private class LoggerTreePopupMenu extends JPopupMenu {
     JCheckBoxMenuItem focusOnCheck = new JCheckBoxMenuItem();
+    JCheckBoxMenuItem hideCheck = new JCheckBoxMenuItem();
 
     private LoggerTreePopupMenu() {
       initMenu();
@@ -680,8 +827,13 @@ final class LoggerNameTreePanel extends JPanel {
       add(collapseAction);
       addSeparator();
       focusOnCheck.setAction(focusOnAction);
+      hideCheck.setAction(hideAction);
       add(focusOnCheck);
-      add(editLoggerAction);
+      add(hideCheck);
+
+      //      add(editLoggerAction);
+      addSeparator();
+      add(clearIgnoreListAction);
     }
 
     /* (non-Javadoc)
