@@ -16,17 +16,9 @@
 
 package org.apache.log4j.rule;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.MDC;
-import org.apache.log4j.chainsaw.ChainsawConstants;
-import org.apache.log4j.chainsaw.filter.FilterModel;
-import org.apache.log4j.spi.LoggingEvent;
-
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -39,6 +31,12 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.MDC;
+import org.apache.log4j.chainsaw.filter.FilterModel;
+import org.apache.log4j.spi.LoggingEvent;
 
 
 public class RuleTest extends JFrame {
@@ -93,8 +91,7 @@ public class RuleTest extends JFrame {
 
     while (iter.hasNext()) {
       LoggingEvent event = (LoggingEvent) iter.next();
-      filterModel.processNewLoggingEvent(
-        ChainsawConstants.LOG4J_EVENT_TYPE, event);
+      filterModel.processNewLoggingEvent(event);
     }
 
     JPanel fieldPanel = new JPanel(new GridLayout(5, 1));
