@@ -16,6 +16,8 @@
 
 package org.apache.log4j.xml;
 
+import java.net.URL;
+
 import org.apache.log4j.*;
 import org.apache.log4j.joran.JoranConfigurator;
 
@@ -53,5 +55,9 @@ public class DOMConfigurator extends JoranConfigurator {
     JoranConfigurator joran = new JoranConfigurator();
     joran.doConfigure(file, LogManager.getLoggerRepository());
   }
-  
+
+  public static void configure(URL url) {
+    JoranConfigurator joran = new JoranConfigurator();
+    joran.doConfigure(url, LogManager.getLoggerRepository());
+  }
 }
