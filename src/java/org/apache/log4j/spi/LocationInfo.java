@@ -41,6 +41,13 @@ public class LocationInfo implements java.io.Serializable {
   public static final String NA = "?";
   static final long serialVersionUID = -1325822038990805636L;
 
+  /**
+   * NA_LOCATION_INFO is used in conjunction with deserialized LoggingEvents 
+   * without real location info available.
+   * @since 1.3
+   */
+  public static LocationInfo NA_LOCATION_INFO = new LocationInfo(NA, NA, NA, NA);
+  
   // Check if we are running in IBM's visual age.
   static boolean inVisualAge = false;
 

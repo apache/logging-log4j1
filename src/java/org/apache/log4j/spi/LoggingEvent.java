@@ -47,8 +47,6 @@ import org.apache.log4j.helpers.LogLog;
  *
  * @author Ceki G&uuml;lc&uuml;
  * @author James P. Cakalic
- *
- * @since 0.8.2
  */
 public class LoggingEvent
        implements java.io.Serializable {
@@ -334,25 +332,24 @@ public class LoggingEvent
    * information is cached for future use.
    */
   public LocationInfo getLocationInformation() {
-    if (locationInfo == null) {
+    if (locationInfo == null && fqnOfLoggerClass != null) {
       locationInfo = new LocationInfo(new Throwable(), fqnOfLoggerClass);
     }
-
     return locationInfo;
   }
 
+
   /**
-   * Set the location information for this logging event. 
+   * Set the location information for this logging event.
    * @since 1.3
    */
   public void setLocationInformation(LocationInfo li) {
     if (locationInfo != null) {
-        throw new IllegalStateException("LocationInformation has been already set.");
+      throw new IllegalStateException("LocationInformation has been already set.");
     }
     locationInfo = li;
   }
-    
-  
+
 
   /**
    * Return the level of this event.
@@ -491,8 +488,9 @@ public class LoggingEvent
     return ndc;
   }
 
+
   /**
-   * This method sets the NDC string for this event. 
+   * This method sets the NDC string for this event.
    * @throws IllegalStateException if ndc had been already set.
    * @since 1.3
    */
@@ -503,6 +501,7 @@ public class LoggingEvent
     ndcLookupRequired = false;
     ndc = ndcString;
   }
+
 
   /**
    * Returns the the context corresponding to the <code>key</code> parameter.
@@ -577,21 +576,22 @@ public class LoggingEvent
 
   /**
    * This method creates a new properties map containing a copy of MDC context
-   * and a copy if the properites in LoggerRepository containing the logger for
-   * this event.
-   * @sicne 1.3
+   * and a copy of the properites in LoggerRepository generating this event.
+   *
+   * @since 1.3
    */
-  public void createProperties() {
-    if (properties == null) {
-      properties = new TreeMap();
-      Map mdcMap = MDC.getContext();
-      if(mdcMap != null) {
-        properties.putAll(mdcMap);
-      }
-      if (logger != null) {
-        properties.putAll(logger.getLoggerRepository().getProperties());
-      }
+  public Map createProperties() {
+    Map map = new TreeMap();
+    Map mdcMap = MDC.getContext();
+
+    if (mdcMap != null) {
+      map.putAll(mdcMap);
     }
+
+    if (logger != null) {
+      map.putAll(logger.getLoggerRepository().getProperties());
+    }
+    return map;
   }
 
 
@@ -616,6 +616,7 @@ public class LoggingEvent
 
     // if the key was not found in this even't properties, try the MDC
     value = MDC.get(key);
+
     if (value != null) {
       return value;
     }
@@ -631,7 +632,8 @@ public class LoggingEvent
 
   /**
    * Returns the set of of the key values in the properties
-   * for the event or Collections.EMPTY_SET if properties do not exist.
+   * for the event.
+   *
    * The returned set is unmodifiable by the caller.
    *
    * @return Set an unmodifiable set of the property keys.
@@ -639,7 +641,7 @@ public class LoggingEvent
    */
   public Set getPropertyKeySet() {
     if (properties == null) {
-      createProperties();
+      properties = createProperties();
     }
     return Collections.unmodifiableSet(properties.keySet());
   }
@@ -764,6 +766,7 @@ public class LoggingEvent
     }
   }
 
+
   /**
    * Set this event's throwable information.
    * @since 1.3
@@ -775,6 +778,7 @@ public class LoggingEvent
       throwableInfo = ti;
     }
   }
+
 
   private void readLevel(ObjectInputStream ois)
          throws java.io.IOException, ClassNotFoundException {
@@ -816,9 +820,9 @@ public class LoggingEvent
     ois.defaultReadObject();
     readLevel(ois);
 
-    // Make sure that no location info is available to Layouts
+    // Make sure that location info instance is set.
     if (locationInfo == null) {
-      locationInfo = new LocationInfo(null, null);
+      locationInfo = LocationInfo.NA_LOCATION_INFO;
     }
   }
 
@@ -846,7 +850,8 @@ public class LoggingEvent
    */
   public void setProperty(String key, String value) {
     if (properties == null) {
-      properties = new Hashtable(5);    // create a small hashtable
+      // create a copy of MDC and repository properties  
+      properties = createProperties();  
     }
 
     if (value != null) {
