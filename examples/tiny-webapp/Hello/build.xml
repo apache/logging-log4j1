@@ -7,14 +7,21 @@
   <!-- The build.properties file defines variables dependent of the host machine -->
   <property file="build.properties"/>
   
-  <property name="src.dir" value="${basedir}/src/java/"/>
-  <property name="javac.dest" value="${basedir}/classes"/>
+  <property name="log4j.home" value="../../.."/>
+
+  <property name="src.dir" value="${basedir}/src/java"/>
+  <property name="WebRoot" value="${basedir}/WebRoot"/>
+  <property name="WEB-INF" value="${WebRoot}/WEB-INF"/>
+  <property name="javac.dest" value="${WEB-INF}/classes"/>
 
   <property name="webapp-name" value="hello"/>
 
   <path id="compile.classpath">
-    <pathelement location="${build.home}/classes"/>
-    <pathelement location="${log4j.jar}"/>
+    <pathelement location="${src.dir}"/>
+    <pathelement location="${javac.dest}"/>
+  	<fileset dir="${log4j.home}">
+  	  <include name="log4j-1.3*.jar"/>
+  	</fileset>
     <pathelement location="${servlet.jar}"/>
   </path>
  
@@ -31,11 +38,9 @@
     </javac>
   </target>
 
-  <target name="war" depends="compile">
-    <war warfile="${webapp-name}.war" webxml="src/WEB-INF/web.xml">
-      <classes dir="classes"/>
-      <zipfileset dir="src/resources" prefix="WEB-INF/classes"/>
-      <zipfileset dir="src/html" prefix=""/>
+  <target name="war" depends="compile">    
+    <war warfile="${webapp-name}.war" webxml="${WEB-INF}/web.xml">
+      <zipfileset dir="${WebRoot}"/>
     </war>
   </target>
 
