@@ -23,8 +23,8 @@ WARN - Message 21
 INFO - Message 22
 DEBUG - Message 23
 java.lang.Exception: Just testing.
-	at org.apache.log4j.MinimumTestCase.common(X)
-	at org.apache.log4j.MinimumTestCase.simple(X)
+	at org.apache.log4j.MinimumTest.common(X)
+	at org.apache.log4j.MinimumTest.simple(X)
 	at java.lang.reflect.Method.invoke(X)
 	at junit.framework.TestCase.runTest(X)
 	at junit.framework.TestCase.runBare(X)
