@@ -52,80 +52,35 @@ package org.apache.log4j.chainsaw.layout;
 import org.apache.log4j.Layout;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Writer;
-
-import java.net.URL;
 
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
 
-import javax.swing.text.html.HTMLEditorKit;
-
 
 /**
  * This layout is used for formatting HTML text for use inside
  * the Chainsaw Event Detail Panel, and the tooltip used
- * when mouse-over on a particular log event row
+ * when mouse-over on a particular log event row.
+ *
+ * It relies an an internal PatternLayout to accomplish this, but ensures HTML characters
+ * from any LoggingEvent are escaped first.
  *
  * @author Paul Smith <psmith@apache.org>
  */
 public class EventDetailLayout extends Layout {
-  private PatternLayout patternLayout =
-    new PatternLayout(PatternLayout.TTCC_CONVERSION_PATTERN);
+  private PatternLayout patternLayout = new PatternLayout();
 
   public EventDetailLayout() {
-    URL defaultLayoutURL =
-      this.getClass().getClassLoader().getResource(
-        "org/apache/log4j/chainsaw/layout/DefaultDetailLayout.html");
-
-    if (defaultLayoutURL == null) {
-      LogLog.warn(
-        "Could not locate the default Layout for Event Details and Tooltips");
-    } else {
-      HTMLEditorKit kit = new HTMLEditorKit();
-
-      try {
-        StringBuffer content = new StringBuffer();
-        BufferedReader reader = null;
-
-        try {
-          reader =
-            new BufferedReader(
-              new InputStreamReader(defaultLayoutURL.openStream()));
-
-          String line = "";
-
-          while ((line = reader.readLine()) != null) {
-            content.append(line);
-          }
-        } finally {
-          if (reader != null) {
-            reader.close();
-          }
-        }
-
-        if (content != null) {
-          LogLog.debug("Loaded layout content:\n" + content);
-          patternLayout.setConversionPattern(content.toString());
-        } else {
-          LogLog.warn("No Layout content retrieved, using default");
-        }
-      } catch (Exception e) {
-        LogLog.error("Failed to read in the Layout", e);
-      }
-    }
   }
 
-  public void setConverionPatter(String conversionPatter) {
-    patternLayout.setConversionPattern(conversionPatter);
+  public void setConversionPattern(String conversionPattern) {
+    patternLayout.setConversionPattern(conversionPattern);
   }
 
   public String getConversionPattern() {
