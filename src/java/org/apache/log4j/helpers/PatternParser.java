@@ -86,7 +86,7 @@ public class PatternParser {
     }
   }
 
-  private
+  protected
   String extractOption() {
     if((i < patternLength) && (pattern.charAt(i) == '{')) {
       int end = pattern.indexOf('}', i);	
