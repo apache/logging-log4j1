@@ -34,7 +34,7 @@ import java.io.InputStream;
  * */
 public class Log4jEntityResolver implements EntityResolver {
   public InputSource resolveEntity(String publicId, String systemId) {
-    LogLog.info("Log4jEntityResolver.resolveEntity("+publicId+","+systemId+") called");
+    LogLog.debug("Log4jEntityResolver.resolveEntity("+publicId+","+systemId+") called");
     if (systemId.endsWith("log4j.dtd")) {
       Class clazz = getClass();
       InputStream in =
