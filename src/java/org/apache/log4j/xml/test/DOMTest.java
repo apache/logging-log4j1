@@ -16,7 +16,6 @@
 
 package org.apache.log4j.xml.test;
 
-import org.apache.log4j.Category;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -32,7 +31,7 @@ import org.apache.log4j.joran.JoranConfigurator;
  * @author Ceki G&uuml;lc&uuml;
  */
 public class DOMTest {
-  static Category cat = Category.getInstance(DOMTest.class.getName());
+  static Logger cat = Logger.getLogger(DOMTest.class);
 
   public static void main(String[] argv) {
     if (argv.length == 1) {
