@@ -138,7 +138,7 @@ public class PropertySetter {
   }
 
   Logger getLogger() {
-    if (logger != null) {
+    if (logger == null) {
       logger = LogManager.getLogger(this.getClass().getName());
     }
     return logger;
