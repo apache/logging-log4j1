@@ -93,7 +93,7 @@ public class Generator extends Receiver implements Runnable {
     return e;
   }
 
-  public synchronized void run() {
+  public void run() {
     NDC.push(baseString_);
     MDC.put("some string", "some value" + baseString_);
 
