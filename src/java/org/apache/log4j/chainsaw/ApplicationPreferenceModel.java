@@ -54,6 +54,7 @@ public class ApplicationPreferenceModel implements SettingsListener {
      * If not 'empty', this property will be used as the URL to load log4j configuration at startup
      */
     private String configurationURL="";
+	private boolean okToRemoveSecurityManager;
 
     /**
      * @param listener
@@ -181,6 +182,7 @@ public class ApplicationPreferenceModel implements SettingsListener {
        setCyclicBufferSize(event.asInt("cyclicBufferSize"));
        setConfigurationURL(event.getSetting("configurationURL"));
        setLastUsedVersion(event.getSetting("lastUsedVersion"));
+       setOkToRemoveSecurityManager(event.asBoolean("okToRemoveSecurityManager"));
     }
 
     /* (non-Javadoc)
@@ -201,6 +203,7 @@ public class ApplicationPreferenceModel implements SettingsListener {
         event.saveSetting("cyclicBufferSize", getCyclicBufferSize());
         event.saveSetting("configurationURL", getConfigurationURL());
         event.saveSetting("lastUsedVersion", getLastUsedVersion());
+        event.saveSetting("okToRemoveSecurityManager", isOkToRemoveSecurityManager());
     }
 
     /**
@@ -223,6 +226,7 @@ public class ApplicationPreferenceModel implements SettingsListener {
       setCyclicBufferSize(model.getCyclicBufferSize());
       setConfigurationURL(model.getConfigurationURL());
       setLastUsedVersion(model.getLastUsedVersion());
+      setOkToRemoveSecurityManager(model.isOkToRemoveSecurityManager());
     }
     
     /**
@@ -388,4 +392,19 @@ public class ApplicationPreferenceModel implements SettingsListener {
         this.lastUsedVersion = lastUsedVersion;
         firePropertyChange("lastUsedVersion", oldValue, this.lastUsedVersion);
     }
+
+	/**
+	 * @return
+	 */
+	public final boolean isOkToRemoveSecurityManager() {
+		return this.okToRemoveSecurityManager;
+	}
+	/**
+	 * @param okToRemoveSecurityManager The okToRemoveSecurityManager to set.
+	 */
+	public final void setOkToRemoveSecurityManager(boolean okToRemoveSecurityManager) {
+		boolean oldValue = this.okToRemoveSecurityManager;
+        this.okToRemoveSecurityManager = okToRemoveSecurityManager;
+        firePropertyChange("okToRemoveSecurityManager", oldValue, this.okToRemoveSecurityManager);
+	}
 }
