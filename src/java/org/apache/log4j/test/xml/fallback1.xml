@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 
-<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+<log4j:configuration debug="true" xmlns:log4j="http://jakarta.apache.org/log4j/">
 
 
   <appender name="PRIMARY" class="org.apache.log4j.FileAppender">
     <errorHandler class="org.apache.log4j.varia.FallbackErrorHandler">
-      <param name="logger" value="root"/>
+      <root-ref/>
       <appender-ref ref="FALLBACK" />
     </errorHandler>
 

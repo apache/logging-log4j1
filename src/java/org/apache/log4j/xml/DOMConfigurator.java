@@ -67,11 +67,13 @@ public class DOMConfigurator implements Configurator {
   static final String LAYOUT_TAG	= "layout";
   static final String CATEGORY		= "category";
   static final String LOGGER		= "logger";
+  static final String LOGGER_REF	= "logger-ref";
   static final String CATEGORY_FACTORY_TAG  = "categoryFactory";
   static final String NAME_ATTR		= "name";
   static final String CLASS_ATTR        = "class";
   static final String VALUE_ATTR	= "value";
   static final String ROOT_TAG		= "root";
+  static final String ROOT_REF		= "root-ref";
   static final String LEVEL_TAG	        = "level";
   static final String PRIORITY_TAG      = "priority";
   static final String FILTER_TAG	= "filter";
@@ -94,6 +96,7 @@ public class DOMConfigurator implements Configurator {
   Hashtable appenderBag;
 
   Properties props;
+  LoggerRepository repository;
 
   /**
      No argument constructor.
@@ -242,6 +245,13 @@ public class DOMConfigurator implements Configurator {
             setParameter(currentElement, propSetter);
 	  } else if(tagName.equals(APPENDER_REF_TAG)) {
 	    eh.setBackupAppender(findAppenderByReference(currentElement));
+	  } else if(tagName.equals(LOGGER_REF)) {
+	    String loggerName = currentElement.getAttribute(REF_ATTR);	    
+	    Logger logger = repository.getLogger(loggerName);
+	    eh.setLogger(logger);
+	  } else if(tagName.equals(ROOT_REF)) {
+	    Logger root = repository.getRootLogger();
+	    eh.setLogger(root);
 	  }
 	}
       }
@@ -283,7 +293,7 @@ public class DOMConfigurator implements Configurator {
      Used internally to parse an category element.
   */
   protected
-  void parseCategory (Element loggerElement, LoggerRepository hierarchy) {
+  void parseCategory (Element loggerElement) {
     // Create a new org.apache.log4j.Category object from the <category> element.
     String catName = subst(loggerElement.getAttribute(NAME_ATTR));
 
@@ -294,7 +304,7 @@ public class DOMConfigurator implements Configurator {
 
     if(EMPTY_STR.equals(className)) {
       LogLog.debug("Retreiving an instance of org.apache.log4j.Logger.");
-      cat = hierarchy.getLogger(catName);
+      cat = repository.getLogger(catName);
     }
     else {
       LogLog.debug("Desired logger sub-class: ["+className+']');
@@ -329,7 +339,7 @@ public class DOMConfigurator implements Configurator {
      Used internally to parse the category factory element.
   */
   protected
-  void parseCategoryFactory(Element factoryElement, LoggerRepository hierarchy) {
+  void parseCategoryFactory(Element factoryElement) {
     String className = subst(factoryElement.getAttribute(CLASS_ATTR));
 
     if(EMPTY_STR.equals(className)) {
@@ -365,8 +375,8 @@ public class DOMConfigurator implements Configurator {
      Used internally to parse the roor category element.
   */
   protected
-  void parseRoot (Element rootElement, LoggerRepository hierarchy) {
-    Logger root = hierarchy.getRootLogger();
+  void parseRoot (Element rootElement) {
+    Logger root = repository.getRootLogger();
     // category configuration needs to be atomic
     synchronized(root) {    
       parseChildrenOfLoggerElement(rootElement, root, true);
@@ -459,11 +469,11 @@ public class DOMConfigurator implements Configurator {
   }
 
   protected 
-  void parseRenderer(Element element, LoggerRepository hierarchy) {
+  void parseRenderer(Element element) {
     String renderingClass = subst(element.getAttribute(RENDERING_CLASS_ATTR));
     String renderedClass = subst(element.getAttribute(RENDERED_CLASS_ATTR));
-    if(hierarchy instanceof RendererSupport) {
-      RendererMap.addRenderer((RendererSupport) hierarchy, renderedClass, 
+    if(repository instanceof RendererSupport) {
+      RendererMap.addRenderer((RendererSupport) repository, renderedClass, 
 			      renderingClass);
     }
   }
@@ -525,12 +535,12 @@ public class DOMConfigurator implements Configurator {
      defined in the log4j.dtd. 
 
   */
-  static
-  public
-  void configure (Element element) {
-    DOMConfigurator configurator = new DOMConfigurator();
-    configurator.parse(element, Category.getDefaultHierarchy());
-  }
+  //static
+  //public
+  //void configure (Element element) {
+  //  DOMConfigurator configurator = new DOMConfigurator();
+  //  configurator.parse(element);
+  //}
 
  /**
      Like {@link #configureAndWatch(String, long)} except that the
@@ -566,11 +576,11 @@ public class DOMConfigurator implements Configurator {
   }
 
   public
-  void doConfigure(String filename, LoggerRepository hierarchy) {
+  void doConfigure(String filename, LoggerRepository repository) {
     FileInputStream fis = null;
     try {
       fis = new FileInputStream(filename);
-      doConfigure(fis, hierarchy);
+      doConfigure(fis, repository);
     } catch(IOException e) {
       LogLog.error("Could not open ["+filename+"].", e);
     } finally {
@@ -586,9 +596,9 @@ public class DOMConfigurator implements Configurator {
   
 
   public
-  void doConfigure(URL url, LoggerRepository hierarchy) {
+  void doConfigure(URL url, LoggerRepository repository) {
     try {
-      doConfigure(url.openStream(), hierarchy);
+      doConfigure(url.openStream(), repository);
     } catch(IOException e) {
       LogLog.error("Could not open ["+url+"].", e);
     }
@@ -600,9 +610,9 @@ public class DOMConfigurator implements Configurator {
 
   */
   public
-  void doConfigure(InputStream inputStream, LoggerRepository hierarchy) 
+  void doConfigure(InputStream inputStream, LoggerRepository repository) 
                                           throws FactoryConfigurationError {
-    doConfigure(new InputSource(inputStream), hierarchy);
+    doConfigure(new InputSource(inputStream), repository);
   }
 
   /**
@@ -611,9 +621,9 @@ public class DOMConfigurator implements Configurator {
 
   */
   public
-  void doConfigure(Reader reader, LoggerRepository hierarchy) 
+  void doConfigure(Reader reader, LoggerRepository repository) 
                                           throws FactoryConfigurationError {
-    doConfigure(new InputSource(reader), hierarchy);
+    doConfigure(new InputSource(reader), repository);
   }
 
   /**
@@ -622,9 +632,10 @@ public class DOMConfigurator implements Configurator {
 
   */
   protected
-  void doConfigure(InputSource inputSource, LoggerRepository hierarchy) 
+  void doConfigure(InputSource inputSource, LoggerRepository repository) 
                                           throws FactoryConfigurationError {
     DocumentBuilderFactory dbf = null;
+    this.repository = repository;
     try { 
       LogLog.debug("System property is :"+
   	                        OptionConverter.getSystemProperty(dbfKey, null)); 
@@ -657,7 +668,7 @@ public class DOMConfigurator implements Configurator {
 	inputSource.setSystemId(dtdURL.toString());
       }
       Document doc = docBuilder.parse(inputSource);
-      parse(doc.getDocumentElement(), hierarchy);
+      parse(doc.getDocumentElement());
     } catch (Exception e) {
       // I know this is miserable...
       LogLog.error("Could not parse input source ["+inputSource+"].", e);
@@ -670,7 +681,7 @@ public class DOMConfigurator implements Configurator {
   static
   public
   void configure(String filename) throws FactoryConfigurationError {
-    new DOMConfigurator().doConfigure(filename, Category.getDefaultHierarchy());
+    new DOMConfigurator().doConfigure(filename, LogManager.getLoggerRepository());
   }
 
   /**
@@ -679,7 +690,7 @@ public class DOMConfigurator implements Configurator {
   static
   public
   void configure(URL url) throws FactoryConfigurationError {
-    new DOMConfigurator().doConfigure(url, Category.getDefaultHierarchy());
+    new DOMConfigurator().doConfigure(url, LogManager.getLoggerRepository());
   }
 
   /**
@@ -689,7 +700,7 @@ public class DOMConfigurator implements Configurator {
      
   */
   protected
-  void parse(Element element, LoggerRepository hierarchy) {
+  void parse(Element element) {
 
     String rootElementName = element.getTagName();
 
@@ -726,7 +737,7 @@ public class DOMConfigurator implements Configurator {
     String thresholdStr = subst(element.getAttribute(THRESHOLD_ATTR));
     LogLog.debug("Threshold =\"" + thresholdStr +"\".");
     if(!"".equals(thresholdStr) && !"null".equals(thresholdStr)) {
-      hierarchy.setThreshold(thresholdStr);
+      repository.setThreshold(thresholdStr);
     }
     
 
@@ -754,7 +765,7 @@ public class DOMConfigurator implements Configurator {
 	tagName = currentElement.getTagName();
 
 	if (tagName.equals(CATEGORY_FACTORY_TAG)) {
-	  parseCategoryFactory(currentElement, hierarchy);
+	  parseCategoryFactory(currentElement);
 	}
       }
     }
@@ -766,11 +777,11 @@ public class DOMConfigurator implements Configurator {
 	tagName = currentElement.getTagName();
 
 	if (tagName.equals(CATEGORY) || tagName.equals(LOGGER)) {
-	  parseCategory(currentElement, hierarchy);
+	  parseCategory(currentElement);
 	} else if (tagName.equals(ROOT_TAG)) {
-	  parseRoot(currentElement, hierarchy);
+	  parseRoot(currentElement);
 	} else if(tagName.equals(RENDERER_TAG)) {
-	  parseRenderer(currentElement, hierarchy);
+	  parseRenderer(currentElement);
 	}
       }
     }

@@ -96,7 +96,8 @@ public class FileAppender extends WriterAppender {
     <code>filename</code> will be truncated before being opened.
   */
   public
-  FileAppender(Layout layout, String filename, boolean append) throws IOException {
+  FileAppender(Layout layout, String filename, boolean append) 
+                                                             throws IOException {
     this.layout = layout;
     this.setFile(filename, append, false, bufferSize);
   }

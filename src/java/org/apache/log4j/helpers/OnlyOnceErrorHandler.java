@@ -39,7 +39,7 @@ public class OnlyOnceErrorHandler implements ErrorHandler {
      Does not do anything.
    */
   public 
-  void setLogger(String loggerName) {
+  void setLogger(Logger logger) {
   }
 
 

@@ -34,11 +34,11 @@ public interface ErrorHandler extends OptionHandler {
      be attached to. The failing appender will be searched and
      replaced only in the loggers you add through this method.
 
-     @param loggerName The name of the logger that will be searched
-     for the failing appender in view of replacement.
+     @param logger One of the loggers that will be searched for the failing
+     appender in view of replacement.
      
      @since 1.2 */
-  void setLogger(String loggerName);
+  void setLogger(Logger logger);
 
 
   /**
