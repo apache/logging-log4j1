@@ -268,7 +268,7 @@ public class PluginTestCase extends TestCase {
     logger.info("shutting down " + repoMap.get(repo2));
     repo2.shutdown(); 
    
-    //assertTrue(Compare.compare(getOutputFile(testName), getWitnessFile(testName)));
+    assertTrue(Compare.compare(getOutputFile(testName), getWitnessFile(testName)));
   }
 
     /*
