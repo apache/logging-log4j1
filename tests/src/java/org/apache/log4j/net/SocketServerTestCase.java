@@ -114,7 +114,7 @@ public class SocketServerTestCase extends TestCase {
           new JunitTestRunnerFilter(),
           new SunReflectFilter() });
 
-    assertTrue(Compare.compare(FILTERED, "witness/socketServer.1"));
+    assertTrue(Compare.compare(FILTERED, "witness/net/socketServer.1"));
   }
 
   /**
@@ -140,7 +140,7 @@ public class SocketServerTestCase extends TestCase {
           new JunitTestRunnerFilter(),
           new SunReflectFilter() });
 
-    assertTrue(Compare.compare(FILTERED, "witness/socketServer.2"));
+    assertTrue(Compare.compare(FILTERED, "witness/net/socketServer.2"));
   }
 
   /**
@@ -165,7 +165,7 @@ public class SocketServerTestCase extends TestCase {
           new JunitTestRunnerFilter(),
           new SunReflectFilter() });
 
-    assertTrue(Compare.compare(FILTERED, "witness/socketServer.3"));
+    assertTrue(Compare.compare(FILTERED, "witness/net/socketServer.3"));
   }
 
   /**
@@ -193,7 +193,7 @@ public class SocketServerTestCase extends TestCase {
           new JunitTestRunnerFilter(),
           new SunReflectFilter() });
 
-    assertTrue(Compare.compare(FILTERED, "witness/socketServer.4"));
+    assertTrue(Compare.compare(FILTERED, "witness/net/socketServer.4"));
   }
 
   /**
@@ -233,7 +233,7 @@ public class SocketServerTestCase extends TestCase {
       new Filter[] { cf, new LineNumberFilter(), 
           new JunitTestRunnerFilter(),
           new SunReflectFilter() });
-    assertTrue(Compare.compare(FILTERED, "witness/socketServer.5"));
+    assertTrue(Compare.compare(FILTERED, "witness/net/socketServer.5"));
   }
 
   /**
@@ -267,7 +267,7 @@ public class SocketServerTestCase extends TestCase {
       new Filter[] { cf, new LineNumberFilter(), 
           new JunitTestRunnerFilter(),
           new SunReflectFilter() });
-    assertTrue(Compare.compare(FILTERED, "witness/socketServer.6"));
+    assertTrue(Compare.compare(FILTERED, "witness/net/socketServer.6"));
   }
 
   /**
@@ -296,7 +296,7 @@ public class SocketServerTestCase extends TestCase {
       new Filter[] { cf, new LineNumberFilter(), 
           new JunitTestRunnerFilter(),
           new SunReflectFilter() });
-    assertTrue(Compare.compare(FILTERED, "witness/socketServer.7"));
+    assertTrue(Compare.compare(FILTERED, "witness/net/socketServer.7"));
   }
 
   /**
@@ -323,7 +323,7 @@ public class SocketServerTestCase extends TestCase {
       new Filter[] { cf, new LineNumberFilter(), 
           new JunitTestRunnerFilter(),
           new SunReflectFilter() });
-    assertTrue(Compare.compare(FILTERED, "witness/socketServer.8"));
+    assertTrue(Compare.compare(FILTERED, "witness/net/socketServer.8"));
   }
 
   static void common(String dc, String key, String o) {

@@ -16,10 +16,10 @@
 
 package org.apache.log4j.net;
 
-import org.apache.log4j.Decoder;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.plugins.Pauseable;
 import org.apache.log4j.plugins.Receiver;
+import org.apache.log4j.spi.Decoder;
 import org.apache.log4j.spi.LoggingEvent;
 
 import java.io.IOException;

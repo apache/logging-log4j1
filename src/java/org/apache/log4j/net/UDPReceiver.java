@@ -24,10 +24,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Decoder;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.plugins.Pauseable;
 import org.apache.log4j.plugins.Receiver;
+import org.apache.log4j.spi.Decoder;
 import org.apache.log4j.spi.LoggingEvent;
 
 
@@ -225,7 +225,8 @@ public class UDPReceiver extends Receiver implements PortBased, Pauseable {
       while (!UDPReceiver.this.closed) {
         try {
           socket.receive(p);
-
+          
+          LogLog.info("got data");
           //this string constructor which accepts a charset throws an exception if it is 
           //null
           if (encoding == null) {

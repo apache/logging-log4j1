@@ -33,10 +33,10 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.log4j.Decoder;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.UtilLoggingLevel;
+import org.apache.log4j.spi.Decoder;
 import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ThrowableInformation;
