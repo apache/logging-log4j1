@@ -71,6 +71,7 @@ import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.LoggingEvent;
 
 import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -120,8 +121,10 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
@@ -138,6 +141,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
@@ -165,6 +169,8 @@ import javax.swing.table.TableModel;
    */
 public class LogPanel extends DockablePanel implements SettingsListener,
   EventBatchListener {
+	private ThrowableRenderPanel throwableRenderPanel ;
+
   private boolean paused = false;
   private boolean logTreePanelVisible = true;
   private final FilterModel filterModel = new FilterModel();
@@ -181,6 +187,7 @@ public class LogPanel extends DockablePanel implements SettingsListener,
   final Action dockingAction;
   final JSortTable table;
   private String profileName = null;
+  private final JDialog detailDialog = new JDialog((JFrame)null, true);
   final JPanel detailPanel = new JPanel(new BorderLayout());
   private final TableColorizingRenderer renderer =
     new TableColorizingRenderer();
@@ -233,6 +240,8 @@ public class LogPanel extends DockablePanel implements SettingsListener,
       new ChainsawTableColumnModelListener(table));
 
     table.setAutoCreateColumnsFromModel(false);
+
+	throwableRenderPanel = new ThrowableRenderPanel(table);
 
     /**
              * We listen for new Key's coming in so we can get them automatically added as columns
@@ -982,6 +991,39 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     undockedToolbar = createDockwindowToolbar();
     externalPanel.add(undockedToolbar, BorderLayout.NORTH);
     undockedFrame.pack();
+    
+    Container container = detailDialog.getContentPane();
+    final JTextArea detailArea = new JTextArea(10,40);
+    detailArea.setEditable(false);
+    container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
+    container.add(new JScrollPane(detailArea));
+    throwableRenderPanel.addActionListener(new ActionListener(){
+
+		public void actionPerformed(ActionEvent e) {
+			Object o = table.getValueAt(table.getSelectedRow(), table.getSelectedColumn());
+			detailDialog.setTitle(table.getColumnName(table.getSelectedColumn()) + " detail...");
+			
+			if(o instanceof String[]){
+				StringBuffer buf = new StringBuffer();
+				String[] ti = (String[]) o;
+				buf.append(ti[0]).append("\n");
+				for (int i = 1; i < ti.length; i++) {
+					buf.append(ti[i]).append("\n    ");
+				}				
+				detailArea.setText(buf.toString());
+				
+			} else {
+				detailArea.setText(o.toString());
+			}
+			
+			detailDialog.setLocation(LogPanel.this.getLocationOnScreen());
+			SwingUtilities.invokeLater(new Runnable(){
+
+				public void run() {
+					detailDialog.setVisible(true);
+				}});
+		}});
+	detailDialog.pack();
   }
 
   private JToolBar createDockwindowToolbar() {
@@ -1700,11 +1742,9 @@ public class LogPanel extends DockablePanel implements SettingsListener,
   //sort column name
   class ChainsawTableColumnModelListener implements TableColumnModelListener {
     private JSortTable table;
-	private TableCellEditor throwableRenderPanel ;
 
     public ChainsawTableColumnModelListener(JSortTable table) {
       this.table = table;
-	  throwableRenderPanel = new ThrowableRenderPanel(table);
     }
 
     public void columnAdded(TableColumnModelEvent e) {
