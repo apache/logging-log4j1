@@ -1,0 +1,48 @@
+
+Each directory corresponds to the name of an author containinghis/her 
+contributions.
+
+
+EirikLygre/			   
+==========
+
+   DailyFileAppender1.java
+
+   DailyFileAppender extends FileAppender to use filenames formatted with
+   date/time information. The filename is recomputed every day at midnight.
+   Note that the filename doesn't have to change every day, making it possible
+   to have logfiles which are per-week or per-month.
+
+JamesHouse/
+==========
+
+   LogTextPanel.java		   
+   LogTextPanelExample.java 
+   TextPanelAppender.java 
+
+MarkDouglas/
+===========
+
+   SocketNode2.java
+   SocketServer2.java
+
+   Small changes to SocketServer and SockerNode to allow the client machine name 
+   to be displayed in the logging output. This is important for us as we are 
+   using a single logging server with several clients.
+
+KitchingSimon/
+=============
+
+   DatagramStringAppender.java
+   DatagramStringWriter.java
+   logconfig.xml
+   SingleLineTracerPrintWriter.java
+   udpserver.pl
+
+   A set of files that implement an Appender which sends messages to a
+   remote host/port via UDP (datagram). Message formatting is
+   performed at the at the client end, mainly so that: 
+      (a) the UDP server application does not have to be in java 
+      (b) non-java clients can send messages to the same UDP server.
+
+
