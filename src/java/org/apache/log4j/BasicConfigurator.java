@@ -270,21 +270,20 @@ public class BasicConfigurator {
   void resetConfiguration() {
 
     Category._default.getRoot().setPriority(Priority.DEBUG);
-    Category._default.getRoot().removeAllAppenders();
     Category._default.root.setResourceBundle(null);
-
     Category.disable =  Category.DISABLE_OFF;
     
     // the synchronization is needed to prevent JDK 1.2.x hashtable
     // surprises
-    synchronized(Category._default.ht) {
+    synchronized(Category._default.ht) {    
+      Category._default.shutdown(); // nested locks are OK    
+    
       Enumeration cats = Category.getCurrentCategories();
       while(cats.hasMoreElements()) {
 	Category c = (Category) cats.nextElement();
 	c.setPriority(null);
 	c.setAdditivity(true);
 	c.setResourceBundle(null);
-	c.removeAllAppenders();
       }
     }
     Category._default.rendererMap.clear();
