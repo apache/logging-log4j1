@@ -101,7 +101,6 @@ public class XMLDecoder implements Decoder {
     if (docBuilder == null || data == null) {
       return null;
     }
-
     Document document = null;
 
     try {
@@ -133,25 +132,24 @@ public class XMLDecoder implements Decoder {
   }
 
   /**
-   * Reads the contents of the file into a String
-   * @param file the file to load
-   * @return The contents of the file as a String
-   * @throws IOException if an error occurred during the loading process
+   * Decodes a File into a Vector of LoggingEvents
+   * @param file the file to decode events from
+   * @return Vector of LoggingEvents
+   * @throws IOException
    */
-  private String loadFileSource(URL url) throws IOException {
-    LineNumberReader reader = null;
-    StringBuffer buf = new StringBuffer(1024);
+  public Vector decode(URL url) throws IOException {
+    LineNumberReader reader = new LineNumberReader(new InputStreamReader(url.openStream()));
+    Vector v = new Vector();
 
+    String line = null;
     try {
-      reader = new LineNumberReader(new InputStreamReader(url.openStream()));
-
-      String line = null;
-
-      while ((line = reader.readLine()) != null) {
-        buf.append(line);
-      }
-    } catch (IOException e) {
-      throw e;
+        while ((line = reader.readLine()) != null) {
+            StringBuffer buffer = new StringBuffer(line);
+            for (int i = 0;i<100;i++) {
+                buffer.append(reader.readLine());
+            }
+            v.addAll(decodeEvents(buffer.toString()));
+        }
     } finally {
       try {
         if (reader != null) {
@@ -161,24 +159,7 @@ public class XMLDecoder implements Decoder {
         e.printStackTrace();
       }
     }
-
-    return buf.toString();
-  }
-
-  /**
-   * Decodes a File into a Vector of LoggingEvents
-   * @param file the file to decode events from
-   * @return Vector of LoggingEvents
-   * @throws IOException
-   */
-  public Vector decode(URL url) throws IOException {
-    String fileContents = loadFileSource(url);
-    Document doc = parse(fileContents);
-
-    if (doc == null) {
-      return null;
-    }
-    return decodeEvents(fileContents);
+    return v;
   }
 
   public Vector decodeEvents(String document) {
