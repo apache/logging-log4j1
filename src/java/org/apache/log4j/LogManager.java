@@ -69,10 +69,15 @@ public class LogManager {
     Hierarchy h = new Hierarchy(new RootCategory((Level) Level.DEBUG));
     repositorySelector = new DefaultRepositorySelector(h);
 
+
+    Logger logger = LogManager.getLoggerRepository().getLogger("LOG4J");
+    logger.setAdditivity(false);
+    logger.addAppender(new ConsoleAppender(new PatternLayout("log4j: %-22c{2} - %m%n")));
+
     /** Search for the properties file log4j.properties in the CLASSPATH.  */
     String override =OptionConverter.getSystemProperty(DEFAULT_INIT_OVERRIDE_KEY,
 						       null);
-
+ 
     // if there is no default init override, then get the resource
     // specified by the user or the default config file.
     if(override == null || "false".equalsIgnoreCase(override)) {
