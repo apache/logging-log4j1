@@ -93,6 +93,8 @@ if [ ! -d doc-files ]; then
   ln -s ../XMLSample.java
   ln -s ../sample1.xml
   ln -s ../sample2.xml
+  ln -s ../extension1.xml
+  ln -s ../extension2.xml
   ln -s ../XCategory.java
   ln -s ../XTest.java
   popd > /dev/null  

@@ -14,9 +14,9 @@ log4j.appender.A1.layout=org.apache.log4j.PatternLayout
 log4j.appender.A1.layout.ConversionPattern=[%t] %c - %m%n
 
 
-# Set the priority of "some.cat". This will have the side effect of
-# instantiating the category "some.cat" which will later cause a
-# ClassCastException.
+# Set the priority of "some.cat". This will actually have the side
+# effect of instanciating a MyCategory object having the name
+# "some.cat".
 
 log4j.category.some.cat=DEBUG
 
