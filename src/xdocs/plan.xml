@@ -44,7 +44,7 @@
 	reliable product.
       </p>
       
-      <table border="1" cellpadding="3" cellspacing="2">
+      <table class="ls" cellpadding="3" cellspacing="2">
 	
 	<tr>
 	  <th>Label</th>
