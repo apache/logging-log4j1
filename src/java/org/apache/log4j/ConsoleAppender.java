@@ -24,8 +24,10 @@ public class ConsoleAppender extends WriterAppender {
   public static final String SYSTEM_ERR = "System.err";
 
   /**
-    @deprecated We now use JavaBeans introspection to configure
-    components. Options strings are no longer needed.  */
+     @deprecated Options are now handled using the JavaBeans paradigm.
+     This constant is not longer needed and will be removed in the
+     <em>near</em> term.
+  */
   public static final String TARGET_OPTION = "Target";
 
   protected String target = SYSTEM_OUT;

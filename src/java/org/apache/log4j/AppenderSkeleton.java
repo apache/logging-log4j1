@@ -188,7 +188,8 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
      additional options they accept.  
      
      @deprecated We now use JavaBeans introspection to configure
-     components. Options strings are no longer needed. */
+     components. Options strings are no longer needed.
+   */
   public
   String[] getOptionStrings() {
     return new String[] {THRESHOLD_OPTION};

@@ -40,6 +40,19 @@ import org.apache.log4j.helpers.LogLog;
 public class ExternallyRolledFileAppender extends RollingFileAppender {
 
   /**
+     A string constant used in naming the option for setting the port
+     for listening to external roll over messages. Current value of
+     this string constant is <b>Port</b>.  
+
+     <p>All option keys are case sensitive. 
+      
+     @deprecated Options are now handled using the JavaBeans paradigm.
+     This constant is not longer needed and will be removed in the
+     <em>near</em> term.
+   */
+  static final public String PORT_OPTION = "Port";
+
+  /**
      The string constant sent to initiate a roll over.   Current value of
      this string constant is <b>RollOver</b>.  
   */
@@ -59,6 +72,44 @@ public class ExternallyRolledFileAppender extends RollingFileAppender {
      constructor.  */
   public
   ExternallyRolledFileAppender() { 
+  }
+  
+  /**
+     Returns the option names for this component, namely {@link
+     #PORT_OPTION} in addition to the options of its super class {@link
+     RollingFileAppender#getOptionStrings FileAppender}. 
+     
+     @deprecated We now use JavaBeans introspection to configure
+     components. Options strings are no longer needed.
+ */
+  public
+  String[] getOptionStrings() {
+
+    return OptionConverter.concatanateArrays(super.getOptionStrings(),
+		 new String[] {PORT_OPTION});
+  }
+
+  /**
+     Set ExternallyRolledFileAppender specific options.
+
+     In addition to {@link org.apache.log4j.FileAppender#setOption FileAppender
+     options} and {@link RollingFileAppender#setOption RollingFileAppender
+     options}, ExternallyRolledFileAppender recognizes the option
+     <b>Port</b>.
+
+     <p>The <b>Port</b> option is used for setting the port for 
+     listening to external roll over messages.
+
+     @deprecated Use the setter method for the option directly instead
+     of the generic <code>setOption</code> method. 
+   */
+  public
+  void setOption(String option, String value) {
+    super.setOption(option, value);    
+    if(option.equalsIgnoreCase(PORT_OPTION)) {
+      port = OptionConverter.toInt(value, port);
+      LogLog.debug("Port option set to "+port); 
+    }
   }
   
   /**

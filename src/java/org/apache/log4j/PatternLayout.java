@@ -378,6 +378,20 @@ import java.text.FieldPosition;
    @since 0.8.2 */
 public class PatternLayout extends Layout {
 
+   /**
+     A string constant used in naming the option for setting the
+     layout pattern. Current value of this string constant is
+     <b>ConversionPattern</b>.
+
+     <p>Note that the search for all option keys is case sensitive.
+     
+     
+     @deprecated Options are now handled using the JavaBeans paradigm.
+     This constant is not longer needed and will be removed in the
+     <em>near</em> term.
+  */
+  final static public String CONVERSION_PATTERN_OPTION = "ConversionPattern";
+
   /** Default pattern string for log output. Currently set to the
       string <b>"%m%n"</b> which just prints the application supplied
       message. */
@@ -418,6 +432,52 @@ public class PatternLayout extends Layout {
     this.pattern = pattern;
     head = createPatternParser((pattern == null) ? DEFAULT_CONVERSION_PATTERN : 
 			     pattern).parse();
+  }
+  
+  /**
+     Returns the the array of option strings that {@link
+     PatternLayout} recognizes. The only recognized option string is
+     the value of {@link #CONVERSION_PATTERN_OPTION}.
+     
+     @deprecated We now use JavaBeans introspection to configure
+     components. Options strings are no longer needed.
+  */
+  public
+  String[] getOptionStrings() {
+    return new String[] {CONVERSION_PATTERN_OPTION};
+  }	
+
+  /**
+     The PatternLayout specific options are:
+
+     <p>
+     <dl>
+     <dt><b>ConversionPattern</b>
+
+     <p><dd>The value determines the conversion pattern used.
+     
+     </dl>
+     
+     @deprecated Use the setter method for the option directly instead
+     of the generic <code>setOption</code> method. 
+
+   */
+  public
+  void setOption(String option, String value) {
+    if(value == null)
+      return;
+    if(option.equalsIgnoreCase(CONVERSION_PATTERN_OPTION)) {
+      pattern = value;
+      head = createPatternParser(value).parse();
+    }
+    //else if(option.equals(TIMEZONE_OPTION)) {
+    //try {
+    //timezone = OptionConverter.substituteVars(value);
+    //}
+    //catch(IllegalArgumentException e) {
+    //LogLog.error("Could not substitute variables." , e);
+    //}
+    //}
   }
   
   /**

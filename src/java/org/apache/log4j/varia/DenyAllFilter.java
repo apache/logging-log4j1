@@ -22,6 +22,28 @@ import org.apache.log4j.spi.LoggingEvent;
 public class DenyAllFilter extends Filter {
 
   /**
+     Returns <code>null</code> as there are no options.
+     
+     @deprecated We now use JavaBeans introspection to configure
+     components. Options strings are no longer needed.
+  */
+  public
+  String[] getOptionStrings() {
+    return null;
+  }
+
+  
+  /**
+     No options to set.
+     
+     @deprecated Use the setter method for the option directly instead
+     of the generic <code>setOption</code> method. 
+  */
+  public
+  void setOption(String key, String value) {
+  }
+  
+  /**
      Always returns the integer constant {@link Filter#DENY}
      regardless of the {@link LoggingEvent} parameter.
 

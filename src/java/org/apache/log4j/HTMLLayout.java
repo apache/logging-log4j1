@@ -29,9 +29,61 @@ public class HTMLLayout extends Layout {
   // output buffer appended to when format() is invoked
   private StringBuffer sbuf = new StringBuffer(BUF_SIZE);
 
+  /**
+     A string constant used in naming the option for setting the the
+     location information flag.  Current value of this string
+     constant is <b>LocationInfo</b>.  
+
+     <p>Note that all option keys are case sensitive.
+     
+     @deprecated Options are now handled using the JavaBeans paradigm.
+     This constant is not longer needed and will be removed in the
+     <em>near</em> term.
+
+  */
+  public static final String LOCATION_INFO_OPTION = "LocationInfo";
+
   // Print no location info by default
   boolean locationInfo = false;
 
+  /**
+     Returns a String consisting of one element {@link
+     #LOCATION_INFO_OPTION}. 
+     
+     @deprecated We now use JavaBeans introspection to configure
+     components. Options strings are no longer needed.
+ */
+  public
+  String[] getOptionStrings() {
+    return new String[] {LOCATION_INFO_OPTION};
+  }
+
+  /**
+     Set HTMLLayout specific options.
+
+     <p>The <b>LocationInfo</b> option takes a boolean value. By
+     default, it is set to false which means there will be no location
+     information output by this layout. If the the option is set to
+     true, then the file name and line number of the statement
+     at the origin of the log statement will be output. 
+
+     <p>If you are embedding this layout within an {@link
+     org.apache.log4j.net.SMTPAppender} then make sure to set the
+     <b>LocationInfo</b> option of that appender as well.
+     
+     @deprecated Use the setter method for the option directly instead
+     of the generic <code>setOption</code> method. 
+
+   */
+  public
+  void setOption(String key, String value) {
+    if(value == null) return;
+
+    if (key.equals(LOCATION_INFO_OPTION)) {
+      locationInfo = OptionConverter.toBoolean(value, locationInfo);
+    }
+  }
+  
   /**
      The <b>LocationInfo</b> option takes a boolean value. By
      default, it is set to false which means there will be no location

@@ -166,6 +166,22 @@ public class SMTPAppender extends AppenderSkeleton {
     this.evaluator = evaluator;
   }
 
+ /**
+     Retuns the option names for this component in addition in
+     addition to the options of its super class {@link
+     AppenderSkeleton}.
+     
+     @deprecated We now use JavaBeans introspection to configure
+     components. Options strings are no longer needed.
+  */
+  public
+  String[] getOptionStrings() {
+    return OptionConverter.concatanateArrays(super.getOptionStrings(),
+          new String[] {TO_OPTION, FROM_OPTION, SUBJECT_OPTION, 
+			  SMTP_HOST_OPTION, BUFFER_SIZE_OPTION,  
+			  EVALUATOR_CLASS_OPTION, LOCATION_INFO_OPTION });
+  }
+  
 
   /**
      Activate the specified options, such as the smtp host, the

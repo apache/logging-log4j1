@@ -32,6 +32,28 @@ public class OnlyOnceErrorHandler implements ErrorHandler {
   boolean firstTime = true;
 
   /**
+     Returns <code>null</code> as <code>OnlyOnceErrorHandler</code>
+     has no options. 
+     
+     @deprecated We now use JavaBeans introspection to configure
+     components. Options strings are no longer needed.
+ */
+  public
+  String[] getOptionStrings() {
+    return null;
+  }
+
+  /**
+     No options to set.
+     
+     @deprecated Use the setter method for the option directly instead
+     of the generic <code>setOption</code> method. 
+  */
+  public
+  void setOption(String key, String value) {
+  }
+
+  /**
      No options to activate.
   */
   public

@@ -33,8 +33,45 @@ import org.apache.log4j.helpers.OptionConverter;
    @since 0.9.0 */
 public class StringMatchFilter extends Filter {
   
+  /**
+     @deprecated Options are now handled using the JavaBeans paradigm.
+     This constant is not longer needed and will be removed in the
+     <em>near</em> term.
+   */
+  public static final String STRING_TO_MATCH_OPTION = "StringToMatch";
+
+  /**
+     @deprecated Options are now handled using the JavaBeans paradigm.
+     This constant is not longer needed and will be removed in the
+     <em>near</em> term.
+   */
+  public static final String ACCEPT_ON_MATCH_OPTION = "AcceptOnMatch";
+  
   boolean acceptOnMatch = true;
   String stringToMatch;
+  
+  /**
+     @deprecated We now use JavaBeans introspection to configure
+     components. Options strings are no longer needed.
+  */
+  public
+  String[] getOptionStrings() {
+    return new String[] {STRING_TO_MATCH_OPTION, ACCEPT_ON_MATCH_OPTION};
+  }
+
+  /**
+     @deprecated Use the setter method for the option directly instead
+     of the generic <code>setOption</code> method. 
+  */
+  public
+  void setOption(String key, String value) { 
+    
+    if(key.equalsIgnoreCase(STRING_TO_MATCH_OPTION)) {
+      stringToMatch = value;
+    } else if (key.equalsIgnoreCase(ACCEPT_ON_MATCH_OPTION)) {
+      acceptOnMatch = OptionConverter.toBoolean(value, acceptOnMatch);
+    }
+  }
   
   public
   void setStringToMatch(String s) {
