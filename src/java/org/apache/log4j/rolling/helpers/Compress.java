@@ -52,6 +52,7 @@ package org.apache.log4j.rolling.helpers;
 import org.apache.log4j.Logger;
 
 import java.io.*;
+
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -69,8 +70,9 @@ public class Compress {
   public static final String NONE_STR = "NONE";
   public static final String GZ_STR = "GZ";
   public static final String ZIP_STR = "ZIP";
-   
-  public static void ZIPCompress(String nameOfFile2zip, String nameOfZippedFile) {
+
+  public static void ZIPCompress(
+    String nameOfFile2zip, String nameOfZippedFile) {
     File file2zip = new File(nameOfFile2zip);
 
     if (!file2zip.exists()) {
@@ -83,8 +85,9 @@ public class Compress {
     if (!nameOfZippedFile.endsWith(".zip")) {
       nameOfZippedFile = nameOfZippedFile + ".zip";
     }
-    
+
     File zippedFile = new File(nameOfZippedFile);
+
     if (zippedFile.exists()) {
       logger.warn(
         "The target compressed file named [" + nameOfZippedFile
@@ -92,27 +95,33 @@ public class Compress {
 
       return;
     }
-    
-    try {
-         FileOutputStream fos = new FileOutputStream(nameOfZippedFile);
-         ZipOutputStream zos = new ZipOutputStream(fos);
-         FileInputStream fis = new FileInputStream(nameOfFile2zip);
-      
-         ZipEntry zipEntry = new ZipEntry(file2zip.getName());
-         zos.putNextEntry(zipEntry);  
-         byte[] inbuf = new byte[8102];
-         int n;
-         while ((n = fis.read(inbuf)) != -1) {
-           zos.write(inbuf, 0, n);
-         }
 
-         fis.close();
-         zos.close();
-       } catch (Exception e) {
-         logger.error(
-           "Error occured while compressing [" + nameOfFile2zip + "] into ["
-           + nameOfZippedFile + "].", e);
-       }
+    try {
+      FileOutputStream fos = new FileOutputStream(nameOfZippedFile);
+      ZipOutputStream zos = new ZipOutputStream(fos);
+      FileInputStream fis = new FileInputStream(nameOfFile2zip);
+
+      ZipEntry zipEntry = new ZipEntry(file2zip.getName());
+      zos.putNextEntry(zipEntry);
+
+      byte[] inbuf = new byte[8102];
+      int n;
+
+      while ((n = fis.read(inbuf)) != -1) {
+        zos.write(inbuf, 0, n);
+      }
+
+      fis.close();
+      zos.close();
+
+      if (!file2zip.delete()) {
+        logger.warn("Could not delete [" + nameOfFile2zip + "].");
+      }
+    } catch (Exception e) {
+      logger.error(
+        "Error occured while compressing [" + nameOfFile2zip + "] into ["
+        + nameOfZippedFile + "].", e);
+    }
   }
 
   public static void GZCompress(String nameOfFile2gz) {
@@ -120,9 +129,10 @@ public class Compress {
     // add te .gz exention to the second argument 
     GZCompress(nameOfFile2gz, nameOfFile2gz);
   }
+
   public static void GZCompress(String nameOfFile2gz, String nameOfgzedFile) {
     File file2gz = new File(nameOfFile2gz);
-    
+
     if (!file2gz.exists()) {
       logger.warn(
         "The file to compress named [" + nameOfFile2gz + "] does not exist.");
@@ -135,6 +145,7 @@ public class Compress {
     }
 
     File gzedFile = new File(nameOfgzedFile);
+
     if (gzedFile.exists()) {
       logger.warn(
         "The target compressed file named [" + nameOfgzedFile
@@ -156,6 +167,10 @@ public class Compress {
 
       fis.close();
       gzos.close();
+
+      if (!file2gz.delete()) {
+        logger.warn("Could not delete [" + nameOfFile2gz + "].");
+      }
     } catch (Exception e) {
       logger.error(
         "Error occured while compressing [" + nameOfFile2gz + "] into ["

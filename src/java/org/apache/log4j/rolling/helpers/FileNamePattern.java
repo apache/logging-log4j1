@@ -78,6 +78,8 @@ public class FileNamePattern {
 
     if (pattern != null) {
       patternLength = pattern.length();
+      // We do not want to deal with trailing spaces in the pattern.
+      this.pattern = this.pattern.trim();
     }
 
     parse();

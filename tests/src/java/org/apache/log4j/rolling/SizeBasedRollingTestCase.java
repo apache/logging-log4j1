@@ -80,6 +80,9 @@ public class SizeBasedRollingTestCase extends TestCase {
   }
 
   public void test1() throws Exception {
+    
+    // this test is invalid because setting the activeFileName variable
+    // is now mandatory.
     Logger root = Logger.getRootLogger();
     root.addAppender(new ConsoleAppender(new PatternLayout()));
 
@@ -145,7 +148,7 @@ public class SizeBasedRollingTestCase extends TestCase {
 
     // Write exactly 10 bytes with each log
     for (int i = 0; i < 25; i++) {
-      //Thread.sleep(1000);
+      Thread.sleep(1000);
       if (i < 10) {
         logger.debug("Hello   " + i);
       } else if (i < 100) {
@@ -170,6 +173,37 @@ public class SizeBasedRollingTestCase extends TestCase {
          */
   }
 
+  public void test3() throws Exception {
+     Logger root = Logger.getRootLogger();
+     root.addAppender(new ConsoleAppender(new PatternLayout()));
+
+     PatternLayout layout = new PatternLayout("%m\n");
+     RollingFileAppender rfa = new RollingFileAppender();
+     rfa.setLayout(layout);
+
+     SlidingWindowRollingPolicy swrp = new SlidingWindowRollingPolicy();
+     SizeBasedTriggeringPolicy sbtp = new SizeBasedTriggeringPolicy();
+
+     swrp.setCompressionMode("GZ");
+     sbtp.setMaxFileSize(100);
+     swrp.setActiveFileName("output/sizeBased-test3");
+     swrp.setFileNamePattern("output/sizeBased-test3.%i");
+     rfa.setRollingPolicy(swrp);
+     rfa.setTriggeringPolicy(sbtp);
+     rfa.activateOptions();
+     root.addAppender(rfa);
+
+     // Write exactly 10 bytes with each log
+     for (int i = 0; i < 25; i++) {
+       Thread.sleep(1000);
+       if (i < 10) {
+         logger.debug("Hello   " + i);
+       } else if (i < 100) {
+         logger.debug("Hello  " + i);
+       }
+     }
+  }
+
   boolean isWindows() {
     return System.getProperty("os.name").indexOf("Windows") != -1;
   }
@@ -179,6 +213,7 @@ public class SizeBasedRollingTestCase extends TestCase {
 
     //suite.addTest(new SizeBasedRollingTestCase("test1"));
     suite.addTest(new SizeBasedRollingTestCase("test2"));
+    //suite.addTest(new SizeBasedRollingTestCase("test3"));
 
     return suite;
   }

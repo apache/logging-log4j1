@@ -91,6 +91,9 @@ public class RollingFileAppender extends FileAppender {
       rollingPolicy.activateOptions();
       logger.debug("Active log file name: "+rollingPolicy.getActiveLogFileName());
       setFile(rollingPolicy.getActiveLogFileName());
+      
+      // the activeFile variable is used by the triggeringPolicy.isTriggeringEvent method
+      activeFile = new File(rollingPolicy.getActiveLogFileName());
       super.activateOptions();
     } else {
       logger.warn("Please set a rolling policy");
@@ -118,9 +121,13 @@ public class RollingFileAppender extends FileAppender {
 
     rollingPolicy.rollover();
 
-    // Altough not certain, the active file name may change after roll over.
+    // Although not certain, the active file name may change after roll over.
     fileName = rollingPolicy.getActiveLogFileName();
     logger.debug("Active file name is now ["+fileName+"].");
+
+    // the activeFile variable is used by the triggeringPolicy.isTriggeringEvent method
+    activeFile = new File(fileName);
+
     try {
       // This will also close the file. This is OK since multiple
       // close operations are safe.
