@@ -52,6 +52,7 @@ package org.apache.log4j.chainsaw;
 import org.apache.log4j.Decoder;
 import org.apache.log4j.Logger;
 import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.helpers.Constants;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
@@ -185,7 +186,7 @@ class FileLoadAction extends AbstractAction {
 
     if (url != null) {
       Map additionalProperties = new HashMap();
-      additionalProperties.put(ChainsawConstants.LOG4J_MACHINE_KEY, name);
+      additionalProperties.put(Constants.HOSTNAME_KEY, name);
       decoder.setAdditionalProperties(additionalProperties);
 
       final URL urlToUse = url;

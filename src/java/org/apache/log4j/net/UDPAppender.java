@@ -56,6 +56,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.helpers.*;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.LoggingEvent;
 
@@ -98,9 +99,9 @@ public class UDPAppender extends AppenderSkeleton implements PortBased{
      We remember host name as String in addition to the resolved
      InetAddress so that it can be returned via getOption().
   */
-  String localMachine;
+  String hostname;
   String remoteHost;
-  String log4japp;
+  String application;
   String encoding;
   String overrideProperties = "true";
   InetAddress address;
@@ -139,21 +140,21 @@ public class UDPAppender extends AppenderSkeleton implements PortBased{
   */
   public void activateOptions() {
     try {
-      localMachine = InetAddress.getLocalHost().getHostName();
+      hostname = InetAddress.getLocalHost().getHostName();
     } catch (UnknownHostException uhe) {
       try {
-        localMachine = InetAddress.getLocalHost().getHostAddress();
+        hostname = InetAddress.getLocalHost().getHostAddress();
       } catch (UnknownHostException uhe2) {
-        localMachine = "unknown";
+        hostname = "unknown";
       }
     }
 
-    //allow system property of log4japp to be primary
-    if (log4japp == null) {
-      log4japp = System.getProperty("log4japp");
+    //allow system property of application to be primary
+    if (application == null) {
+      application = System.getProperty(Constants.APPLICATION_KEY);
     } else {
-      if (System.getProperty("log4japp") != null) {
-        log4japp = log4japp + "-" + System.getProperty("log4japp");
+      if (System.getProperty(Constants.APPLICATION_KEY) != null) {
+        application = application + "-" + System.getProperty(Constants.APPLICATION_KEY);
       }
     }
 
@@ -231,10 +232,10 @@ public class UDPAppender extends AppenderSkeleton implements PortBased{
       if (
         (overrideProperties != null)
           && overrideProperties.equalsIgnoreCase("true")) {
-        event.setProperty("log4jmachinename", localMachine);
+        event.setProperty(Constants.HOSTNAME_KEY, hostname);
 
-        if (log4japp != null) {
-          event.setProperty("log4japp", log4japp);
+        if (application != null) {
+          event.setProperty(Constants.APPLICATION_KEY, application);
         }
       }
 
@@ -248,8 +249,8 @@ public class UDPAppender extends AppenderSkeleton implements PortBased{
            new DatagramPacket(buf.toString().getBytes(encoding), buf.length(), address, port);
         outSocket.send(dp);
         //remove these properties, in case other appenders need to set them to different values 
-        event.setProperty("log4jmachinename", null);
-        event.setProperty("log4japp", null);
+        event.setProperty(Constants.HOSTNAME_KEY, null);
+        event.setProperty(Constants.APPLICATION_KEY, null);
       } catch (IOException e) {
         outSocket = null;
         LogLog.warn("Detected problem with UDP connection: " + e);
@@ -309,15 +310,15 @@ public class UDPAppender extends AppenderSkeleton implements PortBased{
      The <b>App</b> option takes a string value which should be the name of the application getting logged.
      If property was already set (via system property), don't set here.
    */
-  public void setLog4JApp(String log4japp) {
-    this.log4japp = log4japp;
+  public void setApplication(String app) {
+    this.application = app;
   }
 
   /**
      Returns value of the <b>App</b> option.
    */
-  public String getLog4JApp() {
-    return log4japp;
+  public String getApplication() {
+    return application;
   }
 
   /**

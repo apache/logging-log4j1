@@ -50,6 +50,7 @@
 package org.apache.log4j.net;
 
 import org.apache.log4j.*;
+import org.apache.log4j.helpers.Constants;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.plugins.Receiver;
 import org.apache.log4j.spi.*;
@@ -175,8 +176,8 @@ public class XMLSocketNode implements Runnable {
                 LoggingEvent e = (LoggingEvent) iter.next();
                 //if machinename property was not set (the case if properties
                 //not supported by the DTD), use remoteinfo as machine name
-                if (e.getProperty("log4jmachinename")==null) {
-                	e.setProperty("log4jmachinename", remoteInfo);
+                if (e.getProperty(Constants.HOSTNAME_KEY)==null) {
+                	e.setProperty(Constants.HOSTNAME_KEY, remoteInfo);
                 }
 
                 // store the known remote info in an event property
