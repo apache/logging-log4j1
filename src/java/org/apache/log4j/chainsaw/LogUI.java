@@ -123,8 +123,8 @@ import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JEditorPane;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -153,7 +153,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableColumnModelEvent;
 import javax.swing.event.TableColumnModelListener;
-import javax.swing.filechooser.FileFilter;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
@@ -217,6 +216,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   private ChainsawAbout aboutBox;
   private final SettingsManager sm = SettingsManager.getInstance();
   private String lookAndFeelClassName;
+  private final NoReceiversWarningPanel noReceiversWarningPanel =
+    new NoReceiversWarningPanel();
 
   /**
    * Set to true, if and only if the GUI has completed
@@ -227,21 +228,20 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    */
   private boolean isGUIFullyInitialized = false;
   private Object initializationLock = new Object();
-  
+
   /**
    * The shutdownAction is called when the user requests to exit
    * Chainsaw, and by default this exits the VM, but
    * a developer may replace this action with something that better suits
    * their needs
    */
-  private Action shutdownAction = new AbstractAction() {
+  private Action shutdownAction =
+    new AbstractAction() {
+      public void actionPerformed(ActionEvent e) {
+        System.exit(0);
+      }
+    };
 
-    public void actionPerformed(ActionEvent e)
-    {
-      System.exit(0);
-    }
-  };
-  
   /**
    * Clients can register a ShutdownListener to be notified
    * when the user has requested Chainsaw to exit.
@@ -280,25 +280,25 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
   /**
    * Registers a ShutdownListener with this calss so that
-   * it can be notified when the user has requested 
+   * it can be notified when the user has requested
    * that Chainsaw exit.
-   * 
+   *
    * @param l
    */
   public void addShutdownListener(ShutdownListener l) {
-    shutdownListenerList.add(ShutdownListener.class, l);  
+    shutdownListenerList.add(ShutdownListener.class, l);
   }
-  
+
   /**
-   * Removes the registered ShutdownListener so 
+   * Removes the registered ShutdownListener so
    * that the listener will not be notified on a shutdown.
-   * 
+   *
    * @param l
    */
   public void removeShutdownListener(ShutdownListener l) {
     shutdownListenerList.remove(ShutdownListener.class, l);
   }
-  
+
   /**
    * Starts Chainsaw by attaching a new instance to the Log4J
    * main root Logger via a ChainsawAppender, and activates itself
@@ -404,15 +404,19 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
           //if both a config file are defined and a log4j.configuration property are set,  
           //don't use configFile's configuration
-          if ((configFile != null) && !configFile.trim().equals("") && System.getProperty("log4j.configuration") == null) {
+          if (
+            (configFile != null) && !configFile.trim().equals("")
+              && (System.getProperty("log4j.configuration") == null)) {
             try {
               URL url = new URL(configFile);
               OptionConverter.selectAndConfigure(
                 url, null, LogManager.getLoggerRepository());
-                if (LogUI.this.getStatusBar() != null) {
-	              LogUI.this.getStatusBar().setMessage(
-                	"Configured Log4j using remembered URL :: " + url);
-                }
+
+              if (LogUI.this.getStatusBar() != null) {
+                LogUI.this.getStatusBar().setMessage(
+                  "Configured Log4j using remembered URL :: " + url);
+              }
+
               LogUI.this.configURLToUse = url;
             } catch (Exception e) {
               LogLog.error("error occurred initializing log4j", e);
@@ -422,6 +426,34 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
         public void saveSettings(SaveSettingsEvent event) {
           //required because of SettingsListener interface..not used during load
+        }
+      });
+
+    /**
+     * This listener sets up the NoReciversWarningPanel and
+     * loads saves the configs/logfiles
+     */
+    sm.addSettingsListener(
+      new SettingsListener() {
+        public void loadSettings(LoadSettingsEvent event) {
+          int size = event.asInt("SavedConfigs.Size");
+          Object[] configs = new Object[size];
+
+          for (int i = 0; i < size; i++) {
+            configs[i] = event.getSetting("SavedConfigs." + i);
+          }
+
+          noReceiversWarningPanel.getModel().setRememberedConfigs(configs);
+        }
+
+        public void saveSettings(SaveSettingsEvent event) {
+          Object[] configs =
+            noReceiversWarningPanel.getModel().getRememberedConfigs();
+          event.saveSetting("SavedConfigs.Size", configs.length);
+
+          for (int i = 0; i < configs.length; i++) {
+            event.saveSetting("SavedConfigs." + i, configs[i].toString());
+          }
         }
       });
 
@@ -498,9 +530,9 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
         //received a statechange event - selection changed - remove icon from selected index
         public void stateChanged(ChangeEvent e) {
           if (tabbedPane.getSelectedComponent() instanceof ChainsawTabbedPane) {
-          	if (tabbedPane.getSelectedIndex() > -1) {
-            	tabbedPane.setIconAt(tabbedPane.getSelectedIndex(), null);
-          	}
+            if (tabbedPane.getSelectedIndex() > -1) {
+              tabbedPane.setIconAt(tabbedPane.getSelectedIndex(), null);
+            }
           }
         }
       });
@@ -562,7 +594,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
               LogPanel logPanel = getCurrentLogPanel();
 
               if (logPanel != null) {
-                  logPanel.undock();
+                logPanel.undock();
               }
             }
           }
@@ -599,78 +631,69 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     }
 
     if (noReceiversDefined) {
-      SwingUtilities.invokeLater(
-        new Runnable() {
-          public void run() {
-            //            TODO This could be done and look better in a custom Dialog
-            Object[] options =
-              new String[] {
-                "Search for a Log4j config file",
-                "Allow me to specify Receivers manually",
-                "Nothing thanks, I'm fine"
-              };
-            Object initialSelection = options[0];
-            Object result =
-              JOptionPane.showInputDialog(
-                LogUI.this,
-                "You have no Receivers defined.\n\nYou will not be able to receive events from a Remote source unless you define one in the Log4J configuration file.\n",
-                "No Receivers Defined", JOptionPane.WARNING_MESSAGE, null,
-                options, initialSelection);
+      showNoReceiversWarningPanel();
+    }
+  }
 
-            if (result == options[0]) {
-              //              TODO search for Log4j config            
-              JFileChooser chooser = new JFileChooser();
-              chooser.setDialogTitle("Search for Log4j configuration...");
-              chooser.setDialogType(JFileChooser.OPEN_DIALOG);
-              chooser.setFileFilter(
-                new FileFilter() {
-                  public boolean accept(File f) {
-                    return f.isDirectory()
-                    || f.getName().endsWith(".properties")
-                    || f.getName().endsWith(".xml");
-                  }
+  /**
+   * Displays a warning dialog about having no Receivers defined
+   * and allows the user to choose some options for configuration
+   */
+  private void showNoReceiversWarningPanel() {
+    SwingUtilities.invokeLater(
+      new Runnable() {
+        public void run() {
+          final JDialog dialog = new JDialog(LogUI.this, true);
+          dialog.setTitle("Warning: You have no Receivers defined...");
+          dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 
-                  public String getDescription() {
-                    return "Log4j Configuration file";
-                  }
-                });
+          dialog.setResizable(false);
 
-              chooser.showOpenDialog(LogUI.this);
-
-              if (chooser.getSelectedFile() != null) {
-                try {
-                  OptionConverter.selectAndConfigure(
-                    chooser.getSelectedFile().toURL(), null,
-                    LogManager.getLoggerRepository());
-                  receiversPanel.updateReceiverTreeInDispatchThread();
-
-                  //                ask if they want this config URL loaded each time
-                  if (
-                    JOptionPane.showConfirmDialog(
-                        LogUI.this,
-                        "Would you like to use this configuration each time?",
-                        "Please confirm", JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
-                    configURLToUse = chooser.getSelectedFile().toURL();
-                  }
-                } catch (Exception e) {
-                  LogLog.error(
-                    "Error using selected config file for configuration", e);
-                }
-              } else {
-                //                TODO handle if they don't choose a file
+          noReceiversWarningPanel.setOkActionListener(
+            new ActionListener() {
+              public void actionPerformed(ActionEvent e) {
+                dialog.setVisible(false);
               }
+            });
 
-              chooser = null;
-            }
+          dialog.getContentPane().add(noReceiversWarningPanel);
 
-            if (result == options[1]) {
-              toggleReceiversPanel();
-            } else {
+          dialog.pack();
+
+          Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+          dialog.setLocation(
+            (screenSize.width / 2) - (dialog.getWidth() / 2),
+            (screenSize.height / 2) - (dialog.getHeight() / 2));
+          dialog.show();
+
+          dialog.dispose();
+
+          if (noReceiversWarningPanel.getModel().isManualMode()) {
+            toggleReceiversPanel();
+          } else if (noReceiversWarningPanel.getModel().isLoadConfig()) {
+            final URL url =
+              noReceiversWarningPanel.getModel().getConfigToLoad();
+
+            if (url != null) {
+              LogLog.debug("Initialiazing Log4j with " + url.toExternalForm());
+
+              new Thread(
+                new Runnable() {
+                  public void run() {
+                    try {
+                      OptionConverter.selectAndConfigure(
+                        url, null, LogManager.getLoggerRepository());
+                    } catch (Exception e) {
+                      LogLog.error("Error initializing Log4j", e);
+                    }
+
+                    receiversPanel.updateReceiverTreeInDispatchThread();
+                  }
+                }).start();
             }
           }
-        });
-    }
+        }
+      });
   }
 
   /**
@@ -740,32 +763,38 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   }
 
   Map getPanels() {
-  	Map m = new HashMap();
-  	Set panelSet = panelMap.entrySet();
-  	Iterator iter = panelSet.iterator();
-  	while (iter.hasNext()) {
-  		Map.Entry entry = (Map.Entry)iter.next();
-  		m.put(entry.getKey(), Boolean.valueOf(((DockablePanel)entry.getValue()).isDocked()));
-  	}
-  	return m;
+    Map m = new HashMap();
+    Set panelSet = panelMap.entrySet();
+    Iterator iter = panelSet.iterator();
+
+    while (iter.hasNext()) {
+      Map.Entry entry = (Map.Entry) iter.next();
+      m.put(
+        entry.getKey(),
+        Boolean.valueOf(((DockablePanel) entry.getValue()).isDocked()));
+    }
+
+    return m;
   }
-  
+
   void displayPanel(String panelName, boolean display) {
-  	Object o = panelMap.get(panelName);
-  	if (o instanceof LogPanel) {
-		LogPanel p = (LogPanel)o;
+    Object o = panelMap.get(panelName);
 
-		int index = tabbedPane.indexOfTab(panelName);
+    if (o instanceof LogPanel) {
+      LogPanel p = (LogPanel) o;
 
-		if (index == -1 && display) {
-			tabbedPane.addTab(panelName, p);
-		}
-		if (index > -1 && !display) {
-			tabbedPane.removeTabAt(index);
-		}
-  	}
+      int index = tabbedPane.indexOfTab(panelName);
+
+      if ((index == -1) && display) {
+        tabbedPane.addTab(panelName, p);
+      }
+
+      if ((index > -1) && !display) {
+        tabbedPane.removeTabAt(index);
+      }
+    }
   }
-  		
+
   /**
    * Shutsdown by ensuring the Appender gets a chance to close.
    */
@@ -802,10 +831,10 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
           } catch (Exception e) {
             e.printStackTrace();
           }
+
           fireShutdownEvent();
           performShutdownAction();
         }
-
       };
 
     new Thread(runnable).start();
@@ -814,9 +843,11 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   /**
    * Ensures all the registered ShutdownListeners are notified.
    */
-  private void fireShutdownEvent()
-  {
-    ShutdownListener[] listeners = (ShutdownListener[]) shutdownListenerList.getListeners(ShutdownListener.class);
+  private void fireShutdownEvent() {
+    ShutdownListener[] listeners =
+      (ShutdownListener[]) shutdownListenerList.getListeners(
+        ShutdownListener.class);
+
     for (int i = 0; i < listeners.length; i++) {
       listeners[i].shuttingDown();
     }
@@ -827,10 +858,10 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    * requests to exit the application, the default action
    * is to exit the VM.
    * This Action is called AFTER all the ShutdownListeners have been notified
-   * 
+   *
    * @param shutdownAction
    */
-  public final void setShutdownAction(Action shutdownAction){
+  public final void setShutdownAction(Action shutdownAction) {
     this.shutdownAction = shutdownAction;
   }
 
@@ -839,9 +870,10 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    * actionPerformed(...) method.
    *
    */
-  private void performShutdownAction(){
+  private void performShutdownAction() {
     LogLog.debug("Calling the shutdown Action. Goodbye!");
-    shutdownAction.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Shutting Down"));          
+    shutdownAction.actionPerformed(
+      new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Shutting Down"));
   }
 
   /**
@@ -1492,7 +1524,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       detail.setEditable(false);
 
       detailPaneUpdater =
-        new DetailPaneUpdater(detail, (EventContainer) tableModel);
+        new DetailPaneUpdater(this, detail, (EventContainer) tableModel);
 
       upperPanel = new JPanel(new BorderLayout());
       upperPanel.setBorder(BorderFactory.createEmptyBorder(2, 5, 2, 0));
@@ -2041,7 +2073,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
      *
      */
     void dock() {
-	  setDocked(true);
+      setDocked(true);
       f.setVisible(false);
       removeAll();
       add(lowerPanel, BorderLayout.CENTER);
@@ -2058,7 +2090,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
      *
      */
     void undock() {
-	  setDocked(false);
+      setDocked(false);
       externalPanel.removeAll();
       externalPanel.add(lowerPanel, BorderLayout.CENTER);
       tabbedPane.remove(LogPanel.this);
@@ -2341,10 +2373,13 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     private int lastRow = -1;
     private final JEditorPane pane;
     private final EventContainer model;
+    private final LogPanel panel;
 
-    public DetailPaneUpdater(JEditorPane pane, EventContainer model) {
+    public DetailPaneUpdater(
+      LogPanel panel, JEditorPane pane, EventContainer model) {
       this.pane = pane;
       this.model = model;
+      this.panel = panel;
     }
 
     public void setSelectedRow(int row) {
@@ -2409,8 +2444,10 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
           public void run() {
             while (true) {
               //if this tab is active, remove the icon
-              if ((tabbedPane.getSelectedIndex() > -1) && 
-                (tabbedPane.getSelectedIndex() == tabbedPane.indexOfTab(ident))) {
+              if (
+                (tabbedPane.getSelectedIndex() > -1)
+                  && (tabbedPane.getSelectedIndex() == tabbedPane.indexOfTab(
+                    ident))) {
                 tabbedPane.setIconAt(tabbedPane.indexOfTab(ident), null);
 
                 //reset fields so no icon will display 
