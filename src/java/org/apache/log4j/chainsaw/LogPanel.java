@@ -241,7 +241,15 @@ public class LogPanel extends DockablePanel implements SettingsListener,
           preferencesFrame.setVisible(false);
         }
       });
-
+    preferenceModel.addPropertyChangeListener(
+      "levelIcons",
+      new PropertyChangeListener() {
+        public void propertyChange(PropertyChangeEvent evt) {
+          renderer.setLevelUseIcons(
+            ((Boolean) evt.getNewValue()).booleanValue());
+          table.tableChanged(new TableModelEvent(getModel()));
+        }
+      });
     setDetailPaneConversionPattern(
       DefaultLayoutFactory.getDefaultPatternLayout());
     ((EventDetailLayout) toolTipLayout).setConversionPattern(
@@ -366,15 +374,14 @@ public class LogPanel extends DockablePanel implements SettingsListener,
       new JRadioButtonMenuItem(
         new AbstractAction("Use ISO8601Format") {
           public void actionPerformed(ActionEvent e) {
-            preferenceModel.setUseISO8601Format(true);
+            preferenceModel.setDateFormatPattern("ISO8601");
           }
         });
     final JRadioButtonMenuItem simpleTimeButton =
       new JRadioButtonMenuItem(
         new AbstractAction("Use simple time") {
           public void actionPerformed(ActionEvent e) {
-            preferenceModel.setUseISO8601Format(false);
-            preferenceModel.setAlternateDateFormatPattern("HH:mm:ss");
+            preferenceModel.setDateFormatPattern("HH:mm:ss");
           }
         });
 
@@ -426,7 +433,7 @@ public class LogPanel extends DockablePanel implements SettingsListener,
             renderer.setDateFormatter(new ISO8601DateFormat());
           } else {
             renderer.setDateFormatter(
-              new SimpleDateFormat(model.getAlternateDateFormatPattern()));
+              new SimpleDateFormat(model.getDateFormatPattern()));
           }
 
           table.tableChanged(new TableModelEvent(getModel()));
@@ -434,9 +441,9 @@ public class LogPanel extends DockablePanel implements SettingsListener,
       };
 
     preferenceModel.addPropertyChangeListener(
-      "useISO8601Format", datePrefsChangeListener);
+      "dateFormatPattern", datePrefsChangeListener);
     preferenceModel.addPropertyChangeListener(
-      "alternateDateFormatPattern", datePrefsChangeListener);
+      "dateFormatPattern", datePrefsChangeListener);
 
     //      TODO reload new Display rule for this panel
     //      displayFilter = loadDisplayFilter(ident);
