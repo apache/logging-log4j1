@@ -36,6 +36,7 @@ import org.apache.log4j.spi.RendererSupport;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -84,6 +85,10 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   Map properties;
   private Scheduler scheduler;
   
+  // The repository can also be used as an object store for various objects used
+  // by log4j components
+  private Map objectMap;
+  
   // the internal logger used by this instance of Hierarchy for its own reporting
   private Logger myLogger;
   
@@ -104,7 +109,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
     repositoryEventListeners = new ArrayList(1);
     loggerEventListeners = new ArrayList(1);
     this.root = root;
-
+    this.objectMap = new HashMap();
     // Enable all level levels by default.
     setThreshold(Level.ALL);
     this.root.setHierarchy(this);
@@ -791,4 +796,13 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
     }
     return scheduler;
   }
+  
+  public void putObject(String key, Object value) {
+    objectMap.put(key, value);
+  }
+  
+  public Object getObject(String key) {
+    return objectMap.get(key);
+  }
+  
 }

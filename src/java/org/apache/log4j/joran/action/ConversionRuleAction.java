@@ -16,6 +16,9 @@
 
 package org.apache.log4j.joran.action;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.joran.ExecutionContext;
 import org.apache.joran.action.Action;
 import org.apache.joran.helper.Option;
@@ -23,6 +26,7 @@ import org.apache.joran.helper.Option;
 import org.apache.log4j.Layout;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.spi.ErrorItem;
+import org.apache.log4j.spi.LoggerRepository;
 
 
 import org.xml.sax.Attributes;
@@ -66,15 +70,18 @@ public class ConversionRuleAction extends Action {
 
     try {
       getLogger().debug(
-        "About to add conversion rule [" + conversionWord + ", "
-        + converterClass + "] to layout");
+        "About to add conversion rule [{}, {}] to layout", conversionWord, converterClass);
 
-      Object o = ec.peekObject();
+      LoggerRepository repository = (LoggerRepository) ec.getObjectStack().get(0);
 
-      if (o instanceof PatternLayout) {
-        PatternLayout patternLayout = (PatternLayout) o;
-        patternLayout.addConversionRule(conversionWord, converterClass);
+      Map ruleRegistry = (Map) repository.getObject(PatternLayout.PATTERN_RULE_REGISTRY);
+      if(ruleRegistry == null) {
+        ruleRegistry = new HashMap();
+        repository.putObject(PatternLayout.PATTERN_RULE_REGISTRY, ruleRegistry);
       }
+      // put the new rule into the rule registry
+      ruleRegistry.put(conversionWord, converterClass);
+  
     } catch (Exception oops) {
       inError = true;
       errorMsg = "Could not add conversion rule to PatternLayout.";

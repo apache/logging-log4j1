@@ -22,6 +22,7 @@ import org.apache.joran.helper.Option;
 import org.apache.log4j.Appender;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.ErrorItem;
+import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.OptionHandler;
 
 import org.xml.sax.Attributes;
@@ -53,6 +54,9 @@ public class AppenderAction extends Action {
           className, org.apache.log4j.Appender.class, null);
       appender = (Appender) instance;
 
+      LoggerRepository repo = (LoggerRepository) ec.getObjectStack().get(0);
+      appender.setLoggerRepository(repo);
+      
       String appenderName = attributes.getValue(NAME_ATTRIBUTE);
 
       if (Option.isEmpty(appenderName)) {

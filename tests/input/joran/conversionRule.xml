@@ -2,6 +2,9 @@
 <!DOCTYPE log4j:configuration>
 
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+ 
+  <conversionRule conversionWord="toto" converterClass="org.apache.log4j.toto"/>
+ 
   <appender name="A1" class="org.apache.log4j.rolling.RollingFileAppender">
     <param name="File"   value="output/temp.A1" />
     <param name="Append" value="false" />	    
@@ -14,7 +17,6 @@
     </triggeringPolicy>
     <layout class="org.apache.log4j.PatternLayout">
       <param name="ConversionPattern" value="%-5p %c{2} - %m%n"/>
-      <conversionRule conversionWord="toto" converterClass="org.apache.log4j.toto"/>
     </layout>	    
   </appender>
 </log4j:configuration>

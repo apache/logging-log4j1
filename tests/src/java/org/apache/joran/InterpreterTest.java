@@ -52,9 +52,11 @@ import org.apache.log4j.rolling.RollingFileAppender;
 import org.apache.log4j.rolling.SizeBasedTriggeringPolicy;
 import org.apache.log4j.rolling.FixedWindowRollingPolicy;
 import org.apache.log4j.spi.ErrorItem;
+import org.apache.log4j.spi.LoggerRepository;
 import org.xml.sax.SAXParseException;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 
 import javax.xml.parsers.SAXParser;
@@ -175,7 +177,7 @@ public class InterpreterTest extends TestCase {
 
     Interpreter jp = new Interpreter(rs);
     ExecutionContext ec = jp.getExecutionContext();
-    HashMap omap = ec.getObjectMap();
+    Map omap = ec.getObjectMap();
     omap.put(ActionConst.APPENDER_BAG, new HashMap());
     ec.pushObject(LogManager.getLoggerRepository());
     SAXParser saxParser = createParser();
@@ -231,7 +233,7 @@ public class InterpreterTest extends TestCase {
 
     Interpreter jp = new Interpreter(rs);
     ExecutionContext ec = jp.getExecutionContext();
-    HashMap omap = ec.getObjectMap();
+    Map omap = ec.getObjectMap();
     omap.put(ActionConst.APPENDER_BAG, new HashMap());
     ec.pushObject(LogManager.getLoggerRepository());
     SAXParser saxParser = createParser();
@@ -295,7 +297,7 @@ public class InterpreterTest extends TestCase {
     jp.addImplicitAction(new NestComponentIA());
 
     ExecutionContext ec = jp.getExecutionContext();
-    HashMap omap = ec.getObjectMap();
+    Map omap = ec.getObjectMap();
     omap.put(ActionConst.APPENDER_BAG, new HashMap());
     ec.pushObject(LogManager.getLoggerRepository());
     logger.debug("About to parse doc");
@@ -340,9 +342,10 @@ public class InterpreterTest extends TestCase {
     jp.addImplicitAction(new NestComponentIA());
 
     ExecutionContext ec = jp.getExecutionContext();
-    HashMap omap = ec.getObjectMap();
+    Map omap = ec.getObjectMap();
     omap.put(ActionConst.APPENDER_BAG, new HashMap());
-    ec.pushObject(LogManager.getLoggerRepository());
+    LoggerRepository repository = LogManager.getLoggerRepository();
+    ec.pushObject(repository);
 
     SAXParser saxParser = createParser();
     saxParser.parse("file:input/joran/conversionRule.xml", jp);
@@ -351,7 +354,9 @@ public class InterpreterTest extends TestCase {
       (HashMap) ec.getObjectMap().get(ActionConst.APPENDER_BAG);
     Appender appender = (Appender) appenderBag.get("A1");
     PatternLayout pl = (PatternLayout) appender.getLayout();
-    assertEquals("org.apache.log4j.toto", pl.getRuleRegistry().get("toto"));
+    
+    Map ruleRegistry = (Map) repository.getObject(PatternLayout.PATTERN_RULE_REGISTRY);
+    assertEquals("org.apache.log4j.toto", ruleRegistry.get("toto"));
   }
   
   
@@ -367,7 +372,7 @@ public class InterpreterTest extends TestCase {
 
     Interpreter jp = new Interpreter(rs);
     ExecutionContext ec = jp.getExecutionContext();
-    HashMap omap = ec.getObjectMap();
+    Map omap = ec.getObjectMap();
 
     SAXParser saxParser = createParser();
     saxParser.parse("file:input/joran/newRule1.xml", jp);
