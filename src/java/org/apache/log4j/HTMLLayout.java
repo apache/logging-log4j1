@@ -53,7 +53,7 @@ public class HTMLLayout extends Layout {
   // Print no location info by default
   boolean locationInfo = false;
 
-  String title = "Log4J Logging Statements";
+  String title = "Log4J Log Messages";
 
   /**
      Returns a String consisting of one element {@link
@@ -163,58 +163,55 @@ public class HTMLLayout extends Layout {
       sbuf.setLength(0);
     }
     
-    sbuf.append("\r\n\r\n<tr>");
+    sbuf.append(Layout.LINE_SEP + "<tr>" + Layout.LINE_SEP);
  
     sbuf.append("<td>");
     sbuf.append(event.timeStamp - event.getStartTime());
-    sbuf.append("</td>\r\n");
+    sbuf.append("</td>" + Layout.LINE_SEP);
 
     sbuf.append("<td>");
-    sbuf.append(event.getThreadName());
-    sbuf.append("</td>\r\n");
-
+    sbuf.append(escapeHTMLTags(event.getThreadName()));
+    sbuf.append("</td>" + Layout.LINE_SEP);
 
     sbuf.append("<td>");
     if(event.priority.isGreaterOrEqual(Priority.WARN)) {
-      sbuf.append("<font color=\"#FF0000\">");
+      sbuf.append("<font color=\"#FF0000\"><strong>");
       sbuf.append(event.priority);      
-      sbuf.append("</font>");
+      sbuf.append("</strong></font>");
     } else {
       sbuf.append(event.priority);      
     }
-    sbuf.append("</td>\r\n");
+    sbuf.append("</td>" + Layout.LINE_SEP);
 
     sbuf.append("<td>");
-    sbuf.append(event.categoryName);
-    sbuf.append("</td>\r\n");
+    sbuf.append(escapeHTMLTags(event.categoryName));
+    sbuf.append("</td>" + Layout.LINE_SEP);
 
     sbuf.append("<td>");
-    sbuf.append(event.getNDC());
-    sbuf.append("</td>\r\n");
+    sbuf.append(escapeHTMLTags(event.getNDC()));
+    sbuf.append("</td>" + Layout.LINE_SEP);
 
     if(locationInfo) {
       LocationInfo locInfo = event.getLocationInformation();
       sbuf.append("<td>");
-      sbuf.append(locInfo.getFileName());
+      sbuf.append(escapeHTMLTags(locInfo.getFileName()));
       sbuf.append(':');
       sbuf.append(locInfo.getLineNumber());
-      sbuf.append("</td>\r\n");
+      sbuf.append("</td>" + Layout.LINE_SEP);
     }
 
-
     sbuf.append("<td>");
-    sbuf.append(event.getRenderedMessage());
-    sbuf.append("</td>\r\n");
-
-
-    sbuf.append("</tr>");
+    sbuf.append(escapeHTMLTags(event.getRenderedMessage()));
+    sbuf.append("</td>" + Layout.LINE_SEP);
+    sbuf.append("</tr>" + Layout.LINE_SEP);
 
     String[] s = event.getThrowableStrRep(); 
     if(s != null) {
-      sbuf.append("\r\n<tr><td colspan=\"7\">");
+      sbuf.append("<tr><td bgcolor=\"#EEEEEE\" style=\"font-size : xx-small;\" colspan=\"7\">");
       appendThrowableAsHTML(s, sbuf);
-      sbuf.append("</td></tr>");
+      sbuf.append("</td></tr>" + Layout.LINE_SEP);
     }
+
     return sbuf.toString();
   }
 
@@ -223,11 +220,11 @@ public class HTMLLayout extends Layout {
       int len = s.length;
       if(len == 0) 
 	return;
-      sbuf.append(s[0]);
+      sbuf.append(escapeHTMLTags(s[0]));
       sbuf.append(Layout.LINE_SEP);
       for(int i = 1; i < len; i++) {
 	sbuf.append(TRACE_PREFIX);
-	sbuf.append(s[i]);
+	sbuf.append(escapeHTMLTags(s[i]));
 	sbuf.append(Layout.LINE_SEP);
       }
     }
@@ -239,17 +236,32 @@ public class HTMLLayout extends Layout {
   public
   String getHeader() {
     StringBuffer sbuf = new StringBuffer();
-    sbuf.append("<html>\r\n");
-    sbuf.append("<head>\r\n");
-    sbuf.append("<title>" + title + "</title>\r\n");
-    sbuf.append("<body bgcolor=\"#FFFFFF\">\r\n");
-    sbuf.append("<table border=\"1\" cellpadding=\"2\">\r\n<tr>\r\n");
-    sbuf.append("<th>Time</th><th>Thread</th><th>Priority</th><th>Category</th>");
-    sbuf.append("<th>NDC</th>");
+    sbuf.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">"  + Layout.LINE_SEP);
+    sbuf.append("<html>" + Layout.LINE_SEP);
+    sbuf.append("<head>" + Layout.LINE_SEP);
+    sbuf.append("<title>" + title + "</title>" + Layout.LINE_SEP);
+    sbuf.append("<style type=\"text/css\">"  + Layout.LINE_SEP);
+    sbuf.append("<!--"  + Layout.LINE_SEP);
+    sbuf.append("body {font-family: arial,sans-serif; font-size: x-small;}" + Layout.LINE_SEP);
+    sbuf.append("th {background: #336699; color: #FFFFFF; text-align: left;}" + Layout.LINE_SEP);
+    sbuf.append("-->" + Layout.LINE_SEP);
+    sbuf.append("</style>" + Layout.LINE_SEP);
+    sbuf.append("</head>" + Layout.LINE_SEP);
+    sbuf.append("<body bgcolor=\"#FFFFFF\" topmargin=\"6\" leftmargin=\"6\">" + Layout.LINE_SEP);
+    sbuf.append(new java.util.Date() + ":<br>" + Layout.LINE_SEP);
+    sbuf.append("<br>" + Layout.LINE_SEP);
+    sbuf.append("<table cellspacing=\"0\" cellpadding=\"6\" border=\"1\" bordercolor=\"#224466\" bgcolor=\"#FFFFFF\" width=\"100%\">" + Layout.LINE_SEP);
+    sbuf.append("<tr>" + Layout.LINE_SEP);
+    sbuf.append("<th>Time</th>" + Layout.LINE_SEP);
+    sbuf.append("<th>Thread</th>" + Layout.LINE_SEP);
+    sbuf.append("<th>Priority</th>" + Layout.LINE_SEP);
+    sbuf.append("<th>Category</th>" + Layout.LINE_SEP);
+    sbuf.append("<th>NDC</th>" + Layout.LINE_SEP);
     if(locationInfo) {
-      sbuf.append("<th>File:Line</th>");
+      sbuf.append("<th>File:Line</th>" + Layout.LINE_SEP);
     }
-    sbuf.append("<th>Message</th></tr>");
+    sbuf.append("<th>Message</th>" + Layout.LINE_SEP);
+    sbuf.append("</tr>" + Layout.LINE_SEP);
     return sbuf.toString();
   }
 
@@ -258,12 +270,13 @@ public class HTMLLayout extends Layout {
   */
   public
   String getFooter() {
-    return "</table></body></html>";
+    StringBuffer sbuf = new StringBuffer();
+    sbuf.append("</table>" + Layout.LINE_SEP);
+    sbuf.append("<br>" + Layout.LINE_SEP);
+    sbuf.append("</body></html>");
+    return sbuf.toString();
   }
-  
-  
-
-
+ 
   /**
      The HTML layout handles the throwable contained in logging
      events. Hence, this method return <code>false</code>.  */
@@ -272,4 +285,41 @@ public class HTMLLayout extends Layout {
     return false;
   }
 
+  /**
+   * This method takes a string which may contain HTML tags (ie, <b>, <table>,
+   * etc) and converts the '<' and '>' characters to their HTML escape
+   * sequences.
+   *
+   * @param input The text to be converted.
+   * @return The input string with the characters '<' and '>' replaced with
+   *  &lt; and &gt; respectively.
+   */
+  private String escapeHTMLTags(String input) {
+    //Check if the string is null or zero length -- if so, return
+    //what was sent in.
+    
+    if( input == null || input.length() == 0 ) {
+        return input;
+    }
+    
+    //Use a StringBuffer in lieu of String concatenation -- it is
+    //much more efficient this way.
+    
+    StringBuffer buf = new StringBuffer(input.length() + 6);
+    char ch = ' ';
+    
+    for( int i=0; i < input.length(); i++ ) {
+        ch = input.charAt(i);
+        if( ch == '<' ) {
+            buf.append( "&lt;" );
+        }
+        else if( ch == '>' ) {
+            buf.append( "&gt;" );
+        }
+        else {
+            buf.append( ch );
+        }
+    }
+    return buf.toString();
+  }
 }
