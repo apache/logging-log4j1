@@ -80,12 +80,14 @@ public class SizeBasedRollingTestCase extends TestCase {
     Logger root = Logger.getRootLogger();
     root.addAppender(new ConsoleAppender(new PatternLayout()));
     
-    PatternLayout layout = new PatternLayout("%m%n");
+    // We purposefully use the \n as the line separator. 
+    // This makes the regression test system indepent.
+    PatternLayout layout = new PatternLayout("%m\n");
     RollingFileAppender rfa = new RollingFileAppender();
     rfa.setLayout(layout);
     SlidingWindowRollingPolicy swrp = new SlidingWindowRollingPolicy();
     SizeBasedTriggeringPolicy sbtp = new SizeBasedTriggeringPolicy();
-    sbtp.setMaxFileSize(100);
+    sbtp.setMaxFileSize(21);
     swrp.setFileNamePattern("output/test.%i");
     rfa.setRollingPolicy(swrp);
     rfa.setTriggeringPolicy(sbtp);
@@ -93,11 +95,7 @@ public class SizeBasedRollingTestCase extends TestCase {
     rfa.activateOptions();
     root.addAppender(rfa);
     
-
-    for (int i = 0; i < 69; i++) {
-      try {
-        Thread.sleep(10);
-      } catch(Exception e) {}
+    for (int i = 0; i < 10; i++) {
       if (i < 10) {
         logger.debug("Hello---" + i);
       } else if (i < 100) {
@@ -105,7 +103,10 @@ public class SizeBasedRollingTestCase extends TestCase {
       } else {
         logger.debug("Hello-" + i);
       }
+      
+      System.out.flush();
     }
+    
   }
 
   public static Test suite() {
