@@ -65,10 +65,6 @@ public class CacheUtil {
    * a non-sensical pattern, but unsafe nonetheless.
    */
   public static boolean isPatternSafeForCaching(String pattern) {
-    int x = 3;
-    if(x == 3) {
-      return false;
-    }
     // this code assumes that literals have been removed from the pattern
     if(pattern.indexOf("EEEE") != -1 && pattern.indexOf("MMMM") != -1) {
       return false;

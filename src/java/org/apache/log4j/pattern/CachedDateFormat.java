@@ -48,7 +48,7 @@ final class CachedDateFormat extends DateFormat {
   private int milliDigits;
   private StringBuffer milliBuf = new StringBuffer(JVM_MAX_MILLI_DIGITS);
   private NumberFormat numberFormat;
-
+  
   public CachedDateFormat(String pattern) {
     this(pattern, null);
   }
@@ -148,9 +148,11 @@ final class CachedDateFormat extends DateFormat {
    */
   public StringBuffer format(
     Date date, StringBuffer sbuf, FieldPosition fieldPosition) {
+
     if (millisecondStart == BAD_PATTERN) {
       return formatter.format(date, sbuf, fieldPosition);
     }
+    
     long now = date.getTime();
     if ((now < (slotBegin + 1000L)) && (now >= slotBegin)) {
       //System.out.println("Using cached val:"+date);
