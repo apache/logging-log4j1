@@ -48,6 +48,7 @@ import org.apache.log4j.chainsaw.PopupListener;
 import org.apache.log4j.chainsaw.SmallButton;
 import org.apache.log4j.chainsaw.icons.ChainsawIcons;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.varia.ListModelAppender;
 
 
 /**
@@ -74,7 +75,7 @@ public class MessageCenter {
   private final Logger logger = Logger.getLogger(MessageCenter.class);
   private Layout layout = new TTCCLayout();
   private final JList messageList = new JList();
-  private final MessageCenterAppender appender = new MessageCenterAppender();
+  private final ListModelAppender appender = new ListModelAppender();
   private ListCellRenderer listCellRenderer =
     new LayoutListCellRenderer(layout);
   private PropertyChangeSupport propertySupport =
