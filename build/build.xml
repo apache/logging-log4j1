@@ -4,9 +4,10 @@
 
 
 <!-- ================================================================= -->
-<!-- NOTE: all directories are relative to the parent of build/        -->
+<!-- NOTE: all directories are relative to jakarta-log4j/              -->
+<!-- the parent of build/                                              -->
 <!-- ================================================================= -->
-<project name="log4j" default="usage" basedir=".." >
+<project name="log4j" default="usage" basedir="." >
 
   
   <target name="usage">
@@ -14,14 +15,11 @@
     ant build   - compile all project files, if a certain library is missing, 
 	          then the compilation of its dependents is skipped.
 
-    ant compile - compile files in local directory only
-
     ant javadoc - build project javadoc files
 
     ant jar     - build log4j-core and log4j jar files
 
-    ant dist    - will create a distribution in dist/
-
+    ant dist    - will create a complete distribution in dist/
     </echo>
   </target>
 
@@ -84,17 +82,11 @@
 
   <!-- ================================================================= -->
   <!-- Initialize variables                                              -->
-  <!-- NOTE: all directories are relative to ../build/                   -->
+  <!-- NOTE: all directories are relative to jakarta-log4j/              -->
   <!-- ================================================================= -->
   <target name="init">
     <tstamp />
-    <property name="java.source.dir" value="." />
-    <property name="javac.dest" value="classes" />
-    <property name="jar.dest" value="dist" />
-    <property name="docs" value="docs" />
-    <property name="javadoc.dest" value="${docs}/api" />
-    <property name="stem" value="org/apache/log4j" />
-    <property name="version" value="1.1b1"/>  
+    <property file="build.properties" />
   </target>
 
   <target name="build" depends="init, build.core, build.swing, build.xml,
@@ -123,7 +115,7 @@
   <target name="build.swing" depends="init, swing" if="swing-present">   
     <mkdir dir="${javac.dest}/icons"/>
     <copy todir="${javac.dest}/icons" >
-      <fileset dir="icons"/>
+      <fileset dir="${icons.source}"/>
     </copy>
 
     <javac srcdir="${java.source.dir}"
@@ -147,7 +139,7 @@
            excludes="${stem}/xml/examples/doc-files/**.java,
 	             ${stem}/xml/Transform.java"
 	   classpath="${classpath}"/>
-    <copy file="${stem}/xml/log4j.dtd"
+    <copy file="${BSTEM}/xml/log4j.dtd"
 	  tofile="${javac.dest}/${stem}/xml/log4j.dtd" />
   </target>
 
@@ -167,21 +159,33 @@
   </target>
 
 
-
+  <!-- ================================================================= -->
+  <!-- Remove all generated (compiled) class files.                      -->
+  <!-- ================================================================= -->
   <target name="clean" depends="init">
     <delete dir="${javac.dest}/" />
   </target>
 
-  <target name="jar" depends="log4j-core.jar, log4j.jar"/>
+  <!-- ================================================================= -->
+  <!-- Remove the temporary manifest file, actual work is done in the    -->
+  <!-- dependencies.                                                     -->
+  <!-- ================================================================= -->  
+  <target name="jar" depends="log4j-core.jar, log4j.jar">
+     <delete file="${jar.dest}/manifest.mf"/>
+  </target>
 
   <target name="prejar" depends="build">
     <mkdir dir="${jar.dest}"/>    
     <filter token="version" value="${version}" />
-    <copy file="build/manifest.mf" tofile="${jar.dest}/manifest.mf" filtering="true"/>
+    <copy file="${manifest.src}" tofile="${jar.dest}/manifest.mf" 
+          filtering="true"/>
   </target>
 
 
-  <!-- Create log4j-core.jar, exluding non-core files -->
+  <!-- ================================================================= -->
+  <!-- Create log4j-core.jar, exluding non-core files                    -->
+  <!-- ================================================================= -->
+
   <target name="log4j-core.jar" depends="prejar">
     <delete file="${jar.dest}/log4j-core.jar"/>
     <jar jarfile="${jar.dest}/log4j-core.jar" basedir="${javac.dest}"
@@ -190,27 +194,30 @@
 	 excludes="**/StressCategory*, **/TTCC*, **/SimpleLayout.*, 
 	          **/AsyncAppender.*, **/Dispatcher.*, **/BoundedFIFO.*,
 	          **/Syslog*, **/RelativeTimeDateFormat.*,
-		  **/gui/**/*.class, **/Loader.class,
+		  ${stem}/gui/**/*.class, **/Loader.class,
 		  **/UnitTest*.class, 
 		  ${stem}/or/MessageRenderer.class,
 		  ${stem}/spi/TriggeringEventEvaluator.class
-		  org/apache/log4j/helpers/CyclicBuffer.class"
-        manifest="dist/manifest.mf"
+		  ${stem}/helpers/CyclicBuffer.class"
+        manifest="${jar.dest}/manifest.mf"
     />
   </target>
 
-  <!-- Create log4j.jar, excluding tests and other odds and
-       ends. -->
+ <!-- ================================================================= -->
+ <!-- Create log4j.jar, excluding tests and other odds and ends.        -->
+ <!-- ================================================================= -->
   <target name="log4j.jar" depends="prejar">
     <delete file="${jar.dest}/log4j.jar"/>
     <jar jarfile="${jar.dest}/log4j.jar" basedir="${javac.dest}"
-	includes="**/log4j/*.class, ${stem}/xml/log4j.dtd, 
-	          **/log4j/helpers/*.class, icons/**,
-		  **/log4j/spi/*.class,  **/log4j/net/*.class,
-		  **/log4j/varia/*.class, **/log4j/nt/*.class,
-		  **/log4j/xml/*.class, 
-		  **/log4j/or/*.class,
-		  **/log4j/gui/TextPaneAppender.class"
+	includes="${stem}/*.class, ${stem}/xml/log4j.dtd, 
+	          ${stem}/helpers/*.class, icons/**,
+		  ${stem}/spi/*.class,  
+		  ${stem}/net/*.class,
+		  ${stem}/varia/*.class, 
+		  ${stem}/nt/*.class,
+		  ${stem}/xml/*.class, 
+		  ${stem}/or/*.class,
+		  ${stem}/gui/TextPaneAppender.class"
 	excludes="**/StressCategory*, **/UnitTest**"
         manifest="${jar.dest}/manifest.mf"	
     />
@@ -224,8 +231,8 @@
 
     <mkdir dir="${javadoc.dest}" />
 
-    <copy todir="${stem}/examples/doc-files/">
-      <fileset dir="${stem}/examples/" 
+    <copy todir="${BSTEM}/examples/doc-files/">
+      <fileset dir="${BSTEM}/examples/" 
          includes="Sort.java, SortAlgo.java, Trivial.java, MyCategory.java,
             MyCategoryFactory.java, mycat.good, mycat.bad, factor.html,
 	    MyPatternLayout.java, MyPatternParser.java, sort2.lcf, sort3.lcf,
@@ -233,14 +240,14 @@
 	    NumberCruncher.java,  factor.lcf, sort4.lcf"/>
     </copy>
 
-    <copy todir="${stem}/xml/examples/doc-files/" >
-      <fileset dir="${stem}/xml/examples/" 
-         includes="XMLSample.java, sample1.xml, sample2.xml, extension1.xml, 
-	     extension2.xml, XCategory.java,XTest.java"/>
+    <copy todir="${BSTEM}/xml/examples/doc-files/" >
+      <fileset dir="${BSTEM}/xml/examples/" 
+         includes="XMLSample.java, sample*.xml, extension1.xml, 
+	     extension2.xml, XCategory.java, XTest.java"/>
     </copy>
 
-    <copy todir="${stem}/xml/doc-files/"  >
-      <fileset dir="${stem}/xml/" includes="log4j.dtd"/>
+    <copy todir="${BSTEM}/xml/doc-files/"  >
+      <fileset dir="${BSTEM}/xml/" includes="log4j.dtd"/>
     </copy>
 
 
@@ -271,50 +278,79 @@
 		   
            <link offline="true" 
                  href="http://java.sun.com/products/jdk/1.2/docs/api"
-                 packageListLoc="packaging"/>
+                 packageListLoc="${packaging.dir}"/>
     </javadoc>		
   </target>
 
-
+ <!-- ================================================================= -->
+ <!-- Build a complete distribution. Results go to ${dist.images}       -->
+ <!-- ================================================================= -->
   <target name="dist" depends="init, clean, jar, javadoc">
 
     <delete verbose="true">
       <fileset dir="."> 
-        <patternset includes="**/*.bak,${stem}/**/temp*,${stem}/performance/test,
-          ${stem}test/current.*,{$stem}/examples/test,{$stem}/test/logging.*,
-          ${stem}/test/log4j.properties,{$stem}/test/socket.lcf,
-          ${stem}/test/file,${stem}/test/output.*, 
-          ${stem}/nt/EventLogCategories.dbg,${stem}/nt/EventLogCategories.h,
-	  ${stem}/nt/EventLogCategories.rc,${stem}/nt/EventLogCategories.RES,
-          ${stem}/nt/MSG00001.bin,${stem}/nt/NTEventLogAppender.lib,
-          ${stem}/nt/NTEventLogAppender.exp,${stem}/nt/vc50.idb,
-          ${stem}/net/test/loop.log,${stem}/net/test/loop.log.1,
-	  ${jar.dest}/manifest.mf, ${javac.dest}/*.class"/>
+        <patternset includes="**/*.bak,
+	                     ${BSTEM}/**/temp*,
+			     ${BSTEM}/performance/test,
+			     ${BSTEM}test/current.*,
+			     ${BSTEM}/examples/test,
+			     ${BSTEM}/test/logging.*,
+			     ${BSTEM}/test/log4j.properties,
+			     {$BSTEM}/test/socket.lcf,
+			     ${BSTEM}/test/file,${BSTEM}/test/output.*, 
+			     ${BSTEM}/nt/EventLogCategories.dbg,
+			     ${BSTEM}/nt/EventLogCategories.h,
+			     ${BSTEM}/nt/EventLogCategories.rc,
+			     ${BSTEM}/nt/EventLogCategories.RES,
+			     ${BSTEM}/nt/MSG00001.bin,
+			     ${BSTEM}/nt/NTEventLogAppender.lib,
+			     ${BSTEM}/nt/NTEventLogAppender.exp,
+			     ${BSTEM}/nt/vc50.idb,
+			     ${BSTEM}/net/test/loop.log,
+			     ${BSTEM}/net/test/loop.log.1,
+			     ${jar.dest}/manifest.mf, 
+			     ${javac.dest}/*.class"/>
      </fileset>         
     </delete>
 
-    <mkdir  dir="dist/tmp/jakarta-log4j-${version}" />
+    <mkdir  dir="${dist.images}" />
 
-    <copy todir="dist/tmp/jakarta-log4j-${version}">
-       <fileset dir="."
-                includes="make/**, xdocs/**, docs/**, Makefile, build/*
-                          manifest.mf, INSTALL, LICENSE.APL, ${jar.dest}/*.jar, 
-		          org/**,  icons/**, ${javac.dest}/**, contribs/**"
-                excludes="make/make.loc, **/*.bak, **/.#*,
-		          ${stem}/xml/Transform.java"/>
+    <mkdir  dir="${dist.tmp}/jakarta-log4j-${version}" />
+
+    <copy todir="${dist.tmp}/jakarta-log4j-${version}">
+       <fileset dir="${base}"
+                includes="make/**,
+		          xdocs/**, 
+			  docs/**, 
+			  Makefile, 
+			  build/*
+                          manifest.mf, 
+			  INSTALL, 
+			  LICENSE.APL, 
+			  ${jar.dest}/*.jar, 
+		          org/**,  
+			  icons/**, 
+			  ${javac.dest}/**, 
+			  contribs/**"
+                excludes="make/make.loc, 
+		          **/*.bak, 
+			  **/.#*,
+		          ${BSTEM}/xml/Transform.java"/>
     </copy>
 
-    <tar tarfile="dist/jakarta-log4j-${version}.tar" basedir="dist/tmp"
+    <tar tarfile="${dist.images}/jakarta-log4j-${version}.tar" 
+         basedir="${dist.tmp}"
          includes="jakarta-log4j-${version}/**" />
 
-    <gzip src="dist/jakarta-log4j-${version}.tar" 
-          zipfile="dist/jakarta-log4j-${version}.tar.gz" />
+    <gzip src="${dist.images}/jakarta-log4j-${version}.tar" 
+          zipfile="${dist.images}/jakarta-log4j-${version}.tar.gz" />
 
-    <zip zipfile="dist/jakarta-log4j-${version}.zip" basedir="dist/tmp"
+    <zip zipfile="${dist.images}/jakarta-log4j-${version}.zip" 
+         basedir="${dist.tmp}"
          includes="jakarta-log4j-${version}/**" />
 
     	 
-    <delete dir="dist/tmp/" />
+    <delete dir="${dist.tmp}" />
 
   </target>
 
