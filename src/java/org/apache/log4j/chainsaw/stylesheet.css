@@ -1,17 +1,17 @@
  BODY, TABLE, TD,  {
   font-size: 10px;
   color: #000000;
-  font-family: Arial, Tahoma, Helvetica, sans-serif;
+  font-family: Tahoma, Verdana, Helvetica, Arial, sans-serif;
 }
 
 H1 {
 
-  font-size: 14px;
+  font-size: 12px;
   font-weight: bold;
 }
 
 H2 {
-  font-size: 12px;
+  font-size: 10px;
   font-weight: bold;
 }
 
