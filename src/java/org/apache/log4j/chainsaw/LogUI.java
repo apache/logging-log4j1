@@ -102,6 +102,7 @@ import org.apache.log4j.chainsaw.prefs.SettingsListener;
 import org.apache.log4j.chainsaw.prefs.SettingsManager;
 import org.apache.log4j.chainsaw.receivers.ReceiversPanel;
 import org.apache.log4j.chainsaw.version.VersionManager;
+import org.apache.log4j.helpers.Constants;
 import org.apache.log4j.joran.JoranConfigurator;
 import org.apache.log4j.net.SocketNodeEventListener;
 import org.apache.log4j.plugins.Plugin;
@@ -113,6 +114,7 @@ import org.apache.log4j.rule.ExpressionRule;
 import org.apache.log4j.rule.Rule;
 import org.apache.log4j.spi.Decoder;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.varia.PropertyFilter;
 import org.apache.log4j.xml.XMLDecoder;
 
 
@@ -290,6 +292,9 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     logUI.cyclicBufferSize = model.getCyclicBufferSize();
 
     logUI.handler = new ChainsawAppenderHandler();
+    PropertyFilter propFilter = new PropertyFilter();
+    propFilter.setProperties(Constants.HOSTNAME_KEY+"=chainsaw,"+Constants.APPLICATION_KEY+"=log");
+    logUI.handler.addFilter(propFilter);
     logUI.handler.addEventBatchListener(logUI.new NewTabEventBatchReceiver());
     
     
@@ -300,8 +305,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
      * the Plugins directory can find them (this is particularly
      * important for the Web start version of Chainsaw
      */ 
-    ClassLoader classLoader = PluginClassLoaderFactory.getInstance().getClassLoader();
-    ClassLoader previousTCCL = Thread.currentThread().getContextClassLoader();
     
     String config = model.getConfigurationURL();
     if(config!=null && (!(config.trim().equals("")))) {
@@ -350,6 +353,10 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     applyLookAndFeel(model.getLookAndFeelClassName());
 
     handler = new ChainsawAppenderHandler(appender);
+    PropertyFilter propFilter = new PropertyFilter();
+    propFilter.setProperties(Constants.HOSTNAME_KEY+"=chainsaw,"+Constants.APPLICATION_KEY+"=log");
+    handler.addFilter(propFilter);
+
     handler.addEventBatchListener(new NewTabEventBatchReceiver());
     LogManager.getRootLogger().addAppender(appender);
     setShutdownAction(
