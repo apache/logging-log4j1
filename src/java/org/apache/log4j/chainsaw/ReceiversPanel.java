@@ -70,9 +70,11 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.RenderingHints;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -87,6 +89,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.InputVerifier;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -576,13 +579,24 @@ class ReceiversPanel extends JPanel {
     }
   }
 
+  /**
+   * A popup menu that allows the user to choose which
+   * style of Receiver to create, which spawns a relevant Dialog
+   * to enter the information and create the Receiver
+   *
+   * @author Paul Smith <psmith@apache.org>
+   *
+   */
   class NewReceiverPopupMenu extends JPopupMenu {
     NewReceiverPopupMenu() {
       Class[] receivers =
         new Class[] { SocketReceiver.class, UDPReceiver.class };
 
       final Map dialogMap = new HashMap();
-      dialogMap.put(SocketReceiver.class, new ReceiverPanel(SocketReceiver.class, "Socket Receiver", "SocketReceiver"));
+      dialogMap.put(
+        SocketReceiver.class,
+        new CreateReceiverDialog(
+          SocketReceiver.class, "SocketReceiver", "Socket Receiver"));
 
       for (int i = 0; i < receivers.length; i++) {
         final Class toCreate = receivers[i];
@@ -750,20 +764,22 @@ class ReceiversPanel extends JPanel {
     }
   }
 
-  private class ReceiverPanel extends JDialog {
+  private class CreateReceiverDialog extends JDialog {
     final OkCancelPanel okCancelPanel = new OkCancelPanel();
 
-    private ReceiverPanel(Class receiver, String bundleName, String name) {
+    private CreateReceiverDialog(
+      Class receiver, String bundleName, String name) {
       super(logui, "Create new " + name, true);
-
+      setResizable(false);
       getContentPane().setLayout(new GridBagLayout());
 
       GridBagConstraints c = new GridBagConstraints();
 
       Container container = getContentPane();
-      ResourceBundle resourceBundle = ResourceBundle.getBundle("org/apache/log4j/chainsaw/Details_" + name);
-      
-//      TODO put the text about Socket Receiver in a Resource Bundle
+      ResourceBundle resourceBundle =
+        ResourceBundle.getBundle(
+          "org/apache/log4j/chainsaw/Details_" + bundleName);
+
       JLabel infoLabel = new JLabel(resourceBundle.getString("Details"));
 
       infoLabel.setOpaque(true);
@@ -793,7 +809,43 @@ class ReceiversPanel extends JPanel {
 
       JLabel portNumber = new JLabel("Port Number:");
 
-      JTextField portNumberEntry = new JTextField(5);
+      final JTextField portNumberEntry = new JTextField(5);
+      portNumberEntry.setInputVerifier(new PortNumberVerifier());
+
+      //      portNumberEntry.addKeyListener(
+      //        new KeyListener() {
+      //          public void keyTyped(KeyEvent e) {
+      //            validateKeyPress(e);
+      //          }
+      //
+      //          public void keyPressed(KeyEvent e) {
+      //            validateKeyPress(e);
+      //          }
+      //
+      //          private void validateKeyPress(KeyEvent e) {
+      //            char c = e.getKeyChar();
+      //            int keyCode = e.getKeyCode();
+      //
+      //            if ((c < '0') || (c > '9')) {
+      //              if (
+      //                (keyCode != KeyEvent.VK_BACK_SPACE) || (keyCode != KeyEvent.VK_DELETE)
+      //                  || (keyCode != KeyEvent.VK_ESCAPE)) {
+      //                e.consume();
+      //                Toolkit.getDefaultToolkit().beep();
+      //
+      //                return;
+      //              } 
+      ////              else if (portNumberEntry.getText().trim().length() >= 5) {
+      ////                e.consume();
+      ////                Toolkit.getDefaultToolkit().beep();
+      ////              }
+      //            }
+      //          }
+      //
+      //          public void keyReleased(KeyEvent e) {
+      //            validateKeyPress(e);
+      //          }
+      //        });
       portNumber.setLabelFor(portNumberEntry);
 
       c.gridwidth = 1;
@@ -815,6 +867,7 @@ class ReceiversPanel extends JPanel {
       c.gridwidth = 2;
       c.weighty = 0;
       c.gridy++;
+      c.fill = GridBagConstraints.HORIZONTAL;
       c.insets = new Insets(0, 0, 0, 0);
       container.add(lineBox3, c);
 
@@ -849,6 +902,59 @@ class ReceiversPanel extends JPanel {
         closeAction, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
         JComponent.WHEN_IN_FOCUSED_WINDOW);
     }
+
+    /**
+     * Returns true if string is a valid Port identifier.
+     * 
+     * It must be a number, and be >0 and <32768
+     * @param string
+     * @return true/false 
+     */
+    boolean validPort(String string) {
+      try {
+        int port = Integer.parseInt(string);
+
+        return (port > 0) && (port < 32768);
+      } catch (NumberFormatException e) {
+      }
+
+      return false;
+    }
+
+  /**
+   * Verifies the defaults of a TextField by ensuring
+   * it conforms to a valid Port Number.
+   * 
+   * If invalid, the text field is suffixed with " (invalid)"
+   * and all the text is selected, effectively
+   * prompting the user to enter again.
+   * 
+   * @author Paul Smith <psmith@apache.org>
+   *
+   */
+    private final class PortNumberVerifier extends InputVerifier {
+      public boolean verify(JComponent input) {
+        if (input instanceof JTextField) {
+          JTextField textField = ((JTextField) input);
+          boolean valid = validPort(textField.getText());
+
+          if (!valid) {
+            String invalidString = " (invalid)";
+
+            if (!textField.getText().endsWith(invalidString)) {
+              textField.setText(textField.getText() + invalidString);
+            }
+
+            textField.setSelectionStart(0);
+            textField.setSelectionEnd(textField.getText().length());
+          }
+
+          return valid;
+        }
+
+        return true;
+      }
+    }
   }
 
   private static class OkCancelPanel extends JPanel {
@@ -859,7 +965,7 @@ class ReceiversPanel extends JPanel {
       setLayout(new GridBagLayout());
 
       cancelButton.setDefaultCapable(true);
-      
+
       GridBagConstraints c = new GridBagConstraints();
 
       c.fill = GridBagConstraints.HORIZONTAL;
