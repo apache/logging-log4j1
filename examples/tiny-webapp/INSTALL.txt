@@ -1,0 +1,57 @@
+
+The tiny web-applications Hello and Tata demonstrate how multiple
+web-apps can live in separate logging contexts.
+
+Here are the installation steps to run the examples.
+
+Steps performed on the Java Web Server (Servlet Container)
+=========================================================
+
+- Place log4j-VERSION.jar, where VERSION is 1.3 or above, in your web
+  server's (YES, server's) shared class loader directory.
+
+  For example, for Tomcat versions 4 or 5, that would be common/lib/,
+  for Resin version 2.1.x that would be the lib/ directory under the
+  Resin installation folder. Other Servlet containers such as Jetty
+  also have folders for shared jar files.
+
+- When launching your java web *server*, make sure to add the
+  log4j.repositorySelectorClass system property on the java command
+  line.
+
+  For the JNDIContextSelector the exact system property to add is:
+
+     -Dlog4j.repositorySelectorClass="JNDI" 
+     
+- You can now run the supplied web-applications hello.war and
+  tata.war.
+
+Steps performed per web-application
+==================================
+
+- In each web-application's web.ml file add a JNDI environment entry
+  for the log4j logging context name. For the "Hello" web-application
+  this takes the following form:
+
+  <env-entry>
+   <description>JNDI logging context for this app</description>
+   <env-entry-name>log4j/context-name</env-entry-name>
+   <env-entry-value>hello</env-entry-value>
+   <env-entry-type>java.lang.String</env-entry-type>
+  </env-entry>
+ 
+  See also the file examples/tiny-webapp/Hello/src/WEB-INF/web.xml
+
+- Include a log4j.properties or log4j.xml configuration file in your
+  web-application's WEB-INF/classes directory.
+
+  This file will be automatically taken to configure the repository
+  instance specific for your web-application.
+
+  Note that you will need log4j-VERSION.jar to compile the
+  web-applications but log4j-VERSION.jar file should not be included
+  within the web-application's jar file.
+ 
+  For more options see the javadoc for JNDIContextSelector.
+
+
