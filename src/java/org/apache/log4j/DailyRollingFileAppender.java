@@ -143,13 +143,19 @@ public class DailyRollingFileAppender extends FileAppender {
   private String datePattern = "'.'yyyy-MM-dd";
 
   /**
-     The actual formatted filename that is currently being written to.
+     The log file will be renamed to the value of the
+     scheduledFilename variable when the next interval is entered. For
+     example, if the rollover period is one hour, the log file will be
+     renamed to the value of "scheduledFilename" at the beginning of
+     the next hour. 
+
+     The precise time when a rollover occurs depends on logging
+     activity. 
   */
   private String scheduledFilename;
 
   /**
-     The timestamp when we shall next recompute the filename.
-  */
+     The next time we estimate a rollover should occur. */
   private long nextCheck = System.currentTimeMillis () - 1;
 
   Date now = new Date();
@@ -160,14 +166,13 @@ public class DailyRollingFileAppender extends FileAppender {
 
   int checkPeriod = TOP_OF_TROUBLE;
 
-
+  // The gmtTimeZone is used only in computeCheckPeriod() method.
   static final TimeZone gmtTimeZone = TimeZone.getTimeZone("GMT");
 
 
   /**
      The default constructor does nothing. */
-  public
-  DailyRollingFileAppender() {
+  public DailyRollingFileAppender() {
   }
 
   /**
@@ -188,19 +193,16 @@ public class DailyRollingFileAppender extends FileAppender {
      expected by {@link SimpleDateFormat}. This options determines the
      rollover schedule.
    */
-  public
-  void setDatePattern(String pattern) {
+  public void setDatePattern(String pattern) {
     datePattern = pattern;
   }
 
   /** Returns the value of the <b>DatePattern</b> option. */
-  public
-  String getDatePattern() {
+  public String getDatePattern() {
     return datePattern;
   }
 
-  public
-  void activateOptions() {
+  public void activateOptions() {
     super.activateOptions();
     if(datePattern != null && fileName != null) {
       now.setTime(System.currentTimeMillis());
@@ -212,8 +214,8 @@ public class DailyRollingFileAppender extends FileAppender {
       scheduledFilename = fileName+sdf.format(new Date(file.lastModified()));
 
     } else {
-      LogLog.error("Either Filename or DatePattern options are not set for ["+
-		   name+"].");
+      LogLog.error("Either File or DatePattern options are not set for appender ["
+		   +name+"].");
     }
   }
 
@@ -290,6 +292,9 @@ public class DailyRollingFileAppender extends FileAppender {
     }
 
     String datedFilename = fileName+sdf.format(now);
+    // It is too early to roll over because we are still within the
+    // bounds of the current interval. Rollover will occur once the
+    // next interval is reached.
     if (scheduledFilename.equals(datedFilename)) {
       return;
     }
@@ -303,8 +308,12 @@ public class DailyRollingFileAppender extends FileAppender {
     }
 
     File file = new File(fileName);
-    file.renameTo(target);
-    LogLog.debug(fileName +" -> "+ scheduledFilename);
+    boolean result = file.renameTo(target);
+    if(result) {
+      LogLog.debug(fileName +" -> "+ scheduledFilename);
+    } else {
+      LogLog.error("Failed to rename ["+fileName+"] to ["+scheduledFilename+"].");
+    }
 
     try {
       // This will also close the file. This is OK since multiple
@@ -318,17 +327,14 @@ public class DailyRollingFileAppender extends FileAppender {
   }
 
   /**
-     This method differentiates DailyRollingFileAppender from its
-     super class.
-
-     <p>Before actually logging, this method will check whether it is
-     time to do a rollover. If it is, it will schedule the next
-     rollover time and then rollover.
-
-
-  */
-  protected
-  void subAppend(LoggingEvent event) {
+   * This method differentiates DailyRollingFileAppender from its
+   * super class.
+   *
+   * <p>Before actually logging, this method will check whether it is
+   * time to do a rollover. If it is, it will schedule the next
+   * rollover time and then rollover.
+   * */
+  protected void subAppend(LoggingEvent event) {
     long n = System.currentTimeMillis();
     if (n >= nextCheck) {
       now.setTime(n);
@@ -345,16 +351,10 @@ public class DailyRollingFileAppender extends FileAppender {
 }
 
 /**
-   RollingCalendar is a helper class to
-   DailyRollingFileAppender. Using this class, it is easy to compute
-   and access the next Millis().
-
-   It subclasses the standard {@link GregorianCalendar}-object, to
-   allow access to the protected function getTimeInMillis(), which it
-   then exports.
-
-   @author <a HREF="mailto:eirik.lygre@evita.no">Eirik Lygre</a> */
-
+ *  RollingCalendar is a helper class to DailyRollingFileAppender.
+ *  Given a periodicity type and the current time, it computes the
+ *  start of the next interval.  
+ * */
 class RollingCalendar extends GregorianCalendar {
 
   int type = DailyRollingFileAppender.TOP_OF_TROUBLE;
@@ -371,13 +371,11 @@ class RollingCalendar extends GregorianCalendar {
     this.type = type;
   }
 
-  public
-  long getNextCheckMillis(Date now) {
+  public long getNextCheckMillis(Date now) {
     return getNextCheckDate(now).getTime();
   }
 
-  public
-  Date getNextCheckDate(Date now) {
+  public Date getNextCheckDate(Date now) {
     this.setTime(now);
 
     switch(type) {

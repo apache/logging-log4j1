@@ -39,8 +39,7 @@ public class SocketNode implements Runnable {
 
   static Logger logger = Logger.getLogger(SocketNode.class);
 
-  public
-  SocketNode(Socket socket, LoggerRepository hierarchy) {
+  public SocketNode(Socket socket, LoggerRepository hierarchy) {
     this.socket = socket;
     this.hierarchy = hierarchy;
     try {
@@ -64,15 +63,18 @@ public class SocketNode implements Runnable {
 
     try {
       while(true) {
+	// read an event from the wire
 	event = (LoggingEvent) ois.readObject();
+	// get a logger from the hierarchy. The name of the logger is taken to be the name contained in the event.
 	remoteLogger = hierarchy.getLogger(event.categoryName);
 	event.logger = remoteLogger;
+	// apply the logger-level filter
 	if(event.level.isGreaterOrEqual(remoteLogger.getEffectiveLevel())) {
+	  // finally log the event as if was generated locally
 	  remoteLogger.callAppenders(event);
 	}
       }
-    }
-    catch(java.io.EOFException e) {
+    } catch(java.io.EOFException e) {
       logger.info("Caught java.io.EOFException closing conneciton.");
     } catch(java.net.SocketException e) {
       logger.info("Caught java.net.SocketException closing conneciton.");

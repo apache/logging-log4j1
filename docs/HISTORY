@@ -9,11 +9,14 @@
 
  - Release of version 1.2.4
 
+ - The JDBCAppender is marked as slated for replacement. Do not build
+   critical software using it. 
+
  - Added LF5 documentation and examples. Further tests are required
    for full integration. [*]
 
  - XMLLayout can now output messages which contain embedded CDATA
-   sections. This resolves bug #9750. Many thanks Michael
+   sections. This resolves bug #9750. Many thanks to Michael
    A. McAngus for supplying the relevant patch. [*]
 
  - The dispatcher thread associated with AsyncAppender is now marked
