@@ -11,14 +11,14 @@ import java.io.*;
 
 import org.apache.oro.text.perl.Perl5Util;
 
-public class LineNumberFilter implements Filter {
+public class XMLTimestampFilter implements Filter {
 
   Perl5Util util = new Perl5Util();
 
   public 
   String filter(String in) {
-    if(util.match("/\\(.*:\\d{1,4}\\)/", in)) {
-      return util.substitute("s/:\\d{1,4}\\)/:XXX)/", in);
+    if(util.match("/timestamp=\"\\d{10,13}\"/", in)) {
+      return util.substitute("s/timestamp=\"\\d{10,13}\"/timestamp=\"XXX\"/", in);
     } else {
       return in;
     }
