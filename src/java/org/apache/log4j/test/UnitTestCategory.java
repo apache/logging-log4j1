@@ -64,7 +64,7 @@ public class UnitTestCategory extends TestCase {
   public
   void tearDown() {
     // Regular users should not use the clear method lightly!
-    Hierarchy.getDefaultHierarchy().clear();
+    Category.getDefaultHierarchy().clear();
     BasicConfigurator.resetConfiguration();
     a1 = null;
     a2 = null;
