@@ -25,7 +25,7 @@
 
  - Log4j now will check if a system property named "log4j.ignoreTCL"
    is set. If it is set, then it will ignore the Thread Context
-   ClassLoader when loading classes. This solves the irrating
+   ClassLoader when loading classes. This solves the irritating
    "appender is not assignable to Appender" messages observed when
    log4j.jar is loaded by multiple class loaders. 
 
