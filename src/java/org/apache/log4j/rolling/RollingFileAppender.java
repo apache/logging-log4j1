@@ -26,9 +26,16 @@ import java.io.IOException;
 
 
 /**
- * RollingFileAppender extends FileAppender to backup the log files
- * depending on rotation policy.
- *
+ * RollingFileAppender extends {@link FileAppender} to backup the log files
+ * depending on {@link RollingPolicy} and {@link TriggeringPolicy}.
+ * <p>
+ * To be of any use, a <code>RollingFileAppender</code> instance must have both 
+ * a <code>RollingPolicy</code> and a <code>TriggeringPolicy</code> set up. 
+ * However, if its <code>RollingPolicy</code> also implements the
+ * <code>TriggeringPolicy</code> interface, then only the former needs to be
+ * set up. For example, {@link TimeBasedRollingPolicy} acts both as a
+ * <code>RollingPolicy</code> and a <code>TriggeringPolicy</code>.
+ * 
  * @author Heinz Richter
  * @author Ceki G&uuml;lc&uuml;
  * @since  1.3
@@ -55,9 +62,6 @@ public class RollingFileAppender extends FileAppender {
     }
 
     if (rollingPolicy != null) {
-      // Sub components must be activated separately
-      //rollingPolicy.activateOptions();
-      
       String afn = rollingPolicy.getActiveLogFileName();
       activeFile = new File(afn);
       logger.debug("Active log file name: "+afn);
@@ -146,6 +150,12 @@ public class RollingFileAppender extends FileAppender {
     return triggeringPolicy;
   }
 
+  /**
+   * Sets the rolling policy. In case the 'policy' argument also implements
+   * {@link TriggeringPolicy}, then the triggering policy for this appender
+   * is automatically set to be the policy argument.
+   * @param policy
+   */
   public void setRollingPolicy(RollingPolicy policy) {
     rollingPolicy = policy;
     if(rollingPolicy instanceof TriggeringPolicy) {

@@ -31,7 +31,7 @@ import java.io.InputStream;
  * file.
  *
  * @author Paul Austin
- * @authir Ceki Gulcu (adapted for log4j)
+ * @author Ceki Gulcu (adapted for log4j)
  * */
 public class Log4jEntityResolver implements EntityResolver {
   public InputSource resolveEntity(String publicId, String systemId) {

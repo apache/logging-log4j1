@@ -37,7 +37,7 @@ public final class ListModelAppender extends AppenderSkeleton {
    * Returns a reference to the ListModel that contains all the LoggingEvents
    * that have been appended to this class.
    * 
-   * @return
+   * @return the list model
    */
   public final ListModel getModel() {
     return model;

@@ -33,8 +33,8 @@ import java.util.Vector;
 /**
  *
  * The ExecutionContext contains the contextual state of a Joran parsing 
- * session. {@link Action Actions} depend on this context to exchange and
- * storeinformation.
+ * session. {@link org.apache.joran.action.Action Actions} depend on this 
+ * context to exchange and store information.
  *  
  * @author Ceki G&uuml;lc&uuml;
  */

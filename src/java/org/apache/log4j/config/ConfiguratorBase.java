@@ -96,7 +96,7 @@ public static final String DEBUG_KEY = "log4j.debug";
         xLogger.callAppenders(event);
       }
     }
-    listAppender.clearModel();
+    listAppender.clearList();
     listAppender.close();
     ll.removeAppender(listAppender);
   }
@@ -106,7 +106,7 @@ public static final String DEBUG_KEY = "log4j.debug";
     
     ConsoleAppender appender = new ConsoleAppender();
     appender.setLayout(
-      new PatternLayout("TEMPORARY CONSOLE APPPENDER: %d %level [%t] %c - %m%n"));
+      new PatternLayout("LOG4J-INTERNAL: %d %level [%t] %c - %m%n"));
     appender.setName(Constants.TEMP_CONSOLE_APPENDER_NAME);
     appender.activateOptions();
     ll.addAppender(appender);

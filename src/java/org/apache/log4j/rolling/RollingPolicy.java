@@ -14,22 +14,20 @@
  * limitations under the License.
  */
 
-
-/**
- * A <code>RollingPolicy</code> is responsible for copying a log  file after 
- * the occurence of a rollover triggering event. The RollingPolicy is also 
- * responsible for providing the log file where logging output will be 
- * directed.
- *
- * @author Ceki G&uuml;lc&uuml;
- * @since 1.3
- * */
 package org.apache.log4j.rolling;
 
 
 import org.apache.log4j.spi.OptionHandler;
 
-
+/**
+ * A <code>RollingPolicy</code> is responsible for copying a log  file after 
+ * the occurence of a rollover triggering event. The RollingPolicy is also 
+ * responsible for providing the log file where logging output will be 
+ * directed. This file is referred to as the <em>active log file</em>.
+ *
+ * @author Ceki G&uuml;lc&uuml;
+ * @since 1.3
+ * */
 public interface RollingPolicy extends OptionHandler {
     
   /**

@@ -41,15 +41,10 @@ import java.util.Enumeration;
  * The AsyncAppender uses a separate thread to serve the events in its bounded
  * buffer.
  * </p>
- * 
- * <p>
- * Refer to the results in {@link org.apache.log4j.performance.Logging} for
- * the impact of using this appender.
- * </p>
- * 
- * <p>
+
+ *  * <p>
  * <b>Important note:</b> The <code>AsyncAppender</code> can only be script
- * configured using the {@link org.apache.log4j.xml.DOMConfigurator}.
+ * configured using the {@link org.apache.log4j.joran.JoranConfigurator}.
  * </p>
  *
  * @author Ceki G&uuml;lc&uuml;

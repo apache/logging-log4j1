@@ -41,12 +41,14 @@ public class ConfigurationAction extends ActionBase {
     } else {
       LoggerRepository repository = (LoggerRepository) ec.getObject(0);
       ConfiguratorBase.attachTemporaryConsoleAppender(repository);
+      getLogger().debug("Starting internal logs on console.");
       attachment = true;
     }
   }
 
   public void end(ExecutionContext ec, String name) {
     if (attachment) {
+      getLogger().debug("Will stop writing internal logs on console.");
       LoggerRepository repository = (LoggerRepository) ec.getObject(0);
       List errorList = ec.getErrorList();
       ConfiguratorBase.detachTemporaryConsoleAppender(repository, errorList);

@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-
-/**
- * A <code>TriggeringPolicy</code> determines the time where rollover
- * should occur.
- *
- * @author Ceki G&uuml;lc&uuml;
- * */
 package org.apache.log4j.rolling;
 
 import java.io.File;
 
 import org.apache.log4j.spi.OptionHandler;
+/**
+ * A <code>TriggeringPolicy</code> controls the conditions under which rollover
+ * occurs. However, triggering policy might depend on time, file size, an 
+ * external condition or a combination thereof.
+ *
+ * @author Ceki G&uuml;lc&uuml;
+ * @since 1.3
+ * */
 
 public interface TriggeringPolicy extends OptionHandler {
   /**
@@ -35,8 +36,4 @@ public interface TriggeringPolicy extends OptionHandler {
    * 
    * */
   public boolean isTriggeringEvent(File file);
-
-  //public boolean isTriggeringEvent();
-
-  //public boolean isSizeSensitive();
 }

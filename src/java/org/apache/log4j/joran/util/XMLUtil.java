@@ -22,8 +22,6 @@
  */
 package org.apache.log4j.joran.util;
 
-import org.apache.joran.ExecutionContext;
-
 import org.apache.log4j.spi.ErrorItem;
 
 import org.xml.sax.InputSource;

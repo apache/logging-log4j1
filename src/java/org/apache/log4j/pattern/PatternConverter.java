@@ -167,7 +167,7 @@ public abstract class PatternConverter {
    * or not.
    * 
    * @param head The first element of the chain
-   * @return
+   * @return true if can handle the throwable contained in logging events
    */
   public static boolean chainHandlesThrowable(PatternConverter head) {
     PatternConverter c = head;
