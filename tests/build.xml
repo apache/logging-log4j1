@@ -26,7 +26,6 @@
   <path id="tests.classpath">
     <pathelement location="${project.source.home}"/>
     <pathelement location="${project.classes.home}"/>
-    <pathelement location="${examples.classes}"/>
     <pathelement location="${tests.source.home}"/>
     <pathelement location="./classes"/>
     <pathelement location="./resources"/>
@@ -176,23 +175,23 @@
                                      HierarchyThreshold, DefaultInit, 
                                      SocketServer,
                                      XMLLayout, AsyncAppender, ErrorHandler,
-                                  	 OptionSubstitutionTest,
-  	                                 LevelOptionConverterTest,
-  									 BoundedFIFO, 
+                                     OptionSubstitutionTest,
+  	                             LevelOptionConverterTest,
+  				     BoundedFIFO, 
                                      Joran,
                                      SimpleFilter,
-  	                                 Scheduler, 
+  	                             Scheduler, 
                                      ThrowableInformation,
                                      LocationInfo,
                                      CyclicBuffer, OR, 
-  	                                 VariaLevelMatchFilter, 
+  	                             VariaLevelMatchFilter, 
                                      VariaLevelRangeFilter, PatternParser,
                                      LevelMatchFilter, DRFA, 
                                      Rolling, 
                                      ReaderWriterLock,
                                      NDC,
                                      Plugins,
-  									 MessageFormatter,
+                                     MessageFormatter,
                                      CachedDateFormat"/>
 
 
