@@ -12,7 +12,7 @@
   <center>
     <h2>Frequently Asked Questions about log4j</h2>
     <h3>Ceki  G&#252;lc&#252;, Paul Smith, Chris Taylor<br/>
-    May 2002, last updated on August 13th, 2004</h3>
+    May 2002, last updated on September 15th, 2004</h3>
   </center>
 
    <faqSection>
@@ -535,7 +535,28 @@ public class Foo {
 	Logger column anyway...
 	</p>
       </answer>
-    </question>  
+    </question>
+
+    
+    <question>
+      <title>Are there suggested approaches for logging in JSP pages?</title>
+      <answer>
+        <p>
+        The suggested approach depends on your design requirements.  If you or
+        your organization has no constraints on the use of Java in JSP pages,
+        simply use log4j normally in <code>&lt;% ... %&gt;</code> statements
+        as indicated in the Short Manual and the rest of the documentation.
+        </p>
+        <p>
+        However, if your design calls for a minimum amount of Java in your JSP
+        pages, consider using the
+        <a href="http://jakarta.apache.org/taglibs/doc/log-doc/intro.html">Log Taglib</a>
+        from the Jakarta Taglibs project.  It provides logging JSP tags that invoke
+        log4j.
+        </p>
+      </answer>
+    </question>
+  
   </faqSection>
 
   <faqSection>
