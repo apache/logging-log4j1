@@ -18,11 +18,10 @@ package org.apache.joran;
 
 import org.apache.joran.action.*;
 
-
 import org.apache.log4j.Logger;
+import org.apache.log4j.helpers.LogLog;
 
 import org.xml.sax.Attributes;
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -74,7 +73,6 @@ public class Interpreter extends DefaultHandler {
   private ArrayList implicitActions;
   Pattern pattern;
   Locator locator;
-  ErrorHandler saxExceptionHandler;
   
   /**
    * The <id>actionListStack</id> contains a list of actions that are
@@ -232,24 +230,25 @@ public class Interpreter extends DefaultHandler {
   }
 
   public void error(SAXParseException spe) throws SAXException {
-    if(saxExceptionHandler != null) {
-      saxExceptionHandler.error(spe);  
-    }
+    ec.addError(new ErrorItem("Parsing error", getLocator(), spe));
+    LogLog.error(
+        "Parsing problem on line " + spe.getLineNumber() + " and column "
+        + spe.getColumnNumber());
   }
   
   public void fatalError(SAXParseException spe)  throws SAXException {
-    if(saxExceptionHandler != null) {
-      saxExceptionHandler.fatalError(spe);  
-    }
+    ec.addError(new ErrorItem("Parsing fatal error", getLocator(), spe));
+    LogLog.error(
+        "Parsing problem on line " + spe.getLineNumber() + " and column "
+        + spe.getColumnNumber());
   }
   
   public void warning(SAXParseException spe) throws SAXException {
-    if(saxExceptionHandler != null) {
-      saxExceptionHandler.warning(spe);  
-    }
+    ec.addError(new ErrorItem("Parsing warning", getLocator(), spe));
+    LogLog.warn(
+        "Parsing problem on line " + spe.getLineNumber() + " and column "
+        + spe.getColumnNumber());
   } 
-
-
 
   public void endPrefixMapping(java.lang.String prefix) {
   }
