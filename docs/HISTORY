@@ -5,6 +5,17 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
 
+ June 19, 2001
+
+ - Release of version 1.1.3
+
+ - Added a missing namespace declaration in the log4j:configuration
+   element in log4j.dtd. The missing declaration caused the new
+   generation of namespace aware parsers to barf when parsing log4j
+   configuration files. [*]
+
+ - Minor documentation changes. [*]
+
  June 7, 2001
 
  - Release of version 1.1.2

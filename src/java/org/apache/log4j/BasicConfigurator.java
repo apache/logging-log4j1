@@ -38,7 +38,7 @@ public class BasicConfigurator {
      Hierarchy#disableAll}, {@link Hierarchy#disableDebug} and {@link
      Hierarchy#disableInfo}. Thus, enabling normal evaluation of logging
      requests, i.e. according to the <a
-     href="../../manual.html#selectionRule">Basic Selection Rule</a>.
+     href="../../../../manual.html#selectionRule">Basic Selection Rule</a>.
 
      <p>If both <code>log4j.disableOverride</code> and a
      <code>log4j.disable</code> options are present, then

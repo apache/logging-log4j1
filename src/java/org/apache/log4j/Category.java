@@ -628,13 +628,14 @@ public class Category implements AppenderAttachable {
   }
 
   /**
-     Return the {@link ResourceBundle} for this category.
+     Return the <em>inherited</em> {@link ResourceBundle} for this
+     category.
 
      <p>This method walks the hierarchy to find the appropriate
-     resource bundle.
-
-     <p>In case there is no bundle in the hierarchy then
-     <code>null</code> is returned.
+     resource bundle. It will return the resource bundle attached to
+     the closest ancestor of this category, much like the way
+     priorities are searched. In case there is no bundle in the
+     hierarchy then <code>null</code> is returned.
 
      @since 0.9.0 */
   public
@@ -647,6 +648,14 @@ public class Category implements AppenderAttachable {
     return null;
   }
 
+  /**
+     Returns the string resource coresponding to <code>key</code> in
+     this category's inherited resource bundle. See also {@link
+     #getResourceBundle}.
+
+     <p>If the resource cannot be found, then an {@link #error error}
+     message will be logged complaining about the missing resource.
+  */
   protected
   String getResourceBundleString(String key) {
     ResourceBundle rb = getResourceBundle();
@@ -712,40 +721,39 @@ public class Category implements AppenderAttachable {
   }
 
   /**
-     Check whether this category is enabled for the <code>DEBUG</code>
-     priority.
-     
-     <p> This function is intended to lessen the computational cost of
-     disabled log debug statements.
-
-     <p> For some <code>cat</code> Category object, when you write,
-     <pre>
-       cat.debug("This is entry number: " + i );
-     </pre>
-
-     <p>You incur the cost constructing the message, concatenatiion in
-     this case, regardless of whether the message is logged or not.
-
-     <p>If you are worried about speed, then you should write
-     <pre>
-       if(cat.isDebugEnabled()) {
-         cat.debug("This is entry number: " + i );
-       }
-     </pre>
-
-     <p>This way you will not incur the cost of parameter construction
-     if debugging is disabled for <code>cat</code>. On the other hand,
-     if the <code>cat</code> is debug enabled, you will incur the cost
-     of evaluating whether the category is debug enabled twice. Once
-     in <code>isDebugEnabled</code> and once in the
-     <code>debug</code>.  This is an insignificant overhead since
-     evaluating a category takes about 1% of the time it takes to
-     actually log.
-
-     @return boolean - <code>true</code> if this category is debug
-     enabled, <code>false</code> otherwise.
-     
-   */
+    *  Check whether this category is enabled for the <code>DEBUG</code>
+    *  priority.
+    *  
+    *  <p> This function is intended to lessen the computational cost of
+    *  disabled log debug statements.
+    * 
+    *  <p> For some <code>cat</code> Category object, when you write,
+    *  <pre>
+    *      cat.debug("This is entry number: " + i );
+    *  </pre>
+    *  
+    *  <p>You incur the cost constructing the message, concatenatiion in
+    *  this case, regardless of whether the message is logged or not.
+    * 
+    *  <p>If you are worried about speed, then you should write
+    *  <pre>
+    * 	 if(cat.isDebugEnabled()) { 
+    * 	   cat.debug("This is entry number: " + i );
+    * 	 }
+    *  </pre>
+    * 
+    *  <p>This way you will not incur the cost of parameter
+    *  construction if debugging is disabled for <code>cat</code>. On
+    *  the other hand, if the <code>cat</code> is debug enabled, you
+    *  will incur the cost of evaluating whether the category is debug
+    *  enabled twice. Once in <code>isDebugEnabled</code> and once in
+    *  the <code>debug</code>.  This is an insignificant overhead
+    *  since evaluating a category takes about 1%% of the time it
+    *  takes to actually log.
+    * 
+    *  @return boolean - <code>true</code> if this category is debug
+    *  enabled, <code>false</code> otherwise.
+    *   */
   public
   boolean isDebugEnabled() {
     if(hierarchy.disable >=  Priority.DEBUG_INT)

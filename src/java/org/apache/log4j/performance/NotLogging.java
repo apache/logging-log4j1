@@ -124,13 +124,12 @@ public class NotLogging {
     
     ConsoleAppender appender = new ConsoleAppender(new SimpleLayout());
     
-    if("false".equals(args[0]))
-      ;       
-    else if ("true".equals(args[0])) {
+    if("false".equals(args[0])) {
+      // nothing to do
+    } else if ("true".equals(args[0])) {
       System.out.println("Flagging as shipped code.");
       Category.getDefaultHierarchy().disableInfo();
-    }
-    else 
+    } else 
       Usage();
 
     SHORT_CAT.setPriority(Priority.INFO);      
