@@ -19,6 +19,7 @@ package org.apache.log4j;
 import org.apache.log4j.helpers.Constants;
 import org.apache.log4j.helpers.IntializationUtil;
 import org.apache.log4j.helpers.Loader;
+import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.scheduler.Scheduler;
 import org.apache.log4j.selector.ContextJNDISelector;
@@ -187,6 +188,7 @@ public class LogManager {
      Retrieve the appropriate {@link Logger} instance.
   */
   public static Logger getLogger(String name) {
+    LogLog.info("LogManager.getLogger("+name+") called");
     // Delegate the actual manufacturing of the logger to the logger repository.
     return repositorySelector.getLoggerRepository().getLogger(name);
   }
