@@ -331,7 +331,7 @@ public class NDC {
      Remove the diagnostic context for this thread.
 
      <p>Each thread that created a diagnostic context by calling
-     {@link #psuh} should call this method before exiting. Otherwise,
+     {@link #push} should call this method before exiting. Otherwise,
      the memory used by the <b>thread</b> cannot be reclaimed by the
      VM.
 
