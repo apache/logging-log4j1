@@ -15,7 +15,7 @@ import java.lang.reflect.Method;
 
 
 public class LevelAction extends Action {
-  static final Logger logger = Logger.getLogger(LevelAction.class);
+ 
   static final String VALUE_ATTR = "value";
   static final String CLASS_ATTR = "class";
   static final String INHERITED = "INHERITED";
@@ -29,7 +29,7 @@ public class LevelAction extends Action {
     Object o = ec.peekObject();
 
     if (!(o instanceof Logger)) {
-      logger.warn("Could not find a logger at the top of execution stack.");
+      getLogger().warn("Could not find a logger at the top of execution stack.");
       inError = true;
       ec.addError(
         new ErrorItem(
@@ -43,7 +43,7 @@ public class LevelAction extends Action {
     String loggerName = l.getName();
 
     String levelStr = attributes.getValue(VALUE_ATTR);
-    logger.debug(
+    getLogger().debug(
       "Encapsulating logger name is [" + loggerName + "], levelvalue is  ["
       + levelStr + "].");
 
@@ -56,7 +56,7 @@ public class LevelAction extends Action {
       if ((className == null) || EMPTY_STR.equals(className)) {
         l.setLevel(OptionConverter.toLevel(levelStr, Level.DEBUG));
       } else {
-        logger.debug("Desired Level sub-class: [" + className + ']');
+        getLogger().debug("Desired Level sub-class: [" + className + ']');
 
         try {
           Class clazz = Loader.loadClass(className);
@@ -65,7 +65,7 @@ public class LevelAction extends Action {
             (Level) toLevelMethod.invoke(null, new Object[] { levelStr });
           l.setLevel(pri);
         } catch (Exception oops) {
-          logger.error(
+          getLogger().error(
             "Could not create level [" + levelStr
             + "]. Reported error follows.", oops);
 
@@ -74,7 +74,7 @@ public class LevelAction extends Action {
       }
     }
 
-    logger.debug(loggerName + " level set to " + l.getLevel());
+    getLogger().debug(loggerName + " level set to " + l.getLevel());
   }
 
   public void finish(ExecutionContext ec) {
