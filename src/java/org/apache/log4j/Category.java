@@ -203,8 +203,8 @@ public class Category implements AppenderAttachable {
 
     aai.addAppender(newAppender);
     lock.releaseWriteLock();
-
     //	END - WRITE LOCK
+
     repository.fireAddAppenderEvent((Logger) this, newAppender);
   }
 
@@ -499,15 +499,17 @@ public class Category implements AppenderAttachable {
    * </p>
    */
   public Appender getAppender(String name) {
+  	Appender result;
+  	
   	lock.getReadLock();
     if ((aai == null) || (name == null)) {
-      return null;
-    }
-	
-	  Appender appender = aai.getAppender(name);
+      result = null;
+    } else {	
+	    result = aai.getAppender(name);
+    }	  
 	  lock.releaseReadLock();
 	
-    return appender;
+    return result;
   }
 
   /**
