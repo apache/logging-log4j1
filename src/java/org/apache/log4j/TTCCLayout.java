@@ -5,8 +5,9 @@
 
 //      See the LICENCE file for the terms of distribution.
 
-// Contributors: "Christopher Williams" <Christopher_Williams@mail.northgrum.com>
-
+// Contributors: Christopher Williams 
+//               Mathias Bogaert
+       
 package org.apache.log4j;
 
 import org.apache.log4j.Priority;
@@ -213,12 +214,11 @@ public class TTCCLayout extends DateLayout {
   }
 
   /**
-     Provides an alternate mehtod to setting the
+     Provides an alternate method to set the
      <code>CategoryPrefixing</code> option. Preferred method to set
      options is through a configuration file.
 
-     <p>See also {@link PropertyConfigurator}.
-  */
+     <p>See also {@link PropertyConfigurator}.  */
   public
   void setCategoryPrefixing(boolean categoryPrefixing) {
     this.categoryPrefixing = categoryPrefixing;    
@@ -227,12 +227,11 @@ public class TTCCLayout extends DateLayout {
   
 
   /**
-     Provides an alternate mehtod to setting the
-     <code>ThreadPrinting</code> option. Preferred method to set options
-     is through the configuration file.
+     Provides an alternate method to set the
+     <code>ThreadPrinting</code> option. Preferred method to set
+     options is through the configuration file.
 
-     <p>Seel also {@link PropertyConfigurator}
-  */
+     <p>Seel also {@link PropertyConfigurator} */
   public
   void setThreadPrinting(boolean threadPrinting) {
     this.threadPrinting = threadPrinting;    
