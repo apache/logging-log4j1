@@ -37,10 +37,10 @@ public class Loader  {
      <p><li>Search for <code>resource</code> with the class loader
      that loaded <code>clazz</code>. 
 
-     <pi><li>Try one last time with
-     <code>ClassLoader.getSystemResource(resource)</code> 
+     <p><li>Try one last time with
+     <code>ClassLoader.getSystemResource(resource)</code>.
+
      </ol>
-     
      
   */
   static 
@@ -50,12 +50,10 @@ public class Loader  {
     URL url = null;
 
 
-    // Is it under CLAZZ/resource somewhere in the classpath?    
-    // where CLAZZ is the fully qualified name of clazz where dots have been
+    // Is it under CLAZZ/resource somewhere in the classpath?  CLAZZ
+    // stands for fully qualified name of "clazz" where dots have been
     // changed to directory separators
-    LogLog.debug("Trying to find ["+resource+"] using Class.getResource().");
-    
-    
+    LogLog.debug("Trying to find ["+resource+"] using clazz.getResource().");
     
     try {
       url = clazz.getResource(resource);
@@ -64,8 +62,7 @@ public class Loader  {
     } catch (Throwable t) {
       LogLog.warn(TSTR,t);
     }
-    
-    
+      
     // attempt to get the resource under CLAZZ/resource from the
     // system class path. The system class loader should not throw
     // InvalidJarIndexExceptions
@@ -98,12 +95,12 @@ public class Loader  {
     LogLog.debug("Trying to find ["+resource+"] using ClassLoader.getSystemResource().");
     url = ClassLoader.getSystemResource(resource);
     return url;
-
   }
 
   /**
-     Add the fully qualified name of a class before resource (replace . with /).
-   */
+     Append the fully qualified name of a class before resource
+     (replace . with /). 
+  */
   static
   String resolveName(String resource, Class clazz) {
     String fqcn = clazz.getName();

@@ -135,7 +135,7 @@ public class Category implements AppenderAttachable {
 	// attempt to get the resource from the class path
 	url = new URL(resource);
       } catch (MalformedURLException ex) {
-	  url = Loader.getResource(resource, Object.class); 
+	url = Loader.getResource(resource, Category.class); 
       }	
       
       // If we have a non-null url, then delegate the rest of the
