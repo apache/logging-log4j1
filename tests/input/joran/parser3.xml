@@ -7,7 +7,7 @@
     <param name="File"   value="output/temp.A1" />
     <param name="Append" value="false" />	    
 
-    <rollingPolicy class="org.apache.log4j.rolling.SlidingWindowRollingPolicy">
+    <rollingPolicy class="org.apache.log4j.rolling.FixedWindowRollingPolicy">
        <param name="activeFileName" value="output/parser3"/>
       <param name="fileNamePattern" value="output/parser3.%i"/>
     </rollingPolicy>
