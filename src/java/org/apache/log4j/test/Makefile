@@ -19,7 +19,7 @@ JSOURCES:= Shallow.java\
  ShortSocketServer.java\
  DelayedLoop.java\
  SysoutConfigurator.java\
- UnitTestCategory.java\
+ UnitTestLogger.java\
  UnitTestCyclicBuffer.java\
  UnitTestOR.java\
  UnitTestBoundedFIFO.java\

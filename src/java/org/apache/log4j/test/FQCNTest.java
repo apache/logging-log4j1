@@ -18,7 +18,7 @@ import org.apache.log4j.spi.*;
 */
 public class FQCNTest {
 
-  static Category cat = Category.getInstance("dddd");
+  //static Logger cat = Logger.getLoggerInstance("dddd");
   
   public 
   static 
@@ -49,7 +49,7 @@ public class FQCNTest {
 
   static
   void test() {
-    X1Category x1 = X1Category.getLogger("x1");
+    X1Logger x1 = X1Logger.getX1Logger("x1");
     x1.debug("hello");    
     x1.debug1("hello");  
     x1.debug2("hello");  
@@ -61,12 +61,12 @@ public class FQCNTest {
 // ==========================================================================
 // ==========================================================================
 
-class X1Category extends Category {
-  static String FQCN = X1Category.class.getName() + ".";
+class X1Logger extends Logger {
+  static String FQCN = X1Logger.class.getName() + ".";
 
-  private static X1CategoryFactory factory = new X1CategoryFactory();
+  private static X1LoggerFactory factory = new X1LoggerFactory();
 
-  public X1Category(String name) {
+  public X1Logger(String name) {
     super(name);
   }
 
@@ -82,24 +82,24 @@ class X1Category extends Category {
 
   protected
   String getFQCN() {
-    return X1Category.FQCN;
+    return X1Logger.FQCN;
   }
 
   public 
   static
-  X1Category getLogger(String name) {
-    return ((X1Category) Category.getInstance(name, factory)); 
+  X1Logger getX1Logger(String name) {
+    return ((X1Logger) Logger.getLogger(name, factory)); 
   }
 }
 
-class X1CategoryFactory implements CategoryFactory {
+class X1LoggerFactory implements CategoryFactory {
 
   public
-  X1CategoryFactory() {
+  X1LoggerFactory() {
   }
   
   public
-  Category makeNewCategoryInstance(String name) {
-    return new X1Category(name);
+  Logger makeNewCategoryInstance(String name) {
+    return new X1Logger(name);
   }
 }

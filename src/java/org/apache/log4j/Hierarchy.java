@@ -126,10 +126,10 @@ public class Hierarchy {
      
   */
   public
-  Category exists(String name) {    
+  Logger exists(String name) {    
     Object o = ht.get(new CategoryKey(name));
-    if(o instanceof Category) {
-      return (Category) o;
+    if(o instanceof Logger) {
+      return (Logger) o;
     } else {
       return null;
     }
@@ -263,25 +263,25 @@ public class Hierarchy {
 
 
   
-  void fireAddAppenderEvent(Category category, Appender appender) {
+  void fireAddAppenderEvent(Logger logger, Appender appender) {
     if(listeners != null) {
       int size = listeners.size();
       HierarchyEventListener listener;
       for(int i = 0; i < size; i++) {
 	listener = (HierarchyEventListener) listeners.elementAt(i);
-	listener.addAppenderEvent(category, appender);
+	listener.addAppenderEvent(logger, appender);
       }
     }        
   }
 
 
-  void fireRemoveAppenderEvent(Category category, Appender appender) {
+  void fireRemoveAppenderEvent(Logger logger, Appender appender) {
     if(listeners != null) {
       int size = listeners.size();
       HierarchyEventListener listener;
       for(int i = 0; i < size; i++) {
 	listener = (HierarchyEventListener) listeners.elementAt(i);
-	listener.removeAppenderEvent(category, appender);
+	listener.removeAppenderEvent(logger, appender);
       }
     }        
   }
@@ -298,19 +298,19 @@ public class Hierarchy {
   }
 
   /**
-     Return a new category instance named as the first parameter using
+     Return a new logger instance named as the first parameter using
      the default factory. 
      
-     <p>If a category of that name already exists, then it will be
-     returned.  Otherwise, a new category will be instantiated and
+     <p>If a logger of that name already exists, then it will be
+     returned.  Otherwise, a new logger will be instantiated and
      then linked with its existing ancestors as well as children.
      
-     @param name The name of the category to retrieve.
+     @param name The name of the logger to retrieve.
 
  */
   public
-  Category getInstance(String name) {
-    return getInstance(name, defaultFactory);
+  Logger getLogger(String name) {
+    return getLogger(name, defaultFactory);
   }
 
  /**
@@ -327,32 +327,32 @@ public class Hierarchy {
 
  */
   public
-  Category getInstance(String name, CategoryFactory factory) {
+  Logger getLogger(String name, CategoryFactory factory) {
     //System.out.println("getInstance("+name+") called.");
     CategoryKey key = new CategoryKey(name);    
     // Synchronize to prevent write conflicts. Read conflicts (in
     // getChainedLevel method) are possible only if variable
     // assignments are non-atomic.
-    Category category;
+    Logger logger;
     
     synchronized(ht) {
       Object o = ht.get(key);
       if(o == null) {
-	category = factory.makeNewCategoryInstance(name);
-	category.setHierarchy(this);
-	ht.put(key, category);      
-	updateParents(category);
-	return category;
-      } else if(o instanceof Category) {
-	return (Category) o;
+	logger = factory.makeNewCategoryInstance(name);
+	logger.setHierarchy(this);
+	ht.put(key, logger);      
+	updateParents(logger);
+	return logger;
+      } else if(o instanceof Logger) {
+	return (Logger) o;
       } else if (o instanceof ProvisionNode) {
 	//System.out.println("("+name+") ht.get(this) returned ProvisionNode");
-	category = factory.makeNewCategoryInstance(name);
-	category.setHierarchy(this); 
-	ht.put(key, category);
-	updateChildren((ProvisionNode) o, category);
-	updateParents(category);	
-	return category;
+	logger = factory.makeNewCategoryInstance(name);
+	logger.setHierarchy(this); 
+	ht.put(key, logger);
+	updateChildren((ProvisionNode) o, logger);
+	updateParents(logger);	
+	return logger;
       }
       else {
 	// It should be impossible to arrive here
@@ -366,19 +366,19 @@ public class Hierarchy {
      Returns all the currently defined categories in this hierarchy as
      an {@link java.util.Enumeration Enumeration}.
 
-     <p>The root category is <em>not</em> included in the returned
+     <p>The root logger is <em>not</em> included in the returned
      {@link Enumeration}.  */
   public
   Enumeration getCurrentCategories() {
     // The accumlation in v is necessary because not all elements in
-    // ht are Category objects as there might be some ProvisionNodes
+    // ht are Logger objects as there might be some ProvisionNodes
     // as well.
     Vector v = new Vector(ht.size());
     
     Enumeration elems = ht.elements();
     while(elems.hasMoreElements()) {
       Object o = elems.nextElement();
-      if(o instanceof Category) {
+      if(o instanceof Logger) {
 	v.addElement(o);
       }
     }
@@ -400,7 +400,7 @@ public class Hierarchy {
      @since 0.9.0
    */
   public
-  Category getRoot() {
+  Logger getRootLogger() {
     return root;
   }
 
@@ -426,7 +426,7 @@ public class Hierarchy {
      default.  This removes all appenders from all categories, sets
      the level of all non-root categories to <code>null</code>,
      sets their additivity flag to <code>true</code> and sets the level
-     of the root category to {@link Level#DEBUG DEBUG}.  Moreover,
+     of the root logger to {@link Level#DEBUG DEBUG}.  Moreover,
      message disabling is set its default "off" value.
 
      <p>Existing categories are not removed. They are just reset.
@@ -438,7 +438,7 @@ public class Hierarchy {
   public
   void resetConfiguration() {
 
-    getRoot().setLevel(Level.DEBUG);
+    getRootLogger().setLevel(Level.DEBUG);
     root.setResourceBundle(null);
     enableAll();
     
@@ -449,7 +449,7 @@ public class Hierarchy {
     
       Enumeration cats = getCurrentCategories();
       while(cats.hasMoreElements()) {
-	Category c = (Category) cats.nextElement();
+	Logger c = (Logger) cats.nextElement();
 	c.setLevel(null);
 	c.setAdditivity(true);
 	c.setResourceBundle(null);
@@ -459,7 +459,7 @@ public class Hierarchy {
   }
 
   /**
-     Set the default CategoryFactory instance.
+     Set the default LoggerFactory instance.
 
      @since 1.1
    */
@@ -481,7 +481,7 @@ public class Hierarchy {
 
   /**
      Shutting down a hierarchy will <em>safely</em> close and remove
-     all appenders in all categories including the root category.
+     all appenders in all categories including the root logger.
      
      <p>Some appenders such as {@link org.apache.log4j.net.SocketAppender}
      and {@link AsyncAppender} need to be closed before the
@@ -490,14 +490,14 @@ public class Hierarchy {
 
      <p>The <code>shutdown</code> method is careful to close nested
      appenders before closing regular appenders. This is allows
-     configurations where a regular appender is attached to a category
+     configurations where a regular appender is attached to a logger
      and again to a nested appender.
      
 
      @since 1.0 */
   public 
   void shutdown() {
-    Category root = getRoot();    
+    Logger root = getRootLogger();    
 
     // begin by closing nested appenders
     root.closeNestedAppenders();
@@ -505,7 +505,7 @@ public class Hierarchy {
     synchronized(ht) {
       Enumeration cats = this.getCurrentCategories();
       while(cats.hasMoreElements()) {
-	Category c = (Category) cats.nextElement();
+	Logger c = (Logger) cats.nextElement();
 	c.closeNestedAppenders();
       }
 
@@ -513,7 +513,7 @@ public class Hierarchy {
       root.removeAllAppenders();
       cats = this.getCurrentCategories();
       while(cats.hasMoreElements()) {
-	Category c = (Category) cats.nextElement();
+	Logger c = (Logger) cats.nextElement();
 	c.removeAllAppenders();
       }      
     }
@@ -529,7 +529,7 @@ public class Hierarchy {
         We create a ProvisionNode for this potential parent and insert
         'cat' in that provision node.
 
-     2) There entry is of type Category for the potential parent.
+     2) There entry is of type Logger for the potential parent.
 
         The entry is 'cat's nearest existing parent. We update cat's
         parent field with this entry. We also break from the loop
@@ -542,7 +542,7 @@ public class Hierarchy {
    */
   final
   private
-  void updateParents(Category cat) {
+  void updateParents(Logger cat) {
     String name = cat.name;
     int length = name.length();
     boolean parentFound = false;
@@ -597,19 +597,19 @@ public class Hierarchy {
   */
   final
   private
-  void updateChildren(ProvisionNode pn, Category cat) {
-    //System.out.println("updateChildren called for " + cat.name);
+  void updateChildren(ProvisionNode pn, Logger logger) {
+    //System.out.println("updateChildren called for " + logger.name);
     final int last = pn.size();
 
     for(int i = 0; i < last; i++) {
-      Category c = (Category) pn.elementAt(i);
+      Logger l = (Logger) pn.elementAt(i);
       //System.out.println("Updating child " +p.name);
 
       // Unless this child already points to a correct (lower) parent,
-      // make cat.parent point to c.parent and c.parent to cat.
-      if(!c.parent.name.startsWith(cat.name)) {
-	cat.parent = c.parent;
-	c.parent = cat;      
+      // make cat.parent point to l.parent and l.parent to cat.
+      if(!l.parent.name.startsWith(logger.name)) {
+	logger.parent = l.parent;
+	l.parent = logger;      
       }
     }
   }    

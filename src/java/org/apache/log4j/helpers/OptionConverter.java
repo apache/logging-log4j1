@@ -431,26 +431,26 @@ public class OptionConverter {
   public
   void selectAndConfigure(URL url, String clazz,  Hierarchy hierarchy) {
 
-    Configurator configurator = null;
-    String filename = url.getFile();
-
-    if(clazz == null && filename != null && filename.endsWith(".xml")) {
-      clazz = "org.apache.log4j.xml.DOMConfigurator";
-    }
-
-    if(clazz != null) {
-      LogLog.debug("Preferred configurator class: " + clazz);
-      configurator = (Configurator) instantiateByClassName(clazz, 
-							   Configurator.class,
-							   null);
-      if(configurator == null) {
-	LogLog.error("Could not instantiate configurator ["+clazz+"].");
-	return;
-      }
-    } else {
-      configurator = new PropertyConfigurator();
-    }
-
-    configurator.doConfigure(url, hierarchy);
+   Configurator configurator = null;
+   String filename = url.getFile();
+   
+   if(clazz == null && filename != null && filename.endsWith(".xml")) {
+     clazz = "org.apache.log4j.xml.DOMConfigurator";
+   }
+   
+   if(clazz != null) {
+     LogLog.debug("Preferred configurator class: " + clazz);
+     configurator = (Configurator) instantiateByClassName(clazz, 
+							  Configurator.class,
+							  null);
+     if(configurator == null) {
+   	  LogLog.error("Could not instantiate configurator ["+clazz+"].");
+   	  return;
+     }
+   } else {
+     configurator = new PropertyConfigurator();
+   }
+   
+   configurator.doConfigure(url, hierarchy);
   }
 }

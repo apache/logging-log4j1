@@ -7,7 +7,7 @@
 
 package org.apache.log4j.examples;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import org.apache.log4j.spi.CategoryFactory;
 
 /**
@@ -27,7 +27,7 @@ public class MyCategoryFactory implements CategoryFactory {
   }
 
   public
-  Category makeNewCategoryInstance(String name) {
+  Logger makeNewCategoryInstance(String name) {
     return new MyCategory(name);
   }
 }
