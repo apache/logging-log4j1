@@ -43,8 +43,17 @@ public class HTMLLayout extends Layout {
   */
   public static final String LOCATION_INFO_OPTION = "LocationInfo";
 
+  /**
+     A string constant used in naming the option for setting the the
+     HTML document title.  Current value of this string
+     constant is <b>Title</b>.  
+  */
+  public static final String TITLE_OPTION = "Title";
+
   // Print no location info by default
   boolean locationInfo = false;
+
+  String title = "Log4J Logging Statements";
 
   /**
      Returns a String consisting of one element {@link
@@ -55,7 +64,7 @@ public class HTMLLayout extends Layout {
  */
   public
   String[] getOptionStrings() {
-    return new String[] {LOCATION_INFO_OPTION};
+    return new String[] {LOCATION_INFO_OPTION, TITLE_OPTION};
   }
 
   /**
@@ -82,6 +91,9 @@ public class HTMLLayout extends Layout {
     if (key.equals(LOCATION_INFO_OPTION)) {
       locationInfo = OptionConverter.toBoolean(value, locationInfo);
     }
+    else if (key.equals(TITLE_OPTION)) {
+      title = value;
+    }
   }
   
   /**
@@ -106,6 +118,25 @@ public class HTMLLayout extends Layout {
   public
   boolean getLocationInfo() {
     return locationInfo;
+  }
+
+  /**
+    The <b>Title</b> option takes a String value. This option sets the
+    document title of the generated HTML document.
+    
+    <p>Defaults to 'Log4J Logging Statements'.
+  */
+  public
+  void setTitle(String title) {
+    this.title = title;
+  }
+
+  /**
+     Returns the current value of the <b>Title</b> option.
+  */
+  public
+  String getTitle() {
+    return title;
   }
   
  /**
@@ -208,7 +239,10 @@ public class HTMLLayout extends Layout {
   public
   String getHeader() {
     StringBuffer sbuf = new StringBuffer();
-    sbuf.append("<html><body>\r\n");
+    sbuf.append("<html>\r\n");
+    sbuf.append("<head>\r\n");
+    sbuf.append("<title>" + title + "</title>\r\n");
+    sbuf.append("<body bgcolor=\"#FFFFFF\">\r\n");
     sbuf.append("<table border=\"1\" cellpadding=\"2\">\r\n<tr>\r\n");
     sbuf.append("<th>Time</th><th>Thread</th><th>Priority</th><th>Category</th>");
     sbuf.append("<th>NDC</th>");
