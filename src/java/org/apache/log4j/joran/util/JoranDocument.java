@@ -147,8 +147,7 @@ public final class JoranDocument extends DefaultHandler {
         throw (SAXException) e;
       } else if (e instanceof java.io.IOException) {
         // fall back to the default "implementation"
-        Logger logger = LogManager.getLogger(this.getClass().getName());
-        logger.error("Default entity resolver threw an IOException", e);
+        getLogger().error("Default entity resolver threw an IOException", e);
         return null;
       } else {
         // This point should can never be reached.
