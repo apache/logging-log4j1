@@ -96,7 +96,7 @@ abstract public class DateLayout extends Layout {
   public
   void setDateFormat(String dateFormat) {
     if (dateFormat != null) {
-        dateFormatOption = dateFormat.toUpperCase();
+        dateFormatOption = dateFormat;
     }
     setDateFormat(dateFormatOption, TimeZone.getDefault());
   }
