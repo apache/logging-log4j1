@@ -251,7 +251,7 @@
   <!-- ================================================================= -->
   <target name="checkstyle" depends="init">
     <taskdef resource="checkstyletask.properties"
-             classpath="build/lib/checkstyle-all-2.1.jar"/>
+             classpath="${checkstyle.jar}"/>
 
     <!-- by default checkstyle supports the Sun coding standard. -->
     <checkstyle lcurlyMethod="nlow"
@@ -270,7 +270,7 @@
   <target name="chainsaw" depends="build">
     <!-- Need to fork to avoid problems -->
     <java classname="org.apache.log4j.chainsaw.Main" fork="yes"
-          classpath="${javac.dest}">
+          classpath="${javac.dest};${ant.home}/lib/crimson.jar">
     </java>
   </target>
 

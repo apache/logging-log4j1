@@ -18,5 +18,6 @@ jms.jar=/java/JMQ1.1/lib/jms.jar
 jmx.jar=/java/jmx/lib/jmxri.jar
 jmx-extra.jar=/java/jmx/lib/jmxtools.jar
 
-
+# Required to run Checkstyle. Available from http://checkstyle.sf.net
+checkstyle.jar=/java/checkstyle-2.2/checkstyle-all-2.2.jar
 
