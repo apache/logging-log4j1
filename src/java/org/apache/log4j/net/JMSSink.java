@@ -9,6 +9,7 @@ package org.apache.log4j.net;
 
 import org.apache.log4j.joran.JoranConfigurator;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
@@ -56,7 +57,9 @@ public class JMSSink implements javax.jms.MessageListener {
     String configFile = args[4];
 
     if(configFile.endsWith(".xml")) {
-      JoranConfigurator.configure(configFile);
+      JoranConfigurator jc = new JoranConfigurator();
+      jc.doConfigure(configFile, LogManager.getLoggerRepository());
+      jc.logErrors();
     } else {
       PropertyConfigurator.configure(configFile);
     }
