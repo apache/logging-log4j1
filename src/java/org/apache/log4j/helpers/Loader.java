@@ -85,10 +85,7 @@ public class Loader  {
       // We could not find resource. Ler us now try with the
       // classloader that loaded this class.
       classLoader = Loader.class.getClassLoader(); 
-      if(classLoader == null) {
-	LogLog.warn("Loader.class.getClassLoader returned null!");
-      } else {
-	
+      if(classLoader != null) {
 	LogLog.debug("Trying to find ["+resource+"] using "+classLoader
 		     +" class loader.");
 	url = classLoader.getResource(resource);
