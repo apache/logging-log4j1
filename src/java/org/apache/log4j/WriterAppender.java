@@ -192,23 +192,26 @@ public class WriterAppender extends AppenderSkeleton {
     }
 
     this.closed = true;
-    writeFooter();
-    reset();
+    closeWriter();
   }
 
   /**
    * Close the underlying {@link java.io.Writer}.
    * */
   protected void closeWriter() {
-    if (qw != null) {
+    if (this.qw != null) {
       try {
+        // before closing we have to output out layout's footer
+        writeFooter();
         qw.close();
+        this.qw = null;
       } catch (IOException e) {
         // There is do need to invoke an error handler at this late
         // stage.
         LogLog.error("Could not close " + qw, e);
       }
     }
+    
   }
 
   /**
@@ -274,7 +277,9 @@ public class WriterAppender extends AppenderSkeleton {
     <p>
     @param writer An already opened Writer.  */
   public synchronized void setWriter(Writer writer) {
-    reset();
+    // close any previously opened writer
+    closeWriter();
+    
     this.qw = new QuietWriter(writer, errorHandler);
 
     //this.tp = new TracerPrintWriter(qw);
@@ -282,12 +287,12 @@ public class WriterAppender extends AppenderSkeleton {
   }
 
   /**
-     Actual writing occurs here.
-
-     <p>Most subclasses of <code>WriterAppender</code> will need to
-     override this method.
-
-     @since 0.9.0 */
+   * Actual writing occurs here. 
+   * <p>Most subclasses of <code>WriterAppender</code> will need to override 
+   * this method.
+   *  
+   * @since 0.9.0 
+   * */
   protected void subAppend(LoggingEvent event) {
     this.qw.write(this.layout.format(event));
 
@@ -318,20 +323,21 @@ public class WriterAppender extends AppenderSkeleton {
   }
 
   /**
-     Clear internal references to the writer and other variables.
-
-     Subclasses can override this method for an alternate closing
-     behavior.  */
-  protected void reset() {
+   * Clear internal references to the writer and other variables.
+   * 
+   * Subclasses can override this method for an alternate closing 
+   * behavior. 
+   * 
+   * @deprecated Use {@link #closeWriter} method instead.  
+   * */
+  protected void xreset() {
     closeWriter();
-    this.qw = null;
-
-    //this.tp = null;
   }
 
   /**
-     Write a footer as produced by the embedded layout's {@link
-     Layout#getFooter} method.  */
+   * Write a footer as produced by the embedded layout's {@link 
+   * Layout#getFooter} method.  
+   * */
   protected void writeFooter() {
     if (layout != null) {
       String f = layout.getFooter();
@@ -344,8 +350,9 @@ public class WriterAppender extends AppenderSkeleton {
   }
 
   /**
-     Write a header as produced by the embedded layout's {@link
-     Layout#getHeader} method.  */
+   * Write a header as produced by the embedded layout's {@link 
+   * Layout#getHeader} method.  
+   * */
   protected void writeHeader() {
     if (layout != null) {
       String h = layout.getHeader();

@@ -140,7 +140,8 @@ public class RollingFileAppender extends FileAppender {
       // Rename fileName to fileName.1
       target = new File(fileName + "." + 1);
 
-      this.closeFile(); // keep windows happy.
+      // Gracefully close the old the log file.
+      this.closeWriter(); 
 
       file = new File(fileName);
       LogLog.debug("Renaming file " + file + " to " + target);

@@ -38,11 +38,17 @@ public abstract class Layout implements OptionHandler {
   public static final int LINE_SEP_LEN = LINE_SEP.length();
   
   final static Logger logger = Logger.getLogger(Layout.class); 
-
+  
+  
   public CharArrayWriter charArrayWriter = new CharArrayWriter(1024);
+
+  String header;
+  String footer;
+
+  
   /**
-     Implement this method to create your own layout format.
-  */
+   * Implement this method to create your own layout format.
+   * */
   public String format(LoggingEvent event) {
 	  charArrayWriter.reset();
 	  try {
@@ -65,19 +71,20 @@ public abstract class Layout implements OptionHandler {
   }
 
   /**
-     Returns the header for the layout format. The base class returns
-     <code>null</code>.  */
+   * Returns the header for the layout format. There is no default header.
+   * */
   public String getHeader() {
-    return null;
+    return header;
   }
 
   /**
-     Returns the footer for the layout format. The base class returns
-     <code>null</code>.  */
+   * Returns the footer for the layout format. There is no default footer.
+   */
   public String getFooter() {
-    return null;
+    return footer;
   }
 
+  
   /**
      If the layout handles the throwable object contained within
      {@link LoggingEvent}, then the layout should return
@@ -90,4 +97,26 @@ public abstract class Layout implements OptionHandler {
 
      @since 0.8.4 */
   public abstract boolean ignoresThrowable();
+  
+  /**
+   * Set the footer. Note that some layout have their own footers and may choose
+   * to ignote the footer set here.
+   * 
+   * @param footer the footer
+   * @since 1.3
+   */
+  public void setFooter(String footer) {
+    this.footer = footer;
+  }
+
+  /**
+   * Set the header. Note that some layout have their own headers and may choose
+   * to ignote the header set here.
+   *
+   * @param header the header
+   * @since 1.3
+   */
+  public void setHeader(String header) {
+    this.header = header;
+  }
 }

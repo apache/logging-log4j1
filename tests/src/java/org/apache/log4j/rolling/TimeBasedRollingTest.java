@@ -1,12 +1,12 @@
 /*
  * Copyright 1999,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -257,8 +257,9 @@ public class TimeBasedRollingTest extends TestCase {
       filenames[i] = "output/test5-" + sdf.format(cal.getTime());
       cal.add(Calendar.SECOND, 1);
     }
+
     filenames[3] = "output/test5.log";
-    
+
     root.debug("Waiting until next second and 100 millis.");
     delayUntilNextSecond(100);
     root.debug("Done waiting.");
@@ -275,7 +276,7 @@ public class TimeBasedRollingTest extends TestCase {
 
   /**
    * With compression, no stop/restart, activeFileName set
-   * 
+   *
    * The test is a regression test. It logs a few times using a RollingFileAppender.
    * It predicts the names of the files which will be generated and
    * compares them with witness files.
@@ -297,11 +298,13 @@ public class TimeBasedRollingTest extends TestCase {
     SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
     String[] filenames = new String[4];
 
-    Calendar cal = Calendar.getInstance();  
+    Calendar cal = Calendar.getInstance();
+
     for (int i = 0; i < 3; i++) {
       filenames[i] = "output/test6-" + sdf.format(cal.getTime()) + ".gz";
       cal.add(Calendar.SECOND, 1);
     }
+
     filenames[3] = "output/test6.log";
 
     root.debug("Waiting until next second and 100 millis.");
@@ -320,14 +323,14 @@ public class TimeBasedRollingTest extends TestCase {
     for (int i = 0; i < 3; i++) {
       Compare.gzCompare(filenames[i], "witness/tbr-test6." + i + ".gz");
     }
+
     Compare.compare(filenames[3], "witness/tbr-test6.3");
   }
-  
-  
+
   void delayUntilNextSecond(int millis) {
     long now = System.currentTimeMillis();
     Calendar cal = Calendar.getInstance();
-	cal.setTime(new Date(now));
+    cal.setTime(new Date(now));
 
     cal.set(Calendar.MILLISECOND, millis);
     cal.add(Calendar.SECOND, 1);
@@ -343,12 +346,12 @@ public class TimeBasedRollingTest extends TestCase {
   void delayUntilNextMinute(int seconds) {
     long now = System.currentTimeMillis();
     Calendar cal = Calendar.getInstance();
-	cal.setTime(new Date(now));
+    cal.setTime(new Date(now));
 
     cal.set(Calendar.SECOND, seconds);
     cal.add(Calendar.MINUTE, 1);
 
-	long next = cal.getTime().getTime();
+    long next = cal.getTime().getTime();
 
     try {
       Thread.sleep(next - now);
@@ -363,7 +366,7 @@ public class TimeBasedRollingTest extends TestCase {
     suite.addTest(new TimeBasedRollingTest("test2"));
     suite.addTest(new TimeBasedRollingTest("test3"));
     suite.addTest(new TimeBasedRollingTest("test4"));
-    
+
     suite.addTest(new TimeBasedRollingTest("test5"));
     suite.addTest(new TimeBasedRollingTest("test6"));
 
