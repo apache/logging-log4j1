@@ -20,7 +20,6 @@ import org.apache.joran.ExecutionContext;
 import org.apache.joran.Pattern;
 import org.apache.joran.helper.Option;
 
-import org.apache.log4j.Logger;
 import org.apache.log4j.config.PropertySetter;
 import org.apache.log4j.helpers.Loader;
 import org.apache.log4j.spi.ErrorItem;
@@ -36,8 +35,7 @@ import java.util.Stack;
  *
  */
 public class NestComponentIA extends ImplicitAction {
-  static final Logger logger = Logger.getLogger(NestComponentIA.class);
-
+  
   // actionDataStack contains ActionData instances
   // We use a stack of ActionData objects in order to support nested
   // elements which are handled by the same NestComponentIA instance.
@@ -91,7 +89,7 @@ public class NestComponentIA extends ImplicitAction {
       actionData.inError = true;
 
       String errMsg = "No class name attribute in <" + localName + ">";
-      logger.error(errMsg);
+      getLogger().error(errMsg);
       ec.addError(new ErrorItem(errMsg));
 
       return;
@@ -117,7 +115,7 @@ public class NestComponentIA extends ImplicitAction {
   }
 
   public void end(ExecutionContext ec, String tagName) {
-    logger.debug("entering end method");
+    getLogger().debug("entering end method");
 
     // pop the action data object pushed in isApplicable() method call
     // we assume that each this begin
@@ -134,10 +132,10 @@ public class NestComponentIA extends ImplicitAction {
     Object o = ec.peekObject();
 
     if (o != actionData.nestedComponent) {
-      logger.warn(
+      getLogger().warn(
         "The object on the top the of the stack is not the component pushed earlier.");
     } else {
-      logger.warn("Removing component from the object stack");
+      getLogger().warn("Removing component from the object stack");
       ec.popObject();
 
       // Now let us attach the component

@@ -17,6 +17,8 @@
 package org.apache.joran;
 
 import org.apache.joran.action.*;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.log4j.spi.ErrorItem;
 
 import org.xml.sax.Attributes;
@@ -72,6 +74,8 @@ public class Interpreter extends DefaultHandler {
   Pattern pattern;
   Locator locator;
 
+  Logger logger = LogManager.getLogger(Interpreter.class);
+  
   // The entity resolver is only needed in order to be compatible with
   // XML files written for DOMConfigurator containing the following DOCTYPE
   // <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
@@ -123,7 +127,7 @@ public class Interpreter extends DefaultHandler {
       String errMsg =
         "no applicable action for <" + tagName + ">, current pattern is ["
         + pattern+"]";
-      //LogLog.warn(errMsg);
+      logger.warn(errMsg);
       ec.addError(new ErrorItem(errMsg));
     }
   }
@@ -240,28 +244,42 @@ public class Interpreter extends DefaultHandler {
     this.ruleStore = ruleStore;
   }
 
-  public void endDocument() {
-  }
+//  /**
+//   * Call the finish methods for all actions. Unfortunately, the endDocument
+//   * method is not called in case of errors in the XML document, which
+//   * makes endDocument() pretty damn useless.
+//   */
+//  public void endDocument() {
+//    Set arrayListSet = ruleStore.getActionSet();
+//    Iterator iterator = arrayListSet.iterator();
+//    while(iterator.hasNext()) {
+//      ArrayList al = (ArrayList) iterator.next();
+//      for(int i = 0; i < al.size(); i++) {
+//         Action a = (Action) al.get(i);
+//         a.endDocument(ec);
+//      }
+//    }
+//  }
 
   public void error(SAXParseException spe) throws SAXException {
     ec.addError(new ErrorItem("Parsing error", spe));
-    //LogLog.error(
-      //"Parsing problem on line " + spe.getLineNumber() + " and column "
-      //+ spe.getColumnNumber());
+    logger.error(
+      "Parsing problem on line " + spe.getLineNumber() + " and column "
+      + spe.getColumnNumber(), spe);
   }
 
   public void fatalError(SAXParseException spe) throws SAXException {
     ec.addError(new ErrorItem("Parsing fatal error", spe));
-//    LogLog.error(
-//      "Parsing problem on line " + spe.getLineNumber() + " and column "
-//      + spe.getColumnNumber());
+    logger.error(
+      "Parsing problem on line " + spe.getLineNumber() + " and column "
+      + spe.getColumnNumber(), spe);
   }
 
   public void warning(SAXParseException spe) throws SAXException {
     ec.addError(new ErrorItem("Parsing warning", spe));
-//    LogLog.warn(
-//      "Parsing problem on line " + spe.getLineNumber() + " and column "
-//      + spe.getColumnNumber());
+    logger.warn(
+      "Parsing problem on line " + spe.getLineNumber() + " and column "
+      + spe.getColumnNumber(), spe);
   }
 
   public void endPrefixMapping(java.lang.String prefix) {
