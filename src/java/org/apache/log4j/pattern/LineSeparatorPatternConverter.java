@@ -39,9 +39,11 @@ public class LineSeparatorPatternConverter extends PatternConverter {
     return buf;
   }
   
-  public String getName()
-  {
+  public String getName() {
       return "Line Sep";
   }
   
+  public String getStyleClass(LoggingEvent e) {
+    return "lineSep";
+  }
 }

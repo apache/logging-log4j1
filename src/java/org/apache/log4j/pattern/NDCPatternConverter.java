@@ -41,9 +41,12 @@ public class NDCPatternConverter extends PatternConverter {
     return buf;
   }
   
-  public String getName()
-  {
+  public String getName() {
       return "NDC";
+  }
+  
+  public String getStyleClass(LoggingEvent e) {
+    return "ndc";
   }
   
 }

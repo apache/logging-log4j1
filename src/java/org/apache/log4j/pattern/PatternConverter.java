@@ -137,4 +137,28 @@ public abstract class PatternConverter {
    * @return	the name of the conversion pattern
    */
   public abstract String getName();
+ 
+  /**
+   * This method returns the CSS style class that should be applied to
+   * the LoggingEvent passed as parameter. 
+   * 
+   * This information is currently used only by HTMLLayout.
+   * 
+   * @return  the name of the conversion pattern
+   */
+  public abstract String getStyleClass(LoggingEvent e);
+  
+  /**
+   * Normally pattern converters are now meant to handle Exceptions although
+   * few pattern converters might. 
+   * 
+   * By examining the return values for this methd, the containing layouy will
+   * determine whether it ignores throwables or not.
+
+   * @return false if this object handles throwables
+   */
+  public boolean ignoresThrowable() {
+    return true;
+  }
+   
 }

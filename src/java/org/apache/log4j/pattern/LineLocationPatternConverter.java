@@ -47,9 +47,11 @@ public class LineLocationPatternConverter extends PatternConverter {
     return buf;
   }
   
-  public String getName()
-  {
+  public String getName() {
       return "Line";
   }
   
+  public String getStyleClass(LoggingEvent e) {
+    return "line";
+  }
 }

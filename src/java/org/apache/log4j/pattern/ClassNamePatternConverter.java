@@ -27,6 +27,9 @@ import org.apache.log4j.spi.LoggingEvent;
  * @author Ceki G&uuml;lc&uuml;
  */
 public class ClassNamePatternConverter extends NamedPatternConverter {
+  static private final String NAME = "Class Name";
+  static private final String STYLE_CLASS = NAME.toLowerCase();
+
   public ClassNamePatternConverter() {
     super();
   }
@@ -35,9 +38,11 @@ public class ClassNamePatternConverter extends NamedPatternConverter {
 	   return event.getLocationInformation()!=null?event.getLocationInformation().getClassName():"";
 	 }
   
-  public String getName()
-  {
-      return "Class Name";
+  public String getName() {
+      return NAME;
   }
   
+  public String getStyleClass(LoggingEvent e) {
+    return STYLE_CLASS;
+  }
 }

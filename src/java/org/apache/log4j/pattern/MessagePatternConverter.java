@@ -51,9 +51,11 @@ public class MessagePatternConverter extends PatternConverter {
     return buf;
   }
   
-  public String getName()
-  {
+  public String getName() {
       return "Message";
   }
   
+  public String getStyleClass(LoggingEvent e) {
+    return "message";
+  }
 }

@@ -41,9 +41,12 @@ public class RelativeTimePatternConverter extends PatternConverter {
     return buf;
   }
   
-  public String getName()
-  {
+  public String getName() {
       return "Time";
+  }
+  
+  public String getStyleClass(LoggingEvent e) {
+    return "time";
   }
   
 }
