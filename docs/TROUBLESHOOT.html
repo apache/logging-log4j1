@@ -4,74 +4,88 @@
 </head> 
 <body bgcolor=#FFFFFF>
  
-<h1 align=center>Log4j troubleshooting</h1>
+    <h1 align=center>Log4j troubleshooting</h1>
 
-<h2 align=center>Ceki G&uuml;lc&uuml; Paul Glezen
-<br>May 2001</h2>
+    <h2 align=center>Ceki G&uuml;lc&uuml; Paul Glezen
+      <br/>February 2002
+    </h2>
  
-<hr>
+    <hr/>
 
-<p>Here is a list of commonly encountered problems when using log4j:
+      <p>Here is a list of commonly encountered problems when using log4j:</p>
+	
+      <ul> 
+	
+	<li><p><a href=#noAppenders>log4j tells me to initialize
+	      properly.</a></p>
+	</li>
 
-<ul> 
+	<li><p><a href=#duplicates>Duplicates in log4j output.</a></p>
+	</li>
+	<li><p><a href=#space>Options are not parsed correctly.</a></p>
+	</li>
+	<li><p><a href=#jit>Caller location information is printed as a "?"
+	      character.</a>
+	  </p>
+	</li>
 
-<li><p><a href=#noAppenders>log4j tells me to initialize
-properly.</a>
+	<li><p><a href=#cce>ClassCastException when instantiating a Category subclasses.</a>
+	  </p>
+	</li>
 
-<li><p><a href=#duplicates>Duplicates in log4j output.</a>
+	<li><p><a href=#levelCast>Compilation errors when using<code>setLevel(org.apache.log4j.Level)</code>  from the Category class.</a></p></li>
 
-<li><p><a href=#space>Options are not parsed correctly.</a>
+	<li><p><a href="#notfound">My EJB-Servlet-JSP says log4j class
+        not found or not defined.</a> </a></p>
+        </li>
+	
+	<li><p><a href=#syslogd>I cannot connect to syslogd under linux.</a>
+	  </p></li>
 
-<li><p><a href=#jit>Caller location information is printed as a "?"
-character.</a>
+	<li><p><a href="#nosuchpropperty">log4j:WARN No such property
+	      [xyz] in some.appender.or.layout</a>
+	  </p>
+	</li>    
+      </ul>
 
-<li><p><a href=#cce>ClassCastException when instantiating a Category subclasses.</a>
+      <hr>
 
-<li><p><a href=#notfound>My EJB/Servlet/JSP says log4j class not found/defined.</a>
+	<p><a name="noAppenders"></a><h4>log4j tells me to initialize properly.</h4>
 
-<li><p><a href=#syslogd>I cannot connect to syslogd under linux.</a>
-
-<li><p><a href=#nosuchpropperty>log4j:WARN No such property [xyz] in some.appender.or.layout</a>
-
-</ul>
-
-<hr>
-
-<p><a name=noAppenders><h4>log4j tells me to initialize properly.</h4>
-
-Logging output is written to a target by using an appender. If no
-appenders are attached to a category nor to any of its ancestors, you
-will get the following message when trying to log:
+	  Logging output is written to a target by using an appender. If no
+	  appenders are attached to a category nor to any of its ancestors, you
+	  will get the following message when trying to log:
+	</p>
 
 <pre>
 log4j: No appenders could be found for category (some.category.name).
 log4j: Please initialize the log4j system properly.
 </pre>
 
-<em>Log4j does not have a default logging target.</em> It is the
-user's responsibility to ensure that all categories can inherit an
-appender.  This can be easily achieved by attaching an appender to the
-root category.
+	<p><em>Log4j does not have a default logging target.</em>
+	  It is the user's responsibility to ensure that all
+	  categories can inherit an appender.  This can be easily
+	  achieved by attaching an appender to the root category.</p>
 
 
-<p><a name=duplicates><h3>Duplicates in log4j output.</h3>
+	<p><a name=duplicates><h3>Duplicates in log4j output.</h3>
 
 <p>The reason for observing duplicates in log4j output is either due
 to having added the same appender multiple times to the same category
 (typically root) or having added the same appender to different
 categories ignoring the fact that appenders are inherited
-cumulatively.
+cumulatively.</p>
 
 <p>log4j does not eliminate appender duplicates. In other words, if
 you add the same appender to a category <i>n</i> times, that appender
-will be invoked <i>n</i> times to append to its target. 
+will be invoked <i>n</i> times to append to its target. </p>
 
 <p>A slightly different cause is adding different appenders all
 sharing the same underlying output target to some category. In the
 most common occurrence of this phenomenon, the
 BasicConfigurator.configure() method is invoked multiple times. Each
 time it is invoked, this method adds an appender with a
-<code>System.out</code> target to the root category. 
+<code>System.out</code> target to the root category. </p>
 
 <p>One other common mistake is to forget that appenders are inherited
 cumulatively from the hierarchy. For example, if you add an appender,
@@ -80,26 +94,26 @@ inherit <code>A</code> as an appender. Thus, if you add <code>A</code>
 to a category, say <code>C</code>, then an enabled statement of
 category <code>C</code>, will print to <code>A</code> twice, once
 because <code>A</code> is in root and once because it is in
-<code>C</code>. 
+<code>C</code>. </p>
 
-<p><a name=space><h3>Options are not parsed correctly.</h3>
+<p><a name=space></a><h3>Options are not parsed correctly.</h3>
 
-The PropertyConfigurator relies on <code>java.util.Properties</code>
+<p>The PropertyConfigurator relies on <code>java.util.Properties</code>
 class to read in the configuration file. This class preserves spaces
-in options. For example,
+in options. For example,</p>
 
 <pre>
 fruit=orange  
 </pre>
 is returned as an option having the key <code>"fruit"</code> and the
-value <code>"orange "</code>.
+value <code>"orange "</code>.</p>
 
 <p>The spaces in the value, i.e. <code>"orange "</code>, are due to
 invisible spaces at the end of the example shown above. Thus, some of
 the options might not be interpreted correctly due to trailing
-spaces. 
+spaces. </p>
 
-<p><a name=jit><h3>Caller location information is printed as a "?"
+<p><a name=jit></a><h3>Caller location information is printed as a "?"
 character.</h3>
 
 Location information is extracted automatically by the PatternLayout
@@ -107,17 +121,17 @@ conversion patterns %C, %F, %M and %L. However, some just-in-time
 (JIT) compilers make it impossible to extract location information. It
 is also possible that the compiler that generated the byte code may
 have omitted the LineNumber table as is done by -O option of javac
-and jikes.  
+and jikes. </p>
 
 <p>You can remedy this problem by disabling the JIT compiler and by
-compiling the code without the -O option.
+compiling the code without the -O option.</p>
 
 <p><b>In wrappers or subclasses of Category </b>
 
 <p>Wrappers or subclasses of <code>Category</code> need supply their
 fully qualified class name to the <code>Category.log</code> method or
 to <code>Category.forcedLog</code> methods so that the caller location
-information can be extracted correctly.
+information can be extracted correctly.</p>
 
 <p>This approach will work correctly in all cases except if the class
 invoking the extended category instance has the same prefix as the
@@ -129,7 +143,7 @@ from a class with a different name or add a dot to the fully qualified
 name of the extending class that you supply to
 <code>Category.log</code> to <code>Category.forcedLog</code>
 methods. For the <code>com.foo.BarCategory</code> example, supply the
-string <code>"com.foo.BarCategory."</code>.
+string <code>"com.foo.BarCategory."</code>.</p>
 
 
 <p><a name=cce><h3><code>ClassCastException</code> when instantiating
@@ -149,12 +163,12 @@ where <code>MyCategory</code> is a subclass of
 <code>getInstance</code> invocation will retrieve the category created
 in the fist invocation. This instance is a <code>Category</code>
 object and cannot be cast to <code>MyCategory</code>.
-
+					</p>
 <p>By default, the <code>PropertyConfigurator</code> will create and
 configure <code>org.apache.log4j.Category</code> objects. Thus, if you try to
 instantiate a category subclass for an already existing category, and
 try to cast it to the subclass type, you will systematically get a
-<code>ClassCastException</code>.
+<code>ClassCastException</code>.</p>
 
 <p>To address this problem, the <code>PropertyConfigurator</code> admits
 the <code>log4j.categoryFactory</code> key. The value of this key will
@@ -162,6 +176,29 @@ be used as the factory to invoke when instantiating Category objects.
 
 <p>The <code>DOMConfigurator</code> has a finer grain method for
 setting the class of the category object to instantiate.
+
+
+<a name="#levelCast"><h3>Compilation errors when using <code>setLevel(org.apache.log4j.Level)</code> from the Category class.</h3>
+
+  <p>If you try to call the setLevel method with one of the built in
+  levels, the java compiler with complain:
+
+<pre>
+  [javac] setLevel(org.apache.log4j.Level) in org.apache.log4j.Category cannot be applied to (org.apache.log4j.Priority)
+  [javac]         logger.setLevel(Level.DEBUG);
+</pre>
+where logger is a variable of type Logger.
+
+   <p>Casting any of the Level.DEBUG, Level.INFO, Level.WARN,
+Level.ERROR, Level.FATAL arguments to Level will make the compiler
+happy.  As in <pre> logger.setLevel(<b>(Level)</b> Level.DEBUG);
+</pre>
+
+<p>This cast is always safe because log4j 1.2 will never produce
+anything but <code>Level</code> objects, never <code>Priority</code>
+objects. </p>
+
+
 
 <p><a name=notfound><h3>Log4j class not found/defined</h3>
 
