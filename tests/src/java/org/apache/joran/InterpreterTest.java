@@ -329,11 +329,11 @@ public class InterpreterTest extends TestCase {
 
     RuleStore rs = new SimpleRuleStore();
     rs.addRule(
-      new Pattern("log4j:configuration/appender"), new AppenderAction());
+      new Pattern("configuration/appender"), new AppenderAction());
     rs.addRule(
-      new Pattern("log4j:configuration/appender/layout"), new LayoutAction());
+      new Pattern("configuration/appender/layout"), new LayoutAction());
     rs.addRule(
-      new Pattern("log4j:configuration/appender/layout/conversionRule"),
+      new Pattern("configuration/conversionRule"),
       new ConversionRuleAction());
 
     rs.addRule(new Pattern("*/param"), new ParamAction());
