@@ -15,12 +15,6 @@
  */
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.net.PortBased;
-import org.apache.log4j.net.SocketAppender;
-import org.apache.log4j.net.SocketHubReceiver;
-import org.apache.log4j.net.SocketReceiver;
-
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -30,9 +24,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-
 import java.io.File;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -56,6 +48,13 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import javax.swing.filechooser.FileFilter;
+
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.net.PortBased;
+import org.apache.log4j.net.SocketAppender;
+import org.apache.log4j.net.SocketHubReceiver;
+import org.apache.log4j.net.SocketReceiver;
 
 
 /**
@@ -87,6 +86,8 @@ class NoReceiversWarningPanel extends JPanel {
     final DefaultComboBoxModel simplePortModel = new DefaultComboBoxModel();
 
     private boolean dontWarnMeAgain = false;
+    
+    private final Logger logger = LogManager.getLogger(NoReceiversWarningPanel.class);
 
     NoReceiversWarningPanel() {
         initComponents();
@@ -240,7 +241,7 @@ class NoReceiversWarningPanel extends JPanel {
                                     url);
                             }
                         } catch (Exception ex) {
-                            LogLog.error(
+                            logger.error(
                                 "Error browswing for Configuration file", ex);
                         }
                     }

@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Stack;
 
-import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.LogManager;
 
 /**
  * A Factory class which, given a string representation of the rule, and a context stack, will
@@ -56,7 +56,7 @@ public class RuleFactory {
     	Class.forName("org.apache.oro.text.regex.Perl5Compiler");
     	rules.add(LIKE_RULE);
     } catch (Exception e) {
-    	LogLog.info("ORO classes not found - Like rule not supported");
+    	LogManager.getLogger(RuleFactory.class).info("ORO classes not found - Like rule not supported");
     }
     	
     rules.add(EXISTS_RULE);

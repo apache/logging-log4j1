@@ -16,8 +16,6 @@
 
 package org.apache.log4j.chainsaw.icons;
 
-import org.apache.log4j.helpers.LogLog;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
@@ -30,6 +28,9 @@ import java.awt.image.BufferedImage;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 
 /**
  * A simple factory/facade for creating some of the standard Icons that are based
@@ -39,6 +40,7 @@ import javax.swing.ImageIcon;
  *
  */
 public final class LineIconFactory {
+	private static final Logger logger = LogManager.getLogger(LineIconFactory.class);
   /**
    *
    */
@@ -72,7 +74,7 @@ public final class LineIconFactory {
         
         return new ImageIcon(image);
     } catch (Exception e) {
-      LogLog.error("failed to create a Expand icon", e);
+      logger.error("failed to create a Expand icon", e);
     }
 
     return null;
@@ -100,7 +102,7 @@ public final class LineIconFactory {
         
         return new ImageIcon(image);
     } catch (Exception e) {
-      LogLog.error("failed to create a Collapse icon", e);
+      logger.error("failed to create a Collapse icon", e);
     }
 
     return null;

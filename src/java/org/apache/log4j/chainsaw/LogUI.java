@@ -87,6 +87,7 @@ import javax.swing.event.HyperlinkListener;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.log4j.chainsaw.dnd.FileDnDTarget;
 import org.apache.log4j.chainsaw.help.HelpManager;
 import org.apache.log4j.chainsaw.help.Tutorial;
@@ -101,7 +102,6 @@ import org.apache.log4j.chainsaw.prefs.SettingsListener;
 import org.apache.log4j.chainsaw.prefs.SettingsManager;
 import org.apache.log4j.chainsaw.receivers.ReceiversPanel;
 import org.apache.log4j.chainsaw.version.VersionManager;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.joran.JoranConfigurator;
 import org.apache.log4j.net.SocketNodeEventListener;
 import org.apache.log4j.plugins.Plugin;
@@ -158,6 +158,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   private final List identifierPanels = new ArrayList();
   private int dividerSize;
   private int cyclicBufferSize;
+  private static final Logger logger = LogManager.getLogger(LogUI.class);
 
   /**
    * Set to true, if and only if the GUI has completed it's full
@@ -278,7 +279,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 				}
 			});
     }
-    LogLog.info("SecurityManager is now: " + System.getSecurityManager());
+    logger.info("SecurityManager is now: " + System.getSecurityManager());
     
     
     LogUI logUI = new LogUI();
@@ -306,14 +307,14 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     if(config!=null && (!(config.trim().equals("")))) {
         config = config.trim();
         try {
-          LogLog.info("Using '" + config + "' for auto-configuration");
+          logger.info("Using '" + config + "' for auto-configuration");
           URL configURL = new URL(config);
           logUI.loadConfigurationUsingPluginClassLoader(configURL);
         }catch(MalformedURLException e) {
-            LogLog.error("Failed to convert config string to url", e);
+            logger.error("Failed to convert config string to url", e);
         }
     }else {
-        LogLog.info("No auto-configuration file found within the ApplicationPreferenceModel");
+        logger.info("No auto-configuration file found within the ApplicationPreferenceModel");
         logUI.ensureChainsawAppenderHandlerAdded();
     }
     
@@ -389,7 +390,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
             Thread thread = new Thread(new Runnable() {
 
                 public void run() {
-                    LogLog.debug("Loading files: " + fileList);
+                    logger.debug("Loading files: " + fileList);
                     for (Iterator iter = fileList.iterator(); iter.hasNext();) {
                         File  file = (File) iter.next();
                         final Decoder decoder = new XMLDecoder();
@@ -399,7 +400,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
                                     .getName(), file.toURL());
                         } catch (Exception e) {
                             String errorMsg = "Failed to import a file";
-                            LogLog.error(errorMsg, e);
+                            logger.error(errorMsg, e);
                             getStatusBar().setMessage(errorMsg);
                         }
                     }
@@ -1872,7 +1873,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
         ClassLoader previousTCCL = Thread.currentThread().getContextClassLoader();
         
         if(url!=null) {
-            LogLog.info("Using '" + url.toExternalForm()+ "' for auto-configuration");
+            logger.info("Using '" + url.toExternalForm()+ "' for auto-configuration");
             try {
               // we temporarily swap the TCCL so that plugins can find resources
               Thread.currentThread().setContextClassLoader(classLoader);
@@ -1883,7 +1884,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
                 Thread.currentThread().setContextClassLoader(previousTCCL);
             }
         }else {
-            LogLog.info("auto-configuration file has not been provided");
+            logger.info("auto-configuration file has not been provided");
         }
         ensureChainsawAppenderHandlerAdded();
     }

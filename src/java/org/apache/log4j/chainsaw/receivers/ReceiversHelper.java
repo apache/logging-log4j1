@@ -24,8 +24,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.log4j.chainsaw.plugins.PluginClassLoaderFactory;
-import org.apache.log4j.helpers.LogLog;
 
 
 /**
@@ -41,6 +42,7 @@ public class ReceiversHelper {
 
     private static final ReceiversHelper instance = new ReceiversHelper();
 
+    private final Logger logger = LogManager.getLogger(ReceiversHelper.class);
     private List receiverClassList = new ArrayList();
     /**
      *
@@ -67,12 +69,12 @@ public class ReceiversHelper {
             		}
             		Class receiverClass = classLoader.loadClass(line);
             		receiverClassList.add(receiverClass);
-            		LogLog.debug("Located known Receiver class " + receiverClass.getName());
+            		logger.debug("Located known Receiver class " + receiverClass.getName());
             	} catch (ClassNotFoundException e) {
-            		LogLog.warn("Failed to locate Receiver class:" + line);
+            		logger.warn("Failed to locate Receiver class:" + line);
             	}
             	catch (NoClassDefFoundError e) {
-            		LogLog.error("Failed to locate Receiver class:" + line + ", looks like a dependent class is missing from the classpath", e);
+            		logger.error("Failed to locate Receiver class:" + line + ", looks like a dependent class is missing from the classpath", e);
             	}
             }
         } catch (Exception e) {

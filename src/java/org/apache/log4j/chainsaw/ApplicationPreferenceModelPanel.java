@@ -48,7 +48,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 
-import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 
 /**
@@ -65,6 +66,7 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
   private JTextField toolTipDisplayMillis;
   private JTextField cyclicBufferSize;    
   private final JTextField configurationURL = new JTextField(35);
+  private static final Logger logger = LogManager.getLogger(ApplicationPreferenceModelPanel.class);
 
   ApplicationPreferenceModelPanel(ApplicationPreferenceModel model) {
     this.committedPreferenceModel = model;
@@ -111,7 +113,7 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
     model.addPropertyChangeListener(
       new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
-          LogLog.warn(evt.toString());
+          logger.warn(evt.toString());
         }
       });
     panel.setOkCancelActionListener(
@@ -340,7 +342,7 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
         lookAndFeelGroup.add(lfIGTK);
         lfPanel.add(lfIGTK);
       } catch (Exception e) {
-        LogLog.debug("Can't find new GTK L&F, might be Windows, or <JDK1.4.2");
+        logger.debug("Can't find new GTK L&F, might be Windows, or <JDK1.4.2");
       }
 
       add(lfPanel);
@@ -523,7 +525,7 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
 
             if (value >= 1000) {
               int newValue = (value - 750) / 1000;
-              LogLog.debug(
+              logger.debug(
                 "Adjusting old Responsiveness value from " + value + " to "
                 + newValue);
               value = newValue;
@@ -593,7 +595,7 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
                 value = 1;
               }
 
-              LogLog.debug("Adjust responsiveness to " + value);
+              logger.debug("Adjust responsiveness to " + value);
               uncommittedPreferenceModel.setResponsiveness(value);
             }
           }

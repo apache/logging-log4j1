@@ -59,6 +59,7 @@ import javax.swing.tree.TreePath;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.log4j.chainsaw.PopupListener;
 import org.apache.log4j.chainsaw.SmallButton;
 import org.apache.log4j.chainsaw.help.HelpManager;
@@ -67,7 +68,6 @@ import org.apache.log4j.chainsaw.icons.ChainsawIcons;
 import org.apache.log4j.chainsaw.icons.LevelIconFactory;
 import org.apache.log4j.chainsaw.icons.LineIconFactory;
 import org.apache.log4j.chainsaw.messages.MessageCenter;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.net.SocketNodeEventListener;
 import org.apache.log4j.net.SocketReceiver;
 import org.apache.log4j.plugins.Pauseable;
@@ -99,6 +99,7 @@ public class ReceiversPanel extends JPanel {
   private final JSplitPane splitter = new JSplitPane();
   private final PluginPropertyEditorPanel pluginEditorPanel =
     new PluginPropertyEditorPanel();
+  private final Logger logger = LogManager.getLogger(ReceiversPanel.class);
   
   private final PluginRegistry pluginRegistry;
   
@@ -165,7 +166,7 @@ public class ReceiversPanel extends JPanel {
               (node != null) && (node.getUserObject() != null)
                 && (node.getUserObject() instanceof Plugin)) {
               Plugin p = (Plugin) node.getUserObject();
-              LogLog.debug("plugin=" + p);
+              logger.debug("plugin=" + p);
               pluginEditorPanel.setPlugin(p);
             } else {
               pluginEditorPanel.setPlugin(null);
@@ -561,7 +562,7 @@ public class ReceiversPanel extends JPanel {
    *
    */
   public void updateReceiverTreeInDispatchThread() {
-    LogLog.debug(
+    logger.debug(
       "updateReceiverTreeInDispatchThread, should not be needed now");
 
     //    if (SwingUtilities.isEventDispatchThread()) {

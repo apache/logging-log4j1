@@ -10,10 +10,9 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemException;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.log4j.chainsaw.SortTableModel;
-import org.apache.log4j.helpers.LogLog;
 
 /**=
  * Displays the file objects in a List in a TableModel.
@@ -32,6 +31,8 @@ public class DirectoryListTableModel extends AbstractTableModel implements SortT
 	private boolean currentSortAscending;
 
 	private boolean sortEnabled;
+	
+	private final Logger logger = LogManager.getLogger(DirectoryListTableModel.class);
 	
 	
 	/* (non-Javadoc)
@@ -61,7 +62,7 @@ public class DirectoryListTableModel extends AbstractTableModel implements SortT
 				return handleFile(columnIndex, fileObject);
 			}
 		} catch (Exception e) {
-			LogLog.error("error retrieving value", e);
+			logger.error("error retrieving value", e);
 		}
 		return "{Error}";
 		
@@ -195,7 +196,7 @@ public class DirectoryListTableModel extends AbstractTableModel implements SortT
                                     break;
 							}
 						} catch (Exception e) {
-                            LogLog.error("Error during sort", e);
+                            logger.error("Error during sort", e);
                             sort = -1;
 						}
                         sort = (currentSortAscending)?sort:-sort;

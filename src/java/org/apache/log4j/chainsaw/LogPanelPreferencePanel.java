@@ -15,8 +15,6 @@
  */
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.helpers.LogLog;
-
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -24,10 +22,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.util.Iterator;
 
 import javax.swing.BorderFactory;
@@ -48,6 +44,9 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 
 /**
  * GUI panel used to manipulate the PreferenceModel for a Log Panel
@@ -62,6 +61,7 @@ public class LogPanelPreferencePanel extends AbstractPreferencePanel
   private JTextField loggerPrecision = new JTextField(5);
   private final LogPanelPreferenceModel uncommittedPreferenceModel =
     new LogPanelPreferenceModel();
+  private static final Logger logger = LogManager.getLogger(LogPanelPreferenceModel.class);
 
   //~ Constructors ============================================================
 
@@ -108,7 +108,7 @@ public class LogPanelPreferencePanel extends AbstractPreferencePanel
       {
         public void propertyChange(PropertyChangeEvent evt)
         {
-          LogLog.warn(evt.toString());
+          logger.warn(evt.toString());
         }
       });
     panel.setOkCancelActionListener(new ActionListener()
