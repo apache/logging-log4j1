@@ -1,0 +1,104 @@
+
+<!-- This file is an ANT build script. ANT is a Java based build tool. -->
+<!-- It is availale from http://jakarta.apache.org/ant/                -->
+
+
+<!-- ================================================================= -->
+<!-- NOTE: all directories are relative to jakarta-log4j/tests         -->
+<!-- ================================================================= -->
+<project name="log4j" default="usage" basedir="." >
+
+  <property file="build.properties"/>
+
+  <!-- Read the system environment variables and stores them in properties, -->
+  <!-- prefixed with "env". -->
+  <property environment="env"/>
+
+  <!-- The base directory relative to which most targets are built -->
+  <property name="base" value="."/>
+ 
+  <!-- The directory where source files are stored. -->
+  <property name="project.source.home" value="../src/java/"/>
+  <property name="project.classes.home" value="../dist/classes/"/>
+
+  <property name="tests.source.home" value="./src/java/"/>
+
+  
+
+
+  <path id="tests.classpath">
+    <pathelement location="${project.source.home}"/>
+    <pathelement location="${project.classes.home}"/>
+    <pathelement location="${tests.source.home}"/>
+    <pathelement location="./classes"/>
+    <pathelement location="${jakarta.oro.jar}"/>
+  </path>
+
+  <!-- ================================================================= -->
+  <!--                        TARGETS                                    -->
+  <!-- ================================================================= -->
+
+
+
+  <!-- ================================================================= -->
+  <!-- Default target                                                    -->
+  <!-- ================================================================= -->
+  
+  <target name="usage">
+    <echo>
+
+    These are the targets supported by this ANT build scpript:
+
+    build   - compile all project files, if a certain library is missing, 
+	      then the compilation of its dependents are skipped.
+
+    run     - run the tests
+    </echo>
+  </target>
+
+  <target name="prepare">
+    <mkdir dir="./classes" />
+    <mkdir dir="./output" />
+  </target>
+
+
+  <!-- ================================================================= -->
+  <!-- Compile test cases and related source files.                      -->
+  <!-- ================================================================= -->
+  <target name="build" depends="prepare">
+    <javac srcdir="${tests.source.home}"
+	   destdir="./classes"
+           deprecation="${deprecation}"
+           debug="on">			
+      <classpath refid="tests.classpath"/>
+    </javac>
+  </target>
+
+  <!-- ================================================================= -->
+  <!-- Remove all generated (compiled) class files.                      -->
+  <!-- ================================================================= -->
+  <target name="clean">
+    <delete dir="${./classes}/" />
+  </target>
+
+  
+  <target name="run" depends="DOM"/>
+  
+  <target name="last" depends="build">
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" />
+      <test name="org.apache.log4j.Last" />
+    </junit>
+  </target>
+
+  <target name="DOM" depends="build">
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" />
+      <test name="org.apache.log4j.xml.DOMTestCase" />
+    </junit>
+  </target>
+
+</project>
+
