@@ -1,12 +1,12 @@
 /*
  * Copyright 1999,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,6 +21,8 @@
 package org.apache.log4j.chainsaw;
 
 import java.awt.Component;
+
+import java.lang.reflect.Method;
 
 import javax.swing.Icon;
 import javax.swing.JComponent;
@@ -47,17 +49,26 @@ import javax.swing.JTabbedPane;
 class ChainsawTabbedPane extends JTabbedPane {
   /**
    *
+   * Create the tabbed pane.  
+   *
+   * Attempts to call via reflection the 
+   * 'setTabLayoutPolicy' method to use a 'scroll layout'
+   * if method exists (available as of jdk1.4)
+   * 
    */
   public ChainsawTabbedPane() {
     super();
-  }
 
-  /**
-   * @param tabPlacement
-   */
-  public ChainsawTabbedPane(int tabPlacement) {
-    super(tabPlacement);
-    setBorder(null);
+    try {
+      Class tabClass = JTabbedPane.class;
+      Class[] params = new Class[]{Integer.TYPE};
+
+      Method method = tabClass.getMethod("setTabLayoutPolicy", params);
+      Object[] args = new Object[]{new Integer(1)};
+      method.invoke(this, args);
+    } catch (Exception e) {
+      //ignore
+    }
   }
 
   /**
@@ -84,7 +95,8 @@ class ChainsawTabbedPane extends JTabbedPane {
   public void addANewTab(String name, JComponent component, Icon icon) {
     int selectedIndex = getSelectedIndex();
     super.insertTab(name, icon, component, null, 0);
-	//only select the previously existing tab if there is more than one tab
+
+    //only select the previously existing tab if there is more than one tab
     if (getTabCount() > 1) {
       setSelectedIndex(Math.min(selectedIndex + 1, getTabCount() - 1));
     }
