@@ -51,10 +51,7 @@
  */
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.net.PortBased;
-import org.apache.log4j.net.SocketAppender;
-
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -63,9 +60,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-
 import java.io.File;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -74,10 +69,13 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
@@ -85,6 +83,12 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import javax.swing.filechooser.FileFilter;
+
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.net.PortBased;
+import org.apache.log4j.net.SocketAppender;
+import org.apache.log4j.net.SocketHubReceiver;
+import org.apache.log4j.net.SocketReceiver;
 
 
 /**
@@ -98,8 +102,8 @@ import javax.swing.filechooser.FileFilter;
 class NoReceiversWarningPanel extends JPanel {
   private final JComboBox previousConfigs = new JComboBox();
 
-  private final JRadioButton simpleSocket =
-    new JRadioButton("Let me use a simple SocketReceiver on port:");
+  private final JRadioButton simpleReceiver =
+    new JRadioButton("Let me use a simple Receiver:");
 
   private final JRadioButton justLoadingFile =
     new JRadioButton("I'm fine thanks, don't worry");
@@ -111,6 +115,7 @@ class NoReceiversWarningPanel extends JPanel {
   private final PanelModel model = new PanelModel();
   final DefaultComboBoxModel configModel = new DefaultComboBoxModel();
   
+  final DefaultComboBoxModel simpleReceiverModel = new DefaultComboBoxModel();
   final DefaultComboBoxModel simplePortModel = new DefaultComboBoxModel();
 
   NoReceiversWarningPanel() {
@@ -172,8 +177,8 @@ class NoReceiversWarningPanel extends JPanel {
 
     final ButtonGroup optionGroup = new ButtonGroup();
 
-    simpleSocket.setToolTipText("Creates a SocketReceiver listening on a standard port");
-    simpleSocket.setMnemonic('p');
+    simpleReceiver.setToolTipText("Creates one of the standard Receivers on one of the standard port");
+    simpleReceiver.setMnemonic('p');
 
     searchOption.setToolTipText(
       "Allows you to choose a Log4J Configuration file that contains Receiver definitions");
@@ -197,7 +202,7 @@ class NoReceiversWarningPanel extends JPanel {
     optionGroup.add(searchOption);
     optionGroup.add(manualOption);
     optionGroup.add(justLoadingFile);
-    optionGroup.add(simpleSocket);
+    optionGroup.add(simpleReceiver);
 
 
     gc.gridy = 3;
@@ -320,10 +325,38 @@ class NoReceiversWarningPanel extends JPanel {
     
     GridBagConstraints simpleSocketGC = new GridBagConstraints();
     
-    simpleSocketPanel.add(simpleSocket, simpleSocketGC);
+    simpleSocketPanel.add(simpleReceiver, simpleSocketGC);
     final JComboBox socketCombo = new JComboBox(simplePortModel);
-    simpleSocketPanel.add(socketCombo, simpleSocketGC);
     
+    
+    simpleReceiverModel.addElement(SocketReceiver.class);
+    simpleReceiverModel.addElement(SocketHubReceiver.class);
+    
+    final JComboBox receiverCombo = new JComboBox(simpleReceiverModel);
+    receiverCombo.setEditable(false);
+    receiverCombo.setRenderer(new DefaultListCellRenderer() {
+        public Component getListCellRendererComponent(        
+        JList list,
+        Object value,
+            int index,
+            boolean isSelected,
+            boolean cellHasFocus)
+        {
+            Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            if(value instanceof Class) {
+            Class receiverClass = (Class) value;
+                JLabel label = (JLabel) c;
+                String shortenedName = receiverClass.getName().substring(receiverClass.getName().lastIndexOf('.')+1);
+                label.setText(shortenedName);
+            }
+            return c;
+        }
+        
+    });
+    
+    simpleSocketPanel.add(receiverCombo);
+    simpleSocketPanel.add(new JLabel(" on port "));
+    simpleSocketPanel.add(socketCombo, simpleSocketGC);
     /**
      * This listener activates/deactivates certain controls based on the current
      * state of the options
@@ -333,8 +366,8 @@ class NoReceiversWarningPanel extends JPanel {
         public void actionPerformed(ActionEvent e) {
           previousConfigs.setEnabled(e.getSource() == searchOption);
           searchButton.setEnabled(e.getSource() == searchOption);
-          socketCombo.setEnabled(e.getSource() == simpleSocket);
-          
+          socketCombo.setEnabled(e.getSource() == simpleReceiver);
+          receiverCombo.setEnabled(e.getSource() == simpleReceiver);
           if (optionGroup.isSelected(searchOption.getModel())) {
             okButton.setEnabled(isValidConfigURL());
           } else {
@@ -346,7 +379,7 @@ class NoReceiversWarningPanel extends JPanel {
     searchOption.addActionListener(al);
     manualOption.addActionListener(al);
     justLoadingFile.addActionListener(al);
-    simpleSocket.addActionListener(al);
+    simpleReceiver.addActionListener(al);
 
     justLoadingFile.doClick();
 
@@ -477,14 +510,18 @@ class NoReceiversWarningPanel extends JPanel {
       return justLoadingFile.isSelected();
     }
 
-    boolean isSimpleSocketMode()
+    boolean isSimpleReceiverMode()
     {
-      return simpleSocket.isSelected();
+      return simpleReceiver.isSelected();
     }
     
     int getSimplePort()
     {
       return ((PortBased)simplePortModel.getSelectedItem()).getPort();
+    }
+    Class getSimpleReceiverClass()
+    {
+        return (Class) simpleReceiverModel.getSelectedItem();
     }
     boolean isLoadConfig() {
       return searchOption.isSelected();
