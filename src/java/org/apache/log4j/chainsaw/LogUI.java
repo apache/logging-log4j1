@@ -49,22 +49,6 @@
 
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Priority;
-import org.apache.log4j.UtilLoggingLevel;
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SettingsListener;
-import org.apache.log4j.chainsaw.prefs.SettingsManager;
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.helpers.OptionConverter;
-import org.apache.log4j.net.SocketNodeEventListener;
-import org.apache.log4j.net.SocketReceiver;
-import org.apache.log4j.plugins.PluginRegistry;
-import org.apache.log4j.plugins.Receiver;
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -79,20 +63,15 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-
 import java.lang.reflect.Method;
-
 import java.net.URL;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -117,6 +96,24 @@ import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Priority;
+import org.apache.log4j.UtilLoggingLevel;
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.SettingsListener;
+import org.apache.log4j.chainsaw.prefs.SettingsManager;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.net.SocketNodeEventListener;
+import org.apache.log4j.plugins.Plugin;
+import org.apache.log4j.plugins.PluginEvent;
+import org.apache.log4j.plugins.PluginListener;
+import org.apache.log4j.plugins.PluginRegistry;
+import org.apache.log4j.plugins.Receiver;
 
 
 /**
@@ -345,6 +342,49 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    * layout, table columns, and sets itself viewable.
    */
   public void activateViewer() {
+    final SocketNodeEventListener socketListener =
+      new SocketNodeEventListener() {
+        public void socketOpened(String remoteInfo) {
+          statusBar.remoteConnectionReceived(remoteInfo);
+        }
+
+        public void socketClosedEvent(Exception e) {
+          statusBar.setMessage("Collection lost! :: " + e.getMessage());
+        }
+      };
+
+    PluginListener pluginListener =
+      new PluginListener() {
+        public void pluginStarted(PluginEvent e) {
+          statusBar.setMessage(e.getPlugin().getName() + " started!");
+        }
+
+        Method getSocketNodeEventListenerMethod(Plugin p) {
+          try {
+            return p.getClass().getMethod(
+              "removeSocketNodeEventListener",
+              new Class[] { SocketNodeEventListener.class });
+          } catch (Exception e) {
+            return null;
+          }
+        }
+
+        public void pluginStopped(PluginEvent e) {
+          Method method = getSocketNodeEventListenerMethod(e.getPlugin());
+
+          if (method != null) {
+            try {
+              method.invoke(e.getPlugin(), new Object[] { socketListener });
+            } catch (Exception ex) {
+              LogLog.error("Failed to remove SocketNodeEventListener", ex);
+            }
+          }
+		  statusBar.setMessage(e.getPlugin().getName() + " stopped!");
+        }
+      };
+
+    PluginRegistry.addPluginListener(pluginListener);
+
     getSettingsManager().configure(
       new SettingsListener() {
         public void loadSettings(LoadSettingsEvent event) {
@@ -399,30 +439,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     }
 
     initGUI();
-
-    /**
-     * Get all the SocketReceivers and configure a new SocketNodeEventListener
-     * so we can get notified of new Sockets
-     */
-    List list =
-      PluginRegistry.getPlugins(
-        LogManager.getLoggerRepository(), SocketReceiver.class);
-    final SocketNodeEventListener socketListener =
-      new SocketNodeEventListener() {
-        public void socketOpened(String remoteInfo) {
-          statusBar.remoteConnectionReceived(remoteInfo);
-        }
-
-        public void socketClosedEvent(Exception e) {
-          statusBar.setMessage("Collection lost! :: " + e.getMessage());
-        }
-      };
-
-    for (Iterator iter = list.iterator(); iter.hasNext();) {
-      SocketReceiver item = (SocketReceiver) iter.next();
-      LogLog.debug("Adding listener for " + item.getName());
-      item.addSocketNodeEventListener(socketListener);
-    }
 
     List utilList = UtilLoggingLevel.getAllPossibleLevels();
 
@@ -553,14 +569,15 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       });
 
     pack();
-    
-    this.handler.addPropertyChangeListener("dataRate", new PropertyChangeListener(){
 
-		public void propertyChange(PropertyChangeEvent evt) {
-			double dataRate = ((Double)evt.getNewValue()).doubleValue();
-			statusBar.setDataRate(dataRate);
-			
-		}});
+    this.handler.addPropertyChangeListener(
+      "dataRate",
+      new PropertyChangeListener() {
+        public void propertyChange(PropertyChangeEvent evt) {
+          double dataRate = ((Double) evt.getNewValue()).doubleValue();
+          statusBar.setDataRate(dataRate);
+        }
+      });
 
     getSettingsManager().addSettingsListener(this);
     getSettingsManager().addSettingsListener(getToolBarAndMenus());
@@ -581,41 +598,43 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   }
 
   /**
-   * Displays a warning dialog about having no Receivers defined
-   * and allows the user to choose some options for configuration
-   */
+    * Displays a warning dialog about having no Receivers defined
+    * and allows the user to choose some options for configuration
+    */
   private void showNoReceiversWarningPanel() {
-	final NoReceiversWarningPanel noReceiversWarningPanel =
-	 new NoReceiversWarningPanel();
+    final NoReceiversWarningPanel noReceiversWarningPanel =
+      new NoReceiversWarningPanel();
 
-	final SettingsListener sl = new SettingsListener() {
-	  public void loadSettings(LoadSettingsEvent event) {
-		int size = event.asInt("SavedConfigs.Size");
-		Object[] configs = new Object[size];
+    final SettingsListener sl =
+      new SettingsListener() {
+        public void loadSettings(LoadSettingsEvent event) {
+          int size = event.asInt("SavedConfigs.Size");
+          Object[] configs = new Object[size];
 
-		for (int i = 0; i < size; i++) {
-		  configs[i] = event.getSetting("SavedConfigs." + i);
-		}
+          for (int i = 0; i < size; i++) {
+            configs[i] = event.getSetting("SavedConfigs." + i);
+          }
 
-		noReceiversWarningPanel.getModel().setRememberedConfigs(configs);
-	  }
+          noReceiversWarningPanel.getModel().setRememberedConfigs(configs);
+        }
 
-	  public void saveSettings(SaveSettingsEvent event) {
-		Object[] configs =
-		  noReceiversWarningPanel.getModel().getRememberedConfigs();
-		event.saveSetting("SavedConfigs.Size", configs.length);
+        public void saveSettings(SaveSettingsEvent event) {
+          Object[] configs =
+            noReceiversWarningPanel.getModel().getRememberedConfigs();
+          event.saveSetting("SavedConfigs.Size", configs.length);
 
-		for (int i = 0; i < configs.length; i++) {
-		  event.saveSetting("SavedConfigs." + i, configs[i].toString());
-		}
-	  }
-	};
-   /**
-	* This listener sets up the NoReciversWarningPanel and
-	* loads saves the configs/logfiles
-	*/
-   getSettingsManager().addSettingsListener(sl);
-   getSettingsManager().configure(sl);
+          for (int i = 0; i < configs.length; i++) {
+            event.saveSetting("SavedConfigs." + i, configs[i].toString());
+          }
+        }
+      };
+
+    /**
+         * This listener sets up the NoReciversWarningPanel and
+         * loads saves the configs/logfiles
+         */
+    getSettingsManager().addSettingsListener(sl);
+    getSettingsManager().configure(sl);
 
     SwingUtilities.invokeLater(
       new Runnable() {
@@ -666,9 +685,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
               PluginRegistry.startPlugin(simpleReceiver);
               receiversPanel.updateReceiverTreeInDispatchThread();
-              getStatusBar().setMessage(
-                "Simple Receiver created, started, and listening on port  "
-                + port + " (using " + receiverClass.getName() + ")");
             } catch (Exception e) {
               LogLog.error("Error creating Receiver", e);
               getStatusBar().setMessage(
@@ -690,7 +706,9 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
                     } catch (Exception e) {
                       LogLog.error("Error initializing Log4j", e);
                     }
-                    LogManager.getLoggerRepository().getRootLogger().addAppender(handler);
+
+                    LogManager.getLoggerRepository().getRootLogger()
+                              .addAppender(handler);
 
                     receiversPanel.updateReceiverTreeInDispatchThread();
                   }
