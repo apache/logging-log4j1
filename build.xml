@@ -86,6 +86,7 @@
     <pathelement location="${jmx-extra.jar}"/>
     <pathelement location="${avalon-framework.jar}"/>
     <pathelement location="${servlet-api.jar}"/>
+    <pathelement location="${jdbc-stdext.jar}"/>
   </path>
 
   <!-- Construct classpath for building the html pages-->
@@ -177,6 +178,18 @@
   <target name="servletAPI" depends="servletAPICheck" if="servletAPI-present">
     <echo message="Servlet API is present."/>
   </target>
+
+  <target name="jdbcExtensionCheck">
+    <available classname="javax.sql.DataSource" property="jdbcExtension-present">
+     <classpath refid="compile.classpath"/>
+    </available>
+  </target>
+  <target name="jdbcExtension" depends="jdbcExtensionCheck" if="jdbcExtension-present">
+    <echo message="JDBC Standard Extension is present."/>
+  </target>
+
+
+
   <!-- ================================================================= -->
   <!-- Initialize variables                                              -->
   <!-- NOTE: all directories are relative to jakarta-log4j/              -->
@@ -186,8 +199,10 @@
   </target>
 
   <target name="build" description="Compile all log4j components."
-         depends="init, build.core, build.lf5, build.chainsaw, build.examples, build.xml,
-         build.javamail, build.jms, build.jmx, build.avalonFramework, build.servletAPI"/>
+          depends="init, build.core, build.lf5, build.examples, 
+                   build.xml, build.javamail, build.jms, build.jmx, 
+                   build.avalonFramework, build.servletAPI, build.db, 
+                   build.chainsaw"/>
 
   <target name="build.core" depends="init">
     <mkdir dir="${javac.dest}" />
@@ -197,6 +212,7 @@
      excludes="misc/*, **/UnitTest*.java,
                     **/StressCategory.java,
                     **/doc-files/*,
+                    ${stem}/db/**,
                     ${stem}/lf5/**,
                     ${stem}/chainsaw/**,
                     ${stem}/xml/**,
@@ -313,6 +329,16 @@
      destdir="${javac.dest}"
      deprecation="${deprecation}"
      includes="${stem}/selector/servlet/*.java">
+      <classpath refid="compile.classpath"/>
+    </javac>
+  </target>
+
+   <target name="build.db" depends="init, jdbcExtension"
+                if="jdbcExtension-present">
+    <javac srcdir="${java.source.dir}"
+     destdir="${javac.dest}"
+     deprecation="${deprecation}"
+     includes="${stem}/db/**.java">
       <classpath refid="compile.classpath"/>
     </javac>
   </target>
