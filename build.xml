@@ -121,7 +121,7 @@
     </echo>
   </target>
 
-  <target name="jaxpCheck">
+  <target name="jaxpCheck" unless="jaxp-present">
     <available classname="javax.xml.parsers.DocumentBuilderFactory"
                           property="jaxp-present"/>
   	 <fail unless="jaxp-present">
@@ -133,7 +133,7 @@
 
   </target>
 	
-  <target name="jndiCheck">
+  <target name="jndiCheck" unless="jndi-present">
     <available classname="javax.naming.Context" property="jndi-present">
       <classpath refid="compile.classpath"/>
     </available>
@@ -275,7 +275,8 @@
     	             ${stem}/varia/LogFilePatternReceiver*.java,
     	             ${stem}/rule/LikeRule.java,
                      ${stem}/or/jms/*.java,
-                     ${stem}/selector/servlet/*.java"
+                     ${stem}/selector/servlet/*.java,
+                     ${stem}/lbel/**/*.java"
     	   deprecation="on"
     	   debug="${debug}"
     	>
@@ -378,7 +379,8 @@
            destdir="${javac.dest}"
            deprecation="${deprecation}"
            includes="${stem}/varia/LogFilePatternReceiver*.java,
-                     ${stem}/rule/LikeRule.java"
+                     ${stem}/rule/LikeRule.java,
+                     ${stem}/lbel/**/*.java"
     	   debug="${debug}"
     >
       <classpath refid="compile.classpath"/>
@@ -388,7 +390,8 @@
   <target name="log4j-oro.jar" depends="init, oroCheck, build.oro">
     <jar jarfile="${log4j-oro.jar}" basedir="${javac.dest}"
 	     includes="${stem}/varia/LogFilePatternReceiver*.class,
-                  ${stem}/rule/LikeRule.class"
+                  ${stem}/rule/LikeRule.class,
+                  ${stem}/lbel/**/*.class"
 	 	>
         <manifest>
           <section name="org/apache/log4j/">
