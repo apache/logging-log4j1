@@ -68,6 +68,12 @@ public class FileAppender extends WriterAppender {
      The name of the log file. */
   protected String fileName = null;
 
+  /**
+     Is the QuietWriter ours or was it created and passed by the user?     
+
+     @deprecated FileAppender will not support streams passed by the
+     user in the future. */
+  protected boolean qwIsOurs = false;
 
   /**
      The default constructor does not do anything. 
@@ -75,6 +81,38 @@ public class FileAppender extends WriterAppender {
   public
   FileAppender() {
   }
+
+
+  /**
+     Instantiate a FileAppender and set the output destination to a
+     new {@link OutputStreamWriter} initialized with <code>os</code>
+     as its {@link OutputStream}.  
+
+     @deprecated <b>The functionality of constructor form has been
+     replaced by the {@link WriterAppender}. This constructor will be
+     removed in the <em>near</em> term.</b>
+
+  */
+  public
+  FileAppender(Layout layout, OutputStream os) {
+    super(layout, new OutputStreamWriter(os));
+  }
+  
+  /**
+     Instantiate a FileAppender and set the output destination to
+     <code>writer</code>.
+
+     <p>The <code>writer</code> must have been opened by the user.  
+
+     @deprecated <b>The functionality of constructor form has been
+     replaced by the {@link WriterAppender}. This constructor will be
+     removed in the <em>near</em> term.</b>
+  */
+  public
+  FileAppender(Layout layout, Writer writer) {
+    super(layout, writer);
+  }                    
+
 
   /**
     Instantiate a FileAppender and open the file designated by
@@ -127,7 +165,7 @@ public class FileAppender extends WriterAppender {
   */
   protected
   void closeFile() {
-    if(this.qw != null) {
+    if(this.qw != null && this.qwIsOurs) {
       try {
 	this.qw.close();
       }
@@ -170,6 +208,7 @@ public class FileAppender extends WriterAppender {
     this.tp = new TracerPrintWriter(qw);
     this.fileName = fileName;
     this.fileAppend = append;
+    this.qwIsOurs = true;
     writeHeader();
   }
 
@@ -197,7 +236,11 @@ public class FileAppender extends WriterAppender {
 
      <p>The <b>File</b> option takes a string value which should be
      one of the strings "System.out" or "System.err" or the name of a
-     file.
+     file. 
+
+     <font color="#FF0044"><b>Note that the "System.out" or "System.err"
+     options are deprecated. Use {@link ConsoleAppender}
+     instead.</b></font>
 
      <p>If the option is set to "System.out" or "System.err" the
      output will go to the corresponding stream. Otherwise, if the
@@ -222,7 +265,14 @@ public class FileAppender extends WriterAppender {
     if(key.equalsIgnoreCase(FILE_OPTION)) {
       // Trim spaces from both ends. The users probably does not want 
       // trailing spaces in file names.
-      fileName = value.trim();
+      String val = value.trim();
+      if(val.equalsIgnoreCase("System.out")) {
+	setWriter(new OutputStreamWriter(System.out));
+      } else if(val.equalsIgnoreCase("System.err")) {
+	setWriter(new OutputStreamWriter(System.err));
+      } else {
+	fileName = val;
+      }
     }
     else if (key.equalsIgnoreCase(APPEND_OPTION)) {
       fileAppend = OptionConverter.toBoolean(value, fileAppend);
