@@ -84,7 +84,7 @@ public class Interpreter extends DefaultHandler {
    */
   Stack actionListStack;
 
-  Interpreter(RuleStore rs) {
+  public Interpreter(RuleStore rs) {
     ruleStore = rs;
     ec = new ExecutionContext(this);
     implicitActions = new ArrayList(3);
