@@ -329,7 +329,7 @@ public class JMSAppender extends AppenderSkeleton {
   }
 
   String getURLPkgPrefixes( ) {
-    return urlPkgPrefixes;;
+    return urlPkgPrefixes;
   }
 
   public void setURLPkgPrefixes(String urlPkgPrefixes ) {

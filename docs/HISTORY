@@ -18,7 +18,7 @@
    name. The public access categoryName field should not be accessed
    directly. Similarly, added the getLevel method which is now the
    preferred way of accessing the event's level. The public access
-   level field should not be accessd directly.  The javadocs now mark
+   level field should not be accessed directly.  The javadocs now mark
    the categoryName and level fields as deprecated.
 
    Modified existing appenders to comply with these new directives. [*]
