@@ -71,8 +71,6 @@ public final class ListAppender extends AppenderSkeleton {
    */
   public void close() {
     closed = true;
-    clearModel();
-    model = null;
   }
 
   /**
