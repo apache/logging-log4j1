@@ -21,7 +21,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Set;
 
-import org.apache.log4j.LogManager;
 import org.apache.log4j.spi.LoggingEvent;
 
 /**
@@ -51,7 +50,8 @@ public class DBHelper {
       try { 
         connection.close();
       } catch(SQLException sqle) {
-        LogManager.getLogger(DBHelper.class).warn("Failed to close connection.");
+        // static utility classes should not log without an explicit repository
+        // reference
       }
     }
   }
