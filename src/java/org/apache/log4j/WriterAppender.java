@@ -343,8 +343,10 @@ public class WriterAppender extends AppenderSkeleton {
   void writeFooter() {
     if(layout != null) {
       String f = layout.getFooter();
-      if(f != null && this.qw != null)
+      if(f != null && this.qw != null) {
 	this.qw.write(f);
+	this.qw.flush();
+      }
     }
   }
 
