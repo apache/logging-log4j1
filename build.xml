@@ -4,7 +4,7 @@
   <!-- The build.properties file defines the parth to local jar files -->
   <property file="build.properties"/>
 
-  <property name="version" value="1.3alpha-5"/>
+  <property name="version" value="1.3alpha-6"/>
 
   <!-- The base directory relative to which most targets are built -->
   <property name="base" value="."/>
@@ -695,7 +695,8 @@
       <fileset dir=".">
         <patternset>
           <include name="**/*.bak"/>
-          <include name="dist/velocity.log"/>
+          <include name="dist/velocity*.log"/>
+          <include name="tests/output/*"/>
           <include name="${BSTEM}/**/temp*"/>
           <include name="${BSTEM}/performance/test"/>
           <include name="${BSTEM}/test/current.*"/>
@@ -703,24 +704,10 @@
           <include name="${BSTEM}/examples/test"/>
           <include name="${BSTEM}/test/logging.*"/>
           <include name="${BSTEM}/test/log4j.properties"/>
-          <include name="{$BSTEM}/test/socket.lcf"/>
+          <include name="${$BSTEM}/test/socket.lcf"/>
           <include name="${BSTEM}/test/file"/>
-          <include name="${BSTEM}/test/output.*"/>
-          <include name="${BSTEM}/nt/EventLogCategories.dbg"/>
-          <include name="${BSTEM}/nt/*.h"/>
-          <include name="${BSTEM}/nt/*.obj"/>
-          <include name="${BSTEM}/nt/*.idb"/>
-          <include name="${BSTEM}/nt/EventLogCategories.rc"/>
-          <include name="${BSTEM}/nt/EventLogCategories.RES"/>
-          <include name="${BSTEM}/nt/EventLogCategories.res"/>
-          <include name="${BSTEM}/nt/MSG00001.bin"/>
-          <include name="${BSTEM}/nt/NTEventLogAppender.lib"/>
-          <include name="${BSTEM}/nt/NTEventLogAppender.exp"/>
-          <include name="${BSTEM}/nt/vc50.idb"/>
           <include name="${BSTEM}/net/test/loop.log"/>
           <include name="${BSTEM}/net/test/loop.log.1"/>
-          <include name="${jar.dest}/manifest.mf"/>
-          <include name="${javac.dest}/*.class"/>
         </patternset>
       </fileset>
     </delete>
@@ -734,7 +721,6 @@
                includes="src/java/**,
                docs/**,
                examples/**,
-               build/*,
                build.xml,
                build.properties.sample,
                INSTALL,
@@ -748,14 +734,6 @@
                **/.#*"
                />
     </copy>
-    
-
-    <fixcrlf srcdir="${dist.tmp}/logging-log4j-${version}"
-             includes="build.sh" cr="remove"/>
-    <fixcrlf srcdir="${dist.tmp}/logging-log4j-${version}"
-             includes="build.bat" cr="add"/>
-    <chmod   dir="${dist.tmp}/logging-log4j-${version}"
-             includes="build.sh" perm="+x"/>
     
     <tar tarfile="${dist.images}/logging-log4j-${version}.tar"
          basedir="${dist.tmp}"
