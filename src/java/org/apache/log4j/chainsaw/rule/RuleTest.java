@@ -49,6 +49,14 @@
 
 package org.apache.log4j.chainsaw.rule;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.MDC;
+import org.apache.log4j.chainsaw.ChainsawConstants;
+import org.apache.log4j.chainsaw.LoggingEventFieldResolver;
+import org.apache.log4j.chainsaw.filter.FilterModel;
+import org.apache.log4j.spi.LoggingEvent;
+
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.Point;
@@ -57,6 +65,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -72,16 +81,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
-import javax.swing.event.CaretEvent;
-import javax.swing.event.CaretListener;
-
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.MDC;
-import org.apache.log4j.chainsaw.ChainsawConstants;
-import org.apache.log4j.chainsaw.LoggingEventFieldResolver;
-import org.apache.log4j.chainsaw.filter.FilterModel;
-import org.apache.log4j.spi.LoggingEvent;
 
 
 public class RuleTest extends JFrame {
@@ -106,8 +105,9 @@ public class RuleTest extends JFrame {
 
     LoggingEventFieldResolver resolver =
       LoggingEventFieldResolver.getInstance();
-      
+
     filterModel = new FilterModel();
+
     final List eventList = new ArrayList();
     MDC.put("entry1", "123");
     eventList.add(
@@ -133,10 +133,13 @@ public class RuleTest extends JFrame {
         "org.apache.log4j.chainsaw", Logger.getLogger("logger4"),
         System.currentTimeMillis(), Level.WARN, "message4",
         new Exception("test4")));
+
     Iterator iter = eventList.iterator();
+
     while (iter.hasNext()) {
-        LoggingEvent event = (LoggingEvent)iter.next();
-        filterModel.processNewLoggingEvent(ChainsawConstants.LOG4J_EVENT_TYPE, event);
+      LoggingEvent event = (LoggingEvent) iter.next();
+      filterModel.processNewLoggingEvent(
+        ChainsawConstants.LOG4J_EVENT_TYPE, event);
     }
 
     JPanel fieldPanel = new JPanel(new GridLayout(5, 1));
@@ -146,9 +149,9 @@ public class RuleTest extends JFrame {
 
     final JTextField inFixTextField = new JTextField(inFixText);
     fieldPanel.add(inFixTextField);
+
     ContextListener listener = new ContextListener(inFixTextField);
     inFixTextField.addKeyListener(listener);
-    inFixTextField.addCaretListener(listener);
 
     JButton inFixButton = new JButton("Convert InFix to PostFix");
     fieldPanel.add(inFixButton);
@@ -217,96 +220,159 @@ public class RuleTest extends JFrame {
 
   public static void main(String[] args) {
     RuleTest test =
-      new RuleTest("( level ~= deb ) && ( logger like logger[1-2] || MDC.entry1 >= 234 )");
+      new RuleTest(
+        "( level ~= deb ) && ( logger like logger[1-2] || MDC.entry1 >= 234 )");
     test.pack();
     test.setVisible(true);
   }
-  
-  class ContextListener extends KeyAdapter implements CaretListener {
-      LoggingEventFieldResolver resolver = LoggingEventFieldResolver.getInstance();
-      String lastSymbol = null;
-      String lastField = null;
-      JPopupMenu contextMenu = new JPopupMenu();
-      JList list = new JList();
-      final JTextField textField;
-      
+
+  class ContextListener extends KeyAdapter {
+    LoggingEventFieldResolver resolver =
+      LoggingEventFieldResolver.getInstance();
+    String lastField = null;
+    JPopupMenu contextMenu = new JPopupMenu();
+    JList list = new JList();
+    final JTextField textField;
+
     public ContextListener(final JTextField textField) {
-        this.textField = textField;
-        list.setVisibleRowCount(5);
-        list.addKeyListener(new KeyAdapter() {
-            public void keyPressed(KeyEvent e) {
-                System.out.println("key pressed");
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    System.out.println("enter pressed");
-                    updateField(list.getSelectedValue().toString());
-                    contextMenu.setVisible(false);
-                }
-            }});
-            
-        list.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
-                    System.out.println("double clicked");
-                    updateField(list.getSelectedValue().toString());
-                    contextMenu.setVisible(false);
-                }
-            }});
+      this.textField = textField;
+      list.setVisibleRowCount(5);
 
+      PopupListener popupListener = new PopupListener();
+      textField.addMouseListener(popupListener);
 
-        JScrollPane scrollPane = new JScrollPane(list);
-        contextMenu.insert(scrollPane, 0);
+      list.addKeyListener(
+        new KeyAdapter() {
+          public void keyPressed(KeyEvent e) {
+            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+              updateField(list.getSelectedValue().toString());
+              contextMenu.setVisible(false);
+            }
+          }
+        });
+
+      list.addMouseListener(
+        new MouseAdapter() {
+          public void mouseClicked(MouseEvent e) {
+            if (e.getClickCount() == 2) {
+              updateField(list.getSelectedValue().toString());
+              contextMenu.setVisible(false);
+            }
+          }
+        });
+
+      JScrollPane scrollPane = new JScrollPane(list);
+      contextMenu.insert(scrollPane, 0);
     }
 
     private void updateField(String value) {
-        String text = textField.getText();
-        int position = textField.getCaretPosition();
-        textField.setText(text.substring(0, position) + value + text.substring(position));
-        textField.setCaretPosition(position + value.length());
+      String text = textField.getText();
+      int position = textField.getCaretPosition();
+      textField.setText(
+        text.substring(0, position) + value + text.substring(position));
+      textField.setCaretPosition(position + value.length());
     }
-    
-    public void keyTyped(KeyEvent e) {
-        if ((e.getKeyCode() == KeyEvent.VK_SPACE) && (e.getModifiers() == KeyEvent.CTRL_MASK));
-        System.out.println("PRESSED CTRL-SPACE");
-        if (resolver.isField(lastField) && RuleFactory.isRule(lastSymbol)) {
-            System.out.println("showing popupmenu");
-            if (filterModel.getContainer().modelExists(lastField)) {
-                list.setModel(filterModel.getContainer().getModel(lastField));
-                list.setSelectedIndex(0);
-                Point p = ((JTextField)e.getComponent()).getCaret().getMagicCaretPosition();
-                contextMenu.show(e.getComponent(), p.x, (p.y + (e.getComponent().getHeight() - 5)));
-                contextMenu.requestFocusInWindow();
-            }
-        }
+
+    public void keyPressed(KeyEvent e) {
+      if (
+        (e.getKeyCode() == KeyEvent.VK_SPACE)
+          && (e.getModifiers() == KeyEvent.CTRL_MASK)) {
+        displayContext();
+      }
     }
-    
-	public void caretUpdate(CaretEvent e) {
-        //( level ~= deb )
-        String text = textField.getText();
-        int endPosition = e.getDot() - 2;
-        if (endPosition > -1 && text.charAt(endPosition) == ' ') {
-            endPosition--;
+
+    public void displayContext() {
+      String lastField = getContextKey();
+
+      if (lastField != null) {
+        list.setModel(filterModel.getContainer().getModel(lastField));
+        list.setSelectedIndex(0);
+
+        Point p = textField.getCaret().getMagicCaretPosition();
+        contextMenu.show(textField, p.x, (p.y + (textField.getHeight() - 6)));
+        list.requestFocus();
+      }
+    }
+
+    private String getContextKey() {
+      String field = getField();
+
+      if (field == null) {
+        field = getSubField();
+      }
+
+      return field;
+    }
+
+    //returns the currently active field which can be used to display a context menu
+    //the field returned is the left hand portion of an expression (for example, logger == )
+    //logger is the field that is returned
+    private String getField() {
+      String text = textField.getText();
+
+      int currentPosition = textField.getCaretPosition();
+
+      if ((currentPosition < 1) || (text.charAt(currentPosition - 1) != ' ')) {
+        return null;
+      }
+
+      int symbolPosition = text.lastIndexOf(" ", currentPosition - 1);
+
+      if (symbolPosition < 0) {
+        return null;
+      }
+
+      int lastFieldPosition = text.lastIndexOf(" ", symbolPosition - 1);
+
+      if (lastFieldPosition < 0) {
+        return null;
+      }
+
+      int lastFieldStartPosition =
+        Math.max(0, text.lastIndexOf(" ", lastFieldPosition - 1));
+      String lastSymbol =
+        text.substring(lastFieldPosition + 1, symbolPosition).trim();
+
+      String lastField =
+        text.substring(lastFieldStartPosition, lastFieldPosition).trim();
+
+      if (RuleFactory.isRule(lastSymbol) && resolver.isField(lastField)) {
+        return lastField;
+      }
+
+      return null;
+    }
+
+    //subfields allow the key portion of a field to provide context menu support
+    //and are available after the fieldname and a . (for example, MDC.)
+    private String getSubField() {
+      int currentPosition = textField.getCaretPosition();
+      String text = textField.getText();
+
+      if (text.substring(0, currentPosition).endsWith("MDC.")) {
+        return "MDC";
+      }
+
+      return null;
+    }
+
+    class PopupListener extends MouseAdapter {
+      PopupListener() {
+      }
+
+      public void mousePressed(MouseEvent e) {
+        checkPopup(e);
+      }
+
+      public void mouseReleased(MouseEvent e) {
+        checkPopup(e);
+      }
+
+      private void checkPopup(MouseEvent e) {
+        if (e.isPopupTrigger()) {
+          displayContext();
         }
-        System.out.println("position is " + endPosition);
-        int startPosition = text.lastIndexOf(" ", endPosition) + 1;
-        System.out.println("startposition is " + startPosition);
-        
-        if (startPosition > -1 && endPosition > -1) {
-            lastSymbol = text.substring(startPosition, endPosition + 1);
-            if (!RuleFactory.isRule(lastSymbol)) {
-                lastSymbol = null;
-            }
-            System.out.println("last SYMBOL IS " + lastSymbol);
-            
-            int fieldStartPosition = text.lastIndexOf(" ", startPosition - 2);
-            System.out.println("fieldstart is " + fieldStartPosition);
-            if (fieldStartPosition > -1 ) {
-                lastField = text.substring(fieldStartPosition + 1, startPosition - 1);
-                if (!resolver.isField(lastField)) {
-                    lastField = null;
-                }
-                System.out.println("last field is " + lastField);
-            }
-        }
-	}
+      }
+    }
   }
 }
