@@ -143,7 +143,7 @@ public abstract class PluginSkeleton implements Plugin {
   public boolean isEquivalent(Plugin testPlugin) {
     return (repository == testPlugin.getLoggerRepository()) &&
       ((this.name == null && testPlugin.getName() == null) ||
-       (this.name != null && name.equals(testPlugin.getName())));
+       (this.name != null && name.equals(testPlugin.getName()))) && this.getClass().equals(testPlugin.getClass());
   }
 
   /**
