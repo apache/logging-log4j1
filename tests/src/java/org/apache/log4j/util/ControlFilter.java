@@ -26,6 +26,6 @@ public class ControlFilter implements Filter {
       }	
     }
 
-    throw new UnexpectedFormatException(in);
+    throw new UnexpectedFormatException("["+in+"]");
   }
 }

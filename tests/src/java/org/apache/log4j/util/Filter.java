@@ -15,7 +15,7 @@ public interface Filter {
   static public final String ABSOLUTE_TIME_PAT = 
                            "^\\d{2}:\\d{2}:\\d{2},\\d{3}";
 
-  static public final String RELATIVE_TIME_PAT = "^\\d{3,10}";
+  static public final String RELATIVE_TIME_PAT = "^\\d{1,10}";
 
 
   String filter(String in) throws UnexpectedFormatException;
