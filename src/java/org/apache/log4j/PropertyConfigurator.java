@@ -176,7 +176,7 @@ public class PropertyConfigurator extends BasicConfigurator
     <code>additivity</code> flag.
 
     <p>The user can override any of the {@link
-    BasicConfigurator#disable} family of methods by setting the a key
+    Hierarchy#disable} family of methods by setting the a key
     "log4j.disableOverride" to <code>true</code> or any value other
     than false. As in <pre> log4j.disableOverride=true </pre>
 

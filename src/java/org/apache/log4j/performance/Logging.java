@@ -151,7 +151,7 @@ import java.util.Enumeration;
    
    <p><li>Avoiding the flush operation at the end of each append
    results in a performance gain of 10 to 20 percent. However, there
-   is safety tradeoff invloving in skipping flushing. Indeed, when
+   is safety tradeoff invloved in skipping flushing. Indeed, when
    flushing is skipped, then it is likely that the last few log events
    will not be recorded on disk when the application exits. This is a
    high price to pay even for a 20% performance gain.

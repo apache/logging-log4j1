@@ -150,9 +150,10 @@ public class Hierarchy {
      the request category. Logging requests of higher priority then
      the priority of <code>p</code> remain unaffected.
 
-     <p>Nevertheless, if the {@link #DISABLE_OVERRIDE_KEY} system
-     property is set to "true" or any value other than "false", then
-     logging requests are evaluated as usual, i.e. according to the <a
+     <p>Nevertheless, if the {@link
+     BasicConfigurator#DISABLE_OVERRIDE_KEY} system property is set to
+     "true" or any value other than "false", then logging requests are
+     evaluated as usual, i.e. according to the <a
      href="../../manual.html#selectionRule">Basic Selection Rule</a>.
 
      <p>The "disable" family of methods are there for speed. They

@@ -162,10 +162,9 @@ public class JMSAppender extends AppenderSkeleton {
 
  /**
      Retuns the option names for this component, namely the string
-     array {{@link #{TOPIC_BINDING_NAME_OPTION}, {@link
-     #TOPIC_CONNECTION_FACTORY_BINDING_NAME_OPTION}} in addition to
-     the options of its super class {@link AppenderSkeleton}.  
- */
+     array {@link #TOPIC_BINDING_NAME_OPTION}, {@link
+     #TOPIC_CONNECTION_FACTORY_BINDING_NAME_OPTION} in addition to the
+     options of its super class {@link AppenderSkeleton}.  */
   
   public
   String[] getOptionStrings() {

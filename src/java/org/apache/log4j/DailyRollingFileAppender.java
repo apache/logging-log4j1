@@ -35,7 +35,7 @@ import org.apache.log4j.spi.ErrorCode;
    per-month.
 
    The appender computes the proper filename using the formats
-   specified in {@link SimpleDateFormat.html}. The format requires
+   specified in {@link SimpleDateFormat}. The format requires
    that most static text is enclosed in single quotes, which are
    removed. The examples below show how quotes are used to embed
    static information in the format.
@@ -48,13 +48,15 @@ import org.apache.log4j.spi.ErrorCode;
      "'/logs/trace-'yyyy-ww'.log'"        /logs/trace-2000-52.log
 </code>
 
-   @author <a HREF="mailto:eirik.lygre@evita.no">Eirik Lygre</a> */
+   @author Eirik Lygre
+   @author Ceki G&uuml;lc&uuml;
+*/
 public class DailyRollingFileAppender extends FileAppender {
 
 
   // The code assumes that the following constants are in a increasing
   // sequence.
-  static final int TOP_OF_ZONK   =-1;
+  static final int TOP_OF_TROUBLE=-1;
   static final int TOP_OF_MINUTE = 0;
   static final int TOP_OF_HOUR   = 1;
   static final int HALF_DAY      = 2;
@@ -72,7 +74,7 @@ public class DailyRollingFileAppender extends FileAppender {
   
   /**
      The date pattern. By default, the rolled file extension is
-     the date folloed by .log. The rollover occurs at midnight. '
+     the date folloed by .log meaning a nightly rollover.
   */
   private String datePattern = ".YYYY-MM-dd.log";
 
@@ -92,7 +94,7 @@ public class DailyRollingFileAppender extends FileAppender {
 
   RollingCalendar rc = new RollingCalendar();
 
-  int checkPeriod = TOP_OF_ZONK;
+  int checkPeriod = TOP_OF_TROUBLE;
 
   /**
      The default constructor does nothing. */
@@ -110,10 +112,7 @@ public class DailyRollingFileAppender extends FileAppender {
 				   String datePattern) throws IOException {
     super(layout, filename, true);
     this.datePattern = datePattern;
-    sdf = new SimpleDateFormat(datePattern);
-    int type = computeCheckPeriod();
-    printPeriodicity(type);
-    rc.setType(type);
+    activateOptions();
   }
 
 
@@ -121,6 +120,11 @@ public class DailyRollingFileAppender extends FileAppender {
   void activateOptions() {
     super.activateOptions();
     if(datePattern != null && fileName != null) {
+      now.setTime(System.currentTimeMillis());
+      sdf = new SimpleDateFormat(datePattern);
+      int type = computeCheckPeriod();
+      printPeriodicity(type);
+      rc.setType(type);
       lastDatedFilename = fileName+sdf.format(now);
     } else {
       LogLog.error("Either Filename or DatePattern options are not set for ["+
@@ -162,12 +166,9 @@ public class DailyRollingFileAppender extends FileAppender {
   int computeCheckPeriod() {
     RollingCalendar c = new RollingCalendar();
     // set sate to 1970-01-01 00:00:00 GMT
-    Date epoch = new Date(0);
-    
-    
+    Date epoch = new Date(0);    
     if(datePattern != null) {
-      for(int i = TOP_OF_MINUTE; i <= TOP_OF_MONTH; i++) {
-	
+      for(int i = TOP_OF_MINUTE; i <= TOP_OF_MONTH; i++) {	
 	String r0 = sdf.format(epoch);
 	c.setType(i);
 	Date next = new Date(c.getNextCheckMillis(epoch));
@@ -178,24 +179,26 @@ public class DailyRollingFileAppender extends FileAppender {
 	}
       }
     }
-    // Deliberately head for trouble...
-    return TOP_OF_ZONK;
+    return TOP_OF_TROUBLE; // Deliberately head for trouble...
+  }
+
+
+  /**
+     Retuns the option names for this component, namely {@link
+     #DATE_PATTERN_OPTION} in
+     addition to the options of {@link FileAppender#getOptionStrings
+     FileAppender}.
+  */
+  public
+  String[] getOptionStrings() {
+    return OptionConverter.concatanateArrays(super.getOptionStrings(),
+		 new String[] {DATE_PATTERN_OPTION});
   }
 
   /**
-     Set the current output file.
-
-     The function will compute a new filename, and open a new file only
-     when the name has changed.
-
-     The function is automatically called once a day, to allow for
-     daily rolling files -- the purpose of this class.  */
-
-  public
-  synchronized
+     Rollover the current file to a new file.
+  */  
   void rollOver() throws IOException {
-
-    LogLog.debug("RollOver called-------------------------");
 
     /* Compute filename, but only if datePattern is specified */
     if (datePattern == null) {
@@ -205,16 +208,9 @@ public class DailyRollingFileAppender extends FileAppender {
     }
 
     String datedFilename = fileName+sdf.format(now);
-    if (lastDatedFilename.equals(datedFilename)) {
+    if (lastDatedFilename.equals(datedFilename)) 
       return;
-    }
 
-    LogLog.debug("NexCheck="+nextCheck);    
-
-    LogLog.debug("Target = "+datedFilename);
-
-    
-    
     // close current file, and rename it to datedFilename
     this.closeFile(); 
     
@@ -233,57 +229,26 @@ public class DailyRollingFileAppender extends FileAppender {
       this.setFile(fileName, false);
     }
     catch(IOException e) {
-      LogLog.error("setFile("+fileName+", false) call failed., e");
+      errorHandler.error("setFile("+fileName+", false) call failed.");
     }
-
     lastDatedFilename = datedFilename;    
   }
 
   /**
-     This method differentiates DailyRollingFileAppender from its
-     super class.
-  */
-  protected
-  void subAppend(LoggingEvent event) {
-    
-    long n = System.currentTimeMillis();
-    if (n >= nextCheck) {
-      now.setTime(n);
-      nextCheck = rc.getNextCheckMillis(now);
-      try {
-        rollOver();
-      } catch(IOException e) {
-        LogLog.error("setFile(null, false) call failed.", e);
-      }
-    }
-    super.subAppend(event);
-  } 
-
-  /**
-     Retuns the option names for this component, namely {@link
-     #FILE_NAME_PATTERN_OPTION} in
-     addition to the options of {@link FileAppender#getOptionStrings
-     FileAppender}.
-  */
-  public
-  String[] getOptionStrings() {
-    return OptionConverter.concatanateArrays(super.getOptionStrings(),
-		 new String[] {DATE_PATTERN_OPTION});
-  }
-
-  /**
      Set the options for the appender
+
+     <b>See</b> Options of the super class {@link FileAppender}. 
+     <b>See</b> Options of the super class {@link org.apache.log4j.WriterAppender}. 
+     <b>See</b> Options of the super class {@link
+     org.apache.log4j.AppenderSkeleton}, in particular the
+     <b>Threshold</b> option.
   */
   public
   void setOption(String key, String value) {
+    if(value == null) return;
     super.setOption(key, value);    
     if(key.equalsIgnoreCase(DATE_PATTERN_OPTION)) {
       datePattern = value;
-      now.setTime(System.currentTimeMillis());
-      sdf = new SimpleDateFormat(datePattern);
-      int type = computeCheckPeriod();
-      printPeriodicity(type);
-      rc.setType(type);
     }
   }
 }  
@@ -301,7 +266,7 @@ public class DailyRollingFileAppender extends FileAppender {
 
 class RollingCalendar extends GregorianCalendar {
   
-  int type;
+  int type = DailyRollingFileAppender.TOP_OF_TROUBLE;
 
   void setType(int type) {
     this.type = type;

@@ -173,7 +173,6 @@ public class FileAppender extends WriterAppender {
     // FIXME (remove qwIsOurs)
     if(this.qw != null && this.qwIsOurs) {
       try {
-	LogLog.debug("////////////////////////////////////////////////");
 	this.qw.close();
       }
       catch(java.io.IOException e) {
@@ -280,6 +279,11 @@ public class FileAppender extends WriterAppender {
      <p>Note: Actual opening of the file is made when {@link
      #activateOptions} is called, not when the options are set.
      
+     <b>See</b> Options of the super class {@link WriterAppender}. 
+     <b>See</b> Options of the super class {@link
+     org.apache.log4j.AppenderSkeleton}, in particular the
+     <b>Threshold</b> option.
+
      @since 0.8.1 */
   public
   void setOption(String key, String value) {

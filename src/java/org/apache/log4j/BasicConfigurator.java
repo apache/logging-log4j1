@@ -34,9 +34,10 @@ public class BasicConfigurator {
 
      <p>Setting the system property <b>log4j.disableOverride</b> to
      "true" or any other value than "false" overrides the effects of
-     all methods {@link #disable}, {@link #disableAll}, {@link
-     #disableDebug} and {@link #disableInfo}. Thus, enabling normal
-     evaluation of logging requests, i.e. according to the <a
+     all methods {@link Hierarchy#disable}, {@link
+     Hierarchy#disableAll}, {@link Hierarchy#disableDebug} and {@link
+     Hierarchy#disableInfo}. Thus, enabling normal evaluation of logging
+     requests, i.e. according to the <a
      href="../../manual.html#selectionRule">Basic Selection Rule</a>.
 
      <p>If both <code>log4j.disableOverride</code> and a
@@ -53,7 +54,7 @@ public class BasicConfigurator {
 
      <p>Setting the system property <b>log4j.disable</b> to DEBUG,
      INFO, WARN, ERROR or FATAL is equivalent to calling the {@link
-     #disable} method with the corresponding priority.
+     Hierarchy#disable} method with the corresponding priority.
 
      <p>If both <code>log4j.disableOverride</code> and a
      <code>log4j.disable</code> options are present, then
