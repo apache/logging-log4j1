@@ -108,7 +108,7 @@ public class Interpreter extends DefaultHandler {
 
     pattern.push(tagName);
 
-    List applicableActionList = getapplicableActionList(pattern);
+    List applicableActionList = getapplicableActionList(pattern, atts);
 
     if (applicableActionList != null) {
       actionListStack.add(applicableActionList);
@@ -162,13 +162,13 @@ public class Interpreter extends DefaultHandler {
    * action is found, it is returned. Thus, the returned list will have at most
    * one element.
    */
-  List lookupImplicitAction(ExecutionContext ec, Pattern pattern) {
+  List lookupImplicitAction(Pattern pattern, Attributes attributes, ExecutionContext ec) {
     int len = implicitActions.size();
 
     for (int i = 0; i < len; i++) {
       ImplicitAction ia = (ImplicitAction) implicitActions.get(i);
 
-      if (ia.isApplicable(ec, pattern.peekLast())) {
+      if (ia.isApplicable(pattern, attributes, ec)) {
         List actionList = new ArrayList(1);
         actionList.add(ia);
 
@@ -182,12 +182,12 @@ public class Interpreter extends DefaultHandler {
   /**
    * Return the list of applicable patterns for this
   */
-  List getapplicableActionList(Pattern pattern) {
+  List getapplicableActionList(Pattern pattern, Attributes attributes) {
     List applicableActionList = ruleStore.matchActions(pattern);
 
     //logger.debug("set of applicable patterns: " + applicableActionList);
     if (applicableActionList == null) {
-      applicableActionList = lookupImplicitAction(ec, pattern);
+      applicableActionList = lookupImplicitAction(pattern, attributes, ec);
     }
 
     return applicableActionList;
