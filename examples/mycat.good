@@ -1,13 +1,13 @@
-# Setting the category factory to MyCategoryFactory solves the
+# Setting the logger factory to MyLoggerFactory solves the
 # ClassCastException problem encountered with the "mycat.bad"
 # configuration file.
 
-log4j.categoryFactory=org.apache.log4j.examples.MyCategoryFactory
+log4j.loggerFactory=examples.subclass.MyLoggerFactory
 
 
 # The usual stuff. Note that A1 is configured in root not in "some.cat"
 
-log4j.rootCategory=DEBUG, A1
+log4j.rootLogger=DEBUG, A1
 log4j.appender.A1=org.apache.log4j.ConsoleAppender
 
 log4j.appender.A1.layout=org.apache.log4j.PatternLayout
@@ -15,10 +15,10 @@ log4j.appender.A1.layout.ConversionPattern=%5p [%t] %c - %m%n
 
 
 # Set the priority of "some.cat" to TRACE (defined in
-# org.apache.log4j.xml.examples.XPriority). Since we specified
-# MyCategoryFactory as the category factory, the following line willl
-# also have the side effect of instanciating a MyCategory object
-# having the name "some.cat".
+# examples.customLevel.XLevel). Since we specified MyLoggerFactory as
+# the logger factory, the following line willl also have the side
+# effect of instanciating a MyLogger object having the name
+# "some.cat".
 
-log4j.category.some.cat=TRACE#org.apache.log4j.xml.examples.XPriority
+log4j.logger.some.cat=TRACE#examples.customLevel.XLevel
 
