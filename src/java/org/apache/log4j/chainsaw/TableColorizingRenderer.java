@@ -49,33 +49,28 @@
 
 package org.apache.log4j.chainsaw;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.event.ActionEvent;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
-import java.util.Vector;
 
-import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
-import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
 
+import org.apache.log4j.chainsaw.color.Colorizer;
+import org.apache.log4j.chainsaw.color.DefaultColorizer;
 import org.apache.log4j.chainsaw.icons.LevelIconFactory;
 import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
 import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
 import org.apache.log4j.chainsaw.prefs.SettingsListener;
 import org.apache.log4j.helpers.ISO8601DateFormat;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.spi.ThrowableInformation;
 
 
 /**
@@ -92,8 +87,10 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
   private static final DateFormat DATE_FORMATTER =
     new ISO8601DateFormat(Calendar.getInstance().getTimeZone());
   private Map iconMap = LevelIconFactory.getInstance().getLevelToIconMap();
-  private ColorFilter colorFilter;
+
+  //  private ColorFilter colorFilter;
   private JTable table;
+  private Colorizer colorizer = new DefaultColorizer();
   private Color background = new Color(255, 255, 254);
   private final Color COLOR_ODD = new Color(230, 230, 230);
   private final JLabel idComponent = new JLabel();
@@ -112,18 +109,7 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
     levelComponent.setOpaque(true);
     levelComponent.setHorizontalAlignment(JLabel.CENTER);
 
- 
-
     levelComponent.setText("");
-  }
-
-  /**
-  *TODO
-  *
-  * @param colorFilter TODO
-  */
-  public void setColorFilter(ColorFilter colorFilter) {
-    this.colorFilter = colorFilter;
   }
 
   public void loadSettings(LoadSettingsEvent event) {
@@ -133,28 +119,17 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
   public void saveSettings(SaveSettingsEvent event) {
   }
 
-  /**
-   *TODO
-   *
-   * @param table TODO
-   * @param value TODO
-   * @param isSelected TODO
-   * @param hasFocus TODO
-   * @param row TODO
-   * @param col TODO
-   *
-   * @return TODO
-   */
   public Component getTableCellRendererComponent(
     JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
     int col) {
     value = formatField(value);
 
-    Color color = null;
+    Color backgroundColor = null;
+    Color foregroundColor = null;
 
     Component c =
-       super.getTableCellRendererComponent(
-		    table, value, isSelected, hasFocus, row, col);
+      super.getTableCellRendererComponent(
+        table, value, isSelected, hasFocus, row, col);
     int colIndex = table.getColumnModel().getColumn(col).getModelIndex() + 1;
 
     switch (colIndex) {
@@ -165,15 +140,18 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
       c = idComponent;
 
       break;
-      
+
     case ChainsawColumns.INDEX_THROWABLE_COL_NAME:
-    	String[] ti = (String[]) value;
-    	if(ti!=null) {
-			((JLabel)c).setText(ti[0]);
-    	} else {
-			((JLabel)c).setText("");
-    	}
-    	break;
+
+      String[] ti = (String[]) value;
+
+      if (ti != null) {
+        ((JLabel) c).setText(ti[0]);
+      } else {
+        ((JLabel) c).setText("");
+      }
+
+      break;
 
     case ChainsawColumns.INDEX_LEVEL_COL_NAME:
 
@@ -207,11 +185,10 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
 
     this.table = table;
 
-    Vector colNames = null;
-
-    if ((color == null) && (colorFilter != null)) {
+    if ((backgroundColor == null) && (getColorizer() != null)) {
       TableModel model = table.getModel();
       LoggingEvent event = null;
+
       if (model instanceof EventContainer) {
         EventContainer model2 = (EventContainer) model;
         event = model2.getRow(row);
@@ -225,11 +202,12 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
           getClass() + " can only support an EventContainer TableModel");
       }
 
-      color = colorFilter.getColor(ChainsawColumns.getColumnsNames(), event);
+      backgroundColor = getColorizer().getBackgroundColor(event);
+      foregroundColor = getColorizer().getForegroundColor(event);
     }
 
-    if ((color != null)) {
-      c.setBackground(color);
+    if ((backgroundColor != null)) {
+      c.setBackground(backgroundColor);
     } else if (!isSelected) {
       /**
        * Colourize based on row striping
@@ -239,6 +217,11 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
       } else {
         c.setBackground(background);
       }
+    }
+    if(foregroundColor!=null){
+      c.setForeground(foregroundColor);
+    }else {
+      c.setForeground(Color.black);
     }
 
     return c;
@@ -257,5 +240,19 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
     } else {
       return DATE_FORMATTER.format((Date) o);
     }
+  }
+
+  /**
+   * @param colorizer
+   */
+  public void setColorizer(Colorizer colorizer) {
+    this.colorizer = colorizer;
+  }
+
+  /**
+   * @return
+   */
+  public Colorizer getColorizer() {
+    return colorizer;
   }
 }
