@@ -126,8 +126,8 @@ final class LoggerNameTreePanel extends JPanel implements Rule {
   private final class MouseKeyIconListener
     extends MouseMotionAdapter
     implements MouseMotionListener {
-    Cursor focusOnCursor = Toolkit.getDefaultToolkit().createCustomCursor(ChainsawIcons.FOCUS_ON_ICON.getImage(), new Point(0,0), "");
-    Cursor ignoreCursor = Toolkit.getDefaultToolkit().createCustomCursor(ChainsawIcons.IGNORE_ICON.getImage(), new Point(0,0), "");
+    Cursor focusOnCursor = Toolkit.getDefaultToolkit().createCustomCursor(ChainsawIcons.FOCUS_ON_ICON.getImage(), new Point(10,10), "");
+    Cursor ignoreCursor = Toolkit.getDefaultToolkit().createCustomCursor(ChainsawIcons.IGNORE_ICON.getImage(), new Point(10,10), "");
       /* (non-Javadoc)
      * @see java.awt.event.MouseMotionListener#mouseMoved(java.awt.event.MouseEvent)
      */
@@ -141,8 +141,57 @@ final class LoggerNameTreePanel extends JPanel implements Rule {
         logTree.setCursor(Cursor.getDefaultCursor());
       }
     }
-
 }
+  private final class MouseFocusOnListener extends MouseAdapter {
+    
+    /* (non-Javadoc)
+     * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
+     */
+    public void mouseClicked(MouseEvent e) {
+      if(e.getClickCount()>1 && (e.getModifiers() & InputEvent.CTRL_MASK)>0 && (e.getModifiers() & InputEvent.SHIFT_MASK)>0) {
+        ignoreLoggerAtPoint(e.getPoint());
+        e.consume();
+        fireChangeEvent();
+      }else if(e.getClickCount()>1 &&(e.getModifiers() & InputEvent.CTRL_MASK)>0) {
+        focusAnLoggerAtPoint(e.getPoint());
+        e.consume();
+        fireChangeEvent();
+      }    
+    }
+
+    /**
+     * @param point
+     */
+    private void focusAnLoggerAtPoint(Point point) {
+      String logger = getLoggerAtPoint(point);
+      if(logger!=null) {
+        toggleFocusOnState();
+      }
+    }
+
+    /**
+     * @param point
+     * @return
+     */
+    private String getLoggerAtPoint(Point point) {
+      TreePath path = logTree.getPathForLocation(point.x, point.y);
+      if(path!=null) {
+        return getLoggerName(path);
+      }
+      return null;
+    }
+
+    /**
+     * @param point
+     */
+    private void ignoreLoggerAtPoint(Point point) {
+      String logger = getLoggerAtPoint(point);
+      if(logger!=null) {
+        toggleHiddenLogger(logger);
+      }
+      
+    }
+  }
   private static final int WARN_DEPTH = 4;
   private final JTree logTree;
   private final JScrollPane scrollTree;
@@ -592,26 +641,27 @@ final class LoggerNameTreePanel extends JPanel implements Rule {
         }
       });
 
-    /**
-     * Now add a MouseListener that fires the expansion
-     * action if CTRL + DBL CLICK is done.
-     */
-    logTree.addMouseListener(
-      new MouseAdapter() {
-        public void mouseClicked(MouseEvent e) {
-          if (
-            (e.getClickCount() > 1)
-              && ((e.getModifiers() & InputEvent.CTRL_MASK) > 0)
-              && ((e.getModifiers() & InputEvent.BUTTON1_MASK) > 0)) {
-            expandCurrentlySelectedNode();
-            e.consume();
-          } else if (e.getClickCount() > 1) {
-            super.mouseClicked(e);
-            LogLog.debug("Ignoring dbl click event " + e);
-          }
-        }
-      });
+//    /**
+//     * Now add a MouseListener that fires the expansion
+//     * action if CTRL + DBL CLICK is done.
+//     */
+//    logTree.addMouseListener(
+//      new MouseAdapter() {
+//        public void mouseClicked(MouseEvent e) {
+//          if (
+//            (e.getClickCount() > 1)
+//              && ((e.getModifiers() & InputEvent.CTRL_MASK) > 0)
+//              && ((e.getModifiers() & InputEvent.BUTTON1_MASK) > 0)) {
+//            expandCurrentlySelectedNode();
+//            e.consume();
+//          } else if (e.getClickCount() > 1) {
+//            super.mouseClicked(e);
+//            LogLog.debug("Ignoring dbl click event " + e);
+//          }
+//        }
+//      });
 
+    logTree.addMouseListener(new MouseFocusOnListener());
     /**
      * We listen for when the FocusOn action changes, and then  translate
      * that to a RuleChange
