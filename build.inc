@@ -2,13 +2,13 @@
   <target name="Usage">
     <echo>
     ant build   - compile all project files, if certain library is missing, 
-	          then the componets dependent on that library are skipped.
+	          then the components dependent on that library are skipped.
 
     ant compile - compile files in local directory only
 
     ant javadoc - build project javadoc files
 
-    ant jars    - build log4j-core and log4j jar files
+    ant jar     - build log4j-core and log4j jar files
 
     </echo>
   </target>
@@ -91,6 +91,7 @@
                     ${stem}/xml/**,
 		    ${stem}/net/SMTPAppender.java,
                	    ${stem}/net/JMS*.java,
+               	    ${stem}/or/MessageRenderer.java,
 		    **/pending/**" 
 	    debug="on"/>			
   </target>
