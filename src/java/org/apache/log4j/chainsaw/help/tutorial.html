@@ -7,27 +7,36 @@
 <BODY>
 <p>Welcome to the Chainsaw v2 Tutorial.  Here you will learn how to effectively utilise the many features of Chainsaw.</p>
 </p>
+<h2>Conventions</h2>
+<p>To assist you, the following documentation conventions will be used</p>
+<ul>
+<li><img src="../icons/TipOfTheDay16.gif" alt="Interesting...">Interesting items will be shown like this</li>
+<li><img src="../icons/Help16.gif" alt="Try this...">Things you should try during the tutorial will be shown like this</li>
+</ul>
+</p>
 <h2>Outline</h2>
 <p>The built-in tutorial installs several "pretend" Receiver plugins that generate some example LoggingEvents and post
 them into Log4j just like a real Receiver.  </p>
 <ul>
-<li>If you would like to read more about Receivers first, then click here. <font color="red"><b>(TODO)</b></font></li>
-<li>When you are ready to begin the tutorial, <a href="StartTutorial">click here</a>.</li>
+<li><img src="../icons/TipOfTheDay16.gif" alt="Interesting...">If you would like to read more about Receivers first, then click here. <font color="red"><b>(TODO)</b></font></li>
 </ul>
+<hr>
+<p><b>When you are ready to begin the tutorial, <a href="StartTutorial">click here</a>.</b></p>
+<hr>
 <h2>Receivers</h2>
 <p>After you have said yes to the confirmation dialog, you should see 3 new tabs appear 
 in the main GUI. This is because the tutorial has installed 3 'Generator' Receivers into the Log4j engine.  
 </p>
 <ul>
-<li>Confirm
+<li><img src="../icons/Help16.gif" alt="Try this...">Confirm
 this by showing the Receivers panel accessible either via the toolbar or the menu. The icon for this action is <img src="../icons/channelexplorer_satellite.gif"></li>
 </ul>
 <p>
 Any installed receiver installed into Log4j, either via an external configuration file, or via the GUI, is shown in this panel.  You 
 can create new Receivers, stop existing ones, or adjust their threshold.  
 <ul>
-<li>Try right clicking on a specific receiver and looking at the available menu options, but don't change anything just yet.</li>
-<li>When you are finished looking at the Receiver panel, hide it by clicking the 'X" close icon in the top right corner, 
+<li><img src="../icons/Help16.gif" alt="Try this...">Try right clicking on a specific receiver and looking at the available menu options, but don't change anything just yet.</li>
+<li><img src="../icons/Help16.gif" alt="Try this...">When you are finished looking at the Receiver panel, hide it by clicking the 'X" close icon in the top right corner, 
 or toggling the Receivers panel by clicking the icon in the toolbar, or using the menu.</li>
 </ul>
 </p>
@@ -39,29 +48,73 @@ this property, it attempts to use a secondary property usually added via the Soc
 identify the remote host of these events.  If neither of these are found, Chainsaw routes events to a default "Unknown" tab.  You can learn more about
 this whole process here.  <font color="red"><b>TODO</b></font>
 </p>
-<p>
-You may also notice that the tabs have the receiver icon (<img src="../icons/channelexplorer_satellite.gif">).  This is to indicate that new events are arriving for this tab.  Additionally
-if new events are not arriving, but there are events newer than the last time you looked at this tab, then the <img src="../icons/Information16.gif"> icon is shown.
 <ul>
-<li>Click on each tab and see how the icons shown in the tabs change.</li>
-<li>When you click on a specific tab, you should notice the events are streaming in.</li>
+<li><img src="../icons/TipOfTheDay16.gif" alt="Interesting...">You may also notice that the tabs have the receiver icon (<img src="../icons/channelexplorer_satellite.gif">).  This is to indicate that new events are arriving for this tab.  Additionally
+if new events are not arriving, but there are events newer than the last time you looked at this tab, then the <img src="../icons/Information16.gif"> icon is shown.</li>
 </ul>
-</p>
+<ul>
+<li><img src="../icons/Help16.gif" alt="Try this...">Click on each tab and see how the icons shown in the tabs change.</li>
+<li><img src="../icons/Help16.gif" alt="Try this...">When you click on a specific tab, you should notice the events are streaming in.</li>
+</ul>
 <h2>Log Tabs</h2>
 <p>Each tab contains a series of LoggingEvents routed to it via the Chainsaw internals. This visual panel
 is known as the <b>Log Panel</b>. It contains 3 main areas:
 <ol>
-<li><b>Logger Tree Panel</b> - the left hand panel contains all the distinct loggers known from the
+<li><b>Events panel</b> - The top/central panel contains a table of all the events received, and the Refinement filter (more on this later)</li>
+<li><b>Event Detail panel</b> - The bottom/central panel contains more details information of the currently selected event in the table.</li>
+<li><b>Logger Tree panel</b> - the left hand panel contains all the distinct loggers known from the
 received LoggingEvents represented in the natural dotted hierarchy.</li>
-<li><b>Events Panel</b> - The top/central panel contains a table of all the events received.</li>
-<li><b>Event Detail Panel</b> - The bottom/central panel contains more details information of the currently selected event in the table.</li>
 </ol>
 The Logger Tree & Event Detail panels can be hidden by clicking on the 'X' close icon in their respective top left corners, or
-by using the toolbar or menus.  They are also containing within a Split area, so you can adjust the amount
+by using the toolbar or menus.  They are also contained within a split area, so you can adjust the amount
 of visual space they take up to your liking.
 <ul>
-<li>Try hiding/showing/resizing the Logger Tree and Event Detail panels to see how they affect your viewing area.
+<li><img src="../icons/Help16.gif" alt="Try this...">Try hiding/showing/resizing the Logger Tree and Event Detail panels to see how they affect your viewing area.
 </ul>
 </p>
+<h3>Events panel</h3>
+<p>
+The Events panel primary role is to display received events in a table.  Events are colored based 
+on certain rules, with a default set of rules coloring a row based on the LoggingEvent level: Red for ERROR, Yellow for WARN.</p>
+<p>Each of the columns can be moved and resized.  When you exit, Chainsaw will remember these settings automatically.</p>
+<ul>
+<li><img src="../icons/TipOfTheDay16.gif" alt="Interesting...">If you click on a column header, it will sort the viewable events by this column, and subsequent clicks will toggle between ascending and descending mode.</li>
+<li><img src="../icons/TipOfTheDay16.gif" alt="Interesting...">Notice that the Level column displays an iconic representation of the Level.   You can switch between this and Text mode by using the View->Display Level column as menu.</li>
+<li><img src="../icons/TipOfTheDay16.gif" alt="Interesting...">The Throwable column shows only the first line of the stack trace, but if you click on a Throwable cell, you will notice a "..." button.  Clicking this pops up a detailed view of the stack trace</li>
+<li><img src="../icons/Help16.gif" alt="Try this...">Try viewing the stack trace detail by clicking on a Throwable cell, and clicking the "..." button.</li>
+
+</ul>
+<p>
+The popup menu on this panel contains some handy features:
+<ul>
+<li>Scroll to Bottom - follows the new events as the arrive (sort of like the 'tail' command)</li>
+<li>Show Tooltips - you can hover the mouse cursor over an event row and Chainsaw will show you that events contents within the tooltip.  Handy for glancing at more details of events.</li>
+</ul>
+</p>
+<h3>Event Detail panel</h3>
+The Event Detail panel shows a more detailed view of the currently selected LoggingEvent from the Events panel.  The format of the event information
+is determined by the layout chosen.  Internally Chainsaw uses Log4j's Layout classes, so if you are familiar with them, you'll feel right at home. 
+The default layout uses a PatternLayout with HTML formatting.  
+<ul>
+<li><img src="../icons/Help16.gif" alt="Try this...">Try right clicking on the contents of the Event Detail panel and switching between the various Layouts included.</li>
+<li><img src="../icons/Help16.gif" alt="Try this...">Try clicking on the <img src="../icons/Edit16.gif"> icon in the Event Detail toolbar, or popup menu to show the Layout Pattern editor, and edit it to see how changes are reflected.</li>
+</ul>
+
+<h2>Logger Tree panel</h2>
+<font color="red"><b>TODO</b></font>
+
+<h2>Filtering</h2>
+<font color="red"><b>TODO</b></font>
+
+<h2>Shutting down the Tutorial</h2>
+<p>
+When you are finished with the tutorial, you can simply shutdown all the Generator receivers:
+<ul>
+<li><img src="../icons/Help16.gif" alt="Try this...">Show the Receivers panel () and shutdown each of the Generator Receivers by using the <img src="../icons/Stop16.gif" alt="Stop"> icon.</li>
+</ul>
+<p>For convenience you can simply <a href="StopTutorial">click here</a>, and Chainsaw will stop all the tutorial generators for you (If you created any other non-Generator Receivers, they will be left untouched).</p>
+</p>
+<hr>
+<PRE>Transmission Ends</PRE>
 </body>
 </html>
