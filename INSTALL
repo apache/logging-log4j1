@@ -63,6 +63,15 @@ on JDK 1.1 with the following additional requirements:
     Log4j is shipped with jaxp.jar and parser.jar files under the
     build/lib/ directory.
 
+    -------------------
+    RollingFileAppender	
+    -------------------
+ 
+    For rather involved reasons RollingFileAppender requires JDK 1.2
+    or above. This will be fixed in future releases of log4j. If you
+    need RollingFileAppender to run under JDK 1.1 then you can 
+    simply remove RollingFileAppenderBeanInfo.class from log4j.jar.
+
     ------------
     SMTPAppender
     ------------

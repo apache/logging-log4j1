@@ -6,6 +6,7 @@ JSOURCES:=ExternallyRolledFileAppender.java\
 	  DenyAllFilter.java\
 	  StringMatchFilter.java\
 	  PriorityMatchFilter.java\
+	  PriorityRangeFilter.java\
 
 SUBDIRS :=test
 
