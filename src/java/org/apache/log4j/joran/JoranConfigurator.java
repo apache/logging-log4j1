@@ -66,7 +66,8 @@ import javax.xml.parsers.SAXParserFactory;
  * A JoranConfigurator instance should not be used more than once to
  * configure a LoggerRepository.
  *
- * @author Ceki G&uuml;lc&uuml;
+ * @author Curt Arnold
+ * @author Ceki G&uuml;lc&uuml;  
  */
 public class JoranConfigurator extends ConfiguratorBase {
   Interpreter joranInterpreter;
