@@ -21,7 +21,7 @@ import org.apache.log4j.helpers.LogLog;
    <p>A Nested Diagnostic Context, or NDC in short, is an instrument
    to distinguish interleaved log output from different sources. Log
    output is typically interleaved when a server handles multiple
-   clients near-simulatanously.
+   clients near-simultaneously.
 
    <p>Interleaved log output can still be meaningful if each log entry
    from different contexts had a distinctive stamp. This is where NDCs
@@ -65,7 +65,7 @@ import org.apache.log4j.helpers.LogLog;
    <p>Heavy duty systems should call the {@link #remove} method when
    leaving the run method of a thread. This ensures that the memory
    used by the thread can be freed by the Java garbage collector. In
-   version 0.8.5, we have added a meachanism to lazily remove
+   version 0.8.5, we have added a mechanism to lazily remove
    references to dead threads. In practice, this means that you can be
    a little sloppy and sometimes forget to call {@link #remove} before
    exiting a thread.
