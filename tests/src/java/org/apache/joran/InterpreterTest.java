@@ -50,7 +50,7 @@ import org.apache.log4j.joran.action.LoggerAction;
 import org.apache.log4j.joran.action.RootLoggerAction;
 import org.apache.log4j.rolling.RollingFileAppender;
 import org.apache.log4j.rolling.SizeBasedTriggeringPolicy;
-import org.apache.log4j.rolling.SlidingWindowRollingPolicy;
+import org.apache.log4j.rolling.FixedWindowRollingPolicy;
 import org.apache.log4j.spi.ErrorItem;
 import org.xml.sax.SAXParseException;
 
@@ -312,7 +312,7 @@ public class InterpreterTest extends TestCase {
     PatternLayout plBack = (PatternLayout) a1Back.getLayout();
     assertEquals("%-5p %c{2} - %m%n", plBack.getConversionPattern());
          
-    SlidingWindowRollingPolicy swrp = (SlidingWindowRollingPolicy) a1Back.getRollingPolicy();
+    FixedWindowRollingPolicy swrp = (FixedWindowRollingPolicy) a1Back.getRollingPolicy();
     assertEquals("output/parser3", swrp.getActiveFileName());
     assertEquals("output/parser3.%i", swrp.getFileNamePattern());
     
