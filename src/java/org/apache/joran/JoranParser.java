@@ -81,7 +81,7 @@ public class JoranParser {
     loop(e, currentPattern);
   }
 
-  void loop(Node n, Pattern currentPattern) {
+  public void loop(Node n, Pattern currentPattern) {
     if (n == null) {
       return;
     }

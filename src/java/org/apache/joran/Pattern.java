@@ -60,7 +60,7 @@ public class Pattern {
     components = new ArrayList();
   }
 
-  Pattern(String p) {
+  public Pattern(String p) {
     this();
 
     if (p == null) {

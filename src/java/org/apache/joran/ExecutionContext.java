@@ -49,9 +49,14 @@
 
 package org.apache.joran;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Properties;
 import java.util.Stack;
 import java.util.Vector;
+
+import org.apache.log4j.Logger;
+import org.apache.log4j.helpers.OptionConverter;
 
 
 /**
@@ -60,13 +65,20 @@ import java.util.Vector;
  *
  */
 public class ExecutionContext {
+	final static Logger logger = Logger.getLogger(ExecutionContext.class);
+
   Stack objectStack;
+	HashMap objectMap;
+	
 	Vector errorList;
+	Properties substProperties;
+	
 	JoranParser joranParser;
     
 	public ExecutionContext(JoranParser joranParser) {
 		this.joranParser = joranParser;
 		objectStack = new Stack();
+		objectMap = new HashMap(5);
 		errorList = new Vector();
 	}
 	
@@ -101,4 +113,19 @@ public class ExecutionContext {
   public Object getObject(int i) {
 		return objectStack.get(i);
   }
+ 
+  public HashMap getObjectMap() {
+    return objectMap;
+  }
+  
+	public String subst(String value) {
+		try {
+			return OptionConverter.substVars(value, substProperties);
+		} catch (IllegalArgumentException e) {
+			logger.warn("Could not perform variable substitution for variable ["
+			+value+"]", e);
+			return value;
+		}
+	}
+
 }
