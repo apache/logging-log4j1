@@ -33,7 +33,7 @@ public class CacheUtil {
    * @param pattern
    * @return
    */
-  static String removeLiterals(String pattern) {
+  public static String removeLiterals(String pattern) {
     StringBuffer pbuf = new StringBuffer(pattern.length());
     int state = REGULAR_STATE;
     for(int i = 0; i < pattern.length(); i++) {
@@ -45,10 +45,12 @@ public class CacheUtil {
         } else if( (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) {
           pbuf.append(c);
         }
+        break;
       case IN_QUOTE_STATE:
         if(c == '\'') {
           state = REGULAR_STATE;
         }
+        break;
       }
     }
     return pbuf.toString();
@@ -62,7 +64,7 @@ public class CacheUtil {
    * Another uncacheable pattern is that of disjoint Ss, e.g. "YYYY-MM SSE E SSS"
    * a non-sensical pattern, but unsafe nonetheless.
    */
-  static boolean isPatternSafeForCaching(String pattern) {
+  public static boolean isPatternSafeForCaching(String pattern) {
     // this code assumes that literals have been removed from the pattern
     if(pattern.indexOf("EEEE") != -1 && pattern.indexOf("MMMM") != -1) {
       return false;
@@ -73,15 +75,15 @@ public class CacheUtil {
     return true;
   }  
   
-  int computeSuccessiveS(String pattern) {
+  public static int computeSuccessiveS(String pattern) {
     // this code assumes that literals have been removed from the pattern
     int len = pattern.length();
     int i = pattern.indexOf('S');
     
-    if(i != -1)
+    if(i == -1)
       return 0;
     
-    int count = 1;
+    int count = 0;
     while(i < len && pattern.charAt(i++) == 'S') {
       count++;
     }
@@ -100,16 +102,13 @@ public class CacheUtil {
     int len = pattern.length();
     int i = pattern.indexOf('S');
     
-    if(i != -1)
+    if(i == -1)
       return false;
     
     // skip any  ajoining S
-    while(i < len && pattern.charAt(i++) == 'S') {
+    while( i < len && pattern.charAt(i++) == 'S') {
     }
     
-    // i now points to a character different than 'S'
-    // the first possible occurence of S must come after i, hence the i++;
-    i++;
     if(i >= len )
       return false;
     else {
