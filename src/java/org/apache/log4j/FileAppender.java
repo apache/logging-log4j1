@@ -267,8 +267,7 @@ public class FileAppender extends AppenderSkeleton {
 	this.qw.close();
       }
       catch(java.io.IOException e) {
-	System.err.println("Could not close output stream " + qw);
-	e.printStackTrace();
+	LogLog.error("Could not close output stream " + qw, e);
       }
     }      
   }
@@ -373,12 +372,7 @@ public class FileAppender extends AppenderSkeleton {
       else if(value.equalsIgnoreCase("System.err"))
 	setWriter(new OutputStreamWriter(System.err));
       else {
-	try {
-	  fileName = value;
-	}
-	catch(IllegalArgumentException e) {
-	  LogLog.error("Could not set File option.", e);
-	}
+	fileName = value;
       }
     }
     else if (key.equalsIgnoreCase(APPEND_OPTION)) {
