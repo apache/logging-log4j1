@@ -17,7 +17,7 @@
   <!-- prefixed with "env". -->
   <property environment="env"/>
 
-  <property name="version" value="1.2.4"/>
+  <property name="version" value="1.2.5"/>
 
   <!-- The base directory relative to which most targets are built -->
   <property name="base" value="."/>
@@ -191,7 +191,7 @@
     
     <copy todir="${javac.dest}">
       <fileset dir="${java.source.dir}"
-	includes="${stem}/lf5/**/*.properties"/>
+	includes="${stem}/lf5/**/*.properties"/>    
       <fileset dir="${java.source.dir}"
 	includes="${stem}/lf5/viewer/images/*"/>
    </copy>
@@ -213,6 +213,7 @@
 
     <copy todir="${javac.dest}">
       <fileset dir="." includes="examples/lf5/**/*.properties"/>
+      <fileset dir="." includes="examples/lf5/**/*.xml"/>
    </copy>
 
   </target>
@@ -330,6 +331,9 @@
 		${stem}/jdbc/*.class,
 		${stem}/varia/*.class,
 		${stem}/chainsaw/*.class,
+		${stem}/lf5/**/*.class,
+		${stem}/lf5/**/*.properties,
+		${stem}/lf5/**/*.gif,
 		${stem}/nt/*.class,
 		${stem}/xml/*.class,
 		${stem}/jmx/*.class,
@@ -491,7 +495,7 @@
 		          **/*.bak, **/goEnv.bat,
 		          **/Makefile, **/goEnv.bat,
 	                  docs/pub-support/*,
-                          dist/classes/org/**,
+	                  dist/classes/org/**,
 	                  src/java/org/apache/log4j/test/**/*,	
 			  **/.#*"/>
     </copy>

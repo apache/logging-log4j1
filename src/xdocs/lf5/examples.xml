@@ -26,11 +26,16 @@
       <h4>Running the Example:</h4>
 
       <p>Let <code>LOG4J_HOME</code> be the the directory where you
-      installed log4j.</p>
+      installed log4j and let VERSION stand for the log4j version.</p>
       
       <ul>
+	<li>Ensure that <i>LOG4J_HOME/dist/lib/log4j-VERSION.jar</i>
+	  is in your CLASSPATH.</li>
+
 	<li>Ensure that <i>LOG4J_HOME/dist/classes</i> is in your
-	CLASSPATH.</li>
+	CLASSPATH. This directory contains the binary class files for
+	running the lf5 examples. <em>It is not needed under normal
+	operational circumstances.</em> </li>
 
 	<li>Ensure that a JAXP compatible XML parser is in is in your
 	CLASSPATH.</li>
@@ -75,16 +80,12 @@
       installed log4j.</p>
 
       <ul>
-	<li>Ensure that <i>LOG4J_HOME/dist/classes</i> is in your
-	CLASSPATH.</li>
-
-	<li>Ensure that a JAXP compatible XML parser is in is in your
-	CLASSPATH.</li>
+	<li>Set up your CLASSPATH as in Example 1 above.</li>
 	
 	<li>Type<b> </b>the following at the command line: 
 
 	  <p><b> java
-	  examples.lf5.InitUsingPropertiesFile</b>.<b>InitUsingPropertiesFile</b></p>x
+	  examples.lf5.InitUsingPropertiesFile</b>.<b>InitUsingPropertiesFile</b></p>
 	</li>
       </ul>
 
@@ -125,11 +126,7 @@
       installed log4j.</p>
 
       <ul>
-	<li>Ensure that <i>LOG4J_HOME/dist/classes</i> is in your
-	CLASSPATH.</li>
-
-	<li>Ensure that a JAXP compatible XML parser is in is in your
-	CLASSPATH.</li>
+	<li>Set up your CLASSPATH as in Example 1 above.</li>
 
 	<li>Type<b> </b>the following at the command line:
 
@@ -188,11 +185,7 @@
       <h4>Running the Example:</h4>
      
       <ul>
-	<li>Ensure that <i>LOG4J_HOME/dist/classes</i> is in your
-	CLASSPATH.</li>
-
-	<li>Ensure that a JAXP compatible XML parser is in is in your
-	CLASSPATH.</li>
+	<li>Set up your CLASSPATH as in Example 1 above.</li>
 
 	<li>Copy the provided
 	  <i>LOG4J_HOME/examples/lf5/InitUsingLog4JProperties/log4j.properties</i>
@@ -279,11 +272,7 @@ log4j.appender.R.MaxBackupIndex=1
       <h4>Running the Example:</h4>
 
       <ul>
-	<li>Ensure that <i>LOG4J_HOME/dist/classes</i> is in your
-	  CLASSPATH.</li>
-	
-	<li>Ensure that a JAXP compatible XML parser is in is in your
-	  CLASSPATH.</li>
+	<li>Set up your CLASSPATH as in Example 1 above.</li>
 
 	<li>Type<b> </b>the following at the command line:
 
@@ -362,11 +351,7 @@ log4j.appender.R.MaxBackupIndex=1
 
       <h4>Running the Example:</h4>
       <ul>
-	<li>Ensure that <i>LOG4J_HOME/dist/classes</i> is in your
-	  CLASSPATH.</li>
-	
-	<li>Ensure that a JAXP compatible XML parser is in is in your
-	    CLASSPATH.</li>
+	<li>Set up your CLASSPATH as in Example 1 above.</li>
 	
 	<li> Start the SocketServer using the following command: </li>
 	
@@ -469,11 +454,7 @@ Message - %m[slf5s.MESSAGE]</font>
       <h4>Running the Example:</h4>
       
       <ul>
-	<li>Ensure that <i>LOG4J_HOME/dist/classes</i> is in your
-	  CLASSPATH.</li>
-	
-	<li>Ensure that a JAXP compatible XML parser is in is in your
-	  CLASSPATH.</li>
+	<li>Set up your CLASSPATH as in Example 1 above.</li>
 
 	<li>Type<b> </b>the following at the command line:<b> java
 	    org.apache.log4j.lf5.StartLogFactor5</b>
@@ -521,11 +502,7 @@ Message - %m[slf5s.MESSAGE]</font>
 
       <h4>Running the Example:</h4>
       <ul>
-	<li>Ensure that <i>LOG4J_HOME/dist/classes</i> is in your
-	  CLASSPATH.</li>
-	
-	<li>Ensure that a JAXP compatible XML parser is in is in your
-	    CLASSPATH.</li>
+	<li>Set up your CLASSPATH as in Example 1 above.</li>
 
 	<li>Type<b> </b>the following at the command line:
 
@@ -574,11 +551,7 @@ Message - %m[slf5s.MESSAGE]</font>
 
       <h4>Running the Example:</h4>
       <ul>
-	<li>Ensure that <i>LOG4J_HOME/dist/classes</i> is in your
-	  CLASSPATH.</li>
-	
-	<li>Ensure that a JAXP compatible XML parser is in is in your
-	    CLASSPATH.</li>
+	<li>Set up your CLASSPATH as in Example 1 above.</li>
 
 	<li>Type<b> </b>the following at the command line:
 	  

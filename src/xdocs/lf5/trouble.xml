@@ -20,9 +20,10 @@
 	logs to both the LogFactor5 console and a rolling log
 	file.</p>
 
-<pre><font face="Courier New, Courier, mono"># Register both appenders with the root of the Category tree.
+<pre><font face="Courier New, Courier, mono"># Register both appenders
+with the root of the logger tree.
 
-log4j.rootCategory=, A1, R
+log4j.rootLogger=, A1, R
 
 # A1 is set to be a LF5Appender which outputs to a swing
 # logging console.   
