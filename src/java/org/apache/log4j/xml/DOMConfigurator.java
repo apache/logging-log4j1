@@ -105,7 +105,24 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
       return appender;
     } else {
       Document doc = appenderRef.getOwnerDocument();
-      Element element = doc.getElementById(appenderName);
+
+      // DOESN'T WORK!! :
+      // Element element = doc.getElementById(appenderName);
+                        
+      // Endre's hack:
+      Element element = null;
+      NodeList list = doc.getElementsByTagName("appender");
+      for (int t=0; t<list.getLength(); t++) {
+	Node node = list.item(t);
+	NamedNodeMap map= node.getAttributes();
+	Node attrNode = map.getNamedItem("name");
+	if (appenderName.equals(attrNode.getNodeValue())) {
+	  element = (Element) node;
+	  break;
+	}
+      }
+      // Hack finished.
+
       if(element == null) {
 	LogLog.error("No appender named ["+appenderName+"] could be found."); 
 	return null;
@@ -557,7 +574,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
 	LogLog.error("Could not find log4j.dtd.");
       }
       else {
-	LogLog.debug("URL to log4j.dtd is " + dtdURL.toString());
+	LogLog.debug("URL to log4j.dtd is [" + dtdURL.toString()+"].");
 	inputSource.setSystemId(dtdURL.toString());
       }
       Document doc = docBuilder.parse(inputSource);
