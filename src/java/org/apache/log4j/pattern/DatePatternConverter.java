@@ -58,49 +58,42 @@ public class DatePatternConverter extends PatternConverter {
    * The option string can be one of the strings 'DATE', 'ABSOLUTE', 'ISO8601'
    * or any date and time pattern accepted by java.text.SimpleDateFormat.
    */
-  public void setOption(String option) {
-    super.setOption(option);
-
+  public void setOptions(List optionList) {
+    if(optionList == null || optionList.size() == 0) {
+      return;
+    }
+    
+    String patternOption = (String) optionList.get(0);
     String pattern;
-    if (option == null) {
+    if (patternOption == null) {
       pattern = "yyyy-MM-dd HH:mm:ss,SSS";
     } else if (
-      option.equalsIgnoreCase(AbsoluteTimeDateFormat.ISO8601_DATE_FORMAT)) {
+      patternOption.equalsIgnoreCase(AbsoluteTimeDateFormat.ISO8601_DATE_FORMAT)) {
       pattern = "yyyy-MM-dd HH:mm:ss,SSS";
     } else if (
-      option.equalsIgnoreCase(AbsoluteTimeDateFormat.ABS_TIME_DATE_FORMAT)) {
+      patternOption.equalsIgnoreCase(AbsoluteTimeDateFormat.ABS_TIME_DATE_FORMAT)) {
       pattern = "HH:mm:ss,SSS";
     } else if (
-      option.equalsIgnoreCase(
+      patternOption.equalsIgnoreCase(
           AbsoluteTimeDateFormat.DATE_AND_TIME_DATE_FORMAT)) {
       pattern = "dd MMM yyyy HH:mm:ss,SSS";
     } else {
-      pattern = option;
+      pattern = patternOption;
     }
 
     try {
       df = new SimpleDateFormat(pattern);
     } catch (IllegalArgumentException e) {
       logger.warn(
-        "Could not instantiate SimpleDateFormat with pattern " + option, e);
+        "Could not instantiate SimpleDateFormat with pattern " + patternOption, e);
       // detault for the ISO8601 format
       df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
     }
-  }
 
-  /**
-   * Sets the date format and timezone.
-   * @param options list of options, may be null.
-   */
-  public void setOptions(List options) {
-     if (options == null || options.size() == 0) {
-         setOption(null);
-     } else {
-         setOption((String) options.get(0));
-         if (options.size() > 1) {
-             TimeZone tz = TimeZone.getTimeZone((String) options.get(1));
-             df.setTimeZone(tz);
-         }
+    // if the option list contains a TZ option, then set it.
+    if (optionList.size() > 1) {
+      TimeZone tz = TimeZone.getTimeZone((String) optionList.get(1));
+      df.setTimeZone(tz);
     }
   }
   

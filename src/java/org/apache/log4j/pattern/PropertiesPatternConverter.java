@@ -35,6 +35,7 @@ import java.util.*;
 public class PropertiesPatternConverter extends PatternConverter {
   
   String name;
+  String option;
   
   public StringBuffer convert(LoggingEvent event) {
 
@@ -68,6 +69,13 @@ public class PropertiesPatternConverter extends PatternConverter {
     return buf;
   }
 
+  public void setOptions(List optionList) {
+    if(optionList == null || optionList.size() == 0) {
+      return;
+    }
+    option = (String) optionList.get(0);
+  }
+  
   public String getName() {
     if(name == null) {
       if(option != null) {
