@@ -55,10 +55,12 @@
 package org.apache.log4j.chainsaw;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -779,7 +781,18 @@ public class LogPanel extends DockablePanel implements Profileable,
                     }
                 }
             });
-
+            
+        final JMenuItem menuItemBestFit = new JMenuItem("Best fit column");
+        menuItemBestFit.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent evt) {
+                    if (currentPoint != null) {
+                        int column = table.columnAtPoint(currentPoint);
+                        int maxWidth = getMaxColumnWidth(column);
+                        table.getColumnModel().getColumn(column).setPreferredWidth(maxWidth);
+                    }
+                }
+        });
+        
         final JMenuItem menuItemToggleDock = new JMenuItem("Undock/dock");
 
         undockedFrame = new JFrame(ident);
@@ -1008,6 +1021,8 @@ public class LogPanel extends DockablePanel implements Profileable,
         p.add(menuItemFocusOn);
         p.add(menuDefineAddCustomFilter);
         p.add(new JSeparator());
+        
+        p.add(menuItemBestFit);
 
         p.add(menuItemToggleDetails);
         p.add(menuItemToggleToolTips);
@@ -1613,6 +1628,19 @@ public class LogPanel extends DockablePanel implements Profileable,
                     repaint();
                 }
             });
+    }
+
+    private int getMaxColumnWidth(int index) {
+        FontMetrics metrics = getGraphics().getFontMetrics();
+        int longestWidth = metrics.stringWidth("  " + table.getColumnName(index) + "  ") + (2 * table.getColumnModel().getColumnMargin());
+         
+        for(int i=0,j=tableModel.getRowCount();i < j; i++) {
+            Component c = renderer.getTableCellRendererComponent(table, table.getValueAt(i, index), false, false, i, index);
+            if (c instanceof JLabel) {
+                longestWidth = Math.max(longestWidth, metrics.stringWidth(((JLabel)c).getText()));
+            }
+        }
+        return longestWidth + 5; 
     }
 
     void loadColorSettings(String ident) {
