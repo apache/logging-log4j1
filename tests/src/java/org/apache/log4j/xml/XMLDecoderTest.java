@@ -4,7 +4,7 @@
  * To change the template for this generated file go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-package org.apache.log4j.net;
+package org.apache.log4j.xml;
 
 import java.io.File;
 import java.util.List;
