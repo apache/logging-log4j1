@@ -9,14 +9,14 @@
   <meta name="keywords" content="java, logging, tracing, component, framework, API, log4j"/>
 <body>
 
-    <section name="log4j version 1.2.7">
-      <p>log4j 1.2.7 is available in <a
-	href="../jakarta-log4j-1.2.7.tar.gz"><b>TAR.GZ</b></a> format
-	or in <a href="../jakarta-log4j-1.2.7.zip"><b>ZIP</b></a>
+    <section name="log4j version 1.2.8">
+      <p>log4j 1.2.8 is available in <a
+	href="../jakarta-log4j-1.2.8.tar.gz"><b>TAR.GZ</b></a> format
+	or in <a href="../jakarta-log4j-1.2.8.zip"><b>ZIP</b></a>
 	format.
       </p>
 
-      <p>As of release 1.2.7 log4j now searches for the file log4j.xml
+      <p>As of release 1.2.8 log4j now searches for the file log4j.xml
         as well as the file log4j.properties during
         initialization. See the <a href="HISTORY">HISTORY</a> file for
         the firther details.
@@ -42,14 +42,15 @@
 	renaming of the <code>CategoryFactory</code> class to
 	<code>LoggerFactory</code> class such that subclasses of
 	<code>Category</code> class must be modified and
-	recompiled. By the way, <b>we strongly discourage casual users
-	from subclassing the <code>Category</code> or
-	<code>Logger</code> classes.</b>
+	recompiled. <em>The recommended pattern for extending the
+	<code>Logger</code> class is wrapping. Moreover, we strongly
+	discourage casual users from subclassing the
+	<code>Category</code> or <code>Logger</code> classes. </em>
       </p>
 
       <p>We also maintain a list of <a href="earlier.html">earlier
 	  versions</a> of log4j for download, intended for the curious
-	  paleontologist -- there seems to be thousands of them!
+	  paleontologist -- there seems to be quite a few of them!
       </p>
 
 
@@ -76,33 +77,26 @@
 
 	<!-- ============================================================================== -->
 
-	<dt><a href="http://www.japhy.de/configLog4j"><b>configLog4j</b></a></dt>
+<!--	<dt><a href="http://www.japhy.de/configLog4j"><b>configLog4j</b></a></dt>
 
 	<dd>A graphical log4j configuration editor by Tobias
 	Dezulian.</dd>
-
+-->
 	<!-- ============================================================================== -->
 
 	<dt>
 	  <a
-	href="http://support.klopotek.de/log4j/jdbc/index.html"><b>JDBCAppender</b></a>
+	href="http://www.mannhaupt.com/danko/projects/"><b>JDBCAppender</b></a>
+	</dt> 
 
-	</dt> <dd>A <code>JDBCAppender</code> by <a
-	href="mailto:t.fenner@klopotek.de">Thomas Fenner</a>. Note
-	that log4j 1.2 ships with another <code>JDBCAppender</code>
-	written by Kevin Steppe.
+        <dd>A powerful <code>JDBCAppender</code> by Danko Mannhaupt
+	  who continues the work of Thomas Fenner. You might find
+	  this JDBCAppender more suitable then the one that ships with
+	  log4j 1.2. 
 	</dd>
 
 	<!-- ============================================================================== -->	
 	
-	<dt><a
-	href="http://developer.jini.org/exchange/projects/log"><b>JINI
-	logging service</b></a> (registration required)</dt>
-
-	<dd>A log4j wrapper for JINI by Jerome Bernard.</dd>
-
-	<!-- ============================================================================== -->
-
 	<dt><a href="http://qos.ch/"><b>log4j<em>ME</em></b></a></dt>
 
 	<dd>Log4j<em>ME</em>, or log4j MiniEdition, is based on the
@@ -139,9 +133,9 @@
 	</dt> 
 
 	<dd>Another full-featured graphical log viewer. After a merger
-	  with a service-orinted company and a change in
-	  business-orientation, the owners of LogFactor5 have decided
-	  to donate their product to the log4j project.
+	  and the subsequent change in business-orientation, the
+	  owners of LogFactor5 have decided to donate their product to
+	  the log4j project.
 	</dd>
 
 	<!-- ============================================================================== -->
