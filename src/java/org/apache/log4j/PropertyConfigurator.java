@@ -276,7 +276,7 @@ public class PropertyConfigurator extends ConfiguratorBase {
     # Logger definitions:
     # The SECURITY logger inherits is level from root. However, it's output
     # will go to A1 appender defined above. It's additivity is non-cumulative.
-    log4j.logger.SECURITY=INHERIT, A1
+    log4j.logger.SECURITY=INHERITED, A1
     log4j.additivity.SECURITY=false
 
     # Only warnings or above will be logged for the logger "SECURITY.access".
@@ -287,7 +287,7 @@ public class PropertyConfigurator extends ConfiguratorBase {
     # The logger "class.of.the.day" inherits its level from the
     # logger hierarchy.  Output will go to the appender's of the root
     # logger, A2 in this case.
-    log4j.logger.class.of.the.day=INHERIT
+    log4j.logger.class.of.the.day=INHERITED
     </pre>
 
     <p>Refer to the <b>setOption</b> method in each Appender and
