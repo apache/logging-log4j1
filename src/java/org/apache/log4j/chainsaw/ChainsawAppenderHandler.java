@@ -291,6 +291,7 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
           synchronized (mutex) {
             try {
               while (queue.size() == 0) {
+                setDataRate(0);
                 mutex.wait();
               }
 
