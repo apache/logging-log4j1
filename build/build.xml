@@ -234,7 +234,9 @@
 	          ${stem}/helpers/*.class,
                   ${stem}/spi/*.class, 
 		  ${stem}/or/*.class,
-		  ${stem}/config/PropertySetter.class"
+		  ${stem}/config/PropertySetter.class
+		  ${stem}/config/PropertySetterException.class"
+
 	 excludes="**/StressCategory*, **/TTCC*, **/SimpleLayout.*, 
 	          **/AsyncAppender.*, **/Dispatcher.*, **/BoundedFIFO.*,
 	          **/Syslog*, **/RelativeTimeDateFormat.*,
