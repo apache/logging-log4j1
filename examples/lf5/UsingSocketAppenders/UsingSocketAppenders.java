@@ -8,7 +8,7 @@
 
 package examples.lf5.UsingSocketAppenders;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 import java.io.IOException;
@@ -34,99 +34,99 @@ import java.net.URL;
 // Contributed by ThoughtWorks Inc.
 
 public class UsingSocketAppenders {
-  //--------------------------------------------------------------------------
-  //   Constants:
-  //--------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    //   Constants:
+    //--------------------------------------------------------------------------
 
-  //--------------------------------------------------------------------------
-  //   Protected Variables:
-  //--------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    //   Protected Variables:
+    //--------------------------------------------------------------------------
 
-  //--------------------------------------------------------------------------
-  //   Private Variables:
-  //--------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    //   Private Variables:
+    //--------------------------------------------------------------------------
 
-  private static Category cat1 =
-      Category.getInstance(UsingSocketAppenders.class);
-  private static Category cat2 =
-      Category.getInstance("TestClass.Subclass");
-  private static Category cat3 =
-      Category.getInstance("TestClass.Subclass.Subclass");
-  //--------------------------------------------------------------------------
-  //   Constructors:
-  //--------------------------------------------------------------------------
+    private static Logger logger1 =
+            Logger.getLogger(UsingSocketAppenders.class);
+    private static Logger logger2 =
+            Logger.getLogger("TestClass.Subclass");
+    private static Logger logger3 =
+            Logger.getLogger("TestClass.Subclass.Subclass");
+    //--------------------------------------------------------------------------
+    //   Constructors:
+    //--------------------------------------------------------------------------
 
-  //--------------------------------------------------------------------------
-  //   Public Methods:
-  //--------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    //   Public Methods:
+    //--------------------------------------------------------------------------
 
-  public static void main(String argv[]) {
-    // Use a PropertyConfigurator to initialize from a property file.
-    String resource =
-        "/examples/lf5/UsingSocketAppenders/socketclient.properties";
-    URL configFileResource =
-        UsingSocketAppenders.class.getResource(resource);
-    PropertyConfigurator.configure(configFileResource);
+    public static void main(String argv[]) {
+        // Use a PropertyConfigurator to initialize from a property file.
+        String resource =
+                "/examples/lf5/UsingSocketAppenders/socketclient.properties";
+        URL configFileResource =
+                UsingSocketAppenders.class.getResource(resource);
+        PropertyConfigurator.configure(configFileResource);
 
-    // Add a bunch of logging statements ...
-    cat1.debug("Hello, my name is Homer Simpson.");
-    cat1.debug("Hello, my name is Lisa Simpson.");
-    cat2.debug("Hello, my name is Marge Simpson.");
-    cat2.debug("Hello, my name is Bart Simpson.");
-    cat3.debug("Hello, my name is Maggie Simpson.");
+        // Add a bunch of logging statements ...
+        logger1.debug("Hello, my name is Homer Simpson.");
+        logger1.debug("Hello, my name is Lisa Simpson.");
+        logger2.debug("Hello, my name is Marge Simpson.");
+        logger2.debug("Hello, my name is Bart Simpson.");
+        logger3.debug("Hello, my name is Maggie Simpson.");
 
-    cat2.info("We are the Simpsons!");
-    cat2.info("Mmmmmm .... Chocolate.");
-    cat3.info("Homer likes chocolate");
-    cat3.info("Doh!");
-    cat3.info("We are the Simpsons!");
+        logger2.info("We are the Simpsons!");
+        logger2.info("Mmmmmm .... Chocolate.");
+        logger3.info("Homer likes chocolate");
+        logger3.info("Doh!");
+        logger3.info("We are the Simpsons!");
 
-    cat1.warn("Bart: I am through with working! Working is for chumps!" +
-        "Homer: Son, I'm proud of you. I was twice your age before " +
-        "I figured that out.");
-    cat1.warn("Mmm...forbidden donut.");
-    cat1.warn("D'oh! A deer! A female deer!");
-    cat1.warn("Truly, yours is a butt that won't quit." +
-        "- Bart, writing as Woodrow to Ms. Krabappel.");
+        logger1.warn("Bart: I am through with working! Working is for chumps!" +
+                "Homer: Son, I'm proud of you. I was twice your age before " +
+                "I figured that out.");
+        logger1.warn("Mmm...forbidden donut.");
+        logger1.warn("D'oh! A deer! A female deer!");
+        logger1.warn("Truly, yours is a butt that won't quit." +
+                "- Bart, writing as Woodrow to Ms. Krabappel.");
 
-    cat2.error("Dear Baby, Welcome to Dumpsville. Population: you.");
-    cat2.error("Dear Baby, Welcome to Dumpsville. Population: you.",
-        new IOException("Dumpsville, USA"));
-    cat3.error("Mr. Hutz, are you aware you're not wearing pants?");
-    cat3.error("Mr. Hutz, are you aware you're not wearing pants?",
-        new IllegalStateException("Error !!"));
+        logger2.error("Dear Baby, Welcome to Dumpsville. Population: you.");
+        logger2.error("Dear Baby, Welcome to Dumpsville. Population: you.",
+                new IOException("Dumpsville, USA"));
+        logger3.error("Mr. Hutz, are you aware you're not wearing pants?");
+        logger3.error("Mr. Hutz, are you aware you're not wearing pants?",
+                new IllegalStateException("Error !!"));
 
 
-    cat3.fatal("Eep.");
+        logger3.fatal("Eep.");
 
-    cat3.fatal("Mmm...forbidden donut.",
-        new SecurityException("Fatal Exception ... "));
+        logger3.fatal("Mmm...forbidden donut.",
+                new SecurityException("Fatal Exception ... "));
 
-    cat3.fatal("D'oh! A deer! A female deer!");
-    cat2.fatal("Mmmmmm .... Chocolate.",
-        new SecurityException("Fatal Exception"));
+        logger3.fatal("D'oh! A deer! A female deer!");
+        logger2.fatal("Mmmmmm .... Chocolate.",
+                new SecurityException("Fatal Exception"));
 
-    // Put the main thread is put to sleep for 5 seconds to allow the
-    // SocketServer to process all incoming messages before the Socket is
-    // closed. This is done to overcome some basic limitations with the
-    // way the SocketServer and SocketAppender classes manage sockets.
-    try {
-      Thread.currentThread().sleep(5000);
-    } catch (InterruptedException ie) {
+        // Put the main thread is put to sleep for 5 seconds to allow the
+        // SocketServer to process all incoming messages before the Socket is
+        // closed. This is done to overcome some basic limitations with the
+        // way the SocketServer and SocketAppender classes manage sockets.
+        try {
+            Thread.currentThread().sleep(5000);
+        } catch (InterruptedException ie) {
+        }
+
     }
 
-  }
+    //--------------------------------------------------------------------------
+    //   Protected Methods:
+    //--------------------------------------------------------------------------
 
-  //--------------------------------------------------------------------------
-  //   Protected Methods:
-  //--------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    //   Private Methods:
+    //--------------------------------------------------------------------------
 
-  //--------------------------------------------------------------------------
-  //   Private Methods:
-  //--------------------------------------------------------------------------
-
-  //--------------------------------------------------------------------------
-  //   Nested Top-Level Classes or Interfaces:
-  //--------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    //   Nested Top-Level Classes or Interfaces:
+    //--------------------------------------------------------------------------
 
 }

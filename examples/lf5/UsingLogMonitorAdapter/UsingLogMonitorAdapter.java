@@ -54,16 +54,16 @@ public class UsingLogMonitorAdapter {
   }
 
   public void doMyBidding() {
-    String category = this.getClass().getName();
+    String logger = this.getClass().getName();
 
     // will default to debug log level
-    _adapter.log(category, "Doh this is a debugging");
+    _adapter.log(logger, "Doh this is a debugging");
 
-    _adapter.log(category, LogLevel.INFO, "Hmmm fobidden doughnut");
-    _adapter.log(category, LogLevel.WARN, "Danger Danger Will Robinson",
+    _adapter.log(logger, LogLevel.INFO, "Hmmm fobidden doughnut");
+    _adapter.log(logger, LogLevel.WARN, "Danger Danger Will Robinson",
         new RuntimeException("DANGER"), "32");
-    _adapter.log(category, LogLevel.ERROR, "Exit stage right->");
-    _adapter.log(category, LogLevel.FATAL, "What's up Doc?",
+    _adapter.log(logger, LogLevel.ERROR, "Exit stage right->");
+    _adapter.log(logger, LogLevel.FATAL, "What's up Doc?",
         new NullPointerException("Unfortunate exception"));
   }
 
