@@ -91,7 +91,7 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
     new PropertyChangeSupport(this);
 
   public ChainsawAppenderHandler(ChainsawAppender appender) {
-    appender.addAppender(this);
+    appender.setAppender(this);
     activateOptions();
   }
 

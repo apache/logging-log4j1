@@ -321,7 +321,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     
       handler = new ChainsawAppenderHandler(appender);
       handler.addEventBatchListener(new NewTabEventBatchReceiver());
-      LogManager.getRootLogger().addAppender(handler);
+      LogManager.getRootLogger().addAppender(appender);
       setShutdownAction(new AbstractAction() {
 		public void actionPerformed(ActionEvent e) {
 		}});
