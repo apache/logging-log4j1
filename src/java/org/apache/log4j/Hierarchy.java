@@ -64,7 +64,7 @@ public class Hierarchy {
   static final int DISABLE_OVERRIDE = -2;  
   
   private CategoryFactory defaultFactory;
-  private Vector  listeners;
+  private Vector listeners;
 
   Hashtable ht;
   Category root;
@@ -101,6 +101,14 @@ public class Hierarchy {
     rendererMap.put(classToRender, or);
   }
   
+  public 
+  void addHierarchyEventListener(HierarchyEventListener listener) {
+    if(listeners.contains(listener)) {
+      LogLog.warn("Ignoring attempt to add an existent listener.");
+    } else {
+      listeners.add(listener);
+    }
+  }
 
   /**
      This call will clear all category definitions from the internal
@@ -234,7 +242,7 @@ public class Hierarchy {
     disable = DISABLE_OFF;
   }
 
-  private
+  
   void fireAddAppenderEvent(Category category, Appender appender) {
     if(listeners != null) {
       int size = listeners.size();
@@ -247,7 +255,6 @@ public class Hierarchy {
   }
 
 
-  private
   void fireRemoveAppenderEvent(Category category, Appender appender) {
     if(listeners != null) {
       int size = listeners.size();

@@ -80,43 +80,6 @@ public class SyslogAppender extends AppenderSkeleton {
   /** reserved for local use*/
   final static public int LOG_LOCAL7 = 23<<3; 
 
-   /**
-     A string constant used in naming the option for setting the
-     syslog server.  Current value of this string constant is
-     <b>SyslogHost</b>.
-     
-     @deprecated Options are now handled using the JavaBeans paradigm.
-     This constant is not longer needed and will be removed in the
-     <em>near</em> term.
-
-     @since 0.8.1 */
-  public static final String SYSLOG_HOST_OPTION = "SyslogHost";
-
-   /**
-     A string constant used in naming the option for setting facility
-     type.  Current value of this string constant is <b>Facility</b>.
-
-     
-     @deprecated Options are now handled using the JavaBeans paradigm.
-     This constant is not longer needed and will be removed in the
-     <em>near</em> term.
-
-     @since 0.8.1 */
-  public static final String FACILITY_OPTION = "Facility";  
-
-   /**
-     A string constant used in naming the option for setting whether
-     the facility name is printed or not.  Current value of this
-     string constant is <b>FacilityPrinting</b>.
-
-     
-     @deprecated Options are now handled using the JavaBeans paradigm.
-     This constant is not longer needed and will be removed in the
-     <em>near</em> term.
-
-     @since 0.8.1 */
-  public static final String FACILITY_PRINTING_OPTION = "FacilityPrinting";  
-
   protected static final int SYSLOG_HOST_OI = 0;
   protected static final int FACILITY_OI = 1;
   
@@ -148,43 +111,6 @@ public class SyslogAppender extends AppenderSkeleton {
     this(layout, syslogFacility);
     setSyslogHost(syslogHost);
   }
-
-  /**
-     Returns the option names for this component, namely the string
-     array consisting of {{@link #SYSLOG_HOST_OPTION}, {@link
-     #FACILITY_OPTION}, {@link #FACILITY_PRINTING_OPTION}}.
-
-     @deprecated We now use JavaBeans introspection to configure
-     components. Options strings are no longer needed.
-
-     @since 0.8.1 */
-  public
-  String[] getOptionStrings() {
-    return OptionConverter.concatanateArrays(super.getOptionStrings(),
-		      new String[] {SYSLOG_HOST_OPTION, FACILITY_OPTION,
-			            FACILITY_PRINTING_OPTION});
-  }
-  
-  /**
-     @deprecated Use the setter method for the option directly instead
-     of the generic <code>setOption</code> method. 
-
-   */
-  public
-  void setOption(String option, String value) {
-    if(value == null) return;
-    
-    super.setOption(option, value);    
-    
-    if(option.equals(SYSLOG_HOST_OPTION)) 
-      this.setSyslogHost(value);
-    else if(option.equals(FACILITY_PRINTING_OPTION))
-      facilityPrinting = OptionConverter.toBoolean(value, facilityPrinting);
-    else if(option.equals(FACILITY_OPTION)) {
-      this.setFacility(value);
-    }
-  }
-  
 
   /**
      Release any resources held by this SyslogAppender.

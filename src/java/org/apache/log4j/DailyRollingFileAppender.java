@@ -210,7 +210,12 @@ public class DailyRollingFileAppender extends FileAppender {
       int type = computeCheckPeriod();
       printPeriodicity(type);
       rc.setType(type);
-      scheduledFilename = fileName+sdf.format(now);
+      File file = new File(fileName);
+      if(file.exists()) {
+	scheduledFilename = fileName+sdf.format(new Date(file.lastModified()));
+      } else {
+	scheduledFilename = fileName+sdf.format(now);
+      }
     } else {
       LogLog.error("Either Filename or DatePattern options are not set for ["+
 		   name+"].");
@@ -279,8 +284,9 @@ public class DailyRollingFileAppender extends FileAppender {
     }
 
     String datedFilename = fileName+sdf.format(now);
-    if (scheduledFilename.equals(datedFilename)) 
+    if (scheduledFilename.equals(datedFilename)) {
       return;
+    }
 
     // close current file, and rename it to datedFilename
     this.closeFile(); 
@@ -308,6 +314,12 @@ public class DailyRollingFileAppender extends FileAppender {
   /**
      This method differentiates DailyRollingFileAppender from its
      super class.
+
+     <p>Before actually logging, this method will check whether it is
+     time to do a rollover. If it is, it will schedule the next
+     rollover time and then rollover.
+
+
   */
   protected 
   void subAppend(LoggingEvent event) {

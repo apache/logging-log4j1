@@ -96,61 +96,6 @@ import org.apache.log4j.AppenderSkeleton;
     @since 0.8.4 */
 
 public class SocketAppender extends AppenderSkeleton {
-  /**
-     A string constant used in naming the option for setting the the
-     host name of the remote server.  Current value of this string
-     constant is <b>RemoteHost</b>. See the {@link #setOption} method
-     for the meaning of this option.
-
-     
-     @deprecated Options are now handled using the JavaBeans paradigm.
-     This constant is not longer needed and will be removed in the
-     <em>near</em> term.
-
-  */
-  public static final String REMOTE_HOST_OPTION = "RemoteHost";
-
- /**
-     A string constant used in naming the option for setting the the
-     port to contect on the remote server.  Current value of this string
-     constant is <b>Port</b>.  See the {@link #setOption} method
-     for the meaning of this option.
-
-     
-     @deprecated Options are now handled using the JavaBeans paradigm.
-     This constant is not longer needed and will be removed in the
-     <em>near</em> term.
-
-  */
-  public static final String PORT_OPTION = "Port";
-
-  /**
-     A string constant used in naming the option for setting the the
-     location information flag.  Current value of this string
-     constant is <b>LocationInfo</b>.  See the {@link #setOption} method
-     for the meaning of this option.
-
-     
-     @deprecated Options are now handled using the JavaBeans paradigm.
-     This constant is not longer needed and will be removed in the
-     <em>near</em> term.
-
-  */
-  public static final String LOCATION_INFO_OPTION = "LocationInfo";
-
-  /**
-     A string constant used in naming the option for setting the delay
-     between each reconneciton attempt to remote server.  Current
-     value a of this string constant is <b>ReconnectionDelay</b>.  See
-     the {@link #setOption} method for the meaning of this option.
-
-     
-     @deprecated Options are now handled using the JavaBeans paradigm.
-     This constant is not longer needed and will be removed in the
-     <em>near</em> term.
-
-  */
-  public static final String RECONNECTION_DELAY_OPTION = "ReconnectionDelay";
 
   /**
      The default port number of remote logging server (4560).
@@ -206,45 +151,6 @@ public class SocketAppender extends AppenderSkeleton {
     this.address = getAddressByName(host);
     this.remoteHost = host;
     connect(address, port);
-  }
-  
-  /**
-     Retuns the option names for this component, namely the string
-     array consisting of {{@link #REMOTE_HOST_OPTION}, {@link
-     #PORT_OPTION}, {@link #LOCATION_INFO_OPTION}, {@link
-     #RECONNECTION_DELAY_OPTION}} in addition to the options of its
-     super class {@link AppenderSkeleton}.
-
-     @deprecated We now use JavaBeans introspection to configure
-     components. Options strings are no longer needed.
-    */
-  public
-  String[] getOptionStrings() {
-    return OptionConverter.concatanateArrays(super.getOptionStrings(),
-                          new String[] {REMOTE_HOST_OPTION, PORT_OPTION, 
-					LOCATION_INFO_OPTION,
-					RECONNECTION_DELAY_OPTION});
-  }
-
-  /**
-     @deprecated Use the setter method for the option directly instead
-     of the generic <code>setOption</code> method.
-   */
-  public
-  void setOption(String option, String value) {
-    if(value == null) return;
-    super.setOption(option, value);    
-
-    if(option.equals(REMOTE_HOST_OPTION)) {
-      address = getAddressByName(value);
-      remoteHost = value;
-    } else if (option.equals(PORT_OPTION)) {
-      port = OptionConverter.toInt(value, port);
-    } else if (option.equals(LOCATION_INFO_OPTION)) {
-      locationInfo = OptionConverter.toBoolean(value, locationInfo);    
-    } else if (option.equals(RECONNECTION_DELAY_OPTION)) {
-      reconnectionDelay = OptionConverter.toInt(value, reconnectionDelay);  
-    }
   }
   
   /**

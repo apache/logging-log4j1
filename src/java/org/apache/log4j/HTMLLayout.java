@@ -56,47 +56,6 @@ public class HTMLLayout extends Layout {
   String title = "Log4J Log Messages";
 
   /**
-     Returns a String consisting of one element {@link
-     #LOCATION_INFO_OPTION}. 
-     
-     @deprecated We now use JavaBeans introspection to configure
-     components. Options strings are no longer needed.
- */
-  public
-  String[] getOptionStrings() {
-    return new String[] {LOCATION_INFO_OPTION, TITLE_OPTION};
-  }
-
-  /**
-     Set HTMLLayout specific options.
-
-     <p>The <b>LocationInfo</b> option takes a boolean value. By
-     default, it is set to false which means there will be no location
-     information output by this layout. If the the option is set to
-     true, then the file name and line number of the statement
-     at the origin of the log statement will be output. 
-
-     <p>If you are embedding this layout within an {@link
-     org.apache.log4j.net.SMTPAppender} then make sure to set the
-     <b>LocationInfo</b> option of that appender as well.
-     
-     @deprecated Use the setter method for the option directly instead
-     of the generic <code>setOption</code> method. 
-
-   */
-  public
-  void setOption(String key, String value) {
-    if(value == null) return;
-
-    if (key.equalsIgnoreCase(LOCATION_INFO_OPTION)) {
-      locationInfo = OptionConverter.toBoolean(value, locationInfo);
-    }
-    else if (key.equalsIgnoreCase(TITLE_OPTION)) {
-      title = value;
-    }
-  }
-  
-  /**
      The <b>LocationInfo</b> option takes a boolean value. By
      default, it is set to false which means there will be no location
      information output by this layout. If the the option is set to

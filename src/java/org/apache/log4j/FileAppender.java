@@ -238,6 +238,8 @@ public class FileAppender extends WriterAppender {
   public
   synchronized
   void setFile(String fileName, boolean append) throws IOException {
+    LogLog.debug("setFile called: "+fileName+", "+append);
+
     reset();
     this.setQWForFiles(new FileWriter(fileName, append));
     //this.tp = new TracerPrintWriter(qw);
@@ -245,6 +247,7 @@ public class FileAppender extends WriterAppender {
     this.fileAppend = append;
     this.qwIsOurs = true;
     writeHeader();
+    LogLog.debug("setFile ended");
   }
 
 

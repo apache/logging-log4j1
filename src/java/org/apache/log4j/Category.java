@@ -217,6 +217,7 @@ public class Category implements AppenderAttachable {
       aai = new AppenderAttachableImpl();
     }
     aai.addAppender(newAppender);
+    hierarchy.fireAddAppenderEvent(this, newAppender);
   }
 
   /**
