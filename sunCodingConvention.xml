@@ -72,10 +72,10 @@
                 <braceLeft>1</braceLeft>
                 <braceRight>0</braceRight>
                 <braceRightAfter>1</braceRightAfter>
-                <continuation>4</continuation>
+                <continuation>2</continuation>
                 <deep>55</deep>
                 <extends>-1</extends>
-                <general>4</general>
+                <general>2</general>
                 <implements>-1</implements>
                 <leading>0</leading>
                 <tabs>8</tabs>
