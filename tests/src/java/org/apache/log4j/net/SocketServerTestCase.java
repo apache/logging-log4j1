@@ -74,7 +74,7 @@ public class SocketServerTestCase extends TestCase {
   static String EXCEPTION2 = "\\s*at .*\\(.*:\\d{1,4}\\)";
   static String EXCEPTION3 = "\\s*at .*\\(Native Method\\)";
   static Logger logger = Logger.getLogger(SocketServerTestCase.class);
-  public static final int PORT = 12345;
+  public static final int PORT = 12073;
   static Logger rootLogger = Logger.getRootLogger();
   SocketAppender socketAppender;
 
