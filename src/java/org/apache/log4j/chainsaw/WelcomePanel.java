@@ -49,20 +49,12 @@
 
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.chainsaw.help.Tutorial;
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
-
 import java.io.IOException;
-
 import java.net.URL;
-
 import java.util.Stack;
 
 import javax.swing.AbstractAction;
@@ -73,11 +65,12 @@ import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
 
 
 /**
@@ -89,30 +82,32 @@ import javax.swing.event.HyperlinkListener;
  * @author Scott Deboy <sdeboy@apache.org>
  */
 public class WelcomePanel extends JPanel {
-  private static WelcomePanel instance = new WelcomePanel();
   private Stack urlStack = new Stack();
   private final JEditorPane textInfo = new JEditorPane();
-  private final URLToolbar urlToolbar =  new URLToolbar();
+  private final URLToolbar urlToolbar = new URLToolbar();
   private final URL helpURL;
   private final URL exampleConfigURL;
   private final URL tutorialURL;
-  
-  private WelcomePanel() {
+  private LogUI logui;
+
+  public WelcomePanel(LogUI logui) {
     setLayout(new BorderLayout());
+    this.logui = logui;
     setBackground(Color.white);
     add(urlToolbar, BorderLayout.NORTH);
 
-     helpURL =
+    helpURL =
       getClass().getClassLoader().getResource(
         "org/apache/log4j/chainsaw/WelcomePanel.html");
-        
-    exampleConfigURL =
-    getClass().getClassLoader().getResource(
-      "org/apache/log4j/chainsaw/log4j-receiver-sample.xml");
 
-	tutorialURL =    getClass().getClassLoader().getResource(
-	"org/apache/log4j/chainsaw/help/tutorial.html");
- 
+    exampleConfigURL =
+      getClass().getClassLoader().getResource(
+        "org/apache/log4j/chainsaw/log4j-receiver-sample.xml");
+
+    tutorialURL =
+      getClass().getClassLoader().getResource(
+        "org/apache/log4j/chainsaw/help/tutorial.html");
+
     if (helpURL != null) {
       textInfo.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
       textInfo.setEditable(false);
@@ -128,9 +123,6 @@ public class WelcomePanel extends JPanel {
           new HyperlinkListener() {
             public void hyperlinkUpdate(HyperlinkEvent e) {
               if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-				if(e.getDescription().equals("StartTutorial")){
-					new Thread(new Tutorial()).start();	
-				}else{
                 urlStack.add(textInfo.getPage());
 
                 try {
@@ -139,7 +131,6 @@ public class WelcomePanel extends JPanel {
                 } catch (IOException e1) {
                   e1.printStackTrace();
                 }
-				}
               }
             }
           });
@@ -148,7 +139,7 @@ public class WelcomePanel extends JPanel {
       }
     }
   }
-  
+
   void setURL(final URL url) {
     SwingUtilities.invokeLater(
       new Runnable() {
@@ -162,7 +153,13 @@ public class WelcomePanel extends JPanel {
           }
         }
       });
-    
+  }
+
+  /**
+   * @return
+   */
+  public final URL getTutorialURL() {
+    return tutorialURL;
   }
 
   private class URLToolbar extends JToolBar {
@@ -172,11 +169,11 @@ public class WelcomePanel extends JPanel {
           if (urlStack.isEmpty()) {
             return;
           }
-          setURL((URL)urlStack.pop());
 
+          setURL((URL) urlStack.pop());
         }
       };
-      
+
     private final Action homeAction =
       new AbstractAction(null, new ImageIcon(ChainsawIcons.ICON_HOME)) {
         public void actionPerformed(ActionEvent e) {
@@ -186,35 +183,41 @@ public class WelcomePanel extends JPanel {
       };
 
     private URLToolbar() {
-    	setFloatable(false);
+      setFloatable(false);
       updateToolbar();
       previousAction.putValue(Action.SHORT_DESCRIPTION, "Back");
       homeAction.putValue(Action.SHORT_DESCRIPTION, "Home");
 
       JButton home = new SmallButton(homeAction);
       add(home);
-      
-	  addSeparator();      
+
+      addSeparator();
+
       JButton previous = new SmallButton(previousAction);
       previous.setEnabled(false);
       add(previous);
-      
+
       addSeparator();
-      add(new SmallButton(new AbstractAction("Tutorial"){
+      add(
+        new SmallButton(
+          new AbstractAction("Tutorial", new ImageIcon(ChainsawIcons.HELP)) {
+          public void actionPerformed(ActionEvent e) {
+            logui.setupTutorial();
+          }
+        }));
+      addSeparator();
 
-		public void actionPerformed(ActionEvent e) {
-			setURL(tutorialURL);
-			
-		}}));
-	addSeparator();
-      final Action exampleConfigAction = new AbstractAction("View example Receiver configuration"){
+      final Action exampleConfigAction =
+        new AbstractAction("View example Receiver configuration") {
+          public void actionPerformed(ActionEvent e) {
+            setURL(exampleConfigURL);
+          }
+        };
 
-        public void actionPerformed(ActionEvent e) {
-          setURL(exampleConfigURL);
-          
-        }};
-      exampleConfigAction.putValue(Action.SHORT_DESCRIPTION, "Displays an example Log4j configuration file with several Receivers defined.");
-      
+      exampleConfigAction.putValue(
+        Action.SHORT_DESCRIPTION,
+        "Displays an example Log4j configuration file with several Receivers defined.");
+
       JButton exampleButton = new SmallButton(exampleConfigAction);
       add(exampleButton);
 
@@ -226,12 +229,4 @@ public class WelcomePanel extends JPanel {
       previousAction.setEnabled(!urlStack.isEmpty());
     }
   }
-  /**
-   * 
-   */
-  public static WelcomePanel getInstance() {
-    return instance;
-    
-  }
-  
 }
