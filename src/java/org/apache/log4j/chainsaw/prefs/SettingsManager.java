@@ -263,7 +263,7 @@ public final class SettingsManager {
 
             if (settingsListener instanceof Profileable) {
                 Profileable profileable = (Profileable) settingsListener;
-                event = new SaveSettingsEvent(this);
+                event = new SaveSettingsEvent(this, getSettingsDirectory());
 
                 profileable.saveSettings(event);
 
@@ -298,7 +298,7 @@ public final class SettingsManager {
 
             if (!(settingsListener instanceof Profileable)) {
                 if (event == null) {
-                    event = new SaveSettingsEvent(this);
+                    event = new SaveSettingsEvent(this, getSettingsDirectory());
                 }
 
                 settingsListener.saveSettings(event);

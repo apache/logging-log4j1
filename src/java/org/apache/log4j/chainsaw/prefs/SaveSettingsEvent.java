@@ -48,17 +48,19 @@
  */
 package org.apache.log4j.chainsaw.prefs;
 
+import java.io.File;
 import java.util.Properties;
 
 /**
  * @author Paul Smith <psmith@apache.org>
  *
  */
-public class SaveSettingsEvent extends SettingsEvent {
+public class SaveSettingsEvent extends AbstractSettingsEvent {
 
-	SaveSettingsEvent(Object source) {
-		super(source);
-	}
+  
+  SaveSettingsEvent(Object source, File settingsLocation) {
+	super(source, settingsLocation);
+  	}
 	
 	public void saveSetting(String key, int value) {
 		saveSetting(key, "" + value);
@@ -79,7 +81,8 @@ public class SaveSettingsEvent extends SettingsEvent {
 	Properties getProperties() {
 		return properties;
 	}
-	private Properties properties = new Properties();
+  
+  private Properties properties = new Properties();
   /**
    * @param string
    * @param b
