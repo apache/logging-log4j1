@@ -10,6 +10,7 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableCellRenderer;
 
+import org.apache.commons.vfs.FileObject;
 import org.apache.log4j.chainsaw.ChainsawConstants;
 import org.apache.log4j.chainsaw.JSortTable;
 
@@ -81,4 +82,19 @@ public class FileObjectTable extends JPanel {
 			return component;
 		}
 }
+    /**
+     * @return
+     */
+    public JTable getTable() {
+        return this.table;
+    }
+
+
+    /**
+     * @param i
+     * @return
+     */
+    public FileObject getFileObject(int row) {
+        return tableModel.getFileObject(row);
+    }
 }
