@@ -60,6 +60,7 @@ public class LogManager {
     } else if (repositorySelectorStr.equalsIgnoreCase("JNDI")) {
       System.out.println("*** Will use ContextJNDISelector **");
       repositorySelector = new ContextJNDISelector();
+      guard = new Object();
     } else {
       Object r =
         OptionConverter.instantiateByClassName(
@@ -70,6 +71,7 @@ public class LogManager {
           "*** Using [" + repositorySelectorStr
           + "] instance as repository selector.");
         repositorySelector = (RepositorySelector) r;
+        guard = new Object();
       } else {
         System.out.println(
           "*** Could not insantiate [" + repositorySelectorStr
@@ -115,7 +117,10 @@ public class LogManager {
      Sets <code>RepositorySelector</code> but only if the correct
      <em>guard</em> is passed as parameter.
 
-     <p>Initally the guard is null.  If the guard is
+     <p>Initally the guard is null, unless the JVM is started with the
+     log4j.repositorySelectorClass system property
+     (-Dlog4j.repositorySelectorClass=[JNDI | <fully qualified class name>]).
+     If the guard is
      <code>null</code>, then invoking this method sets the logger
      repository and the guard. Following invocations will throw a {@link
      IllegalArgumentException}, unless the previously set
