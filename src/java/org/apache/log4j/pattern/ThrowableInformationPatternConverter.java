@@ -16,6 +16,8 @@
 
 package org.apache.log4j.pattern;
 
+import java.util.List;
+
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ThrowableInformation;
 
@@ -29,6 +31,9 @@ import org.apache.log4j.spi.ThrowableInformation;
  *
  */
 public class ThrowableInformationPatternConverter extends PatternConverter {
+  
+  String option;
+  
   /* (non-Javadoc)
    * @see org.apache.log4j.pattern.PatternConverter#convert(org.apache.log4j.spi.LoggingEvent)
    */
@@ -45,11 +50,11 @@ public class ThrowableInformationPatternConverter extends PatternConverter {
 
     int length = 0;
 
-    if (getOption() == null) {
+    if (option == null) {
       length = stringRep.length;
-    } else if (getOption().equals("full")) {
+    } else if (option.equals("full")) {
       length = stringRep.length;
-    } else if (getOption().equals("short")) {
+    } else if (option.equals("short")) {
       length = 1;
     } else {
       length = stringRep.length;
@@ -63,6 +68,13 @@ public class ThrowableInformationPatternConverter extends PatternConverter {
     return buf;
   }
 
+  public void setOptions(List optionList) {
+    if(optionList == null || optionList.size() == 0) {
+      return;
+    }
+    option = (String) optionList.get(0);
+  }
+  
   public String getName() {
     return "Throwable";
   }

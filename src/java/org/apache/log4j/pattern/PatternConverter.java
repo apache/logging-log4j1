@@ -49,7 +49,7 @@ public abstract class PatternConverter {
   int min = -1;
   int max = 0x7FFFFFFF;
   boolean leftAlign = false;
-  String option;
+  //String option;
 
   protected PatternConverter() {
   }
@@ -121,25 +121,13 @@ public abstract class PatternConverter {
       }
     }
   }
-
-  public String getOption() {
-    return option;
-  }
-
-  public void setOption(String string) {
-    option = string;
-  }
   
   /**
    *    Sets multiple options for the converter.
    *    @param options list of options, may be null.
-   *    @remarks added to allow DateFormat to have multiple
-   *       options, delegates to setOption for other converters. 
    */
   public void setOptions(List options) {
-      if(options != null && options.size() >= 1) {
-          setOption((String) options.get(0));
-      }
+    // NOP implementation. Most PC's do not deal with options.
   }
   
   /**

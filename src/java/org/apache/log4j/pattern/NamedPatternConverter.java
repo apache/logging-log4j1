@@ -16,6 +16,8 @@
 
 package org.apache.log4j.pattern;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
 
@@ -44,8 +46,12 @@ abstract class NamedPatternConverter extends PatternConverter {
 
   abstract String getFullyQualifiedName(LoggingEvent event);
 
-  public void setOption(String option) {
-    super.setOption(option);
+  public void setOptions(List optionList) {
+    if(optionList == null || optionList.size() == 0) {
+      return;
+    }
+
+    String option = (String) optionList.get(0);
 
     /**
        The option is expected to be in decimal and positive. In case of
