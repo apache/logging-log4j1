@@ -13,7 +13,7 @@
 
 <p>Bugs should be reported by using the 
 <a href="http://nagoya.apache.org/bugzilla">Apache Bug Database</a>.<br/>
-Before reporting a problem, please <a href="http://nagoya.betaversion.org/bugzilla/query.cgi">check the database</a> 
+Before reporting a problem, please <a href="http://nagoya.apache.org/bugzilla/query.cgi">check the database</a> 
 and the <a href="HISTORY">project history file</a> to see if the problem is already known.</p>
 
 <p>Support requests should be sent to the log4j-user list (see below).</p>

@@ -54,14 +54,17 @@
   
   <target name="usage">
     <echo>
-    ant build   - compile all project files, if a certain library is missing, 
-	          then the compilation of its dependents is skipped.
 
-    ant javadoc - build project javadoc files
+    These are the targets supported by this ANT build scpript:
 
-    ant jar     - build log4j-core and log4j jar files
+    build   - compile all project files, if a certain library is missing, 
+	      then the compilation of its dependents are skipped.
 
-    ant dist    - will create a complete distribution in dist/
+    javadoc - build project javadoc files
+
+    jar     - build log4j-core and log4j jar files
+
+    dist    - will create a complete distribution in dist/
     </echo>
   </target>
 
@@ -393,7 +396,10 @@
     
     <fixcrlf srcdir="${dist.tmp}/jakarta-log4j-${version}"  
              includes="build.sh" cr="remove"/>
-
+    <fixcrlf srcdir="${dist.tmp}/jakarta-log4j-${version}"   
+             includes="build.bat" cr="add"/>
+    <chmod   dir="${dist.tmp}/jakarta-log4j-${version}"   
+             includes="build.sh" perm="+x"/>
 
     <tar tarfile="${dist.images}/jakarta-log4j-${version}.tar" 
          basedir="${dist.tmp}"

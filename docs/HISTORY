@@ -12,8 +12,8 @@
  
  - Corrected an important performance bug in LocationInfo. Hein Couwet
    and kr@it-practice.dk have independently identified the bug. This is
-   yet another example of the fact that the number of eyeballs
-   studying code makes a difference. [*]
+   yet another example of the difference made by the number of eyeballs
+   studying source code. [*]
 
  - Corrected the incorrect value returned by LocationInfo.getClassName
    method when running under IBM Visual Age. Thanks to Mathias
@@ -22,7 +22,14 @@
  - Corrected a bug where the build.sh file in the distribution would be in 
    DOS CRLF format. Thanks to ma.darche@free.fr for reporting the
    problem. [*]
+
+ - Corrected InvalidJarIndexException thrown in applets while
+   searching for the default log4j configuration file. Thanks to
+   Michael Lundahl for reporting this bug. [*]
   
+ - Added missing PropertySetterException class to log4j-core.jar.
+   Thanks to ma.darche@free.fr for reporting this bug. [*]
+
  April 20, 2001
 
  - Release of version 1.1b4
