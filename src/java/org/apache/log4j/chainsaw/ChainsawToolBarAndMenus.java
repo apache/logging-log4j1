@@ -125,6 +125,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
   private final Action pauseAction;
   private final Action showPreferencesAction;
   private final Action showReceiversAction;
+  private final Action toggleLogTreeAction;
   private final Action toggleDetailPaneAction;
   private final Action toggleToolbarAction;
   private final Action undockAction;
@@ -148,6 +149,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
   private LogUI logui;
   private final SmallButton clearButton = new SmallButton();
   private final SmallToggleButton detailPaneButton = new SmallToggleButton();
+  private final SmallToggleButton logTreePaneButton = new SmallToggleButton();
   private final SmallToggleButton pauseButton = new SmallToggleButton();
   private String lastFind = "";
   private String levelDisplay = ChainsawConstants.LEVEL_DISPLAY_ICONS;
@@ -168,6 +170,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     showPreferencesAction = createShowPreferencesAction();
     lockToolbarAction = createLockableToolbarAction();
     toggleToolbarAction = createToggleToolbarAction();
+    toggleLogTreeAction = createToggleLogTreeAction();
     pauseAction = createPauseAction();
     clearAction = createClearAction();
     undockAction = createUndockAction();
@@ -179,46 +182,79 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
       new JSlider(JSlider.VERTICAL, 0, 5000, logui.handler.getQueueInterval());
     createMenuBar();
     createToolbar();
-    
-    panelListener = new ChangeListener() {
-    	public void stateChanged(ChangeEvent e) {
-    		Map m = logui.getPanels();
-    		if (m !=null) {
-    			Set s = m.entrySet();
-    			Iterator iter = s.iterator();
-    			while (iter.hasNext()) {
-    				Map.Entry entry = (Map.Entry)iter.next();
-    				if (!panelMenuMap.keySet().contains(entry.getKey())) {
-    					panelMenuMap.put(entry.getKey(), getDisplayPanelMenuItem(entry.getKey().toString()));
-    					//default to enabled
-    					panelEnabledMap.put(entry.getKey(), Boolean.TRUE);
-    					showTabs.add((JCheckBoxMenuItem)panelMenuMap.get(entry.getKey()));
-    				}
 
-					boolean entryEnabled = ((Boolean)panelEnabledMap.get(entry.getKey())).booleanValue();
-    				boolean newEnabled = ((Boolean)entry.getValue()).booleanValue();
-					    				  
-    				if (entryEnabled != newEnabled) {
-    					((JCheckBoxMenuItem)panelMenuMap.get(entry.getKey())).getModel().setEnabled(newEnabled);
-    					panelEnabledMap.put(entry.getKey(), Boolean.valueOf(newEnabled));
-    				}
-    			}
-    		}
-    	}
-    };
-    
+    panelListener =
+      new ChangeListener() {
+          public void stateChanged(ChangeEvent e) {
+            Map m = logui.getPanels();
+
+            if (m != null) {
+              Set s = m.entrySet();
+              Iterator iter = s.iterator();
+
+              while (iter.hasNext()) {
+                Map.Entry entry = (Map.Entry) iter.next();
+
+                if (!panelMenuMap.keySet().contains(entry.getKey())) {
+                  panelMenuMap.put(
+                    entry.getKey(),
+                    getDisplayPanelMenuItem(entry.getKey().toString()));
+
+                  //default to enabled
+                  panelEnabledMap.put(entry.getKey(), Boolean.TRUE);
+                  showTabs.add(
+                    (JCheckBoxMenuItem) panelMenuMap.get(entry.getKey()));
+                }
+
+                boolean entryEnabled =
+                  ((Boolean) panelEnabledMap.get(entry.getKey())).booleanValue();
+                boolean newEnabled =
+                  ((Boolean) entry.getValue()).booleanValue();
+
+                if (entryEnabled != newEnabled) {
+                  ((JCheckBoxMenuItem) panelMenuMap.get(entry.getKey())).getModel()
+                   .setEnabled(newEnabled);
+                  panelEnabledMap.put(
+                    entry.getKey(), Boolean.valueOf(newEnabled));
+                }
+              }
+            }
+          }
+        };
+
     logPanelSpecificActions =
       new Action[] {
         pauseAction, findNextAction, clearAction, fileMenu.getFileSaveAction(),
-        toggleDetailPaneAction, showPreferencesAction, undockAction
+        toggleDetailPaneAction, showPreferencesAction, undockAction,
+        toggleLogTreeAction
       };
   }
 
   /**
-   * DOCUMENT ME!
-   *
-   * @param event DOCUMENT ME!
-   */
+  * @return
+  */
+  private Action createToggleLogTreeAction() {
+    Action action =
+      new AbstractAction() {
+        public void actionPerformed(ActionEvent e) {
+          if (logui.getCurrentLogPanel() != null) {
+            logui.getCurrentLogPanel().toggleLogTreePanel();
+          }
+        }
+      };
+
+    action.putValue(Action.NAME, "Logger Tree");
+    action.putValue(Action.SHORT_DESCRIPTION, "Toggles the Log Tree panel");
+
+    //		TODO find an icon
+    return action;
+  }
+
+  /**
+     * DOCUMENT ME!
+     *
+     * @param event DOCUMENT ME!
+     */
   public void loadSettings(LoadSettingsEvent event) {
     try {
       levelDisplay = event.getSetting(ChainsawConstants.LEVEL_DISPLAY);
@@ -343,7 +379,31 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     dockShowPrefsAction.putValue(
       Action.SMALL_ICON, showPreferencesAction.getValue(Action.SMALL_ICON));
 
+    Action dockToggleLogTreeAction =
+      new AbstractAction() {
+        public void actionPerformed(ActionEvent e) {
+          logPanel.toggleLogTreePanel();
+        }
+      };
+
+    dockToggleLogTreeAction.putValue(
+      Action.SMALL_ICON, toggleLogTreeAction.getValue(Action.SMALL_ICON));
+
+    dockToggleLogTreeAction.putValue(
+      Action.NAME, toggleLogTreeAction.getValue(Action.NAME));
+
+    dockToggleLogTreeAction.putValue(
+      Action.SHORT_DESCRIPTION,
+      toggleLogTreeAction.getValue(Action.SHORT_DESCRIPTION));
+    dockToggleLogTreeAction.putValue(
+      Action.SMALL_ICON, toggleLogTreeAction.getValue(Action.SMALL_ICON));
+
     toolbar.add(new SmallButton(dockShowPrefsAction));
+
+    SmallToggleButton toggleLogTreeButton =
+      new SmallToggleButton(dockToggleLogTreeAction);
+    toggleLogTreeButton.setSelected(logPanel.isLogTreePanelVisible());
+    toolbar.add(toggleLogTreeButton);
     toolbar.addSeparator();
 
     final Action undockedClearAction =
@@ -564,12 +624,16 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     viewMenu.add(menuUndock);
     viewMenu.add(pause);
 
-	showTabs = new JMenu("Display tabs");
-	viewMenu.add(showTabs);    
+    showTabs = new JMenu("Display tabs");
+    viewMenu.add(showTabs);
 
     JCheckBoxMenuItem toggleDetailMenuItem =
       new JCheckBoxMenuItem(toggleDetailPaneAction);
     toggleDetailMenuItem.setSelected(true);
+
+    JCheckBoxMenuItem toggleLogTreeMenuItem =
+      new JCheckBoxMenuItem(toggleLogTreeAction);
+    toggleLogTreeMenuItem.setSelected(true);
 
     final Action toggleStatusBarAction =
       new AbstractAction("Show Status bar") {
@@ -587,6 +651,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     toggleStatusBarCheck.setAction(toggleStatusBarAction);
     toggleStatusBarCheck.setSelected(true);
     viewMenu.add(toggleDetailMenuItem);
+    viewMenu.add(toggleLogTreeMenuItem);
     viewMenu.add(menuPrefs);
 
     viewMenu.addSeparator();
@@ -949,6 +1014,10 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
       KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.ALT_MASK),
       toggleDetailPaneAction.getValue(Action.NAME));
 
+    logTreePaneButton.setAction(toggleLogTreeAction);
+
+    //	logTreePaneButton.setText(null);
+    //	TODO add accelerator to this action
     SmallButton prefsButton = new SmallButton(showPreferencesAction);
     SmallButton undockButton = new SmallButton(undockAction);
     undockButton.setText("");
@@ -956,6 +1025,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     toolbar.add(undockButton);
     toolbar.add(pauseButton);
     toolbar.add(detailPaneButton);
+    toolbar.add(logTreePaneButton);
     toolbar.add(prefsButton);
     toolbar.addSeparator();
 
@@ -1053,6 +1123,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
 
     toggleStatusBarCheck.setSelected(logui.isStatusBarVisible());
     toggleShowReceiversCheck.setSelected(logui.isReceiverPanelVisible());
+    logTreePaneButton.setSelected(logui.isLogTreePanelVisible());
     showReceiversButton.setSelected(logui.isReceiverPanelVisible());
 
     /**
@@ -1102,23 +1173,24 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
       }
     }
   }
-  
-  ChangeListener getPanelListener() {
-  	return panelListener;
-  }
-  
-  private JCheckBoxMenuItem getDisplayPanelMenuItem(final String panelName) {
-  	final JCheckBoxMenuItem item = new JCheckBoxMenuItem(panelName, true);
-  	
-	final Action action =
-	  new AbstractAction(panelName) {
-		public void actionPerformed(ActionEvent e) {
-		  logui.displayPanel(panelName, item.isSelected());
-		}
-	  };
-	  item.setAction(action);
 
-	return item;
+  ChangeListener getPanelListener() {
+    return panelListener;
+  }
+
+  private JCheckBoxMenuItem getDisplayPanelMenuItem(final String panelName) {
+    final JCheckBoxMenuItem item = new JCheckBoxMenuItem(panelName, true);
+
+    final Action action =
+      new AbstractAction(panelName) {
+        public void actionPerformed(ActionEvent e) {
+          logui.displayPanel(panelName, item.isSelected());
+        }
+      };
+
+    item.setAction(action);
+
+    return item;
   }
 
   private Action setupFindFieldsAndActions() {

@@ -75,6 +75,8 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -1332,6 +1334,17 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   }
 
   /**
+   * @return
+   */
+  public boolean isLogTreePanelVisible() {
+    if (getCurrentLogPanel() == null) {
+      return false;
+    }
+
+    return getCurrentLogPanel().isLogTreePanelVisible();
+  }
+
+  /**
    * LogPanel encapsulates all the necessary bits and pieces of a
    * floating window of Events coming from a specific Location.
    *
@@ -1372,6 +1385,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     Set noneSet = new HashSet();
     Point currentPoint;
     private final JSplitPane nameTreeAndMainPanelSplit;
+    private final LoggerNameTreePanel logTreePanel;
 
     public LogPanel(
       final String ident, final EventContainer tableModel,
@@ -1383,6 +1397,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       this.table = table;
 
       tableModel.addLoggerNameListener(logTreeModel);
+      logTreePanel = new LoggerNameTreePanel(logTreeModel);
 
       levelSet = new HashSet((List) levelMap.get(eventType));
       map.put(ChainsawConstants.LEVEL_COL_NAME, levelSet);
@@ -1671,8 +1686,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       statusLabelPanel.add(upperPanel, BorderLayout.CENTER);
       eventsAndStatusPanel.add(statusLabelPanel, BorderLayout.NORTH);
 
-      final JPanel logTreePanel = new LoggerNameTreePanel(logTreeModel);
-
       final JPanel detailPanel = new JPanel(new BorderLayout());
 
       //set valueisadjusting if holding down a key - don't process setdetail events
@@ -1721,9 +1734,35 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       nameTreeAndMainPanelSplit.add(lowerPanel);
       nameTreeAndMainPanelSplit.setOneTouchExpandable(true);
       nameTreeAndMainPanelSplit.setToolTipText("Still under development....");
-      nameTreeAndMainPanelSplit.setDividerLocation(120);
+      nameTreeAndMainPanelSplit.setDividerLocation(160);
 
       add(nameTreeAndMainPanelSplit, BorderLayout.CENTER);
+
+      /**
+       * This listener deals with when the user hides the LogPanel,
+       * by disabling the use of the splitpane
+       */
+      logTreePanel.addComponentListener(
+        new ComponentListener() {
+          public void componentHidden(ComponentEvent e) {
+            nameTreeAndMainPanelSplit.setEnabled(false);
+            nameTreeAndMainPanelSplit.setOneTouchExpandable(false);
+            tbms.stateChange();
+          }
+
+          public void componentMoved(ComponentEvent e) {
+          }
+
+          public void componentResized(ComponentEvent e) {
+          }
+
+          public void componentShown(ComponentEvent e) {
+            nameTreeAndMainPanelSplit.setEnabled(true);
+            nameTreeAndMainPanelSplit.setOneTouchExpandable(true);
+            nameTreeAndMainPanelSplit.setDividerLocation(-1);
+            tbms.stateChange();
+          }
+        });
 
       //      add(lowerPanel, BorderLayout.CENTER);
       table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -2171,6 +2210,14 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       }
     }
 
+    void toggleLogTreePanel() {
+      LogLog.debug(
+        "Toggling logPanel, currently isVisible=" + logTreePanel.isVisible());
+      logTreePanel.setVisible(!logTreePanel.isVisible());
+      LogLog.debug(
+        "Toggling logPanel, now isVisible=" + logTreePanel.isVisible());
+    }
+
     public void saveSettings() {
       saveColumnSettings(identifier, table.getColumnModel());
       colorDisplaySelector.save();
@@ -2356,6 +2403,13 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
           }
         }
       }
+    }
+
+    /**
+     * @return
+     */
+    public boolean isLogTreePanelVisible() {
+      return logTreePanel.isVisible();
     }
   }
 
