@@ -55,6 +55,9 @@ import org.apache.log4j.chainsaw.icons.ChainsawIcons;
 import org.apache.log4j.helpers.LogLog;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
@@ -68,16 +71,23 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JToolBar;
 import javax.swing.JTree;
 import javax.swing.ToolTipManager;
+import javax.swing.UIManager;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeSelectionModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
@@ -93,9 +103,13 @@ final class LoggerNameTreePanel extends JPanel {
   private static final int WARN_DEPTH = 4;
   private final JTree logTree;
   private final JScrollPane scrollTree;
-  private final JPanel toolbarPanel = new JPanel();
+  private final JToolBar toolbar = new JToolBar();
   private final JButton expandButton = new SmallButton();
+  private final JButton closeButton = new SmallButton();
+  private final JButton editLoggerButton = new SmallButton();
   private final Action expandAction;
+  private final Action closeAction;
+  private final Action editLoggerAction;
 
   /**
    * @param logTreeModel
@@ -105,7 +119,7 @@ final class LoggerNameTreePanel extends JPanel {
     setBorder(BorderFactory.createEtchedBorder());
 
     logTree =
-      new LoggerNameTree(logTreeModel) {
+      new JTree(logTreeModel) {
           public String getToolTipText(MouseEvent ev) {
             if (ev == null) {
               return null;
@@ -134,6 +148,34 @@ final class LoggerNameTreePanel extends JPanel {
         };
 
     ToolTipManager.sharedInstance().registerComponent(logTree);
+    logTree.setPreferredSize(new Dimension(400, 400));
+    logTree.setCellRenderer(new LoggerNameTreeCellRenderer());
+
+    //	============================================
+    logTreeModel.addTreeModelListener(
+      new TreeModelListener() {
+        public void treeNodesChanged(TreeModelEvent e) {
+          ensureRootExpanded();
+        }
+
+        public void treeNodesInserted(TreeModelEvent e) {
+          ensureRootExpanded();
+        }
+
+        public void treeNodesRemoved(TreeModelEvent e) {
+          ensureRootExpanded();
+        }
+
+        private void ensureRootExpanded() {
+          logTree.expandRow(0);
+        }
+
+        public void treeStructureChanged(TreeModelEvent e) {
+          ensureRootExpanded();
+        }
+      });
+
+    logTree.setEditable(false);
 
     //	TODO decide if Multi-selection is useful, and how it would work	
     TreeSelectionModel selectionModel = new DefaultTreeSelectionModel();
@@ -143,21 +185,42 @@ final class LoggerNameTreePanel extends JPanel {
     logTree.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
     scrollTree = new JScrollPane(logTree);
 
-    toolbarPanel.setLayout(new BoxLayout(toolbarPanel, BoxLayout.X_AXIS));
+    toolbar.setLayout(new BoxLayout(toolbar, BoxLayout.X_AXIS));
 
     expandAction = createExpandAction();
+    editLoggerAction = createEditLoggerAction();
+    closeAction = createCloseAction();
 
     setupListeners();
     configureToolbarPanel();
 
-    add(toolbarPanel, BorderLayout.NORTH);
+    add(toolbar, BorderLayout.NORTH);
     add(scrollTree, BorderLayout.CENTER);
   }
 
   /**
-  * Configures varoius listeners etc for the components within
-  * this Class.
+   * An action that closes (hides) this panel
+  * @return
   */
+  private Action createCloseAction() {
+    Action action =
+      new AbstractAction() {
+        public void actionPerformed(ActionEvent e) {
+          LoggerNameTreePanel.this.setVisible(false);
+        }
+      };
+
+    action.putValue(Action.NAME, "Close");
+    action.putValue(Action.SHORT_DESCRIPTION, "Closes the Logger panel");
+    action.putValue(Action.SMALL_ICON, new CloseIcon(8, 1, 1));
+
+    return action;
+  }
+
+  /**
+    * Configures varoius listeners etc for the components within
+    * this Class.
+    */
   private void setupListeners() {
     /**
        * Enable the actions depending on state of the tree selection
@@ -167,6 +230,7 @@ final class LoggerNameTreePanel extends JPanel {
         public void valueChanged(TreeSelectionEvent e) {
           TreePath path = e.getNewLeadSelectionPath();
           expandAction.setEnabled(path != null);
+          editLoggerAction.setEnabled(path != null);
         }
       });
 
@@ -184,9 +248,30 @@ final class LoggerNameTreePanel extends JPanel {
               && ((e.getModifiers() & InputEvent.CTRL_MASK) > 0)
               && ((e.getModifiers() & InputEvent.BUTTON1_MASK) > 0)) {
             expandCurrentlySelectedNode();
+          } else if (e.getClickCount() > 1) {
+            LogLog.debug("Ignoring dbl click event " + e);
           }
         }
       });
+  }
+
+  private Action createEditLoggerAction() {
+    Action action =
+      new AbstractAction() {
+        public void actionPerformed(ActionEvent e) {
+          // TODO Auto-generated method stub
+        }
+      };
+
+    action.putValue(Action.NAME, "Edit filters/colors");
+    action.putValue(
+      Action.SHORT_DESCRIPTION,
+      "Allows you to specify filters and coloring for this Logger");
+    action.putValue(
+      Action.SMALL_ICON, new ImageIcon(ChainsawIcons.ICON_EDIT_RECEIVER));
+    action.setEnabled(false);
+
+    return action;
   }
 
   /**
@@ -204,7 +289,8 @@ final class LoggerNameTreePanel extends JPanel {
 
     action.putValue(Action.NAME, "Expand branch");
     action.putValue(
-      Action.SHORT_DESCRIPTION, "Expands all the child nodes recursively");
+      Action.SHORT_DESCRIPTION,
+      "Expands all the child nodes of the currently selected node, recursively");
     action.putValue(
       Action.SMALL_ICON, new ImageIcon(ChainsawIcons.UNDOCKED_ICON));
     action.setEnabled(false);
@@ -219,6 +305,12 @@ final class LoggerNameTreePanel extends JPanel {
    */
   private void expandCurrentlySelectedNode() {
     TreePath[] paths = logTree.getSelectionPaths();
+
+    if (paths == null) {
+      return;
+    }
+
+    LogLog.debug("Expanding all children of selected node");
 
     for (int i = 0; i < paths.length; i++) {
       TreePath path = paths[i];
@@ -272,8 +364,62 @@ final class LoggerNameTreePanel extends JPanel {
      * component
      */
   private void configureToolbarPanel() {
+    toolbar.setFloatable(false);
+
     expandButton.setAction(expandAction);
-    expandButton.setText("");
-    toolbarPanel.add(expandButton);
+    expandButton.setText(null);
+    editLoggerButton.setAction(editLoggerAction);
+    editLoggerButton.setText(null);
+    closeButton.setAction(closeAction);
+    closeButton.setText(null);
+
+    toolbar.add(expandButton);
+    toolbar.add(editLoggerButton);
+    toolbar.addSeparator();
+
+    toolbar.add(Box.createHorizontalGlue());
+    toolbar.add(closeButton);
+    toolbar.add(Box.createHorizontalStrut(5));
+  }
+
+  /**
+        *
+        * @author Paul Smith <psmith@apache.org>
+        *
+        */
+  private static class LoggerNameTreeCellRenderer
+    extends DefaultTreeCellRenderer {
+    private JPanel panel = new JPanel();
+
+    private LoggerNameTreeCellRenderer() {
+      super();
+      panel.setBackground(UIManager.getColor("Tree.textBackground"));
+
+      Icon leafIcon = getDefaultLeafIcon();
+      Icon icon = new ImageIcon(ChainsawIcons.WINDOW_ICON);
+
+      panel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+      panel.add(this);
+
+      setLeafIcon(null);
+      setOpaque(false);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.swing.tree.TreeCellRenderer#getTreeCellRendererComponent(javax.swing.JTree, java.lang.Object, boolean, boolean, boolean, int, boolean)
+     */
+    public Component getTreeCellRendererComponent(
+      JTree tree, Object value, boolean sel, boolean expanded, boolean leaf,
+      int row, boolean hasFocus) {
+      Component component =
+        super.getTreeCellRendererComponent(
+          tree, value, sel, expanded, leaf, row, hasFocus);
+
+      if (row == 0) {
+      } else {
+      }
+
+      return panel;
+    }
   }
 }
