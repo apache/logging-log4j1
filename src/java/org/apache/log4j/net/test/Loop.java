@@ -15,8 +15,8 @@ public class Loop {
   public static void main(String[] args) {
     
     
-    Category root = Category.getRoot();
-    Category cat = Category.getInstance(Loop.class.getName());
+    Logger root = Logger.getRootLogger();
+    Logger cat = Logger.getLogger(Loop.class.getName());
 
     if(args.length != 2) 
       usage("Wrong number of arguments.");     

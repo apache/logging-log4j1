@@ -3,13 +3,13 @@
 package org.apache.log4j.test;
 
 import org.apache.log4j.PropertyConfigurator;
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import java.io.InputStreamReader;
 import java.util.Enumeration;
 
 public class Finalize {
 
-  static Category CAT = Category.getInstance(Finalize.class.getName());
+  static Logger CAT = Logger.getLogger(Finalize.class.getName());
 
   public
   static
@@ -42,7 +42,7 @@ public class Finalize {
     int i = -1;
 
     InputStreamReader in = new InputStreamReader(System.in);
-    Category root = Category.getRoot();
+    Logger root = Logger.getRootLogger();
 
     System.out.println("Type 'q' to quit");
     int j = 0;
@@ -68,7 +68,7 @@ public class Finalize {
   }
 
   static
-  void foo(Category cat) {
+  void foo(Logger cat) {
     Enumeration enumaration = cat.getAllAppenders();
     while(enumaration != null && enumaration.hasMoreElements()) {
       ((org.apache.log4j.Appender) enumaration.nextElement()).close();

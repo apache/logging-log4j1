@@ -8,7 +8,7 @@
 
 package org.apache.log4j.net.test;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.Priority;
 import org.apache.log4j.NDC;
@@ -16,7 +16,7 @@ import org.apache.log4j.NDC;
 
 public class SyslogMin {
 
-  static Category CAT = Category.getInstance(SyslogMin.class.getName());
+  static Logger CAT = Logger.getLogger(SyslogMin.class);
 
   public
   static

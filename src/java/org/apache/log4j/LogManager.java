@@ -11,7 +11,7 @@ import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.RepositorySelector;
 import org.apache.log4j.spi.DefaultRepositorySelector;
-import org.apache.log4j.spi.RootCategory;
+import org.apache.log4j.spi.RootLogger;
 import org.apache.log4j.helpers.Loader;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.helpers.LogLog;
@@ -66,7 +66,7 @@ public class LogManager {
 
   static {
     // By default we use a DefaultRepositorySelector which always returns 'h'.
-    Hierarchy h = new Hierarchy(new RootCategory((Level) Level.DEBUG));
+    Hierarchy h = new Hierarchy(new RootLogger((Level) Level.DEBUG));
     repositorySelector = new DefaultRepositorySelector(h);
 
     /** Search for the properties file log4j.properties in the CLASSPATH.  */

@@ -8,7 +8,7 @@
 package org.apache.log4j.nt.test;
 
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.nt.NTEventLogAppender;
 import org.apache.log4j.Priority;
@@ -17,7 +17,7 @@ import org.apache.log4j.NDC;
 
 public class NTMin {
 
-  static Category cat = Category.getInstance(NTMin.class.getName());
+  static Logger cat = Logger.getLogger(NTMin.class.getName());
 
   public
   static

@@ -8,7 +8,7 @@
 package org.apache.log4j.test; 
 
 import org.apache.log4j.PropertyConfigurator;
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.NDC;
 
@@ -21,7 +21,7 @@ public class ConfigurationFileParsing {
     if(argv.length == 1) {
       NDC.push("testing");
       PropertyConfigurator.configure(argv[0]);
-      Category root = Category.getRoot();
+      Logger root = Logger.getRootLogger();
       root.debug("Message 1");
       root.debug("Message 2");      
       NDC.pop();

@@ -7,7 +7,7 @@
 
 package org.apache.log4j.test; 
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.xml.DOMConfigurator;
 
@@ -20,7 +20,7 @@ import org.apache.log4j.xml.DOMConfigurator;
    @author Ceki G&uuml;lc&uuml; */
 public class DelayedLoop {
 
-  static Category cat = Category.getInstance(DelayedLoop.class);
+  static Logger cat = Logger.getLogger(DelayedLoop.class);
   static int loopLength;
 
   public 

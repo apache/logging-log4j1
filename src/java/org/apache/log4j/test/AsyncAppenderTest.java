@@ -6,7 +6,7 @@
 
 package org.apache.log4j.test;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.xml.DOMConfigurator;
 
@@ -16,7 +16,7 @@ import org.apache.log4j.xml.DOMConfigurator;
 */
 public class AsyncAppenderTest {
 
-  static Category cat = Category.getInstance(AsyncAppenderTest.class);
+  static Logger cat = Logger.getLogger(AsyncAppenderTest.class);
   static int delayBeforeClose;
   
 
@@ -54,7 +54,7 @@ public class AsyncAppenderTest {
 
   static
   void test() {    
-    Category root = Category.getRoot();    
+    Logger root = Logger.getRootLogger();    
     for(int i = 0; i < 100; i++) {      
       root.debug("Message " + i);        
     }

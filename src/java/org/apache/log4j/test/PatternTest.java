@@ -2,7 +2,7 @@
 package org.apache.log4j.test;
 
 import org.apache.log4j.PropertyConfigurator;
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Priority;
 /**
@@ -11,7 +11,7 @@ import org.apache.log4j.Priority;
    @author Ceki G&uuml;lc&uuml;
 */
 public class PatternTest {
-  static Category CAT = Category.getInstance(PatternTest.class);
+  static Logger CAT = Logger.getLogger(PatternTest.class);
 
 
   public 
@@ -41,7 +41,7 @@ public class PatternTest {
   static
   void test() {
     int i = -1;
-    Category root = Category.getRoot();
+    Logger root = Logger.getRootLogger();
     
     CAT.debug("Message " + ++i);
     root.debug("Message " + i);        

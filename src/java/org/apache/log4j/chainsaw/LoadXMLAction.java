@@ -16,7 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -31,8 +31,7 @@ class LoadXMLAction
     extends AbstractAction
 {
     /** use to log messages **/
-    private static final Category LOG =
-        Category.getInstance(LoadXMLAction.class);
+    private static final Logger LOG = Logger.getLogger(LoadXMLAction.class);
 
     /** the parent frame **/
     private final JFrame mParent;
