@@ -234,6 +234,7 @@ later. For JDK 1.2, you can get the JNDI API from
                     ${stem}/jmx/*.java,
                     ${stem}/chainsaw/**/*.java,
                     ${stem}/rule/*.java,
+                    ${stem}/varia/LogFilePatternReceiver*.java,
                     ${stem}/varia/Log4JAvalonLogger.java,
                     ${stem}/varia/ExpressionFilter.java,
                     ${stem}/or/jms/*.java,
@@ -359,7 +360,7 @@ later. For JDK 1.2, you can get the JNDI API from
     <javac deprecation="${deprecation}"
            srcdir="${java.source.dir}"
      destdir="${javac.dest}"
-     includes="${stem}/chainsaw/**/*.java,${stem}/rule/*.java,${stem}/varia/ExpressionFilter.java"
+     includes="${stem}/chainsaw/**/*.java,${stem}/rule/*.java,${stem}/varia/ExpressionFilter.java,${stem}/varia/LogFilePatternReceiver*.java"
            excludes="${stem}/chainsaw/vfs/*.java">
       <classpath refid="compile.classpath"/>
       <classpath path="${regexp.oro.jar}"/>
