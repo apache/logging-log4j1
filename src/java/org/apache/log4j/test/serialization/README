@@ -1,0 +1,5 @@
+
+Running the serialization test is not for the faint of heart. It is
+complicated because we are trying to read or write two different
+versions of the same class. This requires unusual classloading
+techniques.
