@@ -19,6 +19,7 @@ package org.apache.log4j.varia;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.Constants;
+import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.plugins.Receiver;
 import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
@@ -135,6 +136,7 @@ public class LogFilePatternReceiver extends Receiver {
   private String logFormat;
   private String fileName;
   private String shortFileName;
+  private boolean looping;
 
   /**
    * Creates a new LogFilePatternReceiver object.
@@ -230,6 +232,24 @@ public class LogFilePatternReceiver extends Receiver {
   /**
    * Accessor
    *
+   * @return looping
+   */
+  public boolean isLooping() {
+    return looping;
+  }
+
+  /**
+   * Mutator
+   *
+   * @param looping
+   */
+  public void setLooping(boolean looping) {
+    this.looping = looping;
+  }
+
+  /**
+   * Accessor
+   *
    * @return log format
    */
   public String getLogFormat() {
@@ -253,7 +273,7 @@ public class LogFilePatternReceiver extends Receiver {
   public void setTimestampFormat(String timestampFormat) {
     this.timestampFormat = timestampFormat;
   }
-  
+
   /**
    * Accessor
    *
@@ -275,85 +295,102 @@ public class LogFilePatternReceiver extends Receiver {
     LinkedList list = new LinkedList();
     String line = null;
 
-    while ((line = reader.readLine()) != null) {
-      //ignore blank lines in file
-      if (line.length() == 0) {
-        continue;
-      }
+    do {
+      while ((line = reader.readLine()) != null) {
+        //ignore blank lines in file
+        if (line.length() == 0) {
+          continue;
+        }
 
-      //System.out.println("Added: " + line);
-      list.addLast(line);
+        //System.out.println("Added: " + line);
+        list.addLast(line);
 
-      if (list.size() > 2) {
-        //System.out.println("size > 2 - processing");
-        if (line.startsWith(TAB)) {
-          String firstLine = (String) list.remove(0);
+        if (list.size() > 2) {
+          //System.out.println("size > 2 - processing");
+          if (line.startsWith(TAB)) {
+            String firstLine = (String) list.remove(0);
 
-          //System.out.println("exception line1: " + firstLine);
-          while ((line != null) && line.startsWith(TAB)) {
-            line = reader.readLine();
+            //System.out.println("exception line1: " + firstLine);
+            while ((line != null) && line.startsWith(TAB)) {
+              line = reader.readLine();
 
-            if ((line != null) && (line.length() != 0)) {
-              list.addLast(line);
+              if ((line != null) && (line.length() != 0)) {
+                list.addLast(line);
+              }
             }
+
+            //hold a reference to the last entry added - while loop adds one too many
+            String nextLine = (String) list.getLast();
+
+            if ((nextLine != null) && !(nextLine.startsWith(TAB))) {
+              list.removeLast();
+            }
+
+            String[] exception = new String[list.size()];
+
+            for (int i = 0, j = list.size(); i < j; i++) {
+              exception[i] = (String) list.remove(0);
+
+              //System.out.println("exception " + i + ".." + exception[i]);
+            }
+
+            //now that exceptions have been taken from list, re-add last entry if not an 
+            //exception line
+            if ((nextLine != null) && !(nextLine.startsWith(TAB))) {
+              list.addLast(nextLine);
+            }
+
+            //GENERATE EXCEPTION EVENT
+            LoggingEvent event = convertToEvent(firstLine, exception);
+
+            //System.out.println(
+            //  "created event with exception " + event.getLoggerName() + ".."
+            //  + event.getMessage());
+            if (event != null) {
+              doPost(event);
+            }
+          } else {
+            //GENERATE NON-EXCEPTION EVENT
+            LoggingEvent event = convertToEvent((String) list.remove(0));
+
+            if (event != null) {
+              doPost(event);
+            }
+
+            //System.out.println(
+            //  "Created event " + event.getLoggerName() + ".."
+            //  + event.getMessage());
           }
-
-          //hold a reference to the last entry added - while loop adds one too many
-          String nextLine = (String) list.getLast();
-
-          if ((nextLine != null) && !(nextLine.startsWith(TAB))) {
-            list.removeLast();
-          }
-
-          String[] exception = new String[list.size()];
-
-          for (int i = 0, j = list.size(); i < j; i++) {
-            exception[i] = (String) list.remove(0);
-
-            //System.out.println("exception " + i + ".." + exception[i]);
-          }
-
-          //now that exceptions have been taken from list, re-add last entry if not an 
-          //exception line
-          if ((nextLine != null) && !(nextLine.startsWith(TAB))) {
-            list.addLast(nextLine);
-          }
-
-          //GENERATE EXCEPTION EVENT
-          LoggingEvent event = convertToEvent(firstLine, exception);
-
-          //System.out.println(
-          //  "created event with exception " + event.getLoggerName() + ".."
-          //  + event.getMessage());
-          doPost(event);
-        } else {
-          //GENERATE NON-EXCEPTION EVENT
-          LoggingEvent event = convertToEvent((String) list.remove(0));
-
-          //System.out.println(
-          //  "Created event " + event.getLoggerName() + ".."
-          //  + event.getMessage());
-          doPost(event);
         }
       }
-    }
 
-    //System.out.println(
-    //  "outside loop - processing remaining entries: " + list.size());
-    //clean up remaining - should not be an exception
-    for (int k = 0, l = list.size(); k < l; k++) {
-      String s = (String) list.remove(0);
+      //System.out.println(
+      //  "outside loop - processing remaining entries: " + list.size());
+      //clean up remaining - should not be an exception
+      for (int k = 0, l = list.size(); k < l; k++) {
+        String s = (String) list.remove(0);
 
-      if ((s != null) && (s.length() > 0)) {
-        //GENERATE NON-EXCEPTION EVENT
-        LoggingEvent event = convertToEvent(s);
+        if ((s != null) && (s.length() > 0)) {
+          //GENERATE NON-EXCEPTION EVENT
+          LoggingEvent event = convertToEvent(s);
 
-        //System.out.println(
-        //  "cleanup - Created non-exception event " + event.getLoggerName()
-        //  + ".." + event.getMessage());
-        doPost(event);
+          if (event != null) {
+            doPost(event);
+          }
+
+          //System.out.println(
+          //  "cleanup - Created non-exception event " + event.getLoggerName()
+          //  + ".." + event.getMessage());
+        }
       }
-    }
+
+      try {
+        synchronized (this) {
+          wait(2000);
+        }
+      } catch (InterruptedException ie) {
+      }
+    } while (looping);
   }
 
   /**
@@ -374,9 +411,22 @@ public class LogFilePatternReceiver extends Receiver {
       //ignore wildcard entries - skip to next field
       if (thisField.equals(WILDCARD)) {
         String nextField = (String) logFormatFields.get(i + 1);
+
+        if (logEntry.indexOf(nextField) == -1) {
+          LogLog.info("Couldn't process line, ignoring: " + logEntry);
+
+          return null;
+        }
+
         logEntry = logEntry.substring(logEntry.indexOf(nextField));
       } else if (thisField.equals(TIMESTAMP)) {
         String nextField = (String) logFormatFields.get(i + 1);
+
+        if (logEntry.indexOf(nextField) == -1) {
+          LogLog.info("Couldn't process line, ignoring: " + logEntry);
+
+          return null;
+        }
 
         //uses nextfield and length of format to guess at timestamp field
         //luckily, SimpleDateFormat is very flexible and forgiving of trailing text
@@ -401,8 +451,12 @@ public class LogFilePatternReceiver extends Receiver {
           //expects no two keywords to be butted up directly against eachother 
           String nextField = (String) logFormatFields.get(i + 1);
 
-          //System.out.println(
-          //  thisField + " = " + logEntry.substring(0, logEntry.indexOf(nextField)).trim());
+          if (logEntry.indexOf(nextField) == -1) {
+            LogLog.info("Couldn't process line, ignoring: " + logEntry);
+
+            return null;
+          }
+
           fieldMap.put(
             thisField,
             logEntry.substring(0, logEntry.indexOf(nextField)).trim());
@@ -459,6 +513,10 @@ public class LogFilePatternReceiver extends Receiver {
    * @return logging event
    */
   private LoggingEvent convertToEvent(Map fieldMap, String[] exception) {
+    if (fieldMap == null) {
+      return null;
+    }
+
     Logger logger = null;
     long timeStamp = 0L;
     String level = null;
