@@ -143,6 +143,11 @@ public class WriterAppender extends AppenderSkeleton {
      value <code>false</code> is returned. */
   protected
   boolean checkEntryConditions() {
+    if(this.closed) {
+      LogLog.warn("Not allowed to write to a closed appender.");
+      return false;
+    }
+
     if(this.qw == null) {
       errorHandler.error("No output target set for appender named \""+ 
 			name+"\".");
