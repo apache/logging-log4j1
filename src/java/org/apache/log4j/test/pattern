@@ -192,5 +192,5 @@ if [ $TEST -ge $start ]; then
   lecho "log4j.appender.testAppender.File=       $TEMP   "
   lecho "log4j.appender.testAppender.Append=false"
   lecho "log4j.appender.testAppender.layout=org.apache.log4j.HTMLLayout"
-  testPattern NONE
+  testPattern HTML
 fi

@@ -1,7 +1,7 @@
 
 # Usage: perl filter.pl input output exceptionString layout 
 # where exceptionString is the string to filter in stack traces
-#       layout is one of NONE|LINE_NUMBER|RELATIVE|DATE|ABSOLUTE|ISO8601
+#       layout is one of NONE|LINE_NUMBER|RELATIVE|DATE|ABSOLUTE|ISO8601|HTML
 #                                  
 
 $INPUT=$ARGV[0];
@@ -17,11 +17,11 @@ local($oldfh) = select(); select(OUT); $|=1; select($oldfh);
 
 if ($LAYOUT =~ "NONE") {
   doNoneFilter();
-}
-elsif($LAYOUT =~ "LINE_NUMBER") {
+} elsif($LAYOUT =~ "LINE_NUMBER") {
   doLineNumberFilter();
-}
-else {
+} elsif($LAYOUT =~ "HTML") {
+  doHTMLFilter();
+} else {
   doFilter($LAYOUT);
 }
 
@@ -36,6 +36,37 @@ sub wrongFormat {
 sub doNoneFilter {  
   while(<IN>) {
     print OUT;
+  }
+}
+
+sub doHTMLFilter {
+  while(<IN>) {
+    if(/\($EXSTR\.java:\d*\)/) {
+      s/\($EXSTR\.java:\d+\)/\($EXSTR\.java:XXX\)/g;
+    }
+    elsif(/\(Compiled Code\)/) {
+      s/\(Compiled Code\)$/\($EXSTR\.java:XXX\)/g;
+    }
+    elsif(/<tr><td>\d+<\/td>/) {
+      s/<tr><td>\d+<\/td>/<tr><td>XXX<\/td>/;
+    }
+    print OUT ;
+  }
+}
+
+sub doLineNumberFilter {  
+  while(<IN>) {
+    if(/\($EXSTR\.java:\d*\)/) {
+      s/\($EXSTR\.java:\d+\)$/\($EXSTR\.java:XXX\)/;
+      print OUT;
+    }
+    elsif(/\(Compiled Code\)/) {
+      s/\(Compiled Code\)$/\($EXSTR\.java:XXX\)/;
+      print OUT;
+    }
+    else {
+      print OUT;
+    }
   }
 }
 
