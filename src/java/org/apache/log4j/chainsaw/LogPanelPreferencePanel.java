@@ -49,14 +49,12 @@
 
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Iterator;
@@ -65,14 +63,20 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
+import javax.swing.ListCellRenderer;
+import javax.swing.UIManager;
+import javax.swing.border.Border;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -82,6 +86,8 @@ import javax.swing.tree.DefaultTreeSelectionModel;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
+
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
 
 
 /**
@@ -97,6 +103,7 @@ public class LogPanelPreferencePanel extends JPanel {
   private final LogPanelPreferenceModel uncommitedPreferenceModel =
     new LogPanelPreferenceModel();
   private ActionListener okCancelListener;
+  private Component currentlyDisplayedPanel = null;
 
   public LogPanelPreferencePanel(LogPanelPreferenceModel model) {
     this.committedPreferenceModel = model;
@@ -190,10 +197,15 @@ public class LogPanelPreferencePanel extends JPanel {
   * @param panel
   */
   protected void setDisplayedPrefPanel(JComponent panel) {
+    if (currentlyDisplayedPanel != null) {
+      selectedPrefPanel.remove(currentlyDisplayedPanel);
+    }
+
     selectedPrefPanel.add(panel, BorderLayout.CENTER);
-    selectedPrefPanel.invalidate();
-    selectedPrefPanel.validate();
+    currentlyDisplayedPanel = panel;
     titleLabel.setText(panel.toString());
+    selectedPrefPanel.revalidate();
+    selectedPrefPanel.repaint();
   }
 
   public void setOkCancelActionListener(ActionListener l) {
@@ -222,7 +234,12 @@ public class LogPanelPreferencePanel extends JPanel {
 
     DefaultMutableTreeNode formatting =
       new DefaultMutableTreeNode(new FormattingPanel());
+
+    DefaultMutableTreeNode columns =
+      new DefaultMutableTreeNode(new ColumnSelectorPanel());
+
     rootNode.add(formatting);
+    rootNode.add(columns);
 
     return model;
   }
@@ -237,7 +254,14 @@ public class LogPanelPreferencePanel extends JPanel {
   public static void main(String[] args) {
     JFrame f = new JFrame("Preferences Panel Test Bed");
     LogPanelPreferenceModel model = new LogPanelPreferenceModel();
-    f.getContentPane().add(new LogPanelPreferencePanel(model));
+    LogPanelPreferencePanel panel = new LogPanelPreferencePanel(model);
+    f.getContentPane().add(panel);
+    panel.setOkCancelActionListener(
+      new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          System.exit(1);
+        }
+      });
 
     f.setSize(640, 480);
     f.show();
@@ -277,7 +301,8 @@ public class LogPanelPreferencePanel extends JPanel {
 
       ButtonGroup bgDateFormat = new ButtonGroup();
       final JRadioButton rdISO =
-        new JRadioButton("<html><b>Fast</b> ISO 8601 format (yyyy-MM-dd HH:mm:ss)</html>");
+        new JRadioButton(
+          "<html><b>Fast</b> ISO 8601 format (yyyy-MM-dd HH:mm:ss)</html>");
       rdISO.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -295,56 +320,154 @@ public class LogPanelPreferencePanel extends JPanel {
       bgDateFormat.add(rdISO);
       dateFormatPanel.add(rdISO);
 
-	for (Iterator iter = LogPanelPreferenceModel.DATE_FORMATS.iterator(); iter.hasNext();) {
-		final String format = (String) iter.next();
-		final JRadioButton rdFormat = new JRadioButton(format);
-		bgDateFormat.add(rdFormat);
-		rdFormat.addActionListener(new ActionListener(){
+      for (
+        Iterator iter = LogPanelPreferenceModel.DATE_FORMATS.iterator();
+          iter.hasNext();) {
+        final String format = (String) iter.next();
+        final JRadioButton rdFormat = new JRadioButton(format);
+        bgDateFormat.add(rdFormat);
+        rdFormat.addActionListener(
+          new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              getModel().setDateFormatPattern(format);
+            }
+          });
+        getModel().addPropertyChangeListener(
+          "dateFormatPattern",
+          new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent evt) {
+              rdFormat.setSelected(
+                getModel().getDateFormatPattern().equals(format));
+            }
+          });
+        dateFormatPanel.add(rdFormat);
+      }
 
-			public void actionPerformed(ActionEvent e) {
-				getModel().setDateFormatPattern(format);
-			}});
-		getModel().addPropertyChangeListener(
-		  "dateFormatPattern",
-		  new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent evt) {
-				rdFormat.setSelected(getModel().getDateFormatPattern().equals(format));
-			}
-		  });
-		dateFormatPanel.add(rdFormat);
-	}
       add(dateFormatPanel);
-      
+
       JPanel levelFormatPanel = new JPanel();
       levelFormatPanel.setLayout(
-	  new BoxLayout(levelFormatPanel, BoxLayout.Y_AXIS));
-      levelFormatPanel.setBorder(BorderFactory.createTitledBorder( BorderFactory.createEtchedBorder(), "Level"));
+        new BoxLayout(levelFormatPanel, BoxLayout.Y_AXIS));
+      levelFormatPanel.setBorder(
+        BorderFactory.createTitledBorder(
+          BorderFactory.createEtchedBorder(), "Level"));
+
       ButtonGroup bgLevel = new ButtonGroup();
       final JRadioButton rdLevelIcons = new JRadioButton("Icons");
-	  final JRadioButton rdLevelText = new JRadioButton("Text");
-	  bgLevel.add(rdLevelIcons);
-	  bgLevel.add(rdLevelText);
+      final JRadioButton rdLevelText = new JRadioButton("Text");
+      bgLevel.add(rdLevelIcons);
+      bgLevel.add(rdLevelText);
 
-	  ActionListener levelIconListener = new ActionListener(){
+      ActionListener levelIconListener =
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            getModel().setLevelIcons(rdLevelIcons.isSelected());
+          }
+        };
 
-			  public void actionPerformed(ActionEvent e) {
-				  getModel().setLevelIcons(rdLevelIcons.isSelected());
-			
-			  }	  };
-	  rdLevelIcons.addActionListener(levelIconListener);
-	  rdLevelText.addActionListener(levelIconListener);
-	
-	  rdLevelIcons.setSelected(getModel().isLevelIcons());	  
-	  
-	  levelFormatPanel.add(rdLevelIcons);
-	  levelFormatPanel.add(rdLevelText);
-      
+      rdLevelIcons.addActionListener(levelIconListener);
+      rdLevelText.addActionListener(levelIconListener);
+
+      rdLevelIcons.setSelected(getModel().isLevelIcons());
+
+      levelFormatPanel.add(rdLevelIcons);
+      levelFormatPanel.add(rdLevelText);
+
       add(levelFormatPanel);
       add(Box.createVerticalGlue());
     }
 
     public String toString() {
       return "Formatting";
+    }
+  }
+
+	/**
+	 * A ListCellRenderer that display a check box if the value
+	 * has been "checked".
+	 * 
+	 * Borrowed heavily from the excellent book "Swing, 2nd Edition" by
+	 * Matthew Robinson  & Pavel Vorobiev.
+	 * 
+	 * @author Paul Smith
+	 *
+	 */
+  public class CheckListCellRenderer extends JCheckBox
+    implements ListCellRenderer {
+    private final Border noFocusBorder =
+      BorderFactory.createEmptyBorder(1, 1, 1, 1);
+
+    /**
+     *
+     */
+    public CheckListCellRenderer() {
+      super();
+      setOpaque(true);
+      setBorder(noFocusBorder);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.swing.ListCellRenderer#getListCellRendererComponent(javax.swing.JList, java.lang.Object, int, boolean, boolean)
+     */
+    public Component getListCellRendererComponent(
+      JList list, Object value, int index, boolean isSelected,
+      boolean cellHasFocus) {
+      setText(value.toString());
+      setBackground(
+        isSelected ? list.getSelectionBackground() : list.getBackground());
+      setForeground(
+        isSelected ? list.getSelectionForeground() : list.getForeground());
+      setFont(list.getFont());
+      setBorder(
+        cellHasFocus ? UIManager.getBorder("List.focusCellHighlightBorder")
+                     : noFocusBorder);
+
+      //		TODO check the model if this is selected
+      return this;
+    }
+  }
+
+	/**
+	 * Allows the user to choose which columns to display.
+	 * 
+	 * @author Paul Smith
+	 *
+	 */
+  public class ColumnSelectorPanel extends BasicPrefPanel {
+    ColumnSelectorPanel() {
+      initComponents();
+    }
+
+    private void initComponents() {
+      setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+      Box columnBox = new Box(BoxLayout.Y_AXIS);
+
+      //		columnBox.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Displayed Columns"));
+      final JList columnList = new JList();
+      columnList.setVisibleRowCount(10);
+
+      DefaultListModel listModel = new DefaultListModel();
+
+      for (
+        Iterator iter = ChainsawColumns.getColumnsNames().iterator();
+          iter.hasNext();) {
+        String name = (String) iter.next();
+        listModel.addElement(name);
+      }
+
+      columnList.setModel(listModel);
+
+      CheckListCellRenderer cellRenderer = new CheckListCellRenderer();
+      columnList.setCellRenderer(cellRenderer);
+      columnBox.add(new JScrollPane(columnList));
+
+      add(columnBox);
+      add(Box.createVerticalGlue());
+    }
+
+    public String toString() {
+      return "<html>Columns <i>(Work in progress)</i></html>";
     }
   }
 }
