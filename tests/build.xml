@@ -63,7 +63,7 @@
   <!-- Build the parent project                                          -->
   <!-- ================================================================= -->  
   <target name="parentBuild">
-    <ant dir=".." target="build"/>
+    <ant dir=".." target="build" inheritRefs="true"/>
   </target>
 
   <!-- ================================================================= -->
