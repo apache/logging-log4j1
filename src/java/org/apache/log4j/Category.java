@@ -457,11 +457,11 @@ public class Category implements AppenderAttachable {
   }
 
   /**
-     Get the appenders contained in this category as an
-     Enumeration.
+     Get the appenders contained in this category as an {@link
+     Enumeration}. If no appenders can be found, then a {@link NullEnumeration}
+     is returned.
      
-     @return Enumeration An enumeration of the appenders in this category.  
-  */
+     @return Enumeration An enumeration of the appenders in this category.  */
   public
   Enumeration getAllAppenders() {
     if(aai == null)
@@ -473,9 +473,8 @@ public class Category implements AppenderAttachable {
   /**
      Look for the appender named as <code>name</code>.
 
-     <p>Return the appender with that name if in the list. Return null
-     otherwise.  
-  */
+     <p>Return the appender with that name if in the list. Return
+     <code>null</code> otherwise.  */
   public
   Appender getAppender(String name) {
      if(aai == null || name == null)

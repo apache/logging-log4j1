@@ -145,6 +145,8 @@ public class PropertySetter {
     name = Introspector.decapitalize(name);
     PropertyDescriptor prop = getPropertyDescriptor(name);
     
+    //LogLog.debug("---------Key: "+name+", type="+prop.getPropertyType());
+
     if (prop == null) {
       LogLog.warn("No such property [" + name + "] in "+
 		  obj.getClass().getName()+"." );
@@ -153,7 +155,7 @@ public class PropertySetter {
         setProperty(prop, name, value);
       } catch (PropertySetterException ex) {
         LogLog.warn("Failed to set property " + name +
-                    " to value \"" + value + "\": " + ex.getMessage());
+                    " to value \"" + value + "\". " + ex.getMessage());
       }
     }
   }
@@ -182,13 +184,14 @@ public class PropertySetter {
     try {
       arg = convertArg(value, paramTypes[0]);
     } catch (Throwable t) {
-      throw new PropertySetterException(t);
+      throw new PropertySetterException("Conversion to type ["+paramTypes[0]+
+					"] failed. Reason: "+t);
     }
     if (arg == null) {
       throw new PropertySetterException(
-          "Unknown property type: "+ paramTypes[0]);
+          "Conversion to type ["+paramTypes[0]+"] failed.");
     }
-    LogLog.debug("Setting property " + name + ": " + arg);
+    LogLog.debug("Setting property [" + name + "] to [" +arg+"].");
     try {
       setter.invoke(obj, new Object[]  { arg });
     } catch (Exception ex) {

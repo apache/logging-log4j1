@@ -19,16 +19,18 @@ element. -->
 <!-- By default, disableOverride is "null", meaning that we          -->
 <!-- do not touch the disable flag.                                  -->
      
-<!-- Setting the configDebug attribute enables the printing of       -->
-<!-- internal log4j statements from within configurators.            -->
-
-<!-- By default, configDebug is "null", meaning that we not touch the -->
-<!-- the configDebug variable.                                        -->
+<!-- Setting the "debug" or "configDebug" attributes enable the printing --> 
+<!-- of internal log4j logging statements.                               -->
+<!-- The "debug" and "configDebug" attributes are equivalent altough     -->
+<!-- the latter is deprecated and should no longer be used.              -->
+<!-- By default, debug and configDebug attributes are "null", meaning    -->
+<!-- that we not touch internal log4j logging settings.                  --> 
 
      
 <!ATTLIST log4j:configuration
   disable                  (debug|info|warn|error|fatal|null)  "null"
   disableOverride          (true|false|null)  "null"
+  debug                    (true|false|null)  "null"
   configDebug              (true|false|null)  "null"
 >
 

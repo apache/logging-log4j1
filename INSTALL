@@ -21,7 +21,7 @@ Using log4j
    You should see log statements appearing on the console.
 
 5) Refer to the javadoc documentation and the user manual on how to
-   include log statements into your own code.
+   include log statements in your own code.
 
 =========
 JAR files
@@ -45,7 +45,7 @@ log4j dependencies
 
    
 The log4j distribution comes with pre-compiled classes. Log4j is based
-on JDK 1.1 with the following exceptions:
+on JDK 1.1 with the following additional requirements:
 
     ---------------------
     Package org.log4j.xml 
@@ -83,12 +83,6 @@ on JDK 1.1 with the following exceptions:
 
        http://java.sun.com/products/jms/vendors.html
 
-    ----------------
-    TextPaneAppender
-    ----------------
-
-    The TextPaneAppender is based on Swing. 
-
     -----------------------
     JUnit testing framework
     -----------------------
@@ -104,8 +98,8 @@ Building log4j
 ==============
     
 Like most java appilicatios today, log4j relies on ANT as its build
-tool. ANT is availale from "http://jakarta.apache.org/ant/index.html".
-ANT requires a build file called build.xml which is part of this
+tool. ANT is availale from "http://jakarta.apache.org/ant/".  ANT
+requires a build file called build.xml which is part of this
 distribution.
 
 Alternatively, you might wish to use the GNU-Make build/compile

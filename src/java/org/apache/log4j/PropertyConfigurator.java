@@ -377,7 +377,13 @@ public class PropertyConfigurator extends BasicConfigurator
   public
   void doConfigure(Properties properties, Hierarchy hierarchy) {
 
-    String value = properties.getProperty(LogLog.CONFIG_DEBUG_KEY);
+    String value = properties.getProperty(LogLog.DEBUG_KEY);
+    if(value == null) {
+      value = properties.getProperty(LogLog.CONFIG_DEBUG_KEY);
+      if(value != null)
+	LogLog.warn("[log4j.configDebug] is deprecated. Use [log4j.debug] instead.");
+    }
+    
     if(value != null) {
       LogLog.setInternalDebugging(OptionConverter.toBoolean(value, true));
     }
