@@ -33,6 +33,7 @@ public class LoggingLoop {
   static int command;
   static final Logger logger = Logger.getLogger(LoggingLoop.class);
   static final double MILLION = 1000 * 1000.0;
+  static final int WARM = 1000 * 100;
   static final int ALL = 0;
   static final int NOLOG_BAD = 1;
   static final int NOLOG_BETTER = 2;
@@ -66,17 +67,18 @@ public class LoggingLoop {
         if(command != ALL) break; 
       case LOG_BAD: 
         setNullAppender();
-        loopBad(); 
+//        loopBad(); 
         if(command != ALL) break; 
       case LOG_BETTER: 
         setNullAppender();
-        loopBetter(); 
+//        loopBetter(); 
         if(command != ALL) break; 
       case LOG_NOPARAM: 
         setNullAppender();
-        loopNoParam(); 
+//        loopNoParam(); 
         if(command != ALL) break; 
     }
+    System.out.println("Done.");
   }
 
   static void usage(String msg) {
@@ -119,15 +121,19 @@ public class LoggingLoop {
   }
   
   static void loopBad() {
-    String msg = "Some message of medium length. i = ";
-
-    for (int i = 0; i < 1000; i++) {
-      //logger.debug(msg + i);
+    Integer x = new Integer(10);
+    for (int i = 0; i < WARM; i++) {
+      logger.debug("Entry number: {} is {}.", new Object[]{x, x});
+      //logger.debug("Entry number: {} is {}.", new Object[]{new Integer(i), x});
+      //logger.debug("Entry number: {} is {}.", new Object[]{new Integer(i), new Integer(i)});
     }
-
+    
+    Runtime.getRuntime().gc();
     long before = System.currentTimeMillis();
     for (int i = 0; i < runLength; i++) {
-      logger.debug(msg + i);
+      logger.debug("Entry number: {} is {}.", new Object[]{x, x});
+      ///logger.debug("Entry number: {} is {}.", new Object[]{new Integer(i), x});
+      //logger.debug("Entry number: {} is {}.", new Object[]{new Integer(i), new Integer(i)});
     }
     long elapsedTime = System.currentTimeMillis() - before;
 
@@ -136,17 +142,20 @@ public class LoggingLoop {
       "Bad loop completed in [" + elapsedTime + "] milliseconds, or ["
       + average + "] nanoseconds per log.");
   }
-
+  
   static void loopBetter() {
-    String msg = "Some message of medium length. i = {}";
-
-    for (int i = 0; i < 1000; i++) {
-     // logger.debug(msg, "x");
+    Integer x = new Integer(5);
+    for (int i = 0; i < WARM; i++) {
+      //logger.debug("Entry number: {} is {}.", x, x);
+      logger.debug("Entry number: {} is {}.", x, new Integer(i));
+      //logger.debug("Entry number: {} is {}.", new Integer(i), new Integer(i));
     }
+    Runtime.getRuntime().gc();
     long before = System.currentTimeMillis();
     for (int i = 0; i < runLength; i++) {
-      logger.debug(msg, "x");
-      logger.debug("sad", new Exception());
+      //logger.debug("Entry number: {} is {}.", x, x);
+      logger.debug("Entry number: {} is {}.", x, new Integer(i));
+      //logger.debug("Entry number: {} is {}.", new Integer(i), new Integer(i));
     }
     long elapsedTime = System.currentTimeMillis() - before;
     double average = (elapsedTime * MILLION) / runLength;
@@ -158,6 +167,7 @@ public class LoggingLoop {
   static void loopNoParam() {
     String msg = "Some message of medium length.";
 
+    Runtime.getRuntime().gc();
     long before = System.currentTimeMillis();
     for (int i = 0; i < runLength; i++) {
       logger.debug(msg);
