@@ -38,15 +38,9 @@ import javax.xml.parsers.FactoryConfigurationError;
    <p>The DTD is specified in <a
    href="doc-files/log4j.dtd"><b>log4j.dtd</b></a>.
 
-   <p>It is sometimes useful to see how log4j is reading configuration
+   <p>Sometimes it is useful to see how log4j is reading configuration
    files. You can enable log4j internal logging by defining the
    <b>log4j.configDebug</b> variable on the java command line.
-
-   <p><b>Warning</b> The DOMConfigurator requires that the DTD file
-   <code>log4j.dtd</code> is read by the parser. In particular, your
-   XML configuration files must explicitly declare a DTD with a
-   &lt;!DOCTYPE&gt; instruction. This restriction stems from ID and
-   IDREF attributes which cannot be used in DTDless environments.
 
    <p>There are sample XML files included in the package.
    
