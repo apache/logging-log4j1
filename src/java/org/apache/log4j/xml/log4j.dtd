@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<!-- Authors: Chris Taylor, Ceki Gulcu. -->
+<!-- Authors: Chris Taylor, Ceki Gulcu. Paul Smith -->
 
-<!-- Version: 1.2 -->
+<!-- Version: 1.3 -->
 
 <!-- A configuration element consists of optional renderer
 elements,appender elements, categories and an optional root
@@ -148,7 +148,7 @@ element. -->
 
 
 
-<!ELEMENT log4j:event (log4j:message, log4j:NDC?, log4j:throwable?, 
+<!ELEMENT log4j:event (log4j:message, log4j:NDC?, log4j:MDC?, log4j:throwable?, 
                        log4j:locationInfo?) >
 
 <!-- The timestamp format is application dependent. -->
@@ -161,7 +161,12 @@ element. -->
 
 <!ELEMENT log4j:message (#PCDATA)>
 <!ELEMENT log4j:NDC (#PCDATA)>
-
+<!ELEMENT log4j:MDC (log4j:data*)>
+<!ELEMENT log4j:data (#PCDATA)>
+<!ATTLIST log4j:data
+  name 		CDATA  #REQUIRED
+  value 	CDATA  #REQUIRED
+>
 <!ELEMENT log4j:throwable (#PCDATA)>
 
 <!ELEMENT log4j:locationInfo EMPTY>
