@@ -89,7 +89,7 @@ public class JoranConfigurator extends ConfiguratorBase {
     case XMLUtil.UNRECOVERABLE_ERROR:
       errorList.add(
         new ErrorItem(
-          "Problem parsing XML document. See previously reported errors. Abandoning all furhter processing."));
+          "Problem parsing XML document. See previously reported errors. Abandoning all further processing."));
       return;
     }
 
