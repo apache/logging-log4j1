@@ -9,7 +9,7 @@
     <param name="File"   value="output/watchdog.FileWatchdog.test1.txt" />
     
     <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="%p - %m\n"/>
+      <param name="ConversionPattern" value="%p - %m%n"/>
     </layout>
   </appender>
   
@@ -19,7 +19,7 @@
   
   <root>
     <appender-ref ref="A1" />	       
-    <level value="warn" />
+    <level value="debug" />
   </root>
   
 </log4j:configuration>
