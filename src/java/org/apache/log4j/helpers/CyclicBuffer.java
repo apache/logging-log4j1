@@ -86,6 +86,10 @@ public class CyclicBuffer {
     return maxSize;
   }
 
+  /**
+     Get the oldest (first) element in the buffer. The oldest element
+     is removed from the buffer.
+  */
   public
   LoggingEvent get() {
     LoggingEvent r = null;
@@ -103,7 +107,6 @@ public class CyclicBuffer {
      Get the number of elements in the buffer. This number is
      guaranteed to be in the range 0 to <code>maxSize</code>
      (inclusive).
-
   */
   public
   int length() {
@@ -138,5 +141,10 @@ public class CyclicBuffer {
     first = 0;
     numElems = loopLen;
     maxSize = newSize;
+    if (loopLen == newSize) {
+      last = 0;
+    } else {
+      last = loopLen;
+    }
   }
 }
