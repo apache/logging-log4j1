@@ -5,7 +5,16 @@
  * the LICENSE.txt file.
  */
 
-package org.apache.log4j.test; 
+package org.apache.log4j.net;
+
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+import junit.framework.Test;
+
+import org.apache.log4j.*;
+import org.apache.log4j.helpers.AbsoluteTimeDateFormat;
+import org.apache.log4j.util.*;
+
 import org.apache.log4j.xml.DOMConfigurator;
 import org.apache.log4j.PropertyConfigurator;
 
@@ -20,38 +29,35 @@ import java.util.Enumeration;
 /**
    @author  Ceki G&uuml;lc&uuml;
 */
-public class SocketAppenderTest {
+public class SocketServerTestCase extends TestCase {
   
-  static Logger logger = Logger.getLogger(SocketAppenderTest.class);
+  static Logger logger = Logger.getLogger(SocketAppenderTestCase.class);
+
+  static public final int PORT = 12345;
   
-  public 
-  static 
-  void main(String argv[]) {
-    if(argv.length == 1) 
-      init(argv[0]);
-    else 
-      usage("Wrong number of arguments.");
-    test();
+  static Logger rootLogger = Logger.getRootLogger();
+
+  public SocketServerTestCase(String name) {
+    super(name);
   }
 
-  static
-  void usage(String msg) {
-    System.err.println(msg);
-    System.err.println( "Usage: java "+ SocketAppenderTest.class.getName()+
-			" configFile");
-    System.exit(1);
+  public void setUp() {
+    System.out.println("-----------------Setting up test case.");
+    SocketAppender socketAppender = new SocketAppender("localhost", PORT);
+    rootLogger.addAppender(socketAppender);
   }
-
-  static 
-  void init(String configFile) {
-    if(configFile.endsWith(".xml"))
-      DOMConfigurator.configure(configFile);
-    else 
-      PropertyConfigurator.configure(configFile);
+  
+  public void tearDown() {
+    System.out.println("---------------Tearing down test case.");
+    rootLogger.removeAllAppenders();
+  }
+  
+  public void test1() {
+    common();
   }
 
   static 
-  void test() {
+  void common() {
     int i = -1; 
     NDC.push("NDC"); 
     Logger root = Logger.getRootLogger();
@@ -66,16 +72,13 @@ public class SocketAppenderTest {
     Exception e = new Exception("Just testing");
     logger.debug("Message " + ++i, e);
     root.error("Message " + ++i, e);
-    
-    LogManager.shutdown();
   }
 
 
-  static
-  void delay(int amount) {
-    try {
-      Thread.currentThread().sleep(amount);
-    }
-    catch(Exception e) {}
+
+  public static Test suite() {
+    TestSuite suite = new TestSuite();
+    suite.addTest(new SocketServerTestCase("test1"));
+    return suite;
   }
 }
