@@ -8,9 +8,10 @@
 package subclass;
 
 import org.apache.log4j.*;
-import org.apache.log4j.xml.DOMConfigurator;
+
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.joran.JoranConfigurator;
 
 /**
    A simple example showing logger subclassing. 
@@ -48,9 +49,10 @@ public class MyLoggerTest {
     }
     else if(args.length == 1) {
       if(args[0].endsWith("xml")) {
-	DOMConfigurator.configure(args[0]);
+        JoranConfigurator jc = new JoranConfigurator();
+ 	      jc.doConfigure(args[0], LogManager.getLoggerRepository());
       } else {
-	PropertyConfigurator.configure(args[0]);
+	        PropertyConfigurator.configure(args[0]);
       }
     } else {
       usage("Incorrect number of parameters.");
