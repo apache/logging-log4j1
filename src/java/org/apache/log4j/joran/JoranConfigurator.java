@@ -13,8 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.log4j.joran;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.HashMap;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.joran.ErrorItem;
 import org.apache.joran.ExecutionContext;
@@ -23,7 +32,6 @@ import org.apache.joran.Pattern;
 import org.apache.joran.RuleStore;
 import org.apache.joran.action.ParamAction;
 import org.apache.joran.helper.SimpleRuleStore;
-
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.joran.action.ActionConst;
 import org.apache.log4j.joran.action.AppenderAction;
@@ -37,19 +45,7 @@ import org.apache.log4j.joran.action.PluginAction;
 import org.apache.log4j.joran.action.RootLoggerAction;
 import org.apache.log4j.spi.Configurator;
 import org.apache.log4j.spi.LoggerRepository;
-
 import org.xml.sax.SAXException;
-
-import java.io.IOException;
-import java.io.InputStream;
-
-import java.net.URL;
-
-import java.util.HashMap;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 
 /**
@@ -58,7 +54,8 @@ import javax.xml.parsers.SAXParserFactory;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class JoranConfigurator implements Configurator {
+public class JoranConfigurator
+       implements Configurator {
   Interpreter joranInterpreter;
 
   public JoranConfigurator() {
@@ -82,45 +79,60 @@ public class JoranConfigurator implements Configurator {
     }
   }
 
+
+  /**
+   * Configure a repository from a configuration file passed as parameter.
+   */
+  public void doConfigure(String filename, LoggerRepository repository) {
+    FileInputStream fis = null;
+    ExecutionContext ec = joranInterpreter.getExecutionContext();
+    ec.pushObject(repository);
+    LogLog.info("in JoranConfigurator doConfigure "+filename);
+    try {
+      fis = new FileInputStream(filename);
+      doConfigure(fis, repository);
+    } catch (IOException ioe) {
+      String errMsg = "Could not open [" + filename + "].";
+      LogLog.error(errMsg, ioe);
+      ec.addError(new ErrorItem(errMsg, ioe));
+    } finally {
+      if (fis != null) {
+        try {
+          fis.close();
+        } catch (java.io.IOException e) {
+          LogLog.error("Could not close [" + filename + "].", e);
+        }
+      }
+    }
+  }
+
+
   protected void selfInitialize() {
     RuleStore rs = new SimpleRuleStore();
     rs.addRule(new Pattern("log4j:configuration"), new ConfigurationAction());
     rs.addRule(new Pattern("log4j:configuration/logger"), new LoggerAction());
-    rs.addRule(
-      new Pattern("log4j:configuration/logger/level"), new LevelAction());
-    rs.addRule(
-      new Pattern("log4j:configuration/root"), new RootLoggerAction());
-    rs.addRule(
-      new Pattern("log4j:configuration/root/level"), new LevelAction());
-    rs.addRule(
-      new Pattern("log4j:configuration/logger/appender-ref"),
-      new AppenderRefAction());
-    rs.addRule(
-      new Pattern("log4j:configuration/root/appender-ref"),
-      new AppenderRefAction());
-    rs.addRule(
-      new Pattern("log4j:configuration/appender"), new AppenderAction());
-    rs.addRule(
-      new Pattern("log4j:configuration/appender/layout"), new LayoutAction());
-    rs.addRule(
-      new Pattern("log4j:configuration/appender/layout/conversionRule"),
-      new ConversionRuleAction());
-    rs.addRule(
-        new Pattern("log4j:configuration/plugin"), new PluginAction());
+    rs.addRule(new Pattern("log4j:configuration/logger/level"), new LevelAction());
+    rs.addRule(new Pattern("log4j:configuration/root"), new RootLoggerAction());
+    rs.addRule(new Pattern("log4j:configuration/root/level"), new LevelAction());
+    rs.addRule(new Pattern("log4j:configuration/logger/appender-ref"), new AppenderRefAction());
+    rs.addRule(new Pattern("log4j:configuration/root/appender-ref"), new AppenderRefAction());
+    rs.addRule(new Pattern("log4j:configuration/appender"), new AppenderAction());
+    rs.addRule(new Pattern("log4j:configuration/appender/layout"), new LayoutAction());
+    rs.addRule(new Pattern("log4j:configuration/appender/layout/conversionRule"), new ConversionRuleAction());
+    rs.addRule(new Pattern("log4j:configuration/plugin"), new PluginAction());
     rs.addRule(new Pattern("*/param"), new ParamAction());
 
-    Interpreter jp = new Interpreter(rs);
-    ExecutionContext ec = jp.getExecutionContext();
+    joranInterpreter = new Interpreter(rs);
+    ExecutionContext ec = joranInterpreter.getExecutionContext();
 
     HashMap omap = ec.getObjectMap();
     omap.put(ActionConst.APPENDER_BAG, new HashMap());
   }
 
+
   public void doConfigure(InputStream in, LoggerRepository repository) {
     ExecutionContext ec = joranInterpreter.getExecutionContext();
-
     ec.pushObject(repository);
-
     String errMsg;
 
     try {
@@ -135,8 +147,7 @@ public class JoranConfigurator implements Configurator {
       ec.addError(new ErrorItem(errMsg, pce));
     } catch (IOException ie) {
       errMsg = "I/O error occured while parsing xml file";
-      ec.addError(
-        new ErrorItem("Parser configuration error occured", ie));
+      ec.addError(new ErrorItem("Parser configuration error occured", ie));
     }
   }
 }
