@@ -25,6 +25,14 @@ JamesHouse/
    LogTextPanelExample.java 
    TextPanelAppender.java 
 
+JimMoore/
+========
+
+   LoggingOutputStream.java
+
+   Allows the user to divert System.out and System.err to log4j.
+   
+
 MarkDouglas/
 ===========
 
