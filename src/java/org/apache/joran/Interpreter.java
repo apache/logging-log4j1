@@ -35,9 +35,9 @@ import java.util.Vector;
 
 
 /**
- * <id>Interpreter</id> is Joran's main driving class. It acts as a SAX
- * {@link ContentHandler} which invokes various
- * {@link Action actions} according to predefined patterns.
+ * <id>Interpreter</id> is Joran's main driving class. It extends SAX
+ * {@link org.xml.sax.helpers.DefaultHandler DefaultHandler} which invokes 
+ * various {@link Action actions} according to predefined patterns.
  *
  * <p>Patterns are kept in a {@link RuleStore} which is programmed to store and
  * then later produce the applicable actions for a given pattern.

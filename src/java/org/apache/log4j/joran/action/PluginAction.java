@@ -20,24 +20,22 @@ import org.apache.joran.ExecutionContext;
 import org.apache.joran.action.Action;
 import org.apache.joran.helper.Option;
 
-import org.apache.log4j.Appender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.plugins.Plugin;
+import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.OptionHandler;
 
 import org.xml.sax.Attributes;
 
-import java.util.HashMap;
-
-
-public class AppenderAction extends Action {
-  static final Logger logger = Logger.getLogger(AppenderAction.class);
-  Appender appender;
+public class PluginAction extends Action {
+  static final Logger logger = Logger.getLogger(PluginAction.class);
+  Plugin plugin;
 
   /**
-   * Instantiates an appender of the given class and sets its name.
+   * Instantiates an plugin of the given class and sets its name.
    *
-   * The appender thus generated is placed in the ExecutionContext appender bag.
+   * The plugin thus generated is placed in the ExecutionContext plugin bag.
    */
   public void begin(
     ExecutionContext ec, String localName, Attributes attributes) {
@@ -45,64 +43,62 @@ public class AppenderAction extends Action {
 
     try {
       logger.debug(
-        "About to instantiate appender of type [" + className + "]");
+        "About to instantiate plugin of type [" + className + "]");
 
       Object instance =
         OptionConverter.instantiateByClassName(
-          className, org.apache.log4j.Appender.class, null);
-      appender = (Appender) instance;
+          className, org.apache.log4j.plugins.Plugin.class, null);
+      plugin = (Plugin) instance;
 
-      String appenderName = attributes.getValue(NAME_ATTRIBUTE);
+      String pluginName = attributes.getValue(NAME_ATTRIBUTE);
 
-      if (Option.isEmpty(appenderName)) {
+      if (Option.isEmpty(pluginName)) {
         logger.warn(
-          "No appender name given for appender of type " + className + "].");
+          "No plugin name given for plugin of type " + className + "].");
       } else {
-        appender.setName(appenderName);
-        logger.debug("Appender named as [" + appenderName + "]");
+        plugin.setName(pluginName);
+        logger.debug("plugin named as [" + pluginName + "]");
       }
 
-      // The execution context contains a bag which contains the appenders
-      // created thus far.
-      HashMap appenderBag =
-        (HashMap) ec.getObjectMap().get(ActionConst.APPENDER_BAG);
-      // add the appender just created to the appender bag.
-      appenderBag.put(appenderName, appender);
-
-      logger.debug("Pushing appender on to the object stack.");
-      ec.pushObject(appender);
+      LoggerRepository repository = (LoggerRepository) ec.getObject(0);
+      
+      repository.getPluginRegistry().addPlugin(plugin);
+	    plugin.setLoggerRepository(repository);
+      
+      logger.debug("Pushing plugin on to the object stack.");
+      ec.pushObject(plugin);
     } catch (Exception oops) {
       inError = true;
       logger.error(
-        "Could not create an Appender. Reported error follows.", oops);
+        "Could not create a plugin. Reported error follows.", oops);
       ec.addError(
         new ErrorItem(
-          "Could not create appender of type " + className + "]."));
+          "Could not create plugin of type " + className + "]."));
     }
   }
 
   /**
    * Once the children elements are also parsed, now is the time to activate
-   * the appender options.
+   * the plugin options.
    */
   public void end(ExecutionContext ec, String name) {
     if (inError) {
       return;
     }
 
-    if (appender instanceof OptionHandler) {
-      ((OptionHandler) appender).activateOptions();
+    if (plugin instanceof OptionHandler) {
+      ((OptionHandler) plugin).activateOptions();
     }
 
     Object o = ec.peekObject();
 
-    if (o != appender) {
+    if (o != plugin) {
       logger.warn(
-        "The object at the of the stack is not the appender named ["
-        + appender.getName() + "] pushed earlier.");
+        "The object at the of the stack is not the plugin named ["
+        + plugin.getName() + "] pushed earlier.");
     } else {
       logger.warn(
-        "Popping appender named [" + appender.getName()
+        "Popping plugin named [" + plugin.getName()
         + "] from the object stack");
       ec.popObject();
     }

@@ -45,6 +45,19 @@ import org.apache.log4j.helpers.LogLog;
  * This class is of concern to those wishing to extend log4j.
  * </p>
  *
+ * <p>Writers of log4j components such as appenders and receivers should be 
+ * aware of that some of the LoggingEvent fields are initialized lazily. 
+ * Therefore, an appender wishing to output data to be later correctly read
+ * by a receiver, must initialize "lazy" fields prior to writing them out.   
+ * See the {@link #prepareForSerialization} method for the exact list.</p>
+ * 
+ * <p>Moreover, in the absence of certain fields, receivers must set the
+ * values of null fields to a default non-null value. For example, in the 
+ * absence of the locationInfo data, the locationInfo field should be
+ * set to {@link org.apache.log4j.spi.LocationInfo#NA_LOCATION_INFO 
+ * LocationInfo.NA_LOCATION_INFO}.
+ * 
+ * 
  * @author Ceki G&uuml;lc&uuml;
  * @author James P. Cakalic
  */
@@ -198,14 +211,12 @@ public class LoggingEvent
   /**
    * Instantiate a LoggingEvent from the supplied parameters.
    *
-   * <p>
-   * Except {@link #timeStamp} all the other fields of
-   * <code>LoggingEvent</code> are filled when actually needed.
+   * <p>Note that many of the LoggingEvent fields are initialized when actually 
+   * needed. For more information please refer to the comments for the 
+   * LoggingEvent class at the top of this page.
    * </p>
    *
-   * <p></p>
-   *
-   * @param category The category of this event.
+   * @param logger The logger of this event.
    * @param level The level of this event.
    * @param message The message of this event.
    * @param throwable The throwable of this event.
@@ -229,18 +240,18 @@ public class LoggingEvent
   /**
    * Instantiate a LoggingEvent from the supplied parameters.
    *
-   * <p>
-   * Except {@link #timeStamp} all the other fields of
-   * <code>LoggingEvent</code> are filled when actually needed.
+   * <p>Note that many of the LoggingEvent fields are initialized lazily. For 
+   * more information please refer to the comments for the LoggingEvent class 
+   * at the top of this page.
    * </p>
-   *
-   * <p></p>
    *
    * @param category The category of this event.
    * @param timeStamp the timestamp of this logging event
    * @param level The level of this event.
    * @param message The message of this event.
    * @param throwable The throwable of this event.
+   * @deprecated Please use the no argument constructor and the setter methods
+   * instead.
    */
   public LoggingEvent(String fqnOfCategoryClass, Logger logger, long timeStamp, Level level, Object message,
     Throwable throwable) {
@@ -258,27 +269,28 @@ public class LoggingEvent
   }
 
 
-  /**
-   * Alternate constructor to allow a string array to be passed in as the throwable.
-   */
-  public LoggingEvent(String fqnOfCategoryClass, Logger logger, long timeStamp, Level level, String threadName,
-    Object message, String ndc, Hashtable properties, String[] throwableStrRep, LocationInfo li) {
-    ndcLookupRequired = false;
-    this.logger = logger;
-    this.loggerName = logger.getName();
-    this.level = level;
-    this.message = message;
-
-    if (throwableStrRep != null) {
-      this.throwableInfo = new ThrowableInformation(throwableStrRep);
-    }
-    this.locationInfo = li;
-    this.fqnOfLoggerClass = fqnOfCategoryClass;
-    this.timeStamp = timeStamp;
-    this.threadName = threadName;
-    this.ndc = ndc;
-    this.properties = properties;
-  }
+  // TODO CG Remove these commented out lines
+//  /**
+//   * Alternate constructor to allow a string array to be passed in as the throwable.
+//   */
+//  public LoggingEvent(String fqnOfCategoryClass, Logger logger, long timeStamp, Level level, String threadName,
+//    Object message, String ndc, Hashtable properties, String[] throwableStrRep, LocationInfo li) {
+//    ndcLookupRequired = false;
+//    this.logger = logger;
+//    this.loggerName = logger.getName();
+//    this.level = level;
+//    this.message = message;
+//
+//    if (throwableStrRep != null) {
+//      this.throwableInfo = new ThrowableInformation(throwableStrRep);
+//    }
+//    this.locationInfo = li;
+//    this.fqnOfLoggerClass = fqnOfCategoryClass;
+//    this.timeStamp = timeStamp;
+//    this.threadName = threadName;
+//    this.ndc = ndc;
+//    this.properties = properties;
+//  }
 
   /**
    * Two events are considerd equal if they refer to the same instance, or if
@@ -939,7 +951,7 @@ public class LoggingEvent
 
   /**
    * Setter for the even'ts time stamp.
-   * See also {@see #getTimeStamp}.
+   * See also {@link #getTimeStamp}.
    * @since 1.3
    */
   public void setTimeStamp(long timeStamp) {

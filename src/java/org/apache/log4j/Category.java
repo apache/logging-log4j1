@@ -819,9 +819,9 @@ public class Category implements AppenderAttachable {
    * Check whether this category is enabled for a given {@link Level} passed
    * as parameter. See also {@link #isDebugEnabled}.
    *
-   * @return boolean True if this category is enabled for <code>level</code>.
+   * @return boolean True if this logger is enabled for <code>level</code>.
    */
-  public boolean isEnabledFor(Priority level) {
+  public boolean isEnabledFor(Level level) {
     if (repository.isDisabled(level.level)) {
       return false;
     }
@@ -1041,14 +1041,14 @@ public class Category implements AppenderAttachable {
    *
    * @deprecated Please use {@link #setLevel} instead.
    */
-  public void setPriority(Priority priority) {
-    this.level = (Level) priority;
-  }
+//  public void setPriority(Priority priority) {
+//    this.level = (Level) priority;
+//  }
 
   /**
    * Set the resource bundle to be used with localized logging methods {@link
-   * #l7dlog(Priority,String,Throwable)} and {@link
-   * #l7dlog(Priority,String,Object[],Throwable)}.
+   * #l7dlog(Level,String,Throwable)} and {@link
+   * #l7dlog(Level,String,Object[],Throwable)}.
    *
    * @since 0.8.4
    */

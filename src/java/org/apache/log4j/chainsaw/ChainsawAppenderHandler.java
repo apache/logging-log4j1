@@ -164,8 +164,8 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
     LogManager.getRootLogger().addAppender(handler);
 
     SocketReceiver receiver = new SocketReceiver(4445);
-    LogManager.getLoggerRepository().getPluginRegistry().startPlugin(receiver);
-
+    LogManager.getLoggerRepository().getPluginRegistry().addPlugin(receiver);
+    receiver.activateOptions();
     Thread.sleep(60000);
   }
 

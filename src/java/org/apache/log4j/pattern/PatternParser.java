@@ -29,18 +29,17 @@ import java.util.HashMap;
 //                 Reinhard Deschler <reinhard.deschler@web.de>
 
 /**
-   Most of the work of the {@link org.apache.log4j.PatternLayout} class
-   is delegated to the PatternParser class.
-
-   <p>It is this class that parses conversion patterns and creates
-   a chained list of {@link OptionConverter OptionConverters}.
-
-   @author James P. Cakalic
-   @author Ceki G&uuml;lc&uuml;
-   @author Anders Kristensen
-   @auther Paul Smith
-
-   @since 0.8.2
+ * Most of the work of the {@link org.apache.log4j.PatternLayout} class 
+ * is delegated to the PatternParser class. 
+ * <p>It is this class that parses conversion patterns and creates 
+ * a chained list of {@link OptionConverter OptionConverters}.
+ * 
+ * @author James P. Cakalic
+ * @author Ceki G&uuml;lc&uuml;
+ * @author Anders Kristensen
+ * @author Paul Smith
+ *
+ * @since 0.8.2
 */
 public class PatternParser {
   private static final char ESCAPE_CHAR = '%';

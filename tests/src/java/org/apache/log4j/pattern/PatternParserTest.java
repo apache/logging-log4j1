@@ -44,9 +44,11 @@ public class PatternParserTest extends TestCase {
     super(name);
     now = System.currentTimeMillis() + 13;
 
-    event =
-      new LoggingEvent(
-        Logger.class.getName(), logger, now, Level.INFO, "msg 1", null);
+    event = new LoggingEvent();
+    event.setLogger(logger);
+    event.setTimeStamp(now);
+    event.setLevel(Level.INFO);
+    event.setMessage("msg 1");
   }
 
   public void setUp() {

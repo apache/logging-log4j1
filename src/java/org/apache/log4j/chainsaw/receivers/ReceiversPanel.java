@@ -287,7 +287,8 @@ public class ReceiversPanel extends JPanel {
                         iter.hasNext();) {
                       Receiver item = (Receiver) iter.next();
                       pluginRegistry.stopPlugin(item.getName());
-                      pluginRegistry.startPlugin(item);
+                      pluginRegistry.addPlugin(item);
+                      item.activateOptions();
                     }
 
                     updateReceiverTreeInDispatchThread();
@@ -622,7 +623,8 @@ public class ReceiversPanel extends JPanel {
                       public void actionPerformed(ActionEvent e2) {
                         dialog.dispose();
                         Plugin plugin = panel.getPlugin();
-                        pluginRegistry.startPlugin(plugin);
+                        pluginRegistry.addPlugin(plugin);
+                        plugin.activateOptions();
                         MessageCenter.getInstance().addMessage("Plugin '" + plugin.getName() + "' started");
                       }
                     });

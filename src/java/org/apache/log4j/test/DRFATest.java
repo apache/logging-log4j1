@@ -10,7 +10,6 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Category;
 import org.apache.log4j.Layout;
 import org.apache.log4j.PatternLayout;
-import org.apache.log4j.Appender;
 import org.apache.log4j.DailyRollingFileAppender;
 
 
@@ -55,9 +54,12 @@ public class DRFATest {
 
     Layout layout = new PatternLayout("%d{yyyy-MM-dd-HH-mm ss:SSS} %m%n");
     try {
-      Appender appender = new DailyRollingFileAppender(layout, "test",
-						       "'.'yyyy-MM-dd-HH-mm" );
+      DailyRollingFileAppender appender = new DailyRollingFileAppender();
+      appender.setLayout(layout);
+      appender.setFile("test");
+      appender.setDatePattern("'.'yyyy-MM-dd-HH-mm" );
       appender.setName("drfa");
+      appender.activateOptions();
       BasicConfigurator.configure(appender);
     } catch(Exception e) {
       System.err.println("Could not create DailyRollingFileAppender");

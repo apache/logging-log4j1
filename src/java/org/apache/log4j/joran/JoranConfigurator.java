@@ -28,10 +28,12 @@ import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.joran.action.ActionConst;
 import org.apache.log4j.joran.action.AppenderAction;
 import org.apache.log4j.joran.action.AppenderRefAction;
+import org.apache.log4j.joran.action.ConfigurationAction;
 import org.apache.log4j.joran.action.ConversionRuleAction;
 import org.apache.log4j.joran.action.LayoutAction;
 import org.apache.log4j.joran.action.LevelAction;
 import org.apache.log4j.joran.action.LoggerAction;
+import org.apache.log4j.joran.action.PluginAction;
 import org.apache.log4j.joran.action.RootLoggerAction;
 import org.apache.log4j.spi.Configurator;
 import org.apache.log4j.spi.LoggerRepository;
@@ -82,6 +84,7 @@ public class JoranConfigurator implements Configurator {
 
   protected void selfInitialize() {
     RuleStore rs = new SimpleRuleStore();
+    rs.addRule(new Pattern("log4j:configuration"), new ConfigurationAction());
     rs.addRule(new Pattern("log4j:configuration/logger"), new LoggerAction());
     rs.addRule(
       new Pattern("log4j:configuration/logger/level"), new LevelAction());
@@ -102,7 +105,8 @@ public class JoranConfigurator implements Configurator {
     rs.addRule(
       new Pattern("log4j:configuration/appender/layout/conversionRule"),
       new ConversionRuleAction());
-
+    rs.addRule(
+        new Pattern("log4j:configuration/plugin"), new PluginAction());
     rs.addRule(new Pattern("*/param"), new ParamAction());
 
     Interpreter jp = new Interpreter(rs);

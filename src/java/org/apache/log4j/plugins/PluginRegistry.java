@@ -77,18 +77,12 @@ public final class PluginRegistry {
 
 
   /**
-    Starts a plugin.
-
-    @param plugin the plugin to start.
-
-    @return Plugin the plugin parameter or a plugin that was already
-      active and was equal to the original plugin. */
-  public Plugin startPlugin(Plugin plugin) {
-    // if the plugin is already active, just return it
-    if (plugin.isActive()) {
-      return plugin;
-    }
-
+   * Adds a plugin to the plugin registry. If a plugin with the same name exists
+   * already, it is shutdown and removed.
+   *  
+   * @param plugin the plugin to add.
+   * */
+  public void addPlugin(Plugin plugin) {
     // put plugin into the repository's reciever map
     synchronized (pluginMap) {
       String name = plugin.getName();
@@ -98,26 +92,12 @@ public final class PluginRegistry {
       
       Plugin existingPlugin = (Plugin)pluginMap.get(name);
       if (existingPlugin != null) {
-        boolean isEquivalent = existingPlugin.isEquivalent(plugin);
-
-        // if the plugins are equivalent and the existing one
-        // is still active, just return the existing one now
-        if (isEquivalent && existingPlugin.isActive()) {
-          return existingPlugin;
-        } else {
-         existingPlugin.shutdown();
-        }
-       
+        existingPlugin.shutdown();
       }
 
       // put the new plugin into the map
       pluginMap.put(name, plugin);
-
-      // start the new plugin
-      plugin.activateOptions();
       firePluginStarted(plugin);
-
-      return plugin;
     }
   }
 

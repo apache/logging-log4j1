@@ -224,7 +224,8 @@ public class SchedulerTest extends TestCase {
     for (int i = 0; i < runLen; i++) {
       PeriodicJob pj = (PeriodicJob) jobs.get(i);
 
-      if (pj.count < NUM_PERIODS) {
+      // allow for 15% error margin
+      if ((pj.count*1.15) < NUM_PERIODS) {
         fail(
           "Periodic job executed only " + pj.count
           + " times. Expected at least " + NUM_PERIODS);
