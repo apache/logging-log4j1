@@ -22,6 +22,7 @@ import org.apache.joran.helper.Option;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.Logger;
+import org.apache.log4j.helpers.Constants;
 import org.apache.log4j.spi.AppenderAttachable;
 import org.apache.log4j.spi.ErrorItem;
 
@@ -76,9 +77,12 @@ public class AppenderRefAction extends Action {
     Appender appender = (Appender) appenderBag.get(appenderName);
 
     if (appender == null) {
-      getLogger().warn("Could not find an appender named [" + appenderName + "]");
+      String msg = "Could not find an appender named ["+appenderName+
+      "]. Did you define it below in the config file?";
+      getLogger().warn(msg);
+      getLogger().warn("See {}#appender_order for more details.", Constants.CODES_HREF);
       inError = true;
-      ec.addError(new ErrorItem("Could not find an appender named [" + appenderName + "]"));
+      ec.addError(new ErrorItem(msg));
 
       return;
     }
