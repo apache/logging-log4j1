@@ -10,6 +10,8 @@ package org.apache.log4j.net;
 import java.io.IOException;
 import java.net.Socket;
 
+import javax.swing.event.EventListenerList;
+
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.plugins.Receiver;
 import org.apache.log4j.helpers.LogLog;
@@ -25,6 +27,7 @@ import org.apache.log4j.helpers.LogLog;
   
   @author Mark Womack
   @author Ceki G&uuml;lc&uuml;
+  @author Paul Smith <psmith@apache.org>
   @since 1.3
 */
 public class SocketHubReceiver
@@ -39,6 +42,8 @@ extends Receiver implements SocketNodeEventListener, PortBased {
   protected Connector connector;
   
   protected Socket socket;
+  
+  private EventListenerList listenerList = new EventListenerList();
     
   public SocketHubReceiver() { }
   
@@ -51,6 +56,24 @@ extends Receiver implements SocketNodeEventListener, PortBased {
     host = _host;
     port = _port;
     repository = _repository;
+  }
+  
+  /**
+   * Adds a SocketNodeEventListener to this receiver to be notified
+   * of SocketNode events
+   * @param l
+   */
+  public void addSocketNodeEventListener(SocketNodeEventListener l){
+  	listenerList.add(SocketNodeEventListener.class, l);
+  }
+  
+  /**
+   * Removes a specific SocketNodeEventListener from this instance
+   * so that it will no  longer be notified of SocketNode events.
+   * @param l
+   */
+  public void removeSocketNodeEventListener(SocketNodeEventListener l){
+  	listenerList.remove(SocketNodeEventListener.class, l);
   }
   
   /**
@@ -189,7 +212,14 @@ extends Receiver implements SocketNodeEventListener, PortBased {
     connector = null;
     socket = _socket;
     SocketNode node = new SocketNode(socket, this);
-    node.setListener(this);
+    node.addSocketNodeEventListener(this);
+	SocketNodeEventListener[] listeners =
+	  (SocketNodeEventListener[]) listenerList.getListeners(
+		SocketNodeEventListener.class);
+
+	for (int i = 0; i < listeners.length; i++) {
+	  node.addSocketNodeEventListener(listeners[i]);
+	}
     new Thread(node).start();
   }
   
