@@ -46,6 +46,15 @@ public class ComponentBase implements Component {
   }
   
   /**
+   * Return the {@link LoggerRepository} this component is attached to.
+   * 
+   * @return Owning LoggerRepository
+   */
+  protected LoggerRepository getLoggerRepository() {
+    return repository;
+  }
+  
+  /**
    * Return an instance specific logger to be used by the component itself.
    * This logger is not intended to be accessed by the end-user, hence the 
    * protected keyword.
