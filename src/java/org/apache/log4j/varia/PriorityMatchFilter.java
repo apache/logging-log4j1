@@ -33,7 +33,7 @@ import org.apache.log4j.helpers.OptionConverter;
 
    @author Ceki G&uuml;lc&uuml;
    
-   @deprecated Use {@link PriorityMatchFilter} instead.
+   @deprecated Use {@link LevelMatchFilter} instead.
    @since 0.9.1 */
 public class PriorityMatchFilter extends Filter {
   

@@ -140,7 +140,7 @@ public class XMLLayout extends Layout {
     // We yield to the \r\n heresy.
 
     buf.append("<log4j:event category=\"");
-    buf.append(event.loggerName);
+    buf.append(event.categoryName);
     buf.append("\" timestamp=\"");
     buf.append(event.timeStamp);
     buf.append("\" level=\"");

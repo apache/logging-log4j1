@@ -9,6 +9,9 @@
  
  - Release of version 1.2 (ALPHA)
 
+ - The src/java/org/apache/log4j/examples/ directory moved under the
+   top-level directory as examples/. [*]
+
  - Improved error reporting in DOMConfigurator. Thanks to Thomas Tuft
    Muller for contributing the enhancement. [*]
 	

@@ -49,8 +49,8 @@ public class LoggingEvent implements java.io.Serializable {
   entity after deserialization. */
   transient public Category logger;
 
-  /** The level name. */
-  public final String loggerName;
+  /** The category (logger) name. */
+  public final String categoryName;
   
   /** Level of logging event. Level cannot be serializable
       because it is a flyweight.  Due to its special seralization it
@@ -122,8 +122,8 @@ public class LoggingEvent implements java.io.Serializable {
 		      Priority priority, Object message, Throwable throwable) {
     this.fqnOfCategoryClass = fqnOfCategoryClass;
     this.logger = logger;
-    this.loggerName = logger.getName();
-    this.level = priority;
+    this.categoryName = logger.getName();
+    this.level = priority;   
     this.message = message;
     if(throwable != null) {
       this.throwableInfo = new ThrowableInformation(throwable);

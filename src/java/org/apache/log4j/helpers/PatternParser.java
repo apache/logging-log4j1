@@ -541,7 +541,7 @@ public class PatternParser {
     }
     
     String getFullyQualifiedName(LoggingEvent event) {
-      return event.loggerName;
+      return event.categoryName;
     }
   }  
 }

@@ -66,7 +66,7 @@ public class SocketNode implements Runnable {
     try {
       while(true) {	
 	event = (LoggingEvent) ois.readObject();	
-	remoteLogger = hierarchy.getLogger(event.loggerName);
+	remoteLogger = hierarchy.getLogger(event.categoryName);
 	event.logger = remoteLogger;
 	if(event.level.isGreaterOrEqual(remoteLogger.getChainedLevel())) {
 	  remoteLogger.callAppenders(event);	
