@@ -19,6 +19,8 @@ package org.apache.log4j.scheduler;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.log4j.helpers.LogLog;
+
 
 /**
  * A simple but still useful implementation of a Scheduler (in memory only).
@@ -161,7 +163,7 @@ public class Scheduler extends Thread {
         ScheduledJobEntry sje = (ScheduledJobEntry) jobList.get(0);
         long now = System.currentTimeMillis();
         if(now >= sje.desiredExecutionTime) {
-          sje.job.execute();
+          executeInABox(sje.job);
           jobList.remove(0);
           if(sje.period > 0) {
             sje.desiredExecutionTime = now + sje.period;
@@ -173,6 +175,17 @@ public class Scheduler extends Thread {
       }
     }
     System.out.println("Leaving scheduler run method");
+  }
+  
+  /**
+   * We do not want a single failure to affect the whole scheduler.
+   */
+  void executeInABox(Job job) {
+    try {
+      job.execute();
+    } catch(Exception e) {
+      LogLog.error("The execution of the job threw an exception", e);
+    }
   }
   
   void linger() {
