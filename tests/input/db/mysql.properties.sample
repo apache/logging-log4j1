@@ -4,9 +4,12 @@
 
 # The JDBC driver class for MySQL
 driverClass=com.mysql.jdbc.Driver
+
 # The DataSource class for MySQL
 dataSourceClass=com.mysql.jdbc.jdbc2.optional.MysqlDataSource
 
+# Native pooled DataSource class for MySQL
+pooledDataSourceClass=com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource
 
 # The following parameters should be set for your machine.
 url=jdbc:mysql:///test

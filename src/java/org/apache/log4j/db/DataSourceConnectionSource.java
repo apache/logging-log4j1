@@ -16,10 +16,10 @@
 
 package org.apache.log4j.db;
 
+import org.apache.log4j.db.dialect.Util;
 import org.apache.log4j.helpers.LogLog;
 
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 
 import javax.sql.DataSource;
@@ -35,16 +35,12 @@ import javax.sql.DataSource;
  *  @author Ceki G&uuml;lc&uuml;
  */
 public class DataSourceConnectionSource extends ConnectionSourceSkeleton {
-  private static final String POSTGRES_PART = "postgresql";
-  private static final String MYSQL_PART = "mysql";
-  private static final String ORACLE_PART = "oracle";
-  private static final String MSSQL_PART = "mssqlserver4"; 
-  
+
   private DataSource dataSource;
   int dialectCode;
   
   public void activateOptions() {
-    LogLog.debug("**********DataSourceConnectionSource.activateOptions called");
+    //LogLog.debug("**********DataSourceConnectionSource.activateOptions called");
     if (dataSource == null) {
       LogLog.warn("WARNING: No data source specified");
       
@@ -52,7 +48,12 @@ public class DataSourceConnectionSource extends ConnectionSourceSkeleton {
         errorHandler.error("WARNING: No data source specified");
       }
     } else {
-      dialectCode = discoverSQLDialect();
+      try {
+        Connection connection = getConnection();
+        dialectCode = Util.discoverSQLDialect(connection);
+      } catch(SQLException se) {
+        LogLog.warn("Could not discover the dialect to use.", se);
+      }
     }
   }
 
@@ -84,33 +85,6 @@ public class DataSourceConnectionSource extends ConnectionSourceSkeleton {
   }
 
   public int getSQLDialect() {
-    return dialectCode;
-  }
-  public int discoverSQLDialect() {
-    int dialectCode = 0;
-
-    try {
-      Connection connection = getConnection();
-      DatabaseMetaData meta = connection.getMetaData();
-      String dbName = meta.getDatabaseProductName().toLowerCase();
-      LogLog.debug("**************db name is " + dbName);
-
-      if (dbName.indexOf(POSTGRES_PART) != -1) {
-        LogLog.debug("POSTGRESQL dialect selected"); 
-        return ConnectionSource.POSTGRES_DIALECT;
-      } else if (dbName.indexOf(MYSQL_PART) != -1) {
-        return ConnectionSource.MYSQL_DIALECT;
-      } else if (dbName.indexOf(ORACLE_PART) != -1) {
-        return ConnectionSource.ORACLE_DIALECT;
-      } else if (dbName.indexOf(MSSQL_PART) != -1) {
-        return ConnectionSource.MSSQL_DIALECT;
-      } else {
-        return ConnectionSource.UNKNOWN_DIALECT;
-      }
-    } catch (SQLException sqle) {
-      // we can't do much here
-    }
-
     return dialectCode;
   }
 }

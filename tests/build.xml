@@ -504,7 +504,21 @@
        defining access as well as necessary class files are available. Otherwise,
        the test is skipped.
        --> 
+
+
+  <!-- The target that performs the actual test -->
+  <target name="DB">    
+    <junit printsummary="yes" fork="no" haltonfailure="yes"> 
+      <sysproperty key="toto" value="${toto}"/>     
+      <sysproperty key="appendConfigFile" value="${appendConfigFile}"/>
+      <sysproperty key="readConfigFile" value="${readConfigFile}"/>
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="false"/>
+      <test name="org.apache.log4j.db.FullCycleDBTest" />
+    </junit>
+  </target>
        
+  <!-- ============ MySQL specific tests ============== -->     
   <target name="mysqlCheck">
     <condition property="mysql-present">
     <and>
@@ -515,22 +529,33 @@
     </and>
     </condition>
   </target>
-   
-   
+
   <target name="mysql" depends="mysqlCheck, build" if="mysql-present">
-    
     <delete file="./input/db/db.properties"/>
     <echo message="MySQL available"/>
     <copy file="./input/db/mysql.properties" tofile="./input/db/db.properties"/>
+
+    <echo message="Running test case with DriverManager config file"/>
+    <antcall target="DB">
+      <param name="appendConfigFile" value="./input/db/append-with-drivermanager1.xml"/>
+      <param name="readConfigFile"   value="./input/db/read-with-drivermanager1.xml"/>
+    </antcall>
+
+    <echo message="Running test case with DataSource"/>
+    <antcall target="DB">
+      <param name="appendConfigFile" value="./input/db/append-with-datasource1.xml"/>
+      <param name="readConfigFile"   value="./input/db/read-with-datasource1.xml"/>
+    </antcall>
+
+    <echo message="Running test case with *pooled* DataSource"/>
+    <antcall target="DB">
+      <param name="appendConfigFile" value="./input/db/append-with-pooled-datasource1.xml"/>
+      <param name="readConfigFile"   value="./input/db/read-with-pooled-datasource1.xml"/>
+    </antcall>
     
-    <junit printsummary="yes" fork="no" haltonfailure="yes"> 
-      <sysproperty key="runLen" value="100"/>     
-      <classpath refid="tests.classpath"/>
-      <formatter type="plain" usefile="false"/>
-      <test name="org.apache.log4j.db.FullCycleDBTest" />
-    </junit>
   </target>
 
+  <!-- ============ PostgreSQL specific tests ============== -->     
 
   <target name="postgresqlCheck">
     <condition property="postgresql-present">
@@ -542,18 +567,29 @@
     </and>
     </condition>
   </target>
-   
+
   <target name="postgresql" depends="postgresqlCheck, build" if="postgresql-present">
     <delete file="./input/db/db.properties"/>
     <echo message="PostgreSQL available"/>
     <copy file="./input/db/postgresql.properties" tofile="./input/db/db.properties"/>
-    
-    <junit printsummary="yes" fork="no" haltonfailure="yes"> 
-      <sysproperty key="runLen" value="100"/>     
-      <classpath refid="tests.classpath"/>
-      <formatter type="plain" usefile="false"/>
-      <test name="org.apache.log4j.db.FullCycleDBTest" />
-    </junit>
+
+    <echo message="Running test case with DriverManager config file"/>
+    <antcall target="DB">
+      <param name="appendConfigFile" value="./input/db/append-with-drivermanager1.xml"/>
+      <param name="readConfigFile"   value="./input/db/read-with-drivermanager1.xml"/>
+    </antcall>
+
+    <echo message="Running test case with DataSource"/>
+    <antcall target="DB">
+      <param name="appendConfigFile" value="./input/db/append-with-datasource1.xml"/>
+      <param name="readConfigFile"   value="./input/db/read-with-datasource1.xml"/>
+    </antcall>
+
+    <echo message="Running test case with *pooled* DataSource"/>
+    <antcall target="DB">
+      <param name="appendConfigFile" value="./input/db/append-with-pooled-datasource1.xml"/>
+      <param name="readConfigFile"   value="./input/db/read-with-pooled-datasource1.xml"/>
+    </antcall>
   </target>
   
   <!-- ================================================================= -->
