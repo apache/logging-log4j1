@@ -569,7 +569,7 @@ public class PropertyConfigurator extends BasicConfigurator
       // root category.
       if(priorityStr.equalsIgnoreCase(BasicConfigurator.INHERITED) &&
                                 	 !loggerName.equals(INTERNAL_ROOT_NAME)) {
-	logger.setPriority(null);
+	logger.setLevel(null);
       } else {
 	logger.setLevel(OptionConverter.toLevel(priorityStr, 
 					     Priority.DEBUG));
