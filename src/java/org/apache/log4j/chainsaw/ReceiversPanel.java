@@ -516,7 +516,7 @@ class ReceiversPanel extends JPanel {
    * and that this operation occurs in the Swing Event Dispatch thread.
    *
    */
-  private void updateReceiverTreeInDispatchThread() {
+  public void updateReceiverTreeInDispatchThread() {
     if (SwingUtilities.isEventDispatchThread()) {
       updateReceiverTree.run();
     } else {
