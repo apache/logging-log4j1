@@ -229,7 +229,7 @@ public class SocketAppender extends AppenderSkeleton {
       /**
        * Rather than log an ugly stack trace, output the msg
        */
-      LogLog.error(msg + "(" + e + ")");
+      LogLog.error(msg + "(" + e.getMessage() + ")");
     }
   }
 
