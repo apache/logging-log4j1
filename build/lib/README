@@ -9,3 +9,6 @@ files are:
   jms.jar 
   activation.jar
   jmxri.jar
+
+We no longer include them in the log4j distribution either because of
+liability issues with Sun's binary license.
