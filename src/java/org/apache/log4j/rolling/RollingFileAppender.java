@@ -52,7 +52,6 @@ package org.apache.log4j.rolling;
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.ErrorCode;
-import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.LoggingEvent;
 
 import java.io.File;
@@ -90,9 +89,8 @@ public class RollingFileAppender extends FileAppender {
 
     if (rollingPolicy != null) {
       rollingPolicy.activateOptions();
-      //System.out.println("Actibe log file name"+rollingPolicy.getActiveLogFileName());
+      logger.debug("Active log file name: "+rollingPolicy.getActiveLogFileName());
       setFile(rollingPolicy.getActiveLogFileName());
-      activeFile = new File(rollingPolicy.getActiveLogFileName());
       super.activateOptions();
     } else {
       logger.warn("Please set a rolling policy");
@@ -118,9 +116,11 @@ public class RollingFileAppender extends FileAppender {
     // make sure to close the hereto active log file!!
     this.closeFile();
 
-    activeFile = new File(fileName);
     rollingPolicy.rollover();
 
+    // Altough not certain, the active file name may change after roll over.
+    fileName = rollingPolicy.getActiveLogFileName();
+    logger.debug("Active file name is now ["+fileName+"].");
     try {
       // This will also close the file. This is OK since multiple
       // close operations are safe.
@@ -155,9 +155,16 @@ public class RollingFileAppender extends FileAppender {
 
   public void setRollingPolicy(RollingPolicy policy) {
     rollingPolicy = policy;
+    if(rollingPolicy instanceof TriggeringPolicy) {
+      triggeringPolicy = (TriggeringPolicy) policy;
+    }
+    
   }
 
   public void setTriggeringPolicy(TriggeringPolicy policy) {
     triggeringPolicy = policy;
+    if(policy instanceof RollingPolicy) {
+      rollingPolicy = (RollingPolicy) policy;
+    }
   }
 }

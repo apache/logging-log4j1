@@ -561,7 +561,7 @@
       excludes="**/stylesheets/**, empty.xml, lf5/**"
       includes="**/*.xml"
       lastModifiedCheck="true"
-      templatePath="../jakarta-site2/xdocs/stylesheets">
+      templatePath="${jakarta-site2}/xdocs/stylesheets">
     </anakia>
 
     <anakia basedir="${xdocs.src}" destdir="${docs.dest}/"
@@ -571,7 +571,7 @@
       excludes="**/stylesheets/**, empty.xml"
       includes="lf5/*.xml"
       lastModifiedCheck="true"
-      templatePath="../jakarta-site2/xdocs/stylesheets">
+      templatePath="${jakarta-site2}/xdocs/stylesheets">
     </anakia>
   </target>
 

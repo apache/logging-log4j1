@@ -1,10 +1,14 @@
+
+
+
 TODO
+
+- Improve the concurrency model of the Logger class
+- Log4j self configuration
 
 
 - Add support for string options in SocketAppender
-
 - Add a properties file option to log4j:configure in XML.
-
 
 
 - Graceful congiguration merging

@@ -50,124 +50,81 @@
 package org.apache.log4j.rolling;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.rolling.helpers.Compress;
+import org.apache.log4j.rolling.helpers.DateTokenConverter;
 import org.apache.log4j.rolling.helpers.FileNamePattern;
-import org.apache.log4j.rolling.helpers.Util;
-
+import org.apache.log4j.rolling.helpers.RollingCalendar;
+import org.apache.log4j.spi.OptionHandler;
 
 import java.io.File;
 
+import java.util.Date;
+
 
 /**
- * The SlidingWindowRollingPolicy rolls over files
+ *
+ *
  *
  * @author Ceki G&uuml;lc&uuml;
- * @since 1.3
- * */
-public class SlidingWindowRollingPolicy extends RollingPolicySkeleton {
-    
-  static Logger logger = Logger.getLogger(SlidingWindowRollingPolicy.class);
-  int maxIndex;
-  int minIndex;
+ */
+public class TimeBasedRollingPolicy extends RollingPolicySkeleton implements TriggeringPolicy {
+  static final Logger logger = Logger.getLogger(TimeBasedRollingPolicy.class);
   FileNamePattern fileNamePattern;
-  String activeFileName;
- 
-  public SlidingWindowRollingPolicy() {
-    minIndex = 1;
-    maxIndex = 7;
-    activeFileName = null;
+  RollingCalendar rc;
+  long nextCheck;
+  Date now = new Date();
+  int compressionMode;
+  
+  public void activateOptions() {
+    // find out period from the filename pattern
+    if (fileNamePattern != null) {
+      DateTokenConverter dtc = fileNamePattern.getDateTokenConverter();
+
+      if (dtc == null) {
+        throw new IllegalStateException(
+          "FileNamePattern [" + fileNamePattern.getPattern()
+          + "] does not contain a valid DateToken");
+      }
+      rc = new RollingCalendar();
+      rc.init(dtc.getDatePattern());
+      logger.debug(
+             "The date pattern is [" + dtc.getDatePattern()
+             + "] from file name pattern [" + fileNamePattern.getPattern() + "].");
+      rc.printPeriodicity();
+      long n = System.currentTimeMillis();
+      now.setTime(n);
+      nextCheck = rc.getNextCheckMillis(now);
+      Date x = new Date(); x.setTime(nextCheck);
+      logger.debug("Next check set to: "+x);
+    }
+  }
+
+  public String getActiveLogFileName() {
+    return fileNamePattern.convert(now);
   }
 
   public void rollover() {
-    // Inside this method it is guaranteed that the hereto active log fil is closed.
-    // If maxIndex <= 0, then there is no file renaming to be done.
-    if (maxIndex >= 0) {
-      // Delete the oldest file, to keep Windows happy.
-      File file = new File(fileNamePattern.convert(maxIndex));
-
-      if (file.exists()) {
-        file.delete();
-      }
-
-      // Map {(maxIndex - 1), ..., minIndex} to {maxIndex, ..., minIndex+1}
-      for (int i = maxIndex - 1; i >= minIndex; i--) {
-        Util.rename(
-          fileNamePattern.convert(i), fileNamePattern.convert(i + 1));
-      }
-
-      if (activeFileName != null) {
-        //move active file name to min
-        switch(compressionMode) {
-          case Compress.NONE: 
-            Util.rename(activeFileName, fileNamePattern.convert(minIndex));
-            break;
-            case Compress.GZ: 
-              Compress.GZCompress(activeFileName, fileNamePattern.convert(minIndex));
-              break;
-        }
-      }
-    }
-  }
-
-  public void activateOptions() {
-    if(activeFileName == null) {
-      logger.warn("The active file name option must be set before using this rolling policy.");
-      throw new IllegalStateException("The activeFileName option must be set.");
-    }
-    
-    if (maxIndex < minIndex) {
-      logger.warn(
-        "maxIndex (" + maxIndex + ") cannot be smaller than minIndex ("
-        + minIndex + ").");
-      logger.warn("Setting maxIndex to equal minIndex.");
-      maxIndex = minIndex;
-    }
-  }
-
-  /**
-   *
-   * If the <b>ActiveFileName</b> option is set, then this method simply returns the
-   * value of the option. Otherwise, it returns the value of <b>FileNamePattern</b>
-   * for <b>MaxIndex</b>. For example, if <b>ActiveFileName</b> is not set and
-   * <b>FileNamePattern</b> is set to "mylogfile.%i" and <b>MaxIndex</b> is set to 0,
-   * then this method will return "mylogfile.0".
-   *
-   */
-  public String getActiveLogFileName() {
-    return activeFileName;
-  }
-
-  public String getFileNamePattern() {
-    return fileNamePattern.toString();
-  }
-
-  public int getMaxIndex() {
-    return maxIndex;
-  }
-
-  public int getMinIndex() {
-    return minIndex;
+    // nothing to do!!!     
   }
 
   public void setFileNamePattern(String fnp) {
     fileNamePattern = new FileNamePattern(fnp);
   }
 
-  public void setMaxIndex(int maxIndex) {
-    this.maxIndex = maxIndex;
+  public boolean isTriggeringEvent(File file) {
+    logger.debug("Is triggering event called");
+    long n = System.currentTimeMillis();
+
+    if (n >= nextCheck) {
+      logger.debug("Time to trigger rollover");
+      now.setTime(n);
+      logger.debug("ActiveLogFileName will return "+getActiveLogFileName());
+      nextCheck = rc.getNextCheckMillis(now);
+      //logger.debug("nextCheck is :"+nextCheck);
+      Date x = new Date(); x.setTime(nextCheck);
+      logger.debug("Next check: "+x);
+      return true;
+    } else {
+      return false;
+    }
   }
-
-  public void setMinIndex(int minIndex) {
-    this.minIndex = minIndex;
-  }
-
-
-  public String getActiveFileName() {
-    return activeFileName;
-  }
-
-  public void setActiveFileName(String afn) {
-    activeFileName = afn;
-  }
-
 }

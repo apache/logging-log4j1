@@ -114,7 +114,9 @@
                                      OptionConverter, BoundedFIFO, 
                                      CyclicBuffer, OR, VariaLevelMatchFilter, 
                                      VariaLevelRangeFilter, PatternParser,
-                                     LevelMatchFilter, DRFA, Plugins"/>
+                                     LevelMatchFilter, DRFA, Plugins, 
+                                     SizeBasedRolling, Compress, 
+                                     TimeBasedRolling"/>
 
   <!-- ================================================================= -->
   <!-- Longer unit tests                                                 -->
@@ -379,11 +381,27 @@
     </junit>
   </target>
   
-    <target name="SizeBasedRolling" depends="build, cleanOutputDir">
+  <target name="SizeBasedRolling" depends="build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
       <test name="org.apache.log4j.rolling.SizeBasedRollingTestCase" />
+    </junit>
+  </target>
+
+  <target name="TimeBasedRolling" depends="build">
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="false"/>
+      <test name="org.apache.log4j.rolling.TimeBasedRollingTestCase" />
+    </junit>
+  </target>
+  
+  <target name="Compress" depends="build, cleanOutputDir">
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="false"/>
+      <test name="org.apache.log4j.rolling.helpers.CompressTestCase" />
     </junit>
   </target>
 

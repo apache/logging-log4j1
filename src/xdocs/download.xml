@@ -6,55 +6,61 @@
     <title>Download</title>
   </properties>
 
-  <meta name="keywords" content="java, logging, tracing, component, framework, API, log4j"/>
-<body>
+    <meta name="keywords" content="java, log4j download, logging, tracing, component, framework, API, log4j"/>
+      <body>
+	
+      <section name="log4j version 1.2.8">
+	<p>Log4j is <a
+	      href="http://jakarta.apache.org/site/binindex.cgi"><b>available
+	      for download</b></a> from a number of mirrors. Please
+	      use these mirrors as they improve download time and save
+	      bandwidth.
+	  </p>
+	  
+	  <p>As of release 1.2.8. log4j searches for the file
+	    <code>log4j.xml</code> as well as the file
+	    <code>log4j.properties</code> during initialization. See the
+	    <a href="HISTORY">HISTORY</a> file for the firther details.
+	  </p>
+	  
+	  <p>In addition to many performance improvements, bug fixes,
+	    and other small enhancements, log4j 1.2 adds JMX support,
+	    Mapped Diagnostic Contexts, JDBC logging, graphical log
+	    viewer (chainsaw), and buffered IO capability. One
+	    important change is the replacement of the
+	    <code>Category</code> class with <code>Logger</code> class
+	    and the <code>Priority</code> class with the
+	    <code>Level</code> class in order to facilitate migrating
+	    from the JDK 1.4 logging API to log4j. <a
+	    href="http://www.javaworld.com/javaworld/jw-05-2001/jw-0504-finalists.html"><img
+	    src="images/ecaward_finalist_logo.gif" align="right"
+	    border="0"/></a>
+	  </p>
 
-    <section name="log4j version 1.2.8">
-      <p>log4j 1.2.8 is available in <a
-	href="../jakarta-log4j-1.2.8.tar.gz"><b>TAR.GZ</b></a> format
-	or in <a href="../jakarta-log4j-1.2.8.zip"><b>ZIP</b></a>
-	format.
-      </p>
+	  <p>Version 1.2 is the 22nd major public release of log4j.
+	    All changes except the removal of deprecated methods are
+	    backward compatible such that log4j 1.2 can be considered
+	    a drop in replacement for log4j 1.1.3. The only exception
+	    is the renaming of the <code>CategoryFactory</code> class
+	    to <code>LoggerFactory</code> class such that subclasses
+	    of <code>Category</code> class must be modified and
+	    recompiled. <em>The recommended pattern for extending the
+	    <code>Logger</code> class is wrapping. Moreover, we
+	    strongly discourage casual users from subclassing the
+	      <code>Category</code> or <code>Logger</code>
+	      classes. </em>
+	  </p>
 
-      <p>As of release 1.2.8 log4j now searches for the file log4j.xml
-        as well as the file log4j.properties during
-        initialization. See the <a href="HISTORY">HISTORY</a> file for
-        the firther details.
-      </p>
-      
-      <p>In addition to many performance improvements, bug fixes, and
-	other small enhancements, log4j 1.2 adds JMX support, Mapped
-	Diagnostic Contexts, JDBC logging, graphical log viewer
-	(chainsaw), and buffered IO capability. One important change
-	is the replacement of the <code>Category</code> class with
-	<code>Logger</code> class and the <code>Priority</code> class
-	with the <code>Level</code> class in order to facilitate
-	migrating from the JDK 1.4 logging API to log4j. <a
-	href="http://www.javaworld.com/javaworld/jw-05-2001/jw-0504-finalists.html"><img
-	src="images/ecaward_finalist_logo.gif" align="right"
-	border="0"/></a>
-      </p>
+	  <subsection name='Earlier Releases'>
+	    <p>We also maintain <a
+	      href="earlier.html">earlier
+	      versions of log4j</a> for download, intended for the
+	      curious paleontologist -- there seems to be quite a few
+	      of them!
+	    </p>
+	  </subsection>
 
-	<p>Version 1.2 is the 22nd major public release of log4j.  All
-	changes except the removal of deprecated methods are backward
-	compatible such that log4j 1.2 can be considered a drop in
-	replacement for log4j 1.1.3. The only exception is the
-	renaming of the <code>CategoryFactory</code> class to
-	<code>LoggerFactory</code> class such that subclasses of
-	<code>Category</code> class must be modified and
-	recompiled. <em>The recommended pattern for extending the
-	<code>Logger</code> class is wrapping. Moreover, we strongly
-	discourage casual users from subclassing the
-	<code>Category</code> or <code>Logger</code> classes. </em>
-      </p>
-
-      <p>We also maintain a list of <a href="earlier.html">earlier
-	  versions</a> of log4j for download, intended for the curious
-	  paleontologist -- there seems to be quite a few of them!
-      </p>
-
-
-    </section>
+	</section>
 
 
     <section name="Third-party extensions (listed in alphabetical order)">
