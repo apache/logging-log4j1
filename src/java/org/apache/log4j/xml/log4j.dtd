@@ -146,7 +146,7 @@ element. -->
   includesLocationInfo   (true|false) "true"
 >
 
-<!ELEMENT log4j:event (log4j:message, log4j:NDC?, log4j:MDC?, 
+<!ELEMENT log4j:event (log4j:message, log4j:NDC?, 
                        log4j:throwable?, log4j:locationInfo?, log4j:properties?) >
 
 <!-- The timestamp format is the elapsed millis since 1970. -->
@@ -161,8 +161,6 @@ element. -->
 <!ELEMENT log4j:message (#PCDATA)>
 
 <!ELEMENT log4j:NDC (#PCDATA)>
-
-<!ELEMENT log4j:MDC (log4j:data*)>
 
 <!ELEMENT log4j:throwable (#PCDATA)>
 
