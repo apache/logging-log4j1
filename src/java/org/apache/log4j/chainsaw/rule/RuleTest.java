@@ -52,6 +52,7 @@ package org.apache.log4j.chainsaw.rule;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -71,307 +72,366 @@ import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
+
 public class RuleTest extends JFrame {
+  /**
+   * Simple infix/postfix conversion and evaluation...work in progress..a ui test tool to work through expression building issues.
+   *
+   * Infix to postfix conversion routines and evaluation methods for boolean expressions.
+   * See http://www.qiksearch.com/articles/cs/infix-postfix/
+   * and http://www.spsu.edu/cs/faculty/bbrown/web_lectures/postfix/
+   *
+   * for more information.
+   *
+   * @author Scott Deboy <sdeboy@apache.org>
+   *
+   */
+  private final Vector data = new Vector();
+  private final Vector colnames = new Vector();
 
-/**
- * Simple infix/postfix conversion and evaluation...work in progress..a ui test tool to work through expression building issues.
- * 
- * Infix to postfix conversion routines and evaluation methods for boolean expressions.
- * See http://www.qiksearch.com/articles/cs/infix-postfix/
- * and http://www.spsu.edu/cs/faculty/bbrown/web_lectures/postfix/
- *
- * for more information.
- *  
- * @author Scott Deboy <sdeboy@apache.org>
- *
- */
-	private final Vector data = new Vector();
-	private final Vector colnames = new Vector();
-	
-	public RuleTest(String booleanPostFixExpression, String inFixExpression) {
-		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		getContentPane().setLayout(new BorderLayout());
-		JPanel fieldPanel = new JPanel(new GridLayout(8, 1));
-		
-		fieldPanel.add(
-			new JLabel("Enter boolean postfix expression to evaluate: "));
-		final JTextField booleanPostFixTextField = new JTextField(booleanPostFixExpression);
-		fieldPanel.add(booleanPostFixTextField);
-		JButton booleanPostFixButton = new JButton("Evaluate Boolean PostFix");
-		fieldPanel.add(booleanPostFixButton);
-		final JTextField booleanResult = new JTextField();
-		fieldPanel.add(booleanResult);
-		booleanPostFixButton.addActionListener(new AbstractAction() {
-			public void actionPerformed(ActionEvent evt) {
-				EvaluateBooleanPostFix booleanPostFixEvaluator = new EvaluateBooleanPostFix();
-				booleanResult.setText(booleanPostFixEvaluator.evaluate(booleanPostFixTextField.getText()));
-			}
-		});
+  public RuleTest(String booleanPostFixExpression, String inFixExpression) {
+    setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    getContentPane().setLayout(new BorderLayout());
 
+    JPanel fieldPanel = new JPanel(new GridLayout(8, 1));
 
-		fieldPanel.add(
-			new JLabel("Enter infix expression to convert to postfix: "));
-		final JTextField inFixTextField = new JTextField(inFixExpression);
-		fieldPanel.add(inFixTextField);
-		JButton inFixButton = new JButton("Convert InFix to PostFix");
-		fieldPanel.add(inFixButton);
-		final JTextField inFixResult = new JTextField();
-		fieldPanel.add(inFixResult);
-		inFixButton.addActionListener(new AbstractAction() {
-			public void actionPerformed(ActionEvent evt) {
-				InFixToPostFix inFixConverter = new InFixToPostFix();
-				inFixResult.setText(inFixConverter.convert(inFixTextField.getText()));
-			}
-		});
+    fieldPanel.add(
+      new JLabel("Enter boolean postfix expression to evaluate: "));
 
-		colnames.add("level");
-		colnames.add("logger");
-		colnames.add("message");
-		colnames.add("result");		
+    final JTextField booleanPostFixTextField =
+      new JTextField(booleanPostFixExpression);
+    fieldPanel.add(booleanPostFixTextField);
 
-		data.add(createEvent("DEBUG", "org.apache.log4j.chainsaw", "TEST MESSAGE 1"));
-		data.add(createEvent("DEBUG", "test logger", "TEST MESSAGE 2"));
-		data.add(createEvent("INFO", "org.apache.log4j.chainsaw", "TEST MESSAGE 3"));
-		data.add(createEvent("INFO", "org.aache.log4j.chainsaw", "TEST MESSAGE 4"));
-		data.add(createEvent("WARN", "test logger", "TEST MESSAGE 5"));
-		data.add(createEvent("WARN", "test logger 2", "TEST MESSAGE 6"));
-		data.add(createEvent("WARN", "test logger 2", "TEST MESSAGE 7"));
+    JButton booleanPostFixButton = new JButton("Evaluate Boolean PostFix");
+    fieldPanel.add(booleanPostFixButton);
 
-		TableModel tm = new EventTableModel(data, colnames);
-		JPanel tablePanel = new JPanel();
-		JTable table = new JTable(tm);
-		tablePanel.add(table);
-		getContentPane().add(fieldPanel, BorderLayout.NORTH);
-		getContentPane().add(tablePanel, BorderLayout.CENTER);
-	}
+    final JTextField booleanResult = new JTextField();
+    fieldPanel.add(booleanResult);
+    booleanPostFixButton.addActionListener(
+      new AbstractAction() {
+        public void actionPerformed(ActionEvent evt) {
+          EvaluateBooleanPostFix booleanPostFixEvaluator =
+            new EvaluateBooleanPostFix();
+          booleanResult.setText(
+            booleanPostFixEvaluator.evaluate(
+              booleanPostFixTextField.getText()));
+        }
+      });
 
-	private Vector createEvent(String level, String logger, String message) {
-		Vector v = new Vector();
-		v.add(level);
-		v.add(logger);
-		v.add(message);
-		return v;
-	}
-	
-	public static void main(String[] args) {
-		RuleTest test = new RuleTest("level debug == BLAH test == logger org.apache == && ||", "( ( level == debug ) || ( BLAH == test ) ) && logger == org.apache");
-		test.pack();
-		test.setVisible(true);
-	}
+    fieldPanel.add(
+      new JLabel("Enter infix expression to convert to postfix: "));
 
-	abstract class BooleanOperator {
-		abstract boolean evaluate(String firstParam, String secondParam);
-	}
-	 
-	class AndOperator extends BooleanOperator {
-		boolean evaluate(String firstParam, String secondParam) {
-			System.out.println("and op");
-			return (convertToBoolean(firstParam) && convertToBoolean(secondParam));
-		}
-	}
+    final JTextField inFixTextField = new JTextField(inFixExpression);
+    fieldPanel.add(inFixTextField);
 
-	boolean convertToBoolean(String param) {
-		//use tostring to convert params to boolean.boolvalues
-		boolean result = false;
-		if (param == null) {
-			return result;
-		}
-		try {
-			result = Boolean.valueOf(param).booleanValue();
-		} catch (Exception e) {
-			e.printStackTrace();
-			return result;
-		}
-		return result;				
-	}
-	
-	class OrOperator extends BooleanOperator {
-		boolean evaluate(String firstParam, String secondParam) {
-			System.out.println("or op");
-			return (convertToBoolean(firstParam) || convertToBoolean(secondParam));
-		}
-	}
-	
-	class PartialTextMatchOperator extends BooleanOperator {
-		boolean evaluate(String firstParam, String secondParam) {
-			System.out.println("part text match op " + firstParam +".."+secondParam);
-			return (secondParam != null && secondParam.indexOf(firstParam) > -1) ? true:false;
-		} 
-	}
+    JButton inFixButton = new JButton("Convert InFix to PostFix");
+    fieldPanel.add(inFixButton);
 
-	class TextMatchOperator extends BooleanOperator {
-		boolean evaluate(String firstParam, String secondParam) {
-			System.out.println("text match op " + firstParam +".."+secondParam);
-			boolean result = false;
-				//second parameter is field name
-				//first parameter is value
-				//fake out logic here to examine passed in parameters and value retrieval from table
-				if ((secondParam.equalsIgnoreCase("level") && firstParam.equalsIgnoreCase("debug")) ||
-				(secondParam.equalsIgnoreCase("logger") && firstParam.equalsIgnoreCase("org.apache")))
-				 {
-					result = true;
-				} else {
-					result = ((secondParam != null && secondParam.equals(firstParam))?true:false);
-				}
-			return result;
-		} 
-	}
-	
-/**
- * Evaluate a boolean postfix expression.
- *
- */
-	class EvaluateBooleanPostFix {
-		private final Map symbolMap = new HashMap();
-		private final Stack stack = new Stack();
-		String result = null;
+    final JTextField inFixResult = new JTextField();
+    fieldPanel.add(inFixResult);
+    inFixButton.addActionListener(
+      new AbstractAction() {
+        public void actionPerformed(ActionEvent evt) {
+          InFixToPostFix inFixConverter = new InFixToPostFix();
+          inFixResult.setText(
+            inFixConverter.convert(inFixTextField.getText()));
+        }
+      });
 
-		EvaluateBooleanPostFix() {
-			symbolMap.put("&&", new AndOperator());
-			symbolMap.put("||", new OrOperator());
-			symbolMap.put("==", new TextMatchOperator());
-			symbolMap.put("~=", new PartialTextMatchOperator());
-		}
+    colnames.add("level");
+    colnames.add("logger");
+    colnames.add("message");
+    colnames.add("result");
 
-		String evaluate(String expression) {
-			String result = null;
-			Enumeration tokenizer = new StringTokenizer(expression);
-			while (tokenizer.hasMoreElements()) {
-				//examine each token
-				String nextToken = ((String) tokenizer.nextElement());
-				//if a symbol is found, pop 2 off the stack, evaluate and push the result 
-				if (symbolMap.containsKey(nextToken)) {
-					BooleanOperator op = (BooleanOperator) symbolMap.get(nextToken);
-					Object o = stack.pop();
-					Object p = stack.pop();
-					//notice the evaluate takes the 2nd parameter as the first field 
-					Boolean output = Boolean.valueOf(op.evaluate(o.toString(), p.toString()));
-					System.out.println("o, p,output is " + o + ".." + p + ".." + output);
-					stack.push(output);
-				} else {
-					//variables or constants are pushed onto the stack
-					stack.push(nextToken);
-					//stack.push("T".equalsIgnoreCase(nextToken)?Boolean.TRUE:Boolean.FALSE);
-				}
-			}
-			if (stack.size() > 0) {
-				result = stack.pop().toString();
-			} else {
-				result = "ERRROR";
-			}
-			return result;
-		}
-	}
+    data.add(
+      createEvent("DEBUG", "org.apache.log4j.chainsaw", "TEST MESSAGE 1"));
+    data.add(createEvent("DEBUG", "test logger", "TEST MESSAGE 2"));
+    data.add(
+      createEvent("INFO", "org.apache.log4j.chainsaw", "TEST MESSAGE 3"));
+    data.add(
+      createEvent("INFO", "org.aache.log4j.chainsaw", "TEST MESSAGE 4"));
+    data.add(createEvent("WARN", "test logger", "TEST MESSAGE 5"));
+    data.add(createEvent("WARN", "test logger 2", "TEST MESSAGE 6"));
+    data.add(createEvent("WARN", "test logger 2", "TEST MESSAGE 7"));
 
-/**
- * precedence: !, &, ^, |, &&, ||
- * Convert an infix expression to postfix.  Supports parentheses, ||, &&, == and ~= 
- *
- */
-	public class InFixToPostFix {
-		private final Stack stack = new Stack();
-		private final Map precedenceMap = new HashMap();
-		private final List operators = new Vector();
-		
-		public InFixToPostFix() {
-			//parentheses are treated as quasi-operators
-			operators.add("(");
-			operators.add(")");
+    TableModel tm = new EventTableModel(data, colnames);
+    JPanel tablePanel = new JPanel();
+    JTable table = new JTable(tm);
+    tablePanel.add(table);
+    getContentPane().add(fieldPanel, BorderLayout.NORTH);
+    getContentPane().add(tablePanel, BorderLayout.CENTER);
+  }
 
-			//boolean operators
-			operators.add("==");
-			operators.add("~=");
-			operators.add("||");
-			operators.add("&&");
+  private Vector createEvent(String level, String logger, String message) {
+    Vector v = new Vector();
+    v.add(level);
+    v.add(logger);
+    v.add(message);
 
-			//boolean precedence
-			precedenceMap.put("==", new Integer(2));
-			precedenceMap.put("~=", new Integer(2));
-			precedenceMap.put("||", new Integer(3));
-			precedenceMap.put("&&", new Integer(3));			
-		}						
+    return v;
+  }
 
-		public String convert(String expression) {
-			return infixToPostFix(expression);
-		}
+  public static void main(String[] args) {
+    RuleTest test =
+      new RuleTest(
+        "level debug == BLAH test == logger org.apache == && ||",
+        "( ( level == debug ) || ( BLAH == test ) ) && logger == org.apache");
+    test.pack();
+    test.setVisible(true);
+  }
 
-		boolean isOperand(String symbol) {
-			return (!operators.contains(symbol));
-		}
+  boolean convertToBoolean(String param) {
+    boolean result = false;
 
-		boolean precedes(String symbol1, String symbol2) {
-			if (!precedenceMap.keySet().contains(symbol1)) {
-				return false;
-			}
-			if (!precedenceMap.keySet().contains(symbol2)) {
-				return false;
-			}
+    if (param == null) {
+      return result;
+    }
 
-			int index1 = ((Integer)precedenceMap.get(symbol1)).intValue();
-			int index2 = ((Integer)precedenceMap.get(symbol2)).intValue();
+    try {
+      result = Boolean.valueOf(param).booleanValue();
+    } catch (Exception e) {
+      e.printStackTrace();
 
-			//boolean precedesResult = !(((index1 == 0) || (index1 == 1)) && (index2 > 1)); 
+      return result;
+    }
 
-			boolean precedesResult = (index1 < index2); 
-			System.out.println("SYMBOL1: " + symbol1 + "SYMBOL2: " + symbol2 + " index1: " + index1 + " index2: " + index2 + " precedesresult: " + precedesResult);
-			return precedesResult; 
-		}
+    return result;
+  }
 
-		String infixToPostFix(String infixParam) {
-			String SPACE = " ";
-			StringBuffer postfix = new StringBuffer();
-			StringTokenizer tokenizer = new StringTokenizer(infixParam);
-			for (int i = 0, j = tokenizer.countTokens(); i < j; i++) {
-				String token = tokenizer.nextToken();
-				System.out.println("FOUND TOKEN " + token);
-				if (isOperand(token)) {
-					postfix.append(token+SPACE);
-					System.out.println("OPERAND - APPENDING TO POSTFIX " + postfix);
-				} else {
-					System.out.println("OPERATOR - ITERATING THROUGH STACK");
-					while ((!(stack.size() == 0))
-						&& (precedes(stack.peek().toString(), token))) {
-							postfix.append(stack.pop().toString()+SPACE);
-							System.out.println("appending to postfix and popping from stack - postfix: " + postfix + "..stack: " + stack);
-					}
-					if ((!(stack.size() == 0)) && (")".equals(token))) {
-						if ("(".equals(stack.peek())) {
-							System.out.println("found left paren - popping without adding to output - result: " + stack);
-							stack.pop();
-						} else {
-							postfix.append(stack.pop().toString()+SPACE);
-							System.out.println("FOUND RIGHT PAREN - POPPING - result: " + stack);
-						}
-					} else {
-						stack.push(token);
-						System.out.println("NOT RIGHT PAREN - PUSHING - result: " + stack);
-					}
-				}
-			}
-			System.out.println("OUT OF TOKEN LOOP - remaining stack is " + stack);
-			while (!(stack.size() == 0)) {
-				if ("(".equals(stack.peek().toString())) {
-					//pop off the stack but don't process
-					stack.pop();
-					System.out.println("popping left paren off stack. stack is " + stack);
-				} else {
-					postfix.append(stack.pop().toString()+SPACE);
-					System.out.println("appending to postfix and popping from stack - postfix: " + postfix + "..stack: " + stack);
-				}			
-			}
-			System.out.println("RETURNING " + postfix);
-			stack.clear();
-			return postfix.toString();
-		}
-	}
-	
-	class EventTableModel extends DefaultTableModel {
-		Vector data;
-		Vector colnames;
-		EventTableModel(Vector data, Vector colnames) {
-			super(data, colnames);
-			this.data = data;
-			this.colnames = colnames;
-		}
-	}
+  abstract class BooleanOperator {
+    abstract boolean evaluate(String firstParam, String secondParam);
+  }
+
+  class AndOperator extends BooleanOperator {
+    boolean evaluate(String firstParam, String secondParam) {
+      System.out.println("and op");
+
+      return (convertToBoolean(firstParam) && convertToBoolean(secondParam));
+    }
+  }
+
+  class OrOperator extends BooleanOperator {
+    boolean evaluate(String firstParam, String secondParam) {
+      System.out.println("or op");
+
+      return (convertToBoolean(firstParam) || convertToBoolean(secondParam));
+    }
+  }
+
+  class PartialTextMatchOperator extends BooleanOperator {
+    boolean evaluate(String firstParam, String secondParam) {
+      System.out.println(
+        "part text match op " + firstParam + ".." + secondParam);
+
+      return ((secondParam != null) && (secondParam.indexOf(firstParam) > -1))
+      ? true : false;
+    }
+  }
+
+  class TextMatchOperator extends BooleanOperator {
+    boolean evaluate(String firstParam, String secondParam) {
+      System.out.println("text match op " + firstParam + ".." + secondParam);
+
+      boolean result = false;
+
+      //second parameter is field name
+      //first parameter is value
+      //fake out logic here to examine passed in parameters and value retrieval from table
+      if (
+        (secondParam.equalsIgnoreCase("level")
+          && firstParam.equalsIgnoreCase("debug"))
+          || (secondParam.equalsIgnoreCase("logger")
+          && firstParam.equalsIgnoreCase("org.apache"))) {
+        result = true;
+      } else {
+        result = (((secondParam != null) && secondParam.equals(firstParam))
+          ? true : false);
+      }
+
+      return result;
+    }
+  }
+
+  /**
+   * Evaluate a boolean postfix expression.
+   *
+   */
+  class EvaluateBooleanPostFix {
+    private final Map symbolMap = new HashMap();
+    private final Stack stack = new Stack();
+    String result = null;
+
+    EvaluateBooleanPostFix() {
+      symbolMap.put("&&", new AndOperator());
+      symbolMap.put("||", new OrOperator());
+      symbolMap.put("==", new TextMatchOperator());
+      symbolMap.put("~=", new PartialTextMatchOperator());
+    }
+
+    String evaluate(String expression) {
+      String result = null;
+      Enumeration tokenizer = new StringTokenizer(expression);
+
+      while (tokenizer.hasMoreElements()) {
+        //examine each token
+        String nextToken = ((String) tokenizer.nextElement());
+
+        //if a symbol is found, pop 2 off the stack, evaluate and push the result 
+        if (symbolMap.containsKey(nextToken)) {
+          BooleanOperator op = (BooleanOperator) symbolMap.get(nextToken);
+          Object o = stack.pop();
+          Object p = stack.pop();
+
+          //notice the evaluate takes the 2nd parameter as the first field 
+          Boolean output =
+            Boolean.valueOf(op.evaluate(o.toString(), p.toString()));
+          System.out.println("o, p,output is " + o + ".." + p + ".." + output);
+          stack.push(output);
+        } else {
+          //variables or constants are pushed onto the stack
+          stack.push(nextToken);
+        }
+      }
+
+      if (stack.size() > 0) {
+        result = stack.pop().toString();
+      } else {
+        result = "ERRROR";
+      }
+
+      return result;
+    }
+  }
+
+  /**
+   * precedence: !, &, ^, |, &&, ||
+   * Convert an infix expression to postfix.  Supports parentheses, ||, &&, == and ~=
+   *
+   */
+  public class InFixToPostFix {
+    private final Stack stack = new Stack();
+    private final Map precedenceMap = new HashMap();
+    private final List operators = new Vector();
+
+    public InFixToPostFix() {
+      //parentheses are treated as quasi-operators
+      operators.add("(");
+      operators.add(")");
+
+      //boolean operators
+      operators.add("==");
+      operators.add("~=");
+      operators.add("||");
+      operators.add("&&");
+
+      //boolean precedence
+      precedenceMap.put("==", new Integer(2));
+      precedenceMap.put("~=", new Integer(2));
+      precedenceMap.put("||", new Integer(3));
+      precedenceMap.put("&&", new Integer(3));
+    }
+
+    public String convert(String expression) {
+      return infixToPostFix(expression);
+    }
+
+    boolean isOperand(String symbol) {
+      return (!operators.contains(symbol));
+    }
+
+    boolean precedes(String symbol1, String symbol2) {
+      if (!precedenceMap.keySet().contains(symbol1)) {
+        return false;
+      }
+
+      if (!precedenceMap.keySet().contains(symbol2)) {
+        return false;
+      }
+
+      int index1 = ((Integer) precedenceMap.get(symbol1)).intValue();
+      int index2 = ((Integer) precedenceMap.get(symbol2)).intValue();
+
+      boolean precedesResult = (index1 < index2);
+      System.out.println(
+        "SYMBOL1: " + symbol1 + "SYMBOL2: " + symbol2 + " index1: " + index1
+        + " index2: " + index2 + " precedesresult: " + precedesResult);
+
+      return precedesResult;
+    }
+
+    String infixToPostFix(String infixParam) {
+      String SPACE = " ";
+      StringBuffer postfix = new StringBuffer();
+      StringTokenizer tokenizer = new StringTokenizer(infixParam);
+
+      for (int i = 0, j = tokenizer.countTokens(); i < j; i++) {
+        String token = tokenizer.nextToken();
+        System.out.println("FOUND TOKEN " + token);
+
+        if (isOperand(token)) {
+          postfix.append(token + SPACE);
+          System.out.println("OPERAND - APPENDING TO POSTFIX " + postfix);
+        } else {
+          System.out.println("OPERATOR - ITERATING THROUGH STACK");
+
+          while (
+            (!(stack.size() == 0))
+              && (precedes(stack.peek().toString(), token))) {
+            postfix.append(stack.pop().toString() + SPACE);
+            System.out.println(
+              "appending to postfix and popping from stack - postfix: "
+              + postfix + "..stack: " + stack);
+          }
+
+          if ((!(stack.size() == 0)) && (")".equals(token))) {
+            if ("(".equals(stack.peek())) {
+              System.out.println(
+                "found left paren - popping without adding to output - result: "
+                + stack);
+              stack.pop();
+            } else {
+              postfix.append(stack.pop().toString() + SPACE);
+              System.out.println(
+                "FOUND RIGHT PAREN - POPPING - result: " + stack);
+            }
+          } else {
+            stack.push(token);
+            System.out.println("NOT RIGHT PAREN - PUSHING - result: " + stack);
+          }
+        }
+      }
+
+      System.out.println("OUT OF TOKEN LOOP - remaining stack is " + stack);
+
+      while (!(stack.size() == 0)) {
+        if ("(".equals(stack.peek().toString())) {
+          //pop off the stack but don't process
+          stack.pop();
+          System.out.println(
+            "popping left paren off stack. stack is " + stack);
+        } else {
+          postfix.append(stack.pop().toString() + SPACE);
+          System.out.println(
+            "appending to postfix and popping from stack - postfix: "
+            + postfix + "..stack: " + stack);
+        }
+      }
+
+      System.out.println("RETURNING " + postfix);
+      stack.clear();
+
+      return postfix.toString();
+    }
+  }
+
+  class EventTableModel extends DefaultTableModel {
+    Vector data;
+    Vector colnames;
+
+    EventTableModel(Vector data, Vector colnames) {
+      super(data, colnames);
+      this.data = data;
+      this.colnames = colnames;
+    }
+  }
 }
