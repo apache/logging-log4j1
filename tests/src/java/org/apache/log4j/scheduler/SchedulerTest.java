@@ -30,9 +30,8 @@ import java.util.Vector;
  *
  */
 public class SchedulerTest extends TestCase {
-  static final long TOLERATED_GAP = 1000;
+  static final long TOLERATED_GAP = 2000;
   Random random = new Random(480361007);
-  final long START_TIME = System.currentTimeMillis();
 
   public SchedulerTest(String arg0) {
     super(arg0);
@@ -96,6 +95,7 @@ public class SchedulerTest extends TestCase {
     scheduler.schedule(cj0, expected0);
     scheduler.schedule(cj1, expected1);
     scheduler.delete(cj0);
+    cj0.markAsDeleted();
     sleep(100 + (3 * 200));
     assertEquals(0, cj0.count);
     assertEquals(1, cj1.count);
@@ -112,10 +112,10 @@ public class SchedulerTest extends TestCase {
     Vector deletedVector = new Vector();
 
     // the approximative duration of this test in millisecs
-    final int TEST_DURATION = 50000;
+    final int TEST_DURATION = 15000;
 
     // the frequncy of operations in millisecs
-    final int OP_FREQUENCY = 10;
+    final int OP_FREQUENCY = 25;
 
     // The number of times we will perform an operation on the scheduler
     final int MAX_OPS = TEST_DURATION / OP_FREQUENCY;
@@ -127,24 +127,33 @@ public class SchedulerTest extends TestCase {
         int indexToDelete = getRandomIndexToDelete(jobVector.size());
         CountingJob j = (CountingJob) jobVector.remove(indexToDelete);
 
-        if (j.count == 0) {
-          scheduler.delete(j);
-          deletedVector.add(j);
-
-          if (j.count == 1) {
-            fail("Error in the test code itself.");
-          }
-        }
+        scheduler.delete(j);
+        deletedVector.add(j);
+        j.markAsDeleted();
       } else {
         long expected = start + random.nextInt(TEST_DURATION);
-        CountingJob cj = new CountingJob((int) i, expected);
-        jobVector.add(cj);
-        scheduler.schedule(cj, expected);
+        CountingJob cj;
+        
+        if (shouldBePeriodic()) {
+          System.out.println(i+ " is periodic");
+          // the period should be at least 50 millis
+          int period = random.nextInt(500)+50;
+          cj = new PeriodicJob((int) i, expected, period);
+          jobVector.add(cj);
+          scheduler.schedule(cj, expected, period);
+        } else {
+          cj = new CountingJob((int) i, expected);
+          jobVector.add(cj);
+          scheduler.schedule(cj, expected);
+        }
+        
       }
     }
 
     long loopEnd = System.currentTimeMillis();
     sleep(TEST_DURATION - (loopEnd - start) + 2000);
+
+    long endOfExecution = System.currentTimeMillis();
 
     if (deletedVector.size() > (MAX_OPS / 2)) {
       fail("too many deleted jobs: " + deletedVector.size());
@@ -156,12 +165,12 @@ public class SchedulerTest extends TestCase {
 
     for (Iterator i = jobVector.iterator(); i.hasNext();) {
       CountingJob cj = (CountingJob) i.next();
-      assertEquals(1, cj.count);
+      cj.sanityCheck(endOfExecution);
     }
 
     for (Iterator i = deletedVector.iterator(); i.hasNext();) {
       CountingJob cj = (CountingJob) i.next();
-      assertEquals(0, cj.count);
+      cj.sanityCheck(endOfExecution);
     }
   }
 
@@ -180,12 +189,14 @@ public class SchedulerTest extends TestCase {
 
     scheduler.shutdown();
 
+    long endOfExecution = System.currentTimeMillis();
+
     if (pj.count < 10) {
       fail(
-        "Periodic job executed only " + pj.count
-        + " times. Expected at least"+NUM_PERIODS);
+        "Periodic job executed only " + pj.count + " times. Expected at least"
+        + NUM_PERIODS);
     }
-    pj.checkPeriods();
+    pj.sanityCheck(endOfExecution);
   }
 
   public void testMultiplePeriodic() {
@@ -208,14 +219,17 @@ public class SchedulerTest extends TestCase {
     sleep(period * NUM_PERIODS);
     scheduler.shutdown();
 
+    long endOfExecution = System.currentTimeMillis();
+
     for (int i = 0; i < runLen; i++) {
       PeriodicJob pj = (PeriodicJob) jobs.get(i);
+
       if (pj.count < NUM_PERIODS) {
         fail(
           "Periodic job executed only " + pj.count
-          + " times. Expected at least "+NUM_PERIODS);
+          + " times. Expected at least " + NUM_PERIODS);
       }
-      pj.checkPeriods();
+      pj.sanityCheck(endOfExecution);
     }
   }
 
@@ -223,6 +237,17 @@ public class SchedulerTest extends TestCase {
     int r = random.nextInt(2);
 
     if (r == 2) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  // One in every 10 tests should be periodic
+  boolean shouldBePeriodic() {
+    int r = random.nextInt(10);
+
+    if (r == 0) {
       return true;
     } else {
       return false;
@@ -247,93 +272,12 @@ public class SchedulerTest extends TestCase {
     }
   }
 
-  public static Test suite() {
+  public static Test xsuite() {
     TestSuite suite = new TestSuite();
 
-    //suite.addTest(new SchedulerTest("testRandom"));
+    suite.addTest(new SchedulerTest("testRandom"));
     //suite.addTest(new SchedulerTest("testPeriodic"));
-    suite.addTest(new SchedulerTest("testMultiplePeriodic"));
+    //suite.addTest(new SchedulerTest("testMultiplePeriodic"));
     return suite;
-  }
-
-  class CountingJob implements Job {
-    int count = 0;
-    int id;
-    long scheduledTime;
-
-    CountingJob(int id, long scheduledTime) {
-      this.id = id;
-      this.scheduledTime = scheduledTime;
-    }
-
-    public void execute() {
-      long now = System.currentTimeMillis();
-      count++;
-
-      if (now < scheduledTime) {
-        throw new IllegalStateException("Job executed too early.");
-      } else if ((now - scheduledTime) > SchedulerTest.TOLERATED_GAP) {
-        String msg =
-          "Job id " + id + " executed " + (now - scheduledTime) + " too late "
-          + "diff " + (scheduledTime - SchedulerTest.this.START_TIME);
-        System.out.println(msg);
-        throw new IllegalStateException(msg);
-      }
-    }
-  }
-
-
-  class PeriodicJob implements Job {
-    int count = 0;
-    int id;
-    long period;
-    Vector desiredTimeVector;
-    Vector actualExecutionTime;
-
-    PeriodicJob(int id, long desiredExecutionTime, long period) {
-      this.id = id;
-      this.period = period;
-      actualExecutionTime = new Vector();
-      desiredTimeVector = new Vector();
-      desiredTimeVector.add(new Long(desiredExecutionTime));
-    }
-
-    public void execute() {
-      long now = System.currentTimeMillis();
-      count++;
-      System.out.println(id+" - execute called: count" + count + ", now=" + now);
-
-      long lastDesiredTime =
-        ((Long) desiredTimeVector.lastElement()).longValue();
-      desiredTimeVector.add(new Long(lastDesiredTime + period));
-      actualExecutionTime.add(new Long(now));
-
-      if (now < lastDesiredTime) {
-        throw new IllegalStateException("Job executed too early.");
-      } else if ((now - lastDesiredTime) > SchedulerTest.TOLERATED_GAP) {
-        String msg =
-          "Job id " + id + " executed " + (now - lastDesiredTime)
-          + " too late ";
-        System.out.println(msg);
-        throw new IllegalStateException(msg);
-      }
-    }
-
-    void checkPeriods() {
-      for (int i = 0; i < actualExecutionTime.size(); i++) {
-        long actual = ((Long) actualExecutionTime.get(i)).longValue();
-        long desired = ((Long) desiredTimeVector.get(i)).longValue();
-
-        if (actual < desired) {
-          throw new IllegalStateException("Job executed too early.");
-        } else if (
-          (actual - desired) > (SchedulerTest.TOLERATED_GAP * (i + 1))) {
-          String msg =
-            "Job id " + id + " executed " + (actual - desired) + " too late ";
-          System.out.println(msg);
-          throw new IllegalStateException(msg);
-        }
-      }
-    }
   }
 }

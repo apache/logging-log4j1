@@ -20,6 +20,7 @@ import org.apache.log4j.helpers.Constants;
 import org.apache.log4j.helpers.IntializationUtil;
 import org.apache.log4j.helpers.Loader;
 import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.scheduler.Scheduler;
 import org.apache.log4j.selector.ContextJNDISelector;
 import org.apache.log4j.spi.DefaultRepositorySelector;
 import org.apache.log4j.spi.LoggerFactory;
@@ -42,7 +43,8 @@ import java.util.Enumeration;
 public class LogManager {
   private static Object guard = null;
   private static RepositorySelector repositorySelector;
-
+  private static Scheduler schedulerInstance = null;
+  
   static {
     System.out.println("**Start of LogManager static initializer");
     Hierarchy defaultHierarchy = new Hierarchy(new RootCategory(Level.DEBUG));
@@ -204,5 +206,20 @@ public class LogManager {
 
   public static void resetConfiguration() {
     repositorySelector.getLoggerRepository().resetConfiguration();
+  }
+  
+  /**
+   * 
+   * Return a singleton {@link Scheduler} instance to be shared by multiple
+   * receivers and watchdogs. 
+   * 
+   * @since 1.3
+   */
+  public static Scheduler getSchedulerInstance() {
+    if(schedulerInstance == null) {
+      schedulerInstance = new Scheduler();
+      schedulerInstance.start();
+    }
+    return schedulerInstance;
   }
 }
