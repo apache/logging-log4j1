@@ -205,7 +205,8 @@ public class ColorPanel extends JPanel {
         }
       });
 
-    f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+//    Following does not compile on JDK 1.3.1
+//    f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     f.getContentPane().add(p);
     f.pack();
     f.setVisible(true);

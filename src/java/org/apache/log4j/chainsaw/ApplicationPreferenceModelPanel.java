@@ -259,7 +259,8 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
         
         
         
-        Box tabPlacementBox = new Box(BoxLayout.Y_AXIS);
+        JPanel tabPlacementBox = new JPanel();
+        tabPlacementBox.setLayout(new BoxLayout(tabPlacementBox, BoxLayout.Y_AXIS));
         
         tabPlacementBox.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Tab Placement"));
        

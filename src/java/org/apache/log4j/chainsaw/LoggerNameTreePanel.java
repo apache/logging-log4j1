@@ -1031,7 +1031,15 @@ final class LoggerNameTreePanel extends JPanel implements Rule {
         //        component.setEnabled(true);
       }
 
-      component.setFont(originalFont.deriveFont(style));
+      if (originalFont!=null)
+      {
+        Font font2 = originalFont.deriveFont(style);
+        if (font2 != null)
+        {
+          component.setFont(font2);
+        }
+        
+      }
 
       return component;
     }

@@ -134,23 +134,6 @@ class ApplicationPreferenceModel implements SettingsListener {
     }
 
     /**
-     * @return
-     */
-    public PropertyChangeListener[] getPropertyChangeListeners() {
-
-        return propertySupport.getPropertyChangeListeners();
-    }
-
-    /**
-     * @param propertyName
-     * @return
-     */
-    public PropertyChangeListener[] getPropertyChangeListeners(
-        String propertyName) {
-        return propertySupport.getPropertyChangeListeners(propertyName);
-    }
-
-    /**
      * @param propertyName
      * @return
      */

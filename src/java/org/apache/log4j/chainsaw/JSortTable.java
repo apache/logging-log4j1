@@ -164,7 +164,7 @@ public class JSortTable extends JTable implements MouseListener {
   	
   	if(event.getClickCount()<2 || event.isPopupTrigger()){
   		return;
-  	}else if(event.getClickCount()>1 && event.getButton() == MouseEvent.BUTTON2_MASK){
+  	}else if(event.getClickCount()>1 && ((event.getModifiers() & MouseEvent.BUTTON2_MASK)>0)){
   		return;
   	}
   	

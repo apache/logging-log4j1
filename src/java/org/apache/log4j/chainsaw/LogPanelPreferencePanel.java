@@ -314,7 +314,8 @@ public class LogPanelPreferencePanel extends AbstractPreferencePanel {
       bgDateFormat.add(rdCustom);
 
       Box customBox = Box.createHorizontalBox();
-      customBox.setAlignmentX(0);
+//      Following does not work in JDK 1.3.1
+//      customBox.setAlignmentX(0);
       customBox.add(rdCustom);
       customBox.add(customFormatText);
       customBox.add(Box.createHorizontalGlue());
