@@ -44,7 +44,7 @@ import java.util.ResourceBundle;
 /**
    <font color="#AA2222"><b>This class has been deprecated and
    replaced by the {@link Logger} <em>subclass</em>.</b></font> It
-   will be kept around to preserve backward compatibility until early
+   will be kept around to preserve backward compatibility until mid
    2003.
    
    <p><code>Logger</code> is a subclass of Category, i.e. it extends
@@ -65,7 +65,7 @@ import java.util.ResourceBundle;
    &nbsp;&nbsp;&nbsp;Logger logger = Logger.getLogger("foo.bar")
    </pre>
 
-   <p>The first tree forms are deprecated and should be avoided.
+   <p>The first form is deprecated and should be avoided.
   
    <p><b>There is absolutely no need for new client code to use or
    refer to the <code>Category</code> class.</b> Whenever possible,

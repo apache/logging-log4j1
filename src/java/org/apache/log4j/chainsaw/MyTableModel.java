@@ -319,8 +319,12 @@ class MyTableModel
      *        in the list after the filter is applied.
      */
     private void updateFilteredEvents(boolean aInsertedToFront) {
+	long start = System.currentTimeMillis();
+	
         final List filtered = new ArrayList();
+	int size = mAllEvents.size();
         final Iterator it = mAllEvents.iterator();
+	
         while (it.hasNext()) {
             final EventDetails event = (EventDetails) it.next();
             if (matchFilter(event)) {
@@ -344,6 +348,8 @@ class MyTableModel
         } else {
             fireTableDataChanged();
         }
+	long end = System.currentTimeMillis();
+	System.out.println("Total time [ms]: "+(end-start)+" in update, size: "+size);
     }
 
     /**

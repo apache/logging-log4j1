@@ -51,14 +51,14 @@ public class JMSSink  {
       Context ctx = new InitialContext();      
       TopicConnectionFactory topicConnectionFactory;
       topicConnectionFactory = (TopicConnectionFactory) lookup(ctx, 
-							       tcfBindingName);
+                                                               tcfBindingName);
 
       TopicConnection topicConnection = 
 	                        topicConnectionFactory.createTopicConnection(); 
       topicConnection.start();
     
       TopicSession topicSession = topicConnection.createTopicSession(false,
-							Session.AUTO_ACKNOWLEDGE);
+                                                       Session.AUTO_ACKNOWLEDGE);
 
       Topic topic = (Topic)ctx.lookup(topicBindingName);
 
