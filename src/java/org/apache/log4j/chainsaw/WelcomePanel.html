@@ -79,10 +79,10 @@
 <h2>Receivers</h2>
 <p>Log4j has a concept of a 'Receiver', an object that receives events
 from some source, and deposits them into the Log4j framework in the local JVM.  
-It useful to think of Log4j's engine as a 'bus' much like the PCI bus in a computer,
+It is useful to think of Log4j's engine as a 'bus' much like the PCI bus in a computer,
 with events being the data placed on the bus.</p>
 
-<p>Since Chainsaw acts just like a Log4j Appender, using a Receiver allows\
+<p>Chainsaw integrates itself with Log4j using this Receiver concept, allowing
 you to receive events from, say, a remote location, and view them within the
 Chainsaw GUI.</p>
 
@@ -92,32 +92,5 @@ A Receiver is just the opposite, it takes an external event and
 places it in the local Log4j bus.  A Receiver can be a 'sink' for event
 data, while the Appender is the 'source'.
 </p>
-<a name="UsefulConfigs"></a>
-<h2>Useful Configuration</h2>
-<p>We'll discuss a very useful and common configuration.  If you have
-an application that is using Log4j to log events, you are able to 
-configure a series of appenders, and often this is just a simple FileAppender. 
-An alternative is to configure a SocketAppender that transmits the event
-to a remote location. In this case, Chainsaw becomes this remote location.
-</p>
-<p>Click <a href="http://jakarta.apache.org/log4j/docs/api/org/apache/log4j/net/SocketAppender.html">here</a> to learn more about <a href="http://jakarta.apache.org/log4j/docs/api/org/apache/log4j/net/SocketAppender.html">SocketAppenders</a>.</p>
-<p>Click here to learn more about Receivers (and SocketReceiver in particular).
-</P>
-<a name="FAQ"></a>
-<h2>FAQ</h2>
-<p></p>@todo<p></p>
-<!--<p><a href="#TheTop">Back to top</a></p>-->
-<a name="FilteringColouring"></a>
-<h2>Filtering and Colouring</h2>
-<p>Chainsaw enables you to configure filters that suppress the display of certain logging events, and also highlight the event with a colo(u)r of your choosing.</p>
-<p><a href="#TheTop">Back to top</a></p>
-<h2>Examples of Filtering and Colouring</h2>
-This example will show you how to:
-
-<ul>
-<li>Colo(ur) all Error level logging Red, Warn level Yellow, and Info level grey</li>
-<li>Suppress all levels but INFO/WARN/ERROR</li>
-</ul>
-<!--<p><a href="#TheTop">Back to top</a></p>-->
 </BODY>
 </HTML>
