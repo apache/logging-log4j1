@@ -477,7 +477,7 @@ public class Category implements AppenderAttachable {
      This method creates a new logging event and logs the event
      without further checks.  */
   protected
-  void forcedLog(String fqcn, Level level, Object message, Throwable t) {
+  void forcedLog(String fqcn, Priority level, Object message, Throwable t) {
     callAppenders(new LoggingEvent(fqcn, this, level, message, t));
   }
 
@@ -852,7 +852,7 @@ public class Category implements AppenderAttachable {
      @return boolean True if this category is enabled for <code>level</code>.
   */
   public
-  boolean isEnabledFor(Level level) {
+  boolean isEnabledFor(Priority level) {
     if(repository.isDisabled(level.level)) 
       return false;
     return level.isGreaterOrEqual(this.getChainedLevel());
@@ -925,7 +925,7 @@ public class Category implements AppenderAttachable {
      This generic form is intended to be used by wrappers.
    */
   public
-  void log(Level level, Object message, Throwable t) {
+  void log(Priority level, Object message, Throwable t) {
     if(repository.isDisabled(level.level)) {
       return;
     }
@@ -937,7 +937,7 @@ public class Category implements AppenderAttachable {
     This generic form is intended to be used by wrappers. 
  */
   public
-  void log(Level level, Object message) {
+  void log(Priority level, Object message) {
     if(repository.isDisabled(level.level)) {
       return;
     }

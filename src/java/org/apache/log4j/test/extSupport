@@ -19,6 +19,7 @@ function testExtSupport {
 }
 
 
+echo "-- $OUTPUT"
 
 declare -i TEST
 
