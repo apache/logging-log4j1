@@ -31,7 +31,7 @@ import java.util.Vector;
  *
  */
 public class Scheduler extends Thread {
-  // 
+   
   List jobList;
   boolean shutdown = false;
   
@@ -64,9 +64,15 @@ public class Scheduler extends Thread {
   
   /**
    * Delete the given job. Returns true if the job could be deleted, and 
-   * false if the job could not be found.
+   * false if the job could not be found or if the Scheduler is about to
+   * shutdown in which case deletions are not permitted.
    */
   public synchronized boolean delete(Job job) {
+    // if already shutdown in the process of shutdown, there is no
+    // need to remove Jobs as they will never be executed.
+    if(shutdown) {
+      return false;
+    }
     int i = findIndex(job);
     if(i != -1) {
       ScheduledJobEntry se = (ScheduledJobEntry) jobList.remove(i);
@@ -128,6 +134,10 @@ public class Scheduler extends Thread {
   }
     
   private synchronized void schedule(ScheduledJobEntry newSJE) {
+    // disallow new jobs after shutdown
+    if(shutdown) {
+      return;
+    }
      int max = jobList.size();
      long desiredExecutionTime = newSJE.desiredExecutionTime;
      
@@ -171,6 +181,9 @@ public class Scheduler extends Thread {
         }
       }
     }
+    // clear out the job list to facilitate garbage collection
+    jobList.clear();
+    jobList = null;
     System.out.println("Leaving scheduler run method");
   }
   
