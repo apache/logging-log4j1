@@ -60,85 +60,84 @@ import java.io.ObjectOutputStream;
 
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 
 /**
-    Sends {@link LoggingEvent} objects to a remote a log server,
-    usually a {@link SocketNode}.
+        Sends {@link LoggingEvent} objects to a remote a log server,
+        usually a {@link SocketNode}.
 
-    <p>The SocketAppender has the following properties:
+        <p>The SocketAppender has the following properties:
 
-    <ul>
+        <ul>
 
-      <p><li>If sent to a {@link SocketNode}, remote logging is
-      non-intrusive as far as the log event is concerned. In other
-      words, the event will be logged with the same time stamp, {@link
-      org.apache.log4j.NDC}, location info as if it were logged locally by
-      the client.
+          <p><li>If sent to a {@link SocketNode}, remote logging is
+          non-intrusive as far as the log event is concerned. In other
+          words, the event will be logged with the same time stamp, {@link
+          org.apache.log4j.NDC}, location info as if it were logged locally by
+          the client.
 
-      <p><li>SocketAppenders do not use a layout. They ship a
-      serialized {@link LoggingEvent} object to the server side.
+          <p><li>SocketAppenders do not use a layout. They ship a
+          serialized {@link LoggingEvent} object to the server side.
 
-      <p><li>Remote logging uses the TCP protocol. Consequently, if
-      the server is reachable, then log events will eventually arrive
-      at the server.
+          <p><li>Remote logging uses the TCP protocol. Consequently, if
+          the server is reachable, then log events will eventually arrive
+          at the server.
 
-      <p><li>If the remote server is down, the logging requests are
-      simply dropped. However, if and when the server comes back up,
-      then event transmission is resumed transparently. This
-      transparent reconneciton is performed by a <em>connector</em>
-      thread which periodically attempts to connect to the server.
+          <p><li>If the remote server is down, the logging requests are
+          simply dropped. However, if and when the server comes back up,
+          then event transmission is resumed transparently. This
+          transparent reconneciton is performed by a <em>connector</em>
+          thread which periodically attempts to connect to the server.
 
-      <p><li>Logging events are automatically <em>buffered</em> by the
-      native TCP implementation. This means that if the link to server
-      is slow but still faster than the rate of (log) event production
-      by the client, the client will not be affected by the slow
-      network connection. However, if the network connection is slower
-      then the rate of event production, then the client can only
-      progress at the network rate. In particular, if the network link
-      to the the server is down, the client will be blocked.
+          <p><li>Logging events are automatically <em>buffered</em> by the
+          native TCP implementation. This means that if the link to server
+          is slow but still faster than the rate of (log) event production
+          by the client, the client will not be affected by the slow
+          network connection. However, if the network connection is slower
+          then the rate of event production, then the client can only
+          progress at the network rate. In particular, if the network link
+          to the the server is down, the client will be blocked.
 
-      <p>On the other hand, if the network link is up, but the server
-      is down, the client will not be blocked when making log requests
-      but the log events will be lost due to server unavailability.
+          <p>On the other hand, if the network link is up, but the server
+          is down, the client will not be blocked when making log requests
+          but the log events will be lost due to server unavailability.
 
-      <p><li>Even if a <code>SocketAppender</code> is no longer
-      attached to any category, it will not be garbage collected in
-      the presence of a connector thread. A connector thread exists
-      only if the connection to the server is down. To avoid this
-      garbage collection problem, you should {@link #close} the the
-      <code>SocketAppender</code> explicitly. See also next item.
+          <p><li>Even if a <code>SocketAppender</code> is no longer
+          attached to any category, it will not be garbage collected in
+          the presence of a connector thread. A connector thread exists
+          only if the connection to the server is down. To avoid this
+          garbage collection problem, you should {@link #close} the the
+          <code>SocketAppender</code> explicitly. See also next item.
 
-      <p>Long lived applications which create/destroy many
-      <code>SocketAppender</code> instances should be aware of this
-      garbage collection problem. Most other applications can safely
-      ignore it.
+          <p>Long lived applications which create/destroy many
+          <code>SocketAppender</code> instances should be aware of this
+          garbage collection problem. Most other applications can safely
+          ignore it.
 
-      <p><li>If the JVM hosting the <code>SocketAppender</code> exits
-      before the <code>SocketAppender</code> is closed either
-      explicitly or subsequent to garbage collection, then there might
-      be untransmitted data in the pipe which might be lost. This is a
-      common problem on Windows based systems.
+          <p><li>If the JVM hosting the <code>SocketAppender</code> exits
+          before the <code>SocketAppender</code> is closed either
+          explicitly or subsequent to garbage collection, then there might
+          be untransmitted data in the pipe which might be lost. This is a
+          common problem on Windows based systems.
 
-      <p>To avoid lost data, it is usually sufficient to {@link
-      #close} the <code>SocketAppender</code> either explicitly or by
-      calling the {@link org.apache.log4j.LogManager#shutdown} method
-      before exiting the application.
+          <p>To avoid lost data, it is usually sufficient to {@link
+          #close} the <code>SocketAppender</code> either explicitly or by
+          calling the {@link org.apache.log4j.LogManager#shutdown} method
+          before exiting the application.
 
 
-     </ul>
+         </ul>
 
-    @author  Ceki G&uuml;lc&uuml;
-    @since 0.8.4 */
-public class SocketAppender extends AppenderSkeleton implements PortBased{
+        @author  Ceki G&uuml;lc&uuml;
+        @since 0.8.4 */
+public class SocketAppender extends AppenderSkeleton {
   /**
-     The default port number of remote logging server (4560).
+         The default port number of remote logging server (4560).
   */
   static final int DEFAULT_PORT = 4560;
 
   /**
-     The default reconnection delay (30000 milliseconds or 30 seconds).
+         The default reconnection delay (30000 milliseconds or 30 seconds).
   */
   static final int DEFAULT_RECONNECTION_DELAY = 30000;
 
@@ -147,13 +146,10 @@ public class SocketAppender extends AppenderSkeleton implements PortBased{
   private static final int RESET_FREQUENCY = 1;
 
   /**
-     We remember host name as String in addition to the resolved
-     InetAddress so that it can be returned via getOption().
+         We remember host name as String in addition to the resolved
+         InetAddress so that it can be returned via getOption().
   */
   String remoteHost;
-  String localMachine;
-  String log4japp;
-  String overrideProperties = "true";
   InetAddress address;
   int port = DEFAULT_PORT;
   ObjectOutputStream oos;
@@ -161,13 +157,12 @@ public class SocketAppender extends AppenderSkeleton implements PortBased{
   boolean locationInfo = false;
   private Connector connector;
   int counter = 0;
-  int count = 0;
 
   public SocketAppender() {
   }
 
   /**
-     Connects to remote server at <code>address</code> and <code>port</code>.
+         Connects to remote server at <code>address</code> and <code>port</code>.
   */
   public SocketAppender(InetAddress address, int port) {
     this.address = address;
@@ -177,7 +172,7 @@ public class SocketAppender extends AppenderSkeleton implements PortBased{
   }
 
   /**
-     Connects to remote server at <code>host</code> and <code>port</code>.
+         Connects to remote server at <code>host</code> and <code>port</code>.
   */
   public SocketAppender(String host, int port) {
     this.port = port;
@@ -187,28 +182,9 @@ public class SocketAppender extends AppenderSkeleton implements PortBased{
   }
 
   /**
-     Connect to the specified <b>RemoteHost</b> and <b>Port</b>.
+         Connect to the specified <b>RemoteHost</b> and <b>Port</b>.
   */
   public void activateOptions() {
-    try {
-      localMachine = InetAddress.getLocalHost().getHostName();
-    } catch (UnknownHostException uhe) {
-      try {
-        localMachine = InetAddress.getLocalHost().getHostAddress();
-      } catch (UnknownHostException uhe2) {
-        localMachine = "unknown";
-      }
-    }
-
-    //allow system property of log4japp to be primary
-    if (log4japp == null) {
-      log4japp = System.getProperty("log4japp");
-    } else {
-      if (System.getProperty("log4japp") != null) {
-        log4japp = log4japp + "-" + System.getProperty("log4japp");
-      }
-    }
-
     connect(address, port);
   }
 
@@ -225,21 +201,6 @@ public class SocketAppender extends AppenderSkeleton implements PortBased{
 
     this.closed = true;
     cleanUp();
-  }
-
-  /**
-     The <b>App</b> option takes a string value which should be the name of the application getting logged
-     If property was already set (via system property), don't set here.
-   */
-  public void setLog4JApp(String log4japp) {
-    this.log4japp = log4japp;
-  }
-
-  /**
-     Returns value of the <b>Log4JApp</b> option.
-   */
-  public String getLog4JApp() {
-    return log4japp;
   }
 
   /**
@@ -307,16 +268,6 @@ public class SocketAppender extends AppenderSkeleton implements PortBased{
           event.getLocationInformation();
         }
 
-        if (
-          (overrideProperties != null)
-            && overrideProperties.equalsIgnoreCase("true")) {
-          event.setProperty("log4jmachinename", localMachine);
-
-          if (log4japp != null) {
-            event.setProperty("log4japp", log4japp);
-          }
-        }
-
         oos.writeObject(event);
 
         //LogLog.debug("=========Flushing.");
@@ -380,89 +331,74 @@ public class SocketAppender extends AppenderSkeleton implements PortBased{
   }
 
   /**
-     Returns value of the <b>RemoteHost</b> option.
+         Returns value of the <b>RemoteHost</b> option.
    */
   public String getRemoteHost() {
     return remoteHost;
   }
 
   /**
-     The <b>OverrideProperties</b> option allows configurations where the appender does not apply
-     the machinename/appname properties - the properties will be used as provided.
-   */
-  public void setOverrideProperties(String overrideProperties) {
-    this.overrideProperties = overrideProperties;
-  }
-
-  /**
-     Returns value of the <b>OverrideProperties</b> option.
-   */
-  public String getOverrideProperties() {
-    return overrideProperties;
-  }
-
-  /**
-     The <b>Port</b> option takes a positive integer representing
-     the port where the server is waiting for connections.
+         The <b>Port</b> option takes a positive integer representing
+         the port where the server is waiting for connections.
    */
   public void setPort(int port) {
     this.port = port;
   }
 
   /**
-     Returns value of the <b>Port</b> option.
+         Returns value of the <b>Port</b> option.
    */
   public int getPort() {
     return port;
   }
 
   /**
-     The <b>LocationInfo</b> option takes a boolean value. If true,
-     the information sent to the remote host will include location
-     information. By default no location information is sent to the server.
+         The <b>LocationInfo</b> option takes a boolean value. If true,
+         the information sent to the remote host will include location
+         information. By default no location information is sent to the server.
    */
   public void setLocationInfo(boolean locationInfo) {
     this.locationInfo = locationInfo;
   }
 
   /**
-     Returns value of the <b>LocationInfo</b> option.
+         Returns value of the <b>LocationInfo</b> option.
    */
   public boolean getLocationInfo() {
     return locationInfo;
   }
 
   /**
-     The <b>ReconnectionDelay</b> option takes a positive integer
-     representing the number of milliseconds to wait between each
-     failed connection attempt to the server. The default value of
-     this option is 30000 which corresponds to 30 seconds.
+         The <b>ReconnectionDelay</b> option takes a positive integer
+         representing the number of milliseconds to wait between each
+         failed connection attempt to the server. The default value of
+         this option is 30000 which corresponds to 30 seconds.
 
-     <p>Setting this option to zero turns off reconnection
-     capability.
+         <p>Setting this option to zero turns off reconnection
+         capability.
    */
   public void setReconnectionDelay(int delay) {
     this.reconnectionDelay = delay;
   }
 
   /**
-     Returns value of the <b>ReconnectionDelay</b> option.
+         Returns value of the <b>ReconnectionDelay</b> option.
    */
   public int getReconnectionDelay() {
     return reconnectionDelay;
   }
 
   /**
-     The Connector will reconnect when the server becomes available
-     again.  It does this by attempting to open a new connection every
-     <code>reconnectionDelay</code> milliseconds.
+         The Connector will reconnect when the server becomes available
+         again.  It does this by attempting to open a new connection every
+         <code>reconnectionDelay</code> milliseconds.
 
-     <p>It stops trying whenever a connection is established. It will
-     restart to try reconnect to the server when previpously open
-     connection is droppped.
+         <p>It stops trying whenever a connection is established. It will
+         restart to try reconnect to the server when previpously open
+         connection is droppped.
 
-     @author  Ceki G&uuml;lc&uuml;
-     @since 0.8.4
+         @author  Ceki G&uuml;lc&uuml;
+         @since 0.8.4
   */
   class Connector extends Thread {
     boolean interrupted = false;
@@ -506,13 +442,5 @@ public class SocketAppender extends AppenderSkeleton implements PortBased{
        LogLog.debug("Connector finalize() has been called.");
        }
     */
-  }
-
-  /* (non-Javadoc)
-   * @see org.apache.log4j.net.NetworkBased#isActive()
-   */
-  public boolean isActive() {
-    // TODO handle active/inactive
-    return true;
   }
 }
