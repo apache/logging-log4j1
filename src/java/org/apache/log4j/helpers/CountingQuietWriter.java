@@ -15,7 +15,7 @@ import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.ErrorCode;
 
 /**
-   Counts the number of bytes written.
+   Counts the number of characters (not necessarily bytes) written.
 
    @author Heinz Richter, heinz.richter@frogdot.com
    @since 0.8.1
