@@ -31,13 +31,41 @@ public class Level extends Priority {
   final static public Level OFF = new Level(OFF_INT, "OFF", 0);
 
   /**
+     The <code>FATAL</code> level designates very severe error
+     events that will presumably lead the application to abort.
+   */
+  final static public Level FATAL = new Level(FATAL_INT, "FATAL", 0);
+
+  /**
+     The <code>ERROR</code> level designates error events that
+     might still allow the application to continue running.  */
+  final static public Level ERROR = new Level(ERROR_INT, "ERROR", 3);
+
+  /**
+     The <code>WARN</code> level designates potentially harmful situations.
+  */
+  final static public Level WARN  = new Level(WARN_INT, "WARN",  4);
+
+  /**
+     The <code>INFO</code> level designates informational messages
+     that highlight the progress of the application at coarse-grained
+     level.  */
+  final static public Level INFO  = new Level(INFO_INT, "INFO",  6);
+
+  /**
+     The <code>DEBUG</code> Level designates fine-grained
+     informational events that are most useful to debug an
+     application.  */
+  final static public Level DEBUG = new Level(DEBUG_INT, "DEBUG", 7);
+
+  /**
      The <code>ALL</code> has the lowest possible rank and is intended to
      turn on all logging.  */
   final static public Level ALL = new Level(ALL_INT, "ALL", 7);
 
 
   /**
-     Instantiate a priority object.
+     Instantiate a Level object.
    */
   protected
   Level(int level, String levelStr, int syslogEquivalent) {
@@ -52,7 +80,7 @@ public class Level extends Priority {
   public
   static
   Level toLevel(String sArg) {
-    return (Level) toLevel(sArg, Priority.DEBUG);
+    return (Level) toLevel(sArg, Level.DEBUG);
   }
 
   /**
@@ -63,7 +91,7 @@ public class Level extends Priority {
   public
   static
   Level toLevel(int val) {
-    return (Level) toLevel(val, Priority.DEBUG);
+    return (Level) toLevel(val, Level.DEBUG);
   }
 
   /**
@@ -72,14 +100,14 @@ public class Level extends Priority {
   */
   public
   static
-  Priority toLevel(int val, Priority defaultLevel) {
+  Level toLevel(int val, Level defaultLevel) {
     switch(val) {
     case ALL_INT: return ALL;
-    case DEBUG_INT: return (Level) Priority.DEBUG;
-    case INFO_INT: return (Level) Priority.INFO;
-    case WARN_INT: return (Level) Priority.WARN;
-    case ERROR_INT: return (Level) Priority.ERROR;
-    case FATAL_INT: return (Level) Priority.FATAL;
+    case DEBUG_INT: return (Level) Level.DEBUG;
+    case INFO_INT: return (Level) Level.INFO;
+    case WARN_INT: return (Level) Level.WARN;
+    case ERROR_INT: return (Level) Level.ERROR;
+    case FATAL_INT: return (Level) Level.FATAL;
     case OFF_INT: return OFF;
     default: return defaultLevel;
     }
@@ -92,19 +120,19 @@ public class Level extends Priority {
   */
   public
   static
-  Priority toLevel(String sArg, Priority defaultLevel) {                  
+  Level toLevel(String sArg, Level defaultLevel) {                  
     if(sArg == null)
        return defaultLevel;
     
     String s = sArg.toUpperCase();
 
     if(s.equals("ALL")) return Level.ALL; 
-    if(s.equals("DEBUG")) return (Level) Priority.DEBUG; 
+    if(s.equals("DEBUG")) return (Level) Level.DEBUG; 
     //if(s.equals("FINE")) return Level.FINE; 
-    if(s.equals("INFO"))  return (Level) Priority.INFO;
-    if(s.equals("WARN"))  return (Level) Priority.WARN;  
-    if(s.equals("ERROR")) return (Level) Priority.ERROR;
-    if(s.equals("FATAL")) return (Level) Priority.FATAL;
+    if(s.equals("INFO"))  return (Level) Level.INFO;
+    if(s.equals("WARN"))  return (Level) Level.WARN;  
+    if(s.equals("ERROR")) return (Level) Level.ERROR;
+    if(s.equals("FATAL")) return (Level) Level.FATAL;
     if(s.equals("OFF")) return Level.OFF;
     return defaultLevel;
   }

@@ -158,7 +158,7 @@ public class Priority {
   public
   static
   Priority toPriority(int val, Priority defaultPriority) {
-    return Level.toLevel(val, defaultPriority);
+    return Level.toLevel(val, (Level) defaultPriority);
   }
 
   /**
@@ -169,7 +169,7 @@ public class Priority {
   public
   static
   Priority toPriority(String sArg, Priority defaultPriority) {                  
-    return Level.toLevel(sArg, defaultPriority);
+    return Level.toLevel(sArg, (Level) defaultPriority);
   }
 
 
