@@ -1,59 +1,58 @@
-
-This directory contains a series of log4j test cases. 
-
-Prerequisites
-=============
-
-Jakarta-ant is used to compile and run the tests. Jakarta-ant version
-1.4.0 was used to compile and run the tests. The optional
-jakarta-ant-1.4-optional.jar file is required to be in the
-$ANT_HOME/lib directory where ANT_HOME envrironment variable point to
-the directory where you installed jakarta-ant.
-
-The tests cases as well running ant require a JAXP compatible
-parser. Such a parser is placed on the classpath by the shell or batch
-script that invokes ant, namely $ANT_HOME/bin/ant on UNIX and
-%ANT_HOME%/bin/ant.bat on Windows.
-
-The test cases are based on Junit version 3.7+.  
-
-IMPORTANT: You need to place junit.jar in your CLASSPATH environment
-variable.
-
-====================
-
-The test cases are also dependent on other external projects and jars.
-The following jars should be placed in the ./tests/lib directory:
-
-jakarta-oro - http://jakarta.apache.org/oro - The test cases perform some 
-regular expression based filtering. Version-2.0.5 was used when writing the
-tests, but later versions should be compatible.
-
-jetty - http://jetty.mortbay.org/jetty/ - Version 4.2.22 was used when writing
-the tests.  You will need both the org.mortbay.jetty.jar and the 
-org.mortbay.jetty.plus.jar
-
-Optional database testing - For the various DB tests you need to place the
-appropriate JDBC drivers in ./tests/lib/ directory. 
-
-Optional JNDI related testing - Testing JNDIConnectionSource requires 
-JNDI File System Service Provider, 1.2 Beta 3, which can be downloaded from: 
-http://java.sun.com/products/jndi/downloads/index.html. Click on 
-"Download JNDI 1.2.1 & More".  Once you obtained the JNDI File System Service
-provider place the files fscontext.jar and providerutil.jar in the ./tests/lib/
-directory.
-
-====================
-
-Assuming jakarta-ant is installed properly, depending on your platform
-type $ANT_HOME/bin/ant or %ANT_HOME%/bin/ant.bat to see the available
-commands.
+This directory (./tests/) contains a series of log4j test cases.
 
 ------------------------------------------------------------------------
 NOTE: The compilation and execution of tests must be performed from
       within the tests/ directory, that is from the directory where
       this README file is located.
 ------------------------------------------------------------------------
+
+=============
+Prerequisites
+=============
+
+Ant
+---
+
+Jakarta-ant is used to compile and run the tests. Jakarta-ant version
+1.5.1 was used to compile and run the tests. 
+
+XML parser
+----------
+
+The tests cases as well running ant require a JAXP compatible
+parser. Such a parser is placed on the classpath by the shell or batch
+script that invokes ant, namely $ANT_HOME/bin/ant on UNIX and
+%ANT_HOME%/bin/ant.bat on Windows.
+
+Junit
+-----
+
+The test cases are based on Junit version 3.7+.  
+
+Note: You must have junit.jar and the class files for the <junit> task
+in the same classpath. You can do one of:
+
+  1) Put both junit.jar and the optional tasks jar file in ANT_HOME/lib.
+
+  2) Do not put either in ANT_HOME/lib, and instead include their
+     locations in your CLASSPATH environment variable.
+
+  3) Do neither of the above, and instead, specify their locations using
+     a <classpath> element in the build file. See the FAQ for details.
+
+The first option is probably the easiest.
+
+jakarta-oro
+-----------
+
+The test cases perform some regular expression based filtering. This
+requires jakarta-oro. Version-2.0.5 was used when writing the
+tests. 
+
+You need to set the jakarta.oro.jar property (found in the
+build.properties file) to point to jakarta-oro.jar. See the file
+build.properties.sample for an example of a build.properties file.
+
 
 Writing a new test case
 =======================
@@ -70,3 +69,40 @@ by removing date and time information.
 
 To automatically run your test case with the rest of the log4j test
 cases, you need to modify tests/build.xml. 
+
+===================
+OPTIONAL Test cases
+===================
+
+Some test cases are also dependent on other external projects and
+jars. If you would like to run the optional tests, then these jars
+should be places in the ./tests/lib directory.
+
+Jetty (OPTIONAL)
+-----
+
+We embed jetty to tests log4j within a web-application.
+
+jetty - http://jetty.mortbay.org/jetty/ - Version 4.2.22 was used when
+writing the tests.  You will need both the org.mortbay.jetty.jar and
+org.mortbay.jetty.plus.jar
+
+
+Database testing 
+----------------
+
+For the various DB tests you need to place the appropriate 
+JDBC drivers in ./tests/lib/ directory. 
+
+Testing JNDIConnectionSource requires JNDI File System Service 
+Provider, 1.2 Beta 3, which can be downloaded from: 
+
+http://java.sun.com/products/jndi/downloads/index.html
+
+Click on "Download JNDI 1.2.1 & More"     
+
+Once you obtained the JNDI File System Service Provider place 
+the files fscontext.jar and providerutil.jar in the ./tests/lib/ 
+directory.
+
+
