@@ -47,47 +47,44 @@
  *
  */
 
-package org.apache.log4j.chainsaw.rule;
+/*
+ */
+package org.apache.log4j.rule;
 
 import org.apache.log4j.spi.LoggingEvent;
 
-import java.util.Stack;
+import java.beans.PropertyChangeListener;
 
 
 /**
- * A Rule class implementing a logical 'and'.
+ * A Rule evaluates to true of false given a LoggingEvent object, and can notify
+ * listeners when the underlying implementation of this Rule has it's
+ * criteria changed by using the standard PropertyChangeListener infrastructure.
  *
+ * @author Paul Smith <psmith@apache.org>
  * @author Scott Deboy <sdeboy@apache.org>
  */
-public class AndRule extends AbstractRule {
-  private final Rule firstRule;
-  private final Rule secondRule;
+public interface Rule {
+  /**
+   * Returns true if this implementation of the rule accepts the LoggingEvent, or false if not.
+   *
+   * What True/False means can be client-specific.
+   *
+   * @param e LoggingEvent this instance will evaluate
+   * @return true if this Rule instance accepts the event, otherwise false.
+   */
+  public boolean evaluate(LoggingEvent e);
 
-  private AndRule(Rule firstRule, Rule secondRule) {
-    this.firstRule = firstRule;
-    this.secondRule = secondRule;
-  }
+  /**
+   * Adds a PropertyChangeListener to this instance, which is notified when underlying Rule
+   * information has changed. (there are no specific property name events).
+   * @param l
+   */
+  public void addPropertyChangeListener(PropertyChangeListener l);
 
-  public static Rule getRule(Stack stack) {
-    if (stack.size() < 2) {
-        throw new IllegalArgumentException("Invalid AND rule - expected two rules but provided " + stack.size());
-    }  
-    Object o2 = stack.pop();
-    Object o1 = stack.pop();
-    if ((o2 instanceof Rule) && (o1 instanceof Rule)) { 
-        Rule p2 = (Rule) o2;
-        Rule p1 = (Rule) o1;
-        return new AndRule(p1, p2);
-    } else {
-        throw new IllegalArgumentException("Invalid AND rule: " + o2 + "..." + o1);
-    }
-  }
-
-  public static Rule getRule(Rule firstParam, Rule secondParam) {
-    return new AndRule(firstParam, secondParam);
-  }
-
-  public boolean evaluate(LoggingEvent event) {
-    return (firstRule.evaluate(event) && secondRule.evaluate(event));
-  }
+  /**
+   * Removes a known PropertyChangeListener from this Rule.
+   * @param l
+   */
+  public void removePropertyChangeListener(PropertyChangeListener l);
 }

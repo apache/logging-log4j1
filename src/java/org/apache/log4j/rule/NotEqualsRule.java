@@ -47,7 +47,7 @@
  *
  */
 
-package org.apache.log4j.chainsaw.rule;
+package org.apache.log4j.rule;
 
 import org.apache.log4j.chainsaw.LoggingEventFieldResolver;
 import org.apache.log4j.spi.LoggingEvent;
@@ -55,37 +55,36 @@ import org.apache.log4j.spi.LoggingEvent;
 import java.util.Stack;
 
 /**
- * A Rule class which returns the result of performing equals against two strings.
+ * A Rule class implementing not equals against two strings.
  * 
  * @author Scott Deboy <sdeboy@apache.org>
  */
-
-public class EqualsRule extends AbstractRule {
+public class NotEqualsRule extends AbstractRule {
   private static final LoggingEventFieldResolver resolver = LoggingEventFieldResolver.getInstance();
-  private final String value;
   private final String field;
+  private final String value;
 
-  private EqualsRule(String field, String value) {
+  private NotEqualsRule(String field, String value) {
     this.field = field;
     this.value = value;
   }
 
+  public static Rule getRule(String field, String value) {
+      return new NotEqualsRule(field, value);
+  }
+  
   public static Rule getRule(Stack stack) {
     if (stack.size() < 2) {
-        throw new IllegalArgumentException("Invalid EQUALS rule - expected two rules but provided " + stack.size());
+        throw new IllegalArgumentException("Invalid NOT EQUALS rule - expected two rules but provided " + stack.size());
     }  
     String p2 = stack.pop().toString();
     String p1 = stack.pop().toString();
-
-    return new EqualsRule(p1, p2);
-  }
-  
-  public static Rule getRule(String p1, String p2) {
-      return new EqualsRule(p1, p2);
+    return new NotEqualsRule(p1, p2);
   }
 
   public boolean evaluate(LoggingEvent event) {
     String p2 = resolver.getValue(field, event).toString();
-    return ((p2 != null) && p2.equals(value));
+
+    return ((p2 != null) && !(p2.equals(value)));
   }
 }

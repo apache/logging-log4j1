@@ -47,41 +47,46 @@
  *
  */
 
-package org.apache.log4j.chainsaw.rule;
+package org.apache.log4j.rule;
 
-import org.apache.log4j.chainsaw.LoggingEventFieldResolver;
 import org.apache.log4j.spi.LoggingEvent;
 
 import java.util.Stack;
 
 /**
- * A Rule class implementing a not null (and not empty string) check.
+ * A Rule class implementing logical or. 
  * 
  * @author Scott Deboy <sdeboy@apache.org>
  */
-public class ExistsRule extends AbstractRule {
-  private static final LoggingEventFieldResolver resolver = LoggingEventFieldResolver.getInstance();
-  private final String field;
+public class OrRule extends AbstractRule {
+  private final Rule rule1;
+  private final Rule rule2;
 
-  private ExistsRule(String field) {
-    this.field = field;
+  private OrRule(Rule firstParam, Rule secondParam) {
+    this.rule1 = firstParam;
+    this.rule2 = secondParam;
   }
 
-  public static Rule getRule(String field) {
-      return new ExistsRule(field);
+  public static Rule getRule(Rule firstParam, Rule secondParam) {
+      return new OrRule(firstParam, secondParam);
   }
   
   public static Rule getRule(Stack stack) {
-      if (stack.size() < 1) {
-          throw new IllegalArgumentException("Invalid EXISTS rule - expected one rule but provided " + stack.size());
+      if (stack.size() < 2) {
+          throw new IllegalArgumentException("Invalid OR rule - expected two rules but provided " + stack.size());
       }  
-
-    return new ExistsRule(stack.pop().toString());
+      Object o2 = stack.pop();
+      Object o1 = stack.pop();
+      if ((o2 instanceof Rule) && (o1 instanceof Rule)) { 
+          Rule p2 = (Rule) o2;
+          Rule p1 = (Rule) o1;
+          return new OrRule(p1, p2);
+      } else {
+          throw new IllegalArgumentException("Invalid OR rule: " + o2 + "..." + o1);
+      }
   }
 
   public boolean evaluate(LoggingEvent event) {
-    String p2 = resolver.getValue(field, event).toString();
-
-    return (!(p2.equals("")));
+    return (rule1.evaluate(event) || rule2.evaluate(event));
   }
 }

@@ -47,84 +47,47 @@
  *
  */
 
-package org.apache.log4j.chainsaw.rule;
+package org.apache.log4j.rule;
 
-import org.apache.log4j.chainsaw.LoggingEventFieldResolver;
 import org.apache.log4j.spi.LoggingEvent;
 
 import java.util.Stack;
 
 
 /**
- * A Rule class implementing inequality evaluation - expects to be able to convert two values to longs.
- * If a specific inequality evaluation class has been provided for the event field, the appropriate rule is returned.
- * (For example, if the expression is Level &lt DEBUG, a LevelInequalityRule is returned).
+ * A Rule class implementing a logical 'and'.
  *
  * @author Scott Deboy <sdeboy@apache.org>
  */
-public class InequalityRule extends AbstractRule {
-  private static final String LEVEL = "LEVEL";
-  private static final LoggingEventFieldResolver resolver = LoggingEventFieldResolver.getInstance();
-  private final String field;
-  private final String value;
-  private final String inequalitySymbol;
+public class AndRule extends AbstractRule {
+  private final Rule firstRule;
+  private final Rule secondRule;
 
-  private InequalityRule(
-    String inequalitySymbol, String field, String value) {
-    this.inequalitySymbol = inequalitySymbol;
-    this.field = field;
-    this.value = value;
+  private AndRule(Rule firstRule, Rule secondRule) {
+    this.firstRule = firstRule;
+    this.secondRule = secondRule;
   }
-  
-  public static Rule getRule(String inequalitySymbol, Stack stack) {
-      if (stack.size() < 2) {
-          throw new IllegalArgumentException("Invalid " + inequalitySymbol + " rule - expected two rules but provided " + stack.size());
-      }  
 
-      String p2 = stack.pop().toString();
-      String p1 = stack.pop().toString();
-      return getRule(inequalitySymbol, p1, p2);
-  }
-  
-  public static Rule getRule(String inequalitySymbol, String field, String value) {
-    if (field.equalsIgnoreCase(LEVEL)) {
-      //push the value back on the stack and allow the level-specific rule pop values
-      return LevelInequalityRule.getRule(inequalitySymbol, field, value);
+  public static Rule getRule(Stack stack) {
+    if (stack.size() < 2) {
+        throw new IllegalArgumentException("Invalid AND rule - expected two rules but provided " + stack.size());
+    }  
+    Object o2 = stack.pop();
+    Object o1 = stack.pop();
+    if ((o2 instanceof Rule) && (o1 instanceof Rule)) { 
+        Rule p2 = (Rule) o2;
+        Rule p1 = (Rule) o1;
+        return new AndRule(p1, p2);
     } else {
-      return new InequalityRule(inequalitySymbol, field, value);
+        throw new IllegalArgumentException("Invalid AND rule: " + o2 + "..." + o1);
     }
+  }
+
+  public static Rule getRule(Rule firstParam, Rule secondParam) {
+    return new AndRule(firstParam, secondParam);
   }
 
   public boolean evaluate(LoggingEvent event) {
-    long first = 0;
-
-    try {
-      first =
-        new Long(resolver.getValue(field, event).toString()).longValue();
-    } catch (NumberFormatException nfe) {
-      return false;
-    }
-
-    long second = 0;
-
-    try {
-      second = new Long(value).longValue();
-    } catch (NumberFormatException nfe) {
-      return false;
-    }
-
-    boolean result = false;
-
-    if ("<".equals(inequalitySymbol)) {
-      result = first < second;
-    } else if (">".equals(inequalitySymbol)) {
-      result = first > second;
-    } else if ("<=".equals(inequalitySymbol)) {
-      result = first <= second;
-    } else if (">=".equals(inequalitySymbol)) {
-      result = first >= second;
-    }
-
-    return result;
+    return (firstRule.evaluate(event) && secondRule.evaluate(event));
   }
 }

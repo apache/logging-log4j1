@@ -97,10 +97,10 @@ import javax.swing.table.TableCellRenderer;
 
 import org.apache.log4j.chainsaw.filter.FilterModel;
 import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-import org.apache.log4j.chainsaw.rule.ColorRule;
-import org.apache.log4j.chainsaw.rule.ExpressionRule;
-import org.apache.log4j.chainsaw.rule.ExpressionRuleContext;
-import org.apache.log4j.chainsaw.rule.Rule;
+import org.apache.log4j.rule.ColorRule;
+import org.apache.log4j.rule.ExpressionRule;
+import org.apache.log4j.rule.ExpressionRuleContext;
+import org.apache.log4j.rule.Rule;
 
 
 /**

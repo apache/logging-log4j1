@@ -49,11 +49,11 @@
 
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.chainsaw.rule.Rule;
-import org.apache.log4j.spi.LoggingEvent;
-
 import java.beans.PropertyChangeListener;
 import java.util.List;
+
+import org.apache.log4j.rule.Rule;
+import org.apache.log4j.spi.LoggingEvent;
 
 
 /**

@@ -98,7 +98,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -152,12 +151,12 @@ import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
 import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
 import org.apache.log4j.chainsaw.prefs.SettingsListener;
 import org.apache.log4j.chainsaw.prefs.SettingsManager;
-import org.apache.log4j.chainsaw.rule.AbstractRule;
-import org.apache.log4j.chainsaw.rule.ExpressionRule;
-import org.apache.log4j.chainsaw.rule.ExpressionRuleContext;
-import org.apache.log4j.chainsaw.rule.Rule;
 import org.apache.log4j.helpers.ISO8601DateFormat;
 import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.rule.AbstractRule;
+import org.apache.log4j.rule.ExpressionRule;
+import org.apache.log4j.rule.ExpressionRuleContext;
+import org.apache.log4j.rule.Rule;
 import org.apache.log4j.spi.LoggingEvent;
 
 

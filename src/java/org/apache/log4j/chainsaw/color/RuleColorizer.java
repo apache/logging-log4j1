@@ -58,8 +58,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.chainsaw.rule.ColorRule;
-import org.apache.log4j.chainsaw.rule.ExpressionRule;
+import org.apache.log4j.rule.ColorRule;
+import org.apache.log4j.rule.ExpressionRule;
 import org.apache.log4j.spi.LoggingEvent;
 
 

@@ -47,7 +47,7 @@
  *
  */
 
-package org.apache.log4j.chainsaw.rule;
+package org.apache.log4j.rule;
 
 import java.util.HashMap;
 import java.util.List;

@@ -47,58 +47,59 @@
  *
  */
 
-package org.apache.log4j.chainsaw.rule;
+package org.apache.log4j.rule;
 
-import org.apache.log4j.chainsaw.LoggingEventFieldResolver;
+import java.awt.Color;
+import java.io.Serializable;
+
 import org.apache.log4j.spi.LoggingEvent;
 
-import org.apache.oro.text.regex.MalformedPatternException;
-import org.apache.oro.text.regex.Pattern;
-import org.apache.oro.text.regex.Perl5Compiler;
-import org.apache.oro.text.regex.Perl5Matcher;
-
-import java.util.Stack;
 
 /**
- * A Rule class providing support for ORO-based regular expression syntax. 
- * 
+ * A Rule class which also holds a color
+ *
  * @author Scott Deboy <sdeboy@apache.org>
  */
-public class LikeRule extends AbstractRule {
-  private static final LoggingEventFieldResolver resolver = LoggingEventFieldResolver.getInstance();
-  private final Pattern pattern;
-  private final Perl5Matcher matcher = new Perl5Matcher();
-  private final String field;
+public class ColorRule extends AbstractRule implements Serializable {
+  static final long serialVersionUID = -794434783372847773L;
 
-  private LikeRule(String field, Pattern pattern) {
-    this.field = field;
-    this.pattern = pattern;
+  private final Rule rule;
+  private final Color foregroundColor;
+  private final Color backgroundColor;
+  private final String expression;
+
+  public ColorRule(Rule rule, Color backgroundColor) {
+    this(null, rule, backgroundColor, null);
   }
 
-  public static Rule getRule(Stack stack) {
-      if (stack.size() < 2) {
-          throw new IllegalArgumentException("Invalid LIKE rule - expected two rules but provided " + stack.size());
-      }  
-      
-      String p2 = stack.pop().toString();
-      String p1 = stack.pop().toString();
-      return getRule(p1, p2);
+  public ColorRule(String expression, Rule rule, Color backgroundColor, Color foregroundColor) {
+    this.expression = expression;
+    this.rule = rule;
+    this.backgroundColor = backgroundColor;
+    this.foregroundColor = foregroundColor;
   }
 
-  public static Rule getRule(String field, String pattern) {
-    Perl5Compiler compiler = new Perl5Compiler();
-    Pattern pattern1 = null;
+  public Rule getRule() {
+      return rule;
+  }
+  
+  public Color getForegroundColor() {
+    return foregroundColor;
+  }
 
-    try {
-      pattern1 = compiler.compile(pattern, Perl5Compiler.CASE_INSENSITIVE_MASK);
-    } catch (MalformedPatternException e) {
-    }
-
-    return new LikeRule(field, pattern1);
+  public Color getBackgroundColor() {
+    return backgroundColor;
+  }
+  
+  public String getExpression() {
+      return expression;
   }
 
   public boolean evaluate(LoggingEvent event) {
-    String input = resolver.getValue(field, event).toString();
-    return ((pattern != null) && matcher.matches(input, pattern));
+    return (rule != null && rule.evaluate(event));
+  }
+  
+  public String toString() {
+      return "color rule - expression: " + expression+", rule: " + rule + " bg: " + backgroundColor + " fg: " + foregroundColor;
   }
 }
