@@ -148,8 +148,8 @@ import org.apache.log4j.chainsaw.layout.DefaultLayoutFactory;
 import org.apache.log4j.chainsaw.layout.EventDetailLayout;
 import org.apache.log4j.chainsaw.layout.LayoutEditorPane;
 import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.Profileable;
 import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SettingsListener;
 import org.apache.log4j.chainsaw.prefs.SettingsManager;
 import org.apache.log4j.helpers.ISO8601DateFormat;
 import org.apache.log4j.helpers.LogLog;
@@ -166,7 +166,7 @@ import org.apache.log4j.spi.LoggingEvent;
    *
    * This is where most of the Swing components are constructed and laid out.
    */
-public class LogPanel extends DockablePanel implements SettingsListener,
+public class LogPanel extends DockablePanel implements Profileable,
   EventBatchListener {
   private final JFrame preferencesFrame = new JFrame();
   private final JFrame colorFrame = new JFrame();
@@ -1429,34 +1429,10 @@ public class LogPanel extends DockablePanel implements SettingsListener,
   }
 
   public void saveSettings(SaveSettingsEvent event) {
-    ObjectOutputStream o = null;
 
-    try {
-      File f =
-      new File(
-          SettingsManager.getInstance().getSettingsDirectory()
-          + File.separator + getIdentifier()+ ".prefs");
-      o = new ObjectOutputStream(
-          new BufferedOutputStream(new FileOutputStream(f)));
-      
-      o.writeObject(getPreferenceModel());
-    }
-    catch(IOException e)
-    {
-      LogLog.error("Error ocurred saving the Preferences",e);
-    }finally
-    {
-      if(o!=null)
-      {
-        try
-        {
-            o.close();
-        }
-        catch (Exception e)
-        {
-        }
-      }
-    }
+    event.saveSetting("levelIcons", getPreferenceModel().isLevelIcons());
+    event.saveSetting("dateFormatPattern", getPreferenceModel().getDateFormatPattern());
+    event.saveSetting("loggerPrecision",getPreferenceModel().getLoggerPrecision());
     saveColumnSettings();
     saveColorSettings();
   }
@@ -1536,39 +1512,10 @@ public class LogPanel extends DockablePanel implements SettingsListener,
    * @see org.apache.log4j.chainsaw.prefs.Profileable#loadSettings(org.apache.log4j.chainsaw.prefs.LoadSettingsEvent)
    */
   public void loadSettings(LoadSettingsEvent event) {
-    ObjectInputStream o = null;
-
-    try {
-      File f =
-      new File(
-          SettingsManager.getInstance().getSettingsDirectory()
-          + File.separator + getIdentifier()+ ".prefs");
-      if (f.exists()) {
-      	o = new ObjectInputStream(
-      			new BufferedInputStream(new FileInputStream(f)));
-      	
-      	LogPanelPreferenceModel model = (LogPanelPreferenceModel) o.readObject();
-      	getPreferenceModel().apply(model);
-      }
-    }
-    catch(Exception e)
-    {
-      LogLog.error("Error ocurred loading the Preferences for ident '" + getIdentifier() + "'",e);
-    }finally
-    {
-      if(o!=null)
-       {
-        try
-        {
-          o.close();
-        }
-        catch (Exception e)
-        {
-          LogLog.error("Error occurred closing a stream", e);
-        }
-      }
-    }
     
+    getPreferenceModel().setLevelIcons(event.asBoolean("levelIcons"));
+    getPreferenceModel().setDateFormatPattern(event.getSetting("dateFormatPattern"));
+    getPreferenceModel().setLoggerPrecision(event.getSetting("loggerPrecision"));
     
     File f =
       new File(
@@ -2206,4 +2153,12 @@ public class LogPanel extends DockablePanel implements SettingsListener,
       return bypassed;
     }
   }
+
+  /* (non-Javadoc)
+   * @see org.apache.log4j.chainsaw.prefs.Profileable#getNamespace()
+   */
+  public String getNamespace() {
+    return getIdentifier();
+  }
+
 }
