@@ -390,7 +390,7 @@
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
-      <test name="org.apache.log4j.filters.LevelMatchFilterTestCase" />
+      <test name="org.apache.log4j.filter.LevelMatchFilterTestCase" />
     </junit>
   </target>
   

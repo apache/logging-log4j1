@@ -62,7 +62,7 @@ public class NOPLogger implements ULogger {
   /* A NOP implementation.
    * @see org.apache.ugli.Logger#debug(java.lang.Object, java.lang.Object, java.lang.Object)
    */
-  public void debug(Object parameterizedMsg, Object param1, Object param2) {
+  public void debug(String parameterizedMsg, Object param1, Object param2) {
     // NOP
   }
 
@@ -98,7 +98,7 @@ public class NOPLogger implements ULogger {
   /* A NOP implementation.
    * @see org.apache.ugli.Logger#info(java.lang.Object, java.lang.Object, java.lang.Object)
    */
-  public void info(Object parameterizedMsg, Object param1, Object param2) {
+  public void info(String parameterizedMsg, Object param1, Object param2) {
     // NOP
   }
 
@@ -133,7 +133,7 @@ public class NOPLogger implements ULogger {
   /* A NOP implementation.
    * @see org.apache.ugli.Logger#warn(java.lang.Object, java.lang.Object, java.lang.Object)
    */
-  public void warn(Object parameterizedMsg, Object param1, Object param2) {
+  public void warn(String parameterizedMsg, Object param1, Object param2) {
     // NOP
   }
 
@@ -168,7 +168,7 @@ public class NOPLogger implements ULogger {
   /* A NOP implementation.
    * @see org.apache.ugli.Logger#error(java.lang.Object, java.lang.Object, java.lang.Object)
    */
-  public void error(Object parameterizedMsg, Object param1, Object param2) {
+  public void error(String parameterizedMsg, Object param1, Object param2) {
     // NOP
   }
 

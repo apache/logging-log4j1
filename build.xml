@@ -234,8 +234,12 @@
     <javac srcdir="${java.source.dir}"
      destdir="${javac.dest}"
      deprecation="on"
-     includes="${stem}/**/*.java, org/apache/joran/**/*.java, ${stem}/xml/XMLLayout.java,"
-     excludes="misc/*, **/UnitTest*.java,
+     includes="org/apache/ugli/**/*.java,
+    	       ${stem}/**/*.java, 
+    	       org/apache/joran/**/*.java, 
+    	       ${stem}/xml/XMLLayout.java,"
+     excludes="org/apache/ugli/impl/JDK14*.java,
+    	            **/UnitTest*.java,
                     **/StressCategory.java,
                     **/doc-files/*,
 			        ${stem}/chainsaw/**,

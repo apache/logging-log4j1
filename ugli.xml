@@ -1,4 +1,4 @@
-<project name="ugli" default="ussage" basedir="." >
+<project name="ugli" default="usage" basedir="." >
 
   <!-- The directory where source files are stored. -->
   <property name="java.source.dir" value="./src/java/"/>
@@ -133,8 +133,6 @@
       <param name="jar-name" value="ugli-jdk14.jar"/>
     </antcall>
   </target>
-
-
 
 
 </project>

@@ -95,7 +95,7 @@ public class JDK14Logger implements ULogger {
    * @param param1 - the first parameter
    * @param param2 - the second parameter
    */
-  public void debug(Object parameterizedMsg, Object param1, Object param2) {
+  public void debug(String parameterizedMsg, Object param1, Object param2) {
     if (logger.isLoggable(Level.FINE)) {
       if (parameterizedMsg instanceof String) {
         String msgStr = (String) parameterizedMsg;
@@ -135,7 +135,7 @@ public class JDK14Logger implements ULogger {
     }
   }
 
-  public void info(Object parameterizedMsg, Object param1, Object param2) {
+  public void info(String parameterizedMsg, Object param1, Object param2) {
     if (logger.isLoggable(Level.INFO)) {
       if (parameterizedMsg instanceof String) {
         String msgStr = (String) parameterizedMsg;
@@ -175,7 +175,7 @@ public class JDK14Logger implements ULogger {
     }
   }
 
-  public void warn(Object parameterizedMsg, Object param1, Object param2) {
+  public void warn(String parameterizedMsg, Object param1, Object param2) {
     if (logger.isLoggable(Level.WARNING)) {
       if (parameterizedMsg instanceof String) {
         String msgStr = (String) parameterizedMsg;
@@ -215,7 +215,7 @@ public class JDK14Logger implements ULogger {
     }
   }
   
-  public void error(Object parameterizedMsg, Object param1, Object param2) {
+  public void error(String parameterizedMsg, Object param1, Object param2) {
     if (logger.isLoggable(Level.WARNING)) {
       if (parameterizedMsg instanceof String) {
         String msgStr = (String) parameterizedMsg;
