@@ -135,12 +135,10 @@ public class ChainsawIcons {
       ChainsawIcons.class.getClassLoader().getResource(
         "org/apache/log4j/chainsaw/logo.jpg"));
 
-  //	TODO give appropriate Credit, http://members.aol.com/gx0vzs/radiotower.html
-  //  public static final URL ANIM_RADIO_TOWER = ChainsawIcons.class.getClassLoader().getResource(BASE_ICON_PATH + "anim_radiotower.gif");
-  public static final URL ANIM_RADIO_TOWER = TOOL_TIP;
   public static final URL ANIM_NET_CONNECT =
     ChainsawIcons.class.getClassLoader().getResource(
-      BASE_ICON_PATH + "Host16.gif");
+      BASE_ICON_PATH + "channelexplorer_satellite.gif");
+  public static final URL ANIM_RADIO_TOWER = ANIM_NET_CONNECT;
   public static final URL ICON_ACTIVE_RECEIVER =
     ChainsawIcons.class.getClassLoader().getResource(
       BASE_ICON_PATH + "Play16.gif");
