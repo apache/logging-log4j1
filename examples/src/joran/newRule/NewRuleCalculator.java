@@ -44,6 +44,7 @@ public class NewRuleCalculator {
     // Uncomment the following line in order to enable log statements generated
     // from joran itself.
     // org.apache.log4j.BasicConfigurator.configure();
+    
     // As usual, we create a simple rule store.
     RuleStore ruleStore = new SimpleRuleStore();
 

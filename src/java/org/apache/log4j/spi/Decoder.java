@@ -30,7 +30,6 @@ import java.util.Vector;
  * (usually XML).
  *
  *  @author Scott Deboy <sdeboy@apache.org>
- *
  */
 public interface Decoder {
   Vector decodeEvents(String document);

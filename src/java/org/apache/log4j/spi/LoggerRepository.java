@@ -83,9 +83,19 @@ public interface LoggerRepository {
   public void setName(String repoName);
 
   /**
-     Set the repository-wide threshold. All logging requests below the
-     threshold are immediately dropped. By default, the threshold is
-     set to <code>Level.ALL</code> which has the lowest possible rank.  */
+   * Set the repository-wide threshold. All logging requests below the threshold
+   * are immediately dropped. By default, the threshold is set to 
+   * <code>Level.ALL</code> which has the lowest possible rank.  
+   * 
+   * <p>The repository-wide threshold acts as a global on off switch. It avoids
+   * the hierarchy walk, hence improving performance. In future log4j versions
+   * the speed of the hiearchy walk will be significantly improved obliviating
+   * the need for this method.
+   * 
+   * <p>The repository-wide threshold is a deprecated feature.
+   * 
+   * @deprecated Will be removed with no replacement. 
+   * */
   public void setThreshold(Level level);
   
   /**
@@ -107,8 +117,8 @@ public interface LoggerRepository {
   public Logger getRootLogger();
 
   /**
-   * Is the current configuration of the reposiroty, the original (pristine)
-   * configuration?
+   * Is the current configuration of the reposiroty in its original (pristine)
+   * state?
    * 
    * @since 1.3
    */

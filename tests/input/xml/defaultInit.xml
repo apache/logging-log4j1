@@ -10,7 +10,7 @@
   </appender>
   
   <root>
-    <priority value ="OFF" />
+    <priority value="OFF" />
     <appender-ref ref="D1" />
   </root>
   
