@@ -159,6 +159,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   private static final String LOOK_AND_FEEL = "LookAndFeel";
   private static final String STATUS_BAR = "StatusBar";
   static final String COLUMNS_EXTENSION = ".columns";
+  static final String COLORS_EXTENSION = ".colors";
   private final JFrame preferencesFrame = new JFrame();
   
   private static ChainsawSplash splash;

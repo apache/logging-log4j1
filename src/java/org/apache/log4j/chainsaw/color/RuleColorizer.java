@@ -49,16 +49,15 @@
 
 package org.apache.log4j.chainsaw.color;
 
-import org.apache.log4j.chainsaw.rule.ColorRule;
-import org.apache.log4j.spi.LoggingEvent;
-
 import java.awt.Color;
-
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
-import java.util.LinkedList;
-import java.util.List;
+import org.apache.log4j.chainsaw.rule.ColorRule;
+import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
@@ -68,37 +67,47 @@ import java.util.List;
  * @author Scott Deboy <sdeboy@apache.org>
  */
 public class RuleColorizer implements Colorizer {
-  private final List ruleList = new LinkedList();
+  private Map ruleMap = new HashMap();
   private final PropertyChangeSupport colorChangeSupport =
     new PropertyChangeSupport(this);
 
   public RuleColorizer() {
   }
+  
+  public void setColors(Map ruleMap) {
+  	this.ruleMap = ruleMap;
+  }
+  
+  public Map getColors() {
+  	return ruleMap;
+  }
 
-  public void addRules(List rules) {
-    for (int i = 0, j = rules.size(); i < j; i++) {
-      ruleList.add((ColorRule) rules.get(i));
-    }
-
+  public void addRules(Map rules) {
+  	Iterator iter = rules.entrySet().iterator();
+  	while (iter.hasNext()) {
+  		Map.Entry entry = (Map.Entry)iter.next();
+  		ruleMap.put(entry.getKey(), entry.getValue());
+  	}
     colorChangeSupport.firePropertyChange("colorrule", false, true);
   }
 
-  public void addRule(ColorRule rule) {
-    ruleList.add(rule);
+  public void addRule(String expression, ColorRule rule) {
+    ruleMap.put(expression, rule);
     colorChangeSupport.firePropertyChange("colorrule", false, true);
   }
 
   public void clear() {
-    ruleList.clear();
+    ruleMap.clear();
   }
 
-  public void removeRule(ColorRule rule) {
-    ruleList.remove(rule);
+  public void removeRule(String expression) {
+    ruleMap.remove(expression);
   }
 
   public Color getBackgroundColor(LoggingEvent event) {
-    for (int i = 0, j = ruleList.size(); i < j; i++) {
-      ColorRule rule = (ColorRule) ruleList.get(i);
+  	Iterator iter = ruleMap.values().iterator();
+  	while (iter.hasNext()) {
+      ColorRule rule = (ColorRule) iter.next();
 
       if ((rule.getBackgroundColor() != null) && (rule.evaluate(event))) {
         return rule.getBackgroundColor();
@@ -109,8 +118,9 @@ public class RuleColorizer implements Colorizer {
   }
 
   public Color getForegroundColor(LoggingEvent event) {
-    for (int i = 0, j = ruleList.size(); i < j; i++) {
-      ColorRule rule = (ColorRule) ruleList.get(i);
+	Iterator iter = ruleMap.values().iterator();
+	while (iter.hasNext()) {
+	  ColorRule rule = (ColorRule) iter.next();
 
       if ((rule.getForegroundColor() != null) && (rule.evaluate(event))) {
         return rule.getForegroundColor();

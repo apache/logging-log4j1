@@ -212,6 +212,7 @@ public class LogPanel extends DockablePanel implements SettingsListener,
   private boolean tooltipsEnabled;
   private final ChainsawStatusBar statusBar;
   private final JToolBar undockedToolbar;
+  private RuleColorizer colorizer = new RuleColorizer();
 
   public LogPanel(
     final ChainsawStatusBar statusBar, final String ident, String eventType) {
@@ -286,7 +287,6 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     colorFrame.setTitle("'" + ident + "' Color Filter");
     colorFrame.setIconImage(
       ((ImageIcon) ChainsawIcons.ICON_PREFERENCES).getImage());
-    RuleColorizer colorizer = new RuleColorizer();
     colorizer.addPropertyChangeListener(new PropertyChangeListener() {
 		public void propertyChange(PropertyChangeEvent evt) {
 			if (evt.getPropertyName().equalsIgnoreCase("colorrule")) {
@@ -1482,6 +1482,35 @@ public class LogPanel extends DockablePanel implements SettingsListener,
       }
     }
     saveColumnSettings();
+    saveColorSettings();
+  }
+
+  void saveColorSettings() {
+	ObjectOutputStream o = null;
+
+	try {
+	  File f =
+		new File(
+		  SettingsManager.getInstance().getSettingsDirectory()
+		  + File.separator + getIdentifier() + LogUI.COLORS_EXTENSION);
+	  o = new ObjectOutputStream(
+		  new BufferedOutputStream(new FileOutputStream(f)));
+
+	  o.writeObject(colorizer.getColors());
+	  o.flush();
+	} catch (FileNotFoundException fnfe) {
+	  fnfe.printStackTrace();
+	} catch (IOException ioe) {
+	  ioe.printStackTrace();
+	} finally {
+	  try {
+		if (o != null) {
+		  o.close();
+		}
+	  } catch (IOException ioe) {
+		ioe.printStackTrace();
+	  }
+	}
   }
 
   void saveColumnSettings() {
@@ -1538,11 +1567,13 @@ public class LogPanel extends DockablePanel implements SettingsListener,
       new File(
           SettingsManager.getInstance().getSettingsDirectory()
           + File.separator + getIdentifier()+ ".prefs");
-      o = new ObjectInputStream(
-          new BufferedInputStream(new FileInputStream(f)));
-      
-      LogPanelPreferenceModel model = (LogPanelPreferenceModel) o.readObject();
-      getPreferenceModel().apply(model);
+      if (f.exists()) {
+      	o = new ObjectInputStream(
+      			new BufferedInputStream(new FileInputStream(f)));
+      	
+      	LogPanelPreferenceModel model = (LogPanelPreferenceModel) o.readObject();
+      	getPreferenceModel().apply(model);
+      }
     }
     catch(Exception e)
     {
@@ -1575,6 +1606,13 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     } else {
       loadDefaultColumnSettings(event);
     }
+	File f2 =
+	  new File(
+		SettingsManager.getInstance().getSettingsDirectory() + File.separator
+		+ identifier + LogUI.COLORS_EXTENSION);
+	if (f2.exists()) {
+	  loadColorSettings(identifier);
+	}
   }
 
   void loadDefaultColumnSettings(LoadSettingsEvent event) {
@@ -1649,6 +1687,40 @@ public class LogPanel extends DockablePanel implements SettingsListener,
       });
   }
 
+  void loadColorSettings(String ident) {
+	File f =
+	  new File(
+		SettingsManager.getInstance().getSettingsDirectory() + File.separator
+		+ ident + LogUI.COLORS_EXTENSION);
+
+	if (f.exists()) {
+	  ObjectInputStream s = null;
+
+	  try {
+		s = new ObjectInputStream(
+			new BufferedInputStream(new FileInputStream(f)));
+
+		while (true) {
+		  Map map = (Map) s.readObject();
+		  colorizer.setColors(map);
+		}
+	  } catch (EOFException eof) { //end of file - ignore..
+	  }catch (IOException ioe) {
+		ioe.printStackTrace();
+	  } catch (ClassNotFoundException cnfe) {
+		cnfe.printStackTrace();
+	  } finally {
+		if (s != null) {
+		  try {
+			s.close();
+		  } catch (IOException ioe) {
+			ioe.printStackTrace();
+		  }
+		}
+	  }
+	}
+  }
+	
   void loadColumnSettings(String ident, TableColumnModel model) {
     File f =
       new File(

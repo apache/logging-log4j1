@@ -60,8 +60,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
@@ -125,6 +126,23 @@ public class ColorPanel extends JPanel {
     this.colorizer = colorizer;
     this.filterModel = filterModel;
 
+	Vector data = new Vector();
+    if (colorizer.getColors() != null && colorizer.getColors().size() > 0) {
+    	System.out.println("FOUND COLORS");
+    	Iterator iter = colorizer.getColors().entrySet().iterator();
+    	while (iter.hasNext()) {
+    		Map.Entry entry = (Map.Entry)iter.next();
+    		String expression = entry.getKey().toString();
+    		ColorRule rule = (ColorRule)entry.getValue();
+    		System.out.println("found " + expression +".."+ rule);
+    		Vector v = new Vector();
+    		v.add(expression);
+    		v.add(rule);
+    		data.add(v);
+    	}
+    	
+    	
+    } else {
     //apply a set of defaults for now, (eventually color rules will be loaded from disk)
     Vector data1 = new Vector();
     data1.add("level == FATAL || level == ERROR");
@@ -136,9 +154,9 @@ public class ColorPanel extends JPanel {
     data2.add(Color.yellow.brighter());
     data2.add(Color.black);
 
-    Vector data = new Vector();
     data.add(data1);
     data.add(data2);
+    }
 
     table = buildTable(data);
     table.sizeColumnsToFit(0);
@@ -191,7 +209,6 @@ public class ColorPanel extends JPanel {
     if (table.getRowCount() > 0) {
         table.getSelectionModel().setSelectionInterval(0, 0);
     }
-
   }
 
   public static void main(String[] args) {
@@ -314,7 +331,7 @@ public class ColorPanel extends JPanel {
     table.getColumnModel().getColumn(0).getCellEditor().stopCellEditing();
     colorizer.clear();
 
-    List list = new ArrayList();
+    Map map = new HashMap();
     Vector vector = tableModel.getDataVector();
     StringBuffer result = new StringBuffer();
 
@@ -335,7 +352,7 @@ public class ColorPanel extends JPanel {
         }
 
         ColorRule r = new ColorRule(expressionRule, background, foreground);
-        list.add(r);
+        map.put(v.elementAt(0), r);
       } catch (IllegalArgumentException iae) {
         if (!result.toString().equals("")) {
           result.append("<br>");
@@ -355,7 +372,7 @@ public class ColorPanel extends JPanel {
       .setToolTipText("<html>" + result.toString() + "</html>");
     }
 
-    colorizer.addRules(list);
+    colorizer.addRules(map);
   }
 
   JPanel buildClosePanel() {
