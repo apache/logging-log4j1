@@ -55,6 +55,18 @@ class VectorWriter extends PrintWriter {
     super(new NullWriter());
     v = new Vector();
   }
+
+  // Support for Orion
+  public
+  void print(Object o) {      
+    v.addElement(o.toString());
+  }
+  
+  // Support for Orion
+  public
+  void print(char[] s) {
+    v.addElement(new String(s));
+  }
   
   public
   void println(Object o) {      

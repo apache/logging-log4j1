@@ -106,7 +106,7 @@ element. -->
 
 <!-- If no level element is specified, then the configurator MUST not -->
 <!-- touch the level of the named logger. -->
-<!ELEMENT logger (param*,level?,appender-ref*)>
+<!ELEMENT logger (level?,appender-ref*)>
 <!ATTLIST logger
   name		ID	#REQUIRED
   additivity	(true|false) "true"  
