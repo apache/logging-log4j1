@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE log4j:configuration>
 
+	  
 <log4j:configuration debug="true">
 	  
   <substitutionProperty file="input/db/db.properties"/>
@@ -11,37 +12,29 @@
            actionClass="org.apache.log4j.db.BindDataSourceToJNDIAction"/>
   	    
   <bindDataSourceToJNDI />
-	    
-  <plugin name="DBPlugin" class="org.apache.log4j.db.DBReceiver">
+  
+  <appender name="DB" class="org.apache.log4j.db.DBAppender">
      <connectionSource class="org.apache.log4j.db.DataSourceConnectionSource">
        
        <dataSource class="${dataSourceClass}">
          <param name="url" value="${url}"/>
          <param name="serverName" value="${serverName}"/>
-         <param name="databaseName" value="${databaseName}"/>          
+         <param name="databaseName" value="${databaseName}"/>         
        </dataSource>
        
        <param name="user" value="${user}"/>
        <param name="password" value="${password}"/>
      </connectionSource>
-  </plugin>
-  
-
-  <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
-     <layout class="org.apache.log4j.PatternLayout">
-       <param name="ConversionPattern" value="READING %relative %level %logger - %message%n"/>
-     </layout>
   </appender>
-  
+
   <appender name="VECTOR" class="org.apache.log4j.VectorAppender">
   </appender>
   
   <root>
-    <level value="debug"/>
+    <level value ="debug"/>
+    <appender-ref ref="DB" />
     <appender-ref ref="VECTOR" />
-    <appender-ref ref="CONSOLE" />
   </root>  
 </log4j:configuration>
-
 
 

@@ -31,7 +31,7 @@
     <pathelement location="./classes"/>
     <pathelement location="./resources"/>
     <pathelement location="${jakarta.oro.jar}"/>
-     <fileset dir="./lib/">
+    <fileset dir="./lib/">
       <include name="*.jar"/>
     </fileset>
   </path>
@@ -535,7 +535,7 @@
     <echo message="MySQL available"/>
     <copy file="./input/db/mysql.properties" tofile="./input/db/db.properties"/>
 
-    <echo message="Running test case with DriverManager config file"/>
+<!--    <echo message="Running test case with DriverManager config file"/>
     <antcall target="DB">
       <param name="appendConfigFile" value="./input/db/append-with-drivermanager1.xml"/>
       <param name="readConfigFile"   value="./input/db/read-with-drivermanager1.xml"/>
@@ -547,10 +547,16 @@
       <param name="readConfigFile"   value="./input/db/read-with-datasource1.xml"/>
     </antcall>
 
-    <echo message="Running test case with *pooled* DataSource"/>
+    <echo message="Running test case with a native *pooled* DataSource"/>
     <antcall target="DB">
       <param name="appendConfigFile" value="./input/db/append-with-pooled-datasource1.xml"/>
       <param name="readConfigFile"   value="./input/db/read-with-pooled-datasource1.xml"/>
+    </antcall>
+-->
+    <echo message="Running test case with a DataSource with JNDI"/>
+    <antcall target="DB">
+      <param name="appendConfigFile" value="./input/db/append-with-jndi1.xml"/>
+      <param name="readConfigFile"   value="./input/db/read-with-jndi1.xml"/>
     </antcall>
     
   </target>

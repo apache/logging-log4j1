@@ -155,11 +155,11 @@ public class JNDIConnectionSource
     DataSource ds;
 
     Hashtable env = new Hashtable(11);
-    env.put(Context.INITIAL_CONTEXT_FACTORY,
-            "com.sun.jndi.fscontext.RefFSContextFactory");
-    env.put(Context.PROVIDER_URL,
-            "file:///home/jndi");
-    Context ctx = new InitialContext(env);
+//    env.put(Context.INITIAL_CONTEXT_FACTORY,
+//            "com.sun.jndi.fscontext.RefFSContextFactory");
+//    env.put(Context.PROVIDER_URL,
+//            "file:///home/jndi");
+    Context ctx = new InitialContext();
     
     //Context ctx = new InitialContext();
     Object obj = ctx.lookup(jndiLocation);
