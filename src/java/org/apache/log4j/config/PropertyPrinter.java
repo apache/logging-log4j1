@@ -75,7 +75,7 @@ public class PropertyPrinter implements PropertyGetter.PropertyCallback {
   //}
   
   protected
-  void printOptions(PrintWriter out, Category cat) {
+  void printOptions(PrintWriter out, Logger cat) {
     Enumeration appenders = cat.getAllAppenders();
     Level prio = cat.getLevel();
     String appenderString = (prio == null ? "" : prio.toString());

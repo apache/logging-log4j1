@@ -30,7 +30,7 @@ import org.apache.log4j.*;
 public interface HierarchyEventListener {
   //public
   //void categoryCreationEvent(Category cat);
-  public void addAppenderEvent(Category cat, Appender appender);
+  public void addAppenderEvent(Logger cat, Appender appender);
 
-  public void removeAppenderEvent(Category cat, Appender appender);
+  public void removeAppenderEvent(Logger cat, Appender appender);
 }
