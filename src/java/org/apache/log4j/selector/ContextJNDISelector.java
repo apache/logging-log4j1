@@ -18,6 +18,7 @@ package org.apache.log4j.selector;
 
 import org.apache.log4j.Hierarchy;
 import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.helpers.Constants;
 import org.apache.log4j.helpers.IntializationUtil;
 import org.apache.log4j.helpers.JNDIUtil;
@@ -130,29 +131,10 @@ public class ContextJNDISelector implements RepositorySelector {
   private final Map hierMap;
 
   /**
-   * default hierarchy used in case the JNDI lookup
-   * fails to return a non-null value
-   */
-  private LoggerRepository defaultRepository;
-
-  /**
    * public no-args constructor
    */
   public ContextJNDISelector() {
     hierMap = Collections.synchronizedMap(new HashMap());
-  }
-
-  public void setDefaultRepository(LoggerRepository dh) {
-    if (defaultRepository == null) {
-      defaultRepository = dh;
-    } else {
-      throw new IllegalStateException(
-        "default hierarchy has been already set.");
-    }
-  }
-  
-  public LoggerRepository getDefaultRepository() {
-    return defaultRepository ;
   }
 
   /**
@@ -175,7 +157,7 @@ public class ContextJNDISelector implements RepositorySelector {
     }
 
     if (loggingContextName == null) {
-      return defaultRepository;
+      return LogManager.defaultLoggerRepository;
     } else {
       //System.out.println("loggingContextName is ["+loggingContextName+"]");
       Hierarchy hierarchy = (Hierarchy) hierMap.get(loggingContextName);

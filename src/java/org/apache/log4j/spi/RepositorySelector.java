@@ -18,56 +18,39 @@ package org.apache.log4j.spi;
 
 
 /**
-
-   The <code>LogManager</code> uses one (and only one)
-   <code>RepositorySelector</code> implementation to select the
-   {@link LoggerRepository} for a particular application context.
-
-   <p>It is the responsability of the <code>RepositorySelector</code>
-   implementation to track the application context. Log4j makes no
-   assumptions about the application context or on its management.
-
-   <p>See also {@link org.apache.log4j.LogManager LogManager}.
-
-   @author Ceki G&uuml;lc&uuml;
-   @since 1.2
-
- */
+ * The <code>LogManager</code> uses one (and only one) 
+ * <code>RepositorySelector</code> implementation to select the 
+ * {@link LoggerRepository} for a particular application context.
+ * 
+ * <p>It is the responsability of the <code>RepositorySelector</code> 
+ * implementation to track the application context. Log4j makes no assumptions 
+ * about the application context or on its management.
+ * 
+ * <p>See also {@link org.apache.log4j.LogManager LogManager}.
+ * 
+ * @author Ceki G&uuml;lc&uuml;
+ * @since 1.2
+ * */
 public interface RepositorySelector {
   /**
-     Returns a {@link LoggerRepository} depending on the
-     context. Implementors must make sure that a valid (non-null)
-     LoggerRepository is returned.
+   * Returns a {@link LoggerRepository} depending on the context. Implementors 
+   * must make sure that under all circumstances a valid (non-null) 
+   * LoggerRepository is returned.
   */
   public LoggerRepository getLoggerRepository();
-  
-  /**
-   * Sets the default repository
-   * @since 1.3
-   */
-  public void setDefaultRepository(LoggerRepository def);
-  
-  /**
-   * Gets the default repository. In the initial phases of configration, the
-   * returned value may be null. However, after the RepositorySelector is 
-   * properly registered with LogManager, the returned value should never
-   * be null.
-   * 
-   * @since 1.3
-   */
-  public LoggerRepository getDefaultRepository();
   
   /**
    * Remove the repository with the given context name from the list maintained
    * by the respository selector.
    * 
-   * When applications are stopped or recycled, this method should be called to
-   * ensure that the associated repository is recycled as well.
+   * <p>When applications are stopped or recycled, this method should be called 
+   * to ensure that the associated repository is recycled as well.
    * 
-   * If more than one application share the same logging context, then the
+   * <p>If more than one application share the same logging context, then the
    * applications need to coordinate their actions.  
    * 
    * @return The LoggerRepository instance that was detached.
+   * @since 1.3
    */
   public LoggerRepository detachRepository(String contextName);
 }

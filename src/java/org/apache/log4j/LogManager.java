@@ -48,16 +48,56 @@ public class LogManager {
   private static Scheduler schedulerInstance = null;
 
   /**
+   * The default LoggerRepository instance created by LogManager. This instance
+   * is provided for the convenience of the {@link RepositorySelector} instance.
+   * The selector, if it choses, may ignore this default repository.
+   */
+  public final static LoggerRepository defaultLoggerRepository;
+  
+  /**
    * Log4j components resort to this instance of {@link SimpleLoggerFA} in case 
    * an appropriate LoggerRepository was not set or could not be found. It is
    * used only in exceptional cases.
    */
   public final static SimpleLoggerFA  SIMPLE_LOGGER_FA = new SimpleLoggerFA();
 
+  // The following static initializer gets invoked immediately after a call to 
+  // Logger.getLogger() is made. Here is a description of the static initializer.
+  // 
+  // create defaultLoggerRepository
+  // configure(defaultLoggerRepository) depending on system properties
+  // during the configuration of defaultLoggerRepository a temporary repository 
+  // selector is used.
+  //
+  // 
   static {
     //System.out.println("**Start of LogManager static initializer");
-    Hierarchy defaultHierarchy = new Hierarchy(new RootLogger(Level.DEBUG));
-    defaultHierarchy.setName("default");
+    defaultLoggerRepository = new Hierarchy(new RootLogger(Level.DEBUG));
+    defaultLoggerRepository.setName("default");
+    
+    // temporary repository
+    repositorySelector = new DefaultRepositorySelector(defaultLoggerRepository);
+    
+    //  Attempt to perform automatic configuration of the default repository
+    String configuratorClassName =
+      OptionConverter.getSystemProperty(Constants.CONFIGURATOR_CLASS_KEY, null);
+    String configurationOptionStr = 
+      OptionConverter.getSystemProperty(Constants.DEFAULT_CONFIGURATION_KEY, null);
+
+    if (configurationOptionStr == null) {
+      if (Loader.getResource(Constants.DEFAULT_XML_CONFIGURATION_FILE) != null) {
+        configurationOptionStr = Constants.DEFAULT_XML_CONFIGURATION_FILE;
+      } else if (
+        Loader.getResource(Constants.DEFAULT_CONFIGURATION_FILE) != null) {
+        configurationOptionStr = Constants.DEFAULT_CONFIGURATION_FILE;
+      }
+    }
+
+    System.out.println("*** configurationOptionStr=" + configurationOptionStr);
+
+    IntializationUtil.initialConfiguration(
+        defaultLoggerRepository, configurationOptionStr, configuratorClassName);
+    
     
     OptionConverter oc = new OptionConverter();
     // No point in setting the repository this early in the game
@@ -67,9 +107,7 @@ public class LogManager {
       OptionConverter.getSystemProperty("log4j.repositorySelectorClass", null);
 
     if (repositorySelectorStr == null) {
-      // By default we use a DefaultRepositorySelector which always returns
-      // the defaultHierarchy.
-      repositorySelector = new DefaultRepositorySelector();
+      // NOTHING TO DO, the default repository has been configured already
     } else if (repositorySelectorStr.equalsIgnoreCase("JNDI")) {
       System.out.println("*** Will use ContextJNDISelector **");
       repositorySelector = new ContextJNDISelector();
@@ -90,39 +128,11 @@ public class LogManager {
           "*** Could not insantiate [" + repositorySelectorStr
           + "] as repository selector.");
         System.out.println("*** Using default repository selector");
-        repositorySelector = new DefaultRepositorySelector();
+        repositorySelector = new DefaultRepositorySelector(defaultLoggerRepository);
       }
     }
 
-    // at this stage 'repositorySelector' should point to a valid selector.
-    // Set the default repository for the selector, but only if it has not
-    // have one already.
-    if(repositorySelector.getDefaultRepository() == null) {
-      repositorySelector.setDefaultRepository(defaultHierarchy);
-    }
-    
-    //  Attempt to perform automatic configuration of the default hierarchy
-    String configuratorClassName =
-      OptionConverter.getSystemProperty(Constants.CONFIGURATOR_CLASS_KEY, null);
-    String configurationOptionStr = 
-      OptionConverter.getSystemProperty(Constants.DEFAULT_CONFIGURATION_KEY, null);
-
-    if (configurationOptionStr == null) {
-      if (Loader.getResource(Constants.DEFAULT_XML_CONFIGURATION_FILE) != null) {
-        configurationOptionStr = Constants.DEFAULT_XML_CONFIGURATION_FILE;
-      } else if (
-        Loader.getResource(Constants.DEFAULT_CONFIGURATION_FILE) != null) {
-        configurationOptionStr = Constants.DEFAULT_CONFIGURATION_FILE;
-      }
-    }
-
-    System.out.println("*** configurationOptionStr=" + configurationOptionStr);
-
-    IntializationUtil.initialConfiguration(
-      defaultHierarchy, configurationOptionStr, configuratorClassName);
-    
-
-    //System.out.println("** End of LogManager static initializer");
+    System.out.println("** End of LogManager static initializer");
   }
 
   /**
