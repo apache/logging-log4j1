@@ -97,17 +97,23 @@
 	</li></p>
 
 	<p><li>
-	  <a href="http://qos.ch/logging/thinkAgain.html">Think Again</a> by Ceki G&#252;lc&#252;
+	  <a href="http://www.qos.ch/logging/thinkAgain.html">Think Again</a> by Ceki G&#252;lc&#252;
 
 	</li></p>
 
-	<p><li> <a href="http://qos.ch/logging/sc.html">Supporting the
+	<p><li> <a href="http://www.qos.ch/logging/sc.html">Supporting the
 	  log4j <code>RepositorySelector</code></a> by Ceki
 	  G&#252;lc&#252;
 	</li></p>
 
          <p><li> <a href="http://rei1.m-plify.com/log4j/">Log4j class
          diagrams</a>, courtesy of David Tonhofer
+            </li>
+         </p>
+
+         <p><li> <a
+         href="http://www.onjava.com/pub/a/onjava/2003/04/02/log4j_ejb.html">Understanding
+         Classloaders: log4j in a J2EE Environment</a> by Vikram Goyal
             </li>
          </p>
 
