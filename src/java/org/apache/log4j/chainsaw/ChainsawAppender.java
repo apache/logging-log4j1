@@ -96,7 +96,7 @@ public class ChainsawAppender extends AppenderSkeleton
   /**
    * Return the singleton instance of the ChainsawAppender, it should only
    * be initialised once.
-   * @return
+   * @return the instance
    */
   static ChainsawAppender getInstance() {
     return sSharedAppender;
@@ -141,45 +141,54 @@ public class ChainsawAppender extends AppenderSkeleton
    * Close does nothing
    */
   public void close() {
-    // TODO: perhaps it should clear the internal TableModel
+      // TODO: perhaps it should clear the internal TableModel
   }
 
   // ==========================================================================
   // All methods here are from TableModel, and simply forward on to the
   // internal wrappedTableModel instance
-  // ==========================================================================
+  // =========================================================================
+  /** @see TableModel */
   public int getRowCount() {
     return wrappedTableModel.getRowCount();
   }
 
+  /** @see TableModel */
   public int getColumnCount() {
     return wrappedTableModel.getColumnCount();
   }
 
+  /** @see TableModel */
   public String getColumnName(int aColumnIndex) {
     return wrappedTableModel.getColumnName(aColumnIndex);
   }
 
+  /** @see TableModel */
   public Class getColumnClass(int columnIndex) {
     return wrappedTableModel.getColumnClass(columnIndex);
   }
 
+  /** @see TableModel */
   public boolean isCellEditable(int rowIndex, int columnIndex) {
     return wrappedTableModel.isCellEditable(rowIndex, columnIndex);
   }
 
+  /** @see TableModel */
   public Object getValueAt(int rowIndex, int columnIndex) {
     return wrappedTableModel.getValueAt(rowIndex, columnIndex);
   }
 
+  /** @see TableModel */
   public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
     wrappedTableModel.setValueAt(aValue, rowIndex, columnIndex);
   }
 
+  /** @see TableModel */
   public void addTableModelListener(TableModelListener l) {
     wrappedTableModel.addTableModelListener(l);
   }
 
+  /** @see TableModel */
   public void removeTableModelListener(TableModelListener l) {
     wrappedTableModel.removeTableModelListener(l);
   }

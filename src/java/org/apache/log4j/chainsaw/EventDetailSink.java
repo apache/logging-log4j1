@@ -57,5 +57,5 @@ package org.apache.log4j.chainsaw;
  * @version 1.0
  */
 public interface EventDetailSink {
-  public void addEvent(EventDetails aDetail);
+  void addEvent(EventDetails aDetail);
 }
