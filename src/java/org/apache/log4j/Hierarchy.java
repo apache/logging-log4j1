@@ -25,6 +25,7 @@ import org.apache.log4j.helpers.IntializationUtil;
 import org.apache.log4j.or.ObjectRenderer;
 import org.apache.log4j.or.RendererMap;
 import org.apache.log4j.plugins.PluginRegistry;
+import org.apache.log4j.scheduler.Scheduler;
 import org.apache.log4j.spi.ErrorItem;
 import org.apache.log4j.spi.LoggerEventListener;
 import org.apache.log4j.spi.LoggerFactory;
@@ -80,6 +81,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   Level threshold;
   PluginRegistry pluginRegistry;
   Map properties;
+  private Scheduler scheduler;
   
   // the internal logger used by this instance of Hierarchy for its own reporting
   private Logger myLogger;
@@ -631,6 +633,13 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   }
 
   private void shutdown(boolean doingReset) {
+    
+    // stop this repo's scheduler if it has one
+     if(scheduler != null) {
+       scheduler.shutdown();
+       scheduler = null;
+     }
+    
     // let listeners know about shutdown if this is
     // not being done as part of a reset.
     if (!doingReset) {
@@ -764,5 +773,17 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
         l.parent = logger;
       }
     }
+  }
+  /**
+   * Return this repository's own scheduler. The scheduler is lazily instantiated.
+   * @return this repository's own scheduler.
+   */
+  public Scheduler getScheduler() {
+    if(scheduler == null) {
+      scheduler = new Scheduler();
+      scheduler.setDaemon(true);
+      scheduler.start();
+    }
+    return scheduler;
   }
 }
