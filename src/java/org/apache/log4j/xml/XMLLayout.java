@@ -106,6 +106,8 @@ public class XMLLayout extends Layout {
     output.write(event.getLoggerName());
     output.write("\" timestamp=\"");
     output.write(Long.toString(event.timeStamp));
+    output.write("\" sequenceNumber=\"");
+    output.write(Long.toString(event.getSequenceNumber()));
     output.write("\" level=\"");
     output.write(event.getLevel().toString());
     output.write("\" thread=\"");
