@@ -18,7 +18,7 @@ package org.apache.log4j;
    <code>ALL</code>.
 
    <p>The <code>Level</code> class may be subclassed to define a larger
-   levek set.
+   level set.
 
    @author Ceki G&uuml;lc&uuml;
 
