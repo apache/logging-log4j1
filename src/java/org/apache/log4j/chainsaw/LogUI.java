@@ -49,6 +49,8 @@
 
 package org.apache.log4j.chainsaw;
 
+import org.apache.log4j.HTMLLayout;
+import org.apache.log4j.Layout;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Priority;
@@ -64,6 +66,8 @@ import org.apache.log4j.net.SocketNodeEventListener;
 import org.apache.log4j.net.SocketReceiver;
 import org.apache.log4j.plugins.PluginRegistry;
 import org.apache.log4j.plugins.Receiver;
+import org.apache.log4j.spi.LocationInfo;
+import org.apache.log4j.spi.LoggingEvent;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -207,7 +211,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   private ChainsawStatusBar statusBar;
   private final Map tableModelMap = new HashMap();
   private final Map tableMap = new HashMap();
-  final List pausedList = new Vector();
+
+  //  final List pausedList = new Vector();
   private final List filterableColumns = new ArrayList();
   private final Map entryMap = new HashMap();
   private final Map panelMap = new HashMap();
@@ -307,6 +312,14 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    * @param args
    */
   public static void main(String[] args) {
+
+//    TODO remove this when ready
+    JOptionPane.showMessageDialog(
+      null,
+      "Chainsaw v2 is currently going through some refactoring work at present.\n\n" +
+      "Some features, most notably filtering and colouring, may be inoperable at this time.\n\n" +
+      "The Log4J Dev team apologises for this inconvenience, but be assured this functionality will be back very shortly.", "Apologise", JOptionPane.WARNING_MESSAGE);
+
     showSplash();
 
     LogUI logUI = new LogUI();
@@ -1095,6 +1108,11 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
         }
       }
 
+      /**
+       * notify the status bar we received an event
+       */
+      statusBar.receivedEvent();
+
       if (tableModelMap.containsKey(ident)) {
         /**
          * we ignore this since we assume the LogPanel has been registered itself a listener
@@ -1148,6 +1166,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    */
   class LogPanel extends DockablePanel implements SettingsListener,
     EventBatchListener {
+    private boolean paused = false;
     final ColorFilter colorFilter = new ColorFilter();
     final DisplayFilter displayFilter;
     final EventContainer tableModel;
@@ -1177,6 +1196,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     ScrollToBottom scrollToBottom;
     private final LogPanelLoggerTreeModel logTreeModel =
       new LogPanelLoggerTreeModel();
+    private Layout detailPaneLayout = new EventDetailLayout();
+    private Layout toolTipLayout = new EventDetailLayout();
 
     //used for consistency - stays empty - used to allow none set in the colordisplay selector and right click
     Set noneSet = new HashSet();
@@ -1284,7 +1305,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
         thisItem.addActionListener(
           new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-              Vector lastSelected = null;
+              LoggingEvent lastSelected = null;
 
               if (table.getSelectedRow() > -1) {
                 lastSelected = tableModel.getRow(table.getSelectedRow());
@@ -1319,7 +1340,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
         thisItem.addActionListener(
           new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-              Vector lastSelected = null;
+              LoggingEvent lastSelected = null;
 
               if (table.getSelectedRow() > -1) {
                 lastSelected = tableModel.getRow(table.getSelectedRow());
@@ -1368,8 +1389,15 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
               currentRow = row;
 
-              table.setToolTipText(
-                ((EventContainer) table.getModel()).getDetailText(row));
+              LoggingEvent event = tableModel.getRow(currentRow);
+              Layout layout = getToolTipLayout();
+
+              if (event != null) {
+                StringBuffer buf = new StringBuffer();
+                buf.append(layout.getHeader()).append(layout.format(event))
+                   .append(layout.getFooter());
+                table.setToolTipText(buf.toString());
+              }
             } else {
               table.setToolTipText(null);
             }
@@ -1457,7 +1485,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       override.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent evt) {
-            Vector lastSelected = null;
+            LoggingEvent lastSelected = null;
 
             if (table.getSelectedRow() > -1) {
               lastSelected = tableModel.getRow(table.getSelectedRow());
@@ -1555,7 +1583,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       nameTreeAndMainPanelSplit.add(lowerPanel);
       nameTreeAndMainPanelSplit.setOneTouchExpandable(true);
       nameTreeAndMainPanelSplit.setToolTipText("Still under development....");
-      nameTreeAndMainPanelSplit.setDividerLocation(160);
+      nameTreeAndMainPanelSplit.setDividerLocation(-1);
 
       add(nameTreeAndMainPanelSplit, BorderLayout.CENTER);
 
@@ -1878,6 +1906,23 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
       tableModel.addEventCountListener(new TabIconHandler(ident));
       f.pack();
+    }
+
+    /**
+     * @return
+     */
+    public boolean isPaused() {
+      return paused;
+    }
+
+    /**
+    * Modifies the Paused property and notifies the listeners
+     * @param paused
+     */
+    public void setPaused(boolean paused) {
+      boolean oldValue = this.paused;
+      this.paused = paused;
+      firePropertyChange("paused", oldValue, paused);
     }
 
     void updateStatusBar() {
@@ -2243,10 +2288,17 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
      * @see org.apache.log4j.chainsaw.EventBatchListener#receiveEventBatch(java.lang.String, java.util.List)
      */
     public void receiveEventBatch(String identifier, List eventBatchEntrys) {
+      /**
+       * if this panel is paused, we totally ignore events
+       */
+      if (isPaused()) {
+        return;
+      }
+
       table.getSelectionModel().setValueIsAdjusting(true);
 
       boolean rowAdded = false;
-      Vector lastSelected = null;
+      LoggingEvent lastSelected = null;
 
       if (table.getSelectedRow() > -1) {
         lastSelected = tableModel.getRow(table.getSelectedRow());
@@ -2255,63 +2307,14 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       for (Iterator iter = eventBatchEntrys.iterator(); iter.hasNext();) {
         ChainsawEventBatchEntry entry = (ChainsawEventBatchEntry) iter.next();
 
-        Vector v = formatFields(entry.getEventVector());
-
+        //        Vector v = formatFields(entry.getEventVector());
         final String eventType = entry.getEventType();
-        String level =
-          v.get(
-            ChainsawColumns.getColumnsNames().indexOf(
-              ChainsawConstants.LEVEL_COL_NAME)).toString();
 
-        //add the level to the appropriate list if it didn't previously exist
-        if (!((List) levelMap.get(eventType)).contains(level)) {
-          ((List) levelMap.get(eventType)).add(level);
-        }
+        updateEntryMap(entry);
 
-        Map map = (HashMap) entryMap.get(getIdentifier());
-
-        //also add it to the unique values list
-        ((Set) map.get(ChainsawConstants.LEVEL_COL_NAME)).add(level);
-
-        Object loggerName =
-          v.get(
-            ChainsawColumns.getColumnsNames().indexOf(
-              ChainsawConstants.LOGGER_COL_NAME));
-        ((Set) map.get(ChainsawConstants.LOGGER_COL_NAME)).add(loggerName);
-
-        /**
-         * EventContainer is a LoggerNameModel imp, use that for notifing
-         */
-        tableModel.addLoggerName(loggerName.toString());
-
-        ((Set) map.get(ChainsawConstants.THREAD_COL_NAME)).add(
-          v.get(
-            ChainsawColumns.getColumnsNames().indexOf(
-              ChainsawConstants.THREAD_COL_NAME)));
-        ((Set) map.get(ChainsawConstants.NDC_COL_NAME)).add(
-          v.get(
-            ChainsawColumns.getColumnsNames().indexOf(
-              ChainsawConstants.NDC_COL_NAME)));
-        ((Set) map.get(ChainsawConstants.MDC_COL_NAME)).add(
-          v.get(
-            ChainsawColumns.getColumnsNames().indexOf(
-              ChainsawConstants.MDC_COL_NAME)));
-        ((Set) map.get(ChainsawConstants.CLASS_COL_NAME)).add(
-          v.get(
-            ChainsawColumns.getColumnsNames().indexOf(
-              ChainsawConstants.CLASS_COL_NAME)));
-        ((Set) map.get(ChainsawConstants.METHOD_COL_NAME)).add(
-          v.get(
-            ChainsawColumns.getColumnsNames().indexOf(
-              ChainsawConstants.METHOD_COL_NAME)));
-        ((Set) map.get(ChainsawConstants.FILE_COL_NAME)).add(
-          v.get(
-            ChainsawColumns.getColumnsNames().indexOf(
-              ChainsawConstants.FILE_COL_NAME)));
-
-        boolean isCurrentRowAdded = tableModel.isAddRow(v, true);
+        boolean isCurrentRowAdded =
+          tableModel.isAddRow(entry.getEvent(), true);
         rowAdded = rowAdded ? true : isCurrentRowAdded;
-        statusBar.receivedEvent();
       }
 
       table.getSelectionModel().setValueIsAdjusting(false);
@@ -2333,6 +2336,84 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
           }
         }
       }
+    }
+
+    /**
+     * ensures the Entry map of all the unque logger names etc, that is used for the Filter panel is
+     * updated with any new information from the event
+     * @param v
+     * @param eventType
+     * @param level
+     */
+    private void updateEntryMap(ChainsawEventBatchEntry entry) {
+      LoggingEvent event = entry.getEvent();
+      String eventType = entry.getEventType();
+      String level = event.getLevel().toString();
+
+      //add the level to the appropriate list if it didn't previously exist
+      if (!((List) levelMap.get(eventType)).contains(level)) {
+        ((List) levelMap.get(eventType)).add(level);
+      }
+
+      Map map = (HashMap) entryMap.get(getIdentifier());
+
+      //        TODO fix up this Set Cast-O-Rama
+      //also add it to the unique values list
+      ((Set) map.get(ChainsawConstants.LEVEL_COL_NAME)).add(level);
+
+      Object loggerName = event.getLoggerName();
+      ((Set) map.get(ChainsawConstants.LOGGER_COL_NAME)).add(loggerName);
+
+      /**
+       * EventContainer is a LoggerNameModel imp, use that for notifing
+       */
+      tableModel.addLoggerName(loggerName.toString());
+
+      ((Set) map.get(ChainsawConstants.THREAD_COL_NAME)).add(
+        event.getThreadName());
+      ((Set) map.get(ChainsawConstants.NDC_COL_NAME)).add(event.getNDC());
+
+      //          TODO MDC event stuff is not being output correctly
+      ((Set) map.get(ChainsawConstants.MDC_COL_NAME)).add(
+        event.getMDCKeySet());
+
+      if (event.getLocationInformation() != null) {
+        LocationInfo info = event.getLocationInformation();
+        ((Set) map.get(ChainsawConstants.CLASS_COL_NAME)).add(
+          info.getClassName());
+        ((Set) map.get(ChainsawConstants.METHOD_COL_NAME)).add(
+          info.getMethodName());
+        ((Set) map.get(ChainsawConstants.FILE_COL_NAME)).add(
+          info.getFileName());
+      }
+    }
+
+    /**
+     * @return
+     */
+    public final Layout getDetailPaneLayout() {
+      return detailPaneLayout;
+    }
+
+    /**
+     * @param detailPaneLayout
+     */
+    public final void setDetailPaneLayout(Layout detailPaneLayout) {
+      this.detailPaneLayout = detailPaneLayout;
+    }
+
+    /**
+     * @return
+     */
+    public final Layout getToolTipLayout() {
+      return toolTipLayout;
+    }
+
+    /**
+     * @param toolTipLayout
+     */
+    public final void setToolTipLayout(Layout toolTipLayout) {
+      this.toolTipLayout = toolTipLayout;
     }
   }
 
@@ -2409,8 +2490,15 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
         if (selectedRow == -1) {
           text = "Nothing selected";
         } else {
-          //            TODO refactor to use a single getEvent(row) call, and use a Formatter interface for pluggable formatting
-          text = model.getDetailText(selectedRow);
+          LoggingEvent event = model.getRow(selectedRow);
+
+          if (event != null) {
+            Layout layout = panel.getDetailPaneLayout();
+            StringBuffer buf = new StringBuffer();
+            buf.append(layout.getHeader()).append(layout.format(event)).append(
+              layout.getFooter());
+            text = buf.toString();
+          }
         }
 
         if (!((text != null) && !text.equals(""))) {
