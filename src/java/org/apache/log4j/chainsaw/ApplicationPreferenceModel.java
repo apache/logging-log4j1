@@ -71,6 +71,8 @@ public class ApplicationPreferenceModel implements SettingsListener {
     private boolean toolbar;
     private boolean receivers;
     
+    private String lookAndFeelClassName;
+    
     
     private int responsiveness;
     
@@ -186,6 +188,7 @@ public class ApplicationPreferenceModel implements SettingsListener {
        setStatusBar(event.asBoolean("statusBar"));
        setToolbar(event.asBoolean("toolbar"));
        setReceivers(event.asBoolean("receivers"));
+       setLookAndFeelClassName(event.getSetting("lookAndFeelClassName"));
     }
 
     /* (non-Javadoc)
@@ -199,6 +202,7 @@ public class ApplicationPreferenceModel implements SettingsListener {
         event.saveSetting("statusBar", isStatusBar());
         event.saveSetting("toolbar", isToolbar());
         event.saveSetting("receivers", isReceivers());
+        event.saveSetting("lookAndFeelClassName", getLookAndFeelClassName());
     }
 
     /**
@@ -214,6 +218,7 @@ public class ApplicationPreferenceModel implements SettingsListener {
       setStatusBar(model.isStatusBar());
       setToolbar(model.isToolbar());
       setReceivers(model.isReceivers());
+      setLookAndFeelClassName(model.getLookAndFeelClassName());
     }
     /**
      * @return Returns the responsiveness.
@@ -295,4 +300,20 @@ public class ApplicationPreferenceModel implements SettingsListener {
       this.toolbar = toolbar;
       firePropertyChange("toolbar", oldValue, this.toolbar);
     }
+    /**
+     * @return Returns the lookAndFeelClassName.
+     */
+    public final String getLookAndFeelClassName() {
+      return lookAndFeelClassName;
+    }
+
+    /**
+     * @param lookAndFeelClassName The lookAndFeelClassName to set.
+     */
+    public final void setLookAndFeelClassName(String lookAndFeelClassName) {
+      String oldValue = this.lookAndFeelClassName;
+      this.lookAndFeelClassName = lookAndFeelClassName;
+      firePropertyChange("lookAndFeelClassName", oldValue, this.lookAndFeelClassName);
+    }
+
 }
