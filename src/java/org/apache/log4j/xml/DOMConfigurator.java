@@ -258,8 +258,8 @@ public class DOMConfigurator implements Configurator {
         }
       }
 
-      if(appender instanceof OptionHandler) {
-       ((OptionHandler)appender).activateOptions();
+      if (appender instanceof OptionHandler) {
+        ((OptionHandler) appender).activateOptions();
       }
 
       return appender;
@@ -343,12 +343,11 @@ public class DOMConfigurator implements Configurator {
         configureNestedComponent(nestedBean, currentElement);
       }
     }
-    
-    // once all the options are set, activate the nested component
-    if(nestedComponent instanceof OptionHandler) { 
-     ((OptionHandler)nestedComponent).activateOptions(); 
-    } 
 
+    // once all the options are set, activate the nested component
+    if (nestedComponent instanceof OptionHandler) {
+      ((OptionHandler) nestedComponent).activateOptions();
+    }
 
     // Now let us attach the component
     switch (containmentType) {
@@ -418,9 +417,9 @@ public class DOMConfigurator implements Configurator {
         }
       }
 
-			if(eh instanceof OptionHandler) {
-			 ((OptionHandler)eh).activateOptions();
-			}
+      if (eh instanceof OptionHandler) {
+        ((OptionHandler) eh).activateOptions();
+      }
 
       appender.setErrorHandler(eh);
     }
@@ -453,10 +452,9 @@ public class DOMConfigurator implements Configurator {
         }
       }
 
-			if(filter instanceof OptionHandler) {
-			 ((OptionHandler)filter).activateOptions();
-			}
-
+      if (filter instanceof OptionHandler) {
+        ((OptionHandler) filter).activateOptions();
+      }
 
       LogLog.debug(
         "Adding filter of type [" + filter.getClass()
@@ -569,9 +567,9 @@ public class DOMConfigurator implements Configurator {
       }
     }
 
-		if(cat instanceof OptionHandler) {
-		 ((OptionHandler)cat).activateOptions();
-		}
+    if (cat instanceof OptionHandler) {
+      ((OptionHandler) cat).activateOptions();
+    }
   }
 
   protected void parseRenderer(Element element) {
