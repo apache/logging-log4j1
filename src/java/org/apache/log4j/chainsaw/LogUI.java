@@ -647,6 +647,20 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
           if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
             if (e.getDescription().equals("StartTutorial")) {
               new Thread(new Tutorial()).start();
+            } else if (e.getDescription().equals("StopTutorial")) {
+              new Thread(
+                new Runnable() {
+                  public void run() {
+                    List list =
+                      PluginRegistry.getPlugins(
+                        LogManager.getLoggerRepository(), Generator.class);
+
+                    for (Iterator iter = list.iterator(); iter.hasNext();) {
+                      Plugin plugin = (Plugin) iter.next();
+                      PluginRegistry.stopPlugin(plugin);
+                    }
+                  }
+                }).start();
             } else {
               try {
                 tutorialArea.setPage(e.getURL());
@@ -1283,7 +1297,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
           new Runnable() {
             public void run() {
               getTabbedPane().addANewTab(
-                ident, thisPanel, new ImageIcon(ChainsawIcons.ANIM_RADIO_TOWER));
+                ident, thisPanel, new ImageIcon(
+                  ChainsawIcons.ANIM_RADIO_TOWER));
             }
           });
 
