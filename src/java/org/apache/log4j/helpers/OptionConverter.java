@@ -410,28 +410,24 @@ public class OptionConverter {
   /**
      Configure log4j given a URL. 
 
-     <p>The URL format is important. Its <em>reference</em> part is
-     taken as the class name of the configurator. For example, if you
-     invoke your application using the command line
-
-     <pre> java -Dlog4j.configuration=file:/temp/myconfig.xyz#com.myCompany.myConfigurator
-     </pre>
-
-     then the log4j will be configured by a new instance of
-     <code>com.myCompany.myConfigurator</code> by interpreting the
-     file referenced by <code>file:/temp/myconfig.xyz</code>.  The
-     configurator you specify <em>must</em> implement the {@link
-     Configurator} interface.
-
-     <p>If the URL has no reference part, then the {@link
-     PropertyConfigurator} will parse the URL. However, if the URL
-     ends with a ".xml" extension, then the {@link DOMConfigurator}
-     will be used to parse the URL.
+     <p>The url must point to a file or resource which will be interpreted by
+     a new instance of a log4j configurator.
 
      <p>All configurations steps are taken on the
-     <code>hierarchy</code> passed as parameter.
+     <code>hierarchy</code> passed as a parameter.
+
+     <p>
+     @param url The location of the configuration file or resource.
+     @param clazz The classname, of the log4j configurator which will parse
+     the file or resource at <code>url</code>. This must be a subclass of
+     {@link Configurator}, or null. If this value is null then a default
+     configurator of {@link PropertyConfigurator} is used, unless the
+     filename pointed to by <code>url</code> ends in '.xml', in which case
+     {@link DOMConfigurator} is used.
+     @param hierarchy The {@link Hierarchy} to act on.
+
+     @since 1.1.4 */
      
-     @since 1.0 */
   static
   public
   void selectAndConfigure(URL url, String clazz,  Hierarchy hierarchy) {
