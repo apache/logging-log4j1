@@ -12,7 +12,7 @@ import org.apache.log4j.FileAppender;
 
 public class DisableOverrideTest {
 
-  static Category CAT = Category.getInstance(DisableOverrideTest.class.getName());
+  static Category CAT = Category.getInstance(DisableOverrideTest.class);
 
   public static void main( String[] argv) {
 
@@ -22,20 +22,6 @@ public class DisableOverrideTest {
     else 
       Usage("Wrong number of arguments.");
      
-    //try {
-      //DOMParser domParser = new DOMParser();
-      //domParser.setFeature("http://xml.org/sax/features/validation", true);
-      //domParser.setFeature("http://apache.org/xml/features/validation/dynamic",
-      //		   true);      
-      //domParser.setErrorHandler(new ReportParserError());      
-      //domParser.parse(new InputSource(configFile));
-      //DOMConfigurator.configure(domParser.getDocument().getDocumentElement());
-    //}
-    //catch(Exception e) {
-    //System.err.println("Could not initialize test program.");
-    //e.printStackTrace();
-    // System.exit(1);           
-    //}
     DOMConfigurator.configure(configFile);
     Category.getDefaultHierarchy().disableInfo();       
     CAT.debug("Hello world");

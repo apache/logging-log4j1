@@ -6,7 +6,8 @@
     with undefined configDebug param element
     no DTD
  -->
-<log4j:configuration disableOverride="false">
+<log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'
+                     disableOverride="false">
 	<appender name="A1" class="org.apache.log4j.FileAppender">
             <param name="File" value="System.out" />
 	    
