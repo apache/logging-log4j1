@@ -29,13 +29,13 @@ import org.apache.log4j.varia.ListAppender;
 abstract public class ConfiguratorBase implements Configurator {
 
   /**
-  Defining this value makes log4j print log4j-internal debug
-  statements.
-
- <p> The value of this string is <b>log4j.debug</b>.
-
- <p>Note that the search for all option names is case sensitive.  */
-public static final String DEBUG_KEY = "log4j.debug";
+   * Defining this value makes log4j print log4j-internal debug statements.
+   * <p> 
+   * The value of this string is <b>log4j.debug</b>.
+   * 
+   * <p>Note that the search for all option names is case sensitive.  
+   * */ 
+   public static final String DEBUG_KEY = "log4j.debug";
 
   protected Logger getLogger(LoggerRepository repository) {
     return repository.getLogger(this.getClass().getName());
