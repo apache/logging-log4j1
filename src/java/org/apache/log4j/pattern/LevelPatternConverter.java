@@ -16,6 +16,7 @@
 
 package org.apache.log4j.pattern;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.spi.LoggingEvent;
 
 /**
@@ -46,7 +47,20 @@ public class LevelPatternConverter extends PatternConverter {
   }
   
   public String getStyleClass(LoggingEvent e) {
-    return e.getLevel().toString();
+    if(e == null) {
+      return "level";
+    } else {
+      int lint = e.getLevel().toInt();
+      switch(lint) {
+      case Level.TRACE_INT: return "level trace";
+      case Level.DEBUG_INT: return "level debug";
+      case Level.INFO_INT: return "level info";
+      case Level.WARN_INT: return "level warn";
+      case Level.ERROR_INT: return "level error";
+      case Level.FATAL_INT: return "level fatal";
+      default: return "level "+e.getLevel().toString();
+      }
+    }
   }
   
 }
