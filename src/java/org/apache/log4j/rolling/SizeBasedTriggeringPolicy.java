@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2005 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package org.apache.log4j.rolling;
 
 import java.io.File;
+import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
@@ -29,7 +30,7 @@ import java.io.File;
 public class SizeBasedTriggeringPolicy implements TriggeringPolicy {
   long maxFileSize = 10 * 1024 * 1024; // let 10 MB the default max size
 
-  public boolean isTriggeringEvent(File file) {
+  public boolean isTriggeringEvent(final File file, final LoggingEvent event) {
     //System.out.println("Size"+file.length());
     return (file.length() >= maxFileSize);
   }

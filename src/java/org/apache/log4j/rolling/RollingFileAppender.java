@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2005 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -159,7 +159,7 @@ public class RollingFileAppender extends FileAppender {
   protected void subAppend(LoggingEvent event) {
     // The rollover check must precede actual writing. This is the 
     // only correct behavior for time driven triggers. 
-    if (triggeringPolicy.isTriggeringEvent(activeFile)) {
+    if (triggeringPolicy.isTriggeringEvent(activeFile, event)) {
       getLogger().debug("About to rollover");
       rollover();
     }
