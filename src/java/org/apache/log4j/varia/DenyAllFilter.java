@@ -10,7 +10,7 @@ import org.apache.log4j.spi.LoggingEvent;
 /**
    This filter drops all logging events. 
 
-   <p>You can add this filter to the to the end of a filter chain to
+   <p>You can add this filter to the end of a filter chain to
    switch from the default "accept all unless instructed otherwise"
    filtering behaviour to a "deny all unless instructed otherwise"
    behaviour.
