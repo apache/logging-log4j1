@@ -112,7 +112,14 @@ not be performed.
 <ul>
 
   <p><li>Log4j is JDK 1.1.x compatible.
-    
+  
+  <p><li>Nevertheless, <code>RollingFileAppender</code> requires JDK
+  1.2 or above. This will be fixed in future releases of log4j. If you
+  need <code>RollingFileAppender</code> to run under JDK 1.1 then you
+  can simply remove <code>RollingFileAppenderBeanInfo.class</code>
+  from log4j.jar.
+
+
 <p><li>The DOMConfigurator is based on the DOM Level 1 API. The
     DOMConfigurator.configure(Element) method will work with any
     XML parser that will pass it a DOM tree.
@@ -133,7 +140,6 @@ not be performed.
 <p><li>The <code>org.apache.log4j.net.JMSAppender</code> requires the
 presence of the JMS API as well as JNDI.
 
-<p><li>The <code>org.apache.log4j.gui.TextPaneAppender</code> requires Swing.
 
 <p><li>log4j test code relies on the <a
 href="http://www.junit.org">JUnit</a> testing framework.

@@ -8,15 +8,18 @@
  April 26, 2001
 
  - Release of version 1.1b6
+
+ - Aaron Greenhouse from Carnegie Mellon SCS found a series of
+   multi-threading related bugs in Category and AsyncAppender. See bug
+   ids 1505 and 1507 in our bug database for examplary bug
+   reports. They are worth the detour. [*]
  
  - InvalidJarIndexException is only available in JDK 1.3.  Referring
    to this exception type caused log4j 1.1b5 to break on earlier JDKs.
    We now avoid referring to it. [*]
 
- - Aaron Greenhouse found a series of multi-threading related bugs in
-   Category and AsyncAppender. See bug ids 1505 and 1507 in our bug
-   database for examplary bug reports. [*]
-  
+ - Added PriorityRangeFilter by Simon Kitching. See the Threshold
+   option in AppenderSkeleton for a more convenient alternative. [*]
 
  April 22, 2001
 

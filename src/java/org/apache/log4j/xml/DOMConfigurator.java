@@ -554,6 +554,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
       // This makes ID/IDREF attributes to have a meaning. Don't ask
       // me why.
       dbf.setValidating(true);
+      //dbf.setNamespaceAware(true);
 
       DocumentBuilder docBuilder = dbf.newDocumentBuilder();
       //docBuilder.setErrorHandler(new ReportParserError());

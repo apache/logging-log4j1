@@ -56,7 +56,7 @@ public class PriorityMatchFilter extends Filter {
 
   /**
      @deprecated We now use JavaBeans introspection to configure
-     components. Options strings are no longer needed.
+     components.
   */
   public
   String[] getOptionStrings() {
@@ -66,6 +66,9 @@ public class PriorityMatchFilter extends Filter {
   /**
      @deprecated Use the setter method for the option directly instead
      of the generic <code>setOption</code> method. 
+
+     @deprecated We now use JavaBeans introspection to configure
+     components. 
   */
   public
   void setOption(String key, String value) {    

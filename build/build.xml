@@ -9,7 +9,7 @@
 <!-- ================================================================= -->
 <project name="log4j" default="usage" basedir=".." >
 
-  <property name="version" value="1.1b5"/>
+  <property name="version" value="1.1b6"/>
 
   <!-- The base directory relative to which most targets are built -->
   <property name="base" value="."/>
@@ -66,14 +66,6 @@
 
     dist    - will create a complete distribution in dist/
     </echo>
-  </target>
-
-
-  <target name="swingCheck">
-    <available classname="javax.swing.JTextPane" property="swing-present"/>
-  </target>   
-  <target name="swing" depends="swingCheck" if="swing-present">
-    <echo message="Swing is present."/>
   </target>
 
   <target name="junitCheck">
@@ -133,8 +125,8 @@
     <tstamp />
   </target>
 
-  <target name="build" depends="init, build.core, build.swing, build.xml,
-                                build.unitTests, build.javamail, build.jms"/>
+  <target name="build" depends="init, build.core, build.xml, build.unitTests, 
+                                build.javamail, build.jms"/>
 
   <target name="build.core" depends="init">
     <mkdir dir="${javac.dest}" />
@@ -156,19 +148,6 @@
 	/>
   </target>
 
-  <target name="build.swing" depends="init, swing" if="swing-present">   
-    <mkdir dir="${javac.dest}/icons"/>
-    <copy todir="${javac.dest}/icons" >
-      <fileset dir="${icons.source}"/>
-    </copy>
-
-    <javac srcdir="${java.source.dir}"
-	   destdir="${javac.dest}"
-	   includes="${stem}/gui/**/*.java"
-           excludes="${stem}/gui/JListView.java, ${stem}/gui/JTableAppender.java"
-           classpath="${classpath}"/>
-  </target>
-	
   <target name="build.unitTests" depends="init, junit" if="junit-present">   
     <javac srcdir="${java.source.dir}"
 	   destdir="${javac.dest}"

@@ -13,8 +13,9 @@
 //              Avy Sharell <asharell@club-internet.fr>
 //              Ciaran Treanor <ciaran@xelector.com>
 //              Jeff Turner <jeff@socialchange.net.au>
-//              Horwitz, Michael <MHorwitz@siemens.co.za>
+//              Michael Horwitz <MHorwitz@siemens.co.za>
 //              Calvin Chan <calvin.chan@hic.gov.au>
+//              Aaron Greenhouse <aarong@cs.cmu.edu>
 
 package org.apache.log4j;
 

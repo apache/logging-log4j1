@@ -5,6 +5,8 @@
  * License version 1.1, a copy of which has been included with this
  * distribution in the LICENSE.APL file.  */
 
+// Contibutors:  Aaron Greenhouse <aarong@cs.cmu.edu>
+
 package org.apache.log4j;
 
 import org.apache.log4j.Category;
@@ -81,6 +83,8 @@ public class AsyncAppender extends AppenderSkeleton
   Dispatcher dispatcher;
   boolean locationInfo = false;
 
+  boolean interruptedWarningMessage = false;
+
   public
   AsyncAppender() {
     // Note: The dispatcher code assumes that the aai is set once and
@@ -94,7 +98,7 @@ public class AsyncAppender extends AppenderSkeleton
   public 
   void addAppender(Appender newAppender) {
     aai.addAppender(newAppender);
-  }
+  } 
 
   public
   void append(LoggingEvent event) {
@@ -106,14 +110,20 @@ public class AsyncAppender extends AppenderSkeleton
       event.getLocationInformation();	
     }
     synchronized(bf) {
-      if(bf.isFull()) {
+      while(bf.isFull()) {
 	try {
 	  //cat.debug("Waiting for free space in buffer.");
 	  bf.wait();
 	} catch(InterruptedException e) {
-	  LogLog.error("AsyncAppender cannot be interrupted.", e);
+	  if(!interruptedWarningMessage) {
+	    interruptedWarningMessage = true;
+	    LogLog.warn("AsyncAppender interrupted.", e);
+	  } else {
+	    LogLog.warn("AsyncAppender interrupted again.");
+	  }
 	}
       }
+ 
       //cat.debug("About to put new event in buffer.");      
       bf.put(event);
       if(bf.wasEmpty()) {
