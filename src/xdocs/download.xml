@@ -248,7 +248,13 @@
 	</dd>
 	
 	<!-- =========================================================================== -->
+	
+	<dt><a href="http://sourceforge.net/projects/qmmslog"><b>qmmslog</b></a></dt>
 
+	<dd>Qmmslog is a port of log4j to the Qt/C++ platform.
+	</dd>
+
+	<!-- =========================================================================== -->
 	<dt><a
 	href="http://log4r.sourceforge.net"><b>log4r</b></a></dt>
 	<dd>A Powerful Logger for Ruby. 
