@@ -93,7 +93,7 @@ public final class JoranDocument extends DefaultHandler {
     final String namespaceURI, final String localName, final String qName) {
     if (
       (namespaceURI == null) || (namespaceURI.length() == 0)
-        || namespaceURI.equals(LOG4J_NS)) {
+        || namespaceURI.equals(LOG4J_NS) || namespaceURI.equals(LS_NS)) {
       events.add(new EndElementEvent(localName, location));
     }
   }
