@@ -176,9 +176,8 @@ Example: to display only events which are greater than or equal to level INFO, u
 
 <p><b>Operator limitations:</b></p>
 <ul>
-<li>The equality operator can be used with the LEVEL identifier, but for the comparison to succeed, the right hand value must be in all uppercase (this applies to the combination of LEVEL keyword and the equality operator only - for example, use <b>LEVEL == WARN</b> instead of <b>LEVEL == warn</b></li>
-<li>Inequality operators are supported for Levels (<b>LEVEL &gt info</b>) and anything that can be converted to a numeric value.</li>
-<li>Expressions using the timestamp field are not yet supported</li>
+<li>Inequality operators are supported for Levels (<b>LEVEL &gt info</b>) and anything that can be converted to a numeric value (including timestamps).</li>
+<li>In order to build expressions using the Timestamp field, provide the Timestamp value in this format: 'yyyy/MM/dd HH:mm:ss'.  Note the single ticks, which are required because of the space between the days and hours. The Timestamp field contains millisecond information, but the milliseconds are rounded off during event evaluation.</li>
 </ul>
 
 <p><B>Example expressions:</B></p>
@@ -188,6 +187,8 @@ Example: to display only events which are greater than or equal to level INFO, u
 <tr><td>To display all events which contain an exception</td><td><b>EXCEPTION EXISTS</b></td></tr>
 <tr><td>To display all events associated with a PROP key of USERID with a value of 'tester'</td><td><b>PROP.USERID == tester</b></td></tr>
 <tr><td>'and' the first and second examples together, 'or'd with the third</td><td><b>( LEVEL &gt= INFO && MSG ~= 'logged in' ) || EXCEPTION EXISTS</b></td></tr>
+<tr><td>To display all events between 23:55 and 23:56 on the 19th of June</td><td><b>TIMESTAMP >= '2004/06/19 23:55:00' && TIMESTAMP <= '2004/06/19 23:56:00'</b></td></tr>
+<tr><td>To display events occurring at 23:55:12 on the 19th of June (all events generated during that second, regardless of millisecond value)</td><td><b>TIMESTAMP == '2004/06/19 23:55:12'</b></td></tr>
 </table>
 
 <A NAME="color_filter"><h3>Color filters</h3>
