@@ -11,6 +11,7 @@ package org.apache.log4j.net;
 import java.net.Socket;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.BufferedInputStream;
 
 
 import org.apache.log4j.*;
@@ -43,7 +44,8 @@ public class SocketNode implements Runnable {
     this.socket = socket;
     this.hierarchy = hierarchy;
     try {
-      ois = new ObjectInputStream(socket.getInputStream());
+      ois = new ObjectInputStream(
+                           new BufferedInputStream(socket.getInputStream()));
     }
     catch(Exception e) {
       logger.error("Could not open ObjectInputStream to "+socket, e);
