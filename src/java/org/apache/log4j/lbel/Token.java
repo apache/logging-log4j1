@@ -22,6 +22,10 @@ class Token {
   public static final int THREAD = 140;
   public static final int PROPERTY = 150;
   public static final int DATE = 160;
+
+  public static final int CLASS = 170;
+  public static final int METHOD = 180;
+
   public static final int EOF = 1000;
 	
 	public Token(int type) {

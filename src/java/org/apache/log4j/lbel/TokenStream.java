@@ -41,6 +41,8 @@ class TokenStream  {
     keywordMap.put("logger", new Token(Token.LOGGER, "logger"));
     keywordMap.put("message", new Token(Token.MESSAGE, "message"));
     keywordMap.put("level", new Token(Token.LEVEL, "level"));
+    keywordMap.put("method", new Token(Token.METHOD, "method"));
+    keywordMap.put("class", new Token(Token.CLASS, "class"));
     keywordMap.put("thread", new Token(Token.THREAD, "thread"));
     keywordMap.put("date", new Token(Token.DATE, "date"));
   }

@@ -16,11 +16,10 @@ import org.apache.oro.text.regex.Perl5Matcher;
 
 
 /**
- * Compare the logger of an event passed as parameter to the logger name and 
- * comparison operator set in the constructor. 
+ * Base class for string-based comparators. 
  * 
- * <p>Allowed comparison operators are '=', '!=', '>', '>=', '<', '<=', '~' and
- * '!~' where '~' stands for regular expression match.
+ * <p>Allowed comparison operators are 'CHILDOF', '=', '!=', '>', '>=', '<', 
+ * '<=', '~' and '!~' where '~' stands for regular expression match.
  * 
  * @author <a href="http://www.qos.ch/log4j/">Ceki G&uuml;lc&uuml;</a>
  * @author Scott Deboy
@@ -33,6 +32,12 @@ abstract public class StringComparator implements Comparator {
   Pattern rightSidePattern;
   Perl5Matcher matcher;
 
+  /**
+   * Derived classes supply the left side of the comparison based on the event.
+   * 
+   * @param event
+   * @return the left side of the expression
+   */
   abstract protected String getLeftSide(LoggingEvent event);
   
   public StringComparator(Operator operator, String rightSide) throws ScanError  {
