@@ -21,7 +21,7 @@ import org.apache.log4j.helpers.LogLog;
    This appender listens on a socket on the port specified by the
    {@link #PORT_OPTION} for a "RollOver" message. When such a message
    is received, the underlying log file is rolled over and an 
-   acknowledgement message is sent back to the process initiating
+   acknowledgment message is sent back to the process initiating
    the roll over.
 
    <p>This method of triggering roll over has the advantage of being
@@ -30,7 +30,7 @@ import org.apache.log4j.helpers.LogLog;
    <p>A simple application {@link Roller} is provided to initiate the
    roll over.
 
-   <p>Note that the intiator is not authenticated. Anyone can trigger
+   <p>Note that the initiator is not authenticated. Anyone can trigger
    a rollover. In production environments, it is recommended that you
    add some form of protection to prevent undesired rollovers.
 
