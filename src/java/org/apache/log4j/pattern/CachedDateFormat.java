@@ -27,48 +27,132 @@ import java.util.TimeZone;
 
 
 /**
- * Caches the results of a DateFormat.
+ * CachedDateFormat optimizes the performance of a wrapped
+ * DateFormat.  The implementation is not thread-safe.
+ * If the millisecond pattern is not recognized,
+ * the class will only use the cache if the 
+ * same value is requested.
+ *
  *  @author Curt Arnold
  *  @since 1.3
  */
 final class CachedDateFormat extends DateFormat {
-  private static final int BAD_PATTERN = -1;
-  private static final int NO_MILLISECONDS = -2;
+  /*
+   *  Constant used to represent that there was no change
+   *  observed when changing the millisecond count.
+   */
+  public static final int NO_MILLISECONDS = -2;
+
+  /**
+   *  Supported digit set.  If the wrapped DateFormat uses
+   *  a different unit set, the millisecond pattern
+   *  will not be recognized and duplicate requests
+   *  will use the cache.
+   */
+  private final static String digits = "0123456789";
   
-  // Given that the JVM precision is 1/1000 of a second, 3 digit millisecond
-  // precision is the best we can ever expect.
-  private static final int JVM_MAX_MILLI_DIGITS = 3;
+  /*
+   *  Constant used to represent that there was an 
+   *  observed change, but was an expected change.
+   */
+  public static final int UNRECOGNIZED_MILLISECONDS = -1;
   
-  private DateFormat formatter;
+  /**
+   *  First magic number used to detect the millisecond position.
+   */
+  private static final int magic1 = 654;
+
+  /**
+   *  Expected representation of first magic number.
+   */
+  private static final String magicString1 = "654";
+
+  /**
+   *  Second magic number used to detect the millisecond position.
+   */
+  private static final int magic2 = 987;
+
+  /**
+   *  Expected representation of second magic number.
+   */
+  private static final String magicString2 = "987";
+
+
+  /**
+   *  Expected representation of 0 milliseconds.
+   */
+  private static final String zeroString = "000";
+  
+  /**
+   *   Wrapped formatter.
+   */
+  private final DateFormat formatter;
+  
+  /**
+   *  Index of initial digit of millisecond pattern or 
+   *   UNRECOGNIZED_MILLISECONDS or NO_MILLISECONDS.
+   */
   private int millisecondStart;
-  private StringBuffer cache = new StringBuffer();
-  private long slotBegin;
-  private Date slotBeginDate;
-  private int milliDigits;
-  private StringBuffer milliBuf = new StringBuffer(JVM_MAX_MILLI_DIGITS);
-  private NumberFormat numberFormat;
   
+  /**
+   *  Cache of previous conversion.
+   */
+  private StringBuffer cache = new StringBuffer(50);
+  
+  /**
+   *  Integral second preceding the previous convered Date.
+   */
+  private long slotBegin;
+  
+  /**
+   *  Maximum validity period for the cache.  
+   *  Typically 1, use cache for duplicate requests only, or
+   *  1000, use cache for requests within the same integral second.
+   */
+  private final int expiration;
+  
+  /**
+   *  Date requested in previous conversion.
+   */
+  private long previousTime;
+  
+  /**
+   *   Scratch date object used to minimize date object creation.
+   */
+   private final Date tmpDate = new Date(0);
  
 
-  public CachedDateFormat(DateFormat dateFormat) {
+  /**
+   *  Creates a new CachedDateFormat object.
+   *  @param dateFormat Date format, may not be null.
+   *  @param expiration maximum cached range in milliseconds.
+   *    If the dateFormat is known to be incompatible with the
+   *      caching algorithm, use a value of 0 to totally disable
+   *      caching or 1 to only use cache for duplicate requests.
+   */
+  public CachedDateFormat(final DateFormat dateFormat,
+          final int expiration) {
     if (dateFormat == null) {
       throw new IllegalArgumentException("dateFormat cannot be null");
     }
     formatter = dateFormat;
-    
-    numberFormat = new DecimalFormat();
-    // numberFormat will zero as necessary
-    numberFormat.setMinimumIntegerDigits(JVM_MAX_MILLI_DIGITS);
+    this.expiration = expiration;
     
     Date now = new Date();
     long nowTime = now.getTime();
     slotBegin = (nowTime / 1000L) * 1000L;
+    //
+    //   if now is before 1970 and slot begin
+    //     was truncated forward
+    //
+    if (slotBegin > nowTime) {
+        slotBegin -= 1000;
+    }
 
-    slotBeginDate = new Date(slotBegin);
-    String formatted = formatter.format(slotBeginDate);
+    String formatted = formatter.format(now);
     cache.append(formatted);
-    millisecondStart = findMillisecondStart(slotBegin, formatted, formatter);
-    //System.out.println("millisecondStart="+millisecondStart);
+    previousTime = nowTime;
+    millisecondStart = findMillisecondStart(nowTime, formatted, formatter);
   } 
     
 
@@ -82,87 +166,149 @@ final class CachedDateFormat extends DateFormat {
    *    -1 indicates no millisecond field, -2 indicates unrecognized
    *    field (likely RelativeTimeDateFormat)
    */
-  private int findMillisecondStart(
+  public static int findMillisecondStart(
     final long time, final String formatted, final DateFormat formatter) {
-    String plus987 = formatter.format(new Date(time + 987));
+    
+    long slotBegin = (time / 1000) * 1000;
+    if (slotBegin > time) {
+       slotBegin -= 1000;
+    }
+    int millis = (int) (time - slotBegin);
+    
+    int magic = magic1;
+    String magicString = magicString1;
+    if (millis == magic1) {
+        magic = magic2;
+        magicString = magicString2;
+    }
+    String plusMagic = formatter.format(new Date(slotBegin + magic));
+    
+    /**
+     *   If the string lengths differ then 
+     *      we can't use the cache except for duplicate requests.
+     */
+    if (plusMagic.length() != formatted.length()) {
+        return UNRECOGNIZED_MILLISECONDS;
+    } else {
+        // find first difference between values
+       for (int i = 0; i < formatted.length(); i++) {
+          if (formatted.charAt(i) != plusMagic.charAt(i)) {
+             //
+             //   determine the expected digits for the base time
+             StringBuffer formattedMillis = new StringBuffer("ABC");
+             millisecondFormat(millis, formattedMillis, 0);
+             
+             String plusZero = formatter.format(new Date(slotBegin));
 
-    //System.out.println("-formatted="+formatted);
-    //System.out.println("plus987="+plus987);
-    // find first difference between values
-    for (int i = 0; i < formatted.length(); i++) {
-      if (formatted.charAt(i) != plus987.charAt(i)) {
-        //   if one string has "000" and the other "987"
-        //      we have found the millisecond field
-        if (i + 3 <= formatted.length() 
-            && "000".equals(formatted.substring(i, i + JVM_MAX_MILLI_DIGITS))  
-            && "987".equals(plus987.substring(i, i + JVM_MAX_MILLI_DIGITS))) {
-          return i;
-        } else {
-          return BAD_PATTERN;  
-        }
-      }
+             //   If the next 3 characters match the magic
+             //      string and the expected string
+             if (plusZero.length() == formatted.length()
+                && magicString.regionMatches(0, plusMagic, i, magicString.length()) 
+                && formattedMillis.toString().regionMatches(0, formatted, i, magicString.length())
+                && zeroString.regionMatches(0, plusZero, i, zeroString.length())) {
+                return i;
+             } else {
+                return UNRECOGNIZED_MILLISECONDS;
+            }
+          }
+       }
     }
     return  NO_MILLISECONDS;
   }
 
   /**
-   * Converts a Date utilizing a previously converted
-   * value if possible.
-
-     @param date the date to format
-     @param sbuf the string buffer to write to
-     @param fieldPosition remains untouched
+   * Formats a Date into a date/time string.
+   *
+   *  @param date the date to format
+   *  @param sbuf the string buffer to write to
+   *  @param fieldPosition remains untouched
    */
   public StringBuffer format(
-    Date date, StringBuffer sbuf, FieldPosition fieldPosition) {
-
-    if (millisecondStart == BAD_PATTERN) {
-      return formatter.format(date, sbuf, fieldPosition);
+    Date date, StringBuffer sbuf, FieldPosition fieldPosition){
+       format(date.getTime(), sbuf);
+    return sbuf;
+  }
+   
+  /**
+   * Formats a millisecond count into a date/time string.
+   *
+   *  @param now Number of milliseconds after midnight 1 Jan 1970 GMT.
+   *  @param sbuf the string buffer to write to
+   */
+  public StringBuffer format(long now, 
+          StringBuffer buf ){
+    
+    //
+    // If an identical request, append the buffer and return.
+    //
+    if (now == previousTime) {
+         buf.append(cache);
+         return buf;
     }
     
-    long now = date.getTime();
-    if ((now < (slotBegin + 1000L)) && (now >= slotBegin)) {
-      //System.out.println("Using cached val:"+date);
-
-      // If there are NO_MILLISECONDS we don't bother computing the millisecs.
-      if (millisecondStart >= 0) {
-        int millis = (int) (now - slotBegin);
-        int cacheLength = cache.length();
-
-        milliBuf.setLength(0);
-        numberFormat.format(millis, milliBuf, fieldPosition);
-        //System.out.println("milliBuf="+milliBuf);
-        for(int j = 0; j < JVM_MAX_MILLI_DIGITS; j++) {
-          cache.setCharAt(millisecondStart+j, milliBuf.charAt(j));
+    //
+    // If not a recognized millisecond pattern,
+    // use the wrapped formatter to update the cache
+    // and append the cache to the buffer.
+    //
+    if (millisecondStart != UNRECOGNIZED_MILLISECONDS) {
+    
+        //
+        //    If the requested time is within the same integral second
+        //       as the last request and a shorter expiration was not requested.
+        if (now < slotBegin + expiration
+            && now >= slotBegin
+            && now < slotBegin + 1000L) {
+        
+            // 
+            //    if there was a millisecond field then update it
+            //
+            if (millisecondStart >= 0 ) {
+                millisecondFormat((int) (now - slotBegin), cache, millisecondStart);
+            }
+            previousTime = now;
+            buf.append(cache);
+            return buf;
         }
-      }
-    } else {
-      //System.out.println("Refreshing the cache: "+date+","+(date.getTime()%1000));
-      slotBegin = (now / 1000L) * 1000L;
-      int prevLength = cache.length();
-      cache.setLength(0);
-      formatter.format(date, cache, fieldPosition);
-     
-      //   if the length changed then
-      //      recalculate the millisecond position
-      if (cache.length() != prevLength && (milliDigits > 0)) {
-        //System.out.println("Recomputing cached len changed oldLen="+prevLength
-        //      +", newLen="+cache.length());
-        //
-        //    format the previous integral second
-        StringBuffer tempBuffer = new StringBuffer(cache.length());
-        slotBeginDate.setTime(slotBegin);
-        formatter.format(slotBeginDate, tempBuffer, fieldPosition);
-        //
-        //    detect the start of the millisecond field
-        millisecondStart = findMillisecondStart(slotBegin,
-                                                tempBuffer.toString(),
-                                                formatter);
-      }
     }
-    return sbuf.append(cache);
+
+    
+    //
+    //  could not use previous value.  
+    //    Call underlying formatter to format date.
+    cache.setLength(0);
+    tmpDate.setTime(now);
+    cache.append(formatter.format(tmpDate));
+    buf.append(cache);
+    previousTime = now;
+    //
+    //   find the start of the millisecond field again
+    //      if we had previously been able to find it.
+    if (millisecondStart != UNRECOGNIZED_MILLISECONDS) {
+        millisecondStart = findMillisecondStart(now, cache.toString(), formatter);
+    }
+    return buf;
   }
 
+  /**
+   *   Formats a count of milliseconds (0-999) into a numeric representation.
+   *   @param millis Millisecond coun between 0 and 999.
+   *   @buf String buffer, may not be null.
+   *   @offset Starting position in buffer, the length of the
+   *       buffer must be at least offset + 3.
+   */
+   private static void millisecondFormat(final int millis, 
+       final StringBuffer buf,
+       final int offset) {
+             buf.setCharAt(offset,
+                 digits.charAt( millis / 100));
+             buf.setCharAt(offset + 1,
+                  digits.charAt((millis / 10) % 10));
+             buf.setCharAt(offset + 2,
+                  digits.charAt(millis  % 10));
+   }
+   
+   
   /**
    * Set timezone.
    *
@@ -192,4 +338,5 @@ final class CachedDateFormat extends DateFormat {
   public NumberFormat getNumberFormat() {
     return formatter.getNumberFormat();
   }
+  
 }
