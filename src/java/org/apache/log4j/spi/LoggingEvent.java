@@ -294,6 +294,80 @@ public class LoggingEvent implements java.io.Serializable {
     this.properties = properties;
   }
 
+  
+  public boolean equals(Object rObject) {
+     
+     if(!(rObject instanceof LoggingEvent)) {
+       return false;
+     }
+     
+     LoggingEvent rEvent = (LoggingEvent) rObject;
+     
+     // timeStamp cannot be null
+     if(timeStamp != rEvent.timeStamp) {
+       return false;
+     }
+     
+     // level cannot be null
+     if(level != rEvent.level) {
+            return false;
+     }
+
+     // threadName cannot be null
+     if(!threadName.equals(rEvent.threadName)) {
+       return false;
+     }
+
+     if(message == null) {
+       if(rEvent.message != null) {
+         return false;
+       }
+     } else if(!message.equals(rEvent.message)) {
+       return false;
+     }
+     
+     if(properties == null) {
+       if(rEvent.message != null) {
+         return false;
+       }
+     } else if(!properties.equals(rEvent.properties)) {
+       return false;
+     }
+
+     if(mdcCopy == null) {
+       if(rEvent.mdcCopy != null) {
+         return false;
+       }
+     } else if(!mdcCopy.equals(rEvent.mdcCopy)) {
+       return false;
+     }
+
+     if(ndc == null) {
+       if(rEvent.ndc != null) {
+         return false;
+       }
+     } else if(!ndc.equals(rEvent.ndc)) {
+       return false;
+     }
+
+     if(throwableInfo == null) {
+       if(rEvent.throwableInfo != null) {
+         return false;
+       }
+     } else if(!throwableInfo.equals(rEvent.throwableInfo)) {
+       return false;
+     }
+
+    
+      // we can now safely assume that the two events are equal.
+      return true; 
+   }
+  
+   
+  public int hashCode() {
+    return (int) ((timeStamp & 0xFFFFFFFF) ^ (timeStamp >> 16));
+  }
+  
   /**
    * Check for the existence of location information without creating it (a byproduct of calling
    * getLocationInformation).
