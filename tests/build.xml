@@ -19,10 +19,10 @@
   <property name="examples.classes" value="../examples/classes/"/>
   
   <property name="tests.source.home" value="./src/java/"/>
-
+  
   <!-- The stem where most log4j source code is located. -->
   <property name="stem" value="org/apache/log4j"/>
-
+  
   <path id="tests.classpath">
     <pathelement location="${project.source.home}"/>
     <pathelement location="${project.classes.home}"/>
@@ -35,39 +35,39 @@
       <include name="*.jar"/>
     </fileset>
   </path>
-
+  
   
   <!-- ================================================================= -->
   <!--                        TARGETS                                    -->
   <!-- ================================================================= -->
-
-
-
+  
+  
+  
   <!-- ================================================================= -->
   <!-- Default target                                                    -->
   <!-- ================================================================= -->
   
   <target name="usage">
     <echo>
+      
+      These are the targets supported by this ANT build scpript:
+      
+      build - compile all project files, if a certain library is missing, 
+              then the compilation of its dependents are skipped.
 
-    These are the targets supported by this ANT build scpript:
-
-    build  - compile all project files, if a certain library is missing, 
-	      then the compilation of its dependents are skipped.
-
-    regression - Run regression tests which check large parts of log4j.
-
-    runAll     - run all available tests
+      regression - Run regression tests which check large parts of log4j.
+      
+      runAll - run all available tests
     </echo>
   </target>
-
+  
   <target name="prepare">
     <mkdir dir="./classes" />
     <mkdir dir="./output" />
     <delete file="classes/log4j.xml"/>
     <delete file="classes/log4j.properties"/>
   </target>
-
+  
   
   <!-- ================================================================= -->
   <!-- Build the parent project                                          -->
@@ -82,12 +82,12 @@
   <target name="build" depends="parentBuild, prepare">
     <javac srcdir="${tests.source.home}"
 	   destdir="./classes" excludes="${stem}/chainsaw/receivers/*.java"
-           deprecation="${deprecation}"
-           debug="on">			
+	   deprecation="${deprecation}"
+	   debug="on">			
       <classpath refid="tests.classpath"/>
     </javac>
   </target>
-
+  
   <!-- ================================================================= -->
   <!-- Remove all generated files such as compiled class files and test  -->
   <!-- case output.                                                     -->
@@ -96,24 +96,24 @@
     <delete dir="./classes/" />
     <delete dir="./output/" />
   </target>
-
+  
   <target name="cleanOutputDir">
     <delete>
       <fileset dir="./output/" includes="**"/>
     </delete>
   </target>
-
+  
   <!-- ================================================================= -->
   <!-- Run all tests                                                     -->
   <!-- ================================================================= -->  
   <target name="runAll" depends="regression, longUnit"/>
-
+  
   <!-- ================================================================= -->
   <!-- Tests multiple parts of log4j. These tests are much more fragile  -->
   <!-- unit tests. Regression tests compare output with a previously     -->
   <!-- created witness file.                                             -->
   <!-- ================================================================= -->  
-
+  
   <target name="regression" depends="Minimum, Logger, DOM, CustomLevel, 
                                      CustomLogger, PatternLayout, 
                                      HierarchyThreshold, DefaultInit, 
@@ -162,7 +162,7 @@
       <test name="org.apache.log4j.MinimumTest" />
     </junit>
   </target>
-
+  
   <target name="Logger" depends="build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
@@ -170,7 +170,7 @@
       <test name="org.apache.log4j.LoggerTestCase" />
     </junit>
   </target>
-
+  
   <target name="PatternLayout" depends="build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
@@ -178,7 +178,7 @@
       <test name="org.apache.log4j.PatternLayoutTest" />
     </junit>
   </target>
-
+  
   <target name="HierarchyThreshold" depends="build, cleanOutputDir">
     <delete file="output/temp"/>
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
@@ -187,7 +187,7 @@
       <test name="org.apache.log4j.HierarchyThresholdTestCase" />
     </junit>
   </target>
-
+  
   <target name="DOM" depends="build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <jvmarg value="-Dlog4j.debug=TRUE"/>
@@ -332,7 +332,7 @@
       <test name="org.apache.log4j.filters.LevelMatchFilterTestCase" />
     </junit>
   </target>
-
+  
   <target name="LevelMatchFilter" depends="build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
@@ -340,7 +340,7 @@
       <test name="org.apache.log4j.varia.LevelMatchFilterTestCase" />
     </junit>
   </target>
-
+  
   <target name="ErrorHandler" depends="build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
@@ -348,7 +348,7 @@
       <test name="org.apache.log4j.varia.ErrorHandlerTestCase" />
     </junit>
   </target>
-
+  
   <target name="OptionConverter" depends="build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
@@ -544,77 +544,76 @@
       <test name="org.apache.log4j.db.FullCycleDBTest" />
     </junit>
   </target>
-     
-
+  
+  
   <!-- the following target is shared by MySQL and PostgreSQL targets -->
   <target name="commonDB">
-     <property file="./input/db/db.properties"/> 
+    <property file="./input/db/db.properties"/> 
 
     <!-- This task deletes existing entries in the database -->
     <!-- Do not use on a table with valuable dataset        -->
     <input
-      message="All data is going to be deleted from DB. Continue (y/n)?"
-      validargs="y,n"
-      addproperty="do.delete"
+     message="All data is going to be deleted from DB. Continue (y/n)?"
+     validargs="y,n"
+     addproperty="do.delete"
      />
     <condition property="do.abort">
       <equals arg1="n" arg2="${do.delete}"/>
     </condition>
     <fail if="do.abort">Build aborted by user.</fail>
     <sql driver="${driverClass}" 
-         url="${url}" 
-         userid="${user}" 
-         password="${password}"
-         src="./input/db/deleteTables.sql">
+	 url="${url}" 
+	 userid="${user}" 
+	 password="${password}"
+	 src="./input/db/deleteTables.sql">
       <classpath refid="tests.classpath"/>
     </sql>
-
-
-   <echo message="Running test case with DriverManager config file"/>
+    
+    
+    <echo message="Running test case with DriverManager config file"/>
     <antcall target="invokeDBTestCase">
       <param name="appendConfigFile" value="./input/db/append-with-drivermanager1.xml"/>
       <param name="readConfigFile"   value="./input/db/read-with-drivermanager1.xml"/>
     </antcall>
-
+    
     <echo message="Running test case with DataSource"/>
     <antcall target="invokeDBTestCase">
       <param name="appendConfigFile" value="./input/db/append-with-datasource1.xml"/>
       <param name="readConfigFile"   value="./input/db/read-with-datasource1.xml"/>
     </antcall>
-
+    
     <echo message="Running test case with a native *pooled* DataSource"/>
     <antcall target="invokeDBTestCase">
       <param name="appendConfigFile" value="./input/db/append-with-pooled-datasource1.xml"/>
       <param name="readConfigFile"   value="./input/db/read-with-pooled-datasource1.xml"/>
     </antcall>
-
+    
     <echo message="Running test case with a DataSource with JNDI"/>
     <antcall target="invokeDBTestCase">
       <param name="appendConfigFile" value="./input/db/append-with-jndi1.xml"/>
       <param name="readConfigFile"   value="./input/db/read-with-jndi1.xml"/>
-     </antcall> 
+    </antcall> 
   </target>   
-
+  
   <!-- ============ hsqldb  specific tests ============== -->     
-       
-       
-   <target name="hsqldbCheck">
+  
+  <target name="hsqldbCheck">
     <condition property="hsqldb-present">
-    <and>
-      <available file="./input/db/hsqldb.properties" />
-      <available classname="org.hsqldb.jdbcDriver">
-        <classpath refid="tests.classpath"/>
-      </available>
-    </and>
+      <and>
+	<available file="./input/db/hsqldb.properties" />
+	<available classname="org.hsqldb.jdbcDriver">
+	  <classpath refid="tests.classpath"/>
+	</available>
+      </and>
     </condition>
   </target>
-
+  
   <target name="hsqldb" depends="hsqldbCheck, build" if="hsqldb-present">
     <delete file="./input/db/db.properties"/>
     <echo message="hsqldb available"/>
     <copy file="./input/db/hsqldb.properties" tofile="./input/db/db.properties"/>
-
-   <echo message="Running test case with DriverManager config file"/>
+    
+    <echo message="Running test case with DriverManager config file"/>
     <antcall target="invokeDBTestCase">
       <param name="appendConfigFile" value="./input/db/append-with-drivermanager1.xml"/>
       <param name="readConfigFile"   value="./input/db/read-with-drivermanager1.xml"/>
@@ -624,48 +623,88 @@
   <!-- ============ MySQL specific tests ============== -->     
   <target name="mysqlCheck">
     <condition property="mysql-present">
-    <and>
-      <available file="./input/db/mysql.properties" />
-      <available classname="com.mysql.jdbc.Driver">
-        <classpath refid="tests.classpath"/>
-      </available>
-    </and>
+      <and>
+	<available file="./input/db/mysql.properties" />
+	<available classname="com.mysql.jdbc.Driver">
+	  <classpath refid="tests.classpath"/>
+	</available>
+      </and>
     </condition>
   </target>
-
+  
   <target name="mysql" depends="mysqlCheck, build" if="mysql-present">
     <delete file="./input/db/db.properties"/>
     <echo message="MySQL available"/>
     <copy file="./input/db/mysql.properties" tofile="./input/db/db.properties"/>
- 
+    
     <antcall target="commonDB"/>
   </target>
-
+  
   <!-- ============ PostgreSQL specific tests ============== -->     
-
+  
   <target name="postgresqlCheck">
     <condition property="postgresql-present">
-    <and>
-      <available file="./input/db/postgresql.properties" />
-      <available classname="org.postgresql.Driver">
-        <classpath refid="tests.classpath"/>
-      </available>
-    </and>
+      <and>
+	<available file="./input/db/postgresql.properties" />
+	<available classname="org.postgresql.Driver">
+	  <classpath refid="tests.classpath"/>
+	</available>
+      </and>
     </condition>
   </target>
-
+  
   <target name="postgresql" depends="postgresqlCheck, build" if="postgresql-present">
     <delete file="./input/db/db.properties"/>
     <echo message="PostgreSQL available"/>
     <copy file="./input/db/postgresql.properties" tofile="./input/db/db.properties"/>
     <antcall target="commonDB"/>
-   </target>
+  </target>
+  
+  <!-- ============ Oracle specific tests ============== --> 
+  <target name="oracleCheck"> 
+    <condition property="oracle-present"> 
+      <and> 
+	<available file="./input/db/oracle.properties" /> 
+	<available classname="oracle.jdbc.driver.OracleDriver"> 
+	  <classpath refid="tests.classpath"/> 
+	</available> 
+      </and> 
+    </condition> 
+  </target> 
+  
+  <target name="oracle" depends="oracleCheck, build" if="oracle-present"> 
+    <delete file="./input/db/db.properties"/> 
+    <echo message="Oracle available"/> 
+    <copy file="./input/db/oracle.properties" tofile="./input/db/db.properties"/> 
+    
+    <antcall target="commonDB"/> 
+  </target> 
+  
+  <!-- ============ MS SQL Server specific tests ============== --> 
+  <target name="msSqlCheck"> 
+    <condition property="msSql-present"> 
+      <and> 
+	<available file="./input/db/msSql.properties" /> 
+	<available classname="weblogic.jdbc.mssqlserver4.Driver"> 
+	  <classpath refid="tests.classpath"/> 
+	</available> 
+      </and> 
+    </condition> 
+  </target> 
+  
+  <target name="msSql" depends="msSqlCheck, build" if="msSql-present"> 
+    <delete file="./input/db/db.properties"/> 
+    <echo message="Ms Sql available"/> 
+    <copy file="./input/db/msSql.properties" tofile="./input/db/db.properties"/> 
+    
+    <antcall target="commonDB"/> 
+  </target> 
   
   <!-- ================================================================= -->
   <!-- =========================   long Tests  ========================= -->
   <!-- ================================================================= -->
   
- 
+  
   <target name="ReaderWriterLock" depends="build, cleanOutputDir">
     <junit printsummary="yes" fork="no" haltonfailure="yes"> 
       <sysproperty key="runLen" value="100"/>     
@@ -674,7 +713,7 @@
       <test name="org.apache.log4j.helpers.ReaderWriterLockTestCase" />
     </junit>
   </target>
-  
+
   
 </project>
 
