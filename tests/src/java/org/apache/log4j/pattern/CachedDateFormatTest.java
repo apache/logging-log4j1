@@ -272,12 +272,10 @@ public final class CachedDateFormatTest extends TestCase {
     s = cachedFormat.format(c.getTime());
     assertEquals("November 006 Monday", s);
 
-    // exercise the cache, this time the result will be wrong.
+    // exercise the cache, (there should be none)
     s = cachedFormat.format(c.getTime());
-    if("November 006 Monday".equals(s)) {
-      // Results should be incrrect!
-      fail("CachedDateFormat does not deal properly with MMMM SSS EEEEE combinations");
-    }
+    assertEquals("November 006 Monday", s);
+
   }
   
   public void testS2() {
@@ -292,15 +290,11 @@ public final class CachedDateFormatTest extends TestCase {
     c.set(Calendar.MILLISECOND, 7);
 
     s = cachedFormat.format(c.getTime());
-    System.out.println("---"+s);
-    
-    
     assertEquals("20:54:37,07", s);
     
-    // excercise the cache
-    //s = cachedFormat.format(c.getTime());
-    //System.out.println("--"+s);
-    //assertEquals("20:54:37:00", s);
+    // excercise the cache (if there is any)
+    s = cachedFormat.format(c.getTime());
+    assertEquals("20:54:37,07", s);
   }
   
   
