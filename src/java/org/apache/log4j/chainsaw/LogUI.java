@@ -456,7 +456,9 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
         //received a statechange event - selection changed - remove icon from selected index
         public void stateChanged(ChangeEvent e) {
           if (tabbedPane.getSelectedComponent() instanceof ChainsawTabbedPane) {
-            tabbedPane.setIconAt(tabbedPane.getSelectedIndex(), null);
+          	if (tabbedPane.getSelectedIndex() > -1) {
+            	tabbedPane.setIconAt(tabbedPane.getSelectedIndex(), null);
+          	}
           }
         }
       });
@@ -2331,8 +2333,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
           public void run() {
             while (true) {
               //if this tab is active, remove the icon
-              if (
-                tabbedPane.getSelectedIndex() == tabbedPane.indexOfTab(ident)) {
+              if ((tabbedPane.getSelectedIndex() > -1) && 
+                (tabbedPane.getSelectedIndex() == tabbedPane.indexOfTab(ident))) {
                 tabbedPane.setIconAt(tabbedPane.indexOfTab(ident), null);
 
                 //reset fields so no icon will display 

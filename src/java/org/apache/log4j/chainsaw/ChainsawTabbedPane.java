@@ -117,8 +117,8 @@ class ChainsawTabbedPane extends JTabbedPane {
   public void addANewTab(String name, JComponent component, Icon icon) {
     int selectedIndex = getSelectedIndex();
     super.insertTab(name, icon, component, null, 0);
-
-    if (getTabCount() >= (selectedIndex + 1)) {
+	//only select the previously existing tab if there is more than one tab
+    if (getTabCount() > 1) {
       setSelectedIndex(selectedIndex + 1);
     }
 
