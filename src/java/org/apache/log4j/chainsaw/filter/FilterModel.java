@@ -36,7 +36,7 @@ public class FilterModel {
     eventContainer.addLogger(event.getLoggerName());
     eventContainer.addThread(event.getThreadName());
     eventContainer.addNDC(event.getNDC());
-    eventContainer.addMDCKeys(event.getMDCKeySet());
+    eventContainer.addPropertyKeys(event.getPropertyKeySet());
 
     if (event.locationInformationExists()) {
       LocationInfo info = event.getLocationInformation();

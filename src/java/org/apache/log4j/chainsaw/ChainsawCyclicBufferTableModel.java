@@ -364,8 +364,8 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
     case ChainsawColumns.INDEX_MESSAGE_COL_NAME:
       return event.getRenderedMessage();
 
-    case ChainsawColumns.INDEX_MDC_COL_NAME:
-      return getMDC(event);
+//    case ChainsawColumns.INDEX_MDC_COL_NAME:
+//      return getMDC(event);
 
     case ChainsawColumns.INDEX_NDC_COL_NAME:
       return event.getNDC();
@@ -406,35 +406,35 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
     default:
 
       if (columnIndex <= columnNames.size()) {
-        return event.getMDC(columnNames.get(columnIndex).toString());
+        return event.getProperty(columnNames.get(columnIndex).toString());
       }
     }
 
     return "";
   }
 
-  private String getMDC(LoggingEvent event) {
-    if (event.getMDCKeySet().size() == 0) {
-      return "";
-    }
-
-    Iterator iter = event.getMDCKeySet().iterator();
-    StringBuffer mdc = new StringBuffer("{");
-
-    while (iter.hasNext()) {
-      mdc.append("{");
-
-      Object key = iter.next();
-      mdc.append(key);
-      mdc.append(",");
-      mdc.append(event.getMDC(key.toString()));
-      mdc.append("}");
-    }
-
-    mdc.append("}");
-
-    return mdc.toString();
-  }
+//  private String getMDC(LoggingEvent event) {
+//    if (event.getMDCKeySet().size() == 0) {
+//      return "";
+//    }
+//
+//    Iterator iter = event.getMDCKeySet().iterator();
+//    StringBuffer mdc = new StringBuffer("{");
+//
+//    while (iter.hasNext()) {
+//      mdc.append("{");
+//
+//      Object key = iter.next();
+//      mdc.append(key);
+//      mdc.append(",");
+//      mdc.append(event.getMDC(key.toString()));
+//      mdc.append("}");
+//    }
+//
+//    mdc.append("}");
+//
+//    return mdc.toString();
+//  }
 
   private String getProperties(LoggingEvent event) {
     Iterator iter = event.getPropertyKeySet().iterator();
@@ -481,15 +481,16 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
     }
 
     /**
-     * Is this a new MDC key we haven't seen before?
+     * Is this a new Propert key we haven't seen before?  Remeber that now MDC has been merged
+     * into the Properties collection.s
      */
-    boolean newColumn = uniqueMDCKeys.addAll(e.getMDCKeySet());
+    boolean newColumn = uniqueMDCKeys.addAll(e.getPropertyKeySet());
 
     if (newColumn) {
       /**
        * If so, we should add them as columns and notify listeners.
        */
-      for (Iterator iter = e.getMDCKeySet().iterator(); iter.hasNext();) {
+      for (Iterator iter = e.getPropertyKeySet().iterator(); iter.hasNext();) {
         Object key = iter.next();
 
         if (!columnNames.contains(key)) {
@@ -497,7 +498,7 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
           LogLog.debug("Adding col '" + key + "', columNames=" + columnNames);
           fireNewKeyColumnAdded(
             new NewKeyEvent(
-              this, columnNames.indexOf(key), key, e.getMDC(key.toString())));
+              this, columnNames.indexOf(key), key, e.getProperty(key.toString())));
         }
       }
     }

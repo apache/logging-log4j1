@@ -156,10 +156,10 @@ public class ColumnComparator implements Comparator {
             }
             break;
             
-      //other columns may be MDC values - see if there is an MDC value matching column name 
+      //other columns may be Property values - see if there is an Property value matching column name 
       default:
-          if (e1.getMDC(columnName) != null && e2.getMDC(columnName) != null) {
-              sort = e1.getMDC(columnName).toString().compareToIgnoreCase(e2.getMDC(columnName).toString());
+          if (e1.getProperty(columnName) != null && e2.getProperty(columnName) != null) {
+              sort = e1.getProperty(columnName).toString().compareToIgnoreCase(e2.getProperty(columnName).toString());
           }
       }
     }

@@ -38,7 +38,7 @@ public class EventTypeEntryContainer {
   private Set ColumnNames = new HashSet();
   private Set Methods = new HashSet();
   private Set Classes = new HashSet();
-  private Set MDCKeys = new HashSet();
+  private Set propertyKeys = new HashSet();
   private Set NDCs = new HashSet();
   private Set Levels = new HashSet();
   private Set Loggers = new HashSet();
@@ -136,8 +136,8 @@ public class EventTypeEntryContainer {
     }
   }
 
-  void addMDCKeys(Set keySet) {
-    if (MDCKeys.addAll(keySet)) {
+  void addPropertyKeys(Set keySet) {
+    if (propertyKeys.addAll(keySet)) {
       for (Iterator iter = keySet.iterator(); iter.hasNext();) {
         Object element = iter.next();
         mdcListModel.addElement(element);
@@ -187,7 +187,7 @@ public class EventTypeEntryContainer {
   /**
    * @return
    */
-  DefaultListModel getMdcListModel() {
+  DefaultListModel getPropertiesListModel() {
     return mdcListModel;
   }
 
