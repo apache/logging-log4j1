@@ -9,7 +9,7 @@
 <body>
 
 
-<section name="log4j version 1.0.1 (2001-01-10 13:45:15 UTC)">
+<section name="log4j version 1.0.2 (2001-01-11 10:30:12 UTC)">
 
 <!--
 <table CELLSPACING="8" CELLPADDING="4" FGCOLOR="gray"
@@ -35,11 +35,11 @@
 
 <p>Download the complete package including <i>full source code</i>,
 class files and documentation in <a
-href="jakarta-log4j-1.0.1.tgz"><b>TGZ</b></a> format or in <a
-href="jakarta-log4j-1.0.1.zip"><b>ZIP</b></a> format. You may elect to browse
+href="jakarta-log4j-1.0.2.tgz"><b>TGZ</b></a> format or in <a
+href="jakarta-log4j-1.0.2.zip"><b>ZIP</b></a> format. You may elect to browse
 log4j <a href="documentation.html"><b>documentation</b></a> online.</p>
 
-<p>Version 1.0.1 is the 21st public release of log4j.</p>
+<p>Version 1.0.2 is the 20th major public release of log4j.</p>
 
 <p>Thanks to <a href="mailto:hgomez@slib.fr">Henri Gomez</a>, Linux
 users can now fetch log4j in RPM format at <a
