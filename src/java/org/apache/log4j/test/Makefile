@@ -29,7 +29,8 @@ JSOURCES:= Shallow.java\
  CustomCategoryTest.java\
  FQCNTest.java\
  DRFATest.java\
- MDCStress.java
+ MDCStress.java\
+ HeavyLoad.java\
 
 ifdef $(ISJDK1)
   JSOURCES:=$(JSOURCES)  UnitTestOR.java

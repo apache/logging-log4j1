@@ -1002,19 +1002,6 @@ public class Logger implements AppenderAttachable {
 
   
   /**
-     Set the level of this Logger.
-
-     <p>Null values are admitted.
-
-     @deprecated Please use {@link #setLevel} instead.
-  */
-  public
-  void setPriority(Priority priority) {
-    setLevel(priority);
-  }
-
-
-  /**
      Set the resource bundle to be used with localized logging
      methods {@link #l7dlog(Level,String,Throwable)} and {@link
      #l7dlog(Level,String,Object[],Throwable)}.
