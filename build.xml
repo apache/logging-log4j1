@@ -38,6 +38,12 @@
   <!-- The jar file that the jar task will generate -->
   <property name="log4j.jar" value="log4j-${version}.jar"/>
 
+	<!-- The jar file that the jar-chainsaw task will generate -->
+	<property name="log4j-chainsaw.jar" value="log4j-chainsaw-${version}.jar"/>
+
+	<!-- The jar file that the jar-lf5 task will generate -->
+	<property name="log4j-lf5.jar" value="log4j-lf5-${version}.jar"/>
+
   <!-- Destination for documentation files -->
   <property name="docs.dest" value="./docs"/>
   <!-- Source directory for xml docs -->
@@ -192,9 +198,9 @@
 
     <copy todir="${javac.dest}">
       <fileset dir="${java.source.dir}"
-	includes="${stem}/lf5/**/*.properties"/>    
+	    includes="${stem}/lf5/**/*.properties"/>    
       <fileset dir="${java.source.dir}"
-	includes="${stem}/lf5/viewer/images/*"/>
+	    includes="${stem}/lf5/viewer/images/*"/>
    </copy>
   </target>
 
@@ -302,7 +308,7 @@
   <!-- ================================================================= -->
   <!-- Aactual work is done in the dependencies.                         -->
   <!-- ================================================================= -->
-  <target name="jar" depends="log4j.jar">
+  <target name="jar" depends="log4j.jar, log4j-chainsaw.jar, log4j-lf5.jar">
   </target>
 
  <!-- ================================================================= -->
@@ -323,10 +329,6 @@
 		${stem}/net/*.class,
 		${stem}/jdbc/*.class,
 		${stem}/varia/*.class,
-		${stem}/chainsaw/*.class,
-		${stem}/lf5/**/*.class,
-		${stem}/lf5/**/*.properties,
-		${stem}/lf5/**/*.gif,
 		${stem}/nt/*.class,
 		${stem}/xml/*.class,
 		${stem}/jmx/*.class,
@@ -347,6 +349,63 @@
     </jar>
   </target>
 
+
+	<!-- ================================================================= -->
+	<!-- Create log4j-chainsaw.jar, excluding everything else              -->
+	<!-- ================================================================= -->
+	<target name="log4j-chainsaw.jar" depends="build">
+		<delete>
+			<fileset dir="${jar.dest}">
+				<include name="${log4j-chainsaw.jar}"/>
+			</fileset>
+		</delete>
+	
+		<jar jarfile="${jar.dest}/${log4j-chainsaw.jar}" basedir="${javac.dest}"
+			   includes="${stem}/chainsaw/*.class"
+	       excludes="**/UnitTest**">
+	
+			<manifest>
+				<attribute name="Manifest-version" value="1.0"/>
+				<section name="org/apache/log4j/">
+					<attribute name="Implementation-Title" value="log4j"/>
+					<attribute name="Implementation-Version" value="${version}"/> 
+					<attribute name="Implementation-Vendor" value="APache Software Foundation"/>
+				</section>
+				<attribute name="Main-Class" value="org.apache.log4j.chainsaw.Main"/>
+				<attribute name="Class-Path" value="${log4j.jar}"/>
+			</manifest>
+		</jar>
+	</target>
+
+
+	<!-- ================================================================= -->
+	<!-- Create log4j-lf5.jar, excluding everything else              -->
+	<!-- ================================================================= -->
+	<target name="log4j-lf5.jar" depends="build">
+		<delete>
+			<fileset dir="${jar.dest}">
+				<include name="${log4j-lf5.jar}"/>
+			</fileset>
+		</delete>
+	
+		<jar jarfile="${jar.dest}/${log4j-lf5.jar}" basedir="${javac.dest}"
+			   includes="${stem}/lf5/**/*.class,
+                   ${stem}/lf5/**/*.properties,
+                   ${stem}/lf5/**/*.gif"
+	       excludes="**/UnitTest**">
+	
+			<manifest>
+				<attribute name="Manifest-version" value="1.0"/>
+				<section name="org/apache/log4j/">
+					<attribute name="Implementation-Title" value="log4j"/>
+					<attribute name="Implementation-Version" value="${version}"/> 
+					<attribute name="Implementation-Vendor" value="APache Software Foundation"/>
+				</section>
+				<attribute name="Main-Class" value="org.apache.log4j.lf5.StartLogFactor5"/>
+				<attribute name="Class-Path" value="${log4j.jar}"/>
+			</manifest>
+		</jar>
+	</target>
 
   <!-- ================================================================= -->
   <!-- This target builds the javadoc files.                             -->
