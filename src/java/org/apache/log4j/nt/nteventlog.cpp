@@ -6,6 +6,23 @@
  * the LICENSE.txt file.
  */
 
+/*
+ * Please note that this class contains code from the book titled
+ * "Java Native Interface: Programmer's Guide and Specification"
+ * which is freely available to the public at
+ * http://java.sun.com/docs/books/jni.
+ * The book is written by Sheng Liang and is copyrighted by
+ * Sun Microsystems.
+ *
+ * More specifically, the code is from Chapter 6 of the book,
+ * titled "Handling Exceptions" and located at
+ * http://java.sun.com/docs/books/jni/html/exceptions.html.
+ *
+ * Because these portions of the book are freely available to the
+ * public we did not seek explicit permission to use these contents
+ * in our not-for-profit project.
+ */
+
 #ifndef NtEventLogAppender_h
 #define NtEventLogAppender_h
 #include "org_apache_log4j_Priority.h"
