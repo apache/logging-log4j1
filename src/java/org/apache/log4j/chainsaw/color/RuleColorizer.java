@@ -117,7 +117,6 @@ public class RuleColorizer implements Colorizer {
 
   public void clear() {
     rules.clear();
-    colorChangeSupport.firePropertyChange("colorrule", false, true);
   }
 
   public void removeRule(String ruleSetName, String expression) {

@@ -142,11 +142,14 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
 	      				//less now..update and delete difference
 	      				fireTableRowsUpdated(0, filteredList.size() - 1);
 	      				fireTableRowsDeleted(filteredList.size(), previousSize);
-	      			} else if (previousSize < filteredList.size() && previousSize > 0) {
+	      			} else if (previousSize < filteredList.size()) {
 	      				//more now..update and insert difference
-	      				fireTableRowsUpdated(0, previousSize - 1);
+	      				fireTableRowsUpdated(0, Math.max(0, previousSize - 1));
 	      				fireTableRowsInserted(previousSize, filteredList.size() - 1);
 	      			}
+      			} else {
+      				//no rows to show
+      				fireTableDataChanged();
       			}
 	      	notifyCountListeners();
       	}});
