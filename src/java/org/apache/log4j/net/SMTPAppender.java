@@ -44,7 +44,7 @@ import javax.mail.internet.MimeUtility;
    delivering useful application context.
    
    @author Ceki G&uuml;lc&uuml;
-   @since 0.9.2 */
+   @since 1.0 */
 public class SMTPAppender extends AppenderSkeleton {
 
 
@@ -136,7 +136,7 @@ public class SMTPAppender extends AppenderSkeleton {
 
   /**
      The default constructor will instantiate the appedner with a
-     {@link TriggerEventEvaluator} that will tirgger on events with
+     {@link TriggeringEventEvaluator} that will tirgger on events with
      priority ERROR or higher.*/
   public
   SMTPAppender() {

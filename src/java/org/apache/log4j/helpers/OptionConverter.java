@@ -284,6 +284,28 @@ public class OptionConverter {
     }
   }
 
+
+  /**
+     Configure log4j given a URL. 
+
+     <p> The URL format is important. 
+
+     <p>It's reference part is taken as the class name of the
+     configurator class. For example if you invoke your application
+     using the command line <pre> java
+     -Dlog4j.configuration=file:/temp/myconfig.xyz#com.myCompany.myConfigurator
+     </pre>
+
+     then the log4j will be configured by a new instance of
+     <code>com.myCompany.myConfigurator</code> using the file referenced
+     by <code>file:/temp/myconfig.xyz</code>.
+
+     <p>If the URL has no reference part, then the {@link
+     PropertyConfigurator} will parse the URL. However, if the URL
+     ends with a ".xml" extension then the {@link DOMConfigurator} will
+     be used to parse the URL.
+
+     @since 1.0 */
   static
   public
   void selectAndConfigure(URL url) {
@@ -293,9 +315,8 @@ public class OptionConverter {
 
     if(clazz != null) {
       LogLog.debug("Preferred configurator class: " + clazz);
-      configurator = (Configurator) instantiateByClassName(clazz,
-						org.apache.log4j.spi.Configurator.class,
-						null);
+      configurator = (Configurator) instantiateByClassName(clazz, Configurator.class,
+							   null);
       if(configurator == null) {
 	LogLog.error("Could not instantiate configurator ["+clazz+"].");
 	return;

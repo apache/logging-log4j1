@@ -12,7 +12,7 @@ package org.apache.log4j.spi;
    Implementions of this interface allow certain appenders to decide
    when to perform an appender specific action.
 
-  <p>See {@link org.apache.log4j.nete.SMPTPAppender} for an example of
+  <p>See {@link org.apache.log4j.net.SMTPAppender} for an example of
   an appender that depends on a
   <code>TriggeringEventEvaluators</code>.
 

@@ -4,7 +4,7 @@
 # that order.
 
 # For the general syntax of propperty based caonfiguration files see
-# the documenation of org.log4j.PropertyConfigurator.
+# the documenation of org.apache.log4j.PropertyConfigurator.
 
 # The root category uses the appender called A1. Since no priority is
 # specified, the root category assumes the default priority for root
@@ -16,11 +16,11 @@
 log4j.rootCategory=, A1
 
 # A1 is set to be a FileAppender which outputs to System.out. 
-log4j.appender.A1=org.log4j.FileAppender
+log4j.appender.A1=org.apache.log4j.FileAppender
 log4j.appender.A1.File=System.out
 
 # A1 uses PatternLayout.
-log4j.appender.A1.layout=org.log4j.PatternLayout
+log4j.appender.A1.layout=org.apache.log4j.PatternLayout
 
 # The conversion pattern uses format specifiers. You might want to
 # change the pattern an watch the output layout change.
@@ -28,5 +28,5 @@ log4j.appender.A1.layout.ConversionPattern=%-4r %-5p [%t] %37c %3x - %m%n
 
 # In this example, we are not really interested in INNER loop or SWAP
 # messages. Try changing the priorities of these categories.
-# log4j.category.org.log4j.examples.SortAlgo.INNER=WARN
-# log4j.category.org.log4j.examples.SortAlgo.SWAP=WARN
+# log4j.category.org.apache.log4j.examples.SortAlgo.INNER=WARN
+# log4j.category.org.apache.log4j.examples.SortAlgo.SWAP=WARN

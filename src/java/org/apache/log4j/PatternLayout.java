@@ -234,8 +234,8 @@ import java.text.FieldPosition;
 
      <td align=center><b>r</b></td>
 
-     <td>Used to output the number of milliseconds elapsed since 1970
-     until the creation of the logging event.</td>
+     <td>Used to output the number of milliseconds elapsed since the start
+     of the application until the creation of the logging event.</td>
    </tr>  
    
 

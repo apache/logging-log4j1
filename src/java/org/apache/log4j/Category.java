@@ -25,7 +25,6 @@ import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.NullEnumeration;
 import org.apache.log4j.helpers.OptionConverter;
-import org.apache.log4j.helpers.PropertyConfig;
 import org.apache.log4j.helpers.AppenderAttachableImpl;
 import org.apache.log4j.or.RendererMap;
 import org.apache.log4j.or.ObjectRenderer;
@@ -129,6 +128,8 @@ public class Category implements AppenderAttachable {
       LogLog.debug("Could not read system property \""+
 		   	   DEFAULT_INIT_OVERRIDE_KEY +"\".", e);
     }
+    // if there is no default init override, them get the resource
+    // specified by the user or the default config file.
     if(override == null || "false".equalsIgnoreCase(override)) {
       String resource = System.getProperty(DEFAULT_CONFIGURATION_KEY, 
 					   DEFAULT_CONFIGURATION_FILE);
@@ -140,13 +141,18 @@ public class Category implements AppenderAttachable {
 	// attempt to get the resource in the most generic way:
 	url = Category.class.getResource(resource);
 	if(url == null) {
-	  // if that didn't work try again in a slightly different way
+	  // if that doen't work, then try again in a slightly
+	  // different way
 	  ClassLoader loader = Category.class.getClassLoader();
 	  if(loader != null) {
 	    url = loader.getResource(resource);	  
 	  }
 	}	
       }	
+      
+      // If we have a non-null url, then delegate the rest of the
+      // configuration to the OptionConverter.selectAndConfigure
+      // method.
       if(url != null) {
 	OptionConverter.selectAndConfigure(url);
       } else {
