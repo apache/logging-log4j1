@@ -52,7 +52,7 @@ class LoggingReceiver extends Thread {
                     new ObjectInputStream(mClient.getInputStream());
                 while (true) {
                     final LoggingEvent event = (LoggingEvent) ois.readObject();
-                    mModel.addEvent(new EventDetails(event));
+                    mEventSink.addEvent(new EventDetails(event));
                 }
             } catch (EOFException e) {
                 LOG.info("Reached EOF, closing connection");
@@ -73,7 +73,7 @@ class LoggingReceiver extends Thread {
     }
 
     /** where to put the events **/
-    private final MyTableModel mModel;
+    private final EventDetailSink mEventSink;
 
     /** server for listening for connections **/
     private final ServerSocket mSvrSock;
@@ -81,13 +81,13 @@ class LoggingReceiver extends Thread {
     /**
      * Creates a new <code>LoggingReceiver</code> instance.
      *
-     * @param aModel model to place put received into
+     * @param aEventSink eventSink to place put received into
      * @param aPort port to listen on
      * @throws IOException if an error occurs
      */
-    LoggingReceiver(MyTableModel aModel, int aPort) throws IOException {
+    LoggingReceiver(EventDetailSink aEventSink, int aPort) throws IOException {
         setDaemon(true);
-        mModel = aModel;
+        this.mEventSink = aEventSink;
         mSvrSock = new ServerSocket(aPort);
     }
 

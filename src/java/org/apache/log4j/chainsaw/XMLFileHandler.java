@@ -86,7 +86,7 @@ class XMLFileHandler
     private static final String TAG_LOCATION_INFO = "log4j:locationInfo";
 
     /** where to put the events **/
-    private final MyTableModel mModel;
+    private final EventDetailSink mEventSink;
     /** the number of events in the document **/
     private int mNumEvents;
 
@@ -114,8 +114,8 @@ class XMLFileHandler
      *
      * @param aModel where to add the events
      */
-    XMLFileHandler(MyTableModel aModel) {
-        mModel = aModel;
+    XMLFileHandler(EventDetailSink aEventSink) {
+        mEventSink = aEventSink;
     }
 
     /** @see DefaultHandler **/
@@ -200,7 +200,7 @@ class XMLFileHandler
 
     /** Add an event to the model **/
     private void addEvent() {
-        mModel.addEvent(new EventDetails(mTimeStamp,
+        mEventSink.addEvent(new EventDetails(mTimeStamp,
                                          mPriority,
                                          mCategoryName,
                                          mNDC,
