@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<!DOCTYPE log4j:configuration>
 
-<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+<log4j:configuration>
   <appender name="A1" class="org.apache.log4j.FileAppender">
     
     <param name="File"   value="output/temp.A1" />
@@ -19,6 +19,11 @@
       <param name="DateFormat" value="ISO8601" />
     </layout>		
   </appender>
+
+  <!-- Turn off internal DEBUG messages -->
+  <logger name="org.apache.log4j.joran"><level value="INFO" /></logger>
+  <logger name="org.apache.log4j.config"><level value="INFO" /></logger>
+  <logger name="org.apache.log4j.FileAppender"><level value="INFO" /></logger>
   
   <logger name="org.apache.log4j.xml">
     <level value="debug" />
