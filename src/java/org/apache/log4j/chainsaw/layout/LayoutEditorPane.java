@@ -19,9 +19,9 @@ package org.apache.log4j.chainsaw.layout;
 import org.apache.log4j.Logger;
 import org.apache.log4j.chainsaw.ChainsawConstants;
 import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ThrowableInformation;
+import org.apache.log4j.spi.location.LocationInfo;
 
 import java.awt.Dimension;
 import java.awt.Frame;

@@ -10,8 +10,8 @@ package org.apache.log4j.lf5;
 
 import org.apache.log4j.lf5.viewer.LogBrokerMonitor;
 import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.location.LocationInfo;
 
 import java.awt.*;
 
@@ -100,7 +100,7 @@ public class LF5Appender extends AppenderSkeleton {
 
     record.setCategory(category);
     record.setMessage(logMessage);
-    record.setLocation(locationInfo.fullInfo);
+    record.setLocation(locationInfo.getFullInfo());
     record.setMillis(time);
     record.setThreadDescription(threadDescription);
 

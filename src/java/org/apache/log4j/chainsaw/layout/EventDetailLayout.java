@@ -19,8 +19,8 @@ package org.apache.log4j.chainsaw.layout;
 import org.apache.log4j.Layout;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
-import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.location.LocationInfo;
 
 import java.io.IOException;
 import java.io.Writer;
