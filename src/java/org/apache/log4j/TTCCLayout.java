@@ -69,28 +69,6 @@ import org.apache.log4j.spi.LoggingEvent;
 */
 public class TTCCLayout extends DateLayout {
 
-  /**
-     @deprecated Options are now handled using the JavaBeans paradigm.
-     This constant is not longer needed and will be removed in the
-     <em>near</em> term.
-  */
-  final static public String THREAD_PRINTING_OPTION = "ThreadPrinting";
-  
-  /**
-     @deprecated Options are now handled using the JavaBeans paradigm.
-     This constant is not longer needed and will be removed in the
-     <em>near</em> term.
-  */
-  final static public String CATEGORY_PREFIXING_OPTION = "CategoryPrefixing";
-  
-  /**
-     @deprecated Options are now handled using the JavaBeans paradigm.
-     This constant is not longer needed and will be removed in the
-     <em>near</em> term.
-  */
-  final static public String CONTEXT_PRINTING_OPTION  = "ContextPrinting";  
-
-    		
   // Internal representation of options
   private boolean threadPrinting    = true;    
   private boolean categoryPrefixing = true;
@@ -124,33 +102,6 @@ public class TTCCLayout extends DateLayout {
     this.setDateFormat(dateFormatType);
   }
   
-  /**
-     @deprecated Use the setter method for the option directly instead
-     of the generic <code>setOption</code> method. 
-   */
-  public
-  String[] getOptionStrings() {
-    return OptionConverter.concatanateArrays(super.getOptionStrings(),
-              new String[] {THREAD_PRINTING_OPTION, CATEGORY_PREFIXING_OPTION,
-  			    CONTEXT_PRINTING_OPTION});
-
-  }
-
-  /**
-     @deprecated Use the setter method for the option directly instead
-     of the generic <code>setOption</code> method. 
-   */
-  public
-  void setOption(String key, String value) {
-    super.setOption(key, value);    
-
-    if(key.equalsIgnoreCase(THREAD_PRINTING_OPTION)) 
-      threadPrinting = OptionConverter.toBoolean(value, threadPrinting);
-    else if(key.equalsIgnoreCase(CATEGORY_PREFIXING_OPTION))
-      categoryPrefixing = OptionConverter.toBoolean(value, categoryPrefixing);
-    else if(key.equalsIgnoreCase(CONTEXT_PRINTING_OPTION))
-      contextPrinting = OptionConverter.toBoolean(value, contextPrinting);
-  }
 
   /**
      The <b>ThreadPrinting</b> option specifies whether the name of the

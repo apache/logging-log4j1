@@ -50,7 +50,7 @@ public class ConsoleAppender extends WriterAppender {
   /**
      Sets the value of the <b>Target</b> option. Recognized values are
      "System.out" and "System.err". Any other value will be ignored.
-          
+  */       
   public
   void setTarget(String value) {
     String v = value.trim();
