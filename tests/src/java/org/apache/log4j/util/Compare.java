@@ -9,23 +9,33 @@ package org.apache.log4j.util;
 
 import java.io.InputStream;
 import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class Compare {
 
+  static final int B1_NULL = -1;
+  static final int B2_NULL = -2;
+  
   static 
   public
   boolean compare(String file1, String file2) throws FileNotFoundException, 
                                                             IOException {
-    InputStream in1 = new FileInputStream(file1);
-    InputStream in2 = new FileInputStream(file2);
+    BufferedReader in1 = new BufferedReader(new FileReader(file1));
+    BufferedReader in2 = new BufferedReader(new FileReader(file2));
     
-    int b1;
-    while((b1 = in1.read()) != -1) {
-      int b2 = in2.read();
-      if(b2 != b1) {
-	System.out.println("Files ["+file1+"] and ["+file2+"] differ.");
+    String s1;
+    int lineCounter = 0;
+    while((s1 = in1.readLine()) != null) {
+      lineCounter++;
+      String s2 = in2.readLine();
+      if(!s1.equals(s2)) {
+	System.out.println("Files ["+file1+"] and ["+file2+"] differ on line " 
+			   +lineCounter);
+	System.out.println("One  reads: ["+s1+"].");
+	System.out.println("Other reads:["+s2+"].");
 	return false;
       }
     }
@@ -36,8 +46,7 @@ public class Compare {
       return false;
     }
     
-
     return true;
   }
-
+  
 }
