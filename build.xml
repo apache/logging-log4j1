@@ -4,7 +4,7 @@
   <!-- The build.properties file defines the parth to local jar files -->
   <property file="build.properties"/>
 
-  <property name="version" value="1.3alpha-6"/>
+  <property name="version" value="1.3alpha-7"/>
 
   <!-- The base directory relative to which most targets are built -->
   <property name="base" value="."/>
@@ -227,11 +227,14 @@
     <tstamp />
 	<mkdir dir="${javac.dest}/"/>
   	<mkdir dir="${examples.javac.dest}/" />
+  	<!-- copy required UGLI files into log4j -->
+    <ant antfile="ugli.xml" target="copy-into-log4j"/>
+  	
   </target>
 
 
   <target name="build" description="Compile all log4j components."
-	      depends="build.core, build.oro, build.jms, build.smtp, build.db,
+	      depends="init, build.core, build.oro, build.jms, build.smtp, build.db,
   	               build.examples, build.chainsaw"/>
 
   <target name="requiredepsCheck" 
@@ -281,7 +284,7 @@
   </target>
 
 
-  <target name="build.chainsaw" depends="build.core, build.oro, build.xml">
+  <target name="build.chainsaw" depends="init, build.core, build.oro, build.xml">
     <ant antfile="build-chainsaw.xml" target="build.chainsaw"/> 
   </target>	
   

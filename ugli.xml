@@ -3,19 +3,22 @@
   <!-- The directory where source files are stored. -->
   <property name="java.source.dir" value="./src/java/"/>
 
+  <!-- Destination for compiled files -->
+  <property name="javac.dest" value="./classes"/>
+
+  <property name="tmp.java.source.dir" value="./tmp/src"/>
+  <property name="tmp.javac.dest" value="./tmp/classes"/>
+
+	
   <!-- The directory where source files are stored. -->
   <property name="version" value="1.0alpha"/>
 
   <!-- Deprecation warning? --> 
   <property name="deprecation" value="on"/>
-  
-  <!-- Destination for compiled files -->
-  <property name="javac.dest" value="./classes"/>
-  
-  
+
+	
   <property name="UGLI_STEM" value="org/apache/ugli"/>
   
-  <property name="path2ugli.properties" value="./classes/ugli.properties"/>
 
   <!-- ================================================================= -->
   <!-- Default target                                                    -->
@@ -33,103 +36,109 @@
     </echo>
   </target>
 
-
+  <target name="init">
+    <mkdir dir="tmp"/>
+	<mkdir dir="${tmp.java.source.dir}"/>
+	<mkdir dir="${tmp.javac.dest}"/>
+  </target>
+	
   <!-- ================================================================= -->
   <!-- Remove all generated (compiled) class files.                      -->
   <!-- ================================================================= -->
   <target name="clean" description="Delete all compiled UGLI files.">
     <delete dir="${javac.dest}/org/apache/ugli" />
-    <delete file="${path2ugli.properties}"/>
+  </target>
+
+  <!-- ================================================================== -->
+  <!-- Copy UGLI files into log4j source tree. This step is necessary for -->
+  <!-- building log4j. However, it needs to be done whenever code in UGLI -->
+  <!-- changes                                                            -->
+  <!-- ================================================================== -->
+  <target name="copy-into-log4j">	
+  	<!-- delete any stale copy of LoggerFactory.java -->
+ 	<delete><fileset dir="src/java/org/apache/ugli" includes="LoggerFactory.java"/></delete>
+  	
+   	<!-- copy a filtered version of ugli to tmp/src -->
+  	<copy todir="src/java">
+  	  <fileset dir="src/filtered-java">
+  	  	<include name="**/*.java"/>
+  	    <exclude name="**/impl/JDK14*.java"/>
+  	  </fileset>
+  	  <filterset><filter token="IMPL" value="Log4j"/></filterset>
+  	</copy>
   </target>
 
 
-  <!-- Build as many source files as we can, except those requiring 
-       JDK 1.4 -->
-  <target name="build.core" depends="">
-    
-    <mkdir dir="${javac.dest}" />
-    <javac srcdir="${java.source.dir}"
-           destdir="${javac.dest}"
-           deprecation="on"
-           includes="${UGLI_STEM}/**/*.java"
-           excludes="${UGLI_STEM}/impl/JDK14*.java"
-           debug="${debug}">
-    </javac>
-  </target>
-
-  <target name="jdk14Check">
-    <available classname="java.util.logging.Logger"
-               property="jdk14.present">
+  <target name="julCheck">
+    <available classname="java.util.logging.Logger" property="julPresent">
     </available>
+
+  	<fail unless="julPresent">
+        Building the UGLI implementation for JDK 1.4 logging 
+        requires the presence of JDK 1.4 or later.
+  	</fail>
   </target>
 
-  <target name="build.jdk14" depends="build.core, jdk14Check">
+  <!-- =================================================================== -->
+  <!-- Generic target that can build NOP, Simple and JDK14 implementations -->
+  <!--  as specified by the "jar-name" and "impl" parameters.              -->
+  <!-- =================================================================== -->
+  <target name="ugli-IMPL.jar" depends="init">
     
-    <fail unless="jdk14.present">
+    <!-- delete all previously existing files in tmp -->
+  	<delete><fileset dir="tmp/" includes="**/*"/></delete>
 
-       Building the UGLI implementation for JDK 1.4 logging 
-       requires the presence of JDK 1.4 or later.
-    </fail>
-
-    <javac srcdir="${java.source.dir}"
-           destdir="${javac.dest}"
+   	<!-- copy a filtered version of ugli to tmp/src -->
+  	<copy todir="tmp/src">
+  	  <fileset dir="src/filtered-java">
+  	  	<include name="**/*.java"/>
+  	  </fileset>
+  	  <filterset><filter token="IMPL" value="${IMPL}"/></filterset>
+  	</copy>
+    	
+    <javac srcdir="${tmp.java.source.dir}"
+           destdir="${tmp.javac.dest}"
            deprecation="on"
-           includes="${UGLI_STEM}/impl/JDK14*.java"
+           includes="${UGLI_STEM}/*.java,
+    	             ${UGLI_STEM}/impl/MessageFormatter.java, 
+                     ${UGLI_STEM}/impl/${impl}*.class"
            debug="${debug}">
     </javac>
-  </target>
-
-
-  <!-- Generic target that can build NOP, Simple and JDK14 implementations
-       as specified by the "jar-name" and "impl" parameters. -->
-  <target name="ugli-IMPL.jar" depends="build.core">
-    
-    <delete file="${path2ugli.properties}"/>
-
-    <!-- Much depends on setting up ugli.properties file correctly -->
-    <propertyfile file="${path2ugli.properties}" comment="${impl} Logger implementation">
-      <entry key="ugli.factoryAdapterClass" value="org.apache.ugli.impl.${impl}LoggerFA"/>
-    </propertyfile>
-
-    <!-- the NOP classes should always be included -->
-    <jar jarfile="${jar-name}" basedir="${javac.dest}"
-        includes="ugli.properties,
-                ${UGLI_STEM}/*.class, 
-                ${UGLI_STEM}/impl/MessageFormatter.class, 
-                ${UGLI_STEM}/impl/NOP*.class,
-                ${UGLI_STEM}/impl/${impl}*.class"
+ 
+    <jar jarfile="${jar-name}" basedir="${tmp.javac.dest}"
+        includes="${UGLI_STEM}/*.class, 
+                  ${UGLI_STEM}/impl/MessageFormatter.class, 
+                  ${UGLI_STEM}/impl/${IMPL}*.class"
                 >
-               <manifest>
-       <attribute name="Manifest-version" value="1.0"/>
-       <section name="org/apache/ugli/">
-         <attribute name="Implementation-Title" value="${impl} implementation"/>
-         <attribute name="Implementation-Version" value="${version}"/>
-         <attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
-       </section>
-     </manifest>
+      <manifest>
+        <attribute name="Manifest-version" value="1.0"/>
+        <section name="org/apache/ugli/">
+          <attribute name="Implementation-Title" value="${IMPL} implementation"/>
+          <attribute name="Implementation-Version" value="${version}"/>
+          <attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
+        </section>
+      </manifest>
     </jar>
-    
-    <!-- remove ugli.properties when done -->
-    <delete file="${path2ugli.properties}"/>
+   
   </target>
 
-  <target name="ugli-nop.jar" depends="build.core">
+  <target name="ugli-nop.jar">
     <antcall target="ugli-IMPL.jar">
-      <param name="impl" value="NOP"/>
+      <param name="IMPL" value="NOP"/>
       <param name="jar-name" value="ugli-nop.jar"/>
     </antcall>
   </target>
 
-  <target name="ugli-simple.jar" depends="build.core">
+  <target name="ugli-simple.jar">
     <antcall target="ugli-IMPL.jar">
-      <param name="impl" value="Simple"/>
+      <param name="IMPL" value="Simple"/>
       <param name="jar-name" value="ugli-simple.jar"/>
     </antcall>
   </target>
 
-  <target name="ugli-jdk14.jar" depends="build.jdk14">
+  <target name="ugli-jdk14.jar" depends="julCheck">
     <antcall target="ugli-IMPL.jar">
-      <param name="impl" value="JDK14"/>
+      <param name="IMPL" value="JDK14"/>
       <param name="jar-name" value="ugli-jdk14.jar"/>
     </antcall>
   </target>
