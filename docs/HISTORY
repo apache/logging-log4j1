@@ -10,17 +10,11 @@
 
  - Release of version 1.1 (the 21st major release)
 
- - Appenders and Layouts now get to see the raw message object in LoggingEvent 
-   not just its rendered form. The access modifiers of some LoggingEvent fields 
-   were changed so that they can be accessed in less error-prone ways. Thanks to 
-   Jim Cajalic and Anders Kristens for their valuable advice. [*]
- 
- - Improved the seach method for searching for the "log4j.properties" file in
-   the static initializer of Category class. Thanks to Calvin Chan for
-   supplying a better method. [*]
-
- - The LoggingEvent class now supports serialization of priorities
-   derived from the org.apache.log4j.Priority class. [*]
+ - Logging can now be disabled per Hierarchy. It can also be disabled
+   using configuration files using the "disable" directive.  The disableOverride 
+   directive takes precedence over the disable directive.  As a result of this change
+   the disable family of methods has moved from the BasicConfigurator
+   class to the Hierarchy class. [**]
 
  - Changed the name of the configuration element to log4j:configuration in the
    log4j.dtd. All configuration files written in XML need to be
@@ -29,7 +23,23 @@
    The following perl command can help:
 
    perl -p -i.bak -e "s/configuration/log4j:configuration/;" file1.xml .. fileN.xml
-   
+
+ - Appenders and Layouts now get to see the raw message object in LoggingEvent 
+   not just its rendered form. The access modifiers of some LoggingEvent fields 
+   were changed so that they can be accessed in less error-prone ways. Thanks to 
+   Jim Cajalic and Anders Kristens for their valuable advice. [*]
+
+ - The LoggingEvent class now supports serialization of priorities
+   derived from the org.apache.log4j.Priority class. [*]
+ 
+ - Improved the seach method for searching for the "log4j.properties" file in
+   the static initializer of Category class. Thanks to Calvin Chan for
+   supplying a better method. [*]
+
+ - Added the BufferSize option to the AsyncAppender. [*]
+
+ - Eliminateed the SecurityExceptions thrown in Applets.  Thanks Timur
+   Zambalayev for reporting this bug. [*]
 
  - Fixed the errouneously thrown IOInterruptedException when the AsyncAppender 
    was closed. Thanks to Tom Palmer for accurately reporting this bug. [*]

@@ -90,7 +90,7 @@ public class UnitTestBoundedFIFO extends TestCase {
 	    assertEquals(r, e[k]);
 	}
       }
-      System.out.println("Passed size="+size);
+      //System.out.println("Passed size="+size);
     }
   }
 
@@ -115,7 +115,118 @@ public class UnitTestBoundedFIFO extends TestCase {
     assertEquals(bf.get(), e[3]); assertEquals(bf.length(), 0);
     assertNull(bf.get()); assertEquals(bf.length(), 0);
   }
+
+  int min(int a, int b) {
+    return a < b ? a : b;
+  }
   
+
+  /**
+     Pattern ++++++++++++++++++++ (insert only);
+   */
+  public
+  void testResize1() {
+    int size = 10;
+
+    for(int n = 1; n < size*2; n++) {
+      for(int i = 0; i < size*2; i++) {
+
+        BoundedFIFO bf = new BoundedFIFO(size);
+        for(int f = 0; f < i; f++) {
+          bf.put(e[f]);
+        }
+
+        bf.resize(n);
+        int expectedSize = min(n, min(i, size));
+        assertEquals(bf.length(), expectedSize);
+        for(int c = 0; c < expectedSize; c++) {
+          assertEquals(bf.get(), e[c]);
+        }
+      }
+    }
+  }
+
+
+  
+  /**
+     Pattern ++...+ --...-
+   */
+  public
+  void testResize2() {
+    int size = 10;
+
+    for(int n = 1; n < size*2; n++) {
+      for(int i = 0; i < size*2; i++) {
+	for(int d = 0; d < min(i,size); d++) {
+	  
+	  BoundedFIFO bf = new BoundedFIFO(size);
+	  for(int p = 0; p < i; p++) {
+	    bf.put(e[p]);
+	  }
+
+	  for(int g = 0; g < d; g++) {
+	    bf.get();
+	  }
+
+	  // x = the number of elems in 
+	  int x = bf.length();
+
+	  bf.resize(n);
+
+	  int expectedSize = min(n, x);
+	  assertEquals(bf.length(), expectedSize);
+
+	  for(int c = 0; c < expectedSize; c++) {
+	    assertEquals(bf.get(), e[c+d]);
+	  }
+	  assertNull(bf.get());
+	}
+      }
+    }
+  }
+
+
+  /**
+     Pattern: i inserts, d deletes, r inserts
+   */
+  public
+  void testResize3() {
+    int size = 10;
+
+    for(int n = 1; n < size*2; n++) {
+      for(int i = 0; i < size; i++) {
+	for(int d = 0; d < i; d++) {
+	  for(int r = 0; r < d; r++) {
+	  
+	    BoundedFIFO bf = new BoundedFIFO(size);
+	    for(int p0 = 0; p0 < i; p0++)
+	      bf.put(e[p0]);
+
+	    for(int g = 0; g < d; g++) 
+	      bf.get();	    
+	    for(int p1 = 0; p1 < r; p1++) 
+	      bf.put(e[i+p1]);
+	    
+
+	    
+	    int x =  bf.length();
+
+	    bf.resize(n);
+	    
+
+	    int expectedSize = min(n, x);
+	    assertEquals(bf.length(), expectedSize);
+
+	    for(int c = 0; c < expectedSize; c++) {
+	      assertEquals(bf.get(), e[c+d]);
+	    }
+	    //assertNull(bf.get());
+	  }
+	}
+      }
+    }
+  }
+
 
   public
   static
@@ -123,6 +234,9 @@ public class UnitTestBoundedFIFO extends TestCase {
     TestSuite suite = new TestSuite();
     suite.addTest(new UnitTestBoundedFIFO("test1"));
     suite.addTest(new UnitTestBoundedFIFO("test2"));
+    suite.addTest(new UnitTestBoundedFIFO("testResize1"));
+    suite.addTest(new UnitTestBoundedFIFO("testResize2"));
+    suite.addTest(new UnitTestBoundedFIFO("testResize3"));
     return suite;
   }
 }

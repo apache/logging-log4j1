@@ -113,7 +113,7 @@ been turned off for the info level.
 <li>Next <code>info</code> compares the
 <code><a href="../javadoc/org/apache/log4j/Priority.html">Priority</a></code> 
 level for this category against <code>Priority.INFO</code>.  Assuming
-the priority warrants logging the message, the category instanciates a
+the priority warrants logging the message, the category instantiates a
 <code><a href="../javadoc/org/apache/log4j/spi/LoggingEvent.html">LoggingEvent</a></code> 
 object populated with information available for logging.
 <p>
@@ -300,7 +300,7 @@ public class AppServerPatternLayout extends PatternLayout
 Recall from our <a href="#peek">peek under the hood</a> that the
 <code>PatternParser</code> does much of its work in its
 <code>parse</code> method.  The <code>PatternLayout</code> object
-instanciates a <code>PatternParser</code> object by passing it
+instantiates a <code>PatternParser</code> object by passing it
 the pattern string.  The PatternLayout then invokes the
 <code>parse</code> method of <code>PatternParser</code> to produce
 a linked list of <code>PatternConverter</code> subclass instances.
@@ -325,7 +325,7 @@ It uses
 <li>constants to identify the various formats
 <li>a converter defined as private static inner-classes of
 	<code>AppServerPatternParser</code>.
-<li>a <code>finalizeConverter</code> method which instanciates
+<li>a <code>finalizeConverter</code> method which instantiates
 	the appropriate converter for a given format character.
 </ul>
 <p>
@@ -335,7 +335,7 @@ attribute to be formatted.
 Rather than placing switch logic in the converter, like its
 parent class, each converter only converts one format character.
 This means the decision of which converter subclass
-to instanciate is made at layout instanciation time rather
+to instantiate is made at layout instantiation time rather
 than in a switch statement at logging time.
 <p>
 It also differs in that the format constants are characters 
@@ -469,7 +469,7 @@ The following tasks are involved in overridding
 <p>
 <li>Override the <code>forcedLog</code> method to ensure that a 
 	correctly populated instance of 
-	<code>AppServerLoggingEvent</code> is instanciated rather than
+	<code>AppServerLoggingEvent</code> is instantiated rather than
 	the default <code>LoggingEvent</code>.
 <p>
 <li>Override the <code>getInstance</code> method to use our
@@ -492,7 +492,7 @@ method that accepts a <code>CategoryFactory</code> reference in
 addition to the category name.
 <p>
 The <code>forcedLog</code> method follows closely the corresponding
-parent class method.  The most important difference is the instanciation
+parent class method.  The most important difference is the instantiation
 of the <code>AppServerLoggingEvent</code>.  A minor yet necessary 
 difference is the use of the <code>getRendererMap()</code> method rather
 than accessing the data member directory as in <code>Category</code>.
@@ -589,7 +589,7 @@ public class AppServerCategory extends Category
 
 The last step is to provide an implementation of the 
 <code>CategoryFactory</code> interface that will correctly 
-instanciate our <code>AppServerCategory</code> objects.  It
+instantiate our <code>AppServerCategory</code> objects.  It
 will obtain the hostname of the machine on which it runs using the
 <code>java.net</code> API.  Aside from providing getters and
 setters for the attributes introduced, the only method to
@@ -707,7 +707,7 @@ know about our extensions, any <code>Category</code> instances they
 create will not be <code>AppServerCategory</code> instances.  To
 prevent this problem, any <code>AppServerCategory</code> that one
 might want to be configured through a configurator should be
-instanciated before the configure method is invoked.  In this way,
+instantiated before the configure method is invoked.  In this way,
 the configurator will configure the <code>AppServerCategory</code>
 that already exists rather than creating an instance of its super
 class in its place.
