@@ -11,6 +11,12 @@
 
  (rc1)
 
+ - The DOMConfigurator now interprets the string after the '#'
+   character in the value attribute within the <level> element as
+   the fully qualified class name of a custom Level. This is consistent
+   with the way log4j handles "level" values in other places. The
+   class attribute is still honored. [*]
+
  - Added Oliver Burn's chainsaw tool to the core log4j
    distribution. Visualisation and dynamic filtering of log events is
    bound to be a very important area of activity in the future. [*]
@@ -59,7 +65,7 @@
  (beta2)
 
  - Source code written for log4j 1.1.3.jar will compile fine with
-   log4j 1.2X. However, code compiled for log4j 1.1.3 would
+   log4j 1.2X. However, code compiled for log4j 1.1.3 would previously
    systematically throw "java.lang.NoSuchMethodError" runtime exceptions
    when run with log4j 1.2 - prior to beta2. This problem has been
    corrected in beta2. Pheew, that was a close one. [*]
