@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE configuration SYSTEM "log4j.dtd">
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 
-<configuration configDebug="true">
+<log4j:configuration configDebug="true">
 
 	<appender name="TEMP" class="org.apache.log4j.FileAppender">
                 <param name="Append" value="false" />
@@ -22,4 +22,4 @@
 	<root>
           <appender-ref ref="TEMP" />	       
 	</root>
-</configuration>
+</log4j:configuration>

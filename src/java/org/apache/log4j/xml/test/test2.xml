@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE configuration SYSTEM "log4j.dtd">
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 
 <!-- This test XML file
    - references an INEXISTENT appender in root
    - has no appender set for root
    - appender A1 has no output target
 -->   
-<configuration>
+<log4j:configuration>
 
 	<appender name="A1" class="org.apache.log4j.FileAppender">
                 <param name="Append" value="false" />	  	
@@ -23,4 +23,4 @@
 	       <priority value="error"/>
 	       <appender-ref ref="INEXISTENT" />	       
 	</root>
-</configuration>
+</log4j:configuration>
