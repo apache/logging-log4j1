@@ -223,11 +223,9 @@ public class ColorPanel extends JPanel {
       ruleSetListModel.removeAllElements();
       while (iter.hasNext()) {
         Map.Entry entry = (Map.Entry)iter.next();
-        System.out.println("entry is " + entry);
         //update ruleset list
         ruleSetListModel.addElement(entry.getKey());
         if (entry.getKey().equals(currentRuleSet)) {
-            System.out.println("entry value is "+ entry.getValue());
             Iterator iter2 = ((List)entry.getValue()).iterator();
       
             while (iter2.hasNext()) {
