@@ -97,7 +97,7 @@ public class Main extends JFrame {
   public static final String DETAILS_SEPARATOR_PROPERTY =
     Preferences.PROP_PREFIX + ".details.separator";
   private static final Preferences PREFS = Preferences.getInstance();
-  private JSplitPane aDetailsDivider;
+  private JSplitPane mDetailsDivider;
   private final MyTableColumnModel mColumnModel;
 
   /**
@@ -127,11 +127,11 @@ public class Main extends JFrame {
   }
 
   /**
- * Constructs the JTable used for displaying the Events logs
- * @param tableModel
- * @param tableColumnModel
- * @return
- */
+   * Constructs the JTable used for displaying the Events logs
+   * @param tableModel
+   * @param tableColumnModel
+   * @return
+   */
   private JTable buildTable(
     TableModel tableModel, TableColumnModel tableColumnModel) {
     final JTable table = new JTable(tableModel, mColumnModel);
@@ -162,9 +162,9 @@ public class Main extends JFrame {
     details.setPreferredSize(new Dimension(900, 100));
 
     // Add the table and stack trace into a splitter
-    aDetailsDivider =
+    mDetailsDivider =
       new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollPane, details);
-    getContentPane().add(aDetailsDivider, BorderLayout.CENTER);
+    getContentPane().add(mDetailsDivider, BorderLayout.CENTER);
   }
 
   /**
@@ -229,7 +229,7 @@ public class Main extends JFrame {
     final int divider = PREFS.getInteger(DETAILS_SEPARATOR_PROPERTY, -1);
 
     if (divider > 0) {
-      aDetailsDivider.setDividerLocation(divider);
+      mDetailsDivider.setDividerLocation(divider);
     }
 
     final int x = PREFS.getInteger(X_POSITION_PROPERTY, 0);
@@ -250,7 +250,7 @@ public class Main extends JFrame {
     mColumnModel.savePrefs();
 
     PREFS.setInteger(
-      DETAILS_SEPARATOR_PROPERTY, aDetailsDivider.getDividerLocation());
+      DETAILS_SEPARATOR_PROPERTY, mDetailsDivider.getDividerLocation());
     PREFS.setInteger(X_POSITION_PROPERTY, getX());
     PREFS.setInteger(Y_POSITION_PROPERTY, getY());
     PREFS.setInteger(WIDTH_PROPERTY, getWidth());
