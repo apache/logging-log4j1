@@ -71,10 +71,10 @@ public class LevelAction extends Action {
     logger.debug(loggerName + " level set to " + l.getLevel());
 
   }
-
-  public void end(ExecutionContext ec, String e) {
+  
+  public  void finish(ExecutionContext ec) {
   }
 
-  public void finish(ExecutionContext ec) {
+  public void end(ExecutionContext ec, String e) {
   }
 }
