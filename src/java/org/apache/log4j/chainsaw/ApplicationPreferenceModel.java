@@ -64,7 +64,7 @@ import org.apache.log4j.helpers.Constants;
  * @author Paul Smith <psmith@apache.org>
  *
  */
-class ApplicationPreferenceModel implements SettingsListener {
+public class ApplicationPreferenceModel implements SettingsListener {
 
     private boolean showNoReceiverWarning  ;
     private boolean statusBar;
