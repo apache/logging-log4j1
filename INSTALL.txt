@@ -7,12 +7,12 @@ Using log4j
 
 2) Assuming you chose to extract the distribution in to the
    PATH_OF_YOUR_CHOICE, untarring the distribution file should create
-   a jakarta-log4j-VERSION directory, where VERSION is the log4j
+   a logging-log4j-VERSION directory, where VERSION is the log4j
    version number, under PATH_OF_YOUR_CHOICE. We will refer to the
-   directory PATH_OF_YOUR_CHOICE/jakarta-log4j-VERSION/ as $LOG4J_HOME/.
+   directory PATH_OF_YOUR_CHOICE/logging-log4j-VERSION/ as $LOG4J_HOME/.
 
-3) Assuming you are using log4j version 1.2, add
-   $LOG4J_HOME/dist/lib/log4j-1.2.jar to your CLASSPATH,
+3) Assuming you are using log4j version 1.3, add
+   $LOG4J_HOME/log4j-1.3.jar to your CLASSPATH,
    
 4) You can now test your installation by first compiling the following
    simple program.
@@ -24,9 +24,7 @@ Using log4j
     
       static Logger logger = Logger.getLogger(Hello.class);
     
-      public
-      static
-      void main(String argv[]) {
+      public static void main(String argv[]) {
     	BasicConfigurator.configure();
     	logger.debug("Hello world.");
     	logger.info("What a beatiful day.");
@@ -47,18 +45,60 @@ Using log4j
 JAR files
 =========
 
-The log4j distribution comes with one jar file: log4j-VERSION.jar
-under the LOG4J_HOME/dist/lib/ directory.
+The log4j distribution comes with several jar files under the
+LOG4J_HOME/ directory.
 
-This jar file contains all the class files of the log4j project,
-except test cases and classes from the "examples" and
-"org.apache.log4j.performance" packages.
+* log4j-VERSION.jar  
+
+  Contains the core log4j classes. It also includes UGLI API hardwired
+  to use log4j.
+
+* log4j-smtp.jar
+
+  Contains SMTPAppender and associated classes.
+
+* log4j-oro.jar
+
+  Contains LogFilePatternReceiver and LikeRule classes which are
+  dependent on jakarta-oro.
+
+ SMTPAppender and associated classes.
+
+* log4j-xml.jar      
+  
+  Contains several optional classes from the org.apache.log4j.xml package.
+
+* log4j-optional.jar      
+
+  Contains several optional appenders/receivers from the
+  org.apache.log4j.net package.
+
+* log4j-db.jar
+
+  Contains DBAppender/DBReceiver and associated classes.
+
+* log4j-jms.jar
+
+  Contains JMSAppender/JMSReceiver and associated classes.
+
+* ugli-nop.jar 
+
+  UGLI hardwired to use the NOP implementation.
+
+* ugli-simple.jar 
+
+  UGLI hardwired to use the SimpleLogger implementation.
+
+* ugli-jdk14.jar 
+
+  UGLI hardwired to use the java.util.logger package.
+
 
 ==================   
 log4j dependencies
 ==================
    
-Log4j is based on JDK 1.1 with the following additional requirements:
+Log4j is based on JDK 1.2 with the following additional requirements:
 
     ----------------------------
     Package org.apache.log4j.xml 
@@ -92,6 +132,12 @@ Log4j is based on JDK 1.1 with the following additional requirements:
 
 	http://java.sun.com/beans/glasgow/jaf.html
 
+    ----------------------
+    DBAppender/DB Receiver
+    ----------------------
+    
+    DBAppender/DB Receiver have a dependency on the JDBC API.
+    
     -----------
     JMSAppender
     -----------
@@ -116,14 +162,14 @@ Building log4j
 ==============
     
 Like most java appilicatios today, log4j relies on ANT as its build
-tool. ANT is availale from "http://jakarta.apache.org/ant/".  ANT
+tool. ANT is availale from "http://logging.apache.org/ant/".  ANT
 requires a build file called build.xml which is part of this
 distribution. Required components from other projects are specified in
 the build.properties and example of which is supplied in the
 build.properties.sample file.
 
 In case of problems send an e-mail note to
-log4j-user@jakarta.apache.org.  Please do not directly e-mail any
-log4j developers. The answer to your question might be useful to other
+log4j-user@logging.apache.org.  Please do not directly e-mail log4j
+developers. The answer to your question might be useful to other
 users. Moreover, there are many knowledgeable users on the log4j-user
 mailing lists who can quickly answer your questions.

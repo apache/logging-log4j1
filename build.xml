@@ -403,8 +403,8 @@
 	
   <target name="log4j-oro.jar" depends="init, oroCheck, build.oro">
     <jar jarfile="log4j-oro.jar" basedir="${javac.dest}"
-	     includes="${stem}/varia/LogFilePatternReceiver*.java,
-                  ${stem}/rule/LikeRule.java"
+	     includes="${stem}/varia/LogFilePatternReceiver*.class,
+                  ${stem}/rule/LikeRule.class"
 	 	>
         <manifest>
           <section name="org/apache/log4j/">
@@ -432,7 +432,7 @@
 	
   <target name="log4j-jms.jar" depends="init, build.jms"
 		          if="jms-present">
-      <jar jarfile="log4j-jms-${version}.jar" basedir="${javac.dest}"
+      <jar jarfile="log4j-jms.jar" basedir="${javac.dest}"
 	       includes="${stem}/net/JMSAppender.class,
 	  	             ${stem}/net/JMSSink.class,
 	   	             ${stem}/net/JMSReceiver.class,
@@ -695,8 +695,6 @@
       <fileset dir=".">
         <patternset>
           <include name="**/*.bak"/>
-          <include name="dist/velocity*.log"/>
-          <include name="tests/output/*"/>
           <include name="${BSTEM}/**/temp*"/>
           <include name="${BSTEM}/performance/test"/>
           <include name="${BSTEM}/test/current.*"/>
@@ -723,7 +721,7 @@
                examples/**,
                build.xml,
                build.properties.sample,
-               INSTALL,
+               INSTALL.txt,
                LICENSE.txt,
       	       ugli-*.jar,
       	       log4j-*.jar"

@@ -97,7 +97,7 @@ public class LogManager {
         defaultLoggerRepository, configurationOptionStr, configuratorClassName);
     
     String repositorySelectorStr = 
-      OptionConverter.getSystemProperty("log4j.repositorySelectorClass", null);
+      OptionConverter.getSystemProperty("log4j.repositorySelector", null);
 
     if (repositorySelectorStr == null) {
       // NOTHING TO DO, the default repository has been configured already
@@ -133,8 +133,8 @@ public class LogManager {
      <em>guard</em> is passed as parameter.
 
      <p>Initally the guard is null, unless the JVM is started with the
-     log4j.repositorySelectorClass system property
-     (-Dlog4j.repositorySelectorClass=[JNDI | <fully qualified class name>]).
+     log4j.repositorySelector system property
+     (-Dlog4j.repositorySelector=[JNDI | <fully qualified class name>]).
      If the guard is
      <code>null</code>, then invoking this method sets the logger
      repository and the guard. Following invocations will throw a {@link
