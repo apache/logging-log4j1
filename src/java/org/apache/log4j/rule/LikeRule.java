@@ -77,7 +77,7 @@ public class LikeRule extends AbstractRule {
 
   public static Rule getRule(Stack stack) {
       if (stack.size() < 2) {
-          throw new IllegalArgumentException("Invalid LIKE rule - expected two rules but provided " + stack.size());
+          throw new IllegalArgumentException("Invalid LIKE rule - expected two parameters but received " + stack.size());
       }  
       
       String p2 = stack.pop().toString();
@@ -98,7 +98,7 @@ public class LikeRule extends AbstractRule {
   }
 
   public boolean evaluate(LoggingEvent event) {
-    String input = resolver.getValue(field, event).toString();
-    return ((pattern != null) && matcher.matches(input, pattern));
+    Object input = resolver.getValue(field, event);
+    return ((input != null) && (pattern != null) && (matcher.matches(input.toString(), pattern)));
   }
 }

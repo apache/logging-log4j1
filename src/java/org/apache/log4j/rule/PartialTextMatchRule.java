@@ -75,7 +75,7 @@ public class PartialTextMatchRule extends AbstractRule {
 
   public static Rule getRule(Stack stack) {
       if (stack.size() < 2) {
-          throw new IllegalArgumentException("invalid partial text rule - expected two entries but " + stack.size() + " were provided");
+          throw new IllegalArgumentException("invalid partial text rule - expected two parameters but received " + stack.size());
       }
     String p2 = stack.pop().toString();
     String p1 = stack.pop().toString();
@@ -84,9 +84,9 @@ public class PartialTextMatchRule extends AbstractRule {
   }
 
   public boolean evaluate(LoggingEvent event) {
-    String p2 = resolver.getValue(field, event).toString();
+    Object p2 = resolver.getValue(field, event);
 
-    return (((p2 != null) && (value != null))
-      && (p2.toLowerCase().indexOf(value.toLowerCase()) > -1));
+    return ((p2 != null) && (value != null)
+      && (p2.toString().toLowerCase().indexOf(value.toLowerCase()) > -1));
   }
 }

@@ -418,6 +418,9 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
   }
   
   private String getMDC(LoggingEvent event) {
+      if (event.getMDCKeySet().size() == 0) {
+          return "";
+      }
       Iterator iter = event.getMDCKeySet().iterator();
       StringBuffer mdc = new StringBuffer("{");
       

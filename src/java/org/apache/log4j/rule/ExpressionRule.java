@@ -121,6 +121,9 @@ public class ExpressionRule extends AbstractRule {
         if ((token.startsWith("'")) && (token.endsWith("'") && (token.length() > 2))) {
             token = token.substring(1, token.length() - 1);
         }
+        if ((token.startsWith("'")) && (token.endsWith("'") && (token.length() == 2))) {
+            token = "";
+        }
 
         boolean inText = token.startsWith("'");
         if (inText) {

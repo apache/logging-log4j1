@@ -78,7 +78,7 @@ public class InequalityRule extends AbstractRule {
   
   public static Rule getRule(String inequalitySymbol, Stack stack) {
       if (stack.size() < 2) {
-          throw new IllegalArgumentException("Invalid " + inequalitySymbol + " rule - expected two rules but provided " + stack.size());
+          throw new IllegalArgumentException("Invalid " + inequalitySymbol + " rule - expected two parameters but received " + stack.size());
       }  
 
       String p2 = stack.pop().toString();
@@ -89,7 +89,7 @@ public class InequalityRule extends AbstractRule {
   public static Rule getRule(String inequalitySymbol, String field, String value) {
     if (field.equalsIgnoreCase(LEVEL)) {
       //push the value back on the stack and allow the level-specific rule pop values
-      return LevelInequalityRule.getRule(inequalitySymbol, field, value);
+      return LevelInequalityRule.getRule(inequalitySymbol, value);
     } else {
       return new InequalityRule(inequalitySymbol, field, value);
     }

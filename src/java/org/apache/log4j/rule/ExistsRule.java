@@ -73,15 +73,15 @@ public class ExistsRule extends AbstractRule {
   
   public static Rule getRule(Stack stack) {
       if (stack.size() < 1) {
-          throw new IllegalArgumentException("Invalid EXISTS rule - expected one rule but provided " + stack.size());
+          throw new IllegalArgumentException("Invalid EXISTS rule - expected one parameter but received " + stack.size());
       }  
 
     return new ExistsRule(stack.pop().toString());
   }
 
   public boolean evaluate(LoggingEvent event) {
-    String p2 = resolver.getValue(field, event).toString();
+    Object p2 = resolver.getValue(field, event);
 
-    return (!(p2.equals("")));
+    return (!(p2 == null || (p2 != null && p2.toString().equals(""))));
   }
 }

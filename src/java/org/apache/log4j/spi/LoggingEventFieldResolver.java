@@ -166,20 +166,20 @@ public final class LoggingEventFieldResolver {
     } else if (LEVEL_FIELD.equals(upperField)) {
       return event.getLevel();
     } else if (CLASS_FIELD.equals(upperField)) {
-      return ((info == null) ? "" : info.getClassName());
+      return ((info == null) ? EMPTY_STRING : info.getClassName());
     } else if (FILE_FIELD.equals(upperField)) {
-      return ((info == null) ? "" : info.getFileName());
+      return ((info == null) ? EMPTY_STRING : info.getFileName());
     } else if (LINE_FIELD.equals(upperField)) {
-      return ((info == null) ? "" : info.getLineNumber());
+      return ((info == null) ? EMPTY_STRING : info.getLineNumber());
     } else if (METHOD_FIELD.equals(upperField)) {
-      return ((info == null) ? "" : info.getMethodName());
+      return ((info == null) ? EMPTY_STRING : info.getMethodName());
     } else if (MSG_FIELD.equals(upperField)) {
       return event.getMessage();
     } else if (NDC_FIELD.equals(upperField)) {
       String ndcValue = event.getNDC();
-      return ((ndcValue == null) ? "" : ndcValue);
+      return ((ndcValue == null) ? EMPTY_STRING : ndcValue);
     } else if (EXCEPTION_FIELD.equals(upperField)) {
-      return event.getThrowableInformation();
+      return (event.getThrowableStrRep() == null ? EMPTY_STRING : getExceptionMessage(event.getThrowableStrRep()));
     } else if (TIMESTAMP_FIELD.equals(upperField)) {
       return new Long(event.timeStamp);
     } else if (THREAD_FIELD.equals(upperField)) {
@@ -187,7 +187,6 @@ public final class LoggingEventFieldResolver {
     } else if (upperField.startsWith(MDC_FIELD)) {
       //note: need to use actual fieldname since case matters
       Object mdcValue = event.getMDC(fieldName.substring(4));
-
       return ((mdcValue == null) ? EMPTY_STRING : mdcValue.toString());
     } else if (upperField.startsWith(PROP_FIELD)) {
       //note: need to use actual fieldname since case matters
@@ -198,4 +197,12 @@ public final class LoggingEventFieldResolver {
     //there wasn't a match, so throw a runtime exception
     throw new RuntimeException("Unsupported field name: " + fieldName);
   }
+
+    private String getExceptionMessage(String[] exception) {
+        StringBuffer buff = new StringBuffer();
+        for (int i=0;i<exception.length;i++) {
+            buff.append(exception[i]);
+        }
+    	return buff.toString();
+    }
 }
