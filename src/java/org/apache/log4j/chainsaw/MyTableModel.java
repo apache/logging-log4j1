@@ -103,7 +103,7 @@ class MyTableModel extends AbstractTableModel implements EventDetailSink {
 
   /** names of the columns in the table **/
   private static final String[] COL_NAMES =
-  { "Time", "Priority", "Trace", "Category", "NDC", "MDC", "Message" };
+  { "Time", "Priority", "Trace", "Category", "NDC", "MDC", "Properties", "Message" };
 
   /** definition of an empty list **/
   private static final EventDetails[] EMPTY_LIST = new EventDetails[] {  };
@@ -138,6 +138,9 @@ class MyTableModel extends AbstractTableModel implements EventDetailSink {
 
   /** filter for the MDC **/
   private String mMDCFilter = "";
+
+  /** filter for the Properties **/
+  private String mPropertiesFilter = "";
 
   /** filter for the category **/
   private String mCategoryFilter = "";
@@ -202,6 +205,8 @@ class MyTableModel extends AbstractTableModel implements EventDetailSink {
         return event.getNDC();
       } else if (aCol == 5) {
         return event.getMDC();
+      } else if (aCol == 6) {
+        return event.getProperties();
       }
 
       return event.getMessage();
@@ -269,6 +274,18 @@ class MyTableModel extends AbstractTableModel implements EventDetailSink {
   public void setMDCFilter(String aStr) {
     synchronized (mLock) {
       mMDCFilter = aStr.trim();
+      updateFilteredEvents(false);
+    }
+  }
+
+  /**
+  * Set the filter for the Properties field.
+  *
+  * @param aStr the string to match
+  */
+  public void setPropertiesFilter(String aStr) {
+    synchronized (mLock) {
+      mPropertiesFilter = aStr.trim();
       updateFilteredEvents(false);
     }
   }
@@ -396,7 +413,10 @@ class MyTableModel extends AbstractTableModel implements EventDetailSink {
         && (aEvent.getNDC().indexOf(mNDCFilter) >= 0)))
         && ((mMDCFilter.length() == 0)
         || ((aEvent.getMDC() != null) 
-        && (aEvent.getMDC().indexOf(mMDCFilter) >= 0)))) {
+        && (aEvent.getMDC().indexOf(mMDCFilter) >= 0)))
+        && ((mPropertiesFilter.length() == 0)
+        || ((aEvent.getProperties() != null) 
+        && (aEvent.getProperties().indexOf(mPropertiesFilter) >= 0)))) {
       final String rm = aEvent.getMessage();
 
       if (rm == null) {
