@@ -1,7 +1,7 @@
 <project name="install-chainsaw" default="install" basedir="." >
 
 	<property name="module.dir" location="${basedir}"/>
-  <property name="oro.file.name" value="jakarta-oro-2.0.7.zip" />
+  <property name="oro.file.name" value="jakarta-oro-2.0.8.zip" />
 	<property name="oro.location" location="${module.dir}/${oro.file.name}" />
 	<property name="oro.unzip.location" location="${module.dir}/" />
 
@@ -18,8 +18,8 @@ This Ant build script will perform the following:
 
 It will create the following artifacts in the current directory (whereever this Ant script is)
    * a jarkarta-log4j directory, containing the log4j source tree
-   * a jakarta-oro-2.0.7.zip file
-   * a jakarta-oro-2.0.7 directory containing the unpacked ORO jar from the aforementioned zip file
+   * a jakarta-oro-2.0.8.zip file
+   * a jakarta-oro-2.0.8 directory containing the unpacked ORO jar from the aforementioned zip file
     </echo>
     <input
       message="Are you OK with all of this?"
@@ -34,10 +34,29 @@ It will create the following artifacts in the current directory (whereever this 
 
   <target name="cvs" depends="">
     <cvs cvsRoot=":pserver:anoncvs@cvs.apache.org:/home/cvspublic"
-        package="jakarta-log4j"
+        package="logging-log4j"
         dest="${module.dir}"
+        compression="true"
+        compressionlevel="6"
         quiet="true"
     />
+     <!--<taskdef name="cvsgrab" classname="net.sourceforge.cvsgrab.CVSGrabTask">
+        <classpath>
+            <pathelement location="lib/cvsgrab-2.0.3.jar"/>
+            <pathelement location="lib/commons-cli-1.0-patched.jar"/>
+            <pathelement location="lib/commons-collections-3.0.jar"/>
+            <pathelement location="lib/commons-httpclient-2.0-final.jar"/>
+            <pathelement location="lib/commons-jxpath-1.1.jar"/>
+            <pathelement location="lib/commons-logging-1.0.3.jar"/>
+            <pathelement location="lib/nekohtml-0.9.jar"/>
+            <pathelement location="lib/nekohtmlXni-0.9.jar"/>
+            <pathelement location="lib/netbeans-cvslib-3.5.jar"/>
+        </classpath>
+     </taskdef>
+     <cvsgrab rootUrl="http://cvs.apache.org/viewcvs/"
+        packagePath="logging-log4j"
+        destDir="."
+        pruneEmptyDirs="true"/>-->
   </target>
 
 	<target name="get-oro" depends="">
@@ -50,18 +69,18 @@ It will create the following artifacts in the current directory (whereever this 
     <unzip src="${oro.location}"
           dest="${oro.unzip.location}">
         <patternset>
-            <include name="jakarta-oro-2.0.7/jakarta-oro-2.0.7.jar"/>
+            <include name="jakarta-oro-2.0.8/jakarta-oro-2.0.8.jar"/>
         </patternset>
     </unzip>
   </target>
 
 
 	<target name="create-build-properties" depends="">
-    <copy file="${module.dir}/jakarta-log4j/build.properties.sample" tofile="${module.dir}/jakarta-log4j/build.properties">
+    <copy file="${module.dir}/logging-log4j/build.properties.sample" tofile="${module.dir}/logging-log4j/build.properties">
     </copy>
-    <replace file="${module.dir}/jakarta-log4j/build.properties">
+    <replace file="${module.dir}/logging-log4j/build.properties">
       <replacetoken><![CDATA[#regexp.oro.jar=../oro/jakarta-oro-2.0.6.jar]]></replacetoken>
-      <replacevalue><![CDATA[regexp.oro.jar=../jakarta-oro-2.0.7/jakarta-oro-2.0.7.jar]]>
+      <replacevalue><![CDATA[regexp.oro.jar=../jakarta-oro-2.0.8/jakarta-oro-2.0.8.jar]]>
 </replacevalue>
     </replace>
   </target>
@@ -76,7 +95,7 @@ Installation completed successfully.
 
 You should now be able to do the following to run Chainsaw v2:
 
-  cd jakarta-log4j
+  cd logging-log4j
   ant chainsaw
 
 GOOD LUCK!
