@@ -16,12 +16,9 @@
 
 package joran.implicit;
 
-import joran.calculator.ComputationAction2;
-
 import org.apache.joran.Interpreter;
 import org.apache.joran.Pattern;
 import org.apache.joran.RuleStore;
-import org.apache.joran.action.NewRuleAction;
 import org.apache.joran.helper.SimpleRuleStore;
 
 import java.util.List;
@@ -31,12 +28,12 @@ import javax.xml.parsers.SAXParserFactory;
 
 
 /**
- * This example illustrates the usage of NewRuleAction which allows the Joran
- * interpreter to learn new rules on the fly from the XML file being
- * interpreted.
- *
- * This example relies heavily on the code from the joran.calculator package.
- *
+ * This example illustrates the usage of implcit actions.
+ * 
+ * The crucial point to remember about implicit actions is that they
+ * are not associated with a pattern. Moreover, they are added directly to
+ * a Joran Interpreter instead of a rule store.
+ * 
  * @author Ceki G&uuml;ulc&uuml;
  */
 public class PrintMe {
@@ -57,9 +54,9 @@ public class PrintMe {
     // Create a new Joran Interpreter and hand it our simple rule store.
     Interpreter ji = new Interpreter(ruleStore);
 
-    // 
-    // Add an implicit action.
-    // 
+    // --------------------------+
+    // Add an implicit action.   |
+    // --------------------------+
     ji.addImplcitAction(new PrintMeImplicitAction());
     
     // Create a SAX parser
@@ -70,7 +67,8 @@ public class PrintMe {
     // set the SAX ContentHandler to the Joran Interpreter we just created.
     saxParser.parse(args[0], ji);
 
-    // The file has been parsed and interpreted. We now errors if any.
+    // The file has been parsed and interpreted. We now print any errors that 
+    // might have occured.
     List errorList = ji.getExecutionContext().getErrorList();
 
     if (errorList.size() > 0) {
