@@ -95,9 +95,10 @@ public class AsyncAppenderTestCase extends TestCase {
 
   // rename the method to suite() to have all tests executed. Rebame the method
   // to Xsuite to have only selected tests executed.
-  public static Test Xsuite() {
+  public static Test XXsuite() {
     TestSuite suite = new TestSuite();
-    suite.addTest(new AsyncAppenderTestCase("closeTest"));
+    suite.addTest(new AsyncAppenderTestCase("test1"));
+    //suite.addTest(new AsyncAppenderTestCase("closeTest"));
 
     return suite;
   }
