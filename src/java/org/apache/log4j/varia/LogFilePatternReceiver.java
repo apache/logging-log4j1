@@ -216,7 +216,7 @@ public class LogFilePatternReceiver extends Receiver {
     //parser.initialize();
     //System.out.println("Created event: " + parser.convertToEvent("2004-12-13 22:49:22,820 DEBUG SOME VALUE [Thread-0] Generator2 (Generator2.java:100) - <test>   <test2>something here</test2>   <test3 blah=something/>   <test4>       <test5>something else</test5>   </test4></test>"));
     //parser.initialize("THREAD LEVEL LOGGER - MESSAGE");
-    parser.setLogFormat("RELATIVETIME PROP(USERID) [THREAD] LEVEL LOGGER * - MESSAGE");
+    //parser.setLogFormat("RELATIVETIME PROP(USERID) [THREAD] LEVEL LOGGER * - MESSAGE");
     parser.setFileName(args[0]);
     parser.initialize();
 
@@ -471,7 +471,7 @@ public class LogFilePatternReceiver extends Receiver {
 
     for (int i = 0; i < logFormatFields.size(); i++) {
       String thisField = (String) logFormatFields.get(i);
-      LogLog.info("processing field " + thisField);
+      //LogLog.info("processing field " + thisField);
 
       //ignore wildcard entries - skip to next field
       if (thisField.equals(WILDCARD)) {
@@ -717,6 +717,7 @@ public class LogFilePatternReceiver extends Receiver {
         if (firstPart.length() > 0) {
           //System.out.println("ADDED FIRSTPART: " + firstPart);
           logFormatFields.add(firstPart);
+          
         }
 
         logFormatFields.add(keyword);
@@ -748,8 +749,8 @@ public class LogFilePatternReceiver extends Receiver {
         return keyword;
       }
     }
-    if (trimmedFragment.startsWith(PROP_PREFIX) && trimmedFragment.endsWith(PROP_SUFFIX)) {
-    	return trimmedFragment;
+    if ((trimmedFragment.indexOf(PROP_PREFIX)> -1) && trimmedFragment.endsWith(PROP_SUFFIX)) {
+    	return trimmedFragment.substring(trimmedFragment.indexOf(PROP_PREFIX));
     }
 
     return null;
