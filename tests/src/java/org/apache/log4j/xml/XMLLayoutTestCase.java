@@ -12,6 +12,7 @@ import org.apache.log4j.xml.XMLLayout;
 import org.apache.log4j.util.Filter;
 import org.apache.log4j.util.ControlFilter;
 import org.apache.log4j.util.XMLTimestampFilter;
+import org.apache.log4j.util.XMLLineAttributeFilter;
 import org.apache.log4j.util.LineNumberFilter;
 import org.apache.log4j.util.Transformer;
 import org.apache.log4j.util.Compare;
@@ -51,7 +52,9 @@ public class XMLLayoutTestCase extends TestCase {
     xmlLayout.setLocationInfo(true);
     root.addAppender(new FileAppender(xmlLayout, TEMP, false));
     common();
-    Transformer.transform(TEMP, FILTERED, new XMLTimestampFilter());
+    Transformer.transform(TEMP, FILTERED, new Filter[] {new LineNumberFilter(),
+                                                        new XMLTimestampFilter(),
+                                                        new XMLLineAttributeFilter()});
     assertTrue(Compare.compare(FILTERED, "witness/xmlLayout.2"));
   }
 
