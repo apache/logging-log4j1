@@ -50,11 +50,13 @@
 package org.apache.log4j.rolling;
 
 import org.apache.log4j.FileAppender;
+import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.LoggingEvent;
 
 import java.io.File;
 import java.io.IOException;
+
 
 /**
  * RollingFileAppender extends FileAppender to backup the log files
@@ -65,7 +67,9 @@ import java.io.IOException;
  * @since  1.3
  * */
 public class RollingFileAppender extends FileAppender {
-  File file;
+  
+  Logger logger = Logger.getLogger(RollingFileAppender.class);
+  File activeFile;
   TriggeringPolicy triggeringPolicy;
   RollingPolicy rollingPolicy;
 
@@ -75,6 +79,23 @@ public class RollingFileAppender extends FileAppender {
    * */
   public RollingFileAppender() {
     super();
+  }
+
+  public void activateOptions() {
+    
+    if(triggeringPolicy == null) {
+      logger.warn("Please set a TriggeringPolicy for ");
+      return;
+    }
+    if (rollingPolicy != null) {
+      rollingPolicy.activateOptions();
+
+      setFile(rollingPolicy.getActiveLogFileName());
+      activeFile = new File(rollingPolicy.getActiveLogFileName());
+      super.activateOptions();
+    } else {
+      logger.warn("Please set a rolling policy");
+    }
   }
 
   /**
@@ -93,13 +114,11 @@ public class RollingFileAppender extends FileAppender {
    */
   public void rollover() {
     // Note: synchronization not necessary since doAppend is already synched
-      
-      // make sure to close the hereto active log file!!
-      this.closeFile(); 
-            
-      rollingPolicy.rollover(file);
+    // make sure to close the hereto active log file!!
+    this.closeFile();
 
-      File activeFile = new File(rollingPolicy.getActiveLogFileName());
+    activeFile = new File(fileName);
+    rollingPolicy.rollover(activeFile);
 
     try {
       // This will also close the file. This is OK since multiple
@@ -110,30 +129,32 @@ public class RollingFileAppender extends FileAppender {
     }
   }
 
-  public synchronized void setFile(
-    String fileName, boolean append, boolean bufferedIO, int bufferSize)
-    throws IOException {
-    super.setFile(fileName, append, this.bufferedIO, this.bufferSize);
-    file = new File(fileName);
-  }
-
   /**
      This method differentiates RollingFileAppender from its super
      class.
   */
   protected void subAppend(LoggingEvent event) {
     super.subAppend(event);
-
-    boolean trigger;
-
-    if (triggeringPolicy.isSizeSensitive()) {
-      trigger = triggeringPolicy.isTriggeringEvent(file.length());
-    } else {
-      trigger = triggeringPolicy.isTriggeringEvent();
-    }
-
-    if (trigger) {
+    
+    if (triggeringPolicy.isTriggeringEvent(activeFile)) {
+      System.out.println("About to rollover");
       rollover();
     }
+  }
+
+  public RollingPolicy getRollingPolicy() {
+    return rollingPolicy;
+  }
+
+  public TriggeringPolicy getTriggeringPolicy() {
+    return triggeringPolicy;
+  }
+
+  public void setRollingPolicy(RollingPolicy policy) {
+    rollingPolicy = policy;
+  }
+
+  public void setTriggeringPolicy(TriggeringPolicy policy) {
+    triggeringPolicy = policy;
   }
 }

@@ -61,8 +61,10 @@ package org.apache.log4j.rolling;
 
 import java.io.File;
 
+import org.apache.log4j.spi.OptionHandler;
 
-public interface RollingPolicy {
+
+public interface RollingPolicy extends OptionHandler {
     
   /**
    * Copy the file passed as parameter to an appropriate location.

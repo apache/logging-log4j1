@@ -54,6 +54,7 @@ import org.apache.log4j.helpers.QuietWriter;
 import org.apache.log4j.spi.ErrorCode;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Writer;
@@ -184,6 +185,7 @@ public class FileAppender extends WriterAppender {
       try {
         setFile(fileName, fileAppend, bufferedIO, bufferSize);
       } catch (java.io.IOException e) {
+        System.out.println("xx" + fileName);
         errorHandler.error(
           "setFile(" + fileName + "," + fileAppend + ") call failed.", e,
           ErrorCode.FILE_OPEN_FAILURE);
@@ -282,7 +284,7 @@ public class FileAppender extends WriterAppender {
     @param append   If true will append to fileName. Otherwise will
         truncate fileName.  */
   public synchronized void setFile(
-    String fileName, boolean append, boolean bufferedIO, int bufferSize)
+    String filename, boolean append, boolean bufferedIO, int bufferSize)
     throws IOException {
     LogLog.debug("setFile called: " + fileName + ", " + append);
 
@@ -293,16 +295,16 @@ public class FileAppender extends WriterAppender {
 
     reset();
 
-    Writer fw = createWriter(new FileOutputStream(fileName, append));
+    Writer fw = createWriter(new FileOutputStream(filename, append));
 
     if (bufferedIO) {
       fw = new BufferedWriter(fw, bufferSize);
     }
 
     this.setQWForFiles(fw);
-    this.fileName = fileName;
     this.fileAppend = append;
     this.bufferedIO = bufferedIO;
+    this.fileName = filename;
     this.bufferSize = bufferSize;
     writeHeader();
     LogLog.debug("setFile ended");
@@ -322,7 +324,13 @@ public class FileAppender extends WriterAppender {
      <code>reset</code>.  */
   protected void reset() {
     closeFile();
-    this.fileName = null;
+
+    // The following line is commented out. It causes problems with the setFile
+    // method taking 4 params which calls the reset method. If there is a 
+    // problem with the createWrite call then the fileName never gets set properly.
+    
+    // this.fileName = null;
+    
     super.reset();
   }
 }

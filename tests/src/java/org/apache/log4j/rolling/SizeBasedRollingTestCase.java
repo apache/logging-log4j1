@@ -47,29 +47,69 @@
  *
  */
 
-
-/**
- * A <code>TriggeringPolicy</code> determines the time where rollover
- * should occur.
- *
- * @author Ceki G&uuml;lc&uuml;
- * */
 package org.apache.log4j.rolling;
 
-import java.io.File;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
-import org.apache.log4j.spi.OptionHandler;
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
 
-public interface TriggeringPolicy extends OptionHandler {
-  /**
-   * Should rolllover be triggered at this time?
-   * 
-   * A reference to the active log file is supplied as a parameter.
-   * 
-   * */
-  public boolean isTriggeringEvent(File file);
 
-  //public boolean isTriggeringEvent();
+/**
+ *
+ * @author Ceki G&uuml;lc&uuml;
+ *
+ */
+public class SizeBasedRollingTestCase extends TestCase {
+  Logger logger = Logger.getLogger(SizeBasedRollingTestCase.class);
 
-  //public boolean isSizeSensitive();
+  public SizeBasedRollingTestCase(String name) {
+    super(name);
+  }
+
+  public void setUp() {
+  }
+
+  public void tearDown() {
+  }
+
+  public void test1() {
+    Logger root = Logger.getRootLogger();
+    root.addAppender(new ConsoleAppender(new PatternLayout()));
+    
+    PatternLayout layout = new PatternLayout("%m%n");
+    RollingFileAppender rfa = new RollingFileAppender();
+    rfa.setLayout(layout);
+    SlidingWindowRollingPolicy swrp = new SlidingWindowRollingPolicy();
+    SizeBasedTriggeringPolicy sbtp = new SizeBasedTriggeringPolicy();
+    sbtp.setMaxFileSize(1000);
+    swrp.setFileNamePattern("output/test.%i");
+    rfa.setRollingPolicy(swrp);
+    rfa.setTriggeringPolicy(sbtp);
+    //rfa.setFile("test");
+    rfa.activateOptions();
+    logger.addAppender(rfa);
+    
+
+    for (int i = 0; i < 1000; i++) {
+      try {
+        Thread.sleep(10);
+      } catch(Exception e) {}
+      if (i < 10) {
+        logger.debug("Hello   " + i);
+      } else {
+        logger.debug("Hello  " + i);
+      }
+    }
+  }
+
+  public static Test suite() {
+    TestSuite suite = new TestSuite();
+    suite.addTest(new SizeBasedRollingTestCase("test1"));
+
+    return suite;
+  }
 }
