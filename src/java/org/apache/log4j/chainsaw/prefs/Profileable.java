@@ -22,22 +22,7 @@ public interface Profileable extends SettingsListener {
 	 * Must be able to provide a name which is used to determine at a minimum, 
 	 * the default profile name prefix for this component.
 	*/
-	public String getName();
+	public String getNamespace();
 	
-	/**
-	 * Sets this components Profile name that is in use.
-	 * 
-	 * The ProfileManager will automatically call this method when a specific
-	 * Profile has been loaded.
-	 * @param profileName
-	 */
-	public void setProfileName(String profileName);
-	
-	/**
-	 * Returns the currently in use profile name, or <code>null</code>
-	 * if there is no profile in use.
-	 * @return
-	 */
-	public String getProfileName();
-	
+
 }
