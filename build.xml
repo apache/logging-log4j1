@@ -169,13 +169,11 @@
                     **/StressCategory.java,
                     **/doc-files/*,
                     ${stem}/xml/**,
-                    ${stem}/gui/**,
                     ${stem}/test/serialization/**,
 		    ${stem}/net/SMTPAppender.java,
                	    ${stem}/net/JMS*.java,
                	    ${stem}/jmx/*.java,
-               	    ${stem}/or/jms/MessageRenderer.java,
-		    **/pending/**"
+               	    ${stem}/or/jms/*.java"
 	    debug="on">
       <classpath refid="compile.classpath"/>
     </javac>
@@ -310,9 +308,8 @@
 		${stem}/or/*.class,
 		${stem}/or/sax/*.class,
                 ${stem}/or/jms/*.class,
-		${stem}/config/*.class,
-		${stem}/gui/TextPaneAppender.class"
-      excludes="**/StressCategory*, **/UnitTest**"
+		${stem}/config/*.class"
+      excludes="**/UnitTest**"
       manifest="${jar.dest}/manifest.mf"
     />
   </target>
