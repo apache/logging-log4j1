@@ -303,6 +303,7 @@
     <javadoc sourcepath="${java.source.dir}" 
            destdir="${javadoc.dest}" 
 	   packagenames="org.apache.log4j,
+			 org.apache.log4j.config,
 			 org.apache.log4j.examples,
 			 org.apache.log4j.examples.appserver,
                          org.apache.log4j.helpers,

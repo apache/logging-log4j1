@@ -7,10 +7,10 @@ if [ $? != 0 ]; then
   exit 1   
 fi
 
-java junit.textui.TestRunner org.apache.log4j.test.UnitTestVarSubst
+java junit.textui.TestRunner org.apache.log4j.test.UnitTestOptionConverter
   
 if [ $? != 0 ]; then
-  echo "UnitTestVarSubst failed."
+  echo "UnitTestOptionConverter failed."
   exit 1   
 fi
 

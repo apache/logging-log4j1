@@ -8,7 +8,10 @@
 
 package org.apache.log4j.config;
 
-import java.beans.*;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
 import java.io.*;
 import java.lang.reflect.*;
 import java.util.*;
@@ -134,11 +137,6 @@ public class PropertySetter {
      
      @param name    name of the property
      @param value   String value of the property
-     @throws PropertySetterException
-            if no setter exists for the named property,
-            or if the setter takes an unkown argument type, i.e. one
-            other than String, int, and boolean,
-            or if the setter method isn't public
    */
   public
   void setProperty(String name, String value) {

@@ -116,6 +116,13 @@ public class UnitTestOptionConverter extends TestCase {
     assertEquals(p, null);
   }
 
+  public
+  void toPriorityTest5() {
+    String val = "INFO#org.apache.log4j.xml.TOTO";
+    Priority p = OptionConverter.toPriority(val, null);    
+    assertEquals(p, null);
+  }
+
 
   public
   static
@@ -130,6 +137,7 @@ public class UnitTestOptionConverter extends TestCase {
     suite.addTest(new UnitTestOptionConverter("toPriorityTest2"));
     suite.addTest(new UnitTestOptionConverter("toPriorityTest3"));
     suite.addTest(new UnitTestOptionConverter("toPriorityTest4"));
+    suite.addTest(new UnitTestOptionConverter("toPriorityTest5"));
     return suite;
   }
 

@@ -9,8 +9,6 @@
 <body>
 
 
-<section name="log4j version 1.0.4, dated 2001-01-12">
-
 <!--
 <table CELLSPACING="8" CELLPADDING="4" FGCOLOR="gray"
   BORDER="0" WIDTH="25%" ALIGN="RIGHT" VALIGN="TOP">
@@ -33,14 +31,25 @@
 </table>
 -->
 
-<p>Download the complete package including <i>full source code</i>,
-class files and documentation in <a
-href="../jakarta-log4j-1.0.4.tgz"><b>TGZ</b></a> format or in <a
-href="../jakarta-log4j-1.0.4.zip"><b>ZIP</b></a> format. You may elect
+
+<section name="log4j version 1.1beta2 (release candidate)">
+
+<p>Downlaod version 1.1beta2 (release candiate) including <i>full
+source code</i>, class files and documentation in <a
+href="../jakarta-log4j-1.1b2.tar.gz"><b>TAR.GZ</b></a> format or in <a
+href="../jakarta-log4j-1.1b2.zip"><b>ZIP</b></a> format. You may elect
 to browse log4j <a href="documentation.html"><b>documentation</b></a>
 online.</p>
 
-<p>Version 1.0.4 is the 20th major public release of log4j.</p>
+<p>This release candidate should be sanctioned as the official 1.1
+release after a short period of probation.</p>
+
+<p>Version 1.1b2 is the 21st major public release of log4j. It is 100%
+backward compatible with log4j version 1.0.x.</p>
+
+<p>We also maintain a list of <a href="earlier.html">earlier
+versions</a> of log4j for download, intended for the curious
+paleontologist.</p>
 
 <p>Thanks to <a href="mailto:hgomez@slib.fr">Henri Gomez</a>, Linux
 users can now fetch log4j in RPM format at <a
@@ -48,20 +57,19 @@ href="http://rpmized.free.fr">http://rpmized.free.fr</a> or
 alternatively at <a
 href="ftp://ftp.falsehope.com/home/gomez/log4j/">ftp://ftp.falsehope.com/home/gomez/log4j/</a>.</p>
 
-<p>We also maintain a list of <a href="earlier.html">earlier
-versions</a> of log4j for download, intended for the curious
-paleontologist.</p>
 
 </section>
 
-<section name="log4j version 1.1 beta1">
+<section name="log4j version 1.0.4, dated 2001-01-12">
 
-<p>Version 1.1beta1 is also available online in <a
-href="../jakarta-log4j-1.1b1.tar.gz"><b>TGZ</b></a> format or in <a
-href="../jakarta-log4j-1.1b1.zip"><b>ZIP</b></a> format.
-</p>
+<p>Download the complete package including <i>full source code</i>,
+class files and documentation in <a
+href="../jakarta-log4j-1.0.4.tgz"><b>TGZ</b></a> format or in <a
+href="../jakarta-log4j-1.0.4.zip"><b>ZIP</b></a> format.</p>
 
+<p>Version 1.0.4 is the 20th major public release of log4j.</p>
 </section>
+
 
 <section name="Third-party software">
 
