@@ -31,7 +31,7 @@ import org.apache.log4j.spi.LoggingEvent;
 /**
   * <p>A flexible layout configurable with pattern string. The goal of this class 
   * is to {@link #format format} a {@link LoggingEvent} and return the results 
-  * in a {#link StringBuffer}. The format of the result depensd on the 
+  * in a {#link StringBuffer}. The format of the result depends on the 
   * <em>conversion pattern</em>.
   * <p>
   * 
@@ -121,31 +121,13 @@ import org.apache.log4j.spi.LoggingEvent;
 
    <tr> <td align=center><b>d</b></td> <td>Used to output the date of
          the logging event. The date conversion specifier may be
-         followed by a <em>date format specifier</em> enclosed between
-         braces. For example, <b>%d{HH:mm:ss,SSS}</b> or
-         <b>%d{dd&nbsp;MMM&nbsp;yyyy&nbsp;HH:mm:ss,SSS}</b>.  If no
-         date format specifier is given then ISO8601 format is
-         assumed.
-
-         <p>The date format specifier admits the same syntax as the
-         time pattern string of the {@link
-         java.text.SimpleDateFormat}. Although part of the standard
-         JDK, the performance of <code>SimpleDateFormat</code> is
-         quite poor.
-
-         <p>For better results it is recommended to use the log4j date
-         formatters. These can be specified using one of the strings
-         "ABSOLUTE", "DATE" and "ISO8601" for specifying {@link
-         org.apache.log4j.helpers.AbsoluteTimeDateFormat
-         AbsoluteTimeDateFormat}, {@link
-         org.apache.log4j.helpers.DateTimeDateFormat DateTimeDateFormat}
-         and respectively {@link
-         org.apache.log4j.helpers.ISO8601DateFormat
-         ISO8601DateFormat}. For example, <b>%d{ISO8601}</b> or
-         <b>%d{ABSOLUTE}</b>.
-
-         <p>These dedicated date formatters perform significantly
-         better than {@link java.text.SimpleDateFormat}.
+         followed by a set of braces containing a
+         date and time pattern strings {@link java.text.SimpleDateFormat}, 
+         <em>ABSOLUTE</em>, <em>DATE</em> or <em>ISO8601</em>.
+         For example, <b>%d{HH:mm:ss,SSS}</b>,
+         <b>%d{dd&nbsp;MMM&nbsp;yyyy&nbsp;HH:mm:ss,SSS}</b> or
+         <b>%d{DATE}</b>.  If no date format specifier is given then
+         ISO8601 format is assumed.
      </td>
    </tr>
 
@@ -156,7 +138,7 @@ import org.apache.log4j.spi.LoggingEvent;
    issued.
 
    <p><b>WARNING</b> Generating caller location information is
-   extremely slow. It's use should be avoided unless execution speed
+   extremely slow. Its use should be avoided unless execution speed
    is not an issue.
 
    </tr>

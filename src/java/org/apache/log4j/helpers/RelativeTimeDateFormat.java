@@ -1,16 +1,27 @@
 /*
- * Copyright (C) The Apache Software Foundation. All rights reserved.
- *
- * This software is published under the terms of the Apache Software
- * License version 1.1, a copy of which has been included with this
- * distribution in the LICENSE.txt file.  */
+ * Copyright 1999,2004 The Apache Software Foundation.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package org.apache.log4j.helpers;
 
 import java.util.Date;
+import java.util.TimeZone;
 import java.text.FieldPosition;
 import java.text.ParsePosition;
 import java.text.DateFormat;
+import java.text.NumberFormat;
 
 /**
    Formats a {@link Date} by printing the number of milliseconds
@@ -50,4 +61,23 @@ public class RelativeTimeDateFormat extends DateFormat {
   Date parse(java.lang.String s, ParsePosition pos) {
     return null;
   }  
+  
+
+  /**
+   * Gets the number format.
+   * @return NumberFormat number format
+   */
+  public NumberFormat getNumberFormat() {
+    return NumberFormat.getIntegerInstance();
+  }
+
+  /**
+   * Sets the timezone.
+   * @remarks Ignored by this formatter, but intercepted to prevent
+   * NullPointerException in superclass.
+   * @param tz TimeZone timezone
+   */
+  public void setTimeZone(final TimeZone tz) {
+  }
+  
 }
