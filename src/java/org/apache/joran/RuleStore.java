@@ -51,10 +51,10 @@ package org.apache.joran;
 
 import java.util.List;
 
-import org.apache.joran.action.*;
-
+import org.apache.joran.action.Action;
 
 public interface RuleStore {
+  public void addRule(Pattern pattern, String actionClassStr) throws ClassNotFoundException;
   public void addRule(Pattern pattern, Action action);
   
   public List matchActions(Pattern pattern);

@@ -47,80 +47,80 @@
  *
  */
 
-package org.apache.joran;
+package org.apache.joran.action;
 
-import org.apache.joran.action.*;
+import org.apache.joran.ExecutionContext;
+import org.apache.joran.helper.Option;
 
+import org.apache.log4j.Layout;
 import org.apache.log4j.Logger;
-import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.PatternLayout;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import org.w3c.dom.Element;
 
 
-public class SimpleRuleStore implements RuleStore {
-  final static Logger logger = Logger.getLogger(SimpleRuleStore.class);
+public class ConversionRuleAction extends Action {
+  static final Logger logger = Logger.getLogger(ConversionRuleAction.class);
+  Layout layout;
 
-  HashMap rules = new HashMap();
+  /**
+   * Instantiates an layout of the given class and sets its name.
+   *
+   */
+  public void begin(ExecutionContext ec, Element element) {
+    // Let us forget about previous errors (in this object)
+    inError = false;
 
-  public void addRule(Pattern pattern, Action action) {
-    //System.out.println("pattern to add is:" + pattern + "hashcode:" + pattern.hashCode());
-    List a4p = (List) rules.get(pattern);
+    String errorMsg;
+    String conversionWord =
+      element.getAttribute(ActionConst.CONVERSION_WORD_ATTRIBUTE);
+    String converterClass =
+      element.getAttribute(ActionConst.CONVERTER_CLASS_ATTRIBUTE);
 
-    if (a4p == null) {
-      a4p = new ArrayList();
-      rules.put(pattern, a4p);
+    if (Option.isEmpty(conversionWord)) {
+      inError = true;
+      errorMsg = "No 'conversionWord' attribute in <conversionRule>";
+      logger.warn(errorMsg);
+      ec.addError(errorMsg);
+
+      return;
     }
 
-    a4p.add(action);
+    if (Option.isEmpty(converterClass)) {
+      inError = true;
+      errorMsg = "No 'converterClass' attribute in <conversionRule>";
+      logger.warn(errorMsg);
+      ec.addError(errorMsg);
+
+      return;
+    }
+
+    try {
+      logger.debug(
+        "About to add conversion rule [" + conversionWord + ", "
+        + converterClass + "] to layout");
+
+      Object o = ec.peekObject();
+
+      if (o instanceof PatternLayout) {
+        PatternLayout patternLayout = (PatternLayout) o;
+        patternLayout.addConversionRule(conversionWord, converterClass);
+      }
+    } catch (Exception oops) {
+      inError = true;
+      errorMsg = "Could not add conversion rule to PatternLayout.";
+      logger.error(errorMsg, oops);
+      ec.addError(errorMsg);
+    }
   }
 
-  public void addRule(Pattern pattern, String actionClassName) {
-    Action action =
-      (Action) OptionConverter.instantiateByClassName(
-        actionClassName, Action.class, null);
-
-    if (action != null) {
-      addRule(pattern, action);
-    } else {
-      logger.warn("Could not intantiate Action of class ["+actionClassName+"].");
-    }
+  /**
+   * Once the children elements are also parsed, now is the time to activate
+   * the appender options.
+   */
+  public void end(ExecutionContext ec, Element e) {
   }
 
-  public List matchActions(Pattern pattern) {
-    //System.out.println("pattern to search for:" + pattern + ", hashcode: " + pattern.hashCode());
-    //System.out.println("rules:" + rules);
-    ArrayList a4p = (ArrayList) rules.get(pattern);
-
-    if (a4p != null) {
-      return a4p;
-    } else {
-      Iterator patternsIterator = rules.keySet().iterator();
-      int max = 0;
-      Pattern longestMatch = null;
-
-      while (patternsIterator.hasNext()) {
-        Pattern p = (Pattern) patternsIterator.next();
-
-        if ((p.size() > 1) && p.get(0).equals("*")) {
-          int r = pattern.tailMatch(p);
-
-          //System.out.println("tailMatch " +r);
-          if (r > max) {
-            //System.out.println("New longest match "+p);
-            max = r;
-            longestMatch = p;
-          }
-        }
-      }
-
-      if (longestMatch != null) {
-        return (ArrayList) rules.get(longestMatch);
-      } else {
-        return null;
-      }
-    }
+  public void finish(ExecutionContext ec) {
   }
 }
