@@ -156,7 +156,7 @@ public class PropertySetter {
         setProperty(prop, name, value);
       } catch (PropertySetterException ex) {
         LogLog.warn("Failed to set property [" + name +
-                    "] to value \"" + value + "\". " + ex.getMessage());
+                    "] to value \"" + value + "\". ", ex.rootCause);
       }
     }
   }
