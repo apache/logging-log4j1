@@ -132,7 +132,7 @@ public class SMTPAppender extends AppenderSkeleton {
     }
 
     if (subjectStr != null) {
-      subjectConverterHead = new PatternParser(subjectStr).parse();
+      subjectConverterHead = new PatternParser(subjectStr, this.repository).parse();
     }
     
     if (this.evaluator == null) {
@@ -422,8 +422,9 @@ public class SMTPAppender extends AppenderSkeleton {
      for the SMTPAppender.
    */
   public void setEvaluatorClass(String value) {
+    OptionConverter oc = new OptionConverter(this.repository);
     evaluator =
-      (TriggeringEventEvaluator) OptionConverter.instantiateByClassName(
+      (TriggeringEventEvaluator) oc.instantiateByClassName(
         value, TriggeringEventEvaluator.class, evaluator);
   }
 
