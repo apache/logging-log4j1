@@ -16,6 +16,7 @@ import java.util.*;
  * @author Paul Smith (but totally based (i.e 'copied') on the MDCPatternConverter by Ceki G&uuml;lc&uuml;)
  * with only minor alterations
  *
+ *@since 1.3
  */
 public class PropertiesPatternConverter extends PatternConverter {
 
