@@ -221,6 +221,7 @@
 
 	 excludes="**/StressCategory*, **/TTCC*, **/SimpleLayout.*, 
                   ${stem}/DailyRollingFileAppender.class,
+		  ${stem}/CompositeRollingAppender.class,
                   ${stem}/Rolling*.class,
                   ${stem}/HTMLLayout.class,
                   ${stem}/helpers/CountingQuietWriter.class,
