@@ -29,8 +29,7 @@ import org.apache.log4j.helpers.OptionConverter;
 
   @since 1.3
 */
-public
-class LevelMatchFilter extends MatchFilterBase {
+public class LevelMatchFilter extends MatchFilterBase {
 
   /**
     The level to match against. */
@@ -38,31 +37,27 @@ class LevelMatchFilter extends MatchFilterBase {
 
   /**
     Sets the level to match against. */
-  public
-  void setLevelToMatch(String level) {
+  public void setLevelToMatch(String level) {
     levelToMatch = OptionConverter.toLevel(level, null);
   }
   
   /**
     Gets the level that will be matched against. */
-  public
-  String getLevelToMatch() {
+  public String getLevelToMatch() {
     return levelToMatch == null ? null : levelToMatch.toString();
   }
 
   /**
     Overrides the implementation from the base class to return
     false if the levelToMatch has not been configured. */
-  protected
-  boolean canMatch() {
+  protected boolean canMatch() {
     return (levelToMatch != null);
   }
   
   /**
     Returns true if the levelToMatch matches the level of the
     logging event. */
-  protected
-  boolean match(LoggingEvent event) {
+  protected boolean match(LoggingEvent event) {
     return (levelToMatch.equals(event.level));
   }
 }

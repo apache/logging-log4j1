@@ -39,8 +39,7 @@ import org.apache.log4j.helpers.OptionConverter;
   
   @since 1.3
 */
-public
-class NDCMatchFilter extends MatchFilterBase {
+public class NDCMatchFilter extends MatchFilterBase {
   
   /**
     The value to match in the NDC value of the LoggingEvent. */
@@ -52,15 +51,13 @@ class NDCMatchFilter extends MatchFilterBase {
 
   /**
     Sets the value to match in the NDC value of the LoggingEvent. */
-  public
-  void setValueToMatch(String value) {
+  public void setValueToMatch(String value) {
     valueToMatch = value;
   }
   
   /**
     Gets the value to match in the NDC value of the LoggingEvent. */
-  public
-  String getValueToMatch() {
+  public String getValueToMatch() {
     return valueToMatch;
   }
 
@@ -69,13 +66,11 @@ class NDCMatchFilter extends MatchFilterBase {
     value of the LoggingEvent. Set to false if the configured
     value must only be contained in the NDC value of the
     LoggingEvent. Default is false. */
-  public
-  void setExactMatch(boolean exact) {
+  public void setExactMatch(boolean exact) {
     exactMatch = exact;
   }
   
-  public
-  boolean getExactMatch() {
+  public boolean getExactMatch() {
     return exactMatch;
   }
   
@@ -86,15 +81,13 @@ class NDCMatchFilter extends MatchFilterBase {
     is set to <code>false</code>, returns true when 
     <b>ValueToMatch</b> is contained anywhere within the NDC
     value. Otherwise, false is returned. */
-  protected
-  boolean match(LoggingEvent event) {
+  protected boolean match(LoggingEvent event) {
     
     // get the ndc value for the event
     String eventNDC = event.getNDC();
     
     // check for a match
-    boolean matchOccured = false;
-    
+        
     // if the NDC stack is empty
     if (eventNDC == null) {
       // return true if are we matching a null

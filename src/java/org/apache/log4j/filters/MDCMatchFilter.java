@@ -45,8 +45,7 @@ import org.apache.log4j.spi.LoggingEvent;
   
   @since 1.3
 */
-public
-class MDCMatchFilter extends MatchFilterBase {
+public class MDCMatchFilter extends MatchFilterBase {
   
   /**
     The key to match in the MDC of the LoggingEvent. */
@@ -62,29 +61,25 @@ class MDCMatchFilter extends MatchFilterBase {
 
   /**
     Sets the key to match in the MDC of the LoggingEvent. */
-  public
-  void setKeyToMatch(String key) {
+  public void setKeyToMatch(String key) {
     keyToMatch = key;
   }
   
   /**
     Gets the key to match in the MDC of the LoggingEvent. */
-  public
-  String getKeyToMatch() {
+  public String getKeyToMatch() {
     return keyToMatch;
   }
 
   /**
     Sets the value to match in the NDC value of the LoggingEvent. */
-  public
-  void setValueToMatch(String value) {
+  public void setValueToMatch(String value) {
     valueToMatch = value;
   }
   
   /**
     Gets the value to match in the NDC value of the LoggingEvent. */
-  public
-  String getValueToMatch() {
+  public String getValueToMatch() {
     return valueToMatch;
   }
 
@@ -93,18 +88,15 @@ class MDCMatchFilter extends MatchFilterBase {
     value of the LoggingEvent. Set to false if the configured
     value must only be contained in the MDC value of the
     LoggingEvent. Default is false. */
-  public
-  void setExactMatch(boolean exact) {
+  public void setExactMatch(boolean exact) {
     exactMatch = exact;
   }
   
-  public
-  boolean getExactMatch() {
+  public boolean getExactMatch() {
     return exactMatch;
   }
   
-  protected
-  boolean canMatch() {
+  protected boolean canMatch() {
     return (keyToMatch != null);
   }
   
@@ -115,8 +107,7 @@ class MDCMatchFilter extends MatchFilterBase {
     is set to <code>false</code>, returns true when 
     <b>ValueToMatch</b> is contained anywhere within the MDC
     value. Otherwise, false is returned. */
-  protected
-  boolean match(LoggingEvent event) {
+  protected boolean match(LoggingEvent event) {
       
     // get the mdc value for the key from the event
     // use the toString() value of the value object
@@ -129,7 +120,6 @@ class MDCMatchFilter extends MatchFilterBase {
     }
     
     // check for a match
-    boolean matchOccured = false;
     if (mdcValue == null) {
       if (valueToMatch == null) {
         return true;
