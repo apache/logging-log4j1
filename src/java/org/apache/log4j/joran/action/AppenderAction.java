@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.log4j.joran.action;
 
 import org.apache.joran.ExecutionContext;
@@ -31,11 +32,9 @@ import java.util.HashMap;
 
 
 public class AppenderAction extends Action {
-  
   Appender appender;
-
   private boolean inError = false;
-  
+
   /**
    * Instantiates an appender of the given class and sets its name.
    *
@@ -49,14 +48,16 @@ public class AppenderAction extends Action {
       getLogger().debug(
         "About to instantiate appender of type [" + className + "]");
 
+      OptionConverter oc = new OptionConverter();
+      oc.setLoggerRepository(this.repository);
       Object instance =
-        OptionConverter.instantiateByClassName(
+        oc.instantiateByClassName(
           className, org.apache.log4j.Appender.class, null);
       appender = (Appender) instance;
 
       LoggerRepository repo = (LoggerRepository) ec.getObjectStack().get(0);
       appender.setLoggerRepository(repo);
-      
+
       String appenderName = attributes.getValue(NAME_ATTRIBUTE);
 
       if (Option.isEmpty(appenderName)) {
@@ -71,6 +72,7 @@ public class AppenderAction extends Action {
       // created thus far.
       HashMap appenderBag =
         (HashMap) ec.getObjectMap().get(ActionConst.APPENDER_BAG);
+
       // add the appender just created to the appender bag.
       appenderBag.put(appenderName, appender);
 
@@ -81,8 +83,7 @@ public class AppenderAction extends Action {
       getLogger().error(
         "Could not create an Appender. Reported error follows.", oops);
       ec.addError(
-        new ErrorItem(
-          "Could not create appender of type " + className + "]."));
+        new ErrorItem("Could not create appender of type " + className + "]."));
     }
   }
 

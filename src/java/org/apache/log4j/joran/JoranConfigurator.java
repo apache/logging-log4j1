@@ -76,7 +76,6 @@ public class JoranConfigurator extends ConfiguratorBase {
   boolean listAppnderAttached = false;
 
   public JoranConfigurator() {
-    selfInitialize();
   }
   
   protected interface ParseAction {
@@ -131,7 +130,8 @@ public class JoranConfigurator extends ConfiguratorBase {
   protected void doConfigure(final ParseAction action, final LoggerRepository repository) {
     // This line is needed here because there is logging from inside this method.
     this.repository = repository;
-
+    selfInitialize(this.repository);
+    
     ExecutionContext ec = joranInterpreter.getExecutionContext();
     List errorList = ec.getErrorList();
 
@@ -186,8 +186,8 @@ public class JoranConfigurator extends ConfiguratorBase {
   }
 
 
-  protected void selfInitialize() {
-    RuleStore rs = new SimpleRuleStore();
+  protected void selfInitialize(LoggerRepository repository) {
+    RuleStore rs = new SimpleRuleStore(repository);
     rs.addRule(new Pattern("configuration"), new ConfigurationAction());
     rs.addRule(
       new Pattern("configuration/substitutionProperty"),
