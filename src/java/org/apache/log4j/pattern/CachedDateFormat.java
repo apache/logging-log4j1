@@ -94,14 +94,16 @@ final class CachedDateFormat extends DateFormat {
   private int millisecondStart;
   
   /**
+   *  Integral second preceding the previous convered Date.
+   */
+  private long slotBegin;
+
+  
+  /**
    *  Cache of previous conversion.
    */
   private StringBuffer cache = new StringBuffer(50);
   
-  /**
-   *  Integral second preceding the previous convered Date.
-   */
-  private long slotBegin;
   
   /**
    *  Maximum validity period for the cache.  
@@ -134,24 +136,17 @@ final class CachedDateFormat extends DateFormat {
     if (dateFormat == null) {
       throw new IllegalArgumentException("dateFormat cannot be null");
     }
+    if (expiration < 0) {
+      throw new IllegalArgumentException("expiration must be non-negative");
+    }
     formatter = dateFormat;
     this.expiration = expiration;
-    
-    Date now = new Date();
-    long nowTime = now.getTime();
-    slotBegin = (nowTime / 1000L) * 1000L;
+    millisecondStart = 0;
     //
-    //   if now is before 1970 and slot begin
-    //     was truncated forward
-    //
-    if (slotBegin > nowTime) {
-        slotBegin -= 1000;
-    }
-
-    String formatted = formatter.format(now);
-    cache.append(formatted);
-    previousTime = nowTime;
-    millisecondStart = findMillisecondStart(nowTime, formatted, formatter);
+    //   set the previousTime so the cache will be invalid
+    //        for the next request.
+    previousTime = Long.MIN_VALUE;
+    slotBegin = Long.MIN_VALUE;
   } 
     
 
@@ -238,7 +233,8 @@ final class CachedDateFormat extends DateFormat {
           StringBuffer buf ){
     
     //
-    // If an identical request, append the buffer and return.
+    // If the current requested time is identical to the previously
+    //     requested time, then append the cache contents.
     //
     if (now == previousTime) {
          buf.append(cache);
@@ -246,13 +242,12 @@ final class CachedDateFormat extends DateFormat {
     }
     
     //
-    // If not a recognized millisecond pattern,
-    // use the wrapped formatter to update the cache
-    // and append the cache to the buffer.
-    //
+    //   If millisecond pattern was not unrecognized 
+    //     (that is if it was found or milliseconds did not appear)   
+    //    
     if (millisecondStart != UNRECOGNIZED_MILLISECONDS) {
     
-        //
+        //    Check if the cache is still valid.
         //    If the requested time is within the same integral second
         //       as the last request and a shorter expiration was not requested.
         if (now < slotBegin + expiration
@@ -265,6 +260,9 @@ final class CachedDateFormat extends DateFormat {
             if (millisecondStart >= 0 ) {
                 millisecondFormat((int) (now - slotBegin), cache, millisecondStart);
             }
+            //
+            //   update the previously requested time
+            //      (the slot begin should be unchanged)
             previousTime = now;
             buf.append(cache);
             return buf;
@@ -280,10 +278,17 @@ final class CachedDateFormat extends DateFormat {
     cache.append(formatter.format(tmpDate));
     buf.append(cache);
     previousTime = now;
+    slotBegin = (previousTime / 1000) * 1000;
+    if (slotBegin > previousTime) {
+        slotBegin -= 1000;
+    }
+    
+    
     //
-    //   find the start of the millisecond field again
-    //      if we had previously been able to find it.
-    if (millisecondStart != UNRECOGNIZED_MILLISECONDS) {
+    //    if the milliseconds field was previous found
+    //       then reevaluate in case it moved.
+    //
+    if (millisecondStart >= 0) {
         millisecondStart = findMillisecondStart(now, cache.toString(), formatter);
     }
     return buf;
@@ -317,8 +322,8 @@ final class CachedDateFormat extends DateFormat {
    */
   public void setTimeZone(final TimeZone timeZone) {
     formatter.setTimeZone(timeZone);
-    // invalidate the cache
-    slotBegin = 0;
+    previousTime = Long.MIN_VALUE;
+    slotBegin = Long.MIN_VALUE;
   }
 
   /**
@@ -347,8 +352,9 @@ final class CachedDateFormat extends DateFormat {
    */
   public static int getMaximumCacheValidity(final String pattern) {
      //
-     //   If there are more "S" in the pattern than just one "SSS"
-     //      prevent caching anything more than duplicate requests
+     //   If there are more "S" in the pattern than just one "SSS" then
+     //      (for example, "HH:mm:ss,SSS SSS"), then set the expiration to
+     //      one millisecond which should only perform duplicate request caching.
      //
      int firstS = pattern.indexOf('S');
      if (firstS >= 0 && firstS != pattern.lastIndexOf("SSS")) {
