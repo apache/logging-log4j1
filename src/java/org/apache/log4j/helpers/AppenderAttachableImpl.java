@@ -97,6 +97,29 @@ public class AppenderAttachableImpl implements AppenderAttachable {
      return null;    
   }
 
+
+  /**
+     Returns <code>true</code> if the specified appender is in the
+     list of attached appenders, <code>false</code> otherwise.
+
+     @since 1.2 */
+  public 
+  boolean isAttached(Appender appender) {
+    if(appenderList == null || appender == null)
+      return false;
+
+     int size = appenderList.size();
+     Appender a;
+     for(int i = 0; i < size; i++) {
+       a  = (Appender) appenderList.elementAt(i);
+       if(a == appender)
+	  return true;
+     }
+     return false;    
+  }
+
+
+
   /**
      Remove all previously attached appenders.
   */

@@ -8,9 +8,12 @@
 package org.apache.log4j.spi;
 
 import org.apache.log4j.Appender;
+import org.apache.log4j.Logger;
+
 
 /**
-   Appenders may delegate their error handling to ErrorHandlers.
+   Appenders may delegate their error handling to
+   <code>ErrorHandlers</code>.
 
    <p>Error handling is a particularly tedious to get right because by
    definition errors are hard to predict and to reproduce. 
@@ -22,25 +25,58 @@ import org.apache.log4j.Appender;
 
 
    @author Ceki G&uuml;lc&uuml;
-
-   @since 0.9.0 */
+   
+*/
 public interface ErrorHandler extends OptionHandler {
+
+  /**
+     Add a reference to a logger to which the failing appender might
+     be attached to. The failing appender will be searched and
+     replaced only in the loggers you add through this method.
+
+     @param loggerName The name of the logger that will be searched
+     for the failing appender in view of replacement.
+     
+     @since 1.2 */
+  void setLogger(Stiring loggerName);
 
 
   /**
-     This method should handle the error. Information about the error
-     condition is passed a parameter.
+     Equivalent to the {@link #error(String, Exception, int,
+     LoggingEvent event)} with the the event parameteter set to
+     <code>null</code>.
      
-     @param message The message assoicated with the error.
-     @param e The Exption that was thrown when the error occured.
-     @param errorCode The error code associated with the error.
   */
   void error(String message, Exception e, int errorCode);
 
-
   /**
-     This method prints the error message passed as a parameter.
+     This method is normally used to just print the error message
+     passed as a parameter.       
   */
   void error(String message);
 
+  /**
+     This method is invoked to handle the error.
+
+     @param message The message assoicated with the error.
+     @param e The Exption that was thrown when the error occured.
+     @param errorCode The error code associated with the error. 
+     @param event The logging event that the failing appender is asked
+            to log.
+
+     @since 1.2 */
+  void error(String message, Exception e, int errorCode, LoggingEvent event);
+  
+  /**
+     Set the appender for which errors are handled. This method is
+     usually called when the error handler is configured.
+     
+     @since 1.2 */
+  void setAppender(Appender appender);
+
+  /**
+     Set the appender to falkback upon in case of failure.
+     
+     @since 1.2 */
+  void setBackupAppender(Appender appender);
 }

@@ -9,6 +9,7 @@ JSOURCES:=ExternallyRolledFileAppender.java\
 	  PriorityRangeFilter.java\
 	  PriorityMatchFilter.java\
           ReloadingPropertyConfigurator.java\
+          FallbackErrorHandler.java\
 
 SUBDIRS :=test
 
