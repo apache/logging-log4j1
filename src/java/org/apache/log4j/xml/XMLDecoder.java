@@ -36,6 +36,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.UtilLoggingLevel;
 import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.ThrowableInformation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -377,12 +378,20 @@ public class XMLDecoder implements Decoder {
       if ((fileName != null) || (className != null) || (methodName != null) || (lineNumber != null)) {
           info = new LocationInfo(fileName, className, methodName, lineNumber);
       } 
-      events.add(
-        new LoggingEvent(
-          logger.getName(), logger, timeStamp, levelImpl, threadName, message, ndc,
-          mdc, exception,
-          info,
-          properties));
+      
+      LoggingEvent loggingEvent = new LoggingEvent();
+      loggingEvent.setLogger(logger);
+      loggingEvent.setTimeStamp(timeStamp);
+      loggingEvent.setLevel(levelImpl);
+      loggingEvent.setThreadName(threadName);
+      loggingEvent.setMessage(message);
+      loggingEvent.setNDC(ndc);
+      loggingEvent.setThrowableInformation(new ThrowableInformation(exception));
+      loggingEvent.setLocationInformation(info);
+      loggingEvent.setProperties(properties);
+      
+      events.add(loggingEvent);
+     
       logger = null;
       timeStamp = 0L;
       level = null;

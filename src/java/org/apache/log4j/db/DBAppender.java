@@ -109,7 +109,7 @@ public class DBAppender
       insertStatement.setString(5, event.getLevel().toString());
       insertStatement.setString(6, event.getNDC());
       insertStatement.setString(7, event.getThreadName());
-      insertStatement.setString(8, computeFlag(event));
+      insertStatement.setShort(8, computeFlag(event, propertiesKeys, throwableStrRep));
       
       int updateCount = insertStatement.executeUpdate();
 
@@ -153,7 +153,7 @@ public class DBAppender
   }
 
 
-  short computeFlag(LoggingEvent event) {
+  short computeFlag(LoggingEvent event, Set propertyJeys, String[] strRep) {
 
     return 0;
   }
