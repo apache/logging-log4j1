@@ -129,22 +129,18 @@ public class Category implements AppenderAttachable {
 						   DEFAULT_CONFIGURATION_FILE);
       URL url = null;
       try {
-	url = new URL(resource);
-      } catch (MalformedURLException ex) {
-
 	// so, resource is not a URL:
 	// attempt to get the resource from the class path
-	url = ClassLoader.getSystemResource(resource);
-	if(url == null) {
-	  // Is it under org/apache/log4j somewhere in the classpath?
-	  url = Category.class.getResource(resource);
-	}	
+	url = new URL(resource);
+      } catch (MalformedURLException ex) {	
+	url = org.apache.log4j.helpers.Loader.getResource(resource, Category.class);
       }	
       
       // If we have a non-null url, then delegate the rest of the
       // configuration to the OptionConverter.selectAndConfigure
       // method.
       if(url != null) {
+	LogLog.debug("Using URL ["+url+"] for automatic log4j configuration.");
 	OptionConverter.selectAndConfigure(url, defaultHierarchy);
       } else {
 	LogLog.debug("Could not find resource: ["+resource+"].");

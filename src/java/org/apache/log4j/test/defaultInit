@@ -16,7 +16,7 @@ function testDefaultInit {
    touch $TEMP
  fi
 
- java $1 org.apache.log4j.test.DefaultInit
+ java $1 -Dlog4j.debug org.apache.log4j.test.DefaultInit
 
  check witness/definit.$TEST $TEMP; echo "OK."
 }
