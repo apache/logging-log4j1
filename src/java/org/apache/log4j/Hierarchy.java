@@ -27,6 +27,11 @@ import org.apache.log4j.or.RendererMap;
 import org.apache.log4j.or.ObjectRenderer;
 import org.apache.log4j.helpers.LogLog;
 
+// Contributors: Luke Blanshard <luke@quiq.com>
+//               Mario Schomburg - IBM Global Services/Germany
+//               Anders Kristensen
+//               Igor Poteryaev
+
 /**
    This class is specialized in retrieving loggers by name and also
    maintaining the logger hierarchy.
@@ -45,19 +50,13 @@ import org.apache.log4j.helpers.LogLog;
    to the provision node. Other descendants of the same ancestor add
    themselves to the previously created provision node.
 
-   Contributors:
-    Luke Blanshard <luke@quiq.com>
-    Mario Schomburg - IBM Global Services/Germany
-    Anders Kristensen
-    Igor Poteryaev
-
    @author Ceki G&uuml;lc&uuml;
+   @author Mark Womack
 
 */
 public class Hierarchy implements LoggerRepository, RendererSupport {
 
   private LoggerFactory defaultFactory;
-  private Vector listeners;
   private Vector repositoryEventListeners;
   private Vector loggerEventListeners;
 
@@ -80,7 +79,6 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   public
   Hierarchy(Logger root) {
     ht = new Hashtable();
-    listeners = new Vector(1);
     repositoryEventListeners = new Vector(1);
     loggerEventListeners = new Vector(1);
     this.root = root;
@@ -94,23 +92,10 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   /**
      Add an object renderer for a specific class.
    */
-  public
-  void addRenderer(Class classToRender, ObjectRenderer or) {
+  public void addRenderer(Class classToRender, ObjectRenderer or) {
     rendererMap.put(classToRender, or);
   }
 
-  /**
-     @deprecated As of v1.3, use {@link #addLoggerRepositoryEventListener}
-     and {@link #addLoggerEventListener} methods instead. */
-  public
-  void addHierarchyEventListener(HierarchyEventListener listener) {
-    if(listeners.contains(listener)) {
-      LogLog.warn("Ignoring attempt to add an existent listener.");
-    } else {
-      listeners.addElement(listener);
-    }
-  }
-  
   /**
     Add a {@link LoggerRepositoryEventListener} to the repository. The 
     listener will be called when repository events occur. 
@@ -175,14 +160,12 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
      invoking this method.
 
      @since 0.9.0 */
-  public
-  void clear() {
+  public void clear() {
     //System.out.println("\n\nAbout to clear internal hash table.");
     ht.clear();
   }
 
-  public
-  void emitNoAppenderWarning(Category cat) {
+  public void emitNoAppenderWarning(Category cat) {
     // No appenders in hierarchy, warn user only once.
     if(!this.emittedNoAppenderWarning) {
       LogLog.warn("No appenders could be found for logger (" +
@@ -197,10 +180,8 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
      its reference, otherwise returns <code>null</code>.
 
      @param name The name of the logger to search for.
-
   */
-  public
-  Logger exists(String name) {
+  public Logger exists(String name) {
     Object o = ht.get(new CategoryKey(name));
     if(o instanceof Logger) {
       return (Logger) o;
@@ -212,8 +193,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   /**
      The string form of {@link #setThreshold(Level)}.
   */
-  public
-  void setThreshold(String levelStr) {
+  public void setThreshold(String levelStr) {
     Level l = Level.toLevel(levelStr, null);
     if(l != null) {
       setThreshold(l);
@@ -229,19 +209,11 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
 
      @param l The minimum level for which logging requests are sent to
      their appenders.  */
-  public
-  void setThreshold(Level l) {
+  public void setThreshold(Level l) {
     if(l != null) {
       thresholdInt = l.level;
       threshold = l;
     }
-  }
-
-  /**
-    @deprecated As of 1.3 use fireAddAppenderEvent(Logger,Appender)
-    instead. */
-  public void fireAddAppenderEvent(Category logger, Appender appender) {
-    fireAddAppenderEvent((Logger)logger, appender);
   }
 
   /**
@@ -251,18 +223,6 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
     @param appender The appender added to the logger.
     @since 1.3*/
   public void fireAddAppenderEvent(Logger logger, Appender appender) {
-    
-    // when deprecated fireAddAppenderEvent(Category,Appender) is removed,
-    // so should this block
-    if(listeners != null) {
-      int size = listeners.size();
-      HierarchyEventListener listener;
-      for(int i = 0; i < size; i++) {
-        listener = (HierarchyEventListener)listeners.elementAt(i);
-        listener.addAppenderEvent(logger, appender);
-      }
-    }
-    
     if(loggerEventListeners != null) {
       int size = loggerEventListeners.size();
       LoggerEventListener listener;
@@ -280,37 +240,12 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
     @param appender The appender removed from the logger.
     @since 1.3*/
   public void fireRemoveAppenderEvent(Logger logger, Appender appender) {
-    if(listeners != null) {
-      int size = listeners.size();
-      HierarchyEventListener listener;
-      for(int i = 0; i < size; i++) {
-        listener = (HierarchyEventListener)listeners.elementAt(i);
-        listener.removeAppenderEvent(logger, appender);
-      }
-    }
-
     if(loggerEventListeners != null) {
       int size = loggerEventListeners.size();
       LoggerEventListener listener;
       for(int i = 0; i < size; i++) {
         listener = (LoggerEventListener)loggerEventListeners.elementAt(i);
         listener.appenderRemovedEvent(logger, appender);
-      }
-    }
-  }
-
-  /**
-    Requests that an all appenders removed event be sent to any registered
-    {@link LoggerEventListener}. 
-    @param logger The logger from which all appenders were removed.
-    @since 1.3*/
-  public void fireRemoveAllAppendersEvent(Logger logger) {
-    if(loggerEventListeners != null) {
-      int size = loggerEventListeners.size();
-      LoggerEventListener listener;
-      for(int i = 0; i < size; i++) {
-        listener = (LoggerEventListener)loggerEventListeners.elementAt(i);
-        listener.allAppendersRemovedEvent(logger);
       }
     }
   }
@@ -352,8 +287,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
      state.
 
      @since 1.2 */
-  public
-  Level getThreshold() {
+  public Level getThreshold() {
     return threshold;
   }
 
@@ -379,8 +313,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
      @param name The name of the logger to retrieve.
 
  */
-  public
-  Logger getLogger(String name) {
+  public Logger getLogger(String name) {
     return getLogger(name, defaultFactory);
   }
 
@@ -397,8 +330,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
      @param factory The factory that will make the new logger instance.
 
  */
-  public
-  Logger getLogger(String name, LoggerFactory factory) {
+  public Logger getLogger(String name, LoggerFactory factory) {
     //System.out.println("getInstance("+name+") called.");
     CategoryKey key = new CategoryKey(name);
     // Synchronize to prevent write conflicts. Read conflicts (in
@@ -438,8 +370,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
 
      <p>The root logger is <em>not</em> included in the returned
      {@link Enumeration}.  */
-  public
-  Enumeration getCurrentLoggers() {
+  public Enumeration getCurrentLoggers() {
     // The accumlation in v is necessary because not all elements in
     // ht are Logger objects as there might be some ProvisionNodes
     // as well.
@@ -458,8 +389,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   /**
      @deprecated Please use {@link #getCurrentLoggers} instead.
    */
-  public
-  Enumeration getCurrentCategories() {
+  public Enumeration getCurrentCategories() {
     return getCurrentLoggers();
   }
 
@@ -467,8 +397,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   /**
      Get the renderer map for this hierarchy.
   */
-  public
-  RendererMap getRendererMap() {
+  public RendererMap getRendererMap() {
     return rendererMap;
   }
 
@@ -478,8 +407,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
 
      @since 0.9.0
    */
-  public
-  Logger getRootLogger() {
+  public Logger getRootLogger() {
     return root;
   }
 
@@ -488,17 +416,8 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
      disabled for <code>level</code> object passed as parameter and
      <code>false</code> otherwise. See also the {@link
      #setThreshold(Level) threshold} emthod.  */
-  public
-  boolean isDisabled(int level) {
+  public boolean isDisabled(int level) {
     return thresholdInt > level;
-  }
-
-  /**
-     @deprecated Deprecated with no replacement.
-  */
-  public
-  void overrideAsNeeded(String override) {
-    LogLog.warn("The Hiearchy.overrideAsNeeded method has been deprecated.");
   }
 
   /**
@@ -515,8 +434,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
      block all logging until it is completed.</p>
 
      @since 0.8.5 */
-  public
-  void resetConfiguration() {
+  public void resetConfiguration() {
     
     getRootLogger().setLevel(Level.DEBUG);
     root.setResourceBundle(null);
@@ -550,25 +468,11 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   }
 
   /**
-     Does nothing.
-
-     @deprecated Deprecated with no replacement.
-   */
-  public
-  void setDisableOverride(String override) {
-    LogLog.warn("The Hiearchy.setDisableOverride method has been deprecated.");
-  }
-
-
-
-  /**
      Used by subclasses to add a renderer to the hierarchy passed as parameter.
    */
-  public
-  void setRenderer(Class renderedClass, ObjectRenderer renderer) {
+  public void setRenderer(Class renderedClass, ObjectRenderer renderer) {
     rendererMap.put(renderedClass, renderer);
   }
-
 
   /**
      Shutting down a hierarchy will <em>safely</em> close and remove
@@ -647,9 +551,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
 
         We add 'cat' to the list of children for this potential parent.
    */
-  final
-  private
-  void updateParents(Logger cat) {
+  final private void updateParents(Logger cat) {
     String name = cat.name;
     int length = name.length();
     boolean parentFound = false;
@@ -702,9 +604,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
 	 c's parent field to cat.
 
   */
-  final
-  private
-  void updateChildren(ProvisionNode pn, Logger logger) {
+  final private void updateChildren(ProvisionNode pn, Logger logger) {
     //System.out.println("updateChildren called for " + logger.name);
     final int last = pn.size();
 

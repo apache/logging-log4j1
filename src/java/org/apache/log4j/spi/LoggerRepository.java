@@ -21,15 +21,9 @@ import java.util.Enumeration;
    can act as a point of registry for events related to loggers.
 
    @author Ceki G&uuml;lc&uuml;
+   @author Mark Womack
    @since 1.2 */
 public interface LoggerRepository {
-
-  /**
-     Add a {@link HierarchyEventListener} event to the repository.
-     @deprecated As of v1.3, use {@link #addLoggerRepositoryEventListener}
-     and {@link addLoggerEventListener} methods instead.
-  */
-  public void addHierarchyEventListener(HierarchyEventListener listener);
 
   /**
     Add a {@link LoggerRepositoryEventListener} to the repository. The 
@@ -98,18 +92,13 @@ public interface LoggerRepository {
   public abstract void resetConfiguration();
 
   /**
-    @deprecated As of 1.3, please use fireAddAppenderEvent(Logger,Appender).*/
-  public abstract void fireAddAppenderEvent(Category logger,
-      Appender appender);
-
-  /**
     Requests that a appender added event be sent to any registered
     {@link LoggerEventListener}.
     @param logger The logger to which the appender was added. 
     @param appender The appender added to the logger.
     @since 1.3*/
   public abstract void fireAddAppenderEvent(Logger logger,
-    Appender appender);
+					    Appender appender);
 
   /**
     Requests that a appender removed event be sent to any registered
@@ -118,14 +107,7 @@ public interface LoggerRepository {
     @param appender The appender removed from the logger.
     @since 1.3*/
   public abstract void fireRemoveAppenderEvent(Logger logger,
-    Appender appender);
-
-  /**
-    Requests that an all appenders removed event be sent to any registered
-    {@link LoggerEventListener}. 
-    @param logger The logger from which all appenders were removed.
-    @since 1.3*/
-  public abstract void fireRemoveAllAppendersEvent(Logger logger);
+					       Appender appender);
 
   /**
     Requests that a level changed event be sent to any registered

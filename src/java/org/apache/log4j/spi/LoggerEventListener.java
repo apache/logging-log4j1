@@ -43,12 +43,6 @@ public interface LoggerEventListener {
   public void appenderRemovedEvent(Logger logger, Appender appender);
 
   /**
-    Called when all appenders are removed from the logger.
-    
-    @param logger The logger from which the appenders were removed. */
-  public void allAppendersRemovedEvent(Logger logger);
-  
-  /**
     Called when level changed on the logger.
     
     @param logger The logger that changed levels. */

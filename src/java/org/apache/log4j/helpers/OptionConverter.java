@@ -120,9 +120,7 @@ public class OptionConverter {
      returned.
 
      <p>Case of value is unimportant.  */
-  public
-  static
-  boolean toBoolean(String value, boolean dEfault) {
+  public static boolean toBoolean(String value, boolean dEfault) {
     if(value == null)
       return dEfault;
     String trimmedVal = value.trim();
@@ -169,9 +167,7 @@ public class OptionConverter {
      significant for the class name part, if present.
 
      @since 1.1 */
-  public
-  static
-  Level toLevel(String value, Level defaultValue) {
+  public static Level toLevel(String value, Level defaultValue) {
     if(value == null)
       return defaultValue;
 
