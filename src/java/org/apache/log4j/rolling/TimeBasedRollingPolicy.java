@@ -31,7 +31,9 @@ import java.util.Date;
 /**
  *
  *
- *
+ * If configuring programatically, do not forget to call {@link #activateOptions}
+ * method before using this policy.
+ * 
  * @author Ceki G&uuml;lc&uuml;
  */
 public class TimeBasedRollingPolicy extends RollingPolicySkeleton
