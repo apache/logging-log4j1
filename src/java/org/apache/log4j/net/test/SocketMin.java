@@ -7,17 +7,16 @@
 
 package org.apache.log4j.net.test;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.apache.log4j.net.SocketAppender;
 import org.apache.log4j.NDC;
 import java.io.InputStreamReader;
 
 public class SocketMin {
 
-  static Category cat = Category.getInstance(SyslogMin.class.getName());
+  static Logger logger = Logger.getLogger(SyslogMin.class);
   static SocketAppender s;
 
   public
@@ -51,7 +50,7 @@ public class SocketMin {
     BasicConfigurator.configure();
     try {
       int port   = Integer.parseInt(portStr);
-      cat.info("Creating socket appender ("+host+","+port+").");
+      logger.info("Creating socket appender ("+host+","+port+").");
       s = new SocketAppender(host, port);
       s.setName("S");
       root.addAppender(s);
@@ -75,10 +74,10 @@ public class SocketMin {
     int i;
     int k = 0;
     while (true) {
-      cat.debug("Message " + k++);
-      cat.info("Message " + k++);
-      cat.warn("Message " + k++);
-      cat.error("Message " + k++, new Exception("Just testing"));
+      logger.debug("Message " + k++);
+      logger.info("Message " + k++);
+      logger.warn("Message " + k++);
+      logger.error("Message " + k++, new Exception("Just testing"));
       try {i = in.read(); }
       catch(Exception e) { return; }
       if(i == -1) break;
@@ -93,11 +92,11 @@ public class SocketMin {
   static
   void test() {
     int i  = 0;
-    cat.debug( "Message " + i++);
-    cat.info( "Message " + i++);
-    cat.warn( "Message " + i++);
-    cat.error( "Message " + i++);
-    cat.log(Level.FATAL, "Message " + i++);
-    cat.debug("Message " + i++,  new Exception("Just testing."));
+    logger.debug( "Message " + i++);
+    logger.info( "Message " + i++);
+    logger.warn( "Message " + i++);
+    logger.error( "Message " + i++);
+    logger.log(Level.FATAL, "Message " + i++);
+    logger.debug("Message " + i++,  new Exception("Just testing."));
   }
 }

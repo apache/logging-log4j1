@@ -16,7 +16,7 @@
 
 package factor;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import org.apache.log4j.NDC;
 import org.apache.log4j.PropertyConfigurator;
 
@@ -61,8 +61,7 @@ import java.util.Vector;
  */
 public class NumberCruncherServer extends UnicastRemoteObject
   implements NumberCruncher {
-  static Category cat =
-    Category.getInstance(NumberCruncherServer.class.getName());
+  final static Logger logger = Logger.getLogger(NumberCruncherServer.class);
 
   public NumberCruncherServer() throws RemoteException {
   }
@@ -82,7 +81,7 @@ public class NumberCruncherServer extends UnicastRemoteObject
     // contained in cookies.
     NDC.push(String.valueOf(number));
 
-    cat.info("Beginning to factor.");
+    logger.info("Beginning to factor.");
 
     if (number <= 0) {
       throw new IllegalArgumentException(
@@ -98,10 +97,10 @@ public class NumberCruncherServer extends UnicastRemoteObject
       // It is bad practice to place log requests within tight loops.
       // It is done here to show interleaved log output from
       // different requests. 
-      cat.debug("Trying to see if " + i + " is a factor.");
+      logger.debug("Trying to see if " + i + " is a factor.");
 
       if ((n % i) == 0) {
-        cat.info("Found factor " + i);
+        logger.info("Found factor " + i);
         factors.addElement(new Integer(i));
 
         do {
@@ -115,7 +114,7 @@ public class NumberCruncherServer extends UnicastRemoteObject
     }
 
     if (n != 1) {
-      cat.info("Found factor " + n);
+      logger.info("Found factor " + n);
       factors.addElement(new Integer(n));
     }
 
@@ -163,9 +162,9 @@ public class NumberCruncherServer extends UnicastRemoteObject
     try {
       ncs = new NumberCruncherServer();
       Naming.rebind("Factor", ncs);
-      cat.info("NumberCruncherServer bound and ready to serve.");
+      logger.info("NumberCruncherServer bound and ready to serve.");
     } catch (Exception e) {
-      cat.error("Could not bind NumberCruncherServer.", e);
+      logger.error("Could not bind NumberCruncherServer.", e);
       return;
     }
     NumberCruncherClient.loop(ncs);

@@ -16,7 +16,7 @@
 
 package org.apache.log4j.net;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.joran.JoranConfigurator;
@@ -41,8 +41,7 @@ import java.net.Socket;
   *  @since 0.8.4
   * */
 public class SimpleSocketServer {
-  static Category cat =
-    Category.getInstance(SimpleSocketServer.class.getName());
+  final static Logger logger = Logger.getLogger(SimpleSocketServer.class);
   static int port;
 
   public static void main(String[] argv) {
@@ -53,16 +52,16 @@ public class SimpleSocketServer {
     }
 
     try {
-      cat.info("Listening on port " + port);
+      logger.info("Listening on port " + port);
 
       ServerSocket serverSocket = new ServerSocket(port);
 
       while (true) {
-        cat.info("Waiting to accept a new client.");
+        logger.info("Waiting to accept a new client.");
 
         Socket socket = serverSocket.accept();
-        cat.info("Connected to client at " + socket.getInetAddress());
-        cat.info("Starting new socket node.");
+        logger.info("Connected to client at " + socket.getInetAddress());
+        logger.info("Starting new socket node.");
         new Thread(new SocketNode(socket, LogManager.getLoggerRepository()))
         .start();
       }

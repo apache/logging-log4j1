@@ -17,7 +17,7 @@
 package trivial;
 
 import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import org.apache.log4j.NDC;
 
 
@@ -47,29 +47,29 @@ import org.apache.log4j.NDC;
 
  */
 public class Trivial {
-  static Category cat = Category.getInstance(Trivial.class.getName());
+  static Logger logger = Logger.getLogger(Trivial.class.getName());
 
   public static void main(String[] args) {
     BasicConfigurator.configure();
     NDC.push("Client #45890");
 
-    cat.info("Awake awake. Put on thy strength.");
+    logger.info("Awake awake. Put on thy strength.");
     Trivial.foo();
     InnerTrivial.foo();
-    cat.info("Exiting Trivial.");
+    logger.info("Exiting Trivial.");
   }
 
   static void foo() {
     NDC.push("DB");
-    cat.debug("Now king David was old.");
+    logger.debug("Now king David was old.");
     NDC.pop();
   }
 
   static class InnerTrivial {
-    static Category cat = Category.getInstance(InnerTrivial.class.getName());
+    static Logger logger = Logger.getLogger(InnerTrivial.class.getName());
 
     static void foo() {
-      cat.info("Entered foo.");
+      logger.info("Entered foo.");
     }
   }
 }
