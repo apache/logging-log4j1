@@ -16,12 +16,9 @@
 
 package org.apache.log4j.rolling;
 
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
-import org.apache.log4j.Appender;
-import org.apache.log4j.ConsoleAppender;
+
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -89,7 +86,7 @@ public class FilterBasedRollingTest extends TestCase {
 
     rfa.setRollingPolicy(swrp);
     rfa.setTriggeringPolicy(fbtp);
-    rfa.activateOptions();
+    rfa.activate();
     Logger.getRootLogger().addAppender(rfa);
 
     common("output/filterBased-test2");

@@ -18,9 +18,7 @@ package org.apache.log4j.watchdog;
 
 import java.net.URL;
 
-import org.apache.log4j.LogManager;
 import org.apache.log4j.scheduler.Job;
-import org.apache.log4j.scheduler.Scheduler;
 import org.apache.log4j.watchdog.WatchdogSkeleton;
 
 /**

@@ -38,7 +38,7 @@ public class AppenderFactoryUtils {
 				tbrp.activateOptions();
 				RollingFileAppender rfa = new RollingFileAppender();
 				rfa.setRollingPolicy(tbrp);
-				rfa.activateOptions();
+				rfa.activate();
 				return rfa;
 
 			}
@@ -67,7 +67,7 @@ public class AppenderFactoryUtils {
 					FileAppender fileAppender = new FileAppender(layout,
 							MessageFormat.format(pattern,
 									new Object[] { value }));
-					fileAppender.activateOptions();
+					fileAppender.activate();
 					return fileAppender;
 				} catch (Exception ex) {
 					//throw new RuntimeException(ex);

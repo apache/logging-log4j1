@@ -71,8 +71,9 @@ public class AsyncAppender extends AppenderSkeleton
     aai = new AppenderAttachableImpl();
     dispatcher = new Dispatcher(bf, this);
     dispatcher.start();
+    super.activate();
   }
-
+  
   public void addAppender(Appender newAppender) {
     synchronized (aai) {
       aai.addAppender(newAppender);

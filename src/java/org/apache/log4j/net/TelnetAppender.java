@@ -67,7 +67,7 @@ public class TelnetAppender extends AppenderSkeleton {
 
   /** all of the options have been set, create the socket handler and
       wait for connections. */
-  public void activateOptions() {
+  public void activate() {
     try {
       sh = new SocketHandler(port);
       sh.start();

@@ -106,7 +106,7 @@ public class SMTPAppender extends AppenderSkeleton {
   /**
      Activate the specified options, such as the smtp host, the
      recipient, from, etc. */
-  public void activateOptions() {
+  public void activate() {
     Properties props = new Properties(System.getProperties());
 
     if (smtpHost != null) {

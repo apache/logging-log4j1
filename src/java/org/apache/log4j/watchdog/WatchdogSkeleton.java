@@ -16,11 +16,9 @@
 
 package org.apache.log4j.watchdog;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.LogManager;
+
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.spi.Configurator;
-import org.apache.log4j.plugins.Plugin;
 import org.apache.log4j.plugins.PluginSkeleton;
 import org.apache.log4j.helpers.OptionConverter;
 

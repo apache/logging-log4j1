@@ -156,7 +156,7 @@ public class SyslogAppender extends AppenderSkeleton {
   /**
    * This method returns immediately as options are activated when they are set.
    * */
-  public void activateOptions() {
+  public void activate() {
     if (facilityStr == null) {
       String errMsg =
         "The Facility option must be set for SyslogAppender named [" + name

@@ -132,7 +132,7 @@ public class SocketAppender extends AppenderSkeleton {
     this.address = address;
     this.remoteHost = address.getHostName();
     this.port = port;
-    connect(address, port);
+    activate();
   }
 
   /**
@@ -142,13 +142,13 @@ public class SocketAppender extends AppenderSkeleton {
     this.port = port;
     this.address = getAddressByName(host);
     this.remoteHost = host;
-    connect(address, port);
+    activate();
   }
 
   /**
          Connect to the specified <b>RemoteHost</b> and <b>Port</b>.
   */
-  public void activateOptions() {
+  public void activate() {
     try {
       hostname = InetAddress.getLocalHost().getHostName();
     } catch (UnknownHostException uhe) {
@@ -166,6 +166,8 @@ public class SocketAppender extends AppenderSkeleton {
       getLogger().error(err);
       throw new IllegalStateException(err);
     }
+    // all is dandy on the eastern front.
+    super.activate();
   }
 
   /**

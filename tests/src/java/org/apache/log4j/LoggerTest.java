@@ -33,7 +33,7 @@ import java.util.ResourceBundle;
    @author Ceki G&uuml;lc&uuml;
 
 */
-public class LoggerTestCase extends TestCase {
+public class LoggerTest extends TestCase {
   // A short message.
   static String MSG = "M";
   Logger logger;
@@ -43,7 +43,7 @@ public class LoggerTestCase extends TestCase {
   ResourceBundle rbFR;
   ResourceBundle rbCH;
 
-  public LoggerTestCase(String name) {
+  public LoggerTest(String name) {
     super(name);
   }
 
@@ -108,6 +108,7 @@ public class LoggerTestCase extends TestCase {
     Logger a = Logger.getLogger("a");
     Logger ab = Logger.getLogger("a.b");
     CountingAppender ca = new CountingAppender();
+    ca.activate();
     a.addAppender(ca);
 
     assertEquals(ca.counter, 0);
@@ -132,8 +133,9 @@ public class LoggerTestCase extends TestCase {
     Logger x = Logger.getLogger("x");
 
     CountingAppender ca1 = new CountingAppender();
+    ca1.activate();
     CountingAppender ca2 = new CountingAppender();
-
+    ca2.activate();  
     a.addAppender(ca1);
     abc.addAppender(ca2);
 
@@ -165,9 +167,12 @@ public class LoggerTestCase extends TestCase {
     Logger x = Logger.getLogger("x");
 
     CountingAppender caRoot = new CountingAppender();
+    caRoot.activate();
     CountingAppender caA = new CountingAppender();
+    caA.activate();
     CountingAppender caABC = new CountingAppender();
-
+    caABC.activate();
+    
     root.addAppender(caRoot);
     a.addAppender(caA);
     abc.addAppender(caABC);
@@ -196,6 +201,7 @@ public class LoggerTestCase extends TestCase {
 
   public void testDisable1() {
     CountingAppender caRoot = new CountingAppender();
+    caRoot.activate();
     Logger root = Logger.getRootLogger();
     root.addAppender(caRoot);
 
@@ -344,19 +350,19 @@ public class LoggerTestCase extends TestCase {
     assertSame(a0, a1);
   }
 
-  public static Test suite() {
+  public static Test DISABLEDsuite() {
     TestSuite suite = new TestSuite();
-    suite.addTest(new LoggerTestCase("testAppender1"));
-    suite.addTest(new LoggerTestCase("testAppender2"));
-    suite.addTest(new LoggerTestCase("testAdditivity1"));
-    suite.addTest(new LoggerTestCase("testAdditivity2"));
-    suite.addTest(new LoggerTestCase("testAdditivity3"));
-    suite.addTest(new LoggerTestCase("testDisable1"));
-    suite.addTest(new LoggerTestCase("testRB1"));
-    suite.addTest(new LoggerTestCase("testRB2"));
-    suite.addTest(new LoggerTestCase("testRB3"));
-    suite.addTest(new LoggerTestCase("testExists"));
-    suite.addTest(new LoggerTestCase("testHierarchy1"));
+    suite.addTest(new LoggerTest("testAppender1"));
+    suite.addTest(new LoggerTest("testAppender2"));
+    suite.addTest(new LoggerTest("testAdditivity1"));
+    suite.addTest(new LoggerTest("testAdditivity2"));
+    suite.addTest(new LoggerTest("testAdditivity3"));
+    suite.addTest(new LoggerTest("testDisable1"));
+    suite.addTest(new LoggerTest("testRB1"));
+    suite.addTest(new LoggerTest("testRB2"));
+    suite.addTest(new LoggerTest("testRB3"));
+    suite.addTest(new LoggerTest("testExists"));
+    suite.addTest(new LoggerTest("testHierarchy1"));
 
     return suite;
   }
@@ -373,10 +379,6 @@ public class LoggerTestCase extends TestCase {
 
     public void append(LoggingEvent event) {
       counter++;
-    }
-
-    public boolean requiresLayout() {
-      return true;
     }
   }
 }

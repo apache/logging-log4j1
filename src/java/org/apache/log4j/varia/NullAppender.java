@@ -52,10 +52,4 @@ public class NullAppender extends AppenderSkeleton {
   protected void append(LoggingEvent event) {
   }
 
-  /**
-    * NullAppenders do not need a layout.  
-    * */
-  public boolean requiresLayout() {
-    return false;
-  }
 }

@@ -18,7 +18,6 @@ package org.apache.log4j.joran.action;
 
 
 import org.apache.log4j.config.PropertySetter;
-import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.joran.spi.ExecutionContext;
 import org.apache.log4j.spi.ErrorItem;
 

@@ -109,7 +109,7 @@ public class ChainsawAppender
    * Instantiates and activates an instance of a ChainsawViewer
    * to view the contents of this appender.
    */
-  public void activateOptions() {
+  public void activate() {
     if (viewerClassname == null) {
       viewerClassname = "org.apache.log4j.chainsaw.DefaultViewer";
     }

@@ -98,7 +98,7 @@ public class SizeBasedRollingTest extends TestCase {
     
     rfa.setRollingPolicy(swrp);
     rfa.setTriggeringPolicy(sbtp);
-    rfa.activateOptions();
+    rfa.activate();
     root.addAppender(rfa);
 
     // Write exactly 10 bytes with each log
@@ -142,7 +142,7 @@ public class SizeBasedRollingTest extends TestCase {
      fwrp.activateOptions();
      rfa.setRollingPolicy(fwrp);
      rfa.setTriggeringPolicy(sbtp);
-     rfa.activateOptions();
+     rfa.activate();
      root.addAppender(rfa);
 
      // Write exactly 10 bytes with each log

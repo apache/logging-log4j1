@@ -28,17 +28,13 @@ import java.io.Writer;
 //              Ben Sandee
 
 /**
-   WriterAppender appends log events to a {@link java.io.Writer} or an
-   {@link java.io.OutputStream} depending on the user's choice.
-
-   @author Ceki G&uuml;lc&uuml;
-   @since 1.1 */
+ * WriterAppender appends log events to a {@link java.io.Writer} or an 
+ * {@link java.io.OutputStream} depending on the user's choice.
+ * 
+ * @author <a href="http://www.qos.ch/log4j/">Ceki G&uuml;lc&uuml;</a>
+ * @since 1.1 
+ * */
 public class WriterAppender extends AppenderSkeleton {
-  
-  /**
-   * Set to true when the appender is in functioning order.
-   */
-  protected boolean inOrder = false;
   
   /**
      Immediate flush means that the underlying writer or output stream
@@ -68,7 +64,8 @@ public class WriterAppender extends AppenderSkeleton {
   protected Writer writer;
 
   /**
-     This default constructor does nothing.  */
+   * The default constructor does nothing.  
+   * */
   public WriterAppender() {
   }
 
@@ -96,6 +93,7 @@ public class WriterAppender extends AppenderSkeleton {
   public WriterAppender(Layout layout, Writer writer) {
     this.layout = layout;
     this.setWriter(writer);
+    this.activate();
   }
 
   /**
@@ -124,16 +122,17 @@ public class WriterAppender extends AppenderSkeleton {
   }
 
   /**
-   * Does nothing.
+   * Checks that requires parameters are set and if everything is in order, 
+   * activates this appender.
   */
-  public void activateOptions() {
+  public void activate() {
     if (this.layout == null) {
       getLogger().error(
         "No layout set for the appender named [{}].", name);
     }
     
     if(this.writer != null) {
-      inOrder = true;
+      super.activate();
     }
   }
 
@@ -173,13 +172,13 @@ public class WriterAppender extends AppenderSkeleton {
      value <code>false</code> is returned. */
   protected boolean checkEntryConditions() {
     if (this.closed) {
-      getLogger().warn("Not allowed to write to a closed appender.");
+      getNonFloodingLogger().warn("Not allowed to write to a closed appender.");
 
       return false;
     }
 
     if (this.writer == null) {
-      getLogger().error(
+      getNonFloodingLogger().error(
         "No output stream or file set for the appender named [{}].", name);
 
       return false;
@@ -286,7 +285,7 @@ public class WriterAppender extends AppenderSkeleton {
    * @since 0.9.0 
    * */
   protected void subAppend(LoggingEvent event) {
-    if(!this.inOrder) {
+    if(!isActive()) {
       return;
     }
     
@@ -310,17 +309,9 @@ public class WriterAppender extends AppenderSkeleton {
         this.writer.flush();
       }
     } catch(IOException ioe) {
-      this.inOrder = false;
-      getLogger().error("IO failure for appender named "+name, ioe);
+      this.active = false;
+      getNonFloodingLogger().error("IO failure for appender named "+name, ioe);
     }
-  }
-
-  /**
-     The WriterAppender requires a layout. Hence, this method returns
-     <code>true</code>.
-  */
-  public boolean requiresLayout() {
-    return true;
   }
 
   /**
@@ -348,7 +339,7 @@ public class WriterAppender extends AppenderSkeleton {
           this.writer.write(f);
           this.writer.flush();
         } catch(IOException ioe) {
-          inOrder = false;
+          active = false;
           getLogger().error("Failed to write footer for Appender named "+name, ioe);
         }
       }
@@ -367,7 +358,7 @@ public class WriterAppender extends AppenderSkeleton {
         try {
           this.writer.write(h);
         } catch(IOException ioe) {
-          this.inOrder = false;
+          this.active = false;
           getLogger().error("Failed to write header for WriterAppender named "+name, ioe);
         }
       }

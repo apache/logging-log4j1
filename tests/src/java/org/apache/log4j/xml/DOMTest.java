@@ -18,7 +18,9 @@ package org.apache.log4j.xml;
 
 import java.util.List;
 
+import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -33,10 +35,9 @@ import org.apache.log4j.util.ControlFilter;
 import org.apache.log4j.util.ISO8601Filter;
 import org.apache.log4j.util.Transformer;
 import org.apache.log4j.util.Compare;
-import org.apache.log4j.FileAppender;
 import java.io.File;
 
-public class DOMTestCase extends TestCase {
+public class DOMTest extends TestCase {
 
   static String TEMP_A1 = "output/temp.A1";
   static String TEMP_A2 = "output/temp.A2";
@@ -61,13 +62,13 @@ public class DOMTestCase extends TestCase {
   Logger root; 
   Logger logger;
 
-  public DOMTestCase(String name) {
+  public DOMTest(String name) {
     super(name);
   }
 
   public void setUp() {
     root = Logger.getRootLogger();
-    logger = Logger.getLogger(DOMTestCase.class);
+    logger = Logger.getLogger(DOMTest.class);
   }
  
   public void tearDown() {  
@@ -77,7 +78,7 @@ public class DOMTestCase extends TestCase {
   public void test1() throws Exception {
     //org.apache.log4j.BasicConfigurator.configure();
     JoranConfigurator jc = new JoranConfigurator();
-    jc.doConfigure("input/xml/DOMTestCase1.xml", LogManager.getLoggerRepository());
+    jc.doConfigure("input/xml/DOMTest1.xml", LogManager.getLoggerRepository());
     dumpErrors(jc.getErrorList());
     common();
 
@@ -110,7 +111,7 @@ public class DOMTestCase extends TestCase {
   public void test2() throws Exception {
   	if (File.separatorChar == '\\') {
  	    JoranConfigurator jc = new JoranConfigurator();
-	    jc.doConfigure("input\\xml\\DOMTestCase2.xml", LogManager.getLoggerRepository());
+	    jc.doConfigure("input\\xml\\DOMTest2.xml", LogManager.getLoggerRepository());
 	    dumpErrors(jc.getErrorList());
 	    common();
 	
@@ -172,10 +173,12 @@ public class DOMTestCase extends TestCase {
       }
     }
   }
-//  public static Test suite() {
-//    TestSuite suite = new TestSuite();
-//    suite.addTest(new DOMTestCase("test1"));
-//    return suite;
-//  }
+
+  public static Test suite() {
+    TestSuite suite = new TestSuite();
+    suite.addTest(new DOMTest("test1"));
+    //suite.addTest(new DOMTest("test2"));
+    return suite;
+  }
 
 }

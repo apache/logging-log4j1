@@ -82,7 +82,7 @@ public class UDPAppender extends AppenderSkeleton implements PortBased{
     this.address = address;
     this.remoteHost = address.getHostName();
     this.port = port;
-    connect(address, port);
+    activate();
   }
 
   /**
@@ -92,13 +92,13 @@ public class UDPAppender extends AppenderSkeleton implements PortBased{
     this.port = port;
     this.address = getAddressByName(host);
     this.remoteHost = host;
-    connect(address, port);
+    activate();
   }
 
   /**
      Open the UDP sender for the <b>RemoteHost</b> and <b>Port</b>.
   */
-  public void activateOptions() {
+  public void activate() {
     try {
       hostname = InetAddress.getLocalHost().getHostName();
     } catch (UnknownHostException uhe) {

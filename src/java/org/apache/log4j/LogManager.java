@@ -59,6 +59,7 @@ public class LogManager {
    */
   public final static SimpleLoggerFA  SIMPLE_LOGGER_FA = new SimpleLoggerFA();
 
+  
   // The following static initializer gets invoked immediately after a call to 
   // Logger.getLogger() is made. Here is a description of the static initializer.
   // 
