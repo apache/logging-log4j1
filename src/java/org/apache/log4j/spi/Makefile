@@ -13,6 +13,7 @@ JSOURCES:=OptionHandler.java\
 	Configurator.java\
         ThrowableInformation.java\
 	TriggeringEventEvaluator.java\
+        HierarchyEventListener.java\
 
 SUBDIRS := 
 
