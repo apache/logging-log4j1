@@ -1,21 +1,63 @@
 /*
- * Copyright (C) The Apache Software Foundation. All rights reserved.
+ * ============================================================================
+ *                   The Apache Software License, Version 1.1
+ * ============================================================================
  *
- * This software is published under the terms of the Apache Software
- * License version 1.1, a copy of which has been included with this
- * distribution in the LICENSE.txt file.  */
-
-
+ *    Copyright (C) 1999 The Apache Software Foundation. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modifica-
+ * tion, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of  source code must  retain the above copyright  notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * 3. The end-user documentation included with the redistribution, if any, must
+ *    include  the following  acknowledgment:  "This product includes  software
+ *    developed  by the  Apache Software Foundation  (http://www.apache.org/)."
+ *    Alternately, this  acknowledgment may  appear in the software itself,  if
+ *    and wherever such third-party acknowledgments normally appear.
+ *
+ * 4. The names "log4j" and  "Apache Software Foundation"  must not be used to
+ *    endorse  or promote  products derived  from this  software without  prior
+ *    written permission. For written permission, please contact
+ *    apache@apache.org.
+ *
+ * 5. Products  derived from this software may not  be called "Apache", nor may
+ *    "Apache" appear  in their name,  without prior written permission  of the
+ *    Apache Software Foundation.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS  FOR A PARTICULAR  PURPOSE ARE  DISCLAIMED.  IN NO  EVENT SHALL  THE
+ * APACHE SOFTWARE  FOUNDATION  OR ITS CONTRIBUTORS  BE LIABLE FOR  ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL,  EXEMPLARY, OR CONSEQUENTIAL  DAMAGES (INCLU-
+ * DING, BUT NOT LIMITED TO, PROCUREMENT  OF SUBSTITUTE GOODS OR SERVICES; LOSS
+ * OF USE, DATA, OR  PROFITS; OR BUSINESS  INTERRUPTION)  HOWEVER CAUSED AND ON
+ * ANY  THEORY OF LIABILITY,  WHETHER  IN CONTRACT,  STRICT LIABILITY,  OR TORT
+ * (INCLUDING  NEGLIGENCE OR  OTHERWISE) ARISING IN  ANY WAY OUT OF THE  USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * This software  consists of voluntary contributions made  by many individuals
+ * on  behalf of the Apache Software  Foundation.  For more  information on the
+ * Apache Software Foundation, please see <http://www.apache.org/>.
+ *
+ */
 
 package org.apache.log4j;
 
+import org.apache.log4j.helpers.CountingQuietWriter;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.spi.LoggingEvent;
+
+import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
-import java.io.File;
-import org.apache.log4j.helpers.OptionConverter;
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.helpers.CountingQuietWriter;
-import org.apache.log4j.spi.LoggingEvent;
+
 
 /**
    RollingFileAppender extends FileAppender to backup the log files when
@@ -26,22 +68,20 @@ import org.apache.log4j.spi.LoggingEvent;
 
 */
 public class RollingFileAppender extends FileAppender {
-
   /**
      The default maximum file size is 10MB.
   */
-  protected long maxFileSize = 10*1024*1024;
+  protected long maxFileSize = 10 * 1024 * 1024;
 
   /**
      There is one backup file by default.
    */
-  protected int  maxBackupIndex  = 1;
+  protected int maxBackupIndex = 1;
 
   /**
      The default constructor simply calls its {@link
      FileAppender#FileAppender parents constructor}.  */
-  public
-  RollingFileAppender() {
+  public RollingFileAppender() {
     super();
   }
 
@@ -54,9 +94,8 @@ public class RollingFileAppender extends FileAppender {
     appended to. Otherwise, the file desginated by
     <code>filename</code> will be truncated before being opened.
   */
-  public
-  RollingFileAppender(Layout layout, String filename, boolean append)
-                                      throws IOException {
+  public RollingFileAppender(Layout layout, String filename, boolean append)
+    throws IOException {
     super(layout, filename, append);
   }
 
@@ -66,27 +105,25 @@ public class RollingFileAppender extends FileAppender {
     destination for this appender.
 
     <p>The file will be appended to.  */
-  public
-  RollingFileAppender(Layout layout, String filename) throws IOException {
+  public RollingFileAppender(Layout layout, String filename)
+    throws IOException {
     super(layout, filename);
   }
 
   /**
      Returns the value of the <b>MaxBackupIndex</b> option.
    */
-  public
-  int getMaxBackupIndex() {
+  public int getMaxBackupIndex() {
     return maxBackupIndex;
   }
 
- /**
-    Get the maximum size that the output file is allowed to reach
-    before being rolled over to backup files.
+  /**
+     Get the maximum size that the output file is allowed to reach
+     before being rolled over to backup files.
 
-    @since 1.1
- */
-  public
-  long getMaximumFileSize() {
+     @since 1.1
+  */
+  public long getMaximumFileSize() {
     return maxFileSize;
   }
 
@@ -109,24 +146,28 @@ public class RollingFileAppender extends FileAppender {
     File target;
     File file;
 
-    LogLog.debug("rolling over count=" + ((CountingQuietWriter) qw).getCount());
-    LogLog.debug("maxBackupIndex="+maxBackupIndex);
+    LogLog.debug(
+      "rolling over count=" + ((CountingQuietWriter) qw).getCount());
+    LogLog.debug("maxBackupIndex=" + maxBackupIndex);
 
     // If maxBackups <= 0, then there is no file renaming to be done.
-    if(maxBackupIndex > 0) {
+    if (maxBackupIndex > 0) {
       // Delete the oldest file, to keep Windows happy.
       file = new File(fileName + '.' + maxBackupIndex);
-      if (file.exists())
-       file.delete();
+
+      if (file.exists()) {
+        file.delete();
+      }
 
       // Map {(maxBackupIndex - 1), ..., 2, 1} to {maxBackupIndex, ..., 3, 2}
       for (int i = maxBackupIndex - 1; i >= 1; i--) {
-	file = new File(fileName + "." + i);
-	if (file.exists()) {
-	  target = new File(fileName + '.' + (i + 1));
-	  LogLog.debug("Renaming file " + file + " to " + target);
-	  file.renameTo(target);
-	}
+        file = new File(fileName + "." + i);
+
+        if (file.exists()) {
+          target = new File(fileName + '.' + (i + 1));
+          LogLog.debug("Renaming file " + file + " to " + target);
+          file.renameTo(target);
+        }
       }
 
       // Rename fileName to fileName.1
@@ -143,23 +184,21 @@ public class RollingFileAppender extends FileAppender {
       // This will also close the file. This is OK since multiple
       // close operations are safe.
       this.setFile(fileName, false, bufferedIO, bufferSize);
-    }
-    catch(IOException e) {
-      LogLog.error("setFile("+fileName+", false) call failed.", e);
+    } catch (IOException e) {
+      LogLog.error("setFile(" + fileName + ", false) call failed.", e);
     }
   }
 
-  public
-  synchronized
-  void setFile(String fileName, boolean append, boolean bufferedIO, int bufferSize)
-                                                                 throws IOException {
+  public synchronized void setFile(
+    String fileName, boolean append, boolean bufferedIO, int bufferSize)
+    throws IOException {
     super.setFile(fileName, append, this.bufferedIO, this.bufferSize);
-    if(append) {
+
+    if (append) {
       File f = new File(fileName);
       ((CountingQuietWriter) qw).setCount(f.length());
     }
   }
-
 
   /**
      Set the maximum number of backup files to keep around.
@@ -170,8 +209,7 @@ public class RollingFileAppender extends FileAppender {
      backup files and the log file will be truncated when it reaches
      <code>MaxFileSize</code>.
    */
-  public
-  void setMaxBackupIndex(int maxBackups) {
+  public void setMaxBackupIndex(int maxBackups) {
     this.maxBackupIndex = maxBackups;
   }
 
@@ -186,12 +224,10 @@ public class RollingFileAppender extends FileAppender {
      java.beans.Introspector Introspector}.
 
      @see #setMaxFileSize(String)
- */
-  public
-  void setMaximumFileSize(long maxFileSize) {
+  */
+  public void setMaximumFileSize(long maxFileSize) {
     this.maxFileSize = maxFileSize;
   }
-
 
   /**
      Set the maximum size that the output file is allowed to reach
@@ -204,14 +240,12 @@ public class RollingFileAppender extends FileAppender {
      or gigabytes. For example, the value "10KB" will be interpreted
      as 10240.
    */
-  public
-  void setMaxFileSize(String value) {
+  public void setMaxFileSize(String value) {
     maxFileSize = OptionConverter.toFileSize(value, maxFileSize + 1);
   }
 
-  protected
-  void setQWForFiles(Writer writer) {
-     this.qw = new CountingQuietWriter(writer, errorHandler);
+  protected void setQWForFiles(Writer writer) {
+    this.qw = new CountingQuietWriter(writer, errorHandler);
   }
 
   /**
@@ -220,11 +254,13 @@ public class RollingFileAppender extends FileAppender {
 
      @since 0.9.0
   */
-  protected
-  void subAppend(LoggingEvent event) {
+  protected void subAppend(LoggingEvent event) {
     super.subAppend(event);
-    if((fileName != null) &&
-                     ((CountingQuietWriter) qw).getCount() >= maxFileSize)
+
+    if (
+      (fileName != null)
+        && (((CountingQuietWriter) qw).getCount() >= maxFileSize)) {
       this.rollOver();
-   }
+    }
+  }
 }
