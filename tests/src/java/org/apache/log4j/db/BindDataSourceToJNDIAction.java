@@ -23,7 +23,6 @@ import org.apache.joran.helper.Option;
 import org.apache.log4j.Logger;
 import org.apache.log4j.config.ErrorItem;
 import org.apache.log4j.config.PropertySetter;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
 
 import org.xml.sax.Attributes;
@@ -59,7 +58,7 @@ public class BindDataSourceToJNDIAction extends Action {
     String dsClassName = ec.getSubstitutionProperty(DATA_SOURCE_CLASS);
 
     if (Option.isEmpty(dsClassName)) {
-      LogLog.warn("dsClassName is a required parameter");
+      getLogger().warn("dsClassName is a required parameter");
       ec.addError(new ErrorItem("dsClassName is a required parameter"));
 
       return;

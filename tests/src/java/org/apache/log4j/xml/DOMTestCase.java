@@ -1,14 +1,14 @@
 
 package org.apache.log4j.xml;
 
+import java.util.List;
+
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import junit.framework.Test;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Level;
-import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.config.ErrorItem;
 import org.apache.log4j.joran.JoranConfigurator;
 import org.apache.log4j.util.Filter;
 import org.apache.log4j.util.JunitTestRunnerFilter;
@@ -61,7 +61,7 @@ public class DOMTestCase extends TestCase {
     //org.apache.log4j.BasicConfigurator.configure();
     JoranConfigurator jc = new JoranConfigurator();
     jc.doConfigure("input/xml/DOMTestCase1.xml", LogManager.getLoggerRepository());
-    LogLog.info(""+jc.getExecutionContext().getErrorList());
+    dumpErrors(jc.getErrorList());
     common();
 
     ControlFilter cf1 = new ControlFilter(new String[]{TEST1_1A_PAT, TEST1_1B_PAT, 
@@ -107,13 +107,22 @@ public class DOMTestCase extends TestCase {
     
     logger.error("Message " + ++i, e);
     root.error("Message " + i, e);    
-
   }
 
-  public static Test suite() {
-    TestSuite suite = new TestSuite();
-    suite.addTest(new DOMTestCase("test1"));
-    return suite;
+  void dumpErrors(List errorList) {
+    for(int i = 0; i < errorList.size(); i++) {
+      ErrorItem ei = (ErrorItem) errorList.get(i);
+      System.out.println(ei);
+      Throwable t = ei.getException();
+      if(t != null) {
+        t.printStackTrace(System.out);
+      }
+    }
   }
+//  public static Test suite() {
+//    TestSuite suite = new TestSuite();
+//    suite.addTest(new DOMTestCase("test1"));
+//    return suite;
+//  }
 
 }

@@ -9,7 +9,6 @@ package org.apache.log4j.db;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.joran.JoranConfigurator;
 
 import junit.framework.TestCase;
@@ -55,7 +54,7 @@ public class DBPerfTest extends TestCase {
       logger.debug("message "+i);
     }
     long endTime = System.currentTimeMillis();
-    LogLog.info("writing "+i+" events took "+(endTime-startTime)+" millis.");
-    LogLog.info("or "+(double)(endTime-startTime)/i+" millis per event.");
+    System.out.println("writing "+i+" events took "+(endTime-startTime)+" millis.");
+    System.out.println("or "+(double)(endTime-startTime)/i+" millis per event.");
   }
 }
