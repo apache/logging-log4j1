@@ -9,7 +9,7 @@
 <!-- ================================================================= -->
 <project name="log4j" default="usage" basedir="." >
 
-  <property name="version" value="1.2alpha5"/>
+  <property name="version" value="1.2alpha6"/>
 
   <!-- The base directory relative to which most targets are built -->
   <property name="base" value="."/>

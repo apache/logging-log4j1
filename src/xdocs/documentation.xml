@@ -15,7 +15,7 @@ distribution and also browsable online:</p>
 
 <ul>
   <p>
-    <li><a href="manual/manual.html"><b>manual</b></a>,
+    <li><a href="manual.html"><b>short manual</b></a>,
     </li>
   </p>
 
@@ -44,13 +44,6 @@ distribution and also browsable online:</p>
     </li>
   </p>
   
-  <p>
-    <li>
-      <a href="critique.html"><b>JSR47 vs. log4j</b></a> and 
-      <a href="critique2.html"><b>follow up</b></a>.
-    </li>
-  </p>
-
 </ul>
 
 </section>

@@ -32,9 +32,6 @@ import java.net.MalformedURLException;
   This is the central class in the log4j package. Most logging
   operations, except configuration, are done through this class.
 
-  <p>See the <a href="../../../../manual/manual.html">user manual</a> for an
-  introduction on this class. 
-
   @author Ceki G&uuml;lc&uuml; */
 public class Logger extends Category {
 
