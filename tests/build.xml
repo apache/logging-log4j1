@@ -114,8 +114,7 @@
                                      OptionConverter, BoundedFIFO, 
                                      CyclicBuffer, OR, VariaLevelMatchFilter, 
                                      VariaLevelRangeFilter, PatternParser,
-                                     LevelMatchFilter, FiltersLevelMatchFilter, DRFA,
-                                     Plugins"/>
+                                     LevelMatchFilter, DRFA, Plugins"/>
 
   <!-- ================================================================= -->
   <!-- Longer unit tests                                                 -->
