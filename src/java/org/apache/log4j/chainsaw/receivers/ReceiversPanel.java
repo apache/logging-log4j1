@@ -658,12 +658,16 @@ public class ReceiversPanel extends JPanel {
                   dialog.pack();
                   SwingHelper.centerOnScreen(dialog);
 
-                  panel.getOkPanel().getCancelButton().addActionListener(
-                    new ActionListener() {
-                      public void actionPerformed(ActionEvent e) {
-                        dialog.dispose();
-                      }
-                    });
+                  /**
+                   * Make the default button the ok button
+                   */
+                  dialog.getRootPane().setDefaultButton(panel.getOkPanel().getOkButton());
+                  
+                  /**
+                   * Use the standard Cancel metaphor
+                   */
+                  SwingHelper.configureCancelForDialog(dialog, panel.getOkPanel().getCancelButton());
+                  
 
                   panel.getOkPanel().getOkButton().addActionListener(
                     new ActionListener() {
