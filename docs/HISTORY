@@ -8,7 +8,10 @@
    [D] Changes affect a method or property which was previously marked as 
        deprecated.
 
- 
+ - Added new printing methods message supporiting pattern parsing. These new forms 
+   avoid superflous parameter construction and yield a significant performance 
+   increase in case the log statement is disabled. [*]
+   
  - Added new ListAppender & ListModelAppender classes to the org.apache.log4j.varia package.  
    These are rather simplistic Appender implementations that store LoggingEvents in
    an internal buffer (java.util.List and a DefaultListModel respectively) which can 

@@ -506,6 +506,41 @@
 	statement.
 	</p>
 	
+        <h3>Better alternative based on message patterns</h3>
+        <p>As of log4j version 1.3, there is a significantly more
+        convenient alternative based on message patterns. Assuming
+        <code>entry</code> is a non-primitive object, you can write:
+        </p>
+
+	<p class="source">
+          l.debug("The new entry is {}.", entry);
+	</p>
+
+        <p>After evaluting whether to log or not, and only if the
+        decision is affirmative, the logger instace will format the
+        message and replace the '{}' pair with the string value of the
+        <code>entry</code> parameter within the message pattern.
+        </p>
+        
+        <p>Thus, the following two lines will yield the exact sane
+        output. However, the second form will perform at least 30
+        times faster in case the logger is disabled for DEBUG.
+        </p>
+        
+	<p class="source">
+          l.debug("The new entry is "+entry+"."); <br />
+          l.debug("The new entry is {}.", entry);
+	</p>
+        
+        <p>A 2 argument variant is also availalble. Thus, you can also
+        write:
+        </p>
+	<p class="source">
+          l.debug("The new entry is {}. It replaces {}.", entry, oldEntry);
+	</p>
+        
+     
+
       
                                  <div class="question">
              <a name="2.4">2.4  Are there any suggested ways for naming loggers?</a>
