@@ -52,9 +52,10 @@ package org.apache.log4j.chainsaw.rule;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -66,11 +67,14 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.chainsaw.LoggingEventFieldResolver;
+import org.apache.log4j.spi.LoggingEvent;
 
 
 public class RuleTest extends JFrame {
@@ -86,14 +90,40 @@ public class RuleTest extends JFrame {
    * @author Scott Deboy <sdeboy@apache.org>
    *
    */
-  private final Vector data = new Vector();
-  private final Vector colnames = new Vector();
-
   public RuleTest(String booleanPostFixExpression, String inFixExpression) {
     setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     getContentPane().setLayout(new BorderLayout());
 
-    JPanel fieldPanel = new JPanel(new GridLayout(8, 1));
+	final LoggingEventFieldResolver resolver = LoggingEventFieldResolver.getInstance();
+
+    final List eventList = new ArrayList();
+    
+    eventList.add(new LoggingEvent("org.apache.log4j.chainsaw", Logger.getLogger("logger1"), System.currentTimeMillis(), Level.DEBUG, "message1", new Exception("test")));
+	eventList.add(new LoggingEvent("org.apache.log4j.chainsaw", Logger.getLogger("logger2"), System.currentTimeMillis(), Level.DEBUG, "message2", new Exception("test2")));
+	eventList.add(new LoggingEvent("org.apache.log4j.net", Logger.getLogger("logger3"), System.currentTimeMillis(), Level.DEBUG, "message3", new Exception("test3")));
+	eventList.add(new LoggingEvent("org.apache.log4j.chainsaw", Logger.getLogger("logger4"), System.currentTimeMillis(), Level.WARN, "message4", new Exception("test4")));
+
+    JPanel fieldPanel = new JPanel(new GridLayout(12, 1));
+
+	fieldPanel.add(
+	  new JLabel("Enter infix expression to convert to postfix: "));
+
+	final JTextField inFixTextField = new JTextField(inFixExpression);
+	fieldPanel.add(inFixTextField);
+
+	JButton inFixButton = new JButton("Convert InFix to PostFix");
+	fieldPanel.add(inFixButton);
+
+	final JTextField inFixResult = new JTextField();
+	fieldPanel.add(inFixResult);
+	inFixButton.addActionListener(
+	  new AbstractAction() {
+		public void actionPerformed(ActionEvent evt) {
+		  InFixToPostFix inFixConverter = new InFixToPostFix();
+		  inFixResult.setText(
+			inFixConverter.convert(inFixTextField.getText()));
+		}
+	  });
 
     fieldPanel.add(
       new JLabel("Enter boolean postfix expression to evaluate: "));
@@ -118,64 +148,56 @@ public class RuleTest extends JFrame {
         }
       });
 
-    fieldPanel.add(
-      new JLabel("Enter infix expression to convert to postfix: "));
 
-    final JTextField inFixTextField = new JTextField(inFixExpression);
-    fieldPanel.add(inFixTextField);
+	JPanel resultsPanel = new JPanel(new BorderLayout());
 
-    JButton inFixButton = new JButton("Convert InFix to PostFix");
-    fieldPanel.add(inFixButton);
+	JButton resultsButton = new JButton("Replace fields (processes expression in 'Enter boolean postfix expression to evaluate' box)");
+	resultsPanel.add(resultsButton, BorderLayout.NORTH);
 
-    final JTextField inFixResult = new JTextField();
-    fieldPanel.add(inFixResult);
-    inFixButton.addActionListener(
-      new AbstractAction() {
-        public void actionPerformed(ActionEvent evt) {
-          InFixToPostFix inFixConverter = new InFixToPostFix();
-          inFixResult.setText(
-            inFixConverter.convert(inFixTextField.getText()));
-        }
-      });
+	final JTextArea results = new JTextArea(5, 50);
+	resultsPanel.add(results, BorderLayout.CENTER);
+	JPanel copyNotePanel = new JPanel(new GridLayout(2, 1));
+	copyNotePanel.add(new JLabel("Copy one of the lines in the replace fields box into the "));
+	copyNotePanel.add(new JLabel("'Enter boolean postfix expression to evaluate' box and re-evaluate"));
+	resultsPanel.add(copyNotePanel, BorderLayout.SOUTH);
 
-    colnames.add("level");
-    colnames.add("logger");
-    colnames.add("message");
-    colnames.add("result");
+	resultsButton.addActionListener(
+	  new AbstractAction() {
+		public void actionPerformed(ActionEvent evt) {
+			results.setText("");
+			String originalPostFix = booleanPostFixTextField.getText();
+			System.out.println("postfix is " + originalPostFix);
+			Iterator iter = eventList.iterator();
+			while (iter.hasNext()) {
+				LoggingEvent event = (LoggingEvent)iter.next();
+				StringTokenizer tokenizer = new StringTokenizer(originalPostFix);
+				StringBuffer newPostFix = new StringBuffer();
+				String nextToken = null;
+				while (tokenizer.hasMoreElements()) {
+					nextToken = tokenizer.nextToken();
+					if (resolver.isField(nextToken)) {
+						newPostFix.append(resolver.getValue(nextToken, event) + " ");
+					} else {
+						newPostFix.append(nextToken + " ");
+					} 										
+				}
+				results.setText(results.getText() + (results.getText().length()==0?"":"\n") + newPostFix.toString());
+			}
+		}
+	  });
 
-    data.add(
-      createEvent("DEBUG", "org.apache.log4j.chainsaw", "TEST MESSAGE 1"));
-    data.add(createEvent("DEBUG", "test logger", "TEST MESSAGE 2"));
-    data.add(
-      createEvent("INFO", "org.apache.log4j.chainsaw", "TEST MESSAGE 3"));
-    data.add(
-      createEvent("INFO", "org.aache.log4j.chainsaw", "TEST MESSAGE 4"));
-    data.add(createEvent("WARN", "test logger", "TEST MESSAGE 5"));
-    data.add(createEvent("WARN", "test logger 2", "TEST MESSAGE 6"));
-    data.add(createEvent("WARN", "test logger 2", "TEST MESSAGE 7"));
-
-    TableModel tm = new EventTableModel(data, colnames);
-    JPanel tablePanel = new JPanel();
-    JTable table = new JTable(tm);
-    tablePanel.add(table);
     getContentPane().add(fieldPanel, BorderLayout.NORTH);
-    getContentPane().add(tablePanel, BorderLayout.CENTER);
+    getContentPane().add(resultsPanel, BorderLayout.CENTER);
   }
-
-  private Vector createEvent(String level, String logger, String message) {
-    Vector v = new Vector();
-    v.add(level);
-    v.add(logger);
-    v.add(message);
-
-    return v;
-  }
+  
+  
+  
 
   public static void main(String[] args) {
     RuleTest test =
       new RuleTest(
-        "level debug == BLAH test == logger org.apache == && ||",
-        "( ( level == debug ) || ( BLAH == test ) ) && logger == org.apache");
+        "level debug ~= BLAH test == logger logger1 == && ||",
+        "( ( level ~= debug ) || ( BLAH == test ) ) && logger == logger1");
     test.pack();
     test.setVisible(true);
   }
@@ -223,8 +245,8 @@ public class RuleTest extends JFrame {
       System.out.println(
         "part text match op " + firstParam + ".." + secondParam);
 
-      return ((secondParam != null) && (secondParam.indexOf(firstParam) > -1))
-      ? true : false;
+      return ((secondParam != null && firstParam != null) && 
+      	(secondParam.toLowerCase().indexOf(firstParam.toLowerCase()) > -1));
     }
   }
 
@@ -232,23 +254,10 @@ public class RuleTest extends JFrame {
     boolean evaluate(String firstParam, String secondParam) {
       System.out.println("text match op " + firstParam + ".." + secondParam);
 
-      boolean result = false;
-
       //second parameter is field name
       //first parameter is value
       //fake out logic here to examine passed in parameters and value retrieval from table
-      if (
-        (secondParam.equalsIgnoreCase("level")
-          && firstParam.equalsIgnoreCase("debug"))
-          || (secondParam.equalsIgnoreCase("logger")
-          && firstParam.equalsIgnoreCase("org.apache"))) {
-        result = true;
-      } else {
-        result = (((secondParam != null) && secondParam.equals(firstParam))
-          ? true : false);
-      }
-
-      return result;
+        return ((secondParam != null) && secondParam.equals(firstParam));
     }
   }
 
@@ -421,17 +430,6 @@ public class RuleTest extends JFrame {
       stack.clear();
 
       return postfix.toString();
-    }
-  }
-
-  class EventTableModel extends DefaultTableModel {
-    Vector data;
-    Vector colnames;
-
-    EventTableModel(Vector data, Vector colnames) {
-      super(data, colnames);
-      this.data = data;
-      this.colnames = colnames;
     }
   }
 }
