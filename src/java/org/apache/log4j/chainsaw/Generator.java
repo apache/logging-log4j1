@@ -88,6 +88,7 @@ public class Generator extends Receiver implements Runnable {
         logger.getClass().getName(), logger, System.currentTimeMillis(), level,
         msg, t);
     e.setProperty(Constants.APPLICATION_KEY, getName());
+    e.setProperty(Constants.HOSTNAME_KEY, "localhost");
 
     return e;
   }
