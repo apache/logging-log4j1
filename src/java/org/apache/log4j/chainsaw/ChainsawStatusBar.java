@@ -53,6 +53,7 @@ import org.apache.log4j.chainsaw.icons.ChainsawIcons;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -81,6 +82,7 @@ class ChainsawStatusBar extends JPanel {
   private final JLabel statusMsg = new JLabel(DEFAULT_MSG);
   private final JLabel pausedLabel = new JLabel("", JLabel.CENTER);
   private final JLabel lineSelectionLabel = new JLabel("", JLabel.CENTER);
+  private final JLabel eventCountLabel = new JLabel("", JLabel.CENTER);
   private final JLabel receivedEventLabel = new JLabel("0.0", JLabel.CENTER);
   private final JLabel receivedConnectionlabel = new JLabel("", JLabel.CENTER);
   private volatile long lastReceivedEvent = System.currentTimeMillis();
@@ -120,9 +122,17 @@ class ChainsawStatusBar extends JPanel {
     receivedEventLabel.setMinimumSize(
       new Dimension(
         receivedEventLabel.getFontMetrics(receivedEventLabel.getFont())
-                          .stringWidth("999.9/s") + 10,
+                          .stringWidth("999.9/s") + 5,
         (int) receivedEventLabel.getPreferredSize().getHeight()));
 
+	eventCountLabel.setBorder(statusBarComponentBorder);
+	eventCountLabel.setToolTipText("<# viewable events>:<# total events>");
+	eventCountLabel.setMinimumSize(
+	new Dimension(
+	eventCountLabel.getFontMetrics(eventCountLabel.getFont())
+						.stringWidth("9999:9999") + 5,
+	  (int) eventCountLabel.getPreferredSize().getHeight()));
+	  
     receivedConnectionlabel.setBorder(statusBarComponentBorder);
     receivedConnectionlabel.setToolTipText(
       "Indicates whether Chainsaw has received a remote connection");
@@ -135,13 +145,14 @@ class ChainsawStatusBar extends JPanel {
     lineSelectionLabel.setMinimumSize(
       new Dimension(
         lineSelectionLabel.getFontMetrics(lineSelectionLabel.getFont())
-                          .stringWidth("999999:999999:999999"),
+                          .stringWidth("999999"),
         (int) lineSelectionLabel.getPreferredSize().getHeight()));
     lineSelectionLabel.setToolTipText(
-      "<current line #>:<# viewable events>:<# total events>");
+      "The current line # selected");
 
     JComponent[] toFix =
       new JComponent[] {
+		eventCountLabel,
         receivedConnectionlabel, lineSelectionLabel, receivedEventLabel,
         pausedLabel
       };
@@ -172,19 +183,24 @@ class ChainsawStatusBar extends JPanel {
     c.gridx = 1;
     add(receivedConnectionlabel, c);
 
-    c.weightx = 0.0;
-    c.weighty = 0.0;
-    c.gridx = 2;
-    add(receivedEventLabel, c);
-
-    c.weightx = 0.0;
-    c.weighty = 0.0;
-    c.gridx = 3;
-    add(lineSelectionLabel, c);
+	c.weightx = 0.0;
+	c.weighty = 0.0;
+	c.gridx = 2;
+	add(lineSelectionLabel, c);
+	
+	c.weightx = 0.0;
+	c.weighty = 0.0;
+	c.gridx = 3;
+	add(eventCountLabel, c);
 
     c.weightx = 0.0;
     c.weighty = 0.0;
     c.gridx = 4;
+    add(receivedEventLabel, c);
+
+    c.weightx = 0.0;
+    c.weighty = 0.0;
+    c.gridx = 5;
 
     add(pausedLabel, c);
 
@@ -264,7 +280,8 @@ class ChainsawStatusBar extends JPanel {
       new Runnable() {
         public void run() {
           lineSelectionLabel.setText(
-            selectedLine + ":" + lineCount + ":" + total);
+            selectedLine+"");
+			eventCountLabel.setText(selectedLine==0?"":lineCount + ":" + total);
         }
       });
   }
