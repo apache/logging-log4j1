@@ -63,6 +63,7 @@ import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
 import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
 import org.apache.log4j.chainsaw.prefs.SettingsListener;
 import org.apache.log4j.chainsaw.prefs.SettingsManager;
+import org.apache.log4j.chainsaw.rule.AbstractRule;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.net.SocketNodeEventListener;
@@ -1194,7 +1195,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     EventBatchListener {
     private boolean paused = false;
     final ColorFilter colorFilter = new ColorFilter();
-    final DisplayFilter displayFilter;
+    private final RuleMediator ruleMediator = new RuleMediator();
     final EventContainer tableModel;
     final JEditorPane detail;
     final JSplitPane lowerPanel;
@@ -1211,7 +1212,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     final Map columnDisplayMap = new HashMap();
     final Map colorDisplayMap = new HashMap();
     final Set loggerSet = new HashSet();
-    final ColorDisplaySelector colorDisplaySelector;
+//    final ColorDisplaySelector colorDisplaySelector;
     Set MDCSet = new HashSet();
     Set NDCSet = new HashSet();
     Set threadSet = new HashSet();
@@ -1230,6 +1231,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     Point currentPoint;
     private final JSplitPane nameTreeAndMainPanelSplit;
     private final LoggerNameTreePanel logTreePanel;
+	private boolean tooltipsEnabled;
 
     public LogPanel(final String ident, String eventType) {
       identifier = ident;
@@ -1279,8 +1281,33 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
       // ==========================================
       tableModel.addLoggerNameListener(logTreeModel);
+      
+      /**
+       * Set the Display rule to use the mediator, the model will add itself as a property
+       * change listener and update itself when the rule changes.
+       */
+      tableModel.setDisplayRule(ruleMediator);
+      
       logTreePanel = new LoggerNameTreePanel(logTreeModel);
 
+	/**
+	 * We listen for when the FocusOn action changes, and then ensure the Refinement filter is set
+	 * accordingly.
+	 */
+	  logTreePanel.addFocusOnPropertyChangeListener( new PropertyChangeListener(){
+
+		public void propertyChange(PropertyChangeEvent evt) {
+			if(logTreePanel.isFocusOnSelected()){
+				final String loggerName = logTreePanel.getCurrentlySelectedLoggerName();
+				ruleMediator.setRefinementRule(new AbstractRule(){
+
+					public boolean evaluate(LoggingEvent e) {
+						return e.getLoggerName().startsWith(loggerName);
+					}});
+			} else {
+				ruleMediator.setRefinementRule(null);
+			}
+		}});
       levelSet = new HashSet((List) levelMap.get(eventType));
 
       map.put(ChainsawConstants.LEVEL_COL_NAME, levelSet);
@@ -1295,9 +1322,11 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       map.put(ChainsawConstants.NONE_COL_NAME, noneSet);
 
       setLayout(new BorderLayout());
-      displayFilter = loadDisplayFilter(ident);
-      tableModel.setDisplayFilter(displayFilter);
-      displayFilter.addFilterChangedListener(tableModel);
+      
+//      TODO reload new Display rule for this panel
+//      displayFilter = loadDisplayFilter(ident);
+//      tableModel.setDisplayRule(displayFilter);
+//      displayFilter.addFilterChangedListener(tableModel);
 
       scrollMap.put(ident, scrollToBottom);
 
@@ -1319,17 +1348,12 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
           }
         });
 
-      final DetailFieldSelector detailFieldSelector =
-        new DetailFieldSelector(
-          ident, new Vector(ChainsawColumns.getColumnsNames()), displayFilter);
-
       final ColumnSelector columnSelector =
         new ColumnSelector(
-          ident, new Vector(ChainsawColumns.getColumnsNames()), table,
-          displayFilter);
+          ident, new Vector(ChainsawColumns.getColumnsNames()), table);
       table.getColumnModel().addColumnModelListener(columnSelector);
+      
       columnSelector.setIconImage(getIconImage());
-      detailFieldSelector.setIconImage(getIconImage());
 
       JMenu menuColumnDisplayFilter =
         new JMenu("Apply display filter for column");
@@ -1352,8 +1376,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
                 lastSelected = tableModel.getRow(table.getSelectedRow());
               }
 
-              colorDisplaySelector.applyColorUpdateForColumn(colName);
-              colorDisplaySelector.applyColorFilters(colName);
+//              colorDisplaySelector.applyColorUpdateForColumn(colName);
+//              colorDisplaySelector.applyColorFilters(colName);
 
               if (lastSelected != null) {
                 int newIndex = tableModel.getRowIndex(lastSelected);
@@ -1387,8 +1411,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
                 lastSelected = tableModel.getRow(table.getSelectedRow());
               }
 
-              colorDisplaySelector.applyDisplayUpdateForColumn(colName);
-              colorDisplaySelector.applyDisplayFilters(colName);
+//              colorDisplaySelector.applyDisplayUpdateForColumn(colName);
+//              colorDisplaySelector.applyDisplayFilters(colName);
 
               if (lastSelected != null) {
                 int newIndex = tableModel.getRowIndex(lastSelected);
@@ -1406,14 +1430,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
         columnDisplayMap.put(colName, thisItem);
       }
 
-      colorDisplaySelector =
-        new ColorDisplaySelector(
-          ident, map, colorFilter, displayFilter, colorDisplayMap,
-          columnDisplayMap, ChainsawColumns.getColumnsNames(),
-          filterableColumns, (List) levelMap.get(eventType));
-      colorDisplaySelector.setIconImage(
-        ((ImageIcon) ChainsawIcons.ICON_PREFERENCES).getImage());
-
       table.addMouseMotionListener(
         new MouseMotionAdapter() {
           int currentRow = -1;
@@ -1421,7 +1437,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
           public void mouseMoved(MouseEvent evt) {
             currentPoint = evt.getPoint();
 
-            if (displayFilter.isToolTipsEnabled()) {
+//			TODO refactor so that LogPanel itself knows if Tooltips are enabled
+            if (false) {
               int row = table.rowAtPoint(evt.getPoint());
 
               if ((row == currentRow) || (row == -1)) {
@@ -1485,15 +1502,17 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
           }
 
           public void setFilter() {
+          	LogLog.warn("setFilter() is not re-implemented in terms of the new Display rule yet");
+//          	TODO Display rule stuff
             if (filterText.getText().equals("")) {
-              displayFilter.setCustomFilter(null);
+//              displayFilter.setCustomFilter(null);
             } else {
-              detailPaneUpdater.setSelectedRow(-1);
-
-              displayFilter.setCustomFilter(
-                new DisplayFilterEntry(
-                  (String) customFilterList.getSelectedItem(),
-                  filterText.getText(), ChainsawConstants.GLOBAL_MATCH));
+//              detailPaneUpdater.setSelectedRow(-1);
+//
+//              displayFilter.setCustomFilter(
+//                new DisplayFilterEntry(
+//                  (String) customFilterList.getSelectedItem(),
+//                  filterText.getText(), ChainsawConstants.GLOBAL_MATCH));
             }
           }
         });
@@ -1511,10 +1530,12 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
         new ActionListener() {
           public void actionPerformed(ActionEvent evt) {
             if (!(filterText.getText().equals(""))) {
-              displayFilter.setCustomFilter(
-                new DisplayFilterEntry(
-                  (String) customFilterList.getSelectedItem(),
-                  filterText.getText(), ChainsawConstants.GLOBAL_MATCH));
+            	
+//            	TODO more Rule implementation here.
+//              displayFilter.setCustomFilter(
+//                new DisplayFilterEntry(
+//                  (String) customFilterList.getSelectedItem(),
+//                  filterText.getText(), ChainsawConstants.GLOBAL_MATCH));
             }
           }
         });
@@ -1532,7 +1553,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
               lastSelected = tableModel.getRow(table.getSelectedRow());
             }
 
-            displayFilter.setCustomFilterOverride(override.isSelected());
+//            displayFilter.setCustomFilterOverride(override.isSelected());
 
             if (lastSelected != null) {
               int newIndex = tableModel.getRowIndex(lastSelected);
@@ -1831,11 +1852,11 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
       final JCheckBoxMenuItem menuItemToggleToolTips =
         new JCheckBoxMenuItem(
-          "Show ToolTips", displayFilter.isToolTipsEnabled());
+          "Show ToolTips", tooltipsEnabled);
       menuItemToggleToolTips.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent evt) {
-            displayFilter.enableToolTips(menuItemToggleToolTips.isSelected());
+            tooltipsEnabled = menuItemToggleToolTips.isSelected();
           }
         });
       menuItemToggleToolTips.setIcon(new ImageIcon(ChainsawIcons.TOOL_TIP));
@@ -1885,17 +1906,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       menuItemRemoveColorFilter.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent evt) {
-            colorDisplaySelector.clearColors();
+//            colorDisplaySelector.clearColors();
             colorFilter.clear();
-          }
-        });
-
-      JMenuItem menuItemDetailFieldSelector =
-        new JMenuItem("Select tooltip/detail columns...");
-      menuItemDetailFieldSelector.addActionListener(
-        new ActionListener() {
-          public void actionPerformed(ActionEvent evt) {
-            detailFieldSelector.show();
           }
         });
 
@@ -1913,8 +1925,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       menuItemRemoveDisplayFilter.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent evt) {
-            colorDisplaySelector.clearDisplay();
-            displayFilter.clear();
+//            colorDisplaySelector.clearDisplay();
+            tableModel.setDisplayRule(null);
           }
         });
 
@@ -1968,7 +1980,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       JMenu selectSubMenu = new JMenu("Select");
 
       selectSubMenu.add(menuItemColumnSelector);
-      selectSubMenu.add(menuItemDetailFieldSelector);
 
       removeSubMenu.add(menuItemRemoveColorFilter);
       removeSubMenu.add(menuItemRemoveDisplayFilter);
@@ -2070,7 +2081,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     }
 
     void showPreferences() {
-      colorDisplaySelector.show();
+//      colorDisplaySelector.show();
     }
 
     TableModel getModel() {
@@ -2219,8 +2230,9 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
     public void saveSettings() {
       saveColumnSettings(identifier, table.getColumnModel());
-      colorDisplaySelector.save();
-      displayFilter.save();
+//      colorDisplaySelector.save();
+//      TODO save display rule settings
+//      displayFilter.save();
     }
 
     public void saveSettings(SaveSettingsEvent event) {

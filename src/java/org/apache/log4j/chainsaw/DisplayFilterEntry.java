@@ -56,6 +56,8 @@ import java.io.Serializable;
  * value and level and returns the display value (true or false).
  *
  * @author Scott Deboy <sdeboy@apache.org>
+ * 
+ * @deprecated The new Rule structure replaces this class
  */
 
 class DisplayFilterEntry implements Serializable {

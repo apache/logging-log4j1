@@ -78,7 +78,6 @@ import javax.swing.table.TableColumn;
  */
 public class ColumnSelector extends JFrame implements TableColumnModelListener {
   private final JSortTable sortTable;
-  private final DisplayFilter displayFilter;
   private Vector checkBoxes=new Vector();
   private List columnNames = ChainsawColumns.getColumnsNames();
 
@@ -89,11 +88,9 @@ public class ColumnSelector extends JFrame implements TableColumnModelListener {
  * 
  */
   public ColumnSelector(String ident,
-    final Vector columnNames, final JSortTable sortTable,
-    final DisplayFilter displayFilter) {
+    final Vector columnNames, final JSortTable sortTable) {
   	super("Select displayed columns for " + ident);
     this.sortTable = sortTable;
-    this.displayFilter = displayFilter;
     setLocation(150, 150);
 
     JPanel columnPanel = new JPanel(new GridLayout(0, 1));
