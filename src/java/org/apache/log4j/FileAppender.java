@@ -128,8 +128,6 @@ public class FileAppender extends WriterAppender {
   protected
   void closeFile() {
     if(this.qw != null) {
-      LogLog.warn("--------------");
-      writeFooter();
       try {
 	this.qw.close();
       }
