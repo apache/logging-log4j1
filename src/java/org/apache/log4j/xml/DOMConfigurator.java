@@ -21,7 +21,6 @@ import org.apache.log4j.config.PropertySetter;
 import org.apache.log4j.helpers.*;
 import org.apache.log4j.or.RendererMap;
 import org.apache.log4j.plugins.Plugin;
-import org.apache.log4j.plugins.PluginRegistry;
 import org.apache.log4j.spi.*;
 
 import org.w3c.dom.*;
@@ -883,7 +882,7 @@ public class DOMConfigurator implements Configurator {
         Plugin plugin = parsePlugin(currentElement);
 
         if (plugin != null) {
-          PluginRegistry.startPlugin(plugin, repository);
+          repository.getPluginRegistry().startPlugin(plugin);
         }
       }
     }

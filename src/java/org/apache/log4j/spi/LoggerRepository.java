@@ -17,6 +17,7 @@
 package org.apache.log4j.spi;
 
 import org.apache.log4j.*;
+import org.apache.log4j.plugins.PluginRegistry;
 
 import java.util.Enumeration;
 
@@ -161,4 +162,11 @@ public interface LoggerRepository {
     @param logger The logger which changed levels.
     @since 1.3*/
   public abstract void fireConfigurationChangedEvent();
+  
+  /**
+   * Return the PluginRegisty for this LoggerRepository.
+   * @since 1.3
+   */
+  public PluginRegistry getPluginRegistry();
+  
 }

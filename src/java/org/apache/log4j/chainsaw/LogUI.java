@@ -342,8 +342,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       });
   }
 
-  private void initPlugins() {
-    PluginRegistry.addPluginListener(
+  private void initPlugins(PluginRegistry pluginRegistry) {
+    pluginRegistry.addPluginListener(
       new PluginListener() {
         public void pluginStarted(PluginEvent e) {
           if (e.getPlugin() instanceof JComponent) {
@@ -359,7 +359,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
     // TODO this should all be in a config file
     ChainsawCentral cc = new ChainsawCentral();
-    PluginRegistry.startPlugin(cc);
+    pluginRegistry.startPlugin(cc);
   }
 
   private void setupReceiverPanel() {
@@ -526,9 +526,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
         }
       });
 
-    if (
-      PluginRegistry.getPlugins(
-          LogManager.getLoggerRepository(), Receiver.class).size() == 0) {
+    final PluginRegistry pluginRegistry = LogManager.getLoggerRepository().getPluginRegistry();
+    if (pluginRegistry.getPlugins(Receiver.class).size() == 0) {
       noReceiversDefined = true;
     }
 
@@ -635,7 +634,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
     panePanel.add(getTabbedPane());
     addWelcomePanel();
-    initPlugins();
+    initPlugins(pluginRegistry);
 
     getContentPane().add(toolbar, BorderLayout.NORTH);
     getContentPane().add(statusBar, BorderLayout.SOUTH);
@@ -837,13 +836,12 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
             new Thread(
               new Runnable() {
                 public void run() {
-                  List list =
-                    PluginRegistry.getPlugins(
-                      LogManager.getLoggerRepository(), Generator.class);
+                  PluginRegistry pluginRegistry = LogManager.getLoggerRepository().getPluginRegistry();
+                  List list = pluginRegistry.getPlugins(Generator.class);
 
                   for (Iterator iter = list.iterator(); iter.hasNext();) {
                     Plugin plugin = (Plugin) iter.next();
-                    PluginRegistry.stopPlugin(plugin);
+                    pluginRegistry.stopPlugin(plugin.getName());
                   }
                 }
               }).start();
@@ -875,15 +873,13 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     startTutorial.addPropertyChangeListener(pcl);
     stopTutorial.addPropertyChangeListener(pcl);
 
-    PluginRegistry.addPluginListener(
+    pluginRegistry.addPluginListener(
       new PluginListener() {
         public void pluginStarted(PluginEvent e) {
         }
 
         public void pluginStopped(PluginEvent e) {
-          List list =
-            PluginRegistry.getPlugins(
-              LogManager.getLoggerRepository(), Generator.class);
+          List list = pluginRegistry.getPlugins(Generator.class);
 
           if (list.size() == 0) {
             startTutorial.putValue("TutorialStarted", Boolean.FALSE);
@@ -1015,7 +1011,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
         }
       };
 
-    PluginRegistry.addPluginListener(pluginListener);
+    pluginRegistry.addPluginListener(pluginListener);
   }
 
   private void initPrefModelListeners() {
@@ -1196,7 +1192,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
               simpleReceiver.setThreshold(Level.DEBUG);
 
-              PluginRegistry.startPlugin(simpleReceiver);
+              pluginRegistry.startPlugin(simpleReceiver);
               receiversPanel.updateReceiverTreeInDispatchThread();
             } catch (Exception e) {
               MessageCenter.getInstance().getLogger().error(
@@ -1345,7 +1341,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
             Thread.sleep(delay);
 
-            PluginRegistry.stopAllPlugins();
+            pluginRegistry.stopAllPlugins();
             panel.setProgress(progress++);
 
             Thread.sleep(delay);
