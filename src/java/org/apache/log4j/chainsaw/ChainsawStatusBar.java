@@ -75,7 +75,7 @@ import javax.swing.border.Border;
  * @author Paul Smith <psmith@apache.org>
  *
  */
-class ChainsawStatusBar extends JPanel {
+public class ChainsawStatusBar extends JPanel {
   private static final int DELAY_PERIOD = 5000;
   private final String DEFAULT_MSG = "Welcome to Chainsaw v2!";
   private final JLabel statusMsg = new JLabel(DEFAULT_MSG);
@@ -96,7 +96,7 @@ class ChainsawStatusBar extends JPanel {
   private final Border statusBarComponentBorder =
     BorderFactory.createLineBorder(statusMsg.getBackground().darker());
 
-  ChainsawStatusBar() {
+  public ChainsawStatusBar() {
     setLayout(new GridBagLayout());
 
     nf.setMaximumFractionDigits(1);
@@ -305,7 +305,7 @@ class ChainsawStatusBar extends JPanel {
       });
   }
 
-  void setMessage(final String msg) {
+  public void setMessage(final String msg) {
     SwingUtilities.invokeLater(
       new Runnable() {
         public void run() {
