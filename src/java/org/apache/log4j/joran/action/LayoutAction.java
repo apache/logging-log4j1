@@ -1,12 +1,12 @@
 /*
  * Copyright 1999,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,35 +32,38 @@ import org.xml.sax.Attributes;
 public class LayoutAction extends Action {
   Layout layout;
   boolean inError = false;
-  
+
   /**
    * Instantiates an layout of the given class and sets its name.
    *
    */
   public void begin(ExecutionContext ec, String name, Attributes attributes) {
-		// Let us forget about previous errors (in this object)
-		inError = false; 
+    // Let us forget about previous errors (in this object)
+    inError = false;
 
-    String className =
-      attributes.getValue(CLASS_ATTRIBUTE);
+    String className = attributes.getValue(CLASS_ATTRIBUTE);
     try {
-      getLogger().debug("About to instantiate layout of type [" + className + "]");
+      getLogger().debug(
+        "About to instantiate layout of type [" + className + "]");
 
+      OptionConverter oc = new OptionConverter();
+      oc.setLoggerRepository(this.repository);
       Object instance =
-        OptionConverter.instantiateByClassName(
+        oc.instantiateByClassName(
           className, org.apache.log4j.Layout.class, null);
       layout = (Layout) instance;
-      
+
       LoggerRepository repo = (LoggerRepository) ec.getObjectStack().get(0);
       layout.setLoggerRepository(repo);
-      
+
       getLogger().debug("Pushing layout on top of the object stack.");
       ec.pushObject(layout);
     } catch (Exception oops) {
       inError = true;
       getLogger().error(
         "Could not create an Layout. Reported error follows.", oops);
-      ec.addError(new ErrorItem("Could not create layout of type " + className + "]."));
+      ec.addError(
+        new ErrorItem("Could not create layout of type " + className + "]."));
     }
   }
 
@@ -85,13 +88,15 @@ public class LayoutAction extends Action {
     } else {
       getLogger().debug("Popping layout from the object stack");
       ec.popObject();
-      
+
       try {
-      	getLogger().debug("About to set the layout of the containing appender.");
+        getLogger().debug(
+          "About to set the layout of the containing appender.");
         Appender appender = (Appender) ec.peekObject();
         appender.setLayout(layout);
-      } catch(Exception ex) {
-      	getLogger().error("Could not set the layout for containing appender.", ex);
+      } catch (Exception ex) {
+        getLogger().error(
+          "Could not set the layout for containing appender.", ex);
       }
     }
   }

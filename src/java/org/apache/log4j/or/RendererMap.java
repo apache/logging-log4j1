@@ -16,10 +16,9 @@
 
 package org.apache.log4j.or;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.Loader;
 import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.spi.ComponentBase;
 import org.apache.log4j.spi.RendererSupport;
 
 import java.util.Hashtable;
@@ -30,7 +29,7 @@ import java.util.Hashtable;
 
    @author Ceki G&uuml;lc&uuml;
    @since version 1.0 */
-public class RendererMap {
+public class RendererMap extends ComponentBase {
   static ObjectRenderer defaultRenderer = new DefaultRenderer();
   Hashtable map;
 
@@ -39,27 +38,22 @@ public class RendererMap {
   }
 
   /**
-   * Gets a logger named after this class. Note that the instance of the 
-   * logger may change depending on the 
-   * {@link org.apache.log4j.spi.RepositorySelector}.
-   * @return a context dependent Logger
-   */
-  private static Logger getLogger() {
-    return LogManager.getLogger(OptionConverter.class);
-  }
-  
-  /**
      Add a renderer to a hierarchy passed as parameter.
   */
-  public static void addRenderer(
-    RendererSupport repository, String renderedClassName,
+  public void addRenderer(String renderedClassName,
     String renderingClassName) {
     getLogger().debug(
       "Rendering class: [{}, Rendered class: [{}].", renderingClassName, 
       renderedClassName);
+    
+    OptionConverter oc = new OptionConverter();
+    oc.setLoggerRepository(repository);
+    
+    
     ObjectRenderer renderer =
-      (ObjectRenderer) OptionConverter.instantiateByClassName(
-        renderingClassName, ObjectRenderer.class, null);
+      (ObjectRenderer) oc.instantiateByClassName(
+          renderingClassName, ObjectRenderer.class, null);
+      
     if (renderer == null) {
       getLogger().error(
         "Could not instantiate renderer [" + renderingClassName + "].");
@@ -67,7 +61,9 @@ public class RendererMap {
     } else {
       try {
         Class renderedClass = Loader.loadClass(renderedClassName);
-        repository.setRenderer(renderedClass, renderer);
+        if(repository != null && repository instanceof RendererSupport) {
+          ((RendererSupport)repository).setRenderer(renderedClass, renderer);
+        }
       } catch (ClassNotFoundException e) {
         getLogger().error("Could not find class [" + renderedClassName + "].", e);
       }
