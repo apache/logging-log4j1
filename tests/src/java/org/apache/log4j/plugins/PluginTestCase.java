@@ -7,6 +7,7 @@
 
 package org.apache.log4j.plugins;
 
+import java.util.HashMap;
 import java.io.File;
 import java.io.IOException;
 
@@ -37,6 +38,8 @@ public class PluginTestCase extends TestCase {
   public void setUp() {
     // delete the output file if they happen to exist
     File file = new File(getOutputFile("test1"));
+    file.delete();
+    file = new File(getOutputFile("test2"));
     file.delete();
   }
   
@@ -79,7 +82,7 @@ public class PluginTestCase extends TestCase {
     logger.info("test 1.1 - basic starting/stopping");
     logger.info("starting " + plugin1.getIdentifier());
     PluginRegistry.startPlugin(plugin1);
-    logger.info("stopping " + plugin1.getIdentifier());
+    logger.info("stopping " + plugin1.getIdentifier() + " using plugin object");
     PluginRegistry.stopPlugin(plugin1); 
     
     // test restarting and starting when already started
@@ -96,47 +99,176 @@ public class PluginTestCase extends TestCase {
     logger.info("stopping " + plugin1.getIdentifier() + " again");
     PluginRegistry.stopPlugin(plugin1);
     
+    logger.info("test 1.4 - restarting then stopping by plugin name");
+    logger.info("starting " + plugin1.getIdentifier());
+    PluginRegistry.startPlugin(plugin1);
+    logger.info("stopping " + plugin1.getIdentifier() + " using plugin name");
+    PluginRegistry.stopPlugin(plugin1.getName()); 
+
     // test starting of an "equal" plugin
-    logger.info("test 1.4 - starting of an \"equal\" plugin");
+    logger.info("test 1.5 - starting of an \"equal\" plugin");
     logger.info("starting " + plugin1.getIdentifier());
     retPlugin = (PluginTester)PluginRegistry.startPlugin(plugin1);
     logger.info("returned plugin is " + retPlugin.getIdentifier());
     logger.info("starting " + plugin2.getIdentifier());
     retPlugin = (PluginTester)PluginRegistry.startPlugin(plugin2);
     logger.info("returned plugin is " + retPlugin.getIdentifier());
-    logger.info("stopping " + plugin1.getIdentifier());
-    PluginRegistry.stopPlugin(plugin1);
+    logger.info("stopping " + retPlugin.getIdentifier());
+    PluginRegistry.stopPlugin(retPlugin);
     
     // test starting an "equal" plugin after original stopped
-    logger.info("test 1.5 - starting an \"equal\" plugin after original stopped");
+    logger.info("test 1.6 - starting an \"equal\" plugin after original stopped");
     logger.info("starting " + plugin2.getIdentifier());
-    PluginRegistry.startPlugin(plugin2);
-    logger.info("stopping " + plugin2.getIdentifier());
-    PluginRegistry.stopPlugin(plugin2); 
+    retPlugin = (PluginTester)PluginRegistry.startPlugin(plugin2);
+    logger.info("returned plugin is " + retPlugin.getIdentifier());
+    logger.info("stopping " + retPlugin.getIdentifier());
+    PluginRegistry.stopPlugin(retPlugin); 
  
      // test starting of an "unequal" plugin with same name
-    logger.info("test 1.6 - starting of an \"unequal\" plugin with same name");
+    logger.info("test 1.7 - starting of an \"unequal\" plugin with same name");
     logger.info("starting " + plugin1.getIdentifier());
     retPlugin = (PluginTester)PluginRegistry.startPlugin(plugin1);
     logger.info("returned plugin is " + retPlugin.getIdentifier());
     logger.info("starting " + plugin3.getIdentifier());
     retPlugin = (PluginTester)PluginRegistry.startPlugin(plugin3);
     logger.info("returned plugin is " + retPlugin.getIdentifier());
-    logger.info("stopping " + plugin3.getIdentifier());
-    PluginRegistry.stopPlugin(plugin3);
+    logger.info("stopping " + retPlugin.getIdentifier());
+    PluginRegistry.stopPlugin(retPlugin);
 
     // test starting of multiple plugins and stopAll
-    logger.info("test 1.7 - starting of multiple plugins and stopAll");
+    logger.info("test 1.8 - starting of multiple plugins and stopAll");
     logger.info("starting " + plugin1.getIdentifier());
     retPlugin = (PluginTester)PluginRegistry.startPlugin(plugin1);
+    logger.info("returned plugin is " + retPlugin.getIdentifier());
     logger.info("starting " + plugin4.getIdentifier());
     retPlugin = (PluginTester)PluginRegistry.startPlugin(plugin4);
+    logger.info("returned plugin is " + retPlugin.getIdentifier());
+    logger.info("stopping all plugins");
+    PluginRegistry.stopAllPlugins();
+    logger.info("stopping all plugins again");
+    PluginRegistry.stopAllPlugins();
+
+    // test starting of multiple plugins and stopAll
+    logger.info("test 1.9 - starting of multiple plugins, stopping, and stopAll");
+    logger.info("starting " + plugin1.getIdentifier());
+    retPlugin = (PluginTester)PluginRegistry.startPlugin(plugin1);
+    logger.info("returned plugin is " + retPlugin.getIdentifier());
+    logger.info("starting " + plugin4.getIdentifier());
+    retPlugin = (PluginTester)PluginRegistry.startPlugin(plugin4);
+    logger.info("returned plugin is " + retPlugin.getIdentifier());
+    logger.info("stopping " + plugin1.getIdentifier() + " using plugin object");
+    PluginRegistry.stopPlugin(plugin1); 
     logger.info("stopping all plugins");
     PluginRegistry.stopAllPlugins();
     logger.info("stopping all plugins again");
     PluginRegistry.stopAllPlugins();
 
     assertTrue(Compare.compare(getOutputFile(testName), getWitnessFile(testName)));
+  }
+
+  // basic test of plugin with repositories
+  public void test2() throws Exception {
+    String testName = "test2";
+    Logger logger = Logger.getLogger(testName);
+    
+    setupAppender(testName);
+
+    PluginTester plugin1 = new PluginTester1("plugin1", 1);
+    PluginTester plugin2 = new PluginTester1("plugin2", 2);
+    PluginTester retPlugin;
+    LoggerRepository repo1 = new Hierarchy(new RootCategory(Level.DEBUG));
+    LoggerRepository repo2 = new Hierarchy(new RootCategory(Level.DEBUG));
+    HashMap repoMap = new HashMap();
+    repoMap.put(repo1, "repository1");
+    repoMap.put(repo2, "repository2");
+
+    logger.info("test 2.1 - starting plugins in multiple repositories");
+    logger.info("starting " + plugin1.getIdentifier() + 
+      " in " + repoMap.get(repo1));
+    retPlugin = (PluginTester)PluginRegistry.startPlugin(plugin1, repo1);
+    logger.info("returned plugin is " + retPlugin.getIdentifier() +
+      " in " + repoMap.get(retPlugin.getLoggerRepository()));
+    logger.info("starting " + plugin2.getIdentifier() + 
+      " in " + repoMap.get(repo2));
+    retPlugin = (PluginTester)PluginRegistry.startPlugin(plugin2, repo2);
+    logger.info("returned plugin is " + retPlugin.getIdentifier() +
+      " in " + repoMap.get(retPlugin.getLoggerRepository()));
+
+    logger.info("test 2.2 - stopping plugins in multiple repositories");
+    logger.info("stopping " + plugin1.getIdentifier() + 
+      " in " + repoMap.get(plugin1.getLoggerRepository()));
+    retPlugin = (PluginTester)PluginRegistry.stopPlugin(plugin1);
+    logger.info("returned plugin is " + retPlugin.getIdentifier() +
+      " in " + repoMap.get(retPlugin.getLoggerRepository()));
+    logger.info("stopping " + plugin2.getIdentifier() + 
+      " in " + repoMap.get(plugin2.getLoggerRepository()));
+    retPlugin = (PluginTester)PluginRegistry.stopPlugin(plugin2);
+    logger.info("returned plugin is " + retPlugin.getIdentifier() +
+      " in " + repoMap.get(retPlugin.getLoggerRepository()));
+
+    logger.info("test 2.3 - restarting plugins in different repositories");
+    logger.info("starting " + plugin1.getIdentifier() + 
+      " in " + repoMap.get(repo2));
+    retPlugin = (PluginTester)PluginRegistry.startPlugin(plugin1, repo2);
+    logger.info("returned plugin is " + retPlugin.getIdentifier() +
+      " in " + repoMap.get(retPlugin.getLoggerRepository()));
+    logger.info("starting " + plugin2.getIdentifier() + 
+      " in " + repoMap.get(repo1));
+    retPlugin = (PluginTester)PluginRegistry.startPlugin(plugin2, repo1);
+    logger.info("returned plugin is " + retPlugin.getIdentifier() +
+      " in " + repoMap.get(retPlugin.getLoggerRepository()));
+
+    logger.info("test 2.4 - stopping plugins using stopAll");
+    logger.info("stopping all plugins in " + repoMap.get(repo1));
+    PluginRegistry.stopAllPlugins(repo1);
+    logger.info("stopping all plugins in " + repoMap.get(repo2));
+    PluginRegistry.stopAllPlugins(repo2);
+
+    logger.info("test 2.5 - starting a plugin already active in another repository");
+    logger.info("starting " + plugin1.getIdentifier() + 
+      " in " + repoMap.get(repo1));
+    retPlugin = (PluginTester)PluginRegistry.startPlugin(plugin1, repo1);
+    logger.info("returned plugin is " + retPlugin.getIdentifier() +
+      " in " + repoMap.get(retPlugin.getLoggerRepository()));
+    logger.info("starting " + plugin2.getIdentifier() + 
+      " in " + repoMap.get(repo2));
+    retPlugin = (PluginTester)PluginRegistry.startPlugin(plugin2, repo2);
+    logger.info("returned plugin is " + retPlugin.getIdentifier() +
+      " in " + repoMap.get(retPlugin.getLoggerRepository()));
+    logger.info("restarting " + plugin1.getIdentifier() + 
+      " in " + repoMap.get(repo2));
+    retPlugin = (PluginTester)PluginRegistry.startPlugin(plugin1, repo2);
+    logger.info("returned plugin is " + retPlugin.getIdentifier() +
+      " in " + repoMap.get(retPlugin.getLoggerRepository()));
+    logger.info("restarting " + plugin2.getIdentifier() + 
+      " in " + repoMap.get(repo1));
+    retPlugin = (PluginTester)PluginRegistry.startPlugin(plugin2, repo1);
+    logger.info("returned plugin is " + retPlugin.getIdentifier() +
+      " in " + repoMap.get(retPlugin.getLoggerRepository()));
+
+    logger.info("test 2.6 - handle repository reset");
+    logger.info("resetting " + repoMap.get(repo1));
+    repo1.resetConfiguration();
+    logger.info("resetting " + repoMap.get(repo2));
+    repo2.resetConfiguration();
+    
+    logger.info("test 2.7 - handle repository shutdown");
+    logger.info("starting " + plugin1.getIdentifier() + 
+      " in " + repoMap.get(repo1));
+    retPlugin = (PluginTester)PluginRegistry.startPlugin(plugin1, repo1);
+    logger.info("returned plugin is " + retPlugin.getIdentifier() +
+      " in " + repoMap.get(retPlugin.getLoggerRepository()));
+    logger.info("starting " + plugin2.getIdentifier() + 
+      " in " + repoMap.get(repo2));
+    retPlugin = (PluginTester)PluginRegistry.startPlugin(plugin2, repo2);
+    logger.info("returned plugin is " + retPlugin.getIdentifier() +
+      " in " + repoMap.get(retPlugin.getLoggerRepository()));
+    logger.info("shutting down " + repoMap.get(repo1));
+    repo1.shutdown(); 
+    logger.info("shutting down " + repoMap.get(repo2));
+    repo2.shutdown(); 
+   
+    //assertTrue(Compare.compare(getOutputFile(testName), getWitnessFile(testName)));
   }
 
     /*
@@ -175,6 +307,7 @@ public class PluginTestCase extends TestCase {
   public static Test suite() {
     TestSuite suite = new TestSuite();
     suite.addTest(new PluginTestCase("test1"));
+    suite.addTest(new PluginTestCase("test2"));
     return suite;
   }
   
@@ -190,17 +323,27 @@ public class PluginTestCase extends TestCase {
     // considered equal if same class, same name and same
     // repository
     public boolean equals(Object obj) {
-      if (!(obj.getClass() == this.getClass()))
+      if (!(obj.getClass() == this.getClass())) {
+        logger.debug("plugin not equal, different class: " + 
+          this.getClass().getName() + " != " + obj.getClass().getName());
         return false;
+      }
         
       Plugin plugin = (PluginTester)obj;
       
-      if (!this.getName().equals(plugin.getName()))
+      if (!this.getName().equals(plugin.getName())) {
+        logger.debug("plugin not equal, different name: " + 
+          this.getName() + " != " + plugin.getName());
         return false;
+      }
         
-      if (!this.getLoggerRepository().equals(plugin.getLoggerRepository()))
+      if (!this.getLoggerRepository().equals(plugin.getLoggerRepository())) {
+        logger.debug("plugin not equal, different repository: " + 
+          this.getLoggerRepository() + " != " + plugin.getLoggerRepository());
         return false;
+      }
           
+      logger.debug("plugin equal");
       return true;
     }
         
