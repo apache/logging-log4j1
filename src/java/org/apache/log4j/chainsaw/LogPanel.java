@@ -55,21 +55,6 @@
  */
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.Layout;
-import org.apache.log4j.PatternLayout;
-import org.apache.log4j.chainsaw.filter.FilterModel;
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-import org.apache.log4j.chainsaw.layout.DefaultLayoutFactory;
-import org.apache.log4j.chainsaw.layout.EventDetailLayout;
-import org.apache.log4j.chainsaw.layout.LayoutEditorPane;
-import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SettingsListener;
-import org.apache.log4j.chainsaw.prefs.SettingsManager;
-import org.apache.log4j.chainsaw.rule.AbstractRule;
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.spi.LoggingEvent;
-
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -88,10 +73,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.EOFException;
@@ -103,9 +86,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-
 import java.text.NumberFormat;
-
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -124,7 +105,6 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
@@ -156,10 +136,24 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableColumnModelEvent;
 import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableModel;
+
+import org.apache.log4j.Layout;
+import org.apache.log4j.PatternLayout;
+import org.apache.log4j.chainsaw.filter.FilterModel;
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.chainsaw.icons.LineIconFactory;
+import org.apache.log4j.chainsaw.layout.DefaultLayoutFactory;
+import org.apache.log4j.chainsaw.layout.EventDetailLayout;
+import org.apache.log4j.chainsaw.layout.LayoutEditorPane;
+import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.SettingsListener;
+import org.apache.log4j.chainsaw.prefs.SettingsManager;
+import org.apache.log4j.chainsaw.rule.AbstractRule;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
@@ -170,8 +164,7 @@ import javax.swing.table.TableModel;
    */
 public class LogPanel extends DockablePanel implements SettingsListener,
   EventBatchListener {
-	private ThrowableRenderPanel throwableRenderPanel ;
-
+  private ThrowableRenderPanel throwableRenderPanel;
   private boolean paused = false;
   private boolean logTreePanelVisible = true;
   private final FilterModel filterModel = new FilterModel();
@@ -188,7 +181,7 @@ public class LogPanel extends DockablePanel implements SettingsListener,
   final Action dockingAction;
   final JSortTable table;
   private String profileName = null;
-  private final JDialog detailDialog = new JDialog((JFrame)null, true);
+  private final JDialog detailDialog = new JDialog((JFrame) null, true);
   final JPanel detailPanel = new JPanel(new BorderLayout());
   private final TableColorizingRenderer renderer =
     new TableColorizingRenderer();
@@ -222,19 +215,7 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     ((EventDetailLayout) toolTipLayout).setConversionPattern(
       DefaultLayoutFactory.getDefaultPatternLayout());
 
-    int bufferSize = 500;
-
-    //if buffer size not provided, set default buffer size to 500 (only used if usecyclicbuffer true)
-    if (System.getProperty(LogUI.CYCLIC_BUFFER_SIZE_PROP_NAME) != null) {
-      bufferSize =
-        Integer.valueOf(
-          System.getProperty(LogUI.CYCLIC_BUFFER_SIZE_PROP_NAME)).intValue();
-    }
-
-    tableModel =
-      new ChainsawCyclicBufferTableModel(
-        Boolean.valueOf(System.getProperty(LogUI.USE_CYCLIC_BUFFER_PROP_NAME))
-               .booleanValue(), bufferSize);
+    tableModel = new ChainsawCyclicBufferTableModel();
 
     table = new JSortTable(tableModel);
     table.getColumnModel().addColumnModelListener(
@@ -242,7 +223,7 @@ public class LogPanel extends DockablePanel implements SettingsListener,
 
     table.setAutoCreateColumnsFromModel(false);
 
-	throwableRenderPanel = new ThrowableRenderPanel(table);
+    throwableRenderPanel = new ThrowableRenderPanel(table);
 
     /**
              * We listen for new Key's coming in so we can get them automatically added as columns
@@ -253,7 +234,15 @@ public class LogPanel extends DockablePanel implements SettingsListener,
           table.addColumn(new TableColumn(e.getNewModelIndex()));
         }
       });
+    tableModel.addPropertyChangeListener("cyclic", new PropertyChangeListener(){
 
+      public void propertyChange(PropertyChangeEvent arg0) {
+        if(tableModel.isCyclic()){
+          statusBar.setMessage("Changed to Cyclic Mode. Maximum # events kept: " + tableModel.getMaxSize());
+        } else{
+          statusBar.setMessage("Changed to Unlimited Mode. Warning, you may run out of memory.");
+        }       
+      }});
     table.setRowHeight(20);
     table.setShowGrid(false);
 
@@ -438,7 +427,8 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     detailPaneUpdater =
       new DetailPaneUpdater(this, detail, (EventContainer) tableModel);
 
-	addPropertyChangeListener("detailPaneConversionPattern", detailPaneUpdater);
+    addPropertyChangeListener(
+      "detailPaneConversionPattern", detailPaneUpdater);
     upperPanel = new JPanel(new BorderLayout());
     upperPanel.setBorder(BorderFactory.createEmptyBorder(2, 5, 2, 0));
 
@@ -645,34 +635,47 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     editDetailButton.setText(null);
     detailToolbar.add(Box.createHorizontalGlue());
     detailToolbar.add(editDetailButton);
+    detailToolbar.addSeparator();
+    detailToolbar.add(Box.createHorizontalStrut(5));
+    
+    Action closeDetailAction = new AbstractAction(null, LineIconFactory.createCloseIcon()){
 
-    //      detailToolbar.add(Box.createHorizontalStrut(5));
+      public void actionPerformed(ActionEvent arg0) {
+        toggleDetailPanel();
+      }};
+    closeDetailAction.putValue(Action.SHORT_DESCRIPTION, "Hides the Detail Panel");
+    SmallButton closeDetailButton = new SmallButton(closeDetailAction);
+    detailToolbar.add(closeDetailButton);
+
     detailPanel.add(detailToolbar, BorderLayout.NORTH);
-
     JPopupMenu editDetailPopupMenu = new JPopupMenu();
     editDetailPopupMenu.add(editDetailAction);
     editDetailPopupMenu.addSeparator();
 
-	final ButtonGroup layoutGroup = new ButtonGroup();
-	
-	JRadioButtonMenuItem defaultLayoutRadio = new JRadioButtonMenuItem( new AbstractAction("Set to Default Layout") {
-	  public void actionPerformed(ActionEvent e) {
-		setDetailPaneConversionPattern(
-		  DefaultLayoutFactory.getDefaultPatternLayout());
-	  }
-	}	);
+    final ButtonGroup layoutGroup = new ButtonGroup();
+
+    JRadioButtonMenuItem defaultLayoutRadio =
+      new JRadioButtonMenuItem(
+        new AbstractAction("Set to Default Layout") {
+          public void actionPerformed(ActionEvent e) {
+            setDetailPaneConversionPattern(
+              DefaultLayoutFactory.getDefaultPatternLayout());
+          }
+        });
     editDetailPopupMenu.add(defaultLayoutRadio);
     layoutGroup.add(defaultLayoutRadio);
-	defaultLayoutRadio.setSelected(true);
+    defaultLayoutRadio.setSelected(true);
 
-	JRadioButtonMenuItem tccLayoutRadio = new JRadioButtonMenuItem( new AbstractAction("Set to TCCLayout") {
-			public void actionPerformed(ActionEvent e) {
-			  setDetailPaneConversionPattern(
-				PatternLayout.TTCC_CONVERSION_PATTERN);
-			}
-		  });
+    JRadioButtonMenuItem tccLayoutRadio =
+      new JRadioButtonMenuItem(
+        new AbstractAction("Set to TCCLayout") {
+          public void actionPerformed(ActionEvent e) {
+            setDetailPaneConversionPattern(
+              PatternLayout.TTCC_CONVERSION_PATTERN);
+          }
+        });
     editDetailPopupMenu.add(tccLayoutRadio);
-	layoutGroup.add(tccLayoutRadio);
+    layoutGroup.add(tccLayoutRadio);
 
     PopupListener editDetailPopupListener =
       new PopupListener(editDetailPopupMenu);
@@ -960,16 +963,16 @@ public class LogPanel extends DockablePanel implements SettingsListener,
         }
       });
 
-    if (tableModel.isCyclic()) {
-      final ChainsawCyclicBufferTableModel cyclicModel =
-        (ChainsawCyclicBufferTableModel) tableModel;
-      tableModel.addEventCountListener(
-        new EventCountListener() {
-          final NumberFormat formatter = NumberFormat.getPercentInstance();
-          boolean warning75 = false;
-          boolean warning100 = false;
+    final ChainsawCyclicBufferTableModel cyclicModel =
+      (ChainsawCyclicBufferTableModel) tableModel;
+    tableModel.addEventCountListener(
+      new EventCountListener() {
+        final NumberFormat formatter = NumberFormat.getPercentInstance();
+        boolean warning75 = false;
+        boolean warning100 = false;
 
-          public void eventCountChanged(int currentCount, int totalCount) {
+        public void eventCountChanged(int currentCount, int totalCount) {
+          if (tableModel.isCyclic()) {
             double percent = ((double) totalCount) / cyclicModel.getMaxSize();
             String msg = null;
 
@@ -990,45 +993,51 @@ public class LogPanel extends DockablePanel implements SettingsListener,
               statusBar.setMessage(msg);
             }
           }
-        });
-    }
+        }
+      });
 
     undockedToolbar = createDockwindowToolbar();
     externalPanel.add(undockedToolbar, BorderLayout.NORTH);
     undockedFrame.pack();
-    
+
     Container container = detailDialog.getContentPane();
-    final JTextArea detailArea = new JTextArea(10,40);
+    final JTextArea detailArea = new JTextArea(10, 40);
     detailArea.setEditable(false);
     container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
     container.add(new JScrollPane(detailArea));
-    throwableRenderPanel.addActionListener(new ActionListener(){
+    throwableRenderPanel.addActionListener(
+      new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          Object o =
+            table.getValueAt(
+              table.getSelectedRow(), table.getSelectedColumn());
+          detailDialog.setTitle(
+            table.getColumnName(table.getSelectedColumn()) + " detail...");
 
-		public void actionPerformed(ActionEvent e) {
-			Object o = table.getValueAt(table.getSelectedRow(), table.getSelectedColumn());
-			detailDialog.setTitle(table.getColumnName(table.getSelectedColumn()) + " detail...");
-			
-			if(o instanceof String[]){
-				StringBuffer buf = new StringBuffer();
-				String[] ti = (String[]) o;
-				buf.append(ti[0]).append("\n");
-				for (int i = 1; i < ti.length; i++) {
-					buf.append(ti[i]).append("\n    ");
-				}				
-				detailArea.setText(buf.toString());
-				
-			} else {
-				detailArea.setText(o.toString());
-			}
-			
-			detailDialog.setLocation(LogPanel.this.getLocationOnScreen());
-			SwingUtilities.invokeLater(new Runnable(){
+          if (o instanceof String[]) {
+            StringBuffer buf = new StringBuffer();
+            String[] ti = (String[]) o;
+            buf.append(ti[0]).append("\n");
 
-				public void run() {
-					detailDialog.setVisible(true);
-				}});
-		}});
-	detailDialog.pack();
+            for (int i = 1; i < ti.length; i++) {
+              buf.append(ti[i]).append("\n    ");
+            }
+
+            detailArea.setText(buf.toString());
+          } else {
+            detailArea.setText(o.toString());
+          }
+
+          detailDialog.setLocation(LogPanel.this.getLocationOnScreen());
+          SwingUtilities.invokeLater(
+            new Runnable() {
+              public void run() {
+                detailDialog.setVisible(true);
+              }
+            });
+        }
+      });
+    detailDialog.pack();
   }
 
   private JToolBar createDockwindowToolbar() {
@@ -1227,9 +1236,9 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     String oldPattern = getDetailPaneConversionPattern();
     ((EventDetailLayout) detailPaneLayout).setConversionPattern(
       conversionPattern);
-    firePropertyChange("detailPaneConversionPattern", oldPattern, getDetailPaneConversionPattern());
-      
-    
+    firePropertyChange(
+      "detailPaneConversionPattern", oldPattern,
+      getDetailPaneConversionPattern());
   }
 
   String getDetailPaneConversionPattern() {
@@ -1240,7 +1249,7 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     //      colorDisplaySelector.show();
   }
 
-  TableModel getModel() {
+  EventContainer getModel() {
     return tableModel;
   }
 
@@ -1369,7 +1378,8 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     if (visible) {
       lowerPanel.setDividerLocation(150);
     }
-	lowerPanel.setOneTouchExpandable(visible);
+
+    lowerPanel.setOneTouchExpandable(visible);
     firePropertyChange("detailPanelVisible", oldValue, isDetailPaneVisible());
   }
 
@@ -1677,7 +1687,7 @@ public class LogPanel extends DockablePanel implements SettingsListener,
    * @param detailPaneLayout
    */
   public final void setDetailPaneLayout(Layout detailPaneLayout) {
-  	Layout oldLayout = this.detailPaneLayout;
+    Layout oldLayout = this.detailPaneLayout;
     this.detailPaneLayout = detailPaneLayout;
     firePropertyChange("detailPaneLayout", oldLayout, detailPaneLayout);
   }
@@ -1708,6 +1718,13 @@ public class LogPanel extends DockablePanel implements SettingsListener,
 
   public boolean getLogTreePanelVisible() {
     return this.logTreePanelVisible;
+  }
+
+  /**
+   *
+   */
+  public void toggleCyclic() {
+    getModel().setCyclic(!getModel().isCyclic());
   }
 
   class TableColumnData implements Serializable {
@@ -1759,8 +1776,7 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     }
 
     public void columnAdded(TableColumnModelEvent e) {
-//      LogLog.debug("Detected columnAdded" + e);
-
+      //      LogLog.debug("Detected columnAdded" + e);
       TableColumnModel columnModel = (TableColumnModel) e.getSource();
       Enumeration enum = table.getColumnModel().getColumns();
 
@@ -1793,7 +1809,7 @@ public class LogPanel extends DockablePanel implements SettingsListener,
    * Thread that periodically checks if the selected row has changed, and if
    * it was, updates the Detail Panel with the detailed Logging information
    */
-  class DetailPaneUpdater implements PropertyChangeListener{
+  class DetailPaneUpdater implements PropertyChangeListener {
     private int selectedRow = -1;
     private int lastRow = -1;
     private final JEditorPane pane;
@@ -1816,13 +1832,14 @@ public class LogPanel extends DockablePanel implements SettingsListener,
       updateDetailPane();
     }
 
-	private void updateDetailPane(){
-		updateDetailPane(false);
-	}
+    private void updateDetailPane() {
+      updateDetailPane(false);
+    }
+
     private void updateDetailPane(boolean force) {
       String text = null;
 
-      if (selectedRow != lastRow || force) {
+      if ((selectedRow != lastRow) || force) {
         if (selectedRow == -1) {
           text = "Nothing selected";
         } else {
@@ -1859,17 +1876,17 @@ public class LogPanel extends DockablePanel implements SettingsListener,
       }
     }
 
-	/* (non-Javadoc)
-	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
-	 */
-	public void propertyChange(PropertyChangeEvent arg0) {
-		SwingUtilities.invokeLater(new Runnable(){
-
-			public void run() {
-				updateDetailPane(true);
-				
-			}});
-	}
+    /* (non-Javadoc)
+     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+     */
+    public void propertyChange(PropertyChangeEvent arg0) {
+      SwingUtilities.invokeLater(
+        new Runnable() {
+          public void run() {
+            updateDetailPane(true);
+          }
+        });
+    }
   }
 
   class ScrollToBottom extends Thread {

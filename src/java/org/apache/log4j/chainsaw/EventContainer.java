@@ -52,6 +52,7 @@ package org.apache.log4j.chainsaw;
 import org.apache.log4j.chainsaw.rule.Rule;
 import org.apache.log4j.spi.LoggingEvent;
 
+import java.beans.PropertyChangeListener;
 import java.util.List;
 
 
@@ -71,6 +72,9 @@ public interface EventContainer extends SortTableModel, FilterChangedListener,
    * @param listener
    */
   void addEventCountListener(EventCountListener listener);
+
+  void addPropertyChangeListener(PropertyChangeListener l);
+  void addPropertyChangeListener(String propertyName, PropertyChangeListener l);
 
 	/**
 	 * Adds a NewKeyListener to be notified when unique Key (MDC/Property keys)
@@ -96,6 +100,26 @@ public interface EventContainer extends SortTableModel, FilterChangedListener,
    * @return true/false
    */
   public boolean isCyclic();
+  
+  /**
+   * Configures this model to use Cyclic or non-cyclic models.
+   * This method should fire a property Change event if
+   * it involves an actual change in the underlying model.
+   *
+   * This method does nothing if there is no change in proprty.
+   * @param cyclic
+   */
+  public void setCyclic(boolean cyclic);
+  
+  /**
+   * If this container is in Cyclic mode, returns the Size of the cyclic buffer, 
+   * otherwise this method throws an IllegalStateException, when in unlimited
+   * mode, this method has no meaning.
+   * 
+   * @throws IllegalStateException if this containers isCyclic() method returns false.
+   * @return int size of the cyclic buffer
+   */
+  public int getMaxSize();
 
   /**
    * Locates a row number, starting from startRow, containing the text

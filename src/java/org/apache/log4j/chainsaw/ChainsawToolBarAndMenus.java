@@ -117,6 +117,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
   private static final String SETTING_TAB_PLACEMENT = "tab.placement";
   private final SmallToggleButton showReceiversButton;
   final JTextField findTextField;
+  private final Action changeModelAction;
   private final Action clearAction;
   private final Action closeAction;
   private final Action findNextAction;
@@ -133,6 +134,8 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     new JCheckBoxMenuItem();
   private final JCheckBoxMenuItem toggleDetailMenuItem =
     new JCheckBoxMenuItem();
+  private final JCheckBoxMenuItem toggleCyclicMenuItem =
+    new JCheckBoxMenuItem();  
   private final FileMenu fileMenu;
   private final JCheckBoxMenuItem toggleStatusBarCheck =
     new JCheckBoxMenuItem();
@@ -153,6 +156,8 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
   private final SmallToggleButton detailPaneButton = new SmallToggleButton();
   private final SmallToggleButton logTreePaneButton = new SmallToggleButton();
   private final SmallToggleButton pauseButton = new SmallToggleButton();
+  private final     SmallToggleButton toggleCyclicButton = new SmallToggleButton();
+
   private String lastFind = "";
   private String levelDisplay = ChainsawConstants.LEVEL_DISPLAY_ICONS;
   private final Action[] logPanelSpecificActions;
@@ -167,6 +172,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     menuBar = new JMenuBar();
     fileMenu = new FileMenu(logui);
     closeAction = createCloseHelpAction();
+    changeModelAction = createChangeModelAction();
     findTextField = createFindField();
     findNextAction = setupFindFieldsAndActions();
     showPreferencesAction = createShowPreferencesAction();
@@ -228,8 +234,24 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
       new Action[] {
         pauseAction, findNextAction, clearAction, fileMenu.getFileSaveAction(),
         toggleDetailPaneAction, showPreferencesAction, undockAction,
-        toggleLogTreeAction
+        toggleLogTreeAction, changeModelAction,
       };
+  }
+
+  /**
+   * @return
+   */
+  private Action createChangeModelAction() {
+    Action action = new AbstractAction("Use Cyclic", new ImageIcon(ChainsawIcons.REFRESH)){
+
+      public void actionPerformed(ActionEvent arg0) {
+        LogPanel logPanel = logui.getCurrentLogPanel();
+        logPanel.toggleCyclic();      
+        scanState();
+      }
+    };
+    action.putValue(Action.SHORT_DESCRIPTION, "Changes between Cyclic and Unlimited mode.");
+    return action;    
   }
 
   /**
@@ -463,7 +485,11 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
 
     toggleDetailMenuItem.setAction(toggleDetailPaneAction);
     toggleDetailMenuItem.setSelected(true);
-
+    
+    toggleCyclicMenuItem.setAction(changeModelAction);
+    
+    toggleCyclicMenuItem.setSelected(true);
+    
     JCheckBoxMenuItem toggleLogTreeMenuItem =
       new JCheckBoxMenuItem(toggleLogTreeAction);
     toggleLogTreeMenuItem.setSelected(true);
@@ -484,7 +510,10 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     toggleStatusBarCheck.setAction(toggleStatusBarAction);
     toggleStatusBarCheck.setSelected(true);
 
+    
     activeTabMenu.add(pause);
+    activeTabMenu.add(toggleCyclicMenuItem);
+    activeTabMenu.addSeparator();
     activeTabMenu.add(toggleDetailMenuItem);
     activeTabMenu.add(toggleLogTreeMenuItem);
     activeTabMenu.addSeparator();
@@ -863,8 +892,11 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     pauseButton.getActionMap().put(
       pauseAction.getValue(Action.NAME), pauseAction);
 
+    toggleCyclicButton.setAction(changeModelAction);
+    toggleCyclicButton.setText(null);
+    
     detailPaneButton.setAction(toggleDetailPaneAction);
-    detailPaneButton.setText("");
+    detailPaneButton.setText(null);
     detailPaneButton.getActionMap().put(
       toggleDetailPaneAction.getValue(Action.NAME), toggleDetailPaneAction);
     detailPaneButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
@@ -886,6 +918,8 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
 
     toolbar.add(undockButton);
     toolbar.add(pauseButton);
+    toolbar.add(toggleCyclicButton);
+    toolbar.addSeparator();
     toolbar.add(detailPaneButton);
     toolbar.add(logTreePaneButton);
     toolbar.add(prefsButton);
@@ -990,8 +1024,10 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
       findTextField.setEnabled(true);
 
       pauseButton.getModel().setSelected(logPanel.isPaused());
+      toggleCyclicButton.setSelected(logPanel.getModel().isCyclic());
       logui.getStatusBar().setPaused(logPanel.isPaused());
       toggleDetailMenuItem.setSelected(logPanel.isDetailPaneVisible());
+      toggleCyclicMenuItem.setSelected(logPanel.getModel().isCyclic());
       detailPaneButton.getModel().setSelected(logPanel.isDetailPaneVisible());
     }
 

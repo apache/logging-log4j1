@@ -56,6 +56,7 @@ import org.apache.log4j.spi.LoggingEvent;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -87,12 +88,11 @@ import javax.swing.table.AbstractTableModel;
  */
 class ChainsawCyclicBufferTableModel extends AbstractTableModel
   implements EventContainer, PropertyChangeListener {
-  private boolean cyclic;
-  private final int INITIAL_CAPACITY = 1024;
-  final List unfilteredList;
-  final List filteredList;
+  private boolean cyclic = true;
+  private final int INITIAL_CAPACITY = 5000;
+  List unfilteredList = new CyclicBufferList(INITIAL_CAPACITY);
+  List filteredList = new CyclicBufferList(INITIAL_CAPACITY);
 
-  //  private Vector countListeners = new Vector();
   private boolean currentSortAscending;
   private int currentSortColumn;
   private EventListenerList eventListenerList = new EventListenerList();
@@ -109,17 +109,11 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
   int uniqueRow;
   private Set uniqueMDCKeys = new HashSet();
   private Rule displayRule;
+  private PropertyChangeSupport propertySupport =
+    new PropertyChangeSupport(this);
 
-  public ChainsawCyclicBufferTableModel(boolean isCyclic, int bufferSize) {
-    this.cyclic = isCyclic;
-
-    if (isCyclic) {
-      unfilteredList = new CyclicBufferList(bufferSize);
-      filteredList = new CyclicBufferList(bufferSize);
-    } else {
-      unfilteredList = new ArrayList(INITIAL_CAPACITY);
-      filteredList = new ArrayList(INITIAL_CAPACITY);
-    }
+  public ChainsawCyclicBufferTableModel() {
+    propertySupport.addPropertyChangeListener("cyclic",new ModelChanger());
   }
 
   /**
@@ -490,7 +484,7 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
   /**
    * @return
    */
-  protected int getMaxSize() {
+  public int getMaxSize() {
     if (!isCyclic()) {
       throw new IllegalStateException(
         "You cannot call getMaxSize() when the model is not cyclic");
@@ -520,6 +514,38 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
     if (evt.getSource() instanceof Rule) {
       reFilter();
     }
+  }
+
+  /* (non-Javadoc)
+   * @see javax.swing.table.TableModel#isCellEditable(int, int)
+   */
+  public boolean isCellEditable(int rowIndex, int columnIndex) {
+    switch (columnIndex + 1) {
+    case ChainsawColumns.INDEX_THROWABLE_COL_NAME:
+      return true;
+    }
+
+    return super.isCellEditable(rowIndex, columnIndex);
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.log4j.chainsaw.EventContainer#setCyclic(boolean)
+   */
+  public void setCyclic(boolean cyclic) {
+    if (this.cyclic == cyclic) {
+      return;
+    }
+
+    boolean old = this.cyclic;
+    this.cyclic = cyclic;
+    propertySupport.firePropertyChange("cyclic", old, this.cyclic);
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.log4j.chainsaw.EventContainer#addPropertyChangeListener(java.beans.PropertyChangeListener)
+   */
+  public void addPropertyChangeListener(PropertyChangeListener l) {
+    propertySupport.addPropertyChangeListener(l);
   }
 
   class SortExecutor implements Runnable {
@@ -607,15 +633,36 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
         });
     }
   }
-	/* (non-Javadoc)
-	 * @see javax.swing.table.TableModel#isCellEditable(int, int)
-	 */
-	public boolean isCellEditable(int rowIndex, int columnIndex) {
-		switch(columnIndex+1){
-			case ChainsawColumns.INDEX_THROWABLE_COL_NAME:
-				return true;
-		}
-		return super.isCellEditable(rowIndex, columnIndex);
-	}
 
+  private class ModelChanger implements PropertyChangeListener {
+    /* (non-Javadoc)
+     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+     */
+    public void propertyChange(PropertyChangeEvent arg0) {
+      synchronized (syncLock) {
+        LogLog.debug("Changing Model, isCyclic is now " + isCyclic());
+        List oldUnfilteredList = unfilteredList;
+        List oldFilteredList = filteredList;
+
+        if (isCyclic()) {
+          unfilteredList = new CyclicBufferList(INITIAL_CAPACITY);
+          filteredList = new CyclicBufferList(INITIAL_CAPACITY);
+        } else {
+          unfilteredList = new ArrayList(INITIAL_CAPACITY);
+          filteredList = new ArrayList(INITIAL_CAPACITY);
+        }
+
+        unfilteredList.addAll(oldUnfilteredList);
+        filteredList.addAll(oldFilteredList);
+      }
+      LogLog.debug("Model Change completed");
+    }
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.log4j.chainsaw.EventContainer#addPropertyChangeListener(java.lang.String, java.beans.PropertyChangeListener)
+   */
+  public void addPropertyChangeListener(String propertyName, PropertyChangeListener l) {
+    propertySupport.addPropertyChangeListener(propertyName, l);
+  }
 }

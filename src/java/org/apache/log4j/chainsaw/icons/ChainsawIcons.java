@@ -77,6 +77,9 @@ public class ChainsawIcons
   public static final URL PAUSE =
     ChainsawIcons.class.getClassLoader().getResource(
       BASE_ICON_PATH + "Pause16.gif");
+  public static final URL REFRESH =
+    ChainsawIcons.class.getClassLoader().getResource(
+      BASE_ICON_PATH + "Refresh16.gif");
   public static final URL DELETE =
     ChainsawIcons.class.getClassLoader().getResource(
       BASE_ICON_PATH + "Delete16.gif");
