@@ -132,7 +132,7 @@ public class NTEventLogAppender extends AppenderSkeleton {
   }
 
   /**
-     Retuns the option names for this component.
+     Returns the option names for this component.
    **/
   public
   String[] getOptionStrings() {
