@@ -105,7 +105,7 @@ public class OptionConverter {
 				Object defaultValue) {
 
     // Get the value of the property in string form
-    String className = props.getProperty(key);
+    String className = findAndSubst(key, props);
     if(className == null) {
       LogLog.error("Could not find value for key " + key);
       return defaultValue;
@@ -225,7 +225,7 @@ public class OptionConverter {
 	Class classObj = Class.forName(className);
 	if(!superClass.isAssignableFrom(classObj)) {
 	  LogLog.error("A \""+className+"\" object is not assignable to a \""+
-		       superClass.getName() + "\" object.");
+		       superClass.getName() + "\" variable.");
 	  return defaultValue;	  
 	}
 	return classObj.newInstance();

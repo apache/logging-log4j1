@@ -227,8 +227,6 @@ public class LoggingEvent implements java.io.Serializable {
     
     // serialize this event's priority
     writePriority(oos);
-    
-
   }
 
   private 
