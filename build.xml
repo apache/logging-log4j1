@@ -447,6 +447,7 @@
     <jar jarfile="${jar.dest}/${log4j.jar}" basedir="${javac.dest}"
       includes="${stem}/*.class, ${stem}/xml/log4j.dtd,
                 org/apache/joran/**/*.class,
+                ${stem}/joran/**/*.class,
                 ${stem}/config/*.class,
                 ${stem}/helpers/*.class,
                 ${stem}/spi/*.class,
@@ -584,7 +585,9 @@
        org.apache.log4j.xml,
        org.apache.log4j.xml.examples,
        org.apache.joran,
-       org.apache.joran.action"
+       org.apache.joran.action,
+       org.apache.log4j.joran,
+       org.apache.log4j.joran.action"
      additionalparam="-breakiterator"
      version="true"
      protected="true"
