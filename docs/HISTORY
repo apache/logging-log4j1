@@ -33,6 +33,9 @@
    type (like XML for example).   
 
  - Fixed bug #23096. NullAppender getInstance method is now declared as a static.  
+
+ - Fixed bug #10706. The %X pattern without a key no longer causes a NullPointer 
+   exception, 
  
  February 19th, 2003
  
