@@ -6,6 +6,7 @@
     <title>Download</title>
   </properties>
 
+  <meta name="keywords" content="java, logging, tracing, component, framework, API, log4j"/>
 <body>
 
 
@@ -80,6 +81,17 @@
     <section name="Third-party extensions">
 
       <dl>
+	
+	<dt><a href="http://logui.sourceforge.net/"><b>Chainsaw</b></a></dt>
+	
+	<dd>Chainsaw is a GUI log viewer and filter for the Log4J
+	  package. It listens for <a
+	  href="http://jakarta.apache.org/log4j/docs/api/org/apache/log4j/spi/LoggingEvent.html">LoggingEvent</a>
+	  objects sent using the <a
+	  href="http://jakarta.apache.org/log4j/docs/api/org/apache/log4j/net/SocketAppender.html">SocketAppender</a>
+	  and displays them in a table.
+	</dd>	
+
 	<dt><a href="http://qos.ch/"><b>log4j<em>ME</em></b></a></dt>
 	<dd>Log4j<em>ME</em>, or log4j MicroEdition, is based on the same
 	  code as log4j. However, as the name indicates the micro-edition is
@@ -97,16 +109,6 @@
 	
 	<dt><a href="http://support.klopotek.de/log4j/jdbc/index.html"><b>JDBCAppender</b></a></dt>
 	<dd>A JDBCAppender by <a href="mailto:t.fenner@klopotek.de">Thomas Fenner</a>.</dd>
-	
-	<dt><a href="http://www.puppycrawl.com/chainsaw"><b>Chainsaw</b></a></dt>
-	
-	<dd>Chainsaw is a GUI log viewer and filter for the Log4J
-	  package. It listens for <a
-	    href="http://jakarta.apache.org/log4j/docs/api/org/apache/log4j/spi/LoggingEvent.html">LoggingEvent</a>
-	  objects sent using the <a
-	    href="http://jakarta.apache.org/log4j/docs/api/org/apache/log4j/net/SocketAppender.html">SocketAppender</a>
-	  and displays them in a table.
-	</dd>
 	
 	<dt><a href="http://www.servidium.com/site/logfactor5/index.html"><b>LogFactor5</b></a></dt>
 	
