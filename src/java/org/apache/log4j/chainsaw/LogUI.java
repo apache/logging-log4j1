@@ -825,6 +825,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       LogLog.error("Error occurred loading the Tutorial", e);
     }
 
+    tutorialFrame.setIconImage(new ImageIcon(ChainsawIcons.HELP).getImage());
     tutorialFrame.setSize(new Dimension(640, 480));
 
     final Action startTutorial =
