@@ -165,6 +165,7 @@ public class CustomSQLDBReceiver extends Receiver implements Pauseable {
         throw new IllegalStateException(
           "CustomSQLDBReceiver cannot function without a connection source");
       }
+      whereExists = (sqlStatement.toUpperCase().indexOf(WHERE_CLAUSE) > -1);
     
       customReceiverJob = new CustomReceiverJob();
         
