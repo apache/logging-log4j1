@@ -1,0 +1,161 @@
+<HTML>
+<document>
+
+<HEAD>
+<title>JSR47 vs. log4j</title>
+</HEAD>
+
+<body>
+
+<CENTER>
+<H1>JSR47 vs. log4j (take two)</H1>
+<font size="+1">by Ceki G&uuml;lc&uuml;</font>
+</CENTER>
+ 
+<hr>
+
+<p>In the forthcoming, still unpublished draft of JSR47, the
+<code>java.util.logging</code> API will resemble log4j even more than
+is the case now.  The way the two APIs name their components may
+differ but otherwise their degree of resemblance is quite frightening.
+
+<p>Changes introduced in the latest draft include configuration order
+independence, appender inheritance, resource bundle inheritance, error
+handlers and lazy inference of caller information. In other words,
+even if the priority levels remain unchanged and equally bogus, the
+vast majority of the points raised in my <a
+href="critique.html">previous critique</a> of JSR47 are now obsolete.
+This is clearly  good news.
+
+<p>It is fair to say that our campaign to influence the JSR47 API has
+handsomely bore fruit. I wish to thank the hundreds of concerned users
+who have expressed their support for log4j. My gratitude goes to Jason
+Hunter for arranging the appropriate communication channel to
+Sun. Graham Hamilton, the JSR47 specification lead, was very open and
+receptive during our exchanges.
+
+<p>As one of its authors, I still think that at its core log4j is a
+better API in some small ways. These differences are explained in the
+next section.
+
+<p>There remain two critical differences however. First, JSR47
+requires JDK 1.4 whereas log4j is compatible with JDK 1.1 and
+later. Second, log4j offers much more functionality. It supports a
+rich configuration language and about a thousand appenders and layouts
+among other very useful features.
+
+<p>Efforts to backport JSR47 to earlier JDKs are doomed to fail
+because the <code>java.util.logging</code> package is located under
+the <code>java</code> namespace. This will cause backported code to
+systematically throw a <code>SecurityException</code> under JDK
+1.3. Moreover, Java is a trademark owned by Sun Microsystems. As such,
+the backported code will be under the threat of litigation as long as
+Sun can be expected to defend its trademark. 
+
+<p>Even without the <code>SecurityException</code> and the trademark
+issue, the backported code would need to be installed. If you are
+going to install a logging API, then why not install log4j which
+offers a lot more than JSR47 and is backward compatible with JDK 1.1?
+
+<p>Log4j is the de facto standard logging API in Java. It has been
+ported to Python, C++ and the much maligned C#. By adopting log4j, you
+simultaneously benefit from much richer functionality and wider JDK
+compatibility. In any case, the log4j project will continue to
+innovate and lead the way.
+
+<h2>Remaining differences</h2>
+
+The remaining differences are admittedly of secondary importance. None
+of them will cause you to think "that sucks." You will probably shrug
+and move on to the next item.
+
+<ol>
+
+<li><b>Filter logic</b>
+
+<p>As in Linux ipchains, log4j filters use ternary logic. In JSR47,
+filter logic is binary. Mathematically the two logics are equivalent
+except that it is much easier to combine generic filters in log4j's
+ternary logic than in JSR47's binary logic. 
+
+For example, if you would like to reject a log message if it contains
+the string "Microsoft" or the string "proprietary code", accept
+messages having the info priority and only the info priority and
+reject everything else, you would write:
+
+<pre>
+  &#60;filter class="org.apache.log4j.varia.StringMatchFilter">
+    &#60;param name="StringToMatch" value="Microsoft" />
+    &#60;param name="AcceptOnMatch" value="false" />
+  &#60;/filter>
+
+  &#60;filter class="org.apache.log4j.varia.StringMatchFilter">
+    &#60;param name="StringToMatch" value="proprietary code" />
+    &#60;param name="AcceptOnMatch" value="false" />
+  &#60;/filter>
+
+  &#60;filter class="org.apache.log4j.varia.PriorityMatchFilter">
+    &#60;param name="PriorityToMatch" value="INFO" />
+    &#60;param name="AcceptOnMatch" value="true" />
+  &#60;/filter>
+
+  &#60;filter class="org.apache.log4j.varia.DenyAllFilter"/>
+</pre>
+
+You cannot express this policy with JSR47 filters without writing a
+filter for exactly this policy.
+
+<p><li><b>Filters in loggers (categories)</b>
+
+<p>JSR47 allows filters to be attached to loggers (categories in log4j
+speak) and also to handlers (appenders in in log4j speak). Log4j
+allows filters to be attached to appenders but not to categories.
+
+<p>In short, attaching filters to loggers is a feature that JSR47
+offers but log4j does not. However, because arbitrary logic cannot be
+meaningfully composed, filters cannot be inherited. Thus, you would
+need to attach a filter to every single logger where you would like it
+to apply. A clear waste of your time.
+
+<p><li><b>Bogus levels</b>
+
+<p>JSR 47 defines the levels <code>ALL</code>, <code>SEVERE</code>,
+<code>WARNING</code>, <code>INFO</code>, <code>CONFIG</code>,
+<code>FINE</code>, <code>FINER</code>, <code>FINEST</code> and
+<code>OFF</code>.  
+
+<p>Having three debugging levels <code>FINE</code>,
+<code>FINER</code>, <code>FINEST</code> could seem like a good
+idea. However, you will soon discover that even when by yourself, it
+is hard to decide when to use which level. It is plain impossible in
+groups.
+
+<p>Arguing about priority levels is a bit like arguing about your
+favorite color. I will thus stop here.
+
+<p><li><b>Plethora of printing methods</b>
+
+<p>The set of printing methods in the <code>Logger</code> class is
+confusing. It is all there -- just not where you would expect them to
+be. For example, you cannot log an exception with the
+<code>warning</code> or <code>severe</code> methods. You will need to
+use the <code>log</code> method instead.
+
+<p><li><b>Sequence numbers</b>
+
+<p>JSR47 emits sequence numbers in each log record it creates. The
+sequence number is synchronized using the <code>LogRecord</code> class
+itself at the cost of a small but measurable performance penalty. This
+variable is not likely to be very meaningful if the logging output is
+split between different handlers as the output of each handler will
+contain holes in the sequence numbers.
+
+<p><li><b>Anonymous loggers</b>
+
+<p>Err... not exactly a useful feature nor consistent with the rest of
+the JSR47 API.
+
+
+
+
+</body> </HTML>
