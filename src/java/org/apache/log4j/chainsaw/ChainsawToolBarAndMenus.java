@@ -73,7 +73,10 @@ import java.awt.event.KeyEvent;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -149,6 +152,10 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
   private String lastFind = "";
   private String levelDisplay = ChainsawConstants.LEVEL_DISPLAY_ICONS;
   private final Action[] logPanelSpecificActions;
+  private final ChangeListener panelListener;
+  private Map panelMenuMap = new HashMap();
+  private Map panelEnabledMap = new HashMap();
+  private JMenuItem showTabs;
 
   ChainsawToolBarAndMenus(final LogUI logui) {
     this.logui = logui;
@@ -172,7 +179,34 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
       new JSlider(JSlider.VERTICAL, 0, 5000, logui.handler.getQueueInterval());
     createMenuBar();
     createToolbar();
+    
+    panelListener = new ChangeListener() {
+    	public void stateChanged(ChangeEvent e) {
+    		Map m = logui.getPanels();
+    		if (m !=null) {
+    			Set s = m.entrySet();
+    			Iterator iter = s.iterator();
+    			while (iter.hasNext()) {
+    				Map.Entry entry = (Map.Entry)iter.next();
+    				if (!panelMenuMap.keySet().contains(entry.getKey())) {
+    					panelMenuMap.put(entry.getKey(), getDisplayPanelMenuItem(entry.getKey().toString()));
+    					//default to enabled
+    					panelEnabledMap.put(entry.getKey(), Boolean.TRUE);
+    					showTabs.add((JCheckBoxMenuItem)panelMenuMap.get(entry.getKey()));
+    				}
 
+					boolean entryEnabled = ((Boolean)panelEnabledMap.get(entry.getKey())).booleanValue();
+    				boolean newEnabled = ((Boolean)entry.getValue()).booleanValue();
+					    				  
+    				if (entryEnabled != newEnabled) {
+    					((JCheckBoxMenuItem)panelMenuMap.get(entry.getKey())).getModel().setEnabled(newEnabled);
+    					panelEnabledMap.put(entry.getKey(), Boolean.valueOf(newEnabled));
+    				}
+    			}
+    		}
+    	}
+    };
+    
     logPanelSpecificActions =
       new Action[] {
         pauseAction, findNextAction, clearAction, fileMenu.getFileSaveAction(),
@@ -529,6 +563,9 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
 
     viewMenu.add(menuUndock);
     viewMenu.add(pause);
+
+	showTabs = new JMenu("Display tabs");
+	viewMenu.add(showTabs);    
 
     JCheckBoxMenuItem toggleDetailMenuItem =
       new JCheckBoxMenuItem(toggleDetailPaneAction);
@@ -1064,6 +1101,24 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
         element.setSelected(false);
       }
     }
+  }
+  
+  ChangeListener getPanelListener() {
+  	return panelListener;
+  }
+  
+  private JCheckBoxMenuItem getDisplayPanelMenuItem(final String panelName) {
+  	final JCheckBoxMenuItem item = new JCheckBoxMenuItem(panelName, true);
+  	
+	final Action action =
+	  new AbstractAction(panelName) {
+		public void actionPerformed(ActionEvent e) {
+		  logui.displayPanel(panelName, item.isSelected());
+		}
+	  };
+	  item.setAction(action);
+
+	return item;
   }
 
   private Action setupFindFieldsAndActions() {

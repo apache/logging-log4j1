@@ -209,7 +209,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   private final List filterableColumns = new ArrayList();
   private final Map entryMap = new HashMap();
   private final Map panelMap = new HashMap();
-  private final Map lostMap = new HashMap();
   private final Map scrollMap = new HashMap();
   private final Map levelMap = new HashMap();
   ChainsawAppenderHandler handler;
@@ -290,6 +289,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     toolbar = tbms.getToolbar();
     setJMenuBar(tbms.getMenubar());
     tabbedPane = new ChainsawTabbedPane();
+    tabbedPane.addChangeListener(tbms.getPanelListener());
   }
 
   /**
@@ -518,17 +518,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
               LogPanel logPanel = getCurrentLogPanel();
 
               if (logPanel != null) {
-                if ((e.getModifiers() & InputEvent.CTRL_MASK) > 0) {
-                  synchronized (tableModelMap) {
-                    logPanel.clearModel();
-                    tableModelMap.remove(logPanel.getIdentifier());
-                    tabbedPane.removeTabAt(tabIndex);
-
-                    //          TODO should also tidy up any other references to things... Might need to be able to recover this pane again...
-                  }
-                } else {
                   logPanel.undock();
-                }
               }
             }
           }
@@ -705,6 +695,33 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     aboutBox.setVisible(true);
   }
 
+  Map getPanels() {
+  	Map m = new HashMap();
+  	Set panelSet = panelMap.entrySet();
+  	Iterator iter = panelSet.iterator();
+  	while (iter.hasNext()) {
+  		Map.Entry entry = (Map.Entry)iter.next();
+  		m.put(entry.getKey(), Boolean.valueOf(((DockablePanel)entry.getValue()).isDocked()));
+  	}
+  	return m;
+  }
+  
+  void displayPanel(String panelName, boolean display) {
+  	Object o = panelMap.get(panelName);
+  	if (o instanceof LogPanel) {
+		LogPanel p = (LogPanel)o;
+
+		int index = tabbedPane.indexOfTab(panelName);
+
+		if (index == -1 && display) {
+			tabbedPane.addTab(panelName, p);
+		}
+		if (index > -1 && !display) {
+			tabbedPane.removeTabAt(index);
+		}
+  	}
+  }
+  		
   /**
    * Shutsdown by ensuring the Appender gets a chance to close.
    */
@@ -1627,17 +1644,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       f.getContentPane().add(
         tbms.createDockwindowToolbar(f, this), BorderLayout.NORTH);
 
-      f.addWindowListener(
-        new WindowAdapter() {
-          public void windowClosing(WindowEvent event) {
-            HashMap m = new HashMap();
-            m.put(ChainsawConstants.MAIN_PANEL, LogPanel.this);
-            m.put(ChainsawConstants.UPPER_PANEL, upperPanel);
-            m.put(ChainsawConstants.LOWER_PANEL, lowerPanel);
-            lostMap.put(ident, m);
-          }
-        });
-
       dockingAction =
         new AbstractAction("Undock") {
             public void actionPerformed(ActionEvent evt) {
@@ -1718,33 +1724,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
         });
       menuItemScrollBottom.setIcon(
         new ImageIcon(ChainsawIcons.SCROLL_TO_BOTTOM));
-
-      JMenuItem menuItemRecoverPanes = new JMenuItem("Recover closed panes");
-      menuItemRecoverPanes.addActionListener(
-        new ActionListener() {
-          public void actionPerformed(ActionEvent evt) {
-            Set s = lostMap.entrySet();
-            Iterator iter = s.iterator();
-
-            while (iter.hasNext()) {
-              Map.Entry m = (Map.Entry) iter.next();
-              String title = (String) m.getKey();
-              HashMap map = (HashMap) m.getValue();
-              JSplitPane lower =
-                (JSplitPane) map.get(ChainsawConstants.LOWER_PANEL);
-              JPanel upper = (JPanel) map.get(ChainsawConstants.UPPER_PANEL);
-              DockablePanel thisPanel =
-                (DockablePanel) map.get(ChainsawConstants.MAIN_PANEL);
-              thisPanel.add(upper, BorderLayout.NORTH);
-              thisPanel.add(lower, BorderLayout.CENTER);
-              panelMap.put(title, thisPanel);
-              tabbedPane.add(title, thisPanel);
-              thisPanel.setDocked(true);
-            }
-
-            lostMap.clear();
-          }
-        });
 
       JMenuItem menuItemRemoveColorFilter =
         new JMenuItem("Remove all color filters");
@@ -1984,13 +1963,13 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
      *
      */
     void dock() {
+	  setDocked(true);
       f.setVisible(false);
       removeAll();
       add(lowerPanel, BorderLayout.CENTER);
       panelMap.put(getIdentifier(), LogPanel.this);
       tabbedPane.addANewTab(getIdentifier(), LogPanel.this, null);
       externalPanel.setDocked(true);
-      setDocked(true);
       dockingAction.putValue(Action.NAME, "Undock");
       dockingAction.putValue(Action.SMALL_ICON, ChainsawIcons.ICON_UNDOCK);
     }
@@ -2001,11 +1980,11 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
      *
      */
     void undock() {
+	  setDocked(false);
       externalPanel.removeAll();
       externalPanel.add(lowerPanel, BorderLayout.CENTER);
       tabbedPane.remove(LogPanel.this);
       externalPanel.setDocked(false);
-      setDocked(false);
       panelMap.put(getIdentifier(), externalPanel);
       f.setSize(getSize());
 
