@@ -18,10 +18,13 @@ package org.apache.log4j.rolling.helper;
 
 
 /**
- * @author Ceki
- *
+ * When asked to convert an integer, <code>IntegerTokenConverter</code> the 
+ * string value of that integer.
+ *  
+ * @author Ceki Gulcu
  */
 class IntegerTokenConverter extends TokenConverter {
+  
   public IntegerTokenConverter() {
     super(TokenConverter.INTEGER);
   }

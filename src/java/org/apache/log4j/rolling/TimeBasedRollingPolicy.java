@@ -27,8 +27,57 @@ import java.util.Date;
 
 
 /**
+ * <code>TimeBasedRollingPolicy</code> is both easy to configure yet quite 
+ * powerful. It <em>requires</em> the user to set just one option, namely the 
+ * <b>FileNamePattern</b> option.
  * 
+ * <p>The <b>FileNamePattern</b> option basically specifies the name of the 
+ * rolled log files. In addition to the name of the file, the FileNamePattern
+ * must contain a reference to a {@link DateTokenConverter} which is specified
+ * by the <code>%d</code> conversion specifier. Moreover, the <code>%d</code> 
+ * conversion specifier may contain a date and time pattern as admitted by
+ * the {@link java.text.SimpleDateFormat} class. If the date and time
+ * pattern is ommitted, then the default pattern of "yyyy-MM-dd" is assumed. 
+ * The following examples should clarify the point.
  *
+ * <p>
+ * <table cellspacing="20px" border="1">
+ *   <tr>
+ *     <th><code>FileNamePattern</code> value</th>
+ *     <th>Rollover schedule</th>
+ *     <th>Example</th>
+ *   </tr>
+ *   <tr>
+ *     <td><code>/some/folder/foo.log.%d</code></td>
+ *     <td>Daily rollover (at midnight).The %d token converter without the optional time and date pattern 
+ *         implies daily rollover.
+ *     </td>
+ *     <td>During November 23rd, 2004, logging output will go to 
+ *       <code>/some/folder/foo.2004-11-23</code>. At midnight and during
+ *       the rest of the 24th, logging output will be directed to 
+ *       <code>/some/folder/foo.2004-11-24</code> until the start of the
+ *       next day.
+ *     </td>
+ *   </tr>
+ *   <tr>
+ *     <td><code>/some/folder/foo.%d{yyyy-MM}.log</code></td>
+ *     <td>Rollover at the beginning of each month.</td>
+ *     <td>During the month of October 2004, logging output will go to
+ *     <code>/some/folder/foo.2004-10.log</code>. After midnight of October 31st 
+ *     and during the rest of November, logging output will be directed to 
+ *       <code>/some/folder/foo.2004-11.log</code> untill the beginning of
+ *     the next month.
+ *     </td>
+ *   </tr>
+
+ * 
+ * copied to 
+ *      /foo/bar.log.2002-03-08. Logging for the 9th day of March will be output to /foo/bar.log until it is rolled over the next day.
+ * 
+ * Daily rollover</td>
+ *   </tr>
+ * </table>
+ * <p>
  * If configuring programatically, do not forget to call {@link #activateOptions}
  * method before using this policy. Moreover, {@link #activateOptions} of
  * <code> TimeBasedRollingPolicy</code> must be called <em>before</em> calling
@@ -36,6 +85,7 @@ import java.util.Date;
  * <code>RollingFileAppender</code>.
  *
  * @author Ceki G&uuml;lc&uuml;
+ * @since 1.3
  */
 public class TimeBasedRollingPolicy extends RollingPolicySkeleton
   implements TriggeringPolicy {

@@ -416,6 +416,33 @@ public class TimeBasedRollingTest extends TestCase {
     }
     
   }
+  
+  public void testWithJoran10() throws Exception {
+    JoranConfigurator jc = new JoranConfigurator();
+    jc.doConfigure("./input/rolling/time2.xml", LogManager.getLoggerRepository());
+    jc.dumpErrors();
+    
+    String datePattern = "yyyy-MM-dd";
+
+    SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
+    String[] filenames = new String[0];
+
+    Calendar cal = Calendar.getInstance();
+
+    filenames[0] = "output/test1-" + sdf.format(cal.getTime());
+
+    for (int i = 0; i < 5; i++) {
+      logger.debug("Hello---" + i);
+      Thread.sleep(500);
+    }
+
+
+    for (int i = 0; i < 1; i++) {
+      assertTrue(Compare.compare(filenames[i], "witness/rolling/tbr-test10." + i));
+    }
+    
+  }
+  
   void delayUntilNextSecond(int millis) {
     long now = System.currentTimeMillis();
     Calendar cal = Calendar.getInstance();
@@ -454,12 +481,12 @@ public class TimeBasedRollingTest extends TestCase {
 //    suite.addTest(new TimeBasedRollingTest("test1"));
 //    suite.addTest(new TimeBasedRollingTest("test2"));
 //    suite.addTest(new TimeBasedRollingTest("test3"));
-    suite.addTest(new TimeBasedRollingTest("test4"));
+//    suite.addTest(new TimeBasedRollingTest("test4"));
 //
 //    suite.addTest(new TimeBasedRollingTest("test5"));
 //    suite.addTest(new TimeBasedRollingTest("test6"));
 //    suite.addTest(new TimeBasedRollingTest("testWithJoran1"));
-    
+    suite.addTest(new TimeBasedRollingTest("testWithJoran10"));
     
     return suite;
   }

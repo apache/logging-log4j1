@@ -16,8 +16,11 @@
 package org.apache.log4j.rolling.helper;
 
 /**
- * @author Ceki
- *
+ * IdentityTokenConverter encapsulates the String value with which it was
+ * constructed. When asked to {@link #convert} it simply returns that String.
+ * 
+ * @author Ceki Gulcu
+ * @since 1.3
  */
 public class IdentityTokenConverter extends TokenConverter {
 
@@ -28,6 +31,11 @@ public class IdentityTokenConverter extends TokenConverter {
    this.str = str; 
   }
   
+  /**
+   * Return the string value encapsulated by this instance.
+   * 
+   * @return The String this instance encapsulates.
+   */
   public String convert() {
     return str;
   }

@@ -19,10 +19,11 @@ package org.apache.log4j.rolling.helper;
 
 /**
  *
- * The TokenConverter offer some basic functionality for more specific token 
- * converters. 
+ * <code>TokenConverter</code> offers some basic functionality used by more 
+ * specific token  converters. 
  * <p>
- * It basically sets up the chained architecture for tokens.
+ * It basically sets up the chained architecture for tokens. It also forces 
+ * derived classes to fix their type.
  * 
  * @author Ceki
  * @since 1.3
@@ -36,7 +37,7 @@ public class TokenConverter {
   int type;
   TokenConverter next;
 
-  TokenConverter(int t) {
+  protected TokenConverter(int t) {
     type = t;
   }
 
