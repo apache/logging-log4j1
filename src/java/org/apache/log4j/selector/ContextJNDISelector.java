@@ -184,10 +184,18 @@ public class ContextJNDISelector implements RepositorySelector {
         // configure log4j internal logging
         IntializationUtil.log4jInternalConfiguration(hierarchy);
 
-        // Use automatic configration to configure the default hierarchy
+        // Check if Mrs. Piggy gave us explicit configration directives
+        // regarding this directory.
         String configResourceStr = JNDIUtil.lookup(ctx, JNDI_CONFIGURATION_RESOURCE);
         String configuratorClassName = JNDIUtil.lookup(ctx, JNDI_CONFIGURATOR_CLASS);
 
+        // If no explicit direction were given, then user automatic 
+        // the default configuration files. Try log4j.xml first and then
+        // log4j.properties.
+        // Note that Loader.getResource() method uses the Thread Context
+        // Classloader first and if that fails,tries "other" classloaders, 
+        // including the System classloader. This is actually quite wrong as
+        // only the TCL should be tried.
         if (configResourceStr == null) {
           if (
             Loader.getResource(Constants.DEFAULT_XML_CONFIGURATION_FILE) != null) {
