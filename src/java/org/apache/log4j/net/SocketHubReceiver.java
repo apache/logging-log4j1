@@ -14,6 +14,7 @@ import javax.swing.event.EventListenerList;
 
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.plugins.Receiver;
+import org.apache.log4j.plugins.Plugin;
 import org.apache.log4j.helpers.LogLog;
 
 /**
@@ -129,20 +130,22 @@ extends Receiver implements SocketNodeEventListener, PortBased {
   }
   
   /**
-    Returns true if the receiver is the same class and they are
-    configured for the same port, logger repository, and name.
-    This is used when determining if the same receiver is being
-    configured.  */
-  public boolean equals(Object obj) {
-    if (obj != null && obj instanceof SocketHubReceiver) {
-      SocketHubReceiver sReceiver = (SocketHubReceiver)obj;
-      String sName = sReceiver.getName();
-      return (repository == sReceiver.getLoggerRepository() &&
-        port == sReceiver.getPort() &&
+   * Returns true if the receiver is the same class and they are
+   * configured for the same properties, and super class also considers
+   * them to be equivalent. This is used by PluginRegistry when determining
+   * if the a similarly configured receiver is being started.
+   * 
+   * @param testPlugin The plugin to test equivalency against.
+   * @return boolean True if the testPlugin is equivalent to this plugin.
+   */
+  public boolean isEquivalent(Plugin testPlugin) {
+    if (testPlugin != null && testPlugin instanceof SocketHubReceiver) {
+      SocketHubReceiver sReceiver = (SocketHubReceiver)testPlugin;
+
+      return (port == sReceiver.getPort() &&
         host.equals(sReceiver.getHost()) &&
         reconnectionDelay == sReceiver.getReconnectionDelay() &&
-        ((sName != null && sName.equals(sReceiver.getName()) || 
-         (sName == null && sReceiver.getName() == null))));
+        super.isEquivalent(testPlugin));
     }
     
     return false;

@@ -24,6 +24,7 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.plugins.Plugin;
 import org.apache.log4j.plugins.Receiver;
 
 /**
@@ -80,14 +81,16 @@ public class JMSReceiver extends Receiver implements MessageListener {
   }
   
   /**
-    Sets the JMS topic name to use when creating the 
-    JMS connection. */
+   * Sets the JMS topic name to use when creating the
+   * JMS connection.
+   */
   public void setTopicName(String _topicName) {
     topicName = _topicName;
   }
   
   /**
-    Gets the curernt JMS topic name property. */
+   * Gets the curernt JMS topic name property.
+   */
   public String getTopicName() {
     return topicName;
   }
@@ -100,37 +103,45 @@ public class JMSReceiver extends Receiver implements MessageListener {
   }
   
   /**
-    Gets the curernt user id property. */
+   * Gets the current user id property.
+   */
   public String getUserId() {
     return userId;
   }
 
   /**
-    Sets the password to use when creating the 
-    JMS connection. */
+   * Sets the password to use when creating the
+   * JMS connection.
+   */
   public void setPassword(String _password) {
     password = _password;
   }
   
   /**
-    Gets the curernt password property. */
+   * Gets the curernt password property.
+   */
   public String getPassword() {
     return password;
   }
  
   /**
-    Returns true if the receiver is the same class and they are
-    configured for the same topic info, logger repository, and name.
-    This is used when determining if the same receiver is being
-    configured.  */
-  public boolean equals(Object obj) {
-    if (obj != null && obj instanceof JMSReceiver) {
-      JMSReceiver receiver = (JMSReceiver)obj;
-      String rName = receiver.getName();
-      return (repository == receiver.getLoggerRepository() &&
-        topicFactoryName.equals(receiver.getTopicFactoryName()) &&
-        ((rName != null && rName.equals(this.getName()) || 
-         (rName == null && this.getName() == null))));
+   * Returns true if the receiver is the same class and they are
+   * configured for the same properties, and super class also considers
+   * them to be equivalent. This is used by PluginRegistry when determining
+   * if the a similarly configured receiver is being started.
+   * 
+   * @param testPlugin The plugin to test equivalency against.
+   * @return boolean True if the testPlugin is equivalent to this plugin.
+   */
+  public boolean isEquivalent(Plugin testPlugin) {
+    // only do full check if an instance of this class
+    if (testPlugin instanceof JMSReceiver) {
+ 
+      JMSReceiver receiver = (JMSReceiver)testPlugin;
+      
+      // check for same topic name and super class equivalency
+      return (topicFactoryName.equals(receiver.getTopicFactoryName()) &&
+        super.isEquivalent(testPlugin));
     }
     
     return false;

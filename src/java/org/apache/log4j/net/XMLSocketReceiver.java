@@ -51,6 +51,7 @@ package org.apache.log4j.net;
 
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.plugins.Receiver;
+import org.apache.log4j.plugins.Plugin;
 import org.apache.log4j.spi.LoggerRepository;
 
 import java.net.ServerSocket;
@@ -114,19 +115,19 @@ public class XMLSocketReceiver extends Receiver implements Runnable, PortBased {
   }
 
   /**
-    Returns true if the receiver is the same class and they are
-    configured for the same port, logger repository, and name.
-    This is used when determining if the same receiver is being
-    configured.  */
-  public boolean equals(Object obj) {
-    if ((obj != null) && obj instanceof XMLSocketReceiver) {
-      XMLSocketReceiver sReceiver = (XMLSocketReceiver) obj;
-      String sName = sReceiver.getName();
+   * Returns true if the receiver is the same class and they are
+   * configured for the same properties, and super class also considers
+   * them to be equivalent. This is used by PluginRegistry when determining
+   * if the a similarly configured receiver is being started.
+   * 
+   * @param testPlugin The plugin to test equivalency against.
+   * @return boolean True if the testPlugin is equivalent to this plugin.
+   */
+  public boolean isEquivalent(Plugin testPlugin) {
+    if ((testPlugin != null) && testPlugin instanceof XMLSocketReceiver) {
+      XMLSocketReceiver sReceiver = (XMLSocketReceiver) testPlugin;
 
-      return ((repository == sReceiver.getLoggerRepository())
-      && (port == sReceiver.getPort())
-      && (((sName != null) && sName.equals(sReceiver.getName()))
-      || ((sName == null) && (sReceiver.getName() == null))));
+      return (port == sReceiver.getPort() && super.isEquivalent(testPlugin));
     }
 
     return false;
