@@ -26,3 +26,18 @@ NOTE: The compilation and execution of tests must be performed from
       this README file is located.
 ------------------------------------------------------------------------
 
+Writing a new test case
+=======================
+
+Our test cases are based on junit and you should be familiar with
+junit in order to write new a test case.
+
+Some of the existing test are actually regression tests. They compare
+the output of a test with the output of a previous run, a.k.a a
+witness, which is purported to be correct. Since the ouput of some
+tests vary on time and line numbers, before comparing the output with
+a witness, we transform the output by unifying the result, for example
+by removing date and time information.
+
+To automatically run your test case with the rest of the log4j test
+cases, you need to modify tests/build.xml. 
