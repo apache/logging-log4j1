@@ -35,8 +35,6 @@ import org.apache.log4j.helpers.LogLog;
 public class UtilLoggingEntityResolver implements EntityResolver {
 
   public InputSource resolveEntity (String publicId, String systemId) {
-    System.err.println("publicID: ["+publicId+"]");
-    System.err.println("systemId: ["+systemId+"]");
     if (systemId.endsWith("logger.dtd")) {
       Class clazz = getClass();
       InputStream in = clazz.getResourceAsStream("/org/apache/log4j/xml/logger.dtd");
