@@ -66,11 +66,16 @@
   static final String SEE_FNP_NOT_SET = "See also http://logging.apache.org/log4j/codes.html#tbr_fnp_not_set";
 
     <message ref="tbr_fnp_not_set">
-      <title>The FileNamePattern option must be set before using TimeBasedRollingPolicy.</title>
+
+      <title>The <b>FileNamePattern</b> option must be set before
+             using <code>TimeBasedRollingPolicy</code> or
+             <code>FixedWindowRollingPolicy</code>.
+      </title>
 
       <explanation>
-        <p>The <code>FileNamePattern</code> option for
-        <code>TimeBasedRollingPolicy</code> is mandatory.
+        <p>The <b>FileNamePattern</b> option for both
+        <code>TimeBasedRollingPolicy</code> and
+        <code>FixedWindowRollingPolicy</code> is mandatory.
         </p>
       </explanation>
 
