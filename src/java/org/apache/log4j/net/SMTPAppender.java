@@ -208,7 +208,7 @@ public class SMTPAppender extends AppenderSkeleton {
   protected
   boolean checkEntryConditions() {
     if(this.msg == null) {
-      errorHandler.error("Message object not configureed.");
+      errorHandler.error("Message object not configured.");
       return false;
     }
 

@@ -362,7 +362,9 @@ public class FileAppender extends AppenderSkeleton {
      @since 0.8.1 */
   public
   void setOption(String key, String value) {
+    if(value == null) return;
     super.setOption(key, value);
+    
     if(key.equalsIgnoreCase(FILE_OPTION)) {
       // Trim spaces from both ends. The users probably does not want 
       // trailing spaces in file names.

@@ -102,6 +102,11 @@ public class AppenderAttachableImpl implements AppenderAttachable {
   public
   void removeAllAppenders() {
     if(appenderList != null) {
+      int len = appenderList.size();      
+      for(int i = 0; i < len; i++) {
+	Appender a = (Appender) appenderList.elementAt(i);
+	a.close();
+      }
       appenderList.removeAllElements();
       appenderList = null;      
     }

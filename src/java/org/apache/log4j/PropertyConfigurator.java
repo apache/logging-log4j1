@@ -574,6 +574,8 @@ public class PropertyConfigurator extends BasicConfigurator
               "Could not instantiate appender named \"" + appenderName+"\".");
       return null;
     }
+    appender.setName(appenderName);
+
     if(appender instanceof OptionHandler) {
       configureOptionHandler((OptionHandler) appender, prefix + ".", props);
       LogLog.debug("Parsed \"" + appenderName +"\" options.");
@@ -589,7 +591,6 @@ public class PropertyConfigurator extends BasicConfigurator
 	}
       }
     }
-    appender.setName(appenderName);
     registryPut(appender);
     return appender;
   }
