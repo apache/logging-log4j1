@@ -43,14 +43,14 @@ import java.util.Enumeration;
 <td>4
 <td>21
 <td>16
-<td>31
+<td>33
 
 <tr>
 <td>PatternLayout "%p - %m%n" 
 <td>4
 <td>21
 <td>16
-<td>31
+<td>32
 
 <tr>
 <td>PatternLayout "%-5p - %m%n"
@@ -99,32 +99,32 @@ import java.util.Enumeration;
 <td>25
 <td>58
 <td>51
-<td>68
+<td>71
 
 <tr>
 <td>PatternLayout "%d{ISO8601} [%t] %-5p %c %x - %m%n"
 <td>28
 <td>62
 <td>55
-<td>73
+<td>76
 
 <tr>
 <td>PatternLayout "%d{yyyy-MM-dd HH:mm:ss,SSS} [%t] %-5p %c %x - %m%n"
 <td>46
 <td>82
 <td>72
-<td>91
+<td>94
 
 <tr>
 <td>PatternLayout "%l - %m%n"
-<td> 1353
-<td> 1565
-<td> 1474 
-<td> 1459 
+<td> 241
+<td> 317
+<td> 299
+<td> 251
 
 <tr>
 <td>PatternLayout "%C.%M.%L - %m%n"
-<td>1379 
+<td>267 
 <td>NA
 <td>NA
 <td>NA
@@ -173,8 +173,9 @@ import java.util.Enumeration;
    time is substracted, logging with the <code>AsyncLogger</code>
    takes no time at all. In other words, logging is done for "free".
 
-   <p><li>Extracting location information is (comparatively) very
-   slow. It should be avoided unless performace is not a concern.
+   <p><li>Extracting location information is comparatively slow. It
+   implies at least a ten fold increase in logging time!  It should be
+   avoided unless performace is not a concern.
 
    </ol>
 
