@@ -1,0 +1,60 @@
+Torino is a AMD Athlon XP 2600+ running Linux 2.6.7 and Sun's JDK 1.4.2.
+
+NullAppender:
+
+    4.67 PatternLayout "%p - %m%n"
+    4.67 PatternLayout "%-5p - %m%n"
+   11.22 PatternLayout "%r [%t] %-5p %c{2} %x - %m%n"
+   11.34 PatternLayout "%r [%t] %-5p %.10c %x - %m%n"
+   11.30 PatternLayout "%r [%t] %-5p %.20c %x - %m%n"
+   10.04 PatternLayout "%r [%t] %-5p %c - %m%n"
+   18.21 PatternLayout "%d{ISO8601} [%t] %-5p %c %x - %m%n"
+   18.11 PatternLayout "%d{yyyy-MM-dd HH:mm:ss,SSS} [%t] %-5p %c %x - %m%n"
+  183.81 PatternLayout "%l - %m%n"
+  203.25 PatternLayout "%C.%M.%L - %m%n"
+
+FileAppender:
+
+   15.11 PatternLayout "%p - %m%n"					   
+   16.96 PatternLayout "%-5p - %m%n"					   
+   24.60 PatternLayout "%r [%t] %-5p %c{2} %x - %m%n"			   
+   24.37 PatternLayout "%r [%t] %-5p %.10c %x - %m%n"			   
+   25.72 PatternLayout "%r [%t] %-5p %.20c %x - %m%n"			   
+   23.09 PatternLayout "%r [%t] %-5p %c - %m%n"				   
+   35.80 PatternLayout "%d{ISO8601} [%t] %-5p %c %x - %m%n"		   
+   36.26 PatternLayout "%d{yyyy-MM-dd HH:mm:ss,SSS} [%t] %-5p %c %x - %m%n"
+  243.57 PatternLayout "%l - %m%n"					   
+  258.75 PatternLayout "%C.%M.%L - %m%n"                                     
+
+FileAppender: (ImmediateFlush=false)
+
+   6.96 PatternLayout "%p - %m%n"					   
+   7.07	PatternLayout "%-5p - %m%n"					   
+  15.33	PatternLayout "%r [%t] %-5p %c{2} %x - %m%n"			   
+  15.18	PatternLayout "%r [%t] %-5p %.10c %x - %m%n"			   
+  16.49	PatternLayout "%r [%t] %-5p %.20c %x - %m%n"			   
+  14.21	PatternLayout "%r [%t] %-5p %c - %m%n"				   
+  23.33	PatternLayout "%d{ISO8601} [%t] %-5p %c %x - %m%n"		   
+  23.13	PatternLayout "%d{yyyy-MM-dd HH:mm:ss,SSS} [%t] %-5p %c %x - %m%n"
+ 241.42	PatternLayout "%l - %m%n"					   
+ 260.15	PatternLayout "%C.%M.%L - %m%n"                                   
+
+FileAppender: (BufferedIO=true)
+
+   6.27 PatternLayout "%p - %m%n"					  
+   6.39	PatternLayout "%-5p - %m%n"					  
+  15.45	PatternLayout "%r [%t] %-5p %c{2} %x - %m%n"			  
+  13.97	PatternLayout "%r [%t] %-5p %.10c %x - %m%n"			  
+  14.40	PatternLayout "%r [%t] %-5p %.20c %x - %m%n"			  
+  13.10	PatternLayout "%r [%t] %-5p %c - %m%n"				  
+  21.78	PatternLayout "%d{ISO8601} [%t] %-5p %c %x - %m%n"		  
+  21.64	PatternLayout "%d{yyyy-MM-dd HH:mm:ss,SSS} [%t] %-5p %c %x - %m%n"
+ 214.99	PatternLayout "%l - %m%n"					  
+ 239.34	PatternLayout "%C.%M.%L - %m%n"                                    
+
+Notice the small but noticable performance gain when
+ImmediateFlush=false
+
+Note also that BufferedIO yeilds better performance than
+ImmediateFlush only when the length of the log entry is relatively
+long.

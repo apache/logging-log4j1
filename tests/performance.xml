@@ -9,8 +9,7 @@
   <property name="examples.classes" value="../examples/classes/"/>
   <property name="tests.source.home" value="${base}/tests/src/java/"/>
 
-  <property name="longrun"  value="100000"/>
-  <property name="shortrun" value="20000"/>
+  <property name="runlen"  value="100000"/>
 
   <path id="perf.classpath">
     <pathelement location="${project.source.home}"/>
@@ -20,75 +19,115 @@
     <pathelement location="./classes"/>
   </path>
   
-	<target name="usage">
-		<echo>
-	      These are the targets supported by this ANT build scpript:
-	      
-		  null - run performance tests using NullAppender	
-	      
-	      runAll - run all available tests
-	    </echo>
-	  </target>
-		
-	<target name="loop">
-	    <echo message="Pattern is ${pattern}"/> 	
-		<java classname="org.apache.log4j.performance.Loop" 
-			  fork="yes" failonerror="true">
-			<classpath refid="perf.classpath"/>
-			<sysproperty key="pattern" value="${pattern}"/>
-			<arg line="${runLen} ${configFile}"/>
-		</java>
-	</target>
+  <target name="usage">
+    <echo>
+      These are the targets supported by this ANT build scpript:
+      
+      all - run all performance tests
+      null         - run performance tests using NullAppender	
+      file         - run performance tests using FileAppender	
+      file-noflush - run performance tests using FileAppender without immediate flush	
+      file-bufferedio - run performance tests using FileAppender without buffered IO
+      
+      runAll - run all available tests
+    </echo>
+  </target>
 
- 	<target name="null-loop">
-      <antcall target="loop">
-   	    <param name="pattern" value="${pattern}"/>
-   	    <param name="runLen" value="${longrun}"/>
- 	    <param name="configFile" value="input/performance/null-appender.xml"/>
-     </antcall>
-	</target>	
-		
-	<target name="short-null-loop">
-	  <echo message="Pattern is ${pattern}"/> 	
-	  <antcall target="loop">
-	  <param name="pattern" value="${pattern}"/>
-	  <param name="runLen" value="${shortrun}"/>
-	  <param name="configFile" value="input\\performance\\null-appender.xml"/>
-	 </antcall>
-	</target>		
-		
-	<target name="null">
-		 <antcall target="null-loop">
-		   <param name="pattern" value="%p - %m%n"/>
-		 </antcall>
-		 <antcall target="null-loop">
-		   <param name="pattern" value="%-5p - %m%n"/>
-		 </antcall>
-		 <antcall target="null-loop">
-		   <param name="pattern" value="%r [%t] %-5p %c{2} %x - %m%n"/>
-		 </antcall>
-		 <antcall target="null-loop">
-		   <param name="pattern" value="%r [%t] %-5p %.10c %x - %m%n"/>
-		 </antcall>
-		 <antcall target="null-loop">
-		   <param name="pattern" value="%r [%t] %-5p %.20c %x - %m%n"/>
-		 </antcall>
-		 <antcall target="null-loop">
-		   <param name="pattern" value="%r [%t] %-5p %c - %m%n"/>
-		 </antcall>
-		 <antcall target="null-loop">
-		   <param name="pattern" value="%d{ISO8601} [%t] %-5p %c %x - %m%n"/>
-		 </antcall>
-		 <antcall target="null-loop">
-		   <param name="pattern" value="%d{yyyy-MM-dd HH:mm:ss,SSS} [%t] %-5p %c %x - %m%n"/>
-		 </antcall>
-		 <antcall target="short-null-loop">
-		   <param name="pattern" value="%l - %m%n"/>
-		 </antcall>
-		 <antcall target="short-null-loop">
-		   <param name="pattern" value="%C.%M.%L - %m%n"/>
-		 </antcall>
+  <target name="clean">
+   <delete>
+      <fileset dir="./output/" includes="**"/>
+    </delete>
+   </target>
 
-	 </target>	
+  <target name="all" depends="null, file, file-noflush, file-bufferedio">
+    <antcall target="loop-group">
+      <param name="configFile" value="input/performance/null-appender.xml"/>
+    </antcall>
+  </target>	
+
+  
+  <target name="null">
+    <antcall target="loop-group">
+      <param name="configFile" value="input/performance/null-appender.xml"/>
+    </antcall>
+  </target>	
+
+  <target name="file" depends="clean">
+    <echo message="*** logging with FileAppender ***"/>
+    <antcall target="loop-group">
+      <param name="configFile" value="input/performance/file.xml"/>
+    </antcall>
+  </target>	
+
+  <target name="file-noflush" depends="clean">
+    <echo message="*** logging with FileAppender, ImmediateFlush=false ***"/>
+    <antcall target="loop-group">
+      <param name="configFile" value="input/performance/file-noflush.xml"/>
+    </antcall>
+  </target>	
+
+  <target name="file-bufferedio" depends="clean">
+    <echo message="*** logging with FileAppender, BufferedIO=true ***"/>
+    <antcall target="loop-group">
+      <param name="configFile" value="input/performance/file-bufferedio.xml"/>
+    </antcall>
+  </target>	
+
+  <target name="loop">
+    <echo message="Pattern is ${pattern}"/> 	
+    <buildnumber file="output/build.number"/>
+    <java classname="org.apache.log4j.performance.Loop" 
+	  fork="yes" failonerror="true">
+      <classpath refid="perf.classpath"/>
+      <sysproperty key="pattern" value="${pattern}"/>
+      <sysproperty key="build.number" value="${build.number}"/>
+      <arg line="${runlen} ${configFile}"/>
+    </java>
+  </target>
+		
+  <target name="loop-group">
+    <antcall target="loop">
+      <param name="configFile" value="${configFile}"/>
+      <param name="pattern" value="%p - %m%n"/>
+    </antcall>
+    <antcall target="loop">
+      <param name="configFile" value="${configFile}"/>
+      <param name="pattern" value="%-5p - %m%n"/>
+    </antcall>
+    <antcall target="loop">
+      <param name="configFile" value="${configFile}"/>
+      <param name="pattern" value="%r [%t] %-5p %c{2} %x - %m%n"/>
+    </antcall>
+    <antcall target="loop">
+      <param name="configFile" value="${configFile}"/>
+      <param name="pattern" value="%r [%t] %-5p %.10c %x - %m%n"/>
+    </antcall>
+    <antcall target="loop">
+      <param name="configFile" value="${configFile}"/>
+      <param name="pattern" value="%r [%t] %-5p %.20c %x - %m%n"/>
+    </antcall>
+    <antcall target="loop">
+      <param name="configFile" value="${configFile}"/>
+      <param name="pattern" value="%r [%t] %-5p %c - %m%n"/>
+    </antcall>
+    <antcall target="loop">
+      <param name="configFile" value="${configFile}"/>
+      <param name="pattern" value="%d{ISO8601} [%t] %-5p %c %x - %m%n"/>
+    </antcall>
+    <antcall target="loop">
+      <param name="configFile" value="${configFile}"/>
+      <param name="pattern" value="%d{yyyy-MM-dd HH:mm:ss,SSS} [%t] %-5p %c %x - %m%n"/>
+    </antcall>
+    <antcall target="loop">
+      <param name="configFile" value="${configFile}"/>
+      <param name="pattern" value="%l - %m%n"/>
+    </antcall>
+    <antcall target="loop">
+      <param name="configFile" value="${configFile}"/>
+      <param name="pattern" value="%C.%M.%L - %m%n"/>
+    </antcall>
+  </target>	
+
+  
   
 </project>
