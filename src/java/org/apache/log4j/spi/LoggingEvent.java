@@ -111,18 +111,13 @@ public class LoggingEvent
    */
   private transient LoggerRepository loggerRepository;
 
-  /**
-   * <p>
-   * The logger name.
-   * </p>
-   *
-   * @deprecated This field will be marked as private in future releases.
-   *             Please do not access it directly. Use the {@link
-   *             #getLoggerName} method instead.
-   */
-  //the 'logger name' variable name ("categoryName") must remain the same as prior versions in order
-  //to maintain serialization compatibility with log4j 1.2.8
-  private String categoryName;
+ 
+   // The logger name.
+   //
+   // the 'logger name' variable name ("categoryName") must remain the same 
+   // as prior versions in order to maintain serialization compatibility with 
+   // log4j 1.2.8
+   private String categoryName;
 
   /**
    * Level of logging event. Level cannot be serializable because it is a
@@ -309,8 +304,26 @@ public class LoggingEvent
       return false;
     }
 
-    // If both the timestamp and the sequenceNumber are equal than the objects
-    // are assumed to be equal.
+    // at this point, the probability of the two events being equal is
+    // extremely high. The next few test is optimized to take advantage of
+    // this knowlege. (We only compare string lengths instead of invoking
+    // string.equals which is much slower when the two string are equal.
+    
+    if(categoryName != null &&  rEvent.categoryName != null) {
+      if(categoryName.length() != rEvent.categoryName.length()) {
+        return false;
+      }
+    } else if(categoryName != rEvent.categoryName) {
+      // of categoryNames is null while the other is not, they can't possibly
+      // be equal
+      return false;
+    }
+
+ 
+
+    
+    // If timestamp, sequenceNumber and categoryName length are equal than the 
+    // events are assumed to be equal.
     return true;
   }
 
