@@ -1,4 +1,5 @@
+org.apache.log4j.net.MulticastReceiver
 org.apache.log4j.net.SocketHubReceiver
 org.apache.log4j.net.SocketReceiver
-org.apache.log4j.net.XMLSocketReceiver
 org.apache.log4j.net.UDPReceiver
+org.apache.log4j.net.XMLSocketReceiver
