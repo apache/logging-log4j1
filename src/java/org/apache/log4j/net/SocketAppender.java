@@ -1,9 +1,10 @@
-//      Copyright 1996-2000, International Business Machines
-//      Corporation. All Rights Reserved.
-//
-//      See the LICENCE file for the terms of distribution.
-
-
+/*
+ * Copyright (C) The Apache Software Foundation. All rights reserved.
+ *
+ * This software is published under the terms of the Apache Software License
+ * version 1.1, a copy of which has been included  with this distribution in
+ * the LICENSE.txt file.
+ */
 
 // Contributors: Dan MacDonald <dan@redknee.com>
 
