@@ -49,12 +49,6 @@
 
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SettingsListener;
-import org.apache.log4j.helpers.LogLog;
-
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -63,13 +57,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -98,6 +90,12 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.SettingsListener;
+import org.apache.log4j.helpers.LogLog;
 
 
 /**
@@ -156,10 +154,8 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
   private String lastFind = "";
   private String levelDisplay = ChainsawConstants.LEVEL_DISPLAY_ICONS;
   private final Action[] logPanelSpecificActions;
-  private final ChangeListener panelListener;
   private Map panelMenuMap = new HashMap();
   private Map panelEnabledMap = new HashMap();
-  private JMenuItem showTabs;
 
   ChainsawToolBarAndMenus(final LogUI logui) {
     this.logui = logui;
@@ -186,44 +182,6 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
       new JSlider(JSlider.VERTICAL, 0, 5000, logui.handler.getQueueInterval());
     createMenuBar();
     createToolbar();
-
-    panelListener =
-      new ChangeListener() {
-          public void stateChanged(ChangeEvent e) {
-            Map m = logui.getPanels();
-
-            if (m != null) {
-              Set s = m.entrySet();
-              Iterator iter = s.iterator();
-
-              while (iter.hasNext()) {
-                Map.Entry entry = (Map.Entry) iter.next();
-
-                if (!panelMenuMap.keySet().contains(entry.getKey())) {
-                  panelMenuMap.put(
-                    entry.getKey(),
-                    getDisplayPanelMenuItem(entry.getKey().toString()));
-
-                  //default to enabled
-                  panelEnabledMap.put(entry.getKey(), Boolean.TRUE);
-                  showTabs.add(
-                    (JCheckBoxMenuItem) panelMenuMap.get(entry.getKey()));
-                }
-
-                boolean entryEnabled =
-                  ((Boolean) panelEnabledMap.get(entry.getKey())).booleanValue();
-                boolean newEnabled =
-                  ((Boolean) entry.getValue()).booleanValue();
-
-                if (entryEnabled != newEnabled) {
-                  ((JCheckBoxMenuItem) panelMenuMap.get(entry.getKey())).getModel()
-                   .setEnabled(newEnabled);
-                  panelEnabledMap.put(entry.getKey(), new Boolean(newEnabled));
-                }
-              }
-            }
-          }
-        };
 
     logPanelSpecificActions =
       new Action[] {
@@ -483,8 +441,6 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
 
     JMenuItem menuUndock = new JMenuItem(undockAction);
 
-    showTabs = new JMenu("Display tabs");
-
     toggleDetailMenuItem.setAction(toggleDetailPaneAction);
     toggleDetailMenuItem.setSelected(true);
 
@@ -618,8 +574,6 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
 
     tabMenu.add(tabsTop);
     tabMenu.add(tabsBottom);
-
-    viewMenu.add(showTabs);
 
     viewMenu.add(tabMenu);
     viewMenu.add(responsiveNess);
@@ -1054,9 +1008,9 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     }
   }
 
-  ChangeListener getPanelListener() {
-    return panelListener;
-  }
+//  ChangeListener getPanelListener() {
+//    return panelListener;
+//  }
 
   private JCheckBoxMenuItem getDisplayPanelMenuItem(final String panelName) {
     final JCheckBoxMenuItem item = new JCheckBoxMenuItem(panelName, true);
