@@ -158,6 +158,13 @@ public class JSortTable extends JTable implements MouseListener {
   }
 
   public void mouseClicked(MouseEvent event) {
+  	
+  	if(event.getClickCount()<2 || event.isPopupTrigger()){
+  		return;
+  	}else if(event.getClickCount()>1 && event.getButton() == MouseEvent.BUTTON2_MASK){
+  		return;
+  	}
+  	
     TableColumnModel colModel = getColumnModel();
     int index = colModel.getColumnIndexAtX(event.getX());
     int modelIndex = colModel.getColumn(index).getModelIndex();
