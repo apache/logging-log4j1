@@ -7,45 +7,41 @@
 <center>
 <h1>Frequently Asked Questions about log4j</h1>
 
-<b>Ceki G&uuml;lc&uuml;</b> and <b>Chris Taylor</b> 
-<h2>May 2002</h2>
+<b>Ceki G&uuml;lc&uuml;</b>, <b>Paul Smith</b>, <b>Chris Taylor</b> 
+<h2>May 2002, last updated 11th of May 2004</h2>
 </center>
 <ul>
 
 <li><p><a href=#whatIs>What is log4j?</a></p>
 
-<li><p><a href=#reliable>Is log4j a reliable logging system?</a></p>
-<li><p><a href=#prerequisites>What are the prerequisites for log4j?</a></p>
-<li><p><a href=#javadoc>Is there javadoc documentation for log4j?</a></p>
-<li><p><a href=#alternatives>What other logging packages are there?</a></p>
-<li><p><a HREF=#usageExample>Is there example code for using log4j?</a></p>
-<li><p><a href=#features>What are the features of log4j?</a></p> 
-<li><p><a href=#thread-safety>Is log4j thread-safe?</a></p> 
-<li><p><a href=#sample>What does log output look like?</a></p>
-<li><p><a href=#logger>What are <em>Loggers</em>?</a></p>
-<li><p><a href=#behavior>How can I change log behavior at runtime?</a></p>
-<li><p><a HREF=#fastLogging>What is the fastest way of (not) logging?</a></p>
-<li><p><a HREF=#arrayDebug>What is the use of the <code>debug</code> method
-expecting a <code>String</code> array as one of its parameters?</a></p>
-
-<li><p><a href=#introCat>Why was the Logger class introduced and how
-do I migrate from the previous String based implementation?</a></p>
-
-<li><p><a href=#namingLoggers>Are there any suggested ways for naming
+<li><p><a href="#reliable">Is log4j a reliable logging system?</a></p>
+<li><p><a href="#prerequisites">What are the prerequisites for log4j?</a></p>
+<li><p><a href="#javadoc">Is there javadoc documentation for log4j?</a></p>
+<li><p><a href="#alternatives">What other logging packages are there?</a></p>
+<li><p><a HREF="#usageExample">Is there example code for using log4j?</a></p>
+<li><p><a href="#features">What are the features of log4j?</a></p> 
+<li><p><a href="#thread-safety">Is log4j thread-safe?</a></p> 
+<li><p><a href="#sample">What does log output look like?</a></p>
+<li><p><a href="#logger">What are <em>Loggers</em>?</a></p>
+<li><p><a href="#behavior">How can I change log behavior at runtime?</a></p>
+<li><p><a HREF="#fastLogging">What is the fastest way of (not) logging?</a></p>
+<li><p><a href="#namingLoggers">Are there any suggested ways for naming
 loggers?</a></p>
 
-<li><p><a href=#className>How do I get the fully-qualified name of a class in
+<li><p><a href="#className">How do I get the fully-qualified name of a class in
 a static block?</a></p>
 
-<li><p><a href=#customLayouts>Can the log output format be
+<li><p><a href="#customLayouts">Can the log output format be
 customized?</a></p>
 
 <li><p><a href="#options">What are the configurable options for
 <code>ForBarAppender</code>?</a></p>
 
+<li><p><a href="#converting14">What is the recommended way of
+migrating from java.util.logging to log4j?</a></p>
 
-<li><p><a href=#NDC>Can the outputs of multiple client request go to
-different log files?</a></p>
+<li><p><a href=#NDC>Canthe outputs of multiple client request go to different log
+files?</a></p>
 
 <li><p><a href=#rm>Logger instances seem to be create only. Why isn't
 there a method to remove logger instances?</a></p>
@@ -107,7 +103,7 @@ logging system.
 exceptions at run-time potentially causing your application to
 crash. <b>If for any reason, log4j throws an uncaught exception,
 please send an email to the <a
-href="mailto:log4j-user@jakarta.apache.org">log4j-user@jakarta.apache.org</a>
+href="mailto:log4j-user@logging.apache.org">log4j-user@logging.apache.org</a>
 mailing list</b>. Uncaught exceptions are handled as serious bugs
 requiring immediate attention.
 
@@ -332,6 +328,7 @@ this hierarchy.
 <p>Note by naming loggers by locality one tends to name things by
 functionality, since in most cases the locality relates closely to
 functionality. 
+</p>
 
 <a name=className><h4>How do I get the fully-qualified name of a class
 in a static block?</a></h4>
@@ -341,8 +338,9 @@ static block for class X, with the statement
 <code>X.class.getName()</code>. Note that <code>X</code> is the class
 name and not an instance.  The <code>X.class</code> statement does
 <i>not</i> create a new instance of class <code>X</code>.
+</p>
 
-<p>Here is the suggested usage template:
+<p>Here is the suggested usage template:</p>
 
 <font color=BLUE><pre>
 package a.b.c;
@@ -359,15 +357,17 @@ public class Foo {
 <p>Yes. Since release 0.7.0, you can extend the <code>Layout</code>
 class to create you own customized log format. Appenders can be
 parameterized to use the layout of your choice.
+</p>
 
 <a name=NDC><h4>Can the outputs of multiple client request go to
 different log files?</h4>
 
-Many developers are confronted with the problem of distinguishing the
+<p>Many developers are confronted with the problem of distinguishing the
 log output originating from the same class but different client
 requests. They come up with ingenious mechanisms to fan out the log
 output to different files. In most cases, this is not the right
 approach.
+</p>
 
 <p>It is simpler to use a nested diagnostic context (NDC). Typically,
 one would <em>NDC.push()</em> client specific information, such as the
@@ -376,21 +376,24 @@ starting to handle the client's request. Thereafter, log output will
 automatically include the nested diagnostic context so that you can
 distinguish logs from different client requests even if they are
 output to the same file.
+</p>
 
 <p>See the <code>NDC</code> and the <code>PatternLayout</code> classes
 for more information. The <code>NumberCruncher</code> example shows
 how the NDC can be used to distinguish the log output from multiple
 clients even if they share the same log file.
+</p>
 
 <p>For select applications, such as virtual hosting web-servers, the
 NDC solution is not sufficient. As of version 0.9.0, log4j supports
 multiple hierarchy trees. Thus, it is possible to log to different
 targets from the same logger depending on the current context.
+</p>
 
 <p><a name="#options"><h4>What are the configurable options for
-FooBarAppender?</h4>
+FooBarAppender?</h4></a>
 
-Log4j uses JavaBeans style configuration. 
+<p>Log4j uses JavaBeans style configuration.</p>
 
 <p>Thus, any setter method in <code>FooBarAppender</code> corresponds
 to a configurable option. For example, in <a
@@ -402,16 +405,38 @@ option. The first letter of the option can be upper case, i.e.
 <code>MaxBackupIndex</code> and <code>maxBackupIndex</code> are
 equivalent but not <code>MAXBACKUPIndex</code> nor
 <code>mAXBackupIndex</code>.
+</p>
 
 <p>Layouts options are also defined by their setter methods. Same goes
 for most other log4j components.
+</p>
+
+<!-- ------------------------------------------------------------------ -->
+
+<p><a name="#converting14"><h4>What is the recommended way of
+migrating from java.util.logging to log4j?</a></h4>
+</p>
+
+<p>We suggest to just use global file search/replace.  You should be able
+to replace all the "java.util.Logger" references with
+"org.apache.log4j.Logger", and you should be on your way.
+</p>
+
+<p>If you're on a Win32 platform, we recommend <a
+href="http://www.textpad.com/">Textpad</a>. You can use the
+CTRL+SHIFT+O to open all *.java files from a directory including all
+its sub-directories, and then use the search/replace function to
+replace in all files, and then CTRL+SHIFT+S to save all.  Should take
+about 60 seconds!  :)
+</p>
 
 <!-- ------------------------------------------------------------------ -->
 
 <p><a name=rm><h4>Logger instances seem to be create only. Why isn't
 there a method to remove logger instances?</h4>
+</a></p>
 
-It is quite nontrivial to define the semantics of a "removed" logger
+<p>It is quite nontrivial to define the semantics of a "removed" logger
 which is still referenced by the user. Future releases <em>may</em>
 include a remove method in the Logger class.
 
@@ -604,7 +629,7 @@ code?</h4>
 <a name=download><h4>Where can I find the latest distribution of log4j?</h4>
 
 <p>The log4j project is hosted at <a
-href="http://jakarta.apache.org/log4j/">http://jakarta.apache.org/log4j/</a>.
+href="http://logging.apache.org/log4j/">http://logging.apache.org/log4j/</a>.
 <p>
 <hr>
 
