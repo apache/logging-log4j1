@@ -301,7 +301,10 @@ public class XMLDecoder implements Decoder {
     for (int eventIndex = 0; eventIndex < eventList.getLength();
         eventIndex++) {
       Node eventNode = eventList.item(eventIndex);
-
+      //ignore carriage returns in xml 
+	  if(eventNode.getNodeType() != Node.ELEMENT_NODE) {
+	  	continue;
+	  }
       logger =
         Logger.getLogger(
           eventNode.getAttributes().getNamedItem("logger").getNodeValue());
