@@ -122,6 +122,7 @@ public class BasicConfigurator {
 
      @deprecated Use <code>Category.getDefaultHierarchy().disable()</code> instead.  */
   public
+  static
   void disable(String priorityStr) {
     Category.getDefaultHierarchy().disable(priorityStr);
   }
@@ -131,6 +132,7 @@ public class BasicConfigurator {
 
      @deprecated Use <code>Category.getDefaultHierarchy().disable(p)</code> instead.  */
   public
+  static
   void disable(Priority p) {
   
   }
@@ -141,6 +143,7 @@ public class BasicConfigurator {
 
      @deprecated Use <code>Category.getDefaultHierarchy().disableAll()</code> instead.  */  
   public
+  static
   void disableAll() {
       Category.getDefaultHierarchy().disable(Priority.FATAL);
   }
@@ -150,6 +153,7 @@ public class BasicConfigurator {
 
      @deprecated Use <code>Category.getDefaultHierarchy().disableDebug()</code> instead.  */ 
   public
+  static
   void disableDebug() {
     Category.getDefaultHierarchy().disable(Priority.DEBUG);
   }  
@@ -159,6 +163,7 @@ public class BasicConfigurator {
 
      @deprecated Use <code>Category.getDefaultHierarchy().disableInfo()</code> instead.  */ 
   public
+  static
   void disableInfo() {
     Category.getDefaultHierarchy().disable(Priority.INFO);
   } 
@@ -169,6 +174,7 @@ public class BasicConfigurator {
 
      @deprecated Use <code>Category.getDefaultHierarchy().enableAll()</code> instead.  */ 
   public
+  static
   void enableAll() {
     Category.getDefaultHierarchy().disable(Priority.INFO);
   }
