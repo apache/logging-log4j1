@@ -96,7 +96,7 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
   private final JLabel idComponent = new JLabel();
   private final JLabel levelComponent = new JLabel();
   private String levelDisplay = ChainsawConstants.LEVEL_DISPLAY_ICONS;
-
+  private DateFormat dateFormatInUse = DATE_FORMATTER;
   /**
    * Creates a new TableColorizingRenderer object.
    */
@@ -226,6 +226,15 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
 
     return c;
   }
+  
+  /**
+   * Changes the Date Formatting object to be used for rendering dates.
+   * @param formatter
+   */
+  void setDateFormatter(DateFormat formatter){
+  	this.dateFormatInUse = formatter;
+  }
+  
 
   /**
    *Format date field
@@ -238,7 +247,7 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
     if (!(o instanceof Date)) {
       return o;
     } else {
-      return DATE_FORMATTER.format((Date) o);
+      return dateFormatInUse.format((Date) o);
     }
   }
 
