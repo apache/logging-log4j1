@@ -131,10 +131,16 @@ public class Loader  {
    */
   public
   static
-  boolean java1() {
+  boolean isJava1() {
     return java1;
   }
 
+
+  /**
+     Load the specified class using the <code>Thread</code>
+     <code>contextClassLoader</code> if running under Java2 or current
+     class loader if running under JDK 1.1.
+  */
   static
   public 
   Class loadClass (String clazz) throws ClassNotFoundException {
