@@ -61,8 +61,8 @@ public class SyslogWriter extends Writer {
   
   public
   void write(String string) throws IOException {
-    DatagramPacket packet = new DatagramPacket(string.getBytes(),
-					       string.length(), 
+    byte[] bytes = string.getBytes();
+    DatagramPacket packet = new DatagramPacket(bytes, bytes.length,
 					       address, SYSLOG_PORT);
 
     if(this.ds != null)

@@ -5,9 +5,23 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
 
+
+ May ??, 2002,
+
+ - Release of version 1.2.3
+
+ - Fixed bug #9285 where the SyslogAppender would incorrectly compute
+   the length of the datagram to send to the remote syslogd host.
+   Reported by Mamoru Kadota. [*]
+
+ - Fixed bug #8505 where the stack trace of exception would not be
+   properly printed on the Compaq tru64 Unix platform. [*]. Initially
+   Reported by Fabrice Claes and later Espen H. Kolstad who also
+   provided the fix. [*]
+
  May 22nd, 2002
 
- - Relase of version 1.2.2
+ - Release of version 1.2.2
 
  - Log4j now configurators admit NULL as a valid level value. NULL has
    the same meaning as the previously available INHERITED value. Both
@@ -21,7 +35,7 @@
 
  May 17th, 2002
 
- - Relase of version 1.2.1
+ - Release of version 1.2.1
 
  - This minor release fixes bug #9155 reported by Nicko Cadell.
    LoggingEvent.getMDCCopy() method now sets mdcCopyLookupRequired
