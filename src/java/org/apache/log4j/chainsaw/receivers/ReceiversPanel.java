@@ -115,6 +115,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.chainsaw.LogUI;
 import org.apache.log4j.chainsaw.PopupListener;
 import org.apache.log4j.chainsaw.SmallButton;
+import org.apache.log4j.chainsaw.help.HelpManager;
 import org.apache.log4j.chainsaw.icons.ChainsawIcons;
 import org.apache.log4j.chainsaw.icons.LevelIconFactory;
 import org.apache.log4j.chainsaw.icons.LineIconFactory;
@@ -146,6 +147,7 @@ public class ReceiversPanel extends JPanel {
   final Action pauseReceiverButtonAction;
   final Action playReceiverButtonAction;
   final Action shutdownReceiverButtonAction;
+  private final Action showReceiverHelpAction;
   private final Action startAllAction;
   private final JPopupMenu popupMenu = new ReceiverPopupMenu();
   private final JTree receiversTree = new JTree();
@@ -325,6 +327,19 @@ public class ReceiversPanel extends JPanel {
       Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_S));
 
     shutdownReceiverButtonAction.setEnabled(false);
+    
+    showReceiverHelpAction = new AbstractAction("Help"){
+
+		public void actionPerformed(ActionEvent e) {
+			Receiver receiver = getCurrentlySelectedReceiver();
+			if(receiver!=null) {
+				HelpManager.getInstance().showHelpForClass(receiver.getClass());
+			}
+			
+		}};
+		
+	showReceiverHelpAction.putValue(Action.SMALL_ICON, new ImageIcon(ChainsawIcons.HELP));
+	showReceiverHelpAction.putValue(Action.SHORT_DESCRIPTION, "Displays the JavaDoc page for this Plugin");
 
     startAllAction =
       new AbstractAction(
@@ -818,6 +833,8 @@ public class ReceiversPanel extends JPanel {
       addSeparator();
       add(createLevelRadioButton(r, Level.OFF));
       add(createLevelRadioButton(r, Level.ALL));
+      addSeparator();
+      add(showReceiverHelpAction);
     }
 
     private JRadioButtonMenuItem createLevelRadioButton(
