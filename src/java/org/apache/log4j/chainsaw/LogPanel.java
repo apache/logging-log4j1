@@ -507,8 +507,6 @@ public class LogPanel extends DockablePanel implements Profileable,
         preferenceModel.addPropertyChangeListener("dateFormatPattern",
             datePrefsChangeListener);
 
-        SettingsManager.getInstance().addSettingsListener(renderer);
-
         table.setDefaultRenderer(Object.class, renderer);
 
         table.addMouseMotionListener(new TableColumnDetailMouseListener(table,
@@ -1514,8 +1512,6 @@ public class LogPanel extends DockablePanel implements Profileable,
         
         File f = new File(SettingsManager.getInstance().getSettingsDirectory() +
                 File.separator + identifier + LogUI.COLUMNS_EXTENSION);
-
-        renderer.loadSettings(event);
 
         if (f.exists()) {
             loadColumnSettings(identifier, table.getColumnModel());
