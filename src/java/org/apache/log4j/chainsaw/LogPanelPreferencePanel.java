@@ -59,6 +59,7 @@ import java.awt.event.ActionListener;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Iterator;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -276,24 +277,69 @@ public class LogPanelPreferencePanel extends JPanel {
 
       ButtonGroup bgDateFormat = new ButtonGroup();
       final JRadioButton rdISO =
-        new JRadioButton("ISO 8601 format (yyyy-MM-dd HH:mm:ss)");
+        new JRadioButton("<html><b>Fast</b> ISO 8601 format (yyyy-MM-dd HH:mm:ss)</html>");
       rdISO.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            getModel().setUseISO8601Format(rdISO.isSelected());
+            getModel().setDateFormatPattern("ISO8601");
           }
         });
       rdISO.setSelected(getModel().isUseISO8601Format());
       getModel().addPropertyChangeListener(
-        "useISO8601Format",
+        "dateFormatPattern",
         new PropertyChangeListener() {
           public void propertyChange(PropertyChangeEvent evt) {
             rdISO.setSelected(getModel().isUseISO8601Format());
           }
         });
+      bgDateFormat.add(rdISO);
       dateFormatPanel.add(rdISO);
 
+	for (Iterator iter = LogPanelPreferenceModel.DATE_FORMATS.iterator(); iter.hasNext();) {
+		final String format = (String) iter.next();
+		final JRadioButton rdFormat = new JRadioButton(format);
+		bgDateFormat.add(rdFormat);
+		rdFormat.addActionListener(new ActionListener(){
+
+			public void actionPerformed(ActionEvent e) {
+				getModel().setDateFormatPattern(format);
+			}});
+		getModel().addPropertyChangeListener(
+		  "dateFormatPattern",
+		  new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				rdFormat.setSelected(getModel().getDateFormatPattern().equals(format));
+			}
+		  });
+		dateFormatPanel.add(rdFormat);
+	}
       add(dateFormatPanel);
+      
+      JPanel levelFormatPanel = new JPanel();
+      levelFormatPanel.setLayout(
+	  new BoxLayout(levelFormatPanel, BoxLayout.Y_AXIS));
+      levelFormatPanel.setBorder(BorderFactory.createTitledBorder( BorderFactory.createEtchedBorder(), "Level"));
+      ButtonGroup bgLevel = new ButtonGroup();
+      final JRadioButton rdLevelIcons = new JRadioButton("Icons");
+	  final JRadioButton rdLevelText = new JRadioButton("Text");
+	  bgLevel.add(rdLevelIcons);
+	  bgLevel.add(rdLevelText);
+
+	  ActionListener levelIconListener = new ActionListener(){
+
+			  public void actionPerformed(ActionEvent e) {
+				  getModel().setLevelIcons(rdLevelIcons.isSelected());
+			
+			  }	  };
+	  rdLevelIcons.addActionListener(levelIconListener);
+	  rdLevelText.addActionListener(levelIconListener);
+	
+	  rdLevelIcons.setSelected(getModel().isLevelIcons());	  
+	  
+	  levelFormatPanel.add(rdLevelIcons);
+	  levelFormatPanel.add(rdLevelText);
+      
+      add(levelFormatPanel);
       add(Box.createVerticalGlue());
     }
 
