@@ -151,7 +151,7 @@ public class LocationInfo implements java.io.Serializable {
 	if(iend == -1) 
 	  className = NA;
 	else {
-	  iend = fullInfo.lastIndexOf('.', iend);
+	  iend =fullInfo.lastIndexOf('.', iend);
 
 	  // This is because a stack trace in VisualAge looks like:
 

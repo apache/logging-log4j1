@@ -270,24 +270,24 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   }
 
   public
-  void fireAddAppenderEvent(Category cat, Appender appender) {
+  void fireAddAppenderEvent(Category logger, Appender appender) {
     if(listeners != null) {
       int size = listeners.size();
       HierarchyEventListener listener;
       for(int i = 0; i < size; i++) {
 	listener = (HierarchyEventListener) listeners.elementAt(i);
-	listener.addAppenderEvent(cat, appender);
+	listener.addAppenderEvent(logger, appender);
       }
     }        
   }
 
-  void fireRemoveAppenderEvent(Category cat, Appender appender) {
+  void fireRemoveAppenderEvent(Category logger, Appender appender) {
     if(listeners != null) {
       int size = listeners.size();
       HierarchyEventListener listener;
       for(int i = 0; i < size; i++) {
 	listener = (HierarchyEventListener) listeners.elementAt(i);
-	listener.removeAppenderEvent(cat, appender);
+	listener.removeAppenderEvent(logger, appender);
       }
     }        
   }

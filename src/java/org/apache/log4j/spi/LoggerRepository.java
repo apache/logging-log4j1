@@ -7,6 +7,9 @@ import java.util.Enumeration;
 
 public interface LoggerRepository {
 
+  public 
+  void addHierarchyEventListener(HierarchyEventListener listener);
+
   boolean isDisabled(int level);
 
   public
@@ -18,6 +21,9 @@ public interface LoggerRepository {
   public
   void emitNoAppenderWarning(Category cat);
   
+  public
+  Level getEnable();
+
   public
   Logger getLogger(String name);
 
@@ -47,7 +53,7 @@ public interface LoggerRepository {
 
   public
   abstract
-  void fireAddAppenderEvent(Category cat, Appender appender);
+  void fireAddAppenderEvent(Category logger, Appender appender);
 
   public
   abstract

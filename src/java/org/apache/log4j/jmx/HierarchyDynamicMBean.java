@@ -1,13 +1,16 @@
+/*
+ * Copyright (C) The Apache Software Foundation. All rights reserved.
+ *
+ * This software is published under the terms of the Apache Software
+ * License version 1.1, a copy of which has been included with this
+ * distribution in the LICENSE.txt file.  */
 
 package org.apache.log4j.jmx;
 
 
 import java.lang.reflect.Constructor;
-import org.apache.log4j.Hierarchy;
-import org.apache.log4j.Appender;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.apache.log4j.Level;
+import org.apache.log4j.*;
+
 import org.apache.log4j.spi.HierarchyEventListener;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.helpers.OptionConverter;
@@ -226,7 +229,7 @@ public class HierarchyDynamicMBean extends AbstractDynamicMBean
 
 
   public
-  void addAppenderEvent(Logger logger, Appender appender) {
+  void addAppenderEvent(Category logger, Appender appender) {
     log.debug("addAppenderEvent called: logger="+logger.getName()+
 	      ", appender="+appender.getName());
     Notification n = new Notification(ADD_APPENDER+logger.getName(), this, 0);
@@ -236,7 +239,7 @@ public class HierarchyDynamicMBean extends AbstractDynamicMBean
   }
 
  public
-  void removeAppenderEvent(Logger cat, Appender appender) {
+  void removeAppenderEvent(Category cat, Appender appender) {
     log.debug("removeAppenderCalled: logger="+cat.getName()+
 	      ", appender="+appender.getName());
   }

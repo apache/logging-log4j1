@@ -9,6 +9,9 @@
 
  - Release of version 1.2alpha_0
 
+ - Modified SMTPAppender to allow multiple email sessions. Thanks to
+   Jon Skeet for supplying the relevant patch.
+
  - The CategoryFactory class has been replaced by the LoggerFactory
    class. The makeNewCategoryInstance method has been renamed as
    makeNewLoggerInstance. This change requires subclasses of Category
