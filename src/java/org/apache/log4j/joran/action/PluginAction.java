@@ -99,9 +99,8 @@ public class PluginAction extends Action {
         "The object at the of the stack is not the plugin named ["
         + plugin.getName() + "] pushed earlier.");
     } else {
-      getLogger().warn(
-        "Popping plugin named [" + plugin.getName()
-        + "] from the object stack");
+      getLogger().debug(
+        "Popping plugin named [{}] from the object stack", plugin.getName());
       ec.popObject();
     }
   }

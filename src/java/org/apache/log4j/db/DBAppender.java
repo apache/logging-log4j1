@@ -262,7 +262,7 @@ public class DBAppender extends AppenderSkeleton {
       String[] strRep = event.getThrowableStrRep();
 
       if (strRep != null) {
-        getLogger().info("Logging an exception");
+        getLogger().debug("Logging an exception");
 
         PreparedStatement insertExceptionStatement = connection
             .prepareStatement(insertExceptionSQL);

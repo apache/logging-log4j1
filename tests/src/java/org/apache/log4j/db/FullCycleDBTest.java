@@ -72,9 +72,9 @@ public class FullCycleDBTest
     
     witnessEvents = new Vector();
     lrWrite = new Hierarchy(new RootLogger(Level.DEBUG));
-    IntializationUtil.log4jInternalConfiguration(lrWrite);
+    lrWrite.setName("lrWrite");
     lrRead = new Hierarchy(new RootLogger(Level.DEBUG));
-    IntializationUtil.log4jInternalConfiguration(lrRead);
+    lrRead.setName("lrRead");
   }
 
 
@@ -254,6 +254,13 @@ public class FullCycleDBTest
     return r;
   }
 
+  void dump(Vector v) {
+    for(int i = 0; i < v.size(); i++) {
+      LoggingEvent le = (LoggingEvent) v.get(i);
+      System.out.println("---"+le.getLevel()+" "+le.getLoggerName()+" "+le.getMessage());
+    }
+  }
+  
   public static Test XXsuite() {
     TestSuite suite = new TestSuite();
     suite.addTest(new FullCycleDBTest("testSingleOutput"));

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE log4j:configuration>
+<!DOCTYPE configuration>
 	  
-<log4j:configuration xmlns:log4j='http://logging.apache.org/' debug="true">
+<configuration xmlns:log4j='http://logging.apache.org/' debug="true">
 	  
   <substitutionProperty file="input/db/db.properties"/>
 	    
@@ -21,12 +21,17 @@
 
   <appender name="VECTOR" class="org.apache.log4j.VectorAppender">
   </appender>
-  
+
+  <!-- Prevent internal log4j DEBUG messages from polluting the output. -->
+  <logger name="org.apache.log4j.joran"><level value="INFO" /></logger>
+  <logger name="org.apache.log4j.config"><level value="INFO" /></logger>
+  <logger name="org.apache.log4j.db"><level value="INFO" /></logger>
+    
   <root>
     <level value ="debug"/>
     <appender-ref ref="DB" />
     <appender-ref ref="VECTOR" />
   </root>  
-</log4j:configuration>
+</configuration>
 
 
