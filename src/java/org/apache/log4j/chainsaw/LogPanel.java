@@ -27,8 +27,6 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -191,7 +189,8 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
   private final JEditorPane detail;
   private final JSplitPane lowerPanel;
   private final DetailPaneUpdater detailPaneUpdater;
-  private final double DEFAULT_SPLIT_LOCATION = .5;
+  private final double DEFAULT_DETAIL_SPLIT_LOCATION = .5;
+  private final double DEFAULT_LOG_TREE_SPLIT_LOCATION = .25;
   private final JPanel detailPanel = new JPanel(new BorderLayout());
   private final int dividerSize;
   private final JSplitPane nameTreeAndMainPanelSplit;
@@ -204,8 +203,11 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
   private final RuleColorizer colorizer = new RuleColorizer();
   private final RuleMediator ruleMediator = new RuleMediator();
   private Layout detailLayout = new EventDetailLayout();
-  private int previousSplitLocation;
-  private double lastSplitLocation = DEFAULT_SPLIT_LOCATION;
+  private int previousDetailPanelSplitLocation;
+  private double lastDetailPanelSplitLocation = DEFAULT_DETAIL_SPLIT_LOCATION;
+  private int previousLogTreePanelSplitLocation;
+  private double lastLogTreePanelSplitLocation = DEFAULT_LOG_TREE_SPLIT_LOCATION;
+
   private Point currentPoint;
   private boolean scroll;
   private boolean bypassScroll;
@@ -403,8 +405,11 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
       new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           boolean newValue = ((Boolean) evt.getNewValue()).booleanValue();
-
-          logTreePanel.setVisible(newValue);
+          if (newValue) {
+            showLogTreePanel();
+          } else {
+            hideLogTreePanel();
+          }
         }
       });
 
@@ -595,7 +600,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
      *
      */
     LogPanelLoggerTreeModel logTreeModel = new LogPanelLoggerTreeModel();
-    logTreePanel = new LoggerNameTreePanel(logTreeModel);
+    logTreePanel = new LoggerNameTreePanel(logTreeModel, preferenceModel);
     tableModel.addLoggerNameListener(logTreeModel);
 
     /**
@@ -913,7 +918,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
       new JSplitPane(
         JSplitPane.VERTICAL_SPLIT, eventsAndStatusPanel, detailPanel);
 
-    lowerPanel.setDividerLocation(lastSplitLocation);
+    lowerPanel.setDividerLocation(lastDetailPanelSplitLocation);
     lowerPanel.setOneTouchExpandable(true);
     dividerSize = lowerPanel.getDividerSize() + 5;
     lowerPanel.setResizeWeight(0.5);
@@ -1043,35 +1048,9 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
     nameTreeAndMainPanelSplit.setDividerLocation(-1);
 
     add(nameTreeAndMainPanelSplit, BorderLayout.CENTER);
-    nameTreeAndMainPanelSplit.setOneTouchExpandable(isLogTreeVisible());
+    nameTreeAndMainPanelSplit.setOneTouchExpandable(true);
 
     logTreePanel.setVisible(isLogTreeVisible());
-
-    /*
-     * This listener deals with when the user hides the LogPanel, by disabling
-     * the use of the splitpane
-     */
-    logTreePanel.addComponentListener(
-      new ComponentListener() {
-        public void componentHidden(ComponentEvent e) {
-          nameTreeAndMainPanelSplit.setEnabled(false);
-          nameTreeAndMainPanelSplit.setOneTouchExpandable(false);
-          preferenceModel.setLogTreePanelVisible(false);
-        }
-
-        public void componentMoved(ComponentEvent e) {
-        }
-
-        public void componentResized(ComponentEvent e) {
-        }
-
-        public void componentShown(ComponentEvent e) {
-          nameTreeAndMainPanelSplit.setEnabled(true);
-          nameTreeAndMainPanelSplit.setOneTouchExpandable(true);
-          nameTreeAndMainPanelSplit.setDividerLocation(-1);
-          preferenceModel.setLogTreePanelVisible(true);
-        }
-      });
 
     /*
      * Other menu items
@@ -1545,8 +1524,8 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
    */
   private void showDetailPane() {
     lowerPanel.setDividerSize(dividerSize);
-    lowerPanel.setDividerLocation(lastSplitLocation);
-    lowerPanel.setLastDividerLocation(previousSplitLocation);
+    lowerPanel.setDividerLocation(lastDetailPanelSplitLocation);
+    lowerPanel.setLastDividerLocation(previousDetailPanelSplitLocation);
     detailPanel.setVisible(true);
   }
 
@@ -1557,12 +1536,12 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
     int currentSize = lowerPanel.getHeight() - dividerSize;
 
     if (currentSize > 0) {
-      lastSplitLocation =
+      lastDetailPanelSplitLocation =
         (double) lowerPanel.getDividerLocation() / currentSize;
 
       //if hiding when details are minimized or maximized, use last location
-      if ((lastSplitLocation == 1.0) || (lastSplitLocation == 0.0)) {
-        previousSplitLocation = lowerPanel.getLastDividerLocation();
+      if ((lastDetailPanelSplitLocation == 1.0) || (lastDetailPanelSplitLocation == 0.0)) {
+        previousDetailPanelSplitLocation = lowerPanel.getLastDividerLocation();
 
         lowerPanel.setLastDividerLocation(lowerPanel.getLastDividerLocation());
       }
@@ -1572,6 +1551,37 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
     detailPanel.setVisible(false);
   }
 
+  /**
+   * Display the log tree pane, using the last known divider location
+   */
+  private void showLogTreePanel() {
+    nameTreeAndMainPanelSplit.setDividerSize(dividerSize);
+    nameTreeAndMainPanelSplit.setDividerLocation(lastLogTreePanelSplitLocation);
+    nameTreeAndMainPanelSplit.setLastDividerLocation(previousLogTreePanelSplitLocation);
+    logTreePanel.setVisible(true);
+  }
+
+  /**
+   * Hide the log tree pane, holding the current divider location for later use
+   */
+  private void hideLogTreePanel() {
+    //subtract one to make sizes match
+    int currentSize = nameTreeAndMainPanelSplit.getWidth() - dividerSize - 1;
+
+    if (currentSize > 0) {
+      lastLogTreePanelSplitLocation = (double) nameTreeAndMainPanelSplit.getDividerLocation() / currentSize;
+      //if hiding when log tree is minimized or maximized, use last location
+      if ((lastLogTreePanelSplitLocation == 1.0) || (lastLogTreePanelSplitLocation == 0.0)) {
+        previousLogTreePanelSplitLocation = nameTreeAndMainPanelSplit.getLastDividerLocation();
+
+        nameTreeAndMainPanelSplit.setLastDividerLocation(nameTreeAndMainPanelSplit.getLastDividerLocation());
+      }
+    }
+
+    nameTreeAndMainPanelSplit.setDividerSize(0);
+    logTreePanel.setVisible(false);
+  }
+  
   /**
    * Return a toolbar used by the undocked LogPanel's frame
    *
