@@ -712,17 +712,21 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
             return;
           }
           boolean lastIndexOnLastRow = (evt.getLastIndex() == (table.getRowCount() - 1));
-          boolean firstIndexOnLastRow = (evt.getFirstIndex() == (table.getRowCount() - 1));
           boolean lastIndexSame = (previousLastIndex == evt.getLastIndex());
 
           /*
-          to bypass the scroll-to-bottom feature when the user selects a row other than the bottom row,
-          one of two conditions must be met:
-          1: neither the 'firstindex' nor the 'lastindex' are on the last row, or
-          2: the last index value didn't change and the 'lastindex' is on the last row, and the last index and first index aren't the same
-           */ 
-          boolean bypassScrollSelection = (!(lastIndexOnLastRow || firstIndexOnLastRow)) || (lastIndexSame && lastIndexOnLastRow && (evt.getFirstIndex() != evt.getLastIndex()));
-          if (bypassScrollSelection && scroll && table.getRowCount() > -1) {
+           * when scroll-to-bottom is active, here is what events look like:
+           * rowcount-1: 227, last: 227, previous last: 191..first: 191
+           * 
+           * when the user has unselected the bottom row, here is what the events look like:
+           * rowcount-1: 227, last: 227, previous last: 227..first: 222
+           * 
+           * note: previouslast is set after it is evaluated in the bypass scroll check
+          */
+          //System.out.println("rowcount: " + (table.getRowCount() - 1) + ", last: " + evt.getLastIndex() +", previous last: " + previousLastIndex + "..first: " + evt.getFirstIndex());
+          
+          boolean bypassScrollSelection = (lastIndexOnLastRow && lastIndexSame && previousLastIndex != evt.getFirstIndex());
+          if (bypassScrollSelection && scroll && table.getRowCount() > 0) {
           	preferenceModel.setScrollToBottom(false);
           }
           previousLastIndex = evt.getLastIndex();
