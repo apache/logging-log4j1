@@ -69,7 +69,7 @@ class ChainsawAbout extends JDialog {
         "<b>http://logging.apache.org/log4j</b><p><p>" +
       "Bug report, mailing list and wiki information:<p>" +
       "<b>http://logging.apache.org/site/bugreport.html</b><p><p>" +
-      "<b>Contributors:</b><ul><li>Scott Deboy &lt;sdeboy@apache.org&gt;</li><li>Paul Smith &lt;psmith@apache.org&gt;</li><li>Ceki G&uuml;lc&uuml; &lt;ceki@apache.org&gt;</li></ul></html>");
+      "<b>Contributors:</b><ul><li>Scott Deboy &lt;sdeboy@apache.org&gt;</li><li>Paul Smith &lt;psmith@apache.org&gt;</li><li>Ceki G&uuml;lc&uuml; &lt;ceki@apache.org&gt;</li><li>Oliver Burn</li></ul></html>");
 
       JButton button = new JButton("Copy bug report link to clipboard");
       button.addActionListener(new ActionListener() {
