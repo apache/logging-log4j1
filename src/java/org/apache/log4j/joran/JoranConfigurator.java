@@ -35,7 +35,6 @@ import org.apache.joran.action.NestComponentIA;
 import org.apache.joran.action.NewRuleAction;
 import org.apache.joran.action.ParamAction;
 import org.apache.joran.helper.SimpleRuleStore;
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 //import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.joran.action.ActionConst;
@@ -78,17 +77,6 @@ public class JoranConfigurator
     selfInitialize();
   }
 
-  /**
-   * 
-   * 
-   * @param filename
-   */
- //public static void configure(URL url) {
-   //xx JoranConfigurator jc = new JoranConfigurator();
-    //jc.doConfigure(url, LogManager.getLoggerRepository());
-  //}
-
-  
   public void doConfigure(URL url, LoggerRepository repository) {
     ExecutionContext ec = joranInterpreter.getExecutionContext();
     String errMsg;
@@ -105,15 +93,10 @@ public class JoranConfigurator
 
   //Use the instance from {@link #doConfigure(String, LoggingRepository)} instead
   
-  /**
-   * 
-   * 
-   * @param filename
-   */
-  public static void configure(String filename) {
-    JoranConfigurator jc = new JoranConfigurator();
-    jc.doConfigure(filename, LogManager.getLoggerRepository());
-  }
+//  public static void configure(String filename) {
+//    JoranConfigurator jc = new JoranConfigurator();
+//    jc.doConfigure(filename, LogManager.getLoggerRepository());
+//  }
 
   /**
    * Configure a repository from a configuration file passed as parameter.

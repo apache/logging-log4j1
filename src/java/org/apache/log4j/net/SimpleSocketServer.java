@@ -1,19 +1,28 @@
 /*
- * Copyright (C) The Apache Software Foundation. All rights reserved.
+ * Copyright 1999,2004 The Apache Software Foundation.
  *
- * This software is published under the terms of the Apache Software
- * License version 1.1, a copy of which has been included with this
- * distribution in the LICENSE.txt file.  */
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package org.apache.log4j.net;
-
-import java.net.Socket;
-import java.net.ServerSocket;
 
 import org.apache.log4j.Category;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.joran.JoranConfigurator;
+
+import java.net.ServerSocket;
+import java.net.Socket;
 
 
 /**
@@ -29,58 +38,57 @@ import org.apache.log4j.joran.JoranConfigurator;
   *
   * @author  Ceki G&uuml;lc&uuml;
   *
-  *  @since 0.8.4 
+  *  @since 0.8.4
   * */
-public class SimpleSocketServer  {
-
-  static Category cat = Category.getInstance(SimpleSocketServer.class.getName());
-
+public class SimpleSocketServer {
+  static Category cat =
+    Category.getInstance(SimpleSocketServer.class.getName());
   static int port;
 
-  public
-  static
-  void main(String argv[]) {
-    if(argv.length == 2) {
+  public static void main(String[] argv) {
+    if (argv.length == 2) {
       init(argv[0], argv[1]);
     } else {
       usage("Wrong number of arguments.");
     }
-    
+
     try {
       cat.info("Listening on port " + port);
+
       ServerSocket serverSocket = new ServerSocket(port);
-      while(true) {
-	cat.info("Waiting to accept a new client.");
-	Socket socket = serverSocket.accept();
-	cat.info("Connected to client at " + socket.getInetAddress());
-	cat.info("Starting new socket node.");
-	new Thread(new SocketNode(socket,
-				  LogManager.getLoggerRepository())).start();
+
+      while (true) {
+        cat.info("Waiting to accept a new client.");
+
+        Socket socket = serverSocket.accept();
+        cat.info("Connected to client at " + socket.getInetAddress());
+        cat.info("Starting new socket node.");
+        new Thread(new SocketNode(socket, LogManager.getLoggerRepository()))
+        .start();
       }
-    } catch(Exception e) {
+    } catch (Exception e) {
       e.printStackTrace();
     }
   }
 
-
-  static void  usage(String msg) {
+  static void usage(String msg) {
     System.err.println(msg);
     System.err.println(
-      "Usage: java " +SimpleSocketServer.class.getName() + " port configFile");
+      "Usage: java " + SimpleSocketServer.class.getName() + " port configFile");
     System.exit(1);
   }
 
   static void init(String portStr, String configFile) {
     try {
       port = Integer.parseInt(portStr);
-    } catch(java.lang.NumberFormatException e) {
+    } catch (java.lang.NumberFormatException e) {
       e.printStackTrace();
-      usage("Could not interpret port number ["+ portStr +"].");
+      usage("Could not interpret port number [" + portStr + "].");
     }
-   
-    if(configFile.endsWith(".xml")) {
+
+    if (configFile.endsWith(".xml")) {
       JoranConfigurator jc = new JoranConfigurator();
-      jc.doConfigure(configFile, LogManager.getLoggerRepository());  
+      jc.doConfigure(configFile, LogManager.getLoggerRepository());
     } else {
       PropertyConfigurator.configure(configFile);
     }

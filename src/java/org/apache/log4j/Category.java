@@ -1065,15 +1065,15 @@ public class Category implements AppenderAttachable {
     this.level = level;
   }
 
-  /**
-   * Set the level of this Category.
-   *
-   * <p>
-   * Null values are admitted.
-   * </p>
-   *
-   * @deprecated Please use {@link #setLevel} instead.
-   */
+//  /**
+//   * Set the level of this Category.
+//   *
+//   * <p>
+//   * Null values are admitted.
+//   * </p>
+//   *
+//   * @deprecated Please use {@link #setLevel} instead.
+//   */
 //  public void setPriority(Priority priority) {
 //    this.level = (Level) priority;
 //  }
