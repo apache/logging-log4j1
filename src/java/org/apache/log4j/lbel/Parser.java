@@ -16,7 +16,7 @@ import org.apache.log4j.spi.LoggingEvent;
  * 
  * @author <a href="http://www.qos.ch/log4j/">Ceki G&uuml;lc&uuml;</a>
  */
-public class Parser {
+class Parser {
 
 // The core of LBEL can be summarized by the following grammar.
   

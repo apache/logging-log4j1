@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class TokenStream  {
+class TokenStream  {
 	
   // keywordMap contains a map of keywords
   // key = keyword string
