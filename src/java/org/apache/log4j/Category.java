@@ -72,7 +72,9 @@ import java.util.ResourceBundle;
    <p><b>There is absolutely no need for new client code to use or
    refer to the <code>Category</code> class.</b> Whenever possible,
    please avoid referring to it or using it.
-   
+
+  <p>See the <a href="../../../../manual.html">short manual</a> for an
+  introduction on this class.    
 
   @author Ceki G&uuml;lc&uuml;
   @author Anders Kristensen */
