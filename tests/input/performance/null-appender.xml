@@ -8,13 +8,6 @@
     </layout>
   </appender>
 
-  <appender name="F" class="org.apache.log4j.FileAppender">
-     <param name="File" value="x.log"/>
-    <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="${pattern}"/>
-    </layout>
-  </appender>
-  
   <root>
     <level value="debug" />
     <appender-ref ref="NULL" />
