@@ -90,35 +90,35 @@ public class ExpressionRule extends AbstractRule {
 }
 
 
-/**
- * Evaluate a boolean postfix expression.
- *
- */
-class PostFixExpressionCompiler {
+  /**
+   * Evaluate a boolean postfix expression.
+   *
+   */
+  class PostFixExpressionCompiler {
 
-  Rule compileExpression(String expression) {
-    System.out.println("compiling expression: " + expression);
+    Rule compileExpression(String expression) {
+      System.out.println("compiling expression: " + expression);
 
-    Stack stack = new Stack();
-    Enumeration tokenizer = new StringTokenizer(expression);
+      Stack stack = new Stack();
+      Enumeration tokenizer = new StringTokenizer(expression);
 
-    while (tokenizer.hasMoreElements()) {
-      //examine each token
-      String nextToken = ((String) tokenizer.nextElement()).toLowerCase();
+      while (tokenizer.hasMoreElements()) {
+        //examine each token
+        String nextToken = ((String) tokenizer.nextElement());
 
-      //if a symbol is found, pop 2 off the stack, evaluate and push the result 
-      if (RuleFactory.isRule(nextToken)) {
-        Rule r = (Rule) RuleFactory.getRule(nextToken, stack);
-        System.out.println("pushing rule " + r);
-        stack.push(r);
-      } else {
-        System.out.println("pushing token " + nextToken);
+        //if a symbol is found, pop 2 off the stack, evaluate and push the result 
+        if (RuleFactory.isRule(nextToken)) {
+          Rule r = (Rule) RuleFactory.getRule(nextToken, stack);
+          System.out.println("pushing rule " + r);
+          stack.push(r);
+        } else {
+          System.out.println("pushing token " + nextToken);
 
-        //variables or constants are pushed onto the stack
-        stack.push(nextToken);
+          //variables or constants are pushed onto the stack
+          stack.push(nextToken);
+        }
       }
-    }
 
-    return (Rule)stack.pop();
-  }
+      return (Rule)stack.pop();
+    }
 }

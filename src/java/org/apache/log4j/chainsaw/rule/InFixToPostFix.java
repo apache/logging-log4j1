@@ -79,12 +79,21 @@ class InFixToPostFix {
     operators.add("||");
     operators.add("&&");
     operators.add("like");
-
+    operators.add("<");
+    operators.add(">");
+    operators.add("<=");
+    operators.add(">=");
+    
     operators.add("*");
     operators.add("+");
     operators.add("-");
 
     //boolean precedence
+    precedenceMap.put("<", new Integer(3));
+    precedenceMap.put(">", new Integer(3));
+    precedenceMap.put("<=", new Integer(3));
+    precedenceMap.put(">=", new Integer(3));
+    
     precedenceMap.put("!", new Integer(3));
     precedenceMap.put("!=", new Integer(3));
     precedenceMap.put("==", new Integer(3));
@@ -139,7 +148,7 @@ class InFixToPostFix {
     Stack stack = new Stack();
 
     while (tokenizer.hasMoreTokens()) {
-      String token = tokenizer.nextToken().toLowerCase();
+      String token = tokenizer.nextToken();
       System.out.println("FOUND TOKEN " + token);
 
       if ("(".equals(token)) {
