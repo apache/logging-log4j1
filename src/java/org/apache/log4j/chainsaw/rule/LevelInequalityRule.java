@@ -68,7 +68,6 @@ import java.util.Stack;
 public class LevelInequalityRule extends AbstractRule {
   private static final LoggingEventFieldResolver resolver = LoggingEventFieldResolver.getInstance();
   private final Level level;
-  private final String value;
   private final List utilList = new LinkedList();
   private final List levelList = new LinkedList();
   private final String inequalitySymbol;
@@ -94,7 +93,6 @@ public class LevelInequalityRule extends AbstractRule {
     }
 
     this.inequalitySymbol = inequalitySymbol;
-    this.value = value;
   }
 
   public static Rule getRule(String inequalitySymbol, String field, String value) {
@@ -110,9 +108,12 @@ public class LevelInequalityRule extends AbstractRule {
 
   public boolean evaluate(LoggingEvent event) {
     //use the type of the first level to access the static toLevel method on the second param
-    Level level2 =
-      level.toLevel(
-        resolver.getValue("LEVEL", event).toString());
+    Level level2 = null;
+    if (level instanceof UtilLoggingLevel) {
+        level2 = UtilLoggingLevel.toLevel(resolver.getValue("LEVEL", event).toString());
+    } else { 
+        level2 = Level.toLevel(resolver.getValue("LEVEL", event).toString());
+    }
 
     boolean result = false;
     int first = level2.toInt();

@@ -53,7 +53,6 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 import org.apache.log4j.chainsaw.ChainsawConstants;
-import org.apache.log4j.chainsaw.LoggingEventFieldResolver;
 import org.apache.log4j.chainsaw.filter.FilterModel;
 import org.apache.log4j.spi.LoggingEvent;
 
@@ -94,9 +93,6 @@ public class RuleTest extends JFrame {
   public RuleTest(String inFixText) {
     setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     getContentPane().setLayout(new BorderLayout());
-
-    LoggingEventFieldResolver resolver =
-      LoggingEventFieldResolver.getInstance();
 
     filterModel = new FilterModel();
 
@@ -179,15 +175,15 @@ public class RuleTest extends JFrame {
         public void actionPerformed(ActionEvent evt) {
           results.setText("");
 
-          Iterator iter = eventList.iterator();
+          Iterator iter2 = eventList.iterator();
 
-          while (iter.hasNext()) {
-            LoggingEvent event = (LoggingEvent) iter.next();
-            Iterator iter2 = event.getMDCKeySet().iterator();
+          while (iter2.hasNext()) {
+            LoggingEvent event = (LoggingEvent) iter2.next();
+            Iterator iter3 = event.getMDCKeySet().iterator();
             StringBuffer mdc = new StringBuffer();
 
-            while (iter2.hasNext()) {
-              String mdcKey = (String) iter2.next();
+            while (iter3.hasNext()) {
+              String mdcKey = (String) iter3.next();
               mdc.append(mdcKey);
               mdc.append(":");
               mdc.append(event.getMDC(mdcKey));
@@ -205,10 +201,6 @@ public class RuleTest extends JFrame {
 
     getContentPane().add(fieldPanel, BorderLayout.NORTH);
     getContentPane().add(resultsPanel, BorderLayout.CENTER);
-  }
-
-  private void setRule(Rule rule) {
-    this.rule = rule;
   }
 
   public static void main(String[] args) {

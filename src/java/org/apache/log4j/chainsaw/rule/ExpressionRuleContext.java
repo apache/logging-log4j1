@@ -73,7 +73,6 @@ import javax.swing.JTextField;
 public class ExpressionRuleContext extends KeyAdapter {
   RuleFactory factory = RuleFactory.getInstance();
   LoggingEventFieldResolver resolver = LoggingEventFieldResolver.getInstance();
-  String lastField = null;
   JPopupMenu contextMenu = new JPopupMenu();
   JList list = new JList();
   FilterModel filterModel;
@@ -143,8 +142,6 @@ public class ExpressionRuleContext extends KeyAdapter {
   }
 
   private void updateField(String value) {
-    String text = textField.getText();
-
     if (textField.getSelectedText() == null) {
       value = value + " ";
     }

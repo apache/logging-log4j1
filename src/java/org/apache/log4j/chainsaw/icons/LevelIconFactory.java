@@ -49,20 +49,14 @@
 
 package org.apache.log4j.chainsaw.icons;
 
-import org.apache.log4j.Level;
-
 import java.awt.Image;
-
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.ImageIcon;
-import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.plaf.metal.MetalLookAndFeel;
-
 
 /**
  */
@@ -74,7 +68,6 @@ public class LevelIconFactory {
     String[] iconFileNames =
       new String[] { "Warn.gif", "Inform.gif", "Error.gif" };
     String[] iconLabels = new String[] { "WARN", "INFO", "ERROR" };
-    Level[] levels = new Level[] { Level.WARN, Level.INFO, Level.ERROR };
 
     for (int i = 0; i < iconLabels.length; i++) {
       URL resourceURL = UIManager.getLookAndFeel().getClass().getResource(

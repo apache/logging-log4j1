@@ -60,8 +60,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -111,13 +113,15 @@ public class ColorPanel extends JPanel {
   private RuleColorizer colorizer;
   private JPanel ruleSetsPanel;
   private JPanel rulesPanel;
-  private JPanel ruleSettingsPanel;
   private FilterModel filterModel;
   private DefaultTableModel tableModel;
   private JScrollPane tableScrollPane;
   private JTable table;
   private ActionListener closeListener;
   private JLabel statusBar;
+  private Vector columns;
+  private String currentRuleSet = "Default";
+  private DefaultListModel ruleSetListModel;
 
   public ColorPanel(
     final RuleColorizer colorizer, final FilterModel filterModel) {
@@ -126,55 +130,31 @@ public class ColorPanel extends JPanel {
     this.colorizer = colorizer;
     this.filterModel = filterModel;
 
-	Vector data = new Vector();
-    if (colorizer.getColors() != null && colorizer.getColors().size() > 0) {
-    	System.out.println("FOUND COLORS");
-    	Iterator iter = colorizer.getColors().entrySet().iterator();
-    	while (iter.hasNext()) {
-    		Map.Entry entry = (Map.Entry)iter.next();
-    		String expression = entry.getKey().toString();
-    		ColorRule rule = (ColorRule)entry.getValue();
-    		System.out.println("found " + expression +".."+ rule);
-    		Vector v = new Vector();
-    		v.add(expression);
-    		v.add(rule);
-    		data.add(v);
-    	}
-    	
-    	
-    } else {
-    //apply a set of defaults for now, (eventually color rules will be loaded from disk)
-    Vector data1 = new Vector();
-    data1.add("level == FATAL || level == ERROR");
-    data1.add(new Color(147, 22, 0));
-    data1.add(Color.white);
+    tableModel = new DefaultTableModel();
+    table = new JTable(tableModel);
 
-    Vector data2 = new Vector();
-    data2.add("level == WARN");
-    data2.add(Color.yellow.brighter());
-    data2.add(Color.black);
+    ruleSetListModel = new DefaultListModel();
+    
+    columns = new Vector();
+    columns.add("Expression");
+    columns.add("Background");
+    columns.add("Foreground");
 
-    data.add(data1);
-    data.add(data2);
-    }
+    table.setPreferredScrollableViewportSize(new Dimension(400, 200));
+    tableScrollPane = new JScrollPane(table);
 
-    table = buildTable(data);
+    Vector data = getColorizerVector();    
+    tableModel.setDataVector(data, columns);
+
     table.sizeColumnsToFit(0);
     table.getColumnModel().getColumn(1).setPreferredWidth(70);
     table.getColumnModel().getColumn(2).setPreferredWidth(70);
     table.getColumnModel().getColumn(1).setMaxWidth(70);
     table.getColumnModel().getColumn(2).setMaxWidth(70);
+
+    configureTable();
+
     statusBar = new JLabel("Ruleset support not yet implemented");
-
-    applyRules("default");
-
-    table.setToolTipText("Click to edit");
-    table.setRowHeight(20);
-    table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    table.setColumnSelectionAllowed(false);
-
-    table.setPreferredScrollableViewportSize(new Dimension(400, 200));
-    tableScrollPane = new JScrollPane(table);
 
     ruleSetsPanel = buildRuleSetsPanel();
     ruleSetsPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -230,6 +210,38 @@ public class ColorPanel extends JPanel {
     f.pack();
     f.setVisible(true);
   }
+  
+  public void updateColors() {
+    tableModel.getDataVector().clear();
+    tableModel.getDataVector().addAll(getColorizerVector());
+  }
+  
+  private Vector getColorizerVector() {
+      Vector data = new Vector();
+      Map map = colorizer.getRules();
+      Iterator iter = map.entrySet().iterator();
+      ruleSetListModel.removeAllElements();
+      while (iter.hasNext()) {
+        Map.Entry entry = (Map.Entry)iter.next();
+        System.out.println("entry is " + entry);
+        //update ruleset list
+        ruleSetListModel.addElement(entry.getKey());
+        if (entry.getKey().equals(currentRuleSet)) {
+            System.out.println("entry value is "+ entry.getValue());
+            Iterator iter2 = ((List)entry.getValue()).iterator();
+      
+            while (iter2.hasNext()) {
+                ColorRule rule = (ColorRule)iter2.next();
+                Vector v = new Vector();
+                v.add(rule.getExpression());
+                v.add(rule.getBackgroundColor());
+                v.add(rule.getForegroundColor());
+                data.add(v);
+            }
+         }
+      }
+      return data;
+  }
 
   private Vector getDefaultColors() {
     Vector vec = new Vector();
@@ -271,7 +283,12 @@ public class ColorPanel extends JPanel {
     return vec;
   }
 
-  private JTable buildTable(Vector data) {
+  private void configureTable() {
+    table.setToolTipText("Click to edit");
+    table.setRowHeight(20);
+    table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    table.setColumnSelectionAllowed(false);
+
     Vector backgroundColors = getDefaultColors();
     Vector foregroundColors = getDefaultColors();
     backgroundColors.add("Browse...");
@@ -284,15 +301,6 @@ public class ColorPanel extends JPanel {
     JComboBox foreground = new JComboBox(foregroundColors);
     foreground.setMaximumRowCount(15);
     foreground.setRenderer(new ColorListCellRenderer());
-
-    Vector cols = new Vector();
-    cols.add("Expression");
-    cols.add("Background");
-    cols.add("Foreground");
-
-    tableModel = new DefaultTableModel(data, cols);
-
-    JTable table = new JTable(tableModel);
 
     DefaultCellEditor backgroundEditor = new DefaultCellEditor(background);
     DefaultCellEditor foregroundEditor = new DefaultCellEditor(foreground);
@@ -313,8 +321,6 @@ public class ColorPanel extends JPanel {
       new ColorTableCellRenderer());
     table.getColumnModel().getColumn(2).setCellRenderer(
       new ColorTableCellRenderer());
-
-    return table;
   }
 
   public void setCloseActionListener(ActionListener listener) {
@@ -331,7 +337,7 @@ public class ColorPanel extends JPanel {
     table.getColumnModel().getColumn(0).getCellEditor().stopCellEditing();
     colorizer.clear();
 
-    Map map = new HashMap();
+    List list = new ArrayList();
     Vector vector = tableModel.getDataVector();
     StringBuffer result = new StringBuffer();
 
@@ -351,8 +357,8 @@ public class ColorPanel extends JPanel {
           foreground = (Color) v.elementAt(2);
         }
 
-        ColorRule r = new ColorRule(expressionRule, background, foreground);
-        map.put(v.elementAt(0), r);
+        ColorRule r = new ColorRule((String)v.elementAt(0), expressionRule, background, foreground);
+        list.add(r);
       } catch (IllegalArgumentException iae) {
         if (!result.toString().equals("")) {
           result.append("<br>");
@@ -371,6 +377,8 @@ public class ColorPanel extends JPanel {
       ((ExpressionTableCellRenderer) table.getColumnModel().getColumn(0).getCellRenderer())
       .setToolTipText("<html>" + result.toString() + "</html>");
     }
+    Map map = new HashMap();
+    map.put(ruleSet, list);
 
     colorizer.addRules(map);
   }
@@ -385,7 +393,7 @@ public class ColorPanel extends JPanel {
     applyButton.addActionListener(
       new AbstractAction() {
         public void actionPerformed(ActionEvent evt) {
-          applyRules("default");
+          applyRules(currentRuleSet);
         }
       });
 
@@ -496,13 +504,10 @@ public class ColorPanel extends JPanel {
   JPanel buildRuleSetsPanel() {
     JPanel panel = new JPanel(new BorderLayout());
 
-    DefaultListModel listModel = new DefaultListModel();
-    listModel.addElement("Default");
-
     JLabel ruleSetLabel = new JLabel("RuleSets:");
     panel.add(ruleSetLabel, BorderLayout.NORTH);
 
-    final JList list = new JList(listModel);
+    final JList list = new JList(ruleSetListModel);
     JScrollPane scrollPane = new JScrollPane(list);
     list.setEnabled(false);
 
@@ -537,7 +542,7 @@ public class ColorPanel extends JPanel {
     panel.add(ruleSetLabel);
 
     JTextField ruleSetTextField = new JTextField(20);
-    ruleSetTextField.setText("Default");
+    ruleSetTextField.setText(currentRuleSet);
     ruleSetTextField.setAlignmentX(Component.LEFT_ALIGNMENT);
     ruleSetTextField.setEnabled(false);
 
@@ -587,9 +592,6 @@ public class ColorPanel extends JPanel {
           int index = table.getSelectionModel().getMaxSelectionIndex();
 
           if ((index > -1) && (index < table.getRowCount())) {
-            Vector v = tableModel.getDataVector();
-            Vector row = (Vector) v.elementAt(index);
-
             tableModel.removeRow(index);
 
             if (index > 0) {
@@ -668,6 +670,7 @@ public class ColorPanel extends JPanel {
     JComboBox box;
     JDialog dialog;
     JColorChooser colorChooser;
+    Color lastColor;
 
     ColorItemListener(final JComboBox box) {
       this.box = box;
@@ -684,7 +687,7 @@ public class ColorPanel extends JPanel {
           }, //OK button handler
           new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-              box.setSelectedIndex(0);
+                box.setSelectedItem(lastColor);
             }
           }); //CANCEL button handler
       dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -697,32 +700,40 @@ public class ColorPanel extends JPanel {
           repaint();
         } else {
           box.setBackground(Color.white);
+          colorChooser.setColor((Color)table.getValueAt(table.getSelectedRow(), table.getSelectedColumn()));
+          lastColor = (Color)table.getValueAt(table.getSelectedRow(), table.getSelectedColumn());
           dialog.setVisible(true);
         }
       }
     }
   }
 
-  class ColorTableCellRenderer extends JPanel implements TableCellRenderer {
+  class ColorTableCellRenderer implements TableCellRenderer {
     Border border;
+    JPanel panel;
     
     ColorTableCellRenderer() {
-        setOpaque(true);
+        panel = new JPanel();
+        panel.setOpaque(true);
+    }
+
+    public Color getCurrentColor() {
+        return panel.getBackground();
     }
 
     public Component getTableCellRendererComponent(
-      JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
+      JTable thisTable, Object value, boolean isSelected, boolean hasFocus, int row,
       int column) {
       if (value instanceof Color) {
-        setBackground((Color) value);
+        panel.setBackground((Color) value);
       }
       if (border == null) {
         border = BorderFactory.createMatteBorder(2, 2, 2, 2, table.getBackground());
       }
 
-      setBorder(border);
+      panel.setBorder(border);
 
-      return this;
+      return panel;
     }
   }
 
@@ -746,7 +757,7 @@ public class ColorPanel extends JPanel {
     }
 
     public Component getTableCellRendererComponent(
-      JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
+      JTable thisTable, Object value, boolean isSelected, boolean hasFocus, int row,
       int column) {
 
       Vector v = tableModel.getDataVector();
