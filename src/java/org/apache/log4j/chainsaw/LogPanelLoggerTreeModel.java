@@ -75,7 +75,7 @@ class LogPanelLoggerTreeModel extends DefaultTreeModel
   implements LoggerNameListener {
 
   LogPanelLoggerTreeModel() {
-    super(new DefaultMutableTreeNode("Root"));
+    super(new DefaultMutableTreeNode("Root Logger"));
   }
 
   /* (non-Javadoc)
@@ -139,10 +139,6 @@ outerFor:    for (int i = 0; i < packages.length; i++) {
         }});
       current = newChild;
     }
-    
-    
-//    nodeStructureChanged((TreeNode) getRoot());
-    
   }
 
   /**
