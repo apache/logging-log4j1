@@ -152,9 +152,11 @@ public class LogFilePatternReceiver extends Receiver {
   
   //all lines other than first line of exception begin with tab followed by 'at' followed by text
   private static final String EXCEPTION_PATTERN = "\tat.*";
-  private static final String REGEXP_WILDCARD = ".*";
+  private static final String REGEXP_DEFAULT_WILDCARD = ".*?";
+  private static final String REGEXP_GREEDY_WILDCARD = ".+";
   private static final String PATTERN_WILDCARD = "*";
-  private static final String GROUP = "(" + REGEXP_WILDCARD + ")";
+  private static final String DEFAULT_GROUP = "(" + REGEXP_DEFAULT_WILDCARD + ")";
+  private static final String GREEDY_GROUP = "(" + REGEXP_GREEDY_WILDCARD + ")";
 
   private static final String HOSTNAME_PROPERTY_VALUE = "file";
 
@@ -171,14 +173,17 @@ public class LogFilePatternReceiver extends Receiver {
   private String filterExpression;
 
   private final Perl5Util util = new Perl5Util();
-  private final Perl5Compiler compiler = new Perl5Compiler();
-  private final Perl5Matcher matcher = new Perl5Matcher();
+  private final Perl5Compiler exceptionCompiler = new Perl5Compiler();
+  private final Perl5Matcher exceptionMatcher = new Perl5Matcher();
+  private static final String VALID_DATEFORMAT_CHAR_PATTERN = "[GyMwWDdFEaHkKhmsSzZ]";
 
   private Rule expressionRule;
   private final Map currentMap = new HashMap();
   private final List additionalLines = new ArrayList();
   private String regexp;
   private Reader reader;
+  private Set greedyKeywords = new HashSet();
+  private String timestampPatternText;
 
   public LogFilePatternReceiver() {
     keywords.add(TIMESTAMP);
@@ -191,6 +196,8 @@ public class LogFilePatternReceiver extends Receiver {
     keywords.add(METHOD);
     keywords.add(MESSAGE);
     keywords.add(NDC);
+    
+    greedyKeywords.add(MESSAGE);
   }
 
   /**
@@ -300,9 +307,9 @@ public class LogFilePatternReceiver extends Receiver {
    */
   private int getExceptionLine() {
     try {
-      Pattern exceptionPattern = compiler.compile(EXCEPTION_PATTERN);
+      Pattern exceptionPattern = exceptionCompiler.compile(EXCEPTION_PATTERN);
       for (int i = 0; i < additionalLines.size(); i++) {
-        if (matcher.matches((String) additionalLines.get(i), exceptionPattern)) {
+        if (exceptionMatcher.matches((String) additionalLines.get(i), exceptionPattern)) {
           return i - 1;
         }
       }
@@ -329,8 +336,9 @@ public class LogFilePatternReceiver extends Receiver {
       return firstMessageLine;
     }
     StringBuffer message = new StringBuffer(firstMessageLine);
+    int linesToProcess = (exceptionLine == -1?additionalLines.size(): exceptionLine);
 
-    for (int i = 0; i < exceptionLine; i++) {
+    for (int i = 0; i < linesToProcess; i++) {
       message.append(newLine);
       message.append(additionalLines.get(i));
     }
@@ -401,6 +409,7 @@ public class LogFilePatternReceiver extends Receiver {
   private void process(Reader unbufferedReader) throws IOException {
     BufferedReader bufferedReader = new BufferedReader(unbufferedReader);
 
+    Perl5Compiler compiler = new Perl5Compiler();
     Pattern regexpPattern = null;
     try {
       regexpPattern = compiler.compile(regexp);
@@ -410,6 +419,7 @@ public class LogFilePatternReceiver extends Receiver {
 
     Perl5Matcher eventMatcher = new Perl5Matcher(); 
     String line = null;
+    LogLog.debug("tailing file: " + tailing);
     do {
       while ((line = bufferedReader.readLine()) != null) {
         if (eventMatcher.matches(line, regexpPattern)) {
@@ -432,6 +442,7 @@ public class LogFilePatternReceiver extends Receiver {
         if (passesExpression(event)) {
           doPost(event);
         }
+        LogLog.debug("no further lines to process in " + fileURL);
       }
       try {
         synchronized (this) {
@@ -440,7 +451,7 @@ public class LogFilePatternReceiver extends Receiver {
       } catch (InterruptedException ie) {
       }
     } while (tailing);
-
+    LogLog.debug("processing " + fileURL + " complete");
     shutdown();
   }
 
@@ -476,6 +487,16 @@ public class LogFilePatternReceiver extends Receiver {
     }
     return map;
   }
+  
+  /**
+   * Helper method that will convert timestamp format to a pattern
+   * 
+   * 
+   * @return string
+   */
+  private String convertTimestamp() {
+    return util.substitute("s/"+VALID_DATEFORMAT_CHAR_PATTERN+"/\\\\w/g", timestampFormat);
+  }
 
   /**
    * Build the regular expression needed to parse log entries
@@ -484,6 +505,7 @@ public class LogFilePatternReceiver extends Receiver {
   private void initialize() {
     if (timestampFormat != null) {
       dateFormat = new SimpleDateFormat(timestampFormat);
+      timestampPatternText = convertTimestamp();
     }
 
     try {
@@ -521,7 +543,7 @@ public class LogFilePatternReceiver extends Receiver {
     }
 
     newPattern = replaceMetaChars(newPattern);
-    newPattern = replace(PATTERN_WILDCARD, REGEXP_WILDCARD, newPattern);
+    newPattern = replace(PATTERN_WILDCARD, REGEXP_DEFAULT_WILDCARD, newPattern);
 
     /*
      * we're using a treemap, so the index will be used as the key to ensure
@@ -551,9 +573,14 @@ public class LogFilePatternReceiver extends Receiver {
     Iterator iter2 = matchingKeywords.iterator();
     while (iter2.hasNext()) {
       String keyword = (String) iter2.next();
-      currentPattern = replace(keyword, GROUP, currentPattern);
+      if (TIMESTAMP.equals(keyword)) {
+        currentPattern = replace(keyword, "(" + timestampPatternText + ")", currentPattern);
+      } else {
+        currentPattern = replace(keyword, greedyKeywords.contains(keyword)?GREEDY_GROUP:DEFAULT_GROUP, currentPattern);
+      }
     }
     regexp = currentPattern;
+    LogLog.debug("regexp is " + regexp);
   }
 
   /**
@@ -678,7 +705,6 @@ public class LogFilePatternReceiver extends Receiver {
     event.setLocationInformation(info);
     event.setNDC(ndc);
     event.setProperties(properties);
-
     return event;
   }
 
@@ -687,7 +713,7 @@ public class LogFilePatternReceiver extends Receiver {
     LogFilePatternReceiver test = new LogFilePatternReceiver();
     test.setLogFormat("TIMESTAMP LEVEL [THREAD] LOGGER (FILE:LINE) - MESSAGE");
     test.setTailing(true);
-    test.setFileURL("file:///C:/downloads/workspace/test/test2.log");
+    test.setFileURL("file:///C:/log/test.log");
     test.initialize();
     try {
       test.process(new InputStreamReader(new URL(test.getFileURL())

@@ -68,8 +68,8 @@ public class ReceiversHelper {
             		Class receiverClass = classLoader.loadClass(line);
             		receiverClassList.add(receiverClass);
             		LogLog.debug("Located known Receiver class " + receiverClass.getName());
-            	} catch (Exception e) {
-            		LogLog.error("Failed to locate Receiver class:" + line, e);
+            	} catch (ClassNotFoundException e) {
+            		LogLog.warn("Failed to locate Receiver class:" + line);
             	}
             	catch (NoClassDefFoundError e) {
             		LogLog.error("Failed to locate Receiver class:" + line + ", looks like a dependent class is missing from the classpath", e);
