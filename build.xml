@@ -643,7 +643,10 @@
     <taskdef name="anakia" classname="org.apache.velocity.anakia.AnakiaTask">
       <classpath refid="site2.classpath"/>
     </taskdef>
-
+ 
+    <mkdir dir="${docs.dest}/css"/>  
+    <copy file="${logging-site}/docs/css/site.css" tofile="${docs.dest}/css/site.css"/>
+    
     <anakia basedir="${xdocs.src}" destdir="${docs.dest}/"
       extension=".html"
       style="site.vsl"
