@@ -79,6 +79,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.ListCellRenderer;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
@@ -325,7 +326,12 @@ public class LogPanelPreferencePanel extends JPanel {
         new BoxLayout(dateFormatPanel, BoxLayout.Y_AXIS));
       dateFormatPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-      final JTextField  customFormatText = new JTextField();
+      final JTextField  customFormatText = new JTextField("",10);
+      customFormatText.setPreferredSize(new Dimension(100,20));
+      customFormatText.setMaximumSize(customFormatText.getPreferredSize());
+      customFormatText.setMinimumSize(customFormatText.getPreferredSize());
+      customFormatText.setEnabled(false);
+      
       final JRadioButton rdCustom =
       new JRadioButton(
       "Custom Format");
@@ -333,8 +339,31 @@ public class LogPanelPreferencePanel extends JPanel {
           new ActionListener() {
             public void actionPerformed(ActionEvent e) {
               customFormatText.setEnabled(rdCustom.isSelected());
+              customFormatText.setText("");
+              customFormatText.grabFocus();
             }
           });
+      rdCustom.setSelected(getModel().isCustomDateFormat());
+      
+      getModel().addPropertyChangeListener("dateFormatPattern", new PropertyChangeListener() {
+
+        public void propertyChange(PropertyChangeEvent evt)
+        {
+          /**
+           * we need to make sure we are not reacting to the user typing, so only do this
+           * if the text box is not the same as the model
+           */ 
+          
+          if(getModel().isCustomDateFormat() && !customFormatText.getText().equals(evt.getNewValue().toString()))
+          {
+            customFormatText.setText(getModel().getDateFormatPattern());
+            rdCustom.setSelected(true);
+            customFormatText.setEnabled(true);
+          }else {
+            rdCustom.setSelected(false);
+          }
+          
+        }});
       
       ButtonGroup bgDateFormat = new ButtonGroup();
       final JRadioButton rdISO =
@@ -347,6 +376,7 @@ public class LogPanelPreferencePanel extends JPanel {
             customFormatText.setEnabled(rdCustom.isSelected());
           }
         });
+      rdISO.setAlignmentX(0);
       rdISO.setSelected(getModel().isUseISO8601Format());
       getModel().addPropertyChangeListener(
         "dateFormatPattern",
@@ -363,6 +393,8 @@ public class LogPanelPreferencePanel extends JPanel {
           iter.hasNext();) {
         final String format = (String) iter.next();
         final JRadioButton rdFormat = new JRadioButton(format);
+        rdFormat.setAlignmentX(0);
+        
         bgDateFormat.add(rdFormat);
         rdFormat.addActionListener(
           new ActionListener() {
@@ -387,6 +419,7 @@ public class LogPanelPreferencePanel extends JPanel {
       if(getModel().isCustomDateFormat())
       {
         customFormatText.setText(getModel().getDateFormatPattern());
+        customFormatText.setEnabled(true);
       }
       customFormatText.getDocument().addDocumentListener(new DocumentListener() {
 
@@ -414,18 +447,16 @@ public class LogPanelPreferencePanel extends JPanel {
           
         }});
       
-      rdCustom.setSelected(getModel().isCustomDateFormat());
-      getModel().addPropertyChangeListener(
-          "dateFormatPattern",
-          new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent evt) {
-              rdCustom.setSelected(getModel().isCustomDateFormat());
-            }
-          });
+      rdCustom.setAlignmentX(0);
       bgDateFormat.add(rdCustom);
 
-      dateFormatPanel.add(rdCustom);
-      dateFormatPanel.add(customFormatText);
+      Box customBox = Box.createHorizontalBox();
+      customBox.setAlignmentX(0);
+      customBox.add(rdCustom);
+      customBox.add(customFormatText);
+      customBox.add(Box.createHorizontalGlue());
+      dateFormatPanel.add(customBox);
+//      dateFormatPanel.add(Box.createVerticalGlue());
       
 
       add(dateFormatPanel);
