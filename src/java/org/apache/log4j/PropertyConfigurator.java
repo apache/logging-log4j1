@@ -90,6 +90,7 @@ public class PropertyConfigurator extends BasicConfigurator
   protected LoggerFactory categoryFactory = new DefaultCategoryFactory();
   
   static final String      CATEGORY_PREFIX = "log4j.category.";
+  static final String      LOGGER_PREFIX   = "log4j.logger.";
   static final String       FACTORY_PREFIX = "log4j.factory";
   static final String    ADDITIVITY_PREFIX = "log4j.additivity.";
   static final String ROOT_CATEGORY_PREFIX = "log4j.rootCategory";
@@ -513,13 +514,18 @@ public class PropertyConfigurator extends BasicConfigurator
     Enumeration enum = props.propertyNames();
     while(enum.hasMoreElements()) {      
       String key = (String) enum.nextElement();
-      if(key.startsWith(CATEGORY_PREFIX)) {
-	String categoryName = key.substring(CATEGORY_PREFIX.length());	
+      if(key.startsWith(CATEGORY_PREFIX) || key.startsWith(LOGGER_PREFIX)) {
+	String loggerName = null;
+	if(key.startsWith(CATEGORY_PREFIX)) {
+	  loggerName = key.substring(CATEGORY_PREFIX.length());	
+	} else if(key.startsWith(LOGGER_PREFIX)) {
+	  loggerName = key.substring(LOGGER_PREFIX.length());
+	}
 	String value =  OptionConverter.findAndSubst(key, props);
-	Logger logger = hierarchy.getLogger(categoryName, categoryFactory);
+	Logger logger = hierarchy.getLogger(loggerName, categoryFactory);
 	synchronized(logger) {
-	  parseCategory(props, logger, key, categoryName, value);
-	  parseAdditivityForCategory(props, logger, categoryName);
+	  parseCategory(props, logger, key, loggerName, value);
+	  parseAdditivityForLogger(props, logger, loggerName);
 	}
       } else if(key.startsWith(RENDERER_PREFIX)) {
 	String renderedClass = key.substring(RENDERER_PREFIX.length());	
@@ -535,15 +541,15 @@ public class PropertyConfigurator extends BasicConfigurator
   /**
      Parse the additivity option for a non-root category.
    */
-  void parseAdditivityForCategory(Properties props, Logger cat,
-				  String categoryName) {
-    String value = OptionConverter.findAndSubst(ADDITIVITY_PREFIX + categoryName, 
+  void parseAdditivityForLogger(Properties props, Logger cat,
+				  String loggerName) {
+    String value = OptionConverter.findAndSubst(ADDITIVITY_PREFIX + loggerName, 
 					     props);
-    LogLog.debug("Handling "+ADDITIVITY_PREFIX + categoryName+"=["+value+"]");
+    LogLog.debug("Handling "+ADDITIVITY_PREFIX + loggerName+"=["+value+"]");
     // touch additivity only if necessary	
     if((value != null) && (!value.equals(""))) {
       boolean additivity = OptionConverter.toBoolean(value, true);
-      LogLog.debug("Setting additivity for \""+categoryName+"\" to "+
+      LogLog.debug("Setting additivity for \""+loggerName+"\" to "+
 		   additivity); 
       cat.setAdditivity(additivity);
     }
