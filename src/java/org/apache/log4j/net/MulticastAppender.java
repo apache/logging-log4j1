@@ -71,6 +71,7 @@ public class MulticastAppender extends AppenderSkeleton implements PortBased {
   private String encoding;
   
   public MulticastAppender() {
+     super(false);
   }
 
   /**

@@ -16,6 +16,10 @@ public class MultiplexAppender extends AppenderSkeleton {
 
 	private MultiplexSelector selector;
 
+    public MultiplexAppender() {
+       super(false);
+    }
+
 	/*
 	 * (non-Javadoc)
 	 * 

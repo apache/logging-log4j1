@@ -123,6 +123,7 @@ public class SocketAppender extends AppenderSkeleton {
   String application;
 
   public SocketAppender() {
+      super(false);
   }
 
   /**

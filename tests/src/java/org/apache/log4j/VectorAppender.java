@@ -29,8 +29,8 @@ public class VectorAppender extends AppenderSkeleton {
   long delay = 0;
   
   public VectorAppender() {
+    super(true);
     vector = new Vector();
-    super.activate();
   }
 
   /**

@@ -70,16 +70,36 @@ public abstract class AppenderSkeleton extends ComponentBase implements Appender
   protected boolean closed = false;
 
   /**
-   * By default, an appender is not in working order. It must be configured
-   * first.
+   * Is the appender properly configured and ready to process
+   * events.
    */
-  protected boolean active = false;
+  protected boolean active = true;
 
   /**
    * The guard prevents an appender from repeatedly calling its own doAppend
    * method.
    */
   private boolean guard = false;
+
+
+  /**
+   *  Constructs an AppenderSkeleton.
+   *  @remarks This constructor marks that the appender is ready for use
+   *   when construction is complete.  If not, call super(false).
+   */
+  protected AppenderSkeleton() {
+     active = true;
+  }
+  
+  /**
+   *  Constructs an AppenderSkeleton.
+   *  @param isActive true if the appender is ready to process events
+   *    when fully constructed.
+   */
+  protected AppenderSkeleton(final boolean isActive) {
+     active = isActive;
+  }
+
 
   /**
    * Calls the {@link #activate} method.
@@ -230,13 +250,11 @@ public abstract class AppenderSkeleton extends ComponentBase implements Appender
         return;
       }
 
-//   This breaks appenders written prior to 18 Feb 2005
-//
-//      if (!this.active) {
-//        getNonFloodingLogger().error(
-//            "Attempted to log with inactive appender named [{}].", name);
-//        return;
-//      }
+      if (!this.active) {
+        getNonFloodingLogger().error(
+            "Attempted to log with inactive appender named [{}].", name);
+        return;
+      }
 
       if (!isAsSevereAsThreshold(event.getLevel())) {
         return;

@@ -33,6 +33,7 @@ public class JMSQueueAppender extends AppenderSkeleton {
     
     public 
 	JMSQueueAppender() {
+	    super(false);
     }
 
   

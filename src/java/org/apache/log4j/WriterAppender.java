@@ -67,6 +67,7 @@ public class WriterAppender extends AppenderSkeleton {
    * The default constructor does nothing.  
    * */
   public WriterAppender() {
+     super(false);
   }
 
   /**
@@ -91,6 +92,7 @@ public class WriterAppender extends AppenderSkeleton {
    * future log4j versions 
    * */
   public WriterAppender(Layout layout, Writer writer) {
+    super(false);
     this.layout = layout;
     this.setWriter(writer);
     this.activate();

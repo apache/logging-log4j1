@@ -21,6 +21,7 @@ public class NullAppender extends AppenderSkeleton {
   private static NullAppender instance = new NullAppender();
 
   public NullAppender() {
+     super(true);
   }
 
   /**

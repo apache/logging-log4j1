@@ -68,10 +68,10 @@ public class AsyncAppender extends AppenderSkeleton
   public AsyncAppender() {
     // Note: The dispatcher code assumes that the aai is set once and
     // for all.
+    super(true);
     aai = new AppenderAttachableImpl();
     dispatcher = new Dispatcher(bf, this);
     dispatcher.start();
-    super.activate();
   }
   
   public void addAppender(Appender newAppender) {

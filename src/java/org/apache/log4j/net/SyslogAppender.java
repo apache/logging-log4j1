@@ -70,6 +70,7 @@ public class SyslogAppender extends AppenderSkeleton {
   Layout layout;
   
   public SyslogAppender() {
+      super(false);
   }
 
   /**

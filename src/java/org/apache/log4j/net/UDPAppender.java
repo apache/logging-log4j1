@@ -73,6 +73,7 @@ public class UDPAppender extends AppenderSkeleton implements PortBased{
   boolean inError = false;
   
   public UDPAppender() {
+     super(false);
   }
 
   /**

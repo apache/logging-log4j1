@@ -118,6 +118,7 @@ public class SocketHubAppender extends AppenderSkeleton {
   private CyclicBuffer buffer = null;
 
   public SocketHubAppender() {
+     super(false);
   }
 
   /**
