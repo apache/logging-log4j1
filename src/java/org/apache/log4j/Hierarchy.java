@@ -12,6 +12,7 @@
 // Contributors:
 //                Luke Blanshard <luke@quiq.com>
 //                Mario Schomburg - IBM Global Services/Germany
+//                Anders Kristensen
 
 package org.apache.log4j;
 
@@ -31,9 +32,10 @@ import org.apache.log4j.helpers.OptionConverter;
    This class is specialized in retreiving categories by name and
    also maintaining the category hierarchy.
 
-   <p><em>The casual user should never have to deal with this class
+   <p><em>The casual user should not have to deal with this class
    firectly.</em> In fact, up until version 0.9.0, this class had
-   default package access. 
+   default package access. However, if you are in an environment where
+   multiple applications run in the same VM, then read on.
 
    <p>The structure of the category hierachy is maintained by the
    {@link #getInstance} method. The hierrachy is such that children
@@ -516,7 +518,7 @@ public class Hierarchy {
     root.closeNestedAppenders();
 
     synchronized(ht) {
-      Enumeration cats = Category.getCurrentCategories();
+      Enumeration cats = this.getCurrentCategories();
       while(cats.hasMoreElements()) {
 	Category c = (Category) cats.nextElement();
 	c.closeNestedAppenders();
@@ -524,7 +526,7 @@ public class Hierarchy {
 
       // then, remove all appenders
       root.removeAllAppenders();
-      cats = Category.getCurrentCategories();
+      cats = this.getCurrentCategories();
       while(cats.hasMoreElements()) {
 	Category c = (Category) cats.nextElement();
 	c.removeAllAppenders();

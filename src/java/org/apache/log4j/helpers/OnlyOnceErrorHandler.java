@@ -18,9 +18,8 @@ import  org.apache.log4j.spi.ErrorHandler;
 
    <p>The error message is printed on <code>System.err</code>. 
 
-   <p>This policy aims at a protecting an otherwise working
-   application from being flooded with error messages when logging
-   fails.
+   <p>This policy aims at protecting an otherwise working application
+   from being flooded with error messages when logging fails.
 
    @author Ceki G&uuml;lc&uuml;
    @since 0.9.0 */
