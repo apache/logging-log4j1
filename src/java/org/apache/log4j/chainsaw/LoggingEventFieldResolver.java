@@ -58,25 +58,28 @@ import org.apache.log4j.spi.LoggingEvent;
  *
  * This class defines a grammar used in creation of an expression-based Rule.
  *
- * The only available method is getField(String fieldName, LoggingEvent event).
+ * The only available method is Object getField(String fieldName, LoggingEvent event).
  *
  * Here is a description of the mapping of field names in the grammar
- * to fields on the logging event:
+ * to fields on the logging event.  While the getField method returns an Object, the 
+ * individual types returned per field are described here: 
  *
- * Field Name                Field value (String representation
- * LOGGER                    category name (logger)
- * LEVEL                     level
- * CLASS                     locationInformation's class name
- * FILE                      locationInformation's file name
- * LINE                      locationInformation's line number
- * METHOD                    locationInformation's method name
- * MSG                       message
- * NDC                       NDC
- * EXCEPTION                 throwable string representation
- * TIMESTAMP                 timestamp
- * THREAD                    thread
- * MDC.keyName               entry in the MDC hashtable mapped to key 'keyName'
- * PROP.keyName              entry in the Property hashtable mapped to the key 'keyName'
+ * Field Name                Field value (String representation		Return type
+ * LOGGER                    category name (logger)					String
+ * LEVEL                     level									Level
+ * CLASS                     locationInformation's class name		String
+ * FILE                      locationInformation's file name		String
+ * LINE                      locationInformation's line number		String
+ * METHOD                    locationInformation's method name		String
+ * MSG                       message								Object
+ * NDC                       NDC									String
+ * EXCEPTION                 throwable string representation		ThrowableInformation
+ * TIMESTAMP                 timestamp								Long
+ * THREAD                    thread									String
+ * MDC.keyName               entry in the MDC hashtable 			Object
+ * 							 mapped to key 'keyName' 			
+ * PROP.keyName              entry in the Property hashtable 		String
+ * 							 mapped to the key 'keyName' 	
 
  * NOTE:  the values for the 'keyName' portion of the MDC and PROP mappings must
  * be an exact match to the key in the hashTable (case sensitive).
@@ -99,7 +102,7 @@ public final class LoggingEventFieldResolver {
     return resolver;
   }
 
-  public String getValue(String fieldName, LoggingEvent event) {
+  public Object getValue(String fieldName, LoggingEvent event) {
     if (fieldName == null) {
       return "";
     }
@@ -109,7 +112,7 @@ public final class LoggingEventFieldResolver {
     if ("LOGGER".equals(fieldName)) {
       return event.getLoggerName();
     } else if ("LEVEL".equals(fieldName)) {
-      return event.getLevel().toString();
+      return event.getLevel();
     } else if ("CLASS".equals(fieldName)) {
       return event.getLocationInformation().getClassName();
     } else if ("FILE".equals(fieldName)) {
@@ -119,24 +122,17 @@ public final class LoggingEventFieldResolver {
     } else if ("METHOD".equals(fieldName)) {
       return event.getLocationInformation().getMethodName();
     } else if ("MSG".equals(fieldName)) {
-      return event.getMessage().toString();
+      return event.getMessage();
     } else if ("NDC".equals(fieldName)) {
       return event.getNDC();
     } else if ("EXCEPTION".equals(fieldName)) {
-      StringBuffer buf = new StringBuffer();
-
-      for (int i = 0; i < event.getThrowableStrRep().length; i++) {
-        buf.append(event.getThrowableStrRep()[i]);
-        buf.append(System.getProperty("line.separator"));
-      }
-
-      return buf.toString();
+	  return event.getThrowableInformation();
     } else if ("TIMESTAMP".equals(fieldName)) {
-      return String.valueOf(event.timeStamp);
+      return new Long(event.timeStamp);
     } else if ("THREAD".equals(fieldName)) {
       return event.getThreadName();
     } else if (fieldName.startsWith("MDC.")) {
-      return event.getMDC(fieldName.substring(4)).toString();
+      return event.getMDC(fieldName.substring(4));
     } else if (fieldName.startsWith("PROP.")) {
       return event.getProperty(fieldName.substring(5));
     }
