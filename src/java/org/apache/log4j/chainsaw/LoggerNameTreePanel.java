@@ -1022,7 +1022,7 @@ final class LoggerNameTreePanel extends JPanel implements Rule
                 {
                   result =
                   result
-                    && e.getLoggerName().startsWith(
+                    && e.getLoggerName() != null && e.getLoggerName().startsWith(
                       currentlySelectedLoggerName);
                 }
 

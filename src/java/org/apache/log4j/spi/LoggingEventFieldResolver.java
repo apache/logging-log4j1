@@ -195,7 +195,7 @@ public final class LoggingEventFieldResolver {
     }
 
     //there wasn't a match, so throw a runtime exception
-    throw new RuntimeException("Unsupported field name: " + fieldName);
+    throw new IllegalArgumentException("Unsupported field name: " + fieldName);
   }
 
     private String getExceptionMessage(String[] exception) {
