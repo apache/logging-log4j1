@@ -64,10 +64,10 @@ import javax.swing.JPopupMenu;
  * @author Paul Smith <psmith@apache.org>
  * 
  */
-class PopupListener extends MouseAdapter {
+public class PopupListener extends MouseAdapter {
   final JPopupMenu popupMenu;
 
-  PopupListener(JPopupMenu popupMenu) {
+  public PopupListener(JPopupMenu popupMenu) {
     this.popupMenu = popupMenu;
   }
 
