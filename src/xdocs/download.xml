@@ -141,22 +141,8 @@
 	logging.
         </dd>
 
-	<!-- ============================================================================== -->	
-	
-	<dt><a href="http://cvs.apache.org/viewcvs/jakarta-log4j/log4jMini/"><b>log4j<em>ME</em></b></a></dt>
 
-	<dd>Log4j<em>ME</em>, or log4j MiniEdition, is based on the
-	same code as log4j. However, as the name indicates the
-	mini-edition is much smaller. It offers the same client
-	interface such that code compiled for log4jME is 100%
-	compatible with log4j standard edition. You can choose to
-	upgrade to log4j standard edition at any time by replacing
-	<em>log4jME.jar</em> with <em>log4j.jar</em> in your
-	classpath. At this time, log4jME is only available through
-	CVS.
-	</dd>
-	
-       <!-- ============================================================================== -->	
+    <!-- ============================================================================== -->	
 	
 	<dt><a href="http://www.openfuture.de/Log4Unit/"><b>log4<em>Unit</em></b></a></dt>
 

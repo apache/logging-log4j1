@@ -107,3 +107,30 @@ Steps performed per web-application
 
   <display-name>Hello sample web-application</display-name>
 
+
+CAVEAT
+======
+
+We recommend that you name configuration resources uniquely. In
+particualar, avoid naming the log4j configuration resource as
+'log4j.xml' or as 'log4j.properties' for a non-default logger
+repository. For example, the following env-entry is error prone:
+
+<env-entry>
+   <description>URL for configuring log4j context</description>
+   <env-entry-name>log4j/configuration-resource</env-entry-name>
+   <env-entry-value>log4j.xml</env-entry-value>
+   <env-entry-type>java.lang.String</env-entry-type>
+</env-entry>
+
+While trying to configure the web-application log4j would search for
+the resource 'log4j.xml' using the thread context classloader.  Thus,
+it would first attempt to locate 'log4j.xml' file using the
+classloader specific to the web-application.  However, if the file
+'log4j.xml' did not exist there (we forgot to put a custom one in
+WEB-INF/classes), and if the file 'log4j.xml' existed higher up in the
+classloader tree, we could end up in a situation where the logger
+repository for your web-application would be configured using the same
+file as that used to configure the default repository. Such
+involuntary sharing of the same configuration by multiple repositories
+will result in corrupt log output.

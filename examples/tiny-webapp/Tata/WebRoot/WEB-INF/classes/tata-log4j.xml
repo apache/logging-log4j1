@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE log4j:configuration >
+<!DOCTYPE configuration >
 
-
-<log4j:configuration debug="true" xmlns:log4j='http://jakarta.apache.org/log4j/'>
+<configuration debug="true" xmlns='http://logging.apache.org/'>
 
   <appender name="FILE" class="org.apache.log4j.FileAppender">
     <param name="File" value="/tata.log"/>
@@ -12,9 +11,8 @@
     </layout>	    
   </appender>
 
-
   <root>
     <level value="debug"/>
     <appender-ref ref="FILE" />    
   </root>
-</log4j:configuration>
+</configuration>
