@@ -129,10 +129,10 @@ public class SizeBasedRollingTest extends TestCase {
      SlidingWindowRollingPolicy swrp = new SlidingWindowRollingPolicy();
      SizeBasedTriggeringPolicy sbtp = new SizeBasedTriggeringPolicy();
 
-     swrp.setCompressionMode("GZ");
+     //swrp.setCompressionMode("GZ");
      sbtp.setMaxFileSize(100);
      swrp.setActiveFileName("output/sizeBased-test3");
-     swrp.setFileNamePattern("output/sizeBased-test3.%i");
+     swrp.setFileNamePattern("output/sizeBased-test3.%i.gz");
      swrp.activateOptions();
      rfa.setRollingPolicy(swrp);
      rfa.setTriggeringPolicy(sbtp);

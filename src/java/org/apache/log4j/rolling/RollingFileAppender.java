@@ -17,8 +17,6 @@
 package org.apache.log4j.rolling;
 
 import org.apache.log4j.FileAppender;
-import org.apache.log4j.Logger;
-import org.apache.log4j.spi.ErrorCode;
 import org.apache.log4j.spi.LoggingEvent;
 
 import java.io.File;
@@ -36,12 +34,13 @@ import java.io.IOException;
  * set up. For example, {@link TimeBasedRollingPolicy} acts both as a
  * <code>RollingPolicy</code> and a <code>TriggeringPolicy</code>.
  * 
+ * 
+ * 
  * @author Heinz Richter
  * @author Ceki G&uuml;lc&uuml;
  * @since  1.3
  * */
 public class RollingFileAppender extends FileAppender {
-  Logger logger = Logger.getLogger(RollingFileAppender.class);
   File activeFile;
   TriggeringPolicy triggeringPolicy;
   RollingPolicy rollingPolicy;
@@ -56,22 +55,21 @@ public class RollingFileAppender extends FileAppender {
 
   public void activateOptions() {
     if (triggeringPolicy == null) {
-      logger.warn("Please set a TriggeringPolicy for ");
-
+      getLogger().warn("Please set a TriggeringPolicy for the RollingFileAppender named '{}'", getName());
       return;
     }
 
     if (rollingPolicy != null) {
-      String afn = rollingPolicy.getActiveLogFileName();
+      String afn = rollingPolicy.getActiveFileName();
       activeFile = new File(afn);
-      logger.debug("Active log file name: "+afn);
+      getLogger().debug("Active log file name: "+afn);
       setFile(afn);
       
       // the activeFile variable is used by the triggeringPolicy.isTriggeringEvent method
       activeFile = new File(afn);
       super.activateOptions();
     } else {
-      logger.warn("Please set a rolling policy");
+      getLogger().warn("Please set a rolling policy");
     }
   }
 
@@ -110,8 +108,8 @@ public class RollingFileAppender extends FileAppender {
     }
     
     // Although not certain, the active file name may change after roll over.
-    fileName = rollingPolicy.getActiveLogFileName();
-    logger.debug("Active file name is now ["+fileName+"].");
+    fileName = rollingPolicy.getActiveFileName();
+    getLogger().debug("Active file name is now [{}].", fileName);
 
     // the activeFile variable is used by the triggeringPolicy.isTriggeringEvent method
     activeFile = new File(fileName);
@@ -121,9 +119,8 @@ public class RollingFileAppender extends FileAppender {
       // close operations are safe.
       this.setFile(fileName, append, bufferedIO, bufferSize);
     } catch (IOException e) {
-      errorHandler.error(
-        "setFile(" + fileName + ", false) call failed.", e,
-        ErrorCode.FILE_OPEN_FAILURE);
+      getLogger().error(
+        "setFile(" + fileName + ", false) call failed.", e);
     }
   }
 
@@ -135,7 +132,7 @@ public class RollingFileAppender extends FileAppender {
     // The rollover check must precede actual writing. This is the 
     // only correct behavior for time driven triggers. 
     if (triggeringPolicy.isTriggeringEvent(activeFile)) {
-      logger.debug("About to rollover");
+      getLogger().debug("About to rollover");
       rollover();
     }
       

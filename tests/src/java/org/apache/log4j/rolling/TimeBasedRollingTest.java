@@ -20,6 +20,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
@@ -45,9 +46,9 @@ public class TimeBasedRollingTest extends TestCase {
   }
 
   public void setUp() {
-    //root = Logger.getRootLogger();
-    //root.addAppender(
-      //new ConsoleAppender(new PatternLayout("%d{ABSOLUTE} [%t] %level %c - %m%n")));
+    Logger root = Logger.getRootLogger();
+    root.addAppender(
+      new ConsoleAppender(new PatternLayout("%d{ABSOLUTE} [%t] %level %c{2}#%M:%L - %m%n")));
   }
 
   public void tearDown() {
@@ -404,12 +405,12 @@ public class TimeBasedRollingTest extends TestCase {
 
 //    suite.addTest(new TimeBasedRollingTest("test1"));
 //    suite.addTest(new TimeBasedRollingTest("test2"));
-//    suite.addTest(new TimeBasedRollingTest("test3"));
+    suite.addTest(new TimeBasedRollingTest("test3"));
 //    suite.addTest(new TimeBasedRollingTest("test4"));
 //
 //    suite.addTest(new TimeBasedRollingTest("test5"));
 //    suite.addTest(new TimeBasedRollingTest("test6"));
-    suite.addTest(new TimeBasedRollingTest("testWithJoran1"));
+//    suite.addTest(new TimeBasedRollingTest("testWithJoran1"));
     
     
     return suite;

@@ -21,19 +21,19 @@ import java.io.File;
 import org.apache.log4j.spi.OptionHandler;
 /**
  * A <code>TriggeringPolicy</code> controls the conditions under which rollover
- * occurs. However, triggering policy might depend on time, file size, an 
- * external condition or a combination thereof.
+ * occurs. Such conditions include time od day, file size, an 
+ * external event or a combination thereof.
  *
  * @author Ceki G&uuml;lc&uuml;
  * @since 1.3
  * */
 
 public interface TriggeringPolicy extends OptionHandler {
+  
   /**
    * Should rolllover be triggered at this time?
    * 
-   * A reference to the active log file is supplied as a parameter.
-   * 
+   * @param file A reference to the currently active log file. 
    * */
   public boolean isTriggeringEvent(File file);
 }
