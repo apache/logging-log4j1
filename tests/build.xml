@@ -115,8 +115,6 @@
   <!-- ================================================================= -->  
   <target name="parentBuild">    
     <ant dir=".." target="build.core" inheritRefs="true"/>
-    <ant dir=".." target="build.xml" inheritRefs="true"/>
-    <ant dir=".." target="build.javamail" inheritRefs="true"/>
     <ant dir=".." target="build.servletAPI" inheritRefs="true"/>
   </target>
 
