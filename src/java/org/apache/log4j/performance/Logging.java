@@ -141,7 +141,7 @@ import java.util.Enumeration;
    <p><li>Format specifiers in conversion patterns have almost no impact
    on performance.
 
-   <p>Formating time and date information is costly. Using relative
+   <p><li>Formating time and date information is costly. Using relative
    time has the least impact on performance. It is recommended that to
    use log4j specific date formatters such as the {@link
    org.apache.log4j.helpers.ISO8601DateFormat} instead of the standard {@link
