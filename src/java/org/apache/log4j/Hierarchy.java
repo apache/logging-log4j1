@@ -185,7 +185,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
     ht.clear();
   }
 
-  public void emitNoAppenderWarning(Category cat) {
+  public void emitNoAppenderWarning(Logger cat) {
     // No appenders in hierarchy, warn user only once.
     if (!this.emittedNoAppenderWarning) {
       LogLog.warn(
@@ -683,9 +683,9 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
         //System.out.println("No parent "+substr+" found. Creating ProvisionNode.");
         ProvisionNode pn = new ProvisionNode(cat);
         ht.put(key, pn);
-      } else if (o instanceof Category) {
+      } else if (o instanceof Logger) {
         parentFound = true;
-        cat.parent = (Category) o;
+        cat.parent = (Logger) o;
 
         //System.out.println("Linking " + cat.name + " -> " + ((Category) o).name);
         break; // no need to update the ancestors of the closest ancestor

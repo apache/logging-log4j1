@@ -1,12 +1,12 @@
 /*
  * Copyright 1999,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,28 +14,108 @@
  * limitations under the License.
  */
 
+//Contibutors: Alex Blewitt <Alex.Blewitt@ioshq.com>
+//Markus Oestreicher <oes@zurich.ibm.com>
+//Frank Hoering <fhr@zurich.ibm.com>
+//Nelson Minar <nelson@media.mit.edu>
+//Jim Cakalic <jim_cakalic@na.biomerieux.com>
+//Avy Sharell <asharell@club-internet.fr>
+//Ciaran Treanor <ciaran@xelector.com>
+//Jeff Turner <jeff@socialchange.net.au>
+//Michael Horwitz <MHorwitz@siemens.co.za>
+//Calvin Chan <calvin.chan@hic.gov.au>
+//Aaron Greenhouse <aarong@cs.cmu.edu>
+//Beat Meier <bmeier@infovia.com.ar>
+//Colin Sampaleanu <colinml1@exis.com>
+//Andy McBride <andy.mcbride@pcmsgroup.com> 
 package org.apache.log4j;
 
+import org.apache.log4j.helpers.AppenderAttachableImpl;
+import org.apache.log4j.helpers.NullEnumeration;
+import org.apache.log4j.helpers.ReaderWriterLock;
+import org.apache.log4j.spi.AppenderAttachable;
 import org.apache.log4j.spi.LoggerFactory;
+import org.apache.log4j.spi.LoggerRepository;
+import org.apache.log4j.spi.LoggingEvent;
+
+import java.util.Enumeration;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 
 /**
-  This is the central class in the log4j package. Most logging
-  operations, except configuration, are done through this class.
-
-  @since log4j 1.2
-
-  @author Ceki G&uuml;lc&uuml; 
+ * This is the central class in the log4j package. Most logging operations, 
+ * except configuration, are done through this class.
+ * 
+ * <p>
+ * See the <a href="../../../../manual.html">Short Manual</a> for an
+ * introduction on this class.
+ * </p>
+ *
+ * @author Ceki G&uuml;lc&uuml;
+ * @author Anders Kristensen
+ * @author Yoav Shapira 
+ * @since log4j 1.2
 */
-public class Logger extends Category {
-    /**
-     * Constructor.
-     *
-     * @param name The logger instance name
-     */
-    protected Logger(String name) {
-	super(name);
-    }
+public class Logger implements AppenderAttachable {
+  /**
+   * The fully qualified name of the Logger class. See also the getFQCN
+   * method.
+   */
+  private static final String FQCN = Logger.class.getName();
+
+  /**
+   * The hierarchy where loggers are attached to by default.
+   */
+  /**
+   * The name of this logger.
+   */
+  protected String name;
+
+  /**
+   * The assigned level of this logger.  The <code>level</code> variable
+   * need not be assigned a value in which case it is inherited form the
+   * hierarchy.
+   */
+  protected volatile Level level;
+
+  /**
+   * The parent of this logger. All loggers have at least one ancestor
+   * which is the root logger.
+   */
+  protected volatile Logger parent;
+  protected ResourceBundle resourceBundle;
+  protected ReaderWriterLock lock;
+
+  // Categories need to know what Hierarchy they are in
+  protected LoggerRepository repository;
+  AppenderAttachableImpl aai;
+
+  /**
+   * Additivity is set to true by default, that is children inherit the
+   * appenders of their ancestors by default. If this variable is set to
+   * <code>false</code> then the appenders found in the ancestors of this
+   * logger are not used. However, the children of this logger will
+   * inherit its appenders, unless the children have their additivity flag
+   * set to <code>false</code> too. See the user manual for more details.
+   */
+  protected boolean additive = true;
+
+  /**
+   * This constructor creates a new <code>Logger</code> instance and sets
+   * its name.
+   *
+   * <p>
+   * It is intended to be used by sub-classes only. You should not create
+   * loggers directly.
+   * </p>
+   *
+   * @param name The name of the logger.
+   */
+  protected Logger(String name) {
+    this.name = name;
+    lock = new ReaderWriterLock();
+  }
 
   /**
      Retrieve a logger by name.
@@ -74,6 +154,1072 @@ public class Logger extends Category {
      @since 0.8.5 */
   public static Logger getLogger(String name, LoggerFactory factory) {
     return LogManager.getLogger(name, factory);
+  }
+
+  /**
+   * Add <code>newAppender</code> to the list of appenders of this Logger
+   * instance.
+   *
+   * <p>
+   * If <code>newAppender</code> is already in the list of appenders, then it
+   * won't be added again.
+   * </p>
+   */
+  public void addAppender(Appender newAppender) {
+    // BEGIN - WRITE LOCK
+    lock.getWriteLock();
+
+    if (aai == null) {
+      aai = new AppenderAttachableImpl();
+    }
+
+    aai.addAppender(newAppender);
+    lock.releaseWriteLock();
+    //  END - WRITE LOCK
+    repository.fireAddAppenderEvent((Logger) this, newAppender);
+  }
+
+  /**
+   * If <code>assertion</code> parameter is <code>false</code>, then logs
+   * <code>msg</code> as an {@link #error(Object) error} statement.
+   *
+   * <p>
+   * The <code>assert</code> method has been renamed to <code>assertLog</code>
+   * because <code>assert</code> is a language reserved word in JDK 1.4.
+   * </p>
+   *
+   * @param assertion
+   * @param msg The message to print if <code>assertion</code> is false.
+   *
+   * @since 1.2
+   */
+  public void assertLog(boolean assertion, String msg) {
+    if (!assertion) {
+      this.error(msg);
+    }
+  }
+
+  /**
+   * Call the appenders in the hierrachy starting at <code>this</code>.  If no
+   * appenders could be found, emit a warning.
+   *
+   * <p>
+   * This method calls all the appenders inherited from the hierarchy
+   * circumventing any evaluation of whether to log or not to log the
+   * particular log request.
+   * </p>
+   *
+   * @param event the event to log.
+   */
+  public void callAppenders(LoggingEvent event) {
+    int writes = 0;
+
+    for (Logger c = this; c != null; c = c.parent) {
+      try {
+        // Protect against simultaneous writes operations such as 
+        // addAppender, removeAppender,...
+        c.lock.getReadLock();
+
+        if (c.aai != null) {
+          writes += c.aai.appendLoopOnAppenders(event);
+        }
+      } finally {
+        c.lock.releaseReadLock();
+      }
+      if (!c.additive) {
+        break;
+      }
+    }
+
+    if (writes == 0) {
+      repository.emitNoAppenderWarning(this);
+    }
+  }
+
+  /**
+   * Close all attached appenders implementing the AppenderAttachable
+   * interface.
+   *
+   * @since 1.0
+   */
+  void closeNestedAppenders() {
+    Enumeration enumeration = this.getAllAppenders();
+
+    if (enumeration != null) {
+      while (enumeration.hasMoreElements()) {
+        Appender a = (Appender) enumeration.nextElement();
+
+        if (a instanceof AppenderAttachable) {
+          a.close();
+        }
+      }
+    }
+  }
+
+  /**
+   * Log a message object with the {@link Level#TRACE TRACE} level.
+   *
+   * @param message the message object to log.
+   * @see #debug(Object) for an explanation of the logic applied.
+   * @since 1.3
+   */
+  public void trace(Object message) {
+    if (repository.isDisabled(Level.TRACE_INT)) {
+      return;
+    }
+
+    if (Level.TRACE.isGreaterOrEqual(this.getEffectiveLevel())) {
+      forcedLog(FQCN, Level.TRACE, message, null);
+    }
+  }
+
+  /**
+   * Log a message object with the <code>TRACE</code> level including the
+   * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
+   *
+   * <p>
+   * See {@link #debug(Object)} form for more detailed information.
+   * </p>
+   *
+   * @param message the message object to log.
+   * @param t the exception to log, including its stack trace.
+   */
+  public void trace(Object message, Throwable t) {
+    if (repository.isDisabled(Level.TRACE_INT)) {
+      return;
+    }
+
+    if (Level.TRACE.isGreaterOrEqual(this.getEffectiveLevel())) {
+      forcedLog(FQCN, Level.TRACE, message, t);
+    }
+  }
+
+  /**
+   * Log a message object with the {@link Level#DEBUG DEBUG} level.
+   *
+   * <p>
+   * This method first checks if this logger is <code>DEBUG</code> enabled
+   * by comparing the level of this logger with the {@link Level#DEBUG
+   * DEBUG} level. If this logger is <code>DEBUG</code> enabled, then it
+   * converts the message object (passed as parameter) to a string by
+   * invoking the appropriate {@link org.apache.log4j.or.ObjectRenderer}. It
+   * then proceeds to call all the registered appenders in this logger and
+   * also higher in the hierarchy depending on the value of the additivity
+   * flag.
+   * </p>
+   *
+   * <p>
+   * <b>WARNING</b> Note that passing a {@link Throwable} to this method will
+   * print the name of the <code>Throwable</code> but no stack trace. To
+   * print a stack trace use the {@link #debug(Object, Throwable)} form
+   * instead.
+   * </p>
+   *
+   * @param message the message object to log.
+   */
+  public void debug(Object message) {
+    if (repository.isDisabled(Level.DEBUG_INT)) {
+      return;
+    }
+
+    if (Level.DEBUG.isGreaterOrEqual(this.getEffectiveLevel())) {
+      forcedLog(FQCN, Level.DEBUG, message, null);
+    }
+  }
+
+  /**
+   * Log a message object with the <code>DEBUG</code> level including the
+   * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
+   *
+   * <p>
+   * See {@link #debug(Object)} form for more detailed information.
+   * </p>
+   *
+   * @param message the message object to log.
+   * @param t the exception to log, including its stack trace.
+   */
+  public void debug(Object message, Throwable t) {
+    if (repository.isDisabled(Level.DEBUG_INT)) {
+      return;
+    }
+
+    if (Level.DEBUG.isGreaterOrEqual(this.getEffectiveLevel())) {
+      forcedLog(FQCN, Level.DEBUG, message, t);
+    }
+  }
+
+  /**
+   * Log a message object with the {@link Level#ERROR ERROR} Level.
+   *
+   * <p>
+   * This method first checks if this logger is <code>ERROR</code> enabled
+   * by comparing the level of this logger with {@link Level#ERROR ERROR}
+   * Level. If this logger is <code>ERROR</code> enabled, then it converts
+   * the message object passed as parameter to a string by invoking the
+   * appropriate {@link org.apache.log4j.or.ObjectRenderer}. It proceeds to
+   * call all the registered appenders in this logger and also higher in
+   * the hierarchy depending on the value of the additivity flag.
+   * </p>
+   *
+   * <p>
+   * <b>WARNING</b> Note that passing a {@link Throwable} to this method will
+   * print the name of the <code>Throwable</code> but no stack trace. To
+   * print a stack trace use the {@link #error(Object, Throwable)} form
+   * instead.
+   * </p>
+   *
+   * @param message the message object to log
+   */
+  public void error(Object message) {
+    if (repository.isDisabled(Level.ERROR_INT)) {
+      return;
+    }
+
+    if (Level.ERROR.isGreaterOrEqual(this.getEffectiveLevel())) {
+      forcedLog(FQCN, Level.ERROR, message, null);
+    }
+  }
+
+  /**
+   * Log a message object with the <code>ERROR</code> level including the
+   * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
+   *
+   * <p>
+   * See {@link #error(Object)} form for more detailed information.
+   * </p>
+   *
+   * @param message the message object to log.
+   * @param t the exception to log, including its stack trace.
+   */
+  public void error(Object message, Throwable t) {
+    if (repository.isDisabled(Level.ERROR_INT)) {
+      return;
+    }
+
+    if (Level.ERROR.isGreaterOrEqual(this.getEffectiveLevel())) {
+      forcedLog(FQCN, Level.ERROR, message, t);
+    }
+  }
+
+  /**
+   * If the named logger exists (in the default hierarchy) then it returns a
+   * reference to the logger, otherwise it returns <code>null</code>.
+   *
+   * @since 0.8.5
+   * @deprecated Please use {@link LogManager#exists} instead.
+   */
+  public static Logger exists(String name) {
+    return LogManager.exists(name);
+  }
+
+  /**
+   * Log a message object with the {@link Level#FATAL FATAL} Level.
+   *
+   * <p>
+   * This method first checks if this logger is <code>FATAL</code> enabled
+   * by comparing the level of this logger with {@link Level#FATAL FATAL}
+   * Level. If the logger is <code>FATAL</code> enabled, then it converts
+   * the message object passed as parameter to a string by invoking the
+   * appropriate {@link org.apache.log4j.or.ObjectRenderer}. It proceeds to
+   * call all the registered appenders in this logger and also higher in
+   * the hierarchy depending on the value of the additivity flag.
+   * </p>
+   *
+   * <p>
+   * <b>WARNING</b> Note that passing a {@link Throwable} to this method will
+   * print the name of the Throwable but no stack trace. To print a stack
+   * trace use the {@link #fatal(Object, Throwable)} form instead.
+   * </p>
+   *
+   * @param message the message object to log
+   */
+  public void fatal(Object message) {
+    if (repository.isDisabled(Level.FATAL_INT)) {
+      return;
+    }
+
+    if (Level.FATAL.isGreaterOrEqual(this.getEffectiveLevel())) {
+      forcedLog(FQCN, Level.FATAL, message, null);
+    }
+  }
+
+  /**
+   * Log a message object with the <code>FATAL</code> level including the
+   * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
+   *
+   * <p>
+   * See {@link #fatal(Object)} for more detailed information.
+   * </p>
+   *
+   * @param message the message object to log.
+   * @param t the exception to log, including its stack trace.
+   */
+  public void fatal(Object message, Throwable t) {
+    if (repository.isDisabled(Level.FATAL_INT)) {
+      return;
+    }
+
+    if (Level.FATAL.isGreaterOrEqual(this.getEffectiveLevel())) {
+      forcedLog(FQCN, Level.FATAL, message, t);
+    }
+  }
+
+  /**
+   * This method creates a new logging event and logs the event without
+   * further checks.
+   */
+  protected void forcedLog(
+    String fqcn, Level level, Object message, Throwable t) {
+    callAppenders(new LoggingEvent(fqcn, (Logger) this, level, message, t));
+  }
+
+  /**
+   * Get the additivity flag for this logger instance.
+   */
+  public boolean getAdditivity() {
+    return additive;
+  }
+
+  /**
+   * Get the appenders contained in this logger as an {@link Enumeration}.
+   * If no appenders can be found, then a {@link NullEnumeration} is
+   * returned.
+   *
+   * @return Enumeration An enumeration of the appenders in this logger.
+   */
+  public Enumeration getAllAppenders() {
+    Enumeration result;
+    lock.getReadLock();
+    if (aai == null) {
+      result = NullEnumeration.getInstance();
+    } else {
+      result = aai.getAllAppenders();
+    }
+    lock.releaseReadLock();
+    return result;
+  }
+
+  /**
+   * Look for the appender named as <code>name</code>.
+   *
+   * <p>
+   * Return the appender with that name if in the list. Return
+   * <code>null</code> otherwise.
+   * </p>
+   */
+  public Appender getAppender(String name) {
+    Appender result;
+
+    lock.getReadLock();
+    if ((aai == null) || (name == null)) {
+      result = null;
+    } else {
+      result = aai.getAppender(name);
+    }
+    lock.releaseReadLock();
+
+    return result;
+  }
+
+  /**
+   * Starting from this logger, search the logger hierarchy for a non-null
+   * level and return it. Otherwise, return the level of the root logger.
+   *
+   * <p>
+   * The Logger class is designed so that this method executes as quickly as
+   * possible.
+   * </p>
+   */
+  public Level getEffectiveLevel() {
+    for (Logger c = this; c != null; c = c.parent) {
+      if (c.level != null) {
+        return c.level;
+      }
+    }
+
+    return null; // If reached will cause an NullPointerException.
+  }
+
+  /**
+   * @deprecated Please use the the {@link #getEffectiveLevel} method instead.
+   */
+  public Level getChainedPriority() {
+    for (Logger c = this; c != null; c = c.parent) {
+      if (c.level != null) {
+        return c.level;
+      }
+    }
+
+    return null; // If reached will cause an NullPointerException.
+  }
+
+  /**
+   * Returns all the currently defined loggers in the default hierarchy as
+   * an {@link java.util.Enumeration Enumeration}.
+   *
+   * <p>
+   * The root logger is <em>not</em> included in the returned {@link
+   * Enumeration}.
+   * </p>
+   *
+   * @deprecated Please use {@link LogManager#getCurrentLoggers()} instead.
+   */
+  public static Enumeration getCurrentCategories() {
+    return LogManager.getCurrentLoggers();
+  }
+
+  /**
+   * Return the default Hierarchy instance.
+   *
+   * @since 1.0
+   * @deprecated Please use {@link LogManager#getLoggerRepository()} instead.
+   */
+  public static LoggerRepository getDefaultHierarchy() {
+    return LogManager.getLoggerRepository();
+  }
+
+  /**
+   * Return the the {@link Hierarchy} where this <code>Logger</code>
+   * instance is attached.
+   *
+   * @since 1.1
+   * @deprecated Please use {@link #getLoggerRepository} instead.
+   */
+  public LoggerRepository getHierarchy() {
+    return repository;
+  }
+
+  /**
+   * Return the the {@link LoggerRepository} where this <code>Logger</code>
+   * is attached.
+   *
+   * @since 1.2
+   */
+  public LoggerRepository getLoggerRepository() {
+    return repository;
+  }
+
+  /**
+   * Retrieve a logger with named as the <code>name</code> parameter. If the
+   * named logger already exists, then the existing instance will be
+   * reutrned. Otherwise, a new instance is created. By default, loggers
+   * do not have a set level but inherit it from their ancestors. This is one
+   * of the central features of log4j.
+   *
+   * @param name The name of the logger to retrieve.
+   * @deprecated Please use the {@link LogManager#getLogger(String)} method
+   * instead.
+   */
+  public static Logger getInstance(String name) {
+    return LogManager.getLogger(name);
+  }
+
+  /**
+   * Shorthand for <code>getInstance(clazz.getName())</code>.
+   *
+   * @param clazz The name of <code>clazz</code> will be used as the name of
+   *        the logger to retrieve.  See {@link #getLogger(String)} for
+   *        more detailed information.
+   * @deprecated Please use {@link LogManager#getLogger(Class)} instead.
+   * @since 1.0
+   */
+  public static Logger getInstance(Class clazz) {
+    return LogManager.getLogger(clazz);
+  }
+
+  /**
+   * Return the logger name.
+   */
+  public final String getName() {
+    return name;
+  }
+
+  /**
+   * Returns the parent of this logger. Note that the parent of a given
+   * logger may change during the lifetime of the logger.
+   *
+   * <p>
+   * The root logger will return <code>null</code>.
+   * </p>
+   *
+   * @since 1.2
+   */
+  public final Logger getParent() {
+    return this.parent;
+  }
+
+  /**
+   * Returns the assigned {@link Level}, if any, for this Logger.
+   *
+   * @return Level - the assigned Level, can be <code>null</code>.
+   */
+  public final Level getLevel() {
+    return this.level;
+  }
+
+  /**
+   * @deprecated Please use {@link #getLevel} instead.
+   */
+  public final Level getPriority() {
+    return this.level;
+  }
+
+  /**
+   * Return the root of the default logger hierarchy.
+   *
+   * <p>
+   * The root logger is always instantiated and available. It's name is
+   * "root".
+   * </p>
+   *
+   * <p>
+   * Nevertheless, calling {@link #getLogger Logger.getLogger("root")}
+   * does not retrieve the root logger but a logger just under root named
+   * "root".
+   * @deprecated Use {@link Logger#getRootLogger()} instead.
+   * </p>
+   */
+  public static final Logger getRoot() {
+    return LogManager.getRootLogger();
+  }
+
+  /**
+   * Return the <em>inherited</em>{@link ResourceBundle} for this logger.
+   *
+   * <p>
+   * This method walks the hierarchy to find the appropriate resource bundle.
+   * It will return the resource bundle attached to the closest ancestor of
+   * this logger, much like the way priorities are searched. In case there
+   * is no bundle in the hierarchy then <code>null</code> is returned.
+   * </p>
+   *
+   * @since 0.9.0
+   */
+  public ResourceBundle getResourceBundle() {
+    for (Logger c = this; c != null; c = c.parent) {
+      if (c.resourceBundle != null) {
+        return c.resourceBundle;
+      }
+    }
+
+    // It might be the case that there is no resource bundle
+    return null;
+  }
+
+  /**
+   * Returns the string resource coresponding to <code>key</code> in this
+   * logger's inherited resource bundle. See also {@link
+   * #getResourceBundle}.
+   *
+   * <p>
+   * If the resource cannot be found, then an {@link #error error} message
+   * will be logged complaining about the missing resource.
+   * </p>
+   */
+  protected String getResourceBundleString(String key) {
+    ResourceBundle rb = getResourceBundle();
+
+    // This is one of the rare cases where we can use logging in order
+    // to report errors from within log4j.
+    if (rb == null) {
+      //if(!hierarchy.emittedNoResourceBundleWarning) {
+      //error("No resource bundle has been set for logger "+name);
+      //hierarchy.emittedNoResourceBundleWarning = true;
+      //}
+      return null;
+    } else {
+      try {
+        return rb.getString(key);
+      } catch (MissingResourceException mre) {
+        error("No resource is associated with key \"" + key + "\".");
+
+        return null;
+      }
+    }
+  }
+
+  /**
+   * Log a message object with the {@link Level#INFO INFO} Level.
+   *
+   * <p>
+   * This method first checks if this logger is <code>INFO</code> enabled by
+   * comparing the level of this logger with {@link Level#INFO INFO} Level.
+   * If the logger is <code>INFO</code> enabled, then it converts the
+   * message object passed as parameter to a string by invoking the
+   * appropriate {@link org.apache.log4j.or.ObjectRenderer}. It proceeds to
+   * call all the registered appenders in this logger and also higher in
+   * the hierarchy depending on the value of the additivity flag.
+   * </p>
+   *
+   * <p>
+   * <b>WARNING</b> Note that passing a {@link Throwable} to this method will
+   * print the name of the Throwable but no stack trace. To print a stack
+   * trace use the {@link #info(Object, Throwable)} form instead.
+   * </p>
+   *
+   * @param message the message object to log
+   */
+  public void info(Object message) {
+    if (repository.isDisabled(Level.INFO_INT)) {
+      return;
+    }
+
+    if (Level.INFO.isGreaterOrEqual(this.getEffectiveLevel())) {
+      forcedLog(FQCN, Level.INFO, message, null);
+    }
+  }
+
+  /**
+   * Log a message object with the <code>INFO</code> level including the stack
+   * trace of the {@link Throwable}<code>t</code> passed as parameter.
+   *
+   * <p>
+   * See {@link #info(Object)} for more detailed information.
+   * </p>
+   *
+   * @param message the message object to log.
+   * @param t the exception to log, including its stack trace.
+   */
+  public void info(Object message, Throwable t) {
+    if (repository.isDisabled(Level.INFO_INT)) {
+      return;
+    }
+
+    if (Level.INFO.isGreaterOrEqual(this.getEffectiveLevel())) {
+      forcedLog(FQCN, Level.INFO, message, t);
+    }
+  }
+
+  /**
+   * Is the appender passed as parameter attached to this logger?
+   */
+  public boolean isAttached(Appender appender) {
+    boolean result;
+
+    lock.getReadLock();
+
+    if ((appender == null) || (aai == null)) {
+      result = false;
+    } else {
+      result = aai.isAttached(appender);
+    }
+
+    lock.releaseReadLock();
+    return result;
+  }
+
+  /**
+   * Check whether this logger is enabled for the <code>DEBUG</code> Level.
+   *
+   * <p>
+   * This function is intended to lessen the computational cost of disabled
+   * log debug statements.
+   * </p>
+   *
+   * <p>
+   * For some <code>cat</code> Logger object, when you write,
+   * <pre>
+   *      cat.debug("This is entry number: " + i );
+   *  </pre>
+   * </p>
+   *
+   * <p>
+   * You incur the cost constructing the message, concatenatiion in this case,
+   * regardless of whether the message is logged or not.
+   * </p>
+   *
+   * <p>
+   * If you are worried about speed, then you should write
+   * <pre>
+   *          if(cat.isDebugEnabled()) {
+   *            cat.debug("This is entry number: " + i );
+   *          }
+   *  </pre>
+   * </p>
+   *
+   * <p>
+   * This way you will not incur the cost of parameter construction if
+   * debugging is disabled for <code>cat</code>. On the other hand, if the
+   * <code>cat</code> is debug enabled, you will incur the cost of evaluating
+   * whether the logger is debug enabled twice. Once in
+   * <code>isDebugEnabled</code> and once in the <code>debug</code>.  This is
+   * an insignificant overhead since evaluating a logger takes about 1%% of
+   * the time it takes to actually log.
+   * </p>
+   *
+   * @return boolean - <code>true</code> if this logger is debug enabled,
+   *         <code>false</code> otherwise.
+   */
+  public boolean isDebugEnabled() {
+    if (repository.isDisabled(Level.DEBUG_INT)) {
+      return false;
+    }
+
+    return Level.DEBUG.isGreaterOrEqual(this.getEffectiveLevel());
+  }
+
+  /**
+   * Check whether this logger is enabled for the TRACE  Level. See also
+   * {@link #isDebugEnabled()}.
+   *
+   * @return boolean - <code>true</code> if this logger is enabled for level
+   *         TRACE, <code>false</code> otherwise.
+   */
+  public boolean isTraceEnabled() {
+    if (repository.isDisabled(Level.TRACE_INT)) {
+      return false;
+    }
+
+    return Level.TRACE.isGreaterOrEqual(this.getEffectiveLevel());
+  }
+
+  /**
+   * Check whether this logger is enabled for a given {@link Level} passed
+   * as parameter. See also {@link #isDebugEnabled()}.
+   *
+   * @return boolean True if this logger is enabled for <code>level</code>.
+   */
+  public boolean isEnabledFor(Level level) {
+    if (repository.isDisabled(level.level)) {
+      return false;
+    }
+
+    return level.isGreaterOrEqual(this.getEffectiveLevel());
+  }
+
+  /**
+   * @deprecated Use the alternate form taking a parameter of type Level.
+   */
+  public boolean isEnabledFor(Priority level) {
+    return isEnabledFor((Level) level);
+  }
+
+  /**
+   * Check whether this logger is enabled for the info Level. See also
+   * {@link #isDebugEnabled()}.
+   *
+   * @return boolean - <code>true</code> if this logger is enabled for level
+   *         info, <code>false</code> otherwise.
+   */
+  public boolean isInfoEnabled() {
+    if (repository.isDisabled(Level.INFO_INT)) {
+      return false;
+    }
+
+    return Level.INFO.isGreaterOrEqual(this.getEffectiveLevel());
+  }
+
+  /**
+   * Log a localized message. The user supplied parameter <code>key</code> is
+   * replaced by its localized version from the resource bundle.
+   *
+   * @see #setResourceBundle
+   * @since 0.8.4
+   */
+  public void l7dlog(Level level, String key, Throwable t) {
+    if (repository.isDisabled(level.level)) {
+      return;
+    }
+
+    if (level.isGreaterOrEqual(this.getEffectiveLevel())) {
+      String msg = getResourceBundleString(key);
+
+      // if message corresponding to 'key' could not be found in the
+      // resource bundle, then default to 'key'.
+      if (msg == null) {
+        msg = key;
+      }
+
+      forcedLog(FQCN, level, msg, t);
+    }
+  }
+
+  /**
+   * Log a localized and parameterized message. First, the user supplied
+   * <code>key</code> is searched in the resource bundle. Next, the resulting
+   * pattern is formatted using {@link
+   * java.text.MessageFormat#format(String,Object[])} method with the user
+   * supplied object array <code>params</code>.
+   *
+   * @since 0.8.4
+   */
+  public void l7dlog(Level level, String key, Object[] params, Throwable t) {
+    if (repository.isDisabled(level.level)) {
+      return;
+    }
+
+    if (level.isGreaterOrEqual(this.getEffectiveLevel())) {
+      String pattern = getResourceBundleString(key);
+      String msg;
+
+      if (pattern == null) {
+        msg = key;
+      } else {
+        msg = java.text.MessageFormat.format(pattern, params);
+      }
+
+      forcedLog(FQCN, level, msg, t);
+    }
+  }
+
+  /**
+   * @deprecated Use the form taking in a Level as a parameter.
+   */
+  public void log(Priority level, Object message, Throwable t) {
+    log((Level) level, message, t);
+  }
+
+  /**
+   * This generic form is intended to be used by wrappers.
+   */
+  public void log(Level level, Object message, Throwable t) {
+    if (repository.isDisabled(level.level)) {
+      return;
+    }
+
+    if (level.isGreaterOrEqual(this.getEffectiveLevel())) {
+      forcedLog(FQCN, level, message, t);
+    }
+  }
+
+  /**
+   * @deprecated Use the form taking in a Level as a parameter.
+   */
+  public void log(Priority level, Object message) {
+    log((Level) level, message);
+  }
+
+  /**
+   * This generic form is intended to be used by wrappers. For the extraction
+   * of caller information, use the most generic form {@link #log(
+    String callerFQCN, Level level, Object message, Throwable t)}.
+   */
+  public void log(Level level, Object message) {
+    if (repository.isDisabled(level.level)) {
+      return;
+    }
+
+    if (level.isGreaterOrEqual(this.getEffectiveLevel())) {
+      forcedLog(FQCN, level, message, null);
+    }
+  }
+
+  /**
+   * This is the most generic printing method. It is intended to be invoked by
+   * <b>wrapper</b> classes.
+   *
+   * @param callerFQCN The wrapper class' fully qualified class name.
+   * @param level The level of the logging request.
+   * @param message The message of the logging request.
+   * @param t The throwable of the logging request, may be null.
+   */
+  public void log(String callerFQCN, Level level, Object message, Throwable t) {
+    if (repository.isDisabled(level.level)) {
+      return;
+    }
+
+    if (level.isGreaterOrEqual(this.getEffectiveLevel())) {
+      forcedLog(callerFQCN, level, message, t);
+    }
+  }
+
+  /**
+   * @deprecated Use the form taking in a Level as a parameter.
+   */
+  public void log(
+    String callerFQCN, Priority level, Object message, Throwable t) {
+    log(callerFQCN, (Level) level, message, t);
+  }
+
+  /**
+   * Remove all previously added appenders from this Logger instance.
+   * <p>Removed appenders are closed.</p>
+   * <p>This is useful when re-reading configuration information.</p>
+   */
+  public void removeAllAppenders() {
+    lock.getWriteLock();
+
+    if (aai != null) {
+      aai.removeAllAppenders();
+      aai = null;
+    }
+    lock.releaseWriteLock();
+  }
+
+  /**
+   * Remove the appender passed as parameter form the list of appenders.
+   *
+   * <p>Does <em>not</em> close the appender.</p>
+   *
+   * @since 0.8.2
+   */
+  public void removeAppender(Appender appender) {
+    lock.getWriteLock();
+
+    if ((appender == null) || (aai == null)) {
+      // Nothing to do
+    } else {
+      aai.removeAppender(appender);
+    }
+    lock.releaseWriteLock();
+  }
+
+  /**
+   * Remove the appender with the name passed as parameter form the list of
+   * appenders.
+   *
+   *<p>Does <em>not</em> close the appender.</p>
+   *
+   * @since 0.8.2
+   */
+  public void removeAppender(String name) {
+    lock.getWriteLock();
+
+    if ((name == null) || (aai == null)) {
+      // nothing to do
+    } else {
+      aai.removeAppender(name);
+    }
+    lock.releaseWriteLock();
+  }
+
+  /**
+   * Set the additivity flag for this Logger instance.
+   *
+   * @since 0.8.1
+   */
+  public void setAdditivity(boolean additive) {
+    this.additive = additive;
+  }
+
+  /**
+   * Only the Hiearchy class can set the hiearchy of a logger. Default
+   * package access is MANDATORY here.
+   */
+  final void setHierarchy(LoggerRepository repository) {
+    this.repository = repository;
+  }
+
+  /**
+   * Set the level of this Logger. If you are passing any of
+   * <code>Level.TRACE</code>, <code>Level.DEBUG</code>,
+   * <code>Level.INFO</code>, <code>Level.WARN</code>,
+   * <code>Level.ERROR</code>, or <code>Level.FATAL</code>
+   *  as a parameter, you need to case them as Level.
+   *
+   * <p>
+   * As in
+   * <pre> &nbsp;&nbsp;&nbsp;logger.setLevel((Level) Level.DEBUG); </pre>
+   * </p>
+   *
+   * <p>
+   * Null values are admitted.
+   * </p>
+   */
+  public void setLevel(Level level) {
+    this.level = level;
+  }
+
+  //  /**
+  //   * Set the level of this Logger.
+  //   *
+  //   * <p>
+  //   * Null values are admitted.
+  //   * </p>
+  //   *
+  //   * @deprecated Please use {@link #setLevel} instead.
+  //   */
+  //  public void setPriority(Priority priority) {
+  //    this.level = (Level) priority;
+  //  }
+
+  /**
+   * Set the resource bundle to be used with localized logging methods {@link
+   * #l7dlog(Level,String,Throwable)} and {@link
+   * #l7dlog(Level,String,Object[],Throwable)}.
+   *
+   * @since 0.8.4
+   */
+  public void setResourceBundle(ResourceBundle bundle) {
+    resourceBundle = bundle;
+  }
+
+  /**
+   * Calling this method will <em>safely</em> close and remove all appenders
+   * in all the loggers including root contained in the default hierachy.
+   *
+   * <p>
+   * Some appenders such as {@link org.apache.log4j.net.SocketAppender} and
+   * {@link AsyncAppender} need to be closed before the application exists.
+   * Otherwise, pending logging events might be lost.
+   * </p>
+   *
+   * <p>
+   * The <code>shutdown</code> method is careful to close nested appenders
+   * before closing regular appenders. This is allows configurations where a
+   * regular appender is attached to a logger and again to a nested
+   * appender.
+   * </p>
+   *
+   * @since 1.0
+   * @deprecated Please use {@link LogManager#shutdown()} instead.
+   */
+  public static void shutdown() {
+    LogManager.shutdown();
+  }
+
+  /**
+   * Log a message object with the {@link Level#WARN WARN} Level.
+   *
+   * <p>
+   * This method first checks if this logger is <code>WARN</code> enabled by
+   * comparing the level of this logger with {@link Level#WARN WARN} Level.
+   * If the logger is <code>WARN</code> enabled, then it converts the
+   * message object passed as parameter to a string by invoking the
+   * appropriate {@link org.apache.log4j.or.ObjectRenderer}. It proceeds to
+   * call all the registered appenders in this logger and also higher in
+   * the hieararchy depending on the value of the additivity flag.
+   * </p>
+   *
+   * <p>
+   * <b>WARNING</b> Note that passing a {@link Throwable} to this method will
+   * print the name of the Throwable but no stack trace. To print a stack
+   * trace use the {@link #warn(Object, Throwable)} form instead.
+   * </p>
+   *
+   * <p></p>
+   *
+   * @param message the message object to log.
+   */
+  public void warn(Object message) {
+    if (repository.isDisabled(Level.WARN_INT)) {
+      return;
+    }
+
+    if (Level.WARN.isGreaterOrEqual(this.getEffectiveLevel())) {
+      forcedLog(FQCN, Level.WARN, message, null);
+    }
+  }
+
+  /**
+   * Log a message with the <code>WARN</code> level including the stack trace
+   * of the {@link Throwable}<code>t</code> passed as parameter.
+   *
+   * <p>
+   * See {@link #warn(Object)} for more detailed information.
+   * </p>
+   *
+   * @param message the message object to log.
+   * @param t the exception to log, including its stack trace.
+   */
+  public void warn(Object message, Throwable t) {
+    if (repository.isDisabled(Level.WARN_INT)) {
+      return;
+    }
+
+    if (Level.WARN.isGreaterOrEqual(this.getEffectiveLevel())) {
+      forcedLog(FQCN, Level.WARN, message, t);
+    }
   }
 }
 
