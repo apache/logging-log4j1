@@ -19,9 +19,9 @@ if [ "$OSTYPE" = "cygwin32" ] || [ "$OSTYPE" = "cygwin" ] ; then
    CLASSPATH=`cygpath --path --unix "$CLASSPATH"`
 fi
 
-ANT_JAR='lib/ant.jar'
-JAXP_JAR='lib/jaxp.jar'
-PARSER_JAR='lib/parser.jar'
+ANT_JAR='build/lib/ant.jar'
+JAXP_JAR='build/lib/jaxp.jar'
+PARSER_JAR='build/lib/parser.jar'
 
 CLASSPATH=${CLASSPATH}:${ANT_JAR}
 CLASSPATH=${CLASSPATH}:${JAXP_JAR}
@@ -32,7 +32,7 @@ if [ "$OSTYPE" = "cygwin32" ] || [ "$OSTYPE" = "cygwin" ] ; then
    CLASSPATH=`cygpath --path --windows "$CLASSPATH"`
 fi
 
-BUILDFILE=build.xml
+BUILDFILE=build/build.xml
 
 ${JAVA_HOME}/bin/java -classpath ${CLASSPATH} org.apache.tools.ant.Main \
                       -buildfile ${BUILDFILE} "$@"
