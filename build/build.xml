@@ -9,7 +9,7 @@
 <!-- ================================================================= -->
 <project name="log4j" default="usage" basedir=".." >
 
-  <property name="version" value="1.1.3"/>
+  <property name="version" value="1.2alpha"/>
 
   <!-- The base directory relative to which most targets are built -->
   <property name="base" value="."/>
@@ -26,6 +26,9 @@
 
   <!-- Destination for generated jar files -->
   <property name="jar.dest" value="dist/lib"/>
+
+  <property name="jar.filename" value="log4j-${version}.jar"/>
+
 
   <!-- Destination for documentation files generated or not -->
   <property name="docs" value="docs"/>
@@ -195,7 +198,7 @@
   <!-- Remove the temporary manifest file, actual work is done in the    -->
   <!-- dependencies.                                                     -->
   <!-- ================================================================= -->  
-  <target name="jar" depends="log4j-core.jar, log4j.jar">
+  <target name="jar" depends="log4j.jar">
      <delete file="${jar.dest}/manifest.mf"/>
   </target>
 
@@ -206,47 +209,12 @@
           filtering="true"/>
   </target>
 
-
-  <!-- ================================================================= -->
-  <!-- Create log4j-core.jar, exluding non-core files                    -->
-  <!-- ================================================================= -->
-
-  <target name="log4j-core.jar" depends="prejar">
-    <delete file="${jar.dest}/log4j-core.jar"/>
-    <jar jarfile="${jar.dest}/log4j-core.jar" basedir="${javac.dest}"
-	 includes="${stem}/*.class, 
-	          ${stem}/helpers/*.class,
-                  ${stem}/spi/*.class, 
-		  ${stem}/or/*.class,
-		  ${stem}/config/PropertySetter.class
-		  ${stem}/config/PropertySetterException.class"
-
-	 excludes="**/StressCategory*, **/TTCC*, **/SimpleLayout.*, 
-                  ${stem}/DailyRollingFileAppender.class,
-		  ${stem}/CompositeRollingAppender.class,
-                  ${stem}/Rolling*.class,
-                  ${stem}/HTMLLayout.class,
-                  ${stem}/helpers/CountingQuietWriter.class,
-                  ${stem}/helpers/DateLayout.class,
-                  ${stem}/or/ThreadGroupRenderer.class,
-	          **/AsyncAppender.*, **/Dispatcher.*, **/BoundedFIFO.*,
-	          **/Syslog*, **/RelativeTimeDateFormat.*,
-		  ${stem}/gui/**/*.class, 
-		  **/UnitTest*.class, 
-		  ${stem}/or/jms/MessageRenderer.class,
-		  ${stem}/or/sax/AttributesRenderer.class,
-		  ${stem}/spi/TriggeringEventEvaluator.class
-		  ${stem}/helpers/CyclicBuffer.class"
-        manifest="${jar.dest}/manifest.mf"
-    />
-  </target>
-
  <!-- ================================================================= -->
  <!-- Create log4j.jar, excluding tests and other odds and ends.        -->
  <!-- ================================================================= -->
   <target name="log4j.jar" depends="prejar">
-    <delete file="${jar.dest}/log4j.jar"/>
-    <jar jarfile="${jar.dest}/log4j.jar" basedir="${javac.dest}"
+    <delete file="${jar.dest}/${jar.filename}"/>
+    <jar jarfile="${jar.dest}/${jar.filename}" basedir="${javac.dest}"
 	includes="${stem}/*.class, ${stem}/xml/log4j.dtd, 
 		  ${stem}/config/*.class,
 	          ${stem}/helpers/*.class, 
