@@ -1,10 +1,10 @@
 
 ----------------------------------------------------------------------
 WARNING: The contents of the contribs/ directory is not guaranteed to
-work properly. Some files might even not compile.
+work properly. Some files might not even compile.
 ----------------------------------------------------------------------
 
-Each directory corresponds to the name of an author containinghis/her 
+Each directory corresponds to the name of an author containing his/her 
 contributions.
 
 
@@ -33,6 +33,13 @@ JimMoore/
    Allows the user to divert System.out and System.err to log4j.
    
 
+LeosLiterak/
+===========
+
+   TempFileAppender.java
+
+   TempFileAppender creates new unique file for each logging statement.
+	 
 MarkDouglas/
 ===========
 
