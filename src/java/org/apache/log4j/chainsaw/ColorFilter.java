@@ -67,6 +67,9 @@ import org.apache.log4j.spi.LoggingEvent;
  * multiple filters, as long as the regexp is unique.
  *
  * @author Scott Deboy <sdeboy@apache.org>
+ * 
+ * @deprecated The new Rule structure replaces this class
+ * 
  */
 public class ColorFilter {
   private Vector filterListeners = new Vector();

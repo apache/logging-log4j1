@@ -76,6 +76,8 @@ import java.util.Vector;
  * multiple filters, as long as the regexp is unique.
  *
  * @author Scott Deboy <sdeboy@apache.org>
+ * 
+ * @deprecated The new Rule structure replaces this class
  */
 public class DisplayFilter implements Serializable {
 

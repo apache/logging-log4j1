@@ -71,6 +71,7 @@ import javax.swing.JPanel;
  * to include in the Detail Panel, or tooltip text when displaying a
  * particular selected LoggingEvent.
  *
+ * @deprecated  
  * @author Scott Deboy <sdeboy@apache.org>
  *
  */
