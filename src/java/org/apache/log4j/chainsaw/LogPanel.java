@@ -901,13 +901,21 @@ public class LogPanel extends DockablePanel implements Profileable,
                 }
             });
 
-        final JCheckBoxMenuItem menuItemScrollBottom = new JCheckBoxMenuItem("Scroll to bottom",
-                scrollToBottom.isScrolled());
+        final JCheckBoxMenuItem menuItemScrollBottom = new JCheckBoxMenuItem("Scroll to bottom");
         menuItemScrollBottom.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent evt) {
-                    scrollToBottom.scroll(menuItemScrollBottom.isSelected());
+                  getPreferenceModel().setScrollToBottom(menuItemScrollBottom.isSelected());
                 }
             });
+        getPreferenceModel().addPropertyChangeListener("scrollToBottom", new PropertyChangeListener() {
+
+          public void propertyChange(PropertyChangeEvent evt)
+          {
+            boolean value = ((Boolean)evt.getNewValue()).booleanValue();
+            menuItemScrollBottom.setSelected(value);
+            scrollToBottom.scroll(value);
+          }});
+        
         menuItemScrollBottom.setIcon(new ImageIcon(
                 ChainsawIcons.SCROLL_TO_BOTTOM));
 
