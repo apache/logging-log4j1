@@ -60,6 +60,7 @@ import java.io.ObjectOutputStream;
 
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 
 /**
@@ -132,13 +133,13 @@ import java.net.Socket;
         @since 0.8.4 */
 public class SocketAppender extends AppenderSkeleton {
   /**
-         The default port number of remote logging server (4560).
-  */
+   * The default port number of remote logging server (4560).
+   */
   static final int DEFAULT_PORT = 4560;
 
   /**
-         The default reconnection delay (30000 milliseconds or 30 seconds).
-  */
+   * The default reconnection delay (30000 milliseconds or 30 seconds).
+   */
   static final int DEFAULT_RECONNECTION_DELAY = 30000;
 
   // reset the ObjectOutputStream every 70 calls
@@ -146,9 +147,9 @@ public class SocketAppender extends AppenderSkeleton {
   private static final int RESET_FREQUENCY = 1;
 
   /**
-         We remember host name as String in addition to the resolved
-         InetAddress so that it can be returned via getOption().
-  */
+   * We remember host name as String in addition to the resolved
+   * InetAddress so that it can be returned via getOption().
+   */
   String remoteHost;
   InetAddress address;
   int port = DEFAULT_PORT;
@@ -157,6 +158,8 @@ public class SocketAppender extends AppenderSkeleton {
   boolean locationInfo = false;
   private Connector connector;
   int counter = 0;
+  String localMachine;
+  String log4jApp;
 
   public SocketAppender() {
   }
@@ -185,6 +188,16 @@ public class SocketAppender extends AppenderSkeleton {
          Connect to the specified <b>RemoteHost</b> and <b>Port</b>.
   */
   public void activateOptions() {
+    try {
+      localMachine = InetAddress.getLocalHost().getHostName();
+    } catch (UnknownHostException uhe) {
+      try {
+        localMachine = InetAddress.getLocalHost().getHostAddress();
+      } catch (UnknownHostException uhe2) {
+        localMachine = "unknown";
+      }
+    }
+
     connect(address, port);
   }
 
@@ -266,6 +279,14 @@ public class SocketAppender extends AppenderSkeleton {
       try {
         if (locationInfo) {
           event.getLocationInformation();
+        }
+
+        if (localMachine != null) {
+          event.setProperty("log4jMachineName", localMachine);
+        }
+
+        if (log4jApp != null) {
+          event.setProperty("log4jApp", log4jApp);
         }
 
         oos.writeObject(event);
@@ -366,6 +387,22 @@ public class SocketAppender extends AppenderSkeleton {
    */
   public boolean getLocationInfo() {
     return locationInfo;
+  }
+
+  /**
+         * The <b>App</b> option takes a string value which should be the
+         * name of the application getting logged
+         * If property was already set (via system property), don't set here.
+   */
+  public void setLog4jApp(String lapp) {
+    this.log4jApp = lapp;
+  }
+
+  /**
+         Returns value of the <b>Log4jApp</b> option.
+   */
+  public String getLog4jApp() {
+    return log4jApp;
   }
 
   /**
