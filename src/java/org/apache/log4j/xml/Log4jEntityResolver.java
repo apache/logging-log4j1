@@ -23,8 +23,6 @@ import org.apache.log4j.helpers.LogLog;
 public class Log4jEntityResolver implements EntityResolver {
 
   public InputSource resolveEntity (String publicId, String systemId) {
-    System.err.println("piblicID: ["+publicId+"]");
-    System.err.println("systemId: ["+systemId+"]");
     if (systemId.endsWith("log4j.dtd")) {
       Class clazz = getClass();
       InputStream in = clazz.getResourceAsStream("/org/apache/log4j/xml/log4j.dtd");
