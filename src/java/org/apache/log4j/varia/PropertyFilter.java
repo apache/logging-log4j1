@@ -17,6 +17,7 @@
 package org.apache.log4j.varia;
 
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -28,6 +29,9 @@ import org.apache.log4j.spi.LoggingEvent;
  * 
  * The 'properties' param is converted to event properties, which are 
  * set on every event processed by the filter.
+ * 
+ * Individual properties are only set if they do not already exist on the 
+ * logging event (will not override existing properties).
  * 
  * This class relies on the convention that property name/value pairs are 
  * equals-symbol delimited, and each name/value pair is comma-delimited
@@ -46,13 +50,16 @@ public class PropertyFilter extends Filter {
 	public int decide(LoggingEvent event) {
 		Map eventProps = event.getProperties();
 		if (eventProps == null) {
-			eventProps = new Hashtable();
+			event.setProperties(new Hashtable(properties));
 		} else {
-			eventProps = new Hashtable(properties);
+		    //only add properties that don't already exist
+		    for (Iterator iter = properties.keySet().iterator();iter.hasNext();) {
+		        Object key = iter.next();
+		        if (!(eventProps.containsKey(key))) {
+		            eventProps.put(key, properties.get(key));
+		        }
+		    }
 		}
-		properties.putAll(eventProps);
-	
-		event.setProperties(properties);
 		return Filter.NEUTRAL;
 	}
 	
