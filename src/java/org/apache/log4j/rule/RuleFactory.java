@@ -54,10 +54,10 @@ public class RuleFactory {
     rules.add(EQUALS_RULE);
     rules.add(PARTIAL_TEXT_MATCH_RULE);
     try {
-    	Class.forName("org.apache.oro.text.regex.Perl5Compiler");
+    	Class.forName("org.apache.log4j.rule.LikeRule");
     	rules.add(LIKE_RULE);
     } catch (Exception e) {
-    	LogManager.getLogger(RuleFactory.class).info("ORO classes not found - Like rule not supported");
+    	LogManager.getLogger(RuleFactory.class).info("Like (regular expression) rule not supported");
     }
     	
     rules.add(EXISTS_RULE);
