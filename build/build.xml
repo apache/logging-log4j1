@@ -48,7 +48,7 @@
   <property name="manifest.src" value="${base}/build/manifest.mf"/>
 
   <!-- Directory where release images go. -->
-  <property name="dist.images"  value="=${base}/dist/images"/>
+  <property name="dist.images"  value="${base}/dist/images"/>
 
   <!-- Directory for temporary files. -->
   <property name="dist.tmp" value="${base}/dist/tmp"/>
