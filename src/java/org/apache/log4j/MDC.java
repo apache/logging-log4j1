@@ -82,6 +82,18 @@ public class MDC {
   }
 
   /**
+   * Clear all entries in the MDC. 
+   * @since 1.3
+   */
+  public static void clear() {
+    Hashtable ht = (Hashtable) tlm.get();
+    if(ht != null) {
+      ht.clear();
+    }
+  }
+
+
+  /**
    * Get the current thread's MDC as a hashtable. This method is
    * intended to be used internally.  
    * */
