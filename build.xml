@@ -396,7 +396,7 @@
                 ${stem}/db/**/*.class,
                 ${stem}/html/**/*.class,
                 ${stem}/varia/*.class,
-                ${stem}/filters/*.class,    	
+                ${stem}/filter/*.class,    	
                 ${stem}/rule/*.class,    	    	
                 ${stem}/nt/*.class,
                 ${stem}/rolling/**/*.class,
