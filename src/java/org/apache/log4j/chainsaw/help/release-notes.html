@@ -9,6 +9,13 @@
 
 <h1>1.99.99</h2>
 
+<h2>17 June 2004</h2>
+<ul>
+ <li>Added application preference to authorize Chainsaw to have a null SecurityManager, which is required under Java Web Start
+ so that classes loaded under the non-Web Start ClassLoader can access resources.</li>
+ <li>Plugins loaded under Chainsaw now use this Custom classloader</li>
+</ul>
+
 <h2>9 June 2004</h2>
 <ul>
  <li>Re-build to include the missing JMSReceiver class that got left off... Oooops.</li>
