@@ -65,16 +65,16 @@ import java.util.Stack;
  * 
  * @author Scott Deboy <sdeboy@apache.org>
  */
-class LevelInequalityRule extends AbstractRule {
-  LoggingEventFieldResolver resolver = LoggingEventFieldResolver.getInstance();
-  Level levelFirstParam;
-  String levelSecondParam;
-  List utilList = new LinkedList();
-  List levelList = new LinkedList();
-  String inequalitySymbol;
+public class LevelInequalityRule extends AbstractRule {
+  private static final LoggingEventFieldResolver resolver = LoggingEventFieldResolver.getInstance();
+  private final Level level;
+  private final String value;
+  private final List utilList = new LinkedList();
+  private final List levelList = new LinkedList();
+  private final String inequalitySymbol;
 
   private LevelInequalityRule(
-    String inequalitySymbol, String levelFirstParam, String levelSecondParam) {
+    String inequalitySymbol, String field, String value) {
     levelList.add(Level.FATAL.toString());
     levelList.add(Level.ERROR.toString());
     levelList.add(Level.WARN.toString());
@@ -87,19 +87,23 @@ class LevelInequalityRule extends AbstractRule {
       utilList.add(((UtilLoggingLevel) iter.next()).toString());
     }
 
-    if (levelList.contains(levelFirstParam)) {
-      this.levelFirstParam = Level.toLevel(levelFirstParam);
+    if (levelList.contains(value.toUpperCase())) {
+      this.level = Level.toLevel(value.toUpperCase());
     } else {
-      this.levelFirstParam = UtilLoggingLevel.toLevel(levelFirstParam);
+      this.level = UtilLoggingLevel.toLevel(value.toUpperCase());
     }
 
     this.inequalitySymbol = inequalitySymbol;
-    this.levelSecondParam = levelSecondParam;
+    this.value = value;
   }
 
+  public static Rule getRule(String inequalitySymbol, String field, String value) {
+      return new LevelInequalityRule(inequalitySymbol, field, value);
+  }
+  
   public static Rule getRule(String inequalitySymbol, Stack stack) {
-    String p1 = stack.pop().toString();
     String p2 = stack.pop().toString();
+    String p1 = stack.pop().toString();
 
     return new LevelInequalityRule(inequalitySymbol, p1, p2);
   }
@@ -107,12 +111,12 @@ class LevelInequalityRule extends AbstractRule {
   public boolean evaluate(LoggingEvent event) {
     //use the type of the first level to access the static toLevel method on the second param
     Level level2 =
-      levelFirstParam.toLevel(
-        resolver.getValue(levelSecondParam, event).toString());
+      level.toLevel(
+        resolver.getValue("LEVEL", event).toString());
 
     boolean result = false;
     int first = level2.toInt();
-    int second = levelFirstParam.toInt();
+    int second = level.toInt();
 
     if ("<".equals(inequalitySymbol)) {
       result = first < second;

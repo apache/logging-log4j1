@@ -47,42 +47,84 @@
  *
  */
 
-package org.apache.log4j.chainsaw.rule;
+package org.apache.log4j.chainsaw.color;
 
-import org.apache.log4j.chainsaw.LoggingEventFieldResolver;
+import org.apache.log4j.chainsaw.rule.ColorRule;
 import org.apache.log4j.spi.LoggingEvent;
 
-import java.util.Stack;
+import java.awt.Color;
+
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+
+import java.util.LinkedList;
+import java.util.List;
+
 
 /**
- * A Rule class implementing not equals against two strings.
- * 
+ * A colorizer supporting an ordered collection of ColorRules, including support for notification of
+ * color rule changes via a propertyChangeListener and the 'colorrule' property.
+ *
  * @author Scott Deboy <sdeboy@apache.org>
  */
-public class NotEqualsRule extends AbstractRule {
-  private static final LoggingEventFieldResolver resolver = LoggingEventFieldResolver.getInstance();
-  private final String field;
-  private final String value;
+public class RuleColorizer implements Colorizer {
+  private final List ruleList = new LinkedList();
+  private final PropertyChangeSupport colorChangeSupport =
+    new PropertyChangeSupport(this);
 
-  private NotEqualsRule(String field, String value) {
-    this.field = field;
-    this.value = value;
+  public RuleColorizer() {
   }
 
-  public static Rule getRule(String field, String value) {
-      return new NotEqualsRule(field, value);
-  }
-  
-  public static Rule getRule(Stack stack) {
-    String p2 = stack.pop().toString();
-    String p1 = stack.pop().toString();
+  public void addRules(List rules) {
+    for (int i = 0, j = rules.size(); i < j; i++) {
+      ruleList.add((ColorRule) rules.get(i));
+    }
 
-    return new NotEqualsRule(p1, p2);
+    colorChangeSupport.firePropertyChange("colorrule", false, true);
   }
 
-  public boolean evaluate(LoggingEvent event) {
-    String p2 = resolver.getValue(field, event).toString();
+  public void addRule(ColorRule rule) {
+    ruleList.add(rule);
+    colorChangeSupport.firePropertyChange("colorrule", false, true);
+  }
 
-    return ((p2 != null) && !(p2.equals(value)));
+  public void clear() {
+    ruleList.clear();
+  }
+
+  public void removeRule(ColorRule rule) {
+    ruleList.remove(rule);
+  }
+
+  public Color getBackgroundColor(LoggingEvent event) {
+    for (int i = 0, j = ruleList.size(); i < j; i++) {
+      ColorRule rule = (ColorRule) ruleList.get(i);
+
+      if ((rule.getBackgroundColor() != null) && (rule.evaluate(event))) {
+        return rule.getBackgroundColor();
+      }
+    }
+
+    return null;
+  }
+
+  public Color getForegroundColor(LoggingEvent event) {
+    for (int i = 0, j = ruleList.size(); i < j; i++) {
+      ColorRule rule = (ColorRule) ruleList.get(i);
+
+      if ((rule.getForegroundColor() != null) && (rule.evaluate(event))) {
+        return rule.getForegroundColor();
+      }
+    }
+
+    return null;
+  }
+
+  public void addPropertyChangeListener(PropertyChangeListener listener) {
+    colorChangeSupport.addPropertyChangeListener(listener);
+  }
+
+  public void removePropertyChangeListener(PropertyChangeListener listener) {
+    colorChangeSupport.removePropertyChangeListener(listener);
   }
 }

@@ -59,30 +59,31 @@ import java.util.Stack;
  * 
  * @author Scott Deboy <sdeboy@apache.org>
  */
-class PartialTextMatchRule extends AbstractRule {
-  LoggingEventFieldResolver resolver = LoggingEventFieldResolver.getInstance();
-  String firstParam;
-  String secondParam;
+public class PartialTextMatchRule extends AbstractRule {
+  private static final LoggingEventFieldResolver resolver = LoggingEventFieldResolver.getInstance();
+  private final String field;
+  private final String value;
 
-  private PartialTextMatchRule(String firstParam, String secondParam) {
-    this.firstParam = firstParam;
-    this.secondParam = secondParam;
+  private PartialTextMatchRule(String field, String value) {
+    this.field = field;
+    this.value = value;
+  }
+  
+  public static Rule getRule(String field, String value) {
+      return new PartialTextMatchRule(field, value);
   }
 
   public static Rule getRule(Stack stack) {
-    String p1 = stack.pop().toString();
     String p2 = stack.pop().toString();
+    String p1 = stack.pop().toString();
 
     return new PartialTextMatchRule(p1, p2);
   }
 
   public boolean evaluate(LoggingEvent event) {
-    String p2 = resolver.getValue(secondParam, event).toString();
+    String p2 = resolver.getValue(field, event).toString();
 
-    boolean result =
-      (((p2 != null) && (firstParam != null))
-      && (p2.toLowerCase().indexOf(firstParam.toLowerCase()) > -1));
-
-    return result;
+    return (((p2 != null) && (value != null))
+      && (p2.toLowerCase().indexOf(value.toLowerCase()) > -1));
   }
 }

@@ -60,28 +60,29 @@ import java.util.Stack;
  * @author Scott Deboy <sdeboy@apache.org>
  */
 
-class EqualsRule extends AbstractRule {
-  LoggingEventFieldResolver resolver = LoggingEventFieldResolver.getInstance();
-  String firstParam;
-  String secondParam;
+public class EqualsRule extends AbstractRule {
+  private static final LoggingEventFieldResolver resolver = LoggingEventFieldResolver.getInstance();
+  private final String value;
+  private final String field;
 
-  private EqualsRule(String firstParam, String secondParam) {
-    this.firstParam = firstParam;
-    this.secondParam = secondParam;
+  private EqualsRule(String field, String value) {
+    this.field = field;
+    this.value = value;
   }
 
   public static Rule getRule(Stack stack) {
-    String p1 = stack.pop().toString();
     String p2 = stack.pop().toString();
+    String p1 = stack.pop().toString();
 
     return new EqualsRule(p1, p2);
   }
+  
+  public static Rule getRule(String p1, String p2) {
+      return new EqualsRule(p1, p2);
+  }
 
   public boolean evaluate(LoggingEvent event) {
-    String p2 = resolver.getValue(secondParam, event).toString();
-
-    boolean result = ((p2 != null) && p2.equals(firstParam));
-
-    return result;
+    String p2 = resolver.getValue(field, event).toString();
+    return ((p2 != null) && p2.equals(value));
   }
 }

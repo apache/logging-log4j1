@@ -66,7 +66,7 @@ import java.util.Vector;
  * @author Scott Deboy <sdeboy@apache.org>
  */
 
-class InFixToPostFix {
+public class InFixToPostFix {
   private final Map precedenceMap = new HashMap();
   private final List operators = new Vector();
 

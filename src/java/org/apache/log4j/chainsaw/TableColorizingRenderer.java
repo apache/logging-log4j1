@@ -50,7 +50,6 @@
 package org.apache.log4j.chainsaw;
 
 import org.apache.log4j.chainsaw.color.Colorizer;
-import org.apache.log4j.chainsaw.color.DefaultColorizer;
 import org.apache.log4j.chainsaw.icons.LevelIconFactory;
 import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
 import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
@@ -88,25 +87,22 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
   implements SettingsListener {
   private static final DateFormat DATE_FORMATTER =
     new ISO8601DateFormat(Calendar.getInstance().getTimeZone());
-  private Map iconMap = LevelIconFactory.getInstance().getLevelToIconMap();
-
-  //  private ColorFilter colorFilter;
-  private JTable table;
-  private Colorizer colorizer = new DefaultColorizer();
-  private Color background = new Color(255, 255, 254);
+  private static final Map iconMap =
+    LevelIconFactory.getInstance().getLevelToIconMap();
+  private Colorizer colorizer;
+  private final Color background = new Color(255, 255, 254);
   private final Color COLOR_ODD = new Color(230, 230, 230);
   private final JLabel idComponent = new JLabel();
   private final JLabel levelComponent = new JLabel();
-
-  //  private String levelDisplay = ChainsawConstants.LEVEL_DISPLAY_ICONS;
   private boolean levelUseIcons = true;
   private DateFormat dateFormatInUse = DATE_FORMATTER;
-  private String loggerPrecision = "";
+  private int loggerPrecision = 0;
 
   /**
    * Creates a new TableColorizingRenderer object.
    */
-  public TableColorizingRenderer() {
+  public TableColorizingRenderer(Colorizer colorizer) {
+    this.colorizer = colorizer;
     idComponent.setBorder(BorderFactory.createRaisedBevelBorder());
     idComponent.setBackground(Color.gray);
     idComponent.setHorizontalAlignment(JLabel.CENTER);
@@ -125,8 +121,8 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
   }
 
   public Component getTableCellRendererComponent(
-    JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
-    int col) {
+    final JTable table, Object value, boolean isSelected, boolean hasFocus,
+    int row, int col) {
     value = formatField(value);
 
     Color backgroundColor = null;
@@ -148,48 +144,44 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
 
     case ChainsawColumns.INDEX_THROWABLE_COL_NAME:
 
-      String[] ti = (String[]) value;
-
-      if (ti != null) {
-        ((JLabel) c).setText(ti[0]);
+      if (value instanceof String[]) {
+        ((JLabel) c).setText(((String[]) value)[0]);
       } else {
         ((JLabel) c).setText("");
       }
 
       break;
 
-      case ChainsawColumns.INDEX_LOGGER_COL_NAME:
-        if (loggerPrecision.equals("")) {
-            break;
-        } else {
-            String logger = value.toString();
-            int precision = 0;
-            try {
-                precision = Integer.parseInt(loggerPrecision);
-            } catch (NumberFormatException nfe){}
-            if (precision < 1) {
-                break;
-            }
-            int startPos = logger.length();
-            for (int i=0;i<precision;i++) {
-                startPos = logger.lastIndexOf(".", startPos - 1);
-            }
-            if (startPos < 0) {
-                break;
-            } else {
-                ((JLabel)c).setText(logger.substring(startPos + 1));
-            }
+    case ChainsawColumns.INDEX_LOGGER_COL_NAME:
+
+      if (loggerPrecision == 0) {
+        break;
+      } else {
+        String logger = value.toString();
+        int startPos = logger.length();
+
+        for (int i = 0; i < loggerPrecision; i++) {
+          startPos = logger.lastIndexOf(".", startPos - 1);
         }
 
-        break;
+        if (startPos < 0) {
+          break;
+        } else {
+          ((JLabel) c).setText(logger.substring(startPos + 1));
+        }
+      }
+
+      break;
 
     case ChainsawColumns.INDEX_LEVEL_COL_NAME:
 
-      Icon icon = (Icon) iconMap.get(value.toString());
+      if (levelUseIcons) {
+        levelComponent.setIcon((Icon) iconMap.get(value.toString()));
 
-      if (levelUseIcons && (icon != null)) {
-        levelComponent.setIcon(icon);
-        levelComponent.setText("");
+        if (levelComponent.getIcon() != null) {
+          levelComponent.setText("");
+        }
+
         levelComponent.setToolTipText(value.toString());
       } else {
         levelComponent.setIcon(null);
@@ -209,8 +201,6 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
     if (isSelected) {
       return c;
     }
-
-    this.table = table;
 
     if ((backgroundColor == null) && (getColorizer() != null)) {
       TableModel model = table.getModel();
@@ -267,8 +257,11 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
    * Changes the Logger precision.
    * @param precision
    */
-  void setLoggerPrecision(String loggerPrecision) {
-    this.loggerPrecision = loggerPrecision;
+  void setLoggerPrecision(String loggerPrecisionText) {
+    try {
+      loggerPrecision = Integer.parseInt(loggerPrecisionText);
+    } catch (NumberFormatException nfe) {
+    }
   }
 
   /**

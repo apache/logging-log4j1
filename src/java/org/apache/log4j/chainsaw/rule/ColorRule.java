@@ -49,40 +49,40 @@
 
 package org.apache.log4j.chainsaw.rule;
 
-import org.apache.log4j.chainsaw.LoggingEventFieldResolver;
 import org.apache.log4j.spi.LoggingEvent;
 
-import java.util.Stack;
+import java.awt.Color;
+
 
 /**
- * A Rule class implementing not equals against two strings.
- * 
+ * A Rule class which also holds a color
+ *
  * @author Scott Deboy <sdeboy@apache.org>
  */
-public class NotEqualsRule extends AbstractRule {
-  private static final LoggingEventFieldResolver resolver = LoggingEventFieldResolver.getInstance();
-  private final String field;
-  private final String value;
+public class ColorRule extends AbstractRule {
+  private final Rule rule;
+  private final Color foregroundColor;
+  private final Color backgroundColor;
 
-  private NotEqualsRule(String field, String value) {
-    this.field = field;
-    this.value = value;
+  public ColorRule(Rule rule, Color backgroundColor) {
+    this(rule, backgroundColor, null);
   }
 
-  public static Rule getRule(String field, String value) {
-      return new NotEqualsRule(field, value);
+  public ColorRule(Rule rule, Color backgroundColor, Color foregroundColor) {
+    this.rule = rule;
+    this.backgroundColor = backgroundColor;
+    this.foregroundColor = foregroundColor;
   }
-  
-  public static Rule getRule(Stack stack) {
-    String p2 = stack.pop().toString();
-    String p1 = stack.pop().toString();
 
-    return new NotEqualsRule(p1, p2);
+  public Color getForegroundColor() {
+    return foregroundColor;
+  }
+
+  public Color getBackgroundColor() {
+    return backgroundColor;
   }
 
   public boolean evaluate(LoggingEvent event) {
-    String p2 = resolver.getValue(field, event).toString();
-
-    return ((p2 != null) && !(p2.equals(value)));
+    return rule.evaluate(event);
   }
 }

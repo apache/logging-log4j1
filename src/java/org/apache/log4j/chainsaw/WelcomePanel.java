@@ -49,12 +49,17 @@
 
 package org.apache.log4j.chainsaw;
 
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+
 import java.io.IOException;
+
 import java.net.URL;
+
 import java.util.Stack;
 
 import javax.swing.AbstractAction;
@@ -69,8 +74,6 @@ import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
-
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
 
 
 /**
@@ -91,7 +94,7 @@ public class WelcomePanel extends JPanel {
   private LogUI logui;
 
   public WelcomePanel(LogUI logui) {
-    setLayout(new BorderLayout());
+    super(new BorderLayout());
     this.logui = logui;
     setBackground(Color.white);
     add(urlToolbar, BorderLayout.NORTH);

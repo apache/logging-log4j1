@@ -279,7 +279,7 @@ public class SocketReceiver extends Receiver implements Runnable, PortBased,
     } catch (Exception e) {
       LogLog.warn(
         "exception while watching socket server in SocketReceiver ("
-        + this.getName() + "), stopping", e);
+        + this.getName() + "), stopping");
     }
 
     LogLog.debug(getName() + " has exited the not interrupted loop");
@@ -290,7 +290,7 @@ public class SocketReceiver extends Receiver implements Runnable, PortBased,
       try {
         socket.close();
       } catch (IOException e1) {
-        e1.printStackTrace();
+          LogLog.warn("socket exception caught - socket closed");
       }
     }
 

@@ -72,7 +72,9 @@ import org.apache.log4j.spi.LoggingEvent;
   appenders currently configured in the LoggerRespository.
 
   @author Mark Womack
-  @since 1.3
+  @author Scott Deboy <sdeboy@apache.org>
+
+    @since 1.3
 */
 public class XMLSocketReceiver extends Receiver implements Runnable, PortBased, Pauseable {
   protected int port;
@@ -299,8 +301,7 @@ public class XMLSocketReceiver extends Receiver implements Runnable, PortBased, 
       }
     } catch (Exception e) {
       LogLog.warn(
-        "exception while watching socket server in SocketReceiver ("
-        + this.getName() + "), stopping", e);
+        "socket server disconnected, stopping");
     }
   }
 

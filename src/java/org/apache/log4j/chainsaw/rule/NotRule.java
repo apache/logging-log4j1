@@ -58,13 +58,17 @@ import java.util.Stack;
  * 
  * @author Scott Deboy <sdeboy@apache.org>
  */
-class NotRule extends AbstractRule {
-  Rule firstParam;
+public class NotRule extends AbstractRule {
+  private final Rule rule;
 
   private NotRule(Rule firstParam) {
-    this.firstParam = firstParam;
+    this.rule = firstParam;
   }
 
+  public static Rule getRule(Rule rule) {
+      return new NotRule(rule);
+  }
+  
   public static Rule getRule(Stack stack) {
     Rule p1 = (Rule) stack.pop();
 
@@ -72,9 +76,6 @@ class NotRule extends AbstractRule {
   }
 
   public boolean evaluate(LoggingEvent event) {
-
-    boolean result = !(firstParam.evaluate(event));
-
-    return result;
+    return !(rule.evaluate(event));
   }
 }

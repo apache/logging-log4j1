@@ -49,30 +49,12 @@
 
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Priority;
-import org.apache.log4j.UtilLoggingLevel;
-import org.apache.log4j.chainsaw.help.Tutorial;
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SettingsListener;
-import org.apache.log4j.chainsaw.prefs.SettingsManager;
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.helpers.OptionConverter;
-import org.apache.log4j.net.SocketNodeEventListener;
-import org.apache.log4j.plugins.Plugin;
-import org.apache.log4j.plugins.PluginEvent;
-import org.apache.log4j.plugins.PluginListener;
-import org.apache.log4j.plugins.PluginRegistry;
-import org.apache.log4j.plugins.Receiver;
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Event;
+import java.awt.Frame;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -83,20 +65,15 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-
 import java.lang.reflect.Method;
-
 import java.net.URL;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -126,6 +103,25 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Priority;
+import org.apache.log4j.UtilLoggingLevel;
+import org.apache.log4j.chainsaw.help.Tutorial;
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.SettingsListener;
+import org.apache.log4j.chainsaw.prefs.SettingsManager;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.net.SocketNodeEventListener;
+import org.apache.log4j.plugins.Plugin;
+import org.apache.log4j.plugins.PluginEvent;
+import org.apache.log4j.plugins.PluginListener;
+import org.apache.log4j.plugins.PluginRegistry;
+import org.apache.log4j.plugins.Receiver;
 
 
 /**
@@ -224,8 +220,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     }
   }
 
-  private static final void showSplash() {
-    splash = new ChainsawSplash();
+  private static final void showSplash(Frame owner) {
+    splash = new ChainsawSplash(owner);
 
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     splash.setLocation(
@@ -269,9 +265,9 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    * @param args
    */
   public static void main(String[] args) {
-    showSplash();
 
     LogUI logUI = new LogUI();
+    showSplash(logUI);
 
     logUI.handler = new ChainsawAppenderHandler();
     logUI.handler.addEventBatchListener(logUI.new NewTabEventBatchReceiver());
@@ -568,8 +564,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
         }
       });
 
-    addWelcomePanel();
     panePanel.add(getTabbedPane());
+    addWelcomePanel();
 
     getContentPane().add(toolbar, BorderLayout.NORTH);
     getContentPane().add(panePanel, BorderLayout.CENTER);
