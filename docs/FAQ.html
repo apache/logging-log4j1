@@ -42,6 +42,14 @@ there a method to remove category instances?</a>
 <li><p><a href=#filterByPriority>Is it possible to direct log output
 to different appenders by priority?</a>
 
+<li><p><a href=#many21>How do I get multiple processes to log to the 
+same file?</a>
+
+<li><p><a href=#timestamp>If I have many process across multiple hosts
+(possibly across multiple timezones) logging to the same file using the
+method above, what happens to timestamps?
+
+
 <li><p><a href=#tax>Why should I donate my log4j extensions back to the
 project?</a>
 <li><p><a href=#help>What should I keep in mind when contributing code?</a>
@@ -136,9 +144,9 @@ href="http://www.junit.org">JUnit</a> testing framework.
 
 <a name=javadoc><h4>Is there javadoc documentation for log4j?</h4>
 
-The javadoc <a href=javadoc/index.html>documentation</a> is part of
+The javadoc <a href=api/index.html>documentation</a> is part of
 the log4j package. There is also an <b><a
-href="javadoc/manual.html">introductory manual</a></b>. In case
+href="manual.html">introductory manual</a></b>. In case
 problems make sure to have a look at <a href="TROUBLESHOOT.html">log4j
 troubleshooting</a> document. 
 
@@ -236,7 +244,7 @@ statements are printed or not.
 <p>Categories are assigned priorities. A log statement is printed
 depending on its priority <em>and</em> its category.
 
-<p>Make sure to read the <a href=javadoc/manual.html>log4j manual</a>
+<p>Make sure to read the <a href=manual.html>log4j manual</a>
 for more information.
 
 <a name=behavior><h4 id="">How can I change log behavior at runtime?</h4>
@@ -490,7 +498,7 @@ different appenders by priority?</h4>
 
 <p>Yes it is. Setting the <b>Threshold</b> option of any appender
 extending <a
-href="javadoc/org/log4j/AppenderSkeleton.html">AppenderSkeleton</a>,
+href="api/org/apache/log4j/AppenderSkeleton.html">AppenderSkeleton</a>,
 (most log4j appenders extend AppenderSkeleton) to filter out all log
 events with <em>lower</em> priority than the value of the threshold
 option. 
@@ -507,16 +515,47 @@ but not FATAL messages.
 to do, as opposed to her mind-projected solution.
 
 <p>See <a
-href="javadoc/org/apache/log4j/examples/doc-files/sort4.lcf">sort4.lcf</a>
+href="api/org/apache/log4j/examples/doc-files/sort4.lcf">sort4.lcf</a>
 for an example threshold configuration.
 
 <p>If you must filter events by exact priority match, then you can
 attach a <a
-href="javadoc/org/apache/log4j/varia/PriorityMatchFilter.html">PriorityMatchFilter</a>
+href="api/org/apache/log4j/varia/PriorityMatchFilter.html">PriorityMatchFilter</a>
 to any appender to filter out logging events by exact priority match.
 
 
-<a name=tax><h4>Why should I donate my extensions to log4j back to the
+<p><a name=many21><h4>How do I get multiple process to log to the same file?</h4></a>
+
+<p>You may have each process log to a 
+<a href="api/org/apache/log4j/net/SocketAppender.html"><code>SocketAppender</code></a>.  
+The receving 
+<a href="api/org/apache/log4j/net/SocketServer.html"><code>SocketServer</code></a>  
+(or 
+<a href="api/org/apache/log4j/net/SimpleSocketServer.html"><code>SimpleSocketServer</code></a>)
+can receive all the events and send them to a single
+log file.
+
+<p><a name=timestamp><h4>If I have many processes across multiple hosts
+(possibly across multiple timezones) logging to the same file using the
+method above, what happens to timestamps?</h4>
+
+<p>The timestamp is created when the logging event is created.  That is
+so say, when the <code>debug</code>, <code>info</code>, <code>warn</code>, 
+<code>error</code> or <code>fatal</code> method is invoked.
+This is unaffected by the time at which they may arrive at a remote
+socket server.  Since the timestamps are stored in UTC format inside
+the event, they all appear in the same timezone as the host creating the
+logfile.  Since the clocks of various machines may not be synchronized,
+this may account for time interval inconsistencies between events generated 
+on different hosts.
+
+<p>While this is the intended behavior, it only recently became so due to
+a bug discovery between version 1.0.4 and 1.1b1.  Versions 1.0.4 and before
+had their timestamp regenerated in the converter.  In this case the timestamps
+seen in the log file would all appear in order, generated at the time they
+arrived at the log server host according to its local clock.
+
+<p><a name=tax><h4>Why should I donate my extensions to log4j back to the
 project?</h4>
 
 Contrary to the GNU Public License (GPL) the Apache Public License
