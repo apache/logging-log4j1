@@ -185,8 +185,8 @@ public class ChainsawCentral extends GUIPluginSkeleton {
     }
 
     private void initCanvas() {
-      setBackground(Color.BLACK);
-      setForeground(Color.RED);
+      setBackground(Color.black);
+      setForeground(Color.red);
       setOpaque(true);
     }
   }
