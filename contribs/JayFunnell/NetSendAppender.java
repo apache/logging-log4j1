@@ -15,12 +15,12 @@ import org.apache.log4j.helpers.LogLog;
 /**
   <p>The NetSendAppender is a log4j appender that uses the popular Windows NET SEND
      command to announce log events.  This is handy for situations where immediate
-     notification is required for critical log events.  It's extremely unhandy for 
+     notification is required for critical log events.  It's extremely unhandy for
      low-priority log messages because it will quickly annoy the user(s) receiving them :)
 
   <p>A JNI component is used to perform the actual network communication.  It must be
      in your path when using this appender.  The source code for this component was
-     originally found  
+     originally found
      <a href="http://www.experts-exchange.com/Programming/Programming_Languages/Java/Q_20286388.html">here</a>
 
   <p>Here is a list of the available configuration options:
@@ -70,22 +70,33 @@ import org.apache.log4j.helpers.LogLog;
    A common problem with NET SENDs is that the recipient can receive duplicates messages.  Note that this is because
    the message is sent on every available transport layer.  So if you have TCP/IP and IPX enabled, each will
    be used to send the message to the user.  This is not a problem with the NetSendAppender.
-  
+
    @author <a HREF="mailto:jay-funnell@shaw.ca">Jay Funnell</a>
 
 */
 
 public class NetSendAppender extends AppenderSkeleton {
 
-  static
-  {
-    System.loadLibrary("NetSendAppender");
-  }
+  static boolean libraryLoaded = false;
 
   String computer = null;
   String toUser = null;
-  String fromUser = null; 
+  String fromUser = null;
   boolean activated = false;
+
+  /** Default constructor */
+  public NetSendAppender() {
+    if (!libraryLoaded) {
+      try {
+        System.loadLibrary("NetSendAppender");
+        libraryLoaded = true;
+      } catch (UnsatisfiedLinkError err) {
+        LogLog.warn("problem loading NetSendAppender.dll:", err);
+      } catch (SecurityException ex) {
+        LogLog.warn("problem loading NetSendAppender.dll:", ex);
+      }
+    }
+  }
 
   /** This appender requires a layout to format the text to the
       attached client(s). */
@@ -143,13 +154,13 @@ public class NetSendAppender extends AppenderSkeleton {
   }
 
   /** Shuts down the appender. */
-  public void close() {  
+  public void close() {
   }
 
   /** Handles a log event.  For this appender, that means writing the
       message to a JNI component that can handle the NET SEND.  */
   protected void append(LoggingEvent event) {
-    if (activated) {
+    if (libraryLoaded && activated) {
       sendMessage(computer, fromUser, toUser, this.layout.format(event));
       if(layout.ignoresThrowable()) {
         String[] s = event.getThrowableStrRep();
