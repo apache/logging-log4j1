@@ -7,6 +7,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.lbel.comparator.LevelComparator;
 import org.apache.log4j.lbel.comparator.LoggerComparator;
 import org.apache.log4j.lbel.comparator.MessageComparator;
+import org.apache.log4j.lbel.comparator.PropertyComparator;
 import org.apache.log4j.lbel.comparator.TimestampComparator;
 
 /**
@@ -185,7 +186,15 @@ class Parser {
       operator = getOperator();
       ts.next();
       return new Node(Node.COMPARATOR, new TimestampComparator(operator, getLong()));
+    case Token.PROPERTY:
+      String key = (String) token.getValue();
+      ts.next();
+      operator = getOperator();
+      ts.next();
+      literal = getLiteral();
+      return new Node(Node.COMPARATOR, new PropertyComparator(operator, key, literal));
     default: throw new IllegalStateException("Unexpected token " +token);
+    
     }
  	}
   
