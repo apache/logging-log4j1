@@ -41,6 +41,8 @@
 
  - Fixed Bugzilla 26658: modify build.xml chainsaw target with respect to crimson.jar [*]
 
+ - Fixed Bugzilla 28682: NullPointerException in SocketHubAppender#cleanup. [*]
+
   November 25, 2004
 
  - Release of version 1.3alpha-3

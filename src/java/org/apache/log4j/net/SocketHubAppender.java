@@ -155,8 +155,11 @@ public class SocketHubAppender extends AppenderSkeleton {
   public void cleanUp() {
     // stop the monitor thread
     getLogger().debug("stopping ServerSocket");
-    serverMonitor.stopMonitor();
-    serverMonitor = null;
+    
+    if(serverMonitor != null) {
+        serverMonitor.stopMonitor();
+        serverMonitor = null;
+    }
 
     // close all of the connections
     getLogger().debug("closing client connections");
