@@ -55,12 +55,11 @@ import javax.swing.table.AbstractTableModel;
 class ChainsawCyclicBufferTableModel extends AbstractTableModel
   implements EventContainer, PropertyChangeListener {
   private static final int DEFAULT_CAPACITY = 5000;
-  private static final String PANEL_CAPACITY = "CHAINSAW_CAPACITY";
   private boolean cyclic = true;
-  private int capacity = DEFAULT_CAPACITY;
+  private int cyclicBufferSize = DEFAULT_CAPACITY;
   List unfilteredList;
   List filteredList;
-  Set idSet = new HashSet(capacity);
+  Set idSet = new HashSet(cyclicBufferSize);
   private boolean currentSortAscending;
   private int currentSortColumn;
   private EventListenerList eventListenerList = new EventListenerList();
@@ -80,18 +79,12 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
   private PropertyChangeSupport propertySupport =
     new PropertyChangeSupport(this);
 
-  public ChainsawCyclicBufferTableModel() {
+  public ChainsawCyclicBufferTableModel(int cyclicBufferSize) {
     propertySupport.addPropertyChangeListener("cyclic", new ModelChanger());
+    this.cyclicBufferSize = cyclicBufferSize;
 
-    if (System.getProperty(PANEL_CAPACITY) != null) {
-      try {
-        capacity = Integer.parseInt(System.getProperty(PANEL_CAPACITY));
-      } catch (NumberFormatException nfe) {
-      }
-    }
-
-    unfilteredList = new CyclicBufferList(capacity);
-    filteredList = new CyclicBufferList(capacity);
+    unfilteredList = new CyclicBufferList(cyclicBufferSize);
+    filteredList = new CyclicBufferList(cyclicBufferSize);
   }
 
   /* (non-Javadoc)
@@ -480,16 +473,16 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
     if (cyclic) {
       if (!reachedCapacity) {
         //if we didn't loop and it's the 1st time, insert
-        if ((begin + count) < capacity) {
+        if ((begin + count) < cyclicBufferSize) {
           fireTableRowsInserted(begin, end);
         } else {
           //we did loop - insert and then update rows
-          fireTableRowsInserted(begin, capacity);
-          fireTableRowsUpdated(0, capacity);
+          fireTableRowsInserted(begin, cyclicBufferSize);
+          fireTableRowsUpdated(0, cyclicBufferSize);
           reachedCapacity = true;
         }
       } else {
-        fireTableRowsUpdated(0, capacity);
+        fireTableRowsUpdated(0, cyclicBufferSize);
       }
     } else {
       fireTableRowsInserted(begin, end);
@@ -521,7 +514,7 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
    * @return
    */
   public int getMaxSize() {
-    return capacity;
+    return cyclicBufferSize;
   }
 
   /* (non-Javadoc)
@@ -614,14 +607,14 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
                   List newFilteredList = null;
                   HashSet newIDSet = null;
 
-                  newIDSet = new HashSet(capacity);
+                  newIDSet = new HashSet(cyclicBufferSize);
 
                   if (isCyclic()) {
-                    newUnfilteredList = new CyclicBufferList(capacity);
-                    newFilteredList = new CyclicBufferList(capacity);
+                    newUnfilteredList = new CyclicBufferList(cyclicBufferSize);
+                    newFilteredList = new CyclicBufferList(cyclicBufferSize);
                   } else {
-                    newUnfilteredList = new ArrayList(capacity);
-                    newFilteredList = new ArrayList(capacity);
+                    newUnfilteredList = new ArrayList(cyclicBufferSize);
+                    newFilteredList = new ArrayList(cyclicBufferSize);
                   }
 
                   int increment = 0;

@@ -155,6 +155,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     DEFAULT_MAIN_RECEIVER_SPLIT_LOCATION;
   private final List identifierPanels = new ArrayList();
   private int dividerSize;
+  private int cyclicBufferSize;
 
   /**
    * Set to true, if and only if the GUI has completed it's full
@@ -258,6 +259,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     if (model.isShowSplash()) {
       showSplash(logUI);
     }
+    logUI.cyclicBufferSize = model.getCyclicBufferSize();
 
     logUI.handler = new ChainsawAppenderHandler();
     logUI.handler.addEventBatchListener(logUI.new NewTabEventBatchReceiver());
@@ -304,6 +306,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   public void activateViewer(ChainsawAppender appender) {
     ApplicationPreferenceModel model = new ApplicationPreferenceModel();
     SettingsManager.getInstance().configure(model);
+
+    cyclicBufferSize = model.getCyclicBufferSize();
     applyLookAndFeel(model.getLookAndFeelClassName());
 
     handler = new ChainsawAppenderHandler(appender);
@@ -1715,7 +1719,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   private void buildLogPanel(
     boolean customExpression, final String ident, final List eventBatchEntrys)
     throws IllegalArgumentException {
-    final LogPanel thisPanel = new LogPanel(getStatusBar(), ident);
+    final LogPanel thisPanel = new LogPanel(getStatusBar(), ident, cyclicBufferSize);
 
     /**
              * Now add the panel as a batch listener so it can handle it's own

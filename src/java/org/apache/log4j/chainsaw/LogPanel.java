@@ -27,6 +27,8 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -228,12 +230,11 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
    * @param statusBar shared status bar, provided by main application
    * @param identifier used to load and save settings
    */
-  public LogPanel(final ChainsawStatusBar statusBar, final String identifier) {
+  public LogPanel(final ChainsawStatusBar statusBar, final String identifier, int cyclicBufferSize) {
     this.identifier = identifier;
     this.statusBar = statusBar;
 
     setLayout(new BorderLayout());
-
     scroll = true;
 
     findPanel = new JPanel();
@@ -553,7 +554,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
     /*
      *End of preferenceModel listeners
      */
-    tableModel = new ChainsawCyclicBufferTableModel();
+    tableModel = new ChainsawCyclicBufferTableModel(cyclicBufferSize);
     table = new JSortTable(tableModel);
     //add a listener to update the 'refine focus'
     tableModel.addNewKeyListener(new NewKeyListener() {
@@ -916,6 +917,18 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
     detail.setEditable(false);
 
     detailPaneUpdater = new DetailPaneUpdater();
+
+    addFocusListener(new FocusListener() {
+
+        public void focusGained(FocusEvent e) {
+            detailPaneUpdater.updateDetailPane();
+        }
+
+        public void focusLost(FocusEvent e) {
+            
+        }
+    });
+
 
     addPropertyChangeListener(
       "detailPaneConversionPattern", detailPaneUpdater);
