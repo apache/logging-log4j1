@@ -30,6 +30,7 @@ import org.apache.log4j.util.LineNumberFilter;
 import org.apache.log4j.util.SunReflectFilter;
 import org.apache.log4j.util.Transformer;
 import org.apache.log4j.util.XMLLineAttributeFilter;
+import org.apache.log4j.util.XMLSequenceNumberFilter;
 import org.apache.log4j.util.XMLTimestampFilter;
 import org.apache.log4j.xml.XMLLayout;
 
@@ -60,7 +61,8 @@ public class XMLLayoutTestCase extends TestCase {
     Transformer.transform(
       TEMP, FILTERED,
       new Filter[] {
-        new LineNumberFilter(), new XMLTimestampFilter(),
+        new LineNumberFilter(), new XMLTimestampFilter(), 
+        new XMLSequenceNumberFilter(),
         new SunReflectFilter()
       });
     assertTrue(Compare.compare(FILTERED, "witness/xmlLayout.1"));
@@ -75,6 +77,7 @@ public class XMLLayoutTestCase extends TestCase {
       TEMP, FILTERED,
       new Filter[] {
         new LineNumberFilter(), new XMLTimestampFilter(),
+        new XMLSequenceNumberFilter(),
         new XMLLineAttributeFilter(), new SunReflectFilter()
       });
     assertTrue(Compare.compare(FILTERED, "witness/xmlLayout.2"));
@@ -91,6 +94,7 @@ public class XMLLayoutTestCase extends TestCase {
       TEMP, FILTERED,
       new Filter[] {
         new LineNumberFilter(), new XMLTimestampFilter(),
+        new XMLSequenceNumberFilter(),
         new XMLLineAttributeFilter(), new SunReflectFilter()
       });
     assertTrue(Compare.compare(FILTERED, "witness/xmlLayout.3"));
@@ -106,7 +110,8 @@ public class XMLLayoutTestCase extends TestCase {
     logger.debug("hi", e);
     Transformer.transform(
       TEMP, FILTERED,
-      new Filter[] { new LineNumberFilter(), new XMLTimestampFilter() });
+      new Filter[] { new LineNumberFilter(), new XMLTimestampFilter(),  
+          new XMLSequenceNumberFilter() });
     assertTrue(Compare.compare(FILTERED, "witness/xmlLayout.null"));
   }
 
@@ -126,7 +131,8 @@ public class XMLLayoutTestCase extends TestCase {
     logger.debug("Hello");
     Transformer.transform(
       TEMP, FILTERED,
-      new Filter[] { new LineNumberFilter(), new XMLTimestampFilter() });
+      new Filter[] { new LineNumberFilter(), new XMLTimestampFilter(), 
+          new XMLSequenceNumberFilter()});
     assertTrue(Compare.compare(FILTERED, "witness/xmlLayout.mdc.1"));
   }
 
@@ -141,7 +147,8 @@ public class XMLLayoutTestCase extends TestCase {
     logger.debug("Hello");
     Transformer.transform(
       TEMP, FILTERED,
-      new Filter[] { new LineNumberFilter(), new XMLTimestampFilter() });
+      new Filter[] { new LineNumberFilter(), new XMLTimestampFilter(),
+          new XMLSequenceNumberFilter() });
     assertTrue(Compare.compare(FILTERED, "witness/xmlLayout.mdc.2"));
   }
 

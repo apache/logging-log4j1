@@ -1,0 +1,37 @@
+/*
+ * Copyright 1999,2004 The Apache Software Foundation.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.apache.log4j.util;
+
+import org.apache.oro.text.perl.Perl5Util;
+
+
+public class XMLSequenceNumberFilter implements Filter {
+  Perl5Util util = new Perl5Util();
+
+  /**
+   * If the input string contains the pattern 'sequenceNumber="123"', then
+   * replace the number 123 by XXX and return the result.
+   */
+  public String filter(String in) {
+    if (util.match("/sequenceNumber=\"\\d{1,13}\"/", in)) {
+      return util.substitute(
+        "s/sequenceNumber=\"\\d{1,13}\"/sequenceNumber=\"XXX\"/", in);
+    } else {
+      return in;
+    }
+  }
+}

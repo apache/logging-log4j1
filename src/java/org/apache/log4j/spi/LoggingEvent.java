@@ -60,6 +60,17 @@ public class LoggingEvent
   static final Class[] TO_LEVEL_PARAMS = new Class[] { int.class };
   static final Hashtable methodCache = new Hashtable( 3 );    // use a tiny table
 
+  
+  /**
+   * LoggingEvent are stamped with a {@link #sequenceNumber}. The 
+   * <code>sequenceCount</code> static variable keeps track of the current count.
+   * 
+   * The count starts at 1 (one).
+   * 
+   * @since 1.3
+   */
+  static long sequenceCount = 1;
+
   /**
    * Fully qualified name of the calling category class.
    */
@@ -163,8 +174,17 @@ public class LoggingEvent
    * The number of milliseconds elapsed from 1/1/1970 until logging event was
    * created.
    */
-  public final long timeStamp;
+  public long timeStamp;
 
+  /**
+   * 
+   * Each logging event bears a sequence number. 
+   * 
+   * @since 1.3
+   */
+  long sequenceNumber;
+  
+  
   /**
    * Location information for the caller.
    */
@@ -185,8 +205,8 @@ public class LoggingEvent
    * @param message The message of this event.
    * @param throwable The throwable of this event.
    */
-  public LoggingEvent( String fqnOfCategoryClass, Category logger, Priority priority, Object message,
-    Throwable throwable ) {
+  public LoggingEvent( String fqnOfCategoryClass, Category logger, 
+                       Priority priority, Object message, Throwable throwable ) {
     this.fqnOfCategoryClass = fqnOfCategoryClass;
     this.logger = logger;
     this.categoryName = logger.getName(  );
@@ -198,6 +218,7 @@ public class LoggingEvent
     }
 
     timeStamp = System.currentTimeMillis(  );
+    sequenceNumber = sequenceCount++;
   }
 
 
@@ -217,8 +238,8 @@ public class LoggingEvent
    * @param message The message of this event.
    * @param throwable The throwable of this event.
    */
-  public LoggingEvent( String fqnOfCategoryClass, Category logger, long timeStamp, Priority priority, Object message,
-    Throwable throwable ) {
+  public LoggingEvent( String fqnOfCategoryClass, Category logger, long timeStamp, 
+                       Priority priority, Object message, Throwable throwable ) {
     this.fqnOfCategoryClass = fqnOfCategoryClass;
     this.logger = logger;
     this.categoryName = logger.getName(  );
@@ -554,6 +575,22 @@ public class LoggingEvent
   }
 
 
+  /**
+   * 
+   * @since 1.3
+   */
+  public long getSequenceNumber() {
+    return sequenceNumber;
+  }
+
+  /**
+   * 
+   * @since 1.3
+   */
+  public void setSequenceNumber(long sequenceNumber) {
+    this.sequenceNumber = sequenceNumber;
+  }
+  
   public String getThreadName(  ) {
     if ( threadName == null ) {
       threadName = ( Thread.currentThread(  ) ).getName(  );
@@ -695,5 +732,26 @@ public class LoggingEvent
       // 1.1.x. We have to resort to this hack instead.
       oos.writeObject( clazz.getName(  ) );
     }
+  }
+  
+  
+  /**
+   * Getter for the event's time stamp. The time stamp is calculated starting
+   * from 1970-01-01 GMT.
+   *
+   * @since 1.3
+   */
+  public long getTimeStamp() {
+    return timeStamp;
+  }
+  
+  /**
+   * Setter for the even'ts time stamp.
+   * See also {@see #getTimeStamp}.
+   * @since 1.3
+   */
+ 
+  public void setTimeStamp(long timeStamp) {
+    this.timeStamp = timeStamp;
   }
 }
