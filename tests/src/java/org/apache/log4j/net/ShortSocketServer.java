@@ -15,6 +15,7 @@ import java.io.IOException;
 import org.apache.log4j.Logger;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.MDC;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.net.SocketNode;
 import org.apache.log4j.net.SocketServer;
@@ -50,6 +51,8 @@ public class ShortSocketServer  {
 
       LogLog.debug("Listening on port " + SocketServerTestCase.PORT);
       ServerSocket serverSocket = new ServerSocket(SocketServerTestCase.PORT);
+
+      MDC.put("hostID", "shortSocketServer");
 
       for(int i = 1; i <= totalTests; i++) {
 	PropertyConfigurator.configure(prefix+i+".properties");
