@@ -379,10 +379,21 @@
   <!-- Runs Chainsaw                                                     -->
   <!-- ================================================================= -->
 
-  <target name="chainsaw" depends="build">
+  <target name="check-for-oro" >
+    <condition property="external.libraries.oro.present">
+       <and>
+          <isset property="regexp.oro.jar" />
+          <available file="${regexp.oro.jar}"/>
+       </and>
+    </condition>
+    
+    <fail unless="external.libraries.oro.present" message="Chainsaw v2 needs Jakarta ORO, and it appears your are missing the Jakarta ORO package.  Please check the build.properties file."/>
+  </target>
+  
+  <target name="chainsaw" depends="build, jar, check-for-oro" description="Builds and runs Chainsaw v2">
     <!-- Need to fork to avoid problems -->
-    <java classname="org.apache.log4j.chainsaw.Start" fork="yes"
-          classpath="${javac.dest};${ant.home}/lib/crimson.jar">
+    <java classname="org.apache.log4j.chainsaw.LogUI" fork="yes"
+          classpath="${jar.dest}/${log4j.jar};${jar.dest}/${log4j-chainsaw.jar};${ant.home}/lib/crimson.jar;${regexp.oro.jar}">
     </java>
   </target>
 
@@ -444,8 +455,27 @@
       </fileset>
     </delete>
 
+    <copy todir="${javac.dest}">
+      <fileset dir="src/java" includes="**/chainsaw/**/*.properties"/>
+      <fileset dir="src/java" includes="**/chainsaw/**/*.xml"/>   
+      <fileset dir="src/java" includes="**/chainsaw/**/*.gif"/>
+      <fileset dir="src/java" includes="**/chainsaw/**/*.html"/>
+      <fileset dir="src/java" includes="**/chainsaw/*.jpg"/>   
+      <fileset dir="src/java" includes="**/chainsaw/**/*.jpg"/>   
+      <fileset dir="src/java" includes="**/chainsaw/**/LICENCE"/>   
+    </copy>
+
     <jar jarfile="${jar.dest}/${log4j-chainsaw.jar}" basedir="${javac.dest}"
-         includes="${stem}/chainsaw/*.class"
+         includes="${stem}/chainsaw/*.class,
+         		${stem}/chainsaw/prefs/*.class, 
+         		${stem}/chainsaw/icons/*.class, 
+         		${stem}/chainsaw/icons/*.gif, 
+         		${stem}/chainsaw/*.jpg, 
+         		${stem}/chainsaw/**/*.xml, 
+         		${stem}/chainsaw/**/*.html, 
+         		${stem}/chainsaw/icons/*.jpg, 
+         		${stem}/chainsaw/prefs/*.properties,
+         		${stem}/chainsaw/icons/LICENCE"
          excludes="**/UnitTest**">
 
       <manifest>
@@ -453,9 +483,9 @@
         <section name="org/apache/log4j/">
           <attribute name="Implementation-Title" value="log4j"/>
           <attribute name="Implementation-Version" value="${version}"/>
-          <attribute name="Implementation-Vendor" value="APache Software Foundation"/>
+          <attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
         </section>
-        <attribute name="Main-Class" value="org.apache.log4j.chainsaw.Start"/>
+        <attribute name="Main-Class" value="org.apache.log4j.chainsaw.LogUI"/>
         <attribute name="Class-Path" value="${log4j.jar}"/>
       </manifest>
     </jar>
