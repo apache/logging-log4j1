@@ -53,6 +53,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Priority;
 import org.apache.log4j.UtilLoggingLevel;
+import org.apache.log4j.chainsaw.help.Tutorial;
 import org.apache.log4j.chainsaw.icons.ChainsawIcons;
 import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
 import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
@@ -69,6 +70,7 @@ import org.apache.log4j.plugins.Receiver;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Event;
 import java.awt.Point;
@@ -105,12 +107,15 @@ import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.JWindow;
 import javax.swing.KeyStroke;
@@ -119,6 +124,8 @@ import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 
 
 /**
@@ -173,6 +180,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   private ChainsawAbout aboutBox;
   private final SettingsManager sm = SettingsManager.getInstance();
   private String lookAndFeelClassName;
+  private final JFrame tutorialFrame = new JFrame("Chainsaw Tutorial");
 
   /**
    * Set to true, if and only if the GUI has completed
@@ -202,6 +210,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    * when the user has requested Chainsaw to exit.
    */
   private EventListenerList shutdownListenerList = new EventListenerList();
+  private WelcomePanel welcomePanel;
 
   /**
    * Constructor which builds up all the visual elements of the frame
@@ -260,14 +269,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    * @param args
    */
   public static void main(String[] args) {
-    //    TODO remove this when ready
-    JOptionPane.showMessageDialog(
-      null,
-      "Chainsaw v2 is currently going through some refactoring work at present.\n\n"
-      + "Some features, most notably filtering and colouring, may be inoperable at this time.\n\n"
-      + "The Log4J Dev team apologises for this inconvenience, but be assured this functionality will be back very shortly.",
-      "Apologise", JOptionPane.WARNING_MESSAGE);
-
     showSplash();
 
     LogUI logUI = new LogUI();
@@ -347,6 +348,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    * layout, table columns, and sets itself viewable.
    */
   public void activateViewer() {
+    welcomePanel = new WelcomePanel(this);
+
     final SocketNodeEventListener socketListener =
       new SocketNodeEventListener() {
         public void socketOpened(String remoteInfo) {
@@ -586,6 +589,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     getContentPane().add(toolbar, BorderLayout.NORTH);
     getContentPane().add(panePanel, BorderLayout.CENTER);
     getContentPane().add(statusBar, BorderLayout.SOUTH);
+    receiversPanel.setVisible(false);
+    getContentPane().add(receiversPanel, BorderLayout.EAST);
 
     addWindowListener(
       new WindowAdapter() {
@@ -621,6 +626,37 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     if (noReceiversDefined) {
       showNoReceiversWarningPanel();
     }
+
+    Container container = tutorialFrame.getContentPane();
+    final JEditorPane tutorialArea = new JEditorPane();
+    tutorialArea.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
+    tutorialArea.setEditable(false);
+
+    try {
+      tutorialArea.setPage(getWelcomePanel().getTutorialURL());
+      container.add(new JScrollPane(tutorialArea));
+    } catch (Exception e) {
+      LogLog.error("Error occurred loading the Tutorial", e);
+    }
+
+    tutorialFrame.setSize(new Dimension(640, 480));
+
+    tutorialArea.addHyperlinkListener(
+      new HyperlinkListener() {
+        public void hyperlinkUpdate(HyperlinkEvent e) {
+          if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+            if (e.getDescription().equals("StartTutorial")) {
+              new Thread(new Tutorial()).start();
+            } else {
+              try {
+                tutorialArea.setPage(e.getURL());
+              } catch (IOException e1) {
+                LogLog.error("Failed to change the URL for the Tutorial", e1);
+              }
+            }
+          }
+        }
+      });
   }
 
   /**
@@ -768,8 +804,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
   void addWelcomePanel() {
     getTabbedPane().addANewTab(
-      "Welcome", WelcomePanel.getInstance(), new ImageIcon(
-        ChainsawIcons.ABOUT), "Welcome/Help");
+      "Welcome", welcomePanel, new ImageIcon(ChainsawIcons.ABOUT),
+      "Welcome/Help");
   }
 
   void removeWelcomePanel() {
@@ -783,14 +819,9 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     SwingUtilities.invokeLater(
       new Runnable() {
         public void run() {
-          if (getContentPane().isAncestorOf(receiversPanel)) {
-            getContentPane().remove(receiversPanel);
-          } else {
-            getContentPane().add(receiversPanel, BorderLayout.EAST);
-          }
-
-          getContentPane().invalidate();
-          getContentPane().validate();
+          receiversPanel.setVisible(!receiversPanel.isVisible());
+          receiversPanel.invalidate();
+          receiversPanel.validate();
 
           getToolBarAndMenus().stateChange();
         }
@@ -798,7 +829,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   }
 
   boolean isReceiverPanelVisible() {
-    return getContentPane().isAncestorOf(receiversPanel);
+    return receiversPanel.isVisible();
   }
 
   public ChainsawStatusBar getStatusBar() {
@@ -1075,12 +1106,19 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     addWelcomePanel();
 
     //    TODO ensure the Welcome Panel is the selected tab
-    WelcomePanel.getInstance().setURL(url);
+    getWelcomePanel().setURL(url);
   }
 
   /**
-   * @return
-   */
+  * @return
+  */
+  private WelcomePanel getWelcomePanel() {
+    return welcomePanel;
+  }
+
+  /**
+     * @return
+     */
   public boolean isLogTreePanelVisible() {
     if (getCurrentLogPanel() == null) {
       return false;
@@ -1140,6 +1178,24 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
   public ChainsawTabbedPane getTabbedPane() {
     return tabbedPane;
+  }
+
+  /**
+   *
+   */
+  public void setupTutorial() {
+    Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+    setLocation(0, getLocation().y);
+
+    double chainsawwidth = 0.7;
+    double tutorialwidth = 1 - chainsawwidth;
+    setSize((int) (screen.width * chainsawwidth), getSize().height);
+
+    Dimension size = getSize();
+    Point loc = getLocation();
+    tutorialFrame.setSize((int) (screen.width * tutorialwidth), size.height);
+    tutorialFrame.setLocation(loc.x + size.width, loc.y);
+    tutorialFrame.setVisible(true);
   }
 
   /**
@@ -1227,7 +1283,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
           new Runnable() {
             public void run() {
               getTabbedPane().addANewTab(
-                ident, thisPanel, new ImageIcon(ChainsawIcons.TOOL_TIP));
+                ident, thisPanel, new ImageIcon(ChainsawIcons.ANIM_RADIO_TOWER));
             }
           });
 
@@ -1254,7 +1310,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     //the tabIconHandler is associated with a new tab, and a new tab always
     //has new events
     private boolean hasNewEvents = true;
-    ImageIcon NEW_EVENTS = new ImageIcon(ChainsawIcons.TOOL_TIP);
+    ImageIcon NEW_EVENTS = new ImageIcon(ChainsawIcons.ANIM_RADIO_TOWER);
     ImageIcon HAS_EVENTS = new ImageIcon(ChainsawIcons.INFO);
 
     public TabIconHandler(final String ident) {
