@@ -47,9 +47,11 @@ public class FullLocationPatternConverter extends PatternConverter {
     return buf;
   }
   
-  public String getName()
-  {
+  public String getName() {
       return "Full Location";
   }
   
+  public String getStyleClass(LoggingEvent e) {
+    return "fullLocation";
+  }
 }

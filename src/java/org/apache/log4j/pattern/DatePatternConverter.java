@@ -77,9 +77,11 @@ public class DatePatternConverter extends PatternConverter {
     return buf;
   }
 
-  public String getName()
-  {
+  public String getName() {
       return "Date";
   }
   
+  public String getStyleClass(LoggingEvent e) {
+    return "date";
+  }
 }

@@ -36,9 +36,12 @@ public class LoggerPatternConverter extends NamedPatternConverter {
 	  return event.getLoggerName();
   } 
   
-  public String getName()
-  {
+  public String getName() {
       return "Logger";
+  }
+  
+  public String getStyleClass(LoggingEvent e) {
+    return "logger";
   }
   
 }

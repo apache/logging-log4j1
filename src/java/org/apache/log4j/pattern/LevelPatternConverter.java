@@ -41,9 +41,12 @@ public class LevelPatternConverter extends PatternConverter {
     return buf;
   }
   
-  public String getName()
-  {
+  public String getName() {
       return "Level";
+  }
+  
+  public String getStyleClass(LoggingEvent e) {
+    return e.getLevel().toString();
   }
   
 }

@@ -78,4 +78,9 @@ public class PropertiesPatternConverter extends PatternConverter {
     }
     return name;
   }
+  
+  public String getStyleClass(LoggingEvent e) {
+    return "property";
+  }
+  
 }

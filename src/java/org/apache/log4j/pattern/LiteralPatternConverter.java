@@ -36,9 +36,11 @@ public class LiteralPatternConverter extends PatternConverter {
     return buf;
   }
   
-  public String getName()
-  {
+  public String getName() {
       return "Literal";
+  }
+  public String getStyleClass(LoggingEvent e) {
+    return "literal";
   }
   
 }

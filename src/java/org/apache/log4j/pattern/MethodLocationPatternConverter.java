@@ -47,9 +47,12 @@ public class MethodLocationPatternConverter extends PatternConverter {
     return buf;
   }
   
-  public String getName()
-  {
+  public String getName() {
       return "Method";
+  }
+  
+  public String getStyleClass(LoggingEvent e) {
+    return "method";
   }
   
 }
