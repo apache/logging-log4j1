@@ -1,13 +1,12 @@
-# This SQL script creates the required tables by
-# org.apache.log4j.db.DBAppender and org.apache.log4j.db.DBReceiver.
-#
-#
-# It is intended for HSQLDB. 
-#
+// This SQL script creates the required tables by
+// org.apache.log4j.db.DBAppender and org.apache.log4j.db.DBReceiver.
+//
+// It is intended for HSQLDB. 
+//
 
-DROP TABLE logging_event_exception;
-DROP TABLE logging_event_property;
-DROP TABLE logging_event;
+DROP TABLE logging_event_exception IF EXISTS;
+DROP TABLE logging_event_property IF EXISTS;
+DROP TABLE logging_event IF EXISTS;
 
 
 CREATE TABLE logging_event 
@@ -20,6 +19,10 @@ CREATE TABLE logging_event
     ndc               LONGVARCHAR,
     thread_name       VARCHAR,
     reference_flag    SMALLINT,
+    caller_filename   VARCHAR, 
+    caller_class      VARCHAR, 
+    caller_method     VARCHAR, 
+    caller_line       CHAR(4), 
     event_id          INT NOT NULL IDENTITY
   );
 
