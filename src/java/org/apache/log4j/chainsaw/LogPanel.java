@@ -545,6 +545,9 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
           boolean value = ((Boolean) evt.getNewValue()).booleanValue();
           menuItemScrollBottom.setSelected(value);
           scroll = value;
+          if (scroll) {
+          	table.scrollToBottom(table.columnAtPoint(table.getVisibleRect().getLocation()));
+          }
         }
       });
 
