@@ -135,6 +135,7 @@ public final class CachedDateFormat
           cache.insert(millisecondStart, "0");
         }
       }
+      sbuf.append(cache);
     } else {
       previousTime = (now / 1000L) * 1000L;
       //
@@ -143,25 +144,14 @@ public final class CachedDateFormat
       if (now - previousTime < 0) {
         previousTime -= 1000;
       }
-      int prevLength = cache.length();
       cache.setLength(0);
-      formatter.format(date, cache, fieldPosition);
+      formatter.format(new Date(previousTime), cache, fieldPosition);
+      millisecondStart = findMillisecondStart(previousTime, cache.toString(), formatter);
       //
-      //   if the length changed then
-      //      recalculate the millisecond position
-      if (cache.length() != prevLength) {
-        //
-        //    format the previous integral second
-        StringBuffer tempBuffer = new StringBuffer(cache.length());
-        formatter.format(new Date(previousTime), tempBuffer, fieldPosition);
-        //
-        //    detect the start of the millisecond field
-        millisecondStart = findMillisecondStart(previousTime,
-                                                tempBuffer.toString(),
-                                                formatter);
-      }
+      //  calling ourself should be safe and faster
+      //     but why risk it
+      formatter.format(date, sbuf, fieldPosition);
     }
-    sbuf.append(cache);
     return sbuf;
   }
 
@@ -178,14 +168,9 @@ public final class CachedDateFormat
     int prevLength = cache.length();
     cache.setLength(0);
     cache.append(formatter.format(new Date(previousTime)));
-    //
-    //   if the length changed then
-    //      recalculate the millisecond position
-    if (cache.length() != prevLength) {
-      millisecondStart = findMillisecondStart(previousTime,
+    millisecondStart = findMillisecondStart(previousTime,
                                               cache.toString(),
                                               formatter);
-    }
   }
 
   /**

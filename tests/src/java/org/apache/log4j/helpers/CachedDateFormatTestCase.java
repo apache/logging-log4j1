@@ -236,4 +236,32 @@ public final class CachedDateFormatTestCase
   }
   
 
+  /**
+   * Test when millisecond position moves but length remains constant.
+   */
+  public void test10() {
+    DateFormat baseFormat = new SimpleDateFormat("MMMM SSS EEEEEE", Locale.US);
+    DateFormat cachedFormat = new CachedDateFormat(baseFormat);
+    TimeZone cet = TimeZone.getTimeZone("GMT+1");
+    cachedFormat.setTimeZone(cet);
+    
+    Calendar c = Calendar.getInstance();
+    c.set(2004, Calendar.OCTOBER, 5, 20, 0);
+    c.set(Calendar.SECOND, 37);
+    c.set(Calendar.MILLISECOND, 23);
+    c.setTimeZone(cet);
+
+    String s = cachedFormat.format(c.getTime());
+    assertEquals("October 023 Tuesday", s);
+
+    c.set(2004, Calendar.NOVEMBER, 1, 0, 0);
+    c.set(Calendar.MILLISECOND, 23);
+    s = cachedFormat.format(c.getTime());
+    assertEquals("November 023 Monday", s);
+
+
+    c.set(Calendar.MILLISECOND, 984);
+    s = cachedFormat.format(c.getTime());
+    assertEquals("November 984 Monday", s);
+  }
 }

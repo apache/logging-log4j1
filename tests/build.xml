@@ -192,7 +192,8 @@
                                      ReaderWriterLock,
                                      NDC,
                                      Plugins,
-  									 MessageFormatter"/>
+  									 MessageFormatter,
+                                     DateFormat"/>
 
 
 
@@ -619,6 +620,14 @@
 	  <classpath refid="tests.classpath"/>
 	  <formatter type="plain" usefile="false"/>
 	  <test name="org.apache.log4j.helpers.MessageFormatterTest" />
+    </junit>
+  </target>
+
+  <target name="DateFormat" depends="check, build, cleanOutputDir">
+	<junit printsummary="yes" fork="yes" haltonfailure="yes">
+	  <classpath refid="tests.classpath"/>
+	  <formatter type="plain" usefile="false"/>
+	  <test name="org.apache.log4j.helpers.CachedDateFormatTestCase" />
     </junit>
   </target>
 	    
