@@ -18,7 +18,6 @@ package org.apache.log4j.rolling;
 
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.Logger;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.ErrorCode;
 import org.apache.log4j.spi.LoggingEvent;
 
@@ -101,7 +100,7 @@ public class RollingFileAppender extends FileAppender {
     try { 
       rollingPolicy.rollover();
     } catch(RolloverFailure rf) {
-      LogLog.warn("RolloverFailure occurred. Deferring rollover.");
+      getLogger().warn("RolloverFailure occurred. Deferring rollover.");
       // we failed to rollover, let us not truncate and risk data loss
       append = true;
     }

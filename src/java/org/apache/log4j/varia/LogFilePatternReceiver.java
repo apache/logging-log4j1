@@ -35,7 +35,6 @@ import java.util.TreeMap;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.Constants;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.plugins.Receiver;
 import org.apache.log4j.rule.ExpressionRule;
 import org.apache.log4j.rule.Rule;
@@ -314,7 +313,7 @@ public class LogFilePatternReceiver extends Receiver {
         }
       }
     } catch (MalformedPatternException mpe) {
-      LogLog.warn("Bad pattern: " + EXCEPTION_PATTERN);
+      getLogger().warn("Bad pattern: " + EXCEPTION_PATTERN);
     }
     return -1;
   }
@@ -419,7 +418,7 @@ public class LogFilePatternReceiver extends Receiver {
 
     Perl5Matcher eventMatcher = new Perl5Matcher(); 
     String line = null;
-    LogLog.debug("tailing file: " + tailing);
+    getLogger().debug("tailing file: " + tailing);
     do {
       while ((line = bufferedReader.readLine()) != null) {
         if (eventMatcher.matches(line, regexpPattern)) {
@@ -442,7 +441,7 @@ public class LogFilePatternReceiver extends Receiver {
         if (passesExpression(event)) {
           doPost(event);
         }
-        LogLog.debug("no further lines to process in " + fileURL);
+        getLogger().debug("no further lines to process in " + fileURL);
       }
       try {
         synchronized (this) {
@@ -451,7 +450,7 @@ public class LogFilePatternReceiver extends Receiver {
       } catch (InterruptedException ie) {
       }
     } while (tailing);
-    LogLog.debug("processing " + fileURL + " complete");
+    getLogger().debug("processing " + fileURL + " complete");
     shutdown();
   }
 
@@ -513,7 +512,7 @@ public class LogFilePatternReceiver extends Receiver {
         expressionRule = ExpressionRule.getRule(filterExpression);
       }
     } catch (Exception e) {
-      LogLog.warn("Invalid filter expression: " + filterExpression, e);
+      getLogger().warn("Invalid filter expression: " + filterExpression, e);
     }
 
     Map keywordMap = new TreeMap();
@@ -580,7 +579,7 @@ public class LogFilePatternReceiver extends Receiver {
       }
     }
     regexp = currentPattern;
-    LogLog.debug("regexp is " + regexp);
+    getLogger().debug("regexp is " + regexp);
   }
 
   /**
@@ -747,14 +746,14 @@ public class LogFilePatternReceiver extends Receiver {
         try {
           reader = new InputStreamReader(new URL(getFileURL()).openStream());
         } catch (IOException ioe) {
-          LogLog.debug("exception", ioe);
+          getLogger().debug("exception", ioe);
           return;
         }
         try {
           process(reader);
         } catch (IOException ioe) {
           //io exception - probably shut down
-          LogLog.debug("stream closed");
+          getLogger().debug("stream closed");
         }
       }
     }).start();
