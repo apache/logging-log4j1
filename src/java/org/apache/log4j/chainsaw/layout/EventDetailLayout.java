@@ -221,7 +221,7 @@ public class EventDetailLayout extends Layout {
     String[] throwableStringRep = event.getThrowableStrRep();
     LocationInfo li = null;
     if (event.locationInformationExists()) {
-        formatLocationInfo(event);
+        li = formatLocationInfo(event);
     }
     Hashtable properties = formatProperties(event);
     LoggingEvent copy =
