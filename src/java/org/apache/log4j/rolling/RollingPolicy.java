@@ -37,7 +37,7 @@ public interface RollingPolicy extends OptionHandler {
    * Rollover log files according to implementation policy.
    * .
    * */
-  public void rollover();
+  public void rollover() throws RolloverFailure;
 
   /**
    * Get the new name of the active log file.

@@ -17,7 +17,6 @@
 package org.apache.log4j.rolling;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.rolling.helpers.Compress;
 import org.apache.log4j.rolling.helpers.FileNamePattern;
 import org.apache.log4j.rolling.helpers.Util;
@@ -47,7 +46,7 @@ public class SlidingWindowRollingPolicy extends RollingPolicySkeleton {
     activeFileName = null;
   }
 
-  public void rollover() {
+  public void rollover() throws RolloverFailure {
     // Inside this method it is guaranteed that the hereto active log fil is closed.
     // If maxIndex <= 0, then there is no file renaming to be done.
     if (maxIndex >= 0) {

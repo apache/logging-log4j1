@@ -24,15 +24,6 @@ import org.apache.log4j.rolling.helpers.Compress;
 abstract public class RollingPolicySkeleton implements RollingPolicy {
   int compressionMode = Compress.NONE;
   
-  /* (non-Javadoc)
-   * @see org.apache.log4j.rolling.RollingPolicy#rollover()
-   */
-  abstract public void rollover();
-  
-  /* (non-Javadoc)
-   * @see org.apache.log4j.rolling.RollingPolicy#getActiveLogFileName()
-   */
-  abstract public String getActiveLogFileName();
   
   /* (non-Javadoc)
    * @see org.apache.log4j.spi.OptionHandler#activateOptions()
