@@ -1,12 +1,12 @@
 /*
  * Copyright 1999,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,23 +16,28 @@
 
 package org.apache.log4j.chainsaw;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
-
-import javax.swing.event.EventListenerList;
-
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.net.SocketReceiver;
 import org.apache.log4j.plugins.PluginRegistry;
+import org.apache.log4j.rule.ExpressionRule;
+import org.apache.log4j.rule.Rule;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.LoggingEventFieldResolver;
+
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
+import javax.swing.event.EventListenerList;
 
 
 /**
@@ -56,6 +61,7 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
     LoggingEventFieldResolver.getInstance();
   private PropertyChangeSupport propertySupport =
     new PropertyChangeSupport(this);
+  private Map customExpressionRules = new HashMap();
 
   public ChainsawAppenderHandler(ChainsawAppender appender) {
     appender.setAppender(this);
@@ -67,14 +73,20 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
   }
 
   public void setIdentifierExpression(String identifierExpression) {
-    synchronized(mutex) {
-        this.identifierExpression = identifierExpression;
-        mutex.notify();
+    synchronized (mutex) {
+      this.identifierExpression = identifierExpression;
+      mutex.notify();
     }
   }
 
   public String getIdentifierExpression() {
     return identifierExpression;
+  }
+
+  public void addCustomEventBatchListener(
+    String identifier, EventBatchListener l) throws IllegalArgumentException {
+    customExpressionRules.put(identifier, ExpressionRule.getRule(identifier));
+    listenerList.add(EventBatchListener.class, l);
   }
 
   public void addEventBatchListener(EventBatchListener l) {
@@ -260,7 +272,7 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
 
           synchronized (mutex) {
             try {
-              while (queue.size() == 0 || identifierExpression == null) {
+              while ((queue.size() == 0) || (identifierExpression == null)) {
                 setDataRate(0);
                 mutex.wait();
               }
@@ -287,6 +299,21 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
               while (iterx.hasNext()) {
                 String thisProp = iterx.next().toString();
                 properties.add(thisProp + " " + e.getProperty(thisProp));
+              }
+
+              for (
+                Iterator itery = customExpressionRules.entrySet().iterator();
+                  itery.hasNext();) {
+                Map.Entry entry = (Map.Entry) itery.next();
+                Rule rule = (Rule) entry.getValue();
+
+                if (rule.evaluate(e)) {
+                  eventBatch.addEvent(
+                    (String) entry.getKey(),
+                    (e.getProperty(ChainsawConstants.EVENT_TYPE_KEY) == null)
+                    ? ChainsawConstants.LOG4J_EVENT_TYPE
+                    : e.getProperty(ChainsawConstants.EVENT_TYPE_KEY), e);
+                }
               }
 
               eventBatch.addEvent(

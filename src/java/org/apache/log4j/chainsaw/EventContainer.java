@@ -1,12 +1,12 @@
 /*
  * Copyright 1999,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,11 +16,12 @@
 
 package org.apache.log4j.chainsaw;
 
-import java.beans.PropertyChangeListener;
-import java.util.List;
-
 import org.apache.log4j.rule.Rule;
 import org.apache.log4j.spi.LoggingEvent;
+
+import java.beans.PropertyChangeListener;
+
+import java.util.List;
 
 
 /**
@@ -40,19 +41,21 @@ public interface EventContainer extends SortTableModel, LoggerNameModel {
   void addEventCountListener(EventCountListener listener);
 
   void addPropertyChangeListener(PropertyChangeListener l);
-  void addPropertyChangeListener(String propertyName, PropertyChangeListener l);
 
-	/**
-	 * Adds a NewKeyListener to be notified when unique Key (MDC/Property keys)
-	 * arrive into this EventContainer
-	 * @param l
-	 */
+  void addPropertyChangeListener(
+    String propertyName, PropertyChangeListener l);
+
+  /**
+   * Adds a NewKeyListener to be notified when unique Key (MDC/Property keys)
+   * arrive into this EventContainer
+   * @param l
+   */
   void addNewKeyListener(NewKeyListener l);
 
-	/**
-	 * Removes a listener from being notified of NewKey events.
-	 * @param l
-	 */
+  /**
+   * Removes a listener from being notified of NewKey events.
+   * @param l
+   */
   void removeNewKeyListener(NewKeyListener l);
 
   /**
@@ -61,12 +64,14 @@ public interface EventContainer extends SortTableModel, LoggerNameModel {
    */
   void clearModel();
 
+  List getMatchingEvents(Rule rule);
+
   /**
    * Returns true if this model is Cyclic (bounded) or not.
    * @return true/false
    */
-  public boolean isCyclic();
-  
+  boolean isCyclic();
+
   /**
    * Configures this model to use Cyclic or non-cyclic models.
    * This method should fire a property Change event if
@@ -75,21 +80,21 @@ public interface EventContainer extends SortTableModel, LoggerNameModel {
    * This method does nothing if there is no change in proprty.
    * @param cyclic
    */
-  public void setCyclic(boolean cyclic);
-  
+  void setCyclic(boolean cyclic);
+
   /**
-   * If this container is in Cyclic mode, returns the Size of the cyclic buffer, 
+   * If this container is in Cyclic mode, returns the Size of the cyclic buffer,
    * otherwise this method throws an IllegalStateException, when in unlimited
    * mode, this method has no meaning.
-   * 
+   *
    * @throws IllegalStateException if this containers isCyclic() method returns false.
    * @return int size of the cyclic buffer
    */
-  public int getMaxSize();
+  int getMaxSize();
 
   /**
    * Locates a row number, starting from startRow, matching the rule provided
-   * 
+   *
    * @param rule
    * @param startRow
    * @param searchForward
@@ -100,7 +105,7 @@ public interface EventContainer extends SortTableModel, LoggerNameModel {
    * Returns a copied list of all the event in the model.
    */
   List getAllEvents();
-  
+
   /**
    * Returns the total number of events currently in the model (all, not just filtered)
    * @return
@@ -111,7 +116,7 @@ public interface EventContainer extends SortTableModel, LoggerNameModel {
    * Returns the vector representing the row.
    */
   LoggingEvent getRow(int row);
-  
+
   /**
    * Return the last added row.
    */
@@ -126,14 +131,10 @@ public interface EventContainer extends SortTableModel, LoggerNameModel {
   boolean isAddRow(LoggingEvent e, boolean valueIsAdjusting);
 
   /**
-   * Return whether or not this container is sorting.
-   */
-  boolean isSortEnabled();
-
-  /**
    * Fire appropriate table update events for the range.
    */
   void fireTableEvent(int begin, int end, int count);
+
   /**
    * Allow a forced notification of the EventCountListeners
    *
@@ -151,9 +152,4 @@ public interface EventContainer extends SortTableModel, LoggerNameModel {
    * @param row
    */
   int getRowIndex(LoggingEvent e);
-
-  /**
-   * Causes the EventContainer to sort according to it's configured attributes
-   */
-  void sort();
 }
