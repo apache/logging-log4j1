@@ -15,6 +15,7 @@ import java.io.BufferedInputStream;
 
 import org.apache.log4j.*;
 import org.apache.log4j.spi.*;
+import org.apache.log4j.plugins.Receiver;
 
 // Contributors:  Moses Hohman <mmhohman@rainbow.uchicago.edu>
 
