@@ -110,7 +110,7 @@ public class NDC {
 
 
   /**
-     Clear any nested disgnostic information if any. This method is
+     Clear any nested diagnostic information if any. This method is
      useful in cases where the same thread can be potentially used
      over and over in different unrelated contexts.
 
@@ -313,7 +313,7 @@ public class NDC {
 
      <p>As this is such an important problem in heavy duty systems and
      because it is difficult to always guarantee that the remove
-     mehtod is called before exiting a thread, this method has been
+     method is called before exiting a thread, this method has been
      augmented to lazily remove references to dead threads. In
      practice, this means that you can be a little sloppy and
      occasionally forget to call {@link #remove} before exiting a
