@@ -160,6 +160,19 @@
 	    Taglibs</a> project.</dd>
 
 	<!-- ============================================================================== -->
+
+	<dt><a href="http://www.m2technologies.net/asp/snmpTrapAppender.asp">
+	    <b>SNMPTrapAppender</b></a>
+	</dt>
+
+	<dd>An appender to send formatted logging event strings to a
+	  specified managment host (typically, a MLM of some sort, but
+	  could also be an SNMP management console) in the form of an
+	  SNMP trap.
+	</dd>
+
+	<!-- ============================================================================== -->
+
       </dl>
     </section>
     
