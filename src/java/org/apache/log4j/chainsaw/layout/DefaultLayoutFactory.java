@@ -31,7 +31,7 @@ import java.net.URL;
  * @author Paul Smith <psmith@apache.org>
  */
 public class DefaultLayoutFactory {
-  private static String defaultPatternLayout = null;
+  private volatile static String defaultPatternLayout = null;
 
   private DefaultLayoutFactory() {
   }

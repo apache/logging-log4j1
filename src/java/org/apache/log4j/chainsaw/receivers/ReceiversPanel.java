@@ -19,7 +19,6 @@ package org.apache.log4j.chainsaw.receivers;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -96,20 +95,14 @@ public class ReceiversPanel extends JPanel {
   private final NewReceiverPopupMenu newReceiverPopup =
     new NewReceiverPopupMenu();
   private final ReceiverToolbar buttonPanel;
-  private final Runnable updateReceiverTree;
   private final JSplitPane splitter = new JSplitPane();
   private final PluginPropertyEditorPanel pluginEditorPanel =
     new PluginPropertyEditorPanel();
   
 
   public ReceiversPanel() {
-    super();
-    setLayout(new BorderLayout());
+    super(new BorderLayout());
     setBorder(BorderFactory.createEtchedBorder());
-
-    setPreferredSize(new Dimension(200, 400));
-    setMinimumSize(getPreferredSize());
-    setMaximumSize(getPreferredSize());
 
     final ReceiversTreeModel model = new ReceiversTreeModel();
     PluginRegistry.addPluginListener(model);
@@ -302,23 +295,6 @@ public class ReceiversPanel extends JPanel {
     startAllAction.putValue(
       Action.SHORT_DESCRIPTION,
       "Ensures that any Receiver that isn't active, is started.");
-
-    /**
-     * We need to setup a runnable that updates the tree
-     * any time a Socket event happens (opening/closing of a socket).
-     *
-     * We do this by installing a SocketNodeEventListener in ALL the
-     * registered SocketReceivers
-     */
-    updateReceiverTree =
-      new Runnable() {
-          public void run() {
-            ReceiversTreeModel model =
-              (ReceiversTreeModel) receiversTree.getModel();
-
-            model.refresh();
-          }
-        };
 
     receiversTree.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
@@ -638,7 +614,7 @@ public class ReceiversPanel extends JPanel {
 
                   panel.getOkPanel().getOkButton().addActionListener(
                     new ActionListener() {
-                      public void actionPerformed(ActionEvent e) {
+                      public void actionPerformed(ActionEvent e2) {
                         dialog.dispose();
                         Plugin plugin = panel.getPlugin();
                         PluginRegistry.startPlugin(plugin);
@@ -712,13 +688,6 @@ public class ReceiversPanel extends JPanel {
      * Receiver node in the Tree.
      */
     private void buildForReceiverNode() {
-      final Action pauseReceiver =
-        new AbstractAction(
-          "Pause this Receiver", new ImageIcon(ChainsawIcons.PAUSE)) {
-          public void actionPerformed(ActionEvent e) {
-            pauseCurrentlySelectedReceiver();
-          }
-        };
 
       add(playReceiverButtonAction);
       add(pauseReceiverButtonAction);
@@ -770,13 +739,6 @@ public class ReceiversPanel extends JPanel {
 
       addSeparator();
       add(startAll);
-    }
-
-    private JMenuItem createNotDoneYet() {
-      final JMenuItem notDoneYet = new JMenuItem("Not Implemented Yet, sorry");
-      notDoneYet.setEnabled(false);
-
-      return notDoneYet;
     }
   }
 

@@ -61,6 +61,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JToolBar;
 import javax.swing.JWindow;
 import javax.swing.KeyStroke;
@@ -141,6 +142,11 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   private ChainsawAbout aboutBox;
   private final SettingsManager sm = SettingsManager.getInstance();
   private final JFrame tutorialFrame = new JFrame("Chainsaw Tutorial");
+  private JSplitPane mainReceiverSplitPane;
+  private static final double DEFAULT_MAIN_RECEIVER_SPLIT_LOCATION = .8d;
+  private int previousMainReceiverSplitLocation;
+  private double lastMainReceiverSplitLocation = DEFAULT_MAIN_RECEIVER_SPLIT_LOCATION;
+  private int dividerSize;
 
   /**
    * Set to true, if and only if the GUI has completed it's full
@@ -156,12 +162,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    * by default this exits the VM, but a developer may replace this action with
    * something that better suits their needs
    */
-  private Action shutdownAction =
-    new AbstractAction() {
-      public void actionPerformed(ActionEvent e) {
-        System.exit(0);
-      }
-    };
+  private Action shutdownAction = null;
 
   /**
    * Clients can register a ShutdownListener to be notified when the user has
@@ -176,7 +177,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    */
   public LogUI() {
     super("Chainsaw v2 - Log Viewer");
-
+    setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     if (ChainsawIcons.WINDOW_ICON != null) {
       setIconImage(new ImageIcon(ChainsawIcons.WINDOW_ICON).getImage());
     }
@@ -242,7 +243,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    *                    DOCUMENT ME!
    */
   public static void createChainsawGUI(ApplicationPreferenceModel model,
-    Action shutdownAction) {
+    Action newShutdownAction) {
     LogUI logUI = new LogUI();
 
     if (model.isShowSplash()) {
@@ -256,8 +257,14 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
     logUI.getApplicationPreferenceModel().apply(model);
     
-    if (shutdownAction != null) {
-      logUI.setShutdownAction(shutdownAction);
+    if (newShutdownAction != null) {
+      logUI.setShutdownAction(newShutdownAction);
+    } else {
+      logUI.setShutdownAction(new AbstractAction() {
+        public void actionPerformed(ActionEvent e) {
+          System.exit(0);
+        }
+      });
     }
   }
 
@@ -298,8 +305,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     setJMenuBar(getToolBarAndMenus().getMenubar());
     setTabbedPane(new ChainsawTabbedPane());
 
-    
-    
     applicationPreferenceModelPanel.setOkCancelActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -401,7 +406,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     setSize(
       event.asInt(LogUI.MAIN_WINDOW_WIDTH),
       event.asInt(LogUI.MAIN_WINDOW_HEIGHT));
-    
+
     getToolBarAndMenus().stateChange();
   }
 
@@ -601,10 +606,19 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     initPlugins();
 
     getContentPane().add(toolbar, BorderLayout.NORTH);
-    getContentPane().add(panePanel, BorderLayout.CENTER);
     getContentPane().add(statusBar, BorderLayout.SOUTH);
-    receiversPanel.setVisible(false);
-    getContentPane().add(receiversPanel, BorderLayout.EAST);
+    
+    mainReceiverSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+    mainReceiverSplitPane.add(panePanel);
+    mainReceiverSplitPane.add(receiversPanel);
+    mainReceiverSplitPane.setDividerLocation(-1);
+    
+    dividerSize = mainReceiverSplitPane.getDividerSize() + 5;
+    mainReceiverSplitPane.setDividerLocation(-1);
+
+    getContentPane().add(mainReceiverSplitPane, BorderLayout.CENTER);
+
+    mainReceiverSplitPane.setOneTouchExpandable(true);
 
     addWindowListener(
       new WindowAdapter() {
@@ -727,6 +741,12 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
     setVisible(true);
 
+    if (applicationPreferenceModel.isReceivers()) {
+        showReceiverPanel();
+    } else {
+        receiversPanel.setVisible(false);
+    }
+
     removeSplash();
 
     synchronized (initializationLock) {
@@ -813,7 +833,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           stopTutorial.setEnabled(
-            ((Boolean) startTutorial.getValue("TutorialStarted")) == Boolean.TRUE);
+            ((Boolean) startTutorial.getValue("TutorialStarted")).equals(Boolean.TRUE));
           startButton.setSelected(stopTutorial.isEnabled());
         }
       };
@@ -859,6 +879,37 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
           }
         }
       });
+  }
+
+  /**
+   * Display the log tree pane, using the last known divider location
+   */
+  private void showReceiverPanel() {
+    mainReceiverSplitPane.setDividerSize(dividerSize);
+    mainReceiverSplitPane.setDividerLocation(lastMainReceiverSplitLocation);
+    mainReceiverSplitPane.setLastDividerLocation(previousMainReceiverSplitLocation);
+    receiversPanel.setVisible(true);
+  }
+
+  /**
+   * Hide the log tree pane, holding the current divider location for later use
+   */
+  private void hideReceiverPanel() {
+    //subtract one to make sizes match
+    int currentSize = mainReceiverSplitPane.getWidth() - dividerSize;
+
+    if (currentSize > 0) {
+      if ((mainReceiverSplitPane.getDividerLocation() + 1 == currentSize) || (mainReceiverSplitPane.getDividerLocation() - 1 == 0)) {
+      //if hiding when receiver is minimized or maximized, use last location
+        previousMainReceiverSplitLocation = mainReceiverSplitPane.getLastDividerLocation();
+        mainReceiverSplitPane.setLastDividerLocation(mainReceiverSplitPane.getLastDividerLocation());
+      } else {
+          lastMainReceiverSplitLocation = ((double)mainReceiverSplitPane.getDividerLocation() / currentSize);
+      }
+    }
+
+    mainReceiverSplitPane.setDividerSize(0);
+    receiversPanel.setVisible(false);
   }
 
   private void initSocketConnectionListener() {
@@ -979,9 +1030,12 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
       public void propertyChange(PropertyChangeEvent evt) {
         boolean value = ((Boolean)evt.getNewValue()).booleanValue();
-        receiversPanel.setVisible(value);
+        if (value) {
+            showReceiverPanel();
+        } else {
+            hideReceiverPanel();
+        }
       }});
-    receiversPanel.setVisible(applicationPreferenceModel.isReceivers());
     
     applicationPreferenceModel.addPropertyChangeListener("toolbar", new PropertyChangeListener() {
 
@@ -1140,10 +1194,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       getTabbedPane().remove(
         getTabbedPane().getComponentAt(getTabbedPane().indexOfTab("Welcome")));
     }
-  }
-
-  boolean isReceiverPanelVisible() {
-    return receiversPanel.isVisible();
   }
 
   ChainsawStatusBar getStatusBar() {

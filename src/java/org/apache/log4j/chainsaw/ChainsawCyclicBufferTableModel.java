@@ -54,7 +54,7 @@ import org.apache.log4j.spi.LoggingEvent;
 class ChainsawCyclicBufferTableModel extends AbstractTableModel
   implements EventContainer, PropertyChangeListener {
   private boolean cyclic = true;
-  private final int DEFAULT_CAPACITY = 5000;
+  private static final int DEFAULT_CAPACITY = 5000;
   private int capacity = DEFAULT_CAPACITY;
   private static final String PANEL_CAPACITY = "CHAINSAW_CAPACITY";
   List unfilteredList;

@@ -12,7 +12,9 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */package org.apache.log4j.chainsaw;
+ */
+ 
+package org.apache.log4j.chainsaw;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -165,9 +167,9 @@ public abstract class AbstractPreferencePanel extends JPanel
   public void notifyOfLookAndFeelChange() {
     SwingUtilities.updateComponentTreeUI(this);
     
-    Enumeration enum = ((DefaultMutableTreeNode)prefTree.getModel().getRoot()).breadthFirstEnumeration();
-    while (enum.hasMoreElements()) {
-      DefaultMutableTreeNode node = (DefaultMutableTreeNode) enum.nextElement();
+    Enumeration enumeration = ((DefaultMutableTreeNode)prefTree.getModel().getRoot()).breadthFirstEnumeration();
+    while (enumeration.hasMoreElements()) {
+      DefaultMutableTreeNode node = (DefaultMutableTreeNode) enumeration.nextElement();
       if (node.getUserObject() instanceof Component) {
         Component c = (Component) node.getUserObject();
         SwingUtilities.updateComponentTreeUI(c);

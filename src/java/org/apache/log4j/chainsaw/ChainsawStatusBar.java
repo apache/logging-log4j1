@@ -44,7 +44,7 @@ import org.apache.log4j.chainsaw.messages.MessageCenter;
  */
 public class ChainsawStatusBar extends JPanel {
   private static final int DELAY_PERIOD = 5000;
-  private final String DEFAULT_MSG = "Welcome to Chainsaw v2!";
+  private static final String DEFAULT_MSG = "Welcome to Chainsaw v2!";
   private final JLabel statusMsg = new JLabel(DEFAULT_MSG);
   private final JLabel pausedLabel = new JLabel("", JLabel.CENTER);
   private final JLabel lineSelectionLabel = new JLabel("", JLabel.CENTER);

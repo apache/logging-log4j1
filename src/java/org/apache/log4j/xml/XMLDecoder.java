@@ -58,7 +58,6 @@ public class XMLDecoder implements Decoder {
     "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><!DOCTYPE log4j:eventSet SYSTEM \"log4j.dtd\"><log4j:eventSet version=\"1.2\" xmlns:log4j=\"http://jakarta.apache.org/log4j/\">";
   private static final String ENDPART = "</log4j:eventSet>";
   private static final String RECORD_END = "</log4j:event>";
-  private StringBuffer buf = new StringBuffer();
   private DocumentBuilderFactory dbf;
   private DocumentBuilder docBuilder;
   private Map additionalProperties = Collections.EMPTY_MAP;
@@ -95,7 +94,7 @@ public class XMLDecoder implements Decoder {
    * @return
    */
   private Document parse(String data) {
-    if (docBuilder == null) {
+    if (docBuilder == null || data == null) {
       return null;
     }
 
@@ -112,7 +111,7 @@ public class XMLDecoder implements Decoder {
        * resetting the length of the StringBuffer is dangerous, particularly
        * on some JDK 1.4 impls, there's a known Bug that causes a memory leak
        */
-      buf = new StringBuffer(1024);
+      StringBuffer buf = new StringBuffer(1024);
 
       buf.append(BEGINPART);
       buf.append(data);
@@ -155,6 +154,7 @@ public class XMLDecoder implements Decoder {
           reader.close();
         }
       } catch (Exception e) {
+        e.printStackTrace();
       }
     }
 

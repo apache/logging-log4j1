@@ -29,9 +29,9 @@ import javax.swing.table.*;
  * @author Claude Duguay
 */
 public class SortHeaderRenderer extends DefaultTableCellRenderer {
-  public static Icon NONSORTED = new SortArrowIcon(SortArrowIcon.NONE);
-  public static Icon ASCENDING = new SortArrowIcon(SortArrowIcon.ASCENDING);
-  public static Icon DECENDING = new SortArrowIcon(SortArrowIcon.DECENDING);
+  public static final Icon NONSORTED = new SortArrowIcon(SortArrowIcon.NONE);
+  public static final Icon ASCENDING = new SortArrowIcon(SortArrowIcon.ASCENDING);
+  public static final Icon DECENDING = new SortArrowIcon(SortArrowIcon.DECENDING);
 
   public SortHeaderRenderer() {
     setHorizontalTextPosition(LEFT);

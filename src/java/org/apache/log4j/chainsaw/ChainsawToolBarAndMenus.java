@@ -188,7 +188,7 @@ class ChainsawToolBarAndMenus implements ChangeListener {
   */
   private Action createToggleLogTreeAction() {
     Action action =
-      new AbstractAction() {
+      new AbstractAction("Toggle the Logger Tree Pane") {
         public void actionPerformed(ActionEvent e) {
           if (logui.getCurrentLogPanel() != null) {
             logui.getCurrentLogPanel().toggleLogTreeVisible();
@@ -196,15 +196,15 @@ class ChainsawToolBarAndMenus implements ChangeListener {
         }
       };
 
-    action.putValue(Action.NAME, "Logger Tree");
-    action.putValue(Action.SHORT_DESCRIPTION, "Toggles the Log Tree panel");
+    action.putValue(Action.SHORT_DESCRIPTION, "Toggles the Logger Tree Pane");
     action.putValue("enabled", Boolean.TRUE);
     action.putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_T));
     action.putValue(
       Action.ACCELERATOR_KEY,
       KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.ALT_MASK));
+      action.putValue(
+        Action.SMALL_ICON, new ImageIcon(ChainsawIcons.WINDOW_ICON));
 
-    //		TODO find an icon
     return action;
   }
 
@@ -513,8 +513,6 @@ class ChainsawToolBarAndMenus implements ChangeListener {
   private Action createToggleDetailPaneAction() {
     Action action =
       new AbstractAction("Show Detail Pane") {
-        boolean enabled = true;
-
         public void actionPerformed(ActionEvent evt) {
           LogPanel logPanel = logui.getCurrentLogPanel();
 
@@ -592,14 +590,12 @@ class ChainsawToolBarAndMenus implements ChangeListener {
       toggleDetailPaneAction.getValue(Action.NAME));
 
     logTreePaneButton.setAction(toggleLogTreeAction);
-
-    //	logTreePaneButton.setText(null);
     logTreePaneButton.getActionMap().put(
       toggleLogTreeAction.getValue(Action.NAME), toggleLogTreeAction);
     logTreePaneButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
       KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.ALT_MASK),
-      toggleDetailPaneAction.getValue(Action.NAME));
-
+      toggleLogTreeAction.getValue(Action.NAME));
+    logTreePaneButton.setText(null);
     SmallButton prefsButton = new SmallButton(showPreferencesAction);
     SmallButton undockButton = new SmallButton(undockAction);
     undockButton.setText("");

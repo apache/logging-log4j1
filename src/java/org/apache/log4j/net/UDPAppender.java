@@ -75,7 +75,6 @@ public class UDPAppender extends AppenderSkeleton implements PortBased{
   int port = DEFAULT_PORT;
   DatagramSocket outSocket;
   int reconnectionDelay = DEFAULT_RECONNECTION_DELAY;
-  boolean locationInfo = false;
   int count = 0;
   private Connector connector;
 

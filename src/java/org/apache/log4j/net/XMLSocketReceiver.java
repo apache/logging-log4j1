@@ -44,7 +44,6 @@ import org.apache.log4j.spi.LoggingEvent;
     @since 1.3
 */
 public class XMLSocketReceiver extends Receiver implements Runnable, PortBased, Pauseable {
-  protected int port;
   protected boolean active = false;
   private boolean paused;
   //default to log4j xml decoder
@@ -52,7 +51,8 @@ public class XMLSocketReceiver extends Receiver implements Runnable, PortBased, 
   private ServerSocket serverSocket;
   private List socketList = new Vector();
   private Thread rThread;
-  public static int DEFAULT_PORT = 4448;
+  public static final int DEFAULT_PORT = 4448;
+  protected int port = DEFAULT_PORT;
 
   public XMLSocketReceiver() {
   }

@@ -30,20 +30,19 @@ public class FilterModel {
   private EventTypeEntryContainer eventContainer =
     new EventTypeEntryContainer();
 
-  public void processNewLoggingEvent(String eventType, LoggingEvent event) {
-    EventTypeEntryContainer container = getContainer(eventType);
+  public void processNewLoggingEvent(LoggingEvent event) {
 
-    container.addLevel(event.getLevel());
-    container.addLogger(event.getLoggerName());
-    container.addThread(event.getThreadName());
-    container.addNDC(event.getNDC());
-    container.addMDCKeys(event.getMDCKeySet());
+    eventContainer.addLevel(event.getLevel());
+    eventContainer.addLogger(event.getLoggerName());
+    eventContainer.addThread(event.getThreadName());
+    eventContainer.addNDC(event.getNDC());
+    eventContainer.addMDCKeys(event.getMDCKeySet());
 
     if (event.locationInformationExists()) {
       LocationInfo info = event.getLocationInformation();
-      container.addClass(info.getClassName());
-      container.addMethod(info.getMethodName());
-      container.addFileName(info.getFileName());
+      eventContainer.addClass(info.getClassName());
+      eventContainer.addMethod(info.getMethodName());
+      eventContainer.addFileName(info.getFileName());
     }
   }
 
@@ -51,7 +50,4 @@ public class FilterModel {
     return eventContainer;
   }
 
-  EventTypeEntryContainer getContainer(String eventType) {
-    return this.eventContainer;
-  }
 }

@@ -190,8 +190,8 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
   private final JEditorPane detail;
   private final JSplitPane lowerPanel;
   private final DetailPaneUpdater detailPaneUpdater;
-  private final double DEFAULT_DETAIL_SPLIT_LOCATION = .5;
-  private final double DEFAULT_LOG_TREE_SPLIT_LOCATION = .25;
+  private static final double DEFAULT_DETAIL_SPLIT_LOCATION = .5;
+  private static final double DEFAULT_LOG_TREE_SPLIT_LOCATION = .25;
   private final JPanel detailPanel = new JPanel(new BorderLayout());
   private final int dividerSize;
   private final JSplitPane nameTreeAndMainPanelSplit;
@@ -346,7 +346,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
     menuItemToggleToolTips.setIcon(new ImageIcon(ChainsawIcons.TOOL_TIP));
 
     final JCheckBoxMenuItem menuItemLoggerTree =
-      new JCheckBoxMenuItem("Logger Tree panel");
+      new JCheckBoxMenuItem("Show Logger Tree panel");
     menuItemLoggerTree.addActionListener(
       new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -354,7 +354,8 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
             menuItemLoggerTree.isSelected());
         }
       });
-
+      menuItemLoggerTree.setIcon(new ImageIcon(ChainsawIcons.WINDOW_ICON));
+      
     final JCheckBoxMenuItem menuItemScrollBottom =
       new JCheckBoxMenuItem("Scroll to bottom");
     menuItemScrollBottom.addActionListener(
@@ -734,7 +735,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
     /*
      * Throwable popup
      */
-    throwableRenderPanel = new ThrowableRenderPanel(table);
+    throwableRenderPanel = new ThrowableRenderPanel();
 
     final JDialog detailDialog = new JDialog((JFrame) null, true);
     Container container = detailDialog.getContentPane();
@@ -1093,7 +1094,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
       });
     menuItemLogPanelPreferences.setIcon(ChainsawIcons.ICON_PREFERENCES);
 
-    final JMenuItem menuItemFocusOn = new JMenuItem("Focus on");
+    final JMenuItem menuItemFocusOn = new JMenuItem("Set 'refine focus' field");
     menuItemFocusOn.addActionListener(
       new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
@@ -1133,7 +1134,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
         }
       });
 
-    final JMenuItem menuDefineAddCustomFilter = new JMenuItem("Add to focus");
+    final JMenuItem menuDefineAddCustomFilter = new JMenuItem("Add to 'refine focus' field");
     menuDefineAddCustomFilter.addActionListener(
       new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
@@ -1175,7 +1176,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
     final JPopupMenu p = new JPopupMenu();
 
     final Action clearFocusAction =
-      new AbstractAction("Clear focus") {
+      new AbstractAction("Clear 'refine focus' field") {
         public void actionPerformed(ActionEvent e) {
           filterText.setText(null);
           ruleMediator.setRefinementRule(null);
@@ -1207,11 +1208,13 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
     p.add(new JSeparator());
 
     p.add(menuItemBestFit);
+    p.add(new JSeparator());
 
     p.add(menuItemToggleDetails);
-    p.add(menuItemToggleToolTips);
-    p.add(menuItemScrollBottom);
     p.add(menuItemLoggerTree);
+    p.add(menuItemToggleToolTips);
+    p.add(new JSeparator());
+    p.add(menuItemScrollBottom);
 
     p.add(new JSeparator());
     p.add(menuItemToggleDock);
@@ -1742,7 +1745,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
     undockedFindPreviousButton.getActionMap().put(
     undockedFindPreviousAction.getValue(Action.NAME), undockedFindPreviousAction);
     undockedFindPreviousButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-      KeyStroke.getKeyStroke(KeyEvent.VK_F3, KeyEvent.SHIFT_DOWN_MASK), undockedFindPreviousAction.getValue(Action.NAME));
+      KeyStroke.getKeyStroke(KeyEvent.VK_F3, KeyEvent.SHIFT_MASK), undockedFindPreviousAction.getValue(Action.NAME));
 
     Dimension findSize = new Dimension(132, 24);
     Dimension findPanelSize = new Dimension(144, 26);
@@ -2167,14 +2170,13 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
    */
   private void updateOtherModels(ChainsawEventBatchEntry entry) {
     LoggingEvent event = entry.getEvent();
-    String eventType = entry.getEventType();
 
     /*
      * EventContainer is a LoggerNameModel imp, use that for notifing
      */
     tableModel.addLoggerName(event.getLoggerName());
 
-    filterModel.processNewLoggingEvent(eventType, event);
+    filterModel.processNewLoggingEvent(event);
   }
   
   /**
@@ -2190,7 +2192,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
     private final JTextField filterText;
     private long lastTimeStamp = System.currentTimeMillis();
     private final Thread delayThread;
-    private final long CHECK_PERIOD = 1000;
+    private static final long CHECK_PERIOD = 1000;
     private final String defaultToolTip;
     private String lastFilterText = null;
 
@@ -2424,10 +2426,10 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
      * @param e 
      */
     public void columnAdded(TableColumnModelEvent e) {
-      Enumeration enum = table.getColumnModel().getColumns();
+      Enumeration enumeration = table.getColumnModel().getColumns();
 
-      while (enum.hasMoreElements()) {
-        TableColumn column = (TableColumn) enum.nextElement();
+      while (enumeration.hasMoreElements()) {
+        TableColumn column = (TableColumn) enumeration.nextElement();
 
         if (
           (column.getModelIndex() + 1) == ChainsawColumns.INDEX_THROWABLE_COL_NAME) {

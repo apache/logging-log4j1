@@ -111,7 +111,7 @@ public final class LineIconFactory {
   }
 
   public static final Icon createBlankIcon() {
-    return new BlankIcon(16, 0, 0);
+    return new BlankIcon(16);
   }
 
   /**
@@ -122,13 +122,9 @@ public final class LineIconFactory {
      */
   private static class BlankIcon implements Icon {
     int size;
-    int xOffSet;
-    int yOffSet;
 
-    public BlankIcon(int size, int xOffSet, int yOffSet) {
+    public BlankIcon(int size) {
       this.size = size;
-      this.xOffSet = xOffSet;
-      this.yOffSet = yOffSet;
     }
 
     public int getIconHeight() {
