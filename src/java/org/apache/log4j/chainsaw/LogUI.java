@@ -744,6 +744,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     if (applicationPreferenceModel.isReceivers()) {
         showReceiverPanel();
     } else {
+        mainReceiverSplitPane.setDividerSize(0);
         receiversPanel.setVisible(false);
     }
 
