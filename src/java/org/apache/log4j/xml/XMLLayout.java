@@ -3,7 +3,7 @@
  *
  * This software is published under the terms of the Apache Software
  * License version 1.1, a copy of which has been included with this
- * distribution in the LICENSE.APL file.  */
+ * distribution in the LICENSE.txt file.  */
 
 // Contributors:   Mathias Bogaert
 
@@ -14,6 +14,7 @@ import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.helpers.DateLayout;
+import org.apache.log4j.helpers.Transform;
 
 /**
    The output of the XMLLayout consists of a series of log4j:event
@@ -43,58 +44,13 @@ import org.apache.log4j.helpers.DateLayout;
    @since 0.9.0 */
 public class XMLLayout extends Layout {
 
-  /**
-     This is a string constant to name the option for setting the
-     location information flag. Current value of this string constant
-     is <b>LocationInfo</b>. 
-
-     <p>See the {@link #setOption(java.lang.String, java.lang.String)}
-     method for the meaning of this option.  
-
-     <p>Note all option keys are case sensitive.
-     
-     @deprecated Options are now handled using the JavaBeans paradigm.
-     This constant is not longer needed and will be removed in the
-     <em>near</em> term.
-  */
-  public static final String LOCATION_INFO_OPTION = "LocationInfo";
-
   private  final int DEFAULT_SIZE = 256;
   private final int UPPER_LIMIT = 2048;
 
   private StringBuffer buf = new StringBuffer(DEFAULT_SIZE);
   private boolean locationInfo = false;
 
-  /**
-     @deprecated We now use JavaBeans introspection to configure
-     components. Options strings are no longer needed.
-  */
-  public
-  String[] getOptionStrings() {
-    return new String[]{LOCATION_INFO_OPTION};
-  }
-
-  /**
-
-     The XMLLayout specific options are:
-
-     <p>The <b>LocationInfo</b> option takes a boolean value. If true,
-     the output will include location information. By default no
-     location information is sent to the server.
-  
-     @deprecated Use the setter method for the option directly instead
-     of the generic <code>setOption</code> method. 
-
-  */
-  public
-  void setOption(String key, String value) {
-
-    if(value == null) return;
-    if (key.equals(LOCATION_INFO_OPTION)) {
-      locationInfo = OptionConverter.toBoolean(value, locationInfo);    
-    } 
-  }
-  
+ 
   /**
      The <b>LocationInfo</b> option takes a boolean value. By
      default, it is set to false which means there will be no location
@@ -166,6 +122,7 @@ public class XMLLayout extends Layout {
 	 buf.append("<log4j:throwable><![CDATA[");
 	 for(int i = 0; i < s.length; i++) {
 	   buf.append(s[i]);
+           buf.append("\r\n");
 	 }
 	 buf.append("]]></log4j:throwable>\r\n");
        }
@@ -175,7 +132,7 @@ public class XMLLayout extends Layout {
 	 buf.append("<log4j:locationInfo class=\"");
 	 buf.append(locationInfo.getClassName());
 	 buf.append("\" method=\"");
-	 buf.append(locationInfo.getMethodName());
+	 buf.append(Transform.escapeTags(locationInfo.getMethodName()));
 	 buf.append("\" file=\"");
 	 buf.append(locationInfo.getFileName());
 	 buf.append("\" line=\"");

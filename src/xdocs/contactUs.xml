@@ -16,10 +16,12 @@
 <p>Before reporting a problem, please <a
 href="http://nagoya.apache.org/bugzilla/query.cgi">check the
 database</a> and the <a href="HISTORY">project history file</a> to see
-if the problem is not already known. After this verification step, you
-are highly encouraged to send email to the <em>log4j-user</em>
-mailing list (see below) describing the bug. Only after these
-precautionary steps should you file a bug report.</p>
+if the problem is not already known. After this first verification
+step, you are highly encouraged to send email to the
+<em>log4j-user</em> mailing list (see below) describing the bug. Only
+after these precautionary steps should you file a bug
+report. Moreover, requests for enhancements should not be entered in
+Bugzilla but posted on the log4j-user mailing list instead.</p>
 
 </section>
 
