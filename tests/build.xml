@@ -144,7 +144,7 @@
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
-      <test name="org.apache.log4j.MinimumTestCase" />
+      <test name="org.apache.log4j.MinimumTest" />
     </junit>
   </target>
 

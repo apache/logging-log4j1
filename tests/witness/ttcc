@@ -23,8 +23,8 @@
  [main] INFO UNDEF - Message 22
  [main] DEBUG UNDEF - Message 23
 java.lang.Exception: Just testing.
-	at org.apache.log4j.MinimumTestCase.common(X)
-	at org.apache.log4j.MinimumTestCase.ttcc(X)
+	at org.apache.log4j.MinimumTest.common(X)
+	at org.apache.log4j.MinimumTest.ttcc(X)
 	at java.lang.reflect.Method.invoke(X)
 	at junit.framework.TestCase.runTest(X)
 	at junit.framework.TestCase.runBare(X)

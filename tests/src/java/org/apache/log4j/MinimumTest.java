@@ -27,7 +27,7 @@ import org.apache.log4j.util.*;
 /**
    A superficial but general test of log4j.
  */
-public class MinimumTestCase extends TestCase {
+public class MinimumTest extends TestCase {
   static String FILTERED = "output/filtered";
   static String EXCEPTION1 = "java.lang.Exception: Just testing";
   static String EXCEPTION2 = "\\s*at .*\\(.*:\\d{1,4}\\)";
@@ -45,7 +45,7 @@ public class MinimumTestCase extends TestCase {
   Logger root;
   Logger logger;
 
-  public MinimumTestCase(String name) {
+  public MinimumTest(String name) {
     super(name);
   }
 
@@ -206,8 +206,8 @@ public class MinimumTestCase extends TestCase {
 
   public static Test suite() {
     TestSuite suite = new TestSuite();
-    suite.addTest(new MinimumTestCase("simple"));
-    suite.addTest(new MinimumTestCase("ttcc"));
+    suite.addTest(new MinimumTest("simple"));
+    suite.addTest(new MinimumTest("ttcc"));
 
     return suite;
   }
