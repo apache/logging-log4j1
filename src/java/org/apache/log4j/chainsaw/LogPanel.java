@@ -713,9 +713,9 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
           to bypass the scroll-to-bottom feature when the user selects a row other than the bottom row,
           one of two conditions must be met:
           1: neither the 'firstindex' nor the 'lastindex' are on the last row, or
-          2: the last index value didn't change and the 'lastindex' is on the last row
+          2: the last index value didn't change and the 'lastindex' is on the last row, and the last index and first index aren't the same
            */ 
-          bypassScrollSelection = (!(lastIndexOnLastRow || firstIndexOnLastRow)) || (lastIndexSame && lastIndexOnLastRow);
+          bypassScrollSelection = (!(lastIndexOnLastRow || firstIndexOnLastRow)) || (lastIndexSame && lastIndexOnLastRow && (evt.getFirstIndex() != evt.getLastIndex()));
           previousLastIndex = evt.getLastIndex();
 
           final ListSelectionModel lsm = (ListSelectionModel) evt.getSource();
