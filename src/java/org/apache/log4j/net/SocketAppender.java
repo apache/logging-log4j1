@@ -236,6 +236,8 @@ public class SocketAppender extends AppenderSkeleton {
 
   public
   void append(LoggingEvent event) {
+    if(event == null)
+      return;
 
     if(address==null) {
       errorHandler.error("No remote host is set for SocketAppedender named \""+
