@@ -1,0 +1,119 @@
+
+<HTML>
+<HEAD>
+  <TITLE>Release plan for log4j 1.2</TITLE>
+</HEAD>
+
+<BODY>
+
+<center>
+<h2>Release plan for log4j 1.2</h2>
+C. G&uuml;lc&uuml;
+</center>
+<p>Here is my proposed plan for the next major log4j release. As
+customary, there is no scheduled release date. It will be ready when
+its ready. Your comments and suggestions are most welcome.
+
+<p>After we get appropriate feedback we can proceed with a vote.
+
+<p><TABLE border="1" cellpadding="3" cellspacing="2">
+
+<TR>
+<TH>Label
+<TH>Comment
+<TH>Volunteer
+
+<TR bgcolor="DDDDDD">
+<TD>More test cases
+
+<TD>We need more automated test cases to catch bugs as early is possible.
+
+<p>Contributors are expected to be familiar with the log4j test
+environment. They are also <em>required</em> to add a new test case
+with each new feature or component.
+
+<TD>All committers
+
+</TR>
+
+<TR>
+<TD>JMX support 
+
+<TD>A common request is to change log4j settings without shutting down
+a running application.  The JMX API is designed to handle such
+management tasks.  
+
+<p>For example, a <code>HierarchyAgent</code> could list all existing
+categories in a hierarchy, create new categories, change the priority
+or attach a new appender to a category. Log4j core needs to be
+enhanced to report events such as the creation of a new categories,
+priority changes, appender attachments/removals etc.
+
+<TD>TBD
+</TR>
+
+<TR bgcolor="DDDDDD">
+<TD>JDBCAppender 
+
+<TD>We currently have two competing JDBCAppenders: one by Thomas
+Fenner and the other by Kevin Steppe. After proper testing, we should
+include at least of one of these in the standard log4j distribution.
+
+<TD>TBD
+
+<TR>
+<TD>Log4j in applets
+
+<TD>In order to minimize network traffic, the size of log4j-core.jar
+needs to be reduced to at most 50KB.
+
+<TD>TBD
+
+<TR  bgcolor="DDDDDD">
+<TD>Improved documentation
+
+<TD>Log4j documentation needs to be enhanced with configuration
+examples and much more hand-holding.
+
+<TD>TBD
+
+<TR>
+<TD valign="top">Mapped Diagnostic Contexts
+
+<TD>Mapped Diagnostic Contexts are similar to the NDC except that the
+MDC is a string to string map instead of a stack that the user sets
+when entering a special context. The <code>PatternLayout</code> has to
+be enhanced to support this by extending the %x pattern to accept an
+argument.  Here is an example:
+
+<pre>
+ ConversionPattern=3D%d %p %c %x{server} %x{host} - %m%n
+</pre>
+
+User code:
+<pre>
+{
+   MDC.put("server", "totoServer");
+   MDC.put("host", "someHost");
+
+   cat.debug("Hello");
+
+}
+</pre>
+will print:
+<pre>2000-01-24 10:00:00,000 DEBUG totoServer someHost - Hello</pre>
+
+<p>To make MDCs truly user friendly <code>ThreadLocal</code> variables
+are required. This will allow the MDC to be inherited by child
+threads. <code>ThreadLocal</code> are only supported under JDK 1.2 and
+above. In JDK 1.1, the MDC will not work but won't harm the user
+application either.
+
+<TD>C. G&uuml;lc&uuml;
+
+
+</TABLE>
+
+</BODY>
+
+</HTML>
