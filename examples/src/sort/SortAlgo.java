@@ -1,6 +1,6 @@
 package sort;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import org.apache.log4j.NDC;
 
 /**
@@ -15,11 +15,11 @@ import org.apache.log4j.NDC;
 public class SortAlgo {
 
   final static String className = SortAlgo.class.getName();
-  final static Category CAT = Category.getInstance(className);
-  final static Category OUTER = Category.getInstance(className + ".OUTER");
-  final static Category INNER = Category.getInstance(className + ".INNER");
-  final static Category DUMP = Category.getInstance(className + ".DUMP");
-  final static Category SWAP = Category.getInstance(className + ".SWAP");
+  final static Logger CAT = Logger.getLogger(className);
+  final static Logger OUTER = Logger.getLogger(className + ".OUTER");
+  final static Logger INNER = Logger.getLogger(className + ".INNER");
+  final static Logger DUMP = Logger.getLogger(className + ".DUMP");
+  final static Logger SWAP = Logger.getLogger(className + ".SWAP");
 
   int[] intArray;
 
