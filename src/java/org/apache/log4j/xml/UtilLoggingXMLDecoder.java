@@ -409,6 +409,20 @@ public class UtilLoggingXMLDecoder implements Decoder {
           mdc, exception,
           info,
           properties));
+
+      logger = null;
+      timeStamp = 0L;
+      level = null;
+      threadName = null;
+      message = null;
+      ndc = null;
+      mdc = null;
+      exception = null;
+      className = null;
+      methodName = null;
+      fileName = null;
+      lineNumber = null;
+      properties = null;
     }
     return events;
   }
