@@ -14,9 +14,12 @@
 	more prominent contributors are listed below in alphabetical
 	order.
       </p>
+    <ul>
 
-      <ul>
-
+    <!-- ======================================== -->
+    <!-- LISTED IN ALPHABETICAL ORDER (last name) -->
+    <!-- ======================================== -->
+    
 	<li><b>Mathias Bogaert</b> 
 
 	  <p>While not lurking on <a
@@ -49,6 +52,17 @@
 	  </p>
 	</li>
 
+    <li><b>Jacob Kjome</b> 
+	  <p>Jacob Kjome has been developing software since 1997 and has been playing 
+         with Java for about 4 years.  Jake joined the log4j team after being very  
+         active on the user list and contributing servlet and repository selector 
+         related code to the logj-sandbox.  He is also a committer on the (non-Apache 
+         related) XMLC, BarracudaMVC, and Prevayler projects.  Of late his free time 
+         has been squeezed with a new job and his vigorous 2 year old son, Nicholas, 
+         but he still tries to pitch in when he can. :-)
+	  </p>
+    </li>
+
 
 	<li><b>Anders Kristensen</b> 
 
@@ -76,6 +90,18 @@
 	  </p>
 	</li>
 
+	<li><b>Paul Smith</b> 
+	
+	  <p>Paul Smith has been developing software since 1990, and playing 
+	  computer games a few years longer than that.  He has been thoroughly
+	  enjoying Java since 1998 after he gave up on Visual Basic in disgust.
+	  Paul joined the log4j team after finding how darn useful it and the 
+	  companion Chainsaw application was in '03, and has been helping out 
+	  where he can, working on Chainsaw v2, and generally making a good 
+	  nuisance of himself.
+	  </p>
+    </li>
+
 	
 	<li><b>Chris Taylor</b> 
 	  
@@ -96,27 +122,9 @@
 	  active committer for the Apache Jakarta log4j project since
 	  April 2002, contributing features for the upcoming v1.3
 	  release. </p>
-         </li>
+    </li>
 
-	<li><b>Paul Smith</b> 
-	
-	  <p>Paul Smith has been developing software since 1990, and playing computer games
-	  a few years longer than that.  He has been thoroughly enjoying Java since 1998 after he
-	  gave up on Visual Basic in disgust.
-	   Paul joined the log4j team after finding how darn useful it and the companion Chainsaw application was
-	   in '03, and has been helping out where he can, working on Chainsaw v2, and generally making a good nuisance of himself.
-	  </p>
-         </li>
          
-        <li><b>Jacob Kjome</b> 
-	
-	  <p>Jacob Kjome has been developing software since 1997 and has been playing with Java for about 4 years.  Jake joined the
-	    Log4j team after being very active on the user list and contributing servlet and repository selector related code to the
-	    logj-sandbox project.  He is also a committer on the (non-Apache related) XMLC, BarracudaMVC, and Prevayler projects.  Of late,
-	    his free time has been squeezed with a new job and his vigorous 2 year old son, Nicholas, but he still tries to pitch in when
-	    he can. :-)
-	  </p>
-         </li>
       </ul>
     </section>
     
