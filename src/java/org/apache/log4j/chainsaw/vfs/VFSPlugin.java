@@ -27,6 +27,10 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
+import org.apache.commons.vfs.FileObject;
+import org.apache.commons.vfs.FileSystemException;
+import org.apache.commons.vfs.VFS;
+import org.apache.commons.vfs.impl.StandardFileSystemManager;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.chainsaw.PopupListener;
@@ -156,8 +160,7 @@ public class VFSPlugin extends GUIPluginSkeleton {
      * Works out which of the supported File Systems are available.
      */
     private void determineSupportedFileSystems() {
-        SystemInfo info = fileSystemManager.getSystemInfo();
-        String[] schemes = info.getSchemes();
+        String[] schemes = fileSystemManager.getSchemes();
         supportedSchemes.addAll(Arrays.asList(schemes));
 
         logger.info("Supported schemes: " + supportedSchemes);
