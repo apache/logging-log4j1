@@ -150,7 +150,7 @@ public class AsyncAppender extends AppenderSkeleton
     
     // The following cannot be synchronized on "this" because the
     // dispatcher synchronizes with "this" in its while loop. If we
-    // did synhcronize we would systematically get deadlocks when
+    // did synchronize we would systematically get deadlocks when
     // close was called.
     dispatcher.close();
     try {

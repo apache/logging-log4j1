@@ -17,7 +17,7 @@ import org.apache.log4j.helpers.LogLog;
 
 
 /** 
-   Abstract super-class of the other appenders in the package.
+   Abstract superclass of the other appenders in the package.
    
    This class provides the code for common functionality, such as
    support for threshold filtering and support for general filters.
@@ -92,7 +92,7 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
   }
 
   /**
-     Subclasses of <code>AppenderSkeleton</code> should imlement this
+     Subclasses of <code>AppenderSkeleton</code> should implement this
      method to perform actual logging. See also {@link #doAppend
      AppenderSkeleton.doAppend} method.
 
@@ -210,7 +210,7 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
 
   /**
      Check whether the message priority is below the appender's
-     threshold. Ig there is no threshold set, then the return value is
+     threshold. If there is no threshold set, then the return value is
      always <code>true</code>.
 
   */
@@ -222,7 +222,7 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
 
   /**
      This method performs threshold checks and invokes filters before
-     delegating actual logging to the sub-classes specific {@link
+     delegating actual logging to the subclasses specific {@link
      AppenderSkeleton#append} method.
 
    */
