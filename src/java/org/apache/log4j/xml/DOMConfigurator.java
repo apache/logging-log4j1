@@ -651,7 +651,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
 
   
   /**
-     A static version of {@link #doConfigure(String, Hierarchy)}.  */
+     A static version of {@link #doConfigure(String, LoggerRepository)}.  */
   static
   public
   void configure(String filename) throws FactoryConfigurationError {
@@ -659,7 +659,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
   }
 
   /**
-     A static version of {@link #doConfigure(URL, Hierarchy)}.
+     A static version of {@link #doConfigure(URL, LoggerRepository)}.
    */
   static
   public

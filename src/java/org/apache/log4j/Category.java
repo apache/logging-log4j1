@@ -44,12 +44,37 @@ import java.net.MalformedURLException;
 
 
 /**
-  This is the central class in the log4j package. One of the
-  distintive features of log4j are hierarchical categories and their
-  evaluation.
+   <font color="#AA2222"><b>This class has been deprecated and
+   replaced by the {@link Logger} <em>subclass</em>.</b></font> It
+   will be kept around to preserve backward compatibility until early
+   2003.
+   
+   <p><code>Logger</code> is a subclass of Category, i.e. it extends
+   Category. In other words, a logger <em>is</em> a category. Thus,
+   all operations that can be performed on a category can be performed
+   on a logger. Whenever log4j is asked to produce a Category object,
+   it will instead produce a Logger object. However, methods that
+   previously accepted cateogry objects still continue to accept
+   category objects.
+   
+   <p>For example, the following are all legal and will work as expected.
 
-  <p>See the <a href="../../../../manual.html">user manual</a> for an
-  introduction on this class. 
+   <pre>
+   &nbsp;&nbsp;&nbsp;// Deprecated forms:
+   &nbsp;&nbsp;&nbsp;Category cat = Category.getInstance("foo.bar")
+   &nbsp;&nbsp;&nbsp;Logger logger = Logger.getInstance("foo.bar")
+   &nbsp;&nbsp;&nbsp;Category cat = Logger.getLogger("foo.bar")
+
+   &nbsp;&nbsp;&nbsp;// Preferred form for retrieving loggers:
+   &nbsp;&nbsp;&nbsp;Logger logger = Logger.getLogger("foo.bar")
+   </pre>
+
+   <p>The first tree forms are deprecated and should be avoided.
+  
+   <p><b>There is absolutely no need for new client code to use or
+   refer to the <code>Category</code> class.</b> Please avoid
+   referring to it.
+   
 
   @author Ceki G&uuml;lc&uuml;
   @author Anders Kristensen */
@@ -596,7 +621,7 @@ public class Category implements AppenderAttachable {
      it from the hierarchy. This is one of the central features of
      log4j.
 
-     @deprecated Please use {@link LogManager#getLogger(String)} instead.
+     @deprecated Please use {@link Logger#getLogger(String)} instead.
 
      @param name The name of the category to retrieve.  */
   public
@@ -612,7 +637,7 @@ public class Category implements AppenderAttachable {
     name of the category to retrieve.  See {@link
     #getInstance(String)} for more detailed information.
 
-    @deprecated Please use {@link LogManager#getLogger(Class)} instead.
+    @deprecated Please use {@link Logger#getLogger(Class)} instead.
 
     @since 1.0 */
   public
@@ -698,7 +723,7 @@ public class Category implements AppenderAttachable {
      Category.getInstance("root")} does not retrieve the root category 
      but a category just under root named "root".
      
-     @deprecated Use {@link LogManager#getRootLogger()} instead.
+     @deprecated Use {@link Logger#getRootLogger()} instead.
    */
   final
   public
