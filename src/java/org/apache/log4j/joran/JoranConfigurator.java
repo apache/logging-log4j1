@@ -214,6 +214,8 @@ public class JoranConfigurator extends ConfiguratorBase {
       new AppenderRefAction());
     rs.addRule(
       new Pattern("configuration/appender"), new AppenderAction());
+    rs.addRule(new Pattern("configuration/appender/appender-ref"), 
+        new AppenderRefAction());
     rs.addRule(
       new Pattern("configuration/appender/layout"), new LayoutAction());
     rs.addRule(
