@@ -68,14 +68,14 @@ public abstract class FileWatchdog extends Thread {
       fileExists = file.exists();
     } catch(SecurityException  e) {
       LogLog.warn("Was not allowed to read check file existance, file:["+
-		  fileName+"]."));
+		  filename+"].");
       interrupted = true; // there is no point in continuing
       return;
     }
 
     if(fileExists) {
       long l = file.lastModified(); // this can also throw a SecurityException
-      if(l > lastModif)             // however, if we reached this point this
+      if(l > lastModif) {           // however, if we reached this point this
 	lastModif = l;              // is very unlikely.
 	doOnChange();
 	warnedAlready = false;

@@ -5,6 +5,8 @@
  * License version 1.1, a copy of which has been included with this
  * distribution in the LICENSE.APL file.  */
 
+// Contributors:   Mathias Bogaert
+
 package org.apache.log4j.xml;
 
 import org.apache.log4j.Layout;
@@ -92,15 +94,15 @@ public class XMLLayout extends Layout {
     buf.append("\">\r\n");
 
 
-       buf.append("<log4j:message>");
+       buf.append("<log4j:message><![CDATA[");
        buf.append(event.getRenderedMessage());
-       buf.append("</log4j:message>\r\n");       
+       buf.append("]]></log4j:message>\r\n");       
 
        String ndc = event.getNDC();
        if(ndc != null) {
-	 buf.append("<log4j:NDC>");
+	 buf.append("<log4j:NDC><![CDATA[");
 	 buf.append(ndc);
-	 buf.append("</log4j:NDC>\r\n");       
+	 buf.append("]]></log4j:NDC>\r\n");       
        }
 
        String t = event.getThrowableInformation();
