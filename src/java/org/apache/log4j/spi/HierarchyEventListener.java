@@ -7,8 +7,7 @@
 
 package org.apache.log4j.spi;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.Appender;
+import org.apache.log4j.*;
 
 /**
    Listen to events occuring within a {@link
@@ -26,10 +25,10 @@ public interface HierarchyEventListener {
 
 
   public
-  void addAppenderEvent(Logger logger, Appender appender);
+  void addAppenderEvent(Category cat, Appender appender);
 
   public
-  void removeAppenderEvent(Logger logger, Appender appender);
+  void removeAppenderEvent(Category cat, Appender appender);
 
 
 }

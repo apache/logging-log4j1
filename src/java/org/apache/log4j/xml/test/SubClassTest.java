@@ -5,7 +5,7 @@ import org.apache.log4j.xml.DOMConfigurator;
 import org.apache.log4j.Category;
 import org.apache.log4j.Priority;
 import org.apache.log4j.xml.examples.ReportParserError;
-import org.apache.log4j.xml.examples.XCategory;
+import org.apache.log4j.xml.examples.XLogger;
 //import org.apache.xerces.parsers.DOMParser;
 //import java.io.FileInputStream;
 //import org.xml.sax.InputSource;
@@ -15,8 +15,7 @@ import org.apache.log4j.xml.examples.XCategory;
 */
 public class SubClassTest {
 
-  static XCategory cat = (XCategory) 
-                        XCategory.getInstance(SubClassTest.class.getName());
+  static XLogger cat = (XLogger) XLogger.getInstance(SubClassTest.class);
 
 
   public 

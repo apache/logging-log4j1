@@ -54,7 +54,7 @@ public class XTest {
   static
   void sample() {
     int i = -1;
-    XCategory cat = (XCategory) XCategory.getInstance("some.cat");    
+    XLogger cat = (XLogger) XLogger.getInstance("some.cat");    
 
     Category root = Category.getRoot();    
     cat.trace("Message " + ++i);

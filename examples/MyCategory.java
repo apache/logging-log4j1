@@ -23,7 +23,7 @@ import org.apache.log4j.helpers.LogLog;
    <p>See {@link MyCategoryTest} for a usage example.
    
  */
-public class MyCategory extends Category {
+public class MyCategory extends Logger {
 
   // It's usually a good idea to add a dot suffix to the fully
   // qualified class name. This makes caller localization to work
@@ -55,7 +55,7 @@ public class MyCategory extends Category {
   */
   public 
   static
-  Category getInstance(String name) {
+  Logger getInstance(String name) {
     return Category.getInstance(name, myFactory); 
   }
 

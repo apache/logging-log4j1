@@ -30,7 +30,8 @@ JSOURCES:= Shallow.java\
  FQCNTest.java\
  DRFATest.java\
  MDCStress.java\
- HeavyLoad.java\
+
+# HeavyLoad.java\
 
 ifdef $(ISJDK1)
   JSOURCES:=$(JSOURCES)  UnitTestOR.java

@@ -5,7 +5,7 @@ JSOURCES:=DOMConfigurator.java\
 	XMLLayout.java\
 
 
-SUBDIRS :=test examples
+SUBDIRS := examples test
 
 # include master-rule file
 include $(DEPTH)/make/make.inc

@@ -11,29 +11,174 @@
 package org.apache.log4j;
 
 /**
-   Defines the minimum set of priorities recognized by the system,
-   that is {@link #FATAL}, {@link #ERROR}, {@link #WARN}, {@link
-   #INFO} and {@link #DEBUG}.
+   <font color="#AA4444">Refrain from using this class directly, use
+   the {@link Level} class instead.</font>
 
-   <p>The <code>Priority</code> class may be subclassed to define a larger
-   priority set.
+   @author Ceki G&uuml;lc&uuml; */
+public class Priority {
 
-   @author Ceki G&uuml;lc&uuml;
- */
-public class Priority extends Level {
+  int level;
+  String levelStr;
+  int syslogEquivalent;
 
-  final static public Priority FATAL = new Priority(FATAL_INT, "FATAL", 0);
-  final static public Priority ERROR = new Priority(ERROR_INT, "ERROR", 3);
-  final static public Priority WARN  = new Priority(WARN_INT, "WARN",  4);
-  final static public Priority INFO  = new Priority(INFO_INT, "INFO",  6);
-  final static public Priority DEBUG = new Priority(DEBUG_INT, "DEBUG", 7);
-    
+  public final static int OFF_INT = Integer.MAX_VALUE;
+  public final static int FATAL_INT = 50000;
+  public final static int ERROR_INT = 40000;
+  public final static int WARN_INT  = 30000;
+  public final static int INFO_INT  = 20000;
+  public final static int DEBUG_INT = 10000;
+  public final static int ALL_INT = Integer.MIN_VALUE;
+
+
   /**
-     Instantiate a level object.
+     The <code>OFF</code> is used to turn off logging.
+   */
+  final static public Level OFF = new Level(OFF_INT, "OFF", 0);
+
+
+  /**
+     The <code>FATAL</code> priority designates very severe error
+     events that will presumably lead the application to abort.
+   */
+  final static public Level FATAL = new Level(FATAL_INT, "FATAL", 0);
+
+  /**
+     The <code>ERROR</code> priority designates error events that
+     might still allow the application to continue running.  */
+  final static public Level ERROR = new Level(ERROR_INT, "ERROR", 3);
+
+  /**
+     The <code>WARN</code> priority designates potentially harmful situations.
+  */
+  final static public Level WARN  = new Level(WARN_INT, "WARN",  4);
+
+  /**
+     The <code>INFO</code> priority designates informational messages
+     that highlight the progress of the application at coarse-grained
+     level.  */
+  final static public Level INFO  = new Level(INFO_INT, "INFO",  6);
+
+  /**
+     The <code>DEBUG</code> priority designates fine-grained
+     informational events that are most useful to debug an
+     application.  */
+  final static public Level DEBUG = new Level(DEBUG_INT, "DEBUG", 7);
+
+  /**
+     The <code>ALL</code> is used to turn on all logging.
+  */
+  final static public Level ALL = new Level(ALL_INT, "ALL", 7);
+
+  
+  /**
+     Instantiate a priority object.
    */
   protected
   Priority(int level, String levelStr, int syslogEquivalent) {
-    super(level, levelStr, syslogEquivalent);
+    this.level = level;
+    this.levelStr = levelStr;
+    this.syslogEquivalent = syslogEquivalent;
   }
+
+  /**
+     Return the syslog equivalent of this priority as an integer.
+   */
+  public
+  final
+  int getSyslogEquivalent() {
+    return syslogEquivalent;
+  }
+
+
+  /**
+     Returns the string representation of this priority.
+   */
+  final
+  public
+  String toString() {
+    return levelStr;
+  }
+
+  /**
+     Returns the integer representation of this priority.
+   */
+  public
+  final
+  int toInt() {
+    return level;
+  }
+
+    
+  /**
+     Returns <code>true</code> if this priority has a higher or equal
+     priority than the priority passed as argument, <code>false</code>
+     otherwise.  
+     
+     <p>You should think twice before overriding the default
+     implementation of <code>isGreaterOrEqual</code> method.
+
+  */
+  public
+  boolean isGreaterOrEqual(Priority r) {
+    return level >= r.level;
+  }
+
+  /**
+     Return all possible priorities as an array of Priority objects in
+     descending order.  */
+  public
+  static
+  Priority[] getAllPossiblePriorities() {
+    return new Priority[] {Level.FATAL, Level.ERROR, Level.WARN, 
+			     Level.INFO, Level.DEBUG};
+  }
+
+
+  /**
+     Convert the string passed as argument to a priority. If the
+     conversion fails, then this method returns {@link #DEBUG}. 
+
+     @deprecated Please use the {@link Level.toPLevel(String)} method instead.}
+   
+
+  */
+  public
+  static
+  Level toPriority(String sArg) {
+    return Level.toPriority(sArg);
+  }
+
+  /**
+    Convert an integer passed as argument to a priority. If the
+    conversion fails, then this method returns {@link #DEBUG}.
+
+  */
+  public
+  static
+  Level toPriority(int val) {
+    return toPriority(val, Level.DEBUG);
+  }
+
+  /**
+    Convert an integer passed as argument to a priority. If the
+    conversion fails, then this method returns the specified default.
+  */
+  public
+  static
+  Level toPriority(int val, Level defaultPriority) {
+    return Level.toLevel(val, defaultPriority);
+  }
+
+  /**
+     Convert the string passed as argument to a priority. If the
+     conversion fails, then this method returns the value of
+     <code>defaultPriority</code>.  
+  */
+  public
+  static
+  Level toPriority(String sArg, Level defaultPriority) {                  
+    return Level.toLevel(sArg, defaultPriority);
+  }
+
 
 }

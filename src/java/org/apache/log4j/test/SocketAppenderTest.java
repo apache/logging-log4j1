@@ -10,7 +10,7 @@ import org.apache.log4j.xml.DOMConfigurator;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.Category;
 import org.apache.log4j.NDC;
-import org.apache.log4j.xml.examples.XCategory;
+import org.apache.log4j.xml.examples.XLogger;
 import org.apache.log4j.Priority;
 import java.io.IOException;
 import java.util.Enumeration;
@@ -20,7 +20,7 @@ import java.util.Enumeration;
 */
 public class SocketAppenderTest {
   
-  static XCategory cat = (XCategory) XCategory.getInstance(SocketAppenderTest.class);
+  static XLogger cat = (XLogger) XLogger.getInstance(SocketAppenderTest.class);
   
   public 
   static 
