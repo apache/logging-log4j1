@@ -55,24 +55,6 @@
  */
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.Layout;
-import org.apache.log4j.PatternLayout;
-import org.apache.log4j.chainsaw.filter.FilterModel;
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-import org.apache.log4j.chainsaw.icons.LineIconFactory;
-import org.apache.log4j.chainsaw.layout.DefaultLayoutFactory;
-import org.apache.log4j.chainsaw.layout.EventDetailLayout;
-import org.apache.log4j.chainsaw.layout.LayoutEditorPane;
-import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SettingsListener;
-import org.apache.log4j.chainsaw.prefs.SettingsManager;
-import org.apache.log4j.chainsaw.rule.AbstractRule;
-import org.apache.log4j.chainsaw.rule.Rule;
-import org.apache.log4j.helpers.ISO8601DateFormat;
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.spi.LoggingEvent;
-
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Cursor;
@@ -95,10 +77,8 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.EOFException;
@@ -110,10 +90,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -156,7 +134,6 @@ import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
@@ -166,6 +143,24 @@ import javax.swing.event.TableColumnModelListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+
+import org.apache.log4j.Layout;
+import org.apache.log4j.PatternLayout;
+import org.apache.log4j.chainsaw.filter.FilterModel;
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.chainsaw.icons.LineIconFactory;
+import org.apache.log4j.chainsaw.layout.DefaultLayoutFactory;
+import org.apache.log4j.chainsaw.layout.EventDetailLayout;
+import org.apache.log4j.chainsaw.layout.LayoutEditorPane;
+import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.SettingsListener;
+import org.apache.log4j.chainsaw.prefs.SettingsManager;
+import org.apache.log4j.chainsaw.rule.AbstractRule;
+import org.apache.log4j.chainsaw.rule.Rule;
+import org.apache.log4j.helpers.ISO8601DateFormat;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
@@ -388,45 +383,12 @@ public class LogPanel extends DockablePanel implements SettingsListener,
 
     logTreePanel = new LoggerNameTreePanel(logTreeModel);
 
-    /**
-     * We listen for when the FocusOn action changes, and then ensure the Refinement filter is set
-     * accordingly.
-     */
-    logTreePanel.addChangeListener(
-      new ChangeListener() {
-        public void stateChanged(ChangeEvent evt) {
-          final String currentlySelectedLoggerName =
-            logTreePanel.getCurrentlySelectedLoggerName();
-
-          /**
-           * We run this later so that the GUI gets a chance to repaint
-           * etc, this might take a little time.
-           */
-          SwingUtilities.invokeLater(
-            new Runnable() {
-              public void run() {
-                ruleMediator.setLoggerRule(
-                  new AbstractRule() {
-                    public boolean evaluate(LoggingEvent e) {
-                      boolean isHidden =
-                        logTreePanel.getHiddenSet().contains(
-                          e.getLoggerName());
-                      boolean result = !isHidden;
-
-                      if (result && logTreePanel.isFocusOnSelected()) {
-                        result =
-                          result
-                          && e.getLoggerName().startsWith(
-                            currentlySelectedLoggerName);
-                      }
-
-                      return result;
-                    }
-                  });
-              }
-            });
-        }
-      });
+  /**
+   * Set the LoggerRule to be the LoggerTreePanel, as this visual component
+   * is a rule itself, and the RuleMediator will automatically listen
+   * when it's rule state changes.
+   */
+    ruleMediator.setLoggerRule(logTreePanel);
 
     /***
      * Setup a popup menu triggered for Timestamp column to allow time stamp format changes
