@@ -54,9 +54,7 @@ public class LevelAction extends Action {
       String className = attributes.getValue(CLASS_ATTR);
 
       if ((className == null) || EMPTY_STR.equals(className)) {
-        OptionConverter oc = new OptionConverter();
-        oc.setLoggerRepository(this.repository);
-        l.setLevel(oc.toLevel(levelStr, Level.DEBUG));
+        l.setLevel(OptionConverter.toLevel(levelStr, Level.DEBUG));
       } else {
         getLogger().debug("Desired Level sub-class: [" + className + ']');
 

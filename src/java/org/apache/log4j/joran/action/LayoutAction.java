@@ -46,12 +46,10 @@ public class LayoutAction extends Action {
       getLogger().debug(
         "About to instantiate layout of type [" + className + "]");
 
-      OptionConverter oc = new OptionConverter();
-      oc.setLoggerRepository(this.repository);
-      Object instance =
-        oc.instantiateByClassName(
+    
+      layout = (Layout)
+        OptionConverter.instantiateByClassName(
           className, org.apache.log4j.Layout.class, null);
-      layout = (Layout) instance;
 
       LoggerRepository repo = (LoggerRepository) ec.getObjectStack().get(0);
       layout.setLoggerRepository(repo);

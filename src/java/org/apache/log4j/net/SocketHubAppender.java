@@ -26,7 +26,6 @@ import java.net.SocketException;
 import java.util.Vector;
 
 import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.CyclicBuffer;
 import org.apache.log4j.spi.LoggingEvent;
 

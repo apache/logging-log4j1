@@ -19,7 +19,7 @@ package org.apache.log4j.spi;
 public class DefaultRepositorySelector implements RepositorySelector {
   LoggerRepository repository;
 
-  public DefaultRepositorySelector(LoggerRepository repository) {
+  public DefaultRepositorySelector(final LoggerRepository repository) {
     this.repository = repository;
   }
 

@@ -48,9 +48,7 @@ public class LevelMatchFilter extends Filter {
   Level levelToMatch;
 
   public void setLevelToMatch(String level) {
-    OptionConverter oc = new OptionConverter();
-    oc.setLoggerRepository(this.repository);
-    levelToMatch = oc.toLevel(level, null);
+    levelToMatch = OptionConverter.toLevel(level, null);
   }
 
   public String getLevelToMatch() {

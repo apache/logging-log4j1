@@ -39,16 +39,10 @@ public class ConsoleAppender extends WriterAppender {
     this(layout, SYSTEM_OUT);
   }
 
-  public ConsoleAppender(Layout layout, String target) {
+  public ConsoleAppender(Layout layout, String targetStr) {
     this.layout = layout;
-
-    if (SYSTEM_OUT.equals(target)) {
-      setWriter(createWriter(System.out));
-    } else if (SYSTEM_ERR.equalsIgnoreCase(target)) {
-      setWriter(createWriter(System.err));
-    } else {
-      targetWarn(target);
-    }
+    setTarget(targetStr);
+    activateOptions();
   }
 
   /**
@@ -89,6 +83,7 @@ public class ConsoleAppender extends WriterAppender {
     } else {
       setWriter(createWriter(System.err));
     }
+    super.activateOptions();
   }
 
   /**

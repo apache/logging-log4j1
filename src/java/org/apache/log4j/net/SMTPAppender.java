@@ -401,9 +401,8 @@ public class SMTPAppender extends AppenderSkeleton {
   public void setEvaluatorClass(String value) {
     getLogger().warn("The SMPTAppender.setEvaluatorClass is deprecated.");
     getLogger().warn("It has been replaced with the more powerful SMPTAppender.setEvaluator method.");
-    OptionConverter oc = new OptionConverter(this.repository);
     evaluator =
-      (TriggeringEventEvaluator) oc.instantiateByClassName(
+      (TriggeringEventEvaluator) OptionConverter.instantiateByClassName(
         value, TriggeringEventEvaluator.class, evaluator);
   }
 

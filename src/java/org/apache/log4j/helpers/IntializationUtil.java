@@ -83,9 +83,7 @@ public class IntializationUtil {
           + "] for automatic log4j configuration of repository named ["+
           repository.getName()+"].");
       
-      OptionConverter oc = new OptionConverter();
-      oc.setLoggerRepository(repository);
-      oc.selectAndConfigure(url, configuratorClassNameStr, repository);
+      OptionConverter.selectAndConfigure(url, configuratorClassNameStr, repository);
     }
   }
 

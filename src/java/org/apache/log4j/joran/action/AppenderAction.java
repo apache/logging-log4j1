@@ -48,12 +48,8 @@ public class AppenderAction extends Action {
       getLogger().debug(
         "About to instantiate appender of type [" + className + "]");
 
-      OptionConverter oc = new OptionConverter();
-      oc.setLoggerRepository(this.repository);
-      Object instance =
-        oc.instantiateByClassName(
+      appender = (Appender) OptionConverter.instantiateByClassName(
           className, org.apache.log4j.Appender.class, null);
-      appender = (Appender) instance;
 
       LoggerRepository repo = (LoggerRepository) ec.getObjectStack().get(0);
       appender.setLoggerRepository(repo);
