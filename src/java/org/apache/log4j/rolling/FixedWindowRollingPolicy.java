@@ -58,6 +58,10 @@ import java.io.File;
  * @since 1.3
  * */
 public class FixedWindowRollingPolicy extends RollingPolicyBase {
+  static final String FNP_NOT_SET =
+    "The FileNamePattern option must be set before using FixedWindowRollingPolicy. ";
+  static final String SEE_FNP_NOT_SET =
+    "See also http://logging.apache.org/log4j/codes.html#tbr_fnp_not_set";
   int maxIndex;
   int minIndex;
   
@@ -73,6 +77,14 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
   }
 
   public void activateOptions() {
+    if (fileNamePatternStr != null) {
+      fileNamePattern = new FileNamePattern(fileNamePatternStr);
+      determineCompressionMode();
+    } else {
+      getLogger().warn(FNP_NOT_SET);
+      getLogger().warn(SEE_FNP_NOT_SET);
+      throw new IllegalStateException(FNP_NOT_SET + SEE_FNP_NOT_SET);
+    }
     if (activeFileName == null) {
       getLogger().warn(
         "The ActiveFile name option must be set before using this rolling policy.");
@@ -87,18 +99,13 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
       getLogger().warn("Setting maxIndex to equal minIndex.");
       maxIndex = minIndex;
     }
-    
+
     if((maxIndex-minIndex) > MAX_WINDOW_SIZE) {
       getLogger().warn("Large window sizes are not allowed.");
       maxIndex = minIndex +  MAX_WINDOW_SIZE;
       getLogger().warn("MaxIndex reduced to {}.", new Integer(maxIndex));
     }
-    
-    if (fileNamePatternStr != null) {
-      fileNamePattern = new FileNamePattern(fileNamePatternStr);
-      determineCompressionMode();
-    }
-    
+
     IntegerTokenConverter itc = fileNamePattern.getIntegerTokenConverter();
 
     if (itc == null) {
