@@ -30,8 +30,6 @@
  - Implemented Bugzilla 20500: separate registry clearing from doConfigure in PropertyConfigurator
    to allow to easier extension. [*]
 
- - Fixed Bugzilla 30425: tests used old name for Jetty server class. [*]
-
  - Fixed Bugzilla 23912: unsafe access to BoundedFIFO in AsyncAppender. [*]
 
  - Fixed Bugzilla 17377: wrong trimming of pattern when left-aligned. [*]
