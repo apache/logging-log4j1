@@ -40,6 +40,7 @@ public class ApplicationPreferenceModel implements SettingsListener {
     private boolean showSplash;
     private String lookAndFeelClassName;
     private int toolTipDisplayMillis;
+    private String lastUsedVersion;
     
     
     private int responsiveness;
@@ -169,6 +170,7 @@ public class ApplicationPreferenceModel implements SettingsListener {
        setShowSplash(event.asBoolean("showSplash"));
        setToolTipDisplayMillis(event.asInt("toolTipDisplayMillis"));
        setConfigurationURL(event.getSetting("configurationURL"));
+       setLastUsedVersion(event.getSetting("lastUsedVersion"));
     }
 
     /* (non-Javadoc)
@@ -187,6 +189,7 @@ public class ApplicationPreferenceModel implements SettingsListener {
         event.saveSetting("showSplash", isShowSplash());
         event.saveSetting("toolTipDisplayMillis", getToolTipDisplayMillis());
         event.saveSetting("configurationURL", getConfigurationURL());
+        event.saveSetting("lastUsedVersion", getLastUsedVersion());
     }
 
     /**
@@ -207,6 +210,7 @@ public class ApplicationPreferenceModel implements SettingsListener {
       setShowSplash(model.isShowSplash());
       setToolTipDisplayMillis(model.getToolTipDisplayMillis());
       setConfigurationURL(model.getConfigurationURL());
+      setLastUsedVersion(model.getLastUsedVersion());
     }
     
     /**
@@ -355,5 +359,21 @@ public class ApplicationPreferenceModel implements SettingsListener {
         Object oldValue = this.configurationURL;
         this.configurationURL = configurationURL;
         firePropertyChange("configurationURL", oldValue, this.configurationURL);
+    }
+    /**
+     * @return Returns the lastUsedVersion.
+     */
+    public final String getLastUsedVersion()
+    {
+        return this.lastUsedVersion;
+    }
+    /**
+     * @param lastUsedVersion The lastUsedVersion to set.
+     */
+    public final void setLastUsedVersion(String lastUsedVersion)
+    {
+        String oldValue = this.lastUsedVersion;
+        this.lastUsedVersion = lastUsedVersion;
+        firePropertyChange("lastUsedVersion", oldValue, this.lastUsedVersion);
     }
 }
