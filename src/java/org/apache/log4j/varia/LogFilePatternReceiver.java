@@ -527,6 +527,9 @@ public class LogFilePatternReceiver extends Receiver {
     if (fieldMap == null) {
       return null;
     }
+    if (exception == null) {
+      exception = new String[]{""};
+    }
 
     Logger logger = null;
     long timeStamp = 0L;
