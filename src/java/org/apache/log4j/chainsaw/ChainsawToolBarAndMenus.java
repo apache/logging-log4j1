@@ -243,7 +243,7 @@ class ChainsawToolBarAndMenus implements ChangeListener {
        Action.ACCELERATOR_KEY,
        KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.CTRL_MASK));
      action.putValue(
-       Action.SMALL_ICON, new ImageIcon(ChainsawIcons.DOWN));
+       Action.SMALL_ICON, new ImageIcon(ChainsawIcons.SCROLL_TO_BOTTOM));
 
      return action;
    }
