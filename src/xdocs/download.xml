@@ -57,11 +57,11 @@
 
     </section>
 
-    <section name="log4j version 1.2 alpha1">
+    <section name="log4j version 1.2 alpha2">
       <p>An alpha version of log4j 1.2 is now available in in <a
-	href="../jakarta-log4j-1.2alpha1.tar.gz"><b>TAR.GZ</b></a>
+	href="../jakarta-log4j-1.2alpha2.tar.gz"><b>TAR.GZ</b></a>
 	format or in <a
-	href="../jakarta-log4j-1.2alpha1.zip"><b>ZIP</b></a> format.
+	href="../jakarta-log4j-1.2alpha2.zip"><b>ZIP</b></a> format.
       </p>
 
  
