@@ -39,6 +39,12 @@ public class HTMLLayout extends Layout {
   // Print no location info by default
   boolean locationInfo = false;
 
+  /**
+     No options to activate.
+  */
+  public
+  void activateOptions() {
+  }
   
   public 
   String format(LoggingEvent event) {
