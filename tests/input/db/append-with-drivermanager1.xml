@@ -9,7 +9,7 @@
      <param name="locationInfo" value="true"/>
      <connectionSource class="org.apache.log4j.db.DriverManagerConnectionSource">
        <param name="driverClass" value="${driverClass}"/>
-       <param name="${url-key:-url}" value="${url}"/>
+       <param name="url" value="${url}"/>
        <param name="user" value="${user}"/>
        <param name="password" value="${password}"/>
      </connectionSource>
