@@ -461,7 +461,11 @@ public class PropertyConfigurator extends BasicConfigurator
 							 CategoryFactory.class, 
 							 categoryFactory);
       PropertySetter.setProperties(categoryFactory, props, FACTORY_PREFIX + ".");
-      Category.getDefaultHierarchy().setCategoryFactory(categoryFactory);
+      //  When the following line is commented out, the configured
+      //  factory is discarded along with the PropertyConfigurator
+      //  instance.
+      //
+      // Category.getDefaultHierarchy().setCategoryFactory(categoryFactory);
     }
   }
 
