@@ -20,6 +20,8 @@
 
     ant jar     - build log4j-core and log4j jar files
 
+    ant distib  - will make a distribution in ../dump directory
+
     </echo>
   </target>
 
@@ -268,35 +270,45 @@
     </javadoc>		
   </target>
 
-  <target name="log4j.tar" depends="jar" >
 
-  <delete>
-    <fileset dir="." 
-             includes="**/*.bak, {$stem}/**/temp*, 
-	     ${stem}/performance/test, {$stem}test/current.*
-	     {$stem}/examples/test,
-	     {$stem}/test/logging.*,
-	     {$stem}/test/log4j.properties,
-	     {$stem}/test/socket.lcf,
-	     {$stem}/test/file,
-	     {$stem}/test/output.*,
-	     {$stem}/nt/EventLogCategories.dbg,
-	     {$stem}/nt/EventLogCategories.h,
-	     {$stem}/nt/EventLogCategories.rc,
-	     {$stem}/nt/EventLogCategories.RES,
-	     {$stem}/nt/MSG00001.bin,
-	     {$stem}/nt/NTEventLogAppender.lib,
-	     {$stem}/nt/NTEventLogAppender.exp,
-	     {$stem}/nt/vc50.idb,
-	     {$stem}/net/test/loop.log,
-	     {$stem}/net/test/loop.log.1"/>
-   </delete>
-    <tar tarfile="../jakarta-log4j-${version}.tar" basedir="."
-         includes="make/**, xdocs/**, docs/**, Makefile, build/**
-                  manifest.mf, INSTALL, LICENSE.APL, ${jar.dest}/**, 
-		  org/**,  icons/**, ${javac.dest}/**" 
-         excludes="make/make.loc, **/*.bak"
-    />
+  <patternset id="temp.files" >
+    <include name="**/*.bak, {$stem}/**/temp*, ${stem}/performance/test, 
+        {$stem}test/current.* {$stem}/examples/test, {$stem}/test/logging.*,
+        {$stem}/test/log4j.properties, {$stem}/test/socket.lcf,
+        {$stem}/test/file, {$stem}/test/output.*, 
+        {$stem}/nt/EventLogCategories.dbg, {$stem}/nt/EventLogCategories.h,
+	{$stem}/nt/EventLogCategories.rc, {$stem}/nt/EventLogCategories.RES,
+        {$stem}/nt/MSG00001.bin, {$stem}/nt/NTEventLogAppender.lib,
+        {$stem}/nt/NTEventLogAppender.exp, {$stem}/nt/vc50.idb,
+        {$stem}/net/test/loop.log, {$stem}/net/test/loop.log.1"/>
+  </patternset>
+
+  <target name="distib" depends="init">
+
+    <delete>
+      <fileset dir=".">
+        <patternset refid="temp.files" />
+      </fileset>         
+    </delete>
+
+    <delete dir="../dump/jakarta-log4j-${version}" />
+    <mkdir  dir="../dump/jakarta-log4j-${version}" />
+
+    <copy todir="../dump/jakarta-log4j-${version}">
+       <fileset dir="."
+                includes="make/**, xdocs/**, docs/**, Makefile, build/**
+                          manifest.mf, INSTALL, LICENSE.APL, ${jar.dest}/**, 
+		          org/**,  icons/**, ${javac.dest}/**"
+                excludes="make/make.loc, **/*.bak"/>
+    </copy>
+
+    <tar tarfile="../dump/jakarta-log4j-${version}.tar" basedir="../dump"
+         includes="jakarta-log4j-${version}/**" />
+    <gzip src="../dump/jakarta-log4j-${version}.tar" 
+          zipfile="../dump/jakarta-log4j-${version}.tar.gz" />
+    <zip zipfile="../dump/jakarta-log4j-${version}.zip" basedir="../dump"
+         includes="jakarta-log4j-${version}/**" />
+
   </target>
 
 </project>
