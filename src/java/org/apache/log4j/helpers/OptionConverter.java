@@ -357,6 +357,8 @@ public class OptionConverter  {
         //System.out.println("About to call classObj.newInstance(), "+classObj.getName());
         
         return classObj.newInstance();
+      } catch(NoClassDefFoundError ncfe) {
+        getLogger().error("Could not instantiate object of class [" + className + "].", ncfe);
       } catch (Throwable e) {
         getLogger().error("Could not instantiate object of class [" + className + "].", e);
       }
