@@ -29,6 +29,12 @@ import org.apache.log4j.spi.LoggingEvent;
  * @author Ceki G&uuml;lc&uuml;
  */
 public interface Appender extends Component {
+  
+  /**
+   * An appender must be activated before it can be used.
+   */
+  public void activate();
+  
   /**
    * Add a filter to the end of the filter list.
    *
@@ -65,6 +71,22 @@ public interface Appender extends Component {
    */
   public void close();
 
+  
+  /**
+   * Is this appender closed?
+   *
+   * @since 1.3
+   */
+  public boolean isClosed();
+
+  /**
+   * Is this appender in working order?
+   *
+   * @since 1.3
+   */
+  public boolean isActive();
+  
+  
   /**
    * Log in <code>Appender</code> specific way. When appropriate, Loggers will
    * call the <code>doAppend</code> method of appender implementations in

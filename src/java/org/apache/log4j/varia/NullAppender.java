@@ -21,7 +21,12 @@ public class NullAppender extends AppenderSkeleton {
   private static NullAppender instance = new NullAppender();
 
   public NullAppender() {
-     super(true);
+  }
+
+  /** 
+   * There are no options to acticate.
+   * */
+  public void activateOptions() {
   }
 
   /**

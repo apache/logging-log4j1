@@ -86,7 +86,6 @@ public class NetSendAppender extends AppenderSkeleton {
 
   /** Default constructor */
   public NetSendAppender() {
-    super(false);
     if (!libraryLoaded) {
       try {
         System.loadLibrary("NetSendAppender");

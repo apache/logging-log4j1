@@ -120,7 +120,6 @@ public class JMSAppender extends AppenderSkeleton {
   int successiveFailureCount = 0;
   
   public JMSAppender() {
-      super(false);
   }
 
   /**
