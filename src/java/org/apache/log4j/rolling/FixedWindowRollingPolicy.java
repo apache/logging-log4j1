@@ -32,7 +32,7 @@ import java.io.File;
  * of the file where current logging output will be written. 
  * The <b>FileNamePattern</b>  option represents the file name pattern for the 
  * archived (rolled over) log files. If present, the <b>FileNamePattern</b> 
- * option must include an integer token, that is the string "%i" somwhere 
+ * option must include an integer token, that is the string "%i" somewhere 
  * within the pattern.
  * 
  * <p>Let <em>max</em> and <em>min</em> represent the values of respectively 

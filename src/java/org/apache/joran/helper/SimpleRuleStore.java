@@ -21,6 +21,7 @@ import org.apache.joran.RuleStore;
 import org.apache.joran.action.*;
 
 import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.spi.LoggerRepository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,9 +33,18 @@ public class SimpleRuleStore implements RuleStore {
 
   // key: Pattern instance, value: ArrayList containing actions
   HashMap rules = new HashMap();
+  LoggerRepository repository;
 
+  public SimpleRuleStore() {
+  }
+
+  public SimpleRuleStore(LoggerRepository repository) {
+    this.repository = repository;
+  }
+  
   public void addRule(Pattern pattern, Action action) {
-    //System.out.println("pattern to add is:" + pattern + "hashcode:" + pattern.hashCode());
+    action.setLoggerRepository(repository);
+    
     List a4p = (List) rules.get(pattern);
 
     if (a4p == null) {
@@ -46,11 +56,13 @@ public class SimpleRuleStore implements RuleStore {
   }
 
   public void addRule(Pattern pattern, String actionClassName) {
+    OptionConverter oc = new OptionConverter();
+    oc.setLoggerRepository(repository);
     Action action =
-      (Action) OptionConverter.instantiateByClassName(
+      (Action) oc.instantiateByClassName(
         actionClassName, Action.class, null);
 
-      if(action != null) {
+    if(action != null) {
         addRule(pattern, action);
       }
   }

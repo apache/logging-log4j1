@@ -114,6 +114,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
     setThreshold(Level.ALL);
     this.root.setHierarchy(this);
     rendererMap = new RendererMap();
+    rendererMap.setLoggerRepository(this);
     properties = new Hashtable();
     defaultFactory = new DefaultCategoryFactory();
   }

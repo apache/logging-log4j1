@@ -108,6 +108,7 @@ public class PropertyConfigurator extends ConfiguratorBase {
   protected Hashtable registry = new Hashtable(11);
   protected LoggerFactory loggerFactory = new DefaultCategoryFactory();
   protected List errorList = new Vector();
+  protected OptionConverter optionConverter = new OptionConverter();
 
   /**
     Read configuration from a file. <b>The existing configuration is
@@ -359,7 +360,8 @@ public class PropertyConfigurator extends ConfiguratorBase {
     try {
       // we start by attaching a temporary list appender
       attachListAppender(repository);
-
+      optionConverter.setLoggerRepository(repository);
+      
       boolean attachedConsoleApepnder = false;
       if ((value != null) && OptionConverter.toBoolean(value, true)) {
         attachTemporaryConsoleAppender(repository);
@@ -370,12 +372,14 @@ public class PropertyConfigurator extends ConfiguratorBase {
       // false.
       repository.setPristine(false);
 
+      
+      
       String thresholdStr =
-        OptionConverter.findAndSubst(THRESHOLD_PREFIX, properties);
+        optionConverter.findAndSubst(THRESHOLD_PREFIX, properties);
 
       if (thresholdStr != null) {
         repository.setThreshold(
-          OptionConverter.toLevel(thresholdStr, Level.ALL));
+          optionConverter.toLevel(thresholdStr, Level.ALL));
         getLogger(repository).debug(
           "Hierarchy threshold set to [" + repository.getThreshold() + "].");
       }
@@ -470,11 +474,11 @@ public class PropertyConfigurator extends ConfiguratorBase {
    */
   protected void configureLoggerFactory(Properties props, LoggerRepository repository) {
     String factoryClassName =
-      OptionConverter.findAndSubst(LOGGER_FACTORY_KEY, props);
+      optionConverter.findAndSubst(LOGGER_FACTORY_KEY, props);
 
     if (factoryClassName != null) {
       loggerFactory =
-        (LoggerFactory) OptionConverter.instantiateByClassName(
+        (LoggerFactory) optionConverter.instantiateByClassName(
           factoryClassName, LoggerFactory.class, loggerFactory);
       PropertySetter setter = new PropertySetter(loggerFactory);
       setter.setLoggerRepository(repository);
@@ -482,33 +486,12 @@ public class PropertyConfigurator extends ConfiguratorBase {
     }
   }
 
-  /*
-  void configureOptionHandler(OptionHandler oh, String prefix,
-                              Properties props) {
-    String[] options = oh.getOptionStrings();
-    if(options == null)
-      return;
-
-    String value;
-    for(int i = 0; i < options.length; i++) {
-      value =  OptionConverter.findAndSubst(prefix + options[i], props);
-      LogLog.debug(
-         "Option " + options[i] + "=[" + (value == null? "N/A" : value)+"].");
-      // Some option handlers assume that null value are not passed to them.
-      // So don't remove this check
-      if(value != null) {
-        oh.setOption(options[i], value);
-      }
-    }
-    oh.activateOptions();
-  }
-  */
   void configureRootCategory(Properties props, LoggerRepository repository) {
     String effectiveFrefix = ROOT_LOGGER_PREFIX;
-    String value = OptionConverter.findAndSubst(ROOT_LOGGER_PREFIX, props);
+    String value = optionConverter.findAndSubst(ROOT_LOGGER_PREFIX, props);
 
     if (value == null) {
-      value = OptionConverter.findAndSubst(ROOT_CATEGORY_PREFIX, props);
+      value = optionConverter.findAndSubst(ROOT_CATEGORY_PREFIX, props);
       effectiveFrefix = ROOT_CATEGORY_PREFIX;
     }
 
@@ -544,7 +527,7 @@ public class PropertyConfigurator extends ConfiguratorBase {
           loggerName = key.substring(LOGGER_PREFIX.length());
         }
 
-        String value = OptionConverter.findAndSubst(key, props);
+        String value = optionConverter.findAndSubst(key, props);
         Logger logger = repository.getLogger(loggerName, loggerFactory);
 
         synchronized (logger) {
@@ -553,11 +536,12 @@ public class PropertyConfigurator extends ConfiguratorBase {
         }
       } else if (key.startsWith(RENDERER_PREFIX)) {
         String renderedClass = key.substring(RENDERER_PREFIX.length());
-        String renderingClass = OptionConverter.findAndSubst(key, props);
+        String renderingClass = optionConverter.findAndSubst(key, props);
 
         if (repository instanceof RendererSupport) {
-          RendererMap.addRenderer(
-            (RendererSupport) repository, renderedClass, renderingClass);
+          RendererSupport rs = (RendererSupport) repository;
+          RendererMap rm = rs.getRendererMap();
+          rm.addRenderer(renderedClass, renderingClass);
         }
       }
     }
@@ -570,7 +554,7 @@ public class PropertyConfigurator extends ConfiguratorBase {
     LoggerRepository repository, Properties props, Logger cat,
     String loggerName) {
     String value =
-      OptionConverter.findAndSubst(ADDITIVITY_PREFIX + loggerName, props);
+      optionConverter.findAndSubst(ADDITIVITY_PREFIX + loggerName, props);
     getLogger(repository).debug(
       "Handling " + ADDITIVITY_PREFIX + loggerName + "=[" + value + "]");
 
@@ -618,7 +602,7 @@ public class PropertyConfigurator extends ConfiguratorBase {
           logger.setLevel(null);
         }
       } else {
-        logger.setLevel(OptionConverter.toLevel(levelStr, Level.DEBUG));
+        logger.setLevel(optionConverter.toLevel(levelStr, Level.DEBUG));
       }
 
       getLogger(repository).debug(
@@ -664,7 +648,7 @@ public class PropertyConfigurator extends ConfiguratorBase {
     String layoutPrefix = prefix + ".layout";
 
     appender =
-      (Appender) OptionConverter.instantiateByKey(
+      (Appender) optionConverter.instantiateByKey(
         props, prefix, org.apache.log4j.Appender.class, null);
 
     if (appender == null) {
@@ -679,13 +663,13 @@ public class PropertyConfigurator extends ConfiguratorBase {
     appender.setLoggerRepository(repository);
     if (appender instanceof OptionHandler) {
       String layoutClassName =
-        OptionConverter.findAndSubst(layoutPrefix, props);
+        optionConverter.findAndSubst(layoutPrefix, props);
 
       // if there are layout related directives, we process these now
       if (layoutClassName != null) {
         // Trim layoutClassName to avoid trailing spaces that cause problems.
         Layout layout =
-          (Layout) OptionConverter.instantiateByClassName(
+          (Layout) optionConverter.instantiateByClassName(
             layoutClassName.trim(), Layout.class, null);
 
         if (layout != null) {

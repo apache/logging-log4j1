@@ -69,9 +69,10 @@ public class BindDataSourceToJNDIAction extends Action {
     String passwordStr = ec.getSubstitutionProperty(PASSWORD);
 
     try {
+      OptionConverter oc = new OptionConverter();
+      oc.setLoggerRepository(this.repository);
       DataSource ds =
-        (DataSource) OptionConverter.instantiateByClassName(
-          dsClassName, DataSource.class, null);
+        (DataSource) oc.instantiateByClassName(dsClassName, DataSource.class, null);
 
       PropertySetter setter = new PropertySetter(ds);
 

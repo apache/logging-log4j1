@@ -16,8 +16,11 @@
 
 package org.apache.log4j.pattern;
 
-import org.apache.log4j.Logger;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.spi.ComponentBase;
+import org.apache.log4j.spi.LoggerRepository;
+import org.apache.ugli.ULogger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +45,7 @@ import java.util.ArrayList;
  *
  * @since 0.8.2
 */
-public class PatternParser {
+public class PatternParser extends ComponentBase {
   private static final char ESCAPE_CHAR = '%';
   private static final int LITERAL_STATE = 0;
   private static final int CONVERTER_STATE = 1;
@@ -121,10 +124,9 @@ public class PatternParser {
    */
   Map converterRegistry;
 
-  private Logger logger  = Logger.getLogger(PatternParser.class);
-  
-  public PatternParser(String pattern) {
+  public PatternParser(String pattern, LoggerRepository repository) {
     this.pattern = pattern;
+    this.repository = repository;
     patternLength = pattern.length();
     state = LITERAL_STATE;
   }
@@ -287,7 +289,7 @@ public class PatternParser {
           formattingInfo.max = c - '0';
           state = MAX_STATE;
         } else {
-          logger.error(
+          getLogger().error(
             "Error occured in position " + i
             + ".\n Was expecting digit, instead got char \"" + c + "\".");
           state = LITERAL_STATE;
@@ -321,7 +323,7 @@ public class PatternParser {
 
   String findConverterClass(String converterId) {
   	if(converterId == null) {
-  		logger.warn("converterId is null");
+      getLogger().warn("converterId is null");
   	}
   	
     if (converterRegistry != null) {
@@ -359,17 +361,20 @@ public class PatternParser {
 
     //System.out.println("Option is [" + option + "]");
     if (className != null) {
-      pc =
-        (PatternConverter) OptionConverter.instantiateByClassName(
+      OptionConverter oc = new OptionConverter(repository);
+      pc = (PatternConverter) oc.instantiateByClassName(
           className, PatternConverter.class, null);
 
+      // setting the logger repository is an important configuration step.
+      pc.setLoggerRepository(this.repository);
+      
       // formattingInfo variable is an instance variable, occasionally reset 
       // and used over and over again
       pc.setFormattingInfo(formattingInfo);
       pc.setOptions(options);
       currentLiteral.setLength(0);
     } else {
-      logger.error(
+      getLogger().error(
           "Unexpected char [" + c + "] at position " + i
           + " in conversion patterrn.");
         pc = new LiteralPatternConverter(currentLiteral.toString());
@@ -404,4 +409,5 @@ public class PatternParser {
   public void setConverterRegistry(Map converterRegistry) {
     this.converterRegistry = converterRegistry;
   }
+  
 }

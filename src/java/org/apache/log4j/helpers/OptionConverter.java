@@ -17,9 +17,9 @@
 package org.apache.log4j.helpers;
 
 import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.spi.ComponentBase;
 import org.apache.log4j.spi.Configurator;
 import org.apache.log4j.spi.LoggerRepository;
 
@@ -44,25 +44,19 @@ import java.util.Properties;
  * @author Anders Kristensen
  * @author Avy Sharell
 */
-public class OptionConverter {
+public class OptionConverter extends ComponentBase {
   static String DELIM_START = "${";
   static char DELIM_STOP = '}';
   static int DELIM_START_LEN = 2;
   static int DELIM_STOP_LEN = 1;
 
-  /** OptionConverter is a static class. */
-  private OptionConverter() {
+  public OptionConverter() {
   }
-
-  /**
-   * Gets a logger named after this class. Note that the instance of the 
-   * logger may change depending on the 
-   * {@link org.apache.log4j.spi.RepositorySelector}.
-   * @return a context dependent Logger
-   */
-  private static Logger getLogger() {
-    return LogManager.getLogger(OptionConverter.class);
+  
+  public OptionConverter(LoggerRepository repository) {
+    this.repository = repository;
   }
+  
   
   public static String[] concatanateArrays(String[] l, String[] r) {
     int len = l.length + r.length;
@@ -126,13 +120,11 @@ public class OptionConverter {
     try {
       return System.getProperty(key, def);
     } catch (Throwable e) { // MS-Java throws com.ms.security.SecurityExceptionEx
-      getLogger().debug("Was not allowed to read system property \"{}\".", key);
-
       return def;
     }
   }
 
-  public static Object instantiateByKey(
+  public Object instantiateByKey(
     Properties props, String key, Class superClass, Object defaultValue) {
     // Get the value of the property in string form
     String className = findAndSubst(key, props);
@@ -144,8 +136,7 @@ public class OptionConverter {
     }
 
     // Trim className to avoid trailing spaces that cause problems.
-    return OptionConverter.instantiateByClassName(
-      className.trim(), superClass, defaultValue);
+    return instantiateByClassName(className.trim(), superClass, defaultValue);
   }
 
   /**
@@ -173,15 +164,14 @@ public class OptionConverter {
     return dEfault;
   }
 
-  public static int toInt(String value, int dEfault) {
+  public int toInt(String value, int dEfault) {
     if (value != null) {
       String s = value.trim();
 
       try {
         return Integer.valueOf(s).intValue();
       } catch (NumberFormatException e) {
-        getLogger().error("[" + s + "] is not in proper int form.");
-        e.printStackTrace();
+        getLogger().error("[{}] is not in proper int form.", s);
       }
     }
 
@@ -208,7 +198,7 @@ public class OptionConverter {
      significant for the class name part, if present.
 
      @since 1.1 */
-  public static Level toLevel(String value, Level defaultValue) {
+  public Level toLevel(String value, Level defaultValue) {
     if (value == null) {
       return defaultValue;
     }
@@ -274,7 +264,7 @@ public class OptionConverter {
     return result;
   }
 
-  public static long toFileSize(String value, long dEfault) {
+  public long toFileSize(String value, long dEfault) {
     if (value == null) {
       return dEfault;
     }
@@ -312,7 +302,7 @@ public class OptionConverter {
      found value.
 
   */
-  public static String findAndSubst(String key, Properties props) {
+  public String findAndSubst(String key, Properties props) {
     String value = props.getProperty(key);
 
     if (value == null) {
@@ -338,7 +328,7 @@ public class OptionConverter {
      @param superClass The class to which the new object should belong.
      @param defaultValue The object to return in case of non-fulfillment
    */
-  public static Object instantiateByClassName(
+  public Object instantiateByClassName(
     String className, Class superClass, Object defaultValue) {
     if (className != null) {
       try {
@@ -359,8 +349,7 @@ public class OptionConverter {
           return defaultValue;
         }
 
-
-        System.out.println("About to call classObj.newInstance(), "+classObj.getName());
+        //System.out.println("About to call classObj.newInstance(), "+classObj.getName());
         
         return classObj.newInstance();
       } catch (Exception e) {
@@ -406,8 +395,7 @@ public class OptionConverter {
    * @param val The string on which variable substitution is performed.
    * @throws IllegalArgumentException if <code>val</code> is malformed.
   */
-  public static String substVars(String val, Properties props)
-     {
+  public static String substVars(String val, Properties props) {
     
     StringBuffer sbuf = new StringBuffer();
 
@@ -511,7 +499,7 @@ public class OptionConverter {
      @param hierarchy The {@link org.apache.log4j.Hierarchy} to act on.
 
      @since 1.1.4 */
-  public static void selectAndConfigure(
+  public void selectAndConfigure(
     URL url, String clazz, LoggerRepository hierarchy) {
     Configurator configurator = null;
     String filename = url.getFile();

@@ -110,7 +110,10 @@ public class PropertySetter extends ComponentBase {
           continue;
         }
 
-        String value = OptionConverter.findAndSubst(key, properties);
+        OptionConverter oc = new OptionConverter();
+        oc.setLoggerRepository(repository);
+        String value = oc.findAndSubst(key, properties);
+        
         key = key.substring(len);
 
         if ("layout".equals(key) && obj instanceof Appender) {
@@ -351,7 +354,9 @@ public class PropertySetter extends ComponentBase {
         return Boolean.FALSE;
       }
     } else if (Level.class.isAssignableFrom(type)) {
-      return OptionConverter.toLevel(v, (Level) Level.DEBUG);
+      OptionConverter oc = new OptionConverter();
+      oc.setLoggerRepository(repository);
+      return oc.toLevel(v, (Level) Level.DEBUG);
     }
 
     return null;
