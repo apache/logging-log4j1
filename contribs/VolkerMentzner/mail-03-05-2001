@@ -1,0 +1,24 @@
+Delivered-To: cgu@qos.ch 
+From: "Mentzner, Volker" <V.Mentzner@PSI-BT.de> 
+To: "'cgu@qos.ch'" <cgu@qos.ch> 
+Subject: Remote configuring log4j 
+Date: Thu, 3 May 2001 08:10:25 +0200 
+X-Mailer: Internet Mail Service (5.5.2653.19) 
+
+Hi Ceki,
+
+I am using log4j in a GUI project. Working at the application I found
+it useful to remotely configure log4j with my favourite browser.  This
+is reached by using a very small web server (PluggableHTTPServer) with
+extentions for tasks like configuring log4j.  You can easily put this
+web server in an application, an example can be found in
+PluggableHTTPServer.main().  Maybe someone else can use this too, so I
+sent it to you to give it to the contrib dir if you like it.
+
+Regards
+
+
+Volker Mentzner
+
+ <<pluggableServer.zip>> 
+
