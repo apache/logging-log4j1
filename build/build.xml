@@ -20,7 +20,7 @@
 
     ant jar     - build log4j-core and log4j jar files
 
-    ant distrib - will create a distribution in ../../dump/ 
+    ant dist    - will create a distribution in dist/
 
     </echo>
   </target>
@@ -90,7 +90,7 @@
     <tstamp />
     <property name="java.source.dir" value="." />
     <property name="javac.dest" value="classes" />
-    <property name="jar.dest" value="lib" />
+    <property name="jar.dest" value="dist" />
     <property name="docs" value="docs" />
     <property name="javadoc.dest" value="${docs}/api" />
     <property name="stem" value="org/apache/log4j" />
@@ -176,7 +176,7 @@
   <target name="prejar" depends="build">
     <mkdir dir="${jar.dest}"/>    
     <filter token="version" value="${version}" />
-    <copy file="build/manifest.mf" tofile="lib/manifest.mf" filtering="true"/>
+    <copy file="build/manifest.mf" tofile="${jar.dest}/manifest.mf" filtering="true"/>
   </target>
 
 
@@ -194,7 +194,7 @@
 		  ${stem}/or/MessageRenderer.class,
 		  ${stem}/spi/TriggeringEventEvaluator.class
 		  org/apache/log4j/helpers/CyclicBuffer.class"
-        manifest="lib/manifest.mf"
+        manifest="dist/manifest.mf"
     />
   </target>
 
@@ -211,7 +211,7 @@
 		  **/log4j/or/*.class,
 		  **/log4j/gui/TextPaneAppender.class"
 	excludes="**/StressCategory*, **/UnitTest**"
-        manifest="lib/manifest.mf"	
+        manifest="${jar.dest}/manifest.mf"	
     />
   </target>
 
@@ -274,45 +274,46 @@
     </javadoc>		
   </target>
 
-  <!-- these files will be deleted -->
-  <patternset id="temp.files" >
-    <include name="**/*.bak, {$stem}/**/temp*, ${stem}/performance/test, 
-        {$stem}test/current.* {$stem}/examples/test, {$stem}/test/logging.*,
-        {$stem}/test/log4j.properties, {$stem}/test/socket.lcf,
-        {$stem}/test/file, {$stem}/test/output.*, 
-        {$stem}/nt/EventLogCategories.dbg, {$stem}/nt/EventLogCategories.h,
-	{$stem}/nt/EventLogCategories.rc, {$stem}/nt/EventLogCategories.RES,
-        {$stem}/nt/MSG00001.bin, {$stem}/nt/NTEventLogAppender.lib,
-        {$stem}/nt/NTEventLogAppender.exp, {$stem}/nt/vc50.idb,
-        {$stem}/net/test/loop.log, {$stem}/net/test/loop.log.1"/>
-  </patternset>
 
-  <target name="distrib" depends="init">
+  <target name="dist" depends="init, clean, jar, javadoc">
 
-    <delete>
-      <fileset dir=".">
-        <patternset refid="temp.files" />
-      </fileset>         
+    <delete verbose="true">
+      <fileset dir="."> 
+        <patternset includes="**/*.bak,${stem}/**/temp*,${stem}/performance/test,
+          ${stem}test/current.*,{$stem}/examples/test,{$stem}/test/logging.*,
+          ${stem}/test/log4j.properties,{$stem}/test/socket.lcf,
+          ${stem}/test/file,${stem}/test/output.*, 
+          ${stem}/nt/EventLogCategories.dbg,${stem}/nt/EventLogCategories.h,
+	  ${stem}/nt/EventLogCategories.rc,${stem}/nt/EventLogCategories.RES,
+          ${stem}/nt/MSG00001.bin,${stem}/nt/NTEventLogAppender.lib,
+          ${stem}/nt/NTEventLogAppender.exp,${stem}/nt/vc50.idb,
+          ${stem}/net/test/loop.log,${stem}/net/test/loop.log.1,
+	  ${jar.dest}/manifest.mf"/>
+     </fileset>         
     </delete>
 
-    <delete dir="../dump/jakarta-log4j-${version}" />
-    <mkdir  dir="../dump/jakarta-log4j-${version}" />
+    <mkdir  dir="dist/tmp/jakarta-log4j-${version}" />
 
-    <copy todir="../dump/jakarta-log4j-${version}">
+    <copy todir="dist/tmp/jakarta-log4j-${version}">
        <fileset dir="."
-                includes="make/**, xdocs/**, docs/**, Makefile, build/**
-                          manifest.mf, INSTALL, LICENSE.APL, ${jar.dest}/**, 
+                includes="make/**, xdocs/**, docs/**, Makefile, build/*
+                          manifest.mf, INSTALL, LICENSE.APL, ${jar.dest}/*.jar, 
 		          org/**,  icons/**, ${javac.dest}/**, contribs/**"
-                excludes="make/make.loc, **/*.bak,
+                excludes="make/make.loc, **/*.bak, **/.#*,
 		          ${stem}/xml/Transform.java"/>
     </copy>
 
-    <tar tarfile="../dump/jakarta-log4j-${version}.tar" basedir="../dump"
+    <tar tarfile="dist/jakarta-log4j-${version}.tar" basedir="dist/tmp"
          includes="jakarta-log4j-${version}/**" />
-    <gzip src="../dump/jakarta-log4j-${version}.tar" 
-          zipfile="../dump/jakarta-log4j-${version}.tar.gz" />
-    <zip zipfile="../dump/jakarta-log4j-${version}.zip" basedir="../dump"
+
+    <gzip src="dist/jakarta-log4j-${version}.tar" 
+          zipfile="dist/jakarta-log4j-${version}.tar.gz" />
+
+    <zip zipfile="dist/jakarta-log4j-${version}.zip" basedir="dist/tmp"
          includes="jakarta-log4j-${version}/**" />
+
+    	 
+    <delete dir="dist/tmp/jakarta-log4j-${version}" />
 
   </target>
 

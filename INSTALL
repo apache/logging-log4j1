@@ -3,7 +3,7 @@
 Using log4j
 ===========
 	
-1) First untar the distribution file.
+1) First untar or unzip the distribution file.
 
 2) Assuming you chose to extract the distribution in to the
    PATH_OF_YOUR_CHOICE, untarring the distribution file should create
@@ -110,4 +110,4 @@ environment included with the package. In that case, you need to
 create a make.loc file in the make directory. See the files
 make/README and make/TUTORIAL for further details.
 
-In case of problems please contact "Ceki Gulcu" <ceki@apache.org>.
+In case of problems send an e-mail note to <log4j-user@jakarta.apache.org>.

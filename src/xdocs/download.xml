@@ -42,6 +42,11 @@ online.</p>
 
 <p>Version 1.0.4 is the 20th major public release of log4j.</p>
 
+<p>Version 1.1beta1 is also available online in <a
+href="../jakarta-log4j-1.1b1.tgz"><b>TGZ</b></a> format or in <a
+href="../jakarta-log4j-1.1b1.zip"><b>ZIP</b></a> format. 
+</p>
+
 <p>Thanks to <a href="mailto:hgomez@slib.fr">Henri Gomez</a>, Linux
 users can now fetch log4j in RPM format at <a
 href="http://rpmized.free.fr">http://rpmized.free.fr</a> or
