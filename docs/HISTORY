@@ -9,6 +9,8 @@
  April 22, 2001
 
  - Release of version 1.1b5
+
+ - In HTMLLayout, the Title option sets the HTML document title (<title>...<title>).
  
  - Corrected an important performance bug in LocationInfo. Hein Couwet
    and kr@it-practice.dk have independently identified the bug. This is
