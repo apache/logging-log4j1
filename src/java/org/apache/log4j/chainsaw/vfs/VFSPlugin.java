@@ -43,10 +43,12 @@ import org.apache.log4j.helpers.LogLog;
  */
 public class VFSPlugin extends GUIPluginSkeleton {
 	
-	
+	private static final Logger USER_MESSAGE_LOGGER = MessageCenter.getInstance().getLogger();
+    
 	private final FileSystemTreePanel fileSystemTree = new FileSystemTreePanel();
 	private final FileObjectTable fileObjectTable = new FileObjectTable();
 	private final JSplitPane splitPane = new JSplitPane();
+    private VFSPluginPreferenceModel prefModel;
     
 	private StandardFileSystemManager fileSystemManager;
     
@@ -75,6 +77,9 @@ public class VFSPlugin extends GUIPluginSkeleton {
 	public void activateOptions() {
 		try {
 			this.fileSystemManager = (StandardFileSystemManager) VFS.getManager();
+            
+//            TODO load the pref model from preference storage
+            this.prefModel = new VFSPluginPreferenceModel();
 			
 		} catch (FileSystemException e) {
 			LogLog.error("Failed to initialise VFS", e);
@@ -95,19 +100,30 @@ public class VFSPlugin extends GUIPluginSkeleton {
      * 
 	 */
 	private void loadLocalFileSystem() {
-		try {
-			FileObject fileObject = this.fileSystemManager.resolveFile(new File("").toURL().toExternalForm());
-			
-			DefaultMutableTreeNode node = this.fileSystemTree.addFileObject("local", fileObject);
-            
-            // TODO replace this with an explicit call to pre-select the firs node in the tree, which
-            // would then trigger the look for children
-            //VFSUtils.lookForChildren(this.fileSystemTree.getTree(), node);
-            
-		} catch (Exception e) {
-			LogLog.error("error creating local VFS",e);
-		}
-		
+        if(prefModel.isLoadAllRootsOnStart()) {
+    		try {
+                
+                File[] roots = File.listRoots();
+				for (int i = 0; i < roots.length; i++) {
+					File root = roots[i];
+                    
+					// Add the authors of the java.io.File class to the list of people to "have a word" with... This is ridiculous...
+					if (!(root.getAbsolutePath().toLowerCase().startsWith("a:") || root.getAbsolutePath().toLowerCase().startsWith("b:"))) {
+						if(root.exists() && root.canRead()) {
+							FileObject fileObject = this.fileSystemManager
+							.resolveFile(root.toURL().toExternalForm());
+							DefaultMutableTreeNode node = this.fileSystemTree
+							.addFileObject("local:" + root.getAbsolutePath(),
+									fileObject);
+                            USER_MESSAGE_LOGGER.info("Adding " + root.getAbsolutePath());
+						}
+					}
+				}
+                
+    		} catch (Exception e) {
+    			LogLog.error("error creating local VFS",e);
+    		}
+        }		
 	}
 	/**
 	 * Works out which of the supported File Systems are available.
@@ -240,7 +256,7 @@ public class VFSPlugin extends GUIPluginSkeleton {
                         Collection objects = new ArrayList(Arrays.asList(fos));
                         for (Iterator iter = objects.iterator(); iter.hasNext();) {
 							FileObject fo = (FileObject) iter.next();
-							if(fo.getType().hasChildren()) {
+							if(fo.isReadable() && fo.getType().hasChildren()) {
 								iter.remove();
                             }
 						}
