@@ -5,6 +5,9 @@
  * version 1.1, a copy of which has been included  with this distribution in
  * the LICENSE file.
  */
+
+// Contributors:  Mathias Bogaert
+
 package org.apache.log4j.helpers;
 
 import java.io.File;
@@ -36,6 +39,7 @@ public abstract class FileWatchdog extends Thread {
   File file;
   long lastModif = 0; 
   boolean warnedAlready = false;
+  boolean interrupted = false;
 
   protected
   FileWatchdog(String filename) {
@@ -59,10 +63,20 @@ public abstract class FileWatchdog extends Thread {
 
   protected
   void checkAndConfigure() {
-    if(file.exists()) {
-      long l = file.lastModified();
-      if(l > lastModif) {
-	lastModif = l;
+    boolean fileExists;
+    try {
+      fileExists = file.exists();
+    } catch(SecurityException  e) {
+      LogLog.warn("Was not allowed to read check file existance, file:["+
+		  fileName+"]."));
+      interrupted = true; // there is no point in continuing
+      return;
+    }
+
+    if(fileExists) {
+      long l = file.lastModified(); // this can also throw a SecurityException
+      if(l > lastModif)             // however, if we reached this point this
+	lastModif = l;              // is very unlikely.
 	doOnChange();
 	warnedAlready = false;
       }
@@ -76,7 +90,7 @@ public abstract class FileWatchdog extends Thread {
 
   public
   void run() {    
-    while(!interrupted()) {
+    while(!interrupted) {
       try {
 	Thread.currentThread().sleep(delay);
       } catch(InterruptedException e) {
