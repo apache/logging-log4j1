@@ -14,11 +14,12 @@ import java.sql.SQLException;
 
 
 /**
+   <p><b><font color="#FF2222">WARNING: This version of JDBCAppender
+   is very likely to be completely replaced in the future. Moreoever,
+   it does not log exceptions.</font></b> </p>
+
   The JDBCAppender provides for sending log events to a database.
   
-  <p><b>WARNING</b> This version of JDBCAppender does not log
-  exceptions.
-  </p>
   
   <p>Each append call adds to an <code>ArrayList</code> buffer.  When
   the buffer is filled each log event is placed in a sql statement
