@@ -199,7 +199,6 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
   private final JSplitPane lowerPanel;
   private final DetailPaneUpdater detailPaneUpdater;
   private final JPanel detailPanel = new JPanel(new BorderLayout());
-  private final int dividerSize;
   private final JSplitPane nameTreeAndMainPanelSplit;
   private final LoggerNameTreePanel logTreePanel;
   private final LogPanelPreferenceModel preferenceModel =
@@ -210,9 +209,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
   private final RuleColorizer colorizer = new RuleColorizer();
   private final RuleMediator ruleMediator = new RuleMediator();
   private Layout detailLayout = new EventDetailLayout();
-  private int previousDetailPanelSplitLocation;
   private double lastDetailPanelSplitLocation = DEFAULT_DETAIL_SPLIT_LOCATION;
-  private int previousLogTreePanelSplitLocation;
   private double lastLogTreePanelSplitLocation =
     DEFAULT_LOG_TREE_SPLIT_LOCATION;
   private boolean bypassScroll;
@@ -222,6 +219,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
   private Rule findRule;
   private final JPanel findPanel;
   private JTextField findField;
+  private int dividerSize;
 
   /**
    * Creates a new LogPanel object.  If a LogPanel with this identifier has
@@ -938,9 +936,9 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
       new JSplitPane(
         JSplitPane.VERTICAL_SPLIT, eventsAndStatusPanel, detailPanel);
 
-    lowerPanel.setDividerLocation(lastDetailPanelSplitLocation);
-    lowerPanel.setOneTouchExpandable(true);
-    dividerSize = lowerPanel.getDividerSize() + 5;
+    dividerSize = lowerPanel.getDividerSize();
+    lowerPanel.setDividerLocation(-1);
+
     lowerPanel.setResizeWeight(1.0);
     lowerPanel.setBorder(null);
     lowerPanel.setContinuousLayout(true);
@@ -950,7 +948,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
     } else {
       hideDetailPane();
     }
-
+    
     /*
      * Detail panel layout editor
      */
@@ -1061,15 +1059,18 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
     /*
      * Logger tree splitpane definition
      */
-    nameTreeAndMainPanelSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-    nameTreeAndMainPanelSplit.add(logTreePanel);
-    nameTreeAndMainPanelSplit.add(lowerPanel);
+    nameTreeAndMainPanelSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, logTreePanel, lowerPanel);
+    
     nameTreeAndMainPanelSplit.setToolTipText("Still under development....");
     nameTreeAndMainPanelSplit.setDividerLocation(-1);
 
     add(nameTreeAndMainPanelSplit, BorderLayout.CENTER);
-    nameTreeAndMainPanelSplit.setOneTouchExpandable(true);
-    logTreePanel.setVisible(isLogTreeVisible());
+
+    if (isLogTreeVisible()) {
+        showLogTreePanel();
+    } else {
+        hideLogTreePanel();
+    }
 
     /*
      * Other menu items
@@ -1580,32 +1581,24 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
   private void showDetailPane() {
     lowerPanel.setDividerSize(dividerSize);
     lowerPanel.setDividerLocation(lastDetailPanelSplitLocation);
-    lowerPanel.setLastDividerLocation(previousDetailPanelSplitLocation);
     detailPanel.setVisible(true);
+    lowerPanel.repaint();
   }
 
   /**
    * Hide the detail pane, holding the current divider location for later use
    */
   private void hideDetailPane() {
-    int currentSize = lowerPanel.getHeight() - dividerSize;
+    int currentSize = lowerPanel.getHeight() - lowerPanel.getDividerSize();
 
     if (currentSize > 0) {
       lastDetailPanelSplitLocation =
         (double) lowerPanel.getDividerLocation() / currentSize;
-
-      //if hiding when details are minimized or maximized, use last location
-      if (
-        (lastDetailPanelSplitLocation == 1.0)
-          || (lastDetailPanelSplitLocation == 0.0)) {
-        previousDetailPanelSplitLocation = lowerPanel.getLastDividerLocation();
-
-        lowerPanel.setLastDividerLocation(lowerPanel.getLastDividerLocation());
-      }
-    }
+     }
 
     lowerPanel.setDividerSize(0);
     detailPanel.setVisible(false);
+    lowerPanel.repaint();
   }
 
   /**
@@ -1615,9 +1608,8 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
     nameTreeAndMainPanelSplit.setDividerSize(dividerSize);
     nameTreeAndMainPanelSplit.setDividerLocation(
       lastLogTreePanelSplitLocation);
-    nameTreeAndMainPanelSplit.setLastDividerLocation(
-      previousLogTreePanelSplitLocation);
     logTreePanel.setVisible(true);
+    nameTreeAndMainPanelSplit.repaint();
   }
 
   /**
@@ -1625,26 +1617,15 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
    */
   private void hideLogTreePanel() {
     //subtract one to make sizes match
-    int currentSize = nameTreeAndMainPanelSplit.getWidth() - dividerSize - 1;
+    int currentSize = nameTreeAndMainPanelSplit.getWidth() - nameTreeAndMainPanelSplit.getDividerSize() - 1;
 
     if (currentSize > 0) {
       lastLogTreePanelSplitLocation =
         (double) nameTreeAndMainPanelSplit.getDividerLocation() / currentSize;
-
-      //if hiding when log tree is minimized or maximized, use last location
-      if (
-        (lastLogTreePanelSplitLocation == 1.0)
-          || (lastLogTreePanelSplitLocation == 0.0)) {
-        previousLogTreePanelSplitLocation =
-          nameTreeAndMainPanelSplit.getLastDividerLocation();
-
-        nameTreeAndMainPanelSplit.setLastDividerLocation(
-          nameTreeAndMainPanelSplit.getLastDividerLocation());
-      }
     }
-
     nameTreeAndMainPanelSplit.setDividerSize(0);
     logTreePanel.setVisible(false);
+    nameTreeAndMainPanelSplit.repaint();
   }
 
   /**
@@ -1801,8 +1782,8 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
       KeyStroke.getKeyStroke(KeyEvent.VK_F3, KeyEvent.SHIFT_MASK),
       undockedFindPreviousAction.getValue(Action.NAME));
 
-    Dimension findSize = new Dimension(132, 24);
-    Dimension findPanelSize = new Dimension(144, 26);
+    Dimension findSize = new Dimension(132, 28);
+    Dimension findPanelSize = new Dimension(144, 28);
     findPanel.setPreferredSize(findPanelSize);
     findPanel.setMaximumSize(findPanelSize);
     findPanel.setMinimumSize(findPanelSize);

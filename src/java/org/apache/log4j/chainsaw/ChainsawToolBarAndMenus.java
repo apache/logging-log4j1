@@ -132,8 +132,8 @@ class ChainsawToolBarAndMenus implements ChangeListener {
 
     findPanel = new JPanel();
 
-    Dimension findSize = new Dimension(132, 24);
-    Dimension findPanelSize = new Dimension(144, 26);
+    Dimension findSize = new Dimension(132, 28);
+    Dimension findPanelSize = new Dimension(144, 28);
     findPanel.setPreferredSize(findPanelSize);
     findPanel.setMaximumSize(findPanelSize);
     findPanel.setMinimumSize(findPanelSize);

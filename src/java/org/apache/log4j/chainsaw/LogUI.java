@@ -154,11 +154,10 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   private final SettingsManager sm = SettingsManager.getInstance();
   private final JFrame tutorialFrame = new JFrame("Chainsaw Tutorial");
   private JSplitPane mainReceiverSplitPane;
-  private int previousMainReceiverSplitLocation;
   private double lastMainReceiverSplitLocation =
     DEFAULT_MAIN_RECEIVER_SPLIT_LOCATION;
-  private int dividerSize;
   private final List identifierPanels = new ArrayList();
+  private int dividerSize;
 
   /**
    * Set to true, if and only if the GUI has completed it's full
@@ -641,17 +640,12 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     getContentPane().add(toolbar, BorderLayout.NORTH);
     getContentPane().add(statusBar, BorderLayout.SOUTH);
 
-    mainReceiverSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-    mainReceiverSplitPane.add(panePanel);
-    mainReceiverSplitPane.add(receiversPanel);
-    mainReceiverSplitPane.setDividerLocation(-1);
-
-    dividerSize = mainReceiverSplitPane.getDividerSize() + 5;
+    mainReceiverSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panePanel, receiversPanel);
+    dividerSize = mainReceiverSplitPane.getDividerSize();
     mainReceiverSplitPane.setDividerLocation(-1);
 
     getContentPane().add(mainReceiverSplitPane, BorderLayout.CENTER);
 
-    mainReceiverSplitPane.setOneTouchExpandable(true);
     mainReceiverSplitPane.setResizeWeight(1.0);
     addWindowListener(
       new WindowAdapter() {
@@ -781,8 +775,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     if (applicationPreferenceModel.isReceivers()) {
       showReceiverPanel();
     } else {
-      mainReceiverSplitPane.setDividerSize(0);
-      receiversPanel.setVisible(false);
+      hideReceiverPanel();
     }
 
     removeSplash();
@@ -932,9 +925,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   private void showReceiverPanel() {
     mainReceiverSplitPane.setDividerSize(dividerSize);
     mainReceiverSplitPane.setDividerLocation(lastMainReceiverSplitLocation);
-    mainReceiverSplitPane.setLastDividerLocation(
-      previousMainReceiverSplitLocation);
     receiversPanel.setVisible(true);
+    mainReceiverSplitPane.repaint();
   }
 
   /**
@@ -942,25 +934,17 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    */
   private void hideReceiverPanel() {
     //subtract one to make sizes match
-    int currentSize = mainReceiverSplitPane.getWidth() - dividerSize;
-
-    if (currentSize > 0) {
-      if (
-        ((mainReceiverSplitPane.getDividerLocation() + 1) == currentSize)
-          || ((mainReceiverSplitPane.getDividerLocation() - 1) == 0)) {
-        //if hiding when receiver is minimized or maximized, use last location
-        previousMainReceiverSplitLocation =
-          mainReceiverSplitPane.getLastDividerLocation();
-        mainReceiverSplitPane.setLastDividerLocation(
-          mainReceiverSplitPane.getLastDividerLocation());
-      } else {
-        lastMainReceiverSplitLocation = ((double) mainReceiverSplitPane
-          .getDividerLocation() / currentSize);
-      }
+    int currentSize = mainReceiverSplitPane.getWidth() - mainReceiverSplitPane.getDividerSize();
+    if (mainReceiverSplitPane.getDividerLocation() > -1) {
+        if (!(((mainReceiverSplitPane.getDividerLocation() + 1) == currentSize)
+                || ((mainReceiverSplitPane.getDividerLocation() - 1) == 0))) {
+                    lastMainReceiverSplitLocation = ((double) mainReceiverSplitPane
+                        .getDividerLocation() / currentSize);
+        }
     }
-
     mainReceiverSplitPane.setDividerSize(0);
     receiversPanel.setVisible(false);
+    mainReceiverSplitPane.repaint();
   }
 
   private void initSocketConnectionListener() {
