@@ -5,6 +5,19 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
 
+ June ??, 2001
+
+ - Release of version 1.1.2
+
+ - Corrected a problem with the static initializer of the Category
+   class which would use the wrong class loader to search for the
+   log4j.properties file. [*]
+
+ - Documentation improvements.
+
+
+ - 
+
  May 20, 2001
 
  - Release of version 1.1.1.
