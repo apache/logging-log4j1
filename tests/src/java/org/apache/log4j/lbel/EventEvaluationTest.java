@@ -40,7 +40,7 @@ public class EventEvaluationTest extends TestCase {
     event.setLevel(Level.INFO);
     event.setMessage("hello world");
     event.setLoggerName("org.wombat");
-    
+    event.setProperty("x", "y follows x");
   }
 
   protected void tearDown() throws Exception {
@@ -123,7 +123,26 @@ public class EventEvaluationTest extends TestCase {
     evaluator = new LBELEventEvaluator("logger CHILDOF org");
     assertTrue(evaluator.evaluate(event));
   }
+  
+  public void testProperty() throws ScanError {
+    evaluator = new LBELEventEvaluator("property.x = 'y follows x'");
+    assertTrue(evaluator.evaluate(event));
+    evaluator = new LBELEventEvaluator("property.x >= 'y follows x'");
+    assertTrue(evaluator.evaluate(event));
+    evaluator = new LBELEventEvaluator("property.x <= 'y follows x'");
+    assertTrue(evaluator.evaluate(event));
     
+    evaluator = new LBELEventEvaluator("property.x != 'y'");
+    assertTrue(evaluator.evaluate(event));
+    evaluator = new LBELEventEvaluator("property.x > 'y'");
+    assertTrue(evaluator.evaluate(event));
+    evaluator = new LBELEventEvaluator("property.x >= 'y'");
+    assertTrue(evaluator.evaluate(event));
+
+    evaluator = new LBELEventEvaluator("property.y = 'toto'");
+    assertTrue(!evaluator.evaluate(event));    
+  }
+  
   public static Test XXsuite() {
     TestSuite suite = new TestSuite();
     //suite.addTest(new ParserTest("testAndOr"));
