@@ -720,11 +720,9 @@ public class Category implements AppenderAttachable {
    */
   public 
   boolean isAttached(Appender appender) {
-    System.err.println(getName()+"=-=-=-=-=-=-["+appender+"-"+aai);
     if(appender == null || aai == null) 
       return false;
     else {
-      System.err.println(".......=-=-=-=-=-=-["+appender);
       return aai.isAttached(appender);
     }
   }
