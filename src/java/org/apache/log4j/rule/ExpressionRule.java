@@ -61,11 +61,17 @@ import java.util.StringTokenizer;
  *
  * NOTE: parsing is supported through the use of <code>StringTokenizer</code>, which
  * implies two limitations:
- * 1: all tokens in the expression must be separated by spaces,
- * 2: operands which contain spaces in the value being evaluated are not supported
- *    (for example, attempting to perform 'msg == some other msg' will fail, since 'some other msg'
- *    will be parsed as individual tokens in the expression instead of a single token (this is
- *    the next planned fix).
+ * 1: all tokens in the expression must be separated by spaces, including parenthese
+ * 2: operands which contain spaces MUST be wrapped in single quotes. 
+ *    For example, the expression:
+ *      msg == 'some msg'
+ *    is a valid expression.
+ * 3: To group expressions, use parentheses.
+ *    For example, the expression:
+ *      level >= INFO || ( msg == 'some msg' || logger == 'test' ) 
+ *    is a valid expression.
+ * See org.apache.log4j.rule.InFixToPostFix for a description of supported operators.
+ * See org.apache.log4j.spi.LoggingEventFieldResolver for field keywords.
  *
  * @author Scott Deboy <sdeboy@apache.org>
  */
