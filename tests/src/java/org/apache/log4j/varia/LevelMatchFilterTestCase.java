@@ -65,19 +65,21 @@ public class LevelMatchFilterTestCase extends TestCase {
      // attach match filter to appender
     appender.addFilter(matchFilter);
    
-    // attach DenyAllFilter to end of filter chain to deny neutral (non matching) messages
+    // attach DenyAllFilter to end of filter chain to deny neutral
+    // (non matching) messages
     appender.addFilter(new DenyAllFilter());
         
     // set appender on root and set level to debug
     root.addAppender(appender);
     root.setLevel(Level.DEBUG);
     
-    Level[] levelArray = new Level[] {Level.DEBUG, Level.INFO, Level.WARN, Level.ERROR, Level.FATAL};
-    for (int x = 0; x < levelArray.length; x++)
-    {
+    Level[] levelArray = new Level[] {Level.DEBUG, Level.INFO, Level.WARN, 
+				      Level.ERROR, Level.FATAL};
+    for (int x = 0; x < levelArray.length; x++) {
       // set the level to match
       matchFilter.setLevelToMatch(levelArray[x].toString());
-      common("pass " + x + "; filter set to accept only " + levelArray[x].toString() + " msgs");
+      common("pass " + x + "; filter set to accept only " 
+	     + levelArray[x].toString() + " msgs");
     }
     
     Transformer.transform(ACCEPT_FILE, ACCEPT_FILTERED, new LineNumberFilter());
@@ -101,12 +103,13 @@ public class LevelMatchFilterTestCase extends TestCase {
     root.addAppender(appender);
     root.setLevel(Level.DEBUG);
     
-    Level[] levelArray = new Level[] {Level.DEBUG, Level.INFO, Level.WARN, Level.ERROR, Level.FATAL};
-    for (int x = 0; x < levelArray.length; x++)
-    {
+    Level[] levelArray = new Level[] {Level.DEBUG, Level.INFO, Level.WARN,
+				      Level.ERROR, Level.FATAL};
+    for (int x = 0; x < levelArray.length; x++) {
       // set the level to match
       matchFilter.setLevelToMatch(levelArray[x].toString());
-      common("pass " + x + "; filter set to deny only " + levelArray[x].toString() + " msgs");
+      common("pass " + x + "; filter set to deny only " + levelArray[x].toString()
+              + " msgs");
     }
     
     Transformer.transform(DENY_FILE, DENY_FILTERED, new LineNumberFilter());
