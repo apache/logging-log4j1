@@ -42,7 +42,9 @@ public class DatePatternConverter extends PatternConverter {
   private DateFormat cdf;
   private Date date;
   protected FieldPosition pos = new FieldPosition(0);
-
+  long lastTimestamp = 0;
+  boolean alreadyWarned = false;
+  
   //  public DatePatternConverter(FormattingInfo formattingInfo) {
   //    super(formattingInfo);
   //    this.buf = new StringBuffer(32);
@@ -103,19 +105,28 @@ public class DatePatternConverter extends PatternConverter {
   }
   
   public StringBuffer convert(LoggingEvent event) {
-    buf.setLength(0);
-
-    date.setTime(event.getTimeStamp());
-
-    String converted = null;
-
-    try {
-      cdf.format(date, buf, pos);
-    } catch (Exception ex) {
-      logger.error("Error occured while converting date.", ex);
+    long timestamp = event.getTimeStamp();
+    // if called multiple times within the same milliseconds
+    // return old value
+    if(timestamp == lastTimestamp) {
+      return buf;
+    } else {
+      buf.setLength(0);
+      lastTimestamp = timestamp;
+      date.setTime(timestamp);
+      try {
+        cdf.format(date, buf, pos);
+        lastTimestamp = timestamp;
+      } catch (Exception ex) {
+        // this should never happen
+        buf.append("DATE_CONV_ERROR");
+        if(!alreadyWarned) {
+          alreadyWarned = true;
+          logger.error("Exception while converting date", ex);
+        }
+      }
+      return buf;
     }
-
-    return buf;
   }
 
   public String getName() {
