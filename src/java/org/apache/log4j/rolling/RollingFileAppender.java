@@ -86,7 +86,7 @@ public class RollingFileAppender extends FileAppender {
   public void rollover() {
     // Note: synchronization not necessary since doAppend is already synched
     // make sure to close the hereto active log file!!
-    this.closeFile();
+    this.closeWriter();
 
     rollingPolicy.rollover();
 

@@ -162,18 +162,12 @@ public class FileAppender extends WriterAppender {
   }
 
   /**
-      Closes the previously opened file.
+   * Closes the previously opened file.
+   * 
+   * @deprecated Use the super class' {@link #closeWriter} method instead.
    */
   protected void closeFile() {
-    if (this.qw != null) {
-      try {
-        this.qw.close();
-      } catch (java.io.IOException e) {
-        // Exceptionally, it does not make sense to delegate to an
-        // ErrorHandler. Since a closed appender is basically dead.
-        LogLog.error("Could not close " + qw, e);
-      }
-    }
+    closeWriter();
   }
 
   /**
@@ -257,7 +251,7 @@ public class FileAppender extends WriterAppender {
       setImmediateFlush(false);
     }
 
-    reset();
+    closeWriter();
 
     Writer fw = createWriter(new FileOutputStream(filename, append));
 
@@ -281,20 +275,5 @@ public class FileAppender extends WriterAppender {
    */
   protected void setQWForFiles(Writer writer) {
     this.qw = new QuietWriter(writer, errorHandler);
-  }
-
-  /**
-     Close any previously opened file and call the parent's
-     <code>reset</code>.  */
-  protected void reset() {
-    closeFile();
-
-    // The following line is commented out. It causes problems with the setFile
-    // method taking 4 params which calls the reset method. If there is a 
-    // problem with the createWrite call then the fileName never gets set properly.
-    
-    // this.fileName = null;
-    
-    super.reset();
   }
 }
