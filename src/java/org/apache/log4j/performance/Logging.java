@@ -269,7 +269,7 @@ public class Logging {
     for(int i = 0; i < runLength; i++) {
       category.info(msg);
     }
-    return (System.currentTimeMillis() - before)*1000.0/runLength;    
+    return ((System.currentTimeMillis() - before)*1000.0)/runLength;    
   }
 
   static

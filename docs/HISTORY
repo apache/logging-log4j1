@@ -6,6 +6,16 @@
  [***] Changes requiring important modifications to existing client code.
 
 
+ March ??, 2001
+
+ - Release of version 1.1b1
+
+ - Added jar files required at build time to build/lib so that it is
+   now possible to compile log4j out of the box. [*]
+
+ - Added the setQuietMode(booelan) method to LogLog. In quiet mode
+   LogLog will not output anything even in case of errors. [*]
+
  February 23, 2001
 
  - Release of version 1.1b1

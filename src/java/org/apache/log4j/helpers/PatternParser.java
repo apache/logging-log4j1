@@ -22,6 +22,7 @@ import java.util.Date;
 
 // Contributors:   Nelson Minar <(nelson@monkey.org>
 //                 Igor E. Poteryaev <jah@mail.ru>  
+//                 Reinhard Deschler <reinhard.deschler@web.de> 
 
 /**
    Most of the work of the {@link org.apache.log4j.PatternLayout} class
@@ -426,7 +427,7 @@ public class PatternParser {
 
     public
     String convert(LoggingEvent event) {
-      date.setTime(System.currentTimeMillis());
+      date.setTime(event.timeStamp);
       return df.format(date);
     }
   }
@@ -477,7 +478,7 @@ public class PatternParser {
 
 	// We substract 1 from 'len' when assigning to 'end' to avoid out of
 	// bounds exception in return r.substring(end+1, len). This can happen if
-	// precision is 1 and the category name ends with a dot. you 
+	// precision is 1 and the category name ends with a dot. 
 	int end = len -1 ;
 	for(int i = precision; i > 0; i--) {	  
 	  end = n.lastIndexOf('.', end-1);

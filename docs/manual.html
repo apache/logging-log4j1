@@ -119,9 +119,12 @@ case-sensitive. They follow the hierarchical naming rule:
    <dl>
      <dt><b>Named Hierarchy</b>
 
-     <dd><p>A category is said to be a parent of another
-category if its name followed by a dot is a prefix of the child
-category name. 
+     <dd><p>A category is said to be an <em>ancestor</em> of another
+     category if its name followed by a dot is a prefix of the
+     <em>descendant</em> category name. A category is said to be a
+     <em>parent</em> of a <em>child</em> category if there are no
+     ancestors between itself and the descendant category.
+
 
    </dl>
 </table>
@@ -200,7 +203,8 @@ formally:
 
      <dd><p>The <em>inherited priority</em> for a given category
 <i>C</i>, is equal to the first non-null priority in the category
-hierarchy, starting at <i>C</i>.
+hierarchy, starting at <i>C</i> and proceeding upwards in the
+hierarchy towards the <code>root</code> category.
 
    </dl>
 </table>
@@ -301,10 +305,13 @@ summarized below.
 	<dt><b>Basic Selection Rule</b>
 
 	<dd><p>A log statement of priority <i>p</i> in a category with
-	inherited priority <i>q</i>, is enabled if <i> p &gt;= q</i>.
+	inherited priority <i>q</i>, is enabled if <i> p &gt;=
+	q</i>. 	
       </dl>
 </table>
 
+<p>This rule assumes that priorities are ordered as follows: <code>DEBUG
+&lt; INFO &lt; WARN &lt; ERROR &lt; FATAL</code>.
 
 <p>Here is an example of this rule.
 
@@ -338,7 +345,7 @@ always return a reference to the exact same category object. Thus, it
 is possible to configure a category and then to retrieve the same
 instance somewhere else in the code without passing around
 references. Categories can be created and configured in any order. In
-particular, a parent category will find and link to its children even
+particular, a category will find and link to its descendants even
 if it is instantiated after them. 
 
 <p>Configuration of the log4j environment is typically done at
@@ -401,15 +408,15 @@ the additivity flag</a> to <code>false</code>.
       <dl>
 	<dt><b>Appender Additivity</b>
 
-	<dd><p>The output of a log statement of
-	category <i>C</i> will go to all the appenders in <i>C</i> and
-	its parents. This is the meaning of the term "appender additivity".
+	<dd><p>The output of a log statement of category <i>C</i> will
+	go to all the appenders in <i>C</i> and its ancestors. This is
+	the meaning of the term "appender additivity".
 
-	<p>However, if a parent category of <i>C</i>, say <i>P</i>,
+	<p>However, if an ancestor of category <i>C</i>, say <i>P</i>,
 	has the additivity flag set to <code>false</code>, then
 	<i>C</i>'s output will be directed to all the appenders in
-	<i>C</i> and it's parents upto and including <i>P</i> but not
-	the appenders in any of the parents of <i>P</i>.
+	<i>C</i> and it's ancestors upto and including <i>P</i> but
+	not the appenders in any of the ancestors of <i>P</i>.
 
 	<p>Categories have their additivity flag set to
 	<code>true</code> by default.
@@ -440,7 +447,7 @@ the additivity flag</a> to <code>false</code>.
                                            <td>A-sec
 
     <td>No appender accumulation as the additivity flag is set to
-        <code>false</code>.  flag.
+        <code>false</code>. 
 
 <tr><td>security.access <td>none <td> true <td> A-sec <td>Only
     appenders of "security" as the additivity flag in "security" is

@@ -74,5 +74,4 @@ public abstract class Layout implements OptionHandler {
   public
   boolean ignoresThrowable();
 
-
 }

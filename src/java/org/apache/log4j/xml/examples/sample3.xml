@@ -15,7 +15,7 @@
 		<param name="File" value="System.out"/>
 		<layout class="org.apache.log4j.PatternLayout">
   		     <param name="ConversionPattern" 
-                            value="%d %-5p [%t] %C{2} (%F:%L) - %m\n"/>
+                            value="%d %-5p [%t] %C{2} (%F:%L) - %m%n"/>
 		</layout>
 	</appender>
 	<category name="org.apache.log4j.xml">
