@@ -49,6 +49,11 @@ public class ApplicationPreferenceModel implements SettingsListener {
     private final PropertyChangeSupport propertySupport =
         new PropertyChangeSupport(this);
     private int tabPlacement;
+    
+    /**
+     * If not 'empty', this property will be used as the URL to load log4j configuration at startup
+     */
+    private String configurationURL="";
 
     /**
      * @param listener
@@ -163,6 +168,7 @@ public class ApplicationPreferenceModel implements SettingsListener {
        setConfirmExit(event.asBoolean("confirmExit"));
        setShowSplash(event.asBoolean("showSplash"));
        setToolTipDisplayMillis(event.asInt("toolTipDisplayMillis"));
+       setConfigurationURL(event.getSetting("configurationURL"));
     }
 
     /* (non-Javadoc)
@@ -180,6 +186,7 @@ public class ApplicationPreferenceModel implements SettingsListener {
         event.saveSetting("confirmExit",isConfirmExit());
         event.saveSetting("showSplash", isShowSplash());
         event.saveSetting("toolTipDisplayMillis", getToolTipDisplayMillis());
+        event.saveSetting("configurationURL", getConfigurationURL());
     }
 
     /**
@@ -199,7 +206,9 @@ public class ApplicationPreferenceModel implements SettingsListener {
       setConfirmExit(model.isConfirmExit());
       setShowSplash(model.isShowSplash());
       setToolTipDisplayMillis(model.getToolTipDisplayMillis());
+      setConfigurationURL(model.getConfigurationURL());
     }
+    
     /**
      * @return Returns the responsiveness.
      */
@@ -330,5 +339,21 @@ public class ApplicationPreferenceModel implements SettingsListener {
       boolean oldValue = this.showSplash;
       this.showSplash = showSplash;
       firePropertyChange("showSplash", oldValue,this.showSplash);
+    }
+    /**
+     * @return Returns the configurationURL.
+     */
+    public final String getConfigurationURL()
+    {
+        return this.configurationURL;
+    }
+    /**
+     * @param configurationURL The configurationURL to set.
+     */
+    public final void setConfigurationURL(String configurationURL)
+    {
+        Object oldValue = this.configurationURL;
+        this.configurationURL = configurationURL;
+        firePropertyChange("configurationURL", oldValue, this.configurationURL);
     }
 }
