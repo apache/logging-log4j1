@@ -548,32 +548,7 @@ public class LogPanel extends DockablePanel implements SettingsListener,
       });
 
     filterText.getDocument().addDocumentListener(
-      new DocumentListener() {
-        public void insertUpdate(DocumentEvent e) {
-          setFilter();
-        }
-
-        public void removeUpdate(DocumentEvent e) {
-          setFilter();
-        }
-
-        public void changedUpdate(DocumentEvent e) {
-          setFilter();
-        }
-
-        public void setFilter() {
-          if (filterText.getText().equals("")) {
-            ruleMediator.setRefinementRule(null);
-          } else {
-              try {
-                ruleMediator.setRefinementRule(ExpressionRule.getRule(filterText.getText()));
-                filterText.setToolTipText("Enter expression");
-              } catch (IllegalArgumentException iae) {
-                  filterText.setToolTipText(iae.getMessage());
-              }
-          }
-        }
-      });
+      new DelayedFilterTextDocumentListener(filterText, ruleMediator));
 
     upperPanel.add(filterText, BorderLayout.CENTER);
     upperPanel.add(upperLeftPanel, BorderLayout.WEST);
@@ -1901,6 +1876,86 @@ public class LogPanel extends DockablePanel implements SettingsListener,
    */
   public final LogPanelPreferenceModel getPreferenceModel() {
     return preferenceModel;
+  }
+
+  /**
+   * This class receives notification when the Refine focus text field is 
+   * updated, where a backgrounh thread periodically wakes up and
+   * checks if they have stopped typing yet.
+   * 
+   * This ensures that the filtering of the model is not done 
+   * for every single character typed.
+   * 
+   * @author Paul Smith <psmith@apache.org>
+   *
+   */
+  private final class DelayedFilterTextDocumentListener implements DocumentListener {
+    private final JTextField filterText;
+    private final RuleMediator ruleMediator;
+    private long lastTimeStamp = System.currentTimeMillis();
+    private final Thread delayThread;
+    private final long CHECK_PERIOD = 1000;
+    private DelayedFilterTextDocumentListener(JTextField filterText, RuleMediator ruleMediator) {
+      super();
+      this.filterText = filterText;
+      this.ruleMediator = ruleMediator;
+      
+      this.delayThread = new Thread(new Runnable() {
+
+        public void run() {
+            while (true) {
+              try {
+                Thread.sleep(CHECK_PERIOD);
+              } catch (InterruptedException e) {
+              }
+              if ((System.currentTimeMillis() - lastTimeStamp)
+                < CHECK_PERIOD) {
+                // They typed something since the last check. we ignor
+                // this for a sample period
+//                LogLog.debug("Typed something since the last check");
+              } else if (
+                (System.currentTimeMillis() - lastTimeStamp)
+                  < (2 * CHECK_PERIOD)) {
+                // they stopped typing recently, but have stopped for at least
+                // 1 sample period. lets apply the filter
+//                LogLog.debug("Typed something recently applying filter");
+                setFilter();
+              } else {
+                // they stopped typing a while ago, let's forget about it
+//                LogLog.debug(
+//                  "They stoppped typing a while ago, assuming filter has been applied");
+              }
+            }
+        }});
+      
+      delayThread.setPriority(Thread.MIN_PRIORITY);
+      delayThread.start();
+    }
+    public void insertUpdate(DocumentEvent e) {
+      notifyChange();
+    }
+    public void removeUpdate(DocumentEvent e) {
+      notifyChange();
+    }
+    public void changedUpdate(DocumentEvent e) {
+      notifyChange();
+    }
+    private void notifyChange() {
+      this.lastTimeStamp = System.currentTimeMillis();
+      
+    }
+    public void setFilter() {
+      if (filterText.getText().equals("")) {
+        ruleMediator.setRefinementRule(null);
+      } else {
+          try {
+            ruleMediator.setRefinementRule(ExpressionRule.getRule(filterText.getText()));
+            filterText.setToolTipText("Enter expression");
+          } catch (IllegalArgumentException iae) {
+              filterText.setToolTipText(iae.getMessage());
+          }
+      }
+    }
   }
 
   private final class TableColumnDetailMouseListener extends MouseMotionAdapter
