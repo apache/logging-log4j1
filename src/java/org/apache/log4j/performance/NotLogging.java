@@ -7,7 +7,7 @@ package org.apache.log4j.performance;
 import org.apache.log4j.Category;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.SimpleLayout;
-import org.apache.log4j.FileAppender;
+import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Layout;
 
 import org.apache.log4j.Priority;
@@ -122,7 +122,7 @@ public class NotLogging {
     }      
 
     
-    FileAppender appender = new FileAppender(new SimpleLayout(), System.err);
+    ConsoleAppender appender = new ConsoleAppender(new SimpleLayout());
     
     if("false".equals(args[0]))
       ;       

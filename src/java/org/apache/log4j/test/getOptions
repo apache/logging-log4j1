@@ -45,7 +45,7 @@ createProperties
 
 TEST=1
 if [ $TEST -ge $start ]; then
-  testGetOptions
+  testGetOptions 
 fi
 
 rm $LCF

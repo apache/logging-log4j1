@@ -25,6 +25,7 @@ JSOURCES:= Shallow.java\
  UnitTestVarSubst.java\
  SocketAppenderTest.java\
  UnitTestOR.java\
+ PrintProperties.java\
 
 SUBDIRS :=
 

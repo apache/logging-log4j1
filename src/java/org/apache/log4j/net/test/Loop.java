@@ -33,7 +33,7 @@ public class Loop {
 
     SocketAppender sa = new SocketAppender(host, port);
     Layout layout = new PatternLayout("%5p [%t] %x %c - %m\n");
-    FileAppender so = new FileAppender(layout, System.out);
+    Appender so = new ConsoleAppender(layout, "System.out");
     root.addAppender(sa);
     root.addAppender(so);
 

@@ -51,7 +51,7 @@ public class MyCategory extends Category {
       // goes to System.out.
       Category root = Category.getRoot();
       Layout layout = new PatternLayout("%p [%t] %c - %m%n");
-      root.addAppender(new FileAppender(layout, System.out));
+      root.addAppender(new ConsoleAppender(layout, ConsoleAppender.SYSTEM_OUT));
     }
     else if(args.length == 1) {
       if(args[0].endsWith("xml")) {
