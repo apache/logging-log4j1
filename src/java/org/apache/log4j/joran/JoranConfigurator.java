@@ -44,6 +44,7 @@ import org.apache.log4j.joran.action.LayoutAction;
 import org.apache.log4j.joran.action.LevelAction;
 import org.apache.log4j.joran.action.LoggerAction;
 import org.apache.log4j.joran.action.PluginAction;
+import org.apache.log4j.joran.action.PropertyAction;
 import org.apache.log4j.joran.action.RootLoggerAction;
 import org.apache.log4j.spi.Configurator;
 import org.apache.log4j.spi.LoggerRepository;
@@ -51,10 +52,11 @@ import org.xml.sax.SAXException;
 
 
 /**
- * @author ceki
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
+ * 
+ * A JoranConfigurator instance should not be used more than once to 
+ * configure a LoggerRepository.
+ * 
+ * @author Ceki G&uuml;lc&uuml;
  */
 public class JoranConfigurator
        implements Configurator {
@@ -66,10 +68,7 @@ public class JoranConfigurator
 
   public void doConfigure(URL url, LoggerRepository repository) {
     ExecutionContext ec = joranInterpreter.getExecutionContext();
-    ec.pushObject(repository);
-
     String errMsg;
-
     try {
       InputStream in = url.openStream();
       doConfigure(in, repository);
@@ -88,7 +87,6 @@ public class JoranConfigurator
   public void doConfigure(String filename, LoggerRepository repository) {
     FileInputStream fis = null;
     ExecutionContext ec = joranInterpreter.getExecutionContext();
-    ec.pushObject(repository);
     LogLog.info("in JoranConfigurator doConfigure "+filename);
     try {
       fis = new FileInputStream(filename);
@@ -112,6 +110,8 @@ public class JoranConfigurator
   protected void selfInitialize() {
     RuleStore rs = new SimpleRuleStore();
     rs.addRule(new Pattern("log4j:configuration"), new ConfigurationAction());
+    rs.addRule(new Pattern("log4j:configuration/property"), new PropertyAction());
+    rs.addRule(new Pattern("log4j:configuration/plugin"), new PluginAction());
     rs.addRule(new Pattern("log4j:configuration/logger"), new LoggerAction());
     rs.addRule(new Pattern("log4j:configuration/logger/level"), new LevelAction());
     rs.addRule(new Pattern("log4j:configuration/root"), new RootLoggerAction());
@@ -121,7 +121,6 @@ public class JoranConfigurator
     rs.addRule(new Pattern("log4j:configuration/appender"), new AppenderAction());
     rs.addRule(new Pattern("log4j:configuration/appender/layout"), new LayoutAction());
     rs.addRule(new Pattern("log4j:configuration/appender/layout/conversionRule"), new ConversionRuleAction());
-    rs.addRule(new Pattern("log4j:configuration/plugin"), new PluginAction());
     rs.addRule(new Pattern("log4j:configuration/newRule"), new NewRuleAction());
     rs.addRule(new Pattern("*/param"), new ParamAction());
 

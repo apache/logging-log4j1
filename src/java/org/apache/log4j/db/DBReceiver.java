@@ -127,7 +127,7 @@ public class DBReceiver
    */
   class DBReceiverJob implements Job {
     
-    long lastId = 0;
+    long lastId = 1;
     
    
     public void execute() {
@@ -146,7 +146,7 @@ public class DBReceiver
         
         Statement statement = connection.createStatement();
         ResultSet rs = statement.executeQuery(sql.toString());
-        rs.first();
+        rs.beforeFirst();
         
         while (rs.next()) {
           LoggingEvent event = new LoggingEvent();

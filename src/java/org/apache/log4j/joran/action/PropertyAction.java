@@ -42,7 +42,7 @@ import java.util.Properties;
 public class PropertyAction extends Action {
   static final Logger logger = Logger.getLogger(PropertyAction.class);
   static String INVALID_ATTRIBUTES =
-    "In <property> element, either the filename attribute or both the name and value attributes must be set.";
+    "In <property> element, either the \"file\" attribute or both the \"name\" and \"value\" attributes must be set.";
 
   /**
    * Set a new property for the execution context by name, value pair, or adds
@@ -64,6 +64,7 @@ public class PropertyAction extends Action {
         FileInputStream istream = new FileInputStream(fileName);
         props.load(istream);
         istream.close();
+        ec.addProperties(props);
       } catch (IOException e) {
         String errMsg = "Could not read properties file [" + fileName + "].";
         LogLog.error(errMsg, e);

@@ -51,6 +51,17 @@ public class ExecutionContext {
     substitutionProperties = new Properties();
   }
 
+//  /**
+//   * Clear the internal structures for reuse of the execution context
+//   * 
+//   */
+//  public void clear() {
+//    objectStack.clear();
+//    objectMap.clear();
+//    errorList.clear();
+//    substitutionProperties.clear();
+//  }
+  
   public void addError(ErrorItem errorItem) {
     Locator locator = joranInterpreter.getLocator();
 
