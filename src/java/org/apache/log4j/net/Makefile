@@ -3,6 +3,7 @@ PKG_DIR :=org/apache/log4j/net
 DEPTH   :=../../../..
 JSOURCES:=SyslogAppender.java\
 	JMSAppender.java\
+	JMSSink.java\
 	SocketServer.java\
 	SocketAppender.java\
 	SMTPAppender.java\
