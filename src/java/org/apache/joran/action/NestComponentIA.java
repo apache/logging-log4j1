@@ -140,7 +140,7 @@ public class NestComponentIA extends ImplicitAction {
       getLogger().warn(
         "The object on the top the of the stack is not the component pushed earlier.");
     } else {
-      getLogger().warn("Removing component from the object stack");
+      getLogger().debug("Removing component from the object stack");
       ec.popObject();
 
       // Now let us attach the component

@@ -634,40 +634,60 @@
     </junit>
   </target>
 
-  
-   <!--
-           Coverage analysis
 
-    -->
-    <target name="with.clover">
+  <!-- ============================================================= --> 
+  <!--                      DB tests                                 -->
+  <!-- ============================================================= --> 
+
+  <target name="mysql" depends="build" description="MySQL tests" >
+     <ant antfile="db.xml" target="mysql"/>
+  </target>	
+
+   <target name="postgresql" depends="build" description="MySQL tests" >
+     <ant antfile="db.xml" target="postgresql"/>
+   </target>	
+
+   <target name="hsqldb" depends="build" description="HSQLDB tests" >
+     <ant antfile="db.xml" target="hsqldb"/>
+   </target>
+
+   <target name="oracle" depends="build" description="Oracle tests" >
+     <ant antfile="db.xml" target="oracle"/>
+   </target>	
+   
+	<target name="msSql" depends="build" description="MsSQL tests" >
+      <ant antfile="db.xml" target="msSql"/>
+    </target>
+   	
+   <!-- ============================================================= --> 
+   <!--                      Coverage analysis                        -->
+   <!-- ============================================================= --> 
+   <target name="with.clover">
         <!-- some tests fail when running clover
                 setting this property will cause testing to continue  -->
         <property name="haltonfailure" value="no"/>
         <available resource="clovertasks" property="clover-present"/>
 
         <fail unless="clover-present">
-
-clover.jar must be in the classpath and should alos be
-placed in the lib directory.  A version of clover 
-(http://www.cenqua.com/clover) for use with ASF projects 
-is available from the committers/donated-licenses/clover module 
-in the SVN repository. 
-
-        </fail>
+          clover.jar must be in the classpath and should alos be
+          placed in the lib directory.  A version of clover 
+          (http://www.cenqua.com/clover) for use with ASF projects 
+          is available from the committers/donated-licenses/clover module 
+          in the SVN repository. 
+       </fail>
          
        <taskdef resource="clovertasks"/>
        <clover-setup initString="log4j.db"/>
     </target>
 
     <target name="coverageReport" depends="parentClean, clean, with.clover, runAll">
-         <mkdir dir="coverage"/>
-         <taskdef resource="clovertasks"/>
-         <clover-report>
-                 <current title="log4j coverage" outfile="coverage">
-                         <format type="html"/>
-                 </current>
-         </clover-report>
-
+      <mkdir dir="coverage"/>
+      <taskdef resource="clovertasks"/>
+      <clover-report>
+        <current title="log4j coverage" outfile="coverage">
+          <format type="html"/>
+        </current>
+      </clover-report>
     </target>
   
 </project>

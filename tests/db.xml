@@ -1,24 +1,8 @@
 <project name="db-tests" default="usage" basedir="." >
-
-  <property file="build.properties"/>
-
-  <!-- The base directory relative to which most targets are built -->
-  <property name="base" value="."/>
- 
-  <!-- The directory where source files are stored. -->
-  <property name="project.source.home" value="../src/java/"/>
-  <property name="project.classes.home" value="../classes/"/>
-  <property name="examples.classes" value="../examples/classes/"/>
-  
-  <property name="tests.source.home" value="./src/java/"/>
-  
-  <!-- The stem where most log4j source code is located. -->
-  <property name="stem" value="org/apache/log4j"/>
   
   <path id="tests.classpath">
     <pathelement location="${project.source.home}"/>
     <pathelement location="${project.classes.home}"/>
-    <pathelement location="${examples.classes}"/>
     <pathelement location="${tests.source.home}"/>
     <pathelement location="./classes"/>
     <pathelement location="./resources"/>
@@ -31,26 +15,19 @@
 	
    <target name="usage">
      <echo>
-	      hsqldb - to invoke HSQLDB tests
+       This build file cannot be invoked directly but only through 
+       its parent build file, build.xml.
      </echo>
    </target>
 	
-   <!-- ================================================================= -->
-   <!-- Build the parent project as well as the test classes              -->
-   <!-- ================================================================= -->  
-   <target name="build">
-     <ant antfile="build.xml" target="build" inheritRefs="true"/>
-   </target>
-
-	<!-- ================================================================= -->
-  <!-- ========================= DB Tests ======================= -->
+  <!-- ================================================================= -->
+  <!--                            DB Tests                               -->
   <!-- ================================================================= -->
 
-  <!-- These tests follow the same pattern. They will be run if a property file 
+  <!-- These tests all follow the same pattern. They will be run if a property file 
        defining access as well as necessary class files are available. Otherwise,
        the test is skipped.
        --> 
-
 
   <!-- The target that performs the actual test -->
   <target name="invokeDBTestCase">    
@@ -94,19 +71,21 @@
       <param name="appendConfigFile" value="./input/db/append-with-drivermanager1.xml"/>
       <param name="readConfigFile"   value="./input/db/read-with-drivermanager1.xml"/>
     </antcall>
-    
+  
+
     <echo message="Running test case with DataSource"/>
     <antcall target="invokeDBTestCase">
       <param name="appendConfigFile" value="./input/db/append-with-datasource1.xml"/>
       <param name="readConfigFile"   value="./input/db/read-with-datasource1.xml"/>
     </antcall>
-    
+
+
     <echo message="Running test case with a native *pooled* DataSource"/>
     <antcall target="invokeDBTestCase">
       <param name="appendConfigFile" value="./input/db/append-with-pooled-datasource1.xml"/>
       <param name="readConfigFile"   value="./input/db/read-with-pooled-datasource1.xml"/>
     </antcall>
-    
+  	
     <echo message="Running test case with a DataSource with JNDI"/>
     <antcall target="invokeDBTestCase">
       <param name="appendConfigFile" value="./input/db/append-with-jndi1.xml"/>
@@ -125,9 +104,16 @@
 	</available>
       </and>
     </condition>
+  		
+  	<fail unless="hsqldb-present">
+  		
+  		Could not find HSQLDB driver. 
+  		No point in running HSQLDB tests.
+  	</fail>
+  			
   </target>
   
-  <target name="hsqldb" depends="hsqldbCheck, build" if="hsqldb-present">
+  <target name="hsqldb" depends="hsqldbCheck" >
     <delete file="./input/db/db.properties"/>
     <echo message="hsqldb available"/>
     <copy file="./input/db/hsqldb.properties" tofile="./input/db/db.properties"/>
@@ -149,9 +135,16 @@
 	</available>
       </and>
     </condition>
+  	
+  	<fail unless="mysql-present">
+  		
+  		Could not find MySQL driver. 
+  		No point in running MySQL tests.
+  	</fail>
+  		
   </target>
   
-  <target name="mysql" depends="mysqlCheck, build" if="mysql-present">
+  <target name="mysql" depends="mysqlCheck">
     <delete file="./input/db/db.properties"/>
     <echo message="MySQL available"/>
     <copy file="./input/db/mysql.properties" tofile="./input/db/db.properties"/>
@@ -170,9 +163,15 @@
 	</available>
       </and>
     </condition>
+  	
+  	<fail unless="postgresql-present">
+  		
+  		Could not find PostgreSQL driver. 
+  		No point in running PostgreSQL tests.
+  	</fail>
   </target>
   
-  <target name="postgresql" depends="postgresqlCheck, build" if="postgresql-present">
+  <target name="postgresql" depends="postgresqlCheck">
     <delete file="./input/db/db.properties"/>
     <echo message="PostgreSQL available"/>
     <copy file="./input/db/postgresql.properties" tofile="./input/db/db.properties"/>
@@ -189,9 +188,15 @@
 	</available> 
       </and> 
     </condition> 
+  	
+  	<fail unless="oracle-present">
+  		
+  		Could not find Oracle driver. 
+  		No point in running Oracle tests.
+  	</fail>
   </target> 
   
-  <target name="oracle" depends="oracleCheck, build" if="oracle-present"> 
+  <target name="oracle" depends="oracleCheck" > 
     <delete file="./input/db/db.properties"/> 
     <echo message="Oracle available"/> 
     <copy file="./input/db/oracle.properties" tofile="./input/db/db.properties"/> 
@@ -209,9 +214,15 @@
 	</available> 
       </and> 
     </condition> 
+  	
+  	<fail unless="msSql-present">
+  		
+  		Could not find MsSQL driver. 
+  		No point in running MsSQL tests.
+  	</fail>
   </target> 
   
-  <target name="msSql" depends="msSqlCheck, build" if="msSql-present"> 
+  <target name="msSql" depends="msSqlCheck"> 
     <delete file="./input/db/db.properties"/> 
     <echo message="Ms Sql available"/> 
     <copy file="./input/db/msSql.properties" tofile="./input/db/db.properties"/> 
