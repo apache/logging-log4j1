@@ -9,7 +9,7 @@
 <!-- ================================================================= -->
 <project name="log4j" default="usage" basedir=".." >
 
-  <property name="version" value="1.1b4"/>
+  <property name="version" value="1.1b5"/>
 
   <!-- The base directory relative to which most targets are built -->
   <property name="base" value="."/>
@@ -389,6 +389,11 @@
 		          **/*.bak, 
 			  **/.#*"/>
     </copy>
+
+    
+    <fixcrlf srcdir="${dist.tmp}/jakarta-log4j-${version}"  
+             includes="build.sh" cr="remove"/>
+
 
     <tar tarfile="${dist.images}/jakarta-log4j-${version}.tar" 
          basedir="${dist.tmp}"
