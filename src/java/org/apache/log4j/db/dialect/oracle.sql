@@ -25,31 +25,32 @@ CREATE TABLE logging_event
     ndc               VARCHAR2(4000),
     thread_name       VARCHAR2(254),
     reference_flag    SMALLINT,
-    event_id          INT PRIMARY KEY
+    event_id          NUMBER(10) PRIMARY KEY
   );
+
 
 CREATE TRIGGER logging_event_id_seq_trig
   BEFORE INSERT ON logging_event
   FOR EACH ROW  
   BEGIN  
     SELECT logging_event_id_seq.NEXTVAL 
-    INTO   :NEW.id 
+    INTO   :NEW.event_id 
     FROM   DUAL;  
   END logging_event_id_seq_trig;
-/
+
 
 CREATE TABLE logging_event_property
   (
-    event_id	      INT NOT NULL,
+    event_id	      NUMBER(10) NOT NULL,
     mapped_key        VARCHAR2(254) NOT NULL,
-    mapped_value      VARCHAR2(254),
+    mapped_value      VARCHAR2(1024),
     PRIMARY KEY(event_id, mapped_key),
     FOREIGN KEY (event_id) REFERENCES logging_event(event_id)
   );
   
 CREATE TABLE logging_event_exception
   (
-    event_id         INT NOT NULL,
+    event_id         NUMBER(10) NOT NULL,
     i                SMALLINT NOT NULL,
     trace_line       VARCHAR2(254) NOT NULL,
     PRIMARY KEY(event_id, i),
