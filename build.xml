@@ -76,7 +76,6 @@
     <pathelement location="${jms.jar}"/>
     <pathelement location="${jmx.jar}"/>
     <pathelement location="${jmx-extra.jar}"/>
-    <pathelement location="${servlet.jar}"/>
   </path>
 
   <!-- Construct compile classpath -->
@@ -160,17 +159,6 @@
     <echo message="JAVAMAIL is present."/>
   </target>
 
-  <target name="servletCheck">
-    <available classname="javax.servlet.Filter" property="servlet-present">
-      <classpath>
-	<pathelement location="${servlet.jar}"/>
-      </classpath>
-    </available>
-  </target>
-  <target name="servlet" depends="servletCheck" if="servlet-present">
-    <echo message="Servlet 2.3 is present."/>
-  </target>
-
   <!-- ================================================================= -->
   <!-- Initialize variables                                              -->
   <!-- NOTE: all directories are relative to jakarta-log4j/              -->
@@ -181,7 +169,7 @@
 
   <target name="build" description="Compile all log4j components."
          depends="init, build.core, build.examples, build.xml,
-         build.javamail, build.jms, build.jmx, build.servlet"/>
+         build.javamail, build.jms, build.jmx"/>
 
   <target name="build.core" depends="init">
     <mkdir dir="${javac.dest}" />
@@ -196,8 +184,7 @@
 		            ${stem}/net/SMTPAppender.java,
                	    ${stem}/net/JMS*.java,
                	    ${stem}/jmx/*.java,
-               	    ${stem}/or/jms/*.java,
-               	    ${stem}/servlet/*.java"
+               	    ${stem}/or/jms/*.java"
   	    deprecation="${deprecation}"
 	    debug="on">
       <classpath refid="compile.classpath"/>
@@ -273,15 +260,6 @@
     </javac>
   </target>
 
-  <target name="build.servlet" depends="init, servlet" if="servlet-present">
-    <javac deprecation="${deprecation}"
-           srcdir="${java.source.dir}"
-	   destdir="${javac.dest}"
-	   includes="${stem}/servlet/*.java">
-      <classpath refid="compile.classpath"/>
-    </javac>
-  </target>
-
   <!-- ================================================================= -->
   <!-- Remove all generated (compiled) class files.                      -->
   <!-- ================================================================= -->
@@ -296,13 +274,17 @@
     <taskdef resource="checkstyletask.properties"
              classpath="${checkstyle.jar}"/>
 
+		<property name="checkstyle.lcurly.method" value="nlow" />
+		<property name="checkstyle.lcurly.type" value="nlow" />
+		<property name="checkstyle.lcurly.other" value="nlow" />
+		<property name="checkstyle.maxmethodlen" value="500" />
+		<property name="checkstyle.maxconstructorlen" value="500" />
+		<property name="checkstyle.ignore.public.in.interface" value="true" />
+		
     <!-- by default checkstyle supports the Sun coding standard. -->
-    <checkstyle lcurlyMethod="nlow"
-                lcurlyOther="nlow"
-                lcurlyType="nlow"
-                maxMethodLen="500"
-                maxConstructorLen="500">
+    <checkstyle>
       <fileset dir="src/java/org/apache/log4j/chainsaw" includes="**/*.java"/>
+      <fileset dir="src/java/org/apache/log4j/plugins" includes="**/*.java"/>
     </checkstyle>
   </target>
 
@@ -336,7 +318,6 @@
     <jar jarfile="${jar.dest}/${log4j.jar}" basedir="${javac.dest}"
       includes="${stem}/*.class, ${stem}/xml/log4j.dtd,
                 ${stem}/config/*.class,
-	        ${stem}/filters/*.class,
 	        ${stem}/helpers/*.class,
 		${stem}/spi/*.class,
 		${stem}/net/*.class,
@@ -353,9 +334,7 @@
 		${stem}/or/sax/*.class,
                 ${stem}/or/jms/*.class,
 		${stem}/config/*.class"
-      excludes="**/UnitTest**,
-                **/selectors/*.class,
-                **/servlet/*.class">
+      excludes="**/UnitTest**">
 
       <manifest>
 	<attribute name="Manifest-version" value="1.0"/>
@@ -380,7 +359,6 @@
       destdir="${javadoc.dest}"
 	   packagenames="org.apache.log4j,
 			 org.apache.log4j.config,
-			 org.apache.log4j.filters,
                          org.apache.log4j.helpers,
 		         org.apache.log4j.jmx,
 		         org.apache.log4j.lf5,
