@@ -62,14 +62,14 @@ import org.w3c.dom.Element;
  * project of the Apache Software Foundation.
  *
  * @author Craig McClanahan
- * @authro Christopher Lenz 
+ * @authro Christopher Lenz
  * @author Ceki G&uuml;lc&uuml;
  *
  */
 public abstract class Action {
-	
-	
   public abstract void begin(Element e);
+
   public abstract void end(Element e);
+
   public abstract void finish();
 }
