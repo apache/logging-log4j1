@@ -72,7 +72,7 @@ public class XLoggerTestCase extends TestCase {
         new LineNumberFilter(), new SunReflectFilter(),
         new JunitTestRunnerFilter()
       });
-    assertTrue(Compare.compare(FILTERED, "witness/customLogger." + number));
+    assertTrue(Compare.compare(FILTERED, "witness/xml/customLogger." + number));
   }
 
   public static Test suite() {
