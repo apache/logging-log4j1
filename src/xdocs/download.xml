@@ -9,14 +9,14 @@
   <meta name="keywords" content="java, logging, tracing, component, framework, API, log4j"/>
 <body>
 
-    <section name="log4j version 1.2.7">
-      <p>log4j 1.2.7 is available in <a
-	href="../jakarta-log4j-1.2.7.tar.gz"><b>TAR.GZ</b></a> format
-	or in <a href="../jakarta-log4j-1.2.7.zip"><b>ZIP</b></a>
+    <section name="log4j version 1.2.8">
+      <p>log4j 1.2.8 is available in <a
+	href="../jakarta-log4j-1.2.8.tar.gz"><b>TAR.GZ</b></a> format
+	or in <a href="../jakarta-log4j-1.2.8.zip"><b>ZIP</b></a>
 	format.
       </p>
 
-      <p>As of release 1.2.7 log4j now searches for the file log4j.xml
+      <p>As of release 1.2.8 log4j now searches for the file log4j.xml
         as well as the file log4j.properties during
         initialization. See the <a href="HISTORY">HISTORY</a> file for
         the firther details.
@@ -86,7 +86,7 @@
 
 	<dt>
 	  <a
-	href="http://www.mannhaupt.com/danko/projects/"><b>JDBCAppender</b></a>
+	href="http://www.dankomannhaupt.de/projects/index.html"><b>JDBCAppender</b></a>
 	</dt> 
 
         <dd>A powerful <code>JDBCAppender</code> by Danko Mannhaupt
@@ -216,6 +216,13 @@
 	<dd>The .NET implementation of the popular log4j Java API
 	providing flexible and arbitrarily granular control over log
 	management and configuration.</dd>
+
+	<!-- =========================================================================== --> 
+        <dt><a href="http://www.vxr.it/log4php/"><b>log4php</b></a></dt> 
+
+        <dd>Log4Php is a PHP port of log4j framework. It supports xml configuration,
+        logging to files, stdout/err, syslog, socket, configurable
+        output layouts and logging levels. </dd>
 
 	<!-- =========================================================================== -->
 	<dt><a
