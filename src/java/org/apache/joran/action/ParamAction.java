@@ -16,10 +16,10 @@
 
 package org.apache.joran.action;
 
-import org.apache.joran.ErrorItem;
 import org.apache.joran.ExecutionContext;
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.config.ErrorItem;
 import org.apache.log4j.config.PropertySetter;
 import org.apache.log4j.helpers.OptionConverter;
 

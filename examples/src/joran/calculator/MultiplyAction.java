@@ -16,9 +16,9 @@
 
 package joran.calculator;
 
-import org.apache.joran.ErrorItem;
 import org.apache.joran.ExecutionContext;
 import org.apache.joran.action.Action;
+import org.apache.log4j.config.ErrorItem;
 
 import org.xml.sax.Attributes;
 

@@ -16,7 +16,6 @@
 
 package org.apache.log4j;
 
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.QuietWriter;
 import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.LoggingEvent;
@@ -156,7 +155,7 @@ public class WriterAppender extends AppenderSkeleton {
      value <code>false</code> is returned. */
   protected boolean checkEntryConditions() {
     if (this.closed) {
-      LogLog.warn("Not allowed to write to a closed appender.");
+      getLogger().warn("Not allowed to write to a closed appender.");
 
       return false;
     }
@@ -208,7 +207,7 @@ public class WriterAppender extends AppenderSkeleton {
       } catch (IOException e) {
         // There is do need to invoke an error handler at this late
         // stage.
-        LogLog.error("Could not close " + qw, e);
+        getLogger().error("Could not close " + qw, e);
       }
     }
     
@@ -229,8 +228,8 @@ public class WriterAppender extends AppenderSkeleton {
       try {
         retval = new OutputStreamWriter(os, enc);
       } catch (IOException e) {
-        LogLog.warn("Error initializing output writer.");
-        LogLog.warn("Unsupported encoding?");
+        getLogger().warn("Error initializing output writer.");
+        getLogger().warn("Unsupported encoding?");
       }
     }
 
@@ -254,7 +253,7 @@ public class WriterAppender extends AppenderSkeleton {
      underlying {@link QuietWriter} if any. */
   public synchronized void setErrorHandler(ErrorHandler eh) {
     if (eh == null) {
-      LogLog.warn("You have tried to set a null error-handler.");
+      getLogger().warn("You have tried to set a null error-handler.");
     } else {
       this.errorHandler = eh;
 

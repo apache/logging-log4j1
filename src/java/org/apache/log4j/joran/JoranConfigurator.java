@@ -26,7 +26,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.apache.joran.ErrorItem;
 import org.apache.joran.ExecutionContext;
 import org.apache.joran.Interpreter;
 import org.apache.joran.Pattern;
@@ -35,10 +34,9 @@ import org.apache.joran.action.NestComponentIA;
 import org.apache.joran.action.NewRuleAction;
 import org.apache.joran.action.ParamAction;
 import org.apache.joran.helper.SimpleRuleStore;
-import org.apache.log4j.Appender;
-import org.apache.log4j.Logger;
 //import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.helpers.Constants;
+import org.apache.log4j.config.ConfiguratorBase;
+import org.apache.log4j.config.ErrorItem;
 import org.apache.log4j.joran.action.ActionConst;
 import org.apache.log4j.joran.action.AppenderAction;
 import org.apache.log4j.joran.action.AppenderRefAction;
@@ -52,10 +50,7 @@ import org.apache.log4j.joran.action.PriorityAction;
 import org.apache.log4j.joran.action.RepositoryPropertyAction;
 import org.apache.log4j.joran.action.RootLoggerAction;
 import org.apache.log4j.joran.action.SubstitutionPropertyAction;
-import org.apache.log4j.spi.Configurator;
 import org.apache.log4j.spi.LoggerRepository;
-import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.varia.ListAppender;
 import org.apache.log4j.xml.Log4jEntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -68,16 +63,11 @@ import org.xml.sax.SAXException;
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
-public class JoranConfigurator
-       implements Configurator {
+public class JoranConfigurator extends ConfiguratorBase {
 
   Interpreter joranInterpreter;
   LoggerRepository repository;
   boolean listAppnderAttached = false;
-  
-  // The logger will be retreived form the logger repository being
-  // configured
-  private Logger logger;
   
   public JoranConfigurator() {
     selfInitialize();
@@ -95,11 +85,15 @@ public class JoranConfigurator
       in.close();
     } catch (IOException ioe) {
       errMsg = "Could not open [" + url + "].";
-      getLogger().error(errMsg, ioe);
+      getLogger(repository).error(errMsg, ioe);
       ec.addError(new ErrorItem(errMsg, ioe));
     }
   }
 
+  public List getErrorList() {
+    return getExecutionContext().getErrorList();
+  }
+  
   /**
    * Configure a repository from a configuration file passed as parameter.
    */
@@ -109,20 +103,20 @@ public class JoranConfigurator
     
     FileInputStream fis = null;
     ExecutionContext ec = joranInterpreter.getExecutionContext();
-    //getLogger().info("in JoranConfigurator doConfigure {}", filename);
+    getLogger(repository).info("in JoranConfigurator doConfigure {}", filename);
     try {
       fis = new FileInputStream(filename);
       doConfigure(fis, repository);
     } catch (IOException ioe) {
       String errMsg = "Could not open [" + filename + "].";
-      getLogger().error(errMsg, ioe);
+      getLogger(repository).error(errMsg, ioe);
       ec.addError(new ErrorItem(errMsg, ioe));
     } finally {
       if (fis != null) {
         try {
           fis.close();
         } catch (java.io.IOException e) {
-          getLogger().error("Could not close [" + filename + "].", e);
+          getLogger(repository).error("Could not close [" + filename + "].", e);
         }
       }
     }
@@ -146,19 +140,19 @@ public class JoranConfigurator
     try {
       attachListAppender(repository);
       
-      getLogger().debug("Starting to parse configuration {}", inputSource);
+      getLogger(repository).debug("Starting to parse configuration {}", inputSource);
       SAXParserFactory spf = SAXParserFactory.newInstance();
       // we want non-validating parsers
       spf.setValidating(false);
       SAXParser saxParser = spf.newSAXParser();
 
       saxParser.parse(inputSource, joranInterpreter);
-      getLogger().debug("Finished parsing.");
+      getLogger(repository).debug("Finished parsing.");
     } catch (SAXException e) {
       // all exceptions should have been recorded already.
     } catch (ParserConfigurationException pce) {
       errMsg = "Parser configuration error occured";
-      getLogger().error(errMsg, pce);
+      getLogger(repository).error(errMsg, pce);
       ec.addError(new ErrorItem(errMsg, pce));
     } catch (IOException ie) {
       errMsg = "I/O error occured while parsing xml file";
@@ -202,78 +196,6 @@ public class JoranConfigurator
   
   public ExecutionContext getExecutionContext() {
     return joranInterpreter.getExecutionContext();
-  }
-  
-  public void logErrors() {
-    List errorList = getExecutionContext().getErrorList();
-    if(errorList.size() == 0) {
-      return;
-    }
-    getLogger().warn("Errors occured while parsing the XML configuration file");
-    for(int i = 0; i < errorList.size(); i++) {
-      getLogger().warn(errorList.get(i));
-    }
-  }
-  
-  Logger getLogger() {
-    if(logger == null) {
-      logger = repository.getLogger(this.getClass().getName());
-    }
-    return logger;
-  }
-  
-  /**
-   * Attach a list appender which will be used to collect the logging events
-   * generated by log4j components, including this JoranConfigurator. These
-   * events will later be output when {@link #detachListAppender} method
-   * is called.
-   * 
-   * @param repository
-   */
-  protected void attachListAppender(LoggerRepository repository) {
-    Logger ll = repository.getLogger(Constants.LOG4J_PACKAGE_NAME);
-    Appender appender = new ListAppender();
-    appender.setName(Constants.TEMP_LIST_APPENDER_NAME);
-    ll.addAppender(appender);
-    ll.setAdditivity(false);
-  }
-  
-  /**
-   * Output the previously collected events using the current log4j 
-   * configuration. When that is completed, cluse and detach the
-   * ListAppender previously created by {@link #attachListAppender}.
-   * 
-   * @param repository
-   */
-  protected void detachListAppender(LoggerRepository repository) {
-    ExecutionContext ec = joranInterpreter.getExecutionContext();
-    Logger ll = repository.getLogger(Constants.LOG4J_PACKAGE_NAME);
-    
-    // FIXME: What happens if the users wanted to set the additivity flag
-    // for "org.apahce.log4j" to false in the config file? We are now 
-    // potentially overriding her wishes but I don't see any other way.
-    ll.setAdditivity(true);
-    
-    ListAppender listAppender = (ListAppender) ll.getAppender(Constants.TEMP_LIST_APPENDER_NAME);
-    if(listAppender == null) {
-      String errMsg = "Could not find appender "+Constants.TEMP_LIST_APPENDER_NAME;
-      getLogger().error(errMsg);
-      ec.addError(new ErrorItem(errMsg));
-      return;
-    }
-    
-    List eventList = listAppender.getList();
-    int size = eventList.size();
-    for(int i = 0; i < size; i++) {
-      LoggingEvent event = (LoggingEvent) eventList.get(i);
-      Logger xLogger = event.getLogger();
-      if (event.getLevel().isGreaterOrEqual(xLogger.getEffectiveLevel())) {
-        xLogger.callAppenders(event);
-      }
-    }
-    listAppender.clearModel();
-    listAppender.close();
-    ll.removeAppender(listAppender);
   }
 }
 

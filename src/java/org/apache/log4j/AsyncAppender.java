@@ -21,7 +21,6 @@ package org.apache.log4j;
 
 import org.apache.log4j.helpers.AppenderAttachableImpl;
 import org.apache.log4j.helpers.BoundedFIFO;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.AppenderAttachable;
 import org.apache.log4j.spi.LoggingEvent;
 
@@ -110,9 +109,9 @@ public class AsyncAppender extends AppenderSkeleton
         } catch (InterruptedException e) {
           if (!interruptedWarningMessage) {
             interruptedWarningMessage = true;
-            LogLog.warn("AsyncAppender interrupted.", e);
+            getLogger().warn("AsyncAppender interrupted.", e);
           } else {
-            LogLog.warn("AsyncAppender interrupted again.");
+            getLogger().warn("AsyncAppender interrupted again.");
           }
         }
       }
@@ -150,7 +149,7 @@ public class AsyncAppender extends AppenderSkeleton
     try {
       dispatcher.join();
     } catch (InterruptedException e) {
-      LogLog.error(
+      getLogger().error(
         "Got an InterruptedException while waiting for the "
         + "dispatcher to finish.", e);
     }
@@ -316,8 +315,6 @@ class Dispatcher extends Thread {
             //LogLog.debug("Waiting for new event to dispatch.");
             bf.wait();
           } catch (InterruptedException e) {
-            LogLog.error("The dispathcer should not be interrupted.");
-
             break;
           }
         }

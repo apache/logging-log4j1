@@ -16,13 +16,13 @@
 
 package org.apache.log4j.joran.action;
 
-import org.apache.joran.ErrorItem;
 import org.apache.joran.ExecutionContext;
 import org.apache.joran.action.Action;
 import org.apache.joran.helper.Option;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.Logger;
+import org.apache.log4j.config.ErrorItem;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.AppenderAttachable;
 

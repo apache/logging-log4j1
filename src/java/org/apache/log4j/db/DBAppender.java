@@ -19,7 +19,6 @@ package org.apache.log4j.db;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.db.dialect.SQLDialect;
 import org.apache.log4j.db.dialect.Util;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.location.LocationInfo;
 
@@ -149,7 +148,7 @@ public class DBAppender extends AppenderSkeleton {
   }
 
   public void activateOptions() {
-    LogLog.debug("DBAppender.activateOptions called");
+    getLogger().debug("DBAppender.activateOptions called");
 
     if (connectionSource == null) { throw new IllegalStateException(
         "DBAppender cannot function without a connection source"); }
@@ -173,7 +172,7 @@ public class DBAppender extends AppenderSkeleton {
    *          The connectionSource to set.
    */
   public void setConnectionSource(ConnectionSource connectionSource) {
-    LogLog.debug("setConnectionSource called for DBAppender");
+    getLogger().debug("setConnectionSource called for DBAppender");
     this.connectionSource = connectionSource;
   }
 
@@ -209,7 +208,7 @@ public class DBAppender extends AppenderSkeleton {
 
       int updateCount = insertStatement.executeUpdate();
       if (updateCount != 1) {
-        LogLog.warn("Failed to insert loggingEvent");
+        getLogger().warn("Failed to insert loggingEvent");
       }
 
       Statement idStatement = connection.createStatement();
@@ -263,7 +262,7 @@ public class DBAppender extends AppenderSkeleton {
       String[] strRep = event.getThrowableStrRep();
 
       if (strRep != null) {
-        LogLog.info("Logging an exception");
+        getLogger().info("Logging an exception");
 
         PreparedStatement insertExceptionStatement = connection
             .prepareStatement(insertExceptionSQL);
@@ -287,7 +286,7 @@ public class DBAppender extends AppenderSkeleton {
 
       connection.commit();
     } catch (SQLException sqle) {
-      LogLog.error("problem appending event", sqle);
+      getLogger().error("problem appending event", sqle);
     } finally {
       DBHelper.closeConnection(connection);
     }

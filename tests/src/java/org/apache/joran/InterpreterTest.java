@@ -40,6 +40,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
+import org.apache.log4j.config.ErrorItem;
 import org.apache.log4j.joran.action.ActionConst;
 import org.apache.log4j.joran.action.AppenderAction;
 import org.apache.log4j.joran.action.AppenderRefAction;

@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package org.apache.joran;
+package org.apache.log4j.config;
 
 /**
- * @author ceki
+ * Used to store log4j errors which occur during configuration.
+ * 
+ * @author Ceki Gulcu
  */
 public class ErrorItem {
   String message;
