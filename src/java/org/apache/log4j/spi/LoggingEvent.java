@@ -523,8 +523,8 @@ public class LoggingEvent
    * are searched.
    * </p>
    */
-  public Object XXgetMDC(String key) {
-    Object r;
+//  public Object XXgetMDC(String key) {
+//    Object r;
 
 //    // Note the mdcCopy is used if it exists. Otherwise we use the MDC
 //    // that is associated with the thread.
@@ -535,8 +535,8 @@ public class LoggingEvent
 //        return r;
 //      }
 //    }
-    return MDC.get(key);
-  }
+//    return MDC.get(key);
+//  }
 
 
   /**
@@ -546,7 +546,7 @@ public class LoggingEvent
    * @return Set an unmodifiable set of the MDC keys.
    * @since 1.3
    */
-  public Set XXgetMDCKeySet() {
+//  public Set XXgetMDCKeySet() {
 //    if ( mdcCopy != null ) {
 //      return Collections.unmodifiableSet( mdcCopy.keySet(  ) );
 //    } else {
@@ -558,15 +558,15 @@ public class LoggingEvent
 //        return Collections.EMPTY_SET;
 //      }
 //    }
-    return null;
-  }
+//    return null;
+//  }
 
 
   /**
    * Obtain a copy of this thread's MDC prior to serialization or asynchronous
    * logging.
    */
-  public void xgetMDCCopy() {
+//  public void xgetMDCCopy() {
 //    if ( mdcCopyLookupRequired ) {
 //      mdcCopyLookupRequired = false;
 //
@@ -578,7 +578,7 @@ public class LoggingEvent
 //        mdcCopy = (Hashtable)t.clone(  );
 //      }
 //    }
-  }
+//  }
 
 
   /**
