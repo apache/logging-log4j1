@@ -728,6 +728,7 @@ class ChainsawToolBarAndMenus implements ChangeListener {
             activeTabMenu.setEnabled(false);
             closeAction.setEnabled(true);
             detailPaneButton.setSelected(false);
+            toggleCyclicButton.setSelected(false);
         } else {
             activeTabMenu.setEnabled(true);
             fileMenu.getFileSaveAction().setEnabled(true);
