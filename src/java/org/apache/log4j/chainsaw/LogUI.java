@@ -49,13 +49,13 @@
 
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.HTMLLayout;
 import org.apache.log4j.Layout;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Priority;
 import org.apache.log4j.UtilLoggingLevel;
 import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.chainsaw.layout.EventDetailLayout;
 import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
 import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
 import org.apache.log4j.chainsaw.prefs.SettingsListener;
@@ -106,6 +106,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import java.lang.reflect.Method;
+
 import java.net.URL;
 
 import java.text.NumberFormat;
@@ -124,6 +125,7 @@ import java.util.Vector;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
@@ -313,13 +315,13 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    * @param args
    */
   public static void main(String[] args) {
-
-//    TODO remove this when ready
+    //    TODO remove this when ready
     JOptionPane.showMessageDialog(
       null,
-      "Chainsaw v2 is currently going through some refactoring work at present.\n\n" +
-      "Some features, most notably filtering and colouring, may be inoperable at this time.\n\n" +
-      "The Log4J Dev team apologises for this inconvenience, but be assured this functionality will be back very shortly.", "Apologise", JOptionPane.WARNING_MESSAGE);
+      "Chainsaw v2 is currently going through some refactoring work at present.\n\n"
+      + "Some features, most notably filtering and colouring, may be inoperable at this time.\n\n"
+      + "The Log4J Dev team apologises for this inconvenience, but be assured this functionality will be back very shortly.",
+      "Apologise", JOptionPane.WARNING_MESSAGE);
 
     showSplash();
 
@@ -690,23 +692,29 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
             toggleReceiversPanel();
           } else if (noReceiversWarningPanel.getModel().isSimpleReceiverMode()) {
             int port = noReceiversWarningPanel.getModel().getSimplePort();
-            Class receiverClass = noReceiversWarningPanel.getModel().getSimpleReceiverClass();
+            Class receiverClass =
+              noReceiversWarningPanel.getModel().getSimpleReceiverClass();
+
             try {
-				Receiver simpleReceiver =
-					(Receiver) receiverClass.newInstance();
-				simpleReceiver.setName("Simple Receiver");
-                Method portMethod = simpleReceiver.getClass().getMethod("setPort", new Class[] {int.class});
-                portMethod.invoke(simpleReceiver, new Object[] {new Integer(port)});
-                
-				PluginRegistry.startPlugin(simpleReceiver);
-				receiversPanel.updateReceiverTreeInDispatchThread();
-				getStatusBar().setMessage(
-					"Simple Receiver created, started, and listening on port  "
-						+ port + " (using " + receiverClass.getName() + ")");
-			} catch (Exception e) {
-				LogLog.error("Error creating Receiver", e);
-                getStatusBar().setMessage("An error occurred creating your Receiver");
-			}
+              Receiver simpleReceiver = (Receiver) receiverClass.newInstance();
+              simpleReceiver.setName("Simple Receiver");
+
+              Method portMethod =
+                simpleReceiver.getClass().getMethod(
+                  "setPort", new Class[] { int.class });
+              portMethod.invoke(
+                simpleReceiver, new Object[] { new Integer(port) });
+
+              PluginRegistry.startPlugin(simpleReceiver);
+              receiversPanel.updateReceiverTreeInDispatchThread();
+              getStatusBar().setMessage(
+                "Simple Receiver created, started, and listening on port  "
+                + port + " (using " + receiverClass.getName() + ")");
+            } catch (Exception e) {
+              LogLog.error("Error creating Receiver", e);
+              getStatusBar().setMessage(
+                "An error occurred creating your Receiver");
+            }
           } else if (noReceiversWarningPanel.getModel().isLoadConfig()) {
             final URL url =
               noReceiversWarningPanel.getModel().getConfigToLoad();
@@ -1570,9 +1578,33 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
         });
 
       final JScrollPane detailPane = new JScrollPane(detail);
+
       detailPane.setPreferredSize(new Dimension(900, 50));
 
       detailPanel.add(detailPane, BorderLayout.CENTER);
+
+      final JToolBar detailToolbar = new JToolBar(JToolBar.HORIZONTAL);
+      detailToolbar.setFloatable(false);
+
+      Action editDetailAction =
+        new AbstractAction(
+          "Edit...", new ImageIcon(ChainsawIcons.ICON_EDIT_RECEIVER)) {
+          public void actionPerformed(ActionEvent e) {
+            // TODO Auto-generated method stub
+          }
+        };
+
+      editDetailAction.putValue(
+        Action.SHORT_DESCRIPTION,
+        "opens a Dialog window to Edit the Pattern Layout text");
+
+      final SmallButton editDetailButton = new SmallButton(editDetailAction);
+      editDetailButton.setText(null);
+      detailToolbar.add(Box.createHorizontalGlue());
+      detailToolbar.add(editDetailButton);
+
+      //      detailToolbar.add(Box.createHorizontalStrut(5));
+      detailPanel.add(detailToolbar, BorderLayout.NORTH);
 
       lowerPanel =
         new JSplitPane(
@@ -1866,8 +1898,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
       eventsPane.addMouseListener(popupListener);
       table.addMouseListener(popupListener);
-      detail.addMouseListener(popupListener);
 
+      //      detail.addMouseListener(popupListener);
       tableMap.put(ident, table);
       tableModelMap.put(ident, tableModel);
       tabbedPane.add(ident, this);
