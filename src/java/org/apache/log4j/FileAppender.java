@@ -54,7 +54,6 @@ import org.apache.log4j.helpers.QuietWriter;
 import org.apache.log4j.spi.ErrorCode;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Writer;

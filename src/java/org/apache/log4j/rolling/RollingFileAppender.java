@@ -51,7 +51,8 @@ package org.apache.log4j.rolling;
 
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.Logger;
-import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.spi.ErrorCode;
+import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.LoggingEvent;
 
 import java.io.File;
@@ -67,7 +68,6 @@ import java.io.IOException;
  * @since  1.3
  * */
 public class RollingFileAppender extends FileAppender {
-  
   Logger logger = Logger.getLogger(RollingFileAppender.class);
   File activeFile;
   TriggeringPolicy triggeringPolicy;
@@ -82,11 +82,12 @@ public class RollingFileAppender extends FileAppender {
   }
 
   public void activateOptions() {
-    
-    if(triggeringPolicy == null) {
+    if (triggeringPolicy == null) {
       logger.warn("Please set a TriggeringPolicy for ");
+
       return;
     }
+
     if (rollingPolicy != null) {
       rollingPolicy.activateOptions();
 
@@ -125,7 +126,9 @@ public class RollingFileAppender extends FileAppender {
       // close operations are safe.
       this.setFile(fileName, false, bufferedIO, bufferSize);
     } catch (IOException e) {
-      LogLog.error("setFile(" + fileName + ", false) call failed.", e);
+      errorHandler.error(
+        "setFile(" + fileName + ", false) call failed.", e,
+        ErrorCode.FILE_OPEN_FAILURE);
     }
   }
 
@@ -135,9 +138,9 @@ public class RollingFileAppender extends FileAppender {
   */
   protected void subAppend(LoggingEvent event) {
     super.subAppend(event);
-    
+
     if (triggeringPolicy.isTriggeringEvent(activeFile)) {
-      System.out.println("About to rollover");
+      logger.debug("About to rollover");
       rollover();
     }
   }
