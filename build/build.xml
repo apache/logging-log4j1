@@ -7,36 +7,34 @@
 <!-- NOTE: all directories are relative to jakarta-log4j/              -->
 <!-- the parent of build/                                              -->
 <!-- ================================================================= -->
-<project name="log4j" default="usage" basedir="." >
-
-
+<project name="log4j" default="usage" basedir=".." >
 
   <property name="version" value="1.1b2"/>
 
   <!-- The base directory relative to which most targets are built -->
-  <property name="base" value=".."/>
+  <property name="base" value="."/>
  
   <!-- The directory where source files are stored. -->
-  <property name="java.source.dir" value="${base}/src/java/"/>
+  <property name="java.source.dir" value="src/java/"/>
 
   <!-- The directory where the package-list file is found, ./ or -->
   <!-- build/ -->
-  <property name="packaging.dir" value="."/>
+  <property name="packaging.dir" value="build"/>
 
   <!-- Destination for compiled files -->
-  <property name="javac.dest" value="${base}/dist/classes"/>
+  <property name="javac.dest" value="dist/classes"/>
 
   <!-- Destination for generated jar files -->
-  <property name="jar.dest" value="${base}/dist/lib"/>
+  <property name="jar.dest" value="dist/lib"/>
 
   <!-- Destination for documentation files generated or not -->
-  <property name="docs" value="${base}/docs"/>
+  <property name="docs" value="docs"/>
 
   <!-- Destination for javadoc generated files -->
-  <property name="javadoc.dest" value="${base}/docs/api"/>
+  <property name="javadoc.dest" value="docs/api"/>
 
   <!-- Icons source directory. -->
-  <property name="icons.source" value="${base}/icons"/>
+  <property name="icons.source" value="icons"/>
 
   <!-- The stem where most log4j source code is located. -->
   <property name="stem" value="org/apache/log4j"/>
@@ -45,13 +43,13 @@
   <property name="BSTEM" value="${java.source.dir}/${stem}"/>
 
   <!-- Original manifest.mf file before filtering. -->
-  <property name="manifest.src" value="${base}/build/manifest.mf"/>
+  <property name="manifest.src" value="build/manifest.mf"/>
 
   <!-- Directory where release images go. -->
-  <property name="dist.images"  value="${base}/dist/images"/>
+  <property name="dist.images"  value="dist/images"/>
 
   <!-- Directory for temporary files. -->
-  <property name="dist.tmp" value="${base}/dist/tmp"/>
+  <property name="dist.tmp" value="dist/tmp"/>
 
   
   <target name="usage">
@@ -333,31 +331,35 @@
  <!-- ================================================================= -->
  <!-- Build a complete distribution. Results go to ${dist.images}       -->
  <!-- ================================================================= -->
-  <target name="dist" depends="init, clean, jar">
+  <target name="dist" depends="init">
 
     <delete verbose="true">
       <fileset dir="."> 
-        <patternset includes="**/*.bak,
-	                     ${BSTEM}/**/temp*,
-			     ${BSTEM}/performance/test,
-			     ${BSTEM}test/current.*,
-			     ${BSTEM}/examples/test,
-			     ${BSTEM}/test/logging.*,
-			     ${BSTEM}/test/log4j.properties,
-			     {$BSTEM}/test/socket.lcf,
-			     ${BSTEM}/test/file,${BSTEM}/test/output.*, 
-			     ${BSTEM}/nt/EventLogCategories.dbg,
-			     ${BSTEM}/nt/EventLogCategories.h,
-			     ${BSTEM}/nt/EventLogCategories.rc,
-			     ${BSTEM}/nt/EventLogCategories.RES,
-			     ${BSTEM}/nt/MSG00001.bin,
-			     ${BSTEM}/nt/NTEventLogAppender.lib,
-			     ${BSTEM}/nt/NTEventLogAppender.exp,
-			     ${BSTEM}/nt/vc50.idb,
-			     ${BSTEM}/net/test/loop.log,
-			     ${BSTEM}/net/test/loop.log.1,
-			     ${jar.dest}/manifest.mf, 
-			     ${javac.dest}/*.class"/>
+        <patternset>
+	   <include name="**/*.bak"/>
+	   <include name="${BSTEM}/**/temp*"/>
+	   <include name="${BSTEM}/performance/test"/>
+	   <include name="${BSTEM}/test/current.*"/>
+	   <include name="${BSTEM}/test/current.*"/>
+	   <include name="${BSTEM}/examples/test"/>
+	   <include name="${BSTEM}/test/logging.*"/>
+	   <include name="${BSTEM}/test/log4j.properties"/>
+	   <include name="{$BSTEM}/test/socket.lcf"/>
+	   <include name="${BSTEM}/test/file"/>
+	   <include name="${BSTEM}/test/output.*"/>
+	   <include name="${BSTEM}/nt/EventLogCategories.dbg"/>
+	   <include name="${BSTEM}/nt/EventLogCategories.h"/>
+	   <include name="${BSTEM}/nt/EventLogCategories.rc"/>
+	   <include name="${BSTEM}/nt/EventLogCategories.RES"/>
+	   <include name="${BSTEM}/nt/MSG00001.bin"/>
+	   <include name="${BSTEM}/nt/NTEventLogAppender.lib"/>
+	   <include name="${BSTEM}/nt/NTEventLogAppender.exp"/>
+	   <include name="${BSTEM}/nt/vc50.idb"/>
+	   <include name="${BSTEM}/net/test/loop.log"/>
+	   <include name="${BSTEM}/net/test/loop.log.1"/>
+	   <include name="${jar.dest}/manifest.mf"/>
+	   <include name="${javac.dest}/*.class"/>
+        </patternset>
      </fileset>         
     </delete>
 
