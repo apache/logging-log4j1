@@ -439,8 +439,8 @@ public class Category implements AppenderAttachable {
 
 
   /**
-     Log immediately without further checks.
-   */
+     This method renders the <code>message</code> passed as a
+     oaraneter and logs immediately without further checks.  */
   protected
   void forcedLog(String fqn, Priority priority, Object message, Throwable t) {
     String s;

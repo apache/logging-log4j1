@@ -34,7 +34,7 @@ import java.util.Hashtable;
 
 /**
    Extends {@link BasicConfigurator} to provide configuration from an
-   external file.  See <b>{@link #doConfigure(String)}</b> for the
+   external file.  See <b>{@link #doConfigure(String, Hierarchy)}</b> for the
    expected format.
 
    <p>It is sometimes useful to see how log4j is reading configuration
@@ -297,7 +297,6 @@ public class PropertyConfigurator extends BasicConfigurator
       return;
     }
     // If we reach here, then the config file is alright.
-    //debug("Reading configuration.");    
     doConfigure(props, hierarchy);
   }
 
@@ -306,47 +305,8 @@ public class PropertyConfigurator extends BasicConfigurator
   static
   public 
   void configure(String configFilename) {
-    new PropertyConfigurator().doConfigure(configFilename, Category.defaultHierarchy);
-  }
-
-
-  /**
-     Read configuration options from <code>properties</code>.
-
-     See {@link #doConfigure(String)} for the expected format.
-  */
-  static
-  public
-  void configure(Properties properties) {
-    new PropertyConfigurator().doConfigure(properties, Category.defaultHierarchy);
-  }
-  
-  /**
-     Read configuration options from <code>properties</code>.
-
-     See {@link #doConfigure(String)} for the expected format.
-  */
-  public
-  void doConfigure(Properties properties, Hierarchy hierarchy) {
-
-    String value = properties.getProperty(LogLog.CONFIG_DEBUG_KEY);
-    if(value != null) {
-      LogLog.setInternalDebugging(OptionConverter.toBoolean(value, true));
-    }
-
-    // Check if the config file overides the shipped code flag.
-    String override = properties.getProperty(
-                                    BasicConfigurator.DISABLE_OVERRIDE_KEY);
-    BasicConfigurator.overrideAsNeeded(override);
-    
-    configureRootCategory(properties, hierarchy);
-    configureCategoryFactory(properties);
-    parseCatsAndRenderers(properties, hierarchy);
-
-    LogLog.debug("Finished configuring.");    
-    // We don't want to hold references to appenders preventing their
-    // garbage collection.
-    registry.clear();
+    new PropertyConfigurator().doConfigure(configFilename, 
+					   Category.defaultHierarchy);
   }
 
   /**
@@ -358,6 +318,18 @@ public class PropertyConfigurator extends BasicConfigurator
   static
   void configure(java.net.URL configURL) {
     new PropertyConfigurator().doConfigure(configURL, Category.defaultHierarchy);
+  }
+
+
+  /**
+     Read configuration options from <code>properties</code>.
+
+     See {@link #doConfigure(String, Hierarchy)} for the expected format.
+  */
+  static
+  public
+  void configure(Properties properties) {
+    new PropertyConfigurator().doConfigure(properties, Category.defaultHierarchy);
   }
 
   /**
@@ -394,6 +366,35 @@ public class PropertyConfigurator extends BasicConfigurator
     pdog.start();
   }
 
+
+  /**
+     Read configuration options from <code>properties</code>.
+
+     See {@link #doConfigure(String, Hierarchy)} for the expected format.
+  */
+  public
+  void doConfigure(Properties properties, Hierarchy hierarchy) {
+
+    String value = properties.getProperty(LogLog.CONFIG_DEBUG_KEY);
+    if(value != null) {
+      LogLog.setInternalDebugging(OptionConverter.toBoolean(value, true));
+    }
+
+    // Check if the config file overides the shipped code flag.
+    String override = properties.getProperty(
+                                    BasicConfigurator.DISABLE_OVERRIDE_KEY);
+    BasicConfigurator.overrideAsNeeded(override);
+    
+    configureRootCategory(properties, hierarchy);
+    configureCategoryFactory(properties);
+    parseCatsAndRenderers(properties, hierarchy);
+
+    LogLog.debug("Finished configuring.");    
+    // We don't want to hold references to appenders preventing their
+    // garbage collection.
+    registry.clear();
+  }
+
   /**
      Read configuration options from url <code>configURL</code>.
    */
@@ -410,8 +411,13 @@ public class PropertyConfigurator extends BasicConfigurator
       LogLog.error("Ignoring configuration file [" + configURL +"].");
       return;
     }
-    configure(props);
+    doConfigure(props, hierarchy);
   }
+
+
+  // -------------------------------------------------------------------------------
+  // Internal stuff
+  // -------------------------------------------------------------------------------
 
   void configureCategoryFactory(Properties props) {
     String factoryClassName = OptionConverter.findAndSubst(CATEGORY_FACTORY_KEY,
@@ -424,7 +430,7 @@ public class PropertyConfigurator extends BasicConfigurator
 							 categoryFactory);
     }
   }
-  
+
   void configureOptionHandler(OptionHandler oh, String prefix,
 			      Properties props) {
     String[] options = oh.getOptionStrings();

@@ -574,7 +574,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
   
 
   /**
-     This is the static version of {@link #doConfigure(String)}.x
+     This is the static version of {@link #doConfigure(String, Hierarchy)}.x
    */
   static
   public
