@@ -300,14 +300,12 @@ public class LogPanel extends DockablePanel implements SettingsListener,
           }
         });
 
-    colorizer.addPropertyChangeListener(new PropertyChangeListener() {
+    colorizer.addPropertyChangeListener("colorrule", new PropertyChangeListener() {
 		public void propertyChange(PropertyChangeEvent evt) {
-			if (evt.getPropertyName().equalsIgnoreCase("colorrule")) {
                 if (table != null) {
                     table.repaint();
                 }
                 colorPanel.updateColors();
-            }
         }}
     );
     
