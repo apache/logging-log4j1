@@ -101,9 +101,13 @@ public class Priority {
   /**
      Returns <code>true</code> if this priority has a higher or equal
      priority than the priority passed as argument, <code>false</code>
-     otherwise.  */
+     otherwise.  
+     
+     <p>You should think twice before overriding the default
+     implementation of <code>isGreaterOrEqual</code> method.
+
+  */
   public
-  final
   boolean isGreaterOrEqual(Priority r) {
     return level >= r.level;
   }
