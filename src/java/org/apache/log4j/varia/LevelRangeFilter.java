@@ -10,8 +10,6 @@ package org.apache.log4j.varia;
 import org.apache.log4j.Level;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.helpers.OptionConverter;
 
 /**
    This is a very simple filter based on level matching, which can be

@@ -24,9 +24,7 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.plugins.Receiver;
-import org.apache.log4j.helpers.LogLog;
 
 /**
   JMSReceiver receives a remote logging event on a configured

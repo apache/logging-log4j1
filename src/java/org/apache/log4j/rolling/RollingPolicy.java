@@ -72,5 +72,5 @@ public interface RollingPolicy {
   /**
    * Get the new log file where logging should go.
    * */  
-  public File getLogFile(String filename);
+  public File getActiveLogFile(String filename);
 }

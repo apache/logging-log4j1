@@ -7,9 +7,6 @@
 
 package org.apache.log4j.helpers;
 
-import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.spi.LocationInfo;
-
 /**
    Utility class for transforming strings.
 

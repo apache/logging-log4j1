@@ -12,9 +12,6 @@ import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.Level;
 import org.apache.log4j.helpers.LogLog;
 
-import java.io.*;
-
-
 /**
    Append to the NT event log system.
 

@@ -49,26 +49,33 @@
 
 package org.apache.log4j.rolling;
 
-import java.io.File;
-
 import org.apache.log4j.Logger;
+
+import java.io.File;
 
 
 /**
+ * The SlidingWindowRollingPolicy rolls over files
  *
  * @author Ceki G&uuml;lc&uuml;
  * @since 1.3
  * */
 public class SlidingWindowRollingPolicy implements RollingPolicy {
- 
-  static Logger logger = Logger.getLogger(SlidingWindowRollingPolicy.class); 
+  static Logger logger = Logger.getLogger(SlidingWindowRollingPolicy.class);
   int maxIndex;
+  int minIndex;
+  String fileNamePattern;
+  String activeFileName;
+
+  public SlidingWindowRollingPolicy() {
+    minIndex = 1;
+  }
 
   public void rollover(File file) {
     // If maxIndex <= 0, then there is no file renaming to be done.
-  
     if (maxIndex > 0) {
-        String filename = file.getName();
+      String filename = file.getName();
+
       // Delete the oldest file, to keep Windows happy.
       file = new File(filename + '.' + maxIndex);
 
@@ -77,6 +84,7 @@ public class SlidingWindowRollingPolicy implements RollingPolicy {
       }
 
       // Map {(maxBackupIndex - 1), ..., 2, 1} to {maxBackupIndex, ..., 3, 2}
+
       /* for (int i = maxIndex - 1; i >= 1; i--) {
          file = new File(filename + "." + i);
 
@@ -95,7 +103,36 @@ public class SlidingWindowRollingPolicy implements RollingPolicy {
     }
   }
 
-  public File getLogFile(String old) {
+  /**
+   * Return the file name for the i-th file in the sliding window according
+   * to the file name pattern.
+   * */
+  protected String getFilenameInWindow(int i) {
+    return fileNamePattern + i;
+  }
+
+  public File getActiveLogFile(String old) {
     return new File(old);
+  }
+
+  public String getActiveFileName() {
+    return activeFileName;
+  }
+
+ 
+  public int getMaxIndex() {
+    return maxIndex;
+  }
+
+  public int getMinIndex() {
+    return minIndex;
+  }
+
+  public void setMaxIndex(int maxIndex) {
+    this.maxIndex = maxIndex;
+  }
+
+  public void setMinIndex(int minIndex) {
+    this.minIndex = minIndex;
   }
 }

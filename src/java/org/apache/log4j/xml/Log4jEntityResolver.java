@@ -8,10 +8,6 @@
 package org.apache.log4j.xml;
 
 import java.io.InputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 

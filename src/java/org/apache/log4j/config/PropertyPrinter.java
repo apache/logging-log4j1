@@ -36,7 +36,7 @@ public class PropertyPrinter implements PropertyGetter.PropertyCallback {
     this.out = out;
     this.doCapitalize = doCapitalize;
     
-    print(out);
+    //print(out);
     out.flush();
   }
   
@@ -65,15 +65,14 @@ public class PropertyPrinter implements PropertyGetter.PropertyCallback {
    * 
    * <p>N.B. print() can be invoked only once!
    */
-  public
-  void print(PrintWriter out) {
-    printOptions(out, Category.getRoot());
-    
-    Enumeration cats = Category.getCurrentCategories();
-    while (cats.hasMoreElements()) {
-      printOptions(out, (Category) cats.nextElement());
-    }
-  }
+  //public void print(PrintWriter out) {
+  //printOptions(out, Category.getRoot());
+  //
+  //  Enumeration cats = Category.getCurrentCategories();
+  //while (cats.hasMoreElements()) {
+  //  printOptions(out, (Category) cats.nextElement());
+  //}
+  //}
   
   protected
   void printOptions(PrintWriter out, Category cat) {

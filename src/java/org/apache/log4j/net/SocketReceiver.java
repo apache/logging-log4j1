@@ -11,8 +11,6 @@ import java.util.Vector;
 import java.net.Socket;
 import java.net.ServerSocket;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.plugins.Receiver;
 import org.apache.log4j.helpers.LogLog;

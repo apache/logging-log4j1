@@ -148,7 +148,7 @@ public class StressAsyncAppender extends Thread {
   public
   void delay(long millis) {
     try {
-      Thread.currentThread().sleep(millis);
+      Thread.sleep(millis);
     } catch(Exception e) {}
   }
 
