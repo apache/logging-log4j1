@@ -78,12 +78,10 @@ public class SocketNode implements Runnable {
     }
     catch(java.io.EOFException e) {
       cat.info("Caught java.io.EOFException closing conneciton.");
-    }
-    catch(java.net.SocketException e) {
+    } catch(java.net.SocketException e) {
       cat.info("Caught java.net.SocketException closing conneciton.");
-    }
-    catch(Exception e) {
-      cat.error("Unexpected exception. Closing conneciton.", e);
+    } catch(Exception e) {
+      cat.warn("Unexpected exception. Closing conneciton.", e);
     }
     
     try {
