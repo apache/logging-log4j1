@@ -53,12 +53,17 @@ package org.apache.log4j.chainsaw;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseMotionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -118,6 +123,26 @@ import org.apache.log4j.spi.LoggingEvent;
  * @author Paul Smith <psmith@apache.org>
  */
 final class LoggerNameTreePanel extends JPanel implements Rule {
+  private final class MouseKeyIconListener
+    extends MouseMotionAdapter
+    implements MouseMotionListener {
+    Cursor focusOnCursor = Toolkit.getDefaultToolkit().createCustomCursor(ChainsawIcons.FOCUS_ON_ICON.getImage(), new Point(0,0), "");
+    Cursor ignoreCursor = Toolkit.getDefaultToolkit().createCustomCursor(ChainsawIcons.IGNORE_ICON.getImage(), new Point(0,0), "");
+      /* (non-Javadoc)
+     * @see java.awt.event.MouseMotionListener#mouseMoved(java.awt.event.MouseEvent)
+     */
+    public void mouseMoved(MouseEvent e) {
+//      LogLog.debug(e.toString());
+      if((e.getModifiers() & InputEvent.CTRL_MASK)>0 && (e.getModifiers() & InputEvent.SHIFT_MASK)>0) {
+        logTree.setCursor(ignoreCursor);
+      }else if((e.getModifiers() & InputEvent.CTRL_MASK)>0) {
+        logTree.setCursor(focusOnCursor);
+      }else {
+        logTree.setCursor(Cursor.getDefaultCursor());
+      }
+    }
+
+}
   private static final int WARN_DEPTH = 4;
   private final JTree logTree;
   private final JScrollPane scrollTree;
@@ -490,6 +515,8 @@ final class LoggerNameTreePanel extends JPanel implements Rule {
     * this Class.
     */
   private void setupListeners() {
+    
+    logTree.addMouseMotionListener(new MouseKeyIconListener());
     /**
        * Enable the actions depending on state of the tree selection
        */
