@@ -5,6 +5,16 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
 
+ July 5th, 2002,
+ 
+ - Release of version 1.2.5
+	
+ - Minor changes and bug fixes in LF5. [*]
+ 
+ - Calling an AsyncAppender close method also closes the embedded
+   appender instances. This resolves bug #10185 submitted by Paul
+   Voutier. [*]
+
  June 12th, 2002,
 
  - Release of version 1.2.4
