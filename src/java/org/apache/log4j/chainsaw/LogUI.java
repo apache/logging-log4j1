@@ -589,33 +589,34 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 	final NoReceiversWarningPanel noReceiversWarningPanel =
 	 new NoReceiversWarningPanel();
 
+	final SettingsListener sl = new SettingsListener() {
+	  public void loadSettings(LoadSettingsEvent event) {
+		int size = event.asInt("SavedConfigs.Size");
+		Object[] configs = new Object[size];
+
+		for (int i = 0; i < size; i++) {
+		  configs[i] = event.getSetting("SavedConfigs." + i);
+		}
+
+		noReceiversWarningPanel.getModel().setRememberedConfigs(configs);
+	  }
+
+	  public void saveSettings(SaveSettingsEvent event) {
+		Object[] configs =
+		  noReceiversWarningPanel.getModel().getRememberedConfigs();
+		event.saveSetting("SavedConfigs.Size", configs.length);
+
+		for (int i = 0; i < configs.length; i++) {
+		  event.saveSetting("SavedConfigs." + i, configs[i].toString());
+		}
+	  }
+	};
    /**
 	* This listener sets up the NoReciversWarningPanel and
 	* loads saves the configs/logfiles
 	*/
-   getSettingsManager().addSettingsListener(
-	 new SettingsListener() {
-	   public void loadSettings(LoadSettingsEvent event) {
-		 int size = event.asInt("SavedConfigs.Size");
-		 Object[] configs = new Object[size];
-
-		 for (int i = 0; i < size; i++) {
-		   configs[i] = event.getSetting("SavedConfigs." + i);
-		 }
-
-		 noReceiversWarningPanel.getModel().setRememberedConfigs(configs);
-	   }
-
-	   public void saveSettings(SaveSettingsEvent event) {
-		 Object[] configs =
-		   noReceiversWarningPanel.getModel().getRememberedConfigs();
-		 event.saveSetting("SavedConfigs.Size", configs.length);
-
-		 for (int i = 0; i < configs.length; i++) {
-		   event.saveSetting("SavedConfigs." + i, configs[i].toString());
-		 }
-	   }
-	 });
+   getSettingsManager().addSettingsListener(sl);
+   getSettingsManager().configure(sl);
 
     SwingUtilities.invokeLater(
       new Runnable() {
@@ -690,6 +691,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
                     } catch (Exception e) {
                       LogLog.error("Error initializing Log4j", e);
                     }
+                    LogManager.getLoggerRepository().getRootLogger().addAppender(handler);
 
                     receiversPanel.updateReceiverTreeInDispatchThread();
                   }
