@@ -148,6 +148,9 @@ public class EventTypeEntryContainer {
   }
 
   void addProperties(Map properties) {
+    if(properties == null) {
+     return;   
+    }
         for (Iterator iter = properties.entrySet().iterator(); iter.hasNext();) {
             Map.Entry entry = (Map.Entry)iter.next();
             if (!(propListModel.contains(entry.getKey()))) {
