@@ -67,10 +67,9 @@ import java.util.ResourceBundle;
   * 
   * <p>See the <a href="../../../../manual.html">short manual</a> for an
   * introduction on this class.
-  * 
-  * <p>See the document entitled the <a
-  * href="http://www.qos.ch/logging/replacingCategory.html">replacement
-  * of Logger by Category</a> for a deeper discussion.
+  * <p>
+  * See the document entitled <a href="http://www.qos.ch/logging/preparingFor13.html">preparing
+  *  for log4j 1.3</a> for a more detailed discussion.
   *
   * @author Ceki G&uuml;lc&uuml;
   * @author Anders Kristensen 
