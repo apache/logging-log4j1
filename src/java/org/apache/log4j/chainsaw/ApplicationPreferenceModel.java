@@ -70,6 +70,7 @@ public class ApplicationPreferenceModel implements SettingsListener {
     private boolean statusBar;
     private boolean toolbar;
     private boolean receivers;
+    private boolean confirmExit;
     
     private String lookAndFeelClassName;
     
@@ -189,6 +190,7 @@ public class ApplicationPreferenceModel implements SettingsListener {
        setToolbar(event.asBoolean("toolbar"));
        setReceivers(event.asBoolean("receivers"));
        setLookAndFeelClassName(event.getSetting("lookAndFeelClassName"));
+       setConfirmExit(event.asBoolean("confirmExit"));
     }
 
     /* (non-Javadoc)
@@ -203,6 +205,7 @@ public class ApplicationPreferenceModel implements SettingsListener {
         event.saveSetting("toolbar", isToolbar());
         event.saveSetting("receivers", isReceivers());
         event.saveSetting("lookAndFeelClassName", getLookAndFeelClassName());
+        event.saveSetting("confirmExit",isConfirmExit());
     }
 
     /**
@@ -219,6 +222,7 @@ public class ApplicationPreferenceModel implements SettingsListener {
       setToolbar(model.isToolbar());
       setReceivers(model.isReceivers());
       setLookAndFeelClassName(model.getLookAndFeelClassName());
+      setConfirmExit(model.isConfirmExit());
     }
     /**
      * @return Returns the responsiveness.
@@ -314,6 +318,22 @@ public class ApplicationPreferenceModel implements SettingsListener {
       String oldValue = this.lookAndFeelClassName;
       this.lookAndFeelClassName = lookAndFeelClassName;
       firePropertyChange("lookAndFeelClassName", oldValue, this.lookAndFeelClassName);
+    }
+
+    /**
+     * @return Returns the confirmExit.
+     */
+    public final boolean isConfirmExit() {
+      return confirmExit;
+    }
+
+    /**
+     * @param confirmExit The confirmExit to set.
+     */
+    public final void setConfirmExit(boolean confirmExit) {
+      boolean oldValue = this.confirmExit;
+      this.confirmExit = confirmExit;
+      firePropertyChange("confirmExit", oldValue, this.confirmExit);
     }
 
 }

@@ -270,22 +270,26 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
               ((Boolean) evt.getNewValue()).booleanValue());
           }
         });
-      
-      uncommittedPreferenceModel.addPropertyChangeListener("lookAndFeelClassName", new PropertyChangeListener(){
 
-        public void propertyChange(PropertyChangeEvent evt) {
+      uncommittedPreferenceModel.addPropertyChangeListener(
+        "lookAndFeelClassName",
+        new PropertyChangeListener() {
+          public void propertyChange(PropertyChangeEvent evt) {
+            String lf = evt.getNewValue().toString();
 
-           String lf = evt.getNewValue().toString();
-           
-           Enumeration enumeration = lookAndFeelGroup.getElements();
-           while(enumeration.hasMoreElements()) {
-             JRadioButton button = (JRadioButton) enumeration.nextElement();
-             if(button.getName().equals(lf)) {
-               button.setSelected(true);
-               break;
-             }
-           }
-        }});
+            Enumeration enumeration = lookAndFeelGroup.getElements();
+
+            while (enumeration.hasMoreElements()) {
+              JRadioButton button = (JRadioButton) enumeration.nextElement();
+
+              if (button.getName().equals(lf)) {
+                button.setSelected(true);
+
+                break;
+              }
+            }
+          }
+        });
     }
 
     /**
@@ -352,9 +356,12 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
       } catch (Exception e) {
         LogLog.debug("Can't find new GTK L&F, might be Windows, or <JDK1.4.2");
       }
+
       add(lfPanel);
-      
-      add(new JLabel("Look and Feel change will apply the next time you start Chainsaw"));
+
+      add(
+        new JLabel(
+          "Look and Feel change will apply the next time you start Chainsaw"));
     }
   }
 
@@ -367,6 +374,7 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
       new JCheckBox("Prompt me on startup if there are no Receivers defined");
     private final JSlider responsiveSlider =
       new JSlider(JSlider.HORIZONTAL, 1, 4, 2);
+    private final JCheckBox confirmExit = new JCheckBox("Confirm Exit");
     Dictionary sliderLabelMap = new Hashtable();
 
     /**
@@ -388,6 +396,8 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
       p.add(showNoReceiverWarning);
       p.add(Box.createHorizontalGlue());
 
+      confirmExit.setToolTipText("Is set, you will be prompted to confirm the exit Chainsaw");
+      
       setupInitialValues();
       setupListeners();
 
@@ -401,6 +411,7 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
       p1.add(identifierExpression);
       add(p1);
       add(p);
+      add(confirmExit);
       add(Box.createVerticalGlue());
     }
 
@@ -480,6 +491,23 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
               LogLog.debug("Adjust responsiveness to " + value);
               uncommittedPreferenceModel.setResponsiveness(value);
             }
+          }
+        });
+
+      uncommittedPreferenceModel.addPropertyChangeListener(
+        "confirmExit",
+        new PropertyChangeListener() {
+          public void propertyChange(PropertyChangeEvent evt) {
+            boolean value = ((Boolean) evt.getNewValue()).booleanValue();
+            confirmExit.setSelected(value);
+          }
+        });
+
+      confirmExit.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            uncommittedPreferenceModel.setConfirmExit(
+              confirmExit.isSelected());
           }
         });
     }

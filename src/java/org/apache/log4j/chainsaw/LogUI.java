@@ -1215,6 +1215,12 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    * Shutsdown by ensuring the Appender gets a chance to close.
    */
   private void shutdown() {
+    if(getApplicationPreferenceModel().isConfirmExit()) {
+      if(JOptionPane.showConfirmDialog(LogUI.this, "Are you sure you want to exit Chainsaw?", "Confirm Exit", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE) != JOptionPane.YES_OPTION) {
+        return;
+      }
+    }
+    
     JWindow progress = new JWindow();
     final ProgressPanel panel = new ProgressPanel(1, 3, "Shutting down");
     progress.getContentPane().add(panel);
