@@ -27,8 +27,9 @@ public class AppenderAttachableImpl implements AppenderAttachable {
   protected Vector  appenderList;
 
   /**
-     Attach an appender.
-   */
+     Attach an appender. If the appender is already in the list in
+     won't be added again.
+  */
   public
   void addAppender(Appender newAppender) {
     // Null values for newAppender parameter are strictly forbidden.
