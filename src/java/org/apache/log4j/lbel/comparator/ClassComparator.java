@@ -19,25 +19,27 @@ package org.apache.log4j.lbel.comparator;
 import org.apache.log4j.lbel.Operator;
 import org.apache.log4j.lbel.ScanError;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.location.LocationInfo;
 
 
 /**
- * Compare the message of an event passed as parameter to the logger name and
+ * Compare the class of an event passed as parameter to the class name and
  * comparison operator set in the constructor.
  *
  * <p>Allowed comparison operators are '=', '!=', '>', '>=', '<', '<=', '~' and
  * '!~' where '~' stands for regular expression match.
  *
  * @author <a href="http://www.qos.ch/log4j/">Ceki G&uuml;lc&uuml;</a>
- * @author Scott Deboy
  */
-public class MessageComparator extends StringComparator {
-  public MessageComparator(final Operator operator, String rightSide)
+public class ClassComparator extends StringComparator {
+  
+  public ClassComparator(final Operator operator, String rightSide)
     throws ScanError {
     super(operator, rightSide);
   }
 
   protected String getLeftSide(LoggingEvent event) {
-    return event.getRenderedMessage();
+    LocationInfo li = event.getLocationInformation();
+    return li.getClassName();
   }
 }

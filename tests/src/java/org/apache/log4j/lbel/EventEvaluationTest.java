@@ -23,6 +23,7 @@ import junit.framework.TestSuite;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.location.LocationInfo;
 
 
 
@@ -41,6 +42,9 @@ public class EventEvaluationTest extends TestCase {
     event.setMessage("hello world");
     event.setLoggerName("org.wombat");
     event.setProperty("x", "y follows x");
+      
+    LocationInfo li = new LocationInfo("file", "org.wombat", "getWombat", "10");
+    event.setLocationInformation(li);
   }
 
   protected void tearDown() throws Exception {
@@ -141,6 +145,30 @@ public class EventEvaluationTest extends TestCase {
 
     evaluator = new LBELEventEvaluator("property.y = 'toto'");
     assertTrue(!evaluator.evaluate(event));    
+  }
+  
+  public void testMethod() throws ScanError {
+    evaluator = new LBELEventEvaluator("method = getWombat");
+    assertTrue(evaluator.evaluate(event));
+ 
+    evaluator = new LBELEventEvaluator("method >= get");
+    assertTrue(evaluator.evaluate(event));
+
+    evaluator = new LBELEventEvaluator("method <= get");
+    assertTrue(!evaluator.evaluate(event));
+    
+  }
+
+  public void testClass() throws ScanError {
+    evaluator = new LBELEventEvaluator("class = org.wombat");
+    assertTrue(evaluator.evaluate(event));
+    
+    evaluator = new LBELEventEvaluator("class > org");
+    assertTrue(evaluator.evaluate(event));
+    
+    evaluator = new LBELEventEvaluator("class < org");
+    assertTrue(!evaluator.evaluate(event));
+
   }
   
   public static Test XXsuite() {

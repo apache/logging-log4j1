@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.util.Stack;
 
 import org.apache.log4j.Level;
+import org.apache.log4j.lbel.comparator.ClassComparator;
 import org.apache.log4j.lbel.comparator.LevelComparator;
 import org.apache.log4j.lbel.comparator.LoggerComparator;
 import org.apache.log4j.lbel.comparator.MessageComparator;
+import org.apache.log4j.lbel.comparator.MethodComparator;
 import org.apache.log4j.lbel.comparator.PropertyComparator;
 import org.apache.log4j.lbel.comparator.TimestampComparator;
 
@@ -181,6 +183,18 @@ class Parser {
       ts.next();
       literal = getLiteral();
       return new Node(Node.COMPARATOR, new MessageComparator(operator, literal));
+    case Token.METHOD:
+      ts.next();
+      operator = getOperator();
+      ts.next();
+      literal = getLiteral();
+      return new Node(Node.COMPARATOR, new MethodComparator(operator, literal));
+    case Token.CLASS:
+      ts.next();
+      operator = getOperator();
+      ts.next();
+      literal = getLiteral();
+      return new Node(Node.COMPARATOR, new ClassComparator(operator, literal));
     case Token.TIMESTAMP:
       ts.next();
       operator = getOperator();
