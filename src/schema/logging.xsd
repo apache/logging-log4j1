@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<!--
+  Copyright 2005 The Apache Software Foundation.
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+-->
+<xs:schema targetNamespace="http://logging.apache.org/"
+                  elementFormDefault="qualified"
+                  xmlns="http://logging.apache.org/"
+                  xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                 
+<xs:simpleType name="objectName">
+   <xs:restriction base="xs:string">
+	   <xs:minLength value="1"/>
+   </xs:restriction>
+</xs:simpleType>                  
+
+<xs:simpleType name="className">
+   <xs:restriction base="xs:string">
+		<!-- xs:pattern value=""/ -->
+   </xs:restriction>
+</xs:simpleType>
+
+<xs:attributeGroup name="object">
+	<xs:attribute name="class" type="className" use="optional"/>
+</xs:attributeGroup>
+
+<xs:element name="configuration">
+	<xs:complexType>
+		<xs:sequence>
+			<xs:element ref="appender" minOccurs="1" maxOccurs="unbounded"/>
+			<xs:element ref="logger" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="root" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+		<xs:attribute name="debug" type="xs:boolean"/>
+	</xs:complexType>
+</xs:element>
+
+<xs:element name="appender">
+	<xs:complexType>
+		<xs:sequence>
+			<xs:element ref="errorHandler" minOccurs="0" maxOccurs="1"/>
+			<xs:element ref="param" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="layout" minOccurs="0" maxOccurs="1"/>
+			<xs:element ref="filter" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="objectName" use="required"/>
+		<xs:attribute name="class" type="className" use="required"/>
+	</xs:complexType>
+</xs:element>
+
+<xs:element name="logger">
+	<xs:complexType>
+		<xs:sequence>
+			<xs:element ref="level" minOccurs="0"/>
+			<xs:element ref="appender-ref" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="objectName" use="required"/>
+	</xs:complexType>
+</xs:element>
+
+<xs:element name="root">
+	<xs:complexType>
+		<xs:sequence>
+			<xs:element ref="level" minOccurs="0"/>
+			<xs:element ref="appender-ref" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:element>
+
+<xs:simpleType name="levelValue">
+	<xs:restriction base="xs:string">
+		<xs:minLength value="1"/>
+	</xs:restriction>
+</xs:simpleType>
+
+<xs:element name="level">
+	<xs:complexType>
+		<xs:attribute name="value" type="levelValue" use="required"/>
+		<xs:attribute name="class" type="className" use="optional"/>
+	</xs:complexType>
+</xs:element>
+
+<xs:simpleType name="paramName">
+	<xs:restriction base="xs:string">
+		<xs:minLength value="1"/>
+	</xs:restriction>
+</xs:simpleType>
+
+<xs:element name="param">
+	<xs:complexType>
+		<xs:attribute name="name" type="paramName" use="required"/>
+		<xs:attribute name="value" type="xs:string" use="required"/>
+	</xs:complexType>
+</xs:element>
+
+<xs:element name="layout">
+	<xs:complexType>
+		<xs:sequence>
+			<xs:element ref="param" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="class" type="className" use="required"/>
+	</xs:complexType>
+</xs:element>
+
+<xs:element name="root-ref">
+	<xs:complexType>
+	</xs:complexType>
+</xs:element>
+
+<xs:element name="appender-ref">
+	<xs:complexType>
+		<xs:attribute name="ref" type="objectName" use="required"/>
+	</xs:complexType>
+</xs:element>
+
+<xs:group name="appender-ref">
+	<xs:choice>
+		<xs:element ref="root-ref"/>
+		<xs:element ref="appender-ref"/>
+	</xs:choice>
+</xs:group>
+
+
+<xs:element name="filter">
+    <xs:complexType>
+    	<xs:sequence>
+    		<xs:element ref="param" minOccurs="0" maxOccurs="unbounded"/>
+    	</xs:sequence>
+    	<xs:attribute name="class" type="className" use="required"/>
+    </xs:complexType>
+</xs:element>
+
+<xs:element name="errorHandler">
+   <xs:complexType>
+   	  <xs:sequence>
+   	  	<xs:group ref="appender-ref" minOccurs="0" maxOccurs="unbounded"/>
+   	  </xs:sequence>
+   	  <xs:attribute name="class" type="className" use="required"/>   	  
+   	</xs:complexType>
+</xs:element>
+
+</xs:schema>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration xmlns='http://logging.apache.org/'
+                     debug="false"
+    				 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                     xsi:schemaLocation="http://logging.apache.org/ logging.xsd">
+
+  <appender name="TEMP" class="org.apache.log4j.FileAppender">
+    <param name="Append" value="false" />
+    <param name="File"   value="output/temp" />
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern"
+	value="%-5p %c{2} - %m\n"/>
+    </layout>
+    
+    <filter class="org.apache.log4j.filter.LevelMatchFilter">
+      <param name="LevelToMatch" value="TRACE#org.apache.log4j.xml.XLevel" />
+      <param name="AcceptOnMatch" value="true" />
+    </filter>
+    
+    <filter class="org.apache.log4j.filter.DenyAllFilter"/>
+
+  </appender>
+
+  <!-- Prevent internal log4j DEBUG messages from polluting the output. -->
+  <logger name="org.apache.log4j.joran"><level value="INFO" /></logger>
+  <logger name="org.apache.log4j.config"><level value="INFO" /></logger>
+  <logger name="org.apache.log4j.FileAppender"><level value="INFO" /></logger>
+
+  <root>
+    <level value="TRACE" class="org.apache.log4j.xml.XLevel"/>
+    <appender-ref ref="TEMP" />
+  </root>
+
+</configuration>

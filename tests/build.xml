@@ -176,23 +176,24 @@
                                      XMLLayout, 
   	                                 AsyncAppender, 
                                      OptionSubstitutionTest,
-  	                             LevelOptionConverterTest,
-  				     BoundedFIFO, 
+  	                                 LevelOptionConverterTest,
+  				                     BoundedFIFO, 
                                      Joran,
                                      SimpleFilter,
-  	                             Scheduler, 
+  	                                 Scheduler, 
                                      ThrowableInformation,
                                      LocationInfo,
                                      CyclicBuffer, 
                                      OR, 
-  	                             VariaLevelMatchFilter, 
+  	                                 VariaLevelMatchFilter, 
                                      VariaLevelRangeFilter, PatternParser,
                                      LevelMatchFilter, DRFA, 
                                      Rolling, 
                                      NDC,
                                      Plugins,
                                      CachedDateFormat,
-                                     ReaderWriterLock
+                                     ReaderWriterLock,
+  	                                 Schema
                                      "/>
 
 
@@ -620,6 +621,20 @@
 	  <classpath refid="tests.classpath"/>
 	  <formatter type="plain" usefile="false"/>
 	  <test name="org.apache.log4j.pattern.CachedDateFormatTest" />
+    </junit>
+  </target>
+
+  <target name="Schema" depends="check, build">
+  	<available classname="org.apache.xerces.jaxp.SAXParserFactoryImpl" property="xerces-available"/>
+  	<fail unless="xerces-available" message="Schema tests require Xerces-J 2.x on class path."/>
+	<junit printsummary="yes" fork="yes" haltonfailure="yes">
+	  <classpath>
+	    <pathelement path="${javac.dest}"/>
+	  	<pathelement path="${java.class.path}"/>
+	  </classpath>
+	  <jvmarg value="-Djavax.xml.parsers.SAXParserFactory=org.apache.xerces.jaxp.SAXParserFactoryImpl"/>		
+	  <formatter type="plain" usefile="false"/>
+	  <test name="org.apache.log4j.xml.SchemaTestCase" />
     </junit>
   </target>
 

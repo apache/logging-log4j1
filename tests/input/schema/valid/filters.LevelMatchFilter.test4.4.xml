@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration xmlns='http://logging.apache.org/'
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://logging.apache.org/ logging.xsd">
+  <appender name="A1" class="org.apache.log4j.FileAppender">
+    <param name="File"   value="output/filters.LevelMatchFilter.test4.txt" />
+    <param name="Append" value="true" />
+        
+    <layout class="org.apache.log4j.SimpleLayout"/>
+    
+    <filter class="org.apache.log4j.filters.LevelMatchFilter">
+      <param name="MatchReturnValue" value="accept"/>
+      <param name="NoMatchReturnValue" value="deny"/>
+      <param name="LevelToMatch" value="fatal"/>
+    </filter>
+  </appender>
+    
+  <root>
+    <level value ="debug" />
+    <appender-ref ref="A1" />
+  </root>
+  
+</configuration>
