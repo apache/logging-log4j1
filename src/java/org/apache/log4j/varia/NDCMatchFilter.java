@@ -16,20 +16,26 @@ import org.apache.log4j.helpers.OptionConverter;
    This is a simple filter based on {@link NDC} value matching.
 
    <p>The filter admits three options <b>ValueToMatch</b> and
-   <b>ExactMatch</b> and <b>AcceptOnMatch</b>. If <b>ExactMatch</b>
-   is set to true, then the <b>ValueToMatch</b> must exactly match
-   the NDC value of the {@link LoggingEvent}. By default the filter
-   will match if the <b>ValueToMatch</b> is "contained" in the NDC
-   value. Also by default, the <b>ValueToMatch</b> is set to null
-   and will only match when the NDC stack is empty.
-   
-   <p>If the filter matches between the configured 
-   <b>ValueToMatch</b> and the NDC value of the {@link 
-   LoggingEvent}, then the {@link #decide} method returns {@link 
-   Filter#ACCEPT} in case the <b>AcceptOnMatch</b> option value 
-   is set to <code>true</code>, if it is <code>false</code> then 
-   {@link Filter#DENY} is returned. If there is no match, 
-   {@link Filter#NEUTRAL} is returned.
+   <b>ExactMatch</b> and <b>AcceptOnMatch</b>.
+
+   <p>If a match occurs, then the {@link #decide decide} method
+   returns {@link Filter#ACCEPT} but only in case the
+   <b>AcceptOnMatch</b> option value is set to <code>true</code>, if
+   it is set to <code>false</code> then {@link Filter#DENY} is
+   returned. If no match occurs, the {@link #decide decide} method
+   returns {@link Filter#NEUTRAL}.
+
+   <p>As the name indicates, the value of <b>ValueToMatch</b> property
+   determines the string value to match. If <b>ExactMatch</b> is set
+   to true, a match will occur only when the value to match exactly
+   matches the NDC value of the logging event.  Otherwise, if the
+   <b>ExactMatch</b> property is set to <code>false</code>, a match
+   will occur if the NDC value is contained anywhere within the value
+   to match. The <b>ExactMatch</b> property is set to
+   <code>false</code> by default.
+
+   <p>Note that by default the value to match is set to
+   <code>null</code> and will only match an empty NDC stack.
 
    @author Mark Womack
 
