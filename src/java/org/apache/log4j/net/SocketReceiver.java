@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.plugins.Pauseable;
 import org.apache.log4j.plugins.Plugin;
 import org.apache.log4j.plugins.Receiver;
@@ -123,7 +122,7 @@ public class SocketReceiver extends Receiver implements Runnable, PortBased,
    * server socket and all of the open sockets.
    */
   public synchronized void shutdown() {
-    LogLog.debug(getName() + " received shutdown request");
+    getLogger().debug(getName() + " received shutdown request");
 
     // mark this as no longer running
     active = false;
@@ -143,7 +142,7 @@ public class SocketReceiver extends Receiver implements Runnable, PortBased,
   private synchronized void doShutdown() {
     active = false;
 
-    LogLog.debug(getName() + " doShutdown called");
+    getLogger().debug(getName() + " doShutdown called");
 
     // close the server socket
     closeServerSocket();
@@ -158,7 +157,7 @@ public class SocketReceiver extends Receiver implements Runnable, PortBased,
    * Closes the server socket, if created.
    */
   private void closeServerSocket() {
-    LogLog.debug(getName() + " closing server socket");
+    getLogger().debug("{} closing server socket", getName());
 
     try {
       if (serverSocket != null) {
@@ -201,7 +200,7 @@ public class SocketReceiver extends Receiver implements Runnable, PortBased,
     try {
       serverSocket = new ServerSocket(port);
     } catch (Exception e) {
-      LogLog.error(
+      getLogger().error(
         "error starting SocketReceiver (" + this.getName()
         + "), receiver did not start", e);
       active = false;
@@ -213,14 +212,14 @@ public class SocketReceiver extends Receiver implements Runnable, PortBased,
     Socket socket = null;
 
     try {
-      LogLog.debug("in run-about to enter while not interrupted loop");
+      getLogger().debug("in run-about to enter while not interrupted loop");
 
       active = true;
 
       while (!rThread.isInterrupted()) {
         // if we have a socket, start watching it
         if (socket != null) {
-          LogLog.debug("socket not null - creating and starting socketnode");
+          getLogger().debug("socket not null - creating and starting socketnode");
           socketList.add(socket);
 
           SocketNode node = new SocketNode(socket, this);
@@ -237,19 +236,19 @@ public class SocketReceiver extends Receiver implements Runnable, PortBased,
           socket = null;
         }
 
-        LogLog.debug("waiting to accept socket");
+        getLogger().debug("waiting to accept socket");
 
         // wait for a socket to open, then loop to start it
         socket = serverSocket.accept();
-        LogLog.debug("accepted socket");
+        getLogger().debug("accepted socket");
       }
     } catch (Exception e) {
-      LogLog.warn(
+      getLogger().warn(
         "exception while watching socket server in SocketReceiver ("
         + this.getName() + "), stopping");
     }
 
-    LogLog.debug(getName() + " has exited the not interrupted loop");
+    getLogger().debug("{} has exited the not interrupted loop", getName());
 
     // socket not watched because we a no longer running
     // so close it now.
@@ -257,11 +256,11 @@ public class SocketReceiver extends Receiver implements Runnable, PortBased,
       try {
         socket.close();
       } catch (IOException e1) {
-          LogLog.warn("socket exception caught - socket closed");
+        getLogger().warn("socket exception caught - socket closed");
       }
     }
 
-    LogLog.debug(getName() + " is exiting main run loop");
+    getLogger().debug("{} is exiting main run loop", getName());
   }
 
   /**

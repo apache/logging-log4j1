@@ -19,8 +19,8 @@
 package org.apache.log4j.net;
 
 import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.helpers.Constants;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.LoggingEvent;
 
 import java.io.IOException;
@@ -193,7 +193,7 @@ public class SocketAppender extends AppenderSkeleton {
       try {
         oos.close();
       } catch (IOException e) {
-        LogLog.error("Could not close oos.", e);
+        getLogger().error("Could not close oos.", e);
       }
 
       oos = null;
@@ -229,7 +229,7 @@ public class SocketAppender extends AppenderSkeleton {
       /**
        * Rather than log an ugly stack trace, output the msg
        */
-      LogLog.error(msg + "(" + e.getMessage() + ")");
+      getLogger().error(msg + "(" + e.getMessage() + ")");
     }
   }
 
@@ -275,7 +275,7 @@ public class SocketAppender extends AppenderSkeleton {
         }
       } catch (IOException e) {
         oos = null;
-        LogLog.warn("Detected problem with connection: " + e);
+        getLogger().warn("Detected problem with connection: " + e);
 
         if (reconnectionDelay > 0) {
           fireConnector();
@@ -286,7 +286,7 @@ public class SocketAppender extends AppenderSkeleton {
 
   void fireConnector() {
     if (connector == null) {
-      LogLog.debug("Starting a new connector thread.");
+      getLogger().debug("Starting a new connector thread.");
       connector = new Connector();
       connector.setDaemon(true);
       connector.setPriority(Thread.MIN_PRIORITY);
@@ -298,7 +298,7 @@ public class SocketAppender extends AppenderSkeleton {
     try {
       return InetAddress.getByName(host);
     } catch (Exception e) {
-      LogLog.error("Could not find address of [" + host + "].", e);
+      LogManager.getLogger(SocketAppender.class).error("Could not find address of [" + host + "].", e);
 
       return null;
     }
@@ -417,27 +417,26 @@ public class SocketAppender extends AppenderSkeleton {
       while (!interrupted) {
         try {
           sleep(reconnectionDelay);
-          LogLog.debug("Attempting connection to " + address.getHostName());
+          getLogger().debug("Attempting connection to {}", address.getHostName());
           socket = new Socket(address, port);
 
           synchronized (this) {
             oos = new ObjectOutputStream(socket.getOutputStream());
             connector = null;
-            LogLog.debug("Connection established. Exiting connector thread.");
+            getLogger().debug("Connection established. Exiting connector thread.");
 
             break;
           }
         } catch (InterruptedException e) {
-          LogLog.debug("Connector interrupted. Leaving loop.");
+          getLogger().debug("Connector interrupted. Leaving loop.");
 
           return;
         } catch (java.net.ConnectException e) {
-          LogLog.debug(
+          getLogger().debug(
             "Remote host " + address.getHostName() + " refused connection.");
         } catch (IOException e) {
-          LogLog.debug(
-            "Could not connect to " + address.getHostName()
-            + ". Exception is " + e);
+          getLogger().debug(
+            "Could not connect to {}. Exception is {}", address.getHostName(), e);
         }
       }
 
