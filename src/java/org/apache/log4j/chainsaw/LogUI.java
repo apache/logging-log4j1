@@ -32,6 +32,7 @@ import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
 import org.apache.log4j.chainsaw.prefs.SettingsListener;
 import org.apache.log4j.chainsaw.prefs.SettingsManager;
 import org.apache.log4j.chainsaw.receivers.ReceiversPanel;
+import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.net.SocketNodeEventListener;
 import org.apache.log4j.plugins.Plugin;
@@ -42,6 +43,7 @@ import org.apache.log4j.plugins.Receiver;
 import org.apache.log4j.rule.ExpressionRule;
 import org.apache.log4j.rule.Rule;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.xml.DOMConfigurator;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -69,6 +71,7 @@ import java.io.IOException;
 
 import java.lang.reflect.Method;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import java.util.ArrayList;
@@ -107,6 +110,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+import javax.xml.parsers.FactoryConfigurationError;
 
 
 /**
@@ -262,6 +266,21 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
     logUI.handler = new ChainsawAppenderHandler();
     logUI.handler.addEventBatchListener(logUI.new NewTabEventBatchReceiver());
+    
+    
+    String config = model.getConfigurationURL();
+    if(config!=null) {
+        config = config.trim();
+        LogLog.info("Using '" + config + "' for auto-configuration");
+        try {
+            DOMConfigurator.configure(new URL(config));
+        } catch (Exception e) {
+            LogLog.error("Failed to use the auto-configuration file", e);
+        }   
+    }else {
+        LogLog.info("No auto-configuration file found within the ApplicationPreferenceModel");
+    }
+    
     LogManager.getRootLogger().addAppender(logUI.handler);
     logUI.activateViewer();
 

@@ -16,15 +16,12 @@
 
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.helpers.LogLog;
-
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
+import java.net.URL;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -33,7 +30,9 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.InputVerifier;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -48,6 +47,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 
+import org.apache.log4j.helpers.LogLog;
+
 
 /**
  * A panel used by the user to modify any application-wide preferences.
@@ -59,8 +60,9 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
   private ApplicationPreferenceModel committedPreferenceModel;
   private ApplicationPreferenceModel uncommittedPreferenceModel =
     new ApplicationPreferenceModel();
-  JTextField identifierExpression;
-  JTextField toolTipDisplayMillis;    
+  private JTextField identifierExpression;
+  private JTextField toolTipDisplayMillis;    
+  private final JTextField configurationURL = new JTextField(25);
 
   ApplicationPreferenceModelPanel(ApplicationPreferenceModel model) {
     this.committedPreferenceModel = model;
@@ -68,6 +70,7 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
     getOkButton().addActionListener(
       new ActionListener() {
         public void actionPerformed(ActionEvent e) {
+          uncommittedPreferenceModel.setConfigurationURL(configurationURL.getText());
           uncommittedPreferenceModel.setIdentifierExpression(
             identifierExpression.getText());
             try {
@@ -84,6 +87,7 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
     getCancelButton().addActionListener(
       new ActionListener() {
         public void actionPerformed(ActionEvent e) {
+          uncommittedPreferenceModel.apply(committedPreferenceModel);
           hidePanel();
         }
       });
@@ -406,7 +410,28 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
       p4.add(toolTipDisplayMillis);
       add(p4);
 
+      JPanel p5 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+
+      p5.add(new JLabel("Automatic Configuration"));
+      p5.add(Box.createHorizontalStrut(5));
+      p5.add(configurationURL);
+      add(p5);
+
+
       add(Box.createVerticalGlue());
+      
+      configurationURL.setToolTipText("A complete and valid URL identifying the location of a valid log4.xml file to auto-configure Receivers and other Plugins");
+      configurationURL.setInputVerifier(new InputVerifier() {
+
+        public boolean verify(JComponent input)
+        {
+            try {
+                new URL(configurationURL.getText());
+            } catch (Exception e) {
+                return false;
+            }
+            return true;
+        }});
     }
 
     private void initSliderComponent() {
@@ -519,6 +544,12 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
           }
         });
 
+      uncommittedPreferenceModel.addPropertyChangeListener("configurationURL", new PropertyChangeListener() {
+
+          public void propertyChange(PropertyChangeEvent evt) {
+            String value = evt.getNewValue().toString();
+            configurationURL.setText(value);
+          }});
       confirmExit.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
