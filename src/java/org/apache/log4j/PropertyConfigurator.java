@@ -697,7 +697,7 @@ public class PropertyConfigurator implements Configurator {
           LogLog.debug("End of parsing for \"" + appenderName + "\".");
         }
       }
-   
+
       PropertySetter.setProperties(appender, props, prefix + ".");
       activateOptions(appender);
       LogLog.debug("Parsed \"" + appenderName + "\" options.");
@@ -708,11 +708,11 @@ public class PropertyConfigurator implements Configurator {
     return appender;
   }
 
-  public void activateOptions(Object obj) { 
-       if (obj instanceof OptionHandler) {  
-         ((OptionHandler) obj).activateOptions();  
-       }  
-     } 
+  public void activateOptions(Object obj) {
+    if (obj instanceof OptionHandler) {
+      ((OptionHandler) obj).activateOptions();
+    }
+  }
 
   void registryPut(Appender appender) {
     registry.put(appender.getName(), appender);
