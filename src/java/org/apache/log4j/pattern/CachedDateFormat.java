@@ -16,12 +16,16 @@
 
 package org.apache.log4j.pattern;
 
-import java.util.Date;
-import java.text.FieldPosition;
-import java.text.ParsePosition;
 import java.text.DateFormat;
+import java.text.FieldPosition;
 import java.text.NumberFormat;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+
+import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
+
 
 /**
  * Caches the results of a DateFormat.
@@ -29,32 +33,56 @@ import java.util.TimeZone;
  *  @since 1.3
  */
 final class CachedDateFormat extends DateFormat {
+  private static final int UNRECOGNIZED_MILLISECOND_PATTERN = -2;
+  private static final int NO_MILLISECOND_PATTERN = -1;
+
+  // We take advantage of structure of the sentinel, in particular
+  // the incremental decrease in the digits 9, 8, and 7.
+  private static final int SENTINEL = 987;
   private DateFormat formatter;
   private int millisecondStart;
   private StringBuffer cache = new StringBuffer();
-  private long previousTime;
+  private long slotBegin;
+  private int milliDigits;
+  private StringBuffer milliBuf = new StringBuffer(3);
   private NumberFormat numberFormat;
-  private static final int UNRECOGNIZED_MILLISECOND_PATTERN = -2;
-  private static final int NO_MILLISECOND_PATTERN = -1;
-  
-  public CachedDateFormat(final DateFormat formatter) {
-    if (formatter == null) {
-      throw new NullPointerException("formatter");
+
+  public CachedDateFormat(String pattern) {
+    this(pattern, null);
+  }
+
+  public CachedDateFormat(String pattern, Locale locale) {
+    if (pattern == null) {
+      throw new IllegalArgumentException("Pattern cannot be null");
     }
-    this.formatter = formatter;
+    if (locale == null) {
+      this.formatter = new SimpleDateFormat(pattern);
+    } else {
+      this.formatter = new SimpleDateFormat(pattern, locale);
+    }
+    milliDigits = CacheUtil.computeSuccessiveS(pattern);
+
+    // if the number if millisecond digits is 4 or more, we can safely reduce
+    // the precision to 3, because the values for the extra digits will always
+    // be 0, thus immutable across iterations.
+    if (milliDigits >= 4) {
+      milliDigits = 3;
+    }
     numberFormat = formatter.getNumberFormat();
     if (numberFormat == null) {
       throw new NullPointerException("numberFormat");
     }
+    // delegate zero padding to numberFormat
+    numberFormat.setMinimumIntegerDigits(milliDigits);
+    
     Date now = new Date();
     long nowTime = now.getTime();
-    previousTime = (nowTime / 1000L) * 1000L;
+    slotBegin = (nowTime / 1000L) * 1000L;
 
-    Date lastSecond = new Date(previousTime);
-    String formatted = formatter.format(lastSecond);
+    Date slotBegingDate = new Date(slotBegin);
+    String formatted = formatter.format(slotBegingDate);
     cache.append(formatted);
-    millisecondStart = findMillisecondStart(previousTime, formatted,
-                                            formatter);
+    millisecondStart = findMillisecondStart(slotBegin, formatted, formatter);
   }
 
   /**
@@ -66,31 +94,38 @@ final class CachedDateFormat extends DateFormat {
    *    -1 indicates no millisecond field, -2 indicates unrecognized
    *    field (likely RelativeTimeDateFormat)
    */
-  private static int findMillisecondStart(final long time,
-                                          final String formatted,
-                                          final DateFormat formatter) {
-      String plus987 = formatter.format(new Date(time + 987));
-      //
-      //    find first difference between values
-      //
-      for (int i = 0; i < formatted.length(); i++) {
-        if (formatted.charAt(i) != plus987.charAt(i)) {
-          //
-          //   if one string has "000" and the other "987"
-          //      we have found the millisecond field
-          //
-          if (i + 3 <= formatted.length() 
-              && formatted.substring(i, i + 3) == "000" 
-              && plus987.substring(i, i + 3) == "987") {
-            return i;
-          } else {
+  private int findMillisecondStart(
+    final long time, final String formatted, final DateFormat formatter) {
+    // the following code assume that the value of the SENTINEL is
+    // 987. It won't work corectly if the SENTINEL is not 987.
+    String plus987 = formatter.format(new Date(time + SENTINEL));
+
+    //
+    //    find first difference between values
+    //
+    for (int i = 0; i < formatted.length(); i++) {
+      if (formatted.charAt(i) != plus987.charAt(i)) {
+        //
+        //   if one string has "000" and the other "987"
+        //      we have found the millisecond field
+        //
+        if ((i + milliDigits) <= formatted.length()) {
+          for (int j = 0; j < milliDigits; j++) {
+            if (
+              (formatted.charAt(i + j) != '0')
+                || (formatted.charAt(i + j) != ('9' - j))) {
+              ;
+            }
             return UNRECOGNIZED_MILLISECOND_PATTERN;
           }
+          return i;
+        } else {
+          return UNRECOGNIZED_MILLISECOND_PATTERN;
         }
       }
+    }
     return NO_MILLISECOND_PATTERN;
-}
-
+  }
 
   /**
    * Converts a Date utilizing a previously converted
@@ -100,46 +135,36 @@ final class CachedDateFormat extends DateFormat {
      @param sbuf the string buffer to write to
      @param fieldPosition remains untouched
    */
-  public
-      StringBuffer format(Date date, StringBuffer sbuf,
-                          FieldPosition fieldPosition) {
-
+  public StringBuffer format(
+    Date date, StringBuffer sbuf, FieldPosition fieldPosition) {
     if (millisecondStart == UNRECOGNIZED_MILLISECOND_PATTERN) {
       return formatter.format(date, sbuf, fieldPosition);
     }
     long now = date.getTime();
-    if (now < previousTime + 1000L && now >= previousTime) {
+    if ((now < (slotBegin + 1000L)) && (now >= slotBegin)) {
       if (millisecondStart >= 0) {
-        cache.delete(millisecondStart, millisecondStart + 3);
-        int millis = (int) (now - previousTime);
+        int millis = (int) (now - slotBegin);
         int cacheLength = cache.length();
-        //
-        //   append milliseconds to the end of the cache
-        numberFormat.format(millis, cache, fieldPosition);
-        int milliLength = cache.length() - cacheLength;
-        //
-        //   if it didn't belong at the end, then move it
-        if (cacheLength != millisecondStart) {
-          String milli = cache.substring(cacheLength);
-          cache.setLength(cacheLength);
-          cache.insert(millisecondStart, milli);
-        }
-        for (int i = milliLength; i < 3; i++) {
-          cache.insert(millisecondStart, "0");
+
+        milliBuf.setLength(0);
+        numberFormat.format(millis, milliBuf, fieldPosition);
+        for(int j = 0; j < milliDigits; j++) {
+          cache.setCharAt(millisecondStart+j, milliBuf.charAt(j));
         }
       }
       sbuf.append(cache);
     } else {
-      previousTime = (now / 1000L) * 1000L;
+      slotBegin = (now / 1000L) * 1000L;
       //
       //   if earlier than 1970 and rounded toward 1970
       //      then move back one second
-      if (now - previousTime < 0) {
-        previousTime -= 1000;
+      if ((now - slotBegin) < 0) {
+        slotBegin -= 1000;
       }
       cache.setLength(0);
-      formatter.format(new Date(previousTime), cache, fieldPosition);
-      millisecondStart = findMillisecondStart(previousTime, cache.toString(), formatter);
+      formatter.format(new Date(slotBegin), cache, fieldPosition);
+      millisecondStart =
+        findMillisecondStart(slotBegin, cache.toString(), formatter);
       //
       //  calling ourself should be safe and faster
       //     but why risk it
@@ -147,7 +172,6 @@ final class CachedDateFormat extends DateFormat {
     }
     return sbuf;
   }
-
 
   /**
    * Set timezone.
@@ -160,18 +184,16 @@ final class CachedDateFormat extends DateFormat {
     formatter.setTimeZone(timeZone);
     int prevLength = cache.length();
     cache.setLength(0);
-    cache.append(formatter.format(new Date(previousTime)));
-    millisecondStart = findMillisecondStart(previousTime,
-                                              cache.toString(),
-                                              formatter);
+    cache.append(formatter.format(new Date(slotBegin)));
+    millisecondStart =
+      findMillisecondStart(slotBegin, cache.toString(), formatter);
   }
 
   /**
      This method is delegated to the formatter which most
      likely returns null.
    */
-  public
-      Date parse(String s, ParsePosition pos) {
+  public Date parse(String s, ParsePosition pos) {
     return formatter.parse(s, pos);
   }
 
