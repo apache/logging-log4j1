@@ -53,6 +53,7 @@ import javax.swing.table.TableModel;
 
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.helpers.OptionConverter;
 
 
 /**
@@ -85,6 +86,11 @@ public class ChainsawAppender
    * initialise wins!
    */
   private static ChainsawAppender sSharedAppender = null;
+
+  /**
+   * The classname of the viewer to create to view the events.
+   */
+  private String viewerClassname;
 
   /**
    * Constructor, initialises the singleton instance of the appender
@@ -163,12 +169,48 @@ public class ChainsawAppender
     }
   }
 
+  /**
+   * Instantiates and activates an instance of a ChainsawViewer
+   * to view the contents of this appender.
+   */
+  public void activateOptions() {
+    if (viewerClassname == null) {
+      viewerClassname = DefaultViewer.class.getName();
+    }
+      
+    ChainsawViewer viewer = 
+      (ChainsawViewer) OptionConverter.instantiateByClassName(viewerClassname, 
+        ChainsawViewer.class, null);
+        
+    if (viewer != null) {
+      viewer.activateViewer(this);
+    }
+  }
 
   /**
    * Close does nothing
    */
   public void close() {
     /** @todo  perhaps it should clear the internal TableModel */
+  }
+
+  /**
+   * Sets the viewer class to use to view the events.  The class must
+   * implement the ChainsawViewer interface.
+   *
+   * @param classname The class name of the viewer class.
+   */
+  public void setViewerClass(String classname) {
+    viewerClassname = classname;
+  }
+
+  /**
+   * Gets the viewer class to use to view the events.
+   *
+   * @return The class name of the viewer class.
+   */
+  public String getViewerClass() {
+    return viewerClassname;
   }
 
   // ==========================================================================
