@@ -23,11 +23,16 @@
 
    Modified existing appenders to comply with these new directives. [*]
 
- - Log4j now will check if a system property called "log4j.ignoreTCL"
-   is set. If it is it will ignore the Thread Context ClassLoader when
-   loading classes. This solves the irrating "appender is not
-   appender" messages observed when log4j.jar is loaded by multiple
-   class loaders. [*]
+ - Log4j now will check if a system property named "log4j.ignoreTCL"
+   is set. If it is set, then it will ignore the Thread Context
+   ClassLoader when loading classes. This solves the irrating
+   "appender is not assignable to Appender" messages observed when
+   log4j.jar is loaded by multiple class loaders. 
+
+   The error reporting for this problem was also improved. [*]
+
+ - Fixed bug #10528 whereby calling the MDC.get method with a null
+   argument would throw a NullPointerException. [*]
 
  July 5th, 2002
  
