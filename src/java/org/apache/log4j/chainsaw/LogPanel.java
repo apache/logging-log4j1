@@ -54,29 +54,6 @@
  */
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.Layout;
-import org.apache.log4j.PatternLayout;
-import org.apache.log4j.chainsaw.color.ColorPanel;
-import org.apache.log4j.chainsaw.color.RuleColorizer;
-import org.apache.log4j.chainsaw.filter.FilterModel;
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-import org.apache.log4j.chainsaw.icons.LineIconFactory;
-import org.apache.log4j.chainsaw.layout.DefaultLayoutFactory;
-import org.apache.log4j.chainsaw.layout.EventDetailLayout;
-import org.apache.log4j.chainsaw.layout.LayoutEditorPane;
-import org.apache.log4j.chainsaw.messages.MessageCenter;
-import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.Profileable;
-import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SettingsManager;
-import org.apache.log4j.helpers.ISO8601DateFormat;
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.rule.AbstractRule;
-import org.apache.log4j.rule.ExpressionRule;
-import org.apache.log4j.rule.ExpressionRuleContext;
-import org.apache.log4j.rule.Rule;
-import org.apache.log4j.spi.LoggingEvent;
-
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -96,10 +73,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.EOFException;
@@ -111,10 +86,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -163,6 +136,30 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import org.apache.log4j.Layout;
+import org.apache.log4j.PatternLayout;
+import org.apache.log4j.chainsaw.color.ColorPanel;
+import org.apache.log4j.chainsaw.color.RuleColorizer;
+import org.apache.log4j.chainsaw.filter.FilterModel;
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.chainsaw.icons.LineIconFactory;
+import org.apache.log4j.chainsaw.layout.DefaultLayoutFactory;
+import org.apache.log4j.chainsaw.layout.EventDetailLayout;
+import org.apache.log4j.chainsaw.layout.LayoutEditorPane;
+import org.apache.log4j.chainsaw.messages.MessageCenter;
+import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.Profileable;
+import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.SettingsManager;
+import org.apache.log4j.helpers.ISO8601DateFormat;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.rule.AbstractRule;
+import org.apache.log4j.rule.ExpressionRule;
+import org.apache.log4j.rule.ExpressionRuleContext;
+import org.apache.log4j.rule.Rule;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.LoggingEventFieldResolver;
+
 
 /**
    * LogPanel encapsulates all the necessary bits and pieces of a
@@ -191,7 +188,6 @@ public class LogPanel extends DockablePanel implements Profileable,
     private final LogPanelPreferenceModel preferenceModel = new LogPanelPreferenceModel();
     private final LogPanelPreferencePanel preferencesPanel = new LogPanelPreferencePanel(preferenceModel);
     private final ColorPanel colorPanel;
-    private String profileName = null;
     private final JDialog detailDialog = new JDialog((JFrame) null, true);
     final JPanel detailPanel = new JPanel(new BorderLayout());
     private final TableColorizingRenderer renderer;
@@ -213,8 +209,7 @@ public class LogPanel extends DockablePanel implements Profileable,
     private final JToolBar undockedToolbar;
     private RuleColorizer colorizer = new RuleColorizer();
 
-    public LogPanel(final ChainsawStatusBar statusBar, final String ident,
-        String eventType) {
+    public LogPanel(final ChainsawStatusBar statusBar, final String ident) {
         identifier = ident;
         this.statusBar = statusBar;
 
@@ -259,6 +254,7 @@ public class LogPanel extends DockablePanel implements Profileable,
                     table.tableChanged(new TableModelEvent(getModel()));
                 }
             });
+
         setDetailPaneConversionPattern(DefaultLayoutFactory.getDefaultPatternLayout());
         ((EventDetailLayout) toolTipLayout).setConversionPattern(DefaultLayoutFactory.getDefaultPatternLayout());
 
@@ -300,6 +296,15 @@ public class LogPanel extends DockablePanel implements Profileable,
         colorFrame.setIconImage(((ImageIcon) ChainsawIcons.ICON_PREFERENCES).getImage());
 
         renderer = new TableColorizingRenderer(colorizer);
+
+        preferenceModel.addPropertyChangeListener("toolTips",
+            new PropertyChangeListener() {
+                public void propertyChange(PropertyChangeEvent evt) {
+                    renderer.setToolTipsVisible(((Boolean) evt.getNewValue()).booleanValue());
+                }
+            });
+        renderer.setToolTipsVisible(preferenceModel.isToolTips());
+
         colorPanel = new ColorPanel(colorizer, filterModel);
 
         colorFrame.getContentPane().add(colorPanel);
@@ -742,7 +747,6 @@ public class LogPanel extends DockablePanel implements Profileable,
                             (evt.getValueIsAdjusting())) {
                         return;
                     }
-
                     final ListSelectionModel lsm = (ListSelectionModel) evt.getSource();
 
                     if (lsm.isSelectionEmpty()) {
@@ -1498,6 +1502,7 @@ public class LogPanel extends DockablePanel implements Profileable,
                 "loggerPrecision"));
         getPreferenceModel().setToolTips(event.asBoolean("toolTips"));
         getPreferenceModel().setScrollToBottom(event.asBoolean("scrollToBottom"));
+        scrollToBottom.scroll(event.asBoolean("scrollToBottom"));
         getPreferenceModel().setLogTreePanelVisible(event.asBoolean(
                 "logTreePanelVisible"));
         getPreferenceModel().setDetailPaneVisible(event.asBoolean(
@@ -1700,20 +1705,13 @@ public class LogPanel extends DockablePanel implements Profileable,
             return;
         }
 
-        table.getSelectionModel().setValueIsAdjusting(true);
+        //table.getSelectionModel().setValueIsAdjusting(true);
 
         boolean rowAdded = false;
-        LoggingEvent lastSelected = null;
-
-        if (table.getSelectedRow() > -1) {
-            lastSelected = tableModel.getRow(table.getSelectedRow());
-        }
+        int currentRow = getCurrentRow();
 
         for (Iterator iter = eventBatchEntrys.iterator(); iter.hasNext();) {
             ChainsawEventBatchEntry entry = (ChainsawEventBatchEntry) iter.next();
-
-            //        Vector v = formatFields(entry.getEventVector());
-            final String eventType = entry.getEventType();
 
             updateOtherModels(entry);
 
@@ -1721,7 +1719,6 @@ public class LogPanel extends DockablePanel implements Profileable,
                     true);
             rowAdded = rowAdded ? true : isCurrentRowAdded;
         }
-
         table.getSelectionModel().setValueIsAdjusting(false);
 
         //tell the model to notify the count listeners
@@ -1734,11 +1731,10 @@ public class LogPanel extends DockablePanel implements Profileable,
                 table.scrollToBottom(table.columnAtPoint(
                         table.getVisibleRect().getLocation()));
             } else {
-                if (lastSelected != null) {
-                    table.scrollToRow(tableModel.getRowIndex(lastSelected),
+                    table.scrollToRow(currentRow,
                         table.columnAtPoint(table.getVisibleRect().getLocation()));
-                }
-            }
+                    detailPaneUpdater.setSelectedRow(currentRow);
+             }
         }
     }
 
@@ -1752,7 +1748,6 @@ public class LogPanel extends DockablePanel implements Profileable,
     private void updateOtherModels(ChainsawEventBatchEntry entry) {
         LoggingEvent event = entry.getEvent();
         String eventType = entry.getEventType();
-        String level = event.getLevel().toString();
 
         /**
          * EventContainer is a LoggerNameModel imp, use that for notifing
@@ -2010,7 +2005,6 @@ public class LogPanel extends DockablePanel implements Profileable,
 
         public void columnAdded(TableColumnModelEvent e) {
             //      LogLog.debug("Detected columnAdded" + e);
-            TableColumnModel columnModel = (TableColumnModel) e.getSource();
             Enumeration enum = table.getColumnModel().getColumns();
 
             while (enum.hasMoreElements()) {
@@ -2043,7 +2037,6 @@ public class LogPanel extends DockablePanel implements Profileable,
      */
     class DetailPaneUpdater implements PropertyChangeListener {
         private int selectedRow = -1;
-        private int lastRow = -1;
         private final JEditorPane pane;
         private final EventContainer model;
         private final LogPanel panel;
@@ -2056,19 +2049,11 @@ public class LogPanel extends DockablePanel implements Profileable,
         }
 
         public void setSelectedRow(int row) {
-            if (row == -1) {
-                lastRow = 0;
-            }
-
             selectedRow = row;
             updateDetailPane();
         }
 
         private void updateDetailPane() {
-            updateDetailPane(false);
-        }
-
-        private void updateDetailPane(boolean force) {
             String text = null;
 
             /**
@@ -2078,39 +2063,35 @@ public class LogPanel extends DockablePanel implements Profileable,
                 return;
             }
 
-            if ((selectedRow != lastRow) || force) {
-                if (selectedRow == -1) {
-                    text = "Nothing selected";
-                } else {
-                    LoggingEvent event = model.getRow(selectedRow);
+            if (selectedRow == -1) {
+                text = "Nothing selected";
+            } else {
+                LoggingEvent event = model.getRow(selectedRow);
 
-                    if (event != null) {
-                        Layout layout = panel.getDetailPaneLayout();
-                        StringBuffer buf = new StringBuffer();
-                        buf.append(layout.getHeader())
-                           .append(layout.format(event)).append(layout.getFooter());
-                        text = buf.toString();
-                    }
+                if (event != null) {
+                    Layout layout = panel.getDetailPaneLayout();
+                    StringBuffer buf = new StringBuffer();
+                    buf.append(layout.getHeader())
+                       .append(layout.format(event)).append(layout.getFooter());
+                    text = buf.toString();
                 }
-
-                if (!((text != null) && !text.equals(""))) {
-                    text = "Nothing selected";
-                }
-
-                lastRow = selectedRow;
-
-                final String text2 = text;
-                SwingUtilities.invokeLater(new Runnable() {
-                        public void run() {
-                            pane.setText(text2);
-                        }
-                    });
-                SwingUtilities.invokeLater(new Runnable() {
-                        public void run() {
-                            pane.setCaretPosition(0);
-                        }
-                    });
             }
+
+            if (!((text != null) && !text.equals(""))) {
+                text = "Nothing selected";
+            }
+
+            final String text2 = text;
+            SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        pane.setText(text2);
+                    }
+                });
+            SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        pane.setCaretPosition(0);
+                    }
+                });
         }
 
         /* (non-Javadoc)
@@ -2119,7 +2100,7 @@ public class LogPanel extends DockablePanel implements Profileable,
         public void propertyChange(PropertyChangeEvent arg0) {
             SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
-                        updateDetailPane(true);
+                        updateDetailPane();
                     }
                 });
         }

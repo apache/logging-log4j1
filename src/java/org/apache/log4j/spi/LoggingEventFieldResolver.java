@@ -47,14 +47,12 @@
  *
  */
 
-package org.apache.log4j.chainsaw;
+package org.apache.log4j.spi;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.apache.log4j.spi.LocationInfo;
-import org.apache.log4j.spi.LoggingEvent;
 
 
 /**

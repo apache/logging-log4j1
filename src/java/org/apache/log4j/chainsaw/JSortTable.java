@@ -130,7 +130,6 @@ public class JSortTable extends JTable implements MouseListener {
           if ((row > -1) && (row < getRowCount())) {
             try {
               setRowSelectionInterval(row, row);
-              scrollRectToVisible(getCellRect(row, col, true));
             } catch (IllegalArgumentException iae) {
             }
              //ignore..out of bounds

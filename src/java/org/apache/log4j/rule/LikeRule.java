@@ -49,8 +49,8 @@
 
 package org.apache.log4j.rule;
 
-import org.apache.log4j.chainsaw.LoggingEventFieldResolver;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.LoggingEventFieldResolver;
 
 import org.apache.oro.text.regex.MalformedPatternException;
 import org.apache.oro.text.regex.Pattern;

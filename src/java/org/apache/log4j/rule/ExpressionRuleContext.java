@@ -49,8 +49,8 @@
 
 package org.apache.log4j.rule;
 
-import org.apache.log4j.chainsaw.LoggingEventFieldResolver;
 import org.apache.log4j.chainsaw.filter.FilterModel;
+import org.apache.log4j.spi.LoggingEventFieldResolver;
 
 import java.awt.Point;
 import java.awt.event.KeyAdapter;

@@ -211,16 +211,14 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
      */
   public void sort() {
     if (sortEnabled) {
-      int size = 0;
 
       synchronized (filteredList) {
-        size = filteredList.size();
         Collections.sort(
           filteredList,
           new ColumnComparator(currentSortColumn, currentSortAscending));
       }
 
-      fireTableRowsUpdated(0, size);
+      fireTableDataChanged();
     }
   }
 
@@ -410,7 +408,6 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
   public boolean isAddRow(LoggingEvent e, boolean valueIsAdjusting) {
     boolean rowAdded = false;
 
-    int newRow = 0;
     Object id = e.getProperty(ChainsawConstants.LOG4J_ID_KEY);
 
     if (id == null) {
@@ -424,20 +421,13 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
     }
     idSet.add(id);
     unfilteredList.add(e);
-
     rowAdded = true;
 
     if ((displayRule == null) || (displayRule.evaluate(e))) {
       synchronized (filteredList) {
         filteredList.add(e);
-        newRow = filteredList.size() - 1;
+        fireTableRowsInserted(filteredList.size(),filteredList.size());
       }
-
-      rowAdded = true;
-    }
-
-    if (!valueIsAdjusting) {
-      notifyCountListeners();
     }
 
     /**
@@ -445,32 +435,21 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
      */
     boolean newColumn = uniqueMDCKeys.addAll(e.getMDCKeySet());
 
-    /**
-     * If so, we should add them as columns and notify listeners.
-     */
-    for (Iterator iter = e.getMDCKeySet().iterator(); iter.hasNext();) {
-      Object key = iter.next();
-
-      if (!columnNames.contains(key)) {
-        columnNames.add(key);
-        LogLog.debug("Adding col '" + key + "', columNames=" + columnNames);
-        fireNewKeyColumnAdded(
-          new NewKeyEvent(
-            this, columnNames.indexOf(key), key, e.getMDC(key.toString())));
-      }
-    }
-
-    if (!isCyclic() && !newColumn) {
-      fireTableRowsInserted(newRow, newRow);
-    } else {
-      if (
-        newColumn
-          || (unfilteredList.size() == ((CyclicBufferList) unfilteredList)
-          .getMaxSize())) {
-        fireTableDataChanged();
-      } else {
-        fireTableRowsInserted(newRow, newRow);
-      }
+    if (newColumn) {
+        /**
+         * If so, we should add them as columns and notify listeners.
+         */
+        for (Iterator iter = e.getMDCKeySet().iterator(); iter.hasNext();) {
+          Object key = iter.next();
+    
+          if (!columnNames.contains(key)) {
+            columnNames.add(key);
+            LogLog.debug("Adding col '" + key + "', columNames=" + columnNames);
+            fireNewKeyColumnAdded(
+              new NewKeyEvent(
+                this, columnNames.indexOf(key), key, e.getMDC(key.toString())));
+          }
+        }
     }
 
     return rowAdded;
@@ -705,7 +684,7 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
                 }
 
                 monitor.setNote("Refiltering...");
-                filterExecutor.run();
+                reFilter();
                 monitor.setProgress(index++);
               } finally {
                 monitor.close();

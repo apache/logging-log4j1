@@ -51,8 +51,8 @@ package org.apache.log4j.rule;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.UtilLoggingLevel;
-import org.apache.log4j.chainsaw.LoggingEventFieldResolver;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.LoggingEventFieldResolver;
 
 import java.util.Iterator;
 import java.util.LinkedList;
