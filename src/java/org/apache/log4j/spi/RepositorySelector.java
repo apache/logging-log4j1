@@ -62,7 +62,7 @@ public interface RepositorySelector {
    * by the respository selector.
    * 
    * When applications are stopped or recycled, this method should be called to
-   * ensure that the associated repostiroy is recycled as well.
+   * ensure that the associated repository is recycled as well.
    * 
    * If more than one application share the same logging context, then the
    * applications need to coordinate their actions.  
