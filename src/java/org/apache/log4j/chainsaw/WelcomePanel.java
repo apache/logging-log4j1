@@ -89,13 +89,14 @@ import javax.swing.event.HyperlinkListener;
  * @author Scott Deboy <sdeboy@apache.org>
  */
 public class WelcomePanel extends JPanel {
+  private static WelcomePanel instance = new WelcomePanel();
   private Stack urlStack = new Stack();
   private final JEditorPane textInfo = new JEditorPane();
   private final URLToolbar urlToolbar =  new URLToolbar();
   private final URL helpURL;
   private final URL exampleConfigURL;
   
-  public WelcomePanel() {
+  private WelcomePanel() {
     setLayout(new BorderLayout());
     setBackground(Color.white);
     add(urlToolbar, BorderLayout.NORTH);
@@ -145,6 +146,7 @@ public class WelcomePanel extends JPanel {
       new Runnable() {
         public void run() {
           try {
+            urlStack.push(textInfo.getPage());
             textInfo.setPage(url);
             urlToolbar.updateToolbar();
           } catch (IOException e) {
@@ -226,4 +228,12 @@ public class WelcomePanel extends JPanel {
       previousAction.setEnabled(!urlStack.isEmpty());
     }
   }
+  /**
+   * 
+   */
+  public static WelcomePanel getInstance() {
+    return instance;
+    
+  }
+  
 }
