@@ -1,13 +1,16 @@
 package org.apache.log4j.chainsaw.receivers;
 
+import java.util.List;
+
 import junit.framework.TestCase;
 
+import org.apache.log4j.chainsaw.receivers.ReceiversHelper;
+import org.apache.log4j.net.MulticastReceiver;
 import org.apache.log4j.net.SocketHubReceiver;
 import org.apache.log4j.net.SocketReceiver;
 import org.apache.log4j.net.UDPReceiver;
 import org.apache.log4j.net.XMLSocketReceiver;
-
-import java.util.List;
+import org.apache.log4j.varia.LogFilePatternReceiver;
 
 
 /**
@@ -32,8 +35,12 @@ public class ReceiversHelperTest extends TestCase {
 
         Class[] expectedList =
             new Class[] {
-                SocketHubReceiver.class, SocketReceiver.class,
-                UDPReceiver.class, XMLSocketReceiver.class
+                MulticastReceiver.class, 
+                SocketHubReceiver.class, 
+                SocketReceiver.class,
+                UDPReceiver.class, 
+                XMLSocketReceiver.class,
+                LogFilePatternReceiver.class
             };
 
         for (int i = 0; i < expectedList.length; i++) {

@@ -31,6 +31,10 @@ public class DeadlockTest extends TestCase {
   static long RUNLENGTH = 10000;
   Logger logger = Logger.getLogger("DeadlockTest");
 
+  public DeadlockTest() {
+      super("DeadlockTest");
+  }
+  
   protected void setUp() throws Exception {
     super.setUp();
     System.out.println("in setup");

@@ -20,6 +20,8 @@
   
   <property name="tests.source.home" value="./src/java/"/>
 
+  <!-- The stem where most log4j source code is located. -->
+  <property name="stem" value="org/apache/log4j"/>
 
   <path id="tests.classpath">
     <pathelement location="${project.source.home}"/>
@@ -75,7 +77,7 @@
   <!-- ================================================================= -->
   <target name="build" depends="parentBuild, prepare">
     <javac srcdir="${tests.source.home}"
-	   destdir="./classes"
+	   destdir="./classes" excludes="${tests.source.home}${stem}/chainsaw/receivers/*.java"
            deprecation="${deprecation}"
            debug="on">			
       <classpath refid="tests.classpath"/>
