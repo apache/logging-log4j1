@@ -42,6 +42,7 @@ import java.util.List;
  * Collects all configuration significant elements from
  * an XML parse.
  *
+ * @author Curt Arnold
  */
 public final class JoranDocument extends DefaultHandler {
   public static final String LOG4J_NS = "http://jakarta.apache.org/log4j/";
