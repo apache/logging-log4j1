@@ -7,6 +7,11 @@
 <BODY>
 <h2>Release Notes</h2>
 
+<h2>1.99.99 (27th May 2004 08:00 GMT+10)</h2>
+<ul>
+ <li>Fixed 'scroll to bottom' no longer scrolling if log panel's events were cleared.  Thanks to Steven Kearns for finding this.</li>
+ <li>Modified shutdown of UDPReceiver - closing socket earlier and notifying threads in order to shut down gracefully.</li>
+</ul>
 <h2>1.99.99 (26th May 2004 08:00 GMT+10)</h2>
 <ul>
  <li>Added the JMSReceiver to the bundled distribution of 'known' receivers.  This will require you to have it's

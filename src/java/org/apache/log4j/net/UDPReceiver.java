@@ -47,7 +47,7 @@ public class UDPReceiver extends Receiver implements PortBased, Pauseable {
   private String decoder = "org.apache.log4j.xml.XMLDecoder";
   private Decoder decoderImpl;
   protected boolean paused;
-  private boolean closed = false;
+  private transient boolean closed = false;
   private int port;
   private DatagramSocket socket;
   UDPHandlerThread handlerThread;
@@ -93,8 +93,11 @@ public class UDPReceiver extends Receiver implements PortBased, Pauseable {
 
   public synchronized void shutdown() {
     closed = true;
+    socket.close();
+
     try {
       if(handlerThread != null) {
+      	handlerThread.close();
         handlerThread.join();
       }
       if(receiverThread != null) {
@@ -102,7 +105,6 @@ public class UDPReceiver extends Receiver implements PortBased, Pauseable {
       }
     } catch(InterruptedException ie) {
     }
-    socket.close();
   }
 
   /**
@@ -156,7 +158,9 @@ public class UDPReceiver extends Receiver implements PortBased, Pauseable {
      * Allow the UDPHandlerThread to wakeup and exit gracefully.
      */
     void close() {
-      list.notify();
+      synchronized(list) {
+      	list.notify();
+      }
     }
 
     public void run() {
@@ -165,7 +169,7 @@ public class UDPReceiver extends Receiver implements PortBased, Pauseable {
       while (!UDPReceiver.this.closed) {
         synchronized (list) {
           try {
-            while (list.size() == 0) {
+            while (!UDPReceiver.this.closed && list.size() == 0) {
               list.wait();
             }
 
