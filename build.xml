@@ -302,6 +302,7 @@
     <jar jarfile="${jar.dest}/${jar.filename}" basedir="${javac.dest}"
       includes="${stem}/*.class, ${stem}/xml/log4j.dtd,
                 ${stem}/config/*.class,
+	        ${stem}/filters/*.class,
 	        ${stem}/helpers/*.class,
 		${stem}/spi/*.class,
 		${stem}/net/*.class,
@@ -332,6 +333,7 @@
       destdir="${javadoc.dest}"
 	   packagenames="org.apache.log4j,
 			 org.apache.log4j.config,
+			 org.apache.log4j.filters,
                          org.apache.log4j.helpers,
 		         org.apache.log4j.jmx,
 		         org.apache.log4j.net,
