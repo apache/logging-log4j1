@@ -9,7 +9,7 @@ package org.apache.log4j.chainsaw;
  * @author Scott Deboy <sdeboy@apache.org>
  * 
  */
-class ChainsawConstants {
+public class ChainsawConstants {
   private ChainsawConstants(){}
   
   static final String MAIN_PANEL = "panel";
@@ -40,7 +40,7 @@ class ChainsawConstants {
   static final String LOG4J_APP_KEY = "log4japp";
   static final String LOG4J_MACHINE_KEY = "log4jmachinename";
   static final String LOG4J_REMOTEHOST_KEY = "log4j.remoteSourceInfo";
-  static final String LOG4J_ID_KEY = "log4jid";
+  public static final String LOG4J_ID_KEY = "log4jid";
   static final String UNKNOWN_TAB_NAME = "Unknown";
   static final String GLOBAL_MATCH = "*";
   static final String DETAIL_CONTENT_TYPE = "text/html";

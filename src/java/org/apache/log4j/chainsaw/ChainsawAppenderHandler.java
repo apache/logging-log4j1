@@ -136,7 +136,7 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
    * 
    * @deprecated
    */
-  static Vector convert(LoggingEvent event) {
+  public static Vector convert(LoggingEvent event) {
     Vector v = new Vector();
     LocationInfo info = event.getLocationInformation();
     String className = "";

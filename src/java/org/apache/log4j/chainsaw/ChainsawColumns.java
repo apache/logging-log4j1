@@ -57,7 +57,7 @@ import java.util.List;
  * @author Paul Smith <psmith@apache.org>
  *
  */
-class ChainsawColumns {
+public class ChainsawColumns {
   private static final List columnNames = new ArrayList();
 
   static {
@@ -97,7 +97,7 @@ class ChainsawColumns {
   private ChainsawColumns() {
   }
 
-  static List getColumnsNames() {
+  public static List getColumnsNames() {
     return columnNames;
   }
 }
