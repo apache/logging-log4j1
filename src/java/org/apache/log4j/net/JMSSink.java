@@ -15,9 +15,15 @@ import org.apache.log4j.helpers.LogLog;
 
 import javax.jms.*;
 
+import javax.naming.InitialContext;
+import javax.naming.Context;
+import javax.naming.NameNotFoundException;
+import javax.naming.NamingException;
+
 /**
    A simple application receiving the logging events sent by a JMSAppender.
    
+
    @author Ceki G&uuml;lc&uuml;
 */
 public class JMSSink  {
@@ -26,21 +32,28 @@ public class JMSSink  {
   static String TOPIC = "MyTopic";
 
   static public void main(String[] args) {
-    PropertyConfigurator.configure(args[0]);
-    //PropertyConfigurator.configure();
+    if(args.length != 3) {
+      usage("Wrong number of arguments.");     
+    }
 
-    
+    String tcfBindingName = args[0];
+    String topicBindingName = args[1];
+    PropertyConfigurator.configure(args[2]);
+
 
     try {
-      TopicConnectionFactory topicConnectionFactory = new 
-                                  com.sun.messaging.TopicConnectionFactory(PORT);
-      TopicConnection topicConnection = topicConnectionFactory.createTopicConnection();
-    
+      Context ctx = new InitialContext();      
+      TopicConnectionFactory topicConnectionFactory;
+      topicConnectionFactory = (TopicConnectionFactory) lookup(ctx, tcfBindingName);
+
+      TopicConnection topicConnection = topicConnectionFactory.createTopicConnection(); 
       topicConnection.start();
     
       TopicSession topicSession = topicConnection.createTopicSession(false,
 							Session.AUTO_ACKNOWLEDGE);
-      Topic topic = topicSession.createTopic(TOPIC);
+
+      Topic topic = (Topic)ctx.lookup(topicBindingName);
+
       //TopicSubscriber topicSubscriber = topicSession.createSubscriber(topic);
       TopicSubscriber topicSubscriber = 
            topicSession.createDurableSubscriber(topic, "x");
@@ -56,8 +69,28 @@ public class JMSSink  {
 	remoteCategory.callAppenders(event);	
       }
     } catch(Exception e) {
-      LogLog.error("---------------------", e);
+      LogLog.error("Could not read JMS message.", e);
     }
   }
 
+
+  protected
+  static
+  Object lookup(Context ctx, String name) throws NamingException {
+    try {
+      return ctx.lookup(name);
+    } catch(NameNotFoundException e) {
+      LogLog.error("Could not find name ["+name+"].");
+      throw e;
+    }    
+  }  
+
+
+  static
+  void usage(String msg) {
+    System.err.println(msg);
+    System.err.println("Usage: java " + JMSSink.class.getName()
+	       + " TopicConnectionFactoryBindingName TopicBindingName configFile");
+    System.exit(1);
+  }
 }
