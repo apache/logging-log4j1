@@ -423,6 +423,7 @@
 		          **/*.bak, **/goEnv.bat,
 		          **/Makefile, **/goEnv.bat,
 	                  docs/pub-support/*,
+                          dist/classes/org/**,
 	                  src/java/org/apache/log4j/test/**/*,	
 			  **/.#*"/>
     </copy>
