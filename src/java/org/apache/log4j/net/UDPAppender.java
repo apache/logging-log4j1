@@ -204,9 +204,15 @@ public class UDPAppender extends AppenderSkeleton implements PortBased{
         // TODO UDPAppender throws NullPointerException if the layout is not set
         StringBuffer buf = new StringBuffer(layout.format(event));
 
-        //the implementation of string.getBytes accepts a null encoding and uses the system charset
+        byte[] payload;
+        if(encoding == null) {
+          payload = buf.toString().getBytes();
+        } else {
+          payload = buf.toString().getBytes(encoding);
+        }
+
         DatagramPacket dp =
-           new DatagramPacket(buf.toString().getBytes(encoding), buf.length(), address, port);
+           new DatagramPacket(payload, payload.length, address, port);
         outSocket.send(dp);
         //remove these properties, in case other appenders need to set them to different values 
         event.setProperty(Constants.HOSTNAME_KEY, null);
