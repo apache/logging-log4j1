@@ -16,22 +16,19 @@ Using log4j
    
 4) You can now test your installation. To do this issue the command:
 
-   java org.log4j.test.Min simple|ttcc|pattern
+   java org.log4j.test.Hello
   
-   That is, supply "simple" or "ttcc" or "pattern" as the argument for
-   the test program "org.log4j.test.Min".
-   
    You should see log statements appearing on the console.
 
-5) Refer to the javadoc documentation on how to include log statements
-   into your own code.
+5) Refer to the javadoc documentation and the user manual on how to
+   include log statements into your own code.
 
 =========
 JAR files
 =========
 
-The log4j distribution comes with two jar files: log4j.jar and
-log4j-full.jar.
+The log4j distribution comes with two jar files: log4j-core.jar and
+log4j.jar.
 
 The first jar file contains the classes you need to use the package to
 print to a file or the console.  The second jar file, in addition to
@@ -60,12 +57,27 @@ on JDK 1.1 with the following exceptions:
     http://xml.apache.org/ which also includes the DOM level 2 Java
     language bindings.
 
+    The DOMConfigurator needs a JAXP and DOM Level 2 compatible parser
+    to compile. We recommend the Apache Xerces compiler.
+
     TextPaneAppender
     ----------------
 
-    The TextPaneAppender is based on Swing. Also, you need to set the
-    FULL environment variable if you want to compile with our GNU-Make
-    environment. See below.
+    The TextPaneAppender is based on Swing. 
+
+    SMTPAppender
+    ------------
+
+    The SMTPAppender relies on the JavaMail API. It has been tested with
+    JavaMail API version 1.2. The JavaMail API requires the
+    JavaBeans Activation Framework package. You can download the JavaMail API at:
+
+	http://java.sun.com/products/javamail/
+
+    and the JavaBeans Activation Framework at:
+
+	http://java.sun.com/beans/glasgow/jaf.html
+
 
     JUnit testing framework
     -----------------------
@@ -86,14 +98,8 @@ ANT requires a build file called build.xml which is part of this
 distribution.
 
 Alternatively, You might wish to use the GNU-Make build/compile
-environment included with the package. In case that case, you need to
+environment included with the package. In that case, you need to
 create a make.loc file in the make directory. See the files
 make/README and make/TUTORIAL for further details.
-
-The XML extensions are not compiled by default in the GNU-Make
-environment.  You need to set the FULL environment variable (to any
-value) so that the org.log4j.xml is recursed into.
-
-
 
 In case of problems please contact "Ceki Gulcu" <cgu@urbanet.ch>.
