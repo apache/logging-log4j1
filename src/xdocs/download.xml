@@ -9,13 +9,27 @@
   <meta name="keywords" content="java, logging, tracing, component, framework, API, log4j"/>
 <body>
 
-    <section name="log4j version 1.2 (final)">
-      <p>log4j 1.2 is now available in <a
-	href="../jakarta-log4j-1.2.tar.gz"><b>TAR.GZ</b></a> format or
-	in <a href="../jakarta-log4j-1.2.zip"><b>ZIP</b></a> format.
+    <section name="log4j version 1.2.3">
+      <p>log4j 1.2.3 is available in <a
+	href="../jakarta-log4j-1.2.3.tar.gz"><b>TAR.GZ</b></a> format
+	or in <a href="../jakarta-log4j-1.2.3.zip"><b>ZIP</b></a>
+	format.
+      </p>
+
+      <p>Minor release 1.2.2 responds to bug #9305. When loading
+	component classes, log4j will now first attempt to use the
+	Thread Context Loader and if that fails, it will use
+	Class.forName. In log4j 1.2 and 1.2.1, only Class.forName was
+	used and the TCL was ignored. 
       </p>
 
 
+      <p>The 1.2.1 (minor release) fixed bug #9155 reported by Nicko
+	Cadell. With the exception of this bug fix and some
+	documentation improvements, it is identical to log4j 1.2
+	final.
+      </p>
+	
       <p>In addition to many performance improvements, bug fixes, and
 	other small enhancements, log4j 1.2 adds JMX support, Mapped
 	Diagnostic Contexts, JDBC logging, graphical log viewer
@@ -57,9 +71,9 @@
 	
 	<dt><a
 	href="http://logui.sourceforge.net/"><b>Chainsaw</b></a></dt>
-	<dd>Chainsaw is now integrated with log4j and ships with the
-	official distribution. Chainsaw is a graphical log viewer and
-	filter for the log4j package. It listens for <a
+	<dd><b>Chainsaw is now integrated with log4j and ships with
+	the official distribution.</b> Chainsaw is a graphical log
+	viewer and filter for the log4j package. It listens for <a
 	href="http://jakarta.apache.org/log4j/docs/api/org/apache/log4j/spi/LoggingEvent.html">LoggingEvent</a>
 	objects sent using the <a
 	href="http://jakarta.apache.org/log4j/docs/api/org/apache/log4j/net/SocketAppender.html">SocketAppender</a>

@@ -25,9 +25,7 @@ public class NullEnumeration implements Enumeration {
   NullEnumeration() {
   }
   
-  public
-  static
-  NullEnumeration getInstance() {
+  public static NullEnumeration getInstance() {
     return instance;
   }
   
