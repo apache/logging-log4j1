@@ -49,6 +49,8 @@
 
 package org.apache.log4j.chainsaw;
 
+import java.util.EventListener;
+
 
 /**
  * Implementations are notified when new Logger names
@@ -56,7 +58,7 @@ package org.apache.log4j.chainsaw;
  * 
  * @author Paul Smith <psmith@apache.org>
  */
-public interface LoggerNameListener {
+public interface LoggerNameListener extends EventListener {
   /**
    * Called by LoggerNameModel instances when a new unique
    * Logger name string has been introduced into the model
