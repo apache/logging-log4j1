@@ -112,11 +112,9 @@ public class LocationInfo implements java.io.Serializable {
      <code>fully.qualified.classname.of.caller.methodName(Filename.java:line)</code>
     */
   public String fullInfo;
-  private boolean locationInfoAvailable;
 
   public LocationInfo(
     String fileName, String className, String methodName, String lineNumber) {
-    locationInfoAvailable = true;
     this.fileName = fileName;
     this.className = className;
     this.methodName = methodName;
@@ -205,8 +203,6 @@ public class LocationInfo implements java.io.Serializable {
 
     // everything between is the requested stack item
     this.fullInfo = s.substring(ibegin, iend);
-
-    locationInfoAvailable = true;
   }
 
   public boolean equals(Object o) {
@@ -220,14 +216,6 @@ public class LocationInfo implements java.io.Serializable {
 
     LocationInfo r = (LocationInfo) o;
 
-    if(locationInfoAvailable != r.locationInfoAvailable) {
-      return false;
-    }
-    
-    if(locationInfoAvailable != false) {
-      return true;
-    }
-    
     if(lineNumber == null) {
       if(r.lineNumber != null) {
         return false;
@@ -270,7 +258,7 @@ public class LocationInfo implements java.io.Serializable {
   */
   public String getClassName() {
     if (
-      (!locationInfoAvailable) || ((className == null) && (fullInfo == null))) {
+      (className == null) && (fullInfo == null)) {
       return NA;
     }
 
@@ -315,7 +303,7 @@ public class LocationInfo implements java.io.Serializable {
      <p>This information is not always available.
   */
   public String getFileName() {
-    if ((!locationInfoAvailable) || ((fileName == null) && (fullInfo == null))) {
+    if ((fileName == null) && (fullInfo == null)) {
       return NA;
     }
 
@@ -340,7 +328,7 @@ public class LocationInfo implements java.io.Serializable {
   */
   public String getLineNumber() {
     if (
-      (!locationInfoAvailable) || ((lineNumber == null) && (fullInfo == null))) {
+      (lineNumber == null) && (fullInfo == null)) {
       return NA;
     }
 
@@ -363,7 +351,7 @@ public class LocationInfo implements java.io.Serializable {
   */
   public String getMethodName() {
     if (
-      (!locationInfoAvailable) || ((methodName == null) && (fullInfo == null))) {
+      (methodName == null) && (fullInfo == null)) {
       return NA;
     }
 
