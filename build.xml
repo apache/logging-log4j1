@@ -17,7 +17,7 @@
   <!-- prefixed with "env". -->
   <property environment="env"/>
 
-  <property name="version" value="1.2.5"/>
+  <property name="version" value="1.2.6"/>
 
   <!-- The base directory relative to which most targets are built -->
   <property name="base" value="."/>
@@ -383,9 +383,8 @@
            header="&lt;b&gt;Log4j ${version}&lt;/b&gt;"
 	   bottom="Copyright 2000-2002 Apache Software Foundation.">
 
-      <link offline="true"
-	     href="http://java.sun.com/products/jdk/1.2/docs/api"
-	     packageListLoc="${packaging.dir}"/>
+      <link href="http://java.sun.com/products/jdk/1.3/docs/api"/>
+      <link href="http://java.sun.com/j2ee/sdk_1.3/techdocs/api/"/>
       <classpath refid="compile.classpath"/>
     </javadoc>
   </target>

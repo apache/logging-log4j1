@@ -79,7 +79,7 @@ public class LevelMatchFilter extends Filter {
     }
     
     boolean matchOccured = false;
-    if(this.levelToMatch.equals(event.level)) {
+    if(this.levelToMatch.equals(event.getLevel())) {
       matchOccured = true;
     } 
 

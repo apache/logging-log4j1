@@ -27,7 +27,9 @@ public class Loader  {
 
   // We conservatively assume that we are running under Java 1.x
   static private boolean java1 = true;
-
+  
+  static private boolean ignoreTCL = false;
+  
   static {
     String prop = OptionConverter.getSystemProperty("java.version", null);
     
@@ -38,6 +40,10 @@ public class Loader  {
 	  java1 = false;
       } 
     }
+    String ignoreTCLProp = OptionConverter.getSystemProperty("log4j.ignoreTCL", null);
+    if(ignoreTCLProp != null) {
+      ignoreTCL = OptionConverter.toBoolean(ignoreTCLProp, true);      
+    }   
   }
 
   /* A cache for 
@@ -63,38 +69,36 @@ public class Loader  {
      </ol>
      
   */
-  static
-  public
-  URL getResource(String resource) {
+  static public URL getResource(String resource) {
     ClassLoader classLoader = null;
     URL url = null;
     
     try {
-      if(!java1) {
-	classLoader = getTCL();
-	if(classLoader != null) {
-	  LogLog.debug("Trying to find ["+resource+"] using context classloader "
-		       +classLoader+".");
-	  url = classLoader.getResource(resource);      
-	  if(url != null) {
-	    return url;
-	  }
-	}
-      }
-      
-      // We could not find resource. Ler us now try with the
-      // classloader that loaded this class.
-      classLoader = Loader.class.getClassLoader(); 
-      if(classLoader != null) {
-	LogLog.debug("Trying to find ["+resource+"] using "+classLoader
-		     +" class loader.");
-	url = classLoader.getResource(resource);
-	if(url != null) {
-	  return url;
-	}
-      }
+  	if(!java1) {
+  	  classLoader = getTCL();
+  	  if(classLoader != null) {
+  	    LogLog.debug("Trying to find ["+resource+"] using context classloader "
+  			 +classLoader+".");
+  	    url = classLoader.getResource(resource);      
+  	    if(url != null) {
+  	      return url;
+  	    }
+  	  }
+  	}
+  	
+  	// We could not find resource. Ler us now try with the
+  	// classloader that loaded this class.
+  	classLoader = Loader.class.getClassLoader(); 
+  	if(classLoader != null) {
+  	  LogLog.debug("Trying to find ["+resource+"] using "+classLoader
+  		       +" class loader.");
+  	  url = classLoader.getResource(resource);
+  	  if(url != null) {
+  	    return url;
+  	  }
+  	}
     } catch(Throwable t) {
-      LogLog.warn(TSTR, t);
+  	LogLog.warn(TSTR, t);
     }
     
     // Last ditch attempt: get the resource from the class path. It
@@ -102,7 +106,7 @@ public class Loader  {
     // loader which the parent of the system class loader. Hence the
     // code below.
     LogLog.debug("Trying to find ["+resource+
-		 "] using ClassLoader.getSystemResource().");
+  		   "] using ClassLoader.getSystemResource().");
     return ClassLoader.getSystemResource(resource);
   } 
   
@@ -146,7 +150,9 @@ public class Loader  {
    *
    */
   static public Class loadClass (String clazz) throws ClassNotFoundException {
-    if(java1) {
+    // Just call Class.forName(clazz) if we are running under JDK 1.1
+    // or if we are instructed to ignore the TCL.
+    if(java1 || ignoreTCL) {
       return Class.forName(clazz);
     } else {
       try {

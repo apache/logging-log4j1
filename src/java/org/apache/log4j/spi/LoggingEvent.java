@@ -45,15 +45,34 @@ public class LoggingEvent implements java.io.Serializable {
    *
    * <p>It is set by the LoggingEvent constructor or set by a remote
    * entity after deserialization.
+   * 
+   * @deprecated This field will be marked as private or be completely
+   * removed in future releases. Please do not use it.
    * */
-  transient public Category logger;
+  transient private Category logger;
 
-  /** The category (logger) name. */
-  public final String categoryName;
+  /** 
+   * <p>The category (logger) name.
+   *   
+   * @deprecated This field will be marked as private in future
+   * releases. Please do not access it directly. Use the {@link
+   * #getLoggerName} method instead.
 
-  /** Level of logging event. Level cannot be serializable
-      because it is a flyweight.  Due to its special seralization it
-      cannot be declared final either. */
+   * */
+  final public String categoryName;
+
+  /** 
+   * Level of logging event. Level cannot be serializable because it
+   * is a flyweight.  Due to its special seralization it cannot be
+   * declared final either.
+   *   
+   * <p> This field should not be accessed directly. You shoud use the
+   * {@link #getLevel} method instead.
+   *
+   * @deprecated This field will be marked as private in future
+   * releases. Please do not access it directly. Use the {@link
+   * #getLevel} method instead.
+   * */
   transient public Priority level;
 
   /** The nested diagnostic context (NDC) of logging event. */
@@ -154,20 +173,31 @@ public class LoggingEvent implements java.io.Serializable {
     this.timeStamp = timeStamp;
   }
 
-
-
   /**
      Set the location information for this logging event. The collected
      information is cached for future use.
    */
-  public
-  LocationInfo getLocationInformation() {
+  public LocationInfo getLocationInformation() {
     if(locationInfo == null) {
       locationInfo = new LocationInfo(new Throwable(), fqnOfCategoryClass);
     }
     return locationInfo;
   }
 
+  /**
+   * Return the level of this event. Use this form instead of directly
+   * accessing the <code>level</code> field.  */
+  public Level getLevel() {
+    return (Level) level;
+  }
+
+  /**
+   * Return the name of the logger. Use this form instead of directly
+   * accessing the <code>categoryName</code> field.  
+   */
+  public String getLoggerName() {
+    return categoryName;
+  }
 
   /**
      Return the message for this logging event.
@@ -267,9 +297,7 @@ public class LoggingEvent implements java.io.Serializable {
   /**
      Returns the time when the application started, in milliseconds
      elapsed since 01.01.1970.  */
-  public
-  static
-  long getStartTime() {
+  public static long getStartTime() {
     return startTime;
   }
 

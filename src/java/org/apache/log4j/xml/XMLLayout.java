@@ -100,11 +100,11 @@ public class XMLLayout extends Layout {
     // We yield to the \r\n heresy.
 
     buf.append("<log4j:event logger=\"");
-    buf.append(event.categoryName);
+    buf.append(event.getLoggerName());
     buf.append("\" timestamp=\"");
     buf.append(event.timeStamp);
     buf.append("\" level=\"");
-    buf.append(event.level);
+    buf.append(event.getLevel());
     buf.append("\" thread=\"");
     buf.append(event.getThreadName());
     buf.append("\">\r\n");

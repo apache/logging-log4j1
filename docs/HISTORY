@@ -5,7 +5,31 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
 
- July 5th, 2002,
+
+ July 31st, 2002
+
+ - Release of version 1.2.6
+
+ - Addition of new options in JMSAppender and new command line arguments in 
+   JMSSink. [*]
+
+ - Added new method getLoggerName() in LoggingEvent class. The
+   getLoggerName is the preferred way for accessing the logger
+   name. The public access categoryName field should not be accessed
+   directly. Similarly, added the getLevel method which is now the
+   preferred way of accessing the event's level. The public access
+   level field should not be accessd directly.  The javadocs now mark
+   the categoryName and level fields as deprecated.
+
+   Modified existing appenders to comply with these new directives. [*]
+
+ - Log4j now will check if a system property called "log4j.ignoreTCL"
+   is set. If it is it will ignore the Thread Context ClassLoader when
+   loading classes. This solves the irrating "appender is not
+   appender" messages observed when log4j.jar is loaded by multiple
+   class loaders. [*]
+
+ July 5th, 2002
  
  - Release of version 1.2.5
 	
@@ -15,7 +39,7 @@
    appender instances. This resolves bug #10185 submitted by Paul
    Voutier. [*]
 
- June 12th, 2002,
+ June 12th, 2002
 
  - Release of version 1.2.4
 
@@ -41,7 +65,7 @@
 
  - Added missing LevelRangeFilter file. [*]
 
- May 24th, 2002,
+ May 24th, 2002
 
  - Release of version 1.2.3
 
