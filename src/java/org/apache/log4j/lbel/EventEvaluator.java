@@ -42,7 +42,7 @@ public interface EventEvaluator {
    * 
    * @param event The event to evaluate
    * @return true if there is a match, false otherwise. 
-   * @throws NullPointerException thrown if lefthand side is null
+   * @throws NullPointerException can be thrown in presence of null values
    */
   boolean evaluate(LoggingEvent event) throws NullPointerException;
 }

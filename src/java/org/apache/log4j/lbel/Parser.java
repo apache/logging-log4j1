@@ -202,7 +202,8 @@ class Parser {
       ts.next();
       return new Node(Node.COMPARATOR, new TimestampComparator(operator, getLong()));
     case Token.PROPERTY:
-      String key = (String) token.getValue();
+      ts.next();
+      String key = (String) getPropertyKey();
       ts.next();
       operator = getOperator();
       ts.next();
@@ -277,6 +278,21 @@ class Parser {
       return Level.ERROR_INT;
     } else {
       throw new ScanError("Expected a level stirng got "+levelStr);
+    }
+  }
+  
+  String getPropertyKey() throws IOException, ScanError {
+    Token token = ts.getCurrent();
+    if(token.getType() == Token.DOT) {
+      ts.next();
+      Token token2 = ts.getCurrent();
+      if(token2.getType() == Token.LITERAL) {
+        return (String) token2.getValue();
+      } else {
+        throw new ScanError("Expected LITERAL but got "+token2);
+      }
+    } else {
+      throw new ScanError("Expected '.' but got "+token);
     }
   }
 }

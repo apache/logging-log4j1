@@ -93,10 +93,11 @@ public class EventEvaluationTest extends TestCase {
     evaluator = new LBELEventEvaluator("message ~ 'h[a-z]* world'");
     assertTrue(evaluator.evaluate(event));
 
-    // the following test cannot be run because of a bug in the way 
-    // java.io.StreamTokenizer incorrectly interprets the '\' character within quotes
-    // evaluator = new LBELEventEvaluator("message ~ 'h\\w* world'");
-    //assertTrue(evaluator.evaluate(event));
+    evaluator = new LBELEventEvaluator("message ~ 'h\\w* world'");
+    assertTrue(evaluator.evaluate(event));
+
+    evaluator = new LBELEventEvaluator("message ~ 'hello\\sworld'");
+    assertTrue(evaluator.evaluate(event));
 
     LBELEventEvaluator evaluator = new LBELEventEvaluator("message !~ 'x'");
     assertTrue(evaluator.evaluate(event));
@@ -106,19 +107,19 @@ public class EventEvaluationTest extends TestCase {
   }
   
   public void testLogger() throws Exception, ScanError {
-    evaluator = new LBELEventEvaluator("logger = org.wombat");
+    evaluator = new LBELEventEvaluator("logger = 'org.wombat'");
     assertTrue(evaluator.evaluate(event));
     
-    evaluator = new LBELEventEvaluator("logger = org.wombat.x");
+    evaluator = new LBELEventEvaluator("logger = 'org.wombat.x'");
     assertTrue(!evaluator.evaluate(event));
     
-    evaluator = new LBELEventEvaluator("logger != org.wombat.x");
+    evaluator = new LBELEventEvaluator("logger != 'org.wombat.x'");
     assertTrue(evaluator.evaluate(event));
     
-    evaluator = new LBELEventEvaluator("logger < org.wombat.x");
+    evaluator = new LBELEventEvaluator("logger < 'org.wombat.x'");
     assertTrue(evaluator.evaluate(event));
 
-    evaluator = new LBELEventEvaluator("logger <= org.wombat.x");
+    evaluator = new LBELEventEvaluator("logger <= 'org.wombat.x'");
     assertTrue(evaluator.evaluate(event));
 
     evaluator = new LBELEventEvaluator("logger > org");
@@ -163,7 +164,7 @@ public class EventEvaluationTest extends TestCase {
   }
 
   public void testClass() throws ScanError {
-    evaluator = new LBELEventEvaluator("class = org.wombat");
+    evaluator = new LBELEventEvaluator("class = 'org.wombat'");
     assertTrue(evaluator.evaluate(event));
     
     evaluator = new LBELEventEvaluator("class > org");
@@ -179,6 +180,9 @@ public class EventEvaluationTest extends TestCase {
 
     evaluator = new LBELEventEvaluator("message != NULL");
     assertTrue(!evaluator.evaluate(nullEvent));
+
+    evaluator = new LBELEventEvaluator("message != NULL");
+    assertTrue(evaluator.evaluate(event));
 
     try {
       evaluator = new LBELEventEvaluator("message > NULL");

@@ -27,6 +27,7 @@ class Token {
   public static final int CLASS  = 170;
   public static final int METHOD = 180;
   public static final int NULL   = 190;
+  public static final int DOT   = 200;
   
   public static final int EOF    = 1000;
 	
