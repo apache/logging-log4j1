@@ -162,6 +162,7 @@ class NoReceiversWarningPanel extends JPanel {
     label.setLineWrap(true);
     label.setEditable(false);
     label.setOpaque(false);
+    label.setFont(getFont());
 
     add(label, gc);
 
