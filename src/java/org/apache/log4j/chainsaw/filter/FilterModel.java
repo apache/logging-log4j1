@@ -52,9 +52,6 @@ package org.apache.log4j.chainsaw.filter;
 import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
 
-import javax.swing.event.EventListenerList;
-
-
 /**
  * This class is used as a Model for Filtering, and retains the unique entries that
  * come through over a set of LoggingEvents
@@ -63,10 +60,8 @@ import javax.swing.event.EventListenerList;
  * @author Scott Deboy <sdeboy@apache.org>
  */
 public class FilterModel {
-  //  private Map eventTypeMap = new HashMap();
   private EventTypeEntryContainer eventContainer =
     new EventTypeEntryContainer();
-  private EventListenerList eventListenerList = new EventListenerList();
 
   public void processNewLoggingEvent(String eventType, LoggingEvent event) {
     EventTypeEntryContainer container = getContainer(eventType);
@@ -86,24 +81,10 @@ public class FilterModel {
   }
 
   public EventTypeEntryContainer getContainer() {
-    //    if(eventTypeMap.size()>0){
-    //        return (EventTypeEntryContainer) eventTypeMap.values().iterator().next();
-    //    }   
     return eventContainer;
   }
 
   EventTypeEntryContainer getContainer(String eventType) {
     return this.eventContainer;
-
-    //    EventTypeEntryContainer container = null;
-    //
-    //    if (eventTypeMap.containsKey(eventType)) {
-    //      container = (EventTypeEntryContainer) eventTypeMap.get(eventType);
-    //    } else {
-    //      container = new EventTypeEntryContainer();
-    //      eventTypeMap.put(eventType, container);
-    //    }
-    //
-    //    return container;
   }
 }

@@ -49,9 +49,10 @@
 
 package org.apache.log4j.chainsaw.rule;
 
-import org.apache.log4j.spi.LoggingEvent;
-
 import java.awt.Color;
+import java.io.Serializable;
+
+import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
@@ -59,16 +60,18 @@ import java.awt.Color;
  *
  * @author Scott Deboy <sdeboy@apache.org>
  */
-public class ColorRule extends AbstractRule {
+public class ColorRule extends AbstractRule implements Serializable {
   private final Rule rule;
   private final Color foregroundColor;
   private final Color backgroundColor;
+  private final String expression;
 
   public ColorRule(Rule rule, Color backgroundColor) {
-    this(rule, backgroundColor, null);
+    this(null, rule, backgroundColor, null);
   }
 
-  public ColorRule(Rule rule, Color backgroundColor, Color foregroundColor) {
+  public ColorRule(String expression, Rule rule, Color backgroundColor, Color foregroundColor) {
+    this.expression = expression;
     this.rule = rule;
     this.backgroundColor = backgroundColor;
     this.foregroundColor = foregroundColor;
@@ -85,12 +88,16 @@ public class ColorRule extends AbstractRule {
   public Color getBackgroundColor() {
     return backgroundColor;
   }
+  
+  public String getExpression() {
+      return expression;
+  }
 
   public boolean evaluate(LoggingEvent event) {
     return (rule != null && rule.evaluate(event));
   }
   
   public String toString() {
-      return "color rule " + rule + " bg: " + backgroundColor + " fg: " + foregroundColor;
+      return "color rule - expression: " + expression+", rule: " + rule + " bg: " + backgroundColor + " fg: " + foregroundColor;
   }
 }

@@ -111,7 +111,7 @@ public class UtilLoggingLevel extends Level {
       return FINEST;
 
     default:
-      return FINEST;
+      return defaultLevel;
     }
   }
 

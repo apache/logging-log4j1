@@ -98,6 +98,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -287,26 +288,29 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     colorFrame.setTitle("'" + ident + "' Color Filter");
     colorFrame.setIconImage(
       ((ImageIcon) ChainsawIcons.ICON_PREFERENCES).getImage());
+
+      renderer = new TableColorizingRenderer(colorizer);
+      colorPanel = new ColorPanel(colorizer, filterModel);
+    
+      colorFrame.getContentPane().add(colorPanel);
+
+      colorPanel.setCloseActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            colorFrame.setVisible(false);
+          }
+        });
+
     colorizer.addPropertyChangeListener(new PropertyChangeListener() {
 		public void propertyChange(PropertyChangeEvent evt) {
 			if (evt.getPropertyName().equalsIgnoreCase("colorrule")) {
                 if (table != null) {
                     table.repaint();
                 }
+                colorPanel.updateColors();
             }
         }}
     );
-    renderer = new TableColorizingRenderer(colorizer);
-    colorPanel = new ColorPanel(colorizer, filterModel);
-    
-    colorFrame.getContentPane().add(colorPanel);
-
-    colorPanel.setCloseActionListener(
-      new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          colorFrame.setVisible(false);
-        }
-      });
     
     preferencesFrame.setSize(640, 480);
 
@@ -1471,7 +1475,7 @@ public class LogPanel extends DockablePanel implements SettingsListener,
 	  o = new ObjectOutputStream(
 		  new BufferedOutputStream(new FileOutputStream(f)));
 
-	  o.writeObject(colorizer.getColors());
+	  o.writeObject(colorizer.getRules());
 	  o.flush();
 	} catch (FileNotFoundException fnfe) {
 	  fnfe.printStackTrace();
@@ -1663,6 +1667,7 @@ public class LogPanel extends DockablePanel implements SettingsListener,
   }
 
   void loadColorSettings(String ident) {
+    System.out.println("loading colors for " + ident);
 	File f =
 	  new File(
 		SettingsManager.getInstance().getSettingsDirectory() + File.separator
@@ -1675,10 +1680,8 @@ public class LogPanel extends DockablePanel implements SettingsListener,
 		s = new ObjectInputStream(
 			new BufferedInputStream(new FileInputStream(f)));
 
-		while (true) {
-		  Map map = (Map) s.readObject();
-		  colorizer.setColors(map);
-		}
+        Map map = (Map) s.readObject();
+	    colorizer.setRules(map);
 	  } catch (EOFException eof) { //end of file - ignore..
 	  }catch (IOException ioe) {
 		ioe.printStackTrace();

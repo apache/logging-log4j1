@@ -49,8 +49,16 @@
 
 package org.apache.log4j.chainsaw;
 
+import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.net.SocketReceiver;
+import org.apache.log4j.plugins.PluginRegistry;
+import org.apache.log4j.spi.LoggingEvent;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -58,13 +66,6 @@ import java.util.List;
 import java.util.Vector;
 
 import javax.swing.event.EventListenerList;
-
-import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.net.SocketReceiver;
-import org.apache.log4j.plugins.PluginRegistry;
-import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
@@ -77,34 +78,33 @@ import org.apache.log4j.spi.LoggingEvent;
  *
  */
 public class ChainsawAppenderHandler extends AppenderSkeleton {
-  private ChainsawAppender appender;
+  private static final String DEFAULT_IDENTIFIER = "Unknown";
   private WorkQueue worker;
   private final Object mutex = new Object();
   private int sleepInterval = 1000;
   private EventListenerList listenerList = new EventListenerList();
   private double dataRate = 0.0;
-  private String identifierExpression = "UNKNOWN";
-  private final LoggingEventFieldResolver resolver = LoggingEventFieldResolver.getInstance();
-   
+  private String identifierExpression;
+  private final LoggingEventFieldResolver resolver =
+    LoggingEventFieldResolver.getInstance();
   private PropertyChangeSupport propertySupport =
     new PropertyChangeSupport(this);
 
   public ChainsawAppenderHandler(ChainsawAppender appender) {
-    this.appender = appender;
     appender.addAppender(this);
     activateOptions();
   }
-  
-  public void setIdentifierExpression(String identifierExpression) {
-      this.identifierExpression = identifierExpression;
-  }
-  
-  public String getIdentifierExpression() {
-      return identifierExpression;
-  }
-  
+
   public ChainsawAppenderHandler() {
     activateOptions();
+  }
+
+  public void setIdentifierExpression(String identifierExpression) {
+    this.identifierExpression = identifierExpression;
+  }
+
+  public String getIdentifierExpression() {
+    return identifierExpression;
   }
 
   public void addEventBatchListener(EventBatchListener l) {
@@ -154,8 +154,10 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
    * @param event
    * @return identifier
    */
-  private String getTabIdentifier(LoggingEvent e) {
-        return resolver.applyFields(identifierExpression, e);
+  String getTabIdentifier(LoggingEvent e) {
+    String ident = resolver.applyFields(identifierExpression, e);
+
+    return ((ident != null) ? ident : DEFAULT_IDENTIFIER);
   }
 
   /**
@@ -202,7 +204,7 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
   /**
    * @param dataRate
    */
-  private void setDataRate(double dataRate) {
+  void setDataRate(double dataRate) {
     double oldValue = this.dataRate;
     this.dataRate = dataRate;
     propertySupport.firePropertyChange(
@@ -249,7 +251,7 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
    * processes all events accumulated during that time..
    */
   class WorkQueue {
-    private final ArrayList queue = new ArrayList();
+    final ArrayList queue = new ArrayList();
     Thread workerThread;
 
     protected WorkQueue() {
@@ -310,10 +312,12 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
               LoggingEvent e = (LoggingEvent) iter.next();
               Vector properties = new Vector();
               Iterator iterx = e.getPropertyKeySet().iterator();
+
               while (iterx.hasNext()) {
-                  String thisProp = iterx.next().toString();
-                  properties.add(thisProp +" " + e.getProperty(thisProp));
+                String thisProp = iterx.next().toString();
+                properties.add(thisProp + " " + e.getProperty(thisProp));
               }
+
               eventBatch.addEvent(
                 getTabIdentifier(e),
                 (e.getProperty(ChainsawConstants.EVENT_TYPE_KEY) == null)

@@ -52,11 +52,14 @@ package org.apache.log4j.chainsaw.color;
 import java.awt.Color;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.chainsaw.rule.ColorRule;
+import org.apache.log4j.chainsaw.rule.ExpressionRule;
 import org.apache.log4j.spi.LoggingEvent;
 
 
@@ -67,65 +70,104 @@ import org.apache.log4j.spi.LoggingEvent;
  * @author Scott Deboy <sdeboy@apache.org>
  */
 public class RuleColorizer implements Colorizer {
-  private Map ruleMap = new HashMap();
+  private Map rules;
   private final PropertyChangeSupport colorChangeSupport =
     new PropertyChangeSupport(this);
+  private Map defaultRules = new HashMap();
+  private static final String DEFAULT_NAME = "Default";
+  private String currentRuleSet = DEFAULT_NAME;
 
   public RuleColorizer() {
+      List rulesList = new ArrayList();
+      
+      String expression = "level == FATAL || level == ERROR";
+      rulesList.add(new ColorRule(expression, ExpressionRule.getRule(expression),new Color(147, 22, 0), Color.white));
+      expression = "level == WARN";
+      rulesList.add(new ColorRule(expression, ExpressionRule.getRule(expression),Color.yellow.brighter(), Color.black));
+      defaultRules.put(DEFAULT_NAME, rulesList);
+      setRules(defaultRules);
   }
   
-  public void setColors(Map ruleMap) {
-  	this.ruleMap = ruleMap;
+  public void setRules(Map rules) {
+  	this.rules = rules;
+    colorChangeSupport.firePropertyChange("colorrule", false, true);
   }
   
-  public Map getColors() {
-  	return ruleMap;
+  public Map getRules() {
+  	return rules;
   }
 
-  public void addRules(Map rules) {
-  	Iterator iter = rules.entrySet().iterator();
-  	while (iter.hasNext()) {
-  		Map.Entry entry = (Map.Entry)iter.next();
-  		ruleMap.put(entry.getKey(), entry.getValue());
-  	}
+  public void addRules(Map newRules) {
+      Iterator iter = newRules.entrySet().iterator();
+      while (iter.hasNext()) {
+          Map.Entry entry = (Map.Entry)iter.next();
+          if (rules.containsKey(entry.getKey())) {
+              ((List)rules.get(entry.getKey())).addAll((List)entry.getValue());
+          } else {
+              rules.put(entry.getKey(), entry.getValue());
+          }
+      }
     colorChangeSupport.firePropertyChange("colorrule", false, true);
   }
 
-  public void addRule(String expression, ColorRule rule) {
-    ruleMap.put(expression, rule);
+  public void addRule(String ruleSetName, ColorRule rule) {
+   if (rules.containsKey(ruleSetName)) {
+    ((List)rules.get(ruleSetName)).add(rule);
+   } else {
+       List list = new ArrayList();
+       list.add(rule);
+       rules.put(ruleSetName, list);
+   }
     colorChangeSupport.firePropertyChange("colorrule", false, true);
   }
 
   public void clear() {
-    ruleMap.clear();
+    rules.clear();
   }
 
-  public void removeRule(String expression) {
-    ruleMap.remove(expression);
+  public void removeRule(String ruleSetName, String expression) {
+    if (rules.containsKey(ruleSetName)) {
+        List list = (List)rules.get(ruleSetName);
+        for (int i = 0;i<list.size();i++) {
+            ColorRule rule = (ColorRule)list.get(i);
+            if (rule.getExpression().equals(expression)) {
+                list.remove(rule);
+                return;
+            }
+        }
+    }
+  }
+  
+  public void setCurrentRuleSet(String ruleSetName) {
+      currentRuleSet = ruleSetName;
   }
 
   public Color getBackgroundColor(LoggingEvent event) {
-  	Iterator iter = ruleMap.values().iterator();
-  	while (iter.hasNext()) {
-      ColorRule rule = (ColorRule) iter.next();
-
-      if ((rule.getBackgroundColor() != null) && (rule.evaluate(event))) {
-        return rule.getBackgroundColor();
-      }
+    if (rules.containsKey(currentRuleSet)) {
+        List list = (List)rules.get(currentRuleSet);    
+  	    Iterator iter = list.iterator();
+  	    while (iter.hasNext()) {
+            ColorRule rule = (ColorRule) iter.next();
+            if ((rule.getBackgroundColor() != null) && (rule.evaluate(event))) {
+                return rule.getBackgroundColor();
+            }
+        }
     }
 
     return null;
   }
 
   public Color getForegroundColor(LoggingEvent event) {
-	Iterator iter = ruleMap.values().iterator();
-	while (iter.hasNext()) {
-	  ColorRule rule = (ColorRule) iter.next();
-
-      if ((rule.getForegroundColor() != null) && (rule.evaluate(event))) {
-        return rule.getForegroundColor();
+      if (rules.containsKey(currentRuleSet)) {
+        List list = (List)rules.get(currentRuleSet);
+        Iterator iter = list.iterator();
+        while (iter.hasNext()) {
+          ColorRule rule = (ColorRule) iter.next();
+          if ((rule.getForegroundColor() != null) && (rule.evaluate(event))) {
+            return rule.getForegroundColor();
+          }
+        }
       }
-    }
 
     return null;
   }
