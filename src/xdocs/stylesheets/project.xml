@@ -26,6 +26,7 @@
     </menu>
 
     <menu name="Translations">
+      <item name="Korean" href="http://jakarta.apache-korea.org/"/>
       <item name="Japanese" href="http://www.ingrid.org/jajakarta/log4j/"/>
     </menu>
   </body>
