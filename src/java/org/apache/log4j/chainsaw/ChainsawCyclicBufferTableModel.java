@@ -95,6 +95,7 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
   private static final String PANEL_CAPACITY = "CHAINSAW_CAPACITY";
   List unfilteredList = new CyclicBufferList(capacity);
   List filteredList = new CyclicBufferList(capacity);
+  List idList = new CyclicBufferList(capacity);
   private boolean currentSortAscending;
   private int currentSortColumn;
   private EventListenerList eventListenerList = new EventListenerList();
@@ -241,6 +242,7 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
     synchronized (unfilteredList) {
       unfilteredList.clear();
       filteredList.clear();
+      idList.clear();
       uniqueRow = 0;
     }
 
@@ -261,7 +263,6 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
     }
 
     int currentRow = -1;
-    String thisVal = null;
 
     synchronized (filteredList) {
       ListIterator iter = filteredList.listIterator();
@@ -419,10 +420,10 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
     }
 
     //prevent duplicate rows
-    if (unfilteredList.contains(e)) {
+    if (idList.contains(id)) {
       return false;
     }
-
+    idList.add(id);
     unfilteredList.add(e);
 
     rowAdded = true;
@@ -449,7 +450,7 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
      * If so, we should add them as columns and notify listeners.
      */
     for (Iterator iter = e.getMDCKeySet().iterator(); iter.hasNext();) {
-      Object key = (Object) iter.next();
+      Object key = iter.next();
 
       if (!columnNames.contains(key)) {
         columnNames.add(key);
@@ -677,20 +678,32 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
                     "Changing Model, isCyclic is now " + isCyclic());
 
                   List newUnfilteredList = null;
+                  List newIDList = null;
 
                   if (isCyclic()) {
                     newUnfilteredList = new CyclicBufferList(capacity);
+                    newIDList = new CyclicBufferList(capacity);
                   } else {
                     newUnfilteredList = new ArrayList(capacity);
+                    newIDList = new ArrayList(capacity);
                   }
 
+                  int increment = 0;
                   for (Iterator iter = unfilteredList.iterator();
                       iter.hasNext();) {
-                    newUnfilteredList.add(iter.next());
+                  	LoggingEvent e = (LoggingEvent)iter.next();
+                    newUnfilteredList.add(e);
+                    Object o = e.getProperty(e.getProperty(ChainsawConstants.LOG4J_ID_KEY));
+                    if (o != null) {
+                    	newIDList.add(o);
+                    } else {
+                    	newIDList.add(new Integer(increment++));
+                    }
                     monitor.setProgress(index++);
                   }
 
                   unfilteredList = newUnfilteredList;
+                  idList = newIDList;
                 }
 
                 monitor.setNote("Refiltering...");
