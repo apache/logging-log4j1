@@ -1658,30 +1658,50 @@ public class LogPanel extends DockablePanel implements SettingsListener,
       !getPreferenceModel().isLogTreePanelVisible());
   }
 
-  public void saveSettings() {
-    saveColumnSettings(identifier, table.getColumnModel());
-
-    //      colorDisplaySelector.save();
-    //      TODO save display rule settings
-    //      displayFilter.save();
-  }
-
   public void saveSettings(SaveSettingsEvent event) {
-    //not used..save of columns performed via tablecolumnmodellistener event callback
+    ObjectOutputStream o = null;
+
+    try {
+      File f =
+      new File(
+          SettingsManager.getInstance().getSettingsDirectory()
+          + File.separator + getIdentifier()+ ".prefs");
+      o = new ObjectOutputStream(
+          new BufferedOutputStream(new FileOutputStream(f)));
+      
+      o.writeObject(getPreferenceModel());
+    }
+    catch(IOException e)
+    {
+      LogLog.error("Error ocurred saving the Preferences",e);
+    }finally
+    {
+      if(o!=null)
+      {
+        try
+        {
+            o.close();
+        }
+        catch (Exception e)
+        {
+        }
+      }
+    }
+    saveColumnSettings();
   }
 
-  void saveColumnSettings(String ident, TableColumnModel model) {
+  void saveColumnSettings() {
     ObjectOutputStream o = null;
 
     try {
       File f =
         new File(
           SettingsManager.getInstance().getSettingsDirectory()
-          + File.separator + ident + LogUI.COLUMNS_EXTENSION);
+          + File.separator + getIdentifier() + LogUI.COLUMNS_EXTENSION);
       o = new ObjectOutputStream(
           new BufferedOutputStream(new FileOutputStream(f)));
 
-      Enumeration e = model.getColumns();
+      Enumeration e = this.table.getColumnModel().getColumns();
 
       while (e.hasMoreElements()) {
         TableColumn c = (TableColumn) e.nextElement();
@@ -1717,6 +1737,38 @@ public class LogPanel extends DockablePanel implements SettingsListener,
    * @see org.apache.log4j.chainsaw.prefs.Profileable#loadSettings(org.apache.log4j.chainsaw.prefs.LoadSettingsEvent)
    */
   public void loadSettings(LoadSettingsEvent event) {
+    ObjectInputStream o = null;
+
+    try {
+      File f =
+      new File(
+          SettingsManager.getInstance().getSettingsDirectory()
+          + File.separator + getIdentifier()+ ".prefs");
+      o = new ObjectInputStream(
+          new BufferedInputStream(new FileInputStream(f)));
+      
+      LogPanelPreferenceModel model = (LogPanelPreferenceModel) o.readObject();
+      getPreferenceModel().apply(model);
+    }
+    catch(Exception e)
+    {
+      LogLog.error("Error ocurred loading the Preferences for ident '" + getIdentifier() + "'",e);
+    }finally
+    {
+      if(o!=null)
+       {
+        try
+        {
+          o.close();
+        }
+        catch (Exception e)
+        {
+          LogLog.error("Error occurred closing a stream", e);
+        }
+      }
+    }
+    
+    
     File f =
       new File(
         SettingsManager.getInstance().getSettingsDirectory() + File.separator

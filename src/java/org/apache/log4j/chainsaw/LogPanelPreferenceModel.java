@@ -56,6 +56,7 @@ import org.apache.log4j.chainsaw.prefs.SettingsManager;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.Serializable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -71,7 +72,7 @@ import java.util.Set;
  *  Used to encapsulate all the preferences for a given LogPanel
  * @author Paul Smith
  */
-public class LogPanelPreferenceModel {
+public class LogPanelPreferenceModel implements Serializable{
   public static final String ISO8601 = "ISO8601";
   public static final Collection DATE_FORMATS;
 
@@ -91,7 +92,7 @@ public class LogPanelPreferenceModel {
     DATE_FORMATS = Collections.unmodifiableCollection(list);
   }
 
-  private final PropertyChangeSupport propertySupport =
+  private transient final PropertyChangeSupport propertySupport =
     new PropertyChangeSupport(this);
   private String dateFormatPattern = ISO8601;
   private boolean levelIcons = true;
