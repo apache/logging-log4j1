@@ -181,6 +181,7 @@ log4j.
 to use log4j.
 
 <ul>
+<li><a href="http://www.cryptix.org/products/sasl/">Cryptix</a>
 <li><a href="http://www.jcorporate.com/html/products/expresso/logging.html">Expresso Framework</a>
 <li><a href="http://www.free-project.org/">Free E-Democracy Project</a>
 <li><a href="http://java.freehep.org">FreeHEP</a>
@@ -222,9 +223,13 @@ Exception in thread "main" java.lang.ExceptionInInitializerError: java.lang.Secu
         at java.lang.ClassLoader.loadClassInternal(ClassLoader.java:313)
 </pre>
 
-
 <p>Jochen Hiller had observed this problem in early 2001 when he
 implemented the JSR47 API by wrapping log4j.
+
+<p>Note that any third-party implementation using the
+<code>java.*</code> or <code>javax.*</code> namespaces violates Sun's
+trademark on Java. Without explicit permission from Sun, such software
+remains under the threat of litigation.
 
 <h2>Error Handling</h2>
 
@@ -305,10 +310,9 @@ does not go to the JSR47 experts group but is internal to Sun
 Microsystems. <em>The address of the JSR47 experts group mailing list
 is considered confidential information.</em> I do not know it myself.
 
-<p>Well over one hundred individuals, including some from very large
-accounts, have written to Sun to express their concern, in their vast
-majority pushing for the adoption of log4j. Their names and the
-content of their request are listed below. I am very grateful for
+<p>Many individuals have written to Sun to express their concern, in
+their vast majority pushing for the adoption of log4j. Their names and
+the content of their request are listed below. I am very grateful for
 their support. Some of these requests are quite detailed and
 insightful.
 
@@ -352,7 +356,7 @@ insightful.
 <li><p><a href="pub-support/HenryLi.html">Henry Li</a> <!-- -->
 <li><p><a href="pub-support/RichardWilliams.html">Richard Williams </a> <!-- -->
 <li><p><a href="pub-support/JasonHeirtzler.html">Jason Heirtzler</a> <!-- -->
-<li><p><a href="pub-support/ScottMiller.html">Scott Miller</a> 
+<li><p><a href="pub-support/ScottMiller.html">Scott Miller</a> <!-- -->
 <li><p><a href="pub-support/ChandraPatni.html">Chandra Patni</a> <!-- -->
 <li><p><a href="pub-support/DanielHoppe.html">Daniel Hoppe </a> <!-- -->
 <li><p><a href="pub-support/SebastienGuimont.html">Sebastien Guimont</a> <!-- -->
@@ -370,7 +374,7 @@ insightful.
 <li><p><a href="pub-support/EmilyBache.html">Emily Bache</a> and her <a href="pub-support/EmilyBache2.html">follow up</a> <!-- -->
 <li><p><a href="pub-support/JulienDubois.html">Julien Dubois</a> <!-- -->
 <li><p><a href="pub-support/AlefArendsen.html">Alef Arendsen</a> <!-- -->
-<li><p><a href="pub-support/SorenHilmer.html">S&oslash;ren Hilmer</a> 
+<li><p><a href="pub-support/SorenHilmer.html">S&oslash;ren Hilmer</a> <!-- -->
 <li><p><a href="pub-support/MaheshBhat.html">Mahesh Bhat</a> <!-- -->
 <li><p><a href="pub-support/JeffLinwood.html">Jeff Linwood</a> 
 <li><p><a href="pub-support/PeterMeulmeester.html">Peter Meulmeester</a> <!-- -->
@@ -419,32 +423,59 @@ insightful.
 <li><p><a href="pub-support/EdHowland.html">Ed Howland</a> <!-- -->
 <li><p><a href="pub-support/FredericSoulier.html">Frederic Soulier</a> <!-- -->
 <li><p><a href="pub-support/NathanQuinlan.html">Nathan Quinlan</a> <!-- -->
-<li><p><a href="pub-support/LaurentCornelis.html">Laurent Cornelis</a> 
+<li><p><a href="pub-support/LaurentCornelis.html">Laurent Cornelis</a> <!-- -->
 <li><p><a href="pub-support/RomainGuy.html">Romain Guy</a> <!-- -->
 <li><p><a href="pub-support/OliverBurn.html">Oliver Burn</a> <!-- -->
-<li><p><a href="pub-support/JonathanKeatley.html">Jonathan C. Keatley</a> 
+<li><p><a href="pub-support/JonathanKeatley.html">Jonathan C. Keatley</a> <!-- -->
 <li><p><a href="pub-support/YannickMenager.html">Yannick Menager</a> <!-- -->
-<li><p><a href="pub-support/JeromeLacoste.html">J&eacute;r&ocirc;me Lacoste</a> 
+<li><p><a href="pub-support/JeromeLacoste.html">J&eacute;r&ocirc;me Lacoste</a> <!-- -->
 <li><p><a href="pub-support/FabienModoux.html">Fabien Modoux</a> <!-- -->
 <li><p><a href="pub-support/YuriyYatsyk.html">Yuriy Yatsyk</a> <!-- -->
-<li><p><a href="pub-support/AndreCusson.html">Andre Cusson</a> 
+<li><p><a href="pub-support/AndreCusson.html">Andre Cusson</a> <!-- -->
 <li><p><a href="pub-support/RahulBhargava.html">Rahul Bhargava</a> 
+<li><p><a href="pub-support/WieserDaniel.html">Wieser Daniel</a> <!-- -->
+<li><p><a href="pub-support/FrancescoMondora.html">Francesco Mondora</a> <!-- -->
+<li><p><a href="pub-support/PaulAustin.html">Paul Austin</a> <!-- -->
+<li><p><a href="pub-support/MichaelWeisser.html">Michael Weisser</a> <!-- -->
+<li><p><a href="pub-support/MalcolmSparks.html">Malcolm Sparks</a> <!-- -->
+<li><p><a href="pub-support/ThomasBohmbach.html">Thomas Bohmbach</a> <!-- -->
+<li><p><a href="pub-support/AhmedSako.html">Ahmed Sako</a> <!-- -->
+<li><p><a href="pub-support/HaraldPehl.html">Harald Pehl</a> <!-- -->
+<li><p><a href="pub-support/AndreAnneck.html">Andre Anneck</a> <!-- -->
+<li><p><a href="pub-support/NisolFabien.html">Nisol Fabien</a> <!-- -->
+<li><p><a href="pub-support/PaulBook.html">Paul Book</a> <!-- -->
+<li><p><a href="pub-support/AlexisAgahi.html">Alexis Agahi</a> 
+<!-- <li><p><a href="pub-support/PaulFurbacher.html">Paul Furbacher</a> -->
+<li><p><a href="pub-support/SanfordRedlich.html">Sanford Redlich</a> <!-- -->
+<li><p><a href="pub-support/MattSponer.html">Matt Sponer</a> <!-- -->
+<li><p><a href="pub-support/DanielSeltzer.html">Daniel Seltzer</a> <!-- -->
+<li><p><a href="pub-support/FlorinManolache.html">Florin Manolache</a> <!-- -->
+<li><p><a href="pub-support/GeertPoels.html">Geert Poels</a> <!-- -->
+<li><p><a href="pub-support/LeifHanack.html">Leif Hanack</a> 
+<li><p><a href="pub-support/AdamMenkes.html">Adam L. Menkes</a> <!-- -->
+<li><p><a href="pub-support/Jean-MarcTupin.html">Jean-Marc Tupin</a> <!-- -->
+<li><p><a href="pub-support/TonyCulshaw.html">Tony Culshaw</a> <!-- -->
+<li><p><a href="pub-support/BartoszDudzinski.html">Bartosz Dudzinski</a> 
+<li><p><a href="pub-support/SabyMaxime.html">Saby Maxime</a> 
+<li><p><a href="pub-support/MeirFaraj.html">Meir Faraj</a> 
+<li><p><a href="pub-support/RobWalker.html">Rob Walker</a> <!-- -->
+<li><p><a href="pub-support/LorrinNelson.html">Lorrin Nelson</a> 
+<li><p><a href="pub-support/ChristopherCooper.html">Christopher J. Cooper</a> <!-- -->
+<li><p><a href="pub-support/LarsGregori.html">Lars Gregori</a> <!-- -->
+<li><p><a href="pub-support/VieridelBianco.html">Vieri del Bianco</a> <!-- -->
+<li><p><a href="pub-support/PatrickOHara.html">Patrick O'Hara</a> <!-- -->
+<li><p><a href="pub-support/RobertQuinn.html">Robert Quinn</a> 
 
 <!--
 
-<li><p><a href="pub-support/.html"></a> 
-<li><p><a href="pub-support/.html"></a> 
-<li><p><a href="pub-support/.html"></a> 
-<li><p><a href="pub-support/.html"></a> 
-<li><p><a href="pub-support/.html"></a> 
-<li><p><a href="pub-support/.html"></a> 
-<li><p><a href="pub-support/.html"></a> 
-<li><p><a href="pub-support/.html"></a> 
-<li><p><a href="pub-support/.html"></a> 
-<li><p><a href="pub-support/.html"></a> 
-<li><p><a href="pub-support/.html"></a> 
-<li><p><a href="pub-support/.html"></a> 
 
+
+<li><p><a href="pub-support/.html"></a> 
+<li><p><a href="pub-support/.html"></a> 
+<li><p><a href="pub-support/.html"></a> 
+<li><p><a href="pub-support/.html"></a> 
+<li><p><a href="pub-support/.html"></a> 
+<li><p><a href="pub-support/.html"></a> 
 -->
 
 

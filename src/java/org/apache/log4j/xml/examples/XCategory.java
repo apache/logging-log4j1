@@ -37,7 +37,7 @@ public class XCategory extends Category implements OptionHandler {
   // It's usually a good idea to add a dot suffix to the fully
   // qualified class name. This makes caller localization to work
   // properly even from classes that have almost the same fully
-  // qualified class name as XCategory.
+  // qualified class name as XCategory, such as XCategoryTest.
   private static String FQCN = XCategory.class.getName() + ".";
 
   // It's enough to instantiate a factory once and for all.
