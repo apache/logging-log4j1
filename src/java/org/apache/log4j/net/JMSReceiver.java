@@ -54,6 +54,8 @@ public class JMSReceiver extends Receiver implements MessageListener {
   protected String userId;
   protected String password;
   protected TopicConnection topicConnection;
+  
+  private String remoteInfo;
 
   public JMSReceiver() { }
 
@@ -153,6 +155,8 @@ public class JMSReceiver extends Receiver implements MessageListener {
   public void activateOptions() {
     if (!isActive()) {
       try {
+        remoteInfo = topicFactoryName + ":" + topicName;
+        
         Context ctx = new InitialContext();
         TopicConnectionFactory topicConnectionFactory;
         topicConnectionFactory = 
@@ -217,6 +221,10 @@ public class JMSReceiver extends Receiver implements MessageListener {
         // get the logging event and post it to the repository
       	ObjectMessage objectMessage = (ObjectMessage) message;
       	LoggingEvent event = (LoggingEvent) objectMessage.getObject();
+      	
+      	// store the known remote info in an event property
+      	event.setProperty("log4j.remoteSourceInfo", remoteInfo);
+      	
       	doPost(event);
       } else {
       	logger.warn("Received message is of type "+message.getJMSType()

@@ -8,6 +8,7 @@
 
 package org.apache.log4j.net;
 
+import java.net.InetAddress;
 import java.net.Socket;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -60,7 +61,6 @@ public class SocketNode implements Runnable {
     listener = _listener;
   }
   
-
   public void run() {
     LoggingEvent event;
     Logger remoteLogger;
@@ -77,10 +77,14 @@ public class SocketNode implements Runnable {
     }
 
     if (ois != null) {
+      String remoteInfo = socket.getInetAddress().getHostName() + ":" + socket.getPort();
       try {
         while(true) {
           // read an event from the wire
         	event = (LoggingEvent) ois.readObject();
+        	
+        	// store the known remote info in an event property
+        	event.setProperty("log4j.remoteSourceInfo", remoteInfo);
         	
         	// if configured with a receiver, tell it to post the event
           if (receiver != null) {
