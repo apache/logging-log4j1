@@ -95,12 +95,12 @@ public class LogPanelPreferenceModel implements Serializable{
   private transient final PropertyChangeSupport propertySupport =
     new PropertyChangeSupport(this);
   private String dateFormatPattern = ISO8601;
-  private boolean levelIcons = true;
+  private boolean levelIcons;
   private Set visibleColumns = new HashSet(ChainsawColumns.getColumnsNames());
-  private boolean detailPaneVisible = true;
-  private boolean toolTips = false;
-  private boolean scrollToBottom = true;
-  private boolean logTreePanelVisible = true;
+  private boolean detailPaneVisible;
+  private boolean toolTips;
+  private boolean scrollToBottom;
+  private boolean logTreePanelVisible;
   private String loggerPrecision = "";
 
   /**
@@ -165,6 +165,9 @@ public class LogPanelPreferenceModel implements Serializable{
     setLoggerPrecision(that.getLoggerPrecision());
     setDateFormatPattern(that.getDateFormatPattern());
     setLevelIcons(that.isLevelIcons());
+    setToolTips(that.isToolTips());
+    setScrollToBottom(that.isScrollToBottom());
+    setDetailPaneVisible(that.isDetailPaneVisible());
 
     /**
      * First, iterate and ADD new columns, (this means notifications of adds go out first
