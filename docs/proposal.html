@@ -5,7 +5,10 @@
 <header>
 <body>
 
-<center><h2>Revised log4j interfaces</h2></center>
+<center>
+<h1>Revised log4j interfaces</h1>
+Ceki G&uuml;lc&uuml
+</center>
 
 <p>In the current log4j code, the <code>Category</code> class is
 polluted with static methods such as <code>getInstance()</code>,
@@ -17,9 +20,9 @@ Servers. Moreover, a number of users have asked for the simplication
 of the <code>Category</code> class.
 
 <p>At this juncture it also seems beneficial to adopt some of the
-component names as proposed in the upcoming JSR47 API. In particular,
-Level instead of Priority, Logger instead of Category and LogManager
-instead of Hierarchy.
+component names as proposed in the upcoming JSR47 API, namely,
+<code>Level</code> instead of <code>Priority</code> and
+<code>Logger</code> instead of <code>Category</code>.
 
 <h1>Levels, Loggers and the LogManager</h1>
 
@@ -45,9 +48,21 @@ public <b>abstract class</b> Logger {
     this.name = name;
   }
 
+  public final String getName() {
+    return name;
+  }
+
   public abstract boolean isDebugEnabled(); 
   public abstract void debug(Object message);  
   public abstract void debug(Object message, Throwable t);  
+
+  public abstract boolean isInfoEnabled(); 
+  public abstract void info(Object message);  
+  public abstract void info(Object message, Throwable t);
+
+  public abstract boolean isWarnEnabled(); 
+  public abstract void warn(Object message);  
+  public abstract void warn(Object message, Throwable t);
 
   public abstract boolean isErrorEnabled(); 
   public abstract void error(Object message);  
@@ -56,25 +71,11 @@ public <b>abstract class</b> Logger {
   public abstract boolean isFatalEnabled(); 
   public abstract void fatal(Object message);  
   public abstract void fatal(Object message, Throwable t);
-  
-  public final String getName() {
-    return name;
-  }
-    
-  public abstract boolean isInfoEnabled(); 
-  public abstract void info(Object message);  
-  public abstract void info(Object message, Throwable t);
-
-  public abstract void l7dlog(Level level, String key, Throwable t);
-  public abstract void l7dlog(Level level, String key,  Object[] params, Throwable t);
 
   public abstract boolean isEnabledFor(Level level);  
   public abstract void log(Level level, Object message, Throwable t);  
   public abstract void log(Level level, Object message);
 
-  public abstract boolean isWarnEnabled(); 
-  public abstract void warn(Object message);  
-  public abstract void warn(Object message, Throwable t);
 }
 </pre>
 </td></tr>
@@ -92,36 +93,84 @@ warn, <code>error</code>, <code>fatal</code> levels is hardcoded in
 <code>Logger</code> methods. This seems appropriate because, as far as
 I am aware, these levels are not disputed.
 
-<p><li>The <code>l7dlog</code> methods will be used for localized
-(internationalized) logging.
+<p><li>There are no methods for localized (internationalized)
+logging. There are already plenty of facilities supporting
+internationalization. It does not seem appropriate for log4j to
+re-invent the wheel.
+
 </ul>
 
-<p>The <code>LogManager</code> class will be used to retrieve
-<code>Logger</code> instances.
+<h2>LogManager</h2>
 
+<p><b>Intent</b>
+
+<p>The <code>LogManager</code> provides a flexible method for
+retrieving <code>Logger</code> instances of varying types and attached
+to context-dependent hierarchies.
+
+<p><b>Motivation</b>
+
+<p>Log4j is a a low level API used in a variety of projects.
+Consequently, it is hard to make a priori assumptions about the
+environment where log4j will run. The problem is particularly acute in
+embedded components (e.g. libraries) which rely on log4j for their
+logging. The author of embedded component can rarely afford to make
+restrictive assumptions about the surrounding environment, much less
+so regarding logging.
+
+<p>Logging in Application Servers and Servlet Containers also create
+unique problems. It is often desirable to separate logging output
+originating from different applications (or web-application in the
+case of Servlet Containers).  In the current version of log4j it is
+possible to have different applications live in their own parallel
+universe by using a different hierarchy for each application. For more
+details, refer to my <a
+href="http://apache.org/~ceki/multHierarchy.tar.gz">hierarchy
+tutorial</a> for Servlet Containers. 
+
+<p>Using multiple hierarchies works well with code that is designed to
+use them. However, it does not entend to a library which uses log4j
+but is unaware of multiple hierarchies.
+
+<p>LogManager must allow us to vary <code>Logger</code> implementation
+depending on the circumstances. Moreover, we would like to be able to
+control the logging hierarchy where a logger is attached depending on
+the application context.
+
+<p><b>Related Patterns</b> 
+
+<p>LogManager is related to the <a
+href="http://c2.com/cgi/wiki?AbstractFactoryPattern">AbstractFactory</a>
+design pattern. It is largely based on the PluggableFactory pattern.
+Refer to John Vlissides' two articles <a
+href="http://www.research.ibm.com/designpatterns/pubs/ph-nov-dec98.pdf">Pluggable
+Factory, Part I</a> and <a
+href="http://www.research.ibm.com/designpatterns/pubs/ph-feb99.pdf">Pluggable
+Factory, Part II</a> to gain more insight on the problem.
+
+<p><b>Public interface</b>
+
+<p>The public interface of the LogManager class consists of one static method.
 
 <p><table bgcolor="CCCCCC">
 <tr><td>
 <pre>
 public class LogManager {
 
-  public Logger getLogger(String name) {
+  public <b>static</b> Logger getRootLogger() {
+     // return the appropriate root Logger 
+  }
+
+
+  public <b>static</b> Logger getLogger(String name) {
      // return the appropriate Logger instance
   }
-
-  /**
-     Returns an aprropriate LogManager instance.
-  */
-  <b>static</b> public LogManager getLogManager() {
-     // the returned instance may depend on the current context, for example on the 
-     // class loader for the current thread, or some environment dependent context.
-  }
 }
 </pre>
 </td></tr>
 </table>
 
-<p>Typical usage would be
+<p>Typical usage:
 
 <p><table bgcolor="CCCCCC">
 <tr><td>
@@ -132,7 +181,7 @@ import org.apache.log4j.Logger;
 
 public class Foo {
 
- final static Logger logger = LogManager.getLogManager().getLogger(Foo.class.getName());
+ final static Logger logger = LogManager.getLogger(Foo.class.getName());
 
  void bar() {
    logger.debug("hello world.");
@@ -141,47 +190,34 @@ public class Foo {
 </pre>
 </td></tr>
 </table>
-
-
-In an environment where multiple independent logging configurations
-are needed, one can write:
-
-<p><table bgcolor="CCCCCC">
-<tr><td>
-<pre>
-
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-
-public class Foo {
- 
- Logger logger;
-
- void init() {
-    LogManger logManager = someEnvironmentDefinedContext.getLogManger();
-    logger = logManager.getLogger(Foo.class);
- }
-
- void bar() {
-   logger.debug("hello world.");
- }
-}
-</pre>
-</td></tr>
-</table>
-
-<h2>Independent implementations</h2>
 
 <p>One of the advantages of the <code>LogManager</code> approach is
 that the <code>getInstance</code> method can return totally different
 <code>Logger</code> implementations. For example, under JDK 1.2 we can
 return a Logger implementation that is aware of the Java2 security
 model whereas under JDK 1.1 the returned logger implementation may be
-oblivious to Java2 security checks.
+oblivious to Java2 security checks. In shipped code, LogManager may be
+configured to return a <code>NOPLogger</code> which could implement
+the <code>Logger</code> (abstract) class with empty method bodies.
 
-<p>As in JSR47, the exact implementation of <code>LogManager</code>
-returned by <code>LogManager.getLogManager()</code> maybe influenced
-system properties.
+<p>The behavior of <code>LogManager</code> may be influenced by system
+properties or by parameters passed as a result of
+<code>LogManager</code> method invocations.
+
+<h2>Backward compatibility</h2>
+
+<p>Existing users of log4j need not worry about the compatibility of
+their code with future versions of log4j. We will make sure that
+client code runs seamlessly with log4j versions based on the revised
+interfaces proposed in this document.
+
+<h2>Contributors</h2>
+
+<ul>
+
+<li>Costin Manoloche 
+<li>Peter Donald
+</ul>
 
 </body>
 
