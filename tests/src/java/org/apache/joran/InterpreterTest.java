@@ -30,6 +30,7 @@ import org.apache.joran.action.NestComponentIA;
 import org.apache.joran.action.NewRuleAction;
 import org.apache.joran.action.ParamAction;
 import org.apache.joran.action.StackCounterAction;
+import org.apache.joran.helper.SimpleRuleStore;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.ConsoleAppender;
