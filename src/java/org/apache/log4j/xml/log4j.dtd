@@ -24,7 +24,7 @@ element. -->
      
 <!ATTLIST log4j:configuration
   xmlns:log4j              CDATA #FIXED "http://jakarta.apache.org/log4j/" 
-  threshold                (all|debug|info|warn|error|fatal|off|null)  "null"
+  threshold                (all|debug|info|warn|error|fatal|off|null) "null"
   debug                    (true|false|null)  "null"
 >
 
@@ -56,7 +56,6 @@ element. -->
   class		CDATA	#REQUIRED
 >
 
-
 <!-- ErrorHandlers can be of any class. They can admit any number of -->
 <!-- parameters. -->
 
@@ -71,7 +70,6 @@ element. -->
 <!ATTLIST logger-ref
   ref IDREF #REQUIRED
 >
-
 
 <!ELEMENT param EMPTY>
 <!ATTLIST param

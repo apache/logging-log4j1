@@ -61,7 +61,7 @@ public class Loader  {
   URL getResource(String resource) {
     ClassLoader classLoader = null;
     URL url = null;
-
+    
     try {
       if(!java1) {
 	classLoader = Thread.currentThread().getContextClassLoader();	
@@ -78,17 +78,21 @@ public class Loader  {
       // We could not find resource. Ler us now try with the
       // classloader that loaded this class.
       classLoader = Loader.class.getClassLoader(); 
-
-      LogLog.debug("Trying to find ["+resource+"] using "+classLoader
-		   +" class loader.");
-      url = classLoader.getResource(resource);      
-      if(url != null) {
-	return url;
+      if(classLoader == null) {
+	LogLog.warn("Loader.class.getClassLoader returned null!");
+      } else {
+	
+	LogLog.debug("Trying to find ["+resource+"] using "+classLoader
+		     +" class loader.");
+	url = classLoader.getResource(resource);
+	if(url != null) {
+	  return url;
+	}
       }
     } catch(Throwable t) {
       LogLog.warn(TSTR, t);
     }
-
+    
     // Last ditch attempt: get the resource from the class path. It
     // may be the case that clazz was loaded by the Extentsion class
     // loader which the parent of the system class loader. Hence the
@@ -97,18 +101,17 @@ public class Loader  {
 		 "] using ClassLoader.getSystemResource().");
     return ClassLoader.getSystemResource(resource);
   } 
-
+  
   /**
-     Are we running under JDK 1.x? 
-          
-   */
+     Are we running under JDK 1.x?        
+  */
   public
   static
   boolean isJava1() {
     return java1;
   }
-
-
+  
+  
   /**
      Load the specified class using the <code>Thread</code>
      <code>contextClassLoader</code> if running under Java2 or current
@@ -118,18 +121,18 @@ public class Loader  {
   public 
   Class loadClass (Double clazz) throws ClassNotFoundException {
     return null;
-//    if(java1) {
-//	return Class.forName(clazz);
-//    } else {
-//	try {
-//	  return Thread.currentThread().getContextClassLoader().loadClass(clazz);
-//	} catch(Exception e) {
-//	  // we reached here because
-//	  // currentThread().getContextClassLoader() is null or because
-//	  // of a security exceptio, or because clazz could not be
-//	  // loaded, in any case we now try one more time
-//	  return Class.forName(clazz);
-//	}
-//    }
+    //    if(java1) {
+    //	return Class.forName(clazz);
+    //    } else {
+    //	try {
+    //	  return Thread.currentThread().getContextClassLoader().loadClass(clazz);
+    //	} catch(Exception e) {
+    //	  // we reached here because
+    //	  // currentThread().getContextClassLoader() is null or because
+    //	  // of a security exceptio, or because clazz could not be
+    //	  // loaded, in any case we now try one more time
+    //	  return Class.forName(clazz);
+    //	}
+    //    }
   } 
 }
