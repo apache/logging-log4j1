@@ -1,12 +1,12 @@
 /*
  * Copyright 1999,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,7 +32,7 @@ import org.apache.log4j.spi.OptionHandler;
  * @since 0.8.1
  */
 public abstract class AppenderSkeleton extends ComponentBase implements Appender, OptionHandler {
-  
+
   /**
    * The layout variable does not need to be set if the appender
    * implementation has its own layout.
@@ -70,26 +70,26 @@ public abstract class AppenderSkeleton extends ComponentBase implements Appender
   protected boolean closed = false;
 
   /**
-   * By default, an appender is not in working order. It must be configured 
-   * first. 
+   * By default, an appender is not in working order. It must be configured
+   * first.
    */
   protected boolean active = false;
-  
+
   /**
    * The guard prevents an appender from repeatedly calling its own doAppend
    * method.
    */
   private boolean guard = false;
-  
+
   /**
    * Calls the {@link #activate} method.
-   * 
+   *
    * @deprecated Please call the activate() method instead.
    */
   public void activateOptions() {
     activate();
   }
-  
+
   /**
    * Default implementation called by sub-classes.
    */
@@ -215,7 +215,7 @@ public abstract class AppenderSkeleton extends ComponentBase implements Appender
   public synchronized void doAppend(LoggingEvent event) {
     // WARNING: The guard check MUST be the first statement in the
     // doAppend() method.
-    
+
     // prevent re-entry.
     if (guard) {
       return;
@@ -230,11 +230,13 @@ public abstract class AppenderSkeleton extends ComponentBase implements Appender
         return;
       }
 
-      if (!this.active) {
-        getNonFloodingLogger().error(
-            "Attempted to log with inactive appender named [{}].", name);
-        return;
-      }
+//   This breaks appenders written prior to 18 Feb 2005
+//
+//      if (!this.active) {
+//        getNonFloodingLogger().error(
+//            "Attempted to log with inactive appender named [{}].", name);
+//        return;
+//      }
 
       if (!isAsSevereAsThreshold(event.getLevel())) {
         return;
@@ -242,7 +244,7 @@ public abstract class AppenderSkeleton extends ComponentBase implements Appender
 
       Filter f = this.headFilter;
 
-FILTER_LOOP: 
+FILTER_LOOP:
       while (f != null) {
         switch (f.decide(event)) {
         case Filter.DENY:
@@ -298,7 +300,7 @@ FILTER_LOOP:
   /**
    * Set the threshold level. All log events with lower level than the
    * threshold level are ignored by the appender.
-   * 
+   *
    * <p>
    * In configuration files this option is specified by setting the value of
    * the <b>Threshold</b> option to a level string, such as "DEBUG", "INFO"
