@@ -137,6 +137,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
@@ -437,6 +438,7 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     detailPaneUpdater =
       new DetailPaneUpdater(this, detail, (EventContainer) tableModel);
 
+	addPropertyChangeListener("detailPaneConversionPattern", detailPaneUpdater);
     upperPanel = new JPanel(new BorderLayout());
     upperPanel.setBorder(BorderFactory.createEmptyBorder(2, 5, 2, 0));
 
@@ -651,23 +653,26 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     editDetailPopupMenu.add(editDetailAction);
     editDetailPopupMenu.addSeparator();
 
-    editDetailPopupMenu.add(
-      new AbstractAction("Set to Default Layout") {
-        public void actionPerformed(ActionEvent e) {
-          setDetailPaneConversionPattern(
-            DefaultLayoutFactory.getDefaultPatternLayout());
-        }
-      });
+	final ButtonGroup layoutGroup = new ButtonGroup();
+	
+	JRadioButtonMenuItem defaultLayoutRadio = new JRadioButtonMenuItem( new AbstractAction("Set to Default Layout") {
+	  public void actionPerformed(ActionEvent e) {
+		setDetailPaneConversionPattern(
+		  DefaultLayoutFactory.getDefaultPatternLayout());
+	  }
+	}	);
+    editDetailPopupMenu.add(defaultLayoutRadio);
+    layoutGroup.add(defaultLayoutRadio);
+	defaultLayoutRadio.setSelected(true);
 
-    editDetailPopupMenu.addSeparator();
-
-    editDetailPopupMenu.add(
-      new AbstractAction("Set to TCCLayout") {
-        public void actionPerformed(ActionEvent e) {
-          setDetailPaneConversionPattern(
-            PatternLayout.TTCC_CONVERSION_PATTERN);
-        }
-      });
+	JRadioButtonMenuItem tccLayoutRadio = new JRadioButtonMenuItem( new AbstractAction("Set to TCCLayout") {
+			public void actionPerformed(ActionEvent e) {
+			  setDetailPaneConversionPattern(
+				PatternLayout.TTCC_CONVERSION_PATTERN);
+			}
+		  });
+    editDetailPopupMenu.add(tccLayoutRadio);
+	layoutGroup.add(tccLayoutRadio);
 
     PopupListener editDetailPopupListener =
       new PopupListener(editDetailPopupMenu);
@@ -1219,8 +1224,12 @@ public class LogPanel extends DockablePanel implements SettingsListener,
   }
 
   void setDetailPaneConversionPattern(String conversionPattern) {
+    String oldPattern = getDetailPaneConversionPattern();
     ((EventDetailLayout) detailPaneLayout).setConversionPattern(
       conversionPattern);
+    firePropertyChange("detailPaneConversionPattern", oldPattern, getDetailPaneConversionPattern());
+      
+    
   }
 
   String getDetailPaneConversionPattern() {
@@ -1668,7 +1677,9 @@ public class LogPanel extends DockablePanel implements SettingsListener,
    * @param detailPaneLayout
    */
   public final void setDetailPaneLayout(Layout detailPaneLayout) {
+  	Layout oldLayout = this.detailPaneLayout;
     this.detailPaneLayout = detailPaneLayout;
+    firePropertyChange("detailPaneLayout", oldLayout, detailPaneLayout);
   }
 
   /**
@@ -1782,7 +1793,7 @@ public class LogPanel extends DockablePanel implements SettingsListener,
    * Thread that periodically checks if the selected row has changed, and if
    * it was, updates the Detail Panel with the detailed Logging information
    */
-  class DetailPaneUpdater {
+  class DetailPaneUpdater implements PropertyChangeListener{
     private int selectedRow = -1;
     private int lastRow = -1;
     private final JEditorPane pane;
@@ -1805,10 +1816,13 @@ public class LogPanel extends DockablePanel implements SettingsListener,
       updateDetailPane();
     }
 
-    private void updateDetailPane() {
+	private void updateDetailPane(){
+		updateDetailPane(false);
+	}
+    private void updateDetailPane(boolean force) {
       String text = null;
 
-      if (selectedRow != lastRow) {
+      if (selectedRow != lastRow || force) {
         if (selectedRow == -1) {
           text = "Nothing selected";
         } else {
@@ -1844,6 +1858,18 @@ public class LogPanel extends DockablePanel implements SettingsListener,
           });
       }
     }
+
+	/* (non-Javadoc)
+	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+	 */
+	public void propertyChange(PropertyChangeEvent arg0) {
+		SwingUtilities.invokeLater(new Runnable(){
+
+			public void run() {
+				updateDetailPane(true);
+				
+			}});
+	}
   }
 
   class ScrollToBottom extends Thread {
