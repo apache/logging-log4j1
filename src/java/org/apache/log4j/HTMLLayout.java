@@ -88,7 +88,7 @@ public class HTMLLayout extends Layout {
 
 
     sbuf.append("<td>");
-    sbuf.append(event.message);
+    sbuf.append(event.getRenderedMessage());
     sbuf.append("</td>\r\n");
 
 

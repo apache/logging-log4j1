@@ -432,8 +432,10 @@ public class FileAppender extends AppenderSkeleton {
 	event.throwable.printStackTrace(this.tp);
       }
       // in case we received this event from a remote client    
-      else if (event.throwableInformation != null) { 
-	this.qw.write(event.throwableInformation);
+      else {
+	String tInfo = event.getThrowableInformation();
+	if (tInfo != null) 
+	  this.qw.write(tInfo);
       }
     }
  

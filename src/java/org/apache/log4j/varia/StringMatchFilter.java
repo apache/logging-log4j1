@@ -49,27 +49,21 @@ public class StringMatchFilter extends Filter {
    */
   public
   int decide(LoggingEvent event) {
-    if(event.message == null ||  stringToMatch == null)
+    String msg = event.getRenderedMessage();
+
+    if(msg == null ||  stringToMatch == null)
       return Filter.NEUTRAL;
     
-    // we've got a string message
-    if(event.message instanceof String) {      
-      String msg = (String) event.message;
-      // match
-      if( msg.indexOf(stringToMatch) == -1 ) {
-	return Filter.NEUTRAL;
-      } else { // we've got a match
-	if(acceptOnMatch) {
-	  return Filter.ACCEPT;
-	} else {
-	  return Filter.DENY;
-	}
-      }
-    } else { // we've got an non-string message
-      return Filter.NEUTRAL;      
-    }
-    
 
+    if( msg.indexOf(stringToMatch) == -1 ) {
+      return Filter.NEUTRAL;
+    } else { // we've got a match
+      if(acceptOnMatch) {
+	return Filter.ACCEPT;
+      } else {
+	return Filter.DENY;
+      }
+    }
   }
 
   public

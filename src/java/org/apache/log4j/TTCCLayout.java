@@ -151,7 +151,7 @@ public class TTCCLayout extends DateLayout {
       }
     }    
     buf.append("- ");
-    buf.append(event.message);
+    buf.append(event.getRenderedMessage());
     buf.append(LINE_SEP);    
     return buf.toString();
   }

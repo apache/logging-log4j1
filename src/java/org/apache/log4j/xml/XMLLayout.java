@@ -93,7 +93,7 @@ public class XMLLayout extends Layout {
 
 
        buf.append("<log4j:message>");
-       buf.append(event.message);
+       buf.append(event.getRenderedMessage());
        buf.append("</log4j:message>\r\n");       
 
        String ndc = event.getNDC();

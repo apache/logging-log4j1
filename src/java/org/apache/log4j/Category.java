@@ -66,8 +66,10 @@ public class Category implements AppenderAttachable {
   static boolean emittedNoAppenderWarning = false;
   static boolean emittedNoResourceBundleWarning = false;  
 
-  // default is a language reserved term, we exceptionally prefix with
-  // an undescore.
+
+  /**
+     The hierarchy where categories are attached to by default.
+  */
   static 
   public 
   final Hierarchy defaultHierarchy = new Hierarchy(new 
@@ -77,7 +79,7 @@ public class Category implements AppenderAttachable {
   protected ResourceBundle resourceBundle;
   
   // Categories need to know what Hierarchy they are in
-  protected Hierarchy myContext;
+  protected Hierarchy hierarchy;
 
   /**
      This string constant is set to <b>log4j.properties</b> the name
@@ -312,22 +314,20 @@ public class Category implements AppenderAttachable {
     }
   }
   
+
   /** 
-   Log a message object with the <code>DEBUG</code> priority including
-   the stack trace of the {@link Throwable} <code>t</code> passed as
-   parameter.
+   Log an exception with the <code>DEBUG</code> priority including its
+   stack trace. 
    
-   <p>See {@link #debug(Object)} form for more detailed information.
-   
-   @param message the message object to log.
    @param t the exception to log, including its stack trace.  */    
   public
-  void debug(Object message, Throwable t) {
+  void debug(Throwable t) {
     if(disable >=  Priority.DEBUG_INT) 
       return;   
     if(Priority.DEBUG.isGreaterOrEqual(this.getChainedPriority()))
-      forcedLog(instanceFQN, Priority.DEBUG, message, t);
+      forcedLog(instanceFQN, Priority.DEBUG, null, t);
   }
+
 
   //public
   //void dump() {
@@ -445,7 +445,7 @@ public class Category implements AppenderAttachable {
     if(message instanceof String) {
       s = (String) message;
     } else {
-      s = myContext.rendererMap.findAndRender(message);
+      s = hierarchy.rendererMap.findAndRender(message);
     }
     callAppenders(new LoggingEvent(fqn, this, priority, s, t));
   }
@@ -540,6 +540,17 @@ public class Category implements AppenderAttachable {
   static 
   Hierarchy getDefaultHierarchy() {
     return defaultHierarchy;
+  }
+
+
+  /**
+     Return the the {@link Hierarchy} where this <code>Category</code> instance is
+     attached.
+
+     @since 1.1 */
+  public 
+  Hierarchy getHierarchy() {
+    return hierarchy;
   }
 
   
@@ -937,7 +948,7 @@ public class Category implements AppenderAttachable {
      category. Default package access is MANDATORY here.  */
   final
   void setHierarchy(Hierarchy hierarchy) {
-    this.myContext = hierarchy;
+    this.hierarchy = hierarchy;
   }
   
   /**
