@@ -28,15 +28,6 @@ public class SimpleLayout extends Layout {
   }
 
   public
-  String[] getOptionStrings() {
-    return new String[0];
-  }
-
-  public
-  void setOption(String option, String value) {
-  }
-  
-  public
   void activateOptions() {
   }
   

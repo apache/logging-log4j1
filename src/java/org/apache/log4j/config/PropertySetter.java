@@ -154,8 +154,8 @@ public class PropertySetter {
       try {
         setProperty(prop, name, value);
       } catch (PropertySetterException ex) {
-        LogLog.warn("Failed to set property " + name +
-                    " to value \"" + value + "\". " + ex.getMessage());
+        LogLog.warn("Failed to set property [" + name +
+                    "] to value \"" + value + "\". " + ex.getMessage());
       }
     }
   }
@@ -173,7 +173,7 @@ public class PropertySetter {
     throws PropertySetterException {
     Method setter = prop.getWriteMethod();
     if (setter == null) {
-      throw new PropertySetterException("No setter for property");
+      throw new PropertySetterException("No setter for property ["+name+"].");
     }
     Class[] paramTypes = setter.getParameterTypes();
     if (paramTypes.length != 1) {
