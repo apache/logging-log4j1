@@ -1,22 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<project name="Tata Webapp Build Script" default="compile" basedir=".">
+<project name="Webapp Build Script" default="compile" basedir=".">
 
   <property environment="env"/>
-  <property name="tomcat.home" value="/home/ceki/ASF/jakarta-tomcat-4.1.30/"/>
 
+  <!-- The build.properties file defines variables dependent of the host machine -->
+  <property file="build.properties"/>
+  
   <property name="src.dir" value="${basedir}/src/java/"/>
   <property name="javac.dest" value="${basedir}/classes"/>
-  
+
+  <property name="webapp-name" value="tata"/>
 
   <path id="compile.classpath">
     <pathelement location="${build.home}/classes"/>
-    <fileset dir="./lib" includes="*.jar"/>
+    <pathelement location="${log4j.jar}"/>
+    <pathelement location="${servlet.jar}"/>
   </path>
  
   <target name="clean" depends="">
     <delete dir="${javac.dest}/" />
-    <delete dir="./tata.war" />
+    <delete dir="./${webapp-name}.war" />
   </target>
 
   <target name="compile">
@@ -28,7 +32,7 @@
   </target>
 
   <target name="war" depends="compile">
-    <war warfile="tata.war" webxml="src/WEB-INF/web.xml">
+    <war warfile="${webapp-name}.war" webxml="src/WEB-INF/web.xml">
       <classes dir="classes"/>
       <zipfileset dir="src/resources" prefix="WEB-INF/classes"/>
       <zipfileset dir="src/html" prefix=""/>
@@ -39,7 +43,7 @@
   <!--                    Uncompress war file                            -->
   <!-- ================================================================= -->
   <target name="deploy" depends="war">
-    <unjar src="tata.war" dest="${tomcat.home}/webapps/tata"/>
+    <unjar src="${webapp-name}.war" dest="${target.webapp.dir}/${webapp-name}"/>
   </target>
 
 </project>

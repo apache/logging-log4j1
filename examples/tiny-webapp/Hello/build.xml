@@ -4,21 +4,23 @@
 
   <property environment="env"/>
 
-  <property name="tomcat.hom-" value="/home/ceki/ASF/jakarta-tomcat-4.1.30/"/>
-  <property name="tomcat.home" value="/home/ceki/ASF/jakarta-tomcat-5.0.19/"/>
-
+  <!-- The build.properties file defines variables dependent of the host machine -->
+  <property file="build.properties"/>
+  
   <property name="src.dir" value="${basedir}/src/java/"/>
   <property name="javac.dest" value="${basedir}/classes"/>
-  
+
+  <property name="webapp-name" value="hello"/>
 
   <path id="compile.classpath">
     <pathelement location="${build.home}/classes"/>
-    <fileset dir="./lib" includes="*.jar"/>
+    <pathelement location="${log4j.jar}"/>
+    <pathelement location="${servlet.jar}"/>
   </path>
  
   <target name="clean" depends="">
     <delete dir="${javac.dest}/" />
-    <delete dir="./hello.war" />
+    <delete dir="./${webapp-name}.war" />
   </target>
 
   <target name="compile">
@@ -30,7 +32,7 @@
   </target>
 
   <target name="war" depends="compile">
-    <war warfile="hello.war" webxml="src/WEB-INF/web.xml">
+    <war warfile="${webapp-name}.war" webxml="src/WEB-INF/web.xml">
       <classes dir="classes"/>
       <zipfileset dir="src/resources" prefix="WEB-INF/classes"/>
       <zipfileset dir="src/html" prefix=""/>
@@ -41,7 +43,7 @@
   <!--                    Uncompress war file                            -->
   <!-- ================================================================= -->
   <target name="deploy" depends="war">
-    <unjar src="hello.war" dest="${tomcat.home}/webapps/hello"/>
+    <unjar src="${webapp-name}.war" dest="${target.webapp.dir}/${webapp-name}"/>
   </target>
 
 </project>

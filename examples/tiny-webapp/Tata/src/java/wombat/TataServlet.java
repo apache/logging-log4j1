@@ -26,7 +26,7 @@ public class TataServlet extends HttpServlet {
     logger.info("About to say Tata to "+name);
 
     out.println("<HTML><BODY>");
-    out.println("<H2> Tata " + name + ". How are you?</H2>");     
+    out.println("<H2>Many tata's to you  " + name + ". How are you today?</H2>");     
     out.println("</BODY></HTML>");
     out.close();    
   }

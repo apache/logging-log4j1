@@ -3,12 +3,6 @@
 <web-app>
 
   <servlet>
-    <servlet-name>log4j-init</servlet-name>
-    <servlet-class>wombat.Log4jInit</servlet-class>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
-
-  <servlet>
     <servlet-name>TataServlet</servlet-name>
     <servlet-class>wombat.TataServlet</servlet-class>
   </servlet>

@@ -23,13 +23,10 @@ public class HelloServlet extends HttpServlet {
     response.setContentType("text/html");
     PrintWriter out = response.getWriter();
     
-    if(logger!=null) {
-      // if defined, use the logger as any other logger
-      logger.info("About to say hello to "+name);
-    }
-
+    logger.info("About to say hello to "+name);
+ 
     out.println("<HTML><BODY>");
-    out.println("<H2> XHello " + name + ". How are you?</H2>");     
+    out.println("<H2> Hello there " + name + ". How are you today?</H2>");     
     out.println("</BODY></HTML>");
     out.close();    
   }
