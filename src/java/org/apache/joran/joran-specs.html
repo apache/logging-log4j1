@@ -1,0 +1,107 @@
+
+<html>
+
+  <head>
+    <title>Project specifications</title>
+  </head>
+  
+  <body>
+    
+    <center>
+      <h1>Project specifications</h1>
+      Ceki G&uuml;lc&uuml;
+    </center>
+    
+    <p>The projects takes its name from a cold north-west wind that
+      occasionally but forcefully blows on the Leman lake.
+    </p>
+    
+      
+    <p>The joran project will implement a generic XML-based
+    configuration tool for the Java platform. 
+    </p>
+
+    <h2>Introduction</h2>
+
+    <p>One of the most powerful features of the Java language is
+      reflection. Using reflection makes it possible to configure
+      software systems declaratively. For example, many important
+      properfies of a EJB are configured with the ejb.xml file. While
+      EJBs are written in Java many of their properties are specified
+      within the ejb.xml file. Similarly, the log4j logging settings
+      are specified in a configuration file which can be expressed in
+      key=properties format or in XML.
+    </p>
+
+    <p>The DOMConfigurator that ships with log4j can parse
+      configuration files written in XML. The DOMConfigurator is
+      written in Java such that each time the structure of the
+      configuration file changes the DOMConfigurator must be tweaked
+      accordingly and the resulting code must be recompiled and
+      redeployed. Just as importantly, the code of the DOMConfigurator
+      consists of a bunch of loops on children of elements with many
+      interspread if/else statemets. One can't help but notice that
+      the code reeks of redundancy.
+    </p>
+
+    <p>The <a
+      href="http://jakarta.apache.org/commons/digester.html">digester
+      project</a> has shown that it is possible to parse XML files
+      using pattern matching rules. At parse time, digester will apply
+      the rules that match previously stated patterns. Rule classes
+      are usually quite small and specialized. Consequently, they are
+      easy to understand and maintain.
+    </p>
+
+    <p>I find the the commons-digester terminology somewhat
+     confusing. In commons-digester a rule can be seen as consisting
+     of a pattern and a rule, as shown by the <a
+     href="http://jakarta.apache.org/commons/digester/api/org/apache/commons/digester/Digester.html#addRule(java.lang.String,%20org.apache.commons.digester.Rule)">Digester.addRule(java.lang.String
+     pattern, Rule rule)</a> method. In commons-joran, a rule consists
+     of a pattern and an action. An action is invoked when a match
+     occurs for the corresponding pattern.
+    </p>
+
+    <p>Quite remarkably, one can deal with quite complex situations by
+      using simple patterns, that is exact matches and wilcard
+      matches. For example, the pattern a/b will match a "&lt;b>"
+      element nested with a "&lt;a>" element but not a "&lt;c>"
+      element even if nested within "&lt;b>". It is also possible to
+      match a particular XML element, regardless of its nesting, by
+      using the "*" wildcard character. For example, an element
+      matching pattern of "*/a" will match an &lt;a> element at any
+      nesting position within the document. Other types of patterns,
+      for example, "a/*" were not supported by earlier versions of
+      commons-digester.
+    </p>
+
+    <h3>Relations between elements</h3>
+
+    <p>Due to the event-based artchitecture of the SAX API, a tool
+      based on SAX cannot easily deal with forward references, that is
+      references to elements which are defined later than the current
+      element being processed. Elements with cyclical references are
+      equally problematic. Another restriction of the SAX API is that
+      the element being processed cannot directly access its children
+      (elements nested within itself). This precludes actions that
+      process nested elements using implicit rules. For example,
+      jakarta-ant will process nested elements within a task by
+      studying addXXX methods of the task class. This type of implicit
+      processing cannot be performed using the SAX API.
+    </p>
+    
+    <h2>Goals</h2>
+    
+    <p>A <em>flexible</em> XML processing API based on possibly
+    dynamic rules. Support for implicit rules, similar to the addXXX
+    methods of jakarta-ant, will also be seriously considered.
+    </p>
+
+    <h2>Non goals</h2>
+    
+    <p>The Joran API is not intended to be used to parse documents
+      with thousands of elements.
+    </p>
+
+  </body> 
+</html>
