@@ -81,6 +81,11 @@ public class LoggingEvent implements java.io.Serializable {
   /** The mapped diagnostic context (MDC) of logging event. */
   private Hashtable mdcCopy;
 
+  /** A map of String keys and String values. 
+      @since 1.3
+   */
+  private Hashtable properties;
+
   /** Have we tried to do an NDC lookup? If we did, there is no need
    *  to do it again.  Note that its value is always false when
    *  serialized. Thus, a receiving SocketNode will never use it's own
@@ -274,6 +279,17 @@ public class LoggingEvent implements java.io.Serializable {
       }
     }
   }
+  
+  /**
+   * Return a previously set property. The return value can be null.
+   * @since 1.3
+   * */
+  public String getProperty(String key) {
+    if(properties == null)
+      return null;
+    else 
+      return (String) properties.get(key);
+  }
 
   public String getRenderedMessage() {
     if (renderedMessage == null && message != null) {
@@ -367,6 +383,17 @@ public class LoggingEvent implements java.io.Serializable {
     // Make sure that no location info is available to Layouts
     if (locationInfo == null)
       locationInfo = new LocationInfo(null, null);
+  }
+
+  /**
+   * Set a string property using a key and a string value. 
+   * since 1.3
+   */
+  public void setProperty(String key, String value) {
+    if(properties == null) {
+      properties = new Hashtable(5); // create a small hashtable
+    }
+    properties.put(key, value);    
   }
 
   private void writeObject(ObjectOutputStream oos) throws java.io.IOException {
