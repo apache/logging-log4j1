@@ -17,6 +17,7 @@
 package org.apache.log4j.varia;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -49,7 +50,8 @@ import org.apache.oro.text.regex.Perl5Matcher;
 
 /**
  * LogFilePatternReceiver can parse and tail log files, converting entries into
- * LoggingEvents.
+ * LoggingEvents.  If the file doesn't exist when the receiver is initialized, the
+ * receiver will look for the file once every 10 seconds.
  * <p>
  * This receiver relies on ORO Perl5 features to perform the parsing of text in the 
  * log file, however the only regular expression field explicitly supported is 
@@ -754,6 +756,7 @@ public class LogFilePatternReceiver extends Receiver {
     try {
       if (reader != null) {
         reader.close();
+        reader = null;
       }
     } catch (IOException ioe) {
       ioe.printStackTrace();
@@ -767,12 +770,22 @@ public class LogFilePatternReceiver extends Receiver {
     new Thread(new Runnable() {
       public void run() {
         initialize();
-        try {
-          reader = new InputStreamReader(new URL(getFileURL()).openStream());
-        } catch (IOException ioe) {
-          getLogger().warn("exception", ioe);
-          return;
-        }
+        while (reader == null) {
+          getLogger().info("attempting to load file: " + getFileURL());
+	        try {
+	          reader = new InputStreamReader(new URL(getFileURL()).openStream());
+	        } catch (FileNotFoundException fnfe) {
+	          getLogger().info("file not available - will try again in 10 seconds");
+	          synchronized(this) {
+	            try {
+	              wait(10000);
+	            } catch (InterruptedException ie){}
+	          }
+	        } catch (IOException ioe) {
+	          getLogger().warn("unable to load file", ioe);
+	          return;
+	        }
+        } 
         try {
           process(reader);
         } catch (IOException ioe) {
