@@ -182,10 +182,9 @@ public class EventDetailLayout extends Layout {
     String fqnCategory = escape(event.getFQNOfLoggerClass());
     Logger logger = Logger.getLogger(event.getLoggerName());
     String threadName = event.getThreadName();
-    Object msg = event.getMessage();
+    Object msg = escape(event.getMessage().toString());
     String ndc = event.getNDC();
 //    Hashtable mdc = formatMDC(event);
-    String[] throwableStringRep = event.getThrowableStrRep();
     LocationInfo li = null;
     if (event.locationInformationExists()) {
         li = formatLocationInfo(event);
