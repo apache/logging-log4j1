@@ -9,9 +9,7 @@
 package org.apache.log4j.config;
 
 import java.beans.*;
-import java.io.*;
 import java.lang.reflect.*;
-import java.util.*;
 import org.apache.log4j.Priority;
 import org.apache.log4j.helpers.LogLog;
 

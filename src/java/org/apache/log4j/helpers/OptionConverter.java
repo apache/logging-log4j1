@@ -422,7 +422,7 @@ public class OptionConverter {
      configurator of {@link PropertyConfigurator} is used, unless the
      filename pointed to by <code>url</code> ends in '.xml', in which case
      {@link org.apache.log4j.xml.DOMConfigurator} is used.
-     @param hierarchy The {@link Hierarchy} to act on.
+     @param hierarchy The {@link org.apache.log4j.Hierarchy} to act on.
 
      @since 1.1.4 */
 

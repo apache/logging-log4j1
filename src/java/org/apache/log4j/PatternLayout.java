@@ -8,11 +8,8 @@
 
 package org.apache.log4j;
 
-import org.apache.log4j.Category;
-import org.apache.log4j.Priority;
 import org.apache.log4j.Layout;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.NDC;
 import org.apache.log4j.helpers.PatternParser;
 import org.apache.log4j.helpers.PatternConverter;
 

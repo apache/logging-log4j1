@@ -14,7 +14,6 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
-import java.io.*;
 import java.lang.reflect.*;
 import java.util.*;
 import org.apache.log4j.*;

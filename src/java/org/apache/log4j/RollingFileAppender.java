@@ -9,7 +9,6 @@
 
 package org.apache.log4j;
 
-import java.beans.*;
 import java.io.IOException;
 import java.io.Writer;
 import java.io.File;
