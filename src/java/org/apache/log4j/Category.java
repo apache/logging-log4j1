@@ -316,18 +316,21 @@ public class Category implements AppenderAttachable {
   
 
   /** 
-   Log an exception with the <code>DEBUG</code> priority including its
-   stack trace. 
+   Log a message object with the <code>DEBUG</code> priority including
+   the stack trace of the {@link Throwable} <code>t</code> passed as
+   parameter.
    
-   @param t the exception to log, including its stack trace.  */    
+   <p>See {@link #debug(Object)} form for more detailed information.
+   
+   @param message the message object to log.
+   @param t the exception to log, including its stack trace.  */  
   public
-  void debug(Throwable t) {
-    if(disable >=  Priority.DEBUG_INT) 
-      return;   
-    if(Priority.DEBUG.isGreaterOrEqual(this.getChainedPriority()))
-      forcedLog(instanceFQN, Priority.DEBUG, null, t);
+  void debug(Object message, Throwable t) {
+    if(disable >=  Priority.DEBUG_INT) return;
+    if(this.isEnabledFor(Priority.DEBUG))
+      forcedLog(instanceFQN, Priority.DEBUG, message, t);
+    
   }
-
 
   //public
   //void dump() {
