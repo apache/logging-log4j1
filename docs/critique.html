@@ -2,7 +2,7 @@
 <document>
 
 <HEAD>
-
+<title>JSR47 vs. log4j</title>
 </HEAD>
 
 <body>
@@ -20,38 +20,39 @@ to react.
 
 <p>The JDK 1.4 logging API is a result of the <a
 href="http://jcp.org/aboutJava/communityprocess/review/jsr047/index.html">JSR47
-process</a>, led by Graham Hamilton. We will refer to it as the JSR47
+process</a>, led by Graham Hamilton. I will refer to it as the JSR47
 API for the remainder of this document.
 
 <p>Before delving into the details, some historical perspective is in
-order. I participated in the specification of the JSR47 API although
-not as an expert. In 1999, I was still working for IBM and big blue
-had already Chris Barlock as a member in the JSR47 experts
-group. Chris is the author of <a
+order. I am the founder of the log4j project. I participated in the
+specification of the JSR47 API although not as an expert. In 1999, I
+was still working for IBM and big blue had already Chris Barlock as a
+member in the JSR47 experts group. Chris is the author of <a
 href="http://www.alphaworks.ibm.com/tech/loggingtoolkit4j">IBM's
 logging toolkit for Java</a>.
 
 <p>On the surface, his toolkit has heavily influenced the JSR47
-API. In particular, the two share the same basic componets, namely
+API. In particular, the two share the same basic components, namely
 loggers, levels, handlers and formatters. In log4j, these components
 are called categories, priorities, appenders and layouts
-respectively. Pairwise, they are similar in purpose.
+respectively. Pairwise, they are similar in purpose. As such, the
+terms logger and category, level and priority, handler and appender,
+formatter and layout will be used interchangeably in the remainder of
+this document.
 
-<p>Despite the difference in their names, pairwise, these components
-share the same purpose. As such, the log4j and JSR47 APIs are
-<em>extremely</em> similar. They are the only logging APIs which are
-based on a named hiearchy. If you understand one API, then
-understanding the other is quite trivial. There are differences
-however.
+<p>Even after a casual glance it should be apparent that the log4j and
+JSR47 APIs are <em>very</em> similar. For one, they are the only
+logging APIs which are based on a named hierarchy. If you understand
+one API, then understanding the other is trivial. There are
+differences however.
 
 <h2>Parents vs. Children</h2>
 
-<p>In JSR47, a parent logger knows about its direct descendants but
-not the other way around. Children do know know about their
-parents. For example, the logger named <code>"com.foo"</code> knows
-about <code>"com.foo.bar1"</code> and
-<code>"com.foo.bar2"</code>. However, <code>"com.foo.bar1"</code> has
-no links to its parent <code>"com.foo"</code>.
+<p>In JSR47, a parent logger knows about its children but not the
+other way around. Children do not have links to their parent. For
+example, the logger named <code>"foo"</code> knows about
+<code>"foo.bar1"</code> and <code>"foo.bar2"</code>. However,
+<code>"foo.bar1"</code> has no links to its parent <code>"foo"</code>.
 
 <p>In log4j, it is exactly the other way around. A log4j category
 contains a link to its parent but a parent does not have links to its
@@ -74,22 +75,23 @@ common case where one sets the level of the root logger.
 of a single field. Children categories dynamically inherit the
 priority of their parent by traversing the hierarchy tree upwards.
 
-<p>It follows that if you configure the level for logger
-"com.foo.bar1" before configuring the level for "com.foo", then the
-latter instruction will overwrite the first. It will be as if the
-first instruction for configuring "com.foo.bar1" never existed. This
-is not an insourmountable problem but it will bite you time and again.
+<p>It follows that if you configure the level for logger "foo.bar1"
+before configuring the level for "foo", then the latter instruction
+will overwrite the first. It will be as if the first instruction for
+configuring "foo.bar1" had never existed. This is not a show stopper
+but it will bite you time and again.
 
-<p>In log4j, categories can be configured in any order.
+<p>In log4j, categories can be configured in any order. Thus, you do
+not have to worry about configuration order.
 
 <p><b><li>Limited inheritance</b>
 
-<p>In JSR47, a logger does not walk the hiearchy to inherit its level
+<p>In JSR47, a logger does not walk the hierarchy to inherit its level
 but possesses a copy of it. In fact, levels are a particular type of
-an an ineherited property.
+an inherited property.
 
 <p>Unfortunately, in the JSR47 API, handlers cannot be inherited
-because it would be prohibitely expensive (and unmanageable) to let
+because it would be prohibitively expensive (and unmanageable) to let
 each logger to contain a Vector of all inherited handlers, especially
 in large trees.
 
@@ -98,24 +100,46 @@ logger logs to global handlers and to the handlers attached to itself
 directly. <em>It does not inherit any handlers from the
 hierarchy.</em>
 
-<p>In log4j, appenders are inherited additively from the hierachy. A
+<p>In log4j, appenders are inherited additively from the hierarchy. A
 category will log to the appenders attached to itself as well as the
 appenders attached to its ancestors. 
 
 <p>This might not seem like much until the day you need handler
-inheritance.
+inheritance. 
 
 <p>Similarly, in log4j resource bundles are inherited from the
 hierarchy. In JSR47, a resource bundle must be attached to one logger
 at a time making resource bundles and hence internationalization quite
 unmanageable.
 
+<h2>Bogus Levels</h2>
+
+<p>JSR 47 defines the levels <code>ALL</code>, <code>SEVERE</code>,
+<code>WARNING</code>, <code>INFO</code>, <code>CONFIG</code>,
+<code>FINE</code>, <code>FINER</code>, <code>FINEST</code> and
+<code>OFF</code>. Experience shows that the levels <code>ALL</code>
+and <code>OFF</code> are never needed. The <code>SEVERE</code> and
+<code>CONFIG</code> levels are unique to JSR47.
+
+<p>Having three debugging levels <code>FINE</code>,
+<code>FINER</code>, <code>FINEST</code> could seem like a good
+idea. However, you will soon discover that even when alone, it is hard
+to decide when to use which level. It is plain impossible in groups.
+
+<p>Log4j in contrast has a limited but self-evident set of priorities:
+<code>FATAL</code>, <code>ERROR</code>, <code>WARN</code>,
+<code>INFO</code> and <code>DEBUG</code>.
+
+<p>Both JSR47 and log4j allow the user to extend the set of
+priorities. Log4j supports sub-classes of priorities in configuration
+files as well as across the wire. JSR47 does not.
+
 <h2>Limited functionality</h2>
 
 <p>Log4j has appenders capable of logging to the console, to files, to
 Unix Syslog daemons, to Microsoft NT EventLoggers, remote servers, to
-JMS channels, etc. It can roll log files by size or date and log
-asyncronously.
+JMS channels, automatically generate email etc. It can roll log files
+by size or date and log asynchronously.
 
 <p>JSR47 can log to the console, to files and to a memory buffer.
 
@@ -127,20 +151,36 @@ PatternLayout. JSR47 offers the much weaker
 documents. JSR47 currently admits only property files. Moreover, the
 language of JSR47 configuration files is very weak. For example, you
 can only configure one instance of a given handler class. <em>This
-means that you can log to one file at a time.</em>
-
+means that you can log to jsut one file at a time.</em>
 
 <p>There are many other details in which log4j differs from
 JSR47. Even if the log4j core is small, the project contains a total
 of over 30'000 lines of well-tested code. JSR47 contains about 5'000
 lines of code.
 
+<p>Log4j has been around for a number of years and is being used in
+thousands of projects. Our site gets over 500 downloads a day, every
+day. Log4j has been ported to C++ and Python. Commercial companies
+provide products based on log4j.
+
 <h2>Performance</h2>
 
 <p>In log4j, caller localization information is optional. In JSR47 it
-is always extracted. Since the extraction of caller localication is
-slow, in the commen case where caller information is not needed, log4j
+is always extracted. Since the extraction of caller localization is
+slow, in the common case where caller information is not needed, log4j
 will log the same information at least 4 times faster. 
+
+
+<h2>Lobby Sun</h2>
+
+<p>If you feel that these differences are imporant, then this is your
+chance to lobby Sun to adopt log4j as the logging API shipped in JDK
+1.4 or <b>at the least change the way parents and children loggers
+interact.</b> This is an implementation detail and does not affect the
+public API.  Please direct your polite and personalized request to <a
+href="mailto:java-logging-input@eng.sun.com">java-logging-input@eng.sun.com</a>.
+
+<p>
 
 </body>
 </HTML>

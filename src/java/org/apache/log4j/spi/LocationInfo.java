@@ -89,12 +89,6 @@ public class LocationInfo implements java.io.Serializable {
     public LocationInfo(Throwable t, String fqnOfCallingClass) {
       if(t == null)
 	return;
-/*
- * Copyright (C) The Apache Software Foundation. All rights reserved.
- *
- * This software is published under the terms of the Apache Software
- * License version 1.1, a copy of which has been included with this
- * distribution in the LICENSE.APL file.  */
 
       String s;
       // Protect against multiple access to sw.
@@ -114,20 +108,27 @@ public class LocationInfo implements java.io.Serializable {
       // than counting the stack depth which is not guaranteed to be
       // constant across JVM implementations.      
       ibegin = s.lastIndexOf(fqnOfCallingClass);
-      if(ibegin == -1) return;
+      if(ibegin == -1) 
+	return;
 
 
-      ibegin = s.indexOf(Layout.LINE_SEP, ibegin); if(ibegin == -1) return;
+      ibegin = s.indexOf(Layout.LINE_SEP, ibegin); 
+      if(ibegin == -1) 
+	return;
       ibegin+= Layout.LINE_SEP_LEN;
       
       // determine end of line
-      iend = s.indexOf(Layout.LINE_SEP, ibegin); if(iend == -1) return;
+      iend = s.indexOf(Layout.LINE_SEP, ibegin); 
+      if(iend == -1) 
+	return;
 
       // VA has a different stack trace format which doesn't 
       // need to skip the inital 'at'
       if(!inVisualAge) {
 	// back up to first blank character
-	ibegin = s.lastIndexOf("at ", iend); if(ibegin == -1) return;
+	ibegin = s.lastIndexOf("at ", iend); 
+	if(ibegin == -1) 
+	  return;
 	// Add 3 to skip "at ";
 	ibegin += 3;
       }
