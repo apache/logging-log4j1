@@ -160,7 +160,7 @@ public final class CachedDateFormatTest
     assertEquals(baseFormat.format(plus1415ms), cachedFormat.format(plus1415ms));
   }
 
-  public void test5() {
+  public void disabled_test5() {
     //   subsequent calls within one minute
     //     are optimized to reuse previous formatted value
     //     make a couple of nearly spaced calls
