@@ -19,7 +19,6 @@ import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.helpers.QuietWriter;
 import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.helpers.TracerPrintWriter;
 
 // Contibutors: Jens Uwe Pipka <jens.pipka@gmx.de>
 
@@ -65,12 +64,6 @@ public class WriterAppender extends AppenderSkeleton {
   */
   protected QuietWriter qw;
 
-  /**
-     {@link TracerPrintWriter} is specialized in optimized printing
-     of stack traces (obtained from throwables) to a Writer. 
-  */
-  protected TracerPrintWriter tp;
-  
   
   /**
      This default constructor does nothing.  */
@@ -285,7 +278,7 @@ public class WriterAppender extends AppenderSkeleton {
   void setWriter(Writer writer) {
     reset();
     this.qw = new QuietWriter(writer, errorHandler);
-    this.tp = new TracerPrintWriter(qw);
+    //this.tp = new TracerPrintWriter(qw);
     writeHeader();
   }
 
@@ -337,7 +330,7 @@ public class WriterAppender extends AppenderSkeleton {
   void reset() {
     closeWriter();
     this.qw = null;
-    this.tp = null;    
+    //this.tp = null;    
   }
 
 
