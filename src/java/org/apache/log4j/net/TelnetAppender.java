@@ -128,6 +128,7 @@ public class TelnetAppender extends AppenderSkeleton {
     private ServerSocket serverSocket;
     private int MAX_CONNECTIONS = 20;
     private Logger logger = Logger.getLogger(SocketHandler.class);
+      private String encoding = "UTF-8";
     
     public SocketHandler(int port) throws IOException {
       serverSocket = new ServerSocket(port);
@@ -175,7 +176,11 @@ public class TelnetAppender extends AppenderSkeleton {
       while (!done) {
         try {
           Socket newClient = serverSocket.accept();
-          PrintWriter pw = new PrintWriter(newClient.getOutputStream());
+
+          // Bugzilla 26117: use an encoding to support EBCDIC machines
+          // Could make encoding a JavaBean property or even make TelnetAppender
+          // extend WriterAppender, which already has encoding support.
+          PrintWriter pw = new PrintWriter(new OutputStreamWriter(newClient.getOutputStream(), encoding));
 
           if (connections.size() < MAX_CONNECTIONS) {
             connections.addElement(newClient);

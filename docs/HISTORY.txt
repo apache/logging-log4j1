@@ -45,6 +45,8 @@
 
  - Fixed Bugzilla 28464: White space significant at end of line for PropertyConfigurator. [*]
 
+ - Fixed Bugzilla 26117: Output encoding for TelnetAppender. [*]
+
   November 25, 2004
 
  - Release of version 1.3alpha-3
