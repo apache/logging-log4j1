@@ -48,16 +48,11 @@
  */
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.helpers.LogLog;
-
-import java.awt.Color;
-import java.awt.Component;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.util.Dictionary;
 import java.util.Hashtable;
 
@@ -69,12 +64,14 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
-import javax.swing.SwingConstants;
+import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
+
+import org.apache.log4j.helpers.LogLog;
 
 
 /**
@@ -88,12 +85,14 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
     private ApplicationPreferenceModel committedPreferenceModel;
     private ApplicationPreferenceModel uncommittedPreferenceModel =
         new ApplicationPreferenceModel();
+    JTextField identifierExpression;
 
     ApplicationPreferenceModelPanel(ApplicationPreferenceModel model) {
         this.committedPreferenceModel = model;
         initComponents();
         getOkButton().addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
+                    uncommittedPreferenceModel.setIdentifierExpression(identifierExpression.getText());
                     committedPreferenceModel.apply(uncommittedPreferenceModel);
                     hidePanel();
                 }
@@ -171,7 +170,7 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
                 1, 4, 2);
 
         Dictionary sliderLabelMap = new Hashtable();
-
+        
         /**
          * @param title
          */
@@ -185,6 +184,7 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
         private void initComponents() {
             setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
+            identifierExpression = new JTextField(20);
 
             Box p = new Box(BoxLayout.X_AXIS);
 
@@ -195,12 +195,15 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
             setupListeners();
 
             initSliderComponent();
-
             add(responsiveSlider);
+            JPanel p1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            
+            p1.add(new JLabel("Tab identifier"));
+            p1.add(Box.createHorizontalStrut(5));
+            p1.add(identifierExpression);
+            add(p1);
             add(p);
             add(Box.createVerticalGlue());
-
-
         }
 
         private void initSliderComponent() {
@@ -229,6 +232,14 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
                     }
                 });
             uncommittedPreferenceModel.addPropertyChangeListener(
+                "identifierExpression", new PropertyChangeListener() {
+
+                    public void propertyChange(PropertyChangeEvent evt) {
+                        identifierExpression.setText(evt.getNewValue().toString());
+                    }
+                });
+
+            uncommittedPreferenceModel.addPropertyChangeListener(
                 "responsiveness", new PropertyChangeListener() {
 
                     public void propertyChange(PropertyChangeEvent evt) {
@@ -247,6 +258,7 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
                         responsiveSlider.setValue(value);
                     }
                 });
+                
             showNoReceiverWarning.addActionListener(new ActionListener() {
 
                     public void actionPerformed(ActionEvent e) {
@@ -289,6 +301,7 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
 //          
             showNoReceiverWarning.setSelected(
                 uncommittedPreferenceModel.isShowNoReceiverWarning());
+            identifierExpression.setText(uncommittedPreferenceModel.getIdentifierExpression());            
         }
 
     }

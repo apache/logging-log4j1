@@ -51,7 +51,6 @@ package org.apache.log4j.chainsaw;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -66,17 +65,14 @@ import java.util.Map;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSlider;
 import javax.swing.JTabbedPane;
@@ -518,10 +514,6 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
         }
       });
 
-    JMenu responsiveNess =
-      new JMenu(ChainsawToolBarAndMenus.SETTING_RESPONSIVENESS);
-    responsiveNess.setMnemonic('R');
-
     final JMenu lookAndFeelMenu = new JMenu("Look & Feel");
     lookAndFeelMenu.setMnemonic('L');
 
@@ -583,7 +575,6 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     tabMenu.add(tabsBottom);
 
     viewMenu.add(tabMenu);
-    viewMenu.add(responsiveNess);
     viewMenu.add(lookAndFeelMenu);
     viewMenu.addSeparator();
     viewMenu.add(showAppPrefs);
