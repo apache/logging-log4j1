@@ -21,7 +21,9 @@ import java.sql.SQLException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.rmi.PortableRemoteObject;
+
+// PortableRemoteObject was introduced in JDK 1.3. We won't use it.
+// import javax.rmi.PortableRemoteObject;
 import javax.sql.DataSource;
 
 import org.apache.log4j.db.dialect.Util;
@@ -154,7 +156,10 @@ public class JNDIConnectionSource
     DataSource ds;
     Context ctx = new InitialContext();
     Object obj = ctx.lookup(jndiLocation);
-    ds = (DataSource)PortableRemoteObject.narrow(obj, DataSource.class);
+
+    // PortableRemoteObject was introduced in JDK 1.3. We won't use it.
+    //ds = (DataSource)PortableRemoteObject.narrow(obj, DataSource.class);
+    ds = (DataSource) obj;
 
     if (ds == null) {
       throw new SQLException("Failed to obtain data source from JNDI location " + jndiLocation);

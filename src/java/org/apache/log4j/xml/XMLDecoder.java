@@ -21,7 +21,7 @@ import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.StringReader;
 import java.net.URL;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
@@ -64,7 +64,7 @@ public class XMLDecoder implements Decoder {
   private static final String RECORD_END = "</log4j:event>";
   private DocumentBuilderFactory dbf;
   private DocumentBuilder docBuilder;
-  private Map additionalProperties = Collections.EMPTY_MAP;
+  private Map additionalProperties = new HashMap();
   private String partialEvent;
   
   public XMLDecoder() {
