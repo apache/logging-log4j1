@@ -17,14 +17,10 @@
 
 //      Contributors:      Dan Milstein 
 //                         Ray Millard
+//                         Ray DeCampo
 package org.apache.log4j;
 
-import org.apache.log4j.helpers.LogLog;
-
-import java.util.Enumeration;
-import java.util.Hashtable;
 import java.util.Stack;
-import java.util.Vector;
 
 
 /**
@@ -63,8 +59,8 @@ import java.util.Vector;
 
      <p><li>When leaving a context, call <code>NDC.pop</code>.
 
-     <p><li><b>When exiting a thread make sure to call {@link #remove
-     NDC.remove()}</b>.
+     <p><li>As of log4j 1.3, it is no longer necessary to call {@link #remove
+     NDC.remove()} when exiting a thread.</b>.
    </ul>
 
    <p>There is no penalty for forgetting to match each
@@ -80,14 +76,6 @@ import java.util.Vector;
    the same category) can still be distinguished because each client
    request will have a different NDC tag.
 
-   <p>Heavy duty systems should call the {@link #remove} method when
-   leaving the run method of a thread. This ensures that the memory
-   used by the thread can be freed by the Java garbage
-   collector. There is a mechanism to lazily remove references to dead
-   threads. In practice, this means that you can be a little sloppy
-   and sometimes forget to call {@link #remove} before exiting a
-   thread.
-
    <p>A thread may inherit the nested diagnostic context of another
    (possibly parent) thread using the {@link #inherit inherit}
    method. A thread may obtain a copy of its NDC with the {@link
@@ -101,13 +89,12 @@ import java.util.Vector;
 public class NDC {
   // The synchronized keyword is not used in this class. This may seem
   // dangerous, especially since the class will be used by
-  // multiple-threads. In particular, all threads share the same
-  // hashtable (the "ht" variable). This is OK since java hashtables
-  // are thread safe. Same goes for Stacks.
+  // multiple-threads.
+  // This is OK since java Stacks are thread safe.
   // More importantly, when inheriting diagnostic contexts the child
   // thread is handed a clone of the parent's NDC.  It follows that
   // each thread has its own NDC (i.e. stack).
-  static Hashtable ht = new Hashtable();
+  private static final ThreadLocal tl = new ThreadLocal();
   static int pushCounter = 0; // the number of times push has been called
                               // after the latest call to lazyRemove
   static final int REAP_THRESHOLD = 5;
@@ -126,7 +113,7 @@ public class NDC {
 
      @since 0.8.4c */
   public static void clear() {
-    Stack stack = (Stack) ht.get(Thread.currentThread());
+    Stack stack = (Stack) tl.get();
 
     if (stack != null) {
       stack.setSize(0);
@@ -148,7 +135,7 @@ public class NDC {
 
   */
   public static Stack cloneStack() {
-    Object o = ht.get(Thread.currentThread());
+    Object o = tl.get();
 
     if (o == null) {
       return null;
@@ -181,7 +168,7 @@ public class NDC {
   */
   public static void inherit(Stack stack) {
     if (stack != null) {
-      ht.put(Thread.currentThread(), stack);
+      tl.set(stack);
     }
   }
 
@@ -190,7 +177,7 @@ public class NDC {
      org.apache.log4j.spi.LoggingEvent#getNDC} method instead</b></font>.
   */
   public static String get() {
-    Stack s = (Stack) ht.get(Thread.currentThread());
+    Stack s = (Stack) tl.get();
 
     if ((s != null) && !s.isEmpty()) {
       return ((DiagnosticContext) s.peek()).fullMessage;
@@ -206,59 +193,12 @@ public class NDC {
      @since 0.7.5
    */
   public static int getDepth() {
-    Stack stack = (Stack) ht.get(Thread.currentThread());
+    Stack stack = (Stack) tl.get();
 
     if (stack == null) {
       return 0;
     } else {
       return stack.size();
-    }
-  }
-
-  private static void lazyRemove() {
-    // The synchronization on ht is necessary to prevent JDK 1.2.x from
-    // throwing ConcurrentModificationExceptions at us. This sucks BIG-TIME.
-    // One solution is to write our own hashtable implementation.
-    Vector v;
-
-    synchronized (ht) {
-      // Avoid calling clean-up too often.
-      if (++pushCounter <= REAP_THRESHOLD) {
-        return; // We release the lock ASAP.
-      } else {
-        pushCounter = 0; // OK let's do some work.
-      }
-
-      int misses = 0;
-      v = new Vector();
-
-      Enumeration enum = ht.keys();
-
-      // We give up after 4 straigt missses. That is 4 consecutive
-      // inspected threads in 'ht' that turn out to be alive.
-      // The higher the proportion on dead threads in ht, the higher the
-      // chances of removal.
-      while (enum.hasMoreElements() && (misses <= 4)) {
-        Thread t = (Thread) enum.nextElement();
-
-        if (t.isAlive()) {
-          misses++;
-        } else {
-          misses = 0;
-          v.addElement(t);
-        }
-      }
-    }
-     // synchronized
-
-    int size = v.size();
-
-    for (int i = 0; i < size; i++) {
-      Thread t = (Thread) v.elementAt(i);
-      LogLog.debug(
-        "Lazy NDC removal for thread [" + t.getName() + "] (" + ht.size()
-        + ").");
-      ht.remove(t);
     }
   }
 
@@ -273,8 +213,7 @@ public class NDC {
 
      */
   public static String pop() {
-    Thread key = Thread.currentThread();
-    Stack stack = (Stack) ht.get(key);
+    Stack stack = (Stack) tl.get();
 
     if ((stack != null) && !stack.isEmpty()) {
       return ((DiagnosticContext) stack.pop()).message;
@@ -294,8 +233,7 @@ public class NDC {
 
      */
   public static String peek() {
-    Thread key = Thread.currentThread();
-    Stack stack = (Stack) ht.get(key);
+    Stack stack = (Stack) tl.get();
 
     if ((stack != null) && !stack.isEmpty()) {
       return ((DiagnosticContext) stack.peek()).message;
@@ -312,13 +250,12 @@ public class NDC {
 
      @param message The new diagnostic context information.  */
   public static void push(String message) {
-    Thread key = Thread.currentThread();
-    Stack stack = (Stack) ht.get(key);
+    Stack stack = (Stack) tl.get();
 
     if (stack == null) {
       DiagnosticContext dc = new DiagnosticContext(message, null);
       stack = new Stack();
-      ht.put(key, stack);
+      tl.set(stack);
       stack.push(dc);
     } else if (stack.isEmpty()) {
       DiagnosticContext dc = new DiagnosticContext(message, null);
@@ -332,27 +269,11 @@ public class NDC {
   /**
      Remove the diagnostic context for this thread.
 
-     <p>Each thread that created a diagnostic context by calling
-     {@link #push} should call this method before exiting. Otherwise,
-     the memory used by the <b>thread</b> cannot be reclaimed by the
-     VM.
-
-     <p>As this is such an important problem in heavy duty systems and
-     because it is difficult to always guarantee that the remove
-     method is called before exiting a thread, this method has been
-     augmented to lazily remove references to dead threads. In
-     practice, this means that you can be a little sloppy and
-     occasionally forget to call {@link #remove} before exiting a
-     thread. However, you must call <code>remove</code> sometime. If
-     you never call it, then your application is sure to run out of
-     memory.
-
+     <p>As of log4j 1.3, the <code>NDC</code> class uses {@link ThreadLocal}
+     technology to store the context.  It is no longer necessary to call this
+     method.  It remains for backwards compatibility.
   */
   public static void remove() {
-    ht.remove(Thread.currentThread());
-
-    // Lazily remove dead-thread references in ht.
-    lazyRemove();
   }
 
   /**
@@ -383,7 +304,7 @@ public class NDC {
      @see #getDepth
      @since 0.7.5 */
   public static void setMaxDepth(int maxDepth) {
-    Stack stack = (Stack) ht.get(Thread.currentThread());
+    Stack stack = (Stack) tl.get();
 
     if ((stack != null) && (maxDepth < stack.size())) {
       stack.setSize(maxDepth);
