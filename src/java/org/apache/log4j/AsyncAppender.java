@@ -37,8 +37,6 @@ import java.util.Enumeration;
    files <a href="xml/examples/doc-files/sample4.xml">sample4.xml</a>
    and <a href="xml/examples/doc-files/sample5.xml">sample5.xml</a>.
 
-
-
    @author Ceki G&uuml;lc&uuml;
    @since 0.9.1 */
 public class AsyncAppender extends AppenderSkeleton
@@ -256,10 +254,14 @@ class Dispatcher extends Thread {
   Dispatcher(BoundedFIFO bf, AsyncAppender container) {
     this.bf = bf;
     this.container = container;
-    this.aai = container.aai;
+    this.aai = container.aai;    
+    // It is the user's responsibility to close appenders before
+    // exiting. 
+    this.setDaemon(true);
     // set the dispatcher priority to lowest possible value
     this.setPriority(Thread.MIN_PRIORITY);
     this.setName("Dispatcher-"+getName());
+
     // set the dispatcher priority to MIN_PRIORITY plus or minus 2
     // depending on the direction of MIN to MAX_PRIORITY.
     //+ (Thread.MAX_PRIORITY > Thread.MIN_PRIORITY ? 1 : -1)*2);
