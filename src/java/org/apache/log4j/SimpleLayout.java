@@ -47,7 +47,7 @@ public class SimpleLayout extends Layout {
     sbuf.setLength(0);
     sbuf.append(event.priority.toString());
     sbuf.append(" - ");
-    sbuf.append(event.message);
+    sbuf.append(event.getRenderedMessage());
     sbuf.append(LINE_SEP);
     return sbuf.toString();
   }

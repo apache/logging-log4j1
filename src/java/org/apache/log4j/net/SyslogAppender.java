@@ -200,8 +200,10 @@ public class SyslogAppender extends AppenderSkeleton {
  
     if(event.throwable != null) 
       event.throwable.printStackTrace(stp);
-    else if (event.throwableInformation != null) {
-      sqw.write(event.throwableInformation);
+    else {
+      String tInfo = event.getThrowableInformation();
+      if (tInfo != null) 
+	this.sqw.write(tInfo);
     }
   }
 

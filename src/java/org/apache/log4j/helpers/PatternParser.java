@@ -388,7 +388,7 @@ public class PatternParser {
       case NDC_CONVERTER:  
 	return event.getNDC();
       case MESSAGE_CONVERTER: {
-	return event.message;
+	return event.getRenderedMessage();
       }
       default: return null;
       }

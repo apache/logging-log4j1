@@ -22,36 +22,40 @@ import java.util.Hashtable;
 
 // Contributors:   Nelson Minar <nelson@monkey.org>
 //                 Wolf Siberski
+//                 Anders Kristensen <akristensen@dynamicsoft.com>
 
 /**
-   The internal representation of logging events. When a affirmative
-   logging decision is made a <code>LoggingEvent</code> instance is
-   created. This instance is passed around the different log4j
+   The internal representation of logging events. When an affirmative
+   decision is made to log then a <code>LoggingEvent</code> instance
+   is created. This instance is passed around to the different log4j
    components.
 
    <p>This class is of concern to those wishing to extend log4j. 
 
    @author Ceki G&uuml;lc&uuml;
-   @author <a href=mailto:jim_cakalic@na.biomerieux.com>Jim Cakalic</a>
+   @author James P. Cakalic
    
    @since 0.8.2 */
 public class LoggingEvent implements java.io.Serializable {
 
   private static long startTime = System.currentTimeMillis();
 
-  ///** Category of logging event. Can not be shipped to remote hosts. */
-  //transient public Category category;
-
-
   /** Fully qualified name of the calling category class. */
   transient public final String fqnOfCategoryClass;
 
+  /** The category of the logging event. The categoy field is not
+  serialized for performance reasons. 
+
+  <p>It is set by the LoggingEvent constructor or set by a remote
+  entity after deserialization. */
+  transient public Category category;
+
   /** The category name. */
-  public String categoryName;
+  public final String categoryName;
   
   /** Priority of logging event. Priority cannot be serializable
       because it is a flyweight.  Due to its special seralization it
-      cannot be declated final either. */
+      cannot be declared final either. */
   transient public Priority priority;
 
   /** The nested diagnostic context (NDC) of logging event. */
@@ -65,23 +69,27 @@ public class LoggingEvent implements java.io.Serializable {
 
 
   /** The application supplied message of logging event. */
-  public final String message;
+  transient private Object message;
+
+  /** The application supplied message rendered through the log4j
+      objet rendering mechanism.*/
+  private String renderedMessage;
+
   /** The name of thread in which this logging event was generated. */
   private String threadName;
 
   /** The throwable associated with this logging event.
 
-      This is field is transient because not all exception are
+      This is field is transient because not all exceptions are
       serializable. More importantly, the stack information does not
       survive serialization.
   */
   transient public final Throwable throwable;
 
-  /** This variable collects the info on a throwable. This variable
-      will be shipped to 
-      
-   */
-  public String throwableInformation;
+  /** This variable contains the string form of the throwable. This
+      field will be serialized if need be.  
+  */
+  private String throwableInformation;
 
   /** The number of milliseconds elapsed from 1/1/1970 until logging event
       was created. */
@@ -110,11 +118,53 @@ public class LoggingEvent implements java.io.Serializable {
   public LoggingEvent(String fqnOfCategoryClass, Category category, 
 		      Priority priority, String message, Throwable throwable) {
     this.fqnOfCategoryClass = fqnOfCategoryClass;
+    this.category = category;
     this.categoryName = category.getName();
     this.priority = priority;
     this.message = message;
     this.throwable = throwable;
     timeStamp = System.currentTimeMillis();
+  }  
+
+
+  /**
+     Return the message for this logging event. 
+
+     <p>Before serialization, the returned object is the message
+     passed by the user to generate the logging event. After
+     serialization, the returned value equals the String form of the
+     message possibly after object rendering. 
+
+     @since 1.1 */
+  public
+  Object getMessage() {
+    if(message != null) {
+      return message;
+    } else {
+      return getRenderedMessage();
+    }
+  }
+
+  public
+  String getNDC() {
+    if(ndcLookupRequired) {
+      ndcLookupRequired = false;
+      ndc = NDC.get();
+    }
+    return ndc; 
+  }
+
+  public
+  String getRenderedMessage() {
+     if(renderedMessage == null && message != null) {
+       if(message instanceof String) {
+	renderedMessage = (String) message;
+       } else {
+	 renderedMessage=
+                    category.getHierarchy().getRendererMap().findAndRender(message);
+       }
+     }
+     return renderedMessage;
   }  
 
   /**
@@ -127,38 +177,33 @@ public class LoggingEvent implements java.io.Serializable {
   }
 
   public
-  String getNDC() {
-    if(ndcLookupRequired) {
-      ndcLookupRequired = false;
-      ndc = NDC.get();
-    }
-    return ndc; 
-  }
-
-  
-
-  public
   String getThreadName() {
     if(threadName == null)
       threadName = (Thread.currentThread()).getName();
     return threadName;
   }
 
+
+  /**
+     Return the throwable's stack trace if any such information is
+     available.  */
   public 
   String getThrowableInformation() {
+
+    if(throwableInformation !=  null)
+      return throwableInformation;
+
+    
     if(throwable == null) {
        return null;
-    }
- 
-    if(throwableInformation == null ) {
+    } else {
       StringWriter sw = new StringWriter();
       PrintWriter pw = new PrintWriter(sw);
 
       throwable.printStackTrace(pw);
       throwableInformation = sw.toString();
+      return throwableInformation;
     }
-
-    return throwableInformation;
   }
 	
   private
@@ -192,9 +237,9 @@ public class LoggingEvent implements java.io.Serializable {
     if(clazz == Priority.class) {
       oos.writeObject(null);
     } else {
-      // writing the Class would be nicer, except that serialized
-      // classed can not be read back by JDK 1.1.x. We have to resort
-      // to this hack instead.
+      // writing directly the Class object would be nicer, except that
+      // serialized a Class object can not be read back by JDK
+      // 1.1.x. We have to resort to this hack instead.
       oos.writeObject(clazz.getName());
     }
   }
@@ -219,7 +264,7 @@ public class LoggingEvent implements java.io.Serializable {
 	priority = (Priority) m.invoke(null,  PARAM_ARRAY);
       }
     } catch(Exception e) {
-	LogLog.warn("Priority deserialization failed, reverting default.", e);
+	LogLog.warn("Priority deserialization failed, reverting to default.", e);
 	priority = Priority.toPriority(p);
     }
   }
@@ -230,7 +275,7 @@ public class LoggingEvent implements java.io.Serializable {
                         throws java.io.IOException, ClassNotFoundException {
     ois.defaultReadObject();    
     readPriority(ois);
-    
+
     // Make sure that no location info is available to Layouts
     if(locationInfo == null)
       locationInfo = new LocationInfo(null, null);
