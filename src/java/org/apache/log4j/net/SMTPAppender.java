@@ -21,7 +21,6 @@ import org.apache.log4j.Layout;
 import org.apache.log4j.Level;
 import org.apache.log4j.helpers.CyclicBuffer;
 import org.apache.log4j.helpers.OptionConverter;
-import org.apache.log4j.spi.ErrorCode;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.TriggeringEventEvaluator;
 
@@ -64,7 +63,8 @@ public class SMTPAppender extends AppenderSkeleton {
   protected CyclicBuffer cb = new CyclicBuffer(bufferSize);
   protected MimeMessage msg;
   protected TriggeringEventEvaluator evaluator;
-
+  
+  
   /**
      The default constructor will instantiate the appender with a
      {@link TriggeringEventEvaluator} that will trigger on events with
@@ -110,6 +110,18 @@ public class SMTPAppender extends AppenderSkeleton {
     } catch (MessagingException e) {
       getLogger().error("Could not activate SMTPAppender options.", e);
     }
+    
+    if (this.evaluator == null) {
+      String errMsg = "No TriggeringEventEvaluator is set for appender ["+getName()+"].";
+      getLogger().error(errMsg);
+      throw new IllegalStateException(errMsg);
+    }
+
+    if (this.layout == null) {
+      String errMsg = "No layout set for appender named [" + name + "].";
+      getLogger().error(errMsg);
+      throw new IllegalStateException(errMsg);
+    }
   }
 
   /**
@@ -143,21 +155,14 @@ public class SMTPAppender extends AppenderSkeleton {
       value <code>false</code> is returned. */
   protected boolean checkEntryConditions() {
     if (this.msg == null) {
-      errorHandler.error("Message object not configured.");
-
       return false;
     }
 
     if (this.evaluator == null) {
-      errorHandler.error(
-        "No TriggeringEventEvaluator is set for appender [" + name + "].");
-
       return false;
     }
 
     if (this.layout == null) {
-      errorHandler.error("No layout set for appender named [" + name + "].");
-
       return false;
     }
 
@@ -172,9 +177,8 @@ public class SMTPAppender extends AppenderSkeleton {
     try {
       return new InternetAddress(addressStr);
     } catch (AddressException e) {
-      errorHandler.error(
-        "Could not parse address [" + addressStr + "].", e,
-        ErrorCode.ADDRESS_PARSE_FAILURE);
+      getLogger().error(
+        "Could not parse address [" + addressStr + "].", e);
 
       return null;
     }
@@ -184,9 +188,8 @@ public class SMTPAppender extends AppenderSkeleton {
     try {
       return InternetAddress.parse(addressStr, true);
     } catch (AddressException e) {
-      errorHandler.error(
-        "Could not parse address [" + addressStr + "].", e,
-        ErrorCode.ADDRESS_PARSE_FAILURE);
+      getLogger().error(
+        "Could not parse address [" + addressStr + "].", e);
 
       return null;
     }
@@ -256,7 +259,7 @@ public class SMTPAppender extends AppenderSkeleton {
       msg.setSentDate(new Date());
       Transport.send(msg);
     } catch (Exception e) {
-      errorHandler.error("Error occured while sending e-mail notification.", e, ErrorCode.GENERIC_FAILURE);
+      getLogger().error("Error occured while sending e-mail notification.", e);
     }
   }
 
