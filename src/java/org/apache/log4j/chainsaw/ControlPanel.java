@@ -8,6 +8,9 @@ package org.apache.log4j.chainsaw;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.FlowLayout;
+import java.awt.Dimension;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
@@ -28,7 +31,7 @@ import org.apache.log4j.Priority;
  */
 class ControlPanel extends JPanel {
     /** use the log messages **/
-    private static final Category LOG = 
+    private static final Category LOG =
                                   Category.getInstance(ControlPanel.class);
 
     /**
@@ -40,6 +43,7 @@ class ControlPanel extends JPanel {
         setBorder(BorderFactory.createTitledBorder("Controls: "));
         final GridBagLayout gridbag = new GridBagLayout();
         final GridBagConstraints c = new GridBagConstraints();
+	final Dimension d = new Dimension(80,24);
         setLayout(gridbag);
 
         // Pad everything
@@ -99,6 +103,7 @@ class ControlPanel extends JPanel {
 
 
         c.fill = GridBagConstraints.HORIZONTAL;
+	c.gridwidth = 2;
         c.gridy++;
         final JTextField threadField = new JTextField("");
         threadField.getDocument().addDocumentListener(new DocumentListener () {
@@ -166,30 +171,19 @@ class ControlPanel extends JPanel {
         add(msgField);
 
         // Add the 3rd column of buttons
-        c.weightx = 0;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.anchor = GridBagConstraints.EAST;
         c.gridx = 2;
-
         c.gridy = 0;
-        final JButton exitButton = new JButton("Exit");
-        exitButton.setMnemonic('x');
-        exitButton.addActionListener(ExitAction.INSTANCE);
-        gridbag.setConstraints(exitButton, c);
-        add(exitButton);
+        c.gridwidth = 1;
+        c.weightx = 0;
+        c.weighty = 0;
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.EAST;
+	final JPanel buttonPanel = new JPanel();
+        gridbag.setConstraints(buttonPanel, c);
+        add(buttonPanel);
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT,1,1));
 
-        c.gridy++;
-        final JButton clearButton = new JButton("Clear");
-        clearButton.setMnemonic('c');
-        clearButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent aEvent) {
-                    aModel.clear();
-                }
-            });
-        gridbag.setConstraints(clearButton, c);
-        add(clearButton);
-
-        c.gridy++;
+	final Insets insets = new Insets(2,2,2,2);
         final JButton toggleButton = new JButton("Pause");
         toggleButton.setMnemonic('p');
         toggleButton.addActionListener(new ActionListener() {
@@ -199,7 +193,30 @@ class ControlPanel extends JPanel {
                         aModel.isPaused() ? "Resume" : "Pause");
                 }
             });
-        gridbag.setConstraints(toggleButton, c);
-        add(toggleButton);
+	toggleButton.setMargin(insets);
+	toggleButton.setPreferredSize(d);
+	toggleButton.setMinimumSize(d);
+        buttonPanel.add(toggleButton);
+
+        final JButton clearButton = new JButton("Clear");
+        clearButton.setMnemonic('c');
+        clearButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent aEvent) {
+                    aModel.clear();
+                }
+            });
+	clearButton.setMargin(insets);
+	clearButton.setPreferredSize(d);
+	clearButton.setMinimumSize(d);
+        buttonPanel.add(clearButton);
+
+        final JButton exitButton = new JButton("Exit");
+        exitButton.setMnemonic('x');
+        exitButton.addActionListener(ExitAction.INSTANCE);
+	exitButton.setMargin(insets);
+	exitButton.setPreferredSize(d);
+	exitButton.setMinimumSize(d);
+        buttonPanel.add(exitButton);
+
     }
 }
