@@ -80,7 +80,7 @@ public class LoggingEvent
    *
    * @since 1.3
    */
-  static long sequenceCount = 1;
+   static long sequenceCount = 1;
 
   /**
    * Fully qualified name of the calling category class. This field does not
@@ -244,7 +244,10 @@ public class LoggingEvent
     }
 
     timeStamp = System.currentTimeMillis();
-    sequenceNumber = sequenceCount++;
+    
+    synchronized(LoggingEvent.class) {
+      sequenceNumber = sequenceCount++;
+    }
   }
 
 
@@ -278,7 +281,9 @@ public class LoggingEvent
     }
 
     this.timeStamp = timeStamp;
-    sequenceNumber = sequenceCount++;
+    synchronized(LoggingEvent.class) {
+      sequenceNumber = sequenceCount++;
+    }
   }
 
   /**
