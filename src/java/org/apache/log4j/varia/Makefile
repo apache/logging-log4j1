@@ -8,6 +8,7 @@ JSOURCES:=ExternallyRolledFileAppender.java\
 	  LevelMatchFilter.java\
 	  PriorityRangeFilter.java\
 	  PriorityMatchFilter.java\
+          ReloadingPropertyConfigurator.java\
 
 SUBDIRS :=test
 
