@@ -18,9 +18,9 @@
 
 <p>
 This article describes a systematic way to extend the
-<a href="http://jakarta.apache.org/log4j">log4j</a> API in order include
-additional attributes that can be formatted using the
-<code><a href="../javadoc/org/apache/log4j/PatternLayout.html">PatternLayout</a></code> 
+<a href="http://jakarta.apache.org/log4j">log4j</a> API to include
+additional attributes formatted using the
+<code><a href="../docs/api/org/apache/log4j/PatternLayout.html">PatternLayout</a></code> 
 class.
 <p>
 <hr>
@@ -54,7 +54,7 @@ class.
 This article assumes familiarity with the log4j
 <a href="manual.html">User Manual</a>.  It builds on fundamental
 classes described in both the User Manual and the
-<a href="../javadoc/index.html">Javadoc</a>.  To assist in illustrating the
+<a href="api/index.html" target="_top">Javadoc API</a>.  To assist in illustrating the
 concepts, a simple case study will be developed along side the
 explanations.  The resulting classes may be used as a template
 for your own extensions.  Condenced (i.e. statements compressed,
@@ -62,10 +62,10 @@ comments removed) snipets of the case study code
 are included in this document.
 
 <a name="case"><h3>The Case Study</h3></a>
-The case study was developed in a CORBA environment in which we desired
-the following information for each log entry. The letters in
+The case study was developed in a CORBA environment in which the
+following information for each log entry was needed. The letters in
 parenthesis represent the corresponding character to be used by the
-<code><a href="../javadoc/org/apache/log4j/PatternLayout.html">PatternLayout</a></code> 
+<code><a href="api/org/apache/log4j/PatternLayout.html">PatternLayout</a></code> 
 class for formatting.
 
 <p>
@@ -84,7 +84,7 @@ class for formatting.
 </ul>
 <p>
 It seems odd to use "b" for the component name.  Presently
-<code><a href="../javadoc/org/apache/log4j/PatternLayout.html">PatternLayout</a></code> 
+<code><a href="api/org/apache/log4j/PatternLayout.html">PatternLayout</a></code> 
 already defines both "C" and "c" for class name and category name respectively.
 
 <h3><a name="peek">A Peek Under the Hood</a></h3>
@@ -102,7 +102,7 @@ case.
 <p>
 <ol>
 <li>Application code invokes a log request on a
-<code><a href="../javadoc/org/apache/log4j/Category.html">Category</a></code> 
+<code><a href="api/org/apache/log4j/Category.html">Category</a></code> 
 object.  Let's say the <code>info</code> method was invoked.
 <p>
 <li>The first thing <code>info</code> does is to check if logging has
@@ -111,36 +111,36 @@ immediately.  We'll assume for this scenario that logging has not
 been turned off for the info level.
 <p>
 <li>Next <code>info</code> compares the
-<code><a href="../javadoc/org/apache/log4j/Priority.html">Priority</a></code> 
+<code><a href="api/org/apache/log4j/Priority.html">Priority</a></code> 
 level for this category against <code>Priority.INFO</code>.  Assuming
 the priority warrants logging the message, the category instantiates a
-<code><a href="../javadoc/org/apache/log4j/spi/LoggingEvent.html">LoggingEvent</a></code> 
+<code><a href="api/org/apache/log4j/spi/LoggingEvent.html">LoggingEvent</a></code> 
 object populated with information available for logging.
 <p>
 <li>The <code>Category</code> instance passes the <code>LoggingEvent</code>
 instance to all its 
-<code><a href="../javadoc/org/apache/log4j/Appender.html">Appender</a></code> 
+<code><a href="api/org/apache/log4j/Appender.html">Appender</a></code> 
 implementations.
 <p>
 <li>Most (but not all) <code>Appender</code> implementations should have 
 an associated subclass of 
-<code><a href="../javadoc/org/apache/log4j/Layout.html">Layout</a></code>.
+<code><a href="api/org/apache/log4j/Layout.html">Layout</a></code>.
 The <code>Layout</code> subclass is passed the <code>LoggingEvent</code> 
 instance and returns the event's information formatted in a 
 <code>String</code> according to the configuration of the <code>Layout</code>.
 <p>
 When the <code>Layout</code> subclass is
-<code><a href="../javadoc/org/apache/log4j/PatternLayout.html">PatternLayout</a></code>, 
+<code><a href="api/org/apache/log4j/PatternLayout.html">PatternLayout</a></code>, 
 the format of the event's information is determined by a character sequence
 similar to the <b>C</b> language library's <code>printf</code> routine.
 <code>PatternLayout</code> delegates the parsing of this character sequence to a
-<code><a href="../javadoc/org/apache/log4j/helpers/PatternParser.html">PatternParser</a></code> 
+<code><a href="api/org/apache/log4j/helpers/PatternParser.html">PatternParser</a></code> 
 instance.
 <p>
 When the <code>PatternLayout</code> was constructed, it created a 
 <code>PatternParser</code> to tokenize the character sequence.  Upon 
 recognizing a token, the <code>PatternParser</code> constructs an appropriate
-<code><a href="../javadoc/org/apache/log4j/helpers/PatternConverter.html">PatternConverter</a></code> 
+<code><a href="api/org/apache/log4j/helpers/PatternConverter.html">PatternConverter</a></code> 
 subclass, passing it formatting information from the token.  Often the
 <code>PatternConverter</code> subclasses are implemented as static inner 
 classes of <code>PatternParser</code>.  The <code>parse</code> method of
@@ -161,12 +161,12 @@ The above discussing involved most of the classes that we must extend or
 implement.
 <p>
 <ul>
-<li><code><a href="../javadoc/org/apache/log4j/PatternLayout.html">org.apache.log4j.PatternLayout</a></code> 
-<li><code><a href="../javadoc/org/apache/log4j/Category.html">org.apache.log4j.Category</a></code> 
-<li><code><a href="../javadoc/org/apache/log4j/spi/CategoryFactory.html">org.apache.log4j.spi.CategoryFactory</a></code> 
-<li><code><a href="../javadoc/org/apache/log4j/spi/LoggingEvent.html">org.apache.log4j.spi.LoggingEvent</a></code> 
-<li><code><a href="../javadoc/org/apache/log4j/helpers/PatternParser.html">org.apache.log4j.helpers.PatternParser</a></code> 
-<li><code><a href="../javadoc/org/apache/log4j/helpers/PatternConverter.html">org.apache.log4j.helpers.PatternConverter</a></code> 
+<li><code><a href="api/org/apache/log4j/PatternLayout.html">org.apache.log4j.PatternLayout</a></code> 
+<li><code><a href="api/org/apache/log4j/Category.html">org.apache.log4j.Category</a></code> 
+<li><code><a href="api/org/apache/log4j/spi/CategoryFactory.html">org.apache.log4j.spi.CategoryFactory</a></code> 
+<li><code><a href="api/org/apache/log4j/spi/LoggingEvent.html">org.apache.log4j.spi.LoggingEvent</a></code> 
+<li><code><a href="api/org/apache/log4j/helpers/PatternParser.html">org.apache.log4j.helpers.PatternParser</a></code> 
+<li><code><a href="api/org/apache/log4j/helpers/PatternConverter.html">org.apache.log4j.helpers.PatternConverter</a></code> 
 </ul>
 <p>
 <hr>
@@ -472,9 +472,6 @@ The following tasks are involved in overridding
 	<code>AppServerLoggingEvent</code> is instantiated rather than
 	the default <code>LoggingEvent</code>.
 <p>
-<li>Override the <code>l7dlog</code> methods since by default they
-	do not call the <code>forcedLog</code> method.
-<p>
 <li>Override the <code>getInstance</code> method to use our
 	<code>CategoryFactory</code> (described in the next step).  This will
 	require that we hold a static reference to our factory and provide a
@@ -559,14 +556,7 @@ public class AppServerCategory extends Category
                              Object    message, 
                              Throwable t) 
    {
-      String s;
-      LoggingEvent event;
-      if(message instanceof String) 
-         s = (String) message;
-      else
-         s = myContext.<b>getRendererMap()</b>.findAndRender(message);
-
-<b>      event = new AppServerLoggingEvent(fqn, this, priority, s, t);</b>
+<b>      LoggingEvent event = new AppServerLoggingEvent(fqn, this, priority, message, t);</b>
       callAppenders( event );
    }
 
@@ -636,28 +626,18 @@ public class AppServerCategoryFactory implements CategoryFactory
       version   = versionName;
    }
 
-   /**
-    *  Create a new instance of <code>AppServerCategory</code>
-    *  using the information contained in this instance.
-    */
    public Category makeNewCategoryInstance(String name)
    {
-       Category result = new AppServerCategory(name, hostname, server, component, version);
-       if ( messageBundle != null )
-          result.setResourceBundle( messageBundle );
+       Category result = new AppServerCategory( name, 
+                                                hostname, 
+                                                server, 
+                                                component, 
+                                                version);
        return result;
    }
-
-   public void setMessageBundle(ResourceBundle bundle)
-   { messageBundle = bundle; }
 }
 </pre>
 </table>
-<p>
-Notice that we have also added the ability to set the message catalog
-<code>ResourceBundle</code> on the factory so that all subsequent
-<code>Category</code> creations will have it set automatically for use
-with the <code>l7dlog</code> methods.
 <p>
 <hr>
 <a name="usage"><h2>Usage</h2></a>
@@ -674,9 +654,9 @@ are generated by the category logging methods.
 <tr><td>
 <pre>
 import org.apache.log4j.*;
-import my.extensions.log4j.appserver.AppServerCategory;
-import my.extensions.log4j.appserver.AppServerCategoryFactory;
-import my.extensions.log4j.appserver.AppServerPatternLayout;
+import org.apache.log4j.appserver.AppServerCategory;
+import org.apache.log4j.appserver.AppServerCategoryFactory;
+import org.apache.log4j.appserver.AppServerPatternLayout;
 
 public class test
 {
@@ -714,10 +694,10 @@ public class test
 <a name="configurators"><h3>Configurators</h3></a>
 There is one a word of caution concerning the use of configurators that
 may create <code>Category</code> instances (such as
-<a href="../javadoc/org/apache/log4j/PropertyConfigurator.html">
+<a href="api/org/apache/log4j/PropertyConfigurator.html">
 <code>PropertyConfigurator</code></a> 
 and 
-<a href="../javadoc/org/apache/log4j/xml/DOMConfigurator.html">
+<a href="api/org/apache/log4j/xml/DOMConfigurator.html">
 <code>DOMConfigurator</code></a>).  Since these configurators do not
 know about our extensions, any <code>Category</code> instances they 
 create will not be <code>AppServerCategory</code> instances.  To
@@ -726,11 +706,16 @@ might want to be configured through a configurator should be
 instantiated before the configure method is invoked.  In this way,
 the configurator will configure the <code>AppServerCategory</code>
 that already exists rather than creating an instance of its super
-class in its place.
+class.
+<p>
+The consequence of a configurator creating the super class by
+mistake is merely that the extra attributes will not appear in 
+the log output.  All other attributes are conveyed properly.
 <p>
 <hr>
 <a name="enhancements"><h2>Further Enhancements</h2></a>
-There are some direction in which this log4j extension may be enhanced.
+There are some other directions in which this log4j extension 
+may be enhanced.
 <p>
 <ol>
 <li>The hostname attribute could incorportate a formatting convention
@@ -738,10 +723,6 @@ There are some direction in which this log4j extension may be enhanced.
 	number of the more significant components are displayed.  But
 	whereas with class and category names, the most significant component
 	is on the right, with host names, it is on the left.
-<p>
-<li>Allow one to set a ResourceBundle on a factory so that categories
-	are created with the message bundle already set (in preparation
-	for using the <code>l7dlog</code> methods).
 <p>
 <li>Specifying a version number could be dangerous since programmers
 	are apt to change versions of the code without changing the 
