@@ -29,8 +29,6 @@ import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
- * 
- * 
  *  Sends log information as a UDP datagrams.
  *
  *  <p>The UDPAppender is meant to be used as a diagnostic logging tool
@@ -43,8 +41,8 @@ import org.apache.log4j.spi.LoggingEvent;
  *  By setting the remoteHost to a broadcast address any number of clients can
  *  listen for log messages.
  *
- *  <p>This was inspired and really extended/copied from {@link SocketAppender}.  Please
- *  see the docs for the proper credit to the authors of that class.
+ *  <p>This was inspired and really extended/copied from {@link SocketAppender}.
+ *  Please see the docs for the proper credit to the authors of that class.
  *
  *  @author  <a href="mailto:kbrown@versatilesolutions.com">Kevin Brown</a>
  *  @author Scott Deboy <sdeboy@apache.org>
@@ -206,7 +204,8 @@ public class UDPAppender extends AppenderSkeleton implements PortBased{
       }
 
       try {
-        StringBuffer buf=new StringBuffer(layout.format(event).trim());
+        // TODO UDPAppender throws NullPointerException if the layout is not set
+        StringBuffer buf = new StringBuffer(layout.format(event).trim());
         if (buf.length() < PACKET_LENGTH) {        
            buf.append(new char[PACKET_LENGTH - buf.length()]);
         }
