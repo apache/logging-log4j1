@@ -50,10 +50,8 @@ public class Generator extends Receiver implements Runnable {
 
   private LoggingEvent createEvent(
     Level level, Logger logger, String msg, Throwable t) {
-    LoggingEvent e =
-      new LoggingEvent(
-        logger.getClass().getName(), logger, System.currentTimeMillis(), level,
-        msg, t);
+    LoggingEvent e = new LoggingEvent(
+        logger.getClass().getName(), logger, level, msg, t);
     e.setProperty(Constants.APPLICATION_KEY, getName());
     e.setProperty(Constants.HOSTNAME_KEY, "localhost");
 

@@ -66,25 +66,25 @@ public class RuleTest extends JFrame {
     eventList.add(
       new LoggingEvent(
         "org.apache.log4j.chainsaw", Logger.getLogger("logger1"),
-        System.currentTimeMillis(), Level.DEBUG, "message1",
+        Level.DEBUG, "message1",
         new Exception("test")));
     MDC.put("entry2", "test1");
     eventList.add(
       new LoggingEvent(
         "org.apache.log4j.chainsaw", Logger.getLogger("logger2"),
-        System.currentTimeMillis(), Level.DEBUG, "message2",
+        Level.DEBUG, "message2",
         new Exception("test2")));
     eventList.add(
       new LoggingEvent(
         "org.apache.log4j.net", Logger.getLogger("logger3"),
-        System.currentTimeMillis(), Level.DEBUG, "message3",
+        Level.DEBUG, "message3",
         new Exception("test3")));
 
     MDC.put("test", "234");
     eventList.add(
       new LoggingEvent(
         "org.apache.log4j.chainsaw", Logger.getLogger("logger4"),
-        System.currentTimeMillis(), Level.WARN, "message4",
+        Level.WARN, "message4",
         new Exception("test4")));
 
     Iterator iter = eventList.iterator();
