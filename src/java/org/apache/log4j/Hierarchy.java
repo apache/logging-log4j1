@@ -25,6 +25,7 @@ import org.apache.log4j.helpers.IntializationUtil;
 import org.apache.log4j.or.ObjectRenderer;
 import org.apache.log4j.or.RendererMap;
 import org.apache.log4j.plugins.PluginRegistry;
+import org.apache.log4j.spi.ErrorItem;
 import org.apache.log4j.spi.LoggerEventListener;
 import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.LoggerRepository;
@@ -34,6 +35,7 @@ import org.apache.log4j.spi.RendererSupport;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -81,6 +83,8 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   
   // the internal logger used by this instance of Hierarchy for its own reporting
   private Logger myLogger;
+  
+  private List errorList = new Vector();
   
   boolean emittedNoAppenderWarning = false;
   boolean emittedNoResourceBundleWarning = false;
@@ -492,6 +496,21 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
     return v.elements();
   }
 
+  /**
+   * Return the the list of previously encoutered {@link ErrorItem error items}.
+   */
+  public List getErrorList() {
+    return errorList;
+  }
+  
+  /**
+   * Add an error item to the list of previously encountered errors.
+   * @since 1.3 
+   */
+  public void addErrorItem(ErrorItem errorItem) {
+    getErrorList().add(errorItem);
+  }
+  
   /**
      @deprecated Please use {@link #getCurrentLoggers} instead.
    */

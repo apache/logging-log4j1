@@ -20,6 +20,7 @@ import org.apache.log4j.*;
 import org.apache.log4j.plugins.PluginRegistry;
 
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Map;
 
 
@@ -198,4 +199,15 @@ public interface LoggerRepository {
    */
   public void setProperty(String key, String value);
   
+  /**
+   * Errors which cannot be logged, go to the error list,
+   * @return List
+   */
+  public List getErrorList();
+
+  /**
+   * Errors which cannot be logged, go to the error list,
+   * @return List
+   */
+  public void addErrorItem(ErrorItem errorItem);
 }
