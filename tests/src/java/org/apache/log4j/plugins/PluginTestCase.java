@@ -381,6 +381,7 @@ public class PluginTestCase extends TestCase {
 		assertTrue("PluginListener stop latch should not be activated", !l.StopLatch);
 		assertTrue("PluginListener should be given reference to Plugin", e.getPlugin() == p);
 
+        l.reset();
 		PluginRegistry.stopAllPlugins();
 		assertTrue("PluginListener should have been notified of stop", l.StopLatch);
 		assertTrue("PluginListener should not have been notified of start", !l.StartLatch);
