@@ -16,11 +16,10 @@
 
 package org.apache.log4j.db;
 
-import org.apache.log4j.db.dialect.Util;
+
 import org.apache.log4j.helpers.LogLog;
 
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 
 import javax.sql.DataSource;
@@ -56,20 +55,11 @@ public class DataSourceConnectionSource extends ConnectionSourceSkeleton {
         LogLog.warn("Could not get a connection to discover the dialect to use.", se);
       }
       if(connection != null) {
-        try {
-          DatabaseMetaData meta = connection.getMetaData();
-          supportsGetGeneratedKeys =   meta.supportsGetGeneratedKeys();
-          if(!supportsGetGeneratedKeys) {
-            dialectCode = Util.discoverSQLDialect(meta);
-          }
-        } catch(SQLException sqle) {
-          LogLog.warn("Could not get a discover connection properties.");
-        }
+        discoverConnnectionProperties();
       } 
       if(!supportsGetGeneratedKeys && dialectCode == ConnectionSource.UNKNOWN_DIALECT) {
         LogLog.warn("Connection does not support GetGeneratedKey method and could not discover the dialect.");
       }
-        
     }
   }
 

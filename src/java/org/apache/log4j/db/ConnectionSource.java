@@ -37,7 +37,7 @@ public interface ConnectionSource extends OptionHandler {
   final int MYSQL_DIALECT = 2;
   final int ORACLE_DIALECT = 3;
   final int MSSQL_DIALECT = 4;
-  final int HSQLDB_DIALECT = 5;  
+  final int HSQL_DIALECT = 5;  
   /**
    *  Obtain a {@link java.sql.Connection} for use.  The client is
    *  responsible for closing the {@link java.sql.Connection} when it is no
@@ -68,4 +68,8 @@ public interface ConnectionSource extends OptionHandler {
    */
   boolean supportsGetGeneratedKeys();
   
+  /**
+   * If the connection does not support batch updates, we will avoid using them.
+   */  
+  public boolean supportsBatchUpdates();
 }
