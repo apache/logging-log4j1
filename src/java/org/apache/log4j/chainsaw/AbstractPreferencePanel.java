@@ -52,6 +52,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
+import java.util.Enumeration;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -61,6 +62,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
+import javax.swing.SwingUtilities;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -100,7 +102,7 @@ public abstract class AbstractPreferencePanel extends JPanel
   private final JButton cancelButton = new JButton("Cancel");
   private ActionListener okCancelListener;
   private Component currentlyDisplayedPanel = null;
-
+  private final JTree prefTree = new JTree();
   /**
    * Setup and layout for the components
    */
@@ -110,7 +112,8 @@ public abstract class AbstractPreferencePanel extends JPanel
     setLayout(new BorderLayout(5, 5));
     setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
   
-    final JTree prefTree = new JTree(createTreeModel());
+    prefTree.setModel(createTreeModel());
+    
     prefTree.setRootVisible(false);
   
     DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
@@ -192,6 +195,19 @@ public abstract class AbstractPreferencePanel extends JPanel
     selectedPrefPanel.repaint();
   }
 
+  public void notifyOfLookAndFeelChange() {
+    SwingUtilities.updateComponentTreeUI(this);
+    
+    Enumeration enum = ((DefaultMutableTreeNode)prefTree.getModel().getRoot()).breadthFirstEnumeration();
+    while (enum.hasMoreElements()) {
+      DefaultMutableTreeNode node = (DefaultMutableTreeNode) enum.nextElement();
+      if (node.getUserObject() instanceof Component) {
+        Component c = (Component) node.getUserObject();
+        SwingUtilities.updateComponentTreeUI(c);
+      }
+    }
+  }
+                                          
   public void setOkCancelActionListener(ActionListener l)
   {
     this.okCancelListener = l;

@@ -95,6 +95,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.JWindow;
 import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
@@ -168,7 +169,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   private ReceiversPanel receiversPanel;
   private ChainsawTabbedPane tabbedPane;
   private JToolBar toolbar;
-  private ChainsawStatusBar statusBar;
+  private final ChainsawStatusBar statusBar = new ChainsawStatusBar();
   private final ApplicationPreferenceModel applicationPreferenceModel = new ApplicationPreferenceModel();
   private final ApplicationPreferenceModelPanel applicationPreferenceModelPanel = new ApplicationPreferenceModelPanel(applicationPreferenceModel);
   private final Map tableModelMap = new HashMap();
@@ -315,18 +316,12 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    *
    */
   private void initGUI() {
-    statusBar = new ChainsawStatusBar();
+    welcomePanel = new WelcomePanel(this);
     receiversPanel = new ReceiversPanel(this);
     setToolBarAndMenus(new ChainsawToolBarAndMenus(this));
     toolbar = getToolBarAndMenus().getToolbar();
     setJMenuBar(getToolBarAndMenus().getMenubar());
     setTabbedPane(new ChainsawTabbedPane());
-    preferencesFrame.setTitle("'Application-wide Preferences");
-    preferencesFrame.setIconImage(
-        ((ImageIcon) ChainsawIcons.ICON_PREFERENCES).getImage());
-    preferencesFrame.getContentPane().add(applicationPreferenceModelPanel);
-
-    preferencesFrame.setSize(640, 480);
 
     applicationPreferenceModelPanel.setOkCancelActionListener(
         new ActionListener() {
@@ -345,11 +340,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    *                    DOCUMENT ME!
    */
   public void loadSettings(LoadSettingsEvent event) {
-    if (event.asBoolean(LogUI.STATUS_BAR)) {
-      addStatusBar();
-    } else {
-      removeStatusBar();
-    }
 
     setLocation(
       event.asInt(LogUI.MAIN_WINDOW_X), event.asInt(LogUI.MAIN_WINDOW_Y));
@@ -377,9 +367,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       event.saveSetting(LogUI.LOOK_AND_FEEL, lookAndFeelClassName);
     }
 
-    event.saveSetting(
-      LogUI.STATUS_BAR, isStatusBarVisible() ? Boolean.TRUE : Boolean.FALSE);
-
     if (configURLToUse != null) {
       event.saveSetting(LogUI.CONFIG_FILE_TO_USE, configURLToUse.toString());
     }
@@ -391,7 +378,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    * table columns, and sets itself viewable.
    */
   public void activateViewer() {
-    welcomePanel = new WelcomePanel(this);
+    initGUI();
     
     applicationPreferenceModel.addPropertyChangeListener("identifierExpression", new PropertyChangeListener() {
 		public void propertyChange(PropertyChangeEvent evt) {
@@ -405,6 +392,33 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       }
     } );
     
+    applicationPreferenceModel.addPropertyChangeListener("tabPlacement", new PropertyChangeListener() {
+
+      public void propertyChange(final PropertyChangeEvent evt) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+          public void run() {
+              int placement = ((Integer)evt.getNewValue()).intValue();
+              switch (placement) {
+                case SwingConstants.TOP :
+                case SwingConstants.BOTTOM:
+                  tabbedPane.setTabPlacement(placement);
+                  break;
+
+                default :
+                  break;
+              }
+          }});
+      }});
+    
+    applicationPreferenceModel.addPropertyChangeListener("statusBar", new PropertyChangeListener() {
+
+      public void propertyChange(PropertyChangeEvent evt) {
+          boolean value = ((Boolean)evt.getNewValue()).booleanValue();
+          setStatusBarVisible(value);
+      }});
+    
+    setStatusBarVisible(applicationPreferenceModel.isStatusBar());
     
     final SocketNodeEventListener socketListener =
       new SocketNodeEventListener() {
@@ -413,7 +427,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
         }
 
         public void socketClosedEvent(Exception e) {
-          statusBar.setMessage("Collection lost! :: " + e.getMessage());
+          statusBar.setMessage("Connection lost! :: " + e.getMessage());
         }
       };
 
@@ -509,7 +523,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       noReceiversDefined = true;
     }
 
-    initGUI();
 
     List utilList = UtilLoggingLevel.getAllPossibleLevels();
 
@@ -642,6 +655,12 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
           exit();
         }
       });
+    preferencesFrame.setTitle("'Application-wide Preferences");
+    preferencesFrame.setIconImage(
+        ((ImageIcon) ChainsawIcons.ICON_PREFERENCES).getImage());
+    preferencesFrame.getContentPane().add(applicationPreferenceModelPanel);
+
+    preferencesFrame.setSize(640, 480);
     getSettingsManager().configure(
       new SettingsListener() {
         public void loadSettings(LoadSettingsEvent event) {
@@ -656,7 +675,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
           //required because of SettingsListener interface..not used during load
         }
       });
-
+    
     pack();
     
     final JPopupMenu tabPopup = new JPopupMenu();
@@ -1212,31 +1231,22 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     return null;
   }
 
-  void removeStatusBar() {
+  /**
+   * @param b
+   */
+  private void setStatusBarVisible(final boolean visible) {
+    LogLog.debug("Setting StatusBar to " + visible);
     SwingUtilities.invokeLater(
-      new Runnable() {
-        public void run() {
-          getContentPane().remove(statusBar);
-          getContentPane().validate();
-          getContentPane().repaint();
-        }
-      });
+        new Runnable() {
+          public void run() {
+            statusBar.setVisible(visible);
+          }
+        });
+    
   }
 
   boolean isStatusBarVisible() {
-    return getContentPane().isAncestorOf(statusBar);
-  }
-
-  void addStatusBar() {
-    removeStatusBar();
-    SwingUtilities.invokeLater(
-      new Runnable() {
-        public void run() {
-          getContentPane().add(statusBar, BorderLayout.SOUTH);
-          getContentPane().validate();
-          getContentPane().repaint();
-        }
-      });
+    return statusBar.isVisible();
   }
 
   /**
@@ -1307,7 +1317,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       UIManager.setLookAndFeel(lookAndFeelClassName);
       SwingUtilities.updateComponentTreeUI(this);
       SwingUtilities.updateComponentTreeUI(preferencesFrame);
-    } catch (Exception e) {
+      applicationPreferenceModelPanel.notifyOfLookAndFeelChange();
+     } catch (Exception e) {
       LogLog.error("Failed to change L&F", e);
     }
   }

@@ -56,6 +56,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -75,11 +77,9 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSlider;
-import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
@@ -136,9 +136,9 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     new JRadioButtonMenuItem("Icon");
   private final JRadioButtonMenuItem levelDisplayText =
     new JRadioButtonMenuItem("Text");
-  private final JRadioButtonMenuItem tabsBottom =
-    new JRadioButtonMenuItem("Bottom");
-  private final JRadioButtonMenuItem tabsTop = new JRadioButtonMenuItem("Top");
+//  private final JRadioButtonMenuItem tabsBottom =
+//    new JRadioButtonMenuItem("Bottom");
+//  private final JRadioButtonMenuItem tabsTop = new JRadioButtonMenuItem("Top");
   private final JSlider responsiveSlider;
   private final JToolBar toolbar;
   private LogUI logui;
@@ -186,6 +186,13 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
         toggleDetailPaneAction, showPreferencesAction, showColorPanelAction,
         undockAction, toggleLogTreeAction, changeModelAction,
       };
+    
+    logui.getApplicationPreferenceModel().addPropertyChangeListener("statusBar", new PropertyChangeListener() {
+
+      public void propertyChange(PropertyChangeEvent evt) {
+         boolean value = ((Boolean)evt.getNewValue()).booleanValue();
+         toggleStatusBarCheck.setSelected(value);
+      }});
   }
 
   /**
@@ -458,18 +465,14 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     final Action toggleStatusBarAction =
       new AbstractAction("Show Status bar") {
         public void actionPerformed(ActionEvent arg0) {
-          if (toggleStatusBarCheck.isSelected()) {
-            logui.addStatusBar();
-          } else {
-            logui.removeStatusBar();
-          }
+          logui.getApplicationPreferenceModel().setStatusBar(toggleStatusBarCheck.isSelected());
         }
       };
 
     toggleStatusBarAction.putValue(
       Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_B));
     toggleStatusBarCheck.setAction(toggleStatusBarAction);
-    toggleStatusBarCheck.setSelected(true);
+    toggleStatusBarCheck.setSelected(logui.getApplicationPreferenceModel().isStatusBar());
 
     activeTabMenu.add(pause);
     activeTabMenu.add(toggleCyclicMenuItem);
@@ -491,27 +494,6 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     viewMenu.add(toggleShowReceiversCheck);
     viewMenu.add(menuItemClose);
     viewMenu.addSeparator();
-
-    ButtonGroup tabPlacementGroup = new ButtonGroup();
-    JMenu tabMenu = new JMenu("Tabs");
-    tabMenu.setMnemonic('a');
-
-    tabPlacementGroup.add(tabsTop);
-    tabPlacementGroup.add(tabsBottom);
-
-    tabsTop.addActionListener(
-      new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          logui.getTabbedPane().setTabPlacement(JTabbedPane.TOP);
-        }
-      });
-
-    tabsBottom.addActionListener(
-      new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          logui.getTabbedPane().setTabPlacement(JTabbedPane.BOTTOM);
-        }
-      });
 
     final JMenu lookAndFeelMenu = new JMenu("Look & Feel");
     lookAndFeelMenu.setMnemonic('L');
@@ -570,10 +552,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
       levelDisplayText.setSelected(true);
     }
 
-    tabMenu.add(tabsTop);
-    tabMenu.add(tabsBottom);
 
-    viewMenu.add(tabMenu);
     viewMenu.add(lookAndFeelMenu);
     viewMenu.addSeparator();
     viewMenu.add(showAppPrefs);
@@ -892,17 +871,17 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
   }
 
   private void scanState() {
-    switch (logui.getTabbedPane().getTabPlacement()) {
-    case SwingConstants.TOP:
-      tabsTop.setSelected(true);
-
-      break;
-
-    case SwingConstants.BOTTOM:
-      tabsBottom.setSelected(true);
-
-      break;
-    }
+//    switch (logui.getTabbedPane().getTabPlacement()) {
+//    case SwingConstants.TOP:
+//      tabsTop.setSelected(true);
+//
+//      break;
+//
+//    case SwingConstants.BOTTOM:
+//      tabsBottom.setSelected(true);
+//
+//      break;
+//    }
 
     toggleStatusBarCheck.setSelected(logui.isStatusBarVisible());
     toggleShowReceiversCheck.setSelected(logui.isReceiverPanelVisible());

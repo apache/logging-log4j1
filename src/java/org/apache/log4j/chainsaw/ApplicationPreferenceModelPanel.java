@@ -59,12 +59,15 @@ import java.util.Hashtable;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -151,13 +154,103 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
         DefaultMutableTreeNode general = new DefaultMutableTreeNode(
                 new GeneralAllPrefPanel());
 
-
+        DefaultMutableTreeNode visuals = new DefaultMutableTreeNode(
+            new VisualsPrefPanel());
+        
         rootNode.add(general);
-
+        rootNode.add(visuals);
+        
         return model;
 
     }
 
+    public class VisualsPrefPanel extends BasicPrefPanel {
+
+      private final JRadioButton topPlacement = new JRadioButton("Top");
+      private final JRadioButton bottomPlacement = new JRadioButton("Bottom");
+
+      private final JCheckBox statusBar = new JCheckBox("Show Status bar");
+      
+      private VisualsPrefPanel() {
+        super("Visuals");
+        setupComponents();
+        setupListeners();
+      }
+
+      /**
+       * 
+       */
+      private void setupListeners() {
+         topPlacement.addActionListener(new ActionListener() {
+
+          public void actionPerformed(ActionEvent e) {
+              uncommittedPreferenceModel.setTabPlacement(SwingConstants.TOP);
+          }});
+         bottomPlacement.addActionListener(new ActionListener() {
+
+           public void actionPerformed(ActionEvent e) {
+             uncommittedPreferenceModel.setTabPlacement(SwingConstants.BOTTOM);
+           }});
+         
+         statusBar.addActionListener(new ActionListener() {
+
+          public void actionPerformed(ActionEvent e) {
+             uncommittedPreferenceModel.setStatusBar(statusBar.isSelected());
+          }});
+         
+         uncommittedPreferenceModel.addPropertyChangeListener("tabPlacement", new PropertyChangeListener() {
+
+          public void propertyChange(PropertyChangeEvent evt) {
+              int value = ((Integer)evt.getNewValue()).intValue();
+              switch (value) {
+                case SwingConstants.TOP :
+                  topPlacement.setSelected(true);
+                  break;
+                 case SwingConstants.BOTTOM :
+                   bottomPlacement.setSelected(true);
+                   break;
+                   
+                default :
+                  break;
+              }
+          }});
+         
+         uncommittedPreferenceModel.addPropertyChangeListener("statusBar", new PropertyChangeListener() {
+
+          public void propertyChange(PropertyChangeEvent evt) {
+            statusBar.setSelected(((Boolean)evt.getNewValue()).booleanValue());
+            
+          }});
+      }
+
+      /**
+       * 
+       */
+      private void setupComponents() {
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        
+        
+        
+        Box tabPlacementBox = new Box(BoxLayout.Y_AXIS);
+        
+        tabPlacementBox.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Tab Placement"));
+       
+        ButtonGroup tabPlacementGroup = new ButtonGroup();
+        
+        tabPlacementGroup.add(topPlacement);
+        tabPlacementGroup.add(bottomPlacement);
+      
+        
+        tabPlacementBox.add(topPlacement);
+        tabPlacementBox.add(bottomPlacement);
+        
+        add(tabPlacementBox);
+        add(statusBar);
+        
+        
+      }
+      
+    }
     /**
      * @author psmith
      *
