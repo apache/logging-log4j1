@@ -78,7 +78,7 @@
 
 	<p><li><a
 	href="http://supportweb.cs.bham.ac.uk/documentation/tutorials/docsystem/build/tutorials/log4j/log4j.html">log4j</a>
-	by Ashley J.S Mills, The University Of Birmingham</li></p>
+	by Ashley J.S Mills, University Of Birmingham</li></p>
 
 	<p><li><a href="http://www.builder.com.com/article.jhtml?id=u00820020124kev01.htm">
 	    Add logging to your Java Applications</a> by Kevin Brown
@@ -98,6 +98,12 @@
 
 	<p><li>
 	  <a href="http://qos.ch/logging/thinkAgain.html">Think Again</a> by Ceki G&#252;lc&#252;
+
+	</li></p>
+
+	<p><li> <a href="http://qos.ch/logging/sc.html">Supporting the
+	  log4j <code>RepositorySelector</code></a> by Ceki
+	  G&#252;lc&#252;
 
 	</li></p>
 
