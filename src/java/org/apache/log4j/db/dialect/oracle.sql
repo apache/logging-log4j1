@@ -3,6 +3,7 @@
 --
 -- It is intended for Oracle databases.
 
+-- Tested successfully on Oracle9i Release 9.2.0.3.0 by James Stauffer
 
 -- The following lines are useful in cleaning any previous tables 
 

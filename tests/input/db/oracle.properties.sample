@@ -2,16 +2,17 @@
 # If you would like to test DBAppender/DBReceiver for Oracle, then 
 # set the url and user parameters for your local environment and 
 # copy this file to "oracle.properties". 
-
+#
+# Tested successfully on Oracle9i Release 9.2.0.3.0 by James Stauffer.
+# 
 # The following parameters should be set for your machine. 
-url=jdbc:oracle:thin:@goofy:1521:dwebec
 
+url=jdbc:oracle:thin:@goofy:1521:dwebec
 user=john
 password=xxx 
 
-
-# NO need to change anything below this line
-# ************************************************
+# Ususally, there is NO need to change anything below this line
+# **************************************************************
 
 # The JDBC driver class for Oracle 
 driverClass=oracle.jdbc.driver.OracleDriver 
