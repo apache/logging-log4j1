@@ -19,7 +19,7 @@ package org.apache.log4j.db.dialect;
 /** 
  * The HSQLDB dialect. 
  * 
- * @author Ceki Gulcu 
+ * @author <a href="http://www.qos.ch/log4j/">Ceki G&uuml;lc&uuml;</a>
 */ 
 public class HSQLDBDialect implements SQLDialect { 
  public static final String SELECT_CURRVAL = "CALL IDENTITY()"; 
