@@ -87,6 +87,7 @@ public class DOMConfigurator implements Configurator {
   static final String INTERNAL_DEBUG_ATTR  = "debug";
   static final String RENDERING_CLASS_ATTR = "renderingClass";
   static final String RENDERED_CLASS_ATTR = "renderedClass";
+  static final String PLUGIN_TAG = "plugin";
 
   static final String EMPTY_STR = "";
   static final Class[] ONE_STRING_PARAM = new Class[] {String.class};
@@ -526,6 +527,40 @@ public class DOMConfigurator implements Configurator {
     LogLog.debug(catName + " level set to " + logger.getLevel());    
   }
 
+  protected Plugin parsePlugin(Element pluginElement) {
+    String className = subst(pluginElement.getAttribute(CLASS_ATTR));
+    LogLog.debug("Creating plugin: [" + className+']');    
+    try {
+      Plugin plugin = (Plugin)Loader.loadClass(className).newInstance();
+      PropertySetter propSetter = new PropertySetter(plugin);
+
+      plugin.setName(subst(pluginElement.getAttribute(NAME_ATTR)));
+      
+      NodeList children	= pluginElement.getChildNodes();
+      final int length 	= children.getLength();
+      for (int loop = 0; loop < length; loop++) {
+        Node currentNode = children.item(loop);
+
+        /* We're only interested in Elements */
+        if (!isElement(currentNode)) {
+          continue;
+        }
+  	
+        Element currentElement = (Element)currentNode;
+  
+      	// Parse appender parameters 
+      	if (currentElement.getTagName().equals(PARAM_TAG)) {
+      	  setParameter(currentElement, propSetter);	
+      	}
+      }
+      return plugin;
+    } catch (Exception e) {
+      LogLog.error("Could not create plugin. Reported error follows.",
+		   e);
+      return null;
+    }
+  }
+  
   protected void setParameter(Element elem, PropertySetter propSetter) {
     String name = subst(elem.getAttribute(NAME_ATTR));
     String value = (elem.getAttribute(VALUE_ATTR));
@@ -759,19 +794,27 @@ public class DOMConfigurator implements Configurator {
     for (int loop = 0; loop < length; loop++) {
       currentNode = children.item(loop);
       if (!isElement(currentNode)) {
-	continue;
+        continue;
       }
       currentElement = (Element) currentNode;
       tagName = currentElement.getTagName();
       
       if (tagName.equals(CATEGORY) || tagName.equals(LOGGER)) {
-	parseCategory(currentElement);
+        parseCategory(currentElement);
       } else if (tagName.equals(ROOT_TAG)) {
-	parseRoot(currentElement);
+        parseRoot(currentElement);
       } else if(tagName.equals(RENDERER_TAG)) {
-	parseRenderer(currentElement);
+        parseRenderer(currentElement);
+      } else if (tagName.equals(PLUGIN_TAG)) {
+        Plugin plugin = parsePlugin(currentElement);
+        if (plugin != null) {
+          PluginRegistry.startPlugin(plugin, repository);
+        }
       }
     }
+        
+    // let listeners know the configuration just changed
+    repository.fireConfigurationChangedEvent();
   }
 
   
