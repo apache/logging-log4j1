@@ -9,8 +9,8 @@
        deprecated.
    
  - The location information extraction code has been refactored to use
-   faster alternatives when running on JDK 1.4 or later. The faster mechanism 
-   has been contributed by Martin Schulz. 
+   a faster mechanism when running on JDK 1.4 or later. The new mechanism, contributed 
+   by Martin Schulz, is at least twice as fast. 
  
    See http://marc.theaimsgroup.com/?t=108473346700001&r=1&w=2 for more details. [*]
    
