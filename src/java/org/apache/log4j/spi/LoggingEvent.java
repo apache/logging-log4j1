@@ -192,6 +192,18 @@ public class LoggingEvent implements java.io.Serializable {
     return threadName;
   }
 
+  /**
+     Returns the throwable information contained within this
+     event. May be <code>null</code> if there is no such information.
+
+     <p>Note that the {@link Throwable} object contained within a
+     {@link ThrowableInformation} does not survive serialization.
+
+     @since 1.1 */
+  public
+  ThrowableInformation getThrowableInformation() {
+    return throwableInfo;
+  }
 
   /**
      Return this event's throwable's string[] representaion.
