@@ -287,6 +287,25 @@ public class PatternLayoutTest extends TestCase {
     assertTrue(Compare.compare(FILTERED, "witness/pattern/patternLayout.13"));
   }
 
+    /**
+     * Test of class abbreviation.
+     *
+     * @throws Exception
+     */
+    public void test14() throws Exception {
+      PropertyConfigurator.configure("input/pattern/patternLayout14.properties");
+      common();
+
+      Transformer.transform(
+        TEMP, FILTERED,
+        new Filter[] {
+          new LineNumberFilter(), new SunReflectFilter(),
+          new JunitTestRunnerFilter()
+        });
+      assertTrue(Compare.compare(FILTERED, "witness/pattern/patternLayout.14"));
+    }
+
+
   public void testMDC1() throws Exception {
     PropertyConfigurator.configure("input/pattern/patternLayout.mdc.1.properties");
     MDC.put("key1", "va11");

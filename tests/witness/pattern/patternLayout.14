@@ -1,14 +1,14 @@
-DEBUG 1    - Message 0
-DEBUG 2    - Message 0
- INFO 3    - Message 1
- INFO 4    - Message 1
- WARN 5    - Message 2
- WARN 6    - Message 2
-ERROR 7    - Message 3
-ERROR 8    - Message 3
-FATAL 9    - Message 4
-FATAL 10   - Message 4
-DEBUG 11   - Message 5
+DEBUG [main] o.a.l.PatternLayoutTest: Message 0
+DEBUG [main] root: Message 0
+INFO  [main] o.a.l.PatternLayoutTest: Message 1
+INFO  [main] root: Message 1
+WARN  [main] o.a.l.PatternLayoutTest: Message 2
+WARN  [main] root: Message 2
+ERROR [main] o.a.l.PatternLayoutTest: Message 3
+ERROR [main] root: Message 3
+FATAL [main] o.a.l.PatternLayoutTest: Message 4
+FATAL [main] root: Message 4
+DEBUG [main] o.a.l.PatternLayoutTest: Message 5
 java.lang.Exception: Just testing
 	at org.apache.log4j.PatternLayoutTest.common(X)
 	at org.apache.log4j.PatternLayoutTest.test14(X)
@@ -21,7 +21,7 @@ java.lang.Exception: Just testing
 	at junit.framework.TestCase.run(X)
 	at junit.framework.TestSuite.runTest(X)
 	at junit.framework.TestSuite.run(X)
- INFO 12   - Message 6
+INFO  [main] o.a.l.PatternLayoutTest: Message 6
 java.lang.Exception: Just testing
 	at org.apache.log4j.PatternLayoutTest.common(X)
 	at org.apache.log4j.PatternLayoutTest.test14(X)
@@ -34,7 +34,7 @@ java.lang.Exception: Just testing
 	at junit.framework.TestCase.run(X)
 	at junit.framework.TestSuite.runTest(X)
 	at junit.framework.TestSuite.run(X)
- WARN 13   - Message 7
+WARN  [main] o.a.l.PatternLayoutTest: Message 7
 java.lang.Exception: Just testing
 	at org.apache.log4j.PatternLayoutTest.common(X)
 	at org.apache.log4j.PatternLayoutTest.test14(X)
@@ -47,7 +47,7 @@ java.lang.Exception: Just testing
 	at junit.framework.TestCase.run(X)
 	at junit.framework.TestSuite.runTest(X)
 	at junit.framework.TestSuite.run(X)
-ERROR 14   - Message 8
+ERROR [main] o.a.l.PatternLayoutTest: Message 8
 java.lang.Exception: Just testing
 	at org.apache.log4j.PatternLayoutTest.common(X)
 	at org.apache.log4j.PatternLayoutTest.test14(X)
@@ -60,7 +60,7 @@ java.lang.Exception: Just testing
 	at junit.framework.TestCase.run(X)
 	at junit.framework.TestSuite.runTest(X)
 	at junit.framework.TestSuite.run(X)
-FATAL 15   - Message 9
+FATAL [main] o.a.l.PatternLayoutTest: Message 9
 java.lang.Exception: Just testing
 	at org.apache.log4j.PatternLayoutTest.common(X)
 	at org.apache.log4j.PatternLayoutTest.test14(X)

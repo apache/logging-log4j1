@@ -17,6 +17,8 @@
 package org.apache.log4j.pattern;
 
 import junit.framework.TestCase;
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 import org.apache.log4j.Layout;
 import org.apache.log4j.Level;
@@ -166,10 +168,10 @@ public class PatternParserTest extends TestCase {
   }
 
 
-//  public static Test suite() {
-//    TestSuite suite = new TestSuite();
-//    suite.addTest(new PatternParserTest("testBasic2"));
-//
-//    return suite;
-//  }
+  public static Test suite() {
+    TestSuite suite = new TestSuite();
+    suite.addTestSuite(PatternParserTest.class);
+    suite.addTestSuite(NameAbbreviatorTest.class);
+    return suite;
+  }
 }
