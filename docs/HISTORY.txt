@@ -34,6 +34,7 @@
 
  - Fixed Bugzilla 23912: unsafe access to BoundedFIFO in AsyncAppender. [*]
 
+ - Fixed Bugzilla 17377: wrong trimming of pattern when left-aligned. [*]
 
   November 25, 2004
 
