@@ -92,7 +92,12 @@ public class UDPReceiver extends Receiver implements PortBased, Pauseable {
   }
 
   public synchronized void shutdown() {
+    if(closed == true) {
+      return;
+    }
     closed = true;
+    // Closing the datagram socket will unblock the UDPReceiverThread if it is
+    // was waiting to receive data from the socket.
     socket.close();
 
     try {
@@ -186,7 +191,7 @@ public class UDPReceiver extends Receiver implements PortBased, Pauseable {
 
           while (iter.hasNext()) {
             String data = (String) iter.next();
-            List v = decoderImpl.decodeEvents(data.trim());
+            List v = decoderImpl.decodeEvents(data);
 
             if (v != null) {
               Iterator eventIter = v.iterator();
@@ -226,7 +231,6 @@ public class UDPReceiver extends Receiver implements PortBased, Pauseable {
         try {
           socket.receive(p);
           
-          LogLog.info("got data");
           //this string constructor which accepts a charset throws an exception if it is 
           //null
           if (encoding == null) {

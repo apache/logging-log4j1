@@ -56,11 +56,6 @@ public class UDPAppender extends AppenderSkeleton implements PortBased{
   private static final int PACKET_LENGTH = 16384;
 
   /**
-     The default reconnection delay (30000 milliseconds or 30 seconds).
-  */
-  static final int DEFAULT_RECONNECTION_DELAY = 30000;
-
-  /**
      We remember host name as String in addition to the resolved
      InetAddress so that it can be returned via getOption().
   */
@@ -72,10 +67,12 @@ public class UDPAppender extends AppenderSkeleton implements PortBased{
   InetAddress address;
   int port = DEFAULT_PORT;
   DatagramSocket outSocket;
-  int reconnectionDelay = DEFAULT_RECONNECTION_DELAY;
   int count = 0;
-  private Connector connector;
 
+  // if there is something irrecoverably wrong with the settings, there is no
+  // point in sending out packeets.
+  boolean inError = false;
+  
   public UDPAppender() {
   }
 
@@ -154,12 +151,6 @@ public class UDPAppender extends AppenderSkeleton implements PortBased{
 
       outSocket = null;
     }
-
-    if (connector != null) {
-      //LogLog.debug("Interrupting the connector.");      
-      connector.interrupted = true;
-      connector = null; // allow gc
-    }
   }
 
   void connect(InetAddress address, int port) {
@@ -174,12 +165,16 @@ public class UDPAppender extends AppenderSkeleton implements PortBased{
       outSocket.connect(address, port);
     } catch (IOException e) {
       LogLog.error(
-        "Could not open UDP Socket for sending. We will try again later.", e);
-      fireConnector();
+        "Could not open UDP Socket for sending.", e);
+      inError = true;
     }
   }
 
   public void append(LoggingEvent event) {
+    if(inError) {
+      return;
+    }
+    
     if (event == null) {
       return;
     }
@@ -187,7 +182,6 @@ public class UDPAppender extends AppenderSkeleton implements PortBased{
     if (address == null) {
       errorHandler.error(
         "No remote host is set for UDPAppender named \"" + this.name + "\".");
-
       return;
     }
 
@@ -205,10 +199,8 @@ public class UDPAppender extends AppenderSkeleton implements PortBased{
 
       try {
         // TODO UDPAppender throws NullPointerException if the layout is not set
-        StringBuffer buf = new StringBuffer(layout.format(event).trim());
-        if (buf.length() < PACKET_LENGTH) {        
-           buf.append(new char[PACKET_LENGTH - buf.length()]);
-        }
+        StringBuffer buf = new StringBuffer(layout.format(event));
+
         //the implementation of string.getBytes accepts a null encoding and uses the system charset
         DatagramPacket dp =
            new DatagramPacket(buf.toString().getBytes(encoding), buf.length(), address, port);
@@ -219,24 +211,14 @@ public class UDPAppender extends AppenderSkeleton implements PortBased{
       } catch (IOException e) {
         outSocket = null;
         LogLog.warn("Detected problem with UDP connection: " + e);
-
-        if (reconnectionDelay > 0) {
-          fireConnector();
-        }
       }
     }
   }
 
-  void fireConnector() {
-    if (connector == null) {
-      LogLog.debug("Starting a new connector thread.");
-      connector = new Connector();
-      connector.setDaemon(true);
-      connector.setPriority(Thread.MIN_PRIORITY);
-      connector.start();
-    }
+  public boolean isActive() {
+    return !inError;
   }
-
+  
   static InetAddress getAddressByName(String host) {
     try {
       return InetAddress.getByName(host);
@@ -331,74 +313,4 @@ public class UDPAppender extends AppenderSkeleton implements PortBased{
     return port;
   }
 
-  /**
-     The <b>ReconnectionDelay</b> option takes a positive integer
-     representing the number of milliseconds to wait between each
-     failed attempt to establish an outgoing socket. The default value of
-     this option is 30000 which corresponds to 30 seconds.
-
-     <p>Setting this option to zero turns off reconnection
-     capability.
-   */
-  public void setReconnectionDelay(int delay) {
-    this.reconnectionDelay = delay;
-  }
-
-  /**
-     Returns value of the <b>ReconnectionDelay</b> option.
-   */
-  public int getReconnectionDelay() {
-    return reconnectionDelay;
-  }
-
-  /**
-     The Connector will retry the UDP socket.
-     It does this by attempting to open a new UDP socket every
-     <code>reconnectionDelay</code> milliseconds.
-
-     <p>It stops trying whenever a connection is established. It will
-     restart to try reconnect to the server when previpously open
-     connection is droppped.
-
-     @author  Ceki G&uuml;lc&uuml;
-     @since 0.8.4
-  */
-  class Connector extends Thread {
-    boolean interrupted = false;
-
-    public void run() {
-      DatagramSocket socket;
-
-      while (!interrupted) {
-        try {
-          sleep(reconnectionDelay);
-          LogLog.debug("Attempting to establish UDP Datagram Socket");
-          socket = new DatagramSocket();
-
-          synchronized (this) {
-            outSocket = socket;
-            connector = null;
-
-            break;
-          }
-        } catch (InterruptedException e) {
-          LogLog.debug("Connector interrupted. Leaving loop.");
-
-          return;
-        } catch (IOException e) {
-          LogLog.debug("Could not establish an outgoing MulticastSocket." + e);
-        }
-      }
-
-      //LogLog.debug("Exiting Connector.run() method.");
-    }
-  }
-
-  /* (non-Javadoc)
-   * @see org.apache.log4j.net.NetworkBased#isActive()
-   */
-  public boolean isActive() {
-    // TODO handle active/inactive
-    return true;
-  }
 }
