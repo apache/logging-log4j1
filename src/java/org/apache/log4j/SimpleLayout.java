@@ -61,14 +61,4 @@ public class SimpleLayout extends Layout {
     output.write(event.getRenderedMessage());
     output.write(LINE_SEP); 
    }
-
-  /**
-       The SimpleLayout does not handle the throwable contained within
-       {@link LoggingEvent LoggingEvents}. Thus, it returns
-       <code>true</code>.
-
-       @since version 0.8.4 */
-  public boolean ignoresThrowable() {
-    return true;
-  }
 }

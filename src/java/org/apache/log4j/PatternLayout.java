@@ -506,16 +506,6 @@ public class PatternLayout extends Layout {
   }
 
   /**
-      The PatternLayout does not handle the throwable contained within
-      {@link LoggingEvent LoggingEvents}. Thus, it returns
-      <code>true</code>.
-
-      @since 0.8.4 */
-  public boolean ignoresThrowable() {
-    return true;
-  }
-
-  /**
      Produces a formatted string as specified by the conversion pattern.
   */
   public  void format(Writer output, LoggingEvent event) throws IOException { 

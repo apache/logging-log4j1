@@ -45,6 +45,9 @@ public abstract class Layout implements OptionHandler {
   String header;
   String footer;
 
+  // Most layouts ignore the throwable. If a subclasses needs to override the 
+  // default value it should do so in its default constructor.
+  protected boolean ignoresThrowable = true;
   
   /**
    * Implement this method to create your own layout format.
@@ -86,17 +89,33 @@ public abstract class Layout implements OptionHandler {
 
   
   /**
-     If the layout handles the throwable object contained within
-     {@link LoggingEvent}, then the layout should return
-     <code>false</code>. Otherwise, if the layout ignores throwable
-     object, then the layout should return <code>true</code>.
+   * If the layout handles the throwable object contained within 
+   * {@link LoggingEvent}, then the layout should return <code>false</code>. 
+   * Otherwise, if the layout ignores throwable object, then the layout should 
+   * return <code>true</code>.
+   * 
+   * <p>By default, {@link SimpleLayout}, {@link TTCCLayout}, {@link 
+   * PatternLayout} all return <code>true</code>. The {@link 
+   * org.apache.log4j.xml.XMLLayout} returns <code>false</code>.
+   * 
+   * <p>As of log4j version 1.3, ignoresThrowable is a settable property. Thus,
+   * you can override, a layout's default setting.
+   * 
+   * @since 0.8.4 
+   * */
+  public boolean ignoresThrowable() {
+    return ignoresThrowable;
+  }
 
-     <p>The {@link SimpleLayout}, {@link TTCCLayout}, {@link
-     PatternLayout} all return <code>true</code>. The {@link
-     org.apache.log4j.xml.XMLLayout} returns <code>false</code>.
-
-     @since 0.8.4 */
-  public abstract boolean ignoresThrowable();
+  /**
+   * 
+   * @since 1.3
+   * @param ignoresThrowable
+  */  
+  public void setIgnoresThrowable(boolean ignoresThrowable) {
+    this.ignoresThrowable = ignoresThrowable;
+  }
+  
   
   /**
    * Set the footer. Note that some layout have their own footers and may choose
