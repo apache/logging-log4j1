@@ -432,6 +432,7 @@
     <!-- Need to fork to avoid problems -->
     <java classname="org.apache.log4j.chainsaw.LogUI" fork="yes"
           classpath="${jar.dest}/${log4j.jar};${jar.dest}/${log4j-chainsaw.jar};${ant.home}/lib/crimson.jar;${regexp.oro.jar}">
+	<sysproperty key="log4j.debug" value="${log4j.debug}"/> 
     </java>
   </target>
 
@@ -472,7 +473,7 @@
                 ${stem}/or/jms/*.class,
                 ${stem}/plugins/*.class,
                 ${stem}/config/*.class"
-      excludes="**/UnitTest**">
+      excludes="**/UnitTest**, ${stem}/**/*BeanInfo.class">
 
       <manifest>
         <attribute name="Manifest-version" value="1.0"/>
@@ -511,6 +512,7 @@
          includes="${stem}/chainsaw/*.class,
                 ${stem}/varia/ExpressionFilter*.class,
                 ${stem}/rule/*.class,
+                ${stem}/**/*BeanInfo.class,
          		${stem}/chainsaw/**/*.class, 
           		${stem}/chainsaw/layout/*, 
          		${stem}/chainsaw/icons/*.gif, 
