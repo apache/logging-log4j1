@@ -172,7 +172,7 @@
     </available>
   	<fail unless="jms-present">
   		
-        Missing java.jms.* classes.
+        Missing javax.jms.* classes.
   		
         Please make sure to that the "jms.jar" poperty in build.properties 
         file is set correctly.
@@ -299,7 +299,9 @@
     <ant antfile="build-chainsaw.xml" target="chainsaw"/>
   </target>	
 	
-  <target name="webstart" depends="build.chainsaw">
+  <target name="webstart" depends="ugli.jar, log4j.jar, log4j-optional.jar, 
+      chainsaw.jar, log4j-jms.jar,  log4j-smtp.jar, 
+      log4j-db.jar, log4j-oro.jar, log4j-xml.jar">
 	<ant antfile="build-chainsaw.xml" target="webstart"/>
   </target>
 

@@ -7,6 +7,7 @@
   <path id="compile.classpath">
     <pathelement location="${javac.dest}"/>
     <pathelement location="${vfs.jar}"/>
+    <pathelement location="${jakarta-oro.jar}"/>
   </path>
 
   <path id="runtime.classpath">
@@ -15,7 +16,7 @@
   	</fileset>
 	<pathelement location="${vfs.jar}"/>
   	<pathelement location="${jaxp.parser.jar}"/>
-  	<pathelement location="${jakarta-.oro.jar}"/>
+  	<pathelement location="${jakarta-oro.jar}"/>
   	<pathelement location="${jms.jar}"/>
   </path>
 
@@ -205,7 +206,7 @@
         <include name="*.jar"/>
       </zipfileset>
       <fileset file="${jakarta-oro.jar}"/>
-      <fileset file="src/chainsaw.bat"/>
+      <fileset file="src/chainsaw.*"/>
     </zip>
   </target>
   
