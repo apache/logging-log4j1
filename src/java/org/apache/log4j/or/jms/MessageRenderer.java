@@ -71,14 +71,6 @@ public class MessageRenderer implements ObjectRenderer {
 
 	sbuf.append(", Type=");
 	sbuf.append(m.getJMSType());
-
-	//Enumeration enum = m.getPropertyNames();
-	//while(enum.hasMoreElements()) {
-	//  String key = (String) enum.nextElement();
-	//  sbuf.append("; "+key+"=");
-	//  sbuf.append(m.getStringProperty(key));
-	//}
-
       } catch(JMSException e) {
 	LogLog.error("Could not parse Message.", e);
       }

@@ -273,8 +273,8 @@ public class SocketReceiver extends Receiver implements Runnable, PortBased,
   public Vector getConnectedSocketDetails() {
     Vector details = new Vector(socketList.size());
 
-    for (Enumeration enum = socketList.elements(); enum.hasMoreElements();) {
-      Socket socket = (Socket) enum.nextElement();
+    for (Enumeration enumeration = socketList.elements(); enumeration.hasMoreElements();) {
+      Socket socket = (Socket) enumeration.nextElement();
       details.add(
         new SocketDetail(socket, (SocketNode) socketMap.get(socket)));
     }
