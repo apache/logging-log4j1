@@ -48,14 +48,15 @@
  */
 package org.apache.log4j.chainsaw;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
-import javax.swing.event.TableModelListener;
-import javax.swing.table.TableModel;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.helpers.Constants;
 import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
@@ -66,23 +67,10 @@ import org.apache.log4j.helpers.OptionConverter;
  * @version 1.0
  */
 public class ChainsawAppender
-    extends AppenderSkeleton
-    implements EventDetailSink, TableModel {
+    extends AppenderSkeleton{
 
   private final ArrayList appenders=new ArrayList();
   
-  /**
-   * Shared model used by the shared Appender
-   */
-  private static MyTableModel sSharedModel;
-
-  /**
-   * The model that is used by this Appender, we ensure
-   * here that we only use a single Model as the current
-   * release is effetively an in-JVM singleton
-   */
-  private final MyTableModel wrappedTableModel = getDefaultModel();
-
   /**
    * The in-JVM singleton instance of the ChainsawAppender.
    *
@@ -95,6 +83,8 @@ public class ChainsawAppender
    * The classname of the viewer to create to view the events.
    */
   private String viewerClassname;
+  private String hostname = "localhost";
+  private String application = "app";
 
   /**
    * Constructor, initialises the singleton instance of the appender
@@ -108,21 +98,6 @@ public class ChainsawAppender
   }
 
   /**
-   * Returns the singleton MyTableModel instance that has been configured.
-   *
-   * This will be eventually replaced to allow each ChainsawAppender
-   * to have it's own model, but for now it's important that all log events
-   * received inside Chainsaw go to a single model.
-   * @return MyTableModel
-   */
-  private static synchronized MyTableModel getDefaultModel() {
-    if (sSharedModel == null) {
-      sSharedModel = new MyTableModel();
-    }
-    return sSharedModel;
-  }
-
-  /**
    * Return the singleton instance of the ChainsawAppender, it should only
    * be initialised once.
    * @return the One and only instance of the ChainsawAppender that is
@@ -130,18 +105,6 @@ public class ChainsawAppender
    */
   static ChainsawAppender getInstance() {
     return sSharedAppender;
-  }
-
-  /**
-   * Returns the internally wrapped Model
-   *
-   * NOTE: it is strongly recommended at this time not to rely on this method
-   * until further refactoring is completed.
-   * @return MyTableModel the MyTableModel that can be used by external
-   * components
-   */
-  MyTableModel getWrappedModel() {
-    return wrappedTableModel;
   }
 
   /**
@@ -157,28 +120,22 @@ public class ChainsawAppender
   }
   
   /**
-   * Implements the EventDetailSink interface by forwarding the EventDetails
-   * object onto an internal Model
-   * @param aDetails the EventDetails to add to the model
-   */
-  public void addEvent(EventDetails aDetails) {
-    synchronized (wrappedTableModel) {
-      wrappedTableModel.addEvent(aDetails);
-    }
-  }
-
-  /**
    * Appends the event into the internal wrapped TableModel
    * @param aEvent the LoggingEvent to append
    */
   protected void append(LoggingEvent aEvent) {
-    synchronized (wrappedTableModel) {
-      wrappedTableModel.addEvent(new EventDetails(aEvent));
-    }
-        for (int i=0;i<appenders.size();i++) {
-            Appender appender=(Appender)appenders.get(i);
-            appender.doAppend(aEvent);
-        }
+      if (hostname != null) {
+        aEvent.setProperty(Constants.HOSTNAME_KEY, hostname);
+      }
+
+      if (application != null) {
+        aEvent.setProperty(Constants.APPLICATION_KEY, application);
+      }
+
+      for (int i=0;i<appenders.size();i++) {
+        Appender appender=(Appender)appenders.get(i);
+        appender.doAppend(aEvent);
+      }
   }
 
   /**
@@ -196,6 +153,14 @@ public class ChainsawAppender
         
     if (viewer != null) {
       viewer.activateViewer(this);
+    }
+    try {
+      hostname = InetAddress.getLocalHost().getHostName();
+    } catch (UnknownHostException uhe) {
+      try {
+        hostname = InetAddress.getLocalHost().getHostAddress();
+      } catch (UnknownHostException uhe2) {
+      }
     }
   }
 
@@ -225,88 +190,20 @@ public class ChainsawAppender
     return viewerClassname;
   }
 
-  // ==========================================================================
-  // All methods here are from TableModel, and simply forward on to the
-  // internal wrappedTableModel instance
-  // ==========================================================================
-
   /**
-   * Implementation of TableModel interface
-   * @return int rowCount
+   * The <b>Application</b> option takes a string value which should be the
+   * name of the application getting logged
    */
-  public int getRowCount() {
-    return wrappedTableModel.getRowCount();
+  public void setApplication(String lapp) {
+    this.application = lapp;
   }
 
   /**
-   * Implementation of TableModel interface
-   * @return int column Count
+   *  Returns value of the <b>Application</b> option.
    */
-  public int getColumnCount() {
-    return wrappedTableModel.getColumnCount();
+  public String getApplication() {
+    return application;
   }
 
-  /**
-   * Implementation of TableModel interface
-   * @param aColumnIndex the Column index to query the name for
-   * @return String column name
-   */
-  public String getColumnName(int aColumnIndex) {
-    return wrappedTableModel.getColumnName(aColumnIndex);
-  }
 
-  /**
-   * Implementation of TableModel interface
-   * @param columnIndex column Index to query the Class of
-   * @return Class class of Column
-   */
-  public Class getColumnClass(int columnIndex) {
-    return wrappedTableModel.getColumnClass(columnIndex);
-  }
-
-  /**
-   * Implementation of TableModel interface
-   * @param rowIndex row Index to query
-   * @param columnIndex column Index to query
-   * @return boolean is Cell Editable?
-   */
-  public boolean isCellEditable(int rowIndex, int columnIndex) {
-    return wrappedTableModel.isCellEditable(rowIndex, columnIndex);
-  }
-
-  /**
-   * Implementation of TableModel interface
-   * @param rowIndex the row index to retrieve value from
-   * @param columnIndex to the column index to retrieve value from
-   * @return Object value at a particular row/column point
-   */
-  public Object getValueAt(int rowIndex, int columnIndex) {
-    return wrappedTableModel.getValueAt(rowIndex, columnIndex);
-  }
-
-  /**
-   * Implementation of TableModel interface
-   * @param aValue the value to set
-   * @param rowIndex the row
-   * @param columnIndex the column
-   */
-  public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-    wrappedTableModel.setValueAt(aValue, rowIndex, columnIndex);
-  }
-
-  /**
-   * Implementation of TableModel interface
-   * @param l a TableModelListener to add
-   */
-  public void addTableModelListener(TableModelListener l) {
-    wrappedTableModel.addTableModelListener(l);
-  }
-
-  /**
-   * Implementation of TableModel interface
-   * @param l listener to remove from the currently registered listeners
-   */
-  public void removeTableModelListener(TableModelListener l) {
-    wrappedTableModel.removeTableModelListener(l);
-  }
 }

@@ -176,7 +176,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   private ReceiversPanel receiversPanel;
   private ChainsawTabbedPane tabbedPane;
   private JToolBar toolbar;
-  private final ChainsawStatusBar statusBar = new ChainsawStatusBar();
+  private ChainsawStatusBar statusBar;
   private final ApplicationPreferenceModel applicationPreferenceModel = new ApplicationPreferenceModel();
   private final ApplicationPreferenceModelPanel applicationPreferenceModelPanel = new ApplicationPreferenceModelPanel(applicationPreferenceModel);
   private final Map tableModelMap = new HashMap();
@@ -309,15 +309,25 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   }
 
   /**
-   * DOCUMENT ME!
-   *
+   * Allow Chainsaw v2 to be ran in-process (configured as a ChainsawAppender)
+   * NOTE: Closing Chainsaw will NOT stop the application generating the events.
    * @param appender
-   *                    DOCUMENT ME!
+   *
    */
   public void activateViewer(ChainsawAppender appender) {
-    handler = new ChainsawAppenderHandler(appender);
-    handler.addEventBatchListener(new NewTabEventBatchReceiver());
-    activateViewer();
+      ApplicationPreferenceModel model = new ApplicationPreferenceModel();
+      SettingsManager.getInstance().configure(model);
+      applyLookAndFeel(model.getLookAndFeelClassName());
+    
+      handler = new ChainsawAppenderHandler(appender);
+      handler.addEventBatchListener(new NewTabEventBatchReceiver());
+      LogManager.getRootLogger().addAppender(handler);
+      setShutdownAction(new AbstractAction() {
+		public void actionPerformed(ActionEvent e) {
+		}});
+      activateViewer();
+
+      getApplicationPreferenceModel().apply(model);
   }
 
   /**
@@ -327,7 +337,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    */
   private void initGUI() {
     setupHelpSystem();
-    
+    statusBar = new ChainsawStatusBar();    
     setupReceiverPanel();
     
     setToolBarAndMenus(new ChainsawToolBarAndMenus(this));
@@ -1242,7 +1252,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       }
     }
     
-    JWindow progressWindow = new JWindow();
+    final JWindow progressWindow = new JWindow();
     final ProgressPanel panel = new ProgressPanel(1, 3, "Shutting down");
     progressWindow.getContentPane().add(panel);
     progressWindow.pack();
@@ -1277,6 +1287,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
           fireShutdownEvent();
           performShutdownAction();
+          progressWindow.setVisible(false);
         }
       };
 
