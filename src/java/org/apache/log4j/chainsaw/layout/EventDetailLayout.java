@@ -184,37 +184,43 @@ public class EventDetailLayout extends Layout {
     String threadName = event.getThreadName();
     Object msg = event.getMessage();
     String ndc = event.getNDC();
-    Hashtable mdc = formatMDC(event);
+//    Hashtable mdc = formatMDC(event);
     String[] throwableStringRep = event.getThrowableStrRep();
     LocationInfo li = null;
     if (event.locationInformationExists()) {
         li = formatLocationInfo(event);
     }
     Hashtable properties = formatProperties(event);
-    LoggingEvent copy =
-      new LoggingEvent(
-        fqnCategory, logger, event.getTimeStamp(), event.getLevel(), threadName, msg,
-        ndc, mdc, throwableStringRep, li, properties);
-
+    LoggingEvent copy = new LoggingEvent();
+    copy.setLogger(logger);
+    copy.setTimeStamp(event.getTimeStamp());
+    copy.setLevel(event.getLevel());
+    copy.setThreadName(threadName);
+    copy.setMessage(msg);
+    copy.setNDC(ndc);
+    copy.setThrowableInformation(event.getThrowableInformation());
+    copy.setLocationInformation(li);
+    copy.setProperties(properties);
+    
     return copy;
   }
 
-  /**
-  * @param event
-  * @return
-  */
-  private static Hashtable formatMDC(LoggingEvent event) {
-    Set keySet = event.getMDCKeySet();
-    Hashtable hashTable = new Hashtable();
-
-    for (Iterator iter = keySet.iterator(); iter.hasNext();) {
-      Object key = (Object) iter.next();
-      Object value = event.getMDC(key.toString());
-      hashTable.put(escape(key.toString()), escape(value.toString()));
-    }
-
-    return hashTable;
-  }
+//  /**
+//  * @param event
+//  * @return
+//  */
+//  private static Hashtable formatMDC(LoggingEvent event) {
+//    Set keySet = event.getMDCKeySet();
+//    Hashtable hashTable = new Hashtable();
+//
+//    for (Iterator iter = keySet.iterator(); iter.hasNext();) {
+//      Object key = (Object) iter.next();
+//      Object value = event.getMDC(key.toString());
+//      hashTable.put(escape(key.toString()), escape(value.toString()));
+//    }
+//
+//    return hashTable;
+//  }
 
   /**
    * @param event

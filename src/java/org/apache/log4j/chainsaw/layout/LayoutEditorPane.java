@@ -180,12 +180,17 @@ public final class LayoutEditorPane extends JPanel {
 
     ThrowableInformation tsr = new ThrowableInformation(new Exception());
 
-    event =
-      new LoggingEvent(
-        "com.mycompany.mylogger", Logger.getLogger("com.mycompany.mylogger"),
-        new Date().getTime(), org.apache.log4j.Level.DEBUG, "Thread-1",
-        "The quick brown fox jumped over the lazy dog", "NDC string", hashTable,
-        tsr.getThrowableStrRep(), li, hashTable);
+    event = new LoggingEvent();
+    event.setLogger(Logger.getLogger("com.mycompany.mylogger"));
+    event.setTimeStamp(new Date().getTime());
+    event.setLevel(org.apache.log4j.Level.DEBUG);
+    event.setThreadName("Thread-1");
+    event.setMessage("The quick brown fox jumped over the lazy dog");
+    event.setNDC("NDC string");
+    event.setThrowableInformation(tsr);
+    event.setLocationInformation(li);
+    event.setProperties(hashTable);
+    
   }
 
   /**
