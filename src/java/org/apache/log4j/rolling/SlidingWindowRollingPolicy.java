@@ -50,6 +50,7 @@
 package org.apache.log4j.rolling;
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.rolling.helpers.Compress;
 import org.apache.log4j.rolling.helpers.FileNamePattern;
 import org.apache.log4j.rolling.helpers.Util;
 import org.apache.log4j.spi.OptionHandler;
@@ -71,11 +72,13 @@ public class SlidingWindowRollingPolicy implements RollingPolicy,
   int minIndex;
   FileNamePattern fileNamePattern;
   String activeFileName;
-
+  int compressionMode;
+  
   public SlidingWindowRollingPolicy() {
     minIndex = 1;
     maxIndex = 7;
     activeFileName = null;
+    compressionMode = Compress.NONE;
   }
 
   public void rollover() {
@@ -97,18 +100,24 @@ public class SlidingWindowRollingPolicy implements RollingPolicy,
 
       if (activeFileName != null) {
         //move active file name to min
-        // TODO: compress the currently active file into minIndex
-        Util.rename(activeFileName, fileNamePattern.convert(minIndex));
-      } else {
-        // TODO: compress the currently active file (minIndex) into minIndex+1
-        //Util.rename(
-          //fileNamePattern.convert(minIndex),
-          //fileNamePattern.convert(minIndex + 1));
+        switch(compressionMode) {
+          case Compress.NONE: 
+            Util.rename(activeFileName, fileNamePattern.convert(minIndex));
+            break;
+            case Compress.GZ: 
+              Compress.GZCompress(activeFileName, fileNamePattern.convert(minIndex));
+              break;
+        }
       }
     }
   }
 
   public void activateOptions() {
+    if(activeFileName == null) {
+      logger.warn("The active file name option must be set before using this rolling policy.");
+      throw new IllegalStateException("The activeFileName option must be set.");
+    }
+    
     if (maxIndex < minIndex) {
       logger.warn(
         "maxIndex (" + maxIndex + ") cannot be smaller than minIndex ("
@@ -128,11 +137,7 @@ public class SlidingWindowRollingPolicy implements RollingPolicy,
    *
    */
   public String getActiveLogFileName() {
-    if (activeFileName == null) {
-      return fileNamePattern.convert(minIndex);
-    } else {
-      return activeFileName;
-    }
+    return activeFileName;
   }
 
   public String getFileNamePattern() {
@@ -166,6 +171,20 @@ public class SlidingWindowRollingPolicy implements RollingPolicy,
 
   public void setActiveFileName(String afn) {
     activeFileName = afn;
+  }
+
+  /**
+   * @return
+   */
+  public int getCompressionMode() {
+    return compressionMode;
+  }
+
+  /**
+   * @param i
+   */
+  public void setCompressionMode(int i) {
+    compressionMode = i;
   }
 
 }
