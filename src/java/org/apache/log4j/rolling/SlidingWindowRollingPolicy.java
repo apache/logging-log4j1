@@ -77,7 +77,7 @@ public class SlidingWindowRollingPolicy implements RollingPolicy,
     activeFileName = null;
   }
 
-  public void rollover(File f) {
+  public void rollover() {
     // Inside this method it is guaranteed that the hereto active log fil is closed.
     // If maxIndex <= 0, then there is no file renaming to be done.
     if (maxIndex >= 0) {

@@ -118,7 +118,7 @@ public class RollingFileAppender extends FileAppender {
     this.closeFile();
 
     activeFile = new File(fileName);
-    rollingPolicy.rollover(activeFile);
+    rollingPolicy.rollover();
 
     try {
       // This will also close the file. This is OK since multiple
