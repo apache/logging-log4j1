@@ -56,7 +56,9 @@ public interface Appender {
   void close();
   
   /**
-     Log in Appender specific way.  */
+     Log in <code>Appender</code> specific way. When appropriate,
+     Loggers will call the <code>doAppend</code> method of appender
+     implementations in order to log. */
   public
   void doAppend(LoggingEvent event);
 

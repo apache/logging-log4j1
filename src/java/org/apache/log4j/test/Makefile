@@ -6,7 +6,6 @@ JSOURCES:= Shallow.java\
  StressNDC.java\
  StressAsyncAppender.java\
  Min.java Base64.java\
- ShippedCodeFlagTest.java\
  ConfigurationFileParsing.java\
  MultipleAppenders.java\
  PatternTest.java\
@@ -30,6 +29,7 @@ JSOURCES:= Shallow.java\
  FQCNTest.java\
  DRFATest.java\
  MDCStress.java\
+ EnableFlagTest.java\
 
 # HeavyLoad.java\
 

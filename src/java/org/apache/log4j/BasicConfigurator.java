@@ -31,116 +31,9 @@ import java.util.Enumeration;
    @author Ceki G&uuml;lc&uuml; */
 public class BasicConfigurator {
 
-  /**
-     <p><code>DISABLE_OVERRIDE_KEY</code> is the name of the constant
-     holding the string value <b>log4j.disableOverride</b>.
-
-     <p>Setting the system property <b>log4j.disableOverride</b> to
-     "true" or any other value than "false" overrides the effects of
-     all methods {@link Hierarchy#disable}, {@link
-     Hierarchy#disableAll}, {@link Hierarchy#disableDebug} and {@link
-     Hierarchy#disableInfo}. Thus, enabling normal evaluation of logging
-     requests, i.e. according to the <a
-     href="../../../../manual.html#selectionRule">Basic Selection Rule</a>.
-
-     <p>If both <code>log4j.disableOverride</code> and a
-     <code>log4j.disable</code> options are present, then
-     <code>log4j.disableOverride</code> as the name indicates
-     overrides any <code>log4j.disable</code> options.
-     
-     @since 0.8.5 */ 
-     public static final String DISABLE_OVERRIDE_KEY = "log4j.disableOverride";
-
-  /**
-     <p><code>DISABLE_KEY</code> is the name of the constant
-     holding the string value <b>log4j.disable</b>.
-
-     <p>Setting the system property <b>log4j.disable</b> to DEBUG,
-     INFO, WARN, ERROR or FATAL is equivalent to calling the {@link
-     Hierarchy#disable} method with the corresponding level.
-
-     <p>If both <code>log4j.disableOverride</code> and a
-     <code>log4j.disable</code> options are present, then
-     <code>log4j.disableOverride</code> as the name indicates
-     overrides any <code>log4j.disable</code> options.
-     
-     @since 1.1 */
-     public static final String DISABLE_KEY = "log4j.disable";
-
-
-  /**
-     Special level value signifying inherited behaviour. The
-     current value of this string constant is <b>inherited</b>.
-
-  */
-  public static final String INHERITED = "inherited";
-
-
-  // Check if value of(DISABLE_OVERRIDE_KEY) system property is set.
-  // If it is set to "true" or any value other than "false", then set
-  // static variable Category.disable to Category.DISABLE_OVERRIDE.
-  static {    
-    String override = OptionConverter.getSystemProperty(DISABLE_OVERRIDE_KEY, null);
-    if(override != null) {
-      //Category.defaultHierarchy.setDisableOverride(override);
-    } else { // check for log4j.disable only in absence of log4j.disableOverride
-      String disableStr = OptionConverter.getSystemProperty(DISABLE_KEY, null);
-      if(disableStr != null) {
-	LogManager.getLoggerRepository().disable(disableStr);
-      }
-    }
-  }
-
-
   protected BasicConfigurator() {
   }
 
-  /**
-     Used by subclasses to add a renderer to the hierarchy passed as parameter.
-   */
-  protected
-  static
-  void addRenderer(RendererSupport repository, String renderedClassName, 
-		   String renderingClassName) {
-    LogLog.debug("Rendering class: ["+renderingClassName+"], Rendered class: ["+
-		 renderedClassName+"].");
-    ObjectRenderer renderer = (ObjectRenderer) 
-             OptionConverter.instantiateByClassName(renderingClassName, 
-						    ObjectRenderer.class,
-						    null);
-    if(renderer == null) {
-      LogLog.error("Could not instantiate renderer ["+renderingClassName+"].");
-      return;
-    } else {
-      try {
-	Class renderedClass = Loader.loadClass(renderedClassName);
-	repository.setRenderer(renderedClass, renderer);
-      } catch(ClassNotFoundException e) {
-	LogLog.error("Could not find class ["+renderedClassName+"].", e);
-      }
-    }
-  }
-  
-  /**
-     See {@link Hierarchy#disable(String)}.
-
-     @deprecated Use <code>Category.getDefaultHierarchy().disable()</code> instead.  */
-  public
-  static
-  void disable(String levelStr) {
-    Category.getDefaultHierarchy().disable(levelStr);
-  }
-
-  /**
-     See {@link Hierarchy#disable(Level)}.
-
-     @deprecated Use <code>Category.getDefaultHierarchy().disable(p)</code> instead.  */
-  public
-  static
-  void disable(Level p) {
-  
-  }
-  
   /**
      Add a {@link FileAppender} that uses {@link PatternLayout} using
      the {@link PatternLayout#TTCC_CONVERSION_PATTERN} and prints to
@@ -148,7 +41,7 @@ public class BasicConfigurator {
   static
   public
   void configure() {
-    Category root = Category.getRoot();
+    Logger root = Logger.getRoot();
     root.addAppender(new ConsoleAppender(
            new PatternLayout(PatternLayout.TTCC_CONVERSION_PATTERN)));
   }
@@ -160,7 +53,7 @@ public class BasicConfigurator {
   static
   public
   void configure(Appender appender) {
-    Category root = Category.getRoot();
+    Logger root = Logger.getRoot();
     root.addAppender(appender);
   }
 

@@ -256,6 +256,20 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   }
 
   /**
+     The string form of {@link enable(Level)}.
+   */
+  public 
+  void enable(String levelStr) {
+    Level l = Level.toLevel(levelStr, null);
+    if(l != null) {
+      enable(l);
+    } else {
+      LogLog.warn("Could not convert ["+levelStr+"] to Level.");
+    }
+  }
+
+
+  /**
      Enable logging for logging requests with level <code>l</code> or
      higher. By default all levels are enabled.
 
@@ -429,9 +443,9 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   }
 
   /**
-     @deprecated See {@link #getEnable} for similar functionality.
-   */
-
+     This methid will Return <code>true</code> if this repository is
+     disabled for <code>level</code> passes as parameter and false otherwise.     
+  */
   public
   boolean isDisabled(int level) {    
     return enableInt > level;

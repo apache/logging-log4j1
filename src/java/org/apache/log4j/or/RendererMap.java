@@ -7,6 +7,10 @@
 
 package org.apache.log4j.or;
 
+import org.apache.log4j.spi.RendererSupport;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.helpers.Loader;
+import org.apache.log4j.helpers.OptionConverter;
 import java.util.Hashtable;
 
 /**
@@ -24,6 +28,33 @@ public class RendererMap {
   RendererMap() {
     map = new Hashtable();
   }
+
+  /**
+     Add a renderer to a hierarchy passed as parameter.
+  */
+  static
+  public
+  void addRenderer(RendererSupport repository, String renderedClassName, 
+		   String renderingClassName) {
+    LogLog.debug("Rendering class: ["+renderingClassName+"], Rendered class: ["+
+		 renderedClassName+"].");
+    ObjectRenderer renderer = (ObjectRenderer) 
+             OptionConverter.instantiateByClassName(renderingClassName, 
+						    ObjectRenderer.class,
+						    null);
+    if(renderer == null) {
+      LogLog.error("Could not instantiate renderer ["+renderingClassName+"].");
+      return;
+    } else {
+      try {
+	Class renderedClass = Loader.loadClass(renderedClassName);
+	repository.setRenderer(renderedClass, renderer);
+      } catch(ClassNotFoundException e) {
+	LogLog.error("Could not find class ["+renderedClassName+"].", e);
+      }
+    }
+  }
+
 
   /**
      Find the appropriate renderer for the class type of the

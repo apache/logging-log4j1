@@ -78,8 +78,7 @@ import java.util.Hashtable;
    @author Ceki G&uuml;lc&uuml;
    @author Anders Kristensen
    @since 0.8.1 */
-public class PropertyConfigurator extends BasicConfigurator
-           implements Configurator {
+public class PropertyConfigurator implements Configurator {
 
   /**
      Used internally to keep track of configured appenders.
@@ -95,6 +94,7 @@ public class PropertyConfigurator extends BasicConfigurator
   static final String ROOT_LOGGER_PREFIX   = "log4j.rootLogger";
   static final String      APPENDER_PREFIX = "log4j.appender.";  
   static final String      RENDERER_PREFIX = "log4j.renderer.";
+  static final String      ENABLE_PREFIX   = "log4j.enable";
 
   /** Key for specifying the {@link org.apache.log4j.spi.LoggerFactory
       LoggerFactory}.  Currently set to "<code>log4j.loggerFactory</code>".  */
@@ -396,18 +396,12 @@ public class PropertyConfigurator extends BasicConfigurator
       LogLog.setInternalDebugging(OptionConverter.toBoolean(value, true));
     }
 
-    // Check if the config file overides the shipped code flag.
-    //String override = properties.getProperty(
-    //                              BasicConfigurator.DISABLE_OVERRIDE_KEY);
-    //hierarchy.overrideAsNeeded(override);
+    String enableStr = properties.getProperty(ENABLE_KEY);
+    if(enableStr != null) {
+      LogLog.debug("Parsing enable string ["+enableStr+"]");
+      hierarchy.enable(enableStr);
+    }
 
-    //if(override == null) {
-    String disableStr = properties.getProperty(BasicConfigurator.DISABLE_KEY);
-    if(disableStr != null)
-      hierarchy.disable(disableStr);      
-    //}
-    
-    
     configureRootCategory(properties, hierarchy);
     configureLoggerFactory(properties);
     parseCatsAndRenderers(properties, hierarchy);
@@ -533,8 +527,8 @@ public class PropertyConfigurator extends BasicConfigurator
 	String renderedClass = key.substring(RENDERER_PREFIX.length());	
 	String renderingClass = OptionConverter.findAndSubst(key, props);
 	if(hierarchy instanceof RendererSupport) {
-	  addRenderer((RendererSupport) hierarchy, renderedClass,
-		      renderingClass);
+	  RendererMap.addRenderer((RendererSupport) hierarchy, renderedClass,
+				  renderingClass);
 	}
       }      
     }
@@ -582,7 +576,7 @@ public class PropertyConfigurator extends BasicConfigurator
       // If the level value is inherited, set category level value to
       // null. We also check that the user has not specified inherited for the
       // root category.
-      if(levelStr.equalsIgnoreCase(BasicConfigurator.INHERITED) &&
+      if(levelStr.equalsIgnoreCase(INHERITED) &&
                                 	 !loggerName.equals(INTERNAL_ROOT_NAME)) {
 	logger.setLevel(null);
       } else {
