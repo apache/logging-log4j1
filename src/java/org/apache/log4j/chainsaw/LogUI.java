@@ -59,6 +59,7 @@ import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
 import org.apache.log4j.chainsaw.prefs.SettingsListener;
 import org.apache.log4j.chainsaw.prefs.SettingsManager;
 import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.net.SocketNodeEventListener;
 import org.apache.log4j.net.SocketReceiver;
 import org.apache.log4j.plugins.PluginRegistry;
@@ -66,13 +67,10 @@ import org.apache.log4j.plugins.Receiver;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Event;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -100,6 +98,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+
 import java.net.URL;
 
 import java.text.NumberFormat;
@@ -120,12 +119,12 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -140,7 +139,6 @@ import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
-import javax.swing.JTree;
 import javax.swing.JWindow;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
@@ -154,13 +152,11 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableColumnModelEvent;
 import javax.swing.event.TableColumnModelListener;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
-import javax.swing.tree.DefaultMutableTreeNode;
 
 
 /**
@@ -186,6 +182,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
  *
  */
 public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
+  private static final String CONFIG_FILE_TO_USE = "config.file";
   private static final String USE_CYCLIC_BUFFER_PROP_NAME =
     "chainsaw.usecyclicbuffer";
   private static final String CYCLIC_BUFFER_SIZE_PROP_NAME =
@@ -200,8 +197,9 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   private static final String STATUS_BAR = "StatusBar";
   private static final String COLUMNS_EXTENSION = ".columns";
   private static ChainsawSplash splash;
+  private URL configURLToUse;
   private boolean noReceiversDefined;
-  private JPanel receiversPanel;
+  private ReceiversPanel receiversPanel;
   ChainsawTabbedPane tabbedPane;
   private JToolBar toolbar;
   private ChainsawStatusBar statusBar;
@@ -330,6 +328,10 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
     event.saveSetting(
       LogUI.STATUS_BAR, isStatusBarVisible() ? Boolean.TRUE : Boolean.FALSE);
+
+    if (configURLToUse != null) {
+      event.saveSetting(LogUI.CONFIG_FILE_TO_USE, configURLToUse.toString());
+    }
   }
 
   /**
@@ -345,6 +347,30 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
           if (lookAndFeelClassName != null) {
             applyLookAndFeel(lookAndFeelClassName);
+          }
+        }
+
+        public void saveSettings(SaveSettingsEvent event) {
+          //required because of SettingsListener interface..not used during load
+        }
+      });
+
+    sm.configure(
+      new SettingsListener() {
+        public void loadSettings(LoadSettingsEvent event) {
+          String configFile = event.getSetting(LogUI.CONFIG_FILE_TO_USE);
+
+          if ((configFile != null) && !configFile.trim().equals("")) {
+            try {
+              URL url = new URL(configFile);
+              OptionConverter.selectAndConfigure(
+                url, null, LogManager.getLoggerRepository());
+              LogUI.this.getStatusBar().setMessage(
+                "Configured Log4j using remembered URL :: " + url);
+              LogUI.this.configURLToUse = url;
+            } catch (Exception e) {
+              LogLog.error("error occurred initializing log4j", e);
+            }
           }
         }
 
@@ -538,11 +564,72 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       SwingUtilities.invokeLater(
         new Runnable() {
           public void run() {
-            toggleReceiversPanel();
-            JOptionPane.showMessageDialog(
-              LogUI.this,
-              "You have no Receivers defined.\n\nYou will not be able to receive events from a Remote source unless you define one in the Log4J configuration file.",
-              "No Receivers Defined", JOptionPane.WARNING_MESSAGE);
+            //            TODO This could be done and look better in a custom Dialog
+            Object[] options =
+              new String[] {
+                "Search for a Log4j config file",
+                "Allow me to specify Receivers manually",
+                "Nothing thanks, I'm fine"
+              };
+            Object initialSelection = options[0];
+            Object result =
+              JOptionPane.showInputDialog(
+                LogUI.this,
+                "You have no Receivers defined.\n\nYou will not be able to receive events from a Remote source unless you define one in the Log4J configuration file.\n",
+                "No Receivers Defined", JOptionPane.WARNING_MESSAGE, null,
+                options, initialSelection);
+
+            if (result == options[0]) {
+              //              TODO search for Log4j config            
+              JFileChooser chooser = new JFileChooser();
+              chooser.setDialogTitle("Search for Log4j configuration...");
+              chooser.setDialogType(JFileChooser.OPEN_DIALOG);
+              chooser.setFileFilter(
+                new FileFilter() {
+                  public boolean accept(File f) {
+                    return f.isDirectory()
+                    || f.getName().endsWith(".properties")
+                    || f.getName().endsWith(".xml");
+                  }
+
+                  public String getDescription() {
+                    return "Log4j Configuration file";
+                  }
+                });
+
+              chooser.showOpenDialog(LogUI.this);
+
+              if (chooser.getSelectedFile() != null) {
+                try {
+                  OptionConverter.selectAndConfigure(
+                    chooser.getSelectedFile().toURL(), null,
+                    LogManager.getLoggerRepository());
+                  receiversPanel.updateReceiverTreeInDispatchThread();
+
+                  //                ask if they want this config URL loaded each time
+                  if (
+                    JOptionPane.showConfirmDialog(
+                        LogUI.this,
+                        "Would you like to use this configuration each time?",
+                        "Please confirm", JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+                    configURLToUse = chooser.getSelectedFile().toURL();
+                  }
+                } catch (Exception e) {
+                  LogLog.error(
+                    "Error using selected config file for configuration", e);
+                }
+              } else {
+                //                TODO handle if they don't choose a file
+              }
+
+              chooser = null;
+            }
+
+            if (result == options[1]) {
+              toggleReceiversPanel();
+            } else {
+            }
           }
         });
     }
@@ -571,8 +658,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
   void addWelcomePanel() {
     tabbedPane.addANewTab(
-      "Welcome", WelcomePanel.getInstance(), new ImageIcon(ChainsawIcons.ABOUT),
-      "Welcome/Help");
+      "Welcome", WelcomePanel.getInstance(), new ImageIcon(
+        ChainsawIcons.ABOUT), "Welcome/Help");
   }
 
   void removeWelcomePanel() {
@@ -622,9 +709,9 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     final ProgressPanel panel = new ProgressPanel(1, 3, "Shutting down");
     progress.getContentPane().add(panel);
     progress.pack();
-    
+
     Point p = new Point(getLocation());
-    p.move((int)getSize().getWidth()>>1, (int)getSize().getHeight()>>1);
+    p.move((int) getSize().getWidth() >> 1, (int) getSize().getHeight() >> 1);
     progress.setLocation(p);
     progress.setVisible(true);
 
@@ -1081,6 +1168,19 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     } catch (Exception e) {
       LogLog.error("Failed to change L&F", e);
     }
+  }
+
+  /**
+   * Causes the Welcome Panel to become visible, and shows the URL
+   * specified as it's contents
+   * @param url for content to show
+   */
+  void showHelp(URL url) {
+    removeWelcomePanel();
+    addWelcomePanel();
+
+    //    TODO ensure the Welcome Panel is the selected tab
+    WelcomePanel.getInstance().setURL(url);
   }
 
   /**
@@ -1766,6 +1866,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
             final NumberFormat formatter = NumberFormat.getPercentInstance();
             boolean warning75 = false;
             boolean warning100 = false;
+
             public void eventCountChanged(int currentCount, int totalCount) {
               double percent =
                 ((double) totalCount) / cyclicModel.getMaxSize();
@@ -1775,13 +1876,13 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
                 msg =
                   "Warning :: " + formatter.format(percent) + " of the '"
                   + getIdentifier() + "' buffer has been used";
-                  warning75 = true;
-              } else if (percent >= 1.0 && !warning100) {
+                warning75 = true;
+              } else if ((percent >= 1.0) && !warning100) {
                 msg =
                   "Warning :: " + formatter.format(percent) + " of the '"
                   + getIdentifier()
                   + "' buffer has been used.  Older events are being discarded.";
-                  warning100 = true;
+                warning100 = true;
               }
 
               if (msg != null) {
@@ -2336,18 +2437,5 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
     public void columnSelectionChanged(ListSelectionEvent e) {
     }
-  }
-
-  /**
-   * Causes the Welcome Panel to become visible, and shows the URL
-   * specified as it's contents
-   * @param url for content to show
-   */
-  void showHelp(URL url) {
-    removeWelcomePanel();
-    addWelcomePanel();
-//    TODO ensure the Welcome Panel is the selected tab
-    WelcomePanel.getInstance().setURL(url);
-    
   }
 }
