@@ -488,22 +488,13 @@ utilize Java's class loading system.  Sun changed the way classloading
 works with the release of Java 2.  In Java 2, classloaders are
 arranged in a hierarchial parent-child relationship.  When a child
 classloader needs to find a class or a resource, it first delegates
-the request to the parent.  Under no circumstances does it delegate
-the classloading to a child.
+the request to the parent. 
 
-<P>
-Earlier releases of Log4J only used the default
-<CODE>Class.forName()</code> mechanism for loading classes.  Beginning
-with Java 2, the preferred method for loading classes is:
-<BLOCKQUOTE>
-<CODE>Thread.currentThread().getContextClassLoader().loadClass()</CODE>
-</BLOCKQUOTE>
-Resources are handled in the same manner.  See the documentation for
-<CODE>java.lang.ClassLoader</CODE> for more details.  The most recent
-versions of Log4J use the Java 2 method for loading classes.
+<P>Log4J only uses the default <CODE>Class.forName()</code> mechanism
+for loading classes.  Resources are handled similarly.  See the
+documentation for <CODE>java.lang.ClassLoader</CODE> for more details.
 
-<P>
-So, if you're having problems, try loading the class or resource
+<P>So, if you're having problems, try loading the class or resource
 yourself.  If you can't find it, neither will Log4J. ;)
 
 <P><A NAME=configureandwatch><H4>Is there a way to get Log4J to
@@ -559,16 +550,28 @@ distribution, you save yourself the unnecessary maintenance work.
 
 <p>If your extensions are useful then someone will eventually write an
 extension providing the same or very similar functionality.  Your
-development effort will be wasted.
-
-<p>Unless the proprietary log4j extension is business critical, there
-is little reason for not donating your extensions back to the project.
+development effort will be wasted. Unless the proprietary log4j
+extension is business critical, there is little reason for not
+donating your extensions back to the project.
 
 <a name=help><h4>What should I keep in mind when contributing
 code?</h4>
 
 <ol>
-  <li>Stick to the existing indentation style even if you hate it.
+
+  <li><b>Write a test case for your contribution.</b>
+   
+    <p>There is nothing more irritating than finding the bugs in
+    debugging (i.e. logging) code. Writing a test case takes some
+    effort but is crucial for a widely used library such as
+    log4j. Writing a test case will go a long way in earning you the
+    respect of fellow developers. See the tests/ directory for exiting
+    test cases.
+
+  </li>
+
+
+  <p><li>Stick to the existing indentation style even if you hate it.
 
       <p>Alternating between indentation styles makes it hard to
       understand the source code. Make it hard on yourself but easier
@@ -581,11 +584,6 @@ code?</h4>
      <p>One of the important advantages of log4j is its compatibility with 
      JDK 1.1.x. 
       
-  <p><li><b>Thoroughly test your code.</b>
-
-      <p>There is nothing more irritating than finding the bugs 
-      in debugging (i.e. logging) code.
-
    <p><li>Keep it simple, small and fast.
 
        <p>It's all about the application not about logging.
@@ -599,6 +597,8 @@ code?</h4>
 	years to raise a child. 
 
     <p><li>Did I mention sticking with the indentation style? 
+
+    <p><li>Did I mention writing test cases? 
 	
 </ol>
 
