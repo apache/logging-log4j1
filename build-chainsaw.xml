@@ -42,7 +42,6 @@
   <!-- Construct compile classpath -->
   <path id="compile.classpath">
     <pathelement location="${javac.dest}"/>
-    <pathelement location="${log4j.jar}"/>
     <pathelement location="${vfs.jar}"/>
   </path>
 
