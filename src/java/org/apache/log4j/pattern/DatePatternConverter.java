@@ -59,11 +59,17 @@ public class DatePatternConverter extends PatternConverter {
    * or any date and time pattern accepted by java.text.SimpleDateFormat.
    */
   public void setOptions(List optionList) {
+    
+    String patternOption;
+    
     if(optionList == null || optionList.size() == 0) {
-      return;
+      // the branch could be optimized, but here we are making explicit
+      // that null values for patternOption are allowed.
+      patternOption = null;
+    } else {
+      patternOption = (String) optionList.get(0);
     }
     
-    String patternOption = (String) optionList.get(0);
     String pattern;
     if (patternOption == null) {
       pattern = "yyyy-MM-dd HH:mm:ss,SSS";
@@ -91,7 +97,7 @@ public class DatePatternConverter extends PatternConverter {
     }
 
     // if the option list contains a TZ option, then set it.
-    if (optionList.size() > 1) {
+    if (optionList != null && optionList.size() > 1) {
       TimeZone tz = TimeZone.getTimeZone((String) optionList.get(1));
       df.setTimeZone(tz);
     }
