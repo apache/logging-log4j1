@@ -31,6 +31,7 @@
     <pathelement location="${project.classes.home}"/>
     <pathelement location="${tests.source.home}"/>
     <pathelement location="./classes"/>
+    <pathelement location="./resources"/>
     <pathelement location="${jakarta.oro.jar}"/>
   </path>
 
@@ -82,22 +83,29 @@
   </target>
 
   
-  <target name="run" depends="Minimum, OptionConverter, BoundedFIFO,
-                              DOM, CustomLevel"/>
+  <target name="run" depends="Minimum, Logger, OptionConverter, BoundedFIFO,
+                              DOM, CustomLevel, CyclicBuffer, OR, DRFA"/>
   
   <target name="Minimum" depends="build">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
-      <formatter type="plain" />
+      <formatter type="plain" usefile="false" />
       <test name="org.apache.log4j.MinimumTestCase" />
     </junit>
   </target>
 
+  <target name="Logger" depends="build">
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="false"/>
+      <test name="org.apache.log4j.LoggerTestCase" />
+    </junit>
+  </target>
 
   <target name="DOM" depends="build">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
-      <formatter type="plain" />
+      <formatter type="plain" usefile="false"/>
       <test name="org.apache.log4j.xml.DOMTestCase" />
     </junit>
   </target>
@@ -105,7 +113,7 @@
   <target name="CustomLevel" depends="build">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
-      <formatter type="plain" />
+      <formatter type="plain" usefile="false" />
       <test name="org.apache.log4j.xml.CustomLevelTestCase" />
     </junit>
   </target>
@@ -113,7 +121,7 @@
   <target name="OptionConverter" depends="build">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
-      <formatter type="plain" />
+      <formatter type="plain" usefile="false"/>
       <test name="org.apache.log4j.helpers.OptionConverterTestCase" />
     </junit>
   </target>
@@ -121,8 +129,32 @@
   <target name="BoundedFIFO" depends="build">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
-      <formatter type="plain" />
+      <formatter type="plain" usefile="false"/>
       <test name="org.apache.log4j.helpers.BoundedFIFOTestCase" />
+    </junit>
+  </target>
+
+  <target name="CyclicBuffer" depends="build">
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="false"/>
+      <test name="org.apache.log4j.helpers.CyclicBufferTestCase" />
+    </junit>
+  </target>
+
+  <target name="DRFA" depends="build">
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="false"/>
+      <test name="org.apache.log4j.DRFATestCase" />
+    </junit>
+  </target>
+  
+  <target name="OR" depends="build">
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="false"/>
+      <test name="org.apache.log4j.or.ORTestCase" />
     </junit>
   </target>
 

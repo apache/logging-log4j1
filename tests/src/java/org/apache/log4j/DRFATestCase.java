@@ -20,9 +20,9 @@ import junit.framework.Test;
 
 import org.apache.log4j.*;
 
-public class UnitTestDRFA extends TestCase {
+public class DRFATestCase extends TestCase {
 
-  public UnitTestDRFA(String name) {
+  public DRFATestCase(String name) {
     super(name);
   }
 
@@ -31,6 +31,10 @@ public class UnitTestDRFA extends TestCase {
     DailyRollingFileAppender drfa = new DailyRollingFileAppender();
     drfa.setName("testComputeCheckPeriod");
     drfa.setDatePattern("yyyy-MM-dd.'log'");
+    drfa.activateOptions();
+    
+    int x = drfa.computeCheckPeriod();
+    int y = DailyRollingFileAppender.TOP_OF_DAY;
     assertEquals(drfa.computeCheckPeriod(), 
 		 DailyRollingFileAppender.TOP_OF_DAY);
 
@@ -244,10 +248,10 @@ public class UnitTestDRFA extends TestCase {
   static
   Test suite() {
     TestSuite suite = new TestSuite();
-    suite.addTest(new UnitTestDRFA("testComputeCheckPeriod"));
-    suite.addTest(new UnitTestDRFA("testRC1"));
-    //suite.addTest(new UnitTestDRFA("testRC2"));
-    suite.addTest(new UnitTestDRFA("testRC3"));
+    suite.addTest(new DRFATestCase("testComputeCheckPeriod"));
+    suite.addTest(new DRFATestCase("testRC1"));
+    suite.addTest(new DRFATestCase("testRC2"));
+    suite.addTest(new DRFATestCase("testRC3"));
     return suite;
   }
   

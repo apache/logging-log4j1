@@ -128,9 +128,35 @@ public class LoggingEvent implements java.io.Serializable {
     if(throwable != null) {
       this.throwableInfo = new ThrowableInformation(throwable);
     }
-
     timeStamp = System.currentTimeMillis();
   }  
+
+  /**
+     Instantiate a LoggingEvent from the supplied parameters.
+     
+     <p>Except {@link #timeStamp} all the other fields of
+     <code>LoggingEvent</code> are filled when actually needed.
+     <p>
+     @param category The category of this event.
+     @param timeStamp the timestamp of this logging event
+     @param level The level of this event.
+     @param message  The message of this event.
+     @param throwable The throwable of this event.  */
+  public LoggingEvent(String fqnOfCategoryClass, Category logger, 
+		      long timeStamp, Priority priority, Object message, 
+		      Throwable throwable) {
+    this.fqnOfCategoryClass = fqnOfCategoryClass;
+    this.logger = logger;
+    this.categoryName = logger.getName();
+    this.level = priority;   
+    this.message = message;
+    if(throwable != null) {
+      this.throwableInfo = new ThrowableInformation(throwable);
+    }
+
+    this.timeStamp = timeStamp;
+  }  
+
 
 
   /**

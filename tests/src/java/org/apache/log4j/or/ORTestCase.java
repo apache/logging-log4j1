@@ -12,7 +12,7 @@
 //     http://www.junit.org
 
 
-package org.apache.log4j.test;
+package org.apache.log4j.or;
 
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.Category;
@@ -33,7 +33,7 @@ import java.io.Serializable;
    Unit test the {@link ObjectRenderer}.
    @author Ceki G&uuml;lc&uuml;
    @since 1.0 */
-public class UnitTestOR extends TestCase {
+public class ORTestCase extends TestCase {
 
   static UTObjectRenderer aor;
   static UTObjectRenderer bor;
@@ -48,7 +48,7 @@ public class UnitTestOR extends TestCase {
 
 
 
-  public UnitTestOR(String name) {
+  public ORTestCase(String name) {
     super(name);
   }
 
@@ -183,16 +183,16 @@ public class UnitTestOR extends TestCase {
   static
   Test suite() {
     TestSuite suite = new TestSuite();
-    suite.addTest(new UnitTestOR("test1"));
-    suite.addTest(new UnitTestOR("test2"));
-    suite.addTest(new UnitTestOR("test3"));
-    suite.addTest(new UnitTestOR("test4"));
-    suite.addTest(new UnitTestOR("test5"));
-    suite.addTest(new UnitTestOR("test6"));
-    suite.addTest(new UnitTestOR("test7"));
-    suite.addTest(new UnitTestOR("test8"));
-    suite.addTest(new UnitTestOR("test9"));
-    suite.addTest(new UnitTestOR("test10"));
+    suite.addTest(new ORTestCase("test1"));
+    suite.addTest(new ORTestCase("test2"));
+    suite.addTest(new ORTestCase("test3"));
+    suite.addTest(new ORTestCase("test4"));
+    suite.addTest(new ORTestCase("test5"));
+    suite.addTest(new ORTestCase("test6"));
+    suite.addTest(new ORTestCase("test7"));
+    suite.addTest(new ORTestCase("test8"));
+    suite.addTest(new ORTestCase("test9"));
+    suite.addTest(new ORTestCase("test10"));
     return suite;
   }
 
