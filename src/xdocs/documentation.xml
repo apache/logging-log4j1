@@ -10,13 +10,17 @@
 
     <section name="Official log4j documentation">
 
-      <p>The following documentation is included with the standard log4j
-	distribution and also browsable online:</p>
+      <p>With the exception of the complete manual, the following
+	documentation is included with the standard log4j distribution
+	and also browsable online:
+      </p>
       
       <ul>
 	<p>
-	  <a href="http://www.flashline.com/components/view.jsp?prodid=4702&amp;affiliateid=657173"><img align="right" src="images/coverSmall.png"></img></a>
-	  <li><a href="manual.html"><b>short manual</b></a>,
+	  <a
+	  href="http://www.flashline.com/components/view.jsp?prodid=4702&amp;affiliateid=657173"><img
+	  align="right" src="images/coverSmall.png"></img></a> <li><a
+	  href="manual.html"><b>short manual</b></a>,
 	  </li>
 	</p>
 
@@ -72,6 +76,9 @@
 	    Build Flexible Logs With log4j</a> by Vikram Goyal
 	</li></p>
 
+	<p><li><a
+	href="http://supportweb.cs.bham.ac.uk/documentation/tutorials/docsystem/build/tutorials/log4j/log4j.html">log4j</a>
+	by Ashley Mills, The University Of Birmingham</li></p>
 
 	<p><li><a href="http://www.builder.com.com/article.jhtml?id=u00820020124kev01.htm">
 	    Add logging to your Java Applications</a> by Kevin Brown
