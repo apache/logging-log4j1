@@ -105,9 +105,11 @@ final class LoggerNameTreePanel extends JPanel {
   private final JScrollPane scrollTree;
   private final JToolBar toolbar = new JToolBar();
   private final JButton expandButton = new SmallButton();
+  private final JButton collapseButton = new SmallButton();
   private final JButton closeButton = new SmallButton();
   private final JButton editLoggerButton = new SmallButton();
   private final Action expandAction;
+  private final Action collapseAction;
   private final Action closeAction;
   private final Action editLoggerAction;
 
@@ -166,10 +168,6 @@ final class LoggerNameTreePanel extends JPanel {
           ensureRootExpanded();
         }
 
-        private void ensureRootExpanded() {
-          logTree.expandRow(0);
-        }
-
         public void treeStructureChanged(TreeModelEvent e) {
           ensureRootExpanded();
         }
@@ -190,7 +188,7 @@ final class LoggerNameTreePanel extends JPanel {
     expandAction = createExpandAction();
     editLoggerAction = createEditLoggerAction();
     closeAction = createCloseAction();
-
+    collapseAction = createCollapseAction();
     setupListeners();
     configureToolbarPanel();
 
@@ -198,10 +196,36 @@ final class LoggerNameTreePanel extends JPanel {
     add(scrollTree, BorderLayout.CENTER);
   }
 
+  private void ensureRootExpanded() {
+    logTree.expandRow(0);
+  }
+
   /**
-   * An action that closes (hides) this panel
   * @return
   */
+  private Action createCollapseAction() {
+    Action action =
+      new AbstractAction() {
+        public void actionPerformed(ActionEvent e) {
+          collapseCurrentlySelectedNode();
+        }
+      };
+
+    action.putValue(Action.NAME, "Collapse");
+    action.putValue(
+      Action.SHORT_DESCRIPTION,
+      "Collapses all the children of the currently selected node");
+    action.putValue(
+      Action.SMALL_ICON, new ImageIcon(ChainsawIcons.ICON_COLLAPSE));
+    action.setEnabled(false);
+
+    return action;
+  }
+
+  /**
+     * An action that closes (hides) this panel
+    * @return
+    */
   private Action createCloseAction() {
     Action action =
       new AbstractAction() {
@@ -231,6 +255,7 @@ final class LoggerNameTreePanel extends JPanel {
           TreePath path = e.getNewLeadSelectionPath();
           expandAction.setEnabled(path != null);
           editLoggerAction.setEnabled(path != null);
+          collapseAction.setEnabled(path != null);
         }
       });
 
@@ -296,6 +321,49 @@ final class LoggerNameTreePanel extends JPanel {
     action.setEnabled(false);
 
     return action;
+  }
+
+  /**
+   * Given the currently selected nodes
+   * collapses all the children of those nodes.
+   *
+   */
+  private void collapseCurrentlySelectedNode() {
+    TreePath[] paths = logTree.getSelectionPaths();
+
+    if (paths == null) {
+      return;
+    }
+
+    LogLog.debug("Collapsing all children of selected node");
+
+    for (int i = 0; i < paths.length; i++) {
+      TreePath path = paths[i];
+      DefaultMutableTreeNode node =
+        (DefaultMutableTreeNode) path.getLastPathComponent();
+      Enumeration enumeration = node.depthFirstEnumeration();
+
+      while (enumeration.hasMoreElements()) {
+        DefaultMutableTreeNode child =
+          (DefaultMutableTreeNode) enumeration.nextElement();
+
+        if (child.getParent() != null) {
+          TreeNode[] nodes =
+            ((DefaultMutableTreeNode) child.getParent()).getPath();
+
+          TreePath treePath = new TreePath(nodes);
+
+          while ((treePath != null) && (treePath.getPathCount() > 0)) {
+            DefaultMutableTreeNode potentialRoot =
+              (DefaultMutableTreeNode) treePath.getPathComponent(0);
+            logTree.collapsePath(treePath);
+            treePath = treePath.getParentPath();
+          }
+        }
+      }
+    }
+
+    ensureRootExpanded();
   }
 
   /**
@@ -368,12 +436,16 @@ final class LoggerNameTreePanel extends JPanel {
 
     expandButton.setAction(expandAction);
     expandButton.setText(null);
+    collapseButton.setAction(collapseAction);
+    collapseButton.setText(null);
+
     editLoggerButton.setAction(editLoggerAction);
     editLoggerButton.setText(null);
     closeButton.setAction(closeAction);
     closeButton.setText(null);
 
     toolbar.add(expandButton);
+    toolbar.add(collapseButton);
     toolbar.add(editLoggerButton);
     toolbar.addSeparator();
 
