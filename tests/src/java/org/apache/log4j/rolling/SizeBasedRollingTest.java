@@ -29,6 +29,8 @@ import org.apache.log4j.util.Compare;
 
 /**
  *
+ * Do not forget to call activateOptions when configuring programatically.
+ * 
  * @author Ceki G&uuml;lc&uuml;
  *
  */
@@ -54,7 +56,7 @@ public class SizeBasedRollingTest extends TestCase {
     root.addAppender(new ConsoleAppender(new PatternLayout()));
 
     // We purposefully use the \n as the line separator. 
-    // This makes the regression test system indepent.
+    // This makes the regression test system independent.
     PatternLayout layout = new PatternLayout("%m\n");
     RollingFileAppender rfa = new RollingFileAppender();
     rfa.setLayout(layout);
@@ -62,35 +64,13 @@ public class SizeBasedRollingTest extends TestCase {
     SlidingWindowRollingPolicy swrp = new SlidingWindowRollingPolicy();
     SizeBasedTriggeringPolicy sbtp = new SizeBasedTriggeringPolicy();
     sbtp.setMaxFileSize(100);
+    sbtp.activateOptions();
     swrp.setFileNamePattern("output/sizeBased-test1.%i");
-    rfa.setRollingPolicy(swrp);
-    rfa.setTriggeringPolicy(sbtp);
-    rfa.activateOptions();
-    root.addAppender(rfa);
-
-    // Write exactly 10 bytes with each log
-    for (int i = 0; i < 22; i++) {
-      Thread.sleep(1000);
-      if (i < 10) {
-        logger.debug("Hello---" + i);
-      } else if (i < 100) {
-        logger.debug("Hello--" + i);
-      } else {
-        logger.debug("Hello-" + i);
-      }
-    }
-
-    // The File.length() method is not accurate under Windows    
-    if (!isWindows()) {
-      assertTrue(
-        Compare.compare(
-          "output/sizeBased-test1.1", "witness/sizeBased-test1.1"));
-      assertTrue(
-        Compare.compare(
-          "output/sizeBased-test1.2", "witness/sizeBased-test1.2"));
-      assertTrue(
-        Compare.compare(
-          "output/sizeBased-test1.3", "witness/sizeBased-test1.3"));
+    try {
+      swrp.activateOptions();
+      fail("The absence of activeFileName option should have caused an exception.");
+    } catch(IllegalStateException e) {
+      return;
     }
   }
 
@@ -108,6 +88,8 @@ public class SizeBasedRollingTest extends TestCase {
     sbtp.setMaxFileSize(100);
     swrp.setActiveFileName("output/sizeBased-test2");
     swrp.setFileNamePattern("output/sizeBased-test2.%i");
+    swrp.activateOptions();
+    
     rfa.setRollingPolicy(swrp);
     rfa.setTriggeringPolicy(sbtp);
     rfa.activateOptions();
@@ -125,8 +107,6 @@ public class SizeBasedRollingTest extends TestCase {
 
     // The File.length() method is not accurate under Windows    
 
-    /**
-     *
      if(!isWindows()) {
 
       assertTrue(Compare.compare("output/sizeBased-test2.1",
@@ -135,9 +115,7 @@ public class SizeBasedRollingTest extends TestCase {
          "witness/sizeBased-test1.2"));
       assertTrue(Compare.compare("output/sizeBased-test2.3",
          "witness/sizeBased-test1.3"));
-         }
-
-         */
+     }
   }
 
   public void test3() throws Exception {
@@ -155,6 +133,7 @@ public class SizeBasedRollingTest extends TestCase {
      sbtp.setMaxFileSize(100);
      swrp.setActiveFileName("output/sizeBased-test3");
      swrp.setFileNamePattern("output/sizeBased-test3.%i");
+     swrp.activateOptions();
      rfa.setRollingPolicy(swrp);
      rfa.setTriggeringPolicy(sbtp);
      rfa.activateOptions();
@@ -175,10 +154,10 @@ public class SizeBasedRollingTest extends TestCase {
     return System.getProperty("os.name").indexOf("Windows") != -1;
   }
 
-  public static Test suite() {
+  public static Test xsuite() {
     TestSuite suite = new TestSuite();
 
-    //suite.addTest(new SizeBasedRollingTestCase("test1"));
+    suite.addTest(new SizeBasedRollingTest("test1"));
     suite.addTest(new SizeBasedRollingTest("test2"));
     //suite.addTest(new SizeBasedRollingTestCase("test3"));
 
