@@ -61,32 +61,6 @@ public class RollingFileAppender extends FileAppender {
     super();
   }
 
- /**
-    Instantiate a RollingFileAppender and set the output destination to a
-     new {@link OutputStreamWriter} initialized with <code>os</code>
-     as its {@link OutputStream}.  
-     
-     @deprecated This constructor does not allow to roll files and
-     will disappear in the near future.  */
-  public
-  RollingFileAppender(Layout layout, OutputStream os) {
-    super(layout, os);
-  }
-  
-  /**
-     Instantiate a RollingFileAppender and set the output destination
-     to <code>writer</code>.
-
-     <p>The <code>writer</code> must have been opened by the user.  
-
-     @deprecated This constructor does not allow to roll files and will
-     disappear in the near future.  */
-  public
-  RollingFileAppender(Layout layout, Writer writer) {
-    super(layout, writer);
-  }                    
-
-
   /**
     Instantiate a RollingFileAppender and open the file designated by
     <code>filename</code>. The opened filename will become the ouput
@@ -173,7 +147,9 @@ public class RollingFileAppender extends FileAppender {
 
       // Rename fileName to fileName.1
       target = new File(fileName + "." + 1);
-      this.closeWriterIfOurs(); // keep windows happy. 
+
+      this.closeFile(); // keep windows happy. 
+
       file = new File(fileName);
       file.renameTo(target);
     }

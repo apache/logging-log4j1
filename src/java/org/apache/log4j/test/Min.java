@@ -10,7 +10,7 @@ package org.apache.log4j.test;
 import org.apache.log4j.Category;
 import org.apache.log4j.Layout;
 import org.apache.log4j.Appender;
-import org.apache.log4j.FileAppender;
+import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.net.SyslogAppender;
 import org.apache.log4j.SimpleLayout;
 import org.apache.log4j.TTCCLayout;
@@ -69,7 +69,7 @@ public class Min {
       Usage("Wrong layoutType [" + layoutType +"].");
 
 
-    appender = new FileAppender(layout, System.out);
+    appender = new ConsoleAppender(layout, "System.out");
     BasicConfigurator.configure(appender);
   }
 

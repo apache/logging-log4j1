@@ -72,5 +72,7 @@ public class PatternTest {
 
     CAT.log(Priority.FATAL, "Message " + ++i, e);
     root.log(Priority.FATAL, "Message " + i, e);    
+    
+    Category.shutdown();
   }
 }

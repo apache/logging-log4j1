@@ -587,8 +587,6 @@ public class PropertyConfigurator extends BasicConfigurator
     appender.setName(appenderName);
 
     if(appender instanceof OptionHandler) {
-      configureOptionHandler((OptionHandler) appender, prefix + ".", props);
-      LogLog.debug("Parsed \"" + appenderName +"\" options.");
       if(appender.requiresLayout()) {
 	Layout layout = (Layout) OptionConverter.instantiateByKey(props, 
 								  layoutPrefix,
@@ -601,6 +599,8 @@ public class PropertyConfigurator extends BasicConfigurator
 	  LogLog.debug("End of parsing for \"" + appenderName +"\".");      
 	}
       }
+      configureOptionHandler((OptionHandler) appender, prefix + ".", props);
+      LogLog.debug("Parsed \"" + appenderName +"\" options.");
     }
     registryPut(appender);
     return appender;

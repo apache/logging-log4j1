@@ -5,7 +5,7 @@ import org.apache.log4j.Category;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.SimpleLayout;
-import org.apache.log4j.FileAppender;
+import org.apache.log4j.ConsoleAppender;
 	
 public class ShippedCodeFlagTest {
 
@@ -26,8 +26,8 @@ public class ShippedCodeFlagTest {
 		  System.getProperty(BasicConfigurator.DISABLE_OVERRIDE_KEY)
 			  +"].");
     
-       BasicConfigurator.configure(new FileAppender(new SimpleLayout(),
-						 System.out));
+       BasicConfigurator.configure(new ConsoleAppender(new SimpleLayout(),
+						 ConsoleAppender.SYSTEM_OUT));
      
     }
     else { 

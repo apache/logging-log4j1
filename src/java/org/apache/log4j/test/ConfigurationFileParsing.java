@@ -24,6 +24,7 @@ public class ConfigurationFileParsing {
       root.debug("Message 1");
       root.debug("Message 2");      
       NDC.pop();
+      Category.shutdown();
     }
     else {
       Usage("Wrong number of arguments.");

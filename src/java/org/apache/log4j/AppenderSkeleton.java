@@ -236,12 +236,12 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
       @since 0.9.0
   */
   public
+  synchronized
   void setErrorHandler(ErrorHandler eh) {
     if(eh == null) {
       // We do not throw exception here since the cause is probably a
       // bad config file.
-      LogLog.error(
-              "It is forbidden to set a null ErrorHandler. Ignoring directive.");
+      LogLog.warn("You have tried to set a null error-handler.");
     } else {
       this.errorHandler = eh;
     }

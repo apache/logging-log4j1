@@ -23,7 +23,7 @@ public class CategoryWrapper {
   static 
   void main(String argv[]) {    
     Layout layout = new PatternLayout("%p [%t] %C %F - %m\n");
-    Appender out = new FileAppender(layout, System.out);
+    Appender out = new ConsoleAppender(layout, ConsoleAppender.SYSTEM_OUT);
     CategoryWrapper w1 = new CategoryWrapper("c1");
     w1.addAppender(out);
     w1.print("hello");

@@ -6,7 +6,7 @@ import org.apache.log4j.Hierarchy;
 import org.apache.log4j.spi.Configurator;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.SimpleLayout;
-import org.apache.log4j.FileAppender;
+import org.apache.log4j.ConsoleAppender;
 
 /**
  * This configurator simply always adds a FileAppender writing to
@@ -18,7 +18,7 @@ public class SysoutConfigurator implements Configurator {
   void
   doConfigure(java.net.URL url, Hierarchy hierarchy) {
     Category.getRoot().addAppender(
-        new FileAppender(
-            new SimpleLayout(), System.out));
+        new ConsoleAppender(
+            new SimpleLayout(), ConsoleAppender.SYSTEM_OUT));
   }
 }

@@ -20,6 +20,8 @@ JSOURCES:=HTMLLayout.java\
 	Layout.java \
 	Appender.java \
 	Priority.java\
+	WriterAppender.java\
+	ConsoleAppender.java\
 
 SUBDIRS :=helpers spi or xml net nt varia test performance examples gui
 

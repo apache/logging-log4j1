@@ -2,7 +2,6 @@
 PKG_DIR :=org/apache/log4j/varia
 DEPTH   :=../../../..
 JSOURCES:=ExternallyRolledFileAppender.java\
-	  ResilientFileAppender.java\
 	  Roller.java\
 	  DenyAllFilter.java\
 	  StringMatchFilter.java\

@@ -125,8 +125,8 @@ public class BasicConfigurator {
   public
   void configure() {
     Category root = Category.getRoot();
-    root.addAppender(new FileAppender(
-	new PatternLayout(PatternLayout.TTCC_CONVERSION_PATTERN), System.out));
+    root.addAppender(new ConsoleAppender(
+           new PatternLayout(PatternLayout.TTCC_CONVERSION_PATTERN)));
   }
 
   /**
