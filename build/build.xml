@@ -278,12 +278,14 @@
 
     <copy todir="${BSTEM}/xml/examples/doc-files/" >
       <fileset dir="${BSTEM}/xml/examples/" 
-         includes="XMLSample.java, sample*.xml, extension1.xml, 
-	     extension2.xml, XCategory.java, XTest.java"/>
+         includes="XMLSample.java, XCategory.java, XTest.java"/>
     </copy>
 
     <copy todir="${BSTEM}/xml/doc-files/"  >
       <fileset dir="${BSTEM}/xml/" includes="log4j.dtd"/>
+      <fileset dir="${BSTEM}/xml/test/" includes="*.xml"/>
+      <fileset dir="${BSTEM}/xml/examples/" 
+         includes="sample*.xml, extension?.xml"/>
     </copy>
 
 
