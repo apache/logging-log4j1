@@ -19,7 +19,7 @@ CREATE TABLE logging_event
     level_string      VARCHAR(254) NOT NULL,
     ndc               TEXT,
     thread_name       VARCHAR(254),
-    flag              SMALLINT,
+    reference_flag    SMALLINT,
     id                INT DEFAULT nextval('logging_event_id_seq') PRIMARY KEY
   );
 
