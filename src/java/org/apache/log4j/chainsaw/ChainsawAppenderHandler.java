@@ -49,17 +49,8 @@
 
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.helpers.Constants;
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.net.SocketReceiver;
-import org.apache.log4j.plugins.PluginRegistry;
-import org.apache.log4j.spi.LoggingEvent;
-
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -67,6 +58,13 @@ import java.util.List;
 import java.util.Vector;
 
 import javax.swing.event.EventListenerList;
+
+import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.net.SocketReceiver;
+import org.apache.log4j.plugins.PluginRegistry;
+import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
@@ -85,6 +83,9 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
   private int sleepInterval = 1000;
   private EventListenerList listenerList = new EventListenerList();
   private double dataRate = 0.0;
+  private String identifierExpression = "UNKNOWN";
+  private final LoggingEventFieldResolver resolver = LoggingEventFieldResolver.getInstance();
+   
   private PropertyChangeSupport propertySupport =
     new PropertyChangeSupport(this);
 
@@ -93,7 +94,15 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
     appender.addAppender(this);
     activateOptions();
   }
-
+  
+  public void setIdentifierExpression(String identifierExpression) {
+      this.identifierExpression = identifierExpression;
+  }
+  
+  public String getIdentifierExpression() {
+      return identifierExpression;
+  }
+  
   public ChainsawAppenderHandler() {
     activateOptions();
   }
@@ -142,54 +151,11 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
   /**
    * Determines an appropriate title for the Tab for the Tab Pane
    * by locating a the hostname property
-   * @param v
-   * @return
+   * @param event
+   * @return identifier
    */
-  private static String getTabIdentifier(LoggingEvent e) {
-    StringBuffer ident = new StringBuffer();
-    String hostname = e.getProperty(Constants.HOSTNAME_KEY);
-
-    if (hostname != null) {
-      ident.append(hostname);
-    }
-
-    String appname = e.getProperty(Constants.APPLICATION_KEY);
-
-    if (appname != null) {
-      if (ident.length() > 0) {
-        ident.append("-");
-      }
-
-      ident.append(appname);
-    }
-
-    if (ident.length() == 0) {
-      /**
-           * Maybe there's a Remote Host entry?
-           */
-      String remoteHost =
-        e.getProperty(ChainsawConstants.LOG4J_REMOTEHOST_KEY);
-
-      if (remoteHost != null) {
-        int colonIndex = remoteHost.indexOf(":");
-
-        if (colonIndex == -1) {
-          colonIndex = remoteHost.length();
-        }
-
-        remoteHost = remoteHost.substring(0, colonIndex);
-      }
-
-      if (remoteHost != null) {
-        ident.append(remoteHost);
-      }
-    }
-
-    if (ident.length() == 0) {
-      ident.append(ChainsawConstants.UNKNOWN_TAB_NAME);
-    }
-
-    return ident.toString();
+  private String getTabIdentifier(LoggingEvent e) {
+        return resolver.applyFields(identifierExpression, e);
   }
 
   /**

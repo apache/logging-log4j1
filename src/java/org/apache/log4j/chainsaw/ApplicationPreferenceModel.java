@@ -48,13 +48,14 @@
  */
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SettingsListener;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+
+import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.SettingsListener;
+import org.apache.log4j.helpers.Constants;
 
 
 /**
@@ -66,6 +67,7 @@ import java.beans.PropertyChangeSupport;
 class ApplicationPreferenceModel implements SettingsListener {
 
     private boolean showNoReceiverWarning = true;
+    private String identifierExpression = Constants.HOSTNAME_KEY + " - " + Constants.APPLICATION_KEY; 
 
     private final PropertyChangeSupport propertySupport =
         new PropertyChangeSupport(this);
@@ -137,7 +139,6 @@ class ApplicationPreferenceModel implements SettingsListener {
      */
     public PropertyChangeListener[] getPropertyChangeListeners(
         String propertyName) {
-
         return propertySupport.getPropertyChangeListeners(propertyName);
     }
 
@@ -146,7 +147,6 @@ class ApplicationPreferenceModel implements SettingsListener {
      * @return
      */
     public boolean hasListeners(String propertyName) {
-
         return propertySupport.hasListeners(propertyName);
     }
 
@@ -164,23 +164,32 @@ class ApplicationPreferenceModel implements SettingsListener {
 
         return showNoReceiverWarning;
     }
+    
+    public final String getIdentifierExpression() {
+        return identifierExpression;
+    }
 
+    public final void setIdentifierExpression(String newIdentifierExpression) {
+        String oldIdentifierExpression=identifierExpression;
+        this.identifierExpression = newIdentifierExpression;
+        firePropertyChange("identifierExpression", oldIdentifierExpression, newIdentifierExpression);
+    }
+    
     /**
      * @param showNoReceiverWarning The showNoReceiverWarning to set.
      */
-    public final void setShowNoReceiverWarning(boolean showNoReceiverWarning) {
-        this.showNoReceiverWarning = showNoReceiverWarning;
+    public final void setShowNoReceiverWarning(boolean newShowNoReceiverWarning) {
+        boolean oldShowNoReceiverWarning=showNoReceiverWarning;
+        this.showNoReceiverWarning = newShowNoReceiverWarning;
+        firePropertyChange("showNoReceiverWarning", oldShowNoReceiverWarning, newShowNoReceiverWarning);
     }
 
     /* (non-Javadoc)
      * @see org.apache.log4j.chainsaw.prefs.SettingsListener#loadSettings(org.apache.log4j.chainsaw.prefs.LoadSettingsEvent)
      */
     public void loadSettings(LoadSettingsEvent event) {
-
-        if (event.getSetting("showNoReceiverWarning") != null) {
-            setShowNoReceiverWarning(event.asBoolean("showNoReceiverWarning"));
-        }
-
+       setShowNoReceiverWarning(event.asBoolean("showNoReceiverWarning"));
+       setIdentifierExpression(event.getSetting("identifierExpression"));
     }
 
     /* (non-Javadoc)
@@ -188,6 +197,6 @@ class ApplicationPreferenceModel implements SettingsListener {
      */
     public void saveSettings(SaveSettingsEvent event) {
         event.saveSetting("showNoReceiverWarning", isShowNoReceiverWarning());
-
+        event.saveSetting("identifierExpression", getIdentifierExpression());
     }
 }
