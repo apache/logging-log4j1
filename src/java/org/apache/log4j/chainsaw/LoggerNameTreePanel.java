@@ -51,6 +51,10 @@
  */
 package org.apache.log4j.chainsaw;
 
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.chainsaw.icons.LineIconFactory;
+import org.apache.log4j.helpers.LogLog;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -59,8 +63,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -98,10 +104,6 @@ import javax.swing.tree.DefaultTreeSelectionModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
-
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-import org.apache.log4j.chainsaw.icons.LineIconFactory;
-import org.apache.log4j.helpers.LogLog;
 
 
 /**
@@ -275,6 +277,7 @@ final class LoggerNameTreePanel extends JPanel {
             focusOnAction.setEnabled(!hiddenSet.contains(logger));
             popupMenu.hideCheck.setSelected(hiddenSet.contains(logger));
           }
+
           fireChangeEvent();
         }
       };
@@ -452,14 +455,14 @@ final class LoggerNameTreePanel extends JPanel {
           //          editLoggerAction.setEnabled(path != null);
           String logger = getCurrentlySelectedLoggerName();
           focusOnAction.setEnabled(
-            (path != null) && (node != null) && (node.getParent() != null) && !hiddenSet.contains(logger));
+            (path != null) && (node != null) && (node.getParent() != null)
+            && !hiddenSet.contains(logger));
           hideAction.setEnabled(
             (path != null) && (node != null) && (node.getParent() != null));
 
           if (!focusOnAction.isEnabled()) {
             setFocusOnSelected(false);
           }
-
 
           expandAction.setEnabled(path != null);
 
@@ -492,6 +495,7 @@ final class LoggerNameTreePanel extends JPanel {
             logTreeModel.nodeChanged(
               (TreeNode) logTree.getSelectionPath().getLastPathComponent());
           }
+
           fireChangeEvent();
         }
       });
@@ -522,7 +526,7 @@ final class LoggerNameTreePanel extends JPanel {
 
     if ((logger == null) || (logger.length() == 0)) {
       focusOnAction.putValue(Action.NAME, "Focus On...");
-	  hideAction.putValue(Action.NAME, "Ignore ...");
+      hideAction.putValue(Action.NAME, "Ignore ...");
     } else {
       focusOnAction.putValue(Action.NAME, "Focus On '" + logger + "'");
       hideAction.putValue(Action.NAME, "Ignore '" + logger + "'");
@@ -759,6 +763,24 @@ final class LoggerNameTreePanel extends JPanel {
     toolbar.add(Box.createHorizontalGlue());
     toolbar.add(closeButton);
     toolbar.add(Box.createHorizontalStrut(5));
+  }
+
+  /**
+   * Ensures the Focus is set to a specific logger name
+   * @param string
+   */
+  public void setFocusOn(String logger) {
+    DefaultMutableTreeNode node = logTreeModel.lookupLogger(logger);
+    if(node!=null){
+		TreeNode[] nodes = node.getPath();
+		TreePath treePath = new TreePath(nodes);
+    	logTree.setSelectionPath(treePath);
+    	if(!focusOnLoggerButton.isSelected()){
+    		focusOnLoggerButton.doClick();
+    	}
+    }else{
+    	LogLog.error("failed to lookup logger " + logger);
+    }
   }
 
   /**
