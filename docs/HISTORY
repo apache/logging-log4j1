@@ -27,15 +27,17 @@
 
  - The FileAppender has been split into three parts: WriterAppender,
    ConsoleAppender and FileAppender. ConsoleAppender takes over the
-   console logging functionality of FileAppender. [**]
+   console logging functionality of FileAppender. As a result Support
+   for stream and console printing has been deprecated in FileAppender. [**]
 
  - The FileAppender now correctly outputs the header and footer of its
    layout. This problem was reported by too many users to list here. [*]
 
- - Appenders and Layouts now get to see the raw message object in LoggingEvent 
-   not just its rendered form. The access modifiers of some LoggingEvent fields 
-   were changed so that they can be accessed in less error-prone ways. Thanks to 
-   Jim Cakalic and Anders Kristens for their valuable advice. [*]
+ - Appenders and Layouts now get to see the raw message object in
+   LoggingEvent not just its rendered form. The access modifiers of
+   some LoggingEvent fields were changed so that they can be accessed
+   in less error-prone ways. Thanks to Jim Cakalic and Anders Kristens
+   for their valuable advice. [*]
 
  - Added getLayout(), getErrorHandler(), and getFilter() to the
    Appender interface. [*]

@@ -24,12 +24,15 @@ import org.apache.log4j.helpers.TracerPrintWriter;
 // Contibutors: Jens Uwe Pipka <jens.pipka@gmx.de>
 
 /**
-   FileAppender appends log events to the console, to a file, to a
-   {@link java.io.Writer} or an {@link java.io.OutputStream} depending
-   on the user's choice.
+   FileAppender appends log events to a file. 
+   
+   <b>Support for java.io.Writer and console appending has been
+   deprecated and will be removed in the near future.</b> You are
+   stongly encouraged to use the replacement solutions: {@link
+   WriterAppender} and {@link ConsoleAppender}.
+   
 
-   @author Ceki G&uuml;lc&uuml;
-   */
+   @author Ceki G&uuml;lc&uuml; */
 public class FileAppender extends WriterAppender {
 
   /**
@@ -95,7 +98,7 @@ public class FileAppender extends WriterAppender {
   */
   public
   FileAppender(Layout layout, OutputStream os) {
-    super(layout, new OutputStreamWriter(os));
+    super(layout, os);
   }
   
   /**
@@ -165,15 +168,33 @@ public class FileAppender extends WriterAppender {
   */
   protected
   void closeFile() {
+    // FIXME (remove qwIsOurs)
     if(this.qw != null && this.qwIsOurs) {
       try {
 	this.qw.close();
       }
       catch(java.io.IOException e) {
+	// Exceptionally, it does not make sense to delegate to an
+	// ErrorHandler. Since a closed appender is basically dead.
 	LogLog.error("Could not close " + qw, e);
       }
     }
   }
+
+  /**
+     Return an option by name.     
+   */
+  public
+  String getOption(String key) {
+    if (key.equalsIgnoreCase(FILE_OPTION)) {
+      return fileName;
+    } else if (key.equalsIgnoreCase(APPEND_OPTION)) {
+      return fileAppend ? "true" : "false";
+    } else {
+      return super.getOption(key);
+    }
+  }
+
  
   /**
      Retuns the option names for this component, namely the string
@@ -232,7 +253,7 @@ public class FileAppender extends WriterAppender {
      The recognized options are <b>File</b> and <b>Append</b>,
      i.e. the values of the string constants {@link #FILE_OPTION} and
      respectively {@link #APPEND_OPTION}. The options of the super
-     class {@link AppenderSkeleton} are also recognized.
+     class {@link WriterAppender} are also recognized.
 
      <p>The <b>File</b> option takes a string value which should be
      one of the strings "System.out" or "System.err" or the name of a
@@ -277,9 +298,6 @@ public class FileAppender extends WriterAppender {
     else if (key.equalsIgnoreCase(APPEND_OPTION)) {
       fileAppend = OptionConverter.toBoolean(value, fileAppend);
     }
-    else if (key.equalsIgnoreCase(IMMEDIATE_FLUSH_OPTION)) {
-      immediateFlush = OptionConverter.toBoolean(value, immediateFlush);
-    }
   }
 
   /**
@@ -292,25 +310,15 @@ public class FileAppender extends WriterAppender {
      this.qw = new QuietWriter(writer, errorHandler);
   }
 
-  
-  public
-  String getOption(String key) {
-    if (key.equalsIgnoreCase(FILE_OPTION)) {
-      return fileName;
-    } else if (key.equalsIgnoreCase(APPEND_OPTION)) {
-      return fileAppend ? "true" : "false";
-    } else if (key.equalsIgnoreCase(IMMEDIATE_FLUSH_OPTION)) {
-      return immediateFlush ? "true" : "false";
-    } else {
-      return super.getOption(key);
-    }
-  }
 
+  /**
+     Close any previously opened file and call the parent's
+     <code>reset</code>.  */
   protected
   void reset() {
     closeFile();
     this.fileName = null;
     super.reset();    
-  }
+  }  
 }
 
