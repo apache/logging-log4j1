@@ -277,7 +277,8 @@ public class NDC {
   }
 
   /**
-     Looks at the {@link DiagnosticContext} at the top of this NDC without removing it.
+     Looks at the last diagnostic context at the top of this NDC
+     without removing it.
 
      <p>The returned value is the value that was pushed last. If no
      context is available, then the empty string "" is returned.
