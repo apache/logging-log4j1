@@ -86,7 +86,6 @@ public class DatePatternConverter extends PatternConverter {
 
     try {
       df = new SimpleDateFormat(option);
-      System.out.println("======="+df);
     } catch (IllegalArgumentException e) {
       logger.error("Could not instantiate SimpleDateFormat with " + option, e);
 
