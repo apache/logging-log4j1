@@ -281,6 +281,7 @@
 		  ${stem}/spi/*.class,
 		  ${stem}/net/*.class,
 		  ${stem}/varia/*.class,
+		  ${stem}/chainsaw/*.class,
 		  ${stem}/nt/*.class,
 		  ${stem}/xml/*.class,
 		  ${stem}/jmx/*.class,
@@ -314,6 +315,7 @@
 	                 org.apache.log4j.performance,
 		         org.apache.log4j.spi,
 			 org.apache.log4j.varia,
+		         org.apache.log4j.chainsaw,
 		         org.apache.log4j.xml,
 		         org.apache.log4j.xml.examples"
 	   version="true"
