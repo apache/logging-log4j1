@@ -5,8 +5,12 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
 
+ June 12th, 2002,
 
  - Release of version 1.2.4
+
+ - Added LF5 documentation and examples. Further tests are required
+   for full integration. [*]
 
  - XMLLayout can now output messages which contain embedded CDATA
    sections. This resolves bug #9750. Many thanks Michael
