@@ -96,7 +96,7 @@ public class TelnetAppender extends AppenderSkeleton {
   /** Handles a log event.  For this appender, that means writing the
     message to each connected client.  */
   protected void append(LoggingEvent event) {
-    if(sh == null) {
+    if(sh == null || !sh.hasConnections()) {
       return;
     }
 
@@ -198,6 +198,14 @@ public class TelnetAppender extends AppenderSkeleton {
           logger.error("Encountered error while in SocketHandler loop.", e);
         }
       }
+    }
+    
+    /**
+     *  Determines if socket hander has any active connections.
+     *  @returns true if any active connections.
+     */
+    public boolean hasConnections() {
+       return connections.size() > 0;
     }
   }
 }
