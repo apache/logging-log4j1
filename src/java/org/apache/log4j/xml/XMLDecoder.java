@@ -16,6 +16,7 @@
 
 package org.apache.log4j.xml;
 
+import java.awt.Component;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
@@ -26,6 +27,7 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
 
+import javax.swing.ProgressMonitorInputStream;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -66,7 +68,12 @@ public class XMLDecoder implements Decoder {
   private DocumentBuilder docBuilder;
   private Map additionalProperties = new HashMap();
   private String partialEvent;
-  
+  private Component owner = null;
+
+  public XMLDecoder(Component owner) {
+      this();
+      this.owner = owner;
+  }
   public XMLDecoder() {
     dbf = DocumentBuilderFactory.newInstance();
     dbf.setValidating(false);
@@ -138,7 +145,13 @@ public class XMLDecoder implements Decoder {
    * @throws IOException
    */
   public Vector decode(URL url) throws IOException {
-    LineNumberReader reader = new LineNumberReader(new InputStreamReader(url.openStream()));
+    LineNumberReader reader = null;
+    if (owner != null) {
+      reader = new LineNumberReader(new InputStreamReader(new ProgressMonitorInputStream(owner, "Loading " + url , url.openStream())));
+    } else {
+      reader = new LineNumberReader(new InputStreamReader(url.openStream()));
+    }
+
     Vector v = new Vector();
 
     String line = null;
@@ -151,6 +164,7 @@ public class XMLDecoder implements Decoder {
             v.addAll(decodeEvents(buffer.toString()));
         }
     } finally {
+      partialEvent = null;
       try {
         if (reader != null) {
           reader.close();

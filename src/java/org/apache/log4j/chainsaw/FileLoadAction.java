@@ -58,22 +58,10 @@ class FileLoadAction extends AbstractAction {
   private boolean remoteURL = false;
 
   public FileLoadAction(
-    LogUI parent, String decoder, String title, boolean isRemoteURL) {
+    LogUI parent, Decoder decoder, String title, boolean isRemoteURL) {
     super(title);
     remoteURL = isRemoteURL;
-
-    try {
-      Class c = Class.forName(decoder);
-      Object o = c.newInstance();
-
-      if (o instanceof Decoder) {
-        this.decoder = (Decoder) o;
-      }
-    } catch (ClassNotFoundException cnfe) {
-    } catch (IllegalAccessException iae) {
-    } catch (InstantiationException ie) {
-    }
-
+    this.decoder = decoder;
     this.parent = parent;
   }
 
