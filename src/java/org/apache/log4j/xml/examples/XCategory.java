@@ -116,11 +116,10 @@ public class XCategory extends Category implements OptionHandler {
      XPriority#LETHAL}.  */
   public
   void lethal(String message, Throwable t) { 
-    // disable is a static variable defined in Category class
     if(hierarchy.isDisabled(XPriority.LETHAL_INT)) 
       return;
     if(XPriority.LETHAL.isGreaterOrEqual(this.getChainedPriority()))
-      forcedLog(FQCN, XPriority.LETHAL, message, t);
+      forcedLog(getFQCN(), XPriority.LETHAL, message, t);
   }
 
   /**
@@ -128,11 +127,10 @@ public class XCategory extends Category implements OptionHandler {
      XPriority#LETHAL}.  */
   public
   void lethal(String message) { 
-    // disable is a static variable defined in Category class
     if(hierarchy.isDisabled(XPriority.LETHAL_INT)) 
       return;
     if(XPriority.LETHAL.isGreaterOrEqual(this.getChainedPriority()))
-      forcedLog(FQCN, XPriority.LETHAL, message, null);
+      forcedLog(getFQCN(), XPriority.LETHAL, message, null);
   }
 
 
@@ -166,11 +164,10 @@ public class XCategory extends Category implements OptionHandler {
   */
   public
   void trace(String message, Throwable t) { 
-    // disable is defined in Category
     if(hierarchy.isDisabled(XPriority.TRACE_INT))
       return;   
     if(XPriority.TRACE.isGreaterOrEqual(this.getChainedPriority()))
-      forcedLog(FQCN, XPriority.TRACE, message, t);
+      forcedLog(getFQCN(), XPriority.TRACE, message, t);
   }
 
   /**
@@ -178,12 +175,10 @@ public class XCategory extends Category implements OptionHandler {
   */
   public
   void trace(String message) { 
-    // disable is defined in Category
     if(hierarchy.isDisabled(XPriority.TRACE_INT))
       return;   
     if(XPriority.TRACE.isGreaterOrEqual(this.getChainedPriority()))
-      callAppenders(new LoggingEvent(FQCN, this, XPriority.TRACE, 
-				     message, null));
+      forcedLog(getFQCN(), XPriority.TRACE, message, null);
   }
 
 

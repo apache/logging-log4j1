@@ -16,6 +16,7 @@
 //              Michael Horwitz <MHorwitz@siemens.co.za>
 //              Calvin Chan <calvin.chan@hic.gov.au>
 //              Aaron Greenhouse <aarong@cs.cmu.edu>
+//              Beat Meier <bmeier@infovia.com.ar>
 
 package org.apache.log4j;
 
@@ -309,12 +310,12 @@ public class Category implements AppenderAttachable {
     if(hierarchy.disable >=  Priority.DEBUG_INT) 
       return;    
     if(Priority.DEBUG.isGreaterOrEqual(this.getChainedPriority())) {
-      forcedLog(getFQCN(), Priority.DEBUG, message, null);
+      forcedLog(FQCN, Priority.DEBUG, message, null);
     }
   }
   
 
-  /** 
+  /**  
    Log a message object with the <code>DEBUG</code> priority including
    the stack trace of the {@link Throwable} <code>t</code> passed as
    parameter.
@@ -325,9 +326,10 @@ public class Category implements AppenderAttachable {
    @param t the exception to log, including its stack trace.  */  
   public
   void debug(Object message, Throwable t) {
-    if(hierarchy.disable >=  Priority.DEBUG_INT) return;
-    if(this.isEnabledFor(Priority.DEBUG))
-      forcedLog(getFQCN(), Priority.DEBUG, message, t);    
+    if(hierarchy.disable >=  Priority.DEBUG_INT) 
+      return;
+    if(Priority.DEBUG.isGreaterOrEqual(this.getChainedPriority()))
+      forcedLog(FQCN, Priority.DEBUG, message, t);    
   }
 
   //public
@@ -359,9 +361,10 @@ public class Category implements AppenderAttachable {
     @param message the message object to log */
   public
   void error(Object message) {
-    if(hierarchy.disable >=  Priority.ERROR_INT) return;
-    if(this.isEnabledFor(Priority.ERROR))
-      forcedLog(getFQCN(), Priority.ERROR, message, null);
+    if(hierarchy.disable >=  Priority.ERROR_INT) 
+      return;
+    if(Priority.ERROR.isGreaterOrEqual(this.getChainedPriority()))
+      forcedLog(FQCN, Priority.ERROR, message, null);
   }
 
   /** 
@@ -375,9 +378,10 @@ public class Category implements AppenderAttachable {
    @param t the exception to log, including its stack trace.  */  
   public
   void error(Object message, Throwable t) {
-    if(hierarchy.disable >=  Priority.ERROR_INT) return;
-    if(this.isEnabledFor(Priority.ERROR))
-      forcedLog(getFQCN(), Priority.ERROR, message, t);
+    if(hierarchy.disable >=  Priority.ERROR_INT) 
+      return;
+    if(Priority.ERROR.isGreaterOrEqual(this.getChainedPriority()))
+      forcedLog(FQCN, Priority.ERROR, message, t);
     
   }
 
@@ -415,9 +419,10 @@ public class Category implements AppenderAttachable {
     @param message the message object to log */
   public
   void fatal(Object message) {
-    if(hierarchy.disable >=  Priority.FATAL_INT) return;    
+    if(hierarchy.disable >=  Priority.FATAL_INT) 
+      return;    
     if(Priority.FATAL.isGreaterOrEqual(this.getChainedPriority()))
-      forcedLog(getFQCN(), Priority.FATAL, message, null);
+      forcedLog(FQCN, Priority.FATAL, message, null);
   }
   
   /** 
@@ -431,9 +436,10 @@ public class Category implements AppenderAttachable {
    @param t the exception to log, including its stack trace.  */
   public
   void fatal(Object message, Throwable t) {
-    if(hierarchy.disable >=  Priority.FATAL_INT) return;   
+    if(hierarchy.disable >=  Priority.FATAL_INT) 
+      return;   
     if(Priority.FATAL.isGreaterOrEqual(this.getChainedPriority()))
-      forcedLog(getFQCN(), Priority.FATAL, message, t);
+      forcedLog(FQCN, Priority.FATAL, message, t);
   }
 
 
@@ -526,20 +532,6 @@ public class Category implements AppenderAttachable {
   }
 
   
-  /**
-     The value returned by this method is used as a hint to determine
-     the correct caller localization information.
-
-     <p>Subclasses should override this method to return their own
-     fully qualified class name.
-
-     @since 1.2 */
-  protected
-  String getFQCN() {
-    return Category.FQCN;
-  }
-
-
   /**
      Return the the {@link Hierarchy} where this <code>Category</code> instance is
      attached.
@@ -713,9 +705,10 @@ public class Category implements AppenderAttachable {
     @param message the message object to log */
   public
   void info(Object message) {
-    if(hierarchy.disable >=  Priority.INFO_INT) return;    
+    if(hierarchy.disable >=  Priority.INFO_INT) 
+      return;    
     if(Priority.INFO.isGreaterOrEqual(this.getChainedPriority()))
-      forcedLog(getFQCN(), Priority.INFO, message, null);
+      forcedLog(FQCN, Priority.INFO, message, null);
   }
   
   /** 
@@ -729,9 +722,10 @@ public class Category implements AppenderAttachable {
    @param t the exception to log, including its stack trace.  */
   public
   void info(Object message, Throwable t) {
-    if(hierarchy.disable >=  Priority.INFO_INT) return;   
+    if(hierarchy.disable >=  Priority.INFO_INT) 
+      return;   
     if(Priority.INFO.isGreaterOrEqual(this.getChainedPriority()))
-      forcedLog(getFQCN(), Priority.INFO, message, t);
+      forcedLog(FQCN, Priority.INFO, message, t);
   }
 
   /**
@@ -785,9 +779,8 @@ public class Category implements AppenderAttachable {
   */
   public
   boolean isEnabledFor(Priority priority) {
-    if(hierarchy.disable >= priority.level) {
+    if(hierarchy.disable >=  priority.level)
       return false;
-    }
     return priority.isGreaterOrEqual(this.getChainedPriority());
   }
 
@@ -826,7 +819,7 @@ public class Category implements AppenderAttachable {
       if(msg == null) {
 	msg = key;
       }
-      forcedLog(getFQCN(), priority, msg, t);
+      forcedLog(FQCN, priority, msg, t);
     }
   }
   /**
@@ -850,7 +843,7 @@ public class Category implements AppenderAttachable {
 	msg = key;
       else 
 	msg = java.text.MessageFormat.format(pattern, params);
-      forcedLog(getFQCN(), priority, msg, t);
+      forcedLog(FQCN, priority, msg, t);
     }
   }
   
@@ -863,7 +856,7 @@ public class Category implements AppenderAttachable {
       return;
     }
     if(priority.isGreaterOrEqual(this.getChainedPriority())) 
-      forcedLog(getFQCN(), priority, message, t);
+      forcedLog(FQCN, priority, message, t);
   }
   
  /**
@@ -875,7 +868,7 @@ public class Category implements AppenderAttachable {
       return;
     }
     if(priority.isGreaterOrEqual(this.getChainedPriority()))
-      forcedLog(getFQCN(), priority, message, null);
+      forcedLog(FQCN, priority, message, null);
   }
 
   /**
@@ -1022,8 +1015,11 @@ public class Category implements AppenderAttachable {
     @param message the message object to log.  */
   public
   void warn(Object message) {
-    if(this.isEnabledFor(Priority.WARN))
-      forcedLog(getFQCN(), Priority.WARN, message, null);
+    if(hierarchy.disable >=  Priority.WARN_INT) 
+      return;   
+
+    if(Priority.WARN.isGreaterOrEqual(this.getChainedPriority()))
+      forcedLog(FQCN, Priority.WARN, message, null);    
   }
   
   /** 
@@ -1037,7 +1033,9 @@ public class Category implements AppenderAttachable {
    @param t the exception to log, including its stack trace.  */
   public
   void warn(Object message, Throwable t) {
-    if(this.isEnabledFor(Priority.WARN))
-      forcedLog(getFQCN(), Priority.WARN, message, t);
+    if(hierarchy.disable >=  Priority.WARN_INT) 
+      return;   
+    if(Priority.WARN.isGreaterOrEqual(this.getChainedPriority()))
+      forcedLog(FQCN, Priority.WARN, message, t);
   }
 }
