@@ -96,7 +96,6 @@
 
   <target name="usage">
     <echo>
-
     These are the targets supported by this ANT build scpript:
 
     build.core - compile core log4j classes. This target is dependent on JAXP, JNDI.
@@ -260,16 +259,13 @@
     <javac srcdir="${java.source.dir}"
            destdir="${javac.dest}"
            includes="org/apache/ugli/**/*.java,
-    	            ${stem}/**/*.java, 
-    	            ${stem}/xml/DOMConfigurator.java,
-    	            ${stem}/xml/XMLLayout.java"
+    	            ${stem}/**/*.java"
            excludes="org/apache/ugli/impl/JDK14*.java,
     	             **/UnitTest*.java,
                      **/StressCategory.java,
                      **/doc-files/*,
                      ${stem}/chainsaw/**,
                      ${stem}/db/**,
-                     ${stem}/xml/**,
                      ${stem}/test/serialization/**,
                      ${stem}/net/SMTPAppender.java,
                      ${stem}/net/JMS*.java,
@@ -349,7 +345,8 @@
 	    <jar jarfile="log4j-xml.jar" basedir="${javac.dest}"
 	         includes="${stem}/xml/*.class,
 	    	           ${stem}/xml/*.dtd"
-	    	  excludes="${stem}/xml/DOMConfigurator.java"
+	    	  excludes="${stem}/xml/DOMConfigurator.class,
+	    	            ${stem}/xml/XMLLayout.class"
 	    >
 	     <manifest>
 	        <section name="org/apache/log4j/">
@@ -539,8 +536,6 @@
          includes="ugli.properties,
                 org/apache/ugli/**/*.class
                 ${stem}/*.class, 
-    	        ${stem}/xml/log4j.dtd, 
-    	        ${stem}/xml/logger.dtd,
                 ${stem}/joran/**/*.class,
                 ${stem}/config/*.class,
                 ${stem}/helpers/*.class,
@@ -562,7 +557,11 @@
                 ${stem}/config/*.class"
       excludes="org/apache/ugli/**/JDK14*.class,
     	         **/UnitTest**, 
-    	        ${stem}/xml/**,
+    	        ${stem}/xml/Log4jEntityResolver.class,
+    	        ${stem}/xml/UtilLoggingEntityResolver.class,
+    	        ${stem}/xml/SAXErrorHandler.class,
+                ${stem}/xml/UtilLoggingXMLDecoder.class,
+                ${stem}/xml/XMLDecoder.class,
     	        ${stem}/net/SMTPAppender.class,
     	        ${stem}/net/DefaultEvaluator.class,
     	        ${stem}/spi/TriggeringEventEvaluator.class,
