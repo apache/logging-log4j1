@@ -55,7 +55,7 @@ href="http://log4cpp.sourceforge.net">log4cpp</a>.
 <p>Inserting log statements into code is a low-tech method for
 debugging it. It may also be the only way because debuggers are not
 always available or applicable. This is usually the case for
-multi-threaded applications and distributed applications at large.
+multithreaded applications and distributed applications at large.
 
 <p>Experience indicated that logging was an important component of the
 development cycle. It offered several advantages. It could provide
@@ -66,7 +66,7 @@ medium to be studied at a later time. In addition to its use in the
 development cycle, a sufficiently rich logging package could also be
 viewed as an auditing tool.
 
-<p>As Brian W. Kernigan and Rob Pike put it in their truely excellent
+<p>As Brian W. Kernigan and Rob Pike put it in their truly excellent
 book <i>"The Practice of Programming"</i>
 <pre>
   As personal choice, we tend not to use debuggers beyond getting a
@@ -92,7 +92,7 @@ simple to understand and to use.
 
 <p>Log4j has three main components: <em>categories</em>,
 <em>appenders</em> and <em>layouts</em>. These three types of
-componets work together to enable developers to log messages according
+components work together to enable developers to log messages according
 to message type and priority, and to control at runtime how these
 messages are formatted and where they are reported.
 
@@ -199,7 +199,7 @@ formally:
   <tr>
   <td>  
    <dl>
-     <dt><b>Priority Inheritence</b>
+     <dt><b>Priority Inheritance</b>
 
      <dd><p>The <em>inherited priority</em> for a given category
 <i>C</i>, is equal to the first non-null priority in the category
@@ -379,7 +379,7 @@ href="api/org/apache/log4j/net/SocketAppender.html">remote socket</a>
 servers, <a href="api/org/apache/log4j/nt/NTEventLogAppender.html"> NT
 Event Loggers</a>, and remote UNIX <a
 href="api/org/apache/log4j/net/SyslogAppender.html">Syslog</a>
-daemons. It is also possible to log <a href="api/org/apache/log4j/AsyncAppender.html">asyncronously</a>.
+daemons. It is also possible to log <a href="api/org/apache/log4j/AsyncAppender.html">asynchronously</a>.
  
 <p>A category may refer to multiple appenders. The <a
 href="api/org/apache/log4j/Category.html#addAppender(org.apache.log4j.Appender)">addAppender</a>
@@ -506,7 +506,7 @@ sized applications will have thousands of logging statements embedded
 within their code.  Given their number, it becomes imperative to
 manage these log statements without the need to modify them manually.
 
-<p>The log4j environment is fully configurable programatically.
+<p>The log4j environment is fully configurable programmatically.
 However, it is far more flexible to configure log4j using
 configuration files.  Currently, configuration files can be written in
 XML or in Java properties (key=value) format.
@@ -732,7 +732,7 @@ static initializer of a class is called once and only during the
 loading of a class into memory. (Although different classloaders may
 load distinct copies of the same class.)
 
-<p>The default intialization is very useful in environments where the
+<p>The default initialization is very useful in environments where the
 exact entry point to the application depends on the runtime
 environment. For example, the same application can be used as a
 stand-alone application, as an applet, or as a servlet under the
@@ -798,7 +798,7 @@ control of a web-server.
 <h2> Nested Diagnostic Contexts</h2>
 
 <p>Most real-world systems have to deal with multiple clients
-simultaneously. In a typical multi-threaded implementation of such a
+simultaneously. In a typical multithreaded implementation of such a
 system, different threads will handle different clients. Logging is
 especially well suited to trace and debug complex distributed
 applications. A common approach to differentiate the logging output of
@@ -884,7 +884,7 @@ claims to be fast and flexible: speed first, flexibility second.
    href="api/org/apache/log4j/BasicConfigurator.html#disable(org.apache.log4j.Priority)">set
    of priorities</a>, the cost of a log request consists of a method
    invocation plus an integer comparison.  On a 233 MHz Pentium II
-   machine this cost is typically in the 5 to 50 nano-second range.
+   machine this cost is typically in the 5 to 50 nanosecond range.
 
    <p>However, The method invocation involves the "hidden" cost of
    parameter construction. 
@@ -925,8 +925,8 @@ claims to be fast and flexible: speed first, flexibility second.
    flexibility.
 
 
-   <p>Certain users resort to pre-processing or compile-time
-   techinques to compile out all log statements. This leads to perfect
+   <p>Certain users resort to preprocessing or compile-time
+   techniques to compile out all log statements. This leads to perfect
    performance efficiency with respect to logging. However, since the
    resulting application binary does not contain any log statements,
    logging cannot be turned on for that binary. In my opinion this is
@@ -1027,7 +1027,7 @@ user-chosen formats. The log4j package is designed so that log
 statements can remain in shipped code without incurring a heavy
 performance cost.
 
-<h2>Acknowledgements</h2>
+<h2>Acknowledgments</h2>
 
 Many thanks to N. Asokan for reviewing the article. He is also one of
 the originators of the category concept. I am indebted to Nelson Minar
