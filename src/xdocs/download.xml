@@ -115,8 +115,13 @@
         ByteCode files.
 	</dd>
 
+     <!-- ============================================================================== -->	
+	
+	<dt><a href="http://log4j400.sourceforge.net/"><b>log4j400</b></a></dt>
 
-
+	<dd>Log4J400 includes MessageQueue and DataQueue Appenders for
+	the AS/400 (aka IBM iSeries).
+        </dd>
 
     <!-- ============================================================================== -->	
 	
