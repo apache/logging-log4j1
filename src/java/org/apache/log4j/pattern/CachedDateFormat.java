@@ -36,10 +36,6 @@ import java.util.TimeZone;
 final class CachedDateFormat extends DateFormat {
   private static final int BAD_PATTERN = -1;
   
-  // We take advantage of structure of the sentinel, in particular
-  // the incremental decrease in the digits 9, 8, and 7.
-  private static final int SENTINEL = 987;
-  
   // Given that the JVM precision is 1/1000 of a second, 3 digit millisecond
   // precision is the best we can ever expect.
   private static final int JVM_MAX_MILLI_DIGITS = 3;
@@ -119,9 +115,7 @@ final class CachedDateFormat extends DateFormat {
    */
   private int findMillisecondStart(
     final long time, final String formatted, final DateFormat formatter) {
-    // the following code assume that the value of the SENTINEL is
-    // 987. It won't work corectly if the SENTINEL is not 987.
-    String plus987 = formatter.format(new Date(time + SENTINEL));
+    String plus987 = formatter.format(new Date(time + 987));
 
     //
     //    find first difference between values
@@ -132,16 +126,12 @@ final class CachedDateFormat extends DateFormat {
         //   if one string has "000" and the other "987"
         //      we have found the millisecond field
         //
-        if ((i + milliDigits) <= formatted.length()) {
-          for (int j = 0; j < milliDigits; j++) {
-            if ((formatted.charAt(i + j) != '0')
-                || (plus987.charAt(i + j) != ('9' - j))) {
-              return BAD_PATTERN;  
-            }
-          }
+        if (i + 3 <= formatted.length() 
+            && formatted.substring(i, i + JVM_MAX_MILLI_DIGITS) == "000" 
+            && plus987.substring(i, i + JVM_MAX_MILLI_DIGITS) == "987") {
           return i;
         } else {
-          return BAD_PATTERN;
+          return BAD_PATTERN;  
         }
       }
     }
