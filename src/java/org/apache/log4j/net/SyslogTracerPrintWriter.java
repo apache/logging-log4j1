@@ -12,7 +12,7 @@ import org.apache.log4j.helpers.TracerPrintWriter;
 
 /**
    SyslogTracerPrintWriter overrides the println function in
-   TracerPrintWriter by replacing the TAB character which appear as
+   TracerPrintWriter by replacing the TAB character which appears as
    '^I' on syslog files with spaces. It also does not print the "\n".
 */
 class SyslogTracerPrintWriter extends TracerPrintWriter {
@@ -24,7 +24,7 @@ class SyslogTracerPrintWriter extends TracerPrintWriter {
   }
 
   /**
-     Make the first Exception line print properly by omitting the \n ath the 
+     Make the first Exception line print properly by omitting the \n at the 
      end.
   */
   public
