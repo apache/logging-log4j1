@@ -42,7 +42,10 @@
 
   <!-- The jar file that the jar-chainsaw task will generate -->
   <property name="log4j-chainsaw.jar" value="log4j-chainsaw-${version}.jar"/>
-    
+
+  <!-- When building a Java Web Start distribution of Chainsaw, some Receivers with external dependencies need to be packaged into a seperate Jar -->
+  <property name="webstart-dependant-receivers.jar" value="webstart-dependant-receivers.jar-${version}.jar"/>
+	
   <!-- The jar file that the jar-lf5 task will generate -->
   <property name="log4j-lf5.jar" value="log4j-lf5-${version}.jar"/>
 
@@ -498,7 +501,8 @@ later. For JDK 1.2, you can get the JNDI API from
                 ${stem}/plugins/*.class,
                 ${stem}/config/*.class"
       excludes="**/UnitTest**, ${stem}/**/*BeanInfo.class">
-
+    	<exclude name="**/JMSReceiver*" if="webstart"/>
+    	<exclude name="**/DBReceiver*" if="webstart"/>
       <manifest>
         <attribute name="Manifest-version" value="1.0"/>
         <section name="org/apache/log4j/">
@@ -572,7 +576,9 @@ later. For JDK 1.2, you can get the JNDI API from
          		${stem}/chainsaw/icons/*.jpg, 
          		${stem}/chainsaw/icons/LICENCE"
          excludes="**/UnitTest**">
-
+    	<!-- we need to exclude the JMS + DB Receiver BeanInfo for webstart purposes -->
+    	<exclude name="**/JMS*BeanInfo.class" if="webstart" />
+    	<exclude name="**/DB*BeanInfo.class" if="webstart" />
       <manifest>
         <attribute name="Manifest-version" value="1.0"/>
         <section name="org/apache/log4j/">
@@ -616,6 +622,46 @@ later. For JDK 1.2, you can get the JNDI API from
     </jar>
   </target>
 
+  <!-- ================================================================= -->
+  <!-- These targets are for when we need to create a Java Web start distribution of Chainsaw -->
+  <!-- ================================================================= -->
+
+  <target name="webstart-dependant-receivers.jar" depends="build">
+    <delete>
+      <fileset dir="${jar.dest}">
+        <include name="${webstart-dependant-receivers.jar}"/>
+      </fileset>
+    </delete>
+
+    <jar jarfile="${jar.dest}/${webstart-dependant-receivers.jar}" basedir="${javac.dest}"
+      includes="${stem}/**/JMSReceiver*.class, ${stem}/**/DBReceiver*.class">
+      <manifest>
+        <attribute name="Manifest-version" value="1.0"/>
+        <section name="org/apache/log4j/">
+          <attribute name="Implementation-Title" value="log4j"/>
+          <attribute name="Implementation-Version" value="${version}"/>
+          <attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
+        </section>
+      </manifest>
+    </jar>
+  </target>
+
+	<target name="webstart" >
+  	<property name="webstart" value="true"/>
+  	 <antcall target="jar"/>
+ 	 <antcall target="webstart-dependant-receivers.jar"/>
+		
+		  <input
+		    message="Please enter key password:"
+		    addproperty="keypass"
+		  />
+		<signjar verbose="false" keystore="${keystore}" alias="${alias}" storepass="${storepass}" keypass="${keypass}" >
+		 <fileset dir=".">
+		  <include name="*.jar"/>
+		 </fileset>
+		</signjar>
+  </target>
+	
   <!-- ================================================================= -->
   <!-- This target builds the javadoc files.                             -->
   <!-- ================================================================= -->
