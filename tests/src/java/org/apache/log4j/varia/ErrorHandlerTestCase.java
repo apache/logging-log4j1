@@ -25,6 +25,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.util.Compare;
 import org.apache.log4j.util.ControlFilter;
 import org.apache.log4j.util.Filter;
+import org.apache.log4j.util.JunitTestRunnerFilter;
 import org.apache.log4j.util.LineNumberFilter;
 import org.apache.log4j.util.SunReflectFilter;
 import org.apache.log4j.util.Transformer;
@@ -70,7 +71,10 @@ public class ErrorHandlerTestCase extends TestCase {
 
     Transformer.transform(
       TEMP, FILTERED,
-      new Filter[] { cf, new LineNumberFilter(), new SunReflectFilter() });
+      new Filter[] { cf, 
+          new LineNumberFilter(),
+          new JunitTestRunnerFilter(),
+          new SunReflectFilter() });
 
     assertTrue(Compare.compare(FILTERED, "witness/fallback"));
   }
@@ -101,7 +105,7 @@ public class ErrorHandlerTestCase extends TestCase {
     root.error("Message " + i, e);
   }
 
-  public static Test suite() {
+  public static Test XXsuite() {
     TestSuite suite = new TestSuite();
     suite.addTest(new ErrorHandlerTestCase("test1"));
 

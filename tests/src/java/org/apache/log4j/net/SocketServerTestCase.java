@@ -109,7 +109,9 @@ public class SocketServerTestCase extends TestCase {
 
     Transformer.transform(
       TEMP, FILTERED,
-      new Filter[] { cf, new LineNumberFilter(), new SunReflectFilter() });
+      new Filter[] { cf, new LineNumberFilter(), 
+          new JunitTestRunnerFilter(),
+          new SunReflectFilter() });
 
     assertTrue(Compare.compare(FILTERED, "witness/socketServer.1"));
   }
@@ -133,7 +135,9 @@ public class SocketServerTestCase extends TestCase {
 
     Transformer.transform(
       TEMP, FILTERED,
-      new Filter[] { cf, new LineNumberFilter(), new SunReflectFilter() });
+      new Filter[] { cf, new LineNumberFilter(), 
+          new JunitTestRunnerFilter(),
+          new SunReflectFilter() });
 
     assertTrue(Compare.compare(FILTERED, "witness/socketServer.2"));
   }
@@ -156,7 +160,9 @@ public class SocketServerTestCase extends TestCase {
 
     Transformer.transform(
       TEMP, FILTERED,
-      new Filter[] { cf, new LineNumberFilter(), new SunReflectFilter() });
+      new Filter[] { cf, new LineNumberFilter(), 
+          new JunitTestRunnerFilter(),
+          new SunReflectFilter() });
 
     assertTrue(Compare.compare(FILTERED, "witness/socketServer.3"));
   }
@@ -182,7 +188,9 @@ public class SocketServerTestCase extends TestCase {
 
     Transformer.transform(
       TEMP, FILTERED,
-      new Filter[] { cf, new LineNumberFilter(), new SunReflectFilter() });
+      new Filter[] { cf, new LineNumberFilter(), 
+          new JunitTestRunnerFilter(),
+          new SunReflectFilter() });
 
     assertTrue(Compare.compare(FILTERED, "witness/socketServer.4"));
   }
@@ -221,7 +229,9 @@ public class SocketServerTestCase extends TestCase {
 
     Transformer.transform(
       TEMP, FILTERED,
-      new Filter[] { cf, new LineNumberFilter(), new SunReflectFilter() });
+      new Filter[] { cf, new LineNumberFilter(), 
+          new JunitTestRunnerFilter(),
+          new SunReflectFilter() });
     assertTrue(Compare.compare(FILTERED, "witness/socketServer.5"));
   }
 
@@ -253,7 +263,9 @@ public class SocketServerTestCase extends TestCase {
 
     Transformer.transform(
       TEMP, FILTERED,
-      new Filter[] { cf, new LineNumberFilter(), new SunReflectFilter() });
+      new Filter[] { cf, new LineNumberFilter(), 
+          new JunitTestRunnerFilter(),
+          new SunReflectFilter() });
     assertTrue(Compare.compare(FILTERED, "witness/socketServer.6"));
   }
 
@@ -280,7 +292,9 @@ public class SocketServerTestCase extends TestCase {
 
     Transformer.transform(
       TEMP, FILTERED,
-      new Filter[] { cf, new LineNumberFilter(), new SunReflectFilter() });
+      new Filter[] { cf, new LineNumberFilter(), 
+          new JunitTestRunnerFilter(),
+          new SunReflectFilter() });
     assertTrue(Compare.compare(FILTERED, "witness/socketServer.7"));
   }
 
@@ -305,7 +319,9 @@ public class SocketServerTestCase extends TestCase {
 
     Transformer.transform(
       TEMP, FILTERED,
-      new Filter[] { cf, new LineNumberFilter(), new SunReflectFilter() });
+      new Filter[] { cf, new LineNumberFilter(), 
+          new JunitTestRunnerFilter(),
+          new SunReflectFilter() });
     assertTrue(Compare.compare(FILTERED, "witness/socketServer.8"));
   }
 
@@ -337,7 +353,7 @@ public class SocketServerTestCase extends TestCase {
     }
   }
 
-  public static Test suite() {
+  public static Test XXsuite() {
     TestSuite suite = new TestSuite();
     suite.addTest(new SocketServerTestCase("test1"));
     suite.addTest(new SocketServerTestCase("test2"));

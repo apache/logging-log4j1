@@ -110,13 +110,10 @@
   <!-- created witness file.                                             -->
   <!-- ================================================================= -->  
 
-  <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
-  <!-- Temporarily removed SocketServer which followed DefaultInit -->
-  <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
-  
   <target name="regression" depends="Minimum, Logger, DOM, CustomLevel, 
                                      CustomLogger, PatternLayout, 
                                      HierarchyThreshold, DefaultInit, 
+                                     SocketServer,
                                      XMLLayout, AsyncAppender, ErrorHandler,
                                      OptionConverter, BoundedFIFO, 
                                      Joran,  
