@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE configuration SYSTEM "log4j.dtd">
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 
 <!-- PropertyConfigurator equivalent:
 log4j.rootCategory=, NULL
@@ -8,7 +8,7 @@ log4j.appender.NULL=org.apache.log4j.performance.NullAppender
 log4j.appender.NULL.layout=org.apache.log4j.PatternLayout
 log4j.appender.NULL.layout.ConversionPattern=%p - %m%n
 -->
-<configuration>
+<log4j:configuration>
 
         <appender name="NULL" class="org.apache.log4j.performance.NullAppender">
            <layout class="org.apache.log4j.PatternLayout">
@@ -25,4 +25,4 @@ log4j.appender.NULL.layout.ConversionPattern=%p - %m%n
    	   <appender-ref ref="NULL" />
 	</root>
 	
-</configuration>
+</log4j:configuration>

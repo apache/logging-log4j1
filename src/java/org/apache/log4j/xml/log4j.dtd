@@ -6,7 +6,7 @@
 elements,appender elements, categories and an optional root
 element. -->
 
-<!ELEMENT configuration (renderer*, appender*,category*,root?)>
+<!ELEMENT logj:configuration (renderer*, appender*,category*,root?)>
 
 <!-- The disableOverride attribute allows the user to override any
      BasicConfigurator.disable invocations made from within the
@@ -22,7 +22,7 @@ element. -->
      configDebug variable.     
 -->
      
-<!ATTLIST configuration
+<!ATTLIST log4j:configuration
   disableOverride          (true|false|null)  "null"
   configDebug              (true|false|null)  "null"
 >

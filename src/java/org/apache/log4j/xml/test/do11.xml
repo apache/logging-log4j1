@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE configuration SYSTEM "log4j.dtd">
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 
 <!-- Test DOMConfigurator for
     with disableOverride=true 
     with undefined configDebug param element
  -->
-<configuration disableOverride="true">
+<log4j:configuration disableOverride="true">
 	<appender name="A1" class="org.apache.log4j.FileAppender">
 
             <param name="File" value="System.out" />
@@ -20,4 +20,4 @@
    	   <appender-ref ref="A1" />
 	</root>
 	
-</configuration>
+</log4j:configuration>

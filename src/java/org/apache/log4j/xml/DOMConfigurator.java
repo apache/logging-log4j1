@@ -55,7 +55,7 @@ import javax.xml.parsers.FactoryConfigurationError;
    @since 0.8.3 */
 public class DOMConfigurator extends BasicConfigurator implements Configurator {
 
-  static final String CONFIGURATION_TAG = "configuration";
+  static final String CONFIGURATION_TAG = "log4j:configuration";
   static final String RENDERER_TAG      = "renderer";
   static final String APPENDER_TAG 	= "appender";
   static final String APPENDER_REF_TAG 	= "appender-ref";  
@@ -249,8 +249,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
   void parseFilters(Element element, Appender appender) {
     String clazz = element.getAttribute(CLASS_ATTR);
     Filter filter = (Filter) OptionConverter.instantiateByClassName(clazz,
-                                                org.apache.log4j.spi.Filter.class, 
-					        null);
+                                                Filter.class, null);
     
     if(filter != null) {
       NodeList children = element.getChildNodes();
@@ -593,7 +592,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
   void parse(Element element, Hierarchy hierarchy) {
     
     if (!element.getTagName().equals(CONFIGURATION_TAG)) {
-      LogLog.error("DOM element is not a <configuration> element");
+      LogLog.error("DOM element is not a <"+CONFIGURATION_TAG+"> element.");
       return;
     }
 

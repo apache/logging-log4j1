@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE configuration SYSTEM "log4j.dtd">
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 
-<configuration>
+<log4j:configuration>
 
         <appender name="NULL" class="org.apache.log4j.performance.NullAppender">
            <layout class="org.apache.log4j.TTCCLayout">
@@ -18,4 +18,4 @@
    	   <appender-ref ref="NULL" />
 	</root>
 	
-</configuration>
+</log4j:configuration>
