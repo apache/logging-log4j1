@@ -294,12 +294,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     }
     logUI.cyclicBufferSize = model.getCyclicBufferSize();
 
-    PropertyFilter propFilter = new PropertyFilter();
-    propFilter.setProperties(Constants.HOSTNAME_KEY+"=chainsaw,"+Constants.APPLICATION_KEY+"=log");
-
     logUI.handler = new ChainsawAppenderHandler();
-    logUI.handler.addFilter(propFilter);
-
     logUI.handler.addEventBatchListener(logUI.new NewTabEventBatchReceiver());
     /**
      * TODO until we work out how JoranConfigurator might be able to have
@@ -311,6 +306,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     //configuration initialized here
     logUI.ensureChainsawAppenderHandlerAdded();
     logger = LogManager.getLogger(LogUI.class);
+    logger.getLoggerRepository().setProperty(Constants.APPLICATION_KEY,"log");
+    logger.getLoggerRepository().setProperty(Constants.HOSTNAME_KEY,"chainsaw");
     
     String config = model.getConfigurationURL();
     if(config!=null && (!(config.trim().equals("")))) {
@@ -366,18 +363,16 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     applyLookAndFeel(model.getLookAndFeelClassName());
 
     handler = new ChainsawAppenderHandler(appender);
-    PropertyFilter propFilter = new PropertyFilter();
-    propFilter.setProperties(Constants.HOSTNAME_KEY+"=chainsaw,"+Constants.APPLICATION_KEY+"=log");
-    handler.addFilter(propFilter);
     handler.addEventBatchListener(new NewTabEventBatchReceiver());
-
-    LogManager.getRootLogger().addAppender(appender);
+    
+    logger = LogManager.getLogger(LogUI.class);
 
     setShutdownAction(
-      new AbstractAction() {
-        public void actionPerformed(ActionEvent e) {
-        }
-      });
+        new AbstractAction() {
+          public void actionPerformed(ActionEvent e) {
+          }
+        });
+    
     activateViewer();
 
     getApplicationPreferenceModel().apply(model);
@@ -1732,82 +1727,83 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   }
 
   private void buildLogPanel(
-    boolean customExpression, final String ident, final List events)
-    throws IllegalArgumentException {
-    final LogPanel thisPanel = new LogPanel(getStatusBar(), ident, cyclicBufferSize);
+      boolean customExpression, final String ident, final List events)
+      throws IllegalArgumentException {
+      final LogPanel thisPanel = new LogPanel(getStatusBar(), ident, cyclicBufferSize);
 
-    /**
-             * Now add the panel as a batch listener so it can handle it's own
-             * batchs
-             */
-    if (customExpression) {
-      handler.addCustomEventBatchListener(ident, thisPanel);
-    } else {
-      identifierPanels.add(thisPanel);
-      handler.addEventBatchListener(thisPanel);
-    }
+      /**
+               * Now add the panel as a batch listener so it can handle it's own
+               * batchs
+               */
+      if (customExpression) {
+        handler.addCustomEventBatchListener(ident, thisPanel);
+      } else {
+        identifierPanels.add(thisPanel);
+        handler.addEventBatchListener(thisPanel);
+      }
 
-    TabIconHandler iconHandler = new TabIconHandler(ident);
-    thisPanel.addEventCountListener(iconHandler);
-    
+      TabIconHandler iconHandler = new TabIconHandler(ident);
+      thisPanel.addEventCountListener(iconHandler);
+      
 
 
-    tabbedPane.addChangeListener(iconHandler);
+      tabbedPane.addChangeListener(iconHandler);
 
-    PropertyChangeListener toolbarMenuUpdateListener =
-      new PropertyChangeListener() {
-        public void propertyChange(PropertyChangeEvent evt) {
-          tbms.stateChange();
-        }
-      };
-
-    thisPanel.addPropertyChangeListener(toolbarMenuUpdateListener);
-    thisPanel.addPreferencePropertyChangeListener(toolbarMenuUpdateListener);
-
-    thisPanel.addPropertyChangeListener(
-      "docked",
-      new PropertyChangeListener() {
-        public void propertyChange(PropertyChangeEvent evt) {
-          LogPanel logPanel = (LogPanel) evt.getSource();
-
-          if (logPanel.isDocked()) {
-            getPanelMap().put(logPanel.getIdentifier(), logPanel);
-            getTabbedPane().addANewTab(
-              logPanel.getIdentifier(), logPanel, null);
-            getTabbedPane().setSelectedTab(getTabbedPane().indexOfTab(logPanel.getIdentifier()));
-          } else {
-            getTabbedPane().remove(logPanel);
+      PropertyChangeListener toolbarMenuUpdateListener =
+        new PropertyChangeListener() {
+          public void propertyChange(PropertyChangeEvent evt) {
+            tbms.stateChange();
           }
-        }
-      });
+        };
 
-    logger.debug("adding logpanel to tabbed pane: " + ident);
-    SwingUtilities.invokeLater(new Runnable() {
-        public void run() {
+      thisPanel.addPropertyChangeListener(toolbarMenuUpdateListener);
+      thisPanel.addPreferencePropertyChangeListener(toolbarMenuUpdateListener);
+
+      thisPanel.addPropertyChangeListener(
+        "docked",
+        new PropertyChangeListener() {
+          public void propertyChange(PropertyChangeEvent evt) {
+            LogPanel logPanel = (LogPanel) evt.getSource();
+
+            if (logPanel.isDocked()) {
+              getPanelMap().put(logPanel.getIdentifier(), logPanel);
+              getTabbedPane().addANewTab(
+                logPanel.getIdentifier(), logPanel, null);
+              getTabbedPane().setSelectedTab(getTabbedPane().indexOfTab(logPanel.getIdentifier()));
+            } else {
+              getTabbedPane().remove(logPanel);
+            }
+          }
+        });
+
+      logger.debug("adding logpanel to tabbed pane: " + ident);
+      
+      //NOTE: tab addition is a very fragile process - if you modify this code,
+      //verify the frames in the individual log panels initialize to their
+      //correct sizes
+      getTabbedPane().add(ident, thisPanel);
+      getPanelMap().put(ident, thisPanel);
+
+      getSettingsManager().addSettingsListener(thisPanel);
+      getSettingsManager().configure(thisPanel);
+
+      /**
+               * Let the new LogPanel receive this batch
+               */
+      thisPanel.receiveEventBatch(ident, events);
+
+      SwingUtilities.invokeLater(
+        new Runnable() {
+          public void run() {
+            getTabbedPane().addANewTab(
+              ident, thisPanel, new ImageIcon(ChainsawIcons.ANIM_RADIO_TOWER));
+          }
+        });
+
+      String msg = "added tab " + ident;
+      MessageCenter.getInstance().getLogger().debug(msg);
     }
-    });
-    getTabbedPane().add(ident, thisPanel);
-    getPanelMap().put(ident, thisPanel);
 
-    getSettingsManager().addSettingsListener(thisPanel);
-    getSettingsManager().configure(thisPanel);
-
-    /**
-             * Let the new LogPanel receive this batch
-             */
-    thisPanel.receiveEventBatch(ident, events);
-
-    SwingUtilities.invokeLater(
-      new Runnable() {
-        public void run() {
-          getTabbedPane().addANewTab(
-            ident, thisPanel, new ImageIcon(ChainsawIcons.ANIM_RADIO_TOWER));
-        }
-      });
-
-    String msg = "added tab " + ident;
-    MessageCenter.getInstance().getLogger().debug(msg);
-  }
 
   public void createCustomExpressionLogPanel(String ident) {
     //collect events matching the rule from all of the tabs
