@@ -12,10 +12,24 @@ import java.util.Hashtable;
 import org.apache.log4j.helpers.ThreadLocalMap;
 
 /**
-   
+   The MDC class supercedes the {@link NDC} class. It provides
+   <em>mapped diagnostic contexts</em>. A <em>Mapped Diagnostic
+   Context</em>, or MDC in short, is an instrument to distinguish
+   interleaved log output from different sources. Log output is
+   typically interleaved when a server handles multiple clients
+   near-simultaneously.
 
-   @author Ceki G&uuml;lc&uuml;
- */
+   <p><b><em>The MDC is managed on a per thread basis</em></b>. A
+   child thread automatically inherits an <em>copy</em> of the mapped
+   diagnostic context of its parent which is managed independently of
+   the parent's context.
+
+   <p>The MDC requires JDK 1.2. It will not work under JDK 1.1.
+
+   
+   @since 1.2
+
+   @author Ceki G&uuml;lc&uuml; */
 public class MDC {
 
   final static ThreadLocalMap context = new ThreadLocalMap();
