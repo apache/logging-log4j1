@@ -296,7 +296,10 @@ public class LoggingEvent implements java.io.Serializable {
 
   
   public boolean equals(Object rObject) {
-     
+     if( this == rObject) {
+       return true;
+     }
+
      if(!(rObject instanceof LoggingEvent)) {
        return false;
      }
