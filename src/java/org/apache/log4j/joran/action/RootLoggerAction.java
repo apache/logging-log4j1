@@ -20,6 +20,7 @@ import org.apache.joran.ExecutionContext;
 import org.apache.joran.action.Action;
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.LoggerRepository;
 
 import org.xml.sax.Attributes;
@@ -30,23 +31,23 @@ public class RootLoggerAction extends Action {
   static final String ADDITIVITY_ATTR = "additivity";
   static final String EMPTY_STR = "";
   static final Class[] ONE_STRING_PARAM = new Class[] { String.class };
-  Logger logger = Logger.getLogger(RootLoggerAction.class);
+  //Logger logger = Logger.getLogger(RootLoggerAction.class);
   Logger root;
   boolean inError = false;
   
   public void begin(ExecutionContext ec, String name, Attributes attributes) {
     inError = false;
-    logger.debug("In begin method");
+    //logger.debug("In begin method");
 
     LoggerRepository repository = (LoggerRepository) ec.getObject(0);
     root = repository.getRootLogger();
 
-    logger.debug("Pushing root logger on stack");
+    LogLog.debug("Pushing root logger on stack");
     ec.pushObject(root);
   }
 
   public void end(ExecutionContext ec, String name) {
-    logger.debug("end() called.");
+    //logger.debug("end() called.");
 
     if (inError) {
       return;
@@ -55,11 +56,11 @@ public class RootLoggerAction extends Action {
     Object o = ec.peekObject();
 
     if (o != root) {
-      logger.warn(
+      LogLog.warn(
         "The object on the top the of the stack is not the root logger");
-        logger.warn("It is: "+o);
+      LogLog.warn("It is: "+o);
     } else {
-      logger.debug("Removing root logger from top of stack.");
+      LogLog.debug("Removing root logger from top of stack.");
       ec.popObject();
     }
   }

@@ -97,13 +97,17 @@ public class ReaderWriterLockTestCase extends TestCase {
       threads[i].start();
     }
 
+    // It's better to wait for the writer to finish first
     for (int i = 0; i < (NUM_WRITERS + NUM_READERS); i++) {
       try {
         threads[i].join();
       } catch (InterruptedException e) {
       }
     }
-
+   
+    // let the verifier thread close
+    vt.closed = true;
+    
     Exception e = vt.getException();
 
     if (e != null) {
@@ -145,7 +149,7 @@ public class ReaderWriterLockTestCase extends TestCase {
       printMessage("In run()");
 
       for (int t = 0; t < RLOOP; t++) {
-        if (vt.getInterrupt()) {
+        if (vt.isClosed()) {
           return;
         }
 
@@ -177,7 +181,7 @@ public class ReaderWriterLockTestCase extends TestCase {
       printMessage("In run");
 
       for (int t = 0; t < WLOOP; t++) {
-        if (vt.getInterrupt()) {
+        if (vt.isClosed()) {
           return;
         }
 

@@ -19,14 +19,18 @@ package org.apache.log4j.helpers;
 import org.apache.oro.text.perl.Perl5Util;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 
 /**
- *
+ * This thread knows about the number of reader and writer threads and keeps
+ * track of their operations.
+ * 
  * @author Ceki G&uuml;lc&uuml;
  *
  */
 class VerifierThread extends Thread {
   int writeLockHolder = -1;
+  
   boolean[] readLockHolders;
   boolean[] readLockWaiters;
   boolean[] writerLockWaiters;
@@ -35,7 +39,7 @@ class VerifierThread extends Thread {
   double v2 = 0;
   Perl5Util regex;
   Exception exception;
-  boolean interrupt;
+  boolean closed;
 
   VerifierThread(BufferedReader br, int numberOfReaders, int numberOfWriters) {
     bufferedReader = br;
@@ -45,18 +49,18 @@ class VerifierThread extends Thread {
     regex = new Perl5Util();
   }
 
-  boolean getInterrupt() {
-    return interrupt;
+  boolean isClosed() {
+    return closed;
   }
 
   public void run() {
     System.out.println("In run of VerifThread");
 	  String line = null;
-	  
-    while (true) {
+
+    while (!closed) {
       try {
         line = bufferedReader.readLine();
-        if(!interrupt) {
+        if(!closed) {
           System.out.println(line);
         } 
         if (regex.match("/([RW])-(\\d{1,3}) (.*)/", line)) {
@@ -74,12 +78,16 @@ class VerifierThread extends Thread {
           System.out.println(
             "[" + line + "] does not match expected pattern.");
         }
-      } catch (Exception e) {
+      } catch(IOException ioe) {
+        System.err.println("IOException occured.");
+        ioe.printStackTrace(System.err);
+      }catch (Exception e) {
       	if(exception == null) {
           exception = e;
       	}
-        interrupt = true;
+        closed = true;
         System.out.println("====Offending line ["+line+"].");
+        e.printStackTrace(System.out);
       }
     }
   }

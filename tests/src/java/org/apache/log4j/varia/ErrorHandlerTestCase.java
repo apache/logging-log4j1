@@ -29,7 +29,7 @@ import org.apache.log4j.util.JunitTestRunnerFilter;
 import org.apache.log4j.util.LineNumberFilter;
 import org.apache.log4j.util.SunReflectFilter;
 import org.apache.log4j.util.Transformer;
-import org.apache.log4j.xml.DOMConfigurator;
+import org.apache.log4j.xml.DOMConfiguratorOld;
 
 
 public class ErrorHandlerTestCase extends TestCase {
@@ -60,7 +60,7 @@ public class ErrorHandlerTestCase extends TestCase {
   }
 
   public void test1() throws Exception {
-    DOMConfigurator.configure("input/xml/fallback1.xml");
+    DOMConfiguratorOld.configure("input/xml/fallback1.xml");
     common();
 
     ControlFilter cf =

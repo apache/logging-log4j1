@@ -1,20 +1,30 @@
 /*
- * Copyright (C) The Apache Software Foundation. All rights reserved.
+ * Copyright 1999,2004 The Apache Software Foundation.
  *
- * This software is published under the terms of the Apache Software License
- * version 1.1, a copy of which has been included  with this distribution in
- * the LICENSE.txt file.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
- 
+
 package org.apache.log4j.varia;
 
-import  org.apache.log4j.spi.ErrorHandler;
-import  org.apache.log4j.spi.LoggingEvent;
-import  org.apache.log4j.Appender;
-import  org.apache.log4j.Logger;
-import  org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.Appender;
+import org.apache.log4j.Logger;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.spi.ErrorHandler;
+import org.apache.log4j.spi.LoggingEvent;
+
 import java.util.Vector;
- 
+
+
 /**
   *
   * The <code>FallbackErrorHandler</code> implements the ErrorHandler
@@ -29,26 +39,34 @@ import java.util.Vector;
   * @author Milind Rao
   * */
 public class FallbackErrorHandler implements ErrorHandler {
-
-
   Appender backup;
   Appender primary;
   Vector loggers;
 
   public FallbackErrorHandler() {
   }
-  
+
 
   /**
-     <em>Adds</em> the logger passed as parameter to the list of
-     loggers that we need to search for in case of appender failure.
+   * <em>Adds</em> the logger passed as parameter to the list of loggers that 
+   * we need to search for in case of appender failure.
+   * @deprecated Use {@link #addLogger} instead.
   */
-  public 
-  void setLogger(Logger logger) {
+  public void setLogger(Logger logger) {
+    addLogger(logger);
+  }
+
+  /**
+  <em>Adds</em> the logger passed as parameter to the list of
+  loggers that we need to search for in case of appender failure.
+  */
+  public void addLogger(Logger logger) {
     LogLog.debug("FB: Adding logger [" + logger.getName() + "].");
-    if(loggers == null) {
+
+    if (loggers == null) {
       loggers = new Vector();
     }
+
     loggers.addElement(logger);
   }
 
@@ -56,16 +74,14 @@ public class FallbackErrorHandler implements ErrorHandler {
   /**
      No options to activate.
   */
-  public 
-  void activateOptions() {
+  public void activateOptions() {
   }
 
 
   /**
      Prints the message and the stack trace of the exception on
      <code>System.err</code>.  */
-  public
-  void error(String message, Exception e, int errorCode) { 
+  public void error(String message, Exception e, int errorCode) {
     error(message, e, errorCode, null);
   }
 
@@ -73,61 +89,62 @@ public class FallbackErrorHandler implements ErrorHandler {
      Prints the message and the stack trace of the exception on
      <code>System.err</code>.
    */
-  public
-  void error(String message, Exception e, int errorCode, LoggingEvent event) {
+  public void error(
+    String message, Exception e, int errorCode, LoggingEvent event) {
     LogLog.debug("FB: The following error reported: " + message, e);
     LogLog.debug("FB: INITIATING FALLBACK PROCEDURE.");
-    for(int i = 0; i < loggers.size(); i++) {
+
+    for (int i = 0; i < loggers.size(); i++) {
       Logger l = (Logger) loggers.elementAt(i);
-      LogLog.debug("FB: Searching for ["+primary.getName()+"] in logger ["
-		   +l.getName() + "].");
+      LogLog.debug(
+        "FB: Searching for [" + primary.getName() + "] in logger ["
+        + l.getName() + "].");
+
       //if(l.isAttached(primary)) {
-      LogLog.debug("FB: Replacing ["+primary.getName()+"] by ["
-		   + backup.getName() + "] in logger ["+ l.getName() +"].");
+      LogLog.debug(
+        "FB: Replacing [" + primary.getName() + "] by [" + backup.getName()
+        + "] in logger [" + l.getName() + "].");
       l.removeAppender(primary);
-      LogLog.debug("FB: Adding appender ["+backup.getName()+"] to logger "
-		   +  l.getName());
+      LogLog.debug(
+        "FB: Adding appender [" + backup.getName() + "] to logger "
+        + l.getName());
       l.addAppender(backup);
-    }    
+    }
   }
 
 
   /**
      Print a the error message passed as parameter on
-     <code>System.err</code>.  
+     <code>System.err</code>.
   */
-  public 
-  void error(String message) {
+  public void error(String message) {
     //if(firstTime) {
     //LogLog.error(message);
     //firstTime = false;
     //}
   }
-  
+
   /**
-	 Return the backup appender.
+   Return the backup appender.
    */
-  public
-  final Appender getBackupAppender() {
-	return backup;
+  public final Appender getBackupAppender() {
+    return backup;
   }
 
   /**
      The appender to which this error handler is attached.
    */
-  public
-  void setAppender(Appender primary) {
-    LogLog.debug("FB: Setting primary appender to [" + primary.getName() + "].");
+  public void setAppender(Appender primary) {
+    LogLog.debug(
+      "FB: Setting primary appender to [" + primary.getName() + "].");
     this.primary = primary;
   }
 
   /**
      Set the backup appender.
    */
-  public
-  void setBackupAppender(Appender backup) {
+  public void setBackupAppender(Appender backup) {
     LogLog.debug("FB: Setting backup appender to [" + backup.getName() + "].");
     this.backup = backup;
   }
-  
 }

@@ -18,8 +18,8 @@ package org.apache.joran;
 
 import org.apache.joran.action.*;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.helpers.LogLog;
+//import org.apache.log4j.Logger;
+//mport org.apache.log4j.helpers.LogLog;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
@@ -64,7 +64,7 @@ import java.util.Vector;
  *
  */
 public class Interpreter extends DefaultHandler {
-  static final Logger logger = Logger.getLogger(Interpreter.class);
+  //static final Logger logger = Logger.getLogger(Interpreter.class);
   private static List EMPTY_LIST = new Vector(0);
   private RuleStore ruleStore;
   private ExecutionContext ec;
@@ -104,7 +104,7 @@ public class Interpreter extends DefaultHandler {
 
     String tagName = getTagName(localName, qName);
 
-    logger.debug("in startElement <" + tagName + ">");
+    //logger.debug("in startElement <" + tagName + ">");
 
     pattern.push(tagName);
 
@@ -119,7 +119,7 @@ public class Interpreter extends DefaultHandler {
       String errMsg =
         "no applicable action for <" + tagName + ">, current pattern is ["
         + pattern+"]";
-      logger.debug(errMsg);
+      //LogLog.error(errMsg);
       ec.addError(new ErrorItem(errMsg));
     }
   }
@@ -241,23 +241,23 @@ public class Interpreter extends DefaultHandler {
 
   public void error(SAXParseException spe) throws SAXException {
     ec.addError(new ErrorItem("Parsing error", spe));
-    LogLog.error(
-      "Parsing problem on line " + spe.getLineNumber() + " and column "
-      + spe.getColumnNumber());
+    //LogLog.error(
+      //"Parsing problem on line " + spe.getLineNumber() + " and column "
+      //+ spe.getColumnNumber());
   }
 
   public void fatalError(SAXParseException spe) throws SAXException {
     ec.addError(new ErrorItem("Parsing fatal error", spe));
-    LogLog.error(
-      "Parsing problem on line " + spe.getLineNumber() + " and column "
-      + spe.getColumnNumber());
+//    LogLog.error(
+//      "Parsing problem on line " + spe.getLineNumber() + " and column "
+//      + spe.getColumnNumber());
   }
 
   public void warning(SAXParseException spe) throws SAXException {
     ec.addError(new ErrorItem("Parsing warning", spe));
-    LogLog.warn(
-      "Parsing problem on line " + spe.getLineNumber() + " and column "
-      + spe.getColumnNumber());
+//    LogLog.warn(
+//      "Parsing problem on line " + spe.getLineNumber() + " and column "
+//      + spe.getColumnNumber());
   }
 
   public void endPrefixMapping(java.lang.String prefix) {
@@ -276,4 +276,5 @@ public class Interpreter extends DefaultHandler {
   public void startPrefixMapping(
     java.lang.String prefix, java.lang.String uri) {
   }
+  
 }
