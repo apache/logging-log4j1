@@ -22,9 +22,9 @@
  */
 package org.apache.log4j.scheduler;
 
-import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Vector;
 
 
 /**
@@ -40,10 +40,40 @@ public class Scheduler extends Thread {
   long key;
   
   public Scheduler() {
-    jobList = new LinkedList();
+    jobList = new Vector();
   }
-  public synchronized long schedule(Job job, Date date) {
-    long timeInMillis = date.getTime();
+
+  public synchronized void delete(Job job) {
+    int size = jobList.size();
+    boolean found = false;
+    // find the index i such that 
+    int i = 0;
+
+    for (; i < size; i++) {
+      ScheduledJobEntry se = (ScheduledJobEntry) jobList.get(i);
+      if(se.job == job) {
+        found = true;
+        break;
+      }
+    }
+    
+    if(found) {
+      ScheduledJobEntry se = (ScheduledJobEntry) jobList.remove(i);
+      if(se.job != job) {
+        new IllegalStateException();
+      }
+      // if the job is the first on the list, then notify the scheduler thread
+      // to schedule a new job
+      if(i == 0) {
+        this.notify();
+      }
+    } else {
+      throw new NoSuchElementException();
+    }
+  }
+  
+  public synchronized void schedule(Job job, long expectedTime) {
+   
 
     int size = jobList.size();
 
@@ -53,16 +83,15 @@ public class Scheduler extends Thread {
     for (; i < size; i++) {
       ScheduledJobEntry se = (ScheduledJobEntry) jobList.get(i);
 
-      if (timeInMillis < se.timeInMillis) {
+      if (expectedTime < se.timeInMillis) {
         break;
       }
     }
-    jobList.add(i, new ScheduledJobEntry(key, job, timeInMillis));
+    jobList.add(i, new ScheduledJobEntry(job, expectedTime));
     // if the jobList was empty, then notify the scheduler thread
     if(i == 0) {
       this.notify();
     }
-    return key++;
   }
 
   public synchronized void run() {
@@ -104,10 +133,8 @@ public class Scheduler extends Thread {
 class ScheduledJobEntry {
   long timeInMillis;
   Job job;
-  long key;
   
-  ScheduledJobEntry(long key, Job job, long timeInMillis) {
-    this.key = key;
+  ScheduledJobEntry(Job job, long timeInMillis) {
     this.timeInMillis = timeInMillis;
     this.job = job;
   }
