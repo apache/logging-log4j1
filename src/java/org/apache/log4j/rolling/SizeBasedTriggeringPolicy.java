@@ -62,6 +62,7 @@ public class SizeBasedTriggeringPolicy implements TriggeringPolicy {
   long maxFileSize = 10 * 1024 * 1024; // let 10 MB the default max size
 
   public boolean isTriggeringEvent(File file) {
+    System.out.print("Size: "+ file.length());
     return (file.length() > maxFileSize);
   }
 

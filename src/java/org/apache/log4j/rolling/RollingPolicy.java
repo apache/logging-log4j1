@@ -49,17 +49,16 @@
 
 
 /**
- * A <code>RollingPolicy</code> is responsible for copying a log
- * file after the occurence of a rollover triggering event. The RollingPolicy
- * is also responsible for providing the log file where logging output 
- * will be directed.
+ * A <code>RollingPolicy</code> is responsible for copying a log  file after 
+ * the occurence of a rollover triggering event. The RollingPolicy is also 
+ * responsible for providing the log file where logging output will be 
+ * directed.
  *
  * @author Ceki G&uuml;lc&uuml;
  * @since 1.3
  * */
 package org.apache.log4j.rolling;
 
-import java.io.File;
 
 import org.apache.log4j.spi.OptionHandler;
 
@@ -67,9 +66,11 @@ import org.apache.log4j.spi.OptionHandler;
 public interface RollingPolicy extends OptionHandler {
     
   /**
-   * Copy the file passed as parameter to an appropriate location.
+   * 
+   * Rollover log files according to implementation policy.
+   * .
    * */
-  public void rollover(File oldLogFile);
+  public void rollover();
 
   /**
    * Get the new name of the active log file.
