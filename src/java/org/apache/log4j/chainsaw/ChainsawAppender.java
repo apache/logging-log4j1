@@ -50,7 +50,6 @@ package org.apache.log4j.chainsaw;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.AppenderSkeleton;
@@ -69,7 +68,7 @@ import org.apache.log4j.spi.LoggingEvent;
 public class ChainsawAppender
     extends AppenderSkeleton{
 
-  private final ArrayList appenders=new ArrayList();
+  private Appender appender;
   
   /**
    * The in-JVM singleton instance of the ChainsawAppender.
@@ -114,13 +113,17 @@ public class ChainsawAppender
   public boolean requiresLayout() {
     return false;
   }
+  
+  public Appender getAppender() {
+      return appender;
+  } 
 
-  public void addAppender(Appender appender) {
-    appenders.add(appender);
+  public void setAppender(Appender appender) {
+    this.appender = appender;
   }
   
   /**
-   * Appends the event into the internal wrapped TableModel
+   * Appends the event
    * @param aEvent the LoggingEvent to append
    */
   protected void append(LoggingEvent aEvent) {
@@ -132,10 +135,7 @@ public class ChainsawAppender
         aEvent.setProperty(Constants.APPLICATION_KEY, application);
       }
 
-      for (int i=0;i<appenders.size();i++) {
-        Appender appender=(Appender)appenders.get(i);
-        appender.doAppend(aEvent);
-      }
+      appender.doAppend(aEvent);
   }
 
   /**
@@ -168,7 +168,6 @@ public class ChainsawAppender
    * Close does nothing
    */
   public void close() {
-    /** @todo  perhaps it should clear the internal TableModel */
   }
 
   /**

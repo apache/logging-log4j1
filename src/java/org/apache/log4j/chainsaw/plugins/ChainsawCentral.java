@@ -49,20 +49,12 @@
 
 package org.apache.log4j.chainsaw.plugins;
 
-import org.apache.log4j.Appender;
-import org.apache.log4j.chainsaw.ChainsawAppenderHandler;
-import org.apache.log4j.chainsaw.messages.MessageCenter;
-import org.apache.log4j.helpers.LogLog;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.text.NumberFormat;
-
 import java.util.Enumeration;
 import java.util.LinkedList;
 
@@ -71,6 +63,12 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+
+import org.apache.log4j.Appender;
+import org.apache.log4j.chainsaw.ChainsawAppender;
+import org.apache.log4j.chainsaw.ChainsawAppenderHandler;
+import org.apache.log4j.chainsaw.messages.MessageCenter;
+import org.apache.log4j.helpers.LogLog;
 
 
 /**
@@ -112,6 +110,13 @@ public class ChainsawCentral extends GUIPluginSkeleton {
         this.handler = (ChainsawAppenderHandler) appender;
 
         break;
+      }
+      if (appender instanceof ChainsawAppender) {
+          Appender chainsawAppender = ((ChainsawAppender)appender).getAppender();
+          if (chainsawAppender instanceof ChainsawAppenderHandler) {
+              handler = (ChainsawAppenderHandler)chainsawAppender;
+              break;
+          }
       }
     }
 
