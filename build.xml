@@ -66,7 +66,6 @@
   <!-- Construct compile classpath -->
   <path id="compile.classpath">
     <pathelement location="${build.home}/classes"/>
-    <pathelement location="${junit.jar}"/>
     <pathelement location="${javamail.jar}"/>
     <pathelement location="${activation.jar}"/>
     <pathelement location="${jaxp.jaxp.jar}"/>
@@ -97,17 +96,6 @@
               Setting the env variable NO_JAVADOC will build the distribution
               without running the javadoc target.
     </echo>
-  </target>
-
-  <target name="junitCheck">
-    <available classname="junit.framework.TestCase" property="junit-present">
-      <classpath>
-	<pathelement location="${junit.jar}"/>
-      </classpath>
-    </available>
-  </target>
-  <target name="junit" depends="junitCheck" if="junit-present">
-    <echo message="JUnit is present."/>
   </target>
 
   <target name="jaxpCheck">
@@ -170,7 +158,7 @@
   </target>
 
   <target name="build" depends="init, build.core, build.examples, build.xml,
-                                build.unitTests, build.javamail, build.jms, build.jmx"/>
+                                build.javamail, build.jms, build.jmx"/>
 
   <target name="build.core" depends="init">
     <mkdir dir="${javac.dest}" />
@@ -179,7 +167,7 @@
 	   includes="${stem}/**/*.java, ${stem}/xml/XMLLayout.java,"
 	   excludes="misc/*, **/UnitTest*.java,
                     **/StressCategory.java,
-	            **/doc-files/*,
+                    **/doc-files/*,
                     ${stem}/xml/**,
                     ${stem}/gui/**,
                     ${stem}/test/serialization/**,
@@ -205,17 +193,6 @@
     <rmic base="${javac.dest}"
       classname="examples.NumberCruncherServer"
       />
-  </target>
-
-
-
-
-  <target name="build.unitTests" depends="init, junit" if="junit-present">
-    <javac srcdir="${java.source.dir}"
-	   destdir="${javac.dest}"
-	   includes="**/UnitTest*.java">
-      <classpath refid="compile.classpath"/>
-    </javac>
   </target>
 
  <target name="build.xml" depends="init, jaxp" if="jaxp-present">
