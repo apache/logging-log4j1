@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<document>
+
+  <properties>
+    <author email="cgu@apache.org">Ceki Gulcu</author>
+    <title>log4j project</title>
+  </properties>
+
+<body>
+
+<section name="Older distributions of the log4j package">
+
+<hr/>
+<p><b>BEWARE:</b> For some reason Internet Explorer decides to rename
+".tgz" files as ".tar". You should rename the files back to tgz after
+the download completes.</p>
+<hr/>
+
+<dl>
+  <dt><b>jakarta-log4j-1.0.3</b></dt>
+  <dd>
+  Download full package in <a href="jakarta-log4j-1.0.3.tgz">TGZ</a> format.
+  </dd>
+     
+</dl>
+
+</section>
+
+</body>
+</document>
+
