@@ -278,6 +278,7 @@
   <!-- ================================================================= -->
   <fileset dir="${java.source.dir}" id="styled_files">
   	<include name="**/plugins/*.java"/>
+  	<include name="**/chainsaw/*.java"/>
   </fileset>
 
 
