@@ -47,44 +47,58 @@
  *
  */
 
-/*
- */
-package org.apache.log4j.chainsaw.rule;
+package org.apache.log4j.rule;
 
+import org.apache.log4j.chainsaw.LoggingEventFieldResolver;
 import org.apache.log4j.spi.LoggingEvent;
 
-import java.beans.PropertyChangeListener;
+import org.apache.oro.text.regex.MalformedPatternException;
+import org.apache.oro.text.regex.Pattern;
+import org.apache.oro.text.regex.Perl5Compiler;
+import org.apache.oro.text.regex.Perl5Matcher;
 
+import java.util.Stack;
 
 /**
- * A Rule evaluates to true of false given a LoggingEvent object, and can notify
- * listeners when the underlying implementation of this Rule has it's
- * criteria changed by using the standard PropertyChangeListener infrastructure.
- *
- * @author Paul Smith <psmith@apache.org>
+ * A Rule class providing support for ORO-based regular expression syntax. 
+ * 
  * @author Scott Deboy <sdeboy@apache.org>
  */
-public interface Rule {
-  /**
-   * Returns true if this implementation of the rule accepts the LoggingEvent, or false if not.
-   *
-   * What True/False means can be client-specific.
-   *
-   * @param e LoggingEvent this instance will evaluate
-   * @return true if this Rule instance accepts the event, otherwise false.
-   */
-  public boolean evaluate(LoggingEvent e);
+public class LikeRule extends AbstractRule {
+  private static final LoggingEventFieldResolver resolver = LoggingEventFieldResolver.getInstance();
+  private final Pattern pattern;
+  private final Perl5Matcher matcher = new Perl5Matcher();
+  private final String field;
 
-  /**
-   * Adds a PropertyChangeListener to this instance, which is notified when underlying Rule
-   * information has changed. (there are no specific property name events).
-   * @param l
-   */
-  public void addPropertyChangeListener(PropertyChangeListener l);
+  private LikeRule(String field, Pattern pattern) {
+    this.field = field;
+    this.pattern = pattern;
+  }
 
-  /**
-   * Removes a known PropertyChangeListener from this Rule.
-   * @param l
-   */
-  public void removePropertyChangeListener(PropertyChangeListener l);
+  public static Rule getRule(Stack stack) {
+      if (stack.size() < 2) {
+          throw new IllegalArgumentException("Invalid LIKE rule - expected two rules but provided " + stack.size());
+      }  
+      
+      String p2 = stack.pop().toString();
+      String p1 = stack.pop().toString();
+      return getRule(p1, p2);
+  }
+
+  public static Rule getRule(String field, String pattern) {
+    Perl5Compiler compiler = new Perl5Compiler();
+    Pattern pattern1 = null;
+
+    try {
+      pattern1 = compiler.compile(pattern, Perl5Compiler.CASE_INSENSITIVE_MASK);
+    } catch (MalformedPatternException e) {
+    }
+
+    return new LikeRule(field, pattern1);
+  }
+
+  public boolean evaluate(LoggingEvent event) {
+    String input = resolver.getValue(field, event).toString();
+    return ((pattern != null) && matcher.matches(input, pattern));
+  }
 }

@@ -47,42 +47,42 @@
  *
  */
 
-package org.apache.log4j.chainsaw.rule;
+package org.apache.log4j.rule;
 
-import org.apache.log4j.spi.LoggingEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.io.Serializable;
 
-import java.util.Stack;
 
 /**
- * A Rule class implementing logical not. 
- * 
+ * An abstract Rule class that provides the PropertyChange support plumbing.
+ *
+ * @author Paul Smith <psmith@apache.org>
  * @author Scott Deboy <sdeboy@apache.org>
  */
-public class NotRule extends AbstractRule {
-  private final Rule rule;
+public abstract class AbstractRule implements Rule, Serializable {
 
-  private NotRule(Rule rule) {
-    this.rule = rule;
+  private PropertyChangeSupport propertySupport =
+    new PropertyChangeSupport(this);
+
+  public void addPropertyChangeListener(PropertyChangeListener l) {
+    propertySupport.addPropertyChangeListener(l);
   }
 
-  public static Rule getRule(Rule rule) {
-      return new NotRule(rule);
-  }
-  
-  public static Rule getRule(Stack stack) {
-      if (stack.size() < 1) {
-          throw new IllegalArgumentException("Invalid NOT rule - expected one rule but provided " + stack.size());
-      }  
-      Object o1 = stack.pop();
-      if (o1 instanceof Rule) {
-        Rule p1 = (Rule)o1;
-        return new NotRule(p1);
-      } else {
-          throw new IllegalArgumentException("Invalid NOT rule: - expected rule but received " + o1);
-      }
+  public void removePropertyChangeListener(PropertyChangeListener l) {
+    propertySupport.removePropertyChangeListener(l);
   }
 
-  public boolean evaluate(LoggingEvent event) {
-    return !(rule.evaluate(event));
+  protected void firePropertyChange(
+    String propertyName, Object oldVal, Object newVal) {
+    propertySupport.firePropertyChange(propertyName, oldVal, newVal);
+  }
+
+  /**
+   * @param evt
+   */
+  public void firePropertyChange(PropertyChangeEvent evt) {
+    propertySupport.firePropertyChange(evt);
   }
 }

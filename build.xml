@@ -205,6 +205,7 @@
                     ${stem}/net/JMS*.java,
                     ${stem}/jmx/*.java,
                     ${stem}/chainsaw/**/*.java,
+                    ${stem}/rule/*.java,
                     ${stem}/varia/Log4JAvalonLogger.java,
                     ${stem}/varia/ExpressionFilter.java,
                     ${stem}/or/jms/*.java"
@@ -309,7 +310,7 @@
     <javac deprecation="${deprecation}"
            srcdir="${java.source.dir}"
      destdir="${javac.dest}"
-     includes="${stem}/chainsaw/**/*.java,${stem}/varia/ExpressionFilter.java"
+     includes="${stem}/chainsaw/**/*.java,${stem}/rule/*.java,${stem}/varia/ExpressionFilter.java"
            excludes="">
       <classpath refid="compile.classpath"/>
       <classpath path="${regexp.oro.jar}"/>
@@ -508,6 +509,8 @@
 
     <jar jarfile="${jar.dest}/${log4j-chainsaw.jar}" basedir="${javac.dest}"
          includes="${stem}/chainsaw/*.class,
+                ${stem}/varia/ExpressionFilter*.class,
+                ${stem}/rule/*.class,
          		${stem}/chainsaw/**/*.class, 
           		${stem}/chainsaw/layout/*, 
          		${stem}/chainsaw/icons/*.gif, 

@@ -109,9 +109,9 @@ import javax.swing.tree.TreeSelectionModel;
 
 import org.apache.log4j.chainsaw.icons.ChainsawIcons;
 import org.apache.log4j.chainsaw.icons.LineIconFactory;
-import org.apache.log4j.chainsaw.rule.AbstractRule;
-import org.apache.log4j.chainsaw.rule.Rule;
 import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.rule.AbstractRule;
+import org.apache.log4j.rule.Rule;
 import org.apache.log4j.spi.LoggingEvent;
 
 

@@ -47,46 +47,84 @@
  *
  */
 
-package org.apache.log4j.chainsaw.rule;
+package org.apache.log4j.rule;
 
 import org.apache.log4j.chainsaw.LoggingEventFieldResolver;
 import org.apache.log4j.spi.LoggingEvent;
 
 import java.util.Stack;
 
+
 /**
- * A Rule class implementing case-insensitive partial-text matches against two strings. 
- * 
+ * A Rule class implementing inequality evaluation - expects to be able to convert two values to longs.
+ * If a specific inequality evaluation class has been provided for the event field, the appropriate rule is returned.
+ * (For example, if the expression is Level &lt DEBUG, a LevelInequalityRule is returned).
+ *
  * @author Scott Deboy <sdeboy@apache.org>
  */
-public class PartialTextMatchRule extends AbstractRule {
+public class InequalityRule extends AbstractRule {
+  private static final String LEVEL = "LEVEL";
   private static final LoggingEventFieldResolver resolver = LoggingEventFieldResolver.getInstance();
   private final String field;
   private final String value;
+  private final String inequalitySymbol;
 
-  private PartialTextMatchRule(String field, String value) {
+  private InequalityRule(
+    String inequalitySymbol, String field, String value) {
+    this.inequalitySymbol = inequalitySymbol;
     this.field = field;
     this.value = value;
   }
   
-  public static Rule getRule(String field, String value) {
-      return new PartialTextMatchRule(field, value);
-  }
-
-  public static Rule getRule(Stack stack) {
+  public static Rule getRule(String inequalitySymbol, Stack stack) {
       if (stack.size() < 2) {
-          throw new IllegalArgumentException("invalid partial text rule - expected two entries but " + stack.size() + " were provided");
-      }
-    String p2 = stack.pop().toString();
-    String p1 = stack.pop().toString();
+          throw new IllegalArgumentException("Invalid " + inequalitySymbol + " rule - expected two rules but provided " + stack.size());
+      }  
 
-    return new PartialTextMatchRule(p1, p2);
+      String p2 = stack.pop().toString();
+      String p1 = stack.pop().toString();
+      return getRule(inequalitySymbol, p1, p2);
+  }
+  
+  public static Rule getRule(String inequalitySymbol, String field, String value) {
+    if (field.equalsIgnoreCase(LEVEL)) {
+      //push the value back on the stack and allow the level-specific rule pop values
+      return LevelInequalityRule.getRule(inequalitySymbol, field, value);
+    } else {
+      return new InequalityRule(inequalitySymbol, field, value);
+    }
   }
 
   public boolean evaluate(LoggingEvent event) {
-    String p2 = resolver.getValue(field, event).toString();
+    long first = 0;
 
-    return (((p2 != null) && (value != null))
-      && (p2.toLowerCase().indexOf(value.toLowerCase()) > -1));
+    try {
+      first =
+        new Long(resolver.getValue(field, event).toString()).longValue();
+    } catch (NumberFormatException nfe) {
+      return false;
+    }
+
+    long second = 0;
+
+    try {
+      second = new Long(value).longValue();
+    } catch (NumberFormatException nfe) {
+      return false;
+    }
+
+    boolean result = false;
+
+    if ("<".equals(inequalitySymbol)) {
+      result = first < second;
+    } else if (">".equals(inequalitySymbol)) {
+      result = first > second;
+    } else if ("<=".equals(inequalitySymbol)) {
+      result = first <= second;
+    } else if (">=".equals(inequalitySymbol)) {
+      result = first >= second;
+    }
+
+    return result;
   }
 }

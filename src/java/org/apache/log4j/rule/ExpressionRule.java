@@ -47,57 +47,102 @@
  *
  */
 
-package org.apache.log4j.chainsaw.rule;
-
-import java.awt.Color;
-import java.io.Serializable;
+package org.apache.log4j.rule;
 
 import org.apache.log4j.spi.LoggingEvent;
 
+import java.util.Stack;
+import java.util.StringTokenizer;
+
 
 /**
- * A Rule class which also holds a color
+ * A Rule class supporting both infix and postfix expressions, accepting any rule which
+ * is supported by the <code>RuleFactory</code>.
+ *
+ * NOTE: parsing is supported through the use of <code>StringTokenizer</code>, which
+ * implies two limitations:
+ * 1: all tokens in the expression must be separated by spaces,
+ * 2: operands which contain spaces in the value being evaluated are not supported
+ *    (for example, attempting to perform 'msg == some other msg' will fail, since 'some other msg'
+ *    will be parsed as individual tokens in the expression instead of a single token (this is
+ *    the next planned fix).
  *
  * @author Scott Deboy <sdeboy@apache.org>
  */
-public class ColorRule extends AbstractRule implements Serializable {
+public class ExpressionRule extends AbstractRule {
+  private static final InFixToPostFix convertor = new InFixToPostFix();
+  private static final PostFixExpressionCompiler compiler = new PostFixExpressionCompiler();
   private final Rule rule;
-  private final Color foregroundColor;
-  private final Color backgroundColor;
-  private final String expression;
 
-  public ColorRule(Rule rule, Color backgroundColor) {
-    this(null, rule, backgroundColor, null);
-  }
-
-  public ColorRule(String expression, Rule rule, Color backgroundColor, Color foregroundColor) {
-    this.expression = expression;
+  private ExpressionRule(Rule rule) {
     this.rule = rule;
-    this.backgroundColor = backgroundColor;
-    this.foregroundColor = foregroundColor;
   }
 
-  public Rule getRule() {
-      return rule;
+  public static Rule getRule(String expression) {
+      return getRule(expression, false);
   }
   
-  public Color getForegroundColor() {
-    return foregroundColor;
-  }
+  public static Rule getRule(String expression, boolean isPostFix) {
+    if (!isPostFix) {
+      expression = convertor.convert(expression);
+    }
 
-  public Color getBackgroundColor() {
-    return backgroundColor;
-  }
-  
-  public String getExpression() {
-      return expression;
+    return new ExpressionRule(compiler.compileExpression(expression));
   }
 
   public boolean evaluate(LoggingEvent event) {
-    return (rule != null && rule.evaluate(event));
+    return rule.evaluate(event);
   }
   
   public String toString() {
-      return "color rule - expression: " + expression+", rule: " + rule + " bg: " + backgroundColor + " fg: " + foregroundColor;
+      return rule.toString();
+  }
+
+  /**
+   * Evaluate a boolean postfix expression.
+   *
+   */
+  static class PostFixExpressionCompiler {
+    Rule compileExpression(String expression) {
+      RuleFactory factory = RuleFactory.getInstance();
+
+      Stack stack = new Stack();
+      StringTokenizer tokenizer = new StringTokenizer(expression);
+
+      while (tokenizer.hasMoreTokens()) {
+        //examine each token
+        String token = tokenizer.nextToken();
+        if ((token.startsWith("'")) && (token.endsWith("'") && (token.length() > 2))) {
+            token = token.substring(1, token.length() - 1);
+        }
+
+        boolean inText = token.startsWith("'");
+        if (inText) {
+            token=token.substring(1);
+            while (inText && tokenizer.hasMoreTokens()) {
+              token = token + " " + tokenizer.nextToken();
+              inText = !(token.endsWith("'"));
+          }
+          token = token.substring(0, token.length() - 1);
+        }
+
+        //if a symbol is found, pop 2 off the stack, evaluate and push the result 
+        if (factory.isRule(token)) {
+          Rule r = (Rule) factory.getRule(token, stack);
+          stack.push(r);
+        } else {
+          //variables or constants are pushed onto the stack
+          stack.push(token);
+        }
+      }
+
+      if ((stack.size() == 0) || (!(stack.peek() instanceof Rule))) {
+        throw new IllegalArgumentException("invalid expression: " + expression);
+      } else {
+        return (Rule) stack.pop();
+      }
+    }
   }
 }
+
+

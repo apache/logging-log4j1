@@ -49,15 +49,9 @@
 
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.chainsaw.rule.Rule;
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.spi.LocationInfo;
-import org.apache.log4j.spi.LoggingEvent;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -72,6 +66,11 @@ import javax.swing.ProgressMonitor;
 import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
 import javax.swing.table.AbstractTableModel;
+
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.rule.Rule;
+import org.apache.log4j.spi.LocationInfo;
+import org.apache.log4j.spi.LoggingEvent;
 
 
 /**

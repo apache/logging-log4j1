@@ -49,8 +49,8 @@
 
 package org.apache.log4j.varia;
 
-import org.apache.log4j.chainsaw.rule.ExpressionRule;
-import org.apache.log4j.chainsaw.rule.Rule;
+import org.apache.log4j.rule.ExpressionRule;
+import org.apache.log4j.rule.Rule;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.spi.LoggingEvent;
 
