@@ -75,8 +75,15 @@ public class MessageComparator implements Comparator {
         return !match;
       }
     }
-
-    int compResult = rightSide.compareTo(event.getRenderedMessage());
+    int compResult;
+    
+    String leftSide = event.getRenderedMessage();
+    if(leftSide == null) {
+      compResult = -1;
+    } else {
+      compResult = event.getRenderedMessage().compareTo(rightSide);
+    }
+    
     switch (operator.getCode()) {
     case Operator.EQUAL:
       return compResult == 0;
