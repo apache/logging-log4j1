@@ -1,5 +1,5 @@
-# For the general syntax of propperty based caonfiguration files see
-# the documenation of org.apache.log4j.PropertyConfigurator.
+# For the general syntax of property based configuration files see the
+# documenation of org.apache.log4j.PropertyConfigurator.
 
 # The root category uses the appender called A1. Since no priority is
 # specified, the root category assumes the default priority for root

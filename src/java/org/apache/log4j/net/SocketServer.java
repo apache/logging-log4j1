@@ -23,7 +23,7 @@ import org.apache.log4j.spi.RootCategory;
 
 
 /**
-   A {@link SocketNode} based server that uses a different hiearchy
+   A {@link SocketNode} based server that uses a different hierarchy
    for each client.
 
    <pre>

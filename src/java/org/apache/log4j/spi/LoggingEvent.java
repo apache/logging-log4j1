@@ -157,9 +157,9 @@ public class LoggingEvent implements java.io.Serializable {
   public
   String getRenderedMessage() {
      if(renderedMessage == null && message != null) {
-       if(message instanceof String) {
-	renderedMessage = (String) message;
-       } else {
+       if(message instanceof String) 
+	 renderedMessage = (String) message;
+       else {
 	 renderedMessage=
                     category.getHierarchy().getRendererMap().findAndRender(message);
        }
@@ -211,6 +211,9 @@ public class LoggingEvent implements java.io.Serializable {
     // Aside from returning the current thread name the wgetThreadName
     // method sets the threadName variable.
     this.getThreadName();    
+
+    // This sets the renders the message in case it wasn't up to now.
+    this.getRenderedMessage();
 
     // This call has a side effect of setting this.ndc and
     // setting ndcLookupRequired to false if not already false.

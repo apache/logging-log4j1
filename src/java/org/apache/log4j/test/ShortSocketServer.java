@@ -24,10 +24,11 @@ public class ShortSocketServer  {
   public 
   static 
   void main(String argv[]) {
-    if(argv.length == 2) 
+    if(argv.length == 2) {
       init(argv[0], argv[1]);
-    else 
+    } else {
       usage("Wrong number of arguments.");     
+    }
     
     try {
       LogLog.debug("Listening on port " + port);

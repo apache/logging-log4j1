@@ -1,8 +1,8 @@
 # An example log4j configuration file that outputs both to System.out
 # and a file named 'test'.
 
-# For the general syntax of propperty based caonfiguration files see
-# the documenation of org.apache.log4j.PropertyConfigurator.
+# For the general syntax of property based configuration files see the
+# documenation of org.apache.log4j.PropertyConfigurator.
 
 # WARNING: Location information can be useful but is very costly in
 # terms of computation.

@@ -9,7 +9,7 @@
 #
 #
 
-# For the general syntax of propperty based caonfiguration files see
+# For the general syntax of property based configuration files see
 # the documenation of org.apache.log4j.PropertyConfigurator.
 
 # The root category uses the appender called A1. 
