@@ -63,7 +63,7 @@ public class PatternLayoutTestCase extends TestCase {
     PropertyConfigurator.configure("input/patternLayout1.properties");
     common();
     Transformer.transform(TEMP, FILTERED, new LineNumberFilter());
-    assert(Compare.compare(FILTERED, "witness/patternLayout.1"));
+    assertTrue(Compare.compare(FILTERED, "witness/patternLayout.1"));
   }
 
   public void test2() throws Exception {
@@ -74,7 +74,7 @@ public class PatternLayoutTestCase extends TestCase {
     Transformer.transform(TEMP, FILTERED, new Filter[] {cf1, 
                                                         new LineNumberFilter(), 
                                                         new ISO8601Filter()});
-    assert(Compare.compare(FILTERED, "witness/patternLayout.2"));
+    assertTrue(Compare.compare(FILTERED, "witness/patternLayout.2"));
   }
 
   public void test3() throws Exception {
@@ -84,7 +84,7 @@ public class PatternLayoutTestCase extends TestCase {
 						       EXCEPTION2, EXCEPTION3});
     Transformer.transform(TEMP, FILTERED, new Filter[] {cf1, new LineNumberFilter(), 
 							  new ISO8601Filter()});
-    assert(Compare.compare(FILTERED, "witness/patternLayout.3"));
+    assertTrue(Compare.compare(FILTERED, "witness/patternLayout.3"));
   }
 
   // Output format:
@@ -97,7 +97,7 @@ public class PatternLayoutTestCase extends TestCase {
     Transformer.transform(TEMP, FILTERED, new Filter[] {cf1, 
                                                         new LineNumberFilter(), 
                                                      new AbsoluteDateAndTimeFilter()});
-    assert(Compare.compare(FILTERED, "witness/patternLayout.4"));
+    assertTrue(Compare.compare(FILTERED, "witness/patternLayout.4"));
   }
 
   public void test5() throws Exception {
@@ -108,7 +108,7 @@ public class PatternLayoutTestCase extends TestCase {
     Transformer.transform(TEMP, FILTERED, new Filter[] {cf1, 
                                                         new LineNumberFilter(), 
                                                     new AbsoluteDateAndTimeFilter()});
-    assert(Compare.compare(FILTERED, "witness/patternLayout.5"));
+    assertTrue(Compare.compare(FILTERED, "witness/patternLayout.5"));
   }
 
   // 18:54:19,201 [main] DEBUG rnLayoutTestCase - Message 0
@@ -120,7 +120,7 @@ public class PatternLayoutTestCase extends TestCase {
     Transformer.transform(TEMP, FILTERED, new Filter[] {cf1, 
                                                         new LineNumberFilter(), 
                                                         new AbsoluteTimeFilter()});
-    assert(Compare.compare(FILTERED, "witness/patternLayout.6"));
+    assertTrue(Compare.compare(FILTERED, "witness/patternLayout.6"));
   }
 
 
@@ -132,7 +132,7 @@ public class PatternLayoutTestCase extends TestCase {
     Transformer.transform(TEMP, FILTERED, new Filter[] {cf1, 
                                                         new LineNumberFilter(), 
                                                         new AbsoluteTimeFilter()});
-    assert(Compare.compare(FILTERED, "witness/patternLayout.7"));
+    assertTrue(Compare.compare(FILTERED, "witness/patternLayout.7"));
   }
 
   public void test8() throws Exception {
@@ -143,7 +143,7 @@ public class PatternLayoutTestCase extends TestCase {
     Transformer.transform(TEMP, FILTERED, new Filter[] {cf1, 
                                                         new LineNumberFilter(), 
                                                         new RelativeTimeFilter()});
-    assert(Compare.compare(FILTERED, "witness/patternLayout.8"));
+    assertTrue(Compare.compare(FILTERED, "witness/patternLayout.8"));
   }
 
   public void test9() throws Exception {
@@ -152,7 +152,7 @@ public class PatternLayoutTestCase extends TestCase {
     ControlFilter cf1 = new ControlFilter(new String[]{PAT5, EXCEPTION1, 
 						       EXCEPTION2, EXCEPTION3});
     Transformer.transform(TEMP, FILTERED, new Filter[] {cf1, new LineNumberFilter()});
-    assert(Compare.compare(FILTERED, "witness/patternLayout.9"));
+    assertTrue(Compare.compare(FILTERED, "witness/patternLayout.9"));
   }
 
 
@@ -185,14 +185,14 @@ public class PatternLayoutTestCase extends TestCase {
 
   public static Test suite() {
     TestSuite suite = new TestSuite();
-    //suite.addTest(new PatternLayoutTestCase("test1"));
-    //suite.addTest(new PatternLayoutTestCase("test2"));
-    //suite.addTest(new PatternLayoutTestCase("test3"));
-    //suite.addTest(new PatternLayoutTestCase("test4"));
-    //suite.addTest(new PatternLayoutTestCase("test5"));
-    //suite.addTest(new PatternLayoutTestCase("test6"));
-    //suite.addTest(new PatternLayoutTestCase("test7"));
-    //suite.addTest(new PatternLayoutTestCase("test8"));
+    suite.addTest(new PatternLayoutTestCase("test1"));
+    suite.addTest(new PatternLayoutTestCase("test2"));
+    suite.addTest(new PatternLayoutTestCase("test3"));
+    suite.addTest(new PatternLayoutTestCase("test4"));
+    suite.addTest(new PatternLayoutTestCase("test5"));
+    suite.addTest(new PatternLayoutTestCase("test6"));
+    suite.addTest(new PatternLayoutTestCase("test7"));
+    suite.addTest(new PatternLayoutTestCase("test8"));
     suite.addTest(new PatternLayoutTestCase("test9"));
     return suite;
   }

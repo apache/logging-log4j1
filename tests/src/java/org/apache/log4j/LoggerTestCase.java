@@ -96,7 +96,7 @@ public class LoggerTestCase extends TestCase {
     Enumeration enum = logger.getAllAppenders();
     Appender aHat = (Appender) enum.nextElement();    
     assertEquals(a2, aHat);
-    assert(!enum.hasMoreElements());
+    assertTrue(!enum.hasMoreElements());
   }
 
   /**

@@ -68,8 +68,8 @@ public class DOMTestCase extends TestCase {
     Transformer.transform(TEMP_A2, FILTERED_A2, new Filter[] {cf2,
                                       new LineNumberFilter(), new ISO8601Filter()});
 
-    assert(Compare.compare(FILTERED_A1, "witness/dom.A1.1"));
-    assert(Compare.compare(FILTERED_A2, "witness/dom.A2.1"));
+    assertTrue(Compare.compare(FILTERED_A1, "witness/dom.A1.1"));
+    assertTrue(Compare.compare(FILTERED_A2, "witness/dom.A2.1"));
   }
 
   void common() {

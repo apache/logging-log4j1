@@ -53,7 +53,7 @@ public class XLoggerTestCase extends TestCase {
     logger.debug("Message " + ++i, e);
 
     Transformer.transform("output/temp", FILTERED, new LineNumberFilter());
-    assert(Compare.compare(FILTERED, "witness/customLogger."+number));
+    assertTrue(Compare.compare(FILTERED, "witness/customLogger."+number));
 
   }
 
