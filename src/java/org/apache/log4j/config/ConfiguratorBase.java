@@ -106,7 +106,7 @@ public static final String DEBUG_KEY = "log4j.debug";
     
     ConsoleAppender appender = new ConsoleAppender();
     appender.setLayout(
-      new PatternLayout("LOG4J-INTERNAL: %d %level [%t] %c - %m%n"));
+      new PatternLayout("LOG4J-INTERNAL: %d %level [%t] %c#%M:%L)- %m%n"));
     appender.setName(Constants.TEMP_CONSOLE_APPENDER_NAME);
     appender.activateOptions();
     ll.addAppender(appender);
