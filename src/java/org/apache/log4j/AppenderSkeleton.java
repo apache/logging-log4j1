@@ -20,6 +20,7 @@ import org.apache.log4j.Layout;
 import org.apache.log4j.helpers.OnlyOnceErrorHandler;
 import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.Filter;
+import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.OptionHandler;
 
@@ -83,6 +84,9 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
    */
   private boolean guard = false;
 
+  
+  private LoggerRepository repository;
+  
   /**
    * Derived appenders should override this method if option structure
    * requires it.
@@ -309,5 +313,31 @@ FILTER_LOOP:
       logger = LogManager.getLogger(this.getClass().getName());
     }
     return logger;
+  }
+  
+  /**
+   * Returns the repository where this appender is attached. If not set, the
+   * returned valyue may be null.
+   * 
+   * @return The repository where this appender is attached.
+   * @since 1.3
+   */
+  protected LoggerRepository getLoggerRepository() {
+    return repository;
+  }
+  
+
+  /**
+   * @see Appender#setLoggerRepository(LoggerRepository)
+   */
+  public void setLoggerRepository(LoggerRepository repository) throws IllegalStateException {
+    if(repository == null) {
+      throw new IllegalArgumentException("repository argument cannot be null");
+    }
+    if(this.repository != null) {
+      this.repository = repository;
+    } else {
+      throw new IllegalStateException("Repository has been already set");
+    }
   }
 }

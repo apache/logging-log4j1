@@ -674,7 +674,7 @@ public class PropertyConfigurator extends ConfiguratorBase {
     }
 
     appender.setName(appenderName);
-
+    appender.setLoggerRepository(repository);
     if (appender instanceof OptionHandler) {
       String layoutClassName =
         OptionConverter.findAndSubst(layoutPrefix, props);
@@ -687,6 +687,7 @@ public class PropertyConfigurator extends ConfiguratorBase {
             layoutClassName.trim(), Layout.class, null);
 
         if (layout != null) {
+          layout.setLoggerRepository(repository);
           appender.setLayout(layout);
           getLogger(repository).debug(
             "Parsing layout options for \"" + appenderName + "\".");
