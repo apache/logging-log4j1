@@ -26,6 +26,8 @@ properly.</a>
 
 <li><p><a href=#cce>ClassCastException when instantiating a Category subclasses.</a>
 
+<li><p><a href=#notfound>My EJB/Servlet/JSP says log4j class not found/defined.</a>
+
 </ul>
 
 <hr>
@@ -139,6 +141,56 @@ be used as the factory to invoke when instantiating Category objects.
 
 <p>The <code>DOMConfigurator</code> has a finer grain method for
 setting the class of the category object to instantiate.
+
+<p><a name=notfound><h4>Log4j class not found/defined</h4>
+
+<p>Naturally you should check the classpath.  But you should also 
+be aware of the presence of multiple classloaders in the JVM:
+<p> <ol>
+<li>the bootstrap classloader
+<li>the extension classloader
+<li>the application classloader
+</ol>
+<p>If you place log4j.jar in the <code>jre/lib/ext</code> directory
+but place user-defined extensions to log4j in the application 
+classloader classpath, log4j configurators will not find them.
+
+<p>Servlet, JSP and EJB containers inside of application servers
+usually have their own special classloaders in addition to the 
+three mentioned above.  While this provides for a greater
+degree of separation for different webapps, EJB containers and the
+application server runtime itself, it can provide headaches to the
+uninitiated.
+
+<p>Classloaders are usually hierarchically related.  The bootstrap
+loader forms the root with the extension loader as its child.  The
+application loader is the child of the extension loader and it's
+this "app loader" that we use by default when we write standalone
+Java programs.
+
+<p>Upon receiving a class load request, the classloader usually 
+delegates it to the parent before attempting to service the request.
+This allows the bootstrap and extension loaders to deliver any classes
+that are part of the JDK or its extensions.  Only after this delegation
+fails will the classloader attempt to find the class itself.  Note that
+classloaders do not delegate requests to children.
+
+<p>Application servers often use the application loader for its runtime
+classes and create separate classloaders for its webapp and EJB
+containers.  These additional classloaders may decend directly
+from the app server's runtime classloader.  If log4j is placed in the
+classpath of a webapp classloader, another webapp classloader will not
+necessarily see it.  EJBs wouldn't see it either.  If log4j is intended
+to be made availble to all objects participating in the app server, it
+should be included in the classpath of a classloader high enough in the
+classloader hierarchy to be seen by all classloaders.
+
+<p>A good article on classloaders with examples using IBM's WebSphere
+application server can be found 
+<a href="http://www7.software.ibm.com/vadd-bin/ftpdl?1/vadc/wsdd/pdf/gisell/UnderstandingWebSphereClassLoaders.pdf">here</a> 
+in PDF format.
+
+
 
 </body>
 </html>
