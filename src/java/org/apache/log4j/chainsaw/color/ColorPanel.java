@@ -147,10 +147,10 @@ public class ColorPanel extends JPanel {
     tableModel.setDataVector(data, columns);
 
     table.sizeColumnsToFit(0);
-    table.getColumnModel().getColumn(1).setPreferredWidth(70);
-    table.getColumnModel().getColumn(2).setPreferredWidth(70);
-    table.getColumnModel().getColumn(1).setMaxWidth(70);
-    table.getColumnModel().getColumn(2).setMaxWidth(70);
+    table.getColumnModel().getColumn(1).setPreferredWidth(80);
+    table.getColumnModel().getColumn(2).setPreferredWidth(80);
+    table.getColumnModel().getColumn(1).setMaxWidth(80);
+    table.getColumnModel().getColumn(2).setMaxWidth(80);
 
     configureTable();
 

@@ -92,8 +92,8 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
   private final int DEFAULT_CAPACITY = 5000;
   private int capacity = DEFAULT_CAPACITY;
   private static final String PANEL_CAPACITY = "CHAINSAW_CAPACITY";
-  List unfilteredList = new CyclicBufferList(capacity);
-  List filteredList = new CyclicBufferList(capacity);
+  List unfilteredList;
+  List filteredList;
   Set idSet = new HashSet(capacity);
   private boolean currentSortAscending;
   private int currentSortColumn;
@@ -122,6 +122,8 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
             capacity = Integer.parseInt(System.getProperty(PANEL_CAPACITY));
         } catch (NumberFormatException nfe) {}
     }
+    unfilteredList = new CyclicBufferList(capacity);
+    filteredList = new CyclicBufferList(capacity);
   }
 
   /**
