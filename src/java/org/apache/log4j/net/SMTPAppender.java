@@ -130,7 +130,7 @@ public class SMTPAppender extends AppenderSkeleton {
   Message msg;
   boolean locationInfo = false;
   
-  TriggeringEventEvaluator evaluator;
+  protected TriggeringEventEvaluator evaluator;
 
 
 
