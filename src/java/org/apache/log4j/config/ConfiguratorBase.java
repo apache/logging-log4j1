@@ -134,11 +134,7 @@ public static final String DEBUG_KEY = "log4j.debug";
     List errorList = getErrorList();
     for(int i = 0; i < errorList.size(); i++) {
       ErrorItem ei = (ErrorItem) errorList.get(i);
-      System.out.println(ei);
-      Throwable t = ei.getException();
-      if(t != null) {
-        t.printStackTrace(System.out);
-      }
+      ei.dump(System.out);
     }
   }
   

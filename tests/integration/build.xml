@@ -92,6 +92,8 @@
       <fileset dir="${src.webapp.dir}"/>
       <classes dir="${target.classes.java.dir}"/>   
       <lib file="${target.dir}/test-appender.jar"/>
+      <lib file="${javamail.jar}"/>
+      <lib file="${activation.jar}"/> 
     </war>
   </target>
 
@@ -104,7 +106,7 @@
       <classpath refid="cactus.cp"/>
       <classpath refid="servlet.cp"/>
       <classpath path="${target.classes.java.dir}"/>
-      <classpath refid="log4j.cp"/>
+      <classpath refid="log4j.cp"/> 
     </javac>
   </target>
 
@@ -155,7 +157,7 @@
             <include name="log4j*.jar"/>
           </fileset>
         </classpath>
-        <containerset timeout="60000">
+        <containerset timeout="20000">
           <tomcat5x if="tomcat5x.home"
                     dir="${tomcat5x.home}"
                     output="${target.testreports.dir}/tomcat5x.out"

@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE configuration>
 
-<configuration debug="false" xmlns='http://logging.apache.org/'>
+<configuration debug="true" xmlns='http://logging.apache.org/'>
   
   <appender name="TEST" class="TestAppender">
     <param name="bogus" value="bogus"/>
   </appender>
+
+
+  <appender name="EMAIL" class="org.apache.log4j.net.SMTPAppender">
+    <param name="SMTPHost" value="mail.qos.ch"/>
+    <param name="To" value="ceki@qos.ch"/>
+    <param name="From" value="noreply@qos.ch"/>
+    <param name="BufferSize" value="128"/>
+    <param name="Subject" value="${os.name} - %m"/>
+    <param name="LocationInfo" value="true"/>
+    <layout class="org.apache.log4j.html.HTMLLayout">
+      <param name="ConversionPattern" value="%d%5p%t%c%m"/>
+    </layout>
+  </appender>
+
 
   <appender name="FILE" class="org.apache.log4j.FileAppender">
 
@@ -17,7 +31,7 @@
     </layout>     
   </appender>
 
-  <logger name="org.apache.log4j.joran.action"> <level value="INFO"/></logger>
+  <logger name="org.apache.log4j.joran.action"> <level value="DEBUG"/></logger>
   <logger name="org.apache.cactus.internal.server"> <level value="INFO"/></logger>
 
 

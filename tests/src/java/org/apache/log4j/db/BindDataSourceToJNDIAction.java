@@ -16,13 +16,13 @@
 
 package org.apache.log4j.db;
 
-import org.apache.joran.ExecutionContext;
-import org.apache.joran.action.Action;
-import org.apache.joran.helper.Option;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.config.PropertySetter;
+import org.apache.log4j.helpers.Option;
 import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.joran.action.Action;
+import org.apache.log4j.joran.spi.ExecutionContext;
 import org.apache.log4j.spi.ErrorItem;
 
 import org.xml.sax.Attributes;

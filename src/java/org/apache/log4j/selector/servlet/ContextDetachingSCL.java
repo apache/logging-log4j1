@@ -30,7 +30,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 // WARNING
-// WARNING Since ServletContextListeners get instantiated by the application
+// WARNING Since ServletContextListener gets instantiated by the application
 // WARNING server, we have no way of passing it a LoggerRepository instance.
 // WARNING It follows that this class should not log except when an LR instance
 // WARNING is available.

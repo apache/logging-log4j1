@@ -560,7 +560,7 @@
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false" />
-      <test name="org.apache.joran.PatternTest" />
+      <test name="org.apache.log4j.joran.PatternTest" />
     </junit>
   </target>
 
@@ -568,7 +568,7 @@
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false" />
-      <test name="org.apache.joran.SimpleStoreTest" />
+      <test name="org.apache.log4j.joran.SimpleStoreTest" />
     </junit>
   </target>
 
@@ -577,7 +577,7 @@
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false" />
-      <test name="org.apache.joran.InterpreterTest" />
+      <test name="org.apache.log4j.joran.InterpreterTest" />
     </junit>
   </target>
   

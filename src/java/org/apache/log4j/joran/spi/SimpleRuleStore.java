@@ -16,9 +16,6 @@
 
 package org.apache.log4j.joran.spi;
 
-import org.apache.joran.*;
-import org.apache.joran.action.*;
-
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.joran.action.Action;
 import org.apache.log4j.spi.LoggerRepository;

@@ -27,6 +27,12 @@ public class Pattern {
   public Pattern() {
     components = new ArrayList();
   }
+  
+  public Object clone() {
+    Pattern p = new Pattern();
+    p.components.addAll(this.components);
+    return p;
+  }
 
   /**
    * Build a pattern from a string.

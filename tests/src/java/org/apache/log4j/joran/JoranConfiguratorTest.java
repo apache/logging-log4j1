@@ -38,8 +38,7 @@ import junit.framework.TestSuite;
  * Various tests verifying that JoranConfigurator can effectively
  * parse config files.
  * 
- * @author ceki
- *
+ * @author Ceki Gulcu
  */
 public class JoranConfiguratorTest extends TestCase {
   Logger root; 
