@@ -55,6 +55,22 @@
  */
 package org.apache.log4j.chainsaw;
 
+import org.apache.log4j.Layout;
+import org.apache.log4j.PatternLayout;
+import org.apache.log4j.chainsaw.filter.FilterModel;
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.chainsaw.icons.LineIconFactory;
+import org.apache.log4j.chainsaw.layout.DefaultLayoutFactory;
+import org.apache.log4j.chainsaw.layout.EventDetailLayout;
+import org.apache.log4j.chainsaw.layout.LayoutEditorPane;
+import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.SettingsListener;
+import org.apache.log4j.chainsaw.prefs.SettingsManager;
+import org.apache.log4j.chainsaw.rule.AbstractRule;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.spi.LoggingEvent;
+
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -73,8 +89,10 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.EOFException;
@@ -86,7 +104,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+
 import java.text.NumberFormat;
+
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -129,31 +149,15 @@ import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableColumnModelEvent;
 import javax.swing.event.TableColumnModelListener;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-
-import org.apache.log4j.Layout;
-import org.apache.log4j.PatternLayout;
-import org.apache.log4j.chainsaw.filter.FilterModel;
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-import org.apache.log4j.chainsaw.icons.LineIconFactory;
-import org.apache.log4j.chainsaw.layout.DefaultLayoutFactory;
-import org.apache.log4j.chainsaw.layout.EventDetailLayout;
-import org.apache.log4j.chainsaw.layout.LayoutEditorPane;
-import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SettingsListener;
-import org.apache.log4j.chainsaw.prefs.SettingsManager;
-import org.apache.log4j.chainsaw.rule.AbstractRule;
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
@@ -233,15 +237,20 @@ public class LogPanel extends DockablePanel implements SettingsListener,
           table.addColumn(new TableColumn(e.getNewModelIndex()));
         }
       });
-    tableModel.addPropertyChangeListener("cyclic", new PropertyChangeListener(){
-
-      public void propertyChange(PropertyChangeEvent arg0) {
-        if(tableModel.isCyclic()){
-          statusBar.setMessage("Changed to Cyclic Mode. Maximum # events kept: " + tableModel.getMaxSize());
-        } else{
-          statusBar.setMessage("Changed to Unlimited Mode. Warning, you may run out of memory.");
-        }       
-      }});
+    tableModel.addPropertyChangeListener(
+      "cyclic",
+      new PropertyChangeListener() {
+        public void propertyChange(PropertyChangeEvent arg0) {
+          if (tableModel.isCyclic()) {
+            statusBar.setMessage(
+              "Changed to Cyclic Mode. Maximum # events kept: "
+              + tableModel.getMaxSize());
+          } else {
+            statusBar.setMessage(
+              "Changed to Unlimited Mode. Warning, you may run out of memory.");
+          }
+        }
+      });
     table.setRowHeight(20);
     table.setShowGrid(false);
 
@@ -262,21 +271,39 @@ public class LogPanel extends DockablePanel implements SettingsListener,
      * We listen for when the FocusOn action changes, and then ensure the Refinement filter is set
      * accordingly.
      */
-    logTreePanel.addFocusOnPropertyChangeListener(
-      new PropertyChangeListener() {
-        public void propertyChange(PropertyChangeEvent evt) {
-          if (logTreePanel.isFocusOnSelected()) {
-            final String loggerName =
-              logTreePanel.getCurrentlySelectedLoggerName();
-            ruleMediator.setRefinementRule(
-              new AbstractRule() {
-                public boolean evaluate(LoggingEvent e) {
-                  return e.getLoggerName().startsWith(loggerName);
-                }
-              });
-          } else {
-            ruleMediator.setRefinementRule(null);
-          }
+    logTreePanel.addChangeListener(
+      new ChangeListener() {
+        public void stateChanged(ChangeEvent evt) {
+          final String currentlySelectedLoggerName =
+            logTreePanel.getCurrentlySelectedLoggerName();
+
+          /**
+           * We run this later so that the GUI gets a chance to repaint
+           * etc, this might take a little time.
+           */
+          SwingUtilities.invokeLater(
+            new Runnable() {
+              public void run() {
+                ruleMediator.setRefinementRule(
+                  new AbstractRule() {
+                    public boolean evaluate(LoggingEvent e) {
+                      boolean isHidden =
+                        logTreePanel.getHiddenSet().contains(
+                          e.getLoggerName());
+                      boolean result = !isHidden;
+
+                      if (result && logTreePanel.isFocusOnSelected()) {
+                        result =
+                          result
+                          && e.getLoggerName().startsWith(
+                            currentlySelectedLoggerName);
+                      }
+
+                      return result;
+                    }
+                  });
+              }
+            });
         }
       });
 
@@ -624,17 +651,22 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     detailToolbar.add(editDetailButton);
     detailToolbar.addSeparator();
     detailToolbar.add(Box.createHorizontalStrut(5));
-    
-    Action closeDetailAction = new AbstractAction(null, LineIconFactory.createCloseIcon()){
 
-      public void actionPerformed(ActionEvent arg0) {
-        toggleDetailPanel();
-      }};
-    closeDetailAction.putValue(Action.SHORT_DESCRIPTION, "Hides the Detail Panel");
+    Action closeDetailAction =
+      new AbstractAction(null, LineIconFactory.createCloseIcon()) {
+        public void actionPerformed(ActionEvent arg0) {
+          toggleDetailPanel();
+        }
+      };
+
+    closeDetailAction.putValue(
+      Action.SHORT_DESCRIPTION, "Hides the Detail Panel");
+
     SmallButton closeDetailButton = new SmallButton(closeDetailAction);
     detailToolbar.add(closeDetailButton);
 
     detailPanel.add(detailToolbar, BorderLayout.NORTH);
+
     JPopupMenu editDetailPopupMenu = new JPopupMenu();
     editDetailPopupMenu.add(editDetailAction);
     editDetailPopupMenu.addSeparator();
@@ -852,16 +884,15 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     menuItemScrollBottom.setIcon(
       new ImageIcon(ChainsawIcons.SCROLL_TO_BOTTOM));
 
-//    JMenuItem menuItemRemoveColorFilter =
-//      new JMenuItem("Remove all color filters");
-//    menuItemRemoveColorFilter.addActionListener(
-//      new ActionListener() {
-//        public void actionPerformed(ActionEvent evt) {
-//          //            colorDisplaySelector.clearColors();
-//          colorFilter.clear();
-//        }
-//      });
-
+    //    JMenuItem menuItemRemoveColorFilter =
+    //      new JMenuItem("Remove all color filters");
+    //    menuItemRemoveColorFilter.addActionListener(
+    //      new ActionListener() {
+    //        public void actionPerformed(ActionEvent evt) {
+    //          //            colorDisplaySelector.clearColors();
+    //          colorFilter.clear();
+    //        }
+    //      });
     JMenuItem menuItemColumnSelector =
       new JMenuItem("Select display columns...");
     menuItemColumnSelector.addActionListener(
@@ -920,21 +951,22 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     p.add(new JSeparator());
 
     p.add(menuItemDisplayFilter);
-    p.add(menuColumnDisplayFilter);
-    p.add(menuColumnColorFilter);
+
+    //    p.add(menuColumnDisplayFilter);
+    //    p.add(menuColumnColorFilter);
     p.add(new JSeparator());
 
-    JMenu removeSubMenu = new JMenu("Remove");
+    //    JMenu removeSubMenu = new JMenu("Remove");
     JMenu selectSubMenu = new JMenu("Select");
 
     selectSubMenu.add(menuItemColumnSelector);
 
-//    removeSubMenu.add(menuItemRemoveColorFilter);
-    removeSubMenu.add(menuItemRemoveDisplayFilter);
+    //    removeSubMenu.add(menuItemRemoveColorFilter);
+    //    removeSubMenu.add(menuItemRemoveDisplayFilter);
+    p.add(menuItemColumnSelector);
 
-    p.add(selectSubMenu);
-    p.add(removeSubMenu);
-
+    //    p.add(selectSubMenu);
+    //    p.add(removeSubMenu);
     final PopupListener popupListener = new PopupListener(p);
 
     eventsPane.addMouseListener(popupListener);

@@ -558,7 +558,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
 		public void propertyChange(PropertyChangeEvent evt) {
 			double dataRate = ((Double)evt.getNewValue()).doubleValue();
-			LogLog.debug("dataRate=" + dataRate);
 			statusBar.setDataRate(dataRate);
 			
 		}});
