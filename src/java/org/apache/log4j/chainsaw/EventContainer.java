@@ -49,9 +49,10 @@
 
 package org.apache.log4j.chainsaw;
 
+import org.apache.log4j.spi.LoggingEvent;
+
 import java.util.List;
 
-import org.apache.log4j.spi.LoggingEvent;
 
 /**
  * To allow pluggable TableModel implementations for Chainsaw, this interface has been factored out.
@@ -60,14 +61,28 @@ import org.apache.log4j.spi.LoggingEvent;
  *
  * @author Paul Smith <psmith@apache.org>
  * @author Scott Deboy <sdeboy@apache.org>
- * 
+ *
  */
-public interface EventContainer extends SortTableModel, FilterChangedListener, LoggerNameModel {
+public interface EventContainer extends SortTableModel, FilterChangedListener,
+  LoggerNameModel {
   /**
    * Adds an EventCountListener, to be notified when the # of events changes
    * @param listener
    */
   void addEventCountListener(EventCountListener listener);
+
+	/**
+	 * Adds a NewKeyListener to be notified when unique Key (MDC/Property keys)
+	 * arrive into this EventContainer
+	 * @param l
+	 */
+  void addNewKeyListener(NewKeyListener l);
+
+	/**
+	 * Removes a listener from being notified of NewKey events.
+	 * @param l
+	 */
+  void removeNewKeyListener(NewKeyListener l);
 
   /**
    * Clears the model completely
@@ -76,11 +91,11 @@ public interface EventContainer extends SortTableModel, FilterChangedListener, L
   void clearModel();
 
   /**
-   * Returns true if this model is Cyclic (bounded) or not. 
+   * Returns true if this model is Cyclic (bounded) or not.
    * @return true/false
    */
   public boolean isCyclic();
-  
+
   /**
    * Locates a row number, starting from startRow, containing the text
    * within any column.
@@ -129,5 +144,4 @@ public interface EventContainer extends SortTableModel, FilterChangedListener, L
    * Causes the EventContainer to sort according to it's configured attributes
    */
   void sort();
-
 }
