@@ -15,31 +15,31 @@ distribution and also browsable online:</p>
 
 <ul>
   <p>
-    <li><a href="log4j/javadoc/manual.html"><b>introductory manual</b></a>,
+    <li><a href="manual.html"><b>introductory manual</b></a>,
     </li>
   </p>
 
   <p>
     <li>
-    <a href="log4j/javadoc/index.html"><b>javadoc documentation</b></a>,
+    <a href="../javadoc/index.html"><b>javadoc documentation</b></a>,
     </li>
   </p>
 
   <p>
     <li>
-    <a href="log4j/FAQ.html"><b>FAQ</b></a>,
+    <a href="FAQ.html"><b>FAQ</b></a>,
     </li>
   </p>
 
   <p>
     <li>
-    <a href="log4j/TROUBLESHOOT.html"><b>troubleshooting guide</b></a> and
+    <a href="TROUBLESHOOT.html"><b>troubleshooting guide</b></a> and
     </li>
   </p>
   
   <p>
     <li>
-      <a href="log4j/javadoc/deepExtension.html"><b>extending log4j</b></a>.
+      <a href="deepExtension.html"><b>extending log4j</b></a>.
     </li>
   </p>
 </ul>

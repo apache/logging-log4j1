@@ -75,7 +75,7 @@
     <property name="classes" value="classes" />
     <property name="stem" value="org/apache/log4j" />
     <property name="build.compiler" value="jikes"/>	
-    <property name="version" value="1.0.2"/>  
+    <property name="version" value="1.0.3"/>  
   </target>
 
 
@@ -200,15 +200,6 @@
 
   <target name="javadoc" depends="init">
     <mkdir dir="javadoc" />
-
-    <copy file="doc/od.gif"
-        tofile="javadoc/od.gif" />
-
-    <copy file="doc/manual.html"
-        tofile="javadoc/manual.html" />
-
-    <copy file="doc/deepExtension.html"
-        tofile="javadoc/deepExtension.html" />
 
     <javadoc sourcepath="${srcdir}" 
            destdir="javadoc" 
