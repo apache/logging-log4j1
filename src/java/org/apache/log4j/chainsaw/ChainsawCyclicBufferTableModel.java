@@ -95,7 +95,7 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
   private static final String PANEL_CAPACITY = "CHAINSAW_CAPACITY";
   List unfilteredList = new CyclicBufferList(capacity);
   List filteredList = new CyclicBufferList(capacity);
-  List idList = new CyclicBufferList(capacity);
+  Set idSet = new HashSet(capacity);
   private boolean currentSortAscending;
   private int currentSortColumn;
   private EventListenerList eventListenerList = new EventListenerList();
@@ -242,7 +242,7 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
     synchronized (unfilteredList) {
       unfilteredList.clear();
       filteredList.clear();
-      idList.clear();
+      idSet.clear();
       uniqueRow = 0;
     }
 
@@ -420,10 +420,10 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
     }
 
     //prevent duplicate rows
-    if (idList.contains(id)) {
+    if (idSet.contains(id)) {
       return false;
     }
-    idList.add(id);
+    idSet.add(id);
     unfilteredList.add(e);
 
     rowAdded = true;
@@ -678,14 +678,13 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
                     "Changing Model, isCyclic is now " + isCyclic());
 
                   List newUnfilteredList = null;
-                  List newIDList = null;
+                  HashSet newIDSet = null;
 
+				  newIDSet = new HashSet(capacity);
                   if (isCyclic()) {
                     newUnfilteredList = new CyclicBufferList(capacity);
-                    newIDList = new CyclicBufferList(capacity);
                   } else {
                     newUnfilteredList = new ArrayList(capacity);
-                    newIDList = new ArrayList(capacity);
                   }
 
                   int increment = 0;
@@ -695,15 +694,15 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
                     newUnfilteredList.add(e);
                     Object o = e.getProperty(e.getProperty(ChainsawConstants.LOG4J_ID_KEY));
                     if (o != null) {
-                    	newIDList.add(o);
+                    	newIDSet.add(o);
                     } else {
-                    	newIDList.add(new Integer(increment++));
+                    	newIDSet.add(new Integer(increment++));
                     }
                     monitor.setProgress(index++);
                   }
 
                   unfilteredList = newUnfilteredList;
-                  idList = newIDList;
+                  idSet = newIDSet;
                 }
 
                 monitor.setNote("Refiltering...");
