@@ -233,4 +233,9 @@ extends Receiver implements SocketNodeEventListener {
     }
   }
 
+  public void socketOpened(String remoteInfo) {
+
+    // This method does nothing.    
+  }
+
 }
