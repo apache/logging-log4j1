@@ -917,10 +917,11 @@ each file is relative to a web-application.
 tells log4j to use the file <code>foobar.lcf</code> as the default
 configuration file. This file should be place under the
 <code>WEB-INF/classes</code> directory of your web-application. Due to
-the second system property, the file will be read using the
-<code>com.foo.BarConfigurator</code> custom configurator.  Each
-web-application will use a different default configuration file
-because each file is relative to a web-application. 
+the definition of the <b>log4j.configuratorClass</b> system property,
+the file will be read using the <code>com.foo.BarConfigurator</code>
+custom configurator.  Each web-application will use a different
+default configuration file because each file is relative to a
+web-application.
 
 <p><b>Example 4</b>
 

@@ -17,7 +17,7 @@
   <!-- prefixed with "env". -->
   <property environment="env"/>
 
-  <property name="version" value="1.2rc1"/>
+  <property name="version" value="1.2"/>
 
   <!-- The base directory relative to which most targets are built -->
   <property name="base" value="."/>
@@ -331,6 +331,7 @@
 		${stem}/jmx/*.class,
 		${stem}/or/*.class,
 		${stem}/or/sax/*.class,
+                ${stem}/or/jms/*.class,
 		${stem}/config/*.class,
 		${stem}/gui/TextPaneAppender.class"
       excludes="**/StressCategory*, **/UnitTest**"
@@ -357,6 +358,7 @@
 		         org.apache.log4j.or,
 		         org.apache.log4j.jdbc,
 		         org.apache.log4j.or.sax,
+		         org.apache.log4j.or.jms,
 	                 org.apache.log4j.performance,
 		         org.apache.log4j.spi,
 			 org.apache.log4j.varia,
