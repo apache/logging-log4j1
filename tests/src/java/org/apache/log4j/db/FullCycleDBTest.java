@@ -15,13 +15,13 @@
  */
 package org.apache.log4j.db;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 
+import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 import org.apache.log4j.Hierarchy;
 import org.apache.log4j.Level;
@@ -99,6 +99,7 @@ public class FullCycleDBTest
     // Write out just one log message
     Logger out = lrWrite.getLogger("testSingleOutput.out");
     out.debug("some message"+startTime);
+    
     VectorAppender witnessAppender = (VectorAppender) lrWrite.getRootLogger().getAppender("VECTOR");
     witnessEvents = witnessAppender.getVector();
     assertEquals(1, witnessEvents.size());    
@@ -107,6 +108,32 @@ public class FullCycleDBTest
     readBack("input/db/readCS1.xml", startTime);
 
   }
+
+  public void testDataSource()
+         throws Exception {
+
+    LogLog.setInternalDebugging(true);
+    JoranConfigurator jc1 = new JoranConfigurator();
+    jc1.doConfigure("input/db/append-with-datasource1.xml", lrWrite);
+  
+    
+    long startTime = System.currentTimeMillis();
+    LogLog.info("startTime is  "+startTime);
+    
+    // Write out just one log message
+    Logger out = lrWrite.getLogger("testSingleOutput.out");
+    out.debug("some message"+startTime);
+
+    VectorAppender witnessAppender = (VectorAppender) lrWrite.getRootLogger().getAppender("VECTOR");
+    witnessEvents = witnessAppender.getVector();
+    assertEquals(1, witnessEvents.size());    
+    
+    LogLog.info("----------------------------------------------");
+    // now read it back
+    readBack("input/db/read-with-datasource1.xml", startTime);
+  }
+  
+
 
   /**
    * This test starts by writing a single event to a DB using DBAppender
@@ -128,7 +155,7 @@ public class FullCycleDBTest
     lrWrite.setProperty("key1", "value1-"+startTime);
     MDC.put("key2", "value2-"+startTime);
     Map mdcMap = MDC.getContext();
-    LogLog.info("**********"+mdcMap.size());
+//    LogLog.info("**********"+mdcMap.size());
     
     // Write out just one log message
     Logger out = lrWrite.getLogger("out"+startTime);
@@ -233,4 +260,14 @@ public class FullCycleDBTest
 //    //ctx.addToEnvironment("toto", new Integer(1));
 //    ctx.bind("toto", new Integer(1));
 //  }
+  
+  public static Test suite() {
+    TestSuite suite = new TestSuite();
+    //suite.addTest(new FullCycleDBTest("test1"));
+    //suite.addTest(new FullCycleDBTest("testSingleOutput"));
+    suite.addTest(new FullCycleDBTest("testDataSource"));
+
+
+    return suite;
+  }
 }

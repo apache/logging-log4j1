@@ -23,6 +23,8 @@ public class LevelAction extends Action {
   static final String EMPTY_STR = "";
   static final Class[] ONE_STRING_PARAM = new Class[] { String.class };
 
+  boolean inError = false;
+  
   public void begin(ExecutionContext ec, String name, Attributes attributes) {
     Object o = ec.peekObject();
 

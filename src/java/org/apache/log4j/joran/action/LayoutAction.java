@@ -32,7 +32,8 @@ import org.xml.sax.Attributes;
 public class LayoutAction extends Action {
   static final Logger logger = Logger.getLogger(LayoutAction.class);
   Layout layout;
-
+  boolean inError = false;
+  
   /**
    * Instantiates an layout of the given class and sets its name.
    *

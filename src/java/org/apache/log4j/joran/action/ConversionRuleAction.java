@@ -32,7 +32,8 @@ import org.xml.sax.Attributes;
 public class ConversionRuleAction extends Action {
   static final Logger logger = Logger.getLogger(ConversionRuleAction.class);
   Layout layout;
-
+  boolean inError = false;
+  
   /**
    * Instantiates an layout of the given class and sets its name.
    *

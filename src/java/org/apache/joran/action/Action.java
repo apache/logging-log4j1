@@ -45,11 +45,6 @@ public abstract class Action {
   public static final String ACTION_CLASS_ATTRIBUTE = "actionClass";
 
   /**
-   * When actions encounter an error condition they set this variable to true.
-   */
-  protected boolean inError = false;
-
-  /**
    * Called when the parser first encounters an element.
    *
    * The return value indicates whether child elements should be processed. If

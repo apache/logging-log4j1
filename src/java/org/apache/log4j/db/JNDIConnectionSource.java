@@ -17,12 +17,15 @@ package org.apache.log4j.db;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Hashtable;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.rmi.PortableRemoteObject;
 import javax.sql.DataSource;
+
+import org.apache.log4j.helpers.LogLog;
 
 /**
  *  The <id>JNDIConnectionSource</id> is an implementation of
@@ -84,6 +87,7 @@ public class JNDIConnectionSource
         errorHandler.error(ne.getMessage(), ne, 0);
       }
 
+      LogLog.error("Error while getting data source", ne);
       throw new SQLException("NamingException while looking up DataSource: " + ne.getMessage());
     } catch (final ClassCastException cce) {
       if (errorHandler != null) {
@@ -142,7 +146,14 @@ public class JNDIConnectionSource
          throws NamingException, SQLException {
     DataSource ds;
 
-    Context ctx = new InitialContext();
+    Hashtable env = new Hashtable(11);
+    env.put(Context.INITIAL_CONTEXT_FACTORY,
+            "com.sun.jndi.fscontext.RefFSContextFactory");
+    env.put(Context.PROVIDER_URL,
+            "file:///home/jndi");
+    Context ctx = new InitialContext(env);
+    
+    //Context ctx = new InitialContext();
     Object obj = ctx.lookup(jndiLocation);
     ds = (DataSource)PortableRemoteObject.narrow(obj, DataSource.class);
 

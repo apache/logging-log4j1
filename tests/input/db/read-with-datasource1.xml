@@ -4,16 +4,24 @@
 <log4j:configuration debug="true">
 	  
   <substitutionProperty file="input/db/db.properties"/>
-	  
-  <plugin name="DB1" class="org.apache.log4j.db.DBReceiver">
-     <connectionSource class="org.apache.log4j.db.DriverManagerConnectionSource">
-       <param name="driverClass" value="${driverClass}"/>
-       <param name="url" value="${url}"/>
+
+  <substitutionProperty file="input/db/db.properties"/>
+	    
+	    
+  <plugin name="DBPlugin" class="org.apache.log4j.db.DBReceiver">
+     <connectionSource class="org.apache.log4j.db.DataSourceConnectionSource">
+       
+       <dataSource class="${dataSourceClass}">
+         <param name="url" value="${url}"/>
+         <param name="serverName" value="${serverName}"/>
+         <param name="databaseName" value="${databaseName}"/>          
+       </dataSource>
+       
        <param name="user" value="${user}"/>
        <param name="password" value="${password}"/>
      </connectionSource>
   </plugin>
-
+  
 
   <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
      <layout class="org.apache.log4j.PatternLayout">

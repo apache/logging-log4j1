@@ -31,7 +31,8 @@ import org.xml.sax.Attributes;
 public class PluginAction extends Action {
   static final Logger logger = Logger.getLogger(PluginAction.class);
   Plugin plugin;
-
+  boolean inError = false;
+  
   /**
    * Instantiates an plugin of the given class and sets its name.
    *

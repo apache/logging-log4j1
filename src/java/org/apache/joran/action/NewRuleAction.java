@@ -28,6 +28,8 @@ import org.xml.sax.Attributes;
 public class NewRuleAction extends Action {
   static final Logger logger = Logger.getLogger(NewRuleAction.class);
 
+  boolean inError = false;
+  
   /**
    * Instantiates an layout of the given class and sets its name.
    *

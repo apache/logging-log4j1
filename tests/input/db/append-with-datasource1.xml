@@ -6,9 +6,14 @@
   <substitutionProperty file="input/db/db.properties"/>
 	    
   <appender name="DB" class="org.apache.log4j.db.DBAppender">
-     <connectionSource class="org.apache.log4j.db.DriverManagerConnectionSource">
-       <param name="driverClass" value="${driverClass}"/>
-       <param name="url" value="${url}"/>
+     <connectionSource class="org.apache.log4j.db.DataSourceConnectionSource">
+       
+       <dataSource class="${dataSourceClass}">
+         <param name="url" value="${url}"/>
+         <param name="serverName" value="${serverName}"/>
+         <param name="databaseName" value="${databaseName}"/>         
+       </dataSource>
+       
        <param name="user" value="${user}"/>
        <param name="password" value="${password}"/>
      </connectionSource>

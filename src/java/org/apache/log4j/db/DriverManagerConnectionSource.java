@@ -23,7 +23,7 @@ import org.apache.log4j.spi.ErrorCode;
 
 
 /**
- *  The UrlConnectionSource is an implementation of {@link ConnectionSource}
+ *  The DriverManagerConnectionSource is an implementation of {@link ConnectionSource}
  *  that obtains the Connection in the traditional JDBC manner based on the
  *  connection URL.
  *  <p>
@@ -40,7 +40,7 @@ import org.apache.log4j.spi.ErrorCode;
  *  <p>
  *  Sample configuration:<br>
  *  <pre>
- *     &lt;connectionSource class="org.apache.log4j.jdbc.UrlConnectionSource"&gt;
+ *     &lt;connectionSource class="org.apache.log4j.jdbc.DriverManagerConnectionSource"&gt;
  *        &lt;param name="driver" value="com.mysql.jdbc.Driver" /&gt;
  *        &lt;param name="url" value="jdbc:mysql://localhost:3306/mydb" /&gt;
  *        &lt;param name="username" value="myUser" /&gt;
@@ -53,7 +53,7 @@ import org.apache.log4j.spi.ErrorCode;
  *  <a href="http://jakarta.apache.org/commons/dbcp/index.html">commons-dbcp</a>
  *  package from Apache:<br>
  *  <pre>
- *     &lt;connectionSource class="org.apache.log4j.jdbc.UrlConnectionSource"&gt;
+ *     &lt;connectionSource class="org.apache.log4j.jdbc.DriverManagerConnectionSource"&gt;
  *        &lt;param name="driver" value="org.apache.commons.dbcp.PoolingDriver" /&gt;
  *        &lt;param name="url" value="jdbc:apache:commons:dbcp:/myPoolingDriver" /&gt;
  *     &lt;/connectionSource&gt;
@@ -65,7 +65,7 @@ import org.apache.log4j.spi.ErrorCode;
  *
  *  @author <a href="mailto:rdecampo@twcny.rr.com">Ray DeCampo</a>
  */
-public class UrlConnectionSource
+public class DriverManagerConnectionSource
        extends ConnectionSourceSkeleton {
   static private final String POSTGRES_PART = "postgresql";
   static private final String MYSQL_PART = "mysql";
@@ -79,7 +79,7 @@ public class UrlConnectionSource
       if (driverClass != null) {
         Class.forName(driverClass);
       } else if (errorHandler != null) {
-        errorHandler.error("WARNING: No JDBC driver specified for log4j " + "UrlConnectionSource.");
+        errorHandler.error("WARNING: No JDBC driver specified for log4j " + "DriverManagerConnectionSource.");
       }
     } catch (final ClassNotFoundException cnfe) {
       if (errorHandler != null) {

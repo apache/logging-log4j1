@@ -34,6 +34,8 @@ public class AppenderAction extends Action {
   static final Logger logger = Logger.getLogger(AppenderAction.class);
   Appender appender;
 
+  private boolean inError = false;
+  
   /**
    * Instantiates an appender of the given class and sets its name.
    *

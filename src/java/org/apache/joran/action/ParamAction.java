@@ -5,6 +5,7 @@ import org.apache.joran.ExecutionContext;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.config.PropertySetter;
+import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
 import org.xml.sax.Attributes;
 
@@ -14,7 +15,9 @@ public class ParamAction extends Action {
 
 	static String NO_NAME = "No name attribute in <param> element";
 	static String NO_VALUE = "No name attribute in <param> element";
-	
+  
+  boolean inError = false;
+  
   public void begin(ExecutionContext ec, String localName, Attributes attributes) {
 		String name = attributes.getValue(NAME_ATTRIBUTE);
 		String value = attributes.getValue(VALUE_ATTRIBUTE);
@@ -33,10 +36,13 @@ public class ParamAction extends Action {
 			return;
 		}
     
+    // remove both leading and trailing spaces
+    value = value.trim();
+    
 		Object o = ec.peekObject();
 		PropertySetter propSetter = new PropertySetter(o);		
 		value = ec.subst(OptionConverter.convertSpecialChars(value));
-    logger.debug("Setting parameter ["+name+"] to value ["+value+"].");
+    LogLog.debug("In ParamAction setting parameter ["+name+"] to value ["+value+"].");
 		propSetter.setProperty(name, value);
   }
 
