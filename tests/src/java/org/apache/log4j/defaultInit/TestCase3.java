@@ -11,11 +11,9 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import junit.framework.Test;
 
-import java.util.Vector;
 import java.util.Enumeration;
 
 import org.apache.log4j.*;
-import org.apache.log4j.performance.NullAppender;
 
 public class TestCase3 extends TestCase {
 

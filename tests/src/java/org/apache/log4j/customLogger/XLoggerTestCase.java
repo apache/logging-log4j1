@@ -9,8 +9,6 @@ package org.apache.log4j.customLogger;
 
 import org.apache.log4j.xml.DOMConfigurator;
 import org.apache.log4j.Logger;
-import org.apache.log4j.Level;
-
 import org.apache.log4j.util.*;
 
 import junit.framework.TestCase;

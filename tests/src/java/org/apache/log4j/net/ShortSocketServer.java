@@ -10,7 +10,6 @@ package org.apache.log4j.net;
 
 import java.net.Socket;
 import java.net.ServerSocket;
-import java.io.IOException;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.LogManager;
@@ -18,7 +17,6 @@ import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.MDC;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.net.SocketNode;
-import org.apache.log4j.net.SocketServer;
 
 /**
  * This SocketServer exits after certain number of connections from a

@@ -1,82 +1,119 @@
+/*
+ * ============================================================================
+ *                   The Apache Software License, Version 1.1
+ * ============================================================================
+ *
+ *    Copyright (C) 1999 The Apache Software Foundation. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modifica-
+ * tion, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of  source code must  retain the above copyright  notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * 3. The end-user documentation included with the redistribution, if any, must
+ *    include  the following  acknowledgment:  "This product includes  software
+ *    developed  by the  Apache Software Foundation  (http://www.apache.org/)."
+ *    Alternately, this  acknowledgment may  appear in the software itself,  if
+ *    and wherever such third-party acknowledgments normally appear.
+ *
+ * 4. The names "log4j" and  "Apache Software Foundation"  must not be used to
+ *    endorse  or promote  products derived  from this  software without  prior
+ *    written permission. For written permission, please contact
+ *    apache@apache.org.
+ *
+ * 5. Products  derived from this software may not  be called "Apache", nor may
+ *    "Apache" appear  in their name,  without prior written permission  of the
+ *    Apache Software Foundation.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS  FOR A PARTICULAR  PURPOSE ARE  DISCLAIMED.  IN NO  EVENT SHALL  THE
+ * APACHE SOFTWARE  FOUNDATION  OR ITS CONTRIBUTORS  BE LIABLE FOR  ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL,  EXEMPLARY, OR CONSEQUENTIAL  DAMAGES (INCLU-
+ * DING, BUT NOT LIMITED TO, PROCUREMENT  OF SUBSTITUTE GOODS OR SERVICES; LOSS
+ * OF USE, DATA, OR  PROFITS; OR BUSINESS  INTERRUPTION)  HOWEVER CAUSED AND ON
+ * ANY  THEORY OF LIABILITY,  WHETHER  IN CONTRACT,  STRICT LIABILITY,  OR TORT
+ * (INCLUDING  NEGLIGENCE OR  OTHERWISE) ARISING IN  ANY WAY OUT OF THE  USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * This software  consists of voluntary contributions made  by many individuals
+ * on  behalf of the Apache Software  Foundation.  For more  information on the
+ * Apache Software Foundation, please see <http://www.apache.org/>.
+ *
+ */
+
 /* Copyright (C) The Apache Software Foundation. All rights reserved.
  *
  * This software is published under the terms of the Apache Software License
  * version 1.1, a copy of which has been included  with this distribution in
  * the LICENSE.txt file.
  */
-
 package org.apache.log4j.net;
 
+import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import junit.framework.Test;
 
 import org.apache.log4j.*;
-import org.apache.log4j.helpers.AbsoluteTimeDateFormat;
-import org.apache.log4j.util.*;
-
-import org.apache.log4j.xml.DOMConfigurator;
-import org.apache.log4j.PropertyConfigurator;
-
 import org.apache.log4j.Logger;
-import org.apache.log4j.LogManager;
 import org.apache.log4j.NDC;
+import org.apache.log4j.util.*;
 import org.apache.log4j.xml.XLevel;
-import org.apache.log4j.Priority;
-import java.io.IOException;
-import java.util.Enumeration;
+
 
 /**
    @author  Ceki G&uuml;lc&uuml;
 */
 public class SocketServerTestCase extends TestCase {
-  
   static String TEMP = "output/temp";
   static String FILTERED = "output/filtered";
 
   // %5p %x [%t] %c %m%n
   // DEBUG T1 [main] org.apache.log4j.net.SocketAppenderTestCase Message 1
-  static String PAT1 = "^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) T1 \\[main]\\ "
-                       + ".* Message \\d{1,2}";
+  static String PAT1 =
+    "^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) T1 \\[main]\\ "
+    + ".* Message \\d{1,2}";
 
   // DEBUG T2 [main] ? (?:?) Message 1
-  static String PAT2 = "^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) T2 \\[main]\\ "
-                       + "\\? \\(\\?:\\?\\) Message \\d{1,2}";
-
+  static String PAT2 =
+    "^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) T2 \\[main]\\ "
+    + "\\? \\(\\?:\\?\\) Message \\d{1,2}";
 
   // DEBUG T3 [main] org.apache.log4j.net.SocketServerTestCase (SocketServerTestCase.java:121) Message 1
-  static String PAT3 = "^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) T3 \\[main]\\ "
-                       + "org.apache.log4j.net.SocketServerTestCase "
-                       + "\\(SocketServerTestCase.java:\\d{3}\\) Message \\d{1,2}";
-
+  static String PAT3 =
+    "^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) T3 \\[main]\\ "
+    + "org.apache.log4j.net.SocketServerTestCase "
+    + "\\(SocketServerTestCase.java:\\d{3}\\) Message \\d{1,2}";
 
   // DEBUG some T4 MDC-TEST4 [main] SocketAppenderTestCase - Message 1   
   // DEBUG some T4 MDC-TEST4 [main] SocketAppenderTestCase - Message 1 
-  static String PAT4 = "^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some T4 MDC-TEST4 \\[main]\\"
-                       + " (root|SocketServerTestCase) - Message \\d{1,2}";
-
-  static String PAT5 = "^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some5 T5 MDC-TEST5 \\[main]\\"
-                       + " (root|SocketServerTestCase) - Message \\d{1,2}";
-
-  static String PAT6 = "^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some6 T6 client-test6 MDC-TEST6"
-                       + " \\[main]\\ (root|SocketServerTestCase) - Message \\d{1,2}";
-
-  static String PAT7 = "^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some7 T7 client-test7 MDC-TEST7"
-                       + " \\[main]\\ (root|SocketServerTestCase) - Message \\d{1,2}";
+  static String PAT4 =
+    "^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some T4 MDC-TEST4 \\[main]\\"
+    + " (root|SocketServerTestCase) - Message \\d{1,2}";
+  static String PAT5 =
+    "^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some5 T5 MDC-TEST5 \\[main]\\"
+    + " (root|SocketServerTestCase) - Message \\d{1,2}";
+  static String PAT6 =
+    "^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some6 T6 client-test6 MDC-TEST6"
+    + " \\[main]\\ (root|SocketServerTestCase) - Message \\d{1,2}";
+  static String PAT7 =
+    "^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some7 T7 client-test7 MDC-TEST7"
+    + " \\[main]\\ (root|SocketServerTestCase) - Message \\d{1,2}";
 
   // DEBUG some8 T8 shortSocketServer MDC-TEST7 [main] SocketServerTestCase - Message 1
-  static String PAT8 = "^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some8 T8 shortSocketServer"
-                       + " MDC-TEST8 \\[main]\\ (root|SocketServerTestCase) - Message \\d{1,2}";
-
-
-
+  static String PAT8 =
+    "^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some8 T8 shortSocketServer"
+    + " MDC-TEST8 \\[main]\\ (root|SocketServerTestCase) - Message \\d{1,2}";
   static String EXCEPTION1 = "java.lang.Exception: Just testing";
   static String EXCEPTION2 = "\\s*at .*\\(.*:\\d{1,4}\\)";
   static String EXCEPTION3 = "\\s*at .*\\(Native Method\\)";
-
-
   static Logger logger = Logger.getLogger(SocketServerTestCase.class);
-  static public final int PORT = 12345;  
+  public static final int PORT = 12345;
   static Logger rootLogger = Logger.getRootLogger();
   SocketAppender socketAppender;
 
@@ -87,7 +124,7 @@ public class SocketServerTestCase extends TestCase {
   public void setUp() {
     System.out.println("Setting up test case.");
   }
-  
+
   public void tearDown() {
     System.out.println("Tearing down test case.");
     socketAppender = null;
@@ -95,20 +132,23 @@ public class SocketServerTestCase extends TestCase {
   }
 
   /**
-   * The pattern on the server side: %5p %x [%t] %c %m%n     
+   * The pattern on the server side: %5p %x [%t] %c %m%n
    *
-   * We are testing NDC functionality across the wire.  
+   * We are testing NDC functionality across the wire.
    */
   public void test1() throws Exception {
     socketAppender = new SocketAppender("localhost", PORT);
     rootLogger.addAppender(socketAppender);
     common("T1", "key1", "MDC-TEST1");
     delay(1);
-    ControlFilter cf = new ControlFilter(new String[]{PAT1, EXCEPTION1, 
-						       EXCEPTION2, EXCEPTION3});
-    
-    Transformer.transform(TEMP, FILTERED, new Filter[] {cf, new LineNumberFilter(),
-                                                        new SunReflectFilter()});
+
+    ControlFilter cf =
+      new ControlFilter(
+        new String[] { PAT1, EXCEPTION1, EXCEPTION2, EXCEPTION3 });
+
+    Transformer.transform(
+      TEMP, FILTERED,
+      new Filter[] { cf, new LineNumberFilter(), new SunReflectFilter() });
 
     assertTrue(Compare.compare(FILTERED, "witness/socketServer.1"));
   }
@@ -125,11 +165,14 @@ public class SocketServerTestCase extends TestCase {
 
     common("T2", "key2", "MDC-TEST2");
     delay(1);
-    ControlFilter cf = new ControlFilter(new String[]{PAT2, EXCEPTION1, 
-						       EXCEPTION2, EXCEPTION3});
-    
-    Transformer.transform(TEMP, FILTERED, new Filter[] {cf, new LineNumberFilter(),
-                                                        new SunReflectFilter()});
+
+    ControlFilter cf =
+      new ControlFilter(
+        new String[] { PAT2, EXCEPTION1, EXCEPTION2, EXCEPTION3 });
+
+    Transformer.transform(
+      TEMP, FILTERED,
+      new Filter[] { cf, new LineNumberFilter(), new SunReflectFilter() });
 
     assertTrue(Compare.compare(FILTERED, "witness/socketServer.2"));
   }
@@ -145,19 +188,22 @@ public class SocketServerTestCase extends TestCase {
 
     common("T3", "key3", "MDC-TEST3");
     delay(1);
-    ControlFilter cf = new ControlFilter(new String[]{PAT3, EXCEPTION1, 
-						       EXCEPTION2, EXCEPTION3});
-    
-    Transformer.transform(TEMP, FILTERED, new Filter[] {cf, new LineNumberFilter(),
-                                                        new SunReflectFilter()});
+
+    ControlFilter cf =
+      new ControlFilter(
+        new String[] { PAT3, EXCEPTION1, EXCEPTION2, EXCEPTION3 });
+
+    Transformer.transform(
+      TEMP, FILTERED,
+      new Filter[] { cf, new LineNumberFilter(), new SunReflectFilter() });
 
     assertTrue(Compare.compare(FILTERED, "witness/socketServer.3"));
   }
 
   /**
-   *  The pattern on the server side: %5p %x %X{key1}%X{key4} [%t] %c{1} - %m%n 
-   *  meaning that we are testing NDC, MDC and localization functionality across 
-   *  the wire.  
+   *  The pattern on the server side: %5p %x %X{key1}%X{key4} [%t] %c{1} - %m%n
+   *  meaning that we are testing NDC, MDC and localization functionality across
+   *  the wire.
   */
   public void test4() throws Exception {
     socketAppender = new SocketAppender("localhost", PORT);
@@ -168,17 +214,20 @@ public class SocketServerTestCase extends TestCase {
     common("T4", "key4", "MDC-TEST4");
     NDC.pop();
     delay(1);
-    ControlFilter cf = new ControlFilter(new String[]{PAT4, EXCEPTION1, 
-						       EXCEPTION2, EXCEPTION3});
-    
-    Transformer.transform(TEMP, FILTERED, new Filter[] {cf, new LineNumberFilter(),
-                                                        new SunReflectFilter()});
+
+    ControlFilter cf =
+      new ControlFilter(
+        new String[] { PAT4, EXCEPTION1, EXCEPTION2, EXCEPTION3 });
+
+    Transformer.transform(
+      TEMP, FILTERED,
+      new Filter[] { cf, new LineNumberFilter(), new SunReflectFilter() });
 
     assertTrue(Compare.compare(FILTERED, "witness/socketServer.4"));
   }
 
   /**
-   * The pattern on the server side: %5p %x %X{key1}%X{key5} [%t] %c{1} - %m%n 
+   * The pattern on the server side: %5p %x %X{key1}%X{key5} [%t] %c{1} - %m%n
    *
    * The test case uses wraps an AsyncAppender around the
    * SocketAppender. This tests was written specifically for bug
@@ -194,6 +243,7 @@ public class SocketServerTestCase extends TestCase {
   public void test5() throws Exception {
     socketAppender = new SocketAppender("localhost", PORT);
     socketAppender.setLocationInfo(true);
+
     AsyncAppender asyncAppender = new AsyncAppender();
     asyncAppender.setLocationInfo(true);
     asyncAppender.addAppender(socketAppender);
@@ -203,16 +253,19 @@ public class SocketServerTestCase extends TestCase {
     common("T5", "key5", "MDC-TEST5");
     NDC.pop();
     delay(2);
-    ControlFilter cf = new ControlFilter(new String[]{PAT5, EXCEPTION1, 
-						       EXCEPTION2, EXCEPTION3});
-    
-    Transformer.transform(TEMP, FILTERED, new Filter[] {cf, new LineNumberFilter(),
-                                                        new SunReflectFilter()});
+
+    ControlFilter cf =
+      new ControlFilter(
+        new String[] { PAT5, EXCEPTION1, EXCEPTION2, EXCEPTION3 });
+
+    Transformer.transform(
+      TEMP, FILTERED,
+      new Filter[] { cf, new LineNumberFilter(), new SunReflectFilter() });
     assertTrue(Compare.compare(FILTERED, "witness/socketServer.5"));
   }
 
   /**
-   * The pattern on the server side: %5p %x %X{hostID}${key6} [%t] %c{1} - %m%n 
+   * The pattern on the server side: %5p %x %X{hostID}${key6} [%t] %c{1} - %m%n
    *
    * This test checks whether client-side MDC overrides the server side.
    * It uses an AsyncAppender encapsulating a SocketAppender
@@ -220,6 +273,7 @@ public class SocketServerTestCase extends TestCase {
   public void test6() throws Exception {
     socketAppender = new SocketAppender("localhost", PORT);
     socketAppender.setLocationInfo(true);
+
     AsyncAppender asyncAppender = new AsyncAppender();
     asyncAppender.setLocationInfo(true);
     asyncAppender.addAppender(socketAppender);
@@ -231,16 +285,19 @@ public class SocketServerTestCase extends TestCase {
     NDC.pop();
     MDC.remove("hostID");
     delay(2);
-    ControlFilter cf = new ControlFilter(new String[]{PAT6, EXCEPTION1, 
-						       EXCEPTION2, EXCEPTION3});
-    
-    Transformer.transform(TEMP, FILTERED, new Filter[] {cf, new LineNumberFilter(),
-                                                        new SunReflectFilter()});
+
+    ControlFilter cf =
+      new ControlFilter(
+        new String[] { PAT6, EXCEPTION1, EXCEPTION2, EXCEPTION3 });
+
+    Transformer.transform(
+      TEMP, FILTERED,
+      new Filter[] { cf, new LineNumberFilter(), new SunReflectFilter() });
     assertTrue(Compare.compare(FILTERED, "witness/socketServer.6"));
   }
 
   /**
-   * The pattern on the server side: %5p %x %X{hostID}${key7} [%t] %c{1} - %m%n 
+   * The pattern on the server side: %5p %x %X{hostID}${key7} [%t] %c{1} - %m%n
    *
    * This test checks whether client-side MDC overrides the server side.
    */
@@ -253,18 +310,21 @@ public class SocketServerTestCase extends TestCase {
     MDC.put("hostID", "client-test7");
     common("T7", "key7", "MDC-TEST7");
     NDC.pop();
-    MDC.remove("hostID"); 
+    MDC.remove("hostID");
     delay(2);
-    ControlFilter cf = new ControlFilter(new String[]{PAT7, EXCEPTION1, 
-						       EXCEPTION2, EXCEPTION3});
-    
-    Transformer.transform(TEMP, FILTERED, new Filter[] {cf, new LineNumberFilter(),
-                                                        new SunReflectFilter()});
+
+    ControlFilter cf =
+      new ControlFilter(
+        new String[] { PAT7, EXCEPTION1, EXCEPTION2, EXCEPTION3 });
+
+    Transformer.transform(
+      TEMP, FILTERED,
+      new Filter[] { cf, new LineNumberFilter(), new SunReflectFilter() });
     assertTrue(Compare.compare(FILTERED, "witness/socketServer.7"));
   }
 
   /**
-   * The pattern on the server side: %5p %x %X{hostID}${key7} [%t] %c{1} - %m%n 
+   * The pattern on the server side: %5p %x %X{hostID}${key7} [%t] %c{1} - %m%n
    *
    * This test checks whether server side MDC works.
    */
@@ -277,19 +337,22 @@ public class SocketServerTestCase extends TestCase {
     common("T8", "key8", "MDC-TEST8");
     NDC.pop();
     delay(2);
-    ControlFilter cf = new ControlFilter(new String[]{PAT8, EXCEPTION1, 
-						       EXCEPTION2, EXCEPTION3});
-    
-    Transformer.transform(TEMP, FILTERED, new Filter[] {cf, new LineNumberFilter(),
-                                                        new SunReflectFilter()});
+
+    ControlFilter cf =
+      new ControlFilter(
+        new String[] { PAT8, EXCEPTION1, EXCEPTION2, EXCEPTION3 });
+
+    Transformer.transform(
+      TEMP, FILTERED,
+      new Filter[] { cf, new LineNumberFilter(), new SunReflectFilter() });
     assertTrue(Compare.compare(FILTERED, "witness/socketServer.8"));
   }
 
-  static 
-  void common(String dc, String key, Object o) {
-    int i = -1; 
-    NDC.push(dc); 
+  static void common(String dc, String key, Object o) {
+    int i = -1;
+    NDC.push(dc);
     MDC.put(key, o);
+
     Logger root = Logger.getRootLogger();
 
     logger.log(XLevel.TRACE, "Message " + ++i);
@@ -298,7 +361,7 @@ public class SocketServerTestCase extends TestCase {
     logger.info("Message " + ++i);
     logger.warn("Message " + ++i);
     logger.log(XLevel.LETHAL, "Message " + ++i); //5
-    
+
     Exception e = new Exception("Just testing");
     logger.debug("Message " + ++i, e);
     root.error("Message " + ++i, e);
@@ -307,9 +370,11 @@ public class SocketServerTestCase extends TestCase {
   }
 
   public void delay(int secs) {
-    try {Thread.currentThread().sleep(secs*1000);} catch(Exception e) {}
+    try {
+      Thread.sleep(secs * 1000);
+    } catch (Exception e) {
+    }
   }
-
 
   public static Test suite() {
     TestSuite suite = new TestSuite();
@@ -321,6 +386,7 @@ public class SocketServerTestCase extends TestCase {
     suite.addTest(new SocketServerTestCase("test6"));
     suite.addTest(new SocketServerTestCase("test7"));
     suite.addTest(new SocketServerTestCase("test8"));
+
     return suite;
   }
 }
