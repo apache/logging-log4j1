@@ -61,6 +61,7 @@ import org.apache.log4j.spi.OptionHandler;
    Extend this abstract class to create your own log layout format.
 
    @author Ceki G&uuml;lc&uuml;
+   @author Chris Nokes
 
 */
 public abstract class Layout implements OptionHandler {
