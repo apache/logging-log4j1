@@ -50,12 +50,12 @@ import org.apache.log4j.spi.ErrorCode;
 
    <p><table border="1">
    <tr>
-   <th>DatePatten</th> 
-   <th>rollover schdule</th>
-   <th>example</th>
+   <th>DatePattern</th> 
+   <th>Rollover schedule</th>
+   <th>Example</th>
 
    <tr>
-   <td><code>'.'yyyy-MM</code>   
+   <td><code>'.'yyyy-MM</code>
    <td>Rollover at the beginning of each month</td>   
 
    <td>Assuming the first day of the week is Sunday, at Sunday 00:00,
@@ -65,7 +65,7 @@ import org.apache.log4j.spi.ErrorCode;
    itself at the beginning of May.
 
    <tr>
-   <td><code>'.'yyyy-ww</code>   
+   <td><code>'.'yyyy-ww</code>
    
    <td>Rollover at the first day of each week. The first day of the
    week depends on the locale.</td>
@@ -335,7 +335,7 @@ public class DailyRollingFileAppender extends FileAppender {
 /**
    RollingCalendar is a helper class to
    DailyRollingFileAppender. Using this class, it is easy to compute
-   and access the next Millis()
+   and access the next Millis().
  
    It subclasses the standard {@link GregorianCalendar}-object, to
    allow access to the protected function getTimeInMillis(), which it
@@ -410,5 +410,4 @@ class RollingCalendar extends GregorianCalendar {
     }      
     return getTime();
   }
-}  
-
+}
