@@ -153,18 +153,23 @@ public class TelnetAppender extends AppenderSkeleton {
 
     /** sends a message to each of the clients in telnet-friendly output. */
     public void send(String message) {
-      Enumeration ce = connections.elements();
-
+      boolean hasWriterError = false;
       for (Enumeration e = writers.elements(); e.hasMoreElements();) {
-        Socket sock = (Socket) ce.nextElement();
         PrintWriter writer = (PrintWriter) e.nextElement();
         writer.print(message);
+        hasWriterError |= writer.checkError();
 
-        if (writer.checkError()) {
-          // The client has closed the connection, remove it from our list:
-          connections.remove(sock);
-          writers.remove(writer);
-        }
+      }
+      //
+      //   if any writer had an error then
+      //       check all writers and remove any bad ones
+      if(hasWriterError) {
+         for (int i = writers.size() - 1; i >= 0; i--) {
+            if (((PrintWriter) writers.elementAt(i)).checkError()) {
+                writers.remove(i);
+                connections.remove(i);
+            }
+         }
       }
     }
 
