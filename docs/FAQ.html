@@ -8,7 +8,7 @@
 <h1>Frequently Asked Questions about log4j</h1>
 
 <b>Ceki G&uuml;lc&uuml;</b> and <b>Chris Taylor</b> 
-<h2>August 2001</h2>
+<h2>May 2002</h2>
 </center>
 <ul>
 
@@ -22,19 +22,17 @@
 <li><p><a href=#features>What are the features of log4j?</a></p> 
 <li><p><a href=#thread-safety>Is log4j thread-safe?</a></p> 
 <li><p><a href=#sample>What does log output look like?</a></p>
-<li><p><a href=#category>What are <em>Categories</em>?</a></p>
+<li><p><a href=#logger>What are <em>Loggers</em>?</a></p>
 <li><p><a href=#behavior>How can I change log behavior at runtime?</a></p>
-<li><p><a HREF=#reduce>How can I reduce the computational cost of
-debug and info statements?</a></p>
 <li><p><a HREF=#fastLogging>What is the fastest way of (not) logging?</a></p>
 <li><p><a HREF=#arrayDebug>What is the use of the <code>debug</code> method
 expecting a <code>String</code> array as one of its parameters?</a></p>
 
-<li><p><a href=#introCat>Why was the Category class introduced and how
+<li><p><a href=#introCat>Why was the Logger class introduced and how
 do I migrate from the previous String based implementation?</a></p>
 
-<li><p><a href=#namingCategories>Are there any suggested ways for naming
-categories?</a></p>
+<li><p><a href=#namingLoggers>Are there any suggested ways for naming
+loggers?</a></p>
 
 <li><p><a href=#className>How do I get the fully-qualified name of a class in
 a static block?</a></p>
@@ -49,12 +47,11 @@ customized?</a></p>
 <li><p><a href=#NDC>Can the outputs of multiple client request go to
 different log files?</a></p>
 
+<li><p><a href=#rm>Logger instances seem to be create only. Why isn't
+there a method to remove logger instances?</a></p>
 
-<li><p><a href=#rm>Category instances seem to be create only. Why isn't
-there a method to remove category instances?</a></p>
-
-<li><p><a href=#filterByPriority>Is it possible to direct log output
-to different appenders by priority?</a></p>
+<li><p><a href=#filterByLevel>Is it possible to direct log output
+to different appenders by level?</a></p>
 
 <li><p><a href=#many21>How do I get multiple processes to log to the 
 same file?</a></p>
@@ -67,17 +64,12 @@ method above, what happens to timestamps?</P>
 <LI><P><A HREF="#configureandwatch">Is there a way to get Log4J to automatically reload a configuration file if it changes?</P>
 <LI><P><A HREF="#nteventlogproblems">What does the Windows NT Event Viewer complain about missing descriptions for my event messages
 when I use the NTEventLogAppender?</P>
-<LI><P><A HREF="#morenteventlogproblems">Why can't I map my category names to the categories that appear in the 
+<LI><P><A HREF="#morenteventlogproblems">Why can't I map my logger names to the loggers that appear in the 
 NT Event Log when I use the NTEventLogAppender?</p>						   
 <li><p><a href=#tax>Why should I donate my log4j extensions back to the
 project?</a></p>
 <li><p><a href=#help>What should I keep in mind when contributing code?</a></p>
 
-<li><p><a href=#bugCorrection>How fast do bugs in log4j get fixed?</a></p>
-
-<li><p><a href=#history>What is the history of log4j?</a></p>
-
-<li><p><a href=#bugs>How do I report bugs?</a></p>
 
 <li><p><a href=#download>Where can I find the latest distribution of log4j?</a></p>
 
@@ -98,7 +90,7 @@ follows that the speed of logging (or rather not logging) is capital.
 
 <p>At the same time, log output can be so voluminous that it quickly
 becomes overwhelming. One of the distinctive features of log4j is the
-notion of <i>hierarchical categories</i>. Using categories it is
+notion of <i>hierarchical loggers</i>. Using loggers it is
 possible to selectively control which log statements are output at
 arbitrary  granularity.
 
@@ -161,9 +153,7 @@ not be performed.
 
 <a name=usageExample><h4>Is there example code for using log4j?</h4>
 
-<p>There is a directory containing examples in
-<code>org/log4j/examples</code>. See also
-<code>org/log4j/xml/examples</code>.
+<p>See the <code>examples/</code> directory.
 
 <a name=features><h4 id="">What are the features of log4j?</h4>
 
@@ -171,7 +161,7 @@ not be performed.
 
   <p><li>log4j is optimized for speed.
 
-  <p><li>log4j is based on a named category hierarchy.
+  <p><li>log4j is based on a named logger hierarchy.
       
   <p><li>log4j is fail-stop but not reliable.
 
@@ -189,8 +179,8 @@ not be performed.
       a remote server using TCP, a remote Unix Syslog daemon, to a
       remote listener using JMS, to the NT EventLog or even send e-mail.
 
-  <p><li>log4j uses 5 priority levels, namely DEBUG, INFO, WARN, ERROR
-  and FATAL.
+  <p><li>log4j uses 5 levels, namely DEBUG, INFO, WARN, ERROR and
+  FATAL.
 
   <p><li>The format of the log output can be easily changed by
       extending the Layout class.
@@ -198,7 +188,7 @@ not be performed.
   <p><li>The target of the log output as well as the writing strategy
       can be altered by implementations of the Appender interface.
 
-   <p><li>log4j supports multiple output appenders per category.
+   <p><li>log4j supports multiple output appenders per logger.
 
    <p><li>log4j supports internationalization.
        
@@ -234,21 +224,21 @@ the conversion pattern <b>"%r [%t] %-5p %c{2} %x - %m%n"</b>
 
 <p>The first field is the number of milliseconds elapsed since the
 start of the program. The second field is the thread outputting the
-log statement. The third field is the priority of the log
+log statement. The third field is the level of the log
 statement. The fourth field is the rightmost two components of the
-category making the log request. The fifth field (just before the '-')
+logger making the log request. The fifth field (just before the '-')
 is the <em>nested diagnostic context</em> (NDC). Note the nested diagnostic
 context may be empty as in the first two statements. The text after
 the '-' is the message of the statement.
 
-<a name=category><h4 id="">What are <em>Categories</em>?</h4>
+<a name=logger><h4 id="">What are <em>Loggers</em>?</h4>
 
-The notion of categories lies at the heart of log4j. Categories define
-a hierarchy and give the programmer <em>run-time</em> control on which
-statements are printed or not.
+Lggers lie at the heart of log4j. Loggers define a hierarchy and give
+the programmer <em>run-time</em> control on which statements are
+printed or not.
 
-<p>Categories are assigned priorities. A log statement is printed
-depending on its priority <em>and</em> its category.
+<p>Loggers are assigned levels. A log statement is printed
+depending on its level <em>and</em> its logger.
 
 <p>Make sure to read the <a href=manual.html>log4j manual</a>
 for more information.
@@ -257,12 +247,11 @@ for more information.
 
 <p>Log behavior can be set using configuration files which are parsed
 at runtime. Using configuration files the programmer can define
-categories and set their priorities.
+loggers and set their levels.
 
 <p>The <code>PropertyConfigurator</code> defines a particular format
-of a configuration file. See also the
-<code>org.log4j.examples.Sort</code> example and associated
-configuration files.
+of a configuration file. See also the <code>examples/Sort.java</code>
+example and associated configuration files.
 
 <p>Configuration files can be specified in XML. See
 <code>log4j.dtd</code> and
@@ -272,23 +261,12 @@ configuration files.
 configuration options.
 
 <p>In addition to configuration files, the user may disable all
-messages belonging to a set of priorities. See next item.
-
-<a name=reduce><h4 id="">How can I reduce the computational cost of
-debug and info statements?</h4>
-
-<p>For public releases of your code, calling the
-<code>BasicConfigurator.disable(pri)</code> method will disable
-all messages of priority <code>pri</code> and below.
-
-<p>In cases of problems with an application, technical support can
-re-enable logging by setting the <b>log4j.disableOverride</b> system
-property without changing the binary at the client's site.
+messages belonging to a set of levels. See next item.
 
 <a name=fastLogging><h4>What is the fastest way of (not) logging?</h4>
 
-<p> For some category <code>cat</code>, writing, <pre>
-  cat.debug("Entry number: " + i + " is " + String.valueOf(entry[i]));
+<p> For some logger <code>l</code>, writing, <pre>
+  l.debug("Entry number: " + i + " is " + String.valueOf(entry[i]));
 </pre>
 
 <p>incurs the cost of constructing the message parameter, that is
@@ -298,106 +276,28 @@ whether the message will be logged or not.
 
 <p>If you are worried about speed, then write
 <pre>
-   if(cat.isDebugEnabled()) {
-     cat.debug("Entry number: " + i + " is " + String.valueOf(entry[i]));
+   if(l.isDebugEnabled()) {
+     l.debug("Entry number: " + i + " is " + String.valueOf(entry[i]));
    }
 </pre>
 
 <p>This way you will not incur the cost of parameter construction if
-debugging is disabled for category <code>CAT</code>. On the other
-hand, if the category is debug enabled, you will incur the cost of
-evaluating whether the category is enabled or not, twice: once in
+debugging is disabled for logger <code>l</code>. On the other
+hand, if the logger is debug enabled, you will incur the cost of
+evaluating whether the logger is enabled or not, twice: once in
 <code>debugEnabled</code> and once in <code>debug</code>.  This is an
-insignificant overhead since evaluating a category takes less than 1%
+insignificant overhead since evaluating a logger takes less than 1%
 of the time it takes to actually log a statement.
 
-<a name=arrayDebug><h4 id="">What is the use of the <code>debug</code>
-method expecting a <code>String</code> array as one of its parameters?</h4>
-
-This method no longer exists. Use the
-<code>Category.isDebugEnabled</code> method instead.
-
-<a name=introCat><h4>Why was the Category class introduced and how do
-I migrate from the previous String based implementation?</h4>
-
-<p>The reason was speed, speed, speed.
-
-<p>In the former implementation, when evaluating whether a category
-should be logged or not, we potentially computed a hash and performed
-an equality check multiple times, once for each higher ranking
-category. For example, if the category name was "x.y.z", we computed
-the hash of "x.y.z" and checked if it was already defined (costing an
-equality check). If not, we parsed "x.y.z" to discover that "x.y" was
-higher ranking, then computed the hash of "x.y" and checked whether it
-was defined (costing another equality check). So on, until a valid
-category was found or there were no possible categories left.
-
-<p>It turns out that for long strings, hash computations and an
-equality checks are computationally expensive operations.
-
-<p>The new Category class retains the flexibility of the former
-implementation and offers much much better performance. I would go as
-far as to claim that the performance cannot be improved upon without
-losing functionality. <em>Please do not hesitate to debunk this
-assertion</em>. Contributions from <a
-href="mailto:Alex.Blewitt@ioshq.com">Alex Blewitt</a>, F. Hoering and
-M. Oestreicher were instrumental to these performance improvements.
-
-<p>The new syntax for defining a category is
-<pre>  
-  Category cat = Category.getInstance("x.y.z");
-  cat.setPriority(Priority.DEBUG);
-</pre>
-
-<p>Previously, to achieve a similar effect, one had to write
-<pre>
-  log.setCategory("x.y.z", "DEBUG"); // where log is an instance of Log
-</pre>
-
-<p>As of release 0.8.0, the syntax was further modified so
-that log statements (debug, info, ... methods) no longer need a log
-singleton but use a Category instance instead.
-
-<p>For some class <code>X</code> one previously wrote,
-<pre>
-package a.b.c;
-
-class X {
-  static String cat = "a.b.c.X";
-
-  void foo() {
-    log.debug(cat, "Some foo message").
-    ...
-  }
-}
-</pre>
-
-This code needs to be modified as follows
-
-<pre>
-package a.b.c;
-
-import org.log4j.Category; 
-
-class X {
-  static Category cat = Category.getInstance("a.b.c.X");
-
-  void foo() {
-    cat.debug("Some foo message").
-    ...
-  }
-}
-</pre>
-
-<a name=namingCategories><h4>Are there any suggested ways for naming
-categories?</a></h4>
+<a name=namingLoggers><h4>Are there any suggested ways for naming
+loggers?</a></h4>
 
 <p>Yes, there are.
 
-<p>You can name categories by <strong>locality</strong>. It turns out
-that instantiating a category in each class, with the category name
+<p>You can name loggers by <strong>locality</strong>. It turns out
+that instantiating a logger in each class, with the logger name
 equal to the fully-qualified name of the class, is a useful and
-straightforward approach of defining categories. This approach has
+straightforward approach of defining loggers. This approach has
 many benefits:
 
 <ul>
@@ -409,27 +309,27 @@ many benefits:
 
   <li>It can be further refined at will.
 
-  <li>Printing the category automatically gives information on the locality
+  <li>Printing the logger automatically gives information on the locality
   of the log statement.
 
 </ul>
 
 
-<p>However, this is not the only way for naming categories. A common
-alternative is to name categories by <strong>functional
-areas</strong>. For example, the "database" category, "RMI" category,
-"security" category, or the "XML" category.
+<p>However, this is not the only way for naming loggers. A common
+alternative is to name loggers by <strong>functional
+areas</strong>. For example, the "database" logger, "RMI" logger,
+"security" logger, or the "XML" logger.
 
-<p>You may choose to name categories by functionality and
-subcategorize by locality, as in "DATABASE.com.ibm.some.package.someClass" or
-"DATABASE.com.ibm.some.other.package.someOtherClass".
+<p>You may choose to name loggers by functionality and
+subcategorize by locality, as in "DATABASE.com.foo.some.package.someClass" or
+"DATABASE.com.foo.some.other.package.someOtherClass".
 
 <p><em>You are totally free in choosing the names of your
-categories.</em> The log4j package merely allows you to manage your
+loggers.</em> The log4j package merely allows you to manage your
 names in a hierarchy.  However, it is your responsibility to define
 this hierarchy.
 
-<p>Note by naming categories by locality one tends to name things by
+<p>Note by naming loggers by locality one tends to name things by
 functionality, since in most cases the locality relates closely to
 functionality. 
 
@@ -448,7 +348,7 @@ name and not an instance.  The <code>X.class</code> statement does
 package a.b.c;
 
 public class Foo {
-  static Category cat = Category.getInstance(Foo.class.getName());
+  static Logger logger = Logger.getLogger(Foo.class);
   ... other code
 
 }
@@ -485,7 +385,7 @@ clients even if they share the same log file.
 <p>For select applications, such as virtual hosting web-servers, the
 NDC solution is not sufficient. As of version 0.9.0, log4j supports
 multiple hierarchy trees. Thus, it is possible to log to different
-targets from the same category depending on the current context.
+targets from the same logger depending on the current context.
 
 <p><a name="#options"><h4>What are the configurable options for
 FooBarAppender?</h4>
@@ -508,32 +408,30 @@ for most other log4j components.
 
 <!-- ------------------------------------------------------------------ -->
 
-<p><a name=rm><h4>Category instances seem to be create only. Why isn't
-there a method to remove category instances?</h4>
+<p><a name=rm><h4>Logger instances seem to be create only. Why isn't
+there a method to remove logger instances?</h4>
 
-It is quite nontrivial to define the semantics of a "removed"
-category which is still referenced by the user.
+It is quite nontrivial to define the semantics of a "removed" logger
+which is still referenced by the user. Future releases <em>may</em>
+include a remove method in the Logger class.
 
-<p>Future releases <em>may</em> include a remove method in the
-Category class.
-
-<a name=filterByPriority><h4>Is it possible to direct log output to
-different appenders by priority?</h4>
+<a name=filterByLevel><h4>Is it possible to direct log output to
+different appenders by level?</h4>
 
 <p>Yes it is. Setting the <b>Threshold</b> option of any appender
 extending <a
 href="api/org/apache/log4j/AppenderSkeleton.html">AppenderSkeleton</a>,
 (most log4j appenders extend AppenderSkeleton) to filter out all log
-events with <em>lower</em> priority than the value of the threshold
+events with <em>lower</em> level than the value of the threshold
 option. 
 
 <p>For example, setting the threshold of an appender to DEBUG also
 allow INFO, WARN, ERROR and FATAL messages to log along with DEBUG
-messages. (DEBUG is the lowest priority). This is usually acceptable
-as there is little use for DEBUG messages without the surrounding
-INFO, WARN, ERROR and FATAL messages. Similarly, setting the threshold
-of an appender to ERROR will filter out DEBUG, INFO and ERROR messages
-but not FATAL messages. 
+messages. This is usually acceptable as there is little use for DEBUG
+messages without the surrounding INFO, WARN, ERROR and FATAL
+messages. Similarly, setting the threshold of an appender to ERROR
+will filter out DEBUG, INFO and WARN messages but not ERROR or FATAL
+messages.
 
 <p>This policy usually best encapsulates what the user actually wants
 to do, as opposed to her mind-projected solution.
@@ -542,10 +440,10 @@ to do, as opposed to her mind-projected solution.
 href="api/org/apache/log4j/examples/doc-files/sort4.lcf">sort4.lcf</a>
 for an example threshold configuration.
 
-<p>If you must filter events by exact priority match, then you can
+<p>If you must filter events by exact level match, then you can
 attach a <a
-href="api/org/apache/log4j/varia/PriorityMatchFilter.html">PriorityMatchFilter</a>
-to any appender to filter out logging events by exact priority match.
+href="api/org/apache/log4j/varia/LevelMatchFilter.html">LevelMatchFilter</a>
+to any appender to filter out logging events by exact level match.
 
 
 <p><a name=many21><h4>How do I get multiple process to log to the same file?</h4></a>
@@ -579,37 +477,62 @@ had their timestamp regenerated in the converter.  In this case the timestamps
 seen in the log file would all appear in order, generated at the time they
 arrived at the log server host according to its local clock.
 
-<p><a name=j2ee><h4>Why can't Log4J find my properties file in a J2EE or WAR application?</h4>
-The short answer: the Log4J classes and the properties file are not within the scope of the same
-classloader.<P>
-The long answer (and what to do about it):
-J2EE or Servlet containers utilize Java's class loading system.  Sun changed the way classloading
-works with the release of Java 2.  In Java 2, classloaders are arranged in a hierarchial parent-child
-relationship.  When a child classloader needs to find a class or a resource, it first delegates the request
-to the parent.  Under no circumstances does it delegate the classloading to a child.
+<p><a name=j2ee><h4>Why can't Log4J find my properties file in a J2EE
+or WAR application?</h4>
+
+The short answer: the Log4J classes and the properties file are not
+within the scope of the same classloader.<P>
+
+The long answer (and what to do about it): J2EE or Servlet containers
+utilize Java's class loading system.  Sun changed the way classloading
+works with the release of Java 2.  In Java 2, classloaders are
+arranged in a hierarchial parent-child relationship.  When a child
+classloader needs to find a class or a resource, it first delegates
+the request to the parent.  Under no circumstances does it delegate
+the classloading to a child.
+
 <P>
-Earlier releases of Log4J only used the default <CODE>Class.forName()</code> mechanism for loading classes.
-Beginning with Java 2, the preferred method for loading classes is:
+Earlier releases of Log4J only used the default
+<CODE>Class.forName()</code> mechanism for loading classes.  Beginning
+with Java 2, the preferred method for loading classes is:
 <BLOCKQUOTE>
 <CODE>Thread.currentThread().getContextClassLoader().loadClass()</CODE>
 </BLOCKQUOTE>
-Resources are handled in the same manner.  See the documentation for <CODE>java.lang.ClassLoader</CODE> for more details.  The most
-recent versions of Log4J use the Java 2 method for loading classes.
+Resources are handled in the same manner.  See the documentation for
+<CODE>java.lang.ClassLoader</CODE> for more details.  The most recent
+versions of Log4J use the Java 2 method for loading classes.
+
 <P>
-So, if you're having problems, try loading the class or resource yourself.  If you can't find it, neither will Log4J. ;)  
-<P><A NAME=configureandwatch><H4>Is there a way to get Log4J to automatically reload a configuration file if it changes?</H4>
-<P>Yes.  Both the DOMConfigurator and the PropertyConfigurator support automatic reloading through the <CODE>configureAndWatch</CODE> APIs.
+So, if you're having problems, try loading the class or resource
+yourself.  If you can't find it, neither will Log4J. ;)
+
+<P><A NAME=configureandwatch><H4>Is there a way to get Log4J to
+automatically reload a configuration file if it changes?</H4>
+
+<P>Yes.  Both the DOMConfigurator and the PropertyConfigurator support
+automatic reloading through the <CODE>configureAndWatch</CODE> APIs.
 See the API documentation for more details.
 
-<P><A NAME=nteventlogproblems><H4>What does the Windows NT Event Viewer complain about missing descriptions for my event messages when I use the NTEventLogAppender?</H4>
-<P>The NT Event Viewer relies on <I>message resource</I> DLLs to properly view an event message.  The NTEventLogAppender.dll contains these message
-resources, but that DLL must be copied to %SYSTEMROOT%\SYSTEM32 for it to work properly.
+<P><A NAME=nteventlogproblems><H4>What does the Windows NT Event
+Viewer complain about missing descriptions for my event messages when
+I use the NTEventLogAppender?</H4>
+
+<P>The NT Event Viewer relies on <I>message resource</I> DLLs to
+properly view an event message.  The NTEventLogAppender.dll contains
+these message resources, but that DLL must be copied to
+%SYSTEMROOT%\SYSTEM32 for it to work properly.
 
 																						
-<P><A NAME=morenteventlogproblems><H4>Why can't I map my category names to the categories that appear in the NT Event Log when I use the NTEventLogAppender?</H4>
-<P>Unfotunately, the category names are hardcoded within the message resource DLL (see previous question about NTEventLogAppender), so there isn't any easy way to
-override those dynamically... in fact, I don't think it's possible to do it, as you'd have to modify the DLL resources for every application. Since
-most native applications don't use the Category column anyway...																						
+<P><A NAME=morenteventlogproblems><H4>Why can't I map my logger names
+to the loggers that appear in the NT Event Log when I use the
+NTEventLogAppender?</H4>
+
+<P>Unfotunately, the logger names are hardcoded within the message
+resource DLL (see previous question about NTEventLogAppender), so
+there isn't any easy way to override those dynamically... in fact, I
+don't think it's possible to do it, as you'd have to modify the DLL
+resources for every application. Since most native applications don't
+use the Logger column anyway...
 
 <p><a name=tax><h4>Why should I donate my extensions to log4j back to the
 project?</h4>
@@ -678,34 +601,6 @@ code?</h4>
     <p><li>Did I mention sticking with the indentation style? 
 	
 </ol>
-
-<a name=bugCorrection><h4>How fast do bugs in log4j get fixed?</h4>
-
-<p>Rather than wait for the next release to be ready, we get bug fixes
-out of the door as soon as possible. Moreover, once a bug is found or
-reported, it is treated as <em>fire in the house</em>. All other
-activities stop until the bug is fixed.
-
-<p>Consequently, confirmed bugs are fixed after a short period
-following the initial bug report.
-
-<a name=history><h4>What is the history of log4j?</h4> 
-
-The first ancestor of log4j was written for the <a
-href="http://www.semper.org">SEMPER</a> project. Jose-Luis Abad-Peiro
-wrote the initial 30 liner version that was picked up by Ceki
-G&uuml;lc&uuml; and enhanced by Andreas Fleuti.  Michael Steiner,
-N. Asokan, Ceki G&uuml;lc&uuml proposed category/priority based
-evaluation which has remained conceptually the same since 1996.
-
-<a name=bugs><h4 id="bugs">How do I report bugs?</h4>
-
-Report bugs using the <a
-href=http://nagoya.apache.org/bugzilla>Apache Bug Database</a>.
-
-<p>Please specify the version of log4j you are using. It is helpful to
-include log configurations files if any, plus source code. A short
-example reproducing the problem is very much appreciated.
 
 <a name=download><h4>Where can I find the latest distribution of log4j?</h4>
 
