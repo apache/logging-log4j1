@@ -23,7 +23,7 @@ package org.apache.log4j.rolling.helper;
  *  
  * @author Ceki Gulcu
  */
-class IntegerTokenConverter extends TokenConverter {
+public class IntegerTokenConverter extends TokenConverter {
   
   public IntegerTokenConverter() {
     super(TokenConverter.INTEGER);

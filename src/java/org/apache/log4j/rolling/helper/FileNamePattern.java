@@ -173,6 +173,19 @@ MAIN_LOOP:
     return null;
   }
 
+  public IntegerTokenConverter getIntegerTokenConverter() {
+    TokenConverter p = headTokenConverter;
+
+    while (p != null) {
+      if (p.getType() == TokenConverter.INTEGER) {
+        return (IntegerTokenConverter) p;
+      }
+
+      p = p.getNext();
+    }
+    return null;
+  }
+  
   public String convert(int i) {
     TokenConverter p = headTokenConverter;
     StringBuffer buf = new StringBuffer();
