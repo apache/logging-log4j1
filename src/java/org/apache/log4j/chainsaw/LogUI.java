@@ -77,6 +77,11 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import java.security.AllPermission;
+import java.security.CodeSource;
+import java.security.PermissionCollection;
+import java.security.Permissions;
+import java.security.Policy;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -258,9 +263,26 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   public static void createChainsawGUI(
     ApplicationPreferenceModel model, Action newShutdownAction) {
     
-    if(model.isOkToRemoveSecurityManager()) {
-        MessageCenter.getInstance().addMessage("User has authorised removal of Java Security Manager via preferences");
-    	System.setSecurityManager(null);
+    if (model.isOkToRemoveSecurityManager()) {
+			MessageCenter
+					.getInstance()
+					.addMessage(
+							"User has authorised removal of Java Security Manager via preferences");
+			System.setSecurityManager(null);
+            // this SHOULD set the Policy/Permission stuff for any
+            // code loaded from our custom classloader.  
+            // crossing fingers...
+			Policy.setPolicy(new Policy() {
+
+				public void refresh() {
+				}
+
+				public PermissionCollection getPermissions(CodeSource codesource) {
+					Permissions perms = new Permissions();
+					perms.add(new AllPermission());
+					return (perms);
+				}
+			});
     }
     LogLog.info("SecurityManager is now: " + System.getSecurityManager());
     
