@@ -46,7 +46,17 @@ import javax.xml.parsers.FactoryConfigurationError;
 
    <p>Sometimes it is useful to see how log4j is reading configuration
    files. You can enable log4j internal logging by defining the
-   <b>log4j.configDebug</b> variable on the java command line.
+   <b>log4j.debug</b> variable on the java command
+   line. Alternatively, set the <code>debug</code> attribute in the
+   <code>log4j:configuration</code> element. As in
+<pre>
+   <log4j:configuration debug=true" xmlns:log4j='http://jakarta.apache.org/log4j/'>
+   ...
+   </log4j:configuration>
+</pre>
+
+   
+
 
    <p>There are sample XML files included in the package.
    
