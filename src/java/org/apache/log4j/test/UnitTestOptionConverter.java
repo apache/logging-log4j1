@@ -5,8 +5,8 @@
 package org.apache.log4j.test;
 
 import org.apache.log4j.helpers.OptionConverter;
-import org.apache.log4j.Priority;
-import org.apache.log4j.xml.examples.XPriority;
+import org.apache.log4j.Level;
+import org.apache.log4j.xml.examples.XLevel;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -89,37 +89,37 @@ public class UnitTestOptionConverter extends TestCase {
 
 
   public
-  void toPriorityTest1() {
+  void toLevelTest1() {
     String val = "INFO";
-    Priority p = OptionConverter.toPriority(val, null);
-    assertEquals(p, Priority.INFO);
+    Level p = OptionConverter.toLevel(val, null);
+    assertEquals(p, Level.INFO);
   }
 
   public
-  void toPriorityTest2() {
-    String val = "INFO#org.apache.log4j.xml.examples.XPriority";
-    Priority p = OptionConverter.toPriority(val, null);
-    assertEquals(p, Priority.INFO);
+  void toLevelTest2() {
+    String val = "INFO#org.apache.log4j.xml.examples.XLevel";
+    Level p = OptionConverter.toLevel(val, null);
+    assertEquals(p, Level.INFO);
   }
 
   public
-  void toPriorityTest3() {
-    String val = "TRACE#org.apache.log4j.xml.examples.XPriority";
-    Priority p = OptionConverter.toPriority(val, null);    
-    assertEquals(p, XPriority.TRACE);
+  void toLevelTest3() {
+    String val = "TRACE#org.apache.log4j.xml.examples.XLevel";
+    Level p = OptionConverter.toLevel(val, null);    
+    assertEquals(p, XLevel.TRACE);
   }
 
   public
-  void toPriorityTest4() {
-    String val = "TR#org.apache.log4j.xml.examples.XPriority";
-    Priority p = OptionConverter.toPriority(val, null);    
+  void toLevelTest4() {
+    String val = "TR#org.apache.log4j.xml.examples.XLevel";
+    Level p = OptionConverter.toLevel(val, null);    
     assertEquals(p, null);
   }
 
   public
-  void toPriorityTest5() {
+  void toLevelTest5() {
     String val = "INFO#org.apache.log4j.xml.TOTO";
-    Priority p = OptionConverter.toPriority(val, null);    
+    Level p = OptionConverter.toLevel(val, null);    
     assertEquals(p, null);
   }
 
@@ -133,11 +133,11 @@ public class UnitTestOptionConverter extends TestCase {
     suite.addTest(new UnitTestOptionConverter("varSubstTest3"));
     suite.addTest(new UnitTestOptionConverter("varSubstTest4"));
 
-    suite.addTest(new UnitTestOptionConverter("toPriorityTest1"));
-    suite.addTest(new UnitTestOptionConverter("toPriorityTest2"));
-    suite.addTest(new UnitTestOptionConverter("toPriorityTest3"));
-    suite.addTest(new UnitTestOptionConverter("toPriorityTest4"));
-    suite.addTest(new UnitTestOptionConverter("toPriorityTest5"));
+    suite.addTest(new UnitTestOptionConverter("toLevelTest1"));
+    suite.addTest(new UnitTestOptionConverter("toLevelTest2"));
+    suite.addTest(new UnitTestOptionConverter("toLevelTest3"));
+    suite.addTest(new UnitTestOptionConverter("toLevelTest4"));
+    suite.addTest(new UnitTestOptionConverter("toLevelTest5"));
     return suite;
   }
 

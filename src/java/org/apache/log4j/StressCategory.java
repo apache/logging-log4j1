@@ -8,7 +8,7 @@
 package org.apache.log4j;
 
 
-import org.apache.log4j.Priority;
+import org.apache.log4j.Level;
 import org.apache.log4j.Category;
 import java.util.Random;
 
@@ -19,13 +19,13 @@ import java.util.Random;
 
 class StressCategory {
 
-  static Priority[] priority = new Priority[] {Priority.DEBUG, 
-					       Priority.INFO, 
-					       Priority.WARN,
-					       Priority.ERROR,
-					       Priority.FATAL};
+  static Level[] level = new Level[] {Level.DEBUG, 
+					       Level.INFO, 
+					       Level.WARN,
+					       Level.ERROR,
+					       Level.FATAL};
 
-  static Priority defaultPriority = Category.getRoot().getPriority();
+  static Level defaultLevel = Category.getRoot().getLevel();
   
   static int LENGTH;
   static String[] names;
@@ -95,7 +95,7 @@ class StressCategory {
 
 
   // Loop through all possible 3^n combinations of not instantiating, 
-  // instantiating and setting/not setting a priority.
+  // instantiating and setting/not setting a level.
 
   static
   void createLoop(int n) {
@@ -106,7 +106,7 @@ class StressCategory {
 	  cat[i] = null;
 	else {
 	  cat[i] = Category.getInstance(ct[i].catstr);
-	  cat[i].setPriority(ct[i].priority);
+	  cat[i].setLevel(ct[i].level);
 	}
       }
       test();
@@ -121,7 +121,7 @@ class StressCategory {
       createLoop(n+1);  
       
       int r = random.nextInt(); if(r < 0) r = -r;
-      ct[n]  = new CT(names[n], priority[r%5]);
+      ct[n]  = new CT(names[n], level[r%5]);
       createLoop(n+1);
     }
   }
@@ -151,7 +151,7 @@ class StressCategory {
     for(int j = 0; j < LENGTH; j++) {
        if(ct[j] != null) 
 	    System.out.println("ct [" + j + "] = ("+ct[j].catstr+"," + 
-			       ct[j].priority + ")");
+			       ct[j].level + ")");
        else 
 	 System.out.println("ct [" + j + "] = undefined");
     }
@@ -162,7 +162,7 @@ class StressCategory {
     for(int j = 0; j < LENGTH; j++) {
       if(cat[j] != null)
 	System.out.println("cat[" + j + "] = (" + cat[j].name + "," +
-			   cat[j].getPriority() + ")");
+			   cat[j].getLevel() + ")");
       else
 	System.out.println("cat[" + j + "] = undefined"); 
     }
@@ -186,16 +186,16 @@ class StressCategory {
     if(localCT == null) 
       return true;
     
-    // find expected priority
-    Priority expected = getExpectedPrioriy(localCT);
+    // find expected level
+    Level expected = getExpectedPrioriy(localCT);
 
 			    
-    Priority purported = cat[i].getChainedPriority();
+    Level purported = cat[i].getChainedLevel();
 
     if(expected != purported) {
-      System.out.println("Expected priority for " + localCT.catstr + " is " +
+      System.out.println("Expected level for " + localCT.catstr + " is " +
 		       expected);
-      System.out.println("Purported priority for "+ cat[i].name + " is "+purported);
+      System.out.println("Purported level for "+ cat[i].name + " is "+purported);
       return false;
     }
     return true;
@@ -203,10 +203,10 @@ class StressCategory {
   }
 
   static
-  Priority getExpectedPrioriy(CT ctParam) {
-    Priority priority = ctParam.priority;
-    if(priority != null) 
-      return priority;
+  Level getExpectedPrioriy(CT ctParam) {
+    Level level = ctParam.level;
+    if(level != null) 
+      return level;
 
     
     String catstr = ctParam.catstr;    
@@ -215,27 +215,27 @@ class StressCategory {
 	                              i = catstr.lastIndexOf('.', i-1))  {
       String substr = catstr.substring(0, i);
 
-      // find the priority of ct corresponding to substr
+      // find the level of ct corresponding to substr
       for(int j = 0; j < LENGTH; j++) {	
 	if(ct[j] != null && substr.equals(ct[j].catstr)) {
-	  Priority p = ct[j].priority;
+	  Level p = ct[j].level;
 	  if(p != null) 
 	    return p;	  
 	}
       }
     }
-    return defaultPriority;
+    return defaultLevel;
   }
 
   
 
   static class CT {
     public String   catstr;
-    public Priority priority;
+    public Level level;
 
-    CT(String catstr,  Priority priority) {
+    CT(String catstr,  Level level) {
       this.catstr = catstr;
-      this.priority = priority;
+      this.level = level;
     }
   }
 }

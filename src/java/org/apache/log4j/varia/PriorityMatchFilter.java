@@ -8,18 +8,18 @@
 
 package org.apache.log4j.varia;
 
-import org.apache.log4j.Priority;
+import org.apache.log4j.Level;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.helpers.OptionConverter;
 
 /**
-   This is a very simple filter based on priority matching.
+   This is a very simple filter based on level matching.
 
 
-   <p>The filter admits two options <b>PriorityToMatch</b> and
+   <p>The filter admits two options <b>LevelToMatch</b> and
    <b>AcceptOnMatch</b>. If there is an exact match between the value
-   of the PriorityToMatch option and the priority of the {@link
+   of the LevelToMatch option and the level of the {@link
    LoggingEvent}, then the {@link #decide} method returns {@link
    Filter#ACCEPT} in case the <b>AcceptOnMatch</b> option value is set
    to <code>true</code>, if it is <code>false</code> then {@link
@@ -29,10 +29,11 @@ import org.apache.log4j.helpers.OptionConverter;
    <p>See configuration files <a
    href="../xml/doc-files/test11.xml">test11.xml</a> and <a
    href="../xml/doc-files/test12.xml">test12.xml</a> for an example of
-   seeting up a <code>PriorityMatchFilter</code>.
+   seeting up a <code>LevelMatchFilter</code>.
 
    @author Ceki G&uuml;lc&uuml;
-
+   
+   @deprecated Use {@link PriorityMatchFilter} instead.
    @since 0.9.1 */
 public class PriorityMatchFilter extends Filter {
   
@@ -41,7 +42,7 @@ public class PriorityMatchFilter extends Filter {
      This constant is not longer needed and will be removed in the
      <em>near</em> term.
    */
-  public static final String PRIORITY_TO_MATCH_OPTION = "PriorityToMatch";
+  public static final String LEVEL_TO_MATCH_OPTION = "PriorityToMatch";
 
   /**
      @deprecated Options are now handled using the JavaBeans paradigm.
@@ -57,7 +58,7 @@ public class PriorityMatchFilter extends Filter {
 
   /**
    */
-  Priority priorityToMatch;
+  Level levelToMatch;
 
   /**
      @deprecated We now use JavaBeans introspection to configure
@@ -65,33 +66,18 @@ public class PriorityMatchFilter extends Filter {
   */
   public
   String[] getOptionStrings() {
-    return new String[] {PRIORITY_TO_MATCH_OPTION, ACCEPT_ON_MATCH_OPTION};
+    return new String[] {LEVEL_TO_MATCH_OPTION, ACCEPT_ON_MATCH_OPTION};
   }
 
-  /**
-     @deprecated Use the setter method for the option directly instead
-     of the generic <code>setOption</code> method. 
 
-     @deprecated We now use JavaBeans introspection to configure
-     components. 
-  */
   public
-  void setOption(String key, String value) {    
-    if(key.equalsIgnoreCase(PRIORITY_TO_MATCH_OPTION)) {
-      priorityToMatch = OptionConverter.toPriority(value, null);
-    } else if (key.equalsIgnoreCase(ACCEPT_ON_MATCH_OPTION)) {
-      acceptOnMatch = OptionConverter.toBoolean(value, acceptOnMatch);
-    }
-  }
-  
-  public
-  void setPriorityToMatch(String priority) {
-    priorityToMatch = OptionConverter.toPriority(priority, null);
+  void setPriorityToMatch(String level) {
+    levelToMatch = OptionConverter.toLevel(level, null);
   }
   
   public
   String getPriorityToMatch() {
-    return priorityToMatch == null ? null : priorityToMatch.toString();
+    return levelToMatch == null ? null : levelToMatch.toString();
   }
   
   public
@@ -129,12 +115,12 @@ public class PriorityMatchFilter extends Filter {
     </table> */
   public
   int decide(LoggingEvent event) {
-    if(this.priorityToMatch == null) {
+    if(this.levelToMatch == null) {
       return Filter.NEUTRAL;
     }
     
     boolean matchOccured = false;
-    if(this.priorityToMatch == event.priority) {
+    if(this.levelToMatch == event.level) {
       matchOccured = true;
     }
 

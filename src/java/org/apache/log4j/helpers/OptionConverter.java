@@ -12,9 +12,8 @@ import java.util.Properties;
 import java.net.URL;
 import org.apache.log4j.Category;
 import org.apache.log4j.Hierarchy;
-import org.apache.log4j.Priority;
+import org.apache.log4j.Level;
 import org.apache.log4j.spi.Configurator;
-import org.apache.log4j.xml.DOMConfigurator;
 import org.apache.log4j.PropertyConfigurator;
 
 // Contributors:   Avy Sharell (sharell@online.fr)
@@ -154,28 +153,28 @@ public class OptionConverter {
   }
 
   /**
-     Converts a standard or custom priority level to a Priority
+     Converts a standard or custom priority level to a Level
      object.  <p> If <code>value</code> is of form
-     "priority#classname", then the specified class' toPriority method
-     is called to process the specified priority string; if no '#'
-     character is present, then the default {@link org.apache.log4j.Priority}
-     class is used to process the priority value.  
+     "level#classname", then the specified class' toLevel method
+     is called to process the specified level string; if no '#'
+     character is present, then the default {@link org.apache.log4j.Level}
+     class is used to process the level value.  
 
      <p>As a special case, if the <code>value</code> parameter is
      equal to the string "NULL", then the value <code>null</code> will
      be returned.
 
-     <p> If any error occurs while converting the value to a priority,
+     <p> If any error occurs while converting the value to a level,
      the <code>defaultValue</code> parameter, which may be
      <code>null</code>, is returned.
 
-     <p> Case of <code>value</code> is insignificant for the priority level, but is
+     <p> Case of <code>value</code> is insignificant for the level level, but is
      significant for the class name part, if present.
      
      @since 1.1 */
   public
   static
-  Priority toPriority(String value, Priority defaultValue) {
+  Level toLevel(String value, Level defaultValue) {
     if(value == null)
       return defaultValue;
 
@@ -184,56 +183,56 @@ public class OptionConverter {
       if("NULL".equalsIgnoreCase(value)) {
 	return null;
       } else {
-	// no class name specified : use standard Priority class
-	return Priority.toPriority(value, defaultValue);
+	// no class name specified : use standard Level class
+	return Level.toLevel(value, defaultValue);
       }
     }
 
-    Priority result = defaultValue;
+    Level result = defaultValue;
 
     String clazz = value.substring(hashIndex+1);
-    String priorityName = value.substring(0, hashIndex);
+    String levelName = value.substring(0, hashIndex);
     
     // This is degenerate case but you never know.
-    if("NULL".equalsIgnoreCase(priorityName)) {
+    if("NULL".equalsIgnoreCase(levelName)) {
 	return null;
     }
 
-    LogLog.debug("toPriority" + ":class=[" + clazz + "]" 
-		 + ":pri=[" + priorityName + "]");
+    LogLog.debug("toLevel" + ":class=[" + clazz + "]" 
+		 + ":pri=[" + levelName + "]");
 
     try {
-      Class customPriority = Loader.loadClass(clazz);
+      Class customLevel = Loader.loadClass(clazz);
 
       // get a ref to the specified class' static method
-      // toPriority(String, org.apache.log4j.Priority)
+      // toLevel(String, org.apache.log4j.Level)
       Class[] paramTypes = new Class[] { String.class,
-					 org.apache.log4j.Priority.class
+					 org.apache.log4j.Level.class
                                        };
-      java.lang.reflect.Method toPriorityMethod =
-                      customPriority.getMethod("toPriority", paramTypes);
+      java.lang.reflect.Method toLevelMethod =
+                      customLevel.getMethod("toLevel", paramTypes);
 
-      // now call the toPriority method, passing priority string + default
-      Object[] params = new Object[] {priorityName, defaultValue};
-      Object o = toPriorityMethod.invoke(null, params);
+      // now call the toLevel method, passing level string + default
+      Object[] params = new Object[] {levelName, defaultValue};
+      Object o = toLevelMethod.invoke(null, params);
 
-      result = (Priority) o;
+      result = (Level) o;
     } catch(ClassNotFoundException e) {
-      LogLog.warn("custom priority class [" + clazz + "] not found.");
+      LogLog.warn("custom level class [" + clazz + "] not found.");
     } catch(NoSuchMethodException e) {
-      LogLog.warn("custom priority class [" + clazz + "]"
+      LogLog.warn("custom level class [" + clazz + "]"
         + " does not have a constructor which takes one string parameter", e);
     } catch(java.lang.reflect.InvocationTargetException e) {
-      LogLog.warn("custom priority class [" + clazz + "]"
+      LogLog.warn("custom level class [" + clazz + "]"
 		   + " could not be instantiated", e);
     } catch(ClassCastException e) {
       LogLog.warn("class [" + clazz
-        + "] is not a subclass of org.apache.log4j.Priority", e);
+        + "] is not a subclass of org.apache.log4j.Level", e);
     } catch(IllegalAccessException e) {
       LogLog.warn("class ["+clazz+
 		   "] cannot be instantiated due to access restrictions", e);
     } catch(Exception e) {
-      LogLog.warn("class ["+clazz+"], priority ["+priorityName+
+      LogLog.warn("class ["+clazz+"], level ["+levelName+
 		   "] conversion failed.", e);
     }
     return result;
@@ -433,6 +432,11 @@ public class OptionConverter {
   void selectAndConfigure(URL url, String clazz,  Hierarchy hierarchy) {
 
     Configurator configurator = null;
+    String filename = url.getFile();
+
+    if(clazz == null && filename != null && filename.endsWith(".xml")) {
+      clazz = "org.apache.log4j.xml.DOMConfigurator";
+    }
 
     if(clazz != null) {
       LogLog.debug("Preferred configurator class: " + clazz);
@@ -444,17 +448,7 @@ public class OptionConverter {
 	return;
       }
     } else {
-      String filename = url.getFile();
-      if(filename != null && filename.endsWith(".xml")) {
-	try {
-	  configurator = new DOMConfigurator();
-	} catch(NoClassDefFoundError e) {
-	  LogLog.warn("Could not find DOMConfigurator!", e);
-	  return;
-	}
-      } else {
-	configurator = new PropertyConfigurator();
-      }
+      configurator = new PropertyConfigurator();
     }
 
     configurator.doConfigure(url, hierarchy);

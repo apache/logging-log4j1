@@ -10,7 +10,7 @@ package org.apache.log4j.examples;
 import org.apache.log4j.*;
 import org.apache.log4j.spi.CategoryFactory;
 import org.apache.log4j.xml.DOMConfigurator;
-import org.apache.log4j.xml.examples.XPriority;
+import org.apache.log4j.xml.examples.XLevel;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.helpers.LogLog;
 

@@ -132,18 +132,18 @@ public class HTMLLayout extends Layout {
     sbuf.append(escapeHTMLTags(event.getThreadName()));
     sbuf.append("</td>" + Layout.LINE_SEP);
 
-    sbuf.append("<td title=\"Priority\">");
-    if (event.priority.equals(Priority.DEBUG)) {
+    sbuf.append("<td title=\"Level\">");
+    if (event.level.equals(Level.DEBUG)) {
       sbuf.append("<font color=\"#339933\">");
-      sbuf.append(event.priority);      
+      sbuf.append(event.level);      
       sbuf.append("</font>");
     }
-    else if(event.priority.isGreaterOrEqual(Priority.WARN)) {
+    else if(event.level.isGreaterOrEqual(Level.WARN)) {
       sbuf.append("<font color=\"#993300\"><strong>");
-      sbuf.append(event.priority);      
+      sbuf.append(event.level);      
       sbuf.append("</strong></font>");
     } else {
-      sbuf.append(event.priority);      
+      sbuf.append(event.level);      
     }
     sbuf.append("</td>" + Layout.LINE_SEP);
 
@@ -221,7 +221,7 @@ public class HTMLLayout extends Layout {
     sbuf.append("<tr>" + Layout.LINE_SEP);
     sbuf.append("<th>Time</th>" + Layout.LINE_SEP);
     sbuf.append("<th>Thread</th>" + Layout.LINE_SEP);
-    sbuf.append("<th>Priority</th>" + Layout.LINE_SEP);
+    sbuf.append("<th>Level</th>" + Layout.LINE_SEP);
     sbuf.append("<th>Category</th>" + Layout.LINE_SEP);
     if(locationInfo) {
       sbuf.append("<th>File:Line</th>" + Layout.LINE_SEP);

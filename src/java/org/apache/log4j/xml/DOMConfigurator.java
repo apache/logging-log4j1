@@ -21,7 +21,7 @@ import org.apache.log4j.spi.Configurator;
 import org.apache.log4j.spi.CategoryFactory;
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
-import org.apache.log4j.Priority;
+import org.apache.log4j.Level;
 import org.apache.log4j.Hierarchy;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.spi.Filter;
@@ -82,7 +82,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
   static final String CLASS_ATTR        = "class";
   static final String VALUE_ATTR	= "value";
   static final String ROOT_TAG		= "root";
-  static final String PRIORITY_TAG	= "priority";
+  static final String LEVEL_TAG	= "level";
   static final String FILTER_TAG	= "filter";
   static final String ERROR_HANDLER_TAG	= "errorHandler";
   static final String REF_ATTR		= "ref";
@@ -410,8 +410,8 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
 	    
 	  cat.addAppender(appender);
 	  
-	} else if(tagName.equals(PRIORITY_TAG)) {
-	  parsePriority(currentElement, cat, isRoot);	
+	} else if(tagName.equals(LEVEL_TAG)) {
+	  parseLevel(currentElement, cat, isRoot);	
 	} else if(tagName.equals(PARAM_TAG)) {
           setParameter(currentElement, propSetter);
 	}
@@ -464,46 +464,46 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
   }
 
   /**
-     Used internally to parse a priority  element.
+     Used internally to parse a level  element.
   */
   protected
-  void parsePriority(Element element, Category cat, boolean isRoot) {
+  void parseLevel(Element element, Category cat, boolean isRoot) {
     String catName = cat.getName();
     if(isRoot) {
       catName = "root";
     }
 
     String priStr = subst(element.getAttribute(VALUE_ATTR));
-    LogLog.debug("Priority value for "+catName+" is  ["+priStr+"].");
+    LogLog.debug("Level value for "+catName+" is  ["+priStr+"].");
     
     if(BasicConfigurator.INHERITED.equals(priStr)) {
       if(isRoot) {
-	LogLog.error("Root priority cannot be inherited. Ignoring directive.");
+	LogLog.error("Root level cannot be inherited. Ignoring directive.");
       } else {
-	cat.setPriority(null);
+	cat.setLevel(null);
       }
     } else {
       String className = subst(element.getAttribute(CLASS_ATTR));      
       if(EMPTY_STR.equals(className)) {      
 	
-	cat.setPriority(Priority.toPriority(priStr));
+	cat.setLevel(Level.toLevel(priStr));
       } else {
-	LogLog.debug("Desired Priority sub-class: ["+className+']');
+	LogLog.debug("Desired Level sub-class: ["+className+']');
 	try {	 
 	  Class clazz = Loader.loadClass(className);
-	  Method toPriorityMethod = clazz.getMethod("toPriority", 
+	  Method toLevelMethod = clazz.getMethod("toLevel", 
 						    ONE_STRING_PARAM);
-	  Priority pri = (Priority) toPriorityMethod.invoke(null, 
+	  Level pri = (Level) toLevelMethod.invoke(null, 
 						    new Object[] {priStr});
-	  cat.setPriority(pri);
+	  cat.setLevel(pri);
 	} catch (Exception oops) {
-	  LogLog.error("Could not create priority ["+priStr+
+	  LogLog.error("Could not create level ["+priStr+
 		       "]. Reported error follows.", oops);
 	  return;
 	}
       }
     }
-    LogLog.debug(catName + " priority set to " + cat.getPriority());    
+    LogLog.debug(catName + " level set to " + cat.getLevel());    
   }
 
   protected

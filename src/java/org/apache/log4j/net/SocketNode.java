@@ -19,7 +19,7 @@ import java.io.ObjectInputStream;
 import org.apache.log4j.Category;
 import org.apache.log4j.Hierarchy;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.Priority;
+import org.apache.log4j.Level;
 import org.apache.log4j.NDC;
 
 // Contributors:  Moses Hohman <mmhohman@rainbow.uchicago.edu>
@@ -71,7 +71,7 @@ public class SocketNode implements Runnable {
 	event = (LoggingEvent) ois.readObject();	
 	remoteCategory = hierarchy.getInstance(event.categoryName);
 	event.category = remoteCategory;
-	if(event.priority.isGreaterOrEqual(remoteCategory.getChainedPriority())) {
+	if(event.level.isGreaterOrEqual(remoteCategory.getChainedLevel())) {
 	  remoteCategory.callAppenders(event);	
 	}
       }

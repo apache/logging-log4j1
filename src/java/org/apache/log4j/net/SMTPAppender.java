@@ -9,7 +9,7 @@ package org.apache.log4j.net;
 
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Layout;
-import org.apache.log4j.Priority;
+import org.apache.log4j.Level;
 import org.apache.log4j.helpers.CyclicBuffer;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.helpers.LogLog;
@@ -63,7 +63,7 @@ public class SMTPAppender extends AppenderSkeleton {
   /**
      The default constructor will instantiate the appender with a
      {@link TriggeringEventEvaluator} that will trigger on events with
-     priority ERROR or higher.*/
+     level ERROR or higher.*/
   public
   SMTPAppender() {
     this(new DefaultEvaluator());
@@ -384,11 +384,11 @@ class DefaultEvaluator implements TriggeringEventEvaluator {
   /**
      Is this <code>event</code> the e-mail triggering event?
      
-     <p>This method returns <code>true</code>, if the event priority
-     has ERROR priority or higher. Otherwise it returns
+     <p>This method returns <code>true</code>, if the event level
+     has ERROR level or higher. Otherwise it returns
      <code>false</code>. */
   public 
   boolean isTriggeringEvent(LoggingEvent event) {
-    return event.priority.isGreaterOrEqual(Priority.ERROR); 
+    return event.level.isGreaterOrEqual(Level.ERROR); 
   }
 }

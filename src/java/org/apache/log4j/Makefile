@@ -1,10 +1,8 @@
 
 PKG_DIR :=org/apache/log4j
 DEPTH   :=../../../../..
-JSOURCES:=HTMLLayout.java\
-	DailyRollingFileAppender.java\
+JSOURCES:=DailyRollingFileAppender.java\
 	RollingFileAppender.java\
-	PropertyConfigurator.java\
 	PatternLayout.java\
 	AsyncAppender.java\
 	NDC.java\
@@ -15,16 +13,22 @@ JSOURCES:=HTMLLayout.java\
 	FileAppender.java \
 	SimpleLayout.java\
 	TTCCLayout.java\
-	BasicConfigurator.java\
 	Category.java \
 	Hierarchy.java\
-	Layout.java \
+        Layout.java \
 	Appender.java \
 	Priority.java\
 	WriterAppender.java\
 	ConsoleAppender.java\
         MDC.java\
+        Level.java\
 
+#        Logger.java\
+#        LogManager.java\
+
+#       HTMLLayout.java\
+#	PropertyConfigurator.java\
+#	BasicConfigurator.java\
 
 ifdef $(ISJDK1)
  JSOURCES:=$(JSOURCES) RollingFileAppenderBeanInfo.java

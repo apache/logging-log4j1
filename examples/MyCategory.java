@@ -10,7 +10,7 @@ package org.apache.log4j.examples;
 import org.apache.log4j.*;
 import org.apache.log4j.spi.CategoryFactory;
 import org.apache.log4j.xml.DOMConfigurator;
-import org.apache.log4j.xml.examples.XPriority;
+import org.apache.log4j.xml.examples.XLevel;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.helpers.LogLog;
 
@@ -46,7 +46,7 @@ public class MyCategory extends Category {
      end of each message.  */
   public 
   void debug(Object message) {
-    super.log(FQCN, Priority.DEBUG, message + " world.", null);    
+    super.log(FQCN, Level.DEBUG, message + " world.", null);    
   }
   
   /**
@@ -61,7 +61,7 @@ public class MyCategory extends Category {
 
   public
   void trace(Object message) {
-    super.log(FQCN, XPriority.TRACE, message, null); 
+    super.log(FQCN, XLevel.TRACE, message, null); 
   }
 }
 

@@ -56,7 +56,7 @@ public class PatternParser {
 
   static final int RELATIVE_TIME_CONVERTER = 2000;
   static final int THREAD_CONVERTER = 2001;
-  static final int PRIORITY_CONVERTER = 2002;
+  static final int LEVEL_CONVERTER = 2002;
   static final int NDC_CONVERTER = 2003;
   static final int MESSAGE_CONVERTER = 2004;
 
@@ -308,8 +308,8 @@ public class PatternParser {
       currentLiteral.setLength(0);
       break;
     case 'p':
-      pc = new BasicPatternConverter(formattingInfo, PRIORITY_CONVERTER);
-      //LogLog.debug("PRIORITY converter.");
+      pc = new BasicPatternConverter(formattingInfo, LEVEL_CONVERTER);
+      //LogLog.debug("LEVEL converter.");
       //formattingInfo.dump();
       currentLiteral.setLength(0);
       break;
@@ -390,8 +390,8 @@ public class PatternParser {
 	return (Long.toString(event.timeStamp - LoggingEvent.getStartTime()));
       case THREAD_CONVERTER:
 	return event.getThreadName();
-      case PRIORITY_CONVERTER:
-	return event.priority.toString();
+      case LEVEL_CONVERTER:
+	return event.level.toString();
       case NDC_CONVERTER:  
 	return event.getNDC();
       case MESSAGE_CONVERTER: {

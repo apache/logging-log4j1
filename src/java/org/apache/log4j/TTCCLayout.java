@@ -10,7 +10,7 @@
        
 package org.apache.log4j;
 
-import org.apache.log4j.Priority;
+import org.apache.log4j.Level;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.DateLayout;
@@ -48,7 +48,7 @@ import org.apache.log4j.spi.LoggingEvent;
 
   <p>The first field is the number of milliseconds elapsed since the
   start of the program. The second field is the thread outputting the
-  log statement. The third field is the priority, the fourth field is
+  log statement. The third field is the level, the fourth field is
   the category to which the statement belongs.
 
   <p>The fifth field (just before the '-') is the nested diagnostic
@@ -156,7 +156,7 @@ public class TTCCLayout extends DateLayout {
   }
 
   /**
-   In addition to the priority of the statement and message, the
+   In addition to the level of the statement and message, the
    returned byte array includes time, thread, category and {@link NDC}
    information.
    
@@ -164,7 +164,7 @@ public class TTCCLayout extends DateLayout {
    depending on options.
    
     @param category
-    @param priority
+    @param level
     @param message
 
   */
@@ -181,7 +181,7 @@ public class TTCCLayout extends DateLayout {
       buf.append(event.getThreadName());
       buf.append("] ");
     }
-    buf.append(event.priority.toString());
+    buf.append(event.level.toString());
     buf.append(' ');
 
     if(this.categoryPrefixing) {

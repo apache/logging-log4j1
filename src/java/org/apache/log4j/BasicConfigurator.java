@@ -55,7 +55,7 @@ public class BasicConfigurator {
 
      <p>Setting the system property <b>log4j.disable</b> to DEBUG,
      INFO, WARN, ERROR or FATAL is equivalent to calling the {@link
-     Hierarchy#disable} method with the corresponding priority.
+     Hierarchy#disable} method with the corresponding level.
 
      <p>If both <code>log4j.disableOverride</code> and a
      <code>log4j.disable</code> options are present, then
@@ -67,7 +67,7 @@ public class BasicConfigurator {
 
 
   /**
-     Special priority value signifying inherited behaviour. The
+     Special level value signifying inherited behaviour. The
      current value of this string constant is <b>inherited</b>.
 
   */
@@ -124,17 +124,17 @@ public class BasicConfigurator {
      @deprecated Use <code>Category.getDefaultHierarchy().disable()</code> instead.  */
   public
   static
-  void disable(String priorityStr) {
-    Category.getDefaultHierarchy().disable(priorityStr);
+  void disable(String levelStr) {
+    Category.getDefaultHierarchy().disable(levelStr);
   }
 
   /**
-     See {@link Hierarchy#disable(Priority)}.
+     See {@link Hierarchy#disable(Level)}.
 
      @deprecated Use <code>Category.getDefaultHierarchy().disable(p)</code> instead.  */
   public
   static
-  void disable(Priority p) {
+  void disable(Level p) {
   
   }
   
@@ -146,7 +146,7 @@ public class BasicConfigurator {
   public
   static
   void disableAll() {
-      Category.getDefaultHierarchy().disable(Priority.FATAL);
+      Category.getDefaultHierarchy().disable(Level.FATAL);
   }
 
  /**
@@ -156,7 +156,7 @@ public class BasicConfigurator {
   public
   static
   void disableDebug() {
-    Category.getDefaultHierarchy().disable(Priority.DEBUG);
+    Category.getDefaultHierarchy().disable(Level.DEBUG);
   }  
 
  /**
@@ -166,7 +166,7 @@ public class BasicConfigurator {
   public
   static
   void disableInfo() {
-    Category.getDefaultHierarchy().disable(Priority.INFO);
+    Category.getDefaultHierarchy().disable(Level.INFO);
   } 
   
 
@@ -177,7 +177,7 @@ public class BasicConfigurator {
   public
   static
   void enableAll() {
-    Category.getDefaultHierarchy().disable(Priority.INFO);
+    Category.getDefaultHierarchy().disable(Level.INFO);
   }
 
   /**

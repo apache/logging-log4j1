@@ -8,7 +8,7 @@
 package org.apache.log4j.test;
 
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.Priority;
+import org.apache.log4j.Level;
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Appender;
@@ -217,31 +217,31 @@ public class UnitTestCategory extends TestCase {
 
     root.debug(MSG); assertEquals(caRoot.counter, 0);  
     root.info(MSG); assertEquals(caRoot.counter, 1);  
-    root.log(Priority.WARN, MSG); assertEquals(caRoot.counter, 2);  
+    root.log(Level.WARN, MSG); assertEquals(caRoot.counter, 2);  
     root.warn(MSG); assertEquals(caRoot.counter, 3);  
 
     h.disableInfo();
     root.debug(MSG); assertEquals(caRoot.counter, 3);  
     root.info(MSG); assertEquals(caRoot.counter, 3);  
-    root.log(Priority.WARN, MSG); assertEquals(caRoot.counter, 4);  
+    root.log(Level.WARN, MSG); assertEquals(caRoot.counter, 4);  
     root.error(MSG); assertEquals(caRoot.counter, 5);  
-    root.log(Priority.ERROR, MSG); assertEquals(caRoot.counter, 6);  
+    root.log(Level.ERROR, MSG); assertEquals(caRoot.counter, 6);  
 
     h.disableAll();
     root.debug(MSG); assertEquals(caRoot.counter, 6);  
     root.info(MSG); assertEquals(caRoot.counter, 6);  
-    root.log(Priority.WARN, MSG); assertEquals(caRoot.counter, 6);  
+    root.log(Level.WARN, MSG); assertEquals(caRoot.counter, 6);  
     root.error(MSG); assertEquals(caRoot.counter, 6);  
-    root.log(Priority.FATAL, MSG); assertEquals(caRoot.counter, 6);  
-    root.log(Priority.FATAL, MSG); assertEquals(caRoot.counter, 6);  
+    root.log(Level.FATAL, MSG); assertEquals(caRoot.counter, 6);  
+    root.log(Level.FATAL, MSG); assertEquals(caRoot.counter, 6);  
 
-    h.disable(Priority.FATAL);
+    h.disable(Level.FATAL);
     root.debug(MSG); assertEquals(caRoot.counter, 6);  
     root.info(MSG); assertEquals(caRoot.counter, 6);  
-    root.log(Priority.WARN, MSG); assertEquals(caRoot.counter, 6);  
+    root.log(Level.WARN, MSG); assertEquals(caRoot.counter, 6);  
     root.error(MSG); assertEquals(caRoot.counter, 6);
-    root.log(Priority.ERROR, MSG); assertEquals(caRoot.counter, 6);  
-    root.log(Priority.FATAL, MSG); assertEquals(caRoot.counter, 6);  
+    root.log(Level.ERROR, MSG); assertEquals(caRoot.counter, 6);  
+    root.log(Level.FATAL, MSG); assertEquals(caRoot.counter, 6);  
   }
 
 
@@ -312,11 +312,11 @@ public class UnitTestCategory extends TestCase {
 
   public
   void testHierarchy1() {
-    Hierarchy h = new Hierarchy( new RootCategory(Priority.ERROR));
+    Hierarchy h = new Hierarchy( new RootCategory(Level.ERROR));
     Category a0 = h.getInstance("a");
     assertEquals("a", a0.getName());
-    assertNull(a0.getPriority());
-    assertSame(Priority.ERROR, a0.getChainedPriority());
+    assertNull(a0.getLevel());
+    assertSame(Level.ERROR, a0.getChainedLevel());
 
     Category a1 = h.getInstance("a");
     assertSame(a0, a1);

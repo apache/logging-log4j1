@@ -3,7 +3,7 @@ package org.apache.log4j.xml.examples;
 
 import org.apache.log4j.xml.DOMConfigurator;
 import org.apache.log4j.Category;
-import org.apache.log4j.Priority;
+import org.apache.log4j.Level;
 import java.net.*;
 
 /**

@@ -7,7 +7,7 @@ package org.apache.log4j;
 import org.apache.log4j.spi.LoggingEvent;
 
 /**
-   SimpleLayout consists of the priority of the log statement,
+   SimpleLayout consists of the level of the log statement,
    followed by " - " and then the log message itself. For example,
 
    <pre>
@@ -33,7 +33,7 @@ public class SimpleLayout extends Layout {
   
   /**
      Returns the log statement in a format consisting of the
-     <code>priority</code>, followed by " - " and then the
+     <code>level</code>, followed by " - " and then the
      <code>message</code>. For example, <pre> INFO - "A message"
      </pre>
 
@@ -45,7 +45,7 @@ public class SimpleLayout extends Layout {
   String format(LoggingEvent event) {
 
     sbuf.setLength(0);
-    sbuf.append(event.priority.toString());
+    sbuf.append(event.level.toString());
     sbuf.append(" - ");
     sbuf.append(event.getRenderedMessage());
     sbuf.append(LINE_SEP);

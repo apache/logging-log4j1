@@ -571,8 +571,8 @@ public class PropertyConfigurator extends BasicConfigurator
                                 	 !catName.equals(INTERNAL_ROOT_NAME)) {
 	cat.setPriority(null);
       } else {
-	cat.setPriority(OptionConverter.toPriority(priorityStr, 
-						   Priority.DEBUG));
+	cat.setLevel(OptionConverter.toLevel(priorityStr, 
+					     Priority.DEBUG));
       }
       LogLog.debug("Category " + catName + " set to " + cat.getPriority());
     }

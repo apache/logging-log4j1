@@ -21,7 +21,6 @@
 
 package org.apache.log4j;
 
-import org.apache.log4j.Priority;
 import org.apache.log4j.spi.RootCategory;
 import org.apache.log4j.spi.AppenderAttachable;
 import org.apache.log4j.spi.CategoryFactory;
@@ -61,7 +60,7 @@ public class Category implements AppenderAttachable {
   static 
   public 
   final Hierarchy defaultHierarchy = new Hierarchy(new 
-						   RootCategory(Priority.DEBUG));
+						   RootCategory(Level.DEBUG));
 
 
   /**
@@ -184,10 +183,10 @@ public class Category implements AppenderAttachable {
   protected String   name;  
 
   /**
-     The assigned priority of this category.  The
-     <code>priority</code> variable need not be assined a value in
+     The assigned level of this category.  The
+     <code>level</code> variable need not be assined a value in
      which case it is inherited form the hierarchy.  */
-  volatile protected Priority priority;
+  volatile protected Level level;
 
   /**
      The parent of this category. All categories have at least one
@@ -320,11 +319,11 @@ public class Category implements AppenderAttachable {
   }
 
   /** 
-    Log a message object with the {@link Priority#DEBUG DEBUG} priority.
+    Log a message object with the {@link Level#DEBUG DEBUG} level.
 
     <p>This method first checks if this category is <code>DEBUG</code>
-    enabled by comparing the priority of this category with the {@link
-    Priority#DEBUG DEBUG} priority. If this category is
+    enabled by comparing the level of this category with the {@link
+    Level#DEBUG DEBUG} level. If this category is
     <code>DEBUG</code> enabled, then it converts the message object
     (passed as parameter) to a string by invoking the appropriate
     {@link ObjectRenderer}. It then proceeds to call all the
@@ -339,16 +338,16 @@ public class Category implements AppenderAttachable {
     @param message the message object to log. */
   public
   void debug(Object message) {
-    if(hierarchy.enableInt >  Priority.DEBUG_INT) 
+    if(hierarchy.enableInt >  Level.DEBUG_INT) 
       return;    
-    if(Priority.DEBUG.isGreaterOrEqual(this.getChainedPriority())) {
-      forcedLog(FQCN, Priority.DEBUG, message, null);
+    if(Level.DEBUG.isGreaterOrEqual(this.getChainedLevel())) {
+      forcedLog(FQCN, Level.DEBUG, message, null);
     }
   }
   
 
   /**  
-   Log a message object with the <code>DEBUG</code> priority including
+   Log a message object with the <code>DEBUG</code> level including
    the stack trace of the {@link Throwable} <code>t</code> passed as
    parameter.
    
@@ -358,27 +357,27 @@ public class Category implements AppenderAttachable {
    @param t the exception to log, including its stack trace.  */  
   public
   void debug(Object message, Throwable t) {
-    if(hierarchy.enableInt >  Priority.DEBUG_INT) 
+    if(hierarchy.enableInt >  Level.DEBUG_INT) 
       return;
-    if(Priority.DEBUG.isGreaterOrEqual(this.getChainedPriority()))
-      forcedLog(FQCN, Priority.DEBUG, message, t);    
+    if(Level.DEBUG.isGreaterOrEqual(this.getChainedLevel()))
+      forcedLog(FQCN, Level.DEBUG, message, t);    
   }
 
   //public
   //void dump() {
   //  System.out.println("Category " + name + " dump -----");
   //  for(Category c = this; c != null; c=c.parent)
-  //	System.out.println("("+c.name+", "+c.priority+") ->");
+  //	System.out.println("("+c.name+", "+c.level+") ->");
   //  System.out.println("---------------------------");
   //
   //}
   
   /** 
-    Log a message object with the {@link Priority#ERROR ERROR} priority.
+    Log a message object with the {@link Level#ERROR ERROR} Level.
 
     <p>This method first checks if this category is <code>ERROR</code>
-    enabled by comparing the priority of this category with {@link
-    Priority#ERROR ERROR} priority. If this category is
+    enabled by comparing the level of this category with {@link
+    Level#ERROR ERROR} Level. If this category is
     <code>ERROR</code> enabled, then it converts the message object
     passed as parameter to a string by invoking the appropriate {@link
     ObjectRenderer}. It proceeds to call all the registered appenders
@@ -393,14 +392,14 @@ public class Category implements AppenderAttachable {
     @param message the message object to log */
   public
   void error(Object message) {
-    if(hierarchy.enableInt >  Priority.ERROR_INT) 
+    if(hierarchy.enableInt >  Level.ERROR_INT) 
       return;
-    if(Priority.ERROR.isGreaterOrEqual(this.getChainedPriority()))
-      forcedLog(FQCN, Priority.ERROR, message, null);
+    if(Level.ERROR.isGreaterOrEqual(this.getChainedLevel()))
+      forcedLog(FQCN, Level.ERROR, message, null);
   }
 
   /** 
-   Log a message object with the <code>ERROR</code> priority including
+   Log a message object with the <code>ERROR</code> level including
    the stack trace of the {@link Throwable} <code>t</code> passed as
    parameter.
    
@@ -410,10 +409,10 @@ public class Category implements AppenderAttachable {
    @param t the exception to log, including its stack trace.  */  
   public
   void error(Object message, Throwable t) {
-    if(hierarchy.enableInt >  Priority.ERROR_INT) 
+    if(hierarchy.enableInt >  Level.ERROR_INT) 
       return;
-    if(Priority.ERROR.isGreaterOrEqual(this.getChainedPriority()))
-      forcedLog(FQCN, Priority.ERROR, message, t);
+    if(Level.ERROR.isGreaterOrEqual(this.getChainedLevel()))
+      forcedLog(FQCN, Level.ERROR, message, t);
     
   }
 
@@ -432,11 +431,11 @@ public class Category implements AppenderAttachable {
   }
 
   /** 
-    Log a message object with the {@link Priority#FATAL FATAL} priority.
+    Log a message object with the {@link Level#FATAL FATAL} Level.
 
     <p>This method first checks if this category is <code>FATAL</code>
-    enabled by comparing the priority of this category with {@link
-    Priority#FATAL FATAL} priority. If the category is <code>FATAL</code>
+    enabled by comparing the level of this category with {@link
+    Level#FATAL FATAL} Level. If the category is <code>FATAL</code>
     enabled, then it converts the message object passed as parameter
     to a string by invoking the appropriate {@link ObjectRenderer}. It
     proceeds to call all the registered appenders in this category and
@@ -451,14 +450,14 @@ public class Category implements AppenderAttachable {
     @param message the message object to log */
   public
   void fatal(Object message) {
-    if(hierarchy.enableInt >  Priority.FATAL_INT) 
+    if(hierarchy.enableInt >  Level.FATAL_INT) 
       return;    
-    if(Priority.FATAL.isGreaterOrEqual(this.getChainedPriority()))
-      forcedLog(FQCN, Priority.FATAL, message, null);
+    if(Level.FATAL.isGreaterOrEqual(this.getChainedLevel()))
+      forcedLog(FQCN, Level.FATAL, message, null);
   }
   
   /** 
-   Log a message object with the <code>FATAL</code> priority including
+   Log a message object with the <code>FATAL</code> level including
    the stack trace of the {@link Throwable} <code>t</code> passed as
    parameter.
    
@@ -468,10 +467,10 @@ public class Category implements AppenderAttachable {
    @param t the exception to log, including its stack trace.  */
   public
   void fatal(Object message, Throwable t) {
-    if(hierarchy.enableInt >  Priority.FATAL_INT) 
+    if(hierarchy.enableInt >  Level.FATAL_INT) 
       return;   
-    if(Priority.FATAL.isGreaterOrEqual(this.getChainedPriority()))
-      forcedLog(FQCN, Priority.FATAL, message, t);
+    if(Level.FATAL.isGreaterOrEqual(this.getChainedLevel()))
+      forcedLog(FQCN, Level.FATAL, message, t);
   }
 
 
@@ -479,8 +478,8 @@ public class Category implements AppenderAttachable {
      This method creates a new logging event and logs the event
      without further checks.  */
   protected
-  void forcedLog(String fqcn, Priority priority, Object message, Throwable t) {
-    callAppenders(new LoggingEvent(fqcn, this, priority, message, t));
+  void forcedLog(String fqcn, Level level, Object message, Throwable t) {
+    callAppenders(new LoggingEvent(fqcn, this, level, message, t));
   }
 
 
@@ -523,17 +522,17 @@ public class Category implements AppenderAttachable {
   
   /**
      Starting from this category, search the category hierarchy for a
-     non-null priority and return it. Otherwise, return the priority of the
+     non-null level and return it. Otherwise, return the level of the
      root category.
      
      <p>The Category class is designed so that this method executes as
      quickly as possible.
    */
   public 
-  Priority getChainedPriority() {
+  Level getChainedLevel() {
     for(Category c = this; c != null; c=c.parent) {
-      if(c.priority != null) 
-	return c.priority;
+      if(c.level != null) 
+	return c.level;
     }
     return null; // If reached will cause an NullPointerException.
   }
@@ -581,7 +580,7 @@ public class Category implements AppenderAttachable {
      existing instance will be reutrned. Otherwise, a new instance is
      created. 
 
-     By default, categories do not have a set priority but inherit
+     By default, categories do not have a set level but inherit
      it from the hierarchy. This is one of the central features of
      log4j.
 
@@ -653,15 +652,25 @@ public class Category implements AppenderAttachable {
 
     
   /**
-     Returns the assigned {@link Priority}, if any, for this Category.  
+     Returns the assigned {@link Level}, if any, for this Category.  
      
-     @return Priority - the assigned Priority, can be <code>null</code>.
+     @return Level - the assigned Level, can be <code>null</code>.
   */
   final
   public
-  Priority getPriority() {
-    return this.priority;
+  Level getLevel() {
+    return this.level;
   }
+
+  /**
+     @deprecated Please use {@link #getLevel} instead.
+  */
+  final
+  public
+  Level getPriority() {
+    return this.level;
+  }
+
 
   /**
      Return the root of the default category hierrachy.
@@ -734,11 +743,11 @@ public class Category implements AppenderAttachable {
   }
   
   /** 
-    Log a message object with the {@link Priority#INFO INFO} priority.
+    Log a message object with the {@link Level#INFO INFO} Level.
 
     <p>This method first checks if this category is <code>INFO</code>
-    enabled by comparing the priority of this category with {@link
-    Priority#INFO INFO} priority. If the category is <code>INFO</code>
+    enabled by comparing the level of this category with {@link
+    Level#INFO INFO} Level. If the category is <code>INFO</code>
     enabled, then it converts the message object passed as parameter
     to a string by invoking the appropriate {@link ObjectRenderer}. It
     proceeds to call all the registered appenders in this category and
@@ -753,14 +762,14 @@ public class Category implements AppenderAttachable {
     @param message the message object to log */
   public
   void info(Object message) {
-    if(hierarchy.enableInt >  Priority.INFO_INT) 
+    if(hierarchy.enableInt >  Level.INFO_INT) 
       return;    
-    if(Priority.INFO.isGreaterOrEqual(this.getChainedPriority()))
-      forcedLog(FQCN, Priority.INFO, message, null);
+    if(Level.INFO.isGreaterOrEqual(this.getChainedLevel()))
+      forcedLog(FQCN, Level.INFO, message, null);
   }
   
   /** 
-   Log a message object with the <code>INFO</code> priority including
+   Log a message object with the <code>INFO</code> level including
    the stack trace of the {@link Throwable} <code>t</code> passed as
    parameter.
    
@@ -770,15 +779,15 @@ public class Category implements AppenderAttachable {
    @param t the exception to log, including its stack trace.  */
   public
   void info(Object message, Throwable t) {
-    if(hierarchy.enableInt >  Priority.INFO_INT) 
+    if(hierarchy.enableInt >  Level.INFO_INT) 
       return;   
-    if(Priority.INFO.isGreaterOrEqual(this.getChainedPriority()))
-      forcedLog(FQCN, Priority.INFO, message, t);
+    if(Level.INFO.isGreaterOrEqual(this.getChainedLevel()))
+      forcedLog(FQCN, Level.INFO, message, t);
   }
 
   /**
     *  Check whether this category is enabled for the <code>DEBUG</code>
-    *  priority.
+    *  Level.
     *  
     *  <p> This function is intended to lessen the computational cost of
     *  disabled log debug statements.
@@ -812,38 +821,38 @@ public class Category implements AppenderAttachable {
     *   */
   public
   boolean isDebugEnabled() {
-    if(hierarchy.enableInt >  Priority.DEBUG_INT)
+    if(hierarchy.enableInt >  Level.DEBUG_INT)
       return false;   
-    return Priority.DEBUG.isGreaterOrEqual(this.getChainedPriority());
+    return Level.DEBUG.isGreaterOrEqual(this.getChainedLevel());
   }
   
   /**
      Check whether this category is enabled for a given {@link
-     Priority} passed as parameter.
+     Level} passed as parameter.
 
      See also {@link #isDebugEnabled}.
        
-     @return boolean True if this category is enabled for <code>priority</code>.
+     @return boolean True if this category is enabled for <code>level</code>.
   */
   public
-  boolean isEnabledFor(Priority priority) {
-    if(hierarchy.enableInt >  priority.level) 
+  boolean isEnabledFor(Level level) {
+    if(hierarchy.enableInt >  level.level) 
       return false;
-    return priority.isGreaterOrEqual(this.getChainedPriority());
+    return level.isGreaterOrEqual(this.getChainedLevel());
   }
 
   /**
-    Check whether this category is enabled for the info priority.
+    Check whether this category is enabled for the info Level.
     See also {@link #isDebugEnabled}.
 
     @return boolean - <code>true</code> if this category is enabled
-    for priority info, <code>false</code> otherwise.
+    for level info, <code>false</code> otherwise.
   */
   public
   boolean isInfoEnabled() {
-    if(hierarchy.enableInt > Priority.INFO_INT)
+    if(hierarchy.enableInt > Level.INFO_INT)
       return false;   
-    return Priority.INFO.isGreaterOrEqual(this.getChainedPriority());
+    return Level.INFO.isGreaterOrEqual(this.getChainedLevel());
   }
 
 
@@ -856,18 +865,18 @@ public class Category implements AppenderAttachable {
 
      @since 0.8.4 */
   public
-  void l7dlog(Priority priority, String key, Throwable t) {
-    if(hierarchy.enableInt > priority.level) {
+  void l7dlog(Level level, String key, Throwable t) {
+    if(hierarchy.enableInt > level.level) {
       return;
     }
-    if(priority.isGreaterOrEqual(this.getChainedPriority())) {
+    if(level.isGreaterOrEqual(this.getChainedLevel())) {
       String msg = getResourceBundleString(key);
       // if message corresponding to 'key' could not be found in the
       // resource bundle, then default to 'key'.
       if(msg == null) {
 	msg = key;
       }
-      forcedLog(FQCN, priority, msg, t);
+      forcedLog(FQCN, level, msg, t);
     }
   }
   /**
@@ -880,18 +889,18 @@ public class Category implements AppenderAttachable {
      @since 0.8.4
   */
   public
-  void l7dlog(Priority priority, String key,  Object[] params, Throwable t) {
-    if(hierarchy.enableInt > priority.level) {
+  void l7dlog(Level level, String key,  Object[] params, Throwable t) {
+    if(hierarchy.enableInt > level.level) {
       return;
     }    
-    if(priority.isGreaterOrEqual(this.getChainedPriority())) {
+    if(level.isGreaterOrEqual(this.getChainedLevel())) {
       String pattern = getResourceBundleString(key);
       String msg;
       if(pattern == null) 
 	msg = key;
       else 
 	msg = java.text.MessageFormat.format(pattern, params);
-      forcedLog(FQCN, priority, msg, t);
+      forcedLog(FQCN, level, msg, t);
     }
   }
   
@@ -899,24 +908,24 @@ public class Category implements AppenderAttachable {
      This generic form is intended to be used by wrappers.
    */
   public
-  void log(Priority priority, Object message, Throwable t) {
-    if(hierarchy.enableInt > priority.level) {
+  void log(Level level, Object message, Throwable t) {
+    if(hierarchy.enableInt > level.level) {
       return;
     }
-    if(priority.isGreaterOrEqual(this.getChainedPriority())) 
-      forcedLog(FQCN, priority, message, t);
+    if(level.isGreaterOrEqual(this.getChainedLevel())) 
+      forcedLog(FQCN, level, message, t);
   }
   
  /**
     This generic form is intended to be used by wrappers. 
  */
   public
-  void log(Priority priority, Object message) {
-    if(hierarchy.enableInt > priority.level) {
+  void log(Level level, Object message) {
+    if(hierarchy.enableInt > level.level) {
       return;
     }
-    if(priority.isGreaterOrEqual(this.getChainedPriority()))
-      forcedLog(FQCN, priority, message, null);
+    if(level.isGreaterOrEqual(this.getChainedLevel()))
+      forcedLog(FQCN, level, message, null);
   }
 
   /**
@@ -925,16 +934,16 @@ public class Category implements AppenderAttachable {
      invoked by <b>wrapper</b> classes.
           
      @param callerFQCN The wrapper class' fully qualified class name.
-     @param priority The priority of the logging request.
+     @param level The level of the logging request.
      @param message The message of the logging request.
      @param t The throwable of the logging request, may be null.  */
   public
-  void log(String callerFQCN, Priority priority, Object message, Throwable t) {
-    if(hierarchy.enableInt > priority.level) {
+  void log(String callerFQCN, Level level, Object message, Throwable t) {
+    if(hierarchy.enableInt > level.level) {
       return;
     }
-    if(priority.isGreaterOrEqual(this.getChainedPriority())) {
-      forcedLog(callerFQCN, priority, message, t);
+    if(level.isGreaterOrEqual(this.getChainedLevel())) {
+      forcedLog(callerFQCN, level, message, t);
     }
   }
 
@@ -995,22 +1004,35 @@ public class Category implements AppenderAttachable {
   void setHierarchy(Hierarchy hierarchy) {
     this.hierarchy = hierarchy;
   }
-  
+
   /**
-     Set the priority of this Category.
+     Set the level of this Category.
 
      <p>Null values are admitted.
   */
   public
+  void setLevel(Level level) {
+    this.level = level;
+  }
+
+  
+  /**
+     Set the level of this Category.
+
+     <p>Null values are admitted.
+
+     @deprecated Please use {@link #setLevel} instead.
+  */
+  public
   void setPriority(Priority priority) {
-    this.priority = priority;
+    setLevel(priority);
   }
 
 
   /**
      Set the resource bundle to be used with localized logging
-     methods {@link #l7dlog(Priority,String,Throwable)} and {@link
-     #l7dlog(Priority,String,Object[],Throwable)}.
+     methods {@link #l7dlog(Level,String,Throwable)} and {@link
+     #l7dlog(Level,String,Object[],Throwable)}.
 
      @since 0.8.4
    */
@@ -1044,11 +1066,11 @@ public class Category implements AppenderAttachable {
 
   
   /** 
-    Log a message object with the {@link Priority#WARN WARN} priority.
+    Log a message object with the {@link Level#WARN WARN} Level.
 
     <p>This method first checks if this category is <code>WARN</code>
-    enabled by comparing the priority of this category with {@link
-    Priority#WARN WARN} priority. If the category is <code>WARN</code>
+    enabled by comparing the level of this category with {@link
+    Level#WARN WARN} Level. If the category is <code>WARN</code>
     enabled, then it converts the message object passed as parameter
     to a string by invoking the appropriate {@link ObjectRenderer}. It
     proceeds to call all the registered appenders in this category and
@@ -1063,15 +1085,15 @@ public class Category implements AppenderAttachable {
     @param message the message object to log.  */
   public
   void warn(Object message) {
-    if(hierarchy.enableInt >  Priority.WARN_INT) 
+    if(hierarchy.enableInt >  Level.WARN_INT) 
       return;   
 
-    if(Priority.WARN.isGreaterOrEqual(this.getChainedPriority()))
-      forcedLog(FQCN, Priority.WARN, message, null);    
+    if(Level.WARN.isGreaterOrEqual(this.getChainedLevel()))
+      forcedLog(FQCN, Level.WARN, message, null);    
   }
   
   /** 
-   Log a message with the <code>WARN</code> priority including the
+   Log a message with the <code>WARN</code> level including the
    stack trace of the {@link Throwable} <code>t</code> passed as
    parameter.
    
@@ -1081,9 +1103,9 @@ public class Category implements AppenderAttachable {
    @param t the exception to log, including its stack trace.  */
   public
   void warn(Object message, Throwable t) {
-    if(hierarchy.enableInt >  Priority.WARN_INT) 
+    if(hierarchy.enableInt >  Level.WARN_INT) 
       return;   
-    if(Priority.WARN.isGreaterOrEqual(this.getChainedPriority()))
-      forcedLog(FQCN, Priority.WARN, message, t);
+    if(Level.WARN.isGreaterOrEqual(this.getChainedLevel()))
+      forcedLog(FQCN, Level.WARN, message, t);
   }
 }

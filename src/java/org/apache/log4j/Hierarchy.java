@@ -63,7 +63,7 @@ public class Hierarchy {
   RendererMap rendererMap;
   
   int enableInt;
-  Priority enable;
+  Level enable;
 
   boolean emittedNoAppenderWarning = false;
   boolean emittedNoResourceBundleWarning = false;  
@@ -79,8 +79,8 @@ public class Hierarchy {
     ht = new Hashtable();
     listeners = new Vector(1);
     this.root = root;
-    // Enable all priority levels by default.
-    enable(Priority.ALL);
+    // Enable all level levels by default.
+    enable(Level.ALL);
     this.root.setHierarchy(this);
     rendererMap = new RendererMap();
     defaultFactory = new DefaultCategoryFactory();
@@ -137,28 +137,28 @@ public class Hierarchy {
 
 
   /**
-     Similar to {@link #disable(Priority)} except that the priority
+     Similar to {@link #disable(Level)} except that the level
      argument is given as a String.  
 
-     @deprecated Replaced with the {@link #enable(Priority)} familiy
+     @deprecated Replaced with the {@link #enable(Level)} familiy
      of methods
   */
   public
-  void disable(String priorityStr) {
-    Priority p = Priority.toPriority(priorityStr, null);
+  void disable(String levelStr) {
+    Level p = Level.toLevel(levelStr, null);
     if(p != null) {
       disable(p);
     } else {
-      LogLog.warn("Could not convert ["+priorityStr+"] to Priority.");
+      LogLog.warn("Could not convert ["+levelStr+"] to Level.");
     }
   }
 
 
   /**
-     Disable all logging requests of priority <em>equal to or
-     below</em> the priority parameter <code>p</code>, for
+     Disable all logging requests of level <em>equal to or
+     below</em> the level parameter <code>p</code>, for
      <em>all</em> categories in this hierarchy. Logging requests of
-     higher priority then <code>p</code> remain unaffected.
+     higher level then <code>p</code> remain unaffected.
 
      <p>The "disable" family of methods are there for speed. They
      allow printing methods such as debug, info, etc. to return
@@ -175,63 +175,63 @@ public class Hierarchy {
 
      @since 0.8.5 */
   public
-  void disable(Priority p) {
+  void disable(Level p) {
     if(p != null) {    
       switch(p.level) {
-      case Priority.ALL_INT: enable(Priority.ALL); break;      
-      case Priority.DEBUG_INT: enable(Priority.INFO); break;      
-      case Priority.INFO_INT: enable(Priority.WARN); break;
-      case Priority.WARN_INT: enable(Priority.ERROR); break;      
-      case Priority.ERROR_INT: enable(Priority.FATAL); break;      
-      case Priority.FATAL_INT: enable(Priority.OFF); break;      
-      case Priority.OFF_INT: enable(Priority.OFF); break;      
+      case Level.ALL_INT: enable(Level.ALL); break;      
+      case Level.DEBUG_INT: enable(Level.INFO); break;      
+      case Level.INFO_INT: enable(Level.WARN); break;
+      case Level.WARN_INT: enable(Level.ERROR); break;      
+      case Level.ERROR_INT: enable(Level.FATAL); break;      
+      case Level.FATAL_INT: enable(Level.OFF); break;      
+      case Level.OFF_INT: enable(Level.OFF); break;      
       default: 
       }
     }
   }
   
   /**
-     Disable all logging requests regardless of category and priority.
+     Disable all logging requests regardless of category and level.
      This method is equivalent to calling {@link #disable} with the
-     argument {@link Priority#FATAL}, the highest possible priority.
+     argument {@link Level#FATAL}, the highest possible level.
 
      @deprecated Please use the {@link #enable} familiy of methods instead.
 
      @since 0.8.5 */
   public
   void disableAll() {
-    disable(Priority.FATAL);
+    disable(Level.FATAL);
   }
 
 
   /**
-     Disable all logging requests of priority DEBUG regardless of
+     Disable all logging requests of level DEBUG regardless of
      category.  Invoking this method is equivalent to calling {@link
-     #disable} with the argument {@link Priority#DEBUG}.
+     #disable} with the argument {@link Level#DEBUG}.
 
      @deprecated Please use the {@link #enable} familiy of methods instead.
 
      @since 0.8.5 */
   public
   void disableDebug() {
-    disable(Priority.DEBUG);
+    disable(Level.DEBUG);
   }
 
 
   /**
-     Disable all logging requests of priority INFO and below
+     Disable all logging requests of level INFO and below
      regardless of category. Note that DEBUG messages are also
      disabled.  
 
      <p>Invoking this method is equivalent to calling {@link
-     #disable(Priority)} with the argument {@link Priority#INFO}.
+     #disable(Level)} with the argument {@link Level#INFO}.
 
      @deprecated Please use the {@link #enable} familiy of methods instead.
 
      @since 0.8.5 */
   public
   void disableInfo() {
-    disable(Priority.INFO);
+    disable(Level.INFO);
   }  
 
   /**
@@ -244,17 +244,17 @@ public class Hierarchy {
      @since 0.8.5 */
   public
   void enableAll() {
-    enable(Priority.ALL);
+    enable(Level.ALL);
   }
 
   /**
-     Enable logging for events with priority p or higher.
+     Enable logging for events with level p or higher.
 
-	  @param p the minimum priority for which events are sent to
+	  @param p the minimum level for which events are sent to
 	         their appenders.
 	  @since 1.1.3 */
   public 
-  void enable(Priority p) {
+  void enable(Level p) {
     if(p != null) {
       enableInt = p.level;
       enable = p;
@@ -287,13 +287,13 @@ public class Hierarchy {
   }
 
   /**
-     Returns a {@link Priority} representation of the
+     Returns a {@link Level} representation of the
      <code>enable</code> state.  
 
      @since 1.2
   */
   public
-  Priority getEnable() {
+  Level getEnable() {
     return enable;
   }
 
@@ -331,7 +331,7 @@ public class Hierarchy {
     //System.out.println("getInstance("+name+") called.");
     CategoryKey key = new CategoryKey(name);    
     // Synchronize to prevent write conflicts. Read conflicts (in
-    // getChainedPriority method) are possible only if variable
+    // getChainedLevel method) are possible only if variable
     // assignments are non-atomic.
     Category category;
     
@@ -424,9 +424,9 @@ public class Hierarchy {
   /**
      Reset all values contained in this hierarchy instance to their
      default.  This removes all appenders from all categories, sets
-     the priority of all non-root categories to <code>null</code>,
-     sets their additivity flag to <code>true</code> and sets the priority
-     of the root category to {@link Priority#DEBUG DEBUG}.  Moreover,
+     the level of all non-root categories to <code>null</code>,
+     sets their additivity flag to <code>true</code> and sets the level
+     of the root category to {@link Level#DEBUG DEBUG}.  Moreover,
      message disabling is set its default "off" value.
 
      <p>Existing categories are not removed. They are just reset.
@@ -438,7 +438,7 @@ public class Hierarchy {
   public
   void resetConfiguration() {
 
-    getRoot().setPriority(Priority.DEBUG);
+    getRoot().setLevel(Level.DEBUG);
     root.setResourceBundle(null);
     enableAll();
     
@@ -450,7 +450,7 @@ public class Hierarchy {
       Enumeration cats = getCurrentCategories();
       while(cats.hasMoreElements()) {
 	Category c = (Category) cats.nextElement();
-	c.setPriority(null);
+	c.setLevel(null);
 	c.setAdditivity(true);
 	c.setResourceBundle(null);
       }

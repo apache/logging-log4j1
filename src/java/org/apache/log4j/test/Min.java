@@ -14,7 +14,7 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.net.SyslogAppender;
 import org.apache.log4j.SimpleLayout;
 import org.apache.log4j.TTCCLayout;
-import org.apache.log4j.Priority;
+import org.apache.log4j.Level;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.helpers.AbsoluteTimeDateFormat;
 import java.io.IOException;
@@ -80,54 +80,54 @@ public class Min {
     int i = 0;
 
     // In the lines below, the category names are chosen as an aid in
-    // remembering their priority values. In general, the category
-    // names should have no bearing to priority values.
+    // remembering their level values. In general, the category
+    // names should have no bearing to level values.
     
     Category ERR = Category.getInstance("ERR");
-    ERR.setPriority(Priority.ERROR);
+    ERR.setLevel(Level.ERROR);
     Category INF = Category.getInstance("INF");
-    INF.setPriority(Priority.INFO);
+    INF.setLevel(Level.INFO);
     Category INF_ERR = Category.getInstance("INF.ERR");
-    INF_ERR.setPriority(Priority.ERROR);
+    INF_ERR.setLevel(Level.ERROR);
     Category DEB = Category.getInstance("DEB");
-    DEB.setPriority(Priority.DEBUG);
+    DEB.setLevel(Level.DEBUG);
     
-    // Note: categories with undefined priority 
+    // Note: categories with undefined level 
     Category INF_UNDEF = Category.getInstance("INF.UNDEF");
     Category INF_ERR_UNDEF = Category.getInstance("INF.ERR.UNDEF");    
     Category UNDEF = Category.getInstance("UNDEF");   
 
 
     // These should all log.----------------------------
-    ERR.log(Priority.FATAL, "Message " + i); i++;  //0
+    ERR.log(Level.FATAL, "Message " + i); i++;  //0
     ERR.error( "Message " + i); i++;          
 
-    INF.log(Priority.FATAL, "Message " + i); i++; // 2
+    INF.log(Level.FATAL, "Message " + i); i++; // 2
     INF.error( "Message " + i); i++;         
     INF.warn ( "Message " + i); i++; 
     INF.info ( "Message " + i); i++;
 
-    INF_UNDEF.log(Priority.FATAL, "Message " + i); i++;  //6
+    INF_UNDEF.log(Level.FATAL, "Message " + i); i++;  //6
     INF_UNDEF.error( "Message " + i); i++;         
     INF_UNDEF.warn ( "Message " + i); i++; 
     INF_UNDEF.info ( "Message " + i); i++; 
     
     
-    INF_ERR.log(Priority.FATAL, "Message " + i); i++;  // 10
+    INF_ERR.log(Level.FATAL, "Message " + i); i++;  // 10
     INF_ERR.error( "Message " + i); i++;  
 
-     INF_ERR_UNDEF.log(Priority.FATAL, "Message " + i); i++; 
+     INF_ERR_UNDEF.log(Level.FATAL, "Message " + i); i++; 
     INF_ERR_UNDEF.error( "Message " + i); i++;             
 
-    DEB.log(Priority.FATAL, "Message " + i); i++;  //14
+    DEB.log(Level.FATAL, "Message " + i); i++;  //14
     DEB.error( "Message " + i); i++;         
     DEB.warn ( "Message " + i); i++; 
     DEB.info ( "Message " + i); i++; 
     DEB.debug( "Message " + i); i++; 
 
     
-    // defaultPriority=DEBUG
-    UNDEF.log(Priority.FATAL, "Message " + i); i++;  // 19
+    // defaultLevel=DEBUG
+    UNDEF.log(Level.FATAL, "Message " + i); i++;  // 19
     UNDEF.error("Message " + i); i++;         
     UNDEF.warn ("Message " + i); i++; 
     UNDEF.info ("Message " + i); i++; 
