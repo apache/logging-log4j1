@@ -23,13 +23,12 @@ package org.apache.log4j;
  * <font color="#AA4444">Refrain from using this class directly, use the 
  * {@link Level} class instead</font>. 
  * 
- * 
  * @author Ceki G&uuml;lc&uuml; 
  * @deprecated 
  */
 public class Priority extends Level {
   
-  protected Priority(int level, String levelStr, int syslogEquivalent) {
+  private Priority(int level, String levelStr, int syslogEquivalent) {
     super(level, levelStr, syslogEquivalent);
   }
 
