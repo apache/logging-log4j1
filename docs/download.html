@@ -1,0 +1,456 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<!-- Content Stylesheet for Site -->
+
+    
+    
+    
+        
+<!-- start the processing -->
+    <!-- ====================================================================== -->
+    <!-- GENERATED FILE, DO NOT EDIT, EDIT THE XML FILE IN xdocs INSTEAD! -->
+    <!-- Main Page Section -->
+    <!-- ====================================================================== -->
+    <html>
+        <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+
+                                                    <meta name="author" value="Ceki Gulcu">
+            <meta name="email" value="ceki@apache.org">
+            
+            
+                                     <meta  name="keywords"  content="java, log4j download, logging, tracing, component, framework, API, log4j"  />
+ 
+                         
+            <link href="./css/site.css" rel="stylesheet" type="text/css"/>
+                                   
+
+            <title>Log4j project - Download</title>
+        </head>
+
+        <body bgcolor="#ffffff" text="#000000" link="#525D76">        
+           <!-- START Header table --> 
+                     <table class="banner" border="0">
+     <tr>
+       <td valign="top">
+         <a href="http://logging.apache.org/">
+           <img src="http://logging.apache.org/images/ls-logo.jpg" border="0"/>
+         </a>
+       </td>
+       <td align="right">
+                              	       <a href="http://logging.apache.org/log4j/docs/">
+                 <img src="./images/logo.jpg" alt="The log4j project" border="0"/>
+      	       </a>
+                               </td>
+     </tr>
+   </table>
+              <!-- END Header table --> 
+
+	   <div class="centercol">
+             <hr noshade="" size="1"/>
+		       
+                                         <h1>log4j version 1.2.8</strong></h1>
+                                    <p>Log4j is <a href="http://logging.apache.org/site/binindex.cgi"><b>available
+	      for download</b></a> from a number of mirrors. Please
+	      use these mirrors as they improve download time and save
+	      bandwidth.
+	  </p>
+                                                <p>As of release 1.2.8. log4j searches for the file
+	    <code>log4j.xml</code> as well as the file
+	    <code>log4j.properties</code> during initialization. See the
+	    <a href="HISTORY">HISTORY</a> file for the firther details.
+	  </p>
+                                                <p>In addition to many performance improvements, bug fixes,
+	    and other small enhancements, log4j 1.2 adds JMX support,
+	    Mapped Diagnostic Contexts, JDBC logging, graphical log
+	    viewer (chainsaw), and buffered IO capability. One
+	    important change is the replacement of the
+	    <code>Category</code> class with <code>Logger</code> class
+	    and the <code>Priority</code> class with the
+	    <code>Level</code> class in order to facilitate migrating
+	    from the JDK 1.4 logging API to log4j. <a href="http://www.javaworld.com/javaworld/jw-05-2001/jw-0504-finalists.html"><img src="images/ecaward_finalist_logo.gif" align="right" border="0" /></a>
+	  </p>
+                                                <p>Version 1.2 is the 22nd major public release of log4j.
+	    All changes except the removal of deprecated methods are
+	    backward compatible such that log4j 1.2 can be considered
+	    a drop in replacement for log4j 1.1.3. The only exception
+	    is the renaming of the <code>CategoryFactory</code> class
+	    to <code>LoggerFactory</code> class such that subclasses
+	    of <code>Category</code> class must be modified and
+	    recompiled. <em>The recommended pattern for extending the
+	    <code>Logger</code> class is wrapping. Moreover, we
+	    strongly discourage casual users from subclassing the
+	      <code>Category</code> or <code>Logger</code>
+	      classes. </em>
+	  </p>
+                                                        <h3>Earlier Releases</strong></h3>
+                                    <p>We also maintain <a href="earlier.html">earlier
+	      versions of log4j</a> for download, intended for the
+	      curious paleontologist -- there seems to be quite a few
+	      of them!
+	    </p>
+                                                                                               <h1>Third-party extensions (listed in alphabetical order)</strong></h1>
+                                    <dl>
+
+	<!-- ============================================================================== -->
+	
+	<dt><a href="chainsaw.html"><b>Chainsaw v2 (NEW!)</b></a></dt>
+
+	<dd>A new and improved version of the venerable Chainsaw
+	utility, now being written by the log4j development team is
+	getting closer to release.  You can see screen shots of it and
+	install it and run over <A href="chainsaw.html">here</A>
+	</dd>
+
+	<!-- ============================================================================== -->
+	<dt><a href="http://minaret.biz/tips/datedFileAppender.html"><b>DatedFileAppender</b></a></dt>
+
+	<dd><code>DatedFileAppender</code> works in the same manner as
+	the Tomcat FileLogger. Contrary to
+	<code>DailyRollingFileAppender</code> shipping with log4j, log
+	file names generated by <code>DatedFileAppender</code> always
+	contain today's date. While this distinction seems minor, it
+	means you can reliably copy, compress, remove or manipulate a
+	day's log file shortly after midnight. With the
+	<ocde>DailyRollingFileAppender</ocde>, a day's log file is not
+	renamed until the first message is logged some time after
+	midnight.
+	</dd>
+
+	<!-- ============================================================================== -->
+
+<!--	<dt><a href="http://www.japhy.de/configLog4j"><b>configLog4j</b></a></dt>
+
+	<dd>A graphical log4j configuration editor by Tobias
+	Dezulian.</dd>
+-->
+	<!-- ============================================================================== -->
+
+	<dt>
+	  <a href="http://www.dankomannhaupt.de/projects/index.html"><b>JDBCAppender</b></a>
+	</dt> 
+
+        <dd>A powerful <code>JDBCAppender</code> by Danko Mannhaupt
+	  who continues the work of Thomas Fenner. You might find
+	  this JDBCAppender more suitable then the one that ships with
+	  log4j 1.2. 
+	</dd>
+
+       <!-- ============================================================================== -->
+
+	<dt>
+	  <a href="http://just4log.sf.net/"><b>Just4log</b></a>
+	</dt> 
+
+        <dd>Just4Log is a library to enhance dynamically the
+        performance of various logging systems inside a java
+        application. Dynamically because the sourcecode in java is not
+        modified but rather the optimization occurs on the compiled
+        ByteCode files.
+	</dd>
+
+     <!-- ============================================================================== -->	
+	<dt><a href="http://purl.net/jware/antx/"><b>log4Ant</b></a></dt>
+
+	<dd>log4Ant includes a complete bridge to the Log4J logging systemfor a robust build monitoring system. 
+	These Ant components let you capture, map, and send Ant log messages and stdio output through your Log4J installation.  Contact <a href="maito:contact@jware.info">contact@jware.info</a>
+        </dd>
+     <!-- ============================================================================== -->	
+
+	<dt><a href="http://log4j400.sourceforge.net/"><b>log4j400</b></a></dt>
+
+	<dd>Log4J400 includes MessageQueue and DataQueue Appenders for
+	the AS/400 (aka IBM iSeries).
+        </dd>
+
+    <!-- ============================================================================== -->	
+	
+	<dt><a href="http://sourceforge.net/projects/log4j2db"><b>log4j2db</b></a></dt>
+
+	<dd>This Project provides a set of EJBs to store Log4J events
+	(received via JMS appender) in a database. The main aim is to
+	provide a toolset for a centralized, data-center suitable
+	logging.
+        </dd>
+
+	<!-- ============================================================================== -->	
+	
+	<dt><a href="http://cvs.apache.org/viewcvs/jakarta-log4j/log4jMini/"><b>log4j<em>ME</em></b></a></dt>
+
+	<dd>Log4j<em>ME</em>, or log4j MiniEdition, is based on the
+	same code as log4j. However, as the name indicates the
+	mini-edition is much smaller. It offers the same client
+	interface such that code compiled for log4jME is 100%
+	compatible with log4j standard edition. You can choose to
+	upgrade to log4j standard edition at any time by replacing
+	<em>log4jME.jar</em> with <em>log4j.jar</em> in your
+	classpath. At this time, log4jME is only available through
+	CVS.
+	</dd>
+	
+       <!-- ============================================================================== -->	
+	
+	<dt><a href="http://www.openfuture.de/Log4Unit/"><b>log4<em>Unit</em></b></a></dt>
+
+	<dd>Log4Unit is a <a href="http://www.junit.org/index.htm">JUnit</a> extension
+	combining JUnit with Log4J. The intention is to create test
+	protocols for JUnit.
+
+        <p>JUnit is asymmetrical in the sense that it focusses on the
+        documentation of test failures and errors. Successful
+        execution of a test case is not further documented. In order
+        to obtain a test protocol that documents the initial settings,
+        the test case execution and its results, a logging component
+        is required. Log4J as the current de facto standard is
+        selected for this extension.
+        </p>
+	</dd>
+
+	<!-- ============================================================================== -->
+
+	<dt><a href="http://www.launchsoftware.com"><b>Log4Web</b></a> (commercial) </dt>
+
+	<dd>Log4Web is a J2EE web application, designed to web-enable
+	  system log files that have been generated by log4j.
+	</dd>
+
+	<!-- ============================================================================== -->
+		
+	<dt><a href="http://jakarta.apache.org/taglibs/doc/log-doc/intro.html">
+	    <b>Log Tag</b></a>
+	</dt>
+	<dd>A custom log tag library from the <a href="http://jakarta.apache.org/taglibs/index.html">Jakarta
+	    Taglibs</a> project.</dd>
+
+	<!-- =========================================================================== -->
+
+	<dt><a href="http://www.codeczar.com/products/logweb/index.html"><b>LogWeb</b></a> </dt>
+
+	<dd>LogWeb is a web interface for configuring log4j at runtime
+	within a servlet container.  Every log4j feature of is
+	configurable through this interface.
+	</dd>
+
+	<!-- ============================================================================== -->
+
+
+	<dt><a href="http://www.m2technologies.net/asp/snmpTrapAppender.asp">
+	    <b>SNMPTrapAppender</b></a>
+	</dt>
+
+	<dd>An appender to send formatted logging event strings to a
+	  specified managment host (typically, a MLM of some sort, but
+	  could also be an SNMP management console) in the form of an
+	  SNMP trap.
+	</dd>
+
+	<!-- =========================================================================== -->
+
+         <dt><a href="http://xpolog.com"><b>XpoLog</b></a>
+	</dt>
+
+	<dd>Log view and analysis application which enables web
+	browsing and analysis over logs.
+	</dd>
+
+	<!-- =========================================================================== -->
+
+      </dl>
+                                                                           <h1>Ports to other languages (listed in alphabetical order within each section)</strong></h1>
+                                            <h3>Fellow Apache Logging Services Projects</strong></h3>
+                                    <dl>	
+	<!-- =========================================================================== -->
+
+	<dt><a href="http://logging.apache.org/log4cxx/"><b>log4cxx</b></a></dt>
+	<dd>Log4cxx is a port to C++ of the log4j project.</dd>
+
+	<!-- =========================================================================== -->	
+	<dt><a href="http://logging.apache.org/log4net/"><b>log4net</b></a></dt>
+
+	<dd>The .NET implementation of the popular log4j Java API
+	providing flexible and arbitrarily granular control over log
+	management and configuration.</dd>
+
+	<!-- =========================================================================== --> 
+        <dt><a href="http://logging.apache.org/log4php/"><b>log4php</b></a></dt> 
+
+        <dd>Log4Php is a PHP port of log4j framework. It supports xml configuration,
+        logging to files, stdout/err, syslog, socket, configurable
+        output layouts and logging levels. </dd>
+
+     </dl>
+                                                                            <h3>Other Ports</strong></h3>
+                                    <dl>
+	<!-- =========================================================================== -->
+	<dt><a href="http://log4c.sourceforge.net"><b>log4c</b></a></dt>
+
+	<dd>ANSI C functions and macros for flexible logging to files
+	and other destinations. It is modeled after log4j. It follows
+	the log4j API within the limits of reason. Intended for use in time-space
+	critical environments.</dd> 
+
+	<!-- =========================================================================== --> 
+	
+	<dt><a href="http://sourceforge.net/projects/log4cpp/"><b>log4cpp</b></a></dt>
+	<dd>A library of C++ classes for flexible logging to files,
+	syslog, IDSA and other destinations modeled after log4j.</dd>
+	
+	<!-- ========================================================================== --> 
+
+	<dt><a href="http://log4cplus.sourceforge.net/"><b>log4cplus</b></a></dt>
+	<dd>Log4cplus is a simple to use C++ logging API providing
+	thread-safe, flexible, and arbitrarily granular control over
+	log management and configuration. It is modeled after the Java
+	log4j API.</dd>
+
+	<!-- =========================================================================== -->
+	
+	<dt><a href="http://goanna.sourceforge.net/"><b>log4E</b></a></dt>
+
+	<dd>The Goanna project (Eiffel Web Services) now includes
+	log4E, a complete port of log4j. 
+	</dd>
+	
+	<!-- =========================================================================== -->
+	<dt><a href="http://log4perl.sourceforge.net"><b>Log::Log4perl</b></a></dt>
+
+	<dd>Log::Log4perl is a Perl port of log4j by Kevin Goess and
+	Mike Schilli. The authors made sure that their port was as
+	close as possible to the original implementation.  Even the
+	configuration files are similar! The project is still being
+	enhanced, however the current release is stable and has been
+	released to CPAN.
+	</dd>
+
+        <!-- ============================================================================== -->	
+        <dt><a href="http://log4ls.sourceforge.net/"><b>log4LS</b></a></dt>
+
+        <dd>Log4LS is a LotusScript library package and is used to get
+         logging statements to a Domino database, sent by mail or
+         written to a file. It is modeled after Jakarta log4j.
+         </dd>
+
+	<!-- =========================================================================== -->
+	<dt><a href="http://www.its4you.at/log4py.php"><b>log4py</b></a></dt>
+
+	<dd>Log4Py is a python logging module similar to log4j. It
+	supports logging to files or to stdout/stderr, variable
+	log-levels, configurable output formats and configuration via
+	configuration files. 
+	</dd>
+	
+	<!-- =========================================================================== -->
+	
+	<dt><a href="http://log4p.sourceforge.net"><b>log4p</b></a></dt>
+	<dd>Another Python translation of log4j. This project no
+	longer seems to be maintained.</dd>
+	
+	<!-- =========================================================================== -->
+
+	<dt><a href="http://log4plsql.sourceforge.net/"><b>log4plsql</b></a></dt>
+
+	<dd>Log4plsql is a Oracle PL/SQL logging module similar to
+	log4j. It supports logging out-off transaction. It is useful
+	for logging, benchmarking and monitoring PL/SQL applications.
+	</dd>
+	
+	<!-- =========================================================================== -->
+	
+	<dt><a href="http://sourceforge.net/projects/qmmslog"><b>qmmslog</b></a></dt>
+
+	<dd>Qmmslog is a port of log4j to the Qt/C++ platform.
+	</dd>
+
+	<!-- =========================================================================== -->
+	<dt><a href="http://log4r.sourceforge.net"><b>log4r</b></a></dt>
+	<dd>A Powerful Logger for Ruby. 
+	  <p>Log4r features an extremely flexible logging library for
+	    Ruby. Killer features include a heiarchial logging system
+	    of any number of levels, logger inheritance, multiple
+	    output destinations, tracing, custom formatting and more.
+	    Log4r was inspired by log4j. Log4r provides the defining
+	    features of log4j and some of its own features that just
+	    might make log4j users envious.</p>	    
+	</dd>	
+	
+	<!-- =========================================================================== -->
+      </dl>
+                                                                    <p>If you would like your software to be listed here, then send a note to the <a href="mailto:log4j-user@logging.apache.org">log4j-user@logging.apache.org</a>
+	list.</p>
+                                             
+            
+  
+                                  <hr/>
+
+  
+                    
+
+             
+                <!-- FOOTER -->
+              <div align="center"><font color="#525D76" size="-1"><em>
+                 Copyright &#169; 1999-2004, Apache Software Foundation
+               </em></font></div>
+
+           <!-- END main table --> 
+
+           <!-- LEFT SIDE NAVIGATION -->
+             <!-- ============================================================ -->
+  <div class="leftcol">
+               <div class="menu_header">Log4j Project</div>
+              	 <div class="menu_item">        <a href="./index.html">Introduction</a>
+  </div>
+              	 <div class="menu_item">        <a href="./download.html">Download</a>
+  </div>
+              	 <div class="menu_item">        <a href="./documentation.html">Documentation</a>
+  </div>
+              	 <div class="menu_item">        <a href="./chainsaw.html">Chainsaw</a>
+  </div>
+              	 <div class="menu_item">        <a href="./plan.html">Plan</a>
+  </div>
+              	 <div class="menu_item">        <a href="http://wiki.apache.org/logging-log4j/Log4JProjectPages">Wiki</a>
+  </div>
+              	 <div class="menu_item">        <a href="./contactUs.html">Contact us</a>
+  </div>
+              	 <div class="menu_item">        <a href="./contributors.html">Contributors</a>
+  </div>
+              	 <div class="menu_item">        <a href="./history.html">History</a>
+  </div>
+                  <div class="menu_header">Logging Services</div>
+              	 <div class="menu_item">        <a href="http://logging.apache.org/">Home page</a>
+  </div>
+              	 <div class="menu_item">        <a href="http://logging.apache.org/site/news.html">News</a>
+  </div>
+              	 <div class="menu_item">        <a href="http://logging.apache.org/site/mission-statement.html">Mission</a>
+  </div>
+              	 <div class="menu_item">        <a href="http://logging.apache.org/site/bylaws.html">Guidelines</a>
+  </div>
+                  <div class="menu_header">Translations</div>
+              	 <div class="menu_item">        <a href="http://jakarta.apache-korea.org/log4j/index.html">Korean</a>
+  </div>
+              	 <div class="menu_item">        <a href="http://www.ingrid.org/jajakarta/log4j/">Japanese</a>
+  </div>
+             </div> 
+   
+
+        </body>
+    </html>
+<!-- end the processing -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
