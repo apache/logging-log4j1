@@ -26,6 +26,7 @@ import  org.apache.log4j.helpers.LogLog;
  */
 final public class RootCategory extends Category {
 
+  final private static String FQCN = RootCategory.class.getName();
 
   /**
      The root category names itself as "root". However, the root
@@ -33,7 +34,7 @@ final public class RootCategory extends Category {
   */
   public
   RootCategory(Priority priority) {
-    super("root");
+    super("root", FQCN);
     this.priority = priority;
   }
 

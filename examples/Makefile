@@ -12,7 +12,7 @@ JSOURCES:=SortAlgo.java Sort.java Trivial.java NumberCruncher.java\
 
 JRMI:=NumberCruncherServer.java
 
-SUBDIRS :=
+SUBDIRS :=appserver
 
 # include master-rule file
 include $(DEPTH)/make/make.inc
