@@ -20,15 +20,9 @@ import java.util.List;
 
 import org.apache.joran.ExecutionContext;
 
-import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
 import org.apache.log4j.config.ConfiguratorBase;
-import org.apache.log4j.config.ErrorItem;
-import org.apache.log4j.helpers.Constants;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.LoggerRepository;
-
 import org.xml.sax.Attributes;
 
 
