@@ -11,10 +11,10 @@ CREATE TABLE logging_event
   ( 
     sequence_number   DECIMAL(20) NOT NULL, 
     timestamp         DECIMAL(20) NOT NULL, 
-    rendered_message  TEXT NOT NULL, 
+    rendered_message  VARCHAR2(4000) NOT NULL, 
     logger_name       VARCHAR(254) NOT NULL, 
     level_string      VARCHAR(254) NOT NULL, 
-    ndc               TEXT, 
+    ndc               VARCHAR2(4000), 
     thread_name       VARCHAR(254), 
     reference_flag    SMALLINT, 
     caller_filename   VARCHAR(254) NOT NULL,
@@ -29,7 +29,7 @@ CREATE TABLE logging_event_property
   ( 
     event_id          INT NOT NULL, 
     mapped_key        VARCHAR(254) NOT NULL, 
-    mapped_value      TEXT, 
+    mapped_value      VARCHAR2(1024), 
     PRIMARY KEY(event_id, mapped_key), 
     FOREIGN KEY (event_id) REFERENCES logging_event(event_id) 
   ) 
