@@ -52,6 +52,7 @@ package org.apache.log4j.chainsaw.rule;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.Serializable;
 
 
 /**
@@ -60,7 +61,7 @@ import java.beans.PropertyChangeSupport;
  * @author Paul Smith <psmith@apache.org>
  * @author Scott Deboy <sdeboy@apache.org>
  */
-public abstract class AbstractRule implements Rule {
+public abstract class AbstractRule implements Rule, Serializable {
   private PropertyChangeSupport propertySupport =
     new PropertyChangeSupport(this);
 
