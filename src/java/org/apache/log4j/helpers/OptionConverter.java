@@ -438,13 +438,6 @@ public class OptionConverter {
   void selectAndConfigure(URL url, Hierarchy hierarchy) {
     String clazz = url.getRef();
 
-    if (clazz.indexOf('.') == -1 || clazz.indexOf('/') != -1 || clazz.indexOf('\\') != -1) {
-      LogLog.warn("Suspicious reference in URL ["+url+
-		  "] will ignore refence part assuming custom URL.");
-      clazz = null;      
-    }
- 
-
     Configurator configurator = null;
 
     if(clazz != null) {
