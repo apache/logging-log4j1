@@ -5,6 +5,14 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
 
+ May 17th, 2002
+
+ - Relase of version 1.2.1
+
+ - This minor release fixes bug #9155 reported by Nicko Cadell.
+   LoggingEvent.getMDCCopy() method now sets mdcCopyLookupRequired
+   instead of ndcLookupRequired. [*]
+
  May, 2002
  
  - Release of version 1.2 

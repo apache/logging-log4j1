@@ -20,10 +20,15 @@ import org.apache.log4j.net.SocketNode;
 import org.apache.log4j.net.SocketServer;
 
 /**
-   This SocketServer exits after just one connection from a client.
-
-   @author Ceki Gulcu
-*/
+ * This SocketServer exits after certain number of connections from a
+ * client. This number is determined the totalsTest parameter, that is
+ * the first argument on the commmand line. The second argument,
+ * prefix, determines the prefix of the configuration file to
+ * use. Each run of the server will use a different properties
+ * file. For the i-th run, the path to the file is
+ * (prefix+i+".properties").
+ *
+ * @author Ceki Gulcu */
 
 public class ShortSocketServer  {
 
@@ -61,7 +66,7 @@ public class ShortSocketServer  {
 
   
   static
-  void  usage(String msg) {
+  void usage(String msg) {
     System.err.println(msg);
     System.err.println(
       "Usage: java " +ShortSocketServer.class.getName() + " totalTests configFilePrefix");
