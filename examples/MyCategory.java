@@ -17,69 +17,22 @@ import org.apache.log4j.helpers.LogLog;
 /**
    A simple example showing category subclassing. 
 
-   <p>The example should make it clear that subclasses follow the
-   hierarchy. You should also try running this example with a <a
-   href="doc-files/mycat.bad">bad</a> and <a
-   href="doc-files/mycat.good">good</a> configuration file samples.
+   <p>See <b><a href="doc-files/MyCategory.java">source code</a></b>
+   for more details.
 
-   <p>See <b><a
-   href="doc-files/MyCategory.java">source code</a></b> for more details.
+   <p>See {@link MyCategoryTest} for a usage example.
    
  */
 public class MyCategory extends Category {
 
-  private static String FQCN = MyCategory.class.getName();
+  // It's usually a good idea to add a dot suffix to the fully
+  // qualified class name. This makes caller localization to work
+  // properly even from classes that match MyCategory such as
+  // MyCategoryTest.
+  static String FQCN = MyCategory.class.getName() + ".";
 
   // It's enough to instantiate a factory once and for all.
   private static MyCategoryFactory myFactory = new MyCategoryFactory();
-
-  /**
-     When called wihtout arguments, this program will just print 
-     <pre>
-       DEBUG [main] some.cat - Hello world.
-     </pre>
-     and exit.
-     
-     <b>However, it can be called with a configuration file in XML or
-     properties format.
-
-   */
-  static public void main(String[] args) {
-    
-    if(args.length == 0) {
-      // Note that the appender is added to root but that the log
-      // request is made to an instance of MyCategory. The output still
-      // goes to System.out.
-      Category root = Category.getRoot();
-      Layout layout = new PatternLayout("%p [%t] %c - %m%n");
-      root.addAppender(new ConsoleAppender(layout, ConsoleAppender.SYSTEM_OUT));
-    }
-    else if(args.length == 1) {
-      if(args[0].endsWith("xml")) {
-	DOMConfigurator.configure(args[0]);
-      } else {
-	PropertyConfigurator.configure(args[0]);
-      }
-    } else {
-      usage("Incorrect number of parameters.");
-    }
-    try {
-      MyCategory c = (MyCategory) MyCategory.getInstance("some.cat");    
-      c.trace("Hello");
-      c.debug("Hello");
-    } catch(ClassCastException e) {
-      LogLog.error("Did you forget to set the factory in the config file?", e);
-    }
-  }
-
-  static
-  void usage(String errMsg) {
-    System.err.println(errMsg);
-    System.err.println("\nUsage: "+MyCategory.class.getName() + "[configFile]\n"
-                + " where *configFile* is an optional configuration file, "+
-		       "either in properties or XML format.");
-    System.exit(1);
-  }
 
   /**
      Just calls the parent constuctor.
@@ -92,9 +45,15 @@ public class MyCategory extends Category {
      Overrides the standard debug method by appending " world" at the
      end of each message.  */
   public 
-  void debug(String message) {
+  void debug(Object message) {
     super.debug(message + " world.");    
   }
+  
+  protected
+  String getFQCN() {
+    return MyCategory.FQCN;
+  }
+
 
   /**
      This method overrides {@link Category#getInstance} by supplying
@@ -107,8 +66,8 @@ public class MyCategory extends Category {
   }
 
   public
-  void trace(String message) {
-    super.log(XPriority.TRACE, message);
+  void trace(Object message) {
+    super.log(XPriority.TRACE, message); 
   }
 }
 
