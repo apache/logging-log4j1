@@ -10,6 +10,9 @@
 
  - Release of version 1.1 (the 21st major release)
 
+ - Added getOption(key) method to the OptionHandler interface and modified
+   implementations of it as appropriate. [**]
+
  - Logging can now be disabled per Hierarchy. It can also be disabled
    using configuration files using the "disable" directive.  The
    disableOverride directive takes precedence over the disable
@@ -28,7 +31,7 @@
  - Appenders and Layouts now get to see the raw message object in LoggingEvent 
    not just its rendered form. The access modifiers of some LoggingEvent fields 
    were changed so that they can be accessed in less error-prone ways. Thanks to 
-   Jim Cajalic and Anders Kristens for their valuable advice. [*]
+   Jim Cakalic and Anders Kristensen for their valuable advice. [*]
 
  - The LoggingEvent class now supports serialization of priorities
    derived from the org.apache.log4j.Priority class. [*]

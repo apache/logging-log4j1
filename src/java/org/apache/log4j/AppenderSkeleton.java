@@ -248,6 +248,13 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
     this.layout = layout;
   }
 
+  /**
+     Returns the layout of this appender. The value may be null.
+  */
+  public
+  Layout getLayout() {
+    return layout;
+  }
   
   /**
      Set the name of this Appender.
@@ -273,6 +280,25 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
   void setOption(String key, String value) {
     if(key.equalsIgnoreCase(THRESHOLD_OPTION)) {
       threshold = Priority.toPriority(value);
+    }
+  }
+  
+  /**
+     Returns the current value of the named option, or null if this
+     is not a known option.
+     
+     <p>Configurable Appenders should override this method if they admit
+     additional options.
+
+     The {@link AppenderSkeleton} returns the value of the
+     {@link #THRESHOLD_OPTION} or null.
+  */
+  public
+  String getOption(String key) {
+    if(key.equalsIgnoreCase(THRESHOLD_OPTION)) {
+      return threshold == null ? null : threshold.toString();
+    } else {
+      return null;
     }
   }
 

@@ -96,12 +96,26 @@ import org.apache.log4j.AppenderSkeleton;
     @since 0.8.4 */
 
 public class SocketAppender extends AppenderSkeleton {
+  /**
+     The default port number of remote logging server (4560).
+  */
+  static final int DEFAULT_PORT                 = 4560;
+  
+  /**
+     The default reconnection delay (30000 milliseconds or 30 seconds).
+  */
+  static final int DEFAULT_RECONNECTION_DELAY   = 30000;
 
+  /**
+     We remember host name as String in addition to the resolved
+     InetAddress so that it can be returned via getOption().
+  */
+  String remoteHost;
+  
   InetAddress address;
-  int port = 4560;
-  String hostName;
+  int port = DEFAULT_PORT;
   ObjectOutputStream oos;
-  int reconnectionDelay = 30000;
+  int reconnectionDelay = DEFAULT_RECONNECTION_DELAY;
   boolean locationInfo = false;
 
   private Connector connector;
@@ -158,8 +172,8 @@ public class SocketAppender extends AppenderSkeleton {
   public
   SocketAppender(InetAddress address, int port) {
     this.address = address;
+    this.remoteHost = address.getHostName();
     this.port = port;
-    this.hostName = address.getHostName();
     connect(address, port);
   }
 
@@ -169,8 +183,8 @@ public class SocketAppender extends AppenderSkeleton {
   public
   SocketAppender(String host, int port) { 
     this.port = port;
-    this.hostName = host;
     this.address = getAddressByName(host);
+    this.remoteHost = host;
     connect(address, port);
   }
 
@@ -240,7 +254,7 @@ public class SocketAppender extends AppenderSkeleton {
       return;
 
     if(address==null) {
-      errorHandler.error("No remote host is set for SocketAppedender named \""+
+      errorHandler.error("No remote host is set for SocketAppender named \""+
 			this.name+"\".");
       return;
     }
@@ -280,7 +294,8 @@ public class SocketAppender extends AppenderSkeleton {
       connector.start();      
     }
   }
-
+  
+  static
   InetAddress getAddressByName(String host) {
     try {
       return InetAddress.getByName(host);
@@ -352,16 +367,40 @@ public class SocketAppender extends AppenderSkeleton {
     if(value == null) return;
     super.setOption(option, value);    
 
-    if(option.equals(REMOTE_HOST_OPTION)) 
+    if(option.equals(REMOTE_HOST_OPTION)) {
       address = getAddressByName(value);
-    else if (option.equals(PORT_OPTION))
+      remoteHost = value;
+    } else if (option.equals(PORT_OPTION)) {
       port = OptionConverter.toInt(value, port);
-    else if (option.equals(LOCATION_INFO_OPTION))
+    } else if (option.equals(LOCATION_INFO_OPTION)) {
       locationInfo = OptionConverter.toBoolean(value, locationInfo);    
-    else if (option.equals(RECONNECTION_DELAY_OPTION))
-      reconnectionDelay = OptionConverter.toInt(value, reconnectionDelay);
+    } else if (option.equals(RECONNECTION_DELAY_OPTION)) {
+      reconnectionDelay = OptionConverter.toInt(value, reconnectionDelay);  
+    }
   }
-
+  
+  public
+  String getOption(String key) {
+    if(key.equals(REMOTE_HOST_OPTION)) {
+      return remoteHost;
+    } else if (key.equals(PORT_OPTION)) {
+      if (port == DEFAULT_PORT) {
+        return null;
+      } else  {
+        return Integer.toString(port);
+      }
+    } else if (key.equals(LOCATION_INFO_OPTION)) {
+      return locationInfo ? "true" : "false";
+    } else if (key.equals(RECONNECTION_DELAY_OPTION)) {
+      if (reconnectionDelay == DEFAULT_RECONNECTION_DELAY) {
+        return null;
+      } else  {
+        return Integer.toString(reconnectionDelay);
+      }
+    } else {
+      return super.getOption(key);
+    }
+  }
 
   /**
      The Connector will reconnect when the server becomes available

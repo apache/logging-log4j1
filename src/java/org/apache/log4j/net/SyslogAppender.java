@@ -29,7 +29,8 @@ import org.apache.log4j.net.SyslogTracerPrintWriter;
 /**
     Use SyslogAppender to send log messages to a remote syslog daemon.
  
-    @author Ceki G&uuml;lc&uuml; 
+    @author Ceki G&uuml;lc&uuml;
+    @author Anders Kristensen
  */
 public class SyslogAppender extends AppenderSkeleton {
   // The following constants are extracted from a syslog.h file
@@ -116,14 +117,14 @@ public class SyslogAppender extends AppenderSkeleton {
   
   public
   SyslogAppender() {
-    this.initSyslogFacilityStr(this.syslogFacility);
+    this.initSyslogFacilityStr();
   }
   
   public
   SyslogAppender(Layout layout, int syslogFacility) {
     this.layout = layout;
     this.syslogFacility = syslogFacility;    
-    this.initSyslogFacilityStr(syslogFacility);
+    this.initSyslogFacilityStr();
   }
 		 
   public
@@ -148,36 +149,110 @@ public class SyslogAppender extends AppenderSkeleton {
   }
   
   private
-  void initSyslogFacilityStr(int syslogFacility) {
-    switch(syslogFacility) {
-    case LOG_KERN: facilityStr = "kern:"; break;
-    case LOG_USER: facilityStr = "user:"; break;
-    case LOG_MAIL: facilityStr = "mail:"; break;
-    case LOG_DAEMON: facilityStr = "daemon:"; break;
-    case LOG_AUTH: facilityStr = "auth:";; break;
-    case LOG_SYSLOG: facilityStr = "syslog:"; break;
-    case LOG_LPR: facilityStr = "lpr:"; break;
-    case LOG_NEWS: facilityStr = "news:"; break;
-    case LOG_UUCP: facilityStr = "uucp:"; break;
-    case LOG_CRON: facilityStr = "cron:"; break;
-    case LOG_AUTHPRIV: facilityStr = "authpriv:"; break;
-    case LOG_FTP: facilityStr = "ftp:"; break;
-    case LOG_LOCAL0: facilityStr = "local0:"; break;
-    case LOG_LOCAL1: facilityStr = "local1:"; break;
-    case LOG_LOCAL2: facilityStr = "local2:"; break;
-    case LOG_LOCAL3: facilityStr = "local3:"; break;
-    case LOG_LOCAL4: facilityStr = "local4:"; break;
-    case LOG_LOCAL5: facilityStr = "local5:"; break;
-    case LOG_LOCAL6: facilityStr = "local6:"; break;
-    case LOG_LOCAL7: facilityStr = "local7:"; break;
-    default: 
+  void initSyslogFacilityStr() {
+    facilityStr = getFacilityString(this.syslogFacility);
+    
+    if (facilityStr == null) {
       System.err.println("\"" + syslogFacility +
                   "\" is an unknown syslog facility. Defaulting to \"USER\".");
       this.syslogFacility = LOG_USER;
       facilityStr = "user:";
+    } else {
+      facilityStr += ":";
+    }
+  }	   
+
+  /**
+     Returns the specified syslog facility as a lower-case String,
+     e.g. "kern", "user", etc.
+  */
+  public
+  static
+  String getFacilityString(int syslogFacility) {
+    switch(syslogFacility) {
+    case LOG_KERN:      return "kern";
+    case LOG_USER:      return "user";
+    case LOG_MAIL:      return "mail";
+    case LOG_DAEMON:    return "daemon";
+    case LOG_AUTH:      return "auth";
+    case LOG_SYSLOG:    return "syslog";
+    case LOG_LPR:       return "lpr";
+    case LOG_NEWS:      return "news";
+    case LOG_UUCP:      return "uucp";
+    case LOG_CRON:      return "cron";
+    case LOG_AUTHPRIV:  return "authpriv";
+    case LOG_FTP:       return "ftp";
+    case LOG_LOCAL0:    return "local0";
+    case LOG_LOCAL1:    return "local1";
+    case LOG_LOCAL2:    return "local2";
+    case LOG_LOCAL3:    return "local3";
+    case LOG_LOCAL4:    return "local4";
+    case LOG_LOCAL5:    return "local5";
+    case LOG_LOCAL6:    return "local6";
+    case LOG_LOCAL7:    return "local7";
+    default:            return null;
     }	   
   }	   
 
+  /**
+     Returns the integer value corresponding to the named syslog
+     facility, or -1 if it couldn't be recognized.
+
+     @param facilityName one of the strings KERN, USER, MAIL, DAEMON,
+            AUTH, SYSLOG, LPR, NEWS, UUCP, CRON, AUTHPRIV, FTP, LOCAL0,
+            LOCAL1, LOCAL2, LOCAL3, LOCAL4, LOCAL5, LOCAL6, LOCAL7.
+            The matching is case-insensitive.
+     
+     @since 1.1
+  */
+  public
+  static
+  int getFacility(String facilityName) {
+    if("KERN".equalsIgnoreCase(facilityName)) {
+      return LOG_KERN;
+    } else if("USER".equalsIgnoreCase(facilityName)) {
+      return LOG_USER;
+    } else if("MAIL".equalsIgnoreCase(facilityName)) {
+      return LOG_MAIL;
+    } else if("DAEMON".equalsIgnoreCase(facilityName)) {
+      return LOG_DAEMON;
+    } else if("AUTH".equalsIgnoreCase(facilityName)) {
+      return LOG_AUTH;
+    } else if("SYSLOG".equalsIgnoreCase(facilityName)) {
+      return LOG_SYSLOG;
+    } else if("LPR".equalsIgnoreCase(facilityName)) {
+      return LOG_LPR;
+    } else if("NEWS".equalsIgnoreCase(facilityName)) {
+      return LOG_NEWS;
+    } else if("UUCP".equalsIgnoreCase(facilityName)) {
+      return LOG_UUCP;
+    } else if("CRON".equalsIgnoreCase(facilityName)) {
+      return LOG_CRON;
+    } else if("AUTHPRIV".equalsIgnoreCase(facilityName)) {
+      return LOG_AUTHPRIV;
+    } else if("FTP".equalsIgnoreCase(facilityName)) {
+      return LOG_FTP;
+    } else if("LOCAL0".equalsIgnoreCase(facilityName)) {
+      return LOG_LOCAL0;
+    } else if("LOCAL1".equalsIgnoreCase(facilityName)) {
+      return LOG_LOCAL1;
+    } else if("LOCAL2".equalsIgnoreCase(facilityName)) {
+      return LOG_LOCAL2;
+    } else if("LOCAL3".equalsIgnoreCase(facilityName)) {
+      return LOG_LOCAL3;
+    } else if("LOCAL4".equalsIgnoreCase(facilityName)) {
+      return LOG_LOCAL4;
+    } else if("LOCAL5".equalsIgnoreCase(facilityName)) {
+      return LOG_LOCAL5;
+    } else if("LOCAL6".equalsIgnoreCase(facilityName)) {
+      return LOG_LOCAL6;
+    } else if("LOCAL7".equalsIgnoreCase(facilityName)) {
+      return LOG_LOCAL7;
+    } else {
+      return -1;
+    }
+  }
+  
   public
   void append(LoggingEvent event) {
 
@@ -255,52 +330,14 @@ public class SyslogAppender extends AppenderSkeleton {
     if(facilityName == null)
       return;
     
-    if("KERN".equalsIgnoreCase(facilityName))
-      this.syslogFacility = LOG_KERN;
-    else if("USER".equalsIgnoreCase(facilityName))
-      this.syslogFacility = LOG_USER;
-    else if("MAIL".equalsIgnoreCase(facilityName))
-      this.syslogFacility = LOG_MAIL;
-    else if("DAEMON".equalsIgnoreCase(facilityName))
-      this.syslogFacility = LOG_DAEMON;
-    else if("AUTH".equalsIgnoreCase(facilityName))
-      this.syslogFacility = LOG_AUTH;
-    else if("SYSLOG".equalsIgnoreCase(facilityName))
-      this.syslogFacility = LOG_SYSLOG;
-    else if("LPR".equalsIgnoreCase(facilityName))
-      this.syslogFacility = LOG_LPR;
-    else if("NEWS".equalsIgnoreCase(facilityName))
-      this.syslogFacility = LOG_NEWS;
-    else if("UUCP".equalsIgnoreCase(facilityName))
-      this.syslogFacility = LOG_UUCP;
-    else if("CRON".equalsIgnoreCase(facilityName))
-      this.syslogFacility = LOG_CRON;
-    else if("AUTHPRIV".equalsIgnoreCase(facilityName))
-      this.syslogFacility = LOG_AUTHPRIV;
-    else if("FTP".equalsIgnoreCase(facilityName))
-      this.syslogFacility = LOG_FTP;
-    else if("LOCAL0".equalsIgnoreCase(facilityName)) 
-      this.syslogFacility = LOG_LOCAL0;
-    else if("LOCAL1".equalsIgnoreCase(facilityName))
-      this.syslogFacility = LOG_LOCAL1;
-    else if("LOCAL2".equalsIgnoreCase(facilityName))
-      this.syslogFacility = LOG_LOCAL2;
-    else if("LOCAL3".equalsIgnoreCase(facilityName))
-      this.syslogFacility = LOG_LOCAL3;
-    else if("LOCAL4".equalsIgnoreCase(facilityName))
-      this.syslogFacility = LOG_LOCAL4;
-    else if("LOCAL5".equalsIgnoreCase(facilityName))
-      this.syslogFacility = LOG_LOCAL5;
-    else if("LOCAL6".equalsIgnoreCase(facilityName))
-      this.syslogFacility = LOG_LOCAL6;
-    else if("LOCAL7".equalsIgnoreCase(facilityName))
-      this.syslogFacility = LOG_LOCAL7;
-    else {
+    syslogFacility = getFacility(facilityName);
+    if (syslogFacility == -1) {
       System.err.println(facilityName +
                   " is an unknown syslog facility. Defaulting to \"USER\".");
-      this.syslogFacility = LOG_USER;
+      syslogFacility = LOG_USER;
     }
-    this.initSyslogFacilityStr(this.syslogFacility);
+    
+    this.initSyslogFacilityStr();
 
     // If there is already a sqw, make it use the new facility.
     if(sqw != null) {
@@ -357,6 +394,19 @@ public class SyslogAppender extends AppenderSkeleton {
       facilityPrinting = OptionConverter.toBoolean(value, facilityPrinting);
     else if(option.equals(FACILITY_OPTION)) {
       this.setFacility(value);
+    }
+  }
+  
+  public
+  String getOption(String option) {
+    if(option.equals(SYSLOG_HOST_OPTION)) {
+      return syslogHost;
+    } else if(option.equals(FACILITY_PRINTING_OPTION)) {
+      return facilityPrinting ? "true" : "false";
+    } else if(option.equals(FACILITY_OPTION)) {
+      return getFacilityString(syslogFacility);
+    } else {
+      return super.getOption(option);
     }
   }
 

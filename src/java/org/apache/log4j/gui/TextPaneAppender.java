@@ -20,6 +20,7 @@ import java.util.Hashtable;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JTextPane;
+import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.SimpleAttributeSet;
@@ -190,6 +191,7 @@ public class TextPaneAppender extends AppenderSkeleton {
 
   
   private
+  static
   Color parseColor (String v) {
     StringTokenizer st = new StringTokenizer(v,",");
     int val[] = {255,255,255,255};
@@ -199,6 +201,14 @@ public class TextPaneAppender extends AppenderSkeleton {
       i++;
     }
     return new Color(val[0],val[1],val[2],val[3]);
+  }
+  
+  private
+  static
+  String colorToString(Color c) {
+    // alpha component emitted only if not default (255)
+    String res = ""+c.getRed()+","+c.getGreen()+","+c.getBlue();
+    return c.getAlpha() >= 255 ? res : res + ","+c.getAlpha();
   }
 
   public
@@ -225,7 +235,14 @@ public class TextPaneAppender extends AppenderSkeleton {
     StyleConstants.setForeground(
 		      (MutableAttributeSet)attributes.get(p),parseColor(v));	
   }
-    
+  
+  private
+  String getColor(Priority p) {
+    Color c =  StyleConstants.getForeground(
+		      (MutableAttributeSet)attributes.get(p));
+    return c == null ? null : colorToString(c);
+  }
+  
   private
   void setFontSize(int size) {
     Enumeration e = attributes.elements();
@@ -236,6 +253,12 @@ public class TextPaneAppender extends AppenderSkeleton {
   }
   
   private
+  int getFontSize() {
+    AttributeSet attrSet = (AttributeSet) attributes.get(Priority.INFO);
+    return StyleConstants.getFontSize(attrSet);
+  }
+  
+  private
   void setFontName(String name) {
     Enumeration e = attributes.elements();
     while (e.hasMoreElements()) {
@@ -243,7 +266,13 @@ public class TextPaneAppender extends AppenderSkeleton {
     }
     return;
   }
-        
+  
+  private
+  String getFontName() {
+    AttributeSet attrSet = (AttributeSet) attributes.get(Priority.INFO);
+    return StyleConstants.getFontFamily(attrSet);
+  }
+  
   public
   void setOption(String option, String value) {
     if (option.equalsIgnoreCase(LABEL_OPTION))
@@ -267,6 +296,33 @@ public class TextPaneAppender extends AppenderSkeleton {
     if (option.equalsIgnoreCase(FONT_NAME_OPTION))
       setFontName(value);
     return;
+  }
+     
+  public
+  String getOption(String key) {
+    if (key.equalsIgnoreCase(LABEL_OPTION)) {
+      return label;
+    } else if (key.equalsIgnoreCase(COLOR_OPTION_FATAL)) {
+      return getColor(Priority.FATAL);
+    } else if (key.equalsIgnoreCase(COLOR_OPTION_ERROR)) {
+      return getColor(Priority.ERROR);
+    } else if (key.equalsIgnoreCase(COLOR_OPTION_WARN)) {
+      return getColor(Priority.WARN);
+    } else if (key.equalsIgnoreCase(COLOR_OPTION_INFO)) {
+      return getColor(Priority.INFO);
+    } else if (key.equalsIgnoreCase(COLOR_OPTION_DEBUG)) {
+      return getColor(Priority.DEBUG);
+    } else if (key.equalsIgnoreCase(COLOR_OPTION_BACKGROUND)) {
+      return colorToString(textpane.getBackground());
+    } else if (key.equalsIgnoreCase(FANCY_OPTION)) {
+      return fancy ? "true" : "false";
+    } else if (key.equalsIgnoreCase(FONT_SIZE_OPTION)) {
+      return Integer.toString(getFontSize());
+    } else if (key.equalsIgnoreCase(FONT_NAME_OPTION)) {
+      return getFontName();
+    } else {
+      return super.getOption(key);
+    }
   }
 
   public

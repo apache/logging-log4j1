@@ -158,6 +158,17 @@ public class JMSAppender extends AppenderSkeleton {
       tcfBindingName = value;
     }
   }
+  
+  public
+  String getOption(String key) {
+    if (key.equals(TOPIC_BINDING_NAME_OPTION)) {
+      return topicBindingName;
+    } else if(key.equals(TOPIC_CONNECTION_FACTORY_BINDING_NAME_OPTION)) {
+      return tcfBindingName;
+    } else {
+      return super.getOption(key);
+    }
+  }
 
   public
   boolean requiresLayout() {

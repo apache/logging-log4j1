@@ -413,6 +413,8 @@ public class PatternLayout extends Layout {
   // output buffer appended to when format() is invoked
   private StringBuffer sbuf = new StringBuffer(BUF_SIZE);
   
+  private String pattern;
+  
   private PatternConverter head;
 
   private String timezone;
@@ -430,6 +432,7 @@ public class PatternLayout extends Layout {
      Constructs a PatternLayout using the supplied conversion pattern.
   */
   public PatternLayout(String pattern) {
+    this.pattern = pattern;
     head = createPatternParser((pattern == null) ? DEFAULT_CONVERSION_PATTERN : 
 			     pattern).parse();
   }
@@ -521,6 +524,7 @@ public class PatternLayout extends Layout {
     if(value == null)
       return;
     if(option.equalsIgnoreCase(CONVERSION_PATTERN_OPTION)) {
+      pattern = value;
       head = createPatternParser(value).parse();
     }
     //else if(option.equals(TIMEZONE_OPTION)) {
@@ -533,4 +537,18 @@ public class PatternLayout extends Layout {
     //}
   }
   
+  /**
+      Returns the current value of the named option, or null if the
+      option name is unkown.
+      
+      The PatternLayout recognizes only the "ConversionPattern" option.
+  */
+  public
+  String getOption(String option) {
+    if (option.equalsIgnoreCase(CONVERSION_PATTERN_OPTION)) {
+      return pattern;
+    } else {
+      return null;
+    }
+  }
 }

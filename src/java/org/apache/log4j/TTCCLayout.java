@@ -212,6 +212,19 @@ public class TTCCLayout extends DateLayout {
     else if(key.equalsIgnoreCase(CONTEXT_PRINTING_OPTION))
       contextPrinting = OptionConverter.toBoolean(value, contextPrinting);
   }
+  
+  public
+  String getOption(String key) {
+    if(key.equalsIgnoreCase(THREAD_PRINTING_OPTION)) {
+      return threadPrinting ? "true" : "false";
+    } else if(key.equalsIgnoreCase(CATEGORY_PREFIXING_OPTION)) {
+      return categoryPrefixing ? "true" : "false";
+    } else if(key.equalsIgnoreCase(CONTEXT_PRINTING_OPTION)) {
+      return contextPrinting ? "true" : "false";
+    } else {
+      return super.getOption(key);
+    }
+  }
 
   /**
      Provides an alternate method to set the

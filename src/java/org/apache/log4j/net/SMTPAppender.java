@@ -376,6 +376,27 @@ public class SMTPAppender extends AppenderSkeleton {
     } else if (option.equals(LOCATION_INFO_OPTION))
       locationInfo = OptionConverter.toBoolean(value, locationInfo);
   }
+  
+  public
+  String getOption(String key) {
+    if (key.equalsIgnoreCase(TO_OPTION)) {
+      return to;
+    } else if (key.equalsIgnoreCase(FROM_OPTION)) {
+        return from;
+    } else if (key.equalsIgnoreCase(SMTP_HOST_OPTION)) {
+        return smtpHost;
+    } else if (key.equalsIgnoreCase(SUBJECT_OPTION)) {
+        return subject;
+    } else if (key.equalsIgnoreCase(EVALUATOR_CLASS_OPTION)) {
+        return evaluator == null ? null : evaluator.getClass().getName();
+    } else if (key.equalsIgnoreCase(BUFFER_SIZE_OPTION)) {
+        return Integer.toString(bufferSize);
+    } else if (key.equalsIgnoreCase(LOCATION_INFO_OPTION)) {
+        return locationInfo ? "true" : "false";
+    } else {
+      return super.getOption(key);
+    }
+  }
 }
 
 class DefaultEvaluator implements TriggeringEventEvaluator {

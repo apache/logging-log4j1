@@ -170,4 +170,19 @@ abstract public class DateLayout extends Layout {
       timeZoneID = value;
     }
   }
+  
+  /**
+     Returns the current value of the specified option, or null if
+     it is not one of "DateFormat" or "TimeZoneID".
+  */
+  public
+  String getOption(String option) {
+    if(option.equalsIgnoreCase(DATE_FORMAT_OPTION)) {
+      return dateFormatOption;
+    } else if(option.equalsIgnoreCase(TIMEZONE_OPTION)) {
+      return timeZoneID;
+    } else {
+      return null;
+    }
+  }
 }
