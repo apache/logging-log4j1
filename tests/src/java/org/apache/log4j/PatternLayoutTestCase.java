@@ -24,6 +24,7 @@ import org.apache.log4j.util.Compare;
 import org.apache.log4j.util.ISO8601Filter;
 import org.apache.log4j.util.AbsoluteTimeFilter;
 import org.apache.log4j.util.RelativeTimeFilter;
+import org.apache.log4j.util.SunReflectFilter;
 import org.apache.log4j.util.AbsoluteDateAndTimeFilter;
 
 public class PatternLayoutTestCase extends TestCase {
@@ -76,7 +77,9 @@ public class PatternLayoutTestCase extends TestCase {
   public void test1() throws Exception {
     PropertyConfigurator.configure("input/patternLayout1.properties");
     common();
-    Transformer.transform(TEMP, FILTERED, new LineNumberFilter());
+    Transformer.transform(TEMP, FILTERED, new Filter[] {
+                                          new LineNumberFilter(),
+                                          new SunReflectFilter()});
     assertTrue(Compare.compare(FILTERED, "witness/patternLayout.1"));
   }
 
@@ -87,7 +90,8 @@ public class PatternLayoutTestCase extends TestCase {
 						       EXCEPTION2, EXCEPTION3});
     Transformer.transform(TEMP, FILTERED, new Filter[] {cf1, 
                                                         new LineNumberFilter(), 
-                                                        new ISO8601Filter()});
+                                                        new ISO8601Filter(),
+                                                        new SunReflectFilter()});
     assertTrue(Compare.compare(FILTERED, "witness/patternLayout.2"));
   }
 
@@ -97,7 +101,8 @@ public class PatternLayoutTestCase extends TestCase {
     ControlFilter cf1 = new ControlFilter(new String[]{PAT1, EXCEPTION1, 
 						       EXCEPTION2, EXCEPTION3});
     Transformer.transform(TEMP, FILTERED, new Filter[] {cf1, new LineNumberFilter(), 
-							  new ISO8601Filter()});
+							  new ISO8601Filter(), 
+                                                          new SunReflectFilter()});
     assertTrue(Compare.compare(FILTERED, "witness/patternLayout.3"));
   }
 
@@ -110,7 +115,8 @@ public class PatternLayoutTestCase extends TestCase {
 						       EXCEPTION2, EXCEPTION3});
     Transformer.transform(TEMP, FILTERED, new Filter[] {cf1, 
                                                         new LineNumberFilter(), 
-                                                     new AbsoluteDateAndTimeFilter()});
+                                                        new AbsoluteDateAndTimeFilter(),
+                                                        new SunReflectFilter()});
     assertTrue(Compare.compare(FILTERED, "witness/patternLayout.4"));
   }
 
@@ -121,7 +127,8 @@ public class PatternLayoutTestCase extends TestCase {
 						       EXCEPTION2, EXCEPTION3});
     Transformer.transform(TEMP, FILTERED, new Filter[] {cf1, 
                                                         new LineNumberFilter(), 
-                                                    new AbsoluteDateAndTimeFilter()});
+                                                        new AbsoluteDateAndTimeFilter(),
+                                                        new SunReflectFilter()});
     assertTrue(Compare.compare(FILTERED, "witness/patternLayout.5"));
   }
 
@@ -133,7 +140,8 @@ public class PatternLayoutTestCase extends TestCase {
 						       EXCEPTION2, EXCEPTION3});
     Transformer.transform(TEMP, FILTERED, new Filter[] {cf1, 
                                                         new LineNumberFilter(), 
-                                                        new AbsoluteTimeFilter()});
+                                                        new AbsoluteTimeFilter(),
+                                                        new SunReflectFilter()});
     assertTrue(Compare.compare(FILTERED, "witness/patternLayout.6"));
   }
 
@@ -145,7 +153,8 @@ public class PatternLayoutTestCase extends TestCase {
 						       EXCEPTION2, EXCEPTION3});
     Transformer.transform(TEMP, FILTERED, new Filter[] {cf1, 
                                                         new LineNumberFilter(), 
-                                                        new AbsoluteTimeFilter()});
+                                                        new AbsoluteTimeFilter(),
+                                                        new SunReflectFilter()});
     assertTrue(Compare.compare(FILTERED, "witness/patternLayout.7"));
   }
 
@@ -156,7 +165,8 @@ public class PatternLayoutTestCase extends TestCase {
 						       EXCEPTION2, EXCEPTION3});
     Transformer.transform(TEMP, FILTERED, new Filter[] {cf1, 
                                                         new LineNumberFilter(), 
-                                                        new RelativeTimeFilter()});
+                                                        new RelativeTimeFilter(),
+                                                        new SunReflectFilter()});
     assertTrue(Compare.compare(FILTERED, "witness/patternLayout.8"));
   }
 
@@ -165,7 +175,8 @@ public class PatternLayoutTestCase extends TestCase {
     common();
     ControlFilter cf1 = new ControlFilter(new String[]{PAT5, EXCEPTION1, 
 						       EXCEPTION2, EXCEPTION3});
-    Transformer.transform(TEMP, FILTERED, new Filter[] {cf1, new LineNumberFilter()});
+    Transformer.transform(TEMP, FILTERED, new Filter[] {cf1, new LineNumberFilter(),
+                                                        new SunReflectFilter()});
     assertTrue(Compare.compare(FILTERED, "witness/patternLayout.9"));
   }
 
@@ -175,7 +186,8 @@ public class PatternLayoutTestCase extends TestCase {
     ControlFilter cf1 = new ControlFilter(new String[]{PAT6, EXCEPTION1, 
 						       EXCEPTION2, EXCEPTION3});
     Transformer.transform(TEMP, FILTERED, new Filter[] {cf1,   
-                                                      new LineNumberFilter()});
+                                                      new LineNumberFilter(),
+                                                      new SunReflectFilter()});
     assertTrue(Compare.compare(FILTERED, "witness/patternLayout.10"));
   }
 
@@ -185,7 +197,8 @@ public class PatternLayoutTestCase extends TestCase {
     ControlFilter cf1 = new ControlFilter(new String[]{PAT11a, PAT11b, EXCEPTION1, 
 						       EXCEPTION2, EXCEPTION3});
     Transformer.transform(TEMP, FILTERED, new Filter[] {cf1,   
-                                                      new LineNumberFilter()});
+                                                      new LineNumberFilter(),
+                                                      new SunReflectFilter()});
     assertTrue(Compare.compare(FILTERED, "witness/patternLayout.11"));
   }
 
@@ -195,7 +208,8 @@ public class PatternLayoutTestCase extends TestCase {
     ControlFilter cf1 = new ControlFilter(new String[]{PAT12, EXCEPTION1, 
 						       EXCEPTION2, EXCEPTION3});
     Transformer.transform(TEMP, FILTERED, new Filter[] {cf1,   
-                                                      new LineNumberFilter()});
+                                                      new LineNumberFilter(),
+                                                      new SunReflectFilter()});
     assertTrue(Compare.compare(FILTERED, "witness/patternLayout.12"));
   }
 
@@ -205,7 +219,8 @@ public class PatternLayoutTestCase extends TestCase {
     ControlFilter cf1 = new ControlFilter(new String[]{PAT13, EXCEPTION1, 
 						       EXCEPTION2, EXCEPTION3});
     Transformer.transform(TEMP, FILTERED, new Filter[] {cf1,   
-                                                      new LineNumberFilter()});
+                                                      new LineNumberFilter(),
+                                                      new SunReflectFilter()});
     assertTrue(Compare.compare(FILTERED, "witness/patternLayout.13"));
   }
 
@@ -215,7 +230,8 @@ public class PatternLayoutTestCase extends TestCase {
     ControlFilter cf1 = new ControlFilter(new String[]{PAT14, EXCEPTION1, 
 						       EXCEPTION2, EXCEPTION3});
     Transformer.transform(TEMP, FILTERED, new Filter[] {cf1,   
-                                                      new LineNumberFilter(), });
+                                                      new LineNumberFilter(), 
+                                                      new SunReflectFilter()});
     assertTrue(Compare.compare(FILTERED, "witness/patternLayout.14"));
   }
 

@@ -11,18 +11,14 @@ import java.io.*;
 
 import org.apache.oro.text.perl.Perl5Util;
 
-public class LineNumberFilter implements Filter {
+public class SunReflectFilter implements Filter {
 
   Perl5Util util = new Perl5Util();
 
-  public 
-  String filter(String in) {
-    if(util.match("/\\(.*:\\d{1,4}\\)/", in)) {
-      return util.substitute("s/\\(.*:\\d{1,4}\\)/\\(X\\)/", in);
-
-    } else if (util.match("/\\(Native Method\\)/", in)) {
-      return util.substitute("s/\\(Native Method\\)/\\(X\\)/", in);      
-    }else {
+  public String filter(String in) {
+    if(util.match("/at sun.reflect/", in)) {
+      return null;
+    } else {
       return in;
     }
   }

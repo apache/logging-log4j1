@@ -52,7 +52,9 @@ public class XLoggerTestCase extends TestCase {
     Exception e = new Exception("Just testing");
     logger.debug("Message " + ++i, e);
 
-    Transformer.transform("output/temp", FILTERED, new LineNumberFilter());
+    Transformer.transform("output/temp", FILTERED, new Filter[] {
+                                                 new LineNumberFilter(),
+                                                 new SunReflectFilter()});
     assertTrue(Compare.compare(FILTERED, "witness/customLogger."+number));
 
   }

@@ -59,7 +59,11 @@ public class MinimumTestCase extends TestCase {
     root.addAppender(appender);    
     common();
 
-    Transformer.transform("output/simple", FILTERED, new LineNumberFilter());
+    Transformer.transform("output/simple", FILTERED, new Filter[] {
+                                                       new LineNumberFilter(),
+   						       new SunReflectFilter()});
+
+
     assertTrue(Compare.compare(FILTERED, "witness/simple"));
   }
 
@@ -74,8 +78,9 @@ public class MinimumTestCase extends TestCase {
 						       EXCEPTION2, EXCEPTION3});
 
     Transformer.transform("output/ttcc", FILTERED, new Filter[] {cf1, 
-						  new LineNumberFilter(), 
-						   new AbsoluteDateAndTimeFilter()});
+						   new LineNumberFilter(), 
+						   new AbsoluteDateAndTimeFilter(),
+                                                   new SunReflectFilter()});
 
     assertTrue(Compare.compare(FILTERED, "witness/ttcc"));
   }
