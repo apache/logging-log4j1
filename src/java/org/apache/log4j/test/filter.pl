@@ -47,6 +47,9 @@ sub doHTMLFilter {
     elsif(/\(Compiled Code\)/) {
       s/\(Compiled Code\)$/\($EXSTR\.java:XXX\)/g;
     }
+    elsif(/\(Unknown Source\)/) {
+      s/\(Unknown Source\)$/\($EXSTR\.java:XXX\)/g;
+    }
     elsif(/<tr><td>\d+<\/td>/) {
       s/<tr><td>\d+<\/td>/<tr><td>XXX<\/td>/;
     }
@@ -59,29 +62,13 @@ sub doLineNumberFilter {
     if(/\($EXSTR\.java:\d*\)/) {
       s/\($EXSTR\.java:\d+\)$/\($EXSTR\.java:XXX\)/;
       print OUT;
-    }
-    elsif(/\(Compiled Code\)/) {
+    } elsif(/\(Compiled Code\)/) {
       s/\(Compiled Code\)$/\($EXSTR\.java:XXX\)/;
       print OUT;
-    }
-    else {
+    } elsif(/\(Unknown Source\)/) {
+      s/\(Unknown Source\)$/\($EXSTR\.java:XXX\)/;
       print OUT;
-    }
-  }
-}
-
-
-sub doLineNumberFilter {  
-  while(<IN>) {
-    if(/\($EXSTR\.java:\d*\)/) {
-      s/\($EXSTR\.java:\d+\)$/\($EXSTR\.java:XXX\)/;
-      print OUT;
-    }
-    elsif(/\(Compiled Code\)/) {
-      s/\(Compiled Code\)$/\($EXSTR\.java:XXX\)/;
-      print OUT;
-    }
-    else {
+    } else {
       print OUT;
     }
   }
@@ -126,16 +113,16 @@ sub doFilter() {
     if (/$pattern/o) {
       $i = index($_,"[main]");
       print OUT substr($_, $i);
-    }
-    elsif(/\($EXSTR\.java:\d*\)/) {
+    } elsif(/\($EXSTR\.java:\d*\)/) {
       s/\($EXSTR\.java:\d+\)$/\($EXSTR\.java:XXX\)/;
       print OUT;
-    }
-    elsif(/\(Compiled Code\)/) {
+    } elsif(/\(Compiled Code\)/) {
       s/\(Compiled Code\)$/\($EXSTR\.java:XXX\)/;
       print OUT;
-    }
-    elsif (/^java\.lang\.Exception: Just testing$/) {
+    } elsif(/\(Unknown Source\)/) {
+      s/\(Unknown Source\)$/\($EXSTR\.java:XXX\)/;
+      print OUT;
+    } elsif (/^java\.lang\.Exception: Just testing$/) {
       print OUT;
     }
     else {
