@@ -41,14 +41,14 @@ import java.util.Date;
  * The following examples should clarify the point.
  *
  * <p>
- * <table cellspacing="20px" border="1">
+ * <table cellspacing="5px" border="1">
  *   <tr>
  *     <th><code>FileNamePattern</code> value</th>
  *     <th>Rollover schedule</th>
  *     <th>Example</th>
  *   </tr>
  *   <tr>
- *     <td><code>/some/folder/foo.log.%d</code></td>
+ *     <td nowrap="true"><code>/some/folder/foo.log.%d</code></td>
  *     <td>Daily rollover (at midnight).The %d token converter without the optional time and date pattern 
  *         implies daily rollover.
  *     </td>
@@ -60,7 +60,7 @@ import java.util.Date;
  *     </td>
  *   </tr>
  *   <tr>
- *     <td><code>/some/folder/foo.%d{yyyy-MM}.log</code></td>
+ *     <td nowrap="true"><code>/some/folder/foo.%d{yyyy-MM}.log</code></td>
  *     <td>Rollover at the beginning of each month.</td>
  *     <td>During the month of October 2004, logging output will go to
  *     <code>/some/folder/foo.2004-10.log</code>. After midnight of October 31st 
@@ -68,13 +68,6 @@ import java.util.Date;
  *       <code>/some/folder/foo.2004-11.log</code> untill the beginning of
  *     the next month.
  *     </td>
- *   </tr>
-
- * 
- * copied to 
- *      /foo/bar.log.2002-03-08. Logging for the 9th day of March will be output to /foo/bar.log until it is rolled over the next day.
- * 
- * Daily rollover</td>
  *   </tr>
  * </table>
  * <p>
