@@ -8,6 +8,15 @@
    [D] Changes affect a method or property which was previously marked as 
        deprecated.
  
+ - org.apache.log4j.HTMLLayout has been replaced with org.apache.log4j.html.HTMLLayout.
+   The new HTMLLayout admits a conversion pattern using the same syntax as
+   PatternLayout. Thus, the user can customize the content of columns fore HTML table
+   produced by HTMLLayout. Just as importantly, many visual aspects of the table can be
+   customized at row or even cell level with the help of a CSS file.
+   
+   The new HTMLLayout is contributed by Steve Mactaggart. [*]
+   
+    
  - Fixed bug #15585 relative to location information extraction on the AS400. The fix
    was contributed by Patrice Kolata. [*]
   
