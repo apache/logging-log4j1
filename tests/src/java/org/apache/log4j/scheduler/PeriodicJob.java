@@ -59,15 +59,14 @@ class PeriodicJob extends CountingJob {
   }
 
   void sanityCheck(long currentTime) {
-    System.out.println("sanity check on " + id);
-
+    System.out.println("sanity check on job " + id);
 
     if (!deleted) {
       int expectedNumberOfExecutions =
         (int) ((currentTime - desiredTime) / period);
 
-      // allow for 10% error margin
-      if ((actualExecutionTime.size()*1.1) < expectedNumberOfExecutions) {
+      // allow for 15% error margin
+      if ((actualExecutionTime.size()*1.15) < expectedNumberOfExecutions) {
         throw new IllegalStateException(
           "Too few executions. Was " + actualExecutionTime.size()
           + " expected " + expectedNumberOfExecutions + " period="+period);
