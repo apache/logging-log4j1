@@ -106,10 +106,10 @@ public class WriterAppender extends AppenderSkeleton {
 
 
   /**
-     This method called by {@link AppenderSkeleton#doAppend}
+     This method is called by the {@link AppenderSkeleton#doAppend}
      method. 
 
-     <p>If the output stream exists an is writable then write a log
+     <p>If the output stream exists and is writable then write a log
      statement to the output stream. Otherwise, write a single warning
      message to <code>System.err</code>.
 
@@ -206,7 +206,7 @@ public class WriterAppender extends AppenderSkeleton {
 
 
   /**
-     Retuns the option names for this component.
+     Returns the option names for this component.
   */
   public
   String[] getOptionStrings() {
@@ -218,7 +218,7 @@ public class WriterAppender extends AppenderSkeleton {
 
   /**
      Set the {@link ErrorHandler} for this FileAppender and also the
-     undelying {@link QuietWriter} if any. */
+     underlying {@link QuietWriter} if any. */
   public
   synchronized 
   void setErrorHandler(ErrorHandler eh) {
@@ -244,7 +244,7 @@ public class WriterAppender extends AppenderSkeleton {
 
      <p>Avoiding the flush operation at the end of each append results in
      a performance gain of 10 to 20 percent. However, there is safety
-     tradeoff invloved in skipping flushing. Indeed, when flushing is
+     tradeoff involved in skipping flushing. Indeed, when flushing is
      skipped, then it is likely that the last few log events will not
      be recorded on disk when the application exits. This is a high
      price to pay even for a 20% performance gain.
@@ -326,7 +326,7 @@ public class WriterAppender extends AppenderSkeleton {
   }
 
   /**
-     Clerar internal references to the writer and other variables.
+     Clear internal references to the writer and other variables.
 
      Sub-classes can override this method for an alternate closing
      behaviour.  */
