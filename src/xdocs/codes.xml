@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+
+<document>
+
+  <properties>
+    <author email="ceki AT aappaacchheeee DOT org">Ceki Gulcu</author>
+    <title>Log4j error codes</title>
+  </properties>
+
+  <body>
+
+    <center>
+      <h2>Log4j error messages and their meanings</h2>
+      <h3>Ceki  G&#252;lc&#252; <br/>
+      November 2004, last updated on November 18th, 2004</h3>
+    </center>
+    
+    <message ref="log4j_dtd">
+      <title>The 'log4j.dtd' is no longer used nor needed.</title>
+      
+      <explanation>
+        <p>Given syntactical flexiblilty that
+        <code>JoranConfigrator</code> supports, it is no longer
+        possible to express this syntatical range with a DTD. Thus,
+        new log4j configuration files in XML should follow the general
+        template.
+        </p>
+
+        <p class="red big">Good:</p>
+
+        <pre>&lt;?xml version="1.0" encoding="UTF-8" ?>
+<b>&lt;!DOCTYPE log4j:configuration></b>
+
+&lt;log4j:configuration>
+  ...
+&lt;/log4j:configuration>
+        </pre>
+
+        <p>However, <code>JoranConfigurator</code> will continue to
+        parse your old XML configuration files which previously
+        required a reference to <code>log4j.dtd</code>. Thus, altough
+        deprecated, the following form will continue to be parsed
+        correctly.
+        </p>
+
+        <p class="red big">Deprecated:</p>
+
+          <pre>&lt;?xml version="1.0" encoding="UTF-8" ?>
+<b>&lt;!DOCTYPE log4j:configuration SYSTEM "log4j.dtd" ></b>
+        </pre>
+     
+
+        <p>Using the deprecated form will generate the above mentioned
+        warning message.
+        </p>
+
+      </explanation>
+    </message>
+
+
+    
+  </body>
+</document>
