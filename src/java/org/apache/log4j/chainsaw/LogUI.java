@@ -2236,8 +2236,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
      * @see org.apache.log4j.chainsaw.EventBatchListener#getInterestedIdentifier()
      */
     public String getInterestedIdentifier() {
-      // TODO Auto-generated method stub
-      return null;
+      return getIdentifier();
     }
 
     /* (non-Javadoc)
