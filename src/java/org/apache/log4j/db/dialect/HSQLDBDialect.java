@@ -17,13 +17,8 @@
 package org.apache.log4j.db.dialect; 
 
 /** 
- * <b>DBAppender DOES NOT WORK WITH HSQLDB.</b>
- *
  * The HSQLDB dialect. 
- *
- * <b>WARNING</b>
- * IT IS ESTABLISHED THAT DBAppender DOES NOT WORK WITH HSQLDB.
- *
+ * 
  * @author Ceki Gulcu 
 */ 
 public class HSQLDBDialect implements SQLDialect { 

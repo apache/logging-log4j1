@@ -36,6 +36,8 @@ public abstract class ConnectionSourceSkeleton implements ConnectionSource {
   // initially we have an unkonw dialect
   protected int dialectCode = UNKNOWN_DIALECT;
   protected boolean supportsGetGeneratedKeys = false;
+  protected boolean supportsBatchUpdates = false;
+  
 
   /**
    * Learn relevant information about this connection source.
@@ -50,6 +52,7 @@ public abstract class ConnectionSourceSkeleton implements ConnectionSource {
       }
       DatabaseMetaData meta = connection.getMetaData();
       supportsGetGeneratedKeys = supportsGetGeneratedKeys(meta);
+      supportsBatchUpdates = meta.supportsBatchUpdates();
       dialectCode = Util.discoverSQLDialect(meta);
     } catch (SQLException se) {
       LogLog.warn("Could not discover the dialect to use.", se);
@@ -61,7 +64,7 @@ public abstract class ConnectionSourceSkeleton implements ConnectionSource {
       return meta.supportsGetGeneratedKeys();
     } catch(Throwable e) {
       LogLog.warn("The following warning is only informative.");
-      LogLog.warn("Could not call supportsGetGeneratedKeys method. This may be recoverable", e);
+      LogLog.warn("Could not call supportsGetGeneratedKeys method. This may be recoverable");
       return false;
     }
   }
@@ -122,4 +125,12 @@ public abstract class ConnectionSourceSkeleton implements ConnectionSource {
   public void setUser(String username) {
     this.user = username;
   }
+  
+  /**
+   * Does this connection support batch updates?
+   */
+  public boolean supportsBatchUpdates() {
+    return supportsBatchUpdates;
+  }
+
 }

@@ -30,17 +30,20 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
+import java.util.Vector;
 
 /**
  * Actual retrieval of data is made by the instance of DBReceiverJob associated
  * with DBReceiver.
- *
+ * 
  * @author Ceki G&uuml;lc&uuml;
  */
 class DBReceiverJob implements Job {
+
   static final Logger logger = Logger.getLogger(DBReceiverJob.class);
+
   long lastId = 0;
+
   DBReceiver parentDBReceiver;
 
   DBReceiverJob(DBReceiver parent) {
@@ -54,8 +57,8 @@ class DBReceiverJob implements Job {
 
     try {
       Logger logger;
-      LoggerRepository loggerRepository =
-        parentDBReceiver.getLoggerRepository();
+      LoggerRepository loggerRepository = parentDBReceiver
+          .getLoggerRepository();
       connection = parentDBReceiver.connectionSource.getConnection();
 
       StringBuffer sql = new StringBuffer();
@@ -81,11 +84,11 @@ class DBReceiverJob implements Job {
 
       Statement statement = connection.createStatement();
       ResultSet rs = statement.executeQuery(sql.toString());
-      rs.beforeFirst();
-      
+      //rs.beforeFirst();
+
       while (rs.next()) {
         LoggingEvent event = new LoggingEvent();
-        
+
         event.setSequenceNumber(rs.getLong(1));
         event.setTimeStamp(rs.getLong(2));
         event.setRenderedMessage(rs.getString(3));
@@ -98,7 +101,6 @@ class DBReceiverJob implements Job {
         event.setNDC(rs.getString(6));
         event.setThreadName(rs.getString(7));
 
-
         short mask = rs.getShort(8);
 
         String fileName = rs.getString(9);
@@ -109,18 +111,17 @@ class DBReceiverJob implements Job {
         if (fileName.equals(LocationInfo.NA)) {
           event.setLocationInformation(LocationInfo.NA_LOCATION_INFO);
         } else {
-          event.setLocationInformation(
-            new LocationInfo(fileName, className, methodName, lineNumber));
+          event.setLocationInformation(new LocationInfo(fileName, className,
+              methodName, lineNumber));
         }
 
         long id = rs.getLong(13);
-        LogLog.info("Received event with id=" +id);
+        LogLog.info("Received event with id=" + id);
         lastId = id;
-        
+
         // Scott asked for this info to be
         event.setProperty(Constants.LOG4J_ID_KEY, Long.toString(id));
 
-        
         if ((mask & DBHelper.PROPERTIES_EXIST) != 0) {
           getProperties(connection, id, event);
         }
@@ -155,17 +156,16 @@ class DBReceiverJob implements Job {
 
   /**
    * Retrieve the event properties from the logging_event_property table.
-   *
+   * 
    * @param connection
    * @param id
    * @param event
    * @throws SQLException
    */
   void getProperties(Connection connection, long id, LoggingEvent event)
-    throws SQLException {
-    String sql =
-      "SELECT mapped_key, mapped_value FROM logging_event_property WHERE event_id='"
-      + id + "'";
+      throws SQLException {
+    String sql = "SELECT mapped_key, mapped_value FROM logging_event_property WHERE event_id='"
+        + id + "'";
 
     Statement statement = null;
 
@@ -173,7 +173,7 @@ class DBReceiverJob implements Job {
       statement = connection.createStatement();
 
       ResultSet rs = statement.executeQuery(sql);
-      rs.beforeFirst();
+      //rs.beforeFirst();
 
       while (rs.next()) {
         String key = rs.getString(1);
@@ -188,19 +188,18 @@ class DBReceiverJob implements Job {
   }
 
   /**
-   * Retrieve the exception string representation from the logging_event_exception
-   * table.
-   *
+   * Retrieve the exception string representation from the
+   * logging_event_exception table.
+   * 
    * @param connection
    * @param id
    * @param event
    * @throws SQLException
    */
   void getException(Connection connection, long id, LoggingEvent event)
-    throws SQLException {
-    String sql =
-      "SELECT i, trace_line FROM logging_event_exception where event_id='"
-      + id + "'";
+      throws SQLException {
+    String sql = "SELECT trace_line FROM logging_event_exception where event_id='"
+        + id + "' ORDER by i ASC";
 
     Statement statement = null;
 
@@ -209,20 +208,20 @@ class DBReceiverJob implements Job {
 
       ResultSet rs = statement.executeQuery(sql);
 
-      // if rs has results, then extract the exception
-      if (rs.last()) {
-        int len = rs.getRow();
-        String[] strRep = new String[len];
-        rs.beforeFirst();
+      Vector v = new Vector();
 
-        while (rs.next()) {
-          int i = rs.getShort(1);
-          strRep[i] = rs.getString(2);
-        }
-
-        // we've filled strRep, we now attach it to the event
-        event.setThrowableInformation(new ThrowableInformation(strRep));
+      while (rs.next()) {
+        //int i = rs.getShort(1);
+        v.add(rs.getString(1));
       }
+
+      int len = v.size();
+      String[] strRep = new String[len];
+      for (int i = 0; i < len; i++) {
+        strRep[i] = (String) v.get(i);
+      }
+      // we've filled strRep, we now attach it to the event
+      event.setThrowableInformation(new ThrowableInformation(strRep));
     } finally {
       if (statement != null) {
         statement.close();

@@ -33,7 +33,8 @@ public class Util {
   private static final String MYSQL_PART = "mysql";
   private static final String ORACLE_PART = "oracle";
   private static final String MSSQL_PART = "mssqlserver4";
-
+  private static final String HSQL_PART = "hsql";
+  
   public static int discoverSQLDialect(DatabaseMetaData meta) {
     int dialectCode = 0;
 
@@ -52,6 +53,8 @@ public class Util {
         return ConnectionSource.ORACLE_DIALECT;
       } else if (dbName.indexOf(MSSQL_PART) != -1) {
         return ConnectionSource.MSSQL_DIALECT;
+      } else if (dbName.indexOf(HSQL_PART) != -1) {
+        return ConnectionSource.HSQL_DIALECT;
       } else {
         return ConnectionSource.UNKNOWN_DIALECT;
       }
@@ -82,7 +85,7 @@ public class Util {
       sqlDialect = new MsSQLDialect();
 
       break;
-    case ConnectionSource.HSQLDB_DIALECT:
+    case ConnectionSource.HSQL_DIALECT:
       sqlDialect = new HSQLDBDialect();
 
       break;

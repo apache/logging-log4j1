@@ -4,10 +4,6 @@
 #
 # It is intended for HSQLDB. 
 #
-# 
-# ====================================================================
-# WARNING: IT IS ESTABLISHED THAT DBAppender DOES NOT WORK WITH HSQLDB.
-# ====================================================================
 
 DROP TABLE logging_event_exception;
 DROP TABLE logging_event_property;
