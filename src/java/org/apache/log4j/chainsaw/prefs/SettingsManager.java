@@ -262,7 +262,7 @@ public final class SettingsManager {
    * other classes within this package.
    * @return Properties defaults
    */
-  Properties getDefaultSettings() {
+  public Properties getDefaultSettings() {
     return defaultProperties;
   }
 }
