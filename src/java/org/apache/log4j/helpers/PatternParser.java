@@ -337,7 +337,7 @@ public class PatternParser {
 	  i++;
 	}
 	else 
-	  LogLog.error("Unexpected char " +cNext+" at position "+i);
+	  LogLog.error("Unexpected char" +cNext+" at position "+i);
       }
       break;*/
     case 'x':
@@ -346,7 +346,8 @@ public class PatternParser {
       currentLiteral.setLength(0);
       break;
     default:
-      LogLog.error("Unexpected char " +c+" at position "+i);
+      LogLog.error("Unexpected char [" +c+"] at position "+i
+		   +" in conversion patterrn.");
       pc = new LiteralPatternConverter(currentLiteral.toString());
       currentLiteral.setLength(0);
     }
