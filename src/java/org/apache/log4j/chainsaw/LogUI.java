@@ -121,6 +121,7 @@ import org.apache.log4j.plugins.PluginEvent;
 import org.apache.log4j.plugins.PluginListener;
 import org.apache.log4j.plugins.PluginRegistry;
 import org.apache.log4j.plugins.Receiver;
+import org.omg.CORBA.portable.ApplicationException;
 
 
 /**
@@ -167,6 +168,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   private ChainsawTabbedPane tabbedPane;
   private JToolBar toolbar;
   private ChainsawStatusBar statusBar;
+  private ApplicationPreferenceModel appPreferenceModel = new ApplicationPreferenceModel();
   private final Map tableModelMap = new HashMap();
   private final Map tableMap = new HashMap();
   private final List filterableColumns = new ArrayList();
@@ -726,6 +728,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       });
 
     getSettingsManager().addSettingsListener(this);
+    getSettingsManager().addSettingsListener(appPreferenceModel);
     getSettingsManager().addSettingsListener(getToolBarAndMenus());
     getSettingsManager().loadSettings();
 
@@ -738,7 +741,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       initializationLock.notifyAll();
     }
 
-    if (noReceiversDefined) {
+    if (noReceiversDefined && appPreferenceModel.isShowNoReceiverWarning()) {
       showNoReceiversWarningPanel();
     }
 
@@ -868,6 +871,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    * user to choose some options for configuration
    */
   private void showNoReceiversWarningPanel() {
+    
     final NoReceiversWarningPanel noReceiversWarningPanel =
       new NoReceiversWarningPanel();
 
@@ -930,6 +934,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
           dialog.dispose();
 
+          appPreferenceModel.setShowNoReceiverWarning(!noReceiversWarningPanel.isDontWarnMeAgain());
           if (noReceiversWarningPanel.getModel().isManualMode()) {
             toggleReceiversPanel();
           } else if (noReceiversWarningPanel.getModel().isSimpleReceiverMode()) {
