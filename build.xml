@@ -483,7 +483,7 @@ later. For JDK 1.2, you can get the JNDI API from
                 ${stem}/joran/**/*.class,
                 ${stem}/config/*.class,
                 ${stem}/helpers/*.class,
-                ${stem}/spi/*.class,
+                ${stem}/spi/**/*.class,
                 ${stem}/net/*.class,
                 ${stem}/jdbc/*.class,
 				${stem}/db/**/*.class,
