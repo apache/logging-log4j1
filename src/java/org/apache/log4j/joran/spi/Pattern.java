@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.apache.joran;
+package org.apache.log4j.joran.spi;
 
 import java.util.ArrayList;
 

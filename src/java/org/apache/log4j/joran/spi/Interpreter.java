@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package org.apache.joran;
+package org.apache.log4j.joran.spi;
 
-import org.apache.joran.action.*;
 import org.apache.log4j.LogManager;
+import org.apache.log4j.joran.action.Action;
+import org.apache.log4j.joran.action.ImplicitAction;
 import org.apache.log4j.spi.Component;
 import org.apache.log4j.spi.ErrorItem;
 import org.apache.log4j.spi.LoggerRepository;
@@ -213,7 +214,7 @@ public class Interpreter extends DefaultHandler implements Component  {
     while (i.hasNext()) {
       Action action = (Action) i.next();
 
-      // now ket us invoke the action. We catch and report any eventual 
+      // now let us invoke the action. We catch and report any eventual 
       // exceptions
       try {
         action.begin(ec, tagName, atts);

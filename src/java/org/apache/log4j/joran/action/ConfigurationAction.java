@@ -18,10 +18,9 @@ package org.apache.log4j.joran.action;
 
 import java.util.List;
 
-import org.apache.joran.ExecutionContext;
-import org.apache.joran.action.Action;
 
 import org.apache.log4j.config.ConfiguratorBase;
+import org.apache.log4j.joran.spi.ExecutionContext;
 import org.apache.log4j.spi.LoggerRepository;
 import org.xml.sax.Attributes;
 

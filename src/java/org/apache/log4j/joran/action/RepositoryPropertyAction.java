@@ -17,7 +17,7 @@ package org.apache.log4j.joran.action;
 
 import java.util.Properties;
 
-import org.apache.joran.ExecutionContext;
+import org.apache.log4j.joran.spi.ExecutionContext;
 import org.apache.log4j.spi.ErrorItem;
 import org.apache.log4j.spi.LoggerRepository;
 

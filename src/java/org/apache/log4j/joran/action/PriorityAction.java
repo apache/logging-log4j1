@@ -2,7 +2,7 @@ package org.apache.log4j.joran.action;
 
 
 
-import org.apache.joran.ExecutionContext;
+import org.apache.log4j.joran.spi.ExecutionContext;
 import org.xml.sax.Attributes;
 
 /**

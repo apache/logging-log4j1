@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.apache.joran.helper;
+package org.apache.log4j.joran.spi;
 
 import org.apache.joran.*;
-import org.apache.joran.RuleStore;
 import org.apache.joran.action.*;
 
 import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.joran.action.Action;
 import org.apache.log4j.spi.LoggerRepository;
 
 import java.util.ArrayList;
