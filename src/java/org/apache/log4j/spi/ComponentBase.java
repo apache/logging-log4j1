@@ -28,11 +28,9 @@ public class ComponentBase implements Component {
   public void setLoggerRepository(LoggerRepository repository) {
     if(this.repository == null) {
       this.repository = repository;
-    } else if(this.repository == repository) {
-      // Nothing to do. Someone is trying to set the repository once again.
-    } else { 
+    } else if(this.repository != repository) {
       throw new IllegalStateException("Repository has been already set");
-    }
+    } 
   }
   
   /**
