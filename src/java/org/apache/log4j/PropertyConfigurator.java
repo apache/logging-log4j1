@@ -22,7 +22,6 @@ package org.apache.log4j;
 
 import org.apache.log4j.DefaultCategoryFactory;
 import org.apache.log4j.config.PropertySetter;
-import org.apache.log4j.helpers.FileWatchdog;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.or.RendererMap;
@@ -345,36 +344,7 @@ public class PropertyConfigurator implements Configurator {
     new PropertyConfigurator().doConfigure(
       properties, LogManager.getLoggerRepository());
   }
-
-  /**
-     Like {@link #configureAndWatch(String, long)} except that the
-     default delay as defined by {@link FileWatchdog#DEFAULT_DELAY} is
-     used.
-
-     @param configFilename A file in key=value format.
-
-  */
-  public static void configureAndWatch(String configFilename) {
-    configureAndWatch(configFilename, FileWatchdog.DEFAULT_DELAY);
-  }
-
-  /**
-     Read the configuration file <code>configFilename</code> if it
-     exists. Moreover, a thread will be created that will periodically
-     check if <code>configFilename</code> has been created or
-     modified. The period is determined by the <code>delay</code>
-     argument. If a change or file creation is detected, then
-     <code>configFilename</code> is read to configure log4j.
-
-      @param configFilename A file in key=value format.
-      @param delay The delay in milliseconds to wait between each check.
-  */
-  public static void configureAndWatch(String configFilename, long delay) {
-    PropertyWatchdog pdog = new PropertyWatchdog(configFilename);
-    pdog.setDelay(delay);
-    pdog.start();
-  }
-
+ 
   /**
      Read configuration options from <code>properties</code>.
 
@@ -688,20 +658,5 @@ public class PropertyConfigurator implements Configurator {
 
   Appender registryGet(String name) {
     return (Appender) registry.get(name);
-  }
-}
-
-
-class PropertyWatchdog extends FileWatchdog {
-  PropertyWatchdog(String filename) {
-    super(filename);
-  }
-
-  /**
-     Call {@link PropertyConfigurator#configure(String)} with the
-     <code>filename</code> to reconfigure log4j. */
-  public void doOnChange() {
-    new PropertyConfigurator().doConfigure(
-      filename, LogManager.getLoggerRepository());
   }
 }
