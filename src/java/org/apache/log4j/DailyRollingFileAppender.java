@@ -150,15 +150,14 @@ public class DailyRollingFileAppender extends FileAppender {
   static final public String DATE_PATTERN_OPTION = "DatePattern";
   
   /**
-     The date pattern. By default, the rolled file extension is
-     the date folloed by .log meaning a nightly rollover.
-  */
-  private String datePattern = ".YYYY-MM-dd.log";
+     The date pattern. By default, the pattern is set to
+     "'.'YYYY-MM-dd" meaning daily rollover.  */
+  private String datePattern = "'.'YYYY-MM-dd";
 
   /**
      The actual formatted filename that is currently being written to
   */
-  private String lastDatedFilename;
+  private String scheduledFilename;
 
   /**
      The timestamp when we shall next recompute the filename
@@ -202,7 +201,7 @@ public class DailyRollingFileAppender extends FileAppender {
       int type = computeCheckPeriod();
       printPeriodicity(type);
       rc.setType(type);
-      lastDatedFilename = fileName+sdf.format(now);
+      scheduledFilename = fileName+sdf.format(now);
     } else {
       LogLog.error("Either Filename or DatePattern options are not set for ["+
 		   name+"].");
@@ -285,20 +284,20 @@ public class DailyRollingFileAppender extends FileAppender {
     }
 
     String datedFilename = fileName+sdf.format(now);
-    if (lastDatedFilename.equals(datedFilename)) 
+    if (scheduledFilename.equals(datedFilename)) 
       return;
 
     // close current file, and rename it to datedFilename
     this.closeFile(); 
     
-    File target  = new File(lastDatedFilename);    
+    File target  = new File(scheduledFilename);    
     if (target.exists()) {
       target.delete();
     }
 
     File file = new File(fileName);
     file.renameTo(target);    
-    LogLog.debug(fileName +" -> "+ lastDatedFilename);    
+    LogLog.debug(fileName +" -> "+ scheduledFilename);    
 
     try {
       // This will also close the file. This is OK since multiple
@@ -308,18 +307,22 @@ public class DailyRollingFileAppender extends FileAppender {
     catch(IOException e) {
       errorHandler.error("setFile("+fileName+", false) call failed.");
     }
-    lastDatedFilename = datedFilename;    
+    scheduledFilename = datedFilename;    
   }
 
   /**
-     Set the options for the appender
+     Set the options for the {@link DailyRollingFileAppender}
+     instance.
 
-     <b>See</b> Options of the super class {@link FileAppender}. 
-     <b>See</b> Options of the super class {@link org.apache.log4j.WriterAppender}. 
-     <b>See</b> Options of the super class {@link
-     org.apache.log4j.AppenderSkeleton}, in particular the
-     <b>Threshold</b> option.
-  */
+     <p>The <b>DatePattern</b> takes a string in the same format as
+     expected by {@link SimpleDateFormat}. This options determines the
+     rollover schedule.
+
+     <p>Be sure to refer to the options in the super classes {@link
+     FileAppender}, {WriterAppender} and in particular the
+     <b>Threshold</b> option in {@link AppenderSkeleton}.
+     
+     </ul> */
   public
   void setOption(String key, String value) {
     if(value == null) return;
