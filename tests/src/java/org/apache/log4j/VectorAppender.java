@@ -26,6 +26,8 @@ import org.apache.log4j.spi.LoggingEvent;
 public class VectorAppender extends AppenderSkeleton {
   public Vector vector;
 
+  long delay = 0;
+  
   public VectorAppender() {
     vector = new Vector();
   }
@@ -42,11 +44,11 @@ public class VectorAppender extends AppenderSkeleton {
 
   */
   public void append(LoggingEvent event) {
-    //System.out.println("---Vector appender called with message ["+event.getRenderedMessage()+"].");
-    //System.out.flush();
-    try {
-      Thread.sleep(100);
-    } catch (Exception e) {
+    if(delay > 0) {
+      try {
+        Thread.sleep(delay);
+      } catch (Exception e) {
+      }
     }
 
     vector.addElement(event);
@@ -71,4 +73,12 @@ public class VectorAppender extends AppenderSkeleton {
   public boolean requiresLayout() {
     return false;
   }
+  
+  public long getDelay() {
+    return delay;
+  }
+  public void setDelay(long delay) {
+    this.delay = delay;
+  }
+
 }
