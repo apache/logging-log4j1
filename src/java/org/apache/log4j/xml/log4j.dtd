@@ -143,8 +143,8 @@ element. -->
 
 <!-- The timestamp format is application dependent. -->
 <!ATTLIST log4j:event
-    category   CDATA #REQUIRED
-    priority   CDATA #REQUIRED
+    logger     CDATA #REQUIRED
+    level      CDATA #REQUIRED
     thread     CDATA #REQUIRED
     timestamp  CDATA #REQUIRED
 >
