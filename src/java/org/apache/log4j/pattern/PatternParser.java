@@ -71,6 +71,7 @@ import java.util.HashMap;
    @author James P. Cakalic
    @author Ceki G&uuml;lc&uuml;
    @author Anders Kristensen
+   @auther Paul Smith
 
    @since 0.8.2
 */
@@ -126,6 +127,10 @@ public class PatternParser {
     
     globalRulesRegistry.put("X", MDCPatternConverter.class.getName());
     globalRulesRegistry.put("mdc", MDCPatternConverter.class.getName());
+    
+    globalRulesRegistry.put("Y", PropertiesPatternConverter.class.getName());
+    globalRulesRegistry.put("properties", PropertiesPatternConverter.class.getName());
+    
   }
 
   int state;
