@@ -116,7 +116,7 @@ class XMLFileHandler
             mThreadName = aAtts.getValue("thread");
             mTimeStamp = Long.parseLong(aAtts.getValue("timestamp"));
             mCategoryName = aAtts.getValue("category");
-            mPriority = Priority.toPriority(aAtts.getValue("priority"));
+            mPriority = Priority.toPriority(aAtts.getValue("level"));
         } else if (TAG_LOCATION_INFO.equals(aQName)) {
             mLocationDetails = aAtts.getValue("class") + "."
                 + aAtts.getValue("method")
