@@ -430,6 +430,7 @@ class ChainsawToolBarAndMenus implements ChangeListener {
     helpMenu.add(receiverHelp);
 
     helpMenu.addSeparator();
+    helpMenu.add(CommonActions.getInstance().getShowReleaseNotes());
     helpMenu.add(about);
 
     menuBar.add(fileMenu);
