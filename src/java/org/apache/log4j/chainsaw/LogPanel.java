@@ -55,6 +55,24 @@
  */
 package org.apache.log4j.chainsaw;
 
+import org.apache.log4j.Layout;
+import org.apache.log4j.PatternLayout;
+import org.apache.log4j.chainsaw.filter.FilterModel;
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.chainsaw.icons.LineIconFactory;
+import org.apache.log4j.chainsaw.layout.DefaultLayoutFactory;
+import org.apache.log4j.chainsaw.layout.EventDetailLayout;
+import org.apache.log4j.chainsaw.layout.LayoutEditorPane;
+import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.SettingsListener;
+import org.apache.log4j.chainsaw.prefs.SettingsManager;
+import org.apache.log4j.chainsaw.rule.AbstractRule;
+import org.apache.log4j.chainsaw.rule.Rule;
+import org.apache.log4j.helpers.ISO8601DateFormat;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.spi.LoggingEvent;
+
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Cursor;
@@ -77,8 +95,10 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.EOFException;
@@ -90,8 +110,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -145,24 +167,6 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
-import org.apache.log4j.Layout;
-import org.apache.log4j.PatternLayout;
-import org.apache.log4j.chainsaw.filter.FilterModel;
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-import org.apache.log4j.chainsaw.icons.LineIconFactory;
-import org.apache.log4j.chainsaw.layout.DefaultLayoutFactory;
-import org.apache.log4j.chainsaw.layout.EventDetailLayout;
-import org.apache.log4j.chainsaw.layout.LayoutEditorPane;
-import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SettingsListener;
-import org.apache.log4j.chainsaw.prefs.SettingsManager;
-import org.apache.log4j.chainsaw.rule.AbstractRule;
-import org.apache.log4j.chainsaw.rule.Rule;
-import org.apache.log4j.helpers.ISO8601DateFormat;
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.spi.LoggingEvent;
-
 
 /**
    * LogPanel encapsulates all the necessary bits and pieces of a
@@ -172,6 +176,7 @@ import org.apache.log4j.spi.LoggingEvent;
    */
 public class LogPanel extends DockablePanel implements SettingsListener,
   EventBatchListener {
+  private final JFrame preferencesFrame = new JFrame();
   private ThrowableRenderPanel throwableRenderPanel;
   private MouseFocusOnAdaptor mouseFocusOnAdaptor = new MouseFocusOnAdaptor();
   private boolean paused = false;
@@ -191,6 +196,8 @@ public class LogPanel extends DockablePanel implements SettingsListener,
   final JSortTable table;
   private final LogPanelPreferenceModel preferenceModel =
     new LogPanelPreferenceModel();
+  private final LogPanelPreferencePanel preferencesPanel =
+    new LogPanelPreferencePanel(preferenceModel);
   private String profileName = null;
   private final JDialog detailDialog = new JDialog((JFrame) null, true);
   final JPanel detailPanel = new JPanel(new BorderLayout());
@@ -220,6 +227,20 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     final ChainsawStatusBar statusBar, final String ident, String eventType) {
     identifier = ident;
     this.statusBar = statusBar;
+
+    preferencesFrame.setTitle("'" + ident + "' Log Panel Preferences");
+    preferencesFrame.setIconImage(
+      ((ImageIcon) ChainsawIcons.ICON_PREFERENCES).getImage());
+    preferencesFrame.getContentPane().add(preferencesPanel);
+
+    preferencesFrame.setSize(640, 480);
+
+    preferencesPanel.setOkCancelActionListener(
+      new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          preferencesFrame.setVisible(false);
+        }
+      });
 
     setDetailPaneConversionPattern(
       DefaultLayoutFactory.getDefaultPatternLayout());
@@ -336,11 +357,10 @@ public class LogPanel extends DockablePanel implements SettingsListener,
             });
         }
       });
-      
+
     /***
      * Setup a popup menu triggered for Timestamp column to allow time stamp format changes
      */
-
     final JPopupMenu dateFormatChangePopup = new JPopupMenu();
     final JRadioButtonMenuItem isoButton =
       new JRadioButtonMenuItem(
@@ -957,15 +977,15 @@ public class LogPanel extends DockablePanel implements SettingsListener,
         }
       });
 
-    JMenuItem menuItemDisplayFilter =
-      new JMenuItem("Define display and color filters...");
-    menuItemDisplayFilter.addActionListener(
+    JMenuItem menuItemLogPanelPreferences =
+      new JMenuItem("LogPanel Preferences...");
+    menuItemLogPanelPreferences.addActionListener(
       new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
           showPreferences();
         }
       });
-    menuItemDisplayFilter.setIcon(ChainsawIcons.ICON_PREFERENCES);
+    menuItemLogPanelPreferences.setIcon(ChainsawIcons.ICON_PREFERENCES);
 
     final JCheckBoxMenuItem menuItemToggleToolTips =
       new JCheckBoxMenuItem("Show ToolTips", tooltipsEnabled);
@@ -1106,7 +1126,8 @@ public class LogPanel extends DockablePanel implements SettingsListener,
 
     //	p.add(new JSeparator());
     //    p.add(menuDefineCustomFilter);
-    //    p.add(menuItemDisplayFilter);
+    p.add(menuItemLogPanelPreferences);
+
     //    p.add(menuColumnDisplayFilter);
     //    p.add(menuColumnColorFilter);
     p.add(new JSeparator());
@@ -1427,7 +1448,8 @@ public class LogPanel extends DockablePanel implements SettingsListener,
   }
 
   void showPreferences() {
-    //      colorDisplaySelector.show();
+    preferencesPanel.updateModel();
+    preferencesFrame.show();
   }
 
   EventContainer getModel() {
