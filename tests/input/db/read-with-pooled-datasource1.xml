@@ -4,10 +4,7 @@
 <log4j:configuration debug="true">
 	  
   <substitutionProperty file="input/db/db.properties"/>
-
-  <substitutionProperty file="input/db/db.properties"/>
-	    
-	    
+      
   <plugin name="DBPlugin" class="org.apache.log4j.db.DBReceiver">
      <connectionSource class="org.apache.log4j.db.DataSourceConnectionSource">
        

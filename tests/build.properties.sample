@@ -1,4 +1,24 @@
-jakarta.oro.jar=../../jakarta-oro-2.0.5/jakarta-oro-2.0.5.jar
 deprecation=on
 
-# junit must be on the classpath! It can't be handled as a property.
+jakarta.oro.jar=../../jakarta-oro-2.0.5/jakarta-oro-2.0.5.jar
+
+
+# junit must be on the classpath or in ANT_HOME/lib. It can't  be
+# handled as a property.
+
+
+# Database testing
+# ================
+#
+# For the various DB tests you need to place the appropriate 
+# JDBC drivers in ./tests/lib/ directory. 
+#
+# Testing JNDIConnectionSource requires JNDI File System Service 
+# Provider, 1.2 Beta 3, which can be downloaded from: 
+#
+# http://java.sun.com/products/jndi/downloads/index.html
+#
+# Click on "Download JNDI 1.2.1 & More"     
+#
+# Once you obtained the JNDI File System Service Provider place 
+# the file fscontext.jar in the ./tests/lib/ directory.

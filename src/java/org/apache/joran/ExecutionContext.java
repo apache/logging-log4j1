@@ -139,6 +139,10 @@ public class ExecutionContext {
       addProperty(key, props.getProperty(key));
     }
   }
+ 
+  public String getSubstitutionProperty(String key) {
+    return substitutionProperties.getProperty(key);
+  }
 
   public String subst(String value) {
     if(value == null) {
