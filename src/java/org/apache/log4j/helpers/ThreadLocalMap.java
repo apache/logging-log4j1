@@ -20,9 +20,7 @@ import java.util.Hashtable;
 */
 final public class ThreadLocalMap extends InheritableThreadLocal {
 
-  public
-  final
-  Object childValue(Object parentValue) {
+  public final Object childValue(Object parentValue) {
     Hashtable ht = (Hashtable) parentValue;
     if(ht != null) {
       return ht.clone();
