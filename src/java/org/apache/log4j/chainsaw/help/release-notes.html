@@ -9,6 +9,13 @@
 
 <h1>1.99.99</h2>
 
+<h2>9 June 2004</h2>
+<ul>
+ <li>Re-build to include the missing JMSReceiver class that got left off... Oooops.</li>
+ <li>Applied patch from Stephen Pain to modify the JMSReceiver so that it can be started correctly when it requires a jndi.properties file.
+ This patch added a jndiPath property to allow the user to specify the path to the jndi.properties file.</li>
+</ul>
+
 <h2>7 June 2004</h2>
 <ul>
  <li>Added filterExpression parameter to LogFilePatternReceiver.  If set, only events which match the expression are processed by the receiver.  Thanks to Jim Prewett for suggesting this feature.</li>
