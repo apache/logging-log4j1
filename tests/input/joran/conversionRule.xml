@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE log4j:configuration>
+<!DOCTYPE configuration>
 
-<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+<configuration xmlns="http://logging.apache.org/">
  
   <conversionRule conversionWord="toto" converterClass="org.apache.log4j.toto"/>
  
@@ -19,4 +19,4 @@
       <param name="ConversionPattern" value="%-5p %c{2} - %m%n"/>
     </layout>	    
   </appender>
-</log4j:configuration>
+</configuration>
