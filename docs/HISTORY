@@ -33,7 +33,11 @@
  - Appenders and Layouts now get to see the raw message object in LoggingEvent 
    not just its rendered form. The access modifiers of some LoggingEvent fields 
    were changed so that they can be accessed in less error-prone ways. Thanks to 
-   Jim Cakalic and Anders Kristensen for their valuable advice. [*]
+   Jim Cajalic and Anders Kristens for their valuable advice. [*]
+
+ - XMLLayout will now mark some output as <![CDATA .. [[> so that it
+   does not get interpreted by the XML parser. This was suggested by
+   Mathias Bogaert like a long list of other fixes. [*]
 
  - The LoggingEvent class now supports serialization of priorities
    derived from the org.apache.log4j.Priority class. [*]
