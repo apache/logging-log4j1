@@ -44,7 +44,7 @@ public class SizeBasedRollingTest extends TestCase {
   }
 
   public void setUp() {
-    Appender ca = new ConsoleAppender(new PatternLayout());
+    Appender ca = new ConsoleAppender(new PatternLayout("%d %level %c -%m%n"));
     ca.setName("CONSOLE");
     root.addAppender(ca);    
   }
@@ -77,8 +77,10 @@ public class SizeBasedRollingTest extends TestCase {
     }
   }
 
+    /** 
+     * Test basic rolling functionality. 
+     */ 
   public void test2() throws Exception {
-
     PatternLayout layout = new PatternLayout("%m\n");
     RollingFileAppender rfa = new RollingFileAppender();
     rfa.setName("ROLLING"); 
@@ -122,36 +124,45 @@ public class SizeBasedRollingTest extends TestCase {
      }
   }
 
+    /**
+     * Same as testBasic but also with GZ compression.
+     */
   public void test3() throws Exception {
-     Logger root = Logger.getRootLogger();
-     root.addAppender(new ConsoleAppender(new PatternLayout()));
-
      PatternLayout layout = new PatternLayout("%m\n");
      RollingFileAppender rfa = new RollingFileAppender();
      rfa.setLayout(layout);
 
-     FixedWindowRollingPolicy swrp = new FixedWindowRollingPolicy();
+     FixedWindowRollingPolicy  fwrp = new FixedWindowRollingPolicy();
      SizeBasedTriggeringPolicy sbtp = new SizeBasedTriggeringPolicy();
 
-     //swrp.setCompressionMode("GZ");
      sbtp.setMaxFileSize(100);
-     swrp.setActiveFileName("output/sizeBased-test3");
-     swrp.setFileNamePattern("output/sizeBased-test3.%i.gz");
-     swrp.activateOptions();
-     rfa.setRollingPolicy(swrp);
+     fwrp.setMinIndex(0);
+     fwrp.setActiveFileName("output/sbr-test3.log");
+     fwrp.setFileNamePattern("output/sbr-test3.%i.gz");
+     fwrp.activateOptions();
+     rfa.setRollingPolicy(fwrp);
      rfa.setTriggeringPolicy(sbtp);
      rfa.activateOptions();
      root.addAppender(rfa);
 
      // Write exactly 10 bytes with each log
      for (int i = 0; i < 25; i++) {
-       Thread.sleep(500);
+       Thread.sleep(100);
        if (i < 10) {
-         logger.debug("Hello   " + i);
+         logger.debug("Hello---" + i);
        } else if (i < 100) {
-         logger.debug("Hello  " + i);
+         logger.debug("Hello--" + i);
        }
      }
+
+     if(!isWindows()) {
+
+      assertTrue(Compare.compare("output/sbr-test3.log",  "witness/rolling/sbr-test3.log"));
+      assertTrue(Compare.compare("output/sbr-test3.0.gz", "witness/rolling/sbr-test3.0.gz"));
+      assertTrue(Compare.compare("output/sbr-test3.1.gz", "witness/rolling/sbr-test3.1.gz"));
+     }
+
+
   }
 
   boolean isWindows() {
@@ -162,8 +173,8 @@ public class SizeBasedRollingTest extends TestCase {
     TestSuite suite = new TestSuite();
 
     //suite.addTest(new SizeBasedRollingTest("test1"));
-    suite.addTest(new SizeBasedRollingTest("test2"));
-    //suite.addTest(new SizeBasedRollingTestCase("test3"));
+    //suite.addTest(new SizeBasedRollingTest("test2"));
+    suite.addTest(new SizeBasedRollingTest("test3"));
 
     return suite;
   }
