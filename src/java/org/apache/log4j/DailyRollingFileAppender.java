@@ -42,13 +42,13 @@ import org.apache.log4j.spi.ErrorCode;
    <code>'.'yyyy-MM-dd</code>, on 2001-02-16 at midnight, the logging
    file <code>/foo/bar.log</code> will be copied to
    <code>/foo/bar.log.2001-02-16</code> and logging for 2001-02-17
-   will continue in <code>/foo/bar.log</code> until it is rolled over
-   itself the next day.
+   will continue in <code>/foo/bar.log</code> until it rolls over
+   the next day.
    
    <p>Is is possible to specify monthly, weekly, half-daily, daily,
    hourly, or minutely rollover schedules.
 
-   <p><table border="1">
+   <p><table border="1" cellpadding="2">
    <tr>
    <th>DatePattern</th> 
    <th>Rollover schedule</th>
@@ -61,8 +61,8 @@ import org.apache.log4j.spi.ErrorCode;
    <td>Assuming the first day of the week is Sunday, at Sunday 00:00,
    March 25th, 2001, <code>/foo/bar.log</code> will be copied to
    <code>/foo/bar.log.2001-03</code>. Logging for the month of April
-   will be output to <code>/foo/bar.log</code> until it is rolled over
-   itself at the beginning of May.
+   will be output to <code>/foo/bar.log</code> until it rolls over
+   at the beginning of May.
 
    <tr>
    <td><code>'.'yyyy-ww</code>
@@ -103,20 +103,20 @@ import org.apache.log4j.spi.ErrorCode;
    <td>At approximately 11:00,000, on March 9th, 2001,
    <code>/foo/bar.log</code> will be copied to
    <code>/foo/bar.log.2001-03-09-10</code>. Logging for the 11th hour
-   of of the 9th of March will be output to <code>/foo/bar.log</code>
+   of the 9th of March will be output to <code>/foo/bar.log</code>
    until it is rolled over at the beginning of the next hour.
 
 
    <tr>
    <td><code>'.'yyyy-MM-dd-HH-mm</code>   
    
-   <td>Rollover at the beginning of every minutue.</td>
+   <td>Rollover at the beginning of every minute.</td>
    
    <td>At approximately 11:23,000, on March 9th, 2001,
    <code>/foo/bar.log</code> will be copied to
-   <code>/foo/bar.log.2001-03-09-10-22</code>. Logging for the minutue
+   <code>/foo/bar.log.2001-03-09-10-22</code>. Logging for the minute
    of 11:23 (9th of March) will be output to
-   <code>/foo/bar.log</code> untill it is rolled over the next minute.
+   <code>/foo/bar.log</code> until it is rolled over the next minute.
       
    </table>
 
@@ -213,7 +213,7 @@ public class DailyRollingFileAppender extends FileAppender {
   }
 
   /**
-     Retuns the option names for this component, namely {@link
+     Returns the option names for this component, namely {@link
      #DATE_PATTERN_OPTION} in
      addition to the options of {@link FileAppender#getOptionStrings
      FileAppender}.
