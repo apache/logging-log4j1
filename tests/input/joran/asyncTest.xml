@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE log4j:configuration >
+<!DOCTYPE configuration>
 
 <configuration xmlns='http://logging.apache.org/' debug="true">
 
-  <appender name="TEMP" class="org.apache.log4j.FileAppender">
+  <appender name="TEMP" class="org.apache.log4j.FileAppender" >
     <param name="File" value="output/temp"/>
     <param name="Append" value="false"/>
     <layout class="org.apache.log4j.PatternLayout">
@@ -11,13 +11,18 @@
     </layout>
   </appender>
 
-
   <appender name="ASYNC" class="org.apache.log4j.AsyncAppender">
     <appender-ref ref="TEMP" />
   </appender>
 
+  <!-- Prevent internal log4j DEBUG messages from polluting the output. -->
+  <logger name="org.apache.log4j.joran.action"><level value="INFO" /></logger>
+  <logger name="org.apache.log4j.joran.JoranConfigurator"><level value="INFO" /></logger>
+  <logger name="org.apache.log4j.config"><level value="INFO" /></logger>
+  <logger name="org.apache.log4j.FileAppender"><level value="INFO" /></logger>
+  
   <root>
-    <priority value ="debug" />
+    <level value ="debug" />
     <appender-ref ref="ASYNC" />
   </root>
 
