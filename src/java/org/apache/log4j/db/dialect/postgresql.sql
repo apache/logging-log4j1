@@ -16,12 +16,14 @@ CREATE TABLE logging_event
     timestamp         BIGINT NOT NULL,
     rendered_message  TEXT NOT NULL,
     logger_name       VARCHAR(254) NOT NULL,
+    level_string      VARCHAR(254) NOT NULL,
     ndc               TEXT,
     thread_name       VARCHAR(254),
+    flag              SMALLINT,
     id                INT DEFAULT nextval('logging_event_id_seq') PRIMARY KEY
   );
 
-CREATE TABLE mdc
+CREATE TABLE logging_event_property
   (
     event_id	      INT NOT NULL,
     mapped_key        VARCHAR(254) NOT NULL,
@@ -30,3 +32,11 @@ CREATE TABLE mdc
     FOREIGN KEY (event_id) REFERENCES logging_event(id)
   );
 
+CREATE TABLE logging_event_exception
+  (
+    event_id         INT NOT NULL,
+    i                SMALLINT NOT NULL,
+    trace_line       VARCHAR(254) NOT NULL,
+    PRIMARY KEY(event_id, i),
+    FOREIGN KEY (event_id) REFERENCES logging_event(id)
+  );

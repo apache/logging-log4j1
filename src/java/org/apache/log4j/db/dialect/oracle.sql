@@ -17,6 +17,7 @@ CREATE TABLE logging_event
     timestamp         BIGINT NOT NULL,
     rendered_message  TEXT NOT NULL,
     logger_name       VARCHAR(254) NOT NULL,
+    level_string      VARCHAR(254) NOT NULL,
     ndc               TEXT,
     thread_name       VARCHAR(254),
     id                INT PRIMARY KEY
@@ -31,7 +32,7 @@ CREATE TRIGGER logging_event_id_seq_trig
     FROM   DUAL;  
   END logging_event_id_seq_trig;
 
-CREATE TABLE mdc
+CREATE TABLE logging_event_property
   (
     event_id	      INT NOT NULL,
     mapped_key        VARCHAR(254) NOT NULL,

@@ -341,6 +341,18 @@ public class LoggingEvent
     return locationInfo;
   }
 
+  /**
+   * Set the location information for this logging event. 
+   * @since 1.3
+   */
+  public void setLocationInformation(LocationInfo li) {
+    if (locationInfo != null) {
+        throw new IllegalStateException("LocationInformation has been already set.");
+    }
+    locationInfo = li;
+  }
+    
+  
 
   /**
    * Return the level of this event.
@@ -752,6 +764,17 @@ public class LoggingEvent
     }
   }
 
+  /**
+   * Set this event's throwable information.
+   * @since 1.3
+   */
+  public void setThrowableInformation(ThrowableInformation ti) {
+    if (throwableInfo != null) {
+      throw new IllegalStateException("ThrowableInformation has been already set.");
+    } else {
+      throwableInfo = ti;
+    }
+  }
 
   private void readLevel(ObjectInputStream ois)
          throws java.io.IOException, ClassNotFoundException {

@@ -23,6 +23,7 @@ import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.plugins.Receiver;
 import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.ThrowableInformation;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -584,11 +585,16 @@ public class LogFilePatternReceiver extends Receiver {
     properties.put(Constants.HOSTNAME_KEY, "file");
     properties.put(Constants.APPLICATION_KEY, shortFileName);
 
-    LoggingEvent event =
-      new LoggingEvent(
-        logger.getName(), logger, timeStamp, levelImpl, threadName, message,
-        null, null, exception, info, properties);
-
+    LoggingEvent event = new LoggingEvent();
+    event.setLogger(logger);
+    event.setTimeStamp(timeStamp);
+    event.setLevel(levelImpl);
+    event.setThreadName(threadName);
+    event.setMessage(message);
+    event.setThrowableInformation(new ThrowableInformation(exception));
+    event.setLocationInformation(info);
+    event.setProperties(properties);
+   
     return event;
   }
 
