@@ -143,6 +143,39 @@ public final class LineIconFactory {
     return new CloseIcon(8, 0, 0);
   }
 
+  public static final Icon createBlankIcon() {
+    return new BlankIcon(16, 0, 0);
+  }
+
+  /**
+     * A nice and simple 'X' style icon that is used to indicate a 'close' operation.
+     *
+     * @author Scott Deboy <sdeboy@apache.org>
+     *
+     */
+  private static class BlankIcon implements Icon {
+    int size;
+    int xOffSet;
+    int yOffSet;
+
+    public BlankIcon(int size, int xOffSet, int yOffSet) {
+      this.size = size;
+      this.xOffSet = xOffSet;
+      this.yOffSet = yOffSet;
+    }
+
+    public int getIconHeight() {
+      return size;
+    }
+
+    public int getIconWidth() {
+      return size;
+    }
+
+    public void paintIcon(Component c, Graphics g, int x, int y) {
+    }
+  }
+
   /**
      * A nice and simple 'X' style icon that is used to indicate a 'close' operation.
      *

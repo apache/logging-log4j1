@@ -83,6 +83,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -114,6 +115,7 @@ import org.apache.log4j.chainsaw.help.HelpManager;
 import org.apache.log4j.chainsaw.help.Tutorial;
 import org.apache.log4j.chainsaw.helper.SwingHelper;
 import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.chainsaw.icons.LineIconFactory;
 import org.apache.log4j.chainsaw.messages.MessageCenter;
 import org.apache.log4j.chainsaw.plugins.ChainsawCentral;
 import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
@@ -566,20 +568,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     getContentPane().setLayout(new BorderLayout());
 
     getTabbedPane().addChangeListener(getToolBarAndMenus());
-    getTabbedPane().addChangeListener(
-      new ChangeListener() {
-        //received a statechange event - selection changed - remove icon from
-        // selected index
-        public void stateChanged(ChangeEvent e) {
-          if (
-            getTabbedPane().getSelectedComponent() instanceof ChainsawTabbedPane) {
-            if (getTabbedPane().getSelectedIndex() > -1) {
-              getTabbedPane().setIconAt(
-                getTabbedPane().getSelectedIndex(), null);
-            }
-          }
-        }
-      });
 
     KeyStroke ksRight =
       KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, Event.CTRL_MASK);
@@ -1629,7 +1617,9 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
         final LogPanel thisPanel =
           new LogPanel(getStatusBar(), ident);
 
-        thisPanel.addEventCountListener(new TabIconHandler(ident));
+        TabIconHandler iconHandler = new TabIconHandler(ident);
+        thisPanel.addEventCountListener(iconHandler);
+        tabbedPane.addChangeListener(iconHandler);
 
         PropertyChangeListener toolbarMenuUpdateListener =
           new PropertyChangeListener() {
@@ -1706,49 +1696,45 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     }
   }
 
-  class TabIconHandler implements EventCountListener {
+  class TabIconHandler implements EventCountListener, ChangeListener {
 
     //the tabIconHandler is associated with a new tab, and a new tab always
     //shows the 'new events' icon
-    private boolean receivedNotification = true;
+    private boolean newEvents = true;
+    private boolean seenEvents = false;
+    private final String ident;
     ImageIcon NEW_EVENTS = new ImageIcon(ChainsawIcons.ANIM_RADIO_TOWER);
     ImageIcon HAS_EVENTS = new ImageIcon(ChainsawIcons.INFO);
+    Icon SELECTED = LineIconFactory.createBlankIcon();
 
-    public TabIconHandler(final String ident) {
+    public TabIconHandler(String identifier) {
+        ident = identifier;
 
       new Thread(
         new Runnable() {
           public void run() {
             while (true) {
               //if this tab is active, remove the icon
-              if (
-                (getTabbedPane().getSelectedIndex() > -1)
-                  && (getTabbedPane().getSelectedIndex() == getTabbedPane()
-                                                                .indexOfTab(
-                    ident))) {
-                getTabbedPane().setIconAt(
-                  getTabbedPane().indexOfTab(ident), null);
-
-              } else {
-                //don't process undocked tabs
-                if (getTabbedPane().indexOfTab(ident) > -1) {
-                  //if the tab is not active and we received notification, set the
-                  // new events icon
-                  if (receivedNotification) {
+              //don't process undocked tabs
+              if (getTabbedPane().getSelectedIndex() == getTabbedPane().indexOfTab(ident)) {
+                getTabbedPane().setIconAt(getTabbedPane().indexOfTab(ident), SELECTED);
+                newEvents = false;
+                seenEvents = true;
+              } else if (getTabbedPane().indexOfTab(ident)  > -1) {
+                if (newEvents) {
                     getTabbedPane().setIconAt(
-                      getTabbedPane().indexOfTab(ident), NEW_EVENTS);
-                    receivedNotification = false;
-                  } else {
-                      getTabbedPane().setIconAt(
+                    getTabbedPane().indexOfTab(ident), NEW_EVENTS);
+                    newEvents = false;
+                    seenEvents = false;
+                } else if (!seenEvents) {
+                    getTabbedPane().setIconAt(
                         getTabbedPane().indexOfTab(ident), HAS_EVENTS);
-                  }
                 }
               }
 
               try {
                 Thread.sleep(handler.getQueueInterval() + 1000);
-              } catch (InterruptedException ie) {
-              }
+              } catch (InterruptedException ie) {}
             }
           }
         }).start();
@@ -1763,7 +1749,13 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
          *                    DOCUMENT ME!
          */
     public void eventCountChanged(int currentCount, int totalCount) {
-      receivedNotification = true;
+        newEvents = true;
+    }
+    
+    public void stateChanged(ChangeEvent event) {
+        if (getTabbedPane().indexOfTab(ident) == getTabbedPane().getSelectedIndex()) {
+            getTabbedPane().setIconAt(getTabbedPane().indexOfTab(ident), SELECTED);
+        }
     }
   }
   /**
