@@ -54,6 +54,10 @@ public class HTMLLayout extends Layout {
   private PatternConverter head;
   private String timezone;
   private String title = "Log4J Log Messages";
+
+  private boolean internalCSS = false;
+  private String url2ExternalCSS = "http://logging.apache.org/log4j/docs/css/eventTable-1.0.css";
+  
   
   // counter keeping track of the rows output
   private long counter = 0;
@@ -131,6 +135,49 @@ public class HTMLLayout extends Layout {
   }
 
   /**
+   * Returns the value of the internalCSS option. See {@link setInternalCSS} 
+   * method for details about the meaning of this option.
+   * 
+   * @return boolean Value of internalCSS option
+   */
+  public boolean isInternalCSS() {
+    return internalCSS;
+  }
+  
+  /**
+   * Set the value of the internalCSS option. If set to true, the generated HTML
+   * ouput will include an internal  cascading style sheet. Otherwise, the
+   * generated HTML output will include a reference to an external CSS.
+   * <p>
+   * By default, <code>internalCSS</code> value is set to false, that is, 
+   * by default, only a link to an external CSS file will be generated. 
+   * 
+   * @see #setURL2ExternalCSS
+   * 
+   * @param internalCSS
+   */
+  public void setInternalCSS(boolean internalCSS) {
+    this.internalCSS = internalCSS;
+  }
+  
+  /**
+   * Return the URL to the external CSS file. See {@link #setURL2ExternalCSS} 
+   * method for details about the meaning of this option.
+   * 
+   * @return URL to the external CSS file.
+   */
+  public String getURL2ExternalCSS() {
+    return url2ExternalCSS;
+  }
+  /**
+   * Set the URL for the external CSS file. By default, the external
+   * CSS file is set to "http://logging.apache.org/log4j/docs/css/eventTable-1.0.css".
+   */
+  public void setURL2ExternalCSS(String url2ExternalCSS) {
+    this.url2ExternalCSS = url2ExternalCSS;
+  }
+  
+  /**
    * Returns the content type output by this layout, i.e "text/html".
    */
   public String getContentType() {
@@ -167,7 +214,11 @@ public class HTMLLayout extends Layout {
     sbuf.append(Layout.LINE_SEP);
     sbuf.append("<title>" + title + "</title>");
     sbuf.append(Layout.LINE_SEP);
-    sbuf.append("<LINK REL=StyleSheet HREF=\"http://logging.apache.org/log4j/docs/css/eventTable-1.0.css\" TITLE=\"Basic\">");
+    if(internalCSS) {
+      getInternalCSS(sbuf);
+    } else {
+      sbuf.append("<LINK REL=StyleSheet HREF=\""+url2ExternalCSS+"\" TITLE=\"Basic\">");
+    }
     sbuf.append(Layout.LINE_SEP);
     sbuf.append("</head>");
     sbuf.append(Layout.LINE_SEP);
@@ -181,7 +232,7 @@ public class HTMLLayout extends Layout {
     sbuf.append(Layout.LINE_SEP);
     sbuf.append("<br>");
     sbuf.append(Layout.LINE_SEP);
-    sbuf.append("<table cellspacing=\"0\" width=\"80%\" >");
+    sbuf.append("<table cellspacing=\"0\">");
     sbuf.append(Layout.LINE_SEP);
 
 
@@ -190,7 +241,7 @@ public class HTMLLayout extends Layout {
     PatternConverter c = head;
     while (c != null) {
       sbuf.append("<td class=\"");
-      sbuf.append(c.getName().toLowerCase());
+      sbuf.append(c.getStyleClass(null).toLowerCase());
       sbuf.append("\">");
       sbuf.append(c.getName());
       sbuf.append("</td>");
@@ -250,7 +301,7 @@ public class HTMLLayout extends Layout {
     PatternConverter c = head;
     while (c != null) {
       output.write("<td class=\"");
-      output.write(c.getName().toLowerCase());
+      output.write(c.getStyleClass(event).toLowerCase());
       output.write("\">");      
       c.format(output, event);
       output.write("</td>");
@@ -266,5 +317,54 @@ public class HTMLLayout extends Layout {
       appendThrowableAsHTML(s, output);
       output.write("</td></tr>" + Layout.LINE_SEP);
     }
+  }
+  
+  /**
+   * Generate an internal CSS file.
+   * @param buf The StringBuffer where the CSS file will be placed.
+   */
+  void getInternalCSS(StringBuffer buf) {
+
+    buf.append("<STYLE  type=\"text/css\">");
+    buf.append(Layout.LINE_SEP);
+    buf.append("table { margin-left: 2em; margin-right: 2em; border-left: 2px solid #AAA; }");
+    buf.append(Layout.LINE_SEP);
+
+    buf.append("TR.even { background: #FFFFFF; }");
+    buf.append(Layout.LINE_SEP);
+
+    buf.append("TR.odd { background: #DADADA; }");
+    buf.append(Layout.LINE_SEP);
+
+    buf.append("TR.warn TD.level, TR.error TD.level, TR.fatal TD.level {font-weight: bold; color: #FF4040 }");
+    buf.append(Layout.LINE_SEP);
+
+    buf.append("TD { padding-right: 1ex; padding-left: 1ex; border-right: 2px solid #AAA; }");
+    buf.append(Layout.LINE_SEP);
+
+    buf.append("TD.time, TD.date { text-align: right; font-family: courier, monospace; font-size: smaller; }");
+    buf.append(Layout.LINE_SEP);
+
+    buf.append("TD.sn { text-align: right; width: 5ex; font-family: courier, monospace; font-size: smaller; }");
+    buf.append(Layout.LINE_SEP);
+
+    buf.append("TD.thread { text-align: left; }");
+    buf.append(Layout.LINE_SEP);
+
+    buf.append("TD.level { text-align: right; }");
+    buf.append(Layout.LINE_SEP);
+
+    buf.append("TD.logger { text-align: left; }");
+    buf.append(Layout.LINE_SEP);
+
+    buf.append("TR.header { background: #9090FF; color: #FFF; font-weight: bold; font-size: larger; }");    
+    buf.append(Layout.LINE_SEP);
+
+    buf.append("TD.exception { background: #C0C0F0; font-family: courier, monospace;}");
+    buf.append(Layout.LINE_SEP);
+
+    buf.append("</STYLE>");
+    buf.append(Layout.LINE_SEP);
+
   }
 }

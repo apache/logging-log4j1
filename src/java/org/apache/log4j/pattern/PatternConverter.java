@@ -140,10 +140,11 @@ public abstract class PatternConverter {
  
   /**
    * This method returns the CSS style class that should be applied to
-   * the LoggingEvent passed as parameter. 
+   * the LoggingEvent passed as parameter, which can be null. 
    * 
    * This information is currently used only by HTMLLayout.
    * 
+   * @param LoggingEvent null values are accepted
    * @return  the name of the conversion pattern
    */
   public abstract String getStyleClass(LoggingEvent e);

@@ -17,7 +17,6 @@
 package org.apache.log4j.pattern;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.helpers.AbsoluteTimeDateFormat;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
 
@@ -60,6 +59,9 @@ public class PatternParser {
     
     globalRulesRegistry.put("C", ClassNamePatternConverter.class.getName());
     globalRulesRegistry.put("class", ClassNamePatternConverter.class.getName());
+ 
+    globalRulesRegistry.put("d", DatePatternConverter.class.getName());
+    globalRulesRegistry.put("date", DatePatternConverter.class.getName());
     
     globalRulesRegistry.put("F", FileLocationPatternConverter.class.getName());
     globalRulesRegistry.put("file", FileLocationPatternConverter.class.getName());
@@ -94,6 +96,9 @@ public class PatternParser {
     globalRulesRegistry.put("X", PropertiesPatternConverter.class.getName());
     globalRulesRegistry.put("properties", PropertiesPatternConverter.class.getName());
 
+    globalRulesRegistry.put("sn", SequenceNumberPatternConverter.class.getName());
+    globalRulesRegistry.put("sequenceNumber", SequenceNumberPatternConverter.class.getName());
+    
     globalRulesRegistry.put("throwable", ThrowableInformationPatternConverter.class.getName());
     
   }
@@ -359,50 +364,12 @@ public class PatternParser {
       pc.setOption(option);
       currentLiteral.setLength(0);
     } else {
-      switch (c) {
-      case 'd':
-
-        String dateFormatStr = AbsoluteTimeDateFormat.ISO8601_DATE_FORMAT;
-
-        //DateFormat df;
-        if (option != null) {
-          dateFormatStr = option;
-        }
-
-        if (
-          dateFormatStr.equalsIgnoreCase(
-              AbsoluteTimeDateFormat.ISO8601_DATE_FORMAT)) {
-          option = "yyyy-MM-dd HH:mm:ss,SSS";
-
-          //System.out.println("optin is " + option);
-        } else if (
-          dateFormatStr.equalsIgnoreCase(
-              AbsoluteTimeDateFormat.ABS_TIME_DATE_FORMAT)) {
-          option = "HH:mm:ss,SSS";
-        } else if (
-          dateFormatStr.equalsIgnoreCase(
-              AbsoluteTimeDateFormat.DATE_AND_TIME_DATE_FORMAT)) {
-          option = "dd MMM yyyy HH:mm:ss,SSS";
-        }
-
-        pc = new DatePatternConverter(formattingInfo);
-        pc.setOption(option);
-
-        //LogLog.debug("DATE converter {"+dateFormatStr+"}.");
-        //formattingInfo.dump();
-        currentLiteral.setLength(0);
-
-        break;
-
-      default:
-        LogLog.error(
+      LogLog.error(
           "Unexpected char [" + c + "] at position " + i
           + " in conversion patterrn.");
         pc = new LiteralPatternConverter(currentLiteral.toString());
         currentLiteral.setLength(0);
-      }
     }
-
     addConverter(pc);
   }
 

@@ -31,7 +31,8 @@ public class Loop {
   public static Logger logger = Logger.getLogger(Loop.class);
 
   public static void main(String[] args) {
-    HTMLLayout htmlLayout = new HTMLLayout("%relative%thread%level%logger%m");
+    HTMLLayout htmlLayout = new HTMLLayout("%sn%date%thread%level%logger%m");
+    //htmlLayout.setInternalCSS(true);
     //EnhancedHTMLLayout htmlLayout = new EnhancedHTMLLayout("%relative%thread%level%logger%m");
     FileAppender appender = new FileAppender();
     appender.setFile("toto.html");
