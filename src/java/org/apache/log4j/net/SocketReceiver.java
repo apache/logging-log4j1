@@ -16,24 +16,24 @@
 
 package org.apache.log4j.net;
 
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.plugins.Pauseable;
-import org.apache.log4j.plugins.Receiver;
-import org.apache.log4j.plugins.Plugin;
-import org.apache.log4j.spi.LoggerRepository;
-import org.apache.log4j.spi.LoggingEvent;
-
 import java.io.IOException;
-
 import java.net.ServerSocket;
 import java.net.Socket;
-
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import javax.swing.event.EventListenerList;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.plugins.Pauseable;
+import org.apache.log4j.plugins.Plugin;
+import org.apache.log4j.plugins.Receiver;
+import org.apache.log4j.spi.LoggerRepository;
+import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
@@ -60,7 +60,7 @@ public class SocketReceiver extends Receiver implements Runnable, PortBased,
   private ServerSocket serverSocket;
   private Vector socketList = new Vector();
   private SocketNodeEventListener listener = null;
-  private EventListenerList listenerList = new EventListenerList();
+  private List listenerList = Collections.synchronizedList(new ArrayList());
 
   public SocketReceiver() {
   }
@@ -224,14 +224,14 @@ public class SocketReceiver extends Receiver implements Runnable, PortBased,
           socketList.add(socket);
 
           SocketNode node = new SocketNode(socket, this);
-          SocketNodeEventListener[] listeners =
-            (SocketNodeEventListener[]) listenerList.getListeners(
-              SocketNodeEventListener.class);
-
-          for (int i = 0; i < listeners.length; i++) {
-            node.addSocketNodeEventListener(listeners[i]);
+          synchronized(listenerList){
+          	for (Iterator iter = listenerList.iterator(); iter
+          	.hasNext();) {
+          		SocketNodeEventListener listener = (SocketNodeEventListener) iter.next();
+          		node.addSocketNodeEventListener(listener);
+          		
+          	}
           }
-
           socketMap.put(socket, node);
           new Thread(node).start();
           socket = null;
@@ -299,7 +299,7 @@ public class SocketReceiver extends Receiver implements Runnable, PortBased,
    * @param listener the listener to add to the list
    */
   public void addSocketNodeEventListener(SocketNodeEventListener listener) {
-    listenerList.add(SocketNodeEventListener.class, listener);
+    listenerList.add(listener);
   }
 
   /**
@@ -310,7 +310,7 @@ public class SocketReceiver extends Receiver implements Runnable, PortBased,
    * @param listener the SocketNodeEventListener to remove
    */
   public void removeSocketNodeEventListener(SocketNodeEventListener listener) {
-    listenerList.remove(SocketNodeEventListener.class, listener);
+    listenerList.remove(listener);
   }
 
   /**

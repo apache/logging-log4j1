@@ -16,21 +16,20 @@
 
 package org.apache.log4j.net;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.apache.log4j.plugins.Pauseable;
 import org.apache.log4j.plugins.Receiver;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.LoggingEvent;
-
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-
-import java.net.Socket;
-
-import java.util.EventListener;
-
-import javax.swing.event.EventListenerList;
 
 
 // Contributors:  Moses Hohman <mmhohman@rainbow.uchicago.edu>
@@ -55,7 +54,7 @@ public class SocketNode implements Runnable, Pauseable {
   private LoggerRepository hierarchy;
   private Receiver receiver;
   private SocketNodeEventListener listener;
-  private EventListenerList listenerList = new EventListenerList();
+  private List listenerList = Collections.synchronizedList(new ArrayList());
 
   /**
     Constructor for socket and logger repository. */
@@ -89,7 +88,7 @@ public class SocketNode implements Runnable, Pauseable {
    * @param listener the listener to add to the list
    */
   public void addSocketNodeEventListener(SocketNodeEventListener listener) {
-    listenerList.add(SocketNodeEventListener.class, listener);
+    listenerList.add(listener);
   }
 
   /**
@@ -100,7 +99,7 @@ public class SocketNode implements Runnable, Pauseable {
    * @param listener the SocketNodeEventListener to remove
    */
   public void removeSocketNodeEventListener(SocketNodeEventListener listener) {
-    listenerList.remove(SocketNodeEventListener.class, listener);
+    listenerList.remove(listener);
   }
 
   public void run() {
@@ -187,7 +186,7 @@ public class SocketNode implements Runnable, Pauseable {
     }
 
     // send event to listener, if configured
-    if (listener != null || listenerList.getListenerCount()>0) {
+    if (listener != null || listenerList.size()>0) {
       fireSocketClosedEvent(listenerException);
     }
   }
@@ -197,16 +196,14 @@ public class SocketNode implements Runnable, Pauseable {
    * @param listenerException
    */
   private void fireSocketClosedEvent(Exception listenerException) {
-    EventListener[] listeners =
-      listenerList.getListeners(SocketNodeEventListener.class);
-
-    for (int i = 0; i < listeners.length; i++) {
-      SocketNodeEventListener snel = (SocketNodeEventListener) listeners[i];
-
-      if (snel != null) {
-        snel.socketClosedEvent(listenerException);
-      }
-    }
+  	synchronized(listenerList){
+  		for (Iterator iter = listenerList.iterator(); iter.hasNext();) {
+  			SocketNodeEventListener snel = (SocketNodeEventListener) iter.next();
+  			if (snel != null) {
+  				snel.socketClosedEvent(listenerException);
+  			}
+  		}
+  	}
   }
 
   /**
@@ -214,16 +211,14 @@ public class SocketNode implements Runnable, Pauseable {
    * @param remoteInfo
    */
   private void fireSocketOpened(String remoteInfo) {
-    EventListener[] listeners =
-      listenerList.getListeners(SocketNodeEventListener.class);
-
-    for (int i = 0; i < listeners.length; i++) {
-      SocketNodeEventListener snel = (SocketNodeEventListener) listeners[i];
-
-      if (snel != null) {
-        snel.socketOpened(remoteInfo);
-      }
-    }
+  	synchronized(listenerList){
+  		for (Iterator iter = listenerList.iterator(); iter.hasNext();) {
+  			SocketNodeEventListener snel = (SocketNodeEventListener) iter.next();
+  			if (snel != null) {
+  				snel.socketOpened(remoteInfo);
+  			}
+  		}
+  	}
   }
 
   public void setPaused(boolean paused) {
