@@ -5,6 +5,23 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
 
+
+ February ??, 2001
+
+ - Release of version 1.1 (the 21st major release)
+
+ - Changed the name of the configuration element to log4j:configuration in the
+   log4j.dtd. All configuration files written in XML need to be
+   modified. [**]
+
+   The following perl command can help:
+
+   > perl -p -i.bak -e "s/configuration/log4j:configuration/;" file1.xml .. fileN.xml
+   
+
+ - Fixed the errouneously thrown IOInterruptedException when the AsyncAppender 
+   was closed. [*]
+
  January 12th, 2001
 
  - Release of version 1.0.4 (the 20th major release)
@@ -57,6 +74,10 @@
  - Release of version 1.0 (the 20th major release)
 
  - Package hierarchy now starts at org.apache.log4j. [***]
+
+   The following perl command can help in the transition:
+
+   > perl -p -i.bak -e "s/org.log4j/org.apache.log4j/;" file1.java .. fileN.java
  
  - Added the fatal() family of methods to the Category
    class.  Moreoever, the EMERG priority has been removed from the

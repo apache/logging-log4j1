@@ -86,5 +86,7 @@ public class DOMTest {
     
     cat.error("Message " + ++i, e);
     root.error("Message " + i, e);    
+
+    Category.shutdown();
   }
 }
