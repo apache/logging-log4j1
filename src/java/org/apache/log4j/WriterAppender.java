@@ -126,12 +126,20 @@ public class WriterAppender extends AppenderSkeleton {
    * activates this appender.
   */
   public void activate() {
+    int errors = 0;
     if (this.layout == null) {
       getLogger().error(
         "No layout set for the appender named [{}].", name);
+      errors++;
     }
     
-    if(this.writer != null) {
+    if(this.writer == null) {
+      getLogger().error("No writer set for the appender named [{}].", name);
+      errors++;
+    }
+    
+    // only error free appenders should be activated
+    if(errors == 0) {
       super.activate();
     }
   }
