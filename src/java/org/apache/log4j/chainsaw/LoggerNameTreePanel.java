@@ -51,9 +51,6 @@
  */
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-import org.apache.log4j.helpers.LogLog;
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -63,7 +60,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -94,6 +90,9 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.helpers.LogLog;
+
 
 /**
  * A panel that encapsulates the Logger Name tree, with associated actions
@@ -118,7 +117,8 @@ final class LoggerNameTreePanel extends JPanel {
    * @param logTreeModel
    */
   LoggerNameTreePanel(LogPanelLoggerTreeModel logTreeModel) {
-    super(new BorderLayout());
+    super();
+    setLayout(new BorderLayout());
     setBorder(BorderFactory.createEtchedBorder());
 
     logTree =
@@ -151,7 +151,6 @@ final class LoggerNameTreePanel extends JPanel {
         };
 
     ToolTipManager.sharedInstance().registerComponent(logTree);
-    logTree.setPreferredSize(new Dimension(400, 400));
     logTree.setCellRenderer(new LoggerNameTreeCellRenderer());
 
     //	============================================
@@ -183,7 +182,7 @@ final class LoggerNameTreePanel extends JPanel {
 
     logTree.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
     scrollTree = new JScrollPane(logTree);
-
+    scrollTree.setMinimumSize(new Dimension(150, 400));
     toolbar.setLayout(new BoxLayout(toolbar, BoxLayout.X_AXIS));
 
     expandAction = createExpandAction();
