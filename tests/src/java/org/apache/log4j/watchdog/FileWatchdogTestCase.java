@@ -27,7 +27,9 @@ import junit.framework.TestSuite;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.spi.Configurator;
+import org.apache.log4j.xml.DOMConfigurator;
 import org.apache.log4j.joran.JoranConfigurator;
 import org.apache.log4j.util.Compare;
 
@@ -72,19 +74,34 @@ public class FileWatchdogTestCase extends TestCase {
       }
     }
     
-    private String getSourceConfigFile(String caseName) {
+    private String getSourceXMLConfigFile(String caseName) {
 
         return SOURCE_CONFIG + "." + caseName + ".xml";
     }
 
-    private String getSourceConfigFile(String caseName, int index) {
+    private String getSourceXMLConfigFile(String caseName, int index) {
 
         return SOURCE_CONFIG + "." + caseName + "_" + index + ".xml";
     }
 
-    private String getConfigFile(String caseName) {
+    private String getXMLConfigFile(String caseName) {
       
       return FILE + "." + caseName + ".xml";
+    }
+    
+    private String getSourceConfigFile(String caseName) {
+
+        return SOURCE_CONFIG + "." + caseName + ".properties";
+    }
+
+    private String getSourceConfigFile(String caseName, int index) {
+
+        return SOURCE_CONFIG + "." + caseName + "_" + index + ".properties";
+    }
+
+    private String getConfigFile(String caseName) {
+      
+      return FILE + "." + caseName + ".properties";
     }
     
     private String getOutputFile(String caseName) {
@@ -101,12 +118,12 @@ public class FileWatchdogTestCase extends TestCase {
     public void test1() throws Exception {
       
       // set up the needed file references
-      File sourceFile1 = new File(getSourceConfigFile("test1", 1));
-      File sourceFile2 = new File(getSourceConfigFile("test1", 2));
+      File sourceFile1 = new File(getSourceXMLConfigFile("test1", 1));
+      File sourceFile2 = new File(getSourceXMLConfigFile("test1", 2));
       assertTrue(sourceFile1.exists());
       assertTrue(sourceFile2.exists());
       
-      File configFile = new File(getConfigFile("test1"));
+      File configFile = new File(getXMLConfigFile("test1"));
       
       // move the first config file into place
       copyFile(sourceFile1, configFile);
@@ -116,8 +133,7 @@ public class FileWatchdogTestCase extends TestCase {
       
       // configure environment to first config file
       Configurator configurator = new JoranConfigurator();
-      configurator.doConfigure(configURL,
-        LogManager.getLoggerRepository());
+      configurator.doConfigure(configURL, LogManager.getLoggerRepository());
       
       // now watch the file for changes
       FileWatchdog watchdog = new FileWatchdog();
@@ -152,11 +168,67 @@ public class FileWatchdogTestCase extends TestCase {
         getWitnessFile("test1")));
       */
     }
+    
+    // basic test of plugin in standalone mode with PropertyConfigurator
+    public void test2() throws Exception {
+      
+      // set up the needed file references
+      File sourceFile1 = new File(getSourceConfigFile("test2", 1));
+      File sourceFile2 = new File(getSourceConfigFile("test2", 2));
+      assertTrue(sourceFile1.exists());
+      assertTrue(sourceFile2.exists());
+      
+      File configFile = new File(getConfigFile("test2"));
+      
+      // move the first config file into place
+      copyFile(sourceFile1, configFile);
+      assertTrue(configFile.exists());
+      
+      URL configURL = new URL("file:"+configFile.getAbsolutePath());
+      
+      // configure environment to first config file
+      Configurator configurator = new PropertyConfigurator();
+      configurator.doConfigure(configURL, LogManager.getLoggerRepository());
+      
+      // now watch the file for changes
+      FileWatchdog watchdog = new FileWatchdog();
+      watchdog.setURL(configURL);
+      watchdog.setInterval(2000);
+      watchdog.setConfigurator(PropertyConfigurator.class.getName());
+      LogManager.getLoggerRepository().getPluginRegistry().addPlugin(watchdog);
+      watchdog.activateOptions();
+
+      // output some test messages
+      logger.debug("debug message");
+      logger.info("info message");
+      logger.warn("warn message");
+      logger.error("error message");
+      logger.fatal("fatal message");
+
+      // copy over a new version of the config file
+      copyFile(sourceFile2, configFile);
+      
+      // wait a few seconds for the watchdog to react
+      Thread.currentThread().sleep(4000);
+      
+      // output some test messages
+      logger.debug("debug message");
+      logger.info("info message");
+      logger.warn("warn message");
+      logger.error("error message");
+      logger.fatal("fatal message");
+      
+      /*
+      assertTrue(Compare.compare(getOutputFile("test2"), 
+        getWitnessFile("test2")));
+      */
+    }
 
     public static Test suite() {
 
         TestSuite suite = new TestSuite();
         suite.addTest(new FileWatchdogTestCase("test1"));
+        suite.addTest(new FileWatchdogTestCase("test2"));
 
         return suite;
     }
