@@ -28,7 +28,8 @@ import org.apache.log4j.xml.XLevel;
 
 
 /**
-   @author  Ceki G&uuml;lc&uuml;
+ * 
+ * @author  Ceki G&uuml;lc&uuml;
 */
 public class SocketServerTestCase extends TestCase {
   static String TEMP = "output/temp";
