@@ -321,6 +321,7 @@
       <fileset dir="."> 
         <patternset>
 	   <include name="**/*.bak"/>
+	   <include name="dist/velocity.log"/>
 	   <include name="${BSTEM}/**/temp*"/>
 	   <include name="${BSTEM}/performance/test"/>
 	   <include name="${BSTEM}/test/current.*"/>

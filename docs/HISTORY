@@ -5,6 +5,13 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
 
+ May 19, 2001
+
+ - Release of version 1.1.
+
+ - This release has the same code as 1.1b7. It differs only in a few minor
+   documentation changes.
+
  May 9, 2001
 
  - Release of version 1.1b7
