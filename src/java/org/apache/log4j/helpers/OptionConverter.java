@@ -207,21 +207,21 @@ public class OptionConverter {
 
       result = (Priority) o;
     } catch(ClassNotFoundException e) {
-      LogLog.error("custom priority class [" + clazz + "] not found.");
+      LogLog.warn("custom priority class [" + clazz + "] not found.");
     } catch(NoSuchMethodException e) {
-      LogLog.error("custom priority class [" + clazz + "]"
+      LogLog.warn("custom priority class [" + clazz + "]"
         + " does not have a constructor which takes one string parameter", e);
     } catch(java.lang.reflect.InvocationTargetException e) {
-      LogLog.error("custom priority class [" + clazz + "]"
+      LogLog.warn("custom priority class [" + clazz + "]"
 		   + " could not be instantiated", e);
     } catch(ClassCastException e) {
-      LogLog.error("class [" + clazz
+      LogLog.warn("class [" + clazz
         + "] is not a subclass of org.apache.log4j.Priority", e);
     } catch(IllegalAccessException e) {
-      LogLog.error("class ["+clazz+
+      LogLog.warn("class ["+clazz+
 		   "] cannot be instantiated due to access restrictions", e);
     } catch(Exception e) {
-      LogLog.error("class ["+clazz+"], priority ["+priorityName+
+      LogLog.warn("class ["+clazz+"], priority ["+priorityName+
 		   "] conversion failed.", e);
     }
     return result;

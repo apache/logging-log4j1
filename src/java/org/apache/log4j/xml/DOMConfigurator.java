@@ -77,6 +77,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
   static final String DISABLE_OVERRIDE_ATTR = "disableOverride";
   static final String DISABLE_ATTR       = "disable";
   static final String CONFIG_DEBUG_ATTR  = "configDebug";
+  static final String INTERNAL_DEBUG_ATTR  = "debug";
   static final String RENDERING_CLASS_ATTR = "renderingClass";
   static final String RENDERED_CLASS_ATTR = "renderedClass";
 
@@ -607,17 +608,25 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
       }
     }
 
-    String confDebug = subst(element.getAttribute(CONFIG_DEBUG_ATTR));
-    LogLog.debug("configDebug attribute= \"" + confDebug +"\".");
+    String debugAttrib = subst(element.getAttribute(INTERNAL_DEBUG_ATTR));
+      
+    LogLog.debug("debug attribute= \"" + debugAttrib +"\".");
     // if the log4j.dtd is not specified in the XML file, then the
-    // configDebug attribute is returned as the empty string when it
-    // is not specified in the XML file.
-    if(!confDebug.equals("") && !confDebug.equals("null")) {      
-      LogLog.setInternalDebugging(OptionConverter.toBoolean(confDebug, true));
+    // "debug" attribute is returned as the empty string.
+    if(!debugAttrib.equals("") && !debugAttrib.equals("null")) {      
+      LogLog.setInternalDebugging(OptionConverter.toBoolean(debugAttrib, true));
     }
     else 
-      LogLog.debug("Ignoring " + CONFIG_DEBUG_ATTR + " attribute.");
-      
+      LogLog.debug("Ignoring " + INTERNAL_DEBUG_ATTR + " attribute.");
+
+
+    String confDebug = subst(element.getAttribute(CONFIG_DEBUG_ATTR));
+    if(!confDebug.equals("") && !confDebug.equals("null")) {      
+      LogLog.warn("The \""+CONFIG_DEBUG_ATTR+"\" attribute is deprecated.");
+      LogLog.warn("Use the \""+INTERNAL_DEBUG_ATTR+"\" attribute instead.");
+      LogLog.setInternalDebugging(OptionConverter.toBoolean(confDebug, true));
+    }
+
     String override = subst(element.getAttribute(DISABLE_OVERRIDE_ATTR));
     LogLog.debug("Disable override=\"" + override +"\".");
     // if the log4j.dtd is not specified in the XML file, then the
@@ -659,6 +668,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
       }
     }
   }
+
   
   protected
   String subst(String value) {

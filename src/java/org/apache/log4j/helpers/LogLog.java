@@ -25,18 +25,30 @@ package org.apache.log4j.helpers;
    @author Ceki G&uuml;lc&uuml;
 */
 public class LogLog {
+
+  /**
+     Defining this value makes log4j print log4j-internal debug
+     statements to <code>System.out</code>.
+     
+    <p> The value of this string is <b>log4j.debug</b>.
+    
+    <p>Note that the search for all option names is case sensitive.  */
+  public static final String DEBUG_KEY="log4j.debug";
+
  
   /**
-     Defining this value makes configurators print debug statements to
-     <code>System.out</code> while parsing configuration files.
+     Defining this value makes log4j components print log4j-internal
+     debug statements to <code>System.out</code>.
      
     <p> The value of this string is <b>log4j.configDebug</b>.
     
-    <p>Note that the search for all option names is case sensitive.
+    <p>Note that the search for all option names is case sensitive.  
+
+    @deprecated Use {@link #DEBUG_KEY} instead.
   */
   public static final String CONFIG_DEBUG_KEY="log4j.configDebug";
 
-  protected static boolean configDebugEnabled = false;  
+  protected static boolean debugEnabled = false;  
 
   /**
      In quietMode not even errors generate any output.
@@ -48,9 +60,15 @@ public class LogLog {
   private static final String WARN_PREFIX = "log4j:WARN ";
 
   static {
-    String key = OptionConverter.getSystemProperty(CONFIG_DEBUG_KEY, null);
-    if(key != null) 
-      configDebugEnabled = OptionConverter.toBoolean(key, true);
+    String key = OptionConverter.getSystemProperty(DEBUG_KEY, null);
+
+    if(key == null) {
+      key = OptionConverter.getSystemProperty(CONFIG_DEBUG_KEY, null);
+    }
+
+    if(key != null) { 
+      debugEnabled = OptionConverter.toBoolean(key, true);
+    }
   }
 
   /**
@@ -59,7 +77,7 @@ public class LogLog {
   static
   public
   void setInternalDebugging(boolean enabled) {
-    configDebugEnabled = enabled;
+    debugEnabled = enabled;
   }
 
   /**
@@ -69,7 +87,7 @@ public class LogLog {
   public
   static
   void debug(String msg) {
-    if(configDebugEnabled && !quietMode) {
+    if(debugEnabled && !quietMode) {
       System.out.println(PREFIX+msg);
     }
   }
@@ -81,7 +99,7 @@ public class LogLog {
   public
   static
   void debug(String msg, Throwable t) {
-    if(configDebugEnabled && !quietMode) {
+    if(debugEnabled && !quietMode) {
       System.out.println(PREFIX+msg);
       if(t != null)
 	t.printStackTrace(System.out);

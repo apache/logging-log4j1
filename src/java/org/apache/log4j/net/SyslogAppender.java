@@ -260,6 +260,9 @@ public class SyslogAppender extends AppenderSkeleton {
   public
   static
   int getFacility(String facilityName) {
+    if(facilityName != null) {
+      facilityName = facilityName.trim();
+    }
     if("KERN".equalsIgnoreCase(facilityName)) {
       return LOG_KERN;
     } else if("USER".equalsIgnoreCase(facilityName)) {
@@ -397,8 +400,8 @@ public class SyslogAppender extends AppenderSkeleton {
     
     syslogFacility = getFacility(facilityName);
     if (syslogFacility == -1) {
-      System.err.println(facilityName +
-                  " is an unknown syslog facility. Defaulting to \"USER\".");
+      System.err.println("["+facilityName +
+                  "] is an unknown syslog facility. Defaulting to [USER].");
       syslogFacility = LOG_USER;
     }
     

@@ -19,11 +19,11 @@
    If you have a CVS checked out copy of log4j be sure to check out a
    fresh copy. [*]
 
- - Added jar files required at build time to build/lib so that it is
-   now possible to compile log4j out of the box. [*]
+ - Added a few jar files required at build time to build/lib so that
+   it is now possible to compile log4j out of the box. [*]
 
- - Whenever a priority parameter is expected in a configuration file
-   one can now use a costom priority class. See OptionConverter.toPriority
+ - Whenever a priority parameter is expected in a configuration file,
+   one can now use a custom priority class. See OptionConverter.toPriority
    method for more information. Note that the <priority> element in
    log4j.dtd remains unaffected by this change. [*]
 
@@ -32,7 +32,11 @@
 
  - Log4j components are now configured as JavaBeans. The setOption and
    getOptionString methods have been deprecated in OptionHandler
-   interface implemented by most log4j components. [*]
+   interface which is implemented by most log4j components. [*]
+
+ - The stack trace of a throwable passed in a logging statement is not
+   parsed into a stack array which is serializable. This allows cascading of
+   log4j servers to properly propagate throwable information. [*]
 
  - In XML configuration files, the <configuration> element has been
    deprecated and was replaced by the <log4j:configuration> element. [*]
@@ -40,6 +44,11 @@
    The following perl command can help to migrate:
 
    perl -p -i.bak -e "s/configuration/log4j:configuration/;" file1.xml .. fileN.xml
+
+  - The "log4j.configDebug" system property has been replaced with the
+    "log4j.debug" system property altough it is still available.
+    Similarly, the "configDebug" attribute has been deprecated and
+    replaced with the "debug" attribute in log4j.dtd. [*]
 
 	
  February 23, 2001

@@ -130,7 +130,7 @@ if [ $TEST -ge $start ]; then
   D_FLAG=""
   echo "18:25:32,394 [main] DEBUG  testing - HELLO WORLD" > $TEMP
   echo  "log4j.rootCategory= DEBUG , testAppender" > $LCF
-  lecho "log4j.configDebug="
+  lecho "log4j.debug="
   lecho "log4j.appender.testAppender=org.apache.log4j.RollingFileAppender"
   lecho "log4j.appender.testAppender.File=$TEMP"
   lecho "log4j.appender.testAppender.Append= true"
@@ -146,7 +146,7 @@ TEST=6;
 if [ $TEST -ge $start ]; then
   D_FLAG=""
   echo  "log4j.rootCategory=  , testAppender" > $LCF
-  lecho "log4j.configDebug="
+  lecho "log4j.debug="
   lecho "log4j.appender.testAppender=org.apache.log4j.FileAppender"
   lecho "log4j.appender.testAppender.File=$TEMP"
   lecho "log4j.appender.testAppender.Append=   false  "
@@ -163,7 +163,7 @@ if [ $TEST -ge $start ]; then
   D_FLAG=""
   echo "18:25:32,394 [main] DEBUG  testing - HELLO WORLD" > $TEMP
   echo  "log4j.rootCategory= DEBUG , testAppender, inexistentAppender" > $LCF
-  lecho "log4j.configDebug=false"
+  lecho "log4j.debug=false"
   lecho "log4j.appender.testAppender=org.apache.log4j.RollingFileAppender"
   lecho "log4j.appender.testAppender.File=$TEMP"
   lecho "log4j.appender.testAppender.Append= true"
@@ -181,7 +181,7 @@ TEST=8;
 if [ $TEST -ge $start ]; then
   D_FLAG=""
   echo  "log4j.rootCategory= DEBUG , testAppender" > $LCF
-  lecho "log4j.configDebug=false"
+  lecho "log4j.debug=false"
   lecho "log4j.appender.testAppender=org.apache.log4j.FileAppender"
   # Note the spaces
   lecho "log4j.appender.testAppender.File=System.out  "
@@ -195,7 +195,7 @@ TEST=9;
 if [ $TEST -ge $start ]; then
   D_FLAG=""
   echo  "log4j.rootCategory= DEBUG , testAppender" > $LCF
-  lecho "log4j.configDebug=false"
+  lecho "log4j.debug=false"
   lecho "log4j.appender.testAppender=org.apache.log4j.ConsoleAppender"
   lecho "log4j.appender.testAppender.Target=  System.out  "
 #  lecho "log4j.appender.testAppender.Append= true  "
@@ -210,7 +210,7 @@ TEST=10;
 if [ $TEST -ge $start ]; then
   D_FLAG=""
   echo  "log4j.rootCategory= DEBUG , testAppender" > $LCF
-  lecho "log4j.configDebug=false"
+  lecho "log4j.debug=false"
   lecho "log4j.appender.testAppender=org.apache.log4j.FileAppender"
   # We escape the dollar sign to avoid substitution at the shell level.
   lecho "log4j.appender.testAppender.File=\${user.dir}/$TEMP"
@@ -256,7 +256,7 @@ TEST=100;
 if [ $TEST -ge $start ]; then
   D_FLAG=""
   echo  "log4j.rootCategory=  , testAppender" > $LCF
-  lecho "log4j.configDebug=true"
+  lecho "log4j.debug=true"
   lecho "log4j.appender.testAppender=org.apache.log4j.net.SyslogAppender"
   lecho "log4j.appender.testAppender.SyslogHost=localhost"
   lecho "log4j.appender.testAppender.Facility=  LOCAL0 "
@@ -275,7 +275,7 @@ TEST=101;
 if [ $TEST -ge $start ]; then
   D_FLAG=""
   echo  "log4j.rootCategory=  , testAppender" > $LCF
-  lecho "log4j.configDebug=true"
+  lecho "log4j.debug=true"
   lecho "log4j.appender.testAppender=org.apache.log4j.net.SyslogAppender"
   lecho "log4j.appender.testAppender.SyslogHost=localhost"
   lecho "log4j.appender.testAppender.Facility="
