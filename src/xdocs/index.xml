@@ -3,7 +3,7 @@
 
   <properties>
     <author email="cgu@apache.org">Ceki Gulcu</author>
-    <title>log4j project</title>
+    <title>Introduction</title>
   </properties>
 
 <body>
@@ -17,7 +17,7 @@ distributed applications.</p>
 
 <p>On the other hand, some people argue that log statements pollute
 source code and decrease legibility. (We believe that the contrary is
-true).  In the Java language where a pre-processor is not available,
+true).  In the Java language where a preprocessor is not available,
 log statements increase the size of the code and reduce its speed,
 even when logging is turned off.  Given that a reasonably sized
 application may contain thousands of log statements, speed is of
@@ -47,9 +47,9 @@ the volume of logged output and minimize the cost of logging.</p>
 log4j server, a remote Unix Syslog daemon or even a NT Event logger.</p>
 
 <p>On a 233 MHz ThinkPad running JDK 1.1.7B, it costs about 46
-nano-seconds to determine if that statement should be logged or
-not. Actual logging is also quite fast, ranging from 79 micro-seconds
-using the SimpleLayout, 164 micro-seconds using the TTCCLayout and
+nanoseconds to determine if that statement should be logged or
+not. Actual logging is also quite fast, ranging from 79 microseconds
+using the SimpleLayout, 164 microseconds using the TTCCLayout and
 around a millisecond when printing exceptions. The performance of the
 PatternLayout is almost as good as the dedicated layouts, except that
 it is a lot more flexible.</p>
