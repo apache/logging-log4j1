@@ -433,7 +433,7 @@ public class PatternParser {
         converted = df.format(date);
       }
       catch (Exception ex) {
-        LogLog.error("Error occured while converting date. Exception message: " + ex.getMessage() + ".");
+        LogLog.error("Error occured while converting date.", ex);
       }
       return converted;
     }
