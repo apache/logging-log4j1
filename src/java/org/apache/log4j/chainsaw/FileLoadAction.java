@@ -99,10 +99,13 @@ class FileLoadAction extends AbstractAction {
           }
         });
 
-      chooser.showOpenDialog(parent);
-
+      int i = chooser.showOpenDialog(parent);
+      if(i != JFileChooser.APPROVE_OPTION) {
+       return; 
+      }
       File selectedFile = chooser.getSelectedFile();
 
+      
       try {
         url = selectedFile.toURL();
         name = selectedFile.getName();
