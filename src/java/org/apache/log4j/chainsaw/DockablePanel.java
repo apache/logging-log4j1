@@ -55,16 +55,19 @@ import javax.swing.JPanel;
 /**
  * Extends the functionality of a JPanel by providing a 'docked' state.
  * @author Scott Deboy <sdeboy@apache.org>
- *
+ * @author Paul Smith <psmith@apache.org>
  */
 public class DockablePanel extends JPanel {
   private boolean isDocked = true;
 
   public void setDocked(boolean docked) {
+    boolean oldVal = isDocked;
     isDocked = docked;
+    firePropertyChange("docked", oldVal, isDocked);
   }
 
   public boolean isDocked() {
     return isDocked;
   }
+
 }
