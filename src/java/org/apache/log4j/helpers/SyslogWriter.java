@@ -25,6 +25,9 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 
 /**
    SyslogWriter is a wrapper around the java.net.DatagramSocket class
@@ -38,13 +41,15 @@ public class SyslogWriter extends Writer {
   private InetAddress address;
   private DatagramSocket ds;
 
+  private Logger logger = LogManager.getLogger(SyslogWriter.class);
+
   public SyslogWriter(String syslogHost) {
     this.syslogHost = syslogHost;
 
     try {
       this.address = InetAddress.getByName(syslogHost);
     } catch (UnknownHostException e) {
-      LogLog.error(
+      logger.error(
         "Could not find " + syslogHost + ". All logging will FAIL.", e);
     }
 
@@ -52,7 +57,7 @@ public class SyslogWriter extends Writer {
       this.ds = new DatagramSocket();
     } catch (SocketException e) {
       e.printStackTrace();
-      LogLog.error(
+      logger.error(
         "Could not instantiate DatagramSocket to " + syslogHost
         + ". All logging will FAIL.", e);
     }

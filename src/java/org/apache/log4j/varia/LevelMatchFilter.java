@@ -17,7 +17,6 @@
 package org.apache.log4j.varia;
 
 import org.apache.log4j.Level;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.spi.LoggingEvent;
@@ -50,7 +49,6 @@ public class LevelMatchFilter extends Filter {
 
   public void setLevelToMatch(String level) {
     levelToMatch = OptionConverter.toLevel(level, null);
-    LogLog.debug("***Level to match set to " + levelToMatch);
   }
 
   public String getLevelToMatch() {
@@ -82,14 +80,9 @@ public class LevelMatchFilter extends Filter {
       return Filter.NEUTRAL;
     }
 
-    LogLog.debug(
-      "*** levelToMatch is " + levelToMatch + ", event.level is "
-      + event.getLevel());
-
     boolean matchOccured = false;
 
     if (this.levelToMatch.equals(event.getLevel())) {
-      LogLog.debug("**********matchOccured");
       matchOccured = true;
     }
 

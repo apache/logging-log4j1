@@ -19,7 +19,6 @@ package org.apache.log4j.db;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.Constants;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.scheduler.Job;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.LoggingEvent;
@@ -40,7 +39,7 @@ import java.util.Vector;
  */
 class DBReceiverJob implements Job {
 
-  static final Logger logger = Logger.getLogger(DBReceiverJob.class);
+  Logger logger = Logger.getLogger(DBReceiverJob.class);
 
   long lastId = 0;
 
@@ -51,7 +50,7 @@ class DBReceiverJob implements Job {
   }
 
   public void execute() {
-    LogLog.info("DBReceiverJob.execute() called");
+    logger.info("DBReceiverJob.execute() called");
 
     Connection connection = null;
 
@@ -137,7 +136,7 @@ class DBReceiverJob implements Job {
       statement.close();
       statement = null;
     } catch (SQLException sqle) {
-      LogLog.error("*************Problem receiving events", sqle);
+      logger.error("*************Problem receiving events", sqle);
     } finally {
       closeConnection(connection);
     }
