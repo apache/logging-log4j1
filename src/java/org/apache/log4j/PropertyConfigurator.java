@@ -601,7 +601,7 @@ public class PropertyConfigurator extends ConfiguratorBase {
         return;
       }
 
-      String levelStr = st.nextToken();
+      String levelStr = st.nextToken().trim();
       getLogger(repository).debug("Level token is [{}].", levelStr);
 
       // If the level value is inherited, set category level value to

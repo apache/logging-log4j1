@@ -43,6 +43,8 @@
 
  - Fixed Bugzilla 28682: NullPointerException in SocketHubAppender#cleanup. [*]
 
+ - Fixed Bugzilla 28464: White space significant at end of line for PropertyConfigurator. [*]
+
   November 25, 2004
 
  - Release of version 1.3alpha-3
