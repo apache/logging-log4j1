@@ -89,6 +89,7 @@ public class Start {
 
     public FinderStrategies() {
       mStrategies.add(new ResourceLoaderFinder());
+      mStrategies.add(new CurrentDirectoryFinder());
       mStrategies.add(new FileOpenFinder());
 
       // TODO: add any more stategies
@@ -118,6 +119,26 @@ public class Start {
   private static class ResourceLoaderFinder implements Log4JConfigurationFinder {
     public URL findConfiguration() {
       return this.getClass().getClassLoader().getResource(LOG4J_CONFIG_FILE);
+    }
+  }
+
+  /**
+   * Finds the config file by looking for it in the current directory
+   * @author Mark Womack
+   * @version 1.0
+   */
+  private static class CurrentDirectoryFinder implements Log4JConfigurationFinder {
+    public URL findConfiguration() {
+      File configFile = new File("./" + LOG4J_CONFIG_FILE);
+      if (configFile.exists()) {
+        try {
+          return new URL("file:" + LOG4J_CONFIG_FILE);
+        } catch (Exception e) {
+          return null;
+        }
+      } else {
+        return null;
+      }
     }
   }
 
