@@ -50,81 +50,93 @@ package org.apache.log4j.chainsaw;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.util.Iterator;
 
 import javax.swing.AbstractAction;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
+
 
 /**
- * Encapsulates the action to load an XML file.
+ *  Recent files menu.
  *
- * @author <a href="mailto:oliver@puppycrawl.com">Oliver Burn</a>
- * @version 1.0
+ *  @author <a href="mailto:rdecampo@twcny.rr.com">Raymond DeCampo</a>
  */
-class LoadXMLAction
-    extends AbstractAction
-{
-    /** use to log messages **/
-    private static final Category LOG =
-        Category.getInstance(LoadXMLAction.class);
+public class RecentFilesMenu extends JMenu {
+  /** Logger for class */
+  private static final Logger LOG = Logger.getLogger(RecentFilesMenu.class);
+  private final MyTableModel mModel;
+  private final XMLFileHandler mHandler;
 
-    /** the parent frame **/
-    private final JFrame mParent;
+  /**
+   *  Construct a RecentFilesMenu object based on the given model.  When a
+   *  file is selected from the menu, it will be loaded to the given model.
+   *
+   *  @param model  the table model
+   */
+  public RecentFilesMenu(MyTableModel model) {
+    super("Recent Files");
+    mModel = model;
+    mHandler = new XMLFileHandler(model);
+  }
 
-    /**
-     * the file chooser - configured to allow only the selection of a
-     * single file.
-     */
-    private final JFileChooser mChooser = new JFileChooser();
-    {
-        mChooser.setMultiSelectionEnabled(false);
-        mChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+  /**
+   *  Rebuild the menu based on the data in the
+   *  {@link org.apache.log4j.chainsaw.Preferences}.
+   */
+  public void rebuild() {
+    removeAll();
+
+    int order = 1;
+    final Iterator fIter =
+        Preferences.getInstance().getRecentFiles().iterator();
+
+    // Menu is enabled when we have files
+    setEnabled(fIter.hasNext());
+
+    while (fIter.hasNext()) {
+      String filename = (String) fIter.next();
+      JMenuItem menuItem = new JMenuItem(order + " - " + filename);
+      menuItem.addActionListener(new LoadRecentFileAction(filename, order));
+      add(menuItem);
+
+      if (order < 10) {
+        menuItem.setMnemonic('0' + order);
+      }
+
+      order++;
     }
 
-    /** the content handler **/
-    private final XMLFileHandler mHandler;
+    updateUI();
+  }
 
+  /** Handler for menu items */
+  private class LoadRecentFileAction extends AbstractAction {
+    /** File to load */
+    private final String mFilename;
 
-    /**
-     * Creates a new <code>LoadXMLAction</code> instance.
-     *
-     * @param aParent the parent frame
-     * @param aModel the model to add events to
-     */
-    LoadXMLAction(JFrame aParent, MyTableModel aModel)
-    {
-        mParent = aParent;
-        mHandler = new XMLFileHandler(aModel);
+    public LoadRecentFileAction(String filename, int order) {
+      mFilename = filename;
+      putValue(NAME, order + " - " + filename);
     }
 
-    /**
-     * Prompts the user for a file to load events from.
-     * @param aIgnore an <code>ActionEvent</code> value
-     */
-    public void actionPerformed(ActionEvent aIgnore) {
-        LOG.info("load file called");
-        if (mChooser.showOpenDialog(mParent) == JFileChooser.APPROVE_OPTION) {
-            LOG.info("Need to load a file");
-            final File chosen = mChooser.getSelectedFile();
-            try {
-                final int num = mHandler.loadFile(chosen);
-                JOptionPane.showMessageDialog(
-                    mParent,
-                    "Loaded " + num + " events.",
-                    "CHAINSAW",
-                    JOptionPane.INFORMATION_MESSAGE);
-            } catch (Exception e) {
-                LOG.warn("caught an exception loading the file", e);
-                JOptionPane.showMessageDialog(
-                    mParent,
-                    "Error parsing file - " + e.getMessage(),
-                    "CHAINSAW",
-                    JOptionPane.ERROR_MESSAGE);
-            }
-        }
+    /* Load the file */
+    public void actionPerformed(ActionEvent ae) {
+      try {
+        final File f = new File(mFilename);
+        final int num = mHandler.loadFile(f);
+        JOptionPane.showMessageDialog(
+          RecentFilesMenu.this, "Loaded " + num + " events.", "CHAINSAW",
+          JOptionPane.INFORMATION_MESSAGE);
+      } catch (Exception e) {
+        LOG.warn("caught an exception loading the file", e);
+        JOptionPane.showMessageDialog(
+          RecentFilesMenu.this, "Error parsing file - " + e.getMessage(),
+          "CHAINSAW", JOptionPane.ERROR_MESSAGE);
+      }
     }
-
+  }
 }
