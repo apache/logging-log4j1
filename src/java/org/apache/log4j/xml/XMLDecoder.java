@@ -47,9 +47,8 @@ import org.xml.sax.InputSource;
  * Decodes Logging Events in XML formated into elements that are used by
  * Chainsaw.
  *
- * This decoder can process either:
- *  - a collection of log4j:event nodes ONLY (no XML declaration nor eventSet node), or 
- *  - the XML declaration, log4j:eventSet root node AND containing log4j:event nodes (all required)
+ * This decoder can process a collection of log4j:event nodes ONLY 
+ * (no XML declaration nor eventSet node)
  * 
  * NOTE:  Only a single LoggingEvent is returned from the decode method
  * even though the DTD supports multiple events nested in an eventSet.
@@ -118,13 +117,9 @@ public class XMLDecoder implements Decoder {
        */
       StringBuffer buf = new StringBuffer(1024);
 
-      if (!(data.substring(0, data.indexOf(" ")).toLowerCase().startsWith("<?xml"))) {
-        buf.append(BEGINPART);
-      }
+      buf.append(BEGINPART);
       buf.append(data);
-      if (!(data.endsWith(ENDPART))) {
-        buf.append(ENDPART);
-      }
+      buf.append(ENDPART);
 
       InputSource inputSource =
         new InputSource(new StringReader(buf.toString()));
