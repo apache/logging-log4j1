@@ -7,7 +7,7 @@
 <h1 align=center>Frequently Asked Questions about log4j</h1>
 
 <h2 align=center>Ceki G&uuml;lc&uuml;
-<br>October 2000</h2>
+<br>May 2001</h2>
 
 <ul>
 
@@ -18,6 +18,7 @@
 <li><p><a href=#alternatives>What other logging packages are there?</a>
 <li><p><a HREF=#usageExample>Is there example code for using log4j?</a>
 <li><p><a href=#features>What are the features of log4j?</a> 
+<li><p><a href=#thread-safety>Is log4j thread-safe?</a> 
 <li><p><a href=#sample>What does log output look like?</a>
 <li><p><a href=#category>What are <em>Categories</em>?</a>
 <li><p><a href=#behavior>How can I change log behavior at runtime?</a>
@@ -182,6 +183,8 @@ list is not exhaustive.
       
   <p><li>log4j is fail-stop but not reliable.
 
+  <p><li>log4j is thread-safe.
+
   <p><li>log4j is not restricted to a predefined set of facilities.
 
   <p><li>Logging behavior can be set at runtime using a configuration
@@ -208,6 +211,10 @@ list is not exhaustive.
    <p><li>log4j supports internationalization.
        
 </ul>
+
+<a name=thread-safety><h4 id="">Is log4j thread-safe?</h4>
+
+Yes, log4j is thread-safe. 
 
 <a name=sample><h4 id="">What does log output look like?</h4>
 
@@ -565,10 +572,11 @@ arrived at the log server host according to its local clock.
 <p><a name=tax><h4>Why should I donate my extensions to log4j back to the
 project?</h4>
 
-Contrary to the GNU Public License (GPL) the Apache Public License
-does not make any claims over your extensions. <em>You are free to do
-whatever you wish with your proprietary log4j extensions.</em> In
-particular, you may choose to never release your extensions to the
+Contrary to the GNU Public License (GPL) the Apache Software License
+does not make any claims over your extensions. By extensions, we mean
+totally new code that invokes existing log4j classes. <em>You are free
+to do whatever you wish with your proprietary log4j extensions.</em>
+In particular, you may choose to never release your extensions to the
 wider public.
 
 <p>We are very careful not to change the log4j client API so that
