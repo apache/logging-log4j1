@@ -88,11 +88,10 @@ public class MDC {
 
 
   /**
-     Get the current thread's MDC as a hashtable.
-   */
-  public
-  static
-  Hashtable getContext() {
+   * Get the current thread's MDC as a hashtable. This method is
+   * intended to be used internally.  
+   * */
+  public static Hashtable getContext() {
     return mdc.getContext0();
   }
 
