@@ -7,7 +7,6 @@
 
 package factor;
 
-import java.rmi.Remote;
 import java.rmi.server.UnicastRemoteObject;
 import java.rmi.RemoteException;
 import java.rmi.Naming;
@@ -140,7 +139,7 @@ public class NumberCruncherServer extends UnicastRemoteObject
 
   public static
   void delay(int millis) {
-    try{Thread.currentThread().sleep(millis);}
+    try{Thread.sleep(millis);}
     catch(InterruptedException e) {}
   }
   

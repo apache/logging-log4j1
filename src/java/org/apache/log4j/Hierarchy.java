@@ -54,6 +54,7 @@
 package org.apache.log4j;
 
 import org.apache.log4j.Appender;
+import org.apache.log4j.helpers.IntializationUtil;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.or.ObjectRenderer;
 import org.apache.log4j.or.RendererMap;
@@ -100,6 +101,8 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   private LoggerFactory defaultFactory;
   private ArrayList repositoryEventListeners;
   private ArrayList loggerEventListeners;
+  
+  String name;
   Hashtable ht;
   Logger root;
   RendererMap rendererMap;
@@ -234,6 +237,29 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
     }
   }
 
+  /**
+   * Return the name of this hierarchy.
+   */
+  public String getName() {
+    return name;
+  }
+
+  /* 
+   * Set the name of this repository.
+   * 
+   * Note that once named, a repository cannot be rerenamed.
+   * @since 1.3
+   */
+  public void setName(String repoName) {
+    if(name == null) {
+      name = repoName;
+    } else if(!name.equals(repoName)) {
+      throw new IllegalStateException("Repository ["+name
+          +"] cannot be renamed as ["+repoName+"].");
+    }
+  }
+
+  
   /**
      The string form of {@link #setThreshold(Level)}.
   */
@@ -586,7 +612,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
     }
     
     // log4j self configure
-    LogManager.internalConf();
+    IntializationUtil.log4jInternalConfiguration(this);
   }
 
   /**
@@ -683,4 +709,5 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
       }
     }
   }
+
 }

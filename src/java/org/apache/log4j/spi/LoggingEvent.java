@@ -361,6 +361,14 @@ public class LoggingEvent implements java.io.Serializable {
        return false;
      }
 
+    if(locationInfo == null) {
+      if(rEvent.locationInfo != null) {
+        return false;
+      }
+    } else if(!locationInfo.equals(rEvent.locationInfo)) {
+      return false;
+    }
+
     
       // we can now safely assume that the two events are equal.
       return true; 

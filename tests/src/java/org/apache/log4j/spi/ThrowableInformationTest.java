@@ -49,34 +49,45 @@
 
 package org.apache.log4j.spi;
 
+import junit.framework.TestCase;
 
 /**
-
-   The <code>LogManager</code> uses one (and only one)
-   <code>RepositorySelector</code> implementation to select the
-   {@link LoggerRepository} for a particular application context.
-
-   <p>It is the responsability of the <code>RepositorySelector</code>
-   implementation to track the application context. Log4j makes no
-   assumptions about the application context or on its management.
-
-   <p>See also {@link org.apache.log4j.LogManager LogManager}.
-
-   @author Ceki G&uuml;lc&uuml;
-   @since 1.2
-
+ * 
+ * @author Ceki G&uuml;lc&uuml;
+ *
  */
-public interface RepositorySelector {
-  /**
-     Returns a {@link LoggerRepository} depending on the
-     context. Implementors must make sure that a valid (non-null)
-     LoggerRepository is returned.
-  */
-  public LoggerRepository getLoggerRepository();
-  
-  /**
-   * Sets the default repository
-   * @since 1.3
+public class ThrowableInformationTest extends TestCase {
+  /*
+   * @see TestCase#setUp()
    */
-  public void setDefaultRepository(LoggerRepository def);
+  protected void setUp() throws Exception {
+    super.setUp();
+  }
+
+  /*
+   * @see TestCase#tearDown()
+   */
+  protected void tearDown() throws Exception {
+    super.tearDown();
+  }
+
+  /*
+   * Class to test for boolean equals(Object)
+   */
+  public void testEqualsObject() {
+    Throwable e1 = new Exception("exeption 1");
+    Throwable e2 = new Exception("exeption 2");
+    
+    ThrowableInformation te1 = new ThrowableInformation(e1);
+    ThrowableInformation te2 = new ThrowableInformation(e2);
+    
+    assertEquals(te1, te1);
+    assertEquals(te2, te2);
+    
+    boolean eq1 = te1.equals(te2);
+    assertEquals(false, eq1);
+
+    boolean eq2 = te1.equals(null);
+    assertEquals(false, eq2);
+  }
 }
