@@ -82,8 +82,9 @@ href="../jakarta-log4j-1.0.4.zip"><b>ZIP</b></a> format.</p>
   <dd>A visual log4j configuration file editor by Tobias Dezulian.</dd>
 
 
-  <dt><a href="http://log4cpp.sourceforge.net"><b>log4cpp</b></a></dt>
-  <dd>A C++ translation of log4j by Bastiaan Bakker.</dd>
+  <dt><a href="http://sourceforge.net/projects/log4cpp/"><b>log4cpp</b></a></dt>
+  <dd>A library of C++ classes for flexible logging to files, syslog, IDSA and 
+      other destinations modeled after log4j by Bastiaan Bakker.</dd>
 
   <dt><a href="http://developer.jini.org/exchange/projects/log"><b>JINI logging service</b></a></dt>
   <dd>A log4j wrapper for JINI Jerome Bernard.</dd>
