@@ -9,6 +9,7 @@
 
 package org.apache.log4j;
 
+import java.beans.*;
 import java.io.IOException;
 import java.io.Writer;
 import java.io.FileWriter;
@@ -47,7 +48,7 @@ public class RollingFileAppender extends FileAppender {
   RollingFileAppender() {
     super();
   }
-
+  
   /**
     Instantiate a RollingFileAppender and open the file designated by
     <code>filename</code>. The opened filename will become the ouput
@@ -95,6 +96,15 @@ public class RollingFileAppender extends FileAppender {
   int getMaxBackupIndex() {
     return maxBackupIndex;
   }
+  
+  /**
+     Set the maximum size that the output file is allowed to reach
+     before being rolled over to backup files.
+   */
+  public
+  void setMaxFileSize(long maxFileSize) {
+    this.maxFileSize = maxFileSize;
+  }
 
   /**
      Set the maximum size that the output file is allowed to reach
@@ -112,14 +122,6 @@ public class RollingFileAppender extends FileAppender {
     maxFileSize = OptionConverter.toFileSize(value, maxFileSize + 1);
   }
   
-  /**
-     Returns the value of the <b>MaxFileSize</b> option.
-   */
-  public
-  long getMaxFileSize() {
-    return maxFileSize;
-  }
-
   public
   synchronized
   void setFile(String fileName, boolean append) throws IOException {
