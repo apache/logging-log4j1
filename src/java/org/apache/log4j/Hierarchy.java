@@ -25,6 +25,7 @@ import java.util.Vector;
 import org.apache.log4j.spi.RootCategory;
 import org.apache.log4j.spi.CategoryFactory;
 import org.apache.log4j.spi.HierarchyEventListener;
+import org.apache.log4j.Appender;
 import org.apache.log4j.or.RendererMap;
 import org.apache.log4j.or.ObjectRenderer;
 import org.apache.log4j.helpers.LogLog;
@@ -234,15 +235,44 @@ public class Hierarchy {
   }
 
   private
-  void fireCategoryCreationEvent(Category category) {
+  void fireAddAppenderEvent(Category category, Appender appender) {
     if(listeners != null) {
       int size = listeners.size();
       HierarchyEventListener listener;
       for(int i = 0; i < size; i++) {
 	listener = (HierarchyEventListener) listeners.elementAt(i);
-	listener.categoryCreationEvent(category);
+	listener.addAppenderEvent(category, appender);
       }
     }        
+  }
+
+
+  private
+  void fireRemoveAppenderEvent(Category category, Appender appender) {
+    if(listeners != null) {
+      int size = listeners.size();
+      HierarchyEventListener listener;
+      for(int i = 0; i < size; i++) {
+	listener = (HierarchyEventListener) listeners.elementAt(i);
+	listener.removeAppenderEvent(category, appender);
+      }
+    }        
+  }
+
+  /**
+     Returns the string representation of the internal
+     <code>disable</code> state.  
+
+     @since 1.2
+  */
+  public
+  String getDisableAsString() {
+    switch(disable) {
+    case DISABLE_OFF: return "DISABLE_OFF";
+    case DISABLE_OVERRIDE: return "DISABLE_OVERRIDE";
+    case Priority.DEBUG_INT: return "DISABLE_DEBUG";
+    default: return "UNKNOWN_STATE";
+    }
   }
 
   /**
@@ -290,7 +320,6 @@ public class Hierarchy {
 	category.setHierarchy(this);
 	ht.put(key, category);      
 	updateParents(category);
-	fireCategoryCreationEvent(category);
 	return category;
       } else if(o instanceof Category) {
 	return (Category) o;
@@ -301,7 +330,6 @@ public class Hierarchy {
 	ht.put(key, category);
 	updateChildren((ProvisionNode) o, category);
 	updateParents(category);	
-	fireCategoryCreationEvent(category);
 	return category;
       }
       else {
@@ -396,7 +424,7 @@ public class Hierarchy {
      <p>This method should be used sparingly and with care as it will
      block all logging until it is completed.</p>
 
-     @since version 0.8.5 */
+     @since 0.8.5 */
   public
   void resetConfiguration() {
 
