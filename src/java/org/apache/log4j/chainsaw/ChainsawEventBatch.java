@@ -56,6 +56,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import org.apache.log4j.spi.LoggingEvent;
+
 
 /**
  * A container class that contains a group of events split up
@@ -74,7 +76,7 @@ class ChainsawEventBatch {
    * @param eventType
    * @param convertedEventVector
    */
-  void addEvent(String ident, String eventType, Vector convertedEventVector) {
+  void addEvent(String ident, String eventType, LoggingEvent e) {
     List events = null;
 
     if (!identEventMap.containsKey(ident)) {
@@ -85,7 +87,7 @@ class ChainsawEventBatch {
     }
 
     events.add(
-      new ChainsawEventBatchEntry(ident, eventType, convertedEventVector));
+      new ChainsawEventBatchEntry(ident, eventType, e));
   }
 
   /**

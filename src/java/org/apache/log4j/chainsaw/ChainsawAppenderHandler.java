@@ -50,6 +50,10 @@
 package org.apache.log4j.chainsaw;
 
 import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.net.SocketReceiver;
+import org.apache.log4j.plugins.PluginRegistry;
 import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
 
@@ -129,8 +133,10 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
    * Converts a LoggingEvent into a Vector of element (columns really).
    * @param event
    * @return
+   * 
+   * @deprecated
    */
-  private Vector convert(LoggingEvent event) {
+  static Vector convert(LoggingEvent event) {
     Vector v = new Vector();
     LocationInfo info = event.getLocationInformation();
     String className = "";
@@ -228,66 +234,16 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
    * @param v
    * @return
    */
-  private static String getTabIdentifier(Vector v) {
-    int fieldIndex =
-      ChainsawColumns.getColumnsNames().indexOf(
-        ChainsawConstants.PROPERTIES_COL_NAME);
-
-    if (fieldIndex < 0) {
-      return ChainsawConstants.UNKNOWN_TAB_NAME;
-    }
-
-    String properties = (String) v.get(fieldIndex);
-
-    String machinekey = ChainsawConstants.LOG4J_MACHINE_KEY + "=";
-    String machinename = null;
-    int machineposition = properties.indexOf(machinekey) + machinekey.length();
-    int machinelength = properties.indexOf(",", machineposition);
-
-    if (machinelength == -1) {
-      machinelength = properties.length();
-    }
-
-    if (machineposition >= machinekey.length()) {
-      machinename = properties.substring(machineposition, machinelength);
-
-      int dotposition = machinename.indexOf(".");
-      boolean isnumeric = true;
-
-      if (dotposition > -1) {
-        char[] firstdotpart =
-          machinename.substring(0, dotposition).toCharArray();
-
-        for (int i = 0; i < firstdotpart.length; i++) {
-          isnumeric = isnumeric && Character.isDigit(firstdotpart[i]);
-        }
-
-        if (!isnumeric) {
-          machinename = machinename.substring(0, dotposition);
-        }
-      }
-    }
-
-    String appkey = ChainsawConstants.LOG4J_APP_KEY + "=";
-    String appname = null;
-    int appposition = properties.indexOf(appkey) + appkey.length();
-
-    if (appposition >= appkey.length()) {
-      int applength = properties.indexOf(",", appposition);
-
-      if (applength == -1) {
-        applength = properties.length();
-      }
-
-      appname = properties.substring(appposition, applength);
-    }
-
+    private static String getTabIdentifier(LoggingEvent e) {
     StringBuffer ident = new StringBuffer();
+    String machinename = e.getProperty(ChainsawConstants.LOG4J_MACHINE_KEY);
 
     if (machinename != null) {
       ident.append(machinename);
     }
 
+    String appname = e.getProperty(ChainsawConstants.LOG4J_APP_KEY);
+    
     if (appname != null) {
       ident.append("-");
       ident.append(appname);
@@ -297,20 +253,15 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
       /**
            * Maybe there's a Remote Host entry?
            */
-      String remoteHostKey = ChainsawConstants.LOG4J_REMOTEHOST_KEY + "=";
-      String remoteHost = null;
-      int rhposition =
-        properties.indexOf(remoteHostKey) + remoteHostKey.length();
-
-      if (rhposition >= remoteHostKey.length()) {
-        int rhlength = properties.indexOf(":", rhposition);
-
-        if (rhlength == -1) {
-          rhlength = properties.length();
-        }
-
-        remoteHost = properties.substring(rhposition, rhlength);
-      }
+      String remoteHost = e.getProperty(ChainsawConstants.LOG4J_REMOTEHOST_KEY);
+//        int rhlength = remoteHost.indexOf(":");
+//
+//        if (rhlength == -1) {
+//          rhlength = properties.length();
+//        }
+//
+//        remoteHost = properties.substring(rhposition, rhlength);
+//      }
 
       if (remoteHost != null) {
         ident.append(remoteHost);
@@ -388,14 +339,12 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
                 eventType = ChainsawConstants.LOG4J_EVENT_TYPE;
               }
 
-              Vector convertedEventVector = convert(e);
-              String ident = getTabIdentifier(convertedEventVector);
-              eventBatch.addEvent(ident, eventType, convertedEventVector);
+              String ident = getTabIdentifier(e);
+              eventBatch.addEvent(ident, eventType, e);
             }
 
             dispatchEventBatch(eventBatch);
 
-            //            logUI.receiveEventBatch(eventBatch);
             innerList.clear();
           }
 
@@ -440,4 +389,30 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
       }
     }
   }
+  
+  /**
+   * A little test bed 
+   * @param args
+   */
+  public static void main(String[] args) throws InterruptedException {
+	
+      ChainsawAppenderHandler handler = new ChainsawAppenderHandler();
+      handler.addEventBatchListener(new EventBatchListener() {
+
+		public String getInterestedIdentifier() {
+			return null;
+		}
+
+		public void receiveEventBatch(String identifier, List eventBatchEntrys) {
+            LogLog.debug("received batch for '" + identifier + "', list.size()=" + eventBatchEntrys.size());
+            LogLog.debug(eventBatchEntrys.toString());
+			
+		}});
+      LogManager.getRootLogger().addAppender(handler);
+      
+      SocketReceiver receiver = new SocketReceiver(4445);
+      PluginRegistry.startPlugin(receiver);
+      
+      Thread.sleep(60000);
+}
 }
