@@ -1273,7 +1273,6 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
 
     if (rowAdded) {
 
-      int currentRow = table.getSelectedRow();
       if (tableModel.isSortEnabled()) {
         tableModel.sort();
       }
@@ -1284,15 +1283,9 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
       if (scroll && !bypassScroll) {
         table.scrollToBottom(
           table.columnAtPoint(table.getVisibleRect().getLocation()));
-      } else {
-        if (!bypassScroll) {
-            table.scrollToRow(
-            currentRow, table.columnAtPoint(
-                table.getVisibleRect().getLocation()));
-        }
-        //always update detail pane (since we may be using a cyclic buffer which is full)
-        detailPaneUpdater.setSelectedRow(currentRow);
       }
+      //always update detail pane (since we may be using a cyclic buffer which is full)
+      detailPaneUpdater.setSelectedRow(table.getSelectedRow());
     }
   }
 
@@ -1535,7 +1528,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
             findRule = ExpressionRule.getRule(ruleText);
             colorizer.setFindRule(findRule);
             return true;
-        } catch (RuntimeException re) {
+        } catch (IllegalArgumentException re) {
             findField.setToolTipText(re.getMessage());
             colorizer.setFindRule(null);
             return false;            
@@ -1716,7 +1709,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
 
     undockedFindNextAction.putValue(Action.NAME, "Find next");
     undockedFindNextAction.putValue(
-      Action.SHORT_DESCRIPTION, "Finds the next occurrence within this view");
+      Action.SHORT_DESCRIPTION, "Find the next occurrence of the rule from the current row");
     undockedFindNextAction.putValue(
       Action.SMALL_ICON, new ImageIcon(ChainsawIcons.DOWN));
 
@@ -1736,9 +1729,9 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
         }
       };
 
-    undockedFindPreviousAction.putValue(Action.NAME, "Find next");
+    undockedFindPreviousAction.putValue(Action.NAME, "Find previous");
     undockedFindPreviousAction.putValue(
-      Action.SHORT_DESCRIPTION, "Finds the next occurrence within this view");
+      Action.SHORT_DESCRIPTION, "Find the previous occurrence of the rule from the current row");
       undockedFindPreviousAction.putValue(
       Action.SMALL_ICON, new ImageIcon(ChainsawIcons.UP));
 
@@ -1850,6 +1843,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
             }
         } catch (IllegalArgumentException iae) {
             findField.setToolTipText(iae.getMessage());
+            colorizer.setFindRule(null);
         }
     }
   }

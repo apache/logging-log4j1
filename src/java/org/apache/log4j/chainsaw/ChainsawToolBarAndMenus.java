@@ -752,7 +752,7 @@ class ChainsawToolBarAndMenus implements ChangeListener {
     action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("F3"));
     action.putValue(
       Action.SHORT_DESCRIPTION,
-      "Finds the next occurrence of the rule from the current row");
+      "Find the next occurrence of the rule from the current row");
       action.putValue(Action.SMALL_ICON, new ImageIcon(ChainsawIcons.DOWN));
 
     return action;
@@ -774,7 +774,7 @@ class ChainsawToolBarAndMenus implements ChangeListener {
     action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F3, KeyEvent.SHIFT_DOWN_MASK));
     action.putValue(
       Action.SHORT_DESCRIPTION,
-      "Finds the previous occurrence of the rule from the current row");
+      "Find the previous occurrence of the rule from the current row");
       action.putValue(Action.SMALL_ICON, new ImageIcon(ChainsawIcons.UP));
 
     return action;
