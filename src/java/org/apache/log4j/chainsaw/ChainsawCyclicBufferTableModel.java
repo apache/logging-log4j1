@@ -49,20 +49,23 @@
 
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.spi.LocationInfo;
-import org.apache.log4j.spi.LoggingEvent;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.swing.SwingUtilities;
+import javax.swing.event.EventListenerList;
 import javax.swing.table.AbstractTableModel;
+
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.spi.LocationInfo;
+import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
@@ -84,9 +87,12 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
   private final int INITIAL_CAPACITY = 1024;
   final List unfilteredList;
   final List filteredList;
-  private Vector countListeners = new Vector();
+
+  //  private Vector countListeners = new Vector();
   private boolean currentSortAscending;
   private int currentSortColumn;
+  private EventListenerList eventListenerList = new EventListenerList();
+  private List columnNames = new ArrayList(ChainsawColumns.getColumnsNames());
 
   /**
    * @deprecated should use new filtering stuff
@@ -102,6 +108,7 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
   //because we may be using a cyclic buffer, if an ID is not provided in the property, 
   //use and increment this row counter as the ID for each received row
   int uniqueRow;
+  private Set uniqueMDCKeys = new HashSet();
 
   public ChainsawCyclicBufferTableModel(boolean isCyclic, int bufferSize) {
     this.cyclic = isCyclic;
@@ -166,7 +173,7 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
   }
 
   public void addEventCountListener(EventCountListener listener) {
-    countListeners.add(listener);
+    eventListenerList.add(EventCountListener.class, listener);
   }
 
   public void filterChanged() {
@@ -178,8 +185,12 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
   }
 
   public void notifyCountListeners() {
-    for (int i = 0; i < countListeners.size(); i++) {
-      ((EventCountListener) countListeners.get(i)).eventCountChanged(
+    EventCountListener[] listeners =
+      (EventCountListener[]) eventListenerList.getListeners(
+        EventCountListener.class);
+
+    for (int i = 0; i < listeners.length; i++) {
+      listeners[i].eventCountChanged(
         filteredList.size(), unfilteredList.size());
     }
   }
@@ -409,11 +420,11 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
   }
 
   public int getColumnCount() {
-    return ChainsawColumns.getColumnsNames().size();
+    return columnNames.size();
   }
 
   public String getColumnName(int column) {
-    return ChainsawColumns.getColumnsNames().get(column).toString();
+    return columnNames.get(column).toString();
   }
 
   public LoggingEvent getRow(int row) {
@@ -443,6 +454,7 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
       if (id != null) {
         return id;
       }
+
       return new Integer(rowIndex);
 
     case ChainsawColumns.INDEX_LEVEL_COL_NAME:
@@ -485,8 +497,11 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
       return (info != null) ? info.getMethodName() : "";
 
     default:
-      return "";
+    	if(columnIndex<=columnNames.size()){
+    		return event.getMDC(columnNames.get(columnIndex).toString());
+    	}
     }
+	return "";
   }
 
   public boolean isAddRow(LoggingEvent e, boolean valueIsAdjusting) {
@@ -524,10 +539,28 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
 
     int newRow = filteredList.size() - 1;
 
-    if (!isCyclic()) {
+	/**
+	 * Is this a new MDC key we haven't seen before?
+	 */
+    boolean newColumn = uniqueMDCKeys.addAll(e.getMDCKeySet());
+
+	/**
+	 * If so, we should add them as columns and notify listeners.
+	 */
+    for (Iterator iter = e.getMDCKeySet().iterator(); iter.hasNext();) {
+      Object key = (Object) iter.next();
+
+      if (!columnNames.contains(key)) {
+        columnNames.add(key);
+        LogLog.debug("Adding col '" + key + "', columNames=" + columnNames);
+        fireNewKeyColumnAdded(new NewKeyEvent(this, columnNames.indexOf(key), key, e.getMDC(key.toString())));
+      }
+    }
+
+    if (!isCyclic() && !newColumn) {
       fireTableRowsInserted(newRow, newRow);
     } else {
-      if (
+      if (newColumn || 
         unfilteredList.size() == ((CyclicBufferList) unfilteredList)
           .getMaxSize()) {
         fireTableDataChanged();
@@ -540,9 +573,22 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
   }
 
   /**
-   * Returns true if this model is Cyclic (bounded) or not
-   * @return true/false
-   */
+  * @param key
+  */
+  private void fireNewKeyColumnAdded(NewKeyEvent e) {
+    NewKeyListener[] listeners =
+      (NewKeyListener[]) eventListenerList.getListeners(NewKeyListener.class);
+
+    for (int i = 0; i < listeners.length; i++) {
+      NewKeyListener listener = listeners[i];
+      listener.newKeyAdded(e);
+    }
+  }
+
+  /**
+     * Returns true if this model is Cyclic (bounded) or not
+     * @return true/false
+     */
   public boolean isCyclic() {
     return cyclic;
   }
@@ -557,6 +603,20 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
     }
 
     return ((CyclicBufferList) unfilteredList).getMaxSize();
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.log4j.chainsaw.EventContainer#addNewKeyListener(org.apache.log4j.chainsaw.NewKeyListener)
+   */
+  public void addNewKeyListener(NewKeyListener l) {
+    eventListenerList.add(NewKeyListener.class, l);
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.log4j.chainsaw.EventContainer#removeNewKeyListener(org.apache.log4j.chainsaw.NewKeyListener)
+   */
+  public void removeNewKeyListener(NewKeyListener l) {
+    eventListenerList.remove(NewKeyListener.class, l);
   }
 
   class SortExecutor implements Runnable {

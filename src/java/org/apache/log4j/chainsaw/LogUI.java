@@ -772,10 +772,9 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   }
 
   void removeWelcomePanel() {
-    if(tabbedPane.containsWelcomePanel()) {
-    tabbedPane.remove(
-      tabbedPane.getComponentAt(tabbedPane.indexOfTab("Welcome")));
-        
+    if (tabbedPane.containsWelcomePanel()) {
+      tabbedPane.remove(
+        tabbedPane.getComponentAt(tabbedPane.indexOfTab("Welcome")));
     }
   }
 
@@ -1148,6 +1147,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
           ((ChainsawEventBatchEntry) eventBatchEntrys.get(0)).getEventType();
         final LogPanel thisPanel = new LogPanel(ident, eventType);
 
+        sm.configure(thisPanel);
+
         /**
          * Let the new LogPanel receive this batch
          */
@@ -1165,8 +1166,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
                 ident, thisPanel, new ImageIcon(ChainsawIcons.TOOL_TIP));
             }
           });
-
-        sm.configure(thisPanel);
 
         String msg = "added tab " + ident;
         LogLog.debug(msg);
@@ -1260,6 +1259,16 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
         new ChainsawTableColumnModelListener(table));
 
       table.setAutoCreateColumnsFromModel(false);
+
+      /**
+               * We listen for new Key's coming in so we can get them automatically added as columns
+              */
+      tableModel.addNewKeyListener(
+        new NewKeyListener() {
+          public void newKeyAdded(NewKeyEvent e) {
+            table.addColumn(new TableColumn(e.getNewModelIndex()));
+          }
+        });
 
       table.setRowHeight(20);
       table.setShowGrid(false);
@@ -2231,9 +2240,16 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
         while (e.hasMoreElements()) {
           TableColumn c = (TableColumn) e.nextElement();
-          o.writeObject(
-            new TableColumnData(
-              (String) c.getHeaderValue(), c.getModelIndex(), c.getWidth()));
+
+          if (c.getModelIndex() < ChainsawColumns.getColumnsNames().size()) {
+            o.writeObject(
+              new TableColumnData(
+                (String) c.getHeaderValue(), c.getModelIndex(), c.getWidth()));
+          } else {
+            LogLog.debug(
+              "Not saving col ' " + c.getHeaderValue()
+              + "' not part of standard columns");
+          }
         }
 
         o.flush();
@@ -2742,6 +2758,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     }
 
     public void columnAdded(TableColumnModelEvent e) {
+      LogLog.debug("Detected columnAdded" + e);
     }
 
     public void columnRemoved(TableColumnModelEvent e) {
