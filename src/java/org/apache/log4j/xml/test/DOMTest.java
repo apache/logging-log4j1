@@ -8,7 +8,7 @@
 package org.apache.log4j.xml.test;
 
 import org.apache.log4j.xml.DOMConfigurator;
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Priority;
 //import org.apache.log4j.xml.examples.ReportParserError;
@@ -20,7 +20,7 @@ import org.apache.log4j.Priority;
    @author Ceki G&uuml;lc&uuml;
 */
 public class DOMTest {
-  static Category cat = Category.getInstance(DOMTest.class.getName());
+  static Logger cat = Logger.getLogger(DOMTest.class.getName());
 
 
   public 
@@ -51,7 +51,7 @@ public class DOMTest {
   static
   void test() {
     int i = -1;
-    Category root = Category.getRoot();
+    Logger root = Logger.getRootLogger();
     
     cat.debug("Message " + ++i);
     root.debug("Message " + i);        
