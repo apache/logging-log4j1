@@ -1,11 +1,7 @@
 
 package org.apache.log4j.test;
 
-import org.apache.log4j.Category;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.PropertyConfigurator;
-import org.apache.log4j.SimpleLayout;
-import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.*;
 	
 public class ShippedCodeFlagTest {
 
@@ -33,7 +29,7 @@ public class ShippedCodeFlagTest {
     else { 
       PropertyConfigurator.configure(type);
     }
-    Category.getDefaultHierarchy().disableInfo();       
+    Category.getDefaultHierarchy().enable(Level.WARN);       
     CAT.debug("Hello world");
   }
 

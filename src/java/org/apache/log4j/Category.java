@@ -25,6 +25,7 @@ import org.apache.log4j.spi.RootCategory;
 import org.apache.log4j.spi.AppenderAttachable;
 import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.NullEnumeration;
 import org.apache.log4j.helpers.OptionConverter;
@@ -57,10 +58,10 @@ public class Category implements AppenderAttachable {
   /**
      The hierarchy where categories are attached to by default.
   */
-  static 
-  public 
-  final Hierarchy defaultHierarchy = new Hierarchy(new 
-						   RootCategory(Level.DEBUG));
+  //static 
+  //public 
+  //final Hierarchy defaultHierarchy = new Hierarchy(new 
+  //					   RootCategory(Level.DEBUG));
 
 
   /**
@@ -170,7 +171,7 @@ public class Category implements AppenderAttachable {
       if(url != null) {
 	LogLog.debug("Using URL ["+url+"] for automatic log4j configuration.");
 	OptionConverter.selectAndConfigure(url, configuratorClassName, 
-					   defaultHierarchy);
+					   LogManager.getLoggerRepository());
       } else {
 	LogLog.debug("Could not find resource: ["+resource+"].");
       }
@@ -201,7 +202,7 @@ public class Category implements AppenderAttachable {
   protected ResourceBundle resourceBundle;
   
   // Categories need to know what Hierarchy they are in
-  protected Hierarchy hierarchy;
+  protected LoggerRepository repository;
 
 
   AppenderAttachableImpl aai;
@@ -243,7 +244,7 @@ public class Category implements AppenderAttachable {
       aai = new AppenderAttachableImpl();
     }
     aai.addAppender(newAppender);
-    hierarchy.fireAddAppenderEvent(this, newAppender);
+    repository.fireAddAppenderEvent(this, newAppender);
   }
 
   /**
@@ -291,12 +292,9 @@ public class Category implements AppenderAttachable {
 	}
       }
     }
-    // No appenders in hierarchy, warn user only once.
-    if(!hierarchy.emittedNoAppenderWarning && writes == 0) {
-      LogLog.error("No appenders could be found for category (" +
-		    this.getName() + ").");
-      LogLog.error("Please initialize the log4j system properly.");
-      hierarchy.emittedNoAppenderWarning = true;
+    
+    if(writes == 0) {
+      repository.emitNoAppenderWarning(this);
     }
   }
 
@@ -338,7 +336,7 @@ public class Category implements AppenderAttachable {
     @param message the message object to log. */
   public
   void debug(Object message) {
-    if(hierarchy.enableInt >  Level.DEBUG_INT) 
+    if(repository.isDisabled(Level.DEBUG_INT)) 
       return;    
     if(Level.DEBUG.isGreaterOrEqual(this.getChainedLevel())) {
       forcedLog(FQCN, Level.DEBUG, message, null);
@@ -357,7 +355,7 @@ public class Category implements AppenderAttachable {
    @param t the exception to log, including its stack trace.  */  
   public
   void debug(Object message, Throwable t) {
-    if(hierarchy.enableInt >  Level.DEBUG_INT) 
+    if(repository.isDisabled(Level.DEBUG_INT)) 
       return;
     if(Level.DEBUG.isGreaterOrEqual(this.getChainedLevel()))
       forcedLog(FQCN, Level.DEBUG, message, t);    
@@ -392,7 +390,7 @@ public class Category implements AppenderAttachable {
     @param message the message object to log */
   public
   void error(Object message) {
-    if(hierarchy.enableInt >  Level.ERROR_INT) 
+    if(repository.isDisabled(Level.ERROR_INT))
       return;
     if(Level.ERROR.isGreaterOrEqual(this.getChainedLevel()))
       forcedLog(FQCN, Level.ERROR, message, null);
@@ -409,7 +407,7 @@ public class Category implements AppenderAttachable {
    @param t the exception to log, including its stack trace.  */  
   public
   void error(Object message, Throwable t) {
-    if(hierarchy.enableInt >  Level.ERROR_INT) 
+    if(repository.isDisabled(Level.ERROR_INT))
       return;
     if(Level.ERROR.isGreaterOrEqual(this.getChainedLevel()))
       forcedLog(FQCN, Level.ERROR, message, t);
@@ -421,13 +419,14 @@ public class Category implements AppenderAttachable {
      If the named category exists (in the default hierarchy) then it
      returns a reference to the category, otherwise it returns
      <code>null</code>.
-     
-     <p>Contributed by Ciaran Treanor -  ciaran@xelector.com
+
+     @deprecateed Please use {@link LogManager#exists} instead.
+
      @version 0.8.5 */
   public
   static
   Logger exists(String name) {    
-    return defaultHierarchy.exists(name);
+    return LogManager.exists(name);
   }
 
   /** 
@@ -450,7 +449,7 @@ public class Category implements AppenderAttachable {
     @param message the message object to log */
   public
   void fatal(Object message) {
-    if(hierarchy.enableInt >  Level.FATAL_INT) 
+    if(repository.isDisabled(Level.FATAL_INT)) 
       return;    
     if(Level.FATAL.isGreaterOrEqual(this.getChainedLevel()))
       forcedLog(FQCN, Level.FATAL, message, null);
@@ -467,7 +466,7 @@ public class Category implements AppenderAttachable {
    @param t the exception to log, including its stack trace.  */
   public
   void fatal(Object message, Throwable t) {
-    if(hierarchy.enableInt >  Level.FATAL_INT) 
+    if(repository.isDisabled(Level.FATAL_INT))
       return;   
     if(Level.FATAL.isGreaterOrEqual(this.getChainedLevel()))
       forcedLog(FQCN, Level.FATAL, message, t);
@@ -543,11 +542,13 @@ public class Category implements AppenderAttachable {
 
      <p>The root category is <em>not</em> included in the returned
      {@link Enumeration}.     
+
+     @deprecated Please use {@link LogManager#getCurrentLoggers()} instead.
   */
   public
   static
   Enumeration getCurrentCategories() {
-    return defaultHierarchy.getCurrentLoggers();
+    return LogManager.getCurrentLoggers();
   }
 
 
@@ -558,19 +559,30 @@ public class Category implements AppenderAttachable {
    */
   public 
   static 
-  Hierarchy getDefaultHierarchy() {
-    return defaultHierarchy;
+  LoggerRepository getDefaultHierarchy() {
+    return LogManager.getLoggerRepository();
   }
 
-  
   /**
-     Return the the {@link Hierarchy} where this <code>Category</code> instance is
-     attached.
+     Return the the {@link Hierarchy} where this <code>Category</code>
+     instance is attached.
+
+     @deprecatede Please use {@link #getLoggerRepository} instead.
 
      @since 1.1 */
   public  
-  Hierarchy getHierarchy() {
-    return hierarchy;
+  LoggerRepository  getHierarchy() {
+    return repository;
+  }
+
+  /**
+     Return the the {@link LoggerRepository} where this
+     <code>Category</code> is attached.
+
+     @since 1.2 */
+  public  
+  LoggerRepository  getLoggerRepository() {
+    return repository;
   }
 
   
@@ -584,11 +596,13 @@ public class Category implements AppenderAttachable {
      it from the hierarchy. This is one of the central features of
      log4j.
 
+     @deprecated Please use {@link LogManager#getLogger(String)} instead.
+
      @param name The name of the category to retrieve.  */
   public
   static
   Logger getInstance(String name) {
-    return defaultHierarchy.getLogger(name);
+    return LogManager.getLogger(name);
   }	
 
  /**
@@ -598,11 +612,13 @@ public class Category implements AppenderAttachable {
     name of the category to retrieve.  See {@link
     #getInstance(String)} for more detailed information.
 
+    @deprecated Please use {@link LogManager#getLogger(Class)} instead.
+
     @since 1.0 */
   public
   static
   Logger getInstance(Class clazz) {
-    return getInstance(clazz.getName());
+    return LogManager.getLogger(clazz);
   }	
 
 
@@ -623,7 +639,7 @@ public class Category implements AppenderAttachable {
   public
   static
   Logger getInstance(String name, LoggerFactory factory) {
-    return defaultHierarchy.getLogger(name, factory);
+    return LogManager.getLogger(name, factory);
   }	
 
   
@@ -682,12 +698,13 @@ public class Category implements AppenderAttachable {
      Category.getInstance("root")} does not retrieve the root category 
      but a category just under root named "root".
      
+     @deprecated Use {@link LogManager#getRootLogger()} instead.
    */
   final
   public
   static
   Logger getRoot() {
-    return defaultHierarchy.getRootLogger();
+    return LogManager.getRootLogger();
   }
 
   /**
@@ -725,10 +742,10 @@ public class Category implements AppenderAttachable {
     // This is one of the rare cases where we can use logging in order
     // to report errors from within log4j.
     if(rb == null) {
-      if(!hierarchy.emittedNoResourceBundleWarning) {
-	error("No resource bundle has been set for category "+name);
-	hierarchy.emittedNoResourceBundleWarning = true;
-      }
+      //if(!hierarchy.emittedNoResourceBundleWarning) {
+      //error("No resource bundle has been set for category "+name);
+      //hierarchy.emittedNoResourceBundleWarning = true;
+      //}
       return null;
     }
     else {
@@ -762,7 +779,7 @@ public class Category implements AppenderAttachable {
     @param message the message object to log */
   public
   void info(Object message) {
-    if(hierarchy.enableInt >  Level.INFO_INT) 
+    if(repository.isDisabled(Level.INFO_INT)) 
       return;    
     if(Level.INFO.isGreaterOrEqual(this.getChainedLevel()))
       forcedLog(FQCN, Level.INFO, message, null);
@@ -779,7 +796,7 @@ public class Category implements AppenderAttachable {
    @param t the exception to log, including its stack trace.  */
   public
   void info(Object message, Throwable t) {
-    if(hierarchy.enableInt >  Level.INFO_INT) 
+    if(repository.isDisabled(Level.INFO_INT))
       return;   
     if(Level.INFO.isGreaterOrEqual(this.getChainedLevel()))
       forcedLog(FQCN, Level.INFO, message, t);
@@ -821,7 +838,7 @@ public class Category implements AppenderAttachable {
     *   */
   public
   boolean isDebugEnabled() {
-    if(hierarchy.enableInt >  Level.DEBUG_INT)
+    if(repository.isDisabled( Level.DEBUG_INT))
       return false;   
     return Level.DEBUG.isGreaterOrEqual(this.getChainedLevel());
   }
@@ -836,7 +853,7 @@ public class Category implements AppenderAttachable {
   */
   public
   boolean isEnabledFor(Level level) {
-    if(hierarchy.enableInt >  level.level) 
+    if(repository.isDisabled(level.level)) 
       return false;
     return level.isGreaterOrEqual(this.getChainedLevel());
   }
@@ -850,7 +867,7 @@ public class Category implements AppenderAttachable {
   */
   public
   boolean isInfoEnabled() {
-    if(hierarchy.enableInt > Level.INFO_INT)
+    if(repository.isDisabled(Level.INFO_INT))
       return false;   
     return Level.INFO.isGreaterOrEqual(this.getChainedLevel());
   }
@@ -866,7 +883,7 @@ public class Category implements AppenderAttachable {
      @since 0.8.4 */
   public
   void l7dlog(Level level, String key, Throwable t) {
-    if(hierarchy.enableInt > level.level) {
+    if(repository.isDisabled(level.level)) {
       return;
     }
     if(level.isGreaterOrEqual(this.getChainedLevel())) {
@@ -890,7 +907,7 @@ public class Category implements AppenderAttachable {
   */
   public
   void l7dlog(Level level, String key,  Object[] params, Throwable t) {
-    if(hierarchy.enableInt > level.level) {
+    if(repository.isDisabled(level.level)) {
       return;
     }    
     if(level.isGreaterOrEqual(this.getChainedLevel())) {
@@ -909,7 +926,7 @@ public class Category implements AppenderAttachable {
    */
   public
   void log(Level level, Object message, Throwable t) {
-    if(hierarchy.enableInt > level.level) {
+    if(repository.isDisabled(level.level)) {
       return;
     }
     if(level.isGreaterOrEqual(this.getChainedLevel())) 
@@ -921,7 +938,7 @@ public class Category implements AppenderAttachable {
  */
   public
   void log(Level level, Object message) {
-    if(hierarchy.enableInt > level.level) {
+    if(repository.isDisabled(level.level)) {
       return;
     }
     if(level.isGreaterOrEqual(this.getChainedLevel()))
@@ -939,7 +956,7 @@ public class Category implements AppenderAttachable {
      @param t The throwable of the logging request, may be null.  */
   public
   void log(String callerFQCN, Level level, Object message, Throwable t) {
-    if(hierarchy.enableInt > level.level) {
+    if(repository.isDisabled(level.level)) {
       return;
     }
     if(level.isGreaterOrEqual(this.getChainedLevel())) {
@@ -1001,8 +1018,8 @@ public class Category implements AppenderAttachable {
      Only the Hiearchy class can set the hiearchy of a
      category. Default package access is MANDATORY here.  */
   final
-  void setHierarchy(Hierarchy hierarchy) {
-    this.hierarchy = hierarchy;
+  void setHierarchy(LoggerRepository repository) {
+    this.repository = repository;
   }
 
   /**
@@ -1024,8 +1041,8 @@ public class Category implements AppenderAttachable {
      @deprecated Please use {@link #setLevel} instead.
   */
   public
-  void setPriority(Level priority) {
-    this.level = priority;
+  void setPriority(Priority priority) {
+    this.level = (Level) priority;
   }
 
 
@@ -1056,12 +1073,14 @@ public class Category implements AppenderAttachable {
      configurations where a regular appender is attached to a category
      and again to a nested appender.  
 
+     @deprecated Please use {@link LogManager#shutdown()} instead.
+
      @since 1.0
   */
   public
   static
   void shutdown() {
-    defaultHierarchy.shutdown();
+    LogManager.shutdown();
   }
 
   
@@ -1085,7 +1104,7 @@ public class Category implements AppenderAttachable {
     @param message the message object to log.  */
   public
   void warn(Object message) {
-    if(hierarchy.enableInt >  Level.WARN_INT) 
+    if(repository.isDisabled( Level.WARN_INT)) 
       return;   
 
     if(Level.WARN.isGreaterOrEqual(this.getChainedLevel()))
@@ -1103,7 +1122,7 @@ public class Category implements AppenderAttachable {
    @param t the exception to log, including its stack trace.  */
   public
   void warn(Object message, Throwable t) {
-    if(hierarchy.enableInt >  Level.WARN_INT) 
+    if(repository.isDisabled(Level.WARN_INT)) 
       return;   
     if(Level.WARN.isGreaterOrEqual(this.getChainedLevel()))
       forcedLog(FQCN, Level.WARN, message, t);

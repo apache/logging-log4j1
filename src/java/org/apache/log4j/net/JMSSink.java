@@ -11,6 +11,9 @@ import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.Category;
 import org.apache.log4j.Hierarchy;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.spi.RendererSupport;
+import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.or.MessageRenderer;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.helpers.LogLog;
@@ -38,9 +41,11 @@ public class JMSSink  {
     String tcfBindingName = args[0];
     String topicBindingName = args[1];
     PropertyConfigurator.configure(args[2]);
-
-    Category.getDefaultHierarchy().addRenderer(Message.class, 
-					       new MessageRenderer());
+    
+    LoggerRepository rep = LogManager.getLoggerRepository();
+    if(rep instanceof RendererSupport) {
+      ((RendererSupport) rep).setRenderer(Message.class, new MessageRenderer());
+    }
 
     try {
       Context ctx = new InitialContext();      

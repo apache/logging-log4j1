@@ -17,6 +17,7 @@ JSOURCES:=OptionHandler.java\
   RepositorySelector.java\
   DefaultRepositorySelector.java\
   LoggerRepository.java\
+  RendererSupport.java\
 
 SUBDIRS := 
 

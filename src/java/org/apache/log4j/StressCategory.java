@@ -20,10 +20,10 @@ import java.util.Random;
 class StressCategory {
 
   static Level[] level = new Level[] {Level.DEBUG, 
-					       Level.INFO, 
-					       Level.WARN,
-					       Level.ERROR,
-					       Level.FATAL};
+				      Level.INFO, 
+				      Level.WARN,
+				      Level.ERROR,
+				      Level.FATAL};
 
   static Level defaultLevel = Category.getRoot().getLevel();
   
@@ -111,7 +111,7 @@ class StressCategory {
       }
       test();
       // Clear hash table for next round
-      Category.defaultHierarchy.clear();
+      LogManager.getLoggerRepository().clear();
     }
     else {      
       ct[n]  = null;

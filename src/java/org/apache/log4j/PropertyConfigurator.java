@@ -20,6 +20,8 @@ import org.apache.log4j.config.PropertySetter;
 import org.apache.log4j.spi.OptionHandler;
 import org.apache.log4j.spi.Configurator;
 import org.apache.log4j.spi.LoggerFactory;
+import org.apache.log4j.spi.LoggerRepository;
+import org.apache.log4j.spi.RendererSupport;
 import org.apache.log4j.or.ObjectRenderer;
 import org.apache.log4j.or.RendererMap;
 import org.apache.log4j.helpers.LogLog;
@@ -293,7 +295,7 @@ public class PropertyConfigurator extends BasicConfigurator
 
   */
   public
-  void doConfigure(String configFileName, Hierarchy hierarchy) {
+  void doConfigure(String configFileName, LoggerRepository hierarchy) {
     Properties props = new Properties();
     try {
       FileInputStream istream = new FileInputStream(configFileName);
@@ -315,7 +317,7 @@ public class PropertyConfigurator extends BasicConfigurator
   public 
   void configure(String configFilename) {
     new PropertyConfigurator().doConfigure(configFilename, 
-					   Category.defaultHierarchy);
+					   LogManager.getLoggerRepository());
   }
 
   /**
@@ -326,7 +328,8 @@ public class PropertyConfigurator extends BasicConfigurator
   public
   static
   void configure(java.net.URL configURL) {
-    new PropertyConfigurator().doConfigure(configURL, Category.defaultHierarchy);
+    new PropertyConfigurator().doConfigure(configURL, 
+					   LogManager.getLoggerRepository());
   }
 
 
@@ -338,7 +341,8 @@ public class PropertyConfigurator extends BasicConfigurator
   static
   public
   void configure(Properties properties) {
-    new PropertyConfigurator().doConfigure(properties, Category.defaultHierarchy);
+    new PropertyConfigurator().doConfigure(properties, 
+					   LogManager.getLoggerRepository());
   }
 
   /**
@@ -382,7 +386,7 @@ public class PropertyConfigurator extends BasicConfigurator
      See {@link #doConfigure(String, Hierarchy)} for the expected format.
   */
   public
-  void doConfigure(Properties properties, Hierarchy hierarchy) {
+  void doConfigure(Properties properties, LoggerRepository hierarchy) {
 
     String value = properties.getProperty(LogLog.DEBUG_KEY);
     if(value == null) {
@@ -421,7 +425,7 @@ public class PropertyConfigurator extends BasicConfigurator
      Read configuration options from url <code>configURL</code>.
    */
   public
-  void doConfigure(java.net.URL configURL, Hierarchy hierarchy) {
+  void doConfigure(java.net.URL configURL, LoggerRepository hierarchy) {
     Properties props = new Properties();
     LogLog.debug("Reading configuration from URL " + configURL);
     try {
@@ -487,7 +491,7 @@ public class PropertyConfigurator extends BasicConfigurator
   */
   
     
-  void configureRootCategory(Properties props, Hierarchy hierarchy) {
+  void configureRootCategory(Properties props, LoggerRepository hierarchy) {
     String value = OptionConverter.findAndSubst(ROOT_CATEGORY_PREFIX, props);
     if(value == null) 
       LogLog.debug("Could not find root category information. Is this OK?");
@@ -505,7 +509,7 @@ public class PropertyConfigurator extends BasicConfigurator
      Parse non-root elements, such non-root categories and renderers.
   */
   protected
-  void parseCatsAndRenderers(Properties props, Hierarchy hierarchy) {
+  void parseCatsAndRenderers(Properties props, LoggerRepository hierarchy) {
     Enumeration enum = props.propertyNames();
     while(enum.hasMoreElements()) {      
       String key = (String) enum.nextElement();
@@ -520,7 +524,10 @@ public class PropertyConfigurator extends BasicConfigurator
       } else if(key.startsWith(RENDERER_PREFIX)) {
 	String renderedClass = key.substring(RENDERER_PREFIX.length());	
 	String renderingClass = OptionConverter.findAndSubst(key, props);
-	addRenderer(hierarchy, renderedClass, renderingClass);
+	if(hierarchy instanceof RendererSupport) {
+	  addRenderer((RendererSupport) hierarchy, renderedClass,
+		      renderingClass);
+	}
       }      
     }
   }  
@@ -657,6 +664,7 @@ class PropertyWatchdog extends FileWatchdog {
      <code>filename</code> to reconfigure log4j. */
   public
   void doOnChange() {
-    new PropertyConfigurator().doConfigure(filename, Logger.defaultHierarchy);
+    new PropertyConfigurator().doConfigure(filename, 
+					   LogManager.getLoggerRepository());
   }
 }

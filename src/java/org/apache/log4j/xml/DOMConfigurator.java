@@ -13,24 +13,11 @@ import java.net.URL;
 
 import org.w3c.dom.*;
 import java.lang.reflect.Method;
-import org.apache.log4j.Category;
-import org.apache.log4j.Logger;
-import org.apache.log4j.spi.OptionHandler;
-import org.apache.log4j.spi.ErrorHandler;
-import org.apache.log4j.spi.AppenderAttachable;
-import org.apache.log4j.spi.Configurator;
-import org.apache.log4j.spi.LoggerFactory;
-import org.apache.log4j.Appender;
-import org.apache.log4j.Layout;
-import org.apache.log4j.Level;
-import org.apache.log4j.Hierarchy;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.spi.Filter;
-import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.*;
+import org.apache.log4j.spi.*;
+import org.apache.log4j.helpers.*;
 import org.apache.log4j.config.PropertySetter;
-import org.apache.log4j.helpers.OptionConverter;
-import org.apache.log4j.helpers.FileWatchdog;
-import org.apache.log4j.helpers.Loader;
+
 import org.xml.sax.InputSource;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -284,7 +271,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
      Used internally to parse an category element.
   */
   protected
-  void parseCategory (Element categoryElement, Hierarchy hierarchy) {
+  void parseCategory (Element categoryElement, LoggerRepository hierarchy) {
     // Create a new org.apache.log4j.Category object from the <category> element.
     String catName = subst(categoryElement.getAttribute(NAME_ATTR));
 
@@ -330,7 +317,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
      Used internally to parse the category factory element.
   */
   protected
-  void parseCategoryFactory(Element factoryElement, Hierarchy hierarchy) {
+  void parseCategoryFactory(Element factoryElement, LoggerRepository hierarchy) {
     String className = subst(factoryElement.getAttribute(CLASS_ATTR));
 
     if(EMPTY_STR.equals(className)) {
@@ -366,7 +353,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
      Used internally to parse the roor category element.
   */
   protected
-  void parseRoot (Element rootElement, Hierarchy hierarchy) {
+  void parseRoot (Element rootElement, LoggerRepository hierarchy) {
     Logger root = hierarchy.getRootLogger();
     // category configuration needs to be atomic
     synchronized(root) {    
@@ -458,10 +445,12 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
   }
 
   protected 
-  void parseRenderer(Element element, Hierarchy hierarchy) {
+  void parseRenderer(Element element, LoggerRepository hierarchy) {
     String renderingClass = subst(element.getAttribute(RENDERING_CLASS_ATTR));
     String renderedClass = subst(element.getAttribute(RENDERED_CLASS_ATTR));
-    addRenderer(hierarchy, renderedClass, renderingClass);
+    if(hierarchy instanceof RendererSupport) {
+      addRenderer((RendererSupport) hierarchy, renderedClass, renderingClass);
+    }
   }
 
   /**
@@ -562,7 +551,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
   }
 
   public
-  void doConfigure(String filename, Hierarchy hierarchy) {
+  void doConfigure(String filename, LoggerRepository hierarchy) {
     FileInputStream fis = null;
     try {
       fis = new FileInputStream(filename);
@@ -582,7 +571,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
   
 
   public
-  void doConfigure(URL url, Hierarchy hierarchy) {
+  void doConfigure(URL url, LoggerRepository hierarchy) {
     try {
       doConfigure(url.openStream(), hierarchy);
     } catch(IOException e) {
@@ -596,7 +585,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
 
   */
   public
-  void doConfigure(InputStream inputStream, Hierarchy hierarchy) 
+  void doConfigure(InputStream inputStream, LoggerRepository hierarchy) 
                                           throws FactoryConfigurationError {
     doConfigure(new InputSource(inputStream), hierarchy);
   }
@@ -607,7 +596,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
 
   */
   public
-  void doConfigure(Reader reader, Hierarchy hierarchy) 
+  void doConfigure(Reader reader, LoggerRepository hierarchy) 
                                           throws FactoryConfigurationError {
     doConfigure(new InputSource(reader), hierarchy);
   }
@@ -618,7 +607,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
 
   */
   protected
-  void doConfigure(InputSource inputSource, Hierarchy hierarchy) 
+  void doConfigure(InputSource inputSource, LoggerRepository hierarchy) 
                                           throws FactoryConfigurationError {
     DocumentBuilderFactory dbf = null;
     try { 
@@ -685,7 +674,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
      
   */
   protected
-  void parse(Element element, Hierarchy hierarchy) {
+  void parse(Element element, LoggerRepository hierarchy) {
 
     String rootElementName = element.getTagName();
 
@@ -725,7 +714,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
     // DISABLE_OVERRIDE attribute is returned as the empty string when
     // it is not specified in the XML file.
     if(!override.equals("") && !override.equals("null")) {
-      hierarchy.overrideAsNeeded(override);
+      //hierarchy.overrideAsNeeded(override);
     }
 
     String disableStr = subst(element.getAttribute(DISABLE_ATTR));
@@ -805,6 +794,7 @@ class XMLWatchdog extends FileWatchdog {
      <code>filename</code> to reconfigure log4j. */
   public
   void doOnChange() {
-    new DOMConfigurator().doConfigure(filename, Category.getDefaultHierarchy());
+    new DOMConfigurator().doConfigure(filename, 
+				      LogManager.getLoggerRepository());
   }
 }

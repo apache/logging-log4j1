@@ -12,7 +12,9 @@ import java.net.ServerSocket;
 import java.io.IOException;
 
 import org.apache.log4j.Category;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.spi.LoggerRepository;
 
 
 /**
@@ -53,7 +55,7 @@ public class SimpleSocketServer  {
 	cat.info("Connected to client at " + socket.getInetAddress());
 	cat.info("Starting new socket node.");	
 	new Thread(new SocketNode(socket, 
-				  Category.getDefaultHierarchy())).start();
+				  LogManager.getLoggerRepository())).start();
       }
     }
     catch(Exception e) {

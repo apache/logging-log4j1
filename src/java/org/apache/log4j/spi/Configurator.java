@@ -7,7 +7,7 @@
 
 package org.apache.log4j.spi;
 
-import org.apache.log4j.Hierarchy;
+import org.apache.log4j.spi.LoggerRepository;
 import java.net.URL;
 
 /**
@@ -26,5 +26,5 @@ public interface Configurator {
      @param url The URL to parse
      @param hierarchy The hierarchy to operation upon.
    */
-  void doConfigure(URL url, Hierarchy hierarchy);
+  void doConfigure(URL url, LoggerRepository repository);
 }

@@ -14,6 +14,8 @@ package org.apache.log4j;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.Loader;
 import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.spi.LoggerRepository;
+import org.apache.log4j.spi.RendererSupport;
 import org.apache.log4j.or.ObjectRenderer;
 import org.apache.log4j.or.RendererMap;
 import java.util.Enumeration;
@@ -80,11 +82,11 @@ public class BasicConfigurator {
   static {    
     String override = OptionConverter.getSystemProperty(DISABLE_OVERRIDE_KEY, null);
     if(override != null) {
-      Category.defaultHierarchy.setDisableOverride(override);
+      //Category.defaultHierarchy.setDisableOverride(override);
     } else { // check for log4j.disable only in absence of log4j.disableOverride
       String disableStr = OptionConverter.getSystemProperty(DISABLE_KEY, null);
       if(disableStr != null) {
-	Category.defaultHierarchy.disable(disableStr);
+	LogManager.getLoggerRepository().disable(disableStr);
       }
     }
   }
@@ -97,7 +99,8 @@ public class BasicConfigurator {
      Used by subclasses to add a renderer to the hierarchy passed as parameter.
    */
   protected
-  void addRenderer(Hierarchy hierarchy, String renderedClassName, 
+  static
+  void addRenderer(RendererSupport repository, String renderedClassName, 
 		   String renderingClassName) {
     LogLog.debug("Rendering class: ["+renderingClassName+"], Rendered class: ["+
 		 renderedClassName+"].");
@@ -111,13 +114,13 @@ public class BasicConfigurator {
     } else {
       try {
 	Class renderedClass = Loader.loadClass(renderedClassName);
-	hierarchy.rendererMap.put(renderedClass, renderer);
+	repository.setRenderer(renderedClass, renderer);
       } catch(ClassNotFoundException e) {
 	LogLog.error("Could not find class ["+renderedClassName+"].", e);
       }
     }
   }
-
+  
   /**
      See {@link Hierarchy#disable(String)}.
 
@@ -138,48 +141,6 @@ public class BasicConfigurator {
   
   }
   
-
-  /**
-     See {@link Hierarchy#disableAll()}.
-
-     @deprecated Use <code>Category.getDefaultHierarchy().disableAll()</code> instead.  */  
-  public
-  static
-  void disableAll() {
-      Category.getDefaultHierarchy().disable(Level.FATAL);
-  }
-
- /**
-     See {@link Hierarchy#disableDebug()}.
-
-     @deprecated Use <code>Category.getDefaultHierarchy().disableDebug()</code> instead.  */ 
-  public
-  static
-  void disableDebug() {
-    Category.getDefaultHierarchy().disable(Level.DEBUG);
-  }  
-
- /**
-     See {@link Hierarchy#disableInfo()}.
-
-     @deprecated Use <code>Category.getDefaultHierarchy().disableInfo()</code> instead.  */ 
-  public
-  static
-  void disableInfo() {
-    Category.getDefaultHierarchy().disable(Level.INFO);
-  } 
-  
-
- /**
-     See {@link Hierarchy#enableAll()}.
-
-     @deprecated Use <code>Category.getDefaultHierarchy().enableAll()</code> instead.  */ 
-  public
-  static
-  void enableAll() {
-    Category.getDefaultHierarchy().disable(Level.INFO);
-  }
-
   /**
      Add a {@link FileAppender} that uses {@link PatternLayout} using
      the {@link PatternLayout#TTCC_CONVERSION_PATTERN} and prints to
@@ -212,15 +173,6 @@ public class BasicConfigurator {
   public
   static
   void resetConfiguration() {
-    Category.defaultHierarchy.resetConfiguration();
-  }
-
-  /**
-     @deprecated Use <code>hierarchy.resetConfiguration()</code> instead.
-  */
-  public
-  static
-  void resetConfiguration(Hierarchy hierarchy) {
-    hierarchy.resetConfiguration();
+    LogManager.resetConfiguration();
   }
 }

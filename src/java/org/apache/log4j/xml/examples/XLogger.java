@@ -85,7 +85,7 @@ public class XLogger extends Logger implements OptionHandler {
      XLevel#LETHAL}.  */
   public
   void lethal(String message, Throwable t) { 
-    if(hierarchy.isDisabled(XLevel.LETHAL_INT)) 
+    if(repository.isDisabled(XLevel.LETHAL_INT)) 
       return;
     if(XLevel.LETHAL.isGreaterOrEqual(this.getChainedLevel()))
       forcedLog(FQCN, XLevel.LETHAL, message, t);
@@ -96,7 +96,7 @@ public class XLogger extends Logger implements OptionHandler {
      XLevel#LETHAL}.  */
   public
   void lethal(String message) { 
-    if(hierarchy.isDisabled(XLevel.LETHAL_INT)) 
+    if(repository.isDisabled(XLevel.LETHAL_INT)) 
       return;
     if(XLevel.LETHAL.isGreaterOrEqual(this.getChainedLevel()))
       forcedLog(FQCN, XLevel.LETHAL, message, null);
@@ -139,7 +139,7 @@ public class XLogger extends Logger implements OptionHandler {
   */
   public
   void trace(String message, Throwable t) { 
-    if(hierarchy.isDisabled(XLevel.TRACE_INT))
+    if(repository.isDisabled(XLevel.TRACE_INT))
       return;   
     if(XLevel.TRACE.isGreaterOrEqual(this.getChainedLevel()))
       forcedLog(FQCN, XLevel.TRACE, message, t);
@@ -150,7 +150,7 @@ public class XLogger extends Logger implements OptionHandler {
   */
   public
   void trace(String message) { 
-    if(hierarchy.isDisabled(XLevel.TRACE_INT))
+    if(repository.isDisabled(XLevel.TRACE_INT))
       return;   
     if(XLevel.TRACE.isGreaterOrEqual(this.getChainedLevel()))
       forcedLog(FQCN, XLevel.TRACE, message, null);

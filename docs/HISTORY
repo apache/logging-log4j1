@@ -50,6 +50,9 @@
    deprecated methods. They have become totally redundant after we
    moved to JavaBeans style configuration in log4j 1.1.
 
+ - Remoced deprecated method disable(Priority), disableAll,
+   disableDebug, disableInfo and enableAll in BasicConfigurator. [*]
+
  - Added supports java.io.Reader objects in the method doConfigure(),
    instead of only InputStream. Thanks to Mark Womack for submitting
    the relevant patch. [*]

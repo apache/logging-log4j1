@@ -4,11 +4,12 @@ DEPTH   :=../../../../../..
 JSOURCES:=SyslogAppender.java\
 	JMSAppender.java\
 	JMSSink.java\
-	SocketServer.java\
 	SimpleSocketServer.java\
 	SocketAppender.java\
 	SMTPAppender.java\
 	SocketNode.java\
+
+#	SocketServer.java\
 
 
 SUBDIRS :=test

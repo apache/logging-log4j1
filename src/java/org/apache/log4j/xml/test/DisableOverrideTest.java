@@ -1,10 +1,8 @@
 
 package org.apache.log4j.xml.test;
 
-import org.apache.log4j.Category;
 import org.apache.log4j.xml.DOMConfigurator;
-import org.apache.log4j.SimpleLayout;
-import org.apache.log4j.FileAppender;
+import org.apache.log4j.*;
 
 //import org.xml.sax.InputSource;
 //import org.apache.log4j.xml.examples.ReportParserError;
@@ -23,7 +21,7 @@ public class DisableOverrideTest {
       Usage("Wrong number of arguments.");
      
     DOMConfigurator.configure(configFile);
-    Category.getDefaultHierarchy().disableInfo();       
+    Category.getDefaultHierarchy().enable(Level.WARN);       
     CAT.debug("Hello world");
   }
 

@@ -210,8 +210,14 @@ public class LoggingEvent implements java.io.Serializable {
        if(message instanceof String) 
 	 renderedMessage = (String) message;
        else {
-	 renderedMessage=
-            logger.getHierarchy().getRendererMap().findAndRender(message);
+	 LoggerRepository repository = logger.getHierarchy();
+ 
+	 if(repository instanceof RendererSupport) {
+	   RendererSupport rs = (RendererSupport) repository;
+	   renderedMessage= rs.getRendererMap().findAndRender(message);
+	 } else {
+	   renderedMessage = message.toString();
+	 }
        }
      }
      return renderedMessage;
