@@ -40,15 +40,15 @@ import java.net.MalformedURLException;
 
 
 /**
-  This is the central class in the log4j package. One of the distintive
-  features of log4j are hierarchal categories and their evaluation.
+  This is the central class in the log4j package. One of the
+  distintive features of log4j are hierarchical categories and their
+  evaluation.
 
   <p>See the <a href="../../../manual.html">user manual</a> for an
   introduction on this class.
 
   @author Ceki G&uuml;lc&uuml;
-  @author Anders Kristensen 
-  */
+  @author Anders Kristensen */
 public class Category implements AppenderAttachable {
 
   // DISABLE_OFF should be set to a value lower than all possible
