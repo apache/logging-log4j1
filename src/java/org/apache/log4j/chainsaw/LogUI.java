@@ -100,6 +100,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.net.URL;
 
 import java.text.NumberFormat;
 
@@ -570,7 +571,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
   void addWelcomePanel() {
     tabbedPane.addANewTab(
-      "Welcome", new WelcomePanel(), new ImageIcon(ChainsawIcons.ABOUT),
+      "Welcome", WelcomePanel.getInstance(), new ImageIcon(ChainsawIcons.ABOUT),
       "Welcome/Help");
   }
 
@@ -621,7 +622,10 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     final ProgressPanel panel = new ProgressPanel(1, 3, "Shutting down");
     progress.getContentPane().add(panel);
     progress.pack();
-    progress.setLocationRelativeTo(this);
+    
+    Point p = new Point(getLocation());
+    p.move((int)getSize().getWidth()>>1, (int)getSize().getHeight()>>1);
+    progress.setLocation(p);
     progress.setVisible(true);
 
     Runnable runnable =
@@ -2332,5 +2336,18 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
     public void columnSelectionChanged(ListSelectionEvent e) {
     }
+  }
+
+  /**
+   * Causes the Welcome Panel to become visible, and shows the URL
+   * specified as it's contents
+   * @param url for content to show
+   */
+  void showHelp(URL url) {
+    removeWelcomePanel();
+    addWelcomePanel();
+//    TODO ensure the Welcome Panel is the selected tab
+    WelcomePanel.getInstance().setURL(url);
+    
   }
 }
