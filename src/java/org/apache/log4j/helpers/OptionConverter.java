@@ -33,10 +33,12 @@ import java.util.Properties;
 // Contributors:   Avy Sharell 
 //                 Matthieu Verbert
 //                 Colin Sampaleanu
+//                 Curt Arnold
 
 // Contributors:   Avy Sharell 
 //                 Matthieu Verbert
 //                 Colin Sampaleanu
+//                 Curt Arnold
 
 /**
  * A convenience class to convert property values to specific types.
@@ -45,6 +47,7 @@ import java.util.Properties;
  * @author Simon Kitching;
  * @author Anders Kristensen
  * @author Avy Sharell
+ * @author Curt Arnold
 */
 public class OptionConverter  {
   static String DELIM_START = "${";
@@ -538,20 +541,36 @@ public class OptionConverter  {
   }
   
   /**
-   * Replaces occurances of double backslashes (if any) in the
-   * source string with single backslashes.
+   * Replaces double backslashes (except the leading doubles in UNC's)
+   * with single backslashes for compatibility with existing path specifications
+   * that were working around use of OptionConverter.convertSpecialChars
+   * in XML configuration files.
+   * 
    * @param src source string
    * @return source string with double backslashes replaced
+   * 
+   * @since 1.3
    */
   public static String stripDuplicateBackslashes(final String src) {
   	int i = src.lastIndexOf('\\');
   	if (i > 0) {
   		StringBuffer buf = new StringBuffer(src);
   		for(; i > 0; i = src.lastIndexOf('\\', i - 1)) {
+  			//
+  			//  if the preceding character is a slash then
+  			//     remove the preceding character
+  			//     and continue processing with the earlier part of the string
   			if(src.charAt(i - 1) == '\\') {
   				buf.deleteCharAt(i);
   				i--;
   				if (i == 0) break;
+  			} else {
+  				//
+  				//  if there was a single slash then
+  				//    the string was not trying to work around
+  				//    convertSpecialChars
+  				//
+  				return src;
   			}
   		}
   		return buf.toString();
