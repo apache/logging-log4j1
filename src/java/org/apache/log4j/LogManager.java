@@ -46,7 +46,7 @@ public class LogManager {
   private static Scheduler schedulerInstance = null;
   
   static {
-    System.out.println("**Start of LogManager static initializer");
+    //System.out.println("**Start of LogManager static initializer");
     Hierarchy defaultHierarchy = new Hierarchy(new RootLogger(Level.DEBUG));
     defaultHierarchy.setName("default");
 
@@ -102,13 +102,13 @@ public class LogManager {
       }
     }
 
-    System.out.println("*** configurationOptionStr=" + configurationOptionStr);
+    //System.out.println("*** configurationOptionStr=" + configurationOptionStr);
 
     IntializationUtil.initialConfiguration(
       defaultHierarchy, configurationOptionStr, configuratorClassName);
     
 
-    System.out.println("** End of LogManager static initializer");
+    //System.out.println("** End of LogManager static initializer");
   }
 
   /**
