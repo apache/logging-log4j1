@@ -98,7 +98,7 @@
     These are the targets supported by this ANT build scpript:
 
     build   - compile all project files, if a certain library is missing,
-        then the compilation of its dependents are skipped.
+              then the compilation of its dependents are skipped.
 
     javadoc - build project javadoc files
 
@@ -242,11 +242,11 @@
   </target>
 
 
-  <target name="build.chainsaw">
+  <target name="build.chainsaw" depends="build.core">
     <ant antfile="build-chainsaw.xml" target="build.chainsaw"/> 
   </target>	
   
-  <target name="chainsaw.jar">
+  <target name="chainsaw.jar" depends="build.core">
     <ant antfile="build-chainsaw.xml" target="chainsaw.jar"/> 
   </target>	  
 
