@@ -61,6 +61,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.AbstractCellEditor;
@@ -97,7 +98,6 @@ class ThrowableRenderPanel extends AbstractCellEditor
     showStackTraceAction =
       new AbstractAction("...") {
           public void actionPerformed(ActionEvent e) {
-            displaySelectedEntry();
           }
         };
     this.table = table;
@@ -106,13 +106,10 @@ class ThrowableRenderPanel extends AbstractCellEditor
     btn.setAction(showStackTraceAction);
   }
 
-  private void displaySelectedEntry() {
-    Object object =
-      table.getModel().getValueAt(
-        table.getSelectedRow(), table.getSelectedColumn() - 1);
-    LogLog.debug("Would hae displayed " + object);
-  }
-
+	void addActionListener(ActionListener l){
+		btn.addActionListener(l);
+	}
+	
   private void setText(String text) {
     lbl.setText(text);
   }
@@ -129,8 +126,10 @@ class ThrowableRenderPanel extends AbstractCellEditor
       panel.setForeground(table.getSelectionForeground());
     } else if ((row % 2) != 0) {
       panel.setBackground(COLOR_ODD);
+	  panel.setForeground(table.getSelectionForeground());
     } else {
       panel.setBackground(background);
+	  panel.setForeground(table.getSelectionForeground());
     }
 
     return panel;
