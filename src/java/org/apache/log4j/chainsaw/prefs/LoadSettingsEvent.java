@@ -48,6 +48,11 @@
  */
 package org.apache.log4j.chainsaw.prefs;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -83,4 +88,25 @@ public class LoadSettingsEvent extends SettingsEvent {
 
   }
   private final Properties properties;
+  /**
+   * Returns an unmodifiable Collection of values whose
+   * setting key begins (String.startsWith()) the specified
+   * string.
+   * @param string
+   */
+  public Collection getSettingsStartingWith(String string)
+  {
+    Collection c = new ArrayList();
+    
+    for (Iterator iter = properties.entrySet().iterator(); iter.hasNext(); )
+    {
+      Map.Entry entry = (Map.Entry) iter.next();
+      if(entry.getKey().toString().startsWith(string)) {
+        c.add(entry.getValue());
+      }
+    }
+    
+    return Collections.unmodifiableCollection(c);
+    
+  }
 }
