@@ -189,8 +189,11 @@
   <target name="log4j-core.jar" depends="prejar">
     <delete file="${jar.dest}/log4j-core.jar"/>
     <jar jarfile="${jar.dest}/log4j-core.jar" basedir="${javac.dest}"
-	 includes="**/log4j/*.class, **/log4j/helpers/*.class,
-                  **/log4j/spi/*.class, **/log4j/or/*.class"
+	 includes="${stem}/*.class, 
+	          ${stem}/helpers/*.class,
+                  ${stem}/spi/*.class, 
+		  ${stem}/or/*.class,
+		  ${stem}/config/PropertySetter.class"
 	 excludes="**/StressCategory*, **/TTCC*, **/SimpleLayout.*, 
 	          **/AsyncAppender.*, **/Dispatcher.*, **/BoundedFIFO.*,
 	          **/Syslog*, **/RelativeTimeDateFormat.*,
@@ -210,13 +213,16 @@
     <delete file="${jar.dest}/log4j.jar"/>
     <jar jarfile="${jar.dest}/log4j.jar" basedir="${javac.dest}"
 	includes="${stem}/*.class, ${stem}/xml/log4j.dtd, 
-	          ${stem}/helpers/*.class, icons/**,
+		  ${stem}/config/*.class,
+	          ${stem}/helpers/*.class, 
+		  icons/**,
 		  ${stem}/spi/*.class,  
 		  ${stem}/net/*.class,
 		  ${stem}/varia/*.class, 
 		  ${stem}/nt/*.class,
 		  ${stem}/xml/*.class, 
 		  ${stem}/or/*.class,
+		  ${stem}/config/*.class,
 		  ${stem}/gui/TextPaneAppender.class"
 	excludes="**/StressCategory*, **/UnitTest**"
         manifest="${jar.dest}/manifest.mf"	

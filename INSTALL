@@ -36,6 +36,9 @@ the code contained in the first file, contains classes to interact
 with a Syslog daemon and code to output/receive log statements using
 TCP sockets plus all sort of other goodies.
 
+Note: If you install log4j.jar you DO NOT NEED to install
+log4j-core.jar on your classpath.
+
 ==================   
 log4j dependencies
 ==================
