@@ -1,9 +1,9 @@
 
-package org.log4j.test;
+package org.apache.log4j.test;
 
-import org.log4j.PropertyConfigurator;
-import org.log4j.Category;
-import org.log4j.Priority;
+import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.Category;
+import org.apache.log4j.Priority;
 /**
    This class is a test of the PatternLayout class.
 

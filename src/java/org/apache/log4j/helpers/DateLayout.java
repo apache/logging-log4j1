@@ -6,14 +6,14 @@
  * the LICENSE.APL file.
  */
 
-package org.log4j.helpers;
+package org.apache.log4j.helpers;
 
-import org.log4j.Layout;
-import org.log4j.helpers.RelativeTimeDateFormat;
-import org.log4j.helpers.AbsoluteTimeDateFormat;
-import org.log4j.helpers.DateTimeDateFormat;
-import org.log4j.helpers.ISO8601DateFormat;
-import org.log4j.spi.LoggingEvent;
+import org.apache.log4j.Layout;
+import org.apache.log4j.helpers.RelativeTimeDateFormat;
+import org.apache.log4j.helpers.AbsoluteTimeDateFormat;
+import org.apache.log4j.helpers.DateTimeDateFormat;
+import org.apache.log4j.helpers.ISO8601DateFormat;
+import org.apache.log4j.spi.LoggingEvent;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -151,7 +151,7 @@ abstract public class DateLayout extends Layout {
     "NULL", "RELATIVE", "ABSOLUTE", "DATE" or "ISO8601.
 
     <p>See also the <b>%d</b> conversion specifier of the {@link
-    org.log4j.PatternLayout PatternLayout}.
+    org.apache.log4j.PatternLayout PatternLayout}.
     
     <p><dt><b>TimeZoneID</b>
 

@@ -1,9 +1,9 @@
 // Copyright 2000, Ceki Gulcu. 
 
-package org.log4j.varia;
+package org.apache.log4j.varia;
 
-import org.log4j.Category;
-import org.log4j.BasicConfigurator;
+import org.apache.log4j.Category;
+import org.apache.log4j.BasicConfigurator;
 
 import java.io.IOException;
 import java.io.DataInputStream;

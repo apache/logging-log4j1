@@ -5,16 +5,16 @@
  * License version 1.1, a copy of which has been included with this
  * distribution in the LICENSE.APL file.  */
 
-package org.log4j.xml.test;
+package org.apache.log4j.xml.test;
 
 
-import org.log4j.Category;
-import org.log4j.Priority;
-import org.log4j.spi.OptionHandler;
-import org.log4j.spi.LoggingEvent;
-import org.log4j.spi.CategoryFactory;
+import org.apache.log4j.Category;
+import org.apache.log4j.Priority;
+import org.apache.log4j.spi.OptionHandler;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.CategoryFactory;
 
-import org.log4j.xml.test.TPriority;
+import org.apache.log4j.xml.test.TPriority;
 
 /**
    A simple example showing Category sub-classing. It shows the

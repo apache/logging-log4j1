@@ -5,10 +5,10 @@
  * License version 1.1, a copy of which has been included with this
  * distribution in the LICENSE.APL file.  */
 
-package org.log4j.examples;
+package org.apache.log4j.examples;
 
-import org.log4j.Category;
-import org.log4j.spi.CategoryFactory;
+import org.apache.log4j.Category;
+import org.apache.log4j.spi.CategoryFactory;
 
 /**
    A factory that makes new {@link MyCategory} objects.

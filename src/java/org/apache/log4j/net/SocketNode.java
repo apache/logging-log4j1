@@ -6,7 +6,7 @@
 //      See the LICENCE file for the terms of usage and distribution.
 
 
-package org.log4j.net;
+package org.apache.log4j.net;
 
 import java.net.InetAddress;
 import java.net.Socket;
@@ -16,10 +16,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 
 
-import org.log4j.Category;
-import org.log4j.spi.LoggingEvent;
-import org.log4j.Priority;
-import org.log4j.NDC;
+import org.apache.log4j.Category;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.Priority;
+import org.apache.log4j.NDC;
 
 // Contributors:  Moses Hohman <mmhohman@rainbow.uchicago.edu>
 

@@ -1,16 +1,16 @@
 //      Copyright 1996-2000, International Business Machines 
 //      Corporation. All Rights Reserved.
 
-package org.log4j.performance;
+package org.apache.log4j.performance;
 
 
-import org.log4j.Category;
-import org.log4j.BasicConfigurator;
-import org.log4j.SimpleLayout;
-import org.log4j.FileAppender;
-import org.log4j.Layout;
+import org.apache.log4j.Category;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.SimpleLayout;
+import org.apache.log4j.FileAppender;
+import org.apache.log4j.Layout;
 
-import org.log4j.Priority;
+import org.apache.log4j.Priority;
 
 /**
    Measure the performance of evaluating whether to log or not to log,
@@ -69,7 +69,7 @@ public class NotLogging {
   static
   void  Usage() {
     System.err.println(
-      "Usage: java org.log4j.test.NotLogging true|false runLength\n" +
+      "Usage: java org.apache.log4j.test.NotLogging true|false runLength\n" +
       "true indicates shipped code, false indicates code in development" +
       "  where runLength is an int representing the run length of loops\n"+
       "We suggest that runLength be at least 100'000.");

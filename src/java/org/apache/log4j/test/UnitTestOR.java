@@ -12,14 +12,14 @@
 //     http://www.junit.org
 
 
-package org.log4j.test;
+package org.apache.log4j.test;
 
-import org.log4j.spi.LoggingEvent;
-import org.log4j.Category;
-import org.log4j.Priority;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.Category;
+import org.apache.log4j.Priority;
 
-import org.log4j.or.ObjectRenderer;
-import org.log4j.or.RendererMap;
+import org.apache.log4j.or.ObjectRenderer;
+import org.apache.log4j.or.RendererMap;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;

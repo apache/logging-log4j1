@@ -5,7 +5,7 @@
  * License version 1.1, a copy of which has been included with this
  * distribution in the LICENSE.APL file.  */
 
-package org.log4j.net;
+package org.apache.log4j.net;
 
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -13,15 +13,15 @@ import java.net.DatagramPacket;
 import java.net.UnknownHostException;
 import java.net.SocketException;
 
-import org.log4j.helpers.OptionConverter;
-import org.log4j.AppenderSkeleton;
-import org.log4j.spi.LoggingEvent;
-import org.log4j.Category;
-import org.log4j.Priority;
-import org.log4j.Layout;
-import org.log4j.helpers.SyslogWriter;
-import org.log4j.helpers.SyslogQuietWriter;
-import org.log4j.net.SyslogTracerPrintWriter;
+import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.Category;
+import org.apache.log4j.Priority;
+import org.apache.log4j.Layout;
+import org.apache.log4j.helpers.SyslogWriter;
+import org.apache.log4j.helpers.SyslogQuietWriter;
+import org.apache.log4j.net.SyslogTracerPrintWriter;
 
 // Contributors: Yves Bossel <ybossel@opengets.cl>
 //               Christopher Taylor <cstaylor@pacbell.net>

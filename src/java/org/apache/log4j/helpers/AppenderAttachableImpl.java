@@ -6,12 +6,12 @@
  * the LICENSE.APL file.
  */
 
-package org.log4j.helpers;
+package org.apache.log4j.helpers;
 
-import org.log4j.spi.AppenderAttachable;
-import org.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.AppenderAttachable;
+import org.apache.log4j.spi.LoggingEvent;
 
-import org.log4j.Appender;
+import org.apache.log4j.Appender;
 import java.util.Vector;
 import java.util.Enumeration;
 

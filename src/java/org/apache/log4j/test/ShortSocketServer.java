@@ -1,15 +1,15 @@
 
 
-package org.log4j.test;
+package org.apache.log4j.test;
 
 import java.net.Socket;
 import java.net.ServerSocket;
 import java.io.IOException;
 
-import org.log4j.Category;
-import org.log4j.PropertyConfigurator;
-import org.log4j.helpers.LogLog;
-import org.log4j.net.SocketNode;
+import org.apache.log4j.Category;
+import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.net.SocketNode;
 
 /**
 */

@@ -5,16 +5,16 @@
  * version 1.1, a copy of which has been included  with this distribution in
  * the LICENSE.APL file.
  */
-package org.log4j.helpers;
+package org.apache.log4j.helpers;
 
-import org.log4j.helpers.LogLog;
-import org.log4j.helpers.OptionConverter;
-import org.log4j.helpers.AbsoluteTimeDateFormat;
-import org.log4j.Layout;
-import org.log4j.NDC;
-import org.log4j.spi.LoggingEvent;
-import org.log4j.or.ObjectRenderer;
-import org.log4j.or.RendererMap;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.helpers.AbsoluteTimeDateFormat;
+import org.apache.log4j.Layout;
+import org.apache.log4j.NDC;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.or.ObjectRenderer;
+import org.apache.log4j.or.RendererMap;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -23,7 +23,7 @@ import java.util.Date;
 //                 Igor E. Poteryaev <jah@mail.ru>  
 
 /**
-   Most of the work of the {@link org.log4j.PatternLayout} class
+   Most of the work of the {@link org.apache.log4j.PatternLayout} class
    is delegated to the PatternParser class.
 
    <p>It is this class that parses conversion patterns and creates
@@ -262,7 +262,7 @@ public class PatternParser {
 	  LogLog.error("Could not instantiate SimpleDateFormat with " +
 		       dateFormatStr, e);
 	  df = (DateFormat) OptionConverter.instantiateByClassName(
-			           "org.log4j.helpers.ISO8601DateFormat",
+			           "org.apache.log4j.helpers.ISO8601DateFormat",
 				   DateFormat.class, null);
 	}	
       }

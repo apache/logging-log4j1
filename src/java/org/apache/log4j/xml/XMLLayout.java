@@ -1,12 +1,12 @@
 //  Copyright (c) 2000 Ceki Gulcu.  All Rights Reserved.
 //  See the LICENCE file for the terms of distribution.
 
-package org.log4j.xml;
+package org.apache.log4j.xml;
 
-import org.log4j.Layout;
-import org.log4j.spi.LoggingEvent;
-import org.log4j.helpers.OptionConverter;
-import org.log4j.helpers.DateLayout;
+import org.apache.log4j.Layout;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.helpers.DateLayout;
 
 /**
    The output of the XMLLayout consists of a series of log4j:event

@@ -6,13 +6,13 @@
  * the LICENSE.APL file.
  */
 
-package org.log4j.helpers;
+package org.apache.log4j.helpers;
 
 import java.util.Properties;
 import java.net.URL;
-import org.log4j.spi.Configurator;
-import org.log4j.xml.DOMConfigurator;
-import org.log4j.PropertyConfigurator;
+import org.apache.log4j.spi.Configurator;
+import org.apache.log4j.xml.DOMConfigurator;
+import org.apache.log4j.PropertyConfigurator;
 
 // Contributors:   Avy Sharell (sharell@online.fr)
 
@@ -297,7 +297,7 @@ public class OptionConverter {
     if(clazz != null) {
       LogLog.debug("Preferred configurator class: " + clazz);
       configurator = (Configurator) instantiateByClassName(clazz,
-						org.log4j.spi.Configurator.class,
+						org.apache.log4j.spi.Configurator.class,
 						null);
       if(configurator == null) {
 	LogLog.error("Could not instantiate configurator ["+clazz+"].");

@@ -12,7 +12,7 @@ function testSCF {
   type=$1
   d=$2
   echo -n "ShippedCodeFlagTest $TEST "
-  java $d org.log4j.test.ShippedCodeFlagTest $type > $OUTPUT
+  java $d org.apache.log4j.test.ShippedCodeFlagTest $type > $OUTPUT
   check $WITNESS.$TEST $OUTPUT; echo " - OK."  
 }
 
@@ -29,9 +29,9 @@ fi
 TEST=3
 if [ $TEST -ge $start ]; then
   echo "log4j.rootCategory=,A" > $LCF
-  lecho "log4j.appender.A=org.log4j.FileAppender"
+  lecho "log4j.appender.A=org.apache.log4j.FileAppender"
   lecho "log4j.appender.A.File=System.out"
-  lecho "log4j.appender.A.layout=org.log4j.PatternLayout"
+  lecho "log4j.appender.A.layout=org.apache.log4j.PatternLayout"
   lecho "log4j.appender.A.layout.ConversionPattern=%p [%t] %c{2} = %m%n"    
   testSCF $LCF 
 fi
@@ -41,9 +41,9 @@ TEST=4
 if [ $TEST -ge $start ]; then
   echo "log4j.disableOverride" > $LCF
   lecho "log4j.rootCategory=,A"
-  lecho "log4j.appender.A=org.log4j.FileAppender"
+  lecho "log4j.appender.A=org.apache.log4j.FileAppender"
   lecho "log4j.appender.A.File=System.out"
-  lecho "log4j.appender.A.layout=org.log4j.PatternLayout"
+  lecho "log4j.appender.A.layout=org.apache.log4j.PatternLayout"
   lecho "log4j.appender.A.layout.ConversionPattern=%p [%t] %c{2} = %m%n"    
   testSCF $LCF 
 fi

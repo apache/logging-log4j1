@@ -9,12 +9,12 @@
 //              "Mark DONSZELMANN" <Mark.Donszelmann@cern.ch>
 //              "Muly Oved" <mulyoved@hotmail.com>
 
-package org.log4j;
+package org.apache.log4j;
 
-import org.log4j.helpers.LogLog;
-import org.log4j.helpers.OptionConverter;
-import org.log4j.or.ObjectRenderer;
-import org.log4j.or.RendererMap;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.or.ObjectRenderer;
+import org.apache.log4j.or.RendererMap;
 import java.util.Enumeration;
 
 /**
@@ -22,7 +22,7 @@ import java.util.Enumeration;
 
    <p>For file based configuration see {@link
    PropertyConfigurator}. For XML based configuration see {@link
-   org.log4j.xml.DOMConfigurator DOMConfigurator}.
+   org.apache.log4j.xml.DOMConfigurator DOMConfigurator}.
 
    @since 0.8.1
    @author Ceki G&uuml;lc&uuml; */
@@ -150,7 +150,7 @@ public class BasicConfigurator {
 
      <p>Other configurators define alternate ways of overriding the
      disable override flag. See {@link PropertyConfigurator} and
-     {@link org.log4j.xml.DOMConfigurator}.
+     {@link org.apache.log4j.xml.DOMConfigurator}.
 
 
      @since 0.8.5 */

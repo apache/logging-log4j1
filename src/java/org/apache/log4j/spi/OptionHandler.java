@@ -22,7 +22,7 @@
   SOFTWARE.
 */
 
-package org.log4j.spi;
+package org.apache.log4j.spi;
 
 /**
 

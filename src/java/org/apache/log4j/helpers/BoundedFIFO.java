@@ -6,13 +6,13 @@
  * the LICENSE.APL file.
  */
 
-package org.log4j.helpers;
+package org.apache.log4j.helpers;
 
-import org.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.LoggingEvent;
 
 /**
    <code>BoundedFIFO</code> serves as the bounded first-in-first-out
-   buffer heavily used by the {@link org.log4j.AsyncAppender}.
+   buffer heavily used by the {@link org.apache.log4j.AsyncAppender}.
    
    @author Ceki G&uuml;lc&uuml; 
    @since version 0.9.1 */

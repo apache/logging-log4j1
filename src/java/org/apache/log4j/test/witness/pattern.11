@@ -10,41 +10,41 @@ FATAL [main] test.PatternTest: Message 4
 FATAL [main] root: Message 4
 DEBUG [main] test.PatternTest: Message 5
 java.lang.Exception: Just testing
-	at org.log4j.test.PatternTest.test(PatternTest.java:60)
-	at org.log4j.test.PatternTest.main(PatternTest.java:25)
+	at org.apache.log4j.test.PatternTest.test(PatternTest.java:60)
+	at org.apache.log4j.test.PatternTest.main(PatternTest.java:25)
 DEBUG [main] root: Message 5
 java.lang.Exception: Just testing
-	at org.log4j.test.PatternTest.test(PatternTest.java:60)
-	at org.log4j.test.PatternTest.main(PatternTest.java:25)
+	at org.apache.log4j.test.PatternTest.test(PatternTest.java:60)
+	at org.apache.log4j.test.PatternTest.main(PatternTest.java:25)
 INFO  [main] test.PatternTest: Message 6
 java.lang.Exception: Just testing
-	at org.log4j.test.PatternTest.test(PatternTest.java:60)
-	at org.log4j.test.PatternTest.main(PatternTest.java:25)
+	at org.apache.log4j.test.PatternTest.test(PatternTest.java:60)
+	at org.apache.log4j.test.PatternTest.main(PatternTest.java:25)
 INFO  [main] root: Message 6
 java.lang.Exception: Just testing
-	at org.log4j.test.PatternTest.test(PatternTest.java:60)
-	at org.log4j.test.PatternTest.main(PatternTest.java:25)
+	at org.apache.log4j.test.PatternTest.test(PatternTest.java:60)
+	at org.apache.log4j.test.PatternTest.main(PatternTest.java:25)
 WARN  [main] test.PatternTest: Message 7
 java.lang.Exception: Just testing
-	at org.log4j.test.PatternTest.test(PatternTest.java:60)
-	at org.log4j.test.PatternTest.main(PatternTest.java:25)
+	at org.apache.log4j.test.PatternTest.test(PatternTest.java:60)
+	at org.apache.log4j.test.PatternTest.main(PatternTest.java:25)
 WARN  [main] root: Message 7
 java.lang.Exception: Just testing
-	at org.log4j.test.PatternTest.test(PatternTest.java:60)
-	at org.log4j.test.PatternTest.main(PatternTest.java:25)
+	at org.apache.log4j.test.PatternTest.test(PatternTest.java:60)
+	at org.apache.log4j.test.PatternTest.main(PatternTest.java:25)
 ERROR [main] test.PatternTest: Message 8
 java.lang.Exception: Just testing
-	at org.log4j.test.PatternTest.test(PatternTest.java:60)
-	at org.log4j.test.PatternTest.main(PatternTest.java:25)
+	at org.apache.log4j.test.PatternTest.test(PatternTest.java:60)
+	at org.apache.log4j.test.PatternTest.main(PatternTest.java:25)
 ERROR [main] root: Message 8
 java.lang.Exception: Just testing
-	at org.log4j.test.PatternTest.test(PatternTest.java:60)
-	at org.log4j.test.PatternTest.main(PatternTest.java:25)
+	at org.apache.log4j.test.PatternTest.test(PatternTest.java:60)
+	at org.apache.log4j.test.PatternTest.main(PatternTest.java:25)
 FATAL [main] test.PatternTest: Message 9
 java.lang.Exception: Just testing
-	at org.log4j.test.PatternTest.test(PatternTest.java:60)
-	at org.log4j.test.PatternTest.main(PatternTest.java:25)
+	at org.apache.log4j.test.PatternTest.test(PatternTest.java:60)
+	at org.apache.log4j.test.PatternTest.main(PatternTest.java:25)
 FATAL [main] root: Message 9
 java.lang.Exception: Just testing
-	at org.log4j.test.PatternTest.test(PatternTest.java:60)
-	at org.log4j.test.PatternTest.main(PatternTest.java:25)
+	at org.apache.log4j.test.PatternTest.test(PatternTest.java:60)
+	at org.apache.log4j.test.PatternTest.main(PatternTest.java:25)

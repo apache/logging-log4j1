@@ -1,12 +1,12 @@
 
-package org.log4j.xml;
+package org.apache.log4j.xml;
 
-import org.log4j.Category;
-import org.log4j.Layout;
-import org.log4j.PropertyConfigurator;
-import org.log4j.spi.LoggingEvent;
-import org.log4j.helpers.OptionConverter;
-import org.log4j.helpers.DateLayout;
+import org.apache.log4j.Category;
+import org.apache.log4j.Layout;
+import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.helpers.DateLayout;
 
 import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;

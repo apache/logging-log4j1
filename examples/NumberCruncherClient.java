@@ -1,5 +1,11 @@
+/*
+ * Copyright (C) The Apache Software Foundation. All rights reserved.
+ *
+ * This software is published under the terms of the Apache Software
+ * License version 1.1, a copy of which has been included with this
+ * distribution in the LICENSE.APL file.  */
 
-package org.log4j.examples;
+package org.apache.log4j.examples;
 
 import java.rmi.Remote;
 import java.rmi.server.UnicastRemoteObject;
@@ -18,7 +24,7 @@ import java.io.*;
    <code>NumberCruncherClient</code> for more details.
 
    <pre>
-   <b>Usage:</b> java  org.log4j.examples.NumberCruncherClient HOST
+   <b>Usage:</b> java  org.apache.log4j.examples.NumberCruncherClient HOST
     &nbsp;&nbsp;&nbsp;&nbsp;where HOST is the machine where the NumberCruncherServer is running
    </pre>
    
@@ -52,7 +58,7 @@ public class NumberCruncherClient {
   void usage(String msg) {
     System.err.println(msg);
     System.err.println(
-     "Usage: java org.log4j.examples.NumberCruncherClient HOST\n" +
+     "Usage: java org.apache.log4j.examples.NumberCruncherClient HOST\n" +
      "   where HOST is the machine where the NumberCruncherServer is running.");
     System.exit(1);
   }

@@ -1,11 +1,11 @@
-package org.log4j.test;
+package org.apache.log4j.test;
 
 import java.util.Properties;
-import org.log4j.Category;
-import org.log4j.spi.Configurator;
-import org.log4j.spi.LoggingEvent;
-import org.log4j.SimpleLayout;
-import org.log4j.FileAppender;
+import org.apache.log4j.Category;
+import org.apache.log4j.spi.Configurator;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.SimpleLayout;
+import org.apache.log4j.FileAppender;
 
 /**
  * This configurator simply always adds a FileAppender writing to

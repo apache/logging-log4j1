@@ -1,7 +1,7 @@
 //      Copyright 1996-1999, International Business Machines 
 //      Corporation. All Rights Reserved.
 
-package org.log4j.performance;
+package org.apache.log4j.performance;
 
 import java.util.Date;
 
@@ -21,7 +21,7 @@ public class ConcatVsArray {
 
   static
   void  Usage() {
-    System.err.println("Usage: java org.log4j.performance.ConcatVsArray " +
+    System.err.println("Usage: java org.apache.log4j.performance.ConcatVsArray " +
 		       "string1 string2 runLength\n" +
 		       "       where runLength is an integer.");
     System.exit(1);

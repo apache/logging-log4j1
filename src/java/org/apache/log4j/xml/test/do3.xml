@@ -9,10 +9,10 @@
     with a specifed DTD 
  -->
 <configuration disableOverride="false">
-	<appender name="A1" class="org.log4j.FileAppender">
+	<appender name="A1" class="org.apache.log4j.FileAppender">
             <param name="File" value="System.out" />
 	    
-            <layout class="org.log4j.PatternLayout">
+            <layout class="org.apache.log4j.PatternLayout">
 		<param name="ConversionPattern"
   		       value="TEST 3: %-5p %c - %m%n"/>
             </layout>

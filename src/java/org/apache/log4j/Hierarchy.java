@@ -10,16 +10,16 @@
 //                Luke Blanshard <luke@quiq.com>
 //                Mario Schomburg - IBM Global Services/Germany
 
-package org.log4j;
+package org.apache.log4j;
 
 
 import java.util.Hashtable;
 import java.util.Enumeration;
 
-import org.log4j.spi.RootCategory;
-import org.log4j.spi.CategoryFactory;
-import org.log4j.or.RendererMap;
-import org.log4j.or.ObjectRenderer;
+import org.apache.log4j.spi.RootCategory;
+import org.apache.log4j.spi.CategoryFactory;
+import org.apache.log4j.or.RendererMap;
+import org.apache.log4j.or.ObjectRenderer;
 
 /**
    This class is specialized in retreiving categories by name and
@@ -324,7 +324,7 @@ public class Hierarchy {
      Shutting down a hiearchy will <em>safely</em> close and remove
      all appenders in all the categories including root.
      
-     <p>Some appenders such as {@link org.log4j.net.SocketAppender}
+     <p>Some appenders such as {@link org.apache.log4j.net.SocketAppender}
      and {@link AsyncAppender} need to be closed before the
      application exists. Otherwise, pending logging events might be
      lost.

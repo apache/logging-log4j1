@@ -1,4 +1,4 @@
-package org.log4j.varia;
+package org.apache.log4j.varia;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,9 +7,9 @@ import java.io.FileWriter;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
-import org.log4j.helpers.LogLog;
-import org.log4j.FileAppender;
-import org.log4j.Layout;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.FileAppender;
+import org.apache.log4j.Layout;
 
 /**
    This appender is resilient against moving of the log output

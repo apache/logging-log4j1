@@ -10,19 +10,19 @@
 //              "Mark DONSZELMANN" <Mark.Donszelmann@cern.ch>
 //              Anders Kristensen <akristensen@dynamicsoft.com>
 
-package org.log4j;
+package org.apache.log4j;
 
-import org.log4j.Category;
-import org.log4j.Priority;
-import org.log4j.DefaultCategoryFactory;
-import org.log4j.spi.OptionHandler;
-import org.log4j.spi.Configurator;
-import org.log4j.spi.CategoryFactory;
-import org.log4j.or.ObjectRenderer;
-import org.log4j.or.RendererMap;
-import org.log4j.helpers.LogLog;
-import org.log4j.helpers.OptionConverter;
-import org.log4j.helpers.FileWatchdog;
+import org.apache.log4j.Category;
+import org.apache.log4j.Priority;
+import org.apache.log4j.DefaultCategoryFactory;
+import org.apache.log4j.spi.OptionHandler;
+import org.apache.log4j.spi.Configurator;
+import org.apache.log4j.spi.CategoryFactory;
+import org.apache.log4j.or.ObjectRenderer;
+import org.apache.log4j.or.RendererMap;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.helpers.FileWatchdog;
 
 import java.util.NoSuchElementException;
 import java.util.Enumeration;
@@ -49,10 +49,10 @@ import java.util.Hashtable;
 
    <p>The <code>PropertyConfigurator</code> does not handle the
    advanced configuration features supported by the {@link
-   org.log4j.xml.DOMConfigurator DOMConfigurator} such as support for
-   sub-classing of the Priority class, {@link org.log4j.spi.Filter
-   Filters}, custom {@link org.log4j.spi.ErrorHandler ErrorHandlers},
-   nested appenders such as the {@link org.log4j.AsyncAppender
+   org.apache.log4j.xml.DOMConfigurator DOMConfigurator} such as support for
+   sub-classing of the Priority class, {@link org.apache.log4j.spi.Filter
+   Filters}, custom {@link org.apache.log4j.spi.ErrorHandler ErrorHandlers},
+   nested appenders such as the {@link org.apache.log4j.AsyncAppender
    AsyncAppender}, etc.
 
    <p><em>All option values admit variable substitution.</em> For
@@ -184,7 +184,7 @@ public class PropertyConfigurator extends BasicConfigurator
     
     You can customize the way message objects of a given type are
     converted to String before being logged. This is done by
-    specifying an {@link org.log4j.or.ObjectRenderer ObjectRenderer}
+    specifying an {@link org.apache.log4j.or.ObjectRenderer ObjectRenderer}
     for the object type would like to customize.
 
     <p>The syntax is:
@@ -211,19 +211,19 @@ public class PropertyConfigurator extends BasicConfigurator
     log4j.categoryFactory=fully.qualified.name.of.categoryFactory.class
     </pre>
 
-    See {@link org.log4j.examples.MyCategory} for an example.
+    See {@link org.apache.log4j.examples.MyCategory} for an example.
     
     <h3>Example</h3>
 
     <p>An example configuration is given below. Other configuration
-    file examples are given in {@link org.log4j.examples.Sort}
+    file examples are given in {@link org.apache.log4j.examples.Sort}
     class documentation.
 
     <pre>
 
     # Set options for appender named "A1". 
     # Appender "A1" will be a SyslogAppender
-    log4j.appender.A1=org.log4j.net.SyslogAppender
+    log4j.appender.A1=org.apache.log4j.net.SyslogAppender
 
     # The syslog daemon resides on www.abc.net
     log4j.appender.A1.SyslogHost=www.abc.net
@@ -237,17 +237,17 @@ public class PropertyConfigurator extends BasicConfigurator
     # the nested disgnostic context and finally the message itself.
     # Refer to the documentation of {@link PatternLayout} for further information
     # on the syntax of the ConversionPattern key.    
-    log4j.appender.A1.layout=org.log4j.PatternLayout
+    log4j.appender.A1.layout=org.apache.log4j.PatternLayout
     log4j.appender.A1.layout.ConversionPattern=%-4r %-5p %c{2} %M.%L %x - %m\n
 
     # Set options for appender named "A2"
     # A2 should be a RollingFileAppender, with maximum file size of 10 MB
     # using at most one backup file. A2's layout is TTCC, using the
     # ISO8061 date format with context printing enabled.    
-    log4j.appender.A2=org.log4j.RollingFileAppender
+    log4j.appender.A2=org.apache.log4j.RollingFileAppender
     log4j.appender.A2.MaxFileSize=10MB
     log4j.appender.A2.MaxBackupIndex=1
-    log4j.appender.A2.layout=org.log4j.TTCCLayout
+    log4j.appender.A2.layout=org.apache.log4j.TTCCLayout
     log4j.appender.A2.layout.ContextPrinting=enabled
     log4j.appender.A2.layout.DateFormat=ISO8601
 
@@ -567,7 +567,7 @@ public class PropertyConfigurator extends BasicConfigurator
     String layoutPrefix = prefix + ".layout";    
 
     appender = (Appender) OptionConverter.instantiateByKey(props, prefix,
-					      org.log4j.Appender.class,
+					      org.apache.log4j.Appender.class,
 					      null);
     if(appender == null) {
       LogLog.error(
@@ -580,7 +580,7 @@ public class PropertyConfigurator extends BasicConfigurator
       if(appender.requiresLayout()) {
 	Layout layout = (Layout) OptionConverter.instantiateByKey(props, 
 						layoutPrefix,
-						org.log4j.Layout.class, null);
+						org.apache.log4j.Layout.class, null);
 	if(layout != null) {
 	  appender.setLayout(layout);
 	  LogLog.debug("Parsing layout options for \"" + appenderName +"\".");

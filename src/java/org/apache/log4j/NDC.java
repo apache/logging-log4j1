@@ -3,7 +3,7 @@
 //
 //      See the LICENCE file for the terms of usage and distribution.
 
-package org.log4j;
+package org.apache.log4j;
 
 import java.util.Hashtable;
 import java.util.Stack;

@@ -5,9 +5,9 @@
  * License version 1.1, a copy of which has been included with this
  * distribution in the LICENSE.APL file.  */
 
-package org.log4j.net.test;
+package org.apache.log4j.net.test;
 
-import org.log4j.*;
+import org.apache.log4j.*;
 import java.io.IOException;
 import java.io.InputStreamReader;
 

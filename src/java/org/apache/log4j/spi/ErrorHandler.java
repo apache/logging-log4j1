@@ -22,9 +22,9 @@
   SOFTWARE.
 */
 
-package org.log4j.spi;
+package org.apache.log4j.spi;
 
-import org.log4j.Appender;
+import org.apache.log4j.Appender;
 
 /**
    Appenders may delegate their error handling to ErrorHandlers.

@@ -5,20 +5,20 @@
 
 //      See the LICENCE file for the terms of distribution.
 
-package org.log4j.performance;
+package org.apache.log4j.performance;
 
-import org.log4j.Category;
-import org.log4j.Layout;
-import org.log4j.xml.DOMConfigurator;
-import org.log4j.Appender;
-import org.log4j.net.SyslogAppender;
-import org.log4j.net.SocketAppender;
-import org.log4j.FileAppender;
+import org.apache.log4j.Category;
+import org.apache.log4j.Layout;
+import org.apache.log4j.xml.DOMConfigurator;
+import org.apache.log4j.Appender;
+import org.apache.log4j.net.SyslogAppender;
+import org.apache.log4j.net.SocketAppender;
+import org.apache.log4j.FileAppender;
 
-import org.log4j.Priority;
-import org.log4j.helpers.LogLog;
-import org.log4j.NDC;
-import org.log4j.performance.NOPWriter;
+import org.apache.log4j.Priority;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.NDC;
+import org.apache.log4j.performance.NOPWriter;
 
 import java.util.Enumeration;
 
@@ -144,10 +144,10 @@ import java.util.Enumeration;
    <p>Formating time and date information is costly. Using relative
    time has the least impact on performance. It is recommended that to
    use log4j specific date formatters such as the {@link
-   org.log4j.helpers.ISO8601DateFormat} instead of the standard {@link
+   org.apache.log4j.helpers.ISO8601DateFormat} instead of the standard {@link
    java.text.SimpleDateFormat} because of its poor performance. See
    the <b>%d</b> conversion character in {@link
-   org.log4j.PatternLayout}.
+   org.apache.log4j.PatternLayout}.
    
    <p><li>Avoiding the flush operation at the end of each append
    results in a performance gain of 10 to 20 percent. However, there
@@ -198,7 +198,7 @@ public class Logging {
   void  Usage(String msg) {
     System.err.println(msg);
     System.err.println(
-      "Usage: java org.log4j.test.Logging confFile runLength delay burstLen\n"+
+      "Usage: java org.apache.log4j.test.Logging confFile runLength delay burstLen\n"+
       "        confFile is a configuration file and\n"+
       "        runLength (integer) is the length of test loop.\n"+
       "        delay is the time in millisecs to wait every bustLen log requests.");
@@ -206,7 +206,7 @@ public class Logging {
   }
 
   /**
-     <b>Usage:</b> <code>java org.log4j.test.Logging confFile runLength [delay] [burstLen]</code>
+     <b>Usage:</b> <code>java org.apache.log4j.test.Logging confFile runLength [delay] [burstLen]</code>
 
      <p><code>confFile</code> is an XML configuration file and
       <code>runLength</code> (integer) is the length of test loop,

@@ -23,7 +23,7 @@ function testConfigurationParsing {
  options=$2; shift; shift;
  
  echo -n " ConfigurationParsing test $TEST - "
- java $D_FLAG org.log4j.test.ConfigurationFileParsing $configFile
+ java $D_FLAG org.apache.log4j.test.ConfigurationFileParsing $configFile
 
  if [ -n "$*" ]; then
    cat $* $TEMP >> $TEMP.x
@@ -50,10 +50,10 @@ function testConfigurationParsingII {
 
  case $target in
  OUT )
-   java $D_FLAG org.log4j.test.ConfigurationFileParsing $conf>$TEMP
+   java $D_FLAG org.apache.log4j.test.ConfigurationFileParsing $conf>$TEMP
    ;;
  ERR )
-   java $D_FLAG org.log4j.test.ConfigurationFileParsing $conf>& $TEMP
+   java $D_FLAG org.apache.log4j.test.ConfigurationFileParsing $conf>& $TEMP
    ;;
  esac
    
@@ -68,12 +68,12 @@ TEST=1;
 if [ $TEST -ge $start ]; then
   D_FLAG=$DEF_DEBUG
   echo "log4j.rootCategory=DEBUG, testAppender" > $LCF
-  lecho "log4j.appender.testAppender=org.log4j.RollingFileAppender"
+  lecho "log4j.appender.testAppender=org.apache.log4j.RollingFileAppender"
   lecho "log4j.appender.testAppender.File=  $TEMP"
   lecho "log4j.appender.testAppender.Append=false"
   lecho "log4j.appender.testAppender.layout.ContextPrinting= false "
   lecho "log4j.appender.testAppender.layout.ThreadPrinting= xx "
-  lecho "log4j.appender.testAppender.layout=org.log4j.TTCCLayout " 
+  lecho "log4j.appender.testAppender.layout=org.apache.log4j.TTCCLayout " 
   testConfigurationParsing $LCF LINE_NUMBER
 fi
 
@@ -81,12 +81,12 @@ TEST=2;
 if [ $TEST -ge $start ]; then
   D_FLAG=$DEF_DEBUG
   echo  "log4j.rootCategory=DEBUG, testAppender" > $LCF
-  lecho "log4j.appender.testAppender=org.log4j.RollingFileAppender"
+  lecho "log4j.appender.testAppender=org.apache.log4j.RollingFileAppender"
   lecho "log4j.appender.testAppender.File= $TEMP"
   lecho "log4j.appender.testAppender.Append=false"
   lecho "log4j.appender.testAppender.MaxFileSize=1KB"
   lecho "log4j.appender.testAppender.MaxBackupIndex= 1 " 
-  lecho "log4j.appender.testAppender.layout=org.log4j.TTCCLayout"
+  lecho "log4j.appender.testAppender.layout=org.apache.log4j.TTCCLayout"
   lecho "log4j.appender.testAppender.layout.ThreadPrinting=true"
   lecho "log4j.appender.testAppender.layout.DateFormat=ReLaTIve"  
   testConfigurationParsing $LCF RELATIVE
@@ -97,12 +97,12 @@ if [ $TEST -ge $start ]; then
   D_FLAG=$DEF_DEBUG
   echo "18:25:32.394 [main] DEBUG  testing - HELLO WORLD" > $TEMP
   echo  "log4j.rootCategory=DEBUG, testAppender" > $LCF
-  lecho "log4j.appender.testAppender=org.log4j.RollingFileAppender"
+  lecho "log4j.appender.testAppender=org.apache.log4j.RollingFileAppender"
   lecho "log4j.appender.testAppender.File=$TEMP"
   lecho "log4j.appender.testAppender.Append=true"
   lecho "log4j.appender.testAppender.MaxFileSize=54"
   lecho "log4j.appender.testAppender.MaxBackupIndex= 0  " 
-  lecho "log4j.appender.testAppender.layout=org.log4j.TTCCLayout"
+  lecho "log4j.appender.testAppender.layout=org.apache.log4j.TTCCLayout"
   lecho "log4j.appender.testAppender.layout.DateFormat=aBSOlute"
   lecho "log4j.appender.testAppender.layout.TimeZone=GMT"  
   testConfigurationParsing $LCF ABSOLUTE
@@ -114,12 +114,12 @@ if [ $TEST -ge $start ]; then
   D_FLAG=$DEF_DEBUG
   echo "18:25:32,394 [main] DEBUG  testing - HELLO WORLD" > $TEMP
   echo  "log4j.rootCategory= DEBUG  , testAppender" > $LCF
-  lecho "log4j.appender.testAppender=org.log4j.RollingFileAppender"
+  lecho "log4j.appender.testAppender=org.apache.log4j.RollingFileAppender"
   lecho "log4j.appender.testAppender.File=$TEMP"
   lecho "log4j.appender.testAppender.Append=true"
   lecho "log4j.appender.testAppender.MaxFileSize=155"
   lecho "log4j.appender.testAppender.MaxBackupIndex=0" 
-  lecho "log4j.appender.testAppender.layout=org.log4j.TTCCLayout"
+  lecho "log4j.appender.testAppender.layout=org.apache.log4j.TTCCLayout"
   lecho "log4j.appender.testAppender.layout.DateFormat=aBSOlute"
   lecho "log4j.appender.testAppender.layout.TimeZone=ECT"  
   testConfigurationParsing $LCF ABSOLUTE
@@ -132,12 +132,12 @@ if [ $TEST -ge $start ]; then
   echo "18:25:32,394 [main] DEBUG  testing - HELLO WORLD" > $TEMP
   echo  "log4j.rootCategory= DEBUG , testAppender" > $LCF
   lecho "log4j.configDebug="
-  lecho "log4j.appender.testAppender=org.log4j.RollingFileAppender"
+  lecho "log4j.appender.testAppender=org.apache.log4j.RollingFileAppender"
   lecho "log4j.appender.testAppender.File=$TEMP"
   lecho "log4j.appender.testAppender.Append= true"
   lecho "log4j.appender.testAppender.MaxFileSize= 1 "
   lecho "log4j.appender.testAppender.MaxBackupIndex=  2" 
-  lecho "log4j.appender.testAppender.layout=org.log4j.TTCCLayout"
+  lecho "log4j.appender.testAppender.layout=org.apache.log4j.TTCCLayout"
   lecho "log4j.appender.testAppender.layout.DateFormat=aBSOlute"
   lecho "log4j.appender.testAppender.layout.TimeZone=ECT"  
   testConfigurationParsing $LCF ABSOLUTE $TEMP.2 $TEMP.1
@@ -148,10 +148,10 @@ if [ $TEST -ge $start ]; then
   D_FLAG=""
   echo  "log4j.rootCategory=  , testAppender" > $LCF
   lecho "log4j.configDebug="
-  lecho "log4j.appender.testAppender=org.log4j.FileAppender"
+  lecho "log4j.appender.testAppender=org.apache.log4j.FileAppender"
   lecho "log4j.appender.testAppender.File=$TEMP"
   lecho "log4j.appender.testAppender.Append=   false  "
-  lecho "log4j.appender.testAppender.layout=org.log4j.TTCCLayout"
+  lecho "log4j.appender.testAppender.layout=org.apache.log4j.TTCCLayout"
   lecho "log4j.appender.testAppender.layout.DateFormat=dAtE"
   lecho "log4j.appender.testAppender.layout.TimeZone="
   
@@ -165,12 +165,12 @@ if [ $TEST -ge $start ]; then
   echo "18:25:32,394 [main] DEBUG  testing - HELLO WORLD" > $TEMP
   echo  "log4j.rootCategory= DEBUG , testAppender, inexistentAppender" > $LCF
   lecho "log4j.configDebug=false"
-  lecho "log4j.appender.testAppender=org.log4j.RollingFileAppender"
+  lecho "log4j.appender.testAppender=org.apache.log4j.RollingFileAppender"
   lecho "log4j.appender.testAppender.File=$TEMP"
   lecho "log4j.appender.testAppender.Append= true"
   lecho "log4j.appender.testAppender.MaxFileSize= 1 "
   lecho "log4j.appender.testAppender.MaxBackupIndex=2 " 
-  lecho "log4j.appender.testAppender.layout=org.log4j.TTCCLayout"
+  lecho "log4j.appender.testAppender.layout=org.apache.log4j.TTCCLayout"
   lecho "log4j.appender.testAppender.layout.DateFormat=aBSOlute"
   lecho "log4j.appender.testAppender.layout.TimeZone=ECT"
   
@@ -183,11 +183,11 @@ if [ $TEST -ge $start ]; then
   D_FLAG=""
   echo  "log4j.rootCategory= DEBUG , testAppender" > $LCF
   lecho "log4j.configDebug=false"
-  lecho "log4j.appender.testAppender=org.log4j.FileAppender"
+  lecho "log4j.appender.testAppender=org.apache.log4j.FileAppender"
   # Note the spaces
   lecho "log4j.appender.testAppender.File=System.out  "
   lecho "log4j.appender.testAppender.Append= true"
-  lecho "log4j.appender.testAppender.layout=org.log4j.PatternLayout "
+  lecho "log4j.appender.testAppender.layout=org.apache.log4j.PatternLayout "
   lecho "log4j.appender.testAppender.layout.ConversionPattern=[%t] %p - %m%n"
   echo -n " ConfigurationParsing test $TEST - "
   testConfigurationParsingII $LCF OUT
@@ -198,10 +198,10 @@ if [ $TEST -ge $start ]; then
   D_FLAG=""
   echo  "log4j.rootCategory= DEBUG , testAppender" > $LCF
   lecho "log4j.configDebug=false"
-  lecho "log4j.appender.testAppender=org.log4j.FileAppender"
+  lecho "log4j.appender.testAppender=org.apache.log4j.FileAppender"
   lecho "log4j.appender.testAppender.File=  System.out  "
   lecho "log4j.appender.testAppender.Append= true  "
-  lecho "log4j.appender.testAppender.layout=org.log4j.PatternLayout"
+  lecho "log4j.appender.testAppender.layout=org.apache.log4j.PatternLayout"
   lecho "log4j.appender.testAppender.layout.ConversionPattern=[%t] %p - %m%n"
    echo -n " ConfigurationParsing test $TEST (can fail if anything is written to System.err) - "
   testConfigurationParsingII $LCF ERR
@@ -213,11 +213,11 @@ if [ $TEST -ge $start ]; then
   D_FLAG=""
   echo  "log4j.rootCategory= DEBUG , testAppender" > $LCF
   lecho "log4j.configDebug=false"
-  lecho "log4j.appender.testAppender=org.log4j.FileAppender"
+  lecho "log4j.appender.testAppender=org.apache.log4j.FileAppender"
   # We escape the dollar sign to avoid substitution at the shell level.
   lecho "log4j.appender.testAppender.File=\${user.dir}/$TEMP"
   lecho "log4j.appender.testAppender.Append=false"
-  lecho "log4j.appender.testAppender.layout=org.log4j.PatternLayout"
+  lecho "log4j.appender.testAppender.layout=org.apache.log4j.PatternLayout"
   lecho "log4j.appender.testAppender.layout.ConversionPattern=AVY [%t] %p-%m%n"
   testConfigurationParsing $LCF NONE
 fi
@@ -232,11 +232,11 @@ if [ $TEST -ge $start ]; then
   lecho "log4j.configDebug=false"
   # $TEMP will be replaced by the shell
   lecho "t=$TEMP"
-  lecho "log4j.appender.testAppender=org.log4j.FileAppender"
+  lecho "log4j.appender.testAppender=org.apache.log4j.FileAppender"
   # We escape the dollar sign to avoid substitution at the shell level.
   lecho "log4j.appender.testAppender.File=\${t}"
   lecho "log4j.appender.testAppender.Append=false"
-  lecho "log4j.appender.testAppender.layout=org.log4j.PatternLayout"
+  lecho "log4j.appender.testAppender.layout=org.apache.log4j.PatternLayout"
   lecho "log4j.appender.testAppender.layout.ConversionPattern=VSUB [%t] %p-%m%n"
   testConfigurationParsing $LCF NONE
 fi
@@ -259,16 +259,16 @@ if [ $TEST -ge $start ]; then
   D_FLAG=""
   echo  "log4j.rootCategory=  , testAppender" > $LCF
   lecho "log4j.configDebug=true"
-  lecho "log4j.appender.testAppender=org.log4j.net.SyslogAppender"
+  lecho "log4j.appender.testAppender=org.apache.log4j.net.SyslogAppender"
   lecho "log4j.appender.testAppender.SyslogHost=localhost"
   lecho "log4j.appender.testAppender.Facility=  LOCAL0 "
   lecho "log4j.appender.testAppender.FacilityPrinting=true"
-  lecho "log4j.appender.testAppender.layout=org.log4j.TTCCLayout"
+  lecho "log4j.appender.testAppender.layout=org.apache.log4j.TTCCLayout"
   lecho "log4j.appender.testAppender.layout.DateFormat=NULL"
   lecho "log4j.appender.testAppender.layout.TimeZone="
   
   echo -n " ConfigurationParsing test $TEST - "
-  java $D_FLAG org.log4j.test.ConfigurationFileParsing $LCF
+  java $D_FLAG org.apache.log4j.test.ConfigurationFileParsing $LCF
 fi
 
   
@@ -278,14 +278,14 @@ if [ $TEST -ge $start ]; then
   D_FLAG=""
   echo  "log4j.rootCategory=  , testAppender" > $LCF
   lecho "log4j.configDebug=true"
-  lecho "log4j.appender.testAppender=org.log4j.net.SyslogAppender"
+  lecho "log4j.appender.testAppender=org.apache.log4j.net.SyslogAppender"
   lecho "log4j.appender.testAppender.SyslogHost=localhost"
   lecho "log4j.appender.testAppender.Facility="
   lecho "log4j.appender.testAppender.FacilityPrinting="
-  lecho "log4j.appender.testAppender.layout=org.log4j.TTCCLayout"
+  lecho "log4j.appender.testAppender.layout=org.apache.log4j.TTCCLayout"
   lecho "log4j.appender.testAppender.layout.DateFormat=NULL"
   lecho "log4j.appender.testAppender.layout.TimeZone="
   
   echo -n " ConfigurationParsing test $TEST - "
-  java $D_FLAG org.log4j.test.ConfigurationFileParsing $LCF
+  java $D_FLAG org.apache.log4j.test.ConfigurationFileParsing $LCF
 fi

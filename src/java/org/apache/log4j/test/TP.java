@@ -2,10 +2,10 @@
 //      Copyright 1996-2000, International Business Machines 
 //      Corporation and others. All Rights Reserved.
 
-package org.log4j.test; 
+package org.apache.log4j.test; 
 
-import org.log4j.*;
-import org.log4j.gui.TextPaneAppender;
+import org.apache.log4j.*;
+import org.apache.log4j.gui.TextPaneAppender;
 import javax.swing.JFrame;
 import javax.swing.JTextPane;
 import java.awt.Dimension;

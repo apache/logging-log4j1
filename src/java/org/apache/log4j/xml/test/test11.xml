@@ -3,15 +3,15 @@
 
 <configuration configDebug="true">
 
-	<appender name="TEMP" class="org.log4j.FileAppender">
+	<appender name="TEMP" class="org.apache.log4j.FileAppender">
                 <param name="Append" value="false" />
 		<param name="File"   value="temp" />
-		<layout class="org.log4j.PatternLayout">
+		<layout class="org.apache.log4j.PatternLayout">
  		    <param name="ConversionPattern"
 		           value="%-5p %c{2} - %m\n"/>
 		</layout>
 
-		<filter class="org.log4j.varia.PriorityMatchFilter">
+		<filter class="org.apache.log4j.varia.PriorityMatchFilter">
                   <param name="PriorityToMatch" value="WARN" />
                   <param name="AcceptOnMatch" value="true" />
 		</filter>

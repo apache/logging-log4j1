@@ -27,7 +27,7 @@ case  $1 in
   ;;
 esac
 
-java org.log4j.test.Min $1 > $TEMP
+java org.apache.log4j.test.Min $1 > $TEMP
 $PERL minreg.pl $1 < $TEMP > $OUTPUT
 
 if [ $? != 0 ]

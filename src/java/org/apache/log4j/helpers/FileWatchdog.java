@@ -5,10 +5,10 @@
  * version 1.1, a copy of which has been included  with this distribution in
  * the LICENSE file.
  */
-package org.log4j.helpers;
+package org.apache.log4j.helpers;
 
 import java.io.File;
-import org.log4j.helpers.LogLog;
+import org.apache.log4j.helpers.LogLog;
 
 /**
    Check every now and then that a certain file has not changed. If it

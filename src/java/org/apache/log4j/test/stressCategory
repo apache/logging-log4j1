@@ -1,6 +1,6 @@
 # ====================================================
 function stressTest {
-  java org.log4j.StressCategory $*
+  java org.apache.log4j.StressCategory $*
   if [ "$?" = "0" ]
   then
     echo "Passed category stress test $index."

@@ -1,6 +1,6 @@
 
-PKG_DIR :=org/log4j/xml/examples
-DEPTH   :=../../../..
+PKG_DIR :=org/apache/log4j/xml/examples
+DEPTH   :=../../../../..
 JSOURCES:=ReportParserError.java XMLSample.java XPriority.java\
 	XCategory.java XTest.java 
 

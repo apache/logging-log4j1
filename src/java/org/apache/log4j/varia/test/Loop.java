@@ -1,8 +1,8 @@
 
-package org.log4j.varia.test; 
+package org.apache.log4j.varia.test; 
 
-import org.log4j.Category;
-import org.log4j.PropertyConfigurator;
+import org.apache.log4j.Category;
+import org.apache.log4j.PropertyConfigurator;
 
 /**
    This test program reads a config file and attempts to log to the

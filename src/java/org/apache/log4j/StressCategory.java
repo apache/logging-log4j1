@@ -5,11 +5,11 @@
  * License version 1.1, a copy of which has been included with this
  * distribution in the LICENSE.APL file.  */
 
-package org.log4j;
+package org.apache.log4j;
 
 
-import org.log4j.Priority;
-import org.log4j.Category;
+import org.apache.log4j.Priority;
+import org.apache.log4j.Category;
 import java.util.Random;
 
 /*

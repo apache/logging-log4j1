@@ -1,5 +1,11 @@
+/*
+ * Copyright (C) The Apache Software Foundation. All rights reserved.
+ *
+ * This software is published under the terms of the Apache Software
+ * License version 1.1, a copy of which has been included with this
+ * distribution in the LICENSE.APL file.  */
 
-package org.log4j.examples;
+package org.apache.log4j.examples;
 
 import java.rmi.Remote;
 import java.rmi.server.UnicastRemoteObject;
@@ -8,9 +14,9 @@ import java.rmi.Naming;
 import java.util.Vector;
 
 
-import org.log4j.Category;
-import org.log4j.NDC;
-import org.log4j.PropertyConfigurator;
+import org.apache.log4j.Category;
+import org.apache.log4j.NDC;
+import org.apache.log4j.PropertyConfigurator;
 
 /**
    A simple {@link NumberCruncher} implementation that logs its
@@ -19,7 +25,7 @@ import org.log4j.PropertyConfigurator;
    distinguish the log output from different client requests.
 
    <pre>
-   <b>Usage:</b> java org.log4j.examples.NumberCruncherServer <em>configFile</em>
+   <b>Usage:</b> java org.apache.log4j.examples.NumberCruncherServer <em>configFile</em>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;where <em>configFile</em> is a log4j configuration file.
    </pre>
 
@@ -127,7 +133,7 @@ public class NumberCruncherServer extends UnicastRemoteObject
   void usage(String msg) {
     System.err.println(msg);
     System.err.println(
-     "Usage: java org.log4j.examples.NumberCruncherServer configFile\n" +
+     "Usage: java org.apache.log4j.examples.NumberCruncherServer configFile\n" +
      "   where configFile is a log4j configuration file.");
     System.exit(1);
   }

@@ -6,7 +6,7 @@
  * the LICENSE.APL file.
  */
 
-package org.log4j;
+package org.apache.log4j;
 
 /**
    Defines the minimum set of priorities recognized by the system,

@@ -1,11 +1,11 @@
 
-package org.log4j.test;
+package org.apache.log4j.test;
 
-import org.log4j.Category;
-import org.log4j.BasicConfigurator;
-import org.log4j.PropertyConfigurator;
-import org.log4j.SimpleLayout;
-import org.log4j.FileAppender;
+import org.apache.log4j.Category;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.SimpleLayout;
+import org.apache.log4j.FileAppender;
 	
 public class ShippedCodeFlagTest {
 
@@ -40,7 +40,7 @@ public class ShippedCodeFlagTest {
   static
   void Usage(String msg) {
     System.err.println(msg);
-    System.err.println( "Usage: java org.log4j.test.ShippedCodeFlagTest " +
+    System.err.println( "Usage: java org.apache.log4j.test.ShippedCodeFlagTest " +
 			"basic|configFile");
     System.exit(1);
   }

@@ -1,15 +1,15 @@
 //      Copyright 1996-1999, International Business Machines 
 //      Corporation and others. All Rights Reserved.
 
-package org.log4j.test;
+package org.apache.log4j.test;
 
 
-import org.log4j.Category;
-import org.log4j.FileAppender;
-import org.log4j.SimpleLayout;
-import org.log4j.BasicConfigurator;
-import org.log4j.Priority;
-import org.log4j.NDC;
+import org.apache.log4j.Category;
+import org.apache.log4j.FileAppender;
+import org.apache.log4j.SimpleLayout;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Priority;
+import org.apache.log4j.NDC;
 
 
 import java.util.Random;
@@ -82,7 +82,7 @@ public class StressNDC extends Thread {
 
   static
   void usage() {
-    System.err.println( "Usage: java org.log4j.test.StressNDC " +
+    System.err.println( "Usage: java org.apache.log4j.test.StressNDC " +
 			"MAX_THREADS");
     System.exit(1);
   }

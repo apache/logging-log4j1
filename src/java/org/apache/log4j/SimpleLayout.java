@@ -2,9 +2,9 @@
 //      Corporation. All Rights Reserved.
 
 
-package org.log4j;
+package org.apache.log4j;
 
-import org.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.LoggingEvent;
 
 /**
    SimpleLayout consists of the priority of the log statement,

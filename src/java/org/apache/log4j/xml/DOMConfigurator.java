@@ -1,7 +1,7 @@
 //  Copyright 2000, Ceki Gulcu.  All Rights Reserved.
 //  See the LICENCE file for the terms of distribution.
 
-package org.log4j.xml;
+package org.apache.log4j.xml;
 
 import java.util.*;
 
@@ -9,19 +9,19 @@ import java.net.URL;
 
 import org.w3c.dom.*;
 import java.lang.reflect.Method;
-import org.log4j.Category;
-import org.log4j.spi.OptionHandler;
-import org.log4j.spi.ErrorHandler;
-import org.log4j.spi.AppenderAttachable;
-import org.log4j.spi.Configurator;
-import org.log4j.Appender;
-import org.log4j.Layout;
-import org.log4j.Priority;
-import org.log4j.BasicConfigurator;
-import org.log4j.helpers.LogLog;
-import org.log4j.spi.Filter;
-import org.log4j.helpers.OptionConverter;
-import org.log4j.helpers.FileWatchdog;
+import org.apache.log4j.Category;
+import org.apache.log4j.spi.OptionHandler;
+import org.apache.log4j.spi.ErrorHandler;
+import org.apache.log4j.spi.AppenderAttachable;
+import org.apache.log4j.spi.Configurator;
+import org.apache.log4j.Appender;
+import org.apache.log4j.Layout;
+import org.apache.log4j.Priority;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.spi.Filter;
+import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.helpers.FileWatchdog;
 import org.xml.sax.InputSource;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -167,7 +167,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
 	    } else {
 	      LogLog.error("Requesting attachment of appender named ["+
 			   refName+ "] to appender named ["+ appender.getName()+
-                "] which does not implement org.log4j.spi.AppenderAttachable.");
+                "] which does not implement org.apache.log4j.spi.AppenderAttachable.");
 	    }
 	  }
 	}
@@ -193,7 +193,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
   void parseErrorHandler(Element element, Appender appender) {
     ErrorHandler eh = (ErrorHandler) OptionConverter.instantiateByClassName(
                                        element.getAttribute(CLASS_ATTR),
-                                       org.log4j.spi.ErrorHandler.class, 
+                                       org.apache.log4j.spi.ErrorHandler.class, 
  				       null);
     if(eh != null) {
       NodeList children = element.getChildNodes();
@@ -233,7 +233,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
   void parseFilters(Element element, Appender appender) {
     String clazz = element.getAttribute(CLASS_ATTR);
     Filter filter = (Filter) OptionConverter.instantiateByClassName(clazz,
-                                                org.log4j.spi.Filter.class, 
+                                                org.apache.log4j.spi.Filter.class, 
 					        null);
     
     if(filter != null) {
@@ -259,7 +259,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
   */
   protected
   void parseCategory (Element categoryElement) {
-    // Create a new org.log4j.Category object from the <category> element.
+    // Create a new org.apache.log4j.Category object from the <category> element.
     String catName = categoryElement.getAttribute(NAME_ATTR);
 
     Category cat;    
@@ -268,7 +268,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
 
 
     if(EMPTY_STR.equals(className)) {
-      LogLog.debug("Retreiving an instance of org.log4j.Category.");
+      LogLog.debug("Retreiving an instance of org.apache.log4j.Category.");
       cat = Category.getInstance(catName);
     }
     else {

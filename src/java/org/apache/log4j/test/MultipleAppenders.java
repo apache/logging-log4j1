@@ -1,9 +1,9 @@
 
 
-package org.log4j.test;
-import org.log4j.PropertyConfigurator;
-import org.log4j.Category;
-import org.log4j.Appender;
+package org.apache.log4j.test;
+import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.Category;
+import org.apache.log4j.Appender;
 import java.util.Enumeration;
 import java.util.Vector;
 

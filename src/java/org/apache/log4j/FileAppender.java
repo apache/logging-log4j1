@@ -5,7 +5,7 @@
  * License version 1.1, a copy of which has been included with this
  * distribution in the LICENSE.APL file.  */
 
-package org.log4j;
+package org.apache.log4j;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -13,13 +13,13 @@ import java.io.FileWriter;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
-import org.log4j.spi.ErrorHandler;
-import org.log4j.spi.ErrorCode;
-import org.log4j.spi.LoggingEvent;
-import org.log4j.helpers.OptionConverter;
-import org.log4j.helpers.QuietWriter;
-import org.log4j.helpers.LogLog;
-import org.log4j.helpers.TracerPrintWriter;
+import org.apache.log4j.spi.ErrorHandler;
+import org.apache.log4j.spi.ErrorCode;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.helpers.QuietWriter;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.helpers.TracerPrintWriter;
 
 // Contibutors: Jens Uwe Pipka <jens.pipka@gmx.de>
 

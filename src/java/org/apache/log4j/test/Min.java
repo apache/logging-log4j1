@@ -5,18 +5,18 @@
  * License version 1.1, a copy of which has been included with this
  * distribution in the LICENSE.APL file.  */
 
-package org.log4j.test; 
+package org.apache.log4j.test; 
 
-import org.log4j.Category;
-import org.log4j.Layout;
-import org.log4j.Appender;
-import org.log4j.FileAppender;
-import org.log4j.net.SyslogAppender;
-import org.log4j.SimpleLayout;
-import org.log4j.TTCCLayout;
-import org.log4j.Priority;
-import org.log4j.BasicConfigurator;
-import org.log4j.helpers.AbsoluteTimeDateFormat;
+import org.apache.log4j.Category;
+import org.apache.log4j.Layout;
+import org.apache.log4j.Appender;
+import org.apache.log4j.FileAppender;
+import org.apache.log4j.net.SyslogAppender;
+import org.apache.log4j.SimpleLayout;
+import org.apache.log4j.TTCCLayout;
+import org.apache.log4j.Priority;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.helpers.AbsoluteTimeDateFormat;
 import java.io.IOException;
 
 /**
@@ -44,7 +44,7 @@ public class Min {
   static
   void Usage(String msg) {
     System.err.println(msg);
-    System.err.println( "Usage: java org.log4j.test.Min " +
+    System.err.println( "Usage: java org.apache.log4j.test.Min " +
 			"simple|ttcc");
     System.exit(1);
   }

@@ -6,15 +6,15 @@
  * distribution in the LICENSE.APL file.  */
 
 
-package org.log4j.net.test;
+package org.apache.log4j.net.test;
 
-import org.log4j.Category;
-import org.log4j.Layout;
-import org.log4j.PropertyConfigurator;
-import org.log4j.Appender;
-import org.log4j.net.SocketAppender;
-import org.log4j.Priority;
-import org.log4j.NDC;
+import org.apache.log4j.Category;
+import org.apache.log4j.Layout;
+import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.Appender;
+import org.apache.log4j.net.SocketAppender;
+import org.apache.log4j.Priority;
+import org.apache.log4j.NDC;
 import java.io.IOException;
 
 

@@ -1,7 +1,7 @@
 
-package org.log4j.test;
+package org.apache.log4j.test;
 
-import org.log4j.*;
+import org.apache.log4j.*;
 
 /**
    This is just to test that wrapper can work. This implementation is
