@@ -87,9 +87,8 @@ import java.util.List;
  * NOTE:  the values for the 'keyName' portion of the MDC and PROP mappings must
  * be an exact match to the key in the hashTable (case sensitive).
  *
- * If the passed-in field is null, an empty string is returned.
- * If the passed-in field doesn't match an entry in the above-described
- * mapping, the passed-in field is returned.
+ * If the passed-in field is null or doesn't match an entry in the above-described
+ * mapping, an exception is thrown.
  *
  * @author Scott Deboy <sdeboy@apache.org>
  * @author Paul Smith <psmith@apache.org>
@@ -144,7 +143,7 @@ public final class LoggingEventFieldResolver {
 
   public Object getValue(String fieldName, LoggingEvent event) {
     if (fieldName == null) {
-      return EMPTY_STRING;
+        throw new RuntimeException("null field name");
     }
 
     String upperField = fieldName.toUpperCase();
@@ -177,12 +176,12 @@ public final class LoggingEventFieldResolver {
       //note: need to use actual fieldname since case matters
       Object mdcValue = event.getMDC(fieldName.substring(4));
 
-      return ((mdcValue == null) ? "" : mdcValue.toString());
+      return ((mdcValue == null) ? EMPTY_STRING : mdcValue.toString());
     } else if (upperField.startsWith(PROP_FIELD)) {
       //note: need to use actual fieldname since case matters
       String propValue = event.getProperty(fieldName.substring(5));
 
-      return ((propValue == null) ? "" : propValue);
+      return ((propValue == null) ? EMPTY_STRING : propValue);
     }
 
     //there wasn't a match, so throw a runtime exception
