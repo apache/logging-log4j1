@@ -8,7 +8,30 @@
 
 <body>
 
+
 <section name="log4j version 1.0.1 (2001-01-10 13:45:15 UTC)">
+
+<!--
+<table CELLSPACING="8" CELLPADDING="4" FGCOLOR="gray"
+  BORDER="0" WIDTH="25%" ALIGN="RIGHT" VALIGN="TOP">
+ <tr> 
+   <td valign="center" BGCOLOR="#FFFFCF" ALIGN="center">
+   <b><font color="CC0000">This is your last chance to bail out!</font></b>
+   </td>
+  </tr>
+  <tr>
+     <td>
+     <font color="666666">
+       There is <a href="praise.html">mounting evidence</a> showing that
+       log4j is highly addictive. In clinical tests, starving programmers
+       have consistently preferred logging to pizza. 
+       <p> Are you absolutely sure you want to use log4j? Because once
+       hooked, there is no turning back.</p>
+     </font>
+     </td>
+ </tr>
+</table>
+-->
 
 <p>Download the complete package including <i>full source code</i>,
 class files and documentation in <a
@@ -16,7 +39,7 @@ href="jakarta-log4j-1.0.1.tgz"><b>TGZ</b></a> format or in <a
 href="jakarta-log4j-1.0.1.zip"><b>ZIP</b></a> format. You may elect to browse
 log4j <a href="documentation.html"><b>documentation</b></a> online.</p>
 
-<p>Version 1.0.1 is the 21th public release of log4j.</p>
+<p>Version 1.0.1 is the 21st public release of log4j.</p>
 
 <p>Thanks to <a href="mailto:hgomez@slib.fr">Henri Gomez</a>, Linux
 users can now fetch log4j in RPM format at <a

@@ -25,7 +25,7 @@ already known.</p>
 <section name="Mailing lists">
 
 <p>New releases and important bug-fixes are anounced at the
-log4j-anouncement list.  You can subscribe to the log4j-announce list,
+<b>log4j-anouncement</b> list.  You can subscribe to the log4j-announce list,
 or change your existing subscription <a
 href="http://lists.sourceforge.net/mailman/listinfo/log4j-announce">online</a>. The
 traffic on this list is extremely low and you are encouraged to
@@ -36,8 +36,8 @@ log4j-user mailing list. To post a message to all its members, send
 email to <A
 HREF="mailto:log4j-user@jakarta.apache.org">log4j-user@jakarta.apache.org</A>.</p>
 
-<p>You can subscribe to the log4j-users list send an email to 
-<A HREF="mailto:log4j-user-subscribe@jakarta.apache.org">log4j-user-subscribe@jakarta.apache.org</A>.</p>
+<p>To subscribe to the log4j-users list send an email to <A
+HREF="mailto:log4j-user-subscribe@jakarta.apache.org">log4j-user-subscribe@jakarta.apache.org</A>.</p>
 
 
 <p>Development related discussions are held on the log4j-dev mailing
@@ -45,7 +45,7 @@ list.  To post a message to all its members, send email to <A
 HREF="mailto:log4j-dev@jakarta.apache.org">log4j-dev@jakarta.apache.org</A>.
 </p>
 
-<p>You can subscribe to the log4j-users list send an email to <A
+<p>To subscribe to the log4j-users list send an email to <A
 HREF="mailto:log4j-dev-subscribe@jakarta.apache.org">log4j-dev-subscribe@jakarta.apache.org</A>.</p>
 
 
