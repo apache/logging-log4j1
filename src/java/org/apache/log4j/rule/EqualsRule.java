@@ -53,11 +53,17 @@ public class EqualsRule extends AbstractRule {
     String p2 = stack.pop().toString();
     String p1 = stack.pop().toString();
 
-    return new EqualsRule(p1, p2);
+    return getRule(p1, p2);
   }
 
   public static Rule getRule(String p1, String p2) {
-    return new EqualsRule(p1, p2);
+    if (p1.equalsIgnoreCase(LoggingEventFieldResolver.LEVEL_FIELD)) {
+    	return PartialTextMatchRule.getRule(p1, p2);
+    } else if (p1.equalsIgnoreCase(LoggingEventFieldResolver.TIMESTAMP_FIELD)) {
+    	return TimestampEqualsRule.getRule(p2);
+    }else {
+    	return new EqualsRule(p1, p2);
+    }
   }
 
   public boolean evaluate(LoggingEvent event) {

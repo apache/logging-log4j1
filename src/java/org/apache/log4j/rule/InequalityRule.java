@@ -30,7 +30,6 @@ import java.util.Stack;
  * @author Scott Deboy <sdeboy@apache.org>
  */
 public class InequalityRule extends AbstractRule {
-  private static final String LEVEL = "LEVEL";
   private static final LoggingEventFieldResolver resolver = LoggingEventFieldResolver.getInstance();
   private final String field;
   private final String value;
@@ -58,9 +57,11 @@ public class InequalityRule extends AbstractRule {
   }
   
   public static Rule getRule(String inequalitySymbol, String field, String value) {
-    if (field.equalsIgnoreCase(LEVEL)) {
+    if (field.equalsIgnoreCase(LoggingEventFieldResolver.LEVEL_FIELD)) {
       //push the value back on the stack and allow the level-specific rule pop values
       return LevelInequalityRule.getRule(inequalitySymbol, value);
+    } else if (field.equalsIgnoreCase(LoggingEventFieldResolver.TIMESTAMP_FIELD)){
+      return TimestampInequalityRule.getRule(inequalitySymbol, value);
     } else {
       return new InequalityRule(inequalitySymbol, field, value);
     }

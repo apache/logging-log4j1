@@ -50,9 +50,11 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -119,6 +121,7 @@ import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
 import org.apache.log4j.chainsaw.prefs.Profileable;
 import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
 import org.apache.log4j.chainsaw.prefs.SettingsManager;
+import org.apache.log4j.helpers.Constants;
 import org.apache.log4j.helpers.ISO8601DateFormat;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.rule.ExpressionRule;
@@ -224,6 +227,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
   static final String COLUMNS_EXTENSION = ".columns";
   static final String COLORS_EXTENSION = ".colors";
   private int previousLastIndex = -1;
+  private final DateFormat timestampExpressionFormat = new SimpleDateFormat(Constants.TIMESTAMP_RULE_FORMAT); 
 
   /**
    * Creates a new LogPanel object.  If a LogPanel with this identifier has
@@ -1153,12 +1157,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
             String value = "";
 
             if (colName.equalsIgnoreCase(ChainsawConstants.TIMESTAMP_COL_NAME)) {
-              JComponent comp =
-                (JComponent) table.getCellRenderer(row, column);
-
-              if (comp instanceof JLabel) {
-                value = ((JLabel) comp).getText();
-              }
+            	value = timestampExpressionFormat.format(new Date(table.getValueAt(row, column).toString()));
             } else {
               Object o = table.getValueAt(row, column);
 
