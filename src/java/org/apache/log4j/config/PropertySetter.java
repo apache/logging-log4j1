@@ -19,6 +19,7 @@ package org.apache.log4j.config;
 
 import org.apache.log4j.*;
 import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.spi.ComponentBase;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -52,7 +53,7 @@ import java.util.*;
    @author Anders Kristensen
    @since 1.1
  */
-public class PropertySetter {
+public class PropertySetter extends ComponentBase {
   public static final int NOT_FOUND = 0;
   public static final int AS_PROPERTY = 1;
   public static final int AS_COLLECTION = 2;
@@ -91,24 +92,8 @@ public class PropertySetter {
   }
 
   /**
-     Set the properties of an object passed as a parameter in one
-     go. The <code>properties</code> are parsed relative to a
-     <code>prefix</code>.
-
-     @param obj The object to configure.
-     @param properties A java.util.Properties containing keys and values.
-     @param prefix Only keys having the specified prefix will be set.
-  */
-  public static void setProperties(
-    Object obj, Properties properties, String prefix) {
-    new PropertySetter(obj).setProperties(properties, prefix);
-  }
-
-  /**
-     Set the properites for the object that match the
-     <code>prefix</code> passed as parameter.
-
-
+   * Set the properites for the object that match the <code>prefix</code> 
+   * passed as parameter.
    */
   public void setProperties(Properties properties, String prefix) {
     int len = prefix.length();
@@ -135,13 +120,6 @@ public class PropertySetter {
         setProperty(key, value);
       }
     }
-  }
-
-  Logger getLogger() {
-    if (logger == null) {
-      logger = LogManager.getLogger(this.getClass().getName());
-    }
-    return logger;
   }
 
   /**
@@ -406,10 +384,4 @@ public class PropertySetter {
 
     return null;
   }
-
-  //public void activate() {
-  //if (obj instanceof OptionHandler) {
-  //((OptionHandler) obj).activateOptions();
-  //}
-  //}
 }

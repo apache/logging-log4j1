@@ -381,7 +381,7 @@ public class PropertyConfigurator extends ConfiguratorBase {
       }
 
       configureRootCategory(properties, repository);
-      configureLoggerFactory(properties);
+      configureLoggerFactory(properties, repository);
       parseCatsAndRenderers(properties, repository);
 
       getLogger(repository).debug("Finished configuring.");
@@ -468,7 +468,7 @@ public class PropertyConfigurator extends ConfiguratorBase {
 
      @see #parseCatsAndRenderers
    */
-  protected void configureLoggerFactory(Properties props) {
+  protected void configureLoggerFactory(Properties props, LoggerRepository repository) {
     String factoryClassName =
       OptionConverter.findAndSubst(LOGGER_FACTORY_KEY, props);
 
@@ -476,7 +476,9 @@ public class PropertyConfigurator extends ConfiguratorBase {
       loggerFactory =
         (LoggerFactory) OptionConverter.instantiateByClassName(
           factoryClassName, LoggerFactory.class, loggerFactory);
-      PropertySetter.setProperties(loggerFactory, props, FACTORY_PREFIX + ".");
+      PropertySetter setter = new PropertySetter(loggerFactory);
+      setter.setLoggerRepository(repository);
+      setter.setProperties(props, FACTORY_PREFIX + ".");
     }
   }
 
@@ -692,14 +694,19 @@ public class PropertyConfigurator extends ConfiguratorBase {
           getLogger(repository).debug(
             "Parsing layout options for \"" + appenderName + "\".");
 
-          PropertySetter.setProperties(layout, props, layoutPrefix + ".");
+          PropertySetter layoutPS = new PropertySetter(layout);
+          layoutPS.setLoggerRepository(repository);
+          layoutPS.setProperties(props, layoutPrefix + ".");
+          
           activateOptions(layout);
           getLogger(repository).debug(
             "End of parsing for \"" + appenderName + "\".");
         }
       }
 
-      PropertySetter.setProperties(appender, props, prefix + ".");
+      PropertySetter appenderPS = new PropertySetter(appender);
+      appenderPS.setLoggerRepository(repository);
+      appenderPS.setProperties(props, prefix + ".");
       activateOptions(appender);
       getLogger(repository).debug("Parsed \"" + appenderName + "\" options.");
     }
