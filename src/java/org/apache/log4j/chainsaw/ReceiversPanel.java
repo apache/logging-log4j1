@@ -427,7 +427,6 @@ class ReceiversPanel extends JPanel {
   private Receiver getCurrentlySelectedReceiver() {
     DefaultMutableTreeNode node =
       (DefaultMutableTreeNode) receiversTree.getLastSelectedPathComponent();
-
     if (node == null) {
       return null;
     }
@@ -439,6 +438,20 @@ class ReceiversPanel extends JPanel {
     }
 
     return null;
+  }
+  
+  private Receiver[] getSelectedReceivers() {
+    TreePath[] paths = receiversTree.getSelectionPaths();
+    Collection receivers = new ArrayList();
+    for (int i = 0; i < paths.length; i++) {
+      TreePath path = paths[i];
+      DefaultMutableTreeNode node =(DefaultMutableTreeNode) path.getLastPathComponent();
+      if (node !=null && node.getUserObject() instanceof Receiver) {
+        receivers.add(node.getUserObject());
+      }
+    }
+    return (Receiver[]) receivers.toArray(new Receiver[0]);
+    
   }
 
   /**
@@ -516,10 +529,12 @@ class ReceiversPanel extends JPanel {
       new Thread(
         new Runnable() {
           public void run() {
-            Receiver receiver = getCurrentlySelectedReceiver();
+            Receiver[] receivers = getSelectedReceivers();
 
-            if (receiver != null) {
-              PluginRegistry.stopPlugin(receiver);
+            if (receivers != null) {
+              for (int i = 0; i < receivers.length; i++) {
+                PluginRegistry.stopPlugin(receivers[i]);
+              }
             }
           }
         }).start();
