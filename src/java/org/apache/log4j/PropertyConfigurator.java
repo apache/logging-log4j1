@@ -228,8 +228,7 @@ public class PropertyConfigurator implements Configurator {
     <h3>Example</h3>
 
     <p>An example configuration is given below. Other configuration
-    file examples are given in {@link org.apache.log4j.examples.Sort}
-    class documentation.
+    file examples are given in the <code>examples</code> folder.
 
     <pre>
 

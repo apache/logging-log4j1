@@ -9,72 +9,58 @@
   <meta name="keywords" content="java, logging, tracing, component, framework, API, log4j"/>
 <body>
 
+    <section name="log4j version 1.2 (release candidate 1)">
+      <p>log4j 1.2rc1 is now available in <a
+	href="../jakarta-log4j-1.2rc1.tar.gz"><b>TAR.GZ</b></a> format
+	or in <a href="../jakarta-log4j-1.2rc1.zip"><b>ZIP</b></a>
+	format.
+      </p>
 
-<!--
-<table CELLSPACING="8" CELLPADDING="4" FGCOLOR="gray"
-  BORDER="0" WIDTH="25%" ALIGN="RIGHT" VALIGN="TOP">
- <tr> 
-   <td valign="center" BGCOLOR="#FFFFCF" ALIGN="center">
-   <b><font color="CC0000">This is your last chance to bail out!</font></b>
-   </td>
-  </tr>
-  <tr>
-     <td>
-     <font color="666666">
-       There is <a href="praise.html">mounting evidence</a> showing that 
-       log4j is highly addictive. In clinical tests, starving programmers
-       have consistently preferred logging to pizza. 
-       <p> Are you absolutely sure you want to use log4j? Because once
-       hooked, there is no turning back.</p>
-     </font>
-     </td>
- </tr>
-</table>
--->
 
- 
+      <p>In addition to many performance improvements, bug fixes, and
+	other small enhancements, log4j 1.2 adds JMX support, Mapped
+	Diagnostic Contexts, JDBC logging, graphical log viewer
+	(chainsaw), and buffered IO capability. One important change
+	is the replacement of the <code>Category</code> class with
+	<code>Logger</code> class and the <code>Priority</code> class
+	with the <code>Level</code> class in order to facilitate
+	migrating from the JDK 1.4 logging API to log4j. <a
+	href="http://www.javaworld.com/javaworld/jw-05-2001/jw-0504-finalists.html"><img
+	src="images/ecaward_finalist_logo.gif" align="right"
+	border="0"/></a>
+      </p>
+
+	<p>Version 1.2 is the 22nd major public release of log4j.  All
+	changes except the removal of deprecated methods are backward
+	compatible such that log4j 1.2 can be considered a drop in
+	replacement for log4j 1.1.3. The only exception is the
+	renaming of the <code>CategoryFactory</code> class to
+	<code>LoggerFactory</code> class such that subclasses of
+	<code>Category</code> class to be modified and recompiled. By
+	the way, we strongly discourage casual users from subclassing
+	the <code>Category</code> or <code>Logger</code> classes.
+      </p>
+
+      <p>We also maintain a list of <a href="earlier.html">earlier
+	  versions</a> of log4j for download, intended for the curious
+	  paleontologist.
+      </p>
+
+
+    </section>
+
+
     <section name="log4j version 1.1.3">
 
       <p>Download version 1.1.3 including <i>full source code</i>,
 	class files and documentation in <a
 	href="../jakarta-log4j-1.1.3.tar.gz"><b>TAR.GZ</b></a> format
 	or in <a href="../jakarta-log4j-1.1.3.zip"><b>ZIP</b></a>
-	format. You may elect to browse log4j <a
-	href="documentation.html"><b>documentation</b></a> online.  <a
-	href="http://www.javaworld.com/javaworld/jw-05-2001/jw-0504-finalists.html"><img
-	src="images/ecaward_finalist_logo.gif" align="right"
-	border="0"/></a>Version 1.1.3 is the 21st major public release
-	of log4j. It is backward compatible with log4j version
-	1.0.x.</p>
-
-
-      <p>We also maintain a list of <a href="earlier.html">earlier
-	  versions</a> of log4j for download, intended for the curious
-	  paleontologist.</p>
+	format. 
+      </p>
 
     </section>
 
-    <section name="log4j version 1.2 beta4">
-      <p>log4j 1.2 beta 4 is now available in <a
-	href="../jakarta-log4j-1.2beta4.tar.gz"><b>TAR.GZ</b></a>
-	format or in <a
-	href="../jakarta-log4j-1.2beta4.zip"><b>ZIP</b></a> format.
-      </p>
-
-
-      <p>In addition to many performance improvements, bug fixes, and
-	other small enhancements, log4j 1.2 beta4 adds JMX support,
-	Mapped Diagnostic Contexts, and buffered IO capability. One
-	important change is the replacement of the Category class with
-	Logger class and the Priority with the Level in order to
-	facilitate migrating from the JDK 1.4 logging API to log4j.
-      </p>
-      
-      <p>All changes except the removal of deprecated methods are backward
-	compatible such that log4j 1.2beta4 can be considered a drop in
-	replacement for log4j 1.1.3. </p>
-
-    </section>
 
     <section name="Third-party extensions">
 
@@ -82,13 +68,14 @@
 	
 	<dt><a href="http://logui.sourceforge.net/"><b>Chainsaw</b></a></dt>
 	
-	<dd>Chainsaw is a GUI log viewer and filter for the Log4J
-	  package. It listens for <a
+	<dd>Chainsaw is now integrated with log4j and ships with the
+	  official distribution. Chainsaw a GUI log viewer and filter
+	  for the Log4J package. It listens for <a
 	  href="http://jakarta.apache.org/log4j/docs/api/org/apache/log4j/spi/LoggingEvent.html">LoggingEvent</a>
 	  objects sent using the <a
 	  href="http://jakarta.apache.org/log4j/docs/api/org/apache/log4j/net/SocketAppender.html">SocketAppender</a>
 	  and displays them in a table. Chainsaw also supports loading
-	  events from files in the XMLLayout format. 
+	  events from files in the XMLLayout format.
 	</dd>
 
 	<dt><a href="http://qos.ch/"><b>log4j<em>ME</em></b></a></dt>

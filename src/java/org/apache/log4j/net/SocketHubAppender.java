@@ -87,13 +87,12 @@ import org.apache.log4j.AppenderSkeleton;
   
   <p>To avoid lost data, it is usually sufficient to {@link #close}
   the <code>SocketHubAppender</code> either explicitly or by calling
-  the {@link Category#shutdown} method before exiting the
-  application.  
+  the {@link org.apache.log4j.LogManager#shutdown} method before
+  exiting the application.
   
   </ul>
      
-  @author Mark Womack 
-*/
+  @author Mark Womack */
 
 public class SocketHubAppender extends AppenderSkeleton {
 
