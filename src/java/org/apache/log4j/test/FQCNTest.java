@@ -88,7 +88,7 @@ class X1Logger extends Logger {
   public 
   static
   X1Logger getX1Logger(String name) {
-    return ((X1Logger) Category.getInstance(name, factory)); 
+    return ((X1Logger) Logger.getLogger(name, factory)); 
   }
 }
 

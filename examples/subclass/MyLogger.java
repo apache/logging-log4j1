@@ -15,29 +15,29 @@ import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.helpers.LogLog;
 
 /**
-   A simple example showing category subclassing. 
+   A simple example showing logger subclassing. 
 
-   <p>See <b><a href="doc-files/MyCategory.java">source code</a></b>
+   <p>See <b><a href="doc-files/MyLogger.java">source code</a></b>
    for more details.
 
-   <p>See {@link MyCategoryTest} for a usage example.
+   <p>See {@link MyLoggerTest} for a usage example.
    
  */
-public class MyCategory extends Logger {
+public class MyLogger extends Logger {
 
   // It's usually a good idea to add a dot suffix to the fully
   // qualified class name. This makes caller localization to work
   // properly even from classes that have almost the same fully
-  // qualified class name as MyCategory, e.g. MyCategoryTest.
-  static String FQCN = MyCategory.class.getName() + ".";
+  // qualified class name as MyLogger, e.g. MyLoggerTest.
+  static String FQCN = MyLogger.class.getName() + ".";
 
   // It's enough to instantiate a factory once and for all.
-  private static MyCategoryFactory myFactory = new MyCategoryFactory();
+  private static MyLoggerFactory myFactory = new MyLoggerFactory();
 
   /**
      Just calls the parent constuctor.
    */
-  public MyCategory(String name) {
+  public MyLogger(String name) {
     super(name);
   }
 
@@ -50,13 +50,13 @@ public class MyCategory extends Logger {
   }
   
   /**
-     This method overrides {@link Category#getInstance} by supplying
+     This method overrides {@link Logger#getInstance} by supplying
      its own factory type as a parameter.
   */
   public 
   static
-  Logger getInstance(String name) {
-    return Category.getInstance(name, myFactory); 
+  Logger getLogger(String name) {
+    return Logger.getLogger(name, myFactory); 
   }
 
   public

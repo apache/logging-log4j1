@@ -517,7 +517,7 @@ public class Category implements AppenderAttachable {
      @param name The name of the category to retrieve.  */
   public
   static
-  Logger getInstance(String name) {
+  Category getInstance(String name) {
      nooptimize++;
     return LogManager.getLogger(name);
   }	
@@ -534,30 +534,9 @@ public class Category implements AppenderAttachable {
     @since 1.0 */
   public
   static
-  Logger getInstance(Class clazz) {
+  Category getInstance(Class clazz) {
     nooptimize++;
     return LogManager.getLogger(clazz);
-  }	
-
-
-  /**
-     Like {@link #getInstance(String)} except that the type of category
-     instantiated depends on the type returned by the {@link
-     LoggerFactory#makeNewLoggerInstance} method of the
-     <code>factory</code> parameter.
-     
-     <p>This method is intended to be used by sub-classes.
-     
-     @param name The name of the category to retrieve.
-
-     @param factory A {@link LoggerFactory} implementation that will
-     actually create a new Instance.
-
-     @since 0.8.5 */
-  public
-  static
-  Logger getInstance(String name, LoggerFactory factory) {
-    return LogManager.getLogger(name, factory);
   }	
 
   

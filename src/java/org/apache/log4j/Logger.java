@@ -119,4 +119,25 @@ public class Logger extends Category {
   Logger getRootLogger() {
     return LogManager.getRootLogger();
   }
+
+  /**
+     Like {@link #getLogger(String)} except that the type of logger
+     instantiated depends on the type returned by the {@link
+     LoggerFactory#makeNewLoggerInstance} method of the
+     <code>factory</code> parameter.
+     
+     <p>This method is intended to be used by sub-classes.
+     
+     @param name The name of the logger to retrieve.
+
+     @param factory A {@link LoggerFactory} implementation that will
+     actually create a new Instance.
+
+     @since 0.8.5 */
+  public
+  static
+  Logger getLogger(String name, LoggerFactory factory) {
+    return LogManager.getLogger(name, factory);
+  }	
+
 }
