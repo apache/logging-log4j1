@@ -133,7 +133,7 @@
   <!-- ================================================================= -->
   <!-- Joran unit tests                                                 -->
   <!-- ================================================================= -->
-  <target name="Joran" depends="Pattern, SimpleStore, JoranParser"/>
+  <target name="Joran" depends="Pattern, SimpleStore, Interpreter"/>
 
 
   <!-- ================================================================= -->
@@ -453,11 +453,11 @@
   </target>
 
 
-  <target name="JoranParser" depends="build, cleanOutputDir">
+  <target name="Interpreter" depends="build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false" />
-      <test name="org.apache.joran.JoranParserTest" />
+      <test name="org.apache.joran.InterpreterTest" />
     </junit>
   </target>
   

@@ -17,7 +17,7 @@
 package org.apache.joran.action;
 
 import org.apache.joran.ExecutionContext;
-import org.apache.joran.JoranParser;
+import org.apache.joran.Interpreter;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 
@@ -66,7 +66,7 @@ public abstract class Action {
   }
   
   protected int getColumnNumber(ExecutionContext ec) {
-    JoranParser jp = ec.getJoranParser();
+    Interpreter jp = ec.getJoranParser();
     Locator locator = jp.getDocumentLocator();
     if(locator != null) {
       return locator.getColumnNumber();
@@ -75,7 +75,7 @@ public abstract class Action {
   }
   
   protected int getLineNumber(ExecutionContext ec) {
-    JoranParser jp = ec.getJoranParser();
+    Interpreter jp = ec.getJoranParser();
     Locator locator = jp.getDocumentLocator();
     if(locator != null) {
       return locator.getLineNumber();

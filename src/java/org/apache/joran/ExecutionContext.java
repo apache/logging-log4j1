@@ -40,9 +40,9 @@ public class ExecutionContext {
 	Vector errorList;
 	Properties substProperties;
 	
-	JoranParser joranParser;
+	Interpreter joranParser;
     
-	public ExecutionContext(JoranParser joranParser) {
+	public ExecutionContext(Interpreter joranParser) {
 		this.joranParser = joranParser;
 		objectStack = new Stack();
 		objectMap = new HashMap(5);
@@ -57,7 +57,7 @@ public class ExecutionContext {
     return errorList;
   }
 
-  public JoranParser getJoranParser() {
+  public Interpreter getJoranParser() {
     return joranParser;
   }
 
