@@ -26,8 +26,8 @@ import java.net.SocketException;
 import java.util.Vector;
 
 import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.CyclicBuffer;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.LoggingEvent;
 
 
@@ -143,10 +143,10 @@ public class SocketHubAppender extends AppenderSkeleton {
       return;
     }
 
-    LogLog.debug("closing SocketHubAppender " + getName());
+    getLogger().debug("closing SocketHubAppender {}", getName());
     this.closed = true;
     cleanUp();
-    LogLog.debug("SocketHubAppender " + getName() + " closed");
+    getLogger().debug("SocketHubAppender {} closed", getName());
   }
 
   /**
@@ -154,12 +154,12 @@ public class SocketHubAppender extends AppenderSkeleton {
      to all connected remote servers. */
   public void cleanUp() {
     // stop the monitor thread
-    LogLog.debug("stopping ServerSocket");
+    getLogger().debug("stopping ServerSocket");
     serverMonitor.stopMonitor();
     serverMonitor = null;
 
     // close all of the connections
-    LogLog.debug("closing client connections");
+    getLogger().debug("closing client connections");
 
     while (oosList.size() != 0) {
       ObjectOutputStream oos = (ObjectOutputStream) oosList.elementAt(0);
@@ -168,7 +168,7 @@ public class SocketHubAppender extends AppenderSkeleton {
         try {
           oos.close();
         } catch (IOException e) {
-          LogLog.error("could not close oos.", e);
+          getLogger().error("could not close oos.", e);
         }
 
         oosList.removeElementAt(0);
@@ -222,7 +222,7 @@ public class SocketHubAppender extends AppenderSkeleton {
       } catch (IOException e) {
         // there was an io exception so just drop the connection
         oosList.removeElementAt(streamCount);
-        LogLog.debug("dropped connection");
+        getLogger().debug("dropped connection");
 
         // decrement to keep the counter in place (for loop always increments)
         streamCount--;
@@ -296,7 +296,8 @@ public class SocketHubAppender extends AppenderSkeleton {
     private Vector oosList;
     private boolean keepRunning;
     private Thread monitorThread;
-
+    Logger logger = Logger.getLogger(ServerMonitor.class);
+    
     /**
       Create a thread and start the monitor. */
     public ServerMonitor(int _port, Vector _oosList) {
@@ -313,7 +314,7 @@ public class SocketHubAppender extends AppenderSkeleton {
       the thread has finished executing. */
     public synchronized void stopMonitor() {
       if (keepRunning) {
-        LogLog.debug("server monitor thread shutting down");
+        logger.debug("server monitor thread shutting down");
         keepRunning = false;
 
         try {
@@ -324,7 +325,7 @@ public class SocketHubAppender extends AppenderSkeleton {
 
         // release the thread
         monitorThread = null;
-        LogLog.debug("server monitor thread shut down");
+        logger.debug("server monitor thread shut down");
       }
     }
     
@@ -348,7 +349,7 @@ public class SocketHubAppender extends AppenderSkeleton {
         serverSocket = new ServerSocket(port);
         serverSocket.setSoTimeout(1000);
       } catch (Exception e) {
-        LogLog.error(
+        logger.error(
           "exception setting timeout, shutting down server socket.", e);
         keepRunning = false;
 
@@ -359,7 +360,7 @@ public class SocketHubAppender extends AppenderSkeleton {
         try {
           serverSocket.setSoTimeout(1000);
         } catch (SocketException e) {
-          LogLog.error(
+          logger.error(
             "exception setting timeout, shutting down server socket.", e);
 
           return;
@@ -373,20 +374,20 @@ public class SocketHubAppender extends AppenderSkeleton {
           } catch (InterruptedIOException e) {
             // timeout occurred, so just loop
           } catch (SocketException e) {
-            LogLog.error(
+            logger.error(
               "exception accepting socket, shutting down server socket.", e);
             keepRunning = false;
           } catch (IOException e) {
-            LogLog.error("exception accepting socket.", e);
+            logger.error("exception accepting socket.", e);
           }
 
           // if there was a socket accepted
           if (socket != null) {
             try {
               InetAddress remoteAddress = socket.getInetAddress();
-              LogLog.debug(
-                "accepting connection from " + remoteAddress.getHostName()
-                + " (" + remoteAddress.getHostAddress() + ")");
+              logger.debug(
+                "accepting connection from {} ({})", remoteAddress.getHostName()
+                , remoteAddress.getHostAddress());
 
               // create an ObjectOutputStream
               ObjectOutputStream oos =
@@ -398,7 +399,7 @@ public class SocketHubAppender extends AppenderSkeleton {
               // add it to the oosList.  OK since Vector is synchronized.
               oosList.addElement(oos);
             } catch (IOException e) {
-              LogLog.error("exception creating output stream on socket.", e);
+              logger.error("exception creating output stream on socket.", e);
             }
           }
         }

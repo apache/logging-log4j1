@@ -21,7 +21,6 @@ import java.net.Socket;
 import java.util.List;
 import java.util.Vector;
 
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.plugins.Pauseable;
 import org.apache.log4j.plugins.Plugin;
 import org.apache.log4j.plugins.Receiver;
@@ -158,7 +157,7 @@ public class XMLSocketReceiver extends Receiver implements Runnable, PortBased, 
     private synchronized void doShutdown() {
       active = false;
 
-      LogLog.debug(getName() + " doShutdown called");
+      getLogger().debug("{} doShutdown called", getName());
 
       // close the server socket
       closeServerSocket();
@@ -171,7 +170,7 @@ public class XMLSocketReceiver extends Receiver implements Runnable, PortBased, 
       * Closes the server socket, if created.
       */
      private void closeServerSocket() {
-       LogLog.debug(getName() + " closing server socket");
+       getLogger().debug("{} closing server socket", getName());
 
        try {
          if (serverSocket != null) {
@@ -206,17 +205,17 @@ public class XMLSocketReceiver extends Receiver implements Runnable, PortBased, 
       /**
         * Ensure we start fresh.
         */
-    LogLog.debug("performing socket cleanup prior to entering loop for " + name);
+    getLogger().debug("performing socket cleanup prior to entering loop for {}",  name);
     closeServerSocket();
     closeAllAcceptedSockets();
-    LogLog.debug("socket cleanup complete for " + name);       
+    getLogger().debug("socket cleanup complete for {}", name);       
     active = true;
 
     // start the server socket
     try {
       serverSocket = new ServerSocket(port);
     } catch (Exception e) {
-      LogLog.error(
+      getLogger().error(
         "error starting SocketReceiver (" + this.getName()
         + "), receiver did not start", e);
       active = false;
@@ -228,14 +227,14 @@ public class XMLSocketReceiver extends Receiver implements Runnable, PortBased, 
     Socket socket = null;
 
     try {
-      LogLog.debug("in run-about to enter while isactiveloop");
+      getLogger().debug("in run-about to enter while isactiveloop");
 
       active = true;
 
       while (!rThread.isInterrupted()) {
         // if we have a socket, start watching it
         if (socket != null) {
-          LogLog.debug("socket not null - creating and starting socketnode");
+          getLogger().debug("socket not null - creating and starting socketnode");
           socketList.add(socket);
 
           XMLSocketNode node = new XMLSocketNode(decoder, socket, this);
@@ -243,11 +242,11 @@ public class XMLSocketReceiver extends Receiver implements Runnable, PortBased, 
           socket = null;
         }
 
-        LogLog.debug("waiting to accept socket");
+        getLogger().debug("waiting to accept socket");
 
         // wait for a socket to open, then loop to start it
         socket = serverSocket.accept();
-        LogLog.debug("accepted socket");
+        getLogger().debug("accepted socket");
       }
 
       // socket not watched because we a no longer running
@@ -256,7 +255,7 @@ public class XMLSocketReceiver extends Receiver implements Runnable, PortBased, 
         socket.close();
       }
     } catch (Exception e) {
-      LogLog.warn(
+      getLogger().warn(
         "socket server disconnected, stopping");
     }
   }
