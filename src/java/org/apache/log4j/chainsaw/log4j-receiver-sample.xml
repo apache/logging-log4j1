@@ -31,6 +31,19 @@
      <param name="tailing" value="true"/> 
    </plugin>
 
+   <plugin name="CustomDBReceiver" class="org.apache.log4j.db.CustomSQLDBReceiver">
+      <connectionSource class="org.apache.log4j.db.DriverManagerConnectionSource">
+        <param name="password" value="somepassword"/>
+        <param name="user" value="someuser"/>
+        <param name="driverClass" value="org.gjt.mm.mysql.Driver"/>
+        <param name="url" value="jdbc:mysql://127.0.0.1/logs"/>
+	  </connectionSource>
+      <param name="refreshMillis" value="5000"/>
+      <param name="sql" value='select logger as LOGGER, timestamp as TIMESTAMP, level as LEVEL, thread as THREAD, message as MESSAGE, ndc as NDC, mdc as MDC, class as CLASS, method as METHOD, file as FILE, line as LINE, concat("{{application,databaselogs,hostname,mymachine,log4jid,", COUNTER, "}}") as PROPERTIES, "" as EXCEPTION from logtable'/> 
+      <param name="IDField" value="COUNTER"/>
+   </plugin>
+
+
    <root>
       <level value="debug"/>
    </root>

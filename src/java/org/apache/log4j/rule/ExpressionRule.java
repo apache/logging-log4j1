@@ -100,7 +100,9 @@ public class ExpressionRule extends AbstractRule {
               token = token + " " + tokenizer.nextToken();
               inText = !(token.endsWith("'"));
           }
-          token = token.substring(0, token.length() - 1);
+          if (token.length() > 0) {
+              token = token.substring(0, token.length() - 1);
+          }
         }
 
         //if a symbol is found, pop 2 off the stack, evaluate and push the result 
@@ -109,7 +111,9 @@ public class ExpressionRule extends AbstractRule {
           stack.push(r);
         } else {
           //variables or constants are pushed onto the stack
-          stack.push(token);
+          if (token.length() > 0) {
+              stack.push(token);
+          }
         }
       }
       

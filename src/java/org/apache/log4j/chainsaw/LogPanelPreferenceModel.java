@@ -186,9 +186,8 @@ public class LogPanelPreferenceModel implements Serializable{
    * @param levelIcons
    */
   public void setLevelIcons(boolean levelIcons) {
-    boolean oldVal = this.levelIcons;
     this.levelIcons = levelIcons;
-    propertySupport.firePropertyChange("levelIcons", oldVal, this.levelIcons);
+    propertySupport.firePropertyChange("levelIcons", !levelIcons, levelIcons);
   }
 
   /**

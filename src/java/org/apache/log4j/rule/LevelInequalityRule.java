@@ -31,6 +31,7 @@ import org.apache.log4j.spi.LoggingEvent;
  */
 public class LevelInequalityRule {
     private static List levelList;
+    private static List utilLoggingLevelList;
 
     static {
         populateLevels();
@@ -48,16 +49,34 @@ public class LevelInequalityRule {
         levelList.add(Level.INFO.toString());
         levelList.add(Level.DEBUG.toString());
         levelList.add(Level.TRACE.toString());
+        
+        utilLoggingLevelList = new LinkedList();
+
+        utilLoggingLevelList.add(UtilLoggingLevel.SEVERE.toString());
+        utilLoggingLevelList.add(UtilLoggingLevel.WARNING.toString());
+        utilLoggingLevelList.add(UtilLoggingLevel.INFO.toString());
+        utilLoggingLevelList.add(UtilLoggingLevel.CONFIG.toString());
+        utilLoggingLevelList.add(UtilLoggingLevel.FINE.toString());
+        utilLoggingLevelList.add(UtilLoggingLevel.FINER.toString());
+        utilLoggingLevelList.add(UtilLoggingLevel.FINEST.toString());
+
     }
 
     public static Rule getRule(String inequalitySymbol, String value) {
 
         Level thisLevel = null;
         
+        //if valid util.logging levels are used against events with log4j levels, the 
+        //DEBUG level is used and an illegalargumentexception won't be generated
+        
+        //an illegalargumentexception is only generated if the user types a level name
+        //that doesn't exist as either a log4j or util.logging level name
         if (levelList.contains(value.toUpperCase())) {
             thisLevel = Level.toLevel(value.toUpperCase());
-        } else {
+        } else if (utilLoggingLevelList.contains(value.toUpperCase())){
             thisLevel = UtilLoggingLevel.toLevel(value.toUpperCase());
+        } else {
+            throw new IllegalArgumentException("Invalid level inequality rule - " + value + " is not a supported level");
         }
 
         if ("<".equals(inequalitySymbol)) {
