@@ -16,9 +16,9 @@
 
 package joran.implicit;
 
-import org.apache.joran.ExecutionContext;
-import org.apache.joran.Pattern;
-import org.apache.joran.action.ImplicitAction;
+import org.apache.log4j.joran.action.ImplicitAction;
+import org.apache.log4j.joran.spi.ExecutionContext;
+import org.apache.log4j.joran.spi.Pattern;
 
 import org.xml.sax.Attributes;
 

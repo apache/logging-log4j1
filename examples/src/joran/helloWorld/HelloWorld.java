@@ -16,10 +16,10 @@
 
 package joran.helloWorld;
 
-import org.apache.joran.Interpreter;
-import org.apache.joran.Pattern;
-import org.apache.joran.RuleStore;
-import org.apache.joran.helper.SimpleRuleStore;
+import org.apache.log4j.joran.spi.Interpreter;
+import org.apache.log4j.joran.spi.Pattern;
+import org.apache.log4j.joran.spi.RuleStore;
+import org.apache.log4j.joran.spi.SimpleRuleStore;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
