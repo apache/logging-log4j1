@@ -53,22 +53,36 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
+
+import org.apache.oro.text.perl.Perl5Util;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.PipedReader;
+import java.io.PipedWriter;
+import java.io.PrintWriter;
 
 
 /**
- * @author Ceki
+ * This test checks the correctness of ReaderWriterLock.
  *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
+ * <b>Warning</b> This test should not use log4j loggers.
+ *
+ * There is not much point in having a test depend on the component being tested.
+ *
+ * @author Ceki G&uuml;lc&uuml;
+ *
  */
 public class ReaderWriterLockTestCase extends TestCase {
   double value1 = 0;
   double value2 = 0;
   ReaderWriterLock lock = new ReaderWriterLock();
+  BufferedReader bufferedReader;
+  PrintWriter printWriter;
+ 
+  static int WLOOP = 30000;
+  static int RLOOP = WLOOP*2;
 
   /**
    * Constructor for ReaderWriterLockTestCasae.
@@ -79,20 +93,25 @@ public class ReaderWriterLockTestCase extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    System.out.println("=====================");
-    Logger root = Logger.getRootLogger();
-    root.addAppender(new ConsoleAppender(new PatternLayout("%4r [%t] - %m%n")));
+    PipedWriter pipedWriter = new PipedWriter();
+    PipedReader pipedReader = new PipedReader();
+    bufferedReader = new BufferedReader(pipedReader);
+    pipedReader.connect(pipedWriter);
+
+    //pipedWriter.connect(pipedReader);
+    printWriter = new PrintWriter(pipedWriter);
   }
 
   protected void tearDown() throws Exception {
-    System.out.println("------------------------");
-    LogManager.shutdown();
   }
 
   public void test1() {
-    int maxReaders = 3;
-    int maxWriters = 2;
+    int maxReaders = 30;
+    int maxWriters = 20;
     Thread[] threads = new Thread[maxReaders + maxWriters];
+
+    VerifierThread vt = new VerifierThread(bufferedReader, maxReaders, maxWriters);
+    vt.start();
 
     for (int i = 0; i < maxReaders; i++) {
       threads[i] = new ReaderThread(i);
@@ -114,6 +133,15 @@ public class ReaderWriterLockTestCase extends TestCase {
     }
   }
 
+  void printMessage(String msg) {
+    synchronized (printWriter) {
+      //printWriter.print("[");
+      printWriter.print(Thread.currentThread().getName());
+      printWriter.print(" ");
+      printWriter.println(msg);
+    }
+  }
+
   public static Test suite() {
     TestSuite suite = new TestSuite();
     suite.addTest(new ReaderWriterLockTestCase("test1"));
@@ -123,48 +151,60 @@ public class ReaderWriterLockTestCase extends TestCase {
 
   class ReaderThread extends Thread {
     ReaderThread(int i) {
-      super("Reader-" + i);
+      super("R-" + i);
     }
 
     public void run() {
-      Logger root = Logger.getRootLogger();
-      root.debug("In run()");
+      printMessage("In run()");
 
-      for (int l = 0; l < 150; l++) {
-        root.debug("Asking for read lock.");
+      for (int l = 0; l < RLOOP; l++) {
+        printMessage("Asking for read lock.");
         lock.getReadLock();
-        root.debug("Got read lock.");
-        root.debug("Value1 is " + value1);
-        root.debug("Value2 is " + value2);
-        try {sleep(10);} catch (InterruptedException e) {}
-        root.debug("About to release read lock.");
+        printMessage("Got read lock.");
+        printMessage("Value1 is " + value1);
+        printMessage("Value2 is " + value2);
+
+        try {
+          sleep(10);
+        } catch (InterruptedException e) {
+        }
+
+        printMessage("About to release read lock.");
         lock.releaseReadLock();
       }
     }
   }
-
+  
   class WriterThread extends Thread {
     WriterThread(int i) {
-      super("WRITER-" + i);
+      super("W-" + i);
     }
 
     public void run() {
-      Logger root = Logger.getRootLogger();
-      root.debug("In run()");
+      printMessage("In run");
 
-      for (int l = 0; l < 50; l++) { 
-        try {sleep(30);} catch (InterruptedException e) {}
-        root.debug("Asking for write lock.");
+      for (int i = 0; i < WLOOP; i++) {
+        try {
+          sleep(30);
+        } catch (InterruptedException e) {
+        }
+
+        printMessage("Asking for write lock.");
         lock.getWriteLock();
-        root.debug("Got write lock.");
-        root.debug("About to increment values.");
+        printMessage("Got write lock.");
+        printMessage("About to increment values.");
         value1 += 1;
         value2 += 10;
-        try {sleep(10);} catch (InterruptedException e) {}
-        root.debug("About to release write lock.");
-        lock.releaseWriteLock();
 
+        try {
+          sleep(10);
+        } catch (InterruptedException e) {
+        }
+
+        printMessage("About to release write lock.");
+        lock.releaseWriteLock();
       }
     }
   }
+
 }
