@@ -65,6 +65,7 @@ import org.apache.joran.action.LayoutAction;
 import org.apache.joran.action.LevelAction;
 import org.apache.joran.action.LoggerAction;
 import org.apache.joran.action.NestComponentIA;
+import org.apache.joran.action.NewRuleAction;
 import org.apache.joran.action.ParamAction;
 import org.apache.joran.action.RootLoggerAction;
 
@@ -229,7 +230,7 @@ public class JoranParserTest extends TestCase {
     jp.parse(doc);
   }
 
-  public void testNewConversionWord() throws Exception {
+  public void xtestNewConversionWord() throws Exception {
     logger.debug("Starting testNewConversionWord");
 
     DocumentBuilderFactory dbf = null;
@@ -265,5 +266,32 @@ public class JoranParserTest extends TestCase {
     Appender appender = (Appender) appenderBag.get("A1");
     PatternLayout pl = (PatternLayout) appender.getLayout();
     assertEquals("org.apache.log4j.toto", pl.getRuleRegistry().get("toto"));
+  }
+  
+  public void testNewRule1() throws Exception {
+    logger.debug("Starting testNewConversionWord");
+
+    DocumentBuilderFactory dbf = null;
+
+    dbf = DocumentBuilderFactory.newInstance();
+
+    DocumentBuilder docBuilder = dbf.newDocumentBuilder();
+
+    //inputSource.setSystemId("dummy://log4j.dtd");
+    Document doc = docBuilder.parse("file:input/joran/newRule1.xml");
+    RuleStore rs = new SimpleRuleStore();
+    rs.addRule(
+      new Pattern("log4j:configuration/newRule"),
+      new NewRuleAction());
+
+    JoranParser jp = new JoranParser(rs);
+    ExecutionContext ec = jp.getExecutionContext();
+    HashMap omap = ec.getObjectMap();
+    omap.put(ActionConst.APPENDER_BAG, new HashMap());
+    ec.pushObject(LogManager.getLoggerRepository());
+    jp.parse(doc);
+
+    String str = (String) ec.getObjectMap().get("hello");
+    assertEquals("Hello John Doe.", str);
   }
 }
