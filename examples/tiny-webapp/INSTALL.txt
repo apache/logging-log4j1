@@ -26,9 +26,32 @@ Steps performed on the Java Web Server (Servlet Container)
 - You can now run the supplied web-applications hello.war and
   tata.war.
 
+- Optionally, you can add a configuration file such as log4j.xml or
+  log4j.properties in the class directory of your web-server. For
+  Tomcat versions 4 or 5, that would be server/classes/ directory.
+
+  Thus, when log4j is first loaded into memory, it will configure the
+  default logging repository using the configuration file found in
+  server/classes/ directory.
+
+  For Tomcat version 5 (tested on Tomcat 5.0.19), you also need to
+  tell Tomcat to use log4j by placing commons-logging.jar in
+  common/lib directory. You should also remove the
+  commons-logging-api.jar from the bin/ directory.
+  
+  This way the default (log4j) logger repository will be used by
+  Tomcat for its logging and the default logger repository will be
+  controlled by the configuration file log4j.xml or log4j.properties
+  found in server/classes/.
+
 Steps performed per web-application
 ==================================
 
+- You will need log4j-VERSION.jar to compile the
+  web-applications. However, log4j-VERSION.jar file need not and
+  probably should not be included within the web-application's jar
+  file.
+ 
 - In each web-application's web.ml file add a JNDI environment entry
   for the log4j logging context name. For the "Hello" web-application
   this takes the following form:
@@ -48,10 +71,68 @@ Steps performed per web-application
   This file will be automatically taken to configure the repository
   instance specific for your web-application.
 
-  Note that you will need log4j-VERSION.jar to compile the
-  web-applications but log4j-VERSION.jar file should not be included
-  within the web-application's jar file.
- 
-  For more options see the javadoc for JNDIContextSelector.
+  Alternatively, you can specify the URL for this context's
+  configuration resource.  The repository selector
+  (ContextJNDISelector) will use the specified resource to
+  automatically configure the log4j repository.
 
+  You can specify a resource other than log4j.xml or log4j.properties
+  with the "log4j/configuration-resource" environment entry.
+
+  <env-entry>
+   <description>URL for configuring log4j context</description>
+   <env-entry-name>log4j/configuration-resource</env-entry-name>
+   <env-entry-value>urlOfConfigrationResource</env-entry-value>
+   <env-entry-type>java.lang.String</env-entry-type>
+  </env-entry>
+  
+  Note that only when "log4j/configuration-resource" environment entry 
+  is missing that the default resources log4j.xml and log4j.properties are
+  looked up.
+
+  For more information on the available options see the javadoc for
+  ContextJNDISelector.
+
+- When the web-application is recycled or shutdown, it is often useful
+  to recycle the associated logging repository. This can be done by
+  installing a ServletContextListener which will detach the repository
+  from the repository selector and shut it down.
+
+  The ContextDetachingSCL which ships with log4j does exactly that. To
+  install it, add the following lines to your web-application's
+  web.xml file.
+
+   <listener>
+     <listener-class>org.apache.log4j.selector.servlet.ContextDetachingSCL</listener-class>
+   </listener>
+
+  See also the file examples/tiny-webapp/Hello/src/WEB-INF/web.xml
+
+- You are encouraged to name your web-application in the web
+  descriptor file. As in
+
+  <display-name>Hello sample web-application</display-name>
+
+
+KNOWN PROBLEMS WITH ContextJNDISelector
+=======================================
+
+- In case your J2EE container does not use log4j by default (e.g. T5,
+  Resin), and you are using ContextJNDISelector to configure multiple
+  logger repositories, then the default logger repository will be
+  configured at the same time the logger repository specific for your
+  first web-application is configured.
+
+  For various technical reasons, if that first web-application is
+  automatically configured using log4j.xml or log4j.properties files
+  contained in the web-application, then the default logger repository
+  will be configured using those same configuration files of the
+  web-application. 
+
+  This is usually benign because even if configured with the wrong
+  file, the default logging respository will probably not be used in
+  this set up. Nevertheless, you can still correct this error by
+  forcing log4j to configure the default logging repository with the
+  configuration file of your choice by setting the
+  "log4j.configuration" system property.
 

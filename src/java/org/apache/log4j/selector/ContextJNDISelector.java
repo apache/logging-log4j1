@@ -20,8 +20,8 @@ import org.apache.log4j.Hierarchy;
 import org.apache.log4j.Level;
 import org.apache.log4j.helpers.Constants;
 import org.apache.log4j.helpers.IntializationUtil;
+import org.apache.log4j.helpers.JNDIUtil;
 import org.apache.log4j.helpers.Loader;
-import org.apache.log4j.helpers.LogLog;
 
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.RepositorySelector;
@@ -33,7 +33,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.naming.Context;
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 
@@ -107,27 +106,16 @@ import javax.naming.NamingException;
  * and setting context name will be enough to ensure a separate logging 
  * environment for your applicaiton.
  *  
- * <p>Unlike the {@link ContextClassLoaderSelector} which will only work in
- * containers that provide for separate classloaders, JNDI is available in all
- * servers claiming to be servlet or J2EE compliant.  So, the JNDI selector
- * is the recommended context selector. However it is possible to spoof the 
- * value of the env-entry.  There are ways to avoid this, but this class makes 
- * no attempt to do so.  It would require a container specific implementation to,
- * for instance, append a non-random unique name to the user-defined value of
- * the env-entry.  Keep that in mind as you choose which custom repository
- * selector you would like to use in your own application.  Until this issue
- * is solved by container-controlled repository selectors, you will need to
- * be diligent in providing a distinctive env-entry-value for each application
- * running on the server.  This is not an issue when using the
- * {@link ContextClassLoaderSelector} in containers in which it is compatible
- * (such as Tomcat 4/5)</p>
- *
+ * <p>Given that JNDI is part of the J2EE specification, the JNDI selector
+ * is the recommended context selector. 
+ * </p>
+ * 
  * @author <a href="mailto:hoju@visi.com">Jacob Kjome</a>
  * @author Ceki G&uuml;lc&uuml;
  * @since  1.3
  */
 public class ContextJNDISelector implements RepositorySelector {
-  static String JNDI_CONTEXT_NAME = "java:comp/env/log4j/context-name";
+
   static String JNDI_CONFIGURATION_RESOURCE =
     "java:comp/env/log4j/configuration-resource";
   static String JNDI_CONFIGURATOR_CLASS =
@@ -162,45 +150,43 @@ public class ContextJNDISelector implements RepositorySelector {
   }
 
   /**
-   * implemented RepositorySelector interface method. The returned
-   * value is guaranteed to be non-null.
+   * Return the repoistory selector based on the current JNDI environment.
+   * 
+   * If the respository is retreived for the first time, then also configure 
+   * the repository using a user specified resource or if no such resource
+   * is specified, using the resource names "log4j.xml" or "log4j.properties".
    *
-   * @return the appropriate JNDI-keyed Hierarchy/LoggerRepository
+   * @return the appropriate JNDI-keyed context name/LoggerRepository
    */
   public LoggerRepository getLoggerRepository() {
     String loggingContextName = null;
     Context ctx = null;
 
     try {
-      ctx = new InitialContext();
-      loggingContextName = (String) ctx.lookup(JNDI_CONTEXT_NAME);
+      ctx = JNDIUtil.getInitialContext();
+      loggingContextName = (String) JNDIUtil.lookup(ctx, Constants.JNDI_CONTEXT_NAME);
     } catch (NamingException ne) {
       // we can't log here
-      //debug minor issue in Tomcat5 where, after the first webapp install,
-      //the second webapp first fails the JNDI lookup and Log4j reports that
-      //"no appenders could be found".  Subsequent webapp installs report the
-      //same except with no "no appenders could be found" message.  However,
-      //the appender do indeed work so I'm not sure why it is reported that
-      //they don't?  No issues like this in Tomcat4.
-      //System.out.println("failed to look up logging context!");
-      ;
     }
 
     if (loggingContextName == null) {
       return defaultRepository;
     } else {
+      System.out.println("loggingContextName is ["+loggingContextName+"]");
       Hierarchy hierarchy = (Hierarchy) hierMap.get(loggingContextName);
 
       if (hierarchy == null) {
         // create new hierarchy
         hierarchy = new Hierarchy(new RootCategory(Level.DEBUG));
+        hierarchy.setName(loggingContextName);
         hierMap.put(loggingContextName, hierarchy);
 
-        // Use automatic configration to configure the default hierarchy
+        // configure log4j internal logging
         IntializationUtil.log4jInternalConfiguration(hierarchy);
 
-        String configResourceStr = lookup(ctx, JNDI_CONFIGURATION_RESOURCE);
-        String configuratorClassName = lookup(ctx, JNDI_CONFIGURATOR_CLASS);
+        // Use automatic configration to configure the default hierarchy
+        String configResourceStr = JNDIUtil.lookup(ctx, JNDI_CONFIGURATION_RESOURCE);
+        String configuratorClassName = JNDIUtil.lookup(ctx, JNDI_CONFIGURATOR_CLASS);
 
         if (configResourceStr == null) {
           if (
@@ -220,19 +206,15 @@ public class ContextJNDISelector implements RepositorySelector {
     }
   }
 
-  String lookup(Context ctx, String name) {
-    try {
-      return (String) ctx.lookup(name);
-    } catch (NamingException e) {
-      LogLog.warn("Failed to get "+name);
-      return null;
-    }
-  }
+
   
-  /** Remove the repository with the given context name from the list of
+  /** 
+   * Remove the repository with the given context name from the list of
    * known repositories.
+   * 
+   * @return 
    */
-  public void remove(String contextName) {
-    hierMap.remove(contextName);  
+  public LoggerRepository detachRepository(String contextName) {
+    return (LoggerRepository) hierMap.remove(contextName);  
   }
 }

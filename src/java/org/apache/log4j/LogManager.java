@@ -44,6 +44,7 @@ public class LogManager {
   private static RepositorySelector repositorySelector;
 
   static {
+    System.out.println("**Start of LogManager static initializer");
     Hierarchy defaultHierarchy = new Hierarchy(new RootCategory(Level.DEBUG));
     defaultHierarchy.setName("default");
 
@@ -79,9 +80,10 @@ public class LogManager {
     // at this stage 'repositorySelector' should point to a valid selector
     repositorySelector.setDefaultRepository(defaultHierarchy);
 
-    // Use automatic configration to configure the default hierarchy
+    // configure log4j internal logging for the default hierarchy
     IntializationUtil.log4jInternalConfiguration(defaultHierarchy);
 
+    //  Attempt to perform automatic configuration of the default hierarchy
     String configuratorClassName =
       OptionConverter.getSystemProperty(
         Constants.CONFIGURATOR_CLASS_KEY, null);
@@ -98,19 +100,22 @@ public class LogManager {
       }
     }
 
-    System.out.println("configurationOptionStr=" + configurationOptionStr);
+    System.out.println("*** configurationOptionStr=" + configurationOptionStr);
 
     IntializationUtil.initialConfiguration(
       defaultHierarchy, configurationOptionStr, configuratorClassName);
+    
+
+    System.out.println("** End of LogManager static initializer");
   }
 
   /**
-     Sets <code>LoggerFactory</code> but only if the correct
+     Sets <code>RepositorySelector</code> but only if the correct
      <em>guard</em> is passed as parameter.
 
      <p>Initally the guard is null.  If the guard is
      <code>null</code>, then invoking this method sets the logger
-     factory and the guard. Following invocations will throw a {@link
+     repository and the guard. Following invocations will throw a {@link
      IllegalArgumentException}, unless the previously set
      <code>guard</code> is passed as the second parameter.
 
@@ -121,14 +126,14 @@ public class LogManager {
      own repository selector. However, if and when Tomcat is embedded
      within JBoss, then JBoss will install its own repository selector
      and Tomcat will use the repository selector set by its container,
-     JBoss.  */
+     JBoss.  
+     */
   public static void setRepositorySelector(
     RepositorySelector selector, Object guard) throws IllegalArgumentException {
     if ((LogManager.guard != null) && (LogManager.guard != guard)) {
       throw new IllegalArgumentException(
         "Attempted to reset the LoggerFactory without possessing the guard.");
     }
-
     if (selector == null) {
       throw new IllegalArgumentException(
         "RepositorySelector must be non-null.");
@@ -138,6 +143,17 @@ public class LogManager {
     LogManager.repositorySelector = selector;
   }
 
+
+  /**
+   * Return the repository selector currently in use.
+   * 
+   * @since 1.3
+   * @return {@link RepositorySelector} currently in use.
+   */
+  public static RepositorySelector getRepositorySelector() {
+    return  LogManager.repositorySelector;
+  } 
+  
   public static LoggerRepository getLoggerRepository() {
     return repositorySelector.getLoggerRepository();
   }

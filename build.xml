@@ -85,6 +85,7 @@
     <pathelement location="${jmx.jar}"/>
     <pathelement location="${jmx-extra.jar}"/>
     <pathelement location="${avalon-framework.jar}"/>
+    <pathelement location="${servlet-api.jar}"/>
   </path>
 
   <!-- Construct classpath for building the html pages-->
@@ -467,6 +468,7 @@
                 ${stem}/xml/*.class,
                 ${stem}/jmx/*.class,
                 ${stem}/selector/*.class,
+                ${stem}/selector/servlet/*.class,
                 ${stem}/pattern/*.class,
                 ${stem}/or/*.class,
                 ${stem}/or/sax/*.class,

@@ -60,6 +60,7 @@ public class IntializationUtil {
   public static void initialConfiguration(LoggerRepository repository, 
                                           String configuratonResourceStr,
                                           String configuratorClassNameStr) {
+                             
     if(configuratonResourceStr == null) {
       return;
     }

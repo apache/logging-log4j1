@@ -57,6 +57,7 @@ public interface RepositorySelector {
    * If more than one application share the same logging context, then the
    * applications need to coordinate their actions.  
    * 
+   * @return The LoggerRepository instance that was detached.
    */
-  public void remove(String contextName);
+  public LoggerRepository detachRepository(String contextName);
 }

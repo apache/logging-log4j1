@@ -14,7 +14,7 @@ public class HelloServlet extends HttpServlet {
     ServletContext context = getServletConfig().getServletContext();
     logger.info("Servlet loaded");
   }
-
+  
   public void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
     
