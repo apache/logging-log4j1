@@ -8,6 +8,7 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.chainsaw.prefs.SettingsManager;
 import org.apache.log4j.helpers.LogLog;
 
 /**
@@ -22,12 +23,25 @@ import org.apache.log4j.helpers.LogLog;
  * 
  */
 public class PluginClassLoaderFactory {
-
+	private final ClassLoader pluginClassLoader;
+    
+    private static final PluginClassLoaderFactory instance = new PluginClassLoaderFactory();
+    
 	/**
 	 * @param urls
 	 */
 	private PluginClassLoaderFactory() {
+        this.pluginClassLoader= PluginClassLoaderFactory.create(new File(SettingsManager.getInstance().getSettingsDirectory() + File.separator + "plugins"));
+
 	}
+    
+    public static PluginClassLoaderFactory getInstance() {
+     return instance;   
+    }
+    
+    public ClassLoader getClassLoader() {
+     return this.pluginClassLoader;   
+    }
     
     /**
      * Creates a Classloader that will be able to access any of the classes found
@@ -40,7 +54,7 @@ public class PluginClassLoaderFactory {
      * @throws RuntimeException if turning a File into a URL failed, which would be very unexpected
      * @return
      */
-    public static final ClassLoader create(File pluginDirectory) {
+    private static final ClassLoader create(File pluginDirectory) {
         if(pluginDirectory == null || !pluginDirectory.exists() || !pluginDirectory.canRead()) {
          LogLog.error("pluginDirectory cannot be null, and it must exist and must be readable, using the normal Classloader");
          return PluginClassLoaderFactory.class.getClassLoader();
@@ -75,8 +89,9 @@ public class PluginClassLoaderFactory {
 				}
 			}
 		}
+        ClassLoader parent = PluginClassLoaderFactory.class.getClassLoader();
         URL[] urls = (URL[]) list.toArray(new URL[list.size()]);
-        return new URLClassLoader(urls);
+        return new URLClassLoader(urls, parent);
     }
 
 }
