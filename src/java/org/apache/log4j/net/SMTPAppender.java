@@ -65,6 +65,8 @@ public class SMTPAppender extends AppenderSkeleton {
 
      <p>Note that all option keys are case sensitive.
      
+     @deprecated Options are now handled using the JavaBeans paradigm. 
+     This constant will be removed in the <em>near</em> term.
   */
   public static final String TO_OPTION = "To";
 
@@ -74,7 +76,9 @@ public class SMTPAppender extends AppenderSkeleton {
      constant is <b>From</b>.
 
      <p>Note that all option keys are case sensitive.
-     
+
+     @deprecated Options are now handled using the JavaBeans paradigm. 
+     This constant will be removed in the <em>near</em> term.     
   */
   public static final String FROM_OPTION = "From";
 
@@ -85,6 +89,8 @@ public class SMTPAppender extends AppenderSkeleton {
 
      <p>Note that all option keys are case sensitive.
      
+     @deprecated Options are now handled using the JavaBeans paradigm. 
+     This constant will be removed in the <em>near</em> term.
   */
   public static final String SUBJECT_OPTION = "Subject";
 
@@ -96,6 +102,8 @@ public class SMTPAppender extends AppenderSkeleton {
 
      <p>Note that all option keys are case sensitive.
      
+     @deprecated Options are now handled using the JavaBeans paradigm. 
+     This constant will be removed in the <em>near</em> term.
   */
   public static final String SMTP_HOST_OPTION = "SMTPHost";
 
@@ -105,6 +113,8 @@ public class SMTPAppender extends AppenderSkeleton {
 
      <p>Note that all option keys are case sensitive.
      
+     @deprecated Options are now handled using the JavaBeans paradigm. 
+     This constant will be removed in the <em>near</em> term.
   */
   public static final String BUFFER_SIZE_OPTION = "BufferSize";
 
@@ -116,6 +126,8 @@ public class SMTPAppender extends AppenderSkeleton {
 
      <p>Note that all option keys are case sensitive.
      
+     @deprecated Options are now handled using the JavaBeans paradigm. 
+     This constant will be removed in the <em>near</em> term.
   */
   public static final String EVALUATOR_CLASS_OPTION = "EvaluatorClass";
 
@@ -126,6 +138,9 @@ public class SMTPAppender extends AppenderSkeleton {
      constant is <b>LocationInfo</b>.  
 
      <p>Note that all option keys are case sensitive.
+
+     @deprecated Options are now handled using the JavaBeans paradigm. 
+     This constant will be removed in the <em>near</em> term.
   */
   public static final String LOCATION_INFO_OPTION = "LocationInfo";
   
@@ -333,48 +348,8 @@ public class SMTPAppender extends AppenderSkeleton {
 
 
 /**
-     Set SMTPAppender specific options.
-
-     <p>On top of the options of the super class {@link
-     AppenderSkeleton}, the recognized options are <b>To</b>,
-     <b>From</b>, <b>Subject</b>, <b>SMTPHost</b>,
-     <b>BufferSize</b>, <b>EvaluatorClass</b> and <b>LocationInfo</b>. 
-     
-     <p>The <b>To</b> option takes a string value which should be a
-     comma separated list of e-mail address of the recipients.
-
-     <p>The <b>From</b> option takes a string value which should be a
-     e-mail address of the sender.
-
-     <p>The <b>Subject</b> option takes a string value which should be a
-     the subject of the e-mail message.
-
-     <p>The <b>SMTPHost</b> option takes a string value which should be a
-     the host name of the SMTP server that will send the e-mail message.
-
-     <p>The <b>BufferSize</b>option takes a positive integer
-     representing the maximum number of logging events to collect in a
-     cyclic buffer. When the <code>BufferSize</code> is reached,
-     oldest events are deleted as new events are added to the
-     buffer. By default the size of the cyclic buffer is 512 events.
-
-     <p>The <b>EvaluatorClass</b> option takes a string value
-     repsenting the name of the class implementing the {@link
-     TriggeringEventEvaluator} interface. A corresponding object will
-     be instantiated and assigned as the triggering event evaluator
-     for the SMTPAppender.
-
-     <p>The <b>LocationInfo</b> option takes a boolean value. By
-     default, it is set to false which means there will be no effort
-     to extract the location information related to the event. As a
-     result, the layout that formats the events as they are sent out
-    in an e-mail is likely to place the wrong location information
-     (if present in the format).
-
-     <p>Location information extraction is comparatively very slow and
-     should be avoided unless performance is not a concern.
-
- */
+   @deprecated Use the setter method for the option directly, instead
+   of the generic <code>setOption</code> method.  */
   public
   void setOption(String option, String value) {
     if(value == null) return;

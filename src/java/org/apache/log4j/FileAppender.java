@@ -69,9 +69,9 @@ public class FileAppender extends WriterAppender {
      new {@link OutputStreamWriter} initialized with <code>os</code>
      as its {@link OutputStream}.  
 
-     @deprecated <b>The functionality of constructor form has been
-     replaced by the {@link WriterAppender}. This constructor will be
-     removed in the <em>near</em> term.</b>
+     @deprecated <b>The functionality of this constructor form has
+     been replaced by the {@link WriterAppender}. This constructor
+     will be removed in the <em>near</em> term.</b>
 
   */
   public
