@@ -17,7 +17,6 @@
 package org.apache.log4j;
 
 import org.apache.log4j.Layout;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OnlyOnceErrorHandler;
 import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.Filter;
@@ -35,6 +34,12 @@ import org.apache.log4j.spi.OptionHandler;
  * @since 0.8.1
  */
 public abstract class AppenderSkeleton implements Appender, OptionHandler {
+  
+  /*
+   * An inststance specific logger. 
+   */
+  private Logger logger;
+  
   /**
    * The layout variable does not need to be set if the appender
    * implementation has its own layout.
@@ -131,7 +136,7 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
       return;
     }
 
-    LogLog.debug("Finalizing appender named [" + name + "].");
+    getLogger().debug("Finalizing appender named [{}].", name);
     close();
   }
 
@@ -201,8 +206,8 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
    */
   public synchronized void doAppend(LoggingEvent event) {
     if (closed) {
-      LogLog.error(
-        "Attempted to append to closed appender named [" + name + "].");
+      getLogger().error(
+        "Attempted to append to closed appender named [{}].", name);
 
       return;
     }
@@ -250,7 +255,7 @@ FILTER_LOOP:
     if (eh == null) {
       // We do not throw exception here since the cause is probably a
       // bad config file.
-      LogLog.warn("You have tried to set a null error-handler.");
+      getLogger().warn("You have tried to set a null error-handler.");
     } else {
       this.errorHandler = eh;
     }
@@ -286,5 +291,19 @@ FILTER_LOOP:
    */
   public void setThreshold(Level threshold) {
     this.threshold = threshold;
+  }
+  
+  /**
+   * Return an instance specifi logger to be used by the Appender itself.
+   * This logger is not intended to be used by Mrs. Piggy, our proverbial user,
+   * hence the protected keyword.
+   * 
+   * @return instance specific logger
+   */
+  protected Logger getLogger() {
+    if(logger == null) {
+      logger = LogManager.getLogger(this.getClass().getName());
+    }
+    return logger;
   }
 }
