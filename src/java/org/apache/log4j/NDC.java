@@ -3,6 +3,9 @@
 //
 //      See the LICENCE file for the terms of usage and distribution.
 
+
+//      Contributors:      Dan Milstein 
+
 package org.apache.log4j;
 
 import java.util.Hashtable;
@@ -80,7 +83,7 @@ import org.apache.log4j.helpers.LogLog;
    thread, in particular to a child.
    
    @author Ceki G&uuml;lc&uuml;
-   @since log4j v0.7.0
+   @since 0.7.0
   
 */
  
@@ -225,7 +228,7 @@ public class NDC {
     
     synchronized(ht) {
       // Avoid calling clean-up too often.
-      if(++pushCounter >= REAP_THRESHOLD) {
+      if(++pushCounter <= REAP_THRESHOLD) {
 	return; // We release the lock ASAP.
       } else {
 	pushCounter = 0; // OK let's do some work.
