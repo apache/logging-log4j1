@@ -19,6 +19,7 @@ package org.apache.log4j.xml.test;
 import org.apache.log4j.Category;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
 
@@ -56,8 +57,8 @@ public class DOMTest {
 
   static void test() {
     int i = -1;
-    Category root = Category.getRoot();
-
+    Logger root = Logger.getRootLogger();
+    
     cat.debug("Message " + ++i);
     root.debug("Message " + i);
 

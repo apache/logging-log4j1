@@ -10,6 +10,7 @@ package org.apache.log4j.net.test;
 import org.apache.log4j.Category;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.apache.log4j.net.SocketAppender;
 import org.apache.log4j.NDC;
 import java.io.InputStreamReader;
@@ -46,7 +47,7 @@ public class SocketMin {
 
   static
   void init(String host, String portStr) {
-    Category root = Category.getRoot();
+    Logger root = Logger.getRootLogger();
     BasicConfigurator.configure();
     try {
       int port   = Integer.parseInt(portStr);
@@ -68,7 +69,7 @@ public class SocketMin {
 
   static
   void loop() {
-    Category root = Category.getRoot();
+    Logger root = Logger.getRootLogger();
     InputStreamReader in = new InputStreamReader(System.in);
     System.out.println("Type 'q' to quit");
     int i;

@@ -2,6 +2,7 @@
 
 package org.apache.log4j.test;
 
+import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.Category;
 import java.io.InputStreamReader;
@@ -42,7 +43,7 @@ public class Finalize {
     int i = -1;
 
     InputStreamReader in = new InputStreamReader(System.in);
-    Category root = Category.getRoot();
+    Logger root = Logger.getRootLogger();;
 
     System.out.println("Type 'q' to quit");
     int j = 0;

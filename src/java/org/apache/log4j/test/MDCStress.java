@@ -8,9 +8,9 @@ import java.util.Random;
 
 public class MDCStress extends Thread {
 
-  static Category root = Category.getRoot();  
-  static Category log = Category.getInstance(MDCStress.class);
-
+  final static Logger root = Logger.getRootLogger();
+  final static Logger log = Logger.getLogger(MDCStress.class);
+  
   static Random random = new Random(17);
 
   static final int BRANCHING_FACTOR = 2;

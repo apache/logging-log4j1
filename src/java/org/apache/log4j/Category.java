@@ -576,9 +576,8 @@ public class Category implements AppenderAttachable {
    *
    * @param clazz The name of <code>clazz</code> will be used as the name of
    *        the category to retrieve.  See {@link #getInstance(String)} for
-   *        more detailed information. <b>Deprecated</b> Please use {@link
-   *        Logger#getLogger(Class)} instead.
-   *
+   *        more detailed information.
+   * @deprecated Please use {@link Logger#getLogger(Class)} instead.
    * @since 1.0
    */
   public static Category getInstance(Class clazz) {
@@ -633,7 +632,8 @@ public class Category implements AppenderAttachable {
    * <p>
    * Nevertheless, calling {@link #getInstance Category.getInstance("root")}
    * does not retrieve the root category but a category just under root named
-   * "root". <b>Deprecated</b> Use {@link Logger#getRootLogger()} instead.
+   * "root". 
+   * @deprecated Use {@link Logger#getRootLogger()} instead.
    * </p>
    */
   public static final Category getRoot() {

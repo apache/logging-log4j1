@@ -15,9 +15,9 @@ public class Loop {
   public static void main(String[] args) {
     
     
-    Category root = Category.getRoot();
-    Category cat = Category.getInstance(Loop.class.getName());
-
+    Logger root = Logger.getRootLogger();
+    final Logger logger = Logger.getLogger(Loop.class);
+    
     if(args.length != 2) 
       usage("Wrong number of arguments.");     
 
@@ -41,7 +41,7 @@ public class Loop {
 
     while(true) {
       NDC.push(""+ (i++));
-      cat.debug("Debug message.");
+      logger.debug("Debug message.");
       root.info("Info message.");
       NDC.pop();
     }

@@ -25,7 +25,7 @@ class StressCategory {
 				      Level.ERROR,
 				      Level.FATAL};
 
-  static Level defaultLevel = Category.getRoot().getLevel();
+  static Level defaultLevel = Logger.getRootLogger().getLevel();
   
   static int LENGTH;
   static String[] names;
