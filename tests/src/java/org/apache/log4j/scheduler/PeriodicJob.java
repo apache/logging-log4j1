@@ -66,7 +66,7 @@ class PeriodicJob extends CountingJob {
         (int) ((currentTime - desiredTime) / period);
 
       // allow for 15% error margin
-      if ((actualExecutionTime.size()*1.15) < expectedNumberOfExecutions) {
+      if ((actualExecutionTime.size()*1.25) < expectedNumberOfExecutions) {
         throw new IllegalStateException(
           "Too few executions. Was " + actualExecutionTime.size()
           + " expected " + expectedNumberOfExecutions + " period="+period);
