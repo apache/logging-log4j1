@@ -18,6 +18,7 @@ package org.apache.log4j.spi;
 
 import org.apache.log4j.*;
 import org.apache.log4j.plugins.PluginRegistry;
+import org.apache.log4j.scheduler.Scheduler;
 
 import java.util.Enumeration;
 import java.util.List;
@@ -180,6 +181,13 @@ public interface LoggerRepository {
    */
   public PluginRegistry getPluginRegistry();
 
+  
+  /**
+   * Return the {@link Scheduler} for this LoggerRepository.
+   * @since 1.3
+   */
+  public Scheduler getScheduler();
+  
   /** 
    * Get the properties specific for this repository.
    * @since 1.3
