@@ -77,12 +77,12 @@ import javax.naming.NamingException;
  * </blockquote>
  * </p>
  *
- * <p> If multiple applications have the same logging context name, then they 
- * will share the same logging context. 
+ * <p><em>If multiple applications use the same logging context name, then they 
+ * will share the same logging context.</em> 
  * </p>
  * 
  *<p>You can also specify the URL for this context's configuration resource.
- * This repository selector (ContextJNDISelector) will use the specified resource
+ * This repository selector (ContextJNDISelector) will use this resource
  * to automatically configure the log4j repository.
  *</p>
  ** <blockquote>
@@ -96,15 +96,18 @@ import javax.naming.NamingException;
  * </pre>
  * </blockquote>
  * 
- * <p>In case no configuration resource is specified, this repository selector
- * will attempt to find the files <em>log4j.xml</em> and 
- * <em>log4j.properties</em> from the resources available to the application.
- * </p>
+ * <p>It usually good practice for configuration resources of distinct 
+ * applications to have distinct names. However, if this is not possible 
+ * Naming 
  * 
- * <p>It follows that bundling a <em>log4j.xml</em> file in your web-application
- * and setting context name will be enough to ensure a separate logging 
- * environment for your applicaiton.
- *  
+ * <p>Note that in case no configuration resource is specified, then there will
+ * be <b>NO</b> attempt to search for the <em>default</em> configuration files 
+ * <em>log4j.xml</em> and <em>log4j.properties</em>. This voluntary omission 
+ * ensures that the configuration file for your application's logger repository
+ * will not be confused with the default configuration file for the default
+ * logger repository. 
+ * </p>
+* 
  * <p>Given that JNDI is part of the J2EE specification, the JNDI selector
  * is the recommended context selector. 
  * </p>
@@ -156,8 +159,7 @@ public class ContextJNDISelector implements RepositorySelector {
    * Return the repoistory selector based on the current JNDI environment.
    * 
    * If the respository is retreived for the first time, then also configure 
-   * the repository using a user specified resource or if no such resource
-   * is specified, using the resource names "log4j.xml" or "log4j.properties".
+   * the repository using a user specified resource.
    *
    * @return the appropriate JNDI-keyed context name/LoggerRepository
    */
