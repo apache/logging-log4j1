@@ -245,6 +245,11 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
 
     action.putValue(Action.NAME, "Logger Tree");
     action.putValue(Action.SHORT_DESCRIPTION, "Toggles the Log Tree panel");
+    action.putValue("enabled", Boolean.TRUE);
+    action.putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_T));
+    action.putValue(
+      Action.ACCELERATOR_KEY,
+      KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.ALT_MASK));
 
     //		TODO find an icon
     return action;
@@ -1015,9 +1020,13 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
       toggleDetailPaneAction.getValue(Action.NAME));
 
     logTreePaneButton.setAction(toggleLogTreeAction);
-
     //	logTreePaneButton.setText(null);
-    //	TODO add accelerator to this action
+    logTreePaneButton.getActionMap().put(
+    toggleLogTreeAction.getValue(Action.NAME), toggleLogTreeAction);
+      logTreePaneButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.ALT_MASK),
+      toggleDetailPaneAction.getValue(Action.NAME));
+
     SmallButton prefsButton = new SmallButton(showPreferencesAction);
     SmallButton undockButton = new SmallButton(undockAction);
     undockButton.setText("");
