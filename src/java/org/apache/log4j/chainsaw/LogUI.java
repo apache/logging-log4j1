@@ -171,8 +171,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   private ChainsawAbout aboutBox;
   private final SettingsManager sm = SettingsManager.getInstance();
   private String lookAndFeelClassName;
-  private final NoReceiversWarningPanel noReceiversWarningPanel =
-    new NoReceiversWarningPanel();
 
   /**
    * Set to true, if and only if the GUI has completed
@@ -394,34 +392,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
         }
       });
 
-    /**
-     * This listener sets up the NoReciversWarningPanel and
-     * loads saves the configs/logfiles
-     */
-    getSettingsManager().addSettingsListener(
-      new SettingsListener() {
-        public void loadSettings(LoadSettingsEvent event) {
-          int size = event.asInt("SavedConfigs.Size");
-          Object[] configs = new Object[size];
-
-          for (int i = 0; i < size; i++) {
-            configs[i] = event.getSetting("SavedConfigs." + i);
-          }
-
-          noReceiversWarningPanel.getModel().setRememberedConfigs(configs);
-        }
-
-        public void saveSettings(SaveSettingsEvent event) {
-          Object[] configs =
-            noReceiversWarningPanel.getModel().getRememberedConfigs();
-          event.saveSetting("SavedConfigs.Size", configs.length);
-
-          for (int i = 0; i < configs.length; i++) {
-            event.saveSetting("SavedConfigs." + i, configs[i].toString());
-          }
-        }
-      });
-
     if (
       PluginRegistry.getPlugins(
           LogManager.getLoggerRepository(), Receiver.class).size() == 0) {
@@ -607,6 +577,37 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    * and allows the user to choose some options for configuration
    */
   private void showNoReceiversWarningPanel() {
+	final NoReceiversWarningPanel noReceiversWarningPanel =
+	 new NoReceiversWarningPanel();
+
+   /**
+	* This listener sets up the NoReciversWarningPanel and
+	* loads saves the configs/logfiles
+	*/
+   getSettingsManager().addSettingsListener(
+	 new SettingsListener() {
+	   public void loadSettings(LoadSettingsEvent event) {
+		 int size = event.asInt("SavedConfigs.Size");
+		 Object[] configs = new Object[size];
+
+		 for (int i = 0; i < size; i++) {
+		   configs[i] = event.getSetting("SavedConfigs." + i);
+		 }
+
+		 noReceiversWarningPanel.getModel().setRememberedConfigs(configs);
+	   }
+
+	   public void saveSettings(SaveSettingsEvent event) {
+		 Object[] configs =
+		   noReceiversWarningPanel.getModel().getRememberedConfigs();
+		 event.saveSetting("SavedConfigs.Size", configs.length);
+
+		 for (int i = 0; i < configs.length; i++) {
+		   event.saveSetting("SavedConfigs." + i, configs[i].toString());
+		 }
+	   }
+	 });
+
     SwingUtilities.invokeLater(
       new Runnable() {
         public void run() {
