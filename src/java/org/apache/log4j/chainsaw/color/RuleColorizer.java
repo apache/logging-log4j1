@@ -179,4 +179,13 @@ public class RuleColorizer implements Colorizer {
   public void removePropertyChangeListener(PropertyChangeListener listener) {
     colorChangeSupport.removePropertyChangeListener(listener);
   }
+  /**
+   * @param propertyName
+   * @param listener
+   */
+  public void addPropertyChangeListener(String propertyName,
+      PropertyChangeListener listener)
+  {
+    colorChangeSupport.addPropertyChangeListener(propertyName, listener);
+  }
 }
