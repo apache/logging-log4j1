@@ -5,8 +5,14 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
 
- September 25, 2001
+ September 26, 2001
+ 
+ - Release of version 1.2alpha_1
 
+ - This alpha release consists of documentation changes. [*]
+
+ September 25, 2001
+ 
  - Release of version 1.2alpha_0
 
  - Log4j is now configurable using JMX. [*]
