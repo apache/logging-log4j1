@@ -1290,7 +1290,25 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
     eventsPane.addMouseListener(popupListener);
     table.addMouseListener(popupListener);
   }
+  
+  /**
+   * Accessor
+   *
+   * @return scrollToBottom
+   *
+   */
+  public boolean isScrollToBottom() {
+  	return preferenceModel.isScrollToBottom();
+  }
 
+  /**
+   * Mutator
+   *
+   */
+  public void toggleScrollToBottom() {
+  	preferenceModel.setScrollToBottom(!preferenceModel.isScrollToBottom());
+  }
+  
   /**
    * Accessor
    *
@@ -1736,6 +1754,8 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
     dockShowPrefsAction.putValue(
       Action.SMALL_ICON, ChainsawIcons.ICON_PREFERENCES);
 
+    toolbar.add(new SmallButton(dockShowPrefsAction));
+
     Action dockToggleLogTreeAction =
       new AbstractAction() {
         public void actionPerformed(ActionEvent e) {
@@ -1751,8 +1771,6 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
         KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.ALT_MASK));
       dockToggleLogTreeAction.putValue(
         Action.SMALL_ICON, new ImageIcon(ChainsawIcons.WINDOW_ICON));
-
-    toolbar.add(new SmallButton(dockShowPrefsAction));
 
     final SmallToggleButton toggleLogTreeButton =
       new SmallToggleButton(dockToggleLogTreeAction);
@@ -1789,6 +1807,37 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
     toolbar.add(dockClearButton);
     toolbar.addSeparator();
 
+    Action dockToggleScrollToBottomAction =
+        new AbstractAction("Toggles Scroll to Bottom") {
+          public void actionPerformed(ActionEvent e) {
+            toggleScrollToBottom();
+          }
+        };
+
+        dockToggleScrollToBottomAction.putValue(Action.SHORT_DESCRIPTION, "Toggles Scroll to Bottom");
+        dockToggleScrollToBottomAction.putValue("enabled", Boolean.TRUE);
+        dockToggleScrollToBottomAction.putValue(
+          Action.SMALL_ICON, new ImageIcon(ChainsawIcons.DOWN));
+
+      final SmallToggleButton toggleScrollToBottomButton =
+        new SmallToggleButton(dockToggleScrollToBottomAction);
+      preferenceModel.addPropertyChangeListener("scrollToBottom", new PropertyChangeListener() {
+      	public void propertyChange(PropertyChangeEvent evt) {
+      	    toggleScrollToBottomButton.setSelected(preferenceModel.isScrollToBottom());    		
+      	}
+      });
+
+      toggleScrollToBottomButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+  	      KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.CTRL_MASK),
+  	      dockToggleScrollToBottomAction.getValue(Action.NAME));
+  	    toggleScrollToBottomButton.getActionMap().put(
+  	      dockToggleScrollToBottomAction.getValue(Action.NAME), dockToggleScrollToBottomAction);
+      
+      toggleScrollToBottomButton.setSelected(isScrollToBottom());
+      toggleScrollToBottomButton.setText("");
+      toolbar.add(toggleScrollToBottomButton);
+      toolbar.addSeparator();
+    
     findField = new JTextField();
     findField.addKeyListener(
       new ExpressionRuleContext(filterModel, findField));
