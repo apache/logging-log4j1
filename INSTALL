@@ -7,11 +7,11 @@ Using log4j
 
 2) Assuming you chose to extract the distribution in to the
    PATH_OF_YOUR_CHOICE, untarring the distribution file should create
-   a log4j-vXX directory, where XX is the log4j version number, under
-   PATH_OF_YOUR_CHOICE.
+   a jakarta-log4j-X.X directory, where X.X is the log4j version
+   number, under PATH_OF_YOUR_CHOICE.
 
 
-3) Add PATH_OF_YOUR_CHOICE\log4j-vXXX\classes to the CLASSPATH
+3) Add PATH_OF_YOUR_CHOICE\jakarta-log4j-X.X\classes to the CLASSPATH
    variable.
    
 4) You can now test your installation. To do this issue the command:
