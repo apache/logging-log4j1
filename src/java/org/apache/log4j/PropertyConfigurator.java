@@ -8,7 +8,7 @@
 
 // Contibutors: "Luke Blanshard" <Luke@quiq.com>
 //              "Mark DONSZELMANN" <Mark.Donszelmann@cern.ch>
-//              Anders Kristensen <akristensen@dynamicsoft.com>
+//               Anders Kristensen <akristensen@dynamicsoft.com>
 
 package org.apache.log4j;
 

@@ -141,7 +141,15 @@ instantiate a category sub-class for an already existing category, and
 try to cast it to the sub-class type, you will systematically get a
 <code>ClassCastException</code>.
 
-To address this problem, the <code>PropertyConfigurator</code> admits the 
+<p>To address this problem, the <code>PropertyConfigurator</code> admits
+the <code>log4j.categoryFactory</code> key. The value of this key will
+be used as the factory to invoke when instantiating Category objects.
+See <a
+href="../javadoc/org/apache/log4j/PropertyConfigurator.html">PropertyConfigurator</a>
+for more details.
+
+<p>The <code>DOMConfigurator</code> has a finer grain method for
+setting the class of the category object to instantiate.
 
 </body>
 </html>

@@ -19,10 +19,9 @@ import org.apache.log4j.PropertyConfigurator;
 // Contributors:   Avy Sharell (sharell@online.fr)
 
 /**
-   A convinience class to convert property values to specific types.
+   A convenience class to convert property values to specific types.
 
    @author Ceki G&uuml;lc&uuml;
-   @author Avy Sharell
 */	
 public class OptionConverter {
 
@@ -310,6 +309,8 @@ public class OptionConverter {
 
      <p>All configurations steps are taken on the
      <code>hierarchy</code> passed as parameter.
+     
+     @author based on code written by Anders Kristensen
 
      @since 1.0 */
   static
