@@ -53,7 +53,16 @@ public class Loader extends java.lang.Object {
     // where CLAZZ is the fully qualified name of clazz where dots have been
     // changed to directory separators
     LogLog.debug("Trying to find ["+resource+"] using Class.getResource().");
-    url = clazz.getResource(resource);
+
+    try
+    {
+      url = clazz.getResource(resource);
+    }
+    catch (sun.misc.InvalidJarIndexException e)
+    {
+      LogLog.warn("Caught InvalidJarException!");
+    }
+
     if(url != null) 
       return url;
 
