@@ -39,21 +39,18 @@ class ChainsawEventBatch {
   }
 
   /**
-   * @param eventType
-   * @param convertedEventVector
+   * @param ident
+   * @param e
    */
-  void addEvent(String ident, String eventType, LoggingEvent e) {
-    List events = null;
+  void addEvent(String ident, LoggingEvent e) {
+    List events = (List)identEventMap.get(ident);
 
-    if (!identEventMap.containsKey(ident)) {
+    if (events == null) {
       events = new ArrayList();
       identEventMap.put(ident, events);
-    } else {
-      events = (List) identEventMap.get(ident);
     }
 
-    events.add(
-      new ChainsawEventBatchEntry(ident, eventType, e));
+    events.add(e);
   }
 
   /**
@@ -68,10 +65,10 @@ class ChainsawEventBatch {
   }
 
   /**
-   * Returns a Collection of ChainsawEventBatchEntry objects that
+   * Returns a Collection of LoggingEvent objects that
    * are bound to the identifier
    * @param identifier
-   * @return Collection of ChainsawEventBatchEntry instances
+   * @return Collection of LoggingEvent instances
    */
   List entrySet(String identifier) {
     return (List) identEventMap.get(identifier);

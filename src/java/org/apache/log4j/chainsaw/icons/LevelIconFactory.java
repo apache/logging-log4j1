@@ -58,7 +58,7 @@ public class LevelIconFactory {
           newWidth, newHeight, Image.SCALE_SMOOTH);
       iconMap.put(iconLabels[i], new ImageIcon(iconImage));
     }
-
+    iconMap.put("TRACE", ChainsawIcons.ICON_DEBUG);
     iconMap.put("DEBUG", ChainsawIcons.ICON_DEBUG);
   }
 

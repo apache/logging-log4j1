@@ -143,11 +143,11 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
         }
 
         public void receiveEventBatch(
-          String identifier, List eventBatchEntrys) {
+          String identifier, List events) {
           logger.debug(
             "received batch for '" + identifier + "', list.size()="
-            + eventBatchEntrys.size());
-          logger.debug(eventBatchEntrys.toString());
+            + events.size());
+          logger.debug(events.toString());
         }
       });
     LogManager.getRootLogger().addAppender(handler);
@@ -305,18 +305,12 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
 
                 if (rule.evaluate(e)) {
                   eventBatch.addEvent(
-                    (String) entry.getKey(),
-                    (e.getProperty(ChainsawConstants.EVENT_TYPE_KEY) == null)
-                    ? ChainsawConstants.LOG4J_EVENT_TYPE
-                    : e.getProperty(ChainsawConstants.EVENT_TYPE_KEY), e);
+                    (String) entry.getKey(), e);
                 }
               }
 
               eventBatch.addEvent(
-                getTabIdentifier(e),
-                (e.getProperty(ChainsawConstants.EVENT_TYPE_KEY) == null)
-                ? ChainsawConstants.LOG4J_EVENT_TYPE
-                : e.getProperty(ChainsawConstants.EVENT_TYPE_KEY), e);
+                getTabIdentifier(e), e);
             }
 
             dispatchEventBatch(eventBatch);

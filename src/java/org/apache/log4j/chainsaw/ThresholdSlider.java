@@ -44,7 +44,7 @@ final class ThresholdSlider extends JSlider {
     Level[] levels =
       new Level[] {
         Level.OFF, Level.FATAL, Level.ERROR, Level.WARN, Level.INFO,
-        Level.DEBUG, Level.ALL
+        Level.DEBUG, Level.TRACE, Level.ALL
       };
 
     priorityList = Arrays.asList(levels);
@@ -68,7 +68,7 @@ final class ThresholdSlider extends JSlider {
 
     setModel(
       new DefaultBoundedRangeModel(
-        priorityList.indexOf(Level.DEBUG), 0, 0, priorityList.size() - 1));
+        priorityList.indexOf(Level.TRACE), 0, 0, priorityList.size() - 1));
 
     Hashtable labelMap = new Hashtable();
 
@@ -105,7 +105,7 @@ final class ThresholdSlider extends JSlider {
     Level level = (Level) priorityList.get(getValue());
 
     if (level == null) {
-      level = Level.DEBUG;
+      level = Level.TRACE;
     }
 
     return level;

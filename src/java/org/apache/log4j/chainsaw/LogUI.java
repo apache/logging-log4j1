@@ -607,26 +607,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       noReceiversDefined = true;
     }
 
-    //List utilList = UtilLoggingLevel.getAllPossibleLevels();
-    // TODO: Replace the array list creating with the standard way of
-    // retreiving the Level set. (TBD)
-    Level[] levels =
-      new Level[] { Level.FATAL, Level.ERROR, Level.WARN, Level.INFO, Level.DEBUG };
-    List priorityLevels = new ArrayList();
-
-    for (int i = 0; i < levels.length; i++) {
-      priorityLevels.add(levels[i].toString());
-    }
-
-    List utilLevels = new ArrayList();
-
-    for (Iterator iterator = utilLevels.iterator(); iterator.hasNext();) {
-      utilLevels.add(iterator.next().toString());
-    }
-
-    //    getLevelMap().put(ChainsawConstants.UTIL_LOGGING_EVENT_TYPE,
-    // utilLevels);
-    //    getLevelMap().put(ChainsawConstants.LOG4J_EVENT_TYPE, priorityLevels);
     getFilterableColumns().add(ChainsawConstants.LEVEL_COL_NAME);
     getFilterableColumns().add(ChainsawConstants.LOGGER_COL_NAME);
     getFilterableColumns().add(ChainsawConstants.THREAD_COL_NAME);
@@ -1300,7 +1280,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
               portMethod.invoke(
                 simpleReceiver, new Object[] { new Integer(port) });
 
-              simpleReceiver.setThreshold(Level.DEBUG);
+              simpleReceiver.setThreshold(Level.TRACE);
 
               pluginRegistry.addPlugin(simpleReceiver);
               simpleReceiver.activateOptions();
@@ -1560,22 +1540,18 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     if (
       UIManager.getLookAndFeel().getClass().getName().equals(
           lookAndFeelClassName)) {
-      //MessageCenter.getInstance().getLogger().debug("No need to change L&F, already the same");
       return;
     }
 
     if (
       (lookAndFeelClassName == null) || lookAndFeelClassName.trim().equals("")) {
-      //      MessageCenter.getInstance().getLogger().info("Using System native L&F");
       lookAndFeelClassName = UIManager.getSystemLookAndFeelClassName();
     }
 
     try {
       UIManager.setLookAndFeel(lookAndFeelClassName);
 
-      //MessageCenter.getInstance().getLogger().debug("Setting L&F -> " + lookAndFeelClassName);
     } catch (Exception e) {
-      //MessageCenter.getInstance().getLogger().error("Failed to change L&F", e);
     }
   }
 
@@ -1625,18 +1601,11 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    *
    * @return DOCUMENT ME!
    */
-  public String getInterestedIdentifier() {
+  public String getIntereXstedIdentifier() {
     //    this instance is interested in ALL event batches, as we determine how to
     // route things
     return null;
   }
-
-  //  public Map getEntryMap() {
-  //    return entryMap;
-  //  }
-  //  public Map getScrollMap() {
-  //    return scrollMap;
-  //  }
 
   /**
    * DOCUMENT ME!
@@ -1759,7 +1728,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   }
 
   private void buildLogPanel(
-    boolean customExpression, final String ident, final List eventBatchEntrys)
+    boolean customExpression, final String ident, final List events)
     throws IllegalArgumentException {
     final LogPanel thisPanel = new LogPanel(getStatusBar(), ident, cyclicBufferSize);
 
@@ -1817,7 +1786,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     /**
              * Let the new LogPanel receive this batch
              */
-    thisPanel.receiveEventBatch(ident, eventBatchEntrys);
+    thisPanel.receiveEventBatch(ident, events);
 
     SwingUtilities.invokeLater(
       new Runnable() {
@@ -1844,12 +1813,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
         while (iter2.hasNext()) {
           LoggingEvent e = (LoggingEvent) iter2.next();
-          list.add(
-            new ChainsawEventBatchEntry(
-              ident,
-              (e.getProperty(ChainsawConstants.EVENT_TYPE_KEY) == null)
-              ? ChainsawConstants.LOG4J_EVENT_TYPE
-              : e.getProperty(ChainsawConstants.EVENT_TYPE_KEY), e));
+          list.add(e);
         }
       }
 
@@ -1913,13 +1877,11 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
          * DOCUMENT ME!
          *
          * @param ident
-         *                    DOCUMENT ME!
-         * @param eventBatchEntrys
-         *                    DOCUMENT ME!
+         * @param events
          */
     public void receiveEventBatch(
-      final String ident, final List eventBatchEntrys) {
-      if (eventBatchEntrys.size() == 0) {
+      final String ident, final List events) {
+      if (events.size() == 0) {
         return;
       }
 
@@ -1942,7 +1904,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
       if (!getPanelMap().containsKey(ident)) {
         try {
-          buildLogPanel(false, ident, eventBatchEntrys);
+          buildLogPanel(false, ident, events);
         } catch (IllegalArgumentException iae) {
           //should not happen - not a custom expression panel
         }

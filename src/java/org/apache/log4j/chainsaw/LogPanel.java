@@ -1345,9 +1345,9 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
    * receives events which share this LogPanel's identifier
    *
    * @param ident identifier shared by events
-   * @param eventBatchEntrys list of EventBatchEntry objects
+   * @param events list of LoggingEvent objects
    */
-  public void receiveEventBatch(String ident, List eventBatchEntrys) {
+  public void receiveEventBatch(String ident, List events) {
     /*
      * if this panel is paused, we totally ignore events
      */
@@ -1360,12 +1360,12 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
 
     int first = tableModel.getLastAdded() + 1;
 
-    for (Iterator iter = eventBatchEntrys.iterator(); iter.hasNext();) {
-      ChainsawEventBatchEntry entry = (ChainsawEventBatchEntry) iter.next();
+    for (Iterator iter = events.iterator(); iter.hasNext();) {
+      LoggingEvent event = (LoggingEvent) iter.next();
 
-      updateOtherModels(entry);
+      updateOtherModels(event);
 
-      boolean isCurrentRowAdded = tableModel.isAddRow(entry.getEvent(), true);
+      boolean isCurrentRowAdded = tableModel.isAddRow(event, true);
       rowAdded = rowAdded ? true : isCurrentRowAdded;
     }
 
@@ -1380,7 +1380,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
       }
 
       tableModel.fireTableEvent(
-        first, tableModel.getLastAdded(), eventBatchEntrys.size());
+        first, tableModel.getLastAdded(), events.size());
 
       if (scroll && !bypassScrollFind) {
         table.scrollToBottom(
@@ -2342,10 +2342,9 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
    * ensures the Entry map of all the unque logger names etc, that is used for
    * the Filter panel is updated with any new information from the event
    *
-   * @param entry
+   * @param event
    */
-  private void updateOtherModels(ChainsawEventBatchEntry entry) {
-    LoggingEvent event = entry.getEvent();
+  private void updateOtherModels(LoggingEvent event) {
 
     /*
      * EventContainer is a LoggerNameModel imp, use that for notifing

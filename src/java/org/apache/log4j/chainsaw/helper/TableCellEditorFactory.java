@@ -39,7 +39,7 @@ public class TableCellEditorFactory
    */
   public static Object createLevelTableCellEditor()
   {
-    JComboBox comboBox = new JComboBox(new Level[] {Level.DEBUG, Level.INFO, Level.WARN, Level.ERROR, Level.FATAL, Level.OFF, Level.ALL});
+    JComboBox comboBox = new JComboBox(new Level[] {Level.TRACE, Level.DEBUG, Level.INFO, Level.WARN, Level.ERROR, Level.FATAL, Level.OFF, Level.ALL});
     return new DefaultCellEditor(comboBox); 
   }
 
