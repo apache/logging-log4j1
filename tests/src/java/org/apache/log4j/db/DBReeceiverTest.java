@@ -99,6 +99,7 @@ public class DBReeceiverTest
       } else {
       }
     }
+    LogManager.getLoggerRepository().shutdown();
   }
 
 
