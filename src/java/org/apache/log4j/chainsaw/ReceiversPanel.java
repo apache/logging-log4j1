@@ -49,46 +49,22 @@
 
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.net.SocketAppender;
-import org.apache.log4j.net.SocketHubAppender;
-import org.apache.log4j.net.SocketHubReceiver;
-import org.apache.log4j.net.SocketNodeEventListener;
-import org.apache.log4j.net.SocketReceiver;
-import org.apache.log4j.net.UDPAppender;
-import org.apache.log4j.net.UDPReceiver;
-import org.apache.log4j.plugins.Pauseable;
-import org.apache.log4j.plugins.PluginRegistry;
-import org.apache.log4j.plugins.Receiver;
-
-import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.io.IOException;
-
 import java.lang.reflect.Method;
-
 import java.net.URL;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -103,7 +79,6 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.InputVerifier;
 import javax.swing.JButton;
@@ -128,6 +103,22 @@ import javax.swing.event.HyperlinkListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.chainsaw.icons.LineIconFactory;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.net.SocketAppender;
+import org.apache.log4j.net.SocketHubAppender;
+import org.apache.log4j.net.SocketHubReceiver;
+import org.apache.log4j.net.SocketNodeEventListener;
+import org.apache.log4j.net.SocketReceiver;
+import org.apache.log4j.net.UDPAppender;
+import org.apache.log4j.net.UDPReceiver;
+import org.apache.log4j.plugins.Pauseable;
+import org.apache.log4j.plugins.PluginRegistry;
+import org.apache.log4j.plugins.Receiver;
 
 
 /**
@@ -1051,7 +1042,7 @@ class ReceiversPanel extends JPanel {
       add(restartAllButton);
 
       Action closeAction =
-        new AbstractAction(null, new CloseIcon(8, 1, 1)) {
+        new AbstractAction(null, LineIconFactory.createCloseIcon()) {
           public void actionPerformed(ActionEvent e) {
             logui.toggleReceiversPanel();
           }
