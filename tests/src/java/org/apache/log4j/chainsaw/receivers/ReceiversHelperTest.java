@@ -11,6 +11,7 @@ import org.apache.log4j.net.SocketHubReceiver;
 import org.apache.log4j.net.SocketReceiver;
 import org.apache.log4j.net.UDPReceiver;
 import org.apache.log4j.net.XMLSocketReceiver;
+import org.apache.log4j.db.DBReceiver;
 import org.apache.log4j.varia.LogFilePatternReceiver;
 
 
@@ -43,6 +44,7 @@ public class ReceiversHelperTest extends TestCase {
                 XMLSocketReceiver.class,
                 LogFilePatternReceiver.class,
                 JMSReceiver.class,
+                DBReceiver.class,
             };
 
         for (int i = 0; i < expectedList.length; i++) {
