@@ -455,7 +455,7 @@
                  org.apache.log4j.rolling.helper,
                  org.apache.log4j.selector,
                  org.apache.log4j.spi,
-                 org.apache.log4j.filters,
+                 org.apache.log4j.filter,
                  org.apache.log4j.varia,
                  org.apache.log4j.rule,
                  org.apache.log4j.xml,
