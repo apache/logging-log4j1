@@ -31,9 +31,16 @@ import org.apache.log4j.net.SocketNode;
  * client. This number is determined the totalsTest parameter, that is
  * the first argument on the commmand line. The second argument,
  * prefix, determines the prefix of the configuration file to
- * use. Each run of the server will use a different properties
- * file. For the i-th run, the path to the file is
- * (prefix+i+".properties").
+ * use. 
+ * 
+ * Each run of the server will use a different properties file. For the i-th 
+ * run, the path to the file is (prefix+i+".properties").
+ * 
+ * There is strong coupling between this class and SocketServerTestCase. When
+ * a test case in  SocketServerTestCase tears down its envrionment, it will
+ * close its SocketAppender which will cause the SocketNode thread to die,
+ * allowing the next test case to start. See the for loop within the main method
+ * of this class.
  *
  * @author Ceki Gulcu */
 public class ShortSocketServer {
@@ -68,6 +75,7 @@ public class ShortSocketServer {
       SocketNode sn = new SocketNode(socket, LogManager.getLoggerRepository());
       Thread t = new Thread(sn);
       t.start();
+      // sn will die when an incoming connection is closed.
       t.join();
     }
   }
