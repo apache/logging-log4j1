@@ -16,6 +16,7 @@
 
 package org.apache.log4j.joran.action;
 
+import org.apache.joran.ErrorItem;
 import org.apache.joran.ExecutionContext;
 import org.apache.joran.action.Action;
 import org.apache.joran.helper.Option;
@@ -48,7 +49,7 @@ public class AppenderRefAction extends Action {
 
       logger.warn(errMsg);
       inError = true;
-      ec.addError(errMsg);
+      ec.addError(new ErrorItem(errMsg, ec.getLocator()));
 
       return;
     }
@@ -63,7 +64,7 @@ public class AppenderRefAction extends Action {
 
       logger.warn(errMsg);
       inError = true;
-      ec.addError(errMsg);
+      ec.addError(new ErrorItem(errMsg, ec.getLocator()));
 
       return;
     }
@@ -75,7 +76,7 @@ public class AppenderRefAction extends Action {
     if (appender == null) {
       logger.warn("Could not find an appender named [" + appenderName + "]");
       inError = true;
-      ec.addError("Could not find an appender named [" + appenderName + "]");
+      ec.addError(new ErrorItem("Could not find an appender named [" + appenderName + "]", ec.getLocator()));
 
       return;
     }

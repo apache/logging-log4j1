@@ -16,6 +16,7 @@
 
 package org.apache.log4j.joran.action;
 
+import org.apache.joran.ErrorItem;
 import org.apache.joran.ExecutionContext;
 import org.apache.joran.action.Action;
 import org.apache.joran.helper.Option;
@@ -50,7 +51,7 @@ public class ConversionRuleAction extends Action {
       inError = true;
       errorMsg = "No 'conversionWord' attribute in <conversionRule>";
       logger.warn(errorMsg);
-      ec.addError(errorMsg);
+      ec.addError(new ErrorItem(errorMsg, ec.getLocator()));
 
       return;
     }
@@ -59,7 +60,7 @@ public class ConversionRuleAction extends Action {
       inError = true;
       errorMsg = "No 'converterClass' attribute in <conversionRule>";
       logger.warn(errorMsg);
-      ec.addError(errorMsg);
+      ec.addError(new ErrorItem(errorMsg, ec.getLocator()));
 
       return;
     }
@@ -79,7 +80,7 @@ public class ConversionRuleAction extends Action {
       inError = true;
       errorMsg = "Could not add conversion rule to PatternLayout.";
       logger.error(errorMsg, oops);
-      ec.addError(errorMsg);
+      ec.addError(new ErrorItem(errorMsg, ec.getLocator()));
     }
   }
 

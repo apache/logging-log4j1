@@ -16,6 +16,7 @@
 
 package org.apache.log4j.joran.action;
 
+import org.apache.joran.ErrorItem;
 import org.apache.joran.ExecutionContext;
 import org.apache.joran.action.Action;
 
@@ -56,7 +57,7 @@ public class LayoutAction extends Action {
       inError = true;
       logger.error(
         "Could not create an Layout. Reported error follows.", oops);
-      ec.addError("Could not create layout of type " + className + "].");
+      ec.addError(new ErrorItem("Could not create layout of type " + className + "].", ec.getLocator()));
     }
   }
 
