@@ -33,9 +33,10 @@ import java.beans.PropertyChangeListener;
  */
 public interface Rule {
   /**
-   * Returns true if this implementation of the rule accepts the LoggingEvent, or false if not.
+   * Returns true if this implementation of the rule accepts the LoggingEvent, 
+   * or false if not.
    *
-   * What True/False means can be client-specific.
+   * <p>What True/False means can be client-specific.
    *
    * @param e LoggingEvent this instance will evaluate
    * @return true if this Rule instance accepts the event, otherwise false.
@@ -43,15 +44,16 @@ public interface Rule {
   public boolean evaluate(LoggingEvent e);
 
   /**
-   * Adds a PropertyChangeListener to this instance, which is notified when underlying Rule
-   * information has changed. (there are no specific property name events).
-   * @param l
+   * Adds a PropertyChangeListener to this instance, which is notified when 
+   * underlying Rule information has changed. 
+   * (there are no specific property name events).
+   * @param listener
    */
-  public void addPropertyChangeListener(PropertyChangeListener l);
+  public void addPropertyChangeListener(PropertyChangeListener listener);
 
   /**
    * Removes a known PropertyChangeListener from this Rule.
-   * @param l
+   * @param listener
    */
-  public void removePropertyChangeListener(PropertyChangeListener l);
+  public void removePropertyChangeListener(PropertyChangeListener listener);
 }

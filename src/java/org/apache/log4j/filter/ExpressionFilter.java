@@ -23,17 +23,18 @@ import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
- *A filter supporting complex expressions - supports both infix and postfix expressions 
- *(infix expressions must first be converted to postfix prior to processing).
+ *A filter supporting complex expressions - supports both infix and postfix 
+ * expressions (infix expressions must first be converted to postfix prior 
+ * to processing).
  *
- *See <code>org.apache.log4j.chainsaw.LoggingEventFieldResolver.java</code> 
- *for the correct names for logging event fields used when building expressions.
+ * <p>See <code>org.apache.log4j.chainsaw.LoggingEventFieldResolver.java</code> 
+ * for the correct names for logging event fields used when building expressions.
  *
- *See <org.apache.log4j.chainsaw.rule</code> package for a list of available rules which can
- *be applied using the expression syntax.
+ * <p>See <org.apache.log4j.chainsaw.rule</code> package for a list of available
+ * rules which can be applied using the expression syntax.
  *
- *See <code>org.apache.log4j.chainsaw.RuleFactory</code> for the symbols used to 
- *activate the corresponding rules.
+ * <p>See <code>org.apache.log4j.chainsaw.RuleFactory</code> for the symbols 
+ * used to activate the corresponding rules.
  *
  *NOTE:  Grouping using parentheses is supported - all tokens must be separated by spaces, and
  *operands which contain spaces are not yet supported.
