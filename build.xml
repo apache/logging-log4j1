@@ -444,7 +444,7 @@ later. For JDK 1.2, you can get the JNDI API from
 
     <!-- Need to fork to avoid problems -->
     <java classname="org.apache.log4j.chainsaw.LogUI" fork="yes"
-          classpath="${jar.dest}/${log4j.jar};${jar.dest}/${log4j-chainsaw.jar};${ant.home}/lib/crimson.jar;${regexp.oro.jar}">
+          classpath="${jar.dest}/${log4j.jar};${jar.dest}/${log4j-chainsaw.jar};${ant.home}/lib/crimson.jar;${regexp.oro.jar};${jms.jar}">
 	<sysproperty key="log4j.debug" value="${log4j.debug}"/> 
     </java>
   </target>

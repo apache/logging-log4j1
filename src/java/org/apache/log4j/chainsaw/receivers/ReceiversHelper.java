@@ -56,17 +56,20 @@ public class ReceiversHelper {
             String line;
 
             while ((line = stream.readLine()) != null) {
-
-                try {
-                    if (line.startsWith("#") || (line.length() == 0)) {
-                        continue;
-                    }
-                    Class receiverClass = Class.forName(line);
-                    receiverClassList.add(receiverClass);
-                    LogLog.debug("Located known Receiver class " + receiverClass.getName());
-                } catch (Exception e) {
-                    LogLog.error("Failed to locate Receiver class:" + line);
-                }
+            	
+            	try {
+            		if (line.startsWith("#") || (line.length() == 0)) {
+            			continue;
+            		}
+            		Class receiverClass = Class.forName(line);
+            		receiverClassList.add(receiverClass);
+            		LogLog.debug("Located known Receiver class " + receiverClass.getName());
+            	} catch (Exception e) {
+            		LogLog.error("Failed to locate Receiver class:" + line, e);
+            	}
+            	catch (NoClassDefFoundError e) {
+            		LogLog.error("Failed to locate Receiver class:" + line + ", looks like a dependent class is missing from the classpath", e);
+            	}
             }
         } catch (Exception e) {
             e.printStackTrace();
