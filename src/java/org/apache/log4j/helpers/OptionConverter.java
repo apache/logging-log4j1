@@ -17,6 +17,7 @@
 package org.apache.log4j.helpers;
 
 import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.spi.ComponentBase;
@@ -44,7 +45,7 @@ import java.util.Properties;
  * @author Anders Kristensen
  * @author Avy Sharell
 */
-public class OptionConverter extends ComponentBase {
+public class OptionConverter  {
   static String DELIM_START = "${";
   static char DELIM_STOP = '}';
   static int DELIM_START_LEN = 2;
@@ -54,9 +55,18 @@ public class OptionConverter extends ComponentBase {
   }
   
   public OptionConverter(LoggerRepository repository) {
-    this.repository = repository;
+    //this.repository = repository;
   }
   
+  // TODO: this method should be removed if OptionConverter becomes a static
+  static Logger getLogger() {
+    return LogManager.getLogger(OptionConverter.class);
+  }
+
+  // TODO: this method should be removed if OptionConverter becomes a static
+  public static void setLoggerRepository(LoggerRepository lr) {
+  }
+
   
   public static String[] concatanateArrays(String[] l, String[] r) {
     int len = l.length + r.length;
@@ -328,7 +338,7 @@ public class OptionConverter extends ComponentBase {
      @param superClass The class to which the new object should belong.
      @param defaultValue The object to return in case of non-fulfillment
    */
-  public Object instantiateByClassName(
+  public static Object instantiateByClassName(
     String className, Class superClass, Object defaultValue) {
     if (className != null) {
       try {

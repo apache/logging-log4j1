@@ -235,19 +235,5 @@ public class LogManager {
   public static void resetConfiguration() {
     repositorySelector.getLoggerRepository().resetConfiguration();
   }
-  
-  /**
-   * 
-   * Return a singleton {@link Scheduler} instance to be shared by multiple
-   * receivers and watchdogs. 
-   * 
-   * @since 1.3
-   */
-//  public static Scheduler getSchedulerInstance() {
-//    if(schedulerInstance == null) {
-//      schedulerInstance = new Scheduler();
-//      schedulerInstance.start();
-//    }
-//    return schedulerInstance;
-//  }
+
 }

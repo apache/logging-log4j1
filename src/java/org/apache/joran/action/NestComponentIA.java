@@ -42,7 +42,7 @@ public class NestComponentIA extends ImplicitAction {
   // elements which are handled by the same NestComponentIA instance.
   // We push a ActionData instance in the isApplicable method (if the
   // action is applicable) and pop it in the end() method.
-  // The XML well-formedness rule will guarantee that a push will eventually
+  // The XML well-formedness property will guarantee that a push will eventually
   // be followed by the corresponding pop.
   Stack actionDataStack = new Stack();
 

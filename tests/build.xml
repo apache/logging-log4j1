@@ -22,12 +22,16 @@
   
   <!-- The stem where most log4j source code is located. -->
   <property name="stem" value="org/apache/log4j"/>
+
+  <!-- Destination for compiled files -->
+  <property name="javac.dest" value="./classes"/>
+
   
   <path id="tests.classpath">
     <pathelement location="${project.source.home}"/>
     <pathelement location="${project.classes.home}"/>
     <pathelement location="${tests.source.home}"/>
-    <pathelement location="./classes"/>
+    <pathelement location="${javac.dest}"/>
     <pathelement location="./resources"/>
     <pathelement location="${jakarta-oro.jar}"/>
     <fileset dir="./lib/">
@@ -63,7 +67,7 @@
   </target>
   
   <target name="prepare">
-    <mkdir dir="./classes" />
+    <mkdir dir="${javac.dest}" />
     <mkdir dir="./output" />
     <delete file="classes/log4j.xml"/>
     <delete file="classes/log4j.properties"/>
@@ -124,7 +128,7 @@
     <!--  default value unless overriden in with.clover task -->
     <property name="haltonfailure" value="yes"/>
     <javac srcdir="${tests.source.home}"
-	   destdir="./classes" 
+	   destdir="${javac.dest}" 
            excludes="${stem}/chainsaw/receivers/*.java,
                      ${stem}/selector/PassByJNDI.java,
                      ${stem}/ugli/**.java,
@@ -140,12 +144,13 @@
   <!-- case output.                                                     -->
   <!-- ================================================================= -->
   <target name="clean">
-    <delete dir="./classes/" />
+    <delete dir="${javac.dest}/" />
     <delete dir="./output/" />
     <delete dir="./coverage/"/>
     <delete>
         <fileset dir="." includes="log4j.db*"/>
     </delete>
+    <delete dir="${javac.dest}/log4j.xml" />
   </target>
   
   <target name="cleanOutputDir">
