@@ -5,9 +5,6 @@
  * License version 1.1, a copy of which has been included with this
  * distribution in the LICENSE.txt file.  */
 
-import org.apache.log4j.*;
-import org.apache.log4j.spi.*;
-
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import junit.framework.Test;
