@@ -68,6 +68,9 @@ public abstract class PatternConverter {
   /**
      Derived pattern converters must override this method in order to
      convert conversion specifiers in the correct way.
+     
+     IMPORTANT: Note that an implementing class may always return the same
+     StringBuffer instance in order to avoid superflous object creation.
   */
   protected abstract StringBuffer convert(LoggingEvent event);
 
