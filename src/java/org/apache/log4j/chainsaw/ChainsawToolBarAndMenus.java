@@ -152,6 +152,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
   private final Action[] logPanelSpecificActions;
   private Map panelMenuMap = new HashMap();
   private Map panelEnabledMap = new HashMap();
+  private final JMenu activeTabMenu = new JMenu("Current tab");
 
   ChainsawToolBarAndMenus(final LogUI logui) {
     this.logui = logui;
@@ -407,8 +408,6 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
   }
 
   private void createMenuBar() {
-    JMenu activeTabMenu = new JMenu("Current tab");
-
     JMenuItem menuItemUseRightMouse =
       new JMenuItem(
         "Other options available via panel's right mouse button popup menu");
@@ -638,56 +637,6 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     return pauseAction;
   }
 
-//  private JComponent createResponsivenessSlider() {
-//    JPanel responsiveNessPanel = new JPanel();
-//    BoxLayout layout = new BoxLayout(responsiveNessPanel, BoxLayout.Y_AXIS);
-//
-//    responsiveNessPanel.setLayout(layout);
-//
-//    responsiveSlider.setAlignmentY(JComponent.CENTER_ALIGNMENT);
-//    responsiveSlider.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-//
-//    responsiveSlider.setMinorTickSpacing(250);
-//    responsiveSlider.setMajorTickSpacing(1000);
-//    responsiveSlider.setToolTipText(
-//      "Adjust to set the responsiveness of the app.  How often the view is updated.");
-//    responsiveSlider.setSnapToTicks(true);
-//    responsiveSlider.setPaintTicks(true);
-//
-//    responsiveSlider.setPaintLabels(true);
-//    responsiveSlider.setPaintTrack(true);
-//    responsiveSlider.setInverted(true);
-//    responsiveSlider.getModel().addChangeListener(
-//      new ChangeListener() {
-//        public void stateChanged(ChangeEvent e) {
-//          if (responsiveSlider.getValueIsAdjusting()) {
-//            /**
-//             * We'll wait until it stops.
-//             */
-//          } else {
-//            int value = responsiveSlider.getValue();
-//
-//            if (value == 0) {
-//              value = 100;
-//            }
-//
-//            System.out.println("Adjust responsiveness to " + value + "ms");
-//            logui.handler.setQueueInterval(value);
-//          }
-//        }
-//      });
-//
-//    JLabel l1 = new JLabel("Update frequently (100ms)");
-//    JLabel l2 = new JLabel("Update infrequently (5 seconds)");
-//    responsiveNessPanel.add(l1);
-//
-//    JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-//    panel.add(responsiveSlider);
-//    responsiveNessPanel.add(panel);
-//    responsiveNessPanel.add(l2);
-//
-//    return responsiveNessPanel;
-//  }
 
   private Action createShowPreferencesAction() {
     Action showPreferences =
@@ -974,9 +923,10 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
       activateLogPanelActions = false;
       logui.getStatusBar().clear();
       findTextField.setEnabled(false);
-
+       activeTabMenu.setEnabled(false);
       closeAction.setEnabled(true);
     } else {
+      activeTabMenu.setEnabled(true);
       fileMenu.getFileSaveAction().setEnabled(true);
       findTextField.setEnabled(true);
 
