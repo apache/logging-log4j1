@@ -198,19 +198,24 @@ public class LoggingEvent implements java.io.Serializable {
 
 
   /**
-      Retrung the the context corresponding to the <code>key</code>
+      Returns the the context corresponding to the <code>key</code>
       parameter. If there is a local MDC copy (probably from a remote
-      machine, the search try it first, if that fails then search this
-      thread's <code>MDC</code>.
-   */
+      machine, the we use it, if that fails then the current thread's
+      <code>MDC</code> is used. 
+      
+      <p>Note that <em>both</em> the local MDC copy and the current
+      thread's MDC are searched.
+
+  */
   public
   Object getMDC(String key) {
     Object r;
-
+    // Note the mdcCopy is used if it exists. Otherwise we use the MDC
+    // that is associated with the thread.
     if(mdcCopy != null) {
       r = mdcCopy.get(key);
       if(r != null) {
-	return r;
+        return r;
       }
     }
     return MDC.get(key);
@@ -223,7 +228,9 @@ public class LoggingEvent implements java.io.Serializable {
   void getMDCCopy() {
     if(mdcLookupRequired) {
       ndcLookupRequired = false;
-      mdcCopy = MDC.getContext();
+      // the clone call is required for asynchronous logging.
+      // See also bug #5932.
+      mdcCopy = (Hashtable) MDC.getContext().clone();
     }
   }
 
