@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE computation>
+
+<!-- This file is intended to be executed by Caculator2. 
+     It is not suited for Calculator1 due to nested computation 
+     elements.
+     -->
+
+<computation name="bart">
+
+  <!-- Let Joran learn the rules from this XML file instead of programatically -->
+  <new-rule pattern="*/computation/literal" actionClass="joran.calculator.LiteralAction"/>
+  <new-rule pattern="*/computation/add" actionClass="joran.calculator.AddAction"/>
+  <new-rule pattern="*/computation/multiply" actionClass="joran.calculator.MultiplyAction"/>
+  
+  <!-- Let the computation begin -->
+  <computation>
+    <literal value="7"/>
+    <literal value="3"/>
+    <add/>
+  </computation>   
+ 
+  <literal value="4"/>
+  <multiply/>
+</computation>

@@ -36,8 +36,8 @@ public class NewRuleAction extends Action {
 		// Let us forget about previous errors (in this object)
 		inError = false; 
     String errorMsg;
-    String pattern =  attributes.getValue(PATTERN_ATTRIBUTE);
-    String actionClass =  attributes.getValue(ACTION_CLASS_ATTRIBUTE);
+    String pattern =  attributes.getValue(Action.PATTERN_ATTRIBUTE);
+    String actionClass =  attributes.getValue(Action.ACTION_CLASS_ATTRIBUTE);
 
     if(Option.isEmpty(pattern)) {
        inError = true;
