@@ -463,7 +463,7 @@
                 ${stem}/jdbc/*.class,
                 ${stem}/varia/*.class,
                 ${stem}/nt/*.class,
-                ${stem}/rolling/*.class,
+                ${stem}/rolling/**/*.class,
                 ${stem}/xml/*.class,
                 ${stem}/jmx/*.class,
                 ${stem}/selector/*.class,
