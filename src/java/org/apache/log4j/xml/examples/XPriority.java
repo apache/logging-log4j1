@@ -29,11 +29,21 @@ public class XPriority extends Priority {
     super(level, strLevel, syslogEquiv);
   }
 
+  /**
+     Convert the string passed as argument to a priority. If the
+     conversion fails, then this method returns {@link #TRACE}. 
+  */
+  public
+  static
+  Priority toPriority(String sArg) {
+    return toPriority(sArg, XPriority.TRACE);
+  }
+
 
   public
   static
   Priority toPriority(String sArg, Priority defaultValue) {
-    
+
     if(sArg == null) {
       return defaultValue;
     }

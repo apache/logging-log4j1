@@ -45,19 +45,6 @@ public class DOMTest {
   static
   void init(String configFile) {
     DOMConfigurator.configure(configFile);
-    //try {
-      //DOMParser domParser = new DOMParser();
-      //domParser.setFeature("http://xml.org/sax/features/validation", true);
-      //domParser.setFeature("http://xml.org/sax/features/namespaces", true); 
-      //domParser.setErrorHandler(new ReportParserError());      
-      //domParser.parse(new InputSource(configFile));
-      //DOMConfigurator.configure(domParser.getDocument().getDocumentElement() );
-      //}
-    //catch(Exception e) {
-    //System.err.println("Could not initialize test program.");
-    //e.printStackTrace();
-    //System.exit(1);		
-    //}
   }
 
   static

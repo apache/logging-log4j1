@@ -479,8 +479,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
       } else {
 	cat.setPriority(null);
       }
-    }
-    else {
+    } else {
       String className = subst(element.getAttribute(CLASS_ATTR));      
       if(EMPTY_STR.equals(className)) {      
 	
