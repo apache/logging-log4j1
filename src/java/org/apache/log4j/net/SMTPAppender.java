@@ -21,9 +21,12 @@ import org.apache.log4j.Layout;
 import org.apache.log4j.Level;
 import org.apache.log4j.helpers.CyclicBuffer;
 import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.pattern.PatternConverter;
+import org.apache.log4j.pattern.PatternParser;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.TriggeringEventEvaluator;
 
+import java.io.StringWriter;
 import java.util.Date;
 import java.util.Properties;
 
@@ -55,15 +58,15 @@ import javax.mail.internet.MimeMultipart;
 public class SMTPAppender extends AppenderSkeleton {
   private String to;
   private String from;
-  private String subject;
+  private String subjectStr = "";
   private String smtpHost;
-    private String charset = "ISO-8859-1";
+  private String charset = "ISO-8859-1";
   private int bufferSize = 512;
   private boolean locationInfo = false;
   protected CyclicBuffer cb = new CyclicBuffer(bufferSize);
   protected MimeMessage msg;
   protected TriggeringEventEvaluator evaluator;
-  
+  private PatternConverter subjectConverterHead;
   
   /**
      The default constructor will instantiate the appender with a
@@ -103,12 +106,12 @@ public class SMTPAppender extends AppenderSkeleton {
       }
 
       msg.setRecipients(Message.RecipientType.TO, parseAddress(to));
-
-      if (subject != null) {
-        msg.setSubject(subject, charset);
-      }
     } catch (MessagingException e) {
       getLogger().error("Could not activate SMTPAppender options.", e);
+    }
+
+    if (subjectStr != null) {
+      subjectConverterHead = new PatternParser(subjectStr).parse();
     }
     
     if (this.evaluator == null) {
@@ -143,7 +146,7 @@ public class SMTPAppender extends AppenderSkeleton {
     cb.add(event);
 
     if (evaluator.isTriggeringEvent(event)) {
-      sendBuffer();
+      sendBuffer(event);
     }
   }
 
@@ -212,12 +215,15 @@ public class SMTPAppender extends AppenderSkeleton {
   /**
      Send the contents of the cyclic buffer as an e-mail message.
    */
-  protected void sendBuffer() {
+  protected void sendBuffer(LoggingEvent triggeringEvent) {
     // Note: this code already owns the monitor for this
     // appender. This frees us from needing to synchronize on 'cb'.
     try {
       MimeBodyPart part = new MimeBodyPart();
-
+      
+      String computedSubject = computeSubject(triggeringEvent);
+      msg.setSubject(computedSubject, charset);
+      
       StringBuffer sbuf = new StringBuffer();
       String t = layout.getHeader();
 
@@ -263,6 +269,20 @@ public class SMTPAppender extends AppenderSkeleton {
     }
   }
 
+  String computeSubject(LoggingEvent triggeringEvent) {
+    PatternConverter c = this.subjectConverterHead;
+    StringWriter sw = new StringWriter();
+    try {
+      while (c != null) {
+        c.format(sw, triggeringEvent);
+        c = c.next;
+      }
+    } catch(java.io.IOException ie) {
+      // this should not happen
+    }
+    return sw.toString();
+  }
+  
   /**
      Returns value of the <b>EvaluatorClass</b> option.
    */
@@ -281,7 +301,7 @@ public class SMTPAppender extends AppenderSkeleton {
      Returns value of the <b>Subject</b> option.
    */
   public String getSubject() {
-    return subject;
+    return subjectStr;
   }
 
   /**
@@ -293,11 +313,19 @@ public class SMTPAppender extends AppenderSkeleton {
   }
 
   /**
-     The <b>Subject</b> option takes a string value which should be a
-     the subject of the e-mail message.
+   * The <b>Subject</b> option takes a string value which will be the subject 
+   * of the e-mail message. This value can be string literal or a conversion 
+   * pattern in the same format as expected by 
+   * {@link org.apache.log4j.PatternLayout}.
+   * 
+   * <p>The conversion pattern is applied on the triggering event to dynamically
+   * compute the subject of the outging email message. For example, setting 
+   * the <b>Subject</b> option to "%properties{host} - %m"
+   * will set the subject of outgoing message to the "host" property of the 
+   * triggering event followed by the message of the triggering event.
    */
   public void setSubject(String subject) {
-    this.subject = subject;
+    this.subjectStr = subject;
   }
 
   /**
