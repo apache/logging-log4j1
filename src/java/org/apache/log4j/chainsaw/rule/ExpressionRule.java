@@ -51,7 +51,6 @@ package org.apache.log4j.chainsaw.rule;
 
 import org.apache.log4j.spi.LoggingEvent;
 
-import java.util.Enumeration;
 import java.util.Stack;
 import java.util.StringTokenizer;
 
@@ -108,19 +107,32 @@ public class ExpressionRule extends AbstractRule {
       RuleFactory factory = RuleFactory.getInstance();
 
       Stack stack = new Stack();
-      Enumeration tokenizer = new StringTokenizer(expression);
+      StringTokenizer tokenizer = new StringTokenizer(expression);
 
-      while (tokenizer.hasMoreElements()) {
+      while (tokenizer.hasMoreTokens()) {
         //examine each token
-        String nextToken = ((String) tokenizer.nextElement());
+        String token = tokenizer.nextToken();
+        if ((token.startsWith("'")) && (token.endsWith("'") && (token.length() > 2))) {
+            token = token.substring(1, token.length() - 1);
+        }
+
+        boolean inText = token.startsWith("'");
+        if (inText) {
+            token=token.substring(1);
+            while (inText && tokenizer.hasMoreTokens()) {
+              token = token + " " + tokenizer.nextToken();
+              inText = !(token.endsWith("'"));
+          }
+          token = token.substring(0, token.length() - 1);
+        }
 
         //if a symbol is found, pop 2 off the stack, evaluate and push the result 
-        if (factory.isRule(nextToken)) {
-          Rule r = (Rule) factory.getRule(nextToken, stack);
+        if (factory.isRule(token)) {
+          Rule r = (Rule) factory.getRule(token, stack);
           stack.push(r);
         } else {
           //variables or constants are pushed onto the stack
-          stack.push(nextToken);
+          stack.push(token);
         }
       }
 
