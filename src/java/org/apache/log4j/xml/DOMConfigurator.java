@@ -29,8 +29,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.FactoryConfigurationError;
 
-// Contributors:   Mark Womack <mwomack@bevocal.com> 
-
+// Contributors:   Mark Womack
+//                 Arun Katkere 
 
 /**
    Use this class to initialize the log4j environment using a DOM tree.
@@ -674,6 +674,14 @@ public class DOMConfigurator implements Configurator {
       LogLog.error("Could not parse input source ["+inputSource+"].", e);
     }
   }
+
+    /**
+       Configure by taking in an DOM element. 
+     */
+    public void doConfigure(Element element, LoggerRepository repository) {
+	this.repository = repository;
+	parse(element);
+    }
 
   
   /**

@@ -88,7 +88,7 @@ public class Level extends Priority {
 
     if(s.equals("ALL")) return Level.ALL; 
     if(s.equals("DEBUG")) return Level.DEBUG; 
-    if(s.equals("FINE")) return Level.FINE; 
+    //if(s.equals("FINE")) return Level.FINE; 
     if(s.equals("INFO"))  return Level.INFO;
     if(s.equals("WARN"))  return Level.WARN;  
     if(s.equals("ERROR")) return Level.ERROR;

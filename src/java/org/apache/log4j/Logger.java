@@ -68,14 +68,14 @@ public class Logger extends Category {
     Throwable)} form instead.
     
     @param message the message object to log. */
-  public
-  void fine(Object message) {
-    if(repository.isDisabled(Level.DEBUG_INT)) 
-      return;    
-    if(Level.DEBUG.isGreaterOrEqual(this.getChainedLevel())) {
-      forcedLog(FQCN, Level.DEBUG, message, null);
-    }
-  }
+  //public
+  //void fine(Object message) {
+  //  if(repository.isDisabled(Level.DEBUG_INT)) 
+  //	return;    
+  //  if(Level.DEBUG.isGreaterOrEqual(this.getChainedLevel())) {
+  //	forcedLog(FQCN, Level.DEBUG, message, null);
+  //  }
+  //}
   
 
   /**  
@@ -87,13 +87,13 @@ public class Logger extends Category {
    
    @param message the message object to log.
    @param t the exception to log, including its stack trace.  */  
-  public
-  void fine(Object message, Throwable t) {
-    if(repository.isDisabled(Level.DEBUG_INT)) 
-      return;
-    if(Level.DEBUG.isGreaterOrEqual(this.getChainedLevel()))
-      forcedLog(FQCN, Level.FINE, message, t);    
-  }
+  //public
+  //void fine(Object message, Throwable t) {
+  //  if(repository.isDisabled(Level.DEBUG_INT)) 
+  //	return;
+  //  if(Level.DEBUG.isGreaterOrEqual(this.getChainedLevel()))
+  //	forcedLog(FQCN, Level.FINE, message, t);    
+  //}
 
   /**
      Same as calling {@link LogManager#getLogger(String)}.
