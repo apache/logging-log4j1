@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import javax.swing.event.EventListenerList;
 
@@ -280,13 +279,6 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
 
             while (iter.hasNext()) {
               LoggingEvent e = (LoggingEvent) iter.next();
-              Vector properties = new Vector();
-              Iterator iterx = e.getPropertyKeySet().iterator();
-
-              while (iterx.hasNext()) {
-                String thisProp = iterx.next().toString();
-                properties.add(thisProp + " " + e.getProperty(thisProp));
-              }
 
               for (
                 Iterator itery = customExpressionRules.entrySet().iterator();
@@ -315,11 +307,15 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
             innerList.clear();
           }
 
-          try {
-            synchronized (this) {
-              wait(getQueueInterval());
-            }
-          } catch (InterruptedException ie) {
+          if (getQueueInterval() > 1000) {
+	          try {
+	            synchronized (this) {
+	              wait(getQueueInterval());
+	            }
+	          } catch (InterruptedException ie) {
+	          }
+          } else {
+          	Thread.yield();
           }
 
           if (size == 0) {
