@@ -14,13 +14,13 @@ import junit.framework.TestCase;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class PatternTestCase extends TestCase {
+public class PatternTest extends TestCase {
 
 	/**
 	 * Constructor for PatternTestCase.
 	 * @param name
 	 */
-	public PatternTestCase(String name) {
+	public PatternTest(String name) {
 		super(name);
 	}
 

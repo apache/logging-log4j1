@@ -6,11 +6,17 @@
  */
 package org.apache.joran;
 
+import java.util.HashMap;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.joran.action.ActionConst;
+import org.apache.joran.action.AppenderAction;
+import org.apache.joran.action.AppenderRefAction;
 import org.apache.joran.action.LevelAction;
 import org.apache.joran.action.LoggerAction;
+import org.apache.joran.action.ParamAction;
 import org.apache.joran.action.RootLoggerAction;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.LogManager;
@@ -26,15 +32,15 @@ import junit.framework.TestCase;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class JoranParserTestCase extends TestCase {
+public class JoranParserTest extends TestCase {
 
-   final static Logger logger = Logger.getLogger(JoranParserTestCase.class);  
+   final static Logger logger = Logger.getLogger(JoranParserTest.class);  
 	
 	/**
 	 * Constructor for JoranParserTestCase.
 	 * @param name
 	 */
-	public JoranParserTestCase(String name) {
+	public JoranParserTest(String name) {
 		super(name);
 	}
 
@@ -74,12 +80,44 @@ public class JoranParserTestCase extends TestCase {
 	   rs.addRule(new Pattern("log4j:configuration/logger"), new LoggerAction());
 		 rs.addRule(new Pattern("log4j:configuration/logger/level"), new LevelAction());
 		 rs.addRule(new Pattern("log4j:configuration/root"), new RootLoggerAction());
+		rs.addRule(new Pattern("log4j:configuration/root"), new RootLoggerAction());
 	   JoranParser jp = new JoranParser(rs);
 		 ExecutionContext ec = jp.getExecutionContext();
+	   HashMap omap = ec.getObjectMap();
+	   omap.put(ActionConst.APPENDER_BAG, new HashMap());
 		 ec.pushObject(LogManager.getLoggerRepository());
 	   jp.parse(doc);
   }
 
+	public void testLoop2() throws Exception {
+			logger.debug("Starting testLoop");
+
+		 DocumentBuilderFactory dbf = null;
+
+		 dbf = DocumentBuilderFactory.newInstance();
+
+		 DocumentBuilder docBuilder = dbf.newDocumentBuilder();
+	   
+		 //inputSource.setSystemId("dummy://log4j.dtd");
+
+			 Document doc = docBuilder.parse("file:input/joran/parser2.xml");
+			 RuleStore rs = new SimpleRuleStore();
+			 logger.debug("pattern: "+new Pattern("log4j:configuration/logger"));
+			 rs.addRule(new Pattern("log4j:configuration/logger"), new LoggerAction());
+			 rs.addRule(new Pattern("log4j:configuration/logger/level"), new LevelAction());
+			 rs.addRule(new Pattern("log4j:configuration/root"), new RootLoggerAction());
+			 rs.addRule(new Pattern("log4j:configuration/root"), new RootLoggerAction());
+		   rs.addRule(new Pattern("log4j:configuration/logger/appender-ref"), new AppenderRefAction());
+		   rs.addRule(new Pattern("log4j:configuration/root/appender-ref"), new AppenderRefAction());
+		   rs.addRule(new Pattern("log4j:configuration/appender"), new AppenderAction());
+	     rs.addRule(new Pattern("*/param"), new ParamAction());
+			 JoranParser jp = new JoranParser(rs);
+			 ExecutionContext ec = jp.getExecutionContext();
+			 HashMap omap = ec.getObjectMap();
+			 omap.put(ActionConst.APPENDER_BAG, new HashMap());
+			 ec.pushObject(LogManager.getLoggerRepository());
+			 jp.parse(doc);
+		}
 
 
 }
