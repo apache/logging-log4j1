@@ -2,11 +2,13 @@
 PKG_DIR :=org/apache/log4j/net
 DEPTH   :=../../../..
 JSOURCES:=SyslogAppender.java\
+	JMSAppender.java\
 	SocketServer.java\
 	SocketAppender.java\
 	SMTPAppender.java\
 	SocketNode.java\
 	SyslogTracerPrintWriter.java\
+
 
 SUBDIRS :=test
 
