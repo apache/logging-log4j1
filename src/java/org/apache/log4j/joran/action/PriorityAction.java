@@ -3,7 +3,6 @@ package org.apache.log4j.joran.action;
 
 
 import org.apache.joran.ExecutionContext;
-import org.apache.log4j.helpers.LogLog;
 import org.xml.sax.Attributes;
 
 /**
@@ -14,7 +13,7 @@ import org.xml.sax.Attributes;
  */
 public class PriorityAction extends LevelAction {
    public void begin(ExecutionContext ec, String name, Attributes attributes) {
-     LogLog.warn("Priority element has been deprecated, please use <level> instead.");
+     getLogger().warn("Priority element has been deprecated, please use <level> instead.");
      super.begin(ec, name, attributes);
   }
 }

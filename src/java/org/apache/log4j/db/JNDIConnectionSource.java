@@ -26,8 +26,6 @@ import javax.naming.NamingException;
 // import javax.rmi.PortableRemoteObject;
 import javax.sql.DataSource;
 
-import org.apache.log4j.helpers.LogLog;
-
 
 /**
  *  The <id>JNDIConnectionSource</id> is an implementation of
@@ -102,7 +100,7 @@ public class JNDIConnectionSource
         errorHandler.error(ne.getMessage(), ne, 0);
       }
 
-      LogLog.error("Error while getting data source", ne);
+      getLogger().error("Error while getting data source", ne);
       throw new SQLException("NamingException while looking up DataSource: " + ne.getMessage());
     } catch (final ClassCastException cce) {
       if (errorHandler != null) {

@@ -21,7 +21,6 @@ import org.apache.joran.action.Action;
 import org.apache.joran.helper.Option;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.ErrorItem;
 
@@ -70,9 +69,9 @@ abstract public class PropertyAction extends Action {
         setProperties(ec, props);
       } catch (IOException e) {
         String errMsg = "Could not read properties file [" + fileName + "].";
-        LogLog.error(errMsg, e);
+        getLogger().error(errMsg, e);
         ec.addError(new ErrorItem(INVALID_ATTRIBUTES, e));
-        LogLog.error("Ignoring configuration file [" + fileName + "].");
+        getLogger().error("Ignoring configuration file [" + fileName + "].");
     
       }
     } else if (
@@ -83,7 +82,7 @@ abstract public class PropertyAction extends Action {
       value = value.trim();
       setProperty(ec, name, value);
     } else {
-      LogLog.error(INVALID_ATTRIBUTES);
+      getLogger().error(INVALID_ATTRIBUTES);
       ec.addError(new ErrorItem(INVALID_ATTRIBUTES));
     }
   }

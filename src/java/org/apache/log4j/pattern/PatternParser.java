@@ -17,7 +17,6 @@
 package org.apache.log4j.pattern;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
 
 import java.util.HashMap;
@@ -50,7 +49,7 @@ public class PatternParser {
   private static final int MAX_STATE = 5;
 
   static HashMap globalRulesRegistry;
- 
+
   static {
     // We set the global rules in the static initializer of PatternParser class
     globalRulesRegistry = new HashMap(17);
@@ -119,7 +118,7 @@ public class PatternParser {
    */
   HashMap converterRegistry;
 
-  static Logger logger  = Logger.getLogger("LOG4J."+PatternParser.class.getName());
+  private Logger logger  = Logger.getLogger(PatternParser.class);
   
   public PatternParser(String pattern) {
     this.pattern = pattern;
@@ -282,7 +281,7 @@ public class PatternParser {
           formattingInfo.max = c - '0';
           state = MAX_STATE;
         } else {
-          LogLog.error(
+          logger.error(
             "Error occured in position " + i
             + ".\n Was expecting digit, instead got char \"" + c + "\".");
           state = LITERAL_STATE;
@@ -364,7 +363,7 @@ public class PatternParser {
       pc.setOption(option);
       currentLiteral.setLength(0);
     } else {
-      LogLog.error(
+      logger.error(
           "Unexpected char [" + c + "] at position " + i
           + " in conversion patterrn.");
         pc = new LiteralPatternConverter(currentLiteral.toString());

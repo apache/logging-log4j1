@@ -116,7 +116,7 @@ class DBReceiverJob implements Job {
         }
 
         long id = rs.getLong(13);
-        LogLog.info("Received event with id=" + id);
+        //LogLog.info("Received event with id=" + id);
         lastId = id;
 
         // Scott asked for this info to be

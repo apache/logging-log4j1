@@ -22,7 +22,6 @@ import org.apache.joran.helper.Option;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.Logger;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.AppenderAttachable;
 import org.apache.log4j.spi.ErrorItem;
 
@@ -50,7 +49,7 @@ public class AppenderRefAction extends Action {
         "Could not find an AppenderAttachable at the top of execution stack. Near <"
         + tagName + "> line " + getLineNumber(ec);
 
-      LogLog.warn(errMsg);
+      getLogger().warn(errMsg);
       inError = true;
       ec.addError(new ErrorItem(errMsg));
 
@@ -65,7 +64,7 @@ public class AppenderRefAction extends Action {
       // print a meaningful error message and return
       String errMsg = "Missing appender ref attribute in <appender-ref> tag.";
 
-      LogLog.warn(errMsg);
+      getLogger().warn(errMsg);
       inError = true;
       ec.addError(new ErrorItem(errMsg));
 
@@ -77,7 +76,7 @@ public class AppenderRefAction extends Action {
     Appender appender = (Appender) appenderBag.get(appenderName);
 
     if (appender == null) {
-      LogLog.warn("Could not find an appender named [" + appenderName + "]");
+      getLogger().warn("Could not find an appender named [" + appenderName + "]");
       inError = true;
       ec.addError(new ErrorItem("Could not find an appender named [" + appenderName + "]"));
 
@@ -85,13 +84,12 @@ public class AppenderRefAction extends Action {
     }
 
     if (appenderAttachable instanceof Logger) {
-      LogLog.debug(
-        "Attaching appender named [" + appenderName + "] to logger named ["
-        + ((Logger) appenderAttachable).getName() + "].");
+      getLogger().debug(
+        "Attaching appender named [{}] to logger named [{}].", appenderName, (
+            (Logger) appenderAttachable).getName());
     } else {
-      LogLog.debug(
-        "Attaching appender named [" + appenderName + "] to "
-        + appenderAttachable);
+      getLogger().debug(
+        "Attaching appender named [{}] to {}.", appenderName, appenderAttachable);
     }
 
     appenderAttachable.addAppender(appender);
