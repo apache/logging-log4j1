@@ -7,7 +7,7 @@
 package org.apache.log4j.chainsaw;
 
 import java.util.StringTokenizer;
-import org.apache.log4j.Priority;
+import org.apache.log4j.Level;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -41,7 +41,7 @@ class XMLFileHandler
     /** the time of the event **/
     private long mTimeStamp;
     /** the priority (level) of the event **/
-    private Priority mPriority;
+    private Level mLevel;
     /** the category of the event **/
     private String mCategoryName;
     /** the NDC for the event **/
@@ -115,7 +115,7 @@ class XMLFileHandler
             mThreadName = aAtts.getValue("thread");
             mTimeStamp = Long.parseLong(aAtts.getValue("timestamp"));
             mCategoryName = aAtts.getValue("logger");
-            mPriority = Priority.toPriority(aAtts.getValue("level"));
+            mLevel = Level.toLevel(aAtts.getValue("level"));
         } else if (TAG_LOCATION_INFO.equals(aQName)) {
             mLocationDetails = aAtts.getValue("class") + "."
                 + aAtts.getValue("method")
@@ -136,7 +136,7 @@ class XMLFileHandler
     /** Add an event to the model **/
     private void addEvent() {
         mModel.addEvent(new EventDetails(mTimeStamp,
-                                         mPriority,
+                                         mLevel,
                                          mCategoryName,
                                          mNDC,
                                          mThreadName,
@@ -149,7 +149,7 @@ class XMLFileHandler
     /** Reset the data for an event **/
     private void resetData() {
         mTimeStamp = 0;
-        mPriority = null;
+        mLevel = null;
         mCategoryName = null;
         mNDC = null;
         mThreadName = null;

@@ -69,9 +69,9 @@ public class Finalize {
 
   static
   void foo(Category cat) {
-    Enumeration enum = cat.getAllAppenders();
-    while(enum != null && enum.hasMoreElements()) {
-      ((org.apache.log4j.Appender) enum.nextElement()).close();
+    Enumeration enumaration = cat.getAllAppenders();
+    while(enumaration != null && enumaration.hasMoreElements()) {
+      ((org.apache.log4j.Appender) enumaration.nextElement()).close();
     }
   }
 

@@ -22,6 +22,9 @@
   <!-- The base directory relative to which most targets are built -->
   <property name="base" value="."/>
 
+
+  <property name="deprecation" value="on"/>
+
   <!-- The directory where source files are stored. -->
   <property name="java.source.dir" value="src/java/"/>
 

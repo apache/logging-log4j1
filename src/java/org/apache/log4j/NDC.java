@@ -240,13 +240,13 @@ public class NDC {
 
       int misses = 0;
       v = new Vector(); 
-      Enumeration enum = ht.keys();
+      Enumeration enumeration = ht.keys();
       // We give up after 4 straigt missses. That is 4 consecutive
       // inspected threads in 'ht' that turn out to be alive.
       // The higher the proportion on dead threads in ht, the higher the
       // chances of removal.
-      while(enum.hasMoreElements() && (misses <= 4)) {
-	Thread t = (Thread) enum.nextElement();
+      while(enumeration.hasMoreElements() && (misses <= 4)) {
+	Thread t = (Thread) enumeration.nextElement();
 	if(t.isAlive()) {
 	  misses++;
 	} else {

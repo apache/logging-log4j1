@@ -69,7 +69,7 @@ public class PropertyPrinter implements PropertyGetter.PropertyCallback {
   void print(PrintWriter out) {
     printOptions(out, Category.getRoot());
     
-    Enumeration cats = Category.getCurrentCategories();
+    Enumeration cats = LogManager.getCurrentLoggers();
     while (cats.hasMoreElements()) {
       printOptions(out, (Category) cats.nextElement());
     }
