@@ -20,7 +20,8 @@ import java.util.ArrayList;
 
 
 public class Pattern {
-  //String patternStr;
+  
+  // contains String instances
   ArrayList components;
 
   public Pattern() {
@@ -30,7 +31,7 @@ public class Pattern {
   /**
    * Build a pattern from a string.
    * 
-   * Note that "/x" is equivalent to "x" and to "x/"
+   * Note that "/x" is considered equivalent to "x" and to "x/"
    * 
    */
   public Pattern(String p) {
