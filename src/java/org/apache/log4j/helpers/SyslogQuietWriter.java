@@ -6,14 +6,14 @@
  * the LICENSE.APL file.
  */
 
-package org.log4j.helpers;
+package org.apache.log4j.helpers;
 
 
 
 import java.io.Writer;
 import java.io.FilterWriter;
 import java.io.IOException;
-import org.log4j.spi.ErrorHandler;
+import org.apache.log4j.spi.ErrorHandler;
 
 /**
    SyslogQuietWriter extends QuietWriter by prepending the syslog

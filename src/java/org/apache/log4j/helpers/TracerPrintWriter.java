@@ -7,7 +7,7 @@
 
 // Contributors: Nocolai <XNH@crisplant.com>
 
-package org.log4j.helpers;
+package org.apache.log4j.helpers;
 
 import java.io.PrintWriter;
 
@@ -37,7 +37,7 @@ public class TracerPrintWriter extends PrintWriter {
   public
   void println(Object o) {
     this.qWriter.write(o.toString());
-    this.qWriter.write(org.log4j.Layout.LINE_SEP);
+    this.qWriter.write(org.apache.log4j.Layout.LINE_SEP);
   }
 
   // JDK 1.1.x apprenly uses this form of println while in
@@ -50,7 +50,7 @@ public class TracerPrintWriter extends PrintWriter {
   public
   void println(String s) {
     this.qWriter.write(s);
-    this.qWriter.write(org.log4j.Layout.LINE_SEP);
+    this.qWriter.write(org.apache.log4j.Layout.LINE_SEP);
   }
 }
 

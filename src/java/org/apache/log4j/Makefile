@@ -1,6 +1,6 @@
 
-PKG_DIR :=org/log4j
-DEPTH   :=../..
+PKG_DIR :=org/apache/log4j
+DEPTH   :=../../..
 JSOURCES:=HTMLLayout.java\
 	RollingFileAppender.java\
 	PropertyConfigurator.java\

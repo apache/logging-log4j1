@@ -23,12 +23,12 @@
 */
 
 
-package org.log4j.spi;
+package org.apache.log4j.spi;
 
 import java.io.StringWriter;
 import java.io.PrintWriter;
-import org.log4j.helpers.LogLog;
-import org.log4j.Layout;;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.Layout;;
 /**
    The internal representation of caller location information.
      
@@ -89,10 +89,10 @@ public class LocationInfo implements java.io.Serializable {
        <pre>
         java.lang.Throwable
         ...
-          at org.log4j.PatternLayout.format(PatternLayout.java:413)
-          at org.log4j.FileAppender.doAppend(FileAppender.java:183)
-        at org.log4j.Category.callAppenders(Category.java:131)
-        at org.log4j.Category.log(Category.java:512)
+          at org.apache.log4j.PatternLayout.format(PatternLayout.java:413)
+          at org.apache.log4j.FileAppender.doAppend(FileAppender.java:183)
+        at org.apache.log4j.Category.callAppenders(Category.java:131)
+        at org.apache.log4j.Category.log(Category.java:512)
         at callers.fully.qualified.className.methodName(FileName.java:74)
 	...
        </pre>
@@ -116,7 +116,7 @@ public class LocationInfo implements java.io.Serializable {
       int ibegin, iend;
 
       // Given the current structure of the package, the line
-      // containing "org.log4j.Category." should be printed just
+      // containing "org.apache.log4j.Category." should be printed just
       // before the caller.
 
       // This method of searching may not be fastest but it's safer

@@ -1,11 +1,11 @@
 //  Copyright (c) 2000 Ceki Gulcu.  All Rights Reserved.
 //  See the LICENCE file for the terms of distribution.
 
-package org.log4j.varia;
+package org.apache.log4j.varia;
 
-import org.log4j.spi.Filter;
-import org.log4j.spi.LoggingEvent;
-import org.log4j.helpers.OptionConverter;
+import org.apache.log4j.spi.Filter;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.helpers.OptionConverter;
 
 /**
    This is a very simple filter based on string matching.

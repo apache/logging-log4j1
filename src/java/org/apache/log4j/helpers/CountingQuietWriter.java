@@ -6,7 +6,7 @@
  * the LICENSE.APL file.
  */
 
-package org.log4j.helpers;
+package org.apache.log4j.helpers;
 
 import java.io.File;
 import java.io.Writer;
@@ -14,8 +14,8 @@ import java.io.FileWriter;
 import java.io.FilterWriter;
 import java.io.IOException;
 
-import org.log4j.spi.ErrorHandler;
-import org.log4j.spi.ErrorCode;
+import org.apache.log4j.spi.ErrorHandler;
+import org.apache.log4j.spi.ErrorCode;
 
 /**
    Counts the number of bytes written.

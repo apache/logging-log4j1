@@ -1,0 +1,96 @@
+
+# Constants
+NOPWriter=NOPWriter
+LCF=logging.lcf
+TEMP=temp
+OUTPUT=current.reg
+ROOT_PREFIX="log4j.rootCategory"
+CAT_PREFIX="log4j.category"
+
+DEF_DEBUG=-Dlog4j.configDebug
+
+SHALLOW_CAT="$CAT_PREFIX.org.apache.log4j.test.Shallow"
+LOG_CAT="$CAT_PREFIX.org.apache.log4j.Log"
+SIMPLE="org.apache.log4j.SimpleLayout"
+TTCC="org.apache.log4j.TTCCLayout"
+
+# +=============================================+
+# Strip the filename, retain the directory only.|
+# +=============================================+
+function getShellScriptDirectory {
+  local dir
+  
+  dir=${0%/*}
+
+  if [ "$dir" = "." ]
+  then
+    dir=$(pwd)
+  elif [ "${dir#/}" = "$dir" ]  # dir does not start with a /
+  then
+    dir=$(pwd)/$dir
+  fi
+ echo $dir
+}
+# +=============================================
+# Compensate for ZRL idiosyncrasy
+# +=============================================
+function setPERL {
+  if [ -z "$PERL" ]
+  then
+   PERL=perl
+  fi
+}
+# =============================================
+# Echo to $LCF
+# =============================================
+function lecho {
+ # The quotes ensure that spaces in arguments are preserved.
+ echo "$*" >> $LCF
+}
+# +============================================
+# Print a message and exit.
+# +============================================
+function die {
+  echo $1
+  exit 1
+}
+function makeRollingConfigFile {
+  fileName=$1
+  rootPriority=$2
+  maxFileSize=$3;  
+  maxBackupIndex=$4;
+
+  PRE="log4j.appender.roll"
+  echo "$PRE=org.apache.log4j.RollingFileAppender" > $LCF
+  echo "$PRE.File=$fileName" >> $LCF
+  echo "$PRE.MaxFileSize=$maxFileSize" >> $LCF
+  echo "$PRE.MaxBackupIndex=$maxBackupIndex" >> $LCF  
+   
+  echo "$ROOT_PREFIX=$rootPriority, roll" >> $LCF
+
+}
+# ==============================================
+# Delete the file if exists
+# ==============================================
+function deleteFile {
+  if [ -e $1 ]; then
+    echo "Deleting file [$1]."
+    rm $1
+  fi
+}
+# ==============================================
+function runRollingFiles() {
+ confFile=$1
+
+ java -Dlog4j.configDebug=x org.apache.log4j.test.RollingFiles $confFile
+}
+# ----------------------------------------------------------------------
+function check() {
+  if ! cmp -s $1 $2
+  then
+    echo "The output of current code DIFFERS from witness."
+    exit 1;
+  fi
+}
+# ----------------------------------------------------------------------
+

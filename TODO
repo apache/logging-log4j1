@@ -2,8 +2,6 @@ TODO
 
 - Integrate tons of GUI code.
 
-- E-mail alerts.
-
 - JMSAppender.
 
 - JDBCAppender.
@@ -26,6 +24,7 @@ ONGOING TASKS
 	
 DONE
 
+- SMTPAppender.
 - Automatic configuration file reloading.
 - AsyncAppender.
 - Written a short user manual.

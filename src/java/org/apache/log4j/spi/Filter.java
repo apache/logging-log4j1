@@ -22,15 +22,15 @@
   SOFTWARE.
 */
 
-package org.log4j.spi;
+package org.apache.log4j.spi;
 
-import org.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
    Users should extend this class to implement customized logging
-   event filtering. Note that {@link org.log4j.Category} and {@link
-   org.log4j.AppenderSkeleton}, the parent class of all standard
+   event filtering. Note that {@link org.apache.log4j.Category} and {@link
+   org.apache.log4j.AppenderSkeleton}, the parent class of all standard
    appenders, have built-in filtering rules. It is suggested that you
    first use and understand the built-in rules before rushing to write
    your own custom filters.
@@ -60,8 +60,8 @@ import org.log4j.spi.LoggingEvent;
    Linux ipchains. 
 
    <p>Note that filtering is only supported by the {@link
-   org.log4j.xml.DOMConfigurator DOMConfigurator}. The {@link
-   org.log4j.PropertyConfigurator PropertyConfigurator} does not
+   org.apache.log4j.xml.DOMConfigurator DOMConfigurator}. The {@link
+   org.apache.log4j.PropertyConfigurator PropertyConfigurator} does not
    support filters.
 
    @author Ceki G&uuml;lc&uuml;

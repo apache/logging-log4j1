@@ -10,7 +10,7 @@ function testFinalize {
  conf=$1
 
 
- java -Dlog4j.configDebug org.log4j.test.Finalize $conf
+ java -Dlog4j.configDebug org.apache.log4j.test.Finalize $conf
 }
 # ======================================================
 
@@ -23,11 +23,11 @@ TEST=1
 if [ $TEST -ge $start ]; then
   D_FLAG=$DEF_DEBUG
   echo "log4j.rootCategory=DEBUG, A1" > $LCF
-  lecho "log4j.appender.A1=org.log4j.FileAppender"
+  lecho "log4j.appender.A1=org.apache.log4j.FileAppender"
   lecho "log4j.appender.A1.File=$TEMP"
   lecho "log4j.appender.A1.Append=false"
   lecho "log4j.appender.A1.layout.ConversionPattern=%m\n"
-  lecho "log4j.appender.A1.layout=org.log4j.PatternLayout" 
+  lecho "log4j.appender.A1.layout=org.apache.log4j.PatternLayout" 
   testFinalize $LCF 
 fi
 
@@ -35,7 +35,7 @@ TEST=2
 if [ $TEST -ge $start ]; then
   D_FLAG=$DEF_DEBUG
   echo "log4j.rootCategory=DEBUG, A1" > $LCF
-  lecho "log4j.appender.A1=org.log4j.net.SocketAppender"
+  lecho "log4j.appender.A1=org.apache.log4j.net.SocketAppender"
   lecho "log4j.appender.A1.RemoteHost=$REMOTE_HOST"
   lecho "log4j.appender.A1.Port=12345"
   lecho "log4j.appender.A1.ReconnectionDelay=2000"    

@@ -1,7 +1,7 @@
 
-package org.log4j.xml.test;
+package org.apache.log4j.xml.test;
 
-import org.log4j.Priority;
+import org.apache.log4j.Priority;
 
 
 /**

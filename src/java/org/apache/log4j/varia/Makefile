@@ -1,6 +1,6 @@
 
-PKG_DIR :=org/log4j/varia
-DEPTH   :=../../..
+PKG_DIR :=org.apache.log4j/varia
+DEPTH   :=../../../..
 JSOURCES:=ExternallyRolledFileAppender.java\
 	  ResilientFileAppender.java\
 	  Roller.java\

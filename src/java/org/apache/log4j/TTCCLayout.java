@@ -7,17 +7,17 @@
 
 // Contributors: "Christopher Williams" <Christopher_Williams@mail.northgrum.com>
 
-package org.log4j;
+package org.apache.log4j;
 
-import org.log4j.Priority;
-import org.log4j.helpers.OptionConverter;
-import org.log4j.helpers.LogLog;
-import org.log4j.helpers.DateLayout;
-import org.log4j.helpers.RelativeTimeDateFormat;
-import org.log4j.helpers.AbsoluteTimeDateFormat;
-import org.log4j.helpers.DateTimeDateFormat;
-import org.log4j.helpers.ISO8601DateFormat;
-import org.log4j.spi.LoggingEvent;
+import org.apache.log4j.Priority;
+import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.helpers.DateLayout;
+import org.apache.log4j.helpers.RelativeTimeDateFormat;
+import org.apache.log4j.helpers.AbsoluteTimeDateFormat;
+import org.apache.log4j.helpers.DateTimeDateFormat;
+import org.apache.log4j.helpers.ISO8601DateFormat;
+import org.apache.log4j.spi.LoggingEvent;
 
 /**
  TTCC layout format consists of time, thread, category and nested
@@ -30,19 +30,19 @@ import org.log4j.spi.LoggingEvent;
  <p>Here is an example TTCCLayout output with the {@link RelativeTimeDateFormat}.
 
  <pre>
-176 [main] INFO  org.log4j.examples.Sort - Populating an array of 2 elements in reverse order.
-225 [main] INFO  org.log4j.examples.SortAlgo - Entered the sort method.
-262 [main] DEBUG org.log4j.examples.SortAlgo.OUTER i=1 - Outer loop.
-276 [main] DEBUG org.log4j.examples.SortAlgo.SWAP i=1 j=0 - Swapping intArray[0] = 1 and intArray[1] = 0
-290 [main] DEBUG org.log4j.examples.SortAlgo.OUTER i=0 - Outer loop.
-304 [main] INFO  org.log4j.examples.SortAlgo.DUMP - Dump of interger array:
-317 [main] INFO  org.log4j.examples.SortAlgo.DUMP - Element [0] = 0
-331 [main] INFO  org.log4j.examples.SortAlgo.DUMP - Element [1] = 1
-343 [main] INFO  org.log4j.examples.Sort - The next log statement should be an error message.
-346 [main] ERROR org.log4j.examples.SortAlgo.DUMP - Tried to dump an uninitialized array.
-        at org.log4j.examples.SortAlgo.dump(SortAlgo.java:58)
-        at org.log4j.examples.Sort.main(Sort.java:64)
-467 [main] INFO  org.log4j.examples.Sort - Exiting main method.
+176 [main] INFO  org.apache.log4j.examples.Sort - Populating an array of 2 elements in reverse order.
+225 [main] INFO  org.apache.log4j.examples.SortAlgo - Entered the sort method.
+262 [main] DEBUG org.apache.log4j.examples.SortAlgo.OUTER i=1 - Outer loop.
+276 [main] DEBUG org.apache.log4j.examples.SortAlgo.SWAP i=1 j=0 - Swapping intArray[0] = 1 and intArray[1] = 0
+290 [main] DEBUG org.apache.log4j.examples.SortAlgo.OUTER i=0 - Outer loop.
+304 [main] INFO  org.apache.log4j.examples.SortAlgo.DUMP - Dump of interger array:
+317 [main] INFO  org.apache.log4j.examples.SortAlgo.DUMP - Element [0] = 0
+331 [main] INFO  org.apache.log4j.examples.SortAlgo.DUMP - Element [1] = 1
+343 [main] INFO  org.apache.log4j.examples.Sort - The next log statement should be an error message.
+346 [main] ERROR org.apache.log4j.examples.SortAlgo.DUMP - Tried to dump an uninitialized array.
+        at org.apache.log4j.examples.SortAlgo.dump(SortAlgo.java:58)
+        at org.apache.log4j.examples.Sort.main(Sort.java:64)
+467 [main] INFO  org.apache.log4j.examples.Sort - Exiting main method.
 </pre>
 
   <p>The first field is the number of milliseconds elapsed since the

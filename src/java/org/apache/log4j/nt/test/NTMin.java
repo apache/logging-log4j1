@@ -5,16 +5,16 @@
  * License version 1.1, a copy of which has been included with this
  * distribution in the LICENSE.APL file.  */
 
-package org.log4j.nt.test;
+package org.apache.log4j.nt.test;
 
 
-import org.log4j.Category;
-import org.log4j.Layout;
-import org.log4j.BasicConfigurator;
-import org.log4j.Appender;
-import org.log4j.nt.NTEventLogAppender;
-import org.log4j.Priority;
-import org.log4j.NDC;
+import org.apache.log4j.Category;
+import org.apache.log4j.Layout;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Appender;
+import org.apache.log4j.nt.NTEventLogAppender;
+import org.apache.log4j.Priority;
+import org.apache.log4j.NDC;
 import java.io.IOException;
 
 

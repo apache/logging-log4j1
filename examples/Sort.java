@@ -1,13 +1,13 @@
 
-package org.log4j.examples;
+package org.apache.log4j.examples;
 
-import org.log4j.PropertyConfigurator;
-import org.log4j.Category;
-import org.log4j.Priority;  
+import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.Category;
+import org.apache.log4j.Priority;  
 
 /**
    Example code for log4j to viewed in conjunction with the {@link
-   org.log4j.examples.SortAlgo SortAlgo} class.
+   org.apache.log4j.examples.SortAlgo SortAlgo} class.
    
    <p>This program expects a configuration file name as its first
    argument, and the size of the array to sort as the second and last
@@ -23,7 +23,7 @@ import org.log4j.Priority;
    <a href="doc-files/sort3.lcf">sort3.lcf</a> are supplied with the package.
    
    <p>If you are interested in logging performance, then have look at
-   the {@link org.log4j.performance.Logging} class.
+   the {@link org.apache.log4j.performance.Logging} class.
 
    @author Ceki G&uuml;lc&uuml;
 */
@@ -70,7 +70,7 @@ public class Sort {
   static
   void usage(String errMsg) {
     System.err.println(errMsg);
-    System.err.println("\nUsage: java org.log4j.examples.Sort " +
+    System.err.println("\nUsage: java org.apache.log4j.examples.Sort " +
 		       "configFile ARRAY_SIZE\n"+
       "where  configFile is a configuration file\n"+
       "      ARRAY_SIZE is a positive integer.\n");

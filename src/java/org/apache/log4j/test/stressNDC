@@ -3,4 +3,4 @@ then
   PERL=perl
 fi
 
-java org.log4j.test.StressNDC $1 | $PERL StressNDC.pl
+java org.apache.log4j.test.StressNDC $1 | $PERL StressNDC.pl

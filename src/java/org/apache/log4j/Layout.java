@@ -5,10 +5,10 @@
  * License version 1.1, a copy of which has been included with this
  * distribution in the LICENSE.APL file.  */
 
-package org.log4j;
+package org.apache.log4j;
 
-import org.log4j.spi.OptionHandler;
-import org.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.OptionHandler;
+import org.apache.log4j.spi.LoggingEvent;
 
 /**
    Extend this abstract class to create your own log layout format.
@@ -67,7 +67,7 @@ public abstract class Layout implements OptionHandler {
 
      <p>The {@link SimpleLayout}, {@link TTCCLayout}, {@link
      PatternLayout} all return <code>true</code>. The {@link
-     org.log4j.xml.XMLLayout} returns <code>false</code>.
+     org.apache.log4j.xml.XMLLayout} returns <code>false</code>.
 
      @since version 0.8.4 */
   abstract

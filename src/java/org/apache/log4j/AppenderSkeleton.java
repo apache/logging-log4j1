@@ -5,15 +5,15 @@
  * License version 1.1, a copy of which has been included with this
  * distribution in the LICENSE.APL file.  */
 
-package org.log4j;
+package org.apache.log4j;
 
-import org.log4j.Layout;
-import org.log4j.spi.Filter;
-import org.log4j.spi.ErrorHandler;
-import org.log4j.spi.OptionHandler;
-import org.log4j.spi.LoggingEvent;
-import org.log4j.helpers.OnlyOnceErrorHandler;
-import org.log4j.helpers.LogLog;
+import org.apache.log4j.Layout;
+import org.apache.log4j.spi.Filter;
+import org.apache.log4j.spi.ErrorHandler;
+import org.apache.log4j.spi.OptionHandler;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.helpers.OnlyOnceErrorHandler;
+import org.apache.log4j.helpers.LogLog;
 
 
 /** 
@@ -235,7 +235,7 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
   /**
      Set the layout for this appender. Note that some appenders have
      their own (fixed) layouts or do not use one. For example, the
-     {@link org.log4j.net.SocketAppender} ignores the layout set
+     {@link org.apache.log4j.net.SocketAppender} ignores the layout set
      here. 
   */
   public

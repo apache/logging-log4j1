@@ -15,7 +15,7 @@ function testDefaultInit {
    touch $TEMP
  fi
 
- java $1 org.log4j.test.DefaultInit
+ java $1 org.apache.log4j.test.DefaultInit
 
  check witness/definit.$TEST $TEMP; echo "OK."
 }
@@ -26,10 +26,10 @@ declare -i TEST
 
 function createProperties {
  echo "log4j.rootCategory=DEBUG, A1" > $LCF
- lecho "log4j.appender.A1=org.log4j.FileAppender"
+ lecho "log4j.appender.A1=org.apache.log4j.FileAppender"
  lecho "log4j.appender.A1.File=$TEMP"
  lecho "log4j.appender.A1.Append=false"
- lecho "log4j.appender.A1.layout=org.log4j.PatternLayout "
+ lecho "log4j.appender.A1.layout=org.apache.log4j.PatternLayout "
  lecho "log4j.appender.A1.layout.ConversionPattern=%m%n"  
 }
 

@@ -1,10 +1,10 @@
 
 
-package org.log4j.test; 
+package org.apache.log4j.test; 
 
-import org.log4j.PropertyConfigurator;
-import org.log4j.Category;
-import org.log4j.Priority;
+import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.Category;
+import org.apache.log4j.Priority;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Enumeration;
@@ -73,7 +73,7 @@ public class Finalize {
   void foo(Category cat) {    
     Enumeration enum = cat.getAllAppenders();
     while(enum != null && enum.hasMoreElements()) {
-      ((org.log4j.Appender) enum.nextElement()).close();
+      ((org.apache.log4j.Appender) enum.nextElement()).close();
     }
   }
     

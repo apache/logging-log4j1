@@ -1,12 +1,12 @@
 
-package org.log4j.examples;
+package org.apache.log4j.examples;
 
-import org.log4j.Category;
-import org.log4j.NDC;
+import org.apache.log4j.Category;
+import org.apache.log4j.NDC;
 
 /**
    Example code for log4j to viewed in conjunction with the {@link
-   org.log4j.examples.Sort Sort} class.
+   org.apache.log4j.examples.Sort Sort} class.
       
    <p>SortAlgo uses the bubble sort algorithm to sort an integer
    array. See also its <b><a href="doc-files/SortAlgo.java">source

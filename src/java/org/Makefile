@@ -3,7 +3,7 @@ PKG_DIR :=org/
 DEPTH   :=..
 JSOURCES:=
 
-SUBDIRS := log4j
+SUBDIRS := apache
 
 # include master-rule file
 include $(DEPTH)/make/make.inc

@@ -1,10 +1,17 @@
-package org.log4j.gui.examples;
+/*
+ * Copyright (C) The Apache Software Foundation. All rights reserved.
+ *
+ * This software is published under the terms of the Apache Software
+ * License version 1.1, a copy of which has been included with this
+ * distribution in the LICENSE.APL file.  */
+
+package org.apache.log4j.gui.examples;
 
 import java.awt.BorderLayout;
 import java.awt.event.*;
 import javax.swing.*;
-import org.log4j.*;
-import org.log4j.gui.*;
+import org.apache.log4j.*;
+import org.apache.log4j.gui.*;
 
 
 

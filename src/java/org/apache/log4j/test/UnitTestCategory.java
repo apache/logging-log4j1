@@ -5,17 +5,17 @@
  * License version 1.1, a copy of which has been included with this
  * distribution in the LICENSE.APL file.  */
 
-package org.log4j.test;
+package org.apache.log4j.test;
 
-import org.log4j.spi.LoggingEvent;
-import org.log4j.Priority;
-import org.log4j.FileAppender;
-import org.log4j.BasicConfigurator;
-import org.log4j.Appender;
-import org.log4j.AppenderSkeleton;
-import org.log4j.Category;
-import org.log4j.Hierarchy;
-import org.log4j.spi.RootCategory;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.Priority;
+import org.apache.log4j.FileAppender;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Appender;
+import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.Category;
+import org.apache.log4j.Hierarchy;
+import org.apache.log4j.spi.RootCategory;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;

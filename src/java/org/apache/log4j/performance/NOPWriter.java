@@ -1,7 +1,7 @@
 //      Copyright 1996-1999, International Business Machines 
 //      Corporation. All Rights Reserved.
 
-package org.log4j.performance;
+package org.apache.log4j.performance;
 
 import java.io.Writer;
 import java.io.IOException;

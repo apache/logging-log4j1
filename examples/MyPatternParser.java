@@ -1,10 +1,17 @@
-package org.log4j.examples;
+/*
+ * Copyright (C) The Apache Software Foundation. All rights reserved.
+ *
+ * This software is published under the terms of the Apache Software
+ * License version 1.1, a copy of which has been included with this
+ * distribution in the LICENSE.APL file.  */
 
-import org.log4j.*;
-import org.log4j.helpers.FormattingInfo;
-import org.log4j.helpers.PatternConverter;
-import org.log4j.helpers.PatternParser;
-import org.log4j.spi.LoggingEvent;
+package org.apache.log4j.examples;
+
+import org.apache.log4j.*;
+import org.apache.log4j.helpers.FormattingInfo;
+import org.apache.log4j.helpers.PatternConverter;
+import org.apache.log4j.helpers.PatternParser;
+import org.apache.log4j.spi.LoggingEvent;
 
 /**
   Example showing how to extend PatternParser to recognize additional
@@ -18,9 +25,9 @@ import org.log4j.spi.LoggingEvent;
   See <a href=doc-files/MyPatternParser.java><b>source</b></a> code
    for more details.
   
-  @see org.log4j.examples.MyPatternLayout
-  @see org.log4j.helpers.PatternParser
-  @see org.log4j.PatternLayout
+  @see org.apache.log4j.examples.MyPatternLayout
+  @see org.apache.log4j.helpers.PatternParser
+  @see org.apache.log4j.PatternLayout
 
   @author Anders Kristensen 
 */

@@ -5,11 +5,11 @@
  * the LICENSE.APL file.
  */
 // NOTICE: Some test are sensitive to line numbers!
-package org.log4j.test; 
-import org.log4j.PropertyConfigurator;
-import org.log4j.Category;
-import org.log4j.NDC;
-import org.log4j.Priority;
+package org.apache.log4j.test; 
+import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.Category;
+import org.apache.log4j.NDC;
+import org.apache.log4j.Priority;
 import java.io.IOException;
 import java.util.Enumeration;
 /**

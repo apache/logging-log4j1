@@ -23,6 +23,6 @@
  [main] INFO UNDEF - Message 22
  [main] DEBUG UNDEF - Message 23
 java.lang.Exception: Just testing.
-	at org.log4j.test.Min.test1
-	at org.log4j.test.Min.main
+	at org.apache.log4j.test.Min.test1
+	at org.apache.log4j.test.Min.main
  [main] INFO INF - Messages should bear numbers 0 through 23.

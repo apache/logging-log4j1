@@ -7,7 +7,7 @@
 
 // Contributors: Dan MacDonald <dan@redknee.com>
 
-package org.log4j.net;
+package org.apache.log4j.net;
 
 import java.net.InetAddress;
 import java.net.Socket;
@@ -19,12 +19,12 @@ import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.PrintWriter;
 
-import org.log4j.helpers.LogLog;
-import org.log4j.helpers.OptionConverter;
-import org.log4j.spi.LoggingEvent;
-import org.log4j.Category;
-import org.log4j.Priority;
-import org.log4j.AppenderSkeleton;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.Category;
+import org.apache.log4j.Priority;
+import org.apache.log4j.AppenderSkeleton;
 
 /**
     Sends {@link LoggingEvent} objects to a remote a log server,
@@ -37,7 +37,7 @@ import org.log4j.AppenderSkeleton;
       <p><li>If sent to a {@link SocketNode}, remote logging is
       non-intrusive as far as the log event is concerned. In other
       words, the event will be logged with the same time stamp, {@link
-      org.log4j.NDC}, location info as if it were logged locally by
+      org.apache.log4j.NDC}, location info as if it were logged locally by
       the client.
 
       <p><li>SocketAppenders do not use a layout. They ship a

@@ -1,13 +1,13 @@
 
-package org.log4j.xml.examples;
+package org.apache.log4j.xml.examples;
 
 
 import org.apache.xerces.parsers.DOMParser;
-import org.log4j.xml.DOMConfigurator;
-import org.log4j.Category;
-import org.log4j.Priority;
-//import org.log4j.helpers.CategoryFactory;
-import org.log4j.xml.examples.XPriority;
+import org.apache.log4j.xml.DOMConfigurator;
+import org.apache.log4j.Category;
+import org.apache.log4j.Priority;
+//import org.apache.log4j.helpers.CategoryFactory;
+import org.apache.log4j.xml.examples.XPriority;
 import org.apache.xerces.parsers.DOMParser;
 import java.io.FileInputStream;
 import org.xml.sax.InputSource;
@@ -16,7 +16,7 @@ import java.net.*;
 /**
    A simple example showing Category sub-classing. It shows the
    minimum steps necessary to implement one's {@link
-   org.log4j.spi.CategoryFactory} and that sub-classes can follow the
+   org.apache.log4j.spi.CategoryFactory} and that sub-classes can follow the
    hiearchy
 
    See <b><a href="doc-files/XCategory.java">source
@@ -61,7 +61,7 @@ public class XTest {
       domParser.setFeature("http://xml.org/sax/features/validation", true);
       domParser.setErrorHandler(new ReportParserError());
       InputSource inputSource = new InputSource(new FileInputStream(configFile));
-      // log4j.dtd is placed in org.log4j/xml/log4j.dtd. The
+      // log4j.dtd is placed in org.apache.log4j/xml/log4j.dtd. The
       // DOMConfigurator class is placed in the same directory and can
       // find it.
       URL dtdURL = DOMConfigurator.class.getResource("log4j.dtd");

@@ -22,8 +22,8 @@ function testDOM {
  touch temp.A1 temp.A2 
  
  echo -n "DOM test $TEST - "
- #java org.log4j.xml.test.DOMTest $configFile
- java -Dlog4j.configDebug org.log4j.xml.test.DOMTest $configFile
+ #java org.apache.log4j.xml.test.DOMTest $configFile
+ java -Dlog4j.configDebug org.apache.log4j.xml.test.DOMTest $configFile
 
  $PERL ../../test/filter.pl temp.A1 output.A1 DOMTest $layoutA1
  if [ $? != 0 ]; then
@@ -48,8 +48,8 @@ function simpleTest {
  configFile=$1
 
  echo -n "DOM test $TEST - "
- java org.log4j.xml.test.DOMTest $configFile
- #java -Dlog4j.configDebug org.log4j.xml.test.DOMTest $configFile
+ java org.apache.log4j.xml.test.DOMTest $configFile
+ #java -Dlog4j.configDebug org.apache.log4j.xml.test.DOMTest $configFile
  $PERL ../../test/filter.pl $TEMP $OUTPUT DOMTest LINE_NUMBER
 
  check witness/dom.$TEST $OUTPUT;  echo " OK" 

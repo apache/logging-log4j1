@@ -2,7 +2,7 @@
 //      Corporation. All Rights Reserved.
 
 
-package org.log4j.test;
+package org.apache.log4j.test;
 
 class Base64 {
 

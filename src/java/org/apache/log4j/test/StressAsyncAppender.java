@@ -1,15 +1,15 @@
 //  Copyright 2000 Ceki Gulcu.  All Rights Reserved.
 //  See the LICENCE file for the terms of distribution.
 
-package org.log4j.test;
+package org.apache.log4j.test;
 
 
-import org.log4j.Category;
-import org.log4j.FileAppender;
-import org.log4j.SimpleLayout;
-import org.log4j.xml.DOMConfigurator;
-import org.log4j.Priority;
-import org.log4j.NDC;
+import org.apache.log4j.Category;
+import org.apache.log4j.FileAppender;
+import org.apache.log4j.SimpleLayout;
+import org.apache.log4j.xml.DOMConfigurator;
+import org.apache.log4j.Priority;
+import org.apache.log4j.NDC;
 
 
 import java.util.Random;

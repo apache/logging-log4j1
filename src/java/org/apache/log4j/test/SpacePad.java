@@ -1,4 +1,4 @@
-package org.log4j.test;
+package org.apache.log4j.test;
 
 public class SpacePad {
 

@@ -15,20 +15,20 @@
 //              Jeff Turner <jeff@socialchange.net.au>
 //              Horwitz, Michael <MHorwitz@siemens.co.za>
 
-package org.log4j;
+package org.apache.log4j;
 
-import org.log4j.Priority;
-import org.log4j.spi.RootCategory;
-import org.log4j.spi.AppenderAttachable;
-import org.log4j.spi.CategoryFactory;
-import org.log4j.spi.LoggingEvent;
-import org.log4j.helpers.LogLog;
-import org.log4j.helpers.NullEnumeration;
-import org.log4j.helpers.OptionConverter;
-import org.log4j.helpers.PropertyConfig;
-import org.log4j.helpers.AppenderAttachableImpl;
-import org.log4j.or.RendererMap;
-import org.log4j.or.ObjectRenderer;
+import org.apache.log4j.Priority;
+import org.apache.log4j.spi.RootCategory;
+import org.apache.log4j.spi.AppenderAttachable;
+import org.apache.log4j.spi.CategoryFactory;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.helpers.NullEnumeration;
+import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.helpers.PropertyConfig;
+import org.apache.log4j.helpers.AppenderAttachableImpl;
+import org.apache.log4j.or.RendererMap;
+import org.apache.log4j.or.ObjectRenderer;
 
 import java.util.Enumeration;
 import java.util.Vector;
@@ -56,7 +56,7 @@ public class Category implements AppenderAttachable {
   static final int DISABLE_OFF = -1;
   static final int DISABLE_OVERRIDE = -21;
   
-  private static String DEFAULT_FQN = "org.log4j.Category";
+  private static String DEFAULT_FQN = "org.apache.log4j.Category";
 
   protected static String instanceFQN;
 
@@ -943,7 +943,7 @@ public class Category implements AppenderAttachable {
      appenders in all the categories including root contained in the
      default hierachy.
      
-     <p>Some appenders such as {@link org.log4j.net.SocketAppender}
+     <p>Some appenders such as {@link org.apache.log4j.net.SocketAppender}
      and {@link AsyncAppender} need to be closed before the
      application exists. Otherwise, pending logging events might be
      lost.

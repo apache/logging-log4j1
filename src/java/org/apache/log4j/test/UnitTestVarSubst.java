@@ -2,9 +2,9 @@
 // Log4j uses the JUnit framework for internal unit testing. JUnit
 // is available from "http://www.junit.org".
 
-package org.log4j.test;
+package org.apache.log4j.test;
 
-import org.log4j.helpers.OptionConverter;
+import org.apache.log4j.helpers.OptionConverter;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;

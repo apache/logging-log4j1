@@ -1,4 +1,11 @@
-package org.log4j.helpers;
+/*
+ * Copyright (C) The Apache Software Foundation. All rights reserved.
+ *
+ * This software is published under the terms of the Apache Software
+ * License version 1.1, a copy of which has been included with this
+ * distribution in the LICENSE.APL file.  */
+
+package org.apache.log4j.helpers;
 
 import java.util.Date;
 import java.util.Calendar;
@@ -22,20 +29,20 @@ public class AbsoluteTimeDateFormat extends DateFormat {
 
   /**
      String constant used to specify {@link
-     org.log4j.helpers.AbsoluteTimeDateFormat} in layouts. Current
+     org.apache.log4j.helpers.AbsoluteTimeDateFormat} in layouts. Current
      value is <b>ABSOLUTE</b>.  */
   public final static String ABS_TIME_DATE_FORMAT = "ABSOLUTE";
 
   /**
      String constant used to specify {@link
-     org.log4j.helpers.DateTimeDateFormat} in layouts.  Current
+     org.apache.log4j.helpers.DateTimeDateFormat} in layouts.  Current
      value is <b>DATE</b>.
   */
   public final static String DATE_AND_TIME_DATE_FORMAT = "DATE";
 
   /**
      String constant used to specify {@link
-     org.log4j.helpers.ISO8601DateFormat} in layouts. Current
+     org.apache.log4j.helpers.ISO8601DateFormat} in layouts. Current
      value is <b>ISO8601</b>.
   */
   public final static String ISO8601_DATE_FORMAT = "ISO8601";

@@ -1,9 +1,9 @@
 
-package org.log4j.xml.examples;
+package org.apache.log4j.xml.examples;
 
-import org.log4j.xml.DOMConfigurator;
-import org.log4j.Category;
-import org.log4j.Priority;
+import org.apache.log4j.xml.DOMConfigurator;
+import org.apache.log4j.Category;
+import org.apache.log4j.Priority;
 import org.apache.xerces.parsers.DOMParser;
 import java.io.FileInputStream;
 import org.xml.sax.InputSource;
@@ -55,7 +55,7 @@ public class XMLSample {
       domParser.setFeature("http://xml.org/sax/features/validation", true);
       domParser.setErrorHandler(new ReportParserError());
       InputSource inputSource = new InputSource(new FileInputStream(configFile));
-      // log4j.dtd is placed in org.log4j/xml/log4j.dtd. The
+      // log4j.dtd is placed in org.apache.log4j/xml/log4j.dtd. The
       // DOMConfigurator class is placed in the same directory and can
       // find it.
       URL dtdURL = DOMConfigurator.class.getResource("log4j.dtd");

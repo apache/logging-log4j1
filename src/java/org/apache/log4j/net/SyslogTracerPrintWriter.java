@@ -5,10 +5,10 @@
  * License version 1.1, a copy of which has been included with this
  * distribution in the LICENSE.APL file.  */
 
-package org.log4j.net;
+package org.apache.log4j.net;
 
-import org.log4j.helpers.QuietWriter;
-import org.log4j.helpers.TracerPrintWriter;
+import org.apache.log4j.helpers.QuietWriter;
+import org.apache.log4j.helpers.TracerPrintWriter;
 
 /**
    SyslogTracerPrintWriter overrides the println function in

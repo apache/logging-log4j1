@@ -2,16 +2,16 @@
 //
 //      See the LICENCE file for the terms of usage and distribution.
 
-package org.log4j.varia;
+package org.apache.log4j.varia;
 
 import java.io.*;
 import java.net.Socket;
 import java.net.ServerSocket;
-import org.log4j.helpers.LogLog;
-import org.log4j.RollingFileAppender;
-import org.log4j.Layout;
-import org.log4j.helpers.OptionConverter;
-import org.log4j.helpers.LogLog;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.RollingFileAppender;
+import org.apache.log4j.Layout;
+import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.helpers.LogLog;
 
 /**
    This appender listen on a socket on the port specified by the

@@ -6,16 +6,16 @@
  * the LICENSE file.
  */
 
-package org.log4j;
+package org.apache.log4j;
 
-import org.log4j.Category;
-import org.log4j.Priority;
-import org.log4j.Layout;
-import org.log4j.spi.LoggingEvent;
-import org.log4j.NDC;
-import org.log4j.helpers.PatternParser;
-import org.log4j.helpers.PatternConverter;
-import org.log4j.helpers.OptionConverter;
+import org.apache.log4j.Category;
+import org.apache.log4j.Priority;
+import org.apache.log4j.Layout;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.NDC;
+import org.apache.log4j.helpers.PatternParser;
+import org.apache.log4j.helpers.PatternConverter;
+import org.apache.log4j.helpers.OptionConverter;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -137,11 +137,11 @@ import java.text.FieldPosition;
 	 <p>For better results it is recommended to use the log4j date
 	 formatters. These can be specified using one of the strings
 	 "ABSOLUTE", "DATE" and "ISO8601" for specifying {@link
-	 org.log4j.helpers.AbsoluteTimeDateFormat
+	 org.apache.log4j.helpers.AbsoluteTimeDateFormat
 	 AbsoluteTimeDateFormat}, {@link
-	 org.log4j.helpers.DateTimeDateFormat DateTimeDateFormat}
+	 org.apache.log4j.helpers.DateTimeDateFormat DateTimeDateFormat}
 	 and respectively {@link
-	 org.log4j.helpers.ISO8601DateFormat
+	 org.apache.log4j.helpers.ISO8601DateFormat
 	 ISO8601DateFormat}. For example, <b>%d{ISO8601}</b> or
 	 <b>%d{ABSOLUTE}</b>.
 
