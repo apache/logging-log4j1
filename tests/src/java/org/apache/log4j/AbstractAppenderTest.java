@@ -18,6 +18,7 @@ package org.apache.log4j;
 
 import java.io.Writer;
 
+import org.apache.log4j.net.SMTPAppenderTest;
 import org.apache.log4j.spi.LoggingEvent;
 
 import junit.framework.Test;
@@ -35,9 +36,9 @@ import junit.framework.TestSuite;
 abstract public class AbstractAppenderTest extends TestCase {
   
   abstract protected Appender getAppender();
-  abstract Appender getConfiguredAppender();
+  abstract protected Appender getConfiguredAppender();
   
-  class DummyLayout extends Layout {
+  public class DummyLayout extends Layout {
     public void format(Writer output, LoggingEvent event) {} 
     public void activateOptions() {} 
   } 
@@ -68,6 +69,7 @@ abstract public class AbstractAppenderTest extends TestCase {
     suite.addTestSuite(WriterAppenderTest.class);
     suite.addTestSuite(ConsoleAppenderTest.class);
     suite.addTestSuite(FileAppenderTest.class);
+    suite.addTestSuite(SMTPAppenderTest.class);
     return suite;
   }
   

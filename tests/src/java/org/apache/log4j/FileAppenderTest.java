@@ -28,7 +28,7 @@ public class FileAppenderTest extends AbstractAppenderTest {
     return new FileAppender();
   }
 
-  Appender getConfiguredAppender() {
+  protected Appender getConfiguredAppender() {
     FileAppender wa = new FileAppender();
     wa.setFile("output/temp");
     wa.setLayout(new DummyLayout());
