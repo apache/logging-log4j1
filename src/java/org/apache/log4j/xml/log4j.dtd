@@ -8,7 +8,11 @@ element. -->
 
 <!ELEMENT logj:configuration (renderer*, appender*,category*,root?)>
 
-<!-- The disableOverride attribute allows the user to override any
+<!-- The disable attribute takes a priority value such that all
+     logging statements with a prioroty equal or below this value are
+     disabled.
+
+     The disableOverride attribute allows the user to override any
      BasicConfigurator.disable invocations made from within the
      application.
      
@@ -23,6 +27,7 @@ element. -->
 -->
      
 <!ATTLIST log4j:configuration
+  disable                  (debug|info|warn|error|fatal|null)  "null"
   disableOverride          (true|false|null)  "null"
   configDebug              (true|false|null)  "null"
 >

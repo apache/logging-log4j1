@@ -78,15 +78,11 @@ public class BasicConfigurator {
   static {    
     String override = OptionConverter.getSystemProperty(DISABLE_OVERRIDE_KEY, null);
     if(override != null) {
-      if(OptionConverter.toBoolean(override, true)) {
-	LogLog.debug("Overriding disable. Non-null system property " + 
-		     DISABLE_OVERRIDE_KEY + "=[" + override +"].");
-	Category.disable = Category.DISABLE_OVERRIDE;
-      }
+      Category.defaultHierarchy.setDisableOverride(override);
     } else { // check for log4j.disable only in absence of log4j.disableOverride
       String disableStr = OptionConverter.getSystemProperty(DISABLE_KEY, null);
       if(disableStr != null) {
-	disableAsNeeded(disableStr);
+	Category.defaultHierarchy.disable(disableStr);
       }
     }
   }
@@ -144,144 +140,6 @@ public class BasicConfigurator {
     root.addAppender(appender);
   }
 
-
-  static
-  protected
-  void disableAsNeeded(String disableStr) {
-    if((disableStr != null) && (Category.disable != Category.DISABLE_OVERRIDE)) {
-      Priority p = Priority.toPriority(disableStr, null);
-      if(p != null) {
-	disable(p);
-      } else {
-	LogLog.warn("Could not convert ["+disableStr+"] to Priority.");
-      }
-    }
-  }
-
-
-  /**
-     Disable all logging requests of priority <em>equal to or
-     below</em> the priority parameter <code>p</code>, regardless of
-     the request category. Logging requests of higher priority then
-     the priority of <code>p</code> remain unaffected.
-
-     <p>Nevertheless, if the {@link #DISABLE_OVERRIDE_KEY} system
-     property is set to "true" or any value other than "false", then
-     logging requests are evaluated as usual, i.e. according to the <a
-     href="../../manual.html#selectionRule">Basic Selection Rule</a>.
-
-     <p>The "disable" family of methods are there for speed. They
-     allow printing methods such as debug, info, etc. to return
-     immediately after an interger comparison without walking the
-     category hierarchy. In most modern computers an integer
-     comparison is measured in nanoseconds where as a category walk is
-     measured in units of microseconds.
-
-     <p>Other configurators define alternate ways of overriding the
-     disable override flag. See {@link PropertyConfigurator} and
-     {@link org.apache.log4j.xml.DOMConfigurator}.
-
-
-     @since 0.8.5 */
-  static 
-  public
-  void disable(Priority p) {
-    if(Category.disable != Category.DISABLE_OVERRIDE) {
-      Category.disable = p.level;
-    }
-  }
-  
-  /**
-     Disable all logging requests regardless of category and priority.
-     This method is equivalent to calling {@link #disable} with the
-     argument {@link Priority#FATAL}, the highest possible priority.
-
-     @since 0.8.5 */
-  static 
-  public
-  void disableAll() {
-    disable(Priority.FATAL);
-  }
-
-
-  /**
-     Disable all logging requests of priority DEBUG regardless of
-     category.  Invoking this method is equivalent to calling {@link
-     #disable} with the argument {@link Priority#DEBUG}.
-
-     @since 0.8.5 */
-  static 
-  public
-  void disableDebug() {
-    disable(Priority.DEBUG);
-  }
-
-
-  /**
-     Disable all logging requests of priority INFO and below
-     regardless of category. Note that DEBUG messages are also
-     disabled.  
-
-     <p>Invoking this method is equivalent to calling {@link #disable}
-     with the argument {@link Priority#INFO}.
-
-     @since 0.8.5 */
-  static 
-  public
-  void disableInfo() {
-    disable(Priority.INFO);
-  }  
-
-  /**
-     Undoes the effect of calling any of {@link #disable}, {@link
-     #disableAll}, {@link #disableDebug} and {@link #disableInfo}
-     methods. More precisely, invoking this method sets the Category
-     class internal variable called <code>disable</code> to its
-     default "off" value.
-
-     @since 0.8.5 */
-  static 
-  public
-  void enableAll() {
-    Category.disable = Category.DISABLE_OFF;
-  }
-  
-  /**
-
-     This method is equivalent to the {@link #disableInfo} method.
-     
-     @deprecated
-     @since 0.8.0 */
-  public
-  static
-  void flagAsShippedCode() {
-    disableInfo();
-  }
-
-
-  /**
-     Override the shipped code flag if the <code>override</code>
-     parameter is not null.
-
-     <p>If <code>override</code> is null then there is nothing to do.
-     Otherwise, set Category.shippedCode to false if override has a
-     value other than "false".     
-  */
-  protected
-  static
-  void overrideAsNeeded(String override) {
-    // If override is defined, any value other than false will be
-    // interpreted as true.    
-    if(override != null) {
-      LogLog.debug("Handling non-null disable override directive: \""+
-		   override +"\".");
-      if(OptionConverter.toBoolean(override, true)) {
-	LogLog.debug("Overriding all disable methods.");
-	Category.disable = Category.DISABLE_OVERRIDE;
-      }
-    }
-  }
-
   /**
      Reset the configuration to its default.  This removes all
      appenders from all categories, sets the priority of all non-root
@@ -300,7 +158,7 @@ public class BasicConfigurator {
 
     Category.defaultHierarchy.getRoot().setPriority(Priority.DEBUG);
     Category.defaultHierarchy.root.setResourceBundle(null);
-    Category.disable =  Category.DISABLE_OFF;
+    Category.defaultHierarchy.disable = Hierarchy.DISABLE_OFF;
     
     // the synchronization is needed to prevent JDK 1.2.x hashtable
     // surprises
@@ -317,4 +175,41 @@ public class BasicConfigurator {
     }
     Category.defaultHierarchy.rendererMap.clear();
   }
+
+  /**
+     Reset the configuration to its default.  This removes all
+     appenders from all categories, sets the priority of all non-root
+     categories to <code>null</code>, their additivity flad to
+     <code>true</code> and sets the priority of the root category to
+     {@link Priority#DEBUG DEBUG}.  Moreover, message disabling is set
+     its default "off" value.
+
+     <p>This method should be used sparingly and with care as it will
+     block all logging until it is completed.</p>
+
+     @since version 0.8.5 */
+  public
+  static
+  void resetConfiguration(Hierarchy hierarchy) {
+
+    hierarchy.getRoot().setPriority(Priority.DEBUG);
+    hierarchy.root.setResourceBundle(null);
+    hierarchy.disable = Hierarchy.DISABLE_OFF;
+    
+    // the synchronization is needed to prevent JDK 1.2.x hashtable
+    // surprises
+    synchronized(hierarchy.ht) {    
+      hierarchy.shutdown(); // nested locks are OK    
+    
+      Enumeration cats = hierarchy.getCurrentCategories();
+      while(cats.hasMoreElements()) {
+	Category c = (Category) cats.nextElement();
+	c.setPriority(null);
+	c.setAdditivity(true);
+	c.setResourceBundle(null);
+      }
+    }
+    hierarchy.rendererMap.clear();
+  }
+
 }

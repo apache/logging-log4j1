@@ -128,7 +128,7 @@ public class NotLogging {
       ;       
     else if ("true".equals(args[0])) {
       System.out.println("Flagging as shipped code.");
-      BasicConfigurator.disableInfo();
+      Category.getDefaultHierarchy().disableInfo();
     }
     else 
       Usage();

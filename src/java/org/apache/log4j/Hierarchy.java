@@ -18,11 +18,14 @@ package org.apache.log4j;
 
 import java.util.Hashtable;
 import java.util.Enumeration;
+import java.util.Vector;
 
 import org.apache.log4j.spi.RootCategory;
 import org.apache.log4j.spi.CategoryFactory;
 import org.apache.log4j.or.RendererMap;
 import org.apache.log4j.or.ObjectRenderer;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.helpers.OptionConverter;
 
 /**
    This class is specialized in retreiving categories by name and
@@ -49,14 +52,25 @@ import org.apache.log4j.or.ObjectRenderer;
 
 */
 public class Hierarchy {
+
+  // DISABLE_OFF should be set to a value lower than all possible
+  // priorities.
+  static final int DISABLE_OFF = -1;
+  static final int DISABLE_OVERRIDE = -2;  
   
   static 
   private
   CategoryFactory defaultFactory = new DefaultCategoryFactory();
 
+
   Hashtable ht;
   Category root;
-  RendererMap rendererMap; 
+  RendererMap rendererMap;
+  
+  int disable;
+
+  boolean emittedNoAppenderWarning = false;
+  boolean emittedNoResourceBundleWarning = false;  
 
   /**
      Create a new Category hierarchy.
@@ -68,6 +82,8 @@ public class Hierarchy {
   Hierarchy(Category root) {
     ht = new Hashtable();
     this.root = root;
+    // Don't disable any priority level by default.
+    disable = DISABLE_OFF;
     this.root.setHierarchy(this);
     rendererMap = new RendererMap();
   }
@@ -110,6 +126,123 @@ public class Hierarchy {
       return (Category) o;
     } else {
       return null;
+    }
+  }
+
+  public
+  void disable(String disableStr) {
+    if(disable != DISABLE_OVERRIDE) {  
+      Priority p = Priority.toPriority(disableStr, null);
+      if(p != null) {
+	disable = p.level;
+      } else {
+	LogLog.warn("Could not convert ["+disableStr+"] to Priority.");
+      }
+    }
+  }
+
+
+  /**
+     Disable all logging requests of priority <em>equal to or
+     below</em> the priority parameter <code>p</code>, regardless of
+     the request category. Logging requests of higher priority then
+     the priority of <code>p</code> remain unaffected.
+
+     <p>Nevertheless, if the {@link #DISABLE_OVERRIDE_KEY} system
+     property is set to "true" or any value other than "false", then
+     logging requests are evaluated as usual, i.e. according to the <a
+     href="../../manual.html#selectionRule">Basic Selection Rule</a>.
+
+     <p>The "disable" family of methods are there for speed. They
+     allow printing methods such as debug, info, etc. to return
+     immediately after an interger comparison without walking the
+     category hierarchy. In most modern computers an integer
+     comparison is measured in nanoseconds where as a category walk is
+     measured in units of microseconds.
+
+     <p>Other configurators define alternate ways of overriding the
+     disable override flag. See {@link PropertyConfigurator} and
+     {@link org.apache.log4j.xml.DOMConfigurator}.
+
+
+     @since 0.8.5 */
+  public
+  void disable(Priority p) {
+    if((disable != DISABLE_OVERRIDE) && (p != null)) {
+      disable = p.level;
+    }
+  }
+  
+  /**
+     Disable all logging requests regardless of category and priority.
+     This method is equivalent to calling {@link #disable} with the
+     argument {@link Priority#FATAL}, the highest possible priority.
+
+     @since 0.8.5 */
+  public
+  void disableAll() {
+    disable(Priority.FATAL);
+  }
+
+
+  /**
+     Disable all logging requests of priority DEBUG regardless of
+     category.  Invoking this method is equivalent to calling {@link
+     #disable} with the argument {@link Priority#DEBUG}.
+
+     @since 0.8.5 */
+  public
+  void disableDebug() {
+    disable(Priority.DEBUG);
+  }
+
+
+  /**
+     Disable all logging requests of priority INFO and below
+     regardless of category. Note that DEBUG messages are also
+     disabled.  
+
+     <p>Invoking this method is equivalent to calling {@link #disable}
+     with the argument {@link Priority#INFO}.
+
+     @since 0.8.5 */
+  public
+  void disableInfo() {
+    disable(Priority.INFO);
+  }  
+
+  /**
+     Undoes the effect of calling any of {@link #disable}, {@link
+     #disableAll}, {@link #disableDebug} and {@link #disableInfo}
+     methods. More precisely, invoking this method sets the Category
+     class internal variable called <code>disable</code> to its
+     default "off" value.
+
+     @since 0.8.5 */
+  public
+  void enableAll() {
+    disable = DISABLE_OFF;
+  }
+  
+  /**
+     Override the shipped code flag if the <code>override</code>
+     parameter is not null.
+
+     <p>If <code>override</code> is null then there is nothing to do.
+     Otherwise, set Category.shippedCode to false if override has a
+     value other than "false".     
+  */
+  public
+  void overrideAsNeeded(String override) {
+    // If override is defined, any value other than false will be
+    // interpreted as true.    
+    if(override != null) {
+      LogLog.debug("Handling non-null disable override directive: \""+
+		   override +"\".");
+      if(OptionConverter.toBoolean(override, true)) {
+	LogLog.debug("Overriding all disable methods.");
+	disable = DISABLE_OVERRIDE;
+      }
     }
   }
 
@@ -176,6 +309,36 @@ public class Hierarchy {
 	return null;  // but let's keep the compiler happy.
       }
     }
+  }
+
+
+  /**
+     Returns all the currently defined categories in this hierarchy as
+     an {@link java.util.Enumeration Enumeration}.
+
+     <p>The root category is <em>not</em> included in the returned
+     {@link Enumeration}.  */
+  public
+  Enumeration getCurrentCategories() {
+    // The accumlation in v is necessary because not all elements in
+    // ht are Category objects as there might be some ProvisionNodes
+    // as well.
+    Vector v = new Vector(ht.size());
+    
+    Enumeration elems = ht.elements();
+    while(elems.hasMoreElements()) {
+      Object o = elems.nextElement();
+      if(o instanceof Category) {
+	v.addElement(o);
+      }
+    }
+    return v.elements();
+  }
+
+
+  public
+  boolean isDisabled(int level) {
+    return disable >=  level;
   }
 
   /**
@@ -313,6 +476,21 @@ public class Hierarchy {
       c.parent = cat;      
     }
   }    
+
+  /**
+     Set the disable override value given a string.
+ 
+     @since 1.1
+   */
+  public
+  void setDisableOverride(String override) {
+    if(OptionConverter.toBoolean(override, true)) {
+      LogLog.debug("Overriding disable.");
+      disable =  DISABLE_OVERRIDE;
+    }
+  }
+
+
 
   /**
      Shutting down a hiearchy will <em>safely</em> close and remove

@@ -37,7 +37,7 @@ public class DisableOverrideTest {
     // System.exit(1);           
     //}
     DOMConfigurator.configure(configFile);
-    DOMConfigurator.disableInfo();       
+    Category.getDefaultHierarchy().disableInfo();       
     CAT.debug("Hello world");
   }
 

@@ -120,10 +120,10 @@ public class PropertyConfigurator extends BasicConfigurator
     For each named appender you can configure its {@link Layout}. The
     syntax for configuring an appender's layout is:
     <pre>
-    log.appender.appenderName.layout=fully.qualified.name.of.layout.class
-    log.appender.appenderName.layout.option1=value1
+    log4j.appender.appenderName.layout=fully.qualified.name.of.layout.class
+    log4j.appender.appenderName.layout.option1=value1
     ....
-    log.appender.appenderName.layout.optionN=valueN
+    log4j.appender.appenderName.layout.optionN=valueN
     </pre>
     
     <h3>Configuring categories</h3>
@@ -190,7 +190,7 @@ public class PropertyConfigurator extends BasicConfigurator
     <p>The syntax is:
 
     <pre>
-    log4j.renreder.fully.qualified.name.of.rendered.class=fully.qualified.name.of.rendering.class
+    log4j.renderer.fully.qualified.name.of.rendered.class=fully.qualified.name.of.rendering.class
     </pre>
 
     As in,
@@ -382,12 +382,12 @@ public class PropertyConfigurator extends BasicConfigurator
     // Check if the config file overides the shipped code flag.
     String override = properties.getProperty(
                                     BasicConfigurator.DISABLE_OVERRIDE_KEY);
-    BasicConfigurator.overrideAsNeeded(override);
+    hierarchy.overrideAsNeeded(override);
 
     if(override == null) {
       String disableStr = properties.getProperty(BasicConfigurator.DISABLE_KEY);
       if(disableStr != null)
-	BasicConfigurator.disableAsNeeded(disableStr);      
+	hierarchy.disable(disableStr);      
     }
     
     

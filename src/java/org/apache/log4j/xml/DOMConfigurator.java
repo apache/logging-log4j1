@@ -71,7 +71,8 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
   static final String ERROR_HANDLER_TAG	= "errorHandler";
   static final String REF_ATTR		= "ref";
   static final String ADDITIVITY_ATTR    = "additivity";  
-  static final String SCFO_ATTR          = "disableOverride";
+  static final String DISABLE_OVERRIDE_ATTR = "disableOverride";
+  static final String DISABLE_ATTR       = "disable";
   static final String CONFIG_DEBUG_ATTR  = "configDebug";
   static final String RENDERING_CLASS_ATTR = "renderingClass";
   static final String RENDERED_CLASS_ATTR = "renderedClass";
@@ -614,18 +615,24 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
     else 
       LogLog.debug("Ignoring " + CONFIG_DEBUG_ATTR + " attribute.");
       
-    String override = subst(element.getAttribute(SCFO_ATTR));
+    String override = subst(element.getAttribute(DISABLE_OVERRIDE_ATTR));
     LogLog.debug("Disable override=\"" + override +"\".");
     // if the log4j.dtd is not specified in the XML file, then the
-    // SCFO_ATTR attribute is returned as the empty string when it
-    // is not specified in the XML file.
+    // DISABLE_OVERRIDE attribute is returned as the empty string when
+    // it is not specified in the XML file.
     if(!override.equals("") && !override.equals("null")) {
-      // overrideAsNeeded is defined in BasicConfigurator.
-      overrideAsNeeded(override);
+      hierarchy.overrideAsNeeded(override);
     }
-    else 
-      LogLog.debug("Ignoring " + SCFO_ATTR + " attribute.");
+
+    String disableStr = subst(element.getAttribute(DISABLE_ATTR));
+    LogLog.debug("Disable =\"" + disableStr +"\".");
+    if(!"".equals(disableStr) && !"null".equals(disableStr)) {
+      hierarchy.disable(disableStr);
+    }
     
+
+
+
     //Hashtable appenderBag = new Hashtable(11);
 
     /* Building Appender objects, placing them in a local namespace
