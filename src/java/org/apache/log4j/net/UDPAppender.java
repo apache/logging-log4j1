@@ -86,7 +86,7 @@ public class UDPAppender extends AppenderSkeleton implements PortBased{
   /**
      The default port number for the UDP packets. (9991).
   */
-  static final int DEFAULT_PORT = 9991;
+  public static final int DEFAULT_PORT = 9991;
 
   private static final int PACKET_LENGTH = 16384;
 
