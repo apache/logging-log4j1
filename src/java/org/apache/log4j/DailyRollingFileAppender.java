@@ -143,17 +143,6 @@ public class DailyRollingFileAppender extends FileAppender {
 
 
   /**
-     A string constant used in naming the option for setting the
-     filename pattern. Current value of this string constant is
-     <strong>DatePattern</strong>.
-     
-     @deprecated Options are now handled using the JavaBeans paradigm.
-     This constant is not longer needed and will be removed in the
-     <em>near</em> term.
-   */
-  static final public String DATE_PATTERN_OPTION = "DatePattern";
-  
-  /**
      The date pattern. By default, the pattern is set to
      "'.'yyyy-MM-dd" meaning daily rollover. 
    */
@@ -212,48 +201,6 @@ public class DailyRollingFileAppender extends FileAppender {
     return datePattern;
   }
 
-  /**
-     Returns the option names for this component, namely {@link
-     #DATE_PATTERN_OPTION} in
-     addition to the options of {@link FileAppender#getOptionStrings
-     FileAppender}.
-     
-     @deprecated We now use JavaBeans introspection to configure
-     components. Options strings are no longer needed.
-
-  */
-  public
-  String[] getOptionStrings() {
-    return OptionConverter.concatanateArrays(super.getOptionStrings(),
-		 new String[] {DATE_PATTERN_OPTION});
-  }
-
-  /**
-     Set the options for the {@link DailyRollingFileAppender}
-     instance.
-
-     <p>The <b>DatePattern</b> takes a string in the same format as
-     expected by {@link SimpleDateFormat}. This options determines the
-     rollover schedule.
-
-     <p>Be sure to refer to the options in the super classes {@link
-     FileAppender}, {@link WriterAppender} and in particular the
-     <b>Threshold</b> option in {@link AppenderSkeleton}.
-     
-     </ul>
-     
-     @deprecated Use the setter method for the option directly instead
-     of the generic <code>setOption</code> method. 
- */
-  public
-  void setOption(String key, String value) {
-    if(value == null) return;
-    super.setOption(key, value);    
-    if(key.equalsIgnoreCase(DATE_PATTERN_OPTION)) {
-      datePattern = value;
-    }
-  }
-  
   public
   void activateOptions() {
     super.activateOptions();
