@@ -146,10 +146,10 @@ public class Interpreter extends DefaultHandler implements Component  {
     if(skip != null) {
       //System.err.println("In End, pattern is "+pattern+", skip pattern "+skip);
       if(skip.equals(pattern)) {
-        getLogger().info("Skipping discontinued. Normall processing will continue with the following element.");
+        getLogger().info("Normall processing will continue with the next element. Current pattern is <{}>", pattern);
         skip = null;
       } else {
-        getLogger().info("Skipping invoking end() method for <{}>.", localName);
+        getLogger().debug("Skipping invoking end() method for <{}>.", pattern);
       }
     } else if (applicableActionList != EMPTY_LIST) {
       callEndAction(applicableActionList, getTagName(localName, qName));
@@ -224,7 +224,7 @@ public class Interpreter extends DefaultHandler implements Component  {
     }
 
     if(skip != null) {
-      getLogger().debug("Skipping invoking end() method for <{}>.", pattern);
+      getLogger().debug("Skipping invoking begin() method for <{}>.", pattern);
       return;
     }
     
@@ -249,10 +249,10 @@ public class Interpreter extends DefaultHandler implements Component  {
           skip.pop();
           break;
         }
-        getLogger().info("Skip pattern set to: "+skip);
+        getLogger().info("Skip pattern set to <{}>", skip);
       } catch (Exception e) {
         skip = (Pattern) pattern.clone();
-        getLogger().info("Skip pattern set to: "+skip);
+        getLogger().info("Skip pattern set to <{}>", skip);
         ec.addError(new ErrorItem("Exception in Action for tag <"+tagName+">", e));
       }
     }
@@ -282,7 +282,7 @@ public class Interpreter extends DefaultHandler implements Component  {
           skip.pop();
           break;
         }
-        getLogger().info("Skip pattern set to: "+skip);
+        getLogger().info("Skip pattern set to <{}>", skip);
       } catch(Exception e) {
         ec.addError(new ErrorItem("Exception in Action for tag <"+tagName+">", e));
         skip = (Pattern) pattern.clone();
