@@ -184,6 +184,10 @@ public class JoranConfigurator extends ConfiguratorBase {
     rs.addRule(new Pattern("*/param"), new ParamAction());
 
     joranInterpreter = new Interpreter(rs);
+    
+    // We need to bother with an entity resolver in order to be compatible
+    // with config files written for DOMConfigurator containing the following: 
+    // <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
     joranInterpreter.setEntityResolver(new Log4jEntityResolver());
     
     // The following line adds the capability to parse nested components

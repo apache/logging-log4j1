@@ -44,4 +44,5 @@ public interface Constants {
   
   static final String TEMP_LIST_APPENDER_NAME = "TEMP_LIST_APPENDER";
   static final String TEMP_CONSOLE_APPENDER_NAME = "TEMP_CONSOLE_APPENDER";
+  static final String CODES_HREF = "http://logging.apache.org/log4j/docs/codes.html";
 }

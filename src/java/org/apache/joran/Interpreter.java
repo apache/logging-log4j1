@@ -72,6 +72,9 @@ public class Interpreter extends DefaultHandler {
   Pattern pattern;
   Locator locator;
 
+  // The entity resolver is only needed in order to be compatible with
+  // XML files written for DOMConfigurator containing the following DOCTYPE
+  // <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
   private EntityResolver entityResolver;
   
   /**

@@ -81,7 +81,7 @@ public class PatternLayoutTest extends TestCase {
   }
 
   public void test1() throws Exception {
-    PropertyConfigurator.configure("input/patternLayout1.properties");
+    PropertyConfigurator.configure("input/pattern/patternLayout1.properties");
     common();
     Transformer.transform(
       TEMP, FILTERED,
@@ -93,7 +93,7 @@ public class PatternLayoutTest extends TestCase {
   }
 
   public void test2() throws Exception {
-    PropertyConfigurator.configure("input/patternLayout2.properties");
+    PropertyConfigurator.configure("input/pattern/patternLayout2.properties");
     common();
 
     ControlFilter cf1 =
@@ -109,7 +109,7 @@ public class PatternLayoutTest extends TestCase {
   }
 
   public void test3() throws Exception {
-    PropertyConfigurator.configure("input/patternLayout3.properties");
+    PropertyConfigurator.configure("input/pattern/patternLayout3.properties");
     common();
 
     ControlFilter cf1 =
@@ -127,7 +127,7 @@ public class PatternLayoutTest extends TestCase {
   // Output format:
   // 06 avr. 2002 18:30:58,937 [main] DEBUG atternLayoutTest - Message 0  
   public void test4() throws Exception {
-    PropertyConfigurator.configure("input/patternLayout4.properties");
+    PropertyConfigurator.configure("input/pattern/patternLayout4.properties");
     common();
 
     ControlFilter cf1 =
@@ -143,7 +143,7 @@ public class PatternLayoutTest extends TestCase {
   }
 
   public void test5() throws Exception {
-    PropertyConfigurator.configure("input/patternLayout5.properties");
+    PropertyConfigurator.configure("input/pattern/patternLayout5.properties");
     common();
 
     ControlFilter cf1 =
@@ -160,7 +160,7 @@ public class PatternLayoutTest extends TestCase {
 
   // 18:54:19,201 [main] DEBUG atternLayoutTest - Message 0
   public void test6() throws Exception {
-    PropertyConfigurator.configure("input/patternLayout6.properties");
+    PropertyConfigurator.configure("input/pattern/patternLayout6.properties");
     common();
 
     ControlFilter cf1 =
@@ -176,7 +176,7 @@ public class PatternLayoutTest extends TestCase {
   }
 
   public void test7() throws Exception {
-    PropertyConfigurator.configure("input/patternLayout7.properties");
+    PropertyConfigurator.configure("input/pattern/patternLayout7.properties");
     common();
 
     ControlFilter cf1 =
@@ -192,7 +192,7 @@ public class PatternLayoutTest extends TestCase {
   }
 
   public void test8() throws Exception {
-    PropertyConfigurator.configure("input/patternLayout8.properties");
+    PropertyConfigurator.configure("input/pattern/patternLayout8.properties");
     common();
 
     ControlFilter cf1 =
@@ -208,7 +208,7 @@ public class PatternLayoutTest extends TestCase {
   }
 
   public void test9() throws Exception {
-    PropertyConfigurator.configure("input/patternLayout9.properties");
+    PropertyConfigurator.configure("input/pattern/patternLayout9.properties");
     common();
 
     ControlFilter cf1 =
@@ -224,7 +224,7 @@ public class PatternLayoutTest extends TestCase {
   }
 
   public void test10() throws Exception {
-    PropertyConfigurator.configure("input/patternLayout10.properties");
+    PropertyConfigurator.configure("input/pattern/patternLayout10.properties");
     common();
 
     ControlFilter cf1 =
@@ -240,7 +240,7 @@ public class PatternLayoutTest extends TestCase {
   }
 
   public void test11() throws Exception {
-    PropertyConfigurator.configure("input/patternLayout11.properties");
+    PropertyConfigurator.configure("input/pattern/patternLayout11.properties");
     common();
 
     ControlFilter cf1 =
@@ -256,7 +256,7 @@ public class PatternLayoutTest extends TestCase {
   }
 
   public void test12() throws Exception {
-    PropertyConfigurator.configure("input/patternLayout12.properties");
+    PropertyConfigurator.configure("input/pattern/patternLayout12.properties");
     common();
 
     ControlFilter cf1 =
@@ -272,7 +272,7 @@ public class PatternLayoutTest extends TestCase {
   }
 
   public void test13() throws Exception {
-    PropertyConfigurator.configure("input/patternLayout13.properties");
+    PropertyConfigurator.configure("input/pattern/patternLayout13.properties");
     common();
 
     ControlFilter cf1 =
@@ -288,7 +288,7 @@ public class PatternLayoutTest extends TestCase {
   }
 
   public void test14() throws Exception {
-    PropertyConfigurator.configure("input/patternLayout14.properties");
+    PropertyConfigurator.configure("input/pattern/patternLayout14.properties");
     common();
 
     ControlFilter cf1 =
@@ -304,7 +304,7 @@ public class PatternLayoutTest extends TestCase {
   }
 
   public void testMDC1() throws Exception {
-    PropertyConfigurator.configure("input/patternLayout.mdc.1.properties");
+    PropertyConfigurator.configure("input/pattern/patternLayout.mdc.1.properties");
     MDC.put("key1", "va11");
     MDC.put("key2", "va12");
     logger.debug("Hello World");

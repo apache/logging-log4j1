@@ -31,7 +31,7 @@ import java.io.Writer;
 
    @author Heinz Richter
    @author Ceki G&uuml;lc&uuml;
-
+   @deprecated Replaced by {@link org.apache.rolling.RollingFileAppender}
 */
 public class RollingFileAppender extends FileAppender {
   /**
