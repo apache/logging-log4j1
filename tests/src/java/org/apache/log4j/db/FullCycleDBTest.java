@@ -30,7 +30,6 @@ import org.apache.log4j.MDC;
 import org.apache.log4j.VectorAppender;
 import org.apache.log4j.helpers.Constants;
 import org.apache.log4j.helpers.IntializationUtil;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.joran.JoranConfigurator;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.LoggingEvent;
@@ -111,7 +110,7 @@ public class FullCycleDBTest
     jc1.doConfigure(appendConfigFile, lrWrite);
   
     long startTime = System.currentTimeMillis();
-    LogLog.info("***startTime is  "+startTime);
+    System.out.println("***startTime is  "+startTime);
     
     // Write out just one log message
     Logger out = lrWrite.getLogger("testSingleOutput.out");
@@ -209,7 +208,7 @@ public class FullCycleDBTest
       
       if(le.getProperties() == null || le.getProperties().size() == 0) {
         if(!(re.getProperties() == null || re.getProperties().size() == 0)) {
-          LogLog.warn("properties are "+re.getProperties());
+          System.out.println("properties are "+re.getProperties());
           fail("Returned event should have been empty");
         }
       } else {
@@ -246,9 +245,9 @@ public class FullCycleDBTest
     for(Iterator i = v.iterator(); i.hasNext(); ) {
       LoggingEvent event = (LoggingEvent) i.next();  
       if(startTime > event.getTimeStamp()) {
-        LogLog.info("***Removing event with timestamp "+event.getTimeStamp());
+        System.out.println("***Removing event with timestamp "+event.getTimeStamp());
       } else {
-        LogLog.info("***Keeping event with timestamo"+event.getTimeStamp());
+        System.out.println("***Keeping event with timestamo"+event.getTimeStamp());
         r.add(event);
       }
     }

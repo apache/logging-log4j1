@@ -421,7 +421,7 @@ public class PatternLayoutTest extends TestCase {
     assertTrue(Compare.compare(OUTPUT_FILE, WITNESS_FILE));
   }
 
-  public static Test suite() {
+  public static Test XXXsuite() {
     TestSuite suite = new TestSuite();
     suite.addTest(new PatternLayoutTest("test1"));
 

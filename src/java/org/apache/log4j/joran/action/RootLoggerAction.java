@@ -20,7 +20,6 @@ import org.apache.joran.ExecutionContext;
 import org.apache.joran.action.Action;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.LoggerRepository;
 
 import org.xml.sax.Attributes;
@@ -42,7 +41,7 @@ public class RootLoggerAction extends Action {
     LoggerRepository repository = (LoggerRepository) ec.getObject(0);
     root = repository.getRootLogger();
 
-    LogLog.debug("Pushing root logger on stack");
+    getLogger().debug("Pushing root logger on stack");
     ec.pushObject(root);
   }
 
@@ -56,11 +55,11 @@ public class RootLoggerAction extends Action {
     Object o = ec.peekObject();
 
     if (o != root) {
-      LogLog.warn(
+      getLogger().warn(
         "The object on the top the of the stack is not the root logger");
-      LogLog.warn("It is: "+o);
+      getLogger().warn("It is: "+o);
     } else {
-      LogLog.debug("Removing root logger from top of stack.");
+      getLogger().debug("Removing root logger from top of stack.");
       ec.popObject();
     }
   }

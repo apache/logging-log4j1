@@ -17,7 +17,6 @@
 package org.apache.log4j.helpers;
 
 import org.apache.log4j.helpers.Loader;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.LoggerRepository;
 
@@ -79,15 +78,15 @@ public class IntializationUtil {
     // configuration to the OptionConverter.selectAndConfigure
     // method.
     if (url != null) {
-      LogLog.info(
-        "Using URL [" + url 
-          + "] for automatic log4j configuration of repository named ["+
-          repository.getName()+"].");
+//      LogLog.info(
+//        "Using URL [" + url 
+//          + "] for automatic log4j configuration of repository named ["+
+//          repository.getName()+"].");
       OptionConverter.selectAndConfigure(
         url, configuratorClassNameStr, repository);
     } else {
-      LogLog.debug(
-        "Could not find resources to perform automatic configuration.");
+//      LogLog.debug(
+//        "Could not find resources to perform automatic configuration.");
     }    
   }
 
