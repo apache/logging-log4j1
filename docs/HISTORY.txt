@@ -36,6 +36,9 @@
 
  - Fixed Bugzilla 17377: wrong trimming of pattern when left-aligned. [*]
 
+ - Changed converter register accessors in PatternParser to take/return Map instead
+   of HashMap, a cleaner abstraction allowing for different implementation types. [*]
+
   November 25, 2004
 
  - Release of version 1.3alpha-3
