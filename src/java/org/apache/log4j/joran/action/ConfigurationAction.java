@@ -21,14 +21,12 @@ import java.util.List;
 import org.apache.joran.ExecutionContext;
 import org.apache.joran.action.Action;
 
-import org.apache.log4j.Logger;
 import org.apache.log4j.config.ConfiguratorBase;
 import org.apache.log4j.spi.LoggerRepository;
 import org.xml.sax.Attributes;
 
 
 public class ConfigurationAction extends Action {
-  static final Logger logger = Logger.getLogger(ConfigurationAction.class);
   static final String INTERNAL_DEBUG_ATTR = "debug";
   boolean attachment = false;
 

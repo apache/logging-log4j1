@@ -21,7 +21,6 @@ import org.apache.joran.action.Action;
 import org.apache.joran.helper.Option;
 
 import org.apache.log4j.Layout;
-import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.spi.ErrorItem;
 
@@ -30,7 +29,6 @@ import org.xml.sax.Attributes;
 
 
 public class ConversionRuleAction extends Action {
-  static final Logger logger = Logger.getLogger(ConversionRuleAction.class);
   Layout layout;
   boolean inError = false;
   
@@ -51,7 +49,7 @@ public class ConversionRuleAction extends Action {
     if (Option.isEmpty(conversionWord)) {
       inError = true;
       errorMsg = "No 'conversionWord' attribute in <conversionRule>";
-      logger.warn(errorMsg);
+      getLogger().warn(errorMsg);
       ec.addError(new ErrorItem(errorMsg));
 
       return;
@@ -60,14 +58,14 @@ public class ConversionRuleAction extends Action {
     if (Option.isEmpty(converterClass)) {
       inError = true;
       errorMsg = "No 'converterClass' attribute in <conversionRule>";
-      logger.warn(errorMsg);
+      getLogger().warn(errorMsg);
       ec.addError(new ErrorItem(errorMsg));
 
       return;
     }
 
     try {
-      logger.debug(
+      getLogger().debug(
         "About to add conversion rule [" + conversionWord + ", "
         + converterClass + "] to layout");
 
@@ -80,7 +78,7 @@ public class ConversionRuleAction extends Action {
     } catch (Exception oops) {
       inError = true;
       errorMsg = "Could not add conversion rule to PatternLayout.";
-      logger.error(errorMsg, oops);
+      getLogger().error(errorMsg, oops);
       ec.addError(new ErrorItem(errorMsg));
     }
   }

@@ -30,7 +30,7 @@ public class RootLoggerAction extends Action {
   static final String ADDITIVITY_ATTR = "additivity";
   static final String EMPTY_STR = "";
   static final Class[] ONE_STRING_PARAM = new Class[] { String.class };
-  //Logger logger = Logger.getLogger(RootLoggerAction.class);
+ 
   Logger root;
   boolean inError = false;
   

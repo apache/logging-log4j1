@@ -21,7 +21,6 @@ import org.apache.joran.action.Action;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
-import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.ErrorItem;
 import org.apache.log4j.spi.OptionHandler;
@@ -30,7 +29,6 @@ import org.xml.sax.Attributes;
 
 
 public class LayoutAction extends Action {
-  static final Logger logger = Logger.getLogger(LayoutAction.class);
   Layout layout;
   boolean inError = false;
   
@@ -45,18 +43,18 @@ public class LayoutAction extends Action {
     String className =
       attributes.getValue(CLASS_ATTRIBUTE);
     try {
-      logger.debug("About to instantiate layout of type [" + className + "]");
+      getLogger().debug("About to instantiate layout of type [" + className + "]");
 
       Object instance =
         OptionConverter.instantiateByClassName(
           className, org.apache.log4j.Layout.class, null);
       layout = (Layout) instance;
 
-      logger.debug("Pushing layout on top of the object stack.");
+      getLogger().debug("Pushing layout on top of the object stack.");
       ec.pushObject(layout);
     } catch (Exception oops) {
       inError = true;
-      logger.error(
+      getLogger().error(
         "Could not create an Layout. Reported error follows.", oops);
       ec.addError(new ErrorItem("Could not create layout of type " + className + "]."));
     }
@@ -78,18 +76,18 @@ public class LayoutAction extends Action {
     Object o = ec.peekObject();
 
     if (o != layout) {
-      logger.warn(
+      getLogger().warn(
         "The object on the top the of the stack is not the layout pushed earlier.");
     } else {
-      logger.debug("Popping layout from the object stack");
+      getLogger().debug("Popping layout from the object stack");
       ec.popObject();
       
       try {
-      	logger.debug("About to set the layout of the containing appender.");
+      	getLogger().debug("About to set the layout of the containing appender.");
         Appender appender = (Appender) ec.peekObject();
         appender.setLayout(layout);
       } catch(Exception ex) {
-      	logger.error("Could not set the layout for containing appender.", ex);
+      	getLogger().error("Could not set the layout for containing appender.", ex);
       }
     }
   }
