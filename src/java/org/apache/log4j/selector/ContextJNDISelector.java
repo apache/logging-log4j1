@@ -212,7 +212,7 @@ public class ContextJNDISelector implements RepositorySelector {
    * Remove the repository with the given context name from the list of
    * known repositories.
    * 
-   * @return 
+   * @return the detached repository
    */
   public LoggerRepository detachRepository(String contextName) {
     return (LoggerRepository) hierMap.remove(contextName);  

@@ -19,7 +19,8 @@ package org.apache.log4j.pattern;
 import org.apache.log4j.spi.LoggingEvent;
 
 /**
- * Most of the work is done in the parent class {@link NamedPatternConverter}.
+ * Most of the work is done in the parent class {@link 
+ * org.apache.log4j.pattern.NamedPatternConverter NamedPatternConverter}.
  * This class is only responsible of returning the full name name of the caller
  * class. 
  * 

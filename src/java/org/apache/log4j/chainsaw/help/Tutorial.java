@@ -38,8 +38,12 @@ public class Tutorial implements Runnable {
       Plugin p3 = new Generator("Generator 3");
       
       PluginRegistry pluginRegistry = LogManager.getLoggerRepository().getPluginRegistry();
-      pluginRegistry.startPlugin(p1);
-      pluginRegistry.startPlugin(p2);
-      pluginRegistry.startPlugin(p3);
+      pluginRegistry.addPlugin(p1);
+      p1.activateOptions();
+      pluginRegistry.addPlugin(p2);
+      p2.activateOptions();
+      pluginRegistry.addPlugin(p3);
+      p3.activateOptions();
+      
   }
 }

@@ -360,7 +360,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
     // TODO this should all be in a config file
     ChainsawCentral cc = new ChainsawCentral();
-    pluginRegistry.startPlugin(cc);
+    pluginRegistry.addPlugin(cc);
+    cc.activateOptions();
   }
 
   private void setupReceiverPanel() {
@@ -1196,7 +1197,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
               simpleReceiver.setThreshold(Level.DEBUG);
 
-              pluginRegistry.startPlugin(simpleReceiver);
+              pluginRegistry.addPlugin(simpleReceiver);
+              simpleReceiver.activateOptions();
               receiversPanel.updateReceiverTreeInDispatchThread();
             } catch (Exception e) {
               MessageCenter.getInstance().getLogger().error(

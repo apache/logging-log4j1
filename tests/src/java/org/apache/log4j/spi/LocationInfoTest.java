@@ -55,8 +55,12 @@ public class LocationInfoTest extends TestCase {
     Throwable t1 = new Throwable();
     Throwable t2 = new Throwable();
     
-    LoggingEvent le = new LoggingEvent(LoggingEvent.class.getName(),
-        logger, System.currentTimeMillis(), Level.DEBUG, "toto", null);
+    LoggingEvent le = new LoggingEvent();
+    le.setLogger(logger);
+    le.setTimeStamp(System.currentTimeMillis());
+    le.setLevel(Level.DEBUG);
+    le.setMessage("toto");
+    
     
     LocationInfo l1 = le.getLocationInformation();
   

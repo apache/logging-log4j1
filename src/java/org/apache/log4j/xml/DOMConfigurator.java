@@ -882,7 +882,8 @@ public class DOMConfigurator implements Configurator {
         Plugin plugin = parsePlugin(currentElement);
 
         if (plugin != null) {
-          repository.getPluginRegistry().startPlugin(plugin);
+          repository.getPluginRegistry().addPlugin(plugin);
+          plugin.activateOptions();
         }
       }
     }

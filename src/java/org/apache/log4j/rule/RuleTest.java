@@ -38,20 +38,20 @@ import org.apache.log4j.MDC;
 import org.apache.log4j.chainsaw.filter.FilterModel;
 import org.apache.log4j.spi.LoggingEvent;
 
-
+/**
+ * UI for demonstrating infix/postfix conversion and expression rule evaluation...work in progress...
+ *
+ * Infix to postfix conversion routines and evaluation methods for boolean expressions.
+ * See http://www.qiksearch.com/articles/cs/infix-postfix/
+ * and http://www.spsu.edu/cs/faculty/bbrown/web_lectures/postfix/
+ *
+ * for more information.
+ *
+ * @author Scott Deboy <sdeboy@apache.org>
+ *
+ */
 public class RuleTest extends JFrame {
-  /**
-   * UI for demonstrating infix/postfix conversion and expression rule evaluation...work in progress...
-   *
-   * Infix to postfix conversion routines and evaluation methods for boolean expressions.
-   * See http://www.qiksearch.com/articles/cs/infix-postfix/
-   * and http://www.spsu.edu/cs/faculty/bbrown/web_lectures/postfix/
-   *
-   * for more information.
-   *
-   * @author Scott Deboy <sdeboy@apache.org>
-   *
-   */
+
   Rule rule;
   FilterModel filterModel;
 
