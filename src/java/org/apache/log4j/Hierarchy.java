@@ -22,6 +22,7 @@ package org.apache.log4j;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.helpers.IntializationUtil;
+import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.or.ObjectRenderer;
 import org.apache.log4j.or.RendererMap;
 import org.apache.log4j.plugins.PluginRegistry;
@@ -449,6 +450,8 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
       Object o = ht.get(key);
 
       if (o == null) {
+        LogLog.info(
+            "Creating new logger ["+name+"] in repostiroy ["+getName()+"].");
         logger = factory.makeNewLoggerInstance(name);
         logger.setHierarchy(this);
         ht.put(key, logger);
@@ -456,6 +459,8 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
 
         return logger;
       } else if (o instanceof Logger) {
+          LogLog.info(
+            "Returning existing logger ["+name+"] in repostiroy ["+getName()+"].");
         return (Logger) o;
       } else if (o instanceof ProvisionNode) {
         //System.out.println("("+name+") ht.get(this) returned ProvisionNode");
