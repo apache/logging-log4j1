@@ -33,7 +33,7 @@ public class ShippedCodeFlagTest {
     else { 
       PropertyConfigurator.configure(type);
     }
-    BasicConfigurator.disableInfo();       
+    Category.getDefaultHierarchy().disableInfo();       
     CAT.debug("Hello world");
   }
 

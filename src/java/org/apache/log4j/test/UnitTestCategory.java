@@ -211,7 +211,8 @@ public class UnitTestCategory extends TestCase {
     Category root = Category.getRoot();    
     root.addAppender(caRoot);
 
-    BasicConfigurator.disableDebug();
+    Hierarchy h = Category.getDefaultHierarchy();
+    h.disableDebug();
     assertEquals(caRoot.counter, 0);     
 
     root.debug(MSG); assertEquals(caRoot.counter, 0);  
@@ -219,14 +220,14 @@ public class UnitTestCategory extends TestCase {
     root.log(Priority.WARN, MSG); assertEquals(caRoot.counter, 2);  
     root.warn(MSG); assertEquals(caRoot.counter, 3);  
 
-    BasicConfigurator.disableInfo();
+    h.disableInfo();
     root.debug(MSG); assertEquals(caRoot.counter, 3);  
     root.info(MSG); assertEquals(caRoot.counter, 3);  
     root.log(Priority.WARN, MSG); assertEquals(caRoot.counter, 4);  
     root.error(MSG); assertEquals(caRoot.counter, 5);  
     root.log(Priority.ERROR, MSG); assertEquals(caRoot.counter, 6);  
 
-    BasicConfigurator.disableAll();
+    h.disableAll();
     root.debug(MSG); assertEquals(caRoot.counter, 6);  
     root.info(MSG); assertEquals(caRoot.counter, 6);  
     root.log(Priority.WARN, MSG); assertEquals(caRoot.counter, 6);  
@@ -234,7 +235,7 @@ public class UnitTestCategory extends TestCase {
     root.log(Priority.FATAL, MSG); assertEquals(caRoot.counter, 6);  
     root.log(Priority.FATAL, MSG); assertEquals(caRoot.counter, 6);  
 
-    BasicConfigurator.disable(Priority.FATAL);
+    h.disable(Priority.FATAL);
     root.debug(MSG); assertEquals(caRoot.counter, 6);  
     root.info(MSG); assertEquals(caRoot.counter, 6);  
     root.log(Priority.WARN, MSG); assertEquals(caRoot.counter, 6);  
