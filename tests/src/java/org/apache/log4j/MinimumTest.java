@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2005 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,6 +72,12 @@ public class MinimumTest extends TestCase {
     assertTrue(Compare.compare(FILTERED, "witness/simple"));
   }
 
+  /**
+   * Tests deprecated TTCCLayout.
+   *
+   * @deprecated Class under test is deprecated.
+   * @throws Exception if io exception.
+   */
   public void ttcc() throws Exception {
     TTCCLayout layout = new TTCCLayout();
     layout.setDateFormat(Constants.DATE_AND_TIME_FORMAT);
