@@ -87,11 +87,12 @@ public class PropertyConfigurator extends BasicConfigurator
   protected Hashtable registry = new Hashtable(11);
   protected CategoryFactory categoryFactory = new DefaultCategoryFactory();
   
-  static final String CATEGORY_PREFIX = "log4j.category.";
-  static final String ADDITIVITY_PREFIX = "log4j.additivity.";
+  static final String      CATEGORY_PREFIX = "log4j.category.";
+  static final String       FACTORY_PREFIX = "log4j.factory";
+  static final String    ADDITIVITY_PREFIX = "log4j.additivity.";
   static final String ROOT_CATEGORY_PREFIX = "log4j.rootCategory";
-  static final String APPENDER_PREFIX = "log4j.appender.";  
-  static final String RENDERER_PREFIX = "log4j.renderer.";
+  static final String      APPENDER_PREFIX = "log4j.appender.";  
+  static final String      RENDERER_PREFIX = "log4j.renderer.";
 
   /** Key for specifying the {@link org.apache.log4j.spi.CategoryFactory
       CategoryFactory}.  Currently set to 
@@ -459,6 +460,8 @@ public class PropertyConfigurator extends BasicConfigurator
                   OptionConverter.instantiateByClassName(factoryClassName,
 							 CategoryFactory.class, 
 							 categoryFactory);
+      PropertySetter.setProperties(categoryFactory, props, FACTORY_PREFIX + ".");
+      Category.getDefaultHierarchy().setCategoryFactory(categoryFactory);
     }
   }
 
