@@ -92,6 +92,8 @@ public class NestComponentIA extends ImplicitAction {
   }
 
   public void end(ExecutionContext ec, String tagName) {
+    
+    logger.debug("entering end method");
     if (inError) {
         return;
       }

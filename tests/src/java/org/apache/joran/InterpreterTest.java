@@ -60,14 +60,14 @@ import javax.xml.parsers.SAXParserFactory;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class JoranParserTest extends TestCase {
-  static final Logger logger = Logger.getLogger(JoranParserTest.class);
+public class InterpreterTest extends TestCase {
+  static final Logger logger = Logger.getLogger(InterpreterTest.class);
 
   /**
    * Constructor for JoranParserTestCase.
    * @param name
    */
-  public JoranParserTest(String name) {
+  public InterpreterTest(String name) {
     super(name);
   }
 
@@ -79,7 +79,8 @@ public class JoranParserTest extends TestCase {
 
     Logger root = Logger.getRootLogger();
     root.addAppender(
-      new ConsoleAppender(new PatternLayout("%r %5p [%t] %c{2} - %m%n")));
+      new ConsoleAppender(new PatternLayout("%r %5p [%t] %c - %m%n")));
+    
   }
 
   /*
@@ -96,7 +97,7 @@ public class JoranParserTest extends TestCase {
   }
   
   /** 
-   * Tests the basic looping contruct in JoranParser.
+   * Tests the basic looping contruct in Interpreter.
    * 
    * The parser is set up to push 2 string objects for each element encountered.
    * The results are compared with a witness stack.
@@ -111,7 +112,7 @@ public class JoranParserTest extends TestCase {
     rs.addRule(
       new Pattern("log4j:configuration/root/level"), new StackCounterAction());
 
-    JoranParser jp = new JoranParser(rs);
+    Interpreter jp = new Interpreter(rs);
     ExecutionContext ec = jp.getExecutionContext();
     SAXParser saxParser = createParser();
     saxParser.parse("file:input/joran/basicLoop.xml", jp);
@@ -143,7 +144,7 @@ public class JoranParserTest extends TestCase {
     rs.addRule(
         new Pattern("log4j:configuration/root/level"), new LevelAction());
 
-    JoranParser jp = new JoranParser(rs);
+    Interpreter jp = new Interpreter(rs);
     ExecutionContext ec = jp.getExecutionContext();
     HashMap omap = ec.getObjectMap();
     omap.put(ActionConst.APPENDER_BAG, new HashMap());
@@ -198,7 +199,7 @@ public class JoranParserTest extends TestCase {
       new Pattern("log4j:configuration/appender/layout"), new LayoutAction());
     rs.addRule(new Pattern("*/param"), new ParamAction());
 
-    JoranParser jp = new JoranParser(rs);
+    Interpreter jp = new Interpreter(rs);
     ExecutionContext ec = jp.getExecutionContext();
     HashMap omap = ec.getObjectMap();
     omap.put(ActionConst.APPENDER_BAG, new HashMap());
@@ -237,7 +238,7 @@ public class JoranParserTest extends TestCase {
     
   }
 
-  public void xtestLoop3() throws Exception {
+  public void testParsing3() throws Exception {
     logger.debug("Starting testLoop3");
 
     RuleStore rs = new SimpleRuleStore();
@@ -261,7 +262,7 @@ public class JoranParserTest extends TestCase {
       new Pattern("log4j:configuration/appender/layout"), new LayoutAction());
     rs.addRule(new Pattern("*/param"), new ParamAction());
 
-    JoranParser jp = new JoranParser(rs);
+    Interpreter jp = new Interpreter(rs);
     jp.addImplcitAction(new NestComponentIA());
 
     ExecutionContext ec = jp.getExecutionContext();
@@ -273,6 +274,7 @@ public class JoranParserTest extends TestCase {
     SAXParser saxParser = createParser();
     saxParser.parse("file:input/joran/parser3.xml", jp);
 
+    // the following assertions depend on the contensts of parser3.xml
   }
 
   public void testNewConversionWord() throws Exception {
@@ -289,7 +291,7 @@ public class JoranParserTest extends TestCase {
 
     rs.addRule(new Pattern("*/param"), new ParamAction());
 
-    JoranParser jp = new JoranParser(rs);
+    Interpreter jp = new Interpreter(rs);
     jp.addImplcitAction(new NestComponentIA());
 
     ExecutionContext ec = jp.getExecutionContext();
@@ -315,7 +317,7 @@ public class JoranParserTest extends TestCase {
       new Pattern("log4j:configuration/newRule"),
       new NewRuleAction());
 
-    JoranParser jp = new JoranParser(rs);
+    Interpreter jp = new Interpreter(rs);
     ExecutionContext ec = jp.getExecutionContext();
     HashMap omap = ec.getObjectMap();
     omap.put(ActionConst.APPENDER_BAG, new HashMap());
@@ -330,8 +332,10 @@ public class JoranParserTest extends TestCase {
   
   public static Test suite() {
     TestSuite suite = new TestSuite();
-    //suite.addTest(new JoranParserTest("testBasicLoop"));
-    suite.addTest(new JoranParserTest("testParsing2"));
+    //suite.addTest(new InterpreterTest("testBasicLoop"));
+    //suite.addTest(new InterpreterTest("testParsing1"));
+    //suite.addTest(new InterpreterTest("testParsing2"));
+    suite.addTest(new InterpreterTest("testParsing3"));
     return suite;
   }
 

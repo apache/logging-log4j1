@@ -27,21 +27,35 @@ import org.xml.sax.helpers.DefaultHandler;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Stack;
+import java.util.Vector;
 
 
-public class JoranParser extends DefaultHandler {
-  static final Logger logger = Logger.getLogger(JoranParser.class);
+public class Interpreter extends DefaultHandler {
+  static final Logger logger = Logger.getLogger(Interpreter.class);
+  private static List EMPTY_LIST = new Vector(0);
+  
   private RuleStore ruleStore;
   private ExecutionContext ec;
   private ArrayList implicitActions;
   Pattern pattern;
   Locator locator;
+  /**
+   * The <code>actionListStack</code> contains a list of actions that are 
+   * executing for the given XML element.
+   * 
+   * A list of actions is pushed by the {link #startElement} and popped by
+   * {@link #endElement}. 
+   * 
+   */
+  Stack actionListStack;
   
-  JoranParser(RuleStore rs) {
+  Interpreter(RuleStore rs) {
     ruleStore = rs;
     ec = new ExecutionContext(this);
     implicitActions = new ArrayList(3);
     pattern = new Pattern();
+    actionListStack = new Stack();
   }
 
   public ExecutionContext getExecutionContext() {
@@ -65,22 +79,18 @@ public class JoranParser extends DefaultHandler {
     List applicableActionList = getapplicableActionList(pattern);
 
     if (applicableActionList != null) {
+      actionListStack.add(applicableActionList);
       callBeginAction(applicableActionList, tagName, atts);
     } else {
+      actionListStack.add(EMPTY_LIST);
       logger.debug("no applicable action for <"+tagName+">.");
     }
   }
 
-  public Locator getDocumentLocator() {
-    return locator;
-  }
-  public void setDocumentLocator(Locator l) {
-    locator = l;
-  }
   public void endElement(String namespaceURI, String localName, String qName) {
-    List applicableActionList = getapplicableActionList(pattern);
+    List applicableActionList = (List) actionListStack.pop();
 
-    if (applicableActionList != null) {
+    if (applicableActionList != EMPTY_LIST) {
       callEndAction(applicableActionList, getTagName(localName, qName));
     }
 
@@ -88,6 +98,14 @@ public class JoranParser extends DefaultHandler {
     pattern.pop();
   }
 
+
+  public Locator getDocumentLocator() {
+    return locator;
+  }
+  public void setDocumentLocator(Locator l) {
+    locator = l;
+  }
+  
   String getTagName(String localName, String qName) {
     String tagName = localName;
 
