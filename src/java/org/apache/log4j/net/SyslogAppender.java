@@ -84,12 +84,14 @@ public class SyslogAppender extends AppenderSkeleton {
   protected static final int SYSLOG_HOST_OI = 0;
   protected static final int FACILITY_OI = 1;
   
+  static final String TAB = "    ";
+
   // Have LOG_USER as default
   int syslogFacility = LOG_USER;
   String facilityStr;  
   boolean facilityPrinting = false;
   
-  SyslogTracerPrintWriter stp;
+  //SyslogTracerPrintWriter stp;
   SyslogQuietWriter sqw;  
   String syslogHost;
   
@@ -124,7 +126,6 @@ public class SyslogAppender extends AppenderSkeleton {
     // A SyslogWriter is UDP based and needs no opening. Hence, it
     // can't be closed. We just unset the variables here.    
     sqw = null;
-    stp = null;
   }
   
   private
@@ -251,13 +252,17 @@ public class SyslogAppender extends AppenderSkeleton {
     sqw.setPriority(event.priority.getSyslogEquivalent());    
     sqw.write(buffer);
 
- 
-    if(event.throwable != null) 
-      event.throwable.printStackTrace(stp);
-    else {
-      String tInfo = event.getThrowableInformation();
-      if (tInfo != null) 
-	this.sqw.write(tInfo);
+    String[] s = event.getThrowableStrRep();
+    if (s != null) {
+      int len = s.length;
+      if(len > 0) {
+	sqw.write(s[0]);
+      
+	for(int i = 1; i < len; i++) {
+	    sqw.write(TAB+s[i].substring(1));
+	}	
+      }
+
     }
   }
 
@@ -292,7 +297,7 @@ public class SyslogAppender extends AppenderSkeleton {
   void setSyslogHost(String syslogHost) {
     this.sqw = new SyslogQuietWriter(new SyslogWriter(syslogHost), 
 				     syslogFacility, errorHandler);
-    this.stp = new SyslogTracerPrintWriter(sqw);    
+    //this.stp = new SyslogTracerPrintWriter(sqw);    
     this.syslogHost = syslogHost;
   }
   

@@ -308,9 +308,12 @@ public class SMTPAppender extends AppenderSkeleton {
 	LoggingEvent event = cb.get();
 	sbuf.append(layout.format(event));
 	if(layout.ignoresThrowable()) {
-	  String tInfo = event.getThrowableInformation();
-	  if (tInfo != null) 
-	    sbuf.append(tInfo);
+	  String[] s = event.getThrowableStrRep();
+	  if (s != null) {
+	    for(int j = 0; j < s.length; j++) {
+	      sbuf.append(s[j]);
+	    }
+	  }
 	}
       }
       t = layout.getFooter();

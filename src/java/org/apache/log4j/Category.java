@@ -44,8 +44,8 @@ import java.net.MalformedURLException;
   distintive features of log4j are hierarchical categories and their
   evaluation.
 
-  <p>See the <a href="../../../manual.html">user manual</a> for an
-  introduction on this class.
+  <p>See the <a href="../../../../manual.html">user manual</a> for an
+  introduction on this class. 
 
   @author Ceki G&uuml;lc&uuml;
   @author Anders Kristensen */
@@ -69,23 +69,30 @@ public class Category implements AppenderAttachable {
      See also {@link #DEFAULT_CONFIGURATION_KEY} for a more general
      alternative.
 
+     <p>See also the full description of <a
+     href="../../../../manual.html#defaultInit">default
+     intialization</a> procedure.
+
      @since 0.8.5 */
      static public final String DEFAULT_CONFIGURATION_FILE = "log4j.properties";
      
   /**
-     This String constant is set to <b>log4j.configuration</b>. 
+     This string constant is set to <b>log4j.configuration</b>. 
 
-     <p>It corresponds to name of the system property which, if set,
+     <p>It corresponds to name of a system property that, if set,
      specifies the name of the resource containing the properties file
      or {@link URL} with which log4j should configure itself. See
      {@link OptionConverter#selectAndConfigure} for more detailed
-     information on the processing of this options.
+     information on the processing of this option.
 
      <p>Setting the <b>log4j.configuration</b> system property
-     overrides the default search for the file
-     <b>log4j.properties</b>.
+     overrides the default search for the file <b>log4j.properties</b>.
 
      <p>Note that all property keys are case sensitive.  
+
+     <p>See also the full description of <a
+     href="../../../../manual.html#defaultInit">default
+     intialization</a> procedure.
 
      @since 1.0 */
      static final public String DEFAULT_CONFIGURATION_KEY="log4j.configuration";
@@ -97,6 +104,10 @@ public class Category implements AppenderAttachable {
 
      <p>The current value of the DEFAULT_INIT_OVERRIDE_KEY string
      constant is <b>log4j.defaultInitOverride</b>.
+
+     <p>See also the full description of <a
+     href="../../../../manual.html#defaultInit">default
+     intialization</a> procedure.
 
      <p>Note that all property keys are case sensitive.  
 
