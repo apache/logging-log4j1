@@ -9,8 +9,18 @@
        deprecated.
    
 
- April, 2004 
-
+ - Made ignoresThrowable a settable property. The user can now force a layout
+   to ignore the throwable in the event even if the layout knows how to handle
+   exceptions. Conversely, an appender can be fooled to believe that a layout
+   handled the exception in the logging event by setting a layout's ignoresThrowable
+   property to false. [*]
+   
+ - The org.apache.log4j.db package replaces the old org.apache.log4j.jdbc
+   package. The new package supports most relational database systems
+   such as PostgreSQL, MySQL, Oracle, DB2 or MsSQL. It can also handle
+   retrieve connections using a JDBC driver class, a data source class or
+   JNDI. [*]
+     
  - A sequenceNumber field has been added to LoggingEvent. This fields is useful when 
    checking for the equality of two logging events or when ordering them. [*]
 
