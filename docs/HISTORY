@@ -5,7 +5,7 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
 
- February 18th, 2003
+ February 19th, 2003
  
  - Release of version 1.2.8
 
@@ -16,6 +16,10 @@
 
  - Fixed bug #12366 whereby various versions of Xerces would not parse
    log4j configuration scripts expressed in XML format. [*]
+
+ - Fixed bug #14827. The "removes" buffer used in the flushBuffer() method
+   of JDBCAppender is now cleared, solving the memory leak.  Thanks to John
+   Landers for reporting the bug and suggesting the fix. [*]
 
  - Fixed bug #15599. SocketAppender now honors ReconnectionDelay of 0.
    Many thanks to Scott Schram for reporting the bug and providing the fix. [*]
