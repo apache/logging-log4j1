@@ -12,6 +12,7 @@ import  org.apache.log4j.spi.ErrorHandler;
 import  org.apache.log4j.spi.LoggingEvent;
 import  org.apache.log4j.Appender;
 import  org.apache.log4j.Logger;
+import  org.apache.log4j.helpers.LogLog;
 import java.util.Vector;
 
 /**
@@ -41,12 +42,12 @@ public class FallbackErrorHandler implements ErrorHandler {
      loggers that we need to search for in case of appender failure.
   */
   public 
-  void setLogger(String loggerName) {
+  void setLogger(Logger logger) {
+    LogLog.debug("FB: Adding logger [" + logger.getName() + "].");
     if(loggers == null) {
       loggers = new Vector();
     }
-    //if(loggerName.equalsIgnoreCase
-    //loggers.add(logger);
+    loggers.add(logger);
   }
 
 
@@ -74,11 +75,16 @@ public class FallbackErrorHandler implements ErrorHandler {
   void error(String message, Exception e, int errorCode, LoggingEvent event) {
     for(int i = 0; i < loggers.size(); i++) {
       Logger l = (Logger) loggers.get(i);
-      if(l.isAttached(primary)) {
-	 l.removeAppender(primary);
-	 l.addAppender(backup);
-      }
-    }
+      LogLog.debug("FB: Searching for ["+primary.getName()+"] in logger"
+		   +l.getName());
+      //if(l.isAttached(primary)) {
+      LogLog.debug("FB: Replacing ["+primary.getName()+"] by ["
+		   + backup.getName() + " in logger"+ l);
+      l.removeAppender(primary);
+      LogLog.debug("FB: Adding appender ["+backup.getName()+"] to logger "
+		   +  l.getName());
+      l.addAppender(backup);
+    }    
   }
 
 
@@ -99,6 +105,7 @@ public class FallbackErrorHandler implements ErrorHandler {
    */
   public
   void setAppender(Appender primary) {
+    LogLog.debug("FB: Setting primary appender to [" + primary.getName() + "].");
     this.primary = primary;
   }
 
@@ -107,6 +114,7 @@ public class FallbackErrorHandler implements ErrorHandler {
    */
   public
   void setBackupAppender(Appender backup) {
+    LogLog.debug("FB: Setting backup appender to [" + backup.getName() + "].");
     this.backup = backup;
   }
   

@@ -60,10 +60,18 @@ element. -->
 <!-- ErrorHandlers can be of any class. They can admit any number of -->
 <!-- parameters. -->
 
-<!ELEMENT errorHandler (param*, appender-ref?)> 
+<!ELEMENT errorHandler (param*, root-ref?, logger-ref*,  appender-ref?)> 
 <!ATTLIST errorHandler
    class        CDATA   #REQUIRED 
 >
+
+<!ELEMENT root-ref EMPTY>
+
+<!ELEMENT logger-ref EMPTY>
+<!ATTLIST logger-ref
+  ref IDREF #REQUIRED
+>
+
 
 <!ELEMENT param EMPTY>
 <!ATTLIST param
@@ -100,8 +108,7 @@ element. -->
 <!-- touch the level of the named logger. -->
 <!ELEMENT logger (param*,level?,appender-ref*)>
 <!ATTLIST logger
-  class         CDATA   #IMPLIED
-  name		CDATA	#REQUIRED
+  name		ID	#REQUIRED
   additivity	(true|false) "true"  
 >
 

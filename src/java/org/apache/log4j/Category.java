@@ -465,6 +465,8 @@ public class Category implements AppenderAttachable {
   /**
      Return the default Hierarchy instance.
 
+     @deprecated Please use {@link LogManager.getLoggerRepository()} instead. 
+
      @since 1.0
    */
   public 
@@ -477,7 +479,7 @@ public class Category implements AppenderAttachable {
      Return the the {@link Hierarchy} where this <code>Category</code>
      instance is attached.
 
-     @deprecatede Please use {@link #getLoggerRepository} instead.
+     @deprecated Please use {@link #getLoggerRepository} instead.
 
      @since 1.1 */
   public  
@@ -718,10 +720,13 @@ public class Category implements AppenderAttachable {
    */
   public 
   boolean isAttached(Appender appender) {
+    System.err.println(getName()+"=-=-=-=-=-=-["+appender+"-"+aai);
     if(appender == null || aai == null) 
       return false;
-    else 
+    else {
+      System.err.println(".......=-=-=-=-=-=-["+appender);
       return aai.isAttached(appender);
+    }
   }
 
   /**
