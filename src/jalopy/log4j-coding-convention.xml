@@ -51,6 +51,35 @@
                 <methodClassIfWrapped>false</methodClassIfWrapped>
             </treatDifferent>
         </braces>
+        <comments>
+            <format>
+                <multiline>true</multiline>
+            </format>
+            <javadoc>
+                <check>
+                    <innerclass>false</innerclass>
+                    <tags>false</tags>
+                    <throwsTags>false</throwsTags>
+                </check>
+                <fieldsShort>false</fieldsShort>
+                <generate>
+                    <class>0</class>
+                    <constructor>0</constructor>
+                    <field>0</field>
+                    <method>0</method>
+                </generate>
+                <parseComments>true</parseComments>
+                <tags>
+                    <in-line />
+                    <standard />
+                </tags>
+            </javadoc>
+            <remove>
+                <javadoc>false</javadoc>
+                <multiline>false</multiline>
+                <singleline>false</singleline>
+            </remove>
+        </comments>
         <footer>
             <text />
         </footer>
