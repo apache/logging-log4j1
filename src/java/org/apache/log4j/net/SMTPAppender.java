@@ -107,6 +107,7 @@ public class SMTPAppender extends AppenderSkeleton {
      Activate the specified options, such as the smtp host, the
      recipient, from, etc. */
   public void activate() {
+    int errorCount = 0;
     Properties props = new Properties(System.getProperties());
 
     if (smtpHost != null) {
@@ -127,6 +128,7 @@ public class SMTPAppender extends AppenderSkeleton {
 
       msg.setRecipients(Message.RecipientType.TO, parseAddress(to));
     } catch (MessagingException e) {
+      errorCount++;
       getLogger().error("Could not activate SMTPAppender options.", e);
     }
 
@@ -135,15 +137,21 @@ public class SMTPAppender extends AppenderSkeleton {
     }
     
     if (this.evaluator == null) {
+      errorCount++;
       String errMsg = "No TriggeringEventEvaluator is set for appender ["+getName()+"].";
       getLogger().error(errMsg);
       throw new IllegalStateException(errMsg);
     }
 
     if (this.layout == null) {
+      errorCount++;
       String errMsg = "No layout set for appender named [" + name + "].";
       getLogger().error(errMsg);
       throw new IllegalStateException(errMsg);
+    }
+    
+    if(errorCount == 0) {
+      super.activate();
     }
   }
 

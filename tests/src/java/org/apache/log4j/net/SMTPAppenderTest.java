@@ -14,43 +14,36 @@
  * limitations under the License.
  */
 
-package org.apache.log4j;
 
-import java.io.CharArrayWriter;
+package org.apache.log4j.net;
+
+import org.apache.log4j.AbstractAppenderTest;
+import org.apache.log4j.Appender;
 
 
 /**
- *
- * Test if WriterAppender honors the Appender contract.
- *
+ * Test if SMTPAppender honors the Appender contract.
+ * 
  * @author <a href="http://www.qos.ch/log4j/">Ceki G&uuml;lc&uuml;</a>
+ *
  */
-public class WriterAppenderTest extends AbstractAppenderTest {
+public class SMTPAppenderTest extends AbstractAppenderTest {
   protected Appender getAppender() {
-    return new WriterAppender();
+    return new SMTPAppender();
   }
 
-  protected Appender getConfiguredAppender() {
-    WriterAppender wa = new WriterAppender();
+  public Appender getConfiguredAppender() {
+    SMTPAppender ca = new SMTPAppender();
 
-    // set a bogus writer
-    wa.setWriter(new CharArrayWriter());
     // set a bogus layout
-    wa.setLayout(new DummyLayout());
-    return wa;
+    ca.setLayout(new DummyLayout());
+    ca.setFrom("noreply@nowhere.x");
+    ca.setTo("noreply@nowhere.x");
+    ca.setSMTPHost("localhost");
+    return ca;
   }
 
   public void testPartiallyConfiguredAppender() {
-    WriterAppender wa1 = new WriterAppender();
-
-    // set a bogus writer
-    wa1.setWriter(new CharArrayWriter());
-    assertFalse(wa1.isActive());
-
-    WriterAppender wa2 = new WriterAppender();
-
-    // set a bogus writer
-    wa2.setLayout(new DummyLayout());
-    assertFalse(wa2.isActive());
+    
   }
 }

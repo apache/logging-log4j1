@@ -29,7 +29,7 @@ public class ConsoleAppenderTest extends AbstractAppenderTest {
     return new ConsoleAppender();
   }
 
-  Appender getConfiguredAppender() {
+  protected Appender getConfiguredAppender() {
     ConsoleAppender ca = new ConsoleAppender();
 
     // set a bogus layout
