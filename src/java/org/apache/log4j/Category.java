@@ -33,40 +33,48 @@ import java.util.ResourceBundle;
 
 
 /**
-   <font color="#AA2222"><b>This class has been deprecated and
-   replaced by the {@link Logger} <em>subclass</em>.</b></font> It
-   will be kept around to preserve backward compatibility until mid
-   2003.
-
-   <p><code>Logger</code> is a subclass of Category, i.e. it extends
-   Category. In other words, a logger <em>is</em> a category. Thus,
-   all operations that can be performed on a category can be performed
-   on a logger. Whenever log4j is asked to produce a Category object,
-   it will instead produce a Logger object. However, methods that
-   previously accepted category objects still continue to accept
-   category objects.
-
-   <p>For example, the following are all legal and will work as expected.
-
+  * <font color="#AA2222"><b>This class has been deprecated and
+  * replaced by the {@link Logger} <em>subclass</em></b></font>. It
+  * will be kept around to preserve backward compatibility until mid
+  * 2003.
+  * 
+  * <p><code>Logger</code> is a subclass of Category, i.e. it extends
+  * Category. In other words, a logger <em>is</em> a category. Thus,
+  * all operations that can be performed on a category can be
+  * performed on a logger. Internally, whenever log4j is asked to
+  * produce a Category object, it will instead produce a Logger
+  * object. Log4j 1.2 will <em>never</em> produce Category objects but
+  * only <code>Logger</code> instances. In order to preserve backward
+  * compatibility, methods that previously accepted category objects
+  * still continue to accept category objects.
+  * 
+  * <p>For example, the following are all legal and will work as
+  * expected.
+  * 
    <pre>
-   &nbsp;&nbsp;&nbsp;// Deprecated form:
-   &nbsp;&nbsp;&nbsp;Category cat = Category.getInstance("foo.bar")
-
-   &nbsp;&nbsp;&nbsp;// Preferred form for retrieving loggers:
-   &nbsp;&nbsp;&nbsp;Logger logger = Logger.getLogger("foo.bar")
+    &nbsp;&nbsp;&nbsp;// Deprecated form:
+    &nbsp;&nbsp;&nbsp;Category cat = Category.getInstance("foo.bar")
+   
+    &nbsp;&nbsp;&nbsp;// Preferred form for retrieving loggers:
+    &nbsp;&nbsp;&nbsp;Logger logger = Logger.getLogger("foo.bar")
    </pre>
-
-   <p>The first form is deprecated and should be avoided.
-
-   <p><b>There is absolutely no need for new client code to use or
-   refer to the <code>Category</code> class.</b> Whenever possible,
-   please avoid referring to it or using it.
-
-  <p>See the <a href="../../../../manual.html">short manual</a> for an
-  introduction on this class.
-
-  @author Ceki G&uuml;lc&uuml;
-  @author Anders Kristensen */
+   
+  *  <p>The first form is deprecated and should be avoided.
+  * 
+  *  <p><b>There is absolutely no need for new client code to use or
+  *  refer to the <code>Category</code> class.</b> Whenever possible,
+  *  please avoid referring to it or using it.
+  * 
+  * <p>See the <a href="../../../../manual.html">short manual</a> for an
+  * introduction on this class.
+  * 
+  * <p>See the document entitled the <a
+  * href="http://www.qos.ch/logging/replacingCategory.html">replacement
+  * of Logger by Category</a> for a deeper discussion.
+  *
+  * @author Ceki G&uuml;lc&uuml;
+  * @author Anders Kristensen 
+  */
 public class Category implements AppenderAttachable {
 
   /**
@@ -312,7 +320,7 @@ public class Category implements AppenderAttachable {
 
      @deprecated Please use {@link LogManager#exists} instead.
 
-     @version 0.8.5 */
+     @since 0.8.5 */
   public
   static
   Logger exists(String name) {
@@ -495,19 +503,8 @@ public class Category implements AppenderAttachable {
 
 
  /**
-     Retrieve a category with named as the <code>name</code>
-     parameter. If the named category already exists, then the
-     existing instance will be reutrned. Otherwise, a new instance is
-     created.
-
-     By default, categories do not have a set level but inherit
-     it from the hierarchy. This is one of the central features of
-     log4j.
-
-     <b>Deprecated</b> Please use {@link Logger#getLogger(String)}
-     instead.
-
-     @param name The name of the category to retrieve.  */
+  * @deprecated Make sure to use {@link Logger#getLogger(String)} instead.
+  */
   public
   static
   Category getInstance(String name) {
@@ -515,15 +512,8 @@ public class Category implements AppenderAttachable {
   }
 
  /**
-    Shorthand for <code>getInstance(clazz.getName())</code>.
-
-    @param clazz The name of <code>clazz</code> will be used as the
-    name of the category to retrieve.  See {@link
-    #getInstance(String)} for more detailed information.
-
-    <b>Deprecated</b> Please use {@link Logger#getLogger(Class)} instead.
-
-    @since 1.0 */
+  * @deprecated Please make sure to use {@link Logger#getLogger(Class)} instead.
+  */ 
   public
   static
   Category getInstance(Class clazz) {
@@ -577,16 +567,7 @@ public class Category implements AppenderAttachable {
 
 
   /**
-     Return the root of the default category hierrachy.
-
-     <p>The root category is always instantiated and available. It's
-     name is "root".
-
-     <p>Nevertheless, calling {@link #getInstance
-     Category.getInstance("root")} does not retrieve the root category
-     but a category just under root named "root".
-
-     <b>Deprecated</b> Use {@link Logger#getRootLogger()} instead.
+   *  @deprecated Please use {@link Logger#getRootLogger()} instead.
    */
   final
   public

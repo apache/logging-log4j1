@@ -201,16 +201,16 @@ public class Logging {
   }
 
   /**
-     <b>Usage:</b> <code>java org.apache.log4j.performance.Logging confFile runLength [delay] [burstLen]</code>
-
-     <p><code>confFile</code> is an XML configuration file and
-      <code>runLength</code> (integer) is the length of test loop,
-      <code>delay</code> is the time in millisecs to sleep every
-      <code>bustLen</code> log requests.
-
-      <p>This application just prints the average time it took to log.
-
-
+   * The main method.
+   *
+   * <b>Usage:</b> <code>java org.apache.log4j.performance.Logging confFile runLength [delay] [burstLen]</code>
+   * 
+   * <p><code>confFile</code> is an XML configuration file and
+   * <code>runLength</code> (integer) is the length of test loop,
+   * <code>delay</code> is the time in millisecs to sleep every
+   * <code>bustLen</code> log requests.
+   *
+   *  <p>This application just prints the average time it took to log.
    */
   public static void main(String argv[]) {
 
