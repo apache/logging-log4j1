@@ -277,7 +277,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     
     applyLookAndFeel(model.getLookAndFeelClassName());
     
-    createChainsawGUI(model, true, null);
+    createChainsawGUI(model, null);
   }
 
   /**
@@ -290,10 +290,10 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    *                    DOCUMENT ME!
    */
   public static void createChainsawGUI(ApplicationPreferenceModel model,
-    boolean showSplash, Action shutdownAction) {
+    Action shutdownAction) {
     LogUI logUI = new LogUI();
 
-    if (showSplash) {
+    if (model.isShowSplash()) {
       showSplash(logUI);
     }
 
