@@ -8,8 +8,6 @@
 
 package org.apache.log4j.helpers;
 
-import java.util.StringTokenizer;
-
 /**
    VersionHelper fixes the classloading trouble when using Log4J in a
    multi-classloader environment like Jakarta Tomcat
@@ -18,10 +16,9 @@ import java.util.StringTokenizer;
    @author Christopher Taylor */
 abstract public class VersionHelper {
 	
-  public static final String VERSION_PROPERTY = "java.version";	
-  private static VersionHelper helper;
-
-	
+  static public final String VERSION_PROPERTY = "java.version";	
+  static private VersionHelper helper;
+  
   /** VersionHelpers for specific JVM versions override this method,
    *  For example, VersionHelper11 just calls into
    *  <code>Class.forName()</code>, while VersionHelper20 calls into
@@ -29,7 +26,9 @@ abstract public class VersionHelper {
    * @see java.lang.Thread#getContextClassLoader */
   
 
-  abstract public Class loadClass (String klass_name) throws ClassNotFoundException;
+  abstract 
+  public 
+  Class loadClass (String klass_name) throws ClassNotFoundException;
 	
   /** All classes in Log4J that need to dynamically load other classes
    * must use
@@ -51,27 +50,28 @@ abstract public class VersionHelper {
    * @see java.lang.Thread#getContextClassLoader */
   public static VersionHelper getInstance () {
     if (helper == null) {
-      /* If the helper is null, we'll inspect the System property "java.version" and
-	 figure out which version of the VM we're running on.
-	 Version strings are: [major version].[minor version].[bug fix revision]
-	 So JDK 1.2: 1.2.0
-	 JDK 1.1: 1.1.0 
-      */
+      /* Inspect the System property "java.version" and figure out which
+	 version of the VM we're running on.  Version strings are: [major
+	 version].[minor version].[bug fix revision] So JDK 1.2: 1.2.0 JDK
+	 1.1: 1.1.0 */
       String prop = System.getProperty(VERSION_PROPERTY);
-      StringTokenizer st = new StringTokenizer(prop,".");
-      st.nextToken(); // Ignore the initial 1
-      String version = st.nextToken();
-      try {
-	/* Here we'll parse the number and decide which version helper to use */
-	switch (Integer.parseInt(version)) {
-	case 0:
-	case 1: helper = new VersionHelper11(); break;
-	default: helper = new VersionHelper20(); break;
-	}
-      } catch (NumberFormatException oops) {
+      boolean java1 = true;
+
+      if(prop != null) {
+	int i = prop.indexOf('.');
+	if(i != -1) {	
+	  if(prop.charAt(i+1) != '1')
+	    java1 = false;
+	} 
+      }
+      if(java1) {
 	helper = new VersionHelper11();
-      }  
+      } else {
+	helper = new VersionHelper20();
+      }
     }
     return helper;
   }
+  
+  
 }

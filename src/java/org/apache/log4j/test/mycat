@@ -12,7 +12,7 @@ declare -i TEST
 function testSubclassing {
  
  echo -n "Subclassing test $TEST - "
- java org.apache.log4j.examples.MyCategory $LCF
+ java org.apache.log4j.examples.MyCategoryTest $LCF
  check witness/mycat.$TEST $TEMP; echo "OK."
 }
 
@@ -31,6 +31,7 @@ fi
 rm $TEMP > /dev/null
 TEST=2
 if [ $TEST -ge $start ]; then
+   echo "The next test outputs error messages."
   echo "log4j.rootCategory=DEBUG, A1" > $LCF
   lecho "log4j.appender.A1=org.apache.log4j.FileAppender"
   lecho "log4j.appender.A1.File=$TEMP"

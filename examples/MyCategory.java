@@ -46,18 +46,9 @@ public class MyCategory extends Category {
      end of each message.  */
   public 
   void debug(Object message) {
-    super.debug(message + " world.");    
+    super.log(FQCN, Priority.DEBUG, message + " world.", null);    
   }
   
-  /**
-     This makes caller localization to work properly.
-   */
-  protected
-  String getFQCN() {
-    return MyCategory.FQCN;
-  }
-
-
   /**
      This method overrides {@link Category#getInstance} by supplying
      its own factory type as a parameter.
@@ -70,7 +61,7 @@ public class MyCategory extends Category {
 
   public
   void trace(Object message) {
-    super.log(XPriority.TRACE, message); 
+    super.log(FQCN, XPriority.TRACE, message, null); 
   }
 }
 
