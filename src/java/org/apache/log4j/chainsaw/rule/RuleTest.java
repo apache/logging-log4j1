@@ -49,9 +49,15 @@
 
 package org.apache.log4j.chainsaw.rule;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.chainsaw.LoggingEventFieldResolver;
+import org.apache.log4j.spi.LoggingEvent;
+
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -71,11 +77,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.chainsaw.LoggingEventFieldResolver;
-import org.apache.log4j.spi.LoggingEvent;
-
 
 public class RuleTest extends JFrame {
   /**
@@ -94,67 +95,90 @@ public class RuleTest extends JFrame {
     setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     getContentPane().setLayout(new BorderLayout());
 
-	final LoggingEventFieldResolver resolver = LoggingEventFieldResolver.getInstance();
+    final LoggingEventFieldResolver resolver =
+      LoggingEventFieldResolver.getInstance();
 
     final List eventList = new ArrayList();
-    
-    eventList.add(new LoggingEvent("org.apache.log4j.chainsaw", Logger.getLogger("logger1"), System.currentTimeMillis(), Level.DEBUG, "message1", new Exception("test")));
-	eventList.add(new LoggingEvent("org.apache.log4j.chainsaw", Logger.getLogger("logger2"), System.currentTimeMillis(), Level.DEBUG, "message2", new Exception("test2")));
-	eventList.add(new LoggingEvent("org.apache.log4j.net", Logger.getLogger("logger3"), System.currentTimeMillis(), Level.DEBUG, "message3", new Exception("test3")));
-	eventList.add(new LoggingEvent("org.apache.log4j.chainsaw", Logger.getLogger("logger4"), System.currentTimeMillis(), Level.WARN, "message4", new Exception("test4")));
+
+    eventList.add(
+      new LoggingEvent(
+        "org.apache.log4j.chainsaw", Logger.getLogger("logger1"),
+        System.currentTimeMillis(), Level.DEBUG, "message1",
+        new Exception("test")));
+    eventList.add(
+      new LoggingEvent(
+        "org.apache.log4j.chainsaw", Logger.getLogger("logger2"),
+        System.currentTimeMillis(), Level.DEBUG, "message2",
+        new Exception("test2")));
+    eventList.add(
+      new LoggingEvent(
+        "org.apache.log4j.net", Logger.getLogger("logger3"),
+        System.currentTimeMillis(), Level.DEBUG, "message3",
+        new Exception("test3")));
+    eventList.add(
+      new LoggingEvent(
+        "org.apache.log4j.chainsaw", Logger.getLogger("logger4"),
+        System.currentTimeMillis(), Level.WARN, "message4",
+        new Exception("test4")));
 
     JPanel fieldPanel = new JPanel(new GridLayout(5, 1));
 
-	fieldPanel.add(
-	  new JLabel("Enter infix expression to convert to postfix: "));
+    fieldPanel.add(
+      new JLabel("Enter infix expression to convert to postfix: "));
 
-	final JTextField inFixTextField = new JTextField(inFixExpression);
-	fieldPanel.add(inFixTextField);
+    final JTextField inFixTextField = new JTextField(inFixExpression);
+    fieldPanel.add(inFixTextField);
 
-	JButton inFixButton = new JButton("Convert InFix to PostFix");
-	fieldPanel.add(inFixButton);
-	
-	JLabel resultsLabel = new JLabel("Results:");
-	fieldPanel.add(resultsLabel);
+    JButton inFixButton = new JButton("Convert InFix to PostFix");
+    fieldPanel.add(inFixButton);
 
-	final JTextField inFixResult = new JTextField();
-	fieldPanel.add(inFixResult);
-	inFixButton.addActionListener(
-	  new AbstractAction() {
-		public void actionPerformed(ActionEvent evt) {
-		  InFixToPostFix inFixConverter = new InFixToPostFix();
-		  inFixResult.setText(
-			inFixConverter.convert(inFixTextField.getText()));
-		}
-	  });
+    JLabel resultsLabel = new JLabel("Results:");
+    fieldPanel.add(resultsLabel);
 
-	JPanel resultsPanel = new JPanel(new BorderLayout());
+    final JTextField inFixResult = new JTextField();
+    fieldPanel.add(inFixResult);
+    inFixButton.addActionListener(
+      new AbstractAction() {
+        public void actionPerformed(ActionEvent evt) {
+          InFixToPostFix inFixConverter = new InFixToPostFix();
+          inFixResult.setText(
+            inFixConverter.convert(inFixTextField.getText()));
+        }
+      });
 
-	JButton resultsButton = new JButton("Evaluate postfix expression against collection of events: ");
-	resultsPanel.add(resultsButton, BorderLayout.NORTH);
+    JPanel resultsPanel = new JPanel(new BorderLayout());
 
-	final JTextArea results = new JTextArea(5, 50);
-	resultsPanel.add(results, BorderLayout.CENTER);
+    JButton resultsButton =
+      new JButton(
+        "Evaluate postfix expression against collection of events: ");
+    resultsPanel.add(resultsButton, BorderLayout.NORTH);
 
-	resultsButton.addActionListener(
-	  new AbstractAction() {
-		public void actionPerformed(ActionEvent evt) {
-			results.setText("");
-			Iterator iter = eventList.iterator();
-			EvaluateBooleanPostFix evaluator = new EvaluateBooleanPostFix();
-			while (iter.hasNext()) {
-				LoggingEvent event = (LoggingEvent)iter.next();
-				results.setText(results.getText() + (results.getText().length()==0?"":"\n") + "level: " + event.getLevel() + ", logger: " + event.getLoggerName() + " - result: " + evaluator.evaluate(inFixResult.getText(), event));
-			}
-		}
-	  });
+    final JTextArea results = new JTextArea(5, 50);
+    resultsPanel.add(results, BorderLayout.CENTER);
+
+    resultsButton.addActionListener(
+      new AbstractAction() {
+        public void actionPerformed(ActionEvent evt) {
+          results.setText("");
+
+          Iterator iter = eventList.iterator();
+          EvaluateBooleanPostFix evaluator = new EvaluateBooleanPostFix();
+
+          while (iter.hasNext()) {
+            LoggingEvent event = (LoggingEvent) iter.next();
+            results.setText(
+              results.getText()
+              + ((results.getText().length() == 0) ? "" : "\n") + "level: "
+              + event.getLevel() + ", logger: " + event.getLoggerName()
+              + " - result: "
+              + evaluator.evaluate(inFixResult.getText(), event));
+          }
+        }
+      });
 
     getContentPane().add(fieldPanel, BorderLayout.NORTH);
     getContentPane().add(resultsPanel, BorderLayout.CENTER);
   }
-  
-  
-  
 
   public static void main(String[] args) {
     RuleTest test =
@@ -174,9 +198,11 @@ public class RuleTest extends JFrame {
 
     try {
       result = Boolean.valueOf(param).booleanValue();
-	  System.out.println("convert to boolean: " + param + "..result " + result);
+      System.out.println(
+        "convert to boolean: " + param + "..result " + result);
     } catch (Exception e) {
       e.printStackTrace();
+
       return result;
     }
 
@@ -184,61 +210,77 @@ public class RuleTest extends JFrame {
   }
 
   abstract class BooleanOperator {
-	//the evaluate method usually uses the 2nd item on the stack first
+    //the evaluate method usually uses the 2nd item on the stack first
     abstract boolean evaluate(Stack stack);
   }
 
   abstract class EventOperator {
-	//the evaluate method usually uses the 2nd item on the stack first
+    //the evaluate method usually uses the 2nd item on the stack first
     abstract boolean evaluate(Stack stack, LoggingEvent event);
   }
 
   class AndOperator extends BooleanOperator {
     boolean evaluate(Stack stack) {
-	  String firstParam = stack.pop().toString();
-	  String secondParam = stack.pop().toString();
-	  System.out.println(
-		"and op " + firstParam + ".." + secondParam);
-	  boolean result = (convertToBoolean(firstParam) && convertToBoolean(secondParam));
-	  System.out.println("result is " + result); 
+      String firstParam = stack.pop().toString();
+      String secondParam = stack.pop().toString();
+      System.out.println("and op " + firstParam + ".." + secondParam);
+
+      boolean result =
+        (convertToBoolean(firstParam) && convertToBoolean(secondParam));
+      System.out.println("result is " + result);
+
       return result;
     }
   }
 
   class OrOperator extends BooleanOperator {
     boolean evaluate(Stack stack) {
-		String firstParam = stack.pop().toString();
-		String secondParam = stack.pop().toString();
-		System.out.println(
-		  "or op " + firstParam + ".." + secondParam);
-	    boolean result = (convertToBoolean(firstParam) || convertToBoolean(secondParam));
-	    System.out.println("result is " + result); 
+      String firstParam = stack.pop().toString();
+      String secondParam = stack.pop().toString();
+      System.out.println("or op " + firstParam + ".." + secondParam);
+
+      boolean result =
+        (convertToBoolean(firstParam) || convertToBoolean(secondParam));
+      System.out.println("result is " + result);
+
       return result;
     }
   }
 
   class PartialTextMatchOperator extends EventOperator {
-	LoggingEventFieldResolver resolver = LoggingEventFieldResolver.getInstance();
+    LoggingEventFieldResolver resolver =
+      LoggingEventFieldResolver.getInstance();
+
     boolean evaluate(Stack stack, LoggingEvent event) {
-		String firstParam = stack.pop().toString();
-		String secondParam = resolver.getValue(stack.pop().toString(), event).toString();
-		System.out.println(
-		  "partial text match op " + firstParam + ".." + secondParam);
-		boolean result = ((secondParam != null && firstParam != null) && 
-      	(secondParam.toLowerCase().indexOf(firstParam.toLowerCase()) > -1)); 
-		System.out.println("result is " + result);
+      String firstParam = stack.pop().toString();
+      String secondParam =
+        resolver.getValue(stack.pop().toString(), event).toString();
+      System.out.println(
+        "partial text match op " + firstParam + ".." + secondParam);
+
+      boolean result =
+        (((secondParam != null) && (firstParam != null))
+        && (secondParam.toLowerCase().indexOf(firstParam.toLowerCase()) > -1));
+      System.out.println("result is " + result);
+
       return result;
     }
   }
 
   class EqualsOperator extends EventOperator {
-	LoggingEventFieldResolver resolver = LoggingEventFieldResolver.getInstance();
+    LoggingEventFieldResolver resolver =
+      LoggingEventFieldResolver.getInstance();
+
     boolean evaluate(Stack stack, LoggingEvent event) {
-	  String firstParam = stack.pop().toString();
-      String secondParam = resolver.getValue(stack.pop().toString(), event).toString();
-	  System.out.println("equals op " + firstParam + ".." + secondParam);
-	  boolean result = ((secondParam != null) && secondParam.equals(firstParam));
-	  System.out.println("result is " + result); 
+      String firstParam = stack.pop().toString();
+      String secondParam =
+        resolver.getValue(stack.pop().toString(), event).toString();
+      System.out.println("equals op " + firstParam + ".." + secondParam);
+
+      boolean result =
+        ((secondParam != null) && secondParam.equals(firstParam));
+      System.out.println("result is " + result);
+
       return result;
     }
   }
@@ -249,7 +291,7 @@ public class RuleTest extends JFrame {
    */
   class EvaluateBooleanPostFix {
     private final Map booleanOperatorMap = new HashMap();
-	private final Map eventOperatorMap = new HashMap();
+    private final Map eventOperatorMap = new HashMap();
     private final Stack stack = new Stack();
     String result = null;
 
@@ -270,13 +312,15 @@ public class RuleTest extends JFrame {
 
         //if a symbol is found, pop 2 off the stack, evaluate and push the result 
         if (booleanOperatorMap.containsKey(nextToken)) {
-          BooleanOperator op = (BooleanOperator) booleanOperatorMap.get(nextToken);
-		  //the operator is responsible for popping the stack
+          BooleanOperator op =
+            (BooleanOperator) booleanOperatorMap.get(nextToken);
+
+          //the operator is responsible for popping the stack
           stack.push(new Boolean(op.evaluate(stack)));
         } else if (eventOperatorMap.containsKey(nextToken)) {
-			EventOperator op = (EventOperator)eventOperatorMap.get(nextToken);
-			stack.push(new Boolean(op.evaluate(stack, event)));
-		} else { 
+          EventOperator op = (EventOperator) eventOperatorMap.get(nextToken);
+          stack.push(new Boolean(op.evaluate(stack, event)));
+        } else {
           //variables or constants are pushed onto the stack
           stack.push(nextToken);
         }
@@ -298,30 +342,33 @@ public class RuleTest extends JFrame {
    *
    */
   public class InFixToPostFix {
-    private final Stack stack = new Stack();
     private final Map precedenceMap = new HashMap();
     private final List operators = new Vector();
 
     public InFixToPostFix() {
-      //parentheses are treated as quasi-operators
-      operators.add("(");
-      operators.add(")");
-
       //boolean operators
       operators.add("==");
       operators.add("~=");
       operators.add("||");
       operators.add("&&");
-
+      
+      operators.add("*");
+      operators.add("+");
+      operators.add("-");
+      
       //boolean precedence
-      precedenceMap.put("==", new Integer(2));
-      precedenceMap.put("~=", new Integer(2));
-      precedenceMap.put("||", new Integer(3));
-      precedenceMap.put("&&", new Integer(4));
+      precedenceMap.put("==", new Integer(3));
+      precedenceMap.put("~=", new Integer(3));
+      precedenceMap.put("||", new Integer(2));
+      precedenceMap.put("&&", new Integer(2));
+      
+      precedenceMap.put("-", new Integer(2));
+      precedenceMap.put("+", new Integer(2));
+      precedenceMap.put("*", new Integer(3));
     }
 
     public String convert(String expression) {
-      return infixToPostFix(expression);
+      return infixToPostFix(new StringTokenizer(expression));
     }
 
     boolean isOperand(String symbol) {
@@ -348,66 +395,67 @@ public class RuleTest extends JFrame {
       return precedesResult;
     }
 
-    String infixToPostFix(String infixParam) {
+    String infixToPostFix(StringTokenizer tokenizer) {
       String SPACE = " ";
       StringBuffer postfix = new StringBuffer();
-      StringTokenizer tokenizer = new StringTokenizer(infixParam);
 
-      for (int i = 0, j = tokenizer.countTokens(); i < j; i++) {
+      Stack stack = new Stack();
+      while (tokenizer.hasMoreTokens()) {
         String token = tokenizer.nextToken();
         System.out.println("FOUND TOKEN " + token);
 
-        if (isOperand(token)) {
-          postfix.append(token + SPACE);
-          System.out.println("OPERAND - APPENDING TO POSTFIX " + postfix);
-        } else {
-          System.out.println("OPERATOR - ITERATING THROUGH STACK");
-
-          while (
-            (!(stack.size() == 0))
-              && (precedes(stack.peek().toString(), token))) {
-            postfix.append(stack.pop().toString() + SPACE);
-            System.out.println(
-              "appending to postfix and popping from stack - postfix: "
-              + postfix + "..stack: " + stack);
+        if ("(".equals(token)) {
+          //recurse
+          postfix.append(infixToPostFix(tokenizer));
+          postfix.append(SPACE);
+        } else if (")".equals(token)) {
+          //exit recursion level
+          while (stack.size() > 0) {
+            postfix.append(stack.pop().toString());
+            postfix.append(SPACE);
           }
+          
+          return postfix.toString();
+        } else if (isOperand(token)) {
+          postfix.append(token);
+          postfix.append(SPACE);
+        } else {
+          //operator..
+          //peek the stack..if the top element has a lower precedence than token
+          //(peeked + has lower precedence than token *), push token onto the stack
+          //otherwise, pop top element off stack and add to postfix string
+          //in a loop until lower precedence or empty..then push token
+          if (stack.size() > 0) {
+            String peek = stack.peek().toString();
 
-          if ((!(stack.size() == 0)) && (")".equals(token))) {
-            if ("(".equals(stack.peek())) {
-              System.out.println(
-                "found left paren - popping without adding to output - result: "
-                + stack);
-              stack.pop();
+            if (precedes(peek, token)) {
+              stack.push(token);
             } else {
-              postfix.append(stack.pop().toString() + SPACE);
-              System.out.println(
-                "FOUND RIGHT PAREN - POPPING - result: " + stack);
+              boolean bypass = false;
+
+              do {
+                if (
+                  (stack.size() > 0)
+                    && !precedes(stack.peek().toString(), token)) {
+                  postfix.append(stack.pop().toString());
+                  postfix.append(SPACE);
+                } else {
+                  bypass = true;
+                }
+              } while (!bypass);
+
+              stack.push(token);
             }
           } else {
             stack.push(token);
-            System.out.println("NOT RIGHT PAREN - PUSHING - result: " + stack);
           }
         }
       }
 
-      System.out.println("OUT OF TOKEN LOOP - remaining stack is " + stack);
-
-      while (!(stack.size() == 0)) {
-        if ("(".equals(stack.peek().toString())) {
-          //pop off the stack but don't process
-          stack.pop();
-          System.out.println(
-            "popping left paren off stack. stack is " + stack);
-        } else {
-          postfix.append(stack.pop().toString() + SPACE);
-          System.out.println(
-            "appending to postfix and popping from stack - postfix: "
-            + postfix + "..stack: " + stack);
-        }
+      while (stack.size() > 0) {
+        postfix.append(stack.pop().toString());
+        postfix.append(SPACE);
       }
-
-      System.out.println("RETURNING " + postfix);
-      stack.clear();
 
       return postfix.toString();
     }
