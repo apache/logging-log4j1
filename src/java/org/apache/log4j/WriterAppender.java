@@ -44,7 +44,7 @@ public class WriterAppender extends AppenderSkeleton {
   public static final String IMMEDIATE_FLUSH_OPTION = "ImmediateFlush";
 
   /**
-     Immediate flush means that the undelying writer or output stream
+     Immediate flush means that the underlying writer or output stream
      will be flushed at the end of each append operation. Immediate
      flush is slower but ensures that each append request is actually
      written. If <code>immediateFlush</code> is set to
@@ -95,7 +95,7 @@ public class WriterAppender extends AppenderSkeleton {
   /**
      If the <b>ImmediateFlush</b> option is set to
      <code>true</code>, the appender will flush at the end of each
-     write. This is the default behaviour. If the option is set to
+     write. This is the default behavior. If the option is set to
      <code>false</code>, then the underlying stream can defer writing
      to physical medium to a later time. 
 
@@ -171,13 +171,13 @@ public class WriterAppender extends AppenderSkeleton {
     }
 
     if(this.qw == null) {
-      errorHandler.error("No output stream or file set for appender named ["+ 
+      errorHandler.error("No output stream or file set for the appender named ["+ 
 			name+"].");
       return false;
     }
     
     if(this.layout == null) {
-      errorHandler.error("No layout set for appender named ["+ name+"].");
+      errorHandler.error("No layout set for the appender named ["+ name+"].");
       return false;
     }
     return true;
@@ -286,7 +286,7 @@ public class WriterAppender extends AppenderSkeleton {
   /**
      Actual writing occurs here.
 
-     <p>Most sub-classes of <code>FileAppender</code> will need to
+     <p>Most subclasses of <code>FileAppender</code> will need to
      override this method.
 
      @since 0.9.0 */
@@ -324,8 +324,8 @@ public class WriterAppender extends AppenderSkeleton {
   /**
      Clear internal references to the writer and other variables.
 
-     Sub-classes can override this method for an alternate closing
-     behaviour.  */
+     Subclasses can override this method for an alternate closing
+     behavior.  */
   protected
   void reset() {
     closeWriter();
