@@ -33,4 +33,8 @@ public class DefaultRepositorySelector implements RepositorySelector {
        throw new IllegalStateException("default repository already set.");
     }
   }
+  
+  public void remove(String contextName) {
+    // do nothing as the default reposiory cannot be removed
+  }
 }

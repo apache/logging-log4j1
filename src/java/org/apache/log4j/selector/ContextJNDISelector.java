@@ -21,6 +21,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.helpers.Constants;
 import org.apache.log4j.helpers.IntializationUtil;
 import org.apache.log4j.helpers.Loader;
+import org.apache.log4j.helpers.LogLog;
 
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.RepositorySelector;
@@ -69,15 +70,19 @@ import javax.naming.NamingException;
  * <blockquote>
  * <pre>
  * &lt;env-entry&gt;
- *   &lt;description&gt;JNDI logging context for this app&lt;/description&gt;
+ *   &lt;description&gt;JNDI logging context name for this app&lt;/description&gt;
  *   &lt;env-entry-name&gt;log4j/context-name&lt;/env-entry-name&gt;
- *   &lt;env-entry-value&gt;uniqueLoggingContextName&lt;/env-entry-value&gt;
+ *   &lt;env-entry-value&gt;aDistinctiveLoggingContextName&lt;/env-entry-value&gt;
  *   &lt;env-entry-type&gt;java.lang.String&lt;/env-entry-type&gt;
  * &lt;/env-entry&gt;
  * </pre>
  * </blockquote>
  * </p>
  *
+ * <p> If multiple applications have the same logging context name, then they 
+ * will share the same logging context. 
+ * </p>
+ * 
  *<p>You can also specify the URL for this context's configuration resource.
  * This repository selector (ContextJNDISelector) will use the specified resource
  * to automatically configure the log4j repository.
@@ -92,14 +97,22 @@ import javax.naming.NamingException;
  * &lt;/env-entry&gt;
  * </pre>
  * </blockquote>
- *
- *
+ * 
+ * <p>In case no configuration resource is specified, this repository selector
+ * will attempt to find the files <em>log4j.xml</em> and 
+ * <em>log4j.properties</em> from the resources available to the application.
+ * </p>
+ * 
+ * <p>It follows that bundling a <em>log4j.xml</em> file in your web-application
+ * and setting context name will be enough to ensure a separate logging 
+ * environment for your applicaiton.
+ *  
  * <p>Unlike the {@link ContextClassLoaderSelector} which will only work in
  * containers that provide for separate classloaders, JNDI is available in all
  * servers claiming to be servlet or J2EE compliant.  So, the JNDI selector
- * may be the better choice.  However it is possible to spoof the value of the
- * env-entry.  There are ways to avoid this, but this class makes no attempt
- * to do so.  It would require a container specific implementation to,
+ * is the recommended context selector. However it is possible to spoof the 
+ * value of the env-entry.  There are ways to avoid this, but this class makes 
+ * no attempt to do so.  It would require a container specific implementation to,
  * for instance, append a non-random unique name to the user-defined value of
  * the env-entry.  Keep that in mind as you choose which custom repository
  * selector you would like to use in your own application.  Until this issue
@@ -211,7 +224,15 @@ public class ContextJNDISelector implements RepositorySelector {
     try {
       return (String) ctx.lookup(name);
     } catch (NamingException e) {
+      LogLog.warn("Failed to get "+name);
       return null;
     }
+  }
+  
+  /** Remove the repository with the given context name from the list of
+   * known repositories.
+   */
+  public void remove(String contextName) {
+    hierMap.remove(contextName);  
   }
 }

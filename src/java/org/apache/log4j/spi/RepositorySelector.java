@@ -46,4 +46,17 @@ public interface RepositorySelector {
    * @since 1.3
    */
   public void setDefaultRepository(LoggerRepository def);
+  
+  /**
+   * Remove the repository with the given context name from the list maintained
+   * by the respository selector.
+   * 
+   * When applications are stopped or recycled, this method should be called to
+   * ensure that the associated repostiroy is recycled as well.
+   * 
+   * If more than one application share the same logging context, then the
+   * applications need to coordinate their actions.  
+   * 
+   */
+  public void remove(String contextName);
 }
