@@ -140,7 +140,7 @@ public abstract class AbstractPreferencePanel extends JPanel
   }
 
   /**
-   * @return
+   * @return tree model
    */
   protected abstract TreeModel createTreeModel();
 

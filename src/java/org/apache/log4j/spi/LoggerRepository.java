@@ -171,7 +171,6 @@ public interface LoggerRepository {
   /**
     Requests that a configuration changed event be sent to any registered
     {@link LoggerRepositoryEventListener}.
-    @param logger The logger which changed levels.
     @since 1.3*/
   public abstract void fireConfigurationChangedEvent();
   

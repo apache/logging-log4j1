@@ -72,7 +72,7 @@ public class LogPanelPreferenceModel implements Serializable{
 
   /**
    * Returns the Date Pattern string for the alternate date formatter.
-   * @return
+   * @return date pattern
    */
   public final String getDateFormatPattern() {
     return dateFormatPattern;
@@ -125,23 +125,23 @@ public class LogPanelPreferenceModel implements Serializable{
   /**
    * Applies all the properties of another model to this model
    *
-   * @param uncommitedPreferenceModel the model to copy
+   * @param model the model to copy
    * all the properties from
    */
-  public void apply(LogPanelPreferenceModel that) {
-    setLoggerPrecision(that.getLoggerPrecision());
-    setDateFormatPattern(that.getDateFormatPattern());
-    setLevelIcons(that.isLevelIcons());
-    setToolTips(that.isToolTips());
-    setScrollToBottom(that.isScrollToBottom());
-    setDetailPaneVisible(that.isDetailPaneVisible());
-    setLogTreePanelVisible(that.isLogTreePanelVisible());
+  public void apply(LogPanelPreferenceModel model) {
+    setLoggerPrecision(model.getLoggerPrecision());
+    setDateFormatPattern(model.getDateFormatPattern());
+    setLevelIcons(model.isLevelIcons());
+    setToolTips(model.isToolTips());
+    setScrollToBottom(model.isScrollToBottom());
+    setDetailPaneVisible(model.isDetailPaneVisible());
+    setLogTreePanelVisible(model.isLogTreePanelVisible());
 
     /**
      * First, iterate and ADD new columns, (this means notifications of adds go out first
      * add to the end
      */
-    for (Iterator iter = that.visibleColumns.iterator(); iter.hasNext();) {
+    for (Iterator iter = model.visibleColumns.iterator(); iter.hasNext();) {
       String column = (String) iter.next();
 
       if (!this.visibleColumns.contains(column)) {
@@ -160,7 +160,7 @@ public class LogPanelPreferenceModel implements Serializable{
     for (Iterator iter = thisSet.iterator(); iter.hasNext();) {
       String column = (String) iter.next();
 
-      if (!that.visibleColumns.contains(column)) {
+      if (!model.visibleColumns.contains(column)) {
         setColumnVisible(column, false);
       }
     }
@@ -169,14 +169,14 @@ public class LogPanelPreferenceModel implements Serializable{
   /**
    * Returns true if this the fast ISO8601DateFormat object
    * should be used instead of SimpleDateFormat
-   * @return
+   * @return use ISO8601 format flag
    */
   public boolean isUseISO8601Format() {
     return getDateFormatPattern().equals(ISO8601);
   }
 
   /**
-   * @return
+   * @return level icons flag
    */
   public boolean isLevelIcons() {
     return levelIcons;
@@ -203,7 +203,7 @@ public class LogPanelPreferenceModel implements Serializable{
   
   /**
    * Returns the Logger precision.
-   * @return
+   * @return logger precision
    */
   public final String getLoggerPrecision() {
     return loggerPrecision;
@@ -213,7 +213,7 @@ public class LogPanelPreferenceModel implements Serializable{
    * Returns true if the named column should be made visible otherwise
    * false.
    * @param columnName
-   * @return
+   * @return column visible flag
    */
   public boolean isColumnVisible(String columnName) {
     return visibleColumns.contains(columnName);
@@ -236,14 +236,14 @@ public class LogPanelPreferenceModel implements Serializable{
 
   /**
    * Toggles the state between visible, non-visible for a particular Column name
-   * @param string
+   * @param column
    */
   public void toggleColumn(String column) {
     setColumnVisible(column, !isColumnVisible(column));
   }
 
   /**
-   * @return
+   * @return detail pane visible flag
    */
   public final boolean isDetailPaneVisible() {
     return detailPaneVisible;
@@ -260,7 +260,7 @@ public class LogPanelPreferenceModel implements Serializable{
   }
 
   /**
-   * @return
+   * @return scroll to bottom flag
    */
   public final boolean isScrollToBottom() {
     return scrollToBottom;
@@ -277,7 +277,7 @@ public class LogPanelPreferenceModel implements Serializable{
   }
 
   /**
-   * @return
+   * @return tool tips enabled flag
    */
   public final boolean isToolTips() {
     return toolTips;
@@ -293,7 +293,7 @@ public class LogPanelPreferenceModel implements Serializable{
   }
 
   /**
-   * @return
+   * @return log tree panel visible flag
    */
   public final boolean isLogTreePanelVisible() {
     return logTreePanelVisible;
@@ -310,7 +310,7 @@ public class LogPanelPreferenceModel implements Serializable{
   }
 
   /**
-   * @return
+   * @return custom date format flag
    */
   public boolean isCustomDateFormat()
   {

@@ -256,7 +256,8 @@ public class LoggingEvent
    * at the top of this page.
    * </p>
    *
-   * @param category The category of this event.
+   * @param fqnOfCategoryClass The category of this event.
+   * @param logger The logger
    * @param timeStamp the timestamp of this logging event
    * @param level The level of this event.
    * @param message The message of this event.

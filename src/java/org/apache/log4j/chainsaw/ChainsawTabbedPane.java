@@ -39,7 +39,9 @@ import javax.swing.JTabbedPane;
  * and therefore no ChangeEvent is generated and sent
  * to listeners.  Thanks very much Sun!
  *
- * @see http://developer.java.sun.com/developer/bugParade/bugs/4253819.html
+ * For more information on the issue:
+ * http://developer.java.sun.com/developer/bugParade/bugs/4253819.html
+ * 
  * @author Paul Smith <psmith@apache.org>
  * @author Scott Deboy <sdeboy@apache.org>
  *

@@ -35,7 +35,7 @@ public interface Colorizer {
    * or null if this instance cannot determine one, or that
    * the stanard color should be used.
    * @param event
-   * @return
+   * @return background color 
    */
   public Color getBackgroundColor(LoggingEvent event);
   

@@ -28,9 +28,7 @@ import java.util.EventListener;
 public interface NewKeyListener extends EventListener {
 	
 	/**
-	 * 
-	 * @param newModelIndex the TableModel index this new key has been assigned to
-	 * @param newKey the value of the Key
+	 * @param e the new key event being added
 	 */
   public void newKeyAdded(NewKeyEvent e);
 }

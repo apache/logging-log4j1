@@ -251,8 +251,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    * the splash screen, and using the passed shutdown action when the user
    * requests to exit the application (if null, then Chainsaw will exit the vm)
    *
-   * @param showSplash
-   * @param shutdownAction
+   * @param model
+   * @param newShutdownAction
    *                    DOCUMENT ME!
    */
   public static void createChainsawGUI(
@@ -1503,7 +1503,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   /**
    * Returns the currently selected LogPanel, if there is one, otherwise null
    *
-   * @return
+   * @return current log panel
    */
   LogPanel getCurrentLogPanel() {
     Component selectedTab = getTabbedPane().getSelectedComponent();
@@ -1518,7 +1518,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   }
 
   /**
-   * @param b
+   * @param visible
    */
   private void setStatusBarVisible(final boolean visible) {
     MessageCenter.getInstance().getLogger().debug(
@@ -1595,7 +1595,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   /**
    * DOCUMENT ME!
    *
-   * @return
+   * @return welcome panel
    */
   private WelcomePanel getWelcomePanel() {
     return welcomePanel;
@@ -1604,7 +1604,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   /**
    * DOCUMENT ME!
    *
-   * @return
+   * @return log tree panel visible flag
    */
   public boolean isLogTreePanelVisible() {
     if (getCurrentLogPanel() == null) {

@@ -114,7 +114,7 @@ public interface EventContainer extends SortTableModel, LoggerNameModel {
   
   /**
    * Returns the total number of events currently in the model (all, not just filtered)
-   * @return
+   * @return size
    */
   int size();
 
@@ -130,7 +130,7 @@ public interface EventContainer extends SortTableModel, LoggerNameModel {
 
   /**
    * Adds a row to the model.
-   * @param row
+   * @param e event
    * @param valueIsAdjusting
    * @return flag representing whether or not the row is being displayed (not filtered)
    */
@@ -149,13 +149,13 @@ public interface EventContainer extends SortTableModel, LoggerNameModel {
 
   /**
    * Sets the DisplayFilter in operation
-   * @param displayFilter
+   * @param displayRule
    */
   void setDisplayRule(Rule displayRule);
 
   /**
-   * Returns the index of the row
-   * @param row
+   * Returns the index of the LoggingEvent
+   * @param e
    */
   int getRowIndex(LoggingEvent e);
 }

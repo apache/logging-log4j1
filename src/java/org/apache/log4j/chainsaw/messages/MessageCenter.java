@@ -211,7 +211,7 @@ public class MessageCenter {
   /**
    * Returns the logger that can be used to log
    * messages to display within the Message Center.
-   * @return
+   * @return logger
    */
   public final Logger getLogger() {
     return this.logger;

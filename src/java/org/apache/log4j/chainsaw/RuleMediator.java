@@ -129,28 +129,28 @@ public class RuleMediator extends AbstractRule implements Rule {
   }
 
   /**
-   * @return
+   * @return exclusion rule
    */
   public final Rule getExclusionRule() {
     return exclusionRule;
   }
 
   /**
-   * @return
+   * @return inclusion rule
    */
   public final Rule getInclusionRule() {
     return inclusionRule;
   }
 
   /**
-   * @return
+   * @return logger rule
    */
   public final Rule getLoggerRule() {
     return loggerRule;
   }
 
   /**
-   * @return
+   * @return refinement rule
    */
   public final Rule getRefinementRule() {
     return refinementRule;

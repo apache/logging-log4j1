@@ -21,7 +21,7 @@ public class FavouritesRegistry{
    * returns an object whose class is assignable from clazz, or more formally, such that
    * clazz.isAssignableFrom(favourite.getPrototype().getClass())
    * @param clazz
-   * @return
+   * @return favourites
    */
   public synchronized Collection getFavouritesByClass(Class clazz) {
     throw new UnsupportedOperationException("Work In Progress");
@@ -38,7 +38,7 @@ public class FavouritesRegistry{
   
   /**
    * Returns an unmodifiable List of all the known Favourite instances
-   * @return
+   * @return favourites
    */
   public List getFavourites() {
     return Collections.unmodifiableList(favourites);
@@ -54,7 +54,6 @@ public class FavouritesRegistry{
    * @throws IllegalArgumentException if the prototype does not conform
    * to the necessary rules to be used as a prototype (see the package documentation).
    * 
-   * @return
    */
   public void addFavourite(String name, Object prototype) {
     favourites.add(createFavourite(name, prototype));

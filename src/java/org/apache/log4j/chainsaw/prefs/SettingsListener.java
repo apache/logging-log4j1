@@ -35,7 +35,6 @@ import java.util.EventListener;
  * be any arbitary thread.  Having said that, it COULD be the Swing's Event
  * dispatching event, but this contract makes no guarantee.
  * 
- * @see ProfileListener
  * @author Paul Smith <psmith@apache.org>
  *
  */

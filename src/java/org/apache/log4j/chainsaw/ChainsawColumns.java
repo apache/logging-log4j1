@@ -79,8 +79,8 @@ public class ChainsawColumns {
   /**
    * Given the index which matches one of the static constants in this class, returns the resolved
    * Column name as a string label.
-   * @param columnIndex (not this is a 1 based collection)
-   * @return
+   * @param columnIndex (note this is a 1 based collection)
+   * @return column name
    */
   public static String getColumnName(int columnIndex) {
     return getColumnsNames().get(columnIndex - 1).toString();

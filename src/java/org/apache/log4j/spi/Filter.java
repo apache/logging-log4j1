@@ -97,7 +97,7 @@ public abstract class Filter implements OptionHandler {
      the chain.
 
      @param event The LoggingEvent to decide upon.
-     @param decision The decision of the filter.  */
+   */
   public abstract int decide(LoggingEvent event);
  
   /**

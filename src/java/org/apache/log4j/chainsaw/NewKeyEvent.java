@@ -43,21 +43,21 @@ public class NewKeyEvent extends EventObject {
   }
 
   /**
-   * @return
+   * @return key
    */
   public Object getKey() {
     return key;
   }
 
   /**
-   * @return
+   * @return model index
    */
   public int getNewModelIndex() {
     return newModelIndex;
   }
 
   /**
-   * @return
+   * @return value
    */
   public Object getValue() {
     return value;

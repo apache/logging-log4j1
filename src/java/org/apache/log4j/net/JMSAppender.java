@@ -39,9 +39,9 @@ import javax.naming.NamingException;
 /**
  * A simple appender that publishes events to a JMS Topic. The events
  * are serialized and transmitted as JMS message type {@link
- * ObjectMessage}.
+ * javax.jms.ObjectMessage}.
 
- * <p>JMS {@link Topic topics} and {@link TopicConnectionFactory topic
+ * <p>JMS {@link javax.jmx.Topic topics} and {@link javax.jmx.TopicConnectionFactory topic
  * connection factories} are administered objects that are retrieved
  * using JNDI messaging which in turn requires the retreival of a JNDI
  * {@link Context}.
@@ -369,7 +369,7 @@ public class JMSAppender extends AppenderSkeleton {
 
   /**
    * The user name to use when {@link
-   * TopicConnectionFactory#createTopicConnection(String, String)
+   * javax.jms.TopicConnectionFactory#createTopicConnection(String, String)}
    * creating a topic session}.  If you set this option, you should
    * also set the <b>Password</b> option. See {@link
    * #setPassword(String)}.

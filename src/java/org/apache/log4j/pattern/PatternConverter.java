@@ -144,7 +144,7 @@ public abstract class PatternConverter {
    * 
    * This information is currently used only by HTMLLayout.
    * 
-   * @param LoggingEvent null values are accepted
+   * @param e null values are accepted
    * @return  the name of the conversion pattern
    */
   public abstract String getStyleClass(LoggingEvent e);
