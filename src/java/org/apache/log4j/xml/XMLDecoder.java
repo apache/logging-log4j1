@@ -181,8 +181,7 @@ public class XMLDecoder implements Decoder {
 
   public Vector decodeEvents(String document) {
     if (document != null) {
-      document = document.trim();
-      if (document.equals("")) {
+      if (document.trim().equals("")) {
         return null;
       }
 	  	String newDoc=null;
