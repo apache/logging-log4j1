@@ -11,25 +11,25 @@
     </layout>
     <!-- Reject all LoggingEvents containing the string "0" in
          the message field. -->
-    <filter class="org.apache.log4j.varia.StringMatchFilter">
+    <filter class="org.apache.log4j.filter.StringMatchFilter">
       <param name="StringToMatch" value="0" />
       <param name="AcceptOnMatch" value="false" />
     </filter>
     <!-- Reject all LoggingEvents containing the string "1" in
          the message field. -->
-    <filter class="org.apache.log4j.varia.StringMatchFilter">
+    <filter class="org.apache.log4j.filter.StringMatchFilter">
       <param name="StringToMatch" value="1" />
       <param name="AcceptOnMatch" value="false" />
     </filter>
     <!-- Reject all LoggingEvents containing the string "5" in
          the message field. -->
-    <filter class="org.apache.log4j.varia.StringMatchFilter">
+    <filter class="org.apache.log4j.filter.StringMatchFilter">
       <param name="StringToMatch" value="5" />
       <param name="AcceptOnMatch" value="false" />
     </filter>
     <!-- Reject all LoggingEvents containing the string "6" in
          the message field. -->
-    <filter class="org.apache.log4j.varia.StringMatchFilter">
+    <filter class="org.apache.log4j.filter.StringMatchFilter">
       <param name="StringToMatch" value="6" />
       <param name="AcceptOnMatch" value="false" />
     </filter>

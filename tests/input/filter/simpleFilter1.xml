@@ -13,16 +13,16 @@
     </layout>
     <!-- Accept all LoggingEvents containing the string
          "1" in the message field. -->
-    <filter class="org.apache.log4j.varia.StringMatchFilter">
+    <filter class="org.apache.log4j.filter.StringMatchFilter">
       <param name="StringToMatch" value="1" />
     </filter>
     <!-- Accept all LoggingEvents containing the string
          "2" in its message field. -->
-    <filter class="org.apache.log4j.varia.StringMatchFilter">
+    <filter class="org.apache.log4j.filter.StringMatchFilter">
       <param name="StringToMatch" value="2" />
     </filter>
     <!-- Deny (filter out) everything else. -->
-    <filter class="org.apache.log4j.varia.DenyAllFilter"/>
+    <filter class="org.apache.log4j.filter.DenyAllFilter"/>
   </appender>
         
   <!-- Prevent internal log4j DEBUG messages from polluting the output. -->
