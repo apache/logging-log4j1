@@ -1113,7 +1113,7 @@ class ReceiversPanel extends JPanel {
       Action closeAction =
         new AbstractAction(null, LineIconFactory.createCloseIcon()) {
           public void actionPerformed(ActionEvent e) {
-            logui.toggleReceiversPanel();
+            logui.getApplicationPreferenceModel().setReceivers(false);
           }
         };
 
