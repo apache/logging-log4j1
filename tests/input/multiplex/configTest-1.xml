@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration>
+	  
+<log4j:configuration debug="true">
+	  
+	    
+  <appender name="Multiplex" class="org.apache.log4j.multiplex.MultiplexAppender">
+    
+     <selector class="org.apache.log4j.multiplex.MDCKeySelector" >
+      <param name="mdcKey" value="User" />
+      <appenderFactory class="org.apache.log4j.multiplex.factories.TimeBasedRollingAppenderFactory">
+       <param name="fileNamePattern" value="output/MultiplexAppenderTest-%i.log.%d{yyyy.MM.dd}"/>
+      </appenderFactory>
+     </selector>
+     
+  </appender>
+
+  
+  <root>
+    <level value ="debug"/>
+    <appender-ref ref="Multiplex" />
+  </root>  
+</log4j:configuration>
