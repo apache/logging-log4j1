@@ -43,6 +43,7 @@ final class CachedDateFormat extends DateFormat {
   private int millisecondStart;
   private StringBuffer cache = new StringBuffer();
   private long slotBegin;
+  private Date slotBeginDate;
   private int milliDigits;
   private StringBuffer milliBuf = new StringBuffer(3);
   private NumberFormat numberFormat;
@@ -79,10 +80,15 @@ final class CachedDateFormat extends DateFormat {
     long nowTime = now.getTime();
     slotBegin = (nowTime / 1000L) * 1000L;
 
-    Date slotBegingDate = new Date(slotBegin);
-    String formatted = formatter.format(slotBegingDate);
+    slotBeginDate = new Date(slotBegin);
+    String formatted = formatter.format(slotBeginDate);
     cache.append(formatted);
     millisecondStart = findMillisecondStart(slotBegin, formatted, formatter);
+//    if(millisecondStart == UNRECOGNIZED_MILLISECOND_PATTERN) {
+//      System.out.println("UNRECOGNIZED PATTERN");
+//    } else {
+//      System.out.println("millisecondStart="+millisecondStart);
+//    }
   }
 
   /**
@@ -111,12 +117,10 @@ final class CachedDateFormat extends DateFormat {
         //
         if ((i + milliDigits) <= formatted.length()) {
           for (int j = 0; j < milliDigits; j++) {
-            if (
-              (formatted.charAt(i + j) != '0')
-                || (formatted.charAt(i + j) != ('9' - j))) {
-              ;
+            if ((formatted.charAt(i + j) != '0')
+                || (plus987.charAt(i + j) != ('9' - j))) {
+              return UNRECOGNIZED_MILLISECOND_PATTERN;  
             }
-            return UNRECOGNIZED_MILLISECOND_PATTERN;
           }
           return i;
         } else {
@@ -142,6 +146,7 @@ final class CachedDateFormat extends DateFormat {
     }
     long now = date.getTime();
     if ((now < (slotBegin + 1000L)) && (now >= slotBegin)) {
+      //System.out.println("Using cached val:"+date);
       if (millisecondStart >= 0) {
         int millis = (int) (now - slotBegin);
         int cacheLength = cache.length();
@@ -152,25 +157,31 @@ final class CachedDateFormat extends DateFormat {
           cache.setCharAt(millisecondStart+j, milliBuf.charAt(j));
         }
       }
-      sbuf.append(cache);
     } else {
+      //System.out.println("Recomputing cache:"+date);
       slotBegin = (now / 1000L) * 1000L;
-      //
-      //   if earlier than 1970 and rounded toward 1970
-      //      then move back one second
-      if ((now - slotBegin) < 0) {
-        slotBegin -= 1000;
-      }
+      int prevLength = cache.length();
       cache.setLength(0);
-      formatter.format(new Date(slotBegin), cache, fieldPosition);
-      millisecondStart =
-        findMillisecondStart(slotBegin, cache.toString(), formatter);
-      //
-      //  calling ourself should be safe and faster
-      //     but why risk it
-      formatter.format(date, sbuf, fieldPosition);
+      formatter.format(date, cache, fieldPosition);
+     
+      //   if the length changed then
+      //      recalculate the millisecond position
+      if (cache.length() != prevLength) {
+        //System.out.println("Recomputing cached len changed oldLen="+prevLength
+        //    +", newLen="+cache.length());
+        //
+        //    format the previous integral second
+        StringBuffer tempBuffer = new StringBuffer(cache.length());
+        slotBeginDate.setTime(slotBegin);
+        formatter.format(slotBeginDate, tempBuffer, fieldPosition);
+        //
+        //    detect the start of the millisecond field
+        millisecondStart = findMillisecondStart(slotBegin,
+                                                tempBuffer.toString(),
+                                                formatter);
+      }
     }
-    return sbuf;
+    return sbuf.append(cache);
   }
 
   /**

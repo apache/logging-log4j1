@@ -16,7 +16,10 @@
 
 package org.apache.log4j.pattern;
 
+import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
 import org.apache.log4j.helpers.AbsoluteTimeDateFormat;
 import org.apache.log4j.pattern.CachedDateFormat;
 
@@ -31,8 +34,7 @@ import java.util.Calendar;
    Unit test {@link AbsoluteTimeDateFormat}.
    @author Curt Arnold
    @since 1.3.0 */
-public final class CachedDateFormatTest
-    extends TestCase {
+public final class CachedDateFormatTest extends TestCase {
 
   /**
    * Test constructor
@@ -80,7 +82,9 @@ public final class CachedDateFormatTest
     gmtFormat.setTimeZone(GMT);
     long ticks = 12601L * 86400000L;
     Date jul1 = new Date(ticks);
-    assertEquals("00:00:00,000", gmtFormat.format(jul1));
+    String r = gmtFormat.format(jul1);
+    assertEquals("00:00:00,000", r);
+    
     Date plus8ms = new Date(ticks + 8);
     assertEquals("00:00:00,008", gmtFormat.format(plus8ms));
     Date plus17ms = new Date(ticks + 17);
@@ -224,7 +228,7 @@ public final class CachedDateFormatTest
   public void test9() {
     String pattern = "yyyy-MMMM-dd HH:mm:ss,SS Z";
     DateFormat baseFormat = new SimpleDateFormat(pattern, Locale.US);
-    DateFormat cachedFormat = new CachedDateFormat(pattern);
+    CachedDateFormat cachedFormat = new CachedDateFormat(pattern);
     TimeZone cet = TimeZone.getTimeZone("GMT+1");
     cachedFormat.setTimeZone(cet);
     
@@ -251,28 +255,55 @@ public final class CachedDateFormatTest
    */
   public void test10() {
     String pattern = "MMMM SSS EEEEEE";
-    DateFormat baseFormat = new SimpleDateFormat("MMMM SSS EEEEEE", Locale.US);
     DateFormat cachedFormat = new CachedDateFormat(pattern);
-    TimeZone cet = TimeZone.getTimeZone("GMT+1");
-    cachedFormat.setTimeZone(cet);
     
     Calendar c = Calendar.getInstance();
     c.set(2004, Calendar.OCTOBER, 5, 20, 0);
     c.set(Calendar.SECOND, 37);
     c.set(Calendar.MILLISECOND, 23);
-    c.setTimeZone(cet);
 
     String s = cachedFormat.format(c.getTime());
     assertEquals("October 023 Tuesday", s);
 
+    // since we are in a different slot, cachedFormat will return correct
+    // results since it will freshly format
     c.set(2004, Calendar.NOVEMBER, 1, 0, 0);
-    c.set(Calendar.MILLISECOND, 23);
+    c.set(Calendar.MILLISECOND, 6);
     s = cachedFormat.format(c.getTime());
-    assertEquals("November 023 Monday", s);
+    assertEquals("November 006 Monday", s);
 
-
-    c.set(Calendar.MILLISECOND, 984);
+    // exercise the cache, this time the result will be wrong.
     s = cachedFormat.format(c.getTime());
-    assertEquals("November 984 Monday", s);
+    if("November 006 Monday".equals(s)) {
+      // Results should be incrrect!
+      fail("CachedDateFormat does not deal properly with MMMM SSS EEEEE combinations");
+    }
+  }
+  
+  public void testS2() {
+    String pattern = "HH:mm:ss,SS";
+    DateFormat cachedFormat = new CachedDateFormat(pattern);
+    
+    Calendar c = Calendar.getInstance();
+    c.set(2004, Calendar.OCTOBER, 5, 20, 54);
+    c.set(Calendar.SECOND, 37);
+    c.set(Calendar.MILLISECOND, 3);
+
+    String s = cachedFormat.format(c.getTime());
+    System.out.println("---"+s);
+    assertEquals("20:54:37:00", s);
+    
+    // excercise the cache
+    s = cachedFormat.format(c.getTime());
+    System.out.println("--"+s);
+    assertEquals("20:54:37:00", s);
+  }
+  
+  
+  public static Test suite() {
+    TestSuite suite = new TestSuite();
+    suite.addTest(new CachedDateFormatTest("test10"));
+    suite.addTest(new CachedDateFormatTest("testS2"));
+    return suite;
   }
 }
