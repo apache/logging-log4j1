@@ -3,17 +3,24 @@
 
 <log4j:configuration debug="true">
 
-  <appender name="A1" class="org.apache.log4j.rolling.RollingFileAppender">
+  <appender name="ROLL" class="org.apache.log4j.rolling.RollingFileAppender">
     <rollingPolicy class="org.apache.log4j.rolling.TimeBasedRollingPolicy">
       <param name="fileNamePattern" value="output/test1-%d{yyyy-MM-dd_HH_mm_ss}"/>
     </rollingPolicy>
 
     <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="%-5p %c{2} - %m%n"/>
+      <param name="ConversionPattern" value="%c{1} - %m%n"/>
     </layout>	    
   </appender>
 
-  <logger name="org">
-    <appender-ref ref="A1" />
-  </loger>
+<!--
+  <logger name="org.apache.log4j.joran"><level value="INFO"/></logger>
+  <logger name="org.apache.log4j.rolling.RollingFileAppender"><level value="INFO"/></logger>
+  <logger name="org.apache.log4j.rolling.TimeBasedRollingPolicy"><level value="INFO"/></logger>
+  <logger name="org.apache.log4j.config.PropertySetter"><level value="INFO"/></logger>
+-->
+  <logger name="org.apache.log4j.rolling.TimeBasedRollingTest">
+    <appender-ref ref="ROLL"/>
+  </logger>
+ 
 </log4j:configuration>
