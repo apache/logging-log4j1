@@ -108,13 +108,14 @@ import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Priority;
 import org.apache.log4j.UtilLoggingLevel;
+import org.apache.log4j.chainsaw.help.HelpManager;
 import org.apache.log4j.chainsaw.help.Tutorial;
 import org.apache.log4j.chainsaw.icons.ChainsawIcons;
 import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
 import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
 import org.apache.log4j.chainsaw.prefs.SettingsListener;
 import org.apache.log4j.chainsaw.prefs.SettingsManager;
-import org.apache.log4j.chainsaw.receivers.*;
+import org.apache.log4j.chainsaw.receivers.ReceiversPanel;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.net.SocketNodeEventListener;
@@ -318,6 +319,21 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    */
   private void initGUI() {
     welcomePanel = new WelcomePanel(this);
+    
+    /**
+     * Setup a listener on the HelpURL property and automatically change the WelcomePages URL
+     * to it.
+     */
+    HelpManager.getInstance().addPropertyChangeListener("helpURL", new PropertyChangeListener(){
+
+		public void propertyChange(PropertyChangeEvent evt) {
+			URL newURL = (URL) evt.getNewValue();
+			if(newURL != null) {
+				welcomePanel.setURL(newURL);
+			}
+			
+		}});
+    
     receiversPanel = new ReceiversPanel(this);
     setToolBarAndMenus(new ChainsawToolBarAndMenus(this));
     toolbar = getToolBarAndMenus().getToolbar();
@@ -1325,6 +1341,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       UIManager.setLookAndFeel(lookAndFeelClassName);
       SwingUtilities.updateComponentTreeUI(this);
       SwingUtilities.updateComponentTreeUI(preferencesFrame);
+	  SwingUtilities.updateComponentTreeUI(receiversPanel);
       applicationPreferenceModelPanel.notifyOfLookAndFeelChange();
      } catch (Exception e) {
       LogLog.error("Failed to change L&F", e);
