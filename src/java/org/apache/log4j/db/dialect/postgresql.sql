@@ -20,7 +20,7 @@ CREATE TABLE logging_event
     ndc               TEXT,
     thread_name       VARCHAR(254),
     reference_flag    SMALLINT,
-    id                INT DEFAULT nextval('logging_event_id_seq') PRIMARY KEY
+    event_id          INT DEFAULT nextval('logging_event_id_seq') PRIMARY KEY
   );
 
 CREATE TABLE logging_event_property

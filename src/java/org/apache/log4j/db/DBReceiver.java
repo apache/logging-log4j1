@@ -22,11 +22,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.plugins.Pauseable;
 import org.apache.log4j.plugins.Receiver;
 import org.apache.log4j.scheduler.Job;
+import org.apache.log4j.scheduler.Scheduler;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ThrowableInformation;
@@ -41,8 +43,15 @@ import org.apache.log4j.spi.ThrowableInformation;
 public class DBReceiver
        extends Receiver
        implements Pauseable {
+  
+  /**
+   * By default we refresh data every 1000 milliseconds.
+   * @see #setRefreshMillis
+   */
+  static int DEFAULT_REFRESH_MILLIS = 1000;
+  
   ConnectionSource connectionSource;
-  int refreshMillis;
+  int refreshMillis = DEFAULT_REFRESH_MILLIS;
   DBReceiverJob receiverJob;
   boolean paused = false;
   
@@ -51,6 +60,9 @@ public class DBReceiver
       LogLog.info("activating connectionSource");
       connectionSource.activateOptions();
       receiverJob = new DBReceiverJob();
+      Scheduler scheduler = LogManager.getSchedulerInstance();
+      scheduler.schedule(receiverJob, System.currentTimeMillis()+500, refreshMillis);
+      
     } else {
       throw new IllegalStateException("DBAppender cannot function without a connection source");
     }
@@ -87,7 +99,9 @@ public class DBReceiver
    * @see org.apache.log4j.plugins.Plugin#shutdown()
    */
   public void shutdown() {
-    // TODO Auto-generated method stub
+    LogLog.info("removing receiverJob from the Scheduler.");
+    Scheduler scheduler = LogManager.getSchedulerInstance();
+    scheduler.delete(receiverJob);
   }
 
 
@@ -105,10 +119,19 @@ public class DBReceiver
     return paused;
   }
 
-  class DBReceiverJob
-         implements Job {
+  /**
+   * Actual retrieval of data is made by the instance of DBReceiverJob associated
+   * with DBReceiver.
+   * 
+   * @author Ceki G&uuml;lc&uuml;
+   */
+  class DBReceiverJob implements Job {
+    
+    long lastId = 0;
+    
+   
     public void execute() {
-      LogLog.info("in DBReceiverJob.execute()");
+      LogLog.info("DBReceiverJob.execute() called");
       try {
         Logger logger;
         LoggerRepository loggerRepository = getLoggerRepository();
@@ -116,8 +139,11 @@ public class DBReceiver
         StringBuffer sql = new StringBuffer();
         sql.append("SELECT sequence_number, timestamp, rendered_message, ");
         sql.append("logger_name, level_string, ndc, thread_name, ");
-        sql.append("reference_flag, id from logging_event");
-
+        sql.append("reference_flag, event_id from logging_event ");
+        // have subsequent SELECTs start from we left off last time
+        sql.append(" WHERE event_id > "+lastId);
+        sql.append(" ORDER BY event_id ASC");
+        
         Statement statement = connection.createStatement();
         ResultSet rs = statement.executeQuery(sql.toString());
         rs.first();
@@ -141,7 +167,8 @@ public class DBReceiver
           short mask = rs.getShort(8);
 
           id = rs.getLong(9);
-
+          lastId = id;
+          
           //event.setProperty("id", Long.toString(id));
           if ((mask & DBHelper.PROPERTIES_EXIST) != 0) {
             getProperties(connection, id, event);
@@ -154,6 +181,7 @@ public class DBReceiver
           if (! DBReceiver.this.isPaused()) {
             DBReceiver.this.doPost(event);
           }
+          
         }
       } catch (SQLException sqle) {
         LogLog.error("Problem receiving events", sqle);
