@@ -29,9 +29,9 @@
  - The Level class replaced the Priority class. Priority class now
    extends Level to preserve backward compatibility. [*]
 
- - The Logger class replaced the Category class. Category class now
-   extends Logger to preserve backward compatibility. We proudly mark
-   this change with a single star for 100% compatibility. [*]
+ - The Logger class replaced the Category class. Logger class 
+   extends Category to preserve backward compatibility. We proudly
+   mark this change with a single star for 100% compatibility. [*]
 
  - The Category.assert method has been replaced by
    Category.assertLog.  This change was necessary because assert is a
