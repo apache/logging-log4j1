@@ -31,6 +31,7 @@ package org.apache.log4j.helpers;
    the string "log4j: ".
 
    @since 0.8.2
+   @deprecated Use {@link org.apache.log4j.Logger} instead.
    @author Ceki G&uuml;lc&uuml;
 */
 public class LogLog {
