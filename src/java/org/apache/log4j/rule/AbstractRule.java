@@ -62,7 +62,8 @@ import java.io.Serializable;
  * @author Scott Deboy <sdeboy@apache.org>
  */
 public abstract class AbstractRule implements Rule, Serializable {
-
+  static final long serialVersionUID = -2844288145563025172L;
+  
   private PropertyChangeSupport propertySupport =
     new PropertyChangeSupport(this);
 
