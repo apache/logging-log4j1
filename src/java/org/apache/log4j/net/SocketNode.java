@@ -36,81 +36,96 @@ public class SocketNode implements Runnable {
   Socket socket;
   LoggerRepository hierarchy;
   Receiver receiver;
-  ObjectInputStream ois;
+  SocketNodeEventListener listener;
 
   static Logger logger = Logger.getLogger(SocketNode.class);
 
+  /**
+    Constructor for socket and logger repository. */
   public SocketNode(Socket socket, LoggerRepository hierarchy) {
     this.socket = socket;
     this.hierarchy = hierarchy;
-    try {
-      ois = new ObjectInputStream(
-                         new BufferedInputStream(socket.getInputStream()));
-    }
-    catch(Exception e) {
-      logger.error("Could not open ObjectInputStream to "+socket, e);
-    }
   }
   
+  /**
+    Constructor for socket and reciever. */
   public SocketNode(Socket socket, Receiver receiver) {
     this.socket = socket;
     this.receiver = receiver;
-    try {
-      ois = new ObjectInputStream(
-                         new BufferedInputStream(socket.getInputStream()));
-    }
-    catch(Exception e) {
-      logger.error("Could not open ObjectInputStream to "+socket, e);
-    }
   }
 
-
-  //public
-  //void finalize() {
-  //System.err.println("-------------------------Finalize called");
-  // System.err.flush();
-  //}
+  /**
+    Set the event listener on this node. */
+  public void setListener(SocketNodeEventListener _listener) {
+    listener = _listener;
+  }
+  
 
   public void run() {
     LoggingEvent event;
     Logger remoteLogger;
-
+    Exception listenerException = null;
+    ObjectInputStream ois = null;
+    
     try {
-      while(true) {
-	// read an event from the wire
-      	event = (LoggingEvent) ois.readObject();
-      	
-      	// if configured with a receiver, tell it to post the event
-        if (receiver != null) {
-          receiver.doPost(event);
-        // else post it via the hierarchy
-        } else {
-	  // get a logger from the hierarchy. The name of the logger
-	  // is taken to be the name contained in the event.
-          remoteLogger = hierarchy.getLogger(event.categoryName);
-          //event.logger = remoteLogger;
-	  // apply the logger-level filter
-          if(event.level.isGreaterOrEqual(remoteLogger.getEffectiveLevel())) {
-	    // finally log the event as if was generated locally
-            remoteLogger.callAppenders(event);
-          }
-        }
-      }
-    } catch(java.io.EOFException e) {
-      logger.info("Caught java.io.EOFException closing conneciton.");
-    } catch(java.net.SocketException e) {
-      logger.info("Caught java.net.SocketException closing conneciton.");
-    } catch(IOException e) {
-      logger.info("Caught java.io.IOException: "+e);
-      logger.info("Closing connection.");
-    } catch(Exception e) {
-      logger.error("Unexpected exception. Closing conneciton.", e);
+      ois = new ObjectInputStream(
+        new BufferedInputStream(socket.getInputStream()));
+    } catch (Exception e) {
+      ois = null;
+      listenerException = e;
+      logger.error("Exception opening ObjectInputStream to " + socket, e);
     }
 
+    if (ois != null) {
+      try {
+        while(true) {
+          // read an event from the wire
+        	event = (LoggingEvent) ois.readObject();
+        	
+        	// if configured with a receiver, tell it to post the event
+          if (receiver != null) {
+            receiver.doPost(event);
+          // else post it via the hierarchy
+          } else {
+            // get a logger from the hierarchy. The name of the logger
+            // is taken to be the name contained in the event.
+            remoteLogger = hierarchy.getLogger(event.categoryName);
+            //event.logger = remoteLogger;
+            // apply the logger-level filter
+            if(event.level.isGreaterOrEqual(remoteLogger.getEffectiveLevel())) {
+              // finally log the event as if was generated locally
+              remoteLogger.callAppenders(event);
+            }
+          }
+        }
+      } catch(java.io.EOFException e) {
+        logger.info("Caught java.io.EOFException closing conneciton.");
+        listenerException = e;
+      } catch(java.net.SocketException e) {
+        logger.info("Caught java.net.SocketException closing conneciton.");
+        listenerException = e;
+      } catch(IOException e) {
+        logger.info("Caught java.io.IOException: "+e);
+        logger.info("Closing connection.");
+        listenerException = e;
+      } catch(Exception e) {
+        logger.error("Unexpected exception. Closing connecition.", e);
+        listenerException = e;
+      }
+    }
+
+    // close the socket
     try {
-      ois.close();
+      if (ois != null) {
+        ois.close();
+      }
     } catch(Exception e) {
-      logger.info("Could not close connection.", e);
+      //logger.info("Could not close connection.", e);
+    }
+    
+    // send event to listener, if configured
+    if (listener != null) {
+      listener.socketClosedEvent(listenerException);
     }
   }
 }
