@@ -43,7 +43,7 @@ public class AsyncAppender extends AppenderSkeleton
 
 
   /**
-     A string constant used in naming the option for setting the the
+     A string constant used in naming the option for setting the
      location information flag.  Current value of this string
      constant is <b>LocationInfo</b>.  
 
@@ -148,7 +148,7 @@ public class AsyncAppender extends AppenderSkeleton
   }
 
  /**
-     Retuns the option names for this component in addition in
+     Returns the option names for this component in addition in
      addition to the options of its super class {@link
      AppenderSkeleton}.  */
   public
@@ -276,7 +276,7 @@ class Dispatcher extends Thread {
      The dispatching strategy is to wait until there are events in the
      buffer to process. After having processed an event, we release
      the monitor (variable bf) so that new events can be placed in the
-     buffer, instead of keeping the monitor and processing remaning
+     buffer, instead of keeping the monitor and processing the remaining
      events in the buffer. 
 
     <p>Other approaches might yield better results.
@@ -308,7 +308,7 @@ class Dispatcher extends Thread {
 	//cat.debug("About to get new event.");
 	event = bf.get();
 	if(bf.wasFull()) {
-	  //cat.debug("Notifiying AsyncAppender about freed space.");
+	  //cat.debug("Notifying AsyncAppender about freed space.");
 	  bf.notify();
 	}
       } // synchronized

@@ -12,8 +12,8 @@ import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
 
 /**
-   ConsoleAppender appends log events to <code>Syste.errm</code> or
-   m<code>System.outm</code> using a layout specified by the user.
+   ConsoleAppender appends log events to <code>System.err</code> or
+   <code>System.out</code> using a layout specified by the user.
 
    @author Ceki G&uuml;lc&uuml;
    @since 1.1 */
@@ -68,8 +68,8 @@ public class ConsoleAppender extends WriterAppender {
   }
 
   /**
-     Retuns the option names for this component, namely the string
-     array {{@link #TARGET_OPTION} and the options of its super class
+     Returns the option names for this component, namely the string
+     array {@link #TARGET_OPTION} and the options of its super class
      {@link WriterAppender}.  
 
       <b>See</b> Options of the super classes {@link WriterAppender} and
