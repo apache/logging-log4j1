@@ -53,11 +53,15 @@ import org.apache.log4j.Level;
 
 import java.awt.Image;
 
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.ImageIcon;
+import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.plaf.metal.MetalLookAndFeel;
 
 
 /**
@@ -73,10 +77,18 @@ public class LevelIconFactory {
     Level[] levels = new Level[] { Level.WARN, Level.INFO, Level.ERROR };
 
     for (int i = 0; i < iconLabels.length; i++) {
+      URL resourceURL = UIManager.getLookAndFeel().getClass().getResource(
+          "icons/" + iconFileNames[i]);
+      if(resourceURL == null) {
+        resourceURL = MetalLookAndFeel.class.getResource(
+          "icons/" + iconFileNames[i]);
+      }
+      if(resourceURL == null) {
+        throw new IllegalStateException("Was unable to locate an L&F icon using either the current L&F or the cross platform L&F.");
+      }
+      
       final ImageIcon icon =
-        new ImageIcon(
-          UIManager.getLookAndFeel().getClass().getResource(
-            "icons/" + iconFileNames[i]));
+        new ImageIcon(resourceURL);
       double scalex = .5;
       double scaley = .5;
       final int newWidth = (int) (scalex * icon.getIconWidth());
