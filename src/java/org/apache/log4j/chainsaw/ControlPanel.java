@@ -102,6 +102,11 @@ class ControlPanel extends JPanel {
   public static final String NDC_PROPERTY = "ndc";
 
   /**
+   * MDC filter property
+   */
+  public static final String MDC_PROPERTY = "mdc";
+
+  /**
    * Message filter property
    */
   public static final String MESSAGE_PROPERTY = "message";
@@ -160,6 +165,11 @@ class ControlPanel extends JPanel {
 
     c.gridy++;
     label = new JLabel("Filter NDC:");
+    gridbag.setConstraints(label, c);
+    add(label);
+
+    c.gridy++;
+    label = new JLabel("Filter MDC:");
     gridbag.setConstraints(label, c);
     add(label);
 
@@ -252,9 +262,11 @@ class ControlPanel extends JPanel {
     c.gridy++;
 
     String ndcProp = "";
+    String mdcProp = "";
 
     if (savePrefs) {
       ndcProp = prefs.getProperty(NDC_PROPERTY, "");
+      mdcProp = prefs.getProperty(MDC_PROPERTY, "");
     }
 
     final JTextField ndcField = new JTextField(ndcProp);
@@ -268,6 +280,20 @@ class ControlPanel extends JPanel {
       });
     gridbag.setConstraints(ndcField, c);
     add(ndcField);
+
+    c.gridy++;
+
+    final JTextField mdcField = new JTextField(mdcProp);
+    aModel.setMDCFilter(mdcProp);
+    mdcField.getDocument().addDocumentListener(
+      new DocumentChangeListener() {
+        public void update(DocumentEvent aEvent) {
+          aModel.setMDCFilter(mdcField.getText());
+          prefs.setProperty(MDC_PROPERTY, mdcField.getText());
+        }
+      });
+    gridbag.setConstraints(mdcField, c);
+    add(mdcField);
 
     c.gridy++;
 

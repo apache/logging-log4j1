@@ -215,7 +215,7 @@ class XMLFileHandler extends DefaultHandler {
   private void addEvent() {
     mEventSink.addEvent(
       new EventDetails(
-        mTimeStamp, mPriority, mCategoryName, mNDC, mThreadName, mMessage,
+        mTimeStamp, mPriority, mCategoryName, mNDC, null, mThreadName, mMessage,
         mThrowableStrRep, mLocationDetails));
     mNumEvents++;
   }
