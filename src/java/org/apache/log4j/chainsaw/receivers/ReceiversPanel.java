@@ -304,8 +304,7 @@ public class ReceiversPanel extends JPanel {
                     for (Iterator iter = allReceivers.iterator();
                         iter.hasNext();) {
                       Receiver item = (Receiver) iter.next();
-                      pluginRegistry.stopPlugin(item.getName());
-                      pluginRegistry.addPlugin(item);
+                      item.shutdown();
                       item.activateOptions();
                     }
 
