@@ -99,7 +99,7 @@ public class Category implements AppenderAttachable {
   //static
   //public
   //final Hierarchy defaultHierarchy = new Hierarchy(new
-  //					   RootCategory(Level.DEBUG));
+  //					   RootLogger(Level.DEBUG));
 
   /**
    * The name of this category.

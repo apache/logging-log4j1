@@ -1,7 +1,7 @@
 package wombat;
 
 import org.apache.log4j.*;
-import org.apache.log4j.spi.RootCategory;
+import org.apache.log4j.spi.RootLogger;
 import javax.servlet.http.*;
 import javax.servlet.*;
 

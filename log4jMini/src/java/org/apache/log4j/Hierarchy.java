@@ -22,7 +22,7 @@ import java.util.Hashtable;
 import java.util.Enumeration;
 import java.util.Vector;
 
-import org.apache.log4j.spi.RootCategory;
+import org.apache.log4j.spi.RootLogger;
 import org.apache.log4j.Appender;
 import org.apache.log4j.helpers.LogLog;
 

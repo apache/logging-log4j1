@@ -23,23 +23,23 @@ import org.apache.log4j.helpers.LogLog;
 // Contibutors: Mathias Bogaert
 
 /**
-   RootCategory sits at the top of the category hierachy. It is a
-   regular category except that it provides several guarantees.
+   RootLogger sits at the top of the category hierachy. It is a
+   regular logger except that it provides several guarantees.
 
    <p>First, it cannot be assigned a <code>null</code>
-   priority. Second, since root category cannot have a parent, the
+   level. Second, since root logger cannot have a parent, the
    {@link #getChainedLevel} method always returns the value of the
    level field without walking the hierarchy.
 
    @author Ceki G&uuml;lc&uuml;
 
  */
-public final class RootCategory extends Logger {
+public final class RootLogger extends Logger {
   /**
      The root category names itself as "root". However, the root
      category cannot be retrieved by name.
   */
-  public RootCategory(Level level) {
+  public RootLogger(Level level) {
     super("root");
     setLevel(level);
   }
@@ -53,7 +53,7 @@ public final class RootCategory extends Logger {
   }
 
   /**
-     Setting a null value to the level of the root category may have catastrophic
+     Setting a null value to the level of the root logger may have catastrophic
      results. We prevent this here.
 
      @since 0.8.3 */
@@ -66,7 +66,4 @@ public final class RootCategory extends Logger {
     }
   }
 
-  public final void setPriority(Level level) {
-    setLevel(level);
-  }
 }

@@ -33,10 +33,10 @@ public class ParamAction extends Action {
 			return;
 		}
     
-    logger.debug("Setting parameter ["+name+"] to value ["+value+"].");
 		Object o = ec.peekObject();
 		PropertySetter propSetter = new PropertySetter(o);		
 		value = ec.subst(OptionConverter.convertSpecialChars(value));
+    logger.debug("Setting parameter ["+name+"] to value ["+value+"].");
 		propSetter.setProperty(name, value);
   }
 

@@ -26,7 +26,7 @@ import org.apache.log4j.spi.DefaultRepositorySelector;
 import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.RepositorySelector;
-import org.apache.log4j.spi.RootCategory;
+import org.apache.log4j.spi.RootLogger;
 
 import java.util.Enumeration;
 
@@ -47,7 +47,7 @@ public class LogManager {
   
   static {
     System.out.println("**Start of LogManager static initializer");
-    Hierarchy defaultHierarchy = new Hierarchy(new RootCategory(Level.DEBUG));
+    Hierarchy defaultHierarchy = new Hierarchy(new RootLogger(Level.DEBUG));
     defaultHierarchy.setName("default");
 
     String repositorySelectorStr =

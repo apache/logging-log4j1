@@ -25,7 +25,7 @@ import org.apache.log4j.helpers.Loader;
 
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.RepositorySelector;
-import org.apache.log4j.spi.RootCategory;
+import org.apache.log4j.spi.RootLogger;
 
 
 import java.util.Collections;
@@ -177,7 +177,7 @@ public class ContextJNDISelector implements RepositorySelector {
 
       if (hierarchy == null) {
         // create new hierarchy
-        hierarchy = new Hierarchy(new RootCategory(Level.DEBUG));
+        hierarchy = new Hierarchy(new RootLogger(Level.DEBUG));
         hierarchy.setName(loggingContextName);
         hierMap.put(loggingContextName, hierarchy);
 

@@ -16,7 +16,7 @@
 
 
 // WARNING This class MUST not have references to the Category or
-// WARNING RootCategory classes in its static initiliazation neither
+// WARNING RootLogger classes in its static initiliazation neither
 // WARNING directly nor indirectly.
 package org.apache.log4j;
 
