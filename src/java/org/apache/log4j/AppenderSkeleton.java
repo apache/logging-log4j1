@@ -268,7 +268,7 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
      
      @since 0.8.3 */
   public
-  void setThreshold(Level threshold) {
+  void setThreshold(Priority threshold) {
     this.threshold = threshold;
   }  
 }

@@ -57,7 +57,7 @@ public class UnitTestLogger extends TestCase {
   public
   void tearDown() {
     // Regular users should not use the clear method lightly!
-    Logger.getDefaultHierarchy().clear();
+    //Logger.getDefaultHierarchy().clear();
     BasicConfigurator.resetConfiguration();
     a1 = null;
     a2 = null;
@@ -204,8 +204,9 @@ public class UnitTestLogger extends TestCase {
     Logger root = Category.getRoot();    
     root.addAppender(caRoot);
 
-    Hierarchy h = Logger.getDefaultHierarchy();
-    h.disableDebug();
+    LoggerRepository h = Category.getDefaultHierarchy();
+    //h.disableDebug();
+    h.enable(Level.INFO);
     assertEquals(caRoot.counter, 0);     
 
     root.debug(MSG); assertEquals(caRoot.counter, 0);  
@@ -213,14 +214,16 @@ public class UnitTestLogger extends TestCase {
     root.log(Level.WARN, MSG); assertEquals(caRoot.counter, 2);  
     root.warn(MSG); assertEquals(caRoot.counter, 3);  
 
-    h.disableInfo();
+    //h.disableInfo();
+    h.enable(Level.WARN);
     root.debug(MSG); assertEquals(caRoot.counter, 3);  
     root.info(MSG); assertEquals(caRoot.counter, 3);  
     root.log(Level.WARN, MSG); assertEquals(caRoot.counter, 4);  
     root.error(MSG); assertEquals(caRoot.counter, 5);  
     root.log(Level.ERROR, MSG); assertEquals(caRoot.counter, 6);  
 
-    h.disableAll();
+    //h.disableAll();
+    h.enable(Level.OFF);
     root.debug(MSG); assertEquals(caRoot.counter, 6);  
     root.info(MSG); assertEquals(caRoot.counter, 6);  
     root.log(Level.WARN, MSG); assertEquals(caRoot.counter, 6);  
@@ -228,7 +231,8 @@ public class UnitTestLogger extends TestCase {
     root.log(Level.FATAL, MSG); assertEquals(caRoot.counter, 6);  
     root.log(Level.FATAL, MSG); assertEquals(caRoot.counter, 6);  
 
-    h.disable(Level.FATAL);
+    //h.disable(Level.FATAL);
+    h.enable(Level.OFF);
     root.debug(MSG); assertEquals(caRoot.counter, 6);  
     root.info(MSG); assertEquals(caRoot.counter, 6);  
     root.log(Level.WARN, MSG); assertEquals(caRoot.counter, 6);  

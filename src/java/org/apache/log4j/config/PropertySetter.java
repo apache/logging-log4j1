@@ -222,7 +222,7 @@ public class PropertySetter {
       } else if ("false".equalsIgnoreCase(v)) {
         return Boolean.FALSE;
       }
-    } else if (Level.class.isAssignableFrom(type)) {
+    } else if (Priority.class.isAssignableFrom(type)) {
       return OptionConverter.toLevel(v, Level.DEBUG);
     }
     return null;

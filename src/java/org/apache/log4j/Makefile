@@ -9,7 +9,6 @@ JSOURCES:=DailyRollingFileAppender.java\
 	AppenderSkeleton.java\
 	CategoryKey.java\
 	ProvisionNode.java\
-	StressCategory.java \
 	FileAppender.java \
 	SimpleLayout.java\
 	TTCCLayout.java\
@@ -28,6 +27,7 @@ JSOURCES:=DailyRollingFileAppender.java\
         HTMLLayout.java\
         LogManager.java\
 
+#	StressCategory.java \
 
 
 

@@ -26,6 +26,7 @@ import org.apache.log4j.spi.RootCategory;
 import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.HierarchyEventListener;
 import org.apache.log4j.spi.LoggerRepository;
+import org.apache.log4j.spi.RendererSupport;
 import org.apache.log4j.Appender;
 import org.apache.log4j.or.RendererMap;
 import org.apache.log4j.or.ObjectRenderer;
@@ -54,7 +55,7 @@ import org.apache.log4j.helpers.OptionConverter;
    @author Ceki G&uuml;lc&uuml; 
 
 */
-public class Hierarchy implements LoggerRepository {
+public class Hierarchy implements LoggerRepository, RendererSupport {
 
   private LoggerFactory defaultFactory;
   private Vector listeners;
@@ -62,7 +63,7 @@ public class Hierarchy implements LoggerRepository {
   Hashtable ht;
   Logger root;
   RendererMap rendererMap;
-  
+
   int enableInt;
   Level enable;
 
@@ -117,6 +118,17 @@ public class Hierarchy implements LoggerRepository {
   void clear() {
     //System.out.println("\n\nAbout to clear internal hash table.");
     ht.clear();
+  }
+
+  public 
+  void emitNoAppenderWarning(Category cat) {
+    // No appenders in hierarchy, warn user only once.
+    if(this.emittedNoAppenderWarning) {
+      LogLog.error("No appenders could be found for category (" +
+		   cat.getName() + ").");
+      LogLog.error("Please initialize the log4j system properly.");
+      this.emittedNoAppenderWarning = true;
+    }
   }
 
   /**
@@ -297,6 +309,17 @@ public class Hierarchy implements LoggerRepository {
   }
 
   /**
+     Returns an integer representation of the this repository's
+     <code>enable</code> state.
+
+     @since 1.2 */
+  public
+  int getEnableInt() {
+    return enableInt;
+  }
+
+
+  /**
      Return a new logger instance named as the first parameter using
      the default factory. 
      
@@ -360,7 +383,6 @@ public class Hierarchy implements LoggerRepository {
     }
   }
 
-
   /**
      Returns all the currently defined categories in this hierarchy as
      an {@link java.util.Enumeration Enumeration}.
@@ -383,6 +405,15 @@ public class Hierarchy implements LoggerRepository {
     }
     return v.elements();
   }
+
+  /**
+     @deprecated Please use {@link #getCurrentLoggers} instead.
+   */
+  public
+  Enumeration getCurrentCategories() {
+    return getCurrentLoggers();
+  }
+
 
   /**
      Get the renderer map for this hierarchy.
@@ -409,7 +440,7 @@ public class Hierarchy implements LoggerRepository {
 
   public
   boolean isDisabled(int level) {    
-    return enableInt >  level;
+    return enableInt > level;
   }
 
   /**
@@ -466,6 +497,17 @@ public class Hierarchy implements LoggerRepository {
   void setDisableOverride(String override) {
     LogLog.warn("The Hiearchy.setDisableOverride method has been deprecated.");    
   }
+
+
+
+  /**
+     Used by subclasses to add a renderer to the hierarchy passed as parameter.
+   */
+  public
+  void setRenderer(Class renderedClass, ObjectRenderer renderer) {
+    rendererMap.put(renderedClass, renderer);
+  }
+
 
   /**
      Shutting down a hierarchy will <em>safely</em> close and remove

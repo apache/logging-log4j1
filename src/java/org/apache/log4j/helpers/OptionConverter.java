@@ -14,6 +14,7 @@ import org.apache.log4j.Category;
 import org.apache.log4j.Hierarchy;
 import org.apache.log4j.Level;
 import org.apache.log4j.spi.Configurator;
+import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.PropertyConfigurator;
 
 // Contributors:   Avy Sharell (sharell@online.fr)
@@ -429,7 +430,7 @@ public class OptionConverter {
      
   static
   public
-  void selectAndConfigure(URL url, String clazz,  Hierarchy hierarchy) {
+  void selectAndConfigure(URL url, String clazz, LoggerRepository hierarchy) {
 
    Configurator configurator = null;
    String filename = url.getFile();

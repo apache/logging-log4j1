@@ -17,7 +17,7 @@ import java.io.ObjectInputStream;
 
 
 import org.apache.log4j.*;
-import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.*;
 
 // Contributors:  Moses Hohman <mmhohman@rainbow.uchicago.edu>
 
@@ -36,13 +36,13 @@ import org.apache.log4j.spi.LoggingEvent;
 public class SocketNode implements Runnable {
 
   Socket socket;
-  Hierarchy hierarchy;
+  LoggerRepository hierarchy;
   ObjectInputStream ois;
 
   static Logger logger = Category.getInstance(SocketNode.class);
 
   public 
-  SocketNode(Socket socket, Hierarchy hierarchy) {
+  SocketNode(Socket socket, LoggerRepository hierarchy) {
     this.socket = socket;
     this.hierarchy = hierarchy;
     try {

@@ -93,6 +93,17 @@ public class LogManager {
     return repositorySelector.getLoggerRepository().getLogger(name);
   }
 
+ /**
+     Retrieve the appropriate {@link Logger} instance.  
+  */
+  public
+  static 
+  Logger getLogger(Class clazz) {
+     // Delegate the actual manufacturing of the logger to the logger factory.
+    return repositorySelector.getLoggerRepository().getLogger(clazz.getName());
+  }
+
+
   /**
      Retrieve the appropriate {@link Logger} instance.  
   */

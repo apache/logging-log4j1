@@ -15,11 +15,8 @@ import java.io.IOException;
 import java.io.File;
 import java.util.Hashtable;
 
-import org.apache.log4j.Category;
-import org.apache.log4j.Hierarchy;
-import org.apache.log4j.Priority;
-import org.apache.log4j.PropertyConfigurator;
-import org.apache.log4j.spi.RootCategory;
+import org.apache.log4j.*;
+import org.apache.log4j.spi.*;
 
 
 /**
@@ -86,7 +83,7 @@ public class SocketServer  {
 
   // key=inetAddress, value=hierarchy
   Hashtable hierarchyMap;
-  Hierarchy genericHierarchy;
+  LoggerRepository genericHierarchy;
   File dir;
 
   public 
@@ -106,7 +103,7 @@ public class SocketServer  {
 	InetAddress inetAddress =  socket.getInetAddress();
 	cat.info("Connected to client at " + inetAddress);
 
-	Hierarchy h = (Hierarchy) server.hierarchyMap.get(inetAddress);
+	LoggerRepository h = (LoggerRepository) server.hierarchyMap.get(inetAddress);
 	if(h == null) {
 	  h = server.configureHierarchy(inetAddress);
 	} 
@@ -157,7 +154,7 @@ public class SocketServer  {
 
   // This method assumes that there is no hiearchy for inetAddress
   // yet. It will configure one and return it.
-  Hierarchy configureHierarchy(InetAddress inetAddress) {
+  LoggerRepository configureHierarchy(InetAddress inetAddress) {
     cat.info("Locating configuration file for "+inetAddress);
     // We assume that the toSting method of InetAddress returns is in
     // the format hostname/d1.d2.d3.d4 e.g. torino/192.168.1.1
@@ -185,7 +182,7 @@ public class SocketServer  {
     }
   }
 
-  Hierarchy genericHierarchy() {
+  LoggerRepository  genericHierarchy() {
     if(genericHierarchy == null) {
       File f = new File(dir, GENERIC+CONFIG_FILE_EXT);
       if(f.exists()) {
@@ -194,7 +191,7 @@ public class SocketServer  {
       } else {
 	cat.warn("Could not find config file ["+f+
 		 "]. Will use the default hierarchy.");
-	genericHierarchy = Category.getDefaultHierarchy();
+	genericHierarchy = LogManager.getLoggerRepository();
       }
     }
     return genericHierarchy;
