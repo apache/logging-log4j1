@@ -135,7 +135,7 @@ public class SMTPAppender extends AppenderSkeleton {
 
 
   /**
-     The default constructor will instantiate the appedner with a
+     The default constructor will instantiate the appender with a
      {@link TriggeringEventEvaluator} that will tirgger on events with
      priority ERROR or higher.*/
   public
@@ -278,6 +278,9 @@ public class SMTPAppender extends AppenderSkeleton {
    */
   protected
   void sendBuffer() {
+
+    // Note: this code already owns the monitor for this
+    // appender. This frees us from needing to synchronize on 'cb'.
     try {      
       MimeBodyPart part = new MimeBodyPart();
 
@@ -285,7 +288,7 @@ public class SMTPAppender extends AppenderSkeleton {
       String t = layout.getHeader();
       if(t != null)
 	sbuf.append(t);
-      int len =  cb.length();
+      int len =  cb.length(); 
       for(int i = 0; i < len; i++) {
 	//sbuf.append(MimeUtility.encodeText(layout.format(cb.get())));
 	sbuf.append(layout.format(cb.get()));

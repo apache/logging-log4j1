@@ -63,9 +63,7 @@ sharing the same underlying output target to some category. In the
 most common occurance of this phenomenon, the
 BasicConfigurator.configure() method is invoked multiple times. Each
 time it is invoked, this method adds an appender with a
-<code>System.out</code> target to the root category. See <a
-href="http://sourceforge.net/support/?func=detailsupport&support_id=107779&group_id=2666">[
-Support #107779]</a> for an example.
+<code>System.out</code> target to the root category. 
 
 <p>One other common mistake is to forget that appenders are inherited
 cumulatively from the hierarchy. For example, if you add an appender,
@@ -74,9 +72,7 @@ inherit <code>A</code> as an appender. Thus, if you add <code>A</code>
 to a categoy, say <code>C</code>, then an enabled statement of
 category <code>C</code>, will print to <code>A</code> twice, once
 because <code>A</code> is in root and once because it is in
-<code>C</code>. See <a
-href="http://sourceforge.net/bugs/?func=detailbug&bug_id=121892&group_id=2666">[
-Bug #121892 ]</a> for an example.
+<code>C</code>. 
 
 <p><a name=space><h4>Options are not parsed correctly.</h4>
 
@@ -93,9 +89,7 @@ value <code>"orange "</code>.
 <p>The spaces in the value, i.e. <code>"orange "</code>, are due to
 invisible spaces at the end of the example shown above. Thus, some of
 the options might not be interpreted correctly due to trailing
-spaces. See <a
-href="http://sourceforge.net/bugs/?func=detailbug&bug_id=121903&group_id=2666">[Bug
-#121903]</a> for an example of this problem.
+spaces. 
 
 <p>In log4j version 0.9.0, all spaces are removed from <em>both</em>
 ends of option values. In version 0.9.1 log4j reverted to the old
@@ -113,9 +107,6 @@ and jikes.
 
 <p>You can remedy this problem by disabling the JIT compiler and by
 compiling the code without the -O option.
-
-<p>See <a href="http://sourceforge.net/support/?func=detailsupport&group_id=2666&support_id=108314">[Support
-#108314]</a> for an example of this problem.
 
 <p><a name=cce><h4><code>ClassCastException</code> when instantiating
 a <code>Category</code> subclasses.</a></h4>
@@ -136,7 +127,7 @@ in the fist invocation. This instance is a <code>Category</code>
 object and cannot be cast to <code>MyCategory</code>.
 
 <p>By default, the <code>PropertyConfigurator</code> will create and
-configure <code>org.log4j.Category</code> objects. Thus, if you try to
+configure <code>org.apache.log4j.Category</code> objects. Thus, if you try to
 instantiate a category sub-class for an already existing category, and
 try to cast it to the sub-class type, you will systematically get a
 <code>ClassCastException</code>.
@@ -144,9 +135,6 @@ try to cast it to the sub-class type, you will systematically get a
 <p>To address this problem, the <code>PropertyConfigurator</code> admits
 the <code>log4j.categoryFactory</code> key. The value of this key will
 be used as the factory to invoke when instantiating Category objects.
-See <a
-href="../javadoc/org/apache/log4j/PropertyConfigurator.html">PropertyConfigurator</a>
-for more details.
 
 <p>The <code>DOMConfigurator</code> has a finer grain method for
 setting the class of the category object to instantiate.
