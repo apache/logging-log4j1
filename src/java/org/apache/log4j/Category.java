@@ -948,10 +948,8 @@ public class Category implements AppenderAttachable {
 
   /**
    * Remove all previously added appenders from this Category instance.
-   * 
-   * <p>
-   * This is useful when re-reading configuration information.
-   * </p>
+   * <p>Removed appenders are closed.</p>
+   * <p>This is useful when re-reading configuration information.</p>
    */
   public synchronized void removeAllAppenders() {
     if (aai != null) {
@@ -962,7 +960,9 @@ public class Category implements AppenderAttachable {
 
   /**
    * Remove the appender passed as parameter form the list of appenders.
-   *
+   * 
+   * <p>Does <em>not</em> close the appender.</p>
+   * 
    * @since 0.8.2
    */
   public synchronized void removeAppender(Appender appender) {
@@ -976,6 +976,8 @@ public class Category implements AppenderAttachable {
   /**
    * Remove the appender with the name passed as parameter form the list of
    * appenders.
+   *
+   *<p>Does <em>not</em> close the appender.</p>
    *
    * @since 0.8.2
    */

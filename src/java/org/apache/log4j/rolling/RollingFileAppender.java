@@ -89,11 +89,13 @@ public class RollingFileAppender extends FileAppender {
 
     if (rollingPolicy != null) {
       rollingPolicy.activateOptions();
-      logger.debug("Active log file name: "+rollingPolicy.getActiveLogFileName());
-      setFile(rollingPolicy.getActiveLogFileName());
+      String afn = rollingPolicy.getActiveLogFileName();
+      activeFile = new File(afn);
+      logger.debug("Active log file name: "+afn);
+      setFile(afn);
       
       // the activeFile variable is used by the triggeringPolicy.isTriggeringEvent method
-      activeFile = new File(rollingPolicy.getActiveLogFileName());
+      activeFile = new File(afn);
       super.activateOptions();
     } else {
       logger.warn("Please set a rolling policy");
@@ -144,12 +146,14 @@ public class RollingFileAppender extends FileAppender {
      class.
   */
   protected void subAppend(LoggingEvent event) {
-    super.subAppend(event);
-
+    // The rollover check must precede actual writing. This is the 
+    // only correct behavior for time driven triggers. 
     if (triggeringPolicy.isTriggeringEvent(activeFile)) {
       logger.debug("About to rollover");
       rollover();
     }
+      
+    super.subAppend(event);
   }
 
   public RollingPolicy getRollingPolicy() {
