@@ -90,4 +90,12 @@ public class ThrowableInformationTest extends TestCase {
     boolean eq2 = te1.equals(null);
     assertEquals(false, eq2);
   }
-}
+  /**
+   * @param arg0
+   */
+  public ThrowableInformationTest(String arg0)
+  {
+    super(arg0);
+  }
+  
+ }
