@@ -27,8 +27,8 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
 import org.apache.log4j.util.Compare;
-import org.apache.log4j.varia.DenyAllFilter;
-import org.apache.log4j.varia.LevelMatchFilter;
+import org.apache.log4j.filter.DenyAllFilter;
+import org.apache.log4j.filter.LevelMatchFilter;
 
 
 /**

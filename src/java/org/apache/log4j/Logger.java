@@ -17,6 +17,7 @@
 package org.apache.log4j;
 
 import org.apache.log4j.spi.LoggerFactory;
+import org.apache.ugli.ULogger;
 import org.apache.ugli.impl.MessageFormatter;
 
 
@@ -28,7 +29,7 @@ import org.apache.ugli.impl.MessageFormatter;
  * @author Ceki G&uuml;lc&uuml;
  * @since log4j 1.2
 */
-public class Logger extends Category {
+public class Logger extends Category implements ULogger {
   /**
    * The fully qualified name of the Logger class. See also the {@link #getFQCN}
    * method.
@@ -198,101 +199,6 @@ public class Logger extends Category {
     if (Level.TRACE.isGreaterOrEqual(this.getEffectiveLevel())) {
       messagePattern = MessageFormatter.format(messagePattern, arg1, arg2);
       forcedLog(FQCN, Level.TRACE, messagePattern, null);
-    }
-  }
-
-  /**
-   * Log a message with the <code>DEBUG</code> level with message formatting
-   * done according to the messagePattern and the arguments arg1 and arg2.
-   * <p>
-   * This form avoids superflous parameter construction. Whenever possible,
-   * you should use this form instead of constructing the message parameter 
-   * using string concatenation.
-   * 
-   * @param messagePattern The message pattern which will be parsed and formatted
-   * @param arg1 The first argument to replace the first formatting element
-   * @param arg2 The second argument to replace the second formatting element
-   * @since 1.3
-   */
-  public void debug(String messagePattern, Object arg1, Object arg2) {
-    if (repository.isDisabled(Level.DEBUG_INT)) {
-      return;
-    }
-    if (Level.DEBUG.isGreaterOrEqual(this.getEffectiveLevel())) {
-      messagePattern = MessageFormatter.format(messagePattern, arg1, arg2);
-      forcedLog(FQCN, Level.DEBUG, messagePattern, null);
-    }
-  }
-  
-  /**
-   * Log a message with the <code>INFO</code> level with message formatting
-   * done according to the messagePattern and the arguments arg1 and arg2.
-   * <p>
-   * This form avoids superflous parameter construction. Whenever possible,
-   * you should use this form instead of constructing the message parameter 
-   * using string concatenation.
-   *
-   * @param messagePattern The message pattern which will be parsed and formatted
-   * @param arg1 The first argument to replace the first formatting element
-   * @param arg2 The second argument to replace the second formatting element
-   * @since 1.3
-   */
-  public void info(String messagePattern, Object arg1, Object arg2) {
-    if (repository.isDisabled(Level.INFO_INT)) {
-      return;
-    }
-    if (Level.INFO.isGreaterOrEqual(this.getEffectiveLevel())) {
-      messagePattern = MessageFormatter.format(messagePattern, arg1, arg2);
-      forcedLog(FQCN, Level.INFO, messagePattern, null);
-    }
-  }
-  
-  
-  /**
-   * Log a message with the <code>WARN</code> level with message formatting
-   * done according to the messagePattern and the arguments arg1 and arg2.
-   * <p>
-   * This form avoids superflous parameter construction. Whenever possible,
-   * you should use this form instead of constructing the message parameter 
-   * using string concatenation.
-   *
-   * @param messagePattern The message pattern which will be parsed and formatted
-   * @param arg1 The first argument to replace the first formatting element
-   * @param arg2 The second argument to replace the second formatting element
-   * @since 1.3
-   */
-  public void warn(String messagePattern, Object arg1, Object arg2) {
-    if (repository.isDisabled(Level.WARN_INT)) {
-      return;
-    }
-    if (Level.WARN.isGreaterOrEqual(this.getEffectiveLevel())) {
-      messagePattern = MessageFormatter.format(messagePattern, arg1, arg2);
-      forcedLog(FQCN, Level.WARN, messagePattern, null);
-    }
-  }
-  
-
-  
-  /**
-   * Log a message with the <code>ERROR</code> level with message formatting
-   * done according to the messagePattern and the arguments arg1 and arg2.
-   * <p>
-   * This form avoids superflous parameter construction. Whenever possible,
-   * you should use this form instead of constructing the message parameter 
-   * using string concatenation.
-   *
-   * @param messagePattern The message pattern which will be parsed and formatted
-   * @param arg1 The first argument to replace the first formatting element
-   * @param arg2 The second argument to replace the second formatting element
-   * @since 1.3
-   */
-  public void error(String messagePattern, Object arg1, Object arg2) {
-    if (repository.isDisabled(Level.ERROR_INT)) {
-      return;
-    }
-    if (Level.ERROR.isGreaterOrEqual(this.getEffectiveLevel())) {
-      messagePattern = MessageFormatter.format(messagePattern, arg1, arg2);
-      forcedLog(FQCN, Level.ERROR, messagePattern, null);
     }
   }
   

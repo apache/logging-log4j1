@@ -87,7 +87,7 @@ public class SimpleLogger implements ULogger {
   /**
    * A NOP implementation.
    */
-  public void debug(Object parameterizedMsg, Object param1, Object param2) {
+  public void debug(String parameterizedMsg, Object param1, Object param2) {
     // NOP
   }
 
@@ -181,7 +181,7 @@ public class SimpleLogger implements ULogger {
    * INFO according to the format outlined above.
    */
   
-  public void info(Object parameterizedMsg, Object param1, Object param2) {
+  public void info(String parameterizedMsg, Object param1, Object param2) {
     parameterizedLog(INFO_STR, parameterizedMsg, param1, param2);
   }
 
@@ -219,7 +219,7 @@ public class SimpleLogger implements ULogger {
    * Perform double parameter substituion before logging the message of level 
    * WARN according to the format outlined above.
    */
-  public void warn(Object parameterizedMsg, Object param1, Object param2) {
+  public void warn(String parameterizedMsg, Object param1, Object param2) {
     parameterizedLog(WARN_STR, parameterizedMsg, param1, param2);
   }
 
@@ -258,7 +258,7 @@ public class SimpleLogger implements ULogger {
    * Perform double parameter substituion before logging the message of level 
    * ERROR according to the format outlined above.
    */
-  public void error(Object parameterizedMsg, Object param1, Object param2) {
+  public void error(String parameterizedMsg, Object param1, Object param2) {
     parameterizedLog(ERROR_STR, parameterizedMsg, param1, param2);
   }
 

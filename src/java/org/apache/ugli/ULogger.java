@@ -63,28 +63,28 @@ public interface ULogger {
    * @param param1 - the first parameter 
    * @param param2 - the second parameter 
    */
-  public void debug(Object parameterizedMsg, Object param1, Object param2);
+  public void debug(String parameterizedMsg, Object param1, Object param2);
   public void debug(Object msg, Throwable t);
 
 
   public boolean isInfoEnabled();
   public void info(Object msg);
   public void info(Object parameterizedMsg, Object param1);
-  public void info(Object parameterizedMsg, Object param1, Object param2);
+  public void info(String parameterizedMsg, Object param1, Object param2);
   public void info(Object msg, Throwable t);
 
 
   public boolean isWarnEnabled();
   public void warn(Object msg);
   public void warn(Object parameterizedMsg, Object param1);
-  public void warn(Object parameterizedMsg, Object param1, Object param2);
+  public void warn(String parameterizedMsg, Object param1, Object param2);
   public void warn(Object msg, Throwable t);
 
 
   public boolean isErrorEnabled();
   public void error(Object msg);
   public void error(Object parameterizedMsg, Object param1);
-  public void error(Object parameterizedMsg, Object param1, Object param2);
+  public void error(String parameterizedMsg, Object param1, Object param2);
   public void error(Object msg, Throwable t);
 
 }
