@@ -1,5 +1,5 @@
 
-package examples;
+package sort;
 
 import org.apache.log4j.Category;
 import org.apache.log4j.NDC;

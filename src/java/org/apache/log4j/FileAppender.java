@@ -183,7 +183,6 @@ public class FileAppender extends WriterAppender {
       try {
         setFile(fileName, fileAppend, bufferedIO, bufferSize);
       } catch (java.io.IOException e) {
-        System.out.println("xx" + fileName);
         errorHandler.error(
           "setFile(" + fileName + "," + fileAppend + ") call failed.", e,
           ErrorCode.FILE_OPEN_FAILURE);

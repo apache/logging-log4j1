@@ -56,7 +56,6 @@ import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
 
 import java.util.HashMap;
-import java.util.Hashtable;
 
 
 // Contributors:   Nelson Minar <(nelson@monkey.org>
@@ -70,7 +69,7 @@ import java.util.Hashtable;
    <p>It is this class that parses conversion patterns and creates
    a chained list of {@link OptionConverter OptionConverters}.
 
-   @author <a href=mailto:"cakalijp@Maritz.com">James P. Cakalic</a>
+   @author James P. Cakalic
    @author Ceki G&uuml;lc&uuml;
    @author Anders Kristensen
 
@@ -94,9 +93,11 @@ public class PatternParser {
   static final int LEVEL_CONVERTER = 2002;
   static final int NDC_CONVERTER = 2003;
   static final int MESSAGE_CONVERTER = 2004;
+  
   static HashMap globalRulesRegistry;
-
+ 
   static {
+    // We set the global rules in the static initializer of PatternParser class
     globalRulesRegistry = new HashMap(17);
     globalRulesRegistry.put("c", LoggerPatternConverter.class.getName());
     globalRulesRegistry.put("C", ClassNamePatternConverter.class.getName());
@@ -104,6 +105,7 @@ public class PatternParser {
     globalRulesRegistry.put("l", FullLocationPatternConverter.class.getName()); 
     globalRulesRegistry.put("L", LineLocationPatternConverter.class.getName());
     globalRulesRegistry.put("m", MessagePatternConverter.class.getName());
+    globalRulesRegistry.put("n", LineSeparatorPatternConverter.class.getName());
     globalRulesRegistry.put(
       "M", MethodLocationPatternConverter.class.getName());
     globalRulesRegistry.put("p", LevelPatternConverter.class.getName());
@@ -123,6 +125,12 @@ public class PatternParser {
   PatternConverter tail;
   protected FormattingInfo formattingInfo = new FormattingInfo();
   protected String pattern;
+  
+  /**
+   * Additional rules for this particular instance.
+   * key: the conversion word (as String)
+   * value: the pattern converter class (as String) 
+   */
   HashMap converterRegistry;
 
   static Logger logger  = Logger.getLogger("LOG4J."+PatternParser.class.getName());
@@ -220,12 +228,6 @@ public class PatternParser {
           switch (pattern.charAt(i)) {
           case ESCAPE_CHAR:
             currentLiteral.append(c);
-            i++; // move pointer
-
-            break;
-
-          case 'n':
-            currentLiteral.append(Layout.LINE_SEP);
             i++; // move pointer
 
             break;
@@ -364,6 +366,8 @@ public class PatternParser {
     //System.out.println("c is [" + c + "]");
     String className = (String) findConverterClass(converterId);
 
+    //System.out.println("==============[" + className + "]");
+    
     String option = extractOption();
 
     //System.out.println("Option is [" + option + "]");
@@ -438,10 +442,16 @@ public class PatternParser {
     formattingInfo.reset();
   }
 
+  /**
+   * Returns the converter registry for this PatternParser instance.
+   */
   public HashMap getConverterRegistry() {
     return converterRegistry;
   }
 
+  /**
+   * Set the converter registry for this PatternParser instance.
+   */
   public void setConverterRegistry(HashMap converterRegistry) {
     this.converterRegistry = converterRegistry;
   }

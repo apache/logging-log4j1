@@ -16,13 +16,15 @@
   <!-- The directory where source files are stored. -->
   <property name="project.source.home" value="../src/java/"/>
   <property name="project.classes.home" value="../dist/classes/"/>
-
+  <property name="examples.classes" value="../examples/classes/"/>
+  
   <property name="tests.source.home" value="./src/java/"/>
 
 
   <path id="tests.classpath">
     <pathelement location="${project.source.home}"/>
     <pathelement location="${project.classes.home}"/>
+    <pathelement location="${examples.classes}"/>
     <pathelement location="${tests.source.home}"/>
     <pathelement location="./classes"/>
     <pathelement location="./resources"/>
@@ -333,7 +335,7 @@
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
-      <test name="org.apache.log4j.helpers.PatternParserTestCase" />
+      <test name="org.apache.log4j.pattern.PatternParserTest" />
     </junit>
   </target>
 

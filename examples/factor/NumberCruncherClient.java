@@ -5,7 +5,7 @@
  * License version 1.1, a copy of which has been included with this
  * distribution in the LICENSE.APL file.  */
 
-package examples;
+package factor;
 
 import java.rmi.Remote;
 import java.rmi.server.UnicastRemoteObject;

@@ -47,60 +47,62 @@
  *
  */
 
-package org.apache.log4j;
+package trivial;
 
-import org.apache.log4j.pattern.FormattingInfo;
-import org.apache.log4j.pattern.PatternConverter;
-import org.apache.log4j.pattern.PatternParser;
-import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Category;
+import org.apache.log4j.NDC;
 
 
 /**
-  Example showing how to extend PatternParser to recognize additional
-  conversion characters.  The examples shows that minimum and maximum
-  width and alignment settings apply for "extension" conversion
-  characters just as they do for PatternLayout recognized characters.
+   View the <a href="doc-files/Trivial.java">source code</a> of this a
+   trivial usage example. Running <code>java examples.Trivial</code>
+   should output something similar to:
 
-  <p>In this case MyPatternParser recognizes %# and outputs the value
-  of an internal counter which is also incremented at each call.
+   <pre>
+      0    INFO  [main] examples.Trivial (Client #45890) - Awake awake. Put on thy strength.
+      15   DEBUG [main] examples.Trivial (Client #45890 DB) - Now king David was old.
+      278  INFO  [main] examples.Trivial$InnerTrivial (Client #45890) - Entered foo.
+      293  INFO  [main] examples.Trivial (Client #45890) - Exiting Trivial.
+   </pre>
 
-  See <a href=doc-files/MyPatternParser.java><b>source</b></a> code
-   for more details.
+   <p> The increasing numbers at the beginning of each line are the
+   times elapsed since the start of the program. The string between
+   the parentheses is the nested diagnostic context.
 
-  @see org.apache.log4j.examples.MyPatternLayout
-  @see org.apache.log4j.helpers.PatternParser
-  @see org.apache.log4j.PatternLayout
+   <p>See {@link Sort} and {@link SortAlgo} for sligtly more elaborate
+   examples.
 
-  @author Anders Kristensen
-*/
-public class MyPatternParser extends PatternParser {
-  int counter = 0;
+   <p>Note thent class files for the example code is not included in
+   any of the distributed log4j jar files. You will have to add the
+   directory <code>/dir-where-you-unpacked-log4j/classes</code> to
+   your classpath before trying out the examples.
 
-  public MyPatternParser(String pattern) {
-    super(pattern);
+ */
+public class Trivial {
+  static Category cat = Category.getInstance(Trivial.class.getName());
+
+  public static void main(String[] args) {
+    BasicConfigurator.configure();
+    NDC.push("Client #45890");
+
+    cat.info("Awake awake. Put on thy strength.");
+    Trivial.foo();
+    InnerTrivial.foo();
+    cat.info("Exiting Trivial.");
   }
 
-  public void finalizeConverter(char c) {
-    if (c == '#') {
-      addConverter(new UserDirPatternConverter(formattingInfo));
-      currentLiteral.setLength(0);
-    } else {
-      super.finalizeConverter(c);
-    }
+  static void foo() {
+    NDC.push("DB");
+    cat.debug("Now king David was old.");
+    NDC.pop();
   }
 
-  private class UserDirPatternConverter extends PatternConverter {
-    StringBuffer buf;
+  static class InnerTrivial {
+    static Category cat = Category.getInstance(InnerTrivial.class.getName());
 
-    UserDirPatternConverter(FormattingInfo formattingInfo) {
-      super(formattingInfo);
-      buf = new StringBuffer(3);
-    }
-
-    public StringBuffer convert(LoggingEvent event) {
-      buf.setLength(0);
-
-      return buf.append(String.valueOf(++counter));
+    static void foo() {
+      cat.info("Entered foo.");
     }
   }
 }

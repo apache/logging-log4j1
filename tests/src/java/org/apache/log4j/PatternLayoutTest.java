@@ -336,7 +336,7 @@ public class PatternLayoutTest extends TestCase {
     assertTrue(Compare.compare(FILTERED, "witness/patternLayout.14"));
   }
 
-  public void testMDCAllowAllKeys() throws Exception {
+  public void testMDC1() throws Exception {
     PropertyConfigurator.configure("input/patternLayout.mdc.1.properties");
     MDC.put("key1", "va11");
     MDC.put("key2", "va12");
@@ -378,6 +378,82 @@ public class PatternLayoutTest extends TestCase {
     logger.log(Level.FATAL, "Message " + ++i, e);
   }
 
+  /**
+    Test case for MDC conversion pattern. */
+  public void testMDC2() throws Exception {
+    String OUTPUT_FILE   = "output/patternLayout.mdc.2";
+    String WITNESS_FILE  = "witness/patternLayout.mdc.2";
+    
+    String mdcMsgPattern1 = "%m : %X%n";
+    String mdcMsgPattern2 = "%m : %X{key1}%n";
+    String mdcMsgPattern3 = "%m : %X{key2}%n";
+    String mdcMsgPattern4 = "%m : %X{key3}%n";
+    String mdcMsgPattern5 = "%m : %X{key1},%X{key2},%X{key3}%n";
+    
+    // set up appender
+    PatternLayout layout = new PatternLayout("%m%n");
+    Appender appender = new FileAppender(layout, OUTPUT_FILE, false);
+            
+    // set appender on root and set level to debug
+    root.addAppender(appender);
+    root.setLevel(Level.DEBUG);
+    
+    // output starting message
+    root.debug("starting mdc pattern test");
+ 
+    layout.setConversionPattern(mdcMsgPattern1);
+    layout.activateOptions();
+    root.debug("empty mdc, no key specified in pattern");
+    
+    layout.setConversionPattern(mdcMsgPattern2);
+    layout.activateOptions();
+    root.debug("empty mdc, key1 in pattern");
+    
+    layout.setConversionPattern(mdcMsgPattern3);
+    layout.activateOptions();
+    root.debug("empty mdc, key2 in pattern");
+    
+    layout.setConversionPattern(mdcMsgPattern4);
+    layout.activateOptions();
+    root.debug("empty mdc, key3 in pattern");
+    
+    layout.setConversionPattern(mdcMsgPattern5);
+    layout.activateOptions();
+    root.debug("empty mdc, key1, key2, and key3 in pattern");
+
+    MDC.put("key1", "value1");
+    MDC.put("key2", "value2");
+
+    layout.setConversionPattern(mdcMsgPattern1);
+    layout.activateOptions();
+    root.debug("filled mdc, no key specified in pattern");
+    
+    layout.setConversionPattern(mdcMsgPattern2);
+    layout.activateOptions();
+    root.debug("filled mdc, key1 in pattern");
+    
+    layout.setConversionPattern(mdcMsgPattern3);
+    layout.activateOptions();
+    root.debug("filled mdc, key2 in pattern");
+    
+    layout.setConversionPattern(mdcMsgPattern4);
+    layout.activateOptions();
+    root.debug("filled mdc, key3 in pattern");
+    
+    layout.setConversionPattern(mdcMsgPattern5);
+    layout.activateOptions();
+    root.debug("filled mdc, key1, key2, and key3 in pattern");
+
+    MDC.remove("key1");
+    MDC.remove("key2");
+
+    layout.setConversionPattern("%m%n");
+    layout.activateOptions();
+    root.debug("finished mdc pattern test");
+
+    assertTrue(Compare.compare(OUTPUT_FILE, WITNESS_FILE));
+  }
+
   public static Test suite() {
     TestSuite suite = new TestSuite();
     suite.addTest(new PatternLayoutTest("test1"));
@@ -395,7 +471,8 @@ public class PatternLayoutTest extends TestCase {
     suite.addTest(new PatternLayoutTest("test12"));
     suite.addTest(new PatternLayoutTest("test13"));
     suite.addTest(new PatternLayoutTest("test14"));
-    suite.addTest(new PatternLayoutTest("testMDCAllowAllKeys"));
+    suite.addTest(new PatternLayoutTest("testMDC1"));
+    suite.addTest(new PatternLayoutTest("testMDC2"));
     
     return suite;
   }

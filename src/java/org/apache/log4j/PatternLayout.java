@@ -458,11 +458,8 @@ public class PatternLayout extends Layout {
      Constructs a PatternLayout using the supplied conversion pattern.
   */
   public PatternLayout(String pattern) {
-    //System.out.println("...PatternLayout ["+pattern+"], "+this);
     this.conversionPattern = pattern;
-    head =
-      createPatternParser(
-        (pattern == null) ? DEFAULT_CONVERSION_PATTERN : pattern).parse();
+    activateOptions();
   }
 
   /**
@@ -510,7 +507,7 @@ public class PatternLayout extends Layout {
     you change the parameters of the PatternLayout instance.
   */
   public void activateOptions() {
-    PatternParser patternParser = createPatternParser(conversionPattern);
+    PatternParser patternParser = new PatternParser(conversionPattern);
     patternParser.setConverterRegistry(ruleRegistry);
     head = patternParser.parse();
   }
@@ -523,17 +520,6 @@ public class PatternLayout extends Layout {
       @since 0.8.4 */
   public boolean ignoresThrowable() {
     return true;
-  }
-
-  /**
-    Returns PatternParser used to parse the conversion string. Subclasses
-    may override this to return a subclass of PatternParser which recognize
-    custom conversion characters.
-
-    @since 0.9.0
-  */
-  protected PatternParser createPatternParser(String pattern) {
-    return new PatternParser(pattern);
   }
 
   /**
