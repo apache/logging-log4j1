@@ -30,18 +30,6 @@ import org.apache.log4j.helpers.LogLog;
    @since 1.1 */
 public class WriterAppender extends AppenderSkeleton {
 
-  /**
-     A string constant used in naming the option for immediate
-     flushing of the output stream at the end of each append
-     operation. Current value of this string constant is
-     <b>ImmediateFlush</b>.
-
-     <p>Note that all option keys are case sensitive.     
-
-     @deprecated We now use JavaBeans introspection to configure
-     components. Options strings are no longer needed. 
-  */
-  public static final String IMMEDIATE_FLUSH_OPTION = "ImmediateFlush";
 
   /**
      Immediate flush means that the underlying writer or output stream
@@ -217,20 +205,6 @@ public class WriterAppender extends AppenderSkeleton {
     }
   }
 
-
-  /**
-     Retuns the option names for this component.
-
-     @deprecated We now use JavaBeans introspection to configure
-     components. Options strings are no longer needed.
-  */
-  public
-  String[] getOptionStrings() {
-    return OptionConverter.concatanateArrays(super.getOptionStrings(),
-           new String[] {IMMEDIATE_FLUSH_OPTION});
-  }
-
-  
   /**
      Set the {@link ErrorHandler} for this FileAppender and also the
      underlying {@link QuietWriter} if any. */
@@ -247,20 +221,6 @@ public class WriterAppender extends AppenderSkeleton {
     }    
   }
 
-  /**
-     @deprecated Use the setter method for the option directly instead
-     of the generic <code>setOption</code> method. 
-   */
- public
-  void setOption(String key, String value) {
-    if(value == null) return;
-    super.setOption(key, value);
-    
-    if (key.equalsIgnoreCase(IMMEDIATE_FLUSH_OPTION)) {
-      immediateFlush = OptionConverter.toBoolean(value, immediateFlush);
-    }
-  }  
-  
   /**
     <p>Sets the Writer where the log output will go. The
     specified Writer must be opened by the user and be
