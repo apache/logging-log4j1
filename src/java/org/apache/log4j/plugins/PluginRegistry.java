@@ -53,7 +53,11 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.LoggerRepositoryEventListener;
 
+import java.util.Collections;
+import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 
@@ -144,6 +148,55 @@ public class PluginRegistry {
     }
   }
 
+  /**
+    Returns all the plugins for a given repository.
+    
+    @param repository the logger repository to get the plugins from.
+    @return List list of plugins from the repository. */
+  public static List getPlugins(LoggerRepository repository) {
+    synchronized (repositoryMap) {
+      // get plugin map for repository
+      Map pluginMap = (Map) repositoryMap.get(repository);
+      if (pluginMap == null) {
+      	return Collections.EMPTY_LIST;
+      } else {
+      	List pluginList = new ArrayList(pluginMap.size());
+      	Iterator iter = pluginMap.values().iterator();
+      	while (iter.hasNext()) {
+      		pluginList.add(iter.next());
+      	}
+      	return pluginList;
+      }
+    }
+  }
+  
+  /**
+    Returns all the plugins for a given repository that are instances
+    of a certain class.
+    
+    @param repository the logger repository to get the plugins from.
+    @param pluginClass the class the plugin must implement to be selected.
+    @return List list of plugins from the repository. */
+  public static List getPlugins(LoggerRepository repository, Class pluginClass) {
+    synchronized (repositoryMap) {
+      // get plugin map for repository
+      Map pluginMap = (Map) repositoryMap.get(repository);
+      if (pluginMap == null) {
+      	return Collections.EMPTY_LIST;
+      } else {
+      	List pluginList = new ArrayList(pluginMap.size());
+      	Iterator iter = pluginMap.values().iterator();
+      	while (iter.hasNext()) {
+      		Object plugin = iter.next();
+      		if (pluginClass.isInstance(plugin)) {
+	      		pluginList.add(plugin);
+	      	}
+      	}
+      	return pluginList;
+      }
+    }
+  }
+  
   /**
     Stops a plugin by plugin object.
 

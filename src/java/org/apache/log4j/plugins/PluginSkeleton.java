@@ -66,6 +66,7 @@ import org.apache.log4j.spi.LoggerRepository;
   Contributors: Nicko Cadell
 
   @author Mark Womack
+  @author Paul Smith <psmith@apache.org>
   @since 1.3
 */
 public abstract class PluginSkeleton implements Plugin {
@@ -74,6 +75,7 @@ public abstract class PluginSkeleton implements Plugin {
 
   /** Repository this plugin is attached to. */
   protected LoggerRepository repository;
+  protected boolean active;
 
   /**
     Gets the name of the plugin.
@@ -107,4 +109,13 @@ public abstract class PluginSkeleton implements Plugin {
   public void setLoggerRepository(LoggerRepository repository) {
     this.repository = repository;
   }
+
+  /**
+   * Returns whether this plugin is Active or not
+   * @return true/false 
+   */
+  public synchronized boolean isActive() {
+    return active;
+  }
+
 }

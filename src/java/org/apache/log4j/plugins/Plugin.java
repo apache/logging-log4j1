@@ -69,6 +69,7 @@ import org.apache.log4j.spi.OptionHandler;
 
   @author Mark Womack
   @author Nicko Cadell
+  @author Paul Smith <psmith@apache.org>
   @since 1.3
 */
 public interface Plugin extends OptionHandler {
@@ -103,7 +104,7 @@ public interface Plugin extends OptionHandler {
 
     @return boolean true if the plugin is currently active. */
   public boolean isActive();
-
+  
   /**
     Call when the plugin should be stopped. */
   public void shutdown();

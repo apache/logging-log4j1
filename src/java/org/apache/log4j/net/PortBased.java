@@ -1,4 +1,4 @@
-/**
+/*
  * ============================================================================
  *                   The Apache Software License, Version 1.1
  * ============================================================================
@@ -49,26 +49,18 @@
 
 package org.apache.log4j.net;
 
-import java.util.EventListener;
 
 /**
-  Interface used to listen for {@link SocketNode} related
-  events. Clients register an instance of the interface and the
-  instance is called back when the various events occur.
-
-  @author Mark Womack
-  @author Paul Smith <psmith@apache.org>
-  @since 1.3
-*/
-public interface SocketNodeEventListener extends EventListener{
-  
+ * Net based entities that 'work with' a Port should consider implementing this
+ * interface so that they can be treated generically.
+ *
+ * @author Paul Smith <psmith@apache.org>
+ *
+ */
+public interface PortBased extends NetworkBased {
   /**
-   * Called when the SocketNode is created and begins awaiting data.
-   *
+   * Returns the Port # that this net based thing is using
+   * @return int port number
    */
-  public void socketOpened(String remoteInfo);
-
-  /**
-    Called when the socket the node was given has been closed. */
-  public void socketClosedEvent(Exception e);
+  public int getPort();
 }

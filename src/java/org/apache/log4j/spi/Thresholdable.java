@@ -1,4 +1,4 @@
-/**
+/*
  * ============================================================================
  *                   The Apache Software License, Version 1.1
  * ============================================================================
@@ -47,28 +47,42 @@
  *
  */
 
-package org.apache.log4j.net;
+package org.apache.log4j.spi;
 
-import java.util.EventListener;
+import org.apache.log4j.Level;
 
 /**
-  Interface used to listen for {@link SocketNode} related
-  events. Clients register an instance of the interface and the
-  instance is called back when the various events occur.
+   An interface that defines the required methods for supporting the 
+   setting and getting of a level threshold.  Components should implement
+   this interface if logging events they process should meet a certain
+   threshold before being processed further.  Examples of this are
+   Appenders and Receivers which will not process logging events unless
+   the event level is at or greater than a set threshold level.
 
-  @author Mark Womack
-  @author Paul Smith <psmith@apache.org>
-  @since 1.3
-*/
-public interface SocketNodeEventListener extends EventListener{
-  
+   @author Paul Smith <psmith@apache.org>
+   @author Mark Womack
+   @since 1.3
+ */
+public interface Thresholdable {
   /**
-   * Called when the SocketNode is created and begins awaiting data.
-   *
-   */
-  public void socketOpened(String remoteInfo);
-
+    Sets the component theshold to the given level.
+    
+    @param level The threshold level events must equal or be greater
+    than before further processing can be done. */
+  public void setThreshold(Level level);
+	
   /**
-    Called when the socket the node was given has been closed. */
-  public void socketClosedEvent(Exception e);
+    Gets the current threshold setting of the component.
+    
+    @return Level The current threshold level of the component. */
+  public Level getThreshold();
+	
+  /**
+    Returns true if the given level is equals or greater than the current
+    threshold value of the component.
+    
+    @param level The level to test against the component threshold.
+    @return boolean True if level is equal or greater than the
+      component threshold. */
+	public boolean isAsSevereAsThreshold(Level level);
 }

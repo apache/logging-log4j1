@@ -49,8 +49,10 @@
 
 package org.apache.log4j.plugins;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.Thresholdable;
 
 
 /**
@@ -84,15 +86,51 @@ import org.apache.log4j.spi.LoggingEvent;
 
   @author Mark Womack
   @author Ceki G&uuml;lc&uuml;
+  @author Paul Smith <psmith@apache.org>
   @since 1.3
 */
-public abstract class Receiver extends PluginSkeleton {
+public abstract class Receiver extends PluginSkeleton implements Thresholdable {
+	protected Level thresholdLevel;
+	
+  /**
+    Sets the receiver theshold to the given level.
+    
+    @param level The threshold level events must equal or be greater
+    	than before further processing can be done. */
+  public void setThreshold(Level level) {
+    thresholdLevel = level;
+  }
+  
+  /**
+    Gets the current threshold setting of the receiver.
+    
+    @return Level The current threshold level of the receiver. */
+  public Level getThreshold() {
+    return thresholdLevel;
+  }
+
+  /**
+    Returns true if the given level is equals or greater than the current
+    threshold value of the receiver.
+    
+    @param level The level to test against the receiver threshold.
+    @return boolean True if level is equal or greater than the
+      receiver threshold. */
+	public boolean isAsSevereAsThreshold(Level level) {
+    return ((thresholdLevel == null) || level.isGreaterOrEqual(thresholdLevel));
+  }
+
   /**
     Posts the logging event to a logger in the configured logger
     repository.
 
     @param event the log event to post to the local log4j environment. */
   public void doPost(LoggingEvent event) {
+    // if event does not meet threshold, exit now
+    if (!isAsSevereAsThreshold(event.getLevel())) {
+      return;
+    }
+      
     // get the "local" logger for this event from the
     // configured repository.
     Logger localLogger =
