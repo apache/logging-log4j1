@@ -12,14 +12,30 @@ public class ParamAction extends Action {
 
   final static Logger logger = Logger.getLogger(ParamAction.class);
 
-  static final Class[] ONE_STRING_PARAM = new Class[] { String.class };
-
+	static String NO_NAME = "No name attribute in <param> element";
+	static String NO_VALUE = "No name attribute in <param> element";
+	
   public void begin(ExecutionContext ec, Element element) {
-    logger.info("begin called");
-		Object o = ec.peekObject();
-		PropertySetter propSetter = new PropertySetter(o);
 		String name = element.getAttribute(ActionConst.NAME_ATTRIBUTE);
 		String value = (element.getAttribute(ActionConst.VALUE_ATTRIBUTE));
+
+    if(name==null) {
+			inError = true;
+			logger.error(NO_NAME);
+			ec.addError(NO_NAME);	
+    	return;
+    }
+
+		if(value==null) {
+			inError = true;
+			logger.error(NO_VALUE);
+			ec.addError(NO_VALUE);	
+			return;
+		}
+    
+    logger.debug("Setting parameter ["+name+"] to value ["+value+"].");
+		Object o = ec.peekObject();
+		PropertySetter propSetter = new PropertySetter(o);		
 		value = ec.subst(OptionConverter.convertSpecialChars(value));
 		propSetter.setProperty(name, value);
   }
