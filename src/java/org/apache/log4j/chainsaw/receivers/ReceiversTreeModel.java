@@ -66,9 +66,7 @@ public class ReceiversTreeModel extends DefaultTreeModel
   public final synchronized ReceiversTreeModel refresh() {
     RootNode.removeAllChildren();
 
-    Collection receivers =
-      PluginRegistry.getPlugins(
-        LogManager.getLoggerRepository(), Receiver.class);
+    Collection receivers = LogManager.getLoggerRepository().getPluginRegistry().getPlugins(Receiver.class);
 
     updateRootDisplay();
 

@@ -25,6 +25,7 @@ import org.apache.log4j.helpers.IntializationUtil;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.or.ObjectRenderer;
 import org.apache.log4j.or.RendererMap;
+import org.apache.log4j.plugins.PluginRegistry;
 import org.apache.log4j.spi.LoggerEventListener;
 import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.LoggerRepository;
@@ -75,6 +76,8 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   RendererMap rendererMap;
   int thresholdInt;
   Level threshold;
+  PluginRegistry pluginRegistry;
+  
   boolean emittedNoAppenderWarning = false;
   boolean emittedNoResourceBundleWarning = false;
   boolean pristine = true;
@@ -254,6 +257,16 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
     }
   }
 
+  /* (non-Javadoc)
+   * @since 1.3
+   */
+  public PluginRegistry getPluginRegistry() {
+   if(pluginRegistry == null) {
+     pluginRegistry = new PluginRegistry(this);
+   }
+   return pluginRegistry;
+  }
+  
   /**
     Requests that a appender added event be sent to any registered
     {@link LoggerEventListener}.
