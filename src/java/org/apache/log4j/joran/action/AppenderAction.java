@@ -44,8 +44,7 @@ public class AppenderAction extends Action {
     String className = attributes.getValue(CLASS_ATTRIBUTE);
 
     try {
-      getLogger().debug(
-        "About to instantiate appender of type [" + className + "]");
+      getLogger().debug("About to instantiate appender of type [{}]", className);
 
       appender = (Appender) OptionConverter.instantiateByClassName(
           className, org.apache.log4j.Appender.class, null);
@@ -73,7 +72,7 @@ public class AppenderAction extends Action {
 
       getLogger().debug("Pushing appender on to the object stack.");
       ec.pushObject(appender);
-    } catch (Exception oops) {
+    } catch (Throwable oops) {
       inError = true;
       getLogger().error(
         "Could not create an Appender. Reported error follows.", oops);

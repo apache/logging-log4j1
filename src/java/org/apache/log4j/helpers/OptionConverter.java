@@ -357,8 +357,8 @@ public class OptionConverter  {
         //System.out.println("About to call classObj.newInstance(), "+classObj.getName());
         
         return classObj.newInstance();
-      } catch (Exception e) {
-        getLogger().error("Could not instantiate class [" + className + "].", e);
+      } catch (Throwable e) {
+        getLogger().error("Could not instantiate object of class [" + className + "].", e);
       }
     }
   
@@ -516,7 +516,7 @@ public class OptionConverter  {
     if (clazz != null) {
       Logger logger = repository.getLogger(OptionConverter.class.getName());
       logger.info("Preferred configurator class: " + clazz);
-      System.out.println("Before instantiateByClassName");
+
       configurator =
         (Configurator) instantiateByClassName(clazz, Configurator.class, null);
 
@@ -529,7 +529,6 @@ public class OptionConverter  {
       configurator = new PropertyConfigurator();
     }
     
-    System.out.println("Before  configurator.doConfigure()");
     configurator.doConfigure(url, repository);
     if(configurator instanceof ConfiguratorBase) {
       ((ConfiguratorBase)configurator).dumpErrors();

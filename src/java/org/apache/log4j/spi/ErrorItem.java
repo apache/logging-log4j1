@@ -16,6 +16,8 @@
 
 package org.apache.log4j.spi;
 
+import java.io.PrintStream;
+
 /**
  * Used to store special log4j errors which cannot be logged using internal
  * logging. Such errors include thos occuring during the initial phases
@@ -82,5 +84,30 @@ public class ErrorItem {
       str += (" with exception " + exception);
     }
     return str;
+  }
+  
+  /**
+   * Dump the details of this ErrorItem to System.out.
+   */
+  public void dump() {
+    dump(System.out);
+  }
+  
+  /**
+   * Dump the details of this ErrorItem on the specified {@link PrintStream}.
+   * @param ps
+   */
+  public void dump(PrintStream ps) {
+    String str =
+      "Reported error: \"" + message + "\"";
+    
+    if(lineNumber != -1) {
+      str += " at line " + lineNumber + " column " + colNumber;
+    }
+    ps.println(str);
+    
+    if(exception != null) {
+      exception.printStackTrace(ps);
+    }    
   }
 }

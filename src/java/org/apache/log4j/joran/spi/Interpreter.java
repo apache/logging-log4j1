@@ -17,6 +17,7 @@
 package org.apache.log4j.joran.spi;
 
 import org.apache.log4j.LogManager;
+import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.joran.action.Action;
 import org.apache.log4j.joran.action.ImplicitAction;
 import org.apache.log4j.spi.Component;
@@ -94,6 +95,12 @@ public class Interpreter extends DefaultHandler implements Component  {
    */
   Stack actionListStack;
 
+  /**
+   * If the skip nested is set, then we skip all its nested elements until
+   * it is set back to null at when the element's end is reached.
+   */
+  Pattern skip = null;
+  
   public Interpreter(RuleStore rs) {
     ruleStore = rs;
     ec = new ExecutionContext(this);
@@ -113,11 +120,16 @@ public class Interpreter extends DefaultHandler implements Component  {
     String namespaceURI, String localName, String qName, Attributes atts) {
 
     String tagName = getTagName(localName, qName);
-
+    
     //LogLog.debug("in startElement <" + tagName + ">");
 
     pattern.push(tagName);
 
+    if(skip != null) {
+      System.out.println("Skipping nested <"+tagName+"> element.");
+    }
+
+    
     List applicableActionList = getApplicableActionList(pattern, atts);
 
     if (applicableActionList != null) {
@@ -137,7 +149,10 @@ public class Interpreter extends DefaultHandler implements Component  {
   public void endElement(String namespaceURI, String localName, String qName) {
     List applicableActionList = (List) actionListStack.pop();
 
-    if (applicableActionList != EMPTY_LIST) {
+    if(skip != null && skip.equals(pattern)) {
+      System.out.println("Setting skipping to null");
+      skip = null;
+    } else if (applicableActionList != EMPTY_LIST) {
       callEndAction(applicableActionList, getTagName(localName, qName));
     }
 
@@ -219,7 +234,9 @@ public class Interpreter extends DefaultHandler implements Component  {
       try {
         action.begin(ec, tagName, atts);
       } catch (Exception e) {
-        ec.addError(new ErrorItem("Action threw an exception", e));
+        skip = (Pattern) pattern.clone();
+        System.out.println("Skip pattern set to "+skip);
+        ec.addError(new ErrorItem("Exception in Action for tag <"+tagName+">", e));
       }
     }
   }
@@ -234,7 +251,13 @@ public class Interpreter extends DefaultHandler implements Component  {
 
     while (i.hasNext()) {
       Action action = (Action) i.next();
-      action.end(ec, tagName);
+      // now let us invoke the end method of the action. We catch and report 
+      // any eventual exceptions
+      try {
+        action.end(ec, tagName);
+      } catch(Exception e) {
+        ec.addError(new ErrorItem("Exception in Action for tag <"+tagName+">", e));
+      }
     }
   }
 

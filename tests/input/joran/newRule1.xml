@@ -3,7 +3,7 @@
 
 <log4j:configuration xmlns:log4j='http://logging.apache.org/'>
 
-  <newRule pattern="log4j:configuration/hello" actionClass="org.apache.joran.action.HelloAction"></newRule>
+  <newRule pattern="log4j:configuration/hello" actionClass="org.apache.log4j.joran.action.HelloAction"></newRule>
 
   <hello name="John Doe"></hello>
   

@@ -28,5 +28,15 @@ public class TestSampleServlet extends ServletTestCase {
     servlet.getLogger1();
   }
 
+  public void testwebappShippedAppender() throws Exception {
+    SampleServlet servlet = new SampleServlet();
+    servlet.webappShippedAppender();
+  }
+
+  public void testExerciseSMPTPAppender() throws Exception {
+    SampleServlet servlet = new SampleServlet();
+    servlet.exerciseSMPTPAppender();
+
+  }
 
 }

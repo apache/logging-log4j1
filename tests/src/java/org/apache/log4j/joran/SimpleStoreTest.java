@@ -20,10 +20,12 @@
  * To change the template for this generated file go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-package org.apache.joran;
+package org.apache.log4j.joran;
 
-import org.apache.joran.action.Action;
-import org.apache.joran.helper.SimpleRuleStore;
+import org.apache.log4j.joran.action.Action;
+import org.apache.log4j.joran.spi.ExecutionContext;
+import org.apache.log4j.joran.spi.Pattern;
+import org.apache.log4j.joran.spi.SimpleRuleStore;
 
 import junit.framework.TestCase;
 
@@ -36,10 +38,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 
 /**
- * @author ceki
+ * 
+ * @author Ceki Gulcu
  *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class SimpleStoreTest extends TestCase {
   /**

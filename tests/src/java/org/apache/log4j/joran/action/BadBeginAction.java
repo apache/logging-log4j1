@@ -14,35 +14,24 @@
  * limitations under the License.
  */
 
-package org.apache.joran.action;
+package org.apache.log4j.joran.action;
 
-import org.apache.joran.ExecutionContext;
-import org.apache.log4j.Layout;
-import org.apache.log4j.Logger;
+import org.apache.log4j.joran.action.Action;
+import org.apache.log4j.joran.spi.ExecutionContext;
 
 import org.xml.sax.Attributes;
 
 
-public class HelloAction extends Action {
-  static final Logger logger = Logger.getLogger(HelloAction.class);
-  Layout layout;
+public class BadBeginAction extends Action {
 
 
-  public HelloAction() {
+  public BadBeginAction() {
   }
-  /**
-   * Instantiates an layout of the given class and sets its name.
-   *
-   */
+
   public void begin(ExecutionContext ec, String name, Attributes attributes) {
-    String str = "Hello "+attributes.getValue("name")+".";
-    ec.getObjectMap().put("hello", str);
+    throw new IllegalStateException("bad begin");
   }
 
-  /**
-   * Once the children elements are also parsed, now is the time to activate
-   * the appender options.
-   */
   public void end(ExecutionContext ec, String name) {
   }
 }

@@ -20,17 +20,18 @@
  * To change the template for this generated file go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-package org.apache.joran;
+package org.apache.log4j.joran;
 
+
+import org.apache.log4j.joran.spi.Pattern;
 
 import junit.framework.TestCase;
 
 
 /**
- * @author ceki
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
+ * Test pattern manipulation code.
+ * 
+ * @author Ceki Gulcu
  */
 public class PatternTest extends TestCase {
   /**

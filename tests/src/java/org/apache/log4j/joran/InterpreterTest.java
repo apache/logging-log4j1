@@ -20,17 +20,13 @@
  * To change the template for this generated file go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-package org.apache.joran;
+package org.apache.log4j.joran;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.joran.action.NestComponentIA;
-import org.apache.joran.action.NewRuleAction;
-import org.apache.joran.action.ParamAction;
-import org.apache.joran.action.StackCounterAction;
-import org.apache.joran.helper.SimpleRuleStore;
+import org.apache.log4j.joran.action.NestComponentIA;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.ConsoleAppender;
@@ -39,15 +35,26 @@ import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
-import org.apache.log4j.joran.NOPAction;
 import org.apache.log4j.joran.action.ActionConst;
 import org.apache.log4j.joran.action.AppenderAction;
 import org.apache.log4j.joran.action.AppenderRefAction;
+import org.apache.log4j.joran.action.BadBeginAction;
+import org.apache.log4j.joran.action.BadEndAction;
 import org.apache.log4j.joran.action.ConversionRuleAction;
+import org.apache.log4j.joran.action.HelloAction;
 import org.apache.log4j.joran.action.LayoutAction;
 import org.apache.log4j.joran.action.LevelAction;
 import org.apache.log4j.joran.action.LoggerAction;
+import org.apache.log4j.joran.action.NewRuleAction;
+import org.apache.log4j.joran.action.ParamAction;
 import org.apache.log4j.joran.action.RootLoggerAction;
+import org.apache.log4j.joran.action.StackCounterAction;
+import org.apache.log4j.joran.action.TouchAction;
+import org.apache.log4j.joran.spi.ExecutionContext;
+import org.apache.log4j.joran.spi.Interpreter;
+import org.apache.log4j.joran.spi.Pattern;
+import org.apache.log4j.joran.spi.RuleStore;
+import org.apache.log4j.joran.spi.SimpleRuleStore;
 import org.apache.log4j.rolling.RollingFileAppender;
 import org.apache.log4j.rolling.SizeBasedTriggeringPolicy;
 import org.apache.log4j.rolling.FixedWindowRollingPolicy;
@@ -56,6 +63,7 @@ import org.apache.log4j.spi.LoggerRepository;
 import org.xml.sax.SAXParseException;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -380,14 +388,61 @@ public class InterpreterTest extends TestCase {
     String str = (String) ec.getObjectMap().get("hello");
     assertEquals("Hello John Doe.", str);
   }
+ 
+  public void testException1() throws Exception {
+    logger.debug("Starting testException1");
   
-  public static Test Xsuite() {
+    RuleStore rs = new SimpleRuleStore();
+    rs.addRule(new Pattern("test"), new NOPAction());
+    rs.addRule(new Pattern("test/badBegin"), new BadBeginAction());
+    rs.addRule(new Pattern("test/badBegin/touch"), new TouchAction());
+    rs.addRule(new Pattern("test/hello"), new HelloAction());
+
+    Interpreter jp = new Interpreter(rs);
+    ExecutionContext ec = jp.getExecutionContext();
+    Map omap = ec.getObjectMap();
+
+    SAXParser saxParser = createParser();
+    saxParser.parse("file:input/joran/exception1.xml", jp);
+    List el = jp.getExecutionContext().getErrorList();
+    for(int i = 0; i < el.size(); i++) {
+      ((ErrorItem) el.get(i)).dump(); 
+    }
+    String str = (String) ec.getObjectMap().get("hello");
+    assertEquals("Hello John Doe.", str);
+  }
+
+  public void testException2() throws Exception {
+    logger.debug("Starting testException2");
+  
+    RuleStore rs = new SimpleRuleStore();
+    rs.addRule(new Pattern("test"), new NOPAction());
+    rs.addRule(new Pattern("test/badEnd"), new BadEndAction());
+    rs.addRule(new Pattern("test/hello"), new HelloAction());
+
+    Interpreter jp = new Interpreter(rs);
+    ExecutionContext ec = jp.getExecutionContext();
+    Map omap = ec.getObjectMap();
+
+    SAXParser saxParser = createParser();
+    saxParser.parse("file:input/joran/exception2.xml", jp);
+    List el = jp.getExecutionContext().getErrorList();
+    for(int i = 0; i < el.size(); i++) {
+      ((ErrorItem) el.get(i)).dump(); 
+    }
+    String str = (String) ec.getObjectMap().get("hello");
+    assertEquals("Hello John Doe.", str);
+  }
+
+  public static Test suite() {
     TestSuite suite = new TestSuite();
      //suite.addTest(new InterpreterTest("testIllFormedXML"));
     //suite.addTest(new InterpreterTest("testBasicLoop"));
     //suite.addTest(new InterpreterTest("testParsing1"));
-    suite.addTest(new InterpreterTest("testParsing2"));
-    //suite.addTest(new InterpreterTest("testParsing3"));
+    //suite.addTest(new InterpreterTest("testParsing2"));
+    //suite.addTest(new InterpreterTest("testParsing3"))
+    suite.addTest(new InterpreterTest("testException1"));
+    //suite.addTest(new InterpreterTest("testException2"));
     return suite;
   }
 
