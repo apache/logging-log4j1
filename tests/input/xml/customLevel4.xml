@@ -13,6 +13,12 @@
     </layout>
   </appender>
 
+    <!-- Prevent internal log4j DEBUG messages from polluting the output. -->
+  <logger name="org.apache.log4j.joran"><level value="INFO" /></logger>
+  <logger name="org.apache.log4j.config"><level value="INFO" /></logger>
+  <logger name="org.apache.log4j.FileAppender"><level value="INFO" /></logger>
+  <logger name="org.apache.log4j.xml.Log4jEntityResolver"><level value="ERROR" /></logger>
+
   <root>
     <level value="TRACE#org.apache.log4j.xml.XLevel"/>
     <appender-ref ref="TEMP" />
