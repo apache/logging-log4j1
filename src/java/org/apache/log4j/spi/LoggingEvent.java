@@ -877,7 +877,7 @@ public class LoggingEvent
    *
    * @since 1.3
    */
-  public void prepareForSerialization() {
+  public void prepareForDeferredProcessing() {
       // Aside from returning the current thread name the wgetThreadName
     // method sets the threadName variable.
     this.getThreadName();
@@ -902,7 +902,7 @@ public class LoggingEvent
   private void writeObject(ObjectOutputStream oos)
          throws java.io.IOException {
     
-    prepareForSerialization();
+    prepareForDeferredProcessing();
     oos.defaultWriteObject();
 
     // serialize this event's level
