@@ -49,17 +49,22 @@
 
 package org.apache.log4j.chainsaw;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.event.ActionEvent;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 import java.util.Vector;
 
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
@@ -70,6 +75,7 @@ import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
 import org.apache.log4j.chainsaw.prefs.SettingsListener;
 import org.apache.log4j.helpers.ISO8601DateFormat;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.ThrowableInformation;
 
 
 /**
@@ -147,8 +153,8 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
     Color color = null;
 
     Component c =
-      super.getTableCellRendererComponent(
-        table, value, isSelected, hasFocus, row, col);
+       super.getTableCellRendererComponent(
+		    table, value, isSelected, hasFocus, row, col);
     int colIndex = table.getColumnModel().getColumn(col).getModelIndex() + 1;
 
     switch (colIndex) {
@@ -159,6 +165,15 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
       c = idComponent;
 
       break;
+      
+    case ChainsawColumns.INDEX_THROWABLE_COL_NAME:
+    	String[] ti = (String[]) value;
+    	if(ti!=null) {
+			((JLabel)c).setText(ti[0]);
+    	} else {
+			((JLabel)c).setText("");
+    	}
+    	break;
 
     case ChainsawColumns.INDEX_LEVEL_COL_NAME:
 
