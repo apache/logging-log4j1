@@ -15,6 +15,11 @@ import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.helpers.DateLayout;
 import org.apache.log4j.helpers.Transform;
+import java.util.Set;
+import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Collections;
 
 /**
  * The output of the XMLLayout consists of a series of log4j:event
@@ -122,6 +127,38 @@ public class XMLLayout extends Layout {
       buf.append("]]></log4j:NDC>\r\n");       
     }
     
+    Set mdcKeySet = event.getMDCKeySet();
+
+    if(mdcKeySet.size()>0)
+    {
+      /**
+       * Normally a sort isn't required, but for Test Case purposes
+       * we need to guarantee a particular order.
+       *
+       * Besides which, from a human readable point of view, the sorting
+       * of the keys is kinda nice..
+       */
+
+      List sortedList = new ArrayList(mdcKeySet);
+      Collections.sort(sortedList);
+
+      buf.append("<log4j:MDC>\n");
+      for (Iterator i = sortedList.iterator(); i.hasNext(); ) {
+        Object key = i.next();
+        Object val = event.getMDC(key.toString());
+        buf.append("    <log4j:data ");
+        buf.append("name=\"<![CDATA[");
+        Transform.appendEscapingCDATA(buf, key.toString());
+        buf.append("]]>\"");
+        buf.append(" ");
+        buf.append("value=\"<![CDATA[");
+        Transform.appendEscapingCDATA(buf, val.toString());
+        buf.append("]]>\"/>");
+        buf.append("\n");
+      }
+      buf.append("</log4j:MDC>\n");
+    }
+
     String[] s = event.getThrowableStrRep();
     if(s != null) {
       buf.append("<log4j:throwable><![CDATA[");
