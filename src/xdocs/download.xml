@@ -251,23 +251,23 @@
 	<!-- =========================================================================== -->
 
 	<dt><a
-	href="http://sourceforge.net/projects/log4cxx/"><b>log4cxx</b></a></dt>
+	href="http://logging.apache.org/log4cxx/"><b>log4cxx</b></a></dt>
 	<dd>Log4cxx is a port to C++ of the log4j project.</dd>
-
-	<!-- =========================================================================== --> 
-        <dt><a href="http://www.vxr.it/log4php/"><b>log4php</b></a></dt> 
-
-        <dd>Log4Php is a PHP port of log4j framework. It supports xml configuration,
-        logging to files, stdout/err, syslog, socket, configurable
-        output layouts and logging levels. </dd>
 
 	<!-- =========================================================================== -->	
 	<dt><a
-	href="http://www.neoworks.com/products/free/log4net/"><b>log4net</b></a></dt>
+	href="http://logging.apache.org/log4net/"><b>log4net</b></a></dt>
 
 	<dd>The .NET implementation of the popular log4j Java API
 	providing flexible and arbitrarily granular control over log
 	management and configuration.</dd>
+
+	<!-- =========================================================================== --> 
+        <dt><a href="http://logging.apache.org/log4php/"><b>log4php</b></a></dt> 
+
+        <dd>Log4Php is a PHP port of log4j framework. It supports xml configuration,
+        logging to files, stdout/err, syslog, socket, configurable
+        output layouts and logging levels. </dd>
 
      </dl>
     </subsection>
