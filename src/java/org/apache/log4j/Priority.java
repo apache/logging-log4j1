@@ -31,8 +31,7 @@ public class Priority {
   public final static int ALL_INT = Integer.MIN_VALUE;
 
   /**
-     The <code>FATAL</code> level designates very severe error
-     events that will presumably lead the application to abort.
+     @deprecated Use {link Level.FATAL} instead.
    */
   final static public Priority FATAL = new Level(FATAL_INT, "FATAL", 0);
 

@@ -23,7 +23,7 @@ import org.apache.log4j.helpers.LogLog;
 // Contibutors: Mathias Bogaert
 
 /**
-   RootLogger sits at the top of the category hierachy. It is a
+   RootLogger sits at the top of the logger hierachy. It is a
    regular logger except that it provides several guarantees.
 
    <p>First, it cannot be assigned a <code>null</code>
@@ -36,8 +36,8 @@ import org.apache.log4j.helpers.LogLog;
  */
 public final class RootLogger extends Logger {
   /**
-     The root category names itself as "root". However, the root
-     category cannot be retrieved by name.
+     The root logger names itself as "root". However, the root
+     logger cannot be retrieved by name.
   */
   public RootLogger(Level level) {
     super("root");
@@ -45,7 +45,7 @@ public final class RootLogger extends Logger {
   }
 
   /**
-     Return the assigned level value without walking the category
+     Return the assigned level value without walking the logger
      hierarchy.
   */
   public final Level getChainedLevel() {
