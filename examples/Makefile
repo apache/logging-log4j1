@@ -7,6 +7,7 @@ JSOURCES:=SortAlgo.java Sort.java Trivial.java NumberCruncher.java\
 	MyPatternParser.java\
 	MyPatternLayout.java\
 	MyCategory.java\
+	MyCategoryTest.java\
 	MyCategoryFactory.java\
 
 
