@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.apache.log4j.rolling.helpers;
+package org.apache.log4j.rolling.helper;
 
 import java.text.SimpleDateFormat;
 

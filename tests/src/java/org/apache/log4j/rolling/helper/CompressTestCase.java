@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.log4j.rolling.helpers;
+package org.apache.log4j.rolling.helper;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.LogManager;
+import org.apache.log4j.rolling.helper.Compress;
 import org.apache.log4j.util.Compare;
 
 import junit.framework.Test;

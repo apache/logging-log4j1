@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.apache.log4j.rolling.helpers;
+package org.apache.log4j.rolling.helper;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -22,6 +22,7 @@ import junit.framework.TestSuite;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.LogManager;
+import org.apache.log4j.rolling.helper.FileNamePattern;
 
 import java.util.Calendar;
 

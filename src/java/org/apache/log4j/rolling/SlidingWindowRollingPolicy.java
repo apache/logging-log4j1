@@ -17,9 +17,9 @@
 package org.apache.log4j.rolling;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.rolling.helpers.Compress;
-import org.apache.log4j.rolling.helpers.FileNamePattern;
-import org.apache.log4j.rolling.helpers.Util;
+import org.apache.log4j.rolling.helper.Compress;
+import org.apache.log4j.rolling.helper.FileNamePattern;
+import org.apache.log4j.rolling.helper.Util;
 
 import java.io.File;
 

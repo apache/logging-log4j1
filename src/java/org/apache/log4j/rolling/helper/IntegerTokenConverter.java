@@ -13,23 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.log4j.rolling.helpers;
+
+package org.apache.log4j.rolling.helper;
+
 
 /**
  * @author Ceki
  *
  */
-public class IdentityTokenConverter extends TokenConverter {
-
-  final String str; 
-  
-  public IdentityTokenConverter(String str) {
-   super(TokenConverter.IDENTITY);
-   this.str = str; 
-  }
-  
-  public String convert() {
-    return str;
+class IntegerTokenConverter extends TokenConverter {
+  public IntegerTokenConverter() {
+    super(TokenConverter.INTEGER);
   }
 
+  public String convert(int i) {
+    return Integer.toString(i);
+  }
 }
