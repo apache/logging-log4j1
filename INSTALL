@@ -1,0 +1,99 @@
+
+===========
+Using log4j
+===========
+	
+1) First untar the distribution file.
+
+2) Assuming you chose to extract the distribution in to the
+   PATH_OF_YOUR_CHOICE, untarring the distribution file should create
+   a log4j-vXX directory, where XX is the log4j version number, under
+   PATH_OF_YOUR_CHOICE.
+
+
+3) Add PATH_OF_YOUR_CHOICE\log4j-vXXX\classes to the CLASSPATH
+   variable.
+   
+4) You can now test your installation. To do this issue the command:
+
+   java org.log4j.test.Min simple|ttcc|pattern
+  
+   That is, supply "simple" or "ttcc" or "pattern" as the argument for
+   the test program "org.log4j.test.Min".
+   
+   You should see log statements appearing on the console.
+
+5) Refer to the javadoc documentation on how to include log statements
+   into your own code.
+
+=========
+JAR files
+=========
+
+The log4j distribution comes with two jar files: log4j.jar and
+log4j-full.jar.
+
+The first jar file contains the classes you need to use the package to
+print to a file or the console.  The second jar file, in addition to
+the code contained in the first file, contains classes to interact
+with a Syslog daemon and code to output/receive log statements using
+TCP sockets plus all sort of other goodies.
+
+==================   
+log4j dependencies
+==================
+
+   
+The log4j distribution comes with pre-compiled classes. Log4j is based
+on JDK 1.1 with the following exceptions:
+
+    Package org.log4j.xml 
+    ---------------------
+    
+    This package requires DOM Level 2 Java bindings. These can be
+    obtained from
+  
+    http://www.w3.org/TR/1999/WD-DOM-Level-2-19990923/java-binding.html
+  
+    To actually use the DOMConfigurator you will need an XML parser
+    based on the DOM interface. You can use the Xerces parser from
+    http://xml.apache.org/ which also includes the DOM level 2 Java
+    language bindings.
+
+    TextPaneAppender
+    ----------------
+
+    The TextPaneAppender is based on Swing. Also, you need to set the
+    FULL environment variable if you want to compile with our GNU-Make
+    environment. See below.
+
+    JUnit testing framework
+    -----------------------
+
+    Log4j uses the JUnit framework for internal unit testing.  If you
+    want to compile all log4j source code, then you will need
+    JUnit. JUnit is available from:
+
+          http://www.junit.org
+
+
+Building log4j
+==============
+    
+Like most java appilicatios today, log4j relies on ANT as its build
+tool. ANT is availale from "http://jakarta.apache.org/ant/index.html".
+ANT requires a build file called build.xml which is part of this
+distribution.
+
+Alternatively, You might wish to use the GNU-Make build/compile
+environment included with the package. In case that case, you need to
+create a make.loc file in the make directory. See the files
+make/README and make/TUTORIAL for further details.
+
+The XML extensions are not compiled by default in the GNU-Make
+environment.  You need to set the FULL environment variable (to any
+value) so that the org.log4j.xml is recursed into.
+
+
+
+In case of problems please contact "Ceki Gulcu" <cgu@urbanet.ch>.

@@ -1,0 +1,147 @@
+<html>
+<head>
+<title>Troubleshooting log4j</title>
+</head> 
+<body bgcolor=#FFFFFF>
+ 
+<h1 align=center>Log4j troubleshooting</h1>
+
+<h2 align=center>Ceki G&uuml;lc&uuml;
+<br>November 2000</h2>
+
+<hr>
+
+<p>Here is a list of commonly encoutered problems when using log4j:
+
+<ul> 
+
+<li><p><a href=#noAppenders>log4j tells me to initialize
+properly.</a>
+
+<li><p><a href=#duplicates>Duplicates in log4j output.</a>
+
+<li><p><a href=#space>Options are not parsed correctly.</a>
+
+<li><p><a href=#jit>Location information is printed as a "?" character.</a>
+
+<li><p><a href=#cce>ClassCastException when instantiating a Category subclasses.</a>
+
+</ul>
+
+<hr>
+
+<p><a name=noAppenders><h4>log4j tells me to initialize properly.</h4>
+
+Logging output is written to a target by using an appender. If no
+appenders are attached to a category nor to any of its ancestors, you
+will get the following message when trying to log:
+
+<pre>
+log4j: No appenders could be found for category (some.category.name).
+log4j: Please initialize the log4j system properly.
+</pre>
+
+<em>Log4j does not have a default logging target.</em> It is the
+user's responsability to ensure that all categories can inherit an
+appender.  This can be easily achieved by attaching an appender to the
+root category.
+
+
+<p><a name=duplicates><h4>Duplicates in log4j output.</h4>
+
+<p>The reason for observing duplicates in log4j output is either due
+to having added the same appender multiple times to the same category
+(typically root) or having added the same appender to different
+categories not knowing that appenders are inherited cumulatively.
+
+<p>log4j does not eliminate appender duplicates. In other words, if
+you add the same appender to a categoty <i>n</i> times, that appender
+will be invoked <i>n</i> times to append to its target. 
+
+<p>A slightly different cause is adding different appenders all
+sharing the same underlying output target to some category. In the
+most common occurance of this phenomenon, the
+BasicConfigurator.configure() method is invoked multiple times. Each
+time it is invoked, this method adds an appender with a
+<code>System.out</code> target to the root category. See <a
+href="http://sourceforge.net/support/?func=detailsupport&support_id=107779&group_id=2666">[
+Support #107779]</a> for an example.
+
+<p>One other common mistake is to forget that appenders are inherited
+cumulatively from the hierarchy. For example, if you add an appender,
+say <code>A</code>, to the root category, all other categories will
+inherit <code>A</code> as an appender. Thus, if you add <code>A</code>
+to a categoy, say <code>C</code>, then an enabled statement of
+category <code>C</code>, will print to <code>A</code> twice, once
+because <code>A</code> is in root and once because it is in
+<code>C</code>. See <a
+href="http://sourceforge.net/bugs/?func=detailbug&bug_id=121892&group_id=2666">[
+Bug #121892 ]</a> for an example.
+
+<p><a name=space><h4>Options are not parsed correctly.</h4>
+
+The PropertyConfigurator relies on <code>java.util.Properties</code>
+class to read in the configuration file. This class preserves spaces
+in options. For example,
+
+<pre>
+fruit=orange  
+</pre>
+is returned as an option having the key <code>"fruit"</code> and the
+value <code>"orange "</code>.
+
+<p>The spaces in the value, i.e. <code>"orange "</code>, are due to
+invisible spaces at the end of the example shown above. Thus, some of
+the options might not be interpreted correctly due to trailing
+spaces. See <a
+href="http://sourceforge.net/bugs/?func=detailbug&bug_id=121903&group_id=2666">[Bug
+#121903]</a> for an example of this problem.
+
+<p>In log4j version 0.9.0, all spaces are removed from <em>both</em>
+ends of option values. In version 0.9.1 log4j reverted to the old
+behaviour where option values are not all automatically trimmed. 
+
+
+<p><a name=jit><h4>Location information is printed as a "?" character.</h4>
+
+Location information is extracted automatically by the PatternLayout
+conversion patterns %C, %F, %M and %L. However, some just-in-time
+(JIT) compilers make it impossible to extract location information. It
+is also possible that the complier that generated the byte code may
+have ommitted the LineNumber table as is done by -O option of javac
+and jikes.  
+
+<p>You can remedy this problem by disabling the JIT compiler and by
+compiling the code without the -O option.
+
+<p>See <a href="http://sourceforge.net/support/?func=detailsupport&group_id=2666&support_id=108314">[Support
+#108314]</a> for an example of this problem.
+
+<p><a name=cce><h4><code>ClassCastException</code> when instantiating
+a <code>Category</code> subclasses.</a></h4>
+
+<p>This exception is thrown because log4j does not support
+homonyms. For example, the following will systematically throw a
+<code>ClassCastException</code>
+
+<pre>
+  Category c1 = Category.getInstance("bad");
+  MyCategory c2 = (MyCategory) MyCategory.getInstance("bad");
+</pre>
+
+where <code>MyCategory</code> is a sub-class of
+<code>Category</code>. The problem occurs because the second
+<code>getInstance</code> invocation will retrieve the category created
+in the fist invocation. This instance is a <code>Category</code>
+object and cannot be cast to <code>MyCategory</code>.
+
+<p>By default, the <code>PropertyConfigurator</code> will create and
+configure <code>org.log4j.Category</code> objects. Thus, if you try to
+instantiate a category sub-class for an already existing category, and
+try to cast it to the sub-class type, you will systematically get a
+<code>ClassCastException</code>.
+
+To address this problem, the <code>PropertyConfigurator</code> admits the 
+
+</body>
+</html>

@@ -1,0 +1,157 @@
+ 
+<!-- This file is intended for ANT, a Java based build tool. ANT is
+     availale from http://jakarta.apache.org/ant/index.html
+  -->
+
+<project name="log4j" default="compile" basedir="." >
+	<target name="init">
+		<tstamp />
+		<property name="srcdir" value="." />
+		<property name="classes" value="classes" />
+		<property name="build.compiler" value="jikes"/>	
+		<property name="version" value="0.9.2"/>
+
+		<available classname="javax.swing.JTextPane"
+ 	                   property="swing-present"/>
+
+	        <available classname="org.apache.xerces.parsers.DOMParser"
+ 	                   property="xerces-present"/>
+
+	        <available classname="test.framework.TestCase"
+ 	                   property="junit-present"/>
+
+
+	</target>
+
+	<target name="compile" depends="init,
+	                                compile.core,
+					compile.swing,
+					compile.unitTests,
+					compile.xml"/>
+
+	<target name="compile.core" depends="init">
+		<mkdir dir="${classes}" />
+		<javac srcdir="${srcdir}"
+		       destdir="${classes}"
+		       includes="org/log4j/**/*.java"
+		       classpath="${classpath}"
+		       excludes="misc/*, **/UnitTest*.java,
+		                 **/doc-files/*,
+               		         org/log4j/xml/**,
+				 **/pending/**" 
+		       debug="on"
+		       optimize="on"/>
+		<copyfile src="org/log4j/xml/log4j.dtd"
+		          dest="${classes}/org/log4j/xml/log4j.dtd" />
+		
+         </target>
+
+	 <target name="compile.swing" depends="init" if="swing-present">   
+            <echo message="Really compiling graphic components." />
+	    <mkdir dir="${classes}/icons"/>
+            <copydir src="icons"
+                     dest="${classes}/icons" />
+	    <javac srcdir="${srcdir}"
+		   destdir="${classes}"
+		   includes="org/log4j/gui/**"
+                    excludes="**/JListView.java, **/JTableAppender.java"
+		   classpath="${classpath}"/>
+	</target>
+	
+	 <target name="compile.unitTests" depends="init" if="junit-present">   
+            <echo message="Really compiling unit tests." />
+	    <javac srcdir="${srcdir}"
+		   destdir="${classes}"
+		   includes="**/UnitTest*.java"
+		   classpath="${classpath}"/>
+	</target>
+	
+         <target name="compile.xml" depends="init" if="xerces-present">   
+            <echo message="Really compiling org.log4j.xml" />
+	    <javac 
+		   srcdir="${srcdir}"
+		   destdir="${classes}"
+		   includes="org/log4j/xml/**/*.java"
+                   excludes="org/log4j/xml/examples/doc-files/**.java"
+		   classpath="${classpath}"/>
+	</target>
+
+	
+	<target name="clean" depends="init">
+		<deltree dir="${classes}" />
+	</target>
+
+        <target name="jar" depends="log4j.jar, log4j-full.jar"/>
+	
+	<!-- Create log4j.jar, exluding non-core files -->
+	<target name="log4j.jar" depends="compile">
+	        <delete file="log4j.jar"/>
+		<jar jarfile="log4j.jar" basedir="${classes}"
+		includes="**/log4j/*.class, **/log4j/helpers/*.class,
+                          **/log4j/spi/*.class"
+		excludes="**/StressCategory*, **/TTCC*, 
+		          **/SimpleLayout.*, **/AsyncAppender.*,
+			  **/Dispatcher.*, **/BoundedFIFO.*,
+		          **/Syslog*, **/RelativeTimeDateFormat.*,
+			  **/gui/**/*.class, **/Loader.class,
+			  **/UnitTest*.class, 
+			  org/log4j/helpers/CyclicBuffer.class"
+                manifest="manifest.mf"
+		/>
+	</target>
+	
+	<!-- Create log4j-full.jar, excluding tests and other odds and
+  	     ends. -->
+	<target name="log4j-full.jar" depends="compile">
+		<delete file="log4j-full.jar"/>
+		<jar jarfile="log4j-full.jar" basedir="${classes}"
+		includes="**/log4j/*.class, org/log4j/xml/log4j.dtd, 
+		          **/log4j/helpers/*.class, icons/**,
+			  **/log4j/spi/*.class,  **/log4j/net/*.class,
+			  **/log4j/varia/*.class, **/log4j/nt/*.class,
+			  **/log4j/xml/*.class, 
+			  **/log4j/gui/TextPaneAppender.class"
+		excludes="**/StressCategory*, **/UnitTest**"
+                manifest="manifest.mf"
+		/>
+	</target>
+
+	<!-- In linkoffline attribute we trick the shell to see two sepatate
+	arguments -->
+	<target name="javadoc" depends="init">
+		<mkdir dir="javadoc" />
+
+		<copyfile src="doc/od.gif"
+		          dest="javadoc/od.gif" />
+
+		<copyfile src="doc/manual.html"
+		          dest="javadoc/manual.html" />
+
+		<javadoc sourcepath="${srcdir}" 
+		   destdir="javadoc" 
+		   packagenames="org.log4j,
+			         org.log4j.spi,
+			         org.log4j.or,
+                                 org.log4j.helpers,
+		                 org.log4j.performance,
+			         org.log4j.xml,
+				 org.log4j.examples,
+			         org.log4j.net,
+				 org.log4j.nt,
+				 org.log4j.varia,
+			         org.log4j.xml.examples"
+		   protected="true"				       
+		   version="true"
+		   author="true"
+		   use="true"
+		   linkoffline='http://java.sun.com/products/jdk/1.2/docs/api" "packaging'
+		   overview="doc/overview.html"
+		   doctitle="log4j version ${version}&lt;br&gt;API Specification"
+		   windowtitle="Log4j Version ${version}" 
+                   header="&lt;b&gt;Log4j ${version}&lt;/b&gt;"
+  		   bottom="Please &lt;a href=http://lists.sourceforge.net/mailman/listinfo/log4j-announce&gt;&lt;b&gt;notify me&lt;/b&gt;&lt;/a&gt; about new log4j releases. &lt;hr&gt;" 
+		/>
+		
+	</target>
+
+</project>

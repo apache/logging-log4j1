@@ -1,0 +1,627 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title>log4j FAQ</title>
+</head> 
+<body bgcolor=#FFFFFF>
+ 
+<h1 align=center>Frequently Asked Questions about log4j</h1>
+
+<h2 align=center>Ceki G&uuml;lc&uuml;
+<br>October 2000</h2>
+
+<ul>
+
+<li><p><a href=#whatIs>What is log4j?</a> <br>
+<li><p><a href=#reliable>Is log4j a reliable logging system?</a>
+<li><p><a href=#prerequisites>What are the prerequisites for log4j?</a>
+<li><p><a href=#javadoc>Is there javadoc documentation for log4j?</a>
+<li><p><a href=#alternatives>What other logging packages are there?</a>
+<li><p><a HREF=#usageExample>Is there example code for using log4j?</a>
+<li><p><a href=#features>What are the features of log4j?</a> 
+<li><p><a href=#sample>What does log output look like?</a>
+<li><p><a href=#category>What are <em>Categories</em>?</a>
+<li><p><a href=#behavior>How can I change log behavior at runtime?</a>
+<li><p><a HREF=#reduce>How can I reduce the computational cost of
+debug and info statements?</a>
+<li><p><a HREF=#fastLogging>What is the fastest way of (not) logging?</a>
+<li><p><a HREF=#arrayDebug>What is the use of the <code>debug</code> method
+expecting a <code>String</code> array as one of its parameters?</a>
+<li><p><a href=#introCat>Why was the Category class introduced and how do
+I migrate from the previous String based implementation?</a>
+<li><p><a href=#namingCategories>Are there any suggested ways for naming
+categories?</a></br>
+<li><p><a href=#className>How do I get the fully-qualified name of a class in
+a static block?</a>
+<li><p><a href=#customLayouts>Can the log output format be
+customized?</a>
+<li><p><a href=#NDC>Can the outputs of multiple client request go to
+different log files?</a>
+<li><p><a href=#rm>Category instances seem to be create only. Why isn't
+there a method to remove category instances?</a>
+
+<li><p><a href=#filterByPriority>Is it possible to direct log output
+to different appenders by priority?</a>
+
+<li><p><a href=#tax>Why should I donate my log4j extensions back to the
+project?</a>
+<li><p><a href=#help>What should I keep in mind when contributing code?</a>
+<li><p><a href=#numberingPolicy>What is the version numbering policy for
+log4j?</a><br>
+<li><p><a href=#bugCorrection>How fast do bugs in log4j get fixed?</a>
+<li><p><a href=#history>What is the history of log4j?</a>
+<li><p><a href=#bugs>How do I report bugs?</a>
+<li><p><a href=#download>Where can I find the latest distribution of log4j?</a>
+
+</ul>
+
+<hr>
+<p><a name=whatIs><h4 id="whatIs">What is log4j?</h4>
+
+log4j is a tool to help the programmer output log statements to a
+variety of output targets.
+
+<p>In case of problems with an application, it is helpful to enable
+logging so that the problem can be located. With log4j it is possible
+to enable logging at runtime without modifying the application binary.
+The log4j package is designed so that log statements can remain in
+<i>shipped</i> code without incurring a high performance cost. It
+follows that the speed of logging (or rather not logging) is capital.
+
+<p>At the same time, log output can be so voluminous that it quickly
+becomes overwhelming. One of the distinctive features of log4j is the
+notion of <i>hierarchical categories</i>. Using categories it is
+possible to selectively control which log statements are output at
+arbitrary  granularity.
+
+<p>log4j is designed with two distinct goals in mind: speed and
+flexibility. There is a tight balance between these two
+requirements. I believe that log4j strikes the right balance.
+
+<a name=reliable><h4>Is log4j a reliable logging system?</h4>
+
+No. log4j is not reliable. It is a best-effort and <em>fail-stop</em>
+logging system.
+
+<p>By fail-stop, we mean that log4j will not throw unexpected
+exceptions at run-time potentially causing your application to
+crash. <b>If for any reason, log4j throws an uncaught exception,
+please contact the <a href="mailto:cgu@urbanet.ch">current
+maintainer</a>.</b> Uncaught exceptions are handled as serious bugs
+requiring immediate attention.
+
+
+<p>Moreover, log4j will not revert to System.out or System.err
+when its designated output stream is not opened, is not writable or
+becomes full. This avoids corrupting an otherwise working program by
+flooding the user's terminal because logging fails. However, log4j
+will output a single message to System.err indicating that logging can
+not be performed.
+
+<a name=prerequisites><h4>What are the prerequisites for log4j?</h4>
+
+<ul>
+
+  <p><li>Log4j is JDK 1.1.x compatible.
+    
+<p><li>The <code>org.log4j.xml</code> package requires the DOM level 2
+API. The <code>configure(filename)</code> method in
+<code>org.log4j.DOMConfigurator</code> requires a <a
+href="http://java.sun.com/xml/">JAXP</a> and DOM Level 2 compatible
+XML parser. We recommend the <a href="http://xml.apache.org/">Apache
+Xerces</a> parser.
+
+<p><li>log4j test code relies on the <a
+href="http://www.junit.org">JUnit</a> testing framework.
+
+<p><li>The <code>org.log4j.gui.TextPaneAppender</code> requries Swing.
+    
+</ul>    
+
+
+<a name=javadoc><h4>Is there javadoc documentation for log4j?</h4>
+
+The javadoc <a href=javadoc/index.html>documentation</a> is part of
+the log4j package. There is also an <b><a
+href="doc/manual.html">introductory manual</a></b>. In case problems
+make sure to have a look at <a href="TROUBLESHOOT.html">log4j
+troubleshooting</a> document.
+
+<a name=alternatives><h4>What other logging packages are there?</h4>
+
+There are many other logging packages out there. I know of <a
+href=http://www.homestead.com/JavaLog/>Grace Software's JavaLog</a>,
+<a href=http://www.sw-zoo.org/>Software ZOO's toolkit</a>, <a
+href=http://www.eli.sdsu.edu/java-SDSU/>SDSU logging package</a> and
+many others.
+
+<p>Many users confuse <a
+href=http://www.alphaworks.ibm.com/tech/loggingtoolkit4j>JLog</a> with
+log4j. The two packages originated at different parts of IBM. JLog was
+developed at IBM Tivoli whereas log4j was independently developed at
+the IBM Research Laboratory. Both packages are listed on IBM's
+alphaWorks, although, as of April 2000, log4j moved to <a
+href="http://www.log4j.org">greener pastures</a>.
+
+<p>Please note that log4j is not an IBM controlled nor IBM sponsored
+project. It carries the IBM Public License for historical reasons.
+
+<a name=usageExample><h4>Is there example code for using log4j?</h4>
+
+<p>There is a directory containing examples in
+<code>org/log4j/examples</code>. See also
+<code>org/log4j/xml/examples</code>.
+
+<a name=features><h4 id="">What are the features of log4j?</h4>
+
+<ul>
+
+  <p><li>log4j is optimized for speed.
+
+  <p><li>log4j is based on a named category hierarchy.
+      
+  <p><li>log4j is fail-stop but not reliable.
+
+  <p><li>log4j is not restricted to a predefined set of facilities.
+
+  <p><li>Logging behavior can be set at runtime using a configuration
+      file. Configuration files can be property files or in XML format.
+      
+  <p><li>log4j is designed to handle Java Exceptions from the start.
+      
+  <p><li>log4j can direct its output to a file, an
+      <code>java.io.OutputStream</code>, <code>java.io.Writer</code>,
+      a remote server using TCP, a remote syslog daemon or to the NT
+      EventLog.
+
+  <p><li>log4j has the same priority levels as the Unix
+      syslog. However, log4j strongly encourages the use of a subset
+      of priorities, namely DEBUG, INFO, WARN and ERROR.
+
+  <p><li>The format of the log output can be easily changed by
+      extending the Layout class.
+
+  <p><li>The target of the log output as well as the writing strategy
+      can be altered by implementations of the Appender interface.
+
+   <p><li>log4j supports multiple output appenders per category.
+
+   <p><li>log4j supports internationalization.
+       
+</ul>
+
+<a name=sample><h4 id="">What does log output look like?</h4>
+
+The log output can be customized in many ways. Moreover, one can completely
+override the output format by implementing one's own Layout. 
+
+<p>Here is an example output using <em>PattenLayout</em> with
+the conversion pattern <b>"%r [%t] %-5p %c{2} %x - %m%n"</b>
+
+<pre>
+176 [main] INFO  examples.Sort - Populating an array of 2 elements in reverse order.
+225 [main] INFO  examples.SortAlgo - Entered the sort method.
+262 [main] DEBUG SortAlgo.OUTER i=1 - Outer loop.
+276 [main] DEBUG SortAlgo.SWAP i=1 j=0 - Swapping intArray[0] = 1 and intArray[1] = 0
+290 [main] DEBUG SortAlgo.OUTER i=0 - Outer loop.
+304 [main] INFO  SortAlgo.DUMP - Dump of interger array:
+317 [main] INFO  SortAlgo.DUMP - Element [0] = 0
+331 [main] INFO  SortAlgo.DUMP - Element [1] = 1
+343 [main] INFO  examples.Sort - The next log statement should be an error message.
+346 [main] ERROR SortAlgo.DUMP - Tried to dump an uninitialized array.
+        at org.log4j.examples.SortAlgo.dump(SortAlgo.java:58)
+        at org.log4j.examples.Sort.main(Sort.java:64)
+467 [main] INFO  examples.Sort - Exiting main method.
+</pre>
+
+<p>The first field is the number of milliseconds elapsed since the
+start of the program. The second field is the thread outputting the
+log statement. The third field is the priority of the log
+statement. The fourth field is the rightmost two components of the
+category making the log request. The fifth field (just before the '-')
+is the <em>nested diagnostic context</em> (NDC). Note the nested diagnostic
+context may be empty as in the first two statements. The text after
+the '-' is the message of the statement.
+
+<a name=category><h4 id="">What are <em>Categories</em>?</h4>
+
+The notion of categories lies at the heart of log4j. Categories define
+a hierarchy and give the programmer <em>run-time</em> control on which
+statements are printed or not.
+
+<p>Categories are assigned priorities. A log statement is printed
+depending on its priority <em>and</em> its category.
+
+<p>Make sure to read the <a
+href=javadoc/overview-summary.html>log4j overview</a> and
+understand Rules 1, 2 and 3 defined there.
+
+<a name=behavior><h4 id="">How can I change log behavior at runtime?</h4>
+
+<p>Log behavior can be set using configuration files which are parsed
+at runtime. Using configuration files the programmer can define
+categories and set their priorities.
+
+<p>The <code>PropertiesConfigurator</code> defines a particular format
+of a configuration file. See also the
+<code>org.log4j.examples.Sort</code> example and associated
+configuration files.
+
+<p>Configuration files can be specified in XML. See
+<code>log4j.dtd</code> and
+<code>org.log4j.xml.DOMConfigurator</code> for more details.
+
+<p>See the various Layout and Appender components for specific
+configuration options.
+
+<p>In addition to configuration files, the user may disable all
+messages belonging to a set of priorities. See next item.
+
+<a name=reduce><h4 id="">How can I reduce the computational cost of
+debug and info statements?</h4>
+
+<p>For public releases of your code, calling the
+<codeI>BasicConfigurator.disable(pri)</code> method will disable
+all messages of priority <code>pri</code> and below.
+
+<p>In cases of problems with an application, technical support re-able
+logging by defining the <b>log4j.disableOverride</b> system property
+without changing the binary at the client's site.
+
+<a name=fastLogging><h4>What is the fastest way of (not) logging?</h4>
+
+<p> For some category <code>cat</code>, writing, <pre>
+  cat.debug("Entry number: " + i + " is " + String.valueOf(entry[i]));
+</pre>
+
+<p>incurs the cost of constructing the message parameter, that is
+converting both integer <code>i</code> and <code>entry[i]</code> to a
+String, and concatenating intermediate strings. This, regardless of
+whether the message will be logged or not.
+
+<p>If you are worried about speed, then write
+<pre>
+   if(cat.isDebugEnabled()) {
+     cat.debug("Entry number: " + i + " is " + String.valueOf(entry[i]));
+   }
+</pre>
+
+<p>This way you will not incur the cost of parameter construction if
+debugging is disabled for category <code>CAT</code>. On the other
+hand, if the category is debug enabled, you will incur the cost of
+evaluating whether the category is enabled or not, twice: once in
+<code>debugEnabled</code> and once in <code>debug</code>.  This is an
+insignificant overhead since evaluating a category takes less than 1%
+of the time it takes to actually log a statement.
+
+<a name=arrayDebug><h4 id="">What is the use of the <code>debug</code>
+method expecting a <code>String</code> array as one of its parameters?</h4>
+
+This method no longer exists. Use the
+<code>Category.isDebugEnabled</code> method instead.
+
+<a name=introCat><h4>Why was the Category class introduced and how do
+I migrate from the previous String based implementation?</h4>
+
+<p>The reason was speed, speed, speed.
+
+<p>In the former implementation, when evaluating whether a category
+should be logged or not, we potentially computed a hash and performed
+an equality check multiple times, once for each higher ranking
+category. For example, if the category name was "x.y.z", we computed
+the hash of "x.y.z" and checked if it was already defined (costing an
+equality check). If not, we parsed "x.y.z" to discover that "x.y" was
+higher ranking, then computed the hash of "x.y" and checked whether it
+was defined (costing another equality check). So on, until a valid
+category was found or there were no possible categories left.
+
+<p>It turns out that for long strings hierarchy parsing, hash
+computations and an equality checks are computationally expensive
+operations. 
+
+<p>The new Category class retains the flexibility of the former
+implementation and offers much much better performance. I would go as
+far as to claim that the performance cannot be improved upon without
+loosing functionality. Please do not hesitate to debunk this
+assertion. Contributions from <a
+href="mailto:Alex.Blewitt@ioshq.com">Alex Blewitt</a>, F. Hoering and
+M. Oestreicher were instrumental to these performance improvements.
+
+<p>The new syntax for defining a category is
+<pre>  
+  Category cat = Category.getInstance("x.y.z");
+  cat.setPriority(Priority.DEBUG);
+</pre>
+
+<p>Previously, to achieve a similar effect, one had to write
+<pre>
+  log.setCategory("x.y.z", "DEBUG"); // where log is an instance of Log
+</pre>
+
+<p>As of release 0.8.0, the syntax was further modified so
+that log statements (debug, info, ... methods) no longer need a log
+singleton but use a Category instance instead.
+
+<p>For some class <code>X</code> one previously wrote,
+<pre>
+package a.b.c;
+
+class X {
+  static String cat = "a.b.c.X";
+
+  void foo() {
+    log.debug(cat, "Some foo message").
+    ...
+  }
+}
+</pre>
+
+This code needs to be modified as follows
+
+<pre>
+package a.b.c;
+
+import org.log4j.Category; 
+
+class X {
+  static Category cat = Category.getInstance("a.b.c.X");
+
+  void foo() {
+    cat.debug("Some foo message").
+    ...
+  }
+}
+</pre>
+
+<a name=namingCategories><h4>Are there any suggested ways for naming
+categories?</a></h4>
+
+<p>Yes, there are.
+
+<p>You can name categories by <strong>locality</strong>. It turns out
+that instantiating a category in each class, with the category name
+equal to the fully-qualified name of the class, is a useful and
+straightforward approach of defining categories. This approach has
+many benefits:
+
+<ul>
+  <li>It is very simple to implenent.
+
+  <li>It is very simple to explain to new developpers.
+
+  <li>It automatically mirrors your application's own modular design.
+
+  <li>It can be further refined at will.
+
+  <li>Printing the category automatically gives information on the locality
+  of the log statement.
+
+</ul>
+
+
+<p>However, this is not the only way for naming categories. A common
+alternative is to name categories by <strong>functional
+areas</strong>. For example, the "database" category, "RMI" category,
+"security" category, or the "XML" category.
+
+<p>You may choose to name categories by functionality and
+sub-categorize by locatily, as in "DATABASE.com.ibm.some.package.someClass" or
+"DATABASE.com.ibm.some.other.package.someOtherClass".
+
+<p><em>You are totally free in choosing the names of your
+categories.</em> The log4j package merely allows you to manage your
+names in a hierarchy.  However, it is your responsibility to define
+this hierarchy.
+
+<p>Note by naming categories by locality one tends to name things by
+functionality, since in most cases the locatility relates closely to
+functionality. 
+
+
+
+<a name=className><h4>How do I get the fully-qualified name of a class
+in a static block?</a></h4>
+
+<p>You can easily retrieve the fully-qualified name of a class in a
+static block for class X, with the statement
+<code>X.class.getName()</code>. Note that <code>X</code> is the class
+name and not an instance.  The <code>X.class</code> statement does
+<i>not</i> create a new instance of class <code>X</code>.
+
+<p>Here is the suggested usage template:
+
+<font color=BLUE><pre>
+package a.b.c;
+
+public class Foo {
+  static Category cat = Category.getInstance(Foo.class.getName());
+  ... other code
+
+}
+</pre></font>
+
+<a name=customLayouts><h4>Can the log output format be customized?</h4>
+
+<p>Yes. Since release 0.7.0, you can extend the <code>Layout</code>
+class to create you own customized log format. Appenders can be
+parameterized to use the layout of your choice.
+
+<a name=NDC><h4>Can the outputs of multiple client request go to
+different log files?</h4>
+
+Many developers are confronted with the problem of distinguishing the
+log output originating from the same class but different client
+requests. They come up with ingenous mechanisms to fan out the log
+output to different files. In most cases, this is not the right
+approach.
+
+<p>It is simpler to use a nested diagnostic context (NDC). Typically,
+one would <em>NDC.push()</em> client specific information, such as the
+client's hostname, ID or any other distinguishing information when
+starting to handle the client's request. Thereafter, log output will
+automagically include the nested diagnostic context so that you can
+distinguish logs from different client requests even if they are
+output to the same file.
+
+<p>See the <code>NDC</code> and the <code>PatternLayout</code> classes
+for more information. The <code>NumberCruncher</code> example shows
+how the NDC can be used to distinguish the log output from multiple
+clients even if they share the same log file.
+
+<p>For select applications, such as virtual hosting web-servers, the
+NDC solution is not sufficient. As of version 0.9.0, log4j supports
+multiple hierarchy trees. Thus, it is possible to log to different
+targets from the same category depending on the current context.
+
+
+<p><a name=rm><h4>Category instances seem to be create only. Why isn't
+there a method to remove category instances?</h4>
+
+It is quite non-trivial to define the semantics of a "removed"
+category which is still referenced by the user.
+
+<p>Future releases <em>may</em> include a remove method in the
+Category class.
+
+<a name=filterByPriority><h4>Is it possible to direct log output to
+different appenders by priority?</h4>
+
+<p>Yes it is. Setting the <b>Threshold</b> option of any appender
+extending <a
+href="javadoc/org/log4j/AppenderSkeleton.html">AppenderSkeleton</a>,
+(most log4j appenders extend AppenderSkeleton) to filter out all log
+events with <em>lower</em> priority than the value of the threshold
+option. 
+
+<p>For example, setting the threshold of an appender to DEBUG will not
+filter out INFO, WARN, ERROR not FATAL messages (DEBUG is the lowest
+priority). This is usually acceptable as there is little use for DEBUG
+messages without the surrounding INFO, WARN, ERROR and FATAL
+messages. Similarly, setting the threshold of an appender to ERROR
+will filter out DEBUG, INFO and ERROR messages but not FATAL
+messages. This policy usually best encapsulates what the user actually
+wants to do, as opposed to her mind-projected solution.
+
+<p>See <a
+href="javadoc/org/log4j/examples/doc-files/sort4.lcf">sort4.lcf</a>
+for an example threshold configuration.
+
+<p>If you must filter events by exact priority match, then you can
+attach a <a
+href="javadoc/org/log4j/varia/PriorityMatchFilter.html">PriorityMatchFilter</a>
+to any appender to filter out logging events by exact priority match.
+
+
+<a name=tax><h4>Why should I donate my extensions to log4j back to the
+project?</h4>
+
+Contrary to the GNU Public License (GPL) our license does not have a
+clause forcing you to donate your own log4j extensions back to the
+log4j project. <em>You are free to do whatever you wish with your
+proprietary log4j extensions.</em> In particlular, you may choose to
+never release your extensions to the wider public.
+
+<p>We are very careful not to change the log4j client API so that
+newer log4j releases are backward compatible with previous
+versions. We are a lot less scrupulous with the internal log4j
+API. Thus, if your extension is designed to work with log4j version
+<code>n</code>, then when log4j release version <code>n+1</code> comes
+out, you will probably need to adapt your proprietary extensions to
+the new release.
+
+Thus, you will be forced to spend precious resources in order to keep
+up with log4j changes. This is commonly referred to as the
+"stupid-tax."  By donating the code and making it part of the standard
+distribution, you save yourself the unncessary maintanance work.
+
+<p>If your extensions are useful then someone will eventually write an
+extension providing the same or very similar functionality.  Your
+developement effort will be wasted.
+
+<p>Unless the proprietary log4j extension is business critical, there
+is little reason for not donating your extensions back to the project.
+
+<a name=help><h4>What should I keep in mind when contributing
+code?</h4>
+
+<ol>
+  <li>Stick to the existing indentation style even if you hate it.
+
+      <p>Alternating between indentation styles makes it hard to
+      understand the source code. Make it hard on yourself but easier
+      on others. Log4j follows the <a
+      href=http://java.sun.com/docs/codeconv/>Code Conventions for
+      the JavaTM Programming Language</a>.
+
+  <p><li>Make every effort to stick to the JDK 1.1 API.
+
+     <p>One of the important advantages of log4j is its compatibility with 
+     JDK 1.1.x. 
+      
+  <p><li><b>Throughly test your code.</b>
+
+      <p>There is nothing more irritating than finding the bugs 
+      in debugging (i.e. logging) code.
+
+   <p><li>Keep it simple, small and fast.
+
+       <p>It's all about the application not about logging.
+
+    <p><li>Identify yourself as the contributor at the top of the
+	relevant file. Add a copyright statement if appropriate.
+
+    <p><li>Take responsibility for your code.
+	
+	<p>Authoring software is like parenting. It takes many
+	years to raise a child. 
+	
+</ol>
+
+<a name=numberingPolicy><h4>What is the version numbering policy for
+log4j?</h4>
+
+<p>As the package us still undergoing rapid development, log4j version
+numbers start with zero. Increments in the second digit mean that
+there has been a significant enhacement or even an interface
+change. The third digit is incremented in case of smaller changes.
+
+<p>Releases consisting of only bug fixes, do not get a completely new
+version number but a letter is attached to the third number,
+e.g. 0.8.3a, 0.8.3b, and so on.
+
+<a name=bugCorrection><h4>How fast do bugs in log4j get fixed?</h4>
+
+<p>Rather than wait for the next release to be ready, we get bug fixes
+out of the door as soon as possible. Moreover, once a bug is found or
+reported, it is treated as <em>fire in the house</em>. All other
+activites stop until the bug is fixed.
+
+<p>Consequently, confirmed bugs are fixed after a short period
+following the initial bug report.
+
+<a name=history><h4>What is the history of log4j?</h4> 
+
+The first ancestor of log4j was written for the <a
+href="http://www.semper.org">SEMPER</a> project. Jose-Luis Abad-Peiro
+wrote the very first version which was picked up by Ceki
+G&uuml;lc&uuml; and enhanced by Andreas Fleuti.  <a Michael Steiner,
+N. Asokan, Ceki G&uuml;lc&uuml proposed category/priority based
+evaluation which has remained essentially the same since 1996.
+
+<a name=bugs><h4 id="bugs">How do I report bugs?</h4>
+
+Report bugs using our <a
+href=http://sourceforge.net/bugs/?group_id=2666>bug tracking</a> system.
+
+<p>Please specify the version of log4j you are using. It is helpful to
+include log configurations files if any, plus source code. A short
+example reproducing the problem is very much appreciated.
+
+<a name=download><h4>Where can I find the latest distribution of log4j?</h4>
+
+<p>The log4j project is hosted at <a
+href=http://log4j.org/>http://log4j.org/</a>.
+<p>
+<hr>
+
+
+</body> </html>
