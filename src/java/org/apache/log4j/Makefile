@@ -2,6 +2,7 @@
 PKG_DIR :=org/apache/log4j
 DEPTH   :=../../..
 JSOURCES:=HTMLLayout.java\
+	DailyRollingFileAppender.java\
 	RollingFileAppender.java\
 	PropertyConfigurator.java\
 	PatternLayout.java\
@@ -24,7 +25,6 @@ JSOURCES:=HTMLLayout.java\
 	ConsoleAppender.java\
 
 SUBDIRS :=helpers spi or xml net nt varia test performance examples gui
-
 
 # include master-rule file
 include $(DEPTH)/make/make.inc

@@ -149,13 +149,13 @@ public class WriterAppender extends AppenderSkeleton {
     }
 
     if(this.qw == null) {
-      errorHandler.error("No output target set for appender named \""+ 
-			name+"\".");
+      errorHandler.error("No output stream or file set for appender named ["+ 
+			name+"].");
       return false;
     }
     
     if(this.layout == null) {
-      errorHandler.error("No layout set for appender named \""+ name+"\".");
+      errorHandler.error("No layout set for appender named ["+ name+"].");
       return false;
     }
     return true;

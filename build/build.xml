@@ -20,7 +20,7 @@
 
     ant jar     - build log4j-core and log4j jar files
 
-    ant distrib - will make a distribution in ../../dump/ 
+    ant distrib - will create a distribution in ../../dump/ 
 
     </echo>
   </target>
@@ -82,11 +82,9 @@
     <echo message="JAVAMAIL is present."/>
   </target>
 
-
-
   <!-- ================================================================= -->
   <!-- Initialize variables                                              -->
-  <!-- NOTE: all directories are relative to ../build                    -->
+  <!-- NOTE: all directories are relative to ../build/                   -->
   <!-- ================================================================= -->
   <target name="init">
     <tstamp />
@@ -124,7 +122,7 @@
 
   <target name="build.swing" depends="init, swing" if="swing-present">   
     <mkdir dir="${javac.dest}/icons"/>
-    <copy todir="${javac.dest}/icons">
+    <copy todir="${javac.dest}/icons" >
       <fileset dir="icons"/>
     </copy>
     <javac srcdir="${java.source.dir}"
@@ -139,7 +137,7 @@
 	   destdir="${javac.dest}"
 	   includes="**/UnitTest*.java"
 	   classpath="${classpath}"/>
-</target>
+  </target>
 
  <target name="build.xml" depends="init, xerces, sunParser" if="jaxp-present">
     <javac srcdir="${java.source.dir}"
@@ -150,7 +148,7 @@
 	   classpath="${classpath}"/>
     <copy file="${stem}/xml/log4j.dtd"
 	  tofile="${javac.dest}/${stem}/xml/log4j.dtd" />
-</target>
+  </target>
 
  <target name="build.javamail" depends="init, javamail" 
                if="javamail-present">   
@@ -175,9 +173,15 @@
 
   <target name="jar" depends="log4j-core.jar, log4j.jar"/>
 
+  <target name="prejar" depends="build">
+    <mkdir dir="${jar.dest}"/>    
+    <filter token="version" value="${version}" />
+    <copy file="build/manifest.mf" tofile="lib/manifest.mf" filtering="true"/>
+  </target>
+
+
   <!-- Create log4j-core.jar, exluding non-core files -->
-  <target name="log4j-core.jar" depends="build">
-    <mkdir dir="${jar.dest}"/>
+  <target name="log4j-core.jar" depends="prejar">
     <delete file="${jar.dest}/log4j-core.jar"/>
     <jar jarfile="${jar.dest}/log4j-core.jar" basedir="${javac.dest}"
 	 includes="**/log4j/*.class, **/log4j/helpers/*.class,
@@ -190,14 +194,13 @@
 		  ${stem}/or/MessageRenderer.class,
 		  ${stem}/spi/TriggeringEventEvaluator.class
 		  org/apache/log4j/helpers/CyclicBuffer.class"
-        manifest="manifest.mf"
+        manifest="lib/manifest.mf"
     />
   </target>
 
   <!-- Create log4j.jar, excluding tests and other odds and
        ends. -->
-  <target name="log4j.jar" depends="build">
-    <mkdir dir="${jar.dest}"/>
+  <target name="log4j.jar" depends="prejar">
     <delete file="${jar.dest}/log4j.jar"/>
     <jar jarfile="${jar.dest}/log4j.jar" basedir="${javac.dest}"
 	includes="**/log4j/*.class, ${stem}/xml/log4j.dtd, 
@@ -208,7 +211,7 @@
 		  **/log4j/or/*.class,
 		  **/log4j/gui/TextPaneAppender.class"
 	excludes="**/StressCategory*, **/UnitTest**"
-        manifest="manifest.mf"
+        manifest="lib/manifest.mf"	
     />
   </target>
 
@@ -220,7 +223,7 @@
 
     <mkdir dir="${javadoc.dest}" />
 
-    <copy todir="${stem}/examples/doc-files/" >
+    <copy todir="${stem}/examples/doc-files/">
       <fileset dir="${stem}/examples/" 
          includes="Sort.java, SortAlgo.java, Trivial.java, MyCategory.java,
             MyCategoryFactory.java, mycat.good, mycat.bad, factor.html,
@@ -235,7 +238,7 @@
 	     extension2.xml, XCategory.java,XTest.java"/>
     </copy>
 
-    <copy todir="${stem}/xml/doc-files/" >
+    <copy todir="${stem}/xml/doc-files/"  >
       <fileset dir="${stem}/xml/" includes="log4j.dtd"/>
     </copy>
 

@@ -17,6 +17,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.helpers.QuietWriter;
+import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.CountingQuietWriter;
 import org.apache.log4j.spi.LoggingEvent;
 
@@ -123,8 +124,8 @@ public class RollingFileAppender extends FileAppender {
      <code>File</code> is truncated with no backup files created.
      
    */
-  public
-  synchronized
+
+  public // synchronization not necessary since doAppend is alreasy synched
   void rollOver() {
     File target;    
     File file;
@@ -160,8 +161,7 @@ public class RollingFileAppender extends FileAppender {
       this.setFile(fileName, false);
     }
     catch(IOException e) {
-      System.err.println("setFile("+fileName+", false) call failed.");
-      e.printStackTrace();
+      LogLog.error("setFile("+fileName+", false) call failed.", e);
     }
   }
 
