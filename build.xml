@@ -35,11 +35,14 @@
   <!-- Destination for generated jar files -->
   <property name="jar.dest" value="dist/lib"/>
 
+  <!-- The jar file that the jar task will generate -->
   <property name="jar.filename" value="log4j-${version}.jar"/>
 
+  <!-- Destination for documentation files -->
+  <property name="docs.dest" value="./docs"/>
+  <!-- Source directory for xml docs -->
+  <property name="xdocs.src" value="./src/xdocs"/>
 
-  <!-- Destination for documentation files generated or not -->
-  <property name="docs" value="docs"/>
 
   <!-- Destination for javadoc generated files -->
   <property name="javadoc.dest" value="docs/api"/>
@@ -73,6 +76,13 @@
     <pathelement location="${jms.jar}"/>
     <pathelement location="${jmx.jar}"/>
     <pathelement location="${jmx-extra.jar}"/>
+  </path>
+
+  <!-- Construct compile classpath -->
+  <path id="site2.classpath">
+    <fileset dir="${jakarta-site2}/lib">
+      <include name="*.jar"/>
+    </fileset>
   </path>
 
 
@@ -334,6 +344,7 @@
 			 org.apache.log4j.config,
                          org.apache.log4j.helpers,
 		         org.apache.log4j.jmx,
+		         org.apache.log4j.lf5,
 		         org.apache.log4j.net,
 			 org.apache.log4j.nt,
 		         org.apache.log4j.or,
@@ -350,7 +361,7 @@
 	   protected="true"
 	   author="true"
 	   use="true"
-	   overview="${docs}/overview.html"
+	   overview="${docs.dest}/overview.html"
 	   doctitle="log4j version ${version}&lt;br&gt;API Specification"
 	   windowtitle="Log4j Version ${version}"
            header="&lt;b&gt;Log4j ${version}&lt;/b&gt;"
@@ -363,10 +374,54 @@
     </javadoc>
   </target>
 
+  <!-- ============================================== -->
+  <!-- Build the site files using Anakia              -->
+  <!-- ============================================== -->  
+  <target name="prepareSite2">    
+    <available classname="org.apache.velocity.anakia.AnakiaTask"
+      property="AnakiaTask.present">
+      <classpath refid="site2.classpath"/>
+    </available>
+  </target>
+  
+  <target name="checkSite2" depends="prepareSite2" unless="AnakiaTask.present">
+    <echo>
+      AnakiaTask is not present! Please check to make sure that 
+      velocity.jar is in your classpath.
+    </echo>
+  </target>
+  
+  <target name="site2" depends="checkSite2" if="AnakiaTask.present">
+    <taskdef name="anakia" classname="org.apache.velocity.anakia.AnakiaTask">
+      <classpath refid="site2.classpath"/>
+    </taskdef>
+
+    <anakia basedir="${xdocs.src}" destdir="${docs.dest}/"
+      extension=".html" 
+      style="site.vsl"
+      projectFile="stylesheets/project.xml"
+      excludes="**/stylesheets/**, empty.xml, lf5/**"
+      includes="**/*.xml"
+      lastModifiedCheck="true"
+      templatePath="../jakarta-site2/xdocs/stylesheets">
+    </anakia>
+    
+    <anakia basedir="${xdocs.src}" destdir="${docs.dest}/"
+      extension=".html" 
+      style="site.vsl"
+      projectFile="stylesheets/lf5.xml"
+      excludes="**/stylesheets/**, empty.xml"
+      includes="lf5/*.xml"
+      lastModifiedCheck="true"
+      templatePath="../jakarta-site2/xdocs/stylesheets">
+    </anakia>
+  </target>
+
+
  <!-- ================================================================= -->
  <!-- Build a complete distribution. Results go to ${dist.images}       -->
  <!-- ================================================================= -->
-  <target name="dist" depends="init, clean, javadoc, jar">
+  <target name="dist" depends="init, clean, javadoc, jar, site2">
 
     <delete verbose="true">
       <fileset dir=".">
@@ -403,7 +458,7 @@
     </delete>
 
     <mkdir  dir="${dist.images}" />
-
+    
     <mkdir  dir="${dist.tmp}/jakarta-log4j-${version}" />
 
     <copy todir="${dist.tmp}/jakarta-log4j-${version}">
