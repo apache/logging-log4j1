@@ -13,6 +13,10 @@
    XMLLayout also outputs each item of a stack trace in a separate
    line. [*]
 
+ - Fixed bug #5932 as suggested by Heikki Linnakangas. The
+   LoggingEvent.getMDCCopy method now clones the MDC instead of just
+   referencing it. [*]
+
  (rc1)
 
   - The ANT build script was modified to use jar files specified in

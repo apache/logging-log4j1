@@ -174,6 +174,7 @@
                	    ${stem}/net/JMS*.java,
                	    ${stem}/jmx/*.java,
                	    ${stem}/or/jms/*.java"
+  	    deprecation="${deprecation}"
 	    debug="on">
       <classpath refid="compile.classpath"/>
     </javac>
@@ -187,7 +188,8 @@
 	   includes="examples/**/*.java"
 	   classpath="${classpath}"
 	   excludes="misc/*"
-	    debug="on"/>
+	   deprecation="${deprecation}"
+           debug="on"/>
     <rmic base="${javac.dest}"
       classname="examples.NumberCruncherServer"
       />
@@ -199,6 +201,7 @@
 	   includes="${stem}/xml/**/*.java"
            excludes="${stem}/xml/examples/doc-files/**.java,
 	             ${stem}/xml/Transform.java"
+	   deprecation="${deprecation}"
 	   classpath="${classpath}">
       <classpath refid="compile.classpath"/>
     </javac>
@@ -210,13 +213,15 @@
                if="javamail-present">
     <javac srcdir="${java.source.dir}"
 	   destdir="${javac.dest}"
+	   deprecation="${deprecation}"
 	   includes="${stem}/net/SMTPAppender.java">
       <classpath refid="compile.classpath"/>
     </javac>
   </target>
 
   <target name="build.jms" depends="init, jms, jndi" if="jms-present">
-    <javac srcdir="${java.source.dir}"
+    <javac deprecation="${deprecation}"
+           srcdir="${java.source.dir}"
 	   destdir="${javac.dest}"
 	   includes="${stem}/net/JMS*.java">
       <classpath refid="compile.classpath"/>
@@ -224,7 +229,8 @@
   </target>
 
  <target name="build.jmx" depends="init, jmx, jndi" if="jmx-present">
-    <javac srcdir="${java.source.dir}"
+    <javac deprecation="${deprecation}"
+           srcdir="${java.source.dir}"
 	   destdir="${javac.dest}"
 	   includes="${stem}/jmx/*.java"
            excludes="${stem}/jmx/T.java">

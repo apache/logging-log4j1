@@ -70,22 +70,20 @@
 
     <section name="Bug reporting">
 
-      <p>Bugs should be reported by using the 
-	<a href="http://nagoya.apache.org/bugzilla">Apache Bug Database</a>.
+      <p>Bugs should be reported by using the <a
+	href="http://nagoya.apache.org/bugzilla">Apache Bug
+	Database</a>. Before reporting a problem, please make sure to
+	<a href="http://nagoya.apache.org/bugzilla/query.cgi">check
+	the database</a> and the <a href="HISTORY">project history
+	file</a> to see if the problem is not already known. Before
+	filing a report, you should first send email to the
+	<em>log4j-user</em> mailing list describing the bug. Only
+	after these precautionary steps should you file a bug report
+	with Bugzilla.
       </p>
 
-      <p>Before reporting a problem, please make sure to <a
-	  href="http://nagoya.apache.org/bugzilla/query.cgi">check the
-	  database</a> and the <a href="HISTORY">project history
-	  file</a> to see if the problem is not already known. Before
-	  filing a report, you should first send email to the
-	  <em>log4j-user</em> mailing list describing the bug. Only
-	  after these precautionary steps should you file a bug
-	  report. 
-      </p>
-
-      <p>Although Bugzilla allows users to flag enhancement requests
-	 as such, enhancement requests are not bugs and should not be
+      <p>Although Bugzilla allows users to file enhancement requests
+	 as bugs, enhancement requests are not bugs and should not be
 	 treated as such. The preferred way to request for
 	 enhancements is by posting on the log4j-user list. This
 	 allows other interested parties to participate in the ensuing
