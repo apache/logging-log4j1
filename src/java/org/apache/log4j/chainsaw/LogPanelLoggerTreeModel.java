@@ -142,7 +142,7 @@ outerFor:
       StringBuffer fullPackageBuf = new StringBuffer();
 
       for (int j = 0; j <= i; j++) {
-        fullPackageBuf.append(packages[i]);
+        fullPackageBuf.append(packages[j]);
 
         if (j < i) {
           fullPackageBuf.append(".");
@@ -172,6 +172,9 @@ outerFor:
   LogPanelTreeNode lookupLogger(String logger) {
     if (fullPackageMap.containsKey(logger)) {
       return (LogPanelTreeNode) fullPackageMap.get(logger);
+    }else{
+        LogLog.debug("No logger found matching '" + logger + "'");
+        LogLog.debug("Map Dump: " + fullPackageMap);
     }
 
     return null;
