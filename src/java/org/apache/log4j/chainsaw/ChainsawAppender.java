@@ -46,14 +46,13 @@
  * Apache Software Foundation, please see <http://www.apache.org/>.
  *
  */
-
 package org.apache.log4j.chainsaw;
-
-import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.spi.LoggingEvent;
 
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
+
+import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
@@ -63,12 +62,33 @@ import javax.swing.table.TableModel;
  * @author Paul Smith
  * @version 1.0
  */
-public class ChainsawAppender extends AppenderSkeleton
-  implements EventDetailSink, TableModel {
+public class ChainsawAppender
+    extends AppenderSkeleton
+    implements EventDetailSink, TableModel {
+
+  /**
+   * Shared model used by the shared Appender
+   */
   private static MyTableModel sSharedModel;
-  private static ChainsawAppender sSharedAppender = null;
+
+  /**
+   * The model that is used by this Appender, we ensure
+   * here that we only use a single Model as the current
+   * release is effetively an in-JVM singleton
+   */
   private final MyTableModel wrappedTableModel = getDefaultModel();
 
+  /**
+   * The in-JVM singleton instance of the ChainsawAppender.
+   *
+   * If somehow Log4j initialises more than one, then the first one to
+   * initialise wins!
+   */
+  private static ChainsawAppender sSharedAppender = null;
+
+  /**
+   * Constructor, initialises the singleton instance of the appender
+   */
   public ChainsawAppender() {
     synchronized (ChainsawAppender.class) {
       if (sSharedAppender == null) {
@@ -89,14 +109,14 @@ public class ChainsawAppender extends AppenderSkeleton
     if (sSharedModel == null) {
       sSharedModel = new MyTableModel();
     }
-
     return sSharedModel;
   }
 
   /**
    * Return the singleton instance of the ChainsawAppender, it should only
    * be initialised once.
-   * @return the instance
+   * @return the One and only instance of the ChainsawAppender that is
+   * allowed to be referenced by the GUI
    */
   static ChainsawAppender getInstance() {
     return sSharedAppender;
@@ -107,12 +127,17 @@ public class ChainsawAppender extends AppenderSkeleton
    *
    * NOTE: it is strongly recommended at this time not to rely on this method
    * until further refactoring is completed.
-   * @return MyTableModel
+   * @return MyTableModel the MyTableModel that can be used by external
+   * components
    */
   MyTableModel getWrappedModel() {
     return wrappedTableModel;
   }
 
+  /**
+   * This appender does not require layout and so return false
+   * @return false and only false
+   */
   public boolean requiresLayout() {
     return false;
   }
@@ -120,6 +145,7 @@ public class ChainsawAppender extends AppenderSkeleton
   /**
    * Implements the EventDetailSink interface by forwarding the EventDetails
    * object onto an internal Model
+   * @param aDetails the EventDetails to add to the model
    */
   public void addEvent(EventDetails aDetails) {
     synchronized (wrappedTableModel) {
@@ -137,58 +163,95 @@ public class ChainsawAppender extends AppenderSkeleton
     }
   }
 
+
   /**
    * Close does nothing
    */
   public void close() {
-      // TODO: perhaps it should clear the internal TableModel
+    /** @todo  perhaps it should clear the internal TableModel */
   }
 
   // ==========================================================================
   // All methods here are from TableModel, and simply forward on to the
   // internal wrappedTableModel instance
-  // =========================================================================
-  /** @see TableModel */
+  // ==========================================================================
+
+  /**
+   * Implementation of TableModel interface
+   * @return int rowCount
+   */
   public int getRowCount() {
     return wrappedTableModel.getRowCount();
   }
 
-  /** @see TableModel */
+  /**
+   * Implementation of TableModel interface
+   * @return int column Count
+   */
   public int getColumnCount() {
     return wrappedTableModel.getColumnCount();
   }
 
-  /** @see TableModel */
+  /**
+   * Implementation of TableModel interface
+   * @param aColumnIndex the Column index to query the name for
+   * @return String column name
+   */
   public String getColumnName(int aColumnIndex) {
     return wrappedTableModel.getColumnName(aColumnIndex);
   }
 
-  /** @see TableModel */
+  /**
+   * Implementation of TableModel interface
+   * @param columnIndex column Index to query the Class of
+   * @return Class class of Column
+   */
   public Class getColumnClass(int columnIndex) {
     return wrappedTableModel.getColumnClass(columnIndex);
   }
 
-  /** @see TableModel */
+  /**
+   * Implementation of TableModel interface
+   * @param rowIndex row Index to query
+   * @param columnIndex column Index to query
+   * @return boolean is Cell Editable?
+   */
   public boolean isCellEditable(int rowIndex, int columnIndex) {
     return wrappedTableModel.isCellEditable(rowIndex, columnIndex);
   }
 
-  /** @see TableModel */
+  /**
+   * Implementation of TableModel interface
+   * @param rowIndex the row index to retrieve value from
+   * @param columnIndex to the column index to retrieve value from
+   * @return Object value at a particular row/column point
+   */
   public Object getValueAt(int rowIndex, int columnIndex) {
     return wrappedTableModel.getValueAt(rowIndex, columnIndex);
   }
 
-  /** @see TableModel */
+  /**
+   * Implementation of TableModel interface
+   * @param aValue the value to set
+   * @param rowIndex the row
+   * @param columnIndex the column
+   */
   public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
     wrappedTableModel.setValueAt(aValue, rowIndex, columnIndex);
   }
 
-  /** @see TableModel */
+  /**
+   * Implementation of TableModel interface
+   * @param l a TableModelListener to add
+   */
   public void addTableModelListener(TableModelListener l) {
     wrappedTableModel.addTableModelListener(l);
   }
 
-  /** @see TableModel */
+  /**
+   * Implementation of TableModel interface
+   * @param l listener to remove from the currently registered listeners
+   */
   public void removeTableModelListener(TableModelListener l) {
     wrappedTableModel.removeTableModelListener(l);
   }
