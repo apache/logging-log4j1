@@ -29,7 +29,8 @@
 <section name="So what is it really?">
       <p><a name="WhatIsIt">&#160;</a>It's a GUI-based Log viewer. A picture tells a thousand words...</p>
       
-      <p><img src="chainsaw-1.jpg" width="873" height="492"/></p>
+      <p><a href="images/chainsaw-fullscreen.jpg" target="_new"><img src="images/chainsaw-fullscreen-small.jpg" /></a></p>
+      <p><a href="images/chainsaw-fullscreen.jpg" target="_new">[zoom image]</a></p>
 
       <p>These screen shots were taken on Windows 2000, running Sun JDK 1.4.2.</p>
       
