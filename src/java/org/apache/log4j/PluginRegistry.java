@@ -47,8 +47,12 @@ public class PluginRegistry {
         repositoryMap.put(repository, pluginMap);
       }
       
-      // existing plugin exists with the 
-      Plugin existingPlugin = (Plugin)pluginMap.get(plugin.getName());
+      // existing plugin exists with the
+      String name = plugin.getName();
+      if (name == null) {
+        name = "";
+      }
+      Plugin existingPlugin = (Plugin)pluginMap.get(name);
       if (existingPlugin != null) {
         boolean isEqual = existingPlugin.equals(plugin);
         
@@ -62,7 +66,7 @@ public class PluginRegistry {
       }
       
       // put the new plugin into the map
-      pluginMap.put(plugin.getName(), plugin);
+      pluginMap.put(name, plugin);
       
       // start the new plugin
       plugin.activateOptions();
@@ -96,6 +100,10 @@ public class PluginRegistry {
     Stops a plugin in the given logger repository. */
   public static Plugin stopPlugin(String pluginName, 
   LoggerRepository repository) {
+    String name = pluginName;
+    if (pluginName == null) {
+      pluginName = "";
+    }
     synchronized(repositoryMap) {
       Hashtable pluginMap = (Hashtable)repositoryMap.get(repository);
       if (pluginMap == null)
