@@ -56,9 +56,9 @@ import java.util.Stack;
 
 
 /**
- * A Rule class implementing less than - expects to be able to convert two values to longs.
- * If the field being evaluated can support inequality evaluation, the appropriate rule is returned.
- * (For example, if the expression is Level < DEBUG, a LessThanLevelRule is returned).
+ * A Rule class implementing inequality evaluation - expects to be able to convert two values to longs.
+ * If a specific inequality evaluation class has been provided for the event field, the appropriate rule is returned.
+ * (For example, if the expression is Level &lt DEBUG, a LevelInequalityRule is returned).
  *
  * @author Scott Deboy <sdeboy@apache.org>
  */
@@ -76,7 +76,7 @@ class InequalityRule extends AbstractRule {
     this.secondParam = secondParam;
   }
 
-  static Rule getRule(String inequalitySymbol, Stack stack) {
+  public static Rule getRule(String inequalitySymbol, Stack stack) {
     String p1 = stack.pop().toString();
     String p2 = stack.pop().toString();
 
@@ -87,8 +87,6 @@ class InequalityRule extends AbstractRule {
 
       return LevelInequalityRule.getRule(inequalitySymbol, stack);
     } else {
-      System.out.println("get equals op " + p1 + ".." + p2);
-
       return new InequalityRule(inequalitySymbol, p1, p2);
     }
   }
@@ -122,8 +120,6 @@ class InequalityRule extends AbstractRule {
     } else if (">=".equals(inequalitySymbol)) {
       result = first >= second;
     }
-
-    System.out.println("result is " + result);
 
     return result;
   }

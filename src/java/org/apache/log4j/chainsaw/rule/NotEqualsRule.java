@@ -55,7 +55,7 @@ import org.apache.log4j.spi.LoggingEvent;
 import java.util.Stack;
 
 /**
- * A Rule class implementing not equals against two strings (case sensitive).
+ * A Rule class implementing not equals against two strings.
  * 
  * @author Scott Deboy <sdeboy@apache.org>
  */
@@ -69,20 +69,17 @@ class NotEqualsRule extends AbstractRule {
     this.secondParam = secondParam;
   }
 
-  static Rule getRule(Stack stack) {
+  public static Rule getRule(Stack stack) {
     String p1 = stack.pop().toString();
     String p2 = stack.pop().toString();
-    System.out.println("get not equals op " + p1 + ".." + p2);
 
     return new NotEqualsRule(p1, p2);
   }
 
   public boolean evaluate(LoggingEvent event) {
     String p2 = resolver.getValue(secondParam, event).toString();
-    System.out.println("not equals op " + firstParam + ".." + p2);
 
     boolean result = ((p2 != null) && !(p2.equals(firstParam)));
-    System.out.println("result is " + result);
 
     return result;
   }

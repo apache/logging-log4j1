@@ -185,7 +185,7 @@ public final class LoggingEventFieldResolver {
       return ((propValue == null) ? "" : propValue);
     }
 
-    //there wasn't a match, so just return the passed-in name
-    return fieldName;
+    //there wasn't a match, so throw a runtime exception
+    throw new RuntimeException("Unsupported field name: " + fieldName);
   }
 }

@@ -134,9 +134,6 @@ class InFixToPostFix {
     int index2 = ((Integer) precedenceMap.get(symbol2)).intValue();
 
     boolean precedesResult = (index1 < index2);
-    System.out.println(
-      "SYMBOL1: " + symbol1 + "SYMBOL2: " + symbol2 + " index1: " + index1
-      + " index2: " + index2 + " precedesresult: " + precedesResult);
 
     return precedesResult;
   }
@@ -149,7 +146,6 @@ class InFixToPostFix {
 
     while (tokenizer.hasMoreTokens()) {
       String token = tokenizer.nextToken();
-      System.out.println("FOUND TOKEN " + token);
 
       if ("(".equals(token)) {
         //recurse
@@ -173,7 +169,6 @@ class InFixToPostFix {
         //otherwise, pop top element off stack and add to postfix string
         //in a loop until lower precedence or empty..then push token
         if (stack.size() > 0) {
-          System.out.println("OPERATOR " + token + "..stack: " + stack);
 
           String peek = stack.peek().toString();
 
