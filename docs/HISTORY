@@ -5,8 +5,19 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
 
-
  January 12th, 2001
+
+ - Release of version 1.0.4 (the 20th major release)
+
+ - Corrected a serious bug in Hierarchy.java that would cause a
+   NullPointerException depending on the order of instantiation of
+   categories. Thanks to Wolfram Gewohn for reporting this bug. [*]
+
+ - Corrected a bug in the getOptionsStrings method of SMTPAppender
+   that omitted to mention the EvaluatorClass option. Thanks to Mark
+   Balster for reporting this bug. [*]
+
+ January 11th, 2001
  
  - Release of version 1.0.3 (the 20th major release)
 
