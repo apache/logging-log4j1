@@ -39,6 +39,7 @@ public class LogLog {
   protected static boolean configDebugEnabled = false;  
 
   private static final String PREFIX = "log4j: ";
+  private static final String ERR_PREFIX = "log4j:ERROR ";
 
   static {
     try {
@@ -96,7 +97,7 @@ public class LogLog {
   public
   static
   void error(String msg) {
-    System.err.println(PREFIX+msg);
+    System.err.println(ERR_PREFIX+msg);
   }  
 
   /**
@@ -107,7 +108,7 @@ public class LogLog {
   public
   static
   void error(String msg, Throwable t) {
-    System.err.println(PREFIX+msg);
+    System.err.println(ERR_PREFIX+msg);
     if(t != null) {
       t.printStackTrace();
     }

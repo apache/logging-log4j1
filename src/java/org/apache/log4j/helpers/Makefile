@@ -5,7 +5,9 @@ JSOURCES:=LogLog.java\
 	AppenderAttachableImpl.java\
 	TracerPrintWriter.java\
 	SyslogWriter.java \
-	QuietWriter.java CountingQuietWriter.java SyslogQuietWriter.java\
+	QuietWriter.java \
+	CountingQuietWriter.java\
+	 SyslogQuietWriter.java\
 	OptionConverter.java\
 	DateLayout.java\
 	RelativeTimeDateFormat.java\

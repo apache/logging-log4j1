@@ -5,12 +5,12 @@
 # To test this example, you must start a log4j server with the command
 #
 #
-#    java org.log4j.net.SocketServer 12345 path/to/a/configuration/file
+#    java org.apache.log4j.net.SocketServer 12345 path/to/a/configuration/file
 #
 #
 
 # For the general syntax of propperty based caonfiguration files see
-# the documenation of org.log4j.PropertyConfigurator.
+# the documenation of org.apache.log4j.PropertyConfigurator.
 
 # The root category uses the appender called A1. 
 
@@ -19,7 +19,7 @@ log4j.rootCategory=DEBUG, A1
 # A1 is set to be a SocketAppender sending its output to the server
 running on the local host, port 12345.
 
-log4j.appender.A1=org.log4j.net.SocketAppender
+log4j.appender.A1=org.apache.log4j.net.SocketAppender
 log4j.appender.A1.Port=12345
 log4j.appender.A1.RemoteHost=localhost
 
@@ -27,5 +27,5 @@ log4j.appender.A1.RemoteHost=localhost
 # messages.  You might try to set INNER and SWAP to DEBUG for more
 # verbose output.
 
-log4j.category.org.log4j.examples.SortAlgo.INNER=INFO
-log4j.category.org.log4j.examples.SortAlgo.SWAP=INFO
+log4j.category.org.apache.log4j.examples.SortAlgo.INNER=INFO
+log4j.category.org.apache.log4j.examples.SortAlgo.SWAP=INFO
