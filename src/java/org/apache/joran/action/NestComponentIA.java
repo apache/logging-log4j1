@@ -102,6 +102,8 @@ public class NestComponentIA extends ImplicitAction {
         className);
 
       actionData.nestedComponent = Loader.loadClass(className).newInstance();
+      
+      // pass along the repository
       if(actionData.nestedComponent instanceof Component) {
         ((Component) actionData.nestedComponent).setLoggerRepository(this.repository);
       }
