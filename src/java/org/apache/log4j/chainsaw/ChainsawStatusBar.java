@@ -56,11 +56,13 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+
 import java.text.NumberFormat;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -83,38 +85,31 @@ class ChainsawStatusBar extends JPanel {
   private final JLabel receivedConnectionlabel = new JLabel("", JLabel.CENTER);
   private volatile long lastReceivedEvent = System.currentTimeMillis();
   private volatile long lastReceivedConnection = System.currentTimeMillis();
-  private final Thread receiveThread;
   private final Thread connectionThread;
+  private final Icon pausedIcon = new ImageIcon(ChainsawIcons.PAUSE);
   private final Icon radioTowerIcon =
     new ImageIcon(ChainsawIcons.ANIM_RADIO_TOWER);
   private final Icon netConnectIcon =
     new ImageIcon(ChainsawIcons.ANIM_NET_CONNECT);
-    
-    private final NumberFormat nf = NumberFormat.getNumberInstance();
-
-  //  private final Border statusBarComponentBorder =
-  //    BorderFactory.createEmptyBorder();
+  private final NumberFormat nf = NumberFormat.getNumberInstance();
   private final Border statusBarComponentBorder =
     BorderFactory.createLineBorder(statusMsg.getBackground().darker());
 
-  //  private final Border statusBarComponentBorder =
-  //    new SoftBevelBorder(SoftBevelBorder.LOWERED);
   ChainsawStatusBar() {
     setLayout(new GridBagLayout());
 
-	nf.setMaximumFractionDigits(1);
-	nf.setMinimumFractionDigits(1);
-	nf.setGroupingUsed(false);
+    nf.setMaximumFractionDigits(1);
+    nf.setMinimumFractionDigits(1);
+    nf.setGroupingUsed(false);
+
     JPanel statusMsgPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 2, 2));
 
     statusMsgPanel.add(statusMsg);
     statusMsgPanel.setBorder(statusBarComponentBorder);
 
     pausedLabel.setBorder(statusBarComponentBorder);
-    pausedLabel.setPreferredSize(
-      new Dimension(
-        pausedLabel.getFontMetrics(pausedLabel.getFont()).stringWidth(
-          "Paused") + 10, (int) pausedLabel.getPreferredSize().getHeight()));
+    pausedLabel.setMinimumSize(
+      new Dimension(pausedIcon.getIconWidth(), pausedIcon.getIconHeight()));
 
     pausedLabel.setToolTipText(
       "Shows whether the current Log panel is paused or not");
@@ -122,29 +117,39 @@ class ChainsawStatusBar extends JPanel {
     receivedEventLabel.setBorder(statusBarComponentBorder);
     receivedEventLabel.setToolTipText(
       "Indicates whether Chainsaw is receiving events, and how fast it is processing them");
-    receivedEventLabel.setPreferredSize(
+    receivedEventLabel.setMinimumSize(
       new Dimension(
-        radioTowerIcon.getIconWidth() + receivedEventLabel.getFontMetrics(receivedEventLabel.getFont()).stringWidth(
-	"9999.9") + 10,
+        receivedEventLabel.getFontMetrics(receivedEventLabel.getFont())
+                          .stringWidth("999.9/s") + 10,
         (int) receivedEventLabel.getPreferredSize().getHeight()));
-    receivedEventLabel.setMinimumSize(receivedEventLabel.getPreferredSize());
 
     receivedConnectionlabel.setBorder(statusBarComponentBorder);
     receivedConnectionlabel.setToolTipText(
       "Indicates whether Chainsaw has received a remote connection");
-    receivedConnectionlabel.setPreferredSize(
+    receivedConnectionlabel.setMinimumSize(
       new Dimension(
         netConnectIcon.getIconWidth() + 4,
         (int) receivedConnectionlabel.getPreferredSize().getHeight()));
 
     lineSelectionLabel.setBorder(statusBarComponentBorder);
-    lineSelectionLabel.setPreferredSize(
+    lineSelectionLabel.setMinimumSize(
       new Dimension(
         lineSelectionLabel.getFontMetrics(lineSelectionLabel.getFont())
-                          .stringWidth("999999:999999"),
+                          .stringWidth("999999:999999:999999"),
         (int) lineSelectionLabel.getPreferredSize().getHeight()));
     lineSelectionLabel.setToolTipText(
-      "Shows the currently selected line # & Total # of Lines");
+      "<current line #>:<# viewable events>:<# total events>");
+
+    JComponent[] toFix =
+      new JComponent[] {
+        receivedConnectionlabel, lineSelectionLabel, receivedEventLabel,
+        pausedLabel
+      };
+
+    for (int i = 0; i < toFix.length; i++) {
+      toFix[i].setPreferredSize(toFix[i].getMinimumSize());
+      toFix[i].setMaximumSize(toFix[i].getMinimumSize());
+    }
 
     statusMsg.setMinimumSize(pausedLabel.getPreferredSize());
     statusMsg.setToolTipText("Shows messages from Chainsaw");
@@ -183,35 +188,6 @@ class ChainsawStatusBar extends JPanel {
 
     add(pausedLabel, c);
 
-    receiveThread =
-      new Thread(
-        new Runnable() {
-          public void run() {
-            while (true) {
-              try {
-                Thread.sleep(DELAY_PERIOD);
-              } catch (InterruptedException e) {
-              }
-
-              Icon icon = null;
-
-              if (
-                (System.currentTimeMillis() - lastReceivedEvent) < DELAY_PERIOD) {
-                icon = radioTowerIcon;
-              }
-
-              final Icon theIcon = icon;
-              SwingUtilities.invokeLater(
-                new Runnable() {
-                  public void run() {
-                    receivedEventLabel.setIcon(theIcon);
-                  }
-                });
-            }
-          }
-        });
-    receiveThread.start();
-
     connectionThread =
       new Thread(
         new Runnable() {
@@ -242,25 +218,13 @@ class ChainsawStatusBar extends JPanel {
     connectionThread.start();
   }
 
-  /**
-   * Calling this method indicates an event has been received in
-   * the current LogPanel, this method will trigger update
-   * the Icon/Text of the Statusbar to indicate the received event
-   * and after a period of time, this message will be removed or
-   * the icon will be hidden.
-   *
-   */
-  void receivedEvent() {
-    lastReceivedEvent = System.currentTimeMillis();
-    receiveThread.interrupt();
-  }
-
   void setDataRate(final double dataRate) {
-  	SwingUtilities.invokeLater(new Runnable(){
-
-		public void run() {
-    		receivedEventLabel.setText(nf.format(dataRate) + "/s");
-		}});
+    SwingUtilities.invokeLater(
+      new Runnable() {
+        public void run() {
+          receivedEventLabel.setText(nf.format(dataRate) + "/s");
+        }
+      });
   }
 
   /**
@@ -284,18 +248,23 @@ class ChainsawStatusBar extends JPanel {
     Runnable runnable =
       new Runnable() {
         public void run() {
-          pausedLabel.setText(isPaused ? "Paused" : "");
+          pausedLabel.setIcon(isPaused ? pausedIcon : null);
+          pausedLabel.setToolTipText(
+            isPaused ? "This Log panel is currently paused"
+                     : "This Log panel is not paused");
         }
       };
 
     SwingUtilities.invokeLater(runnable);
   }
 
-  void setSelectedLine(final int selectedLine, final int lineCount) {
+  void setSelectedLine(
+    final int selectedLine, final int lineCount, final int total) {
     SwingUtilities.invokeLater(
       new Runnable() {
         public void run() {
-          lineSelectionLabel.setText(selectedLine + ":" + lineCount);
+          lineSelectionLabel.setText(
+            selectedLine + ":" + lineCount + ":" + total);
         }
       });
   }
