@@ -283,6 +283,34 @@ public class LogPanel extends DockablePanel implements SettingsListener,
         }
       });
 
+
+	preferenceModel.addPropertyChangeListener("visibleColumns", new PropertyChangeListener(){
+
+		public void propertyChange(PropertyChangeEvent evt) {
+			TableColumnModel columnModel = table.getColumnModel();
+			for (int i = 0; i < columnModel.getColumnCount(); i++) {
+				TableColumn column = columnModel.getColumn(i);
+				if(!preferenceModel.isColumnVisible(column.getHeaderValue().toString())){
+					columnModel.removeColumn(column);
+				}
+			}
+			Set columnSet = new HashSet();
+			Enumeration enumeration = columnModel.getColumns();
+			while (enumeration.hasMoreElements()) {
+				TableColumn column = (TableColumn) enumeration.nextElement();
+				columnSet.add(column.getHeaderValue());
+			}			
+			for (Iterator iter = ChainsawColumns.getColumnsNames().iterator(); iter.hasNext();) {
+				String column = (String) iter.next();
+				if(preferenceModel.isColumnVisible(column) && !columnSet.contains(column)){
+					TableColumn newCol = new TableColumn(ChainsawColumns.getColumnsNames().indexOf(column));
+					newCol.setHeaderValue(column);
+					columnModel.addColumn(newCol);
+				}
+			}
+			
+		}});
+
     /**
              * We listen for new Key's coming in so we can get them automatically added as columns
             */
@@ -1052,14 +1080,14 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     //          colorFilter.clear();
     //        }
     //      });
-    JMenuItem menuItemColumnSelector =
-      new JMenuItem("Select display columns...");
-    menuItemColumnSelector.addActionListener(
-      new ActionListener() {
-        public void actionPerformed(ActionEvent evt) {
-          columnSelector.show();
-        }
-      });
+//    JMenuItem menuItemColumnSelector =
+//      new JMenuItem("Select display columns...");
+//    menuItemColumnSelector.addActionListener(
+//      new ActionListener() {
+//        public void actionPerformed(ActionEvent evt) {
+//          columnSelector.show();
+//        }
+//      });
 
     JMenuItem menuItemRemoveDisplayFilter =
       new JMenuItem("Remove all display filters");
@@ -1133,20 +1161,21 @@ public class LogPanel extends DockablePanel implements SettingsListener,
 
     //	p.add(new JSeparator());
     //    p.add(menuDefineCustomFilter);
+	p.add(new JSeparator());
     p.add(menuItemLogPanelPreferences);
 
     //    p.add(menuColumnDisplayFilter);
     //    p.add(menuColumnColorFilter);
-    p.add(new JSeparator());
+//    p.add(new JSeparator());
 
     //    JMenu removeSubMenu = new JMenu("Remove");
-    JMenu selectSubMenu = new JMenu("Select");
+//    JMenu selectSubMenu = new JMenu("Select");
 
-    selectSubMenu.add(menuItemColumnSelector);
+//    selectSubMenu.add(menuItemColumnSelector);
 
     //    removeSubMenu.add(menuItemRemoveColorFilter);
     //    removeSubMenu.add(menuItemRemoveDisplayFilter);
-    p.add(menuItemColumnSelector);
+//    p.add(menuItemColumnSelector);
 
     //    p.add(selectSubMenu);
     //    p.add(removeSubMenu);
