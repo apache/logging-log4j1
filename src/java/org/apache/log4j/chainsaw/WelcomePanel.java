@@ -77,9 +77,8 @@ import javax.swing.event.HyperlinkListener;
 
 
 /**
- * An initial Welcome Panel that is used when Chainsaw starts up, displays
- * a HTML page that should be located in the current Classloaders classpath
- * providing some useful tips on startup.
+ * An initial Welcome Panel that is used when Chainsaw starts up, can displays
+ * a HTML pages based on URLs.
  *
  * @author Paul Smith
  * @author Scott Deboy <sdeboy@apache.org>
@@ -88,9 +87,6 @@ public class WelcomePanel extends JPanel {
   private Stack urlStack = new Stack();
   private final JEditorPane textInfo = new JEditorPane();
   private final URLToolbar urlToolbar = new URLToolbar();
-  private final URL helpURL;
-  private final URL exampleConfigURL;
-  private final URL tutorialURL;
   private LogUI logui;
 
   public WelcomePanel(LogUI logui) {
@@ -99,17 +95,7 @@ public class WelcomePanel extends JPanel {
     setBackground(Color.white);
     add(urlToolbar, BorderLayout.NORTH);
 
-    helpURL =
-      getClass().getClassLoader().getResource(
-        "org/apache/log4j/chainsaw/WelcomePanel.html");
-
-    exampleConfigURL =
-      getClass().getClassLoader().getResource(
-        "org/apache/log4j/chainsaw/log4j-receiver-sample.xml");
-
-    tutorialURL =
-      getClass().getClassLoader().getResource(
-        "org/apache/log4j/chainsaw/help/tutorial.html");
+	URL helpURL = ChainsawConstants.WELCOME_URL;
 
     if (helpURL != null) {
       textInfo.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
@@ -162,7 +148,7 @@ public class WelcomePanel extends JPanel {
    * @return
    */
   public final URL getTutorialURL() {
-    return tutorialURL;
+    return ChainsawConstants.TUTORIAL_URL;
   }
 
   private class URLToolbar extends JToolBar {
@@ -180,7 +166,7 @@ public class WelcomePanel extends JPanel {
     private final Action homeAction =
       new AbstractAction(null, new ImageIcon(ChainsawIcons.ICON_HOME)) {
         public void actionPerformed(ActionEvent e) {
-          setURL(helpURL);
+          setURL(ChainsawConstants.WELCOME_URL);
           urlStack.clear();
         }
       };
@@ -213,7 +199,7 @@ public class WelcomePanel extends JPanel {
       final Action exampleConfigAction =
         new AbstractAction("View example Receiver configuration") {
           public void actionPerformed(ActionEvent e) {
-            setURL(exampleConfigURL);
+            setURL(ChainsawConstants.EXAMLE_CONFIG_URL);
           }
         };
 
