@@ -183,8 +183,7 @@ import javax.swing.table.TableModel;
  * @author Paul Smith <psmith@apache.org>
  *
  */
-public class LogUI extends JFrame implements ChainsawViewer, SettingsListener,
-  EventBatchListener {
+public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   private static final String CONFIG_FILE_TO_USE = "config.file";
   private static final String USE_CYCLIC_BUFFER_PROP_NAME =
     "chainsaw.usecyclicbuffer";
@@ -313,14 +312,14 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener,
     LogUI logUI = new LogUI();
 
     logUI.handler = new ChainsawAppenderHandler();
-    logUI.handler.addEventBatchListener(logUI);
+    logUI.handler.addEventBatchListener(logUI.new NewTabEventBatchReceiver());
     LogManager.getRootLogger().addAppender(logUI.handler);
     logUI.activateViewer();
   }
 
   public void activateViewer(ChainsawAppender appender) {
     handler = new ChainsawAppenderHandler(appender);
-    handler.addEventBatchListener(this);
+    handler.addEventBatchListener(new NewTabEventBatchReceiver());
     activateViewer();
   }
 
@@ -943,7 +942,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener,
     }
   }
 
-
   /**
    * Formats the individual elements of an LoggingEvent by ensuring that
    * there are no null bits, replacing them with EMPTY_STRING
@@ -1000,183 +998,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener,
     }
 
     return d;
-  }
-
-  /**
-   * Adds a specific row to a specific Tabbed Pane's TableModel.
-   *
-   * If there is currently no Tabbed Pane for the identifier, then a new
-   * one is created and added to this current Frames Tabbed Pane infrastructure
-   * @param ident
-   * @param v
-   */
-  public void receiveEventBatch(
-    final String ident, final List eventBatchEntrys) {
-    if (eventBatchEntrys.size() == 0) {
-      return;
-    }
-
-    EventContainer tableModel;
-    JSortTable table;
-    ScrollToBottom scrollToBottom;
-    HashMap map = null;
-
-    if (!isGUIFullyInitialized) {
-      synchronized (initializationLock) {
-        while (!isGUIFullyInitialized) {
-          System.out.println(
-            "Wanting to add a row, but GUI not initialized, waiting...");
-
-          /**
-           * Lets wait 1 seconds and recheck.
-           */
-          try {
-            initializationLock.wait(1000);
-          } catch (InterruptedException e) {
-          }
-        }
-      }
-    }
-
-    if (tableModelMap.containsKey(ident)) {
-      tableModel = (EventContainer) tableModelMap.get(ident);
-      map = (HashMap) entryMap.get(ident);
-      scrollToBottom = (ScrollToBottom) scrollMap.get(ident);
-      table = (JSortTable) tableMap.get(ident);
-    } else {
-      final String eventType =
-        ((ChainsawEventBatchEntry) eventBatchEntrys.get(0)).getEventType();
-
-      int bufferSize = 500;
-
-      //if buffer size not provided, set default buffer size to 500 (only used if usecyclicbuffer true)
-      if (System.getProperty(CYCLIC_BUFFER_SIZE_PROP_NAME) != null) {
-        bufferSize =
-          Integer.valueOf(System.getProperty(CYCLIC_BUFFER_SIZE_PROP_NAME))
-                 .intValue();
-      }
-
-      tableModel =
-        new ChainsawCyclicBufferTableModel(
-          Boolean.valueOf(System.getProperty(USE_CYCLIC_BUFFER_PROP_NAME))
-                 .booleanValue(), bufferSize);
-
-      map = new HashMap();
-      table = new JSortTable(tableModel);
-      table.getColumnModel().addColumnModelListener(
-        new ChainsawTableColumnModelListener(table));
-
-      table.setAutoCreateColumnsFromModel(false);
-
-      table.setRowHeight(20);
-      table.setShowGrid(false);
-
-      scrollToBottom = new ScrollToBottom(true);
-
-      final LogPanel thisPanel =
-        new LogPanel(ident, tableModel, table, scrollToBottom, map, eventType);
-
-      SwingUtilities.invokeLater(
-        new Runnable() {
-          public void run() {
-            tabbedPane.addANewTab(
-              ident, thisPanel, new ImageIcon(ChainsawIcons.TOOL_TIP));
-          }
-        });
-
-      sm.configure(thisPanel);
-
-      String msg = "added tab " + ident;
-      LogLog.debug(msg);
-      statusBar.setMessage(msg);
-    }
-
-    table.getSelectionModel().setValueIsAdjusting(true);
-
-    boolean rowAdded = false;
-    Vector lastSelected = null;
-
-    if (table.getSelectedRow() > -1) {
-      lastSelected = tableModel.getRow(table.getSelectedRow());
-    }
-
-    for (Iterator iter = eventBatchEntrys.iterator(); iter.hasNext();) {
-      ChainsawEventBatchEntry entry = (ChainsawEventBatchEntry) iter.next();
-      Vector v = formatFields(entry.getEventVector());
-      final String eventType = entry.getEventType();
-      String level =
-        v.get(
-          ChainsawColumns.getColumnsNames().indexOf(
-            ChainsawConstants.LEVEL_COL_NAME)).toString();
-
-      //add the level to the appropriate list if it didn't previously exist
-      if (!((List) levelMap.get(eventType)).contains(level)) {
-        ((List) levelMap.get(eventType)).add(level);
-      }
-
-      //also add it to the unique values list
-      ((Set) map.get(ChainsawConstants.LEVEL_COL_NAME)).add(level);
-
-      Object loggerName =
-        v.get(
-          ChainsawColumns.getColumnsNames().indexOf(
-            ChainsawConstants.LOGGER_COL_NAME));
-      ((Set) map.get(ChainsawConstants.LOGGER_COL_NAME)).add(loggerName);
-
-      /**
-       * EventContainer is a LoggerNameModel imp, use that for notifing
-       */
-      tableModel.addLoggerName(loggerName.toString());
-
-      ((Set) map.get(ChainsawConstants.THREAD_COL_NAME)).add(
-        v.get(
-          ChainsawColumns.getColumnsNames().indexOf(
-            ChainsawConstants.THREAD_COL_NAME)));
-      ((Set) map.get(ChainsawConstants.NDC_COL_NAME)).add(
-        v.get(
-          ChainsawColumns.getColumnsNames().indexOf(
-            ChainsawConstants.NDC_COL_NAME)));
-      ((Set) map.get(ChainsawConstants.MDC_COL_NAME)).add(
-        v.get(
-          ChainsawColumns.getColumnsNames().indexOf(
-            ChainsawConstants.MDC_COL_NAME)));
-      ((Set) map.get(ChainsawConstants.CLASS_COL_NAME)).add(
-        v.get(
-          ChainsawColumns.getColumnsNames().indexOf(
-            ChainsawConstants.CLASS_COL_NAME)));
-      ((Set) map.get(ChainsawConstants.METHOD_COL_NAME)).add(
-        v.get(
-          ChainsawColumns.getColumnsNames().indexOf(
-            ChainsawConstants.METHOD_COL_NAME)));
-      ((Set) map.get(ChainsawConstants.FILE_COL_NAME)).add(
-        v.get(
-          ChainsawColumns.getColumnsNames().indexOf(
-            ChainsawConstants.FILE_COL_NAME)));
-
-      boolean isCurrentRowAdded = tableModel.isAddRow(v, true);
-      rowAdded = rowAdded ? true : isCurrentRowAdded;
-      statusBar.receivedEvent();
-    }
-
-    table.getSelectionModel().setValueIsAdjusting(false);
-
-    //tell the model to notify the count listeners
-    tableModel.notifyCountListeners();
-
-    if (rowAdded) {
-      tableModel.sort();
-
-      if (scrollToBottom.isScrolled() && !scrollToBottom.isBypassed()) {
-        table.scrollToBottom(
-          table.columnAtPoint(table.getVisibleRect().getLocation()));
-      } else {
-        if (lastSelected != null) {
-          table.scrollToRow(
-            tableModel.getRowIndex(lastSelected),
-            table.columnAtPoint(table.getVisibleRect().getLocation()));
-        }
-      }
-    }
   }
 
   /**
@@ -1239,12 +1060,94 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener,
   }
 
   /**
+   * This class handles the recption of the Event batches
+   * and creates new LogPanels if the identifier is not in use
+   * otherwise it ignores the event batch.
+   * @author Paul Smith <psmith@apache.org>
+   *
+   */
+  private class NewTabEventBatchReceiver implements EventBatchListener {
+    public void receiveEventBatch(
+      final String ident, final List eventBatchEntrys) {
+      if (eventBatchEntrys.size() == 0) {
+        return;
+      }
+
+      EventContainer tableModel;
+      JSortTable table;
+      ScrollToBottom scrollToBottom;
+      HashMap map = null;
+
+      if (!isGUIFullyInitialized) {
+        synchronized (initializationLock) {
+          while (!isGUIFullyInitialized) {
+            System.out.println(
+              "Wanting to add a row, but GUI not initialized, waiting...");
+
+            /**
+             * Lets wait 1 seconds and recheck.
+             */
+            try {
+              initializationLock.wait(1000);
+            } catch (InterruptedException e) {
+            }
+          }
+        }
+      }
+
+      if (tableModelMap.containsKey(ident)) {
+        /**
+         * we ignore this since we assume the LogPanel has been registered itself a listener
+         * and will receive it's own event batches directly
+         */
+      } else {
+        final String eventType =
+          ((ChainsawEventBatchEntry) eventBatchEntrys.get(0)).getEventType();
+        final LogPanel thisPanel = new LogPanel(ident, eventType);
+
+        /**
+         * Let the new LogPanel receive this batch
+         */
+        thisPanel.receiveEventBatch(ident, eventBatchEntrys);
+
+        /**
+         * Now add the panel as a batch listener so it can handle it's own batchs
+         */
+        handler.addEventBatchListener(thisPanel);
+
+        SwingUtilities.invokeLater(
+          new Runnable() {
+            public void run() {
+              tabbedPane.addANewTab(
+                ident, thisPanel, new ImageIcon(ChainsawIcons.TOOL_TIP));
+            }
+          });
+
+        sm.configure(thisPanel);
+
+        String msg = "added tab " + ident;
+        LogLog.debug(msg);
+        statusBar.setMessage(msg);
+      }
+    }
+
+    /* (non-Javadoc)
+     * @see org.apache.log4j.chainsaw.EventBatchListener#getInterestedIdentifier()
+     */
+    public String getInterestedIdentifier() {
+      // we are interested in all batches so we can detect new identifiers
+      return null;
+    }
+  }
+
+  /**
    * LogPanel encapsulates all the necessary bits and pieces of a
    * floating window of Events coming from a specific Location.
    *
    * This is where most of the Swing components are constructed and laid out.
    */
-  class LogPanel extends DockablePanel implements SettingsListener {
+  class LogPanel extends DockablePanel implements SettingsListener,
+    EventBatchListener {
     final ColorFilter colorFilter = new ColorFilter();
     final DisplayFilter displayFilter;
     final EventContainer tableModel;
@@ -1281,19 +1184,43 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener,
     private final JSplitPane nameTreeAndMainPanelSplit;
     private final LoggerNameTreePanel logTreePanel;
 
-    public LogPanel(
-      final String ident, final EventContainer tableModel,
-      final JSortTable table, final ScrollToBottom scrollToBottom,
-      final Map map, String eventType) {
+    public LogPanel(final String ident, String eventType) {
       identifier = ident;
-      this.scrollToBottom = scrollToBottom;
-      this.tableModel = tableModel;
-      this.table = table;
 
+      Map map = new HashMap();
+      entryMap.put(ident, map);
+
+      int bufferSize = 500;
+
+      //if buffer size not provided, set default buffer size to 500 (only used if usecyclicbuffer true)
+      if (System.getProperty(CYCLIC_BUFFER_SIZE_PROP_NAME) != null) {
+        bufferSize =
+          Integer.valueOf(System.getProperty(CYCLIC_BUFFER_SIZE_PROP_NAME))
+                 .intValue();
+      }
+
+      tableModel =
+        new ChainsawCyclicBufferTableModel(
+          Boolean.valueOf(System.getProperty(USE_CYCLIC_BUFFER_PROP_NAME))
+                 .booleanValue(), bufferSize);
+
+      table = new JSortTable(tableModel);
+      table.getColumnModel().addColumnModelListener(
+        new ChainsawTableColumnModelListener(table));
+
+      table.setAutoCreateColumnsFromModel(false);
+
+      table.setRowHeight(20);
+      table.setShowGrid(false);
+
+      scrollToBottom = new ScrollToBottom(true);
+
+      // ==========================================
       tableModel.addLoggerNameListener(logTreeModel);
       logTreePanel = new LoggerNameTreePanel(logTreeModel);
 
       levelSet = new HashSet((List) levelMap.get(eventType));
+
       map.put(ChainsawConstants.LEVEL_COL_NAME, levelSet);
 
       map.put(ChainsawConstants.LOGGER_COL_NAME, loggerSet);
@@ -1906,7 +1833,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener,
       tableModelMap.put(ident, tableModel);
       tabbedPane.add(ident, this);
       panelMap.put(ident, this);
-      entryMap.put(ident, map);
 
       tableModel.addEventCountListener(
         new EventCountListener() {
@@ -2304,6 +2230,110 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener,
      */
     public boolean isLogTreePanelVisible() {
       return logTreePanel.isVisible();
+    }
+
+    /* (non-Javadoc)
+     * @see org.apache.log4j.chainsaw.EventBatchListener#getInterestedIdentifier()
+     */
+    public String getInterestedIdentifier() {
+      // TODO Auto-generated method stub
+      return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.apache.log4j.chainsaw.EventBatchListener#receiveEventBatch(java.lang.String, java.util.List)
+     */
+    public void receiveEventBatch(String identifier, List eventBatchEntrys) {
+      table.getSelectionModel().setValueIsAdjusting(true);
+
+      boolean rowAdded = false;
+      Vector lastSelected = null;
+
+      if (table.getSelectedRow() > -1) {
+        lastSelected = tableModel.getRow(table.getSelectedRow());
+      }
+
+      for (Iterator iter = eventBatchEntrys.iterator(); iter.hasNext();) {
+        ChainsawEventBatchEntry entry = (ChainsawEventBatchEntry) iter.next();
+
+        Vector v = formatFields(entry.getEventVector());
+
+        final String eventType = entry.getEventType();
+        String level =
+          v.get(
+            ChainsawColumns.getColumnsNames().indexOf(
+              ChainsawConstants.LEVEL_COL_NAME)).toString();
+
+        //add the level to the appropriate list if it didn't previously exist
+        if (!((List) levelMap.get(eventType)).contains(level)) {
+          ((List) levelMap.get(eventType)).add(level);
+        }
+
+        Map map = (HashMap) entryMap.get(getIdentifier());
+
+        //also add it to the unique values list
+        ((Set) map.get(ChainsawConstants.LEVEL_COL_NAME)).add(level);
+
+        Object loggerName =
+          v.get(
+            ChainsawColumns.getColumnsNames().indexOf(
+              ChainsawConstants.LOGGER_COL_NAME));
+        ((Set) map.get(ChainsawConstants.LOGGER_COL_NAME)).add(loggerName);
+
+        /**
+         * EventContainer is a LoggerNameModel imp, use that for notifing
+         */
+        tableModel.addLoggerName(loggerName.toString());
+
+        ((Set) map.get(ChainsawConstants.THREAD_COL_NAME)).add(
+          v.get(
+            ChainsawColumns.getColumnsNames().indexOf(
+              ChainsawConstants.THREAD_COL_NAME)));
+        ((Set) map.get(ChainsawConstants.NDC_COL_NAME)).add(
+          v.get(
+            ChainsawColumns.getColumnsNames().indexOf(
+              ChainsawConstants.NDC_COL_NAME)));
+        ((Set) map.get(ChainsawConstants.MDC_COL_NAME)).add(
+          v.get(
+            ChainsawColumns.getColumnsNames().indexOf(
+              ChainsawConstants.MDC_COL_NAME)));
+        ((Set) map.get(ChainsawConstants.CLASS_COL_NAME)).add(
+          v.get(
+            ChainsawColumns.getColumnsNames().indexOf(
+              ChainsawConstants.CLASS_COL_NAME)));
+        ((Set) map.get(ChainsawConstants.METHOD_COL_NAME)).add(
+          v.get(
+            ChainsawColumns.getColumnsNames().indexOf(
+              ChainsawConstants.METHOD_COL_NAME)));
+        ((Set) map.get(ChainsawConstants.FILE_COL_NAME)).add(
+          v.get(
+            ChainsawColumns.getColumnsNames().indexOf(
+              ChainsawConstants.FILE_COL_NAME)));
+
+        boolean isCurrentRowAdded = tableModel.isAddRow(v, true);
+        rowAdded = rowAdded ? true : isCurrentRowAdded;
+        statusBar.receivedEvent();
+      }
+
+      table.getSelectionModel().setValueIsAdjusting(false);
+
+      //tell the model to notify the count listeners
+      tableModel.notifyCountListeners();
+
+      if (rowAdded) {
+        tableModel.sort();
+
+        if (scrollToBottom.isScrolled() && !scrollToBottom.isBypassed()) {
+          table.scrollToBottom(
+            table.columnAtPoint(table.getVisibleRect().getLocation()));
+        } else {
+          if (lastSelected != null) {
+            table.scrollToRow(
+              tableModel.getRowIndex(lastSelected),
+              table.columnAtPoint(table.getVisibleRect().getLocation()));
+          }
+        }
+      }
     }
   }
 

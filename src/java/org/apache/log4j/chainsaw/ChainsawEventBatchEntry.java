@@ -55,6 +55,8 @@
  */
 package org.apache.log4j.chainsaw;
 
+import org.apache.log4j.spi.LoggingEvent;
+
 import java.util.Vector;
 
 
@@ -65,25 +67,52 @@ import java.util.Vector;
  */
 class ChainsawEventBatchEntry {
   private String eventType;
-  private Vector eventVector;
+
+  //  private Vector eventVector;
+  private LoggingEvent event;
   private String identifier;
 
-  ChainsawEventBatchEntry(
-    String identifier, String eventType, Vector eventVector) {
+  ChainsawEventBatchEntry(String identifier, String eventType, LoggingEvent e) {
     this.identifier = identifier;
     this.eventType = eventType;
-    this.eventVector = eventVector;
+    this.event = e;
   }
 
   String getEventType() {
     return eventType;
   }
 
+  /**
+   * @deprecated
+   * @return
+   */
   Vector getEventVector() {
-    return eventVector;
+    return ChainsawAppenderHandler.convert(getEvent());
+//    throw new UnsupportedOperationException(
+//      "Transistion to non Vector based model");
+
+    //    return eventVector;
+  }
+
+  public LoggingEvent getEvent() {
+    return event;
   }
 
   public String getIdentifier() {
     return identifier;
+  }
+  
+  public String toString()
+  {
+      StringBuffer buffer = new StringBuffer(this.getClass().getName());
+      buffer.append("[");
+      buffer.append("ident=").append(getIdentifier());
+      buffer.append(",");
+      buffer.append("eventType=").append(getEventType());
+      buffer.append(",");
+      buffer.append("event=").append(getEvent());
+      buffer.append("]");
+      
+        return buffer.toString();
   }
 }
