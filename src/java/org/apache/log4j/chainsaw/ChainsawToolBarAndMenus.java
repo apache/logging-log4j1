@@ -282,7 +282,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
         new Runnable() {
           public void run() {
             responsiveSlider.setValue(responsiveness);
-            logui.tabbedPane.setTabPlacement(tabPlacement);
+            logui.getTabbedPane().setTabPlacement(tabPlacement);
             scanState();
           }
         });
@@ -303,7 +303,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
 
     event.saveSetting(
       ChainsawToolBarAndMenus.SETTING_TAB_PLACEMENT,
-      logui.tabbedPane.getTabPlacement());
+      logui.getTabbedPane().getTabPlacement());
 
     event.saveSetting(ChainsawConstants.LEVEL_DISPLAY, levelDisplay);
   }
@@ -333,7 +333,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
   }
 
   JToolBar createDockwindowToolbar(
-    final JFrame dockablePanel, final LogUI.LogPanel logPanel) {
+    final JFrame dockablePanel, final LogPanel logPanel) {
     final JToolBar toolbar = new JToolBar();
     toolbar.setFloatable(false);
 
@@ -498,7 +498,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     final Action action =
       new AbstractAction("Clear") {
         public void actionPerformed(ActionEvent e) {
-          LogUI.LogPanel logPanel = logui.getCurrentLogPanel();
+          LogPanel logPanel = logui.getCurrentLogPanel();
 
           if (logPanel == null) {
             return;
@@ -701,14 +701,14 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     tabsTop.addActionListener(
       new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          logui.tabbedPane.setTabPlacement(JTabbedPane.TOP);
+          logui.getTabbedPane().setTabPlacement(JTabbedPane.TOP);
         }
       });
 
     tabsBottom.addActionListener(
       new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          logui.tabbedPane.setTabPlacement(JTabbedPane.BOTTOM);
+          logui.getTabbedPane().setTabPlacement(JTabbedPane.BOTTOM);
         }
       });
 
@@ -789,7 +789,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     final Action pauseAction =
       new AbstractAction("Pause") {
         public void actionPerformed(ActionEvent evt) {
-          LogUI.LogPanel logPanel = logui.getCurrentLogPanel();
+          LogPanel logPanel = logui.getCurrentLogPanel();
 
           if (logPanel == null) {
             return;
@@ -868,7 +868,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     Action showPreferences =
       new AbstractAction("", ChainsawIcons.ICON_PREFERENCES) {
         public void actionPerformed(ActionEvent arg0) {
-          LogUI.LogPanel logPanel = logui.getCurrentLogPanel();
+          LogPanel logPanel = logui.getCurrentLogPanel();
 
           if (logPanel != null) {
             logPanel.showPreferences();
@@ -911,7 +911,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
         boolean enabled = true;
 
         public void actionPerformed(ActionEvent evt) {
-          LogUI.LogPanel logPanel = logui.getCurrentLogPanel();
+          LogPanel logPanel = logui.getCurrentLogPanel();
 
           if (logPanel == null) {
             return;
@@ -1063,7 +1063,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     Action action =
       new AbstractAction("Undock", ChainsawIcons.ICON_UNDOCK) {
         public void actionPerformed(ActionEvent arg0) {
-          LogUI.LogPanel logPanel = logui.getCurrentLogPanel();
+          LogPanel logPanel = logui.getCurrentLogPanel();
 
           if (logPanel != null) {
             logPanel.undock();
@@ -1080,7 +1080,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
   }
 
   private void find(boolean next) {
-    LogUI.LogPanel logPanel = logui.getCurrentLogPanel();
+    LogPanel logPanel = logui.getCurrentLogPanel();
 
     if (logPanel != null) {
       localFind(next, logPanel, findTextField);
@@ -1088,7 +1088,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
   }
 
   private void localFind(
-    boolean next, final LogUI.LogPanel logPanel,
+    boolean next, final LogPanel logPanel,
     final JTextField theFindTextField) {
     if (!theFindTextField.getText().equals("")) {
       if (
@@ -1110,7 +1110,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
   }
 
   private void scanState() {
-    switch (logui.tabbedPane.getTabPlacement()) {
+    switch (logui.getTabbedPane().getTabPlacement()) {
     case SwingConstants.TOP:
       tabsTop.setSelected(true);
 
@@ -1126,12 +1126,12 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     toggleShowReceiversCheck.setSelected(logui.isReceiverPanelVisible());
     logTreePaneButton.setSelected(logui.isLogTreePanelVisible());
     showReceiversButton.setSelected(logui.isReceiverPanelVisible());
-    menuItemClose.setSelected(logui.tabbedPane.containsWelcomePanel());
+    menuItemClose.setSelected(logui.getTabbedPane().containsWelcomePanel());
     /**
      * We get the currently selected LogPanel, and if null, deactivate some
      * actions
      */
-    LogUI.LogPanel logPanel = logui.getCurrentLogPanel();
+    LogPanel logPanel = logui.getCurrentLogPanel();
 
     boolean activateLogPanelActions = true;
 
