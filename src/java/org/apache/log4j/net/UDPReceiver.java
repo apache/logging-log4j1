@@ -169,7 +169,7 @@ public class UDPReceiver extends Receiver implements PortBased, Pauseable {
 
           while (iter.hasNext()) {
             String data = (String) iter.next();
-            List v = decoderImpl.decodeEvents(data);
+            List v = decoderImpl.decodeEvents(data.trim());
 
             if (v != null) {
               Iterator eventIter = v.iterator();
@@ -220,10 +220,10 @@ public class UDPReceiver extends Receiver implements PortBased, Pauseable {
           //null
           if (encoding == null) {
             handlerThread.append(
-              new String(p.getData(), 0, p.getLength()).trim());
+              new String(p.getData(), 0, p.getLength()));
           } else {
             handlerThread.append(
-              new String(p.getData(), 0, p.getLength(), encoding).trim());
+              new String(p.getData(), 0, p.getLength(), encoding));
           }
         } catch (SocketException se) {
           //disconnected
