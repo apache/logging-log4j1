@@ -76,28 +76,44 @@ import javax.swing.event.DocumentListener;
  * @author <a href="mailto:oliver@puppycrawl.com">Oliver Burn</a>
  */
 class ControlPanel extends JPanel {
-  /** Name of the preference set for the control panel */
+  /**
+   * Name of the preference set for the control panel
+   */
   public static final String PREF_SET_NAME = "filter";
 
-  /** Priority filter property */
+  /**
+   * Priority filter property
+   */
   public static final String PRIORITY_PROPERTY = "priority";
 
-  /** Thread filter property */
+  /**
+   * Thread filter property
+   */
   public static final String THREAD_PROPERTY = "thread";
 
-  /** Category filter property */
+  /**
+   * Category filter property
+   */
   public static final String CATEGORY_PROPERTY = "category";
 
-  /** NDC filter property */
+  /**
+   * NDC filter property
+   */
   public static final String NDC_PROPERTY = "ndc";
 
-  /** Message filter property */
+  /**
+   * Message filter property
+   */
   public static final String MESSAGE_PROPERTY = "message";
 
-  /** Save filters? property */
+  /**
+   * Save filters? property
+   */
   public static final String SAVE_PROPERTY = "save";
 
-  /** use the log messages **/
+  /**
+   * use the log messages
+   */
   private static final Category LOG = Category.getInstance(ControlPanel.class);
 
   /**
@@ -325,7 +341,9 @@ class ControlPanel extends JPanel {
     buttonPanel.add(exitButton);
   }
 
-  /** Convenience class that filters all document events to one method */
+  /**
+   * Convenience class that filters all document events to one method
+   */
   private abstract static class DocumentChangeListener
     implements DocumentListener {
     public abstract void update(DocumentEvent aEvent);
