@@ -33,14 +33,26 @@ public class LocationInfo implements java.io.Serializable {
      <code>NA</code> is returned. Current value of this string
      constant is <b>?</b>.  */
   public static final String NA = "?";
+  
   static final long serialVersionUID = -1325822038990805636L;
-
+  
+  private static boolean haveStackTraceElement = false;
+  
   /**
    * NA_LOCATION_INFO is used in conjunction with deserialized LoggingEvents 
    * without real location info available.
    * @since 1.3
    */
   public static LocationInfo NA_LOCATION_INFO = new LocationInfo(NA, NA, NA, NA);
+ 
+  static {
+    try {
+      Class.forName("java.lang.StackTraceElement");
+      haveStackTraceElement = true;
+    } catch ( Throwable e) {
+      // we are running on a JDK prior to 1.4
+    } 
+  }
   
   /**
      Caller's line number.
@@ -100,7 +112,12 @@ public class LocationInfo implements java.io.Serializable {
     if (t == null) {
       return;
     }
-    LegacyExtractor.extract(this, t, fqnOfCallingClass);  
+    
+    if(haveStackTraceElement) {
+      StackTraceElementExtractor.extract(this, t, fqnOfCallingClass);
+    } else {
+      LegacyExtractor.extract(this, t, fqnOfCallingClass);  
+    }
   }
 
   public boolean equals(Object o) {

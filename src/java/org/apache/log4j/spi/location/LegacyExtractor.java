@@ -67,9 +67,9 @@ public class LegacyExtractor {
     //System.out.println("s is ["+s+"].");
     int iend;
 
-    // Given the current structure of the package, the line
-    // containing "org.apache.log4j.Category." should be printed just
-    // before the caller.
+    // Given the current structure of log4j, the line 
+    // containing 'fqnOfCallingClass', usually "org.apache.log4j.Logger." 
+    // should be printed just before the caller.
     // This method of searching may not be fastest but it's safer
     // than counting the stack depth which is not guaranteed to be
     // constant across JVM implementations.
