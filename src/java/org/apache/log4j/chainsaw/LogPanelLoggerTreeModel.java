@@ -73,14 +73,8 @@ import javax.swing.tree.TreeNode;
  */
 class LogPanelLoggerTreeModel extends DefaultTreeModel
   implements LoggerNameListener {
-  private LogUI.LogPanel logPanel;
 
-  LogPanelLoggerTreeModel(LogUI.LogPanel logPanel) {
-    this();
-    this.logPanel = logPanel;
-  }
-
-  private LogPanelLoggerTreeModel() {
+  LogPanelLoggerTreeModel() {
     super(new DefaultMutableTreeNode("Root"));
   }
 
@@ -133,10 +127,21 @@ outerFor:    for (int i = 0; i < packages.length; i++) {
       DefaultMutableTreeNode newChild =
         new DefaultMutableTreeNode(packageName);
       current.add(newChild);
+      
+      final TreeNode changedNode = current;
+      final int[] changedIndices = new int[]{current.getIndex(newChild)};
+      SwingUtilities.invokeLater(new Runnable(){
+
+        public void run()
+        {
+          nodesWereInserted(changedNode, changedIndices);
+          
+        }});
       current = newChild;
     }
     
-    nodeStructureChanged((TreeNode) getRoot());
+    
+//    nodeStructureChanged((TreeNode) getRoot());
     
   }
 
