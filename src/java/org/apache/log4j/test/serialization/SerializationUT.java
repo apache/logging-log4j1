@@ -135,10 +135,6 @@ public class SerializationUT extends TestCase {
     byte[] buf = (byte[]) serMethod12a7.invoke(o12a7, new Object[] {inHt});
 
     Hashtable outHt = (Hashtable) deserMethod12a7.invoke(o12a7, new Object[] {buf});
-
-    System.out.println("witness"+witness);
-    System.out.println("outHt  "+outHt);
-
     assertEquals(witness, outHt);
   }
 
@@ -160,8 +156,6 @@ public class SerializationUT extends TestCase {
     witness.put("renderedMessage", "hello");
     byte[] buf = (byte[]) serMethod113.invoke(o113, new Object[] {inHt});
     Hashtable outHt = (Hashtable) deserMethod12a7.invoke(o12a7, new Object[] {buf});
-    //System.out.println("witness"+witness);
-    //System.out.println("outHt  "+outHt);
     assertEquals(witness, outHt);
   }
 
@@ -177,10 +171,13 @@ public class SerializationUT extends TestCase {
     inHt.put("categoryName", "a.b.c");
     inHt.put("priorityStr", "DEBUG");
     inHt.put("message", "hello");
-   
+    Exception e = new ComparableException("test4");
+    inHt.put("throwable", e);
+
     witness.put("categoryName", "a.b.c");
     witness.put("priorityStr", "DEBUG");
     witness.put("renderedMessage", "hello");
+    witness.put("throwable", e);
 
     byte[] buf = (byte[]) serMethod12a7.invoke(o12a7, new Object[] {inHt});
 
@@ -203,5 +200,28 @@ public class SerializationUT extends TestCase {
     suite.addTest(new SerializationUT("test4"));
     return suite;
   }   
+}
+
+class ComparableException extends Exception {
+
+  public ComparableException(String msg) {
+    super(msg);
+  }
+
+  public boolean equals(Object o) {
+    System.out.println("ComparableException.equals called.");
+    if(!(o instanceof ComparableException)) 
+      return false;
+
+    ComparableException r = (ComparableException) o;
+    
+    if(r.getMessage() == null) {
+      if(getMessage() != null)
+	return false;
+    } else if(!r.getMessage().equals(getMessage())) {
+      return false;
+    }
+    return true;
+  }
 }
 
