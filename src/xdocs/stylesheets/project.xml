@@ -40,8 +40,12 @@
         <item name="ECS"                   
 	      href="http://jakarta.apache.org/ecs/index.html"/>
 
+        <item name="James"                 
+	      href="/james/index.html"/>
+
         <item name="Log4J"                   
 	      href="http://jakarta.apache.org/log4j/index.html"/>
+
 
         <item name="ORO"                   
 	      href="http://jakarta.apache.org/oro/index.html"/>
