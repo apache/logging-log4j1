@@ -10,6 +10,9 @@ package org.apache.log4j.nt;
 import org.apache.log4j.*;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.Priority;
+import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.helpers.LogLog;
+
 import java.io.*;
 
 
@@ -27,6 +30,15 @@ import java.io.*;
    @author <a href="mailto:jim_cakalic@na.biomerieux.com">Jim Cakalic</a> */
 public class NTEventLogAppender extends AppenderSkeleton {
   private int _handle = 0;
+
+  /**
+     The string constant used in naming the source of the event. The
+     current value of this constant is <b>Source</b>.
+
+   */
+  public static final String SOURCE_OPTION = "Source";
+  private String source = null;
+  private String server = null;
 
   private static final int FATAL  = Priority.FATAL.toInt();
   private static final int ERROR  = Priority.ERROR.toInt();
@@ -76,6 +88,19 @@ public class NTEventLogAppender extends AppenderSkeleton {
   void close() {
     // unregister ...
   }
+
+  public
+  void activateOptions() {    
+    if (source != null) {
+      try {
+	_handle = registerEventSource(server, source);
+      } catch (Exception e) {
+	LogLog.error("Could not register event source.", e);
+	_handle = 0;
+      }
+    }
+  }
+
   
   public void append(LoggingEvent event) {
     // First, format the log string so we can send it to NT.
@@ -105,6 +130,29 @@ public class NTEventLogAppender extends AppenderSkeleton {
     deregisterEventSource(_handle);
     _handle = 0;
   }
+
+  /**
+     Retuns the option names for this component.
+   **/
+  public
+  String[] getOptionStrings() {
+    return OptionConverter.concatanateArrays(super.getOptionStrings(),
+          new String[] {SOURCE_OPTION});
+  }
+
+
+  public
+  void setOption(String key, String value) {
+    if(value == null) return;
+    super.setOption(key, value);
+    
+
+    if(key.equalsIgnoreCase(SOURCE_OPTION)) {
+      // Set the source for the NT Evetns
+      source = value.trim();
+    }
+  }
+
 
 /**
      The <code>NTEventLogAppender</code> requires a layout. Hence,
