@@ -61,9 +61,7 @@ public class Hierarchy {
   static final int DISABLE_OFF = -1;
   static final int DISABLE_OVERRIDE = -2;  
   
-  static 
-  private
-  CategoryFactory defaultFactory = new DefaultCategoryFactory();
+  private CategoryFactory defaultFactory;
 
 
   Hashtable ht;
@@ -89,6 +87,7 @@ public class Hierarchy {
     disable = DISABLE_OFF;
     this.root.setHierarchy(this);
     rendererMap = new RendererMap();
+	 defaultFactory = new DefaultCategoryFactory();
   }
 
   /**
@@ -404,6 +403,17 @@ public class Hierarchy {
       }
     }
     rendererMap.clear();
+  }
+
+  /**
+     Set the default CategoryFactory instance.
+
+     @since 1.1
+   */
+  public void setCategoryFactory(CategoryFactory factory)
+  {
+    if (factory != null)
+      defaultFactory = factory;
   }
 
   /**
