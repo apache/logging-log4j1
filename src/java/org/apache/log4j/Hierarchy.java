@@ -322,7 +322,7 @@ public class Hierarchy {
      and again to a nested appender.
      
 
-     @since 0.9.2 */
+     @since 1.0 */
   public 
   void shutdown() {
     Category root = getRoot();    

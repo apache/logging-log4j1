@@ -81,35 +81,46 @@ public class JMSAppender extends AppenderSkeleton {
  
   protected
   boolean checkEntryConditions() {
-    if(this.topicSession == null) {
-      errorHandler.error("No topic session for JMSAppender named ["+ 
-			name+"].");
+    String fail = null;
+
+    if(this.topicConnection == null) {
+      fail = "No TopicConnection";
+    } else if(this.topicSession == null) {
+      fail = "No TopicSession";
+    } else if(this.topicPublisher == null) {
+      fail = "No TopicPublisher";
+    } 
+
+    if(fail != null) {
+      errorHandler.error(fail +" for JMSAppender named ["+name+"].");      
       return false;
+    } else {
+      return true;
     }
-    
-    return true;
   }
 
 
   public 
+  synchronized // avoid concurrent append and close operations
   void close() {
     if(this.closed) 
       return;
 
     LogLog.debug("Closing appender ["+name+"].");
-    this.closed = true;
-    
-    
+    this.closed = true;    
+
     try {
-      if(topicPublisher != null) 
-	topicPublisher.close();    
       if(topicSession != null) 
-	topicSession.close();
+	topicSession.close();	
       if(topicConnection != null) 
 	topicConnection.close();
     } catch(Exception e) {
-      LogLog.error("Could not close ["+name+"].", e);	
-    }    
+      LogLog.error("Error while closing JMSAppender ["+name+"].", e);	
+    }   
+    // Help garbage collection
+    topicPublisher = null;
+    topicSession = null;
+    topicConnection = null;
   }
 
   public

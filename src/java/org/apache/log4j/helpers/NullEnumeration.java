@@ -16,7 +16,7 @@ import java.util.NoSuchElementException;
   An always-empty Enumerator.
 
   @author Anders Kristensen
-  @since version 0.9.2
+  @since version 1.0
  */
 public class NullEnumeration implements Enumeration {
   private static final NullEnumeration instance = new NullEnumeration();

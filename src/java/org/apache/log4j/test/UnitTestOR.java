@@ -32,7 +32,7 @@ import java.io.Serializable;
 /**
    Unit test the {@link ObjectRenderer}.
    @author Ceki G&uuml;lc&uuml;
-   @since 0.9.2 */
+   @since 1.0 */
 public class UnitTestOR extends TestCase {
 
   static UTObjectRenderer oor;

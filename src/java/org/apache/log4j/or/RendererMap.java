@@ -13,7 +13,7 @@ import java.util.Hashtable;
    Map class objects to an {@link ObjectRenderer}.
 
    @author Ceki G&uuml;lc&uuml;
-   @since version 0.9.2 */
+   @since version 1.0 */
 public class RendererMap {
 
   Hashtable map;
