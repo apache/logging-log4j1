@@ -1,5 +1,5 @@
 
-package org.apache.log4j.examples;
+package examples;
 
 
 import org.apache.log4j.Category;
@@ -8,15 +8,14 @@ import org.apache.log4j.NDC;
 
 /**
    View the <a href="doc-files/Trivial.java">source code</a> of this a
-   trivial usage example. Running <code>java
-   org.apache.log4j.examples.Trivial</code> should output something
-   similar to:
+   trivial usage example. Running <code>java examples.Trivial</code>
+   should output something similar to:
 
    <pre>
-      0    INFO  [main] org.apache.log4j.examples.Trivial (Client #45890) - Awake awake. Put on thy strength.
-      15   DEBUG [main] org.apache.log4j.examples.Trivial (Client #45890 DB) - Now king David was old.
-      278  INFO  [main] org.apache.log4j.examples.Trivial$InnerTrivial (Client #45890) - Entered foo.
-      293  INFO  [main] org.apache.log4j.examples.Trivial (Client #45890) - Exiting Trivial.   
+      0    INFO  [main] examples.Trivial (Client #45890) - Awake awake. Put on thy strength.
+      15   DEBUG [main] examples.Trivial (Client #45890 DB) - Now king David was old.
+      278  INFO  [main] examples.Trivial$InnerTrivial (Client #45890) - Entered foo.
+      293  INFO  [main] examples.Trivial (Client #45890) - Exiting Trivial.   
    </pre>
    
    <p> The increasing numbers at the beginning of each line are the
