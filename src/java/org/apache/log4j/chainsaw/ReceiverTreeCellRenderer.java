@@ -90,7 +90,8 @@ public class ReceiverTreeCellRenderer extends DefaultTreeCellRenderer {
     DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
     Object o = node.getUserObject();
     setText(o.toString());
-
+    String tooltip = "";
+    
     /**
      * Deal with Text
      */
@@ -110,12 +111,15 @@ public class ReceiverTreeCellRenderer extends DefaultTreeCellRenderer {
       }
 
       buf.append(" ").append("(")
-         .append(networkBased.isActive() ? "running" : "inactive").append(")");
+         .append(networkBased.isActive() ? "active" : "inactive").append(")");
 
       setText(buf.toString());
     } else if (
       o == ((ReceiversTreeModel) tree.getModel()).getRootNode().getUserObject()) {
       setText(o.toString());
+    } else if (o instanceof String) {
+      setText(o.toString());
+      setIcon(null);
     } else {
       setText("(Unknown Type) :: " + o);
     }
@@ -129,8 +133,15 @@ public class ReceiverTreeCellRenderer extends DefaultTreeCellRenderer {
       if (networkBased.isActive()) {
         if ((o instanceof Pauseable) && !((Pauseable) o).isPaused()) {
           setIcon(activeReceiverIcon);
-        } else {
+          tooltip +="This item is active, and can be paused";
+        } 
+        else if ((o instanceof Pauseable) && ((Pauseable) o).isPaused()) {
           setIcon(inactiveReceiverIcon);
+          tooltip += "This item is paused, and can be resumed";
+        }
+        else {
+          setIcon(null);
+          tooltip += " This item cannot be Paused/Resumed";
         }
       } else {
       }
@@ -138,7 +149,7 @@ public class ReceiverTreeCellRenderer extends DefaultTreeCellRenderer {
       o == ((ReceiversTreeModel) tree.getModel()).getRootNode().getUserObject()) {
       setIcon(rootIcon);
     }
-
+    setToolTipText(tooltip);
     return this;
   }
 }
