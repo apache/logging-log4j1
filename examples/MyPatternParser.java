@@ -3,9 +3,9 @@
  *
  * This software is published under the terms of the Apache Software
  * License version 1.1, a copy of which has been included with this
- * distribution in the LICENSE.APL file.  */
+ * distribution in the LICENSE.txt file.  */
 
-package org.apache.log4j.examples;
+package examples;
 
 import org.apache.log4j.*;
 import org.apache.log4j.helpers.FormattingInfo;

@@ -155,7 +155,7 @@
 
   <target name="build.examples" depends="build.core">
     <mkdir dir="${javac.dest}" />
-    <javac srcdir="${java.source.dir}"
+    <javac srcdir="${basedir}"
 	   destdir="${javac.dest}"
 	   includes="examples/**/*.java"
 	   classpath="${classpath}"
@@ -237,7 +237,12 @@
  <!-- Create log4j.jar, excluding tests and other odds and ends.        -->
  <!-- ================================================================= -->
   <target name="log4j.jar" depends="prejar">
-    <delete file="${jar.dest}/${jar.filename}"/>
+    <delete>
+      <fileset dir="${jar.dest}"> 
+	<include name="*.jar"/>
+      </fileset>
+    </delete>
+
     <jar jarfile="${jar.dest}/${jar.filename}" basedir="${javac.dest}"
 	includes="${stem}/*.class, ${stem}/xml/log4j.dtd, 
 		  ${stem}/config/*.class,
@@ -269,7 +274,6 @@
       destdir="${javadoc.dest}" 
 	   packagenames="org.apache.log4j,
 			 org.apache.log4j.config,
-			 org.apache.log4j.examples,
                          org.apache.log4j.helpers,
 		         org.apache.log4j.jmx,
 		         org.apache.log4j.net,
@@ -344,6 +348,7 @@
        <fileset dir="${base}"
                 includes="src/java/**, 
 			  docs/**, 
+	                  examples/**, 
 			  build/*,
 	                  build.bat, build.sh,
 	                  build.xml,
@@ -362,8 +367,10 @@
                 excludes="make/make.loc, 
 		          **/*.bak, **/goEnv.bat,
 		          **/Makefile, **/goEnv.bat,
-	                  src/docbook/docbkx412/**,
-	                  src/docbook/docbook-xsl-1.45/**,
+	                  docs/pub-support/*,
+	                  src/java/org/apache/log4j/test/serialization/T/*.jar,
+	                  src/java/org/apache/log4j/test/serialization/T/compile,
+	                  src/java/org/apache/log4j/test/serialization/**/*.class,
 	                  src/java/org/apache/log4j/examples/appserver/*,
 			  dist/classes/org/apache/log4j/examples/appserver/*.class, 
 			  **/.#*"/>

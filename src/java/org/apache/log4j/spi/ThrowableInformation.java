@@ -22,8 +22,6 @@ public class ThrowableInformation implements java.io.Serializable {
   private transient Throwable throwable;
   private String[] rep;
   
-  static private VectorWriter vw = new VectorWriter();
-  
   public
   ThrowableInformation(Throwable throwable) {
     this.throwable = throwable;
@@ -39,6 +37,7 @@ public class ThrowableInformation implements java.io.Serializable {
     if(rep != null) {
       return (String[]) rep.clone();
     } else {
+      VectorWriter vw = new VectorWriter();
       throwable.printStackTrace(vw);
       rep = vw.toStringArray();
       vw.clear();

@@ -5,12 +5,21 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
 
- ??, 2001
+ ??, 2002
  
  - Release of version 1.2 (ALPHA)
 
+ (alpha7)
+
  - The src/java/org/apache/log4j/examples/ directory moved under the
    top-level directory as examples/. [*]
+
+ - Fixed the ArrayIndexOutOfBoundsException that was thrown by
+   AsyncAppender if multiple threads were trying to log an event
+   containing an exception near simultaneously. Thanks to Thomas Tuft Muller
+   for reporting this bug. [*]
+
+ (alpha1-alpha6)
 
  - Improved error reporting in DOMConfigurator. Thanks to Thomas Tuft
    Muller for contributing the enhancement. [*]

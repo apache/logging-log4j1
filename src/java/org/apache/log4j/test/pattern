@@ -180,7 +180,7 @@ if [ $TEST -ge $start ]; then
   lecho "log4j.appender.testAppender=org.apache.log4j.FileAppender"
   lecho "log4j.appender.testAppender.File=       $TEMP   "
   lecho "log4j.appender.testAppender.Append=false"
-  lecho "log4j.appender.testAppender.layout=org.apache.log4j.examples.MyPatternLayout"
+  lecho "log4j.appender.testAppender.layout=examples.MyPatternLayout"
   lecho "log4j.appender.testAppender.layout.ConversionPattern=%5p %-4# - %m%n" 
   testPattern NONE
 fi
