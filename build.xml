@@ -202,6 +202,7 @@
               ${stem}/net/SMTPAppender.java,
                     ${stem}/net/JMS*.java,
                     ${stem}/jmx/*.java,
+                    ${stem}/chainsaw/*.java,
                     ${stem}/varia/Log4JAvalonLogger.java,
                     ${stem}/or/jms/*.java"
         deprecation="${deprecation}"
@@ -285,6 +286,17 @@
      includes="${stem}/jmx/*.java"
            excludes="${stem}/jmx/T.java">
       <classpath refid="compile.classpath"/>
+    </javac>
+  </target>
+
+ <target name="build.chainsaw" depends="init, check-for-oro, build.core">
+    <javac deprecation="${deprecation}"
+           srcdir="${java.source.dir}"
+     destdir="${javac.dest}"
+     includes="${stem}/chainsaw/**/*.java"
+           excludes="">
+      <classpath refid="compile.classpath"/>
+      <classpath path="${regexp.oro.jar}"/>
     </javac>
   </target>
 
@@ -390,7 +402,7 @@
     <fail unless="external.libraries.oro.present" message="Chainsaw v2 needs Jakarta ORO, and it appears your are missing the Jakarta ORO package.  Please check the build.properties file."/>
   </target>
   
-  <target name="chainsaw" depends="build, jar, check-for-oro" description="Builds and runs Chainsaw v2">
+  <target name="chainsaw" depends="build.chainsaw, jar" description="Builds and runs Chainsaw v2">
     <!-- Need to fork to avoid problems -->
     <java classname="org.apache.log4j.chainsaw.LogUI" fork="yes"
           classpath="${jar.dest}/${log4j.jar};${jar.dest}/${log4j-chainsaw.jar};${ant.home}/lib/crimson.jar;${regexp.oro.jar}">
