@@ -3,13 +3,13 @@
 
 <configuration configDebug="true">
 
-	<appender name="ASYNC" class="org.log4j.AsyncAppender">
+	<appender name="ASYNC" class="org.apache.log4j.AsyncAppender">
 	        <appender-ref ref="TEMP"/>
 	</appender>
 
-	<appender name="TEMP" class="org.log4j.FileAppender">
+	<appender name="TEMP" class="org.apache.log4j.FileAppender">
 		<param name="File" value="temp"/>
-		<layout class="org.log4j.PatternLayout">
+		<layout class="org.apache.log4j.2PatternLayout">
   		     <param name="ConversionPattern" 
                             value="%d %-5p [%t] %C{2} (%F:%L) - %m\n"/>
 		</layout>

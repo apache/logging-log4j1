@@ -147,7 +147,7 @@ void addRegistryInfo(char *source) {
 }
 
 /*
- * Class:     org_log4j_nt_NTEventLogAppender
+ * Class:     org.apache.log4j.nt.NTEventLogAppender
  * Method:    registerEventSource
  * Signature: (Ljava/lang/String;Ljava/lang/String;)I
  */
@@ -208,7 +208,7 @@ JNIEXPORT void JNICALL Java_org_apache_log4j_nt_NTEventLogAppender_reportEvent(
 }
 
 /*
- * Class:     org_log4j_nt_NTEventLogAppender
+ * Class:     org_apache_log4j_nt_NTEventLogAppender
  * Method:    deregisterEventSource
  * Signature: (I)V
  */

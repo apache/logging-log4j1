@@ -39,7 +39,7 @@ function multiRun() {
   while [ $i -lt $loopLength ]
   do
     i=$i+1
-    x=$(java $D org.log4j.performance.Logging  $lcf $runLength $5)
+    x=$(java $D org.apache.log4j.performance.Logging  $lcf $runLength $5)
     if [ $x -lt 100 ]; then
       echo -n " "
     fi  
@@ -307,7 +307,7 @@ fi
 # ===============================================================
 TEST=1000
 if [ $TEST -ge $start ]; then
-   java org.log4j.performance.Logging xml/logging$TEST.xml 10000 100 100
+   java org.apache.log4j.performance.Logging xml/logging$TEST.xml 10000 100 100
    #multiRun 4 "SocketAppender" $SHORTRUN $DELAY
 fi
 
