@@ -66,13 +66,20 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -80,15 +87,19 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.JTree;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -570,6 +581,9 @@ class ReceiversPanel extends JPanel {
       Class[] receivers =
         new Class[] { SocketReceiver.class, UDPReceiver.class };
 
+      final Map dialogMap = new HashMap();
+      dialogMap.put(SocketReceiver.class, new ReceiverPanel(SocketReceiver.class, "Socket Receiver", "SocketReceiver"));
+
       for (int i = 0; i < receivers.length; i++) {
         final Class toCreate = receivers[i];
         Package thePackage = toCreate.getPackage();
@@ -578,10 +592,17 @@ class ReceiversPanel extends JPanel {
         add(
           new AbstractAction("New " + name + "...") {
             public void actionPerformed(ActionEvent e) {
-              JOptionPane.showMessageDialog(
-                logui,
-                "You wanted a " + name
-                + " but this is not finished yet, sorry.");
+              if (dialogMap.containsKey(toCreate)) {
+                JDialog dialog = (JDialog) dialogMap.get(toCreate);
+                dialog.pack();
+                dialog.setLocationRelativeTo(logui);
+                dialog.show();
+              } else {
+                JOptionPane.showMessageDialog(
+                  logui,
+                  "You wanted a " + name
+                  + " but this is not finished yet, sorry.");
+              }
             }
           });
       }
@@ -678,15 +699,15 @@ class ReceiversPanel extends JPanel {
       container.add(new ThresholdSlider());
       dialog.setResizable(false);
       dialog.pack();
-      
 
-      Action setThresholdAction = new AbstractAction("Set Threshold..."){
+      Action setThresholdAction =
+        new AbstractAction("Set Threshold...") {
+          public void actionPerformed(ActionEvent e) {
+            dialog.setLocationRelativeTo(receiversTree);
+            dialog.show();
+          }
+        };
 
-        public void actionPerformed(ActionEvent e) {
-          dialog.setLocationRelativeTo(receiversTree);
-          dialog.show();    
-        }};
-      
       add(setThresholdAction);
     }
   }
@@ -726,6 +747,142 @@ class ReceiversPanel extends JPanel {
         x + xOffSet, y + yOffSet, x + size + xOffSet, y + size + yOffSet);
       g2D.drawLine(
         x + xOffSet, y + size + yOffSet, x + size + xOffSet, y + yOffSet);
+    }
+  }
+
+  private class ReceiverPanel extends JDialog {
+    final OkCancelPanel okCancelPanel = new OkCancelPanel();
+
+    private ReceiverPanel(Class receiver, String bundleName, String name) {
+      super(logui, "Create new " + name, true);
+
+      getContentPane().setLayout(new GridBagLayout());
+
+      GridBagConstraints c = new GridBagConstraints();
+
+      Container container = getContentPane();
+      ResourceBundle resourceBundle = ResourceBundle.getBundle("org/apache/log4j/chainsaw/Details_" + name);
+      
+//      TODO put the text about Socket Receiver in a Resource Bundle
+      JLabel infoLabel = new JLabel(resourceBundle.getString("Details"));
+
+      infoLabel.setOpaque(true);
+      infoLabel.setForeground(Color.black);
+      infoLabel.setBackground(Color.white);
+      infoLabel.setVerticalTextPosition(JLabel.TOP);
+      infoLabel.setVerticalAlignment(JLabel.TOP);
+      infoLabel.setPreferredSize(new Dimension(320, 240));
+
+      c.fill = GridBagConstraints.BOTH;
+      c.anchor = GridBagConstraints.NORTHWEST;
+      c.weighty = 0.7;
+      c.gridx = 0;
+      c.gridy = 0;
+      c.weightx = 1.0;
+      c.gridwidth = 2;
+
+      Box lineBox = Box.createHorizontalBox();
+      lineBox.setBorder(BorderFactory.createLineBorder(Color.gray));
+
+      container.add(infoLabel, c);
+
+      c.gridy++;
+      c.weighty = 0.3;
+      c.fill = GridBagConstraints.HORIZONTAL;
+      container.add(lineBox, c);
+
+      JLabel portNumber = new JLabel("Port Number:");
+
+      JTextField portNumberEntry = new JTextField(5);
+      portNumber.setLabelFor(portNumberEntry);
+
+      c.gridwidth = 1;
+      c.gridx = 0;
+      c.weightx = 0.25;
+      c.gridy++;
+      c.insets = new Insets(10, 5, 10, 5);
+      c.anchor = GridBagConstraints.WEST;
+
+      container.add(portNumber, c);
+      c.gridx++;
+      c.weightx = 0.65;
+      container.add(portNumberEntry, c);
+
+      Box lineBox3 = Box.createHorizontalBox();
+      lineBox3.setBorder(BorderFactory.createLineBorder(Color.gray));
+
+      c.gridx = 0;
+      c.gridwidth = 2;
+      c.weighty = 0;
+      c.gridy++;
+      c.insets = new Insets(0, 0, 0, 0);
+      container.add(lineBox3, c);
+
+      c.gridwidth = 2;
+      c.gridx = 0;
+      c.weighty = 0.0;
+      c.gridy++;
+      c.anchor = GridBagConstraints.SOUTH;
+      c.fill = GridBagConstraints.BOTH;
+      container.add(okCancelPanel, c);
+
+      Action closeAction =
+        new AbstractAction("Cancel") {
+          public void actionPerformed(ActionEvent e) {
+            hide();
+          }
+        };
+
+      okCancelPanel.setCancelAction(closeAction);
+
+      Action okAction =
+        new AbstractAction("Ok") {
+          public void actionPerformed(ActionEvent e) {
+            hide();
+          }
+        };
+
+      okAction.setEnabled(false);
+      okCancelPanel.setOkAction(okAction);
+
+      getRootPane().registerKeyboardAction(
+        closeAction, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
+        JComponent.WHEN_IN_FOCUSED_WINDOW);
+    }
+  }
+
+  private static class OkCancelPanel extends JPanel {
+    final JButton okButton = new JButton("Ok");
+    final JButton cancelButton = new JButton("Cancel");
+
+    OkCancelPanel() {
+      setLayout(new GridBagLayout());
+
+      cancelButton.setDefaultCapable(true);
+      
+      GridBagConstraints c = new GridBagConstraints();
+
+      c.fill = GridBagConstraints.HORIZONTAL;
+      c.weightx = 1.0;
+
+      add(Box.createHorizontalGlue(), c);
+
+      c.insets = new Insets(5, 5, 5, 5);
+      c.weightx = 0.0;
+      c.fill = GridBagConstraints.NONE;
+      c.anchor = GridBagConstraints.SOUTHEAST;
+
+      add(okButton, c);
+      add(cancelButton, c);
+      add(Box.createHorizontalStrut(6));
+    }
+
+    void setCancelAction(Action a) {
+      cancelButton.setAction(a);
+    }
+
+    void setOkAction(Action a) {
+      okButton.setAction(a);
     }
   }
 }
