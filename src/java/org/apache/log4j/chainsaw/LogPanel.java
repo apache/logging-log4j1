@@ -2124,7 +2124,7 @@ public class LogPanel extends DockablePanel implements Profileable,
         }
     }
 
-    class ScrollToBottom extends Thread {
+    class ScrollToBottom  {
         boolean scrollToBottom;
         boolean bypassed;
 
