@@ -248,9 +248,8 @@ public class NDC {
     int size = v.size();
     for(int i = 0; i < size; i++) {
       Thread t = (Thread) v.elementAt(i);
-      System.out.println("Lazy NDC removal for thread [" + t.getName() + "] ("
-			 + ht.size() + ").");
-
+      LogLog.debug("Lazy NDC removal for thread [" + t.getName() + "] ("+ 
+		   ht.size() + ").");
       ht.remove(t);
     }
   }

@@ -8,6 +8,7 @@
 package org.apache.log4j;
 
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.helpers.OptionConverter;
 import java.io.StringWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
@@ -20,6 +21,18 @@ public class HTMLLayout extends Layout {
 
   // output buffer appended to when format() is invoked
   private StringBuffer sbuf = new StringBuffer(BUF_SIZE);
+
+  /**
+     A string constant used in naming the option for setting the the
+     location information flag.  Current value of this string
+     constant is <b>LocationInfo</b>.  
+
+     <p>Note that all option keys are case sensitive.
+  */
+  public static final String LOCATION_INFO_OPTION = "LocationInfo";
+
+  // Print no location info by default
+  boolean locationInfo = false;
 
   public
   void activateOptions() {
@@ -44,8 +57,15 @@ public class HTMLLayout extends Layout {
     sbuf.append(event.getThreadName());
     sbuf.append("</td>\r\n");
 
+
     sbuf.append("<td>");
-    sbuf.append(event.priority);
+    if(event.priority.isGreaterOrEqual(Priority.WARN)) {
+      sbuf.append("<font color=\"#FF0000\">");
+      sbuf.append(event.priority);      
+      sbuf.append("</font>");
+    } else {
+      sbuf.append(event.priority);      
+    }
     sbuf.append("</td>\r\n");
 
     sbuf.append("<td>");
@@ -56,6 +76,15 @@ public class HTMLLayout extends Layout {
     sbuf.append(event.getNDC());
     sbuf.append("</td>\r\n");
 
+    if(locationInfo) {
+      event.setLocationInformation();
+      sbuf.append("<td>");
+      sbuf.append(event.locationInfo.getFileName());
+      sbuf.append(':');
+      sbuf.append(event.locationInfo.getLineNumber());
+      sbuf.append("</td>\r\n");
+    }
+
 
     sbuf.append("<td>");
     sbuf.append(event.message);
@@ -65,7 +94,7 @@ public class HTMLLayout extends Layout {
     sbuf.append("</tr>");
 
     if(event.throwable != null) {
-      sbuf.append("\r\n<tr><td colspan=\"6\">");
+      sbuf.append("\r\n<tr><td colspan=\"7\">");
       sbuf.append(getThrowableAsHTML(event.throwable));
       sbuf.append("</td></tr>");
     }
@@ -90,10 +119,16 @@ public class HTMLLayout extends Layout {
   */
   public
   String getHeader() {
-    return "<html><body>\r\n"+
-      "<table border=\"1\" cellpadding=\"2\">\r\n<tr>\r\n"+
-      "<th>Time</th><th>Thread</th><th>Priority</th><th>Category</th>"+
-      "<th>NDC</th><th>Message</th></tr>";
+    StringBuffer sbuf = new StringBuffer();
+    sbuf.append("<html><body>\r\n");
+    sbuf.append("<table border=\"1\" cellpadding=\"2\">\r\n<tr>\r\n");
+    sbuf.append("<th>Time</th><th>Thread</th><th>Priority</th><th>Category</th>");
+    sbuf.append("<th>NDC</th>");
+    if(locationInfo) {
+      sbuf.append("<th>File:Line</th>");
+    }
+    sbuf.append("<th>Message</th></tr>");
+    return sbuf.toString();
   }
 
   /**
@@ -107,7 +142,7 @@ public class HTMLLayout extends Layout {
 
   public
   String[] getOptionStrings() {
-    return new String[0];
+    return new String[] {LOCATION_INFO_OPTION};
   }
 
   String getThrowableAsHTML(Throwable throwable) {
@@ -127,10 +162,33 @@ public class HTMLLayout extends Layout {
     return false;
   }
 
+  /**
+     Set HTMLLayout specific options.
+
+     <p>The <b>LocationInfo</b> option takes a boolean value. By
+     default, it is set to false which means there will be no location
+     information output by this layoout. If the the option is set to
+     true, then the file name and line number of the statement
+     at the origin of the log statement will be output. 
+
+     <p>If you are embedding this layout within an {@link
+     org.apache.log4j.net.SMTPAppender} then make sure to set the
+     <b>LocationInfo</b> option of that appender as well.
+     
+   */
   public
   void setOption(String key, String value) {
+    if(value == null) return;
+
+    if (key.equals(LOCATION_INFO_OPTION)) {
+      locationInfo = OptionConverter.toBoolean(value, locationInfo);
+    }
   }
 
+
+  /**
+     Format exceptions in HTML aware way.
+   */
   static class HTMLPrintWriter extends PrintWriter {
     
     static String TRACE_PREFIX = "<br>&nbsp;&nbsp;&nbsp;&nbsp;";
@@ -140,13 +198,18 @@ public class HTMLLayout extends Layout {
       super(writer);
     }
 
+    /**
+       Some JDKs use prinln(char[])
+     */
     public
     void println(char[] c) {
       write(TRACE_PREFIX);
       this.write(c);
     }
 
-  
+    /**
+       Yet others use println(String). Go figure.
+    */    
     public
     void println(String s) {
       write(TRACE_PREFIX);
