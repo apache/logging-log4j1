@@ -191,7 +191,7 @@ public class SMTPAppender extends AppenderSkeleton {
     event.getThreadName();
     event.getNDC();
     if(locationInfo) {
-      event.setLocationInformation();	
+      event.getLocationInformation();	
     }
     cb.add(event);    
     if(evaluator.isTriggeringEvent(event)) {

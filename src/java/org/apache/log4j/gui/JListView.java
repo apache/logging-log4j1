@@ -180,13 +180,21 @@ public class JListView extends JList {
     int RUN = 1000;
     int i = 0;
     while(i++ < RUN) {      
-      LoggingEvent event = new LoggingEvent("x", cat, Priority.ERROR, 
-					    "Message "+i, null);
-      event.getThreadName();
-      if(i % 10 == 0) {
-	event.throwable = new Exception("hello "+i);
+      LoggingEvent event0 = new LoggingEvent("x", cat, Priority.ERROR, 
+					     "Message "+i, null);
+      
+      Throwable t = new Exception("hello "+i);
+      LoggingEvent event1 = new LoggingEvent("x", cat, Priority.ERROR, 
+					     "Message "+i, t);
+      
+
+      if(i % 10 == 0) {	
+	event1.getThreadName();
+	view.add(event1);
+      } else {
+	event0.getThreadName();
+	view.add(event0);
       }
-      view.add(event);
     }
 
     long after = System.currentTimeMillis();
@@ -336,7 +344,7 @@ class AddAction implements ActionListener {
 
 	  event.getThreadName();    
 	  if(counter % 50 == 0) {
-	    event.throwable = new Exception("hello "+counter);
+	    //event.throwable = new Exception("hello "+counter);
 	  }
 	  counter++;
 	  view.add(event);

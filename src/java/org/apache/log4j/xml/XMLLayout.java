@@ -9,6 +9,7 @@ package org.apache.log4j.xml;
 
 import org.apache.log4j.Layout;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.helpers.DateLayout;
 
@@ -110,15 +111,15 @@ public class XMLLayout extends Layout {
        }
 
        if(locationInfo) { 
-	 event.setLocationInformation();	
+	 LocationInfo locationInfo = event.getLocationInformation();	
 	 buf.append("<log4j:locationInfo class=\"");
-	 buf.append(event.locationInfo.getClassName());
+	 buf.append(locationInfo.getClassName());
 	 buf.append("\" method=\"");
-	 buf.append(event.locationInfo.getMethodName());
+	 buf.append(locationInfo.getMethodName());
 	 buf.append("\" file=\"");
-	 buf.append(event.locationInfo.getFileName());
+	 buf.append(locationInfo.getFileName());
 	 buf.append("\" line=\"");
-	 buf.append(event.locationInfo.getLineNumber());
+	 buf.append(locationInfo.getLineNumber());
 	 buf.append("\"/>\r\n");
        }
 

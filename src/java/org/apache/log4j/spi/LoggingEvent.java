@@ -44,30 +44,30 @@ public class LoggingEvent implements java.io.Serializable {
 
 
   /** Fully qualified name of the calling category class. */
-  transient public String fqnOfCategoryClass;
+  transient public final String fqnOfCategoryClass;
 
   /** The category name. */
   public String categoryName;
   
   /** Priority of logging event. Priority cannot be serializable
-      because it is a flyweight.
-  */
+      because it is a flyweight.  Due to its special seralization it
+      cannot be declated final either. */
   transient public Priority priority;
 
   /** The nested diagnostic context (NDC) of logging event. */
-  public String ndc;
+  private String ndc;
 
   /** Have we tried to do an NDC lookup? If we did, there is no need
       to do it again.  Note that its value is always false when
       serialized. Thus, a receiving SocketNode will never use it's own
       (incorrect) NDC. See also writeObject method. */
-  public boolean ndcLookupRequired = true;
+  private boolean ndcLookupRequired = true;
 
 
   /** The application supplied message of logging event. */
-  public String message;
+  public final String message;
   /** The name of thread in which this logging event was generated. */
-  public String threadName;
+  private String threadName;
 
   /** The throwable associated with this logging event.
 
@@ -75,7 +75,7 @@ public class LoggingEvent implements java.io.Serializable {
       serializable. More importantly, the stack information does not
       survive serialization.
   */
-  transient public Throwable throwable;
+  transient public final Throwable throwable;
 
   /** This variable collects the info on a throwable. This variable
       will be shipped to 
@@ -85,9 +85,9 @@ public class LoggingEvent implements java.io.Serializable {
 
   /** The number of milliseconds elapsed from 1/1/1970 until logging event
       was created. */
-  public long timeStamp;
+  public final long timeStamp;
   /** Location information for the caller. */
-  public LocationInfo locationInfo;
+  private LocationInfo locationInfo;
 
   // Damn serialization
   static final long serialVersionUID = -868428216207166145L;
@@ -95,7 +95,7 @@ public class LoggingEvent implements java.io.Serializable {
   static final Integer[] PARAM_ARRAY = new Integer[1];
   static final String TO_PRIORITY = "toPriority";
   static final Class[] TO_PRIORITY_PARAMS = new Class[] {int.class};
-  static final Hashtable methodCache = new Hashtable(3);
+  static final Hashtable methodCache = new Hashtable(3); // use a tiny table
 
   /**
      Instantiate a LoggingEvent from the supplied parameters.
@@ -134,6 +134,8 @@ public class LoggingEvent implements java.io.Serializable {
     }
     return ndc; 
   }
+
+  
 
   public
   String getThreadName() {
@@ -190,6 +192,9 @@ public class LoggingEvent implements java.io.Serializable {
     if(clazz == Priority.class) {
       oos.writeObject(null);
     } else {
+      // writing the Class would be nicer, except that serialized
+      // classed can not be read back by JDK 1.1.x. We have to resort
+      // to this hack instead.
       oos.writeObject(clazz.getName());
     }
   }
@@ -237,9 +242,10 @@ public class LoggingEvent implements java.io.Serializable {
      information is cached for future use.
    */
   public
-  void setLocationInformation() {
+  LocationInfo getLocationInformation() {
     if(locationInfo == null) {
       locationInfo = new LocationInfo(new Throwable(), fqnOfCategoryClass);
     }
+    return locationInfo;
   }
 }

@@ -105,7 +105,7 @@ public class JTableAppender extends JTable {
 					    "Message "+i, null);
       event.getThreadName();
       if(i % 10 == 0) {
-	event.throwable = new Exception("hello "+i);
+	//event.throwable = new Exception("hello "+i);
       }
       appender.add(event);
     }
@@ -219,7 +219,7 @@ class JTableAddAction implements ActionListener {
 					    "Message "+j, null);
     
     if(j % 5 == 0) {
-      event.throwable = new Exception("hello "+j);
+      //event.throwable = new Exception("hello "+j);
     }
     j++;
     appender.add(event);

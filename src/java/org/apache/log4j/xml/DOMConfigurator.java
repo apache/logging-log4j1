@@ -85,6 +85,8 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
   // key: appenderName, value: appender
   Hashtable appenderBag;
 
+  Properties props;
+
   /**
      No argument constructor.
   */
@@ -98,7 +100,8 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
    */
   protected
   Appender findAppenderByReference(Element appenderRef) {    
-    String appenderName = appenderRef.getAttribute(REF_ATTR);
+    String appenderName = subst(appenderRef.getAttribute(REF_ATTR));
+
     Appender appender = (Appender) appenderBag.get(appenderName);
     if(appender != null) {
       return appender;
@@ -138,13 +141,13 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
    */
   protected
   Appender parseAppender (Element appenderElement) {
-    String className = appenderElement.getAttribute(CLASS_ATTR);
+    String className = subst(appenderElement.getAttribute(CLASS_ATTR));
     LogLog.debug("Class name: [" + className+']');    
     try {
       Object instance 	= Class.forName(className).newInstance();
       Appender appender	= (Appender)instance;
 
-      appender.setName(appenderElement.getAttribute(NAME_ATTR));
+      appender.setName(subst(appenderElement.getAttribute(NAME_ATTR)));
       
       NodeList children	= appenderElement.getChildNodes();
       final int length 	= children.getLength();
@@ -174,7 +177,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
 	    parseErrorHandler(currentElement, appender);
 	  }
 	  else if (currentElement.getTagName().equals(APPENDER_REF_TAG)) {
-	    String refName = currentElement.getAttribute(REF_ATTR);
+	    String refName = subst(currentElement.getAttribute(REF_ATTR));
 	    if(appender instanceof AppenderAttachable) {
 	      AppenderAttachable aa = (AppenderAttachable) appender;
 	      LogLog.debug("Attaching appender named ["+ refName+
@@ -208,7 +211,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
   protected
   void parseErrorHandler(Element element, Appender appender) {
     ErrorHandler eh = (ErrorHandler) OptionConverter.instantiateByClassName(
-                                       element.getAttribute(CLASS_ATTR),
+                                       subst(element.getAttribute(CLASS_ATTR)),
                                        org.apache.log4j.spi.ErrorHandler.class, 
  				       null);
     if(eh != null) {
@@ -234,8 +237,8 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
    */
   protected
   void parseParameters(Element elem, OptionHandler oh) {
-    String name = elem.getAttribute(NAME_ATTR);
-    String value = elem.getAttribute(VALUE_ATTR);
+    String name = subst(elem.getAttribute(NAME_ATTR));
+    String value = subst(elem.getAttribute(VALUE_ATTR));
     LogLog.debug("Handling parameter \""+name+ "="+value+'\"');	   
     if(oh instanceof OptionHandler && value != null) {
       oh.setOption(name, OptionConverter.convertSpecialChars(value));
@@ -247,7 +250,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
    */
   protected
   void parseFilters(Element element, Appender appender) {
-    String clazz = element.getAttribute(CLASS_ATTR);
+    String clazz = subst(element.getAttribute(CLASS_ATTR));
     Filter filter = (Filter) OptionConverter.instantiateByClassName(clazz,
                                                 Filter.class, null);
     
@@ -275,11 +278,11 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
   protected
   void parseCategory (Element categoryElement, Hierarchy hierarchy) {
     // Create a new org.apache.log4j.Category object from the <category> element.
-    String catName = categoryElement.getAttribute(NAME_ATTR);
+    String catName = subst(categoryElement.getAttribute(NAME_ATTR));
 
     Category cat;    
 
-    String className = categoryElement.getAttribute(CLASS_ATTR);
+    String className = subst(categoryElement.getAttribute(CLASS_ATTR));
 
 
     if(EMPTY_STR.equals(className)) {
@@ -305,7 +308,8 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
     // configuration is in progress.
     synchronized(cat) {
       boolean additivity = OptionConverter.toBoolean(
-                           categoryElement.getAttribute(ADDITIVITY_ATTR), true);
+                           subst(categoryElement.getAttribute(ADDITIVITY_ATTR)),
+			   true);
     
       LogLog.debug("Setting ["+cat.getName()+"] additivity to ["+additivity+"].");
       cat.setAdditivity(additivity);
@@ -352,7 +356,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
 	if (tagName.equals(APPENDER_REF_TAG)) {
 	  Element appenderRef = (Element) currentNode;
 	  Appender appender = findAppenderByReference(appenderRef);
-	  String refName =  appenderRef.getAttribute(REF_ATTR);
+	  String refName =  subst(appenderRef.getAttribute(REF_ATTR));
 	  if(appender != null)
 	    LogLog.debug("Adding appender named ["+ refName+ 
 			 "] to category ["+cat.getName()+"].");
@@ -379,7 +383,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
   */  
   protected
   Layout parseLayout (Element layout_element) {
-    String className = layout_element.getAttribute(CLASS_ATTR);
+    String className = subst(layout_element.getAttribute(CLASS_ATTR));
     LogLog.debug("Parsing layout of class: \""+className+"\"");		 
     try {
       Object instance 	= Class.forName(className).newInstance();
@@ -412,8 +416,8 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
 
   protected 
   void parseRenderer(Element element, Hierarchy hierarchy) {
-    String renderingClass = element.getAttribute(RENDERING_CLASS_ATTR);
-    String renderedClass = element.getAttribute(RENDERED_CLASS_ATTR);
+    String renderingClass = subst(element.getAttribute(RENDERING_CLASS_ATTR));
+    String renderedClass = subst(element.getAttribute(RENDERED_CLASS_ATTR));
     addRenderer(hierarchy, renderedClass, renderingClass);
   }
 
@@ -427,7 +431,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
       catName = "root";
     }
 
-    String priStr = element.getAttribute(VALUE_ATTR);
+    String priStr = subst(element.getAttribute(VALUE_ATTR));
     LogLog.debug("Priority value for "+catName+" is  ["+priStr+"].");
     
     if(BasicConfigurator.INHERITED.equals(priStr)) {
@@ -438,7 +442,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
       }
     }
     else {
-      String className = element.getAttribute(CLASS_ATTR);      
+      String className = subst(element.getAttribute(CLASS_ATTR));      
       if(EMPTY_STR.equals(className)) {      
 	
 	cat.setPriority(Priority.toPriority(priStr));
@@ -599,7 +603,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
       return;
     }
 
-    String confDebug = element.getAttribute(CONFIG_DEBUG_ATTR);
+    String confDebug = subst(element.getAttribute(CONFIG_DEBUG_ATTR));
     LogLog.debug("configDebug attribute= \"" + confDebug +"\".");
     // if the log4j.dtd is not specified in the XML file, then the
     // configDebug attribute is returned as the empty string when it
@@ -610,7 +614,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
     else 
       LogLog.debug("Ignoring " + CONFIG_DEBUG_ATTR + " attribute.");
       
-    String override = element.getAttribute(SCFO_ATTR);
+    String override = subst(element.getAttribute(SCFO_ATTR));
     LogLog.debug("Disable override=\"" + override +"\".");
     // if the log4j.dtd is not specified in the XML file, then the
     // SCFO_ATTR attribute is returned as the empty string when it
@@ -643,6 +647,16 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
 	  parseRenderer(currentElement, hierarchy);
 	}
       }
+    }
+  }
+  
+  protected
+  String subst(String value) {
+    try {
+      return OptionConverter.substVars(value, props);
+    } catch(IllegalArgumentException e) {
+      LogLog.warn("Could not perform variable substitution.", e);
+      return value;
     }
   }
 }

@@ -8,6 +8,7 @@
 package org.apache.log4j;
 
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.helpers.OptionConverter;
 import java.io.StringWriter;
 import java.io.PrintWriter;
@@ -77,11 +78,11 @@ public class HTMLLayout extends Layout {
     sbuf.append("</td>\r\n");
 
     if(locationInfo) {
-      event.setLocationInformation();
+      LocationInfo locInfo = event.getLocationInformation();
       sbuf.append("<td>");
-      sbuf.append(event.locationInfo.getFileName());
+      sbuf.append(locInfo.getFileName());
       sbuf.append(':');
-      sbuf.append(event.locationInfo.getLineNumber());
+      sbuf.append(locInfo.getLineNumber());
       sbuf.append("</td>\r\n");
     }
 
@@ -93,9 +94,10 @@ public class HTMLLayout extends Layout {
 
     sbuf.append("</tr>");
 
-    if(event.throwable != null) {
+    Throwable t = event.throwable; // JVM is a stack machine
+    if(t != null) {
       sbuf.append("\r\n<tr><td colspan=\"7\">");
-      sbuf.append(getThrowableAsHTML(event.throwable));
+      sbuf.append(getThrowableAsHTML(t));
       sbuf.append("</td></tr>");
     }
 
