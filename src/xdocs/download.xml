@@ -11,7 +11,7 @@
 	
       <section name="log4j version 1.2.8">
 	<p>Log4j is <a
-	      href="http://jakarta.apache.org/site/binindex.cgi"><b>available
+	      href="http://logging.apache.org/site/binindex.cgi"><b>available
 	      for download</b></a> from a number of mirrors. Please
 	      use these mirrors as they improve download time and save
 	      bandwidth.
@@ -372,7 +372,7 @@
       
       
       <p>If you would like your software to be listed here, then send a note to the <a
-	  href="mailto:log4j-user@jakarta.apache.org">log4j-user@jakarta.apache.org</a>
+	  href="mailto:log4j-user@logging.apache.org">log4j-user@jakarta.apache.org</a>
 	list.</p>
       
     </section>
