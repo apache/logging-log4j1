@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2005 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,8 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.util.Compare;
+
+import java.io.File;
 
 
 /**
@@ -111,7 +113,11 @@ public class SizeBasedRollingTest extends TestCase {
       }
     }
 
-    // The File.length() method is not accurate under Windows    
+    assertTrue(new File("output/sizeBased-test2.log").exists());
+    assertTrue(new File("output/sizeBased-test2.0").exists());
+    assertTrue(new File("output/sizeBased-test2.1").exists());
+
+    // The File.length() method is not accurate under Windows
 
      if(!isWindows()) {
 
@@ -155,6 +161,10 @@ public class SizeBasedRollingTest extends TestCase {
        }
      }
 
+    assertTrue(new File("output/sbr-test3.log").exists());
+    assertTrue(new File("output/sbr-test3.0.gz").exists());
+    assertTrue(new File("output/sbr-test3.1.gz").exists());
+
      if(!isWindows()) {
 
       assertTrue(Compare.compare("output/sbr-test3.log",  "witness/rolling/sbr-test3.log"));
@@ -169,13 +179,16 @@ public class SizeBasedRollingTest extends TestCase {
     return System.getProperty("os.name").indexOf("Windows") != -1;
   }
 
+    /**
+     * Build test suite using this class and ObsoleteRollingFileAppenderTest.
+     *
+     * @deprecated Marked deprecated since suite contains tests of deprecated classes
+     * @return test suite.
+     */
   public static Test suite() {
     TestSuite suite = new TestSuite();
-
-    suite.addTest(new SizeBasedRollingTest("test1"));
-    suite.addTest(new SizeBasedRollingTest("test2"));
-    suite.addTest(new SizeBasedRollingTest("test3"));
-
+    suite.addTestSuite(SizeBasedRollingTest.class);
+    suite.addTestSuite(ObsoleteRollingFileAppenderTest.class);
     return suite;
   }
 }

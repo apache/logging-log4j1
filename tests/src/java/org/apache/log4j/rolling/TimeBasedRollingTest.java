@@ -475,19 +475,17 @@ public class TimeBasedRollingTest extends TestCase {
     }
   }
 
-  public static Test DISABLEDsuite() {
+  /**
+   * Build test suite using this class and ObsoleteDailyRollingFileAppenderTest.
+   *
+   * @deprecated Marked deprecated since suite contains tests of deprecated classes
+   * @return test suite.
+   */
+  public static Test suite() {
     TestSuite suite = new TestSuite();
+    suite.addTestSuite(TimeBasedRollingTest.class);
+    suite.addTestSuite(ObsoleteDailyRollingFileAppenderTest.class);
 
-    suite.addTest(new TimeBasedRollingTest("test1"));
-//    suite.addTest(new TimeBasedRollingTest("test2"));
-//    suite.addTest(new TimeBasedRollingTest("test3"));
-//    suite.addTest(new TimeBasedRollingTest("test4"));
-//
-//    suite.addTest(new TimeBasedRollingTest("test5"));
-//    suite.addTest(new TimeBasedRollingTest("test6"));
-//    suite.addTest(new TimeBasedRollingTest("testWithJoran1"));
-//    suite.addTest(new TimeBasedRollingTest("testWithJoran10"));
-    
     return suite;
   }
 }

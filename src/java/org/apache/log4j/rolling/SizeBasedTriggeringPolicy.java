@@ -30,6 +30,14 @@ import org.apache.log4j.spi.LoggingEvent;
 public class SizeBasedTriggeringPolicy implements TriggeringPolicy {
   long maxFileSize = 10 * 1024 * 1024; // let 10 MB the default max size
 
+  public SizeBasedTriggeringPolicy() {
+  }
+
+  public SizeBasedTriggeringPolicy(final long maxFileSize) {
+      this.maxFileSize = maxFileSize;
+  }
+
+
   public boolean isTriggeringEvent(final File file, final LoggingEvent event) {
     //System.out.println("Size"+file.length());
     return (file.length() >= maxFileSize);
