@@ -1,12 +1,12 @@
 /*
  * Copyright 1999,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,10 +15,6 @@
  */
 
 package org.apache.log4j.helpers;
-
-import java.lang.IllegalAccessException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 import java.net.URL;
 
@@ -67,10 +63,11 @@ public class Loader {
      <ol>
 
      <p><li>Search for <code>resource</code> using the thread context
-     class loader under Java2. If that fails, search for
-     <code>resource</code> using the class loader that loaded this
-     class (<code>Loader</code>). Under JDK 1.1, only the the class
-     loader that loaded this class (<code>Loader</code>) is used.
+     class loader under Java2. This step is performed only if the <code>
+     skipTCL</code> parameter is false.</li>
+
+     <p><li>If the aboved step failed, search for <code>resource</code> using
+     the class loader that loaded this class (<code>Loader</code>).</li>
 
      <p><li>Try one last time with
      <code>ClassLoader.getSystemResource(resource)</code>, that is is
@@ -84,18 +81,16 @@ public class Loader {
     URL url = null;
 
     try {
-      if (!java1) {
-        classLoader = getTCL();
+      classLoader = getTCL();
 
-        if (classLoader != null) {
-          LogLog.debug(
-            "Trying to find [" + resource + "] using context classloader "
-            + classLoader + ".");
-          url = classLoader.getResource(resource);
+      if (classLoader != null) {
+        LogLog.debug(
+          "Trying to find [" + resource + "] using context classloader "
+          + classLoader + ".");
+        url = classLoader.getResource(resource);
 
-          if (url != null) {
-            return url;
-          }
+        if (url != null) {
+          return url;
         }
       }
 
@@ -141,19 +136,8 @@ public class Loader {
     * returns <code>null<code>.
     *
     *  */
-  private static ClassLoader getTCL()
-    throws IllegalAccessException, InvocationTargetException {
-    // Are we running on a JDK 1.2 or later system?
-    Method method = null;
-
-    try {
-      method = Thread.class.getMethod("getContextClassLoader", null);
-    } catch (NoSuchMethodException e) {
-      // We are running on JDK 1.1
-      return null;
-    }
-
-    return (ClassLoader) method.invoke(Thread.currentThread(), null);
+  private static ClassLoader getTCL() {
+    return Thread.currentThread().getContextClassLoader();
   }
 
   /**
