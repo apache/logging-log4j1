@@ -45,7 +45,7 @@ import java.util.Enumeration;
 public class LogManager {
   private static Object guard = null;
   private static RepositorySelector repositorySelector;
-  private static Scheduler schedulerInstance = null;
+  //private static Scheduler schedulerInstance = null;
 
   /**
    * The default LoggerRepository instance created by LogManager. This instance
@@ -243,11 +243,11 @@ public class LogManager {
    * 
    * @since 1.3
    */
-  public static Scheduler getSchedulerInstance() {
-    if(schedulerInstance == null) {
-      schedulerInstance = new Scheduler();
-      schedulerInstance.start();
-    }
-    return schedulerInstance;
-  }
+//  public static Scheduler getSchedulerInstance() {
+//    if(schedulerInstance == null) {
+//      schedulerInstance = new Scheduler();
+//      schedulerInstance.start();
+//    }
+//    return schedulerInstance;
+//  }
 }

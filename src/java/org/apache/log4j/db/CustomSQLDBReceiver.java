@@ -24,7 +24,6 @@ import java.util.Hashtable;
 import java.util.StringTokenizer;
 
 import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.plugins.Pauseable;
 import org.apache.log4j.plugins.Receiver;
@@ -161,21 +160,26 @@ public class CustomSQLDBReceiver extends Receiver implements Pauseable {
     private Job customReceiverJob;
 
     public void activateOptions() {
-        if (connectionSource != null) {
-            customReceiverJob = new CustomReceiverJob();
+      
+      if(connectionSource == null)  {
+        throw new IllegalStateException(
+          "CustomSQLDBReceiver cannot function without a connection source");
+      }
+    
+      customReceiverJob = new CustomReceiverJob();
+        
+      if(this.repository == null) {
+        throw new IllegalStateException(
+        "CustomSQLDBReceiver cannot function without a reference to its owning repository");
+      }
+     
+    
+      
+      Scheduler scheduler = this.repository.getScheduler();
+      
+      scheduler.schedule(
+          customReceiverJob, System.currentTimeMillis() + 500, refreshMillis);
 
-            Scheduler scheduler = LogManager.getSchedulerInstance();
-            if (refreshMillis > 0) {
-                scheduler.schedule(customReceiverJob, System
-                        .currentTimeMillis() + 500, refreshMillis);
-            } else {
-                scheduler.schedule(customReceiverJob, System
-                        .currentTimeMillis() + 500);
-            }
-        } else {
-            throw new IllegalStateException(
-                    "CustomSQLDBReceiver cannot function without a connection source");
-        }
     }
 
     void closeConnection(Connection connection) {
@@ -236,8 +240,11 @@ public class CustomSQLDBReceiver extends Receiver implements Pauseable {
     public void shutdown() {
         getLogger().info("removing receiverJob from the Scheduler.");
 
-        Scheduler scheduler = LogManager.getSchedulerInstance();
-        scheduler.delete(customReceiverJob);
+        if(this.repository != null) {
+          Scheduler scheduler = repository.getScheduler();
+          scheduler.delete(customReceiverJob);
+        }
+
         lastID = -1;
     }
 

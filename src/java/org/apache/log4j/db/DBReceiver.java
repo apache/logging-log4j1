@@ -16,10 +16,10 @@
 
 package org.apache.log4j.db;
 
-import org.apache.log4j.LogManager;
 import org.apache.log4j.plugins.Pauseable;
 import org.apache.log4j.plugins.Receiver;
 import org.apache.log4j.scheduler.Scheduler;
+import org.apache.log4j.spi.LoggerRepository;
 
 /**
  *
@@ -37,19 +37,28 @@ public class DBReceiver extends Receiver implements Pauseable {
   int refreshMillis = DEFAULT_REFRESH_MILLIS;
   DBReceiverJob receiverJob;
   boolean paused = false;
+  private static final LoggerRepository Hierarchy = null;
 
   public void activateOptions() {
-    if (connectionSource != null) {
-      receiverJob = new DBReceiverJob(this);
-      receiverJob.setLoggerRepository(repository);
-      
-      Scheduler scheduler = LogManager.getSchedulerInstance();
-      scheduler.schedule(
-        receiverJob, System.currentTimeMillis() + 500, refreshMillis);
-    } else {
+    
+    if(connectionSource == null)  {
       throw new IllegalStateException(
         "DBAppender cannot function without a connection source");
     }
+  
+    receiverJob = new DBReceiverJob(this);
+    receiverJob.setLoggerRepository(repository);
+      
+    if(this.repository == null) {
+      throw new IllegalStateException(
+      "DBAppender cannot function without a reference to its owning repository");
+    }
+
+    Scheduler scheduler = this.repository.getScheduler();
+    
+    scheduler.schedule(
+        receiverJob, System.currentTimeMillis() + 500, refreshMillis);
+   
   }
 
   public void setRefreshMillis(int refreshMillis) {
@@ -83,8 +92,10 @@ public class DBReceiver extends Receiver implements Pauseable {
   public void shutdown() {
     getLogger().info("removing receiverJob from the Scheduler.");
 
-    Scheduler scheduler = LogManager.getSchedulerInstance();
-    scheduler.delete(receiverJob);
+    if(this.repository != null) {
+      Scheduler scheduler = repository.getScheduler();
+      scheduler.delete(receiverJob);
+    }
   }
 
 
