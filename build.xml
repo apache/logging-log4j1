@@ -225,8 +225,8 @@
     	            **/UnitTest*.java,
                     **/StressCategory.java,
                     **/doc-files/*,
-			        ${stem}/chainsaw/**,
-			    	${stem}/db/**,
+                    ${stem}/chainsaw/**,
+                    ${stem}/db/**,
                     ${stem}/xml/**,
                     ${stem}/test/serialization/**,
                     ${stem}/net/SMTPAppender.java,
@@ -266,7 +266,8 @@
      includes="**/*.java"
      excludes="**/jmx/*.java"
      deprecation="${deprecation}"
-           debug="${debug}">
+     debug="${debug}"
+     >
       <classpath refid="compile.classpath"/>
     </javac>
 
@@ -289,53 +290,53 @@
   </target>
 
   <target name="build.javamail" depends="init, javamail"
-                if="javamail-present">
+          if="javamail-present">
     <javac srcdir="${java.source.dir}"
-     destdir="${javac.dest}"
-     deprecation="${deprecation}"
-     includes="${stem}/net/SMTPAppender.java">
+           destdir="${javac.dest}"
+           deprecation="${deprecation}"
+           includes="${stem}/net/SMTPAppender.java">
       <classpath refid="compile.classpath"/>
     </javac>
   </target>
-
-    <target name="build.oro" depends="init, oro" if="oro-present">
-	  <javac srcdir="${java.source.dir}"
-	    destdir="${javac.dest}"
-        deprecation="${deprecation}"
-	    includes="${stem}/varia/LogFilePatternReceiver*.java,
-	    	      ${stem}/rule/LikeRule.java">
-	     <classpath refid="compile.classpath"/>
-	  </javac>
-	</target>
-
-	<target name="build.jms" depends="init, jms, jndi" if="jms-present">
+  
+  <target name="build.oro" depends="init, oro" if="oro-present">
+    <javac srcdir="${java.source.dir}"
+           destdir="${javac.dest}"
+           deprecation="${deprecation}"
+           includes="${stem}/varia/LogFilePatternReceiver*.java,
+           ${stem}/rule/LikeRule.java">
+      <classpath refid="compile.classpath"/>
+    </javac>
+  </target>
+  
+  <target name="build.jms" depends="init, jms, jndi" if="jms-present">
     <javac deprecation="${deprecation}"
            srcdir="${java.source.dir}"
-    	   debug="${debug}"
+           debug="${debug}"
            destdir="${javac.dest}"
            includes="${stem}/net/JMS*.java">
       <classpath refid="compile.classpath"/>
     </javac>
   </target>
 
-   <target name="build.servletAPI" depends="init, servletAPI"
-                if="servletAPI-present">
+  <target name="build.servletAPI" depends="init, servletAPI"
+          if="servletAPI-present">
     <javac srcdir="${java.source.dir}"
            destdir="${javac.dest}"
-    	   debug="${debug}"
+           debug="${debug}"
            deprecation="${deprecation}"
            includes="${stem}/selector/servlet/*.java">
       <classpath refid="compile.classpath"/>
     </javac>
   </target>
 
-   <target name="build.db" depends="init, jdbcExtension"
-                if="jdbcExtension-present">
+  <target name="build.db" depends="init, jdbcExtension"
+          if="jdbcExtension-present">
     <javac srcdir="${java.source.dir}"
-          destdir="${javac.dest}"
-          deprecation="${deprecation}"
-    	  debug="${debug}"
-          includes="${stem}/db/**.java">
+           destdir="${javac.dest}"
+           deprecation="${deprecation}"
+           debug="${debug}"
+           includes="${stem}/db/**.java">
       <classpath refid="compile.classpath"/>
     </javac>
   </target>
@@ -354,16 +355,16 @@
   <target name="jar" depends="log4j.jar">
   </target>
 
- <!-- ================================================================= -->
- <!-- Create log4j.jar, excluding tests and other odds and ends.        -->
- <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <!-- Create log4j.jar, excluding tests and other odds and ends.        -->
+  <!-- ================================================================= -->
   <target name="log4j.jar" depends="build">
     
-  	<delete file="${log4j.jar}" verbose="true"/>
+    <delete file="${log4j.jar}" verbose="true"/>
 
     <jar jarfile="${jar.dest}/${log4j.jar}" basedir="${javac.dest}"
-      includes="org/apache/ugli/**/*.class
-    	        ${stem}/*.class, 
+         includes="org/apache/ugli/**/*.class
+                ${stem}/*.class, 
     	        ${stem}/xml/log4j.dtd, 
     	        ${stem}/xml/logger.dtd,
                 org/apache/joran/**/*.class,
@@ -372,8 +373,8 @@
                 ${stem}/helpers/*.class,
                 ${stem}/spi/**/*.class,
                 ${stem}/net/*.class,
-				${stem}/db/**/*.class,
-		        ${stem}/html/**/*.class,
+                ${stem}/db/**/*.class,
+                ${stem}/html/**/*.class,
                 ${stem}/varia/*.class,
                 ${stem}/filters/*.class,    	
                 ${stem}/rule/*.class,    	    	
@@ -403,55 +404,55 @@
       </manifest>
     </jar>
   </target>
-
-
+  
+  
   <!-- ================================================================= -->
   <!-- This target builds the javadoc files.                             -->
   <!-- ================================================================= -->
   <target name="javadoc" depends="init">
-
+    
     <mkdir dir="${javadoc.dest}" />
-
+    
     <javadoc sourcepath="${java.source.dir}"
-      destdir="${javadoc.dest}"
-     packagenames="org.apache.log4j,
-       org.apache.log4j.db,
-       org.apache.log4j.db.dialect,
-       org.apache.log4j.plugins,
-       org.apache.log4j.config,
-       org.apache.log4j.helpers,
-       org.apache.log4j.net,
-       org.apache.log4j.nt,
-       org.apache.log4j.or,
-       org.apache.log4j.or.sax,
-       org.apache.log4j.or.jms,
-       org.apache.log4j.pattern,
-       org.apache.log4j.rolling,
-       org.apache.log4j.rolling.helper,
-       org.apache.log4j.selector,
-       org.apache.log4j.spi,
-       org.apache.log4j.filters,
-       org.apache.log4j.varia,
-       org.apache.log4j.rule,
-       org.apache.log4j.xml,
-       org.apache.log4j.xml.examples,
-       org.apache.joran,
-       org.apache.joran.action,
-       org.apache.log4j.joran,
-       org.apache.log4j.joran.action,
-       org.apache.ugli,
-       org.apache.ugli.impl"
-     additionalparam="-breakiterator"
-     version="true"
-     protected="true"
-     author="true"
-     use="true"
-     overview="${docs.dest}/overview.html"
-     doctitle="log4j version ${version}&lt;br&gt;API Specification"
-     windowtitle="Log4j Version ${version}"
-           header="&lt;b&gt;Log4j ${version}&lt;/b&gt;"
-     bottom="Copyright 2000-2003 Apache Software Foundation.">
-
+             destdir="${javadoc.dest}"
+             packagenames="org.apache.log4j,
+                 org.apache.log4j.db,
+                 org.apache.log4j.db.dialect,
+                 org.apache.log4j.plugins,
+                 org.apache.log4j.config,
+                 org.apache.log4j.helpers,
+                 org.apache.log4j.net,
+                 org.apache.log4j.nt,
+                 org.apache.log4j.or,
+                 org.apache.log4j.or.sax,
+                 org.apache.log4j.or.jms,
+                 org.apache.log4j.pattern,
+                 org.apache.log4j.rolling,
+                 org.apache.log4j.rolling.helper,
+                 org.apache.log4j.selector,
+                 org.apache.log4j.spi,
+                 org.apache.log4j.filters,
+                 org.apache.log4j.varia,
+                 org.apache.log4j.rule,
+                 org.apache.log4j.xml,
+                 org.apache.log4j.xml.examples,
+                 org.apache.joran,
+                 org.apache.joran.action,
+                 org.apache.log4j.joran,
+                 org.apache.log4j.joran.action,
+                 org.apache.ugli,
+                 org.apache.ugli.impl"
+             additionalparam="-breakiterator"
+             version="true"
+             protected="true"
+             author="true"
+             use="true"
+             overview="${docs.dest}/overview.html"
+             doctitle="log4j version ${version}&lt;br&gt;API Specification"
+             windowtitle="Log4j Version ${version}"
+             header="&lt;b&gt;Log4j ${version}&lt;/b&gt;"
+             bottom="Copyright 2000-2005 Apache Software Foundation.">
+      
       <link href="http://java.sun.com/products/j2se/1.3/docs/api/"/>
       <link href="http://java.sun.com/j2ee/sdk_1.3/techdocs/api/"/>
       <classpath refid="compile.classpath"/>
@@ -464,11 +465,11 @@
   <!-- ============================================== -->
   <target name="prepareSite">
     <available classname="org.apache.velocity.anakia.AnakiaTask"
-      property="AnakiaTask.present">
+               property="AnakiaTask.present">
       <classpath refid="site.classpath"/>
     </available>
   </target>
-
+  
   <target name="checkSite" depends="prepareSite" unless="AnakiaTask.present">
     <echo>
       AnakiaTask is not present! Please check to make sure that
@@ -480,22 +481,22 @@
     <taskdef name="anakia" classname="org.apache.velocity.anakia.AnakiaTask">
       <classpath refid="site.classpath"/>
     </taskdef>
- 
+    
     <mkdir dir="${docs.dest}/css"/>  
     <copy file="${logging-site}/docs/css/site.css" tofile="${docs.dest}/css/site.css"/>
     
     <anakia basedir="${xdocs.src}" destdir="${docs.dest}/"
-      extension=".html"
-      style="site.vsl"
-      projectFile="stylesheets/project.xml"
-      excludes="**/stylesheets/**, empty.xml"
-      includes="**/*.xml"
-      lastModifiedCheck="true"
-      templatePath="${logging-site}/src/xdocs/stylesheets">
+            extension=".html"
+            style="site.vsl"
+            projectFile="stylesheets/project.xml"
+            excludes="**/stylesheets/**, empty.xml"
+            includes="**/*.xml"
+            lastModifiedCheck="true"
+            templatePath="${logging-site}/src/xdocs/stylesheets">
     </anakia>
-
+    
   </target>
-
+  
 
  <!-- ================================================================= -->
  <!-- Build a complete distribution. Results go to ${dist.images}       -->
@@ -505,60 +506,60 @@
     <delete verbose="true">
       <fileset dir=".">
         <patternset>
-     <include name="**/*.bak"/>
-     <include name="dist/velocity.log"/>
-     <include name="${BSTEM}/**/temp*"/>
-     <include name="${BSTEM}/performance/test"/>
-     <include name="${BSTEM}/test/current.*"/>
-     <include name="${BSTEM}/test/current.*"/>
-     <include name="${BSTEM}/examples/test"/>
-     <include name="${BSTEM}/test/logging.*"/>
-     <include name="${BSTEM}/test/log4j.properties"/>
-     <include name="{$BSTEM}/test/socket.lcf"/>
-     <include name="${BSTEM}/test/file"/>
-     <include name="${BSTEM}/test/output.*"/>
-     <include name="${BSTEM}/nt/EventLogCategories.dbg"/>
-     <include name="${BSTEM}/nt/*.h"/>
-     <include name="${BSTEM}/nt/*.obj"/>
-     <include name="${BSTEM}/nt/*.idb"/>
-     <include name="${BSTEM}/nt/EventLogCategories.rc"/>
-     <include name="${BSTEM}/nt/EventLogCategories.RES"/>
-     <include name="${BSTEM}/nt/EventLogCategories.res"/>
-     <include name="${BSTEM}/nt/MSG00001.bin"/>
-     <include name="${BSTEM}/nt/NTEventLogAppender.lib"/>
-     <include name="${BSTEM}/nt/NTEventLogAppender.exp"/>
-     <include name="${BSTEM}/nt/vc50.idb"/>
-     <include name="${BSTEM}/net/test/loop.log"/>
-     <include name="${BSTEM}/net/test/loop.log.1"/>
-     <include name="${jar.dest}/manifest.mf"/>
-     <include name="${javac.dest}/*.class"/>
+          <include name="**/*.bak"/>
+          <include name="dist/velocity.log"/>
+          <include name="${BSTEM}/**/temp*"/>
+          <include name="${BSTEM}/performance/test"/>
+          <include name="${BSTEM}/test/current.*"/>
+          <include name="${BSTEM}/test/current.*"/>
+          <include name="${BSTEM}/examples/test"/>
+          <include name="${BSTEM}/test/logging.*"/>
+          <include name="${BSTEM}/test/log4j.properties"/>
+          <include name="{$BSTEM}/test/socket.lcf"/>
+          <include name="${BSTEM}/test/file"/>
+          <include name="${BSTEM}/test/output.*"/>
+          <include name="${BSTEM}/nt/EventLogCategories.dbg"/>
+          <include name="${BSTEM}/nt/*.h"/>
+          <include name="${BSTEM}/nt/*.obj"/>
+          <include name="${BSTEM}/nt/*.idb"/>
+          <include name="${BSTEM}/nt/EventLogCategories.rc"/>
+          <include name="${BSTEM}/nt/EventLogCategories.RES"/>
+          <include name="${BSTEM}/nt/EventLogCategories.res"/>
+          <include name="${BSTEM}/nt/MSG00001.bin"/>
+          <include name="${BSTEM}/nt/NTEventLogAppender.lib"/>
+          <include name="${BSTEM}/nt/NTEventLogAppender.exp"/>
+          <include name="${BSTEM}/nt/vc50.idb"/>
+          <include name="${BSTEM}/net/test/loop.log"/>
+          <include name="${BSTEM}/net/test/loop.log.1"/>
+          <include name="${jar.dest}/manifest.mf"/>
+          <include name="${javac.dest}/*.class"/>
         </patternset>
-     </fileset>
+      </fileset>
     </delete>
-
+    
     <mkdir  dir="${dist.images}" />
-
+    
     <mkdir  dir="${dist.tmp}/logging-log4j-${version}" />
-
+    
     <copy todir="${dist.tmp}/logging-log4j-${version}">
-       <fileset dir="${base}"
-                includes="src/java/**,
-                          docs/**,
-                          examples/**,
-                          build/*,
-                          build.xml,
-                          build.properties.sample,
-                          INSTALL,
-                          LICENSE.txt,
-                          ${log4j.jar}"
-                excludes="**/*.bak, 
-                         **/goEnv.bat,
-                          docs/pub-support/*,
-                          src/java/org/apache/log4j/test/**/*,
-                          **/.#*"
-        />
+      <fileset dir="${base}"
+               includes="src/java/**,
+               docs/**,
+               examples/**,
+               build/*,
+               build.xml,
+               build.properties.sample,
+               INSTALL,
+               LICENSE.txt,
+               ${log4j.jar}"
+               excludes="**/*.bak, 
+               **/goEnv.bat,
+               docs/pub-support/*,
+               src/java/org/apache/log4j/test/**/*,
+               **/.#*"
+               />
     </copy>
-
+    
 
     <fixcrlf srcdir="${dist.tmp}/logging-log4j-${version}"
              includes="build.sh" cr="remove"/>
@@ -566,14 +567,14 @@
              includes="build.bat" cr="add"/>
     <chmod   dir="${dist.tmp}/logging-log4j-${version}"
              includes="build.sh" perm="+x"/>
-
+    
     <tar tarfile="${dist.images}/logging-log4j-${version}.tar"
          basedir="${dist.tmp}"
          includes="logging-log4j-${version}/**" />
-
+    
     <gzip src="${dist.images}/logging-log4j-${version}.tar"
           zipfile="${dist.images}/logging-log4j-${version}.tar.gz" />
-
+    
     <zip zipfile="${dist.images}/logging-log4j-${version}.zip"
          basedir="${dist.tmp}"
          includes="logging-log4j-${version}/**" />
