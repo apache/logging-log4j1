@@ -66,9 +66,14 @@ final class CachedDateFormat extends DateFormat {
     } else {
       this.formatter = new SimpleDateFormat(pattern, locale);
     }
-    milliDigits = CacheUtil.computeSuccessiveS(pattern);
     
-    System.out.println("milliDigits="+milliDigits);
+    String cleanedPattern = CacheUtil.removeLiterals(pattern);
+    milliDigits = CacheUtil.computeSuccessiveS(cleanedPattern);
+   
+    if(!CacheUtil.isPatternSafeForCaching(cleanedPattern)) {
+      millisecondStart = BAD_PATTERN;
+      return;
+    }
     
     if(milliDigits == 0) {
       // millisecondStart value won't be used
@@ -96,11 +101,11 @@ final class CachedDateFormat extends DateFormat {
       millisecondStart = findMillisecondStart(slotBegin, formatted, formatter);
     } 
     
-    if(millisecondStart == BAD_PATTERN) {
-      System.out.println("BAD PATTERN");
-    } else {
-      System.out.println("millisecondStart="+millisecondStart);
-    }
+//    if(millisecondStart == BAD_PATTERN) {
+//      System.out.println("BAD PATTERN");
+//    } else {
+//      System.out.println("millisecondStart="+millisecondStart);
+//    }
   }
 
   /**
@@ -153,7 +158,6 @@ final class CachedDateFormat extends DateFormat {
    */
   public StringBuffer format(
     Date date, StringBuffer sbuf, FieldPosition fieldPosition) {
-    System.out.println("millisecondStart="+millisecondStart);
     if (millisecondStart == BAD_PATTERN) {
       return formatter.format(date, sbuf, fieldPosition);
     }
@@ -166,13 +170,12 @@ final class CachedDateFormat extends DateFormat {
 
         milliBuf.setLength(0);
         numberFormat.format(millis, milliBuf, fieldPosition);
-        System.out.println("milliBuf:"+milliBuf);
         for(int j = 0; j < milliDigits; j++) {
           cache.setCharAt(millisecondStart+j, milliBuf.charAt(j));
         }
       }
     } else {
-      System.out.println("Refreshing the cache: "+date+","+(date.getTime()%1000));
+      //System.out.println("Refreshing the cache: "+date+","+(date.getTime()%1000));
       slotBegin = (now / 1000L) * 1000L;
       int prevLength = cache.length();
       cache.setLength(0);
@@ -181,8 +184,8 @@ final class CachedDateFormat extends DateFormat {
       //   if the length changed then
       //      recalculate the millisecond position
       if (cache.length() != prevLength && (milliDigits > 0)) {
-        System.out.println("Recomputing cached len changed oldLen="+prevLength
-            +", newLen="+cache.length());
+        //System.out.println("Recomputing cached len changed oldLen="+prevLength
+        //      +", newLen="+cache.length());
         //
         //    format the previous integral second
         StringBuffer tempBuffer = new StringBuffer(cache.length());
