@@ -20,10 +20,10 @@
 		</layout>		
 	</appender>
 	
-	<category name="org.apache.log4j.xml">
+	<logger name="org.apache.log4j.xml">
 	  <priority value="debug" />
   	  <appender-ref ref="A1" />
-	</category>
+	</logger>
 	
 	<root>
 	   <priority value ="debug" />
