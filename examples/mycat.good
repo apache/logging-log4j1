@@ -8,8 +8,8 @@ log4j.categoryFactory=org.apache.log4j.examples.MyCategoryFactory
 # The usual stuff. Note that A1 is configured in root not in "some.cat"
 
 log4j.rootCategory=DEBUG, A1
-log4j.appender.A1=org.apache.log4j.FileAppender
-log4j.appender.A1.File=System.out
+log4j.appender.A1=org.apache.log4j.ConsoleAppender
+
 log4j.appender.A1.layout=org.apache.log4j.PatternLayout
 log4j.appender.A1.layout.ConversionPattern=[%t] %c - %m%n
 

@@ -11,8 +11,7 @@ log4j.rootCategory=DEBUG, A1
 # influences log requests made to the root category. It has no
 # influence on the appenders attached to root.
 
-log4j.appender.A1=org.apache.log4j.FileAppender
-log4j.appender.A1.File=System.out
+log4j.appender.A1=org.apache.log4j.ConsoleAppender
 log4j.appender.A1.Threshold=ERROR
 
 
