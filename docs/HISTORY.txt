@@ -8,9 +8,24 @@
    [D] Changes affect a method or property which was previously marked as 
        deprecated.
 
-  December XX, 2004
- - Release of version 1.3alpha-4
+  January 20th, 2005
+ - Release of version 1.3alpha-6
 
+ - Fixed involuntary omission of DOMConfigrator (deprecated) in log4j-VERSION.jar.
+ - Added missing files in log4-oro.jar.
+ - The lengthy system property "log4j.repositorySelectorClass" was renamed as 
+   "log4j.repositorySelector".
+  
+  January 19th, 2005
+ - Release of version 1.3alpha-5
+
+ - Universal and Generic Logging Interface (UGLI) is now part of log4j. 
+   UGLI allows variation in the logging API implementattion in a simple and 
+   robust way. Log4j directly supports the interfaces defined by UGLI. 
+   For more information see http://logging.apache.org/log4j/docs/ugli.html [*]
+   
+ - Log4j now ships with several jar files, one jar file per dependency. [*/**]  
+ 
  - Fixed Bugzilla 15198: TelnetAppender: NullPointerException if
    SocketHandler not initialized. [*]
 

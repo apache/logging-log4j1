@@ -16,16 +16,19 @@ Steps performed on the Java Web Server (Servlet Container)
   Other Servlet containers such as Jetty also have folders for 
   shared jar files.
 
-- On the java command line launching your java web *server*, make sure to 
-  add te log4j.repositorySelectorClass system property. For the 
+- On the java command line launching your java web *server*, make sure
+  to add te log4j.repositorySelector system property. For the
   JNDIContextSelector the exact system property to add is:
 
-     -Dlog4j.repositorySelectorClass=org.apache.log4j.selector.ContextJNDISelector
+     -Dlog4j.repositorySelector=org.apache.log4j.selector.ContextJNDISelector
   
   or in its equivalent but shorter form
   
-     -Dlog4j.repositorySelectorClass=JNDI 
+     -Dlog4j.repositorySelector=JNDI 
      
+  For Tomcat, you can add this line directly in ./bin/catalina.sh or
+  ./bin/catalina.bat.
+
 - You can now run the supplied web-applications hello.war and
   tata.war.
 
