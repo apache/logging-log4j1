@@ -7,6 +7,7 @@
 
 package org.apache.log4j.performance;
 
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Category;
 import org.apache.log4j.xml.DOMConfigurator;
 
@@ -232,7 +233,7 @@ public class Logging {
 
     System.out.print((int)delta);
 
-    Category.shutdown();
+    LogManager.shutdown();
 
   }
 

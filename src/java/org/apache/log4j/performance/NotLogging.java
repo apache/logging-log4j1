@@ -5,6 +5,7 @@ package org.apache.log4j.performance;
 
 
 import org.apache.log4j.Category;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.SimpleLayout;
 import org.apache.log4j.ConsoleAppender;
 
@@ -126,7 +127,7 @@ public class NotLogging {
       // nothing to do
     } else if ("true".equals(args[0])) {
       System.out.println("Flagging as shipped code.");
-      Category.getDefaultHierarchy().setThreshold((Level) Level.WARN);
+      LogManager.getLoggerRepository().setThreshold((Level) Level.WARN);
     } else
       Usage();
 

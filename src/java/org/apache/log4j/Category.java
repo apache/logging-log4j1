@@ -204,10 +204,10 @@ public class Category implements AppenderAttachable {
   */
   synchronized
   void closeNestedAppenders() {
-    Enumeration enum = this.getAllAppenders();
-    if(enum != null) {
-      while(enum.hasMoreElements()) {
-	Appender a = (Appender) enum.nextElement();
+    Enumeration enumeration = this.getAllAppenders();
+    if(enumeration != null) {
+      while(enumeration.hasMoreElements()) {
+	Appender a = (Appender) enumeration.nextElement();
 	if(a instanceof AppenderAttachable) {
 	  a.close();
 	}

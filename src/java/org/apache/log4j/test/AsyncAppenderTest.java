@@ -7,6 +7,7 @@
 package org.apache.log4j.test;
 
 import org.apache.log4j.Category;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.xml.DOMConfigurator;
 
 /**
@@ -59,7 +60,7 @@ public class AsyncAppenderTest {
     }
 
     try{Thread.currentThread().sleep(delayBeforeClose);}catch(Exception e){}
-    Category.shutdown();
+    LogManager.shutdown();
   }
 
   

@@ -228,9 +228,9 @@ public class LoggerDynamicMBean extends AbstractDynamicMBean
   }
 
   void appenderMBeanRegistration() {
-    Enumeration enum = logger.getAllAppenders();
-    while(enum.hasMoreElements()) {
-      Appender appender = (Appender) enum.nextElement();
+    Enumeration enumeration = logger.getAllAppenders();
+    while(enumeration.hasMoreElements()) {
+      Appender appender = (Appender) enumeration.nextElement();
       registerAppenderMBean(appender);
     }
   }

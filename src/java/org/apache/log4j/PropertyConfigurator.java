@@ -508,9 +508,9 @@ public class PropertyConfigurator implements Configurator {
   */
   protected
   void parseCatsAndRenderers(Properties props, LoggerRepository hierarchy) {
-    Enumeration enum = props.propertyNames();
-    while(enum.hasMoreElements()) {
-      String key = (String) enum.nextElement();
+    Enumeration enumeration = props.propertyNames();
+    while(enumeration.hasMoreElements()) {
+      String key = (String) enumeration.nextElement();
       if(key.startsWith(CATEGORY_PREFIX) || key.startsWith(LOGGER_PREFIX)) {
 	String loggerName = null;
 	if(key.startsWith(CATEGORY_PREFIX)) {

@@ -73,8 +73,8 @@ public class LoggerTestCase extends TestCase {
     a1.setName("testAppender1");             
     logger.addAppender(a1);
 
-    Enumeration enum = logger.getAllAppenders();
-    Appender aHat = (Appender) enum.nextElement();    
+    Enumeration enumeration = logger.getAllAppenders();
+    Appender aHat = (Appender) enumeration.nextElement();    
     assertEquals(a1, aHat);    
   }
 
@@ -93,10 +93,10 @@ public class LoggerTestCase extends TestCase {
     logger.addAppender(a1);
     logger.addAppender(a2);    
     logger.removeAppender("testAppender2.1");
-    Enumeration enum = logger.getAllAppenders();
-    Appender aHat = (Appender) enum.nextElement();    
+    Enumeration enumeration = logger.getAllAppenders();
+    Appender aHat = (Appender) enumeration.nextElement();    
     assertEquals(a2, aHat);
-    assertTrue(!enum.hasMoreElements());
+    assertTrue(!enumeration.hasMoreElements());
   }
 
   /**

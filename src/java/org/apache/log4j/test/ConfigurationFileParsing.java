@@ -9,6 +9,7 @@ package org.apache.log4j.test;
 
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.Category;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.NDC;
 
 public class ConfigurationFileParsing {
@@ -24,7 +25,7 @@ public class ConfigurationFileParsing {
       root.debug("Message 1");
       root.debug("Message 2");      
       NDC.pop();
-      Category.shutdown();
+      LogManager.shutdown();
     }
     else {
       Usage("Wrong number of arguments.");

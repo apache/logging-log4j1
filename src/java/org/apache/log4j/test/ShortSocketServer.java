@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.net.ServerSocket;
 
 import org.apache.log4j.Category;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.net.SocketNode;
@@ -35,7 +36,7 @@ public class ShortSocketServer  {
       Socket socket = serverSocket.accept();
       LogLog.debug("Connected to client at " + socket.getInetAddress());
       LogLog.debug("Starting new socket node.");
-      SocketNode sn = new SocketNode(socket, Category.getDefaultHierarchy());
+      SocketNode sn = new SocketNode(socket, LogManager.getLoggerRepository());
       Thread t = new Thread(sn);
       t.start();
       t.join();
