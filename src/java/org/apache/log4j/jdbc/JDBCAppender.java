@@ -240,7 +240,13 @@ public class JDBCAppender extends org.apache.log4j.AppenderSkeleton
 			   ErrorCode.FLUSH_FAILURE);
       }
     }
+    
+    // remove from the buffer any events that were reported
     buffer.removeAll(removes);
+    
+    // clear the buffer of reported events
+    removes.clear();
+    
     //buffer.clear();
   }
 
