@@ -50,9 +50,12 @@
 package org.apache.log4j.util;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.zip.GZIPInputStream;
 
 
 public class Compare {
@@ -98,6 +101,11 @@ public class Compare {
     return true;
   }
 
+  /** 
+   * 
+   * Prints file on the console.
+   *
+   */
   private static void outputFile(String file)
     throws FileNotFoundException, IOException {
     BufferedReader in1 = new BufferedReader(new FileReader(file));
@@ -124,4 +132,43 @@ public class Compare {
       System.out.println(s1);
     }
   }
+  
+    public static boolean gzCompare(String file1, String file2)
+      throws FileNotFoundException, IOException {
+      BufferedReader in1 = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(file1))));      
+      BufferedReader in2 = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(file2))));
+
+      String s1;
+      int lineCounter = 0;
+
+      while ((s1 = in1.readLine()) != null) {
+        lineCounter++;
+
+        String s2 = in2.readLine();
+
+        if (!s1.equals(s2)) {
+          System.out.println(
+            "Files [" + file1 + "] and [" + file2 + "] differ on line "
+            + lineCounter);
+          System.out.println("One reads:  [" + s1 + "].");
+          System.out.println("Other reads:[" + s2 + "].");
+          outputFile(file1);
+          outputFile(file2);
+
+          return false;
+        }
+      }
+
+      // the second file is longer
+      if (in2.read() != -1) {
+        System.out.println(
+          "File [" + file2 + "] longer than file [" + file1 + "].");
+        outputFile(file1);
+        outputFile(file2);
+
+        return false;
+      }
+
+      return true;
+    }
 }
