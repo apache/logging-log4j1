@@ -1,5 +1,9 @@
-//  Copyright 2000, Ceki Gulcu.  All Rights Reserved.
-//  See the LICENCE file for the terms of distribution.
+/*
+ * Copyright (C) The Apache Software Foundation. All rights reserved.
+ *
+ * This software is published under the terms of the Apache Software
+ * License version 1.1, a copy of which has been included with this
+ * distribution in the LICENSE.APL file.  */
 
 package org.apache.log4j.xml;
 
@@ -17,6 +21,7 @@ import org.apache.log4j.spi.Configurator;
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.Priority;
+import org.apache.log4j.Hierarchy;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.Filter;
@@ -269,7 +274,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
      Used internally to parse an category element.
   */
   protected
-  void parseCategory (Element categoryElement) {
+  void parseCategory (Element categoryElement, Hierarchy hierarchy) {
     // Create a new org.apache.log4j.Category object from the <category> element.
     String catName = categoryElement.getAttribute(NAME_ATTR);
 
@@ -280,7 +285,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
 
     if(EMPTY_STR.equals(className)) {
       LogLog.debug("Retreiving an instance of org.apache.log4j.Category.");
-      cat = Category.getInstance(catName);
+      cat = hierarchy.getInstance(catName);
     }
     else {
       LogLog.debug("Desired category sub-class: ["+className+']');
@@ -311,8 +316,8 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
      Used internally to parse the roor category element.
   */
   protected
-  void parseRoot (Element rootElement) {
-    Category root = Category.getRoot();
+  void parseRoot (Element rootElement, Hierarchy hierarchy) {
+    Category root = hierarchy.getRoot();
     // category configuration needs to be atomic
     synchronized(root) {    
       parseChildrenOfCategoryElement(rootElement, root, true);
@@ -459,13 +464,12 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
      Configure log4j using a <code>configuration</code> element as
      defined in the log4j.dtd. 
 
-      <p><b>Note:</b> This public method relies on DOM Level-2 API.
   */
   static
   public
   void configure (Element element) {
     DOMConfigurator configurator = new DOMConfigurator();
-    configurator.parse(element);
+    configurator.parse(element, Category.getDefaultHierarchy());
   }
 
  /**
@@ -473,11 +477,6 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
      default delay as defined by {@link FileWatchdog#DEFAULT_DELAY} is
      used. 
 
-      <p><b>Note:</b> This public method relies on DOM Level-2 API, and a
-      JAXP compliant parser. At the time of this writing only the
-      Apache Xerces parser fulfills both requirements.
-
-     
      @param configFilename A log4j configuration file in XML format.
 
   */
@@ -497,11 +496,6 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
      argument. If a change or file creation is detected, then
      <code>configFilename</code> is read to configure log4j.  
 
-       <p><b>Note:</b> This public method relies on DOM Level-2 API, and a
-      JAXP compliant parser. At the time of this writing only the
-      Apache Xerces parser fulfills both requirements.
-
-
       @param configFilename A log4j configuration file in XML format.
       @param delay The delay in milliseconds to wait between each check.
   */
@@ -514,18 +508,18 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
   }
 
   public
-  void doConfigure(String filename) {
+  void doConfigure(String filename, Hierarchy hierarchy) {
     try {
-      doConfigure(new FileInputStream(filename));
+      doConfigure(new FileInputStream(filename), hierarchy);
     } catch(IOException e) {
       LogLog.error("Could not open ["+filename+"].", e);
     }
   }
 
   public
-  void doConfigure(URL url) {
+  void doConfigure(URL url, Hierarchy hierarchy) {
     try {
-      doConfigure(url.openStream());
+      doConfigure(url.openStream(), hierarchy);
     } catch(IOException e) {
       LogLog.error("Could not open ["+url+"].", e);
     }
@@ -536,12 +530,10 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
      Configure log4j by reading in a log4j.dtd compliant XML
      configuration file.
 
-       <p><b>Note:</b> This public method relies on DOM Level-2 API,
-       and a JAXP compliant parser. At the time of this writing only
-       the Apache Xerces parser fulfills both requirements.  
   */
   public
-  void doConfigure(InputStream input) throws FactoryConfigurationError {
+  void doConfigure(InputStream input, Hierarchy hierarchy) 
+                                          throws FactoryConfigurationError {
     DocumentBuilderFactory dbf = null;
     try { 
       LogLog.debug("System property is :"+System.getProperty(dbfKey));      
@@ -572,7 +564,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
 	inputSource.setSystemId(dtdURL.toString());
       }
       Document doc = docBuilder.parse(inputSource);
-      DOMConfigurator.configure(doc.getDocumentElement());
+      parse(doc.getDocumentElement(), hierarchy);
     } catch (Exception e) {
       // I know this is miserable...
       LogLog.error("Could not parse input stream ["+input+"].", e);
@@ -587,7 +579,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
   static
   public
   void configure(String filename) throws FactoryConfigurationError {
-    new DOMConfigurator().doConfigure(filename);
+    new DOMConfigurator().doConfigure(filename, Category.getDefaultHierarchy());
   }
 
   /**
@@ -597,7 +589,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
      
   */
   protected
-  void parse(Element element) {
+  void parse(Element element, Hierarchy hierarchy) {
     
     if (!element.getTagName().equals(CONFIGURATION_TAG)) {
       LogLog.error("DOM element is not a <configuration> element");
@@ -641,9 +633,9 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
 	String tagName = currentElement.getTagName();
 
 	if (tagName.equals(CATEGORY)) {
-	  parseCategory(currentElement);
+	  parseCategory(currentElement, hierarchy);
 	} else if (tagName.equals(ROOT_TAG)) {
-	  parseRoot(currentElement);
+	  parseRoot(currentElement, hierarchy);
 	} else if(tagName.equals(RENDERER_TAG)) {
 	  parserRenderer(currentElement);
 	}
@@ -664,6 +656,6 @@ class XMLWatchdog extends FileWatchdog {
      <code>filename</code> to reconfigure log4j. */
   public
   void doOnChange() {
-    new DOMConfigurator().doConfigure(filename);
+    new DOMConfigurator().doConfigure(filename, Category.getDefaultHierarchy());
   }
 }

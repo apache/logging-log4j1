@@ -69,13 +69,13 @@ public class Category implements AppenderAttachable {
   // an undescore.
   static 
   public 
-  final Hierarchy _default = new Hierarchy( new RootCategory(Priority.DEBUG));
+  final Hierarchy defaultHierarchy = new Hierarchy(new RootCategory(Priority.DEBUG));
 
   
   protected ResourceBundle resourceBundle;
   
   // Categories need to know what Hierarchy they are in
-  Hierarchy myContext;
+  protected Hierarchy myContext;
 
   /**
      This string constant is set to <b>log4j.properties</b> the name
@@ -392,7 +392,7 @@ public class Category implements AppenderAttachable {
   public
   static
   Category exists(String name) {    
-    return _default.exists(name);
+    return defaultHierarchy.exists(name);
   }
 
   /** 
@@ -519,9 +519,9 @@ public class Category implements AppenderAttachable {
     // The accumlation in v is necessary because not all elements in
     // HierarchyMaintainer.ht are Category objects as there might be some
     // ProvisionNodes as well.       
-    Vector v = new Vector(_default.ht.size());
+    Vector v = new Vector(defaultHierarchy.ht.size());
     
-    Enumeration elems = _default.ht.elements();
+    Enumeration elems = defaultHierarchy.ht.elements();
     while(elems.hasMoreElements()) {
       Object o = elems.nextElement();
       if(o instanceof Category) {
@@ -540,7 +540,7 @@ public class Category implements AppenderAttachable {
   public 
   static 
   Hierarchy getDefaultHierarchy() {
-    return _default;
+    return defaultHierarchy;
   }
 
   
@@ -558,7 +558,7 @@ public class Category implements AppenderAttachable {
   public
   static
   Category getInstance(String name) {
-    return _default.getInstance(name);
+    return defaultHierarchy.getInstance(name);
   }	
 
  /**
@@ -593,7 +593,7 @@ public class Category implements AppenderAttachable {
   public
   static
   Category getInstance(String name, CategoryFactory factory) {
-    return _default.getInstance(name, factory);
+    return defaultHierarchy.getInstance(name, factory);
   }	
 
   
@@ -631,7 +631,7 @@ public class Category implements AppenderAttachable {
   public
   static
   Category getRoot() {
-    return _default.getRoot();
+    return defaultHierarchy.getRoot();
   }
 
   /**
@@ -984,7 +984,7 @@ public class Category implements AppenderAttachable {
   public
   static
   void shutdown() {
-    _default.shutdown();
+    defaultHierarchy.shutdown();
   }
 
   
