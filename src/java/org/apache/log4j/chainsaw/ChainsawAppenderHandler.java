@@ -251,7 +251,9 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
     String appname = e.getProperty(ChainsawConstants.LOG4J_APP_KEY);
 
     if (appname != null) {
-      ident.append("-");
+      if(ident.length()>0){
+          ident.append("-");
+      }
       ident.append(appname);
     }
 
