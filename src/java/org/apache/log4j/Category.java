@@ -54,7 +54,7 @@ import java.net.MalformedURLException;
    all operations that can be performed on a category can be performed
    on a logger. Whenever log4j is asked to produce a Category object,
    it will instead produce a Logger object. However, methods that
-   previously accepted cateogry objects still continue to accept
+   previously accepted category objects still continue to accept
    category objects.
    
    <p>For example, the following are all legal and will work as expected.
@@ -73,7 +73,7 @@ import java.net.MalformedURLException;
   
    <p><b>There is absolutely no need for new client code to use or
    refer to the <code>Category</code> class.</b> Please avoid
-   referring to it.
+   referring to it or using it.
    
 
   @author Ceki G&uuml;lc&uuml;
