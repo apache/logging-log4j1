@@ -40,6 +40,8 @@ public class OnlyOnceErrorHandler implements ErrorHandler {
   final String WARN_PREFIX = "log4j warning: ";
   final String ERROR_PREFIX = "log4j error: ";
   boolean firstTime = true;
+  
+  // use an instance logger
   final Logger logger = LogManager.getLogger(OnlyOnceErrorHandler.class);
 
   /**
