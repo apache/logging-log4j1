@@ -83,8 +83,10 @@ public class AsyncAppender extends AppenderSkeleton
 
   public
   AsyncAppender() {
+    // Note: The dispatcher code assumes that the aai is set once and
+    // for all!!!
     aai = new AppenderAttachableImpl();
-    dispatcher = new Dispatcher(bf, aai);
+    dispatcher = new Dispatcher(bf, this);
     dispatcher.start();
   }
   
@@ -124,7 +126,9 @@ public class AsyncAppender extends AppenderSkeleton
   /**
      Close this <code>AsyncAppender</code> by interrupting the
      dispatcher thread which will process all pending events before
-     exiting. */
+     exiting. 
+  */
+  synchronized
   public 
   void close() {
     if(closed) // avoid multiple close, otherwise one gets NullPointerException
@@ -143,11 +147,13 @@ public class AsyncAppender extends AppenderSkeleton
     bf = null;
   }
 
+  synchronized
   public
   Enumeration getAllAppenders() {
     return aai.getAllAppenders();
   }
 
+  synchronized
   public
   Appender getAppender(String name) {
     return aai.getAppender(name);
@@ -303,16 +309,18 @@ public class AsyncAppender extends AppenderSkeleton
 }
 // ------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 class Dispatcher extends Thread {
 
   BoundedFIFO bf;
   AppenderAttachableImpl aai;
   boolean interrupted = false;
+  AsyncAppender container;
 
-  Dispatcher(BoundedFIFO bf, AppenderAttachableImpl aai) {
+  Dispatcher(BoundedFIFO bf, AsyncAppender container) {
     this.bf = bf;
-    this.aai = aai;
+    this.container = container;
+    this.aai = container.aai;
     // set the dispatcher priority to lowest possible value
     this.setPriority(Thread.MIN_PRIORITY);
     
@@ -326,7 +334,7 @@ class Dispatcher extends Thread {
     synchronized(bf) {
       interrupted = true;   
       // We have a waiting dispacther if and only if bf.length is
-      // zero.  In that case, we need to give its death kiss.
+      // zero.  In that case, we need to give it a death kiss.
       if(bf.length() == 0) {
 	bf.notify();
       }
@@ -375,9 +383,14 @@ class Dispatcher extends Thread {
 	  bf.notify();
 	}
       } // synchronized
-      
-      if(aai != null && event != null)
-	aai.appendLoopOnAppenders(event);
+  
+      // The synchronization on parent is necessary to protect against
+      // operations on the aai object of the parent
+      synchronized(container) {
+	if(aai != null && event != null) {
+	  aai.appendLoopOnAppenders(event);
+	}
+      }
     } // while
   }
 }

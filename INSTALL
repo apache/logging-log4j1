@@ -11,7 +11,7 @@ Using log4j
    number, under PATH_OF_YOUR_CHOICE.
 
 
-3) Add PATH_OF_YOUR_CHOICE\jakarta-log4j-X.X\classes to the CLASSPATH
+3) Add PATH_OF_YOUR_CHOICE\jakarta-log4j-X.X\dist\classes to the CLASSPATH
    variable.
    
 4) You can now test your installation. To do this issue the command:

@@ -18,9 +18,9 @@ import java.net.URL;
   @author Ceki G&uuml;lc&uuml;
  */
 
-public class Loader extends java.lang.Object { 
+public class Loader  { 
 
-  static String JARSTR = "Caught InvalidJarException. This may be innocuous.";
+  static String TSTR = "Caught Exception while in Loader.getResource. This may be innocuous.";
   
   /**
      This method will search for <code>resource</code> in different
@@ -48,24 +48,24 @@ public class Loader extends java.lang.Object {
   URL getResource(String resource, Class clazz) {
     
     URL url = null;
-    
+
 
     // Is it under CLAZZ/resource somewhere in the classpath?    
     // where CLAZZ is the fully qualified name of clazz where dots have been
     // changed to directory separators
     LogLog.debug("Trying to find ["+resource+"] using Class.getResource().");
-
-
-
+    
+    
+    
     try {
       url = clazz.getResource(resource);
       if(url != null) 
 	return url;
-    } catch (sun.misc.InvalidJarIndexException e) {
-      LogLog.debug(JARSTR);
+    } catch (Throwable t) {
+      LogLog.warn(TSTR,t);
     }
-
-
+    
+    
     // attempt to get the resource under CLAZZ/resource from the
     // system class path. The system class loader should not throw
     // InvalidJarIndexExceptions
@@ -75,28 +75,30 @@ public class Loader extends java.lang.Object {
     url = ClassLoader.getSystemResource(fullyQualified);
     if(url != null) 
       return url;
-
+    
     // Let the class loader of clazz and parents (by the delagation
     // property) seearch for resource
     ClassLoader loader = clazz.getClassLoader();
-    LogLog.debug("Trying to find ["+resource+"] using "+loader
-		 +" class loader.");
-    
-    try {
-      url = loader.getResource(resource); 
-      if(url != null) 
-	return url;
-    } catch(sun.misc.InvalidJarIndexException e) {
-      LogLog.debug(JARSTR);
+    if(loader != null) {
+      try {
+	LogLog.debug("Trying to find ["+resource+"] using "+loader
+		     +" class loader.");
+	url = loader.getResource(resource); 
+	if(url != null) 
+	  return url;
+      } catch(Throwable t) {
+	LogLog.warn(TSTR, t);
+      }
     }
     
-
+    
     // Attempt to get the resource from the class path. It may be the
     // case that clazz was loaded by the Extentsion class loader which
     // the parent of the system class loader. Hence the code below.
     LogLog.debug("Trying to find ["+resource+"] using ClassLoader.getSystemResource().");
     url = ClassLoader.getSystemResource(resource);
     return url;
+
   }
 
   /**

@@ -8,7 +8,6 @@ JSOURCES:=HTMLLayout.java\
 	PatternLayout.java\
 	AsyncAppender.java\
 	NDC.java\
-	RollingFileAppenderBeanInfo.java\
 	AppenderSkeleton.java\
 	CategoryKey.java\
 	ProvisionNode.java\
@@ -24,6 +23,11 @@ JSOURCES:=HTMLLayout.java\
 	Priority.java\
 	WriterAppender.java\
 	ConsoleAppender.java\
+
+ifdef $(ISJDK1)
+ JSOURCES:=$(JSOURCES) RollingFileAppenderBeanInfo.java
+endif
+
 
 SUBDIRS :=helpers spi config or xml net nt varia test performance examples 
 
