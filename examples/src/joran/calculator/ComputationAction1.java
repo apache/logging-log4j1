@@ -24,7 +24,7 @@ import org.xml.sax.Attributes;
 
 
 /**
- * The ComputationAction will print the result of the compuration made by 
+ * ComputationAction1 will print the result of the compuration made by 
  * children elements but only if the compuration itself is named, that is if the
  * name attribute of the associated computation element is not null. In other
  * words, anonymous computations will not print their result.
