@@ -32,9 +32,11 @@ import java.util.Enumeration;
 
    <p><b>Important note:</b> The <code>AsyncAppender</code> can only
    be script configured using the {@link
-   org.apache.log4j.xml.DOMConfigurator}. Refer to the
-   <code>org/apache/log4j/performace/xml</code> directory for
-   examples.
+   org.apache.log4j.xml.DOMConfigurator}. Refer to example  configuration
+   files <a href="xml/examples/doc-files/sample4.xml">sample4.xml</a>
+   and <a href="xml/examples/doc-files/sample5.xml">sample5.xml</a>.
+
+
    
    @author Ceki G&uuml;lc&uuml;
    @since version 0.9.1 */
