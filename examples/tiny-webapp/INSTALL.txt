@@ -29,8 +29,30 @@ Steps performed on the Java Web Server (Servlet Container)
   For Tomcat, you can add this line directly in ./bin/catalina.sh or
   ./bin/catalina.bat.
 
+   After you start Tomcat, the $TOMCAT_HOME/logs/catalina.out file
+  should contain a line with the following text.
+
+  *** Will use ContextJNDISelector **
+
+  If the above line exists, then you can be certain that setting the
+  log4j.repositorySelector system property had the desired affect.
+
 - You can now run the supplied web-applications hello.war and
   tata.war.
+
+  Alternatively, you can instruct Tomcat to run Hello and Tata
+  directly form LOG4J_HOME. Here is an excerpt from our 'server.xml'
+  file, that is Tomcat's configrationf file.
+
+  <Host name="localhost">
+    <Context 
+      docBase="LOG4J_HOME/examples/tiny-webapp/Hello/WebRoot"
+      path="/hello"/>
+
+    <Context docBase="LOG4J_HOME/examples/tiny-webapp/Tata/WebRoot"
+             path="/tata"/>
+  </Host>    
+
 
 - Optionally, you can add a configuration file such as log4j.xml or
   log4j.properties in the class directory of your *web-server*. For
@@ -40,15 +62,17 @@ Steps performed on the Java Web Server (Servlet Container)
   default logging repository using the configuration file found in
   ./common/classes/ directory.
 
-  For Tomcat version 5 (tested on Tomcat 5.0.19), you also need to
-  tell Tomcat to use log4j by placing commons-logging.jar in
-  ./common/lib directory. You should also remove the
-  commons-logging-api.jar from the ./bin/ directory.
+- Instructing Tomcat to use log4j
+
+  If you would like Tomcat to use log4j and its default repository,
+  you also need to tell Tomcat to use log4j by placing
+  commons-logging.jar in ./common/lib directory. You should also
+  remove the commons-logging-api.jar from the ./bin/ directory.
   
   This way the default (log4j) logger repository will be used by
   Tomcat for its logging and the default logger repository will be
   controlled by the configuration file log4j.xml or log4j.properties
-  found in ./common/classes/.
+  found in ./common/classes/. (Tested on Tomcat 5.0.19 and 5.0.27),
 
 Steps performed per web-application
 ==================================
@@ -114,10 +138,10 @@ Steps performed per web-application
 CAVEAT
 ======
 
-We recommend that you name configuration resources uniquely. In
+We recommend that you name log4j configuration resources uniquely. In
 particualar, avoid naming the log4j configuration resource as
 'log4j.xml' or as 'log4j.properties' for a non-default logger
-repository. For example, the following env-entry is error prone:
+repository. For example, the following env-entry is error-prone:
 
 <env-entry>
    <description>URL for configuring log4j context</description>

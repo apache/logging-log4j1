@@ -4,7 +4,7 @@
 <configuration debug="true" xmlns='http://logging.apache.org/'>
 
   <appender name="FILE" class="org.apache.log4j.FileAppender">
-    <param name="File" value="/tata.log"/>
+    <param name="File" value="tata.log"/>
     <param name="Append" value="false"/>
     <layout class="org.apache.log4j.PatternLayout">
       <param name="ConversionPattern" value="TATA %r %-5p %c - %m%n"/>
