@@ -5,10 +5,11 @@
  * License version 1.1, a copy of which has been included with this
  * distribution in the LICENSE.txt file.  */
 
-package org.apache.log4j.or;
+package org.apache.log4j.or.sax;
 
 import org.apache.log4j.Layout;
 import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.or.ObjectRenderer;
 
 import java.util.Enumeration;
 import org.xml.sax.Attributes;
