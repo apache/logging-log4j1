@@ -222,7 +222,10 @@
 
 	<dt><a
 	href="http://log4cplus.sourceforge.net/"><b>log4cplus</b></a></dt>
-	<dd>A competing port to C++.</dd> 
+	<dd>Log4cplus is a simple to use C++ logging API providing
+	thread-safe, flexible, and arbitrarily granular control over
+	log management and configuration. It is modeled after the Java
+	log4j API.</dd>
 
 	<!-- =========================================================================== -->
 	
