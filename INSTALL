@@ -116,7 +116,9 @@ Building log4j
 Like most java appilicatios today, log4j relies on ANT as its build
 tool. ANT is availale from "http://jakarta.apache.org/ant/".  ANT
 requires a build file called build.xml which is part of this
-distribution.
+distribution. Required components from other projects are specified in
+the build.properties and example of which is supplied in the
+build.properties.sample file.
 
 In case of problems send an e-mail note to
 log4j-user@jakarta.apache.org.  Please do not directly e-mail any of
