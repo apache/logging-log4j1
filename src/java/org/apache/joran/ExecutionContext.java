@@ -49,127 +49,56 @@
 
 package org.apache.joran;
 
-import org.apache.joran.action.*;
-
-import org.apache.log4j.Logger;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-
-import java.util.Iterator;
 import java.util.List;
+import java.util.Stack;
+import java.util.Vector;
 
 
-public class JoranParser {
-  static final Logger logger = Logger.getLogger(JoranParser.class);
-  private RuleStore ruleStore;
-  private ExecutionContext ec;
+/**
+ *
+ * Joran is designed to parse DOM trees
+ *
+ */
+public class ExecutionContext {
+  Stack objectStack;
+	Vector errorList;
+	JoranParser joranParser;
+    
+	public ExecutionContext(JoranParser joranParser) {
+		this.joranParser = joranParser;
+		objectStack = new Stack();
+		errorList = new Vector();
+	}
+	
+	public void addError(String error) {
+		errorList.add(error);
+	}
 
-  JoranParser(RuleStore rs) {
-    ruleStore = rs;
-    ec = new ExecutionContext(this);
+  public List getErrorList() {
+    return errorList;
   }
 
-  public ExecutionContext getExecutionContext() {
-    return ec;
+  public JoranParser getJoranParser() {
+    return joranParser;
   }
 
-  public void parse(Document document) {
-    Pattern currentPattern = new Pattern();
-    Element e = document.getDocumentElement();
-    loop(e, currentPattern);
+  public Stack getObjectStack() {
+    return objectStack;
   }
 
-  void loop(Node n, Pattern currentPattern) {
-    if (n == null) {
-      return;
-    }
+	public Object peekObject() {
+		return objectStack.peek();
+	}
 
-    try {
-      currentPattern.push(n.getNodeName());
-
-      if (n instanceof Element) {
-        logger.debug("pattern is " + currentPattern);
-      }
-
-      List applicableActionList = ruleStore.matchActions(currentPattern);
-
-      //logger.debug("set of applicable patterns: " + applicableActionList);
-
-      if (applicableActionList == null) {
-        applicableActionList = lookupImplicitAction(currentPattern);
-      }
-
-      if (applicableActionList != null) {
-        callBeginAction(applicableActionList, n);
-      }
-
-      if (n.hasChildNodes()) {
-        for (Node c = n.getFirstChild(); c != null; c = c.getNextSibling()) {
-          loop(c, currentPattern);
-        }
-      }
-
-      if (applicableActionList != null) {
-        callEndAction(applicableActionList, n);
-      }
-    } finally {
-      currentPattern.pop();
-    }
+  public void pushObject(Object o) {
+		objectStack.push(o);
   }
-
-  /**
-   * Check if any implicit actions are applicable. As soon as an applicable
-   * action is found, it is returned. Thus, the returned list will have at most
-   * one element.
-   */
-  List lookupImplicitAction(Pattern p) {
-    return null;
+  
+  public Object popObject() {
+    return 	objectStack.pop();
   }
-
-  void callBeginAction(List applicableActionList, Node n) {
-    if (applicableActionList == null) {
-      return;
-    }
-
-    short type = n.getNodeType();
-
-    if (type != Node.ELEMENT_NODE) {
-      return;
-    }
-
-    Element e = (Element) n;
-    String localName = n.getNodeName();
-
-    Iterator i = applicableActionList.iterator();
-
-    while (i.hasNext()) {
-      Action action = (Action) i.next();
-      action.begin(ec, e);
-    }
-  }
-
-  void callEndAction(List applicableActionList, Node n) {
-    if (applicableActionList == null) {
-      return;
-    }
-
-    short type = n.getNodeType();
-
-    if (type != Node.ELEMENT_NODE) {
-      return;
-    }
-
-    Element e = (Element) n;
-    String localName = n.getNodeName();
-    //logger.debug("About to call end actions on node: <" + localName + ">");
-
-    Iterator i = applicableActionList.iterator();
-
-    while (i.hasNext()) {
-      Action action = (Action) i.next();
-      action.end(ec, e);
-    }
+  
+  public Object getObject(int i) {
+		return objectStack.get(i);
   }
 }

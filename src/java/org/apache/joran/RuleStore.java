@@ -51,6 +51,8 @@ package org.apache.joran;
 
 import java.util.List;
 
+import org.apache.joran.action.*;
+
 
 public interface RuleStore {
   public void addRule(Pattern pattern, Action action);
