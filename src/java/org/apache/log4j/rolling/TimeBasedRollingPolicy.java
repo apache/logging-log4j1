@@ -18,6 +18,7 @@ package org.apache.log4j.rolling;
 
 import org.apache.log4j.rolling.helper.Compress;
 import org.apache.log4j.rolling.helper.DateTokenConverter;
+import org.apache.log4j.rolling.helper.FileNamePattern;
 import org.apache.log4j.rolling.helper.RollingCalendar;
 import org.apache.log4j.rolling.helper.Util;
 
@@ -133,7 +134,7 @@ import java.util.Date;
  * @author Ceki G&uuml;lc&uuml;
  * @since 1.3
  */
-public class TimeBasedRollingPolicy extends RollingPolicySkeleton
+public class TimeBasedRollingPolicy extends RollingPolicyBase
   implements TriggeringPolicy {
   static final String FNP_NOT_SET =
     "The FileNamePattern option must be set before using TimeBasedRollingPolicy. ";
@@ -143,10 +144,12 @@ public class TimeBasedRollingPolicy extends RollingPolicySkeleton
   long nextCheck;
   Date lastCheck = new Date();
   String elapsedPeriodsFileName;
-
+  FileNamePattern activeFileNamePattern;
+  
   public void activateOptions() {
     // find out period from the filename pattern
     if (fileNamePatternStr != null) {
+      fileNamePattern = new FileNamePattern(fileNamePatternStr);
       determineCompressionMode();
     } else {
       getLogger().warn(FNP_NOT_SET);
@@ -162,6 +165,23 @@ public class TimeBasedRollingPolicy extends RollingPolicySkeleton
         + "] does not contain a valid DateToken");
     }
 
+    int len = fileNamePatternStr.length();
+    switch(compressionMode) {
+    case Compress.GZ:
+      activeFileNamePattern =
+        new FileNamePattern(fileNamePatternStr.substring(0, len - 3));
+      break;
+      case Compress.ZIP:
+        activeFileNamePattern =
+          new FileNamePattern(fileNamePatternStr.substring(0, len - 4));
+        break;
+       case Compress.NONE:
+        activeFileNamePattern = fileNamePattern;
+     }
+     getLogger().info("Will use the pattern {} for the active file", activeFileNamePattern);
+    
+    
+   
     rc = new RollingCalendar();
     rc.init(dtc.getDatePattern());
     getLogger().debug(
@@ -224,7 +244,7 @@ public class TimeBasedRollingPolicy extends RollingPolicySkeleton
   public String getActiveFileName() {
     getLogger().debug("getActiveLogFileName called");
     if (activeFileName == null) {
-      return fileNamePattern.convert(lastCheck);
+      return activeFileNamePattern.convert(lastCheck);
     } else {
       return activeFileName;
     }
@@ -240,7 +260,7 @@ public class TimeBasedRollingPolicy extends RollingPolicySkeleton
       // We set the elapsedPeriodsFileName before we set the 'lastCheck' variable
       // The elapsedPeriodsFileName corresponds to the file name of the period
       // that just elapsed.
-      elapsedPeriodsFileName = fileNamePattern.convert(lastCheck);
+      elapsedPeriodsFileName = activeFileNamePattern.convert(lastCheck);
       getLogger().debug(
         "elapsedPeriodsFileName set to {}", elapsedPeriodsFileName);
 

@@ -30,7 +30,7 @@ import org.apache.log4j.rolling.helper.FileNamePattern;
  * @author Ceki G&uuml;lc&uuml;
  * @since 1.3
  */
-public abstract class RollingPolicySkeleton implements RollingPolicy {
+public abstract class RollingPolicyBase implements RollingPolicy {
   protected int compressionMode = Compress.NONE;
   protected FileNamePattern fileNamePattern;
   protected String fileNamePatternStr;
@@ -50,21 +50,14 @@ public abstract class RollingPolicySkeleton implements RollingPolicy {
    *
    */
   protected void determineCompressionMode() {
-    int len = fileNamePatternStr.length();
-
-    if (fileNamePatternStr.endsWith(".gz")) {
+     if (fileNamePatternStr.endsWith(".gz")) {
       getLogger().debug("Will use gz compression");
-      fileNamePattern =
-        new FileNamePattern(fileNamePatternStr.substring(0, len - 3));
       compressionMode = Compress.GZ;
     } else if (fileNamePatternStr.endsWith(".zip")) {
       getLogger().debug("Will use zip compression");
-      fileNamePattern =
-        new FileNamePattern(fileNamePatternStr.substring(0, len - 4));
-      compressionMode = Compress.GZ;
+      compressionMode = Compress.ZIP;
     } else {
       getLogger().debug("No compression will be used");
-      fileNamePattern = new FileNamePattern(fileNamePatternStr);
       compressionMode = Compress.NONE;
     }
   }

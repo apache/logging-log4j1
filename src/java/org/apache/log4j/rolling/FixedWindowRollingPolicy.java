@@ -56,7 +56,7 @@ import java.io.File;
  * @author Ceki G&uuml;lc&uuml;
  * @since 1.3
  * */
-public class FixedWindowRollingPolicy extends RollingPolicySkeleton {
+public class FixedWindowRollingPolicy extends RollingPolicyBase {
   int maxIndex;
   int minIndex;
   
