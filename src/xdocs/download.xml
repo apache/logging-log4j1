@@ -97,7 +97,7 @@
 
 	<!-- ============================================================================== -->	
 	
-	<dt><a href="http://qos.ch/"><b>log4j<em>ME</em></b></a></dt>
+	<dt><a href="http://cvs.apache.org/viewcvs/jakarta-log4j/log4jMini/"><b>log4j<em>ME</em></b></a></dt>
 
 	<dd>Log4j<em>ME</em>, or log4j MiniEdition, is based on the
 	same code as log4j. However, as the name indicates the
@@ -106,7 +106,27 @@
 	compatible with log4j standard edition. You can choose to
 	upgrade to log4j standard edition at any time by replacing
 	<em>log4jME.jar</em> with <em>log4j.jar</em> in your
-	classpath.
+	classpath. At this time, log4jME is only available through
+	CVS.
+	</dd>
+	
+       <!-- ============================================================================== -->	
+	
+	<dt><a href="http://www.openfuture.de/Log4Unit/"><b>log4<em>Unit</em></b></a></dt>
+
+	<dd>Log4Unit is a <a
+	href="http://www.junit.org/index.htm">JUnit</a> extension
+	combining JUnit with Log4J. The intention is to create test
+	protocols for JUnit.
+
+        <p>JUnit is asymmetrical in the sense that it focusses on the
+        documentation of test failures and errors. Successful
+        execution of a test case is not further documented. In order
+        to obtain a test protocol that documents the initial settings,
+        the test case execution and its results, a logging component
+        is required. Log4J as the current de facto standard is
+        selected for this extension.
+        </p>
 	</dd>
 
 	<!-- ============================================================================== -->
@@ -173,7 +193,7 @@
       </dl>
     </section>
     
-    <section name="Ports to other languages">
+    <section name="Ports to other languages (listed in alphabetical order)">
 
       <dl>	
 	<!-- =========================================================================== -->
@@ -218,9 +238,18 @@
 	enhanced, however the current release is stable and has been
 	released to CPAN.
 	</dd>
+
+        <!-- ============================================================================== -->	
+        <dt><a href="http://log4ls.sourceforge.net/"><b>log4LS</b></a></dt>
+
+        <dd>Log4LS is a LotusScript library package and is used to get
+         logging statements to a Domino database, sent by mail or
+         written to a file. It is modeled after Jakarta log4j.
+         </dd>
+
 	<!-- =========================================================================== -->	
 	<dt><a
-	href="http://www.neoworks.com/products/log4net/"><b>log4net</b></a></dt>
+	href="http://www.neoworks.com/products/free/log4net/"><b>log4net</b></a></dt>
 
 	<dd>The .NET implementation of the popular log4j Java API
 	providing flexible and arbitrarily granular control over log

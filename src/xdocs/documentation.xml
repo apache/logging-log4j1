@@ -20,7 +20,7 @@
 	  <a
 	  href="http://www.qos.ch/shop/products/clm_t.jsp"><img
 	  align="right" src="images/coverSmall.png"></img></a> <li><a
-	  href="manual.html"><b>short manual</b></a>,
+	  href="manual.html"><b>short manual</b></a>, 
 	  </li>
 	</p>
 
@@ -62,6 +62,15 @@
 	
       </ul>
     </section>
+
+    <section name="Translations to other languages">
+       <ul>
+           <li><a
+           href="http://www.vimeworks.com/~mauricio/manualLog4J.html">Spanish
+           translation</a> of the short manual Mauricio Santacruz (<a href="http://www.vimeworks.com/~mauricio/manualLog4J.pdf">PDF</a>, <a href="http://www.vimeworks.com/~mauricio/manualLog4J.html">HTML</a>)</li>
+       </ul>
+    </section>
+
     
     <section name="Articles on log4j">
       <ul>
