@@ -160,6 +160,8 @@ public class FileAppender extends WriterAppender {
 	errorHandler.error("setFile("+fileName+","+fileAppend+") call failed.",
 			   e, ErrorCode.FILE_OPEN_FAILURE);
       }
+    } else {
+      LogLog.error("Filename option not set for appender ["+name+"].");
     }
   }
 
@@ -171,6 +173,7 @@ public class FileAppender extends WriterAppender {
     // FIXME (remove qwIsOurs)
     if(this.qw != null && this.qwIsOurs) {
       try {
+	LogLog.debug("////////////////////////////////////////////////");
 	this.qw.close();
       }
       catch(java.io.IOException e) {
