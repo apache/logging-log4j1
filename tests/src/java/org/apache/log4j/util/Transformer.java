@@ -16,7 +16,7 @@ public class Transformer {
     Perl5Util util = new Perl5Util();
     String line;
     BufferedReader input = new BufferedReader(new FileReader(in));
-    PrintStream output = new PrintStream(new FileOutputStream(out));
+    PrintStream output = new PrintStream(new FileOutputStream(out, false));
   
     // Initialization of input and output omitted
     while((line = input.readLine()) != null) {

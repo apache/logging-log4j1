@@ -82,13 +82,14 @@
   </target>
 
   
-  <target name="run" depends="OptionConverter, BoundedFIFO, DOM, CustomLevel"/>
+  <target name="run" depends="Minimum, OptionConverter, BoundedFIFO,
+                              DOM, CustomLevel"/>
   
-  <target name="last" depends="build">
+  <target name="Minimum" depends="build">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" />
-      <test name="org.apache.log4j.Last" />
+      <test name="org.apache.log4j.MinimumTestCase" />
     </junit>
   </target>
 
