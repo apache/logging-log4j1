@@ -49,9 +49,9 @@ public class Loop {
       usage("Wrong number of arguments.");
     }
 
-    memPrint();
+    //memPrint();
     loop(1000, logger, "Some fix message of medium length.");
-    memPrint();
+    //memPrint();
 
     long res = loop(runLength, logger, "Some fix message of medium length.");
     double average = (res * 1000.0) / runLength;
@@ -59,7 +59,7 @@ public class Loop {
       "Loop completed in [" + res + "] milliseconds, or [" + average
       + "] microseconds per log.");
 
-    memPrint();
+    //memPrint();
   }
 
   static void usage(String msg) {
@@ -92,9 +92,9 @@ public class Loop {
     long before = System.currentTimeMillis();
     for (int i = 0; i < len; i++) {
       logger.debug(msg);
-      if(i == 1000) {
-        memPrint();
-      }
+      //if(i == 1000) {
+        //memPrint();
+      //}
     }
     return (System.currentTimeMillis() - before);
   }
