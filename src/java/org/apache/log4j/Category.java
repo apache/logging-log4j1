@@ -89,6 +89,7 @@ public class Category implements AppenderAttachable {
   //					   RootCategory(Level.DEBUG));
 
 
+  static int nooptimize;
 
   /**
      The name of this category.
@@ -517,6 +518,7 @@ public class Category implements AppenderAttachable {
   public
   static
   Logger getInstance(String name) {
+     nooptimize++;
     return LogManager.getLogger(name);
   }	
 
@@ -533,6 +535,7 @@ public class Category implements AppenderAttachable {
   public
   static
   Logger getInstance(Class clazz) {
+    nooptimize++;
     return LogManager.getLogger(clazz);
   }	
 

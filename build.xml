@@ -14,7 +14,7 @@
   <!-- prefixed with "env". -->
   <property environment="env"/>
 
-  <property name="version" value="1.2alpha8"/>
+  <property name="version" value="1.2beta1"/>
   
   <!-- The base directory relative to which most targets are built -->
   <property name="base" value="."/>
@@ -72,7 +72,9 @@
 
     jar     - build log4j-core and log4j jar files
 
-    dist    - will create a complete distribution in dist/
+    dist    - will create a complete distribution in dist/ 
+              Setting the env variable NO_JAVADOC will build the distribution
+              with running the javadoc target.
     </echo>
   </target>
 
@@ -293,7 +295,7 @@
 	   doctitle="log4j version ${version}&lt;br&gt;API Specification"
 	   windowtitle="Log4j Version ${version}" 
            header="&lt;b&gt;Log4j ${version}&lt;/b&gt;"
-	   bottom="Please &lt;a href=http://lists.sourceforge.net/mailman/listinfo/log4j-announce&gt;&lt;b&gt;notify me&lt;/b&gt;&lt;/a&gt; about new log4j releases. &lt;hr&gt;"> 
+	   bottom="Copyright 2000-2002 Apache Software Foundation."> 
 		   
            <link offline="true" 
                  href="http://java.sun.com/products/jdk/1.2/docs/api"
@@ -352,9 +354,6 @@
 			  build/*,
 	                  build.bat, build.sh,
 	                  build.xml,
-	                  build/lib/ant-1.4.jar,
-			  build/lib/jaxp-1.1.jar,
-			  build/lib/crimson-1.1.jar,
                           manifest.mf, 
 			  INSTALL, 
 			  LICENSE.APL, 
@@ -368,6 +367,7 @@
 		          **/*.bak, **/goEnv.bat,
 		          **/Makefile, **/goEnv.bat,
 	                  docs/pub-support/*,
+	                  src/java/org/apache/log4j/test/**/*,
 	                  src/java/org/apache/log4j/test/serialization/T/*.jar,
 	                  src/java/org/apache/log4j/test/serialization/T/compile,
 	                  src/java/org/apache/log4j/test/serialization/**/*.class,
