@@ -13,7 +13,7 @@ A:link:hover {
 }
 
 .centercol {
-  margin-top: 100px;
+  margin-top: 120px;
   margin-left: 210px;
   margin-right:210px;
   max-width: 800px;
@@ -30,7 +30,7 @@ A:link:hover {
   position: absolute;
   left:  10px;
   top:   10px; 
-  height: 100px;
+  height: 130px;
   width: 1000px;
 }
 
