@@ -25,7 +25,11 @@ JSOURCES:= Shallow.java\
  UnitTestOptionConverter.java\
  SocketAppenderTest.java\
  PrintProperties.java\
- UnitTestOR.java\
+
+
+ifdef $(ISJDK1)
+  JSOURCES:=$(JSOURCES)  UnitTestOR.java
+endif
 
 SUBDIRS :=
 

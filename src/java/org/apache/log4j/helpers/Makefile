@@ -6,7 +6,7 @@ JSOURCES:=LogLog.java\
 	SyslogWriter.java \
 	QuietWriter.java \
 	CountingQuietWriter.java\
-         SyslogQuietWriter.java\
+        SyslogQuietWriter.java\
 	OptionConverter.java\
 	DateLayout.java\
 	RelativeTimeDateFormat.java\
@@ -20,6 +20,8 @@ JSOURCES:=LogLog.java\
 	BoundedFIFO.java\
 	FileWatchdog.java\
 	Loader.java\
+
+
 
 SUBDIRS := 
 

@@ -27,6 +27,7 @@ import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.NullEnumeration;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.helpers.AppenderAttachableImpl;
+import org.apache.log4j.helpers.Loader;
 import org.apache.log4j.or.RendererMap;
 import org.apache.log4j.or.ObjectRenderer;
 
@@ -132,8 +133,8 @@ public class Category implements AppenderAttachable {
 	// so, resource is not a URL:
 	// attempt to get the resource from the class path
 	url = new URL(resource);
-      } catch (MalformedURLException ex) {	
-	url = org.apache.log4j.helpers.Loader.getResource(resource, Category.class);
+      } catch (MalformedURLException ex) {
+	  url = Loader.getResource(resource, Object.class); 
       }	
       
       // If we have a non-null url, then delegate the rest of the
@@ -458,6 +459,7 @@ public class Category implements AppenderAttachable {
      is returned.
      
      @return Enumeration An enumeration of the appenders in this category.  */
+  synchronized
   public
   Enumeration getAllAppenders() {
     if(aai == null)
@@ -471,6 +473,7 @@ public class Category implements AppenderAttachable {
 
      <p>Return the appender with that name if in the list. Return
      <code>null</code> otherwise.  */
+  synchronized
   public
   Appender getAppender(String name) {
      if(aai == null || name == null)
