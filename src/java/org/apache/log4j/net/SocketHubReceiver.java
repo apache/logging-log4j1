@@ -60,6 +60,14 @@ extends Receiver implements SocketNodeEventListener, PortBased {
   }
   
   /**
+   * Configures the Host property, this will require activateOptions
+   * to be called for this to take effect.
+   * @param host
+   */
+  public void setHost(String host){
+  	this.host = host;
+  }
+  /**
     Set the remote host to connect to for logging events. */
   public void setPort(String _host) {
     host = _host;
