@@ -63,35 +63,41 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
+import javax.swing.event.EventListenerList;
+
 
 /**
- * Integrates a ChainsawAppender and a LogUI instance by registering
- * itself as a sub-appender of a ChainsawAppender (and therefore receives
- * any events the ChainsawAppender receives, and queues up those events.
- *
- * The Queued LoggingEvents are then periodically processed/converted into
- * Vectors of event information that are then forwared into the LogUI instance
+ * A handler class that either extends a particular appender hierarchy or can be bound
+ * into the Log4j appender framework, and queues events, to be later
+ * dispatched to registered/interested parties.
  *
  * @author Scott Deboy <sdeboy@apache.org>
+ * @author Paul Smith <psmith@apache.org>
  *
  */
 public class ChainsawAppenderHandler extends AppenderSkeleton {
   private ChainsawAppender appender;
-  private LogUI logUI;
   private WorkQueue worker;
   private final Object mutex = new Object();
   private int sleepInterval = 1000;
+  private EventListenerList listenerList = new EventListenerList();
 
-  public ChainsawAppenderHandler(LogUI logUI, ChainsawAppender appender) {
+  public ChainsawAppenderHandler(ChainsawAppender appender) {
     this.appender = appender;
-    this.logUI = logUI;
     appender.addAppender(this);
     activateOptions();
   }
 
-  public ChainsawAppenderHandler(LogUI logUI) {
-    this.logUI = logUI;
+  public ChainsawAppenderHandler() {
     activateOptions();
+  }
+
+  public void addEventBatchListener(EventBatchListener l) {
+    listenerList.add(EventBatchListener.class, l);
+  }
+
+  public void removeEventBatchListener(EventBatchListener l) {
+    listenerList.remove(EventBatchListener.class, l);
   }
 
   public void append(LoggingEvent event) {
@@ -217,6 +223,108 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
   }
 
   /**
+   * Determines an appropriate title for the Tab for the Tab Pane
+   * by locating a the log4jmachinename property
+   * @param v
+   * @return
+   */
+  private static String getTabIdentifier(Vector v) {
+    int fieldIndex =
+      ChainsawColumns.getColumnsNames().indexOf(
+        ChainsawConstants.PROPERTIES_COL_NAME);
+
+    if (fieldIndex < 0) {
+      return ChainsawConstants.UNKNOWN_TAB_NAME;
+    }
+
+    String properties = (String) v.get(fieldIndex);
+
+    String machinekey = ChainsawConstants.LOG4J_MACHINE_KEY + "=";
+    String machinename = null;
+    int machineposition = properties.indexOf(machinekey) + machinekey.length();
+    int machinelength = properties.indexOf(",", machineposition);
+
+    if (machinelength == -1) {
+      machinelength = properties.length();
+    }
+
+    if (machineposition >= machinekey.length()) {
+      machinename = properties.substring(machineposition, machinelength);
+
+      int dotposition = machinename.indexOf(".");
+      boolean isnumeric = true;
+
+      if (dotposition > -1) {
+        char[] firstdotpart =
+          machinename.substring(0, dotposition).toCharArray();
+
+        for (int i = 0; i < firstdotpart.length; i++) {
+          isnumeric = isnumeric && Character.isDigit(firstdotpart[i]);
+        }
+
+        if (!isnumeric) {
+          machinename = machinename.substring(0, dotposition);
+        }
+      }
+    }
+
+    String appkey = ChainsawConstants.LOG4J_APP_KEY + "=";
+    String appname = null;
+    int appposition = properties.indexOf(appkey) + appkey.length();
+
+    if (appposition >= appkey.length()) {
+      int applength = properties.indexOf(",", appposition);
+
+      if (applength == -1) {
+        applength = properties.length();
+      }
+
+      appname = properties.substring(appposition, applength);
+    }
+
+    StringBuffer ident = new StringBuffer();
+
+    if (machinename != null) {
+      ident.append(machinename);
+    }
+
+    if (appname != null) {
+      ident.append("-");
+      ident.append(appname);
+    }
+
+    if (ident.length() == 0) {
+      /**
+           * Maybe there's a Remote Host entry?
+           */
+      String remoteHostKey = ChainsawConstants.LOG4J_REMOTEHOST_KEY + "=";
+      String remoteHost = null;
+      int rhposition =
+        properties.indexOf(remoteHostKey) + remoteHostKey.length();
+
+      if (rhposition >= remoteHostKey.length()) {
+        int rhlength = properties.indexOf(":", rhposition);
+
+        if (rhlength == -1) {
+          rhlength = properties.length();
+        }
+
+        remoteHost = properties.substring(rhposition, rhlength);
+      }
+
+      if (remoteHost != null) {
+        ident.append(remoteHost);
+      }
+    }
+
+    if (ident.length() == 0) {
+      ident.append(ChainsawConstants.UNKNOWN_TAB_NAME);
+    }
+
+    return ident.toString();
+  }
+
+  /**
    * Queue of Events are placed in here, which are picked up by an
    * asychronous thread.  The WorkerThread looks for events once a second and
    * processes all events accumulated during that time..
@@ -281,12 +389,13 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
               }
 
               Vector convertedEventVector = convert(e);
-              String ident = logUI.getTabIdentifier(convertedEventVector);
+              String ident = getTabIdentifier(convertedEventVector);
               eventBatch.addEvent(ident, eventType, convertedEventVector);
             }
 
-            logUI.receiveEventBatch(eventBatch);
+            dispatchEventBatch(eventBatch);
 
+            //            logUI.receiveEventBatch(eventBatch);
             innerList.clear();
           }
 
@@ -294,6 +403,39 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
             Thread.sleep(getQueueInterval());
           } catch (InterruptedException ie) {
           }
+        }
+      }
+
+      /**
+      * Dispatches the event batches contents to all the interested parties
+      * by iterating over each identifier and dispatching the
+      * ChainsawEventBatchEntry object to each listener that is interested.
+       * @param eventBatch
+       */
+      private void dispatchEventBatch(ChainsawEventBatch eventBatch) {
+        EventBatchListener[] listeners =
+          (EventBatchListener[]) listenerList.getListeners(
+            EventBatchListener.class);
+
+        for (Iterator iter = eventBatch.identifierIterator(); iter.hasNext();) {
+          String identifier = (String) iter.next();
+          List eventList = null;
+
+          for (int i = 0; i < listeners.length; i++) {
+            EventBatchListener listener = listeners[i];
+
+            if (
+              (listener.getInterestedIdentifier() == null)
+                || listener.getInterestedIdentifier().equals(identifier)) {
+              if (eventList == null) {
+                eventList = eventBatch.entrySet(identifier);
+              }
+
+              listener.receiveEventBatch(identifier, eventList);
+            }
+          }
+
+          eventList = null;
         }
       }
     }
