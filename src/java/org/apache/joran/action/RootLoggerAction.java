@@ -91,7 +91,7 @@ public class RootLoggerAction extends Action {
         "The object on the top the of the stack is not the root logger");
         logger.warn("It is: "+o);
     } else {
-      logger.debug("Removing root logger from stack.");
+      logger.debug("Removing root logger from top of stack.");
       ec.popObject();
     }
   }

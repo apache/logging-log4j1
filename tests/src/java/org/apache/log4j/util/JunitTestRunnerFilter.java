@@ -47,15 +47,28 @@
  *
  */
 
-package org.apache.joran;
+package org.apache.log4j.util;
 
-import java.util.List;
-
-import org.apache.joran.action.*;
+import org.apache.oro.text.perl.Perl5Util;
 
 
-public interface RuleStore {
-  public void addRule(Pattern pattern, Action action);
-  
-  public List matchActions(Pattern pattern);
+public class JunitTestRunnerFilter implements Filter {
+  Perl5Util util = new Perl5Util();
+
+  /**
+   * Filter out stack trace lines coming from the various JUnit TestRunners.
+   */
+  public String filter(String in) {
+    if(in == null) 
+     return null;
+     
+    if (util.match("/at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner/", in)) {
+      return null;
+    } else if (util.match("/at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner/", in)) {
+          return in;
+    } else {
+      return in;
+    }
+  }
+ 
 }

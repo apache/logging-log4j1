@@ -1,6 +1,7 @@
 package org.apache.joran.action;
 
 import org.apache.joran.ExecutionContext;
+import org.apache.joran.helper.Option;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.Loader;
@@ -23,7 +24,7 @@ public class LoggerAction extends Action {
 
     // Create a new org.apache.log4j.Category object from the <category> element.
     String loggerName = loggerElement.getAttribute(ActionConst.NAME_ATTRIBUTE);
-    if(loggerName == null || ActionConst.EMPTY_STR.equals(loggerName)) {
+    if(Option.isEmpty(loggerName)) {
       inError = true;
 			String errorMsg = "No 'name' attribute in element "
 				+loggerElement.getTagName();

@@ -50,90 +50,116 @@
 package org.apache.joran.action;
 
 import org.apache.joran.ExecutionContext;
-import org.apache.joran.helper.Option;
 
-import org.apache.log4j.Appender;
 import org.apache.log4j.Logger;
-import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.config.PropertySetter;
+import org.apache.log4j.helpers.Loader;
 import org.apache.log4j.spi.OptionHandler;
 
 import org.w3c.dom.Element;
 
-import java.util.HashMap;
 
+/**
+ * @author Ceki G&uuml;lc&uuml;
+ *
+ */
+public class NestComponentIA extends ImplicitAction {
+  static final Logger logger = Logger.getLogger(NestComponentIA.class);
 
-public class AppenderAction extends Action {
-  static final Logger logger = Logger.getLogger(AppenderAction.class);
-  Appender appender;
+  Object nestedComponent;
+  int containmentType;
+  PropertySetter parentBean;
+  
+  public boolean isApplicable(Element nestedElement, ExecutionContext ec) {
+    inError = false;
+    Object o = ec.peekObject();
+    parentBean = new PropertySetter(o);
 
-  /**
-   * Instantiates an appender of the given class and sets its name.
-   *
-   * The appender thus generated is placed in the ExecutionContext appender bag.
-   */
-  public void begin(ExecutionContext ec, Element appenderElement) {
-    String className =
-      appenderElement.getAttribute(ActionConst.CLASS_ATTRIBUTE);
+    String nestedElementTagName = nestedElement.getTagName();
 
-    try {
-      logger.debug(
-        "About to instantiate appender of type [" + className + "]");
+    containmentType = parentBean.canContainComponent(nestedElementTagName);
 
-      Object instance =
-        OptionConverter.instantiateByClassName(
-          className, org.apache.log4j.Appender.class, null);
-      appender = (Appender) instance;
+    switch (containmentType) {
+    case PropertySetter.NOT_FOUND:
+      return false;
 
-      String appenderName =
-        appenderElement.getAttribute(ActionConst.NAME_ATTRIBUTE);
+    case PropertySetter.AS_COLLECTION:
+      return true;
 
-      if (Option.isEmpty(appenderName)) {
-        logger.warn(
-          "No appender name given for appender of type " + className + "].");
-      } else {
-        appender.setName(appenderName);
-        logger.debug("Appender named as [" + appenderName + "]");
-      }
-
-      HashMap appenderBag =
-        (HashMap) ec.getObjectMap().get(ActionConst.APPENDER_BAG);
-      appenderBag.put(appenderName, appender);
-
-      logger.debug("Pushing appender on to the object stack.");
-      ec.pushObject(appender);
-    } catch (Exception oops) {
-      inError = true;
-      logger.error(
-        "Could not create an Appender. Reported error follows.", oops);
-      ec.addError("Could not create appender of type " + className + "].");
+    case PropertySetter.AS_PROPERTY:
+      return true;
+      
+      default: 
+      inError= true;
+      ec.addError("PropertySetter.canContainComponent returned "+containmentType);
+      return false;
     }
   }
 
-  /**
-   * Once the children elements are also parsed, now is the time to activate
-   * the appender options.
-   */
+  public void begin(ExecutionContext ec, Element e) {
+    // inError was reset in isApplicable. It should not be touched here
+
+      String className = e.getAttribute(ActionConst.CLASS_ATTRIBUTE);
+      
+      String tagName = e.getTagName();
+      if(className == null || ActionConst.EMPTY_STR.equals(className)) {
+        inError = true;
+        String errMsg = "No class name attribute in <"+tagName+">";
+        logger.error(errMsg);
+        ec.addError(errMsg);
+        return;
+      }
+      
+      try {
+        logger.debug("About to instantiate component <"+tagName+ "> of type [" + className + "]");
+
+        nestedComponent = Loader.loadClass(className).newInstance();
+         
+            
+        logger.debug("Pushing component <"+tagName+"> on top of the object stack.");
+        ec.pushObject(nestedComponent);
+      } catch (Exception oops) {
+        inError = true;      
+        String msg =  "Could not create component <"+tagName+">.";
+        logger.error(msg, oops);
+        ec.addError(msg);
+      }
+  }
+
   public void end(ExecutionContext ec, Element e) {
     if (inError) {
-      return;
-    }
+        return;
+      }
 
-    if (appender instanceof OptionHandler) {
-      ((OptionHandler) appender).activateOptions();
-    }
+      if (nestedComponent instanceof OptionHandler) {
+        ((OptionHandler) nestedComponent).activateOptions();
+      }
 
-    Object o = ec.peekObject();
+      Object o = ec.peekObject();
 
-    if (o != appender) {
-      logger.warn(
-        "The object at the of the stack is not the appender named ["
-        + appender.getName() + "] pushed earlier.");
-    } else {
-      logger.warn(
-        "Popping appender named [" + appender.getName()
-        + "] from the object stack");
-      ec.popObject();
-    }
+      if (o != nestedComponent) {
+        logger.warn(
+          "The object on the top the of the stack is not the component pushed earlier.");
+      } else {
+        logger.warn("Removing component from the object stack");
+        ec.popObject();
+       
+         
+        String tagName =  e.getTagName();
+        // Now let us attach the component
+        switch (containmentType) {
+        case PropertySetter.AS_PROPERTY:
+        logger.debug("Setting ["+tagName+"] to parent.");
+          parentBean.setComponent(tagName, nestedComponent);
+          break;
+
+        case PropertySetter.AS_COLLECTION:
+        logger.debug("Adding ["+tagName+"] to parent.");
+          parentBean.addComponent(e.getTagName(), nestedComponent);
+
+          break;
+        } 
+      }
   }
 
   public void finish(ExecutionContext ec) {
