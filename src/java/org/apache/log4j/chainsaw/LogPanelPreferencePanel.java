@@ -55,6 +55,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Iterator;
@@ -88,6 +90,7 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.helpers.LogLog;
 
 
 /**
@@ -96,6 +99,15 @@ import org.apache.log4j.chainsaw.icons.ChainsawIcons;
  * @author Paul Smith
  */
 public class LogPanelPreferencePanel extends JPanel {
+	/**
+	 *
+	 */
+	private class ModifiableListModel extends DefaultListModel {
+		public void fireContentsChanged(){
+			fireContentsChanged(this,0, this.size());
+		}
+
+	}
   private final LogPanelPreferenceModel committedPreferenceModel;
   private final JLabel titleLabel = new JLabel("Selected Pref Panel");
   private final JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
@@ -256,6 +268,13 @@ public class LogPanelPreferencePanel extends JPanel {
     LogPanelPreferenceModel model = new LogPanelPreferenceModel();
     LogPanelPreferencePanel panel = new LogPanelPreferencePanel(model);
     f.getContentPane().add(panel);
+    
+    model.addPropertyChangeListener(new PropertyChangeListener(){
+
+		public void propertyChange(PropertyChangeEvent evt) {
+			LogLog.warn(evt.toString());
+			
+		}});
     panel.setOkCancelActionListener(
       new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -392,7 +411,7 @@ public class LogPanelPreferencePanel extends JPanel {
 	 * @author Paul Smith
 	 *
 	 */
-  public class CheckListCellRenderer extends JCheckBox
+  public abstract class CheckListCellRenderer extends JCheckBox
     implements ListCellRenderer {
     private final Border noFocusBorder =
       BorderFactory.createEmptyBorder(1, 1, 1, 1);
@@ -422,9 +441,15 @@ public class LogPanelPreferencePanel extends JPanel {
         cellHasFocus ? UIManager.getBorder("List.focusCellHighlightBorder")
                      : noFocusBorder);
 
-      //		TODO check the model if this is selected
+      setSelected(isSelected(value));
       return this;
     }
+
+	/**
+	 * @param value
+	 * @return
+	 */
+	protected abstract boolean isSelected(Object value);
   }
 
 	/**
@@ -447,7 +472,7 @@ public class LogPanelPreferencePanel extends JPanel {
       final JList columnList = new JList();
       columnList.setVisibleRowCount(10);
 
-      DefaultListModel listModel = new DefaultListModel();
+      final ModifiableListModel listModel = new ModifiableListModel();
 
       for (
         Iterator iter = ChainsawColumns.getColumnsNames().iterator();
@@ -458,7 +483,31 @@ public class LogPanelPreferencePanel extends JPanel {
 
       columnList.setModel(listModel);
 
-      CheckListCellRenderer cellRenderer = new CheckListCellRenderer();
+      CheckListCellRenderer cellRenderer = new CheckListCellRenderer(){
+
+		protected boolean isSelected(Object value) {
+			return LogPanelPreferencePanel.this.getModel().isColumnVisible(value.toString());
+		}};
+		
+	  getModel().addPropertyChangeListener("visibleColumns", new PropertyChangeListener(){
+
+		public void propertyChange(PropertyChangeEvent evt) {
+			listModel.fireContentsChanged();
+			
+		}});
+	   
+	  columnList.addMouseListener(new MouseAdapter(){
+	  	public void mouseClicked(MouseEvent e){
+	  		if(e.getClickCount()>1 && (e.getModifiers() & MouseEvent.BUTTON1_MASK)>0){
+	  			int i = columnList.locationToIndex(e.getPoint());
+	  			if(i>=0){
+		  			Object column = listModel.get(i);
+		  			getModel().toggleColumn(column.toString());
+	  			}
+	  		}else {
+	  		}
+	  	}
+	  });
       columnList.setCellRenderer(cellRenderer);
       columnBox.add(new JScrollPane(columnList));
 
@@ -467,7 +516,7 @@ public class LogPanelPreferencePanel extends JPanel {
     }
 
     public String toString() {
-      return "<html>Columns <i>(Work in progress)</i></html>";
+      return "Columns";
     }
   }
 }
