@@ -25,8 +25,6 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.spi.AppenderAttachable;
 
 import org.xml.sax.Attributes;
-import org.xml.sax.Locator;
-
 import java.util.HashMap;
 
 
@@ -34,7 +32,7 @@ public class AppenderRefAction extends Action {
   static final Logger logger = Logger.getLogger(AppenderRefAction.class);
 
   public void begin(
-    ExecutionContext ec, String localName, Attributes attributes, Locator locator) {
+    ExecutionContext ec, String localName, Attributes attributes) {
     // Let us forget about previous errors (in this object)
     inError = false;
 

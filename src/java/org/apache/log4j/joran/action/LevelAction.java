@@ -8,8 +8,6 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.Loader;
 import org.apache.log4j.helpers.OptionConverter;
 import org.xml.sax.Attributes;
-import org.xml.sax.Locator;
-
 import java.lang.reflect.Method;
 
 public class LevelAction extends Action {
@@ -24,7 +22,7 @@ public class LevelAction extends Action {
 
   static final Class[] ONE_STRING_PARAM = new Class[] { String.class };
 
-  public void begin(ExecutionContext ec, String name, Attributes attributes, Locator locator) {
+  public void begin(ExecutionContext ec, String name, Attributes attributes) {
     
 		Object o = ec.peekObject();
 		

@@ -26,7 +26,6 @@ import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.LoggerRepository;
 
 import org.xml.sax.Attributes;
-import org.xml.sax.Locator;
 
 import java.lang.reflect.Method;
 
@@ -34,7 +33,7 @@ import java.lang.reflect.Method;
 public class LoggerAction extends Action {
   Logger logger = Logger.getLogger(LoggerAction.class);
 
-  public void begin(ExecutionContext ec, String name, Attributes attributes, Locator locator) {
+  public void begin(ExecutionContext ec, String name, Attributes attributes) {
     // Let us forget about previous errors (in this object)
     inError = false;
 
@@ -46,12 +45,12 @@ public class LoggerAction extends Action {
     if (Option.isEmpty(loggerName)) {
       inError = true;
 
-      String line = null;
-      if(locator != null) {
-        line = ", around line "+locator.getLineNumber()+" column "+locator.getColumnNumber();
-      } 
+      String line =
+        ", around line " + getLineNumber(ec) + " column "
+        + getColumnNumber(ec);
+
       String errorMsg = "No 'name' attribute in element " + name + line;
-     
+
       logger.warn(errorMsg);
       ec.addError(errorMsg);
 

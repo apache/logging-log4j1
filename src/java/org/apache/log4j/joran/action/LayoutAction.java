@@ -26,7 +26,6 @@ import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.OptionHandler;
 
 import org.xml.sax.Attributes;
-import org.xml.sax.Locator;
 
 
 public class LayoutAction extends Action {
@@ -37,7 +36,7 @@ public class LayoutAction extends Action {
    * Instantiates an layout of the given class and sets its name.
    *
    */
-  public void begin(ExecutionContext ec, String name, Attributes attributes, Locator locator) {
+  public void begin(ExecutionContext ec, String name, Attributes attributes) {
 		// Let us forget about previous errors (in this object)
 		inError = false; 
 

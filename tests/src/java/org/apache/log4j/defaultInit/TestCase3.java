@@ -8,8 +8,6 @@
 package org.apache.log4j.defaultInit;
 
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import junit.framework.Test;
 
 import java.util.Enumeration;
 
