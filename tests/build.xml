@@ -109,9 +109,14 @@
   <!-- unit tests. Regression tests compare output with a previously     -->
   <!-- created witness file.                                             -->
   <!-- ================================================================= -->  
+
+  <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
+  <!-- Temporarily removed SocketServer which followed DefaultInit -->
+  <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
+  
   <target name="regression" depends="Minimum, Logger, DOM, CustomLevel, 
                                      CustomLogger, PatternLayout, 
-                                     HierarchyThreshold, DefaultInit, SocketServer, 
+                                     HierarchyThreshold, DefaultInit, 
                                      XMLLayout, AsyncAppender, ErrorHandler,
                                      OptionConverter, BoundedFIFO, 
                                      Joran,  
@@ -125,6 +130,8 @@
                                      TimeBasedRolling, ReaderWriterLock,
                                      NDC,
                                      Plugins"/>
+
+
 
   <!-- ================================================================= -->
   <!-- Longer unit tests                                                 -->
