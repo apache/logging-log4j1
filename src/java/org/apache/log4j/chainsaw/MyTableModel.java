@@ -148,32 +148,32 @@ class MyTableModel
     // Table Methods
     ////////////////////////////////////////////////////////////////////////////
 
-    /** @see TableModel **/
+    /** @see javax.swing.table.TableModel **/
     public int getRowCount() {
         synchronized (mLock) {
             return mFilteredEvents.length;
         }
     }
 
-    /** @see TableModel **/
+    /** @see javax.swing.table.TableModel **/
     public int getColumnCount() {
         // does not need to be synchronized
         return COL_NAMES.length;
     }
 
-    /** @see TableModel **/
+    /** @see javax.swing.table.TableModel **/
     public String getColumnName(int aCol) {
         // does not need to be synchronized
         return COL_NAMES[aCol];
     }
 
-    /** @see TableModel **/
+    /** @see javax.swing.table.TableModel **/
     public Class getColumnClass(int aCol) {
         // does not need to be synchronized
         return (aCol == 2) ? Boolean.class : Object.class;
     }
 
-    /** @see TableModel **/
+    /** @see javax.swing.table.TableModel **/
     public Object getValueAt(int aRow, int aCol) {
         synchronized (mLock) {
             final EventDetails event = mFilteredEvents[aRow];
