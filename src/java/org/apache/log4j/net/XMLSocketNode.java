@@ -50,6 +50,7 @@
 package org.apache.log4j.net;
 
 import org.apache.log4j.*;
+import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.plugins.Receiver;
 import org.apache.log4j.spi.*;
 
@@ -59,7 +60,7 @@ import java.io.InputStream;
 import java.net.Socket;
 
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
 
 
 /**
@@ -94,8 +95,11 @@ public class XMLSocketNode implements Runnable {
         this.decoder = (Decoder) o;
       }
     } catch (ClassNotFoundException cnfe) {
+    	LogLog.warn("Unable to find decoder", cnfe);
     } catch (IllegalAccessException iae) {
+		LogLog.warn("Unable to construct decoder", iae);
     } catch (InstantiationException ie) {
+		LogLog.warn("Unable to construct decoder", ie);
     }
 
     this.socket = socket;
@@ -113,8 +117,11 @@ public class XMLSocketNode implements Runnable {
         this.decoder = (Decoder) o;
       }
     } catch (ClassNotFoundException cnfe) {
+    	LogLog.warn("Unable to find decoder", cnfe);
     } catch (IllegalAccessException iae) {
+		LogLog.warn("Unable to construct decoder", iae);
     } catch (InstantiationException ie) {
+		LogLog.warn("Unable to construct decoder", ie);
     }
 
     this.socket = socket;
@@ -159,7 +166,7 @@ public class XMLSocketNode implements Runnable {
             while (true) {
                 byte[] b=new byte[1024];
                 is.read(b);
-                Vector v= decoder.decodeEvents(new String(b).trim());
+                List v= decoder.decodeEvents(new String(b).trim());
 
             if (v != null) {
               Iterator iter = v.iterator();
@@ -220,7 +227,7 @@ public class XMLSocketNode implements Runnable {
         is.close();
       }
     } catch (Exception e) {
-      //logger.info("Could not close connection.", e);
+		//logger.info("Could not close connection.", e);
     }
 
     // send event to listener, if configured

@@ -62,7 +62,7 @@ import java.net.SocketException;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
 
 
 /**
@@ -124,11 +124,15 @@ public class UDPReceiver extends Receiver implements PortBased{
         this.decoderImpl = (Decoder) o;
       }
     } catch (ClassNotFoundException cnfe) {
+    	LogLog.warn("Unable to find decoder", cnfe);
     } catch (IllegalAccessException iae) {
+    	LogLog.warn("Could not construct decoder", iae);
     } catch (InstantiationException ie) {
+    	LogLog.warn("Could not construct decoder", ie);
     }
 
     try {
+      isActive=true;
       socket = new DatagramSocket(port);
       receiverThread = new UDPReceiverThread();
       receiverThread.start();
@@ -140,7 +144,7 @@ public class UDPReceiver extends Receiver implements PortBased{
   }
 
   class UDPHandlerThread extends Thread {
-    private ArrayList list = new ArrayList();
+    private List list = new ArrayList();
 
     public UDPHandlerThread() {
       setDaemon(true);
@@ -168,7 +172,7 @@ public class UDPReceiver extends Receiver implements PortBased{
 
           while (iter.hasNext()) {
             String data = (String) iter.next();
-			Vector v= decoderImpl.decodeEvents(data);
+			List v= decoderImpl.decodeEvents(data);
 
             if (v != null) {
               Iterator eventIter = v.iterator();

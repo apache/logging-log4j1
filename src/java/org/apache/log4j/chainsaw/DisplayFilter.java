@@ -78,6 +78,9 @@ import java.util.Vector;
  * @author Scott Deboy <sdeboy@apache.org>
  */
 public class DisplayFilter implements Serializable {
+
+  static final long serialVersionUID = 5583905936243239630L;
+
   private static final DateFormat DATE_FORMATTER =
     new SimpleDateFormat(ChainsawConstants.DATETIME_FORMAT);
   private transient Vector filterListeners = new Vector();

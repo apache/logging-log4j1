@@ -56,6 +56,7 @@ import org.apache.log4j.spi.LoggerRepository;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import java.util.List;
 import java.util.Vector;
 
 
@@ -78,7 +79,7 @@ public class XMLSocketReceiver extends Receiver implements Runnable, PortBased {
   //default to log4j xml decoder
   protected String decoder = "org.apache.log4j.xml.XMLDecoder";
   private ServerSocket serverSocket;
-  private Vector socketList = new Vector();
+  private List socketList = new Vector();
 
   public XMLSocketReceiver() {
   }
@@ -131,6 +132,13 @@ public class XMLSocketReceiver extends Receiver implements Runnable, PortBased {
     return false;
   }
 
+  public int hashCode() {
+  	
+  	int result = 37 * (repository != null? repository.hashCode():0);
+  	result = result * 37 + port;
+  	return (result * 37 + (getName() != null? getName().hashCode():0));
+  }
+  	
   /**
     Returns true if this receiver is active. */
   public synchronized boolean isActive() {
@@ -161,7 +169,7 @@ public class XMLSocketReceiver extends Receiver implements Runnable, PortBased {
         serverSocket.close();
       }
     } catch (Exception e) {
-      // ignore for now
+    	//ignore for now
     }
 
     // close all of the accepted sockets
@@ -169,7 +177,7 @@ public class XMLSocketReceiver extends Receiver implements Runnable, PortBased {
       try {
         ((Socket) socketList.get(x)).close();
       } catch (Exception e) {
-        // ignore for now
+    	//ignore for now
       }
     }
 

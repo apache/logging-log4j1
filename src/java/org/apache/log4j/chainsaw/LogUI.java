@@ -360,13 +360,17 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
         public void loadSettings(LoadSettingsEvent event) {
           String configFile = event.getSetting(LogUI.CONFIG_FILE_TO_USE);
 
-          if ((configFile != null) && !configFile.trim().equals("")) {
+          //if both a config file are defined and a log4j.configuration property are set,  
+          //don't use configFile's configuration
+          if ((configFile != null) && !configFile.trim().equals("") && System.getProperty("log4j.configuration") == null) {
             try {
               URL url = new URL(configFile);
               OptionConverter.selectAndConfigure(
                 url, null, LogManager.getLoggerRepository());
-              LogUI.this.getStatusBar().setMessage(
-                "Configured Log4j using remembered URL :: " + url);
+                if (LogUI.this.getStatusBar() != null) {
+	              LogUI.this.getStatusBar().setMessage(
+                	"Configured Log4j using remembered URL :: " + url);
+                }
               LogUI.this.configURLToUse = url;
             } catch (Exception e) {
               LogLog.error("error occurred initializing log4j", e);
@@ -988,9 +992,9 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    * @param v
    */
   private void addRows(final String ident, final List eventBatchEntrys) {
-    final EventContainer tableModel;
-    final JSortTable table;
-    final ScrollToBottom scrollToBottom;
+    EventContainer tableModel;
+    JSortTable table;
+    ScrollToBottom scrollToBottom;
     HashMap map = null;
 
     if (!isGUIFullyInitialized) {
