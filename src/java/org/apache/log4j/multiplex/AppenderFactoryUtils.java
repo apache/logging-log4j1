@@ -70,7 +70,9 @@ public class AppenderFactoryUtils {
 					fileAppender.activateOptions();
 					return fileAppender;
 				} catch (Exception ex) {
-					throw new RuntimeException(ex);
+					//throw new RuntimeException(ex);
+          throw new RuntimeException();
+
 				}
 			}
 
