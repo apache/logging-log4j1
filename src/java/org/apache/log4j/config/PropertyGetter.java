@@ -32,7 +32,7 @@ public class PropertyGetter {
   }
   
   /**
-    Create a new PropertySetter for the specified Object. This is done
+    Create a new PropertyGetter for the specified Object. This is done
     in prepartion for invoking {@link
     #getProperties(PropertyGetter.PropertyCallback, String)} one or
     more times.
@@ -58,31 +58,31 @@ public class PropertyGetter {
   public
   void getProperties(PropertyCallback callback, String prefix) {
     for (int i = 0; i < props.length; i++) {
-        Method getter = props[i].getReadMethod();
-        if (getter == null) continue;
-        if (!isHandledType(getter.getReturnType())) {
-          //System.err.println("Ignoring " + props[i].getName() +" " + getter.getReturnType());
-          continue;
-        }
-        String name = props[i].getName();
-        try {
-          Object result = getter.invoke(obj, NULL_ARG);
-          //System.err.println("PROP " + name +": " + result);
-          if (result != null) {
-            callback.foundProperty(obj, prefix, name, result);
-          }
-        } catch (Exception ex) {
-          LogLog.warn("Failed to get value of property " + name);
-        }
+      Method getter = props[i].getReadMethod();
+      if (getter == null) continue;
+      if (!isHandledType(getter.getReturnType())) {
+	//System.err.println("Ignoring " + props[i].getName() +" " + getter.getReturnType());
+	continue;
+      }
+      String name = props[i].getName();
+      try {
+	Object result = getter.invoke(obj, NULL_ARG);
+	//System.err.println("PROP " + name +": " + result);
+	if (result != null) {
+	  callback.foundProperty(obj, prefix, name, result);
+	}
+      } catch (Exception ex) {
+	LogLog.warn("Failed to get value of property " + name);
+      }
     }
   }
   
   protected
   boolean isHandledType(Class type) {
     return String.class.isAssignableFrom(type) ||
-           Integer.TYPE.isAssignableFrom(type) ||
-           Long.TYPE.isAssignableFrom(type)    ||
-           Boolean.TYPE.isAssignableFrom(type) ||
-           Priority.class.isAssignableFrom(type);
+      Integer.TYPE.isAssignableFrom(type) ||
+      Long.TYPE.isAssignableFrom(type)    ||
+      Boolean.TYPE.isAssignableFrom(type) ||
+      Priority.class.isAssignableFrom(type);
   }
 }
