@@ -41,8 +41,8 @@ public class VectorAppender extends AppenderSkeleton {
 
   */
   public void append(LoggingEvent event) {
-    System.out.println("---Vector appender called with message ["+event.getRenderedMessage()+"].");
-    System.out.flush();
+    //System.out.println("---Vector appender called with message ["+event.getRenderedMessage()+"].");
+    //System.out.flush();
     try {
       Thread.currentThread().sleep(100);
     } catch(Exception e) {
