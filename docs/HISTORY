@@ -40,6 +40,10 @@
    does not get interpreted by the XML parser. This was suggested by
    Mathias Bogaert like a long list of other fixes. [*]
 
+ - Corrected a bug in CyclicBuffer.resize method that would not update the
+   next insertion point. Thanks to Ole Bulbuk for accurately reporting
+   the bug. [*]
+	
  - The LoggingEvent class now supports serialization of priorities
    derived from the org.apache.log4j.Priority class. [*]
  

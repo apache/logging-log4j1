@@ -20,7 +20,7 @@
 
     ant jar     - build log4j-core and log4j jar files
 
-    ant distib  - will make a distribution in ../../dump/ 
+    ant distrib - will make a distribution in ../../dump/ 
 
     </echo>
   </target>
@@ -271,7 +271,7 @@
     </javadoc>		
   </target>
 
-
+  <!-- these files will be deleted -->
   <patternset id="temp.files" >
     <include name="**/*.bak, {$stem}/**/temp*, ${stem}/performance/test, 
         {$stem}test/current.* {$stem}/examples/test, {$stem}/test/logging.*,
@@ -284,7 +284,7 @@
         {$stem}/net/test/loop.log, {$stem}/net/test/loop.log.1"/>
   </patternset>
 
-  <target name="distib" depends="init">
+  <target name="distrib" depends="init">
 
     <delete>
       <fileset dir=".">
@@ -300,7 +300,8 @@
                 includes="make/**, xdocs/**, docs/**, Makefile, build/**
                           manifest.mf, INSTALL, LICENSE.APL, ${jar.dest}/**, 
 		          org/**,  icons/**, ${javac.dest}/**"
-                excludes="make/make.loc, **/*.bak"/>
+                excludes="make/make.loc, **/*.bak,
+		          ${stem}/xml/Transform.java"/>
     </copy>
 
     <tar tarfile="../dump/jakarta-log4j-${version}.tar" basedir="../dump"

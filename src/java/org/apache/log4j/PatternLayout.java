@@ -389,9 +389,9 @@ public class PatternLayout extends Layout {
   final static public String CONVERSION_PATTERN_OPTION = "ConversionPattern";
 
   /** Default pattern string for log output. Currently set to the
-      string <b>"%m\n"</b> which just prints the application supplied
+      string <b>"%m%n"</b> which just prints the application supplied
       message. */
-  public final static String DEFAULT_CONVERSION_PATTERN ="%m\n";
+  public final static String DEFAULT_CONVERSION_PATTERN ="%m%n";
 
   /*
      A string constant used in naming the option for setting the time
