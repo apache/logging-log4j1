@@ -28,6 +28,8 @@
  - Implemented Bugzilla 20500: separate registry clearing from doConfigure in PropertyConfigurator
    to allow to easier extension.
 
+ - Fixed Bugzilla 30425: tests used old name for Jetty server class.
+
   November 25, 2004
 
  - Release of version 1.3alpha-3

@@ -10,7 +10,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 
 import org.mortbay.http.SocketListener;
-import org.mortbay.jetty.plus.Server;
+import org.mortbay.jetty.Server;
 
 
 import junit.framework.TestCase;
