@@ -19,6 +19,7 @@
 package org.apache.log4j.spi.location;
 
 import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.helpers.PlatformInfo;
 
 
 /**
@@ -36,8 +37,6 @@ public class LocationInfo implements java.io.Serializable {
   
   static final long serialVersionUID = -1325822038990805636L;
   
-  private static boolean haveStackTraceElement = false;
-  
   /**
    * NA_LOCATION_INFO is used in conjunction with deserialized LoggingEvents 
    * without real location info available.
@@ -45,14 +44,7 @@ public class LocationInfo implements java.io.Serializable {
    */
   public static LocationInfo NA_LOCATION_INFO = new LocationInfo(NA, NA, NA, NA);
  
-  static {
-    try {
-      Class.forName("java.lang.StackTraceElement");
-      haveStackTraceElement = true;
-    } catch ( Throwable e) {
-      // we are running on a JDK prior to 1.4
-    } 
-  }
+
   
   /**
      Caller's line number.
@@ -113,7 +105,7 @@ public class LocationInfo implements java.io.Serializable {
       return;
     }
     
-    if(haveStackTraceElement) {
+    if(PlatformInfo.hasStackTraceElement()) {
       StackTraceElementExtractor.extract(this, t, fqnOfCallingClass);
     } else {
       LegacyExtractor.extract(this, t, fqnOfCallingClass);  

@@ -18,7 +18,7 @@
 package org.apache.log4j.spi.location;
 
 import org.apache.log4j.Layout;
-import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.helpers.PlatformInfo;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -32,18 +32,7 @@ import java.io.StringWriter;
  * @author Ceki G&uuml;lc&uuml;
  */
 public class LegacyExtractor {
-  // Check if we are running in IBM's visual age.
-  static boolean inVisualAge = false;
 
-  static {
-    try {
-      Class dummy = Class.forName("com.ibm.uvm.tools.DebugSupport");
-      inVisualAge = true;
-      LogLog.debug("Detected IBM VisualAge environment.");
-    } catch (Throwable e) {
-      ; // nothing to do
-    }
-  }
 
   private static StringWriter sw = new StringWriter();
   private static PrintWriter pw = new PrintWriter(sw);
@@ -96,7 +85,7 @@ public class LegacyExtractor {
 
     // VA has a different stack trace format which doesn't
     // need to skip the inital 'at'
-    if (!inVisualAge) {
+    if (!PlatformInfo.isInVisualAge()) {
       // back up to first blank character
       ibegin = s.lastIndexOf("at ", iend);
 
@@ -164,7 +153,7 @@ public class LegacyExtractor {
       //  void test.test.Run.main(java.lang.String [])
       int ibegin = 0;
 
-      if (inVisualAge) {
+      if (PlatformInfo.isInVisualAge()) {
         ibegin = fullInfo.lastIndexOf(' ', iend) + 1;
       }
 

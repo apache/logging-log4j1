@@ -7,6 +7,12 @@
    
    [D] Changes affect a method or property which was previously marked as 
        deprecated.
+ 
+ - Log4j will now automatically include stack traces for nested
+   exceptions. Log4j extends the automatic nested exception printing
+   available in JDK 1.4 to nested exceptions accessible through methods
+   named "getRootCause", "getNextException" and "getException", not just
+   "getCause" as in JDK 1.4. [*]
    
  - The location information extraction code has been refactored to use
    a faster mechanism when running on JDK 1.4 or later. The new mechanism, contributed 
