@@ -2,6 +2,7 @@
 
     <!-- Initialization properties -->
     <property name="project.name"   value="log4j.site"/>
+    
     <property name="docs.src" value="./xdocs"/>
     <property name="docs.dest" value="./doc"/>
 
@@ -18,13 +19,14 @@
     </target>
 
     <target name="docs" depends="prepare-error" if="AnakiaTask.present">
-        <taskdef name="anakia" classname="org.apache.velocity.anakia.AnakiaTask"/>
+        <taskdef name="anakia" 
+                 classname="org.apache.velocity.anakia.AnakiaTask"/>
         <anakia basedir="${docs.src}" destdir="${docs.dest}/"
-             extension=".html" style="${docs.src}/stylesheets/site.vsl"
+             extension=".html" style="./site.vsl"
              projectFile="stylesheets/project.xml"
-             excludes="**/stylesheets/** empty.xml"
+             excludes="**/stylesheets/**, empty.xml"
              includes="**/*.xml"
-             lastModifiedCheck="true"
+             lastModifiedCheck="false"
              velocityPropertiesFile="${docs.src}/velocity.properties">
         </anakia>
 
