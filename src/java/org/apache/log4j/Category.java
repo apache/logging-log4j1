@@ -77,9 +77,6 @@ public class Category implements AppenderAttachable {
   //final Hierarchy defaultHierarchy = new Hierarchy(new
   //					   RootCategory(Level.DEBUG));
 
-
-  static int nooptimize;
-
   /**
      The name of this category.
   */
@@ -514,7 +511,6 @@ public class Category implements AppenderAttachable {
   public
   static
   Category getInstance(String name) {
-     nooptimize++;
     return LogManager.getLogger(name);
   }
 
@@ -531,7 +527,6 @@ public class Category implements AppenderAttachable {
   public
   static
   Category getInstance(Class clazz) {
-    nooptimize++;
     return LogManager.getLogger(clazz);
   }
 
