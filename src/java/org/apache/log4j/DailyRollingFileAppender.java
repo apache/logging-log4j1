@@ -145,22 +145,22 @@ public class DailyRollingFileAppender extends FileAppender {
   /**
      A string constant used in naming the option for setting the
      filename pattern. Current value of this string constant is
-     <strong>datePattern</strong>.
+     <strong>DatePattern</strong>.
    */
   static final public String DATE_PATTERN_OPTION = "DatePattern";
   
   /**
      The date pattern. By default, the pattern is set to
-     "'.'YYYY-MM-dd" meaning daily rollover.  */
-  private String datePattern = "'.'YYYY-MM-dd";
+     "'.'yyyy-MM-dd" meaning daily rollover.  */
+  private String datePattern = "'.'yyyy-MM-dd";
 
   /**
-     The actual formatted filename that is currently being written to
+     The actual formatted filename that is currently being written to.
   */
   private String scheduledFilename;
 
   /**
-     The timestamp when we shall next recompute the filename
+     The timestamp when we shall next recompute the filename.
   */
   private long nextCheck = System.currentTimeMillis () - 1;
 
