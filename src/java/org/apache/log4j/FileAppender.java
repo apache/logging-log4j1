@@ -161,7 +161,9 @@ public class FileAppender extends WriterAppender {
 			   e, ErrorCode.FILE_OPEN_FAILURE);
       }
     } else {
-      LogLog.error("Filename option not set for appender ["+name+"].");
+      //LogLog.error("File option not set for appender ["+name+"].");
+      LogLog.warn("File option not set for appender ["+name+"].");
+      LogLog.warn("Are you using FileAppender instead of ConsoleAppender?");
     }
   }
 
@@ -253,15 +255,17 @@ public class FileAppender extends WriterAppender {
      Set FileAppender specific options.
           
      The recognized options are <b>File</b> and <b>Append</b>,
-     i.e. the values of the string constants {@link #FILE_OPTION} and
-     respectively {@link #APPEND_OPTION}. The options of the super
-     class {@link WriterAppender} are also recognized.
+     i.e. the values of the string constants. The options of the super
+     class {@link WriterAppender} are also recognized. See in
+     particular the <b>Threshold</b> option on {@link
+     AppenderSkeleton}.
 
      <p>The <b>File</b> option takes a string value which should be
-     one of the strings "System.out" or "System.err" or the name of a
-     file. 
+     the name of the file to append to. Special values "System.out" or
+     "System.err" are interpreted as the standard out and standard
+     error streams.
 
-     <font color="#FF0044"><b>Note that the "System.out" or "System.err"
+     <font color="#DD0044"><b>Note that the "System.out" or "System.err"
      options are deprecated. Use {@link ConsoleAppender}
      instead.</b></font>
 

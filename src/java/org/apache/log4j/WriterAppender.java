@@ -163,11 +163,13 @@ public class WriterAppender extends AppenderSkeleton {
 
 
   /**
-     Will close this appender. The underlying stream or writer is not closed.
+     Close this appender instance. The underlying stream or writer is
+     also closed.
+     
+     <p>Closed appenders cannot be reused.
 
      @see #setWriter
-     @since 0.8.4
-  */
+     @since 0.8.4 */
   public
   synchronized
   void close() {
@@ -335,6 +337,10 @@ public class WriterAppender extends AppenderSkeleton {
     this.tp = null;    
   }
 
+
+  /**
+     Write a footer as produced by the embedded layout's {@link
+     Layout#getFooter} method.  */
   protected
   void writeFooter() {
     if(layout != null) {
@@ -344,6 +350,9 @@ public class WriterAppender extends AppenderSkeleton {
     }
   }
 
+/**
+     Write a header as produced by the embedded layout's {@link
+     Layout#getHeader} method.  */
   protected 
   void writeHeader() {
     if(layout != null) {
