@@ -346,20 +346,23 @@ later. For JDK 1.2, you can get the JNDI API from
     <include name="**/chainsaw/*.java"/>
   </fileset>
 
-  <!-- ================================================================= -->
-  <!-- Runs Chainsaw                                                     -->
-  <!-- ================================================================= -->
-
   <target name="oroCheck" >
-    <condition property="chainsaw-libraries-present">
-       <and>
-          <isset property="regexp.oro.jar" />
-          <available file="${regexp.oro.jar}"/>
-       </and>
-    </condition>
-
+    <available classname="org.apache.oro.text.perl.Perl5Util" property="chainsaw-libraries-present">
+      <classpath refid="compile.classpath"/>
+    </available>
+  	
+  	<antcall target="oroWarning"/>
+  	  
   </target>
-  
+
+  <target name="oroWarning" unless="chainsaw-libraries-present">	
+    <echo>
+      Could not find jakarta-oro classes. Did you forget to set
+      "regexp.oro.jar" property in build.properties to point to
+      a valid jakarta.oro.jar file?
+    </echo>
+  </target>
+  	
   <target name="chainsawCheck" depends="oroCheck" if="chainsaw-libraries-present">
     <echo message="Chainsaw dependant libraries present."/>
   </target>
@@ -367,7 +370,11 @@ later. For JDK 1.2, you can get the JNDI API from
   <target name="chainsawRunCheck" depends="chainsawCheck">
     <fail unless="chainsaw-libraries-present" message="Chainsaw v2 needs Jakarta ORO, and it appears your are missing the Jakarta ORO package.  Please check the build.properties file."/>
   </target>
-  
+
+  <!-- ================================================================= -->
+  <!-- Runs Chainsaw                                                     -->
+  <!-- ================================================================= -->
+
   <target name="chainsaw" depends="chainsawRunCheck, build.chainsaw, log4j.jar, chainsaw.jar" description="Builds and runs Chainsaw v2" >
 
     <!-- Need to fork to avoid problems -->
