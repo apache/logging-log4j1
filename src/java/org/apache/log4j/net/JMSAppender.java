@@ -196,9 +196,8 @@ public class JMSAppender extends AppenderSkeleton {
       topicConnectionFactory = (TopicConnectionFactory) lookup(jndi, tcfBindingName);
       LogLog.debug("About to create TopicConnection.");
       if(userName != null) {
-	LogLog.debug("--------User name: "+userName);
 	topicConnection = topicConnectionFactory.createTopicConnection(userName, 
-								       password);	
+								       password); 
       } else {
 	topicConnection = topicConnectionFactory.createTopicConnection();
       }
