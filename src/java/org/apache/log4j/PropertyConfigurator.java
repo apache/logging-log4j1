@@ -492,7 +492,7 @@ public class PropertyConfigurator extends BasicConfigurator
     if(value == null) 
       LogLog.debug("Could not find root category information. Is this OK?");
     else {
-      Category root = hierarchy.getRoot();
+      Logger root = hierarchy.getRootLogger();
       synchronized(root) {
 	parseCategory(props, root, ROOT_CATEGORY_PREFIX, INTERNAL_ROOT_NAME, 
 		      value);
@@ -512,10 +512,10 @@ public class PropertyConfigurator extends BasicConfigurator
       if(key.startsWith(CATEGORY_PREFIX)) {
 	String categoryName = key.substring(CATEGORY_PREFIX.length());	
 	String value =  OptionConverter.findAndSubst(key, props);
-	Category cat = hierarchy.getInstance(categoryName, categoryFactory);
-	synchronized(cat) {
-	  parseCategory(props, cat, key, categoryName, value);
-	  parseAdditivityForCategory(props, cat, categoryName);
+	Logger logger = hierarchy.getLogger(categoryName, categoryFactory);
+	synchronized(logger) {
+	  parseCategory(props, logger, key, categoryName, value);
+	  parseAdditivityForCategory(props, logger, categoryName);
 	}
       } else if(key.startsWith(RENDERER_PREFIX)) {
 	String renderedClass = key.substring(RENDERER_PREFIX.length());	
@@ -528,7 +528,7 @@ public class PropertyConfigurator extends BasicConfigurator
   /**
      Parse the additivity option for a non-root category.
    */
-  void parseAdditivityForCategory(Properties props, Category cat,
+  void parseAdditivityForCategory(Properties props, Logger cat,
 				  String categoryName) {
     String value = OptionConverter.findAndSubst(ADDITIVITY_PREFIX + categoryName, 
 					     props);
@@ -545,15 +545,15 @@ public class PropertyConfigurator extends BasicConfigurator
   /**
      This method must work for the root category as well.
    */
-  void parseCategory(Properties props, Category cat, String optionKey,
-		     String catName, String value) {
+  void parseCategory(Properties props, Logger logger, String optionKey,
+		     String loggerName, String value) {
 
-    LogLog.debug("Parsing for [" +catName +"] with value=[" + value+"].");
+    LogLog.debug("Parsing for [" +loggerName +"] with value=[" + value+"].");
     // We must skip over ',' but not white space
     StringTokenizer st = new StringTokenizer(value, ",");
      
     // If value is not in the form ", appender.." or "", then we should set
-    // the priority of the category.
+    // the priority of the loggeregory.
     
     if(!(value.startsWith(",") || value.equals(""))) {
 
@@ -568,17 +568,17 @@ public class PropertyConfigurator extends BasicConfigurator
       // null. We also check that the user has not specified inherited for the
       // root category.
       if(priorityStr.equalsIgnoreCase(BasicConfigurator.INHERITED) &&
-                                	 !catName.equals(INTERNAL_ROOT_NAME)) {
-	cat.setPriority(null);
+                                	 !loggerName.equals(INTERNAL_ROOT_NAME)) {
+	logger.setPriority(null);
       } else {
-	cat.setLevel(OptionConverter.toLevel(priorityStr, 
+	logger.setLevel(OptionConverter.toLevel(priorityStr, 
 					     Priority.DEBUG));
       }
-      LogLog.debug("Category " + catName + " set to " + cat.getPriority());
+      LogLog.debug("Category " + loggerName + " set to " + logger.getPriority());
     }
 
     // Remove all existing appenders. They will be reconstructed below.
-    cat.removeAllAppenders();
+    logger.removeAllAppenders();
     
     Appender appender;    
     String appenderName;
@@ -589,7 +589,7 @@ public class PropertyConfigurator extends BasicConfigurator
       LogLog.debug("Parsing appender named \"" + appenderName +"\".");
       appender = parseAppender(props, appenderName);
       if(appender != null) {
-	cat.addAppender(appender);
+	logger.addAppender(appender);
       }      
     }          
   }
@@ -657,6 +657,6 @@ class PropertyWatchdog extends FileWatchdog {
      <code>filename</code> to reconfigure log4j. */
   public
   void doOnChange() {
-    new PropertyConfigurator().doConfigure(filename, Category.defaultHierarchy);
+    new PropertyConfigurator().doConfigure(filename, Logger.defaultHierarchy);
   }
 }

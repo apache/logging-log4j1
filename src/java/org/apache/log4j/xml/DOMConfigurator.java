@@ -14,6 +14,7 @@ import java.net.URL;
 import org.w3c.dom.*;
 import java.lang.reflect.Method;
 import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import org.apache.log4j.spi.OptionHandler;
 import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.AppenderAttachable;
@@ -287,14 +288,14 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
     // Create a new org.apache.log4j.Category object from the <category> element.
     String catName = subst(categoryElement.getAttribute(NAME_ATTR));
 
-    Category cat;    
+    Logger cat;    
 
     String className = subst(categoryElement.getAttribute(CLASS_ATTR));
 
 
     if(EMPTY_STR.equals(className)) {
       LogLog.debug("Retreiving an instance of org.apache.log4j.Category.");
-      cat = hierarchy.getInstance(catName);
+      cat = hierarchy.getLogger(catName);
     }
     else {
       LogLog.debug("Desired category sub-class: ["+className+']');
@@ -366,7 +367,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
   */
   protected
   void parseRoot (Element rootElement, Hierarchy hierarchy) {
-    Category root = hierarchy.getRoot();
+    Logger root = hierarchy.getRootLogger();
     // category configuration needs to be atomic
     synchronized(root) {    
       parseChildrenOfCategoryElement(rootElement, root, true);
@@ -379,7 +380,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
   */
   protected
   void parseChildrenOfCategoryElement(Element catElement,
-				      Category cat, boolean isRoot) {
+				      Logger cat, boolean isRoot) {
     
     PropertySetter propSetter = new PropertySetter(cat);
     
@@ -467,8 +468,8 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
      Used internally to parse a level  element.
   */
   protected
-  void parseLevel(Element element, Category cat, boolean isRoot) {
-    String catName = cat.getName();
+  void parseLevel(Element element, Logger logger, boolean isRoot) {
+    String catName = logger.getName();
     if(isRoot) {
       catName = "root";
     }
@@ -480,13 +481,13 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
       if(isRoot) {
 	LogLog.error("Root level cannot be inherited. Ignoring directive.");
       } else {
-	cat.setLevel(null);
+	logger.setLevel(null);
       }
     } else {
       String className = subst(element.getAttribute(CLASS_ATTR));      
       if(EMPTY_STR.equals(className)) {      
 	
-	cat.setLevel(Level.toLevel(priStr));
+	logger.setLevel(Level.toLevel(priStr));
       } else {
 	LogLog.debug("Desired Level sub-class: ["+className+']');
 	try {	 
@@ -495,7 +496,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
 						    ONE_STRING_PARAM);
 	  Level pri = (Level) toLevelMethod.invoke(null, 
 						    new Object[] {priStr});
-	  cat.setLevel(pri);
+	  logger.setLevel(pri);
 	} catch (Exception oops) {
 	  LogLog.error("Could not create level ["+priStr+
 		       "]. Reported error follows.", oops);
@@ -503,7 +504,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
 	}
       }
     }
-    LogLog.debug(catName + " level set to " + cat.getLevel());    
+    LogLog.debug(catName + " level set to " + logger.getLevel());    
   }
 
   protected

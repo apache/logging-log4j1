@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import org.apache.log4j.Hierarchy;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.Level;
@@ -42,7 +42,7 @@ public class SocketNode implements Runnable {
   Hierarchy hierarchy;
   ObjectInputStream ois;
 
-  static Category cat = Category.getInstance(SocketNode.class.getName());
+  static Logger logger = Logger.getLogger(SocketNode.class.getName());
 
   public 
   SocketNode(Socket socket, Hierarchy hierarchy) {
@@ -52,7 +52,7 @@ public class SocketNode implements Runnable {
       ois = new ObjectInputStream(socket.getInputStream());
     }
     catch(Exception e) {
-      cat.error("Could not open ObjectInputStream to "+socket, e);
+      logger.error("Could not open ObjectInputStream to "+socket, e);
     }
   }
 
@@ -64,33 +64,33 @@ public class SocketNode implements Runnable {
 
   public void run() {
     LoggingEvent event;
-    Category remoteCategory;
+    Logger remoteLogger;
 
     try {
       while(true) {	
 	event = (LoggingEvent) ois.readObject();	
-	remoteCategory = hierarchy.getInstance(event.categoryName);
-	event.category = remoteCategory;
-	if(event.level.isGreaterOrEqual(remoteCategory.getChainedLevel())) {
-	  remoteCategory.callAppenders(event);	
+	remoteLogger = hierarchy.getLogger(event.loggerName);
+	event.logger = remoteLogger;
+	if(event.level.isGreaterOrEqual(remoteLogger.getChainedLevel())) {
+	  remoteLogger.callAppenders(event);	
 	}
       }
     }
     catch(java.io.EOFException e) {
-      cat.info("Caught java.io.EOFException closing conneciton.");
+      logger.info("Caught java.io.EOFException closing conneciton.");
     } catch(java.net.SocketException e) {
-      cat.info("Caught java.net.SocketException closing conneciton.");
+      logger.info("Caught java.net.SocketException closing conneciton.");
     } catch(IOException e) {
-      cat.info("Caught java.io.IOException: "+e);
-      cat.info("Closing connection.");
+      logger.info("Caught java.io.IOException: "+e);
+      logger.info("Closing connection.");
     } catch(Exception e) {
-      cat.error("Unexpected exception. Closing conneciton.", e);
+      logger.error("Unexpected exception. Closing conneciton.", e);
     }
     
     try {
       ois.close();
     } catch(Exception e) {
-      cat.info("Could not close connection.", e);	
+      logger.info("Could not close connection.", e);	
     }  
   }
 }

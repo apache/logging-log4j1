@@ -9,6 +9,7 @@ package org.apache.log4j.xml.examples;
 
 
 import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import org.apache.log4j.Level;
 import org.apache.log4j.spi.OptionHandler;
 import org.apache.log4j.spi.LoggingEvent;
@@ -183,7 +184,7 @@ public class XCategory extends Category implements OptionHandler {
     }
 
     public
-    Category makeNewCategoryInstance(String name) {
+    Logger  makeNewCategoryInstance(String name) {
       return new XCategory(name);
     }
   }

@@ -8,12 +8,12 @@
 package org.apache.log4j.test;
 
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Appender;
 import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.Category;
+import org.apache.log4j.Level;
 import org.apache.log4j.Hierarchy;
 import org.apache.log4j.spi.RootCategory;
 
@@ -25,14 +25,14 @@ import java.util.ResourceBundle;
 import java.util.Locale;
 
 /**
-   Used for internal unit testing the Category class.
+   Used for internal unit testing the Logger class.
 
    @author Ceki G&uuml;lc&uuml;
 
 */
-public class UnitTestCategory extends TestCase {
+public class UnitTestLogger extends TestCase {
 
-  Category cat;
+  Logger cat;
   Appender a1;
   Appender a2;
 
@@ -44,7 +44,7 @@ public class UnitTestCategory extends TestCase {
   static String MSG = "M";
   
 
-  public UnitTestCategory(String name) {
+  public UnitTestLogger(String name) {
     super(name);
   }
 
@@ -64,7 +64,7 @@ public class UnitTestCategory extends TestCase {
   public
   void tearDown() {
     // Regular users should not use the clear method lightly!
-    Category.getDefaultHierarchy().clear();
+    Logger.getDefaultHierarchy().clear();
     BasicConfigurator.resetConfiguration();
     a1 = null;
     a2 = null;
@@ -75,7 +75,7 @@ public class UnitTestCategory extends TestCase {
   */
   public
   void testAppender1() {
-    cat = Category.getInstance("test");
+    cat = Logger.getLogger("test");
     a1 = new FileAppender();
     a1.setName("testAppender1");             
     cat.addAppender(a1);
@@ -96,7 +96,7 @@ public class UnitTestCategory extends TestCase {
     a2 = new FileAppender();
     a2.setName("testAppender2.2");           
 
-    cat = Category.getInstance("test");
+    cat = Logger.getLogger("test");
     cat.addAppender(a1);
     cat.addAppender(a2);    
     cat.removeAppender("testAppender2.1");
@@ -107,12 +107,12 @@ public class UnitTestCategory extends TestCase {
   }
 
   /**
-     Test if category a.b inherits its appender from a.
+     Test if logger a.b inherits its appender from a.
    */
   public
   void testAdditivity1() {
-    Category a = Category.getInstance("a");
-    Category ab = Category.getInstance("a.b");
+    Logger a = Logger.getLogger("a");
+    Logger ab = Logger.getLogger("a.b");
     CountingAppender ca = new CountingAppender();
     a.addAppender(ca);
     
@@ -132,10 +132,10 @@ public class UnitTestCategory extends TestCase {
   public
   void testAdditivity2() {
     
-    Category a = Category.getInstance("a");
-    Category ab = Category.getInstance("a.b");
-    Category abc = Category.getInstance("a.b.c");
-    Category x   = Category.getInstance("x");
+    Logger a = Logger.getLogger("a");
+    Logger ab = Logger.getLogger("a.b");
+    Logger abc = Logger.getLogger("a.b.c");
+    Logger x   = Logger.getLogger("x");
 
     CountingAppender ca1 = new CountingAppender();
     CountingAppender ca2 = new CountingAppender();
@@ -166,11 +166,11 @@ public class UnitTestCategory extends TestCase {
   public
   void testAdditivity3() {
 
-    Category root = Category.getRoot();    
-    Category a = Category.getInstance("a");
-    Category ab = Category.getInstance("a.b");
-    Category abc = Category.getInstance("a.b.c");
-    Category x   = Category.getInstance("x");
+    Logger root = Logger.getRootLogger();    
+    Logger a = Logger.getLogger("a");
+    Logger ab = Logger.getLogger("a.b");
+    Logger abc = Logger.getLogger("a.b.c");
+    Logger x   = Logger.getLogger("x");
 
     CountingAppender caRoot = new CountingAppender();
     CountingAppender caA = new CountingAppender();
@@ -208,10 +208,10 @@ public class UnitTestCategory extends TestCase {
   public
   void testDisable1() {
     CountingAppender caRoot = new CountingAppender();
-    Category root = Category.getRoot();    
+    Logger root = Logger.getRootLogger();    
     root.addAppender(caRoot);
 
-    Hierarchy h = Category.getDefaultHierarchy();
+    Hierarchy h = Logger.getDefaultHierarchy();
     h.disableDebug();
     assertEquals(caRoot.counter, 0);     
 
@@ -247,14 +247,14 @@ public class UnitTestCategory extends TestCase {
 
   public
   void testRB1() {
-    Category root = Category.getRoot(); 
+    Logger root = Logger.getRootLogger(); 
     root.setResourceBundle(rbUS);
     ResourceBundle t = root.getResourceBundle();
     assertSame(t, rbUS);
 
-    Category x = Category.getInstance("x");
-    Category x_y = Category.getInstance("x.y");
-    Category x_y_z = Category.getInstance("x.y.z");
+    Logger x = Logger.getLogger("x");
+    Logger x_y = Logger.getLogger("x.y");
+    Logger x_y_z = Logger.getLogger("x.y.z");
 
     t = x.getResourceBundle();     assertSame(t, rbUS);
     t = x_y.getResourceBundle();   assertSame(t, rbUS);
@@ -263,14 +263,14 @@ public class UnitTestCategory extends TestCase {
 
   public
   void testRB2() {
-    Category root = Category.getRoot(); 
+    Logger root = Logger.getRootLogger(); 
     root.setResourceBundle(rbUS);
     ResourceBundle t = root.getResourceBundle();
     assertSame(t, rbUS);
 
-    Category x = Category.getInstance("x");
-    Category x_y = Category.getInstance("x.y");
-    Category x_y_z = Category.getInstance("x.y.z");
+    Logger x = Logger.getLogger("x");
+    Logger x_y = Logger.getLogger("x.y");
+    Logger x_y_z = Logger.getLogger("x.y.z");
 
     x_y.setResourceBundle(rbFR);
     t = x.getResourceBundle();     assertSame(t, rbUS);
@@ -281,14 +281,14 @@ public class UnitTestCategory extends TestCase {
 
   public
   void testRB3() {
-    Category root = Category.getRoot(); 
+    Logger root = Logger.getRootLogger(); 
     root.setResourceBundle(rbUS);
     ResourceBundle t = root.getResourceBundle();
     assertSame(t, rbUS);
 
-    Category x = Category.getInstance("x");
-    Category x_y = Category.getInstance("x.y");
-    Category x_y_z = Category.getInstance("x.y.z");
+    Logger x = Logger.getLogger("x");
+    Logger x_y = Logger.getLogger("x.y");
+    Logger x_y_z = Logger.getLogger("x.y.z");
 
     x_y.setResourceBundle(rbFR);
     x_y_z.setResourceBundle(rbCH);
@@ -299,26 +299,26 @@ public class UnitTestCategory extends TestCase {
 
   public
   void testExists() {
-    Category a = Category.getInstance("a");
-    Category a_b = Category.getInstance("a.b");
-    Category a_b_c = Category.getInstance("a.b.c");
+    Logger a = Logger.getLogger("a");
+    Logger a_b = Logger.getLogger("a.b");
+    Logger a_b_c = Logger.getLogger("a.b.c");
     
-    Category t;
-    t = Category.exists("xx");    assertNull(t);
-    t = Category.exists("a");     assertSame(a, t);
-    t = Category.exists("a.b");   assertSame(a_b, t);
-    t = Category.exists("a.b.c"); assertSame(a_b_c, t);
+    Logger t;
+    t = Logger.exists("xx");    assertNull(t);
+    t = Logger.exists("a");     assertSame(a, t);
+    t = Logger.exists("a.b");   assertSame(a_b, t);
+    t = Logger.exists("a.b.c"); assertSame(a_b_c, t);
   }
 
   public
   void testHierarchy1() {
     Hierarchy h = new Hierarchy( new RootCategory(Level.ERROR));
-    Category a0 = h.getInstance("a");
+    Logger a0 = h.getLogger("a");
     assertEquals("a", a0.getName());
     assertNull(a0.getLevel());
     assertSame(Level.ERROR, a0.getChainedLevel());
 
-    Category a1 = h.getInstance("a");
+    Logger a1 = h.getLogger("a");
     assertSame(a0, a1);
 
     
@@ -330,17 +330,17 @@ public class UnitTestCategory extends TestCase {
   static
   Test suite() {
     TestSuite suite = new TestSuite();
-    suite.addTest(new UnitTestCategory("testAppender1"));
-    suite.addTest(new UnitTestCategory("testAppender2"));
-    suite.addTest(new UnitTestCategory("testAdditivity1"));        
-    suite.addTest(new UnitTestCategory("testAdditivity2"));        
-    suite.addTest(new UnitTestCategory("testAdditivity3"));        
-    suite.addTest(new UnitTestCategory("testDisable1"));        
-    suite.addTest(new UnitTestCategory("testRB1"));        
-    suite.addTest(new UnitTestCategory("testRB2"));        
-    suite.addTest(new UnitTestCategory("testRB3"));        
-    suite.addTest(new UnitTestCategory("testExists"));        
-    suite.addTest(new UnitTestCategory("testHierarchy1"));        
+    suite.addTest(new UnitTestLogger("testAppender1"));
+    suite.addTest(new UnitTestLogger("testAppender2"));
+    suite.addTest(new UnitTestLogger("testAdditivity1"));        
+    suite.addTest(new UnitTestLogger("testAdditivity2"));        
+    suite.addTest(new UnitTestLogger("testAdditivity3"));        
+    suite.addTest(new UnitTestLogger("testDisable1"));        
+    suite.addTest(new UnitTestLogger("testRB1"));        
+    suite.addTest(new UnitTestLogger("testRB2"));        
+    suite.addTest(new UnitTestLogger("testRB3"));        
+    suite.addTest(new UnitTestLogger("testExists"));        
+    suite.addTest(new UnitTestLogger("testHierarchy1"));        
     return suite;
   }
 

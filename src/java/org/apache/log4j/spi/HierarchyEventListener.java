@@ -7,7 +7,7 @@
 
 package org.apache.log4j.spi;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import org.apache.log4j.Appender;
 
 /**
@@ -26,10 +26,10 @@ public interface HierarchyEventListener {
 
 
   public
-  void addAppenderEvent(Category cat, Appender appender);
+  void addAppenderEvent(Logger logger, Appender appender);
 
   public
-  void removeAppenderEvent(Category cat, Appender appender);
+  void removeAppenderEvent(Logger logger, Appender appender);
 
 
 }

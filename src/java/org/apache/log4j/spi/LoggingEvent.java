@@ -7,7 +7,7 @@
 
 package org.apache.log4j.spi;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import org.apache.log4j.Level;
 import org.apache.log4j.NDC;
 import org.apache.log4j.MDC;
@@ -42,18 +42,18 @@ public class LoggingEvent implements java.io.Serializable {
 
   private static long startTime = System.currentTimeMillis();
 
-  /** Fully qualified name of the calling category class. */
-  transient public final String fqnOfCategoryClass;
+  /** Fully qualified name of the calling logger class. */
+  transient public final String fqnOfLoggerClass;
 
-  /** The category of the logging event. The category field is not
+  /** The logger of the logging event. The logger field is not
   serialized for performance reasons. 
 
   <p>It is set by the LoggingEvent constructor or set by a remote
   entity after deserialization. */
-  transient public Category category;
+  transient public Logger logger;
 
-  /** The category name. */
-  public final String categoryName;
+  /** The logger name. */
+  public final String loggerName;
   
   /** Level of logging event. Level cannot be serializable
       because it is a flyweight.  Due to its special seralization it
@@ -117,15 +117,15 @@ public class LoggingEvent implements java.io.Serializable {
      <p>Except {@link #timeStamp} all the other fields of
      <code>LoggingEvent</code> are filled when actually needed.
      <p>
-     @param category The category of this event.
+     @param logger The logger of this event.
      @param level The level of this event.
      @param message  The message of this event.
      @param throwable The throwable of this event.  */
-  public LoggingEvent(String fqnOfCategoryClass, Category category, 
+  public LoggingEvent(String fqnOfLoggerClass, Logger logger, 
 		      Level level, Object message, Throwable throwable) {
-    this.fqnOfCategoryClass = fqnOfCategoryClass;
-    this.category = category;
-    this.categoryName = category.getName();
+    this.fqnOfLoggerClass = fqnOfLoggerClass;
+    this.logger = logger;
+    this.loggerName = logger.getName();
     this.level = level;
     this.message = message;
     if(throwable != null) {
@@ -143,7 +143,7 @@ public class LoggingEvent implements java.io.Serializable {
   public
   LocationInfo getLocationInformation() {
     if(locationInfo == null) {
-      locationInfo = new LocationInfo(new Throwable(), fqnOfCategoryClass);
+      locationInfo = new LocationInfo(new Throwable(), fqnOfLoggerClass);
     }
     return locationInfo;
   }
@@ -214,7 +214,7 @@ public class LoggingEvent implements java.io.Serializable {
 	 renderedMessage = (String) message;
        else {
 	 renderedMessage=
-            category.getHierarchy().getRendererMap().findAndRender(message);
+            logger.getHierarchy().getRendererMap().findAndRender(message);
        }
      }
      return renderedMessage;

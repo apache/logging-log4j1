@@ -11,8 +11,8 @@ import java.util.Vector;
 
 class ProvisionNode extends Vector {
     
-  ProvisionNode(Category cat) {
+  ProvisionNode(Logger logger) {
     super();
-    this.addElement(cat);
+    this.addElement(logger);
   }
 }

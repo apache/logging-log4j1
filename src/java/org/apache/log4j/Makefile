@@ -22,13 +22,14 @@ JSOURCES:=DailyRollingFileAppender.java\
 	ConsoleAppender.java\
         MDC.java\
         Level.java\
+        Logger.java\
+	PropertyConfigurator.java\
+	BasicConfigurator.java\
 
-#        Logger.java\
 #        LogManager.java\
 
 #       HTMLLayout.java\
-#	PropertyConfigurator.java\
-#	BasicConfigurator.java\
+
 
 ifdef $(ISJDK1)
  JSOURCES:=$(JSOURCES) RollingFileAppenderBeanInfo.java

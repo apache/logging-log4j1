@@ -7,7 +7,7 @@
 
 package org.apache.log4j.spi;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 /**
    
@@ -24,6 +24,6 @@ public interface CategoryFactory {
 
  
   public
-  Category makeNewCategoryInstance(String name);
+  Logger makeNewCategoryInstance(String name);
 
 }

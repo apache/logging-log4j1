@@ -15,7 +15,7 @@ class DefaultCategoryFactory implements CategoryFactory {
   }    
     
   public
-  Category makeNewCategoryInstance(String name) {
+  Logger makeNewCategoryInstance(String name) {
     return new Category(name);
   }    
 }
