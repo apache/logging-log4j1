@@ -15,6 +15,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Calendar;
+import java.util.TimeZone;
+import java.util.Locale;
 
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.LoggingEvent;
@@ -158,6 +160,10 @@ public class DailyRollingFileAppender extends FileAppender {
 
   int checkPeriod = TOP_OF_TROUBLE;
 
+
+  static final TimeZone gmtTimeZone = TimeZone.getTimeZone("GMT");
+
+
   /**
      The default constructor does nothing. */
   public
@@ -245,16 +251,20 @@ public class DailyRollingFileAppender extends FileAppender {
   // This method computes the roll over period by looping over the
   // periods, starting with the shortest, and stopping when the r0 is
   // different from from r1, where r0 is the epoch formatted according
-  // the datePattern and r1 is the epoch+nextMillis(i) formatted
-  // according to the datePattern.
+  // the datePattern (supplied by the user) and r1 is the
+  // epoch+nextMillis(i) formatted according to datePattern. All date
+  // formatting is done in GMT and not local format because the test
+  // logic is based on comparisons relative to 1970-01-01 00:00:00
+  // GMT (the epoch).
 
   int computeCheckPeriod() {
-    RollingCalendar rollingCalendar = new RollingCalendar();
+    RollingCalendar rollingCalendar = new RollingCalendar(gmtTimeZone, Locale.ENGLISH);
     // set sate to 1970-01-01 00:00:00 GMT
     Date epoch = new Date(0);
     if(datePattern != null) {
       for(int i = TOP_OF_MINUTE; i <= TOP_OF_MONTH; i++) {
 	SimpleDateFormat simpleDateFormat = new SimpleDateFormat(datePattern);
+	simpleDateFormat.setTimeZone(gmtTimeZone); // do all date formatting in GMT
 	String r0 = simpleDateFormat.format(epoch);
 	rollingCalendar.setType(i);
 	Date next = new Date(rollingCalendar.getNextCheckMillis(epoch));
@@ -348,6 +358,14 @@ public class DailyRollingFileAppender extends FileAppender {
 class RollingCalendar extends GregorianCalendar {
 
   int type = DailyRollingFileAppender.TOP_OF_TROUBLE;
+
+  RollingCalendar() {
+    super();
+  }  
+
+  RollingCalendar(TimeZone tz, Locale locale) {
+    super(tz, locale);
+  }  
 
   void setType(int type) {
     this.type = type;
