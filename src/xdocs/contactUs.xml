@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<document>
+
+  <properties>
+    <author email="cgu@apache.org">Ceki Gulcu</author>
+    <title>log4j project</title>
+  </properties>
+
+<body>
+
+<section name="Reporting tools">
+
+
+<p>Bugs should be reported by using the <a
+href="http://nagoya.apache.org/bugzilla">Apache Bug
+Database</a>. Before reporting a problem, please check the <a
+href="log4j/HISTORY">project history</a> file to see if the problem is
+already known.</p>
+
+
+<p>Support requests should be sent to the log4j-user list (see below).</p>
+
+</section>
+
+<section name="Mailing lists">
+
+<p>New releases and important bug-fixes are anounced at the
+log4j-anouncement list.  You can subscribe to the log4j-announce list,
+or change your existing subscription <a
+href="http://lists.sourceforge.net/mailman/listinfo/log4j-announce">online</a>. The
+traffic on this list is extremely low and you are encouraged to
+subscribe to this list if you are using log4j.</p>
+
+<p>Discussion on log4j and logging in general are held on the
+log4j-user mailing list. To post a message to all its members, send
+email to <A
+HREF="mailto:log4j-user@jakarta.apache.org">log4j-user@jakarta.apache.org</A>.</p>
+
+<p>You can subscribe to the log4j-users list send an email to 
+<A HREF="mailto:log4j-user-subscribe@jakarta.apache.org">log4j-user-subscribe@jakarta.apache.org</A>.</p>
+
+
+<p>Development related discussions are held on the log4j-dev mailing
+list.  To post a message to all its members, send email to <A
+HREF="mailto:log4j-dev@jakarta.apache.org">log4j-dev@jakarta.apache.org</A>.
+</p>
+
+<p>You can subscribe to the log4j-users list send an email to <A
+HREF="mailto:log4j-dev-subscribe@jakarta.apache.org">log4j-dev-subscribe@jakarta.apache.org</A>.</p>
+
+
+</section>
+
+</body>
+</document>
+

@@ -5,6 +5,13 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
 
+ January 10th, 2001
+
+ - Release of version 1.0.1 (the 21th public release)
+
+ - This version corrects some documentation and build script bugs;
+   code has not changed.
+
  January 8th, 2001
 
  - Release of version 1.0 (the 20th public release)

@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<document>
+
+  <properties>
+    <author email="cgu@apache.org">Ceki Gulcu</author>
+    <title>log4j project</title>
+  </properties>
+
+<body>
+
+<section name="Introduction">
+
+<p>Inserting log statements into your code is a low-tech method for
+debugging it.  It may also be the only way because debuggers are not
+always available or applicable.  This is often the case for 
+distributed applications.</p>
+
+<p>On the other hand, some people argue that log statements pollute
+source code and decrease legibility. (We believe that the contrary is
+true).  In the Java language where a pre-processor is not available,
+log statements increase the size of the code and reduce its speed,
+even when logging is turned off.  Given that a reasonably sized
+application may contain thousands of log statements, speed is of
+particular importance.</p>
+
+
+<p>With log4j it is possible to enable logging at runtime without
+modifying the application binary. The log4j package is designed so
+that these statements can remain in shipped code without incurring a
+heavy performance cost. Logging behavior can be controlled by editing
+a configuration file, without touching the application binary.</p>
+
+<p>Logging equips the developer with <i>detailed context</i> for
+application failures. On the other hand, testing provides quality
+assurance and confidence in the application. Logging and testing
+should not be confused. They are complementary. When logging is wisely
+used, it can prove to be an essential tool.</p>
+
+<p>One of the distinctive features of log4j is the notion of
+<i>inheritance</i> in categories. Using a category <em>hierarchy</em>
+it is possible to control which log statements are output at
+arbitrarily fine granularity but also great ease. This helps reduce
+the volume of logged output and minimize the cost of logging.</p>
+
+<p>The target of the log output can be a file, an
+<code>OutputStream</code>, a <code>java.io.Writer</code>, a remote
+log4j server, a remote Unix Syslog daemon or even a NT Event logger.</p>
+
+<p>On a 233 MHz ThinkPad running JDK 1.1.7B, it costs about 46
+nano-seconds to determine if that statement should be logged or
+not. Actual logging is also quite fast, ranging from 79 micro-seconds
+using the SimpleLayout, 164 micro-seconds using the TTCCLayout and
+around a millisecond when printing exceptions. The performance of the
+PatternLayout is almost as good as the dedicated patterns, except that
+it is a lot more flexible.</p>
+
+<p>The package is being constantly improved thanks to input from users
+and code contributed by authors in the community.</p>
+
+</section>
+
+</body>
+</document>
+

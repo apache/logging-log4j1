@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<document>
+
+  <properties>
+    <author email="cgu@apache.org">Ceki Gulcu</author>
+    <title>log4j project</title>
+  </properties>
+
+<body>
+
+<section name="log4j documentation">
+
+<p>The following documentation is included with the standard log4j
+distribution and also browsable online:</p>
+
+<ul>
+  <p>
+    <li><a href="log4j/javadoc/manual.html"><b>introductory manual</b></a>,
+    </li>
+  </p>
+
+  <p>
+    <li>
+    <a href="log4j/javadoc/index.html"><b>javadoc documentation</b></a>,
+    </li>
+  </p>
+
+  <p>
+    <li>
+    <a href="log4j/FAQ.html"><b>FAQ</b></a>,
+    </li>
+  </p>
+
+  <p>
+    <li>
+    <a href="log4j/TROUBLESHOOT.html"><b>troubleshooting guide</b></a> and
+    </li>
+  </p>
+  
+  <p>
+    <li>
+      <a href="log4j/javadoc/deepExtension.html"><b>extending log4j</b></a>.
+    </li>
+  </p>
+</ul>
+
+</section>
+
+</body>
+</document>
+

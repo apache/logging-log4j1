@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Jakarta Site"
+        href="http://jakarta.apache.org/">
+
+    <title>Log4j project</title>
+    <logo href="images/logo.jpg">The log4j Project</logo>
+    
+    <body>
+
+    <menu name="log4j project">
+        <item name="Introduciton"   href="/index.html"/>
+        <item name="Download"       href="/download.html"/>
+        <item name="Documentation"  href="/documentation.html"/>
+        <item name="Contact us"     href="/contactUs.html"/>
+        <item name="History"        href="/history.html"/>
+    </menu>
+
+    </body>
+</project>
