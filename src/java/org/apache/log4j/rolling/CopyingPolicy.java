@@ -13,6 +13,8 @@
  * */
 package org.apache.log4j.rolling;
 
+import java.io.File;
+
 public interface CopyingPolicy {
   
   /** 
