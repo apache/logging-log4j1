@@ -1,7 +1,10 @@
-# JAXP OPTIONAL; required to build the DOMConfigurator
-jaxp.home=/java/jaxp-1.1
-jaxp.jaxp.jar=${jaxp.home}/jaxp.jar
-jaxp.parser.jar=${jaxp.home}/crimson.jar
+# The jaxp interface and a jaxp parser are required to build the
+# DOMConfigurator. However, these are already available since Ant
+# needs them too.
+
+# jaxp.home=/java/jaxp-1.1 
+# jaxp.jaxp.jar=${jaxp.home}/jaxp.jar
+# jaxp.parser.jar=${jaxp.home}/crimson.jar
 
 # JavaMail API OPTIONAL; required to build the SMTPAppender
 javamail.jar=/java/javamail-1.2/mail.jar

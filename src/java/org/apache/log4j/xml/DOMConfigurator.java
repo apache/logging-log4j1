@@ -669,11 +669,11 @@ public class DOMConfigurator implements Configurator {
     DocumentBuilderFactory dbf = null;
     this.repository = repository;
     try { 
-      LogLog.debug("System property is :"+
+      LogLog.debug("System property ["+dbfKey+"] is: "+
   	                        OptionConverter.getSystemProperty(dbfKey, 
 								  null)); 
       dbf = DocumentBuilderFactory.newInstance();
-      LogLog.debug("Standard DocumentBuilderFactory search succeded.");
+      LogLog.debug("Search for the standard DocumentBuilderFactory succeded.");
       LogLog.debug("DocumentBuilderFactory is: "+dbf.getClass().getName());
     } catch(FactoryConfigurationError fce) {
       Exception e = fce.getException();
@@ -682,25 +682,17 @@ public class DOMConfigurator implements Configurator {
     }
       
     try {
-      // This makes ID/IDREF attributes to have a meaning. Don't ask
-      // me why.
       dbf.setValidating(true);
-      //dbf.setNamespaceAware(true);
 
       DocumentBuilder docBuilder = dbf.newDocumentBuilder();
-      docBuilder.setErrorHandler(new SAXErrorHandler());
-
-      Class clazz = this.getClass();
-      URL dtdURL = clazz.getResource("/org/apache/log4j/xml/log4j.dtd");
-      if(dtdURL == null) {
-	LogLog.error("Could not find [log4j.dtd]. Used ["+clazz.getClassLoader()+
-		     "] class loader in the search.");
-      }
-      else {
-	LogLog.debug("URL to log4j.dtd is [" + dtdURL.toString()+"].");
-	inputSource.setSystemId(dtdURL.toString());
-      }
-      Document doc = docBuilder.parse(inputSource);
+      docBuilder.setErrorHandler(new SAXErrorHandler());      
+      docBuilder.setEntityResolver(new Log4jEntityResolver());        
+      // we change the system ID to a valid URI so that Crimson won't
+      // complain. Indeed, "log4j.dtd" alone is not a valid URI which
+      // causes Crimson to barf. The Log4jEntityResolver only cares
+      // about the "log4j.dtd" ending.
+      inputSource.setSystemId("dummy://log4j.dtd");
+      Document doc = docBuilder.parse(inputSource); 
       parse(doc.getDocumentElement());
     } catch (Exception e) {
       // I know this is miserable...
