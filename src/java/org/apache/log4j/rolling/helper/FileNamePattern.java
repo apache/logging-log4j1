@@ -106,7 +106,7 @@ MAIN_LOOP:
             option = pattern.substring(i + 3, optionEnd);
             lastIndex = optionEnd + 1;
           } else {
-            logger.warn("Assuming daily rotation schedule");
+            logger.debug("Assuming daily rotation schedule");
             option = "yyyy-MM-dd";
             lastIndex = i+2;
           }
