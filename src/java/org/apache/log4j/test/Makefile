@@ -1,6 +1,6 @@
  
 PKG_DIR :=org/apache/log4j/test
-DEPTH   :=../../../..
+DEPTH   :=../../../../../..
 JSOURCES:= Shallow.java\
  Hello.java\
  StressNDC.java\
