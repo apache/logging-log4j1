@@ -399,7 +399,7 @@ appender accumulation is no longer additive by <a
 href="api/org/apache/log4j/Category.html#setAdditivity(boolean)">setting
 the additivity flag</a> to <code>false</code>.
 
-<p>The rules govening appender addivity are sumarized below.
+<p>The rules governing appender additivity are summarized below.
 
 <p>
 <a name="additivity"><table bgcolor="#EEEE99">
@@ -723,6 +723,73 @@ Syslog daemon, redirected all <code>com.foo</code> output to an NT
 Event logger, or forwarded logging events to a remote log4j server,
 which would log according to local server policy, for example by
 forwarding the log event to a second log4j server.
+
+<a name="defaultInit"><h2>Default Initialization Procedure</h2>
+
+<p>The log4j library does not make any assumptions about its
+environment. In particular, there are no default log4j
+appenders. Under certain well-defined circumstances however, the
+static inializer of the <code>Category</code> class will attempt to
+automatically configure log4j. The Java languuage guarantees that the
+static initializer of a class is called once and only during the
+loading of a class into memory. Nevertheless, different classloaders
+may load distinct copies of the same class.
+
+<p>The default intialization is very useful in environments where the
+exact entry point to the application depends on the runtime
+environment. For example, the same application can be used as a
+stand-alone application, as an applet, or as a servlet under the
+control of a web-server.
+
+<p>The exact default initialization algorithm is defined as follows:
+
+<ol>
+
+ <li>Skip default initialization if the
+ <b>log4j.defaultInitOverride</b> system property is set to any value
+ other than "false".
+
+ <p><li>Set the <code>resource</code> string variable to the value of
+ the <b>log4j.configuration</b> system property. If the system
+ property is not defined, then set <code>resource</code> to
+ "log4j.properties". 
+
+ <p><li>Attempt to convert the <code>resource</code> variable to a
+ URL.
+
+ <p><li>If the resource variable cannot be converted to a URL, for
+ example due to a <code>MalformedURLException</code>, then search for
+ the <code>resource</code> from the classpath using a classloader. The
+ result of the search, if successful, should be a well-formed URL.
+
+ <p><li>If the URL could not be found, abort default initialization.
+
+ <p><li>Otherwise, configure log4j from the URL.
+
+
+ <p>The URL format is important. Its <em>reference</em> part is
+ taken as the class name of the configurator. For example, if you
+ invoke your application using the command line
+
+     <pre> java -Dlog4j.configuration=file:/temp/myconfig.xyz#com.myCompany.myConfigurator
+     </pre>
+
+     then the log4j will be configured by a new instance of
+     <code>com.myCompany.myConfigurator</code> by interpreting the
+     file referenced by <code>file:/temp/myconfig.xyz</code>.  The
+     configurator you specify <em>must</em> implement the <a
+     href="api/org/apache/log4j/spi/Configurator.html">Configurator</a>
+     interface.
+
+     <p>If the URL has no reference part, then the <a
+     href="api/org/apache/log4j/PropertyConfigurator.html">PropertyConfigurator</a>
+     will parse the URL. However, if the URL ends with a ".xml"
+     extension, then the <a
+     href="api/org/apache/log4j/xml/DOMConfigurator.html">DOMConfigurator</a>
+     will be used to parse the URL.
+
+
+</ol>
 
 <h2> Nested Diagnostic Contexts</h2>
 
