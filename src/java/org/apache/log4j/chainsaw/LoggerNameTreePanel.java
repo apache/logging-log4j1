@@ -471,7 +471,7 @@ final class LoggerNameTreePanel extends JPanel {
 
           collapseAction.setEnabled(path != null);
 
-          reconfigureFocusOnText();
+          reconfigureMenuText();
         }
       });
 
@@ -517,17 +517,20 @@ final class LoggerNameTreePanel extends JPanel {
       });
   }
 
-  private void reconfigureFocusOnText() {
+  private void reconfigureMenuText() {
     String logger = getCurrentlySelectedLoggerName();
 
     if ((logger == null) || (logger.length() == 0)) {
       focusOnAction.putValue(Action.NAME, "Focus On...");
+	  hideAction.putValue(Action.NAME, "Ignore ...");
     } else {
       focusOnAction.putValue(Action.NAME, "Focus On '" + logger + "'");
+      hideAction.putValue(Action.NAME, "Ignore '" + logger + "'");
     }
 
     // need to ensure the button doens't update itself with the text, looks stupid otherwise
     focusOnLoggerButton.setText(null);
+    ignoreLoggerButton.setText(null);
   }
 
   /**
