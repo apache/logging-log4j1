@@ -16,9 +16,6 @@
 
 package org.apache.log4j.filter;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.spi.LoggingEvent;
 
@@ -67,15 +64,21 @@ import org.apache.log4j.spi.LoggingEvent;
  * @author Scott Deboy sdeboy@apache.org
  */
 public class AndFilter extends Filter {
-  List filters = new ArrayList();
+  Filter headFilter = null;
+  Filter tailFilter = null;
   boolean acceptOnMatch = true;
   
   public void activateOptions() {
-    //nothing to do
   }
 
   public void addFilter(Filter filter) {
-    filters.add(filter);
+    System.out.println("add"+filter);
+    if (headFilter == null) {
+      headFilter = filter;
+      tailFilter = filter;
+    } else {
+      tailFilter.setNext(filter);
+    }
   }
   
   public void setAcceptOnMatch(boolean acceptOnMatch) {
@@ -92,11 +95,11 @@ public class AndFilter extends Filter {
    */
   public int decide(LoggingEvent event) {
     boolean accepted = true;
-    for (Iterator iter = filters.iterator(); iter.hasNext();) {
-      Filter thisFilter = (Filter)iter.next();
-      accepted = accepted && (Filter.ACCEPT == thisFilter.decide(event));
+    Filter f = headFilter;
+    while (f != null) {
+      accepted = accepted && (Filter.ACCEPT == f.decide(event));
+      f = f.getNext();
     }
-    
     if (accepted) {
       if(acceptOnMatch) {
         return Filter.ACCEPT;
