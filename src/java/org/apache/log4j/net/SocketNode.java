@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.BufferedInputStream;
 
-
 import org.apache.log4j.*;
 import org.apache.log4j.spi.*;
 
@@ -35,12 +34,12 @@ public class SocketNode implements Runnable {
 
   Socket socket;
   LoggerRepository hierarchy;
+  Receiver receiver;
   ObjectInputStream ois;
 
   static Logger logger = Logger.getLogger(SocketNode.class);
 
-  public
-  SocketNode(Socket socket, LoggerRepository hierarchy) {
+  public SocketNode(Socket socket, LoggerRepository hierarchy) {
     this.socket = socket;
     this.hierarchy = hierarchy;
     try {
@@ -51,6 +50,19 @@ public class SocketNode implements Runnable {
       logger.error("Could not open ObjectInputStream to "+socket, e);
     }
   }
+  
+  public SocketNode(Socket socket, Receiver receiver) {
+    this.socket = socket;
+    this.receiver = receiver;
+    try {
+      ois = new ObjectInputStream(
+                         new BufferedInputStream(socket.getInputStream()));
+    }
+    catch(Exception e) {
+      logger.error("Could not open ObjectInputStream to "+socket, e);
+    }
+  }
+
 
   //public
   //void finalize() {
@@ -64,12 +76,19 @@ public class SocketNode implements Runnable {
 
     try {
       while(true) {
-	event = (LoggingEvent) ois.readObject();
-	remoteLogger = hierarchy.getLogger(event.categoryName);
-	event.logger = remoteLogger;
-	if(event.level.isGreaterOrEqual(remoteLogger.getEffectiveLevel())) {
-	  remoteLogger.callAppenders(event);
-	}
+      	event = (LoggingEvent) ois.readObject();
+      	
+      	// if configured with a receiver, tell it to post the event
+        if (receiver != null) {
+          receiver.doPost(event);
+        // else post it via the hierarchy
+        } else {
+          remoteLogger = hierarchy.getLogger(event.categoryName);
+          event.logger = remoteLogger;
+          if(event.level.isGreaterOrEqual(remoteLogger.getEffectiveLevel())) {
+            remoteLogger.callAppenders(event);
+          }
+        }
       }
     }
     catch(java.io.EOFException e) {
