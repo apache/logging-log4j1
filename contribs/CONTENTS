@@ -30,7 +30,10 @@ JimMoore/
 
    LoggingOutputStream.java
 
-   Allows the user to divert System.out and System.err to log4j.
+   Allows the user to divert System.out and System.err to log4j. 
+
+   WARNING: Be sure to read the included e-mails to understand the dangers of
+   WARNING: redirecting the console to LoggingOutputStream.
    
 
 LeosLiterak/
@@ -86,4 +89,13 @@ ThomasFenner/
   code_example2.java
   configfile_example.txt
 
+Volker Mentzner/
+===============
   
+  HTTPRequestHandler.java
+  Log4jRequestHandler.java
+  PluggableHTTPServer.java
+  RootRequestHandler.java
+  UserDialogRequestHandler.java
+
+  Allows users to configure log4j at runtime using a web-browser.
