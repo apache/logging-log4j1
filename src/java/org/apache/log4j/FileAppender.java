@@ -16,13 +16,9 @@
 
 package org.apache.log4j;
 
-import org.apache.log4j.helpers.QuietWriter;
-import org.apache.log4j.spi.ErrorCode;
-
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.Writer;
 
 
 // Contibutors: Jens Uwe Pipka <jens.pipka@gmx.de>
@@ -83,6 +79,7 @@ public class FileAppender extends WriterAppender {
     int bufferSize) throws IOException {
     this.layout = layout;
     this.setFile(filename, append, bufferedIO, bufferSize);
+    activateOptions();
   }
 
   /**
@@ -98,6 +95,7 @@ public class FileAppender extends WriterAppender {
     throws IOException {
     this.layout = layout;
     this.setFile(filename, append, false, bufferSize);
+    activateOptions();
   }
 
   /**
@@ -108,6 +106,7 @@ public class FileAppender extends WriterAppender {
     <p>The file will be appended to.  */
   public FileAppender(Layout layout, String filename) throws IOException {
     this(layout, filename, true);
+    activateOptions();
   }
 
   /**
@@ -149,15 +148,15 @@ public class FileAppender extends WriterAppender {
       try {
         setFile(fileName, fileAppend, bufferedIO, bufferSize);
       } catch (java.io.IOException e) {
-        errorHandler.error(
-          "setFile(" + fileName + "," + fileAppend + ") call failed.", e,
-          ErrorCode.FILE_OPEN_FAILURE);
+        getLogger().error(
+          "setFile(" + fileName + "," + fileAppend + ") call failed.", e);
       }
     } else {
       //LogLog.error("File option not set for appender ["+name+"].");
       getLogger().warn("File option not set for appender [{}].", name);
       getLogger().warn("Are you using FileAppender instead of ConsoleAppender?");
     }
+    super.activateOptions();
   }
 
   /**
@@ -258,25 +257,17 @@ public class FileAppender extends WriterAppender {
 
     closeWriter();
 
-    Writer fw = createWriter(new FileOutputStream(filename, append));
+    this.writer = createWriter(new FileOutputStream(filename, append));
 
     if (bufferedIO) {
-      fw = new BufferedWriter(fw, bufferSize);
+      this.writer = new BufferedWriter(this.writer, bufferSize);
     }
 
-    this.setQWForFiles(fw);
     this.fileAppend = append;
     this.bufferedIO = bufferedIO;
     this.fileName = filename;
     this.bufferSize = bufferSize;
     writeHeader();
     getLogger().debug("setFile ended");
-  }
-
-  /**
-   * Sets the quiet writer being used.
-   */
-  protected void setQWForFiles(Writer writer) {
-    this.qw = new QuietWriter(writer, errorHandler);
   }
 }

@@ -158,8 +158,14 @@ public class SocketAppender extends AppenderSkeleton {
         hostname = "unknown";
       }
     }
-
-    connect(address, port);
+    if(remoteHost != null) {
+      address = getAddressByName(remoteHost);
+      connect(address, port);
+    } else {
+      String err = "The RemoteHost property is required for SocketAppender named "+ name;
+      getLogger().error(err);
+      throw new IllegalStateException(err);
+    }
   }
 
   /**
@@ -231,15 +237,7 @@ public class SocketAppender extends AppenderSkeleton {
       return;
     }
 
-    if (address == null) {
-      errorHandler.error(
-        "No remote host is set for SocketAppender named \"" + this.name
-        + "\".");
-
-      return;
-    }
-
-    if (oos != null) {
+   if (oos != null) {
       try {
         if (locationInfo) {
           event.getLocationInformation();
@@ -254,8 +252,6 @@ public class SocketAppender extends AppenderSkeleton {
         }
 
         oos.writeObject(event);
-
-        //LogLog.debug("=========Flushing.");
         oos.flush();
 
         if (++counter >= RESET_FREQUENCY) {
@@ -297,65 +293,56 @@ public class SocketAppender extends AppenderSkeleton {
   }
 
   /**
-   * The SocketAppender does not use a layout. Hence, this method
-   * returns <code>false</code>.
-   * */
-  public boolean requiresLayout() {
-    return false;
-  }
-
-  /**
    * The <b>RemoteHost</b> option takes a string value which should be
-   * the host name of the server where a {@link SocketNode} is
-   * running.
+   * the host name of the server where a {@link SocketNode} or a 
+   * {@link SocketReceiver} is running.
    * */
   public void setRemoteHost(String host) {
-    address = getAddressByName(host);
     remoteHost = host;
   }
 
   /**
-         Returns value of the <b>RemoteHost</b> option.
+   * Returns value of the <b>RemoteHost</b> option.
    */
   public String getRemoteHost() {
     return remoteHost;
   }
 
   /**
-         The <b>Port</b> option takes a positive integer representing
-         the port where the server is waiting for connections.
+   * The <b>Port</b> option takes a positive integer representing the port 
+   * where the server is waiting for connections.
    */
   public void setPort(int port) {
     this.port = port;
   }
 
   /**
-         Returns value of the <b>Port</b> option.
+   * Returns value of the <b>Port</b> option.
    */
   public int getPort() {
     return port;
   }
 
   /**
-         The <b>LocationInfo</b> option takes a boolean value. If true,
-         the information sent to the remote host will include location
-         information. By default no location information is sent to the server.
+   * The <b>LocationInfo</b> option takes a boolean value. If true, the 
+   * information sent to the remote host will include location information. 
+   * By default no location information is sent to the server.
    */
   public void setLocationInfo(boolean locationInfo) {
     this.locationInfo = locationInfo;
   }
 
   /**
-         Returns value of the <b>LocationInfo</b> option.
+   * Returns value of the <b>LocationInfo</b> option.
    */
   public boolean getLocationInfo() {
     return locationInfo;
   }
 
   /**
-         * The <b>App</b> option takes a string value which should be the
-         * name of the application getting logged
-         * If property was already set (via system property), don't set here.
+   * The <b>App</b> option takes a string value which should be the name of the 
+   * application getting logged.
+   * If property was already set (via system property), don't set here.
    */
   public void setApplication(String lapp) {
     this.application = lapp;
@@ -369,36 +356,34 @@ public class SocketAppender extends AppenderSkeleton {
   }
 
   /**
-         The <b>ReconnectionDelay</b> option takes a positive integer
-         representing the number of milliseconds to wait between each
-         failed connection attempt to the server. The default value of
-         this option is 30000 which corresponds to 30 seconds.
-
-         <p>Setting this option to zero turns off reconnection
-         capability.
+   * The <b>ReconnectionDelay</b> option takes a positive integer representing 
+   * the number of milliseconds to wait between each failed connection attempt 
+   * to the server. The default value of this option is 30000 which corresponds 
+   * to 30 seconds. 
+   * <p>
+   * Setting this option to zero turns off reconnection capability.
    */
   public void setReconnectionDelay(int delay) {
     this.reconnectionDelay = delay;
   }
 
   /**
-         Returns value of the <b>ReconnectionDelay</b> option.
+   * Returns value of the <b>ReconnectionDelay</b> option.
    */
   public int getReconnectionDelay() {
     return reconnectionDelay;
   }
 
   /**
-         The Connector will reconnect when the server becomes available
-         again.  It does this by attempting to open a new connection every
-         <code>reconnectionDelay</code> milliseconds.
-
-         <p>It stops trying whenever a connection is established. It will
-         restart to try reconnect to the server when previpously open
-         connection is droppped.
-
-         @author  Ceki G&uuml;lc&uuml;
-         @since 0.8.4
+   * The Connector will reconnect when the server becomes available again.  
+   * It does this by attempting to open a new connection every 
+   * <code>reconnectionDelay</code> milliseconds.
+   * <p>
+   * It stops trying whenever a connection is established. It will restart to 
+   * try reconnect to the server when previpously open connection is droppped.
+   * 
+   * @author  Ceki G&uuml;lc&uuml;
+   * @since 0.8.4
   */
   class Connector extends Thread {
     boolean interrupted = false;

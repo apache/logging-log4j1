@@ -17,7 +17,6 @@
 package org.apache.log4j;
 
 import org.apache.log4j.spi.Component;
-import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.LoggingEvent;
@@ -83,14 +82,14 @@ public interface Appender extends Component {
    *
    * @since 0.9.0
    */
-  public void setErrorHandler(ErrorHandler errorHandler);
+  //public void setErrorHandler(ErrorHandler errorHandler);
 
   /**
    * Returns the {@link ErrorHandler} for this appender.
    *
    * @since 1.1
    */
-  public ErrorHandler getErrorHandler();
+  //public ErrorHandler getErrorHandler();
 
   /**
    * Set the {@link Layout} for this appender.

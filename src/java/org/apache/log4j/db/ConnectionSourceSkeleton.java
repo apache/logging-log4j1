@@ -18,7 +18,6 @@ package org.apache.log4j.db;
 
 import org.apache.log4j.db.dialect.Util;
 import org.apache.log4j.spi.ComponentBase;
-import org.apache.log4j.spi.ErrorHandler;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -31,7 +30,6 @@ import java.sql.SQLException;
 public abstract class ConnectionSourceSkeleton extends ComponentBase implements ConnectionSource {
   protected String user = null;
   protected String password = null;
-  protected ErrorHandler errorHandler = null;
 
   // initially we have an unkonw dialect
   protected int dialectCode = UNKNOWN_DIALECT;
@@ -66,21 +64,6 @@ public abstract class ConnectionSourceSkeleton extends ComponentBase implements 
    */
   public boolean supportsGetGeneratedKeys() {
     return supportsGetGeneratedKeys;
-  }
-
-  /**
-   * Get teh errorHandler for this connection source
-   */
-  public ErrorHandler getErrorHandler() {
-    return errorHandler;
-  }
-
-  /**
-   * Sets the error handler.
-   * @param errorHandler  the error handler to set
-   */
-  public void setErrorHandler(ErrorHandler errorHandler) {
-    this.errorHandler = errorHandler;
   }
 
   public int getSQLDialectCode() {

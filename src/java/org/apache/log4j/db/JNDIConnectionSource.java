@@ -71,8 +71,8 @@ public class JNDIConnectionSource
    * @see org.apache.log4j.spi.OptionHandler#activateOptions()
    */
   public void activateOptions() {
-    if (jndiLocation == null && errorHandler != null) {
-      errorHandler.error("No JNDI location specified for JNDIConnectionSource.");
+    if (jndiLocation == null) {
+      getLogger().error("No JNDI location specified for JNDIConnectionSource.");
     }
     
     discoverConnnectionProperties();
@@ -96,17 +96,10 @@ public class JNDIConnectionSource
         conn = dataSource.getConnection(user, password);
       }
     } catch (final NamingException ne) {
-      if (errorHandler != null) {
-        errorHandler.error(ne.getMessage(), ne, 0);
-      }
-
-      getLogger().error("Error while getting data source", ne);
+         getLogger().error("Error while getting data source", ne);
       throw new SQLException("NamingException while looking up DataSource: " + ne.getMessage());
     } catch (final ClassCastException cce) {
-      if (errorHandler != null) {
-        errorHandler.error(cce.getMessage(), cce, 0);
-      }
-
+      getLogger().error("ClassCastException while looking up DataSource.", cce);
       throw new SQLException("ClassCastException while looking up DataSource: " + cce.getMessage());
     }
 

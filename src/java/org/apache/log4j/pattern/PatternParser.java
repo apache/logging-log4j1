@@ -16,11 +16,9 @@
 
 package org.apache.log4j.pattern;
 
-import org.apache.log4j.LogManager;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.ComponentBase;
 import org.apache.log4j.spi.LoggerRepository;
-import org.apache.ugli.ULogger;
 
 import java.util.HashMap;
 import java.util.Map;

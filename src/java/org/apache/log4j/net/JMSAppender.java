@@ -17,7 +17,6 @@
 package org.apache.log4j.net;
 
 import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.spi.ErrorCode;
 import org.apache.log4j.spi.LoggingEvent;
 
 import java.util.Properties;
@@ -100,6 +99,9 @@ import javax.naming.NamingException;
 
    @author Ceki G&uuml;lc&uuml; */
 public class JMSAppender extends AppenderSkeleton {
+  
+  static int SUCCESSIVE_FAILURE_LIMIT = 3;
+  
   String securityPrincipalName;
   String securityCredentials;
   String initialContextFactoryName;
@@ -114,6 +116,9 @@ public class JMSAppender extends AppenderSkeleton {
   TopicSession topicSession;
   TopicPublisher topicPublisher;
 
+  boolean inOrder = false;
+  int successiveFailureCount = 0;
+  
   public JMSAppender() {
   }
 
@@ -196,37 +201,42 @@ public class JMSAppender extends AppenderSkeleton {
         jndi = new InitialContext();
       }
 
-      getLogger().debug("Looking up [" + tcfBindingName + "]");
+      getLogger().debug("Looking up [{}]", tcfBindingName);
       topicConnectionFactory =
         (TopicConnectionFactory) lookup(jndi, tcfBindingName);
       getLogger().debug("About to create TopicConnection.");
       if (userName != null) {
-        topicConnection =
+        this.topicConnection =
           topicConnectionFactory.createTopicConnection(userName, password);
       } else {
-        topicConnection = topicConnectionFactory.createTopicConnection();
+        this.topicConnection = topicConnectionFactory.createTopicConnection();
       }
 
       getLogger().debug(
         "Creating TopicSession, non-transactional, "
         + "in AUTO_ACKNOWLEDGE mode.");
-      topicSession =
+      this.topicSession =
         topicConnection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
 
       getLogger().debug("Looking up topic name [" + topicBindingName + "].");
       Topic topic = (Topic) lookup(jndi, topicBindingName);
 
       getLogger().debug("Creating TopicPublisher.");
-      topicPublisher = topicSession.createPublisher(topic);
+      this.topicPublisher = topicSession.createPublisher(topic);
 
       getLogger().debug("Starting TopicConnection.");
       topicConnection.start();
 
       jndi.close();
     } catch (Exception e) {
-      errorHandler.error(
-        "Error while activating options for appender named [" + name + "].", e,
-        ErrorCode.GENERIC_FAILURE);
+      getLogger().error(
+       "Error while activating options for appender named [" + name + "].", e);
+    }
+    
+    if (this.topicConnection != null && this.topicSession != null && this.topicPublisher == null) {
+      inOrder = true;
+    } else {
+      inOrder = false;
     }
   }
 
@@ -236,25 +246,6 @@ public class JMSAppender extends AppenderSkeleton {
     } catch (NameNotFoundException e) {
       getLogger().error("Could not find name [" + name + "].");
       throw e;
-    }
-  }
-
-  protected boolean checkEntryConditions() {
-    String fail = null;
-
-    if (this.topicConnection == null) {
-      fail = "No TopicConnection";
-    } else if (this.topicSession == null) {
-      fail = "No TopicSession";
-    } else if (this.topicPublisher == null) {
-      fail = "No TopicPublisher";
-    }
-
-    if (fail != null) {
-      errorHandler.error(fail + " for JMSAppender named [" + name + "].");
-      return false;
-    } else {
-      return true;
     }
   }
 
@@ -291,7 +282,7 @@ public class JMSAppender extends AppenderSkeleton {
      This method called by {@link AppenderSkeleton#doAppend} method to
      do most of the real appending work.  */
   public void append(LoggingEvent event) {
-    if (!checkEntryConditions()) {
+    if (!inOrder) {
       return;
     }
 
@@ -302,10 +293,16 @@ public class JMSAppender extends AppenderSkeleton {
       }
       msg.setObject(event);
       topicPublisher.publish(msg);
+      successiveFailureCount = 0;
     } catch (Exception e) {
-      errorHandler.error(
-        "Could not publish message in JMSAppender [" + name + "].", e,
-        ErrorCode.GENERIC_FAILURE);
+      successiveFailureCount++;
+      if(successiveFailureCount > SUCCESSIVE_FAILURE_LIMIT) {
+        inOrder = false;
+      }
+      getLogger().error(
+        "Could not publish message in JMSAppender [" + name + "].", e);
+   
+      
     }
   }
 
@@ -396,13 +393,5 @@ public class JMSAppender extends AppenderSkeleton {
    * */
   public void setLocationInfo(boolean locationInfo) {
     this.locationInfo = locationInfo;
-  }
-
-  /**
-   * The JMSAppender sends serialized events and consequently does not
-   * require a layout.
-   * */
-  public boolean requiresLayout() {
-    return false;
   }
 }

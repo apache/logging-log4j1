@@ -18,15 +18,15 @@ package org.apache.log4j.chainsaw;
 
 import org.apache.log4j.chainsaw.color.Colorizer;
 import org.apache.log4j.chainsaw.icons.LevelIconFactory;
-import org.apache.log4j.helpers.ISO8601DateFormat;
+import org.apache.log4j.helpers.Constants;
 import org.apache.log4j.spi.LoggingEvent;
 
 import java.awt.Color;
 import java.awt.Component;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
@@ -49,7 +49,7 @@ import javax.swing.table.DefaultTableCellRenderer;
  */
 public class TableColorizingRenderer extends DefaultTableCellRenderer {
   private static final DateFormat DATE_FORMATTER =
-    new ISO8601DateFormat(Calendar.getInstance().getTimeZone());
+    new SimpleDateFormat(Constants.ISO8601_PATTERN);
   private static final Map iconMap =
     LevelIconFactory.getInstance().getLevelToIconMap();
   private Colorizer colorizer;

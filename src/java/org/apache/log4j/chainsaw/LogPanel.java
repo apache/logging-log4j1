@@ -126,7 +126,6 @@ import org.apache.log4j.chainsaw.prefs.Profileable;
 import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
 import org.apache.log4j.chainsaw.prefs.SettingsManager;
 import org.apache.log4j.helpers.Constants;
-import org.apache.log4j.helpers.ISO8601DateFormat;
 import org.apache.log4j.rule.ExpressionRule;
 import org.apache.log4j.rule.Rule;
 import org.apache.log4j.spi.LoggingEvent;
@@ -496,7 +495,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
             !model.isUseISO8601Format() && !model.isCustomDateFormat());
 
           if (model.isUseISO8601Format()) {
-            renderer.setDateFormatter(new ISO8601DateFormat());
+            renderer.setDateFormatter(new SimpleDateFormat(Constants.ISO8601_PATTERN));
           } else {
             renderer.setDateFormatter(
               new SimpleDateFormat(model.getDateFormatPattern()));

@@ -28,7 +28,6 @@ import java.text.DateFormat;
    printing DateFormat in the package.
    
    @author Ceki G&uuml;lc&uuml;
-   
    @since 0.7.5
 */
 public class RelativeTimeDateFormat extends DateFormat {

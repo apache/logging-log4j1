@@ -41,10 +41,6 @@ public class DataSourceConnectionSource extends ConnectionSourceSkeleton {
     //LogLog.debug("**********DataSourceConnectionSource.activateOptions called");
     if (dataSource == null) {
       getLogger().warn("WARNING: No data source specified");
-      
-      if (errorHandler != null) {
-        errorHandler.error("WARNING: No data source specified");
-      }
     } else {
       Connection connection = null;
       try {
@@ -66,10 +62,7 @@ public class DataSourceConnectionSource extends ConnectionSourceSkeleton {
    */
   public Connection getConnection() throws SQLException {
     if (dataSource == null) {
-      if (errorHandler != null) {
-        errorHandler.error("WARNING: No data source specified");
-      }
-
+      getLogger().error("WARNING: No data source specified");
       return null;
     }
 
