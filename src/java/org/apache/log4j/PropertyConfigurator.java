@@ -41,7 +41,7 @@ import java.util.Hashtable;
 
    <p>It is sometimes useful to see how log4j is reading configuration
    files. You can enable log4j internal logging by defining the
-   <b>log4j.configDebug</b> variable. 
+   <b>log4j.debug</b> variable.
 
    <P>As of log4j version 0.8.5, at the initialization of the Category
    class, the file <b>log4j.properties</b> will be searched from the
@@ -51,10 +51,10 @@ import java.util.Hashtable;
 
    <p>The <code>PropertyConfigurator</code> does not handle the
    advanced configuration features supported by the {@link
-   org.apache.log4j.xml.DOMConfigurator DOMConfigurator} such as support for
-   sub-classing of the Priority class, {@link org.apache.log4j.spi.Filter
-   Filters}, custom {@link org.apache.log4j.spi.ErrorHandler ErrorHandlers},
-   nested appenders such as the {@link org.apache.log4j.AsyncAppender
+   org.apache.log4j.xml.DOMConfigurator DOMConfigurator} such as
+   support for @link org.apache.log4j.spi.Filter Filters}, custom
+   {@link org.apache.log4j.spi.ErrorHandler ErrorHandlers}, nested
+   appenders such as the {@link org.apache.log4j.AsyncAppender
    AsyncAppender}, etc.
 
    <p><em>All option values admit variable substitution.</em> For
@@ -97,14 +97,15 @@ public class PropertyConfigurator extends BasicConfigurator
   static final private String INTERNAL_ROOT_NAME = "root";
   
   /**
-    Read configuration from a file. The existing configuration is not
-    cleared nor reset. If you require a different call, behavior,
+    Read configuration from a file. <b>The existing configuration is
+    not cleared nor reset.</b> If you require a different behavior,
     then call {@link BasicConfigurator#resetConfiguration
     resetConfiguration} method before calling
     <code>doConfigure</code>.
 
     <p>The configuration file consists of statements in the format
-    <code>key=value</code>.
+    <code>key=value</code>. The syntax of different configuration
+    elements are discussed below.
 
     <h3>Appender configuration</h3>
 
@@ -133,17 +134,27 @@ public class PropertyConfigurator extends BasicConfigurator
 
     <p>The syntax for configuring the root category is:
     <pre>
-      log4j.rootCategory=[FATAL|ERROR|WARN|INFO|DEBUG], appenderName, appenderName, ...
+      log4j.rootCategory=[priority], appenderName, appenderName, ...
     </pre>
 
-    <p>This syntax means that one of the strings values ERROR, WARN,
-    INFO or DEBUG can be supplied followed by appender names separated
-    by commas.
+    <p>This syntax means that an optional <em>priority value</em> can
+    be supplied followed by appender names separated by commas.
+
+   
+
+
+    <p>The priority value can consist of the string values FATAL,
+    ERROR, WARN, INFO or DEBUG. However, you can specify a custom
+    priority value in the form <code>priority#classname</code>. In
+    that case, the specified class' toPriority method is called to
+    process the specified priority string; if no '#' character is
+    present, then the default {@link Priority} class is used to
+    process the priority value.
     
-    <p>If one of the optional priority values ERROR, WARN, INFO or
-    DEBUG is given, the root priority is set to the corresponding
-    priority.  If no priority value is specified, then the root
-    priority remains untouched.
+    <p>If one of the optional priority value is specified, then the
+    root priority is set to the corresponding priority.  If no
+    priority value is specified, then the root priority remains
+    untouched.
 
     <p>The root category can be assigned multiple appenders.
     
@@ -430,9 +441,9 @@ public class PropertyConfigurator extends BasicConfigurator
   }
 
 
-  // -------------------------------------------------------------------------------
+  // --------------------------------------------------------------------------
   // Internal stuff
-  // -------------------------------------------------------------------------------
+  // --------------------------------------------------------------------------
 
   void configureCategoryFactory(Properties props) {
     String factoryClassName = OptionConverter.findAndSubst(CATEGORY_FACTORY_KEY,
@@ -533,8 +544,7 @@ public class PropertyConfigurator extends BasicConfigurator
     LogLog.debug("Parsing for [" +catName +"] with value=[" + value+"].");
     // We must skip over ',' but not white space
     StringTokenizer st = new StringTokenizer(value, ",");
- 
-    
+     
     // If value is not in the form ", appender.." or "", then we should set
     // the priority of the category.
     
@@ -551,10 +561,12 @@ public class PropertyConfigurator extends BasicConfigurator
       // null. We also check that the user has not specified inherited for the
       // root category.
       if(priorityStr.equalsIgnoreCase(BasicConfigurator.INHERITED) &&
-	                              !catName.equals(INTERNAL_ROOT_NAME)) 
+                                	 !catName.equals(INTERNAL_ROOT_NAME)) {
 	cat.setPriority(null);
-      else 
-	cat.setPriority(Priority.toPriority(priorityStr));
+      } else {
+	cat.setPriority(OptionConverter.toPriority(priorityStr, 
+						   Priority.DEBUG));
+      }
       LogLog.debug("Category " + catName + " set to " + cat.getPriority());
     }
 
