@@ -29,6 +29,9 @@
    getOptionString methods have been removed from the OptionHandler
    interface which is implemented by most log4j components. [**]
 
+ - In XML configuration files, the <configuration> element has been
+   deprecated and was replaced by the <log4j:configuration> element. [*]
+	
  February 23, 2001
 
  - Release of version 1.1b1
@@ -39,10 +42,6 @@
    directive.  As a result of this change the disable family of
    methods has moved from the BasicConfigurator class to the Hierarchy
    class. [**]
-
- - Changed the name of the configuration element to log4j:configuration in the
-   log4j.dtd. All configuration files written in XML need to be
-   modified. [**]
 
    The following perl command can help:
 

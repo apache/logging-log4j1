@@ -286,7 +286,7 @@ import java.text.FieldPosition;
    data. The value is never truncated.
 
    <p>This behavior can be changed using the <em>maximum field
-   width</em> modifier which is desginated by a period followed by a
+   width</em> modifier which is designated by a period followed by a
    decimal constant. If the data item is longer than the maximum
    field, then the extra characters are removed from the
    <em>beginning</em> of the data item and not from the end. For
