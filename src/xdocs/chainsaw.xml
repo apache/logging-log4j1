@@ -19,14 +19,15 @@
      <li><a href="#WhatIsIt">So what is it really?</a></li>
      <li><a href="#QuickTour">Quick Tour of Chainsaw features</a></li>
      <li><a href="#ProjectStatus">Project Status/Support/Feedback</a></li>
+     <li><a href="#Installation">Installation</a></li>
      <li><a href="#GettingStarted">Getting Started</a></li>
      <li><a href="#Tutorial">Tutorial and User Manual</a></li>
-    </ul>
-      
-    
+     <li><a href="#Screenshots">Screenshots</a></li>
+     </ul>
     </section>
-    <section name="So what is it really?">
-      <p><a name="WhatIsIt"/>It's a GUI-based Log viewer. Pictures tell a thousand words...</p>
+    
+<section name="So what is it really?">
+      <p><a name="WhatIsIt"/>It's a GUI-based Log viewer. A picture tells a thousand words...</p>
       
       <p><img src="api/org/apache/log4j/chainsaw/doc-files/Chainsawv2.gif" width="873" height="492"/></p>
 
@@ -35,46 +36,57 @@
       <p>Rather than rely on a combination of tail/grep/vi or equivalent to view/query/trace-through
       a huge trail of logging events, you can use Chainsaw.  Chainsaw can read log files formatted in Log4j's XMLLayout, receive
       events from remote locations, read events from a DB, it can even work with the JDK 1.4 logging events.</p>
+      <p>You can see some more screenshots <a href="#Screenshots">here</a>.</p>
     </section>
     
-    <section name="Project Status/Support/Feedback">
-      <p><a name="ProjectStatus"/>Currently Chainsaw v2 is not in official release status, more
-      Alpha level, but a number of developers
-      are actively using it to assist in the management of production environments.  A number
-      of changes and features are still being added at this time, but it is scheduled to be officially
-      released with the Log4j 1.3 release in the very near future.</p>
-      
-      <p>Feel free to monitor and participate in discussing Chainsaw on the <a href="mailto:log4j-user@jakarta.apache.org">Log4j User</a> mailing list.
-      
-      Support for the product will also be provided through this forum.</p>
-      
-    </section>
-    
-        
     <section name="Quick Tour of Chainsaw features">
-			<p><a name="QuickTour"/></p>
+			<p><a name="QuickTour"/> Heres just a <b>brief</b> run down of some of the features of Chainsaw v2:</p>
       <ul>
-       <li><b>View remote events</b> - Remote events are "received" by Chainsaw using Log4j's new Receiver concept.</li>
+       <li><b>View remote events</b> - Remote events are "received" by Chainsaw using Log4j 1.3's new Receiver concept.</li>
+       <li><b>Saved Preferences</b> - You can fully customize each Tab the way you want it, and it will restore it's state the next time.</li>
+
        <li><b>Responsive</b> - When events are screaming in, you don't want the GUI to meltdown.  You can control 
        how responsive the GUI is and determine the frequency of updates.</li>
        <li><b>Tabs/Docking</b> - Chainsaw routes separate applications/remote hosts' events to a unique Tab within the GUI.  
        These tabs can be undocked from the main window.  Using these features you can manage multiple application logs using the one GUI.</li>
        <li><b>Coloring</b> - You can specify your own rules to color each event row depending on the attributes of a LoggingEvent to 
        help you locate important events.</li>
-       <li><b>Dynamic and powerful filtering</b> - Helps you locate stuff. There's support for quick-and-dirty filtering, right through to advanced expression-based filtering.</li>
+       <li><b>Dynamic and powerful filtering</b> - Helps you locate stuff. There's support for quick-and-dirty filtering, right through to advanced expression-based filtering (e.g. <code> "LOGGER == 'com.mycompany' &amp;&amp; LEVEL == ERROR" </code>).</li>
        <li><b>Cyclic</b> - A tab view can support a Cyclic-based model, which constrains it's view to the last
        X events, ensuring you don't hog memory.  This is great for monitoring live applications.</li>
        <li><b>Built-in documentation and tutorial</b> - HTML-based documentation included in the package.</li>
       </ul>
     </section>
 
+    <section name="Installation">
+			<p><a name="Installation"/>Currently you need to check out the jakarta-log4j module from the Apache CVS server
+			to build and run Chainsaw v2.  To make this easier, we have created a temporary installation Ant script, you can download this 
+			by <a href="install-chainsaw.xml">clicking here</a>.</p>    
+			<P>You will need the following installed to utilise this installation script:</P>
+			<UL>
+			 <li>JDK 1.3+</li>
+			 <li>Ant 1.5+</li>
+			 <li>CVS</li>
+			</UL>
+			<P>Once you have downloaded and placed this script in a directory where you want Chainsaw v2 installed, you can type:</P>
+			<pre>ant</pre>
+			<P>This will download everything you need to build and run Chainsaw v2.</P>
+			<P>When finally released, we plan to have Chainsaw v2 available via Java WebStart.</P>
+    </section>
+
     <section name="Getting Started">
-			<p><a name="GettingStarted"/> </p>    
+			<p><a name="GettingStarted"/>Once you have used the above installer, you can <code>cd</code> to tho <code>jakarta-log4j</code> sub-directory and
+			type:</p>    
+			<pre>ant chainsaw</pre>
+			<P>Chainsaw v2 will be built and run!</P>
     </section>
    
     <section name="Tutorial and User Manual">
-			<p><a name="ExtraDocs"/>Chainsaw includes help with
-      with a Quick Reference, Tutorial, and User Manual, all viewable from within the GUI. </p>    
+			<p><a name="ExtraDocs"/>Chainsaw already includes help with
+      with a Quick Reference and a Tutorial to get you started, all viewable from <b>within the GUI</b>. A User Manual will be made available around release time. </p>    
+    </section>
+    <section name="Screenshots">
+			<p><a name="Screenshots"/>Here's a few more screenshots to whet your appetite:</p>    
     </section>
     
 </body>
