@@ -1901,13 +1901,20 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     }
 
     public void mouseMoved(MouseEvent e) {
+//        LogLog.debug(e.toString());
       int col = table.columnAtPoint(e.getPoint());
 
+
+//    TODO This is a Bug or something, but InputEvent.CTRL_DOWN_MASK only works
+// in JDK 1.4.2 when the LoggerTreePanel is open, if it is closed, it doesn't work... CTRL_DOWN_MASK
+// is ok though... Strange. Copied the mask from 1.4.2 here
       if (
-        ((e.getModifiers() & InputEvent.CTRL_MASK) > 0)
+        ((e.getModifiers() & (1 << 7))> 0) || ((e.getModifiers() & InputEvent.CTRL_MASK)> 0)
           && isFocusableColumn(col)) {
         table.setCursor(ChainsawColumns.CURSOR_FOCUS_ON);
       } else {
+//          LogLog.debug("MouseMoved,  ((e.getModifiers() & InputEvent.CTRL_MASK) > 0)=" +  ((e.getModifiers() & InputEvent.CTRL_MASK) > 0) + ", isFocusableColumn(col)=" + isFocusableColumn(col));
+//        LogLog.debug(e.toString());
         table.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
       }
     }
