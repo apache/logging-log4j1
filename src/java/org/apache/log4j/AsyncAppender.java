@@ -43,6 +43,33 @@ import java.util.Enumeration;
 public class AsyncAppender extends AppenderSkeleton 
                                             implements AppenderAttachable {
   
+  /**
+     A string constant used in naming the option for setting the
+     location information flag.  Current value of this string
+     constant is <b>LocationInfo</b>.  
+
+     <p>Note that all option keys are case sensitive.
+
+     @deprecated Options are now handled using the JavaBeans paradigm.
+     This constant is not longer needed and will be removed in the
+     <em>near</em> term.
+  */
+  public static final String LOCATION_INFO_OPTION = "LocationInfo";
+
+
+  /**
+     A string constant used in naming the option for setting the size of the
+     internal buffer where logging events are stored until they are written.
+     Current value of this string constant is <b>BufferSize</b>.  
+
+     <p>Note that all option keys are case sensitive.
+
+     @deprecated Options are now handled using the JavaBeans paradigm.
+     This constant is not longer needed and will be removed in the
+     <em>near</em> term.
+  */
+  public static final String BUFFER_SIZE_OPTION = "BufferSize";
+
   /** The default buffer size is set to 128 events. */
   public static final int DEFAULT_BUFFER_SIZE = 128;
 
@@ -201,6 +228,64 @@ public class AsyncAppender extends AppenderSkeleton
   public
   int getBufferSize() {
     return bf.getMaxSize();
+  }
+
+ /**
+     Returns the option names for this component in addition in
+     addition to the options of its super class {@link
+     AppenderSkeleton}.  
+     
+     @deprecated We now use JavaBeans introspection to configure
+     components. Options strings are no longer needed.
+   */
+  public
+  String[] getOptionStrings() {
+    return OptionConverter.concatanateArrays(super.getOptionStrings(),
+          new String[] {LOCATION_INFO_OPTION, BUFFER_SIZE_OPTION});
+  }
+
+ /**
+     Set AsyncAppender specific options:
+
+     <p>On top of the options of the super class {@link
+     AppenderSkeleton}, the only recognized options are
+     <b>BufferSize</b> and <b>LocationInfo</b>.
+     
+     <p> The <b>BufferSize</b> option takes a non-negative integer
+     value.  This integer value determines the maximum size of the
+     bounded buffer. Increasing the size of the buffer is always
+     safe. However, if an existing buffer holds unwritten elements,
+     then <em>decreasing the buffer size will result in event
+     loss.</em> Nevertheless, while script configuring the
+     AsyncAppender, it is safe to set a buffer size smaller than the
+     {@link #DEFAULT_BUFFER_SIZE default buffer size} because
+     configurators guarantee that an appender cannot be used before
+     being completely configured. 
+
+     <p>The <b>LocationInfo</b> option takes a boolean value. By
+     default, it is set to false which means there will be no effort
+     to extract the location information related to the event. As a
+     result, the event that will be ultimately logged will likely to
+     contain the wrong location information (if present in the log
+     format).
+
+     <p>Location information extraction is comparatively very slow and
+     should be avoided unless performance is not a concern.
+
+     @deprecated Use the setter method for the option directly instead
+     of the generic <code>setOption</code> method. 
+ */
+  public
+  void setOption(String option, String value) {
+    if(value == null) return;
+    super.setOption(option, value);
+
+    if (option.equals(LOCATION_INFO_OPTION))
+      locationInfo = OptionConverter.toBoolean(value, locationInfo);
+    else if (option.equals(BUFFER_SIZE_OPTION)) {
+      int newSize = OptionConverter.toInt(value, DEFAULT_BUFFER_SIZE);
+      bf.resize(newSize);
+    }
   }
   
   /*

@@ -32,6 +32,29 @@ import org.apache.log4j.spi.LoggingEvent;
 */
 public class RollingFileAppender extends FileAppender {
   /**
+     A string constant used in naming the option for setting the
+     maximum size of the log file. Current value of this string constant is
+     <b>MaxFileSize</b>.
+     
+     @deprecated Options are now handled using the JavaBeans paradigm.
+     This constant is not longer needed and will be removed in the
+     <em>near</em> term.
+
+   */
+  static final public String MAX_FILE_SIZE_OPTION = "MaxFileSize";
+  
+   /**
+     A string constant used in naming the option for setting the the
+     number of backup files to retain. Current value of this string
+     constant is <b>MaxBackupIndex</b>. 
+     
+     @deprecated Options are now handled using the JavaBeans paradigm.
+     This constant is not longer needed and will be removed in the
+     <em>near</em> term.
+ */
+  static final public String MAX_BACKUP_INDEX_OPTION = "MaxBackupIndex";  
+
+  /**
      The default maximum file size is 10MB. 
   */
   protected long maxFileSize = 10*1024*1024; 
@@ -73,6 +96,39 @@ public class RollingFileAppender extends FileAppender {
   public
   RollingFileAppender(Layout layout, String filename) throws IOException {
     super(layout, filename);
+  }
+  
+  /**
+     Retuns the option names for this component, namely {@link
+     #MAX_FILE_SIZE_OPTION} and {@link #MAX_BACKUP_INDEX_OPTION} in
+     addition to the options of {@link FileAppender#getOptionStrings}
+
+     
+     @deprecated We now use JavaBeans introspection to configure
+     components. Options strings are no longer needed.
+     FileAppender}.  */
+  public
+  String[] getOptionStrings() {
+
+    return OptionConverter.concatanateArrays(super.getOptionStrings(),
+		 new String[] {MAX_FILE_SIZE_OPTION, MAX_BACKUP_INDEX_OPTION});
+  }
+  
+   /**
+     
+     @deprecated Use the setter method for the option directly instead
+     of the generic <code>setOption</code> method. 
+
+    */
+  public
+  void setOption(String key, String value) {
+    super.setOption(key, value);    
+    if(key.equalsIgnoreCase(MAX_FILE_SIZE_OPTION)) {
+      maxFileSize = OptionConverter.toFileSize(value, maxFileSize + 1);
+    }
+    else if(key.equalsIgnoreCase(MAX_BACKUP_INDEX_OPTION)) {
+      maxBackupIndex = OptionConverter.toInt(value, maxBackupIndex);
+    }
   }
   
   /**

@@ -31,6 +31,17 @@ import java.io.*;
 public class NTEventLogAppender extends AppenderSkeleton {
   private int _handle = 0;
 
+  /**
+     The string constant used in naming the source of the event. The
+     current value of this constant is <b>Source</b>.
+
+     @deprecated Options are now handled using the JavaBeans paradigm.
+     This constant is not longer needed and will be removed in the
+     <em>near</em> term.
+
+   */
+  public static final String SOURCE_OPTION = "Source";
+  
   private String source = null;
   private String server = null;
 
@@ -75,6 +86,34 @@ public class NTEventLogAppender extends AppenderSkeleton {
     } catch (Exception e) {
       e.printStackTrace();
       _handle = 0;
+    }
+  }
+
+  /**
+     Returns the option names for this component.
+     
+     @deprecated We now use JavaBeans introspection to configure
+     components. Options strings are no longer needed.
+   **/
+  public
+  String[] getOptionStrings() {
+    return OptionConverter.concatanateArrays(super.getOptionStrings(),
+          new String[] {SOURCE_OPTION});
+  }
+
+  /**
+     @deprecated Use the setter method for the option directly instead
+     of the generic <code>setOption</code> method. 
+  */
+  public
+  void setOption(String key, String value) {
+    if(value == null) return;
+    super.setOption(key, value);
+    
+
+    if(key.equalsIgnoreCase(SOURCE_OPTION)) {
+      // Set the source for the NT Evetns
+      source = value.trim();
     }
   }
 

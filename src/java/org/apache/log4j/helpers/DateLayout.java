@@ -45,8 +45,19 @@ abstract public class DateLayout extends Layout {
 
   protected FieldPosition pos = new FieldPosition(0);
 
-  //final static public String DATE_FORMAT_OPTION = "DateFormat";
-  //final static public String TIMEZONE_OPTION = "TimeZone";  
+  /**
+     @deprecated Options are now handled using the JavaBeans paradigm.
+     This constant is not longer needed and will be removed in the
+     <em>near</em> term.
+  */
+  final static public String DATE_FORMAT_OPTION = "DateFormat";
+  
+  /**
+     @deprecated Options are now handled using the JavaBeans paradigm.
+     This constant is not longer needed and will be removed in the
+     <em>near</em> term.
+  */
+  final static public String TIMEZONE_OPTION = "TimeZone";  
 
   private String timeZoneID;
   private String dateFormatOption;  
@@ -54,6 +65,28 @@ abstract public class DateLayout extends Layout {
   protected DateFormat dateFormat;
   protected Date date = new Date();
 
+  /**
+     @deprecated Use the setter method for the option directly instead
+     of the generic <code>setOption</code> method. 
+  */
+  public
+  String[] getOptionStrings() {
+    return new String[] {DATE_FORMAT_OPTION, TIMEZONE_OPTION};
+  }
+
+  /**
+     @deprecated Use the setter method for the option directly instead
+     of the generic <code>setOption</code> method. 
+  */
+  public
+  void setOption(String option, String value) {
+    if(option.equalsIgnoreCase(DATE_FORMAT_OPTION)) {
+      dateFormatOption = value.toUpperCase();
+    } else if(option.equalsIgnoreCase(TIMEZONE_OPTION)) {
+      timeZoneID = value;
+    }
+  }
+  
 
   /**
     The value of the <b>DateFormat</b> option should be either an

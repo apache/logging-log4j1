@@ -32,6 +32,20 @@ import org.apache.log4j.helpers.OptionConverter;
 public class PriorityMatchFilter extends Filter {
   
   /**
+     @deprecated Options are now handled using the JavaBeans paradigm.
+     This constant is not longer needed and will be removed in the
+     <em>near</em> term.
+   */
+  public static final String PRIORITY_TO_MATCH_OPTION = "PriorityToMatch";
+
+  /**
+     @deprecated Options are now handled using the JavaBeans paradigm.
+     This constant is not longer needed and will be removed in the
+     <em>near</em> term.
+   */
+  public static final String ACCEPT_ON_MATCH_OPTION = "AcceptOnMatch";
+  
+  /**
      Do we return ACCEPT when a match occurs. Default is
      <code>true</code>.  */
   boolean acceptOnMatch = true;
@@ -40,6 +54,28 @@ public class PriorityMatchFilter extends Filter {
    */
   Priority priorityToMatch;
 
+  /**
+     @deprecated We now use JavaBeans introspection to configure
+     components. Options strings are no longer needed.
+  */
+  public
+  String[] getOptionStrings() {
+    return new String[] {PRIORITY_TO_MATCH_OPTION, ACCEPT_ON_MATCH_OPTION};
+  }
+
+  /**
+     @deprecated Use the setter method for the option directly instead
+     of the generic <code>setOption</code> method. 
+  */
+  public
+  void setOption(String key, String value) {    
+    if(key.equalsIgnoreCase(PRIORITY_TO_MATCH_OPTION)) {
+      priorityToMatch = Priority.toPriority(value, null);
+    } else if (key.equalsIgnoreCase(ACCEPT_ON_MATCH_OPTION)) {
+      acceptOnMatch = OptionConverter.toBoolean(value, acceptOnMatch);
+    }
+  }
+  
   public
   void setPriorityToMatch(String priority) {
     priorityToMatch = Priority.toPriority(priority, null);

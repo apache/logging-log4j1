@@ -5,9 +5,9 @@
  * License version 1.1, a copy of which has been included with this
  * distribution in the LICENSE.APL file.  */
 
-
-
 package org.apache.log4j.spi;
+
+import org.apache.log4j.FileAppender;
 
 /**
    A string based interface to configure package components.
@@ -32,4 +32,23 @@ public interface OptionHandler {
      ambigous until the other is also set.
   */
   void activateOptions();
+
+  /**
+     Return list of strings that the OptionHandler instance recognizes.
+     
+     @deprecated use JavaBeans style getters/setters
+   */
+  String[] getOptionStrings();
+
+  /**
+     Set <code>option</code> to <code>value</code>.
+
+     <p>The handling of each option depends on the OptionHandler
+     instance. Some options may become active immediately whereas
+     other may be activated only when {@link #activateOptions} is
+     called.
+     
+     @deprecated use JavaBeans style getters/setters
+  */
+  void setOption(String option, String value);
 }
