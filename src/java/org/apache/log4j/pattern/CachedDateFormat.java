@@ -339,4 +339,22 @@ final class CachedDateFormat extends DateFormat {
     return formatter.getNumberFormat();
   }
   
+  /**
+   * Gets maximum cache validity for the specified SimpleDateTime
+   *    conversion pattern.
+   *  @param pattern conversion pattern, may not be null.
+   *  @returns Duration in milliseconds from an integral second
+   *      that the cache will return consistent results.
+   */
+  public static int getMaximumCacheValidity(final String pattern) {
+     //
+     //   If there are more "S" in the pattern than just one "SSS"
+     //      prevent caching anything more than duplicate requests
+     //
+     int firstS = pattern.indexOf('S');
+     if (firstS >= 0 && firstS != pattern.lastIndexOf("SSS")) {
+         return 1;
+     }
+     return 1000;
+  }
 }
