@@ -52,6 +52,8 @@ package org.apache.log4j.plugins;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.OptionHandler;
 
+import java.beans.PropertyChangeListener;
+
 
 /**
   Defines the required interface for all Plugin objects.
@@ -100,11 +102,45 @@ public interface Plugin extends OptionHandler {
   public void setLoggerRepository(LoggerRepository repository);
 
   /**
+   * Adds a PropertyChangeListener to this instance which is
+   * notified only by changes of the property with name propertyName
+   * @param propertyName the name of the property in standard JavaBean syntax (e.g. for setName(), property="name")
+   * @param l
+   */
+  public void addPropertyChangeListener(
+    String propertyName, PropertyChangeListener l);
+
+  /**
+   * Adds a PropertyChangeListener that will be notified of all property
+   * changes.
+   * @param l
+   */
+  public void addPropertyChangeListener(PropertyChangeListener l);
+
+  /**
+   * Removes a specific PropertyChangeListener from this instances
+   * registry that has been mapped to be notified of all property
+   * changes..
+   * @param l
+   */
+  public void removePropertyChangeListener(PropertyChangeListener l);
+
+  /**
+   * Removes a specific PropertyChangeListener from this instance's
+   * registry which has been previously registered to be notified
+   * of only a specific property change.
+   * @param propertyName
+   * @param l
+   */
+  public void removePropertyChangeListener(
+    String propertyName, PropertyChangeListener l);
+
+  /**
     True if the plugin is active and running.
 
     @return boolean true if the plugin is currently active. */
   public boolean isActive();
-  
+
   /**
     Call when the plugin should be stopped. */
   public void shutdown();

@@ -63,6 +63,9 @@ import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.RootCategory;
 import org.apache.log4j.util.Compare;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -365,12 +368,123 @@ public class PluginTestCase extends TestCase {
       Compare.compare(getOutputFile(testName), getWitnessFile(testName)));
   }
 
+  public void testPropertyChangeListeners() {
+    Plugin plugin = new PluginTester1("PluginTest1", 1);
+
+    final PropertyChangeListenerLatch l = new PropertyChangeListenerLatch();
+    plugin.addPropertyChangeListener(l);
+
+    /**
+     * Test the basic properties and ensure they get latched by notification
+     */
+    plugin.setName("NewName");
+    assertTrue(
+      "PropertyChange latch should have been detected", l.isLatched());
+    assertTrue(
+      "Old value unexpected: '" + l.getLastEvent().getOldValue() + "'",
+      l.getLastEvent().getOldValue().equals("PluginTest1"));
+    assertTrue(
+      "New value unexpected: '" + l.getLastEvent().getNewValue() + "'",
+      l.getLastEvent().getNewValue().equals("NewName"));
+
+    l.reset();
+
+    plugin.removePropertyChangeListener(l);
+    plugin.setName("SecondNewName");
+
+    assertTrue("Should not have been notified/latched", !l.isLatched());
+
+    l.reset();
+
+    /**
+     * Test when only listening for specific property
+     */
+    plugin.addPropertyChangeListener("name", l);
+
+    plugin.setName("NewName2");
+    assertTrue(
+      "PropertyChange latch should have been detected", l.isLatched());
+    assertTrue(
+      "Old value unexpected: '" + l.getLastEvent().getOldValue() + "'",
+      l.getLastEvent().getOldValue().equals("SecondNewName"));
+    assertTrue(
+      "New value unexpected: '" + l.getLastEvent().getNewValue() + "'",
+      l.getLastEvent().getNewValue().equals("NewName2"));
+
+    plugin.removePropertyChangeListener("name", l);
+
+    l.reset();
+
+    /**
+     * setup some assertions before continuing testing to make sure the test code isn't broken
+     */
+    assertTrue("Plugin should not be active just yet", !plugin.isActive());
+    assertTrue("Latch should not be latched", !l.isLatched());
+
+    plugin.addPropertyChangeListener("active", l);
+
+    PluginRegistry.startPlugin(plugin);
+    assertTrue(
+      "Should have been notified of activation when PluginRegistry.start(plugin)",
+      l.isLatched());
+    assertTrue(
+      "Active old value should have been false",
+      l.getLastEvent().getOldValue().equals(Boolean.FALSE));
+    assertTrue(
+      "Active New value should have been true",
+      l.getLastEvent().getNewValue().equals(Boolean.TRUE));
+      
+      PluginRegistry.stopAllPlugins();
+      l.reset();
+      assertTrue("Latch should have been reset", !l.isLatched());
+      /**
+       * start afresh
+       */
+     plugin = new PluginTester1("LoggerRepositoryProperty", 2);
+     LoggerRepository oldValue = plugin.getLoggerRepository();
+     plugin.addPropertyChangeListener("loggerRepository", l);
+     LoggerRepository rep = new Hierarchy(new RootCategory(Level.DEBUG));
+     plugin.setLoggerRepository(rep);
+     
+     assertTrue("Should be notified of LoggerRepository property change", l.isLatched());
+     assertTrue("LoggerRepository Old value mismatch", l.getLastEvent().getOldValue() == oldValue);
+     assertTrue("LoggerRepository New vale mismatch", l.getLastEvent().getNewValue() == rep);
+  }
+
   public static Test suite() {
     TestSuite suite = new TestSuite();
     suite.addTest(new PluginTestCase("test1"));
     suite.addTest(new PluginTestCase("test2"));
+    suite.addTest(new PluginTestCase("testPropertyChangeListeners"));
 
     return suite;
+  }
+
+  private static class PropertyChangeListenerLatch
+    implements PropertyChangeListener {
+    boolean latch = false;
+    PropertyChangeEvent lastEvent = null;
+
+    /* (non-Javadoc)
+     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+     */
+    public void propertyChange(PropertyChangeEvent evt) {
+      latch = true;
+      lastEvent = evt;
+    }
+
+    boolean isLatched() {
+      return latch;
+    }
+
+    void reset() {
+      latch = false;
+      lastEvent = null;
+    }
+
+    PropertyChangeEvent getLastEvent() {
+      return lastEvent;
+    }
   }
 
   /**
@@ -424,8 +538,11 @@ public class PluginTestCase extends TestCase {
     }
 
     private synchronized boolean setActive(boolean _active) {
+      boolean oldValue = active;
+
       if (active != _active) {
         active = _active;
+        firePropertyChange("active", oldValue, active);
 
         return true;
       } else {
