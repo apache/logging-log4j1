@@ -5,4 +5,3 @@ Implementation-Title: log4j
 Implementation-Version: @version@
 Implementation-Vendor: "Apache Software Foundation"
 
-
