@@ -44,7 +44,7 @@ public class StressAsyncAppender extends Thread {
       usage();
     }
 
-    DOMConfigurator.configure("stressAsyncAppender.xml");
+    DOMConfigurator.configure("xml/stressAsyncAppender.xml");
 
     try {
       maxThreads =  Integer.parseInt(args[0]);
