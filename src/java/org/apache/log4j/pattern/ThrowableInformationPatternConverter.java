@@ -70,4 +70,11 @@ public class ThrowableInformationPatternConverter extends PatternConverter {
   public String getStyleClass(LoggingEvent e) {
     return "throwable";
   }
+  
+  /**
+   * This converter obviosly handles throwables.
+   */
+  public boolean handlesThrowable() {
+    return true;
+  }
 }
