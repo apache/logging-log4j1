@@ -104,6 +104,21 @@ public interface LoggerRepository {
 
   public Logger getRootLogger();
 
+  /**
+   * Is the current configuration of the reposiroty, the original (pristine)
+   * configuration?
+   * 
+   * @since 1.3
+   */
+  public boolean isPristine();
+  
+  /**
+   *  Set the pristine flag. 
+   *  @see #isPristine 
+   *  @since 1.3
+   */
+  public void setPristine(boolean state);
+  
   public abstract Logger exists(String name);
 
   public abstract void shutdown();

@@ -1,12 +1,12 @@
 /*
  * Copyright 1999,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -42,6 +42,7 @@ import java.util.Vector;
 //               Anders Kristensen
 //               Igor Poteryaev
 
+
 /**
    This class is specialized in retrieving loggers by name and also
    maintaining the logger hierarchy.
@@ -68,7 +69,6 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   private LoggerFactory defaultFactory;
   private ArrayList repositoryEventListeners;
   private ArrayList loggerEventListeners;
-  
   String name;
   Hashtable ht;
   Logger root;
@@ -77,6 +77,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   Level threshold;
   boolean emittedNoAppenderWarning = false;
   boolean emittedNoResourceBundleWarning = false;
+  boolean pristine = true;
 
   /**
      Create a new logger hierarchy.
@@ -211,22 +212,22 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
     return name;
   }
 
-  /* 
+  /*
    * Set the name of this repository.
-   * 
+   *
    * Note that once named, a repository cannot be rerenamed.
    * @since 1.3
    */
   public void setName(String repoName) {
-    if(name == null) {
+    if (name == null) {
       name = repoName;
-    } else if(!name.equals(repoName)) {
-      throw new IllegalStateException("Repository ["+name
-          +"] cannot be renamed as ["+repoName+"].");
+    } else if (!name.equals(repoName)) {
+      throw new IllegalStateException(
+        "Repository [" + name + "] cannot be renamed as [" + repoName + "].");
     }
   }
 
-  
+
   /**
      The string form of {@link #setThreshold(Level)}.
   */
@@ -349,6 +350,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   //  return thresholdInt;
   //}
 
+
   /**
      Return a new logger instance named as the first parameter using
      the default factory.
@@ -380,6 +382,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   public Logger getLogger(String name, LoggerFactory factory) {
     //System.out.println("getInstance("+name+") called.");
     CategoryKey key = new CategoryKey(name);
+
 
     // Synchronize to prevent write conflicts. Read conflicts (in
     // getChainedLevel method) are possible only if variable
@@ -490,6 +493,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
     root.setResourceBundle(null);
     setThreshold(Level.ALL);
 
+
     // the synchronization is needed to prevent JDK 1.2.x hashtable
     // surprises
     synchronized (ht) {
@@ -522,6 +526,20 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
    */
   public void setRenderer(Class renderedClass, ObjectRenderer renderer) {
     rendererMap.put(renderedClass, renderer);
+  }
+
+  /*
+   * @see org.apache.log4j.spi.LoggerRepository#isPristine()
+   */
+  public boolean isPristine() {
+    return pristine;
+  }
+
+  /*
+   * @see org.apache.log4j.spi.LoggerRepository#setPristine()
+   */
+  public void setPristine(boolean state) {
+    pristine = state;
   }
 
   /**
@@ -577,7 +595,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
         c.removeAllAppenders();
       }
     }
-    
+
     // log4j self configure
     IntializationUtil.log4jInternalConfiguration(this);
   }
@@ -606,6 +624,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
     String name = cat.name;
     int length = name.length();
     boolean parentFound = false;
+
 
     //System.out.println("UpdateParents called for " + name);
     // if name = "w.x.y.z", loop thourgh "w.x.y", "w.x" and "w", but not "w.x.y.z"
@@ -667,6 +686,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
     for (int i = 0; i < last; i++) {
       Logger l = (Logger) pn.elementAt(i);
 
+
       //System.out.println("Updating child " +p.name);
       // Unless this child already points to a correct (lower) parent,
       // make cat.parent point to l.parent and l.parent to cat.
@@ -676,5 +696,4 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
       }
     }
   }
-
 }
