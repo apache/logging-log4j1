@@ -61,7 +61,7 @@ public class SizeBasedRollingTest extends TestCase {
     RollingFileAppender rfa = new RollingFileAppender();
     rfa.setLayout(layout);
 
-    SlidingWindowRollingPolicy swrp = new SlidingWindowRollingPolicy();
+    FixedWindowRollingPolicy swrp = new FixedWindowRollingPolicy();
     SizeBasedTriggeringPolicy sbtp = new SizeBasedTriggeringPolicy();
     sbtp.setMaxFileSize(100);
     sbtp.activateOptions();
@@ -82,7 +82,7 @@ public class SizeBasedRollingTest extends TestCase {
     RollingFileAppender rfa = new RollingFileAppender();
     rfa.setLayout(layout);
 
-    SlidingWindowRollingPolicy swrp = new SlidingWindowRollingPolicy();
+    FixedWindowRollingPolicy swrp = new FixedWindowRollingPolicy();
     SizeBasedTriggeringPolicy sbtp = new SizeBasedTriggeringPolicy();
 
     sbtp.setMaxFileSize(100);
@@ -126,7 +126,7 @@ public class SizeBasedRollingTest extends TestCase {
      RollingFileAppender rfa = new RollingFileAppender();
      rfa.setLayout(layout);
 
-     SlidingWindowRollingPolicy swrp = new SlidingWindowRollingPolicy();
+     FixedWindowRollingPolicy swrp = new FixedWindowRollingPolicy();
      SizeBasedTriggeringPolicy sbtp = new SizeBasedTriggeringPolicy();
 
      //swrp.setCompressionMode("GZ");
