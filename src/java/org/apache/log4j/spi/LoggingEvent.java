@@ -29,7 +29,6 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 import org.apache.log4j.NDC;
 import org.apache.log4j.helpers.Loader;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.location.LocationInfo;
 
 
@@ -817,7 +816,7 @@ public class LoggingEvent
         level = (Level)m.invoke(null, PARAM_ARRAY);
       }
     } catch (Exception e) {
-      LogLog.warn("Level deserialization failed, reverting to default.", e);
+      //LogLog.warn("Level deserialization failed, reverting to default.", e);
       level = Level.toLevel(p);
     }
   }
