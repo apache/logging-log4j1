@@ -85,7 +85,7 @@ public class RollingCalendar extends GregorianCalendar {
   // GMT (the epoch).
   public int computeTriggeringPeriod(String datePattern) {
     RollingCalendar rollingCalendar =
-      new RollingCalendar(GMT_TIMEZONE, Locale.ENGLISH);
+      new RollingCalendar(GMT_TIMEZONE, Locale.getDefault());
 
     // set sate to 1970-01-01 00:00:00 GMT
     Date epoch = new Date(0);
