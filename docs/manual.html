@@ -90,7 +90,7 @@ book <i>"The Practice of Programming"</i>
 application. If too verbose, it can cause scrolling blindness. To
 alleviate these concerns, log4j is designed to be reliable, fast and
 extensible. Since logging is rarely the main focus of an application,
-log4j API strives to be simple to understand and to use.
+the log4j API strives to be simple to understand and to use.
 
 <h2>Loggers, Appenders and Layouts</h2>
 
@@ -114,13 +114,13 @@ has replaced the <code>Category</code> class. For those familiar with
 earlier versions of log4j, the <code>Logger</code> class can be
 considered as a mere alias to the <code>Category</code> class.
 
-<p> Loggers are named entities. Logger names are case-sensitive and
+<p>Loggers are named entities. Logger names are case-sensitive and
 they follow the hierarchical naming rule:
 
 <p>
 <table bgcolor="#EEEE99">
  <tr>
-  <td>  
+  <td>
    <dl>
      <dt><b>Named Hierarchy</b>
 
@@ -142,11 +142,11 @@ ancestor of <code>"java.util.Vector"</code>.  This naming scheme
 should be familiar to most developers.
 
 <p>The root logger resides at the top of the logger hierarchy. It
-is exceptional in two ways: 
+is exceptional in two ways:
 
 <ol>
 <li> it always exists,
-<li> it cannot be retrieved by name. 
+<li> it cannot be retrieved by name.
 </ol>
 <p>Invoking the class static <a
 href="api/org/apache/log4j/Logger.html#getRootLogger()">Logger.getRootLogger</a>
@@ -162,18 +162,19 @@ below.
 <td>
 <pre>
   package org.apache.log4j;
-  
+
   public class <b>Logger</b> {
-  
+
     // Creation & retrieval methods:
     public static Logger getRootLogger();
     public static Logger getLogger(String name);
-    
+
     // printing methods:
     public void debug(Object message);
     public void info(Object message);
     public void warn(Object message);
     public void error(Object message);
+    public void fatal(Object message);
 
     // generic printing method:
     public void log(Level l, Object message);
@@ -183,19 +184,19 @@ below.
 </table>
 
 <p>Loggers <em>may</em> be assigned levels. The set of possible
-levels, that is 
+levels, that is
 
-<a href="api/org/apache/log4j/Level.html#DEBUG">DEBUG</a>, 
-<a href="api/org/apache/log4j/Level.html#INFO">INFO</a>, 
-<a href="api/org/apache/log4j/Level.html#WARN">WARN</a>, 
-<a href="api/org/apache/log4j/Level.html#ERROR">ERROR</a> and 
-<a href="api/org/apache/log4j/Level.html#FATAL">FATAL</a> 
+<a href="api/org/apache/log4j/Level.html#DEBUG">DEBUG</a>,
+<a href="api/org/apache/log4j/Level.html#INFO">INFO</a>,
+<a href="api/org/apache/log4j/Level.html#WARN">WARN</a>,
+<a href="api/org/apache/log4j/Level.html#ERROR">ERROR</a> and
+<a href="api/org/apache/log4j/Level.html#FATAL">FATAL</a>
 
 are defined in the <code><a
 href="api/org/apache/log4j/Level.html">org.apache.log4j.Level</a></code>
-class. Although we do not encourage you from doing so, you may define
+class. Although we do not encourage you to do so, you may define
 your own levels by sub-classing the <code>Level</code> class. A
-perhaps better approach is will be explained later on.
+perhaps better approach will be explained later on.
 
 <p>If a given logger is not assigned a level, then it inherits
 one from its closest ancestor with an assigned level. More
@@ -205,7 +206,7 @@ formally:
 <p>
 <table bgcolor="#EEEE99">
   <tr>
-  <td>  
+  <td>
    <dl>
      <dt><b>Level Inheritance</b>
 
@@ -231,10 +232,10 @@ resulting inherited levels according to the above rule.
     <tr align=left><td>X </td>      <td>none</td>  <td>Proot</td></tr>
     <tr align=left><td>X.Y </td>    <td>none</td>  <td>Proot</td></tr>
     <tr align=left><td>X.Y.Z</td>   <td>none</td>  <td>Proot</td></tr>
-    <caption align=bottom>Example 1</caption>    
+    <caption align=bottom>Example 1</caption>
 </table>
 
-<p>In example 1 above, only the root logger is assinged a
+<p>In example 1 above, only the root logger is assigned a
 level. This level value, <code>Proot</code>, is inherited by the
 other loggers <code>X</code>, <code>X.Y</code> and
 <code>X.Y.Z</code>.
@@ -288,17 +289,17 @@ having an assigned level..
 
 
 <p>Logging requests are made by invoking one of the printing methods
-of a logger instance. These printing methods are 
+of a logger instance. These printing methods are
 
 <code>
 <a href="api/org/apache/log4j/Logger.html#debug(java.lang.Object)">debug</a>,
 
-<a href="api/org/apache/log4j/Logger.html#info(java.lang.Object)">info</a>, 
+<a href="api/org/apache/log4j/Logger.html#info(java.lang.Object)">info</a>,
 
-<a href="api/org/apache/log4j/Logger.html#warn(java.lang.Object)">warn</a>, 
+<a href="api/org/apache/log4j/Logger.html#warn(java.lang.Object)">warn</a>,
 <a href="api/org/apache/log4j/Logger.html#error(java.lang.Object)">error</a>,
 <a href="api/org/apache/log4j/Logger.html#fatal(java.lang.Object)">fatal</a>
- and <a href="api/org/apache/log4j/Logger.html#log(org.apache.log4j.Level, java.lang.Object)">log</a></code>. 
+ and <a href="api/org/apache/log4j/Logger.html#log(org.apache.log4j.Level, java.lang.Object)">log</a></code>.
 
 
 <p>By definition, the printing method determines the level of a
@@ -321,8 +322,8 @@ summarized below.
 	<dt><b>Basic Selection Rule</b>
 
 	<dd><p>A log request of level <i>p</i> in a logger with
-	inherited level <i>q</i>, is enabled if <i> p &gt;=
-	q</i>. 	
+	(either assigned or inherited, whichever is appropriate) level <i>q</i>, is enabled if <i> p &gt;=
+	q</i>.
       </dl>
 </table>
 
@@ -330,7 +331,7 @@ summarized below.
 ordered. For the standard levels, we have <code>DEBUG &lt; INFO
 &lt; WARN &lt; ERROR &lt; FATAL</code>.
 
-<p>Here is an example of this rule. 
+<p>Here is an example of this rule.
 
 <p><table bgcolor="CCCCCC">
 <tr><td>
@@ -339,35 +340,35 @@ ordered. For the standard levels, we have <code>DEBUG &lt; INFO
    // get a logger instance named "com.foo"
    Logger  logger = Logger.getLogger(<strong>"com.foo"</strong>);
 
-   // Now set its level. Normally you do not need to set the 
-   // level of a logger progamitcally. This is usually done 
+   // Now set its level. Normally you do not need to set the
+   // level of a logger programmatically. This is usually done
    // in configuration files.
    <strong>logger</strong>.setLevel(<font
    color="0000AA"><strong>Level.INFO</strong></font>);
 
    Logger barlogger = Logger.getLogger(<strong>"com.foo.Bar"</strong>);
- 
+
    // This request is enabled, because <font color="00AA00"><strong>WARN</strong></font> &gt;= <font color="0000AA"><strong>INFO</strong></font>.
    logger.<font color="00AA00"><strong>warn</strong></font>("Low fuel level.");
-  
-   // This request is disabled, because <font color="00AA00"><strong>DEBUG</strong></font> &lt; <font color="0000AA"><strong>INFO</strong></font>.
-   logger.<font color="00AA00"><strong>debug</strong></font>("Starting search for nearest gas station."); 
- 
-   // The logger instance barlogger, named "com.foo.Bar",
-   // will inherit its level from the logger named 
-   // "com.foo" Thus, the following request is enabled 
-   // because <font color="00AA00"><strong>INFO</strong></font> &gt;= <font color="0000AA"><strong>INFO</strong></font>.  
-   barlogger.<font color="00AA00"><strong>info</strong></font>("Located nearest gas station."); 
 
    // This request is disabled, because <font color="00AA00"><strong>DEBUG</strong></font> &lt; <font color="0000AA"><strong>INFO</strong></font>.
-   barlogger.<font color="00AA00"><strong>debug</strong></font>("Exiting gas station search"); 
+   logger.<font color="00AA00"><strong>debug</strong></font>("Starting search for nearest gas station.");
+
+   // The logger instance barlogger, named "com.foo.Bar",
+   // will inherit its level from the logger named
+   // "com.foo" Thus, the following request is enabled
+   // because <font color="00AA00"><strong>INFO</strong></font> &gt;= <font color="0000AA"><strong>INFO</strong></font>.
+   barlogger.<font color="00AA00"><strong>info</strong></font>("Located nearest gas station.");
+
+   // This request is disabled, because <font color="00AA00"><strong>DEBUG</strong></font> &lt; <font color="0000AA"><strong>INFO</strong></font>.
+   barlogger.<font color="00AA00"><strong>debug</strong></font>("Exiting gas station search");
 </pre>
-</table>  
+</table>
 
 <p>Calling the <code>getLogger</code> method with the same name will
-always return a reference to the exact same logger object. 
+always return a reference to the exact same logger object.
 
-<p>For example, in 
+<p>For example, in
 
 <table bgcolor="CCCCCC">
 <tr><td>
@@ -422,7 +423,7 @@ href="api/org/apache/log4j/net/JMSAppender.html">JMS</a>,
 Event Loggers</a>, and remote UNIX <a
 href="api/org/apache/log4j/net/SyslogAppender.html">Syslog</a>
 daemons. It is also possible to log <a href="api/org/apache/log4j/AsyncAppender.html">asynchronously</a>.
- 
+
 <p>More than one appender can be attached to a logger.
 
 <p>The <a
@@ -486,14 +487,14 @@ the additivity flag</a> to <code>false</code>.
 <tr><td>x.y     <td>none       <td>true <td>A1, A-x1, A-x2
     <td>Appenders of "x" and root.
 
-<tr><td>x.y.z   <td>A-xyz1     <td>true <td>A1, A-x1, A-x2, A-xyz1	
+<tr><td>x.y.z   <td>A-xyz1     <td>true <td>A1, A-x1, A-x2, A-xyz1
     <td>Appenders in "x.y.z", "x" and root.
 
-<tr><td>security        <td>A-sec	   <td><font color="blue">false</font> 
+<tr><td>security        <td>A-sec	   <td><font color="blue">false</font>
                                            <td>A-sec
 
     <td>No appender accumulation since the additivity flag is set to
-        <code>false</code>. 
+        <code>false</code>.
 
 <tr><td>security.access <td>none <td> true <td> A-sec <td>Only
     appenders of "security" because the additivity flag in "security" is
@@ -507,7 +508,7 @@ destination but also the output format. This is accomplished by
 associating a <em>layout</em> with an appender. The layout is
 responsible for formatting the logging request according to the user's
 wishes, whereas an appender takes care of sending the formatted output
-to its destination. 
+to its destination.
 
 The <a
 href="api/org/apache/log4j/PatternLayout.html">PatternLayout</a>, part
@@ -533,7 +534,7 @@ message according to user specified criteria. For example, if you
 frequently need to log <code>Oranges</code>, an object type used in
 your current project, then you can register an
 <code>OrangeRenderer</code> that will be invoked whenever an orange
-needs to be logged. 
+needs to be logged.
 
 <p>Object rendering follows the class hierarchy. For example, assuming
 oranges are fruits, if you register an <code>FruitRenderer</code>, all
@@ -570,7 +571,7 @@ imaginary application <code>MyApp</code> that uses log4j.
  // Import log4j classes.
  <b>import org.apache.log4j.Logger;
  import org.apache.log4j.BasicConfigurator;</b>
- 
+
  public class MyApp {
 
    // Define a static logger variable so that it references the
@@ -585,7 +586,7 @@ imaginary application <code>MyApp</code> that uses log4j.
      logger.info("Entering application.");
      Bar bar = new Bar();
      bar.doIt();
-     logger.info("Exiting application.");    
+     logger.info("Exiting application.");
    }
  }
 </pre>
@@ -603,12 +604,12 @@ package <code>com.foo</code>.
 <pre>
  <b>package com.foo;</b>
  import org.apache.log4j.Logger;
- 
+
  public class Bar {
    <strong>static</strong> Logger logger = <strong>Logger.getLogger(Bar.class);</strong>
-  
+
    public void doIt() {
-     logger.debug("Did it again!");    
+     logger.debug("Did it again!");
    }
  }
 </pre>
@@ -624,7 +625,7 @@ href="api/org/apache/log4j/PatternLayout.html">PatternLayout</a> set
 to the pattern "%-4r [%t] %-5p %c %x - %m%n".
 
 <p>Note that by default, the root logger is assigned to
-<code>Level.DEBUG</code>. 
+<code>Level.DEBUG</code>.
 
 <p>The output of MyApp is:
 <pre>
@@ -635,7 +636,7 @@ to the pattern "%-4r [%t] %-5p %c %x - %m%n".
 
 <p>The figure below depicts the object diagram of <code>MyApp</code>
 after just having called the <code>BasicConfigurator.configure</code>
-method. 
+method.
 
 <p>
 <center>
@@ -658,7 +659,7 @@ retrieve the loggers they wish to use, and log away.
 <p>The previous example always outputs the same log information.
 Fortunately, it is easy to modify <code>MyApp</code> so that the log
 output can be controlled at run-time. Here is a slightly modified
-version.  
+version.
 
 <p><table bgcolor="CCCCCC"><tr><td>
 <pre>
@@ -666,21 +667,21 @@ version.
 
  import org.apache.log4j.Logger;
  <b>import org.apache.log4j.PropertyConfigurator;</b>
- 
+
  public class MyApp {
 
    static Logger logger = Logger.getLogger(MyApp.class.getName());
 
    public static void main(String[] args) {
 
-     
+
      // BasicConfigurator replaced with PropertyConfigurator.
      <strong>PropertyConfigurator.configure(args[0]);</strong>
 
      logger.info("Entering application.");
      Bar bar = new Bar();
      bar.doIt();
-     logger.info("Exiting application.");    
+     logger.info("Exiting application.");
    }
  }
 </pre>
@@ -697,10 +698,10 @@ output as the previous <code>BasicConfigurator</code> based example.
 <pre>
 # Set root logger level to DEBUG and its only appender to A1.
 log4j.rootLogger=DEBUG, A1
-  
-# A1 is set to be a ConsoleAppender. 
+
+# A1 is set to be a ConsoleAppender.
 log4j.appender.A1=org.apache.log4j.ConsoleAppender
-  
+
 # A1 uses PatternLayout.
 log4j.appender.A1.layout=org.apache.log4j.PatternLayout
 log4j.appender.A1.layout.ConversionPattern=%-4r [%t] %-5p %c %x - %m%n
@@ -721,10 +722,10 @@ configuration file shows one possible way of achieving this.
 log4j.rootLogger=DEBUG, A1
 log4j.appender.A1=org.apache.log4j.ConsoleAppender
 log4j.appender.A1.layout=org.apache.log4j.PatternLayout
-  
+
 # <strong>Print the date in ISO 8601 format</strong>
 log4j.appender.A1.layout.ConversionPattern=<strong>%d</strong> [%t] %-5p %c - %m%n
-  
+
 # Print only messages of level WARN or above in the package com.foo.
 <strong>log4j.logger.com.foo=WARN</strong>
 </pre>
@@ -932,7 +933,7 @@ web-application.
 tells log4j to use the file <code>c:\foobar.lcf</code> as the default
 configuration file. The configuration file is fully specified by the
 URL <code>file:/c:/foobar.lcf</code>. Thus, the same configuration
-file will be used for all web-applications. 
+file will be used for all web-applications.
 
 
 <p>Different web-applications will load the log4j classes through
@@ -963,9 +964,9 @@ import java.io.PrintWriter;
 import java.io.IOException;
 
 public class Log4jInit extends HttpServlet {
-  
+
   public
-  void <b>init()</b> { 
+  void <b>init()</b> {
     String prefix =  getServletContext().getRealPath("/");
     String file = getInitParameter("log4j-init-file");
     // if the log4j-init-file is not set, then no point in trying
@@ -1029,19 +1030,19 @@ user pushes contextual information into the NDC, the abbreviation of
 <em>Nested Diagnostic Context</em>. The NDC class is shown below.
 
 <pre>
-  public class NDC { 
-    // Used when printing the diagnostic 
-    public <strong>static</strong> String get(); 
- 
+  public class NDC {
+    // Used when printing the diagnostic
+    public <strong>static</strong> String get();
+
     // Remove the top of the context from the NDC.
-    public <strong>static</strong> String pop(); 
- 
+    public <strong>static</strong> String pop();
+
     // Add diagnostic context for the current thread.
-    public <strong>static</strong> void push(String message); 
- 
-    // Remove the diagnostic context for this thread.                      
-    public <strong>static</strong> void remove(); 
-  }                  
+    public <strong>static</strong> void push(String message);
+
+    // Remove the diagnostic context for this thread.
+    public <strong>static</strong> void remove();
+  }
 </pre>
 
 <p>The NDC is managed per thread as a <em>stack</em> of contextual
@@ -1096,7 +1097,7 @@ claims to be fast and flexible: speed first, flexibility second.
    machine this cost is typically in the 5 to 50 nanosecond range.
 
    <p>However, The method invocation involves the "hidden" cost of
-   parameter construction. 
+   parameter construction.
 
    <p>For example, for some logger <code>cat</code>, writing,
     <pre>
@@ -1113,12 +1114,12 @@ claims to be fast and flexible: speed first, flexibility second.
 
 
       <p>To avoid the parameter construction cost write:
-    <pre>   
+    <pre>
       if(logger.isDebugEnabled() {
         logger.debug("Entry number: " + i + " is " + String.valueOf(entry[i]));
       }
    </pre>
-      
+
       <p>This will not incur the cost of parameter
       construction if debugging is disabled.  On the other hand, if
       the logger is debug-enabled, it will incur twice the cost of
@@ -1127,7 +1128,7 @@ claims to be fast and flexible: speed first, flexibility second.
       <code>debug</code>. This is an insignificant
       overhead because evaluating a logger takes about 1%
       of the time it takes to actually log.
-      
+
    <p>In log4j, logging requests are made to instances of the Logger
    class. Logger is a class and not an interface. This measurably
    reduces the cost of method invocation at the cost of some
