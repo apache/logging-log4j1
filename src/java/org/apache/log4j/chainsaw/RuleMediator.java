@@ -25,18 +25,21 @@ import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
- * A mediator class that implements the Rule interface, by combining several optional
- * rules used by Chainsaw's filtering GUI's into a single Rule.
+ * A mediator class that implements the Rule interface, by combining several 
+ * optional rules used by Chainsaw's filtering GUI's into a single Rule.
  *
- * This class is based upon the concept of Inclusion, Exclusion and Refinement.
- * By default, this class accepts all events by returning true as part of the Rule interface, unless
- * the Inclusion/Exclusion/Refinement sub-rules have been configured.
+ * <p>This class is based upon the concept of Inclusion, Exclusion and Refinement.
+ * By default, this class accepts all events by returning true as part of the 
+ * Rule interface, unless the Inclusion/Exclusion/Refinement sub-rules have been
+ * configured.
  *
- * The sub-rules are queried in this order: Inclusion, Refinement, Exclusion.  If any are null, that particular
- * sub-rule is not queried.  If any of the sub-rules returns false, this mediator returns false immediately, otherwise
+ * <p>The sub-rules are queried in this order: Inclusion, Refinement, Exclusion.  
+ * If any are null, that particular sub-rule is not queried.  If any of the 
+ * sub-rules returns false, this mediator returns false immediately, otherwise
  * they are queried in that order to ensure the overall rule evaluates.
  *
- * Setting the individual sub-rules propagates a PropertyChangeEvent as per standard Java beans principles.
+ * <p>Setting the individual sub-rules propagates a PropertyChangeEvent as per 
+ * standard Java beans principles.
  *
  * @author Paul Smith <psmith@apache.org>
  * @author Scott Deboy <sdeboy@apache.org>
