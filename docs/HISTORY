@@ -9,18 +9,32 @@
  
  - Release of version 1.2 
 
+ (beta5)
+
+ - In the Category class, the .getChainedPriority method has been
+   replaced with getEffectiveLevel method. [*]
 
  (beta4)
 
-  - Replaced the custom class loading based on he thread context class
-    loader with a simple Class.forName() call. Thanks to Dave Herman
-    on explaining the issues involved. See 
+  - Replaced the custom class loading based on the thread context class
+    loader with a simple Class.forName() call. This solves two allied
+    but distinct problems encountered when using Ant with JUnit
+    although the bug is more general. In one instance of the
+    problem, log4j would throw java.lang.NoClassDefFoundError for
+    org/apache/log4j/AppenderSkeleton where log4j.jar and related
+    classes were clearly available to the Ant classloader. In another
+    incarnation, log4j would reject a custom appender claiming that it is
+    not assignable to a org.apache.log4j.Appender variable. This would
+    occur when log4j.jar was available to both the Ant classloader and the
+    system classloader. 
+    
+    Thanks to Dave Herman for providing detailed scenarios exposing
+    the issues involved. See
       http://forum.java.sun.com/thread.jsp?forum=38&thread=70946
       http://forum.java.sun.com/thread.jsp?forum=38&thread=70946#479697
       http://marc.theaimsgroup.com/?l=ant-user&m=101139178705895&w=2
     for more details. [*]
 
-Class.forName(clazz);
 
  (beta3)
   

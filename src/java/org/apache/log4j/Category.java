@@ -249,7 +249,7 @@ public class Category implements AppenderAttachable {
   void debug(Object message) {
     if(repository.isDisabled(Level.DEBUG_INT)) 
       return;    
-    if(Level.DEBUG.isGreaterOrEqual(this.getChainedLevel())) {
+    if(Level.DEBUG.isGreaterOrEqual(this.getEffectiveLevel())) {
       forcedLog(FQCN, Level.DEBUG, message, null);
     }
   }
@@ -268,7 +268,7 @@ public class Category implements AppenderAttachable {
   void debug(Object message, Throwable t) {
     if(repository.isDisabled(Level.DEBUG_INT)) 
       return;
-    if(Level.DEBUG.isGreaterOrEqual(this.getChainedLevel()))
+    if(Level.DEBUG.isGreaterOrEqual(this.getEffectiveLevel()))
       forcedLog(FQCN, Level.DEBUG, message, t);    
   }
 
@@ -303,7 +303,7 @@ public class Category implements AppenderAttachable {
   void error(Object message) {
     if(repository.isDisabled(Level.ERROR_INT))
       return;
-    if(Level.ERROR.isGreaterOrEqual(this.getChainedLevel()))
+    if(Level.ERROR.isGreaterOrEqual(this.getEffectiveLevel()))
       forcedLog(FQCN, Level.ERROR, message, null);
   }
 
@@ -320,7 +320,7 @@ public class Category implements AppenderAttachable {
   void error(Object message, Throwable t) {
     if(repository.isDisabled(Level.ERROR_INT))
       return;
-    if(Level.ERROR.isGreaterOrEqual(this.getChainedLevel()))
+    if(Level.ERROR.isGreaterOrEqual(this.getEffectiveLevel()))
       forcedLog(FQCN, Level.ERROR, message, t);
     
   }
@@ -362,7 +362,7 @@ public class Category implements AppenderAttachable {
   void fatal(Object message) {
     if(repository.isDisabled(Level.FATAL_INT)) 
       return;    
-    if(Level.FATAL.isGreaterOrEqual(this.getChainedLevel()))
+    if(Level.FATAL.isGreaterOrEqual(this.getEffectiveLevel()))
       forcedLog(FQCN, Level.FATAL, message, null);
   }
   
@@ -379,7 +379,7 @@ public class Category implements AppenderAttachable {
   void fatal(Object message, Throwable t) {
     if(repository.isDisabled(Level.FATAL_INT))
       return;   
-    if(Level.FATAL.isGreaterOrEqual(this.getChainedLevel()))
+    if(Level.FATAL.isGreaterOrEqual(this.getEffectiveLevel()))
       forcedLog(FQCN, Level.FATAL, message, t);
   }
 
@@ -439,13 +439,27 @@ public class Category implements AppenderAttachable {
      quickly as possible.
    */
   public 
-  Level getChainedLevel() {
+  Level getEffectiveLevel() {
     for(Category c = this; c != null; c=c.parent) {
       if(c.level != null) 
 	return c.level;
     }
     return null; // If reached will cause an NullPointerException.
   }
+
+  /**
+     
+     @deprecated Has been replaced by the {@link #getEffectiveLevel}
+     method.  */
+  public 
+  Priority getChainedPriority() {
+    for(Category c = this; c != null; c=c.parent) {
+      if(c.level != null) 
+	return c.level;
+    }
+    return null; // If reached will cause an NullPointerException.
+  }
+
 
   /**
      Returns all the currently defined categories in the default
@@ -676,7 +690,7 @@ public class Category implements AppenderAttachable {
   void info(Object message) {
     if(repository.isDisabled(Level.INFO_INT)) 
       return;    
-    if(Level.INFO.isGreaterOrEqual(this.getChainedLevel()))
+    if(Level.INFO.isGreaterOrEqual(this.getEffectiveLevel()))
       forcedLog(FQCN, Level.INFO, message, null);
   }
   
@@ -693,7 +707,7 @@ public class Category implements AppenderAttachable {
   void info(Object message, Throwable t) {
     if(repository.isDisabled(Level.INFO_INT))
       return;   
-    if(Level.INFO.isGreaterOrEqual(this.getChainedLevel()))
+    if(Level.INFO.isGreaterOrEqual(this.getEffectiveLevel()))
       forcedLog(FQCN, Level.INFO, message, t);
   }
 
@@ -747,7 +761,7 @@ public class Category implements AppenderAttachable {
   boolean isDebugEnabled() {
     if(repository.isDisabled( Level.DEBUG_INT))
       return false;   
-    return Level.DEBUG.isGreaterOrEqual(this.getChainedLevel());
+    return Level.DEBUG.isGreaterOrEqual(this.getEffectiveLevel());
   }
   
   /**
@@ -762,7 +776,7 @@ public class Category implements AppenderAttachable {
   boolean isEnabledFor(Priority level) {
     if(repository.isDisabled(level.level)) 
       return false;
-    return level.isGreaterOrEqual(this.getChainedLevel());
+    return level.isGreaterOrEqual(this.getEffectiveLevel());
   }
 
   /**
@@ -776,7 +790,7 @@ public class Category implements AppenderAttachable {
   boolean isInfoEnabled() {
     if(repository.isDisabled(Level.INFO_INT))
       return false;   
-    return Level.INFO.isGreaterOrEqual(this.getChainedLevel());
+    return Level.INFO.isGreaterOrEqual(this.getEffectiveLevel());
   }
 
 
@@ -793,7 +807,7 @@ public class Category implements AppenderAttachable {
     if(repository.isDisabled(priority.level)) {
       return;
     }
-    if(priority.isGreaterOrEqual(this.getChainedLevel())) {
+    if(priority.isGreaterOrEqual(this.getEffectiveLevel())) {
       String msg = getResourceBundleString(key);
       // if message corresponding to 'key' could not be found in the
       // resource bundle, then default to 'key'.
@@ -817,7 +831,7 @@ public class Category implements AppenderAttachable {
     if(repository.isDisabled(priority.level)) {
       return;
     }    
-    if(priority.isGreaterOrEqual(this.getChainedLevel())) {
+    if(priority.isGreaterOrEqual(this.getEffectiveLevel())) {
       String pattern = getResourceBundleString(key);
       String msg;
       if(pattern == null) 
@@ -836,7 +850,7 @@ public class Category implements AppenderAttachable {
     if(repository.isDisabled(priority.level)) {
       return;
     }
-    if(priority.isGreaterOrEqual(this.getChainedLevel())) 
+    if(priority.isGreaterOrEqual(this.getEffectiveLevel())) 
       forcedLog(FQCN, priority, message, t);
   }
   
@@ -848,7 +862,7 @@ public class Category implements AppenderAttachable {
     if(repository.isDisabled(priority.level)) {
       return;
     }
-    if(priority.isGreaterOrEqual(this.getChainedLevel()))
+    if(priority.isGreaterOrEqual(this.getEffectiveLevel()))
       forcedLog(FQCN, priority, message, null);
   }
 
@@ -866,7 +880,7 @@ public class Category implements AppenderAttachable {
     if(repository.isDisabled(level.level)) {
       return;
     }
-    if(level.isGreaterOrEqual(this.getChainedLevel())) {
+    if(level.isGreaterOrEqual(this.getEffectiveLevel())) {
       forcedLog(callerFQCN, level, message, t);
     }
   }
@@ -1020,7 +1034,7 @@ public class Category implements AppenderAttachable {
     if(repository.isDisabled( Level.WARN_INT)) 
       return;   
 
-    if(Level.WARN.isGreaterOrEqual(this.getChainedLevel()))
+    if(Level.WARN.isGreaterOrEqual(this.getEffectiveLevel()))
       forcedLog(FQCN, Level.WARN, message, null);    
   }
   
@@ -1037,7 +1051,7 @@ public class Category implements AppenderAttachable {
   void warn(Object message, Throwable t) {
     if(repository.isDisabled(Level.WARN_INT)) 
       return;   
-    if(Level.WARN.isGreaterOrEqual(this.getChainedLevel()))
+    if(Level.WARN.isGreaterOrEqual(this.getEffectiveLevel()))
       forcedLog(FQCN, Level.WARN, message, t);
   }
 }

@@ -65,7 +65,7 @@ public class XLogger extends Logger implements OptionHandler {
   void lethal(String message, Throwable t) { 
     if(repository.isDisabled(XLevel.LETHAL_INT)) 
       return;
-    if(XLevel.LETHAL.isGreaterOrEqual(this.getChainedLevel()))
+    if(XLevel.LETHAL.isGreaterOrEqual(this.getEffectiveLevel()))
       forcedLog(FQCN, XLevel.LETHAL, message, t);
   }
 
@@ -76,7 +76,7 @@ public class XLogger extends Logger implements OptionHandler {
   void lethal(String message) { 
     if(repository.isDisabled(XLevel.LETHAL_INT)) 
       return;
-    if(XLevel.LETHAL.isGreaterOrEqual(this.getChainedLevel()))
+    if(XLevel.LETHAL.isGreaterOrEqual(this.getEffectiveLevel()))
       forcedLog(FQCN, XLevel.LETHAL, message, null);
   }
 
@@ -110,7 +110,7 @@ public class XLogger extends Logger implements OptionHandler {
   void trace(String message, Throwable t) { 
     if(repository.isDisabled(XLevel.TRACE_INT))
       return;   
-    if(XLevel.TRACE.isGreaterOrEqual(this.getChainedLevel()))
+    if(XLevel.TRACE.isGreaterOrEqual(this.getEffectiveLevel()))
       forcedLog(FQCN, XLevel.TRACE, message, t);
   }
 
@@ -121,7 +121,7 @@ public class XLogger extends Logger implements OptionHandler {
   void trace(String message) { 
     if(repository.isDisabled(XLevel.TRACE_INT))
       return;   
-    if(XLevel.TRACE.isGreaterOrEqual(this.getChainedLevel()))
+    if(XLevel.TRACE.isGreaterOrEqual(this.getEffectiveLevel()))
       forcedLog(FQCN, XLevel.TRACE, message, null);
   }
 
