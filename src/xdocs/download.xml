@@ -54,6 +54,39 @@ paleontologist.</p>
 
 </section>
 
+<section name="Third-party software">
+
+<dl>
+  <dt><a href="http://log4p.sourceforge.net"><b>log4p</b></a></dt>
+
+  <dd>A Python translation of log4j by Igor Poteryaev.</dd>
+
+
+  <dt><a href="http://www.japhy.de/configLog4j"><b>configLog4j</b></a></dt>
+
+  <dd>A visual log4j configuration file editor by Tobias Dezulian.</dd>
+
+
+  <dt><a href="http://log4cpp.sourceforge.net"><b>log4cpp</b></a></dt>
+
+  <dd>A C++ translation of log4j by Bastiaan Bakker.</dd>
+
+  <dt><a href="http://developer.jini.org/exchange/projects/log"><b>JINI logging service</b></a></dt>
+
+  <dd>A log4j wrapper for JINI Jerome Bernard.</dd>
+
+
+
+</dl>
+
+<p>If you would like your software to be listed here, then send a note
+to the <a
+href="mailto:log4j-user@jakarta.apache.org">log4j-user@jakarta.apache.org</a>
+list.</p>
+
+
+</section>
+
 </body>
 </document>
 
