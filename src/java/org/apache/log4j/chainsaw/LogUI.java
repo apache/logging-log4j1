@@ -114,6 +114,7 @@ import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
 import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
 import org.apache.log4j.chainsaw.prefs.SettingsListener;
 import org.apache.log4j.chainsaw.prefs.SettingsManager;
+import org.apache.log4j.chainsaw.receivers.*;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.net.SocketNodeEventListener;
@@ -1337,7 +1338,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    * @param url
    *                    for content to show
    */
-  void showHelp(URL url) {
+  public void showHelp(URL url) {
     removeWelcomePanel();
     addWelcomePanel();
 
