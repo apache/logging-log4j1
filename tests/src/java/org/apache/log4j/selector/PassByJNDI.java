@@ -10,7 +10,10 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 
 import org.mortbay.http.SocketListener;
-import org.mortbay.jetty.Server;
+
+// In bug #30425, Michael Price asserts that org.mortbay.jetty.Server is
+// sufficient. We'll play dumb for the moment.
+import org.mortbay.jetty.plus.Server;
 
 
 import junit.framework.TestCase;
