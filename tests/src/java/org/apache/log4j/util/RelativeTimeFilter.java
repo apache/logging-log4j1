@@ -14,6 +14,7 @@ public class RelativeTimeFilter implements Filter {
     String pat = "/"+Filter.RELATIVE_TIME_PAT+"/";
 
     if(util.match(pat, in)) {    
+      //System.out.println("Removing relative time from line ["+in+"]");
       return util.substitute("s/"+Filter.RELATIVE_TIME_PAT+"//", in);
     } else {
       return in;
