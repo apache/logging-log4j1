@@ -83,10 +83,10 @@
 
         <target name="jar" depends="log4j.jar, log4j-full.jar"/>
 	
-	<!-- Create log4j.jar, exluding non-core files -->
-	<target name="log4j.jar" depends="compile">
-	        <delete file="log4j.jar"/>
-		<jar jarfile="log4j.jar" basedir="${classes}"
+	<!-- Create log4j-core.jar, exluding non-core files -->
+	<target name="log4j-core.jar" depends="compile">
+	        <delete file="log4j-core.jar"/>
+		<jar jarfile="log4j-core.jar" basedir="${classes}"
 		includes="**/log4j/*.class, **/log4j/helpers/*.class,
                           **/log4j/spi/*.class"
 		excludes="**/StressCategory*, **/TTCC*, 
@@ -100,11 +100,11 @@
 		/>
 	</target>
 	
-	<!-- Create log4j-full.jar, excluding tests and other odds and
+	<!-- Create log4j.jar, excluding tests and other odds and
   	     ends. -->
-	<target name="log4j-full.jar" depends="compile">
-		<delete file="log4j-full.jar"/>
-		<jar jarfile="log4j-full.jar" basedir="${classes}"
+	<target name="log4j.jar" depends="compile">
+		<delete file="log4j.jar"/>
+		<jar jarfile="log4j.jar" basedir="${classes}"
 		includes="**/log4j/*.class, org/log4j/xml/log4j.dtd, 
 		          **/log4j/helpers/*.class, icons/**,
 			  **/log4j/spi/*.class,  **/log4j/net/*.class,

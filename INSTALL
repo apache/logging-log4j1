@@ -97,7 +97,7 @@ tool. ANT is availale from "http://jakarta.apache.org/ant/index.html".
 ANT requires a build file called build.xml which is part of this
 distribution.
 
-Alternatively, You might wish to use the GNU-Make build/compile
+Alternatively, you might wish to use the GNU-Make build/compile
 environment included with the package. In that case, you need to
 create a make.loc file in the make directory. See the files
 make/README and make/TUTORIAL for further details.
