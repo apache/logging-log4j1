@@ -49,6 +49,14 @@
 
 package org.apache.log4j.chainsaw.rule;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.MDC;
+import org.apache.log4j.chainsaw.ChainsawConstants;
+import org.apache.log4j.chainsaw.LoggingEventFieldResolver;
+import org.apache.log4j.chainsaw.filter.FilterModel;
+import org.apache.log4j.spi.LoggingEvent;
+
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.Point;
@@ -57,6 +65,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -73,14 +82,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
-
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.MDC;
-import org.apache.log4j.chainsaw.ChainsawConstants;
-import org.apache.log4j.chainsaw.LoggingEventFieldResolver;
-import org.apache.log4j.chainsaw.filter.FilterModel;
-import org.apache.log4j.spi.LoggingEvent;
 
 
 public class RuleTest extends JFrame {
@@ -232,6 +233,7 @@ public class RuleTest extends JFrame {
     String lastField = null;
     JPopupMenu contextMenu = new JPopupMenu();
     JList list = new JList();
+    JScrollPane scrollPane = new JScrollPane(list);
     final JTextField textField;
     private DefaultListModel fieldModel = new DefaultListModel();
     private DefaultListModel operatorModel = new DefaultListModel();
@@ -258,13 +260,15 @@ public class RuleTest extends JFrame {
       operatorModel.addElement("!=");
       operatorModel.addElement("==");
       operatorModel.addElement("~=");
-      operatorModel.addElement("like");
+      operatorModel.addElement("LIKE");
       operatorModel.addElement("<");
       operatorModel.addElement(">");
       operatorModel.addElement("<=");
       operatorModel.addElement(">=");
 
-      list.setVisibleRowCount(5);
+      //make as large as operator list to avoid narrow list scrollbar issues
+      list.setVisibleRowCount(11);
+
       PopupListener popupListener = new PopupListener();
       textField.addMouseListener(popupListener);
 
@@ -288,16 +292,24 @@ public class RuleTest extends JFrame {
           }
         });
 
-      JScrollPane scrollPane = new JScrollPane(list);
       contextMenu.insert(scrollPane, 0);
     }
 
     private void updateField(String value) {
       String text = textField.getText();
-      int position = textField.getCaretPosition();
+      int startPosition = textField.getSelectionStart();
+      int endPosition = textField.getSelectionEnd();
+      String spacer = "";
+
+      if (startPosition == endPosition) {
+        spacer = " ";
+      }
+
       textField.setText(
-        text.substring(0, position) + value + " " + text.substring(position));
-      textField.setCaretPosition(position + value.length() + 1);
+        text.substring(0, startPosition) + value + spacer
+        + text.substring(endPosition));
+      textField.setCaretPosition(
+        startPosition + value.length() + spacer.length());
     }
 
     public void keyPressed(KeyEvent e) {
@@ -316,33 +328,43 @@ public class RuleTest extends JFrame {
         list.setSelectedIndex(0);
 
         Point p = textField.getCaret().getMagicCaretPosition();
+
         contextMenu.show(textField, p.x, (p.y + (textField.getHeight() - 5)));
         list.requestFocus();
       } else {
         if (isOperatorContextValid()) {
-            list.setModel(operatorModel);
-            list.setSelectedIndex(0);
+          list.setModel(operatorModel);
+          list.setSelectedIndex(0);
 
-            Point p = textField.getCaret().getMagicCaretPosition();
-            contextMenu.show(textField, p.x, (p.y + (textField.getHeight() - 5)));
-            list.requestFocus();
+          Point p = textField.getCaret().getMagicCaretPosition();
+          contextMenu.show(
+            textField, p.x, (p.y + (textField.getHeight() - 5)));
+          list.requestFocus();
         } else if (isFieldContextValid()) {
-            list.setModel(fieldModel);
-            list.setSelectedIndex(0);
-            Point p = textField.getCaret().getMagicCaretPosition();
-            if (p == null) {
-                p = new Point(textField.getLocation().x, (textField.getLocation().y - textField.getHeight() + 5));
-            }
-            contextMenu.show(textField, p.x, (p.y + (textField.getHeight() - 5)));
-            list.requestFocus();
+          list.setModel(fieldModel);
+          list.setSelectedIndex(0);
+
+          Point p = textField.getCaret().getMagicCaretPosition();
+
+          if (p == null) {
+            p = new Point(
+                textField.getLocation().x,
+                (textField.getLocation().y - textField.getHeight() + 5));
+          }
+
+          contextMenu.show(
+            textField, p.x, (p.y + (textField.getHeight() - 5)));
+          list.requestFocus();
         }
-        }
+      }
     }
 
     private boolean isFieldContextValid() {
-        String text = textField.getText();
-        int currentPosition = textField.getCaretPosition();
-        return ((currentPosition == 0) || (text.charAt(currentPosition - 1) == ' '));
+      String text = textField.getText();
+      int currentPosition = textField.getSelectionStart();
+
+      return ((currentPosition == 0)
+      || (text.charAt(currentPosition - 1) == ' '));
     }
 
     private String getContextKey() {
@@ -358,13 +380,14 @@ public class RuleTest extends JFrame {
     private boolean isOperatorContextValid() {
       String text = textField.getText();
 
-      int currentPosition = textField.getCaretPosition();
+      int currentPosition = textField.getSelectionStart();
 
       if ((currentPosition < 1) || (text.charAt(currentPosition - 1) != ' ')) {
         return false;
       }
 
       int lastFieldPosition = text.lastIndexOf(" ", currentPosition - 1);
+
       if (lastFieldPosition == -1) {
         return false;
       }
@@ -372,25 +395,27 @@ public class RuleTest extends JFrame {
       int lastFieldStartPosition =
         Math.max(0, text.lastIndexOf(" ", lastFieldPosition - 1));
       String field =
-        text.substring(lastFieldStartPosition, lastFieldPosition).trim();
+        text.substring(lastFieldStartPosition, lastFieldPosition).toUpperCase()
+            .trim();
 
       if (field.startsWith("MDC.")) {
         return true;
       }
+
       if (resolver.isField(field)) {
         return true;
       }
 
       return false;
     }
+
     //returns the currently active field which can be used to display a context menu
     //the field returned is the left hand portion of an expression (for example, logger == )
     //logger is the field that is returned
-
     private String getField() {
       String text = textField.getText();
 
-      int currentPosition = textField.getCaretPosition();
+      int currentPosition = textField.getSelectionStart();
 
       if ((currentPosition < 1) || (text.charAt(currentPosition - 1) != ' ')) {
         return null;
@@ -416,7 +441,9 @@ public class RuleTest extends JFrame {
       String lastField =
         text.substring(lastFieldStartPosition, lastFieldPosition).trim();
 
-      if (RuleFactory.isRule(lastSymbol) && resolver.isField(lastField)) {
+      if (
+        RuleFactory.isRule(lastSymbol)
+          && filterModel.getContainer().modelExists(lastField)) {
         return lastField;
       }
 
@@ -426,10 +453,10 @@ public class RuleTest extends JFrame {
     //subfields allow the key portion of a field to provide context menu support
     //and are available after the fieldname and a . (for example, MDC.)
     private String getSubField() {
-      int currentPosition = textField.getCaretPosition();
+      int currentPosition = textField.getSelectionStart();
       String text = textField.getText();
 
-      if (text.substring(0, currentPosition).endsWith("MDC.")) {
+      if (text.substring(0, currentPosition).toUpperCase().endsWith("MDC.")) {
         return "MDC";
       }
 
