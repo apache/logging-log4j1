@@ -43,7 +43,7 @@ public class LoggingEvent implements java.io.Serializable {
   /** Fully qualified name of the calling category class. */
   transient public final String fqnOfCategoryClass;
 
-  /** The category of the logging event. The categoy field is not
+  /** The category of the logging event. The category field is not
   serialized for performance reasons. 
 
   <p>It is set by the LoggingEvent constructor or set by a remote

@@ -186,7 +186,19 @@ public class HTMLLayout extends Layout {
       locationInfo = OptionConverter.toBoolean(value, locationInfo);
     }
   }
-
+  
+  /**
+     Returns the current value of the specified option, or null if
+     it is unknown.
+  */
+  public
+  String getOption(String key) {
+    if (key.equals(LOCATION_INFO_OPTION)) {
+      return locationInfo ? "true" : "false";
+    } else {
+      return null;
+    }
+  }
 
   /**
      Format exceptions in HTML aware way.

@@ -1,3 +1,4 @@
+
 #!/bin/sh
 
 . .functions
@@ -8,6 +9,7 @@
 ./shippedCodeFlag || die "shippedCodeFlag test FAILED."
 ./defaultInit || die "defaultInit test FAILED."
 ./propConfig || die "propConfig test FAILED."
+./getOptions || die "getOptions test FAILED."
 ./multipleAppenders || die "multipleAppenders test FAILED."
 ./confParsing || die "confParsing test FAILED."
 ./pattern || die "pattern test FAILED."

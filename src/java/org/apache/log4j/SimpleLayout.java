@@ -71,4 +71,9 @@ public class SimpleLayout extends Layout {
   public
   void setOption(String option, String value) {
   }
+  
+  public
+  String getOption(String option) {
+    return null;
+  }
 }

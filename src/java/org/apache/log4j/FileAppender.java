@@ -307,8 +307,9 @@ public class FileAppender extends AppenderSkeleton {
     untouched. It is the users responsability to close it.
 
     @param fileName The path to the log file.
-    @param boolean If true will append to fileName. Otherwise will
-    truncate fileName.  */
+    @param append   If true will append to fileName. Otherwise will
+        truncate fileName.
+  */
   public
   synchronized
   void setFile(String fileName, boolean append) throws IOException {
@@ -316,6 +317,7 @@ public class FileAppender extends AppenderSkeleton {
     this.setQWForFiles(new FileWriter(fileName, append));
     this.tp = new TracerPrintWriter(qw);
     this.fileName = fileName;
+    this.fileAppend = append;
     this.qwIsOurs = true;
   }
 
@@ -368,20 +370,31 @@ public class FileAppender extends AppenderSkeleton {
     if(key.equalsIgnoreCase(FILE_OPTION)) {
       // Trim spaces from both ends. The users probably does not want 
       // trailing spaces in file names.
-      value = value.trim();
-      if(value.equalsIgnoreCase("System.out"))
+      fileName = value.trim();
+      if(fileName.equalsIgnoreCase("System.out")) {
 	setWriter(new OutputStreamWriter(System.out));
-      else if(value.equalsIgnoreCase("System.err"))
+      } else if(fileName.equalsIgnoreCase("System.err")) {
 	setWriter(new OutputStreamWriter(System.err));
-      else {
-	fileName = value;
-      } 
+      }
     }
     else if (key.equalsIgnoreCase(APPEND_OPTION)) {
       fileAppend = OptionConverter.toBoolean(value, fileAppend);
     }
     else if (key.equalsIgnoreCase(IMMEDIATE_FLUSH_OPTION)) {
       immediateFlush = OptionConverter.toBoolean(value, immediateFlush);
+    }
+  }
+  
+  public
+  String getOption(String key) {
+    if (key.equalsIgnoreCase(FILE_OPTION)) {
+      return fileName;
+    } else if (key.equalsIgnoreCase(APPEND_OPTION)) {
+      return fileAppend ? "true" : "false";
+    } else if (key.equalsIgnoreCase(IMMEDIATE_FLUSH_OPTION)) {
+      return immediateFlush ? "true" : "false";
+    } else {
+      return super.getOption(key);
     }
   }
   

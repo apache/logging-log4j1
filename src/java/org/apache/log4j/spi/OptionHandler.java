@@ -14,6 +14,7 @@ package org.apache.log4j.spi;
    A string based interface to configure package components.
 
    @author Ceki G&uuml;lc&uuml;
+   @author Anders Kristensen
    @since 0.8.1
  */
 public interface OptionHandler {
@@ -46,4 +47,12 @@ public interface OptionHandler {
 
   */
   void setOption(String option, String value);
+  
+  /**
+     Returns the current value of the specified option, or null
+     if the option name is unkown or undefined.
+     
+     @since 1.1
+  */
+  String getOption(String option);
 }

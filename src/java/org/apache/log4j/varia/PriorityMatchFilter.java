@@ -102,4 +102,14 @@ public class PriorityMatchFilter extends Filter {
     }
   }
   
+  public
+  String getOption(String key) {  
+    if(key.equalsIgnoreCase(PRIORITY_TO_MATCH_OPTION)) {
+      return priorityToMatch == null ? null : priorityToMatch.toString();
+    } else if (key.equalsIgnoreCase(ACCEPT_ON_MATCH_OPTION)) {
+      return acceptOnMatch ? "true" : "false";
+    } else {
+      return null;
+    }
+  }
 }

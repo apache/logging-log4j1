@@ -225,10 +225,18 @@ public class AsyncAppender extends AppenderSkeleton
       int newSize = OptionConverter.toInt(value, DEFAULT_BUFFER_SIZE);
       bf.resize(newSize);
     }
-    
-
   }
 
+  public
+  String getOption(String option) {
+    if (option.equals(LOCATION_INFO_OPTION)) {
+      return locationInfo ? "true" : "false";
+    } else if (option.equals(BUFFER_SIZE_OPTION)) {
+      return Integer.toString(bf.getMaxSize());
+    } else {
+      return super.getOption(option);
+    }
+  }
 }
 // ------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------

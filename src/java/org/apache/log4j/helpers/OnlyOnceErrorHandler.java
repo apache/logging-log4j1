@@ -67,6 +67,14 @@ public class OnlyOnceErrorHandler implements ErrorHandler {
   }
 
   /**
+     No options to get.
+  */
+  public
+  String getOption(String key) {
+    return null;
+  }
+
+  /**
      Print a the error message passed as parameter on
      <code>System.err</code>.  
   */

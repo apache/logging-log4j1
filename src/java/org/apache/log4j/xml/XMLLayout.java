@@ -161,4 +161,13 @@ public class XMLLayout extends Layout {
       locationInfo = OptionConverter.toBoolean(value, locationInfo);    
     } 
   }
+  
+  public
+  String getOption(String key) {
+    if (key.equals(LOCATION_INFO_OPTION)) {
+      return locationInfo ? "true" : "false";    
+    } else {
+      return null;
+    }
+  }
 }

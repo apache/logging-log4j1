@@ -1,0 +1,8 @@
+log4j.appender.A0=org.apache.log4j.FileAppender
+log4j.appender.A0.File=temp
+log4j.appender.A0.Append=false
+log4j.appender.A0.ImmediateFlush=true
+log4j.appender.A0.layout=org.apache.log4j.PatternLayout
+log4j.appender.A0.layout.ConversionPattern=%m%n
+log4j.rootCategory=DEBUG, A0
+log4j.category.org.apache.log4j=INFO, A0

@@ -48,5 +48,13 @@ public class DenyAllFilter extends Filter {
   public
   void setOption(String key, String value) {
   }
+  
+  /**
+     No options to get.
+  */
+  public
+  String getOption(String key) {
+    return null;
+  }
 }
 

@@ -81,4 +81,14 @@ public class StringMatchFilter extends Filter {
     }
   }
   
+  public
+  String getOption(String key) {
+    if(key.equalsIgnoreCase(STRING_TO_MATCH_OPTION)) {
+      return stringToMatch;
+    } else if (key.equalsIgnoreCase(ACCEPT_ON_MATCH_OPTION)) {
+      return acceptOnMatch ? "true" : "false";
+    } else {
+      return null;
+    }
+  }
 }
