@@ -27,6 +27,7 @@ public class Priority {
   public final static int WARN_INT  = 30000;
   public final static int INFO_INT  = 20000;
   public final static int DEBUG_INT = 10000;
+  public final static int FINE_INT = DEBUG_INT;
   public final static int ALL_INT = Integer.MIN_VALUE;
 
 
@@ -37,26 +38,32 @@ public class Priority {
 
 
   /**
-     The <code>FATAL</code> priority designates very severe error
+     The <code>FATAL</code> level designates very severe error
      events that will presumably lead the application to abort.
    */
   final static public Level FATAL = new Level(FATAL_INT, "FATAL", 0);
 
   /**
-     The <code>ERROR</code> priority designates error events that
+     The <code>ERROR</code> level designates error events that
      might still allow the application to continue running.  */
   final static public Level ERROR = new Level(ERROR_INT, "ERROR", 3);
 
   /**
-     The <code>WARN</code> priority designates potentially harmful situations.
+     The <code>WARN</code> level designates potentially harmful situations.
   */
   final static public Level WARN  = new Level(WARN_INT, "WARN",  4);
 
   /**
-     The <code>INFO</code> priority designates informational messages
+     The <code>INFO</code> level designates informational messages
      that highlight the progress of the application at coarse-grained
      level.  */
   final static public Level INFO  = new Level(INFO_INT, "INFO",  6);
+
+  /**
+     The <code>FINE</code> level is an alias for the
+     <code>DEBUG</code> level.  */
+  final static public Level FINE = new Level(FINE_INT, "FINE", 7);
+
 
   /**
      The <code>DEBUG</code> priority designates fine-grained
@@ -71,7 +78,7 @@ public class Priority {
 
   
   /**
-     Instantiate a priority object.
+     Instantiate a level object.
    */
   protected
   Priority(int level, String levelStr, int syslogEquivalent) {
@@ -100,7 +107,7 @@ public class Priority {
   }
 
   /**
-     Returns the integer representation of this priority.
+     Returns the integer representation of this level.
    */
   public
   final
@@ -110,8 +117,8 @@ public class Priority {
 
     
   /**
-     Returns <code>true</code> if this priority has a higher or equal
-     priority than the priority passed as argument, <code>false</code>
+     Returns <code>true</code> if this level has a higher or equal
+     level than the level passed as argument, <code>false</code>
      otherwise.  
      
      <p>You should think twice before overriding the default
@@ -124,8 +131,11 @@ public class Priority {
   }
 
   /**
-     Return all possible priorities as an array of Priority objects in
-     descending order.  */
+     Return all possible priorities as an array of Level objects in
+     descending order.
+
+     @deprecated This method will be removed with no replacement.
+  */
   public
   static
   Priority[] getAllPossiblePriorities() {
