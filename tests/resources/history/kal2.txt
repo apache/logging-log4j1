@@ -1,0 +1,57 @@
+KAL is an Intel Pentium 4 clocked at 2.53 GHz running XP and Sun's JDK 1.4.1.
+
+Results are in microseconds.
+
+
+NullAppender:
+
+  PatternLayout "%p - %m%n"
+  PatternLayout "%-5p - %m%n"
+  PatternLayout "%r [%t] %-5p %c{2} %x - %m%n"
+  PatternLayout "%r [%t] %-5p %.10c %x - %m%n"
+  PatternLayout "%r [%t] %-5p %.20c %x - %m%n"
+  PatternLayout "%r [%t] %-5p %c - %m%n"
+  PatternLayout "%d{ISO8601} [%t] %-5p %c %x - %m%n"
+  PatternLayout "%d{yyyy-MM-dd HH:mm:ss,SSS} [%t] %-5p %c %x - %m%n"
+  PatternLayout "%l - %m%n"        
+  PatternLayout "%C.%M.%L - %m%n"
+
+FileAppender:
+
+   PatternLayout "%p - %m%n"					   
+   PatternLayout "%-5p - %m%n"					   
+   PatternLayout "%r [%t] %-5p %c{2} %x - %m%n"			   
+   PatternLayout "%r [%t] %-5p %.10c %x - %m%n"			   
+   PatternLayout "%r [%t] %-5p %.20c %x - %m%n"			   
+   PatternLayout "%r [%t] %-5p %c - %m%n"				   
+   PatternLayout "%d{ISO8601} [%t] %-5p %c %x - %m%n"		   
+   PatternLayout "%d{yyyy-MM-dd HH:mm:ss,SSS} [%t] %-5p %c %x - %m%n"
+   PatternLayout "%l - %m%n"					   
+   PatternLayout "%C.%M.%L - %m%n"                                     
+
+FileAppender: (ImmediateFlush=false)
+
+   PatternLayout "%p - %m%n"					   
+   PatternLayout "%-5p - %m%n"					   
+   PatternLayout "%r [%t] %-5p %c{2} %x - %m%n"			   
+   PatternLayout "%r [%t] %-5p %.10c %x - %m%n"			   
+   PatternLayout "%r [%t] %-5p %.20c %x - %m%n"			   
+   PatternLayout "%r [%t] %-5p %c - %m%n"				   
+   PatternLayout "%d{ISO8601} [%t] %-5p %c %x - %m%n"		   
+   PatternLayout "%d{yyyy-MM-dd HH:mm:ss,SSS} [%t] %-5p %c %x - %m%n"
+   PatternLayout "%l - %m%n"					   
+   PatternLayout "%C.%M.%L - %m%n"                                     
+
+FileAppender: (BufferedIO=true)
+
+   PatternLayout "%p - %m%n"					   
+   PatternLayout "%-5p - %m%n"					   
+   PatternLayout "%r [%t] %-5p %c{2} %x - %m%n"			   
+   PatternLayout "%r [%t] %-5p %.10c %x - %m%n"			   
+   PatternLayout "%r [%t] %-5p %.20c %x - %m%n"			   
+   PatternLayout "%r [%t] %-5p %c - %m%n"				   
+   PatternLayout "%d{ISO8601} [%t] %-5p %c %x - %m%n"		   
+   PatternLayout "%d{yyyy-MM-dd HH:mm:ss,SSS} [%t] %-5p %c %x - %m%n"
+   PatternLayout "%l - %m%n"					   
+   PatternLayout "%C.%M.%L - %m%n"                                     
+
