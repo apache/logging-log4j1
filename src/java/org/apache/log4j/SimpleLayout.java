@@ -41,8 +41,8 @@ public class SimpleLayout extends Layout {
   }
   
   /**
-     Return the a log statement in a format consisting of the
-     <code>priority</code>, folloed by " - " and then the
+     Returns the log statement in a format consisting of the
+     <code>priority</code>, followed by " - " and then the
      <code>message</code>. For example, <pre> INFO - "A message"
      </pre>
 
