@@ -9,6 +9,7 @@ package org.apache.log4j.xml.test;
 
 import org.apache.log4j.xml.DOMConfigurator;
 import org.apache.log4j.Category;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Priority;
 //import org.apache.log4j.xml.examples.ReportParserError;
 //import org.apache.xerces.parsers.DOMParser;
@@ -74,6 +75,6 @@ public class DOMTest {
     cat.error("Message " + ++i, e);
     root.error("Message " + i, e);    
 
-    Category.shutdown();
+    LogManager.shutdown();
   }
 }

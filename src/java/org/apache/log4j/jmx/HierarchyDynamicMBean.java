@@ -93,7 +93,7 @@ public class HierarchyDynamicMBean extends AbstractDynamicMBean
 
   public
   ObjectName addLoggerMBean(String name) {
-    Logger cat = Logger.exists(name);
+    Logger cat = LogManager.exists(name);
 
     if(cat != null) {
       return addLoggerMBean(cat);
