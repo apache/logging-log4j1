@@ -56,22 +56,31 @@ import java.beans.PropertyChangeSupport;
 
 /**
  * An abstract Rule class that provides the PropertyChange support plumbing.
- * 
+ *
  * @author Paul Smith <psmith@apache.org>
  * @author Scott Deboy <sdeboy@apache.org>
  */
 public abstract class AbstractRule implements Rule {
+  private PropertyChangeSupport propertySupport =
+    new PropertyChangeSupport(this);
 
-	public void addPropertyChangeListener(PropertyChangeListener l) {
-		propertySupport.addPropertyChangeListener(l);
-	}
+  public void addPropertyChangeListener(PropertyChangeListener l) {
+    propertySupport.addPropertyChangeListener(l);
+  }
 
-	public void removePropertyChangeListener(PropertyChangeListener l) {
-		propertySupport.removePropertyChangeListener(l);
-	}
+  public void removePropertyChangeListener(PropertyChangeListener l) {
+    propertySupport.removePropertyChangeListener(l);
+  }
 
-	protected void firePropertyChange(String propertyName, Object oldVal, Object newVal) {
-		propertySupport.firePropertyChange(propertyName, oldVal, newVal);
-	}
-	private PropertyChangeSupport propertySupport = new PropertyChangeSupport(this);
+  protected void firePropertyChange(
+    String propertyName, Object oldVal, Object newVal) {
+    propertySupport.firePropertyChange(propertyName, oldVal, newVal);
+  }
+
+  /**
+   * @param evt
+   */
+  public void firePropertyChange(PropertyChangeEvent evt) {
+    propertySupport.firePropertyChange(evt);
+  }
 }
