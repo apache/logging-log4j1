@@ -22,6 +22,9 @@ import org.apache.log4j.Layout;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 import java.io.CharArrayWriter;
 
@@ -139,6 +142,25 @@ public class PatternParserTest extends TestCase {
     System.out.println("Result is[" + result + "]");
     assertEquals(expectedRelativeTime + " INFO  [main] "+logger.getName()+" - msg 1" + Layout.LINE_SEP, result);
   }
+
+  public void testMultiOption() throws Exception {
+    PatternParser patternParser =
+      new PatternParser("%d{HH:mm:ss}{GMT} %d{HH:mm:ss} %c  - %m%n");
+    PatternConverter head = patternParser.parse();
+
+    String result = convert(event, head);
+    System.out.println("Result is[" + result + "]");
+    SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+    String localTime = dateFormat.format(new Date(event.getTimeStamp()));
+    dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+    String utcTime = dateFormat.format(new Date(event.getTimeStamp()));
+    StringBuffer buf = new StringBuffer(utcTime);
+    buf.append(' ');
+    buf.append(localTime);
+    buf.append(" org.foobar  - msg 1\n");
+    assertEquals(buf.toString(), result);
+  }
+
 
 //  public static Test suite() {
 //    TestSuite suite = new TestSuite();

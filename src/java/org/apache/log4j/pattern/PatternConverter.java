@@ -20,6 +20,7 @@ import org.apache.log4j.spi.LoggingEvent;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.List;
 
 
 /**
@@ -127,6 +128,18 @@ public abstract class PatternConverter {
 
   public void setOption(String string) {
     option = string;
+  }
+  
+  /**
+   *    Sets multiple options for the converter.
+   *    @param options list of options, may be null.
+   *    @remarks added to allow DateFormat to have multiple
+   *       options, delegates to setOption for other converters. 
+   */
+  public void setOptions(List options) {
+      if(options != null && options.size() >= 1) {
+          setOption((String) options.get(0));
+      }
   }
   
   /**

@@ -21,6 +21,8 @@ import org.apache.log4j.helpers.OptionConverter;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 
 
 // Contributors:   Nelson Minar <(nelson@monkey.org>
@@ -174,19 +176,23 @@ public class PatternParser {
   /**
    * Returns the option, null if not in the expected format.
    */
-  protected String extractOption() {
-    if ((i < patternLength) && (pattern.charAt(i) == '{')) {
+  private String extractOption() { return null; }
+  protected List extractOptions() {
+    ArrayList options = null;
+    while ((i < patternLength) && (pattern.charAt(i) == '{')) {
       int end = pattern.indexOf('}', i);
 
       if (end > i) {
+        if (options == null) {
+            options = new ArrayList();
+        }
         String r = pattern.substring(i + 1, end);
+        options.add(r);
         i = end + 1;
-
-        return r;
       }
     }
 
-    return null;
+    return options;
   }
 
   public PatternConverter parse() {
@@ -350,7 +356,7 @@ public class PatternParser {
 
     //System.out.println("converter class [" + className + "]");
     
-    String option = extractOption();
+    List options = extractOptions();
 
     //System.out.println("Option is [" + option + "]");
     if (className != null) {
@@ -361,7 +367,7 @@ public class PatternParser {
       // formattingInfo variable is an instance variable, occasionally reset 
       // and used over and over again
       pc.setFormattingInfo(formattingInfo);
-      pc.setOption(option);
+      pc.setOptions(options);
       currentLiteral.setLength(0);
     } else {
       logger.error(
