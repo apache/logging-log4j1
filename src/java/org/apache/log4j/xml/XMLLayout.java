@@ -31,7 +31,7 @@ import org.apache.log4j.helpers.DateLayout;
 
    &lt;!DOCTYPE log4j:eventSet SYSTEM "log4j.dtd" [&lt;!ENTITY data SYSTEM "abc"&gt;]&gt;
 
-   &lt;log4j:eventSet xmlns:log4j="http://log4j.org"&gt;
+   &lt;log4j:eventSet xmlns:log4j="http://jakarta.apache.org/log4j"&gt;
        &nbsp;&nbsp;&data;
    &lt;/log4j:eventSet&gt;
    </pre>
@@ -151,7 +151,7 @@ public class XMLLayout extends Layout {
      The XMLLayout specific options are:
 
      <p>The <b>LocationInfo</b> option takes a boolean value. If true,
-     the oupyt will include location information. By default no
+     the output will include location information. By default no
      location information is sent to the server.
   
   */
