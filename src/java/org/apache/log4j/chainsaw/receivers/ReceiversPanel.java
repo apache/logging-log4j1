@@ -49,31 +49,13 @@
 
 package org.apache.log4j.chainsaw.receivers;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.chainsaw.PopupListener;
-import org.apache.log4j.chainsaw.SmallButton;
-import org.apache.log4j.chainsaw.help.HelpManager;
-import org.apache.log4j.chainsaw.helper.SwingHelper;
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-import org.apache.log4j.chainsaw.icons.LevelIconFactory;
-import org.apache.log4j.chainsaw.icons.LineIconFactory;
-import org.apache.log4j.chainsaw.messages.MessageCenter;
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.net.SocketNodeEventListener;
-import org.apache.log4j.net.SocketReceiver;
-import org.apache.log4j.plugins.Pauseable;
-import org.apache.log4j.plugins.Plugin;
-import org.apache.log4j.plugins.PluginRegistry;
-import org.apache.log4j.plugins.Receiver;
-
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -109,6 +91,24 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.ExpandVetoException;
 import javax.swing.tree.TreePath;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.chainsaw.PopupListener;
+import org.apache.log4j.chainsaw.SmallButton;
+import org.apache.log4j.chainsaw.help.HelpManager;
+import org.apache.log4j.chainsaw.helper.SwingHelper;
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.chainsaw.icons.LevelIconFactory;
+import org.apache.log4j.chainsaw.icons.LineIconFactory;
+import org.apache.log4j.chainsaw.messages.MessageCenter;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.net.SocketNodeEventListener;
+import org.apache.log4j.net.SocketReceiver;
+import org.apache.log4j.plugins.Pauseable;
+import org.apache.log4j.plugins.Plugin;
+import org.apache.log4j.plugins.PluginRegistry;
+import org.apache.log4j.plugins.Receiver;
+
 
 /**
  * This panel is used to manage all the Receivers configured within Log4j
@@ -133,6 +133,7 @@ public class ReceiversPanel extends JPanel {
   private final JSplitPane splitter = new JSplitPane();
   private final PluginPropertyEditorPanel pluginEditorPanel =
     new PluginPropertyEditorPanel();
+  
 
   public ReceiversPanel() {
     super();
@@ -647,7 +648,8 @@ public class ReceiversPanel extends JPanel {
           add(
             new AbstractAction("New " + name + "...") {
               public void actionPerformed(ActionEvent e) {
-                final JDialog dialog = new JDialog((JFrame) null, false);
+                Container container = SwingUtilities.getAncestorOfClass(JFrame.class, ReceiversPanel.this);
+                final JDialog dialog = new JDialog((JFrame) container, true);
 
                 try {
                   final NewReceiverDialogPanel panel =
