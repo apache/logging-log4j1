@@ -853,8 +853,23 @@ public class Category implements AppenderAttachable {
   }
 
   /**
+   * Check whether this category is enabled for the TRACE  Level. See also
+   * {@link #isDebugEnabled()}.
+   *
+   * @return boolean - <code>true</code> if this category is enabled for level
+   *         TRACE, <code>false</code> otherwise.
+   */
+  public boolean isTraceEnabled() {
+      if (repository.isDisabled(Level.TRACE_INT)) {
+          return false;
+        }
+
+        return Level.TRACE.isGreaterOrEqual(this.getEffectiveLevel());
+  }
+
+  /**
    * Check whether this category is enabled for a given {@link Level} passed
-   * as parameter. See also {@link #isDebugEnabled}.
+   * as parameter. See also {@link #isDebugEnabled()}.
    *
    * @return boolean True if this logger is enabled for <code>level</code>.
    */
@@ -875,7 +890,7 @@ public class Category implements AppenderAttachable {
   
   /**
    * Check whether this category is enabled for the info Level. See also
-   * {@link #isDebugEnabled}.
+   * {@link #isDebugEnabled()}.
    *
    * @return boolean - <code>true</code> if this category is enabled for level
    *         info, <code>false</code> otherwise.
@@ -887,7 +902,7 @@ public class Category implements AppenderAttachable {
 
     return Level.INFO.isGreaterOrEqual(this.getEffectiveLevel());
   }
-
+  
   /**
    * Log a localized message. The user supplied parameter <code>key</code> is
    * replaced by its localized version from the resource bundle.
