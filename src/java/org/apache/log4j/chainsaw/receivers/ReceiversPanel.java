@@ -93,6 +93,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.JTree;
@@ -142,7 +143,6 @@ import org.apache.log4j.plugins.Receiver;
  * @author Scott Debogy <sdeboy@apache.org>
  */
 public class ReceiversPanel extends JPanel {
-  final Action editReceiverButtonAction;
   final Action newReceiverButtonAction;
   final Action pauseReceiverButtonAction;
   final Action playReceiverButtonAction;
@@ -156,6 +156,8 @@ public class ReceiversPanel extends JPanel {
     new NewReceiverPopupMenu();
   private final ReceiverToolbar buttonPanel;
   private final Runnable updateReceiverTree;
+  
+  private final JSplitPane splitter = new JSplitPane();
   
   private final PluginPropertyEditorPanel pluginEditorPanel = new PluginPropertyEditorPanel();
 
@@ -257,22 +259,6 @@ public class ReceiversPanel extends JPanel {
       Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_N));
 
     newReceiverButtonAction.setEnabled(true);
-
-    editReceiverButtonAction =
-      new AbstractAction() {
-          public void actionPerformed(ActionEvent e) {
-            JOptionPane.showMessageDialog(logui, "Not Implemented yet, sorry");
-          }
-        };
-    editReceiverButtonAction.putValue(
-      Action.SMALL_ICON, new ImageIcon(ChainsawIcons.ICON_EDIT_RECEIVER));
-    editReceiverButtonAction.putValue(
-      Action.SHORT_DESCRIPTION,
-      "Edits the configuration of the selected Receiver");
-    editReceiverButtonAction.putValue(Action.NAME, "Edit Receiver");
-    editReceiverButtonAction.setEnabled(false);
-    editReceiverButtonAction.putValue(
-      Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_E));
 
     playReceiverButtonAction =
       new AbstractAction() {
@@ -406,10 +392,16 @@ public class ReceiversPanel extends JPanel {
     this.addMouseListener(popupListener);
 
     JComponent component = receiversTree;
-
-    add(new JScrollPane(component), BorderLayout.CENTER);
+    JScrollPane pane = new JScrollPane(component);
+    
+    splitter.setOrientation(JSplitPane.VERTICAL_SPLIT);
+    
+    splitter.setTopComponent(pane);
+    splitter.setBottomComponent(pluginEditorPanel);
+    
+    splitter.setResizeWeight(0.7);
     add(buttonPanel, BorderLayout.NORTH);
-    add(pluginEditorPanel, BorderLayout.SOUTH);
+    add(splitter, BorderLayout.CENTER);
     
 
     /**
@@ -612,11 +604,9 @@ public class ReceiversPanel extends JPanel {
     }
 
     if (object instanceof Receiver) {
-      editReceiverButtonAction.setEnabled(true);
       newReceiverButtonAction.setEnabled(true);
       shutdownReceiverButtonAction.setEnabled(true);
     } else {
-      editReceiverButtonAction.setEnabled(false);
       shutdownReceiverButtonAction.setEnabled(false);
       newReceiverButtonAction.setEnabled(true);
     }
@@ -822,8 +812,6 @@ public class ReceiversPanel extends JPanel {
       add(pauseReceiverButtonAction);
       add(shutdownReceiverButtonAction);
       addSeparator();
-      add(editReceiverButtonAction);
-      addSeparator();
 
       final Receiver r = getCurrentlySelectedReceiver();
       add(createLevelRadioButton(r, Level.DEBUG));
@@ -867,7 +855,6 @@ public class ReceiversPanel extends JPanel {
       JMenuItem startAll = new JMenuItem(startAllAction);
 
       add(newReceiverButtonAction);
-      add(editReceiverButtonAction);
 
       addSeparator();
       add(startAll);
@@ -1145,12 +1132,7 @@ public class ReceiversPanel extends JPanel {
       newReceiverButton.setText(null);
       newReceiverButton.addMouseListener(new PopupListener(newReceiverPopup));
 
-      SmallButton editReceiverButton =
-        new SmallButton(editReceiverButtonAction);
-      editReceiverButton.setText(null);
-
       add(newReceiverButton);
-      add(editReceiverButton);
       addSeparator();
 
       add(playReceiverButton);
