@@ -227,6 +227,7 @@ public class SMTPAppender extends AppenderSkeleton {
   }
 
 
+  synchronized
   public
   void close() {
     this.closed = true;
@@ -262,7 +263,6 @@ public class SMTPAppender extends AppenderSkeleton {
 			 ErrorCode.ADDRESS_PARSE_FAILURE);
       return null;
     }
-
   }
 
   /**
