@@ -27,9 +27,9 @@ public class BasicConfigurator {
   }
 
   /**
-     Add a {@link FileAppender} that uses {@link PatternLayout} using
-     the {@link PatternLayout#TTCC_CONVERSION_PATTERN} and prints to
-     <code>System.out</code> to the root category.  */
+     Add a {@link ConsoleAppender} that uses {@link PatternLayout}
+     using the {@link PatternLayout#TTCC_CONVERSION_PATTERN} and
+     prints to <code>System.out</code> to the root category.  */
   static
   public
   void configure() {
