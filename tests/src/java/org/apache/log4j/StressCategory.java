@@ -9,11 +9,11 @@ package org.apache.log4j;
 
 
 import org.apache.log4j.Level;
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import java.util.Random;
 
 /*
-  Stress test the Category class.
+  Stress test the Logger class.
 
 */
 
@@ -25,11 +25,11 @@ class StressCategory {
 				      Level.ERROR,
 				      Level.FATAL};
 
-  static Level defaultLevel = Category.getRoot().getLevel();
+  static Level defaultLevel = Logger.getRootLogger().getLevel();
   
   static int LENGTH;
   static String[] names;
-  static Category[] cat;
+  static Logger[] cat;
   static CT[] ct;
 
   static Random random = new Random(10);
@@ -53,7 +53,7 @@ class StressCategory {
     for(int i=0; i < LENGTH; i++) {
       names[i] = args[i];
     }    
-    cat = new Category[LENGTH];
+    cat = new Logger[LENGTH];
     ct = new CT[LENGTH]; 
 
 
@@ -105,7 +105,7 @@ class StressCategory {
 	if(ct[i] == null)
 	  cat[i] = null;
 	else {
-	  cat[i] = Category.getInstance(ct[i].catstr);
+	  cat[i] = Logger.getLogger(ct[i].catstr);
 	  cat[i].setLevel(ct[i].level);
 	}
       }
@@ -183,7 +183,7 @@ class StressCategory {
   boolean checkCorrectness(int i) {
     CT localCT = ct[i];
 
-    // Can't perform test if category is not instantiated
+    // Can't perform test if logger is not instantiated
     if(localCT == null) 
       return true;
     

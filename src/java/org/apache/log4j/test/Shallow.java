@@ -8,9 +8,11 @@
 package org.apache.log4j.test;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.xml.DOMConfigurator;
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
+import org.apache.log4j.Logger;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.NDC;
-import org.apache.log4j.Priority;
+import org.apache.log4j.Level;
 /**
    This class is a shallow test of the various appenders and
    layouts. It also tests their reading of the configuration file.
@@ -18,7 +20,7 @@ import org.apache.log4j.Priority;
 */
 public class Shallow {
 
-  static Category cat = Category.getInstance(Shallow.class);
+  static Logger cat = Logger.getLogger(Shallow.class);
 
   public
   static
@@ -49,7 +51,7 @@ public class Shallow {
   void test() {
     int i = -1;
     NDC.push("NDC");
-    Category root = Category.getRoot();
+    Logger root = Logger.getRootLogger();
     cat.debug("Message " + ++i);
     root.debug("Message " + i);
 
@@ -62,8 +64,8 @@ public class Shallow {
     cat.error("Message " + ++i);
     root.error("Message " + i);
 
-    cat.log(Priority.FATAL, "Message " + ++i);
-    root.log(Priority.FATAL, "Message " + i);
+    cat.log(Level.FATAL, "Message " + ++i);
+    root.log(Level.FATAL, "Message " + i);
 
     Exception e = new Exception("Just testing");
     cat.debug("Message " + ++i, e);
@@ -78,14 +80,14 @@ public class Shallow {
     cat.error("Message " + ++i, e);
     root.error("Message " + i, e);
 
-    cat.log(Priority.FATAL, "Message " + ++i, e);
-    root.log(Priority.FATAL, "Message " + i, e);
+    cat.log(Level.FATAL, "Message " + ++i, e);
+    root.log(Level.FATAL, "Message " + i, e);
 
-    root.setPriority(Priority.FATAL);
+    root.setLevel(Level.FATAL);
 
     // It is always a good idea to call this method when exiting an
     // application.
-    Category.shutdown();
+    LogManager.shutdown();
   }
 
 

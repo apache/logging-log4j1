@@ -330,8 +330,7 @@ public class ConfigurationManager extends Object {
 
   protected String getFilename() {
     String home = System.getProperty("user.home");
-    String sep = (home.startsWith(MRUFileManager.UNIX_SEPARATOR))
-        ? MRUFileManager.UNIX_SEPARATOR : MRUFileManager.DOS_SEPARATOR;
+    String sep = System.getProperty("file.separator");
 
     return home + sep + "lf5" + sep + CONFIG_FILE_NAME;
   }

@@ -73,8 +73,8 @@ public class LoggerTestCase extends TestCase {
     a1.setName("testAppender1");             
     logger.addAppender(a1);
 
-    Enumeration enum = logger.getAllAppenders();
-    Appender aHat = (Appender) enum.nextElement();    
+    Enumeration enumeration = logger.getAllAppenders();
+    Appender aHat = (Appender) enumeration.nextElement();    
     assertEquals(a1, aHat);    
   }
 
@@ -93,10 +93,10 @@ public class LoggerTestCase extends TestCase {
     logger.addAppender(a1);
     logger.addAppender(a2);    
     logger.removeAppender("testAppender2.1");
-    Enumeration enum = logger.getAllAppenders();
-    Appender aHat = (Appender) enum.nextElement();    
+    Enumeration enumeration = logger.getAllAppenders();
+    Appender aHat = (Appender) enumeration.nextElement();    
     assertEquals(a2, aHat);
-    assertTrue(!enum.hasMoreElements());
+    assertTrue(!enumeration.hasMoreElements());
   }
 
   /**
@@ -204,7 +204,7 @@ public class LoggerTestCase extends TestCase {
     Logger root = Logger.getRootLogger();    
     root.addAppender(caRoot);
 
-    LoggerRepository h = Category.getDefaultHierarchy();
+    LoggerRepository h = LogManager.getLoggerRepository();
     //h.disableDebug();
     h.setThreshold((Level) Level.INFO);
     assertEquals(caRoot.counter, 0);     
@@ -309,7 +309,7 @@ public class LoggerTestCase extends TestCase {
 
   public
   void testHierarchy1() {
-    Hierarchy h = new Hierarchy(new RootCategory((Level) Level.ERROR));
+    Hierarchy h = new Hierarchy(new RootLogger((Level) Level.ERROR));
     Logger a0 = h.getLogger("a");
     assertEquals("a", a0.getName());
     assertNull(a0.getLevel());

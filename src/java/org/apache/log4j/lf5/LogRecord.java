@@ -350,7 +350,7 @@ public abstract class LogRecord implements java.io.Serializable {
   /**
    * Set the location in code where this LogRecord originated.
    *
-   * @param ndc A string containing location information.
+   * @param location A string containing location information.
    */
   public void setLocation(String location) {
     _location = location;

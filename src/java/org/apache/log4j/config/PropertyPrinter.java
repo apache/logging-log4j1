@@ -3,7 +3,7 @@
  *
  * This software is published under the terms of the Apache Software
  * License version 1.1, a copy of which has been included with this
- * distribution in the LICENSE.APL file.
+ * distribution in the LICENSE.txt file.
  */
 
 package org.apache.log4j.config;
@@ -46,8 +46,8 @@ public class PropertyPrinter implements PropertyGetter.PropertyCallback {
   }
   
   /**
-     Returns true if the specified appender name is considered to have
-     been generated, i.e. if it is of the form A[0-9]+.
+   * Returns true if the specified appender name is considered to have
+   * been generated, that is, if it is of the form A[0-9]+.
   */
   protected
   boolean isGenAppName(String name) {
@@ -67,16 +67,16 @@ public class PropertyPrinter implements PropertyGetter.PropertyCallback {
    */
   public
   void print(PrintWriter out) {
-    printOptions(out, Category.getRoot());
+    printOptions(out, Logger.getRootLogger());
     
-    Enumeration cats = Category.getCurrentCategories();
+    Enumeration cats = LogManager.getCurrentLoggers();
     while (cats.hasMoreElements()) {
-      printOptions(out, (Category) cats.nextElement());
+      printOptions(out, (Logger) cats.nextElement());
     }
   }
   
   protected
-  void printOptions(PrintWriter out, Category cat) {
+  void printOptions(PrintWriter out, Logger cat) {
     Enumeration appenders = cat.getAllAppenders();
     Level prio = cat.getLevel();
     String appenderString = (prio == null ? "" : prio.toString());
@@ -100,9 +100,9 @@ public class PropertyPrinter implements PropertyGetter.PropertyCallback {
       }
       appenderString += ", " + name;
     }
-    String catKey = (cat == Category.getRoot())
-        ? "log4j.rootCategory"
-        : "log4j.category." + cat.getName();
+    String catKey = (cat == Logger.getRootLogger())
+        ? "log4j.rootLogger"
+        : "log4j.logger." + cat.getName();
     if (appenderString != "") {
       out.println(catKey + "=" + appenderString);
     }

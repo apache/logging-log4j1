@@ -5,7 +5,8 @@ package org.apache.log4j.test;
 import java.net.Socket;
 import java.net.ServerSocket;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.net.SocketNode;
@@ -15,7 +16,7 @@ import org.apache.log4j.net.SocketNode;
 
 public class ShortSocketServer  {
 
-  static Category cat = Category.getInstance(ShortSocketServer.class.getName());
+  static Logger cat = Logger.getLogger(ShortSocketServer.class.getName());
 
   static int port;
 
@@ -35,7 +36,7 @@ public class ShortSocketServer  {
       Socket socket = serverSocket.accept();
       LogLog.debug("Connected to client at " + socket.getInetAddress());
       LogLog.debug("Starting new socket node.");
-      SocketNode sn = new SocketNode(socket, Category.getDefaultHierarchy());
+      SocketNode sn = new SocketNode(socket, LogManager.getLoggerRepository());
       Thread t = new Thread(sn);
       t.start();
       t.join();

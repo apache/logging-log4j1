@@ -161,7 +161,7 @@ public class DOMConfigurator implements Configurator {
     String className = subst(appenderElement.getAttribute(CLASS_ATTR));
     LogLog.debug("Class name: [" + className+']');    
     try {
-      Object instance 	= Class.forName(className).newInstance();
+      Object instance 	= Loader.loadClass(className).newInstance();
       Appender appender	= (Appender)instance;
       PropertySetter propSetter = new PropertySetter(appender);
 
@@ -311,7 +311,7 @@ public class DOMConfigurator implements Configurator {
     else {
       LogLog.debug("Desired logger sub-class: ["+className+']');
        try {	 
-	 Class clazz = Class.forName(className);
+	 Class clazz = Loader.loadClass(className);
 	 Method getInstanceMethod = clazz.getMethod("getLogger", 
 						    ONE_STRING_PARAM);
 	 cat = (Logger) getInstanceMethod.invoke(null, new Object[] {catName});
@@ -442,7 +442,7 @@ public class DOMConfigurator implements Configurator {
     String className = subst(layout_element.getAttribute(CLASS_ATTR));
     LogLog.debug("Parsing layout of class: \""+className+"\"");		 
     try {
-      Object instance 	= Class.forName(className).newInstance();
+      Object instance 	= Loader.loadClass(className).newInstance();
       Layout layout   	= (Layout)instance;
       PropertySetter propSetter = new PropertySetter(layout);
       
@@ -493,7 +493,7 @@ public class DOMConfigurator implements Configurator {
     String priStr = subst(element.getAttribute(VALUE_ATTR));
     LogLog.debug("Level value for "+catName+" is  ["+priStr+"].");
     
-    if(INHERITED.equals(priStr)) {
+    if(INHERITED.equalsIgnoreCase(priStr) || NULL.equalsIgnoreCase(priStr)) {
       if(isRoot) {
 	LogLog.error("Root level cannot be inherited. Ignoring directive.");
       } else {
@@ -506,7 +506,7 @@ public class DOMConfigurator implements Configurator {
       } else {
 	LogLog.debug("Desired Level sub-class: ["+className+']');
 	try {	 
-	  Class clazz = Class.forName(className);
+	  Class clazz = Loader.loadClass(className);
 	  Method toLevelMethod = clazz.getMethod("toLevel", 
 						    ONE_STRING_PARAM);
 	  Level pri = (Level) toLevelMethod.invoke(null, 
@@ -651,25 +651,18 @@ public class DOMConfigurator implements Configurator {
     }
       
     try {
-      // This makes ID/IDREF attributes to have a meaning. Don't ask
-      // me why.
       dbf.setValidating(true);
-      //dbf.setNamespaceAware(true);
 
       DocumentBuilder docBuilder = dbf.newDocumentBuilder();
-      docBuilder.setErrorHandler(new SAXErrorHandler());
 
-      Class clazz = this.getClass();
-      URL dtdURL = clazz.getResource("/org/apache/log4j/xml/log4j.dtd");
-      if(dtdURL == null) {
-	LogLog.error("Could not find [log4j.dtd]. Used ["+clazz.getClassLoader()+
-		     "] class loader in the search.");
-      }
-      else {
-	LogLog.debug("URL to log4j.dtd is [" + dtdURL.toString()+"].");
-	inputSource.setSystemId(dtdURL.toString());
-      }
-      Document doc = docBuilder.parse(inputSource);
+      docBuilder.setErrorHandler(new SAXErrorHandler());      
+      docBuilder.setEntityResolver(new Log4jEntityResolver());        
+      // we change the system ID to a valid URI so that Crimson won't
+      // complain. Indeed, "log4j.dtd" alone is not a valid URI which
+      // causes Crimson to barf. The Log4jEntityResolver only cares
+      // about the "log4j.dtd" ending.
+      inputSource.setSystemId("dummy://log4j.dtd");
+      Document doc = docBuilder.parse(inputSource); 
       parse(doc.getDocumentElement());
     } catch (Exception e) {
       // I know this is miserable...
@@ -677,13 +670,13 @@ public class DOMConfigurator implements Configurator {
     }
   }
 
-    /**
-       Configure by taking in an DOM element. 
-     */
-    public void doConfigure(Element element, LoggerRepository repository) {
-	this.repository = repository;
-	parse(element);
-    }
+  /**
+     Configure by taking in an DOM element. 
+  */
+  public void doConfigure(Element element, LoggerRepository repository) {
+    this.repository = repository;
+    parse(element);
+  }
 
   
   /**
@@ -733,9 +726,9 @@ public class DOMConfigurator implements Configurator {
     // "debug" attribute is returned as the empty string.
     if(!debugAttrib.equals("") && !debugAttrib.equals("null")) {      
       LogLog.setInternalDebugging(OptionConverter.toBoolean(debugAttrib, true));
-    }
-    else 
+    } else {
       LogLog.debug("Ignoring " + INTERNAL_DEBUG_ATTR + " attribute.");
+    }
 
 
     String confDebug = subst(element.getAttribute(CONFIG_DEBUG_ATTR));

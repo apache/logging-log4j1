@@ -24,16 +24,14 @@ public class VectorAppender extends AppenderSkeleton {
 
   public Vector vector;
   
-  public
-  VectorAppender() {
+  public VectorAppender() {
     vector = new Vector();
   }
 
   /**
      Does nothing.
   */
-  public
-  void activateOptions() {
+  public void activateOptions() {
   }
 
 
@@ -42,28 +40,32 @@ public class VectorAppender extends AppenderSkeleton {
      method.
 
   */
-  public
-  void append(LoggingEvent event) {
-    System.out.println("---Vector appender called with message ["+event.getRenderedMessage()+"].");
+  public void append(LoggingEvent event) {
+    //System.out.println("---Vector appender called with message ["+event.getRenderedMessage()+"].");
+    //System.out.flush();
+    try {
+      Thread.currentThread().sleep(100);
+    } catch(Exception e) {
+    }
     vector.addElement(event);
    }
 
-  public
-  Vector getVector() {
+  public Vector getVector() {
     return vector;
   }
 
-  public
-  synchronized
-  void close() {
+  public synchronized void close() {
     if(this.closed)
       return;
     this.closed = true;
   }
 
 
-  public
-  boolean requiresLayout() {
+  public boolean isClosed() {
+    return closed;
+  }
+
+  public boolean requiresLayout() {
     return false;
   }
 }

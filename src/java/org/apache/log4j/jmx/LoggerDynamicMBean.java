@@ -218,7 +218,7 @@ public class LoggerDynamicMBean extends AbstractDynamicMBean
 	} else {
 	  p = OptionConverter.toLevel(s, p);
 	}
-	logger.setPriority(p);
+	logger.setLevel(p);
       }
     } else {
       throw(new AttributeNotFoundException("Attribute " + name +
@@ -228,9 +228,9 @@ public class LoggerDynamicMBean extends AbstractDynamicMBean
   }
 
   void appenderMBeanRegistration() {
-    Enumeration enum = logger.getAllAppenders();
-    while(enum.hasMoreElements()) {
-      Appender appender = (Appender) enum.nextElement();
+    Enumeration enumeration = logger.getAllAppenders();
+    while(enumeration.hasMoreElements()) {
+      Appender appender = (Appender) enumeration.nextElement();
       registerAppenderMBean(appender);
     }
   }

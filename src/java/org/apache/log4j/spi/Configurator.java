@@ -19,22 +19,16 @@ import java.net.URL;
 public interface Configurator {
 
   /**
-     <p><code>ENABLE_KEY</code> is the name of the constant
-     holding the string value <b>log4j.enable</b>.
-
-     <p>Setting the system property <b>log4j.disable</b> to DEBUG,
-     INFO, WARN, ERROR or FATAL is equivalent to calling the {@link
-     Hierarchy#disable} method with the corresponding level.
-
-     @since 1.2 */
-  // public static final String ENABLE_KEY = "log4j.enable";
-
+     Special level value signifying inherited behaviour. The current
+     value of this string constant is <b>inherited</b>. {@link #NULL}
+     is a synonym.  */
+  public static final String INHERITED = "inherited";
 
   /**
-     Special level value signifying inherited behaviour. The
-     current value of this string constant is <b>inherited</b>.
-  */
-  public static final String INHERITED = "inherited";
+     Special level signifying inherited behaviour, same as {@link
+     #INHERITED}. The current value of this string constant is
+     <b>null</b>. */
+  public static final String NULL = "null";
 
 
 
@@ -45,7 +39,7 @@ public interface Configurator {
      parameter.
 
      @param url The URL to parse
-     @param hierarchy The hierarchy to operation upon.
+     @param repository The hierarchy to operation upon.
    */
   void doConfigure(URL url, LoggerRepository repository);
 }
