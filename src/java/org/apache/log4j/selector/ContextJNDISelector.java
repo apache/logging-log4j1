@@ -21,7 +21,6 @@ import org.apache.log4j.Level;
 import org.apache.log4j.helpers.Constants;
 import org.apache.log4j.helpers.IntializationUtil;
 import org.apache.log4j.helpers.JNDIUtil;
-import org.apache.log4j.helpers.Loader;
 
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.RepositorySelector;
@@ -187,27 +186,15 @@ public class ContextJNDISelector implements RepositorySelector {
         // Check if Mrs. Piggy gave us explicit configration directives
         // regarding this directory.
         String configResourceStr = JNDIUtil.lookup(ctx, JNDI_CONFIGURATION_RESOURCE);
-        String configuratorClassName = JNDIUtil.lookup(ctx, JNDI_CONFIGURATOR_CLASS);
-
-        // If no explicit direction were given, then user automatic 
-        // the default configuration files. Try log4j.xml first and then
-        // log4j.properties.
-        // Note that Loader.getResource() method uses the Thread Context
-        // Classloader first and if that fails,tries "other" classloaders, 
-        // including the System classloader. This is actually quite wrong as
-        // only the TCL should be tried.
-        if (configResourceStr == null) {
-          if (
-            Loader.getResource(Constants.DEFAULT_XML_CONFIGURATION_FILE) != null) {
-            configResourceStr = Constants.DEFAULT_XML_CONFIGURATION_FILE;
-          } else if (
-            Loader.getResource(Constants.DEFAULT_CONFIGURATION_FILE) != null) {
-            configResourceStr = Constants.DEFAULT_CONFIGURATION_FILE;
-          }
+        
+        // For non-default repositories we do not try to search for default
+        // config files such as log4j.xml or log4j.properties because
+        // we have no deterministic way of finding the right one
+        if(configResourceStr != null) {
+          String configuratorClassName = JNDIUtil.lookup(ctx, JNDI_CONFIGURATOR_CLASS);
+          IntializationUtil.initialConfiguration(
+           hierarchy, configResourceStr, configuratorClassName);
         }
-
-        IntializationUtil.initialConfiguration(
-          hierarchy, configResourceStr, configuratorClassName);
       }
 
       return hierarchy;
