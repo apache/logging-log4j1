@@ -148,6 +148,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.EventListenerList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableColumnModelEvent;
@@ -226,6 +227,26 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    */
   private boolean isGUIFullyInitialized = false;
   private Object initializationLock = new Object();
+  
+  /**
+   * The shutdownAction is called when the user requests to exit
+   * Chainsaw, and by default this exits the VM, but
+   * a developer may replace this action with something that better suits
+   * their needs
+   */
+  private Action shutdownAction = new AbstractAction() {
+
+    public void actionPerformed(ActionEvent e)
+    {
+      System.exit(0);
+    }
+  };
+  
+  /**
+   * Clients can register a ShutdownListener to be notified
+   * when the user has requested Chainsaw to exit.
+   */
+  private EventListenerList shutdownListenerList = new EventListenerList();
 
   /**
    * Constructor which builds up all the visual elements of the frame
@@ -257,6 +278,27 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     }
   }
 
+  /**
+   * Registers a ShutdownListener with this calss so that
+   * it can be notified when the user has requested 
+   * that Chainsaw exit.
+   * 
+   * @param l
+   */
+  public void addShutdownListener(ShutdownListener l) {
+    shutdownListenerList.add(ShutdownListener.class, l);  
+  }
+  
+  /**
+   * Removes the registered ShutdownListener so 
+   * that the listener will not be notified on a shutdown.
+   * 
+   * @param l
+   */
+  public void removeShutdownListener(ShutdownListener l) {
+    shutdownListenerList.remove(ShutdownListener.class, l);
+  }
+  
   /**
    * Starts Chainsaw by attaching a new instance to the Log4J
    * main root Logger via a ChainsawAppender, and activates itself
@@ -760,12 +802,46 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
           } catch (Exception e) {
             e.printStackTrace();
           }
-
-          System.exit(0);
+          fireShutdownEvent();
+          performShutdownAction();
         }
+
       };
 
     new Thread(runnable).start();
+  }
+
+  /**
+   * Ensures all the registered ShutdownListeners are notified.
+   */
+  private void fireShutdownEvent()
+  {
+    ShutdownListener[] listeners = (ShutdownListener[]) shutdownListenerList.getListeners(ShutdownListener.class);
+    for (int i = 0; i < listeners.length; i++) {
+      listeners[i].shuttingDown();
+    }
+  }
+
+  /**
+   * Configures LogUI's with an action to execute when the user
+   * requests to exit the application, the default action
+   * is to exit the VM.
+   * This Action is called AFTER all the ShutdownListeners have been notified
+   * 
+   * @param shutdownAction
+   */
+  public final void setShutdownAction(Action shutdownAction){
+    this.shutdownAction = shutdownAction;
+  }
+
+  /**
+   * Using the current thread, calls the registed Shutdown action's
+   * actionPerformed(...) method.
+   *
+   */
+  private void performShutdownAction(){
+    LogLog.debug("Calling the shutdown Action. Goodbye!");
+    shutdownAction.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Shutting Down"));          
   }
 
   /**
