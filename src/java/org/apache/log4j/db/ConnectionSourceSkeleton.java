@@ -51,24 +51,14 @@ public abstract class ConnectionSourceSkeleton implements ConnectionSource {
         return;
       }
       DatabaseMetaData meta = connection.getMetaData();
-      supportsGetGeneratedKeys = supportsGetGeneratedKeys(meta);
-      supportsBatchUpdates = meta.supportsBatchUpdates();
+      supportsGetGeneratedKeys = Util.supportsGetGeneratedKeys(meta);
+      supportsBatchUpdates = Util.supportsBatchUpdates(meta);
       dialectCode = Util.discoverSQLDialect(meta);
     } catch (SQLException se) {
       LogLog.warn("Could not discover the dialect to use.", se);
     }
   }
 
-  boolean supportsGetGeneratedKeys(DatabaseMetaData meta) {
-    try {
-      return meta.supportsGetGeneratedKeys();
-    } catch(Throwable e) {
-      LogLog.warn("The following warning is only informative.");
-      LogLog.warn("Could not call supportsGetGeneratedKeys method. This may be recoverable");
-      return false;
-    }
-  }
-  
   /**
    * Does this connection support the JDBC Connection.getGeneratedKeys method?
    */
