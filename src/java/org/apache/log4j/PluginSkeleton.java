@@ -26,7 +26,7 @@ import org.apache.log4j.spi.LoggerRepository;
   @since 1.3
 */
 public abstract class PluginSkeleton implements Plugin {
-  protected String name;
+  protected String name = "";
   protected LoggerRepository repository;
   
   /**
