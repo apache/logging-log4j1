@@ -306,7 +306,7 @@ public class HTMLLayout extends Layout {
     //what was sent in.
     
     if( input == null || input.length() == 0 ) {
-        return input;
+      return input;
     }
     
     //Use a StringBuffer in lieu of String concatenation -- it is
@@ -315,17 +315,16 @@ public class HTMLLayout extends Layout {
     StringBuffer buf = new StringBuffer(input.length() + 6);
     char ch = ' ';
     
-    for(int i=0; i < input.length(); i++) {
-        ch = input.charAt(i);
-        if(ch == '<') {
-            buf.append("&lt;");
-        }
-        else if(ch == '>') {
-            buf.append("&gt;");
-        }
-        else {
-            buf.append(ch);
-        }
+    int len = input.length();
+    for(int i=0; i < len; i++) {
+      ch = input.charAt(i);
+      if(ch == '<') {
+	buf.append("&lt;");
+      } else if(ch == '>') {
+	buf.append("&gt;");
+      } else {
+	buf.append(ch);
+      }
     }
 
     return buf.toString();

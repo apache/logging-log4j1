@@ -7,6 +7,7 @@
  */
 
 // Contributors:     Mathias Bogaert
+//                   joelr@viair.com
 
 package org.apache.log4j.helpers;
 
@@ -48,6 +49,8 @@ public class BoundedFIFO {
       return null;
     
     LoggingEvent r = buf[first];
+    buf[first] = null; // help garbage collection
+
     if(++first == maxSize) {
 	first = 0;
     }
