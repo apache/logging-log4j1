@@ -2691,32 +2691,32 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
 	             .append(detailLayout.format(event)).append(
 	            detailLayout.getFooter());
 	          if (buf.length() > 0) {
-		      	SwingUtilities.invokeLater(new Runnable() {
-		      		public void run() {
-			          	try {
-			          		Document doc = detail.getEditorKit().createDefaultDocument();
-			          		detail.getEditorKit().read(new StringReader(buf.toString()), doc, 0);
-			          		detail.setDocument(doc);
-			          		detail.setCaretPosition(0);
-			          	} catch (Exception e) {}
-    	      		}
-    	      	});
-	          }
+		          	try {
+		          		final Document doc = detail.getEditorKit().createDefaultDocument();
+		          		detail.getEditorKit().read(new StringReader(buf.toString()), doc, 0);
+				      	SwingUtilities.invokeLater(new Runnable() {
+				      		public void run() {
+				      			detail.setDocument(doc);
+				      			detail.setCaretPosition(0);
+				      		}
+				      	});
+		          	} catch (Exception e) {}
+	      		}
 	        }
 	      }
 	
 	      if (event == null) {
-	      	SwingUtilities.invokeLater(new Runnable() {
-	      		public void run() {
-			      	try {
-			      		Document doc = detail.getEditorKit().createDefaultDocument();
-			      		detail.getEditorKit().read(new StringReader("<html>Nothing selected</html>"), doc, 0);
-			      		detail.setDocument(doc);
-			      		detail.setCaretPosition(0);
-			      	} catch (Exception e) {}
-	      		}
-	      	});
-	      }
+          	try {
+          		final Document doc = detail.getEditorKit().createDefaultDocument();
+          		detail.getEditorKit().read(new StringReader("<html>Nothing selected</html>"), doc, 0);
+		      	SwingUtilities.invokeLater(new Runnable() {
+		      		public void run() {
+		      			detail.setDocument(doc);
+		      			detail.setCaretPosition(0);
+		      		}
+		      	});
+          	} catch (Exception e) {}
+  		}
     }
 
     /**
