@@ -146,7 +146,7 @@ class NoReceiversWarningPanel extends JPanel {
     setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
     gc.gridx = 1;
-    gc.fill = gc.BOTH;
+    gc.fill = GridBagConstraints.BOTH;
     gc.weightx = 1.0;
     gc.weighty = 1.0;
 
@@ -390,10 +390,10 @@ class NoReceiversWarningPanel extends JPanel {
 
     add(optionpanel, gc);
 
-    gc.gridy = gc.RELATIVE;
+    gc.gridy = GridBagConstraints.RELATIVE;
     gc.weightx = 0;
-    gc.fill = gc.NONE;
-    gc.anchor = gc.SOUTHEAST;
+    gc.fill = GridBagConstraints.NONE;
+    gc.anchor = GridBagConstraints.SOUTHEAST;
 
     add(Box.createVerticalStrut(20), gc);
 

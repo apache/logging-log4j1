@@ -71,7 +71,6 @@ import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
 
 
 /**
