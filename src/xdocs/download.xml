@@ -67,31 +67,25 @@ href="../jakarta-log4j-1.1b1.zip"><b>ZIP</b></a> format.
 
 <dl>
   <dt><a href="http://log4p.sourceforge.net"><b>log4p</b></a></dt>
-
   <dd>A Python translation of log4j by Igor Poteryaev.</dd>
 
 
   <dt><a href="http://www.japhy.de/configLog4j"><b>configLog4j</b></a></dt>
-
   <dd>A visual log4j configuration file editor by Tobias Dezulian.</dd>
 
 
   <dt><a href="http://log4cpp.sourceforge.net"><b>log4cpp</b></a></dt>
-
   <dd>A C++ translation of log4j by Bastiaan Bakker.</dd>
 
   <dt><a href="http://developer.jini.org/exchange/projects/log"><b>JINI logging service</b></a></dt>
-
   <dd>A log4j wrapper for JINI Jerome Bernard.</dd>
 
 
   <dt><a href="http://support.klopotek.de/log4j/jdbc/index.html"><b>JDBCAppender</b></a></dt>
+  <dd>A JDBCAppender by <a href="mailto:t.fenner@klopotek.de">Thomas Fenner</a>.</dd>
 
-  <dd>A JDBCAppender by <a href="mailto:t.fenner@klopotek.de">Thomas
-  Fenner</a>.</dd>
-
-
-
+  <dt><a href="http://www.epesh.com/logtags.jsp"><b>The Log Tag Library</b></a></dt>
+  <dd>A tag library designed to give JSP tag-level access to log4j.</dd>
 </dl>
 
 <p>If you would like your software to be listed here, then send a note
@@ -104,4 +98,3 @@ list.</p>
 
 </body>
 </document>
-
