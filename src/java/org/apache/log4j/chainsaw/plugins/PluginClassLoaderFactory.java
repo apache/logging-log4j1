@@ -42,7 +42,8 @@ public class PluginClassLoaderFactory {
      */
     public static final ClassLoader create(File pluginDirectory) {
         if(pluginDirectory == null || !pluginDirectory.exists() || !pluginDirectory.canRead()) {
-         throw new IllegalArgumentException("pluginDirectory cannot be null, and it must exist and must be readable");   
+         LogLog.error("pluginDirectory cannot be null, and it must exist and must be readable, using the normal Classloader");
+         return PluginClassLoaderFactory.class.getClassLoader();
         }
         
         String[] strings = pluginDirectory.list(new FilenameFilter() {
