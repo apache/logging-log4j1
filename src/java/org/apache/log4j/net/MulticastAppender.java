@@ -170,13 +170,17 @@ public class MulticastAppender extends AppenderSkeleton implements PortBased {
       }
 
       try {
-        StringBuffer buf=new StringBuffer(layout.format(event).trim());
-        if (buf.length() < PACKET_LENGTH) {
-          buf.append(new char[PACKET_LENGTH - buf.length()]);
+        StringBuffer buf = new StringBuffer(layout.format(event));
+
+        byte[] payload;
+        if(encoding == null) {
+          payload = buf.toString().getBytes();
+        } else {
+          payload = buf.toString().getBytes(encoding);
         }
-        //the implementation of string.getBytes accepts a null encoding and uses the system charset
+
         DatagramPacket dp =
-          new DatagramPacket(buf.toString().getBytes(encoding), buf.length(), address, port);
+           new DatagramPacket(payload, payload.length, address, port);
         outSocket.send(dp);
         //remove these properties, in case other appenders need to set them to different values 
         event.setProperty(Constants.HOSTNAME_KEY, null);
