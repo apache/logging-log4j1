@@ -20,8 +20,8 @@ if [ "$OSTYPE" = "cygwin32" ] || [ "$OSTYPE" = "cygwin" ] ; then
 fi
 
 ANT_JAR='build/lib/ant.jar'
-JAXP_JAR='build/lib/jaxp.jar'
-PARSER_JAR='build/lib/parser.jar'
+JAXP_JAR='build/lib/jaxp-1.1.jar'
+PARSER_JAR='build/lib/crimson-1.1.jar'
 
 CLASSPATH=${CLASSPATH}:${ANT_JAR}
 CLASSPATH=${CLASSPATH}:${JAXP_JAR}
