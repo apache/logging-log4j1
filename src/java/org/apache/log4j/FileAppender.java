@@ -183,6 +183,29 @@ public class FileAppender extends WriterAppender {
   }
 
   /**
+     Get the value of the <b>BufferedIO</b> option.
+     
+     <p>BufferedIO will significatnly increase performance on heavily
+     loaded systems.
+
+  */
+  public
+  boolean getBufferedIO() {
+    return this.bufferedIO;
+  }
+  
+ 
+  /**
+     Get the size of the IO buffer. 
+  */
+  public
+  int getBufferSize() {
+    return this.bufferSize;
+  }
+  
+
+
+  /**
      The <b>Append</b> option takes a boolean value. It is set to
      <code>true</code> by default. If true, then <code>File</code>
      will be opened in append mode by {@link #setFile setFile} (see
@@ -210,6 +233,18 @@ public class FileAppender extends WriterAppender {
   public
   void setBufferedIO(boolean bufferedIO) {
     this.bufferedIO = bufferedIO;
+    if(bufferedIO) {
+      immediateFlush = false;
+    }
+  }
+  
+ 
+  /**
+     Set the size of the IO buffer.
+  */
+  public
+  void setBufferSize(int bufferSize) {
+    this.bufferSize = bufferSize;
   }
   
 
