@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.apache.joran;
+package org.apache.log4j.joran.spi;
 
 import java.util.List;
 
-import org.apache.joran.action.Action;
+import org.apache.log4j.joran.action.Action;
 
 public interface RuleStore {
   public void addRule(Pattern pattern, String actionClassStr) throws ClassNotFoundException;

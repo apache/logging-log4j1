@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.apache.joran;
+package org.apache.log4j.joran.spi;
 
 //import org.apache.log4j.helpers.OptionConverter;
 
@@ -34,7 +34,7 @@ import java.util.Vector;
 /**
  *
  * The ExecutionContext contains the contextual state of a Joran parsing 
- * session. {@link org.apache.joran.action.Action Actions} depend on this 
+ * session. {@link org.apache.log4j.joran.action.Action Actions} depend on this 
  * context to exchange and store information.
  *  
  * @author Ceki G&uuml;lc&uuml;

@@ -16,15 +16,7 @@
 
 package org.apache.log4j.joran;
 
-import org.apache.joran.ExecutionContext;
-import org.apache.joran.Interpreter;
-import org.apache.joran.Pattern;
-import org.apache.joran.RuleStore;
-import org.apache.joran.action.NestComponentIA;
-import org.apache.joran.action.NewRuleAction;
-import org.apache.joran.action.ParamAction;
-import org.apache.joran.helper.SimpleRuleStore;
-
+import org.apache.log4j.joran.action.NestComponentIA;
 import org.apache.log4j.config.ConfiguratorBase;
 import org.apache.log4j.joran.action.ActionConst;
 import org.apache.log4j.joran.action.AppenderAction;
@@ -35,11 +27,18 @@ import org.apache.log4j.joran.action.JndiSubstitutionPropertyAction;
 import org.apache.log4j.joran.action.LayoutAction;
 import org.apache.log4j.joran.action.LevelAction;
 import org.apache.log4j.joran.action.LoggerAction;
+import org.apache.log4j.joran.action.NewRuleAction;
+import org.apache.log4j.joran.action.ParamAction;
 import org.apache.log4j.joran.action.PluginAction;
 import org.apache.log4j.joran.action.PriorityAction;
 import org.apache.log4j.joran.action.RepositoryPropertyAction;
 import org.apache.log4j.joran.action.RootLoggerAction;
 import org.apache.log4j.joran.action.SubstitutionPropertyAction;
+import org.apache.log4j.joran.spi.ExecutionContext;
+import org.apache.log4j.joran.spi.Interpreter;
+import org.apache.log4j.joran.spi.Pattern;
+import org.apache.log4j.joran.spi.RuleStore;
+import org.apache.log4j.joran.spi.SimpleRuleStore;
 import org.apache.log4j.joran.util.JoranDocument;
 import org.apache.log4j.spi.ErrorItem;
 import org.apache.log4j.spi.LoggerRepository;

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.apache.joran.action;
+package org.apache.log4j.joran.action;
 
-import org.apache.joran.ExecutionContext;
-import org.apache.joran.Interpreter;
+import org.apache.log4j.joran.spi.ExecutionContext;
+import org.apache.log4j.joran.spi.Interpreter;
 import org.apache.log4j.spi.ComponentBase;
 
 import org.xml.sax.Attributes;

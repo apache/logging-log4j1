@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package org.apache.joran.action;
+package org.apache.log4j.joran.action;
 
-import org.apache.joran.ExecutionContext;
-import org.apache.joran.Pattern;
 import org.apache.joran.helper.Option;
 
+import org.apache.log4j.joran.spi.ExecutionContext;
+import org.apache.log4j.joran.spi.Pattern;
 import org.apache.log4j.spi.ErrorItem;
 import org.xml.sax.Attributes;
 

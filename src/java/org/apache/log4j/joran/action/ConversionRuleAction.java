@@ -19,12 +19,11 @@ package org.apache.log4j.joran.action;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.joran.ExecutionContext;
-import org.apache.joran.action.Action;
 import org.apache.joran.helper.Option;
 
 import org.apache.log4j.Layout;
 import org.apache.log4j.PatternLayout;
+import org.apache.log4j.joran.spi.ExecutionContext;
 import org.apache.log4j.spi.ErrorItem;
 import org.apache.log4j.spi.LoggerRepository;
 
