@@ -19,7 +19,7 @@ import org.apache.log4j.spi.OptionHandler;
 import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.AppenderAttachable;
 import org.apache.log4j.spi.Configurator;
-import org.apache.log4j.spi.CategoryFactory;
+import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.Level;
@@ -340,7 +340,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
     else {
       LogLog.debug("Desired category factory: ["+className+']');
       Object catFactory = OptionConverter.instantiateByClassName(className, 
-                                                                 CategoryFactory.class, 
+                                                                 LoggerFactory.class, 
                                                                  null);
       PropertySetter propSetter = new PropertySetter(catFactory);
 

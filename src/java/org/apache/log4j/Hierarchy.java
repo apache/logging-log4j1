@@ -23,8 +23,9 @@ import java.util.Enumeration;
 import java.util.Vector;
 
 import org.apache.log4j.spi.RootCategory;
-import org.apache.log4j.spi.CategoryFactory;
+import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.HierarchyEventListener;
+import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.Appender;
 import org.apache.log4j.or.RendererMap;
 import org.apache.log4j.or.ObjectRenderer;
@@ -53,9 +54,9 @@ import org.apache.log4j.helpers.OptionConverter;
    @author Ceki G&uuml;lc&uuml; 
 
 */
-public class Hierarchy {
+public class Hierarchy implements LoggerRepository {
 
-  private CategoryFactory defaultFactory;
+  private LoggerFactory defaultFactory;
   private Vector listeners;
 
   Hashtable ht;
@@ -261,8 +262,7 @@ public class Hierarchy {
     }
   }
 
-
-  
+  public
   void fireAddAppenderEvent(Logger logger, Appender appender) {
     if(listeners != null) {
       int size = listeners.size();
@@ -273,7 +273,6 @@ public class Hierarchy {
       }
     }        
   }
-
 
   void fireRemoveAppenderEvent(Logger logger, Appender appender) {
     if(listeners != null) {
@@ -327,7 +326,7 @@ public class Hierarchy {
 
  */
   public
-  Logger getLogger(String name, CategoryFactory factory) {
+  Logger getLogger(String name, LoggerFactory factory) {
     //System.out.println("getInstance("+name+") called.");
     CategoryKey key = new CategoryKey(name);    
     // Synchronize to prevent write conflicts. Read conflicts (in
@@ -338,7 +337,7 @@ public class Hierarchy {
     synchronized(ht) {
       Object o = ht.get(key);
       if(o == null) {
-	logger = factory.makeNewCategoryInstance(name);
+	logger = factory.makeNewLoggerInstance(name);
 	logger.setHierarchy(this);
 	ht.put(key, logger);      
 	updateParents(logger);
@@ -347,7 +346,7 @@ public class Hierarchy {
 	return (Logger) o;
       } else if (o instanceof ProvisionNode) {
 	//System.out.println("("+name+") ht.get(this) returned ProvisionNode");
-	logger = factory.makeNewCategoryInstance(name);
+	logger = factory.makeNewLoggerInstance(name);
 	logger.setHierarchy(this); 
 	ht.put(key, logger);
 	updateChildren((ProvisionNode) o, logger);
@@ -369,7 +368,7 @@ public class Hierarchy {
      <p>The root logger is <em>not</em> included in the returned
      {@link Enumeration}.  */
   public
-  Enumeration getCurrentCategories() {
+  Enumeration getCurrentLoggers() {
     // The accumlation in v is necessary because not all elements in
     // ht are Logger objects as there might be some ProvisionNodes
     // as well.
@@ -447,7 +446,7 @@ public class Hierarchy {
     synchronized(ht) {    
       shutdown(); // nested locks are OK    
     
-      Enumeration cats = getCurrentCategories();
+      Enumeration cats = getCurrentLoggers();
       while(cats.hasMoreElements()) {
 	Logger c = (Logger) cats.nextElement();
 	c.setLevel(null);
@@ -456,17 +455,6 @@ public class Hierarchy {
       }
     }
     rendererMap.clear();
-  }
-
-  /**
-     Set the default LoggerFactory instance.
-
-     @since 1.1
-   */
-  public void setCategoryFactory(CategoryFactory factory) {
-    if (factory != null) {
-      defaultFactory = factory;
-    }
   }
 
   /**
@@ -503,7 +491,7 @@ public class Hierarchy {
     root.closeNestedAppenders();
 
     synchronized(ht) {
-      Enumeration cats = this.getCurrentCategories();
+      Enumeration cats = this.getCurrentLoggers();
       while(cats.hasMoreElements()) {
 	Logger c = (Logger) cats.nextElement();
 	c.closeNestedAppenders();
@@ -511,7 +499,7 @@ public class Hierarchy {
 
       // then, remove all appenders
       root.removeAllAppenders();
-      cats = this.getCurrentCategories();
+      cats = this.getCurrentLoggers();
       while(cats.hasMoreElements()) {
 	Logger c = (Logger) cats.nextElement();
 	c.removeAllAppenders();

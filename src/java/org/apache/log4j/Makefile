@@ -25,10 +25,10 @@ JSOURCES:=DailyRollingFileAppender.java\
         Logger.java\
 	PropertyConfigurator.java\
 	BasicConfigurator.java\
+        HTMLLayout.java\
+        LogManager.java\
 
-#        LogManager.java\
 
-#       HTMLLayout.java\
 
 
 ifdef $(ISJDK1)

@@ -19,7 +19,7 @@ import org.apache.log4j.config.PropertySetter;
 //import org.apache.log4j.config.PropertySetterException;
 import org.apache.log4j.spi.OptionHandler;
 import org.apache.log4j.spi.Configurator;
-import org.apache.log4j.spi.CategoryFactory;
+import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.or.ObjectRenderer;
 import org.apache.log4j.or.RendererMap;
 import org.apache.log4j.helpers.LogLog;
@@ -85,7 +85,7 @@ public class PropertyConfigurator extends BasicConfigurator
      Used internally to keep track of configured appenders.
    */
   protected Hashtable registry = new Hashtable(11);
-  protected CategoryFactory categoryFactory = new DefaultCategoryFactory();
+  protected LoggerFactory categoryFactory = new DefaultCategoryFactory();
   
   static final String      CATEGORY_PREFIX = "log4j.category.";
   static final String       FACTORY_PREFIX = "log4j.factory";
@@ -456,9 +456,9 @@ public class PropertyConfigurator extends BasicConfigurator
 							   props);    
     if(factoryClassName != null) {
       LogLog.debug("Setting category factory to ["+factoryClassName+"].");
-      categoryFactory = (CategoryFactory) 
+      categoryFactory = (LoggerFactory) 
                   OptionConverter.instantiateByClassName(factoryClassName,
-							 CategoryFactory.class, 
+							 LoggerFactory.class, 
 							 categoryFactory);
       PropertySetter.setProperties(categoryFactory, props, FACTORY_PREFIX + ".");
     }

@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.Level;
 import org.apache.log4j.spi.OptionHandler;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.spi.CategoryFactory;
+import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.helpers.LogLog;
 
 import org.apache.log4j.xml.examples.XLevel;
@@ -178,13 +178,13 @@ public class XCategory extends Category implements OptionHandler {
 
   // Any sub-class of Category must also have its own implementation of 
   // CategoryFactory.
-  public static class XFactory implements CategoryFactory {
+  public static class XFactory implements LoggerFactory {
     
     public XFactory() {
     }
 
     public
-    Logger  makeNewCategoryInstance(String name) {
+    Logger  makeNewLoggerInstance(String name) {
       return new XCategory(name);
     }
   }
