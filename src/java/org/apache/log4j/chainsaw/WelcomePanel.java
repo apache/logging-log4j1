@@ -87,11 +87,9 @@ public class WelcomePanel extends JPanel {
   private Stack urlStack = new Stack();
   private final JEditorPane textInfo = new JEditorPane();
   private final URLToolbar urlToolbar = new URLToolbar();
-  private LogUI logui;
 
-  public WelcomePanel(LogUI logui) {
+  public WelcomePanel() {
     super(new BorderLayout());
-    this.logui = logui;
     setBackground(Color.white);
     add(urlToolbar, BorderLayout.NORTH);
 
@@ -144,13 +142,6 @@ public class WelcomePanel extends JPanel {
       });
   }
 
-  /**
-   * @return
-   */
-  public final URL getTutorialURL() {
-    return ChainsawConstants.TUTORIAL_URL;
-  }
-
   private class URLToolbar extends JToolBar {
     private final Action previousAction =
       new AbstractAction(null, new ImageIcon(ChainsawIcons.ICON_BACK)) {
@@ -187,35 +178,17 @@ public class WelcomePanel extends JPanel {
       add(previous);
 
       addSeparator();
-      add(
-        new SmallButton(
-          new AbstractAction("Tutorial", new ImageIcon(ChainsawIcons.HELP)) {
-          public void actionPerformed(ActionEvent e) {
-            logui.setupTutorial();
-          }
-        }));
-      addSeparator();
-
-      final Action exampleConfigAction =
-        new AbstractAction("View example Receiver configuration") {
-          public void actionPerformed(ActionEvent e) {
-            setURL(ChainsawConstants.EXAMLE_CONFIG_URL);
-          }
-        };
-
-      exampleConfigAction.putValue(
-        Action.SHORT_DESCRIPTION,
-        "Displays an example Log4j configuration file with several Receivers defined.");
-
-      JButton exampleButton = new SmallButton(exampleConfigAction);
-      add(exampleButton);
-
-      JPanel p = new JPanel();
-      add(p);
     }
 
     void updateToolbar() {
       previousAction.setEnabled(!urlStack.isEmpty());
     }
+  }
+
+  /**
+   * @return
+   */
+  public JToolBar getToolbar() {
+    return urlToolbar;
   }
 }
