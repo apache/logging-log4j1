@@ -113,6 +113,23 @@ public class PropertyConfigurator implements Configurator {
     <code>key=value</code>. The syntax of different configuration
     elements are discussed below.
 
+    <h3>Repository-wide threshold</h3>
+    
+    <p>The repository-wide threshold filters logging requests by level
+    regardless of logger. The syntax is:
+
+    <pre>
+    log4j.threshold=[level]
+    </pre>
+
+    <p>The level value can consist of the string values OFF, FATAL,
+    ERROR, WARN, INFO, DEBUG, ALL or a <em>custom level</e> value. A
+    custom level value can be specified in the form
+    level#classname. By default the repository-wide threshold is set
+    to the lowest possible value, namely the level <code>ALL</code>.
+    </p>
+   
+
     <h3>Appender configuration</h3>
 
     <p>Appender configuration syntax is:
@@ -146,10 +163,10 @@ public class PropertyConfigurator implements Configurator {
     <p>This syntax means that an optional <em>level</em> can be
     supplied followed by appender names separated by commas.
 
-    <p>The level value can consist of the string values FATAL,
-    ERROR, WARN, INFO, DEBUG or a <em>custom level</em> value. A
+    <p>The level value can consist of the string values OFF, FATAL,
+    ERROR, WARN, INFO, DEBUG, ALL or a <em>custom level</em> value. A
     custom level value can be specified in the form
-    <code>level#classname</code>. 
+    <code>level#classname</code>.
     
     <p>If a level value is specified, then the root level is set
     to the corresponding level.  If no level value is specified,
@@ -204,18 +221,10 @@ public class PropertyConfigurator implements Configurator {
     log4j.renderer.my.Fruit=my.FruitRenderer
     </pre>
 
-    <h3>Class Factories</h3>
+    <h3>Logger Factories</h3>
 
-    In case you are using your own subtypes of the
-    <code>Logger</code> class and wish to use configuration files,
-    then you <em>must</em> set the <code>loggerFactory</code> for
-    the subtype that you are using.
-    
-    <p>The syntax is:
-
-    <pre>
-    log4j.loggerFactory=fully.qualified.name.of.loggerFactory.class
-    </pre>
+    The usage of custom logger factories is discouraged and no longer
+    documented.
 
     <h3>Example</h3>
 
