@@ -38,13 +38,12 @@ public class DatePatternConverter extends PatternConverter {
   // We assume that each PatternConveter instance is unique within a layout, 
   // which is unique within an appender. We further assume that calls to the 
   // appender method are serialized (per appender).
-  StringBuffer buf;
   Logger logger = Logger.getLogger(DatePatternConverter.class);
-  private DateFormat df;
-  private Date date;
-  protected FieldPosition pos = new FieldPosition(0);
-  long lastTimestamp = 0;
-  boolean alreadyWarned = false;
+  private CachedDateFormat df;
+  private final StringBuffer buf = new StringBuffer(30); 
+  public static final String ISO8601_PATTERN = "yyyy-MM-dd HH:mm:ss,SSS";
+  public static final String ABSOLUTE_PATTERN = "HH:mm:ss,SSS";
+  public static final String DATE_AND_TIME_PATTERN = "dd MMM yyyy HH:mm:ss,SSS";
   
   //  public DatePatternConverter(FormattingInfo formattingInfo) {
   //    super(formattingInfo);
@@ -52,8 +51,6 @@ public class DatePatternConverter extends PatternConverter {
   //    date = new Date();
   //  }
   public DatePatternConverter() {
-    this.buf = new StringBuffer(32);
-    date = new Date();
   }
 
   /**
@@ -73,68 +70,42 @@ public class DatePatternConverter extends PatternConverter {
     }
     
     String pattern;
-    if (patternOption == null) {
-      pattern = "yyyy-MM-dd HH:mm:ss,SSS";
+    if (patternOption == null || patternOption.equalsIgnoreCase("ISO8601")) {
+      pattern = ISO8601_PATTERN;
     } else if (
-      patternOption.equalsIgnoreCase(AbsoluteTimeDateFormat.ISO8601_DATE_FORMAT)) {
-      pattern = "yyyy-MM-dd HH:mm:ss,SSS";
+      patternOption.equalsIgnoreCase("ABSOLUTE")) {
+      pattern = ABSOLUTE_PATTERN;
     } else if (
-      patternOption.equalsIgnoreCase(AbsoluteTimeDateFormat.ABS_TIME_DATE_FORMAT)) {
-      pattern = "HH:mm:ss,SSS";
-    } else if (
-      patternOption.equalsIgnoreCase(
-          AbsoluteTimeDateFormat.DATE_AND_TIME_DATE_FORMAT)) {
-      pattern = "dd MMM yyyy HH:mm:ss,SSS";
+      patternOption.equalsIgnoreCase("DATE")) {
+      pattern = DATE_AND_TIME_PATTERN;
     } else {
       pattern = patternOption;
     }
 
+    SimpleDateFormat simpleFormat = null;
     try {
-      df = new SimpleDateFormat(pattern);
+      simpleFormat = new SimpleDateFormat(pattern);
     } catch (IllegalArgumentException e) {
       logger.warn(
         "Could not instantiate SimpleDateFormat with pattern " + patternOption, e);
-      // detault for the ISO8601 format
-      pattern = "yyyy-MM-dd HH:mm:ss,SSS";
-      df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
+      // default to the ISO8601 format
+      simpleFormat = new SimpleDateFormat(ISO8601_PATTERN);
     }
   
      
     // if the option list contains a TZ option, then set it.
     if (optionList != null && optionList.size() > 1) {
       TimeZone tz = TimeZone.getTimeZone((String) optionList.get(1));
-      df.setTimeZone(tz);
+      simpleFormat.setTimeZone(tz);
     }
-    
-    // if we can cache, so much the better
-    if(CacheUtil.isPatternSafeForCaching(pattern)) {
-      df = new CachedDateFormat(df);
-    }     
+
+    df = new CachedDateFormat(simpleFormat, 1000);
   }
   
   public StringBuffer convert(LoggingEvent event) {
-    long timestamp = event.getTimeStamp();
-    // if called multiple times within the same milliseconds
-    // return old value
-    if(timestamp == lastTimestamp) {
-      return buf;
-    } else {
-      buf.setLength(0);
-      lastTimestamp = timestamp;
-      date.setTime(timestamp);
-      try {
-        df.format(date, buf, pos);
-        lastTimestamp = timestamp;
-      } catch (Exception ex) {
-        // this should never happen
-        buf.append("DATE_CONV_ERROR");
-        if(!alreadyWarned) {
-          alreadyWarned = true;
-          logger.error("Exception while converting date", ex);
-        }
-      }
-      return buf;
-    }
+    buf.setLength(0);
+    df.format(event.getTimeStamp(), buf);
+    return buf;
   }
 
   public String getName() {
