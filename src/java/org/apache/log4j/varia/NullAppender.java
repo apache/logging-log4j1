@@ -1,0 +1,42 @@
+/*
+ * Copyright (C) The Apache Software Foundation. All rights reserved.
+ *
+ * This software is published under the terms of the Apache Software
+ * License version 1.1, a copy of which has been included with this
+ * distribution in the LICENSE.txt file.  */
+
+package org.apache.log4j.performance;
+
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.AppenderSkeleton;
+
+/**
+  * A NullAppender merely exists, it never outputs a message to any
+  * device.  
+  * @author Ceki G&uuml;lc&uml;
+  */
+public class NullAppender implements OptionHandler {
+
+  private static NullAppender instance = new NullAppender();
+
+  public NullAppender() {
+  }
+
+  public NullAppender getInstance() {
+    return instance;
+  }
+
+  public void close() {
+  }
+
+  public void doAppend(LoggingEvent event) {
+  }
+
+  /**
+    * NullAppenders do not need a layout.  
+    *
+    */
+  public boolean requiresLayout() {
+    return false;
+  }
+}
