@@ -68,14 +68,17 @@ import javax.swing.tree.DefaultTreeModel;
  * @author Paul Smith <psmith@apache.org>
  */
 public class ReceiversTreeModel extends DefaultTreeModel {
-  final DefaultMutableTreeNode NoReceiversNode = new DefaultMutableTreeNode("You have no Receivers defined");
+  private static final String ROOTNODE_LABEL = "Receivers";
+  final DefaultMutableTreeNode NoReceiversNode =
+    new DefaultMutableTreeNode("You have no Receivers defined");
   final DefaultMutableTreeNode RootNode;
 
   ReceiversTreeModel() {
-    super(new DefaultMutableTreeNode("Receivers"));
+    super(new DefaultMutableTreeNode(ROOTNODE_LABEL));
     RootNode = (DefaultMutableTreeNode) getRoot();
     refresh();
   }
+
   /**
    * Creates a new ReceiversTreeModel by querying the Log4j Plugin Repository
    * and building up the required information.
@@ -84,15 +87,16 @@ public class ReceiversTreeModel extends DefaultTreeModel {
    */
   public final synchronized ReceiversTreeModel refresh() {
     RootNode.removeAllChildren();
-    
+
     Collection receivers =
       PluginRegistry.getPlugins(
         LogManager.getLoggerRepository(), Receiver.class);
 
-    if( receivers.size() == 0){
-      
-      getRootNode().add(NoReceiversNode);     
-    }else {
+    updateRootDisplay();
+
+    if (receivers.size() == 0) {
+      getRootNode().add(NoReceiversNode);
+    } else {
       for (Iterator iter = receivers.iterator(); iter.hasNext();) {
         Receiver item = (Receiver) iter.next();
         DefaultMutableTreeNode receiverNode = new DefaultMutableTreeNode(item);
@@ -110,8 +114,21 @@ public class ReceiversTreeModel extends DefaultTreeModel {
         getRootNode().add(receiverNode);
       }
     }
+
     reload();
+
     return this;
+  }
+
+  /**
+   * Ensure the Root node of this tree is updated with the latest information
+   * and that listeners are notified.
+   */
+  void updateRootDisplay() {
+    getRootNode().setUserObject(
+      ROOTNODE_LABEL + " (" + LogManager.getLoggerRepository().getThreshold()
+      + ")");
+    nodeChanged(getRootNode());
   }
 
   DefaultMutableTreeNode getRootNode() {
