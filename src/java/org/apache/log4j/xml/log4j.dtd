@@ -8,8 +8,8 @@
 elements,appender elements, categories and an optional root
 element. -->
 
-<!ELEMENT log4j:configuration (renderer*, appender*,(category|logger)*,root?,
-                               categoryFactory?)>
+<!ELEMENT log4j:configuration (renderer*, appender*, plugin*, 
+                               (category|logger)*,root?, categoryFactory?)>
 
 <!-- The "threshold" attribute takes a level value such that all -->
 <!-- logging statements with a level equal or below this value are -->
@@ -121,6 +121,13 @@ element. -->
 <!ELEMENT appender-ref EMPTY>
 <!ATTLIST appender-ref
   ref IDREF #REQUIRED
+>
+
+<!-- plugins must have a name and class and can have optional parameters -->
+<!ELEMENT plugin (param*)>
+<!ATTLIST plugin
+  name 		ID 	   #REQUIRED
+  class 	CDATA  #REQUIRED
 >
 
 <!-- If no priority element is specified, then the configurator MUST not -->
