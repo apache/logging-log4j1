@@ -102,7 +102,7 @@ table.ls th {
   font-weight: bolder;
 }
 
-/* this class is used for screen output placed in <pre></pre> tags
+/* this class is used for screen output placed in <pre></pre> tags */
 .screen_output {
   padding-left:  1em;
   padding-right: 1em;
@@ -110,4 +110,32 @@ table.ls th {
   border-right: 1px solid #AAAAAA;
   border-bottom:1px solid #AAAAAA;
   border-left:  1px solid #AAAAAA;
+}
+
+
+.big {
+  font-size: larger;
+  font-weight: bold;
+}
+
+.small {
+  font-size: smaller;
+}
+
+.red {
+  color: #AA0000;
+}
+
+.msg_title {
+  padding-left:  1em;
+  padding-right: 1em;
+  font-family: Courier, "MS Courier New", Prestige, Everson Monocourrier, monospace;
+  border:   1px solid #AAAAAA;
+  background: #DDDDFF;
+
+}
+
+.msg_meaning {
+  padding-left:  2em;
+  padding-right: 1em;
 }
