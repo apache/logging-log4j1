@@ -16,10 +16,11 @@
 
 package org.apache.log4j.rule;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Stack;
-
 import org.apache.log4j.LogManager;
 
 /**
@@ -101,8 +102,20 @@ public class RuleFactory {
       return PartialTextMatchRule.getRule(stack);
     }
 
+    //in order to avoid compile-time dependency on LikeRule, call getRule(stack) using reflection 
     if (rules.contains(LIKE_RULE) && LIKE_RULE.equalsIgnoreCase(symbol)) {
-      return LikeRule.getRule(stack);
+      String methodName = "getRule";
+      try {
+        Class likeClass = Class.forName("org.apache.log4j.rule.LikeRule");
+        Method method =
+          likeClass.getDeclaredMethod(methodName, new Class[]{Stack.class});
+
+        return (Rule)method.invoke(null, new Object[]{stack});
+      }
+      catch (ClassNotFoundException cnfe) {}
+      catch (NoSuchMethodException nsme) {}
+      catch (IllegalAccessException iae) {}
+      catch (InvocationTargetException iae) {}
     }
 
     if (EXISTS_RULE.equalsIgnoreCase(symbol)) {
