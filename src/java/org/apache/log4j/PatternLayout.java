@@ -71,7 +71,7 @@ import java.text.FieldPosition;
    the end of a conversion specifier when it reads a conversion
    character. In the example above the conversion specifier
    <b>%-5p</b> means the priority of the logging event should be left
-   justfied to a with of five characters. 
+   justified to a with of five characters. 
    
    The recognized conversion characters are
    
@@ -108,7 +108,7 @@ import java.text.FieldPosition;
 
      <p>If a precision specifier is given, then only the corresponding
      number of right most components of the class name will be
-     printed. By default the class name is output in fullly qualified form.
+     printed. By default the class name is output in fully qualified form.
      
      <p>For example, for the class name "org.apache.xyz.SomeClass", the
      pattern <b>%C{1}</b> will output "SomeClass".
@@ -130,7 +130,7 @@ import java.text.FieldPosition;
 	 
 	 <p>The date format specifier admits the same syntax as the
 	 time pattern string of the {@link
-	 java.text.SimpleDateFormat}. Altough part of the standard
+	 java.text.SimpleDateFormat}. Although part of the standard
 	 JDK, the performance of <code>SimpleDateFormat</code> is
 	 quite poor.
 
@@ -266,7 +266,7 @@ import java.text.FieldPosition;
    
    </table>
 
-   <p>By default the relevant infromation is output as is. However,
+   <p>By default the relevant information is output as is. However,
    with the aid of format modifiers it is possible to change the
    minimum field width, the maximum field width and justification.
 
@@ -282,7 +282,7 @@ import java.text.FieldPosition;
    reached. The default is to pad on the left (right justify) but you
    can specify right padding with the left justification flag. The
    padding character is space. If the data item is larger than the
-   minimum field width, the field is expanded to accomodate the
+   minimum field width, the field is expanded to accommodate the
    data. The value is never truncated.
 
    <p>This behavior can be changed using the <em>maximum field
@@ -292,7 +292,7 @@ import java.text.FieldPosition;
    <em>beginning</em> of the data item and not from the end. For
    example, it the maximum field width is eight and the data item is
    ten characters long, then the first two characters of the data item
-   are dropped. This behaviour deviates from the printf function in C
+   are dropped. This behavior deviates from the printf function in C
    where truncation is done from the end.
 
    <p>Below are various format modifier examples for the category
@@ -302,7 +302,7 @@ import java.text.FieldPosition;
    <TABLE BORDER=1 CELLPADDING=8>
    <th>Format modifier
    <th>left justify
-   <th>minimim width
+   <th>minimum width
    <th>maximum width
    <th>comment
 
@@ -359,7 +359,7 @@ import java.text.FieldPosition;
 
    <p><dt><b>%-6r [%15.15t] %-5p %30.30c %x - %m\n</b>
 
-   <p><dd>Similar to the TTCC layout except that the rlative time is
+   <p><dd>Similar to the TTCC layout except that the relative time is
    right padded if less than 6 digits, thread name is right padded if
    less than 15 characters and truncated if longer and the category
    name is left padded if shorter than 30 characters and truncated if
@@ -368,7 +368,7 @@ import java.text.FieldPosition;
   </dl>
    
    <p>The above text is largely inspired from Peter A. Darnell and
-   Philip E. Margolis' higly recommended book "C -- a Software
+   Philip E. Margolis' highly recommended book "C -- a Software
    Engineering Approach", ISBN 0-387-97389-3.
    
    @author <a href="mailto:cakalijp@Maritz.com">James P. Cakalic</a>
@@ -435,7 +435,7 @@ public class PatternLayout extends Layout {
   }
   
   /**
-     Returns the the array of option strings that {@link
+     Returns the array of option strings that {@link
      PatternLayout} recognizes. The only recognized option string is
      the value of {@link #CONVERSION_PATTERN_OPTION}.
      
