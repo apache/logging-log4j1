@@ -132,6 +132,9 @@ public final class LoggingEventFieldResolver {
   }
   
   public String applyFields(String replaceText, LoggingEvent event) {
+  	  if (replaceText == null) {
+  	  	return null;
+  	  }
       StringTokenizer tokenizer = new StringTokenizer(replaceText);
       StringBuffer result = new StringBuffer();
       
