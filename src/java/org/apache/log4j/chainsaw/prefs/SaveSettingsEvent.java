@@ -80,4 +80,13 @@ public class SaveSettingsEvent extends SettingsEvent {
 		return properties;
 	}
 	private Properties properties = new Properties();
+  /**
+   * @param string
+   * @param b
+   */
+  public void saveSetting(String string, boolean b)
+  {
+    properties.put(string, b?Boolean.TRUE.toString():Boolean.FALSE.toString());
+    
+  }
 }
