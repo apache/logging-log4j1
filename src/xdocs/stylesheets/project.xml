@@ -37,15 +37,26 @@
         <item name="Ant"  
 	      href="http://jakarta.apache.org/ant/index.html"/>
 
+        <item name="Avalon"  
+	      href="http://jakarta.apache.org/avalon/index.html"/>
+
+        <item name="Commons"  
+	      href="http://jakarta.apache.org/commons/index.html"/>
+
         <item name="ECS"                   
 	      href="http://jakarta.apache.org/ecs/index.html"/>
 
         <item name="James"                 
-	      href="/james/index.html"/>
+	      href="http://jakarta.apache.org/james/index.html"/>
+
+        <item name="Jetspeed"                 
+	      href="http://jakarta.apache.org/jetspeed/index.html"/>
+
+        <item name="JMeter"                 
+	      href="http://jakarta.apache.org/jmeter/index.html"/>
 
         <item name="Log4J"                   
 	      href="http://jakarta.apache.org/log4j/index.html"/>
-
 
         <item name="ORO"                   
 	      href="http://jakarta.apache.org/oro/index.html"/>
@@ -64,6 +75,9 @@
 
         <item name="Tomcat" 
               href="http://jakarta.apache.org/tomcat/index.html"/>
+
+        <item name="Turbine"                 
+	      href="http://jakarta.apache.org/turbine/index.html"/>
 
         <item name="Velocity" 
               href="http://jakarta.apache.org/velocity/index.html"/>
