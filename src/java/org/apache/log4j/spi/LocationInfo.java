@@ -20,9 +20,6 @@ package org.apache.log4j.spi;
 
 import org.apache.log4j.Layout;
 import org.apache.log4j.helpers.LogLog;
-
-import sun.security.action.GetLongAction;
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
