@@ -73,6 +73,7 @@ import org.apache.log4j.spi.LoggingEvent;
 public class RuleMediator extends AbstractRule implements Rule {
 
 	private Rule inclusionRule;
+	private Rule loggerRule;
 	private Rule refinementRule;
 	private Rule exclusionRule;
 	
@@ -84,6 +85,10 @@ public class RuleMediator extends AbstractRule implements Rule {
 		
 		if(inclusionRule!=null) {
 			accepts = inclusionRule.evaluate(e);
+		}
+		if(!accepts) return false;
+		if(loggerRule!=null) {
+			accepts = loggerRule.evaluate(e);
 		}
 		if(!accepts) return false;
 		if(refinementRule!=null) {
@@ -117,6 +122,12 @@ public class RuleMediator extends AbstractRule implements Rule {
 		firePropertyChange("refinementRule", oldRefinementRule, this.refinementRule);
 	}
 	
+	public void setLoggerRule(Rule r) {
+		Rule oldLoggerRule = this.loggerRule;
+		this.loggerRule = r;
+		firePropertyChange("loggerRule", oldLoggerRule, this.loggerRule);
+	}
+	
 	/**
 	 * Sets the Exclusion rule to be used, and fires a PropertyChangeEvent to listeners.
 	 * 
@@ -127,4 +138,32 @@ public class RuleMediator extends AbstractRule implements Rule {
 		this.exclusionRule = r;
 		firePropertyChange("exclusionRule", oldExclusionRule, this.exclusionRule);
 	}
+	/**
+	 * @return
+	 */
+	public final Rule getExclusionRule() {
+		return exclusionRule;
+	}
+
+	/**
+	 * @return
+	 */
+	public final Rule getInclusionRule() {
+		return inclusionRule;
+	}
+
+	/**
+	 * @return
+	 */
+	public final Rule getLoggerRule() {
+		return loggerRule;
+	}
+
+	/**
+	 * @return
+	 */
+	public final Rule getRefinementRule() {
+		return refinementRule;
+	}
+
 }
