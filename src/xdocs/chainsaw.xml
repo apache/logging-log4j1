@@ -15,6 +15,7 @@
       projects, this new version was built upon inspirations, ideas and creations of others. 
       Chainsaw v2 has it's roots from the original Chainsaw utility written by Oliver Burn, 
       and with inspiration from the Log Factor 5 utility contributed by ThoughtWorks Inc. </p>
+   <p><b>*** Got Java Web Start installed?: <a href="http://logging.apache.org/log4j/docs/webstart/chainsaw/chainsawWebStart.jnlp">[Launch now!]</a>***</b></p>
     <ul>
      <li><a href="#WhatIsIt">So what is it really?</a></li>
      <li><a href="#QuickTour">Quick Tour of Chainsaw features</a></li>
@@ -60,8 +61,10 @@
     </section>
 
     <section name="Installation">
-			<p><a name="Installation">&#160;</a>Currently you need to check out the jakarta-log4j module from the Apache CVS server
-			to build and run Chainsaw v2.  To make this easier, we have created a temporary installation Ant script, you can download this 
+			<a name="Installation">&#160;</a>
+   <p><b>*** Got Java Web Start installed?: <a href="http://logging.apache.org/log4j/docs/webstart/chainsaw/chainsawWebStart.jnlp">[Launch now!]</a>***</b></p>
+			<p>Otherwise, if the above link does not work, then you will need to check out the jakarta-log4j module from the Apache CVS server
+			to build and run Chainsaw v2.  To make this easier, we have created an installation Ant script, you can download this 
 			by <a href="install-chainsaw.xml">clicking here</a>.</p>    
 			<P>You will need the following installed to utilise this installation script:</P>
 			<UL>
@@ -76,7 +79,7 @@
     </section>
 
     <section name="Getting Started">
-			<p><a name="GettingStarted">&#160;</a>Once you have used the above installer, you can <code>cd</code> to tho <code>jakarta-log4j</code> sub-directory and
+			<p><a name="GettingStarted">&#160;</a>If you launched via Java Web Start, you should be ROCKING!  However, if you have used the above installer, you can <code>cd</code> to tho <code>jakarta-log4j</code> sub-directory and
 			type:</p>    
 			<pre>ant chainsaw</pre>
 			<P>Chainsaw v2 will be built and run!</P>
@@ -84,7 +87,7 @@
    
     <section name="Tutorial and User Manual">
 			<p><a name="ExtraDocs">&#160;</a>Chainsaw already includes help with
-      with a Quick Reference and a Tutorial to get you started, all viewable from <b>within the GUI</b>. A User Manual will be made available around release time. </p>    
+      with a Quick Reference and a Tutorial to get you started, all viewable from <b>within the GUI</b>!. A User Manual will be made available around release time. </p>    
     </section>
 
     <!--<section name="Screenshots">
