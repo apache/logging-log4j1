@@ -10,12 +10,12 @@
   <property name="deprecation" value="on"/>
   
   <!-- Destination for compiled files -->
-  <property name="javac.dest" value="./dist/classes"/>
+  <property name="javac.dest" value="./classes"/>
   
   
   <property name="UGLI_STEM" value="org/apache/ugli"/>
   
-  <property name="ugli.properties" value="dist/classes/ugli.properties"/>
+  <property name="ugli.properties" value="./classes/ugli.properties"/>
 
     <!-- ================================================================= -->
   <!-- Default target                                                    -->

@@ -10,12 +10,12 @@
   <property name="deprecation" value="on"/>
   
   <!-- Destination for compiled files -->
-  <property name="javac.dest" value="./dist/classes"/>
+  <property name="javac.dest" value="classes"/>
 
   
   <path id="basic.classpath">
     <pathelement location="${tests.source.home}"/>
-    <pathelement location="./classes"/>
+    <pathelement location="${javac.dest}"/>
     <pathelement location="${jakarta-oro.jar}"/>
   </path>
 
@@ -63,7 +63,7 @@
 
   <target name="build" depends="siblingBuild">
     <javac srcdir="${tests.source.home}"
-           destdir="./classes" 
+           destdir="${javac.dest}" 
            includes="${stem}/ugli/**.java"
 	   deprecation="${deprecation}"
 	   debug="on">
