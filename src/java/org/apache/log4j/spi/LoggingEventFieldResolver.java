@@ -46,8 +46,6 @@ import java.util.StringTokenizer;
  * EXCEPTION                 throwable string representation                   ThrowableInformation
  * TIMESTAMP                 timestamp                                         Long
  * THREAD                    thread                                            String
- * MDC.keyName               entry in the MDC hashtable                        Object
- *                           mapped to key [keyName]
  * PROP.keyName              entry in the Property hashtable                   String
  *                           mapped to the key [keyName]
 
@@ -74,7 +72,6 @@ public final class LoggingEventFieldResolver {
   public static final String EXCEPTION_FIELD = "EXCEPTION";
   public static final String TIMESTAMP_FIELD = "TIMESTAMP";
   public static final String THREAD_FIELD = "THREAD";
-  public static final String MDC_FIELD = "MDC.";
   public static final String PROP_FIELD = "PROP.";
   public static final String EMPTY_STRING = "";
   private static final LoggingEventFieldResolver resolver =
@@ -92,7 +89,6 @@ public final class LoggingEventFieldResolver {
     keywordList.add(EXCEPTION_FIELD);
     keywordList.add(TIMESTAMP_FIELD);
     keywordList.add(THREAD_FIELD);
-    keywordList.add(MDC_FIELD);
     keywordList.add(PROP_FIELD);
   }
   
@@ -105,7 +101,7 @@ public final class LoggingEventFieldResolver {
       
       while (tokenizer.hasMoreTokens()) {
           String token = tokenizer.nextToken();
-          if (isField(token)  || (token.toUpperCase().startsWith(MDC_FIELD) || token.toUpperCase().startsWith(PROP_FIELD))) {
+          if (isField(token) || token.toUpperCase().startsWith(PROP_FIELD)) {
               result.append(getValue(token, event).toString());
           } else { 
               result.append(token);
@@ -120,7 +116,7 @@ public final class LoggingEventFieldResolver {
 
   public boolean isField(String fieldName) {
     if (fieldName != null) {
-        return (keywordList.contains(fieldName.toUpperCase()) || fieldName.toUpperCase().startsWith(MDC_FIELD) || fieldName.toUpperCase().startsWith(PROP_FIELD));
+        return (keywordList.contains(fieldName.toUpperCase()) || fieldName.toUpperCase().startsWith(PROP_FIELD));
     }
     return false;
   }
@@ -154,10 +150,6 @@ public final class LoggingEventFieldResolver {
       return new Long(event.getTimeStamp());
     } else if (THREAD_FIELD.equals(upperField)) {
       return event.getThreadName();
-    } else if (upperField.startsWith(MDC_FIELD)) {
-      //note: need to use actual fieldname since case matters
-      Object mdcValue = event.getMDC(fieldName.substring(4));
-      return ((mdcValue == null) ? EMPTY_STRING : mdcValue.toString());
     } else if (upperField.startsWith(PROP_FIELD)) {
       //note: need to use actual fieldname since case matters
       String propValue = event.getProperty(fieldName.substring(5));
