@@ -18,11 +18,12 @@ package org.apache.log4j;
 
 import org.apache.log4j.Layout;
 import org.apache.log4j.helpers.OnlyOnceErrorHandler;
+import org.apache.log4j.spi.ComponentBase;
 import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.Filter;
-import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.OptionHandler;
+import org.apache.ugli.ULogger;
 
 
 /**
@@ -34,13 +35,13 @@ import org.apache.log4j.spi.OptionHandler;
  *
  * @since 0.8.1
  */
-public abstract class AppenderSkeleton implements Appender, OptionHandler {
+public abstract class AppenderSkeleton extends ComponentBase implements Appender, OptionHandler {
   
   /*
    * An instance specific logger which must be accessed through the getLogger()
    * method. 
    */
-  private Logger logger;
+  private ULogger logger;
   
   /**
    * The layout variable does not need to be set if the appender
@@ -83,9 +84,6 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
    * method.
    */
   private boolean guard = false;
-
-  
-  private LoggerRepository repository;
   
   /**
    * Derived appenders should override this method if option structure
@@ -299,45 +297,5 @@ FILTER_LOOP:
    */
   public void setThreshold(Level threshold) {
     this.threshold = threshold;
-  }
-  
-  /**
-   * Return an instance specific logger to be used by the Appender itself.
-   * This logger is not intended to be used by Mrs. Piggy, our proverbial user,
-   * hence the protected keyword.
-   * 
-   * @return instance specific logger
-   */
-  protected Logger getLogger() {
-    if(logger == null) {
-      logger = LogManager.getLogger(this.getClass().getName());
-    }
-    return logger;
-  }
-  
-  /**
-   * Returns the repository where this appender is attached. If not set, the
-   * returned valyue may be null.
-   * 
-   * @return The repository where this appender is attached.
-   * @since 1.3
-   */
-  protected LoggerRepository getLoggerRepository() {
-    return repository;
-  }
-  
-
-  /**
-   * @see Appender#setLoggerRepository(LoggerRepository)
-   */
-  public void setLoggerRepository(LoggerRepository repository) throws IllegalStateException {
-    if(repository == null) {
-      throw new IllegalArgumentException("repository argument cannot be null");
-    }
-    if(this.repository == null) {
-      this.repository = repository;
-    } else {
-      throw new IllegalStateException("Repository has been already set");
-    }
   }
 }
