@@ -55,11 +55,6 @@ import org.apache.log4j.helpers.OptionConverter;
 */
 public class Hierarchy {
 
-  // DISABLE_OFF should be set to a value lower than all possible
-  // priorities.
-  static final int DISABLE_OFF = -1;
-  static final int DISABLE_OVERRIDE = -2;  
-  
   private CategoryFactory defaultFactory;
   private Vector listeners;
 
@@ -67,7 +62,8 @@ public class Hierarchy {
   Category root;
   RendererMap rendererMap;
   
-  int disable;
+  int enableInt;
+  Priority enable;
 
   boolean emittedNoAppenderWarning = false;
   boolean emittedNoResourceBundleWarning = false;  
@@ -83,8 +79,8 @@ public class Hierarchy {
     ht = new Hashtable();
     listeners = new Vector(1);
     this.root = root;
-    // Don't disable any priority level by default.
-    disable = DISABLE_OFF;
+    // Enable all priority levels by default.
+    enable(Priority.ALL);
     this.root.setHierarchy(this);
     rendererMap = new RendererMap();
     defaultFactory = new DefaultCategoryFactory();
@@ -142,16 +138,18 @@ public class Hierarchy {
 
   /**
      Similar to {@link #disable(Priority)} except that the priority
-     argument is given as a String.  */
+     argument is given as a String.  
+
+     @deprecated Replaced with the {@link #enable(Priority)} familiy
+     of methods
+  */
   public
   void disable(String priorityStr) {
-    if(disable != DISABLE_OVERRIDE) {  
-      Priority p = Priority.toPriority(priorityStr, null);
-      if(p != null) {
-	disable = p.level;
-      } else {
-	LogLog.warn("Could not convert ["+priorityStr+"] to Priority.");
-      }
+    Priority p = Priority.toPriority(priorityStr, null);
+    if(p != null) {
+      disable(p);
+    } else {
+      LogLog.warn("Could not convert ["+priorityStr+"] to Priority.");
     }
   }
 
@@ -161,12 +159,6 @@ public class Hierarchy {
      below</em> the priority parameter <code>p</code>, for
      <em>all</em> categories in this hierarchy. Logging requests of
      higher priority then <code>p</code> remain unaffected.
-
-     <p>Nevertheless, if the {@link
-     BasicConfigurator#DISABLE_OVERRIDE_KEY} system property is set to
-     "true" or any value other than "false", then logging requests are
-     evaluated as usual, i.e. according to the <a
-     href="../../../../manual.html#selectionRule">Basic Selection Rule</a>.
 
      <p>The "disable" family of methods are there for speed. They
      allow printing methods such as debug, info, etc. to return
@@ -179,12 +171,22 @@ public class Hierarchy {
      disable override flag. See {@link PropertyConfigurator} and
      {@link org.apache.log4j.xml.DOMConfigurator}.
 
+     @deprecated Please use the {@link #enable} familiy of methods instead.
 
      @since 0.8.5 */
   public
   void disable(Priority p) {
-    if((disable != DISABLE_OVERRIDE) && (p != null)) {
-      disable = p.level;
+    if(p != null) {    
+      switch(p.level) {
+      case Priority.ALL_INT: enable(Priority.ALL); break;      
+      case Priority.DEBUG_INT: enable(Priority.INFO); break;      
+      case Priority.INFO_INT: enable(Priority.WARN); break;
+      case Priority.WARN_INT: enable(Priority.ERROR); break;      
+      case Priority.ERROR_INT: enable(Priority.FATAL); break;      
+      case Priority.FATAL_INT: enable(Priority.OFF); break;      
+      case Priority.OFF_INT: enable(Priority.OFF); break;      
+      default: 
+      }
     }
   }
   
@@ -236,8 +238,17 @@ public class Hierarchy {
      @since 0.8.5 */
   public
   void enableAll() {
-    disable = DISABLE_OFF;
+    enable(Priority.ALL);
   }
+
+  public 
+  void enable(Priority p) {
+    if(p != null) {
+      enableInt = p.level;
+      enable = p;
+    }
+  }
+
 
   
   void fireAddAppenderEvent(Category category, Appender appender) {
@@ -270,13 +281,8 @@ public class Hierarchy {
      @since 1.2
   */
   public
-  String getDisableAsString() {
-    switch(disable) {
-    case DISABLE_OFF: return "DISABLE_OFF";
-    case DISABLE_OVERRIDE: return "DISABLE_OVERRIDE";
-    case Priority.DEBUG_INT: return "DISABLE_DEBUG";
-    default: return "UNKNOWN_STATE";
-    }
+  Priority getEnable() {
+    return enable;
   }
 
   /**
@@ -386,33 +392,21 @@ public class Hierarchy {
     return root;
   }
 
+  /**
+     @deprecated Use {@link isEnabled} instead.
+   */
+
   public
-  boolean isDisabled(int level) {
-    return disable >=  level;
+  boolean isDisabled(int level) {    
+    return enableInt >  level;
   }
 
   /**
-     Override the shipped code flag if the <code>override</code>
-     parameter is not null.
-     
-     <p>This method is intended to be used by configurators.
-
-     <p>If the <code>override</code> paramter is <code>null</code>
-     then there is nothing to do.  Otherwise, set
-     <code>Hiearchy.disable</code> to <code>false</code> if override
-     has a value other than <code>false</code>.  */
+     @deprecated Deprecated with no replacement.
+  */
   public
   void overrideAsNeeded(String override) {
-    // If override is defined, any value other than false will be
-    // interpreted as true.    
-    if(override != null) {
-      LogLog.debug("Handling non-null disable override directive: \""+
-		   override +"\".");
-      if(OptionConverter.toBoolean(override, true)) {
-	LogLog.debug("Overriding all disable methods.");
-	disable = DISABLE_OVERRIDE;
-      }
-    }
+    LogLog.warn("The Hiearchy.overrideAsNeeded method has been deprecated.");
   }
 
   /**
@@ -434,7 +428,7 @@ public class Hierarchy {
 
     getRoot().setPriority(Priority.DEBUG);
     root.setResourceBundle(null);
-    disable = Hierarchy.DISABLE_OFF;
+    enableAll();
     
     // the synchronization is needed to prevent JDK 1.2.x hashtable
     // surprises
@@ -464,16 +458,13 @@ public class Hierarchy {
   }
 
   /**
-     Set the disable override value given a string.
+     Does mothing.
  
-     @since 1.1
+     @deprecated Deprecated with no replacement.
    */
   public
   void setDisableOverride(String override) {
-    if(OptionConverter.toBoolean(override, true)) {
-      LogLog.debug("Overriding disable.");
-      disable =  DISABLE_OVERRIDE;
-    }
+    LogLog.warn("The Hiearchy.setDisableOverride method has been deprecated.");    
   }
 
   /**

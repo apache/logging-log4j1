@@ -26,16 +26,24 @@ public class Priority {
   String levelStr;
   int syslogEquivalent;
 
+  public final static int OFF_INT = Integer.MAX_VALUE;
   public final static int FATAL_INT = 50000;
   public final static int ERROR_INT = 40000;
   public final static int WARN_INT  = 30000;
   public final static int INFO_INT  = 20000;
   public final static int DEBUG_INT = 10000;
+  public final static int ALL_INT = Integer.MIN_VALUE;
+
+
+  /**
+     The <code>OFF</code> is used to turn off logging.
+   */
+  final static public Priority OFF = new Priority(OFF_INT, "OFF", 0);
+
 
   /**
      The <code>FATAL</code> priority designates very severe error
      events that will presumably lead the application to abort.
-
    */
   final static public Priority FATAL = new Priority(FATAL_INT, "FATAL", 0);
 
@@ -60,6 +68,11 @@ public class Priority {
      informational events that are most useful to debug an
      application.  */
   final static public Priority DEBUG = new Priority(DEBUG_INT, "DEBUG", 7);
+
+  /**
+     The <code>ALL</code> is used to turn on all logging.
+  */
+  final static public Priority ALL = new Priority(ALL_INT, "ALL", 7);
 
   
   /**
@@ -155,11 +168,13 @@ public class Priority {
   static
   Priority toPriority(int val, Priority defaultPriority) {
     switch(val) {
+    case ALL_INT: return ALL;
     case DEBUG_INT: return DEBUG;
     case INFO_INT: return INFO;
     case WARN_INT: return WARN;
     case ERROR_INT: return ERROR;
     case FATAL_INT: return FATAL;
+    case OFF_INT: return OFF;
     default: return defaultPriority;
     }
   }
@@ -177,11 +192,13 @@ public class Priority {
     
     String s = sArg.toUpperCase();
 
+    if(s.equals("ALL")) return Priority.ALL; 
     if(s.equals("DEBUG")) return Priority.DEBUG; 
     if(s.equals("INFO"))  return Priority.INFO;
     if(s.equals("WARN"))  return Priority.WARN;  
     if(s.equals("ERROR")) return Priority.ERROR;
     if(s.equals("FATAL")) return Priority.FATAL;
+    if(s.equals("OFF")) return Priority.OFF;
     return defaultPriority;
   }
 

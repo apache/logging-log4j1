@@ -396,15 +396,15 @@ public class PropertyConfigurator extends BasicConfigurator
     }
 
     // Check if the config file overides the shipped code flag.
-    String override = properties.getProperty(
-                                    BasicConfigurator.DISABLE_OVERRIDE_KEY);
-    hierarchy.overrideAsNeeded(override);
+    //String override = properties.getProperty(
+    //                              BasicConfigurator.DISABLE_OVERRIDE_KEY);
+    //hierarchy.overrideAsNeeded(override);
 
-    if(override == null) {
-      String disableStr = properties.getProperty(BasicConfigurator.DISABLE_KEY);
-      if(disableStr != null)
-	hierarchy.disable(disableStr);      
-    }
+    //if(override == null) {
+    String disableStr = properties.getProperty(BasicConfigurator.DISABLE_KEY);
+    if(disableStr != null)
+      hierarchy.disable(disableStr);      
+    //}
     
     
     configureRootCategory(properties, hierarchy);
