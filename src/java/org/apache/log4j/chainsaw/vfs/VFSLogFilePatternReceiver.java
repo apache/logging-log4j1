@@ -23,7 +23,6 @@ import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.VFS;
-import org.apache.commons.vfs.impl.StandardFileSystemManager;
 import org.apache.log4j.varia.LogFilePatternReceiver;
 
 /**
@@ -140,7 +139,7 @@ public class VFSLogFilePatternReceiver extends LogFilePatternReceiver {
       while (reader == null) {
         getLogger().info("attempting to load file: " + getFileURL());
         try {
-          FileSystemManager fileSystemManager = (StandardFileSystemManager) VFS.getManager();
+          FileSystemManager fileSystemManager = VFS.getManager();
           FileObject fileObject = fileSystemManager.resolveFile(getFileURL());
           reader = new InputStreamReader(fileObject.getContent().getInputStream());
         } catch (FileSystemException fse) {
