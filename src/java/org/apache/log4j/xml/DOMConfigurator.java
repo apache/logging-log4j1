@@ -559,9 +559,11 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
       //docBuilder.setErrorHandler(new ReportParserError());
 
       InputSource inputSource = new InputSource(input);
-      URL dtdURL = DOMConfigurator.class.getResource("log4j.dtd");
+      Class clazz = this.getClass();
+      URL dtdURL = clazz.getResource("/org/apache/log4j/xml/log4j.dtd");
       if(dtdURL == null) {
-	LogLog.error("Could not find log4j.dtd.");
+	LogLog.error("Could not find [log4j.dtd]. Used ["+clazz.getClassLoader()+
+		     "] class loader in the search.");
       }
       else {
 	LogLog.debug("URL to log4j.dtd is [" + dtdURL.toString()+"].");
