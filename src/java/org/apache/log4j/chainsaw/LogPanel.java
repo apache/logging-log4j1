@@ -1293,7 +1293,7 @@ public class LogPanel extends DockablePanel implements SettingsListener,
 
             detailArea.setText(buf.toString());
           } else {
-            detailArea.setText(o.toString());
+            detailArea.setText(o==null?"":o.toString());
           }
 
           detailDialog.setLocation(LogPanel.this.getLocationOnScreen());
