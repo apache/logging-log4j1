@@ -1,4 +1,9 @@
 
+----------------------------------------------------------------------
+WARNING: The contents of the contribs/ directory is not guaranteed to
+work properly. Some files might even not compile.
+----------------------------------------------------------------------
+
 Each directory corresponds to the name of an author containinghis/her 
 contributions.
 
@@ -30,6 +35,13 @@ MarkDouglas/
    to be displayed in the logging output. This is important for us as we are 
    using a single logging server with several clients.
 
+KevinSteppe/
+===========
+
+  JDBCAppender.java
+  JDBCTest.java
+   
+
 KitchingSimon/
 =============
 
@@ -45,4 +57,18 @@ KitchingSimon/
       (a) the UDP server application does not have to be in java 
       (b) non-java clients can send messages to the same UDP server.
 
+ThomasFenner/
+============
 
+  Yet one more JDBCAppender.
+
+  JDBCAppender.java
+  JDBCConnectionHandler.java
+  JDBCIDHandler.java
+  JDBCLogger.java
+  Log4JTest.java
+  code_example1.java
+  code_example2.java
+  configfile_example.txt
+
+  
