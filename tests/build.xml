@@ -16,7 +16,6 @@
   <!-- The directory where source files are stored. -->
   <property name="project.source.home" value="../src/java/"/>
   <property name="project.classes.home" value="../classes/"/>
-  <property name="examples.classes" value="../examples/classes/"/>
   
   <property name="tests.source.home" value="./src/java/"/>
   
