@@ -39,6 +39,7 @@ public class LogFilePatternReceiverBeanInfo extends SimpleBeanInfo {
                 new PropertyDescriptor("logFormat", LogFilePatternReceiver.class),
                 new PropertyDescriptor("name", LogFilePatternReceiver.class),
                 new PropertyDescriptor("tailing", LogFilePatternReceiver.class),
+                new PropertyDescriptor("filterExpression", LogFilePatternReceiver.class),
             };
         } catch (Exception e) {
         }

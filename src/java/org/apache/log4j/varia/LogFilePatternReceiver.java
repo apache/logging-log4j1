@@ -16,23 +16,12 @@
 
 package org.apache.log4j.varia;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.helpers.Constants;
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.plugins.Receiver;
-import org.apache.log4j.spi.LocationInfo;
-import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.spi.ThrowableInformation;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-
 import java.text.SimpleDateFormat;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -40,6 +29,17 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.helpers.Constants;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.plugins.Receiver;
+import org.apache.log4j.rule.ExpressionRule;
+import org.apache.log4j.rule.Rule;
+import org.apache.log4j.spi.LocationInfo;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.ThrowableInformation;
 
 
 /**
@@ -95,6 +95,9 @@ import java.util.Map;
  * Note how keywords may be surrounded by delimiters, and in the second example,
  * ndc is ignored (even multiple words in the ndc in this case, since the keyword
  * is followed by a delimiter (-)
+ * 
+ * Assign a filterExpression in order to only process events which match a filter.
+ * If a filterExpression is not assigned, all events are processed.
  *
  * LIMITATIONS:
  * - specify delimited NDC or MDC entries using support for properties
@@ -153,6 +156,8 @@ public class LogFilePatternReceiver extends Receiver {
   private String fileName;
   private String shortFileName;
   private boolean tailing;
+  private String filterExpression;
+  private Rule expressionRule;
 
   /**
    * Creates a new LogFilePatternReceiver object.
@@ -243,6 +248,24 @@ public class LogFilePatternReceiver extends Receiver {
   public void setFileName(String fileName) {
     this.fileName = fileName;
     shortFileName = new File(fileName).getName();
+  }
+
+  /**
+   * Accessor
+   *
+   * @return filter expression
+   */
+  public String getFilterExpression() {
+    return filterExpression;
+  }
+
+  /**
+   * Mutator
+   *
+   * @param filterExpression
+   */
+  public void setFilterExpression(String filterExpression) {
+    this.filterExpression = filterExpression;
   }
 
   /**
@@ -363,14 +386,26 @@ public class LogFilePatternReceiver extends Receiver {
             //  "created event with exception " + event.getLoggerName() + ".."
             //  + event.getMessage());
             if (event != null) {
-              doPost(event);
+              if (expressionRule != null) {
+              	if (expressionRule.evaluate(event)) {
+              		doPost(event);
+              	}
+              } else {
+              	doPost(event);
+              }
             }
           } else {
             //GENERATE NON-EXCEPTION EVENT
             LoggingEvent event = convertToEvent((String) list.remove(0));
 
             if (event != null) {
-              doPost(event);
+                if (expressionRule != null) {
+                  	if (expressionRule.evaluate(event)) {
+                  		doPost(event);
+                  	}
+                } else {
+                	doPost(event);
+                }
             }
 
             //System.out.println(
@@ -391,7 +426,13 @@ public class LogFilePatternReceiver extends Receiver {
           LoggingEvent event = convertToEvent(s);
 
           if (event != null) {
-            doPost(event);
+            if (expressionRule != null) {
+              	if (expressionRule.evaluate(event)) {
+              		doPost(event);
+              	}
+            } else {
+            	doPost(event);
+            }
           }
 
           //System.out.println(
@@ -629,6 +670,13 @@ public class LogFilePatternReceiver extends Receiver {
    * Initialize and post log entries to framework
    */
   public void activateOptions() {
+  	try {
+  		if (filterExpression != null) {
+  			expressionRule = ExpressionRule.getRule(filterExpression);
+  		}
+  	} catch (Exception e) {
+  		LogLog.warn("Invalid filter expression: " + filterExpression, e);
+  	}
     new Thread(
       new Runnable() {
         public void run() {
