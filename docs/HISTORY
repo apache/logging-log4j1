@@ -76,6 +76,9 @@
    instead of only InputStream. Thanks to Mark Womack for submitting
    the relevant patch. [*]
 
+ - Corrected the restart bug in DayliRollingFileAppender. Thanks to
+   Jim Moore for supplying the relevant patch. [*]
+
  June 19, 2001
 
  - Release of version 1.1.3
