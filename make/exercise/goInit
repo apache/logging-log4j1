@@ -1,0 +1,1 @@
+find . -not -path '*CVS*' -type d -exec cp {}/Makefile Makefile.clean \;
