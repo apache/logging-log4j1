@@ -16,8 +16,6 @@
 
 package org.apache.log4j.rule;
 
-import java.io.IOException;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -32,19 +30,17 @@ import org.apache.log4j.spi.LoggingEvent;
  * @author Scott Deboy <sdeboy@apache.org>
  */
 public class LevelInequalityRule {
-    static final long serialVersionUID = 851854546425717836L;
-
-    private transient Level level;
-
-    private static List utilList;
-
     private static List levelList;
 
-    private transient String inequalitySymbol;
-
     static {
+        populateLevels();
+    }
+
+    private LevelInequalityRule() {
+    }
+    
+    private static void populateLevels() {
         levelList = new LinkedList();
-        utilList = new LinkedList();
 
         levelList.add(Level.FATAL.toString());
         levelList.add(Level.ERROR.toString());
@@ -52,76 +48,32 @@ public class LevelInequalityRule {
         levelList.add(Level.INFO.toString());
         levelList.add(Level.DEBUG.toString());
         levelList.add(Level.TRACE.toString());
-
-        Iterator iter = UtilLoggingLevel.getAllPossibleLevels().iterator();
-
-        while (iter.hasNext()) {
-            utilList.add(((UtilLoggingLevel) iter.next()).toString());
-        }
-    }
-
-    private LevelInequalityRule() {
     }
 
     public static Rule getRule(String inequalitySymbol, String value) {
 
-        // return new LevelInequalityRule(inequalitySymbol, value);
-        Level level = null;
+        Level thisLevel = null;
+        
         if (levelList.contains(value.toUpperCase())) {
-            level = Level.toLevel(value.toUpperCase());
+            thisLevel = Level.toLevel(value.toUpperCase());
         } else {
-            level = UtilLoggingLevel.toLevel(value.toUpperCase());
+            thisLevel = UtilLoggingLevel.toLevel(value.toUpperCase());
         }
 
         if ("<".equals(inequalitySymbol)) {
-            return new LessThanRule(level);
+            return new LessThanRule(thisLevel);
         }
         if (">".equals(inequalitySymbol)) {
-            return new GreaterThanRule(level);
+            return new GreaterThanRule(thisLevel);
         }
         if ("<=".equals(inequalitySymbol)) {
-            return new LessThanEqualsRule(level);
+            return new LessThanEqualsRule(thisLevel);
         }
         if (">=".equals(inequalitySymbol)) {
-            return new GreaterThanEqualsRule(level);
+            return new GreaterThanEqualsRule(thisLevel);
         }
 
         return null;
-    }
-
-    /**
-     * Deserialize the state of the object
-     * 
-     * @param in
-     * 
-     * @throws IOException
-     * @throws ClassNotFoundException
-     */
-    private void readObject(java.io.ObjectInputStream in) throws IOException,
-            ClassNotFoundException {
-        utilList = new LinkedList();
-        levelList = new LinkedList();
-        inequalitySymbol = (String) in.readObject();
-        boolean isUtilLogging = in.readBoolean();
-        int levelInt = in.readInt();
-        if (isUtilLogging) {
-            level = UtilLoggingLevel.toLevel(levelInt);
-        } else {
-            level = Level.toLevel(levelInt);
-        }
-    }
-
-    /**
-     * Serialize the state of the object
-     * 
-     * @param out
-     * 
-     * @throws IOException
-     */
-    private void writeObject(java.io.ObjectOutputStream out) throws IOException {
-        out.writeObject(inequalitySymbol);
-        out.writeBoolean(level instanceof UtilLoggingLevel);
-        out.writeInt(level.toInt());
     }
 
     static class LessThanRule extends AbstractRule {
