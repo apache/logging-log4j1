@@ -18,7 +18,7 @@ package org.apache.log4j.net;
 
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Layout;
-import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
 
 import java.io.*;
@@ -120,7 +120,8 @@ public class TelnetAppender extends AppenderSkeleton {
     private Vector connections = new Vector();
     private ServerSocket serverSocket;
     private int MAX_CONNECTIONS = 20;
-
+    private Logger logger = Logger.getLogger(SocketHandler.class);
+    
     public SocketHandler(int port) throws IOException {
       serverSocket = new ServerSocket(port);
     }
@@ -182,7 +183,7 @@ public class TelnetAppender extends AppenderSkeleton {
             newClient.close();
           }
         } catch (Exception e) {
-          LogLog.error("Encountered error while in SocketHandler loop.", e);
+          logger.error("Encountered error while in SocketHandler loop.", e);
         }
       }
     }

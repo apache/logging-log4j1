@@ -20,7 +20,6 @@ import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Layout;
 import org.apache.log4j.Level;
 import org.apache.log4j.helpers.CyclicBuffer;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.ErrorCode;
 import org.apache.log4j.spi.LoggingEvent;
@@ -108,7 +107,7 @@ public class SMTPAppender extends AppenderSkeleton {
         msg.setSubject(subject);
       }
     } catch (MessagingException e) {
-      LogLog.error("Could not activate SMTPAppender options.", e);
+      getLogger().error("Could not activate SMTPAppender options.", e);
     }
   }
 
@@ -256,7 +255,7 @@ public class SMTPAppender extends AppenderSkeleton {
       msg.setSentDate(new Date());
       Transport.send(msg);
     } catch (Exception e) {
-      LogLog.error("Error occured while sending e-mail notification.", e);
+      getLogger().error("Error occured while sending e-mail notification.", e);
     }
   }
 

@@ -23,8 +23,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.helpers.*;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.LoggingEvent;
 
 
@@ -146,7 +146,7 @@ public class UDPAppender extends AppenderSkeleton implements PortBased{
       try {
         outSocket.close();
       } catch (Exception e) {
-        LogLog.error("Could not close outSocket.", e);
+        getLogger().error("Could not close outSocket.", e);
       }
 
       outSocket = null;
@@ -164,7 +164,7 @@ public class UDPAppender extends AppenderSkeleton implements PortBased{
       outSocket = new DatagramSocket();
       outSocket.connect(address, port);
     } catch (IOException e) {
-      LogLog.error(
+      getLogger().error(
         "Could not open UDP Socket for sending.", e);
       inError = true;
     }
@@ -210,7 +210,7 @@ public class UDPAppender extends AppenderSkeleton implements PortBased{
         event.setProperty(Constants.APPLICATION_KEY, null);
       } catch (IOException e) {
         outSocket = null;
-        LogLog.warn("Detected problem with UDP connection: " + e);
+        getLogger().warn("Detected problem with UDP connection: " + e);
       }
     }
   }
@@ -223,7 +223,7 @@ public class UDPAppender extends AppenderSkeleton implements PortBased{
     try {
       return InetAddress.getByName(host);
     } catch (Exception e) {
-      LogLog.error("Could not find address of [" + host + "].", e);
+      LogManager.getLogger(UDPAppender.class).error("Could not find address of [" + host + "].", e);
 
       return null;
     }

@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.plugins.Pauseable;
 import org.apache.log4j.plugins.Receiver;
 import org.apache.log4j.spi.Decoder;
@@ -127,11 +126,11 @@ public class UDPReceiver extends Receiver implements PortBased, Pauseable {
         this.decoderImpl = (Decoder) o;
       }
     } catch (ClassNotFoundException cnfe) {
-      LogLog.warn("Unable to find decoder", cnfe);
+      getLogger().warn("Unable to find decoder", cnfe);
     } catch (IllegalAccessException iae) {
-      LogLog.warn("Could not construct decoder", iae);
+      getLogger().warn("Could not construct decoder", iae);
     } catch (InstantiationException ie) {
-      LogLog.warn("Could not construct decoder", ie);
+      getLogger().warn("Could not construct decoder", ie);
     }
 
     try {
@@ -214,7 +213,7 @@ public class UDPReceiver extends Receiver implements PortBased, Pauseable {
           }
         }
       } // while
-      LogLog.debug(UDPReceiver.this.getName()+ "'s handler thread is exiting");
+      getLogger().debug(UDPReceiver.this.getName()+ "'s handler thread is exiting");
     } // run
   } // UDPHandlerThread
 
@@ -247,7 +246,7 @@ public class UDPReceiver extends Receiver implements PortBased, Pauseable {
         }
       }
 
-      LogLog.debug(UDPReceiver.this.getName() + "'s thread is ending.");
+      //LogLog.debug(UDPReceiver.this.getName() + "'s thread is ending.");
     }
   }
 }

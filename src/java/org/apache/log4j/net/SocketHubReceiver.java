@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.Logger;
 import org.apache.log4j.plugins.Plugin;
 import org.apache.log4j.plugins.Receiver;
 import org.apache.log4j.spi.LoggerRepository;
@@ -210,7 +210,7 @@ extends Receiver implements SocketNodeEventListener, PortBased {
   
   private synchronized void fireConnector(boolean isReconnect) {
     if (active && connector == null) {
-      LogLog.debug("Starting a new connector thread.");
+      getLogger().debug("Starting a new connector thread.");
       connector = new Connector(isReconnect);
       connector.setDaemon(true);
       connector.setPriority(Thread.MIN_PRIORITY);
@@ -248,6 +248,7 @@ extends Receiver implements SocketNodeEventListener, PortBased {
 
     boolean interrupted = false;
     boolean doDelay;
+    Logger logger = Logger.getLogger(Connector.class);
     
     public Connector(boolean isReconnect) {
       doDelay = isReconnect;
@@ -257,25 +258,23 @@ extends Receiver implements SocketNodeEventListener, PortBased {
       while(!interrupted) {
         try {
        	  if (doDelay) {
-       	    LogLog.debug("waiting for " + reconnectionDelay + 
+       	    logger.debug("waiting for " + reconnectionDelay + 
        	      " milliseconds before reconnecting.");
        	    sleep(reconnectionDelay);
        	  }
        	  doDelay = true;
-     	    LogLog.debug("Attempting connection to "+ host);
+       	  logger.debug("Attempting connection to "+ host);
       	  Socket socket = new Socket(host, port);
       	  setSocket(socket);
-      	  LogLog.debug("Connection established. Exiting connector thread.");
+      	  logger.debug("Connection established. Exiting connector thread.");
       	  break;
       	} catch(InterruptedException e) {
-      	  LogLog.debug("Connector interrupted. Leaving loop.");
+      	  logger.debug("Connector interrupted. Leaving loop.");
       	  return;
       	} catch(java.net.ConnectException e) {
-      	  LogLog.debug("Remote host "+ host
-      		       +" refused connection.");
+      	  logger.debug("Remote host {} refused connection.", host);
       	} catch(IOException e) {
-      	  LogLog.debug("Could not connect to " + host +
-      		       ". Exception is " + e);
+      	  logger.debug("Could not connect to {}. Exception is {}.", host, e);
       	}
       }
     }
