@@ -77,9 +77,10 @@
 	the database</a> and the <a href="HISTORY">project history
 	file</a> to see if the problem is not already known. Before
 	filing a report, you should first send email to the
-	<em>log4j-user</em> mailing list describing the bug. Only
-	after these precautionary steps should you file a bug report
-	with Bugzilla.
+	<em>log4j-user</em> mailing list describing the bug ensuring
+	that you are not filing an already known problem. Only after
+	these precautionary steps should you file a bug report with
+	Bugzilla.
       </p>
 
       <p>Although Bugzilla allows users to file enhancement requests

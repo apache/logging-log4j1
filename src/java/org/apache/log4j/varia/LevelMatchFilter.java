@@ -16,10 +16,9 @@ import org.apache.log4j.helpers.OptionConverter;
 /**
    This is a very simple filter based on level matching.
 
-
    <p>The filter admits two options <b>LevelToMatch</b> and
    <b>AcceptOnMatch</b>. If there is an exact match between the value
-   of the LevelToMatch option and the level of the {@link
+   of the <b>LevelToMatch</b> option and the level of the {@link
    LoggingEvent}, then the {@link #decide} method returns {@link
    Filter#ACCEPT} in case the <b>AcceptOnMatch</b> option value is set
    to <code>true</code>, if it is <code>false</code> then {@link
@@ -28,8 +27,7 @@ import org.apache.log4j.helpers.OptionConverter;
 
    @author Ceki G&uuml;lc&uuml;
 
-   @since 1.2
-*/
+   @since 1.2 */
 public class LevelMatchFilter extends Filter {
   
   /**

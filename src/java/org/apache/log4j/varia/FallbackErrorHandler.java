@@ -47,7 +47,7 @@ public class FallbackErrorHandler implements ErrorHandler {
     if(loggers == null) {
       loggers = new Vector();
     }
-    loggers.add(logger);
+    loggers.addElement(logger);
   }
 
 
@@ -74,7 +74,7 @@ public class FallbackErrorHandler implements ErrorHandler {
   public
   void error(String message, Exception e, int errorCode, LoggingEvent event) {
     for(int i = 0; i < loggers.size(); i++) {
-      Logger l = (Logger) loggers.get(i);
+      Logger l = (Logger) loggers.elementAt(i);
       LogLog.debug("FB: Searching for ["+primary.getName()+"] in logger"
 		   +l.getName());
       //if(l.isAttached(primary)) {

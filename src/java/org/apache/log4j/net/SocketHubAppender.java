@@ -151,7 +151,7 @@ public class SocketHubAppender extends AppenderSkeleton {
     // close all of the connections
 	LogLog.debug("closing client connections");
     while (oosList.size() != 0) {
-      ObjectOutputStream oos = (ObjectOutputStream)oosList.get(0);
+      ObjectOutputStream oos = (ObjectOutputStream)oosList.elementAt(0);
       if(oos != null) {
         try {
         	oos.close();
@@ -160,7 +160,7 @@ public class SocketHubAppender extends AppenderSkeleton {
         	LogLog.error("could not close oos.", e);
         }
         
-        oosList.remove(0);     
+        oosList.removeElementAt(0);     
       }
     }
   }
@@ -183,7 +183,7 @@ public class SocketHubAppender extends AppenderSkeleton {
 
       ObjectOutputStream oos = null;
       try {
-        oos = (ObjectOutputStream)oosList.get(streamCount);
+        oos = (ObjectOutputStream)oosList.elementAt(streamCount);
       }
       catch (ArrayIndexOutOfBoundsException e) {
         // catch this, but just don't assign a value
@@ -205,7 +205,7 @@ public class SocketHubAppender extends AppenderSkeleton {
       }
       catch(IOException e) {
       	// there was an io exception so just drop the connection
-      	oosList.remove(streamCount);
+      	oosList.removeElementAt(streamCount);
       	LogLog.debug("dropped connection");
       	
       	// decrement to keep the counter in place (for loop always increments)
@@ -357,7 +357,7 @@ public class SocketHubAppender extends AppenderSkeleton {
               ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
 	            
               // add it to the oosList.  OK since Vector is synchronized.
-              oosList.add(oos);
+              oosList.addElement(oos);
             }
             catch (IOException e) {
               LogLog.error("exception creating output stream on socket.", e);
