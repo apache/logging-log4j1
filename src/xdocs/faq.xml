@@ -131,7 +131,10 @@
 
 	  <li><p>log4j is based on a named logger hierarchy.</p></li>
 	  
-	  <li><p>log4j is fail-stop but not reliable.</p></li>
+	  <li><p>log4j is fail-stop. However, altough it certainly
+	  strives to ensure delivery, log4j does not guarantee that
+	  each log statement will be delivered to its destination.
+	  </p></li>
 
 	  <li><p>log4j is thread-safe.</p></li>
 
@@ -151,17 +154,16 @@
 	  remote Unix Syslog daemon, to a remote listener using JMS,
 	  to the NT EventLog or even send e-mail.  </p></li>
 
-	  <li><p>log4j uses 5 levels, namely DEBUG, INFO, WARN, ERROR and
-	  FATAL.
-	  </p></li>
+	  <li><p>log4j uses 6 levels, namely TRACE, DEBUG, INFO, WARN,
+	  ERROR and FATAL.  </p></li>
 
 	  <li><p>The format of the log output can be easily changed by
-	  extending the Layout class.
-	  </p></li>	  
+	  extending the <code>Layout</code>
+          class.  </p></li>
 
 	  <li><p>The target of the log output as well as the writing
-	  strategy can be altered by implementations of the Appender
-	  interface.  </p></li>
+	  strategy can be altered by implementations of the
+	  <code>Appender</code> interface.  </p></li>
 
 	  <li><p>log4j supports multiple output appenders per logger.
 	  </p></li>
@@ -179,13 +181,14 @@
     </question>
 
     <question>
-      <title>What documentation should I read to learn log4j?</title>
+      <title>What documentation should I read to learn more about
+      log4j?</title>
       <answer>
 	<p>Make sure to read the <a href="manual.html">short
 	manual</a>. It is also recommended to you read <a
-	href="https://www.qos.ch/shop/products/clm_t.jsp">The complete
-	log4j manual</a>. Both documents were written by Ceki
-	G&#252;lc&#252;.
+	href="http://www.qos.ch/shop/products/eclm/">The complete
+	log4j manual</a> which is much more detailed and up to
+	date. Both documents were written by Ceki G&#252;lc&#252;.
 	</p>
       </answer>
     </question>
@@ -239,6 +242,31 @@
 	</p>
       </answer>
     </question>
+
+
+    <question>
+      
+      <title>Why should I use log4j when JDK 1.4 already ships with a
+      logging API?</title>
+
+      <answer>
+        <p>
+        Although both APIs are conceptually similar, the log4j API is
+        significantly more flexible and offers many more features, too
+        numerous to be listed here. You will discover that the
+        additional features and flexibility turn out to be
+        indispensable in the context of a mission-critical
+        application.
+        </p>
+
+        <p>The open and collaborative way in which log4j is developped
+        ensures that it continues to preserve and even widen its
+        competitive edge. At some point, input from bright developpers
+        from all over the world is bound to make a difference.
+        </p>
+      </answer>
+    </question>
+
   </faqSection>
 
   <faqSection>
@@ -331,7 +359,7 @@
 	</p>
 	
         <h3>Better alternative based on message patterns</h3>
-        <p>As of log4j version 1.3, there is a significantly more
+        <p>As of log4j version 1.3, there exists a significantly more
         convenient alternative based on message patterns. Assuming
         <code>entry</code> is a non-primitive object, you can write:
         </p>
@@ -343,12 +371,13 @@
         <p>After evaluting whether to log or not, and only if the
         decision is affirmative, the logger instace will format the
         message and replace the '{}' pair with the string value of the
-        <code>entry</code> parameter within the message pattern.
+        <code>entry</code> parameter.
         </p>
         
         <p>Thus, the following two lines will yield the exact sane
         output. However, the second form will perform at least 30
-        times faster in case the logger is disabled for DEBUG.
+        (yes, thirty, the cardinal number equal to 3x10) times faster
+        in case of a <em>disabled</em> logging statement.
         </p>
         
 	<p class="source">
@@ -356,8 +385,8 @@
           l.debug("The new entry is {}.", entry);
 	</p>
         
-        <p>A 2 argument variant is also availalble. Thus, you can also
-        write:
+        <p>A two argument variant is also availalble. For example, you
+        can also write:
         </p>
 	<p class="source">
           l.debug("The new entry is {}. It replaces {}.", entry, oldEntry);
