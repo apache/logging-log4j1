@@ -30,8 +30,8 @@ import org.apache.log4j.helpers.OptionConverter;
    to true, a match will occur only when the value to match exactly
    matches the NDC value of the logging event.  Otherwise, if the
    <b>ExactMatch</b> property is set to <code>false</code>, a match
-   will occur if the NDC value is contained anywhere within the value
-   to match. The <b>ExactMatch</b> property is set to
+   will occur if the value to match is contained anywhere within the
+   NDC value. The <b>ExactMatch</b> property is set to
    <code>false</code> by default.
 
    <p>Note that by default the value to match is set to
