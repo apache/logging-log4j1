@@ -16,47 +16,37 @@
 
 package pattern;
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.PatternLayout;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.apache.log4j.Layout;
+import org.apache.log4j.joran.JoranConfigurator;
 
 /**
  * 
  * Example showing how to extend PatternLayout to recognize additional 
- * conversion words without adding.
+ * conversion words without through a configuration file.
  * 
- * <p>In this case MyPatternLayout recognizes %counter conversion word. 
+ * <p>In this case have PatternLayout recognize %counter conversion word. 
  * It outputs the value of an internal counter which is also incremented at 
  * each call.
  * 
- * @see org.apache.log4j.PatternLayout
- * @author Anders Kristensen
  * @author Ceki G&uuml;lc&uuml;
  */
 
-public class MyPatternLayout extends PatternLayout {
-  public MyPatternLayout() {
-    super();
-  }
-
-  public MyPatternLayout(String pattern) {
-    super(pattern);
-  }
-
-  /**
-    Activates the conversion pattern. Do not forget to call this method after
-    you change the parameters of the PatternLayout instance.
-  */
-  public void activateOptions() {
-    this.addConversionRule("counter", CountingPatternConverter.class.getName());
-    super.activateOptions();
-  }
+public class LearnNewWord {
 
   public static void main(String[] args) {
-    Layout layout = new MyPatternLayout("[counter=%.10#] - %m%n");
+    if (args.length != 1) {
+     System.err.println("Usage: java " + LearnNewWord.class.getName() +
+        " configFile");
+      
+    }
+    
+    JoranConfigurator joran = new JoranConfigurator();
+    
+    joran.doConfigure(args[0], LogManager.getLoggerRepository());
+    joran.dumpErrors();
+    
     Logger logger = Logger.getLogger("some.cat");
-    logger.addAppender(new ConsoleAppender(layout, ConsoleAppender.SYSTEM_OUT));
     logger.debug("Hello, log");
     logger.info("Hello again...");
   }

@@ -23,6 +23,7 @@ import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.ErrorItem;
+import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.OptionHandler;
 
 import org.xml.sax.Attributes;
@@ -49,7 +50,10 @@ public class LayoutAction extends Action {
         OptionConverter.instantiateByClassName(
           className, org.apache.log4j.Layout.class, null);
       layout = (Layout) instance;
-
+      
+      LoggerRepository repo = (LoggerRepository) ec.getObjectStack().get(0);
+      layout.setLoggerRepository(repo);
+      
       getLogger().debug("Pushing layout on top of the object stack.");
       ec.pushObject(layout);
     } catch (Exception oops) {

@@ -334,7 +334,7 @@ FILTER_LOOP:
     if(repository == null) {
       throw new IllegalArgumentException("repository argument cannot be null");
     }
-    if(this.repository != null) {
+    if(this.repository == null) {
       this.repository = repository;
     } else {
       throw new IllegalStateException("Repository has been already set");

@@ -56,6 +56,7 @@ import java.net.URL;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -194,6 +195,9 @@ public class JoranConfigurator extends ConfiguratorBase {
     rs.addRule(
       new Pattern("configuration/repositoryProperty"),
       new RepositoryPropertyAction());
+    rs.addRule(
+        new Pattern("configuration/conversionRule"),
+        new ConversionRuleAction());
     rs.addRule(new Pattern("configuration/plugin"), new PluginAction());
     rs.addRule(new Pattern("configuration/logger"), new LoggerAction());
     rs.addRule(
@@ -218,9 +222,6 @@ public class JoranConfigurator extends ConfiguratorBase {
         new AppenderRefAction());
     rs.addRule(
       new Pattern("configuration/appender/layout"), new LayoutAction());
-    rs.addRule(
-      new Pattern("configuration/appender/layout/conversionRule"),
-      new ConversionRuleAction());
     rs.addRule( 
          new Pattern("configuration/jndiSubstitutionProperty"), 
          new JndiSubstitutionPropertyAction());
@@ -234,7 +235,7 @@ public class JoranConfigurator extends ConfiguratorBase {
     joranInterpreter.addImplicitAction(new NestComponentIA());
     ExecutionContext ec = joranInterpreter.getExecutionContext();
 
-    HashMap omap = ec.getObjectMap();
+    Map omap = ec.getObjectMap();
     omap.put(ActionConst.APPENDER_BAG, new HashMap());
   }
 

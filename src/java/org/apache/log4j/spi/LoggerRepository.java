@@ -209,4 +209,21 @@ public interface LoggerRepository {
    * @return List
    */
   public void addErrorItem(ErrorItem errorItem);
+  
+  /**
+   * A LoggerRepository can also act as a store for various objects used
+   * by log4j components.
+   * 
+   * @return The object stored under 'key'.
+   * @since 1.3
+   */
+  public Object getObject(String key);
+ 
+  /**
+   * Store an object under 'key'. If no object can be found, null is returned.
+   * 
+   * @param key
+   * @param value
+   */
+  public void putObject(String key, Object value);
 }

@@ -25,6 +25,7 @@ import org.xml.sax.Locator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Stack;
 import java.util.Vector;
@@ -40,7 +41,7 @@ import java.util.Vector;
  */
 public class ExecutionContext {
   Stack objectStack;
-  HashMap objectMap;
+  Map objectMap;
   Vector errorList;
   Properties substitutionProperties;
   Interpreter joranInterpreter;
@@ -107,7 +108,7 @@ public class ExecutionContext {
     return objectStack.get(i);
   }
 
-  public HashMap getObjectMap() {
+  public Map getObjectMap() {
     return objectMap;
   }
 

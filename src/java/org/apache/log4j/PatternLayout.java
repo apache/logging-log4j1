@@ -18,7 +18,7 @@ package org.apache.log4j;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.log4j.pattern.PatternConverter;
 import org.apache.log4j.pattern.PatternParser;
@@ -415,10 +415,16 @@ public class PatternLayout extends Layout {
   public static final String TTCC_CONVERSION_PATTERN =
     "%r [%t] %p %c %x - %m%n";
 
+  /**
+   * Customized pattern conversion rules are stored under this key in the
+   * {@link LoggerRepository} object store.
+   */
+  public static final String PATTERN_RULE_REGISTRY = "PATTERN_RULE_REGISTRY";
+  
   private String conversionPattern;
   private PatternConverter head;
 
-  private HashMap ruleRegistry = null;
+
   private boolean handlesExceptions;
 
   /**
@@ -436,30 +442,6 @@ public class PatternLayout extends Layout {
   public PatternLayout(String pattern) {
     this.conversionPattern = pattern;
     activateOptions();
-  }
-
-  /**
-   * 
-   * Add a new conversion word and associate it with a 
-   * {@link org.apache.log4j.pattern.PatternConverter PatternConverter} class.
-   * 
-   * @param conversionWord New conversion word to accept in conversion patterns
-   * @param converterClass The class name associated with the conversion word
-   * @since 1.3
-   */
-  public void addConversionRule(String conversionWord, String converterClass) {
-    if(ruleRegistry == null) {
-      ruleRegistry = new HashMap(5);
-    }
-    ruleRegistry.put(conversionWord, converterClass);
-  }
-
-  /**
-   * Returns the rule registry specific for this PatternLayout instance.
-   * @since 1.3
-   */
-  public HashMap getRuleRegistry() {
-    return ruleRegistry;
   }
   
   /**
@@ -484,7 +466,9 @@ public class PatternLayout extends Layout {
   */
   public void activateOptions() {
     PatternParser patternParser = new PatternParser(conversionPattern);
-    patternParser.setConverterRegistry(ruleRegistry);
+    if(this.repository != null) {
+      patternParser.setConverterRegistry((Map) this.repository.getObject(PATTERN_RULE_REGISTRY));
+    }
     head = patternParser.parse();
     handlesExceptions = PatternConverter.chainHandlesThrowable(head);
   }
