@@ -146,10 +146,8 @@ element. -->
   includesLocationInfo   (true|false) "true"
 >
 
-
-
-<!ELEMENT log4j:event (log4j:message, log4j:NDC?, log4j:MDC?, log4j:throwable?, 
-                       log4j:locationInfo?) >
+<!ELEMENT log4j:event (log4j:message, log4j:NDC?, log4j:MDC?, 
+                       log4j:throwable?, log4j:locationInfo?, log4j:properties?) >
 
 <!-- The timestamp format is application dependent. -->
 <!ATTLIST log4j:event
@@ -160,19 +158,25 @@ element. -->
 >
 
 <!ELEMENT log4j:message (#PCDATA)>
+
 <!ELEMENT log4j:NDC (#PCDATA)>
+
 <!ELEMENT log4j:MDC (log4j:data*)>
-<!ELEMENT log4j:data (#PCDATA)>
-<!ATTLIST log4j:data
-  name 		CDATA  #REQUIRED
-  value 	CDATA  #REQUIRED
->
+
 <!ELEMENT log4j:throwable (#PCDATA)>
 
 <!ELEMENT log4j:locationInfo EMPTY>
+
 <!ATTLIST log4j:locationInfo
   class  CDATA	#REQUIRED
   method CDATA	#REQUIRED
   file   CDATA	#REQUIRED
   line   CDATA	#REQUIRED
+>
+
+<!ELEMENT log4j:properties (log4j:data*)>
+
+<!ATTLIST log4j:data
+  name 		CDATA  #REQUIRED
+  value 	CDATA  #REQUIRED
 >
