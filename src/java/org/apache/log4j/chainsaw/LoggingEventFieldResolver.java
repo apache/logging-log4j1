@@ -84,8 +84,9 @@ import org.apache.log4j.spi.LoggingEvent;
  * NOTE:  the values for the 'keyName' portion of the MDC and PROP mappings must
  * be an exact match to the key in the hashTable (case sensitive).
  *
- * If the passed-in field is null or does not match an entry in the above-described
- * mapping, an empty string is returned.
+ * If the passed-in field is null, an empty string is returned.
+ * If the passed-in field doesn't match an entry in the above-described
+ * mapping, the passed-in field is returned.
  *
  * @author Scott Deboy <sdeboy@apache.org>
  * @author Paul Smith <psmith@apache.org>
@@ -102,41 +103,56 @@ public final class LoggingEventFieldResolver {
     return resolver;
   }
 
+  public boolean isField(String fieldName) {
+  	if (fieldName == null) {
+  		return false;
+  	}
+  	String upperField = fieldName.toUpperCase();
+  	
+  	return (upperField != null && ("LOGGER".equals(upperField) || "LEVEL".equals(upperField) || 
+  	"CLASS".equals(upperField) || "FILE".equals(upperField) || "LINE".equals(upperField) ||
+  	"METHOD".equals(upperField) || "MSG".equals(upperField) || "NDC".equals(upperField) || 
+  	"EXCEPTION".equals(upperField) || "TIMESTAMP".equals(upperField) || "THREAD".equals(upperField) ||
+	upperField.startsWith("MDC.") || upperField.startsWith("PROP.")));
+  }
+  
   public Object getValue(String fieldName, LoggingEvent event) {
     if (fieldName == null) {
       return "";
     }
 
-    String lowerProp = fieldName.toUpperCase();
+    String upperField = fieldName.toUpperCase();
 
-    if ("LOGGER".equals(fieldName)) {
+    if ("LOGGER".equals(upperField)) {
       return event.getLoggerName();
-    } else if ("LEVEL".equals(fieldName)) {
+    } else if ("LEVEL".equals(upperField)) {
       return event.getLevel();
-    } else if ("CLASS".equals(fieldName)) {
+    } else if ("CLASS".equals(upperField)) {
       return event.getLocationInformation().getClassName();
-    } else if ("FILE".equals(fieldName)) {
+    } else if ("FILE".equals(upperField)) {
       return event.getLocationInformation().getFileName();
-    } else if ("LINE".equals(fieldName)) {
+    } else if ("LINE".equals(upperField)) {
       return event.getLocationInformation().getLineNumber();
-    } else if ("METHOD".equals(fieldName)) {
+    } else if ("METHOD".equals(upperField)) {
       return event.getLocationInformation().getMethodName();
-    } else if ("MSG".equals(fieldName)) {
+    } else if ("MSG".equals(upperField)) {
       return event.getMessage();
-    } else if ("NDC".equals(fieldName)) {
+    } else if ("NDC".equals(upperField)) {
       return event.getNDC();
-    } else if ("EXCEPTION".equals(fieldName)) {
+    } else if ("EXCEPTION".equals(upperField)) {
 	  return event.getThrowableInformation();
-    } else if ("TIMESTAMP".equals(fieldName)) {
+    } else if ("TIMESTAMP".equals(upperField)) {
       return new Long(event.timeStamp);
-    } else if ("THREAD".equals(fieldName)) {
+    } else if ("THREAD".equals(upperField)) {
       return event.getThreadName();
-    } else if (fieldName.startsWith("MDC.")) {
+    } else if (upperField.startsWith("MDC.")) {
+      //note: need to use actual fieldname since case matters
       return event.getMDC(fieldName.substring(4));
-    } else if (fieldName.startsWith("PROP.")) {
+    } else if (upperField.startsWith("PROP.")) {
+		//note: need to use actual fieldname since case matters
       return event.getProperty(fieldName.substring(5));
     }
-
-    return "";
+	//there wasn't a match, so just return the passed-in name
+    return fieldName;
   }
 }
