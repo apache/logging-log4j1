@@ -33,7 +33,14 @@ import javax.naming.InitialContext;
 
 import javax.sql.DataSource;
 
-
+/**
+ * This Joran action is specifically designed for @{link FullCycleDBTest} when
+ * run in conjunction with a JNDIDataSource. It is used to bind the DataSource
+ * to JNDI before the FullCycleDBTest executes.
+ * 
+ * @author Ceki Gulcu
+ *
+ */
 public class BindDataSourceToJNDIAction extends Action {
   static final Logger logger =
     Logger.getLogger(BindDataSourceToJNDIAction.class);
@@ -51,7 +58,6 @@ public class BindDataSourceToJNDIAction extends Action {
     ExecutionContext ec, String localName, Attributes attributes) {
     String dsClassName = ec.getSubstitutionProperty(DATA_SOURCE_CLASS);
 
-    LogLog.info("==============************************");
     if (Option.isEmpty(dsClassName)) {
       LogLog.warn("dsClassName is a required parameter");
       ec.addError(new ErrorItem("dsClassName is a required parameter"));
