@@ -7,8 +7,8 @@
 
 package org.apache.log4j.plugins;
 
-import java.util.Hashtable;
-import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.LoggerRepositoryEventListener;
@@ -22,13 +22,21 @@ import org.apache.log4j.spi.LoggerRepositoryEventListener;
   @since 1.3
 */
 public class PluginRegistry {
-  private static Hashtable repositoryMap = new Hashtable();
+  private static HashMap repositoryMap = new HashMap();
   private static RepositoryListener listener = new RepositoryListener();
   
   /**
     Starts a Plugin with default logger repository. */
   public static Plugin startPlugin(Plugin plugin) {
-    return startPlugin(plugin, LogManager.getLoggerRepository());
+    // if repository already set in plugin, use it
+    LoggerRepository repository = plugin.getLoggerRepository();
+    
+    // else use the default one
+    if (repository == null) {
+      repository = LogManager.getLoggerRepository();
+    }
+    
+    return startPlugin(plugin, repository);
   }
 
   /**
@@ -36,36 +44,38 @@ public class PluginRegistry {
   public static Plugin startPlugin(Plugin plugin,
   LoggerRepository repository) {
     
-    // make sure the plugin has reference to repository
-    plugin.setLoggerRepository(repository);
-    
+    // if the plugin is already active, just return it
+    if (plugin.isActive())
+      return plugin;
+      
     // put plugin into the repository's reciever map
     synchronized(repositoryMap) {
       // get plugin map for repository
-      Hashtable pluginMap = (Hashtable)repositoryMap.get(repository);
+      HashMap pluginMap = (HashMap)repositoryMap.get(repository);
       
+      String name = plugin.getName();
+
+      // make sure the plugin has reference to repository
+      plugin.setLoggerRepository(repository);
+
       // if the plugin map does not exist, create one
       if (pluginMap == null) {
-        pluginMap = new Hashtable();
+        pluginMap = new HashMap();
         repositoryMap.put(repository, pluginMap);
         repository.addLoggerRepositoryEventListener(listener);
       }
-      
-      // existing plugin exists with the
-      String name = plugin.getName();
-      if (name == null) {
-        name = "";
-      }
-      Plugin existingPlugin = (Plugin)pluginMap.get(name);
-      if (existingPlugin != null) {
-        boolean isEqual = existingPlugin.equals(plugin);
-        
-        // if the plugins are equivalent and the existing one
-        // is still active, just return the existing one now
-        if (isEqual && existingPlugin.isActive()) {
-          return existingPlugin;
-        } else {
-          existingPlugin.shutdown();
+      else {
+        Plugin existingPlugin = (Plugin)pluginMap.get(name);
+        if (existingPlugin != null) {
+          boolean isEqual = existingPlugin.equals(plugin);
+          
+          // if the plugins are equivalent and the existing one
+          // is still active, just return the existing one now
+          if (isEqual && existingPlugin.isActive()) {
+            return existingPlugin;
+          } else {
+            existingPlugin.shutdown();
+          }
         }
       }
       
@@ -80,35 +90,28 @@ public class PluginRegistry {
   }
   
   /**
-    Stops a plugin in the default logger repository. */
+    Stops a plugin by plugin object. */
   public static Plugin stopPlugin(Plugin plugin) {
-    return stopPlugin(plugin.getName(), 
-      LogManager.getLoggerRepository());
+    return stopPlugin(plugin.getName(), plugin.getLoggerRepository());
+  }
+  
+  /**
+    Stops a plugin by plugin name using default repository. */
+  public static Plugin stopPlugin(String pluginName) {
+    return stopPlugin(pluginName, LogManager.getLoggerRepository());
   }
 
   /**
-    Stops a plugin in the default logger repository. */  
-  public static Plugin stopPlugin(String pluginName) {
-    return stopPlugin(pluginName,
-      LogManager.getLoggerRepository());
-  }
-  
-  /**
-    Stops a plugin in the given logger repository. */
-  public static Plugin stopPlugin(Plugin plugin, 
+    Stops a plugin by plugin name and repository. */
+  public static Plugin stopPlugin(String pluginName,
   LoggerRepository repository) {
-    return stopPlugin(plugin.getName(), repository);
-  }
-  
-  /**
-    Stops a plugin in the given logger repository. */
-  public static Plugin stopPlugin(String pluginName, 
-  LoggerRepository repository) {
-    if (pluginName == null) {
-      pluginName = "";
+    // if a null repository, exit now
+    if (repository == null) {
+      return null;
     }
+
     synchronized(repositoryMap) {
-      Hashtable pluginMap = (Hashtable)repositoryMap.get(repository);
+      HashMap pluginMap = (HashMap)repositoryMap.get(repository);
       if (pluginMap == null)
         return null;
         
@@ -144,17 +147,16 @@ public class PluginRegistry {
     Stops all plugins in the given logger repository. */
   public static void stopAllPlugins(LoggerRepository repository) {    
     synchronized(repositoryMap) {
-      Hashtable pluginMap = (Hashtable)repositoryMap.get(repository);
+      HashMap pluginMap = (HashMap)repositoryMap.get(repository);
       if (pluginMap == null)
         return;
         
       // remove the listener for this repository
       repository.removeLoggerRepositoryEventListener(listener);
 
-      Enumeration enum = pluginMap.elements();
-      while(enum.hasMoreElements()) {
-        Plugin plugin = (Plugin)enum.nextElement();
-        plugin.shutdown();
+      Iterator iter = pluginMap.values().iterator();
+      while(iter.hasNext()) {
+        ((Plugin)iter.next()).shutdown();
       }
       
       // since no more plugins, remove plugin map from
