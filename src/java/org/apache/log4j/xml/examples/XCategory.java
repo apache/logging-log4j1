@@ -137,6 +137,14 @@ public class XCategory extends Category implements OptionHandler {
       LogLog.debug("Setting suffix to"+suffix);
     }
   }
+  
+  public
+  String getOption(String option) {
+    if(option.equalsIgnoreCase(SUFFIX_OPTION)) {
+      return this.suffix;
+    }
+    return null;
+  }
 
   /**
      We introduce a new printing method that takes the TRACE priority.

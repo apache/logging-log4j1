@@ -56,11 +56,9 @@ public class PrintProperties {
         if (app instanceof OptionHandler) {
           printOptions((OptionHandler) app, "log4j.appender."+name);
         }
-        if (app instanceof AppenderSkeleton) {
-          Layout layout = ((AppenderSkeleton) app).getLayout();
-          if (layout != null) {
-            printOptions(layout, "log4j.appender."+name+".layout");
-          }
+        Layout layout = ((AppenderSkeleton) app).getLayout();
+        if (layout != null) {
+          printOptions(layout, "log4j.appender."+name+".layout");
         }
       }
       appenderString += ", " + name;
