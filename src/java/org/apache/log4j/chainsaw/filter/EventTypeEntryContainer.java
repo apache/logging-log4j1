@@ -172,7 +172,7 @@ public class EventTypeEntryContainer {
   void addMDCKeys(Set keySet) {
     if (MDCKeys.addAll(keySet)) {
       for (Iterator iter = keySet.iterator(); iter.hasNext();) {
-        Object element = (Object) iter.next();
+        Object element = iter.next();
         mdcListModel.addElement(element);
       }
     }

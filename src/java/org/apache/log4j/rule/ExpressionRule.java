@@ -137,7 +137,7 @@ public class ExpressionRule extends AbstractRule {
 
         //if a symbol is found, pop 2 off the stack, evaluate and push the result 
         if (factory.isRule(token)) {
-          Rule r = (Rule) factory.getRule(token, stack);
+          Rule r = factory.getRule(token, stack);
           stack.push(r);
         } else {
           //variables or constants are pushed onto the stack

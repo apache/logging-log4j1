@@ -80,7 +80,6 @@ public class XMLSocketReceiver extends Receiver implements Runnable, PortBased, 
   protected int port;
   protected boolean active = false;
   private boolean paused;
-  private boolean shutdown;
   //default to log4j xml decoder
   protected String decoder = "org.apache.log4j.xml.XMLDecoder";
   private ServerSocket serverSocket;
@@ -199,17 +198,7 @@ public class XMLSocketReceiver extends Receiver implements Runnable, PortBased, 
 
       // close all of the accepted sockets
       closeAllAcceptedSockets();
-
-      setShutdown(true);
     }
-
-    /**
-     * @param b
-     */
-    private void setShutdown(boolean b) {
-      shutdown = b;
-    }
-
 
     /**
       * Closes the server socket, if created.
@@ -264,7 +253,7 @@ public class XMLSocketReceiver extends Receiver implements Runnable, PortBased, 
         "error starting SocketReceiver (" + this.getName()
         + "), receiver did not start", e);
       active = false;
-      setShutdown(true);
+      doShutdown();
 
       return;
     }

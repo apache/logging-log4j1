@@ -121,17 +121,14 @@ public class MulticastAppender extends AppenderSkeleton implements PortBased {
     this.address = address;
     this.remoteHost = address.getHostName();
     this.port = port;
-    connect(address, port);
+    connect();
   }
 
   /**
      Sends multicast packets to the <code>address</code> and <code>port</code>.
   */
   public MulticastAppender(String host, int port) {
-    this.port = port;
-    this.address = getAddressByName(host);
-    this.remoteHost = host;
-    connect(address, port);
+    this(getAddressByName(host), port);
   }
 
   /**
@@ -157,7 +154,7 @@ public class MulticastAppender extends AppenderSkeleton implements PortBased {
       }
     }
 
-    connect(address, port);
+    connect();
   }
 
   /**
@@ -190,7 +187,7 @@ public class MulticastAppender extends AppenderSkeleton implements PortBased {
     }
   }
 
-  void connect(InetAddress address, int port) {
+  void connect() {
     if (this.address == null) {
       return;
     }
