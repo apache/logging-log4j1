@@ -2,9 +2,12 @@
 <document>
 
   <properties>
-    <author email="cgu@apache.org">Ceki Gulcu</author>
+    <author email="ceki@apache.org">Ceki Gulcu</author>
     <title>Introduction</title>
   </properties>
+
+  <meta name="keywords" content="java, logging, tracing, component, framework, API, log4j"/>
+
 
 <body>
 
