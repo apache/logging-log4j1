@@ -319,7 +319,7 @@ public class DailyRollingFileAppender extends FileAppender {
      rollover schedule.
 
      <p>Be sure to refer to the options in the super classes {@link
-     FileAppender}, {WriterAppender} and in particular the
+     FileAppender}, {@link WriterAppender} and in particular the
      <b>Threshold</b> option in {@link AppenderSkeleton}.
      
      </ul> */
