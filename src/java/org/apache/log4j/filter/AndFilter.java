@@ -16,16 +16,19 @@
 
 package org.apache.log4j.filter;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
- * A filter that 'and's the results of two filters together.
+ * A filter that 'and's the results of any number of contained filters together.
  * 
- * For the filter to process events, both contained filters must return Filter.ACCEPT.
+ * For the filter to process events, all contained filters must return Filter.ACCEPT.
  * 
- * If both filters do not return Filter.ACCEPT, Filter.NEUTRAL is returned.
+ * If the contained filters do not return Filter.ACCEPT, Filter.NEUTRAL is returned.
  * 
  * If acceptOnMatch is set to true, Filter.ACCEPT is returned.
  * If acceptOnMatch is set to false, Filter.DENY is returned.
@@ -35,14 +38,14 @@ import org.apache.log4j.spi.LoggingEvent;
  * 
  *<appender name="STDOUT" class="org.apache.log4j.ConsoleAppender">
  * <filter class="org.apache.log4j.filter.AndFilter">
- *  <filter1 class="org.apache.log4j.filter.LevelMatchFilter">
+ *  <filter class="org.apache.log4j.filter.LevelMatchFilter">
  *        <param name="levelToMatch" value="DEBUG" />
  *        <param name="acceptOnMatch" value="true" />
- *  </filter1>
- *  <filter2 class="org.apache.log4j.filter.StringMatchFilter">
+ *  </filter>
+ *  <filter class="org.apache.log4j.filter.StringMatchFilter">
  *        <param name="stringToMatch" value="test" />
  *        <param name="acceptOnMatch" value="true" />
- *  </filter2>
+ *  </filter>
  *  <param name="acceptOnMatch" value="false"/>
  * </filter>
  * <filter class="org.apache.log4j.filter.DenyAllFilter"/>
@@ -64,24 +67,17 @@ import org.apache.log4j.spi.LoggingEvent;
  * @author Scott Deboy sdeboy@apache.org
  */
 public class AndFilter extends Filter {
-  Filter filter1;
-  Filter filter2;
+  List filters = new ArrayList();
   boolean acceptOnMatch = true;
   
   public void activateOptions() {
     //nothing to do
   }
 
-  public void setFilter1(Filter filter1) {
-    System.out.println("filter 1 set to: " + filter1);
-    this.filter1 = filter1;
+  public void addFilter(Filter filter) {
+    filters.add(filter);
   }
   
-  public void setFilter2(Filter filter2) {
-    System.out.println("filter 2 set to: " + filter2);
-    this.filter2 = filter2;
-  }
-
   public void setAcceptOnMatch(boolean acceptOnMatch) {
     this.acceptOnMatch = acceptOnMatch;
   }
@@ -95,14 +91,18 @@ public class AndFilter extends Filter {
    * Returns {@link Filter#NEUTRAL}
    */
   public int decide(LoggingEvent event) {
-    if ((Filter.ACCEPT == filter1.decide(event)) &&
-        Filter.ACCEPT == filter2.decide(event)) {
+    boolean accepted = true;
+    for (Iterator iter = filters.iterator(); iter.hasNext();) {
+      Filter thisFilter = (Filter)iter.next();
+      accepted = accepted && (Filter.ACCEPT == thisFilter.decide(event));
+    }
+    
+    if (accepted) {
       if(acceptOnMatch) {
         return Filter.ACCEPT;
       }
        return Filter.DENY;
     }
-//    System.out.println("neutral: " + event.getLevel() + ".." + event.getMessage()); 
     return Filter.NEUTRAL;
   }
 }
