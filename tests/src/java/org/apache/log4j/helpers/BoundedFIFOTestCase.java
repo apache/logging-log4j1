@@ -55,10 +55,7 @@
 //     http://www.junit.org
 package org.apache.log4j.helpers;
 
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 import org.apache.log4j.Category;
 import org.apache.log4j.Priority;
 import org.apache.log4j.helpers.BoundedFIFO;

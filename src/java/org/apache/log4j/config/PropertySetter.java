@@ -126,7 +126,12 @@ public class PropertySetter {
         setProperty(key, value);
       }
     }
-    //activate();
+    
+   
+    if (obj instanceof OptionHandler) {   
+         ((OptionHandler) obj).activateOptions(); 
+       }    
+     } 
   }
   
   /**

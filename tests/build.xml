@@ -142,7 +142,7 @@
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
-      <test name="org.apache.log4j.PatternLayoutTestCase" />
+      <test name="org.apache.log4j.PatternLayoutTest" />
     </junit>
   </target>
 

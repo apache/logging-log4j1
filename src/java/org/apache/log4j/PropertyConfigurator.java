@@ -692,14 +692,14 @@ public class PropertyConfigurator implements Configurator {
           appender.setLayout(layout);
           LogLog.debug("Parsing layout options for \"" + appenderName + "\".");
 
-          //configureOptionHandler(layout, layoutPrefix + ".", props);
           PropertySetter.setProperties(layout, props, layoutPrefix + ".");
+          activateOptions(appender);
           LogLog.debug("End of parsing for \"" + appenderName + "\".");
         }
       }
-
-      //configureOptionHandler((OptionHandler) appender, prefix + ".", props);
+   
       PropertySetter.setProperties(appender, props, prefix + ".");
+      activateOptions(appender);
       LogLog.debug("Parsed \"" + appenderName + "\" options.");
     }
 
@@ -707,6 +707,12 @@ public class PropertyConfigurator implements Configurator {
 
     return appender;
   }
+
+  public void activateOptions(Object obj) { 
+       if (obj instanceof OptionHandler) {  
+         ((OptionHandler) obj).activateOptions();  
+       }  
+     } 
 
   void registryPut(Appender appender) {
     registry.put(appender.getName(), appender);
