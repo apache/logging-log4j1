@@ -46,11 +46,16 @@
  * Apache Software Foundation, please see <http://www.apache.org/>.
  *
  */
+
 package org.apache.log4j.chainsaw;
 
+import org.apache.log4j.xml.DOMConfigurator;
+
 import java.io.File;
+
 import java.net.MalformedURLException;
 import java.net.URL;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -58,7 +63,6 @@ import java.util.Iterator;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
-import org.apache.log4j.xml.DOMConfigurator;
 
 /**
  * Main initialization point of Chainsaw
@@ -66,45 +70,44 @@ import org.apache.log4j.xml.DOMConfigurator;
  * @version 1.0
  */
 public class Start {
+  private static final String LOG4J_CONFIG_FILE = "log4j.xml";
 
   public static void main(String[] args) {
     initLog4J();
     new Main();
   }
 
-  private static void initLog4J()
-  {
+  private static void initLog4J() {
     /** initialise log4j **/
     final FinderStrategies strategies = new FinderStrategies();
     final URL url = strategies.findConfiguration();
-    DOMConfigurator.configure( url );
+    DOMConfigurator.configure(url);
   }
 
-  private static class FinderStrategies implements Log4JConfigurationFinder
-  {
-    public FinderStrategies()
-    {
+  private static class FinderStrategies implements Log4JConfigurationFinder {
+    private final Collection mStrategies = new ArrayList();
+
+    public FinderStrategies() {
       mStrategies.add(new ResourceLoaderFinder());
       mStrategies.add(new FileOpenFinder());
 
       // TODO: add any more stategies
     }
 
-    public URL findConfiguration()
-    {
-      for (Iterator i = mStrategies.iterator(); i.hasNext(); ) {
+    public URL findConfiguration() {
+      for (Iterator i = mStrategies.iterator(); i.hasNext();) {
         final Log4JConfigurationFinder finder =
-            (Log4JConfigurationFinder) i.next();
+          (Log4JConfigurationFinder) i.next();
         final URL resource = finder.findConfiguration();
+
         if (resource != null) {
           return resource;
         }
       }
-      throw new RuntimeException("Failed to locate a Log4J configuration"
-                                 + " via any means");
-    }
 
-    private final Collection mStrategies = new ArrayList();
+      throw new RuntimeException(
+        "Failed to locate a Log4J configuration" + " via any means");
+    }
   }
 
   /**
@@ -112,15 +115,11 @@ public class Start {
    * @author Paul Smith
    * @version 1.0
    */
-  private static class ResourceLoaderFinder implements Log4JConfigurationFinder
-  {
-    public URL findConfiguration()
-    {
+  private static class ResourceLoaderFinder implements Log4JConfigurationFinder {
+    public URL findConfiguration() {
       return this.getClass().getClassLoader().getResource(LOG4J_CONFIG_FILE);
     }
   }
-
-  private static final String LOG4J_CONFIG_FILE = "log4j.xml";
 
   /**
    * Allows the user to locate the Log4J initialization file
@@ -128,42 +127,40 @@ public class Start {
    * @author Paul Smith
    * @version 1.0
    */
-  private static class FileOpenFinder implements Log4JConfigurationFinder
-  {
-    public URL findConfiguration()
-    {
+  private static class FileOpenFinder implements Log4JConfigurationFinder {
+    private static FileFilter LOG4J_FILE_FILTER =
+      new FileFilter() {
+        public boolean accept(File f) {
+          return f.isDirectory() || f.getName().equals(LOG4J_CONFIG_FILE);
+        }
+
+        /**
+         * The description of this filter. For example: "JPG and GIF Images"
+         * @see FileView#getName
+         */
+        public String getDescription() {
+          return "Log4J Configuration File";
+        }
+      };
+
+    public URL findConfiguration() {
       final JFileChooser chooser = new JFileChooser();
-      chooser.setFileFilter( LOG4J_FILE_FILTER );
+      chooser.setFileFilter(LOG4J_FILE_FILTER);
       chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
       final int returnVal = chooser.showOpenDialog(null);
+
       if (returnVal == JFileChooser.APPROVE_OPTION) {
         final File f = chooser.getSelectedFile();
+
         try {
           return f.toURL();
-        }
-        catch (MalformedURLException ex) {
+        } catch (MalformedURLException ex) {
           ex.printStackTrace();
         }
       }
+
       return null;
     }
-
-    private static FileFilter LOG4J_FILE_FILTER = new FileFilter(){
-
-      public boolean accept(File f)
-      {
-        return f.isDirectory() || f.getName().equals(LOG4J_CONFIG_FILE);
-      }
-
-      /**
-       * The description of this filter. For example: "JPG and GIF Images"
-       * @see FileView#getName
-       */
-      public String getDescription()
-      {
-        return "Log4J Configuration File";
-      }
-    };
   }
 }

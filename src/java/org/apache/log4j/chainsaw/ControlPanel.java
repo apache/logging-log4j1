@@ -46,15 +46,20 @@
  * Apache Software Foundation, please see <http://www.apache.org/>.
  *
  */
+
 package org.apache.log4j.chainsaw;
 
+import org.apache.log4j.Category;
+import org.apache.log4j.Priority;
+
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.FlowLayout;
-import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -63,8 +68,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import org.apache.log4j.Category;
-import org.apache.log4j.Priority;
+
 
 /**
  * Represents the controls for filtering, pausing, exiting, etc.
@@ -72,246 +76,270 @@ import org.apache.log4j.Priority;
  * @author <a href="mailto:oliver@puppycrawl.com">Oliver Burn</a>
  */
 class ControlPanel extends JPanel {
+  /** Name of the preference set for the control panel */
+  public static final String PREF_SET_NAME = "filter";
 
-    /** Name of the preference set for the control panel */
-    public static final String PREF_SET_NAME = "filter";
-    /** Priority filter property */
-    public static final String PRIORITY_PROPERTY = "priority";
-    /** Thread filter property */
-    public static final String THREAD_PROPERTY = "thread";
-    /** Category filter property */
-    public static final String CATEGORY_PROPERTY = "category";
-    /** NDC filter property */
-    public static final String NDC_PROPERTY = "ndc";
-    /** Message filter property */
-    public static final String MESSAGE_PROPERTY = "message";
-    /** Save filters? property */
-    public static final String SAVE_PROPERTY = "save";
+  /** Priority filter property */
+  public static final String PRIORITY_PROPERTY = "priority";
 
-    /** use the log messages **/
-    private static final Category LOG =
-                                  Category.getInstance(ControlPanel.class);
+  /** Thread filter property */
+  public static final String THREAD_PROPERTY = "thread";
 
-    /**
-     * Creates a new <code>ControlPanel</code> instance.
-     *
-     * @param aModel the model to control
-     */
-    ControlPanel(final MyTableModel aModel) {
-        final PreferenceSet prefs = Preferences.getInstance().getPreferenceSet(
-            Preferences.PROP_PREFIX, PREF_SET_NAME);
-        final boolean savePrefs = prefs.getBoolean(SAVE_PROPERTY, true);
+  /** Category filter property */
+  public static final String CATEGORY_PROPERTY = "category";
 
-        setBorder(BorderFactory.createTitledBorder("Controls: "));
-        final GridBagLayout gridbag = new GridBagLayout();
-        final GridBagConstraints c = new GridBagConstraints();
-        final Dimension d = new Dimension(80,24);
-        setLayout(gridbag);
+  /** NDC filter property */
+  public static final String NDC_PROPERTY = "ndc";
 
-        // Pad everything
-        c.ipadx = 5;
-        c.ipady = 5;
+  /** Message filter property */
+  public static final String MESSAGE_PROPERTY = "message";
 
-        // Add the 1st column of labels
-        c.gridx = 0;
-        c.anchor = GridBagConstraints.EAST;
+  /** Save filters? property */
+  public static final String SAVE_PROPERTY = "save";
 
-        c.gridy = 0;
-        JLabel label = new JLabel("Filter Level:");
-        gridbag.setConstraints(label, c);
-        add(label);
+  /** use the log messages **/
+  private static final Category LOG = Category.getInstance(ControlPanel.class);
 
-        c.gridy++;
-        label = new JLabel("Filter Thread:");
-        gridbag.setConstraints(label, c);
-        add(label);
+  /**
+   * Creates a new <code>ControlPanel</code> instance.
+   *
+   * @param aModel the model to control
+   */
+  ControlPanel(final MyTableModel aModel) {
+    final PreferenceSet prefs =
+      Preferences.getInstance().getPreferenceSet(
+        Preferences.PROP_PREFIX, PREF_SET_NAME);
+    final boolean savePrefs = prefs.getBoolean(SAVE_PROPERTY, true);
 
-        c.gridy++;
-        label = new JLabel("Filter Category:");
-        gridbag.setConstraints(label, c);
-        add(label);
+    setBorder(BorderFactory.createTitledBorder("Controls: "));
 
-        c.gridy++;
-        label = new JLabel("Filter NDC:");
-        gridbag.setConstraints(label, c);
-        add(label);
+    final GridBagLayout gridbag = new GridBagLayout();
+    final GridBagConstraints c = new GridBagConstraints();
+    final Dimension d = new Dimension(80, 24);
+    setLayout(gridbag);
 
-        c.gridy++;
-        label = new JLabel("Filter Message:");
-        gridbag.setConstraints(label, c);
-        add(label);
+    // Pad everything
+    c.ipadx = 5;
+    c.ipady = 5;
 
-        // Add the 2nd column of filters
-        c.weightx = 1;
-        //c.weighty = 1;
-        c.gridx = 1;
-        c.anchor = GridBagConstraints.WEST;
+    // Add the 1st column of labels
+    c.gridx = 0;
+    c.anchor = GridBagConstraints.EAST;
 
-        c.gridy = 0;
-        final Priority[] allPriorities = Priority.getAllPossiblePriorities();
-        final JComboBox priorities = new JComboBox(allPriorities);
-        gridbag.setConstraints(priorities, c);
-        add(priorities);
-        priorities.setEditable(false);
-        priorities.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent aEvent) {
-                    aModel.setPriorityFilter(
-                        (Priority) priorities.getSelectedItem());
-                    prefs.setProperty(PRIORITY_PROPERTY,
-                        priorities.getSelectedItem().toString());
-                }
-            });
+    c.gridy = 0;
 
-        Priority selected = allPriorities[allPriorities.length - 1];
-        final String priorityProp = prefs.getProperty(PRIORITY_PROPERTY);
-        if (savePrefs && priorityProp != null) {
-            for (int i = 0; i < allPriorities.length; i++) {
-                if (allPriorities[i].toString().equals(priorityProp)) {
-                    selected = allPriorities[i];
-                    break;
-                }
-            }
+    JLabel label = new JLabel("Filter Level:");
+    gridbag.setConstraints(label, c);
+    add(label);
+
+    c.gridy++;
+    label = new JLabel("Filter Thread:");
+    gridbag.setConstraints(label, c);
+    add(label);
+
+    c.gridy++;
+    label = new JLabel("Filter Category:");
+    gridbag.setConstraints(label, c);
+    add(label);
+
+    c.gridy++;
+    label = new JLabel("Filter NDC:");
+    gridbag.setConstraints(label, c);
+    add(label);
+
+    c.gridy++;
+    label = new JLabel("Filter Message:");
+    gridbag.setConstraints(label, c);
+    add(label);
+
+    // Add the 2nd column of filters
+    c.weightx = 1;
+
+    //c.weighty = 1;
+    c.gridx = 1;
+    c.anchor = GridBagConstraints.WEST;
+
+    c.gridy = 0;
+
+    final Priority[] allPriorities = Priority.getAllPossiblePriorities();
+    final JComboBox priorities = new JComboBox(allPriorities);
+    gridbag.setConstraints(priorities, c);
+    add(priorities);
+    priorities.setEditable(false);
+    priorities.addActionListener(
+      new ActionListener() {
+        public void actionPerformed(ActionEvent aEvent) {
+          aModel.setPriorityFilter((Priority) priorities.getSelectedItem());
+          prefs.setProperty(
+            PRIORITY_PROPERTY, priorities.getSelectedItem().toString());
         }
-        priorities.setSelectedItem(selected);
-        aModel.setPriorityFilter(selected);
+      });
 
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridwidth = 2;
-        c.gridy++;
-        String threadProp = "";
-        if (savePrefs) {
-            threadProp = prefs.getProperty(THREAD_PROPERTY, "");
+    Priority selected = allPriorities[allPriorities.length - 1];
+    final String priorityProp = prefs.getProperty(PRIORITY_PROPERTY);
+
+    if (savePrefs && (priorityProp != null)) {
+      for (int i = 0; i < allPriorities.length; i++) {
+        if (allPriorities[i].toString().equals(priorityProp)) {
+          selected = allPriorities[i];
+
+          break;
         }
-        final JTextField threadField = new JTextField(threadProp);
-        aModel.setThreadFilter(threadProp);
-        threadField.getDocument().addDocumentListener(
-            new DocumentChangeListener () {
-                public void update(DocumentEvent aEvent) {
-                    aModel.setThreadFilter(threadField.getText());
-                    prefs.setProperty(THREAD_PROPERTY, threadField.getText());
-                }
-            });
-        gridbag.setConstraints(threadField, c);
-        add(threadField);
+      }
+    }
 
-        c.gridy++;
-        String catProp = "";
-        if (savePrefs) {
-            catProp = prefs.getProperty(CATEGORY_PROPERTY, "");
+    priorities.setSelectedItem(selected);
+    aModel.setPriorityFilter(selected);
+
+    c.fill = GridBagConstraints.HORIZONTAL;
+    c.gridwidth = 2;
+    c.gridy++;
+
+    String threadProp = "";
+
+    if (savePrefs) {
+      threadProp = prefs.getProperty(THREAD_PROPERTY, "");
+    }
+
+    final JTextField threadField = new JTextField(threadProp);
+    aModel.setThreadFilter(threadProp);
+    threadField.getDocument().addDocumentListener(
+      new DocumentChangeListener() {
+        public void update(DocumentEvent aEvent) {
+          aModel.setThreadFilter(threadField.getText());
+          prefs.setProperty(THREAD_PROPERTY, threadField.getText());
         }
-        final JTextField catField = new JTextField(catProp);
-        aModel.setCategoryFilter(catProp);
-        catField.getDocument().addDocumentListener(
-            new DocumentChangeListener() {
-                public void update(DocumentEvent aEvent) {
-                    aModel.setCategoryFilter(catField.getText());
-                    prefs.setProperty(CATEGORY_PROPERTY, catField.getText());
-                }
-            });
-        gridbag.setConstraints(catField, c);
-        add(catField);
+      });
+    gridbag.setConstraints(threadField, c);
+    add(threadField);
 
-        c.gridy++;
-        String ndcProp = "";
-        if (savePrefs) {
-            ndcProp = prefs.getProperty(NDC_PROPERTY, "");
+    c.gridy++;
+
+    String catProp = "";
+
+    if (savePrefs) {
+      catProp = prefs.getProperty(CATEGORY_PROPERTY, "");
+    }
+
+    final JTextField catField = new JTextField(catProp);
+    aModel.setCategoryFilter(catProp);
+    catField.getDocument().addDocumentListener(
+      new DocumentChangeListener() {
+        public void update(DocumentEvent aEvent) {
+          aModel.setCategoryFilter(catField.getText());
+          prefs.setProperty(CATEGORY_PROPERTY, catField.getText());
         }
-        final JTextField ndcField = new JTextField(ndcProp);
-        aModel.setNDCFilter(ndcProp);
-        ndcField.getDocument().addDocumentListener(
-            new DocumentChangeListener () {
-                public void update(DocumentEvent aEvent) {
-                    aModel.setNDCFilter(ndcField.getText());
-                    prefs.setProperty(NDC_PROPERTY, ndcField.getText());
-                }
-            });
-        gridbag.setConstraints(ndcField, c);
-        add(ndcField);
+      });
+    gridbag.setConstraints(catField, c);
+    add(catField);
 
-        c.gridy++;
-        String msgProp = "";
-        if (savePrefs) {
-            msgProp = prefs.getProperty(MESSAGE_PROPERTY, "");
+    c.gridy++;
+
+    String ndcProp = "";
+
+    if (savePrefs) {
+      ndcProp = prefs.getProperty(NDC_PROPERTY, "");
+    }
+
+    final JTextField ndcField = new JTextField(ndcProp);
+    aModel.setNDCFilter(ndcProp);
+    ndcField.getDocument().addDocumentListener(
+      new DocumentChangeListener() {
+        public void update(DocumentEvent aEvent) {
+          aModel.setNDCFilter(ndcField.getText());
+          prefs.setProperty(NDC_PROPERTY, ndcField.getText());
         }
-        final JTextField msgField = new JTextField(msgProp);
-        aModel.setMessageFilter(msgProp);
-        msgField.getDocument().addDocumentListener(
-            new DocumentChangeListener () {
-                public void update(DocumentEvent aEvent) {
-                    aModel.setMessageFilter(msgField.getText());
-                    prefs.setProperty(MESSAGE_PROPERTY, msgField.getText());
-                }
-            });
+      });
+    gridbag.setConstraints(ndcField, c);
+    add(ndcField);
 
+    c.gridy++;
 
-        gridbag.setConstraints(msgField, c);
-        add(msgField);
+    String msgProp = "";
 
-        // Add the 3rd column of buttons
-        c.gridx = 2;
-        c.gridy = 0;
-        c.gridwidth = 1;
-        c.weightx = 0;
-        c.weighty = 0;
-        c.fill = GridBagConstraints.NONE;
-        c.anchor = GridBagConstraints.EAST;
+    if (savePrefs) {
+      msgProp = prefs.getProperty(MESSAGE_PROPERTY, "");
+    }
+
+    final JTextField msgField = new JTextField(msgProp);
+    aModel.setMessageFilter(msgProp);
+    msgField.getDocument().addDocumentListener(
+      new DocumentChangeListener() {
+        public void update(DocumentEvent aEvent) {
+          aModel.setMessageFilter(msgField.getText());
+          prefs.setProperty(MESSAGE_PROPERTY, msgField.getText());
+        }
+      });
+
+    gridbag.setConstraints(msgField, c);
+    add(msgField);
+
+    // Add the 3rd column of buttons
+    c.gridx = 2;
+    c.gridy = 0;
+    c.gridwidth = 1;
+    c.weightx = 0;
+    c.weighty = 0;
+    c.fill = GridBagConstraints.NONE;
+    c.anchor = GridBagConstraints.EAST;
+
     final JPanel buttonPanel = new JPanel();
-        gridbag.setConstraints(buttonPanel, c);
-        add(buttonPanel);
-        buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT,1,1));
+    gridbag.setConstraints(buttonPanel, c);
+    add(buttonPanel);
+    buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 1, 1));
 
-    final Insets insets = new Insets(2,2,2,2);
-        final JButton toggleButton = new JButton("Pause");
-        toggleButton.setMnemonic('p');
-        toggleButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent aEvent) {
-                    aModel.toggle();
-                    toggleButton.setText(
-                        aModel.isPaused() ? "Resume" : "Pause");
-                }
-            });
+    final Insets insets = new Insets(2, 2, 2, 2);
+    final JButton toggleButton = new JButton("Pause");
+    toggleButton.setMnemonic('p');
+    toggleButton.addActionListener(
+      new ActionListener() {
+        public void actionPerformed(ActionEvent aEvent) {
+          aModel.toggle();
+          toggleButton.setText(aModel.isPaused() ? "Resume" : "Pause");
+        }
+      });
     toggleButton.setMargin(insets);
     toggleButton.setPreferredSize(d);
     toggleButton.setMinimumSize(d);
-        buttonPanel.add(toggleButton);
+    buttonPanel.add(toggleButton);
 
-        final JButton clearButton = new JButton("Clear");
-        clearButton.setMnemonic('c');
-        clearButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent aEvent) {
-                    aModel.clear();
-                }
-            });
+    final JButton clearButton = new JButton("Clear");
+    clearButton.setMnemonic('c');
+    clearButton.addActionListener(
+      new ActionListener() {
+        public void actionPerformed(ActionEvent aEvent) {
+          aModel.clear();
+        }
+      });
     clearButton.setMargin(insets);
     clearButton.setPreferredSize(d);
     clearButton.setMinimumSize(d);
-        buttonPanel.add(clearButton);
+    buttonPanel.add(clearButton);
 
-        final JButton exitButton = new JButton("Exit");
-        exitButton.setMnemonic('x');
-        exitButton.addActionListener(ExitAction.INSTANCE);
+    final JButton exitButton = new JButton("Exit");
+    exitButton.setMnemonic('x');
+    exitButton.addActionListener(ExitAction.INSTANCE);
     exitButton.setMargin(insets);
     exitButton.setPreferredSize(d);
     exitButton.setMinimumSize(d);
-        buttonPanel.add(exitButton);
+    buttonPanel.add(exitButton);
+  }
+
+  /** Convenience class that filters all document events to one method */
+  private abstract static class DocumentChangeListener
+    implements DocumentListener {
+    public abstract void update(DocumentEvent aEvent);
+
+    public void insertUpdate(DocumentEvent aEvent) {
+      update(aEvent);
     }
 
-    /** Convenience class that filters all document events to one method */
-    private static abstract class DocumentChangeListener
-        implements DocumentListener {
-
-        public abstract void update(DocumentEvent aEvent);
-
-        public void insertUpdate(DocumentEvent aEvent) {
-            update(aEvent);
-        }
-        public void removeUpdate(DocumentEvent aEvent) {
-            update(aEvent);
-        }
-        public void changedUpdate(DocumentEvent aEvent) {
-            update(aEvent);
-        }
-
+    public void removeUpdate(DocumentEvent aEvent) {
+      update(aEvent);
     }
 
+    public void changedUpdate(DocumentEvent aEvent) {
+      update(aEvent);
+    }
+  }
 }

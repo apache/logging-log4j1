@@ -46,7 +46,10 @@
  * Apache Software Foundation, please see <http://www.apache.org/>.
  *
  */
+
 package org.apache.log4j.chainsaw;
+
+import org.apache.log4j.Logger;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -56,13 +59,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
 
 /**
  *  Manages user preferences for the Chainsaw application.
@@ -208,7 +211,7 @@ class Preferences extends Properties {
         result = Integer.parseInt(strValue);
       }
     } catch (final NumberFormatException nfe) {
-        // just use default value
+      // just use default value
     }
 
     return result;

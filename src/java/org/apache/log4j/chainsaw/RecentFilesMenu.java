@@ -46,18 +46,21 @@
  * Apache Software Foundation, please see <http://www.apache.org/>.
  *
  */
+
 package org.apache.log4j.chainsaw;
 
+import org.apache.log4j.Logger;
+
 import java.awt.event.ActionEvent;
+
 import java.io.File;
+
 import java.util.Iterator;
 
 import javax.swing.AbstractAction;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-
-import org.apache.log4j.Logger;
 
 
 /**
@@ -72,11 +75,11 @@ public class RecentFilesMenu extends JMenu {
   private final XMLFileHandler mHandler;
 
   /**
-   *  Construct a RecentFilesMenu object based on the given model.  When a
-   *  file is selected from the menu, it will be loaded to the given model.
-   *
-   *  @param model  the table model
-   */
+ *  Construct a RecentFilesMenu object based on the given model.  When a
+ *  file is selected from the menu, it will be loaded to the given model.
+ *
+ *  @param model  the table model
+ */
   public RecentFilesMenu(EventDetailSink eventSink) {
     super("Recent Files");
     this.eventSink = eventSink;
@@ -84,15 +87,15 @@ public class RecentFilesMenu extends JMenu {
   }
 
   /**
-   *  Rebuild the menu based on the data in the
-   *  {@link org.apache.log4j.chainsaw.Preferences}.
-   */
+ *  Rebuild the menu based on the data in the
+ *  {@link org.apache.log4j.chainsaw.Preferences}.
+ */
   public void rebuild() {
     removeAll();
 
     int order = 1;
     final Iterator fIter =
-        Preferences.getInstance().getRecentFiles().iterator();
+      Preferences.getInstance().getRecentFiles().iterator();
 
     // Menu is enabled when we have files
     setEnabled(fIter.hasNext());

@@ -46,6 +46,7 @@
  * Apache Software Foundation, please see <http://www.apache.org/>.
  *
  */
+
 package org.apache.log4j.chainsaw;
 
 import java.util.ArrayList;
