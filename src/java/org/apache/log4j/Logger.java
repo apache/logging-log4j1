@@ -29,19 +29,47 @@ import java.net.MalformedURLException;
 
 
 /**
-  This is the central class in the log4j package. One of the
-  distintive features of log4j are hierarchical categories and their
-  evaluation.
+  This is the central class in the log4j package. Most logging
+  operations, except configuration, are done through this class.
 
   <p>See the <a href="../../../../manual.html">user manual</a> for an
   introduction on this class. 
 
-  @author Ceki G&uuml;lc&uuml;
-  @author Anders Kristensen */
+  @author Ceki G&uuml;lc&uuml; */
 public class Logger extends Category {
 
   protected 
   Logger(String name) {
     super(name);
   }
+
+  /**
+     Same as calling {@link LogManager#getLogger(String)}.
+  */
+  static
+  public
+  Logger getLogger(String name) {
+    return LogManager.getLogger(name);
+  }
+
+
+  /**
+     Same as calling {@link LogManager#getLogger(Class)}.
+   */
+  static
+  public
+  Logger getLogger(Class clazz) {
+    return LogManager.getLogger(clazz.getName());
+  }
+
+  /**
+     Same as calling {@link LogManager#getRootLogger()}.     
+   */
+  public
+  static 
+  Logger getRootLogger() {
+    return LogManager.getRootLogger();
+  }
+
+
 }

@@ -34,17 +34,16 @@ import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
 
 /**
-   This class is specialized in retrieving categories by name and
-   also maintaining the category hierarchy.
+   This class is specialized in retrieving loggers by name and also
+   maintaining the logger hierarchy.
 
-   <p><em>The casual user should not have to deal with this class
-   directly.</em> In fact, up until version 0.9.0, this class had
-   default package access. 
+   <p><em>The casual user does not have to deal with this class
+   directly.</em>
 
-   <p>The structure of the category hierarchy is maintained by the
+   <p>The structure of the logger hierarchy is maintained by the
    {@link #getLogger} method. The hierarchy is such that children link
    to their parent but parents do not have any pointers to their
-   children. Moreover, categories can be instantiated in any order, in
+   children. Moreover, loggers can be instantiated in any order, in
    particular descendant before ancestor.
 
    <p>In case a descendant is created before a particular ancestor,
@@ -71,7 +70,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   boolean emittedNoResourceBundleWarning = false;  
 
   /**
-     Create a new Category hierarchy.
+     Create a new logger hierarchy.
 
      @param root The root of the new hierarchy.
 
@@ -106,9 +105,9 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   }
 
   /**
-     This call will clear all category definitions from the internal
+     This call will clear all logger definitions from the internal
      hashtable. Invoking this method will irrevocably mess up the
-     category hierarchy.
+     logger hierarchy.
      
      <p>You should <em>really</em> know what you are doing before
      invoking this method.
@@ -124,7 +123,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   void emitNoAppenderWarning(Category cat) {
     // No appenders in hierarchy, warn user only once.
     if(this.emittedNoAppenderWarning) {
-      LogLog.error("No appenders could be found for category (" +
+      LogLog.error("No appenders could be found for logger (" +
 		   cat.getName() + ").");
       LogLog.error("Please initialize the log4j system properly.");
       this.emittedNoAppenderWarning = true;
@@ -132,10 +131,10 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   }
 
   /**
-     Check if the named category exists in the hierarchy. If so return
+     Check if the named logger exists in the hierarchy. If so return
      its reference, otherwise returns <code>null</code>.
      
-     @param name The name of the category to search for.
+     @param name The name of the logger to search for.
      
   */
   public
@@ -168,23 +167,23 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
 
 
   /**
-     Disable all logging requests of level <em>equal to or
-     below</em> the level parameter <code>p</code>, for
-     <em>all</em> categories in this hierarchy. Logging requests of
-     higher level then <code>p</code> remain unaffected.
+     Disable all logging requests of level <em>equal to or below</em>
+     the level parameter <code>p</code>, for <em>all</em> loggers in
+     this hierarchy. Logging requests of higher level then
+     <code>p</code> remain unaffected.
 
      <p>The "disable" family of methods are there for speed. They
      allow printing methods such as debug, info, etc. to return
      immediately after an integer comparison without walking the
-     category hierarchy. In most modern computers an integer
-     comparison is measured in nanoseconds where as a category walk is
-     measured in units of microseconds.
+     logger hierarchy. In most modern computers an integer comparison
+     is measured in nanoseconds where as a logger walk is measured in
+     units of microseconds.
 
      <p>Other configurators define alternate ways of overriding the
      disable override flag. See {@link PropertyConfigurator} and
      {@link org.apache.log4j.xml.DOMConfigurator}.
 
-     @deprecated Please use the {@link #enable} familiy of methods instead.
+     @deprecated Please use the {@link #enable} family of methods instead.
 
      @since 0.8.5 */
   public
@@ -204,11 +203,11 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   }
   
   /**
-     Disable all logging requests regardless of category and level.
+     Disable all logging requests regardless of logger and level.
      This method is equivalent to calling {@link #disable} with the
      argument {@link Level#FATAL}, the highest possible level.
 
-     @deprecated Please use the {@link #enable} familiy of methods instead.
+     @deprecated Please use the {@link #enable} family of methods instead.
 
      @since 0.8.5 */
   public
@@ -218,13 +217,12 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
 
 
   /**
-     Disable all logging requests of level DEBUG regardless of
-     category.  Invoking this method is equivalent to calling {@link
+     Disable all logging requests of level DEBUG regardless of the
+     logger.  Invoking this method is equivalent to calling {@link
      #disable} with the argument {@link Level#DEBUG}.
 
-     @deprecated Please use the {@link #enable} familiy of methods instead.
-
-     @since 0.8.5 */
+     @deprecated Please use the {@link #enable} family of methods instead.
+  */
   public
   void disableDebug() {
     disable(Level.DEBUG);
@@ -233,13 +231,13 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
 
   /**
      Disable all logging requests of level INFO and below
-     regardless of category. Note that DEBUG messages are also
+     regardless of logger. Note that DEBUG messages are also
      disabled.  
 
      <p>Invoking this method is equivalent to calling {@link
      #disable(Level)} with the argument {@link Level#INFO}.
 
-     @deprecated Please use the {@link #enable} familiy of methods instead.
+     @deprecated Please use the {@link #enable} family of methods instead.
 
      @since 0.8.5 */
   public
@@ -248,29 +246,26 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   }  
 
   /**
-     Undoes the effect of calling any of {@link #disable}, {@link
-     #disableAll}, {@link #disableDebug} and {@link #disableInfo}
-     methods. More precisely, invoking this method sets the Category
-     class internal variable called <code>disable</code> to its
-     default "off" value.
-
-     @since 0.8.5 */
+     Equivalent to calling <code>enable(Level.ALL)</code>.
+     
+     By default all levels are enabled.
+  */
   public
   void enableAll() {
     enable(Level.ALL);
   }
 
   /**
-     Enable logging for events with level p or higher.
+     Enable logging for logging requests with level <code>l</code> or
+     higher. By default all levels are enabled.
 
-	  @param p the minimum level for which events are sent to
-	         their appenders.
-	  @since 1.1.3 */
+     @param l The minimum level for which logging requests are sent to
+     their appenders.  */
   public 
-  void enable(Level p) {
-    if(p != null) {
-      enableInt = p.level;
-      enable = p;
+  void enable(Level l) {
+    if(l != null) {
+      enableInt = l.level;
+      enable = l;
     }
   }
 
@@ -298,11 +293,10 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   }
 
   /**
-     Returns a {@link Level} representation of the
-     <code>enable</code> state.  
+     Returns a {@link Level} representation of the <code>enable</code>
+     state.
 
-     @since 1.2
-  */
+     @since 1.2 */
   public
   Level getEnable() {
     return enable;
@@ -336,16 +330,16 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   }
 
  /**
-     Return a new category instance named as the first parameter using
+     Return a new logger instance named as the first parameter using
      <code>factory</code>.
      
-     <p>If a category of that name already exists, then it will be
-     returned.  Otherwise, a new category will be instantiated by the
+     <p>If a logger of that name already exists, then it will be
+     returned.  Otherwise, a new logger will be instantiated by the
      <code>factory</code> parameter and linked with its existing
      ancestors as well as children.
      
-     @param name The name of the category to retrieve.
-     @param factory The factory that will make the new category instance.
+     @param name The name of the logger to retrieve.
+     @param factory The factory that will make the new logger instance.
 
  */
   public
@@ -613,7 +607,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   /** 
       We update the links for all the children that placed themselves
       in the provision node 'pn'. The second argument 'cat' is a
-      reference for the newly created Category, parent of all the
+      reference for the newly created Logger, parent of all the
       children in 'pn'
 
       We loop on all the children 'c' in 'pn':

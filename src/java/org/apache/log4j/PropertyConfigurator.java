@@ -38,7 +38,7 @@ import java.util.Hashtable;
 
 /**
    Extends {@link BasicConfigurator} to provide configuration from an
-   external file.  See <b>{@link #doConfigure(String, Hierarchy)}</b> for the
+   external file.  See <b>{@link #doConfigure(String, LoggerRepository)}</b> for the
    expected format.
 
    <p>It is sometimes useful to see how log4j is reading configuration
@@ -336,7 +336,7 @@ public class PropertyConfigurator extends BasicConfigurator
   /**
      Read configuration options from <code>properties</code>.
 
-     See {@link #doConfigure(String, Hierarchy)} for the expected format.
+     See {@link #doConfigure(String, LoggerRepository)} for the expected format.
   */
   static
   public
@@ -383,7 +383,7 @@ public class PropertyConfigurator extends BasicConfigurator
   /**
      Read configuration options from <code>properties</code>.
 
-     See {@link #doConfigure(String, Hierarchy)} for the expected format.
+     See {@link #doConfigure(String, LoggerRepository)} for the expected format.
   */
   public
   void doConfigure(Properties properties, LoggerRepository hierarchy) {
