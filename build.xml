@@ -297,23 +297,15 @@
   </target>
 
   <!-- ================================================================= -->
-  <!-- Remove the temporary manifest file, actual work is done in the    -->
-  <!-- dependencies.                                                     -->
+  <!-- Aactual work is done in the dependencies.                         -->
   <!-- ================================================================= -->
   <target name="jar" depends="log4j.jar">
-     <delete file="${jar.dest}/manifest.mf"/>
-  </target>
-
-  <target name="prejar" depends="build">
-    <filter token="version" value="${version}" />
-    <copy file="${manifest.src}" tofile="${jar.dest}/manifest.mf"
-          filtering="true"/>
   </target>
 
  <!-- ================================================================= -->
  <!-- Create log4j.jar, excluding tests and other odds and ends.        -->
  <!-- ================================================================= -->
-  <target name="log4j.jar" depends="prejar">
+  <target name="log4j.jar" depends="build">
     <delete>
       <fileset dir="${jar.dest}">
 	<include name="${log4j.jar}"/>
@@ -340,9 +332,17 @@
 		${stem}/or/sax/*.class,
                 ${stem}/or/jms/*.class,
 		${stem}/config/*.class"
-      excludes="**/UnitTest**"
-      manifest="${jar.dest}/manifest.mf"
-    />
+      excludes="**/UnitTest**">
+
+      <manifest>
+	<attribute name="Manifest-version" value="1.0"/>
+	<section name="org/apache/log4j/">
+	  <attribute name="Implementation-Title" value="log4j"/>
+	  <attribute name="Implementation-Version" value="${version}"/> 
+	  <attribute name="Implementation-Vendor" value="APache Software Foundation"/>
+	</section>
+      </manifest>
+    </jar>
   </target>
 
 
