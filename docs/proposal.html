@@ -96,7 +96,7 @@ I am aware, these levels are not disputed.
 (internationalized) logging.
 </ul>
 
-<p>The <code>LogManager</code> class will be used to retreive
+<p>The <code>LogManager</code> class will be used to retrieve
 <code>Logger</code> instances.
 
 
@@ -109,12 +109,12 @@ public class LogManager {
      // return the appropriate Logger instance
   }
 
-  public Logger getLogger(Class clazz) {
-    return getLogger(clazzz.getName());
-  }
-
+  /**
+     Returns an aprropriate LogManager instance.
+  */
   <b>static</b> public LogManager getLogManager() {
-    // returns the default LogManager 
+     // the returned instance may depend on the current context, for example on the 
+     // class loader for the current thread, or some environment dependent context.
   }
 }
 </pre>
@@ -132,7 +132,7 @@ import org.apache.log4j.Logger;
 
 public class Foo {
 
- final static Logger logger = LogManager.getLogManager().getLogger(Foo.class);
+ final static Logger logger = LogManager.getLogManager().getLogger(Foo.class.getName());
 
  void bar() {
    logger.debug("hello world.");
@@ -154,7 +154,6 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 public class Foo {
-
  
  Logger logger;
 
