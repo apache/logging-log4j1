@@ -105,21 +105,18 @@ hierarchy.</em>
 
 <p>In log4j, appenders are inherited additively from the hierarchy. A
 category will log to the appenders attached to itself as well as the
-appenders attached to its ancestors. 
-
-<p>This might not seem like much until the day you need handler
-inheritance; probably the day after you decide to adopt a logging API.
+appenders attached to its ancestors. This might not seem like much
+until the day you need handler inheritance; probably a week after you
+decide to adopt a logging API.
 
 <p>Similarly, in log4j resource bundles are inherited from the
 hierarchy. In JSR47, a resource bundle <em>must</em> be attached to
 each logger individually. There is no resource bundle inheritance in
 JSR47. In practice, this means that you have to choose between
 internationalization and the benefits of the named logger
-hierarchy. It's one or the other.
-
-<p>This is particularly surprising since support for
-internationalization is advocated as one of the big advantages of the
-JSR47 API.
+hierarchy. It's one or the other. This limitation is particularly
+surprising because support for internationalization is advocated as
+one of the primary advantages of the JSR47 API.
 
 </ol>
 
@@ -228,7 +225,6 @@ Exception in thread "main" java.lang.ExceptionInInitializerError: java.lang.Secu
 
 <p>Jochen Hiller had observed this problem in early 2001 when he
 implemented the JSR47 API by wrapping log4j.
-
 
 <h2>Error Handling</h2>
 
@@ -452,6 +448,4 @@ credit for their ongoing investment. They have also introduced a
 number of amazingly innovative APIs. However, no one gets it right
 <em>all</em> the time.
 
-</body>
-</HTML>
-
+</body> </HTML>
