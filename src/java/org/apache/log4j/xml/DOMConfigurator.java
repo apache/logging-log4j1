@@ -651,16 +651,16 @@ public class DOMConfigurator implements Configurator {
     }
       
     try {
-      // This makes ID/IDREF attributes to have a meaning. Don't ask
-      // me why.
       dbf.setValidating(true);
-      //dbf.setNamespaceAware(true);
-
       DocumentBuilder docBuilder = dbf.newDocumentBuilder();
-      docBuilder.setErrorHandler(new SAXErrorHandler());
-
-      docBuilder.setEntityResolver(new Log4jEntityResolver());
-      Document doc = docBuilder.parse(inputSource);
+      docBuilder.setErrorHandler(new SAXErrorHandler());      
+      docBuilder.setEntityResolver(new Log4jEntityResolver());        
+      // we change the system ID to a valid URI so that Crimson won't
+      // complain. Indeed, "log4j.dtd" alone is not a valid URI which
+      // causes Crimson to barf. The Log4jEntityResolver only cares
+      // about the "log4j.dtd" ending.
+      inputSource.setSystemId("dummy://log4j.dtd");
+      Document doc = docBuilder.parse(inputSource); 
       parse(doc.getDocumentElement());
     } catch (Exception e) {
       // I know this is miserable...
@@ -668,13 +668,13 @@ public class DOMConfigurator implements Configurator {
     }
   }
 
-    /**
-       Configure by taking in an DOM element. 
-     */
-    public void doConfigure(Element element, LoggerRepository repository) {
-	this.repository = repository;
-	parse(element);
-    }
+  /**
+     Configure by taking in an DOM element. 
+  */
+  public void doConfigure(Element element, LoggerRepository repository) {
+    this.repository = repository;
+    parse(element);
+  }
 
   
   /**

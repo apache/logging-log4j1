@@ -246,8 +246,6 @@ public class JDBCAppender extends org.apache.log4j.AppenderSkeleton
     
     // clear the buffer of reported events
     removes.clear();
-    
-    //buffer.clear();
   }
 
 
