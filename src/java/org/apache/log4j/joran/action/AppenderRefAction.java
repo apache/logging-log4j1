@@ -49,7 +49,7 @@ public class AppenderRefAction extends Action {
 
       logger.warn(errMsg);
       inError = true;
-      ec.addError(new ErrorItem(errMsg, ec.getLocator()));
+      ec.addError(new ErrorItem(errMsg));
 
       return;
     }
@@ -64,7 +64,7 @@ public class AppenderRefAction extends Action {
 
       logger.warn(errMsg);
       inError = true;
-      ec.addError(new ErrorItem(errMsg, ec.getLocator()));
+      ec.addError(new ErrorItem(errMsg));
 
       return;
     }
@@ -76,7 +76,7 @@ public class AppenderRefAction extends Action {
     if (appender == null) {
       logger.warn("Could not find an appender named [" + appenderName + "]");
       inError = true;
-      ec.addError(new ErrorItem("Could not find an appender named [" + appenderName + "]", ec.getLocator()));
+      ec.addError(new ErrorItem("Could not find an appender named [" + appenderName + "]"));
 
       return;
     }

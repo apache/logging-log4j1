@@ -53,7 +53,7 @@ public class LoggerAction extends Action {
       String errorMsg = "No 'name' attribute in element " + name + line;
 
       logger.warn(errorMsg);
-      ec.addError(new ErrorItem(errorMsg, ec.getLocator()));
+      ec.addError(new ErrorItem(errorMsg));
 
       return;
     }

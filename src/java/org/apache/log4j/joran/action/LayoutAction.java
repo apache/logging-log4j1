@@ -57,7 +57,7 @@ public class LayoutAction extends Action {
       inError = true;
       logger.error(
         "Could not create an Layout. Reported error follows.", oops);
-      ec.addError(new ErrorItem("Could not create layout of type " + className + "].", ec.getLocator()));
+      ec.addError(new ErrorItem("Could not create layout of type " + className + "]."));
     }
   }
 

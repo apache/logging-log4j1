@@ -51,7 +51,7 @@ public class ConversionRuleAction extends Action {
       inError = true;
       errorMsg = "No 'conversionWord' attribute in <conversionRule>";
       logger.warn(errorMsg);
-      ec.addError(new ErrorItem(errorMsg, ec.getLocator()));
+      ec.addError(new ErrorItem(errorMsg));
 
       return;
     }
@@ -60,7 +60,7 @@ public class ConversionRuleAction extends Action {
       inError = true;
       errorMsg = "No 'converterClass' attribute in <conversionRule>";
       logger.warn(errorMsg);
-      ec.addError(new ErrorItem(errorMsg, ec.getLocator()));
+      ec.addError(new ErrorItem(errorMsg));
 
       return;
     }
@@ -80,7 +80,7 @@ public class ConversionRuleAction extends Action {
       inError = true;
       errorMsg = "Could not add conversion rule to PatternLayout.";
       logger.error(errorMsg, oops);
-      ec.addError(new ErrorItem(errorMsg, ec.getLocator()));
+      ec.addError(new ErrorItem(errorMsg));
     }
   }
 

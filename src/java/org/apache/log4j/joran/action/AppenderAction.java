@@ -74,8 +74,7 @@ public class AppenderAction extends Action {
         "Could not create an Appender. Reported error follows.", oops);
       ec.addError(
         new ErrorItem(
-          "Could not create appender of type " + className + "].",
-          ec.getLocator()));
+          "Could not create appender of type " + className + "]."));
     }
   }
 

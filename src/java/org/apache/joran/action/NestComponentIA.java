@@ -57,7 +57,7 @@ public class NestComponentIA extends ImplicitAction {
       
       default: 
       inError= true;
-      ec.addError(new ErrorItem("PropertySetter.canContainComponent returned "+containmentType, ec.getLocator()));
+      ec.addError(new ErrorItem("PropertySetter.canContainComponent returned "+containmentType));
       return false;
     }
   }
@@ -72,7 +72,7 @@ public class NestComponentIA extends ImplicitAction {
         inError = true;
         String errMsg = "No class name attribute in <"+localName+">";
         logger.error(errMsg);
-        ec.addError(new ErrorItem(errMsg, ec.getLocator()));
+        ec.addError(new ErrorItem(errMsg));
         return;
       }
       
@@ -88,7 +88,7 @@ public class NestComponentIA extends ImplicitAction {
         inError = true;      
         String msg =  "Could not create component <"+localName+">.";
         logger.error(msg, oops);
-        ec.addError(new ErrorItem(msg, ec.getLocator()));
+        ec.addError(new ErrorItem(msg));
       }
   }
 

@@ -34,34 +34,32 @@ import java.util.Stack;
 import java.util.Vector;
 
 
-// TODO Errors should be reported in Error objects instead of just strings.
-// TODO Interpreter should set its own ErrorHander for XML parsing errors.
 /**
- * <id>Interpreter</id> is Joran's main driving class. It acts as a SAX 
- * {@link ContentHandler} which invokes various 
- * {@link Action actions} according to predefined patterns. 
- * 
+ * <id>Interpreter</id> is Joran's main driving class. It acts as a SAX
+ * {@link ContentHandler} which invokes various
+ * {@link Action actions} according to predefined patterns.
+ *
  * <p>Patterns are kept in a {@link RuleStore} which is programmed to store and
  * then later produce the applicable actions for a given pattern.
- * 
- * <p>The pattern corresponding to a top level &lt;a&gt; element is the string 
+ *
+ * <p>The pattern corresponding to a top level &lt;a&gt; element is the string
  * <id>"a"</id>.
- * 
- * <p>The pattern corresponding to an element &lt;b&gt; embeded within a top level 
+ *
+ * <p>The pattern corresponding to an element &lt;b&gt; embeded within a top level
  * &lt;a&gt; element is the string <id>"a/b"</id>.
- * 
+ *
  * <p>The pattern corresponding to an &lt;b&gt; and any level of nesting is
  * "&star;/b. Thus, the &star; character placed at the beginning of a pattern
- * serves as a wildcard for the level of nesting.  
- * 
- * Conceptually, this is very similar to the API of commons-digester. Joran 
+ * serves as a wildcard for the level of nesting.
+ *
+ * Conceptually, this is very similar to the API of commons-digester. Joran
  * offers several small advantages. First and foremost, it offers support for
  * implicit actions which result in a significant leap in flexibility. Second,
  * in our opinion better error reporting capability. Third, it is self-reliant.
  * It does not depend on other APIs, in particular commons-logging which is
- * a big no-no for log4j. Last but not least, joran is quite tiny and is 
- * expected to remain so.  
- *   
+ * a big no-no for log4j. Last but not least, joran is quite tiny and is
+ * expected to remain so.
+ *
  * @author Ceki G&uuml;lcu&uuml;
  *
  */
@@ -73,7 +71,7 @@ public class Interpreter extends DefaultHandler {
   private ArrayList implicitActions;
   Pattern pattern;
   Locator locator;
-  
+
   /**
    * The <id>actionListStack</id> contains a list of actions that are
    * executing for the given XML element.
@@ -117,7 +115,9 @@ public class Interpreter extends DefaultHandler {
       callBeginAction(applicableActionList, tagName, atts);
     } else {
       actionListStack.add(EMPTY_LIST);
-      logger.debug("no applicable action for <" + tagName + ">.");
+      String errMsg = "no applicable action for <" + tagName + ">.";
+      logger.debug(errMsg);
+      
     }
   }
 
@@ -200,7 +200,15 @@ public class Interpreter extends DefaultHandler {
 
     while (i.hasNext()) {
       Action action = (Action) i.next();
-      action.begin(ec, tagName, atts);
+
+      // now ket us invoke the action. We catch and report any eventual 
+      // exceptions
+      try {
+        action.begin(ec, tagName, atts);
+      } catch (Exception e) {
+        ec.addError(
+          new ErrorItem("Action threw an exception", e));
+      }
     }
   }
 
@@ -230,25 +238,25 @@ public class Interpreter extends DefaultHandler {
   }
 
   public void error(SAXParseException spe) throws SAXException {
-    ec.addError(new ErrorItem("Parsing error", getLocator(), spe));
+    ec.addError(new ErrorItem("Parsing error", spe));
     LogLog.error(
-        "Parsing problem on line " + spe.getLineNumber() + " and column "
-        + spe.getColumnNumber());
+      "Parsing problem on line " + spe.getLineNumber() + " and column "
+      + spe.getColumnNumber());
   }
-  
-  public void fatalError(SAXParseException spe)  throws SAXException {
-    ec.addError(new ErrorItem("Parsing fatal error", getLocator(), spe));
+
+  public void fatalError(SAXParseException spe) throws SAXException {
+    ec.addError(new ErrorItem("Parsing fatal error", spe));
     LogLog.error(
-        "Parsing problem on line " + spe.getLineNumber() + " and column "
-        + spe.getColumnNumber());
+      "Parsing problem on line " + spe.getLineNumber() + " and column "
+      + spe.getColumnNumber());
   }
-  
+
   public void warning(SAXParseException spe) throws SAXException {
-    ec.addError(new ErrorItem("Parsing warning", getLocator(), spe));
+    ec.addError(new ErrorItem("Parsing warning", spe));
     LogLog.warn(
-        "Parsing problem on line " + spe.getLineNumber() + " and column "
-        + spe.getColumnNumber());
-  } 
+      "Parsing problem on line " + spe.getLineNumber() + " and column "
+      + spe.getColumnNumber());
+  }
 
   public void endPrefixMapping(java.lang.String prefix) {
   }

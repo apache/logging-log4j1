@@ -31,8 +31,7 @@ public class LevelAction extends Action {
       inError = true;
       ec.addError(
         new ErrorItem(
-          "For element <level>, could not find a logger at the top of execution stack.",
-          ec.getLocator()));
+          "For element <level>, could not find a logger at the top of execution stack."));
 
       return;
     }
