@@ -19,15 +19,15 @@ import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.helpers.VersionHelper;
 
 // Contributors:   Avy Sharell (sharell@online.fr)
-//                 Anders Kristensen
 //                 Matthieu Verbert (mve@zurich.ibm.com)
-
+//                 Colin Sampaleanu
 
 /**
    A convenience class to convert property values to specific types.
 
    @author Ceki G&uuml;lc&uuml;
    @author Simon Kitching;
+   @author Anders Kristensen
 */	
 public class OptionConverter {
 
@@ -420,13 +420,18 @@ public class OptionConverter {
      <p>All configurations steps are taken on the
      <code>hierarchy</code> passed as parameter.
      
-     @author based on code written by Anders Kristensen
-
      @since 1.0 */
   static
   public
   void selectAndConfigure(URL url, Hierarchy hierarchy) {
     String clazz = url.getRef();
+
+    if (clazz.indexOf('.') == -1 || clazz.indexOf('/') != -1 || clazz.indexOf('\\') != -1) {
+      LogLog.warn("Suspicious reference in URL ["+url+
+		  "] will ignore refence part assuming BEA Weblogic environment.");
+      clazz = null;      
+    }
+ 
 
     Configurator configurator = null;
 
