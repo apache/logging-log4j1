@@ -649,8 +649,8 @@ public class ReceiversPanel extends JPanel {
             new AbstractAction("New " + name + "...") {
               public void actionPerformed(ActionEvent e) {
                 Container container = SwingUtilities.getAncestorOfClass(JFrame.class, ReceiversPanel.this);
-                final JDialog dialog = new JDialog((JFrame) container, true);
-
+                final JDialog dialog = new JDialog((JFrame) container,"New " + toCreate.getName() + "..." ,true);
+                
                 try {
                   final NewReceiverDialogPanel panel =
                     NewReceiverDialogPanel.create(toCreate);
