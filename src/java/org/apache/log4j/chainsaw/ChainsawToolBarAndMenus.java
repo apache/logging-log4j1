@@ -134,6 +134,10 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
   private final Collection lookAndFeelMenus = new ArrayList();
   private final JCheckBoxMenuItem toggleShowReceiversCheck =
     new JCheckBoxMenuItem();
+	
+	private final JCheckBoxMenuItem toggleDetailMenuItem =
+	  new JCheckBoxMenuItem();
+
   private final FileMenu fileMenu;
   private final JCheckBoxMenuItem toggleStatusBarCheck =
     new JCheckBoxMenuItem();
@@ -624,8 +628,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
 
     showTabs = new JMenu("Display tabs");
 
-    JCheckBoxMenuItem toggleDetailMenuItem =
-      new JCheckBoxMenuItem(toggleDetailPaneAction);
+    toggleDetailMenuItem.setAction(toggleDetailPaneAction);
     toggleDetailMenuItem.setSelected(true);
 
     JCheckBoxMenuItem toggleLogTreeMenuItem =
@@ -1147,7 +1150,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
 
       pauseButton.getModel().setSelected(logPanel.isPaused());
       logui.getStatusBar().setPaused(logPanel.isPaused());
-
+	  toggleDetailMenuItem.setSelected(logPanel.isDetailPaneVisible());
       detailPaneButton.getModel().setSelected(logPanel.isDetailPaneVisible());
     }
 

@@ -49,6 +49,22 @@
 
 package org.apache.log4j.chainsaw;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Priority;
+import org.apache.log4j.UtilLoggingLevel;
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.SettingsListener;
+import org.apache.log4j.chainsaw.prefs.SettingsManager;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.net.SocketNodeEventListener;
+import org.apache.log4j.net.SocketReceiver;
+import org.apache.log4j.plugins.PluginRegistry;
+import org.apache.log4j.plugins.Receiver;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -63,13 +79,20 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+
 import java.lang.reflect.Method;
+
 import java.net.URL;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -94,22 +117,6 @@ import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
-
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Priority;
-import org.apache.log4j.UtilLoggingLevel;
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SettingsListener;
-import org.apache.log4j.chainsaw.prefs.SettingsManager;
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.helpers.OptionConverter;
-import org.apache.log4j.net.SocketNodeEventListener;
-import org.apache.log4j.net.SocketReceiver;
-import org.apache.log4j.plugins.PluginRegistry;
-import org.apache.log4j.plugins.Receiver;
 
 
 /**
@@ -136,8 +143,7 @@ import org.apache.log4j.plugins.Receiver;
  */
 public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   private static final String CONFIG_FILE_TO_USE = "config.file";
-  static final String USE_CYCLIC_BUFFER_PROP_NAME =
-    "chainsaw.usecyclicbuffer";
+  static final String USE_CYCLIC_BUFFER_PROP_NAME = "chainsaw.usecyclicbuffer";
   static final String CYCLIC_BUFFER_SIZE_PROP_NAME =
     "chainsaw.cyclicbuffersize";
   private static final String MAIN_WINDOW_HEIGHT = "main.window.height";
@@ -158,13 +164,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   private ChainsawStatusBar statusBar;
   private final Map tableModelMap = new HashMap();
   private final Map tableMap = new HashMap();
-
-  //  final List pausedList = new Vector();
   private final List filterableColumns = new ArrayList();
-  private final Map entryMap = new HashMap();
   private final Map panelMap = new HashMap();
-  private final Map scrollMap = new HashMap();
-  private final Map levelMap = new HashMap();
   ChainsawAppenderHandler handler;
   private ChainsawToolBarAndMenus tbms;
   private ChainsawAbout aboutBox;
@@ -470,9 +471,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       utilLevels.add(iterator.next().toString());
     }
 
-    getLevelMap().put(ChainsawConstants.UTIL_LOGGING_EVENT_TYPE, utilLevels);
-    getLevelMap().put(ChainsawConstants.LOG4J_EVENT_TYPE, priorityLevels);
-
+    //    getLevelMap().put(ChainsawConstants.UTIL_LOGGING_EVENT_TYPE, utilLevels);
+    //    getLevelMap().put(ChainsawConstants.LOG4J_EVENT_TYPE, priorityLevels);
     getFilterableColumns().add(ChainsawConstants.LEVEL_COL_NAME);
     getFilterableColumns().add(ChainsawConstants.LOGGER_COL_NAME);
     getFilterableColumns().add(ChainsawConstants.THREAD_COL_NAME);
@@ -493,9 +493,11 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       new ChangeListener() {
         //received a statechange event - selection changed - remove icon from selected index
         public void stateChanged(ChangeEvent e) {
-          if (getTabbedPane().getSelectedComponent() instanceof ChainsawTabbedPane) {
+          if (
+            getTabbedPane().getSelectedComponent() instanceof ChainsawTabbedPane) {
             if (getTabbedPane().getSelectedIndex() > -1) {
-              getTabbedPane().setIconAt(getTabbedPane().getSelectedIndex(), null);
+              getTabbedPane().setIconAt(
+                getTabbedPane().getSelectedIndex(), null);
             }
           }
         }
@@ -554,7 +556,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
             int tabIndex = getTabbedPane().getSelectedIndex();
 
             if (
-              (tabIndex != -1) && (tabIndex == getTabbedPane().getSelectedIndex())) {
+              (tabIndex != -1)
+                && (tabIndex == getTabbedPane().getSelectedIndex())) {
               LogPanel logPanel = getCurrentLogPanel();
 
               if (logPanel != null) {
@@ -648,9 +651,9 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
                   "setPort", new Class[] { int.class });
               portMethod.invoke(
                 simpleReceiver, new Object[] { new Integer(port) });
-			
-			simpleReceiver.setThreshold(Level.DEBUG);
-			
+
+              simpleReceiver.setThreshold(Level.DEBUG);
+
               PluginRegistry.startPlugin(simpleReceiver);
               receiversPanel.updateReceiverTreeInDispatchThread();
               getStatusBar().setMessage(
@@ -1039,53 +1042,50 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     return null;
   }
 
-public Map getEntryMap() {
-	return entryMap;
-}
+  //  public Map getEntryMap() {
+  //    return entryMap;
+  //  }
+  //  public Map getScrollMap() {
+  //    return scrollMap;
+  //  }
+  public Map getPanelMap() {
+    return panelMap;
+  }
 
-public Map getScrollMap() {
-	return scrollMap;
-}
+  //  public Map getLevelMap() {
+  //    return levelMap;
+  //  }
+  public SettingsManager getSettingsManager() {
+    return sm;
+  }
 
-public Map getPanelMap() {
-	return panelMap;
-}
+  public List getFilterableColumns() {
+    return filterableColumns;
+  }
 
-public Map getLevelMap() {
-	return levelMap;
-}
+  public void setToolBarAndMenus(ChainsawToolBarAndMenus tbms) {
+    this.tbms = tbms;
+  }
 
-public SettingsManager getSettingsManager() {
-	return sm;
-}
+  public ChainsawToolBarAndMenus getToolBarAndMenus() {
+    return tbms;
+  }
 
-public List getFilterableColumns() {
-	return filterableColumns;
-}
+  public Map getTableMap() {
+    return tableMap;
+  }
 
-public void setToolBarAndMenus(ChainsawToolBarAndMenus tbms) {
-	this.tbms = tbms;
-}
+  public Map getTableModelMap() {
+    return tableModelMap;
+  }
 
-public ChainsawToolBarAndMenus getToolBarAndMenus() {
-	return tbms;
-}
+  public void setTabbedPane(ChainsawTabbedPane tabbedPane) {
+    this.tabbedPane = tabbedPane;
+  }
 
-public Map getTableMap() {
-	return tableMap;
-}
-
-public Map getTableModelMap() {
-	return tableModelMap;
-}
-
-public void setTabbedPane(ChainsawTabbedPane tabbedPane) {
-	this.tabbedPane = tabbedPane;
-}
-
-public ChainsawTabbedPane getTabbedPane() {
-	return tabbedPane;
-}
+  public ChainsawTabbedPane getTabbedPane() {
+    return tabbedPane;
+  }
 
   /**
    * This class handles the recption of the Event batches
@@ -1127,15 +1127,39 @@ public ChainsawTabbedPane getTabbedPane() {
        */
       statusBar.receivedEvent();
 
-      if (getTableModelMap().containsKey(ident)) {
-        /**
-         * we ignore this since we assume the LogPanel has been registered itself a listener
-         * and will receive it's own event batches directly
-         */
-      } else {
+      if (!getPanelMap().containsKey(ident)) {
         final String eventType =
           ((ChainsawEventBatchEntry) eventBatchEntrys.get(0)).getEventType();
-        final LogPanel thisPanel = new LogPanel(LogUI.this, ident, eventType);
+
+        final LogPanel thisPanel =
+          new LogPanel(getStatusBar(), ident, eventType);
+
+        thisPanel.addEventCountListener(new TabIconHandler(ident));
+
+        thisPanel.addPropertyChangeListener(
+          new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent evt) {
+              tbms.stateChange();
+            }
+          });
+        thisPanel.addPropertyChangeListener(
+          "docked",
+          new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent evt) {
+              LogPanel logPanel = (LogPanel) evt.getSource();
+
+              if (logPanel.isDocked()) {
+                getPanelMap().put(logPanel.getIdentifier(), logPanel);
+                getTabbedPane().addANewTab(
+                  logPanel.getIdentifier(), logPanel, null);
+              } else {
+                getTabbedPane().remove(logPanel);
+              }
+            }
+          });
+
+        getTabbedPane().add(ident, thisPanel);
+        getPanelMap().put(ident, thisPanel);
 
         getSettingsManager().configure(thisPanel);
 
@@ -1193,9 +1217,11 @@ public ChainsawTabbedPane getTabbedPane() {
               //if this tab is active, remove the icon
               if (
                 (getTabbedPane().getSelectedIndex() > -1)
-                  && (getTabbedPane().getSelectedIndex() == getTabbedPane().indexOfTab(
+                  && (getTabbedPane().getSelectedIndex() == getTabbedPane()
+                                                                .indexOfTab(
                     ident))) {
-                getTabbedPane().setIconAt(getTabbedPane().indexOfTab(ident), null);
+                getTabbedPane().setIconAt(
+                  getTabbedPane().indexOfTab(ident), null);
 
                 //reset fields so no icon will display 
                 lastCount = currentCount;
