@@ -1,0 +1,36 @@
+if [ -z "$PERL" ]
+then
+  PERL=perl
+fi
+
+. .functions
+
+#rm test
+#rm test.*
+
+echo "starting org.apache.log4j.test.DRFATest 5"
+java -Dlog4j.debug org.apache.log4j.test.DRFATest 5
+$PERL drfa.pl || die "drfa test FAILED."
+
+echo -n "About to sleep ";date
+sleep 60
+echo -n "After sleep ";date
+echo "Starting org.apache.log4j.test.DRFATest 10"
+java -Dlog4j.debug org.apache.log4j.test.DRFATest 10
+$PERL drfa.pl || die "drfa test FAILED."
+
+
+echo -n "About to sleep ";date
+sleep 60
+echo -n "After sleep ";date
+echo "Starting org.apache.log4j.test.DRFATest 100"
+java -Dlog4j.debug org.apache.log4j.test.DRFATest 100
+$PERL drfa.pl || die "drfa test FAILED."
+
+
+echo -n "About to sleep ";date
+sleep 60
+echo -n "After sleep ";date
+echo "Starting org.apache.log4j.test.DRFATest 100"
+java -Dlog4j.debug org.apache.log4j.test.DRFATest 100
+$PERL drfa.pl || die "drfa test FAILED."
