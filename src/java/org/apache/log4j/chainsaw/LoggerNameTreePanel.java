@@ -253,7 +253,7 @@ final class LoggerNameTreePanel extends JPanel {
         public void valueChanged(TreeSelectionEvent e) {
           TreePath path = e.getNewLeadSelectionPath();
           expandAction.setEnabled(path != null);
-          editLoggerAction.setEnabled(path != null);
+//          editLoggerAction.setEnabled(path != null);
           collapseAction.setEnabled(path != null);
         }
       });
@@ -287,6 +287,9 @@ final class LoggerNameTreePanel extends JPanel {
         }
       };
 
+//    TODO enable this when it's ready.
+    action.putValue("enabled", Boolean.FALSE);
+    
     action.putValue(Action.NAME, "Edit filters/colors");
     action.putValue(
       Action.SHORT_DESCRIPTION,
