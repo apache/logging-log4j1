@@ -22,21 +22,21 @@
      <li><a href="#Installation">Installation</a></li>
      <li><a href="#GettingStarted">Getting Started</a></li>
      <li><a href="#Tutorial">Tutorial and User Manual</a></li>
-     <li><a href="#Screenshots">Screenshots</a></li>
+     <!--<li><a href="#Screenshots">Screenshots</a></li>-->
      </ul>
     </section>
     
 <section name="So what is it really?">
       <p><a name="WhatIsIt"/>It's a GUI-based Log viewer. A picture tells a thousand words...</p>
       
-      <p><img src="api/org/apache/log4j/chainsaw/doc-files/Chainsawv2.gif" width="873" height="492"/></p>
+      <p><img src="chainsaw-1.jpg" width="873" height="492"/></p>
 
       <p>These screen shots were taken on Windows 2000, running Sun JDK 1.4.2.</p>
       
       <p>Rather than rely on a combination of tail/grep/vi or equivalent to view/query/trace-through
       a huge trail of logging events, you can use Chainsaw.  Chainsaw can read log files formatted in Log4j's XMLLayout, receive
       events from remote locations, read events from a DB, it can even work with the JDK 1.4 logging events.</p>
-      <p>You can see some more screenshots <a href="#Screenshots">here</a>.</p>
+      <!--<p>You can see some more screenshots <a href="#Screenshots">here</a>.</p>-->
     </section>
     
     <section name="Quick Tour of Chainsaw features">
@@ -85,9 +85,10 @@
 			<p><a name="ExtraDocs"/>Chainsaw already includes help with
       with a Quick Reference and a Tutorial to get you started, all viewable from <b>within the GUI</b>. A User Manual will be made available around release time. </p>    
     </section>
-    <section name="Screenshots">
+
+    <!--<section name="Screenshots">
 			<p><a name="Screenshots"/>Here's a few more screenshots to whet your appetite:</p>    
-    </section>
+    </section>-->
     
 </body>
 </document>
