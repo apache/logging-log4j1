@@ -267,14 +267,13 @@ logic not enabled, and when actually logging.  Please refer to the <a
 href="manual.html#performance">log4j manual</a> for a more detailed
 discussion of logging performance.
 
-<p>When logging is turned on, log4j will be about three times slower
-to decide whether a log statement is enabled or not. This is due to
-the dynamic nature of log4j which requires it to walk the
-hierarchy. To give you an idea about the figures involved, we are
-talking about 90 <em>nanoseconds</em> instead of 30
-<em>nanoseconds</em> on a 800Mhz Intel processor. In other words, one
-million disabled logging requests will cost under a second in both
-environments.
+<p>When logging is turned on, log4j will be about two three slower to
+decide whether a log statement is enabled or not. This is due to the
+dynamic nature of log4j which requires it to walk the hierarchy. To
+give you an idea about the figures involved, we are talking about 90
+<em>nanoseconds</em> instead of 30 <em>nanoseconds</em> on a 800Mhz
+Intel processor. In other words, one million disabled logging requests
+will cost under a second in both environments.
 
 <p>In a shipped binary, you can turn off logging entirely and both
 APIs will perform identically.  Note that if one is not careful, the
@@ -315,6 +314,7 @@ their vast majority pushing for the adoption of log4j. Their names and
 the content of their request are listed below. I am very grateful for
 their support. Some of these requests are quite detailed and
 insightful.
+
 
 <p><UL>
 <li><p><a href="pub-support/ChristopherTaylor.html">Christopher Taylor</a> <!-- -->
@@ -465,14 +465,30 @@ insightful.
 <li><p><a href="pub-support/VieridelBianco.html">Vieri del Bianco</a> <!-- -->
 <li><p><a href="pub-support/PatrickOHara.html">Patrick O'Hara</a> <!-- -->
 <li><p><a href="pub-support/RobertQuinn.html">Robert Quinn</a> 
+<li><p><a href="pub-support/HenrikKlagges.html">Henrik Klagges</a> <!-- -->
+<li><p><a href="pub-support/PeterMiller.html">Peter Miller</a> <!-- -->
+<li><p><a href="pub-support/TimothyFalconer.html">Timothy Falconer</a> <!-- -->
+<li><p><a href="pub-support/DavidLi.html">David Li</a> <!-- -->
+<li><p><a href="pub-support/RossCormier.html">Ross Cormier</a> <!-- -->
+<li><p><a href="pub-support/ByungJinChun.html">Byung Jin Chun</a> <!-- -->
+<li><p><a href="pub-support/HughTran.html">Hugh Tran</a> 
+<li><p><a href="pub-support/MustaqAli.html">Mustaq Ali</a> 
+<li><p><a href="pub-support/MarkWomack.html">Mark Womack</a> <!-- -->
+<li><p><a href="pub-support/SilviaTsai.html">Silvia Tsai</a> <!-- -->
+<li><p><a href="pub-support/YingZChen.html">Ying Z Chen</a> 
+<li><p><a href="pub-support/ChrisGunn.html">Chris Gunn</a> <!-- -->
+<li><p><a href="pub-support/JeremyMeyer.html">Jeremy Meyer</a> <!-- --> 
+<li><p><a href="pub-support/EricPabst.html">Eric Pabst</a> <!-- -->
+<li><p><a href="pub-support/MarcDARCHE.html">Marc-Aurèle DARCHE</a> <!-- --> 
+<li><p><a href="pub-support/HaukePlambeck.html">Hauke Plambeck</a>  <!-- --> 
+<li><p><a href="pub-support/KenJarrad.html">Ken Jarrad</a> 
+<li><p><a href="pub-support/ErikBergersjo.html">ErikBergersj&ouml;</a> 
+<li><p><a href="pub-support/CamilleTroillard.html">Camille Troillard</a> <!-- --> 
 
 <!--
 
 
 
-<li><p><a href="pub-support/.html"></a> 
-<li><p><a href="pub-support/.html"></a> 
-<li><p><a href="pub-support/.html"></a> 
 <li><p><a href="pub-support/.html"></a> 
 <li><p><a href="pub-support/.html"></a> 
 <li><p><a href="pub-support/.html"></a> 

@@ -10,16 +10,14 @@
 
 <section name="Older distributions of the log4j package">
 
-<hr/>
-<p><b>BEWARE:</b> For some reason Internet Explorer decides to rename
-".tgz" files as ".tar". You should rename the files back to tgz after
-the download completes.</p>
-<hr/>
+<hr/> <p><b>BEWARE:</b> For some reason Internet Explorer decides to
+rename ".tar.gz" files as ".tar". You should rename the files back to
+<code>tar.gz</code> after the download completes.</p> <hr/>
 
 <dl>
   <dt><b>jakarta-log4j-1.0.4</b></dt>
   <dd>
-  Download full package in <a href="../jakarta-log4j-1.0.4.tgz">TGZ</a> format.
+  Download full package in <a href="../jakarta-log4j-1.0.4.tar.gz">TAR.GZ</a> format.
   </dd>
 
 </dl>
