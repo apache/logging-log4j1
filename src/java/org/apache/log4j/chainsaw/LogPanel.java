@@ -189,6 +189,7 @@ public class LogPanel extends DockablePanel implements Profileable,
     final DockablePanel externalPanel;
     final Action dockingAction;
     final JSortTable table;
+    private final double DEFAULT_SPLIT_LOCATION = .5;
     private final LogPanelPreferenceModel preferenceModel = new LogPanelPreferenceModel();
     private final LogPanelPreferencePanel preferencesPanel = new LogPanelPreferencePanel(preferenceModel);
     private final ColorPanel colorPanel;
@@ -200,6 +201,9 @@ public class LogPanel extends DockablePanel implements Profileable,
     final Map colorDisplayMap = new HashMap();
     final Map columnNameKeywordMap = new HashMap();
     final JMenuItem menuItemFocusOn = new JMenuItem("Focus on");
+    private double lastSplitLocation = DEFAULT_SPLIT_LOCATION;  
+    private int previousSplitLocation;
+    private int dividerSize;
 
     //    final ColorDisplaySelector colorDisplaySelector;
     ScrollToBottom scrollToBottom;
@@ -266,24 +270,13 @@ public class LogPanel extends DockablePanel implements Profileable,
             new PropertyChangeListener() {
                 public void propertyChange(PropertyChangeEvent evt) {
                     boolean newValue = ((Boolean) evt.getNewValue()).booleanValue();
-
-                    //          if (newValue) {
-                    //            lowerPanel.setDividerLocation(400);
-                    //          }
-                    detailPanel.setVisible(newValue);
-                    lowerPanel.setOneTouchExpandable(newValue);
+                    if (newValue) {
+                        showDetailPane();
+                    } else {
+                        hideDetailPane();
+                    }
                 }
             });
-
-        detailPanel.addPropertyChangeListener("visible",
-            new PropertyChangeListener() {
-                public void propertyChange(PropertyChangeEvent evt) {
-                    lowerPanel.setDividerLocation(0.5d);
-                    lowerPanel.validate();
-                }
-            });
-
-        detailPanel.setPreferredSize(new Dimension(320, 160));
 
         preferenceModel.addPropertyChangeListener("logTreePanelVisible",
             new PropertyChangeListener() {
@@ -545,7 +538,7 @@ public class LogPanel extends DockablePanel implements Profileable,
                 public void propertyChange(PropertyChangeEvent evt) {
                     Rule rule = ruleMediator.getRefinementRule();
 
-                    //			TODO need to work out how to suspend the DocumentChangeListener reFilter temporarily while this bit updates
+                    //          TODO need to work out how to suspend the DocumentChangeListener reFilter temporarily while this bit updates
                     if ((rule != null) && rule instanceof RefinementFocusRule) {
                         RefinementFocusRule refineRule = (RefinementFocusRule) ruleMediator.getRefinementRule();
                         filterText.setText(refineRule.getExpression());
@@ -564,8 +557,7 @@ public class LogPanel extends DockablePanel implements Profileable,
 
         upperPanel.add(upperRightPanel, BorderLayout.EAST);
 
-        eventsAndStatusPanel = new JPanel();
-        eventsAndStatusPanel.setLayout(new BorderLayout());
+        eventsAndStatusPanel = new JPanel(new BorderLayout());
 
         final JScrollPane eventsPane = new JScrollPane(table);
 
@@ -696,13 +688,19 @@ public class LogPanel extends DockablePanel implements Profileable,
 
         lowerPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
                 eventsAndStatusPanel, detailPanel);
-        lowerPanel.setDividerSize(5);
+
+        lowerPanel.setDividerLocation(lastSplitLocation);
+        lowerPanel.setOneTouchExpandable(true);
+        dividerSize = lowerPanel.getDividerSize() + 5;
         lowerPanel.setResizeWeight(0.5);
         lowerPanel.setBorder(null);
         lowerPanel.setContinuousLayout(true);
 
-        detailPanel.setVisible(getPreferenceModel().isDetailPaneVisible());
-        lowerPanel.setOneTouchExpandable(getPreferenceModel().isDetailPaneVisible());
+        if (getPreferenceModel().isDetailPaneVisible()) {
+            showDetailPane();
+        } else {
+            hideDetailPane();
+        }
 
         nameTreeAndMainPanelSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         nameTreeAndMainPanelSplit.add(logTreePanel);
@@ -997,12 +995,6 @@ public class LogPanel extends DockablePanel implements Profileable,
 
         menuItemToggleDetails.setIcon(new ImageIcon(ChainsawIcons.INFO));
 
-        /**
-         * We set this to true first, because the Split pane hasn't been laid
-         * out yet, and isDetailPaneVisible() will therefore return false.
-         */
-        menuItemToggleDetails.getModel().setSelected(true);
-
         final Action clearFocusAction = new AbstractAction("Clear focus") {
                 public void actionPerformed(ActionEvent e) {
                     filterText.setText(null);
@@ -1118,6 +1110,29 @@ public class LogPanel extends DockablePanel implements Profileable,
                 }
             });
         detailDialog.pack();
+    }
+
+    private void showDetailPane() {
+        lowerPanel.setDividerSize(dividerSize);
+        lowerPanel.setDividerLocation(lastSplitLocation);
+        lowerPanel.setLastDividerLocation(previousSplitLocation);
+        detailPanel.setVisible(true);
+    }
+
+    private void hideDetailPane() {
+        int currentSize = lowerPanel.getHeight() - dividerSize; 
+        if (currentSize > 0) {
+            lastSplitLocation = (double)lowerPanel.getDividerLocation() / currentSize;
+            //if hiding when details are minimized or maximized, use last location
+            if (lastSplitLocation == 1.0 || lastSplitLocation == 0.0) {
+                previousSplitLocation = lowerPanel.getLastDividerLocation();
+                //lastSplitLocation = (double)lowerPanel.getLastDividerLocation() / currentSize;
+                lowerPanel.setLastDividerLocation(lowerPanel.getLastDividerLocation());
+            }
+        } 
+
+        lowerPanel.setDividerSize(0);
+        detailPanel.setVisible(false);
     }
 
     private JToolBar createDockwindowToolbar() {
@@ -1539,8 +1554,6 @@ public class LogPanel extends DockablePanel implements Profileable,
         getPreferenceModel().setDetailPaneVisible(event.asBoolean(
                 "detailPaneVisible"));
 
-        lowerPanel.setDividerLocation(0.5d);
-
         logTreePanel.ignore(event.getSettingsStartingWith("Logger.Ignore."));
         
         File f = new File(SettingsManager.getInstance().getSettingsDirectory() +
@@ -1583,8 +1596,6 @@ public class LogPanel extends DockablePanel implements Profileable,
             TableColumn column = (TableColumn) columnNameMap.get(element);
 
             if (column != null) {
-                System.out.println("Moving column " + element + " from index " +
-                    column.getModelIndex() + " to index " + index++);
                 sortedColumnList.add(column);
                 table.removeColumn(column);
             }
@@ -1610,7 +1621,7 @@ public class LogPanel extends DockablePanel implements Profileable,
                 int width = Integer.parseInt(element);
 
                 if (index > (columnModel.getColumnCount() - 1)) {
-                    System.out.println(
+                    LogLog.warn(
                         "loadsettings - failed attempt to set width for index " +
                         index + ", width " + element);
                 } else {
