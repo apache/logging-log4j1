@@ -16,10 +16,9 @@
 
 package org.apache.joran;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.helpers.OptionConverter;
+//import org.apache.log4j.helpers.OptionConverter;
 
+import org.apache.log4j.helpers.OptionConverter;
 import org.xml.sax.Locator;
 
 import java.util.HashMap;
@@ -32,11 +31,13 @@ import java.util.Vector;
 
 /**
  *
- * Joran is designed to parse DOM trees
- *
+ * The ExecutionContext contains the contextual state of a Joran parsing 
+ * session. {@link Action Actions} depend on this context to exchange and
+ * storeinformation.
+ *  
+ * @author Ceki G&uuml;lc&uuml;
  */
 public class ExecutionContext {
-  static final Logger logger = Logger.getLogger(ExecutionContext.class);
   Stack objectStack;
   HashMap objectMap;
   Vector errorList;
@@ -117,11 +118,11 @@ public class ExecutionContext {
     if(key == null || value == null) {
       return;
     }
-    if (substitutionProperties.contains(key)) {
-      LogLog.warn(
-        "key [" + key
-        + "] already contained in the EC properties. Overwriting.");
-    }
+//    if (substitutionProperties.contains(key)) {
+//      LogLog.warn(
+//        "key [" + key
+//        + "] already contained in the EC properties. Overwriting.");
+//    }
 
     // values with leading or trailing spaces are bad. We remove them now.
     value = value.trim();
@@ -135,7 +136,6 @@ public class ExecutionContext {
     Iterator i = props.keySet().iterator();
     while(i.hasNext()) {
       String key = (String) i.next();
-      LogLog.debug("Adding property ["+key+"="+props.getProperty(key)+"]");
       addProperty(key, props.getProperty(key));
     }
   }
@@ -148,14 +148,6 @@ public class ExecutionContext {
     if(value == null) {
       return null;
     }
-    try {
-      return OptionConverter.substVars(value, substitutionProperties);
-    } catch (IllegalArgumentException e) {
-      logger.warn(
-        "Could not perform variable substitution for variable [" + value + "]",
-        e);
-
-      return value;
-    }
+    return OptionConverter.substVars(value, substitutionProperties);
   }
 }

@@ -20,7 +20,6 @@ import org.apache.joran.*;
 import org.apache.joran.RuleStore;
 import org.apache.joran.action.*;
 
-import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.OptionConverter;
 
 import java.util.ArrayList;
@@ -30,7 +29,6 @@ import java.util.List;
 
 
 public class SimpleRuleStore implements RuleStore {
-  final static Logger logger = Logger.getLogger(SimpleRuleStore.class);
 
   // key: Pattern instance, value: ArrayList containing actions
   HashMap rules = new HashMap();
@@ -52,11 +50,9 @@ public class SimpleRuleStore implements RuleStore {
       (Action) OptionConverter.instantiateByClassName(
         actionClassName, Action.class, null);
 
-    if (action != null) {
-      addRule(pattern, action);
-    } else {
-      logger.warn("Could not intantiate Action of class ["+actionClassName+"].");
-    }
+      if(action != null) {
+        addRule(pattern, action);
+      }
   }
 
   public List matchActions(Pattern pattern) {
