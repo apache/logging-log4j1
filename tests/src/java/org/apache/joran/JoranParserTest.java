@@ -106,7 +106,6 @@ public class JoranParserTest extends TestCase {
 			 rs.addRule(new Pattern("log4j:configuration/logger"), new LoggerAction());
 			 rs.addRule(new Pattern("log4j:configuration/logger/level"), new LevelAction());
 			 rs.addRule(new Pattern("log4j:configuration/root"), new RootLoggerAction());
-			 rs.addRule(new Pattern("log4j:configuration/root"), new RootLoggerAction());
 		   rs.addRule(new Pattern("log4j:configuration/logger/appender-ref"), new AppenderRefAction());
 		   rs.addRule(new Pattern("log4j:configuration/root/appender-ref"), new AppenderRefAction());
 		   rs.addRule(new Pattern("log4j:configuration/appender"), new AppenderAction());

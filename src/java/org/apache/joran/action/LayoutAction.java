@@ -69,6 +69,9 @@ public class LayoutAction extends Action {
    *
    */
   public void begin(ExecutionContext ec, Element appenderElement) {
+		// Let us forget about previous errors (in this object)
+		inError = false; 
+
     String className =
       appenderElement.getAttribute(ActionConst.CLASS_ATTRIBUTE);
     try {

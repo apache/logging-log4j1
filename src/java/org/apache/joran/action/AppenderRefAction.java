@@ -63,6 +63,9 @@ public class AppenderRefAction extends Action {
   static final Logger logger = Logger.getLogger(AppenderRefAction.class);
 
   public void begin(ExecutionContext ec, Element appenderRef) {
+		// Let us forget about previous errors (in this object)
+		inError = false; 
+
     logger.debug("begin called");
 
     Object o = ec.peekObject();
@@ -120,9 +123,16 @@ public class AppenderRefAction extends Action {
       return;
     }
 
+
+    if(appenderAttachable instanceof Logger) {
     logger.debug(
-      "Attaching appender named [" + appenderName + "] to "
-      + appenderAttachable);
+      "Attaching appender named [" + appenderName + "] to logger named ["
+      + ((Logger)appenderAttachable).getName() +"].");
+    } else {
+			logger.debug(
+					 "Attaching appender named [" + appenderName + "] to "
+					 + appenderAttachable);
+    }
     appenderAttachable.addAppender(appender);
   }
 

@@ -13,19 +13,17 @@ import java.lang.reflect.Method;
 
 public class LoggerAction extends Action {
 	
-  static final String NAME_ATTR = "name";
-  static final String CLASS_ATTR = "class";
-  static final String ADDITIVITY_ATTR = "additivity";
-  static final String EMPTY_STR = "";
-  static final Class[] ONE_STRING_PARAM = new Class[] { String.class };
   Logger logger = Logger.getLogger(LoggerAction.class);
 
   public void begin(ExecutionContext ec, Element loggerElement) {
+  	// Let us forget about previous errors (in this object)
+  	inError = false; 
+  	
     LoggerRepository repository = (LoggerRepository) ec.getObject(0);
 
     // Create a new org.apache.log4j.Category object from the <category> element.
-    String loggerName = loggerElement.getAttribute(NAME_ATTR);
-    if(loggerName == null || EMPTY_STR.equals(loggerName)) {
+    String loggerName = loggerElement.getAttribute(ActionConst.NAME_ATTRIBUTE);
+    if(loggerName == null || ActionConst.EMPTY_STR.equals(loggerName)) {
       inError = true;
 			String errorMsg = "No 'name' attribute in element "
 				+loggerElement.getTagName();
@@ -38,9 +36,9 @@ public class LoggerAction extends Action {
 
     Logger l;
 
-    String className = loggerElement.getAttribute(CLASS_ATTR);
+    String className = loggerElement.getAttribute(ActionConst.CLASS_ATTRIBUTE);
 
-    if (EMPTY_STR.equals(className)) {
+    if (ActionConst.EMPTY_STR.equals(className)) {
       logger.debug("Retreiving an instance of org.apache.log4j.Logger.");
       l = repository.getLogger(loggerName);
     } else {
@@ -49,7 +47,7 @@ public class LoggerAction extends Action {
       try {
         Class clazz = Loader.loadClass(className);
         Method getInstanceMethod =
-          clazz.getMethod("getLogger", ONE_STRING_PARAM);
+          clazz.getMethod("getLogger", ActionConst.ONE_STRING_PARAM);
         l = (Logger) getInstanceMethod.invoke(null, new Object[] { loggerName });
       } catch (Exception oops) {
         logger.error(
@@ -63,7 +61,7 @@ public class LoggerAction extends Action {
 
     boolean additivity =
       OptionConverter.toBoolean(
-        loggerElement.getAttribute(ADDITIVITY_ATTR),
+        loggerElement.getAttribute(ActionConst.ADDITIVITY_ATTRIBUTE),
         true);
     logger.debug(
       "Setting [" + l.getName() + "] additivity to [" + additivity + "].");
