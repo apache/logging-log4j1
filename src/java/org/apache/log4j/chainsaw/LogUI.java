@@ -26,6 +26,7 @@ import org.apache.log4j.chainsaw.icons.ChainsawIcons;
 import org.apache.log4j.chainsaw.icons.LineIconFactory;
 import org.apache.log4j.chainsaw.messages.MessageCenter;
 import org.apache.log4j.chainsaw.plugins.ChainsawCentral;
+import org.apache.log4j.chainsaw.plugins.PluginClassLoaderFactory;
 import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
 import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
 import org.apache.log4j.chainsaw.prefs.SettingsListener;
@@ -68,6 +69,7 @@ import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import java.io.File;
 import java.io.IOException;
 
 import java.lang.reflect.Method;
@@ -255,6 +257,11 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    */
   public static void createChainsawGUI(
     ApplicationPreferenceModel model, Action newShutdownAction) {
+    
+    
+    ClassLoader classLoader = PluginClassLoaderFactory.create(new File(SettingsManager.getInstance().getSettingsDirectory() + File.separator + "plugins"));
+    Thread.currentThread().setContextClassLoader(classLoader);
+    
     LogUI logUI = new LogUI();
 
     if (model.isShowSplash()) {
