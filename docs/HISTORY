@@ -8,6 +8,16 @@
    [D] Changes affect a method or property which was previously marked as 
        deprecated.
 
+
+ - The Appender.requiresLayout() method is no longer needed.
+
+   This method was only used by PropertConfigrurator and not
+   DOMConfigurator nor JoranConfigurator. It was never strictly necessary
+   and case the layout is *optional* for a given appender type, it causes
+   unwarranted error messages.
+
+   This simplification will make it slightly easier to write appenders.
+
  - Added new printing methods message supporiting pattern parsing. These new forms 
    avoid superflous parameter construction and yield a significant performance 
    increase in case the log statement is disabled. [*]
