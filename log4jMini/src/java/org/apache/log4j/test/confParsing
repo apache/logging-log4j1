@@ -1,0 +1,95 @@
+#!/bin/bash
+	
+# Read the .functions file
+. .functions
+
+declare -i start=$1
+
+setPERL
+
+# =========================================================================
+
+# This script runs ConfigurationFileParsing java program with args1 and 2.
+# It has the side effect of aggregating the following arguments to one
+# file called $TEMP.
+
+# It runs a perl filter to remove date, line and other variable
+# information from the output.
+
+# =========================================================================
+function testConfigurationParsing {
+ configFile=$1; 
+ options=$2; shift; shift;
+ 
+ echo -n " ConfigurationParsing test $TEST - "
+ java $D_FLAG org.apache.log4j.test.ConfigurationFileParsing $configFile
+
+ if [ -n "$*" ]; then
+   cat $* $TEMP >> $TEMP.x
+   mv $TEMP.x $TEMP
+ fi
+ 
+ $PERL filter.pl $TEMP $OUTPUT ConfigurationFileParsing $options
+ if [ $? != 0 ]; then
+   echo "The output is not in expected format. See the file [$OUTPUT]."
+   exit 1   
+ fi
+
+ check witness/confParsing.$TEST $OUTPUT; echo " OK"
+}
+
+
+# =========================================================================
+# Just run ConfigurationFileParsing and direct the output to STDOUT or
+# STDERR.
+# =========================================================================
+function testConfigurationParsingII {
+ conf=$1; 
+ target=$2
+
+ case $target in
+ OUT )
+   java $D_FLAG org.apache.log4j.test.ConfigurationFileParsing $conf>$TEMP
+   ;;
+ ERR )
+   java $D_FLAG org.apache.log4j.test.ConfigurationFileParsing $conf>& $TEMP
+   ;;
+ esac
+   
+ check witness/confParsing.$TEST $TEMP; echo " OK"
+}
+# ======================================================
+
+declare -i TEST
+
+
+TEST=1;
+if [ $TEST -ge $start ]; then
+  D_FLAG=""
+  echo  "log4j.rootCategory=  , testAppender" > $LCF
+  lecho "log4j.debug="
+  lecho "log4j.appender.testAppender=org.apache.log4j.FileAppender"
+  lecho "log4j.appender.testAppender.File=$TEMP"
+  lecho "log4j.appender.testAppender.Append=   false  "
+  lecho "log4j.appender.testAppender.layout=org.apache.log4j.PatternLayout"
+  lecho "log4j.appender.testAppender.layout.ConversionPattern=%-5p [%t] %c{2} - %m%n"
+  
+  testConfigurationParsing $LCF NONE
+fi
+
+
+TEST=2;
+if [ $TEST -ge $start ]; then
+  D_FLAG=""
+  echo  "log4j.rootCategory= DEBUG , testAppender" > $LCF
+  lecho "log4j.debug=false"
+  lecho "log4j.appender.testAppender=org.apache.log4j.FileAppender"
+  # Note the spaces
+  lecho "log4j.appender.testAppender.File=System.out  "
+  lecho "log4j.appender.testAppender.layout=org.apache.log4j.PatternLayout "
+  lecho "log4j.appender.testAppender.layout.ConversionPattern=[%t] %p - %m%n"
+  echo -n " ConfigurationParsing test $TEST - "
+  testConfigurationParsingII $LCF OUT
+fi
+
+

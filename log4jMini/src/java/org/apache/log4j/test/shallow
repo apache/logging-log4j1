@@ -1,0 +1,54 @@
+#!/bin/bash
+
+# A regression test to check the option reading code and print formats.
+ 
+# Read the .functions file
+
+. .functions
+
+
+# If set, allows to skip tests 
+declare -i start=$1
+
+# ----------------------------------------------------------------------
+function testShallow {
+
+ file="$1"
+ filter="$2"
+ format="$3"   
+
+ echo -n "Shallow test $TEST - "
+ runShallow "$format" $file 
+ $PERL filter.pl $TEMP $OUTPUT Shallow $filter
+
+ if [ $? != 0 ]; then
+  echo "The output is not in expected format. See the file [$OUTPUT]."
+  exit 1   
+ fi
+
+ check witness/shallow.$TEST $OUTPUT; echo "OK" 
+}
+# ----------------------------------------------------------------------
+function runShallow {
+ format="$1"
+ file="$2" 
+ #java -Dlog4j.configDebug org.apache.log4j.test.Shallow $confFile
+ java org.apache.log4j.test.Shallow "$file" "$format"
+}
+# ===============================================================
+
+setPERL
+
+declare -i TEST
+
+deleteFile $TEMP 
+
+TEST=1
+if [ $TEST -ge $start ]; then
+  testShallow $TEMP NONE "%p %c - %m%n"
+fi
+
+
+
+
+

@@ -1,0 +1,63 @@
+
+# Constants
+TEMP=temp
+OUTPUT=current.reg
+LCF=logging.lcf
+
+# +=============================================+
+# Strip the filename, retain the directory only.|
+# +=============================================+
+function getShellScriptDirectory {
+  local dir
+  
+  dir=${0%/*}
+
+  if [ "$dir" = "." ]
+  then
+    dir=$(pwd)
+  elif [ "${dir#/}" = "$dir" ]  # dir does not start with a /
+  then
+    dir=$(pwd)/$dir
+  fi
+ echo $dir
+}
+# +=============================================
+# Compensate for ZRL idiosyncrasy
+# +=============================================
+function setPERL {
+  if [ -z "$PERL" ]
+  then
+   PERL=perl
+  fi
+}
+# +============================================
+# Print a message and exit.
+# +============================================
+function die {
+  echo $1
+  exit 1
+}
+# ==============================================
+# Delete the file if exists
+# ==============================================
+function deleteFile {
+  if [ -e $1 ]; then
+    echo "Deleting file [$1]."
+    rm $1
+  fi
+}
+# ----------------------------------------------------------------------
+function check() {
+  if ! cmp -s $1 $2
+  then
+    echo "The output of current code DIFFERS from witness."
+    exit 1;
+  fi
+}
+# =============================================
+# Echo to $LCF
+# =============================================
+function lecho {
+ # The quotes ensure that spaces in arguments are preserved.
+ echo "$*" >> $LCF
+}

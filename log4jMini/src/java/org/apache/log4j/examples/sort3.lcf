@@ -1,0 +1,38 @@
+# Attach appender A1 to root. Set root priority to Prority.DEBUG.
+log4j.rootCategory=DEBUG, A1
+
+
+
+# A1 is set to be a FileAppender sending its output to
+# System.out. However, only error messages and above will be printed
+# since the threshold is set to Priority.ERROR.
+
+# The fact that the root priority is set to Prority.DEBUG only
+# influences log requests made to the root category. It has no
+# influence on the appenders attached to root.
+
+log4j.appender.A1=org.apache.log4j.ConsoleAppender
+log4j.appender.A1.Threshold=ERROR
+
+
+log4j.appender.A1.layout=org.apache.log4j.PatternLayout
+log4j.appender.A1.layout.ConversionPattern=%p [%t] %c{2} (%M:%L) - %m%n
+
+# Set the priority of the category named "org.apache.log4j.examples" to 
+# Priority.INFO, attach appender A2.
+log4j.category.org.apache.log4j.examples=INFO, A2
+
+# Appender A2 writes to the file "test" in user's home.
+log4j.appender.A2=org.apache.log4j.FileAppender
+log4j.appender.A2.File=${user.home}/test
+
+# Truncate 'test' if it aleady exists.
+log4j.appender.A2.Append=false
+
+# Appender A2 uses the PatternLayout.
+log4j.appender.A2.layout=org.apache.log4j.PatternLayout
+log4j.appender.A2.layout.ConversionPattern=%5r %-5p [%t] %c{2} - %m%n
+
+
+
+

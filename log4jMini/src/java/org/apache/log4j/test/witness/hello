@@ -1,0 +1,2 @@
+DEBUG [main] org.apache.log4j.test.Hello - Hello world.
+INFO [main] org.apache.log4j.test.Hello - What a beatiful day.

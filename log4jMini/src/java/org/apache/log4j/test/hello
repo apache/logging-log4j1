@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# A regression test to check the option reading code and print formats.
+ 
+# Read the .functions file
+
+. .functions
+
+
+deleteFile $OUTPUT
+
+echo -n "Hello test $TEST - "
+java org.apache.log4j.test.Hello > $OUTPUT
+check witness/hello $OUTPUT; echo "OK"
+
+
+
+
+
+
