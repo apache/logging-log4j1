@@ -28,6 +28,7 @@ import javax.swing.event.EventListenerList;
 
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.LogManager;
+import org.apache.log4j.helpers.Constants;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.net.SocketReceiver;
 import org.apache.log4j.rule.ExpressionRule;
@@ -279,6 +280,21 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
 
             while (iter.hasNext()) {
               LoggingEvent e = (LoggingEvent) iter.next();
+              //attempt to set the host name (without port), from remoteSourceInfo
+              //if 'hostname' property not provided
+              if (e.getProperty(Constants.HOSTNAME_KEY) == null) {
+              		String remoteHost =
+              		e.getProperty(ChainsawConstants.LOG4J_REMOTEHOST_KEY);
+              		
+              		if (remoteHost != null) {
+              			int colonIndex = remoteHost.indexOf(":");
+              		if (colonIndex == -1) {
+              		colonIndex = remoteHost.length();
+              		}
+              		
+              		e.setProperty(Constants.HOSTNAME_KEY, remoteHost.substring(0, colonIndex));
+           		}              	
+              }
 
               for (
                 Iterator itery = customExpressionRules.entrySet().iterator();
