@@ -216,6 +216,10 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
   private final JPanel findPanel;
   private JTextField findField;
   private int dividerSize;
+  static final String TABLE_COLUMN_ORDER = "table.columns.order";
+  static final String TABLE_COLUMN_WIDTHS = "table.columns.widths";
+  static final String COLUMNS_EXTENSION = ".columns";
+  static final String COLORS_EXTENSION = ".colors";
 
   /**
    * Creates a new LogPanel object.  If a LogPanel with this identifier has
@@ -448,6 +452,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
 
           while (enumeration.hasMoreElements()) {
             TableColumn column = (TableColumn) enumeration.nextElement();
+
             columnSet.add(column.getHeaderValue());
           }
 
@@ -790,7 +795,9 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
     tableModel.addNewKeyListener(
       new NewKeyListener() {
         public void newKeyAdded(NewKeyEvent e) {
-          table.addColumn(new TableColumn(e.getNewModelIndex()));
+          TableColumn col = new TableColumn(e.getNewModelIndex());
+          col.setHeaderValue(e.getKey());
+          table.addColumn(col);
         }
       });
 
@@ -1341,7 +1348,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
     File f =
       new File(
         SettingsManager.getInstance().getSettingsDirectory() + File.separator
-        + identifier + LogUI.COLUMNS_EXTENSION);
+        + identifier + COLUMNS_EXTENSION);
 
     if (f.exists()) {
       loadColumnSettings();
@@ -1352,7 +1359,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
     File f2 =
       new File(
         SettingsManager.getInstance().getSettingsDirectory() + File.separator
-        + identifier + LogUI.COLORS_EXTENSION);
+        + identifier + COLORS_EXTENSION);
 
     if (f2.exists()) {
       loadColorSettings();
@@ -1940,7 +1947,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
       File f =
         new File(
           SettingsManager.getInstance().getSettingsDirectory()
-          + File.separator + getIdentifier() + LogUI.COLUMNS_EXTENSION);
+          + File.separator + getIdentifier() + COLUMNS_EXTENSION);
       o = new ObjectOutputStream(
           new BufferedOutputStream(new FileOutputStream(f)));
 
@@ -1986,7 +1993,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
       File f =
         new File(
           SettingsManager.getInstance().getSettingsDirectory()
-          + File.separator + getIdentifier() + LogUI.COLORS_EXTENSION);
+          + File.separator + getIdentifier() + COLORS_EXTENSION);
       o = new ObjectOutputStream(
           new BufferedOutputStream(new FileOutputStream(f)));
 
@@ -2014,7 +2021,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
     File f =
       new File(
         SettingsManager.getInstance().getSettingsDirectory() + File.separator
-        + identifier + LogUI.COLUMNS_EXTENSION);
+        + identifier + COLUMNS_EXTENSION);
 
     if (f.exists()) {
       ArrayList newColumns = new ArrayList();
@@ -2071,7 +2078,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
    * @param event
    */
   private void loadDefaultColumnSettings(LoadSettingsEvent event) {
-    String columnOrder = event.getSetting(LogUI.TABLE_COLUMN_ORDER);
+    String columnOrder = event.getSetting(TABLE_COLUMN_ORDER);
 
     TableColumnModel columnModel = table.getColumnModel();
 
@@ -2106,7 +2113,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
       table.addColumn(element);
     }
 
-    String columnWidths = event.getSetting(LogUI.TABLE_COLUMN_WIDTHS);
+    String columnWidths = event.getSetting(TABLE_COLUMN_WIDTHS);
 
     tok = new StringTokenizer(columnWidths, ",");
     index = 0;
@@ -2150,7 +2157,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
     File f =
       new File(
         SettingsManager.getInstance().getSettingsDirectory() + File.separator
-        + identifier + LogUI.COLORS_EXTENSION);
+        + identifier + COLORS_EXTENSION);
 
     if (f.exists()) {
       ObjectInputStream s = null;
@@ -2477,6 +2484,9 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
         if (
           (column.getModelIndex() + 1) == ChainsawColumns.INDEX_THROWABLE_COL_NAME) {
           column.setCellEditor(throwableRenderPanel);
+        }
+        if (column.getModelIndex() > 0) {
+            preferenceModel.setColumnVisible(column.getHeaderValue().toString(), true);
         }
       }
     }

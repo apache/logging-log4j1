@@ -127,10 +127,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   private static final String MAIN_WINDOW_WIDTH = "main.window.width";
   private static final String MAIN_WINDOW_Y = "main.window.y";
   private static final String MAIN_WINDOW_X = "main.window.x";
-  static final String TABLE_COLUMN_ORDER = "table.columns.order";
-  static final String TABLE_COLUMN_WIDTHS = "table.columns.widths";
-  static final String COLUMNS_EXTENSION = ".columns";
-  static final String COLORS_EXTENSION = ".colors";
   private static ChainsawSplash splash;
   private static final double DEFAULT_MAIN_RECEIVER_SPLIT_LOCATION = .8d;
   private final JFrame preferencesFrame = new JFrame();
