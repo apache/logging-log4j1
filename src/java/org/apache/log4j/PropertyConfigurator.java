@@ -580,8 +580,9 @@ public class PropertyConfigurator extends BasicConfigurator
       LogLog.debug("Parsed \"" + appenderName +"\" options.");
       if(appender.requiresLayout()) {
 	Layout layout = (Layout) OptionConverter.instantiateByKey(props, 
-						layoutPrefix,
-						org.apache.log4j.Layout.class, null);
+								  layoutPrefix,
+								  Layout.class, 
+								  null);
 	if(layout != null) {
 	  appender.setLayout(layout);
 	  LogLog.debug("Parsing layout options for \"" + appenderName +"\".");

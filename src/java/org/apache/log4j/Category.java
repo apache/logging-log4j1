@@ -69,7 +69,8 @@ public class Category implements AppenderAttachable {
   // an undescore.
   static 
   public 
-  final Hierarchy defaultHierarchy = new Hierarchy(new RootCategory(Priority.DEBUG));
+  final Hierarchy defaultHierarchy = new Hierarchy(new 
+						   RootCategory(Priority.DEBUG));
 
   
   protected ResourceBundle resourceBundle;

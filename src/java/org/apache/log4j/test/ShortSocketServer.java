@@ -44,7 +44,7 @@ public class ShortSocketServer  {
       Socket socket = serverSocket.accept();
       LogLog.debug("Connected to client at " + socket.getInetAddress());
       LogLog.debug("Starting new socket node.");	
-      SocketNode sn = new SocketNode(socket);
+      SocketNode sn = new SocketNode(socket, Category.getDefaultHierarchy());
       Thread t = new Thread(sn);
       t.start(); 
       t.join();
