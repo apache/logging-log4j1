@@ -29,7 +29,7 @@ public interface AppenderAttachable {
   Enumeration getAllAppenders();
 
   /**
-     Get  an appender by name.
+     Get an appender by name.
    */
   public
   Appender getAppender(String name);
@@ -41,13 +41,13 @@ public interface AppenderAttachable {
 
 
   /**
-     Remove the appender passed as parameter form the list of appenders.
+     Remove the appender passed as parameter from the list of appenders.
   */
    void removeAppender(Appender appender);
 
 
  /**
-    Remove the appender with the name passed as parameter form the
+    Remove the appender with the name passed as parameter from the
     list of appenders.  
   */
  void
