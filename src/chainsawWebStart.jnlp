@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<!-- JNLP File for Jakarta Log4j Chainsaw v2 Application --> 
+<jnlp 
+  spec="1.0+" 
+codebase="@CHAINSAW_CODEBASE@"
+  href="@CHAINSAW_CODEBASE@@CHAINSAW_JNLP_FILE@"> 
+  <information> 
+    <title>Log4j Chainsaw v2</title> 
+    <vendor>Apache</vendor> 
+    <homepage href="http://jakarta.apache.org/log4j"/> 
+    <description>A Log4j log viewing application</description> 
+    <description kind="short">A Log4j log viewing application</description> 
+    <icon href="http://jakarta.apache.org/log4j/docs/images/logo.jpg"/> 
+    <icon kind="splash" href="http://jakarta.apache.org/log4j/docs/images/logo.jpg"/> 
+    <offline-allowed/> 
+  </information> 
+  <security> 
+      <all-permissions/> 
+  </security> 
+  <resources> 
+    <j2se version="1.3+"/> 
+    <jar href="lib/log4j-chainsaw-1.3alpha.jar"/> 
+    <jar href="lib/log4j-1.3alpha.jar"/> 
+    <jar href="lib/jakarta-oro-2.0.6.jar"/> 
+  </resources> 
+  <application-desc main-class="org.apache.log4j.chainsaw.LogUI"/> 
+</jnlp> 
