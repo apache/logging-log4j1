@@ -30,7 +30,7 @@ import java.net.URL;
 public class ChainsawConstants {
   private ChainsawConstants(){}
   
-  public static final Color COLOR_ODD_ROW = new Color(230, 230, 230);
+  public static final Color COLOR_ODD_ROW = new Color(200, 200, 200);
   public static final Color COLOR_EVEN_ROW = new Color(255,255,255);
   
   public static final URL WELCOME_URL = ChainsawConstants.class.getClassLoader().getResource(
