@@ -101,7 +101,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
 
   /**
      @deprecated As of v1.3, use {@link #addLoggerRepositoryEventListener}
-     and {@link addLoggerEventListener} methods instead. */
+     and {@link #addLoggerEventListener} methods instead. */
   public
   void addHierarchyEventListener(HierarchyEventListener listener) {
     if(listeners.contains(listener)) {
@@ -214,7 +214,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   */
   public
   void setThreshold(String levelStr) {
-    Level l = (Level) Level.toLevel(levelStr, null);
+    Level l = Level.toLevel(levelStr, null);
     if(l != null) {
       setThreshold(l);
     } else {
@@ -334,7 +334,6 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   /**
     Requests that a configuration changed event be sent to any registered
     {@link LoggerRepositoryEventListener}. 
-    @param logger The logger which changed levels.
     @since 1.3*/
   public void fireConfigurationChangedEvent() {
     if(repositoryEventListeners != null) {
@@ -519,7 +518,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   public
   void resetConfiguration() {
     
-    getRootLogger().setLevel((Level) Level.DEBUG);
+    getRootLogger().setLevel(Level.DEBUG);
     root.setResourceBundle(null);
     setThreshold(Level.ALL);
 

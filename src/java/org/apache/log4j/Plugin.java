@@ -7,7 +7,6 @@
 
 package org.apache.log4j;
 
-import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.OptionHandler;
 
