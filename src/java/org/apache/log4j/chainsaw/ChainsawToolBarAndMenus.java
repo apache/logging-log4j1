@@ -139,6 +139,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     new JCheckBoxMenuItem();
   private final JMenu viewMenu = new JMenu("View");
   private final JMenuBar menuBar;
+   private final JCheckBoxMenuItem menuItemClose = new JCheckBoxMenuItem();
   private final JRadioButtonMenuItem levelDisplayIcon =
     new JRadioButtonMenuItem("Icon");
   private final JRadioButtonMenuItem levelDisplayText =
@@ -522,22 +523,22 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     final Action action =
       new AbstractAction() {
         public void actionPerformed(ActionEvent e) {
-          if (logui.tabbedPane.containsWelcomePanel()) {
+            closeAction.putValue(Action.NAME, "Welcome tab");
             logui.removeWelcomePanel();
-            closeAction.putValue(Action.NAME, "Show Welcome tab");
-          } else {
-            logui.addWelcomePanel();
-            closeAction.putValue(Action.NAME, "Close Welcome tab");
-          }
+            if(menuItemClose.isSelected()){
+                logui.addWelcomePanel();
+            } else {
+                
+            }
         }
       };
 
     action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("F1"));
 
     //    action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.ALT_MASK));
-    action.putValue(Action.SHORT_DESCRIPTION, "Removes the Welcome tab");
+    action.putValue(Action.SHORT_DESCRIPTION, "Toggles the Welcome tab");
     action.putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_C));
-    action.putValue(Action.NAME, "Close Welcome tab");
+    action.putValue(Action.NAME, "Welcome tab");
 
     return action;
   }
@@ -601,7 +602,6 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
       new JMenuItem(
         "Other options available via panel's right mouse button popup menu");
     menuItemUseRightMouse.setEnabled(false);
-    activeTabMenu.add(menuItemUseRightMouse);
 
     viewMenu.setMnemonic('V');
 
@@ -613,7 +613,8 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
       new JCheckBoxMenuItem(toggleToolbarAction);
     showToolbarCheck.setSelected(true);
 
-    JMenuItem menuItemClose = new JMenuItem(closeAction);
+    menuItemClose.setAction(closeAction);
+    
     JCheckBoxMenuItem pause = new JCheckBoxMenuItem(pauseAction);
     JMenuItem menuPrefs = new JMenuItem(showPreferencesAction);
     menuPrefs.setText(
@@ -621,11 +622,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
 
     JMenuItem menuUndock = new JMenuItem(undockAction);
 
-    viewMenu.add(menuUndock);
-    viewMenu.add(pause);
-
     showTabs = new JMenu("Display tabs");
-    viewMenu.add(showTabs);
 
     JCheckBoxMenuItem toggleDetailMenuItem =
       new JCheckBoxMenuItem(toggleDetailPaneAction);
@@ -650,16 +647,23 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
       Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_B));
     toggleStatusBarCheck.setAction(toggleStatusBarAction);
     toggleStatusBarCheck.setSelected(true);
-    viewMenu.add(toggleDetailMenuItem);
-    viewMenu.add(toggleLogTreeMenuItem);
-    viewMenu.add(menuPrefs);
+    
+    activeTabMenu.add(pause);
+    activeTabMenu.add(toggleDetailMenuItem);
+    activeTabMenu.add(toggleLogTreeMenuItem);
+    activeTabMenu.addSeparator();
+    activeTabMenu.add(menuUndock);
+    activeTabMenu.add(menuPrefs);
 
-    viewMenu.addSeparator();
+    activeTabMenu.addSeparator();
+    activeTabMenu.add(new JMenuItem(clearAction));
+    activeTabMenu.addSeparator();
+    activeTabMenu.add(menuItemUseRightMouse);
 
-    viewMenu.add(new JMenuItem(clearAction));
     viewMenu.addSeparator();
     viewMenu.add(showToolbarCheck);
     viewMenu.add(toggleStatusBarCheck);
+    viewMenu.add(toggleShowReceiversCheck);
     viewMenu.add(menuItemClose);
     viewMenu.addSeparator();
 
@@ -755,11 +759,11 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     tabMenu.add(tabsTop);
     tabMenu.add(tabsBottom);
 
+    viewMenu.add(showTabs);
+
     viewMenu.add(levelIconMenu);
     viewMenu.add(tabMenu);
     viewMenu.add(responsiveNess);
-    viewMenu.addSeparator();
-    viewMenu.add(toggleShowReceiversCheck);
     viewMenu.add(lookAndFeelMenu);
 
     JMenu helpMenu = new JMenu("Help");
@@ -1123,7 +1127,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     toggleShowReceiversCheck.setSelected(logui.isReceiverPanelVisible());
     logTreePaneButton.setSelected(logui.isLogTreePanelVisible());
     showReceiversButton.setSelected(logui.isReceiverPanelVisible());
-
+    menuItemClose.setSelected(logui.tabbedPane.containsWelcomePanel());
     /**
      * We get the currently selected LogPanel, and if null, deactivate some
      * actions
