@@ -49,6 +49,24 @@
 
 package org.apache.log4j.chainsaw;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Priority;
+import org.apache.log4j.UtilLoggingLevel;
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.SettingsListener;
+import org.apache.log4j.chainsaw.prefs.SettingsManager;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.net.SocketNodeEventListener;
+import org.apache.log4j.plugins.Plugin;
+import org.apache.log4j.plugins.PluginEvent;
+import org.apache.log4j.plugins.PluginListener;
+import org.apache.log4j.plugins.PluginRegistry;
+import org.apache.log4j.plugins.Receiver;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -63,15 +81,20 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+
 import java.lang.reflect.Method;
+
 import java.net.URL;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -96,24 +119,6 @@ import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
-
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Priority;
-import org.apache.log4j.UtilLoggingLevel;
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SettingsListener;
-import org.apache.log4j.chainsaw.prefs.SettingsManager;
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.helpers.OptionConverter;
-import org.apache.log4j.net.SocketNodeEventListener;
-import org.apache.log4j.plugins.Plugin;
-import org.apache.log4j.plugins.PluginEvent;
-import org.apache.log4j.plugins.PluginListener;
-import org.apache.log4j.plugins.PluginRegistry;
-import org.apache.log4j.plugins.Receiver;
 
 
 /**
@@ -357,9 +362,19 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       new PluginListener() {
         public void pluginStarted(PluginEvent e) {
           statusBar.setMessage(e.getPlugin().getName() + " started!");
+
+          Method method = getAddListenerMethod(e.getPlugin());
+
+          if (method != null) {
+            try {
+              method.invoke(e.getPlugin(), new Object[] { socketListener });
+            } catch (Exception ex) {
+              LogLog.error("Failed to add a SocketNodeEventListener", ex);
+            }
+          }
         }
 
-        Method getSocketNodeEventListenerMethod(Plugin p) {
+        Method getRemoveListenerMethod(Plugin p) {
           try {
             return p.getClass().getMethod(
               "removeSocketNodeEventListener",
@@ -369,8 +384,18 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
           }
         }
 
+        Method getAddListenerMethod(Plugin p) {
+          try {
+            return p.getClass().getMethod(
+              "addSocketNodeEventListener",
+              new Class[] { SocketNodeEventListener.class });
+          } catch (Exception e) {
+            return null;
+          }
+        }
+
         public void pluginStopped(PluginEvent e) {
-          Method method = getSocketNodeEventListenerMethod(e.getPlugin());
+          Method method = getRemoveListenerMethod(e.getPlugin());
 
           if (method != null) {
             try {
@@ -379,7 +404,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
               LogLog.error("Failed to remove SocketNodeEventListener", ex);
             }
           }
-		  statusBar.setMessage(e.getPlugin().getName() + " stopped!");
+
+          statusBar.setMessage(e.getPlugin().getName() + " stopped!");
         }
       };
 
