@@ -16,11 +16,4 @@ final public class ThreadLocalMap extends InheritableThreadLocal {
       return null;
     }
   }
-
-  public 
-  final
-  void finalize() throws Throwable {
-    System.out.println("finalize called. ["+Thread.currentThread().getName()+"]");
-    super.finalize();
-  }
 }

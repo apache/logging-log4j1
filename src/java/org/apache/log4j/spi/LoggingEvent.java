@@ -62,11 +62,22 @@ public class LoggingEvent implements java.io.Serializable {
   /** The nested diagnostic context (NDC) of logging event. */
   private String ndc;
 
+  /** The mapped diagnostic context (MDC) of logging event. */
+  private Hashtable mdc;
+
+
   /** Have we tried to do an NDC lookup? If we did, there is no need
       to do it again.  Note that its value is always false when
       serialized. Thus, a receiving SocketNode will never use it's own
       (incorrect) NDC. See also writeObject method. */
   private boolean ndcLookupRequired = true;
+
+
+ /** Have we tried to do an MDC lookup? If we did, there is no need to
+      do it again.  Note that its value is always false when
+      serialized. Thus, a receiving SocketNode will never use it's own
+      (incorrect) MDC. See also writeObject method. */
+  private boolean mdcLookupRequired = true;
 
 
   /** The application supplied message of logging event. */
@@ -163,6 +174,25 @@ public class LoggingEvent implements java.io.Serializable {
     }
     return ndc; 
   }
+
+  //public
+  //Hashtable getMDC(String key) {
+  //  if(mdcLookupRequired) {
+  //	mdcLookupRequired = false;
+  //	mdc = MDC.getContext();
+  //	if(mdc != null) 
+  //	  return mdc.get(key);
+  //  }
+  //
+  //
+  //  Object r = mdc.get(key); 
+  //  if(r == null) {
+  //	return MDC.get(key);
+  //  } else {
+  //	return r;
+  //  }
+  //}
+
 
   public
   String getRenderedMessage() {
