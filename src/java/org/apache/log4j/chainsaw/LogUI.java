@@ -417,21 +417,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     getSettingsManager().configure(
       new SettingsListener() {
         public void loadSettings(LoadSettingsEvent event) {
-          lookAndFeelClassName = event.getSetting(LogUI.LOOK_AND_FEEL);
-
-          if (lookAndFeelClassName != null) {
-            applyLookAndFeel(lookAndFeelClassName);
-          }
-        }
-
-        public void saveSettings(SaveSettingsEvent event) {
-          //required because of SettingsListener interface..not used during load
-        }
-      });
-
-    getSettingsManager().configure(
-      new SettingsListener() {
-        public void loadSettings(LoadSettingsEvent event) {
           String configFile = event.getSetting(LogUI.CONFIG_FILE_TO_USE);
 
           //if both a config file are defined and a log4j.configuration property are set,  
@@ -598,6 +583,20 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
           exit();
         }
       });
+	getSettingsManager().configure(
+	  new SettingsListener() {
+		public void loadSettings(LoadSettingsEvent event) {
+		  lookAndFeelClassName = event.getSetting(LogUI.LOOK_AND_FEEL);
+
+		  if (lookAndFeelClassName != null) {
+			applyLookAndFeel(lookAndFeelClassName);
+		  }
+		}
+
+		public void saveSettings(SaveSettingsEvent event) {
+		  //required because of SettingsListener interface..not used during load
+		}
+	  });
 
     pack();
 
