@@ -27,12 +27,18 @@ import java.util.Date;
  *
  */
 public class DateTokenConverter extends TokenConverter {
-  String datePattern;
+ 
+  final String datePattern;
   SimpleDateFormat sdf;
 
   public DateTokenConverter(String datePattern) {
     super(TokenConverter.DATE);
-    this.datePattern = datePattern;
+    if("".equals(datePattern)) {
+      // In the absence of a valid option assume daily rollover
+      this.datePattern = "yyyy-MM-dd";
+    } else {
+      this.datePattern = datePattern;
+    }
     sdf = new SimpleDateFormat(datePattern);
   }
 
@@ -50,8 +56,8 @@ public class DateTokenConverter extends TokenConverter {
   /**
    * Set the date pattern.
    */
-  public void setDatePattern(String string) {
-    datePattern = string;
-  }
+  //public void setDatePattern(String string) {
+  //  datePattern = string;
+  //}
 
 }

@@ -27,12 +27,12 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 
-/**
 
 /**
- * RollingCalendar is a helper class to DailyRollingFileAppender or similar
- * timed-based rolling policies. Given a periodicity type and the current
- * time, it computes the start of the next interval.
+ * RollingCalendar is a helper class to 
+ * {@link org.apache.log4j.rolling.TimeBasedRollingPolicy TimeBasedRollingPolicy} 
+ * or similar timed-based rolling policies. Given a periodicity type and the 
+ * current time, it computes the start of the next interval.
  *
  * @author Ceki G&uuml;lc&uuml;
  *

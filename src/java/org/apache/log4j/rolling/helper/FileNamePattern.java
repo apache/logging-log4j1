@@ -100,22 +100,17 @@ MAIN_LOOP:
 
           int optionEnd = getOptionEnd(i + 2);
 
-          if (optionEnd != -1) {
-            String option = pattern.substring(i + 3, optionEnd);
+          String option;
 
-            tc = addTokenConverter(tc, new DateTokenConverter(option));
+          if (optionEnd != -1) {
+            option = pattern.substring(i + 3, optionEnd);
             lastIndex = optionEnd + 1;
           } else {
-            logger.warn(
-              "Could not parse option related to the %d conversion pattern");
-
-            tc =
-              addTokenConverter(
-                tc, new IdentityTokenConverter(pattern.substring(i)));
-
-            break MAIN_LOOP;
+            logger.warn("Assuming daily rotation schedule");
+            option = "yyyy-MM-dd";
+            lastIndex = i+2;
           }
-
+          tc = addTokenConverter(tc, new DateTokenConverter(option));
           break; // break from switch statement 
 
         case '%':
