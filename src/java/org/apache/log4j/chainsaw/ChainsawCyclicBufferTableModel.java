@@ -26,7 +26,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Set;
 
 import javax.swing.ProgressMonitor;
@@ -116,6 +115,17 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
           notifyCountListeners();
         }
     }
+  }
+  
+  public int find(Rule rule, int startLocation) {
+      synchronized(filteredList) {
+        for (int i=startLocation; i<filteredList.size(); i++) {
+            if (rule.evaluate((LoggingEvent)filteredList.get(i))) {
+                return i;
+            }
+        }
+      }
+      return -1;
   }
   
   /**
@@ -227,41 +237,6 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
     }
     fireTableDataChanged();
     notifyCountListeners();
-  }
-
-  /**
-   * @deprecated - should this be replaced with a Refinement filter?
-   *
-   * If not it should be replaced with something inside LogPanel, a Finder class, it should not be in the Model.
-   */
-  public int find(int startRow, String text) {
-    if (text == null) {
-      text = "";
-    } else {
-      text = text.toLowerCase();
-    }
-
-    int currentRow = -1;
-
-    synchronized (filteredList) {
-      ListIterator iter = filteredList.listIterator();
-
-      while (iter.hasNext()) {
-        currentRow++;
-
-        LoggingEvent event = (LoggingEvent) iter.next();
-
-        if (currentRow < startRow) {
-          continue;
-        }
-
-        if (event.getMessage().toString().toLowerCase().indexOf(text) > 0) {
-          return currentRow;
-        }
-      }
-    }
-
-    return -1;
   }
 
   public List getAllEvents() {

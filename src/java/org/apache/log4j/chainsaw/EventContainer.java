@@ -88,12 +88,12 @@ public interface EventContainer extends SortTableModel, LoggerNameModel {
   public int getMaxSize();
 
   /**
-   * Locates a row number, starting from startRow, containing the text
-   * within any column.
+   * Locates a row number, starting from startRow, matching the rule provided
+   * 
+   * @param rule
    * @param startRow
-   * @param text
    */
-  int find(int startRow, String text);
+  int find(Rule rule, int startRow);
 
   /**
    * Returns a copied list of all the event in the model.
