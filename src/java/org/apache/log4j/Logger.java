@@ -33,6 +33,7 @@ package org.apache.log4j;
 import org.apache.log4j.helpers.AppenderAttachableImpl;
 import org.apache.log4j.helpers.NullEnumeration;
 import org.apache.log4j.helpers.ReaderWriterLock;
+import org.apache.log4j.helpers.mcompose.MessageComposer;
 import org.apache.log4j.spi.AppenderAttachable;
 import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.LoggerRepository;
@@ -118,21 +119,46 @@ public class Logger implements AppenderAttachable {
   }
 
   /**
-     Retrieve a logger by name.
-  */
+   * Retrieve a logger by name. If the named logger already exists, then the 
+   * existing instance will be reutrned. Otherwise, a new instance is created. 
+   * 
+   * <p>By default, loggers do not have a set level but inherit it from their 
+   * ancestors. This is one of the central features of log4j.
+   * </p>
+   * 
+   * @param name The name of the logger to retrieve.
+   */
   public static Logger getLogger(String name) {
     return LogManager.getLogger(name);
   }
 
+  
   /**
-     Same as calling <code>getLogger(clazz.getName())</code>.
+   * Shorthand for <code>{@link #getLogger(Class) getLogger(clazz.getName())}</code>.
+   *
+   * @param clazz The name of <code>clazz</code> will be used as the name of
+   *        the logger to retrieve.  See {@link #getLogger(String)} for
+   *        more detailed information.
+   * @since 1.0
    */
   public static Logger getLogger(Class clazz) {
     return LogManager.getLogger(clazz.getName());
   }
 
+  
   /**
-     Retrieve the root logger.
+   * Return the root of logger for the current hierarchy.
+   *
+   * <p>
+   * The root logger is always instantiated and available. It's name is
+   * "root".
+   * </p>
+   *
+   * <p>
+   * Nevertheless, note that calling <code>Logger.getLogger("root")</code>
+   * does not retrieve the root logger but a logger just under root named
+   * "root".
+   * </p>
    */
   public static Logger getRootLogger() {
     return LogManager.getRootLogger();
@@ -327,6 +353,25 @@ public class Logger implements AppenderAttachable {
     }
   }
 
+  public void debug(Object message, Object param) {
+    if (repository.isDisabled(Level.DEBUG_INT)) {
+      return;
+    }
+
+    if (Level.DEBUG.isGreaterOrEqual(this.getEffectiveLevel())) {
+      if(param instanceof Throwable) {
+        forcedLog(FQCN, Level.DEBUG, message, (Throwable) param);
+      } else if (message instanceof String){
+        String msgStr = (String) message;
+        msgStr = MessageComposer.compose(msgStr, param);
+        forcedLog(FQCN, Level.DEBUG, msgStr, null);
+      } else {
+        forcedLog(FQCN, Level.DEBUG, message, null);
+      }
+    }
+  }
+
+  
   /**
    * Log a message object with the <code>DEBUG</code> level including the
    * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
@@ -600,28 +645,15 @@ public class Logger implements AppenderAttachable {
   }
 
   /**
-   * Retrieve a logger with named as the <code>name</code> parameter. If the
-   * named logger already exists, then the existing instance will be
-   * reutrned. Otherwise, a new instance is created. By default, loggers
-   * do not have a set level but inherit it from their ancestors. This is one
-   * of the central features of log4j.
-   *
-   * @param name The name of the logger to retrieve.
-   * @deprecated Please use the {@link LogManager#getLogger(String)} method
-   * instead.
+   * @deprecated Please use {@link LogManager#getLogger(String)} instead.
    */
   public static Logger getInstance(String name) {
     return LogManager.getLogger(name);
   }
 
+  
   /**
-   * Shorthand for <code>getInstance(clazz.getName())</code>.
-   *
-   * @param clazz The name of <code>clazz</code> will be used as the name of
-   *        the logger to retrieve.  See {@link #getLogger(String)} for
-   *        more detailed information.
    * @deprecated Please use {@link LogManager#getLogger(Class)} instead.
-   * @since 1.0
    */
   public static Logger getInstance(Class clazz) {
     return LogManager.getLogger(clazz);
