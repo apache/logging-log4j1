@@ -10,10 +10,6 @@
 
   <property file="build.properties"/>
 
-  <!-- Read the system environment variables and stores them in properties, -->
-  <!-- prefixed with "env". -->
-  <property environment="env"/>
-
   <!-- The base directory relative to which most targets are built -->
   <property name="base" value="."/>
  
