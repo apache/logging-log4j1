@@ -121,12 +121,21 @@ public class RecentFilesMenu extends JMenu {
     /** File to load */
     private final String mFilename;
 
+    /**
+     * Constructor that uses the filename and the order as descriptors
+     * for use within the GUI
+     * @param filename the file name to load
+     * @param order a sorting number
+     */
     public LoadRecentFileAction(String filename, int order) {
       mFilename = filename;
       putValue(NAME, order + " - " + filename);
     }
 
-    /* Load the file */
+    /**
+     * Loads the File
+     * @param ae the ActionEvent from the pressing of the button
+     */
     public void actionPerformed(ActionEvent ae) {
       try {
         final File f = new File(mFilename);

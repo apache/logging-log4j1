@@ -83,10 +83,18 @@ class MyTableColumnModel extends DefaultTableColumnModel {
 
   /** Logger for the class */
   private static final Logger LOG = Logger.getLogger(MyTableColumnModel.class);
+
+  /**
+   * The one and only instance of the Preferences
+   */
   private static final Preferences PREFS = Preferences.getInstance();
 
   /** Map of TableColumns to PreferenceSets */
   private final Map mColPrefMap = new HashMap();
+
+  /**
+   * The internal TableModel used by this ColumnModel
+   */
   private final TableModel mTableModel;
 
   /**
@@ -154,7 +162,10 @@ class MyTableColumnModel extends DefaultTableColumnModel {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * Adds a column to the ColumnModel
+   * @param column the column to add
+   */
   public void addColumn(TableColumn column) {
     PreferenceSet colPrefSet = getColumnPreferences(column);
 
@@ -165,7 +176,8 @@ class MyTableColumnModel extends DefaultTableColumnModel {
     super.addColumn(column);
   }
 
-  /** {@inheritDoc} */
+  /** {@inheritDoc}
+   * @param column the column to remove*/
   public void removeColumn(TableColumn column) {
     PreferenceSet colPrefSet = getColumnPreferences(column);
 
@@ -176,7 +188,9 @@ class MyTableColumnModel extends DefaultTableColumnModel {
     super.removeColumn(column);
   }
 
-  /** {@inheritDoc} */
+  /** {@inheritDoc}
+   * @param columnIndex the columnIndex to move
+   * @param newIndex the new index for that columnIndex*/
   public void moveColumn(int columnIndex, int newIndex) {
     super.moveColumn(columnIndex, newIndex);
     saveColumnOrder();
@@ -205,12 +219,19 @@ class MyTableColumnModel extends DefaultTableColumnModel {
     return (PreferenceSet) mColPrefMap.get(col);
   }
 
-  /* Store the column preferences in the map. */
+  /**
+   * Store the column preferences in the map.
+   * @param col the TableColumn to put
+   * @param colPrefSet the PreferenceSet to put
+   */
   private void putColumnPreferences(TableColumn col, PreferenceSet colPrefSet) {
     mColPrefMap.put(col, colPrefSet);
   }
 
-  /* Determine the order of the columns based on the preferences. */
+  /**
+   * Determine the order of the columns based on the preferences.
+   * @return String[] of Column names in order
+   */
   private String[] getColumnOrder() {
     String colOrder = PREFS.getProperty(ORDER_PROPERTY);
 
@@ -236,7 +257,9 @@ class MyTableColumnModel extends DefaultTableColumnModel {
     return (String[]) result.toArray(new String[result.size()]);
   }
 
-  /** Save the current column order to the preferences */
+  /**
+   * Save the current column order to the preferences
+   */
   private void saveColumnOrder() {
     StringBuffer colList = new StringBuffer(45);
 

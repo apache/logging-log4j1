@@ -52,6 +52,17 @@ package org.apache.log4j.chainsaw;
 import java.net.URL;
 
 
+/**
+ * Instances of this class are able to locate a URL of a Log4J configuration
+ * file using different means.  This is intended to be a Strategy pattern.
+ * @author Paul Smith
+ */
 public interface Log4JConfigurationFinder {
-  public URL findConfiguration();
+
+  /**
+   * Returns the URL of the configuration found according to the
+   * underlying implementation
+   * @return URL of configuration file
+   */
+  URL findConfiguration();
 }
