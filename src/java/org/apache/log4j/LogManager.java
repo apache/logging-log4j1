@@ -27,6 +27,7 @@ import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.RepositorySelector;
 import org.apache.log4j.spi.RootLogger;
+import org.apache.log4j.spi.location.LocationInfo;
 
 import java.util.Enumeration;
 
@@ -177,6 +178,15 @@ public class LogManager {
     return repositorySelector.getLoggerRepository().getRootLogger();
   }
 
+  /**
+   * Retrieve a {@link Logger} instance based on the calling class name.
+   * 
+   */
+  public static Logger getLogger() {
+    LocationInfo info = new LocationInfo(new Exception(), LogManager.class.getName());
+    return getLogger(info.getClassName());
+  }
+  
   /**
      Retrieve the appropriate {@link Logger} instance.
   */
