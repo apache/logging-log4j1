@@ -76,6 +76,7 @@
     <pathelement location="${jms.jar}"/>
     <pathelement location="${jmx.jar}"/>
     <pathelement location="${jmx-extra.jar}"/>
+    <pathelement location="${servlet.jar}"/>
   </path>
 
   <!-- Construct compile classpath -->
@@ -159,6 +160,17 @@
     <echo message="JAVAMAIL is present."/>
   </target>
 
+  <target name="servletCheck">
+    <available classname="javax.servlet.Filter" property="servlet-present">
+      <classpath>
+	<pathelement location="${servlet.jar}"/>
+      </classpath>
+    </available>
+  </target>
+  <target name="servlet" depends="servletCheck" if="servlet-present">
+    <echo message="Servlet 2.3 is present."/>
+  </target>
+
   <!-- ================================================================= -->
   <!-- Initialize variables                                              -->
   <!-- NOTE: all directories are relative to jakarta-log4j/              -->
@@ -169,7 +181,7 @@
 
   <target name="build" description="Compile all log4j components."
          depends="init, build.core, build.examples, build.xml,
-         build.javamail, build.jms, build.jmx"/>
+         build.javamail, build.jms, build.jmx, build.servlet"/>
 
   <target name="build.core" depends="init">
     <mkdir dir="${javac.dest}" />
@@ -181,10 +193,11 @@
                     **/doc-files/*,
                     ${stem}/xml/**,
                     ${stem}/test/serialization/**,
-		    ${stem}/net/SMTPAppender.java,
+		            ${stem}/net/SMTPAppender.java,
                	    ${stem}/net/JMS*.java,
                	    ${stem}/jmx/*.java,
-               	    ${stem}/or/jms/*.java"
+               	    ${stem}/or/jms/*.java,
+               	    ${stem}/servlet/*.java"
   	    deprecation="${deprecation}"
 	    debug="on">
       <classpath refid="compile.classpath"/>
@@ -260,6 +273,14 @@
     </javac>
   </target>
 
+  <target name="build.servlet" depends="init, servlet" if="servlet-present">
+    <javac deprecation="${deprecation}"
+           srcdir="${java.source.dir}"
+	   destdir="${javac.dest}"
+	   includes="${stem}/servlet/*.java">
+      <classpath refid="compile.classpath"/>
+    </javac>
+  </target>
 
   <!-- ================================================================= -->
   <!-- Remove all generated (compiled) class files.                      -->
@@ -333,7 +354,8 @@
                 ${stem}/or/jms/*.class,
 		${stem}/config/*.class"
       excludes="**/UnitTest**,
-                **/selectors/*.class">
+                **/selectors/*.class,
+                **/servlet/*.class">
 
       <manifest>
 	<attribute name="Manifest-version" value="1.0"/>
