@@ -252,7 +252,6 @@ public class XMLDecoder implements Decoder {
     String threadName = null;
     Object message = null;
     String ndc = null;
-    Hashtable mdc = null;
     String[] exception = null;
     String className = null;
     String methodName = null;
@@ -295,10 +294,9 @@ public class XMLDecoder implements Decoder {
         if (tagName.equalsIgnoreCase("log4j:NDC")) {
           ndc = getCData(list.item(y));
         }
-
+        //still support receiving of MDC and convert to properties
         if (tagName.equalsIgnoreCase("log4j:MDC")) {
-          mdc = new Hashtable();
-
+          properties = new Hashtable();
           NodeList propertyList = list.item(y).getChildNodes();
           int propertyLength = propertyList.getLength();
 
@@ -311,7 +309,7 @@ public class XMLDecoder implements Decoder {
                 property.getAttributes().getNamedItem("name").getNodeValue();
               String value =
                 property.getAttributes().getNamedItem("value").getNodeValue();
-              mdc.put(name, value);
+              properties.put(name, value);
             }
           }
         }
@@ -332,8 +330,9 @@ public class XMLDecoder implements Decoder {
         }
 
         if (tagName.equalsIgnoreCase("log4j:properties")) {
-          properties = new Hashtable();
-
+          if (properties == null) {
+              properties = new Hashtable();
+          }
           NodeList propertyList = list.item(y).getChildNodes();
           int propertyLength = propertyList.getLength();
 
@@ -366,7 +365,7 @@ public class XMLDecoder implements Decoder {
       Level levelImpl = null;
       if ((properties != null)  && (properties.get("log4j.eventtype") != null)) {
       	String s = (String)properties.get("log4j.eventtype");
-		if (s.equalsIgnoreCase("util-logging")) {
+		if ("util-logging".equalsIgnoreCase(s)) {
 			levelImpl=UtilLoggingLevel.toLevel(level);
 		}
       }
@@ -400,7 +399,6 @@ public class XMLDecoder implements Decoder {
       threadName = null;
       message = null;
       ndc = null;
-      mdc = null;
       exception = null;
       className = null;
       methodName = null;

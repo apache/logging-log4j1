@@ -58,7 +58,6 @@ public class ChainsawConstants {
   static final String THREAD_COL_NAME = "Thread";
   static final String MESSAGE_COL_NAME = "Message";
   static final String NDC_COL_NAME = "NDC";
-  static final String MDC_COL_NAME = "MDC";
   static final String THROWABLE_COL_NAME = "Throwable";
   static final String CLASS_COL_NAME = "Class";
   static final String METHOD_COL_NAME = "Method";

@@ -16,29 +16,6 @@
 
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.Layout;
-import org.apache.log4j.PatternLayout;
-import org.apache.log4j.chainsaw.color.ColorPanel;
-import org.apache.log4j.chainsaw.color.RuleColorizer;
-import org.apache.log4j.chainsaw.filter.FilterModel;
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-import org.apache.log4j.chainsaw.icons.LineIconFactory;
-import org.apache.log4j.chainsaw.layout.DefaultLayoutFactory;
-import org.apache.log4j.chainsaw.layout.EventDetailLayout;
-import org.apache.log4j.chainsaw.layout.LayoutEditorPane;
-import org.apache.log4j.chainsaw.messages.MessageCenter;
-import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.Profileable;
-import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SettingsManager;
-import org.apache.log4j.helpers.ISO8601DateFormat;
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.rule.ExpressionRule;
-import org.apache.log4j.rule.ExpressionRuleContext;
-import org.apache.log4j.rule.Rule;
-import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.spi.LoggingEventFieldResolver;
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
@@ -58,10 +35,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.EOFException;
@@ -73,10 +48,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -128,6 +101,29 @@ import javax.swing.event.TableColumnModelListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+
+import org.apache.log4j.Layout;
+import org.apache.log4j.PatternLayout;
+import org.apache.log4j.chainsaw.color.ColorPanel;
+import org.apache.log4j.chainsaw.color.RuleColorizer;
+import org.apache.log4j.chainsaw.filter.FilterModel;
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.chainsaw.icons.LineIconFactory;
+import org.apache.log4j.chainsaw.layout.DefaultLayoutFactory;
+import org.apache.log4j.chainsaw.layout.EventDetailLayout;
+import org.apache.log4j.chainsaw.layout.LayoutEditorPane;
+import org.apache.log4j.chainsaw.messages.MessageCenter;
+import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.Profileable;
+import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.SettingsManager;
+import org.apache.log4j.helpers.ISO8601DateFormat;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.rule.ExpressionRule;
+import org.apache.log4j.rule.ExpressionRuleContext;
+import org.apache.log4j.rule.Rule;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.LoggingEventFieldResolver;
 
 
 /**
@@ -251,9 +247,6 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
       ChainsawConstants.LOGGER_COL_NAME, LoggingEventFieldResolver.LOGGER_FIELD);
     columnNameKeywordMap.put(
       ChainsawConstants.NDC_COL_NAME, LoggingEventFieldResolver.NDC_FIELD);
-    columnNameKeywordMap.put(
-      ChainsawConstants.PROPERTIES_COL_NAME,
-      LoggingEventFieldResolver.PROP_FIELD);
     columnNameKeywordMap.put(
       ChainsawConstants.MESSAGE_COL_NAME, LoggingEventFieldResolver.MSG_FIELD);
     columnNameKeywordMap.put(
@@ -557,6 +550,12 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
      */
     tableModel = new ChainsawCyclicBufferTableModel();
     table = new JSortTable(tableModel);
+    //add a listener to update the 'refine focus'
+    tableModel.addNewKeyListener(new NewKeyListener() {
+		public void newKeyAdded(NewKeyEvent e) {
+            columnNameKeywordMap.put(e.getKey(), "PROP." + e.getKey());
+		}
+    });
 
     /*
      * Set the Display rule to use the mediator, the model will add itself as

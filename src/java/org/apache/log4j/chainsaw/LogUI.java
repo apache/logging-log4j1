@@ -267,7 +267,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     
     
     String config = model.getConfigurationURL();
-    if(config!=null) {
+    if(config!=null && (!(config.trim().equals("")))) {
         config = config.trim();
         LogLog.info("Using '" + config + "' for auto-configuration");
         try {
@@ -559,7 +559,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     getFilterableColumns().add(ChainsawConstants.LOGGER_COL_NAME);
     getFilterableColumns().add(ChainsawConstants.THREAD_COL_NAME);
     getFilterableColumns().add(ChainsawConstants.NDC_COL_NAME);
-    getFilterableColumns().add(ChainsawConstants.MDC_COL_NAME);
+    getFilterableColumns().add(ChainsawConstants.PROPERTIES_COL_NAME);
     getFilterableColumns().add(ChainsawConstants.CLASS_COL_NAME);
     getFilterableColumns().add(ChainsawConstants.METHOD_COL_NAME);
     getFilterableColumns().add(ChainsawConstants.FILE_COL_NAME);
