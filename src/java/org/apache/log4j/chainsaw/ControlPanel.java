@@ -50,6 +50,7 @@
 package org.apache.log4j.chainsaw;
 
 import org.apache.log4j.Category;
+import org.apache.log4j.Level;
 import org.apache.log4j.Priority;
 
 import java.awt.Dimension;
@@ -197,7 +198,8 @@ class ControlPanel extends JPanel {
 
     c.gridy = 0;
 
-    final Priority[] allPriorities = Priority.getAllPossiblePriorities();
+    final Priority[] allPriorities =
+      new Level[] { Level.FATAL, Level.ERROR, Level.WARN, Level.INFO, Level.DEBUG };
     final JComboBox priorities = new JComboBox(allPriorities);
     gridbag.setConstraints(priorities, c);
     add(priorities);
