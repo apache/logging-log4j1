@@ -59,6 +59,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -101,9 +102,68 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
   private boolean sortEnabled = false;
   protected final Object syncLock = new Object();
 
+  private LoggerNameModel loggerNameModelDelegate = new LoggerNameModelSupport();
+  
   //because we may be using a cyclic buffer, if an ID is not provided in the property, 
   //use and increment this row counter as the ID for each received row
   int uniqueRow;
+
+  /**
+   * @param l
+   */
+  public void removeLoggerNameListener(LoggerNameListener l)
+  {
+    loggerNameModelDelegate.removeLoggerNameListener(l);
+  }
+
+  /* (non-Javadoc)
+   * @see java.lang.Object#hashCode()
+   */
+  public int hashCode()
+  {
+    return loggerNameModelDelegate.hashCode();
+  }
+
+  /**
+   * @param loggerName
+   * @return
+   */
+  public boolean addLoggerName(String loggerName)
+  {
+    return loggerNameModelDelegate.addLoggerName(loggerName);
+  }
+
+  /* (non-Javadoc)
+   * @see java.lang.Object#toString()
+   */
+  public String toString()
+  {
+    return loggerNameModelDelegate.toString();
+  }
+
+  /**
+   * @param l
+   */
+  public void addLoggerNameListener(LoggerNameListener l)
+  {
+    loggerNameModelDelegate.addLoggerNameListener(l);
+  }
+
+  /**
+   * @return
+   */
+  public Collection getLoggerNames()
+  {
+    return loggerNameModelDelegate.getLoggerNames();
+  }
+
+  /* (non-Javadoc)
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  public boolean equals(Object obj)
+  {
+    return loggerNameModelDelegate.equals(obj);
+  }
 
   public ChainsawCyclicBufferTableModel(boolean isCyclic, int bufferSize) {
     this.cyclic = isCyclic;
