@@ -17,10 +17,10 @@ TEMP=temp
 setPERL
 
 echo "log4j.rootCategory=DEBUG, testAppender" > $LCF
-lecho "log4j.appender.testAppender=org.log4j.ResilientFileAppender"
+lecho "log4j.appender.testAppender=org.apache.log4j.ResilientFileAppender"
 lecho "log4j.appender.testAppender.File=$TEMP"
 lecho "log4j.appender.testAppender.Append=false"
-lecho "log4j.appender.testAppender.layout=org.log4j.PatternLayout"
+lecho "log4j.appender.testAppender.layout=org.apache.log4j.PatternLayout"
 lecho "log4j.appender.testAppender.layout.ConversionPattern=%m%n"
 
 
@@ -30,7 +30,7 @@ MAX_COUNTER=3
 MAX_MESSAGES=50000
 
 perl elf.pl $TEMP $MAX_COUNTER&
-java org.log4j.test.Loop $LCF $MAX_MESSAGES
+java org.apache.log4j.test.Loop $LCF $MAX_MESSAGES
 
 if perl checkForHoles.pl $TEMP $MAX_COUNTER $MAX_MESSAGES 
 then

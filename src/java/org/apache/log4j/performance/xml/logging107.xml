@@ -2,11 +2,11 @@
 <!DOCTYPE configuration SYSTEM "log4j.dtd">
 
 <configuration>
-        <appender name="NULL" class="org.log4j.FileAppender">
+        <appender name="NULL" class="org.apache.log4j.FileAppender">
            <param name="File" value="temp"/>
            <param name="Append" value="false"/>
 
-           <layout class="org.log4j.PatternLayout">
+           <layout class="org.apache.log4j.PatternLayout">
               <param name="ConversionPattern" 
                      value="%l - %m%n"/>
 	   </layout>

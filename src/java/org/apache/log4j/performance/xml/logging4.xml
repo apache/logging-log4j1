@@ -3,8 +3,8 @@
 
 <configuration>
 
-        <appender name="NULL" class="org.log4j.performance.NullAppender">
-           <layout class="org.log4j.TTCCLayout">
+        <appender name="NULL" class="org.apache.log4j.performance.NullAppender">
+           <layout class="org.apache.log4j.TTCCLayout">
               <param name="DateFormat" value="RELATIVE"/>
 	   </layout>
 	</appender>

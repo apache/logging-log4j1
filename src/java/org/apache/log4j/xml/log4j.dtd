@@ -74,7 +74,7 @@ parameters. -->
   value		CDATA	#REQUIRED
 >
 
-<!-- The priority class is org.log4j.Priority by default -->
+<!-- The priority class is org.apache.log4j.Priority by default -->
 <!ELEMENT priority (param*)>
 <!ATTLIST priority
   class   CDATA	#IMPLIED
