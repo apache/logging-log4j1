@@ -7,11 +7,9 @@
  */
 package examples.lf5.InitUsingDefaultConfigurator;
 
-import org.apache.log4j.lf5.DefaultLF5Configurator;
-import org.apache.log4j.lf5.LogLevel;
-import org.apache.log4j.lf5.util.LogMonitorAdapter;
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import org.apache.log4j.NDC;
+import org.apache.log4j.lf5.DefaultLF5Configurator;
 
 import java.io.IOException;
 
@@ -20,11 +18,8 @@ import java.io.IOException;
  * logging window using the DefaultLF5Configurator.
  *
  * The DefaultLF5Configurator uses a default configuration file stored
- * in the lf5.jar in order to provide a default configuration for
+ * in the log4j.jar in order to provide a default configuration for
  * the LF5Appender.
- *
- * To make this example work, ensure that the lf5.jar and lf5-license.jar
- * files are in your classpath, and then run the example at the command line.
  *
  * @author Brent Sprecher
  */
@@ -32,97 +27,97 @@ import java.io.IOException;
 // Contributed by ThoughtWorks Inc.
 
 public class InitUsingDefaultConfigurator {
-  //--------------------------------------------------------------------------
-  //   Constants:
-  //--------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    //   Constants:
+    //--------------------------------------------------------------------------
 
-  //--------------------------------------------------------------------------
-  //   Protected Variables:
-  //--------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    //   Protected Variables:
+    //--------------------------------------------------------------------------
 
-  //--------------------------------------------------------------------------
-  //   Private Variables:
-  //--------------------------------------------------------------------------
-  private static Category cat =
-      Category.getInstance(InitUsingDefaultConfigurator.class);
+    //--------------------------------------------------------------------------
+    //   Private Variables:
+    //--------------------------------------------------------------------------
+    private static Logger logger =
+            Logger.getLogger(InitUsingDefaultConfigurator.class);
 
-  //--------------------------------------------------------------------------
-  //   Constructors:
-  //--------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    //   Constructors:
+    //--------------------------------------------------------------------------
 
-  //--------------------------------------------------------------------------
-  //   Public Methods:
-  //--------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    //   Public Methods:
+    //--------------------------------------------------------------------------
 
-  public static void main(String[] args) throws IOException {
-    // Configure the LF5Appender using the DefaultLF5Configurator.  This
-    // will add the LF5Appender to the root of the Category tree.
-    DefaultLF5Configurator.configure();
+    public static void main(String[] args) throws IOException {
+        // Configure the LF5Appender using the DefaultLF5Configurator.  This
+        // will add the LF5Appender to the root of the Category tree.
+        DefaultLF5Configurator.configure();
 
-    // Add an NDC to demonstrate how NDC information is output.
-    NDC.push("#23856");
-    // Log some information.
-    for (int i = 0; i < 10; i++) {
-      cat.debug("Hello, my name is Homer Simpson.");
-      cat.info("Mmmmmm .... Chocolate.");
-      cat.warn("Mmm...forbidden donut.");
+        // Add an NDC to demonstrate how NDC information is output.
+        NDC.push("#23856");
+        // Log some information.
+        for (int i = 0; i < 10; i++) {
+            logger.debug("Hello, my name is Homer Simpson.");
+            logger.info("Mmmmmm .... Chocolate.");
+            logger.warn("Mmm...forbidden donut.");
+        }
+        // Clean up NDC
+        NDC.pop();
+        NDC.remove();
+
+        NDC.push("Another NDC");
+        // Log some information.
+        logger.fatal("Hello, my name is Bart Simpson.");
+        logger.error("Hi diddly ho good neighbour.");
+        // Clean up NDC
+        NDC.pop();
+        NDC.remove();
+
+        // Call methods on both classes.
+        InitUsingDefaultConfigurator.foo();
+        InnerInitUsingDefaultConfigurator.foo();
+
+        logger.info("Exiting InitUsingDefaultConfigurator.");
+
     }
-    // Clean up NDC
-    NDC.pop();
-    NDC.remove();
 
-    NDC.push("Another NDC");
-    // Log some information.
-    cat.fatal("Hello, my name is Bart Simpson.");
-    cat.error("Hi diddly ho good neighbour.");
-    // Clean up NDC
-    NDC.pop();
-    NDC.remove();
+    public static void foo() {
+        logger.debug("Entered foo in InitUsingDefaultConfigurator class");
 
-    // Call methods on both classes.
-    InitUsingDefaultConfigurator.foo();
-    InnerInitUsingDefaultConfigurator.foo();
-
-    cat.info("Exiting InitUsingDefaultConfigurator.");
-
-  }
-
-  public static void foo() {
-    cat.debug("Entered foo in InitUsingDefaultConfigurator class");
-
-    NDC.push("#123456");
-    cat.debug("Hello, my name is Marge Simpson.");
-    cat.info("D'oh!! A deer! A female deer.");
-    // Clean up NDC
-    NDC.pop();
-    NDC.remove();
-  }
-
-  //--------------------------------------------------------------------------
-  //   Protected Methods:
-  //--------------------------------------------------------------------------
-
-  //--------------------------------------------------------------------------
-  //   Private Methods:
-  //--------------------------------------------------------------------------
-
-  //--------------------------------------------------------------------------
-  //   Nested Top-Level Classes or Interfaces:
-  //--------------------------------------------------------------------------
-
-  public static class InnerInitUsingDefaultConfigurator {
-    static Category cat =
-        Category.getInstance(InnerInitUsingDefaultConfigurator.class.getName());
-
-    static void foo() throws IOException {
-      // Configure the LF5Appender again. You can call
-      // DefaultLF5Configurator.configure() as often as you want
-      // without unexpected behavior.
-      DefaultLF5Configurator.configure();
-
-      cat.info("Entered foo in InnerInitUsingDefaultConfigurator class.");
+        NDC.push("#123456");
+        logger.debug("Hello, my name is Marge Simpson.");
+        logger.info("D'oh!! A deer! A female deer.");
+        // Clean up NDC
+        NDC.pop();
+        NDC.remove();
     }
-  }
+
+    //--------------------------------------------------------------------------
+    //   Protected Methods:
+    //--------------------------------------------------------------------------
+
+    //--------------------------------------------------------------------------
+    //   Private Methods:
+    //--------------------------------------------------------------------------
+
+    //--------------------------------------------------------------------------
+    //   Nested Top-Level Classes or Interfaces:
+    //--------------------------------------------------------------------------
+
+    public static class InnerInitUsingDefaultConfigurator {
+        static Logger logger =
+                Logger.getLogger(InnerInitUsingDefaultConfigurator.class.getName());
+
+        static void foo() throws IOException {
+            // Configure the LF5Appender again. You can call
+            // DefaultLF5Configurator.configure() as often as you want
+            // without unexpected behavior.
+            DefaultLF5Configurator.configure();
+
+            logger.info("Entered foo in InnerInitUsingDefaultConfigurator class.");
+        }
+    }
 }
 
 
