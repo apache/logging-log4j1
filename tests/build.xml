@@ -395,6 +395,11 @@
   </target>
   
   <target name="Compress" depends="build, cleanOutputDir">
+    <!-- The input files are erased as a result of compression. We -->
+    <!-- need to "create" them afresh for each test.               -->         
+    <copy file="input/compress1.copy" toFile="input/compress1.txt"/>
+    <copy file="input/compress2.copy" toFile="input/compress2.txt"/>
+    <copy file="input/compress3.copy" toFile="input/compress3.txt"/>
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
