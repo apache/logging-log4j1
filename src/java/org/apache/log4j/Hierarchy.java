@@ -3,7 +3,7 @@
  *
  * This software is published under the terms of the Apache Software
  * License version 1.1, a copy of which has been included with this
- * distribution in the LICENSE.APL file.  */
+ * distribution in the LICENSE.txt file.  */
 
 // WARNING This class MUST not have references to the Category or
 // WARNING RootCategory classes in its static initiliazation neither 
@@ -24,6 +24,7 @@ import java.util.Vector;
 
 import org.apache.log4j.spi.RootCategory;
 import org.apache.log4j.spi.CategoryFactory;
+import org.apache.log4j.spi.HierarchyEventListener;
 import org.apache.log4j.or.RendererMap;
 import org.apache.log4j.or.ObjectRenderer;
 import org.apache.log4j.helpers.LogLog;
@@ -62,7 +63,7 @@ public class Hierarchy {
   static final int DISABLE_OVERRIDE = -2;  
   
   private CategoryFactory defaultFactory;
-
+  private Vector  listeners;
 
   Hashtable ht;
   Category root;
@@ -82,6 +83,7 @@ public class Hierarchy {
   public
   Hierarchy(Category root) {
     ht = new Hashtable();
+    listeners = new Vector(1);
     this.root = root;
     // Don't disable any priority level by default.
     disable = DISABLE_OFF;
@@ -230,29 +232,18 @@ public class Hierarchy {
   void enableAll() {
     disable = DISABLE_OFF;
   }
-  
-  /**
-     Override the shipped code flag if the <code>override</code>
-     parameter is not null.
 
-     <p>If <code>override</code> is null then there is nothing to do.
-     Otherwise, set Category.shippedCode to false if override has a
-     value other than "false".     
-  */
-  public
-  void overrideAsNeeded(String override) {
-    // If override is defined, any value other than false will be
-    // interpreted as true.    
-    if(override != null) {
-      LogLog.debug("Handling non-null disable override directive: \""+
-		   override +"\".");
-      if(OptionConverter.toBoolean(override, true)) {
-	LogLog.debug("Overriding all disable methods.");
-	disable = DISABLE_OVERRIDE;
+  private
+  void fireCategoryCreationEvent(Category category) {
+    if(listeners != null) {
+      int size = listeners.size();
+      HierarchyEventListener listener;
+      for(int i = 0; i < size; i++) {
+	listener = (HierarchyEventListener) listeners.elementAt(i);
+	listener.categoryCreationEvent(category);
       }
-    }
+    }        
   }
-
 
   /**
      Return a new category instance named as the first parameter using
@@ -299,6 +290,7 @@ public class Hierarchy {
 	category.setHierarchy(this);
 	ht.put(key, category);      
 	updateParents(category);
+	fireCategoryCreationEvent(category);
 	return category;
       } else if(o instanceof Category) {
 	return (Category) o;
@@ -309,6 +301,7 @@ public class Hierarchy {
 	ht.put(key, category);
 	updateChildren((ProvisionNode) o, category);
 	updateParents(category);	
+	fireCategoryCreationEvent(category);
 	return category;
       }
       else {
@@ -342,12 +335,6 @@ public class Hierarchy {
     return v.elements();
   }
 
-
-  public
-  boolean isDisabled(int level) {
-    return disable >=  level;
-  }
-
   /**
      Get the renderer map for this hierarchy.
   */
@@ -367,6 +354,34 @@ public class Hierarchy {
     return root;
   }
 
+  public
+  boolean isDisabled(int level) {
+    return disable >=  level;
+  }
+
+  /**
+     Override the shipped code flag if the <code>override</code>
+     parameter is not null.
+     
+     <p>This method is intended to be used by configurators.
+
+     <p>If the <code>override</code> paramter is <code>null</code>
+     then there is nothing to do.  Otherwise, set
+     <code>Hiearchy.disable</code> to <code>false</code> if override
+     has a value other than <code>false</code>.  */
+  public
+  void overrideAsNeeded(String override) {
+    // If override is defined, any value other than false will be
+    // interpreted as true.    
+    if(override != null) {
+      LogLog.debug("Handling non-null disable override directive: \""+
+		   override +"\".");
+      if(OptionConverter.toBoolean(override, true)) {
+	LogLog.debug("Overriding all disable methods.");
+	disable = DISABLE_OVERRIDE;
+      }
+    }
+  }
 
   /**
      Reset all values contained in this hierarchy instance to their
@@ -428,8 +443,6 @@ public class Hierarchy {
       disable =  DISABLE_OVERRIDE;
     }
   }
-
-
 
   /**
      Shutting down a hierarchy will <em>safely</em> close and remove
