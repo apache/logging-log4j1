@@ -27,7 +27,7 @@
     </section>
     
 <section name="So what is it really?">
-      <p><a name="WhatIsIt"></a>It's a GUI-based Log viewer. A picture tells a thousand words...</p>
+      <p><a name="WhatIsIt">&#160;</a>It's a GUI-based Log viewer. A picture tells a thousand words...</p>
       
       <p><img src="chainsaw-1.jpg" width="873" height="492"/></p>
 
@@ -40,7 +40,7 @@
     </section>
     
     <section name="Quick Tour of Chainsaw features">
-			<p><a name="QuickTour"></a> Heres just a <b>brief</b> run down of some of the features of Chainsaw v2:</p>
+			<p><a name="QuickTour">&#160;</a> Heres just a <b>brief</b> run down of some of the features of Chainsaw v2:</p>
       <ul>
        <li><b>View remote events</b> - Remote events are "received" by Chainsaw using Log4j 1.3's new Receiver concept.</li>
        <li><b>Saved Preferences</b> - You can fully customize each Tab the way you want it, and it will restore it's state the next time.</li>
@@ -59,7 +59,7 @@
     </section>
 
     <section name="Installation">
-			<p><a name="Installation"></a>Currently you need to check out the jakarta-log4j module from the Apache CVS server
+			<p><a name="Installation">&#160;</a>Currently you need to check out the jakarta-log4j module from the Apache CVS server
 			to build and run Chainsaw v2.  To make this easier, we have created a temporary installation Ant script, you can download this 
 			by <a href="install-chainsaw.xml">clicking here</a>.</p>    
 			<P>You will need the following installed to utilise this installation script:</P>
@@ -75,14 +75,14 @@
     </section>
 
     <section name="Getting Started">
-			<p><a name="GettingStarted"></a>Once you have used the above installer, you can <code>cd</code> to tho <code>jakarta-log4j</code> sub-directory and
+			<p><a name="GettingStarted">&#160;</a>Once you have used the above installer, you can <code>cd</code> to tho <code>jakarta-log4j</code> sub-directory and
 			type:</p>    
 			<pre>ant chainsaw</pre>
 			<P>Chainsaw v2 will be built and run!</P>
     </section>
    
     <section name="Tutorial and User Manual">
-			<p><a name="ExtraDocs"></a>Chainsaw already includes help with
+			<p><a name="ExtraDocs">&#160;</a>Chainsaw already includes help with
       with a Quick Reference and a Tutorial to get you started, all viewable from <b>within the GUI</b>. A User Manual will be made available around release time. </p>    
     </section>
 
