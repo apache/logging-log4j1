@@ -226,7 +226,10 @@ public class SocketAppender extends AppenderSkeleton {
         fireConnector(); // fire the connector thread
       }
 
-      LogLog.error(msg, e);
+      /**
+       * Rather than log an ugly stack trace, output the msg
+       */
+      LogLog.error(msg + "(" + e + ")");
     }
   }
 
