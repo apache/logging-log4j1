@@ -74,6 +74,9 @@ import javax.swing.table.TableColumn;
  * moved, minimized away to be used later, rather than being a Dialog.
  *
  * @author Scott Deboy <sdeboy@apache.org>
+ * 
+ * @deprecated - Preferred to use the Log Panel preferences, or alter on we can pass the 
+ * LogPanelPreferenceModel to this class so it can modify it.
  *
  */
 public class ColumnSelector extends JFrame implements TableColumnModelListener {
