@@ -78,6 +78,14 @@ public interface Appender {
   public
   void setLayout(Layout layout);
 
+  /**
+     Returns this appenders layout.
+     
+     @since 1.1
+  */
+  public
+  Layout getLayout();
+  
 
   /**
      Set the name of this appender. The name is used by other
