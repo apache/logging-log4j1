@@ -120,7 +120,7 @@ not be performed.
     <p>The DOMConfigurator.configure(String filename) method and its
     variants require a JAXP compatible XML parser, for example <a
     href="http://xml.apache.org/">Xerces</a> or Sun's
-    parser. Ccompiling the DOMConfigurator requires the presence of a
+    parser. Compiling the DOMConfigurator requires the presence of a
     JAXP parser in the classpath.
 
 <p><li>The <code>org.apache.log4j.net.SMTPAppender</code> relies on
@@ -130,10 +130,10 @@ not be performed.
     href="http://java.sun.com/beans/glasgow/jaf.html">JavaBeans
     Activation Framework</a> package. 
     
-<p><li>The <code>org.apache.log4j.net.JMSAppender</code> requries the
+<p><li>The <code>org.apache.log4j.net.JMSAppender</code> requires the
 presence of the JMS API as well as JNDI.
 
-<p><li>The <code>org.apache.log4j.gui.TextPaneAppender</code> requries Swing.
+<p><li>The <code>org.apache.log4j.gui.TextPaneAppender</code> requires Swing.
 
 <p><li>log4j test code relies on the <a
 href="http://www.junit.org">JUnit</a> testing framework.
@@ -397,7 +397,7 @@ many benefits:
 <ul>
   <li>It is very simple to implement.
 
-  <li>It is very simple to explain to new developpers.
+  <li>It is very simple to explain to new developers.
 
   <li>It automatically mirrors your application's own modular design.
 
@@ -415,7 +415,7 @@ areas</strong>. For example, the "database" category, "RMI" category,
 "security" category, or the "XML" category.
 
 <p>You may choose to name categories by functionality and
-sub-categorize by locatily, as in "DATABASE.com.ibm.some.package.someClass" or
+subcategorize by locality, as in "DATABASE.com.ibm.some.package.someClass" or
 "DATABASE.com.ibm.some.other.package.someOtherClass".
 
 <p><em>You are totally free in choosing the names of your
@@ -424,7 +424,7 @@ names in a hierarchy.  However, it is your responsibility to define
 this hierarchy.
 
 <p>Note by naming categories by locality one tends to name things by
-functionality, since in most cases the locatility relates closely to
+functionality, since in most cases the locality relates closely to
 functionality. 
 
 
@@ -461,7 +461,7 @@ different log files?</h4>
 
 Many developers are confronted with the problem of distinguishing the
 log output originating from the same class but different client
-requests. They come up with ingenous mechanisms to fan out the log
+requests. They come up with ingenious mechanisms to fan out the log
 output to different files. In most cases, this is not the right
 approach.
 
@@ -469,7 +469,7 @@ approach.
 one would <em>NDC.push()</em> client specific information, such as the
 client's hostname, ID or any other distinguishing information when
 starting to handle the client's request. Thereafter, log output will
-automagically include the nested diagnostic context so that you can
+automatically include the nested diagnostic context so that you can
 distinguish logs from different client requests even if they are
 output to the same file.
 
@@ -487,7 +487,7 @@ targets from the same category depending on the current context.
 <p><a name=rm><h4>Category instances seem to be create only. Why isn't
 there a method to remove category instances?</h4>
 
-It is quite non-trivial to define the semantics of a "removed"
+It is quite nontrivial to define the semantics of a "removed"
 category which is still referenced by the user.
 
 <p>Future releases <em>may</em> include a remove method in the
@@ -528,7 +528,7 @@ to any appender to filter out logging events by exact priority match.
 
 <p>You may have each process log to a 
 <a href="api/org/apache/log4j/net/SocketAppender.html"><code>SocketAppender</code></a>.  
-The receving 
+The receiving 
 <a href="api/org/apache/log4j/net/SocketServer.html"><code>SocketServer</code></a>  
 (or 
 <a href="api/org/apache/log4j/net/SimpleSocketServer.html"><code>SimpleSocketServer</code></a>)
@@ -561,7 +561,7 @@ project?</h4>
 Contrary to the GNU Public License (GPL) the Apache Public License
 does not make any claims over your extensions. <em>You are free to do
 whatever you wish with your proprietary log4j extensions.</em> In
-particlular, you may choose to never release your extensions to the
+particular, you may choose to never release your extensions to the
 wider public.
 
 <p>We are very careful not to change the log4j client API so that
@@ -575,7 +575,7 @@ the new release.
 Thus, you will be forced to spend precious resources in order to keep
 up with log4j changes. This is commonly referred to as the
 "stupid-tax."  By donating the code and making it part of the standard
-distribution, you save yourself the unncessary maintanance work.
+distribution, you save yourself the unnecessary maintenance work.
 
 <p>If your extensions are useful then someone will eventually write an
 extension providing the same or very similar functionality.  Your
@@ -601,7 +601,7 @@ code?</h4>
      <p>One of the important advantages of log4j is its compatibility with 
      JDK 1.1.x. 
       
-  <p><li><b>Throughly test your code.</b>
+  <p><li><b>Thoroughly test your code.</b>
 
       <p>There is nothing more irritating than finding the bugs 
       in debugging (i.e. logging) code.
@@ -627,7 +627,7 @@ code?</h4>
 <p>Rather than wait for the next release to be ready, we get bug fixes
 out of the door as soon as possible. Moreover, once a bug is found or
 reported, it is treated as <em>fire in the house</em>. All other
-activites stop until the bug is fixed.
+activities stop until the bug is fixed.
 
 <p>Consequently, confirmed bugs are fixed after a short period
 following the initial bug report.
