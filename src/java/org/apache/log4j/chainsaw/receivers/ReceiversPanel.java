@@ -99,12 +99,21 @@ public class ReceiversPanel extends JPanel {
   private final PluginPropertyEditorPanel pluginEditorPanel =
     new PluginPropertyEditorPanel();
   
+  private final PluginRegistry pluginRegistry;
+  
 
   public ReceiversPanel() {
     super(new BorderLayout());
-
+    pluginRegistry = LogManager.getLoggerRepository().getPluginRegistry();
     final ReceiversTreeModel model = new ReceiversTreeModel();
-    PluginRegistry.addPluginListener(model);
+    
+    /**
+     * TODO Ccurrently the model will not have a correctly populated
+     * internal plugin map, because some plugins will already have started, so
+     * when you stop a plugin, it DOES stop, but the Tree seems to keep displaying
+     * it because it can't find the TreeNode for it within it's internal map.
+     */
+    pluginRegistry.addPluginListener(model);
     receiversTree.setModel(model);
 
     receiversTree.setExpandsSelectedPaths(true);
@@ -272,14 +281,13 @@ public class ReceiversPanel extends JPanel {
                 new Runnable() {
                   public void run() {
                     Collection allReceivers =
-                      PluginRegistry.getPlugins(
-                        LogManager.getLoggerRepository(), Receiver.class);
+                        pluginRegistry.getPlugins(Receiver.class);
 
                     for (Iterator iter = allReceivers.iterator();
                         iter.hasNext();) {
                       Receiver item = (Receiver) iter.next();
-                      PluginRegistry.stopPlugin(item);
-                      PluginRegistry.startPlugin(item);
+                      pluginRegistry.stopPlugin(item.getName());
+                      pluginRegistry.startPlugin(item);
                     }
 
                     updateReceiverTreeInDispatchThread();
@@ -336,8 +344,7 @@ public class ReceiversPanel extends JPanel {
      * add this listener to all SocketReceivers
      */
     List socketReceivers =
-      PluginRegistry.getPlugins(
-        LogManager.getLoggerRepository(), SocketReceiver.class);
+      pluginRegistry.getPlugins(SocketReceiver.class);
 
     for (Iterator iter = socketReceivers.iterator(); iter.hasNext();) {
       SocketReceiver element = (SocketReceiver) iter.next();
@@ -490,7 +497,7 @@ public class ReceiversPanel extends JPanel {
 
             if (receivers != null) {
               for (int i = 0; i < receivers.length; i++) {
-                PluginRegistry.stopPlugin(receivers[i]);
+                pluginRegistry.stopPlugin(receivers[i].getName());
               }
             }
           }
@@ -615,7 +622,7 @@ public class ReceiversPanel extends JPanel {
                       public void actionPerformed(ActionEvent e2) {
                         dialog.dispose();
                         Plugin plugin = panel.getPlugin();
-                        PluginRegistry.startPlugin(plugin);
+                        pluginRegistry.startPlugin(plugin);
                         MessageCenter.getInstance().addMessage("Plugin '" + plugin.getName() + "' started");
                       }
                     });
