@@ -428,7 +428,7 @@ public class OptionConverter {
 
     if (clazz.indexOf('.') == -1 || clazz.indexOf('/') != -1 || clazz.indexOf('\\') != -1) {
       LogLog.warn("Suspicious reference in URL ["+url+
-		  "] will ignore refence part assuming BEA Weblogic environment.");
+		  "] will ignore refence part assuming custom URL.");
       clazz = null;      
     }
  
