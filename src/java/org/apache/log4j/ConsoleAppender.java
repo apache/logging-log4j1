@@ -11,12 +11,12 @@ import java.io.OutputStreamWriter;
 import org.apache.log4j.helpers.LogLog;
 
 /**
-   ConsoleAppender appends log events to <code>System.out</code> or
-   <code>System.err</code> using a layout specified by the
-   user. The default target is <code>System.out</code>.
-
-   @author Ceki G&uuml;lc&uuml;
-   @since 1.1 */
+  * ConsoleAppender appends log events to <code>System.out</code> or
+  * <code>System.err</code> using a layout specified by the user. The
+  * default target is <code>System.out</code>.
+  *
+  * @author Ceki G&uuml;lc&uuml; 
+  * @since 1.1 */
 public class ConsoleAppender extends WriterAppender {
 
   public static final String SYSTEM_OUT = "System.out";
@@ -47,9 +47,10 @@ public class ConsoleAppender extends WriterAppender {
   }
 
   /**
-     Sets the value of the <b>Target</b> option. Recognized values are
-     "System.out" and "System.err". Any other value will be ignored.
-  */
+   *  Sets the value of the <b>Target</b> option. Recognized values
+   *  are "System.out" and "System.err". Any other value will be
+   *  ignored.  
+   * */
   public
   void setTarget(String value) {
     String v = value.trim();
@@ -64,12 +65,11 @@ public class ConsoleAppender extends WriterAppender {
   }
 
   /**
-      Returns the current value of the <b>Target</b> property. The default
-      value of the option is "System.out".
-
-      See also {@link #setTarget}.
-
-  */
+   * Returns the current value of the <b>Target</b> property. The
+   * default value of the option is "System.out".
+   *
+   * See also {@link #setTarget}.
+   * */
   public
   String getTarget() {
     return target;
@@ -77,7 +77,7 @@ public class ConsoleAppender extends WriterAppender {
 
   void targetWarn(String val) {
     LogLog.warn("["+val+"] should be System.out or System.err.");
-    LogLog.warn("Using System.out (default).");
+    LogLog.warn("Using previously set target, System.out by default.");
   }
 
   public
@@ -90,8 +90,10 @@ public class ConsoleAppender extends WriterAppender {
   }
 
   /**
-     Override the parent method to do nothing.
-   */
+   *  This method overrides the parent {@link
+   *  WriterAppender#closeWriter} implementation to do nothing because
+   *  the console stream is not ours to close.
+   * */
   protected
   final
   void closeWriter() {

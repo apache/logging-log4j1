@@ -8,7 +8,7 @@
   
   <body>
     <section name="Log4j contributors">
-      
+       
       <p>Log4j is the result of contributions from several dozen
 	developers and hundreds of users across the globe. Some of the
 	more prominent contributors are listed below in alphabetical
@@ -64,9 +64,13 @@
 	</li>
 
 	<li><b>Jon Skeet</b> 
-	  
-	  <p>Jon acts as a moderator for the log4j mailing lists where
-	  he is one of the most active participants.
+
+	  <p>Jon is a software developer in his mid-twenties living in
+	  the UK. He is a Java enthusiast and very active participant
+	  in the comp.lang.java.* newsgroups as well as a moderator
+	  for the log4j mailing lists. He is a committer for the Ant
+	  project, involved (when time permits!) in tidying up the
+	  code documentation.
 	  </p>
 	</li>
 

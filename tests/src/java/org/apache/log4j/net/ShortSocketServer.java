@@ -15,15 +15,21 @@ import java.io.IOException;
 import org.apache.log4j.Logger;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.MDC;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.net.SocketNode;
 import org.apache.log4j.net.SocketServer;
 
 /**
-   This SocketServer exits after just one connection from a client.
-
-   @author Ceki Gulcu
-*/
+ * This SocketServer exits after certain number of connections from a
+ * client. This number is determined the totalsTest parameter, that is
+ * the first argument on the commmand line. The second argument,
+ * prefix, determines the prefix of the configuration file to
+ * use. Each run of the server will use a different properties
+ * file. For the i-th run, the path to the file is
+ * (prefix+i+".properties").
+ *
+ * @author Ceki Gulcu */
 
 public class ShortSocketServer  {
 
@@ -46,6 +52,8 @@ public class ShortSocketServer  {
       LogLog.debug("Listening on port " + SocketServerTestCase.PORT);
       ServerSocket serverSocket = new ServerSocket(SocketServerTestCase.PORT);
 
+      MDC.put("hostID", "shortSocketServer");
+
       for(int i = 1; i <= totalTests; i++) {
 	PropertyConfigurator.configure(prefix+i+".properties");
 	LogLog.debug("Waiting to accept a new client.");
@@ -61,7 +69,7 @@ public class ShortSocketServer  {
 
   
   static
-  void  usage(String msg) {
+  void usage(String msg) {
     System.err.println(msg);
     System.err.println(
       "Usage: java " +ShortSocketServer.class.getName() + " totalTests configFilePrefix");

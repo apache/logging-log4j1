@@ -3,7 +3,7 @@
  *
  * This software is published under the terms of the Apache Software
  * License version 1.1, a copy of which has been included with this
- * distribution in the LICENSE.APL file.  */
+ * distribution in the LICENSE.txt file.  */
 
 package org.apache.log4j.nt;
 
@@ -110,7 +110,7 @@ public class NTEventLogAppender extends AppenderSkeleton {
       }
     }
     // Normalize the log message level into the supported categories
-    int nt_category = event.level.toInt();
+    int nt_category = event.getLevel().toInt();
 
     // Anything above FATAL or below DEBUG is labeled as INFO.
     //if (nt_category > FATAL || nt_category < DEBUG) {

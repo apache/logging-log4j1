@@ -199,7 +199,7 @@ public class OptionConverter {
 		 + ":pri=[" + levelName + "]");
 
     try {
-      Class customLevel = Class.forName(clazz);
+      Class customLevel = Loader.loadClass(clazz);
 
       // get a ref to the specified class' static method
       // toLevel(String, org.apache.log4j.Level)
@@ -306,10 +306,14 @@ public class OptionConverter {
 				Object defaultValue) {
     if(className != null) {
       try {
-	Class classObj = Class.forName(className);
+	Class classObj = Loader.loadClass(className);
 	if(!superClass.isAssignableFrom(classObj)) {
 	  LogLog.error("A \""+className+"\" object is not assignable to a \""+
 		       superClass.getName() + "\" variable.");
+	  LogLog.error("The class \""+ superClass.getName()+"\" was loaded by ");
+	  LogLog.error("["+superClass.getClassLoader()+"] whereas object of type ");
+	  LogLog.error("\"" +classObj.getName()+"\" was loaded by ["
+		       +classObj.getClassLoader()+"].");
 	  return defaultValue;
 	}
 	return classObj.newInstance();

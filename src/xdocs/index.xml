@@ -53,14 +53,13 @@
 	remote log4j server, a remote Unix Syslog daemon, or even a NT
 	Event logger among many other output targets.</p>
 
-      <p>On a 233 MHz ThinkPad running JDK 1.1.7B, it costs about 46
-	nanoseconds to determine if that statement should be logged or
-	not. Actual logging is also quite fast, ranging from 79
-	microseconds using the SimpleLayout, 164 microseconds using
-	the TTCCLayout and around a millisecond when printing
-	exceptions. The performance of the PatternLayout is almost as
-	good as the dedicated layouts, except that it is a lot more
-	flexible.</p>
+      <p>On an AMD Duron clocked at 800Mhz running JDK 1.3.1, it costs
+	about 5 nanoseconds to determine if a logging statement should
+	be logged or not. Actual logging is also quite fast, ranging
+	from 21 microseconds microseconds using the SimpleLayout, 37
+	microseconds using the TTCCLayout.  The performance of the
+	PatternLayout is almost as good as the dedicated layouts,
+	except that it is much more flexible.</p>
 
       <p>The package is being constantly improved thanks to input from
 	users and code contributed by authors in the community.

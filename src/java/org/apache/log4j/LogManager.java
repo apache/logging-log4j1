@@ -23,84 +23,40 @@ import java.net.MalformedURLException;
 import java.util.Enumeration;
 
 /**
-  Use the <code>LogManager</code> to retreive instances of {@link Logger}.
-
-  @author Ceki G&uuml;lc&uuml;
-*/
+ * Use the <code>LogManager</code> class to retreive {@link Logger}
+ * instances or to operate on the current {@link
+ * LoggerRepository}. When the <code>LogManager</code> class is loaded
+ * into memory the default initalzation procedure is inititated. The
+ * default intialization procedure</a> is described in the <a
+ * href="../../../../manual.html#defaultInit">short log4j manual</a>.
+ *
+ * @author Ceki G&uuml;lc&uuml; */
 public class LogManager {
 
   /**
-     This string constant is set to <b>log4j.properties</b> the name
-     of the file that will be searched by default in classpath. If the
-     file can be found, then it is fed to the {@link
-     PropertyConfigurator}.
-
-     See also {@link #DEFAULT_CONFIGURATION_KEY} for a more general
-     alternative.
-
-     <p>See also the full description of <a
-     href="../../../../manual.html#defaultInit">default
-     intialization</a> procedure.
-
-     @since 0.8.5 */
-     static public final String DEFAULT_CONFIGURATION_FILE = "log4j.properties";
-     
-  /**
-     This string constant is set to <b>log4j.configuration</b>. 
-
-     <p>It corresponds to name of a system property that, if set,
-     specifies the name of the resource containing the properties file
-     or {@link URL} with which log4j should configure itself. See
-     {@link OptionConverter#selectAndConfigure} for more detailed
-     information on the processing of this option.
-
-     <p>Setting the <b>log4j.configuration</b> system property
-     overrides the default search for the file <b>log4j.properties</b>.
-
-     <p>Note that all property keys are case sensitive.  
-
-     <p>See also the full description of <a
-     href="../../../../manual.html#defaultInit">default
-     intialization</a> procedure.
-
-     @since 1.0 */
-     static final public String DEFAULT_CONFIGURATION_KEY="log4j.configuration";
-
- /**
-     This string constant is set to <b>log4j.configuratorClass</b>. 
-
-     <p>It corresponds to name of a system property that, if set,
-     specifies the class name to use to automatically configure
-     log4j. See {@link OptionConverter#selectAndConfigure} for more
-     detailed information on the processing of this option.
-
-     <p>Setting the <b>log4j.configuration</b> system property
-     overrides the default search for the file <b>log4j.properties</b>.
-
-     <p>Note that all property keys are case sensitive.  
-
-     <p>See also the full description of <a
-     href="../../../../manual.html#defaultInit">default
-     intialization</a> procedure.
+   * @deprecated This variable is for internal use only. It will
+   * become package protected in future versions.
+   * */
+  static public final String DEFAULT_CONFIGURATION_FILE = "log4j.properties";
+  
+  static final String DEFAULT_XML_CONFIGURATION_FILE = "log4j.xml";  
    
-     @since 1.2 */
-     static final public String CONFIGURATOR_CLASS_KEY="log4j.configuratorClass";
+  /**
+   * @deprecated This variable is for internal use only. It will
+   * become private in future versions.
+   * */
+  static final public String DEFAULT_CONFIGURATION_KEY="log4j.configuration";
 
   /**
-      Setting the system property <b>log4j.defaultInitOverride</b> to
-      "true" or any other value than "false" will skip default
-      configuration process.
+   * @deprecated This variable is for internal use only. It will
+   * become private in future versions.
+   * */
+  static final public String CONFIGURATOR_CLASS_KEY="log4j.configuratorClass";
 
-     <p>The current value of the DEFAULT_INIT_OVERRIDE_KEY string
-     constant is <b>log4j.defaultInitOverride</b>.
-
-     <p>See also the full description of <a
-     href="../../../../manual.html#defaultInit">default
-     intialization</a> procedure.
-
-     <p>Note that all property keys are case sensitive.  
-
-     @since 0.8.5 */
+  /**
+  * @deprecated This variable is for internal use only. It will
+  * become private in future versions.
+  */
   public static final String DEFAULT_INIT_OVERRIDE_KEY = 
                                                  "log4j.defaultInitOverride";
 
@@ -117,35 +73,47 @@ public class LogManager {
     String override =OptionConverter.getSystemProperty(DEFAULT_INIT_OVERRIDE_KEY,
 						       null);
 
-    // if there is no default init override, them get the resource
+    // if there is no default init override, then get the resource
     // specified by the user or the default config file.
     if(override == null || "false".equalsIgnoreCase(override)) {
-      String resource = OptionConverter.getSystemProperty(
-						  DEFAULT_CONFIGURATION_KEY, 
-						  DEFAULT_CONFIGURATION_FILE);
+
+      String configurationOptionStr = OptionConverter.getSystemProperty(
+							  DEFAULT_CONFIGURATION_KEY, 
+							  null);
 
       String configuratorClassName = OptionConverter.getSystemProperty(
                                                    CONFIGURATOR_CLASS_KEY, 
 						   null);
 
       URL url = null;
-      try {
-	// so, resource is not a URL:
-	// attempt to get the resource from the class path
-	url = new URL(resource);
-      } catch (MalformedURLException ex) {
-	url = Loader.getResource(resource); 
-      }	
+
+      // if the user has not specified the log4j.configuration
+      // property, we search first for the file "log4j.xml" and then
+      // "log4j.properties"
+      if(configurationOptionStr == null) {	
+	url = Loader.getResource(DEFAULT_XML_CONFIGURATION_FILE);
+	if(url == null) {
+	  url = Loader.getResource(DEFAULT_CONFIGURATION_FILE);
+	}
+      } else {
+	try {
+	  url = new URL(configurationOptionStr);
+	} catch (MalformedURLException ex) {
+	  // so, resource is not a URL:
+	  // attempt to get the resource from the class path
+	  url = Loader.getResource(configurationOptionStr); 
+	}	
+      }
       
       // If we have a non-null url, then delegate the rest of the
       // configuration to the OptionConverter.selectAndConfigure
       // method.
       if(url != null) {
-	LogLog.debug("Using URL ["+url+"] for automatic log4j configuration.");        
+	LogLog.debug("Using URL ["+url+"] for automatic log4j configuration.");      
 	OptionConverter.selectAndConfigure(url, configuratorClassName, 
 					   LogManager.getLoggerRepository());
       } else {
-	LogLog.debug("Could not find resource: ["+resource+"].");
+	LogLog.debug("Could not find resource: ["+configurationOptionStr+"].");
       }
     }  
   } 

@@ -88,11 +88,11 @@ public class LF5Appender extends AppenderSkeleton {
    */
   public void append(LoggingEvent event) {
     // Retrieve the information from the log4j LoggingEvent.
-    String category = event.categoryName;
+    String category = event.getLoggerName();
     String logMessage = event.getRenderedMessage();
     String nestedDiagnosticContext = event.getNDC();
     String threadDescription = event.getThreadName();
-    String level = event.level.toString();
+    String level = event.getLevel().toString();
     long time = event.timeStamp;
     LocationInfo locationInfo = event.getLocationInformation();
 
