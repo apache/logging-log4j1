@@ -67,12 +67,15 @@ import org.apache.log4j.helpers.Constants;
 class ApplicationPreferenceModel implements SettingsListener {
 
     private boolean showNoReceiverWarning  ;
+    private boolean statusBar;
+    
     private int responsiveness;
     
     private String identifierExpression = Constants.HOSTNAME_KEY + " - " + Constants.APPLICATION_KEY; 
 
     private final PropertyChangeSupport propertySupport =
         new PropertyChangeSupport(this);
+    private int tabPlacement;
 
     /**
      * @param listener
@@ -193,7 +196,8 @@ class ApplicationPreferenceModel implements SettingsListener {
        setShowNoReceiverWarning(event.asBoolean("showNoReceiverWarning"));
        setIdentifierExpression(event.getSetting("identifierExpression"));
        setResponsiveness(event.asInt("Responsiveness"));
-       
+       setTabPlacement(event.asInt("tabPlacement"));
+       setStatusBar(event.asBoolean("statusBar"));
     }
 
     /* (non-Javadoc)
@@ -203,6 +207,8 @@ class ApplicationPreferenceModel implements SettingsListener {
         event.saveSetting("showNoReceiverWarning", isShowNoReceiverWarning());
         event.saveSetting("identifierExpression", getIdentifierExpression());
         event.saveSetting("Responsiveness", getResponsiveness());
+        event.saveSetting("tabPlacement", getTabPlacement());
+        event.saveSetting("statusBar", isStatusBar());
     }
 
     /**
@@ -214,6 +220,8 @@ class ApplicationPreferenceModel implements SettingsListener {
       setIdentifierExpression(model.getIdentifierExpression());
       setShowNoReceiverWarning(model.isShowNoReceiverWarning());
       setResponsiveness(model.getResponsiveness());
+      setTabPlacement(model.getTabPlacement());
+      setStatusBar(model.isStatusBar());
     }
     /**
      * @return Returns the responsiveness.
@@ -231,4 +239,36 @@ class ApplicationPreferenceModel implements SettingsListener {
       this.responsiveness = responsiveness;
       firePropertyChange("responsiveness", oldvalue, responsiveness);
     }
+
+    /**
+     * @param i
+     */
+    public void setTabPlacement(int i) {
+      int oldValue = this.tabPlacement;
+       this.tabPlacement = i;
+       firePropertyChange("tabPlacement",oldValue,this.tabPlacement);
+    }
+    /**
+     * @return Returns the tabPlacement.
+     */
+    public final int getTabPlacement() {
+      return tabPlacement;
+    }
+
+    /**
+     * @return Returns the statusBar.
+     */
+    public final boolean isStatusBar() {
+      return statusBar;
+    }
+
+    /**
+     * @param statusBar The statusBar to set.
+     */
+    public final void setStatusBar(boolean statusBar) {
+      boolean oldValue = this.statusBar;
+      this.statusBar = statusBar;
+      firePropertyChange("statusBar", oldValue, this.statusBar);
+    }
+
 }
