@@ -5,6 +5,34 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
 
+
+ Semptember ?th, 2003 
+
+ - Release of version 1.3alpha0
+
+ - Added keys() method to the MDC class as requested by Don Isenor.
+ 
+ - Certain operations on Loggers are now made using ReaderWriterLocks which 
+   allows simultaneous read operations but only one write operation. This should 
+   significantly improve logging throughput in heavily loaded server environments. 
+
+ - LIST OF CHAINSAW IMPROVEMENTS. 
+
+ - Rolling can now be triggered based on time or size as was already the case in 
+   log4j 1.2. However, the new architecture allows for much more variation in the 
+   timing of the rollover and the actions taken during rollover (i.e on the fly 
+   compression, renaming, moving). The new architecture was suggested a long time 
+   ago by James P. Cakalic. A similar design can be found in the Avalon Logkit. 
+
+ - LoggingEvent was extended to allow properties. Properties are meant to be set 
+   by Layout and Appender classes as they output/process logging events. 
+   Properties are per logging event where MDC values are per thread. 
+ 
+ - Another LoggingEvent constructor was added to allow instances to be reconstituted 
+   when received from remote sources that do not use LoggingEvent as the transport 
+   type (like XML for example).   
+   
+
  February 19th, 2003
  
  - Release of version 1.2.8
