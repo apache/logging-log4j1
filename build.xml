@@ -17,7 +17,7 @@
   <!-- prefixed with "env". -->
   <property environment="env"/>
 
-  <property name="version" value="1.2.7"/>
+  <property name="version" value="1.3alpha"/>
 
   <!-- The base directory relative to which most targets are built -->
   <property name="base" value="."/>
@@ -33,10 +33,10 @@
   <property name="javac.dest" value="dist/classes"/>
 
   <!-- Destination for generated jar files -->
-  <property name="jar.dest" value="dist/lib"/>
+  <property name="jar.dest" value="${basedir}"/>
 
   <!-- The jar file that the jar task will generate -->
-  <property name="jar.filename" value="log4j-${version}.jar"/>
+  <property name="log4j.jar" value="log4j-${version}.jar"/>
 
   <!-- Destination for documentation files -->
   <property name="docs.dest" value="./docs"/>
@@ -305,7 +305,6 @@
   </target>
 
   <target name="prejar" depends="build">
-    <mkdir dir="${jar.dest}"/>
     <filter token="version" value="${version}" />
     <copy file="${manifest.src}" tofile="${jar.dest}/manifest.mf"
           filtering="true"/>
@@ -317,11 +316,11 @@
   <target name="log4j.jar" depends="prejar">
     <delete>
       <fileset dir="${jar.dest}">
-	<include name="*.jar"/>
+	<include name="${log4j.jar}"/>
       </fileset>
     </delete>
 
-    <jar jarfile="${jar.dest}/${jar.filename}" basedir="${javac.dest}"
+    <jar jarfile="${jar.dest}/${log4j.jar}" basedir="${javac.dest}"
       includes="${stem}/*.class, ${stem}/xml/log4j.dtd,
                 ${stem}/config/*.class,
 	        ${stem}/filters/*.class,
@@ -488,7 +487,7 @@
                           manifest.mf,
 			  INSTALL,
 			  LICENSE.txt,
-			  dist/lib/log4j*.jar,
+			  ${log4j.jar},
 			  dist/classes/**,
 			  contribs/**"
                 excludes="make/make.loc,
