@@ -20,12 +20,16 @@ class SyslogTracerPrintWriter extends TracerPrintWriter {
   }
 
   /**
-     Make the first Exception line print properly by omitting the \n ath the end.
+     Make the first Exception line print properly by omitting the \n ath the 
+     end.
   */
   public
    void println(Object o) {
     this.qWriter.write(o.toString());
   }
+
+  // Note: the Char[] form is handled by the TracerPrinterWriter super
+  // class
 
   /**
      Remove the first character from the string (usually a TAB) and do

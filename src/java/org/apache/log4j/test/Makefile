@@ -2,6 +2,7 @@
 PKG_DIR :=org/log4j/test
 DEPTH   :=../../..
 JSOURCES:= Shallow.java\
+ Hello.java\
  StressNDC.java\
  StressAsyncAppender.java\
  Min.java Base64.java\

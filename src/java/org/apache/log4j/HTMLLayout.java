@@ -2,6 +2,9 @@
 package org.log4j;
 
 import org.log4j.spi.LoggingEvent;
+import java.io.StringWriter;
+import java.io.PrintWriter;
+import java.io.Writer;
 
 
 public class HTMLLayout extends Layout {
@@ -49,7 +52,7 @@ public class HTMLLayout extends Layout {
 
     if(event.throwable != null) {
       sbuf.append("\r\n<tr><td colspan=\"5\">");
-      sbuf.append(event.getThrowableInformation());
+      sbuf.append(getThrowableAsHTML(event.throwable));
       sbuf.append("</td></tr>");
     }
 
@@ -65,6 +68,8 @@ public class HTMLLayout extends Layout {
   String getContentType() {
     return "text/html";
   }
+
+  
 
   /**
      Returns appropriate HTML headers.
@@ -89,6 +94,17 @@ public class HTMLLayout extends Layout {
     return new String[0];
   }
 
+  String getThrowableAsHTML(Throwable throwable) {
+    if(throwable == null) 
+      return null;
+ 
+    StringWriter sw = new StringWriter();
+    HTMLPrintWriter hpw = new HTMLPrintWriter(sw);
+
+    throwable.printStackTrace(hpw);
+    return sw.toString();
+  }
+
 
   public
   boolean ignoresThrowable() {
@@ -97,5 +113,28 @@ public class HTMLLayout extends Layout {
 
   public
   void setOption(String key, String value) {
+  }
+
+  static class HTMLPrintWriter extends PrintWriter {
+    
+    static String TRACE_PREFIX = "<br>&nbsp;&nbsp;&nbsp;&nbsp;";
+
+    public
+    HTMLPrintWriter(Writer writer) {
+      super(writer);
+    }
+
+    public
+    void println(char[] c) {
+      write(TRACE_PREFIX);
+      this.write(c);
+    }
+
+  
+    public
+    void println(String s) {
+      write(TRACE_PREFIX);
+      this.write(s);
+    }    
   }
 }

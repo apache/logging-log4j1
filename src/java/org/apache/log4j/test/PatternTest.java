@@ -10,7 +10,7 @@ import org.log4j.Priority;
    @author Ceki G&uuml;lc&uuml;
 */
 public class PatternTest {
-  static Category CAT = Category.getInstance(PatternTest.class.getName());
+  static Category CAT = Category.getInstance(PatternTest.class);
 
 
   public 
