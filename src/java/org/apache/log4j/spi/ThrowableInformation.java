@@ -45,10 +45,7 @@ public class ThrowableInformation implements java.io.Serializable {
       return rep;
     }
   }
-
-  
 }
-
 
 class VectorWriter extends PrintWriter {
     

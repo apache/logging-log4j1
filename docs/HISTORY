@@ -14,6 +14,8 @@
    generation of namespace aware parsers to barf when parsing log4j
    configuration files. [*]
 
+ - Reduced the size of log4j-core.jar to 78KB. [*]
+
  - Minor documentation changes. [*]
 
  June 7, 2001
