@@ -17,7 +17,7 @@
   <!-- prefixed with "env". -->
   <property environment="env"/>
 
-  <property name="version" value="1.2"/>
+  <property name="version" value="1.2.1"/>
 
   <!-- The base directory relative to which most targets are built -->
   <property name="base" value="."/>
@@ -413,6 +413,7 @@
 	                  examples/**,
 			  build/*,
 	                  build.xml,
+	                  build.properties.sample,
                           manifest.mf,
 			  INSTALL,
 			  LICENSE.txt,
