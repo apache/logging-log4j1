@@ -286,7 +286,7 @@ public final class LayoutEditorPane extends JPanel {
     JDialog dialog = new JDialog((Frame) null, "Pattern Editor");
     dialog.getContentPane().add(new LayoutEditorPane());
     dialog.setResizable(true);
-    dialog.setDefaultCloseOperation(JDialog.EXIT_ON_CLOSE);
+    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
     //    dialog.pack();
     dialog.setSize(new Dimension(640, 480));
