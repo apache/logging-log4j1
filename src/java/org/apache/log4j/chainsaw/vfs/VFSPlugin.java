@@ -252,13 +252,19 @@ public class VFSPlugin extends GUIPluginSkeleton {
 
 				public void run() {
                     try {
-                        FileObject[] fos = vfsNode.getFileObject().getChildren();
+                        FileObject fileObject = vfsNode.getFileObject();
+                        FileObject[] fos = null;
+                        synchronized(fileObject) {
+                          fos = fileObject.getChildren();
+                        }
                         Collection objects = new ArrayList(Arrays.asList(fos));
                         for (Iterator iter = objects.iterator(); iter.hasNext();) {
 							FileObject fo = (FileObject) iter.next();
-							if(fo.isReadable() && fo.getType().hasChildren()) {
-								iter.remove();
-                            }
+							synchronized(fo) {
+							  if(fo.isReadable() && fo.getType().hasChildren()) {
+							    iter.remove();
+							  }
+							}
 						}
                         tableModel.setFiles(objects);
                     } catch (FileSystemException ex) {
@@ -318,23 +324,29 @@ public class VFSPlugin extends GUIPluginSkeleton {
                 }
             });
             try {
-                List children = new ArrayList(Arrays.asList(this.vfsNode
-                        .getFileObject().getChildren()));
+                FileObject fileObject = this.vfsNode
+                        .getFileObject();
+                List children = null;
+                synchronized(fileObject) {
+                  children = new ArrayList(Arrays.asList(fileObject.getChildren()));
+                }
                 Collections.sort(children, VFSUtils.FILE_OBJECT_COMPARATOR);
                 USER_MESSAGE_LOGGER.debug("Found " + children.size() + " children");
                 for (Iterator iter = children.iterator(); iter.hasNext();) {
                     FileObject child = (FileObject) iter.next();
                     // we only add non-leaf nodes, as the leaf nodes get
                     // displayed in the table
-                    if (child.getType().hasChildren()) {
+                    synchronized(child) {
+                      if (child.getType().hasChildren()) {
                         final DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(
-                                new VFSNode(child.getName().getBaseName(),
-                                        child));
+                            new VFSNode(child.getName().getBaseName(),
+                                child));
                         SwingUtilities.invokeLater(new Runnable() {
-                            public void run() {
-                                node.add(childNode);
-                            }
+                          public void run() {
+                            node.add(childNode);
+                          }
                         });
+                      }
                     }
                 }
             } catch (Exception e) {
