@@ -36,7 +36,7 @@ public interface OptionHandler {
   /**
      Return list of strings that the OptionHandler instance recognizes.
      
-     @deprecated use JavaBeans style getters/setters
+     @deprecated We now use JavaBeans style getters/setters.
    */
   String[] getOptionStrings();
 
@@ -48,7 +48,7 @@ public interface OptionHandler {
      other may be activated only when {@link #activateOptions} is
      called.
      
-     @deprecated use JavaBeans style getters/setters
+     @deprecated We now use JavaBeans style getters/setters.
   */
   void setOption(String option, String value);
 }

@@ -9,9 +9,7 @@
     without a DTD 
  -->
 <log4j:configuration>
-	<appender name="A1" class="org.apache.log4j.FileAppender">
-
-            <param name="File" value="System.out" />
+	<appender name="A1" class="org.apache.log4j.ConsoleAppender">
             <layout class="org.apache.log4j.PatternLayout">
 		<param name="ConversionPattern"
 		       value="(TEST 7) %t %c - %m%n"/>

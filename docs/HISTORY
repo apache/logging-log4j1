@@ -6,7 +6,7 @@
  [***] Changes requiring important modifications to existing client code.
 
 
- March ??, 2001
+ April ??, 2001
 
  - Release of version 1.1b2
 
@@ -31,6 +31,11 @@
 
  - In XML configuration files, the <configuration> element has been
    deprecated and was replaced by the <log4j:configuration> element. [*]
+
+   The following perl command can help to migrate:
+
+   perl -p -i.bak -e "s/configuration/log4j:configuration/;" file1.xml .. fileN.xml
+
 	
  February 23, 2001
 
@@ -38,14 +43,10 @@
 
  - Logging can now be disabled per Hierarchy. It can also be disabled
    using configuration files using the "disable" directive.  The
-   disableOverride directive takes precedence over the disable
+   "disableOverride" directive takes precedence over the "disable"
    directive.  As a result of this change the disable family of
-   methods has moved from the BasicConfigurator class to the Hierarchy
-   class. [**]
-
-   The following perl command can help:
-
-   perl -p -i.bak -e "s/configuration/log4j:configuration/;" file1.xml .. fileN.xml
+   methods in BasicConfigurator has been deprecated and replaced by the same 
+   family of methods in the Hierarchy class. [*]
 
  - The FileAppender has been split into three parts: WriterAppender,
    ConsoleAppender and FileAppender. ConsoleAppender takes over the

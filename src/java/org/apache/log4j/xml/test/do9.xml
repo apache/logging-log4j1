@@ -10,9 +10,7 @@
 
  -->
 <log4j:configuration disableOverride="false">
-	<appender name="A1" class="org.apache.log4j.FileAppender">
-            <param name="File" value="System.out" />
-	    
+	<appender name="A1" class="org.apache.log4j.ConsoleAppender">
             <layout class="org.apache.log4j.PatternLayout">
 		<param name="ConversionPattern"
   		       value="TEST 9: %-5p %c - %m%n"/>

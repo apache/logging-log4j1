@@ -5,15 +5,16 @@
  * License version 1.1, a copy of which has been included with this
  * distribution in the LICENSE.APL file.  */
 
-// WARNING This class MUST not have a static initiliazer that
-// WARNING references the Category or RootCategory classes neither 
+// WARNING This class MUST not have references to the Category or
+// WARNING RootCategory classes in its static initiliazation neither 
 // WARNING directly nor indirectly.
 
 // Contributors:
 //                Luke Blanshard <luke@quiq.com>
 //                Mario Schomburg - IBM Global Services/Germany
 //                Anders Kristensen
-
+//                Igor Poteryaev
+ 
 package org.apache.log4j;
 
 
@@ -131,14 +132,18 @@ public class Hierarchy {
     }
   }
 
+
+  /**
+     Similar to {@link #disable(Priority)} except that the priority
+     argument is given as a String.  */
   public
-  void disable(String disableStr) {
+  void disable(String priorityStr) {
     if(disable != DISABLE_OVERRIDE) {  
-      Priority p = Priority.toPriority(disableStr, null);
+      Priority p = Priority.toPriority(priorityStr, null);
       if(p != null) {
 	disable = p.level;
       } else {
-	LogLog.warn("Could not convert ["+disableStr+"] to Priority.");
+	LogLog.warn("Could not convert ["+priorityStr+"] to Priority.");
       }
     }
   }
@@ -146,15 +151,15 @@ public class Hierarchy {
 
   /**
      Disable all logging requests of priority <em>equal to or
-     below</em> the priority parameter <code>p</code>, regardless of
-     the request category. Logging requests of higher priority then
-     the priority of <code>p</code> remain unaffected.
+     below</em> the priority parameter <code>p</code>, for
+     <em>all</em> categories in this hierarchy. Logging requests of
+     higher priority then <code>p</code> remain unaffected.
 
      <p>Nevertheless, if the {@link
      BasicConfigurator#DISABLE_OVERRIDE_KEY} system property is set to
      "true" or any value other than "false", then logging requests are
      evaluated as usual, i.e. according to the <a
-     href="../../manual.html#selectionRule">Basic Selection Rule</a>.
+     href="../../../../manual.html#selectionRule">Basic Selection Rule</a>.
 
      <p>The "disable" family of methods are there for speed. They
      allow printing methods such as debug, info, etc. to return
@@ -363,6 +368,100 @@ public class Hierarchy {
     return root;
   }
 
+
+  /**
+     Reset all values contained in this hierarchy instance to their
+     default.  This removes all appenders from all categories, sets
+     the priority of all non-root categories to <code>null</code>,
+     sets their additivity flag to <code>true</code> and sets the priority
+     of the root category to {@link Priority#DEBUG DEBUG}.  Moreover,
+     message disabling is set its default "off" value.
+
+     <p>Existing categories are not removed. They are just reset.
+
+     <p>This method should be used sparingly and with care as it will
+     block all logging until it is completed.</p>
+
+     @since version 0.8.5 */
+  public
+  void resetConfiguration() {
+
+    getRoot().setPriority(Priority.DEBUG);
+    root.setResourceBundle(null);
+    disable = Hierarchy.DISABLE_OFF;
+    
+    // the synchronization is needed to prevent JDK 1.2.x hashtable
+    // surprises
+    synchronized(ht) {    
+      shutdown(); // nested locks are OK    
+    
+      Enumeration cats = getCurrentCategories();
+      while(cats.hasMoreElements()) {
+	Category c = (Category) cats.nextElement();
+	c.setPriority(null);
+	c.setAdditivity(true);
+	c.setResourceBundle(null);
+      }
+    }
+    rendererMap.clear();
+  }
+
+  /**
+     Set the disable override value given a string.
+ 
+     @since 1.1
+   */
+  public
+  void setDisableOverride(String override) {
+    if(OptionConverter.toBoolean(override, true)) {
+      LogLog.debug("Overriding disable.");
+      disable =  DISABLE_OVERRIDE;
+    }
+  }
+
+
+
+  /**
+     Shutting down a hierarchy will <em>safely</em> close and remove
+     all appenders in all categories including the root category.
+     
+     <p>Some appenders such as {@link org.apache.log4j.net.SocketAppender}
+     and {@link AsyncAppender} need to be closed before the
+     application exists. Otherwise, pending logging events might be
+     lost.
+
+     <p>The <code>shutdown</code> method is careful to close nested
+     appenders before closing regular appenders. This is allows
+     configurations where a regular appender is attached to a category
+     and again to a nested appender.
+     
+
+     @since 1.0 */
+  public 
+  void shutdown() {
+    Category root = getRoot();    
+
+    // begin by closing nested appenders
+    root.closeNestedAppenders();
+
+    synchronized(ht) {
+      Enumeration cats = this.getCurrentCategories();
+      while(cats.hasMoreElements()) {
+	Category c = (Category) cats.nextElement();
+	c.closeNestedAppenders();
+      }
+
+      // then, remove all appenders
+      root.removeAllAppenders();
+      cats = this.getCurrentCategories();
+      while(cats.hasMoreElements()) {
+	Category c = (Category) cats.nextElement();
+	c.removeAllAppenders();
+      }      
+    }
+  }
+
+
   /**
      This method loops through all the *potential* parents of
      'cat'. There 3 possible cases:
@@ -457,60 +556,6 @@ public class Hierarchy {
     }
   }    
 
-  /**
-     Set the disable override value given a string.
- 
-     @since 1.1
-   */
-  public
-  void setDisableOverride(String override) {
-    if(OptionConverter.toBoolean(override, true)) {
-      LogLog.debug("Overriding disable.");
-      disable =  DISABLE_OVERRIDE;
-    }
-  }
-
-
-
-  /**
-     Shutting down a hierarchy will <em>safely</em> close and remove
-     all appenders in all categories including the root category.
-     
-     <p>Some appenders such as {@link org.apache.log4j.net.SocketAppender}
-     and {@link AsyncAppender} need to be closed before the
-     application exists. Otherwise, pending logging events might be
-     lost.
-
-     <p>The <code>shutdown</code> method is careful to close nested
-     appenders before closing regular appenders. This is allows
-     configurations where a regular appender is attached to a category
-     and again to a nested appender.
-     
-
-     @since 1.0 */
-  public 
-  void shutdown() {
-    Category root = getRoot();    
-
-    // begin by closing nested appenders
-    root.closeNestedAppenders();
-
-    synchronized(ht) {
-      Enumeration cats = this.getCurrentCategories();
-      while(cats.hasMoreElements()) {
-	Category c = (Category) cats.nextElement();
-	c.closeNestedAppenders();
-      }
-
-      // then, remove all appenders
-      root.removeAllAppenders();
-      cats = this.getCurrentCategories();
-      while(cats.hasMoreElements()) {
-	Category c = (Category) cats.nextElement();
-	c.removeAllAppenders();
-      }      
-    }
-  }
 }
 
 

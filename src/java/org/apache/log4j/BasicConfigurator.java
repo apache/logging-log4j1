@@ -117,7 +117,62 @@ public class BasicConfigurator {
     }
   }
 
+  /**
+     See {@link Hierarchy#disable(String)}.
+
+     @deprecated Use <code>Category.getDefaultHierarchy().disable()</code> instead.  */
+  public
+  void disable(String priorityStr) {
+    Category.getDefaultHierarchy().disable(priorityStr);
+  }
+
+  /**
+     See {@link Hierarchy#disable(Priority)}.
+
+     @deprecated Use <code>Category.getDefaultHierarchy().disable(p)</code> instead.  */
+  public
+  void disable(Priority p) {
   
+  }
+  
+
+  /**
+     See {@link Hierarchy#disableAll()}.
+
+     @deprecated Use <code>Category.getDefaultHierarchy().disableAll()</code> instead.  */  
+  public
+  void disableAll() {
+      Category.getDefaultHierarchy().disable(Priority.FATAL);
+  }
+
+ /**
+     See {@link Hierarchy#disableDebug()}.
+
+     @deprecated Use <code>Category.getDefaultHierarchy().disableDebug()</code> instead.  */ 
+  public
+  void disableDebug() {
+    Category.getDefaultHierarchy().disable(Priority.DEBUG);
+  }  
+
+ /**
+     See {@link Hierarchy#disableInfo()}.
+
+     @deprecated Use <code>Category.getDefaultHierarchy().disableInfo()</code> instead.  */ 
+  public
+  void disableInfo() {
+    Category.getDefaultHierarchy().disable(Priority.INFO);
+  } 
+  
+
+ /**
+     See {@link Hierarchy#enableAll()}.
+
+     @deprecated Use <code>Category.getDefaultHierarchy().enableAll()</code> instead.  */ 
+  public
+  void enableAll() {
+    Category.getDefaultHierarchy().disable(Priority.INFO);
+  }
+
   /**
      Add a {@link FileAppender} that uses {@link PatternLayout} using
      the {@link PatternLayout#TTCC_CONVERSION_PATTERN} and prints to
@@ -142,75 +197,23 @@ public class BasicConfigurator {
   }
 
   /**
-     Reset the configuration to its default.  This removes all
-     appenders from all categories, sets the priority of all non-root
-     categories to <code>null</code>, their additivity flag to
-     <code>true</code> and sets the priority of the root category to
-     {@link Priority#DEBUG DEBUG}.  Moreover, message disabling is set
-     its default "off" value.
-
-     <p>This method should be used sparingly and with care as it will
-     block all logging until it is completed.</p>
-
-     @since version 0.8.5 */
+     Reset the default hierarchy to its defaut. It is equivalent to
+     calling
+     <code>Category.getDefaultHierarchy().resetConfiguration()</code>.
+ 
+     See {@link Hierarchy#resetConfiguration()} for more details.  */
   public
   static
   void resetConfiguration() {
-
-    Category.defaultHierarchy.getRoot().setPriority(Priority.DEBUG);
-    Category.defaultHierarchy.root.setResourceBundle(null);
-    Category.defaultHierarchy.disable = Hierarchy.DISABLE_OFF;
-    
-    // the synchronization is needed to prevent JDK 1.2.x hashtable
-    // surprises
-    synchronized(Category.defaultHierarchy.ht) {    
-      Category.defaultHierarchy.shutdown(); // nested locks are OK    
-    
-      Enumeration cats = Category.getCurrentCategories();
-      while(cats.hasMoreElements()) {
-	Category c = (Category) cats.nextElement();
-	c.setPriority(null);
-	c.setAdditivity(true);
-	c.setResourceBundle(null);
-      }
-    }
-    Category.defaultHierarchy.rendererMap.clear();
+    Category.defaultHierarchy.resetConfiguration();
   }
 
   /**
-     Reset the configuration to its default.  This removes all
-     appenders from all categories, sets the priority of all non-root
-     categories to <code>null</code>, their additivity flad to
-     <code>true</code> and sets the priority of the root category to
-     {@link Priority#DEBUG DEBUG}.  Moreover, message disabling is set
-     its default "off" value.
-
-     <p>This method should be used sparingly and with care as it will
-     block all logging until it is completed.</p>
-
-     @since version 0.8.5 */
+     @deprecated Use <code>hierarchy.resetConfiguration()</code> instead.
+  */
   public
   static
   void resetConfiguration(Hierarchy hierarchy) {
-
-    hierarchy.getRoot().setPriority(Priority.DEBUG);
-    hierarchy.root.setResourceBundle(null);
-    hierarchy.disable = Hierarchy.DISABLE_OFF;
-    
-    // the synchronization is needed to prevent JDK 1.2.x hashtable
-    // surprises
-    synchronized(hierarchy.ht) {    
-      hierarchy.shutdown(); // nested locks are OK    
-    
-      Enumeration cats = hierarchy.getCurrentCategories();
-      while(cats.hasMoreElements()) {
-	Category c = (Category) cats.nextElement();
-	c.setPriority(null);
-	c.setAdditivity(true);
-	c.setResourceBundle(null);
-      }
-    }
-    hierarchy.rendererMap.clear();
+    hierarchy.resetConfiguration();
   }
-
 }
