@@ -51,8 +51,17 @@
  */
 package org.apache.log4j.chainsaw;
 
+import org.apache.log4j.chainsaw.prefs.SettingsManager;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
 
 
 /**
@@ -60,93 +69,115 @@ import java.beans.PropertyChangeSupport;
  * @author Paul Smith
  */
 public class LogPanelPreferenceModel {
-	private final PropertyChangeSupport propertySupport = new PropertyChangeSupport(this);
-	
-	private boolean useISO8601Format = true;
-	private String alternateDateFormatPattern = "HH:mm:ss"; 
-	/**
-	 * Returns the Date Pattern string for the alternate date formatter.
-	 * @return
-	 */
-	public final String getAlternateDateFormatPattern() {
-		return alternateDateFormatPattern;
-	}
+  public static final String ISO8601 = "ISO8601";
+  public static final Collection DATE_FORMATS;
 
-	/**
-	 * Configures the Date pattern to use when using the alternate
-	 * pattern
-	 * @param alternateDateFormatPattern
-	 */
-	public final void setAlternateDateFormatPattern(String alternateDateFormatPattern) {
-		String oldVal = this.alternateDateFormatPattern;
-		this.alternateDateFormatPattern = alternateDateFormatPattern;
-		propertySupport.firePropertyChange("alternateDateFormatPattern", oldVal, this.alternateDateFormatPattern);
-	}
+  static {
+    Collection list = new ArrayList();
 
-	/**
-	 * Whether to use the faster ISO8601Format object for
-	 * renderring dates, or not.
-	 * @return
-	 */
-	public boolean isUseISO8601Format() {
-		return useISO8601Format;
-	}
+    Properties properties = SettingsManager.getInstance().getDefaultSettings();
 
-	/**
-	 * Sets whether to use the ISO8601Format object for rendering 
-	 * dates.
-	 * @param useISO8601Format
-	 */
-	public void setUseISO8601Format(boolean useISO8601Format) {
-		boolean oldVal = this.useISO8601Format;
-		this.useISO8601Format = useISO8601Format;
-		propertySupport.firePropertyChange("useISO8601Format", oldVal, this.useISO8601Format);
-	}
+    for (Iterator iter = properties.entrySet().iterator(); iter.hasNext();) {
+      Map.Entry entry = (Map.Entry) iter.next();
 
-	/**
-	 * @param listener
-	 */
-	public synchronized void addPropertyChangeListener(PropertyChangeListener listener) {
-		propertySupport.addPropertyChangeListener(listener);
-	}
+      if (entry.getKey().toString().startsWith("DateFormat")) {
+        list.add(entry.getValue());
+      }
+    }
 
-	/**
-	 * @param propertyName
-	 * @param listener
-	 */
-	public synchronized void addPropertyChangeListener(
-		String propertyName,
-		PropertyChangeListener listener) {
-		propertySupport.addPropertyChangeListener(propertyName, listener);
-	}
+    DATE_FORMATS = Collections.unmodifiableCollection(list);
+  }
 
-	/**
-	 * @param listener
-	 */
-	public synchronized void removePropertyChangeListener(PropertyChangeListener listener) {
-		propertySupport.removePropertyChangeListener(listener);
-	}
+  private final PropertyChangeSupport propertySupport =
+    new PropertyChangeSupport(this);
+  private String dateFormatPattern = ISO8601;
+  private boolean levelIcons = true;
 
-	/**
-	 * @param propertyName
-	 * @param listener
-	 */
-	public synchronized void removePropertyChangeListener(
-		String propertyName,
-		PropertyChangeListener listener) {
-		propertySupport.removePropertyChangeListener(propertyName, listener);
-	}
+  /**
+   * Returns the Date Pattern string for the alternate date formatter.
+   * @return
+   */
+  public final String getDateFormatPattern() {
+    return dateFormatPattern;
+  }
 
-	/**
-	 * Applies all the properties of another model to this model
-	 * 
-	 * @param uncommitedPreferenceModel the model to copy
-	 * all the properties from
-	 */
-	public void apply(LogPanelPreferenceModel that) {
-		setAlternateDateFormatPattern(that.getAlternateDateFormatPattern());
-		setUseISO8601Format(that.isUseISO8601Format());
-		
-	}
+  /**
+   * @param dateFormatPattern
+   */
+  public final void setDateFormatPattern(String dateFormatPattern) {
+    String oldVal = this.dateFormatPattern;
+    this.dateFormatPattern = dateFormatPattern;
+    propertySupport.firePropertyChange(
+      "dateFormatPattern", oldVal, this.dateFormatPattern);
+  }
 
+  /**
+   * @param listener
+   */
+  public synchronized void addPropertyChangeListener(
+    PropertyChangeListener listener) {
+    propertySupport.addPropertyChangeListener(listener);
+  }
+
+  /**
+   * @param propertyName
+   * @param listener
+   */
+  public synchronized void addPropertyChangeListener(
+    String propertyName, PropertyChangeListener listener) {
+    propertySupport.addPropertyChangeListener(propertyName, listener);
+  }
+
+  /**
+   * @param listener
+   */
+  public synchronized void removePropertyChangeListener(
+    PropertyChangeListener listener) {
+    propertySupport.removePropertyChangeListener(listener);
+  }
+
+  /**
+   * @param propertyName
+   * @param listener
+   */
+  public synchronized void removePropertyChangeListener(
+    String propertyName, PropertyChangeListener listener) {
+    propertySupport.removePropertyChangeListener(propertyName, listener);
+  }
+
+  /**
+   * Applies all the properties of another model to this model
+   *
+   * @param uncommitedPreferenceModel the model to copy
+   * all the properties from
+   */
+  public void apply(LogPanelPreferenceModel that) {
+    setDateFormatPattern(that.getDateFormatPattern());
+    setLevelIcons(that.isLevelIcons());
+  }
+
+  /**
+   * Returns true if this the fast ISO8601DateFormat object
+   * should be used instead of SimpleDateFormat
+   * @return
+   */
+  public boolean isUseISO8601Format() {
+    return getDateFormatPattern().equals(ISO8601);
+  }
+
+  /**
+   * @return
+   */
+  public boolean isLevelIcons() {
+    return levelIcons;
+  }
+
+  /**
+   * @param levelIcons
+   */
+  public void setLevelIcons(boolean levelIcons) {
+    boolean oldVal = this.levelIcons;
+    this.levelIcons = levelIcons;
+    propertySupport.firePropertyChange("levelIcons", oldVal, this.levelIcons);
+  }
 }
