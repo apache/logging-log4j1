@@ -90,11 +90,6 @@ public class MulticastAppender extends AppenderSkeleton implements PortBased {
   private static final int PACKET_LENGTH = 16384;
 
   /**
-     The default reconnection delay (30000 milliseconds or 30 seconds).
-  */
-  static final int DEFAULT_RECONNECTION_DELAY = 30000;
-
-  /**
      We remember host name as String in addition to the resolved
      InetAddress so that it can be returned via getOption().
   */
@@ -106,8 +101,6 @@ public class MulticastAppender extends AppenderSkeleton implements PortBased {
   InetAddress address;
   int port = DEFAULT_PORT;
   MulticastSocket outSocket;
-  int reconnectionDelay = DEFAULT_RECONNECTION_DELAY;
-  boolean locationInfo = false;
   int count = 0;
   private String encoding;
   
@@ -297,7 +290,7 @@ public class MulticastAppender extends AppenderSkeleton implements PortBased {
      The <b>App</b> option takes a string value which should be the name of the application getting logged.
      If property was already set (via system property), don't set here.
    */
-  public void setApplicationp(String app) {
+  public void setApplication(String app) {
     this.application = app;
   }
 
@@ -351,26 +344,6 @@ public class MulticastAppender extends AppenderSkeleton implements PortBased {
    */
   public int getPort() {
     return port;
-  }
-
-  /**
-     The <b>ReconnectionDelay</b> option takes a positive integer
-     representing the number of milliseconds to wait between each
-     failed attempt to establish an outgoing socket. The default value of
-     this option is 30000 which corresponds to 30 seconds.
-
-     <p>Setting this option to zero turns off reconnection
-     capability.
-   */
-  public void setReconnectionDelay(int delay) {
-    this.reconnectionDelay = delay;
-  }
-
-  /**
-     Returns value of the <b>ReconnectionDelay</b> option.
-   */
-  public int getReconnectionDelay() {
-    return reconnectionDelay;
   }
 
   /* (non-Javadoc)
