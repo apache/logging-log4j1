@@ -2580,17 +2580,19 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
       }
 
       if (!((text != null) && !text.equals(""))) {
-        text = "Nothing selected";
+        text = "<html>Nothing selected</html>";
       }
 
       final String text2 = text;
       SwingUtilities.invokeLater(
         new Runnable() {
           public void run() {
-            detail.setText(text2);
-            if (text2.length() > 0) {
-                detail.setCaretPosition(0);
-            }
+            try {
+                detail.setText(text2);
+                if (text2.length() > 0) {
+                    detail.setCaretPosition(0);
+                }
+            } catch (Exception e){} //ignore
           }
         });
         detail.revalidate();
