@@ -5,6 +5,23 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
 
+ May 9, 2001
+
+ - Release of version 1.1b7
+
+ - Made BasicConfigurator disable methods static as they were in log4j
+   1.0.4. Thanks to Francisco Marin for reporting the bug. [*]
+
+ - Corrected a two related deadlock problems introduced while fixing
+   bug 1505. Thanks to joelr@viair.com for reporting the problem. [*]
+
+ - The configureAndWatch methods in Configurators did not close the
+   configuration file, preventing its editing. See bug 1686. [*]
+
+ - In DOMConfigurator.setParameter special charater conversion now
+   preceeds variable substitution. This change was suggested by Steven
+   Velez. The vast majority of users should be oblivious to it. [*]
+
  April 26, 2001
 
  - Release of version 1.1b6

@@ -185,12 +185,12 @@ if [ $TEST -ge $start ]; then
   testPattern NONE
 fi
 
-TEST=15
-if [ $TEST -ge $start ]; then
-  echo "log4j.rootCategory=DEBUG, testAppender" > $LCF
-  lecho "log4j.appender.testAppender=org.apache.log4j.FileAppender"
-  lecho "log4j.appender.testAppender.File=       $TEMP   "
-  lecho "log4j.appender.testAppender.Append=false"
-  lecho "log4j.appender.testAppender.layout=org.apache.log4j.HTMLLayout"
-  testPattern HTML
-fi
+#TEST=15
+#if [ $TEST -ge $start ]; then
+#  echo "log4j.rootCategory=DEBUG, testAppender" > $LCF
+#  lecho "log4j.appender.testAppender=org.apache.log4j.FileAppender"
+#  lecho "log4j.appender.testAppender.File=       $TEMP   "
+#  lecho "log4j.appender.testAppender.Append=false"
+#  lecho "log4j.appender.testAppender.layout=org.apache.log4j.HTMLLayout"
+#  testPattern HTML
+#fi
