@@ -1369,7 +1369,7 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     if (visible) {
       lowerPanel.setDividerLocation(150);
     }
-
+	lowerPanel.setOneTouchExpandable(visible);
     firePropertyChange("detailPanelVisible", oldValue, isDetailPaneVisible());
   }
 
