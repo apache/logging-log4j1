@@ -434,8 +434,7 @@ public class OptionConverter {
      @since 1.0 */
   static
   public
-  void selectAndConfigure(URL url, Hierarchy hierarchy) {
-    String clazz = url.getRef();
+  void selectAndConfigure(URL url, String clazz,  Hierarchy hierarchy) {
 
     Configurator configurator = null;
 

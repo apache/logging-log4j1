@@ -100,6 +100,26 @@ public class Category implements AppenderAttachable {
      @since 1.0 */
      static final public String DEFAULT_CONFIGURATION_KEY="log4j.configuration";
 
+ /**
+     This string constant is set to <b>log4j.configuratorClass</b>. 
+
+     <p>It corresponds to name of a system property that, if set,
+     specifies the class name to use to automatically configure
+     log4j. See {@link OptionConverter#selectAndConfigure} for more
+     detailed information on the processing of this option.
+
+     <p>Setting the <b>log4j.configuration</b> system property
+     overrides the default search for the file <b>log4j.properties</b>.
+
+     <p>Note that all property keys are case sensitive.  
+
+     <p>See also the full description of <a
+     href="../../../../manual.html#defaultInit">default
+     intialization</a> procedure.
+   
+     @since 1.2 */
+     static final public String CONFIGURATOR_CLASS_KEY="log4j.configuratorClass";
+
   /**
       Setting the system property <b>log4j.defaultInitOverride</b> to
       "true" or any other value than "false" will skip default
@@ -130,13 +150,18 @@ public class Category implements AppenderAttachable {
       String resource = OptionConverter.getSystemProperty(
                                                    DEFAULT_CONFIGURATION_KEY, 
 						   DEFAULT_CONFIGURATION_FILE);
+
+      String configuratorClassName = OptionConverter.getSystemProperty(
+                                                   CONFIGURATOR_CLASS_KEY, 
+						   null);
+
       URL url = null;
       try {
 	// so, resource is not a URL:
 	// attempt to get the resource from the class path
 	url = new URL(resource);
       } catch (MalformedURLException ex) {
-	url = Loader.getResource(resource, Category.class); 
+	url = Loader.getResource(resource); 
       }	
       
       // If we have a non-null url, then delegate the rest of the
@@ -144,7 +169,8 @@ public class Category implements AppenderAttachable {
       // method.
       if(url != null) {
 	LogLog.debug("Using URL ["+url+"] for automatic log4j configuration.");
-	OptionConverter.selectAndConfigure(url, defaultHierarchy);
+	OptionConverter.selectAndConfigure(url, configuratorClassName, 
+					   defaultHierarchy);
       } else {
 	LogLog.debug("Could not find resource: ["+resource+"].");
       }

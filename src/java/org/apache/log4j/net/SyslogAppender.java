@@ -270,8 +270,6 @@ public class SyslogAppender extends AppenderSkeleton {
   /**
      This method returns immediately as options are activated when they
      are set.
-
-     @see #setOption
   */
   public
   void activateOptions() {

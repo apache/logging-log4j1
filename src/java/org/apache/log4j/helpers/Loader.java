@@ -36,15 +36,15 @@ public class Loader  {
     }
   }
 
-  
   /**
      This method will search for <code>resource</code> in different
      places. The rearch order is as follows:
 
      <ol>
 
-     <p><li>Search for <code>resource</code> using the same class
-     loader that loaded <code>clazz</code>.
+     <p><li>Search for <code>resource</code> using the thread context
+     class loader under Java2 and using the class loader that loaded
+     this class (<code>Loader</code>) under JDK 1.1.
 
      <p><li>Try one last time with
      <code>ClassLoader.getSystemResource(resource)</code>, that is is
@@ -54,76 +54,37 @@ public class Loader  {
      </ol>
      
   */
-  static 
+  static
   public
-  URL getResource(String resource, Class clazz) {
-    
+  URL getResource(String resource) {
+    ClassLoader classLoader = null;
     URL url = null;
 
-
-    // Is it under CLAZZ/resource somewhere in the classpath?  CLAZZ
-    // stands for fully qualified name of "clazz" where dots have been
-    // changed to directory separators
-    ///LogLog.debug("Trying to find ["+resource+"] using clazz.getResource().");
-    ///
-    ///try {
-    ///	 url = clazz.getResource(resource);
-    ///	 if(url != null) 
-    ///	   return url;
-    ///} catch (Throwable t) {
-    ///	 LogLog.warn(TSTR,t);
-    ///}
-    ///	 
-    ///// attempt to get the resource under CLAZZ/resource from the
-    ///// system class path. The system class loader should not throw
-    ///// InvalidJarIndexExceptions
-    ///String fullyQualified = resolveName(resource, clazz);
-    ///LogLog.debug("Trying to find ["+fullyQualified+
-    ///		    "] using ClassLoader.getSystemResource().");
-    ///url = ClassLoader.getSystemResource(fullyQualified);
-    ///if(url != null) 
-    ///	 return url;
-    
-    
-    // Let the class loader of clazz and parents (by the delagation
-    // property) seearch for resource
-    ClassLoader loader = clazz.getClassLoader();
-    if(loader != null) {
-      try {
-	LogLog.debug("Trying to find ["+resource+"] using "+loader
-		     +" class loader.");
-	url = loader.getResource(resource); 
-	if(url != null) 
-	  return url;
-      } catch(Throwable t) {
-	LogLog.warn(TSTR, t);
+    try {
+      if(!java1) {
+	classLoader = Thread.currentThread().getContextClassLoader();	
       }
+      
+      if(classLoader == null)
+	classLoader = Loader.class.getClassLoader(); 
+
+      LogLog.debug("Trying to find ["+resource+"] using "+classLoader
+		   +" class loader.");
+      url = classLoader.getResource(resource);      
+      if(url != null) {
+	return url;
+      }
+    } catch(Throwable t) {
+      LogLog.warn(TSTR, t);
     }
-    
-    
+
     // Attempt to get the resource from the class path. It may be the
     // case that clazz was loaded by the Extentsion class loader which
     // the parent of the system class loader. Hence the code below.
-    LogLog.debug("Trying to find ["+resource+"] using ClassLoader.getSystemResource().");
-    url = ClassLoader.getSystemResource(resource);
-    return url;
-  }
-
-  /**
-     Append the fully qualified name of a class before resource
-     (replace . with /). 
-  */
-  static
-  String resolveName(String resource, Class clazz) {
-    String fqcn = clazz.getName();
-    int index = fqcn.lastIndexOf('.');
-    if (index != -1) {
-      fqcn = fqcn.substring(0, index).replace('.', '/');
-      resource = fqcn+"/"+resource;
-    }
-    return resource;
-  }
-
+    LogLog.debug("Trying to find ["+resource+
+		 "] using ClassLoader.getSystemResource().");
+    return ClassLoader.getSystemResource(resource);
+  } 
 
   /**
      Are we running under JDK 1.x? 
@@ -147,40 +108,15 @@ public class Loader  {
     if(java1) {
       return Class.forName(clazz);
     } else {
-      return Thread.currentThread().getContextClassLoader().loadClass(clazz);
+      try {
+	return Thread.currentThread().getContextClassLoader().loadClass(clazz);
+      } catch(Exception e) {
+	// we reached here because
+	// currentThread().getContextClassLoader() is null or because
+	// of a security exceptio, or because clazz could not be
+	// loaded, in any case we now try one more time
+	return Class.forName(clazz);
+      }
     }
-  }
-
-  //public static Image getGIF_Image ( String path ) {
-  //  Image img = null;
-  //  try {
-  //	URL url = ClassLoader.getSystemResource(path);
-  //	System.out.println(url);
-  //	img = (Image) (Toolkit.getDefaultToolkit()).getImage(url);
-  //  }
-  //  catch (Exception e) {
-  //	System.out.println("Exception occured: " + e.getMessage() + 
-  //			   " - " + e );
-  //	      
-  //  }
-  //  return (img);
-  //}
-  //
-  //public static Image getGIF_Image ( URL url ) {
-  //  Image img = null;
-  //  try {
-  //	System.out.println(url);
-  //	img = (Image) (Toolkit.getDefaultToolkit()).getImage(url);
-  //  } catch (Exception e) {
-  //	System.out.println("Exception occured: " + e.getMessage() + 
-  //			   " - " + e );
-  //	      
-  //  }
-  //  return (img);
-  //}
-  //
-  //public static URL getHTML_Page ( String path ) {
-  //  URL url = null;
-  //  return (url = ClassLoader.getSystemResource(path));
-  //  }    
+  } 
 }

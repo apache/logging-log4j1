@@ -195,6 +195,8 @@ public class Hierarchy {
      This method is equivalent to calling {@link #disable} with the
      argument {@link Priority#FATAL}, the highest possible priority.
 
+     @deprecated Please use the {@link #enable} familiy of methods instead.
+
      @since 0.8.5 */
   public
   void disableAll() {
@@ -206,6 +208,8 @@ public class Hierarchy {
      Disable all logging requests of priority DEBUG regardless of
      category.  Invoking this method is equivalent to calling {@link
      #disable} with the argument {@link Priority#DEBUG}.
+
+     @deprecated Please use the {@link #enable} familiy of methods instead.
 
      @since 0.8.5 */
   public
@@ -221,6 +225,8 @@ public class Hierarchy {
 
      <p>Invoking this method is equivalent to calling {@link
      #disable(Priority)} with the argument {@link Priority#INFO}.
+
+     @deprecated Please use the {@link #enable} familiy of methods instead.
 
      @since 0.8.5 */
   public
@@ -393,7 +399,7 @@ public class Hierarchy {
   }
 
   /**
-     @deprecated Use {@link isEnabled} instead.
+     @deprecated No replacement offered.
    */
 
   public

@@ -441,8 +441,8 @@ public class PatternLayout extends Layout {
   }
   
   /**
-     Does not do anything as options become effective immediately. See
-     {@link #setOption} method. */
+     Does not do anything as options become effective 
+  */
   public
   void activateOptions() {
     // nothing to do.

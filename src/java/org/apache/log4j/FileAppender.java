@@ -123,13 +123,13 @@ public class FileAppender extends WriterAppender {
   }
 
   /**
-     The <b>File</b> option takes a string value which should be
-     the name of the file to append to. Special values "System.out" or
+     The <b>File</b> property takes a string value which should be the
+     name of the file to append to. Special values "System.out" or
      "System.err" are interpreted as the standard out and standard
      error streams.
 
      <p><font color="#DD0044"><b>Note that the "System.out" or "System.err"
-     options are deprecated. Use {@link ConsoleAppender}
+     options are deprecated. Please use {@link ConsoleAppender}
      instead.</b></font>
 
      <p>If the option is set to "System.out" or "System.err" the
@@ -138,8 +138,7 @@ public class FileAppender extends WriterAppender {
      and output will go there.
      
      <p>Note: Actual opening of the file is made when {@link
-     #activateOptions} is called, not when the options are set.
-   */
+     #activateOptions} is called, not when the options are set.  */
   public void setFile(String file) {
     // Trim spaces from both ends. The users probably does not want 
     // trailing spaces in file names.
@@ -185,9 +184,9 @@ public class FileAppender extends WriterAppender {
   
 
   /**
-     If the value of {@link #FILE_OPTION} is not <code>null</code>, then {@link
-     #setFile} is called with the values of {@link #FILE_OPTION} and
-     {@link #APPEND_OPTION}.
+     If the value of <b>File</b> is not <code>null</code>, then {@link
+     #setFile} is called with the values of <b>File</b>  and
+     <b>Append</b> properties.
 
      @since 0.8.1 */
   public
