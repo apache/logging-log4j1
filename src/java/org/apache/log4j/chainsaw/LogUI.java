@@ -879,16 +879,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     //    TODO Ask the user if they want to save the settings via a dialog.
     getSettingsManager().saveSettings();
 
-    int tabCount = getTabbedPane().getTabCount();
-
-    for (int i = 0; i < tabCount; i++) {
-      Component c = getTabbedPane().getComponentAt(i);
-
-      if (c instanceof LogPanel) {
-        ((LogPanel) c).saveSettings();
-      }
-    }
-
     shutdown();
   }
 
@@ -1372,6 +1362,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
         getTabbedPane().add(ident, thisPanel);
         getPanelMap().put(ident, thisPanel);
 
+        getSettingsManager().addSettingsListener(thisPanel);
         getSettingsManager().configure(thisPanel);
 
         /**
