@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<document>
+  
+  <properties>
+    <author email="cgu@apache.org">Ceki Gulcu</author>
+    <title>Log4j Contributors</title>
+  </properties>
+  
+  <body>
+    <section name="Log4j contributors">
+      
+      <p>Log4j is the result of contributions from several dozen
+	developers and hundreds of users across the globe. Some of the
+	more prominent contributors are listed below in aplhabetical
+	order.
+      </p>
+
+      <ul>
+
+	<li><b>Mathias Bogaert</b> 
+
+	  <p>While not lurking on the serverside, Mathias mends the
+	  log4j documentation.</p>
+	</li>
+
+	<li><b>James P. Cakalic</b>
+	  <p>Jim is the original author of the PatternLayout and the
+	  NTEventLogAppender.
+	  </p>
+	</li>
+
+	<li><b>Paul Glezen</b> 
+
+	  <p>Paul maintains the log4j extension manual while he is not
+	  consulting for IBM.
+	  </p>
+	</li>
+
+	<li><b>Ceki G&#252;lc&#252;</b> 
+
+	  <p>Ceki is the founder of the log4j project.  Time
+	    permitting, he also does custom development for
+	    clients. See <a href="http://qos.ch">http://qos.ch</a> for
+	    more information.
+	  </p>
+	</li>
+
+
+	<li><b>Anders Kristensen</b> 
+
+	  <p>Contributor of many enhancements, Anders takes a keen
+	  interest in log4j and all things Java, OO, and XML. He is
+	  currently specification lead for JSR 116, the SIP Servlet
+	  expert group.  
+	  </p>	  
+	</li>
+	
+	<li><b>Jim Moore</b> 
+	  <p>Jim is often seen answering tough question from log4j
+	    users. 
+	  </p>
+	</li>
+	
+	<li><b>Chris Taylor</b> 
+	  
+	  <p>Chris is the author NTEventLogAppender. In around 1832,
+	  he ported our previous build GNU-make based build system to
+	  at the time unknown but promising jakarta-ant.
+	  </p>
+	</li>
+	
+      </ul>
+
+    </section>
+    
+  </body>
+</document>
