@@ -779,7 +779,7 @@ public class Category implements AppenderAttachable {
   */
   public
   boolean isEnabledFor(Priority priority) {
-    if(hierarchy.disable >=  priority.level)
+    if(hierarchy.disable >=  priority.level) 
       return false;
     return priority.isGreaterOrEqual(this.getChainedPriority());
   }

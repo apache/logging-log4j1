@@ -67,17 +67,9 @@ public class XCategory extends Category implements OptionHandler {
   */
   public 
   void debug(String message) {
-    super.debug(message + " " + suffix);
+    super.log(FQCN, Priority.DEBUG, message + " " + suffix, null);
   }
 
-
-  /**
-     This makes caller localization to work properly.
-   */
-  protected
-  String getFQCN() {
-    return XCategory.FQCN;
-  }
 
   /**
      This method overrides {@link Category#getInstance} by supplying
@@ -119,7 +111,7 @@ public class XCategory extends Category implements OptionHandler {
     if(hierarchy.isDisabled(XPriority.LETHAL_INT)) 
       return;
     if(XPriority.LETHAL.isGreaterOrEqual(this.getChainedPriority()))
-      forcedLog(getFQCN(), XPriority.LETHAL, message, t);
+      forcedLog(FQCN, XPriority.LETHAL, message, t);
   }
 
   /**
@@ -130,7 +122,7 @@ public class XCategory extends Category implements OptionHandler {
     if(hierarchy.isDisabled(XPriority.LETHAL_INT)) 
       return;
     if(XPriority.LETHAL.isGreaterOrEqual(this.getChainedPriority()))
-      forcedLog(getFQCN(), XPriority.LETHAL, message, null);
+      forcedLog(FQCN, XPriority.LETHAL, message, null);
   }
 
 
@@ -167,7 +159,7 @@ public class XCategory extends Category implements OptionHandler {
     if(hierarchy.isDisabled(XPriority.TRACE_INT))
       return;   
     if(XPriority.TRACE.isGreaterOrEqual(this.getChainedPriority()))
-      forcedLog(getFQCN(), XPriority.TRACE, message, t);
+      forcedLog(FQCN, XPriority.TRACE, message, t);
   }
 
   /**
@@ -178,7 +170,7 @@ public class XCategory extends Category implements OptionHandler {
     if(hierarchy.isDisabled(XPriority.TRACE_INT))
       return;   
     if(XPriority.TRACE.isGreaterOrEqual(this.getChainedPriority()))
-      forcedLog(getFQCN(), XPriority.TRACE, message, null);
+      forcedLog(FQCN, XPriority.TRACE, message, null);
   }
 
 
