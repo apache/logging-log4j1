@@ -27,7 +27,13 @@
  - Removed the DOM Level 2 dependency in DOMConfigurator. This makes
    log4j XML configurable using Sun's parser or Apache's Xerces. [*]
 
- - Enhanced the ProppertyConfigurator to support variable substitution
+ - Enhanced the PropertyConfigurator and DOMConfigurator to support
+   customization of independent Hierarchies. The
+   org.apache.log4j.net.SocketServer has been enhanced to take
+   advantage of this functionality. The old code of SocketServer has
+   been moved to SimpleSocketServer. [**]
+
+ - Enhanced the PropertyConfigurator to support variable substitution
    for all options *values* (but not keys!). [*]
 
  - Categories are now aware of the Hierarchy they are linked to. This
