@@ -22,6 +22,7 @@ import org.apache.log4j.spi.LoggingEvent;
 
 public class CountingPatternConverter extends PatternConverter {
   static private final String NAME = "Count";
+  static private final String STYLE_CLASS = NAME.toLowerCase();
   
   StringBuffer buf;
   int counter = 0;
@@ -42,5 +43,9 @@ public class CountingPatternConverter extends PatternConverter {
   
   public String getName() {
     return NAME;
+  }
+  
+  public String getStyleClass(LoggingEvent e) {
+    return STYLE_CLASS;
   }
 }
