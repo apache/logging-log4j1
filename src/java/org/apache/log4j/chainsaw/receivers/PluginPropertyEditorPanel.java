@@ -237,11 +237,14 @@ public class PluginPropertyEditorPanel extends JPanel {
         public Component getTableCellEditorComponent(JTable table, Object value,
             boolean isSelected, int row, int column) {
 
-            if (editorMap.containsKey(value.getClass())) {
+           PluginPropertyTableModel model = (PluginPropertyTableModel) table.getModel();
+           PropertyDescriptor descriptor =  model.getDescriptors()[row];
+           Class valueClass = descriptor.getPropertyType();
+            if (editorMap.containsKey(valueClass)) {
 
                 DefaultCellEditor editor =
-                    (DefaultCellEditor) editorMap.get(value.getClass());
-                LogLog.debug("Located CellEditor for " + value.getClass());
+                    (DefaultCellEditor) editorMap.get(valueClass);
+                LogLog.debug("Located CellEditor for " + valueClass);
                 currentEditor = editor;
 
                 return currentEditor.getTableCellEditorComponent(table, value,
@@ -249,7 +252,7 @@ public class PluginPropertyEditorPanel extends JPanel {
             }
 
             currentEditor = defaultEditor;
-            LogLog.debug("Cell value class " + value.getClass() +
+            LogLog.debug("Cell value class " + valueClass +
                 " not know, using default editor");
 
             return defaultEditor.getTableCellEditorComponent(table, value,
@@ -415,6 +418,12 @@ public class PluginPropertyEditorPanel extends JPanel {
             }
 
             return value;
+        }
+        /**
+         * @return Returns the descriptors.
+         */
+        public final PropertyDescriptor[] getDescriptors() {
+          return descriptors;
         }
     }
 }
