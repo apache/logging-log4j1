@@ -16,8 +16,8 @@
 
 package org.apache.log4j.rolling.helpers;
 
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.rolling.RolloverFailure;
 
 import java.io.File;
@@ -26,28 +26,39 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
- * @author Ceki
- *  
+ * Utility class to help solving problems encontered while renameing files.
+ * @author Ceki Gulcu  
  */
 public class Util {
 
-  static Logger logger = Logger.getLogger(Util.class);
-
+  private static Logger getLogger() {
+    return LogManager.getLogger(Util.class);
+  }
+  
+  /**
+   * A robust file renaming method which in case of failure falls back to
+   * renmaing by copying. In case, the file to be renamed is open by another
+   * process, renaming by copying will succed whereas, regular renaming will
+   * fail. However, renaming by copying is much slower.
+   * 
+   * @param from
+   * @param to
+   * @throws RolloverFailure
+   */
   public static void rename(String from, String to) throws RolloverFailure {
     File fromFile = new File(from);
     boolean success = false;
 
     if (fromFile.exists()) {
       File toFile = new File(to);
-      logger.debug("Renaming file [" + fromFile + "] to [" + toFile + "]");
+      getLogger().debug("Renaming file [" + fromFile + "] to [" + toFile + "]");
 
       boolean result = fromFile.renameTo(toFile);
 
       if (!result) {
-        String msg1 = "Failed to rename file [" + fromFile + "] to [" + toFile
-            + "].";
-        LogLog.warn(msg1);
-        LogLog.warn("Attemting to rename by copying.");
+        Logger logger = getLogger();
+        logger.warn("Failed to rename file [{}] to [{}].", fromFile, toFile);
+        logger.warn("Attemting to rename by copying.");
         renameByCopying(from, to);
       }
     } else {
@@ -73,10 +84,10 @@ public class Util {
       File fromFile = new File(from);
 
       if (!fromFile.delete()) {
-        logger.warn("Could not delete [" + from + "].");
+        getLogger().warn("Could not delete [].", from);
       }
     } catch (IOException ioe) {
-      LogLog.error("Failed to rename file by copying", ioe);
+      getLogger().error("Failed to rename file by copying", ioe);
       throw new RolloverFailure("Failed to rename file by copying");
     }
   }
