@@ -3,12 +3,12 @@
         href="http://jakarta.apache.org/">
 
     <title>Log4j project</title>
-    <logo href="images/logo.jpg">The log4j Project</logo>
+    <logo href="images/logo.jpg">The log4j project</logo>
     
     <body>
 
     <menu name="Log4j Project">
-        <item name="Introduciton"   href="/index.html"/>
+        <item name="Introduction"   href="/index.html"/>
         <item name="Download"       href="/download.html"/>
         <item name="Documentation"  href="/documentation.html"/>
         <item name="Contact us"     href="/contactUs.html"/>
@@ -36,6 +36,12 @@
     
         <item name="Ant"  
 	      href="http://jakarta.apache.org/ant/index.html"/>
+
+        <item name="ECS"                   
+	      href="http://jakarta.apache.org/ecs/index.html"/>
+
+        <item name="Log4J"                   
+	      href="http://jakarta.apache.org/log4j/index.html"/>
 
         <item name="ORO"                   
 	      href="http://jakarta.apache.org/oro/index.html"/>

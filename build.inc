@@ -1,8 +1,8 @@
   
   <target name="Usage">
     <echo>
-    ant build   - compile all project files, if certain library is missing, 
-	          then the components dependent on that library are skipped.
+    ant build   - compile all project files, if a certain library is missing, 
+	          then the compilation of its dependents is skipped.
 
     ant compile - compile files in local directory only
 

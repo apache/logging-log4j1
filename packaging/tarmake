@@ -40,12 +40,9 @@ tar -cz${1}f ${pkg}.tgz -X $scriptDir/tar-exclude \
  $pkg/doc/\
  $pkg/xdocs/\
  $pkg/Makefile\
- $pkg/HISTORY\
  $pkg/build.xml\
  $pkg/build.inc\
  $pkg/manifest.mf\
- $pkg/FAQ.html\
- $pkg/TROUBLESHOOT.html\
  $pkg/INSTALL\
  $pkg/LICENSE.APL\
  $pkg/*.jar\

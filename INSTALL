@@ -75,7 +75,10 @@ on JDK 1.1 with the following exceptions:
     JMSAppender
     -----------
   
-    The JMSAppender requires the JMS API as well as JNDI.
+    The JMSAppender requires the JMS API as well as JNDI. The JMS API
+    is usually bundled with the products of the vendors listed under
+
+       http://java.sun.com/products/jms/vendors.html
 
     ----------------
     TextPaneAppender
