@@ -49,6 +49,8 @@
 
 package org.apache.log4j.chainsaw.receivers;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -59,6 +61,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 
 import org.apache.log4j.LogManager;
+import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.net.SocketReceiver;
 import org.apache.log4j.plugins.Plugin;
 import org.apache.log4j.plugins.PluginEvent;
@@ -106,9 +109,10 @@ public class ReceiversTreeModel extends DefaultTreeModel
       getRootNode().add(NoReceiversNode);
     } else {
       for (Iterator iter = receivers.iterator(); iter.hasNext();) {
-        Receiver item = (Receiver) iter.next();
-        DefaultMutableTreeNode receiverNode = new DefaultMutableTreeNode(item);
+        final Receiver item = (Receiver) iter.next();
+        final DefaultMutableTreeNode receiverNode = new DefaultMutableTreeNode(item);
 
+        item.addPropertyChangeListener(creatPluginPropertyChangeListener(item, receiverNode));
         if (item instanceof SocketReceiver) {
           for (
             Iterator iterator =
@@ -126,6 +130,18 @@ public class ReceiversTreeModel extends DefaultTreeModel
     reload();
 
     return this;
+  }
+
+  private PropertyChangeListener creatPluginPropertyChangeListener(final Receiver item, final DefaultMutableTreeNode receiverNode)
+  {
+    return new PropertyChangeListener() {
+
+      public void propertyChange(PropertyChangeEvent evt)
+      {
+        LogLog.debug(evt.toString());
+        ReceiversTreeModel.this.fireTreeNodesChanged(item, receiverNode.getPath(), null, null);
+        
+      }};
   }
 
   /**
@@ -156,6 +172,7 @@ public class ReceiversTreeModel extends DefaultTreeModel
       Receiver receiver = (Receiver) e.getPlugin();
       DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(receiver);
       getRootNode().add(newNode);
+      receiver.addPropertyChangeListener(creatPluginPropertyChangeListener(receiver, newNode));
       nodesWereInserted(
         getRootNode(), new int[] { getRootNode().getIndex(newNode) });
       pluginNodeMap.put(receiver, newNode);

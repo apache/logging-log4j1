@@ -228,7 +228,10 @@ public class ReceiversPanel extends JPanel {
             Plugin p = (Plugin) node.getUserObject();
             LogLog.debug("plugin=" + p);
             pluginEditorPanel.setPlugin(p);
+          }else {
+            pluginEditorPanel.setPlugin(null);
           }
+                
           
         }
         
