@@ -353,9 +353,13 @@
 	   <include name="${BSTEM}/test/file"/>
 	   <include name="${BSTEM}/test/output.*"/>
 	   <include name="${BSTEM}/nt/EventLogCategories.dbg"/>
-	   <include name="${BSTEM}/nt/EventLogCategories.h"/>
+	   <include name="${BSTEM}/nt/*.h"/>
+	   <include name="${BSTEM}/nt/*.obj"/>
+	   <include name="${BSTEM}/nt/*.idb"/>
+	   <include name="${BSTEM}/nt/goEnv.bat"/>
 	   <include name="${BSTEM}/nt/EventLogCategories.rc"/>
 	   <include name="${BSTEM}/nt/EventLogCategories.RES"/>
+	   <include name="${BSTEM}/nt/EventLogCategories.res"/>
 	   <include name="${BSTEM}/nt/MSG00001.bin"/>
 	   <include name="${BSTEM}/nt/NTEventLogAppender.lib"/>
 	   <include name="${BSTEM}/nt/NTEventLogAppender.exp"/>
