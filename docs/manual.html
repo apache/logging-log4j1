@@ -995,10 +995,24 @@ specification</a> has recently became ready for public review.
 <p>The JSR47 API and log4j are quite similar at the architectural
 level. JSR47 API will support a hierarchical name space, one of the
 central features of log4j.  On the other hand, log4j has many useful
-features that are missing in JSR47. Given the momentum behind log4j,
-in my partisan opinion, JSR47 is likely to be obsolete by the time it
-is launced. Log4j is written by the people who use it daily, not by a
-committee.
+features that are missing in JSR47. For example, log4j supports
+appender inheritance, JSR47 doesn't. In log4j categories can be
+initialized in any order, in JSR47 parents must be initialized before
+children.
+
+<p>From time to time, users ask if log4j is "standard
+compliant". While it is possible to be compliant with a protocol or a
+pluggable-API, it is impossible to be compliant with an
+implementation. Either one <em>is</em> the implementation or one is
+not.  JSR47 is an <em>implementation</em> of a skeleton logging
+API. It is not a mere interface or a communication protocol. No API
+other than the JSR47 API will ever be compliant with the JSR47 API.
+
+<p>Given the momentum behind log4j, in my partisan opinion, JSR47 is
+likely to be obsolete by the time it is launched. Log4j is written by
+the people who use it daily, not by a committee.
+
+
 
 <h2>Conclusions</h2>
 
