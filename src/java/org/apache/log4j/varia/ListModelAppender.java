@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.apache.log4j.chainsaw.messages;
+package org.apache.log4j.varia;
 
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.spi.LoggingEvent;
@@ -30,7 +30,7 @@ import javax.swing.ListModel;
  * @author Paul Smith <psmith@apache.org>
  *
  */
-public final class MessageCenterAppender extends AppenderSkeleton {
+public final class ListModelAppender extends AppenderSkeleton {
   private final DefaultListModel model = new DefaultListModel();
 
   /**
@@ -54,6 +54,7 @@ public final class MessageCenterAppender extends AppenderSkeleton {
    * @see org.apache.log4j.Appender#close()
    */
   public void close() {
+    clearModel();
   }
 
   /* (non-Javadoc)
