@@ -72,20 +72,39 @@ public class Generator extends Receiver implements Runnable {
           "debugmsg " + i++
           + " g dg sdfa sadf sdf safd fsda asfd sdfa sdaf asfd asdf fasd fasd adfs fasd adfs fads afds afds afsd afsd afsd afsd afsd fasd asfd asfd afsd fasd afsd",
           new Exception("someexception-" + baseString_)));
-     doPost(createEvent(Level.INFO, logger2, "infomsg " + i++, new Exception("someexception-" + baseString_)));
-
-     doPost(createEvent(Level.WARN,logger3,  "warnmsg " + i++, new Exception("someexception-" + baseString_)));
-     doPost(createEvent(Level.ERROR, logger1, "errormsg " + i++, new Exception("someexception-" + baseString_)));
-     doPost(createEvent(Level.TRACE, logger2, "tracemsg" + i++, new Exception("someexception-" + baseString_)));
-     doPost(createEvent(Level.DEBUG, logger2,"debugmsg " + i++, new Exception("someexception-" + baseString_)));
-     doPost(createEvent(Level.INFO, logger3,"infomsg " + i++, new Exception("someexception-" + baseString_)));
-     doPost(createEvent(Level.WARN, logger1, "warnmsg " + i++, new Exception("someexception-" + baseString_)));
-     doPost(createEvent(Level.ERROR, logger2, "errormsg " + i++, new Exception("someexception-" + baseString_)));
-     doPost(createEvent(Level.TRACE, logger3, "tracemsg" + i++, new Exception("someexception-" + baseString_)));
-     doPost(createEvent(Level.DEBUG, logger3, "debugmsg " + i++, new Exception("someexception-" + baseString_)));
      doPost(createEvent(Level.INFO, logger1, "infomsg " + i++, new Exception("someexception-" + baseString_)));
+     doPost(createEvent(Level.WARN, logger1, "warnmsg " + i++, new Exception("someexception-" + baseString_)));
+     doPost(createEvent(Level.ERROR, logger1, "errormsg " + i++, new Exception("someexception-" + baseString_)));
+     doPost(createEvent(Level.FATAL, logger1, "fatalmsg " + i++, new Exception("someexception-" + baseString_)));
+     doPost(createEvent(Level.TRACE, logger2, "tracemsg" + i++, new Exception("someexception-" + baseString_)));
+     doPost(
+        createEvent(
+          Level.DEBUG, logger2,
+          "debugmsg " + i++
+          + " g dg sdfa sadf sdf safd fsda asfd sdfa sdaf asfd asdf fasd fasd adfs fasd adfs fads afds afds afsd afsd afsd afsd afsd fasd asfd asfd afsd fasd afsd",
+          new Exception("someexception-" + baseString_)));
+     doPost(createEvent(Level.INFO, logger2, "infomsg " + i++, new Exception("someexception-" + baseString_)));
      doPost(createEvent(Level.WARN, logger2, "warnmsg " + i++, new Exception("someexception-" + baseString_)));
+     doPost(createEvent(Level.ERROR, logger2, "errormsg " + i++, new Exception("someexception-" + baseString_)));
+     doPost(createEvent(Level.FATAL, logger2, "fatalmsg " + i++, new Exception("someexception-" + baseString_)));
+     doPost(createEvent(Level.TRACE, logger3, "tracemsg" + i++, new Exception("someexception-" + baseString_)));
+     doPost(
+        createEvent(
+          Level.DEBUG, logger3,
+          "debugmsg " + i++
+          + " g dg sdfa sadf sdf safd fsda asfd sdfa sdaf asfd asdf fasd fasd adfs fasd adfs fads afds afds afsd afsd afsd afsd afsd fasd asfd asfd afsd fasd afsd",
+          new Exception("someexception-" + baseString_)));
+     doPost(createEvent(Level.INFO, logger3, "infomsg " + i++, new Exception("someexception-" + baseString_)));
+     doPost(createEvent(Level.WARN, logger3, "warnmsg " + i++, new Exception("someexception-" + baseString_)));
      doPost(createEvent(Level.ERROR, logger3, "errormsg " + i++, new Exception("someexception-" + baseString_)));
+     doPost(createEvent(Level.FATAL, logger3, "fatalmsg " + i++, new Exception("someexception-" + baseString_)));
+     
+     
+     
+     
+     
+     
+     
       try {
         Thread.sleep(1000);
       } catch (InterruptedException ie) {
