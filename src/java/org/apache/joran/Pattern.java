@@ -59,7 +59,7 @@ public class Pattern {
     //System.out.println(components);
   }
 
-  void push(String s) {
+  public void push(String s) {
     components.add(s);
   }
 
@@ -71,13 +71,13 @@ public class Pattern {
     return (String) components.get(i);
   }
 
-  void pop() {
+  public void pop() {
     if (!components.isEmpty()) {
       components.remove(components.size() - 1);
     }
   }
   
-  String peekLast() {
+  public String peekLast() {
     if (!components.isEmpty()) {
       int size = components.size();
       return (String) components.get(size - 1);

@@ -16,18 +16,17 @@
 
 package org.apache.joran.action;
 
+import org.apache.joran.ErrorItem;
 import org.apache.joran.ExecutionContext;
 import org.apache.joran.Pattern;
 import org.apache.joran.helper.Option;
 
-import org.apache.log4j.Layout;
 import org.apache.log4j.Logger;
 import org.xml.sax.Attributes;
 
 
 public class NewRuleAction extends Action {
   static final Logger logger = Logger.getLogger(NewRuleAction.class);
-  Layout layout;
 
   /**
    * Instantiates an layout of the given class and sets its name.
@@ -44,7 +43,7 @@ public class NewRuleAction extends Action {
        inError = true;
        errorMsg = "No 'pattern' attribute in <newRule>";
        logger.warn(errorMsg);
-       ec.addError(errorMsg);
+       ec.addError(new ErrorItem(errorMsg, ec.getLocator()));
        return;
      }
     
@@ -52,7 +51,7 @@ public class NewRuleAction extends Action {
          inError = true;
          errorMsg = "No 'actionClass' attribute in <newRule>";
          logger.warn(errorMsg);
-         ec.addError(errorMsg);
+         ec.addError(new ErrorItem(errorMsg, ec.getLocator()));
          return;
      }
        
@@ -63,7 +62,7 @@ public class NewRuleAction extends Action {
       inError = true;
       errorMsg =  "Could not add new Joran parsing rule ["+pattern+","+actionClass+"]"; 
       logger.error(errorMsg, oops);
-      ec.addError(errorMsg);
+      ec.addError(new ErrorItem(errorMsg, ec.getLocator()));
     }
   }
 

@@ -67,7 +67,7 @@ public abstract class Action {
   
   protected int getColumnNumber(ExecutionContext ec) {
     Interpreter jp = ec.getJoranParser();
-    Locator locator = jp.getDocumentLocator();
+    Locator locator = jp.getLocator();
     if(locator != null) {
       return locator.getColumnNumber();
     }
@@ -76,7 +76,7 @@ public abstract class Action {
   
   protected int getLineNumber(ExecutionContext ec) {
     Interpreter jp = ec.getJoranParser();
-    Locator locator = jp.getDocumentLocator();
+    Locator locator = jp.getLocator();
     if(locator != null) {
       return locator.getLineNumber();
     }

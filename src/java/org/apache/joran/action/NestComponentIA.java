@@ -16,6 +16,7 @@
 
 package org.apache.joran.action;
 
+import org.apache.joran.ErrorItem;
 import org.apache.joran.ExecutionContext;
 import org.apache.joran.helper.Option;
 
@@ -56,7 +57,7 @@ public class NestComponentIA extends ImplicitAction {
       
       default: 
       inError= true;
-      ec.addError("PropertySetter.canContainComponent returned "+containmentType);
+      ec.addError(new ErrorItem("PropertySetter.canContainComponent returned "+containmentType, ec.getLocator()));
       return false;
     }
   }
@@ -71,7 +72,7 @@ public class NestComponentIA extends ImplicitAction {
         inError = true;
         String errMsg = "No class name attribute in <"+localName+">";
         logger.error(errMsg);
-        ec.addError(errMsg);
+        ec.addError(new ErrorItem(errMsg, ec.getLocator()));
         return;
       }
       
@@ -87,7 +88,7 @@ public class NestComponentIA extends ImplicitAction {
         inError = true;      
         String msg =  "Could not create component <"+localName+">.";
         logger.error(msg, oops);
-        ec.addError(msg);
+        ec.addError(new ErrorItem(msg, ec.getLocator()));
       }
   }
 
