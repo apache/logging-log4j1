@@ -145,7 +145,7 @@ public class PatternParserTest extends TestCase {
 
   public void testMultiOption() throws Exception {
     PatternParser patternParser =
-      new PatternParser("%d{HH:mm:ss}{GMT} %d{HH:mm:ss} %c  - %m%n");
+      new PatternParser("%d{HH:mm:ss}{GMT} %d{HH:mm:ss} %c  - %m");
     PatternConverter head = patternParser.parse();
 
     String result = convert(event, head);
@@ -157,7 +157,7 @@ public class PatternParserTest extends TestCase {
     StringBuffer buf = new StringBuffer(utcTime);
     buf.append(' ');
     buf.append(localTime);
-    buf.append(" org.foobar  - msg 1\n");
+    buf.append(" org.foobar  - msg 1");
     assertEquals(buf.toString(), result);
   }
 
