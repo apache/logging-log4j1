@@ -47,10 +47,14 @@
 
     These are the targets supported by this ANT build scpript:
 
-    build   - compile all project files, if a certain library is missing, 
+    build  - compile all project files, if a certain library is missing, 
 	      then the compilation of its dependents are skipped.
 
-    run     - run the tests
+    regression - Run regression ests which check large parts of log4j.
+    unit       - Run unit tests which check one component at a time.
+    longUnit   - Run long unit tests which check one component at a time.
+
+    runAll     - run all available tests
     </echo>
   </target>
 
@@ -79,9 +83,29 @@
     <delete dir="./classes/" />
   </target>
 
-  
-  <target name="run" depends="Minimum, Logger, OptionConverter, BoundedFIFO,
-                              DOM, CustomLevel, CyclicBuffer, OR, DRFA"/>
+  <!-- ================================================================= -->
+  <!-- Run all tests                                                     -->
+  <!-- ================================================================= -->  
+  <target name="runAll" depends="regression, unit, longUnit"/>
+
+  <!-- ================================================================= -->
+  <!-- Tests multiple parts of log4j. These tests are much more fragile  -->
+  <!-- unit tests.                                                       -->
+  <!-- ================================================================= -->  
+  <target name="regression" depends="Minimum, Logger, DOM, CustomLevel, 
+                                     CustomLogger"/>
+
+  <!-- ================================================================= -->
+  <!-- Unit tests test small parts of log4j for logical programming      -->
+  <!-- errors. This is different than regression tests which check       -->
+  <!-- larger parts of log4j.                                            -->
+  <!-- ================================================================= -->  
+  <target name="unit" depends="OptionConverter, BoundedFIFO, CyclicBuffer, OR"/>
+
+  <!-- ================================================================= -->
+  <!-- Longer unit tests                                                 -->
+  <!-- ================================================================= -->
+  <target name="longUnit" depends="DRFA"/>
   
   <target name="Minimum" depends="build">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
@@ -114,6 +138,16 @@
       <test name="org.apache.log4j.xml.CustomLevelTestCase" />
     </junit>
   </target>
+
+  <target name="CustomLogger" depends="build">
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="false" />
+      <test name="org.apache.log4j.customLogger.XLoggerTestCase" />
+    </junit>
+  </target>
+
+
 
   <target name="OptionConverter" depends="build">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">

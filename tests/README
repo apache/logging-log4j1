@@ -16,14 +16,11 @@ tests. You need to have jakarta.oro.jar property (found in the
 build.properties file) to point to jakarta-oro.jar. See the file
 build.properties.sample for an example of a build.properties file.
 
-Compiling
-=========
+Type "ant" to see the available commands.
 
-ant build
-
-Running
-=======
-
-ant run
-
+------------------------------------------------------------------------
+NOTE: The compilation and execution of test must be done from the tests/
+      directory, that is from the directory where this README file is
+      located.
+------------------------------------------------------------------------
 
