@@ -52,11 +52,10 @@ import org.apache.log4j.spi.LoggingEvent;
    <td><code>'.'yyyy-MM</code>
    <td>Rollover at the beginning of each month</td>
 
-   <td>Assuming the first day of the week is Sunday, at Sunday 00:00,
-   March 25th, 2001, <code>/foo/bar.log</code> will be copied to
-   <code>/foo/bar.log.2001-03</code>. Logging for the month of April
-   will be output to <code>/foo/bar.log</code> until it rolls over
-   at the beginning of May.
+   <td>At midnight of May 31st, 2002 <code>/foo/bar.log</code> will be
+   copied to <code>/foo/bar.log.2002-05</code>. Logging for the month
+   of June will be output to <code>/foo/bar.log</code> until it is
+   also rolled over the next month.
 
    <tr>
    <td><code>'.'yyyy-ww</code>
@@ -64,10 +63,11 @@ import org.apache.log4j.spi.LoggingEvent;
    <td>Rollover at the first day of each week. The first day of the
    week depends on the locale.</td>
 
-   <td>At midnight, on March 31st, 2001, <code>/foo/bar.log</code>
-   will be copied to <code>/foo/bar.log.2001-08</code>. Logging for
-   the 9th week of 2001 will be output to <code>/foo/bar.log</code>
-   until it is rolled over the next week.
+   <td>Assuming the first day of the week is Sunday, on Saturday
+   midnight, June 9th 2000, the file <i>/foo/bar.log</i> will be
+   copied will be copied to /foo/bar.log.2001-23.  Logging for the
+   24th week of 2002 will be output to <code>/foo/bar.log</code> until
+   it is rolled over the next week.
 
    <tr>
    <td><code>'.'yyyy-MM-dd</code>
