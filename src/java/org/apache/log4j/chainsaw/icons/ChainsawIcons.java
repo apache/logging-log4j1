@@ -174,6 +174,9 @@ public class ChainsawIcons {
     ChainsawIcons.class.getClassLoader().getResource(
       BASE_ICON_PATH + "ZoomOut16.gif");
 
+  public static final ImageIcon FOCUS_ON_ICON = new ImageIcon(WINDOW_ICON);
+  public static final ImageIcon IGNORE_ICON = new ImageIcon(ICON_COLLAPSE);  
+  
   private ChainsawIcons() {
   }
 }
