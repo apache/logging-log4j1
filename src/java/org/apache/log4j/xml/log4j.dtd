@@ -149,12 +149,13 @@ element. -->
 <!ELEMENT log4j:event (log4j:message, log4j:NDC?, log4j:MDC?, 
                        log4j:throwable?, log4j:locationInfo?, log4j:properties?) >
 
-<!-- The timestamp format is application dependent. -->
+<!-- The timestamp format is the elapsed millis since 1970. -->
 <!ATTLIST log4j:event
     logger     CDATA #REQUIRED
     level      CDATA #REQUIRED
     thread     CDATA #REQUIRED
     timestamp  CDATA #REQUIRED
+    sequenceNumber CDATA #REQUIRED
 >
 
 <!ELEMENT log4j:message (#PCDATA)>

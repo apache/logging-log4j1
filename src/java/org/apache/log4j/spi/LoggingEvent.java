@@ -290,11 +290,17 @@ public class LoggingEvent
 
     LoggingEvent rEvent = (LoggingEvent)rObject;
 
-    // timeStamp cannot be null
     if ( timeStamp != rEvent.timeStamp ) {
       return false;
     }
+    
+    if ( sequenceNumber != rEvent.sequenceNumber ) {
+      return false;
+    }
 
+    // TODO: the rest of the tests could be skipped and we could just return true.
+    
+    
     // level cannot be null
     if ( level != rEvent.level ) {
       return false;

@@ -11,6 +11,9 @@
 
  April, 2004 
 
+ - A sequenceNumber field has been added to LoggingEvent. This fields is useful when 
+   checking for the equality of two logging events or when ordering them. [*]
+
  - Log4j now has its own Scheduler. It allows jobs to be executed at a certain date
    or even periodically. It only requires just one extra thread. [*]
    
