@@ -18,6 +18,7 @@ package org.apache.joran.action;
 
 import org.apache.joran.ErrorItem;
 import org.apache.joran.ExecutionContext;
+import org.apache.joran.Pattern;
 import org.apache.joran.helper.Option;
 
 import org.apache.log4j.Logger;
@@ -38,7 +39,10 @@ public class NestComponentIA extends ImplicitAction {
   int containmentType;
   PropertySetter parentBean;
   
-  public boolean isApplicable(ExecutionContext ec, String nestedElementTagName) {
+  public boolean isApplicable(Pattern pattern, Attributes attributes, ExecutionContext ec) {
+    
+    String nestedElementTagName = pattern.peekLast();
+    
     inError = false;
     Object o = ec.peekObject();
     parentBean = new PropertySetter(o);
