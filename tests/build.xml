@@ -132,7 +132,8 @@
                                      Rolling, 
                                      ReaderWriterLock,
                                      NDC,
-                                     Plugins"/>
+                                     Plugins,
+  									 MessageFormatter"/>
 
 
 
@@ -543,6 +544,15 @@
     </junit>
   </target>
   
+  <target name="MessageFormatter" depends="build, cleanOutputDir">
+	<junit printsummary="yes" fork="yes" haltonfailure="yes">
+	  <classpath refid="tests.classpath"/>
+	  <formatter type="plain" usefile="false"/>
+	  <test name="org.apache.log4j.helpers.MessageFormatterTest" />
+    </junit>
+  </target>
+	  
+	
   
   <!-- ================================================================= -->
   <!-- ========================= DB Tests ======================= -->
