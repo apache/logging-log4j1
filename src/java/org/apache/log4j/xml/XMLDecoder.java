@@ -25,7 +25,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -156,23 +155,16 @@ public class XMLDecoder implements Decoder {
     Vector v = new Vector();
 
     String line = null;
+	Vector events = null;
     try {
-        /**
-         * Keep reading in the lines until we find the end of record line
-         * 
-         * NOTE: this might chew a bit more memory than the previous implementation which
-         * read in line blocks of 100, but allows a HUGE event spread over 100+ lines to be decode correctly.
-         */
         while ((line = reader.readLine()) != null) {
-            StringBuffer buffer = new StringBuffer(512);
-            while(line!=null && line.indexOf(RECORD_END)==-1) {
-                buffer.append(line).append("\n");
-                line = reader.readLine();
+            StringBuffer buffer = new StringBuffer(line);
+            for (int i = 0;i<1000;i++) {
+                buffer.append(reader.readLine()).append("\n");
             }
-            if(line!=null) {
-             buffer.append(line);   
-            }
-            v.addAll(decodeEvents(buffer.toString()));
+			events = decodeEvents(buffer.toString());
+            if (events != null)
+            	v.addAll(events);
         }
     } finally {
       partialEvent = null;
@@ -188,16 +180,10 @@ public class XMLDecoder implements Decoder {
   }
 
   public Vector decodeEvents(String document) {
-    /**
-     * NOTE: due to the logic above, which should read in the string containing the WHOLE event text,
-     * there should be no need to track partial events, but I have not changed the code just in case....
-     * 
-     * Paul Smith 4th August 2004
-     */
     if (document != null) {
       document = document.trim();
       if (document.equals("")) {
-        return new Vector();
+        return null;
       } else {
       	String newDoc=null;
       	String newPartialEvent=null;
