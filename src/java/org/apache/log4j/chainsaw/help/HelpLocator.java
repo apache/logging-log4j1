@@ -43,12 +43,14 @@
 package org.apache.log4j.chainsaw.help;
 
 import org.apache.log4j.chainsaw.messages.MessageCenter;
+import org.apache.log4j.helpers.LogLog;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -126,9 +128,11 @@ class HelpLocator {
 
       try {
         URL resourceURL = new URL(root, name);
-
+        URL[] urlArray = new URL[] { root, resourceURL };
+        LogLog.debug("Looking for Help resource at:" + resourceURL.toExternalForm());
+        LogLog.debug("urlArray=" + Arrays.asList(urlArray));
         return new URLClassLoader(
-          new URL[] { root, resourceURL }).findResource(
+          urlArray).findResource(
           name);
       } catch (MalformedURLException e) {
         e.printStackTrace();
