@@ -100,12 +100,14 @@ public class PatternParser {
     globalRulesRegistry.put("c", LoggerPatternConverter.class.getName());
     globalRulesRegistry.put("C", ClassNamePatternConverter.class.getName());
     globalRulesRegistry.put("F", FileLocationPatternConverter.class.getName());
-    globalRulesRegistry.put("l", FullLocationPatternConverter.class.getName());
+    globalRulesRegistry.put("l", FullLocationPatternConverter.class.getName()); 
     globalRulesRegistry.put("L", LineLocationPatternConverter.class.getName());
     globalRulesRegistry.put("m", MessagePatternConverter.class.getName());
     globalRulesRegistry.put(
       "M", MethodLocationPatternConverter.class.getName());
     globalRulesRegistry.put("p", LevelPatternConverter.class.getName());
+	  globalRulesRegistry.put("level", FullLocationPatternConverter.class.getName());
+	       
     globalRulesRegistry.put("r", RelativeTimePatternConverter.class.getName());
     globalRulesRegistry.put("t", ThreadPatternConverter.class.getName());
     globalRulesRegistry.put("x", NDCPatternConverter.class.getName());
