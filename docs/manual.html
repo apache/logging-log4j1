@@ -1,0 +1,951 @@
+<html>
+<head>
+<title>log4j manual</title>
+</head>
+
+<body bgcolor="white">
+
+<center>
+<h1>Short introduction to log4j</h1>
+
+  "Ceki G&uuml;lc&uuml;" 
+
+  December 2000 <br><br>
+</center>
+
+<hr>
+This manual is based on the article <a
+href="http://www.javaworld.com/jw-11-2000/jw-1122-log4j.html">"Log4j
+delivers control over logging"</a> published in November 2000 edition
+of <a href="http://www.javaworld.com">JavaWorld</a>. However, the
+present article contains more details and upto date information.
+<hr>
+
+<h2>Abstract</h2>
+
+<p>This article describes the log4j API, its unique features and
+design rationale. Log4j is an open source project based on the work of
+many authors.  It allows the developer to control which log statements
+are output with arbitrary granularity. It is fully configurable at
+runtime using external configuration files.  Best of all, log4j has a
+gentle learning curve. Beware: judging from user feedback, it is also
+quite addictive.
+
+<h2>Introduction</h2>
+
+<p>Almost every large application includes its own logging or tracing
+API. In conformance with this rule, the E.U.  <a
+href="http://www.semper.org">SEMPER</a> project decided to write its
+own tracing API. This was in early 1996. After countless enhancements,
+several incarnations and much work that API has evolved to become
+log4j, a popular logging package for Java. The package is distributed
+under the <a href=../LICENSE.APL>Apache Public License</a>, a
+fully-fledged open source license certified by the <a
+href="http://www.opensource.org">open source</a> initiative. The
+latest log4j version, including full-source code, class files and
+documentation can be found at <a
+href="http://log4j.org"><b>http://log4j.org</b></a>.
+
+<p>Igor Poteryaev, an independent author, has ported log4j to the
+Python language. Bastiaan Bakker has initiated a C++ port. Their
+projects are unsurprisingly called <a
+href="http://log4p.sourceforge.net">log4p</a> and <a
+href="http://log4cpp.sourceforge.net">log4cpp</a>.
+
+<p>Inserting log statements into code is a low-tech method for
+debugging it. It may also be the only way because debuggers are not
+always available or applicable. This is usually the case for
+multi-threaded applications and distributed applications at large.
+
+<p>Experience indicated that logging was an important component of the
+development cycle. It offered several advantages. It could provide
+precise <em>context</em> about a run of the application. Once inserted
+into the code, the generation of logging output required no human
+intervention.  Moreover, log output could be saved in persistent
+medium to be studied at a later time. In addition to its use in the
+development cycle, a sufficiently rich logging package could also be
+viewed as an auditing tool.
+
+<p>As Brian W. Kernigan and Rob Pike put it in their excellent book
+<i>"The Practice of Programming"</i>
+<pre>
+  As personal choice, we tend not to use debuggers beyond getting a
+  stack trace or the value of a variable or two. One reason is that it
+  is easy to get lost in details of complicated data structures and
+  control flow; we find stepping through a program less productive
+  than thinking harder and adding output statements and self-checking
+  code at critical places. Clicking over statements takes longer than
+  scanning the output of judiciously-placed displays. It takes less
+  time to decide where to put print statements than to single-step to
+  the critical section of code, even assuming we know where that
+  is. More important, debugging statements stay with the program;
+  debugging sessions are transient.
+</pre>
+
+<p>Logging does have its drawbacks. It can slow down an application. If
+too verbose, it can cause scrolling blindness. To alleviate these
+concerns, log4j is designed to be fast and flexible. Since logging is
+rarely the main focus of an application, log4j API strives to be
+simple to understand and to use.
+
+<h2>Categories, Appenders and Layouts</h2>
+
+<p>Log4j has three main components: <em>categories</em>,
+<em>appenders</em> and <em>layouts</em>. These three types of
+componets work together to enable developers to log messages according
+to message type and priority, and to control at runtime how these
+messages are formatted and where they are reported.
+
+<h3>Category hierarchy</h3>
+
+<p>The first and foremost advantage of any logging API over plain
+<code>System.out.println</code> resides in its ability to disable
+certain log statements while allowing others to print unhindered. This
+capability assumes that the logging space, that is, the space of all
+possible logging statements, is categorized according to some
+developer-chosen criteria. 
+
+<p>This observation led us to choose <em>category</em> as the central
+concept of the package.  The category notion is embodied in the
+<code><a
+href="../javadoc/org/log4j/Category.html">org.log4j.Category</a></code>
+class. Categories are named entities. Category names are
+case-sensitive. They follow the hierarchical naming rule:
+
+<p>
+<table bgcolor="#EEEE99">
+ <tr>
+  <td>  
+   <dl>
+     <dt><b>Named Hierarchy</b>
+
+     <dd><p>A category is said to be a parent of another
+category if its name followed by a dot is a prefix of the child
+category name. 
+
+   </dl>
+</table>
+
+
+<p>For example, the category named <code>"com.foo"</code> is a parent
+of the category named <code>"com.foo.Bar"</code>.  Similarly,
+<code>"java"</code> is a parent of <code>"java.util"</code> and an
+ancestor of <code>"java.util.Vector"</code>.  This naming scheme
+should be familiar to Java developers.
+
+<p>The root category resides at the top of the category hierarchy. It
+is exceptional in two ways: 
+
+<ol>
+<li> it always exists,
+<li> it cannot be retrieved by name. 
+</ol>
+<p>Invoking the class static <a
+href="../javadoc/org/log4j/Category.html#getRoot()">Category.getRoot</a>
+method retrieves it. All other categories are instantiated and
+retrieved with the class static <a
+href="../javadoc/org/log4j/Category.html#getRoot()">Category.getInstance</a>
+method. This method takes the name of the desired category as a
+parameter. Some of the basic methods in the Category class are listed
+below.
+
+<pre>
+  package org.log4j;
+  
+  public Category class {
+  
+    // Creation & retrieval methods:
+    public static Category getRoot();
+    public static Category getInstance(String name);
+    
+    // printing methods:
+    public void debug(Object message);
+    public void info(Object message);
+    public void warn(Object message);
+    public void error(Object message);
+
+    // generic printing method:
+    public void log(Priority p, Object message);
+}
+</pre>
+
+<p>Categories <em>may</em> be assigned priorities. The set of possible
+priorities, that is 
+
+<a href="../javadoc/org/log4j/Priority.html#DEBUG">DEBUG</a>, 
+<a href="../javadoc/org/log4j/Priority.html#DEBUG">INFO</a>, 
+<a href="../javadoc/org/log4j/Priority.html#DEBUG">WARN</a>, 
+<a href="../javadoc/org/log4j/Priority.html#DEBUG">ERROR</a> and 
+<a href="../javadoc/org/log4j/Priority.html#DEBUG">FATAL</a> 
+
+are defined in the <code><a
+href="../javadoc/org/log4j/Priority.html">org.log4j.Priority</a></code>
+class. The rationale behind this seemingly restricted set
+is to promote the use of the more flexible category hierarchy rather
+than a static (even if large) set of priorities.  One may however
+define one's own priorities by sub-classing the <code>Priority</code>
+class.  
+
+<p>If a given category is not assigned a priority, then it inherits
+one from its closest ancestor with an assigned priority. More
+formally:
+
+
+<p>
+<table bgcolor="#EEEE99">
+  <tr>
+  <td>  
+   <dl>
+     <dt><b>Priority Inheritence</b>
+
+     <dd><p>The <em>inherited priority</em> for a given category
+<i>C</i>, is equal to the first non-null priority in the category
+hierarchy, starting at <i>C</i>.
+
+   </dl>
+</table>
+
+<p>To ensure that all categories can eventually inherit a priority,
+the root category always has an assigned priority.
+
+<p>Below are four tables with various assigned priority values and the
+resulting inherited priorities according to the above rule.
+
+<p>
+<table align=center cellpadding=15 width="80%">
+  <tr><td><table border=1>
+    <tr><th>Category<br>name</th><th>Assigned<br>priority</th>
+    <th>Inherited<br>priority</th></tr>
+    <tr align=left><td>root</td>    <td>Proot</td> <td>Proot</td></tr>
+    <tr align=left><td>X </td>      <td>none</td>  <td>Proot</td></tr>
+    <tr align=left><td>X.Y </td>    <td>none</td>  <td>Proot</td></tr>
+    <tr align=left><td>X.Y.Z</td>   <td>none</td>  <td>Proot</td></tr>
+    <caption align=bottom>Example 1</caption>
+</table></td>
+
+<td><table border=1>
+    <tr><th>Category<br>name</th><th>Assigned<br>priority</th>
+    <th>Inherited<br>priority</th></tr>
+    <tr align=left><td>root</td>    <td>Proot</td> <td>Proot</td></tr>
+    <tr align=left><td>X </td>      <td>Px</td>    <td>Px</td></tr>
+    <tr align=left><td>X.Y </td>    <td>Pxy</td>   <td>Pxy</td></tr>
+    <tr align=left><td>X.Y.Z</td>   <td>Pxyz</td>  <td>Pxyz</td></tr>
+    <caption align=bottom>Example 2</caption>
+</table></td></tr>
+  <tr><td><table border=1>
+    <tr><th>Category<br>name</th><th>Assigned<br>priority</th>
+    <th>Inherited<br>priority</th></tr>
+    <tr align=left><td>root</td>    <td>Proot</td> <td>Proot</td></tr>
+    <tr align=left><td>X </td>      <td>Px</td>    <td>Px</td></tr>
+    <tr align=left><td>X.Y </td>    <td>none</td>  <td>Px</td></tr>
+    <tr align=left><td>X.Y.Z</td>   <td>Pxyz</td>  <td>Pxyz</td></tr>
+    <caption align=bottom>Example 3</caption>
+</table></td>
+
+<td><table border=1>
+    <tr><th>Category<br>name</th><th>Assigned<br>priority</th>
+    <th>Inherited<br>priority</th></tr>
+    <tr align=left><td>root</td>    <td>Proot</td> <td>Proot</td></tr>
+    <tr align=left><td>X </td>      <td>Px</td>    <td>Px</td></tr>
+    <tr align=left><td>X.Y </td>    <td>none</td>  <td>Px</td></tr>
+    <tr align=left><td>X.Y.Z</td>   <td>none</td>  <td>Px</td></tr>
+    <caption align=bottom>Example 4</caption>
+</table></td></tr>
+</table>
+
+<p>Logging requests are made by invoking one of the printing methods
+of a category instance. These printing methods are 
+
+<code>
+<a href="../javadoc/org/log4j/Category.html#debug(java.lang.Object)">debug</a>
+</code>,
+
+<code>
+<a href="../javadoc/org/log4j/Category.html#info(java.lang.Object)">info</a>
+</code>, 
+
+<code>
+<a href="../javadoc/org/log4j/Category.html#warn(java.lang.Object)">warn</a>
+</code>, 
+
+<code>
+<a href="../javadoc/org/log4j/Category.html#error(java.lang.Object)">error</a>
+</code>, 
+
+<code>
+<a href="../javadoc/org/log4j/Category.html#fatal(java.lang.Object)">fatal</a>
+</code>, 
+and
+
+<code>
+<a href="../javadoc/org/log4j/Category.html#log(org.log4j.Priority, java.lang.Object)">log</a></code>. 
+
+
+By definition, the printing method determines the
+priority of a logging request. For example, if <code>c</code> is a
+category instance, then the statement <code>c.info("..")</code> is a
+logging request of priority INFO.
+
+<p>A logging request is said to be <em>enabled</em> if its priority is
+higher than or equal to the priority of its category. Otherwise, the
+request is said to be <em>disabled</em>. A category without an
+assigned priority will inherit one from the hierarchy. This rule is
+summarized below.
+
+
+<p>
+<a name="selectionRule"><table bgcolor="#EEEE99">
+  <tr>
+  <td>
+      <dl>
+	<dt><b>Basic Selection Rule</b>
+
+	<dd><p>A log statement of priority <i>p</i> in a category with
+	inherited priority <i>q</i>, is enabled if <i> p &gt;= q</i>.
+      </dl>
+</table>
+
+
+<p>Here is an example of this rule.
+
+<pre>
+   // get a category instance named "com.foo"
+   Category  cat = Category.getInstance(<strong>"com.foo"</strong>);
+
+   // Now set its priority.
+   <strong>cat</strong>.setPriority(<font color="0000AA"><strong>Priority.INFO</strong></font>);
+
+   Category barcat = Category.getInstance(<strong>"com.foo.Bar"</strong>);
+ 
+   // This request is enabled, because <font color="00AA00"><strong>WARN</strong></font> &gt;= <font color="0000AA"><strong>INFO</strong></font>.
+   cat.<font color="00AA00"><strong>warn</strong></font>("Low fuel level.");
+  
+   // This request is disabled, because <font color="00AA00"><strong>DEBUG</strong></font> &lt; <font color="0000AA"><strong>INFO</strong></font>.
+   cat.<font color="00AA00"><strong>debug</strong></font>("Starting search for nearest gas station."); 
+ 
+   // The category instance barcat, named "com.foo.Bar",
+   // will inherit its priority from the category named 
+   // "com.foo" Thus, the following request is enabled 
+   // because <font color="00AA00"><strong>INFO</strong></font> &gt;= <font color="0000AA"><strong>INFO</strong></font>.  
+   barcat.<font color="00AA00"><strong>info</strong></font>("Located nearest gas station."); 
+
+   // This request is disabled, because <font color="00AA00"><strong>DEBUG</strong></font> &lt; <font color="0000AA"><strong>INFO</strong></font>.
+   barcat.<font color="00AA00"><strong>debug</strong></font>("Exiting gas station search"); 
+</pre>
+  
+<p>Calling the <code>getInstance</code> method with the same name will
+always return a reference to the exact same category object. Thus, it
+is possible to configure a category and then to retrieve the same
+instance somewhere else in the code without passing around
+references. Categories can be created and configured in any order. In
+particular, a parent category will find and link to its children even
+if it is instantiated after them. 
+
+<p>Configuration of the log4j environment is typically done at
+application initialization. The preferred way is by reading a
+configuration file. This approach will be discussed shortly.
+
+<p>Log4j makes it easy to name categories by <em>software
+component</em>.  This can be accomplished by statically instantiating
+a category in each class, with the category name equal to the fully
+qualified name of the class. This is a useful and straightforward
+method of defining categories. As the log output bears the name of the
+generating category, this naming strategy makes it easy to identify
+the origin of a log message.  However, this is only one possible,
+albeit common, strategy for naming categories. Log4j does not restrict
+the possible set of categories. The developer is free to name the
+categories as desired.
+
+<p>Nevertheless, naming categories after the class where they are
+defined seems to be the best strategy known so far.
+
+<h2>Appenders and Layouts</h2>
+
+<p>The ability to selectively enable or disable logging requests based
+on their category is only part of the picture. Log4j allows logging
+requests to print to multiple destinations. In log4j speak, an output
+destination is called an <em>appender</em>. Currently, appenders exist
+for the console, <a
+href="../javadoc/org/log4j/FileAppender.html">files</a>, GUI
+components, <a
+href="../javadoc/org/log4j/net/SocketAppender.html">remote socket</a>
+servers, <a href="../javadoc/org/log4j/nt/NTEventLogAppender.html"> NT
+Event Loggers</a>, and remote UNIX <a
+href="../javadoc/org/log4j/net/SyslogAppender.html">Syslog</a>
+daemons. It is also possible to log <a href="../javadoc/org/log4j/AsyncAppender.html">asyncronously</a>.
+ 
+<p>A category may refer to multiple appenders. The <a
+href="../javadoc/org/log4j/Category.html#addAppender(org.log4j.Appender)">addAppender</a>
+method adds an appender to a given category.
+
+Each enabled logging
+request for a given category will be forwarded to all the appenders in
+that category as well as the appenders higher in the hierarchy. In
+other words, appenders are inherited additively from the category
+hierarchy. For example, if a console appender is added to the root
+category, then all enabled logging requests will at least print on the
+console. If in addition a file appender is added to a category, say
+<em>C</em>, then enabled logging requests for <em>C</em> and
+<em>C</em>'s children will print on a file <em>and</em> on the
+console. It is possible to override this default behavior so that
+appender accumulation is no longer additive by <a
+href="../javadoc/org/log4j/Category.html#setAdditivity(boolean)">setting
+the additivity flag</a> to <code>false</code>.
+
+<p>The rules govening appender addivity are sumarized below.
+
+<p>
+<a name="additivity"><table bgcolor="#EEEE99">
+  <tr>
+  <td>
+      <dl>
+	<dt><b>Appender Additivity</b>
+
+	<dd><p>The output of a log statement of
+	category <i>C</i> will go to all the appenders in <i>C</i> and
+	its parents. This is the meaning of the term "appender additivity".
+
+	<p>However, if a parent category of <i>C</i>, say <i>P</i>,
+	has the additivity flag set to <code>false</code>, then
+	<i>C</i>'s output will be directed to all the appenders in
+	<i>C</i> and it's parents upto and including <i>P</i> but not
+	the appenders in any of the parents of <i>P</i>.
+
+	<p>Categories have their additivity flag set to
+	<code>true</code> by default.
+      </dl>
+</table>
+
+
+<p>The table below shows an example:
+
+<p><table align=center border=3 cellpadding=10>
+  <tr rowspan="2">
+  <th>Category<br>Name <th>Added<br>Appenders <th>Additivity<br>Flag <th>Output Targets <th>Comment
+
+<tr><td>root    <td>A1         <td>not applicable <td>A1
+    <td>The root category is anonymous but can be accessed with the 
+        Category.getRoot() method.
+
+<tr><td>x       <td>A-x1, A-x2 <td>true <td>A1, A-x1, A-x2
+    <td>Appenders in root are added to appenders in "x".    
+
+<tr><td>x.y     <td>none       <td>true <td>A1, A-x1, A-x2
+    <td>Appenders of "x" and root.
+
+<tr><td>x.y.z   <td>A-xyz1     <td>true <td>A1, A-x1, A-x2, A-xyz1	
+    <td>Appenders in "x.y.z", "x" and root.
+
+<tr><td>security        <td>A-sec	   <td><font color="blue">false</font> 
+                                           <td>A-sec
+
+    <td>No appender accumulation as the additivity flag is set to
+        <code>false</code>.  flag.
+
+<tr><td>security.access <td>none <td> true <td> A-sec <td>Only
+    appenders of "security" as the additivity flag in "security" is
+    set to <code>false</code>.
+
+</table>
+
+
+<p>More often than not, users wish to customize not only the output
+destination but also the output format. This is accomplished by
+associating a <em>layout</em> with an appender. The layout is
+responsible for formatting the logging request according to the user's
+wishes, whereas an appender takes care of sending the formatted output
+to its destination. The <code>PatternLayout</code>, part of the
+standard log4j distribution, lets the user specify the output format
+according to conversion patterns similar to the C language
+<code>printf</code> function.
+
+<p>For example, the PatternLayout with the conversion pattern "%r [%t]
+%-5p %c - %m%n" will output something akin to:
+
+<pre>
+176 [main] INFO  org.foo.Bar - Located nearest gas station.
+</pre>
+
+<p>The first field is the number of milliseconds elapsed since the
+start of the program.  The second field is the thread making the log
+request.  The third field is the priority of the log statement. The
+fourth field is the name of the category associated with the log
+request. The text after the '-' is the message of the statement.
+
+<p>Just as importantly, log4j will render the content of the log
+message according to user specified criteria. For example, if you
+frequently need to log <code>Oranges</code>, an object type used in
+your current project, then you can register an
+<code>OrangeRenderer</code> that will be invoked whenever an orange
+needs to be logged. 
+
+<p>Object rendering follows the class hierarchy. For example, assuming
+oranges are fruits, if you register an <code>FruitRenderer</code>, all
+fruits including oranges will be rendered by the
+<code>FruitRenderer</code>, unless of course you registered an orange
+specific <code>OrangeRenderer</code>.
+
+<p>Object renderers have to implement the
+<a href="../javadoc/org/log4j/or/ObjectRenderer.html">ObjectRenderer</a>
+interface.
+
+
+<h2>Configuration</h2>
+
+<p>Inserting log requests into the application code requires a fair
+amount of planning and effort. Observation shows that approximately 4
+percent of code is dedicated to logging. Consequently, even moderately
+sized applications will have thousands of logging statements embedded
+within their code.  Given their number, it becomes imperative to
+manage these log statements without the need to modify them manually.
+
+<p>The log4j environment is fully configurable programatically.
+However, it is far more flexible to configure log4j using
+configuration files.  Currently, configuration files can be written in
+XML or in Java properties (key=value) format.
+
+<p>Let us give a taste of how this is done with the help of an
+imaginary application <code>MyApp</code> that uses log4j.
+
+<pre>
+ import com.foo.Bar;
+
+ // Import log4j classes.
+ <b>import org.log4j.Category;
+ import org.log4j.BasicConfigurator;</b>
+ 
+ public class MyApp {
+
+   // Define a static category variable so that it references the
+   // Category instance named "MyApp".
+   <strong>static</strong> Category cat = <strong>Category.getInstance(MyApp.class.getName());</strong>
+
+   public static void main(String[] args) {
+
+     // Set up a simple configuration that logs on the console.
+     <strong>BasicConfigurator.configure();</strong>
+
+     cat.info("Entering application.");
+     Bar bar = new Bar();
+     bar.doIt();
+     cat.info("Exiting application.");    
+   }
+ }
+</pre>
+
+<p><code>MyApp</code> begins by importing log4j related classes.  It
+then defines a static category variable with the name
+<code>MyApp</code> which happens to be the fully qualified name of the
+class.
+
+<p><code>MyApp</code> uses the <code>Bar</code> class defined in the
+package <code>com.foo</code>.
+
+<pre>
+ <b>package com.foo;</b>
+ import org.log4j.Category;
+ 
+ public class Bar {
+   <strong>static</strong> Category cat = <strong>Category.getInstance(Bar.class.getName());</strong>
+  
+   public void doIt() {
+     cat.debug("Did it again!");    
+   }
+ }
+</pre>
+
+
+<p>The invocation of the <a
+href="http://log4j.org/log4j/javadoc/org/log4j/BasicConfigurator.html#configure()">BasicConfigurator.configure</a>
+method creates a rather simple log4j setup. This method is hardwired
+to add to the root category a FileAppender printing on the
+console. The output will be formatted using a PatternLayout set to the
+pattern "%-4r [%t] %-5p %c %x - %m%n".
+
+<p>Note that by default, the root category is assigned to
+<code>Priority.DEBUG</code>. 
+
+<p>The output of MyApp is:
+<pre>
+0    [main] INFO  MyApp  - Entering application.
+36   [main] DEBUG com.foo.Bar  - Did it again!
+51   [main] INFO  MyApp  - Exiting application.
+</pre>
+
+<p>The figure below depicts the object diagram of <code>MyApp</code>
+after just having called the <code>BasicConfigurator.configure</code>
+method.
+
+<p>
+<center>
+<img src="od.gif" align="center" >
+</center>
+
+<p>The <code>MyApp</code> class configures log4j by invoking
+<code>BasicConfigurator.configure</code> method.  Other classes only
+need to import the <code>org.log4j.Category</code> class, retrieve the
+categories they wish to use, and log away.
+
+<p>The previous example always outputs the same log information.
+Fortunately, it is easy to modify <code>MyApp</code> so that the log
+output can be controlled at run-time. Here is a slightly modified
+version.  
+
+<pre>
+ import com.foo.Bar;
+
+ import org.log4j.Category;
+ <b>import org.log4j.PropertyConfigurator;</b>
+ 
+ public class MyApp {
+
+   static Category cat = Category.getInstance(MyApp.class.getName());
+
+   public static void main(String[] args) {
+
+     
+     // BasicConfigurator replaced with PropertyConfigurator.
+     <strong>PropertyConfigurator.configure(args[0]);</strong>
+
+     cat.info("Entering application.");
+     Bar bar = new Bar();
+     bar.doIt();
+     cat.info("Exiting application.");    
+   }
+ }
+</pre>
+
+This version of <code>MyApp</code> instructs
+<code>PropertyConfigurator</code> to parse a configuration file and
+set up logging accordingly.
+
+<p>Here is a sample configuration file that results in exactly same
+output as the previous <code>BasicConfigurator</code> based example.
+
+<pre>
+# Set root category priority to DEBUG and its only appender to A1.
+log4j.rootCategory=DEBUG, A1
+  
+# A1 is set to be a FileAppender which outputs to System.out. 
+log4j.appender.A1=org.log4j.FileAppender
+log4j.appender.A1.File=System.out
+  
+# A1 uses PatternLayout.
+log4j.appender.A1.layout=org.log4j.PatternLayout
+log4j.appender.A1.layout.ConversionPattern=%-4r [%t] %-5p %c %x - %m%n
+</pre>
+
+<p>Please note that if you copy and paste the examples, then result is
+likely to include trailing spaces on some lines. These trailing spaces
+are not trimmed out but interpreted by the PropertyConfigurator.  By
+the time you read this article the problem should be corrected.
+
+
+<p>Suppose we are no longer interested in seeing the output of any
+component belonging to the <code>com.foo</code> package. The following
+configuration file shows one possible way of achieving this.
+
+<pre>
+log4j.rootCategory=DEBUG, A1
+log4j.appender.A1=org.log4j.FileAppender
+log4j.appender.A1.File=System.out  
+log4j.appender.A1.layout=org.log4j.PatternLayout
+  
+# <strong>Print the date in ISO 8601 format</strong>
+log4j.appender.A1.layout.ConversionPattern=<strong>%d</strong> [%t] %-5p %c - %m%n
+  
+# Print only messages of priority WARN or above in the package com.foo.
+<strong>log4j.category.com.foo=WARN</strong>
+</pre>
+
+The output of <code>MyApp</code> configured with this file is shown below.
+
+<pre>
+<strong>2000-09-07 14:07:41,508</strong> [main] INFO  MyApp - Entering application.
+<strong>2000-09-07 14:07:41,529</strong> [main] INFO  MyApp - Exiting application.
+</pre>
+
+<p>As the category <code>com.foo.Bar</code> does not have an assigned
+priority, it inherits its priority from <code>com.foo</code>, which
+was set to WARN in the configuration file. The log statement from the
+<code>Bar.doIt</code> method has the priority DEBUG, lower than the
+category priority WARN. Consequently, <code>doIt</code>'s log request
+is suppressed.
+
+<p>Here is another configuration file that uses multiple appenders.
+
+<pre>
+log4j.rootCategory=debug, <strong>stdout, R</strong>
+
+log4j.appender.<strong>stdout</strong>=org.log4j.FileAppender
+log4j.appender.stdout.File=System.out
+log4j.appender.stdout.layout=org.log4j.PatternLayout
+
+# Pattern to output the caller's file name and line number.
+log4j.appender.stdout.layout.ConversionPattern=%5p [%t] <strong>(%F:%L)</strong> - %m%n
+
+log4j.appender.<strong>R</strong>=org.log4j.RollingFileAppender
+log4j.appender.R.File=example.log
+
+log4j.appender.R.MaxFileSize=<strong>100KB</strong>
+# Keep one backup file
+log4j.appender.R.MaxBackupIndex=1
+
+log4j.appender.R.layout=org.log4j.PatternLayout
+log4j.appender.R.layout.ConversionPattern=%p %t %c - %m%n
+</pre>
+
+Calling the enhanced MyApp with the this configuration file will
+output the following on the console.
+
+<pre>
+ INFO [main] <strong>(MyApp2.java:12)</strong> - Entering application.
+DEBUG [main] (Bar.java:8) - Doing it again!
+ INFO [main] (MyApp2.java:15) - Exiting application.
+</pre>
+
+<p>In addition, as the root category has been allocated a second
+appender, output will also be directed to the <code>example.log</code>
+file. This file will be rolled over when it reaches 100KB. When
+roll-over occurs, the old version of <code>example.log</code> is
+automatically moved to <code>example.log.1</code>.
+
+<p>Note that to obtain these different logging behaviors we did not
+need to recompile code. We could just as easily have logged to a UNIX
+Syslog daemon, redirected all <code>com.foo</code> output to an NT
+Event logger, or forwarded logging events to a remote log4j server,
+which would log according to local server policy, for example by
+forwarding the log event to a second log4j server.
+
+<h2> Nested Diagnostic Contexts</h2>
+
+<p>Most real-world systems have to deal with multiple clients
+simultaneously. In a typical multi-threaded implementation of such a
+system, different threads will handle different clients. Logging is
+especially well suited to trace and debug complex distributed
+applications. A common approach to differentiate the logging output of
+one client from another is to instantiate a new separate category for
+each client. This promotes the proliferation of categories and
+increases the management overhead of logging.
+
+<p>A lighter technique is to uniquely stamp each log request initiated
+from the same client interaction. Neil Harrison described this method
+in the book "Patterns for Logging Diagnostic Messages," in <em>Pattern
+Languages of Program Design 3</em>, edited by R. Martin, D.  Riehle,
+and F. Buschmann (Addison-Wesley, 1997).
+
+
+
+<p> To uniquely stamp each request, the
+user pushes contextual information into the NDC, the abbreviation of
+<em>Nested Diagnostic Context</em>. The NDC class is shown below.
+
+<pre>
+  public class NDC { 
+    // Used when printing the diagnostic 
+    public <strong>static</strong> String get(); 
+ 
+    // Remove the top of the context from the NDC.
+    public <strong>static</strong> String pop(); 
+ 
+    // Add diagnostic context for the current thread.
+    public <strong>static</strong> void push(String message); 
+ 
+    // Remove the diagnostic context for this thread.                      
+    public <strong>static</strong> void remove(); 
+  }                  
+</pre>
+
+<p>The NDC is managed per thread as a <em>stack</em> of contextual
+information. Note that all methods of the <code>org.log4j.NDC</code>
+class are static. Assuming that NDC printing is turned on, every time
+a log request is made, the appropriate log4j component will include
+the <em>entire</em> NDC stack for the current thread in the log
+output. This is done without the intervention of the user, who is
+responsible only for placing the correct information in the NDC by
+using the <code>push</code> and <code>pop</code> methods at a few
+well-defined points in the code.  In contrast, the per-client category
+approach commands extensive changes in the code.
+
+<p>To illustrate this point, let us take the example of a servlet
+delivering content to numerous clients. The servlet can build the NDC
+at the very beginning of the request before executing other code. The
+contextual information can be the client's host name and other
+information inherent to the request, typically information contained
+in cookies. Hence, even if the servlet is serving multiple clients
+simultaneously, the logs initiated by the same code, i.e. belonging to
+the same category, can still be distinguished because each client
+request will have a different NDC stack. Contrast this with the
+complexity of passing a freshly instantiated category to all code
+exercised during the client's request.
+
+<p>Nevertheless, some sophisticated applications, such as virtual
+hosting web servers, must log differently depending on the virtual
+host context and also depending on the software component issuing the
+request. Recent log4j releases support multiple hierarchy trees. This
+enhancement allows each virtual host to possess its own copy of the
+category hierarchy.
+
+
+<h2>Performance</h2>
+
+<p>One of the often-cited arguments against logging is its
+computational cost. This is a legitimate concern as even moderately
+sized applications can generate thousands of log requests.  Much
+effort was spent measuring and tweaking logging performance. Log4j
+claims to be fast and flexible: speed first, flexibility second.
+
+<p>The user should be aware of the following performance issues.
+
+<ol>
+  <li>Logging performance when logging is turned off.
+
+   <p>When logging is <a
+   href="../javadoc/org/log4j/BasicConfigurator.html#disableAll()">turned
+   off entirely</a> or just for a <a
+   href="../javadoc/org/log4j/BasicConfigurator.html#disable(org.log4j.Priority)">set
+   of priorities</a>, the cost of a log request consists of a method
+   invocation plus an integer comparison.  On a 233 MHz Pentium II
+   machine this cost is typically in the 5 to 50 nano-second range.
+
+   <p>However, The method invocation involves the "hidden" cost of
+   parameter construction. 
+
+   <p>For example, for some category <code>cat</code>, writing,
+    <pre>
+     cat.debug("Entry number: " + i + " is " + String.valueOf(entry[i]));
+    </pre>
+
+      incurs the cost of constructing the message parameter, i.e.
+      converting both integer <code>i</code> and <code>entry[i]</code>
+      to a String, and concatenating intermediate strings,
+      regardless of whether the message will be logged or not.
+
+      This cost of parameter construction can be quite high and it
+      depends on the size of the parameters involved.
+
+
+      <p>To avoid the parameter construction cost write:
+    <pre>   
+      if(cat.isDebugEnabled() {
+        cat.debug("Entry number: " + i + " is " + String.valueOf(entry[i]));
+      }
+   </pre>
+      
+      <p>This will not incur the cost of parameter
+      construction if debugging is disabled.  On the other hand, if
+      the category is debug-enabled, it will incur twice the cost of
+      evaluating whether the category is enabled or not: once
+      in <code>debugEnabled</code> and once in
+      <code>debug</code>. This is an insignificant
+      overhead because evaluating a category takes about 1%
+      of the time it takes to actually log.
+      
+   <p>In log4j, logging requests are made to instances of the Category
+   class. Category is a class and not an interface. This measurably
+   reduces the cost of method invocation at the cost of some
+   flexibility.
+
+
+   <p>Certain users resort to pre-processing or compile-time
+   techinques to compile out all log statements. This leads to perfect
+   performance efficiency with respect to logging. However, since the
+   resulting application binary does not contain any log statements,
+   logging cannot be turned on for that binary. In my opinion this is
+   a disproportionate price to pay in exchange for a small performance
+   gain.
+
+
+   <p><li> The performance of deciding whether to log or not to log when
+       logging is turned on.
+
+   <p>This is essentially the performance of walking the category
+   hierarchy. When logging is turned on, log4j still needs to compare
+       the priority of the log request with the priority of the request
+   category. However, categories may not have an assigned
+   priority; they can inherit them from the category hierarchy. Thus,
+   before inheriting a priority, the category may need to search its
+   ancestors.
+
+   <p>There has been a serious effort to make this hierarchy walk to
+be as fast as possible. For example, child categories link only to
+their existing ancestors. In the <code>BasicConfigurator</code>
+example shown earlier, the category named <code>com.foo.Bar</code> is
+linked directly to the root category, thereby circumventing the
+nonexistent <code>com</code> or <code>com.foo</code> categories. This
+significantly improves the speed of the walk, especially in "sparse"
+hierarchies.
+
+       <p>The typical cost of walking the hierarchy is in the range of
+       5 to 15 microseconds, again on a 233MHz Pentium II machine.
+
+   <p><li>Actual logging.
+
+   <p>This is the cost of formatting the log output and sending it to
+   its target destination. Here again, a serious effort was made to
+   make layouts (formatters) perform as quickly as possible. The same
+   is true for appenders. The typical cost of actually logging is
+   about 100 to 300 microseconds.
+
+   See <a
+   href="../javadoc/org/log4j/performance/Logging.html">org.log4j.performance.Logging</a>
+   for actual figures.
+
+</ol>
+
+<p>Although log4j has a many features, its first design goal was
+speed.  Some log4j components have been rewritten many times to
+improve performance.  Nevertheless, contributors frequently come up
+with new optimizations. You should be pleased to know that when
+configured with the <a
+href="../javadoc/org/log4j/SimpleLayout.html">SimpleLayout</a>
+performace tests have shown log4j to log as quickly as
+<code>System.out.println</code>.
+
+
+<h2>Upcoming logging API from Sun</h2>
+
+<p>Sun has begun a community process, JSR47, in order to define a
+logging API for java. This API will <em>require</em> JDK version 1.4.
+The <a
+href="http://java.sun.com/aboutJava/communityprocess/review/jsr047/index.html">JSR47
+specification</a> has recently became ready for public review.
+
+<p>The JSR47 API and log4j are quite similar at the architectural
+level. JSR47 API will support a hierarchical name space, one of the
+central features of log4j.  On the other hand, log4j has many useful
+features that are missing in JSR47. Given the momentum behind log4j,
+in my partisan opinion, JSR47 is likely to be obsolete by the time it
+is launced. Log4j is written by the people who use it daily, not by a
+committee.
+
+<h2>Conclusions</h2>
+
+<p>Log4j is a popular logging package written in Java.  One of its
+distinctive features is the notion of inheritance in categories. Using
+a category hierarchy it is possible to control which log statements
+are output at arbitrary granularity. This helps reduce the volume of
+logged output and minimize the cost of logging.
+
+<p>One of the advantages of the log4j API is its manageability. Once
+the log statements have been inserted into the code, they can be
+controlled with configuration files. They can be selectively enabled
+or disabled, and sent to different and multiple output targets in
+user-chosen formats. The log4j package is designed so that log
+statements can remain in shipped code without incurring a heavy
+performance cost.
+
+<h2>Acknowledgements</h2>
+
+Many thanks to N. Asokan for reviewing the article. He is also one of
+the originators of the category concept. I am indebted to Nelson Minar
+of <a href="http://www.popularpower.com">PopularPower</a> for
+encouraging me to write this article. He has also made many useful
+suggestions and corrections to this article.
+
+<p>Log4j is the result of a collective effort. My special thanks go to
+all the authors who have contributed to the project.  Without
+exception, the best features in the package have all originated in the
+user community.  
+
+</body> </html>

@@ -1,0 +1,15 @@
+
+# The usual stuff. Note that A1 is configured in root not in "some.cat"
+log4j.rootCategory=DEBUG, A1
+log4j.appender.A1=org.log4j.FileAppender
+log4j.appender.A1.File=System.out
+log4j.appender.A1.layout=org.log4j.PatternLayout
+log4j.appender.A1.layout.ConversionPattern=%c - %m%n
+
+
+# Set the priority of "some.cat". This will have the side effect of
+# instantiating the category "some.cat" which will later cause a
+# ClassCastException.
+
+log4j.category.some.cat=DEBUG
+
