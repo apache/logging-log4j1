@@ -1,29 +1,27 @@
 TODO
 
+- Mapped Diagnostic Contexts
+- FailOverAppender
+- Complete multiple hierachy support, give an a Sink example
+- Graceful congiguration merging
+
 - Integrate tons of GUI code.
-
-- JMSAppender.
-
 - JDBCAppender.
-
 - SAX configurator?
-
 - Time based rolling.
-
 - SSL logging.
-
-- Authenticated logging (research topic).
+- Authenticated logging.
 
 
 ONGOING TASKS
 
 - Better test suite.
-
 - Better documentation.
 
 	
 DONE
 
+- JMSAppender.
 - SMTPAppender.
 - Automatic configuration file reloading.
 - AsyncAppender.

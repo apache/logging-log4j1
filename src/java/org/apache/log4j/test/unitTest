@@ -1,3 +1,4 @@
+#!/bin/bash
 
 java junit.textui.TestRunner org.apache.log4j.test.UnitTestCategory
   

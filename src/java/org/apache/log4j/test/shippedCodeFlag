@@ -1,4 +1,4 @@
-
+#!/bin/bash
 	
 # Read the .functions file
 . .functions

@@ -67,7 +67,9 @@ public class SocketNode implements Runnable {
       while(true) {	
 	event = (LoggingEvent) ois.readObject();	
 	remoteCategory = Category.getInstance(event.categoryName);
-	remoteCategory.callAppenders(event);	
+	if(event.priority.isGreaterOrEqual(remoteCategory.getChainedPriority())) {
+	  remoteCategory.callAppenders(event);	
+	}
       }
     }
     catch(java.io.EOFException e) {
