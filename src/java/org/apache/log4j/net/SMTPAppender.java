@@ -255,7 +255,7 @@ public class SMTPAppender extends AppenderSkeleton {
       msg.setSentDate(new Date());
       Transport.send(msg);
     } catch (Exception e) {
-      getLogger().error("Error occured while sending e-mail notification.", e);
+      errorHandler.error("Error occured while sending e-mail notification.", e);
     }
   }
 

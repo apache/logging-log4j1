@@ -23,6 +23,8 @@
 
  - Fixed Bugzilla 18076: setting of firstTime in OnlyOnceErrorHandler.
 
+ - Fixed Bugzilla 13900: SMTPAppender doesn't use errorHandler when sending error occurs.
+
   November 25, 2004
 
  - Release of version 1.3alpha-3
