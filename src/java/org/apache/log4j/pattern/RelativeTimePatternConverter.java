@@ -29,15 +29,25 @@ public class RelativeTimePatternConverter extends PatternConverter {
 	// which is unique within an appender. We further assume that callas to the 
 	// appender method are serialized (per appender).
   StringBuffer buf;
-
+  long lastTimestamp = 0;
+  
+  
   public RelativeTimePatternConverter() {
     super();
     this.buf = new StringBuffer(9);
   }
 
   public StringBuffer convert(LoggingEvent event) {
-    buf.setLength(0);
-    buf.append(Long.toString(event.getTimeStamp() - LoggingEvent.getStartTime()));
+    long timestamp = event.getTimeStamp();
+    // if called multiple times within the same milliseconds
+    // return old value
+    if(timestamp == lastTimestamp) {
+      return buf;
+    } else {
+      buf.setLength(0);
+      lastTimestamp = timestamp;
+      buf.append(Long.toString(timestamp - LoggingEvent.getStartTime()));
+    }
     return buf;
   }
   
