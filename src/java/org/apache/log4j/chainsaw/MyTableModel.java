@@ -16,7 +16,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import javax.swing.table.AbstractTableModel;
 import org.apache.log4j.Priority;
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 /**
  * Represents a list of <code>EventDetails</code> objects that are sorted on
@@ -29,8 +29,7 @@ class MyTableModel
 {
 
     /** used to log messages **/
-    private static final Category LOG =
-        Category.getInstance(MyTableModel.class);
+    private static final Logger LOG = Logger.getLogger(MyTableModel.class);
 
     /** use the compare logging events **/
     private static final Comparator MY_COMP = new Comparator()

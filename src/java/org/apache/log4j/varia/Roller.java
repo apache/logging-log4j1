@@ -8,7 +8,7 @@
 
 package org.apache.log4j.varia;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import org.apache.log4j.BasicConfigurator;
 
 import java.io.IOException;
@@ -29,7 +29,7 @@ import java.net.Socket;
    @since version 0.9.0 */
 public class Roller {
 
-  static Category cat = Category.getInstance(Roller.class.getName());
+  static Logger cat = Logger.getLogger(Roller.class);
   
 
   static String host;

@@ -67,16 +67,16 @@ public class PropertyPrinter implements PropertyGetter.PropertyCallback {
    */
   public
   void print(PrintWriter out) {
-    printOptions(out, Category.getRoot());
+    printOptions(out, Logger.getRootLogger());
     
     Enumeration cats = LogManager.getCurrentLoggers();
     while (cats.hasMoreElements()) {
-      printOptions(out, (Category) cats.nextElement());
+      printOptions(out, (Logger) cats.nextElement());
     }
   }
   
   protected
-  void printOptions(PrintWriter out, Category cat) {
+  void printOptions(PrintWriter out, Logger cat) {
     Enumeration appenders = cat.getAllAppenders();
     Level prio = cat.getLevel();
     String appenderString = (prio == null ? "" : prio.toString());
@@ -100,9 +100,9 @@ public class PropertyPrinter implements PropertyGetter.PropertyCallback {
       }
       appenderString += ", " + name;
     }
-    String catKey = (cat == Category.getRoot())
-        ? "log4j.rootCategory"
-        : "log4j.category." + cat.getName();
+    String catKey = (cat == Logger.getRootLogger())
+        ? "log4j.rootLogger"
+        : "log4j.logger." + cat.getName();
     if (appenderString != "") {
       out.println(catKey + "=" + appenderString);
     }

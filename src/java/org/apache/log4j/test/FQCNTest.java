@@ -18,7 +18,7 @@ import org.apache.log4j.spi.*;
 */
 public class FQCNTest {
 
-  //static Logger cat = Logger.getLoggerInstance("dddd");
+  //static Logger cat = Logger.getLogger("dddd");
   
   public 
   static 
@@ -42,7 +42,7 @@ public class FQCNTest {
     Layout layout = new PatternLayout("%p %c (%C{2}#%M) - %m%n");
     FileAppender appender = new FileAppender(layout, file, false);
     appender.setLayout(layout);
-    Category root = Category.getRoot();
+    Logger root = Logger.getRootLogger();
     root.addAppender(appender);
   }
 

@@ -8,8 +8,8 @@ import java.util.Random;
 
 public class MDCStress extends Thread {
 
-  static Category root = Category.getRoot();  
-  static Category log = Category.getInstance(MDCStress.class);
+  static Logger root = Logger.getRootLogger();  
+  static Logger log = Logger.getLogger(MDCStress.class);
 
   static Random random = new Random(17);
 

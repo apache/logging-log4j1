@@ -10,7 +10,7 @@ package org.apache.log4j.net;
 import java.net.Socket;
 import java.net.ServerSocket;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.xml.DOMConfigurator;
@@ -33,7 +33,7 @@ import org.apache.log4j.xml.DOMConfigurator;
   * */
 public class SimpleSocketServer  {
 
-  static Category cat = Category.getInstance(SimpleSocketServer.class.getName());
+  static Logger cat = Logger.getLogger(SimpleSocketServer.class);
 
   static int port;
 

@@ -23,7 +23,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 /**
@@ -41,7 +41,7 @@ public class Main
     public static final String PORT_PROP_NAME = "chainsaw.port";
 
     /** use to log messages **/
-    private static final Category LOG = Category.getInstance(Main.class);
+    private static final Logger LOG = Logger.getLogger(Main.class);
 
 
     /**
@@ -162,7 +162,7 @@ public class Main
     /** initialise log4j **/
     private static void initLog4J() {
         final Properties props = new Properties();
-        props.setProperty("log4j.rootCategory", "DEBUG, A1");
+        props.setProperty("log4j.rootLogger", "DEBUG, A1");
         props.setProperty("log4j.appender.A1",
                           "org.apache.log4j.ConsoleAppender");
         props.setProperty("log4j.appender.A1.layout",

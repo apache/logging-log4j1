@@ -11,7 +11,7 @@ import org.apache.log4j.*;
 
 public class SMTPMin {
 
-  static Category cat = Category.getInstance(SMTPMin.class);
+  static Logger cat = Logger.getLogger(SMTPMin.class);
 
   public
   static
