@@ -9,6 +9,9 @@
 <!-- ================================================================= -->
 <project name="log4j" default="usage" basedir="." >
 
+  
+  <!-- The build.properties file defines the parth to local jar files -->
+  <property file="build.properties"/>               
 
   <!-- Read the system environment variables and stores them in properties, -->
   <!-- prefixed with "env". -->
@@ -60,6 +63,19 @@
   <property name="dist.tmp" value="dist/tmp"/>
 
 
+  <!-- Construct compile classpath -->
+  <path id="compile.classpath">
+    <pathelement location="${build.home}/classes"/>
+    <pathelement location="${junit.jar}"/>
+    <pathelement location="${javamail.jar}"/>
+    <pathelement location="${activation.jar}"/>
+    <pathelement location="${jaxp.jaxp.jar}"/>
+    <pathelement location="${jaxp.parser.jar}"/>
+    <pathelement location="${jms.jar}"/>
+    <pathelement location="${jmx.jar}"/>
+    <pathelement location="${jmx-extra.jar}"/>
+  </path>
+
 
   <!-- ================================================================= -->
   <!-- Default target                                                    -->
@@ -84,7 +100,11 @@
   </target>
 
   <target name="junitCheck">
-    <available classname="junit.framework.TestCase" property="junit-present"/>
+    <available classname="junit.framework.TestCase" property="junit-present">
+      <classpath>
+	<pathelement location="${junit.jar}"/>
+      </classpath>
+    </available>
   </target>
   <target name="junit" depends="junitCheck" if="junit-present">
     <echo message="JUnit is present."/>
@@ -100,8 +120,12 @@
   </target>
 
 
- <target name="jmxCheck">
-    <available classname="javax.management.MBeanInfo" property="jmx-present"/>
+  <target name="jmxCheck">
+    <available classname="javax.management.MBeanInfo" property="jmx-present">
+      <classpath>
+	<pathelement location="${jmx.jar}"/>
+      </classpath>
+    </available>
   </target>
   <target name="jmx" depends="jmxCheck" if="jmx-present">
     <echo message="JMX is present."/>
@@ -109,7 +133,11 @@
 
 
   <target name="jmsCheck">
-    <available classname="javax.jms.Message" property="jms-present"/>
+    <available classname="javax.jms.Message" property="jms-present">
+      <classpath>
+	<pathelement location="${jms.jar}"/>
+      </classpath>
+    </available>
   </target>
   <target name="jms" depends="jmsCheck" if="jms-present">
     <echo message="JMS is present."/>
@@ -123,7 +151,11 @@
   </target>
 
   <target name="javamailCheck">
-    <available classname="javax.mail.Message" property="javamail-present"/>
+    <available classname="javax.mail.Message" property="javamail-present">
+      <classpath>
+	<pathelement location="${javamail.jar}"/>
+      </classpath>
+    </available>
   </target>
   <target name="javamail" depends="javamailCheck" if="javamail-present">
     <echo message="JAVAMAIL is present."/>
@@ -145,7 +177,6 @@
     <javac srcdir="${java.source.dir}"
 	   destdir="${javac.dest}"
 	   includes="${stem}/**/*.java, ${stem}/xml/XMLLayout.java,"
-	   classpath="${classpath}"
 	   excludes="misc/*, **/UnitTest*.java,
                     **/StressCategory.java,
 	            **/doc-files/*,
@@ -157,7 +188,10 @@
                	    ${stem}/jmx/*.java,
                	    ${stem}/or/jms/MessageRenderer.java,
 		    **/pending/**"
-	    debug="on"/>
+	    debug="on">
+      <classpath refid="compile.classpath"/>
+    </javac>
+    
   </target>
 
   <target name="build.examples" depends="build.core">
@@ -179,8 +213,9 @@
   <target name="build.unitTests" depends="init, junit" if="junit-present">
     <javac srcdir="${java.source.dir}"
 	   destdir="${javac.dest}"
-	   includes="**/UnitTest*.java"
-	   classpath="${classpath}"/>
+	   includes="**/UnitTest*.java">
+      <classpath refid="compile.classpath"/>
+    </javac>
   </target>
 
  <target name="build.xml" depends="init, jaxp" if="jaxp-present">
@@ -189,7 +224,9 @@
 	   includes="${stem}/xml/**/*.java"
            excludes="${stem}/xml/examples/doc-files/**.java,
 	             ${stem}/xml/Transform.java"
-	   classpath="${classpath}"/>
+	   classpath="${classpath}">
+      <classpath refid="compile.classpath"/>
+    </javac>
     <copy file="${BSTEM}/xml/log4j.dtd"
 	  tofile="${javac.dest}/${stem}/xml/log4j.dtd" />
   </target>
@@ -198,23 +235,26 @@
                if="javamail-present">
     <javac srcdir="${java.source.dir}"
 	   destdir="${javac.dest}"
-	   includes="${stem}/net/SMTPAppender.java"
-	   classpath="${classpath}"/>
+	   includes="${stem}/net/SMTPAppender.java">
+      <classpath refid="compile.classpath"/>
+    </javac>
   </target>
 
   <target name="build.jms" depends="init, jms, jndi" if="jms-present">
     <javac srcdir="${java.source.dir}"
 	   destdir="${javac.dest}"
-	   includes="${stem}/net/JMS*.java"
-	   classpath="${classpath}"/>
+	   includes="${stem}/net/JMS*.java">
+      <classpath refid="compile.classpath"/>
+    </javac>
   </target>
 
  <target name="build.jmx" depends="init, jmx, jndi" if="jmx-present">
     <javac srcdir="${java.source.dir}"
 	   destdir="${javac.dest}"
 	   includes="${stem}/jmx/*.java"
-           excludes="${stem}/jmx/T.java"
-	   classpath="${classpath}"/>
+           excludes="${stem}/jmx/T.java">
+      <classpath refid="compile.classpath"/>
+    </javac>
   </target>
 
 
@@ -395,20 +435,13 @@
 			  LICENSE.APL,
 			  LICENSE.txt,
 			  dist/lib/*.jar,
-		          org/**,
-			  icons/**,
 			  dist/classes/**,
 			  contribs/**"
                 excludes="make/make.loc,
 		          **/*.bak, **/goEnv.bat,
 		          **/Makefile, **/goEnv.bat,
 	                  docs/pub-support/*,
-	                  src/java/org/apache/log4j/test/**/*,
-	                  src/java/org/apache/log4j/test/serialization/T/*.jar,
-	                  src/java/org/apache/log4j/test/serialization/T/compile,
-	                  src/java/org/apache/log4j/test/serialization/**/*.class,
-	                  src/java/org/apache/log4j/examples/appserver/*,
-			  dist/classes/org/apache/log4j/examples/appserver/*.class,
+	                  src/java/org/apache/log4j/test/**/*,	
 			  **/.#*"/>
     </copy>
 

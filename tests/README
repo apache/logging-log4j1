@@ -7,8 +7,10 @@ Prerequisites
 Jakarta-ant is used to compile and run the tests. Jakarta-ant version
 1.4.0 was used to compile and run the tests.
 
-The test cases are based on Junit version 3.2. You need to place
-junit.jar in your CLASSPATH.
+The test cases are based on Junit version 3.2.  
+
+IMPORTANT: You need to place junit.jar in your CLASSPATH environment
+variable.
 
 The test cases perform some regular expression based filtering. This
 requires jakarta-oro. Version-2.0.5 was used when writing the

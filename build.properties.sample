@@ -1,0 +1,25 @@
+
+# Required to build test cases
+junit.jar=/java/junit3.7/junit.jar
+
+# The jaxp interface and a jaxp parser are required
+# to build the DOMConfigurator
+jaxp.home=/java/jaxp-1.1
+jaxp.jaxp.jar=${jaxp.home}/jaxp.jar
+jaxp.parser.jar=${jaxp.home}/crimson.jar
+
+# JavaMail API Required to build the SMTPAppender
+javamail.jar=/java/javamail-1.2/mail.jar
+activation.jar=/java/jaf-1.0.1/activation.jar
+
+
+# JMS interfaces are required to be on the classpath
+# in order to build the JMSAppender.
+jms.jar=/java/JMQ1.1/lib/jms.jar
+
+# Required to build the org.apace.log4j.jmx package.
+jmx.jar=/java/jmx/lib/jmxri.jar
+jmx-extra.jar=/java/jmx/lib/jmxtools.jar
+
+
+
