@@ -8,15 +8,15 @@ log4j.appender.NULL=org.apache.log4j.performance.NullAppender
 log4j.appender.NULL.layout=org.apache.log4j.SimpleLayout
 -->
 
-<log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
 
-	<appender name="NULL" class="org.apache.log4j.performance.NullAppender">
-           <layout class="org.apache.log4j.SimpleLayout"/>
-	</appender>
+  <appender name="NULL" class="org.apache.log4j.performance.NullAppender">
+    <layout class="org.apache.log4j.SimpleLayout"/>
+  </appender>
 	
-	<root>
-	   <priority value ="debug" />
-   	   <appender-ref ref="NULL" />
-	</root>
+  <root>
+    <priority value ="debug" />
+    <appender-ref ref="NULL" />
+  </root>
 	
 </log4j:configuration>
