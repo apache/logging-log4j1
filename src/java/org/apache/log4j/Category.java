@@ -143,7 +143,7 @@ public class Category implements AppenderAttachable {
       aai = new AppenderAttachableImpl();
     }
     aai.addAppender(newAppender);
-    repository.fireAddAppenderEvent(this, newAppender);
+    repository.fireAddAppenderEvent((Logger)this, newAppender);
   }
 
   /**

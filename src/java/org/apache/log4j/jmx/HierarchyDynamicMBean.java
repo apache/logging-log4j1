@@ -11,7 +11,7 @@ package org.apache.log4j.jmx;
 import java.lang.reflect.Constructor;
 import org.apache.log4j.*;
 
-import org.apache.log4j.spi.HierarchyEventListener;
+import org.apache.log4j.spi.LoggerEventListener;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.helpers.OptionConverter;
 
@@ -40,7 +40,7 @@ import javax.management.NotificationFilterSupport;
 import javax.management.ListenerNotFoundException;
 
 public class HierarchyDynamicMBean extends AbstractDynamicMBean
-                                   implements HierarchyEventListener,
+                                   implements LoggerEventListener,
                                               NotificationBroadcaster {
 
   static final String ADD_APPENDER = "addAppender.";
@@ -227,8 +227,7 @@ public class HierarchyDynamicMBean extends AbstractDynamicMBean
   }
 
 
-  public
-  void addAppenderEvent(Category logger, Appender appender) {
+  public void appenderAddedEvent(Logger logger, Appender appender) {
     log.debug("addAppenderEvent called: logger="+logger.getName()+
 	      ", appender="+appender.getName());
     Notification n = new Notification(ADD_APPENDER+logger.getName(), this, 0);
@@ -237,16 +236,20 @@ public class HierarchyDynamicMBean extends AbstractDynamicMBean
     nbs.sendNotification(n);
   }
 
- public
-  void removeAppenderEvent(Category cat, Appender appender) {
-    log.debug("removeAppenderCalled: logger="+cat.getName()+
+ public void appenderRemovedEvent(Logger logger, Appender appender) {
+    log.debug("removeAppenderCalled: logger="+logger.getName()+
 	      ", appender="+appender.getName());
+  }
+
+  public void levelChangedEvent(Logger logger) {
+    // FIX ME
+    // FIX ME
   }
 
   public
   void postRegister(java.lang.Boolean registrationDone) {
     log.debug("postRegister is called.");
-    hierarchy.addHierarchyEventListener(this);
+    hierarchy.addLoggerEventListener(this);
     Logger root = hierarchy.getRootLogger();
     addLoggerMBean(root);
   }
