@@ -173,9 +173,15 @@ class Parser {
       ts.next();
       int levelInt = getLevelInt();
       return new Node(Node.COMPARATOR, new LevelComparator(operator, levelInt));
+    case Token.MESSAGE:
+      ts.next();
+      operator = getOperator();
+      ts.next();
+      literal = getLiteral();
+      return new Node(Node.COMPARATOR, new MessageComparator(operator, literal));
     default: throw new IllegalStateException("Unexpected token " +token);
     }
-	}
+ 	}
   
   Operator getOperator() throws ScanError {
     Token token = ts.getCurrent();
