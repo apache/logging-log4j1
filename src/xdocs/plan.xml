@@ -8,8 +8,36 @@
 
   <body>
 
+    <section name="Plan? What plan?">
+
+      <p>The following paragragh was adapted from the <a
+	  href="http://jakarta.apache.org/cactus/todo.html">Cactus
+	  project's roadmap</a>. Permission to quote pending.
+      </p>
+      
+      <p>Our users keep inventing better ways and adding new
+	requirements. The downside is that our todo list keeps
+	growing. The upside is that there is plenty of work to go
+	around. If you are interested in participating, send an email
+	on the log4j-dev@ mailing list stating your interest. You'll
+	be promptly enrolled. We're always looking for help!  Don't be
+	put off if in the "Volunteer" column already has a person
+	listed. Programming is fun, especially if it is done in a
+	group.
+      </p>
+
+      <p>
+	
+      </p>
+
+
+    </section>
+
     <section name="Workplan for log4j 1.3">
 
+      <p>With log4j 1.2 still in beta, the workplan for log4j 1.3 is
+      obviously not final. It is included here to give you an idea of
+      the future.</p>
       
       <table border="1" cellpadding="3" cellspacing="2">
 	
@@ -21,7 +49,7 @@
 	</tr>
 	
 	<tr bgcolor="DDDDDD">
-	  <td>More test cases</td>
+	  <td><b>test cases</b></td>
 	  
 	  <td>
 	    <p>Writing test cases is not the most sexy part of
@@ -30,10 +58,9 @@
 	      as early is possible.  It is strongly recommended to add
 	      a new test case with each new feature or component.</p>
 
-	    <p>
-	      Existing <em>Perl</em> language based test cases are
-	      gradually being migrated to all-Java (junit) based test
-	      cased.  The new tests are placed under the
+	    <p>Existing <em>Perl</em> language based test cases are
+	      gradually being migrated to junit (all-Java)based test
+	      cases.  The new tests are placed under the
 	      <code>tests/</code> directory.  It should be thus
 	      possible for participants in the project to understand
 	      the stucture of our tests and add tests for their
@@ -45,8 +72,90 @@
 	  <td>ongoing effort</td>	  
 	</tr>
 
-	<tr  bgcolor="DDDDDD">
-	  <td>Review of the configure and watch architecture in configurators</td>
+	<tr>
+	  <td>Extensible XML configuration files</td>
+	  
+	  <td>
+	     <p>The DOMConfigurator is complex and not very
+	      flexible. It can only deal with elements that the
+	      developer knew about at compilation time. This has been
+	      an important drawback in the design of several appenders
+	      such as the the SMTPAppender and the
+	      RollingFileAppenders and its variants.  These appenders
+	      need to delegate certain task to sub-components which we
+	      should be able to configure separately.
+	    </p>
+
+	    <p>The support for extensible configuration files will be
+	    based on the code in commons-digester authored by Craig
+	    McClanahan and Scott Sanders. They graciously granted
+	    permission for the modification of their code and its
+	    inclusion in log4j.</p>	      
+	  </td>
+	  <td>Ceki</td>	  
+	  <td>design board</td>
+	</tr>
+
+	<tr>
+	  <td>Log4j Domains</td>
+	  
+	  <td>
+	    <p>This is a very powerful and innovative concept that
+	    extends the notion of hierarchical loggers. It will also
+	    allow dynamic logging with pin-point accuracy. It was
+	    first suggested to me by Scott Stark of <a
+	    href="http://www.jboss.org">JBoss</a> fame.
+	    </p>
+	  </td>
+	  <td>Ceki</td>	  
+	  <td>design board</td>
+	</tr>
+
+	<tr>
+	  <td>Multiple implementation of Logger</td>
+	  
+	  <td>
+	    <p>Based on <code>RepositorySelectors</code> introduced in
+	      log4j 1.2, the user will be able to replace the
+	      <code>Logger</code> implementation. Several
+	      implementations will be provided offering different
+	      properties and functionality although none of the
+	      implementations will add new public methods.
+	    </p>
+	  </td>
+
+
+	  <td>?</td>	  
+	  <td>vaporware</td>
+	</tr>
+
+
+	<tr>
+	  <td>Strategy based rollovers</td>
+	  
+	  <td>
+	    <p>Contrary to our own DailyRollingFileAppender, Avalon's
+	      logkit has a nice and clean implementation for rolling
+	      files. See the
+	      <code>org.apache.log.output.io.rotate</code> package for
+	      exact details.
+	    </p>
+	    
+	    <p>Their implementation is based on strategies which are
+	    sub-components of appender. We will be able to configure
+	    such sub-components with the new XML configuration
+	    scripts.
+	    </p>
+	  </td>
+	  <td>?</td>	  
+	  <td>not started</td>
+	</tr>
+
+
+
+	<tr>
+	  <td>Redesign of configure and watch architecture in
+	  configurators</td>
 	  
 	  <td>This is a very useful feature and the current architecture is not very good.
 	    
@@ -63,19 +172,40 @@
 	  <td>Mark Womack</td>	  
 	  <td>initial implementation</td>
 	</tr>
+
+	<tr>
+	  <td>Performance improvements to LoggingEvent serialization</td>
+	  
+	  <td>
+	    <p>Ole Dalgaard has shown that by implementing the
+	      java.io.Externalizable interface instead of
+	      java.io.Serializable in the LoggingEvent class, the
+	      speed of serialiazation is increased by a factor of 4 or
+	      more.
+	    </p>
+	    
+	    <p>Their implementation is based on strategies which are
+	    sub-components of appender. We will be able to configure
+	    such sub-components with the new XML configuration
+	    scripts.
+	    </p>
+	  </td>
+	  <td>Ole Dalgaard?</td>	  
+	  <td>initial implementation</td>
+	</tr>
+
       </table>
     </section>
       
       
-    
       
     <section name="Workplan for log4j 1.2">
-
-
       <p>
 	Here is workplan for the 1.2 release. As always, there is no
-	scheduled release date. It will be ready when it is
-	ready. Your comments and suggestions are most welcome.
+	scheduled release date. The lack of schedule suprises and
+	disturbs some people. Writing good software, like good
+	cooking, takes time. If we make you wait, it is to create a
+	better and more reliable product.
       </p>
       
       <table border="1" cellpadding="3" cellspacing="2">
@@ -145,7 +275,7 @@
 	  
 	  <td>Ceki</td>
 	  
-	  <td>On going process</td>
+	  <td>ongoing effort</td>
 	  
 	</tr>
 	
