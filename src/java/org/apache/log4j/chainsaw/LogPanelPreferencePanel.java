@@ -172,10 +172,145 @@ public class LogPanelPreferencePanel extends AbstractPreferencePanel {
                 "Show Event Detail Tooltips");
         private final JCheckBox detailPanelVisible = new JCheckBox(
                 "Show Event Detail panel");
-
+        private final JCheckBox scrollToBottom= new JCheckBox(
+        "Scroll to bottom (view tracks with new events)");
+        private JRadioButton rdCustom = new JRadioButton("Custom Format");
+        private JTextField customFormatText = new JTextField("", 10);
+        private final JRadioButton rdISO = new JRadioButton(
+                "<html><b>Fast</b> ISO 8601 format (yyyy-MM-dd HH:mm:ss)</html>");
+        private final JRadioButton rdLevelIcons = new JRadioButton("Icons");
+        private final JRadioButton rdLevelText = new JRadioButton("Text");
+        
         private FormattingPanel() {
             super("Formatting");
             this.initComponents();
+            setupListeners();
+        }
+
+        /**
+         * 
+         */
+        private void setupListeners()
+        {
+          rdCustom.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              customFormatText.setEnabled(rdCustom.isSelected());
+              customFormatText.setText("");
+              customFormatText.grabFocus();
+            }
+          });
+          getModel().addPropertyChangeListener("dateFormatPattern",
+              new PropertyChangeListener() {
+                public void propertyChange(PropertyChangeEvent evt) {
+                  /**
+                   * we need to make sure we are not reacting to the user typing, so only do this
+                   * if the text box is not the same as the model
+                   */
+                  if (getModel().isCustomDateFormat() &&
+                      !customFormatText.getText().equals(evt.getNewValue()
+                          .toString())) {
+                    customFormatText.setText(getModel()
+                        .getDateFormatPattern());
+                    rdCustom.setSelected(true);
+                    customFormatText.setEnabled(true);
+                  } else {
+                    rdCustom.setSelected(false);
+                  }
+                }
+              });          
+          
+          
+          rdISO.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              getModel().setDateFormatPattern("ISO8601");
+              customFormatText.setEnabled(rdCustom.isSelected());
+            }
+          });
+          getModel().addPropertyChangeListener("dateFormatPattern",
+              new PropertyChangeListener() {
+                public void propertyChange(PropertyChangeEvent evt) {
+                  rdISO.setSelected(getModel().isUseISO8601Format());
+                }
+              });        
+
+          
+          customFormatText.getDocument().addDocumentListener(new DocumentListener() {
+            public void textChanged() {
+              getModel().setDateFormatPattern(customFormatText.getText());
+            }
+
+            public void changedUpdate(DocumentEvent e) {
+              textChanged();
+            }
+
+            public void insertUpdate(DocumentEvent e) {
+              textChanged();
+            }
+
+            public void removeUpdate(DocumentEvent e) {
+              textChanged();
+            }
+          });
+          
+          ActionListener levelIconListener = new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              getModel().setLevelIcons(rdLevelIcons.isSelected());
+            }
+          };
+
+          rdLevelIcons.addActionListener(levelIconListener);
+          rdLevelText.addActionListener(levelIconListener);
+
+          getModel().addPropertyChangeListener("levelIcons",
+              new PropertyChangeListener() {
+                public void propertyChange(PropertyChangeEvent evt) {
+                  boolean value = ((Boolean) evt.getNewValue()).booleanValue();
+                  rdLevelIcons.setSelected(value);
+                  rdLevelText.setSelected(!value);
+                }
+              });
+          toolTips.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              getModel().setToolTips(toolTips.isSelected());
+            }
+          });
+          getModel().addPropertyChangeListener("toolTips",
+              new PropertyChangeListener() {
+                public void propertyChange(PropertyChangeEvent evt) {
+                  boolean value = ((Boolean) evt.getNewValue()).booleanValue();
+                  toolTips.setSelected(value);
+                }
+              });
+          
+          detailPanelVisible.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              getModel().setDetailPaneVisible(detailPanelVisible.isSelected());
+            }
+          });
+
+          getModel().addPropertyChangeListener("detailPaneVisible",
+              new PropertyChangeListener() {
+                public void propertyChange(PropertyChangeEvent evt) {
+                  boolean value = ((Boolean) evt.getNewValue()).booleanValue();
+                  detailPanelVisible.setSelected(value);
+                }
+              });
+          
+          scrollToBottom.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              getModel().setScrollToBottom(scrollToBottom.isSelected());
+            }
+          });
+
+          getModel().addPropertyChangeListener("scrollToBottom",
+              new PropertyChangeListener() {
+                public void propertyChange(PropertyChangeEvent evt) {
+                  boolean value = ((Boolean) evt.getNewValue()).booleanValue();
+                  scrollToBottom.setSelected(value);
+                }
+              });
+          
+          
         }
 
         private void initComponents() {
@@ -183,6 +318,7 @@ public class LogPanelPreferencePanel extends AbstractPreferencePanel {
 
             add(toolTips);
             add(detailPanelVisible);
+            add(scrollToBottom);
 
             JPanel dateFormatPanel = new JPanel();
             dateFormatPanel.setBorder(BorderFactory.createTitledBorder(
@@ -191,59 +327,21 @@ public class LogPanelPreferencePanel extends AbstractPreferencePanel {
                     BoxLayout.Y_AXIS));
             dateFormatPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-            final JTextField customFormatText = new JTextField("", 10);
             customFormatText.setPreferredSize(new Dimension(100, 20));
             customFormatText.setMaximumSize(customFormatText.getPreferredSize());
             customFormatText.setMinimumSize(customFormatText.getPreferredSize());
             customFormatText.setEnabled(false);
 
-            final JRadioButton rdCustom = new JRadioButton("Custom Format");
-            rdCustom.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        customFormatText.setEnabled(rdCustom.isSelected());
-                        customFormatText.setText("");
-                        customFormatText.grabFocus();
-                    }
-                });
+
             rdCustom.setSelected(getModel().isCustomDateFormat());
 
-            getModel().addPropertyChangeListener("dateFormatPattern",
-                new PropertyChangeListener() {
-                    public void propertyChange(PropertyChangeEvent evt) {
-                        /**
-                         * we need to make sure we are not reacting to the user typing, so only do this
-                         * if the text box is not the same as the model
-                         */
-                        if (getModel().isCustomDateFormat() &&
-                                !customFormatText.getText().equals(evt.getNewValue()
-                                                                          .toString())) {
-                            customFormatText.setText(getModel()
-                                                         .getDateFormatPattern());
-                            rdCustom.setSelected(true);
-                            customFormatText.setEnabled(true);
-                        } else {
-                            rdCustom.setSelected(false);
-                        }
-                    }
-                });
+
 
             ButtonGroup bgDateFormat = new ButtonGroup();
-            final JRadioButton rdISO = new JRadioButton(
-                    "<html><b>Fast</b> ISO 8601 format (yyyy-MM-dd HH:mm:ss)</html>");
-            rdISO.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        getModel().setDateFormatPattern("ISO8601");
-                        customFormatText.setEnabled(rdCustom.isSelected());
-                    }
-                });
+
             rdISO.setAlignmentX(0);
             rdISO.setSelected(getModel().isUseISO8601Format());
-            getModel().addPropertyChangeListener("dateFormatPattern",
-                new PropertyChangeListener() {
-                    public void propertyChange(PropertyChangeEvent evt) {
-                        rdISO.setSelected(getModel().isUseISO8601Format());
-                    }
-                });
+
             bgDateFormat.add(rdISO);
             dateFormatPanel.add(rdISO);
 
@@ -278,23 +376,6 @@ public class LogPanelPreferencePanel extends AbstractPreferencePanel {
                 customFormatText.setEnabled(true);
             }
 
-            customFormatText.getDocument().addDocumentListener(new DocumentListener() {
-                    public void textChanged() {
-                        getModel().setDateFormatPattern(customFormatText.getText());
-                    }
-
-                    public void changedUpdate(DocumentEvent e) {
-                        textChanged();
-                    }
-
-                    public void insertUpdate(DocumentEvent e) {
-                        textChanged();
-                    }
-
-                    public void removeUpdate(DocumentEvent e) {
-                        textChanged();
-                    }
-                });
 
             rdCustom.setAlignmentX(0);
             bgDateFormat.add(rdCustom);
@@ -319,28 +400,10 @@ public class LogPanelPreferencePanel extends AbstractPreferencePanel {
             levelFormatPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
             ButtonGroup bgLevel = new ButtonGroup();
-            final JRadioButton rdLevelIcons = new JRadioButton("Icons");
-            final JRadioButton rdLevelText = new JRadioButton("Text");
             bgLevel.add(rdLevelIcons);
             bgLevel.add(rdLevelText);
 
-            ActionListener levelIconListener = new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        getModel().setLevelIcons(rdLevelIcons.isSelected());
-                    }
-                };
 
-            rdLevelIcons.addActionListener(levelIconListener);
-            rdLevelText.addActionListener(levelIconListener);
-
-            getModel().addPropertyChangeListener("levelIcons",
-                new PropertyChangeListener() {
-                    public void propertyChange(PropertyChangeEvent evt) {
-                        boolean value = ((Boolean) evt.getNewValue()).booleanValue();
-                        rdLevelIcons.setSelected(value);
-                        rdLevelText.setSelected(!value);
-                    }
-                });
             rdLevelIcons.setSelected(getModel().isLevelIcons());
 
             levelFormatPanel.add(rdLevelIcons);
@@ -350,33 +413,10 @@ public class LogPanelPreferencePanel extends AbstractPreferencePanel {
 
             toolTips.setSelected(getModel().isToolTips());
 
-            toolTips.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        getModel().setToolTips(toolTips.isSelected());
-                    }
-                });
-            getModel().addPropertyChangeListener("toolTips",
-                new PropertyChangeListener() {
-                    public void propertyChange(PropertyChangeEvent evt) {
-                        boolean value = ((Boolean) evt.getNewValue()).booleanValue();
-                        toolTips.setSelected(value);
-                    }
-                });
+
 
             detailPanelVisible.setSelected(getModel().isDetailPaneVisible());
-            detailPanelVisible.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        getModel().setDetailPaneVisible(detailPanelVisible.isSelected());
-                    }
-                });
 
-            getModel().addPropertyChangeListener("detailPaneVisible",
-                new PropertyChangeListener() {
-                    public void propertyChange(PropertyChangeEvent evt) {
-                        boolean value = ((Boolean) evt.getNewValue()).booleanValue();
-                        detailPanelVisible.setSelected(value);
-                    }
-                });
 
             JPanel loggerFormatPanel = new JPanel();
             loggerFormatPanel.setLayout(new BoxLayout(loggerFormatPanel,
