@@ -128,4 +128,13 @@ public abstract class PatternConverter {
   public void setOption(String string) {
     option = string;
   }
+  
+  /**
+   * This method returns the name of the conversion pattern.
+   * 
+   * The name can be useful to certain Layouts such as HTMLLayout.
+   * 
+   * @return	the name of the conversion pattern
+   */
+  public abstract String getName();
 }

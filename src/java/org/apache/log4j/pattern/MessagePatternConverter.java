@@ -50,4 +50,10 @@ public class MessagePatternConverter extends PatternConverter {
 
     return buf;
   }
+  
+  public String getName()
+  {
+      return "Message";
+  }
+  
 }

@@ -46,4 +46,10 @@ public class LineLocationPatternConverter extends PatternConverter {
 
     return buf;
   }
+  
+  public String getName()
+  {
+      return "Line";
+  }
+  
 }

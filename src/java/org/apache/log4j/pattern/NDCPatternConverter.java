@@ -40,4 +40,10 @@ public class NDCPatternConverter extends PatternConverter {
 
     return buf;
   }
+  
+  public String getName()
+  {
+      return "NDC";
+  }
+  
 }

@@ -35,4 +35,10 @@ public class LoggerPatternConverter extends NamedPatternConverter {
   String getFullyQualifiedName(LoggingEvent event) {
 	  return event.getLoggerName();
   } 
+  
+  public String getName()
+  {
+      return "Logger";
+  }
+  
 }

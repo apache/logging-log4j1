@@ -35,4 +35,9 @@ public class ClassNamePatternConverter extends NamedPatternConverter {
 	   return event.getLocationInformation()!=null?event.getLocationInformation().getClassName():"";
 	 }
   
+  public String getName()
+  {
+      return "Class Name";
+  }
+  
 }
