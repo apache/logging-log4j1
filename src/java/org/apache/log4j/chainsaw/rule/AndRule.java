@@ -69,10 +69,18 @@ public class AndRule extends AbstractRule {
   }
 
   public static Rule getRule(Stack stack) {
-    Rule p2 = (Rule) stack.pop();
-    Rule p1 = (Rule) stack.pop();
-
-    return new AndRule(p1, p2);
+    if (stack.size() < 2) {
+        throw new IllegalArgumentException("Invalid AND rule - expected two rules but provided " + stack.size());
+    }  
+    Object o2 = stack.pop();
+    Object o1 = stack.pop();
+    if ((o2 instanceof Rule) && (o1 instanceof Rule)) { 
+        Rule p2 = (Rule) o2;
+        Rule p1 = (Rule) o1;
+        return new AndRule(p1, p2);
+    } else {
+        throw new IllegalArgumentException("Invalid AND rule: " + o2 + "..." + o1);
+    }
   }
 
   public static Rule getRule(Rule firstParam, Rule secondParam) {

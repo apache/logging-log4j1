@@ -53,6 +53,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -119,7 +120,7 @@ public class LogPanelPreferencePanel extends JPanel {
     new LogPanelPreferenceModel();
   private ActionListener okCancelListener;
   private Component currentlyDisplayedPanel = null;
-  private JTextField loggerPrecision = new JTextField();
+  private JTextField loggerPrecision = new JTextField(5);
 
   public LogPanelPreferencePanel(LogPanelPreferenceModel model) {
     this.committedPreferenceModel = model;
@@ -322,6 +323,7 @@ public class LogPanelPreferencePanel extends JPanel {
           BorderFactory.createEtchedBorder(), "Timestamp"));
       dateFormatPanel.setLayout(
         new BoxLayout(dateFormatPanel, BoxLayout.Y_AXIS));
+      dateFormatPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
       final JTextField  customFormatText = new JTextField();
       final JRadioButton rdCustom =
@@ -434,6 +436,7 @@ public class LogPanelPreferencePanel extends JPanel {
       levelFormatPanel.setBorder(
         BorderFactory.createTitledBorder(
           BorderFactory.createEtchedBorder(), "Level"));
+      levelFormatPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
       ButtonGroup bgLevel = new ButtonGroup();
       final JRadioButton rdLevelIcons = new JRadioButton("Icons");
@@ -464,13 +467,17 @@ public class LogPanelPreferencePanel extends JPanel {
       loggerFormatPanel.setBorder(
         BorderFactory.createTitledBorder(
           BorderFactory.createEtchedBorder(), "Logger"));
+      loggerFormatPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
       final JLabel precisionLabel = new JLabel("Precision (package depth displayed)");
       final JLabel precisionLabel2 = new JLabel("leave blank to display full logger");
 
       loggerFormatPanel.add(precisionLabel);
       loggerFormatPanel.add(precisionLabel2);
-      loggerFormatPanel.add(loggerPrecision);
+      JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            
+      p.add(loggerPrecision);
+      loggerFormatPanel.add(p);
 
       add(loggerFormatPanel);
       

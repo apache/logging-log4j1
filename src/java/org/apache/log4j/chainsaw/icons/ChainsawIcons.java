@@ -69,6 +69,12 @@ public class ChainsawIcons {
   public static final URL FILE_OPEN =
     ChainsawIcons.class.getClassLoader().getResource(
       BASE_ICON_PATH + "Open16.gif");
+  public static final URL UP =
+          ChainsawIcons.class.getClassLoader().getResource(
+            BASE_ICON_PATH + "Up16.gif");
+  public static final URL DOWN =
+      ChainsawIcons.class.getClassLoader().getResource(
+        BASE_ICON_PATH + "Down16.gif");
   public static final URL FILE_SAVE_AS =
     ChainsawIcons.class.getClassLoader().getResource(
       BASE_ICON_PATH + "SaveAs16.gif");
@@ -111,6 +117,8 @@ public class ChainsawIcons {
   public static final URL HELP =
     ChainsawIcons.class.getClassLoader().getResource(
       BASE_ICON_PATH + "Help16.gif");
+  public static final Icon ICON_UP = new ImageIcon(UP);
+  public static final Icon ICON_DOWN = new ImageIcon(DOWN);
   public static final Icon ICON_HELP = new ImageIcon(HELP);
   public static final Icon ICON_PREFERENCES = new ImageIcon(PREFERENCES);
   public static final Icon ICON_DOCK = new ImageIcon(DOCK);

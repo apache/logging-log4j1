@@ -24,7 +24,7 @@ import javax.swing.border.SoftBevelBorder;
  * @author Paul Smith <psmith@apache.org>
  *
  */
-class SmallButton extends JButton implements MouseListener {
+public class SmallButton extends JButton implements MouseListener {
   protected Border m_inactive = new EmptyBorder(3, 3, 3, 3);
   protected Border m_border = m_inactive;
   protected Border m_lowered = new SoftBevelBorder(BevelBorder.LOWERED);
