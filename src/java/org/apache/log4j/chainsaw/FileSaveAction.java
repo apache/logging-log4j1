@@ -49,28 +49,26 @@
 
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.xml.XMLLayout;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.KeyStroke;
+
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.xml.XMLLayout;
 
 
 /**
@@ -126,7 +124,7 @@ class FileSaveAction extends AbstractAction {
 
     if (selectedFile != null) {
       try {
-        Vector v = ((EventContainer)parent.getCurrentLogPanel().getModel()).getAllEvents();
+        List v = ((EventContainer)parent.getCurrentLogPanel().getModel()).getAllEvents();
 
         if (((v != null) && (v.size() == 0)) || (v == null)) {
           //no events to save
