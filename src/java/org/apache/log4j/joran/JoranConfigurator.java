@@ -234,7 +234,7 @@ public class JoranConfigurator extends ConfiguratorBase {
     joranInterpreter = new Interpreter(rs);
 
     // The following line adds the capability to parse nested components
-    joranInterpreter.addImplcitAction(new NestComponentIA());
+    joranInterpreter.addImplicitAction(new NestComponentIA());
     ExecutionContext ec = joranInterpreter.getExecutionContext();
 
     HashMap omap = ec.getObjectMap();
