@@ -61,7 +61,8 @@ public class Calculator2 {
     // set the SAX ContentHandler to the Joran Interpreter we just created.
     saxParser.parse(args[0], ji);
     
-    // The file has been parsed and interpreted. We now errors if any.
+    // The file has been parsed and interpreted. We now print any errors that 
+    // might have occured.
     List errorList = ji.getExecutionContext().getErrorList();
     if(errorList.size() > 0) {
       System.out.println("The following errors occured:");

@@ -40,8 +40,6 @@ import javax.xml.parsers.SAXParserFactory;
  * @author Ceki G&uuml;ulc&uuml;
  */
 public class NewRuleCalculator {
-  
-  
   public static void main(String[] args) throws Exception {
     // Uncomment the following line in order to enable log statements generated
     // from joran itself.
@@ -70,7 +68,9 @@ public class NewRuleCalculator {
     // set the SAX ContentHandler to the Joran Interpreter we just created.
     saxParser.parse(args[0], ji);
 
-    // The file has been parsed and interpreted. We now errors if any.
+
+    // The file has been parsed and interpreted. We now print any errors that 
+    // might have occured.
     List errorList = ji.getExecutionContext().getErrorList();
 
     if (errorList.size() > 0) {
