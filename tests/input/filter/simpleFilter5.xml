@@ -11,13 +11,13 @@
     </layout>
     <!-- Accept all LoggingEvents containing the string
          "1" in its message field. -->
-    <filter class="org.apache.log4j.varia.StringMatchFilter">
+    <filter class="org.apache.log4j.filter.StringMatchFilter">
       <param name="StringToMatch" value="1" />
       <param name="AcceptOnMatch" value="true" />
     </filter>
     <!-- Reject all LoggingEvents containing the string
          "Message" in its message field. -->
-    <filter class="org.apache.log4j.varia.StringMatchFilter">
+    <filter class="org.apache.log4j.filter.StringMatchFilter">
       <param name="StringToMatch" value="Message" />
       <param name="AcceptOnMatch" value="false" />
     </filter>    
