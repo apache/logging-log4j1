@@ -17,6 +17,8 @@
 package org.apache.log4j.helpers;
 
 import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.spi.Configurator;
 import org.apache.log4j.spi.LoggerRepository;
@@ -25,6 +27,10 @@ import java.net.URL;
 
 import java.util.Properties;
 
+
+// Contributors:   Avy Sharell 
+//                 Matthieu Verbert
+//                 Colin Sampaleanu
 
 // Contributors:   Avy Sharell 
 //                 Matthieu Verbert
@@ -48,6 +54,16 @@ public class OptionConverter {
   private OptionConverter() {
   }
 
+  /**
+   * Gets a logger named after this class. Note that the instance of the 
+   * logger may change depending on the 
+   * {@link org.apache.log4j.spi.RepositorySelector}.
+   * @return a context dependent Logger
+   */
+  private static Logger getLogger() {
+    return LogManager.getLogger(OptionConverter.class);
+  }
+  
   public static String[] concatanateArrays(String[] l, String[] r) {
     int len = l.length + r.length;
     String[] a = new String[len];
@@ -110,7 +126,7 @@ public class OptionConverter {
     try {
       return System.getProperty(key, def);
     } catch (Throwable e) { // MS-Java throws com.ms.security.SecurityExceptionEx
-      LogLog.debug("Was not allowed to read system property \"" + key + "\".");
+      getLogger().debug("Was not allowed to read system property \"{}\".", key);
 
       return def;
     }
@@ -122,7 +138,7 @@ public class OptionConverter {
     String className = findAndSubst(key, props);
 
     if (className == null) {
-      LogLog.error("Could not find value for key " + key);
+      getLogger().error("Could not find value for key {}", key);
 
       return defaultValue;
     }
@@ -164,7 +180,7 @@ public class OptionConverter {
       try {
         return Integer.valueOf(s).intValue();
       } catch (NumberFormatException e) {
-        LogLog.error("[" + s + "] is not in proper int form.");
+        getLogger().error("[" + s + "] is not in proper int form.");
         e.printStackTrace();
       }
     }
@@ -218,9 +234,6 @@ public class OptionConverter {
       return null;
     }
 
-    LogLog.debug(
-      "toLevel" + ":class=[" + clazz + "]" + ":pri=[" + levelName + "]");
-
     try {
       Class customLevel = Loader.loadClass(clazz);
 
@@ -237,23 +250,23 @@ public class OptionConverter {
 
       result = (Level) o;
     } catch (ClassNotFoundException e) {
-      LogLog.warn("custom level class [" + clazz + "] not found.");
+      getLogger().warn("custom level class [" + clazz + "] not found.");
     } catch (NoSuchMethodException e) {
       LogLog.warn(
         "custom level class [" + clazz + "]"
         + " does not have a constructor which takes one string parameter", e);
     } catch (java.lang.reflect.InvocationTargetException e) {
-      LogLog.warn(
+      getLogger().warn(
         "custom level class [" + clazz + "]" + " could not be instantiated", e);
     } catch (ClassCastException e) {
-      LogLog.warn(
+      getLogger().warn(
         "class [" + clazz + "] is not a subclass of org.apache.log4j.Level", e);
     } catch (IllegalAccessException e) {
-      LogLog.warn(
+      getLogger().warn(
         "class [" + clazz
         + "] cannot be instantiated due to access restrictions", e);
     } catch (Exception e) {
-      LogLog.warn(
+      getLogger().warn(
         "class [" + clazz + "], level [" + levelName + "] conversion failed.",
         e);
     }
@@ -285,8 +298,8 @@ public class OptionConverter {
       try {
         return Long.valueOf(s).longValue() * multiplier;
       } catch (NumberFormatException e) {
-        LogLog.error("[" + s + "] is not in proper int form.");
-        LogLog.error("[" + value + "] not in expected format.", e);
+        getLogger().error("[{}] is not in proper int form.", s);
+        getLogger().error("[" + value + "] not in expected format.", e);
       }
     }
 
@@ -309,7 +322,7 @@ public class OptionConverter {
     try {
       return substVars(value, props);
     } catch (IllegalArgumentException e) {
-      LogLog.error("Bad option value [" + value + "].", e);
+      getLogger().error("Bad option value [" + value + "].", e);
 
       return value;
     }
@@ -320,7 +333,7 @@ public class OptionConverter {
      <code>className</code> is a subclass of
      <code>superClass</code>. If that test fails or the object could
      not be instantiated, then <code>defaultValue</code> is returned.
-
+  
      @param className The fully qualified class name of the object to instantiate.
      @param superClass The class to which the new object should belong.
      @param defaultValue The object to return in case of non-fulfillment
@@ -330,28 +343,28 @@ public class OptionConverter {
     if (className != null) {
       try {
         Class classObj = Loader.loadClass(className);
-
+  
         if (!superClass.isAssignableFrom(classObj)) {
-          LogLog.error(
+          getLogger().error(
             "A \"" + className + "\" object is not assignable to a \""
             + superClass.getName() + "\" variable.");
-          LogLog.error(
+          getLogger().error(
             "The class \"" + superClass.getName() + "\" was loaded by ");
-          LogLog.error(
+          getLogger().error(
             "[" + superClass.getClassLoader() + "] whereas object of type ");
-          LogLog.error(
+          getLogger().error(
             "\"" + classObj.getName() + "\" was loaded by ["
             + classObj.getClassLoader() + "].");
-
+  
           return defaultValue;
         }
-
+  
         return classObj.newInstance();
       } catch (Exception e) {
         LogLog.error("Could not instantiate class [" + className + "].", e);
       }
     }
-
+  
     return defaultValue;
   }
 
@@ -391,7 +404,7 @@ public class OptionConverter {
    * @throws IllegalArgumentException if <code>val</code> is malformed.
   */
   public static String substVars(String val, Properties props)
-    throws IllegalArgumentException {
+     {
     
     StringBuffer sbuf = new StringBuffer();
 
