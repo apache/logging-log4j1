@@ -151,6 +151,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableColumnModelEvent;
 import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
@@ -765,6 +766,9 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     externalPanel.setLayout(new BorderLayout());
     undockedFrame.getContentPane().add(externalPanel);
 
+    //	TODO undocked toolbar is broken      
+    //      f.getContentPane().add(
+    //        logUI.getToolBarAndMenus().createDockwindowToolbar(f, this), BorderLayout.NORTH);
     dockingAction =
       new AbstractAction("Undock") {
           public void actionPerformed(ActionEvent evt) {
@@ -1696,13 +1700,27 @@ public class LogPanel extends DockablePanel implements SettingsListener,
   //sort column name
   class ChainsawTableColumnModelListener implements TableColumnModelListener {
     private JSortTable table;
+	private TableCellEditor throwableRenderPanel ;
 
     public ChainsawTableColumnModelListener(JSortTable table) {
       this.table = table;
+	  throwableRenderPanel = new ThrowableRenderPanel(table);
     }
 
     public void columnAdded(TableColumnModelEvent e) {
-      LogLog.debug("Detected columnAdded" + e);
+//      LogLog.debug("Detected columnAdded" + e);
+
+      TableColumnModel columnModel = (TableColumnModel) e.getSource();
+      Enumeration enum = table.getColumnModel().getColumns();
+
+      while (enum.hasMoreElements()) {
+        TableColumn column = (TableColumn) enum.nextElement();
+
+        if (
+          (column.getModelIndex() + 1) == ChainsawColumns.INDEX_THROWABLE_COL_NAME) {
+          column.setCellEditor(throwableRenderPanel);
+        }
+      }
     }
 
     public void columnRemoved(TableColumnModelEvent e) {

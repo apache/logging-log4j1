@@ -607,4 +607,15 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
         });
     }
   }
+	/* (non-Javadoc)
+	 * @see javax.swing.table.TableModel#isCellEditable(int, int)
+	 */
+	public boolean isCellEditable(int rowIndex, int columnIndex) {
+		switch(columnIndex+1){
+			case ChainsawColumns.INDEX_THROWABLE_COL_NAME:
+				return true;
+		}
+		return super.isCellEditable(rowIndex, columnIndex);
+	}
+
 }
