@@ -16,39 +16,48 @@ import java.sql.SQLException;
 
 
 /**
- * The JDBCAppender provides for sendinhg log messages to a database.
- *
- * Each append call adds to an ArrayList buffer.  When the buffer is filled
- * each log event is placed in a sql statement (configurable) and executed.
- *
- * BufferSize, db URL, User, & Password are configurable options in
- * the standard Log4J ways.
- *
- * The setSql(String sql) sets the SQL statement to be used for logging --
- * this statement is sent to a PatternLayout (either created automaticly
- * by the appender or added by the user).  Therefore by default all the
- * conversion patterns in PatternLayout can be used inside of the statement.
- * (see the test cases for examples)
- *
- * Overriding the getLogStatement method allows more explicit control of the
- * statement used for logging.
- *
- * For use as a base class:
- *
- *    Override getConnection() to pass any connection you want.
- *       Typically this is used to enable application wide connection pooling.
- *    Override closeConnection(Connection con) -- if you override getConnection
- *       make sure to implement closeConnection to handle the connection you
- *       generated.  Typically this would return the connection to the pool it
- *       came from.
- *
- *    Override getLogStatement(LoggingEvent event) to produce specialized or
- *       dynamic statements The default uses the sql option value
- *
- * @author: Kevin Steppe (<A HREF="mailto:ksteppe@pacbell.net">ksteppe@pacbell.net</A>)
+  The JDBCAppender provides for sending log events to a database.
+ 
+  <p>Each append call adds to an <code>ArrayList</code> buffer.  When
+  the buffer is filled each log event is placed in a sql statement
+  (configurable) and executed.
+ 
+  <b>BufferSize</b>, <b>db URL</b>, <b>User</b>, & <b>Password</b> are
+  configurable options in the standard log4j ways.
+ 
+  <p>The <code>setSql(String sql)</code> sets the SQL statement to be
+  used for logging -- this statement is sent to a
+  <code>PatternLayout</code> (either created automaticly by the
+  appender or added by the user).  Therefore by default all the
+  conversion patterns in <code>PatternLayout</code> can be used
+  inside of the statement.  (see the test cases for examples)
+ 
+  <p>Overriding the {@link getLogStatement} method allows more
+  explicit control of the statement used for logging.
+ 
+  <p>For use as a base class:
+  
+    <ul>
+ 
+    <li>Override <code>getConnection()</code> to pass any connection
+    you want.  Typically this is used to enable application wide
+    connection pooling.
+
+     <li>Override <code>closeConnection(Connection con)</code> -- if
+     you override getConnection make sure to implement
+     <code>closeConnection</code> to handle the connection you
+     generated.  Typically this would return the connection to the
+     pool it came from.
+ 
+     <li>Override <code>getLogStatement(LoggingEvent event)</code> to
+     produce specialized or dynamic statements. The default uses the
+     sql option value.
+
+    </ul>
+  
+    @author: Kevin Steppe (<A HREF="mailto:ksteppe@pacbell.net">ksteppe@pacbell.net</A>) 
+
 */
-
-
 public class JDBCAppender extends org.apache.log4j.AppenderSkeleton
     implements org.apache.log4j.Appender {
 
@@ -323,6 +332,5 @@ public class JDBCAppender extends org.apache.log4j.AppenderSkeleton
 			 ErrorCode.GENERIC_FAILURE);
     }
   }
-
 }
 

@@ -311,6 +311,7 @@
 		         org.apache.log4j.net,
 			 org.apache.log4j.nt,
 		         org.apache.log4j.or,
+		         org.apache.log4j.jdbc,
 		         org.apache.log4j.or.sax,
 	                 org.apache.log4j.performance,
 		         org.apache.log4j.spi,
