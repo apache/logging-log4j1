@@ -173,16 +173,18 @@ public class ReceiversTreeModel extends DefaultTreeModel
       Receiver receiver = (Receiver) e.getPlugin();
       DefaultMutableTreeNode node =
         (DefaultMutableTreeNode) resolvePluginNode(receiver);
-      int index = getRootNode().getIndex(node);
-      getRootNode().remove(node);
-      nodesWereRemoved(
-        getRootNode(), new int[] { index }, new Object[] { node });
-      pluginNodeMap.remove(receiver);
+        if (node != null) {
+            int index = getRootNode().getIndex(node);
+            getRootNode().remove(node);
+            nodesWereRemoved(
+                getRootNode(), new int[] { index }, new Object[] { node });
+            pluginNodeMap.remove(receiver);
+        }
 
       if (getRootNode().getChildCount() == 0) {
         getRootNode().add(NoReceiversNode);
 
-        index = getRootNode().getIndex(NoReceiversNode);
+        int index = getRootNode().getIndex(NoReceiversNode);
         nodesWereInserted(getRootNode(), new int[] { index });
       }
     }

@@ -233,6 +233,7 @@ public class RuleTest extends JFrame {
     String lastField = null;
     JPopupMenu contextMenu = new JPopupMenu();
     JList list = new JList();
+ 
     JScrollPane scrollPane = new JScrollPane(list);
     final JTextField textField;
     private DefaultListModel fieldModel = new DefaultListModel();

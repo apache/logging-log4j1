@@ -77,7 +77,7 @@ public class FilterModel {
     container.addNDC(event.getNDC());
     container.addMDCKeys(event.getMDCKeySet());
 
-    if (event.getLocationInformation() != null) {
+    if (event.locationInformationExists()) {
       LocationInfo info = event.getLocationInformation();
       container.addClass(info.getClassName());
       container.addMethod(info.getMethodName());

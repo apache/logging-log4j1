@@ -49,6 +49,7 @@
 
 package org.apache.log4j.chainsaw;
 
+import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
 
 import java.util.ArrayList;
@@ -139,19 +140,22 @@ public final class LoggingEventFieldResolver {
 
   public Object getValue(String fieldName, LoggingEvent event) {
     String upperField = fieldName.toUpperCase();
-
+    LocationInfo info = null;
+    if (event.locationInformationExists()) {
+        info = event.getLocationInformation();
+    }
     if (LOGGER_FIELD.equals(upperField)) {
       return event.getLoggerName();
     } else if (LEVEL_FIELD.equals(upperField)) {
       return event.getLevel();
     } else if (CLASS_FIELD.equals(upperField)) {
-      return event.getLocationInformation().getClassName();
+      return ((info == null) ? "" : info.getClassName());
     } else if (FILE_FIELD.equals(upperField)) {
-      return event.getLocationInformation().getFileName();
+      return ((info == null) ? "" : info.getFileName());
     } else if (LINE_FIELD.equals(upperField)) {
-      return event.getLocationInformation().getLineNumber();
+      return ((info == null) ? "" : info.getLineNumber());
     } else if (METHOD_FIELD.equals(upperField)) {
-      return event.getLocationInformation().getMethodName();
+      return ((info == null) ? "" : info.getMethodName());
     } else if (MSG_FIELD.equals(upperField)) {
       return event.getMessage();
     } else if (NDC_FIELD.equals(upperField)) {

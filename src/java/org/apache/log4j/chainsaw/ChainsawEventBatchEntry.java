@@ -57,9 +57,6 @@ package org.apache.log4j.chainsaw;
 
 import org.apache.log4j.spi.LoggingEvent;
 
-import java.util.Vector;
-
-
 /**
  * A simple container of Events, mapped to an identifier
  * @author Paul Smith <psmith@apache.org>
@@ -80,18 +77,6 @@ class ChainsawEventBatchEntry {
 
   String getEventType() {
     return eventType;
-  }
-
-  /**
-   * @deprecated
-   * @return
-   */
-  Vector getEventVector() {
-    return ChainsawAppenderHandler.convert(getEvent());
-//    throw new UnsupportedOperationException(
-//      "Transistion to non Vector based model");
-
-    //    return eventVector;
   }
 
   public LoggingEvent getEvent() {

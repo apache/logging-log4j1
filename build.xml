@@ -260,6 +260,8 @@
     </javac>
     <copy file="${BSTEM}/xml/log4j.dtd"
     tofile="${javac.dest}/${stem}/xml/log4j.dtd" />
+    <copy file="${BSTEM}/xml/logger.dtd"
+    tofile="${javac.dest}/${stem}/xml/logger.dtd" />
   </target>
 
   <target name="build.avalonFramework" depends="init, avalonFramework" if="avalonFramework-present">
@@ -446,7 +448,7 @@
     </delete>
 
     <jar jarfile="${jar.dest}/${log4j.jar}" basedir="${javac.dest}"
-      includes="${stem}/*.class, ${stem}/xml/log4j.dtd,
+      includes="${stem}/*.class, ${stem}/xml/log4j.dtd, ${stem}/xml/logger.dtd,
                 org/apache/joran/**/*.class,
                 ${stem}/joran/**/*.class,
                 ${stem}/config/*.class,
