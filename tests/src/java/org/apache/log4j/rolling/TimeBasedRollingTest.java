@@ -100,7 +100,7 @@ public class TimeBasedRollingTest extends TestCase {
     }
 
     for (int i = 0; i < 4; i++) {
-      assertTrue(Compare.compare(filenames[i], "witness/tbr-test1." + i));
+      assertTrue(Compare.compare(filenames[i], "witness/rolling/tbr-test1." + i));
     }
   }
 
@@ -164,7 +164,7 @@ public class TimeBasedRollingTest extends TestCase {
     }
 
     for (int i = 0; i < 4; i++) {
-      assertTrue(Compare.compare(filenames[i], "witness/tbr-test2." + i));
+      assertTrue(Compare.compare(filenames[i], "witness/rolling/tbr-test2." + i));
     }
   }
 
@@ -215,10 +215,10 @@ public class TimeBasedRollingTest extends TestCase {
     }
 
     for (int i = 0; i < 3; i++) {
-      assertTrue(Compare.gzCompare(filenames[i], "witness/tbr-test3." + i + ".gz"));
+      assertTrue(Compare.gzCompare(filenames[i], "witness/rolling/tbr-test3." + i + ".gz"));
     }
 
-    assertTrue(Compare.compare(filenames[3], "witness/tbr-test3.3"));
+    assertTrue(Compare.compare(filenames[3], "witness/rolling/tbr-test3.3"));
   }
 
   /**
@@ -275,7 +275,7 @@ public class TimeBasedRollingTest extends TestCase {
     }
 
     for (int i = 0; i < 4; i++) {
-      assertTrue(Compare.compare(filenames[i], "witness/tbr-test5." + i));
+      assertTrue(Compare.compare(filenames[i], "witness/rolling/tbr-test5." + i));
     }
   }
 
@@ -327,10 +327,10 @@ public class TimeBasedRollingTest extends TestCase {
     }
 
     for (int i = 0; i < 3; i++) {
-      assertTrue(Compare.gzCompare(filenames[i], "witness/tbr-test6." + i + ".gz"));
+      assertTrue(Compare.gzCompare(filenames[i], "witness/rolling/tbr-test6." + i + ".gz"));
     }
 
-    assertTrue(Compare.compare(filenames[3], "witness/tbr-test6.3"));
+    assertTrue(Compare.compare(filenames[3], "witness/rolling/tbr-test6.3"));
   }
 
   void delayUntilNextSecond(int millis) {
