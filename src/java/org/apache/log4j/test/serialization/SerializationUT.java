@@ -87,6 +87,10 @@ public class SerializationUT extends TestCase {
   void tearDown() {
   }
 
+
+  /**
+     Test writing in 1.1.3 and reading from 1.1.3. Here we are testing
+     the test.  */
   public 
   void test1() throws Exception {
     
@@ -111,6 +115,9 @@ public class SerializationUT extends TestCase {
     assertEquals(witness, outHt);
   }
 
+  /**
+     Test writing 1.2 and reading from 1.2. Here we are testing the test.
+  */
   public 
   void test2() throws Exception {
     
@@ -135,6 +142,56 @@ public class SerializationUT extends TestCase {
     assertEquals(witness, outHt);
   }
 
+  /**
+     Test writing 1.1.3 and reading from 1.2. 
+  */
+  public 
+  void test3() throws Exception {
+    
+    Hashtable inHt = new Hashtable();
+    Hashtable witness = new Hashtable();
+
+    inHt.put("categoryName", "a.b.c");
+    inHt.put("priorityStr", "DEBUG");
+    inHt.put("message", "hello");
+   
+    witness.put("categoryName", "a.b.c");
+    witness.put("priorityStr", "DEBUG");
+    witness.put("renderedMessage", "hello");
+    byte[] buf = (byte[]) serMethod113.invoke(o113, new Object[] {inHt});
+    Hashtable outHt = (Hashtable) deserMethod12a7.invoke(o12a7, new Object[] {buf});
+    //System.out.println("witness"+witness);
+    //System.out.println("outHt  "+outHt);
+    assertEquals(witness, outHt);
+  }
+
+  /**
+     Test writing 1.2 and reading from 1.1.3.
+  */
+  public 
+  void test4() throws Exception {
+    
+    Hashtable inHt = new Hashtable();
+    Hashtable witness = new Hashtable();
+
+    inHt.put("categoryName", "a.b.c");
+    inHt.put("priorityStr", "DEBUG");
+    inHt.put("message", "hello");
+   
+    witness.put("categoryName", "a.b.c");
+    witness.put("priorityStr", "DEBUG");
+    witness.put("renderedMessage", "hello");
+
+    byte[] buf = (byte[]) serMethod12a7.invoke(o12a7, new Object[] {inHt});
+
+    Hashtable outHt = (Hashtable) deserMethod113.invoke(o113, new Object[] {buf});
+
+    //System.out.println("witness"+witness);
+    //System.out.println("outHt  "+outHt);
+
+    assertEquals(witness, outHt);
+  }
+
  
   public
   static
@@ -142,6 +199,8 @@ public class SerializationUT extends TestCase {
     TestSuite suite = new TestSuite();
     suite.addTest(new SerializationUT("test1"));
     suite.addTest(new SerializationUT("test2"));
+    suite.addTest(new SerializationUT("test3"));
+    suite.addTest(new SerializationUT("test4"));
     return suite;
   }   
 }
