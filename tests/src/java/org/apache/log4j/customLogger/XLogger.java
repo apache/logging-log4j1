@@ -13,8 +13,7 @@ import org.apache.log4j.spi.OptionHandler;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.helpers.LogLog;
-
-import examples.customLevel.XLevel;
+import org.apache.log4j.xml.XLevel;
 
 /**
    A simple example showing Logger sub-classing. It shows the

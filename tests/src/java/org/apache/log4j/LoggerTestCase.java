@@ -301,10 +301,10 @@ public class LoggerTestCase extends TestCase {
     Logger a_b_c = Logger.getLogger("a.b.c");
     
     Logger t;
-    t = Logger.exists("xx");    assertNull(t);
-    t = Logger.exists("a");     assertSame(a, t);
-    t = Logger.exists("a.b");   assertSame(a_b, t);
-    t = Logger.exists("a.b.c"); assertSame(a_b_c, t);
+    t = LogManager.exists("xx");    assertNull(t);
+    t = LogManager.exists("a");     assertSame(a, t);
+    t = LogManager.exists("a.b");   assertSame(a_b, t);
+    t = LogManager.exists("a.b.c"); assertSame(a_b_c, t);
   }
 
   public
