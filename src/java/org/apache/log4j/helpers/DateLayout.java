@@ -115,7 +115,7 @@ public abstract class DateLayout extends Layout {
 
   public void dateFormat(StringBuffer buf, LoggingEvent event) {
     if (dateFormat != null) {
-      date.setTime(event.timeStamp);
+      date.setTime(event.getTimeStamp());
       dateFormat.format(date, buf, this.pos);
       buf.append(' ');
     }

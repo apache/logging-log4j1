@@ -92,8 +92,7 @@ public class PatternParser {
     globalRulesRegistry.put("x", NDCPatternConverter.class.getName());
     globalRulesRegistry.put("ndc", NDCPatternConverter.class.getName());
     
-    globalRulesRegistry.put("X", MDCPatternConverter.class.getName());
-    globalRulesRegistry.put("mdc", MDCPatternConverter.class.getName());
+    globalRulesRegistry.put("X", PropertiesPatternConverter.class.getName());
     
     globalRulesRegistry.put("properties", PropertiesPatternConverter.class.getName());
     globalRulesRegistry.put("throwable", ThrowableInformationPatternConverter.class.getName());

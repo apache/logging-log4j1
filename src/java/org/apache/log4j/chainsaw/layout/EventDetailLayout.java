@@ -179,7 +179,7 @@ public class EventDetailLayout extends Layout {
    * @return new LoggingEvent
    */
   private static LoggingEvent copyForHTML(LoggingEvent event) {
-    String fqnCategory = escape(event.fqnOfCategoryClass);
+    String fqnCategory = escape(event.getFQNOfLoggerClass());
     Logger logger = Logger.getLogger(event.getLoggerName());
     String threadName = event.getThreadName();
     Object msg = event.getMessage();
@@ -193,7 +193,7 @@ public class EventDetailLayout extends Layout {
     Hashtable properties = formatProperties(event);
     LoggingEvent copy =
       new LoggingEvent(
-        fqnCategory, logger, event.timeStamp, event.getLevel(), threadName, msg,
+        fqnCategory, logger, event.getTimeStamp(), event.getLevel(), threadName, msg,
         ndc, mdc, throwableStringRep, li, properties);
 
     return copy;

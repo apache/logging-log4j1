@@ -1,3 +1,7 @@
+# This SQL script creates the required tables by org.apache.log4j.db.DBAppender and 
+# org.apache.log4j.db.DBReceiver.
+#
+# It is intended for PostgreSQL databases.
 
 DROP TABLE    mdc;
 DROP TABLE    logging_event;

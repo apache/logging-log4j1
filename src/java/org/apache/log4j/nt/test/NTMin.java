@@ -11,7 +11,7 @@ package org.apache.log4j.nt.test;
 import org.apache.log4j.Category;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.nt.NTEventLogAppender;
-import org.apache.log4j.Priority;
+import org.apache.log4j.Level;
 import org.apache.log4j.NDC;
 
 
@@ -55,7 +55,7 @@ public class NTMin {
     cat.info( "Message " + i++);
     cat.warn( "Message " + i++);
     cat.error( "Message " + i++);
-    cat.log(Priority.FATAL, "Message " + i++);
+    cat.log(Level.FATAL, "Message " + i++);
     cat.debug("Message " + i++,  new Exception("Just testing."));
   }
 }

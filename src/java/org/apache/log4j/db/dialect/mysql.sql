@@ -1,8 +1,12 @@
+# This SQL script creates the required tables by org.apache.log4j.db.DBAppender and 
+# org.apache.log4j.db.DBReceiver.
+#
+# It is intended for MySQL databases.
+
 
 BEGIN;
 DROP TABLE IF EXISTS loggging_event;
 DROP TABLE IF EXISTS mdc;
-
 COMMIT;
 
 

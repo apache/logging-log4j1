@@ -37,7 +37,7 @@ public class RelativeTimePatternConverter extends PatternConverter {
 
   public StringBuffer convert(LoggingEvent event) {
     buf.setLength(0);
-    buf.append(Long.toString(event.timeStamp - LoggingEvent.getStartTime()));
+    buf.append(Long.toString(event.getTimeStamp() - LoggingEvent.getStartTime()));
     return buf;
   }
 }

@@ -35,6 +35,7 @@ import org.apache.log4j.spi.RendererSupport;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Vector;
 
 
@@ -77,6 +78,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   int thresholdInt;
   Level threshold;
   PluginRegistry pluginRegistry;
+  Map properties;
   
   boolean emittedNoAppenderWarning = false;
   boolean emittedNoResourceBundleWarning = false;
@@ -98,6 +100,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
     setThreshold(Level.ALL);
     this.root.setHierarchy(this);
     rendererMap = new RendererMap();
+    properties = new Hashtable();
     defaultFactory = new DefaultCategoryFactory();
   }
 
@@ -230,6 +233,31 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
     }
   }
 
+  /* 
+   * Get the properties for this repository.
+   * 
+   * @see org.apache.log4j.spi.LoggerRepository#getProperties()
+   *
+   */
+  public Map getProperties() {
+    return properties;
+  }
+
+  /* 
+   * Get a property of this repository.
+   * @see org.apache.log4j.spi.LoggerRepository#getProperty(java.lang.String)
+   */
+  public String getProperty(String key) {
+     return (String) properties.get(key);
+  }
+
+  /* 
+   * Set a property by key and value. The property will be shared by all
+   * events in this repository.
+   */
+  public void setProperty(String key, String value) {
+   properties.put(key, value);
+  }
 
   /**
      The string form of {@link #setThreshold(Level)}.

@@ -98,8 +98,8 @@ public class MDCStress extends Thread {
 
     createChildren(randomInt(BRANCHING_FACTOR), depth);
 
-    MDC.put("depth", new Integer(depth));
-    MDC.put("total", new Integer(this.total));
+    MDC.put("depth", new Integer(depth).toString());
+    MDC.put("total", new Integer(this.total).toString());
 
     log.debug("Set MDC variables.");   
 

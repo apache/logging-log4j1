@@ -359,7 +359,7 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
       return event.getLoggerName();
 
     case ChainsawColumns.INDEX_TIMESTAMP_COL_NAME:
-      return new Date(event.timeStamp);
+      return new Date(event.getTimeStamp());
 
     case ChainsawColumns.INDEX_MESSAGE_COL_NAME:
       return event.getRenderedMessage();

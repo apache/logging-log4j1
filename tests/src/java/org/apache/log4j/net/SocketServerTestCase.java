@@ -325,7 +325,7 @@ public class SocketServerTestCase extends TestCase {
     assertTrue(Compare.compare(FILTERED, "witness/socketServer.8"));
   }
 
-  static void common(String dc, String key, Object o) {
+  static void common(String dc, String key, String o) {
     int i = -1;
     NDC.push(dc);
     MDC.put(key, o);

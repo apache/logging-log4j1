@@ -112,7 +112,7 @@ public class ColumnComparator implements Comparator {
         break;
         
        case ChainsawColumns.INDEX_TIMESTAMP_COL_NAME:
-       		sort = (e1.timeStamp<e2.timeStamp ? -1 : (e1.timeStamp==e2.timeStamp ? 0 : 1));
+       		sort = (e1.getTimeStamp()<e2.getTimeStamp() ? -1 : (e1.getTimeStamp()==e2.getTimeStamp() ? 0 : 1));
        		break;
        		
        case ChainsawColumns.INDEX_THREAD_COL_NAME:

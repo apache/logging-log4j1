@@ -151,7 +151,7 @@ public final class LoggingEventFieldResolver {
     } else if (EXCEPTION_FIELD.equals(upperField)) {
       return (event.getThrowableStrRep() == null ? EMPTY_STRING : getExceptionMessage(event.getThrowableStrRep()));
     } else if (TIMESTAMP_FIELD.equals(upperField)) {
-      return new Long(event.timeStamp);
+      return new Long(event.getTimeStamp());
     } else if (THREAD_FIELD.equals(upperField)) {
       return event.getThreadName();
     } else if (upperField.startsWith(MDC_FIELD)) {

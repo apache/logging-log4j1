@@ -13,7 +13,7 @@
   <!-- The build.properties file defines the parth to local jar files -->
   <property file="build.properties"/>
 
-  <property name="version" value="1.3alpha"/>
+  <property name="version" value="1.3alpha0"/>
 
   <!-- The base directory relative to which most targets are built -->
   <property name="base" value="."/>
@@ -402,7 +402,7 @@
     <fail unless="chainsaw-libraries-present" message="Chainsaw v2 needs Jakarta ORO, and it appears your are missing the Jakarta ORO package.  Please check the build.properties file."/>
   </target>
   
-  <target name="chainsaw" depends="chainsawRunCheck, build.chainsaw, log4j.jar, log4j-chainsaw.jar" description="Builds and runs Chainsaw v2" >
+  <target name="chainsaw" depends="chainsawRunCheck, build.chainsaw, log4j.jar, chainsaw.jar" description="Builds and runs Chainsaw v2" >
 
     <!-- Need to fork to avoid problems -->
     <java classname="org.apache.log4j.chainsaw.LogUI" fork="yes"
@@ -414,7 +414,7 @@
   <!-- ================================================================= -->
   <!-- Aactual work is done in the dependencies.                         -->
   <!-- ================================================================= -->
-  <target name="jar" depends="log4j.jar, log4j-chainsaw.jar, log4j-lf5.jar">
+  <target name="jar" depends="log4j.jar, chainsaw.jar, log4j-lf5.jar">
   </target>
 
  <!-- ================================================================= -->
@@ -436,6 +436,7 @@
                 ${stem}/spi/*.class,
                 ${stem}/net/*.class,
                 ${stem}/jdbc/*.class,
+                ${stem}/db/*.class,
                 ${stem}/varia/*.class,
                 ${stem}/nt/*.class,
                 ${stem}/rolling/**/*.class,
@@ -466,7 +467,7 @@
   <!-- ================================================================= -->
   <!-- Create log4j-chainsaw.jar, excluding everything else              -->
   <!-- ================================================================= -->
-  <target name="log4j-chainsaw.jar" depends="build">
+  <target name="chainsaw.jar" depends="build">
     <delete>
       <fileset dir="${jar.dest}">
         <include name="${log4j-chainsaw.jar}"/>
