@@ -422,12 +422,17 @@ public class OptionConverter {
             + j + '.');
         } else {
           j += DELIM_START_LEN;
-
-          String key = val.substring(j, k);
-
+          
+          String rawKey = val.substring(j, k);
+          
+          // Massage the key to extract a default replacement if there is one
+          String[] extracted = extractDefaultReplacement(rawKey);
+          String key = extracted[0];
+          String defaultReplacement = extracted[1]; // can be null
+          
 					String replacement = null;
 				  
-					// first try the props passes as parameter					
+					// first try the props passed as parameter					
 				  if(props != null) {
 						replacement = props.getProperty(key);				   
 				  }
@@ -437,10 +442,16 @@ public class OptionConverter {
 						replacement = getSystemProperty(key, null);
           }
 
+          // if replacement is still null, use the defaultReplacement which
+          // still be null
+          if(replacement == null) {
+            replacement = defaultReplacement;
+          }
+          
           if (replacement != null) {
             // Do variable substitution on the replacement string
             // such that we can solve "Hello ${x2}" as "Hello p1" 
-            // the where the properties are
+            // where the properties are
             // x1=p1
             // x2=${x1}
             String recursiveReplacement = substVars(replacement, props);
@@ -453,6 +464,17 @@ public class OptionConverter {
     }
   }
 
+  static public String[] extractDefaultReplacement(String key) {
+    String[] result = new String[2];
+    result[0] = key;
+    int d = key.indexOf(":-");
+    if(d != -1) {
+      result[0] = key.substring(0, d);
+      result[1] = key.substring(d+2);
+    }
+    return result;
+  }
+  
   /**
      Configure log4j given a URL.
 

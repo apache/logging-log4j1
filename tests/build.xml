@@ -119,7 +119,9 @@
                                      HierarchyThreshold, DefaultInit, 
                                      SocketServer,
                                      XMLLayout, AsyncAppender, ErrorHandler,
-                                     OptionConverter, BoundedFIFO, 
+                                  	 OptionSubstitutionTest,
+  	                                 LevelOptionConverterTest,
+  									 BoundedFIFO, 
                                      Joran,  
                                      Scheduler, 
                                      ThrowableInformation,
@@ -349,14 +351,22 @@
     </junit>
   </target>
   
-  <target name="OptionConverter" depends="build, cleanOutputDir">
+  <target name="OptionSubstitutionTest" depends="build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
-      <test name="org.apache.log4j.helpers.OptionConverterTestCase" />
+      <test name="org.apache.log4j.helpers.OptionSubstitutionTest" />
     </junit>
   </target>
 
+  <target name="LevelOptionConverterTest" depends="build, cleanOutputDir">
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+	  <classpath refid="tests.classpath"/>
+	  <formatter type="plain" usefile="false"/>
+	  <test name="org.apache.log4j.helpers.LevelOptionConverterTest" />
+	</junit>
+  </target>
+	
   <target name="BoundedFIFO" depends="build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
