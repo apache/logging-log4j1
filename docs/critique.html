@@ -16,12 +16,13 @@
 <p>I consider it quite distasteful to criticize other people's work,
 especially in public. However, since the logging API included in JDK
 1.4 will be potentially considered as the "standard", I feel compelled
-to react.
+to react. I am not alone in my criticism of JSR47, Greg Davis has his
+own set of <a
+href="http://www.swzoo.org/documents/miscellaneous/jsr047/">comments</a>.
 
 <p>The JDK 1.4 logging API is a result of the <a
 href="http://jcp.org/aboutJava/communityprocess/review/jsr047/index.html">JSR47
-process</a>, led by Graham Hamilton. I will refer to it as the JSR47
-API for the remainder of this document.
+effort</a>, led by Graham Hamilton. 
 
 <p>Before delving into the details, some historical perspective is in
 order. I am the founder of the log4j project. I participated in the
@@ -40,13 +41,14 @@ terms logger and category, level and priority, handler and appender,
 formatter and layout will be used interchangeably in the remainder of
 this document.
 
+
 <p>Even after a casual review it should be apparent that the log4j and
 JSR47 APIs are <em>very</em> similar. For one, they are the only
 logging APIs which are based on a named hierarchy. If you understand
-one API, then understanding the other is trivial. There are
-differences however.
+one API, then understanding the concepts of the other should be a
+breeze. There are differences however.
 
-<h2>Parents vs. Children</h2>
+<h2>On Parents and  Children</h2>
 
 <p>In JSR47, a parent logger knows about its children but not the
 other way around. Children do not have links to their parent. For
@@ -69,7 +71,8 @@ detail but it is actually quite fundamental.
 <code>wombat</code>. In other words, the levels for all the loggers
 descending from <code>wombat</code> are overwritten. This can be a
 very expensive operation for large trees. In particular, for the most
-common case where one sets the level of the root logger.
+common case where one sets the level of the root logger. However,
+performance is not the point I am trying to make.
 
 <p>In log4j, changing the priority of a category involves the change
 of a single field. Children categories dynamically inherit the
@@ -77,23 +80,23 @@ priority of their parent by traversing the hierarchy tree upwards.
 
 <p>It follows that with JSR47 if you configure the level for logger
 "foo.bar1" before configuring the level for "foo", then the latter
-instruction will overwrite the first. It will be as if the first
-instruction for configuring "foo.bar1" had never existed. This is not
-a show stopper but it will bite you time and again.
+instruction will overwrite the first exactly as if the first
+instruction for configuring "foo.bar1" had never
+existed. <em>Configuration order dependence is not a show stopper but
+it is something that will bite you time and again.</em>
 
-<p>In log4j, categories can be configured in any order. Thus, you do
-not have to worry about configuration order.
+<p>In contrast, in log4j categories can be configured in any
+order. You never have to worry about configuration order.
 
 <p><b><li>Limited inheritance</b>
 
 <p>In JSR47, a logger does not walk the hierarchy to inherit its level
-but possesses a copy of it. In fact, levels are a particular type of
-an inherited property.
+but possesses a copy of it. 
 
 <p>Unfortunately, in the JSR47 API, handlers cannot be inherited
-because it would be prohibitively expensive (and unmanageable) to let
-each logger to contain a Vector of all inherited handlers, especially
-in large trees.
+because it would be prohibitively expensive to let each logger to
+contain a distinct Vector of all inherited handlers, especially in
+large trees.
 
 <p>To circumvent this problem by JSR47 defines global handlers. A
 logger logs to global handlers and to the handlers attached to itself
@@ -105,12 +108,18 @@ category will log to the appenders attached to itself as well as the
 appenders attached to its ancestors. 
 
 <p>This might not seem like much until the day you need handler
-inheritance. 
+inheritance; probably the day after you decide to adopt a logging API.
 
 <p>Similarly, in log4j resource bundles are inherited from the
-hierarchy. In JSR47, a resource bundle must be attached to one logger
-at a time making resource bundles and hence internationalization quite
-unmanageable.
+hierarchy. In JSR47, a resource bundle <em>must</em> be attached to
+each logger individually. There is no resource bundle inheritance in
+JSR47. In practice, this means that you have to choose between
+internationalization and the benefits of the named logger
+hierarchy. It's one or the other.
+
+<p>This is particularly surprising since support for
+internationalization is advocated as one of the big advantages of the
+JSR47 API.
 
 </ol>
 
@@ -160,12 +169,13 @@ means that you can log to just one file at a time.</em>
 <p>There are many other details in which log4j differs from
 JSR47. Even if the log4j core is small, the project contains a total
 of over 30'000 lines of well-tested code. JSR47 contains about 5'000
-lines of code.
+lines of code. 
 
-<p>Log4j has been around for a number of years and is being used in
-thousands of projects. Our site gets over 500 downloads each and every
-day, and the numbers are on the rise.  Log4j has been ported to C++
-and Python. Companies are also offering commercial products extending
+<p>Log4j has been around for a number of years, enjoys the support of
+five active developers (committers) and is being used in thousands of
+projects. Our site gets over 500 downloads each and every day, and the
+numbers are on the rise.  Log4j has been ported to C++ and
+Python. Companies are also offering commercial products extending
 log4j.
 
 <p>Here is a short list of opensource projects that are known to use
@@ -175,19 +185,48 @@ log4j.
 <li><a href="http://www.jboss.org">JBoss</a>
 <li><a href="http://www.free-project.org/">Free E-Democracy Project</a>
 <li><a href="http://www.jcorporate.com/html/products/expresso/logging.html">Espresso</a>
+<li><a href="http://www.opensymphony.com/guidelines/logging.jsp">OpenSymphony (OSCache, SiteMesh, ...)</a>
 <li><a href="http://wired2.web.cern.ch/wired2/">WIRED</a>
 <li><a href="http://jakarta.apache.org/turbine/index.html">Turbine</a>
+<li><a href="http://jakarta.apache.org/velocity/index.html">Velocity</a>
 <li><a href="http://java.freehep.org">FreeHEP</a>
 <li><a href="http://theserverside.com">TheServerSide</a>
-<li><a href="http://www.opensymphony.com/guidelines/logging.jsp">OpenSymphony (OSCache, SiteMesh, ...)</a>
-<li><a href="http://www.jcorporate.com/html/products/expresso/logging.html">Expresso Framework</a>
-<li><a href="http://jrf.sourceforge.net">jRelationalFramework</a>
 
+ 
 </ul>
 
-<p>By the way, log4j runs fine under JDK 1.1. JSR 47 will run under
-JDK 1.4 and only under JDK 1.4. Interestingly enough, no package
-shipped with JDK 1.4 is using the JSR47 API.
+
+<p>By the way, log4j runs fine under JDK 1.1 and above. JSR 47 will
+run under JDK 1.4 and only under JDK 1.4. Interestingly enough, no
+package shipped with JDK 1.4 is using the JSR47 API.  
+
+<p>Brian R. Gilstrap has <A
+href="http://javalogging.sourceforge.net/">re-written</a> JSR47 API to
+run under JDK 1.2 and 1.3. He has also published an <a
+href="http://www.ociweb.com/jnb/archive/jnbJun2001.html">article</a>
+in JavaWorld. This is all very promising but since
+<code>java.util.logging</code> is under the <code>java.*</code>
+namespace, when running under JDK 1.3, you will systematically
+encounter:
+<pre>
+Exception in thread "main" java.lang.ExceptionInInitializerError: java.lang.SecurityException: Prohibited package name: java.util.logging
+        at java.lang.ClassLoader.defineClass(ClassLoader.java:477)
+        at java.security.SecureClassLoader.defineClass(SecureClassLoader.java:111)
+        at java.net.URLClassLoader.defineClass(URLClassLoader.java:248)
+        at java.net.URLClassLoader.access$100(URLClassLoader.java:56)
+        at java.net.URLClassLoader$1.run(URLClassLoader.java:195)
+        at java.security.AccessController.doPrivileged(Native Method)
+        at java.net.URLClassLoader.findClass(URLClassLoader.java:188)
+        at java.lang.ClassLoader.loadClass(ClassLoader.java:297)
+        at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:286)
+        at java.lang.ClassLoader.loadClass(ClassLoader.java:253)
+        at java.lang.ClassLoader.loadClassInternal(ClassLoader.java:313)
+</pre>
+
+
+<p>Jochen Hiller had observed this problem in early 2001 when he
+implemented the JSR47 API by wrapping log4j.
+
 
 <h2>Error Handling</h2>
 
@@ -219,22 +258,53 @@ code.
 
 <h2>Performance</h2>
 
-<p>In log4j, caller localization information is optional. In JSR47 it
-is always extracted. Since the extraction of caller localization is
-slow, in the common case where caller information is not needed, log4j
-will log the same information at least 4 times faster. 
+<p>This is a widely misunderstood topic, even by experts. In log4j,
+performance must be studied in three distinct cases: when logging is
+turned off, when turned on but due to the comparison of the log
+statement priority and category priority not enabled, and when
+actually logging.  Please refer to the <a
+href="manual.html#performance">log4j manual</a> for a more detailed
+discussion of log4j performance.
+
+<p>When logging is turned on, log4j will be about three times slower
+to decide whether a log statement is enabled or not. This is due to
+the dynamic nature of log4j which requires it to walk the
+hierarchy. To give you an idea about the figures involved, we are
+talking about 90 <em>nanoseconds</em> instead of 30
+<em>nanoseconds</em> on a 800Mhz Intel processor. In other words, one
+million log statements will cost under a second in both environments.
+
+<p>When log4j logging is turned off entirely, walking the hierarchy is
+not necessary. In this case, log4j will perform as well as JSR47.
+
+<p>In log4j, caller localization information is optional whereas in
+JSR47 it is always extracted. Since the extraction of caller
+localization is a very slow operation, in the common case where caller
+information is not needed, log4j will log the same information 4 to
+100 times faster. 
+
+</ol>
+
 
 
 <h2>Lobby Sun</h2>
 
-<p>If you feel that these differences are important, then this is your
-chance to lobby Sun to adopt log4j as the logging API shipped with JDK
-1.4. Given enough demand it is still possible to modify the JSR47
-API. This will be much harder once JDK 1.4 ships.
+<p>If you feel that these differences are important, then this the
+time to lobby Sun to adopt log4j as the logging API shipped with JDK
+1.4. Since the JSR47 has not been yet reached final specification
+stage nor formally approved, assuming enough demand, it should be
+still possible to modify the JSR47 API. This will be much harder once
+JDK 1.4 ships. Apparently, even the JSR47 experts group is divided on
+the issue.
 
 <p><b>Please direct your polite and personalized request to <a
 href="mailto:java-logging-input@eng.sun.com">java-logging-input@eng.sun.com</a>
-with a cc: to <a href="mailto:cgu@qos.ch">cgu@qos.ch</a>.</b>
+with a cc: to <a href="mailto:cgu@qos.ch">cgu@qos.ch</a>.</b> 
+
+<p>By the way, the address <code>java-logging-input@eng.sun.com</code>
+is not a mailing list for the JSR47 experts group. From what I hear,
+the mailing list address for JSR47 experts group is considered
+confidential information.
 
 <p>Below is a list of individuals who have written to Sun, with the
 vast majority pushing for the adoption of log4j. I am very grateful
@@ -242,21 +312,23 @@ for their support. Some of these requests are quite detailed and
 insightful. 
 
 <p><UL>
-
 <li><p><a href="pub-support/AlexBlewitt.html">AlexBlewitt</a> 
 <li><p><a href="pub-support/FrankBaxter.html">Frank Baxter</a> 
 <li><p><a href="pub-support/EllisTeer.html">Ellis Teer</a> 
 <li><p><a href="pub-support/BrentSprecher.html">Brent Sprecher</a> 
 <li><p><a href="pub-support/JasonKitcat.html">Jason Kitcat</a> 
-<li><p><a href="pub-support/AndyDePue.html">Andy DePue</a> 
+<li><p><a href="pub-support/AndyDePue.html">Andy DePue</a>  and his <a href="pub-support/AndyDePue2.html">follow up</a> 
+<li><p><a href="pub-support/BenjaminRussellStocum.html">Benjamin Russell Stocum</a> 
 <li><p><a href="pub-support/DanielSavarese.html">Daniel F. Savarese</a> 
-<li><p><a href="pub-support/JonStevens.html">Jon Stevens</a> 
+<li><p>Jon Stevens
+<li><p><a href="pub-support/RichardDallaway.html">Richard Dallaway</a> 
+<li><p><a href="pub-support/JeffTurner.html">Jeff Turner</a> 
 <li><p><a href="pub-support/GuyLichtman.html">Guy Lichtman</a> 
 <li><p><a href="pub-support/AndersKristensen.html">Anders Kristensen</a> 
 <li><p><a href="pub-support/MichaelMoser.html">Michael Moser</a> 
 <li><p><a href="pub-support/ChristopherTaylor.html">Christopher Taylor</a> 
 <li><p><a href="pub-support/PaulGrinchenko.html">Paul Grinchenko</a> 
-<li><p><a href="pub-support/CourtDemas.html">Court Demas</a> 
+<li><p><a href="pub-support/CourtDemas.html">Court Demas</a> and his <a href="pub-support/CourtDemas2.html">follow up</a>
 <li><p><a href="pub-support/NelsonMinar.html">Nelson Minar</a> 
 <li><p><a href="pub-support/RobertMahoney.html">Robert Mahoney</a> 
 <li><p><a href="pub-support/HenrikLundahl.html">Henrik Lundahl</a> 
@@ -264,7 +336,7 @@ insightful.
 <li><p><a href="pub-support/EndreStolsvik.html">Endre St&oslash;lsvik</a> 
 <li><p><a href="pub-support/KnutErikBallestad.html">Knut Erik Ballestad</a> 
 <li><p><a href="pub-support/JohnVolkar.html">John Volkar </a> 
-<li><p><a href="pub-support/HenrikFredholm.html">Henrik Fredholm</a> 
+<li><p><a href="pub-support/HenrikFredholm.html">Henrik Fredholm</a> and his <a href="pub-support/HenrikFredholm2.html">follow up</a> to Graham.
 <li><p><a href="pub-support/WilliamJaynes.html">William Jaynes</a> 
 <li><p><a href="pub-support/MichaelStacey.html">Michael Stacey</a> 
 <li><p><a href="pub-support/StacyCurl.html">Stacy Curl</a> 
@@ -302,12 +374,50 @@ insightful.
 <li><p><a href="pub-support/SorenHilmer.html">S&oslash;ren Hilmer</a> 
 <li><p><a href="pub-support/MaheshBhat.html">Mahesh Bhat</a> 
 <li><p><a href="pub-support/JeffLinwood.html">Jeff Linwood</a> 
+<li><p><a href="pub-support/PeterMeulmeester.html">Peter Meulmeester</a> 
+<li><p><a href="pub-support/MichaelDuffy.html">Michael Duffy</a> 
+<li><p><a href="pub-support/BillGriffith.html">Bill Griffith</a> 
+<li><p><a href="pub-support/DanielBram.html">Daniel Bram</a> 
+<li><p><a href="pub-support/ChrisMein.html">Chris Mein</a> 
+<li><p><a href="pub-support/GuyNirpaz.html">Guy Nirpaz</a> 
+<li><p><a href="pub-support/GrayJones.html">Gray Jones</a> 
+<li><p><a href="pub-support/CarlosPerez.html">Carlos Perez</a> 
+<li><p><a href="pub-support/PaulMichaelReilly.html">Paul Michael Reilly</a> 
+<li><p><a href="pub-support/MarcusAhnve.html">Marcus Ahnve</a> 
+<li><p><a href="pub-support/DavidDuddleston.html">David Duddleston</a> 
+<li><p><a href="pub-support/BrianPaulsen.html">Brian Paulsen</a> 
+<li><p><a href="pub-support/AlexFernandez.html">Alex Fernández</a> 
+<li><p><a href="pub-support/DanielStephan.html">Daniel Stephan</a> 
+<li><p><a href="pub-support/AlexanderEvsukov.html">Alexander Evsukov</a> 
+<li><p><a href="pub-support/StevenSagaert.html">Steven Sagaert</a> 
+<li><p><a href="pub-support/DougErickson.html">Doug Erickson</a> 
+<li><p><a href="pub-support/ScottGilpin.html">Scott Gilpin </a> 
+<li><p><b><a href="pub-support/NateSammons.html">Nate Sammons</a></b> author of <a href="http://protomatter.sourceforge.net">Protomatter Syslog</a>
+<li><p><a href="pub-support/StephanSchmidt.html">Stephan J. Schmidt</a> 
+<li><p><a href="pub-support/JochenBedersdorfer.html">Jochen Bedersdorfer</a> 
+<li><p><a href="pub-support/BalajiKithiganahalli.html">Balaji Kithiganahalli</a> 
+<li><p><a href="pub-support/ChrisYearsley.html">Chris Yearsley</a> 
+<li><p><a href="pub-support/ScottFleming.html">Scott Fleming</a> 
+<li><p><a href="pub-support/PaulCraven.html">Paul Craven</a> 
+<li><p><a href="pub-support/BruceKroeze.html">Bruce Kroeze</a> 
+<li><p><a href="pub-support/AndrewHarris.html">Andrew Harris</a> 
 
 <!--
 
+
+
+
 <li><p><a href="pub-support/ .html"></a> 
 <li><p><a href="pub-support/ .html"></a> 
 <li><p><a href="pub-support/ .html"></a> 
+<li><p><a href="pub-support/ .html"></a> 
+<li><p><a href="pub-support/ .html"></a> 
+<li><p><a href="pub-support/ .html"></a> 
+<li><p><a href="pub-support/ .html"></a> 
+<li><p><a href="pub-support/ .html"></a> 
+<li><p><a href="pub-support/ .html"></a> 
+
+
 -->
 
 
@@ -330,19 +440,16 @@ explains:
   sources and we've tried to support a wide set of requirements.
 </pre>
 
-<p>Unfortunately, it is becoming increasingly clear that the resulting
-API is unlikely to meet a wide set of requirements, if any. The
-apparent failure of JSR47 API may be the inevitable consequence of the
-steamroller commonly referred to as the Java Community Process. <a
+<p>Unfortunately, given the uproar that this API is generating, it is
+becoming increasingly clear that the resulting API is unlikely to meet
+a wide set of requirements. The apparent failure of JSR47 API may be
+the inevitable consequence of the Java Community Process. <a
 href="http://www.zdnet.com/eweek/stories/general/0,11011,2666270,00.html">Michael
-C. Daconta</a> has some interesting comments on the JCP.
-
-<p>Neither side will win this match by a knockout. However, a victory
-by points in our favor is a distinct possibility. You are very much
-encouraged to continue writing to Sun. Regardless of the outcome,
-given the resourcefulness of our community, we will continue to
-innovate and build on the previous success of log4j.
-
+C. Daconta</a> has some interesting comments on the JCP.  All said and
+done, Java remains a wonderful computing platform.  Sun deserves
+credit for their ongoing investment. They have also introduced a
+number of amazingly innovative APIs. However, no one gets it right
+<em>all</em> the time.
 
 </body>
 </HTML>
