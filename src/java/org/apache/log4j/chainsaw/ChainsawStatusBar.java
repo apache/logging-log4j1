@@ -281,7 +281,7 @@ class ChainsawStatusBar extends JPanel {
         public void run() {
           lineSelectionLabel.setText(
             selectedLine+"");
-			eventCountLabel.setText(selectedLine==0?"":lineCount + ":" + total);
+			eventCountLabel.setText(lineCount + ":" + total);
         }
       });
   }
