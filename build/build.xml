@@ -88,6 +88,14 @@
   </target>
 
 
+ <target name="jmxCheck">
+    <available classname="javax.management.MBeanInfo" property="jmx-present"/>
+  </target>   
+  <target name="jmx" depends="jmxCheck" if="jmx-present">
+    <echo message="JMX is present."/>
+  </target>
+
+
   <target name="jmsCheck">
     <available classname="javax.jms.Message" property="jms-present"/>
   </target>   
@@ -118,7 +126,7 @@
   </target>
 
   <target name="build" depends="init, build.core, build.xml, build.unitTests, 
-                                build.javamail, build.jms"/>
+                                build.javamail, build.jms, build.jmx"/>
 
   <target name="build.core" depends="init">
     <mkdir dir="${javac.dest}" />
@@ -172,6 +180,14 @@
     <javac srcdir="${java.source.dir}"
 	   destdir="${javac.dest}"
 	   includes="${stem}/net/JMS*.java"
+	   classpath="${classpath}"/>
+  </target>
+
+ <target name="build.jmx" depends="init, jmx, jndi" if="jmx-present">   
+    <javac srcdir="${java.source.dir}"
+	   destdir="${javac.dest}"
+	   includes="${stem}/jmx/*.java"
+           excludes="${stem}/jmx/T.java"
 	   classpath="${classpath}"/>
   </target>
 

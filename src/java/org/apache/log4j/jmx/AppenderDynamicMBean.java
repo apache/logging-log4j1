@@ -1,3 +1,9 @@
+/*
+ * Copyright (C) The Apache Software Foundation. All rights reserved.
+ *
+ * This software is published under the terms of the Apache Software
+ * License version 1.1, a copy of which has been included with this
+ * distribution in the LICENSE.txt file.  */
 
 package org.apache.log4j.jmx;
 
@@ -86,7 +92,7 @@ public class AppenderDynamicMBean extends AbstractDynamicMBean {
 						 true,
 						 writeMethod != null,
 						 false));
-	  dynamicProps.put(name, new B(readMethod, writeMethod));
+	  dynamicProps.put(name, new MethodUnion(readMethod, writeMethod));
 	}      
       }
     }
@@ -219,13 +225,13 @@ public class AppenderDynamicMBean extends AbstractDynamicMBean {
       }
     }
 
-    B b = (B) dynamicProps.get(attributeName);
+    MethodUnion mu = (MethodUnion) dynamicProps.get(attributeName);
 
     //cat.debug("----name="+attributeName+", b="+b);
 
-    if(b != null && b.readMethod != null) {
+    if(mu != null && mu.readMethod != null) {
       try {
-	return b.readMethod.invoke(appender, null);
+	return mu.readMethod.invoke(appender, null);
       } catch(Exception e) {
 	return null;
       }
@@ -265,12 +271,12 @@ public class AppenderDynamicMBean extends AbstractDynamicMBean {
     
 
     
-    B b = (B) dynamicProps.get(name);
+    MethodUnion mu = (MethodUnion) dynamicProps.get(name);
 
-    if(b != null && b.writeMethod != null) {
+    if(mu != null && mu.writeMethod != null) {
       Object[] o = new Object[1];
 
-      Class[] params = b.writeMethod.getParameterTypes();
+      Class[] params = mu.writeMethod.getParameterTypes();
       if(params[0] == org.apache.log4j.Priority.class) {
 	value = OptionConverter.toLevel((String) value, 
 					(Level) getAttribute(name));
@@ -278,7 +284,7 @@ public class AppenderDynamicMBean extends AbstractDynamicMBean {
       o[0] = value;
 
       try {
-	b.writeMethod.invoke(appender,  o);
+	mu.writeMethod.invoke(appender,  o);
 	
       } catch(Exception e) {
 	cat.error("FIXME", e);
@@ -304,14 +310,3 @@ public class AppenderDynamicMBean extends AbstractDynamicMBean {
 
 }
 
-
-  class B {
-    Method readMethod;
-    Method writeMethod;
-
-    B(Method readMethod, Method writeMethod) {
-      this.readMethod = readMethod;
-      this.writeMethod = writeMethod;
-    }
-    
-  }

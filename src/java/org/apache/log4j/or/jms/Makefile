@@ -1,5 +1,5 @@
 
-PKG_DIR :=org/apache/log4j/or/sax
+PKG_DIR :=org/apache/log4j/or/jms
 DEPTH   :=../../../../../../..
 JSOURCES:= MessageRenderer.java
 
