@@ -147,6 +147,10 @@ public class ContextJNDISelector implements RepositorySelector {
         "default hierarchy has been already set.");
     }
   }
+  
+  public LoggerRepository getDefaultRepository() {
+    return defaultRepository ;
+  }
 
   /**
    * Return the repoistory selector based on the current JNDI environment.

@@ -48,6 +48,16 @@ public interface RepositorySelector {
   public void setDefaultRepository(LoggerRepository def);
   
   /**
+   * Gets the default repository. In the initial phases of configration, the
+   * returned value may be null. However, after the RepositorySelector is 
+   * properly registered with LogManager, the returned value should never
+   * be null.
+   * 
+   * @since 1.3
+   */
+  public LoggerRepository getDefaultRepository();
+  
+  /**
    * Remove the repository with the given context name from the list maintained
    * by the respository selector.
    * 

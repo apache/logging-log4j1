@@ -81,9 +81,13 @@ public class LogManager {
       }
     }
 
-    // at this stage 'repositorySelector' should point to a valid selector
-    repositorySelector.setDefaultRepository(defaultHierarchy);
-
+    // at this stage 'repositorySelector' should point to a valid selector.
+    // Set the default repository for the selector, but only if it has not
+    // have one already.
+    if(repositorySelector.getDefaultRepository() == null) {
+      repositorySelector.setDefaultRepository(defaultHierarchy);
+    }
+    
     // configure log4j internal logging for the default hierarchy
     IntializationUtil.log4jInternalConfiguration(defaultHierarchy);
 

@@ -26,6 +26,10 @@ public class DefaultRepositorySelector implements RepositorySelector {
     return repository;
   }
   
+  public LoggerRepository getDefaultRepository() {
+    return repository ;
+  }
+  
   public void setDefaultRepository(LoggerRepository dr) {
     if(repository == null) {
       repository = dr;
