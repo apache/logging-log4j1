@@ -238,6 +238,7 @@ public class JoranConfigurator extends ConfiguratorBase {
 
     Map omap = ec.getObjectMap();
     omap.put(ActionConst.APPENDER_BAG, new HashMap());
+    omap.put(ActionConst.FILTER_CHAIN_BAG, new HashMap());
   }
 
   public ExecutionContext getExecutionContext() {

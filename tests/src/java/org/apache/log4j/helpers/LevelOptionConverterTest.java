@@ -34,7 +34,6 @@ import java.util.Properties;
 */
 public class LevelOptionConverterTest extends TestCase {
   Properties props;
-  OptionConverter optionConverter = new OptionConverter();
 
   public LevelOptionConverterTest(String name) {
     super(name);
@@ -49,31 +48,31 @@ public class LevelOptionConverterTest extends TestCase {
 
   public void toLevelTest1() {
     String val = "INFO";
-    Level p = optionConverter.toLevel(val, null);
+    Level p = OptionConverter.toLevel(val, null);
     assertEquals(p, Level.INFO);
   }
 
   public void toLevelTest2() {
     String val = "INFO#org.apache.log4j.xml.XLevel";
-    Level p = optionConverter.toLevel(val, null);
+    Level p = OptionConverter.toLevel(val, null);
     assertEquals(p, Level.INFO);
   }
 
   public void toLevelTest3() {
     String val = "TRACE#org.apache.log4j.xml.XLevel";
-    Level p = optionConverter.toLevel(val, null);
+    Level p = OptionConverter.toLevel(val, null);
     assertEquals(p, XLevel.TRACE);
   }
 
   public void toLevelTest4() {
     String val = "TR#org.apache.log4j.xml.XLevel";
-    Level p = optionConverter.toLevel(val, null);
+    Level p = OptionConverter.toLevel(val, null);
     assertEquals(p, null);
   }
 
   public void toLevelTest5() {
     String val = "INFO#org.apache.log4j.xml.TOTO";
-    Level p = optionConverter.toLevel(val, null);
+    Level p = OptionConverter.toLevel(val, null);
     assertEquals(p, null);
   }
 

@@ -21,7 +21,6 @@ import org.apache.log4j.helpers.IntializationUtil;
 import org.apache.log4j.helpers.Loader;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
-import org.apache.log4j.scheduler.Scheduler;
 import org.apache.log4j.selector.ContextJNDISelector;
 import org.apache.log4j.spi.DefaultRepositorySelector;
 import org.apache.log4j.spi.LoggerFactory;
@@ -98,11 +97,6 @@ public class LogManager {
     IntializationUtil.initialConfiguration(
         defaultLoggerRepository, configurationOptionStr, configuratorClassName);
     
-    
-    OptionConverter oc = new OptionConverter();
-    // No point in setting the repository this early in the game
-    //oc.setLoggerRepository(null);
-    
     String repositorySelectorStr = 
       OptionConverter.getSystemProperty("log4j.repositorySelectorClass", null);
 
@@ -114,7 +108,7 @@ public class LogManager {
       guard = new Object();
     } else {
       Object r =
-        oc.instantiateByClassName(
+        OptionConverter.instantiateByClassName(
           repositorySelectorStr, RepositorySelector.class, null);
 
       if (r instanceof RepositorySelector) {

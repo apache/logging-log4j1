@@ -45,13 +45,9 @@ public class RendererMap extends ComponentBase {
     getLogger().debug(
       "Rendering class: [{}, Rendered class: [{}].", renderingClassName, 
       renderedClassName);
-    
-    OptionConverter oc = new OptionConverter();
-    oc.setLoggerRepository(repository);
-    
-    
+
     ObjectRenderer renderer =
-      (ObjectRenderer) oc.instantiateByClassName(
+      (ObjectRenderer) OptionConverter.instantiateByClassName(
           renderingClassName, ObjectRenderer.class, null);
       
     if (renderer == null) {

@@ -114,10 +114,8 @@ public class ChainsawAppender
       viewerClassname = "org.apache.log4j.chainsaw.DefaultViewer";
     }
       
-    OptionConverter oc = new OptionConverter();
-    oc.setLoggerRepository(repository);
     ChainsawViewer viewer = 
-      (ChainsawViewer) oc.instantiateByClassName(viewerClassname, 
+      (ChainsawViewer) OptionConverter.instantiateByClassName(viewerClassname, 
         ChainsawViewer.class, null);
         
     if (viewer != null) {

@@ -56,10 +56,8 @@ public class SimpleRuleStore implements RuleStore {
   }
 
   public void addRule(Pattern pattern, String actionClassName) {
-    OptionConverter oc = new OptionConverter();
-    oc.setLoggerRepository(repository);
     Action action =
-      (Action) oc.instantiateByClassName(
+      (Action) OptionConverter.instantiateByClassName(
         actionClassName, Action.class, null);
 
     if(action != null) {

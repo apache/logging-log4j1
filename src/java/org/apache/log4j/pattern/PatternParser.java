@@ -359,8 +359,7 @@ public class PatternParser extends ComponentBase {
 
     //System.out.println("Option is [" + option + "]");
     if (className != null) {
-      OptionConverter oc = new OptionConverter(repository);
-      pc = (PatternConverter) oc.instantiateByClassName(
+      pc = (PatternConverter) OptionConverter.instantiateByClassName(
           className, PatternConverter.class, null);
 
       // setting the logger repository is an important configuration step.

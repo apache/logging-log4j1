@@ -20,7 +20,8 @@ import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
-import org.apache.log4j.spi.ComponentBase;
+import org.apache.log4j.config.ConfiguratorBase;
+import org.apache.log4j.joran.JoranConfigurator;
 import org.apache.log4j.spi.Configurator;
 import org.apache.log4j.spi.LoggerRepository;
 
@@ -51,20 +52,14 @@ public class OptionConverter  {
   static int DELIM_START_LEN = 2;
   static int DELIM_STOP_LEN = 1;
 
-  public OptionConverter() {
-  }
-  
-  public OptionConverter(LoggerRepository repository) {
-    //this.repository = repository;
-  }
-  
   // TODO: this method should be removed if OptionConverter becomes a static
   static Logger getLogger() {
     return LogManager.getLogger(OptionConverter.class);
   }
 
-  // TODO: this method should be removed if OptionConverter becomes a static
+  // TODO: this method should be removed if OptionConverter becomes totally static
   public static void setLoggerRepository(LoggerRepository lr) {
+    
   }
 
   
@@ -134,7 +129,7 @@ public class OptionConverter  {
     }
   }
 
-  public Object instantiateByKey(
+  public static Object instantiateByKey(
     Properties props, String key, Class superClass, Object defaultValue) {
     // Get the value of the property in string form
     String className = findAndSubst(key, props);
@@ -174,7 +169,7 @@ public class OptionConverter  {
     return dEfault;
   }
 
-  public int toInt(String value, int dEfault) {
+  public static int toInt(String value, int dEfault) {
     if (value != null) {
       String s = value.trim();
 
@@ -208,7 +203,7 @@ public class OptionConverter  {
      significant for the class name part, if present.
 
      @since 1.1 */
-  public Level toLevel(String value, Level defaultValue) {
+  public static Level toLevel(String value, Level defaultValue) {
     if (value == null) {
       return defaultValue;
     }
@@ -274,7 +269,7 @@ public class OptionConverter  {
     return result;
   }
 
-  public long toFileSize(String value, long dEfault) {
+  public static long toFileSize(String value, long dEfault) {
     if (value == null) {
       return dEfault;
     }
@@ -312,7 +307,7 @@ public class OptionConverter  {
      found value.
 
   */
-  public String findAndSubst(String key, Properties props) {
+  public static String findAndSubst(String key, Properties props) {
     String value = props.getProperty(key);
 
     if (value == null) {
@@ -343,7 +338,7 @@ public class OptionConverter  {
     if (className != null) {
       try {
         Class classObj = Loader.loadClass(className);
-  ;
+  
         if (!superClass.isAssignableFrom(classObj)) {
           getLogger().error(
             "A \"" + className + "\" object is not assignable to a \""
@@ -509,17 +504,17 @@ public class OptionConverter  {
      @param hierarchy The {@link org.apache.log4j.Hierarchy} to act on.
 
      @since 1.1.4 */
-  public void selectAndConfigure(
-    URL url, String clazz, LoggerRepository hierarchy) {
+  public static void selectAndConfigure(
+    URL url, String clazz, LoggerRepository repository) {
     Configurator configurator = null;
     String filename = url.getFile();
 
     if ((clazz == null) && (filename != null) && filename.endsWith(".xml")) {
-      clazz = "org.apache.log4j.joran.JoranConfigurator";
+      clazz = JoranConfigurator.class.getName();
     }
 
     if (clazz != null) {
-      Logger logger = hierarchy.getLogger(OptionConverter.class.getName());
+      Logger logger = repository.getLogger(OptionConverter.class.getName());
       logger.info("Preferred configurator class: " + clazz);
       System.out.println("Before instantiateByClassName");
       configurator =
@@ -535,6 +530,9 @@ public class OptionConverter  {
     }
     
     System.out.println("Before  configurator.doConfigure()");
-    configurator.doConfigure(url, hierarchy);
+    configurator.doConfigure(url, repository);
+    if(configurator instanceof ConfiguratorBase) {
+      ((ConfiguratorBase)configurator).dumpErrors();
+    }
   }
 }

@@ -29,7 +29,6 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 import org.apache.log4j.VectorAppender;
 import org.apache.log4j.helpers.Constants;
-import org.apache.log4j.helpers.IntializationUtil;
 import org.apache.log4j.joran.JoranConfigurator;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.LoggingEvent;

@@ -45,12 +45,9 @@ public class PluginAction extends Action {
       getLogger().debug(
         "About to instantiate plugin of type [" + className + "]");
 
-      OptionConverter oc = new OptionConverter();
-      oc.setLoggerRepository(this.repository);
-      Object instance =
-        oc.instantiateByClassName(
+      plugin = (Plugin)
+        OptionConverter.instantiateByClassName(
           className, org.apache.log4j.plugins.Plugin.class, null);
-      plugin = (Plugin) instance;
 
       String pluginName = attributes.getValue(NAME_ATTRIBUTE);
 
