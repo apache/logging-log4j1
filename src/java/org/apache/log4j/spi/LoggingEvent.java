@@ -118,7 +118,9 @@ public class LoggingEvent
    *             Please do not access it directly. Use the {@link
    *             #getLoggerName} method instead.
    */
-  private String loggerName;
+  //the 'logger name' variable name ("categoryName") must remain the same as prior versions in order
+  //to maintain serialization compatibility with log4j 1.2.8
+  private String categoryName;
 
   /**
    * Level of logging event. Level cannot be serializable because it is a
@@ -224,7 +226,7 @@ public class LoggingEvent
   public LoggingEvent(String fqnOfLoggerClass, Logger logger, Level level, Object message, Throwable throwable) {
     this.fqnOfLoggerClass = fqnOfLoggerClass;
     this.logger = logger;
-    this.loggerName = logger.getName();
+    this.categoryName = logger.getName();
     this.level = level;
     this.message = message;
 
@@ -257,7 +259,7 @@ public class LoggingEvent
     Throwable throwable) {
     this.fqnOfLoggerClass = fqnOfCategoryClass;
     this.logger = logger;
-    this.loggerName = logger.getName();
+    this.categoryName = logger.getName();
     this.level = level;
     this.message = message;
 
@@ -416,13 +418,13 @@ public class LoggingEvent
       throw new IllegalStateException("logger has been already set to [" + this.logger.getName() + "].");
     }
 
-    if (this.loggerName != null) {
-      throw new IllegalStateException("loggerName has been already set to [" + this.loggerName + "], logger "
+    if (this.categoryName != null) {
+      throw new IllegalStateException("loggerName has been already set to [" + this.categoryName + "], logger "
         + logger.getName() + "] is invalid");
     }
 
     this.logger = logger;
-    this.loggerName = logger.getName();
+    this.categoryName = logger.getName();
   }
 
 
@@ -430,7 +432,7 @@ public class LoggingEvent
    * Return the name of the logger.
    */
   public String getLoggerName() {
-    return loggerName;
+    return categoryName;
   }
 
 
@@ -443,10 +445,10 @@ public class LoggingEvent
    */
   public void setLoggerName(String loggerName)
          throws IllegalStateException {
-    if (this.loggerName != null) {
-      throw new IllegalStateException("loggerName has been already set to [" + this.loggerName + "].");
+    if (this.categoryName != null) {
+      throw new IllegalStateException("loggerName has been already set to [" + this.categoryName + "].");
     } else {
-      this.loggerName = loggerName;
+      this.categoryName = loggerName;
     }
   }
 
