@@ -68,6 +68,18 @@ public class MDC {
   }
 
   /**
+   * Please use the {@link #put(String key, String val)} form instead. The 'val'
+   * parameter needs to be a string.
+   * 
+   * @param key the key for the contextual information
+   * @param val is transformed into a string before being placed in the MDC
+   * @deprecated please use the {@link #put(String key, String val)} form.
+   */
+  public static void put(String key, Object val) {
+    put(key, val.toString());
+  }
+  
+  /**
    * Get the context identified by the <code>key</code> parameter.
    *
    *  <p>This method has no side effects.

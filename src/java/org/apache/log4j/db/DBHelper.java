@@ -16,8 +16,8 @@ import org.apache.log4j.spi.LoggingEvent;
  */
 public class DBHelper {
   
-  static short PROPERTIES_EXIST = 0x01;
-  static short EXCEPTION_EXISTS = 0x02;
+  public static short PROPERTIES_EXIST = 0x01;
+  public static short EXCEPTION_EXISTS = 0x02;
   
   static short computeReferenceMask(LoggingEvent event) {
     short mask = 0;
