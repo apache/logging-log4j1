@@ -228,6 +228,7 @@
 		  ${stem}/varia/*.class, 
 		  ${stem}/nt/*.class,
 		  ${stem}/xml/*.class, 
+		  ${stem}/jmx/*.class, 
 		  ${stem}/or/*.class,
 		  ${stem}/or/sax/*.class,
 		  ${stem}/config/*.class,
@@ -385,8 +386,6 @@
 
     	 
     <delete dir="${dist.tmp}" />
-
   </target>
-
 </project>
 

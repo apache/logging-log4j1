@@ -33,5 +33,8 @@ fi
 
 BUILDFILE=build/build.xml
 
-${JAVA_HOME}/bin/java -classpath ${CLASSPATH} org.apache.tools.ant.Main \
+${JAVA_HOME}/bin/java -classpath ${CLASSPATH} \
+                       org.apache.tools.ant.Main \
                       -buildfile ${BUILDFILE} "$@"
+
+#   -Djavax.xml.transform.TransformerFactory=com.icl.saxon.TransformerFactoryImpl\
