@@ -1,37 +1,53 @@
 /*
- * Copyright (C) The Apache Software Foundation. All rights reserved.
+ * Copyright 1999,2004 The Apache Software Foundation.
  *
- * This software is published under the terms of the Apache Software
- * License version 1.1, a copy of which has been included with this
- * distribution in the LICENSE.txt file.  */
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package org.apache.log4j.xml;
 
-import java.io.InputStream;
+import org.apache.log4j.helpers.LogLog;
+
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 
-import org.apache.log4j.helpers.LogLog;
+import java.io.InputStream;
+
 
 /**
  * An {@link EntityResolver} specifically designed to return
  * <code>log4j.dtd</code> which is embedded within the log4j jar
- * file. 
+ * file.
  *
  * @author Paul Austin
+ * @authir Ceki Gulcu (adapted for log4j)
  * */
 public class Log4jEntityResolver implements EntityResolver {
-
-  public InputSource resolveEntity (String publicId, String systemId) {
+  public InputSource resolveEntity(String publicId, String systemId) {
+    LogLog.info("Log4jEntityResolver.resolveEntity("+publicId+","+systemId+") called");
     if (systemId.endsWith("log4j.dtd")) {
       Class clazz = getClass();
-      InputStream in = clazz.getResourceAsStream("/org/apache/log4j/xml/log4j.dtd");
+      InputStream in =
+        clazz.getResourceAsStream("/org/apache/log4j/xml/log4j.dtd");
+
       if (in == null) {
-	LogLog.error("Could not find [log4j.dtd]. Used [" + clazz.getClassLoader() 
-		     + "] class loader in the search.");
-	return null;
+        LogLog.error(
+          "Could not find [log4j.dtd]. Used [" + clazz.getClassLoader()
+          + "] class loader in the search.");
+
+        return null;
       } else {
-	return new InputSource(in);
+        return new InputSource(in);
       }
     } else {
       return null;
