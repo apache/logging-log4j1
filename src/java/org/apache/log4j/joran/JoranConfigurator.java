@@ -31,6 +31,7 @@ import org.apache.log4j.joran.action.AppenderAction;
 import org.apache.log4j.joran.action.AppenderRefAction;
 import org.apache.log4j.joran.action.ConfigurationAction;
 import org.apache.log4j.joran.action.ConversionRuleAction;
+import org.apache.log4j.joran.action.JndiSubstitutionPropertyAction;
 import org.apache.log4j.joran.action.LayoutAction;
 import org.apache.log4j.joran.action.LevelAction;
 import org.apache.log4j.joran.action.LoggerAction;
@@ -228,8 +229,12 @@ public class JoranConfigurator extends ConfiguratorBase {
       new Pattern("log4j:configuration/appender/layout/conversionRule"),
       new ConversionRuleAction());
     rs.addRule(
+               new Pattern("log4j:configuration/jndiSubstitutionProperty"),
+               new JndiSubstitutionPropertyAction());
+    rs.addRule(
       new Pattern("log4j:configuration/newRule"), new NewRuleAction());
     rs.addRule(new Pattern("*/param"), new ParamAction());
+
 
     joranInterpreter = new Interpreter(rs);
 
