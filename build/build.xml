@@ -142,7 +142,7 @@
 		    ${stem}/net/SMTPAppender.java,
                	    ${stem}/net/JMS*.java,
                	    ${stem}/jmx/*.java,
-               	    ${stem}/or/MessageRenderer.java,
+               	    ${stem}/or/jms/MessageRenderer.java,
 		    **/pending/**" 
 	    debug="on"/>			
     <rmic base="${javac.dest}" 
@@ -233,7 +233,8 @@
 	          **/Syslog*, **/RelativeTimeDateFormat.*,
 		  ${stem}/gui/**/*.class, 
 		  **/UnitTest*.class, 
-		  ${stem}/or/MessageRenderer.class,
+		  ${stem}/or/jms/MessageRenderer.class,
+		  ${stem}/or/sax/AttributesRenderer.class,
 		  ${stem}/spi/TriggeringEventEvaluator.class
 		  ${stem}/helpers/CyclicBuffer.class"
         manifest="${jar.dest}/manifest.mf"
