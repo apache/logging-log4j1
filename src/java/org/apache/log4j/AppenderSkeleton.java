@@ -210,8 +210,11 @@ public abstract class AppenderSkeleton extends ComponentBase implements Appender
       guard = true;
 
       if (closed) {
-        getLogger().error(
-          "Attempted to append to closed appender named [{}].", name);
+        // FIXME: We should not flood other appenders but at the same time
+        // should output something meaningful (only once though).
+        // Logging not allowed:
+        //getLogger().error(
+        //  "Attempted to append to closed appender named [{}].", name);
 
         return;
       }
