@@ -1,37 +1,46 @@
 /*
- * Copyright (C) The Apache Software Foundation. All rights reserved.
+ * Copyright 1999,2004 The Apache Software Foundation.
  *
- * This software is published under the terms of the Apache Software
- * License version 1.1, a copy of which has been included with this
- * distribution in the LICENSE.txt file.  */
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package org.apache.log4j.xml;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXParseException;
-import org.apache.log4j.helpers.LogLog;
+
 
 public class SAXErrorHandler implements ErrorHandler {
-
-  public
-  void error(SAXParseException ex) {
-    LogLog.error("Parsing error on line "+ex.getLineNumber()+" and column "
-		 +ex.getColumnNumber());
-    LogLog.error(ex.getMessage(), ex.getException());
+  Logger logger = LogManager.getLogger(SAXErrorHandler.class);
+  
+  public void error(SAXParseException ex) {
+    logger.error(
+      "Parsing error on line " + ex.getLineNumber() + " and column "
+      + ex.getColumnNumber());
+    logger.error(ex.getMessage(), ex.getException());
     //LogLog.error("pid="+ex.getPublicId()+" sid="+ex.getSystemId());
   }
-  
-  public
-  void fatalError(SAXParseException ex) {
+
+  public void fatalError(SAXParseException ex) {
     error(ex);
   }
-   
-  public
-  void warning(SAXParseException ex) {
-    LogLog.warn("Parsing error on line "+ex.getLineNumber()+" and column "
-		+ex.getColumnNumber());
-    LogLog.warn(ex.getMessage(), ex.getException());
+
+  public void warning(SAXParseException ex) {
+    logger.warn(
+      "Parsing error on line " + ex.getLineNumber() + " and column "
+      + ex.getColumnNumber());
+    logger.warn(ex.getMessage(), ex.getException());
   }
-
-
 }

@@ -16,6 +16,8 @@
 
 package org.apache.log4j.spi;
 
+//import org.apache.log4j.LogManager;
+//import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
 
 
@@ -111,4 +113,19 @@ public abstract class Filter implements OptionHandler {
   public Filter getNext() {
         return next;
   }
+  
+  /**
+   * Return an instance specific logger to be used by the Filter itself.
+   * This logger is not intended to be used by Mrs. Piggy, our proverbial user,
+   * hence the protected keyword.
+   * 
+   * @return instance specific logger
+   */
+//  protected Logger getLogger() {
+//    if(logger == null) {
+//      logger = LogManager.getLogger(this.getClass().getName());
+//    }
+//    return logger;
+//  }
+  
 }

@@ -17,7 +17,6 @@
 package org.apache.log4j.db;
 
 import org.apache.log4j.LogManager;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.plugins.Pauseable;
 import org.apache.log4j.plugins.Receiver;
 import org.apache.log4j.scheduler.Scheduler;
@@ -81,7 +80,7 @@ public class DBReceiver extends Receiver implements Pauseable {
    * @see org.apache.log4j.plugins.Plugin#shutdown()
    */
   public void shutdown() {
-    LogLog.info("removing receiverJob from the Scheduler.");
+    getLogger().info("removing receiverJob from the Scheduler.");
 
     Scheduler scheduler = LogManager.getSchedulerInstance();
     scheduler.delete(receiverJob);

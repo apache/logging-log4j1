@@ -29,8 +29,6 @@ import org.apache.log4j.util.JunitTestRunnerFilter;
 import org.apache.log4j.util.LineNumberFilter;
 import org.apache.log4j.util.SunReflectFilter;
 import org.apache.log4j.util.Transformer;
-import org.apache.log4j.xml.DOMConfigurator;
-
 
 public class ErrorHandlerTestCase extends TestCase {
   static String TEMP = "output/temp";
@@ -60,7 +58,7 @@ public class ErrorHandlerTestCase extends TestCase {
   }
 
   public void test1() throws Exception {
-    DOMConfigurator.configure("input/xml/fallback1.xml");
+    org.apache.log4j.xml.DOMConfigurator.configure("input/xml/fallback1.xml");
     common();
 
     ControlFilter cf =
