@@ -190,8 +190,8 @@ public class SMTPAppender extends AppenderSkeleton {
 
 
   /**
-     The <code>SMTPAppender</code> requires a {@link Layout layout}.
-  */
+     The <code>SMTPAppender</code> requires a {@link
+     org.apache.log4j.Layout layout}.  */
   public
   boolean requiresLayout() {
     return true;

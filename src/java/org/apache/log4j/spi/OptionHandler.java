@@ -25,11 +25,10 @@ public interface OptionHandler {
      options have been set. This is required for components which have
      related options that remain ambigous until all are set.
 
-     <p>For example, the FileAppender has the
-     {@link FileAppender#setFile File} and
-     {@link FileAppender#setAppend Append} options both of which are
-     ambigous until the other is also set.
-  */
+     <p>For example, the FileAppender has the {@link
+     org.apache.log4j.FileAppender#setFile File} and {@link
+     org.apache.log4j.FileAppender#setAppend Append} options both of
+     which are ambigous until the other is also set.  */
   void activateOptions();
 
   /**

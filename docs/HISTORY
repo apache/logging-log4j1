@@ -9,9 +9,13 @@
  
  - Release of version 1.2 
 
+ - Fixed bug #8527. A closed TelnetAppender would continue waiting
+   for connections even if its ServerSocket was closed. This caused
+   the TelnetSocket to sit in a loop and complain about the closed
+   socket. [*]
 
  - AsyncAppender throws NullPointerException problem. The bug was actually in
-   AppenderSkeleton. See bug #5444 for more details. [*]
+   AppenderSkeleton. See bug #5444 details. [*]
 
  - Added support for recursive variable substiuton as requested by
    Eric Chastan. [*]

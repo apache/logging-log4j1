@@ -268,12 +268,12 @@ public class Category implements AppenderAttachable {
 
     <p>This method first checks if this category is <code>ERROR</code>
     enabled by comparing the level of this category with {@link
-    Level#ERROR ERROR} Level. If this category is
-    <code>ERROR</code> enabled, then it converts the message object
-    passed as parameter to a string by invoking the appropriate {@link
-    ObjectRenderer}. It proceeds to call all the registered appenders
-    in this category and also higher in the hierarchy depending on
-    the value of the additivity flag.
+    Level#ERROR ERROR} Level. If this category is <code>ERROR</code>
+    enabled, then it converts the message object passed as parameter
+    to a string by invoking the appropriate {@link
+    org.apache.log4j.or.ObjectRenderer}. It proceeds to call all the
+    registered appenders in this category and also higher in the
+    hierarchy depending on the value of the additivity flag.
 
     <p><b>WARNING</b> Note that passing a {@link Throwable} to this
     method will print the name of the <code>Throwable</code> but no
