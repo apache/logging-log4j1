@@ -176,6 +176,13 @@ public class LoggingEvent implements java.io.Serializable {
     return ndc; 
   }
 
+
+  /** 
+      Retrung the the context corresponding to the <code>key</code>
+      parameter. If there is a local MDC copy (probably from a remote
+      machine, the search try it first, if that fails then search this
+      thread's <code>MDC</code>.
+   */
   public
   Object getMDC(String key) {
     Object r;
@@ -189,32 +196,16 @@ public class LoggingEvent implements java.io.Serializable {
     return MDC.get(key);
   }
 
-  protected
+  /**
+     Obtain a copy of this thread's MDC prior to serialization or
+     asynchronous logging.  */
+  public
   void getMDCCopy() {
     if(mdcLookupRequired) {
       ndcLookupRequired = false;
       mdcCopy = MDC.getContext();
     }
   }
-
-  
-
-  //  if(mdcLookupRequired) {
-  //	mdcLookupRequired = false;
-  //	mdc = MDC.getContext();
-  //	if(mdc != null) 
-  //	  return mdc.get(key);
-  //  }
-  //
-  //
-  //  Object r = mdc.get(key); 
-  //  if(r == null) {
-  //	return MDC.get(key);
-  //  } else {
-  //	return r;
-  //  }
-  //}
-
 
   public
   String getRenderedMessage() {

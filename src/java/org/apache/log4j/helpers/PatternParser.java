@@ -12,7 +12,6 @@ import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.helpers.AbsoluteTimeDateFormat;
 import org.apache.log4j.Layout;
 import org.apache.log4j.NDC;
-import org.apache.log4j.MDC;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.or.ObjectRenderer;
@@ -456,7 +455,7 @@ public class PatternParser {
 
     public
     String convert(LoggingEvent event) {
-      Object val = MDC.get(key);
+      Object val = event.getMDC(key);
       if(val == null) {
 	return null;
       } else {

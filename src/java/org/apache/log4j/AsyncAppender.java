@@ -108,6 +108,9 @@ public class AsyncAppender extends AppenderSkeleton
     // LoggingEvent fields were not set at event creation time.
     event.getNDC();
     event.getThreadName();
+    // Get a copy of this thread's MDC.
+
+    event.getMDCCopy();
     if(locationInfo) {
       event.getLocationInformation();	
     }

@@ -147,7 +147,7 @@ public class RollingFileAppender extends FileAppender {
     try {
       // This will also close the file. This is OK since multiple
       // close operations are safe.
-      this.setFile(fileName, false);
+      this.setFile(fileName, false, bufferedIO, bufferSize);
     }
     catch(IOException e) {
       LogLog.error("setFile("+fileName+", false) call failed.", e);
@@ -156,8 +156,9 @@ public class RollingFileAppender extends FileAppender {
 
   public
   synchronized
-  void setFile(String fileName, boolean append) throws IOException {
-    super.setFile(fileName, append);
+  void setFile(String fileName, boolean append, boolean bufferedIO, int bufferSize) 
+                                                                 throws IOException {
+    super.setFile(fileName, append, this.bufferedIO, this.bufferSize);
     if(append) {
       File f = new File(fileName);
       ((CountingQuietWriter) qw).setCount(f.length());
