@@ -49,22 +49,38 @@
 
 package org.apache.log4j.chainsaw;
 
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.DefaultTreeSelectionModel;
 import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
 
 
 /**
@@ -73,16 +89,21 @@ import javax.swing.tree.TreeModel;
  * @author Paul Smith
  */
 public class LogPanelPreferencePanel extends JPanel {
-  private final LogPanelPreferenceModel model;
-  final JLabel titleLabel = new JLabel("Selected Pref Panel");
+  private final LogPanelPreferenceModel committedPreferenceModel;
+  private final JLabel titleLabel = new JLabel("Selected Pref Panel");
+  private final JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+  private final JPanel selectedPrefPanel = new JPanel(new BorderLayout(0, 3));
+  private final LogPanelPreferenceModel uncommitedPreferenceModel =
+    new LogPanelPreferenceModel();
+  private ActionListener okCancelListener;
 
   public LogPanelPreferencePanel(LogPanelPreferenceModel model) {
-    this.model = model;
+    this.committedPreferenceModel = model;
     initComponents();
   }
 
   /**
-   * Setsup and layouts the components
+   * Setup and layout for the components
    */
   private void initComponents() {
     //		setBorder(BorderFactory.createLineBorder(Color.red));
@@ -90,17 +111,15 @@ public class LogPanelPreferencePanel extends JPanel {
     setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
     final JTree prefTree = new JTree(createTreeModel());
+    prefTree.setRootVisible(false);
+
     DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
-    renderer.setLeafIcon(null);
+    renderer.setLeafIcon(ChainsawIcons.ICON_PREFERENCES);
     prefTree.setCellRenderer(renderer);
 
     final JScrollPane treeScroll = new JScrollPane(prefTree);
 
     treeScroll.setPreferredSize(new Dimension(200, 240));
-
-    JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
-
-    JPanel selectedPrefPanel = new JPanel(new BorderLayout(0, 3));
 
     titleLabel.setFont(titleLabel.getFont().deriveFont(16.0f));
     titleLabel.setBorder(BorderFactory.createEtchedBorder());
@@ -115,7 +134,23 @@ public class LogPanelPreferencePanel extends JPanel {
     add(mainPanel, BorderLayout.CENTER);
 
     JButton okButton = new JButton("OK");
+
+    okButton.addActionListener(
+      new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          committedPreferenceModel.apply(uncommitedPreferenceModel);
+          hidePanel();
+        }
+      });
+
     JButton cancelButton = new JButton("Cancel");
+    cancelButton.addActionListener(
+      new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          hidePanel();
+        }
+      });
+
     Box buttonBox = Box.createHorizontalBox();
     buttonBox.add(Box.createHorizontalGlue());
     buttonBox.add(okButton);
@@ -123,6 +158,60 @@ public class LogPanelPreferencePanel extends JPanel {
     buttonBox.add(cancelButton);
 
     add(buttonBox, BorderLayout.SOUTH);
+
+    DefaultTreeSelectionModel treeSelectionModel =
+      new DefaultTreeSelectionModel();
+    treeSelectionModel.setSelectionMode(
+      TreeSelectionModel.SINGLE_TREE_SELECTION);
+    prefTree.setSelectionModel(treeSelectionModel);
+    prefTree.addTreeSelectionListener(
+      new TreeSelectionListener() {
+        public void valueChanged(TreeSelectionEvent e) {
+          TreePath path = e.getNewLeadSelectionPath();
+          DefaultMutableTreeNode node =
+            (DefaultMutableTreeNode) path.getLastPathComponent();
+          setDisplayedPrefPanel((JComponent) node.getUserObject());
+        }
+      });
+
+    // ensure the first pref panel is selected and displayed
+    DefaultMutableTreeNode root =
+      (DefaultMutableTreeNode) prefTree.getModel().getRoot();
+    DefaultMutableTreeNode firstNode =
+      (DefaultMutableTreeNode) root.getFirstChild();
+    prefTree.setSelectionPath(new TreePath(firstNode.getPath()));
+  }
+
+  /**
+   * Ensures a specific panel is displayed in the spot where
+   * preferences can be selected.
+   *
+  * @param panel
+  */
+  protected void setDisplayedPrefPanel(JComponent panel) {
+    selectedPrefPanel.add(panel, BorderLayout.CENTER);
+    selectedPrefPanel.invalidate();
+    selectedPrefPanel.validate();
+    titleLabel.setText(panel.toString());
+  }
+
+  public void setOkCancelActionListener(ActionListener l) {
+    this.okCancelListener = l;
+  }
+
+  public void hidePanel() {
+    if (okCancelListener != null) {
+      okCancelListener.actionPerformed(null);
+    }
+  }
+
+  /**
+   * Ensures this panels DISPLAYED model is in sync with
+   * the model initially passed to the constructor.
+   *
+   */
+  public void updateModel() {
+    this.uncommitedPreferenceModel.apply(committedPreferenceModel);
   }
 
   private TreeModel createTreeModel() {
@@ -131,10 +220,17 @@ public class LogPanelPreferencePanel extends JPanel {
     DefaultTreeModel model = new DefaultTreeModel(rootNode);
 
     DefaultMutableTreeNode formatting =
-      new DefaultMutableTreeNode("Formatting");
+      new DefaultMutableTreeNode(new FormattingPanel());
     rootNode.add(formatting);
 
     return model;
+  }
+
+  /**
+   * @return
+   */
+  private LogPanelPreferenceModel getModel() {
+    return uncommitedPreferenceModel;
   }
 
   public static void main(String[] args) {
@@ -144,5 +240,65 @@ public class LogPanelPreferencePanel extends JPanel {
 
     f.setSize(640, 480);
     f.show();
+  }
+
+  /**
+   * All of the Preferences panels used in this class extend from
+   * this, it is used to provide standard L&F required by all.
+   * @author Paul Smith
+   *
+   */
+  private static class BasicPrefPanel extends JPanel {
+    private BasicPrefPanel() {
+      //    	setBorder(BorderFactory.createLineBorder(Color.red));
+    }
+  }
+
+  /**
+   * Provides preference gui's for all the Formatting options
+   * available for the columns etc.
+   */
+  private class FormattingPanel extends BasicPrefPanel {
+    private FormattingPanel() {
+      super();
+      this.initComponents();
+    }
+
+    private void initComponents() {
+      setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+      JPanel dateFormatPanel = new JPanel();
+      dateFormatPanel.setBorder(
+        BorderFactory.createTitledBorder(
+          BorderFactory.createEtchedBorder(), "Timestamp"));
+      dateFormatPanel.setLayout(
+        new BoxLayout(dateFormatPanel, BoxLayout.Y_AXIS));
+
+      ButtonGroup bgDateFormat = new ButtonGroup();
+      final JRadioButton rdISO =
+        new JRadioButton("ISO 8601 format (yyyy-MM-dd HH:mm:ss)");
+      rdISO.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            getModel().setUseISO8601Format(rdISO.isSelected());
+          }
+        });
+      rdISO.setSelected(getModel().isUseISO8601Format());
+      getModel().addPropertyChangeListener(
+        "useISO8601Format",
+        new PropertyChangeListener() {
+          public void propertyChange(PropertyChangeEvent evt) {
+            rdISO.setSelected(getModel().isUseISO8601Format());
+          }
+        });
+      dateFormatPanel.add(rdISO);
+
+      add(dateFormatPanel);
+      add(Box.createVerticalGlue());
+    }
+
+    public String toString() {
+      return "Formatting";
+    }
   }
 }
