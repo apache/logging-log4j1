@@ -69,7 +69,7 @@
            <li><a
            href="http://www.vimeworks.com/~mauricio/manualLog4J.html">Spanish
            translation</a> of the short manual Mauricio Santacruz (<a href="http://www.vimeworks.com/~mauricio/manualLog4J.pdf">PDF</a>, <a href="http://www.vimeworks.com/~mauricio/manualLog4J.html">HTML</a>)</li>
-           <li><a href="http://www.javacore.de/jumpToDownload.php?id=8&url=tutorials/schnelle/log4jmanual.pdf">German translation of the short manual, courtesy of Dirk Schnelle. (PDF only at this time)</li>
+           <li><a href="http://www.javacore.de/jumpToDownload.php?id=8&amp;url=tutorials/schnelle/log4jmanual.pdf">German translation</a> of the short manual, courtesy of Dirk Schnelle. (PDF only at this time)</li>
        </ul>
     </section>
 
