@@ -65,32 +65,30 @@
       <classpath refid="tests.classpath"/>
     </sql>
     
-    
     <echo message="Running test case with DriverManager config file"/>
     <antcall target="invokeDBTestCase">
       <param name="appendConfigFile" value="./input/db/append-with-drivermanager1.xml"/>
       <param name="readConfigFile"   value="./input/db/read-with-drivermanager1.xml"/>
     </antcall>
-  
 
     <echo message="Running test case with DataSource"/>
     <antcall target="invokeDBTestCase">
       <param name="appendConfigFile" value="./input/db/append-with-datasource1.xml"/>
       <param name="readConfigFile"   value="./input/db/read-with-datasource1.xml"/>
     </antcall>
-
-
+  	
     <echo message="Running test case with a native *pooled* DataSource"/>
     <antcall target="invokeDBTestCase">
       <param name="appendConfigFile" value="./input/db/append-with-pooled-datasource1.xml"/>
       <param name="readConfigFile"   value="./input/db/read-with-pooled-datasource1.xml"/>
     </antcall>
-  	
-    <echo message="Running test case with a DataSource with JNDI"/>
+
+  	<echo message="Running tests DataSource with JNDI"/>
     <antcall target="invokeDBTestCase">
       <param name="appendConfigFile" value="./input/db/append-with-jndi1.xml"/>
       <param name="readConfigFile"   value="./input/db/read-with-jndi1.xml"/>
-    </antcall> 
+    </antcall>
+     
   </target>   
   
   <!-- ============ hsqldb  specific tests ============== -->     
