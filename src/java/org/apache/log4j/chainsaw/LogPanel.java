@@ -214,7 +214,6 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
   private double lastLogTreePanelSplitLocation =
     DEFAULT_LOG_TREE_SPLIT_LOCATION;
   private boolean bypassScrollFind;
-  private boolean bypassScrollSelection;
   private Point currentPoint;
   private boolean scroll;
   private boolean paused = false;
@@ -722,7 +721,10 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
           1: neither the 'firstindex' nor the 'lastindex' are on the last row, or
           2: the last index value didn't change and the 'lastindex' is on the last row, and the last index and first index aren't the same
            */ 
-          bypassScrollSelection = (!(lastIndexOnLastRow || firstIndexOnLastRow)) || (lastIndexSame && lastIndexOnLastRow && (evt.getFirstIndex() != evt.getLastIndex()));
+          boolean bypassScrollSelection = (!(lastIndexOnLastRow || firstIndexOnLastRow)) || (lastIndexSame && lastIndexOnLastRow && (evt.getFirstIndex() != evt.getLastIndex()));
+          if (bypassScrollSelection && scroll && table.getRowCount() > -1) {
+          	preferenceModel.setScrollToBottom(false);
+          }
           previousLastIndex = evt.getLastIndex();
 
           final ListSelectionModel lsm = (ListSelectionModel) evt.getSource();
@@ -1343,7 +1345,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
       tableModel.fireTableEvent(
         first, tableModel.getLastAdded(), eventBatchEntrys.size());
 
-      if (scroll && !bypassScrollFind && !bypassScrollSelection) {
+      if (scroll && !bypassScrollFind) {
         table.scrollToBottom(
           table.columnAtPoint(table.getVisibleRect().getLocation()));
       }
