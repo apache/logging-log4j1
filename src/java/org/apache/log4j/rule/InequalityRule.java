@@ -39,6 +39,10 @@ public class InequalityRule extends AbstractRule {
   private InequalityRule(
     String inequalitySymbol, String field, String value) {
     this.inequalitySymbol = inequalitySymbol;
+    if (!resolver.isField(field)) {
+        throw new IllegalArgumentException("Invalid " + inequalitySymbol + " rule - " + field + " is not a supported field");
+    }
+
     this.field = field;
     this.value = value;
   }
