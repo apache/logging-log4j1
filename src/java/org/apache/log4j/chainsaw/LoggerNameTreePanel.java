@@ -335,6 +335,7 @@ final class LoggerNameTreePanel extends JPanel {
 
   private void toggleFocusOnState() {
     setFocusOnSelected(!isFocusOnSelected());
+    hideAction.setEnabled(!isFocusOnSelected());
   }
 
   /**
@@ -458,10 +459,12 @@ final class LoggerNameTreePanel extends JPanel {
             (path != null) && (node != null) && (node.getParent() != null)
             && !hiddenSet.contains(logger));
           hideAction.setEnabled(
-            (path != null) && (node != null) && (node.getParent() != null));
+            (path != null) && (node != null) && (node.getParent() != null) && !isFocusOnSelected());
 
           if (!focusOnAction.isEnabled()) {
             setFocusOnSelected(false);
+          }else{
+              
           }
 
           expandAction.setEnabled(path != null);
@@ -499,6 +502,18 @@ final class LoggerNameTreePanel extends JPanel {
           fireChangeEvent();
         }
       });
+      
+      hideAction.addPropertyChangeListener(new PropertyChangeListener(){
+
+		public void propertyChange(PropertyChangeEvent evt) {
+            if (logTree.getSelectionPath() != null) {
+              logTreeModel.nodeChanged(
+                (TreeNode) logTree.getSelectionPath().getLastPathComponent());
+            }
+
+            fireChangeEvent();
+			
+		}});
 
     /**
      * Now add a MouseListener that fires the expansion
@@ -815,22 +830,26 @@ final class LoggerNameTreePanel extends JPanel {
 
       Font originalFont = component.getFont();
 
+     int style = Font.PLAIN;
       if (sel && focusOnLoggerButton.isSelected()) {
-        component.setFont(originalFont.deriveFont(Font.BOLD));
-      } else {
-        component.setFont(originalFont.deriveFont(Font.PLAIN));
-      }
+          style = style | Font.BOLD;
+      } 
 
-      originalFont = component.getFont();
 
-      String logger =
-        ((DefaultMutableTreeNode) value).getUserObject().toString();
+      
+      String logger = getLoggerName(new TreePath(((DefaultMutableTreeNode) value).getPath()));
 
       if (hiddenSet.contains(logger)) {
-        component.setEnabled(false);
+//        component.setEnabled(false);
+//        component.setIcon(leaf?null:getDefaultOpenIcon());
+        style = style | Font.ITALIC;
+//        LogLog.debug("TreeRenderer: '" + logger + "' is in hiddenSet, italicizing");
       } else {
-        component.setEnabled(true);
+//          LogLog.debug("TreeRenderer: '" + logger + "' is NOT in hiddenSet, leaving plain");
+//        component.setEnabled(true);
       }
+      component.setFont(originalFont.deriveFont(style));
+      
 
       return component;
     }
