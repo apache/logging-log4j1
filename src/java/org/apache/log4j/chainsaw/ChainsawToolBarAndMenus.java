@@ -70,8 +70,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -89,7 +87,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -134,16 +131,14 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
   private final Collection lookAndFeelMenus = new ArrayList();
   private final JCheckBoxMenuItem toggleShowReceiversCheck =
     new JCheckBoxMenuItem();
-	
-	private final JCheckBoxMenuItem toggleDetailMenuItem =
-	  new JCheckBoxMenuItem();
-
+  private final JCheckBoxMenuItem toggleDetailMenuItem =
+    new JCheckBoxMenuItem();
   private final FileMenu fileMenu;
   private final JCheckBoxMenuItem toggleStatusBarCheck =
     new JCheckBoxMenuItem();
   private final JMenu viewMenu = new JMenu("View");
   private final JMenuBar menuBar;
-   private final JCheckBoxMenuItem menuItemClose = new JCheckBoxMenuItem();
+  private final JCheckBoxMenuItem menuItemClose = new JCheckBoxMenuItem();
   private final JRadioButtonMenuItem levelDisplayIcon =
     new JRadioButtonMenuItem("Icon");
   private final JRadioButtonMenuItem levelDisplayText =
@@ -336,168 +331,6 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     return toolbar;
   }
 
-  JToolBar createDockwindowToolbar(
-    final JFrame dockablePanel, final LogPanel logPanel) {
-    final JToolBar toolbar = new JToolBar();
-    toolbar.setFloatable(false);
-
-    final String ident = dockablePanel.getTitle();
-    final Action dockPauseAction =
-      new AbstractAction("Pause") {
-        public void actionPerformed(ActionEvent evt) {
-          logPanel.setPaused(!logPanel.isPaused());
-        }
-      };
-
-    dockPauseAction.putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_P));
-    dockPauseAction.putValue(
-      Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("F12"));
-    dockPauseAction.putValue(
-      Action.SHORT_DESCRIPTION,
-      "Halts the display, while still allowing events to stream in the background");
-    dockPauseAction.putValue(
-      Action.SMALL_ICON, new ImageIcon(ChainsawIcons.PAUSE));
-
-    final SmallToggleButton dockPauseButton =
-      new SmallToggleButton(dockPauseAction);
-    dockPauseButton.setText("");
-
-    dockPauseButton.getModel().setSelected(logPanel.isPaused());
-
-    logPanel.addPropertyChangeListener("paused", new PropertyChangeListener() {
-
-		public void propertyChange(PropertyChangeEvent evt) {
-            dockPauseButton.getModel().setSelected(logPanel.isPaused());
-		}});
-    toolbar.add(dockPauseButton);
-
-    Action dockShowPrefsAction =
-      new AbstractAction("") {
-        public void actionPerformed(ActionEvent arg0) {
-          logPanel.showPreferences();
-        }
-      };
-
-    dockShowPrefsAction.putValue(
-      Action.SHORT_DESCRIPTION,
-      showPreferencesAction.getValue(Action.SHORT_DESCRIPTION));
-    dockShowPrefsAction.putValue(
-      Action.SMALL_ICON, showPreferencesAction.getValue(Action.SMALL_ICON));
-
-    Action dockToggleLogTreeAction =
-      new AbstractAction() {
-        public void actionPerformed(ActionEvent e) {
-          logPanel.toggleLogTreePanel();
-        }
-      };
-
-    dockToggleLogTreeAction.putValue(
-      Action.SMALL_ICON, toggleLogTreeAction.getValue(Action.SMALL_ICON));
-
-    dockToggleLogTreeAction.putValue(
-      Action.NAME, toggleLogTreeAction.getValue(Action.NAME));
-
-    dockToggleLogTreeAction.putValue(
-      Action.SHORT_DESCRIPTION,
-      toggleLogTreeAction.getValue(Action.SHORT_DESCRIPTION));
-    dockToggleLogTreeAction.putValue(
-      Action.SMALL_ICON, toggleLogTreeAction.getValue(Action.SMALL_ICON));
-
-    toolbar.add(new SmallButton(dockShowPrefsAction));
-
-    SmallToggleButton toggleLogTreeButton =
-      new SmallToggleButton(dockToggleLogTreeAction);
-    toggleLogTreeButton.setSelected(logPanel.isLogTreePanelVisible());
-    toolbar.add(toggleLogTreeButton);
-    toolbar.addSeparator();
-
-    final Action undockedClearAction =
-      new AbstractAction("Clear") {
-        public void actionPerformed(ActionEvent arg0) {
-          logPanel.clearModel();
-        }
-      };
-
-    undockedClearAction.putValue(
-      Action.SMALL_ICON, new ImageIcon(ChainsawIcons.DELETE));
-    undockedClearAction.putValue(
-      Action.SHORT_DESCRIPTION, "Removes all the events from the current view");
-
-    final SmallButton dockClearButton = new SmallButton(undockedClearAction);
-    dockClearButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-      KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, InputEvent.CTRL_MASK),
-      undockedClearAction.getValue(Action.NAME));
-    dockClearButton.getActionMap().put(
-      undockedClearAction.getValue(Action.NAME), undockedClearAction);
-
-    dockClearButton.setText("");
-    toolbar.add(dockClearButton);
-    toolbar.addSeparator();
-
-    final JTextField findField = createFindField();
-    findField.getDocument().addDocumentListener(
-      new DocumentListener() {
-        public void insertUpdate(DocumentEvent e) {
-          findInUndocked(false);
-        }
-
-        public void removeUpdate(DocumentEvent e) {
-          findInUndocked(false);
-        }
-
-        public void changedUpdate(DocumentEvent e) {
-          findInUndocked(false);
-        }
-
-        private void findInUndocked(boolean next) {
-          localFind(next, logPanel, findField);
-        }
-      });
-
-    final Action undockedFindAction =
-      new AbstractAction() {
-        public void actionPerformed(ActionEvent e) {
-          localFind(true, logPanel, findField);
-        }
-      };
-
-    undockedFindAction.putValue(Action.NAME, "Find");
-    undockedFindAction.putValue(
-      Action.SHORT_DESCRIPTION, "Finds the next occurrence within this view");
-    undockedFindAction.putValue(
-      Action.SMALL_ICON, new ImageIcon(ChainsawIcons.FIND));
-
-    SmallButton undockedFindNextButton = new SmallButton(undockedFindAction);
-
-    undockedFindNextButton.setAction(undockedFindAction);
-    undockedFindNextButton.setText("");
-    undockedFindNextButton.getActionMap().put(
-      undockedFindAction.getValue(Action.NAME), undockedFindAction);
-    undockedFindNextButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-      KeyStroke.getKeyStroke("F3"), undockedFindAction.getValue(Action.NAME));
-
-    toolbar.add(undockedFindNextButton);
-    toolbar.add(findField);
-
-    toolbar.addSeparator();
-
-    Action redockAction =
-      new AbstractAction("", ChainsawIcons.ICON_DOCK) {
-        public void actionPerformed(ActionEvent arg0) {
-          logPanel.dock();
-        }
-      };
-
-    redockAction.putValue(
-      Action.SHORT_DESCRIPTION,
-      "Docks this window back with the main Chainsaw window");
-
-    SmallButton redockButton = new SmallButton(redockAction);
-    toolbar.add(redockButton);
-
-    return toolbar;
-  }
-
   private Action createClearAction() {
     final Action action =
       new AbstractAction("Clear") {
@@ -527,13 +360,13 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     final Action action =
       new AbstractAction() {
         public void actionPerformed(ActionEvent e) {
-            closeAction.putValue(Action.NAME, "Welcome tab");
-            logui.removeWelcomePanel();
-            if(menuItemClose.isSelected()){
-                logui.addWelcomePanel();
-            } else {
-                
-            }
+          closeAction.putValue(Action.NAME, "Welcome tab");
+          logui.removeWelcomePanel();
+
+          if (menuItemClose.isSelected()) {
+            logui.addWelcomePanel();
+          } else {
+          }
         }
       };
 
@@ -564,7 +397,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
       });
   }
 
-  private JTextField createFindField() {
+  static JTextField createFindField() {
     JTextField tf = new JTextField();
     Dimension fixedSize = new Dimension(132, 24);
     tf.setPreferredSize(fixedSize);
@@ -618,7 +451,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     showToolbarCheck.setSelected(true);
 
     menuItemClose.setAction(closeAction);
-    
+
     JCheckBoxMenuItem pause = new JCheckBoxMenuItem(pauseAction);
     JMenuItem menuPrefs = new JMenuItem(showPreferencesAction);
     menuPrefs.setText(
@@ -650,7 +483,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
       Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_B));
     toggleStatusBarCheck.setAction(toggleStatusBarAction);
     toggleStatusBarCheck.setSelected(true);
-    
+
     activeTabMenu.add(pause);
     activeTabMenu.add(toggleDetailMenuItem);
     activeTabMenu.add(toggleLogTreeMenuItem);
@@ -1086,29 +919,11 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     LogPanel logPanel = logui.getCurrentLogPanel();
 
     if (logPanel != null) {
-      localFind(next, logPanel, findTextField);
-    }
-  }
-
-  private void localFind(
-    boolean next, final LogPanel logPanel,
-    final JTextField theFindTextField) {
-    if (!theFindTextField.getText().equals("")) {
-      if (
-        (lastFind.length() == 0)
-          || (lastFind.length() > theFindTextField.getText().length())) {
-        logPanel.findFromTop(theFindTextField.getText());
+      if (next) {
+        logPanel.find(findTextField.getText());
       } else {
-        if (next) {
-          logPanel.findNext(theFindTextField.getText());
-        } else {
-          logPanel.find(theFindTextField.getText());
-        }
+        logPanel.find(findTextField.getText());
       }
-
-      lastFind = theFindTextField.getText();
-    } else {
-      theFindTextField.requestFocus();
     }
   }
 
@@ -1130,6 +945,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     logTreePaneButton.setSelected(logui.isLogTreePanelVisible());
     showReceiversButton.setSelected(logui.isReceiverPanelVisible());
     menuItemClose.setSelected(logui.getTabbedPane().containsWelcomePanel());
+
     /**
      * We get the currently selected LogPanel, and if null, deactivate some
      * actions
@@ -1150,7 +966,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
 
       pauseButton.getModel().setSelected(logPanel.isPaused());
       logui.getStatusBar().setPaused(logPanel.isPaused());
-	  toggleDetailMenuItem.setSelected(logPanel.isDetailPaneVisible());
+      toggleDetailMenuItem.setSelected(logPanel.isDetailPaneVisible());
       detailPaneButton.getModel().setSelected(logPanel.isDetailPaneVisible());
     }
 
