@@ -19,7 +19,7 @@ build.properties.sample for an example of a build.properties file.
 Compiling
 =========
 
-ant compile
+ant build
 
 Running
 =======
