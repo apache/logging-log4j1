@@ -8,6 +8,21 @@
    [D] Changes affect a method or property which was previously marked as 
        deprecated.
 
+   ??, 2005
+  - Release of version 1.3alpha-7
+ 
+  - Chatty output about Logger creation or retrieval events is now
+    suppressed by default.  They can be enabled by explicitly setting the
+    log4j.coreDebug system property. [*]
+ 
+  - The log4j.debug system property no longer has any affect as all
+    log4j output is done through regular Logger objects. However, in
+    configuration file in properties format, the log4j.debug property will
+    cause PropertyConfigurator to *temporarily* output logs generated
+    during the configuration process. This is very similar to the way the
+    debug attribute works in configuration files in XML format. [*]
+ 
+  
   January 20th, 2005
  - Release of version 1.3alpha-6
 

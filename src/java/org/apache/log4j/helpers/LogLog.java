@@ -17,8 +17,7 @@
 package org.apache.log4j.helpers;
 
 
-/**
-   This class used to output log statements from within the log4j package.
+/**This class used to output log statements from within the log4j package.
 
    <p>Log4j components cannot make log4j logging calls. However, it is
    sometimes useful for the user to learn about what log4j is
@@ -31,7 +30,6 @@ package org.apache.log4j.helpers;
    the string "log4j: ".
 
    @since 0.8.2
-   @deprecated Use {@link org.apache.log4j.Logger} instead.
    @author Ceki G&uuml;lc&uuml;
 */
 public class LogLog {
@@ -42,21 +40,17 @@ public class LogLog {
     <p> The value of this string is <b>log4j.debug</b>.
 
     <p>Note that the search for all option names is case sensitive.  */
-  public static final String DEBUG_KEY = "log4j.debug";
+  public static final String CORE_DEBUG_KEY = "log4j.coreDebug";
 
   protected static boolean debugEnabled = false;
 
-  /**
-     In quietMode not even errors generate any output.
-   */
-  private static boolean quietMode = false;
   private static final String PREFIX = "log4j: ";
   private static final String ERR_PREFIX = "log4j:ERROR ";
   private static final String INFO_PREFIX = "log4j:INFO ";
   private static final String WARN_PREFIX = "log4j:WARN ";
 
   static {
-    String key = OptionConverter.getSystemProperty(DEBUG_KEY, null);
+    String key = OptionConverter.getSystemProperty(CORE_DEBUG_KEY, null);
 
     if (key != null) {
       debugEnabled = OptionConverter.toBoolean(key, true);
@@ -75,15 +69,13 @@ public class LogLog {
      statements. Output goes to <code>System.out</code>.
   */
   public static void debug(String msg) {
-    if (debugEnabled && !quietMode) {
+    if (debugEnabled) {
       System.out.println(PREFIX + msg);
     }
   }
 
   public static void info(String msg) {
-    if ( !quietMode) {
-      System.out.println(INFO_PREFIX + msg);
-    }
+    System.out.println(INFO_PREFIX + msg);
   }
   
   /**
@@ -91,7 +83,7 @@ public class LogLog {
      statements. Output goes to <code>System.out</code>.
   */
   public static void debug(String msg, Throwable t) {
-    if (debugEnabled && !quietMode) {
+    if (debugEnabled) {
       System.out.println(PREFIX + msg);
 
       if (t != null) {
@@ -101,28 +93,20 @@ public class LogLog {
   }
 
   /**
-     This method is used to output log4j internal error
-     statements. There is no way to disable error statements.
-     Output goes to <code>System.err</code>.
+   * This method is used to output log4j internal error statements. There is no 
+   * way to disable error statements. Output goes to <code>System.err</code>.
+   * @deprecated Use {@link org.apache.log4j.Logger} instead.
   */
   public static void error(String msg) {
-    if (quietMode) {
-      return;
-    }
-
     System.err.println(ERR_PREFIX + msg);
   }
 
   /**
-     This method is used to output log4j internal error
-     statements. There is no way to disable error statements.
-     Output goes to <code>System.err</code>.
-  */
+   * This method is used to output log4j internal error statements. There is no 
+   * way to disable error statements. Output goes to <code>System.err</code>.
+   * @deprecated Use {@link org.apache.log4j.Logger} instead.
+  **/
   public static void error(String msg, Throwable t) {
-    if (quietMode) {
-      return;
-    }
-
     System.err.println(ERR_PREFIX + msg);
 
     if (t != null) {
@@ -131,36 +115,33 @@ public class LogLog {
   }
 
   /**
-     In quite mode no LogLog generates strictly no output, not even
-     for errors.
-
-     @param quietMode A true for not
+   * In quite mode no LogLog generates strictly no output, not even 
+   * for errors.
+   * @param quietMode A true for not
+   * @deprecated with no replacement
   */
   public static void setQuietMode(boolean quietMode) {
-    LogLog.quietMode = quietMode;
+    // nothing to do
   }
 
   /**
-     This method is used to output log4j internal warning
-     statements. There is no way to disable warning statements.
-     Output goes to <code>System.err</code>.  */
+   * This method is used to output log4j internal warning statements. There is 
+   * no way to disable warning statements. Output goes to 
+   * <code>System.err</code>.  
+   * 
+   * @deprecated Use {@link org.apache.log4j.Logger} instead.
+   * */
   public static void warn(String msg) {
-    if (quietMode) {
-      return;
-    }
-
     System.err.println(WARN_PREFIX + msg);
   }
 
   /**
-     This method is used to output log4j internal warnings. There is
-     no way to disable warning statements.  Output goes to
-     <code>System.err</code>.  */
+   * This method is used to output log4j internal warnings. There is no way to 
+   * disable warning statements.  Output goes to <code>System.err</code>. 
+   * 
+   * @deprecated Use {@link org.apache.log4j.Logger} instead.
+   *  */
   public static void warn(String msg, Throwable t) {
-    if (quietMode) {
-      return;
-    }
-
     System.err.println(WARN_PREFIX + msg);
 
     if (t != null) {
