@@ -70,6 +70,7 @@ public class DriverManagerConnectionSource
   static private final String POSTGRES_PART = "postgresql";
   static private final String MYSQL_PART = "mysql";
   static private final String ORACLE_PART = "oracle";
+  static private final String MSSQL_PART = "mssql"; 
   
   private String driverClass = null;
   protected String url = null;
@@ -151,6 +152,8 @@ public class DriverManagerConnectionSource
       return ConnectionSource.POSTGRES_DIALECT;
     } else if (url.indexOf(MYSQL_PART) != -1) {
       return ConnectionSource.MYSQL_DIALECT;
+    } else if (url.indexOf(ORACLE_PART) != -1) {
+      return ConnectionSource.ORACLE_DIALECT;
     } else if (url.indexOf(ORACLE_PART) != -1) {
       return ConnectionSource.ORACLE_DIALECT;
     } else {

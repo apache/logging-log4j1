@@ -36,6 +36,7 @@ public interface ConnectionSource extends OptionHandler {
   final int POSTGRES_DIALECT = 1;
   final int MYSQL_DIALECT = 2;
   final int ORACLE_DIALECT = 3;
+  final int MSSQL_DIALECT = 4;
   
   /**
    *  Obtain a {@link java.sql.Connection} for use.  The client is
