@@ -13,6 +13,7 @@ import org.apache.log4j.Priority;
 import org.apache.log4j.spi.OptionHandler;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.CategoryFactory;
+import org.apache.log4j.helpers.LogLog;
 
 import org.apache.log4j.xml.examples.XPriority;
 
@@ -22,8 +23,12 @@ import org.apache.log4j.xml.examples.XPriority;
    Note that sub-classes follow the hiearchy even if its categories
    belong to different classes.
 
-   See <b><a href="doc-files/XCategory.java">source
-   code</a></b> for more details.
+   See <b><a href="doc-files/XCategory.java">source code</a></b> for
+   more details. See also <a
+   href="doc-files/extension1.xml">extension1.xml</a> and <a
+   href="doc-files/extension2.xml">extension2.xml</a> XML configuration
+   files.
+
    
  */
 public class XCategory extends Category implements OptionHandler {
@@ -36,7 +41,7 @@ public class XCategory extends Category implements OptionHandler {
   
   public static final String SUFFIX_OPTION = "Suffix";
 
-  String suffix;
+  String suffix = "";
 
   /**
      Just calls the parent constuctor.
@@ -50,8 +55,8 @@ public class XCategory extends Category implements OptionHandler {
   }
 
   /**
-     Overrides the standard debug method by appending " world" to each
-     message.  */
+     Overrides the standard debug method by appending the value of
+     suffix variable to each message.  */
   public 
   void debug(String message) {
     log(instanceFQCN, Priority.DEBUG, message + suffix, null);
@@ -68,34 +73,43 @@ public class XCategory extends Category implements OptionHandler {
     return Category.getInstance(name, factory); 
   }
 
-  /**
 
-   */
+ /**
+    Retuns the option names for this component, namely the string
+    {@link #SUFFIX_OPTION}.
+ */
   public
   String[] getOptionStrings() {
     return (new String[] {SUFFIX_OPTION});
   }
 
+ /**
+     Set XCategory specific options.
+
+     <p>The <b>Suffix</b> option is the only recognized option. It
+     takes a string value.
+     */
   public
   void setOption(String option, String value) {
-    System.out.println(option+"="+value);
     if(option == null) {
       return;
     }
     if(option.equalsIgnoreCase(SUFFIX_OPTION)) {
       this.suffix = value;
-      System.out.println("Setting suffix to"+suffix);
-
+      LogLog.debug("Setting suffix to"+suffix);
     }
   }
 
+  /**
+     We introduce a new printing method that takes the TRACE priority.
+  */
   public
   void trace(String message) { 
     // disable is defined in Category
     if(disable <=  XPriority.TRACE_INT) return;   
     if(XPriority.TRACE.isGreaterOrEqual(this.getChainedPriority()))
-      callAppenders(new LoggingEvent(instanceFQCN, this, XPriority.TRACE, message, 
-				     null));
+      callAppenders(new LoggingEvent(instanceFQCN, this, XPriority.TRACE, 
+				     message, null));
   }
 
 
