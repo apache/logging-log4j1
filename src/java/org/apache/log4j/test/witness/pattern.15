@@ -1,0 +1,184 @@
+<html><body>
+<table border="1" cellpadding="2">
+<tr>
+<th>Time</th><th>Thread</th><th>Priority</th><th>Category</th><th>NDC</th><th>Message</th></tr>
+
+<tr><td>XXX</td>
+<td>main</td>
+<td>DEBUG</td>
+<td>org.apache.log4j.test.PatternTest</td>
+<td>null</td>
+<td>Message 0</td>
+</tr>
+
+<tr><td>XXX</td>
+<td>main</td>
+<td>DEBUG</td>
+<td>root</td>
+<td>null</td>
+<td>Message 0</td>
+</tr>
+
+<tr><td>XXX</td>
+<td>main</td>
+<td>INFO</td>
+<td>org.apache.log4j.test.PatternTest</td>
+<td>null</td>
+<td>Message 1</td>
+</tr>
+
+<tr><td>XXX</td>
+<td>main</td>
+<td>INFO</td>
+<td>root</td>
+<td>null</td>
+<td>Message 1</td>
+</tr>
+
+<tr><td>XXX</td>
+<td>main</td>
+<td><font color="#FF0000">WARN</font></td>
+<td>org.apache.log4j.test.PatternTest</td>
+<td>null</td>
+<td>Message 2</td>
+</tr>
+
+<tr><td>XXX</td>
+<td>main</td>
+<td><font color="#FF0000">WARN</font></td>
+<td>root</td>
+<td>null</td>
+<td>Message 2</td>
+</tr>
+
+<tr><td>XXX</td>
+<td>main</td>
+<td><font color="#FF0000">ERROR</font></td>
+<td>org.apache.log4j.test.PatternTest</td>
+<td>null</td>
+<td>Message 3</td>
+</tr>
+
+<tr><td>XXX</td>
+<td>main</td>
+<td><font color="#FF0000">ERROR</font></td>
+<td>root</td>
+<td>null</td>
+<td>Message 3</td>
+</tr>
+
+<tr><td>XXX</td>
+<td>main</td>
+<td><font color="#FF0000">FATAL</font></td>
+<td>org.apache.log4j.test.PatternTest</td>
+<td>null</td>
+<td>Message 4</td>
+</tr>
+
+<tr><td>XXX</td>
+<td>main</td>
+<td><font color="#FF0000">FATAL</font></td>
+<td>root</td>
+<td>null</td>
+<td>Message 4</td>
+</tr>
+
+<tr><td>XXX</td>
+<td>main</td>
+<td>DEBUG</td>
+<td>org.apache.log4j.test.PatternTest</td>
+<td>null</td>
+<td>Message 5</td>
+</tr>
+<tr><td colspan="7">java.lang.Exception: Just testing
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)</td></tr>
+
+<tr><td>XXX</td>
+<td>main</td>
+<td>DEBUG</td>
+<td>root</td>
+<td>null</td>
+<td>Message 5</td>
+</tr>
+<tr><td colspan="7">java.lang.Exception: Just testing
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)</td></tr>
+
+<tr><td>XXX</td>
+<td>main</td>
+<td>INFO</td>
+<td>org.apache.log4j.test.PatternTest</td>
+<td>null</td>
+<td>Message 6</td>
+</tr>
+<tr><td colspan="7">java.lang.Exception: Just testing
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)</td></tr>
+
+<tr><td>XXX</td>
+<td>main</td>
+<td>INFO</td>
+<td>root</td>
+<td>null</td>
+<td>Message 6</td>
+</tr>
+<tr><td colspan="7">java.lang.Exception: Just testing
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)</td></tr>
+
+<tr><td>XXX</td>
+<td>main</td>
+<td><font color="#FF0000">WARN</font></td>
+<td>org.apache.log4j.test.PatternTest</td>
+<td>null</td>
+<td>Message 7</td>
+</tr>
+<tr><td colspan="7">java.lang.Exception: Just testing
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)</td></tr>
+
+<tr><td>XXX</td>
+<td>main</td>
+<td><font color="#FF0000">WARN</font></td>
+<td>root</td>
+<td>null</td>
+<td>Message 7</td>
+</tr>
+<tr><td colspan="7">java.lang.Exception: Just testing
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)</td></tr>
+
+<tr><td>XXX</td>
+<td>main</td>
+<td><font color="#FF0000">ERROR</font></td>
+<td>org.apache.log4j.test.PatternTest</td>
+<td>null</td>
+<td>Message 8</td>
+</tr>
+<tr><td colspan="7">java.lang.Exception: Just testing
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)</td></tr>
+
+<tr><td>XXX</td>
+<td>main</td>
+<td><font color="#FF0000">ERROR</font></td>
+<td>root</td>
+<td>null</td>
+<td>Message 8</td>
+</tr>
+<tr><td colspan="7">java.lang.Exception: Just testing
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)</td></tr>
+
+<tr><td>XXX</td>
+<td>main</td>
+<td><font color="#FF0000">FATAL</font></td>
+<td>org.apache.log4j.test.PatternTest</td>
+<td>null</td>
+<td>Message 9</td>
+</tr>
+<tr><td colspan="7">java.lang.Exception: Just testing
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)</td></tr>
+
+<tr><td>XXX</td>
+<td>main</td>
+<td><font color="#FF0000">FATAL</font></td>
+<td>root</td>
+<td>null</td>
+<td>Message 9</td>
+</tr>
+<tr><td colspan="7">java.lang.Exception: Just testing
+<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.test(PatternTest.java:XXX)<br>&nbsp;&nbsp;&nbsp;&nbsp;	at org.apache.log4j.test.PatternTest.main(PatternTest.java:XXX)</td></tr></table></body></html>

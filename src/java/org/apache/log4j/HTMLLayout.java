@@ -14,7 +14,11 @@ import java.io.StringWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
 
+/**
+   This layout outputs events in a HTML table.
 
+   @author Ceki G&uuml;lc&uuml;   
+ */
 public class HTMLLayout extends Layout {
 
   protected final int BUF_SIZE = 256;
@@ -35,10 +39,7 @@ public class HTMLLayout extends Layout {
   // Print no location info by default
   boolean locationInfo = false;
 
-  public
-  void activateOptions() {
-  }
-
+  
   public 
   String format(LoggingEvent event) {
     
@@ -142,6 +143,9 @@ public class HTMLLayout extends Layout {
   }
   
 
+  /**
+     Returns a String consisting of one element {@link
+     #LOCATION_INFO_OPTION}.  */
   public
   String[] getOptionStrings() {
     return new String[] {LOCATION_INFO_OPTION};
@@ -159,6 +163,9 @@ public class HTMLLayout extends Layout {
   }
 
 
+  /**
+     The HTML layout handles the throwable contained in logging
+     events. Hence, this method return <code>false</code>.  */
   public
   boolean ignoresThrowable() {
     return false;
