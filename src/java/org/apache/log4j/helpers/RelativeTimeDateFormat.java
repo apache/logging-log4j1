@@ -21,7 +21,6 @@ import java.util.TimeZone;
 import java.text.FieldPosition;
 import java.text.ParsePosition;
 import java.text.DateFormat;
-import java.text.NumberFormat;
 
 /**
    Formats a {@link Date} by printing the number of milliseconds
@@ -61,15 +60,6 @@ public class RelativeTimeDateFormat extends DateFormat {
   Date parse(java.lang.String s, ParsePosition pos) {
     return null;
   }  
-  
-
-  /**
-   * Gets the number format.
-   * @return NumberFormat number format
-   */
-  public NumberFormat getNumberFormat() {
-    return NumberFormat.getIntegerInstance();
-  }
 
   /**
    * Sets the timezone.
