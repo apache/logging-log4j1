@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.Level;
 import org.apache.log4j.util.Filter;
 import org.apache.log4j.util.LineNumberFilter;
+import org.apache.log4j.util.SunReflectFilter;
 import org.apache.log4j.util.ControlFilter;
 import org.apache.log4j.util.ISO8601Filter;
 import org.apache.log4j.util.Transformer;
@@ -63,10 +64,12 @@ public class DOMTestCase extends TestCase {
 					       EXCEPTION1, EXCEPTION2, EXCEPTION3});
 
     Transformer.transform(TEMP_A1, FILTERED_A1, new Filter[] {cf1, 
-							new LineNumberFilter()});
+							new LineNumberFilter(),
+                                                        new SunReflectFilter()});
 
     Transformer.transform(TEMP_A2, FILTERED_A2, new Filter[] {cf2,
-                                      new LineNumberFilter(), new ISO8601Filter()});
+                                      new LineNumberFilter(), new ISO8601Filter(),
+                                      new SunReflectFilter()});
 
     assertTrue(Compare.compare(FILTERED_A1, "witness/dom.A1.1"));
     assertTrue(Compare.compare(FILTERED_A2, "witness/dom.A2.1"));

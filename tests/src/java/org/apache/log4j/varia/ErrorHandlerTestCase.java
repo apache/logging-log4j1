@@ -12,25 +12,21 @@ import org.apache.log4j.util.Filter;
 import org.apache.log4j.util.LineNumberFilter;
 import org.apache.log4j.util.ControlFilter;
 import org.apache.log4j.util.ISO8601Filter;
+import org.apache.log4j.util.SunReflectFilter;
 import org.apache.log4j.util.Transformer;
 import org.apache.log4j.util.Compare;
 
 public class ErrorHandlerTestCase extends TestCase {
 
-  static String TEMP_A1 = "output/temp.A1";
-  static String TEMP_A2 = "output/temp.A2";
-  static String FILTERED_A1 = "output/filtered.A1";
-  static String FILTERED_A2 = "output/filtered.A2";
-
+  static String TEMP = "output/temp";
+  static String FILTERED = "output/filtered";
 
   static String EXCEPTION1 = "java.lang.Exception: Just testing";
   static String EXCEPTION2 = "\\s*at .*\\(.*:\\d{1,4}\\)";
   static String EXCEPTION3 = "\\s*at .*\\(Native Method\\)";
 
-  static String TEST1_1A_PAT = 
-                       "(DEBUG|INFO |WARN |ERROR|FATAL) \\w*\\.\\w* - Message \\d";
-
-  static String TEST1_1B_PAT = "(DEBUG|INFO |WARN |ERROR|FATAL) root - Message \\d";
+  static String TEST1_A_PAT = "FALLBACK - test - Message \\d";
+  static String TEST1_B_PAT = "FALLBACK - root - Message \\d";
 
   static String TEST1_2_PAT = "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3} "+
                         "\\[main]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - Message \\d";
@@ -57,20 +53,15 @@ public class ErrorHandlerTestCase extends TestCase {
     DOMConfigurator.configure("input/xml/fallback1.xml");
     common();
 
-    ControlFilter cf1 = new ControlFilter(new String[]{TEST1_1A_PAT, TEST1_1B_PAT, 
+    ControlFilter cf = new ControlFilter(new String[]{TEST1_A_PAT, TEST1_B_PAT, 
 					       EXCEPTION1, EXCEPTION2, EXCEPTION3});
 
-    ControlFilter cf2 = new ControlFilter(new String[]{TEST1_2_PAT, 
-					       EXCEPTION1, EXCEPTION2, EXCEPTION3});
 
-    Transformer.transform(TEMP_A1, FILTERED_A1, new Filter[] {cf1, 
-							new LineNumberFilter()});
+    Transformer.transform(TEMP, FILTERED, new Filter[] {cf, 
+							new LineNumberFilter(),
+                                                        new SunReflectFilter()});
 
-    Transformer.transform(TEMP_A2, FILTERED_A2, new Filter[] {cf2,
-                                      new LineNumberFilter(), new ISO8601Filter()});
-
-    assertTrue(Compare.compare(FILTERED_A1, "witness/dom.A1.1"));
-    assertTrue(Compare.compare(FILTERED_A2, "witness/dom.A2.1"));
+    assertTrue(Compare.compare(FILTERED, "witness/fallback"));
   }
 
   void common() {

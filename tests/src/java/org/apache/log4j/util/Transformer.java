@@ -30,7 +30,9 @@ public class Transformer {
       for(int i = 0; i < filters.length; i++) {
 	line = filters[i].filter(line);
       }
-      output.println(line);
+      if(line != null) {
+	output.println(line);
+      }
     }
   }
 

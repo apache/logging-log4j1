@@ -14,6 +14,7 @@ import org.apache.log4j.util.ControlFilter;
 import org.apache.log4j.util.XMLTimestampFilter;
 import org.apache.log4j.util.XMLLineAttributeFilter;
 import org.apache.log4j.util.LineNumberFilter;
+import org.apache.log4j.util.SunReflectFilter;
 import org.apache.log4j.util.Transformer;
 import org.apache.log4j.util.Compare;
 
@@ -43,7 +44,8 @@ public class XMLLayoutTestCase extends TestCase {
     root.addAppender(new FileAppender(xmlLayout, TEMP, false));
     common();
     Transformer.transform(TEMP, FILTERED, new Filter[] {new LineNumberFilter(), 
-							new XMLTimestampFilter()});
+							new XMLTimestampFilter(),
+                                                        new SunReflectFilter()});
     assertTrue(Compare.compare(FILTERED, "witness/xmlLayout.1"));
   }
 
@@ -54,7 +56,8 @@ public class XMLLayoutTestCase extends TestCase {
     common();
     Transformer.transform(TEMP, FILTERED, new Filter[] {new LineNumberFilter(),
                                                         new XMLTimestampFilter(),
-                                                        new XMLLineAttributeFilter()});
+                                                        new XMLLineAttributeFilter(),
+                                                        new SunReflectFilter()});
     assertTrue(Compare.compare(FILTERED, "witness/xmlLayout.2"));
   }
 
@@ -67,7 +70,8 @@ public class XMLLayoutTestCase extends TestCase {
 
     Transformer.transform(TEMP, FILTERED, new Filter[] {new LineNumberFilter(),
     						  new XMLTimestampFilter(),
-    						  new XMLLineAttributeFilter()});
+    						  new XMLLineAttributeFilter(),
+                                                  new SunReflectFilter()});
     assertTrue(Compare.compare(FILTERED, "witness/xmlLayout.3"));
   }
 

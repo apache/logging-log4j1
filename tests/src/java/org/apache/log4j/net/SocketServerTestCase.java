@@ -107,7 +107,8 @@ public class SocketServerTestCase extends TestCase {
     ControlFilter cf = new ControlFilter(new String[]{PAT1, EXCEPTION1, 
 						       EXCEPTION2, EXCEPTION3});
     
-    Transformer.transform(TEMP, FILTERED, new Filter[] {cf, new LineNumberFilter()});
+    Transformer.transform(TEMP, FILTERED, new Filter[] {cf, new LineNumberFilter(),
+                                                        new SunReflectFilter()});
 
     assertTrue(Compare.compare(FILTERED, "witness/socketServer.1"));
   }
@@ -127,7 +128,8 @@ public class SocketServerTestCase extends TestCase {
     ControlFilter cf = new ControlFilter(new String[]{PAT2, EXCEPTION1, 
 						       EXCEPTION2, EXCEPTION3});
     
-    Transformer.transform(TEMP, FILTERED, new Filter[] {cf, new LineNumberFilter()});
+    Transformer.transform(TEMP, FILTERED, new Filter[] {cf, new LineNumberFilter(),
+                                                        new SunReflectFilter()});
 
     assertTrue(Compare.compare(FILTERED, "witness/socketServer.2"));
   }
@@ -146,7 +148,8 @@ public class SocketServerTestCase extends TestCase {
     ControlFilter cf = new ControlFilter(new String[]{PAT3, EXCEPTION1, 
 						       EXCEPTION2, EXCEPTION3});
     
-    Transformer.transform(TEMP, FILTERED, new Filter[] {cf, new LineNumberFilter()});
+    Transformer.transform(TEMP, FILTERED, new Filter[] {cf, new LineNumberFilter(),
+                                                        new SunReflectFilter()});
 
     assertTrue(Compare.compare(FILTERED, "witness/socketServer.3"));
   }
@@ -168,7 +171,8 @@ public class SocketServerTestCase extends TestCase {
     ControlFilter cf = new ControlFilter(new String[]{PAT4, EXCEPTION1, 
 						       EXCEPTION2, EXCEPTION3});
     
-    Transformer.transform(TEMP, FILTERED, new Filter[] {cf, new LineNumberFilter()});
+    Transformer.transform(TEMP, FILTERED, new Filter[] {cf, new LineNumberFilter(),
+                                                        new SunReflectFilter()});
 
     assertTrue(Compare.compare(FILTERED, "witness/socketServer.4"));
   }
@@ -202,7 +206,8 @@ public class SocketServerTestCase extends TestCase {
     ControlFilter cf = new ControlFilter(new String[]{PAT5, EXCEPTION1, 
 						       EXCEPTION2, EXCEPTION3});
     
-    Transformer.transform(TEMP, FILTERED, new Filter[] {cf, new LineNumberFilter()});
+    Transformer.transform(TEMP, FILTERED, new Filter[] {cf, new LineNumberFilter(),
+                                                        new SunReflectFilter()});
     assertTrue(Compare.compare(FILTERED, "witness/socketServer.5"));
   }
 
@@ -229,7 +234,8 @@ public class SocketServerTestCase extends TestCase {
     ControlFilter cf = new ControlFilter(new String[]{PAT6, EXCEPTION1, 
 						       EXCEPTION2, EXCEPTION3});
     
-    Transformer.transform(TEMP, FILTERED, new Filter[] {cf, new LineNumberFilter()});
+    Transformer.transform(TEMP, FILTERED, new Filter[] {cf, new LineNumberFilter(),
+                                                        new SunReflectFilter()});
     assertTrue(Compare.compare(FILTERED, "witness/socketServer.6"));
   }
 
@@ -252,7 +258,8 @@ public class SocketServerTestCase extends TestCase {
     ControlFilter cf = new ControlFilter(new String[]{PAT7, EXCEPTION1, 
 						       EXCEPTION2, EXCEPTION3});
     
-    Transformer.transform(TEMP, FILTERED, new Filter[] {cf, new LineNumberFilter()});
+    Transformer.transform(TEMP, FILTERED, new Filter[] {cf, new LineNumberFilter(),
+                                                        new SunReflectFilter()});
     assertTrue(Compare.compare(FILTERED, "witness/socketServer.7"));
   }
 
@@ -273,7 +280,8 @@ public class SocketServerTestCase extends TestCase {
     ControlFilter cf = new ControlFilter(new String[]{PAT8, EXCEPTION1, 
 						       EXCEPTION2, EXCEPTION3});
     
-    Transformer.transform(TEMP, FILTERED, new Filter[] {cf, new LineNumberFilter()});
+    Transformer.transform(TEMP, FILTERED, new Filter[] {cf, new LineNumberFilter(),
+                                                        new SunReflectFilter()});
     assertTrue(Compare.compare(FILTERED, "witness/socketServer.8"));
   }
 
