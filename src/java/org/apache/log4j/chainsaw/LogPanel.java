@@ -634,6 +634,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
      * it's rule state changes.
      */
     ruleMediator.setLoggerRule(logTreePanel);
+    colorizer.setLoggerRule(logTreePanel.getLoggerColorRule());
 
     /*
      * Color rule frame and panel
