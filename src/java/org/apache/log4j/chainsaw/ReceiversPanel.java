@@ -49,6 +49,7 @@
 
 package org.apache.log4j.chainsaw;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.chainsaw.icons.ChainsawIcons;
 import org.apache.log4j.helpers.LogLog;
@@ -73,9 +74,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.RenderingHints;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -83,14 +82,16 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import java.io.IOException;
+
 import java.lang.reflect.Method;
+
 import java.net.URL;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -114,6 +115,8 @@ import javax.swing.JToolBar;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.event.TreeSelectionEvent;
@@ -340,6 +343,10 @@ class ReceiversPanel extends JPanel {
     }
   }
 
+  protected ReceiversTreeModel getReceiverTreeModel() {
+    return ((ReceiversTreeModel) receiversTree.getModel());
+  }
+
   /**
    *
    */
@@ -355,7 +362,7 @@ class ReceiversPanel extends JPanel {
             return;
           }
 
-          ((ReceiversTreeModel) receiversTree.getModel()).reload(node);
+          getReceiverTreeModel().nodeChanged(node);
           updateActions();
         }
       });
@@ -573,46 +580,49 @@ class ReceiversPanel extends JPanel {
         dialogMap.put(
           SocketReceiver.class,
           new CreateReceiverDialog(
-            SocketReceiver.class,
-            "SocketReceiver",
-            "Socket Receiver",
-            new SimplePortBasedReceiverDialogPanel(SocketReceiver.class, "SocketReceiver", SocketAppender.DEFAULT_PORT)));
+            SocketReceiver.class, "SocketReceiver", "Socket Receiver",
+            new SimplePortBasedReceiverDialogPanel(
+              SocketReceiver.class, "SocketReceiver",
+              SocketAppender.DEFAULT_PORT)));
 
-              dialogMap.put(
-                UDPReceiver.class,
-                new CreateReceiverDialog(
-                  UDPReceiver.class, "UDPReceiver", "UDP Receiver",
-                  new SimplePortBasedReceiverDialogPanel(UDPReceiver.class, "UDPReceiver", UDPAppender.DEFAULT_PORT)));
+        dialogMap.put(
+          UDPReceiver.class,
+          new CreateReceiverDialog(
+            UDPReceiver.class, "UDPReceiver", "UDP Receiver",
+            new SimplePortBasedReceiverDialogPanel(
+              UDPReceiver.class, "UDPReceiver", UDPAppender.DEFAULT_PORT)));
 
         for (int i = 0; i < receivers.length; i++) {
           final Class toCreate = receivers[i];
           Package thePackage = toCreate.getPackage();
           final String name =
             toCreate.getName().substring(thePackage.getName().length() + 1);
-          add(new AbstractAction("New " + name + "...") {
-            public void actionPerformed(ActionEvent e) {
-              if (dialogMap.containsKey(toCreate)) {
-                JDialog dialog = (JDialog) dialogMap.get(toCreate);
-                dialog.pack();
-                dialog.setLocationRelativeTo(logui);
-                dialog.show();
-              } else {
-                JOptionPane.showMessageDialog(
-                  logui,
-                  "You wanted a "
-                    + name
+          add(
+            new AbstractAction("New " + name + "...") {
+              public void actionPerformed(ActionEvent e) {
+                if (dialogMap.containsKey(toCreate)) {
+                  JDialog dialog = (JDialog) dialogMap.get(toCreate);
+                  dialog.pack();
+                  dialog.setLocationRelativeTo(logui);
+                  dialog.show();
+                } else {
+                  JOptionPane.showMessageDialog(
+                    logui,
+                    "You wanted a " + name
                     + " but this is not finished yet, sorry.");
+                }
               }
-            }
-          });
+            });
         }
+
         addSeparator();
-        Action note = new AbstractAction("More coming in future....") {
 
-          public void actionPerformed(ActionEvent e) {
+        Action note =
+          new AbstractAction("More coming in future....") {
+            public void actionPerformed(ActionEvent e) {
+            }
+          };
 
-          }
-        };
         note.setEnabled(false);
 
         add(note);
@@ -703,13 +713,31 @@ class ReceiversPanel extends JPanel {
 
       final JDialog dialog = new JDialog(logui, "Set Threshold", true);
       Container container = dialog.getContentPane();
-      container.add(new ThresholdSlider());
+      final ThresholdSlider thresholdSlider = new ThresholdSlider();
+      thresholdSlider.getModel().addChangeListener(
+        new ChangeListener() {
+          public void stateChanged(ChangeEvent e) {
+            if (thresholdSlider.getValueIsAdjusting()) {
+              return;
+            }
+
+            Level level = thresholdSlider.getSelectedLevel();
+            LogManager.getLoggerRepository().setThreshold(level);
+            logui.getStatusBar().setMessage(
+              "Adjusted Log4j repository threshold to " + level);
+            getReceiverTreeModel().updateRootDisplay();
+          }
+        });
+
+      container.add(thresholdSlider);
       dialog.setResizable(false);
       dialog.pack();
 
       Action setThresholdAction =
         new AbstractAction("Set Threshold...") {
           public void actionPerformed(ActionEvent e) {
+            thresholdSlider.setChosenLevel(
+              LogManager.getLoggerRepository().getThreshold());
             dialog.setLocationRelativeTo(receiversTree);
             dialog.show();
           }
@@ -809,7 +837,7 @@ class ReceiversPanel extends JPanel {
 
     private CreateReceiverDialog(
       Class receiver, String bundleName, String name,
-      final AbstractReceiverDialogPanel entryPanel) throws IOException  {
+      final AbstractReceiverDialogPanel entryPanel) throws IOException {
       super(logui, "Create new Receiver", true);
       setResizable(false);
       getContentPane().setLayout(new GridBagLayout());
@@ -818,21 +846,20 @@ class ReceiversPanel extends JPanel {
 
       Container container = getContentPane();
       URL descriptionResource =
-        this.getClass().getClassLoader().getResource("org/apache/log4j/chainsaw/Details_" + bundleName + ".html");
+        this.getClass().getClassLoader().getResource(
+          "org/apache/log4j/chainsaw/Details_" + bundleName + ".html");
 
       JEditorPane infoArea = new JEditorPane(descriptionResource);
-      infoArea.addHyperlinkListener(new HyperlinkListener(){
-
-        public void hyperlinkUpdate(HyperlinkEvent e) {
-          if(e.getEventType() == HyperlinkEvent.EventType.ACTIVATED){
-            logui.showHelp(e.getURL());
+      infoArea.addHyperlinkListener(
+        new HyperlinkListener() {
+          public void hyperlinkUpdate(HyperlinkEvent e) {
+            if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+              logui.showHelp(e.getURL());
+            }
           }
-          
-        }
-      });
-      
-//      infoArea.setBorder(BorderFactory.createTitledBorder("Description"));
-      
+        });
+
+      //      infoArea.setBorder(BorderFactory.createTitledBorder("Description"));
       infoArea.setOpaque(true);
       infoArea.setEditable(false);
       infoArea.setForeground(Color.black);
@@ -848,9 +875,12 @@ class ReceiversPanel extends JPanel {
       c.gridwidth = 2;
 
       Box lineBox = Box.createHorizontalBox();
-//      lineBox.setBorder(BorderFactory.createLineBorder(Color.gray));
 
-      container.add(infoArea, c);
+      //      lineBox.setBorder(BorderFactory.createLineBorder(Color.gray));
+      container.add(
+        new JScrollPane(
+          infoArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+          JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), c);
 
       c.gridy++;
       c.weighty = 0.3;
@@ -867,8 +897,8 @@ class ReceiversPanel extends JPanel {
       container.add(entryPanel, c);
 
       Box lineBox3 = Box.createHorizontalBox();
-//      lineBox3.setBorder(BorderFactory.createLineBorder(Color.gray));
 
+      //      lineBox3.setBorder(BorderFactory.createLineBorder(Color.gray));
       c.gridx = 0;
       c.gridwidth = 2;
       c.weighty = 0;
@@ -1033,21 +1063,20 @@ class ReceiversPanel extends JPanel {
   private class SimplePortBasedReceiverDialogPanel
     extends AbstractReceiverDialogPanel {
     private String receiverName;
-
     private Class receiverClass;
-
     final JTextField portNumberEntry = new JTextField(8);
 
-    SimplePortBasedReceiverDialogPanel(Class receiverClass, String receiverName, int defaultPort) {
+    SimplePortBasedReceiverDialogPanel(
+      Class receiverClass, String receiverName, int defaultPort) {
       this.receiverClass = receiverClass;
       this.receiverName = receiverName;
+
       JLabel portNumber = new JLabel("Port Number:");
 
       portNumberEntry.setInputVerifier(new PortNumberVerifier());
       portNumberEntry.setText(defaultPort + "");
       portNumberEntry.selectAll();
-      
-      
+
       portNumberEntry.addKeyListener(
         new KeyListener() {
           public void keyTyped(KeyEvent e) {
@@ -1082,26 +1111,35 @@ class ReceiversPanel extends JPanel {
     void createReceiver() {
       int port = Integer.parseInt(portNumberEntry.getText());
       Receiver receiver = null;
+
       try {
         receiver = (Receiver) receiverClass.newInstance();
-        Method method = receiver.getClass().getMethod("setPort", new Class[]{int.class});
-        if(method!=null){
-          method.invoke(receiver, new Object[]{new Integer(port)});
-        }else {
+
+        Method method =
+          receiver.getClass().getMethod("setPort", new Class[] { int.class });
+
+        if (method != null) {
+          method.invoke(receiver, new Object[] { new Integer(port) });
+        } else {
           throw new Exception("The Receiver class has no setPort method");
         }
       } catch (Exception e) {
         LogLog.error("Error occurred creating the Receiver", e);
-        logui.getStatusBar().setMessage("Error occurred creating the Receiver ::" + e.getMessage());
+        logui.getStatusBar().setMessage(
+          "Error occurred creating the Receiver ::" + e.getMessage());
+
         return;
-      } 
+      }
+
       String name = receiverName;
       String suffix = "";
       int index = 1;
-      while(PluginRegistry.pluginNameExists(name + suffix)){
-        suffix = index+"";
+
+      while (PluginRegistry.pluginNameExists(name + suffix)) {
+        suffix = index + "";
         index++;
       }
+
       receiver.setName(name + suffix);
       PluginRegistry.startPlugin(receiver);
       updateReceiverTreeInDispatchThread();
