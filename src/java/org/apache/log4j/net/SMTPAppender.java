@@ -99,6 +99,17 @@ public class SMTPAppender extends AppenderSkeleton {
   public static final String BUFFER_SIZE_OPTION = "BufferSize";
 
 
+ /**
+     A string constant used in naming the class of the
+     TriggeringEventEvaluator that this SMTPApepdner wll use. Current
+     value of this string constant is <b>EvaluatorClass</b>.
+
+     <p>Note that all option keys are case sensitive.
+     
+  */
+  public static final String EVALUATOR_CLASS_OPTION = "EvaluatorClass";
+
+
   /**
      A string constant used in naming the option for setting the the
      location information flag.  Current value of this string
@@ -120,6 +131,8 @@ public class SMTPAppender extends AppenderSkeleton {
   boolean locationInfo = false;
   
   TriggeringEventEvaluator evaluator;
+
+
 
   /**
      The default constructor will instantiate the appedner with a
@@ -299,7 +312,7 @@ public class SMTPAppender extends AppenderSkeleton {
      <p>On top of the options of the super class {@link
      AppenderSkeleton}, the recognized options are <b>To</b>,
      <b>From</b>, <b>Subject</b>, <b>SMTPHost</b>,
-     <b>BufferSize</b> and <b>LocationInfo</b>. 
+     <b>BufferSize</b>, <b>EvaluatorClass</b> and <b>LocationInfo</b>. 
      
      <p>The <b>To</b> option takes a string value which should be a
      comma separated list of e-mail address of the recipients.
@@ -318,6 +331,12 @@ public class SMTPAppender extends AppenderSkeleton {
      cyclic buffer. When the <code>BufferSize</code> is reached,
      oldest events are deleted as new events are added to the
      buffer. By default the size of the cyclic buffer is 512 events.
+
+     <p>The <b>EvaluatorClass</b> option takes a string value
+     repsenting the name of the class implementing the {@link
+     TriggeringEventEvaluator} interface. A corresponding object will
+     be instantiated and assigned as the triggering event evaluator
+     for the SMTPAppender.
 
      <p>The <b>LocationInfo</b> option takes a boolean value. By
      default, it is set to false which means there will be no effort
@@ -343,6 +362,12 @@ public class SMTPAppender extends AppenderSkeleton {
       smtpHost = value;
     else if (option.equals(SUBJECT_OPTION)) 
       subject = value;
+    else if (option.equals(EVALUATOR_CLASS_OPTION)) {      
+      evaluator = (TriggeringEventEvaluator) 
+                OptionConverter.instantiateByClassName(value, 
+					   TriggeringEventEvaluator.class,
+						       evaluator);    
+    }
     else if (option.equals(BUFFER_SIZE_OPTION)) {
       bufferSize = OptionConverter.toInt(value, bufferSize);    
       cb.resize(bufferSize);
