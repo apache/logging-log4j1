@@ -38,11 +38,11 @@
   <!-- The jar file that the jar task will generate -->
   <property name="log4j.jar" value="log4j-${version}.jar"/>
 
-	<!-- The jar file that the jar-chainsaw task will generate -->
-	<property name="log4j-chainsaw.jar" value="log4j-chainsaw-${version}.jar"/>
+  <!-- The jar file that the jar-chainsaw task will generate -->
+  <property name="log4j-chainsaw.jar" value="log4j-chainsaw-${version}.jar"/>
 
-	<!-- The jar file that the jar-lf5 task will generate -->
-	<property name="log4j-lf5.jar" value="log4j-lf5-${version}.jar"/>
+  <!-- The jar file that the jar-lf5 task will generate -->
+  <property name="log4j-lf5.jar" value="log4j-lf5-${version}.jar"/>
 
   <!-- Destination for documentation files -->
   <property name="docs.dest" value="./docs"/>
