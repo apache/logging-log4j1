@@ -14,15 +14,14 @@ import java.text.FieldPosition;
 import java.text.ParsePosition;
 import java.text.DateFormat;
 
- 
 
 /**
-
    Formats a {@link Date} in the format "HH:mm:ss,SSS" for example,
    "15:49:37,459".
    
    @author Ceki G&uuml;lc&uuml;
-   
+   @author Andrew Vajoczki    
+
    @since 0.7.5
 */
 public class AbsoluteTimeDateFormat extends DateFormat {
@@ -56,7 +55,10 @@ public class AbsoluteTimeDateFormat extends DateFormat {
   AbsoluteTimeDateFormat(TimeZone timeZone) {
     setCalendar(Calendar.getInstance(timeZone));
   }
-  
+
+  private static long   previousTime;
+  private static char[] previousTimeWithoutMillis = new char[9]; // "HH:mm:ss."
+
   /**
      Appends to <code>sbuf</code> the time in the format
      "HH:mm:ss,SSS" for example, "15:49:37,459"
@@ -69,32 +71,50 @@ public class AbsoluteTimeDateFormat extends DateFormat {
   StringBuffer format(Date date, StringBuffer sbuf,
 		      FieldPosition fieldPosition) {
 
-    // We use a previously instantiated Date object to avoid the needless
-    // creation of temporary objects. This saves a few micro-secs.
-    calendar.setTime(date); 
-    
-    int hour = calendar.get(Calendar.HOUR_OF_DAY);
-    if(hour < 10) {
-      sbuf.append('0');
-    }
-    sbuf.append(hour);
-    sbuf.append(':');
+    long now = date.getTime();
+    int millis = (int)(now % 1000);
 
-    int mins = calendar.get(Calendar.MINUTE);
-    if(mins < 10) {
-      sbuf.append('0');
+    if ((now - millis) != previousTime) {
+      // We reach this point at most once per second
+      // across all threads instead of each time format()
+      // is called. This saves considerable CPU time.
+
+      calendar.setTime(date);
+
+      int start = sbuf.length();
+      
+      int hour = calendar.get(Calendar.HOUR_OF_DAY);
+      if(hour < 10) {
+	sbuf.append('0');
+      }
+      sbuf.append(hour);
+      sbuf.append(':');
+      
+      int mins = calendar.get(Calendar.MINUTE);
+      if(mins < 10) {
+	sbuf.append('0');
+      }
+      sbuf.append(mins);
+      sbuf.append(':');
+      
+      int secs = calendar.get(Calendar.SECOND);
+      if(secs < 10) {
+	sbuf.append('0');
+      }
+      sbuf.append(secs);
+      sbuf.append(',');      
+
+      // store the time string for next time to avoid recomputation
+      sbuf.getChars(start, sbuf.length(), previousTimeWithoutMillis, 0);
+      
+      previousTime = now - millis;
     }
-    sbuf.append(mins);
-    sbuf.append(':');
-    
-    int secs = calendar.get(Calendar.SECOND);
-    if(secs < 10) {
-      sbuf.append('0');
+    else {
+      sbuf.append(previousTimeWithoutMillis);
     }
-    sbuf.append(secs);
-    sbuf.append(',');
     
-    int millis = calendar.get(Calendar.MILLISECOND);
+
+    
     if(millis < 100) 
       sbuf.append('0');
     if(millis < 10) 
