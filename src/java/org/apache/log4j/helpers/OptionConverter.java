@@ -1,19 +1,63 @@
 /*
- * Copyright (C) The Apache Software Foundation. All rights reserved.
+ * ============================================================================
+ *                   The Apache Software License, Version 1.1
+ * ============================================================================
  *
- * This software is published under the terms of the Apache Software License
- * version 1.1, a copy of which has been included  with this distribution in
- * the LICENSE.txt file.
+ *    Copyright (C) 1999 The Apache Software Foundation. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modifica-
+ * tion, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of  source code must  retain the above copyright  notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * 3. The end-user documentation included with the redistribution, if any, must
+ *    include  the following  acknowledgment:  "This product includes  software
+ *    developed  by the  Apache Software Foundation  (http://www.apache.org/)."
+ *    Alternately, this  acknowledgment may  appear in the software itself,  if
+ *    and wherever such third-party acknowledgments normally appear.
+ *
+ * 4. The names "log4j" and  "Apache Software Foundation"  must not be used to
+ *    endorse  or promote  products derived  from this  software without  prior
+ *    written permission. For written permission, please contact
+ *    apache@apache.org.
+ *
+ * 5. Products  derived from this software may not  be called "Apache", nor may
+ *    "Apache" appear  in their name,  without prior written permission  of the
+ *    Apache Software Foundation.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS  FOR A PARTICULAR  PURPOSE ARE  DISCLAIMED.  IN NO  EVENT SHALL  THE
+ * APACHE SOFTWARE  FOUNDATION  OR ITS CONTRIBUTORS  BE LIABLE FOR  ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL,  EXEMPLARY, OR CONSEQUENTIAL  DAMAGES (INCLU-
+ * DING, BUT NOT LIMITED TO, PROCUREMENT  OF SUBSTITUTE GOODS OR SERVICES; LOSS
+ * OF USE, DATA, OR  PROFITS; OR BUSINESS  INTERRUPTION)  HOWEVER CAUSED AND ON
+ * ANY  THEORY OF LIABILITY,  WHETHER  IN CONTRACT,  STRICT LIABILITY,  OR TORT
+ * (INCLUDING  NEGLIGENCE OR  OTHERWISE) ARISING IN  ANY WAY OUT OF THE  USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * This software  consists of voluntary contributions made  by many individuals
+ * on  behalf of the Apache Software  Foundation.  For more  information on the
+ * Apache Software Foundation, please see <http://www.apache.org/>.
+ *
  */
 
 package org.apache.log4j.helpers;
 
-import java.util.Properties;
-import java.net.URL;
 import org.apache.log4j.Level;
+import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.spi.Configurator;
 import org.apache.log4j.spi.LoggerRepository;
-import org.apache.log4j.PropertyConfigurator;
+
+import java.net.URL;
+
+import java.util.Properties;
+
 
 // Contributors:   Avy Sharell (sharell@online.fr)
 //                 Matthieu Verbert (mve@zurich.ibm.com)
@@ -27,18 +71,16 @@ import org.apache.log4j.PropertyConfigurator;
    @author Anders Kristensen
 */
 public class OptionConverter {
-
   static String DELIM_START = "${";
-  static char   DELIM_STOP  = '}';
+  static char DELIM_STOP = '}';
   static int DELIM_START_LEN = 2;
-  static int DELIM_STOP_LEN  = 1;
+  static int DELIM_STOP_LEN = 1;
 
   /** OptionConverter is a static class. */
-  private OptionConverter() {}
+  private OptionConverter() {
+  }
 
-  public
-  static
-  String[] concatanateArrays(String[] l, String[] r) {
+  public static String[] concatanateArrays(String[] l, String[] r) {
     int len = l.length + r.length;
     String[] a = new String[len];
 
@@ -48,32 +90,43 @@ public class OptionConverter {
     return a;
   }
 
-  public
-  static
-  String convertSpecialChars(String s) {
+  public static String convertSpecialChars(String s) {
     char c;
     int len = s.length();
     StringBuffer sbuf = new StringBuffer(len);
 
     int i = 0;
-    while(i < len) {
+
+    while (i < len) {
       c = s.charAt(i++);
+
       if (c == '\\') {
-	c =  s.charAt(i++);
-	if(c == 'n')      c = '\n';
-	else if(c == 'r') c = '\r';
-	else if(c == 't') c = '\t';
-	else if(c == 'f') c = '\f';
-	else if(c == '\b') c = '\b';
-	else if(c == '\"') c = '\"';
-	else if(c == '\'') c = '\'';
-	else if(c == '\\') c = '\\';
+        c = s.charAt(i++);
+
+        if (c == 'n') {
+          c = '\n';
+        } else if (c == 'r') {
+          c = '\r';
+        } else if (c == 't') {
+          c = '\t';
+        } else if (c == 'f') {
+          c = '\f';
+        } else if (c == '\b') {
+          c = '\b';
+        } else if (c == '\"') {
+          c = '\"';
+        } else if (c == '\'') {
+          c = '\'';
+        } else if (c == '\\') {
+          c = '\\';
+        }
       }
+
       sbuf.append(c);
     }
+
     return sbuf.toString();
   }
-
 
   /**
      Very similar to <code>System.getProperty</code> except
@@ -85,32 +138,30 @@ public class OptionConverter {
      value if there is no property with that key.
 
      @since 1.1 */
-  public
-  static
-  String getSystemProperty(String key, String def) {
+  public static String getSystemProperty(String key, String def) {
     try {
       return System.getProperty(key, def);
-    } catch(Throwable e) { // MS-Java throws com.ms.security.SecurityExceptionEx
-      LogLog.debug("Was not allowed to read system property \""+key+"\".");
+    } catch (Throwable e) { // MS-Java throws com.ms.security.SecurityExceptionEx
+      LogLog.debug("Was not allowed to read system property \"" + key + "\".");
+
       return def;
     }
   }
 
-
-  public
-  static
-  Object instantiateByKey(Properties props, String key, Class superClass,
-				Object defaultValue) {
-
+  public static Object instantiateByKey(
+    Properties props, String key, Class superClass, Object defaultValue) {
     // Get the value of the property in string form
     String className = findAndSubst(key, props);
-    if(className == null) {
+
+    if (className == null) {
       LogLog.error("Could not find value for key " + key);
+
       return defaultValue;
     }
+
     // Trim className to avoid trailing spaces that cause problems.
-    return OptionConverter.instantiateByClassName(className.trim(), superClass,
-						  defaultValue);
+    return OptionConverter.instantiateByClassName(
+      className.trim(), superClass, defaultValue);
   }
 
   /**
@@ -121,29 +172,35 @@ public class OptionConverter {
 
      <p>Case of value is unimportant.  */
   public static boolean toBoolean(String value, boolean dEfault) {
-    if(value == null)
+    if (value == null) {
       return dEfault;
+    }
+
     String trimmedVal = value.trim();
-    if("true".equalsIgnoreCase(trimmedVal))
+
+    if ("true".equalsIgnoreCase(trimmedVal)) {
       return true;
-    if("false".equalsIgnoreCase(trimmedVal))
+    }
+
+    if ("false".equalsIgnoreCase(trimmedVal)) {
       return false;
+    }
+
     return dEfault;
   }
 
-  public
-  static
-  int toInt(String value, int dEfault) {
-    if(value != null) {
+  public static int toInt(String value, int dEfault) {
+    if (value != null) {
       String s = value.trim();
+
       try {
-	return Integer.valueOf(s).intValue();
-      }
-      catch (NumberFormatException e) {
-	 LogLog.error("[" + s + "] is not in proper int form.");
-	e.printStackTrace();
+        return Integer.valueOf(s).intValue();
+      } catch (NumberFormatException e) {
+        LogLog.error("[" + s + "] is not in proper int form.");
+        e.printStackTrace();
       }
     }
+
     return dEfault;
   }
 
@@ -168,100 +225,103 @@ public class OptionConverter {
 
      @since 1.1 */
   public static Level toLevel(String value, Level defaultValue) {
-    if(value == null)
+    if (value == null) {
       return defaultValue;
+    }
 
     int hashIndex = value.indexOf('#');
+
     if (hashIndex == -1) {
-      if("NULL".equalsIgnoreCase(value)) {
-	return null;
+      if ("NULL".equalsIgnoreCase(value)) {
+        return null;
       } else {
-	// no class name specified : use standard Level class
-	return(Level) Level.toLevel(value, defaultValue);
+        // no class name specified : use standard Level class
+        return (Level) Level.toLevel(value, defaultValue);
       }
     }
 
     Level result = defaultValue;
 
-    String clazz = value.substring(hashIndex+1);
+    String clazz = value.substring(hashIndex + 1);
     String levelName = value.substring(0, hashIndex);
 
     // This is degenerate case but you never know.
-    if("NULL".equalsIgnoreCase(levelName)) {
-	return null;
+    if ("NULL".equalsIgnoreCase(levelName)) {
+      return null;
     }
 
-    LogLog.debug("toLevel" + ":class=[" + clazz + "]"
-		 + ":pri=[" + levelName + "]");
+    LogLog.debug(
+      "toLevel" + ":class=[" + clazz + "]" + ":pri=[" + levelName + "]");
 
     try {
       Class customLevel = Loader.loadClass(clazz);
 
       // get a ref to the specified class' static method
       // toLevel(String, org.apache.log4j.Level)
-      Class[] paramTypes = new Class[] { String.class,
-					 org.apache.log4j.Level.class
-                                       };
+      Class[] paramTypes =
+        new Class[] { String.class, org.apache.log4j.Level.class };
       java.lang.reflect.Method toLevelMethod =
-                      customLevel.getMethod("toLevel", paramTypes);
+        customLevel.getMethod("toLevel", paramTypes);
 
       // now call the toLevel method, passing level string + default
-      Object[] params = new Object[] {levelName, defaultValue};
+      Object[] params = new Object[] { levelName, defaultValue };
       Object o = toLevelMethod.invoke(null, params);
 
       result = (Level) o;
-    } catch(ClassNotFoundException e) {
+    } catch (ClassNotFoundException e) {
       LogLog.warn("custom level class [" + clazz + "] not found.");
-    } catch(NoSuchMethodException e) {
-      LogLog.warn("custom level class [" + clazz + "]"
+    } catch (NoSuchMethodException e) {
+      LogLog.warn(
+        "custom level class [" + clazz + "]"
         + " does not have a constructor which takes one string parameter", e);
-    } catch(java.lang.reflect.InvocationTargetException e) {
-      LogLog.warn("custom level class [" + clazz + "]"
-		   + " could not be instantiated", e);
-    } catch(ClassCastException e) {
-      LogLog.warn("class [" + clazz
-        + "] is not a subclass of org.apache.log4j.Level", e);
-    } catch(IllegalAccessException e) {
-      LogLog.warn("class ["+clazz+
-		   "] cannot be instantiated due to access restrictions", e);
-    } catch(Exception e) {
-      LogLog.warn("class ["+clazz+"], level ["+levelName+
-		   "] conversion failed.", e);
+    } catch (java.lang.reflect.InvocationTargetException e) {
+      LogLog.warn(
+        "custom level class [" + clazz + "]" + " could not be instantiated", e);
+    } catch (ClassCastException e) {
+      LogLog.warn(
+        "class [" + clazz + "] is not a subclass of org.apache.log4j.Level", e);
+    } catch (IllegalAccessException e) {
+      LogLog.warn(
+        "class [" + clazz
+        + "] cannot be instantiated due to access restrictions", e);
+    } catch (Exception e) {
+      LogLog.warn(
+        "class [" + clazz + "], level [" + levelName + "] conversion failed.",
+        e);
     }
-    return result;
-   }
 
-  public
-  static
-  long toFileSize(String value, long dEfault) {
-    if(value == null)
+    return result;
+  }
+
+  public static long toFileSize(String value, long dEfault) {
+    if (value == null) {
       return dEfault;
+    }
 
     String s = value.trim().toUpperCase();
     long multiplier = 1;
     int index;
 
-    if((index = s.indexOf("KB")) != -1) {
+    if ((index = s.indexOf("KB")) != -1) {
       multiplier = 1024;
       s = s.substring(0, index);
-    }
-    else if((index = s.indexOf("MB")) != -1) {
-      multiplier = 1024*1024;
+    } else if ((index = s.indexOf("MB")) != -1) {
+      multiplier = 1024 * 1024;
+      s = s.substring(0, index);
+    } else if ((index = s.indexOf("GB")) != -1) {
+      multiplier = 1024 * 1024 * 1024;
       s = s.substring(0, index);
     }
-    else if((index = s.indexOf("GB")) != -1) {
-      multiplier = 1024*1024*1024;
-      s = s.substring(0, index);
-    }
-    if(s != null) {
+
+    if (s != null) {
       try {
-	return Long.valueOf(s).longValue() * multiplier;
-      }
-      catch (NumberFormatException e) {
-	LogLog.error("[" + s + "] is not in proper int form.");
-	LogLog.error("[" + value + "] not in expected format.", e);
+        return Long.valueOf(s).longValue() * multiplier;
+      } catch (NumberFormatException e) {
+        LogLog.error("[" + s + "] is not in proper int form.");
+        LogLog.error("[" + value + "] not in expected format.", e);
       }
     }
+
     return dEfault;
   }
 
@@ -270,18 +330,19 @@ public class OptionConverter {
      <code>props</code>. Then perform variable substitution on the
      found value.
 
- */
-  public
-  static
-  String findAndSubst(String key, Properties props) {
+  */
+  public static String findAndSubst(String key, Properties props) {
     String value = props.getProperty(key);
-    if(value == null)
+
+    if (value == null) {
       return null;
+    }
 
     try {
       return substVars(value, props);
-    } catch(IllegalArgumentException e) {
-      LogLog.error("Bad option value ["+value+"].", e);
+    } catch (IllegalArgumentException e) {
+      LogLog.error("Bad option value [" + value + "].", e);
+
       return value;
     }
   }
@@ -296,30 +357,35 @@ public class OptionConverter {
      @param superClass The class to which the new object should belong.
      @param defaultValue The object to return in case of non-fulfillment
    */
-  public
-  static
-  Object instantiateByClassName(String className, Class superClass,
-				Object defaultValue) {
-    if(className != null) {
+  public static Object instantiateByClassName(
+    String className, Class superClass, Object defaultValue) {
+    if (className != null) {
       try {
-	Class classObj = Loader.loadClass(className);
-	if(!superClass.isAssignableFrom(classObj)) {
-	  LogLog.error("A \""+className+"\" object is not assignable to a \""+
-		       superClass.getName() + "\" variable.");
-	  LogLog.error("The class \""+ superClass.getName()+"\" was loaded by ");
-	  LogLog.error("["+superClass.getClassLoader()+"] whereas object of type ");
-	  LogLog.error("\"" +classObj.getName()+"\" was loaded by ["
-		       +classObj.getClassLoader()+"].");
-	  return defaultValue;
-	}
-	return classObj.newInstance();
+        Class classObj = Loader.loadClass(className);
+
+        if (!superClass.isAssignableFrom(classObj)) {
+          LogLog.error(
+            "A \"" + className + "\" object is not assignable to a \""
+            + superClass.getName() + "\" variable.");
+          LogLog.error(
+            "The class \"" + superClass.getName() + "\" was loaded by ");
+          LogLog.error(
+            "[" + superClass.getClassLoader() + "] whereas object of type ");
+          LogLog.error(
+            "\"" + classObj.getName() + "\" was loaded by ["
+            + classObj.getClassLoader() + "].");
+
+          return defaultValue;
+        }
+
+        return classObj.newInstance();
       } catch (Exception e) {
-	LogLog.error("Could not instantiate class [" + className + "].", e);
+        LogLog.error("Could not instantiate class [" + className + "].", e);
       }
     }
+
     return defaultValue;
   }
-
 
   /**
      Perform variable substitution in string <code>val</code> from the
@@ -357,57 +423,68 @@ public class OptionConverter {
      @throws IllegalArgumentException if <code>val</code> is malformed.
 
   */
-  public static
-  String substVars(String val, Properties props) throws
-                        IllegalArgumentException {
-
+  public static String substVars(String val, Properties props)
+    throws IllegalArgumentException {
+    
     StringBuffer sbuf = new StringBuffer();
 
     int i = 0;
-    int j, k;
+    int j;
+    int k;
 
-    while(true) {
-      j=val.indexOf(DELIM_START, i);
-      if(j == -1) {
-	// no more variables
-	if(i==0) { // this is a simple string
-	  return val;
-	} else { // add the tail string which contails no variables and return the result.
-	  sbuf.append(val.substring(i, val.length()));
-	  return sbuf.toString();
-	}
+    while (true) {
+      j = val.indexOf(DELIM_START, i);
+
+      if (j == -1) {
+        // no more variables
+        if (i == 0) { // this is a simple string
+
+          return val;
+        } else { // add the tail string which contails no variables and return the result.
+          sbuf.append(val.substring(i, val.length()));
+
+          return sbuf.toString();
+        }
       } else {
-	sbuf.append(val.substring(i, j));
-	k = val.indexOf(DELIM_STOP, j);
-	if(k == -1) {
-	  throw new IllegalArgumentException('"'+val+
-		      "\" has no closing brace. Opening brace at position " + j
-					     + '.');
-	} else {
-	  j += DELIM_START_LEN;
-	  String key = val.substring(j, k);
-	  // first try in System properties
-	  String replacement = getSystemProperty(key, null);
-	  // then try props parameter
-	  if(replacement == null && props != null) {
-	    replacement =  props.getProperty(key);
-	  }
+        sbuf.append(val.substring(i, j));
+        k = val.indexOf(DELIM_STOP, j);
 
-	  if(replacement != null) {
-	    // Do variable substitution on the replacement string
-	    // such that we can solve "Hello ${x2}" as "Hello p1" 
+        if (k == -1) {
+          throw new IllegalArgumentException(
+            '"' + val + "\" has no closing brace. Opening brace at position "
+            + j + '.');
+        } else {
+          j += DELIM_START_LEN;
+
+          String key = val.substring(j, k);
+
+					String replacement = null;
+				  
+					// first try the props passes as parameter					
+				  if(props != null) {
+						replacement = props.getProperty(key);				   
+				  }
+				  
+          // then try in System properties
+          if (replacement == null) {
+						replacement = getSystemProperty(key, null);
+          }
+
+          if (replacement != null) {
+            // Do variable substitution on the replacement string
+            // such that we can solve "Hello ${x2}" as "Hello p1" 
             // the where the properties are
-	    // x1=p1
+            // x1=p1
             // x2=${x1}
-	    String recursiveReplacement = substVars(replacement, props);
-	    sbuf.append(recursiveReplacement);
-	  }
-	  i = k + DELIM_STOP_LEN;
-	}
+            String recursiveReplacement = substVars(replacement, props);
+            sbuf.append(recursiveReplacement);
+          }
+
+          i = k + DELIM_STOP_LEN;
+        }
       }
     }
   }
-
 
   /**
      Configure log4j given a URL.
@@ -429,30 +506,29 @@ public class OptionConverter {
      @param hierarchy The {@link org.apache.log4j.Hierarchy} to act on.
 
      @since 1.1.4 */
+  public static void selectAndConfigure(
+    URL url, String clazz, LoggerRepository hierarchy) {
+    Configurator configurator = null;
+    String filename = url.getFile();
 
-  static
-  public
-  void selectAndConfigure(URL url, String clazz, LoggerRepository hierarchy) {
-   Configurator configurator = null;
-   String filename = url.getFile();
+    if ((clazz == null) && (filename != null) && filename.endsWith(".xml")) {
+      clazz = "org.apache.log4j.xml.DOMConfigurator";
+    }
 
-   if(clazz == null && filename != null && filename.endsWith(".xml")) {
-     clazz = "org.apache.log4j.xml.DOMConfigurator";
-   }
+    if (clazz != null) {
+      LogLog.debug("Preferred configurator class: " + clazz);
+      configurator =
+        (Configurator) instantiateByClassName(clazz, Configurator.class, null);
 
-   if(clazz != null) {
-     LogLog.debug("Preferred configurator class: " + clazz);
-     configurator = (Configurator) instantiateByClassName(clazz,
-							  Configurator.class,
-							  null);
-     if(configurator == null) {
-   	  LogLog.error("Could not instantiate configurator ["+clazz+"].");
-   	  return;
-     }
-   } else {
-     configurator = new PropertyConfigurator();
-   }
+      if (configurator == null) {
+        LogLog.error("Could not instantiate configurator [" + clazz + "].");
 
-   configurator.doConfigure(url, hierarchy);
+        return;
+      }
+    } else {
+      configurator = new PropertyConfigurator();
+    }
+
+    configurator.doConfigure(url, hierarchy);
   }
 }
