@@ -111,24 +111,30 @@ The default layout uses a PatternLayout with HTML formatting.
 <A NAME="expressions"><h3>Expressions</h3>
 Expressions are used to define color and display rules in Chainsaw.  An expression is a textual representation of a rule, and provides the ability to perform queries against a collection of logging events.  As each logging event is examined by the rule, if the event passes the rule's evaluation, the operation associated with the rule is performed (for example, the event may be assigned a color or added to the display).  Log4J's rule expression syntax provides access to all of the logging event's fields, a number of operators, and the ability to control precedence.
 
-<p><b>Expression requirements:</b></p>
 <ul>
 <li>Precedence can be controlled by applying parentheses to groups of expressions (usually used in combination with logical operators)</li>
 <li>All operators, operands and parentheses must be separated by spaces</li>
-<li>Single tick marks can be used to delimit multi-word operands, for example: <b>msg ~= 'my msg'</b></li>
+<li>Single tick marks can be used to delimit multi-word operands</li>
+<li>Example: msg ~= <b>'my msg'</b></li>
 <li><b>NOTE:</b> A context menu is available anywhere you can enter an expression in order to assist in constructing expressions (use the right-mouse click or ctrl-space to activate the context menu) </li>
 </ul>
 
-<b>To define an expression:</b>
+<b>Define an expression:</b>
 <ol>
-<li>Select the field identifier (a keyword representing a logging event field) required to perform the evaluation.  For example, to define an expression which evaluates the 'message' field, use the <b>MSG</b> field identifier (list of supported field identifiers provided below)</li>
-<li>Select the operator needed to perform the filtering operation (list of supported operators provided below).  For example, to perform a case-insensitive partial-text filtering operation, use the <b>~=</b> operator</li>
-<li>Define the value to be matched in the expression (Required by all operators except logical operators)</li>
-<p>
-For example, to display only events which contain the word 'result' in the message field, the matching expression is <b>msg ~= result</b>
-<li>The field identifier/operator/operand combination is a valid expression, but can be used in combination with other expressions and logical operators to build complex expressions</li>
-<li>Modify the precedence expressions in a complex expression by using parentheses</li>
+<li>Select the field identifier (a keyword representing a logging event field) required to perform the evaluation.  <b>Field identifiers are not case sensitive.  </b>See the list of supported field identifiers below</li>
+<li>Example: use the <B>MSG</B> field identifier in an expression to evaluate the 'message' field of the logging event</li>
+<li>Select the operator needed to perform the evaluation.  See the list of supported operators below.</li>
+<li>
+Example: to perform a case-insensitive partial-text evaluation, use the <b>~=</b> operator</li>
+<li>Define the value to be matched in the expression (required by all operators except logical operators).</li>
+<li>
+Example: to display only events which are greater than or equal to level INFO, use the expression <b>LEVEL >= INFO</b></li>
 </ol>
+
+<ul>
+<li>The field identifier/operator/operand combination itself is a valid expression, but can be used in combination with other expressions and logical operators (&&, ||) in order to define complex expressions</li>
+<li>Modify the precedence of expressions in a complex expression by surrounding the expression(s) in parentheses</li>
+</ul>
 
 <b>Supported field identifiers:</b>
 <ul>
@@ -143,15 +149,15 @@ For example, to display only events which contain the word 'result' in the messa
 <li>EXCEPTION</li>
 <li>TIMESTAMP</li>
 <li>THREAD</li>
-<li>MDC</li>
-<li>PROP (properties)</li>
+<li>MDC.[key name]</li>
+<li>PROP.[key name]</li>
 </ul>
 
-<li><b>NOTE: </b>To build expressions using <b>MDC</b> or <b>PROP (properties)</b>, the key being evaluated must be added after the field identifier, followed by a period (.)</li>
-  <p>For example, all events in the event table contain a '<b>log4jid</b>' property (used during import/export of events)  
-   <p>To refine the display to only show rows 50 through 60, specify this expression in the 'refine focus' text field: <b>PROP.log4jid &gt= 50 && PROP.log4jid &lt= 60</b>
-   <p><b>NOTE:</b> case matters when specifying the key.  <b>PROP.log4jid</b> is <b>not</b> the same as <b>PROP.LOG4JID</b></li>
-
+<ul>
+<li><b>NOTE: </b>To build expressions using <b>MDC</b> or <b>PROP (properties)</b> field identifiers, the key being evaluated must be added after the field identifier and a period</li>
+ <li>Example: all events in the event table contain a '<b>log4jid</b>' property (used during import/export of events).  To refine the display to display only rows 50 through 60, the expression <b>PROP.log4jid &gt= 50 && PROP.log4jid &lt= 60</b> can be used in the 'refine focus' field</li>
+<b>NOTE:</b> MDC and PROP keys are case sensitive.  <b>PROP.log4jid</b> is <b>not</b> equivalent to <b>PROP.LOG4JID</b>
+</ul>
 <p>
 <b>Supported operators:</b></p>
 <table border=1>
@@ -197,7 +203,7 @@ Each log panel can define color rules which can be used to colorize events in th
 <li>Enter an expression (see <a href="#expressions">Expressions</a> section below)</li>
 <li>Select a color from the list or use the 'browse' button at the bottom of the color list to define a custom color</li>
 <li>Repeat steps 2 - 5 as needed</li>
-<li>Order the rules - events are evaluated against color rules in order.  Select a color rule entry and press the UP or DOWN icons on the panel as needed</li>
+<li>Order the rules - rules are evaluated in order.  Select a color rule entry and press the UP or DOWN icons on the panel as needed</li>
 <li>Apply the rules.  The event panel will be updated based on the defined color rules</li>
 <li>If there are invalid expressions, a message at the bottom will direct you to hover the mouse over an expression to see the error as the entry's tooltip</li>
 <li>Fix errors as needed, apply and close the panel</li>
@@ -213,7 +219,7 @@ Events displayed in the event panel can be filtered in two ways: by focusing on 
 <ol>
 <li>Move the cursor to the 'refine focus on' field</li>
 <li>Enter an expression (see <a href="#expressions">Expressions</a> section below)</li>
-<li>Alternatively, use the context (mouse right click) menu (available when the mouse pointer is over the events table) to modify the 'refine focus' field's expression based on the field and value under the mouse pointer.  For example, if the mouse pointer is over the LEVEL cell of an event which has a value of INFO, selecting <b>set 'refine focus' field</b> will assign the expression <b>LEVEL == 'INFO'</b> to the refine focus field.</li>
+<li>Alternatively, use the context (mouse right click) menu (available when the mouse pointer is over the events table) to modify the 'refine focus' field's expression based on the field and value under the mouse pointer.  For example, if the mouse pointer is over the THREAD cell of an event which has a value of Thread-1, selecting <b>set 'refine focus' field</b> will assign the expression <b>THREAD == 'Thread-1'</b> to the refine focus field.</li>
 <li>The display will be updated automatically if the expression is valid and the contents of the 'refine focus' field have not changed for 1 second, showing only events which match the expression</li>
 <li>If the expression entered is invalid, an error message will available as the 'refine focus on' field's tooltip</li>
 <li>If the <b>ENTER</b> key is pressed when a valid expression is in the 'refine focus on' field, the expression is added to the refine focus drop down list and can be recalled later in the session</li>
