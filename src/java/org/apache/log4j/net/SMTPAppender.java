@@ -32,13 +32,13 @@ import javax.mail.internet.MimeMultipart;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Layout;
 import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
 import org.apache.log4j.helpers.CyclicBuffer;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.pattern.PatternConverter;
 import org.apache.log4j.pattern.PatternParser;
 import org.apache.log4j.rule.ExpressionRule;
 import org.apache.log4j.rule.Rule;
+import org.apache.log4j.spi.ComponentBase;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.TriggeringEventEvaluator;
 
@@ -85,7 +85,6 @@ public class SMTPAppender extends AppenderSkeleton {
   private boolean locationInfo = false;
   protected CyclicBuffer cb = new CyclicBuffer(bufferSize);
   protected MimeMessage msg;
-  private String expression;
   protected TriggeringEventEvaluator evaluator;
   private PatternConverter subjectConverterHead;
   
@@ -319,29 +318,6 @@ public class SMTPAppender extends AppenderSkeleton {
   }
   
   /**
-   * Returns the expression
-   * 
-   * @return expression
-   */
-  public String getExpression() {
-    return expression;
-  }
-  
-  /**
-   * Set an expression used to determine when the sending of an email is triggered.
-   * 
-   * Only use an expression to evaluate if the 'evaluatorClass' param is not provided.
-   * @param expression
-   */
-  public void setExpression(String expression) {
-    
-    if (evaluator instanceof DefaultEvaluator) {
-      this.expression = expression;
-      evaluator = new DefaultEvaluator(expression);
-    }
-  }
-
-  /**
      Returns value of the <b>Subject</b> option.
    */
   public String getSubject() {
@@ -415,18 +391,29 @@ public class SMTPAppender extends AppenderSkeleton {
   }
 
   /**
-     The <b>EvaluatorClass</b> option takes a string value
-     representing the name of the class implementing the {@link
-     TriggeringEventEvaluator} interface. A corresponding object will
-     be instantiated and assigned as the triggering event evaluator
-     for the SMTPAppender.
+   * The <b>EvaluatorClass</b> option takes a string value representing the 
+   * name of the class implementing the {@link TriggeringEventEvaluator} 
+   * interface. A corresponding object will be instantiated and assigned as 
+   * the triggering event evaluator for the SMTPAppender.
+   * 
+   * @deprecated replaced by {@link #setEvaluator}.
    */
   public void setEvaluatorClass(String value) {
+    getLogger().warn("The SMPTAppender.setEvaluatorClass is deprecated.");
+    getLogger().warn("It has been replaced with the more powerful SMPTAppender.setEvaluator method.");
     OptionConverter oc = new OptionConverter(this.repository);
     evaluator =
       (TriggeringEventEvaluator) oc.instantiateByClassName(
         value, TriggeringEventEvaluator.class, evaluator);
   }
+
+  /**
+   * Set {@link TriggeringEventEvaluator} for this instance of SMTPAppender.
+   */
+  public void setEvaluator(TriggeringEventEvaluator evaluator) {
+    this.evaluator = evaluator;
+  }
+
 
   /**
      The <b>LocationInfo</b> option takes a boolean value. By
@@ -470,17 +457,24 @@ public class SMTPAppender extends AppenderSkeleton {
 }
 
 
-class DefaultEvaluator implements TriggeringEventEvaluator {
+class DefaultEvaluator extends ComponentBase implements TriggeringEventEvaluator {
 
   private Rule expressionRule;
+  private String expression;
   
   public DefaultEvaluator() {}
   
-  public DefaultEvaluator(String expression) {
-    try {
-      expressionRule = ExpressionRule.getRule(expression);
-    } catch (IllegalArgumentException iae) {
-      LogManager.getLogger(SMTPAppender.class).error("Unable to use provided expression - falling back to default behavior (trigger on ERROR or greater severity)", iae);
+  public void setExpression(String expression) {
+    this.expression = expression;
+  }
+  
+  public void activateOptions() {
+    if(expression != null) {
+      try {
+        expressionRule = ExpressionRule.getRule(expression);
+      } catch (IllegalArgumentException iae) {
+        getLogger().error("Unable to use provided expression - falling back to default behavior (trigger on ERROR or greater severity)", iae);
+      }
     }
   }
   
