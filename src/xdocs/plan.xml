@@ -63,7 +63,6 @@
 	  <td>Mark Womack</td>	  
 	  <td>initial implementation</td>
 	</tr>
-
       </table>
     </section>
       
@@ -229,7 +228,7 @@
 	  </td>
 	  
 	  <td>Ceki</td>
-	  <td>started, requires testing</td>
+	  <td>implemented, manually tested, requires automated test cases</td>
 	</tr>
       </table>
     </section>
