@@ -20,6 +20,8 @@ import org.apache.log4j.joran.spi.ActionException;
 import org.apache.log4j.joran.spi.ExecutionContext;
 import org.apache.log4j.joran.spi.Interpreter;
 import org.apache.log4j.spi.ComponentBase;
+import org.apache.log4j.spi.LoggerRepository;
+import org.apache.log4j.spi.ErrorItem;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
@@ -78,5 +80,23 @@ public abstract class Action extends ComponentBase {
       return locator.getLineNumber();
     }
     return -1;
+  }
+  
+  /**
+   * Helper method to return the LoggerRepository of the  execution context.
+   *
+   * @param ec The ExecutionContext that contains the reference to the
+   *   LoggerRepository
+   * @return The LoggerRepository
+   */
+  protected LoggerRepository getLoggerRepository(ExecutionContext ec) {
+    Object o = ec.getObject(0);
+    if(o instanceof LoggerRepository) {
+      return (LoggerRepository) o;
+    } else {
+      String errMsg = "There is no LoggerRepository at the top of the object stack.";
+      ec.addError(new ErrorItem(errMsg));
+      throw new IllegalStateException(errMsg);
+    }
   }
 }

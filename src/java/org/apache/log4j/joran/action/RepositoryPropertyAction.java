@@ -28,17 +28,6 @@ import org.apache.log4j.spi.LoggerRepository;
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class RepositoryPropertyAction extends PropertyAction {
-
-  LoggerRepository getLoggerRepository(ExecutionContext ec) {
-    Object o = ec.getObjectStack().get(0);
-    if(o instanceof LoggerRepository) {
-      return (LoggerRepository) o;
-    } else {
-      String errMsg = "There is no LoggerRepository at the top of the object stack.";
-      ec.addError(new ErrorItem(errMsg));
-      throw new IllegalStateException(errMsg);
-    }
-  }
   
   public void setProperties(ExecutionContext ec, Properties props) {
     LoggerRepository repository = getLoggerRepository(ec);
