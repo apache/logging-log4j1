@@ -66,6 +66,15 @@ abstract public class StringComparator implements Comparator {
     
     String leftSide = getLeftSide(event);
     
+    if(leftSide == null) {
+        switch(operator.getCode()) {
+        case Operator.EQUAL: return leftSide == rightSide;   
+        case Operator.NOT_EQUAL: return leftSide != rightSide;
+        default: throw new NullPointerException("null leftside can only be used with == or != operators");
+        }
+      
+    }
+    
     if(operator.isRegex()) {
       boolean match = matcher.contains(leftSide, rightSidePattern);
       if(operator.getCode() == Operator.REGEX_MATCH) {
@@ -83,15 +92,8 @@ abstract public class StringComparator implements Comparator {
       }
     }
   
-    int compResult;
-
-    if(leftSide == null) {
-      // Assuming rightside can never be null, if leftSide == null, then it is
-      // defined to be lexicographically smaller
-      compResult = -1;
-    } else {
-      compResult = leftSide.compareTo(rightSide);
-    }
+    int compResult = leftSide.compareTo(rightSide);
+    
     
     switch(operator.getCode()) {
     case Operator.EQUAL: return compResult == 0;   

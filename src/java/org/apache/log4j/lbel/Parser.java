@@ -148,6 +148,7 @@ class Parser {
     Token token = ts.getCurrent();
     Operator operator;
     String literal;
+    
     switch(token.getType()) {
     case Token.TRUE:
     	ts.next();
@@ -246,8 +247,10 @@ class Parser {
     Token token = ts.getCurrent();
     if(token.getType() == Token.LITERAL) {
       return (String) token.getValue();
+    } else if(token.getType() == Token.NULL) {
+      return null;
     } else {
-      throw new ScanError("Expected LITERAL but got "+token);
+      throw new ScanError("Expected LITERAL or NULL but got "+token);
     }
   }
 

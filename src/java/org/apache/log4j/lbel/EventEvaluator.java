@@ -31,16 +31,18 @@ import org.apache.log4j.spi.LoggingEvent;
 
 public interface EventEvaluator {
   
+
   /**
    * Evaluates whether the event passed as parameter matches this evaluator's 
-   * matching criteria?
+   * matching criteria.
    * 
    * <p>The <code>Evaluator</code> instance is free to evaluate the event as
    * it pleases. In particular, the evaluation results <em>may</em> depend on 
    * previous events. 
    * 
    * @param event The event to evaluate
-   * @return true if there is a match, false otherwise.
+   * @return true if there is a match, false otherwise. 
+   * @throws NullPointerException thrown if lefthand side is null
    */
-  boolean evaluate(LoggingEvent event);
+  boolean evaluate(LoggingEvent event) throws NullPointerException;
 }

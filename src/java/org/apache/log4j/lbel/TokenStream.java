@@ -45,6 +45,7 @@ class TokenStream  {
     keywordMap.put("class", new Token(Token.CLASS, "class"));
     keywordMap.put("thread", new Token(Token.THREAD, "thread"));
     keywordMap.put("date", new Token(Token.DATE, "date"));
+    keywordMap.put("null", new Token(Token.NULL, "null"));
   }
   
   StreamTokenizer tokenizer;
