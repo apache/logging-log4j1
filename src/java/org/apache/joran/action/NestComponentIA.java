@@ -25,8 +25,6 @@ import org.apache.log4j.helpers.Loader;
 import org.apache.log4j.spi.OptionHandler;
 
 import org.xml.sax.Attributes;
-import org.xml.sax.Locator;
-
 
 /**
  * @author Ceki G&uuml;lc&uuml;
@@ -63,7 +61,7 @@ public class NestComponentIA extends ImplicitAction {
     }
   }
 
-  public void begin(ExecutionContext ec, String localName, Attributes attributes, Locator locator) {
+  public void begin(ExecutionContext ec, String localName, Attributes attributes) {
     // inError was reset in isApplicable. It should not be touched here
 
       String className = attributes.getValue(CLASS_ATTRIBUTE);

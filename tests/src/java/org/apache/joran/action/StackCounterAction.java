@@ -21,7 +21,6 @@ import org.apache.log4j.Layout;
 import org.apache.log4j.Logger;
 
 import org.xml.sax.Attributes;
-import org.xml.sax.Locator;
 
 
 public class StackCounterAction extends Action {
@@ -35,7 +34,7 @@ public class StackCounterAction extends Action {
    * Instantiates an layout of the given class and sets its name.
    *
    */
-  public void begin(ExecutionContext ec, String name, Attributes attributes, Locator locator) {
+  public void begin(ExecutionContext ec, String name, Attributes attributes) {
     String str = "Pushing "+name+"-begin";
     ec.pushObject(name+"-begin");
   }

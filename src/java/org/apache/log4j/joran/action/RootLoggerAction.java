@@ -23,8 +23,6 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggerRepository;
 
 import org.xml.sax.Attributes;
-import org.xml.sax.Locator;
-
 
 public class RootLoggerAction extends Action {
   static final String NAME_ATTR = "name";
@@ -35,7 +33,7 @@ public class RootLoggerAction extends Action {
   Logger logger = Logger.getLogger(RootLoggerAction.class);
   Logger root;
 
-  public void begin(ExecutionContext ec, String name, Attributes attributes, Locator locator) {
+  public void begin(ExecutionContext ec, String name, Attributes attributes) {
     inError = false;
     logger.debug("In begin method");
 

@@ -71,6 +71,9 @@ public class JoranParser extends DefaultHandler {
     }
   }
 
+  public Locator getDocumentLocator() {
+    return locator;
+  }
   public void setDocumentLocator(Locator l) {
     locator = l;
   }
@@ -145,7 +148,7 @@ public class JoranParser extends DefaultHandler {
 
     while (i.hasNext()) {
       Action action = (Action) i.next();
-      action.begin(ec, tagName, atts, locator);
+      action.begin(ec, tagName, atts);
     }
   }
 

@@ -16,9 +16,7 @@
 
 package org.apache.log4j.pattern;
 
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 import org.apache.log4j.Layout;
 import org.apache.log4j.Level;

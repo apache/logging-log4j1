@@ -17,6 +17,7 @@
 package org.apache.joran.action;
 
 import org.apache.joran.ExecutionContext;
+import org.apache.joran.JoranParser;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 
@@ -54,7 +55,7 @@ public abstract class Action {
    * the returned value is 'false', then child elements are ignored.
    */
   public abstract void begin(
-    ExecutionContext ec, String name, Attributes attributes, Locator locator);
+    ExecutionContext ec, String name, Attributes attributes);
 
   public abstract void end(ExecutionContext ec, String name);
 
@@ -62,5 +63,23 @@ public abstract class Action {
 
   public String toString() {
     return this.getClass().getName();
+  }
+  
+  protected int getColumnNumber(ExecutionContext ec) {
+    JoranParser jp = ec.getJoranParser();
+    Locator locator = jp.getDocumentLocator();
+    if(locator != null) {
+      return locator.getColumnNumber();
+    }
+    return -1;
+  }
+  
+  protected int getLineNumber(ExecutionContext ec) {
+    JoranParser jp = ec.getJoranParser();
+    Locator locator = jp.getDocumentLocator();
+    if(locator != null) {
+      return locator.getLineNumber();
+    }
+    return -1;
   }
 }
