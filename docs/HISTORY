@@ -11,12 +11,17 @@
 
  - Corrected a problem with the static initializer of the Category
    class which would use the wrong class loader to search for the
-   log4j.properties file. [*]
+   log4j.properties file.  The search algorithm has been also
+   simplified. The preferred method to specify the automatic
+   configuration file is setting the log4j.configration system
+   property. [*]
 
- - Documentation improvements.
+ - Documentation improvements. [*]
+ 
+ - Enhancements to the org.apache.log4j.examples.appserver package. [*]
 
-
- - 
+ - Corrected a bug in the way the NTEventLogAppender printed
+   exceptions. [*]
 
  May 20, 2001
 

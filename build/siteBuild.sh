@@ -10,21 +10,19 @@ if [ "$OSTYPE" = "cygwin32" ] || [ "$OSTYPE" = "cygwin" ] ; then
    CLASSPATH=`cygpath --path --unix "$CLASSPATH"`
 fi
 
-# Add in your .jar files first
-for i in ./lib/*.jar
-do
-    CLASSPATH=$CLASSPATH:"$i"
-done
 # Add in the jakarta-site2 library files
 for i in ../../jakarta-site2/lib/*.jar
 do
     CLASSPATH=$CLASSPATH:"$i"
 done
 
+
 # convert the unix path to windows
 if [ "$OSTYPE" = "cygwin32" ] || [ "$OSTYPE" = "cygwin" ] ; then
    CLASSPATH=`cygpath --path --windows "$CLASSPATH"`
 fi
+
+echo "CLASSPATH=$CLASSPATH"
 
 BUILDFILE=siteBuild.xml
 

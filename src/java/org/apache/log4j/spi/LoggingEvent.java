@@ -90,7 +90,7 @@ public class LoggingEvent implements java.io.Serializable {
   /** Location information for the caller. */
   private LocationInfo locationInfo;
 
-  // Damn serialization
+  // Serialization 
   static final long serialVersionUID = -868428216207166145L;
 
   static final Integer[] PARAM_ARRAY = new Integer[1];

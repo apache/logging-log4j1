@@ -747,9 +747,14 @@ control of a web-server.
  other than "false".
 
  <p><li>Set the <code>resource</code> string variable to the value of
- the <b>log4j.configuration</b> system property. If the system
- property is not defined, then set <code>resource</code> to
- "log4j.properties". 
+ the <b>log4j.configuration</b> system property.  <em>The preferred
+ way to specify the default initialization file is thourough the
+ <b>log4j.configuration</b> system property.</em> In case the system
+ property is not defined, then set <code>resource</code> to the
+ default value "log4j.properties".
+
+
+ 
 
  <p><li>Attempt to convert the <code>resource</code> variable to a
  URL.
@@ -758,14 +763,13 @@ control of a web-server.
  example due to a <code>MalformedURLException</code>, then search for
  the <code>resource</code> from the classpath by calling
  <code>org.apache.log4j.helpers.Loader.getResource(resource,
- Category.class)</code> which returns a URL.  Note that
- "log4j.properties" is a malformed URL and hence it falls to this
+ Category.class)</code> which returns a URL.  Note that the string
+ "log4j.properties" constitutes a malformed URL and falls into this
  case.
 
  <p>See <a
  href="api/org/apache/log4j/helpers/Loader.html#getResource(java.lang.String, java.lang.Class)">Loader.getResource(java.lang.String, java.lang.Class)</a>
- for the list of searched locations which is rather complex in
- itself..
+ for the list of searched locations.
 
  <p><li>If no URL could not be found, abort default
  initialization. Otherwise, configure log4j from the URL.

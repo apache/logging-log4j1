@@ -28,17 +28,13 @@ public class Loader  {
 
      <ol>
 
-     <p><li>Search for <code>fully/qualified/clazz/name/resource</code>
-     with the {@link ClassLoader} that loaded <code>clazz</code>.
-
-     <p><li>Search for <code>fully/qualified/clazz/name/resource</code>
-     with the <code>null</code> (bootstrap) class loader.
-
-     <p><li>Search for <code>resource</code> with the class loader
-     that loaded <code>clazz</code>. 
+     <p><li>Search for <code>resource</code> with same the class
+     loader that loaded <code>clazz</code>.
 
      <p><li>Try one last time with
-     <code>ClassLoader.getSystemResource(resource)</code>.
+     <code>ClassLoader.getSystemResource(resource)</code>, that is is
+     using the system class loader in JDK 1.2 and virtual machine's
+     built-in class loader in JDK 1.1.
 
      </ol>
      
@@ -53,25 +49,26 @@ public class Loader  {
     // Is it under CLAZZ/resource somewhere in the classpath?  CLAZZ
     // stands for fully qualified name of "clazz" where dots have been
     // changed to directory separators
-    LogLog.debug("Trying to find ["+resource+"] using clazz.getResource().");
+    ///LogLog.debug("Trying to find ["+resource+"] using clazz.getResource().");
+    ///
+    ///try {
+    ///	 url = clazz.getResource(resource);
+    ///	 if(url != null) 
+    ///	   return url;
+    ///} catch (Throwable t) {
+    ///	 LogLog.warn(TSTR,t);
+    ///}
+    ///	 
+    ///// attempt to get the resource under CLAZZ/resource from the
+    ///// system class path. The system class loader should not throw
+    ///// InvalidJarIndexExceptions
+    ///String fullyQualified = resolveName(resource, clazz);
+    ///LogLog.debug("Trying to find ["+fullyQualified+
+    ///		    "] using ClassLoader.getSystemResource().");
+    ///url = ClassLoader.getSystemResource(fullyQualified);
+    ///if(url != null) 
+    ///	 return url;
     
-    try {
-      url = clazz.getResource(resource);
-      if(url != null) 
-	return url;
-    } catch (Throwable t) {
-      LogLog.warn(TSTR,t);
-    }
-      
-    // attempt to get the resource under CLAZZ/resource from the
-    // system class path. The system class loader should not throw
-    // InvalidJarIndexExceptions
-    String fullyQualified = resolveName(resource, clazz);
-    LogLog.debug("Trying to find ["+fullyQualified+
-		 "] using ClassLoader.getSystemResource().");
-    url = ClassLoader.getSystemResource(fullyQualified);
-    if(url != null) 
-      return url;
     
     // Let the class loader of clazz and parents (by the delagation
     // property) seearch for resource
