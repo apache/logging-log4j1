@@ -64,7 +64,7 @@ import java.util.List;
  * This implementation (although there's very little change) @author Paul Smith <psmith@apache.org>
  *
  */
-class CyclicBufferList extends AbstractList implements List {
+public class CyclicBufferList extends AbstractList implements List {
   Object[] ea;
   int first;
   int last;
