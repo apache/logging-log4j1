@@ -196,7 +196,7 @@ public class ContextJNDISelector implements RepositorySelector {
    * with the given name.
    */
   public LoggerRepository getLoggerRepository(String name) {
-    if( Constants.JNDI_CONTEXT_NAME.equals(name)) {
+    if(Constants.DEFAULT_REPOSITORY_NAME.equals(name)) {
       return LogManager.defaultLoggerRepository;
     } else {
       return (LoggerRepository) hierMap.get(name);  
