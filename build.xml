@@ -29,7 +29,7 @@
   <property name="javac.dest" value="dist/classes"/>
 
   <!-- Source directory for the examples/ -->
-  <property name="examples.src" value="examples"/>
+  <property name="examples.src" value="examples/src"/>
 
   <!-- Destination for compiled files for examples/ -->
   <property name="examples.javac.dest" value="examples/classes"/>
