@@ -1,17 +1,17 @@
 /*
  * Copyright 1999,2004 The Apache Software Foundation.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package org.apache.log4j.varia;
@@ -20,16 +20,17 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -41,137 +42,143 @@ import org.apache.log4j.rule.Rule;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ThrowableInformation;
 import org.apache.log4j.spi.location.LocationInfo;
-
+import org.apache.oro.text.perl.Perl5Util;
+import org.apache.oro.text.regex.MalformedPatternException;
+import org.apache.oro.text.regex.MatchResult;
+import org.apache.oro.text.regex.Pattern;
+import org.apache.oro.text.regex.Perl5Compiler;
+import org.apache.oro.text.regex.Perl5Matcher;
 
 /**
- * A receiver which supports the definition of the log format using keywords, the
- * contained timestamp using SimpleDateFormat's format support, and the file URL
- *
- * FEATURES:
- * specify the URL of the log file to be processed
- * specify the timestamp format (if one exists)
- * specify the layout used in the log file
- * define your file's layout using these keywords along with any text being added as delimiters
- * supports the conversion of exceptions found in the file
- *
- * TIMESTAMP
- * LOGGER
- * LEVEL
- * THREAD
- * CLASS
- * FILE
- * LINE
- * METHOD
- * RELATIVETIME
- * MESSAGE
- * *
- * PROP(key)
- * 
- * For example,
- *
- * If your file's patternlayout is this:
- * %d %-5p [%t] %C{2} (%F:%L) - %m%n
- *
- * specify this as the log format:
- * TIMESTAMP LEVEL [THREAD] CLASS (FILE:LINE) - MESSAGE
- *
- * Only PROPERTIES are supported directly, but an MDC entry (or delimited NDC) can be set as a property
+ * LogFilePatternReceiver can parse and tail log files, converting entries into
+ * LoggingEvents.
+ * <p>
+ * This receiver relies on ORO Perl5 features to perform the parsing of text in the 
+ * log file, however the only regular expression field explicitly supported is 
+ * a glob-style wildcard used to ignore fields in the log file if needed.  All other
+ * fields are parsed by using the supplied keywords.
+ * <p>
+ * <b>Features:</b><br>
+ * - specify the URL of the log file to be processed<br>
+ * - specify the timestamp format in the file (if one exists)<br>
+ * - specify the pattern (logFormat) used in the log file using keywords, a wildcard character (*) and fixed text<br>
+ * - 'tail' the file (allows the contents of the file to be continually read and new events processed)<br>
+ * - supports the parsing of multi-line messages and exceptions
+ *<p>
+ * <b>Keywords:</b><br>
+ * TIMESTAMP<br>
+ * LOGGER<br>
+ * LEVEL<br>
+ * THREAD<br>
+ * CLASS<br>
+ * FILE<br>
+ * LINE<br>
+ * METHOD<br>
+ * RELATIVETIME<br>
+ * MESSAGE<br>
+ * NDC<br>
+ * PROP(key)<br>
+ * <p>
+ * Use a * to ignore portions of the log format that should be ignored
+ * <p>
+ * Example:<br>
+ * If your file's patternlayout is this:<br>
+ * <b>%d %-5p [%t] %C{2} (%F:%L) - %m%n</b>
+ *<p>
+ * specify this as the log format:<br>
+ * <b>TIMESTAMP LEVEL [THREAD] CLASS (FILE:LINE) - MESSAGE</b>
+ *<p>
  * To define a PROPERTY field, use PROP(key)
- * 
- * For example, 
- * 
- * If you specified a userID field as an MDC entry in the file, 
- * you can use PROP(userID) in the log format definition to access the userID MDC entry as a property
- *  
- * If your file's patternlayout is this:
- * %r [%t] %-5p %c %x - %m%n
- *
- * specify this as the log format:
- * RELATIVETIME [THREAD] LEVEL LOGGER * - MESSAGE
- *
+ * <p>
+ * Example:<br> 
+ * If you used the RELATIVETIME pattern layout character in the file, 
+ * you can use PROP(RELATIVETIME) in the logFormat definition to assign 
+ * the RELATIVETIME field as a property on the event.
+ * <p>
+ * If your file's patternlayout is this:<br>
+ * <b>%r [%t] %-5p %c %x - %m%n</b>
+ *<p>
+ * specify this as the log format:<br>
+ * <b>PROP(RELATIVETIME) [THREAD] LEVEL LOGGER * - MESSAGE</b>
+ * <p>
  * Note the * - it can be used to ignore a single word or sequence of words in the log file
  * (in order for the wildcard to ignore a sequence of words, the text being ignored must be
- *  followed by some delimiter, like '-' or '[')
- *
- * Note how keywords may be surrounded by delimiters, and in the second example,
- * ndc is ignored (even multiple words in the ndc in this case, since the keyword
- * is followed by a delimiter (-)
- * 
+ *  followed by some delimiter, like '-' or '[') - ndc is being ignored in this example.
+ * <p>
  * Assign a filterExpression in order to only process events which match a filter.
  * If a filterExpression is not assigned, all events are processed.
- *
- * LIMITATIONS:
- * - specify delimited NDC or MDC entries using support for properties
- * - no support for the single-line version of throwable supported by patternlayout
- * - relativetime is set as a property
- * - loggers with spaces in their names are not supported (but may work if followed by a delimiter,
- *   similar to wildcard example above)
- * - messages must appear at the end of the line
- * - note the explanation above describing the rules for ignoring text using the wildcard
- *   keyword
- * - exceptions will be converted if the exception stack trace lines (other than the first line)
- *   are stored in the log file with a tab as the first character
- *
- * EXAMPLE RECEIVER CONFIGURATION (add these as params, specifying a LogFilePatternReceiver 'plugin'
- *
- * param: "timestampFormat" value="yyyy-MM-d HH:mm:ss,SSS"
- * param: "logFormat" value="RELATIVETIME [THREAD] LEVEL LOGGER * - MESSAGE"
- * param: "fileURL" value="file:///c:/events.log"
+ *<p>
+ * <b>Limitations:</b><br>
+ * - no support for the single-line version of throwable supported by patternlayout<br>
+ *   (this version of throwable will be included as the last line of the message)<br>
+ * - the relativetime patternLayout character must be set as a property: PROP(RELATIVETIME)<br>
+ * - messages should appear as the last field of the logFormat because the variability in message content<br>
+ * - exceptions are converted if the exception stack trace (other than the first line of the exception)<br>
+ *   is stored in the log file with a tab followed by the word 'at' as the first characters in the line<br>
+ * - tailing may fail if the file rolls over. 
+ *<p>
+ * <b>Example receiver configuration settings</b> (add these as params, specifying a LogFilePatternReceiver 'plugin'):<br>
+ * param: "timestampFormat" value="yyyy-MM-d HH:mm:ss,SSS"<br>
+ * param: "logFormat" value="RELATIVETIME [THREAD] LEVEL LOGGER * - MESSAGE"<br>
+ * param: "fileURL" value="file:///c:/events.log"<br>
  * param: "tailing" value="true"
+ *<p>
+ * This configuration will be able to process these sample events:<br>
+ * 710    [       Thread-0] DEBUG                   first.logger first - <test>   <test2>something here</test2>   <test3 blah=something/>   <test4>       <test5>something else</test5>   </test4></test><br>
+ * 880    [       Thread-2] DEBUG                   first.logger third - <test>   <test2>something here</test2>   <test3 blah=something/>   <test4>       <test5>something else</test5>   </test4></test><br>
+ * 880    [       Thread-0] INFO                    first.logger first - infomsg-0<br>
+ * java.lang.Exception: someexception-first<br>
+ *     at Generator2.run(Generator2.java:102)<br>
  *
- * The 'tailing' parameter allows the contents of the file to be continually read and new events processed.
- * 
- * NOTE: in our example file content below, the timestampFormat entry defined above
- * is not required, but included as an example of how to specify the format.  See SimpleDateFormat
- * for more information.
- *
- * This configuration will be able to process these sample events:
- * 710    [       Thread-0] DEBUG                   first.logger first - <test>   <test2>something here</test2>   <test3 blah=something/>   <test4>       <test5>something else</test5>   </test4></test>
- * 880    [       Thread-2] DEBUG                   first.logger third - <test>   <test2>something here</test2>   <test3 blah=something/>   <test4>       <test5>something else</test5>   </test4></test>
- * 880    [       Thread-0] INFO                    first.logger first - infomsg-0
- * java.lang.Exception: someexception-first
- *     at Generator2.run(Generator2.java:102)
- *
+ *@author Scott Deboy
  */
 public class LogFilePatternReceiver extends Receiver {
-  public static final String TIMESTAMP = "TIMESTAMP";
-  public static final String LOGGER = "LOGGER";
-  public static final String LEVEL = "LEVEL";
-  public static final String THREAD = "THREAD";
-  public static final String CLASS = "CLASS";
-  public static final String FILE = "FILE";
-  public static final String LINE = "LINE";
-  public static final String METHOD = "METHOD";
-  public static final String RELATIVETIME = "RELATIVETIME";
-  public static final String MESSAGE = "MESSAGE";
-  public static final String WILDCARD = "*";
-  private static final String TAB = "\t";
-  private static final String PROP_PREFIX = "PROP(";
-  private static final String PROP_SUFFIX = ")";
-  private final List keywords = new ArrayList();
-  private final List logFormatFields = new ArrayList();
-  private final Map defaultMap = new HashMap();
+  private final Set keywords = new HashSet();
+
+  private static final String PROP_START = "PROP(";
+  private static final String PROP_END = ")";
+
+  private static final String LOGGER = "LOGGER";
+  private static final String MESSAGE = "MESSAGE";
+  private static final String TIMESTAMP = "TIMESTAMP";
+  private static final String NDC = "NDC";
+  private static final String LEVEL = "LEVEL";
+  private static final String THREAD = "THREAD";
+  private static final String CLASS = "CLASS";
+  private static final String FILE = "FILE";
+  private static final String LINE = "LINE";
+  private static final String METHOD = "METHOD";
+
+  private static final String EXCEPTION_PATTERN = "\t.*";
+  private static final String REGEXP_WILDCARD = ".+";
+  private static final String PATTERN_WILDCARD = "*";
+  private static final String GROUP = "(" + REGEXP_WILDCARD + ")";
+
+  private static final String HOSTNAME_PROPERTY_VALUE = "file";
+
+  private final List matchingKeywords = new ArrayList();
+  private final String newLine = System.getProperty("line.separator");
+
+  private final String[] emptyException = new String[] { "" };
+
   private SimpleDateFormat dateFormat;
   private String timestampFormat = "yyyy-MM-d HH:mm:ss,SSS";
   private String logFormat;
   private String fileURL;
-  private String shortFileName;
   private boolean tailing;
   private String filterExpression;
+
+  private final Perl5Util util = new Perl5Util();
+  private final Perl5Compiler compiler = new Perl5Compiler();
+  private final Perl5Matcher matcher = new Perl5Matcher();
+
   private Rule expressionRule;
+  private final Map currentMap = new HashMap();
+  private final List additionalLines = new ArrayList();
+  private String regexp;
+  private Reader reader;
 
-  /**
-   * Creates a new LogFilePatternReceiver object.
-   */
   public LogFilePatternReceiver() {
-    //define defaults which may not be provided by log file but are required by log4j
-    defaultMap.put(LOGGER, "Unknown");
-
-    //supported keyword replacements are expected to be single words, except for the MESSAGE keyword,
-    //which is expected to appear at the end of each entry in the log file
-    //since throwable, ndc and properties can all have spaces, they're not yet supported
-    //while loggers may containspaces, only loggers without spaces are currently supported
-    //fullinfo pattern is not supported directly - build from individual keywords instead
     keywords.add(TIMESTAMP);
     keywords.add(LOGGER);
     keywords.add(LEVEL);
@@ -180,62 +187,13 @@ public class LogFilePatternReceiver extends Receiver {
     keywords.add(FILE);
     keywords.add(LINE);
     keywords.add(METHOD);
-
-    //wildcard removes any single word 
-    //will also remove any number of words if the next entry in the log file format
-    //is not found in the wildcard text itself 
-    //(for example, 'LOGGER * [THREAD]' would successfully resolve keywords for 
-    //'MYLOGGER any text here [Thread-0]'
-    //but, 'LOGGER * THREAD' would not successfully resolve keywords for
-    //'MYLOGGER any text here Thread-0'
-    //but would successfully resolve
-    //'MYLOGGER singleword Thread-0'
-    keywords.add(WILDCARD);
-
-    //supported as a property on the event
-    keywords.add(RELATIVETIME);
-
-    //keywords.add("NDC");
-    //keywords.add("MDC");
-    //keywords.add("THROWABLE");
-    //keywords.add("PROPERTIES");
     keywords.add(MESSAGE);
-  }
-
-  /**
-   * Test
-   *
-   * @param args file url to parse
-   */
-  public static void main(String[] args) {
-    LogFilePatternReceiver parser = new LogFilePatternReceiver();
-    parser.setTimestampFormat("yyyy-MM-d HH:mm:ss,SSS");
-
-    //parser.parse(args[0]);
-    //%d %-5p [%t] %C{2} (%F:%L) - %m%n -- a2
-    //parser.setLogFormat("TIMESTAMP LEVEL * [THREAD] CLASS (FILE:LINE) - MESSAGE");
-    //parser.initialize();
-    //System.out.println("Created event: " + parser.convertToEvent("2004-12-13 22:49:22,820 DEBUG SOME VALUE [Thread-0] Generator2 (Generator2.java:100) - <test>   <test2>something here</test2>   <test3 blah=something/>   <test4>       <test5>something else</test5>   </test4></test>"));
-    //parser.initialize("THREAD LEVEL LOGGER - MESSAGE");
-    //parser.setLogFormat("RELATIVETIME PROP(USERID) [THREAD] LEVEL LOGGER * - MESSAGE");
-    parser.setFileURL(args[0]);
-    parser.initialize();
-
-    try {
-      //expects an unbuffered reader
-      parser.process(new InputStreamReader(new URL(parser.getFileURL()).openStream()));
-
-      //parser.process(new StringReader("2004-12-13 22:49:22,820 DEBUG SOME VALUE [Thread-0] Generator2 (Generator2.java:100) - <test>   <test2>something here</test2>   <test3 blah=something/>   <test4>       <test5>something else</test5>   </test4></test>\nException blah\n\tat someplace.java:555\n\tat nextline blah:55"));
-    } catch (IOException ioe) {
-      ioe.printStackTrace();
-    }
-
-    //comment out doPost calls to run via main
+    keywords.add(NDC);
   }
 
   /**
    * Accessor
-   *
+   * 
    * @return file URL
    */
   public String getFileURL() {
@@ -244,21 +202,16 @@ public class LogFilePatternReceiver extends Receiver {
 
   /**
    * Mutator
-   *
+   * 
    * @param fileURL
    */
   public void setFileURL(String fileURL) {
     this.fileURL = fileURL;
-    try {
-    	shortFileName = new URL(fileURL).getFile();
-    } catch (MalformedURLException mue) {
-    	shortFileName = fileURL;
-    }
   }
 
   /**
    * Accessor
-   *
+   * 
    * @return filter expression
    */
   public String getFilterExpression() {
@@ -267,7 +220,7 @@ public class LogFilePatternReceiver extends Receiver {
 
   /**
    * Mutator
-   *
+   * 
    * @param filterExpression
    */
   public void setFilterExpression(String filterExpression) {
@@ -276,7 +229,7 @@ public class LogFilePatternReceiver extends Receiver {
 
   /**
    * Accessor
-   *
+   * 
    * @return tailing
    */
   public boolean isTailing() {
@@ -285,7 +238,7 @@ public class LogFilePatternReceiver extends Receiver {
 
   /**
    * Mutator
-   *
+   * 
    * @param tailing
    */
   public void setTailing(boolean tailing) {
@@ -294,7 +247,7 @@ public class LogFilePatternReceiver extends Receiver {
 
   /**
    * Accessor
-   *
+   * 
    * @return log format
    */
   public String getLogFormat() {
@@ -303,8 +256,9 @@ public class LogFilePatternReceiver extends Receiver {
 
   /**
    * Mutator
-   *
-   * @param logFormat the format
+   * 
+   * @param logFormat
+   *          the format
    */
   public void setLogFormat(String logFormat) {
     this.logFormat = logFormat;
@@ -312,7 +266,7 @@ public class LogFilePatternReceiver extends Receiver {
 
   /**
    * Mutator
-   *
+   * 
    * @param timestampFormat
    */
   public void setTimestampFormat(String timestampFormat) {
@@ -321,7 +275,7 @@ public class LogFilePatternReceiver extends Receiver {
 
   /**
    * Accessor
-   *
+   * 
    * @return timestamp format
    */
   public String getTimestampFormat() {
@@ -329,124 +283,153 @@ public class LogFilePatternReceiver extends Receiver {
   }
 
   /**
-   * Convert a reader into a buffered reader, reading lines and converting lines into log events
-   *
+   * Walk the additionalLines list, looking for the EXCEPTION_PATTERN.
+   * <p>
+   * Return the index of the first matched line minus 1 
+   * (the match is the 2nd line of an exception)
+   * <p>
+   * Assumptions: <br>
+   * - the additionalLines list may contain both message and exception lines<br>
+   * - message lines are added to the additionalLines list and then
+   * exception lines (all message lines occur in the list prior to all 
+   * exception lines)
+   * 
+   * @return -1 if no exception line exists, line number otherwise
+   */
+  private int getExceptionLine() {
+    try {
+      Pattern exceptionPattern = compiler.compile(EXCEPTION_PATTERN);
+      for (int i = 0; i < additionalLines.size(); i++) {
+        if (matcher.matches((String) additionalLines.get(i), exceptionPattern)) {
+          return i - 1;
+        }
+      }
+    } catch (MalformedPatternException mpe) {
+      LogLog.warn("Bad pattern: " + EXCEPTION_PATTERN);
+    }
+    return -1;
+  }
+
+  /**
+   * Combine all message lines occuring in the additionalLines list, adding
+   * a newline character between each line
+   * <p>
+   * the event will already have a message - combine this message
+   * with the message lines in the additionalLines list 
+   * (all entries prior to the exceptionLine index)
+   * 
+   * @param firstMessageLine primary message line
+   * @param exceptionLine index of first exception line
+   * @return message
+   */
+  private String buildMessage(String firstMessageLine, int exceptionLine) {
+    if (additionalLines.size() == 0 || exceptionLine == 0) {
+      return firstMessageLine;
+    }
+    StringBuffer message = new StringBuffer(firstMessageLine);
+
+    for (int i = 0; i < exceptionLine; i++) {
+      message.append(newLine);
+      message.append(additionalLines.get(i));
+    }
+    return message.toString();
+  }
+
+  /**
+   * Combine all exception lines occuring in the additionalLines list into a 
+   * String array
+   * <p>
+   * (all entries equal to or greater than the exceptionLine index)
+   * 
+   * @param exceptionLine index of first exception line
+   * @return exception
+   */
+  private String[] buildException(int exceptionLine) {
+    if (exceptionLine == -1) {
+      return emptyException;
+    }
+    String[] exception = new String[additionalLines.size() - exceptionLine];
+    for (int i = 0; i < additionalLines.size() - exceptionLine; i++) {
+      exception[i] = (String) additionalLines.get(i + exceptionLine);
+    }
+    return exception;
+  }
+
+  /**
+   * Construct a logging event from currentMap and additionalLines 
+   * (additionalLines contains multiple message lines and any exception lines)
+   * <p>
+   * CurrentMap and additionalLines are cleared in the process
+   * 
+   * @return event
+   */
+  private LoggingEvent buildEvent() {
+    LoggingEvent event = null;
+
+    if (currentMap.size() == 0) {
+      return event;
+    }
+    int exceptionLine = getExceptionLine();
+    String[] exception = buildException(exceptionLine);
+
+    //messages are listed before exceptions in additionallines
+    if (additionalLines.size() > 0 && exceptionLine != 0) {
+      currentMap.put(MESSAGE, buildMessage((String) currentMap.get(MESSAGE),
+          exceptionLine));
+    }
+
+    if (currentMap.size() > 0) {
+      event = convertToEvent(currentMap, exception);
+    }
+    currentMap.clear();
+    additionalLines.clear();
+
+    return event;
+  }
+
+  /**
+   * Read, parse and optionally tail the log file, converting entries into logging events
+   * <p>
+   * A runtimeException is thrown if the logFormat pattern is malformed 
+   * according to ORO's Perl5Compiler.
+   * 
    * @param unbufferedReader
-   *
    * @throws IOException
    */
-  public void process(Reader unbufferedReader) throws IOException {
-    BufferedReader reader = new BufferedReader(unbufferedReader);
-    LinkedList list = new LinkedList();
+  private void process(Reader unbufferedReader) throws IOException {
+    BufferedReader bufferedReader = new BufferedReader(unbufferedReader);
+
+    Pattern regexpPattern = null;
+    try {
+      regexpPattern = compiler.compile(regexp);
+    } catch (MalformedPatternException mpe) {
+      throw new RuntimeException("Bad pattern: " + regexp);
+    }
+
     String line = null;
-
     do {
-      while ((line = reader.readLine()) != null) {
-        //ignore blank lines in file
-        if (line.length() == 0) {
-          continue;
-        }
-
-        //System.out.println("Added: " + line);
-        list.addLast(line);
-
-        if (list.size() > 2) {
-          //System.out.println("size > 2 - processing");
-          if (line.startsWith(TAB)) {
-            String firstLine = (String) list.remove(0);
-
-            //System.out.println("exception line1: " + firstLine);
-            while ((line != null) && line.startsWith(TAB)) {
-              line = reader.readLine();
-
-              if ((line != null) && (line.length() != 0)) {
-                list.addLast(line);
-              }
-            }
-
-            //hold a reference to the last entry added - while loop adds one too many
-            String nextLine = (String) list.getLast();
-
-            if ((nextLine != null) && !(nextLine.startsWith(TAB))) {
-              list.removeLast();
-            }
-
-            String[] exception = new String[list.size()];
-
-            for (int i = 0, j = list.size(); i < j; i++) {
-              exception[i] = (String) list.remove(0);
-
-              //System.out.println("exception " + i + ".." + exception[i]);
-            }
-
-            //now that exceptions have been taken from list, re-add last entry if not an 
-            //exception line
-            if ((nextLine != null) && !(nextLine.startsWith(TAB))) {
-              list.addLast(nextLine);
-            }
-
-            //GENERATE EXCEPTION EVENT
-            LoggingEvent event = convertToEvent(firstLine, exception);
-
-            //System.out.println(
-            //  "created event with exception " + event.getLoggerName() + ".."
-            //  + event.getMessage());
-            if (event != null) {
-              if (expressionRule != null) {
-              	if (expressionRule.evaluate(event)) {
-              		doPost(event);
-              	}
-              } else {
-              	doPost(event);
-              }
-            }
-          } else {
-            //GENERATE NON-EXCEPTION EVENT
-            LoggingEvent event = convertToEvent((String) list.remove(0));
-
-            if (event != null) {
-                if (expressionRule != null) {
-                  	if (expressionRule.evaluate(event)) {
-                  		doPost(event);
-                  	}
-                } else {
-                	doPost(event);
-                }
-            }
-
-            //System.out.println(
-            //  "Created event " + event.getLoggerName() + ".."
-            //  + event.getMessage());
-          }
-        }
-      }
-
-      //System.out.println(
-      //  "outside loop - processing remaining entries: " + list.size());
-      //clean up remaining - should not be an exception
-      for (int k = 0, l = list.size(); k < l; k++) {
-        String s = (String) list.remove(0);
-
-        if ((s != null) && (s.length() > 0)) {
-          //GENERATE NON-EXCEPTION EVENT
-          LoggingEvent event = convertToEvent(s);
-
+      while ((line = bufferedReader.readLine()) != null) {
+        if (matcher.matches(line, regexpPattern)) {
+          LoggingEvent event = buildEvent();
           if (event != null) {
-            if (expressionRule != null) {
-              	if (expressionRule.evaluate(event)) {
-              		doPost(event);
-              	}
-            } else {
-            	doPost(event);
+            if (passesExpression(event)) {
+              doPost(event);
             }
           }
-
-          //System.out.println(
-          //  "cleanup - Created non-exception event " + event.getLoggerName()
-          //  + ".." + event.getMessage());
+          currentMap.putAll(processEvent(matcher.getMatch()));
+        } else {
+          //may be an exception or additional message lines
+          additionalLines.add(line);
         }
       }
 
+      //process last event if one exists
+      LoggingEvent event = buildEvent();
+      if (event != null) {
+        if (passesExpression(event)) {
+          doPost(event);
+        }
+      }
       try {
         synchronized (this) {
           wait(2000);
@@ -454,141 +437,172 @@ public class LogFilePatternReceiver extends Receiver {
       } catch (InterruptedException ie) {
       }
     } while (tailing);
+
+    shutdown();
+  }
+
+  /**
+   * Helper method that supports the evaluation of the expression
+   * 
+   * @param event
+   * @return true if expression isn't set, or the result of the evaluation otherwise 
+   */
+  private boolean passesExpression(LoggingEvent event) {
+    if (event != null) {
+      if (expressionRule != null) {
+        return (expressionRule.evaluate(event));
+      }
+    }
+    return true;
+  }
+
+  /**
+   * Convert the ORO match into a map.
+   * <p>
+   * Relies on the fact that the matchingKeywords list is in the same
+   * order as the groups in the regular expression
+   *  
+   * @param result
+   * @return map
+   */
+  private Map processEvent(MatchResult result) {
+    Map map = new HashMap();
+    //group zero is the entire match - process all other groups
+    for (int i = 1; i < result.groups(); i++) {
+      map.put(matchingKeywords.get(i - 1), result.group(i));
+    }
+    return map;
+  }
+
+  /**
+   * Build the regular expression needed to parse log entries
+   *  
+   */
+  private void initialize() {
+    if (timestampFormat != null) {
+      dateFormat = new SimpleDateFormat(timestampFormat);
+    }
+
     try {
-      if (reader != null) {
-          reader.close();
+      if (filterExpression != null) {
+        expressionRule = ExpressionRule.getRule(filterExpression);
       }
-    } catch (IOException ioe) {
-      ioe.printStackTrace();
+    } catch (Exception e) {
+      LogLog.warn("Invalid filter expression: " + filterExpression, e);
     }
-  }
 
-  /**
-   * Walk the entries in the log format fields, adding keyword matches to a
-   * map
-   *
-   * @param logEntry
-   *
-   * @return map of keywords to values in the log entry
-   */
-  private Map extractEventFields(String logEntry) {
-    //System.out.println("extracting from " + logEntry);
-    Map fieldMap = new HashMap(defaultMap);
+    Map keywordMap = new TreeMap();
 
-    for (int i = 0; i < logFormatFields.size(); i++) {
-      String thisField = (String) logFormatFields.get(i);
-      //LogLog.info("processing field " + thisField);
+    String newPattern = logFormat;
 
-      //ignore wildcard entries - skip to next field
-      if (thisField.equals(WILDCARD)) {
-        String nextField = (String) logFormatFields.get(i + 1);
-
-        if (logEntry.indexOf(nextField) == -1) {
-          LogLog.info(nextField + " does not exist in line - ignoring: " + logEntry);
-
-          return null;
-        }
-
-        logEntry = logEntry.substring(logEntry.indexOf(nextField));
-      } else if (thisField.equals(TIMESTAMP)) {
-        String nextField = (String) logFormatFields.get(i + 1);
-
-        if (logEntry.indexOf(nextField) == -1) {
-          LogLog.info(nextField + " does not exist in line - ignoring: " + logEntry);
-
-          return null;
-        }
-
-        //uses nextfield and length of format to guess at timestamp field
-        //luckily, SimpleDateFormat is very flexible and forgiving of trailing text
-        int firstLength =
-          logEntry.substring(0, timestampFormat.length()).length() - 1;
-        int nextLength =
-          (firstLength
-          + logEntry.substring(firstLength - 1).indexOf(nextField)) - 1;
-
-        int length = Math.max(firstLength, nextLength);
-
-        //        System.out.println("parsing timestamp: " + logEntry.substring(0, length));
-        fieldMap.put(thisField, logEntry.substring(0, length));
-
-        //System.out.println(
-        //  "added " + thisField + ":" + fieldMap.get(thisField));
-        logEntry = logEntry.substring(length);
-      } else if (keywords.contains(thisField) || thisField.startsWith(PROP_PREFIX)) {
-        logEntry = logEntry.trim();
-
-        if (i < (logFormatFields.size() - 1)) {
-          //expects no two keywords to be butted up directly against eachother 
-          String nextField = (String) logFormatFields.get(i + 1);
-
-          if (logEntry.indexOf(nextField) == -1) {
-          	LogLog.info(nextField + " does not exist in line - ignoring: " + logEntry);
-
-            return null;
-          }
-
-          fieldMap.put(
-            thisField,
-            logEntry.substring(0, logEntry.indexOf(nextField)).trim());
-
-          //System.out.println(
-          //  "added " + thisField + ":" + fieldMap.get(thisField));
-          logEntry = logEntry.substring(logEntry.indexOf(nextField));
-        } else {
-          fieldMap.put(thisField, logEntry.trim());
-
-          //System.out.println(
-          //  "added " + thisField + ":" + fieldMap.get(thisField));
-        }
-      } else {
-        //ignore non-fields
-        //System.out.println("text: " + thisField);
-        logEntry = logEntry.substring(thisField.length());
+    /*
+     * examine pattern, adding properties to an index-based map.
+     * 
+     * Replaces PROP(X) definitions in the pattern with the short version X, so 
+     * that the name can be used as the event property later 
+     */
+    int index = 0;
+    String current = newPattern;
+    while (index > -1) {
+      index = current.indexOf(PROP_START);
+      if (index > -1) {
+        String currentProp = current.substring(current.indexOf(PROP_START));
+        String prop = currentProp.substring(0,
+            currentProp.indexOf(PROP_END) + 1);
+        current = current.substring(current.indexOf(currentProp) + 1);
+        String shortProp = prop.substring(PROP_START.length(),
+            prop.length() - 1);
+        keywordMap.put(new Integer(index), shortProp);
+        newPattern = replace(prop, shortProp, newPattern);
       }
     }
 
-    return fieldMap;
+    newPattern = replaceMetaChars(newPattern);
+    newPattern = replace(PATTERN_WILDCARD, REGEXP_WILDCARD, newPattern);
+
+    /*
+     * we're using a treemap, so the index will be used as the key to ensure
+     * keywords are ordered correctly
+     * 
+     * examine pattern, adding keywords to an index-based map patterns can
+     * contain only one of these per entry...properties are the only 'keyword'
+     * that can occur multiple times in an entry
+     */
+    Iterator iter = keywords.iterator();
+    while (iter.hasNext()) {
+      String keyword = (String) iter.next();
+      int index2 = newPattern.indexOf(keyword);
+      if (index2 > -1) {
+        keywordMap.put(new Integer(index2), keyword);
+      }
+    }
+
+    //keywordMap should be ordered by index..add all values to a list
+    matchingKeywords.addAll(keywordMap.values());
+
+    /*
+     * iterate over the keywords found in the pattern and replace with regexp
+     * group
+     */
+    String currentPattern = newPattern;
+    Iterator iter2 = matchingKeywords.iterator();
+    while (iter2.hasNext()) {
+      String keyword = (String) iter2.next();
+      currentPattern = replace(keyword, GROUP, currentPattern);
+    }
+    regexp = currentPattern;
   }
 
   /**
-   * Helper convert method that doesn't support exceptions
-   *
-   * @param logEntry
-   *
-   * @return logging event
+   * Helper method that will globally replace a section of text
+   * 
+   * @param pattern
+   * @param replacement
+   * @param input 
+   * 
+   * @return string
    */
-  private LoggingEvent convertToEvent(String logEntry) {
-    return convertToEvent(logEntry, null);
+  private String replace(String pattern, String replacement, String input) {
+    return util.substitute("s/" + Perl5Compiler.quotemeta(pattern) + "/"
+        + Perl5Compiler.quotemeta(replacement) + "/g", input);
   }
 
   /**
-   * Convert log entry with exceptions
-   *
-   * @param logEntry
-   * @param exception string array of exception lines
-   *
-   * @return logging event
+   * Some perl5 characters may occur in the log file format.  
+   * Escape these characters to prevent parsing errors.
+   * 
+   * @param input
+   * @return string
    */
-  private LoggingEvent convertToEvent(String logEntry, String[] exception) {
-    return convertToEvent(extractEventFields(logEntry), exception);
+  private String replaceMetaChars(String input) {
+    input = replace("(", "\\(", input);
+    input = replace(")", "\\)", input);
+    input = replace("[", "\\[", input);
+    input = replace("]", "\\]", input);
+    input = replace("{", "\\{", input);
+    input = replace("}", "\\}", input);
+    return input;
   }
 
   /**
-   * Convert entries in the map of keywords to values in a log entry into a
-   * loggingEvent
-   *
+   * Convert a keyword-to-values map to a LoggingEvent
+   * 
    * @param fieldMap
    * @param exception
-   *
+   * 
    * @return logging event
    */
   private LoggingEvent convertToEvent(Map fieldMap, String[] exception) {
     if (fieldMap == null) {
       return null;
     }
+
+    //a logger must exist at a minimum for the event to be processed
+    if (!fieldMap.containsKey(LOGGER)) {
+      fieldMap.put(LOGGER, "Unknown");
+    }
     if (exception == null) {
-      exception = new String[]{""};
+      exception = emptyException;
     }
 
     Logger logger = null;
@@ -596,67 +610,58 @@ public class LogFilePatternReceiver extends Receiver {
     String level = null;
     String threadName = null;
     Object message = null;
-
-    //    String ndc = null;
-    //    Hashtable mdc = null;
+    String ndc = null;
     String className = null;
     String methodName = null;
     String eventFileName = null;
     String lineNumber = null;
     Hashtable properties = new Hashtable();
 
+    logger = Logger.getLogger((String) fieldMap.remove(LOGGER));
+
     if ((dateFormat != null) && fieldMap.containsKey(TIMESTAMP)) {
       try {
-        timeStamp =
-          dateFormat.parse((String) fieldMap.get(TIMESTAMP)).getTime();
+        timeStamp = dateFormat.parse((String) fieldMap.remove(TIMESTAMP))
+            .getTime();
       } catch (Exception e) {
         e.printStackTrace();
       }
     }
-
+    //use current time if timestamp not parseable
     if (timeStamp == 0L) {
       timeStamp = System.currentTimeMillis();
     }
 
-    logger = Logger.getLogger((String) fieldMap.get(LOGGER));
-
-    level = (String) fieldMap.get(LEVEL);
-    threadName = (String) fieldMap.get(THREAD);
-
-    message = (String) fieldMap.get(MESSAGE);
-
-    className = (String) fieldMap.get(CLASS);
-    methodName = (String) fieldMap.get(METHOD);
-    eventFileName = (String) fieldMap.get(FILE);
-    lineNumber = (String) fieldMap.get(LINE);
-
-    if (fieldMap.get(RELATIVETIME) != null) {
-      properties.put(RELATIVETIME, fieldMap.get(RELATIVETIME));
-    }
-
+    level = (String) fieldMap.remove(LEVEL);
     Level levelImpl = Level.toLevel(level);
+
+    threadName = (String) fieldMap.remove(THREAD);
+
+    message = (String) fieldMap.remove(MESSAGE);
+
+    ndc = (String) fieldMap.remove(NDC);
+
+    className = (String) fieldMap.remove(CLASS);
+
+    methodName = (String) fieldMap.remove(METHOD);
+
+    eventFileName = (String) fieldMap.remove(FILE);
+
+    lineNumber = (String) fieldMap.remove(LINE);
+
+    properties.put(Constants.HOSTNAME_KEY, HOSTNAME_PROPERTY_VALUE);
+    properties.put(Constants.APPLICATION_KEY, fileURL);
+
+    //all remaining entries in fieldmap are properties
+    properties.putAll(fieldMap);
 
     LocationInfo info = null;
 
-    if (
-      (eventFileName != null) || (className != null) || (methodName != null)
+    if ((eventFileName != null) || (className != null) || (methodName != null)
         || (lineNumber != null)) {
-      info =
-        new LocationInfo(eventFileName, className, methodName, lineNumber);
+      info = new LocationInfo(eventFileName, className, methodName, lineNumber);
     } else {
       info = LocationInfo.NA_LOCATION_INFO;
-    }
-    properties.put(Constants.HOSTNAME_KEY, "file");
-    properties.put(Constants.APPLICATION_KEY, shortFileName);
-
-    //add properties 
-    Iterator iter = fieldMap.keySet().iterator();
-    while (iter.hasNext()) {
-    	String key = (String)iter.next();
-    	if (key.startsWith(PROP_PREFIX)) {
-    		String prop = key.substring(PROP_PREFIX.length(), key.length() - 1).trim();
-    		properties.put(prop, fieldMap.get(key));
-    	}
     }
 
     LoggingEvent event = new LoggingEvent();
@@ -667,104 +672,61 @@ public class LogFilePatternReceiver extends Receiver {
     event.setMessage(message);
     event.setThrowableInformation(new ThrowableInformation(exception));
     event.setLocationInformation(info);
+    event.setNDC(ndc);
     event.setProperties(properties);
-   
+
     return event;
   }
 
-  /**
-   * Initialize and post log entries to framework
-   */
-  public void activateOptions() {
-  	try {
-  		if (filterExpression != null) {
-  			expressionRule = ExpressionRule.getRule(filterExpression);
-  		}
-  	} catch (Exception e) {
-  		LogLog.warn("Invalid filter expression: " + filterExpression, e);
-  	}
-    new Thread(
-      new Runnable() {
-        public void run() {
-          initialize();
-
-          try {
-          	process(new InputStreamReader(new URL(getFileURL()).openStream()));
-          } catch (IOException ioe) {
-            ioe.printStackTrace();
-          }
-        }
-      }).start();
+  public static void main(String[] args) {
+    /*
+    LogFilePatternReceiver test = new LogFilePatternReceiver();
+    test.setLogFormat("TIMESTAMP LEVEL [THREAD] LOGGER (FILE:LINE) - MESSAGE");
+    test.setTailing(true);
+    test.setFileURL("file:///C:/downloads/workspace/test/test2.log");
+    test.initialize();
+    try {
+      test.process(new InputStreamReader(new URL(test.getFileURL())
+          .openStream()));
+    } catch (IOException ioe) {
+      ioe.printStackTrace();
+    }
+    */
   }
 
   /**
-   * Walk the passed-in log format, building a list of entries which are (from
-   * left to right), either a keyword, or any string of characters not a
-   * keyword.
-   */
-  private void initialize() {
-    if (timestampFormat != null) {
-      dateFormat = new SimpleDateFormat(timestampFormat);
-    }
-
-    int i = 0;
-    int j = 0;
-
-    while (i < logFormat.length()) {
-      String keyword = endsInKeyword(logFormat.substring(i, j));
-
-      //System.out.println("current arg is " + arg.substring(i,j));
-      //fragment ends in keyword.  
-      //add everything before the keyword as an entry in the list
-      //then add the keyword
-      if (keyword != null) {
-        String firstPart = logFormat.substring(i, j - keyword.length());
-
-        if (firstPart.length() > 0) {
-          //System.out.println("ADDED FIRSTPART: " + firstPart);
-          logFormatFields.add(firstPart);
-          
-        }
-
-        logFormatFields.add(keyword);
-
-        //System.out.println("ADDED: " + keyword);
-        i = j;
-        j = j + 1;
-      } else {
-        j++;
-      }
-    }
-  }
-
-  /**
-   * Check to see if the log format fragment passed in ends with a keyword.
-   *
-   * @param logFormatFragment
-   *
-   * @return keyword or null
-   */
-  private String endsInKeyword(String logFormatFragment) {
-  	String trimmedFragment = logFormatFragment.trim();
-    Iterator iter = keywords.iterator();
-
-    while (iter.hasNext()) {
-      String keyword = (String) iter.next();
-
-      if (trimmedFragment.endsWith(keyword)) {
-        return keyword;
-      }
-    }
-    if ((trimmedFragment.indexOf(PROP_PREFIX)> -1) && trimmedFragment.endsWith(PROP_SUFFIX)) {
-    	return trimmedFragment.substring(trimmedFragment.indexOf(PROP_PREFIX));
-    }
-
-    return null;
-  }
-
-  /* (non-Javadoc)
-   * @see org.apache.log4j.plugins.Plugin#shutdown()
+   * Close the reader. 
    */
   public void shutdown() {
+    try {
+      if (reader != null) {
+        reader.close();
+      }
+    } catch (IOException ioe) {
+      ioe.printStackTrace();
+    }
+  }
+
+  /**
+   * Read and process the log file.
+   */
+  public void activateOptions() {
+    new Thread(new Runnable() {
+      public void run() {
+        initialize();
+        try {
+          reader = new InputStreamReader(new URL(getFileURL()).openStream());
+        } catch (IOException ioe) {
+          LogLog.debug("exception", ioe);
+          return;
+        }
+        try {
+          process(reader);
+        } catch (IOException ioe) {
+          //io exception - probably shut down
+          LogLog.debug("stream closed");
+        }
+      }
+    }).start();
   }
 }
