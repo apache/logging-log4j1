@@ -10,7 +10,7 @@
 
  - Release of version 1.1b4
 
- - Mathias Boagert observed that in version 1.1b3 the search algorithm
+ - Mathias Bogaert observed that in version 1.1b3 the search algorithm
    for the resource used in automatic log4j configuration was
    different than in 1.0.x. Beta4 uses a more powerful mechanism which
    is also compatible with 1.0.x. [*]
@@ -27,7 +27,7 @@
 
  - Added a RollingFileAppenderBeanInfo class that fakes the
    maxFileSize JavaBeans property as a String type instead of a long.
-   This allows us to resuscitate setMaxFileSize(long) method which was
+   This allows us to resuscitate setMaxFileSize(long) method that was
    removed in 1.1b2 breaking 100% backward compatibility. This addition
    restores 100% backward compatibility. [*]
 
@@ -52,7 +52,7 @@
    method for more information. Note that the <priority> element in
    log4j.dtd remains unaffected by this change. [*]
 
- - Added the setQuietMode(booelan) method to LogLog. In quiet mode
+ - Added the setQuietMode(boolean) method to LogLog. In quiet mode
    LogLog will not output anything even in case of errors. [*]
 
  - Log4j components are now configured as JavaBeans. The setOption and
@@ -71,7 +71,7 @@
    perl -p -i.bak -e "s/configuration/log4j:configuration/;" file1.xml .. fileN.xml
 
   - The "log4j.configDebug" system property has been replaced with the
-    "log4j.debug" system property altough it is still available.
+    "log4j.debug" system property although it is still available.
     Similarly, the "configDebug" attribute has been deprecated and
     replaced with the "debug" attribute in log4j.dtd. [*]
 
@@ -89,7 +89,7 @@
 
  - The FileAppender has been split into three parts: WriterAppender,
    ConsoleAppender and FileAppender. ConsoleAppender takes over the
-   console logging functionality of FileAppender. As a result Support
+   console logging functionality of FileAppender. As a result support
    for stream and console printing has been deprecated in FileAppender. [**]
 
  - The FileAppender now correctly outputs the header and footer of its
@@ -119,7 +119,7 @@
  - Removed org/apache/log4j/varia/ResilientFileAppender.java which was
    bogus to begin with. [*]
 
- - XMLLayout will now mark some output as <![CDATA .. [[> so that it
+ - XMLLayout will now mark some output as <![CDATA[ .. ]]> so that it
    does not get interpreted by the XML parser. This was suggested by
    Mathias Bogaert like a long list of other fixes. [*]
 
@@ -183,7 +183,7 @@
  
  - Release of version 1.0.3 (the 20th major release)
 
- - Fixed a NullPointerException occurring in AsyncAppedner after
+ - Fixed a NullPointerException occurring in AsyncAppender after
    invoking Category.shutdown. Thanks to Frank-Olaf Lohmann for
    reporting this bug. [*]
 
@@ -249,7 +249,7 @@
    property. [*]
 
  - Enhanced the PropertyConfigurator and DOMConfigurator to support
-   customization of independent Hierarchy instances.  The
+   customisation of independent Hierarchy instances.  The
    org.apache.log4j.net.SocketServer has been enhanced to take
    advantage of this functionality. The old code of SocketServer has
    been moved to SimpleSocketServer. [**]
@@ -275,18 +275,18 @@
  
  - Added support for user defined category factories in the
    PropertyConfigurator. Thus, it is now possible to configure log4j
-   with a properties file and still use custem Category
+   with a properties file and still use custom Category
    sub-classes. The DOMConfigurator had already a finer grain
    support. [*]
 
- - Addeed the SMTPAppender that in case of an error or fatal event
+ - Added the SMTPAppender that in case of an error or fatal event
    sends an e-mail containing latest N logging events in its buffer,
    where N is chosen by the user. [*]
 
  - Added the method getInstance(Class) to the Category class. [*]
 
  - Corrected a bug in configureAndWatch method of configurators that
-   would confgure log4j only after an unnecessary delay. [*]
+   would configure log4j only after an unnecessary delay. [*]
 
  November 30, 2000
  
@@ -345,7 +345,7 @@
  - The jar files log4j.jar and log4j-full.jar now contain versioning
    information in their respective manifest files. [*]
 
- - Corrected an inconsistecy in the NTEventLogAppender which broke it.
+ - Corrected an inconsistency in the NTEventLogAppender which broke it.
 
  - Fixed a bug where configuration files were not parsed correctely
    due to trailing spaces in option values as returned by
