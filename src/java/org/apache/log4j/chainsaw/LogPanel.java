@@ -223,7 +223,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
   static final String TABLE_COLUMN_WIDTHS = "table.columns.widths";
   static final String COLUMNS_EXTENSION = ".columns";
   static final String COLORS_EXTENSION = ".colors";
-  private int previousSelectedIndex = -1;
+  private int previousLastIndex = -1;
 
   /**
    * Creates a new LogPanel object.  If a LogPanel with this identifier has
@@ -705,12 +705,18 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
               && (evt.getFirstIndex() > 0)) || (evt.getValueIsAdjusting())) {
             return;
           }
-          if (previousSelectedIndex > -1) {
-                bypassScrollSelection = (!bypassScrollSelection && (evt.getLastIndex() == (table.getRowCount() - 1)) 
-                &&
-                (!((previousSelectedIndex == evt.getFirstIndex()) && (evt.getLastIndex() == (table.getRowCount() - 1)))));
-          }
-          previousSelectedIndex = evt.getLastIndex();
+          boolean lastIndexOnLastRow = (evt.getLastIndex() == (table.getRowCount() - 1));
+          boolean firstIndexOnLastRow = (evt.getFirstIndex() == (table.getRowCount() - 1));
+          boolean lastIndexSame = (previousLastIndex == evt.getLastIndex());
+
+          /*
+          to bypass the scroll-to-bottom feature when the user selects a row other than the bottom row,
+          one of two conditions must be met:
+          1: neither the 'firstindex' nor the 'lastindex' are on the last row, or
+          2: the last index value didn't change and the 'lastindex' is on the last row
+           */ 
+          bypassScrollSelection = (!(lastIndexOnLastRow || firstIndexOnLastRow)) || (lastIndexSame && lastIndexOnLastRow);
+          previousLastIndex = evt.getLastIndex();
 
           final ListSelectionModel lsm = (ListSelectionModel) evt.getSource();
 
