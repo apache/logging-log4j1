@@ -5,8 +5,6 @@
  * License version 1.1, a copy of which has been included with this
  * distribution in the LICENSE.APL file.  */
 
-
-
 package org.apache.log4j.test;
 
 import java.util.Calendar;
@@ -18,6 +16,7 @@ import junit.framework.TestSuite;
 import junit.framework.TestFailure;
 import junit.framework.Test;
 
+import org.apache.log4j.*;
 
 public class UnitTestDRFA extends TestCase {
 
