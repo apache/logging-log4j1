@@ -28,12 +28,21 @@ servlet-api.jar=/java/servlet-api.jar
 # from the parent project.
 logging-site=../logging-site
 
-# ===================================================================
-# Chainsaw v2 specific
-# ===================================================================
-# describes the relative or full path to the Jakarta ORO Reg Exp jar file
-# This is required if you wish to use Chainsaw v2
+# Describes the relative or full path to the Jakarta ORO Reg Exp jar file
+# Required if you wish to use LogFilePatternReceiver or LikeRule (regexp)
 #regexp.oro.jar=../oro/jakarta-oro-2.0.8.jar
+
+# Describes the path to the VFS jar (see http://jakarta.apache.org/commons/sandbox/vfs/)
+# Required if you wish to compile the Chainsaw jar and include the 
+# org.apache.log4j.chainsaw.vfs.VFSLogFilePatternReceiver virtual file system receiver
+# to access log files in Chainsaw
+#
+# See http://jakarta.apache.org/commons/sandbox/vfs/filesystems.html 
+# for a full description of supported file systems (ssh, zip, etc).
+#
+# See http://jakarta.apache.org/commons/sandbox/vfs/download.html for 
+# file system-specific jars required when running Chainsaw with a VFSLogFilePatternReceiver
+#vfs.jar=../vfs/commons-vfs-1.0-dev.jar
 
 # DBAppeder/DBReceiver OPTIONAL: 
 #

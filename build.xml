@@ -20,7 +20,7 @@
   <property name="deprecation" value="on"/>
 	
   <!-- Destination for compiled files -->
-  <property name="javac.dest" value="dist/classes"/>
+  <property name="javac.dest" value="classes"/>
 
   <!-- Source directory for the examples/ -->
   <property name="examples.src" value="examples/src"/>
@@ -34,12 +34,6 @@
   <!-- The jar file that the jar task will generate -->
   <property name="log4j.jar" value="log4j-${version}.jar"/>
 
-  <!-- The jar file that the jar-chainsaw task will generate -->
-  <property name="log4j-chainsaw.jar" value="log4j-chainsaw-${version}.jar"/>
-
-  <!-- When building a Java Web Start distribution of Chainsaw, some Receivers with external dependencies need to be packaged into a seperate Jar -->
-  <property name="webstart-dependant-receivers.jar" value="webstart-dependant-receivers.jar-${version}.jar"/>
-	
   <!-- Destination for documentation files -->
   <property name="docs.dest" value="./docs"/>
   <!-- Source directory for xml docs -->
@@ -122,7 +116,7 @@
   <target name="jaxp" depends="jaxpCheck" if="jaxp-present">
     <echo message="JAXP present."/>
   </target>
-
+	
   <target name="jndiCheck">
     <available classname="javax.naming.Context" property="jndi-present">
       <classpath refid="compile.classpath"/>
@@ -142,7 +136,7 @@ later. For JDK 1.2, you can get the JNDI API from
   </target>
 
   <target name="jmxCheck" depends="jndiCheck" if="jndi-present">
-    <condition property="jmxCheck">
+    <condition property="jmx-present">
          <and>
             <available classname="javax.management.MBeanInfo">
              <classpath refid="compile.classpath"/>
@@ -158,11 +152,22 @@ later. For JDK 1.2, you can get the JNDI API from
     <echo message="JMX is present."/>
   </target>
 
+  <target name="oroCheck" >
+    <available classname="org.apache.oro.text.perl.Perl5Util" property="oro-present">
+      <classpath refid="compile.classpath"/>
+    </available>
+  </target>
+
+  <target name="oro" depends="oroCheck" if="oro-present">
+    <echo message="ORO is present."/>
+  </target>
+	  	
   <target name="jmsCheck" depends="jndiCheck" if="jndi-present">
     <available classname="javax.jms.Message" property="jms-present">
      <classpath refid="compile.classpath"/>
     </available>
   </target>
+  	
   <target name="jms" depends="jmsCheck" if="jms-present">
     <echo message="JMS is present."/>
   </target>
@@ -194,17 +199,35 @@ later. For JDK 1.2, you can get the JNDI API from
     <echo message="JDBC Standard Extension is present."/>
   </target>
 
-
-
   <target name="init">
     <tstamp />
   </target>
 
-  <target name="build" description="Compile all log4j components."
-          depends="init, build.core, build.examples, 
-                   build.xml, build.javamail, build.jms, build.jmx, 
-                   build.servletAPI, build.db, 
-                   build.chainsaw"/>
+	 <target name="build" description="Compile all log4j components."
+	          depends="init, build.core, build.examples, 
+	                   build.xml, build.javamail, build.jms, build.jmx, 
+	                   build.servletAPI, build.db, build.oro, build.chainsaw"/>
+
+  <target name="build.requiredeps" 
+  	depends="jndiCheck,jmsCheck,oroCheck,javamailCheck,servletAPICheck,jdbcExtensionCheck,jmxCheck,jaxpCheck"
+  	description="Compile all log4j components - fail if dependencies do not exist"
+  	>
+    <condition property="alldeps.exist">
+              <and>
+                <isset property="jndi-present"/>
+                <isset property="oro-present"/>
+                <isset property="jms-present"/>
+                <isset property="javamail-present"/>
+                <isset property="servletAPI-present"/>         	
+                <isset property="jdbcExtension-present"/>
+                <isset property="jmx-present"/>         	
+                <isset property="jaxp-present"/>         	
+              </and>
+          </condition>
+          <fail unless="alldeps.exist">
+              Some jar files required to perform a full compile of log4j are not available on the classpath.  Update build.properties as needed.
+          </fail>	<antcall target="build"/>
+  </target>
 
   <target name="build.core" depends="init, jndiCheck" if="jndi-present" >
     <mkdir dir="${javac.dest}" />
@@ -215,23 +238,33 @@ later. For JDK 1.2, you can get the JNDI API from
      excludes="misc/*, **/UnitTest*.java,
                     **/StressCategory.java,
                     **/doc-files/*,
-                    ${stem}/db/**,
-                    ${stem}/chainsaw/**,
+			        ${stem}/chainsaw/**,
+			    	${stem}/db/**,
                     ${stem}/xml/**,
                     ${stem}/test/serialization/**,
                     ${stem}/net/SMTPAppender.java,
                     ${stem}/net/JMS*.java,
+    	            ${stem}/varia/LogFilePatternReceiver*.java,
+    	            ${stem}/rule/LikeRule.java,
                     ${stem}/jmx/*.java,
-                    ${stem}/chainsaw/**/*.java,
-                    ${stem}/rule/*.java,
-                    ${stem}/varia/LogFilePatternReceiver*.java,
-                    ${stem}/varia/ExpressionFilter.java,
                     ${stem}/or/jms/*.java,
                     ${stem}/selector/servlet/*.java"
       debug="${debug}">
       <classpath refid="compile.classpath"/>
     </javac>
   </target>
+
+  <target name="build.chainsaw">
+	<ant antfile="build-chainsaw.xml" target="build.chainsaw"/>
+  </target>	
+  
+  <target name="chainsaw.jar">
+	<ant antfile="build-chainsaw.xml" target="chainsaw.jar"/>
+  </target>	  
+	 	
+  <target name="chainsaw" depends="log4j.jar" description="Builds and runs Chainsaw v2" >
+	<ant antfile="build-chainsaw.xml" target="chainsaw"/>
+  </target>	
 
  <!-- ================================================= -->
  <!--                Compile examples                   -->
@@ -276,7 +309,17 @@ later. For JDK 1.2, you can get the JNDI API from
     </javac>
   </target>
 
-  <target name="build.jms" depends="init, jms, jndi" if="jms-present">
+    <target name="build.oro" depends="init, oro" if="oro-present">
+	  <javac srcdir="${java.source.dir}"
+	    destdir="${javac.dest}"
+        deprecation="${deprecation}"
+	    includes="${stem}/varia/LogFilePatternReceiver*.java,
+	    	      ${stem}/rule/LikeRule.java">
+	     <classpath refid="compile.classpath"/>
+	  </javac>
+	</target>
+
+	<target name="build.jms" depends="init, jms, jndi" if="jms-present">
     <javac deprecation="${deprecation}"
            srcdir="${java.source.dir}"
     	   debug="${debug}"
@@ -319,23 +362,6 @@ later. For JDK 1.2, you can get the JNDI API from
     </javac>
   </target>
   
-  <target name="build.chainsaw" depends="init, chainsawCheck, build.core">
-    <javac deprecation="${deprecation}"
-           srcdir="${java.source.dir}"
-    	   debug="${debug}"
-           destdir="${javac.dest}">
-  		   <patternset>
-  		   	<include name="${stem}/chainsaw/**/*.java"/>
-  		   	<include name="${stem}/rule/*.java"/>
-  		   	<include name="${stem}/varia/ExpressionFilter.java"/>
-  		    <include name="${stem}/varia/LogFilePatternReceiver*.java" if="chainsaw-libraries-present"/>
-  			<exclude name="${stem}/chainsaw/vfs/*.java"/>
-    	    <exclude name="${stem}/rule/LikeRule.java" unless="chainsaw-libraries-present"/>
-  	       </patternset>
-      <classpath refid="compile.classpath"/>   
-    </javac>
-  </target>
-
   <!-- ================================================================= -->
   <!-- Remove all generated (compiled) class files.                      -->
   <!-- ================================================================= -->
@@ -345,54 +371,9 @@ later. For JDK 1.2, you can get the JNDI API from
   </target>
 
   <!-- ================================================================= -->
-  <!-- Define the set of files current styled                            -->
-  <!-- ================================================================= -->
-  <fileset dir="${java.source.dir}" id="styled_files">
-    <include name="**/plugins/*.java"/>
-    <include name="**/chainsaw/*.java"/>
-  </fileset>
-
-  <target name="oroCheck" >
-    <available classname="org.apache.oro.text.perl.Perl5Util" property="chainsaw-libraries-present">
-      <classpath refid="compile.classpath"/>
-    </available>
-  	
-  	<antcall target="oroWarning"/>
-  	  
-  </target>
-
-  <target name="oroWarning" unless="chainsaw-libraries-present">	
-    <echo>
-      Could not find jakarta-oro classes. Did you forget to set
-"regexp.oro.jar" property in build.properties to point to
-a valid jakarta.oro.jar file?  Chainsaw will be built but will
-not include support for:
-   the 'LIKE' (regular expression) rule
-   LogFilePatternReceiver
-    </echo>
-  </target>
-  	
-  <target name="chainsawCheck" depends="oroCheck" if="chainsaw-libraries-present">
-    <echo message="Chainsaw dependant libraries present."/>
-  </target>
-
-  <!-- ================================================================= -->
-  <!-- Runs Chainsaw                                                     -->
-  <!-- ================================================================= -->
-
-  <target name="chainsaw" depends="build.chainsaw, log4j.jar, chainsaw.jar" description="Builds and runs Chainsaw v2" >
-
-    <!-- Need to fork to avoid problems -->
-    <java classname="org.apache.log4j.chainsaw.LogUI" fork="yes"
-          classpath="${jar.dest}/${log4j.jar};${jar.dest}/${log4j-chainsaw.jar};${jaxp.parser.jar};${regexp.oro.jar};${jms.jar}">
-	<sysproperty key="log4j.debug" value="${log4j.debug}"/> 
-    </java>
-  </target>
-
-  <!-- ================================================================= -->
   <!-- Aactual work is done in the dependencies.                         -->
   <!-- ================================================================= -->
-  <target name="jar" depends="log4j.jar, chainsaw.jar">
+  <target name="jar" depends="log4j.jar">
   </target>
 
  <!-- ================================================================= -->
@@ -416,6 +397,8 @@ not include support for:
 				${stem}/db/**/*.class,
 		        ${stem}/html/**/*.class,
                 ${stem}/varia/*.class,
+                ${stem}/filters/*.class,    	
+                ${stem}/rule/*.class,    	    	
                 ${stem}/nt/*.class,
                 ${stem}/rolling/**/*.class,
                 ${stem}/xml/*.class,
@@ -428,9 +411,7 @@ not include support for:
                 ${stem}/or/jms/*.class,
                 ${stem}/plugins/*.class,
                 ${stem}/config/*.class"
-      excludes="**/UnitTest**, ${stem}/**/*BeanInfo.class, ${stem}/varia/LogFilePatternReceiver*.class, ${stem}/varia/ExpressionFilter.class">
-    	<exclude name="**/JMSReceiver*" if="webstart"/>
-    	<exclude name="**/DBReceiver*" if="webstart"/>
+      excludes="**/UnitTest**, ${stem}/**/*BeanInfo.class">
       <manifest>
         <attribute name="Manifest-version" value="1.0"/>
         <section name="org/apache/log4j/">
@@ -443,132 +424,6 @@ not include support for:
   </target>
 
 
-  <!-- ================================================================= -->
-  <!-- Create log4j-chainsaw.jar, excluding everything else              -->
-  <!-- ================================================================= -->
-  <target name="chainsaw.jar" depends="build">
-    <delete>
-      <fileset dir="${jar.dest}">
-        <include name="${log4j-chainsaw.jar}"/>
-      </fileset>
-    </delete>
-
-    <copy todir="${javac.dest}">
-      <fileset dir="src/java" includes="**/chainsaw/**/*.properties"/>
-      <fileset dir="src/java" includes="**/chainsaw/*.properties"/>
-      <fileset dir="src/java" includes="**/chainsaw/receivers/known.receivers"/>
-      <fileset dir="src/java" includes="**/chainsaw/**/*.xml"/>   
-      <fileset dir="src/java" includes="**/chainsaw/**/*.gif"/>
-      <fileset dir="src/java" includes="**/chainsaw/**/*.html"/>
-      <fileset dir="src/java" includes="**/chainsaw/*.jpg"/>   
-      <fileset dir="src/java" includes="**/chainsaw/**/*.jpg"/>   
-      <fileset dir="src/java" includes="**/chainsaw/**/LICENCE"/>   
-    </copy>
-
-    <!-- JavaDoc up some Receiver and other stuff we want to be able to ship with Chainsaw-->
-    <javadoc sourcepath="${java.source.dir}"
-      destdir="${javac.dest}"
-     version="true"
-     author="true"
-     use="true"
-     overview="${jar.dest}/overview.html"
-     doctitle="log4j version ${version}&lt;br&gt;API Specification"
-     windowtitle="Log4j Version ${version}"
-           header="&lt;b&gt;Log4j ${version}&lt;/b&gt;"
-     bottom="Copyright 2000-2003 Apache Software Foundation."
-        >
-	    <fileset dir="src/java" defaultexcludes="yes">
-	      <include name="**/*Receiver.java" />
-	    </fileset>
-        <classpath refid="compile.classpath"/>
-        
-    </javadoc>        
-      
-      
-    <jar jarfile="${jar.dest}/${log4j-chainsaw.jar}" basedir="${javac.dest}"
-         includes="${stem}/chainsaw/*.class,
-                ${stem}/**/*.html,
-                **/*.css,
-                **/resources/*,
-                ${stem}/varia/ExpressionFilter*.class,
-                ${stem}/varia/LogFilePatternReceiver*.class,
-            	${stem}/rule/*.class,
-                ${stem}/**/*BeanInfo.class,
-         		${stem}/chainsaw/**/*.class, 
-          		${stem}/chainsaw/layout/*, 
-         		${stem}/chainsaw/icons/*.gif, 
-         		${stem}/chainsaw/*.jpg, 
-         		${stem}/chainsaw/**/*.xml, 
-         		${stem}/chainsaw/**/*.html, 
-         		${stem}/chainsaw/**/*.properties, 
-         		${stem}/chainsaw/receivers/known.receivers, 
-         		${stem}/chainsaw/icons/*.jpg, 
-         		${stem}/chainsaw/icons/LICENCE"
-         excludes="**/UnitTest**">
-    	<!-- we need to exclude the JMS + DB Receiver BeanInfo for webstart purposes -->
-    	<exclude name="**/JMS*BeanInfo.class" if="webstart" />
-    	<exclude name="**/DB*BeanInfo.class" if="webstart" />
-      <manifest>
-        <attribute name="Manifest-version" value="1.0"/>
-        <section name="org/apache/log4j/">
-          <attribute name="Implementation-Title" value="log4j"/>
-          <attribute name="Implementation-Version" value="${version}"/>
-          <attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
-        </section>
-        <attribute name="Main-Class" value="org.apache.log4j.chainsaw.LogUI"/>
-        <attribute name="Class-Path" value="${log4j.jar}"/>
-      </manifest>
-    </jar>
-  </target>
-
-  <!-- ================================================================= -->
-  <!-- These targets are for when we need to create a Java Web start distribution of Chainsaw -->
-  <!-- ================================================================= -->
-
-  <target name="webstart-dependant-receivers.jar" depends="build">
-    <delete>
-      <fileset dir="${jar.dest}">
-        <include name="${webstart-dependant-receivers.jar}"/>
-      </fileset>
-    </delete>
-
-    <jar jarfile="${jar.dest}/${webstart-dependant-receivers.jar}" basedir="${javac.dest}"
-      includes="${stem}/**/JMSReceiver*.class, ${stem}/**/DBReceiver*.class">
-      <manifest>
-        <attribute name="Manifest-version" value="1.0"/>
-        <section name="org/apache/log4j/">
-          <attribute name="Implementation-Title" value="log4j"/>
-          <attribute name="Implementation-Version" value="${version}"/>
-          <attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
-        </section>
-      </manifest>
-    </jar>
-  </target>
-
-	<target name="webstart" >
-  	<property name="webstart" value="true"/>
-  	 <antcall target="jar"/>
- 	 <antcall target="webstart-dependant-receivers.jar"/>
-		
-		  <input
-		    message="Please enter key password:"
-		    addproperty="keypass"
-		  />
-		<signjar verbose="false" keystore="${keystore}" alias="${alias}" storepass="${storepass}" keypass="${keypass}" >
-		 <fileset dir=".">
-		  <include name="*.jar"/>
-		 </fileset>
-		</signjar>
-		
-		<zip destfile="chainsaw-bundle.zip" >
-			<zipfileset dir="."> 
-				<include name="*.jar"/>
-			</zipfileset>
-			<fileset file="${regexp.oro.jar}"/>
-			<fileset file="src/chainsaw.bat"/>
-		</zip>
-  </target>
-	
   <!-- ================================================================= -->
   <!-- This target builds the javadoc files.                             -->
   <!-- ================================================================= -->
@@ -594,19 +449,8 @@ not include support for:
        org.apache.log4j.rolling.helper,
        org.apache.log4j.selector,
        org.apache.log4j.spi,
+       org.apache.log4j.filters,
        org.apache.log4j.varia,
-       org.apache.log4j.chainsaw,
-       org.apache.log4j.chainsaw.color,
-       org.apache.log4j.chainsaw.favourites,
-       org.apache.log4j.chainsaw.filter,
-       org.apache.log4j.chainsaw.help,
-       org.apache.log4j.chainsaw.helper,
-       org.apache.log4j.chainsaw.icons,
-       org.apache.log4j.chainsaw.layout,
-       org.apache.log4j.chainsaw.messages,
-       org.apache.log4j.chainsaw.plugins,
-       org.apache.log4j.chainsaw.prefs,
-       org.apache.log4j.chainsaw.receivers,
        org.apache.log4j.rule,
        org.apache.log4j.xml,
        org.apache.log4j.xml.examples,
@@ -725,8 +569,7 @@ not include support for:
                           build.properties.sample,
                           INSTALL,
                           LICENSE.txt,
-                          ${log4j.jar},
-                          ${log4j-chainsaw.jar}"
+                          ${log4j.jar}"
                 excludes="**/*.bak, 
                          **/goEnv.bat,
                           docs/pub-support/*,

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.apache.log4j.rule;
+package org.apache.log4j.chainsaw;
 
 import java.awt.Point;
 import java.awt.event.InputEvent;
@@ -31,6 +31,7 @@ import javax.swing.JTextField;
 import javax.swing.ListModel;
 
 import org.apache.log4j.chainsaw.filter.FilterModel;
+import org.apache.log4j.rule.RuleFactory;
 import org.apache.log4j.spi.LoggingEventFieldResolver;
 
 /**

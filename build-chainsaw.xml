@@ -1,0 +1,298 @@
+<project name="log4j" default="build" basedir="." >
+
+
+  <!-- The build.properties file defines the parth to local jar files -->
+  <property file="build.properties"/>
+
+  <property name="version" value="1.3alpha-4"/>
+
+  <!-- The base directory relative to which most targets are built -->
+  <property name="base" value="."/>
+
+  <!-- The directory where source files are stored. -->
+  <property name="java.source.dir" value="src/java/"/>
+
+  <!-- Deprecation warning? --> 
+  <property name="deprecation" value="on"/>
+	
+  <!-- Destination for compiled files -->
+  <property name="javac.dest" value="classes"/>
+
+  <!-- Destination for generated jar files -->
+  <property name="jar.dest" value="${basedir}"/>
+
+  <!-- The jar file that the jar task will generate -->
+  <property name="log4j.jar" value="log4j-${version}.jar"/>
+
+  <!-- The jar file that the jar-chainsaw task will generate -->
+  <property name="log4j-chainsaw.jar" value="log4j-chainsaw-${version}.jar"/>
+
+  <!-- When building a Java Web Start distribution of Chainsaw, some Receivers with external dependencies need to be packaged into a seperate Jar -->
+  <property name="webstart-dependant-receivers.jar" value="webstart-dependant-receivers.jar-${version}.jar"/>
+	
+  <!-- Javac with debug on/off. Log4j without debug on is hard to debug, so leave this settint on. -->
+  <property name="debug" value="on"/>
+
+  <!-- Destination for javadoc generated files -->
+  <property name="javadoc.dest" value="docs/api"/>
+
+  <!-- The stem where most log4j source code is located. -->
+  <property name="stem" value="org/apache/log4j"/>
+
+  <!-- Construct compile classpath -->
+  <path id="compile.classpath">
+    <pathelement location="${javac.dest}"/>
+    <pathelement location="${log4j.jar}"/>
+    <pathelement location="${vfs.jar}"/>
+  </path>
+
+  <!-- ================================================================= -->
+  <!-- Default target                                                    -->
+  <!-- ================================================================= -->
+
+  <target name="usage">
+    <echo>
+
+    These are the targets supported by this ANT build scpript:
+
+    build   - compile Chainsaw.  If a certain library is missing,
+              then the compilation of its dependents are skipped.
+
+    javadoc - build Chainsaw javadoc files
+
+    jar     - build Chainsaw jar file
+
+    </echo>
+  </target>
+
+  <target name="init">
+    <tstamp />
+  </target>
+
+  <target name="build" description="Compile Chainsaw."
+          depends="init, build.chainsaw"/>
+
+  <target name="build.chainsaw" depends="init,vfs">
+    <mkdir dir="${javac.dest}" />  	
+    <javac deprecation="${deprecation}"
+           srcdir="${java.source.dir}"
+    	   debug="${debug}"
+           destdir="${javac.dest}">
+  		   <patternset>
+  		   	<include name="${stem}/chainsaw/**/*.java"/>
+    	    <exclude name="${stem}/chainsaw/vfs/**/*.java" unless="vfs-present"/>
+  	       </patternset>
+      <classpath refid="compile.classpath"/>   
+    </javac>
+  </target>
+
+  <!-- ================================================================= -->
+  <!-- Remove all generated (compiled) class files.                      -->
+  <!-- ================================================================= -->
+  <target name="clean" depends="init" description="Delete compiled Chainsaw files">
+    <delete dir="${javac.dest}/" />
+  </target>
+
+  <target name="log4jCheck">
+    <available filepath="${base}" file="${log4j.jar}" property="log4j-present"/>
+  	
+    <fail unless="log4j-present">  	
+Log4j jar required here: ${jar.dest}/${log4j.jar}.    	
+    </fail>
+  </target>
+
+	  <target name="vfsCheck">
+	    <available classname="org.apache.commons.vfs.FileObject" property="vfs-present">
+	      <classpath refid="compile.classpath"/>
+	    </available>
+	  </target>
+	
+	  <target name="vfs" depends="vfsCheck" unless="vfs-present">
+	    <echo>
+	      Could not find vfs classes (http://jakarta.apache.org/commons/sandbox/vfs/). 
+Did you forget to set "vfs.jar" property in 
+build.properties to point to a valid vfs jar file?  
+
+Chainsaw will be built but will not include support 
+for VFSLogFilePatternReceiver
+	    </echo>
+	  </target>	
+  	
+  <!-- ================================================================= -->
+  <!-- Runs Chainsaw                                                     -->
+  <!-- ================================================================= -->
+
+  <target name="chainsaw" depends="chainsaw.jar, log4jCheck" description="Build and run Chainsaw v2 from jar file (generates Chainsaw jar if necessary)" >
+
+    <!-- Need to fork to avoid problems -->
+    <java classname="org.apache.log4j.chainsaw.LogUI" fork="yes"
+          classpath="${jar.dest}/${log4j.jar};${jar.dest}/${log4j-chainsaw.jar};${jaxp.parser.jar};${regexp.oro.jar};${jms.jar}">
+	<sysproperty key="log4j.debug" value="${log4j.debug}"/> 
+    </java>
+  </target>
+
+  <!-- ================================================================= -->
+  <!-- Aactual work is done in the dependencies.                         -->
+  <!-- ================================================================= -->
+  <target name="jar" depends="chainsaw.jar" description="Create chainsaw jar">
+  </target>
+
+  <!-- ================================================================= -->
+  <!-- Create log4j-chainsaw.jar, excluding everything else              -->
+  <!-- ================================================================= -->
+  <target name="chainsaw.jar" depends="build">
+    <delete>
+      <fileset dir="${jar.dest}">
+        <include name="${log4j-chainsaw.jar}"/>
+      </fileset>
+    </delete>
+
+    <copy todir="${javac.dest}">
+      <fileset dir="src/java" includes="**/chainsaw/**/*"/>
+    </copy>
+
+    <!-- JavaDoc up some Receiver and other stuff we want to be able to ship with Chainsaw-->
+    <javadoc sourcepath="${java.source.dir}"
+      destdir="${javac.dest}"
+     version="true"
+     author="true"
+     use="true"
+     overview="${jar.dest}/overview.html"
+     doctitle="log4j version ${version}&lt;br&gt;API Specification"
+     windowtitle="Log4j Version ${version}"
+           header="&lt;b&gt;Log4j ${version}&lt;/b&gt;"
+     bottom="Copyright 2000-2003 Apache Software Foundation."
+        >
+	    <fileset dir="src/java" defaultexcludes="yes">
+	      <include name="**/*Receiver.java" />
+	    </fileset>
+        <classpath refid="compile.classpath"/>
+        
+    </javadoc>        
+      
+      
+    <jar jarfile="${jar.dest}/${log4j-chainsaw.jar}" basedir="${javac.dest}"
+         includes="${stem}/chainsaw/*.class,
+                ${stem}/**/*.html,
+                **/*.css,
+                **/resources/*,
+                ${stem}/**/*BeanInfo.class,
+         		${stem}/chainsaw/**/*.class, 
+          		${stem}/chainsaw/layout/*, 
+         		${stem}/chainsaw/icons/*.gif, 
+         		${stem}/chainsaw/*.jpg, 
+         		${stem}/chainsaw/**/*.xml, 
+         		${stem}/chainsaw/**/*.html, 
+         		${stem}/chainsaw/**/*.properties, 
+         		${stem}/chainsaw/receivers/known.receivers, 
+         		${stem}/chainsaw/icons/*.jpg, 
+         		${stem}/chainsaw/icons/LICENCE"
+         excludes="**/UnitTest**">
+    	<!-- we need to exclude the JMS + DB Receiver BeanInfo for webstart purposes -->
+    	<exclude name="**/JMS*BeanInfo.class" if="webstart" />
+    	<exclude name="**/DB*BeanInfo.class" if="webstart" />
+      <manifest>
+        <attribute name="Manifest-version" value="1.0"/>
+        <section name="org/apache/log4j/">
+          <attribute name="Implementation-Title" value="log4j"/>
+          <attribute name="Implementation-Version" value="${version}"/>
+          <attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
+        </section>
+        <attribute name="Main-Class" value="org.apache.log4j.chainsaw.LogUI"/>
+        <attribute name="Class-Path" value="${log4j.jar}"/>
+      </manifest>
+    </jar>
+  </target>
+
+  <!-- ================================================================= -->
+  <!-- These targets are for when we need to create a Java Web start distribution of Chainsaw -->
+  <!-- ================================================================= -->
+
+  <target name="webstart-dependant-receivers.jar" depends="build">
+    <delete>
+      <fileset dir="${jar.dest}">
+        <include name="${webstart-dependant-receivers.jar}"/>
+      </fileset>
+    </delete>
+
+    <jar jarfile="${jar.dest}/${webstart-dependant-receivers.jar}" basedir="${javac.dest}"
+      includes="${stem}/**/JMSReceiver*.class, ${stem}/**/DBReceiver*.class">
+      <manifest>
+        <attribute name="Manifest-version" value="1.0"/>
+        <section name="org/apache/log4j/">
+          <attribute name="Implementation-Title" value="log4j"/>
+          <attribute name="Implementation-Version" value="${version}"/>
+          <attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
+        </section>
+      </manifest>
+    </jar>
+  </target>
+
+	<target name="webstart" >
+  	<property name="webstart" value="true"/>
+  	 <antcall target="jar"/>
+ 	 <antcall target="webstart-dependant-receivers.jar"/>
+		
+		  <input
+		    message="Please enter key password:"
+		    addproperty="keypass"
+		  />
+		<signjar verbose="false" keystore="${keystore}" alias="${alias}" storepass="${storepass}" keypass="${keypass}" >
+		 <fileset dir=".">
+		  <include name="*.jar"/>
+		 </fileset>
+		</signjar>
+		
+		<zip destfile="chainsaw-bundle.zip" >
+			<zipfileset dir="."> 
+				<include name="*.jar"/>
+			</zipfileset>
+			<fileset file="${regexp.oro.jar}"/>
+			<fileset file="src/chainsaw.bat"/>
+		</zip>
+  </target>
+	
+  <!-- ================================================================= -->
+  <!-- This target builds the javadoc files.                             -->
+  <!-- ================================================================= -->
+  <target name="javadoc" depends="init" description="Generate Chainsaw-related Javadoc">
+
+    <mkdir dir="${javadoc.dest}" />
+
+    <javadoc sourcepath="${java.source.dir}"
+      destdir="${javadoc.dest}"
+     packagenames="org.apache.log4j,
+       org.apache.log4j.chainsaw,
+       org.apache.log4j.chainsaw.color,
+       org.apache.log4j.chainsaw.favourites,
+       org.apache.log4j.chainsaw.filter,
+       org.apache.log4j.chainsaw.help,
+       org.apache.log4j.chainsaw.helper,
+       org.apache.log4j.chainsaw.dnd,
+       org.apache.log4j.chainsaw.icons,
+       org.apache.log4j.chainsaw.layout,
+       org.apache.log4j.chainsaw.messages,
+       org.apache.log4j.chainsaw.plugins,
+       org.apache.log4j.chainsaw.prefs,
+       org.apache.log4j.chainsaw.receivers,
+       org.apache.log4j.chainsaw.vfs"
+     additionalparam="-breakiterator"
+     version="true"
+     protected="true"
+     author="true"
+     use="true"
+     overview="${docs.dest}/overview.html"
+     doctitle="log4j version ${version}&lt;br&gt;API Specification"
+     windowtitle="Log4j Version ${version}"
+           header="&lt;b&gt;Log4j ${version}&lt;/b&gt;"
+     bottom="Copyright 2000-2003 Apache Software Foundation.">
+
+      <link href="http://java.sun.com/products/j2se/1.3/docs/api/"/>
+      <link href="http://java.sun.com/j2ee/sdk_1.3/techdocs/api/"/>
+      <classpath refid="compile.classpath"/>
+      <classpath path="${regexp.oro.jar}"/>
+    </javadoc>
+  </target>
+
+</project>
+
