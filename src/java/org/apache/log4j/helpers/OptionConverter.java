@@ -18,6 +18,8 @@ import org.apache.log4j.PropertyConfigurator;
 
 // Contributors:   Avy Sharell (sharell@online.fr)
 //                 Anders Kristensen
+//                 Matthieu Verbert (mve@zurich.ibm.com)
+
 
 /**
    A convenience class to convert property values to specific types.
@@ -206,8 +208,13 @@ public class OptionConverter {
    
   /**
      Instantiate an object given a class name. Check that the
-     <code>className</code> is a subclass of <code>superClass</code>.
+     <code>className</code> is a subclass of
+     <code>superClass</code>. If that test fails or the object could
+     not be instantiated, then <code>defaultValue</code> is returned.
 
+     @param className The fully qualified class name of the object to instantiate.
+     @param superClass The class to which the new object should belong.
+     @param defaultValue The object to return in case of non-fulfillment
    */
   public
   static
@@ -216,9 +223,11 @@ public class OptionConverter {
     if(className != null) {
       try {
 	Class classObj = Class.forName(className);
-	if(!superClass.isAssignableFrom(classObj)) 
+	if(!superClass.isAssignableFrom(classObj)) {
 	  LogLog.error("A \""+className+"\" object is not assignable to a \""+
 		       superClass.getName() + "\" object.");
+	  return defaultValue;	  
+	}
 	return classObj.newInstance();
       }
       catch (Exception e) {

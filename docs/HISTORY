@@ -51,7 +51,11 @@
    static in Category.java. In related move, the Category constructor
    now takes an additional argument setting the instanceFCQN. This
    makes life less miserable for Category subclasses. [*]
-	
+
+ - Corrected a bug in the OptionConverter.instantiateByClassName
+   method that would not return the defaultValue in case of error. Thanks
+   to Matthieu Verbert for identifying this bug.
+   		
  - Updated the "Adding Conversion Characters to PatternLayout"
    document to reflect the latest changes to the code. Also added the
    org/apache/log4j/examples/appserver directory containing the
