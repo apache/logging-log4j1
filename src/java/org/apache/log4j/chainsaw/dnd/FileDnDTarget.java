@@ -19,8 +19,6 @@ import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
-import javax.swing.colorchooser.ColorChooserComponentFactory;
-import javax.swing.event.EventListenerList;
 
 /**
  * This class provides all the functionality to work out when files are dragged onto
