@@ -241,28 +241,39 @@ public class TokenStreamTest extends TestCase {
 
     ts.next(); t = ts.getCurrent();
     assertEquals(Token.PROPERTY, t.getType());
+    ts.next(); t = ts.getCurrent();
+    assertEquals(Token.DOT, t.getType());
+    ts.next(); t = ts.getCurrent();
+    assertEquals(Token.LITERAL, t.getType());
     assertEquals("x", t.getValue());
 
     ts.next(); t = ts.getCurrent();
     assertEquals(Token.PROPERTY, t.getType());
+    ts.next(); t = ts.getCurrent();
+    assertEquals(Token.DOT, t.getType());
+    ts.next(); t = ts.getCurrent();
+    assertEquals(Token.LITERAL, t.getType());
     assertEquals("xyz", t.getValue());
+
+    ts.next(); t = ts.getCurrent();
+    assertEquals(Token.PROPERTY, t.getType());
+    ts.next(); t = ts.getCurrent();
+    assertEquals(Token.DOT, t.getType());
     
-    try {
-      ts.next();
-      fail("A ScanError should have been thrown");
-    } catch(ScanError e) {
-    }
   }
 
   
-  public void testProperty2() throws IOException, ScanError {
-    // TODO: add support for spaces in prooperty keys
+  public void testQuotedProperty() throws IOException, ScanError {
     
-//    StringReader sr = new StringReader(" property.'toto a' etc");
-//    TokenStream ts = new TokenStream(sr);
-//
-//    ts.next(); t = ts.getCurrent();
-//    assertEquals(Token.PROPERTY, t.getType());
-//    assertEquals("toto a", t.getValue());
+    StringReader sr = new StringReader(" property.'toto a' etc");
+    TokenStream ts = new TokenStream(sr);
+
+    ts.next(); t = ts.getCurrent();
+    assertEquals(Token.PROPERTY, t.getType());
+    ts.next(); t = ts.getCurrent();
+    assertEquals(Token.DOT, t.getType());
+    ts.next(); t = ts.getCurrent();
+    assertEquals(Token.LITERAL, t.getType());
+    assertEquals("toto a", t.getValue());
   }
 }

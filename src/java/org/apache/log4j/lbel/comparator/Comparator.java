@@ -28,5 +28,12 @@ import org.apache.log4j.spi.LoggingEvent;
  */
 public interface Comparator {
   
-  public boolean compare(LoggingEvent event);
+  /**
+   * 
+   * @param event
+   * @return
+   * @throws NullPointerException thrown if the lef or right side is null and 
+   * the comparison operator is other than equals not equals ('=' or '!=').
+   */
+  public boolean compare(LoggingEvent event) throws NullPointerException;
 }

@@ -44,6 +44,7 @@ class TokenStream  {
     keywordMap.put("method", new Token(Token.METHOD, "method"));
     keywordMap.put("class", new Token(Token.CLASS, "class"));
     keywordMap.put("thread", new Token(Token.THREAD, "thread"));
+    keywordMap.put("property", new Token(Token.PROPERTY, "property"));
     keywordMap.put("date", new Token(Token.DATE, "date"));
     keywordMap.put("null", new Token(Token.NULL, "null"));
   }
@@ -51,11 +52,13 @@ class TokenStream  {
   StreamTokenizer tokenizer;
 	int token;
   Token current;
-	
+	Reader reader;
   
   public TokenStream(Reader reader) {
+    this.reader = reader;
   	tokenizer = new StreamTokenizer(reader);
   	tokenizer.resetSyntax();
+    
   	tokenizer.whitespaceChars(' ', ' ');
   	tokenizer.whitespaceChars('\t', '\t');
   	tokenizer.whitespaceChars('\n', '\n');
@@ -64,10 +67,15 @@ class TokenStream  {
   	tokenizer.wordChars('a', 'z');
   	tokenizer.wordChars('A', 'Z');
   	tokenizer.wordChars('0', '9');
+
+
     
-  	tokenizer.quoteChar('"');
-  	tokenizer.quoteChar('\'');
-  	tokenizer.parseNumbers();
+    // StreamTokenizer does not correctly handle the '\' character within quotes
+  	// tokenizer.quoteChar('"');
+  	// tokenizer.quoteChar('\'');
+  	
+    tokenizer.parseNumbers();
+    tokenizer.ordinaryChar('.');
   }
 
   public Token getCurrent() {
@@ -90,22 +98,20 @@ class TokenStream  {
   		case StreamTokenizer.TT_WORD:
   			String txt = tokenizer.sval;
         String lowerCaseTxt = txt.toLowerCase();
-
-        if(txt.startsWith("property.")) {
-          current = extractPropertyToken(txt);  
-        } else {
-    		  Token result = (Token) keywordMap.get(lowerCaseTxt);
-  		    if(result != null) {
-  		  	  current = result;
-  		    } else {
-  		  	 current = new Token(Token.LITERAL, tokenizer.sval);
-  		    }
-        }
+   		  Token result = (Token) keywordMap.get(lowerCaseTxt);
+ 		    if(result != null) {
+  	  	  current = result;
+  	    } else {
+   	  	 current = new Token(Token.LITERAL, tokenizer.sval);
+  	    }
         break;  		
   		case '"':
   	  case '\'':
-  		  current = new Token(Token.LITERAL, tokenizer.sval);
+  		  current = scanLiteral(token);
   		  break;
+      case '.':
+        current = new Token(Token.DOT, ".");
+        break;
   		case '>':
    			token2 = tokenizer.nextToken();
   			if(token2 == '=') {
@@ -153,15 +159,42 @@ class TokenStream  {
   	}
   }
   
-  Token extractPropertyToken(String txt) throws ScanError {
-    int point = txt.indexOf('.');
-    String key = txt.substring(point+1);
-    // Is the key empty? (An empty key is the only thing that can go wrong at
-    // this stage.
-    if(key == null || key.length() == 0) {
-      throw new ScanError("["+txt+"] has zero-legnth key.");
-    } else {
-      return new Token(Token.PROPERTY, key);
-    }
+  Token scanLiteral(int startChar) { 
+   StringBuffer buf = new StringBuffer();
+   try {
+     int in = 0;
+     while(in != -1) {
+       in = reader.read();
+       if(in == startChar) {
+         break;
+       } else {
+           switch(in) {
+           case '\n':
+           case '\r':
+             break; // ignore line breaks
+           default: buf.append((char) in);
+           }
+       }
+     }
+   } catch(IOException io) {
+   }
+   
+   return new Token(Token.LITERAL, buf.toString());
   }
+  
+ // Token extractPropertyToken() throws ScanError {
+//    int token = tokenizer.nextToken();
+//    if(token == '.') {
+//    }
+//    
+//    int point = txt.indexOf('.');
+//    String key = txt.substring(point+1);
+//    // Is the key empty? (An empty key is the only thing that can go wrong at
+//    // this stage.
+//    if(key == null || key.length() == 0) {
+//      throw new ScanError("["+txt+"] has zero-legnth key.");
+//    } else {
+//      return new Token(Token.PROPERTY, key);
+//    }
+ // }
 }
