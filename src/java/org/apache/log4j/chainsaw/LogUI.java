@@ -397,6 +397,13 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
              handler.setIdentifierExpression(evt.getNewValue().toString());
 		}
 	} );
+    applicationPreferenceModel.addPropertyChangeListener("responsiveness", new PropertyChangeListener() {
+      public void propertyChange(PropertyChangeEvent evt) {
+        int value = ((Integer)evt.getNewValue()).intValue();
+        handler.setQueueInterval((value*1000)-750);
+      }
+    } );
+    
     
     final SocketNodeEventListener socketListener =
       new SocketNodeEventListener() {

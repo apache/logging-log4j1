@@ -66,7 +66,9 @@ import org.apache.log4j.helpers.Constants;
  */
 class ApplicationPreferenceModel implements SettingsListener {
 
-    private boolean showNoReceiverWarning = true;
+    private boolean showNoReceiverWarning  ;
+    private int responsiveness;
+    
     private String identifierExpression = Constants.HOSTNAME_KEY + " - " + Constants.APPLICATION_KEY; 
 
     private final PropertyChangeSupport propertySupport =
@@ -190,6 +192,8 @@ class ApplicationPreferenceModel implements SettingsListener {
     public void loadSettings(LoadSettingsEvent event) {
        setShowNoReceiverWarning(event.asBoolean("showNoReceiverWarning"));
        setIdentifierExpression(event.getSetting("identifierExpression"));
+       setResponsiveness(event.asInt("Responsiveness"));
+       
     }
 
     /* (non-Javadoc)
@@ -198,6 +202,7 @@ class ApplicationPreferenceModel implements SettingsListener {
     public void saveSettings(SaveSettingsEvent event) {
         event.saveSetting("showNoReceiverWarning", isShowNoReceiverWarning());
         event.saveSetting("identifierExpression", getIdentifierExpression());
+        event.saveSetting("Responsiveness", getResponsiveness());
     }
 
     /**
@@ -208,6 +213,22 @@ class ApplicationPreferenceModel implements SettingsListener {
     {
       setIdentifierExpression(model.getIdentifierExpression());
       setShowNoReceiverWarning(model.isShowNoReceiverWarning());
-      
+      setResponsiveness(model.getResponsiveness());
+    }
+    /**
+     * @return Returns the responsiveness.
+     */
+    public final int getResponsiveness()
+    {
+      return responsiveness;
+    }
+    /**
+     * @param responsiveness The responsiveness to set.
+     */
+    public final void setResponsiveness(int responsiveness)
+    {
+      int oldvalue = this.responsiveness;
+      this.responsiveness = responsiveness;
+      firePropertyChange("responsiveness", oldvalue, responsiveness);
     }
 }

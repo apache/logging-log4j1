@@ -522,8 +522,6 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
       new JMenu(ChainsawToolBarAndMenus.SETTING_RESPONSIVENESS);
     responsiveNess.setMnemonic('R');
 
-    responsiveNess.add(createResponsivenessSlider());
-
     final JMenu lookAndFeelMenu = new JMenu("Look & Feel");
     lookAndFeelMenu.setMnemonic('L');
 
@@ -649,56 +647,56 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     return pauseAction;
   }
 
-  private JComponent createResponsivenessSlider() {
-    JPanel responsiveNessPanel = new JPanel();
-    BoxLayout layout = new BoxLayout(responsiveNessPanel, BoxLayout.Y_AXIS);
-
-    responsiveNessPanel.setLayout(layout);
-
-    responsiveSlider.setAlignmentY(JComponent.CENTER_ALIGNMENT);
-    responsiveSlider.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-
-    responsiveSlider.setMinorTickSpacing(250);
-    responsiveSlider.setMajorTickSpacing(1000);
-    responsiveSlider.setToolTipText(
-      "Adjust to set the responsiveness of the app.  How often the view is updated.");
-    responsiveSlider.setSnapToTicks(true);
-    responsiveSlider.setPaintTicks(true);
-
-    responsiveSlider.setPaintLabels(true);
-    responsiveSlider.setPaintTrack(true);
-    responsiveSlider.setInverted(true);
-    responsiveSlider.getModel().addChangeListener(
-      new ChangeListener() {
-        public void stateChanged(ChangeEvent e) {
-          if (responsiveSlider.getValueIsAdjusting()) {
-            /**
-             * We'll wait until it stops.
-             */
-          } else {
-            int value = responsiveSlider.getValue();
-
-            if (value == 0) {
-              value = 100;
-            }
-
-            System.out.println("Adjust responsiveness to " + value + "ms");
-            logui.handler.setQueueInterval(value);
-          }
-        }
-      });
-
-    JLabel l1 = new JLabel("Update frequently (100ms)");
-    JLabel l2 = new JLabel("Update infrequently (5 seconds)");
-    responsiveNessPanel.add(l1);
-
-    JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-    panel.add(responsiveSlider);
-    responsiveNessPanel.add(panel);
-    responsiveNessPanel.add(l2);
-
-    return responsiveNessPanel;
-  }
+//  private JComponent createResponsivenessSlider() {
+//    JPanel responsiveNessPanel = new JPanel();
+//    BoxLayout layout = new BoxLayout(responsiveNessPanel, BoxLayout.Y_AXIS);
+//
+//    responsiveNessPanel.setLayout(layout);
+//
+//    responsiveSlider.setAlignmentY(JComponent.CENTER_ALIGNMENT);
+//    responsiveSlider.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+//
+//    responsiveSlider.setMinorTickSpacing(250);
+//    responsiveSlider.setMajorTickSpacing(1000);
+//    responsiveSlider.setToolTipText(
+//      "Adjust to set the responsiveness of the app.  How often the view is updated.");
+//    responsiveSlider.setSnapToTicks(true);
+//    responsiveSlider.setPaintTicks(true);
+//
+//    responsiveSlider.setPaintLabels(true);
+//    responsiveSlider.setPaintTrack(true);
+//    responsiveSlider.setInverted(true);
+//    responsiveSlider.getModel().addChangeListener(
+//      new ChangeListener() {
+//        public void stateChanged(ChangeEvent e) {
+//          if (responsiveSlider.getValueIsAdjusting()) {
+//            /**
+//             * We'll wait until it stops.
+//             */
+//          } else {
+//            int value = responsiveSlider.getValue();
+//
+//            if (value == 0) {
+//              value = 100;
+//            }
+//
+//            System.out.println("Adjust responsiveness to " + value + "ms");
+//            logui.handler.setQueueInterval(value);
+//          }
+//        }
+//      });
+//
+//    JLabel l1 = new JLabel("Update frequently (100ms)");
+//    JLabel l2 = new JLabel("Update infrequently (5 seconds)");
+//    responsiveNessPanel.add(l1);
+//
+//    JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+//    panel.add(responsiveSlider);
+//    responsiveNessPanel.add(panel);
+//    responsiveNessPanel.add(l2);
+//
+//    return responsiveNessPanel;
+//  }
 
   private Action createShowPreferencesAction() {
     Action showPreferences =
