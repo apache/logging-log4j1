@@ -21,8 +21,6 @@ java.lang.Exception: Just testing
 	at junit.framework.TestCase.run(X)
 	at junit.framework.TestSuite.runTest(X)
 	at junit.framework.TestSuite.run(X)
-	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(X)
-	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.main(X)
 FALLBACK - root - Message 5
 java.lang.Exception: Just testing
 	at org.apache.log4j.varia.ErrorHandlerTestCase.common(X)
@@ -36,8 +34,6 @@ java.lang.Exception: Just testing
 	at junit.framework.TestCase.run(X)
 	at junit.framework.TestSuite.runTest(X)
 	at junit.framework.TestSuite.run(X)
-	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(X)
-	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.main(X)
 FALLBACK - test - Message 6
 java.lang.Exception: Just testing
 	at org.apache.log4j.varia.ErrorHandlerTestCase.common(X)
@@ -51,8 +47,6 @@ java.lang.Exception: Just testing
 	at junit.framework.TestCase.run(X)
 	at junit.framework.TestSuite.runTest(X)
 	at junit.framework.TestSuite.run(X)
-	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(X)
-	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.main(X)
 FALLBACK - root - Message 6
 java.lang.Exception: Just testing
 	at org.apache.log4j.varia.ErrorHandlerTestCase.common(X)
@@ -66,5 +60,3 @@ java.lang.Exception: Just testing
 	at junit.framework.TestCase.run(X)
 	at junit.framework.TestSuite.runTest(X)
 	at junit.framework.TestSuite.run(X)
-	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(X)
-	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.main(X)
