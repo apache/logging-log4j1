@@ -62,6 +62,13 @@ import org.apache.log4j.Level;
  * @version CVS $Revision$ $Date$
  */
 public final class Log4JAvalonLogger implements Logger {
+
+  /**
+   * Constant for name of class to use when recording caller
+   * of log method. Appending a dot at the end is recommended practice.
+   */
+  private static final String FQCN = Log4JAvalonLogger.class.getName() + ".";
+
   //underlying implementation
   private final org.apache.log4j.Logger m_logger;
 
@@ -80,7 +87,7 @@ public final class Log4JAvalonLogger implements Logger {
    * @param message the message
    */
   public final void debug(final String message) {
-    m_logger.debug(message);
+    m_logger.log(FQCN, Level.DEBUG, message, null );
   }
 
   /**
@@ -90,7 +97,7 @@ public final class Log4JAvalonLogger implements Logger {
    * @param throwable the throwable
    */
   public final void debug(final String message, final Throwable throwable) {
-    m_logger.debug(message, throwable);
+    m_logger.log( FQCN, Level.DEBUG, message, throwable);
   }
 
   /**
@@ -108,7 +115,7 @@ public final class Log4JAvalonLogger implements Logger {
    * @param message the message
    */
   public final void info(final String message) {
-    m_logger.info(message);
+    m_logger.log( FQCN, Level.INFO, message, null );
   }
 
   /**
@@ -118,7 +125,7 @@ public final class Log4JAvalonLogger implements Logger {
    * @param throwable the throwable
    */
   public final void info(final String message, final Throwable throwable) {
-    m_logger.info(message, throwable);
+    m_logger.log( FQCN, Level.INFO, message, throwable );
   }
 
   /**
@@ -136,7 +143,7 @@ public final class Log4JAvalonLogger implements Logger {
    * @param message the message
    */
   public final void warn(final String message) {
-    m_logger.warn(message);
+    m_logger.log( FQCN, Level.WARN, message, null );
   }
 
   /**
@@ -146,7 +153,7 @@ public final class Log4JAvalonLogger implements Logger {
    * @param throwable the throwable
    */
   public final void warn(final String message, final Throwable throwable) {
-    m_logger.warn(message, throwable);
+    m_logger.log( FQCN, Level.WARN, message, throwable );
   }
 
   /**
@@ -164,7 +171,7 @@ public final class Log4JAvalonLogger implements Logger {
    * @param message the message
    */
   public final void error(final String message) {
-    m_logger.error(message);
+    m_logger.log( FQCN, Level.ERROR, message, null );
   }
 
   /**
@@ -174,7 +181,7 @@ public final class Log4JAvalonLogger implements Logger {
    * @param throwable the throwable
    */
   public final void error(final String message, final Throwable throwable) {
-    m_logger.error(message, throwable);
+    m_logger.log( FQCN, Level.ERROR, message, throwable );
   }
 
   /**
@@ -192,7 +199,7 @@ public final class Log4JAvalonLogger implements Logger {
    * @param message the message
    */
   public final void fatalError(final String message) {
-    m_logger.fatal(message);
+    m_logger.log( FQCN, Level.FATAL, message, null );
   }
 
   /**
@@ -203,7 +210,7 @@ public final class Log4JAvalonLogger implements Logger {
    */
   public final void fatalError(
     final String message, final Throwable throwable) {
-    m_logger.fatal(message, throwable);
+    m_logger.log( FQCN, Level.FATAL, message, throwable );
   }
 
   /**
