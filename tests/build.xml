@@ -82,6 +82,7 @@
   <!-- ================================================================= -->
   <target name="clean">
     <delete dir="./classes/" />
+    <delete dir="./output/" />
   </target>
 
   <!-- ================================================================= -->
@@ -99,7 +100,7 @@
                                      HierarchyThreshold, SocketServer, 
                                      XMLLayout, AsyncAppender, 
                                      OptionConverter, BoundedFIFO, 
-                                     CyclicBuffer, OR"/>
+                                     CyclicBuffer, OR, LevelMatchFilter"/>
 
   <!-- ================================================================= -->
   <!-- Longer unit tests                                                 -->
@@ -241,6 +242,14 @@
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
       <test name="org.apache.log4j.or.ORTestCase" />
+    </junit>
+  </target>
+  
+  <target name="LevelMatchFilter" depends="build">
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="false"/>
+      <test name="org.apache.log4j.varia.LevelMatchFilterTestCase" />
     </junit>
   </target>
 
