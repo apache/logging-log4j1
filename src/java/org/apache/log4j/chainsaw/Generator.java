@@ -53,6 +53,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 import org.apache.log4j.NDC;
+import org.apache.log4j.helpers.Constants;
 import org.apache.log4j.plugins.Receiver;
 import org.apache.log4j.spi.LoggingEvent;
 
@@ -86,7 +87,7 @@ public class Generator extends Receiver implements Runnable {
       new LoggingEvent(
         logger.getClass().getName(), logger, System.currentTimeMillis(), level,
         msg, t);
-    e.setProperty(ChainsawConstants.LOG4J_APP_KEY, getName());
+    e.setProperty(Constants.APPLICATION_KEY, getName());
 
     return e;
   }

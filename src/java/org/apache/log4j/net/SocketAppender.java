@@ -52,6 +52,7 @@
 package org.apache.log4j.net;
 
 import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.helpers.Constants;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.LoggingEvent;
 
@@ -158,8 +159,8 @@ public class SocketAppender extends AppenderSkeleton {
   boolean locationInfo = false;
   private Connector connector;
   int counter = 0;
-  String localMachine;
-  String log4jApp;
+  String hostname;
+  String application;
 
   public SocketAppender() {
   }
@@ -189,12 +190,12 @@ public class SocketAppender extends AppenderSkeleton {
   */
   public void activateOptions() {
     try {
-      localMachine = InetAddress.getLocalHost().getHostName();
+      hostname = InetAddress.getLocalHost().getHostName();
     } catch (UnknownHostException uhe) {
       try {
-        localMachine = InetAddress.getLocalHost().getHostAddress();
+        hostname = InetAddress.getLocalHost().getHostAddress();
       } catch (UnknownHostException uhe2) {
-        localMachine = "unknown";
+        hostname = "unknown";
       }
     }
 
@@ -281,12 +282,12 @@ public class SocketAppender extends AppenderSkeleton {
           event.getLocationInformation();
         }
 
-        if (localMachine != null) {
-          event.setProperty("log4jMachineName", localMachine);
+        if (hostname != null) {
+          event.setProperty(Constants.HOSTNAME_KEY, hostname);
         }
 
-        if (log4jApp != null) {
-          event.setProperty("log4jApp", log4jApp);
+        if (application != null) {
+          event.setProperty(Constants.APPLICATION_KEY, application);
         }
 
         oos.writeObject(event);
@@ -394,15 +395,15 @@ public class SocketAppender extends AppenderSkeleton {
          * name of the application getting logged
          * If property was already set (via system property), don't set here.
    */
-  public void setLog4jApp(String lapp) {
-    this.log4jApp = lapp;
+  public void setApplication(String lapp) {
+    this.application = lapp;
   }
 
   /**
-         Returns value of the <b>Log4jApp</b> option.
+   *  Returns value of the <b>Application</b> option.
    */
-  public String getLog4jApp() {
-    return log4jApp;
+  public String getApplication() {
+    return application;
   }
 
   /**

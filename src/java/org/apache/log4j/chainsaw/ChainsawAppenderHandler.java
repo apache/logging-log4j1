@@ -51,6 +51,7 @@ package org.apache.log4j.chainsaw;
 
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.LogManager;
+import org.apache.log4j.helpers.Constants;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.net.SocketReceiver;
 import org.apache.log4j.plugins.PluginRegistry;
@@ -140,19 +141,19 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
 
   /**
    * Determines an appropriate title for the Tab for the Tab Pane
-   * by locating a the log4jmachinename property
+   * by locating a the hostname property
    * @param v
    * @return
    */
   private static String getTabIdentifier(LoggingEvent e) {
     StringBuffer ident = new StringBuffer();
-    String machinename = e.getProperty(ChainsawConstants.LOG4J_MACHINE_KEY);
+    String hostname = e.getProperty(Constants.HOSTNAME_KEY);
 
-    if (machinename != null) {
-      ident.append(machinename);
+    if (hostname != null) {
+      ident.append(hostname);
     }
 
-    String appname = e.getProperty(ChainsawConstants.LOG4J_APP_KEY);
+    String appname = e.getProperty(Constants.APPLICATION_KEY);
 
     if (appname != null) {
       if (ident.length() > 0) {
