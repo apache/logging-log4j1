@@ -49,28 +49,28 @@
 
 package org.apache.log4j.chainsaw.rule;
 
-import java.util.Stack;
-
 import org.apache.log4j.chainsaw.LoggingEventFieldResolver;
 import org.apache.log4j.spi.LoggingEvent;
+
+import java.util.Stack;
+
 
 /**
  * A Rule class implementing less than - expects to be able to convert two values to longs.
  * If the field being evaluated can support inequality evaluation, the appropriate rule is returned.
  * (For example, if the expression is Level < DEBUG, a LessThanLevelRule is returned).
- * 
+ *
  * @author Scott Deboy <sdeboy@apache.org>
  */
-
 class InequalityRule extends AbstractRule {
-    private static final String LEVEL = "LEVEL";
-
+  private static final String LEVEL = "LEVEL";
   LoggingEventFieldResolver resolver = LoggingEventFieldResolver.getInstance();
   String firstParam;
   String secondParam;
   String inequalitySymbol;
 
-  private InequalityRule(String inequalitySymbol, String firstParam, String secondParam) {
+  private InequalityRule(
+    String inequalitySymbol, String firstParam, String secondParam) {
     this.inequalitySymbol = inequalitySymbol;
     this.firstParam = firstParam;
     this.secondParam = secondParam;
@@ -79,34 +79,50 @@ class InequalityRule extends AbstractRule {
   static Rule getRule(String inequalitySymbol, Stack stack) {
     String p1 = stack.pop().toString();
     String p2 = stack.pop().toString();
+
     if (p2.equalsIgnoreCase(LEVEL)) {
-        //push the value back on the stack and allow the level-specific rule pop values
-        stack.push(p1);
-        stack.push(p2);
+      //push the value back on the stack and allow the level-specific rule pop values
+      stack.push(p2);
+      stack.push(p1);
 
-        return LevelInequalityRule.getRule(inequalitySymbol, stack);
+      return LevelInequalityRule.getRule(inequalitySymbol, stack);
     } else {
-        System.out.println("get equals op " + p1 + ".." + p2);
+      System.out.println("get equals op " + p1 + ".." + p2);
 
-        return new InequalityRule(inequalitySymbol, p1, p2);
+      return new InequalityRule(inequalitySymbol, p1, p2);
     }
   }
-  
+
   public boolean evaluate(LoggingEvent event) {
-    long second = new Long(resolver.getValue(secondParam, event).toString()).longValue();
-    long first = new Long(firstParam).longValue();
+    long first = 0;
+
+    try {
+      first =
+        new Long(resolver.getValue(secondParam, event).toString()).longValue();
+    } catch (NumberFormatException nfe) {
+      return false;
+    }
+
+    long second = 0;
+
+    try {
+      second = new Long(firstParam).longValue();
+    } catch (NumberFormatException nfe) {
+      return false;
+    }
 
     boolean result = false;
-        
+
     if ("<".equals(inequalitySymbol)) {
-        result = first < second;
+      result = first < second;
     } else if (">".equals(inequalitySymbol)) {
-        result = first > second;
-    } else if ("<=".equals(inequalitySymbol)){
-        result = first <= second;
+      result = first > second;
+    } else if ("<=".equals(inequalitySymbol)) {
+      result = first <= second;
     } else if (">=".equals(inequalitySymbol)) {
-        result = first >= second;
+      result = first >= second;
     }
+
     System.out.println("result is " + result);
 
     return result;
