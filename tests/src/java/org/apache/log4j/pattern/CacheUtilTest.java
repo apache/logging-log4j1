@@ -58,10 +58,10 @@ public class CacheUtilTest extends TestCase {
     assertEquals(true, result);
     
     result = CacheUtil.isPatternSafeForCaching("aS");
-    assertEquals(true, result);
+    assertEquals(false, result);
 
     result = CacheUtil.isPatternSafeForCaching("aSS");
-    assertEquals(true, result);
+    assertEquals(false, result);
 
     result = CacheUtil.isPatternSafeForCaching("aSSS");
     assertEquals(true, result);
