@@ -57,6 +57,7 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
+import org.apache.log4j.rolling.helpers.Compress;
 import org.apache.log4j.util.Compare;
 
 
@@ -76,6 +77,7 @@ public class TimeBasedRollingTestCase extends TestCase {
   }
 
   public void tearDown() {
+    logger.debug("Tear down called.");
     LogManager.shutdown();
   }
 
@@ -109,13 +111,45 @@ public class TimeBasedRollingTestCase extends TestCase {
 
     // The File.length() method is not accurate under Windows    
   }
+  
+  public void test2() throws Exception {
+      Logger root = Logger.getRootLogger();
+      root.addAppender(new ConsoleAppender(new PatternLayout()));
+
+      // We purposefully use the \n as the line separator. 
+      // This makes the regression test system indepent.
+      PatternLayout layout = new PatternLayout("%d %c %m\n");
+      RollingFileAppender rfa = new RollingFileAppender();
+      rfa.setLayout(layout);
+
+      TimeBasedRollingPolicy tbrp = new TimeBasedRollingPolicy();
+      tbrp.setFileNamePattern("output/tbt%d{yyyy-MM-dd_HH_mm}");
+      tbrp.setCompressionMode(Compress.GZ_STR);
+      rfa.setRollingPolicy(tbrp);
+      rfa.activateOptions();
+      root.addAppender(rfa);
+
+      // Write exactly 10 bytes with each log
+      for (int i = 0; i < 30; i++) {
+        Thread.sleep(1000);
+        if (i < 10) {
+          logger.debug("Hello---" + i);
+        } else if (i < 100) {
+          logger.debug("Hello--" + i);
+        } else {
+          logger.debug("Hello-" + i);
+        }
+      }
+
+      // The File.length() method is not accurate under Windows    
+    }
 
 
   public static Test suite() {
     TestSuite suite = new TestSuite();
 
-    suite.addTest(new TimeBasedRollingTestCase("test1"));
-    //suite.addTest(new TimeBasedRollingTestCase("test2"));
+    //suite.addTest(new TimeBasedRollingTestCase("test1"));
+    suite.addTest(new TimeBasedRollingTestCase("test2"));
 
     return suite;
   }

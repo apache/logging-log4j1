@@ -83,11 +83,13 @@ abstract public class RollingPolicySkeleton implements RollingPolicy {
 
 
   public void setCompressionMode(String compMode) {
+    System.out.println("================"+compMode);
     if(compMode == null) {
       compressionMode = Compress.NONE;
     }
     compMode = compMode.trim();
     if(compMode.equalsIgnoreCase(Compress.GZ_STR)) {
+      System.out.println("==================================");
       compressionMode = Compress.GZ;
     } else if (compMode.equalsIgnoreCase(Compress.ZIP_STR)) {
       compressionMode = Compress.ZIP;
