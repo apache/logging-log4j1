@@ -41,7 +41,7 @@ import javax.naming.NamingException;
  * are serialized and transmitted as JMS message type {@link
  * javax.jms.ObjectMessage}.
 
- * <p>JMS {@link javax.jmx.Topic topics} and {@link javax.jmx.TopicConnectionFactory topic
+ * <p>JMS {@link javax.jms.Topic topics} and {@link javax.jms.TopicConnectionFactory topic
  * connection factories} are administered objects that are retrieved
  * using JNDI messaging which in turn requires the retreival of a JNDI
  * {@link Context}.
