@@ -114,8 +114,8 @@ import org.apache.log4j.chainsaw.layout.EventDetailLayout;
 import org.apache.log4j.chainsaw.layout.LayoutEditorPane;
 import org.apache.log4j.chainsaw.messages.MessageCenter;
 import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.Profileable;
 import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SettingsListener;
 import org.apache.log4j.chainsaw.prefs.SettingsManager;
 import org.apache.log4j.helpers.ISO8601DateFormat;
 import org.apache.log4j.helpers.LogLog;
@@ -174,7 +174,7 @@ import org.apache.log4j.spi.LoggingEventFieldResolver;
  *@author Paul Smith (psmith at apache.org)
  *
  */
-public class LogPanel extends DockablePanel implements EventBatchListener, SettingsListener {
+public class LogPanel extends DockablePanel implements EventBatchListener, Profileable {
   private final String identifier;
   private final ChainsawStatusBar statusBar;
   private final JFrame preferencesFrame = new JFrame();
@@ -1226,6 +1226,17 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
 
     eventsPane.addMouseListener(popupListener);
     table.addMouseListener(popupListener);
+  }
+  
+  /**
+   * Accessor
+   *
+   * @return namespace
+   *
+   * @see Profileable
+   */
+  public String getNamespace() {
+      return getIdentifier();
   }
 
   /**
