@@ -19,7 +19,7 @@ class DefaultRenderer implements ObjectRenderer {
   }
 
   /**
-     Render the the object passed as parameter by calling its
+     Render the object passed as parameter by calling its
      <code>toString</code> method.  */
   public
   String doRender(Object o) {
