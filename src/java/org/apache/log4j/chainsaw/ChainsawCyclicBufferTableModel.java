@@ -1,12 +1,12 @@
 /*
  * Copyright 1999,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,9 +16,15 @@
 
 package org.apache.log4j.chainsaw;
 
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.rule.Rule;
+import org.apache.log4j.spi.LocationInfo;
+import org.apache.log4j.spi.LoggingEvent;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -31,11 +37,6 @@ import java.util.Set;
 import javax.swing.ProgressMonitor;
 import javax.swing.event.EventListenerList;
 import javax.swing.table.AbstractTableModel;
-
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.rule.Rule;
-import org.apache.log4j.spi.LocationInfo;
-import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
@@ -53,10 +54,10 @@ import org.apache.log4j.spi.LoggingEvent;
  */
 class ChainsawCyclicBufferTableModel extends AbstractTableModel
   implements EventContainer, PropertyChangeListener {
-  private boolean cyclic = true;
   private static final int DEFAULT_CAPACITY = 5000;
-  private int capacity = DEFAULT_CAPACITY;
   private static final String PANEL_CAPACITY = "CHAINSAW_CAPACITY";
+  private boolean cyclic = true;
+  private int capacity = DEFAULT_CAPACITY;
   List unfilteredList;
   List filteredList;
   Set idSet = new HashSet(capacity);
@@ -81,15 +82,18 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
 
   public ChainsawCyclicBufferTableModel() {
     propertySupport.addPropertyChangeListener("cyclic", new ModelChanger());
+
     if (System.getProperty(PANEL_CAPACITY) != null) {
-        try {
-            capacity = Integer.parseInt(System.getProperty(PANEL_CAPACITY));
-        } catch (NumberFormatException nfe) {}
+      try {
+        capacity = Integer.parseInt(System.getProperty(PANEL_CAPACITY));
+      } catch (NumberFormatException nfe) {
+      }
     }
+
     unfilteredList = new CyclicBufferList(capacity);
     filteredList = new CyclicBufferList(capacity);
   }
-  
+
   /* (non-Javadoc)
    * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
    */
@@ -98,44 +102,66 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
       reFilter();
     }
   }
-  
-  private void reFilter() {
-    synchronized(unfilteredList) {
-        try {
-          filteredList.clear();
-          Iterator iter = unfilteredList.iterator();
-          while (iter.hasNext()) {
-              LoggingEvent e = (LoggingEvent)iter.next();
-              if ((displayRule == null) || (displayRule.evaluate(e))) {
-                  filteredList.add(e);
-              }
-          }
-        } finally { 
-          fireTableDataChanged();
-          notifyCountListeners();
-        }
-    }
-  }
-  
-  public int find(Rule rule, int startLocation, boolean searchForward) {
-      synchronized(filteredList) {
-        if (searchForward) {
-            for (int i = startLocation; i < filteredList.size(); i++) {
-                if (rule.evaluate((LoggingEvent)filteredList.get(i))) {
-                    return i;
-                }
-            }
-        } else {
-            for (int i = startLocation; i > -1; i--) {
-                if (rule.evaluate((LoggingEvent)filteredList.get(i))) {
-                    return i;
-                }
-            }
+
+  public List getMatchingEvents(Rule rule) {
+    List list = new ArrayList();
+
+    synchronized (unfilteredList) {
+      Iterator iter = unfilteredList.iterator();
+
+      while (iter.hasNext()) {
+        LoggingEvent event = (LoggingEvent) iter.next();
+
+        if (rule.evaluate(event)) {
+          list.add(event);
         }
       }
-      return -1;
+    }
+
+    return list;
   }
-  
+
+  private void reFilter() {
+    synchronized (unfilteredList) {
+      try {
+        filteredList.clear();
+
+        Iterator iter = unfilteredList.iterator();
+
+        while (iter.hasNext()) {
+          LoggingEvent e = (LoggingEvent) iter.next();
+
+          if ((displayRule == null) || (displayRule.evaluate(e))) {
+            filteredList.add(e);
+          }
+        }
+      } finally {
+        fireTableDataChanged();
+        notifyCountListeners();
+      }
+    }
+  }
+
+  public int find(Rule rule, int startLocation, boolean searchForward) {
+    synchronized (filteredList) {
+      if (searchForward) {
+        for (int i = startLocation; i < filteredList.size(); i++) {
+          if (rule.evaluate((LoggingEvent) filteredList.get(i))) {
+            return i;
+          }
+        }
+      } else {
+        for (int i = startLocation; i > -1; i--) {
+          if (rule.evaluate((LoggingEvent) filteredList.get(i))) {
+            return i;
+          }
+        }
+      }
+    }
+
+    return -1;
+  }
+
   /**
    * @param l
    */
@@ -201,6 +227,7 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
     if (this.displayRule != null) {
       this.displayRule.addPropertyChangeListener(this);
     }
+
     reFilter();
   }
 
@@ -209,23 +236,24 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
      */
   public void sort() {
     if (sortEnabled) {
-
       synchronized (filteredList) {
         Collections.sort(
           filteredList,
-          new ColumnComparator(getColumnName(currentSortColumn), currentSortColumn, currentSortAscending));
+          new ColumnComparator(
+            getColumnName(currentSortColumn), currentSortColumn,
+            currentSortAscending));
       }
+
       fireTableRowsUpdated(0, Math.max(filteredList.size() - 1, 0));
     }
   }
-  
+
   public boolean isSortEnabled() {
-      return sortEnabled;
+    return sortEnabled;
   }
 
   public void sortColumn(int col, boolean ascending) {
-    LogLog.debug(
-      "request to sort col=" + col);
+    LogLog.debug("request to sort col=" + col);
     currentSortAscending = ascending;
     currentSortColumn = col;
     sortEnabled = true;
@@ -237,12 +265,14 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
    */
   public void clearModel() {
     reachedCapacity = false;
+
     synchronized (unfilteredList) {
       unfilteredList.clear();
       filteredList.clear();
       idSet.clear();
       uniqueRow = 0;
     }
+
     fireTableDataChanged();
     notifyCountListeners();
   }
@@ -301,8 +331,9 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
     }
 
     LocationInfo info = null;
+
     if (event.locationInformationExists()) {
-        info = event.getLocationInformation();
+      info = event.getLocationInformation();
     }
 
     if (event == null) {
@@ -349,17 +380,29 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
       return event.getThrowableStrRep();
 
     case ChainsawColumns.INDEX_CLASS_COL_NAME:
-      return (info == null || (info != null && info.getClassName().equals("?"))) ?  "" : info.getClassName();
+      return ((info == null)
+      || ((info != null) && info.getClassName().equals("?"))) ? ""
+                                                              : info
+      .getClassName();
 
     case ChainsawColumns.INDEX_FILE_COL_NAME:
-      return (info == null || (info != null && info.getFileName().equals("?"))) ? "" : info.getFileName();
+      return ((info == null)
+      || ((info != null) && info.getFileName().equals("?"))) ? ""
+                                                             : info
+      .getFileName();
 
     case ChainsawColumns.INDEX_LINE_COL_NAME:
-      return (info == null || (info != null && info.getLineNumber().equals("?"))) ? "" : info.getLineNumber();
+      return ((info == null)
+      || ((info != null) && info.getLineNumber().equals("?"))) ? ""
+                                                               : info
+      .getLineNumber();
 
     case ChainsawColumns.INDEX_METHOD_COL_NAME:
-      return (info == null || (info != null && info.getMethodName().equals("?"))) ? "" : info.getMethodName();
-    
+      return ((info == null)
+      || ((info != null) && info.getMethodName().equals("?"))) ? ""
+                                                               : info
+      .getMethodName();
+
     default:
 
       if (columnIndex <= columnNames.size()) {
@@ -369,40 +412,47 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
 
     return "";
   }
-  
+
   private String getMDC(LoggingEvent event) {
-      if (event.getMDCKeySet().size() == 0) {
-          return "";
-      }
-      Iterator iter = event.getMDCKeySet().iterator();
-      StringBuffer mdc = new StringBuffer("{");
-      
-      while (iter.hasNext()) {
-          mdc.append("{");
-          Object key = iter.next(); 
-          mdc.append(key);
-          mdc.append(",");
-          mdc.append(event.getMDC(key.toString()));
-          mdc.append("}");
-      }
+    if (event.getMDCKeySet().size() == 0) {
+      return "";
+    }
+
+    Iterator iter = event.getMDCKeySet().iterator();
+    StringBuffer mdc = new StringBuffer("{");
+
+    while (iter.hasNext()) {
+      mdc.append("{");
+
+      Object key = iter.next();
+      mdc.append(key);
+      mdc.append(",");
+      mdc.append(event.getMDC(key.toString()));
       mdc.append("}");
-      return mdc.toString();
+    }
+
+    mdc.append("}");
+
+    return mdc.toString();
   }
-  
+
   private String getProperties(LoggingEvent event) {
-      Iterator iter = event.getPropertyKeySet().iterator();
-      StringBuffer prop = new StringBuffer("{");
-      
-      while (iter.hasNext()) {
-          prop.append("{");
-          Object key = iter.next(); 
-          prop.append(key);
-          prop.append(",");
-          prop.append(event.getProperty(key.toString()));
-          prop.append("}");
-      }
+    Iterator iter = event.getPropertyKeySet().iterator();
+    StringBuffer prop = new StringBuffer("{");
+
+    while (iter.hasNext()) {
+      prop.append("{");
+
+      Object key = iter.next();
+      prop.append(key);
+      prop.append(",");
+      prop.append(event.getProperty(key.toString()));
       prop.append("}");
-      return prop.toString();
+    }
+
+    prop.append("}");
+
+    return prop.toString();
   }
 
   public boolean isAddRow(LoggingEvent e, boolean valueIsAdjusting) {
@@ -419,6 +469,7 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
     if (idSet.contains(id)) {
       return false;
     }
+
     idSet.add(id);
     unfilteredList.add(e);
 
@@ -435,57 +486,60 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
     boolean newColumn = uniqueMDCKeys.addAll(e.getMDCKeySet());
 
     if (newColumn) {
-        /**
-         * If so, we should add them as columns and notify listeners.
-         */
-        for (Iterator iter = e.getMDCKeySet().iterator(); iter.hasNext();) {
-          Object key = iter.next();
-    
-          if (!columnNames.contains(key)) {
-            columnNames.add(key);
-            LogLog.debug("Adding col '" + key + "', columNames=" + columnNames);
-            fireNewKeyColumnAdded(
-              new NewKeyEvent(
-                this, columnNames.indexOf(key), key, e.getMDC(key.toString())));
-          }
+      /**
+       * If so, we should add them as columns and notify listeners.
+       */
+      for (Iterator iter = e.getMDCKeySet().iterator(); iter.hasNext();) {
+        Object key = iter.next();
+
+        if (!columnNames.contains(key)) {
+          columnNames.add(key);
+          LogLog.debug("Adding col '" + key + "', columNames=" + columnNames);
+          fireNewKeyColumnAdded(
+            new NewKeyEvent(
+              this, columnNames.indexOf(key), key, e.getMDC(key.toString())));
         }
+      }
     }
+
     if (!valueIsAdjusting) {
-        int lastAdded = getLastAdded();
-        fireTableEvent(lastAdded, lastAdded, 1);
+      int lastAdded = getLastAdded();
+      fireTableEvent(lastAdded, lastAdded, 1);
     }
 
     return rowAdded;
   }
-  
+
   public int getLastAdded() {
-      int last = 0;
-      if (cyclic) {
-          last = ((CyclicBufferList)filteredList).getLast();
-      } else {
-          last = filteredList.size();
-      }
-      return last;
+    int last = 0;
+
+    if (cyclic) {
+      last = ((CyclicBufferList) filteredList).getLast();
+    } else {
+      last = filteredList.size();
+    }
+
+    return last;
   }
-  
+
   public void fireTableEvent(int begin, int end, int count) {
-      if (cyclic) {
-          if (!reachedCapacity) {
-              //if we didn't loop and it's the 1st time, insert
-              if (begin + count < capacity) {
-                fireTableRowsInserted(begin, end);
-              } else {
-                //we did loop - insert and then update rows
-                fireTableRowsInserted(begin, capacity);
-                fireTableRowsUpdated(0, capacity);
-                reachedCapacity = true;
-              }
-          } else {
-            fireTableRowsUpdated(0, capacity);
-          } 
-      } else {
+    if (cyclic) {
+      if (!reachedCapacity) {
+        //if we didn't loop and it's the 1st time, insert
+        if ((begin + count) < capacity) {
           fireTableRowsInserted(begin, end);
+        } else {
+          //we did loop - insert and then update rows
+          fireTableRowsInserted(begin, capacity);
+          fireTableRowsUpdated(0, capacity);
+          reachedCapacity = true;
+        }
+      } else {
+        fireTableRowsUpdated(0, capacity);
       }
+    } else {
+      fireTableRowsInserted(begin, end);
+    }
   }
 
   /**
@@ -513,7 +567,7 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
    * @return
    */
   public int getMaxSize() {
-      return capacity;
+    return capacity;
   }
 
   /* (non-Javadoc)
@@ -549,6 +603,7 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
     if (this.cyclic == cyclic) {
       return;
     }
+
     final boolean old = this.cyclic;
     this.cyclic = cyclic;
     propertySupport.firePropertyChange("cyclic", old, cyclic);
@@ -605,7 +660,8 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
                   List newFilteredList = null;
                   HashSet newIDSet = null;
 
-				  newIDSet = new HashSet(capacity);
+                  newIDSet = new HashSet(capacity);
+
                   if (isCyclic()) {
                     newUnfilteredList = new CyclicBufferList(capacity);
                     newFilteredList = new CyclicBufferList(capacity);
@@ -615,16 +671,22 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
                   }
 
                   int increment = 0;
+
                   for (Iterator iter = unfilteredList.iterator();
                       iter.hasNext();) {
-                  	LoggingEvent e = (LoggingEvent)iter.next();
+                    LoggingEvent e = (LoggingEvent) iter.next();
                     newUnfilteredList.add(e);
-                    Object o = e.getProperty(e.getProperty(ChainsawConstants.LOG4J_ID_KEY));
+
+                    Object o =
+                      e.getProperty(
+                        e.getProperty(ChainsawConstants.LOG4J_ID_KEY));
+
                     if (o != null) {
-                    	newIDSet.add(o);
+                      newIDSet.add(o);
                     } else {
-                    	newIDSet.add(new Integer(increment++));
+                      newIDSet.add(new Integer(increment++));
                     }
+
                     monitor.setProgress(index++);
                   }
 

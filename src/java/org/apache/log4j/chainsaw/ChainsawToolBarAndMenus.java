@@ -16,10 +16,13 @@
 
 package org.apache.log4j.chainsaw;
 
+import org.apache.log4j.chainsaw.filter.FilterModel;
 import org.apache.log4j.chainsaw.help.HelpManager;
 import org.apache.log4j.chainsaw.icons.ChainsawIcons;
 import org.apache.log4j.chainsaw.receivers.ReceiversHelper;
+import org.apache.log4j.rule.ExpressionRuleContext;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -42,6 +45,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -50,6 +55,7 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -76,6 +82,7 @@ class ChainsawToolBarAndMenus implements ChangeListener {
   private final Action toggleDetailPaneAction;
   private final Action toggleToolbarAction;
   private final Action undockAction;
+  private final Action customExpressionPanelAction;
   private final Collection lookAndFeelMenus = new ArrayList();
   private final JCheckBoxMenuItem toggleShowReceiversCheck =
     new JCheckBoxMenuItem();
@@ -112,6 +119,7 @@ class ChainsawToolBarAndMenus implements ChangeListener {
     findField = new JTextField();
     findNextAction = getFindNextAction();
     findPreviousAction = getFindPreviousAction();
+    customExpressionPanelAction = createCustomExpressionPanelAction();
     showPreferencesAction = createShowPreferencesAction();
     showColorPanelAction = createShowColorPanelAction();
     toggleToolbarAction = createToggleToolbarAction();
@@ -139,9 +147,10 @@ class ChainsawToolBarAndMenus implements ChangeListener {
 
     logPanelSpecificActions =
       new Action[] {
-        pauseAction, findNextAction, findPreviousAction, clearAction, fileMenu.getFileSaveAction(),
-        toggleDetailPaneAction, showPreferencesAction, showColorPanelAction,
-        undockAction, toggleLogTreeAction, changeModelAction,
+        pauseAction, findNextAction, findPreviousAction, clearAction,
+        fileMenu.getFileSaveAction(), toggleDetailPaneAction,
+        showPreferencesAction, showColorPanelAction, undockAction,
+        toggleLogTreeAction, changeModelAction,
       };
 
     logui.getApplicationPreferenceModel().addPropertyChangeListener(
@@ -202,8 +211,8 @@ class ChainsawToolBarAndMenus implements ChangeListener {
     action.putValue(
       Action.ACCELERATOR_KEY,
       KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.ALT_MASK));
-      action.putValue(
-        Action.SMALL_ICON, new ImageIcon(ChainsawIcons.WINDOW_ICON));
+    action.putValue(
+      Action.SMALL_ICON, new ImageIcon(ChainsawIcons.WINDOW_ICON));
 
     return action;
   }
@@ -310,6 +319,11 @@ class ChainsawToolBarAndMenus implements ChangeListener {
     menuPrefs.setText(
       showPreferencesAction.getValue(Action.SHORT_DESCRIPTION).toString());
 
+    JMenuItem menuCustomExpressionPanel =
+      new JMenuItem(customExpressionPanelAction);
+    menuCustomExpressionPanel.setText(
+      customExpressionPanelAction.getValue(Action.SHORT_DESCRIPTION).toString());
+
     JMenuItem menuShowColor = new JMenuItem(showColorPanelAction);
     menuShowColor.setText(
       showColorPanelAction.getValue(Action.SHORT_DESCRIPTION).toString());
@@ -369,6 +383,8 @@ class ChainsawToolBarAndMenus implements ChangeListener {
     viewMenu.add(toggleStatusBarCheck);
     viewMenu.add(toggleShowReceiversCheck);
     viewMenu.add(menuItemClose);
+    viewMenu.addSeparator();
+    viewMenu.add(menuCustomExpressionPanel);
     viewMenu.addSeparator();
 
     viewMenu.add(showAppPrefs);
@@ -437,13 +453,11 @@ class ChainsawToolBarAndMenus implements ChangeListener {
       };
 
     action.putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_P));
-    action.putValue(
-      Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("F12"));
+    action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("F12"));
     action.putValue(
       Action.SHORT_DESCRIPTION,
       "Causes incoming events for this tab to be discarded");
-    action.putValue(
-      Action.SMALL_ICON, new ImageIcon(ChainsawIcons.PAUSE));
+    action.putValue(Action.SMALL_ICON, new ImageIcon(ChainsawIcons.PAUSE));
 
     return action;
   }
@@ -465,6 +479,25 @@ class ChainsawToolBarAndMenus implements ChangeListener {
 
     // TODO think of good mnemonics and HotKey for this action
     return showPreferences;
+  }
+
+  private Action createCustomExpressionPanelAction() {
+    final JDialog dialog = new JDialog(logui, "Define tab", true);
+    dialog.getContentPane().add(getCustomExpressionPanel());
+    dialog.pack();
+
+    Action createExpressionPanel =
+      new AbstractAction("", ChainsawIcons.ICON_HELP) {
+        public void actionPerformed(ActionEvent arg0) {
+          dialog.setVisible(true);
+        }
+      };
+
+    createExpressionPanel.putValue(
+      Action.SHORT_DESCRIPTION, "Create custom expression LogPanel...");
+
+    // TODO think of good mnemonics and HotKey for this action
+    return createExpressionPanel;
   }
 
   private Action createShowColorPanelAction() {
@@ -546,8 +579,7 @@ class ChainsawToolBarAndMenus implements ChangeListener {
         }
       };
 
-    action.putValue(
-      Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_T));
+    action.putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_T));
 
     return action;
   }
@@ -557,8 +589,7 @@ class ChainsawToolBarAndMenus implements ChangeListener {
 
     FileMenu menu = (FileMenu) menuBar.getMenu(0);
 
-    JButton fileOpenButton =
-      new SmallButton(menu.getLog4JFileOpenAction());
+    JButton fileOpenButton = new SmallButton(menu.getLog4JFileOpenAction());
     fileOpenButton.setMargin(buttonMargins);
 
     JButton fileSaveButton = new SmallButton(menu.getFileSaveAction());
@@ -596,6 +627,7 @@ class ChainsawToolBarAndMenus implements ChangeListener {
       KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.ALT_MASK),
       toggleLogTreeAction.getValue(Action.NAME));
     logTreePaneButton.setText(null);
+
     SmallButton prefsButton = new SmallButton(showPreferencesAction);
     SmallButton undockButton = new SmallButton(undockAction);
     undockButton.setText("");
@@ -622,7 +654,6 @@ class ChainsawToolBarAndMenus implements ChangeListener {
       (KeyStroke) findNextAction.getValue(Action.ACCELERATOR_KEY),
       findNextAction.getValue(Action.NAME));
 
-
     JButton findPreviousButton = new SmallButton(findPreviousAction);
     findPreviousButton.setText("");
     findPreviousButton.getActionMap().put(
@@ -630,7 +661,6 @@ class ChainsawToolBarAndMenus implements ChangeListener {
     findPreviousButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
       (KeyStroke) findPreviousAction.getValue(Action.ACCELERATOR_KEY),
       findPreviousAction.getValue(Action.NAME));
-
 
     findPanel.add(findField);
 
@@ -749,7 +779,7 @@ class ChainsawToolBarAndMenus implements ChangeListener {
     action.putValue(
       Action.SHORT_DESCRIPTION,
       "Find the next occurrence of the rule from the current row");
-      action.putValue(Action.SMALL_ICON, new ImageIcon(ChainsawIcons.DOWN));
+    action.putValue(Action.SMALL_ICON, new ImageIcon(ChainsawIcons.DOWN));
 
     return action;
   }
@@ -767,13 +797,53 @@ class ChainsawToolBarAndMenus implements ChangeListener {
       };
 
     //    action.putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_F));
-    action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F3, KeyEvent.SHIFT_DOWN_MASK));
+    action.putValue(
+      Action.ACCELERATOR_KEY,
+      KeyStroke.getKeyStroke(KeyEvent.VK_F3, KeyEvent.SHIFT_DOWN_MASK));
     action.putValue(
       Action.SHORT_DESCRIPTION,
       "Find the previous occurrence of the rule from the current row");
-      action.putValue(Action.SMALL_ICON, new ImageIcon(ChainsawIcons.UP));
+    action.putValue(Action.SMALL_ICON, new ImageIcon(ChainsawIcons.UP));
 
     return action;
   }
 
+  private JPanel getCustomExpressionPanel() {
+    final JPanel panel = new JPanel(new BorderLayout());
+    panel.add(
+      new JLabel("Enter expression for new tab:  "), BorderLayout.NORTH);
+
+    final JTextField textField = new JTextField();
+    textField.addKeyListener(
+      new ExpressionRuleContext(new FilterModel(), textField));
+    panel.add(textField, BorderLayout.CENTER);
+
+    JButton ok = new JButton("OK");
+    JButton close = new JButton("Close");
+    JPanel lowerPanel = new JPanel();
+    lowerPanel.add(ok);
+    lowerPanel.add(Box.createHorizontalStrut(7));
+    lowerPanel.add(close);
+    panel.add(lowerPanel, BorderLayout.SOUTH);
+
+    ok.addActionListener(
+      new AbstractAction() {
+        public void actionPerformed(ActionEvent evt) {
+          logui.createCustomExpressionLogPanel(textField.getText());
+          SwingUtilities.getAncestorOfClass(JDialog.class, panel).setVisible(
+            false);
+        }
+      });
+
+    close.addActionListener(
+      new AbstractAction() {
+        public void actionPerformed(ActionEvent evt) {
+          SwingUtilities.getAncestorOfClass(JDialog.class, panel).setVisible(
+            false);
+        }
+      });
+
+    //String expression = JOptionPane.showInputDialog(logui, "Enter expression", "Create custom expression LogPanel", JOptionPane.PLAIN_MESSAGE);
+    return panel;
+  }
 }

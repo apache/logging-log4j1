@@ -1,12 +1,12 @@
 /*
  * Copyright 1999,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,6 +15,29 @@
  */
 
 package org.apache.log4j.chainsaw;
+
+import org.apache.log4j.Layout;
+import org.apache.log4j.PatternLayout;
+import org.apache.log4j.chainsaw.color.ColorPanel;
+import org.apache.log4j.chainsaw.color.RuleColorizer;
+import org.apache.log4j.chainsaw.filter.FilterModel;
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.chainsaw.icons.LineIconFactory;
+import org.apache.log4j.chainsaw.layout.DefaultLayoutFactory;
+import org.apache.log4j.chainsaw.layout.EventDetailLayout;
+import org.apache.log4j.chainsaw.layout.LayoutEditorPane;
+import org.apache.log4j.chainsaw.messages.MessageCenter;
+import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.Profileable;
+import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.SettingsManager;
+import org.apache.log4j.helpers.ISO8601DateFormat;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.rule.ExpressionRule;
+import org.apache.log4j.rule.ExpressionRuleContext;
+import org.apache.log4j.rule.Rule;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.LoggingEventFieldResolver;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -35,8 +58,10 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.EOFException;
@@ -48,8 +73,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -102,28 +129,6 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
-import org.apache.log4j.Layout;
-import org.apache.log4j.PatternLayout;
-import org.apache.log4j.chainsaw.color.ColorPanel;
-import org.apache.log4j.chainsaw.color.RuleColorizer;
-import org.apache.log4j.chainsaw.filter.FilterModel;
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-import org.apache.log4j.chainsaw.icons.LineIconFactory;
-import org.apache.log4j.chainsaw.layout.DefaultLayoutFactory;
-import org.apache.log4j.chainsaw.layout.EventDetailLayout;
-import org.apache.log4j.chainsaw.layout.LayoutEditorPane;
-import org.apache.log4j.chainsaw.messages.MessageCenter;
-import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.Profileable;
-import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SettingsManager;
-import org.apache.log4j.helpers.ISO8601DateFormat;
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.rule.ExpressionRule;
-import org.apache.log4j.rule.ExpressionRuleContext;
-import org.apache.log4j.rule.Rule;
-import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.spi.LoggingEventFieldResolver;
 
 /**
  * A LogPanel provides a view to a collection of LoggingEvents.<br>
@@ -174,7 +179,10 @@ import org.apache.log4j.spi.LoggingEventFieldResolver;
  *@author Paul Smith (psmith at apache.org)
  *
  */
-public class LogPanel extends DockablePanel implements EventBatchListener, Profileable {
+public class LogPanel extends DockablePanel implements EventBatchListener,
+  Profileable {
+  private static final double DEFAULT_DETAIL_SPLIT_LOCATION = .5;
+  private static final double DEFAULT_LOG_TREE_SPLIT_LOCATION = .25;
   private final String identifier;
   private final ChainsawStatusBar statusBar;
   private final JFrame preferencesFrame = new JFrame();
@@ -190,8 +198,6 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Profi
   private final JEditorPane detail;
   private final JSplitPane lowerPanel;
   private final DetailPaneUpdater detailPaneUpdater;
-  private static final double DEFAULT_DETAIL_SPLIT_LOCATION = .5;
-  private static final double DEFAULT_LOG_TREE_SPLIT_LOCATION = .25;
   private final JPanel detailPanel = new JPanel(new BorderLayout());
   private final int dividerSize;
   private final JSplitPane nameTreeAndMainPanelSplit;
@@ -207,9 +213,9 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Profi
   private int previousDetailPanelSplitLocation;
   private double lastDetailPanelSplitLocation = DEFAULT_DETAIL_SPLIT_LOCATION;
   private int previousLogTreePanelSplitLocation;
-  private double lastLogTreePanelSplitLocation = DEFAULT_LOG_TREE_SPLIT_LOCATION;
+  private double lastLogTreePanelSplitLocation =
+    DEFAULT_LOG_TREE_SPLIT_LOCATION;
   private boolean bypassScroll;
-
   private Point currentPoint;
   private boolean scroll;
   private boolean paused = false;
@@ -354,8 +360,8 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Profi
             menuItemLoggerTree.isSelected());
         }
       });
-      menuItemLoggerTree.setIcon(new ImageIcon(ChainsawIcons.WINDOW_ICON));
-      
+    menuItemLoggerTree.setIcon(new ImageIcon(ChainsawIcons.WINDOW_ICON));
+
     final JCheckBoxMenuItem menuItemScrollBottom =
       new JCheckBoxMenuItem("Scroll to bottom");
     menuItemScrollBottom.addActionListener(
@@ -412,6 +418,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Profi
       new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           boolean newValue = ((Boolean) evt.getNewValue()).booleanValue();
+
           if (newValue) {
             showLogTreePanel();
           } else {
@@ -851,40 +858,46 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Profi
     final JTextField filterText;
 
     if (filterCombo.getEditor().getEditorComponent() instanceof JTextField) {
-        String comboToolTipText = "Enter an expression, press enter to add to list";
-        filterText = (JTextField)filterCombo.getEditor().getEditorComponent();
-        filterText.setToolTipText(comboToolTipText);
-        filterText.addKeyListener(
-          new ExpressionRuleContext(filterModel, filterText));
-        filterText.getDocument().addDocumentListener(
-          new DelayedFilterTextDocumentListener(filterText));
-        filterCombo.setEditable(true);
-        filterCombo.addActionListener(new AbstractAction() {
-        public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals("comboBoxEdited")) {
-            try {
+      String comboToolTipText =
+        "Enter an expression, press enter to add to list";
+      filterText = (JTextField) filterCombo.getEditor().getEditorComponent();
+      filterText.setToolTipText(comboToolTipText);
+      filterText.addKeyListener(
+        new ExpressionRuleContext(filterModel, filterText));
+      filterText.getDocument().addDocumentListener(
+        new DelayedFilterTextDocumentListener(filterText));
+      filterCombo.setEditable(true);
+      filterCombo.addActionListener(
+        new AbstractAction() {
+          public void actionPerformed(ActionEvent e) {
+            if (e.getActionCommand().equals("comboBoxEdited")) {
+              try {
                 //verify the expression is valid
-                ExpressionRule.getRule(filterCombo.getSelectedItem().toString());
-            } catch (IllegalArgumentException iae) {
+                ExpressionRule.getRule(
+                  filterCombo.getSelectedItem().toString());
+              } catch (IllegalArgumentException iae) {
                 //don't add expressions that aren't valid
                 return;
-            } 
-            //should be 'valid expression' check
-            if (!(v.contains(filterCombo.getSelectedItem()))) {
+              }
+
+              //should be 'valid expression' check
+              if (!(v.contains(filterCombo.getSelectedItem()))) {
                 filterCombo.addItem(filterCombo.getSelectedItem());
+              }
             }
-        }
-        }});
-        upperPanel.add(filterCombo, BorderLayout.CENTER);
+          }
+        });
+      upperPanel.add(filterCombo, BorderLayout.CENTER);
     } else {
-        filterText = new JTextField();
-        filterText.setToolTipText("Enter an expression");
-        filterText.addKeyListener(
-          new ExpressionRuleContext(filterModel, filterText));
-        filterText.getDocument().addDocumentListener(
-          new DelayedFilterTextDocumentListener(filterText));
-        upperPanel.add(filterText, BorderLayout.CENTER);
+      filterText = new JTextField();
+      filterText.setToolTipText("Enter an expression");
+      filterText.addKeyListener(
+        new ExpressionRuleContext(filterModel, filterText));
+      filterText.getDocument().addDocumentListener(
+        new DelayedFilterTextDocumentListener(filterText));
+      upperPanel.add(filterText, BorderLayout.CENTER);
     }
+
     upperPanel.add(upperLeftPanel, BorderLayout.WEST);
 
     JPanel upperRightPanel =
@@ -1093,7 +1106,8 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Profi
       });
     menuItemLogPanelPreferences.setIcon(ChainsawIcons.ICON_PREFERENCES);
 
-    final JMenuItem menuItemFocusOn = new JMenuItem("Set 'refine focus' field");
+    final JMenuItem menuItemFocusOn =
+      new JMenuItem("Set 'refine focus' field");
     menuItemFocusOn.addActionListener(
       new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
@@ -1133,7 +1147,8 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Profi
         }
       });
 
-    final JMenuItem menuDefineAddCustomFilter = new JMenuItem("Add to 'refine focus' field");
+    final JMenuItem menuDefineAddCustomFilter =
+      new JMenuItem("Add to 'refine focus' field");
     menuDefineAddCustomFilter.addActionListener(
       new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
@@ -1227,7 +1242,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Profi
     eventsPane.addMouseListener(popupListener);
     table.addMouseListener(popupListener);
   }
-  
+
   /**
    * Accessor
    *
@@ -1236,7 +1251,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Profi
    * @see Profileable
    */
   public String getNamespace() {
-      return getIdentifier();
+    return getIdentifier();
   }
 
   /**
@@ -1285,7 +1300,6 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Profi
     tableModel.notifyCountListeners();
 
     if (rowAdded) {
-
       if (tableModel.isSortEnabled()) {
         tableModel.sort();
       }
@@ -1297,6 +1311,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Profi
         table.scrollToBottom(
           table.columnAtPoint(table.getVisibleRect().getLocation()));
       }
+
       //always update detail pane (since we may be using a cyclic buffer which is full)
       detailPaneUpdater.setSelectedRow(table.getSelectedRow());
     }
@@ -1434,6 +1449,10 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Profi
     return tableModel.getAllEvents();
   }
 
+  List getMatchingEvents(Rule rule) {
+    return tableModel.getMatchingEvents(rule);
+  }
+
   /**
    * Remove all events
    */
@@ -1528,24 +1547,30 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Profi
   }
 
   public boolean updateRule(String ruleText) {
-    if (ruleText == null || (ruleText != null && ruleText.equals(""))) {
-        findRule = null;
-        colorizer.setFindRule(null);
-        bypassScroll = false;
-        findField.setToolTipText("Enter expression - right click or ctrl-space for menu");
-        return false;
+    if ((ruleText == null) || ((ruleText != null) && ruleText.equals(""))) {
+      findRule = null;
+      colorizer.setFindRule(null);
+      bypassScroll = false;
+      findField.setToolTipText(
+        "Enter expression - right click or ctrl-space for menu");
+
+      return false;
     } else {
-        bypassScroll = true;
-        try {
-            findField.setToolTipText("Enter expression - right click or ctrl-space for menu");
-            findRule = ExpressionRule.getRule(ruleText);
-            colorizer.setFindRule(findRule);
-            return true;
-        } catch (IllegalArgumentException re) {
-            findField.setToolTipText(re.getMessage());
-            colorizer.setFindRule(null);
-            return false;            
-        }
+      bypassScroll = true;
+
+      try {
+        findField.setToolTipText(
+          "Enter expression - right click or ctrl-space for menu");
+        findRule = ExpressionRule.getRule(ruleText);
+        colorizer.setFindRule(findRule);
+
+        return true;
+      } catch (IllegalArgumentException re) {
+        findField.setToolTipText(re.getMessage());
+        colorizer.setFindRule(null);
+
+        return false;
+      }
     }
   }
 
@@ -1570,7 +1595,9 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Profi
         (double) lowerPanel.getDividerLocation() / currentSize;
 
       //if hiding when details are minimized or maximized, use last location
-      if ((lastDetailPanelSplitLocation == 1.0) || (lastDetailPanelSplitLocation == 0.0)) {
+      if (
+        (lastDetailPanelSplitLocation == 1.0)
+          || (lastDetailPanelSplitLocation == 0.0)) {
         previousDetailPanelSplitLocation = lowerPanel.getLastDividerLocation();
 
         lowerPanel.setLastDividerLocation(lowerPanel.getLastDividerLocation());
@@ -1586,8 +1613,10 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Profi
    */
   private void showLogTreePanel() {
     nameTreeAndMainPanelSplit.setDividerSize(dividerSize);
-    nameTreeAndMainPanelSplit.setDividerLocation(lastLogTreePanelSplitLocation);
-    nameTreeAndMainPanelSplit.setLastDividerLocation(previousLogTreePanelSplitLocation);
+    nameTreeAndMainPanelSplit.setDividerLocation(
+      lastLogTreePanelSplitLocation);
+    nameTreeAndMainPanelSplit.setLastDividerLocation(
+      previousLogTreePanelSplitLocation);
     logTreePanel.setVisible(true);
   }
 
@@ -1599,19 +1628,25 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Profi
     int currentSize = nameTreeAndMainPanelSplit.getWidth() - dividerSize - 1;
 
     if (currentSize > 0) {
-      lastLogTreePanelSplitLocation = (double) nameTreeAndMainPanelSplit.getDividerLocation() / currentSize;
-      //if hiding when log tree is minimized or maximized, use last location
-      if ((lastLogTreePanelSplitLocation == 1.0) || (lastLogTreePanelSplitLocation == 0.0)) {
-        previousLogTreePanelSplitLocation = nameTreeAndMainPanelSplit.getLastDividerLocation();
+      lastLogTreePanelSplitLocation =
+        (double) nameTreeAndMainPanelSplit.getDividerLocation() / currentSize;
 
-        nameTreeAndMainPanelSplit.setLastDividerLocation(nameTreeAndMainPanelSplit.getLastDividerLocation());
+      //if hiding when log tree is minimized or maximized, use last location
+      if (
+        (lastLogTreePanelSplitLocation == 1.0)
+          || (lastLogTreePanelSplitLocation == 0.0)) {
+        previousLogTreePanelSplitLocation =
+          nameTreeAndMainPanelSplit.getLastDividerLocation();
+
+        nameTreeAndMainPanelSplit.setLastDividerLocation(
+          nameTreeAndMainPanelSplit.getLastDividerLocation());
       }
     }
 
     nameTreeAndMainPanelSplit.setDividerSize(0);
     logTreePanel.setVisible(false);
   }
-  
+
   /**
    * Return a toolbar used by the undocked LogPanel's frame
    *
@@ -1711,7 +1746,8 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Profi
     toolbar.addSeparator();
 
     findField = new JTextField();
-    findField.addKeyListener(new ExpressionRuleContext(filterModel, findField));
+    findField.addKeyListener(
+      new ExpressionRuleContext(filterModel, findField));
 
     final Action undockedFindNextAction =
       new AbstractAction() {
@@ -1722,18 +1758,21 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Profi
 
     undockedFindNextAction.putValue(Action.NAME, "Find next");
     undockedFindNextAction.putValue(
-      Action.SHORT_DESCRIPTION, "Find the next occurrence of the rule from the current row");
+      Action.SHORT_DESCRIPTION,
+      "Find the next occurrence of the rule from the current row");
     undockedFindNextAction.putValue(
       Action.SMALL_ICON, new ImageIcon(ChainsawIcons.DOWN));
 
-    SmallButton undockedFindNextButton = new SmallButton(undockedFindNextAction);
+    SmallButton undockedFindNextButton =
+      new SmallButton(undockedFindNextAction);
 
     undockedFindNextButton.setAction(undockedFindNextAction);
     undockedFindNextButton.setText("");
     undockedFindNextButton.getActionMap().put(
       undockedFindNextAction.getValue(Action.NAME), undockedFindNextAction);
     undockedFindNextButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-      KeyStroke.getKeyStroke("F3"), undockedFindNextAction.getValue(Action.NAME));
+      KeyStroke.getKeyStroke("F3"),
+      undockedFindNextAction.getValue(Action.NAME));
 
     final Action undockedFindPreviousAction =
       new AbstractAction() {
@@ -1744,18 +1783,23 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Profi
 
     undockedFindPreviousAction.putValue(Action.NAME, "Find previous");
     undockedFindPreviousAction.putValue(
-      Action.SHORT_DESCRIPTION, "Find the previous occurrence of the rule from the current row");
-      undockedFindPreviousAction.putValue(
+      Action.SHORT_DESCRIPTION,
+      "Find the previous occurrence of the rule from the current row");
+    undockedFindPreviousAction.putValue(
       Action.SMALL_ICON, new ImageIcon(ChainsawIcons.UP));
 
-    SmallButton undockedFindPreviousButton = new SmallButton(undockedFindPreviousAction);
+    SmallButton undockedFindPreviousButton =
+      new SmallButton(undockedFindPreviousAction);
 
     undockedFindPreviousButton.setAction(undockedFindPreviousAction);
     undockedFindPreviousButton.setText("");
     undockedFindPreviousButton.getActionMap().put(
-    undockedFindPreviousAction.getValue(Action.NAME), undockedFindPreviousAction);
-    undockedFindPreviousButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-      KeyStroke.getKeyStroke(KeyEvent.VK_F3, KeyEvent.SHIFT_MASK), undockedFindPreviousAction.getValue(Action.NAME));
+      undockedFindPreviousAction.getValue(Action.NAME),
+      undockedFindPreviousAction);
+    undockedFindPreviousButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                              .put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_F3, KeyEvent.SHIFT_MASK),
+      undockedFindPreviousAction.getValue(Action.NAME));
 
     Dimension findSize = new Dimension(132, 24);
     Dimension findPanelSize = new Dimension(144, 26);
@@ -1842,46 +1886,53 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Profi
   /**
    * Finds the next row matching the current find rule, and ensures it is made
    * visible
-   * 
+   *
    */
   public void findNext() {
     updateRule(findField.getText());
+
     if (findRule != null) {
-        try {
-            final int nextRow = tableModel.find(findRule, table.getSelectedRow() + 1, true);
-            if (nextRow > -1) {
-                table.scrollToRow(
-                nextRow, table.columnAtPoint(table.getVisibleRect().getLocation()));
-                findField.setToolTipText("Enter an expression");
-            }
-        } catch (IllegalArgumentException iae) {
-            findField.setToolTipText(iae.getMessage());
-            colorizer.setFindRule(null);
+      try {
+        final int nextRow =
+          tableModel.find(findRule, table.getSelectedRow() + 1, true);
+
+        if (nextRow > -1) {
+          table.scrollToRow(
+            nextRow, table.columnAtPoint(table.getVisibleRect().getLocation()));
+          findField.setToolTipText("Enter an expression");
         }
+      } catch (IllegalArgumentException iae) {
+        findField.setToolTipText(iae.getMessage());
+        colorizer.setFindRule(null);
+      }
     }
   }
-  
+
   /**
    * Finds the previous row matching the current find rule, and ensures it is made
    * visible
-   * 
+   *
    */
   public void findPrevious() {
     updateRule(findField.getText());
+
     if (findRule != null) {
-        try {
-            final int previousRow = tableModel.find(findRule, table.getSelectedRow() - 1, false);
-            if (previousRow > -1) {
-                table.scrollToRow(
-                previousRow, table.columnAtPoint(table.getVisibleRect().getLocation()));
-                findField.setToolTipText("Enter an expression");
-            }
-        } catch (IllegalArgumentException iae) {
-            findField.setToolTipText(iae.getMessage());
+      try {
+        final int previousRow =
+          tableModel.find(findRule, table.getSelectedRow() - 1, false);
+
+        if (previousRow > -1) {
+          table.scrollToRow(
+            previousRow,
+            table.columnAtPoint(table.getVisibleRect().getLocation()));
+          findField.setToolTipText("Enter an expression");
         }
+      } catch (IllegalArgumentException iae) {
+        findField.setToolTipText(iae.getMessage());
+      }
     }
   }
-  
+
   /**
    * Docks this DockablePanel by hiding the JFrame and placing the Panel back
    * inside the LogUI window.
@@ -2188,7 +2239,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Profi
 
     filterModel.processNewLoggingEvent(event);
   }
-  
+
   /**
    * This class receives notification when the Refine focus text field is
    * updated, where a backgrounh thread periodically wakes up and checks if
@@ -2199,10 +2250,10 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Profi
    */
   private final class DelayedFilterTextDocumentListener
     implements DocumentListener {
+    private static final long CHECK_PERIOD = 1000;
     private final JTextField filterText;
     private long lastTimeStamp = System.currentTimeMillis();
     private final Thread delayThread;
-    private static final long CHECK_PERIOD = 1000;
     private final String defaultToolTip;
     private String lastFilterText = null;
 
@@ -2251,7 +2302,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Profi
     /**
      * Update timestamp
      *
-     * @param e 
+     * @param e
      */
     public void insertUpdate(DocumentEvent e) {
       notifyChange();
@@ -2260,7 +2311,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Profi
     /**
      * Update timestamp
      *
-     * @param e 
+     * @param e
      */
     public void removeUpdate(DocumentEvent e) {
       notifyChange();
@@ -2269,7 +2320,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Profi
     /**
      * Update timestamp
      *
-     * @param e 
+     * @param e
      */
     public void changedUpdate(DocumentEvent e) {
       notifyChange();
@@ -2313,7 +2364,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Profi
     /**
      * Update tooltip based on mouse position
      *
-     * @param evt 
+     * @param evt
      */
     public void mouseMoved(MouseEvent evt) {
       currentPoint = evt.getPoint();
@@ -2377,7 +2428,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Profi
     /**
      * Accessor
      *
-     * @return displayed index 
+     * @return displayed index
      */
     public int getIndex() {
       return index;
@@ -2395,10 +2446,10 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Profi
     /**
      * Deserialize the state of the object
      *
-     * @param in 
+     * @param in
      *
-     * @throws IOException 
-     * @throws ClassNotFoundException 
+     * @throws IOException
+     * @throws ClassNotFoundException
      */
     private void readObject(java.io.ObjectInputStream in)
       throws IOException, ClassNotFoundException {
@@ -2410,9 +2461,9 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Profi
     /**
      * Serialize the state of the object
      *
-     * @param out 
+     * @param out
      *
-     * @throws IOException 
+     * @throws IOException
      */
     private void writeObject(java.io.ObjectOutputStream out)
       throws IOException {
@@ -2433,7 +2484,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Profi
      * If a new column was added to the display and that column was the exception column,
      * set the cell editor to the throwablerenderer
      *
-     * @param e 
+     * @param e
      */
     public void columnAdded(TableColumnModelEvent e) {
       Enumeration enumeration = table.getColumnModel().getColumns();
@@ -2451,7 +2502,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Profi
     /**
      * Update sorted column
      *
-     * @param e 
+     * @param e
      */
     public void columnRemoved(TableColumnModelEvent e) {
       table.updateSortedColumn();
@@ -2460,7 +2511,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Profi
     /**
      * Update sorted column
      *
-     * @param e 
+     * @param e
      */
     public void columnMoved(TableColumnModelEvent e) {
       table.updateSortedColumn();
@@ -2469,7 +2520,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Profi
     /**
      * Ignore margin changed
      *
-     * @param e 
+     * @param e
      */
     public void columnMarginChanged(ChangeEvent e) {
     }
@@ -2477,7 +2528,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Profi
     /**
      * Ignore selection changed
      *
-     * @param e 
+     * @param e
      */
     public void columnSelectionChanged(ListSelectionEvent e) {
     }
@@ -2496,7 +2547,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Profi
     /**
      * Update detail pane to display information about the LoggingEvent at index row
      *
-     * @param row 
+     * @param row
      */
     private void setSelectedRow(int row) {
       selectedRow = row;
@@ -2520,11 +2571,11 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Profi
         LoggingEvent event = tableModel.getRow(selectedRow);
 
         if (event != null) {
-            StringBuffer buf = new StringBuffer();
-            buf.append(detailLayout.getHeader())
-               .append(detailLayout.format(event)).append(
-              detailLayout.getFooter());
-            text = buf.toString();
+          StringBuffer buf = new StringBuffer();
+          buf.append(detailLayout.getHeader())
+             .append(detailLayout.format(event)).append(
+            detailLayout.getFooter());
+          text = buf.toString();
         }
       }
 
@@ -2550,7 +2601,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Profi
     /**
      * Update detail pane layout if it's changed
      *
-     * @param arg0 
+     * @param arg0
      */
     public void propertyChange(PropertyChangeEvent arg0) {
       SwingUtilities.invokeLater(
