@@ -8,15 +8,21 @@
   <appender name="DB" class="org.apache.log4j.db.DBAppender">
      <connectionSource class="org.apache.log4j.db.DataSourceConnectionSource">
        
-       <dataSource class="${pooledDataSourceClass}">
-         <param name="url" value="${url}"/>
+       <dataSource class="com.mchange.v2.c3p0.ComboPooledDataSource">
+         <param name="driverClass" value="${driverClass}"/>
+         <param name="jdbcUrl" value="${url}"/>
          <param name="serverName" value="${serverName}"/>
          <param name="databaseName" value="${databaseName}"/>
          <param name="user" value="${user}"/>
          <param name="password" value="${password}"/>
-                
+                <!--
          <param name="initialConnections" value="10"/>
          <param name="maxConnections" value="10"/>
+       
+         <param name="max-connections" value="100"/>                                                    
+         <param name="min-connections" value="5" />                                                     
+         <param name="inactivity-timeout" value="200"/>        
+         -->                                         
        </dataSource>
        
        <param name="user" value="${user}"/>

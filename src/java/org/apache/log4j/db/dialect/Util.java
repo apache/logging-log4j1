@@ -19,7 +19,6 @@ package org.apache.log4j.db.dialect;
 import org.apache.log4j.db.ConnectionSource;
 import org.apache.log4j.helpers.LogLog;
 
-import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 
@@ -35,11 +34,11 @@ public class Util {
   private static final String ORACLE_PART = "oracle";
   private static final String MSSQL_PART = "mssqlserver4";
 
-  public static int discoverSQLDialect(Connection connection) {
+  public static int discoverSQLDialect(DatabaseMetaData meta) {
     int dialectCode = 0;
 
     try {
-      DatabaseMetaData meta = connection.getMetaData();
+
       String dbName = meta.getDatabaseProductName().toLowerCase();
       LogLog.debug("**db name is " + dbName);
 

@@ -5,7 +5,7 @@
 	  
   <substitutionProperty file="input/db/db.properties"/>
 	  
-  <plugin name="DB1" class="org.apache.log4j.db.DBReceiver">
+  <plugin name="DB" class="org.apache.log4j.db.DBReceiver">
      <connectionSource class="org.apache.log4j.db.DriverManagerConnectionSource">
        <param name="driverClass" value="${driverClass}"/>
        <param name="url" value="${url}"/>

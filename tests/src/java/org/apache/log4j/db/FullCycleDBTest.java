@@ -28,6 +28,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 import org.apache.log4j.VectorAppender;
+import org.apache.log4j.helpers.Constants;
 import org.apache.log4j.helpers.IntializationUtil;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.joran.JoranConfigurator;
@@ -84,7 +85,6 @@ public class FullCycleDBTest
   protected void tearDown()
          throws Exception {
     super.tearDown();
-    lrWrite.shutdown();
     lrRead.shutdown();
     witnessEvents = null;
   }
@@ -116,11 +116,14 @@ public class FullCycleDBTest
     // Write out just one log message
     Logger out = lrWrite.getLogger("testSingleOutput.out");
     out.debug("some message"+startTime);
-    
+
     VectorAppender witnessAppender = (VectorAppender) lrWrite.getRootLogger().getAppender("VECTOR");
     witnessEvents = witnessAppender.getVector();
     assertEquals(1, witnessEvents.size());    
-    
+
+    // We have to close all appenders before starting to read
+    lrWrite.shutdown();
+
     // now read it back
     readBack(readConfigFile, startTime);
 
@@ -156,7 +159,6 @@ public class FullCycleDBTest
     MDC.put("key3", "value2-"+startTime);
     out.error("some error message"+startTime, new Exception("testing"));
     
-
     // we clear the MDC to avoid interference with the events read back from
     // the db
     MDC.clear();
@@ -165,6 +167,9 @@ public class FullCycleDBTest
     witnessEvents = witnessAppender.getVector();
     assertEquals(2, witnessEvents.size());    
 
+    // We have to close all appenders just before starting to read
+    lrWrite.shutdown();
+    
     readBack(readConfigFile, startTime);
   }
 
@@ -197,12 +202,17 @@ public class FullCycleDBTest
       if(re.getTimeStamp() < le.getTimeStamp()) {
         fail("Returned event cannot preceed witness timestamp");
       }
+      
+      if((re.getProperties() != null) && re.getProperties().containsKey(Constants.LOG4J_ID_KEY)) {
+        re.getProperties().remove(Constants.LOG4J_ID_KEY);
+      }
+      
       if(le.getProperties() == null || le.getProperties().size() == 0) {
         if(!(re.getProperties() == null || re.getProperties().size() == 0)) {
+          LogLog.warn("properties are "+re.getProperties());
           fail("Returned event should have been empty");
         }
-      }
-      else {
+      } else {
         assertEquals(le.getProperties(), re.getProperties());
       }
       comprareStringArrays( le.getThrowableStrRep(),  re.getThrowableStrRep());

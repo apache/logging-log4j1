@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.log4j.db;
+
+import org.apache.log4j.spi.ErrorCode;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-
-import org.apache.log4j.spi.ErrorCode;
 
 
 /**
@@ -65,14 +66,7 @@ import org.apache.log4j.spi.ErrorCode;
  *
  *  @author <a href="mailto:rdecampo@twcny.rr.com">Ray DeCampo</a>
  */
-public class DriverManagerConnectionSource
-       extends ConnectionSourceSkeleton {
-  static private final String POSTGRES_PART = "postgresql";
-  static private final String MYSQL_PART = "mysql";
-  static private final String ORACLE_PART = "oracle";
-  static private final String MSSQL_PART = "mssql"; 
-  static private final String HSQLDB_PART = "hsqldb"; 
-  
+public class DriverManagerConnectionSource extends ConnectionSourceSkeleton {
   private String driverClass = null;
   protected String url = null;
 
@@ -80,12 +74,17 @@ public class DriverManagerConnectionSource
     try {
       if (driverClass != null) {
         Class.forName(driverClass);
+        discoverConnnectionProperties();
       } else if (errorHandler != null) {
-        errorHandler.error("WARNING: No JDBC driver specified for log4j " + "DriverManagerConnectionSource.");
+        errorHandler.error(
+          "WARNING: No JDBC driver specified for log4j "
+          + "DriverManagerConnectionSource.");
       }
     } catch (final ClassNotFoundException cnfe) {
       if (errorHandler != null) {
-        errorHandler.error("Could not load JDBC driver class: " + driverClass, cnfe, ErrorCode.GENERIC_FAILURE);
+        errorHandler.error(
+          "Could not load JDBC driver class: " + driverClass, cnfe,
+          ErrorCode.GENERIC_FAILURE);
       } else {
         cnfe.printStackTrace();
       }
@@ -96,8 +95,7 @@ public class DriverManagerConnectionSource
   /**
    * @see org.apache.log4j.db.ConnectionSource#getConnection()
    */
-  public Connection getConnection()
-         throws SQLException {
+  public Connection getConnection() throws SQLException {
     if (user == null) {
       return DriverManager.getConnection(url);
     } else {
@@ -139,28 +137,5 @@ public class DriverManagerConnectionSource
    */
   public void setDriverClass(String driverClass) {
     this.driverClass = driverClass;
-  }
-
-
-  public int getSQLDialectCode() {
-    int dialectCode = 0;
-
-    if (url == null) {
-      return ConnectionSource.UNKNOWN_DIALECT;
-    }
-
-    if (url.indexOf(POSTGRES_PART) != -1) {
-      return ConnectionSource.POSTGRES_DIALECT;
-    } else if (url.indexOf(MYSQL_PART) != -1) {
-      return ConnectionSource.MYSQL_DIALECT;
-    } else if (url.indexOf(ORACLE_PART) != -1) {
-      return ConnectionSource.ORACLE_DIALECT;
-    } else if (url.indexOf(MSSQL_PART) != -1) {
-      return ConnectionSource.MSSQL_DIALECT;
-    } else if (url.indexOf(HSQLDB_PART) != -1) {
-      return ConnectionSource.HSQLDB_DIALECT;
-    } else {
-      return ConnectionSource.UNKNOWN_DIALECT;
-    }
   }
 }
