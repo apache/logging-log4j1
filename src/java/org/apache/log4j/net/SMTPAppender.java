@@ -84,12 +84,12 @@ public class SMTPAppender extends AppenderSkeleton {
      recipient, from, etc. */
   public
   void activateOptions() {
-    Properties props = System.getProperties();
+    Properties props = new Properties (System.getProperties());
     if (smtpHost != null)
       props.put("mail.smtp.host", smtpHost);
 
     
-    Session session = Session.getDefaultInstance(props, null);
+    Session session = Session.getInstance(props, null);
     //session.setDebug(true);
     msg = new MimeMessage(session);
      
