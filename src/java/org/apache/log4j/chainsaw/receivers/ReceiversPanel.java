@@ -88,6 +88,7 @@ public class ReceiversPanel extends JPanel {
   final Action pauseReceiverButtonAction;
   final Action playReceiverButtonAction;
   final Action shutdownReceiverButtonAction;
+  final Action restartReceiverButtonAction;
   private final Action showReceiverHelpAction;
   private final Action startAllAction;
   private final JPopupMenu popupMenu = new ReceiverPopupMenu();
@@ -107,12 +108,6 @@ public class ReceiversPanel extends JPanel {
     pluginRegistry = LogManager.getLoggerRepository().getPluginRegistry();
     final ReceiversTreeModel model = new ReceiversTreeModel();
     
-    /**
-     * TODO Ccurrently the model will not have a correctly populated
-     * internal plugin map, because some plugins will already have started, so
-     * when you stop a plugin, it DOES stop, but the Tree seems to keep displaying
-     * it because it can't find the TreeNode for it within it's internal map.
-     */
     pluginRegistry.addPluginListener(model);
     receiversTree.setModel(model);
 
@@ -251,6 +246,29 @@ public class ReceiversPanel extends JPanel {
       Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_S));
 
     shutdownReceiverButtonAction.setEnabled(false);
+    restartReceiverButtonAction =
+        new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+              Receiver selectedReceiver = getCurrentlySelectedReceiver();
+              if(selectedReceiver == null){
+              	return;
+              }
+              selectedReceiver.shutdown();
+              selectedReceiver.activateOptions();
+            }
+          };
+
+      restartReceiverButtonAction.putValue(
+        Action.SHORT_DESCRIPTION,
+        "Restarts the selected Receiver");
+      restartReceiverButtonAction.putValue(Action.NAME, "Restart");
+
+      restartReceiverButtonAction.putValue(
+        Action.SMALL_ICON, new ImageIcon(ChainsawIcons.ICON_RESTART));
+      restartReceiverButtonAction.putValue(
+        Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_R));
+
+      restartReceiverButtonAction.setEnabled(false);
 
     showReceiverHelpAction =
       new AbstractAction("Help") {
@@ -270,7 +288,7 @@ public class ReceiversPanel extends JPanel {
 
     startAllAction =
       new AbstractAction(
-        "(Re)start All Receivers", new ImageIcon(ChainsawIcons.ICON_RESTART)) {
+        "(Re)start All Receivers", new ImageIcon(ChainsawIcons.ICON_RESTART_ALL)) {
           public void actionPerformed(ActionEvent e) {
             if (
               JOptionPane.showConfirmDialog(
@@ -302,7 +320,7 @@ public class ReceiversPanel extends JPanel {
 
     startAllAction.putValue(
       Action.SHORT_DESCRIPTION,
-      "Ensures that any Receiver that isn't active, is started.");
+      "Ensures that any Receiver that isn't active, is started, and any started action is stopped, and then restarted");
 
     receiversTree.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
     receiversTree.setCellRenderer(new ReceiverTreeCellRenderer());
@@ -531,9 +549,10 @@ public class ReceiversPanel extends JPanel {
     if (object instanceof Receiver) {
       newReceiverButtonAction.setEnabled(true);
       shutdownReceiverButtonAction.setEnabled(true);
+      restartReceiverButtonAction.setEnabled(true);
     } else {
       shutdownReceiverButtonAction.setEnabled(false);
-      newReceiverButtonAction.setEnabled(true);
+      restartReceiverButtonAction.setEnabled(false);
     }
   }
 
@@ -698,6 +717,7 @@ public class ReceiversPanel extends JPanel {
 
       add(playReceiverButtonAction);
       add(pauseReceiverButtonAction);
+      add(restartReceiverButtonAction);
       add(shutdownReceiverButtonAction);
       addSeparator();
 
@@ -763,34 +783,31 @@ public class ReceiversPanel extends JPanel {
     private ReceiverToolbar() {
       setFloatable(false);
 
-      SmallButton playReceiverButton =
-        new SmallButton(playReceiverButtonAction);
-      playReceiverButton.setText(null);
-
-      SmallButton pauseReceiverButton =
-        new SmallButton(pauseReceiverButtonAction);
-      pauseReceiverButton.setText(null);
-
+      SmallButton restartReceiverButton = new SmallButton(restartReceiverButtonAction);
+      restartReceiverButton.setText(null);
+      
       SmallButton shutdownReceiverButton =
         new SmallButton(shutdownReceiverButtonAction);
       shutdownReceiverButton.setText(null);
 
       SmallButton restartAllButton = new SmallButton(startAllAction);
       restartAllButton.setText(null);
+      
+      
 
       newReceiverButton = new SmallButton(newReceiverButtonAction);
       newReceiverButton.setText(null);
       newReceiverButton.addMouseListener(new PopupListener(newReceiverPopup));
 
       add(newReceiverButton);
+      add(restartAllButton);
+
       addSeparator();
 
-      add(playReceiverButton);
-      add(pauseReceiverButton);
+      add(restartReceiverButton);
       add(shutdownReceiverButton);
 
       addSeparator();
-      add(restartAllButton);
 
       Action closeAction =
         new AbstractAction(null, LineIconFactory.createCloseIcon()) {

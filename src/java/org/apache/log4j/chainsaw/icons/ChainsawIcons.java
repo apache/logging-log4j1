@@ -126,6 +126,11 @@ public class ChainsawIcons {
   public static final URL ICON_RESTART =
     ChainsawIcons.class.getClassLoader().getResource(
       BASE_ICON_PATH + "Redo16.gif");
+  public static final URL ICON_RESTART_ALL = 
+    ChainsawIcons.class.getClassLoader().getResource(
+    	      BASE_ICON_PATH + "Refresh16.gif");
+
+  
   public static final URL ICON_STOP_RECEIVER =
     ChainsawIcons.class.getClassLoader().getResource(
       BASE_ICON_PATH + "Stop16.gif");
