@@ -23,7 +23,7 @@ package org.apache.log4j;
 
 import org.apache.log4j.spi.RootCategory;
 import org.apache.log4j.spi.AppenderAttachable;
-import org.apache.log4j.spi.CategoryFactory;
+import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.NullEnumeration;
@@ -538,20 +538,6 @@ public class Logger implements AppenderAttachable {
   }
 
   /**
-     Returns all the currently defined categories in the default
-     hierarchy as an {@link java.util.Enumeration Enumeration}.
-
-     <p>The root logger is <em>not</em> included in the returned
-     {@link Enumeration}.     
-  */
-  public
-  static
-  Enumeration getCurrentCategories() {
-    return defaultHierarchy.getCurrentCategories();
-  }
-
-
-  /**
      Return the default Hierarchy instance.
 
      @since 1.0
@@ -621,7 +607,7 @@ public class Logger implements AppenderAttachable {
      @since 0.8.5 */
   public
   static
-  Logger getLogger(String name, CategoryFactory factory) {
+  Logger getLogger(String name, LoggerFactory factory) {
     return defaultHierarchy.getLogger(name, factory);
   }	
 

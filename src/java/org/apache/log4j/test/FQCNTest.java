@@ -92,14 +92,14 @@ class X1Logger extends Logger {
   }
 }
 
-class X1LoggerFactory implements CategoryFactory {
+class X1LoggerFactory implements LoggerFactory {
 
   public
   X1LoggerFactory() {
   }
   
   public
-  Logger makeNewCategoryInstance(String name) {
+  Logger makeNewLoggerInstance(String name) {
     return new X1Logger(name);
   }
 }

@@ -23,7 +23,7 @@ package org.apache.log4j;
 
 import org.apache.log4j.spi.RootCategory;
 import org.apache.log4j.spi.AppenderAttachable;
-import org.apache.log4j.spi.CategoryFactory;
+import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.NullEnumeration;
@@ -56,7 +56,7 @@ public class Category extends Logger implements AppenderAttachable {
 
   private static final String FQCN = Category.class.getName();
 
-  private static CategoryFactory factory = new DefaultCategoryFactory();
+  private static LoggerFactory factory = new DefaultCategoryFactory();
     
   /**
      This constructor created a new <code>Category</code> instance and
@@ -158,11 +158,13 @@ public class Category extends Logger implements AppenderAttachable {
 
      <p>The root category is <em>not</em> included in the returned
      {@link Enumeration}.     
+
+     @deprecated FIXME FIXME FIXME FIXME FIXME FIXME FIXME 
   */
   public
   static
   Enumeration getCurrentCategories() {
-    return defaultHierarchy.getCurrentCategories();
+    return defaultHierarchy.getCurrentLoggers();
   }
 
 
@@ -217,7 +219,7 @@ public class Category extends Logger implements AppenderAttachable {
      @since 0.8.5 */
   public
   static
-  Category getInstance(String name, CategoryFactory factory) {
+  Category getInstance(String name, LoggerFactory factory) {
     return (Category) defaultHierarchy.getLogger(name, factory);
   }	
 

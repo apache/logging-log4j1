@@ -13,10 +13,9 @@ JSOURCES:=OptionHandler.java\
         ThrowableInformation.java\
 	TriggeringEventEvaluator.java\
         HierarchyEventListener.java\
-
-#        LoggerRepository.java\
-#        DefaultRepositorySelector.java\
-#        LoggerFactory.java\
+        LoggerRepository.java\
+        DefaultRepositorySelector.java\
+        LoggerFactory.java\
 
 SUBDIRS := 
 

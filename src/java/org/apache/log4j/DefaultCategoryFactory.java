@@ -7,15 +7,15 @@
 
 package org.apache.log4j;
 
-import org.apache.log4j.spi.CategoryFactory;
+import org.apache.log4j.spi.LoggerFactory;
 
-class DefaultCategoryFactory implements CategoryFactory {
+class DefaultCategoryFactory implements LoggerFactory {
     
   DefaultCategoryFactory() {
   }    
     
   public
-  Logger makeNewCategoryInstance(String name) {
+  Logger makeNewLoggerInstance(String name) {
     return new Category(name);
   }    
 }
