@@ -18,7 +18,11 @@ package org.apache.log4j.util;
 
 import org.apache.oro.text.perl.Perl5Util;
 
-
+/**
+ * The sun.reflect.* lines are not present in all JDKs.
+ * 
+ * @author Ceki Gulcu
+ */
 public class SunReflectFilter implements Filter {
   Perl5Util util = new Perl5Util();
 
