@@ -58,6 +58,18 @@
     </message>
 
 
-    
+  static final String FNP_NOT_SET = "The FileNamePattern option must be set before using TimeBasedRollingPolicy. ";
+  static final String SEE_FNP_NOT_SET = "See also http://logging.apache.org/log4j/codes.html#tbr_fnp_not_set";
+
+    <message ref="tbr_fnp_not_set">
+      <title>The FileNamePattern option must be set before using TimeBasedRollingPolicy.</title>
+
+      <explanation>
+        <p>The <code>FileNamePattern</code> option for
+        <code>TimeBasedRollingPolicy</code> is mandatory.
+        </p>
+      </explanation>
+
+    </message>
   </body>
 </document>
