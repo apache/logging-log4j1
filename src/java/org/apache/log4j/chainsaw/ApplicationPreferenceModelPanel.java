@@ -282,7 +282,7 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
             while (enumeration.hasMoreElements()) {
               JRadioButton button = (JRadioButton) enumeration.nextElement();
 
-              if (button.getName().equals(lf)) {
+              if (button.getName()!=null && button.getName().equals(lf)) {
                 button.setSelected(true);
 
                 break;
