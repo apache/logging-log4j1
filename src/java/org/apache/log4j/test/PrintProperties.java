@@ -30,6 +30,25 @@ public class PrintProperties {
     new PrintProperties().print();
   }
   
+  protected
+  String genAppName() {
+    return "A" + numAppenders++;
+  }
+  
+  /**
+     Returns true if the specified appender name is considered to have
+     been generated, i.e. if it is of the form A[0-9]+.
+  */
+  protected
+  boolean isGenAppName(String name) {
+    if (name.length() < 2 || name.charAt(0) != 'A') return false;
+    
+    for (int i = 0; i < name.length(); i++) {
+      if (name.charAt(i) < '0' || name.charAt(i) > '9') return false;
+    }
+    return true;
+  }
+  
   public
   void print() {
     printOptions(Category.getRoot());
@@ -50,15 +69,18 @@ public class PrintProperties {
       String name;
       
       if ((name = (String) appenderNames.get(app)) == null) {
-        name = "A" + numAppenders++;
+      
+        // first assign name to the appender
+        if ((name = app.getName()) == null || isGenAppName(name)) {
+            name = genAppName();
+        }
         appenderNames.put(app, name);
         
         if (app instanceof OptionHandler) {
           printOptions((OptionHandler) app, "log4j.appender."+name);
         }
-        Layout layout = ((AppenderSkeleton) app).getLayout();
-        if (layout != null) {
-          printOptions(layout, "log4j.appender."+name+".layout");
+        if (app.getLayout() != null) {
+          printOptions(app.getLayout(), "log4j.appender."+name+".layout");
         }
       }
       appenderString += ", " + name;

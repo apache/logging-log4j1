@@ -32,13 +32,13 @@ function createProperties {
   #if [ -n "$1" ]; then
   #  lecho "log4j.configurator=$1"
   #fi
-  lecho "log4j.appender.A1=org.apache.log4j.FileAppender"
-  lecho "log4j.appender.A1.File=$TEMP"
-  lecho "log4j.appender.A1.Append=false"
-  lecho "log4j.appender.A1.layout=org.apache.log4j.PatternLayout "
-  lecho "log4j.appender.A1.layout.ConversionPattern=%m%n"
-  lecho "log4j.rootCategory=DEBUG, A1"
-  lecho "log4j.category.org.apache.log4j=INFO, A1"
+  lecho "log4j.appender.f=org.apache.log4j.FileAppender"
+  lecho "log4j.appender.f.File=$TEMP"
+  lecho "log4j.appender.f.Append=false"
+  lecho "log4j.appender.f.layout=org.apache.log4j.PatternLayout "
+  lecho "log4j.appender.f.layout.ConversionPattern=%m%n"
+  lecho "log4j.rootCategory=DEBUG, f"
+  lecho "log4j.category.org.apache.log4j=INFO, f"
 }
 
 createProperties
