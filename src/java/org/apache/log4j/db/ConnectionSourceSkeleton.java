@@ -49,13 +49,22 @@ public abstract class ConnectionSourceSkeleton implements ConnectionSource {
         return;
       }
       DatabaseMetaData meta = connection.getMetaData();
-      supportsGetGeneratedKeys = meta.supportsGetGeneratedKeys();
+      supportsGetGeneratedKeys = supportsGetGeneratedKeys(meta);
       dialectCode = Util.discoverSQLDialect(meta);
     } catch (SQLException se) {
       LogLog.warn("Could not discover the dialect to use.", se);
     }
   }
 
+  boolean supportsGetGeneratedKeys(DatabaseMetaData meta) {
+    try {
+      return meta.supportsGetGeneratedKeys();
+    } catch(Exception e) {
+      LogLog.warn("Could not call supportsGetGeneratedKeys method.", e);
+      return false;
+    }
+  }
+  
   /**
    * Does this connection support the JDBC Connection.getGeneratedKeys method?
    */
