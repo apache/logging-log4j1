@@ -371,7 +371,8 @@
 		${stem}/jmx/*.class,
 		${stem}/or/*.class,
 		${stem}/or/sax/*.class,
-                ${stem}/or/jms/*.class,
+    ${stem}/or/jms/*.class,
+    ${stem}/plugins/*.class,
 		${stem}/config/*.class"
       excludes="**/UnitTest**">
 
@@ -454,6 +455,7 @@
     <javadoc sourcepath="${java.source.dir}"
       destdir="${javadoc.dest}"
 	   packagenames="org.apache.log4j,
+			 org.apache.log4j.plugins,
 			 org.apache.log4j.config,
                          org.apache.log4j.helpers,
 		         org.apache.log4j.jmx,
