@@ -36,7 +36,7 @@ public class ConfigurationAction extends ActionBase {
 
     if (
       (debugAttrib == null) || debugAttrib.equals("")
-        || debugAttrib.equals("null")) {
+        || debugAttrib.equals("false") || debugAttrib.equals("null")) {
       getLogger().debug("Ignoring " + INTERNAL_DEBUG_ATTR + " attribute.");
     } else {
       LoggerRepository repository = (LoggerRepository) ec.getObject(0);
