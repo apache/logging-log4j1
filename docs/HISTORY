@@ -8,6 +8,11 @@
    [D] Changes affect a method or property which was previously marked as 
        deprecated.
  
+ - Added new ListAppender & ListModelAppender classes to the org.apache.log4j.varia package.  
+   These are rather simplistic Appender implementations that store LoggingEvents in
+   an internal buffer (java.util.List and a DefaultListModel respectively) which can 
+   be useful in certain applications (such as a Swing GUI app etc). [*]
+   
  - org.apache.log4j.HTMLLayout has been replaced with org.apache.log4j.html.HTMLLayout.
    The new HTMLLayout admits a conversion pattern using the same syntax as
    PatternLayout. Thus, the user can customize the content of columns in the HTML table
