@@ -60,7 +60,7 @@ public class MinimumTestCase extends TestCase {
     common();
 
     Transformer.transform("output/simple", FILTERED, new LineNumberFilter());
-    assert(Compare.compare(FILTERED, "witness/simple"));
+    assertTrue(Compare.compare(FILTERED, "witness/simple"));
   }
 
   public void ttcc() throws Exception {
@@ -77,7 +77,7 @@ public class MinimumTestCase extends TestCase {
 						  new LineNumberFilter(), 
 						   new AbsoluteDateAndTimeFilter()});
 
-    assert(Compare.compare(FILTERED, "witness/ttcc"));
+    assertTrue(Compare.compare(FILTERED, "witness/ttcc"));
   }
 
 

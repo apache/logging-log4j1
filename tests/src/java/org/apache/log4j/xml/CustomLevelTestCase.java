@@ -37,25 +37,25 @@ public class CustomLevelTestCase extends TestCase {
   public void test1() throws Exception {
     DOMConfigurator.configure("input/xml/customLevel1.xml");
     common();
-    assert(Compare.compare(TEMP, "witness/customLevel.1"));
+    assertTrue(Compare.compare(TEMP, "witness/customLevel.1"));
   }
 
   public void test2() throws Exception {
     DOMConfigurator.configure("input/xml/customLevel2.xml");
     common();
-    assert(Compare.compare(TEMP, "witness/customLevel.2"));
+    assertTrue(Compare.compare(TEMP, "witness/customLevel.2"));
   }
 
   public void test3() throws Exception {
     DOMConfigurator.configure("input/xml/customLevel3.xml");
     common();
-    assert(Compare.compare(TEMP, "witness/customLevel.3"));
+    assertTrue(Compare.compare(TEMP, "witness/customLevel.3"));
   }
 
   public void test4() throws Exception {
     DOMConfigurator.configure("input/xml/customLevel4.xml");
     common();
-    assert(Compare.compare(TEMP, "witness/customLevel.4"));
+    assertTrue(Compare.compare(TEMP, "witness/customLevel.4"));
   }
 
 
