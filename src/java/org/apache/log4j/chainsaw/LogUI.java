@@ -707,7 +707,9 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
                   "setPort", new Class[] { int.class });
               portMethod.invoke(
                 simpleReceiver, new Object[] { new Integer(port) });
-
+			
+			simpleReceiver.setThreshold(Level.DEBUG);
+			
               PluginRegistry.startPlugin(simpleReceiver);
               receiversPanel.updateReceiverTreeInDispatchThread();
               getStatusBar().setMessage(
