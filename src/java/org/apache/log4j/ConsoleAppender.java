@@ -18,9 +18,6 @@ package org.apache.log4j;
 
 import org.apache.log4j.helpers.LogLog;
 
-import java.io.OutputStreamWriter;
-
-
 /**
   * ConsoleAppender appends log events to <code>System.out</code> or
   * <code>System.err</code> using a layout specified by the user. The
