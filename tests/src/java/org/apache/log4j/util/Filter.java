@@ -1,28 +1,39 @@
 /*
- * Copyright (C) The Apache Software Foundation. All rights reserved.
+ * Copyright 1999,2004 The Apache Software Foundation.
  *
- * This software is published under the terms of the Apache Software
- * License version 1.1, a copy of which has been included with this
- * distribution in the LICENSE.txt file.  */
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package org.apache.log4j.util;
 
 public interface Filter {
-  
-  final String BASIC_PAT = "\\[main\\] (FATAL|ERROR|WARN|INFO|DEBUG)";
-  final String ISO8601_PAT = "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}";  
-
   // 06 avr. 2002 18:36:32,036
   // 18 fevr. 2002 20:05:36,222
-  static public final String ABSOLUTE_DATE_AND_TIME_PAT = 
-                           "^\\d{1,2} .{2,6}\\.? 200\\d \\d{2}:\\d{2}:\\d{2},\\d{3}";
+  public static final String ABSOLUTE_DATE_AND_TIME_PAT =
+    "^\\d{1,2} .{2,6}\\.? 200\\d \\d{2}:\\d{2}:\\d{2},\\d{3}";
 
   // 18:54:19,201
-  static public final String ABSOLUTE_TIME_PAT = 
-                           "^\\d{2}:\\d{2}:\\d{2},\\d{3}";
+  public static final String ABSOLUTE_TIME_PAT =
+    "^\\d{2}:\\d{2}:\\d{2},\\d{3}";
+  public static final String RELATIVE_TIME_PAT = "^\\d{1,10}";
+  final String BASIC_PAT = "\\[main\\] (FATAL|ERROR|WARN|INFO|DEBUG)";
+  final String ISO8601_PAT =
+    "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}";
 
-  static public final String RELATIVE_TIME_PAT = "^\\d{1,10}";
-
-
+  /**
+   * This filter transforms the input string and returns the results as
+   * output. If the input should be ignored, this method returns null. 
+   * 
+   */
   String filter(String in) throws UnexpectedFormatException;
 }
