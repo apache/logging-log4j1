@@ -26,24 +26,58 @@ import org.xml.sax.Attributes;
 
 
 /**
- * The ComputationAction will print the result of the compuration made by 
- * children elements but only if the compuration itself is named.
+ * ComputationAction2 will print the result of the compuration made by 
+ * children elements but only if the compuration itself is named, that is if the
+ * name attribute of the associated computation element is not null. In other
+ * words, anonymous computations will not print their result.
+ * 
+ * ComputationAction2 differs from ComputationAction1 in its handling of
+ * instance variables. ComputationAction1 has a simple <Code>nameStr</code>
+ * instance variable. This variable is set when the begin() method is called 
+ * and then later used within the end() method. 
+ * 
+ * This simple approach works properly if the begin() and end()
+ * method of a given action are expected to be called in sequence. However,
+ * there are situations where the begin() method of the same action instance is 
+ * invoked multiple times before the matching end() method is invoked. 
+ * 
+ * When this happens, the second call to begin() overwrites values set by
+ * the first invocation to begin(). The solution is to save parameter values 
+ * into a separate stack. The well-formedness of XML will guarantee that a value
+ * saved by one begin() will be consumed only by the matching end() method.
+ * 
+ * Note that in the vast majority of cases there is no need to resort to a 
+ * separate stack for each variable. The situation of successibe begin() 
+ * invocations can only occur if: 
+ * 
+ * 1) the associated pattern contains a wildcard, i.e. the &#42; character
+ * 
+ * and
+ * 
+ * 2) the associated element tag can contain itself as a child 
+ *  
+ * For example, "&#42;/computation" pattern means that computations can contain
+ * other computation elements as children. 
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
 public class ComputationAction2 extends Action {
   public static String NAME_ATR = "name";
 
-  Stack paremeterStack = new Stack();
+  Stack nameStrStack = new Stack();
   
   
   public void begin(ExecutionContext ec, String name, Attributes attributes) {
     String nameStr = attributes.getValue(NAME_ATR);
-    paremeterStack.push(nameStr);
+    // save nameStr value in a special stack. Note that the value is saved
+    // even if it is empty or null.
+    nameStrStack.push(nameStr);
   }
 
   public void end(ExecutionContext ec, String name) {
-    String nameStr = (String) paremeterStack.pop();
+    // pop nameStr value from the special stack
+    String nameStr = (String) nameStrStack.pop();
+    
     if (Option.isEmpty(nameStr)) {
       // nothing to do
     } else {
