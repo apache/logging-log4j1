@@ -57,10 +57,11 @@ import org.apache.log4j.Layout;
 /**
  * 
  * Example showing how to extend PatternLayout to recognize additional 
- * conversion characters.
+ * conversion words without adding.
  * 
- * <p>In this case MyPatternLayout recognizes %# conversion pattern. It outputs
- *  the value of an internal counter which is also incremented at each call.
+ * <p>In this case MyPatternLayout recognizes %counter conversion word. 
+ * It outputs the value of an internal counter which is also incremented at 
+ * each call.
  * 
  * @see org.apache.log4j.PatternLayout
  * @author Anders Kristensen
@@ -81,7 +82,7 @@ public class MyPatternLayout extends PatternLayout {
     you change the parameters of the PatternLayout instance.
   */
   public void activateOptions() {
-    this.addConversionRule("#", CountingPatternConverter.class.getName());
+    this.addConversionRule("counter", CountingPatternConverter.class.getName());
     super.activateOptions();
   }
 

@@ -49,7 +49,6 @@
 
 package org.apache.log4j.pattern;
 
-import org.apache.log4j.Layout;
 import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.AbsoluteTimeDateFormat;
 import org.apache.log4j.helpers.LogLog;
@@ -83,38 +82,50 @@ public class PatternParser {
   private static final int DOT_STATE = 3;
   private static final int MIN_STATE = 4;
   private static final int MAX_STATE = 5;
-  static final int FULL_LOCATION_CONVERTER = 1000;
-  static final int METHOD_LOCATION_CONVERTER = 1001;
-  static final int CLASS_LOCATION_CONVERTER = 1002;
-  static final int LINE_LOCATION_CONVERTER = 1003;
-  static final int FILE_LOCATION_CONVERTER = 1004;
-  static final int RELATIVE_TIME_CONVERTER = 2000;
-  static final int THREAD_CONVERTER = 2001;
-  static final int LEVEL_CONVERTER = 2002;
-  static final int NDC_CONVERTER = 2003;
-  static final int MESSAGE_CONVERTER = 2004;
-  
+
   static HashMap globalRulesRegistry;
  
   static {
     // We set the global rules in the static initializer of PatternParser class
     globalRulesRegistry = new HashMap(17);
     globalRulesRegistry.put("c", LoggerPatternConverter.class.getName());
+    globalRulesRegistry.put("logger", LoggerPatternConverter.class.getName());
+    
     globalRulesRegistry.put("C", ClassNamePatternConverter.class.getName());
+    globalRulesRegistry.put("class", ClassNamePatternConverter.class.getName());
+    
     globalRulesRegistry.put("F", FileLocationPatternConverter.class.getName());
+    globalRulesRegistry.put("file", FileLocationPatternConverter.class.getName());
+    
     globalRulesRegistry.put("l", FullLocationPatternConverter.class.getName()); 
+
     globalRulesRegistry.put("L", LineLocationPatternConverter.class.getName());
+    globalRulesRegistry.put("line", LineLocationPatternConverter.class.getName());
+
     globalRulesRegistry.put("m", MessagePatternConverter.class.getName());
+    globalRulesRegistry.put("message", MessagePatternConverter.class.getName());
+
     globalRulesRegistry.put("n", LineSeparatorPatternConverter.class.getName());
+
     globalRulesRegistry.put(
       "M", MethodLocationPatternConverter.class.getName());
+    globalRulesRegistry.put(
+      "method", MethodLocationPatternConverter.class.getName());
+
     globalRulesRegistry.put("p", LevelPatternConverter.class.getName());
-	  globalRulesRegistry.put("level", FullLocationPatternConverter.class.getName());
+	  globalRulesRegistry.put("level", LevelPatternConverter.class.getName());
 	       
     globalRulesRegistry.put("r", RelativeTimePatternConverter.class.getName());
+    globalRulesRegistry.put("relative", RelativeTimePatternConverter.class.getName());
+    
     globalRulesRegistry.put("t", ThreadPatternConverter.class.getName());
+    globalRulesRegistry.put("thread", ThreadPatternConverter.class.getName());
+    
     globalRulesRegistry.put("x", NDCPatternConverter.class.getName());
+    globalRulesRegistry.put("ndc", NDCPatternConverter.class.getName());
+    
     globalRulesRegistry.put("X", MDCPatternConverter.class.getName());
+    globalRulesRegistry.put("mdc", MDCPatternConverter.class.getName());
   }
 
   int state;
@@ -161,28 +172,25 @@ public class PatternParser {
    */
   protected String extractConverter(char lastChar) {
   	
+    // When this method is called, lastChar points to the first character of the
+    // conersion word. For example:
+    // For "%hello"     lastChar = 'h'
+    // For "%-5hello"   lastChar = 'h'
+      
   	//System.out.println("lastchar is "+lastChar);
-  	
+
+    if(!Character.isUnicodeIdentifierStart(lastChar)) {
+      return null;
+    }  	
+    
     StringBuffer convBuf = new StringBuffer(16);
 	  convBuf.append(lastChar);
 	
-    if (i >= patternLength) {
-      // the pattern converter was the last character...
-      return convBuf.toString();
-    }
-
-    char c = pattern.charAt(i);
-
-    if (Character.isUnicodeIdentifierStart(c)) {
-      convBuf.append(c);
-    } else {
-      return convBuf.toString();
-    }
-
-    while (
-      (++i < patternLength)
-        && Character.isUnicodeIdentifierPart(pattern.charAt(i))) {
+    while ((i < patternLength) 
+                  && Character.isUnicodeIdentifierPart(pattern.charAt(i))) {
       convBuf.append(pattern.charAt(i));
+      //System.out.println("conv buffer is now ["+convBuf+"].");
+      i++;
     }
 
     return convBuf.toString();
@@ -359,18 +367,17 @@ public class PatternParser {
   protected void finalizeConverter(char c) {
     PatternConverter pc = null;
 
-    //System.out.println("============================");
     String converterId = extractConverter(c);
 
-    //System.out.println("==============[" + converterId + "]");
-    //System.out.println("c is [" + c + "]");
+    System.out.println("converter ID[" + converterId + "]");
+    System.out.println("c is [" + c + "]");
     String className = (String) findConverterClass(converterId);
 
-    //System.out.println("==============[" + className + "]");
+    System.out.println("converter class [" + className + "]");
     
     String option = extractOption();
 
-    //System.out.println("Option is [" + option + "]");
+    System.out.println("Option is [" + option + "]");
     if (className != null) {
       pc =
         (PatternConverter) OptionConverter.instantiateByClassName(

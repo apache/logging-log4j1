@@ -53,6 +53,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.apache.log4j.Layout;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
@@ -70,10 +71,17 @@ import java.util.HashMap;
  */
 public class PatternParserTest extends TestCase {
   public CharArrayWriter charArrayWriter = new CharArrayWriter(1024);
-  Logger logger = Logger.getLogger(PatternParserTest.class);
+  Logger logger = Logger.getLogger("org.foobar");
+  LoggingEvent event;
+  long now;
 
   public PatternParserTest(String name) {
     super(name);
+    now = System.currentTimeMillis() + 13;
+
+    event =
+      new LoggingEvent(
+        Logger.class.getName(), logger, now, Level.INFO, "msg 1", null);
   }
 
   public void setUp() {
@@ -88,7 +96,7 @@ public class PatternParserTest extends TestCase {
     PatternConverter c = head;
 
     while (c != null) {
-      System.out.println("pc "+c);
+      System.out.println("pc " + c);
       c.format(charArrayWriter, event);
       c = c.next;
     }
@@ -97,26 +105,78 @@ public class PatternParserTest extends TestCase {
   }
 
   public void testNewWord() throws Exception {
-    PatternParser patternParser = new PatternParser("%zum343");
+    PatternParser patternParser = new PatternParser("%z343");
     HashMap ruleRegistry = new HashMap(5);
 
-    ruleRegistry.put("zum343", Num343PatternConverter.class.getName());
+    ruleRegistry.put("z343", Num343PatternConverter.class.getName());
     patternParser.setConverterRegistry(ruleRegistry);
 
     PatternConverter head = patternParser.parse();
 
-    LoggingEvent event =
-      new LoggingEvent(
-        Logger.class.getName(), logger, Level.DEBUG, "msg 1", null);
     String result = convert(event, head);
-    System.out.println("Resuls is["+result+"]");
+    System.out.println("Result is[" + result + "]");
     assertEquals("343", result);
   }
 
-  public static Test suite() {
-    TestSuite suite = new TestSuite();
-    suite.addTest(new PatternParserTest("testNewWord"));
+  /* Test whether words starting with the letter 'n' are treated differently,
+   * which was previously the case by mistake.
+   */
+  public void testNewWord2() throws Exception {
+    PatternParser patternParser = new PatternParser("%n343");
+    HashMap ruleRegistry = new HashMap(5);
 
-    return suite;
+    ruleRegistry.put("n343", Num343PatternConverter.class.getName());
+    patternParser.setConverterRegistry(ruleRegistry);
+
+    PatternConverter head = patternParser.parse();
+
+    String result = convert(event, head);
+    System.out.println("Result is[" + result + "]");
+    assertEquals("343", result);
   }
+
+  public void testBogusWord1() throws Exception {
+    PatternParser patternParser = new PatternParser("%, foobar");
+    PatternConverter head = patternParser.parse();
+
+    String result = convert(event, head);
+    System.out.println("Result is[" + result + "]");
+    assertEquals("%, foobar", result);
+  }
+
+  public void testBogusWord2() throws Exception {
+    PatternParser patternParser = new PatternParser("xyz %, foobar");
+    PatternConverter head = patternParser.parse();
+
+    String result = convert(event, head);
+    System.out.println("Result is[" + result + "]");
+    assertEquals("xyz %, foobar", result);
+  }
+
+  public void testBasic1() throws Exception {
+    PatternParser patternParser = new PatternParser("hello %-5level - %m%n");
+    PatternConverter head = patternParser.parse();
+
+    String result = convert(event, head);
+    System.out.println("Result is[" + result + "]");
+    assertEquals("hello INFO  - msg 1" + Layout.LINE_SEP, result);
+  }
+
+  public void testBasic2() throws Exception {
+    PatternParser patternParser =
+      new PatternParser("%relative %-5level [%thread] %logger - %m%n");
+    PatternConverter head = patternParser.parse();
+
+    String result = convert(event, head);
+    long expectedRelativeTime = now - LoggingEvent.getStartTime();
+    System.out.println("Result is[" + result + "]");
+    assertEquals(expectedRelativeTime + " INFO  [main] "+logger.getName()+" - msg 1" + Layout.LINE_SEP, result);
+  }
+
+//  public static Test suite() {
+//    TestSuite suite = new TestSuite();
+//    suite.addTest(new PatternParserTest("testBasic2"));
+//
+//    return suite;
+//  }
 }
