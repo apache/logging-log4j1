@@ -45,7 +45,7 @@ tar -cz${1}f ${pkg}.tgz -X $scriptDir/tar-exclude \
  $pkg/FAQ.html\
  $pkg/TROUBLESHOOT.html\
  $pkg/INSTALL\
- $pkg/LICENSE.IPL\
+ $pkg/LICENSE.APL\
  $pkg/*.jar\
  $pkg/org/ \
  $pkg/icons\
@@ -56,7 +56,6 @@ tar -cz${1}f ${pkg}.tgz -X $scriptDir/tar-exclude \
  $pkg/packaging/initialize \
  $pkg/packaging/install \
  $pkg/packaging/tarmake \
- $pkg/packaging/local-package-list\
  
 
 if [ $? -ne 0 ]; then

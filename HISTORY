@@ -5,7 +5,7 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
 
- December ??, 2000
+ January 8th, 2001
 
  - Release of version 1.0 (the 20th public release)
  
@@ -26,6 +26,12 @@
 
  - Removed the DOM Level 2 dependency in DOMConfigurator. This makes
    log4j XML configurable using Sun's parser or Apache's Xerces. [*]
+
+ - The static initializer of the Category class now takes the
+   log4j.configuration system property to search for its configuration
+   file. The type of the configurator used to parse the configuration
+   file depends on the value of the log4j.configuration system
+   property. [*]
 
  - Enhanced the PropertyConfigurator and DOMConfigurator to support
    customization of independent Hierarchies. The
