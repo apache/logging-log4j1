@@ -37,7 +37,7 @@ import java.util.List;
  *
  */
 public final class ListAppender extends AppenderSkeleton {
-  private final List model = new ArrayList();
+  private List model = new ArrayList();
 
   /**
    * Returns a writeable, BUT cloned List of all the LoggingEvents that are contained
@@ -70,7 +70,9 @@ public final class ListAppender extends AppenderSkeleton {
    * @see org.apache.log4j.Appender#close()
    */
   public void close() {
+    closed = true;
     clearModel();
+    model = null;
   }
 
   /**
