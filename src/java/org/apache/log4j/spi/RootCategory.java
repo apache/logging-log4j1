@@ -17,8 +17,6 @@
 package org.apache.log4j.spi;
 
 import org.apache.log4j.*;
-import org.apache.log4j.helpers.LogLog;
-
 
 // Contibutors: Mathias Bogaert
 
@@ -53,8 +51,11 @@ public final class RootCategory extends Logger {
      @since 0.8.3 */
   public final void setLevel(Level level) {
     if (level == null) {
-      LogLog.error(
-        "You have tried to set a null level to root.", new Throwable());
+      if (repository != null) {
+        repository.addErrorItem(
+          new ErrorItem(
+            "You have tried to set a null level to root.", new Exception()));
+      }
     } else {
       this.level = level;
     }

@@ -17,6 +17,7 @@
 package org.apache.log4j.pattern;
 
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.location.LocationInfo;
 
 /**
  * Most of the work is done in the parent class {@link 
@@ -35,8 +36,13 @@ public class ClassNamePatternConverter extends NamedPatternConverter {
   }
   
   String getFullyQualifiedName(LoggingEvent event) {
-	   return event.getLocationInformation()!=null?event.getLocationInformation().getClassName():"";
-	 }
+    LocationInfo li = event.getLocationInformation();
+    if(li == null) {
+      return LocationInfo.NA;
+    } else {
+	    return li.getClassName();
+    }
+	}
   
   public String getName() {
       return NAME;
