@@ -128,13 +128,7 @@ final class LoggerNameTreePanel extends JPanel implements Rule
   private final LogPanelLoggerTreeModel logTreeModel;
   private final PopupListener popupListener;
   private final LoggerTreePopupMenu popupMenu;
-  private Rule ruleDelegate = new AbstractRule()
-    {
-      public boolean evaluate(LoggingEvent e)
-      {
-        return true;
-      }
-    };
+  private final Rule ruleDelegate;
   private Rule colorRuleDelegate; 
   private final JScrollPane scrollTree;
   private final JToolBar toolbar = new JToolBar();
@@ -154,6 +148,26 @@ final class LoggerNameTreePanel extends JPanel implements Rule
 
     setLayout(new BorderLayout());
 
+    ruleDelegate = new AbstractRule() {
+    	public boolean evaluate(LoggingEvent e)
+        {
+          String currentlySelectedLoggerName = getCurrentlySelectedLoggerName();
+          if (currentlySelectedLoggerName == null) {
+          	//if there is no selected logger, all events should pass
+          	return true;
+          }
+          boolean isHidden = getHiddenSet().contains(e.getLoggerName());
+          boolean result = (e.getLoggerName() != null) && (!isHidden);
+
+          if (result && isFocusOnSelected())
+          {
+            result = result &&  (e.getLoggerName() != null && (e.getLoggerName().startsWith(currentlySelectedLoggerName+".") || e.getLoggerName().endsWith(currentlySelectedLoggerName))) ;
+          }
+
+          return result;
+        }
+      };
+    
     colorRuleDelegate = 
         new AbstractRule()
         {
@@ -169,7 +183,6 @@ final class LoggerNameTreePanel extends JPanel implements Rule
             return false;
           }
         };
-
 
     logTree =
     new JTree(logTreeModel)
@@ -1038,25 +1051,6 @@ final class LoggerNameTreePanel extends JPanel implements Rule
       {
         public void stateChanged(ChangeEvent evt)
         {
-          final String currentlySelectedLoggerName =
-            getCurrentlySelectedLoggerName();
-
-          ruleDelegate =
-          new AbstractRule()
-            {
-              public boolean evaluate(LoggingEvent e)
-              {
-                boolean isHidden = getHiddenSet().contains(e.getLoggerName());
-                boolean result = (e.getLoggerName() != null) && (!isHidden);
-
-                if (result && isFocusOnSelected())
-                {
-                  result = result &&  (e.getLoggerName() != null && (e.getLoggerName().startsWith(currentlySelectedLoggerName+".") || e.getLoggerName().endsWith(currentlySelectedLoggerName))) ;
-                }
-
-                return result;
-              }
-            };
           firePropertyChange("rule", null, null);
           updateAllIgnoreStuff();
         }
