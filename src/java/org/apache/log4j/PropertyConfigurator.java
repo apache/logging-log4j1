@@ -398,10 +398,12 @@ public class PropertyConfigurator implements Configurator {
       LogLog.setInternalDebugging(OptionConverter.toBoolean(value, true));
     }
 
-    String thresholdStr = properties.getProperty(THRESHOLD_PREFIX);
+    String thresholdStr = OptionConverter.findAndSubst(THRESHOLD_PREFIX, 
+						       properties);    
     if(thresholdStr != null) {
-      LogLog.debug("Parsing threshold string ["+thresholdStr+"]");
-      hierarchy.setThreshold(thresholdStr);
+      hierarchy.setThreshold(OptionConverter.toLevel(thresholdStr, 
+						     (Level) Level.ALL));
+      LogLog.debug("Hierarchy threshold set to ["+hierarchy.getThreshold()+"].");
     }
 
     configureRootCategory(properties, hierarchy);
