@@ -282,11 +282,13 @@
   </target>
 
 
-  <target name="build.chainsaw" depends="build.core">
+  <target name="build.chainsaw" depends="build.core, build.oro, build.xml">
     <ant antfile="build-chainsaw.xml" target="build.chainsaw"/> 
   </target>	
   
-  <target name="chainsaw.jar" depends="log4j.jar, log4j-xml.jar">
+  <target name="chainsaw.jar" depends="build.chainsaw, log4j.jar, 
+  	                                   log4j-xml.jar, 
+  	                                   log4j-optional.jar">
     <ant antfile="build-chainsaw.xml" target="chainsaw.jar"/> 
   </target>	  
 
