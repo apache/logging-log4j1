@@ -52,6 +52,8 @@
 package org.apache.log4j.chainsaw;
 
 import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.net.PortBased;
+import org.apache.log4j.net.SocketAppender;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -95,6 +97,10 @@ import javax.swing.filechooser.FileFilter;
  */
 class NoReceiversWarningPanel extends JPanel {
   private final JComboBox previousConfigs = new JComboBox();
+
+  private final JRadioButton simpleSocket =
+    new JRadioButton("Let me use a simple SocketReceiver on port:");
+
   private final JRadioButton justLoadingFile =
     new JRadioButton("I'm fine thanks, don't worry");
   private final JRadioButton searchOption =
@@ -104,6 +110,8 @@ class NoReceiversWarningPanel extends JPanel {
   private final JButton okButton = new JButton("Ok");
   private final PanelModel model = new PanelModel();
   final DefaultComboBoxModel configModel = new DefaultComboBoxModel();
+  
+  final DefaultComboBoxModel simplePortModel = new DefaultComboBoxModel();
 
   NoReceiversWarningPanel() {
     initComponents();
@@ -158,11 +166,14 @@ class NoReceiversWarningPanel extends JPanel {
     add(Box.createVerticalStrut(20), gc);
 
     JPanel optionpanel = new JPanel();
-    optionpanel.setLayout(new GridLayout(3, 1, 3, 3));
+    optionpanel.setLayout(new GridLayout(4, 1, 3, 3));
     optionpanel.setBackground(getBackground());
     optionpanel.setBorder(BorderFactory.createEtchedBorder());
 
     final ButtonGroup optionGroup = new ButtonGroup();
+
+    simpleSocket.setToolTipText("Creates a SocketReceiver listening on a standard port");
+    simpleSocket.setMnemonic('p');
 
     searchOption.setToolTipText(
       "Allows you to choose a Log4J Configuration file that contains Receiver definitions");
@@ -179,16 +190,20 @@ class NoReceiversWarningPanel extends JPanel {
 
     justLoadingFile.setMnemonic('I');
 
-    searchOption.setOpaque(false);
+//    searchOption.setOpaque(false);
     manualOption.setOpaque(false);
     justLoadingFile.setOpaque(false);
 
     optionGroup.add(searchOption);
     optionGroup.add(manualOption);
     optionGroup.add(justLoadingFile);
+    optionGroup.add(simpleSocket);
+
 
     gc.gridy = 3;
 
+    
+   
     configModel.removeAllElements();
 
     previousConfigs.setModel(configModel);
@@ -256,6 +271,59 @@ class NoReceiversWarningPanel extends JPanel {
     searchButton.setToolTipText(
       "Shows a File Open dialog to allow you to find a configuration file");
 
+
+    simplePortModel.addElement(new PortBased(){
+      
+        private void unsupported()
+        {
+          throw new UnsupportedOperationException("Should not be used in this context");
+        }
+        public String getName(){ unsupported();return null;}
+        public boolean isActive()
+        {
+          unsupported();return false;
+        }
+        public int getPort()
+        {
+          return 4445;
+        }
+        
+        public String toString()
+        {
+          return getPort() + " (Old style/standard Chainsaw port)";
+        }
+    });
+
+    simplePortModel.addElement(new PortBased(){
+      
+        private void unsupported()
+        {
+          throw new UnsupportedOperationException("Should not be used in this context");
+        }
+        public String getName(){ unsupported();return null;}
+        public boolean isActive()
+        {
+          unsupported();return false;
+        }
+        public int getPort()
+        {
+          return SocketAppender.DEFAULT_PORT;
+        }
+        
+        public String toString()
+        {
+          return getPort() + " (Default SocketAppender port)";
+        }
+    });
+
+    JPanel simpleSocketPanel = new JPanel(new GridBagLayout());
+    
+    GridBagConstraints simpleSocketGC = new GridBagConstraints();
+    
+    simpleSocketPanel.add(simpleSocket, simpleSocketGC);
+    final JComboBox socketCombo = new JComboBox(simplePortModel);
+    simpleSocketPanel.add(socketCombo, simpleSocketGC);
+    
     /**
      * This listener activates/deactivates certain controls based on the current
      * state of the options
@@ -265,7 +333,8 @@ class NoReceiversWarningPanel extends JPanel {
         public void actionPerformed(ActionEvent e) {
           previousConfigs.setEnabled(e.getSource() == searchOption);
           searchButton.setEnabled(e.getSource() == searchOption);
-
+          socketCombo.setEnabled(e.getSource() == simpleSocket);
+          
           if (optionGroup.isSelected(searchOption.getModel())) {
             okButton.setEnabled(isValidConfigURL());
           } else {
@@ -277,25 +346,29 @@ class NoReceiversWarningPanel extends JPanel {
     searchOption.addActionListener(al);
     manualOption.addActionListener(al);
     justLoadingFile.addActionListener(al);
+    simpleSocket.addActionListener(al);
 
     justLoadingFile.doClick();
 
     JPanel searchOptionPanel = new JPanel(new GridBagLayout());
 
     searchOptionPanel.setOpaque(false);
-
+    
     GridBagConstraints searchGCC = new GridBagConstraints();
 
     searchGCC.fill = GridBagConstraints.HORIZONTAL;
     searchGCC.gridx = 1;
-
+    searchGCC.weightx = 0.0;
+    searchGCC.anchor = GridBagConstraints.WEST;
     searchOptionPanel.add(searchOption, searchGCC);
+
+    searchGCC.fill = GridBagConstraints.NONE;
+    searchGCC.weightx = 1.0;
     searchGCC.gridx = 2;
     searchOptionPanel.add(Box.createHorizontalStrut(5), searchGCC);
 
-    searchGCC.weightx = 0.0;
     searchGCC.gridx = 3;
-    searchGCC.fill = GridBagConstraints.NONE;
+    searchGCC.weightx = 0.0;
     searchOptionPanel.add(previousConfigs, searchGCC);
 
     searchGCC.weightx = 0.0;
@@ -303,10 +376,17 @@ class NoReceiversWarningPanel extends JPanel {
     searchOptionPanel.add(Box.createHorizontalStrut(5), searchGCC);
     searchGCC.gridx = 5;
     searchOptionPanel.add(searchButton, searchGCC);
+    
+//    searchGCC.gridx = 6;
+//    searchGCC.fill = GridBagConstraints.HORIZONTAL;
+//    searchGCC.weightx = 1.0;
+//    searchOptionPanel.add(Box.createHorizontalGlue(), searchGCC);
+    
 
+    optionpanel.add(justLoadingFile);
+    optionpanel.add(simpleSocketPanel);
     optionpanel.add(searchOptionPanel);
     optionpanel.add(manualOption);
-    optionpanel.add(justLoadingFile);
 
     add(optionpanel, gc);
 
@@ -397,6 +477,15 @@ class NoReceiversWarningPanel extends JPanel {
       return justLoadingFile.isSelected();
     }
 
+    boolean isSimpleSocketMode()
+    {
+      return simpleSocket.isSelected();
+    }
+    
+    int getSimplePort()
+    {
+      return ((PortBased)simplePortModel.getSelectedItem()).getPort();
+    }
     boolean isLoadConfig() {
       return searchOption.isSelected();
     }
