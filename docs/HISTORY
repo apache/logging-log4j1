@@ -5,7 +5,9 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
 
- - February 18th, 2003
+ February 18th, 2003
+ 
+ - Release of version 1.2.8
 
  - Fixed bug #11570 whereby XMLAppender would throw a
    NullPointerException if the input message was null. Many thanks to
