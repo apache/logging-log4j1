@@ -6,12 +6,11 @@
  */
 package org.apache.log4j.joran.util;
 
-import java.io.IOException;
-import java.util.List;
 
+import java.util.List;
+import org.apache.log4j.helpers.Constants;
 import org.apache.log4j.spi.ErrorItem;
 import org.xml.sax.EntityResolver;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -34,47 +33,31 @@ public class WellfomednessChecker extends DefaultHandler {
   }
   
   public void error(SAXParseException spe) throws SAXException {
-    ErrorItem errorItem = new ErrorItem("Parsing error", spe);
-    errorItem.setLineNumber(spe.getLineNumber());
-    errorItem.setColNumber(spe.getColumnNumber());
-    errorList.add(errorItem);
+    errorReport(spe);
   }
 
   public void fatalError(SAXParseException spe) throws SAXException {
-    ErrorItem errorItem = new ErrorItem("Parsing fatal error", spe);
-    errorItem.setLineNumber(spe.getLineNumber());
-    errorItem.setColNumber(spe.getColumnNumber());
-    errorList.add(errorItem);
-
+    errorReport(spe);
   }
 
   public void warning(SAXParseException spe) throws SAXException {
+    errorReport(spe);
+  }
+  
+  private void errorReport(SAXParseException spe) throws SAXException {
+    int line = spe.getLineNumber();
     ErrorItem errorItem = new ErrorItem("Parsing warning", spe);
-    errorItem.setLineNumber(spe.getLineNumber());
+    errorItem.setLineNumber(line);
     errorItem.setColNumber(spe.getColumnNumber());
     errorList.add(errorItem);
-  }
-  
-  public EntityResolver getEntityResolver() {
-    return entityResolver;
-  }
-  
-  public void setEntityResolver(EntityResolver entityResolver) {
-    this.entityResolver = entityResolver;
-  }
-
-  public InputSource resolveEntity(String publicId, String systemId) throws SAXException {
-    if(entityResolver == null) {
-      // the default implementation is to return null
-      return null;
-    } else {
-      try {
-        return entityResolver.resolveEntity(publicId, systemId);
-      } catch(IOException ioe) {
-        // fall back to the default "implementation"
-        return null;
-      }
+    if(line == 2) {
+      ErrorItem e1 = new ErrorItem("The 'log4j.dtd' is no longer used nor needed.");
+      errorList.add(e1);
+      ErrorItem e2 = new ErrorItem("See "+Constants.CODES_HREF+"#log4j_dtd for more details.");
+      errorList.add(e2);
     }
   }
+  
+
   
 }

@@ -42,7 +42,6 @@ import org.apache.log4j.joran.action.SubstitutionPropertyAction;
 import org.apache.log4j.joran.util.XMLUtil;
 import org.apache.log4j.spi.ErrorItem;
 import org.apache.log4j.spi.LoggerRepository;
-import org.apache.log4j.xml.Log4jEntityResolver;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -177,7 +176,7 @@ public class JoranConfigurator extends ConfiguratorBase {
       // we want non-validating parsers
       spf.setValidating(false);
       SAXParser saxParser = spf.newSAXParser();
-
+      
       saxParser.parse(inputSource, joranInterpreter);
       getLogger(repository).debug("Finished parsing.");
     } catch (SAXException e) {
@@ -233,11 +232,6 @@ public class JoranConfigurator extends ConfiguratorBase {
     rs.addRule(new Pattern("*/param"), new ParamAction());
 
     joranInterpreter = new Interpreter(rs);
-
-    // We need to bother with an entity resolver in order to be compatible
-    // with config files written for DOMConfigurator containing the following: 
-    // <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
-    joranInterpreter.setEntityResolver(new Log4jEntityResolver());
 
     // The following line adds the capability to parse nested components
     joranInterpreter.addImplcitAction(new NestComponentIA());
