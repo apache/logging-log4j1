@@ -48,6 +48,13 @@ public class CustomLevelTestCase extends TestCase {
     assert(Compare.compare(TEMP, "witness/customLevel.3"));
   }
 
+  public void test4() throws Exception {
+    DOMConfigurator.configure("input/xml/customLevel4.xml");
+    common();
+    assert(Compare.compare(TEMP, "witness/customLevel.4"));
+  }
+
+
   void common() {
     int i = 0;
     logger.debug("Message " + ++i);
@@ -62,6 +69,7 @@ public class CustomLevelTestCase extends TestCase {
     suite.addTest(new CustomLevelTestCase("test1"));
     suite.addTest(new CustomLevelTestCase("test2"));
     suite.addTest(new CustomLevelTestCase("test3"));
+    suite.addTest(new CustomLevelTestCase("test4"));
     return suite;
   }
 
