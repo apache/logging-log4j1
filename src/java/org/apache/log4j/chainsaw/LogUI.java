@@ -105,6 +105,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import java.lang.reflect.Method;
 import java.net.URL;
 
 import java.text.NumberFormat;
@@ -687,15 +688,25 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
           if (noReceiversWarningPanel.getModel().isManualMode()) {
             toggleReceiversPanel();
-          } else if (noReceiversWarningPanel.getModel().isSimpleSocketMode()) {
+          } else if (noReceiversWarningPanel.getModel().isSimpleReceiverMode()) {
             int port = noReceiversWarningPanel.getModel().getSimplePort();
-            SocketReceiver simpleSocketReceiver = new SocketReceiver(port);
-            simpleSocketReceiver.setName("Simple Socket Receiver");
-            PluginRegistry.startPlugin(simpleSocketReceiver);
-            receiversPanel.updateReceiverTreeInDispatchThread();
-            getStatusBar().setMessage(
-              "Simple Socket Receiver created, started, and listening on port "
-              + port);
+            Class receiverClass = noReceiversWarningPanel.getModel().getSimpleReceiverClass();
+            try {
+				Receiver simpleReceiver =
+					(Receiver) receiverClass.newInstance();
+				simpleReceiver.setName("Simple Receiver");
+                Method portMethod = simpleReceiver.getClass().getMethod("setPort", new Class[] {int.class});
+                portMethod.invoke(simpleReceiver, new Object[] {new Integer(port)});
+                
+				PluginRegistry.startPlugin(simpleReceiver);
+				receiversPanel.updateReceiverTreeInDispatchThread();
+				getStatusBar().setMessage(
+					"Simple Receiver created, started, and listening on port  "
+						+ port + " (using " + receiverClass.getName() + ")");
+			} catch (Exception e) {
+				LogLog.error("Error creating Receiver", e);
+                getStatusBar().setMessage("An error occurred creating your Receiver");
+			}
           } else if (noReceiversWarningPanel.getModel().isLoadConfig()) {
             final URL url =
               noReceiversWarningPanel.getModel().getConfigToLoad();
