@@ -59,16 +59,21 @@ public class JunitTestRunnerFilter implements Filter {
    * Filter out stack trace lines coming from the various JUnit TestRunners.
    */
   public String filter(String in) {
-    if(in == null) 
-     return null;
-     
-    if (util.match("/at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner/", in)) {
+    if (in == null) {
       return null;
-    } else if (util.match("/at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner/", in)) {
-          return in;
+    }
+
+    if (
+      util.match(
+          "/at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner/", in)) {
+      return null;
+    } else if (
+      util.match(
+          "/at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner/",
+          in)) {
+      return null;
     } else {
       return in;
     }
   }
- 
 }
