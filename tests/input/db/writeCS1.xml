@@ -3,7 +3,7 @@
 	  
 <log4j:configuration debug="true">
 	  
-  <property file="input/db/db.properties"/>
+  <substitutionProperty file="input/db/db.properties"/>
 	    
   <appender name="DB" class="org.apache.log4j.db.DBAppender">
      <connectionSource class="org.apache.log4j.db.UrlConnectionSource">
@@ -14,10 +14,13 @@
      </connectionSource>
   </appender>
 
-
+  <appender name="VECTOR" class="org.apache.log4j.VectorAppender">
+  </appender>
+  
   <root>
     <level value ="debug"/>
     <appender-ref ref="DB" />
+    <appender-ref ref="VECTOR" />
   </root>  
 </log4j:configuration>
 

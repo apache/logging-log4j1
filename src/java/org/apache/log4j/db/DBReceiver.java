@@ -202,7 +202,7 @@ public class DBReceiver
     String sql = "SELECT mapped_key, mapped_value FROM logging_event_property WHERE event_id='" + id + "'";
     Statement statement = connection.createStatement();
     ResultSet rs = statement.executeQuery(sql);
-    rs.first();
+    rs.beforeFirst();
 
     while (rs.next()) {
       String key = rs.getString(1);

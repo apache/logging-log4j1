@@ -15,21 +15,18 @@
  */
 package org.apache.log4j.db;
 
-import java.io.FileInputStream;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.Properties;
+import java.util.Map;
 import java.util.Vector;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
 
 import junit.framework.TestCase;
 
 import org.apache.log4j.Hierarchy;
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.log4j.MDC;
 import org.apache.log4j.VectorAppender;
 import org.apache.log4j.helpers.IntializationUtil;
 import org.apache.log4j.helpers.LogLog;
@@ -45,12 +42,22 @@ import org.apache.log4j.spi.RootLogger;
  */
 public class FullCycleDBTest
        extends TestCase {
+  
+  Vector witnessEvents;
+  LoggerRepository lrWrite;
+  LoggerRepository lrRead;
+  
   /*
    * @see TestCase#setUp()
    */
   protected void setUp()
          throws Exception {
     super.setUp();
+    witnessEvents = new Vector();
+    lrWrite = new Hierarchy(new RootLogger(Level.DEBUG));
+    IntializationUtil.log4jInternalConfiguration(lrWrite);
+    lrRead = new Hierarchy(new RootLogger(Level.DEBUG));
+    IntializationUtil.log4jInternalConfiguration(lrRead);
   }
 
 
@@ -60,6 +67,9 @@ public class FullCycleDBTest
   protected void tearDown()
          throws Exception {
     super.tearDown();
+    lrWrite.shutdown();
+    lrRead.shutdown();
+    witnessEvents = null;
   }
 
   /**
@@ -72,61 +82,142 @@ public class FullCycleDBTest
 
   
   /**
-   * This test starts by writing a single element to a DB using DBAppender
+   * This test starts by writing a single event to a DB using DBAppender
    * and then reads it back using DBReceiver.
    * 
+   * DB related information is specified within the configuration files.
    * @throws Exception
    */
   public void testSingleOutput()
          throws Exception {
-    LoggerRepository lrWrite = new Hierarchy(new RootLogger(Level.DEBUG));
-    IntializationUtil.log4jInternalConfiguration(lrWrite);
     JoranConfigurator jc1 = new JoranConfigurator();
     jc1.doConfigure("input/db/writeCS1.xml", lrWrite);
   
     long startTime = System.currentTimeMillis();
-    //LogLog.info("***start time is "+startTime);
+    LogLog.info("***startTime is  "+startTime);
     
     // Write out just one log message
-    Logger out = lrWrite.getLogger("testSingleOutput");
-    long sn = LoggingEvent.getSequenceCount();
-    out.debug("test1");
-
+    Logger out = lrWrite.getLogger("testSingleOutput.out");
+    out.debug("some message"+startTime);
+    VectorAppender witnessAppender = (VectorAppender) lrWrite.getRootLogger().getAppender("VECTOR");
+    witnessEvents = witnessAppender.getVector();
+    assertEquals(1, witnessEvents.size());    
+    
     // now read it back
-    LoggerRepository lrRead = new Hierarchy(new RootLogger(Level.DEBUG));
-    IntializationUtil.log4jInternalConfiguration(lrRead);
-    JoranConfigurator jc2 = new JoranConfigurator();
-    jc2.doConfigure("input/db/readCS1.xml", lrRead);
+    readBack("input/db/readCS1.xml", startTime);
 
-    VectorAppender va = (VectorAppender) lrRead.getRootLogger().getAppender("VECTOR");
-    try { Thread.sleep(1100); } catch(Exception e) {}
-    Vector v = getCleanedVector(va, startTime);
-    assertEquals(1, v.size());
-    LoggingEvent eventBack = (LoggingEvent) v.get(0);
-    assertEquals("testSingleOutput", eventBack.getLoggerName());
-    if(eventBack.getTimeStamp() < startTime) {
-      fail("Returned event cannot preceed start of the test");
-    }
-    assertEquals("testSingleOutput", eventBack.getLoggerName());
-    assertEquals(sn, eventBack.getSequenceNumber());
-    LogManager.getLoggerRepository().shutdown();
+  }
+
+  /**
+   * This test starts by writing a single event to a DB using DBAppender
+   * and then reads it back using DBReceiver.
+   * 
+   * The written event includes MDC and repository properties as well as
+   * exception info.
+   * 
+   * DB related information is specified within the configuration files.
+   * @throws Exception
+   */
+  public void testAllFields() {
+    JoranConfigurator jc1 = new JoranConfigurator();
+    jc1.doConfigure("input/db/writeCS1.xml", lrWrite);
+  
+    long startTime = System.currentTimeMillis();
+    
+    // Write out just one log message
+    lrWrite.setProperty("key1", "value1-"+startTime);
+    MDC.put("key2", "value2-"+startTime);
+    Map mdcMap = MDC.getContext();
+    LogLog.info("**********"+mdcMap.size());
+    
+    // Write out just one log message
+    Logger out = lrWrite.getLogger("out"+startTime);
+    long sn = LoggingEvent.getSequenceCount();
+
+    out.debug("some message"+startTime);
+    MDC.put("key3", "value2-"+startTime);
+    out.error("some error message"+startTime, new Exception("testing"));
+    
+
+    // we clear the MDC to avoid interference with the events read back from
+    // the db
+    MDC.clear();
+
+    VectorAppender witnessAppender = (VectorAppender) lrWrite.getRootLogger().getAppender("VECTOR");
+    witnessEvents = witnessAppender.getVector();
+    assertEquals(2, witnessEvents.size());    
+
+    readBack("input/db/readCS1.xml", startTime);
   }
 
 
-  Vector getCleanedVector(VectorAppender va, long startTime) {
+  void readBack(String configfile, long startTime) {
+    // now read it back
+    JoranConfigurator jc2 = new JoranConfigurator();
+    jc2.doConfigure(configfile, lrRead);
+    
+    // wait a little to allow events to be read
+    try { Thread.sleep(3100); } catch(Exception e) {}
+    VectorAppender va = (VectorAppender) lrRead.getRootLogger().getAppender("VECTOR");
+    Vector returnedEvents = getRelevantEventsFromVA(va, startTime);
+    
+    compareEvents(witnessEvents, returnedEvents);
+    
+  }
+  
+  void compareEvents(Vector l, Vector r) {
+    assertNotNull("left vector of events should not be null");
+    assertEquals(l.size(), r.size());
+    
+    for(int i = 0; i < r.size(); i++) {
+      LoggingEvent le = (LoggingEvent) l.get(i);
+      LoggingEvent re = (LoggingEvent) r.get(i);
+      assertEquals(le.getMessage(),        re.getMessage());
+      assertEquals(le.getSequenceNumber(), re.getSequenceNumber());
+      assertEquals(le.getLoggerName(),     re.getLoggerName());
+      assertEquals(le.getLevel(),          re.getLevel());
+      assertEquals(le.getThreadName(), re.getThreadName());
+      if(re.getTimeStamp() < le.getTimeStamp()) {
+        fail("Returned event cannot preceed witness timestamp");
+      }
+      if(le.getProperties() == null || le.getProperties().size() == 0) {
+        if(!(re.getProperties() == null || re.getProperties().size() == 0)) {
+          fail("Returned event should have been empty");
+        }
+      }
+      else {
+        assertEquals(le.getProperties(), re.getProperties());
+      }
+      comprareStringArrays( le.getThrowableStrRep(),  re.getThrowableStrRep());
+    } 
+  }
+  
+  void comprareStringArrays(String[] la, String[] ra) {
+    if((la == null) && (ra == null)) {
+      return;
+    }
+    assertEquals(la.length, ra.length);
+    for(int i = 0; i < la.length; i++) {
+      assertEquals(la[i], ra[i]);
+    }
+  }
+  
+
+  Vector getRelevantEventsFromVA(VectorAppender va, long startTime) {
     assertNotNull(va);
     Vector v = va.getVector();
+    Vector r = new Vector();
     // remove all elements older than startTime
     for(Iterator i = v.iterator(); i.hasNext(); ) {
       LoggingEvent event = (LoggingEvent) i.next();  
       if(startTime > event.getTimeStamp()) {
         LogLog.info("***Removing event with timestamp "+event.getTimeStamp());
-        i.remove();
       } else {
         LogLog.info("***Keeping event with timestamo"+event.getTimeStamp());
+        r.add(event);
       }
     }
-    return v;
+    return r;
   }
   
   

@@ -136,7 +136,7 @@ public class DBAppender
         for (Iterator i = propertiesKeys.iterator(); i.hasNext();) {
           String key = (String)i.next();
           String value = (String)event.getProperty(key);
-          LogLog.debug("id " + eventId + ", key " + key + ", value " + value);
+          LogLog.info("id " + eventId + ", key " + key + ", value " + value);
           insertPropertiesStatement.setInt(1, eventId);
           insertPropertiesStatement.setString(2, key);
           insertPropertiesStatement.setString(3, value);

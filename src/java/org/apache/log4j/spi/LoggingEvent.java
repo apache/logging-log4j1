@@ -611,17 +611,15 @@ public class LoggingEvent
   public void initializeProperties() {
     
     if(properties == null) {
-      Map map = new TreeMap();
+      properties = new TreeMap();
       Map mdcMap = MDC.getContext();
-
       if (mdcMap != null) {
-        map.putAll(mdcMap);
+        properties.putAll(mdcMap);
       }
 
       if (logger != null) {
-        map.putAll(logger.getLoggerRepository().getProperties());
+        properties.putAll(logger.getLoggerRepository().getProperties());
       }
-      properties = map;
     }
   }
 
