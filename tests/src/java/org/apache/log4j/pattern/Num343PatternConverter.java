@@ -21,6 +21,8 @@ import org.apache.log4j.spi.LoggingEvent;
 
 public class Num343PatternConverter extends PatternConverter {
   static private final String NAME = "Num34";
+  static private final String STYLE_CLASS = NAME.toLowerCase();
+  
   StringBuffer buf;
 
   public Num343PatternConverter() {
@@ -37,5 +39,9 @@ public class Num343PatternConverter extends PatternConverter {
   
   public String getName() {
     return NAME;
+  }
+  
+  public String getStyleClass(LoggingEvent e) {
+    return STYLE_CLASS;
   }
 }
