@@ -147,20 +147,9 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
     }
   }
 
- 
   /**
-     Equivalent to calling <code>threshold(Level.ALL)</code>.
-     
-     By default all levels are thresholdd.
+     The string form of {@link #setThreshold(Level)}.
   */
-  //public
-  //void enableAll() {
-  //enable(Level.ALL);
-  //}
-
-  /**
-     The string form of {@link enable(Level)}.
-   */
   public 
   void setThreshold(String levelStr) {
     Level l = Level.toLevel(levelStr, null);
@@ -349,7 +338,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
      This method will return <code>true</code> if this repository is
      disabled for <code>level</code> object passed as parameter and
      <code>false</code> otherwise. See also the {@link
-     #threshold(org.apache.log4j.Level) threshold} emthod.  */
+     #setThreshold(Level) threshold} emthod.  */
   public
   boolean isDisabled(int level) {    
     return thresholdInt > level;

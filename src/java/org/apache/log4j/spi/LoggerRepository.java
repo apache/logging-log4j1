@@ -33,9 +33,8 @@ public interface LoggerRepository {
 
   /**
      Is the repository disabled for a given level? The answer depends
-     on the repository threhold and the <code>level</code>
-     parameter. See also {@link #setThreshold} method.
-  */
+     on the repository threshold and the <code>level</code>
+     parameter. See also {@link #setThreshold} method.  */
   boolean isDisabled(int level);
 
   /**

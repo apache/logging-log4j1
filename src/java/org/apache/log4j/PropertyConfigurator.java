@@ -186,11 +186,6 @@ public class PropertyConfigurator implements Configurator {
     additivity rule</a> in the user manual for the meaning of the
     <code>additivity</code> flag.
 
-    <p>The user can override any of the {@link
-    Hierarchy#disable} family of methods by setting the a key
-    "log4j.disableOverride" to <code>true</code> or any value other
-    than false. As in <pre>log4j.disableOverride=true </pre>
-
     <h3>ObjectRenderers</h3>
     
     You can customize the way message objects of a given type are
