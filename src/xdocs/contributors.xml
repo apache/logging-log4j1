@@ -84,21 +84,20 @@
 	  </p>
 	</li>
 
-        <li><b>Yoav Shapira</b> 
-         <table>
-          <tr><td>
-              <p>Yoav Shapira works for Millennium Pharmaceuticals and
+    <li><b>Yoav Shapira</b> 
+      <table>
+        <tr><td>
+          <p>Yoav Shapira works for Millennium Pharmaceuticals and
           is as interested in the business aspects of Open-Source
           Software as he is in the technical aspects. Yoav contributes
           to the Tomcat container, the Log4j logging system, and a
           number of jakarta-commons and other open-source projects.
               </p>
-          </td>
-          <td><img align="right" src="images/yshapira.bmp"></img></td>
-         </tr>
-         </table>
-
-        </li>
+        </td>
+        <td><img align="right" src="images/yshapira.bmp"></img></td>
+       </tr>
+     </table>
+   </li>
 
 	<li><b>Jon Skeet</b> 
 
@@ -112,15 +111,21 @@
 	</li>
 
 	<li><b>Paul Smith</b> 
+      <table>
+        <tr><td>
+        <p>Paul Smith has been developing software since 1990, and playing 
+	    computer games a few years longer than that.  He has been thoroughly
+	    enjoying Java since 1998 after he gave up on Visual Basic in disgust.
+	    Paul joined the log4j team after finding how darn useful it and the 
+	    companion Chainsaw application was in '03, and has been helping out 
+	    where he can, working on Chainsaw v2, and generally making a good 
+	    nuisance of himself.
+	    </p></td>
+        <td><img align="right" src="images/psmith.jpg"></img></td>
+       </tr>
+     </table>
 	
-	  <p>Paul Smith has been developing software since 1990, and playing 
-	  computer games a few years longer than that.  He has been thoroughly
-	  enjoying Java since 1998 after he gave up on Visual Basic in disgust.
-	  Paul joined the log4j team after finding how darn useful it and the 
-	  companion Chainsaw application was in '03, and has been helping out 
-	  where he can, working on Chainsaw v2, and generally making a good 
-	  nuisance of himself.
-	  </p>
+
     </li>
 
 	
