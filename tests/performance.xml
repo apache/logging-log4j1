@@ -28,8 +28,8 @@
       file         - run performance tests using FileAppender	
       file-noflush - run performance tests using FileAppender without immediate flush	
       file-bufferedio - run performance tests using FileAppender without buffered IO
+      telnet - run performace tests with TelnetAppender
       
-      runAll - run all available tests
     </echo>
   </target>
 
@@ -39,7 +39,7 @@
     </delete>
    </target>
 
-  <target name="all" depends="null, file, file-noflush, file-bufferedio">
+  <target name="all" depends="null, file, file-noflush, file-bufferedio, telnet">
     <antcall target="loop-group">
       <param name="configFile" value="input/performance/null-appender.xml"/>
     </antcall>
@@ -72,6 +72,15 @@
       <param name="configFile" value="input/performance/file-bufferedio.xml"/>
     </antcall>
   </target>	
+  
+  <target name="telnet" depends="clean">
+    <echo message="*** logging with TelnetAppender ***"/>
+    <antcall target="loop-group">
+      <param name="configFile" value="input/performance/telnet.xml"/>
+    </antcall>
+  </target>
+
+  
 
   <target name="loop">
     <echo message="Pattern is ${pattern}"/> 	
