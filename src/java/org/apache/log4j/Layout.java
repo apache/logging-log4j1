@@ -20,6 +20,7 @@ import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.io.Writer;
 
+import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.OptionHandler;
 
@@ -45,6 +46,7 @@ public abstract class Layout implements OptionHandler {
   String header;
   String footer;
 
+  LoggerRepository repository;
   // Most layouts ignore the throwable. If a subclasses needs to override the 
   // default value it should do so in its default constructor.
   protected boolean ignoresThrowable = true;
@@ -99,7 +101,7 @@ public abstract class Layout implements OptionHandler {
    * org.apache.log4j.xml.XMLLayout} returns <code>false</code>.
    * 
    * <p>As of log4j version 1.3, ignoresThrowable is a settable property. Thus,
-   * you can override, a layout's default setting.
+   * you can override a layout's default setting.
    * 
    * @since 0.8.4 
    * */
@@ -137,5 +139,37 @@ public abstract class Layout implements OptionHandler {
    */
   public void setHeader(String header) {
     this.header = header;
+  }
+  
+  /**
+   * Repository where this layout is attached. If not set, the
+   * returned valyue may be null.
+   * 
+   * @return The repository where this layout is attached.
+   */
+  public LoggerRepository getLoggerRepository() {
+    return repository;
+  }
+    
+  /**
+   * Set the LoggerRepository this layout is attached to indirectly through its 
+   * containing appener. This operation can only be performed once. Once set, 
+   * the repository cannot be changed.
+   *   
+   * @param repository The repository where this layout is indirectly attached.
+   * @throws IllegalStateException If you try to change the repository after it
+   * has been set.
+   * 
+   * @since 1.3
+   */
+  public void setLoggerRepository(LoggerRepository repository) throws IllegalStateException {
+    if(repository == null) {
+      throw new IllegalArgumentException("repository argument cannot be null");
+    }
+    if(this.repository != null) {
+      this.repository = repository;
+    } else {
+      throw new IllegalStateException("Repository has been already set");
+    }
   }
 }
