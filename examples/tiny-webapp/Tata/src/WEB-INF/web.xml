@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app>
+
+  <servlet>
+    <servlet-name>log4j-init</servlet-name>
+    <servlet-class>wombat.Log4jInit</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet>
+    <servlet-name>TataServlet</servlet-name>
+    <servlet-class>wombat.TataServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>TataServlet</servlet-name>
+    <url-pattern>/TataServlet</url-pattern>
+  </servlet-mapping>
+
+  <env-entry>
+   <description>JNDI logging context for this app</description>
+   <env-entry-name>log4j/context-name</env-entry-name>
+   <env-entry-value>tata</env-entry-value>
+   <env-entry-type>java.lang.String</env-entry-type>
+  </env-entry>
+  
+</web-app>

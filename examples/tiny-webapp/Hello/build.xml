@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<project name="Hello Webapp Build Script" default="compile" basedir=".">
+
+  <property environment="env"/>
+
+  <property name="tomcat.hom-" value="/home/ceki/ASF/jakarta-tomcat-4.1.30/"/>
+  <property name="tomcat.home" value="/home/ceki/ASF/jakarta-tomcat-5.0.19/"/>
+
+  <property name="src.dir" value="${basedir}/src/java/"/>
+  <property name="javac.dest" value="${basedir}/classes"/>
+  
+
+  <path id="compile.classpath">
+    <pathelement location="${build.home}/classes"/>
+    <fileset dir="./lib" includes="*.jar"/>
+  </path>
+ 
+  <target name="clean" depends="">
+    <delete dir="${javac.dest}/" />
+    <delete dir="./hello.war" />
+  </target>
+
+  <target name="compile">
+    <mkdir dir="${javac.dest}"/>
+    <javac srcdir="${src.dir}" destdir="${javac.dest}">
+      <classpath refid="compile.classpath"/>
+      <include name="wombat/*.java" />
+    </javac>
+  </target>
+
+  <target name="war" depends="compile">
+    <war warfile="hello.war" webxml="src/WEB-INF/web.xml">
+      <classes dir="classes"/>
+      <zipfileset dir="src/resources" prefix="WEB-INF/classes"/>
+      <zipfileset dir="src/html" prefix=""/>
+    </war>
+  </target>
+
+  <!-- ================================================================= -->
+  <!--                    Uncompress war file                            -->
+  <!-- ================================================================= -->
+  <target name="deploy" depends="war">
+    <unjar src="hello.war" dest="${tomcat.home}/webapps/hello"/>
+  </target>
+
+</project>
