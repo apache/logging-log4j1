@@ -46,13 +46,14 @@
  * Apache Software Foundation, please see <http://www.apache.org/>.
  *
  */
-package org.apache.log4j.chainsaw;
 
-import javax.swing.event.TableModelListener;
-import javax.swing.table.TableModel;
+package org.apache.log4j.chainsaw;
 
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.spi.LoggingEvent;
+
+import javax.swing.event.TableModelListener;
+import javax.swing.table.TableModel;
 
 
 /**
@@ -62,14 +63,11 @@ import org.apache.log4j.spi.LoggingEvent;
  * @author Paul Smith
  * @version 1.0
  */
-public class ChainsawAppender
-    extends AppenderSkeleton
-    implements EventDetailSink, TableModel {
-
+public class ChainsawAppender extends AppenderSkeleton
+  implements EventDetailSink, TableModel {
   private static MyTableModel sSharedModel;
-  private final MyTableModel wrappedTableModel = getDefaultModel();
-
   private static ChainsawAppender sSharedAppender = null;
+  private final MyTableModel wrappedTableModel = getDefaultModel();
 
   public ChainsawAppender() {
     synchronized (ChainsawAppender.class) {
@@ -87,11 +85,11 @@ public class ChainsawAppender
    * received inside Chainsaw go to a single model.
    * @return MyTableModel
    */
-  private static synchronized MyTableModel getDefaultModel()
-  {
+  private static synchronized MyTableModel getDefaultModel() {
     if (sSharedModel == null) {
       sSharedModel = new MyTableModel();
     }
+
     return sSharedModel;
   }
 
@@ -100,8 +98,7 @@ public class ChainsawAppender
    * be initialised once.
    * @return
    */
-  static ChainsawAppender getInstance()
-  {
+  static ChainsawAppender getInstance() {
     return sSharedAppender;
   }
 
@@ -112,8 +109,7 @@ public class ChainsawAppender
    * until further refactoring is completed.
    * @return MyTableModel
    */
-  MyTableModel getWrappedModel()
-  {
+  MyTableModel getWrappedModel() {
     return wrappedTableModel;
   }
 
@@ -125,8 +121,7 @@ public class ChainsawAppender
    * Implements the EventDetailSink interface by forwarding the EventDetails
    * object onto an internal Model
    */
-  public void addEvent(EventDetails aDetails)
-  {
+  public void addEvent(EventDetails aDetails) {
     synchronized (wrappedTableModel) {
       wrappedTableModel.addEvent(aDetails);
     }
@@ -142,7 +137,6 @@ public class ChainsawAppender
     }
   }
 
-
   /**
    * Close does nothing
    */
@@ -154,7 +148,6 @@ public class ChainsawAppender
   // All methods here are from TableModel, and simply forward on to the
   // internal wrappedTableModel instance
   // ==========================================================================
-
   public int getRowCount() {
     return wrappedTableModel.getRowCount();
   }
@@ -175,7 +168,7 @@ public class ChainsawAppender
     return wrappedTableModel.isCellEditable(rowIndex, columnIndex);
   }
 
-    public Object getValueAt(int rowIndex, int columnIndex) {
+  public Object getValueAt(int rowIndex, int columnIndex) {
     return wrappedTableModel.getValueAt(rowIndex, columnIndex);
   }
 
