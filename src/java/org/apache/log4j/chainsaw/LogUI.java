@@ -159,7 +159,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   private static final String MAIN_WINDOW_X = "main.window.x";
   static final String TABLE_COLUMN_ORDER = "table.columns.order";
   static final String TABLE_COLUMN_WIDTHS = "table.columns.widths";
-  private static final String LOOK_AND_FEEL = "LookAndFeel";
   private static final String STATUS_BAR = "StatusBar";
   static final String COLUMNS_EXTENSION = ".columns";
   static final String COLORS_EXTENSION = ".colors";
@@ -182,7 +181,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   private ChainsawToolBarAndMenus tbms;
   private ChainsawAbout aboutBox;
   private final SettingsManager sm = SettingsManager.getInstance();
-  private String lookAndFeelClassName;
   private final JFrame tutorialFrame = new JFrame("Chainsaw Tutorial");
 
   /**
@@ -212,6 +210,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    */
   private EventListenerList shutdownListenerList = new EventListenerList();
   private WelcomePanel welcomePanel;
+  private String lookAndFeelClassName;
 
   /**
    * Constructor which builds up all the visual elements of the frame including
@@ -270,7 +269,14 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    * @param args
    */
   public static void main(String[] args) {
-    createChainsawGUI(true, null);
+    
+    ApplicationPreferenceModel model = new ApplicationPreferenceModel();
+    
+    SettingsManager.getInstance().configure(model);
+    
+    applyLookAndFeel(model.getLookAndFeelClassName());
+    
+    createChainsawGUI(model, true, null);
   }
 
   /**
@@ -282,7 +288,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    * @param shutdownAction
    *                    DOCUMENT ME!
    */
-  public static void createChainsawGUI(
+  public static void createChainsawGUI(ApplicationPreferenceModel model,
     boolean showSplash, Action shutdownAction) {
     LogUI logUI = new LogUI();
 
@@ -295,6 +301,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     LogManager.getRootLogger().addAppender(logUI.handler);
     logUI.activateViewer();
 
+    logUI.getApplicationPreferenceModel().apply(model);
+    
     if (shutdownAction != null) {
       logUI.setShutdownAction(shutdownAction);
     }
@@ -379,10 +387,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
     event.saveSetting(LogUI.MAIN_WINDOW_WIDTH, getWidth());
     event.saveSetting(LogUI.MAIN_WINDOW_HEIGHT, getHeight());
-
-    if (lookAndFeelClassName != null) {
-      event.saveSetting(LogUI.LOOK_AND_FEEL, lookAndFeelClassName);
-    }
 
     if (configURLToUse != null) {
       event.saveSetting(LogUI.CONFIG_FILE_TO_USE, configURLToUse.toString());
@@ -698,21 +702,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
     preferencesFrame.setLocation(new Point((screenDimension.width/2)-(preferencesFrame.getSize().width/2),  (screenDimension.height/2)-(preferencesFrame.getSize().height/2)  ));
     
-    getSettingsManager().configure(
-      new SettingsListener() {
-        public void loadSettings(LoadSettingsEvent event) {
-          lookAndFeelClassName = event.getSetting(LogUI.LOOK_AND_FEEL);
-
-          if (lookAndFeelClassName != null) {
-            applyLookAndFeel(lookAndFeelClassName);
-          }
-        }
-
-        public void saveSettings(SaveSettingsEvent event) {
-          //required because of SettingsListener interface..not used during load
-        }
-      });
-    
+ 
     pack();
     
     final JPopupMenu tabPopup = new JPopupMenu();
@@ -1326,7 +1316,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    * @param lookAndFeelClassName
    *                    The FQN of the LookANdFeel
    */
-  private void applyLookAndFeel(String lookAndFeelClassName) {
+  private static void applyLookAndFeel(String lookAndFeelClassName) {
     if (
       UIManager.getLookAndFeel().getClass().getName().equals(
           lookAndFeelClassName)) {
@@ -1335,14 +1325,14 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       return;
     }
 
-    LogLog.debug("Setting L&F -> " + lookAndFeelClassName);
 
+    if(lookAndFeelClassName == null || lookAndFeelClassName.trim().equals("")) {
+      LogLog.info("Using System native L&F");
+      lookAndFeelClassName = UIManager.getSystemLookAndFeelClassName();
+    }
+    LogLog.debug("Setting L&F -> " + lookAndFeelClassName);
     try {
       UIManager.setLookAndFeel(lookAndFeelClassName);
-      SwingUtilities.updateComponentTreeUI(this);
-      SwingUtilities.updateComponentTreeUI(preferencesFrame);
-	  SwingUtilities.updateComponentTreeUI(receiversPanel);
-      applicationPreferenceModelPanel.notifyOfLookAndFeelChange();
      } catch (Exception e) {
       LogLog.error("Failed to change L&F", e);
     }
