@@ -34,9 +34,24 @@ import java.util.Date;
 
 
 /**
- *
+ * A rather exhaustive set of tests. Tests include leaving the ActiveFileName
+ * argument blank, or setting it, with and without compression, and tests
+ * with or without stopping/restarting the RollingFileAppender.
+ * 
+ * The regression tests log a few times using a RollingFileAppender. Then, 
+ * they predict the names of the files which sould be generated and compare
+ * them with witness files.
+ * 
+ * <pre>
+         Compression    ActiveFileName  Stop/Restart 
+ Test1      NO              BLANK          NO
+ Test2      NO              BLANK          YES
+ Test3      YES             BLANK          NO
+ Test4      NO                SET          YES 
+ Test5      NO                SET          NO
+ Test6      YES               SET          NO
+ * </pre>
  * @author Ceki G&uuml;lc&uuml;
- *
  */
 public class TimeBasedRollingTest extends TestCase {
   Logger logger = Logger.getLogger(TimeBasedRollingTest.class);
@@ -52,15 +67,11 @@ public class TimeBasedRollingTest extends TestCase {
   }
 
   public void tearDown() {
-    //LogManager.shutdown();
+    LogManager.shutdown();
   }
 
   /**
-   * Test rolling without compression, activeFileName left blank
-   *
-   * The test is a regression test. It logs a few times using a RollingFileAppender.
-   * It predicts the names of the files which will be generated and
-   * compares them with witness files.
+   * Test rolling without compression, activeFileName left blank, no stop/start
    */
   public void test1() throws Exception {
     PatternLayout layout = new PatternLayout("%c{1} - %m%n");
@@ -105,11 +116,7 @@ public class TimeBasedRollingTest extends TestCase {
   }
 
   /**
-   * No compression with stop/restart, activeFileName left blank
-   *
-   * The test is a regression test. It logs a few times using a RollingFileAppender.
-   * It predicts the names of the files which will be generated and
-   * compares them with witness files.
+   * No compression, with stop/restart, activeFileName left blank
    */
   public void test2() throws Exception {
     String datePattern = "yyyy-MM-dd_HH_mm_ss";
@@ -169,11 +176,7 @@ public class TimeBasedRollingTest extends TestCase {
   }
 
   /**
-   * With compression, no stop/restart, activeFileName left blank
-   *
-   * The test is a regression test. It logs a few times using a RollingFileAppender.
-   * It predicts the names of the files which will be generated and
-   * compares them with witness files.
+   * With compression, activeFileName left blank, no stop/restart
    */
   public void test3() throws Exception {
     PatternLayout layout = new PatternLayout("%c{1} - %m%n");
@@ -222,21 +225,70 @@ public class TimeBasedRollingTest extends TestCase {
   }
 
   /**
-   * With compression, with stop/restart, activeFileName left blank
-   *
-   * The test is a regression test. It logs a few times using a RollingFileAppender.
-   * It predicts the names of the files which will be generated and
-   * compares them with witness files.
+   * Without compression, activeFileName set,  with stop/restart
    */
   public void test4() throws Exception {
+    String datePattern = "yyyy-MM-dd_HH_mm_ss";
+
+    PatternLayout layout1 = new PatternLayout("%c{1} - %m%n");
+    RollingFileAppender rfa1 = new RollingFileAppender();
+    rfa1.setLayout(layout1);
+
+    TimeBasedRollingPolicy tbrp1 = new TimeBasedRollingPolicy();
+    tbrp1.setActiveFileName("output/test4.log");
+    tbrp1.setFileNamePattern("output/test4-%d{" + datePattern + "}");
+    tbrp1.activateOptions();
+    rfa1.setRollingPolicy(tbrp1);
+    rfa1.activateOptions();
+    logger.addAppender(rfa1);
+
+    SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
+    String[] filenames = new String[4];
+
+    Calendar cal = Calendar.getInstance();
+
+    for (int i = 0; i < 3; i++) {
+      filenames[i] = "output/test4-" + sdf.format(cal.getTime());
+      cal.add(Calendar.SECOND, 1);
+    }
+    filenames[3] = "output/test4.log";
+    
+    System.out.println("Waiting until next second and 100 millis.");
+    delayUntilNextSecond(100);
+    System.out.println("Done waiting.");
+
+    for (int i = 0; i <= 2; i++) {
+      logger.debug("Hello---" + i);
+      Thread.sleep(500);
+    }
+
+    logger.removeAppender(rfa1);
+    rfa1.close();
+
+    PatternLayout layout2 = new PatternLayout("%c{1} - %m%n");
+    RollingFileAppender rfa2 = new RollingFileAppender();
+    rfa2.setLayout(layout2);
+
+    TimeBasedRollingPolicy tbrp2 = new TimeBasedRollingPolicy();
+    tbrp2.setFileNamePattern("output/test4-%d{" + datePattern + "}");
+    tbrp2.setActiveFileName("output/test4.log");
+    tbrp2.activateOptions();
+    rfa2.setRollingPolicy(tbrp2);
+    rfa2.activateOptions();
+    logger.addAppender(rfa2);
+
+    for (int i = 3; i <= 4; i++) {
+      logger.debug("Hello---" + i);
+      Thread.sleep(500);
+    }
+
+    for (int i = 0; i < 4; i++) {
+      assertTrue(Compare.compare(filenames[i], "witness/rolling/tbr-test4." + i));
+    }
   }
 
   /**
-   * No compression, activeFileName set
-   *
-   * The test is a regression test. It logs a few times using a RollingFileAppender.
-   * It predicts the names of the files which will be generated and
-   * compares them with witness files.
+   * No compression, activeFileName set,  without stop/restart
    */
   public void test5() throws Exception {
     PatternLayout layout = new PatternLayout("%c{1} - %m%n");
@@ -280,11 +332,7 @@ public class TimeBasedRollingTest extends TestCase {
   }
 
   /**
-   * With compression, no stop/restart, activeFileName set
-   *
-   * The test is a regression test. It logs a few times using a RollingFileAppender.
-   * It predicts the names of the files which will be generated and
-   * compares them with witness files.
+   * With compression, activeFileName set, no stop/restart,
    */
   public void test6() throws Exception {
     PatternLayout layout = new PatternLayout("%c{1} - %m%n");
@@ -405,8 +453,8 @@ public class TimeBasedRollingTest extends TestCase {
 
 //    suite.addTest(new TimeBasedRollingTest("test1"));
 //    suite.addTest(new TimeBasedRollingTest("test2"));
-    suite.addTest(new TimeBasedRollingTest("test3"));
-//    suite.addTest(new TimeBasedRollingTest("test4"));
+//    suite.addTest(new TimeBasedRollingTest("test3"));
+    suite.addTest(new TimeBasedRollingTest("test4"));
 //
 //    suite.addTest(new TimeBasedRollingTest("test5"));
 //    suite.addTest(new TimeBasedRollingTest("test6"));
