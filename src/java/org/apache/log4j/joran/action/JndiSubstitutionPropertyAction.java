@@ -22,7 +22,6 @@ import javax.naming.InitialContext;
 
 import org.apache.joran.ExecutionContext;
 import org.apache.joran.action.Action;
-import org.apache.log4j.Logger;
 import org.apache.log4j.spi.ErrorItem;
 
 import org.xml.sax.Attributes;
@@ -39,11 +38,6 @@ import org.xml.sax.Attributes;
  * @author Yoav Shapira
  */
 public class JndiSubstitutionPropertyAction extends Action {
-    /**
-     * Logger.
-     */
-    private static final Logger LOGGER = Logger.getLogger(JndiSubstitutionPropertyAction.class);
-
     /**
      * The attribute name specifying the JNDI variable to lookup.
      */
@@ -71,7 +65,7 @@ public class JndiSubstitutionPropertyAction extends Action {
      */
     protected void findNamingContext() throws NamingException {
         if(getNamingContext() != null) {
-            LOGGER.warn("Overwriting existing naming context.");
+            getLogger().warn("Overwriting existing naming context.");
         }
 
         // POSSIBLE TO-DO: add support for properties
@@ -85,12 +79,9 @@ public class JndiSubstitutionPropertyAction extends Action {
      * @see org.apache.joran.Action#begin.
      */
     public void begin(final ExecutionContext ec, final String name, final Attributes attributes) {
-        if(LOGGER.isDebugEnabled()) {
-            LOGGER.debug(getClass().getName() +
-                         ": begin(" + ec +
-                         ", " + name +
-                         ", " + attributes +
-                         "): here.");
+        if(getLogger().isDebugEnabled()) {
+            getLogger().debug(getClass().getName() +
+                              ": begin({}, " + name + ", {}): here.", ec, attributes);
         }
 
         // If first time, create and locate context: expensive operation.
@@ -98,7 +89,7 @@ public class JndiSubstitutionPropertyAction extends Action {
             try {
                 findNamingContext();
             } catch (Exception e) {
-                LOGGER.error("Couldn't find JNDI naming context: ", e);
+                getLogger().error("Couldn't find JNDI naming context: ", e);
                 ec.addError(new ErrorItem("Couldn't find JNDI naming context.", e));
             }
         }
@@ -106,26 +97,26 @@ public class JndiSubstitutionPropertyAction extends Action {
         String jndiName = attributes.getValue(JNDI_ATTR);
         
         if((jndiName == null) || (jndiName.trim().length() < 1)) {
-            LOGGER.warn("Missing " + JNDI_ATTR + " attribute, ignoring.");
+            getLogger().warn("Missing {} attribute, ignoring.", JNDI_ATTR);
         } else if(getNamingContext() != null){ 
             Object value = null;
 
             try {
                 value = getNamingContext().lookup(jndiName);
             } catch (Exception e) {
-                LOGGER.error("Error looking up " + jndiName + ": ", e);
+                getLogger().error("Error looking up " + jndiName + ": ", e);
                 ec.addError(new ErrorItem("Error looking up " + jndiName, e));
             }
 
             if(value == null) {
-                LOGGER.warn("No JNDI value found for " + jndiName);
+                getLogger().warn("No JNDI value found for {}.", jndiName);
             } else if(! (value instanceof String)) {
-                LOGGER.warn("Value for " + jndiName + " is not a String.");
+                getLogger().warn("Value for {} is not a String.", jndiName);
             } else {
                 ec.addProperty(jndiName, (String) value);
             }
         } else {
-            LOGGER.warn("Naming context is null, cannot lookup " + jndiName);
+            getLogger().warn("Naming context is null, cannot lookup {}", jndiName);
         }
     }
 
