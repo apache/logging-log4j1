@@ -36,7 +36,7 @@ ifdef $(ISJDK1)
 endif
 
 
-SUBDIRS :=helpers spi config or xml net nt varia jmx test performance examples 
+SUBDIRS :=helpers spi config or xml net nt varia jmx test performance 
 
 # include master-rule file
 include $(DEPTH)/make/make.inc

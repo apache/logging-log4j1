@@ -638,7 +638,8 @@ public class DOMConfigurator implements Configurator {
     this.repository = repository;
     try { 
       LogLog.debug("System property is :"+
-  	                        OptionConverter.getSystemProperty(dbfKey, null)); 
+  	                        OptionConverter.getSystemProperty(dbfKey, 
+								  null)); 
       dbf = DocumentBuilderFactory.newInstance();
       LogLog.debug("Standard DocumentBuilderFactory search succeded.");
       LogLog.debug("DocumentBuilderFactory is: "+dbf.getClass().getName());
@@ -689,7 +690,8 @@ public class DOMConfigurator implements Configurator {
   static
   public
   void configure(String filename) throws FactoryConfigurationError {
-    new DOMConfigurator().doConfigure(filename, LogManager.getLoggerRepository());
+    new DOMConfigurator().doConfigure(filename, 
+				      LogManager.getLoggerRepository());
   }
 
   /**
