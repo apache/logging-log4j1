@@ -307,9 +307,18 @@ fi
 # ===============================================================
 TEST=1000
 #RL=1000
-RL=20000
+RL=10000
 if [ $TEST -ge $start ]; then
    java org.apache.log4j.performance.Logging xml/logging$TEST.xml $RL 100 100
+   #multiRun 4 "SocketAppender" $SHORTRUN $DELAY
+fi
+
+
+TEST=1001
+#RL=1000
+RL=30000
+if [ $TEST -ge $start ]; then
+   java org.apache.log4j.performance.Logging xml/logging$TEST.xml $RL 
    #multiRun 4 "SocketAppender" $SHORTRUN $DELAY
 fi
 

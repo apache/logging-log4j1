@@ -4,7 +4,7 @@
 <log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
         <appender name="NULL" class="org.apache.log4j.net.SocketAppender">
            <param name="RemoteHost" value="localhost"/>
-           <param name="Port" value="1000"/>
+           <param name="Port" value="12345"/>
            <param name="ReconnectionDelay" value="1000"/>
 	</appender>
  

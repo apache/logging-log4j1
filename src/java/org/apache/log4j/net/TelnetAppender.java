@@ -13,6 +13,7 @@ import java.util.*;
 import org.apache.log4j.Layout;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.helpers.LogLog;
 
 /**
   <p>The TelnetAppender is a log4j appender that specializes in
@@ -47,7 +48,9 @@ public class TelnetAppender extends AppenderSkeleton {
   private SocketHandler sh;
   private int port = 23;
 
-  /** this appender requires a layout to format the text to the attached client(s). */
+  /** 
+      This appender requires a layout to format the text to the
+      attached client(s). */
   public boolean requiresLayout() {
     return true;
   }
@@ -103,6 +106,7 @@ public class TelnetAppender extends AppenderSkeleton {
       asynchronously. */
   protected class SocketHandler extends Thread {
 
+    private boolean done = false;
     private Vector writers = new Vector();
     private Vector connections = new Vector();
     private ServerSocket serverSocket;
@@ -113,15 +117,14 @@ public class TelnetAppender extends AppenderSkeleton {
       for(Enumeration e = connections.elements();e.hasMoreElements();) {
         try {
           ((Socket)e.nextElement()).close();
-        }
-        catch(Exception ex) {
+        } catch(Exception ex) {
         }
       }
       try {
         serverSocket.close();
+      } catch(Exception ex) {
       }
-      catch(Exception ex) {
-      }
+      done = true;
     }
 
     /** sends a message to each of the clients in telnet-friendly output. */
@@ -132,37 +135,35 @@ public class TelnetAppender extends AppenderSkeleton {
         PrintWriter writer = (PrintWriter)e.nextElement();
         writer.print(message);
         if(writer.checkError()) {
-
           // The client has closed the connection, remove it from our list:
-
           connections.remove(sock);
           writers.remove(writer);
-
         }
       }
     }
 
-    /** continually accepts client connections.  Client connections
-        are refused when MAX_CONNECTIONS is reached. */
+    /** 
+	Continually accepts client connections.  Client connections
+        are refused when MAX_CONNECTIONS is reached. 
+    */
     public void run() {
-      while(true) {
+      while(!done) {
         try {
           Socket newClient = serverSocket.accept();
           PrintWriter pw = new PrintWriter(newClient.getOutputStream());
           if(connections.size() < MAX_CONNECTIONS) {
             connections.addElement(newClient);
             writers.addElement(pw);
-            pw.print("TelnetAppender v1.0 (" + connections.size() + " active connections)\r\n\r\n");
+            pw.print("TelnetAppender v1.0 (" + connections.size() 
+		     + " active connections)\r\n\r\n");
             pw.flush();
-          }
-          else {
+          } else {
             pw.print("Too many connections.\r\n");
             pw.flush();
             newClient.close();
           }
-        }
-        catch(Exception e) {
-          e.printStackTrace();
+        } catch(Exception e) {
+          LogLog.error("Encountered error while in SocketHandler loop.", e);
         }
       }
     }
