@@ -52,10 +52,13 @@ package org.apache.log4j.chainsaw;
 import org.apache.log4j.Layout;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
+import org.apache.log4j.PatternLayout;
 import org.apache.log4j.Priority;
 import org.apache.log4j.UtilLoggingLevel;
 import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.chainsaw.layout.DefaultLayoutFactory;
 import org.apache.log4j.chainsaw.layout.EventDetailLayout;
+import org.apache.log4j.chainsaw.layout.LayoutEditorPane;
 import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
 import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
 import org.apache.log4j.chainsaw.prefs.SettingsListener;
@@ -1227,6 +1230,11 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     public LogPanel(final String ident, String eventType) {
       identifier = ident;
 
+      setDetailPaneConversionPattern(
+        DefaultLayoutFactory.getDefaultPatternLayout());
+      ((EventDetailLayout) toolTipLayout).setConversionPattern(
+        DefaultLayoutFactory.getDefaultPatternLayout());
+
       Map map = new HashMap();
       entryMap.put(ident, map);
 
@@ -1586,11 +1594,45 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       final JToolBar detailToolbar = new JToolBar(JToolBar.HORIZONTAL);
       detailToolbar.setFloatable(false);
 
+      final LayoutEditorPane layoutEditorPane = new LayoutEditorPane();
+      final JDialog layoutEditorDialog =
+        new JDialog(LogUI.this, "Pattern Editor");
+      layoutEditorDialog.getContentPane().add(layoutEditorPane);
+      layoutEditorDialog.setSize(640, 480);
+
+      layoutEditorPane.addCancelActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            layoutEditorDialog.setVisible(false);
+          }
+        });
+
+      layoutEditorPane.addOkActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            setDetailPaneConversionPattern(
+              layoutEditorPane.getConversionPattern());
+            layoutEditorDialog.setVisible(false);
+          }
+        });
+
       Action editDetailAction =
         new AbstractAction(
           "Edit...", new ImageIcon(ChainsawIcons.ICON_EDIT_RECEIVER)) {
           public void actionPerformed(ActionEvent e) {
-            // TODO Auto-generated method stub
+            layoutEditorPane.setConversionPattern(
+              getDetailPaneConversionPattern());
+
+            Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
+            Point p =
+              new Point(
+                ((int) ((size.getWidth() / 2)
+                - (layoutEditorDialog.getSize().getWidth() / 2))),
+                ((int) ((size.getHeight() / 2)
+                - (layoutEditorDialog.getSize().getHeight() / 2))));
+            layoutEditorDialog.setLocation(p);
+
+            layoutEditorDialog.setVisible(true);
           }
         };
 
@@ -1605,6 +1647,32 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
       //      detailToolbar.add(Box.createHorizontalStrut(5));
       detailPanel.add(detailToolbar, BorderLayout.NORTH);
+
+      JPopupMenu editDetailPopupMenu = new JPopupMenu();
+      editDetailPopupMenu.add(editDetailAction);
+      editDetailPopupMenu.addSeparator();
+
+      editDetailPopupMenu.add(
+        new AbstractAction("Set to Default Layout") {
+          public void actionPerformed(ActionEvent e) {
+            setDetailPaneConversionPattern(
+              DefaultLayoutFactory.getDefaultPatternLayout());
+          }
+        });
+
+      editDetailPopupMenu.addSeparator();
+
+      editDetailPopupMenu.add(
+        new AbstractAction("Set to TCCLayout") {
+          public void actionPerformed(ActionEvent e) {
+            setDetailPaneConversionPattern(
+              PatternLayout.TTCC_CONVERSION_PATTERN);
+          }
+        });
+
+      PopupListener editDetailPopupListener =
+        new PopupListener(editDetailPopupMenu);
+      detail.addMouseListener(editDetailPopupListener);
 
       lowerPanel =
         new JSplitPane(
@@ -1976,6 +2044,15 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
               table.getSelectedRow() + 1, table.getModel().getRowCount());
           }
         });
+    }
+
+    void setDetailPaneConversionPattern(String conversionPattern) {
+      ((EventDetailLayout) detailPaneLayout).setConversionPattern(
+        conversionPattern);
+    }
+
+    String getDetailPaneConversionPattern() {
+      return ((EventDetailLayout) detailPaneLayout).getConversionPattern();
     }
 
     void showPreferences() {
