@@ -31,8 +31,9 @@
  - Another LoggingEvent constructor was added to allow instances to be reconstituted 
    when received from remote sources that do not use LoggingEvent as the transport 
    type (like XML for example).   
-   
 
+ - Fixed bug #23096. NullAppender getInstance method is now declared as a static.  
+ 
  February 19th, 2003
  
  - Release of version 1.2.8
