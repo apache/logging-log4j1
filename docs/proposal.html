@@ -107,8 +107,8 @@ re-invent the wheel.
 <p><b>Intent</b>
 
 <p>The <code>LogManager</code> provides a flexible method for
-retrieving <code>Logger</code> instances of varying types and attached
-to context-dependent hierarchies.
+retrieving <code>Logger</code> instances of <em>varying types</em>
+held in <em>context-dependent repositories</em>.
 
 <p><b>Motivation</b>
 
@@ -118,7 +118,12 @@ environment where log4j will run. The problem is particularly acute in
 embedded components (e.g. libraries) which rely on log4j for their
 logging. The author of embedded component can rarely afford to make
 restrictive assumptions about the surrounding environment, a fortiori
-assumtions about logging.
+assumtions about logging. It might be the case that the end user is
+not interested in logging at all. It would be a total waste to
+generate logging output for a user who will never look at them. Under
+such circumstances, the embedded component will want to use a
+<code>NullLogger</code> which would not genereate any log output at
+all.
 
 <p>Logging in Application Servers and Servlet Containers also create
 unique problems. It is often desirable to separate logging output
@@ -127,24 +132,25 @@ case of Servlet Containers).  In the current version of log4j it is
 possible to have different applications live in their own parallel
 universe by using a different hierarchy for each application. For more
 details, refer to my <a
-href="http://apache.org/~ceki/multHierarchy.tar.gz">hierarchy
-tutorial</a> for Servlet Containers.
+href="http://apache.org/~ceki/multHierarchy.tar.gz"><b>multiple
+hierarchy tutorial</b></a> for Servlet Containers.
 
 <p>Using multiple hierarchies works well with code that is designed to
 use them. However, it does not entend to a library which uses log4j
 but is unaware of multiple hierarchies.
 
-<p>LogManager must allow us to vary <code>Logger</code> implementation
-depending on the circumstances. Moreover, we would like to be able to
-control the logging hierarchy where a logger is attached depending on
-the application context.
+<p>LogManager should allow us to vary <code>Logger</code>
+implementation depending on the circumstances. Moreover, we would like
+to be able to control the logging repository (or hierarchy) where
+loggers are held depending on the application context.
 
 <p><b>Related Patterns</b> 
 
 <p>LogManager is related to the <a
 href="http://c2.com/cgi/wiki?AbstractFactoryPattern">AbstractFactory</a>
-design pattern. It is largely based on the PluggableFactory pattern.
-Refer to John Vlissides' two articles <a
+design pattern. It is largely based on the
+<code>PluggableFactory</code> pattern.  Refer to John Vlissides' two
+articles <a
 href="http://www.research.ibm.com/designpatterns/pubs/ph-nov-dec98.pdf">Pluggable
 Factory, Part I</a> and <a
 href="http://www.research.ibm.com/designpatterns/pubs/ph-feb99.pdf">Pluggable
@@ -168,8 +174,8 @@ public class LogManager {
      // return the appropriate Logger instance
   }
 
-  // The actual task of manufacturing loggers is delegated to a LoggerFactory
-  public <b>static</b> Logger getLoggerFactory(LoggerFactory factory) {
+  // The actual task of manufacturing loggers is delegated to a <code>LoggerRepository</code>
+  public <b>static</b> void setLoggerRepository(LoggerRepository repository) {
     
   }  
 }
@@ -178,7 +184,8 @@ public class LogManager {
 </table>
 
 <p>Note that altough the methods are static there is a lot of
-flexibility in the underlying implementations. See the implementation section below.
+flexibility in the underlying implementation. See the implementation
+section below.
 
 <p>Typical usage:
 
@@ -207,13 +214,13 @@ that the <code>getInstance</code> method can return totally different
 return a Logger implementation that is aware of the Java2 security
 model whereas under JDK 1.1 the returned logger implementation may be
 oblivious to Java2 security checks. In shipped code, LogManager may be
-configured to return a <code>NOPLogger</code> which could implement
+configured to return a <code>NullLogger</code> which could implement
 the <code>Logger</code> (abstract) class with empty method bodies.
 
-<h2>Impelementation</h2>
+<p><b>Impelementation</b>
 
 <p>The behavior of <code>LogManager</code> is mostly determined by the
-<code>LogFactory</code> it uses.  However, it may also be influenced
+<code>LoggerRepository</code> it uses.  However, it may also be influenced
 by system properties or by parameters passed as a result of
 <code>LogManager</code> method invocations.
 
@@ -222,70 +229,62 @@ by system properties or by parameters passed as a result of
 <p><table bgcolor="CCCCCC">
 <tr><td>
 <pre>
-/*
- * Copyright (C) The Apache Software Foundation. All rights reserved.
- *
- * This software is published under the terms of the Apache Software
- * License version 1.1, a copy of which has been included with this
- * distribution in the LICENSE.txt file.  */
-
 package org.apache.log4j;
 
 /**
   Use the <code>LogManager</code> to retreive instances of {@link Logger}.
-
-  @author Ceki G&uuml;lc&uuml;
 */
 public <b>final</b> class <font color="0000AA"><b>LogManager</b></font> {
 
-  static <font color="AA5555"><b>private</b></font> Object guard = null;
-  static <font color="AA5555"><b>private</b></font> LoggerFactory loggerFactory;
+  static <b>private</b> Object guard = null;
+  static <b>private</b> LoggerRepository loggerRepository = null;
 
-  // By default the logger factory is set to a platform dependent
-  // default logger factory.
+  // By default the logger repository is set to a platform dependent
+  // default logger repository.
   <b>static</b> {
     if(java14) {
-      loggerFactory = new DefaultLoggerFactory14();
+      loggerRepository = new DefaultLoggerRepository14();
     } else if (java2) {
-      loggerFactory = new DefaultLoggerFactory2();
+      loggerRepository = new DefaultLoggerRepository2();
     } else {
-      loggerFactory = new DefaultLoggerFactory11();
+      loggerRepository = new DefaultLoggerRepository11();
     }
   }
 
+
   /**
-     Sets <code>LoggerFactory</code> but only if the correct
+     Sets <code>LoggerRepository</code> but only if the correct
      <em>guard</em> is passed as parameter.
      
      Initally the guard is null.  If the guard is
      <code>null</code>, then invoking this method sets the logger
-     factory and the guard. Following invocations will throw a {@link
+     repository and the guard. Following invocations will throw a {@link
      IllegalArgumentException}, unless the previously set
      <code>guard</code> is passed as the second parameter.
 
-     This allows a high-level component to set the logger factory to
+     This allows a high-level component to set the logger repository to
      be used, thus, fixing the log4j environment.
      
      For example, when tomcat starts it will be able to install its
-     own logger factory. However, if and when Tomcat is embedded
-     within JBoss, then JBoss will install its loggger factory and
-     Tomcat will use the factory set by its container, JBoss.
+     own logger repository. However, if and when Tomcat is embedded
+     within JBoss, then JBoss will install its loggger repository and
+     Tomcat will use the repository set by its container, JBoss.
   */
   public
   <b>static</b>
-  void <font color="#0000AA"><b>setLoggerFactory</b></font>(LoggerFactory factory, Object guard) 
-                                                 throws IllegalArgumentException {
+  void  <font color="#0000AA"><b>setLoggerRepository</b></font>(LoggerRepository repository, Object guard) 
+                                              throws IllegalArgumentException {
     if((LogManager.guard != null) && (LogManager.guard != guard)) {
       throw new IllegalArgumentException(
-           "Attempted to reset the LoggerFactory without possessing the guard.");
+           "Attempted to reset the LoggerRepository without possessing the guard.");
     }
 
-    if(factory == null) {
-      throw new IllegalArgumentException("LoggerFactory must be non-null.");
+    if(repository == null) {
+      throw new IllegalArgumentException("LoggerRepository must be non-null.");
     }
 
     LogManager.guard = guard;
-    LogManager.loggerFactory = factory;
+    LogManager.loggerRepository = repository;
 
   }
 
@@ -295,8 +294,8 @@ public <b>final</b> class <font color="0000AA"><b>LogManager</b></font> {
   public
   <b>static</b>
   Logger <font color="#0000AA"><b>getRootLogger()</b></font> {
-     // Delegate the actual manufacturing of the logger to the logger factory.
-    return loggerFactory.getRootLogger();
+     // Delegate the choice of the root logger to the logger repository
+    return loggerRepository.getRootLogger();
   }
 
   /**
@@ -305,13 +304,58 @@ public <b>final</b> class <font color="0000AA"><b>LogManager</b></font> {
   public
   <b>static</b>
   Logger <font color="#0000AA"><b>getLogger</b></font>(String name) {
-     // Delegate the actual manufacturing of the logger to the logger factory.
-    return loggerFactory.getLogger(name);
+     // Delegate the actual manufacturing of the logger to the logger repository.
+    return loggerRepository.getLogger(name);
   }
 }
 </pre>
 </td></tr>
 <table>
+
+<h2>LoggerRepository</h2>
+
+<p><b>Intent</b>
+
+Serve as a repository of logger objects offering primitives for
+retreiving individual loggers or acting on collections of loggers. In
+special cases a <code>LoggerRepository</code> can be itself composed
+of <code>LoggerRepositories</code>.
+
+<p><b>Motivation</b>
+
+One of the distinctive feature of log4j is its ability to arrange
+loggers (categories) in a hierarchy. See the <a
+href="api/org/apache/log4j/Hierarchy.html">Hierarchy class</a> for
+further detail.  A hierarchy is merely a repository of categories
+which happens to arrange them in a tree like structure. The log4j
+hiearchy as its stands today (August 2001) can only deal with
+<code>Category</code> objects which are heavier than loggers as
+defined previously.
+
+
+<p><table bgcolor="CCCCCC">
+<tr><td>
+<pre>
+public interface LoggerRepository {
+
+  // return the appropriate root Logger
+  public Logger getRootLogger();
+
+  // return an appropriate Logger instance
+  public Logger getLogger(String name);
+
+  // 
+  public void enable(Level level);
+  
+  
+}
+</pre>
+</td></tr>
+</table>
+
+
+
+
 
 <p>
 <h2>Backward compatibility</h2>
