@@ -26,7 +26,7 @@ import org.apache.log4j.spi.LoggingEvent;
    RollingFileAppender extends FileAppender to backup the log files when 
    they reach a certain size. 
 
-   @author <a HREF="mailto:heinz.richter@ecmwf.int">Heinz Richter</a>
+   @author Heinz Richter
    @author Ceki G&uuml;lc&uuml;
    
 */
@@ -97,6 +97,25 @@ public class RollingFileAppender extends FileAppender {
   RollingFileAppender(Layout layout, String filename) throws IOException {
     super(layout, filename);
   }
+
+  /**
+     Returns the value of the <b>MaxBackupIndex</b> option.
+   */
+  public
+  int getMaxBackupIndex() {
+    return maxBackupIndex;
+  }
+
+ /**
+    Get the maximum size that the output file is allowed to reach
+    before being rolled over to backup files.
+
+    @since 1.1
+ */
+  public
+  long getMaximumFileSize() {
+    return maxFileSize;
+  }
   
   /**
      Retuns the option names for this component, namely {@link
@@ -106,86 +125,12 @@ public class RollingFileAppender extends FileAppender {
      
      @deprecated We now use JavaBeans introspection to configure
      components. Options strings are no longer needed.
-     FileAppender}.  */
+  */
   public
   String[] getOptionStrings() {
 
     return OptionConverter.concatanateArrays(super.getOptionStrings(),
 		 new String[] {MAX_FILE_SIZE_OPTION, MAX_BACKUP_INDEX_OPTION});
-  }
-  
-   /**
-     
-     @deprecated Use the setter method for the option directly instead
-     of the generic <code>setOption</code> method. 
-
-    */
-  public
-  void setOption(String key, String value) {
-    super.setOption(key, value);    
-    if(key.equalsIgnoreCase(MAX_FILE_SIZE_OPTION)) {
-      maxFileSize = OptionConverter.toFileSize(value, maxFileSize + 1);
-    }
-    else if(key.equalsIgnoreCase(MAX_BACKUP_INDEX_OPTION)) {
-      maxBackupIndex = OptionConverter.toInt(value, maxBackupIndex);
-    }
-  }
-  
-  /**
-     Set the maximum number of backup files to keep around.
-     
-     <p>The <b>MaxBackupIndex</b> option determines how many backup
-     files are kept before the oldest is erased. This option takes
-     a positive integer value. If set to zero, then there will be no
-     backup files and the log file will be truncated when it reaches
-     <code>MaxFileSize</code>.
-   */
-  public
-  void setMaxBackupIndex(int maxBackups) {
-    this.maxBackupIndex = maxBackups;    
-  }
-  
-  /**
-     Returns the value of the <b>MaxBackupIndex</b> option.
-   */
-  public
-  int getMaxBackupIndex() {
-    return maxBackupIndex;
-  }
-  
-  /**
-     Set the maximum size that the output file is allowed to reach
-     before being rolled over to backup files.
-   */
-  public
-  void setMaxFileSize(long maxFileSize) {
-    this.maxFileSize = maxFileSize;
-  }
-
-  /**
-     Set the maximum size that the output file is allowed to reach
-     before being rolled over to backup files.
-     
-     <p>In configuration files, the <b>MaxFileSize</b> option takes an
-     long integer in the range 0 - 2^63. You can specify the value
-     with the suffixes "KB", "MB" or "GB" so that the integer is
-     interpreted being expressed respectively in kilobytes, megabytes
-     or gigabytes. For example, the value "10KB" will be interpreted
-     as 10240.
-   */
-  public
-  void setMaxFileSize(String value) {
-    maxFileSize = OptionConverter.toFileSize(value, maxFileSize + 1);
-  }
-  
-  public
-  synchronized
-  void setFile(String fileName, boolean append) throws IOException {
-    super.setFile(fileName, append);
-    if(append) {
-      File f = new File(fileName);
-      ((CountingQuietWriter) qw).setCount(f.length());
-    }
   }
 
   /**
@@ -245,6 +190,92 @@ public class RollingFileAppender extends FileAppender {
     catch(IOException e) {
       LogLog.error("setFile("+fileName+", false) call failed.", e);
     }
+  }
+
+  public
+  synchronized
+  void setFile(String fileName, boolean append) throws IOException {
+    super.setFile(fileName, append);
+    if(append) {
+      File f = new File(fileName);
+      ((CountingQuietWriter) qw).setCount(f.length());
+    }
+  }
+
+  /**
+     
+     @deprecated Use the setter method for the option directly instead
+     of the generic <code>setOption</code> method. 
+
+  */
+  public
+  void setOption(String key, String value) {
+    super.setOption(key, value);    
+    if(key.equalsIgnoreCase(MAX_FILE_SIZE_OPTION)) {
+      maxFileSize = OptionConverter.toFileSize(value, maxFileSize + 1);
+    }
+    else if(key.equalsIgnoreCase(MAX_BACKUP_INDEX_OPTION)) {
+      maxBackupIndex = OptionConverter.toInt(value, maxBackupIndex);
+    }
+  }
+  
+  /**
+     Set the maximum number of backup files to keep around.
+     
+     <p>The <b>MaxBackupIndex</b> option determines how many backup
+     files are kept before the oldest is erased. This option takes
+     a positive integer value. If set to zero, then there will be no
+     backup files and the log file will be truncated when it reaches
+     <code>MaxFileSize</code>.
+   */
+  public
+  void setMaxBackupIndex(int maxBackups) {
+    this.maxBackupIndex = maxBackups;    
+  }
+  
+  /**
+     Set the maximum size that the output file is allowed to reach
+     before being rolled over to backup files.
+
+     @deprecated Use {@link #setMaximumFileSize} instead.
+   */
+  public
+  void setMaxFileSize(long maxFileSize) {
+    this.maxFileSize = maxFileSize;
+  }
+
+  /**
+     Set the maximum size that the output file is allowed to reach
+     before being rolled over to backup files.
+
+     <p>This method is equivalent to {@link #setMaxFileSize} except
+     that it is required for differentiating the setter taking a
+     <code>long</code> argument from the setter taking a
+     <code>String</code> argument by the JavaBeans {@link
+     java.beans.Introspector Introspector}.
+
+     @see setMaxFileSize(String)
+ */
+  public
+  void setMaximumFileSize(long maxFileSize) {
+    this.maxFileSize = maxFileSize;
+  }
+
+
+  /**
+     Set the maximum size that the output file is allowed to reach
+     before being rolled over to backup files.
+     
+     <p>In configuration files, the <b>MaxFileSize</b> option takes an
+     long integer in the range 0 - 2^63. You can specify the value
+     with the suffixes "KB", "MB" or "GB" so that the integer is
+     interpreted being expressed respectively in kilobytes, megabytes
+     or gigabytes. For example, the value "10KB" will be interpreted
+     as 10240.
+   */
+  public
+  void setMaxFileSize(String value) {
+    maxFileSize = OptionConverter.toFileSize(value, maxFileSize + 1);
   }
 
   protected

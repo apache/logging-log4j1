@@ -9,7 +9,7 @@
 <!-- ================================================================= -->
 <project name="log4j" default="usage" basedir=".." >
 
-  <property name="version" value="1.1b2"/>
+  <property name="version" value="1.1b3"/>
 
   <!-- The base directory relative to which most targets are built -->
   <property name="base" value="."/>
@@ -331,7 +331,7 @@
  <!-- ================================================================= -->
  <!-- Build a complete distribution. Results go to ${dist.images}       -->
  <!-- ================================================================= -->
-  <target name="dist" depends="init">
+  <target name="dist" depends="init, clean, jar, javadoc">
 
     <delete verbose="true">
       <fileset dir="."> 

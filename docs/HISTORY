@@ -5,6 +5,15 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
 
+ April 18, 2001
+
+ - Release of version 1.1b3
+
+ - Added a RollingFileAppenderBeanInfo class that fakes the
+   maxFileSize JavaBeans property as a String type instead of a long.
+   This allows us to resuscitate setMaxFileSize(long) method which was
+   removed in 1.1b2 breaking 100% backward compatibility. This addition
+   restores 100% backward compatibility. [*]
 
  April 18, 2001
 
