@@ -185,7 +185,7 @@ public class TTCCLayout extends DateLayout {
     buf.append(' ');
 
     if(this.categoryPrefixing) {
-      buf.append(event.loggerName);
+      buf.append(event.categoryName);
       buf.append(' ');
     }
 

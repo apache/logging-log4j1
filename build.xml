@@ -14,8 +14,8 @@
   <!-- prefixed with "env". -->
   <property environment="env"/>
 
-  <property name="version" value="1.2alpha6"/>
-
+  <property name="version" value="1.2alpha7"/>
+  
   <!-- The base directory relative to which most targets are built -->
   <property name="base" value="."/>
  
@@ -130,7 +130,7 @@
     <tstamp />
   </target>
 
-  <target name="build" depends="init, build.core, build.xml, build.unitTests, 
+  <target name="build" depends="init, build.core, build.examples, build.xml, build.unitTests, 
                                 build.javamail, build.jms, build.jmx"/>
 
   <target name="build.core" depends="init">
@@ -144,16 +144,30 @@
 	            **/doc-files/*,
                     ${stem}/xml/**,
                     ${stem}/gui/**,
+                    ${stem}/test/serialization/**,
 		    ${stem}/net/SMTPAppender.java,
                	    ${stem}/net/JMS*.java,
                	    ${stem}/jmx/*.java,
                	    ${stem}/or/jms/MessageRenderer.java,
 		    **/pending/**" 
 	    debug="on"/>			
-    <rmic base="${javac.dest}" 
-	  classname="org.apache.log4j.examples.NumberCruncherServer"
-	/>
   </target>
+
+  <target name="build.examples" depends="build.core">
+    <mkdir dir="${javac.dest}" />
+    <javac srcdir="${java.source.dir}"
+	   destdir="${javac.dest}"
+	   includes="examples/**/*.java"
+	   classpath="${classpath}"
+	   excludes="misc/*" 
+	    debug="on"/>			
+    <rmic base="${javac.dest}" 
+      classname="examples.NumberCruncherServer"
+      />    
+  </target>
+
+
+
 
   <target name="build.unitTests" depends="init, junit" if="junit-present">   
     <javac srcdir="${java.source.dir}"
@@ -332,6 +346,7 @@
 			  docs/**, 
 			  build/*,
 	                  build.bat, build.sh,
+	                  build.xml,
 	                  build/lib/ant-1.4.jar,
 			  build/lib/jaxp-1.1.jar,
 			  build/lib/crimson-1.1.jar,

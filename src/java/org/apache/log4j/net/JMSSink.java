@@ -73,7 +73,7 @@ public class JMSSink  {
       while(true) {
 	ObjectMessage msg = (ObjectMessage)topicSubscriber.receive();      
 	event = (LoggingEvent) msg.getObject();
-	remoteCategory = Category.getInstance(event.loggerName);
+	remoteCategory = Category.getInstance(event.categoryName);
 	remoteCategory.callAppenders(event);	
 	
 	// dump the JMSMessage

@@ -147,8 +147,8 @@ public class HTMLLayout extends Layout {
     }
     sbuf.append("</td>" + Layout.LINE_SEP);
 
-    sbuf.append("<td title=\"" + event.loggerName + " category\">");
-    sbuf.append(escapeHTMLTags(event.loggerName));
+    sbuf.append("<td title=\"" + event.categoryName + " category\">");
+    sbuf.append(escapeHTMLTags(event.categoryName));
     sbuf.append("</td>" + Layout.LINE_SEP);
 
     if(locationInfo) {

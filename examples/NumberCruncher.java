@@ -1,5 +1,5 @@
 
-package org.apache.log4j.examples;
+package examples;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

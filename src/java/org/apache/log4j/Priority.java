@@ -155,7 +155,7 @@ public class Priority {
   public
   static
   Level toPriority(String sArg) {
-    return Level.toPriority(sArg);
+    return Level.toLevel(sArg);
   }
 
   /**
