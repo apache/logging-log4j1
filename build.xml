@@ -191,10 +191,14 @@
     <tstamp />
   </target>
 
-  <target name="build" description="Compile all log4j components."
-	      depends="init, build.core, build.examples, 
+  <target name="build.log4j" description="Compile log4j, but not chainsaw or examples."
+	      depends="init, build.core,  
 	               build.xml, build.javamail, build.jms,
-	               build.servletAPI, build.db, build.oro, build.chainsaw"/>
+	               build.servletAPI, build.db, build.oro"/>
+
+
+  <target name="build" description="Compile all log4j components."
+	      depends="build.log4j, build.examples, build.chainsaw"/>
 
   <target name="requiredepsCheck" 
   	depends="jndiCheck,jmsCheck,oroCheck,javamailCheck,servletAPICheck,jdbcExtensionCheck,jaxpCheck"
@@ -359,7 +363,7 @@
   </target>
 
   <!-- ================================================================= -->
-  <!-- Aactual work is done in the dependencies.                         -->
+  <!-- Actual work is done in the dependencies.                         -->
   <!-- ================================================================= -->
   <target name="jar" depends="log4j.jar, chainsaw.jar">
   </target>
@@ -367,7 +371,7 @@
   <!-- ================================================================= -->
   <!-- Create log4j.jar, excluding tests and other odds and ends.        -->
   <!-- ================================================================= -->
-  <target name="log4j.jar" depends="build">
+  <target name="log4j.jar" depends="build.log4j">
     
     <delete file="${log4j.jar}" verbose="true"/>
     <delete file="${path2ugli.properties}"/>
