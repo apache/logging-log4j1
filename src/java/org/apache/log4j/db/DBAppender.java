@@ -80,9 +80,7 @@ public class DBAppender
 
 
   protected void append(LoggingEvent event) {
-    Set propertiesKeys = event.getPropertyKeySet();
-    String[] throwableStrRep = event.getThrowableStrRep();
-    
+ 
     try {
       Connection connection = connectionSource.getConnection();
       connection.setAutoCommit(false);
@@ -98,8 +96,8 @@ public class DBAppender
       StringBuffer sql = new StringBuffer();
       sql.append("INSERT INTO logging_event (");
       sql.append("sequence_number, timestamp, rendered_message, ");
-      sql.append("logger_name, level_string, ndc, thread_name, flag) ");
-      sql.append(" VALUES (?, ?, ? ,?, ?, ?, ?)");
+      sql.append("logger_name, level_string, ndc, thread_name, reference_flag) ");
+      sql.append(" VALUES (?, ?, ? ,?, ?, ?, ?, ?)");
 
       PreparedStatement insertStatement = connection.prepareStatement(sql.toString());
       insertStatement.setLong(1, event.getSequenceNumber());
@@ -109,7 +107,7 @@ public class DBAppender
       insertStatement.setString(5, event.getLevel().toString());
       insertStatement.setString(6, event.getNDC());
       insertStatement.setString(7, event.getThreadName());
-      insertStatement.setShort(8, computeFlag(event, propertiesKeys, throwableStrRep));
+      insertStatement.setShort(8, DBHelper.computeReferenceMask(event));
       
       int updateCount = insertStatement.executeUpdate();
 
@@ -130,22 +128,41 @@ public class DBAppender
 //      mapped_key        VARCHAR(254) NOT NULL,
 //      mapped_value      VARCHAR(254),
 
+      Set propertiesKeys = event.getPropertyKeySet();
       if (propertiesKeys.size() > 0) {
         String insertPropertiesSQL = "INSERT INTO  logging_event_property (event_id, mapped_key, mapped_value) VALUES (?, ?, ?)";
-        PreparedStatement insertMDCStatement = connection.prepareStatement(insertPropertiesSQL);
+        PreparedStatement insertPropertiesStatement = connection.prepareStatement(insertPropertiesSQL);
 
         for (Iterator i = propertiesKeys.iterator(); i.hasNext();) {
           String key = (String)i.next();
           String value = (String)event.getProperty(key);
           LogLog.debug("id " + eventId + ", key " + key + ", value " + value);
-          insertMDCStatement.setInt(1, eventId);
-          insertMDCStatement.setString(2, key);
-          insertMDCStatement.setString(3, value);
-          insertMDCStatement.addBatch();
+          insertPropertiesStatement.setInt(1, eventId);
+          insertPropertiesStatement.setString(2, key);
+          insertPropertiesStatement.setString(3, value);
+          insertPropertiesStatement.addBatch();
         }
-        insertMDCStatement.executeBatch();
+        insertPropertiesStatement.executeBatch();
       }
 
+      String[] strRep = event.getThrowableStrRep();
+      if(strRep != null) {
+        LogLog.info("Logging an exception");
+//        CREATE TABLE logging_event_exception (
+//          event_id         INT NOT NULL,
+//          i                SMALLINT NOT NULL,
+//          trace_line       VARCHAR(254) NOT NULL)
+        String insertExceptionSQL = "INSERT INTO  logging_event_exception (event_id, i, trace_line) VALUES (?, ?, ?)";
+        PreparedStatement insertExceptionStatement = connection.prepareStatement(insertExceptionSQL);
+        
+        for (short i = 0; i < strRep.length; i++) {
+          insertExceptionStatement.setInt(1, eventId);
+          insertExceptionStatement.setShort(2, i);
+          insertExceptionStatement.setString(3, strRep[i]);
+          insertExceptionStatement.addBatch();
+        }
+        insertExceptionStatement.executeBatch();
+      }
       connection.commit();
     } catch (SQLException sqle) {
       LogLog.error("problem appending event", sqle);
@@ -153,11 +170,7 @@ public class DBAppender
   }
 
 
-  short computeFlag(LoggingEvent event, Set propertyJeys, String[] strRep) {
 
-    return 0;
-  }
-  
   public void close() {
     // TODO Auto-generated method st  
   }

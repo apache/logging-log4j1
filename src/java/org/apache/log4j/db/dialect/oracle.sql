@@ -20,6 +20,7 @@ CREATE TABLE logging_event
     level_string      VARCHAR(254) NOT NULL,
     ndc               TEXT,
     thread_name       VARCHAR(254),
+    reference_flag    SMALLINT,
     id                INT PRIMARY KEY
   );
 
@@ -40,6 +41,16 @@ CREATE TABLE logging_event_property
     PRIMARY KEY(event_id, mapped_key),
     FOREIGN KEY (event_id) REFERENCES logging_event(id)
   );
+  
+CREATE TABLE logging_event_exception
+  (
+    event_id         INT NOT NULL,
+    i                SMALLINT NOT NULL,
+    trace_line       VARCHAR(254) NOT NULL,
+    PRIMARY KEY(event_id, i),
+    FOREIGN KEY (event_id) REFERENCES logging_event(id)
+  );
+  
 
 
 

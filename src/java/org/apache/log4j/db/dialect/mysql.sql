@@ -6,8 +6,9 @@
 
 
 BEGIN;
-DROP TABLE IF EXISTS loggging_event;
-DROP TABLE IF EXISTS mdc;
+DROP TABLE IF EXISTS logging_event;
+DROP TABLE IF EXISTS logging_event_property;
+DROP TABLE IF EXISTS logging_event_exception;
 COMMIT;
 
 
@@ -21,7 +22,7 @@ CREATE TABLE logging_event
     level_string      VARCHAR(254) NOT NULL,
     ndc               TEXT,
     thread_name       VARCHAR(254),
-    flag              SMALLINT,
+    reference_flag    SMALLINT,
     id                INT NOT NULL AUTO_INCREMENT PRIMARY KEY
   );
 COMMIT;
