@@ -306,7 +306,7 @@ public class WriterAppender extends AppenderSkeleton {
     }
   }
 
-/**
+  /**
      Write a header as produced by the embedded layout's {@link
      Layout#getHeader} method.  */
   protected 

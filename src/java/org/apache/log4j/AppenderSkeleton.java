@@ -26,20 +26,6 @@ import org.apache.log4j.helpers.LogLog;
    @author Ceki G&uuml;lc&uuml; */
 public abstract class AppenderSkeleton implements Appender, OptionHandler {
 
-  /**
-     A string constant used in naming the option for setting the
-     threshold for the appender. See also {@link #setThreshold
-     setThreshold} method. Current value of this string constant is
-     <b>Threshold</b>.
-
-     @deprecated Options are now handled using the JavaBeans paradigm.
-     This constant is not longer needed and will be removed in the
-     <em>near</em> term.
-     
-  */
-  public static final String THRESHOLD_OPTION = "Threshold";
-
-
   /** The layout variable does not need to be set if the appender
       implementation has its own layout. */
   protected Layout layout;
@@ -182,22 +168,6 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
   }
 
   /**
-     Returns the string array {{@link #THRESHOLD_OPTION}}.
-
-     <p>Configurable appenders must override this method to return the
-     additional options they accept.  
-     
-     @deprecated We now use JavaBeans introspection to configure
-     components. Options strings are no longer needed.
-   */
-  public
-  String[] getOptionStrings() {
-    return new String[] {THRESHOLD_OPTION};
-  }
-
-  
-
-  /**
      Returns this appenders threshold priority. See the {@link
      #setThreshold} method for the meaning of this option.
      
@@ -288,17 +258,6 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
   }
 
 
-  /**
-     @deprecated Use the setter method for the option directly instead
-     of the generic <code>setOption</code> method. 
-  */
-  public
-  void setOption(String key, String value) {
-    if(key.equalsIgnoreCase(THRESHOLD_OPTION)) {
-      threshold = Priority.toPriority(value);
-    }
-  }
-  
   /**
      Set the threshold priority. All log events with lower priority
      than the threshold priority are ignored by the appender.

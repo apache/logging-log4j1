@@ -28,6 +28,7 @@ JSOURCES:= Shallow.java\
  PrintProperties.java\
  CustomCategoryTest.java\
  FQCNTest.java\
+ DRFATest.java\
 
 ifdef $(ISJDK1)
   JSOURCES:=$(JSOURCES)  UnitTestOR.java

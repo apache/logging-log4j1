@@ -56,94 +56,6 @@ public class SMTPAppender extends AppenderSkeleton {
   protected CyclicBuffer cb = new CyclicBuffer(bufferSize);
   protected Message msg;
 
-
-
- /**
-     A string constant used in naming the <em>To</em> field of
-     outgoing e-mail output file. Current value of this string
-     constant is <b>To</b>.
-
-     <p>Note that all option keys are case sensitive.
-     
-     @deprecated Options are now handled using the JavaBeans paradigm. 
-     This constant will be removed in the <em>near</em> term.
-  */
-  public static final String TO_OPTION = "To";
-
- /**
-     A string constant used in naming the <em>From</em> field of
-     outgoing e-mail output file. Current value of this string
-     constant is <b>From</b>.
-
-     <p>Note that all option keys are case sensitive.
-
-     @deprecated Options are now handled using the JavaBeans paradigm. 
-     This constant will be removed in the <em>near</em> term.     
-  */
-  public static final String FROM_OPTION = "From";
-
- /**
-     A string constant used in naming the <em>Subject</em> field of
-     outgoing e-mail output file. Current value of this string
-     constant is <b>Subject</b>.
-
-     <p>Note that all option keys are case sensitive.
-     
-     @deprecated Options are now handled using the JavaBeans paradigm. 
-     This constant will be removed in the <em>near</em> term.
-  */
-  public static final String SUBJECT_OPTION = "Subject";
-
-
- /**
-     A string constant used in naming the SMTP host that will be
-     contacted to send the e-mail. Current value of this string
-     constant is <b>SMTPHost</b>.
-
-     <p>Note that all option keys are case sensitive.
-     
-     @deprecated Options are now handled using the JavaBeans paradigm. 
-     This constant will be removed in the <em>near</em> term.
-  */
-  public static final String SMTP_HOST_OPTION = "SMTPHost";
-
- /**
-     A string constant used in naming the cyclic buffer size option.
-     Current value of this string constant is <b>BufferSize</b>.
-
-     <p>Note that all option keys are case sensitive.
-     
-     @deprecated Options are now handled using the JavaBeans paradigm. 
-     This constant will be removed in the <em>near</em> term.
-  */
-  public static final String BUFFER_SIZE_OPTION = "BufferSize";
-
-
- /**
-     A string constant used in naming the class of the
-     TriggeringEventEvaluator that this SMTPApepdner wll use. Current
-     value of this string constant is <b>EvaluatorClass</b>.
-
-     <p>Note that all option keys are case sensitive.
-     
-     @deprecated Options are now handled using the JavaBeans paradigm. 
-     This constant will be removed in the <em>near</em> term.
-  */
-  public static final String EVALUATOR_CLASS_OPTION = "EvaluatorClass";
-
-
-  /**
-     A string constant used in naming the option for setting the the
-     location information flag.  Current value of this string
-     constant is <b>LocationInfo</b>.  
-
-     <p>Note that all option keys are case sensitive.
-
-     @deprecated Options are now handled using the JavaBeans paradigm. 
-     This constant will be removed in the <em>near</em> term.
-  */
-  public static final String LOCATION_INFO_OPTION = "LocationInfo";
-  
   protected TriggeringEventEvaluator evaluator;
 
 
@@ -166,22 +78,6 @@ public class SMTPAppender extends AppenderSkeleton {
     this.evaluator = evaluator;
   }
 
- /**
-     Retuns the option names for this component in addition in
-     addition to the options of its super class {@link
-     AppenderSkeleton}.
-     
-     @deprecated We now use JavaBeans introspection to configure
-     components. Options strings are no longer needed.
-  */
-  public
-  String[] getOptionStrings() {
-    return OptionConverter.concatanateArrays(super.getOptionStrings(),
-          new String[] {TO_OPTION, FROM_OPTION, SUBJECT_OPTION, 
-			  SMTP_HOST_OPTION, BUFFER_SIZE_OPTION,  
-			  EVALUATOR_CLASS_OPTION, LOCATION_INFO_OPTION });
-  }
-  
 
   /**
      Activate the specified options, such as the smtp host, the
@@ -374,37 +270,7 @@ public class SMTPAppender extends AppenderSkeleton {
   String getSubject() {
     return subject;
   }
-
-
-/**
-   @deprecated Use the setter method for the option directly, instead
-   of the generic <code>setOption</code> method.  */
-  public
-  void setOption(String option, String value) {
-    if(value == null) return;
-    super.setOption(option, value);    
-
-    if(option.equals(TO_OPTION)) 
-      to = value;
-    else if (option.equals(FROM_OPTION))
-      from = value;
-    else if (option.equals(SMTP_HOST_OPTION)) 
-      smtpHost = value;
-    else if (option.equals(SUBJECT_OPTION)) 
-      subject = value;
-    else if (option.equals(EVALUATOR_CLASS_OPTION)) {      
-      evaluator = (TriggeringEventEvaluator) 
-                OptionConverter.instantiateByClassName(value, 
-                                           TriggeringEventEvaluator.class,
-                                                       evaluator);    
-    } else if (option.equals(BUFFER_SIZE_OPTION)) {
-      bufferSize = OptionConverter.toInt(value, bufferSize);    
-      cb.resize(bufferSize);
-    } else if (option.equals(LOCATION_INFO_OPTION))
-      locationInfo = OptionConverter.toBoolean(value, locationInfo);
-  }
-
-
+  
   /**
      The <b>From</b> option takes a string value which should be a
      e-mail address of the sender.
