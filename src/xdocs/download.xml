@@ -101,6 +101,18 @@
 	  log4j 1.2. 
 	</dd>
 
+
+
+    <!-- ============================================================================== -->	
+	
+	<dt><a href="http://sourceforge.net/projects/log4j2db"><b>log4j2db</b></a></dt>
+
+	<dd>This Project provides a set of EJBs to store Log4J events
+	(received via JMS appender) in a database. The main aim is to
+	provide a toolset for a centralized, data-center suitable
+	logging.
+        </dd>
+
 	<!-- ============================================================================== -->	
 	
 	<dt><a href="http://cvs.apache.org/viewcvs/jakarta-log4j/log4jMini/"><b>log4j<em>ME</em></b></a></dt>
