@@ -1,12 +1,3 @@
-
-<!-- This file is an ANT build script. ANT is a Java based build tool. -->
-<!-- It is availale from http://jakarta.apache.org/ant/                -->
-
-
-<!-- ================================================================= -->
-<!-- NOTE: all directories are relative to jakarta-log4j/              -->
-<!-- the parent of build/                                              -->
-<!-- ================================================================= -->
 <project name="log4j" default="build" basedir="." >
 
 
@@ -49,9 +40,6 @@
   <!-- When building a Java Web Start distribution of Chainsaw, some Receivers with external dependencies need to be packaged into a seperate Jar -->
   <property name="webstart-dependant-receivers.jar" value="webstart-dependant-receivers.jar-${version}.jar"/>
 	
-  <!-- The jar file that the jar-lf5 task will generate -->
-  <property name="log4j-lf5.jar" value="log4j-lf5-${version}.jar"/>
-
   <!-- Destination for documentation files -->
   <property name="docs.dest" value="./docs"/>
   <!-- Source directory for xml docs -->
@@ -92,10 +80,10 @@
     <pathelement location="${jms.jar}"/>
     <pathelement location="${jmx.jar}"/>
     <pathelement location="${jmx-extra.jar}"/>
-    <pathelement location="${avalon-framework.jar}"/>
     <pathelement location="${servlet-api.jar}"/>
     <pathelement location="${jdbc-stdext.jar}"/>
     <pathelement location="${jndi.jar}"/>
+    <pathelement location="${regexp.oro.jar}"/>
   </path>
 
   <!-- Construct classpath for building the html pages-->
@@ -153,16 +141,6 @@ later. For JDK 1.2, you can get the JNDI API from
     <echo message="JNDI is present."/>
   </target>
 
-  <target name="avalonFrameworkCheck">
-    <available classname="org.apache.avalon.framework.logger.Logger"
-        property="avalonFramework-present">
-         <classpath refid="compile.classpath"/>
-    </available>
-  </target>
-  <target name="avalonFramework" depends="avalonFrameworkCheck" if="avalonFramework-present">
-    <echo message="Avalon Framework is present."/>
-  </target>
-
   <target name="jmxCheck" depends="jndiCheck" if="jndi-present">
     <condition property="jmxCheck">
          <and>
@@ -218,10 +196,6 @@ later. For JDK 1.2, you can get the JNDI API from
 
 
 
-  <!-- ================================================================= -->
-  <!-- Initialize variables                                              -->
-  <!-- NOTE: all directories are relative to jakarta-log4j/              -->
-  <!-- ================================================================= -->
   <target name="init">
     <tstamp />
   </target>
@@ -229,7 +203,7 @@ later. For JDK 1.2, you can get the JNDI API from
   <target name="build" description="Compile all log4j components."
           depends="init, build.core, build.examples, 
                    build.xml, build.javamail, build.jms, build.jmx, 
-                   build.avalonFramework, build.servletAPI, build.db, 
+                   build.servletAPI, build.db, 
                    build.chainsaw"/>
 
   <target name="build.core" depends="init, jndiCheck" if="jndi-present" >
@@ -251,7 +225,6 @@ later. For JDK 1.2, you can get the JNDI API from
                     ${stem}/chainsaw/**/*.java,
                     ${stem}/rule/*.java,
                     ${stem}/varia/LogFilePatternReceiver*.java,
-                    ${stem}/varia/Log4JAvalonLogger.java,
                     ${stem}/varia/ExpressionFilter.java,
                     ${stem}/or/jms/*.java,
                     ${stem}/selector/servlet/*.java"
@@ -276,12 +249,6 @@ later. For JDK 1.2, you can get the JNDI API from
     </javac>
 
     <rmic base="${examples.javac.dest}" classname="factor.NumberCruncherServer" />
-
-    <copy todir="${javac.dest}">
-      <fileset dir="." includes="examples/lf5/**/*.properties"/>
-      <fileset dir="." includes="examples/lf5/**/*.xml"/>
-   </copy>
-
   </target>
 
  <target name="build.xml" depends="init, jaxp" if="jaxp-present">
@@ -297,15 +264,6 @@ later. For JDK 1.2, you can get the JNDI API from
     tofile="${javac.dest}/${stem}/xml/log4j.dtd" />
     <copy file="${BSTEM}/xml/logger.dtd"
     tofile="${javac.dest}/${stem}/xml/logger.dtd" />
-  </target>
-
-  <target name="build.avalonFramework" depends="init, avalonFramework" if="avalonFramework-present">
-    <javac srcdir="${java.source.dir}"
-      destdir="${javac.dest}"
-      deprecation="${deprecation}"
-      includes="${stem}/varia/Log4JAvalonLogger.java">
-      <classpath refid="compile.classpath"/>
-    </javac>
   </target>
 
   <target name="build.javamail" depends="init, javamail"
@@ -368,8 +326,7 @@ later. For JDK 1.2, you can get the JNDI API from
            destdir="${javac.dest}"
            includes="${stem}/chainsaw/**/*.java,${stem}/rule/*.java,${stem}/varia/ExpressionFilter.java,${stem}/varia/LogFilePatternReceiver*.java"
            excludes="${stem}/chainsaw/vfs/*.java">
-      <classpath refid="compile.classpath"/>
-      <classpath path="${regexp.oro.jar}"/>
+      <classpath refid="compile.classpath"/>   
     </javac>
   </target>
 
@@ -388,21 +345,6 @@ later. For JDK 1.2, you can get the JNDI API from
     <include name="**/plugins/*.java"/>
     <include name="**/chainsaw/*.java"/>
   </fileset>
-
-  <!-- ================================================================= -->
-  <!-- Runs jalopy preferences editor.                                   -->
-  <!-- ================================================================= -->
-  <target name="editJalopyPreferences">
-    <path id="jalopy.path">
-      <fileset dir="${jalopy.lib}">
-        <include name="*.jar" />
-      </fileset>
-    </path>
-
-    <java classname="de.hunsicker.jalopy.swing.SettingsDialog"
-          classpathref="jalopy.path"
-          fork="true" />
-  </target>
 
   <!-- ================================================================= -->
   <!-- Runs Chainsaw                                                     -->
@@ -466,7 +408,6 @@ later. For JDK 1.2, you can get the JNDI API from
                 ${stem}/nt/*.class,
                 ${stem}/rolling/**/*.class,
                 ${stem}/xml/*.class,
-                ${stem}/jmx/*.class,
     	        ${stem}/scheduler/*.class,        
     	        ${stem}/selector/*.class,
                 ${stem}/selector/servlet/*.class,
@@ -604,14 +545,12 @@ later. For JDK 1.2, you can get the JNDI API from
 		<signjar verbose="false" keystore="${keystore}" alias="${alias}" storepass="${storepass}" keypass="${keypass}" >
 		 <fileset dir=".">
 		  <include name="*.jar"/>
-		  <exclude name="*lf5*.jar"/>
 		 </fileset>
 		</signjar>
 		
 		<zip destfile="chainsaw-bundle.zip" >
 			<zipfileset dir="."> 
 				<include name="*.jar"/>
-				<exclude name="*lf5*.jar"/>
 			</zipfileset>
 			<fileset file="${regexp.oro.jar}"/>
 			<fileset file="src/chainsaw.bat"/>
@@ -633,15 +572,12 @@ later. For JDK 1.2, you can get the JNDI API from
        org.apache.log4j.plugins,
        org.apache.log4j.config,
        org.apache.log4j.helpers,
-       org.apache.log4j.jmx,
-       org.apache.log4j.lf5,
        org.apache.log4j.net,
        org.apache.log4j.nt,
        org.apache.log4j.or,
        org.apache.log4j.or.sax,
        org.apache.log4j.or.jms,
        org.apache.log4j.pattern,
-       org.apache.log4j.performance,
        org.apache.log4j.rolling,
        org.apache.log4j.rolling.helper,
        org.apache.log4j.selector,
@@ -681,7 +617,6 @@ later. For JDK 1.2, you can get the JNDI API from
       <link href="http://java.sun.com/j2ee/sdk_1.3/techdocs/api/"/>
       <classpath refid="compile.classpath"/>
       <classpath path="${regexp.oro.jar}"/>
-      <classpath path="${avalon-framework.jar}"/>
     </javadoc>
   </target>
 
@@ -714,7 +649,7 @@ later. For JDK 1.2, you can get the JNDI API from
       extension=".html"
       style="site.vsl"
       projectFile="stylesheets/project.xml"
-      excludes="**/stylesheets/**, empty.xml, lf5/**"
+      excludes="**/stylesheets/**, empty.xml"
       includes="**/*.xml"
       lastModifiedCheck="true"
       templatePath="${logging-site}/src/xdocs/stylesheets">
@@ -764,49 +699,46 @@ later. For JDK 1.2, you can get the JNDI API from
 
     <mkdir  dir="${dist.images}" />
 
-    <mkdir  dir="${dist.tmp}/jakarta-log4j-${version}" />
+    <mkdir  dir="${dist.tmp}/logging-log4j-${version}" />
 
-    <copy todir="${dist.tmp}/jakarta-log4j-${version}">
+    <copy todir="${dist.tmp}/logging-log4j-${version}">
        <fileset dir="${base}"
                 includes="src/java/**,
-        docs/**,
-                    examples/**,
-        build/*,
-                    build.xml,
-                    build.properties.sample,
-                          manifest.mf,
-        INSTALL,
-        LICENSE.txt,
-        ${log4j.jar},
-        dist/classes/**,
-        contribs/**"
-                excludes="make/make.loc,
-              **/*.bak, **/goEnv.bat,
-              **/Makefile, **/goEnv.bat,
-                    docs/pub-support/*,
-                          dist/classes/org/**,
-                    src/java/org/apache/log4j/test/**/*,
-        **/.#*"/>
+                          docs/**,
+                          examples/**,
+                          build/*,
+                          build.xml,
+                          build.properties.sample,
+                          INSTALL,
+                          LICENSE.txt,
+                          ${log4j.jar},
+                          ${log4j-chainsaw.jar}"
+                excludes="**/*.bak, 
+                         **/goEnv.bat,
+                          docs/pub-support/*,
+                          src/java/org/apache/log4j/test/**/*,
+                          **/.#*"
+        />
     </copy>
 
 
-    <fixcrlf srcdir="${dist.tmp}/jakarta-log4j-${version}"
+    <fixcrlf srcdir="${dist.tmp}/logging-log4j-${version}"
              includes="build.sh" cr="remove"/>
-    <fixcrlf srcdir="${dist.tmp}/jakarta-log4j-${version}"
+    <fixcrlf srcdir="${dist.tmp}/logging-log4j-${version}"
              includes="build.bat" cr="add"/>
-    <chmod   dir="${dist.tmp}/jakarta-log4j-${version}"
+    <chmod   dir="${dist.tmp}/logging-log4j-${version}"
              includes="build.sh" perm="+x"/>
 
-    <tar tarfile="${dist.images}/jakarta-log4j-${version}.tar"
+    <tar tarfile="${dist.images}/logging-log4j-${version}.tar"
          basedir="${dist.tmp}"
-         includes="jakarta-log4j-${version}/**" />
+         includes="logging-log4j-${version}/**" />
 
-    <gzip src="${dist.images}/jakarta-log4j-${version}.tar"
-          zipfile="${dist.images}/jakarta-log4j-${version}.tar.gz" />
+    <gzip src="${dist.images}/logging-log4j-${version}.tar"
+          zipfile="${dist.images}/logging-log4j-${version}.tar.gz" />
 
-    <zip zipfile="${dist.images}/jakarta-log4j-${version}.zip"
+    <zip zipfile="${dist.images}/logging-log4j-${version}.zip"
          basedir="${dist.tmp}"
-         includes="jakarta-log4j-${version}/**" />
+         includes="logging-log4j-${version}/**" />
 
 
     <delete dir="${dist.tmp}" />
