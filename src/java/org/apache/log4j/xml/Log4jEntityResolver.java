@@ -18,6 +18,7 @@ package org.apache.log4j.xml;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.apache.log4j.helpers.Constants;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 
@@ -39,6 +40,8 @@ public class Log4jEntityResolver implements EntityResolver {
     logger.debug(
       "Log4jEntityResolver.resolveEntity({}, {}) called", publicId, systemId);
     if (systemId.endsWith("log4j.dtd")) {
+      logger.warn("The 'log4j.dtd' is no longer used nor needed.");
+      logger.warn("See {}#log4j_dtd for more details.", Constants.CODES_HREF);
       Class clazz = getClass();
       InputStream in =
         clazz.getResourceAsStream("/org/apache/log4j/xml/log4j.dtd");
