@@ -26,14 +26,10 @@ import org.apache.log4j.helpers.OptionConverter;
    Filter#DENY} is returned. If there is no match, {@link
    Filter#NEUTRAL} is returned.
 
-   <p>See configuration files <a
-   href="../xml/doc-files/test11.xml">test11.xml</a> and <a
-   href="../xml/doc-files/test12.xml">test12.xml</a> for an example of
-   seeting up a <code>LevelMatchFilter</code>.
-
    @author Ceki G&uuml;lc&uuml;
 
-   @since 0.9.1 */
+   @since 1.2
+*/
 public class LevelMatchFilter extends Filter {
   
   /**
@@ -59,31 +55,7 @@ public class LevelMatchFilter extends Filter {
    */
   Level levelToMatch;
 
-  /**
-     @deprecated We now use JavaBeans introspection to configure
-     components.
-  */
-  public
-  String[] getOptionStrings() {
-    return new String[] {LEVEL_TO_MATCH_OPTION, ACCEPT_ON_MATCH_OPTION};
-  }
-
-  /**
-     @deprecated Use the setter method for the option directly instead
-     of the generic <code>setOption</code> method. 
-
-     @deprecated We now use JavaBeans introspection to configure
-     components. 
-  */
-  public
-  void setOption(String key, String value) {    
-    if(key.equalsIgnoreCase(LEVEL_TO_MATCH_OPTION)) {
-      levelToMatch = OptionConverter.toLevel(value, null);
-    } else if (key.equalsIgnoreCase(ACCEPT_ON_MATCH_OPTION)) {
-      acceptOnMatch = OptionConverter.toBoolean(value, acceptOnMatch);
-    }
-  }
-  
+ 
   public
   void setLevelToMatch(String level) {
     levelToMatch = OptionConverter.toLevel(level, null);
@@ -108,25 +80,14 @@ public class LevelMatchFilter extends Filter {
   /**
      Return the decision of this filter.
 
-     Returns {@link Filter#NEUTRAL} if the <b>LevelToMatch</b>
-     option is not set.  Otherwise, the returned decision is defined
-     according to the following table:
+     Returns {@link Filter#NEUTRAL} if the <b>LevelToMatch</b> option
+     is not set or if there is not match.  Otherwise, if there is a
+     match, then the returned decision is {@link Filter#ACCEPT} if the
+     <b>AcceptOnMatch</b> property is set to <code>true</code>. The
+     returned decision is {@link Filter#DENY} if the
+     <b>AcceptOnMatch</b> property is set to false.
 
-     <p><table border=1>
-     <tr><th rowspan="2" BGCOLOR="#AAAAFF">Did a level match occur?</th>
-     	 <th colspan="2" BGCOLOR="#CCCCCC">AcceptOnMatch setting</th>
-     
-     <tr><td BGCOLOR="#CCCCCC" align="center">TRUE</td>
-     	 <td BGCOLOR="#CCCCCC" align="center">FALSE</td>
-     
-     <tr><td BGCOLOR="#AAAAFF" align="center">TRUE</td>
-     	 <td>{@link Filter#ACCEPT}</td><td>{@link Filter#DENY}</td>
-     <tr><td BGCOLOR="#AAAAFF" align="center">FALSE</td>
-     	 <td>{@link Filter#DENY}</td><td>{@link Filter#ACCEPT}</td>
-     
-     	 <caption align="bottom">Filter decision in function of whether a match
-     	 occured and the AcceptOnMatch settings</caption> 
-    </table> */
+  */
   public
   int decide(LoggingEvent event) {
     if(this.levelToMatch == null) {
@@ -136,12 +97,15 @@ public class LevelMatchFilter extends Filter {
     boolean matchOccured = false;
     if(this.levelToMatch == event.level) {
       matchOccured = true;
-    }
+    } 
 
-    if(this.acceptOnMatch ^ matchOccured) {
-      return Filter.DENY;
+    if(matchOccured) {
+      if(this.acceptOnMatch)
+	  return Filter.ACCEPT;
+      else
+	  return Filter.DENY;
     } else {
-      return Filter.ACCEPT;
+      return Filter.NEUTRAL;
     }
   }
 }

@@ -59,6 +59,11 @@
   <!-- Directory for temporary files. -->
   <property name="dist.tmp" value="dist/tmp"/>
 
+
+
+  <!-- ================================================================= -->
+  <!-- Default target                                                    -->
+  <!-- ================================================================= -->
   
   <target name="usage">
     <echo>
@@ -130,13 +135,13 @@
   <!-- ================================================================= -->
   <target name="init">
     <tstamp />
+    <mkdir dir="${javac.dest}" />
   </target>
 
-  <target name="build" depends="init, build.core, build.examples, build.xml, build.unitTests, 
-                                build.javamail, build.jms, build.jmx"/>
+  <target name="build" depends="init, build.core, build.examples, build.xml, 
+                                build.unitTests, build.javamail, build.jms, build.jmx"/>
 
   <target name="build.core" depends="init">
-    <mkdir dir="${javac.dest}" />
     <javac srcdir="${java.source.dir}"
 	   destdir="${javac.dest}"
 	   includes="${stem}/**/*.java, ${stem}/xml/XMLLayout.java,"

@@ -7,14 +7,6 @@ if [ $? != 0 ]; then
   exit 1   
 fi
 
-java junit.textui.TestRunner org.apache.log4j.test.UnitTestOptionConverter
-  
-if [ $? != 0 ]; then
-  echo "UnitTestOptionConverter failed."
-  exit 1   
-fi
-
-
 java junit.textui.TestRunner org.apache.log4j.test.UnitTestCyclicBuffer  
 if [ $? != 0 ]; then
   echo "UnitTestCyclicBuffer failed."
