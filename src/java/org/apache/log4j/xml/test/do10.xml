@@ -8,7 +8,7 @@
 
     no DTD 
  -->
-<log4j:configuration>
+<log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
 	<appender name="A1" class="org.apache.log4j.FileAppender">
 
             <param name="File" value="System.out" />

@@ -22,6 +22,12 @@
    preceeds variable substitution. This change was suggested by Steven
    Velez. The vast majority of users should be oblivious to it. [*]
 
+ - The TextPaneAppender is no longer maintained and has been
+   removed.  It is still available under the contribs/
+   directory. This change has been discussed in the log4j mailing
+   lists and no one objected to the removal of the TextPaneAppender
+   class. 
+
  April 26, 2001
 
  - Release of version 1.1b6

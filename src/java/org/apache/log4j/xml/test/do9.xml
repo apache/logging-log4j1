@@ -9,7 +9,8 @@
     without DTD
 
  -->
-<log4j:configuration disableOverride="false">
+<log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'
+                     disableOverride="false">
 	<appender name="A1" class="org.apache.log4j.ConsoleAppender">
             <layout class="org.apache.log4j.PatternLayout">
 		<param name="ConversionPattern"

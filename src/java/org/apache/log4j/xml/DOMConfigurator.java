@@ -547,7 +547,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
 
   */
   public
-  void doConfigure(InputStream input, Hierarchy hierarchy) 
+  void doConfigure(InputStream inputStream, Hierarchy hierarchy) 
                                           throws FactoryConfigurationError {
     DocumentBuilderFactory dbf = null;
     try { 
@@ -571,7 +571,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
       DocumentBuilder docBuilder = dbf.newDocumentBuilder();
       //docBuilder.setErrorHandler(new ReportParserError());
 
-      InputSource inputSource = new InputSource(input);
+      InputSource inputSource = new InputSource(inputStream);
       Class clazz = this.getClass();
       URL dtdURL = clazz.getResource("/org/apache/log4j/xml/log4j.dtd");
       if(dtdURL == null) {
@@ -586,7 +586,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
       parse(doc.getDocumentElement(), hierarchy);
     } catch (Exception e) {
       // I know this is miserable...
-      LogLog.error("Could not parse input stream ["+input+"].", e);
+      LogLog.error("Could not parse input stream ["+inputStream+"].", e);
     }
   }
 
