@@ -48,7 +48,7 @@ public class MessageComparator implements Comparator {
   Pattern rightSidePattern;
   Perl5Matcher matcher;
 
-  public MessageComparator(Operator operator, String rightSide)
+  public MessageComparator(final Operator operator, String rightSide)
     throws ScanError {
     this.operator = operator;
     this.rightSide = rightSide;
@@ -68,7 +68,7 @@ public class MessageComparator implements Comparator {
   public boolean compare(LoggingEvent event) {
     if (operator.isRegex()) {
       boolean match =
-        matcher.matches(event.getRenderedMessage(), rightSidePattern);
+        matcher.contains(event.getRenderedMessage(), rightSidePattern);
       if (operator.getCode() == Operator.REGEX_MATCH) {
         return match;
       } else {
@@ -101,5 +101,9 @@ public class MessageComparator implements Comparator {
 
     throw new IllegalStateException(
       "Unreachable state reached, operator " + operator);
+  }
+  
+  public String toString() {
+    return "MessageComparator("+operator+", "+rightSide+")";
   }
 }

@@ -36,6 +36,10 @@ public class LBELEventEvaluator implements EventEvaluator {
     return evaluate(top, event);
   }
 
+  void dumpSyntaxTree(String prefix) {
+    top.leftFirstDump(prefix);
+  }
+  
   private boolean evaluate(Node node, LoggingEvent event) {
     int type = node.getType();
     boolean left;

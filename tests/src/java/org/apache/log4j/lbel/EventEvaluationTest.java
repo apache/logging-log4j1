@@ -16,12 +16,14 @@
 
 package org.apache.log4j.lbel;
 
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.spi.LoggingEvent;
+
 
 
 public class EventEvaluationTest extends TestCase {
@@ -52,8 +54,76 @@ public class EventEvaluationTest extends TestCase {
     evaluator = new LBELEventEvaluator("level = INFO");
     assertTrue(evaluator.evaluate(event));
   }
-   
+ 
+  public void testMessage() throws ScanError {
+    evaluator = new LBELEventEvaluator("message = 'hello world'");
+    assertTrue(evaluator.evaluate(event));
+
+    evaluator = new LBELEventEvaluator("message = hello");
+    assertTrue(!evaluator.evaluate(event));
+
+    evaluator = new LBELEventEvaluator("message != hello");
+    assertTrue(evaluator.evaluate(event));
+
+    
+    evaluator = new LBELEventEvaluator("message > hello");
+    assertTrue(evaluator.evaluate(event));
+
+    evaluator = new LBELEventEvaluator("message >= hello");
+    assertTrue(evaluator.evaluate(event));
+
+    evaluator = new LBELEventEvaluator("message < hello");
+    assertTrue(!evaluator.evaluate(event));
+
+    evaluator = new LBELEventEvaluator("message <= hello");
+    assertTrue(!evaluator.evaluate(event));
+  }
   
+  public void testRegexMessage() throws Exception, ScanError {
+    evaluator = new LBELEventEvaluator("message ~ 'hello'");
+    assertTrue(evaluator.evaluate(event));
+    
+    evaluator = new LBELEventEvaluator("message ~ 'h[a-z]* world'");
+    assertTrue(evaluator.evaluate(event));
+
+    // the following test cannot be run because of a bug in the way 
+    // java.io.StreamTokenizer incorrectly interprets the '\' character within quotes
+    // evaluator = new LBELEventEvaluator("message ~ 'h\\w* world'");
+    //assertTrue(evaluator.evaluate(event));
+
+    LBELEventEvaluator evaluator = new LBELEventEvaluator("message !~ 'x'");
+    assertTrue(evaluator.evaluate(event));
+    
+    evaluator = new LBELEventEvaluator("message !~ 'x[a-z]* world'");
+    assertTrue(evaluator.evaluate(event));
+  }
+  
+  public void testLogger() throws Exception, ScanError {
+    evaluator = new LBELEventEvaluator("logger = org.wombat");
+    assertTrue(evaluator.evaluate(event));
+    
+    evaluator = new LBELEventEvaluator("logger = org.wombat.x");
+    assertTrue(!evaluator.evaluate(event));
+    
+    evaluator = new LBELEventEvaluator("logger != org.wombat.x");
+    assertTrue(evaluator.evaluate(event));
+    
+    evaluator = new LBELEventEvaluator("logger < org.wombat.x");
+    assertTrue(evaluator.evaluate(event));
+
+    evaluator = new LBELEventEvaluator("logger <= org.wombat.x");
+    assertTrue(evaluator.evaluate(event));
+
+    evaluator = new LBELEventEvaluator("logger > org");
+    assertTrue(evaluator.evaluate(event));
+
+    evaluator = new LBELEventEvaluator("logger >= org");
+    assertTrue(evaluator.evaluate(event));
+    
+    evaluator = new LBELEventEvaluator("logger CHILDOF org");
+    assertTrue(evaluator.evaluate(event));
+  }
+    
   public static Test XXsuite() {
     TestSuite suite = new TestSuite();
     //suite.addTest(new ParserTest("testAndOr"));

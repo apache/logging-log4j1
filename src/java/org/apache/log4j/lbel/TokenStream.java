@@ -62,7 +62,7 @@ class TokenStream  {
   	tokenizer.wordChars('a', 'z');
   	tokenizer.wordChars('A', 'Z');
   	tokenizer.wordChars('0', '9');
-
+    
   	tokenizer.quoteChar('"');
   	tokenizer.quoteChar('\'');
   	tokenizer.parseNumbers();
@@ -128,7 +128,6 @@ class TokenStream  {
 			    current = new Token(Token.OPERATOR, "!=");		
 			  } else if (token2 == '~') {
 			    current = new Token(Token.OPERATOR, "!~");
-			    tokenizer.pushBack();
 			  } else {
 			  	throw new ScanError("Unrecogized token "+token+". The '!' character must be followed by = or '~'");
 			  }
