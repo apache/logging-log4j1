@@ -8,6 +8,7 @@ package org.apache.log4j.spi;
 
 import org.apache.log4j.LogManager;
 import org.apache.ugli.ULogger;
+import org.apache.ugli.impl.NOPLogger;
 
 
 /**
@@ -18,9 +19,20 @@ import org.apache.ugli.ULogger;
  */
 public class ComponentBase implements Component {
 
+  private final static int ERROR_COUNT_LIMIT = 3;
+  
   protected LoggerRepository repository;
   private ULogger logger;
-
+  private int errorCount = 0;
+  
+  
+  /**
+   * Called by derived classes when they deem that the component has recovered
+   * from an erroneous state.
+   */
+  protected void resetErrorCount() {
+    errorCount = 0;
+  }
   /**
    * Set the owning repository. The owning repository cannot be set more than
    * once.
@@ -58,5 +70,19 @@ public class ComponentBase implements Component {
       // logger = repository.getLogger(this.getClass().getName());
     }
     return logger;
+  } 
+  
+  /**
+   * Frequently called methods in log4j components can invoke this method in
+   * order to avoid flooding the output when logging lasting error conditions. 
+   * 
+   * @return a regular logger, or a NOPLogger if called too frequently.
+   */
+  protected ULogger getNonFloodingLogger() {
+    if(errorCount++ >= ERROR_COUNT_LIMIT) {
+      return NOPLogger.NOP_LOGGER;
+    } else {
+      return getLogger();
+    }
   } 
 }

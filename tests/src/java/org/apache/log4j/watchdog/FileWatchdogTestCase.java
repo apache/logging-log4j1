@@ -29,9 +29,8 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.spi.Configurator;
-import org.apache.log4j.xml.DOMConfigurator;
 import org.apache.log4j.joran.JoranConfigurator;
-import org.apache.log4j.util.Compare;
+
 
 public class FileWatchdogTestCase extends TestCase {
 
@@ -154,7 +153,7 @@ public class FileWatchdogTestCase extends TestCase {
       copyFile(sourceFile2, configFile);
       
       // wait a few seconds for the watchdog to react
-      Thread.currentThread().sleep(4000);
+      Thread.sleep(4000);
       
       // output some test messages
       logger.debug("debug message");
@@ -209,7 +208,7 @@ public class FileWatchdogTestCase extends TestCase {
       copyFile(sourceFile2, configFile);
       
       // wait a few seconds for the watchdog to react
-      Thread.currentThread().sleep(4000);
+      Thread.sleep(4000);
       
       // output some test messages
       logger.debug("debug message");

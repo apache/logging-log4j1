@@ -38,7 +38,7 @@ public class Loop {
     appender.setFile("toto.html");
     appender.setAppend(false);
     appender.setLayout(htmlLayout);
-    appender.activateOptions();
+    appender.activate();
     Logger root = Logger.getRootLogger();
     root.addAppender(appender);
 

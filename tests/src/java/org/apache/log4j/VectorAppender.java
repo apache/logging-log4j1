@@ -30,12 +30,14 @@ public class VectorAppender extends AppenderSkeleton {
   
   public VectorAppender() {
     vector = new Vector();
+    super.activate();
   }
 
   /**
-     Does nothing.
-  */
-  public void activateOptions() {
+   * Defers to super.activate() method.
+   */
+  public void activate() {
+    super.activate();
   }
 
   /**

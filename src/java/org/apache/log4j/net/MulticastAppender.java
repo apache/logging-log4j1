@@ -76,7 +76,7 @@ public class MulticastAppender extends AppenderSkeleton implements PortBased {
   /**
      Open the multicast sender for the <b>RemoteHost</b> and <b>Port</b>.
   */
-  public void activateOptions() {
+  public void activate() {
     try {
       hostname = InetAddress.getLocalHost().getHostName();
     } catch (UnknownHostException uhe) {

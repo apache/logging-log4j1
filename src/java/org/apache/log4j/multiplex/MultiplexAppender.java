@@ -21,7 +21,7 @@ public class MultiplexAppender extends AppenderSkeleton {
 	 * 
 	 * @see org.apache.log4j.spi.OptionHandler#activateOptions()
 	 */
-	public void activateOptions() {
+	public void activate() {
 
 
 		// check that we have a selector of something at this point
@@ -30,9 +30,7 @@ public class MultiplexAppender extends AppenderSkeleton {
 					"Should have had a Selector defined at this point");
 		}
 
-        // TODO work out how the Selector has it's AppenderFactory configured by Joran
-      
-
+    // TODO work out how the Selector has it's AppenderFactory configured by Joran
 	}
 
 	/*

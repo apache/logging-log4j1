@@ -57,13 +57,6 @@ public final class ListModelAppender extends AppenderSkeleton {
     clearModel();
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.log4j.Appender#requiresLayout()
-   */
-  public boolean requiresLayout() {
-    return false;
-  }
-
   /**
    * Removes all the Events from the model
    */

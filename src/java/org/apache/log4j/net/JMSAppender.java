@@ -165,7 +165,7 @@ public class JMSAppender extends AppenderSkeleton {
   /**
    *  Options are activated and become effective only after calling
    *  this method.*/
-  public void activateOptions() {
+  public void activate() {
     TopicConnectionFactory topicConnectionFactory;
 
     try {

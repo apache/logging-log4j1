@@ -37,7 +37,7 @@ public class MultiplexAppenderTest extends TestCase {
 
 		appender = new MultiplexAppender();
 		try {
-			appender.activateOptions();
+			appender.activate();
 			fail("Should have thrown an IllegalStateException because it should not be configured correctly");
 		} catch (Exception e) {
 			// expected

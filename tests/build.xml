@@ -191,7 +191,6 @@
                                      NDC,
                                      Plugins,
                                      CachedDateFormat,
-                                     ReaderWriterLock,
   	                                 Schema
                                      "/>
 
@@ -200,8 +199,28 @@
   <!-- ================================================================= -->
   <!-- Longer unit tests                                                 -->
   <!-- ================================================================= -->
-  <target name="longUnit" depends=""/>
+  <target name="longUnit" depends="ReaderWriterLock"/>
 
+  <!-- ================================================================= -->
+  <!-- Longer unit tests                                                 -->
+  <!-- ================================================================= -->
+  <target name="noArgTests" >
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+  	  <classpath refid="tests.classpath"/>
+  	  <formatter type="plain" usefile="false"/>
+  	  <batchtest>
+  	    <fileset dir="${tests.source.home}">
+  	      <include name="**/*Test*.java"/>
+  	      <exclude name="${stem}/DeadlockTest.java"/>
+  	      <exclude name="${stem}/helpers/ReaderWriterLockTestCase.java"/>
+  	      <exclude name="${stem}/defaultInit/*.java"/>
+  	      <exclude name="${stem}/chainsaw/receivers/ReceiversHelperTest.java"/>
+  	      <exclude name="${stem}/db/*.java"/>
+  	    </fileset>
+  	  </batchtest>
+    </junit>
+  </target>
+	
   <!-- ================================================================= -->
   <!-- Rolling unit tests                                                 -->
   <!-- ================================================================= -->
@@ -243,7 +262,7 @@
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
-      <test name="org.apache.log4j.LoggerTestCase" />
+      <test name="org.apache.log4j.LoggerTest" />
     </junit>
   </target>
   
@@ -269,7 +288,7 @@
       <jvmarg value="-Dlog4j.debug=TRUE"/>
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
-      <test name="org.apache.log4j.xml.DOMTestCase" />
+      <test name="org.apache.log4j.xml.DOMTest" />
     </junit>
   </target>
 

@@ -31,6 +31,7 @@ import java.sql.Statement;
 import java.util.Iterator;
 import java.util.Set;
 
+
 /**
  * The DBAppender inserts loggin events into three database tables in a format
  * independent of the Java programming language. The three tables that
@@ -41,7 +42,7 @@ import java.util.Set;
  * for your particular type of database system is missing, it should be quite
  * easy to write one, taking example on the already existing scripts. If you
  * send them to us, we will gladly include missing scripts in future releases.
- * 
+ *
  * <p>
  * If the JDBC driver you are using supports the
  * {@link java.sql.Statement#getGeneratedKeys}method introduced in JDBC 3.0
@@ -52,7 +53,7 @@ import java.util.Set;
  * not support the {@link java.sql.Statement#getGeneratedKeys getGeneratedKeys}
  * method.
  * </p>
- * 
+ *
  * <table border="1" cellpadding="4">
  * <tr>
  * <th>RDBMS</th>
@@ -89,7 +90,7 @@ import java.util.Set;
  *    <td align="center">NO</td>
  *    <td>present and used</td>
  * <tr>
- * 
+ *
  * </table>
  * <p>
  * <b>Performance: </b> Experiments show that writing a single event into the
@@ -97,32 +98,23 @@ import java.util.Set;
  * connections are used, this figure drops to under 10 milliseconds. Note that
  * most JDBC drivers already ship with connection pooling support.
  * </p>
- * 
- * 
- * 
+ *
+ *
+ *
  * <p>
  * <b>Configuration </b> DBAppender can be configured programmatically, or using
  * {@link org.apache.log4j.joran.JoranConfigurator JoranConfigurator}. Example
  * scripts can be found in the <em>tests/input/db</em> directory.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  * @author Ray DeCampo
  * @since 1.3
  */
 public class DBAppender extends AppenderSkeleton {
-
-  ConnectionSource connectionSource;
-
-  boolean cnxSupportsGetGeneratedKeys = false;
-  boolean cnxSupportsBatchUpdates = false;
-  SQLDialect sqlDialect;
-
-  boolean locationInfo = false;
-
-  static final String insertPropertiesSQL = "INSERT INTO  logging_event_property (event_id, mapped_key, mapped_value) VALUES (?, ?, ?)";
-
-  static final String insertExceptionSQL = "INSERT INTO  logging_event_exception (event_id, i, trace_line) VALUES (?, ?, ?)";
-
+  static final String insertPropertiesSQL =
+    "INSERT INTO  logging_event_property (event_id, mapped_key, mapped_value) VALUES (?, ?, ?)";
+  static final String insertExceptionSQL =
+    "INSERT INTO  logging_event_exception (event_id, i, trace_line) VALUES (?, ?, ?)";
   static final String insertSQL;
 
   static {
@@ -144,20 +136,33 @@ public class DBAppender extends AppenderSkeleton {
     insertSQL = sql.toString();
   }
 
+  ConnectionSource connectionSource;
+  boolean cnxSupportsGetGeneratedKeys = false;
+  boolean cnxSupportsBatchUpdates = false;
+  SQLDialect sqlDialect;
+  boolean locationInfo = false;
+
   public DBAppender() {
   }
 
-  public void activateOptions() {
+  public void activate() {
     getLogger().debug("DBAppender.activateOptions called");
 
-    if (connectionSource == null) { throw new IllegalStateException(
-        "DBAppender cannot function without a connection source"); }
+    if (connectionSource == null) {
+      throw new IllegalStateException(
+        "DBAppender cannot function without a connection source");
+    }
 
     sqlDialect = Util.getDialectFromCode(connectionSource.getSQLDialectCode());
     cnxSupportsGetGeneratedKeys = connectionSource.supportsGetGeneratedKeys();
     cnxSupportsBatchUpdates = connectionSource.supportsBatchUpdates();
-    if (!cnxSupportsGetGeneratedKeys && sqlDialect == null) { throw new IllegalStateException(
-        "DBAppender cannot function if the JDBC driver does not support getGeneratedKeys method *and* without a specific SQL dialect"); }
+    if (!cnxSupportsGetGeneratedKeys && (sqlDialect == null)) {
+      throw new IllegalStateException(
+        "DBAppender cannot function if the JDBC driver does not support getGeneratedKeys method *and* without a specific SQL dialect");
+    }
+    
+    // all nice and dandy on the eastern front
+    super.activate();
   }
 
   /**
@@ -182,8 +187,8 @@ public class DBAppender extends AppenderSkeleton {
       connection = connectionSource.getConnection();
       connection.setAutoCommit(false);
 
-      PreparedStatement insertStatement = connection
-          .prepareStatement(insertSQL);
+      PreparedStatement insertStatement =
+        connection.prepareStatement(insertSQL);
       insertStatement.setLong(1, event.getSequenceNumber());
       insertStatement.setLong(2, event.getTimeStamp());
       insertStatement.setString(3, event.getRenderedMessage());
@@ -220,6 +225,7 @@ public class DBAppender extends AppenderSkeleton {
       } else {
         rs = idStatement.executeQuery(sqlDialect.getSelectInsertId());
       }
+
       // A ResultSet cursor is initially positioned before the first row; the 
       // first call to the method next makes the first row the current row
       rs.next();
@@ -232,29 +238,29 @@ public class DBAppender extends AppenderSkeleton {
       Set propertiesKeys = event.getPropertyKeySet();
 
       if (propertiesKeys.size() > 0) {
-
-        PreparedStatement insertPropertiesStatement = connection
-            .prepareStatement(insertPropertiesSQL);
+        PreparedStatement insertPropertiesStatement =
+          connection.prepareStatement(insertPropertiesSQL);
 
         for (Iterator i = propertiesKeys.iterator(); i.hasNext();) {
           String key = (String) i.next();
           String value = (String) event.getProperty(key);
+
           //LogLog.info("id " + eventId + ", key " + key + ", value " + value);
           insertPropertiesStatement.setInt(1, eventId);
           insertPropertiesStatement.setString(2, key);
           insertPropertiesStatement.setString(3, value);
-          
-          if(cnxSupportsBatchUpdates) {
+
+          if (cnxSupportsBatchUpdates) {
             insertPropertiesStatement.addBatch();
           } else {
             insertPropertiesStatement.execute();
           }
         }
 
-        if(cnxSupportsBatchUpdates) {
+        if (cnxSupportsBatchUpdates) {
           insertPropertiesStatement.executeBatch();
         }
-        
+
         insertPropertiesStatement.close();
         insertPropertiesStatement = null;
       }
@@ -264,20 +270,20 @@ public class DBAppender extends AppenderSkeleton {
       if (strRep != null) {
         getLogger().debug("Logging an exception");
 
-        PreparedStatement insertExceptionStatement = connection
-            .prepareStatement(insertExceptionSQL);
+        PreparedStatement insertExceptionStatement =
+          connection.prepareStatement(insertExceptionSQL);
 
         for (short i = 0; i < strRep.length; i++) {
           insertExceptionStatement.setInt(1, eventId);
           insertExceptionStatement.setShort(2, i);
           insertExceptionStatement.setString(3, strRep[i]);
-          if(cnxSupportsBatchUpdates) {
+          if (cnxSupportsBatchUpdates) {
             insertExceptionStatement.addBatch();
           } else {
             insertExceptionStatement.execute();
           }
         }
-        if(cnxSupportsBatchUpdates) {
+        if (cnxSupportsBatchUpdates) {
           insertExceptionStatement.executeBatch();
         }
         insertExceptionStatement.close();
@@ -294,13 +300,6 @@ public class DBAppender extends AppenderSkeleton {
 
   public void close() {
     closed = true;
-  }
-
-  /*
-   * The DBAppender does not require a layout.
-   */
-  public boolean requiresLayout() {
-    return false;
   }
 
   /**

@@ -72,7 +72,7 @@ public class RenamingTest extends TestCase {
     tbrp.setActiveFileName("output/test.log");
     tbrp.activateOptions();
     rfa.setRollingPolicy(tbrp);
-    rfa.activateOptions();
+    rfa.activate();
 
     Calendar cal = Calendar.getInstance();
 

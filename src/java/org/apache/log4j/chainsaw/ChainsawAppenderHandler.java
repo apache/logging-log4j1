@@ -57,11 +57,11 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
 
   public ChainsawAppenderHandler(ChainsawAppender appender) {
     appender.setAppender(this);
-    activateOptions();
+    activate();
   }
 
   public ChainsawAppenderHandler() {
-    activateOptions();
+    activate();
   }
 
   public void setIdentifierExpression(String identifierExpression) {
@@ -95,8 +95,9 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
 
   public void close() {}
 
-  public void activateOptions() {
+  public void activate() {
     worker = new WorkQueue();
+    super.activate();
   }
 
   public boolean requiresLayout() {

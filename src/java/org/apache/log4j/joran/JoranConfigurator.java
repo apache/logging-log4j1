@@ -60,14 +60,13 @@ import java.util.Map;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-
 /**
  *
  * A JoranConfigurator instance should not be used more than once to
  * configure a LoggerRepository.
  *
  * @author Curt Arnold
- * @author Ceki G&uuml;lc&uuml;  
+ * @author <a href="http://www.qos.ch/log4j/">Ceki G&uuml;lc&uuml;</a>
  */
 public class JoranConfigurator extends ConfiguratorBase {
   Interpreter joranInterpreter;

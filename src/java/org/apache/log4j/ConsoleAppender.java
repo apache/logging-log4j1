@@ -22,7 +22,7 @@ package org.apache.log4j;
   * <code>System.err</code> using a layout specified by the user. The
   * default target is <code>System.out</code>.
   *
-  * @author Ceki G&uuml;lc&uuml;
+  * @author <a href="http://www.qos.ch/log4j/">Ceki G&uuml;lc&uuml;</a>
   * @since 1.1 */
 public class ConsoleAppender extends WriterAppender {
   public static final String SYSTEM_OUT = "System.out";
@@ -42,7 +42,7 @@ public class ConsoleAppender extends WriterAppender {
   public ConsoleAppender(Layout layout, String targetStr) {
     this.layout = layout;
     setTarget(targetStr);
-    activateOptions();
+    activate();
   }
 
   /**
@@ -77,13 +77,13 @@ public class ConsoleAppender extends WriterAppender {
     getLogger().warn("Using previously set target, System.out by default.");
   }
 
-  public void activateOptions() {
+  public void activate() {
     if (target.equals(SYSTEM_OUT)) {
       setWriter(createWriter(System.out));
     } else {
       setWriter(createWriter(System.err));
     }
-    super.activateOptions();
+    super.activate();
   }
 
   /**

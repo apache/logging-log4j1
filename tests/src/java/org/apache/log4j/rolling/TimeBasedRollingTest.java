@@ -84,7 +84,7 @@ public class TimeBasedRollingTest extends TestCase {
     tbrp.setFileNamePattern("output/test1-%d{" + datePattern + "}");
     tbrp.activateOptions();
     rfa.setRollingPolicy(tbrp);
-    rfa.activateOptions();
+    rfa.activate();
     logger.addAppender(rfa);
 
     SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
@@ -129,7 +129,7 @@ public class TimeBasedRollingTest extends TestCase {
     tbrp1.setFileNamePattern("output/test2-%d{" + datePattern + "}");
     tbrp1.activateOptions();
     rfa1.setRollingPolicy(tbrp1);
-    rfa1.activateOptions();
+    rfa1.activate();
     logger.addAppender(rfa1);
 
     SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
@@ -162,7 +162,7 @@ public class TimeBasedRollingTest extends TestCase {
     tbrp2.setFileNamePattern("output/test2-%d{" + datePattern + "}");
     tbrp2.activateOptions();
     rfa2.setRollingPolicy(tbrp2);
-    rfa2.activateOptions();
+    rfa2.activate();
     logger.addAppender(rfa2);
 
     for (int i = 3; i <= 4; i++) {
@@ -189,7 +189,7 @@ public class TimeBasedRollingTest extends TestCase {
     tbrp.setFileNamePattern("output/test3-%d{" + datePattern + "}.gz");
     tbrp.activateOptions();
     rfa.setRollingPolicy(tbrp);
-    rfa.activateOptions();
+    rfa.activate();
     logger.addAppender(rfa);
 
     SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
@@ -239,7 +239,7 @@ public class TimeBasedRollingTest extends TestCase {
     tbrp1.setFileNamePattern("output/test4-%d{" + datePattern + "}");
     tbrp1.activateOptions();
     rfa1.setRollingPolicy(tbrp1);
-    rfa1.activateOptions();
+    rfa1.activate();
     logger.addAppender(rfa1);
 
     SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
@@ -274,7 +274,7 @@ public class TimeBasedRollingTest extends TestCase {
     tbrp2.setActiveFileName("output/test4.log");
     tbrp2.activateOptions();
     rfa2.setRollingPolicy(tbrp2);
-    rfa2.activateOptions();
+    rfa2.activate();
     logger.addAppender(rfa2);
 
     for (int i = 3; i <= 4; i++) {
@@ -302,7 +302,7 @@ public class TimeBasedRollingTest extends TestCase {
     tbrp.setActiveFileName("output/test5.log");
     tbrp.activateOptions();
     rfa.setRollingPolicy(tbrp);
-    rfa.activateOptions();
+    rfa.activate();
     logger.addAppender(rfa);
 
     SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
@@ -346,7 +346,7 @@ public class TimeBasedRollingTest extends TestCase {
     tbrp.setActiveFileName("output/test6.log");
     tbrp.activateOptions();
     rfa.setRollingPolicy(tbrp);
-    rfa.activateOptions();
+    rfa.activate();
     logger.addAppender(rfa);
 
     SimpleDateFormat sdf = new SimpleDateFormat(datePattern);

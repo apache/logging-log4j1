@@ -70,16 +70,31 @@ public abstract class AppenderSkeleton extends ComponentBase implements Appender
   protected boolean closed = false;
 
   /**
+   * By default, an appender is not in working order. It must be configured 
+   * first. 
+   */
+  protected boolean active = false;
+  
+  /**
    * The guard prevents an appender from repeatedly calling its own doAppend
    * method.
    */
   private boolean guard = false;
   
   /**
-   * Derived appenders should override this method if option structure
-   * requires it.
+   * Calls the {@link #activate} method.
+   * 
+   * @deprecated Please call the activate() method instead.
    */
   public void activateOptions() {
+    activate();
+  }
+  
+  /**
+   * Default implementation called by sub-classes.
+   */
+  public void activate() {
+    this.active = true;
   }
 
   /**
@@ -209,13 +224,15 @@ public abstract class AppenderSkeleton extends ComponentBase implements Appender
     try {
       guard = true;
 
-      if (closed) {
-        // FIXME: We should not flood other appenders but at the same time
-        // should output something meaningful (only once though).
-        // Logging not allowed:
-        //getLogger().error(
-        //  "Attempted to append to closed appender named [{}].", name);
+      if (this.closed) {
+        getNonFloodingLogger().error(
+            "Attempted to append to closed appender named [{}].", name);
+        return;
+      }
 
+      if (!this.active) {
+        getNonFloodingLogger().error(
+            "Attempted to log with inactive appender named [{}].", name);
         return;
       }
 
@@ -246,19 +263,21 @@ FILTER_LOOP:
   }
 
   /**
-   * Set the {@link ErrorHandler} for this Appender.
-   *
-   * @since 0.9.0
+   * Returns true if this appender instance is closed.
+   * @since 1.3
    */
-//  public synchronized void setErrorHandler(ErrorHandler eh) {
-//    if (eh == null) {
-//      // We do not throw exception here since the cause is probably a
-//      // bad config file.
-//      getLogger().warn("You have tried to set a null error-handler.");
-//    } else {
-//      this.errorHandler = eh;
-//    }
-//  }
+  public boolean isClosed() {
+    return closed;
+  }
+
+  /**
+   * Returns true if this appender is working order.
+   * @since 1.3
+   */
+  public boolean isActive() {
+    // an appender can be active only if it is not closed
+    return (active && !closed);
+  }
 
   /**
    * Set the layout for this appender. Note that some appenders have their own

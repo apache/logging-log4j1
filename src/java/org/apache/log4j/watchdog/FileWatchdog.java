@@ -17,7 +17,6 @@
 package org.apache.log4j.watchdog;
 
 import java.io.File;
-import java.net.URL;
 
 /**
  * Implements a watchdog to watch a file.  When the file changes, determined by
