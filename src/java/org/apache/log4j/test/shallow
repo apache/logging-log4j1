@@ -85,9 +85,11 @@ declare -i TEST
 
 TEST=1
 if [ $TEST -ge $start ]; then
+
   makeShallowConfigFile $TEMP DEBUG " " $SIMPLE
   testShallow LINE_NUMBER
 fi
+
 
 TEST=2
 if [ $TEST -ge $start ]; then

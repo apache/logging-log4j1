@@ -50,7 +50,7 @@ import javax.xml.parsers.FactoryConfigurationError;
 
    <p>There are sample XML files included in the package.
    
-   @author <a href=mailto:cstaylor@pacbell.net>Christopher Taylor</a>
+   @author Christopher Taylor
    @author Ceki G&uuml;lc&uuml;
    @author Anders Kristensen
 
@@ -112,7 +112,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
     } else {
       Document doc = appenderRef.getOwnerDocument();
 
-      // DOESN'T WORK!! :
+      // Doesn't work on DOM Level 1 :
       // Element element = doc.getElementById(appenderName);
                         
       // Endre's hack:

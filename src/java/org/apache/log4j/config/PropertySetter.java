@@ -68,6 +68,16 @@ public class PropertySetter {
     }
   }
   
+
+  /**
+     Set the properties of an object passed as a parameter in one
+     go. The <code>properties</code> are parsed relative to a
+     <code>prefix</code>.
+
+     @param obj The object to configure.
+     @param properties A java.util.Properties containing keys and values.
+     @param prefix Only keys having the specified prefix will be set.
+  */
   public
   static
   void setProperties(Object obj, Properties properties, String prefix) {
@@ -103,8 +113,7 @@ public class PropertySetter {
         key = key.substring(len);
         if ("layout".equals(key) && obj instanceof Appender) {
           continue;
-        }
-        
+        }        
         setProperty(key, value);
       }
     }
@@ -139,7 +148,8 @@ public class PropertySetter {
     PropertyDescriptor prop = getPropertyDescriptor(name);
     
     if (prop == null) {
-      LogLog.warn("No such property: " + name);
+      LogLog.warn("No such property [" + name + "] in "+
+		  obj.getClass().getName()+"." );
     } else {
       try {
         setProperty(prop, name, value);
@@ -150,26 +160,17 @@ public class PropertySetter {
     }
   }
   
-  /*
-  public
-  void setProperty(String name, String value) throws PropertySetterException {
-    if (props == null) introspect();
-    name = Introspector.decapitalize(name);
-    PropertyDescriptor prop = getPropertyDescriptor(name);
-    
-    if (prop != null) {
-      setProperty(prop, name, value);
-    } else {
-      throw new PropertySetterException(
-          "No such property", obj, name, value);
-    }
-  }
-  */
-  
+  /** 
+      Set the named property given a {@link PropertyDescriptor}.
+
+      @param prop A PropertyDescriptor describing the characteristics
+      of the property to set.
+      @param name The named of the property to set.
+      @param value The value of the property.      
+   */
   public
   void setProperty(PropertyDescriptor prop, String name, String value)
-    throws PropertySetterException
-  {
+    throws PropertySetterException {
     Method setter = prop.getWriteMethod();
     if (setter == null) {
       throw new PropertySetterException("No setter for property");
@@ -181,7 +182,7 @@ public class PropertySetter {
     
     Object arg;
     try {
-      arg = getArg(value, paramTypes[0]);
+      arg = convertArg(value, paramTypes[0]);
     } catch (Throwable t) {
       throw new PropertySetterException(t);
     }
@@ -197,33 +198,44 @@ public class PropertySetter {
     }
   }
   
+
+  /**
+     Convert <code>val</code> a String parameter to an object of a
+     given type.
+  */
   protected
-  Object getArg(String val, Class type) {
+  Object convertArg(String val, Class type) {
+    if(val == null)
+      return null;
+
+    String v = val.trim();
     if (String.class.isAssignableFrom(type)) {
       return val;
     } else if (Integer.TYPE.isAssignableFrom(type)) {
-      return new Integer(val.trim());
+      return new Integer(v);
     } else if (Long.TYPE.isAssignableFrom(type)) {
-      return new Long(val.trim());
+      return new Long(v);
     } else if (Boolean.TYPE.isAssignableFrom(type)) {
-      val = val.trim();
-      if ("true".equalsIgnoreCase(val)) {
+      if ("true".equalsIgnoreCase(v)) {
         return Boolean.TRUE;
-      } else if ("false".equalsIgnoreCase(val)) {
+      } else if ("false".equalsIgnoreCase(v)) {
         return Boolean.FALSE;
       }
     } else if (Priority.class.isAssignableFrom(type)) {
-      return Priority.toPriority(val.trim());
+      return OptionConverter.toPriority(v, null);
     }
     return null;
   }
+  
   
   protected
   PropertyDescriptor getPropertyDescriptor(String name) {
     if (props == null) introspect();
     
     for (int i = 0; i < props.length; i++) {
-      if (name.equals(props[i].getName())) return props[i];
+      if (name.equals(props[i].getName())) {
+	return props[i];
+      }
     }
     return null;
   }
@@ -231,7 +243,7 @@ public class PropertySetter {
   public
   void activate() {
     if (obj instanceof OptionHandler) {
-        ((OptionHandler) obj).activateOptions();
+      ((OptionHandler) obj).activateOptions();
     }
   }
 }
