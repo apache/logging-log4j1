@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE log4j:configuration>
 
-<log4j:configuration xmlns:log4j='http://logging.apache.org/' debug="true">
+<configuration xmlns='http://logging.apache.org/' debug="true">
 	  
   <substitutionProperty file="input/db/db.properties"/>
 
   <!-- We create a joran rule that will instance and bind the appropriate
        data source instance to JNDI. -->   
-  <newRule pattern="log4j:configuration/bindDataSourceToJNDI" 
+  <newRule pattern="configuration/bindDataSourceToJNDI" 
            actionClass="org.apache.log4j.db.BindDataSourceToJNDIAction"/>
   	    
   <bindDataSourceToJNDI />
@@ -46,7 +46,7 @@
     <appender-ref ref="VECTOR" />
     <appender-ref ref="CONSOLE" />
   </root>  
-</log4j:configuration>
+</configuration>
 
 
 
