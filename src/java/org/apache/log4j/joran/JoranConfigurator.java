@@ -44,8 +44,9 @@ import org.apache.log4j.joran.action.LayoutAction;
 import org.apache.log4j.joran.action.LevelAction;
 import org.apache.log4j.joran.action.LoggerAction;
 import org.apache.log4j.joran.action.PluginAction;
-import org.apache.log4j.joran.action.PropertyAction;
+import org.apache.log4j.joran.action.RepositoryPropertyAction;
 import org.apache.log4j.joran.action.RootLoggerAction;
+import org.apache.log4j.joran.action.SubstitutionPropertyAction;
 import org.apache.log4j.spi.Configurator;
 import org.apache.log4j.spi.LoggerRepository;
 import org.xml.sax.SAXException;
@@ -110,7 +111,8 @@ public class JoranConfigurator
   protected void selfInitialize() {
     RuleStore rs = new SimpleRuleStore();
     rs.addRule(new Pattern("log4j:configuration"), new ConfigurationAction());
-    rs.addRule(new Pattern("log4j:configuration/property"), new PropertyAction());
+    rs.addRule(new Pattern("log4j:configuration/substitutionProperty"), new SubstitutionPropertyAction());
+    rs.addRule(new Pattern("log4j:configuration/repositoryProperty"), new RepositoryPropertyAction());
     rs.addRule(new Pattern("log4j:configuration/plugin"), new PluginAction());
     rs.addRule(new Pattern("log4j:configuration/logger"), new LoggerAction());
     rs.addRule(new Pattern("log4j:configuration/logger/level"), new LevelAction());

@@ -3,7 +3,7 @@
 
 <log4j:configuration debug="true">
 	  
-  <property file="input/db/db.properties"/>
+  <substitutionProperty file="input/db/db.properties"/>
 	  
   <plugin name="DB1" class="org.apache.log4j.db.DBReceiver">
      <connectionSource class="org.apache.log4j.db.UrlConnectionSource">
@@ -17,7 +17,7 @@
 
   <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
      <layout class="org.apache.log4j.PatternLayout">
-       <param name="ConversionPattern" value="ZZZ %relative %level %logger - %message%n"/>
+       <param name="ConversionPattern" value="READING %relative %level %logger - %message%n"/>
      </layout>
   </appender>
   

@@ -33,17 +33,20 @@ import java.io.IOException;
 import java.util.Properties;
 
 /**
- * Set a new property for the execution context by name, value pair, or adds
- * all the properties found in the specified file.
+ * This class serves as a base for other actions, which similar to the ANT 
+ * <property> task which add/set properties of a given object.
  * 
- * Similar to the ANT <property> task.
  * @author Ceki G&uuml;lc&uuml;
  */
-public class PropertyAction extends Action {
+abstract public class PropertyAction extends Action {
   static final Logger logger = Logger.getLogger(PropertyAction.class);
   static String INVALID_ATTRIBUTES =
     "In <property> element, either the \"file\" attribute or both the \"name\" and \"value\" attributes must be set.";
 
+  
+  abstract void setProperties(ExecutionContext ec, Properties props);
+  abstract void setProperty(ExecutionContext ec, String key, String value);
+  
   /**
    * Set a new property for the execution context by name, value pair, or adds
    * all the properties found in the given file.
@@ -64,7 +67,7 @@ public class PropertyAction extends Action {
         FileInputStream istream = new FileInputStream(fileName);
         props.load(istream);
         istream.close();
-        ec.addProperties(props);
+        setProperties(ec, props);
       } catch (IOException e) {
         String errMsg = "Could not read properties file [" + fileName + "].";
         LogLog.error(errMsg, e);
@@ -76,7 +79,7 @@ public class PropertyAction extends Action {
       !(Option.isEmpty(name) || Option.isEmpty(value))
         && Option.isEmpty(fileName)) {
       value = OptionConverter.convertSpecialChars(value);
-      ec.addProperty(name, value);
+      setProperty(ec, name, value);
     } else {
       LogLog.error(INVALID_ATTRIBUTES);
       ec.addError(new ErrorItem(INVALID_ATTRIBUTES));
