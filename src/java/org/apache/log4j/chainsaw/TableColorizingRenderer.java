@@ -85,10 +85,7 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer {
     int row, int col) {
     value = formatField(value);
 
-    Color background = null;
-    Color foreground = null;
-
-    Component c = super.getTableCellRendererComponent(table, value, 
+    JLabel c = (JLabel)super.getTableCellRendererComponent(table, value, 
         isSelected, hasFocus, row, col);
     int colIndex = table.getColumnModel().getColumn(col).getModelIndex() + 1;
 
@@ -102,26 +99,25 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer {
 
     case ChainsawColumns.INDEX_THROWABLE_COL_NAME:
       if (value instanceof String[]) {
-        ((JLabel) c).setText(((String[]) value)[0]);
+        c.setText(((String[]) value)[0]);
       }
       break;
 
     case ChainsawColumns.INDEX_LOGGER_COL_NAME:
       if (loggerPrecision == 0) {
         break;
-      } else {
-        String logger = value.toString();
-        int startPos = -1;
-
-        for (int i = 0; i < loggerPrecision; i++) {
-          startPos = logger.indexOf(".", startPos + 1);
-          if (startPos < 0) {
-              break;
-          }
-        }
-
-        ((JLabel) c).setText(logger.substring(startPos + 1));
       }
+      String logger = value.toString();
+      int startPos = -1;
+
+      for (int i = 0; i < loggerPrecision; i++) {
+        startPos = logger.indexOf(".", startPos + 1);
+        if (startPos < 0) {
+          break;
+        }
+      }
+
+    c.setText(logger.substring(startPos + 1));
       break;
 
     case ChainsawColumns.INDEX_LEVEL_COL_NAME:
@@ -131,15 +127,18 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer {
         if (levelComponent.getIcon() != null) {
           levelComponent.setText("");
         }
-
-        if (toolTipsVisible) {
-            levelComponent.setToolTipText(((JLabel)c).getToolTipText());
-        } else {
-            levelComponent.setToolTipText(value.toString());
-        } 
+        if (!toolTipsVisible) {
+          levelComponent.setToolTipText(value.toString());
+        }
       } else {
         levelComponent.setIcon(null);
         levelComponent.setText(value.toString());
+        if (!toolTipsVisible) {
+            levelComponent.setToolTipText(null);
+        }
+      }
+      if (toolTipsVisible) {
+          levelComponent.setToolTipText(c.getToolTipText());
       }
       levelComponent.setForeground(c.getForeground());
       levelComponent.setBackground(c.getBackground());
@@ -155,7 +154,10 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer {
       return c;
     }
 
-    if (getColorizer() != null) {
+    Color background = null;
+    Color foreground = null;
+
+    if (colorizer != null) {
       EventContainer container = (EventContainer) table.getModel();
       LoggingEvent event = container.getRow(row);
 
@@ -163,8 +165,8 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer {
         //ignore...probably changed displayed cols
         return c;
       }
-      background = getColorizer().getBackgroundColor(event);
-      foreground = getColorizer().getForegroundColor(event);
+      background = colorizer.getBackgroundColor(event);
+      foreground = colorizer.getForegroundColor(event);
     }
 
     /**
@@ -217,10 +219,9 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer {
    */
   private Object formatField(Object o) {
     if (!(o instanceof Date)) {
-      return o;
-    } else {
-      return dateFormatInUse.format((Date) o);
+      return (o == null ? "" : o);
     }
+    return dateFormatInUse.format((Date) o);
   }
 
   /**
@@ -230,23 +231,7 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer {
     this.colorizer = colorizer;
   }
 
-  /**
-   * @return colorizer
-   */
-  public Colorizer getColorizer() {
-    return colorizer;
-  }
-
-  /**
-   * Returns true if this renderer will use Icons to render the Level
-   * column, otherwise false.
-   * @return level use icons flag
-   */
-  public boolean isLevelUseIcons() {
-    return levelUseIcons;
-  }
-
-  /**
+   /**
    * Sets the property which determines whether to use Icons or text
    * for the Level column
    * @param levelUseIcons

@@ -123,7 +123,13 @@ import org.apache.log4j.xml.XMLDecoder;
  * that is used to display a Welcome panel, and any other panels that are
  * generated because Logging Events are streamed via a Receiver, or other
  * mechanism.
- *
+ * 
+ * NOTE: Some of Chainsaw's application initialization should be performed prior 
+ * to activating receivers and the logging framework used to perform self-logging.  
+ * 
+ * DELAY as much as possible the logging framework initialization process,
+ * currently initialized by the creation of a ChainsawAppenderHandler.
+ * 
  * @author Scott Deboy <sdeboy@apache.org>
  * @author Paul Smith  <psmith@apache.org>
  *
@@ -143,8 +149,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   private ChainsawStatusBar statusBar;
   private final ApplicationPreferenceModel applicationPreferenceModel =
     new ApplicationPreferenceModel();
-  private final ApplicationPreferenceModelPanel applicationPreferenceModelPanel =
-    new ApplicationPreferenceModelPanel(applicationPreferenceModel);
+  private ApplicationPreferenceModelPanel applicationPreferenceModelPanel;
   private final Map tableModelMap = new HashMap();
   private final Map tableMap = new HashMap();
   private final List filterableColumns = new ArrayList();
@@ -160,12 +165,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   private final List identifierPanels = new ArrayList();
   private int dividerSize;
   private int cyclicBufferSize;
-  private static final Logger logger = LogManager.getLogger(LogUI.class);
+  private static Logger logger;
 
-  static {
-      LogManager.getRootLogger().setLevel(Level.TRACE);
-  }
-  
   /**
    * Set to true, if and only if the GUI has completed it's full
    * initialization. Any logging events that come in must wait until this is
@@ -285,8 +286,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 				}
 			});
     }
-    logger.info("SecurityManager is now: " + System.getSecurityManager());
-    
     
     LogUI logUI = new LogUI();
 
@@ -295,12 +294,17 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     }
     logUI.cyclicBufferSize = model.getCyclicBufferSize();
 
-    logUI.handler = new ChainsawAppenderHandler();
     PropertyFilter propFilter = new PropertyFilter();
     propFilter.setProperties(Constants.HOSTNAME_KEY+"=chainsaw,"+Constants.APPLICATION_KEY+"=log");
+
+    logUI.handler = new ChainsawAppenderHandler();
     logUI.handler.addFilter(propFilter);
+
     logUI.handler.addEventBatchListener(logUI.new NewTabEventBatchReceiver());
-    
+    //NOTE: this next line MUST be the first place where the logging framework is initialized
+    //if started from the 'main' method
+    LogManager.getRootLogger().setLevel(Level.TRACE);
+    logger = LogManager.getLogger(LogUI.class);
     /**
      * TODO until we work out how JoranConfigurator might be able to have
      * configurable class loader, if at all.  For now we temporarily replace the
@@ -312,8 +316,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     String config = model.getConfigurationURL();
     if(config!=null && (!(config.trim().equals("")))) {
         config = config.trim();
+        logger.info("Using '" + config + "' for auto-configuration");
         try {
-          logger.info("Using '" + config + "' for auto-configuration");
           URL configURL = new URL(config);
           logUI.loadConfigurationUsingPluginClassLoader(configURL);
         }catch(MalformedURLException e) {
@@ -327,6 +331,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     logUI.activateViewer();
 
     logUI.getApplicationPreferenceModel().apply(model);
+
+    logger.info("SecurityManager is now: " + System.getSecurityManager());
 
     logUI.checkForNewerVersion();
     
@@ -349,6 +355,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    *
    */
   public void activateViewer(ChainsawAppender appender) {
+    //if Chainsaw is launched as an appender, ensure the root logger level is TRACE
+    LogManager.getRootLogger().setLevel(Level.TRACE);
     ApplicationPreferenceModel model = new ApplicationPreferenceModel();
     SettingsManager.getInstance().configure(model);
 
@@ -359,8 +367,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     PropertyFilter propFilter = new PropertyFilter();
     propFilter.setProperties(Constants.HOSTNAME_KEY+"=chainsaw,"+Constants.APPLICATION_KEY+"=log");
     handler.addFilter(propFilter);
-
     handler.addEventBatchListener(new NewTabEventBatchReceiver());
+
     LogManager.getRootLogger().addAppender(appender);
 
     setShutdownAction(
@@ -430,6 +438,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     getTabbedPane().setEnabledAt(getTabbedPane().indexOfTab(dndTitle), false);
     ensureWelcomePanelVisible();
     
+    applicationPreferenceModelPanel = new ApplicationPreferenceModelPanel(applicationPreferenceModel);
     applicationPreferenceModelPanel.setOkCancelActionListener(
       new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -1600,23 +1609,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     return getCurrentLogPanel().isLogTreeVisible();
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see org.apache.log4j.chainsaw.EventBatchListener#getInterestedIdentifier()
-   */
-
-  /**
-   * DOCUMENT ME!
-   *
-   * @return DOCUMENT ME!
-   */
-  public String getIntereXstedIdentifier() {
-    //    this instance is interested in ALL event batches, as we determine how to
-    // route things
-    return null;
-  }
-
   /**
    * DOCUMENT ME!
    *
@@ -1787,6 +1779,11 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
         }
       });
 
+    logger.debug("adding logpanel to tabbed pane: " + ident);
+    SwingUtilities.invokeLater(new Runnable() {
+        public void run() {
+    }
+    });
     getTabbedPane().add(ident, thisPanel);
     getPanelMap().put(ident, thisPanel);
 
@@ -1847,7 +1844,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
         ClassLoader previousTCCL = Thread.currentThread().getContextClassLoader();
         
         if(url!=null) {
-            logger.info("Using '" + url.toExternalForm()+ "' for auto-configuration");
             try {
               // we temporarily swap the TCCL so that plugins can find resources
               Thread.currentThread().setContextClassLoader(classLoader);
@@ -1857,8 +1853,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
                 // now switch it back...
                 Thread.currentThread().setContextClassLoader(previousTCCL);
             }
-        }else {
-            logger.info("auto-configuration file has not been provided");
         }
         ensureChainsawAppenderHandlerAdded();
     }
@@ -1906,16 +1900,20 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
                          */
             try {
               initializationLock.wait(1000);
+              logger.debug("waiting for initialization to complete");
             } catch (InterruptedException e) {
             }
           }
+          logger.debug("out of system initialization wait loop");
         }
       }
 
       if (!getPanelMap().containsKey(ident)) {
+          logger.debug("panel " + ident + " does not exist - creating");
         try {
           buildLogPanel(false, ident, events);
         } catch (IllegalArgumentException iae) {
+            logger.error("error creating log panel", iae);
           //should not happen - not a custom expression panel
         }
       }

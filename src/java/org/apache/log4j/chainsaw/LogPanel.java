@@ -245,6 +245,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
   public LogPanel(final ChainsawStatusBar statusBar, final String identifier, int cyclicBufferSize) {
     this.identifier = identifier;
     this.statusBar = statusBar;
+    logger.debug("creating logpanel for " + identifier);
 
     setLayout(new BorderLayout());
     scroll = true;

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.log4j.chainsaw;
 
 import java.beans.PropertyChangeListener;
@@ -23,12 +22,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import javax.swing.event.EventListenerList;
-
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.Constants;
 import org.apache.log4j.net.SocketReceiver;
 import org.apache.log4j.rule.ExpressionRule;
@@ -36,15 +32,14 @@ import org.apache.log4j.rule.Rule;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.LoggingEventFieldResolver;
 
-
 /**
- * A handler class that either extends a particular appender hierarchy or can be bound
- * into the Log4j appender framework, and queues events, to be later
+ * A handler class that either extends a particular appender hierarchy or can be
+ * bound into the Log4j appender framework, and queues events, to be later
  * dispatched to registered/interested parties.
- *
+ * 
  * @author Scott Deboy <sdeboy@apache.org>
  * @author Paul Smith <psmith@apache.org>
- *
+ * 
  */
 public class ChainsawAppenderHandler extends AppenderSkeleton {
   private static final String DEFAULT_IDENTIFIER = "Unknown";
@@ -54,12 +49,11 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
   private EventListenerList listenerList = new EventListenerList();
   private double dataRate = 0.0;
   private String identifierExpression;
-  private final LoggingEventFieldResolver resolver =
-    LoggingEventFieldResolver.getInstance();
-  private PropertyChangeSupport propertySupport =
-    new PropertyChangeSupport(this);
+  private final LoggingEventFieldResolver resolver = LoggingEventFieldResolver
+      .getInstance();
+  private PropertyChangeSupport propertySupport = new PropertyChangeSupport(
+      this);
   private Map customExpressionRules = new HashMap();
-  private static final Logger logger = LogManager.getLogger(ChainsawAppenderHandler.class);
 
   public ChainsawAppenderHandler(ChainsawAppender appender) {
     appender.setAppender(this);
@@ -81,8 +75,8 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
     return identifierExpression;
   }
 
-  public void addCustomEventBatchListener(
-    String identifier, EventBatchListener l) throws IllegalArgumentException {
+  public void addCustomEventBatchListener(String identifier,
+      EventBatchListener l) throws IllegalArgumentException {
     customExpressionRules.put(identifier, ExpressionRule.getRule(identifier));
     listenerList.add(EventBatchListener.class, l);
   }
@@ -99,8 +93,7 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
     worker.enqueue(event);
   }
 
-  public void close() {
-  }
+  public void close() {}
 
   public void activateOptions() {
     worker = new WorkQueue();
@@ -119,39 +112,34 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
   }
 
   /**
-   * Determines an appropriate title for the Tab for the Tab Pane
-   * by locating a the hostname property
+   * Determines an appropriate title for the Tab for the Tab Pane by locating a
+   * the hostname property
+   * 
    * @param event
    * @return identifier
    */
   String getTabIdentifier(LoggingEvent e) {
     String ident = resolver.applyFields(identifierExpression, e);
-
     return ((ident != null) ? ident : DEFAULT_IDENTIFIER);
   }
 
   /**
    * A little test bed
+   * 
    * @param args
    */
   public static void main(String[] args) throws InterruptedException {
     ChainsawAppenderHandler handler = new ChainsawAppenderHandler();
-    handler.addEventBatchListener(
-      new EventBatchListener() {
-        public String getInterestedIdentifier() {
-          return null;
-        }
+    handler.addEventBatchListener(new EventBatchListener() {
+      public String getInterestedIdentifier() {
+        return null;
+      }
 
-        public void receiveEventBatch(
-          String identifier, List events) {
-          logger.debug(
-            "received batch for '" + identifier + "', list.size()="
-            + events.size());
-          logger.debug(events.toString());
-        }
-      });
+      public void receiveEventBatch(String identifier, List events) {
+        System.out.println("received " + events.size());
+      }
+    });
     LogManager.getRootLogger().addAppender(handler);
-
     SocketReceiver receiver = new SocketReceiver(4445);
     LogManager.getLoggerRepository().getPluginRegistry().addPlugin(receiver);
     receiver.activateOptions();
@@ -159,12 +147,13 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
   }
 
   /**
-   * Exposes the current Data rate calculated.  This is periodically updated
-   * by an internal Thread as is the number of events that have
-   * been processed, and dispatched to all listeners since the last sample period
-   * divided by the number of seconds since the last sample period.
-   *
+   * Exposes the current Data rate calculated. This is periodically updated by
+   * an internal Thread as is the number of events that have been processed, and
+   * dispatched to all listeners since the last sample period divided by the
+   * number of seconds since the last sample period.
+   * 
    * This method fires a PropertyChange event so listeners can monitor the rate
+   * 
    * @return double # of events processed per second
    */
   public double getDataRate() {
@@ -177,15 +166,15 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
   void setDataRate(double dataRate) {
     double oldValue = this.dataRate;
     this.dataRate = dataRate;
-    propertySupport.firePropertyChange(
-      "dataRate", new Double(oldValue), new Double(this.dataRate));
+    propertySupport.firePropertyChange("dataRate", new Double(oldValue),
+        new Double(this.dataRate));
   }
 
   /**
    * @param listener
    */
   public synchronized void addPropertyChangeListener(
-    PropertyChangeListener listener) {
+      PropertyChangeListener listener) {
     propertySupport.addPropertyChangeListener(listener);
   }
 
@@ -193,8 +182,8 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
    * @param propertyName
    * @param listener
    */
-  public synchronized void addPropertyChangeListener(
-    String propertyName, PropertyChangeListener listener) {
+  public synchronized void addPropertyChangeListener(String propertyName,
+      PropertyChangeListener listener) {
     propertySupport.addPropertyChangeListener(propertyName, listener);
   }
 
@@ -202,7 +191,7 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
    * @param listener
    */
   public synchronized void removePropertyChangeListener(
-    PropertyChangeListener listener) {
+      PropertyChangeListener listener) {
     propertySupport.removePropertyChangeListener(listener);
   }
 
@@ -210,15 +199,15 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
    * @param propertyName
    * @param listener
    */
-  public synchronized void removePropertyChangeListener(
-    String propertyName, PropertyChangeListener listener) {
+  public synchronized void removePropertyChangeListener(String propertyName,
+      PropertyChangeListener listener) {
     propertySupport.removePropertyChangeListener(propertyName, listener);
   }
 
   /**
-   * Queue of Events are placed in here, which are picked up by an
-   * asychronous thread.  The WorkerThread looks for events once a second and
-   * processes all events accumulated during that time..
+   * Queue of Events are placed in here, which are picked up by an asychronous
+   * thread. The WorkerThread looks for events once a second and processes all
+   * events accumulated during that time..
    */
   class WorkQueue {
     final ArrayList queue = new ArrayList();
@@ -243,8 +232,8 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
     }
 
     /**
-     * The worker thread converts each queued event
-     * to a vector and forwards the vector on to the UI.
+     * The worker thread converts each queued event to a vector and forwards the
+     * vector on to the UI.
      */
     private class WorkerThread extends Thread {
       public WorkerThread() {
@@ -254,81 +243,65 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
 
       public void run() {
         List innerList = new ArrayList();
-
         while (true) {
           long timeStart = System.currentTimeMillis();
-
           synchronized (mutex) {
             try {
               while ((queue.size() == 0) || (identifierExpression == null)) {
                 setDataRate(0);
                 mutex.wait();
               }
-
               if (queue.size() > 0) {
                 innerList.addAll(queue);
                 queue.clear();
               }
-            } catch (InterruptedException ie) {
             }
+            catch (InterruptedException ie) {}
           }
-
           int size = innerList.size();
-
           if (size > 0) {
             Iterator iter = innerList.iterator();
             ChainsawEventBatch eventBatch = new ChainsawEventBatch();
-
             while (iter.hasNext()) {
               LoggingEvent e = (LoggingEvent) iter.next();
-              //attempt to set the host name (without port), from remoteSourceInfo
-              //if 'hostname' property not provided
+              // attempt to set the host name (without port), from
+              // remoteSourceInfo
+              // if 'hostname' property not provided
               if (e.getProperty(Constants.HOSTNAME_KEY) == null) {
-              		String remoteHost =
-              		e.getProperty(ChainsawConstants.LOG4J_REMOTEHOST_KEY);
-              		
-              		if (remoteHost != null) {
-              			int colonIndex = remoteHost.indexOf(":");
-              		if (colonIndex == -1) {
-              		colonIndex = remoteHost.length();
-              		}
-              		
-              		e.setProperty(Constants.HOSTNAME_KEY, remoteHost.substring(0, colonIndex));
-           		}              	
-              }
-
-              for (
-                Iterator itery = customExpressionRules.entrySet().iterator();
-                  itery.hasNext();) {
-                Map.Entry entry = (Map.Entry) itery.next();
-                Rule rule = (Rule) entry.getValue();
-
-                if (rule.evaluate(e)) {
-                  eventBatch.addEvent(
-                    (String) entry.getKey(), e);
+                String remoteHost = e
+                    .getProperty(ChainsawConstants.LOG4J_REMOTEHOST_KEY);
+                if (remoteHost != null) {
+                  int colonIndex = remoteHost.indexOf(":");
+                  if (colonIndex == -1) {
+                    colonIndex = remoteHost.length();
+                  }
+                  e.setProperty(Constants.HOSTNAME_KEY, remoteHost.substring(0,
+                      colonIndex));
                 }
               }
-
-              eventBatch.addEvent(
-                getTabIdentifier(e), e);
+              for (Iterator itery = customExpressionRules.entrySet().iterator(); itery
+                  .hasNext();) {
+                Map.Entry entry = (Map.Entry) itery.next();
+                Rule rule = (Rule) entry.getValue();
+                if (rule.evaluate(e)) {
+                  eventBatch.addEvent((String) entry.getKey(), e);
+                }
+              }
+              eventBatch.addEvent(getTabIdentifier(e), e);
             }
-
             dispatchEventBatch(eventBatch);
-
             innerList.clear();
           }
-
           if (getQueueInterval() > 1000) {
-	          try {
-	            synchronized (this) {
-	              wait(getQueueInterval());
-	            }
-	          } catch (InterruptedException ie) {
-	          }
+            try {
+              synchronized (this) {
+                wait(getQueueInterval());
+              }
+            }
+            catch (InterruptedException ie) {}
           } else {
-          	Thread.yield();
+            Thread.yield();
           }
-
           if (size == 0) {
             setDataRate(0.0);
           } else {
@@ -341,34 +314,28 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
       }
 
       /**
-      * Dispatches the event batches contents to all the interested parties
-      * by iterating over each identifier and dispatching the
-      * ChainsawEventBatchEntry object to each listener that is interested.
+       * Dispatches the event batches contents to all the interested parties by
+       * iterating over each identifier and dispatching the
+       * ChainsawEventBatchEntry object to each listener that is interested.
+       * 
        * @param eventBatch
        */
       private void dispatchEventBatch(ChainsawEventBatch eventBatch) {
-        EventBatchListener[] listeners =
-          (EventBatchListener[]) listenerList.getListeners(
-            EventBatchListener.class);
-
+        EventBatchListener[] listeners = (EventBatchListener[]) listenerList
+            .getListeners(EventBatchListener.class);
         for (Iterator iter = eventBatch.identifierIterator(); iter.hasNext();) {
           String identifier = (String) iter.next();
           List eventList = null;
-
           for (int i = 0; i < listeners.length; i++) {
             EventBatchListener listener = listeners[i];
-
-            if (
-              (listener.getInterestedIdentifier() == null)
+            if ((listener.getInterestedIdentifier() == null)
                 || listener.getInterestedIdentifier().equals(identifier)) {
               if (eventList == null) {
                 eventList = eventBatch.entrySet(identifier);
               }
-
               listener.receiveEventBatch(identifier, eventList);
             }
           }
-
           eventList = null;
         }
       }

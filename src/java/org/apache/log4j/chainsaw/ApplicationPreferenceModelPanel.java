@@ -66,10 +66,11 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
   private JTextField toolTipDisplayMillis;
   private JTextField cyclicBufferSize;    
   private final JTextField configurationURL = new JTextField(35);
-  private static final Logger logger = LogManager.getLogger(ApplicationPreferenceModelPanel.class);
+  private final Logger logger;
 
   ApplicationPreferenceModelPanel(ApplicationPreferenceModel model) {
     this.committedPreferenceModel = model;
+    logger = LogManager.getLogger(ApplicationPreferenceModelPanel.class);
     initComponents();
     getOkButton().addActionListener(
       new ActionListener() {
@@ -113,7 +114,7 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
     model.addPropertyChangeListener(
       new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
-          logger.warn(evt.toString());
+          System.out.println(evt);
         }
       });
     panel.setOkCancelActionListener(
