@@ -10,7 +10,7 @@ package org.apache.log4j.spi;
 import org.apache.log4j.*;
 
 import org.apache.log4j.helpers.LogLog;
-
+import org.apache.log4j.helpers.Loader;
 import java.lang.reflect.Method;
 import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
@@ -316,7 +316,7 @@ public class LoggingEvent implements java.io.Serializable {
       } else {
 	Method m = (Method) methodCache.get(className);
 	if(m == null) {
-	  Class clazz = Class.forName(className);
+	  Class clazz = Loader.loadClass(className);
 	  // Note that we use Class.getDeclaredMethod instead of
 	  // Class.getMethod. This assumes that the Level subclass
 	  // implements the toLevel(int) method which is a

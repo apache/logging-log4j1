@@ -576,9 +576,13 @@ public class PropertyConfigurator implements Configurator {
       // If the level value is inherited, set category level value to
       // null. We also check that the user has not specified inherited for the
       // root category.
-      if(levelStr.equalsIgnoreCase(INHERITED) &&
-                                	 !loggerName.equals(INTERNAL_ROOT_NAME)) {
-	logger.setLevel(null);
+      if(INHERITED.equalsIgnoreCase(levelStr) || 
+ 	                                  NULL.equalsIgnoreCase(levelStr)) {
+	if(loggerName.equals(INTERNAL_ROOT_NAME)) {
+	  LogLog.warn("The root logger cannot be set to null.");
+	} else {
+	  logger.setLevel(null);
+	}
       } else {
 	logger.setLevel(OptionConverter.toLevel(levelStr, (Level) Level.DEBUG));
       }
