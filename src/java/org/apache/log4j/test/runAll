@@ -11,6 +11,7 @@ deleteFile log4j.properties
 ./defaultInit || die "defaultInit test FAILED."
 ./propConfig || die "propConfig test FAILED."
 ./getOptions || die "getOptions test FAILED."
+./domTest || die "domTest FAILED."
 ./thresholdFlagTest || die "enableFlagTest test FAILED."
 ./multipleAppenders || die "multipleAppenders test FAILED."
 ./confParsing || die "confParsing test FAILED."

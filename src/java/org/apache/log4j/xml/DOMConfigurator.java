@@ -634,7 +634,7 @@ public class DOMConfigurator implements Configurator {
       //dbf.setNamespaceAware(true);
 
       DocumentBuilder docBuilder = dbf.newDocumentBuilder();
-      //docBuilder.setErrorHandler(new ReportParserError());
+      docBuilder.setErrorHandler(new SAXErrorHandler());
 
       Class clazz = this.getClass();
       URL dtdURL = clazz.getResource("/org/apache/log4j/xml/log4j.dtd");
