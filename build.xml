@@ -457,6 +457,7 @@
 
     <copy todir="${javac.dest}">
       <fileset dir="src/java" includes="**/chainsaw/**/*.properties"/>
+      <fileset dir="src/java" includes="**/chainsaw/*.properties"/>
       <fileset dir="src/java" includes="**/chainsaw/**/*.xml"/>   
       <fileset dir="src/java" includes="**/chainsaw/**/*.gif"/>
       <fileset dir="src/java" includes="**/chainsaw/**/*.html"/>
@@ -473,8 +474,8 @@
          		${stem}/chainsaw/*.jpg, 
          		${stem}/chainsaw/**/*.xml, 
          		${stem}/chainsaw/**/*.html, 
+         		${stem}/chainsaw/**/*.properties, 
          		${stem}/chainsaw/icons/*.jpg, 
-         		${stem}/chainsaw/prefs/*.properties,
          		${stem}/chainsaw/icons/LICENCE"
          excludes="**/UnitTest**">
 
