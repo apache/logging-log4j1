@@ -143,9 +143,10 @@ public class DBAppender extends AppenderSkeleton {
   boolean locationInfo = false;
 
   public DBAppender() {
+      super(false);
   }
 
-  public void activate() {
+  public void activateOptions() {
     getLogger().debug("DBAppender.activateOptions called");
 
     if (connectionSource == null) {
@@ -162,7 +163,7 @@ public class DBAppender extends AppenderSkeleton {
     }
     
     // all nice and dandy on the eastern front
-    super.activate();
+    super.activateOptions();
   }
 
   /**

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2005 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,12 +71,13 @@ public class MulticastAppender extends AppenderSkeleton implements PortBased {
   private String encoding;
   
   public MulticastAppender() {
+     super(false);
   }
 
   /**
      Open the multicast sender for the <b>RemoteHost</b> and <b>Port</b>.
   */
-  public void activate() {
+  public void activateOptions() {
     try {
       hostname = InetAddress.getLocalHost().getHostName();
     } catch (UnknownHostException uhe) {

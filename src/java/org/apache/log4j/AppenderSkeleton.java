@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2005 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,31 +70,53 @@ public abstract class AppenderSkeleton extends ComponentBase implements Appender
   protected boolean closed = false;
 
   /**
-   * By default, an appender is not in working order. It must be configured 
-   * first. 
+   * Is the appender ready for action.
    */
-  protected boolean active = false;
+  protected boolean active;
   
   /**
    * The guard prevents an appender from repeatedly calling its own doAppend
    * method.
    */
   private boolean guard = false;
-  
+
   /**
-   * Calls the {@link #activate} method.
+   * Construct an AppenderSkeleton.
+   *
+   * @deprecated Provided for compatibility, migrate to AppenderSkeleton(boolean)
+   * to indicate whether appender is ready upon construction.
+   *
+   */
+  protected AppenderSkeleton() {
+      active = true;
+  }
+
+
+/**
+ * Construct an AppenderSkeleton.
+ *
+ * @param isActive true if appender is ready for use upon construction.
+ */
+  protected AppenderSkeleton(final boolean isActive) {
+      active = isActive;
+  }
+
+  /**
+   * Called to configure appender for use after configuration.
    * 
-   * @deprecated Please call the activate() method instead.
    */
   public void activateOptions() {
-    activate();
+    this.active = true;
   }
   
   /**
-   * Default implementation called by sub-classes.
+   *   Synonym for activateOptions.
+   *   @deprecated TODO: this weird signature is an attempt to flush
+   * out the remaining uses of activate since mixing activate and
+   * activateOptions can lead to very bad things.
    */
-  public void activate() {
-    this.active = true;
+  public final void activate() throws org.xml.sax.SAXException {
+     activateOptions();
   }
 
   /**

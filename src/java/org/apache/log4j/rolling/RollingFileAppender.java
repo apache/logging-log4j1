@@ -78,10 +78,9 @@ public class RollingFileAppender extends FileAppender {
    * FileAppender#FileAppender parents constructor}.
    * */
   public RollingFileAppender() {
-    super();
   }
 
-  public void activate() {
+  public void activateOptions() {
     if (triggeringPolicy == null) {
       getLogger().warn("Please set a TriggeringPolicy for the RollingFileAppender named '{}'", getName());
       return;
@@ -95,7 +94,7 @@ public class RollingFileAppender extends FileAppender {
       
       // the activeFile variable is used by the triggeringPolicy.isTriggeringEvent method
       activeFile = new File(afn);
-      super.activate();
+      super.activateOptions();
     } else {
       getLogger().warn("Please set a rolling policy");
     }

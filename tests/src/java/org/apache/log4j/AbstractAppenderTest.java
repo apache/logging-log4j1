@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,18 +35,19 @@ import junit.framework.TestSuite;
  */
 abstract public class AbstractAppenderTest extends TestCase {
   
-  abstract protected Appender getAppender();
-  abstract protected Appender getConfiguredAppender();
-  
+  abstract protected AppenderSkeleton getAppender();
+  abstract protected AppenderSkeleton getConfiguredAppender();
+
+
   public class DummyLayout extends Layout {
     public void format(Writer output, LoggingEvent event) {} 
     public void activateOptions() {} 
-  } 
-  
+  }
+
   public void testNewAppender() {
     // new appenders whould be inactive
-    Appender appender = getAppender();
-    assertFalse(appender.isActive());
+    AppenderSkeleton appender = getAppender();
+    assertFalse( appender.isActive());
     assertFalse(appender.isClosed());
     
     appender.close();
@@ -54,8 +55,8 @@ abstract public class AbstractAppenderTest extends TestCase {
   }
   
   public void testConfiguredAppender() {
-    Appender appender = getConfiguredAppender();
-    appender.activate();
+    AppenderSkeleton appender = getConfiguredAppender();
+    appender.activateOptions();
     assertTrue(appender.isActive());
     assertFalse(appender.isClosed());
     

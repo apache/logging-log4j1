@@ -27,7 +27,6 @@ import java.io.File;
  * Tests the emulation of org.apache.log4j.DailyRollingFileAppender
  *
  * @author Curt Arnold
- * @deprecated Class under test is deprecated.
  *
  */
 public class ObsoleteDailyRollingFileAppenderTest extends TestCase {
@@ -64,6 +63,7 @@ public class ObsoleteDailyRollingFileAppenderTest extends TestCase {
 
   /**
    * Test basic rolling functionality.
+   * @deprecated Class under test is deprecated.
    */
   public void test2() throws Exception {
     PatternLayout layout = new PatternLayout("%m%n");

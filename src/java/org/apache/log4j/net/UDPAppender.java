@@ -73,32 +73,35 @@ public class UDPAppender extends AppenderSkeleton implements PortBased{
   boolean inError = false;
   
   public UDPAppender() {
+      super(false);
   }
 
   /**
      Sends UDP packets to the <code>address</code> and <code>port</code>.
   */
-  public UDPAppender(InetAddress address, int port) {
+  public UDPAppender(final InetAddress address, final int port) {
+    super(false);
     this.address = address;
     this.remoteHost = address.getHostName();
     this.port = port;
-    activate();
+    activateOptions();
   }
 
   /**
      Sends UDP packets to the <code>address</code> and <code>port</code>.
   */
-  public UDPAppender(String host, int port) {
+  public UDPAppender(final String host, final int port) {
+    super(false);
     this.port = port;
     this.address = getAddressByName(host);
     this.remoteHost = host;
-    activate();
+    activateOptions();
   }
 
   /**
      Open the UDP sender for the <b>RemoteHost</b> and <b>Port</b>.
   */
-  public void activate() {
+  public void activateOptions() {
     try {
       hostname = InetAddress.getLocalHost().getHostName();
     } catch (UnknownHostException uhe) {

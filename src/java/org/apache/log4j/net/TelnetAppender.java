@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2005 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,6 +58,13 @@ public class TelnetAppender extends AppenderSkeleton {
   private SocketHandler sh;
   private int port = 23;
 
+    /**
+     * Creates a TelnetAppender.
+     */
+  public TelnetAppender() {
+      super(false);
+  }
+
   /**
       This appender requires a layout to format the text to the
       attached client(s). */
@@ -67,7 +74,7 @@ public class TelnetAppender extends AppenderSkeleton {
 
   /** all of the options have been set, create the socket handler and
       wait for connections. */
-  public void activate() {
+  public void activateOptions() {
     try {
       sh = new SocketHandler(port);
       sh.start();
@@ -206,7 +213,7 @@ public class TelnetAppender extends AppenderSkeleton {
     
     /**
      *  Determines if socket hander has any active connections.
-     *  @returns true if any active connections.
+     *  @return true if any active connections.
      */
     public boolean hasConnections() {
        return connections.size() > 0;

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2005 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ public class ConsoleAppender extends WriterAppender {
   public ConsoleAppender(Layout layout, String targetStr) {
     this.layout = layout;
     setTarget(targetStr);
-    activate();
+    activateOptions();
   }
 
   /**
@@ -77,13 +77,13 @@ public class ConsoleAppender extends WriterAppender {
     getLogger().warn("Using previously set target, System.out by default.");
   }
 
-  public void activate() {
+  public void activateOptions() {
     if (target.equals(SYSTEM_OUT)) {
       setWriter(createWriter(System.out));
     } else {
       setWriter(createWriter(System.err));
     }
-    super.activate();
+    super.activateOptions();
   }
 
   /**

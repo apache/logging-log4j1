@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2005 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,12 @@ import javax.swing.ListModel;
 public final class ListModelAppender extends AppenderSkeleton {
   private final DefaultListModel model = new DefaultListModel();
 
+  /**
+   * Constructs a ListModelAppender.
+   */
+  public ListModelAppender() {
+      super(true);
+  }
   /**
    * Returns a reference to the ListModel that contains all the LoggingEvents
    * that have been appended to this class.

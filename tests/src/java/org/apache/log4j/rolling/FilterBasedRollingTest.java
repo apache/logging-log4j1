@@ -86,7 +86,7 @@ public class FilterBasedRollingTest extends TestCase {
 
     rfa.setRollingPolicy(swrp);
     rfa.setTriggeringPolicy(fbtp);
-    rfa.activate();
+    rfa.activateOptions();
     Logger.getRootLogger().addAppender(rfa);
 
     common("output/filterBased-test2");
