@@ -1,0 +1,11 @@
+Hi,
+
+I have written a JMSQueueAppender that essentially logs to a JMS Queue
+(Point 2 Point).  The JMSAppender currently packaged with log4j logs to
+a JMS Topic (I would rename it JMSTopicAppender).  I also made it so
+that the InitialContextFactory and ProviderUrl are configurable appender
+options.  I would like to submit this to Apache.
+
+Thanks,
+
+Jamie Tsao
