@@ -54,6 +54,10 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
    */
   protected boolean closed = false;
 
+  /** The guard prevents an appender from repeatedly calling its own
+      doAppend method. */
+  private boolean guard = false;
+
 
   /**
      Derived appenders should override this method if option structure
@@ -203,22 +207,33 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
       return;
     }
     
-    if(!isAsSevereAsThreshold(event.getLevel())) {
+    // prevent re-entry
+    if(guard) {
       return;
-    }
+     }
 
-    Filter f = this.headFilter;
-    
-    FILTER_LOOP:
-    while(f != null) {
-      switch(f.decide(event)) {
-      case Filter.DENY: return;
-      case Filter.ACCEPT: break FILTER_LOOP;
-      case Filter.NEUTRAL: f = f.next;
+    try {
+      guard = true;
+      
+      if(!isAsSevereAsThreshold(event.getLevel())) {
+	return;
       }
+      
+      Filter f = this.headFilter;
+      
+    FILTER_LOOP:
+      while(f != null) {
+	switch(f.decide(event)) {
+	case Filter.DENY: return;
+	case Filter.ACCEPT: break FILTER_LOOP;
+	case Filter.NEUTRAL: f = f.next;
+	}
+      }
+      
+      this.append(event);    
+    } finally {
+      guard = false;
     }
-    
-    this.append(event);    
   }
 
   /** 
