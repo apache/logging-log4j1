@@ -70,8 +70,8 @@ abstract class NamedPatternConverter extends PatternConverter {
   StringBuffer buf;
   int precision;
 
-  public NamedPatternConverter(FormattingInfo formattingInfo) {
-    super(formattingInfo);
+  public NamedPatternConverter() {
+    super();
     this.buf = new StringBuffer(32);
   }
 

@@ -67,8 +67,8 @@ public class MDCPatternConverter extends PatternConverter {
   // appender method are serialized (per appender).
   StringBuffer buf;
 
-  public MDCPatternConverter(FormattingInfo formattingInfo) {
-    super(formattingInfo);
+  public MDCPatternConverter() {
+    super();
     this.buf = new StringBuffer(32);
   }
 

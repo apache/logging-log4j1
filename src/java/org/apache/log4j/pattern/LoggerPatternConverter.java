@@ -61,8 +61,8 @@ public class LoggerPatternConverter extends NamedPatternConverter {
   // which is unique within an appender. We further assume that callas to the 
   // appender method are serialized (per appender).
 
-  public LoggerPatternConverter(FormattingInfo formattingInfo) {
-    super(formattingInfo);
+  public LoggerPatternConverter() {
+    super();
   }
 
   String getFullyQualifiedName(LoggingEvent event) {

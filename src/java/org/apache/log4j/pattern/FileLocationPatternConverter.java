@@ -64,8 +64,8 @@ public class FileLocationPatternConverter extends PatternConverter {
   // appender method are serialized (per appender).
   StringBuffer buf;
 
-  public FileLocationPatternConverter(FormattingInfo formattingInfo) {
-    super(formattingInfo);
+  public FileLocationPatternConverter() {
+    super();
     this.buf = new StringBuffer(32);
   }
 

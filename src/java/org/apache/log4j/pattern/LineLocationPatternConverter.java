@@ -64,8 +64,8 @@ public class LineLocationPatternConverter extends PatternConverter {
   // appender method are serialized (per appender).
   StringBuffer buf;
 
-  public LineLocationPatternConverter(FormattingInfo formattingInfo) {
-    super(formattingInfo);
+  public LineLocationPatternConverter() {
+    super();
     this.buf = new StringBuffer(32);
   }
 

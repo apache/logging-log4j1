@@ -63,8 +63,8 @@ public class RelativeTimePatternConverter extends PatternConverter {
 	// appender method are serialized (per appender).
   StringBuffer buf;
 
-  public RelativeTimePatternConverter(FormattingInfo formattingInfo) {
-    super(formattingInfo);
+  public RelativeTimePatternConverter() {
+    super();
     this.buf = new StringBuffer(9);
   }
 
