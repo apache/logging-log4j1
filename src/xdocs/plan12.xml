@@ -1,0 +1,197 @@
+<?xml version="1.0"?>
+<document>
+
+  <properties>
+    <author email="ceki@apache.org">Ceki Gulcu</author>
+    <title>Release plan for log4j 1.2</title>
+  </properties>
+
+  <body>
+
+    <section name="Workplan for log4j 1.2">
+
+
+      <p>Here is workplan for the next major log4j release. As
+	customary, there is no scheduled release date. It will be
+	ready when it is ready. Your comments and suggestions are most
+	welcome.</p>
+      
+      <table border="1" cellpadding="3" cellspacing="2">
+	    
+	<tr>
+	  <th>Label</th>
+	  <th>Comment</th>
+	  <th>Volunteer</th>
+	  <th>Status</th>
+	</tr>
+	
+	<tr bgcolor="DDDDDD">
+	  <td>More test cases</td>
+	  
+	  <td>We need more automated test cases to catch bugs as early
+	    is possible.It is highly recommended to add a new test case
+	    with each new feature or component.</td>
+	  
+	  <td>All committers</td>
+	  <td>ongoing effort</td>	  
+	</tr>
+
+
+	<tr>
+	  <td>Removal of deprecated methods</td>
+	    
+	  <td>Deprecated <code>setOption</code> and <code>getOption</code>
+	    methods should be removed.</td>
+
+	  <td>Ceki</td>
+	  <td>done</td>
+	</tr>
+	
+	<tr bgcolor="DDDDDD">
+	  <td>JDBCAppender</td>
+	  
+	  <td>We currently have two competing JDBCAppenders: one by
+	    Thomas Fenner and the other by Kevin Steppe. We should try
+	    to get both authors to collaborate.
+	    
+	    <p>We must be careful not to dismiss an implementation
+	      without proper testing and due study. We should include at
+	      least of one of these implemetation in the standard log4j
+	      distribution. </p>
+	    </td>
+	  
+	  <td>?</td>
+	  
+	  <td>not started</td>
+	</tr>
+	
+	<tr>
+	  <td>Log4j in applets</td>
+	  
+	  <td>In order to minimize network traffic, the size of log4j-core.jar
+	    needs to be reduced to at most 50KB.
+	    
+	    <p>Log4jME has been released. It's less than 20KB.</p>
+	  </td>
+	  
+	  <td>Ceki</td>
+	  <td>done</td>
+	</tr>
+	
+	<tr  bgcolor="DDDDDD">
+	  <td>Improved documentation</td>
+	  
+	  <td>Log4j documentation needs to be enhanced with configuration
+	    examples and much more hand-holding.</td>
+	  
+	  <td>Ceki</td>
+	  
+	  <td>under discussion</td>
+	  
+	</tr>
+	
+	<tr>
+	  <td valign="top">Mapped Diagnostic Contexts</td>
+	  
+	  <td>Mapped Diagnostic Contexts are similar to the NDC
+	    except that the MDC is a string to string map instead of
+	    a stack that the user sets when entering a special
+	    context. The <code>PatternLayout</code> has to be
+	    enhanced to support this by extending the %x pattern to
+	    accept an argument.  Here is an example:
+	    
+	    <pre>
+    ConversionPattern=3D%d %p %c %x{server} %x{host} - %m%n
+	    </pre>
+	    
+	    User code:
+	    <pre>
+    {
+       MDC.put("server", "totoServer");
+       MDC.put("host", "someHost");
+	      
+       logger.debug("Hello");
+	      
+    }
+</pre>
+      will print:
+      <pre>2000-01-24 10:00:00,000 DEBUG totoServer someHost - Hello</pre>
+
+	    <p>To make MDCs truly user friendly
+	      <code>ThreadLocal</code> variables are required. This
+	      will allow the MDC to be inherited by child
+	      threads. <code>ThreadLocal</code> are only supported
+	      under JDK 1.2 and above. In JDK 1.1, the MDC will not
+	      work but won't harm the user application either.</p>
+	      </td> 
+	  <td>Ceki</td> 
+	  <td>done</td>
+	</tr>
+
+	<tr bgcolor="DDDDDD">
+	  <td>Enhanced variable substitution support in DOMConfigurator</td>
+	  <td></td>
+	  
+	  <td>Ceki</td>
+	  <td>done</td>	  
+	</tr>
+	    
+	<tr>
+	  <td>FallbackErrorHandler</td>
+	  
+	  <td>The FallbackErrorHandler implements the ErrorHandler
+	    interface such that a secondary appender may be
+	    specified. This secondary appender takes over if the primary
+	    appender fails for whatever reason.
+	    
+	    <p>The DOMConfigurator needs to be extended to support the
+	      FallbackErrorHandler</p>
+	    
+	  </td>
+	  <td>Ceki</td>
+	  <td>implemented, requires further testing</td>
+	</tr>
+	
+	<tr  bgcolor="DDDDDD">
+	  <td>Review of the configure and watch architecture in configurators</td>
+	  
+	  <td>This is a very useful feature and the current architecture is not very good.
+	    
+	    <p>Contributions have been received by Mark Womack and others.</p>
+	    
+	    <p>See
+	      <pre>
+     http://www.mail-archive.com/log4j-dev@jakarta.apache.org/msg01390.html
+     http://www.mail-archive.com/log4j-user@jakarta.apache.org/msg00666.html
+     http://marc.theaimsgroup.com/?t=101010070500002&amp;r=1&amp;w=2
+              </pre>
+	    </p>
+	  </td>
+	  <td>?</td>	  
+	  <td>not yet started</td>
+	</tr>
+
+	<tr>
+	  <td>Ensure backward compatibility of LoggingEvent
+	  objects</td> 
+	  
+	  <td>To avoid deployment problems we must ensure that
+	  LoggingEvent objects are compatible between 1.2 and 1.1.3.
+
+	    <p>Robert Bushman has proposed a very innovative way for
+	    solving this problem. See <a
+	    href="http://www.mail-archive.com/log4j-dev@jakarta.apache.org/msg01397.html">
+	    http://www.mail-archive.com/log4j-dev@jakarta.apache.org/msg01397.html</a>
+	    for further details.
+	    </p>
+	  </td>
+	  
+	  <td>Ceki</td>
+	  <td>started, requires testing</td>
+	</tr>
+      </table>
+    </section>
+
+  </body>
+
+</document>

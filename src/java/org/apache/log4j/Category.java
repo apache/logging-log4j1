@@ -930,10 +930,16 @@ public class Category implements AppenderAttachable {
   }
 
   /**
-     Set the level of this Category.
+     Set the level of this Category. If you are passing any of
+     <code>Level.DEBUG</code>, <code>Level.INFO</code>,
+     <code>Level.WARN</code>, <code>Level.ERROR</code>,
+     <code>Level.FATAL</code> as a parameter, you need to case them as
+     Level. 
 
-     <p>Null values are admitted.
-  */
+     <p>As in <pre> &nbsp;&nbsp;&nbsp;logger.setLevel((Level) Level.DEBUG); </pre>
+
+
+     <p>Null values are admitted.  */
   public
   void setLevel(Level level) {
     this.level = level;
@@ -955,8 +961,8 @@ public class Category implements AppenderAttachable {
 
   /**
      Set the resource bundle to be used with localized logging
-     methods {@link #l7dlog(Level,String,Throwable)} and {@link
-     #l7dlog(Level,String,Object[],Throwable)}.
+     methods {@link #l7dlog(Priority,String,Throwable)} and {@link
+     #l7dlog(Priority,String,Object[],Throwable)}.
 
      @since 0.8.4
    */
