@@ -14,9 +14,6 @@
                                                     <meta name="author" value="Ceki Gulcu">
             <meta name="email" value="ceki@apache.org">
             
- 	    
-                                     <meta  name="keywords"  content="java, logging, tracing, component, framework, API, log4j"  />
- 
             <title>Log4j project - Download</title>
         </head>
 
@@ -86,14 +83,40 @@
                                     <p>Download version 1.1.3 including <i>full source code</i>,
 	class files and documentation in <a href="../jakarta-log4j-1.1.3.tar.gz"><b>TAR.GZ</b></a> format
 	or in <a href="../jakarta-log4j-1.1.3.zip"><b>ZIP</b></a>
-	format. You may elect to browse log4j <a href="documentation.html"><b>documentation</b></a> online.
-      </p>
-                                                <p><a href="http://www.javaworld.com/javaworld/jw-05-2001/jw-0504-finalists.html"><img src="images/ecaward_finalist_logo.gif" align="right" border="0" /></a>Version 1.1.3 is the 21st major public
-	  release of log4j. It is backward compatible with log4j
-	  version 1.0.x.</p>
+	format. You may elect to browse log4j <a href="documentation.html"><b>documentation</b></a> online.  <a href="http://www.javaworld.com/javaworld/jw-05-2001/jw-0504-finalists.html"><img src="images/ecaward_finalist_logo.gif" align="right" border="0" /></a>Version 1.1.3 is the 21st major public release
+	of log4j. It is backward compatible with log4j version
+	1.0.x.</p>
                                                 <p>We also maintain a list of <a href="earlier.html">earlier
 	  versions</a> of log4j for download, intended for the curious
 	  paleontologist.</p>
+                            </blockquote>
+        </p>
+      </td></tr>
+      <tr><td><br/></td></tr>
+    </table>
+                                                <table border="0" cellspacing="0" cellpadding="2" width="100%">
+      <tr><td bgcolor="#525D76">
+        <font color="#ffffff" face="arial,helvetica,sanserif">
+          <a name="log4j version 1.2 beta2"><strong>log4j version 1.2 beta2</strong></a>
+        </font>
+      </td></tr>
+      <tr><td>
+        <blockquote>
+                                    <p>log4j 1.2 is now available in in <a href="../jakarta-log4j-1.2beta2.tar.gz"><b>TAR.GZ</b></a>
+	format or in <a href="../jakarta-log4j-1.2beta2.zip"><b>ZIP</b></a> format.
+      </p>
+                                                <p>Log4j version 1.2 is not feature-complete, nor is the
+	documentation up to date.  Some previously deprecated APIs are
+	now removed. Moreover, users who have written sub-classes of
+	Category will need to modify their code. We have gone to great
+	lengths to ensure that version 1.2 is backward compatible with
+	earlier versions. Client source code writen for log4j 1.1.3
+	will compile without any problems using log4j version
+	1.2. Unfortunately however, code compiled for log4j 1.1.3
+	would systematically throw "java.lang.NoSuchMethodError"
+	runtime exceptions with log4j 1.2 prior to beta2. This problem
+	has been corrected in beta2.
+      </p>
                             </blockquote>
         </p>
       </td></tr>
@@ -252,12 +275,6 @@
         </body>
     </html>
 <!-- end the processing -->
-
-
-
-
-
-
 
 
 

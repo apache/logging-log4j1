@@ -584,8 +584,7 @@ public class PropertyConfigurator implements Configurator {
                                 	 !loggerName.equals(INTERNAL_ROOT_NAME)) {
 	logger.setLevel(null);
       } else {
-	logger.setLevel(OptionConverter.toLevel(levelStr, 
-					     Level.DEBUG));
+	logger.setLevel(OptionConverter.toLevel(levelStr, (Level) Level.DEBUG));
       }
       LogLog.debug("Category " + loggerName + " set to " + logger.getLevel());
     }

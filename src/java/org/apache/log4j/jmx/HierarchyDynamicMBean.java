@@ -60,7 +60,7 @@ public class HierarchyDynamicMBean extends AbstractDynamicMBean
 
   private LoggerRepository hierarchy;
   
-  private static Logger log = Logger.getInstance(HierarchyDynamicMBean.class);
+  private static Logger log = Logger.getLogger(HierarchyDynamicMBean.class);
 
   public HierarchyDynamicMBean() {
     hierarchy = LogManager.getLoggerRepository();

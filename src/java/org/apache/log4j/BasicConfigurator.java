@@ -41,7 +41,7 @@ public class BasicConfigurator {
   static
   public
   void configure() {
-    Logger root = Logger.getRoot();
+    Logger root = Logger.getRootLogger();
     root.addAppender(new ConsoleAppender(
            new PatternLayout(PatternLayout.TTCC_CONVERSION_PATTERN)));
   }
@@ -53,7 +53,7 @@ public class BasicConfigurator {
   static
   public
   void configure(Appender appender) {
-    Logger root = Logger.getRoot();
+    Logger root = Logger.getRootLogger();
     root.addAppender(appender);
   }
 

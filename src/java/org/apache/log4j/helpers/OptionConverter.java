@@ -185,7 +185,7 @@ public class OptionConverter {
 	return null;
       } else {
 	// no class name specified : use standard Level class
-	return Level.toLevel(value, defaultValue);
+	return(Level) Level.toLevel(value, defaultValue);
       }
     }
 
@@ -208,7 +208,7 @@ public class OptionConverter {
       // get a ref to the specified class' static method
       // toLevel(String, org.apache.log4j.Level)
       Class[] paramTypes = new Class[] { String.class,
-					 org.apache.log4j.Level.class
+					 org.apache.log4j.Priority.class
                                        };
       java.lang.reflect.Method toLevelMethod =
                       customLevel.getMethod("toLevel", paramTypes);

@@ -128,12 +128,12 @@ public class NotLogging {
       // nothing to do
     } else if ("true".equals(args[0])) {
       System.out.println("Flagging as shipped code.");
-      Category.getDefaultHierarchy().setThreshold(Level.WARN);
+      Category.getDefaultHierarchy().setThreshold((Level) Level.WARN);
     } else 
       Usage();
 
-    SHORT_CAT.setLevel(Level.INFO);      
-    Category.getRoot().setLevel(Level.INFO);
+    SHORT_CAT.setLevel((Level) Level.INFO);      
+    Category.getRoot().setLevel((Level) Level.INFO);
 
   }    
   

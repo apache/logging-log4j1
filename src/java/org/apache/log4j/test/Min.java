@@ -84,13 +84,13 @@ public class Min {
     // names should have no bearing to level values.
     
     Category ERR = Category.getInstance("ERR");
-    ERR.setLevel(Level.ERROR);
+    ERR.setPriority(Level.ERROR);
     Category INF = Category.getInstance("INF");
-    INF.setLevel(Level.INFO);
+    INF.setPriority(Level.INFO);
     Category INF_ERR = Category.getInstance("INF.ERR");
-    INF_ERR.setLevel(Level.ERROR);
+    INF_ERR.setPriority(Level.ERROR);
     Category DEB = Category.getInstance("DEB");
-    DEB.setLevel(Level.DEBUG);
+    DEB.setPriority(Level.DEBUG);
     
     // Note: categories with undefined level 
     Category INF_UNDEF = Category.getInstance("INF.UNDEF");

@@ -24,6 +24,18 @@ package org.apache.log4j;
  */
 public class Level extends Priority {
 
+
+  /**
+     The <code>OFF</code> has the highest possible rank and is
+     intended to turn off logging.  */
+  final static public Level OFF = new Level(OFF_INT, "OFF", 0);
+
+  /**
+     The <code>ALL</code> has the lowest possible rank and is intended to
+     turn on all logging.  */
+  final static public Level ALL = new Level(ALL_INT, "ALL", 7);
+
+
   /**
      Instantiate a priority object.
    */
@@ -40,7 +52,7 @@ public class Level extends Priority {
   public
   static
   Level toLevel(String sArg) {
-    return toLevel(sArg, Level.DEBUG);
+    return (Level) toLevel(sArg, Priority.DEBUG);
   }
 
   /**
@@ -51,7 +63,7 @@ public class Level extends Priority {
   public
   static
   Level toLevel(int val) {
-    return toLevel(val, Level.DEBUG);
+    return (Level) toLevel(val, Priority.DEBUG);
   }
 
   /**
@@ -60,14 +72,14 @@ public class Level extends Priority {
   */
   public
   static
-  Level toLevel(int val, Level defaultLevel) {
+  Priority toLevel(int val, Priority defaultLevel) {
     switch(val) {
     case ALL_INT: return ALL;
-    case DEBUG_INT: return DEBUG;
-    case INFO_INT: return INFO;
-    case WARN_INT: return WARN;
-    case ERROR_INT: return ERROR;
-    case FATAL_INT: return FATAL;
+    case DEBUG_INT: return (Level) Priority.DEBUG;
+    case INFO_INT: return (Level) Priority.INFO;
+    case WARN_INT: return (Level) Priority.WARN;
+    case ERROR_INT: return (Level) Priority.ERROR;
+    case FATAL_INT: return (Level) Priority.FATAL;
     case OFF_INT: return OFF;
     default: return defaultLevel;
     }
@@ -80,19 +92,19 @@ public class Level extends Priority {
   */
   public
   static
-  Level toLevel(String sArg, Level defaultLevel) {                  
+  Priority toLevel(String sArg, Priority defaultLevel) {                  
     if(sArg == null)
        return defaultLevel;
     
     String s = sArg.toUpperCase();
 
     if(s.equals("ALL")) return Level.ALL; 
-    if(s.equals("DEBUG")) return Level.DEBUG; 
+    if(s.equals("DEBUG")) return (Level) Priority.DEBUG; 
     //if(s.equals("FINE")) return Level.FINE; 
-    if(s.equals("INFO"))  return Level.INFO;
-    if(s.equals("WARN"))  return Level.WARN;  
-    if(s.equals("ERROR")) return Level.ERROR;
-    if(s.equals("FATAL")) return Level.FATAL;
+    if(s.equals("INFO"))  return (Level) Priority.INFO;
+    if(s.equals("WARN"))  return (Level) Priority.WARN;  
+    if(s.equals("ERROR")) return (Level) Priority.ERROR;
+    if(s.equals("FATAL")) return (Level) Priority.FATAL;
     if(s.equals("OFF")) return Level.OFF;
     return defaultLevel;
   }

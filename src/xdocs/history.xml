@@ -19,18 +19,13 @@ history file before asking for help.</p>
 href="http://jakarta.apache.org/log4j">http://jakarta.apache.org/log4j</a>.</p>
 
 <p>Many thanks to all the log4j users who keep sending us input and
-sometimes even <b><a href="praise.html">praise</a></b> for our
-collective effort.</p>
-      
-<p>The first ancestor of log4j was written for the E.U. sponsored <a
+sometimes even praise for our collective effort. The first ancestor of
+log4j was written for the E.U. sponsored <a
 href="http://www.semper.org">SEMPER</a> project.  N. Asokan, Ceki
 G&#252;lc&#252; and Michael Steiner came up with the idea of
 hierarchical categories back in 1996. Their idea is still at the heart
-of log4j.</p>
-
-<p>The package was considerably improved over the years by Ceki
-G&#252;lc&#252; while working at the <a
-href="http://www.zurich.ibm.com"><b>IBM Zurich Research
+of log4j. The package was considerably improved over the years at the
+<a href="http://www.zurich.ibm.com"><b>IBM Zurich Research
 Laboratory</b></a>. However, log4j is no longer associated nor
 supported by IBM.</p>
 
