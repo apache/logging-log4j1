@@ -1,10 +1,10 @@
 
 <!-- This file is an ANT build script. ANT is a Java based build tool. -->
-<!-- It is availale from http://jakarta.apache.org/ant/                -->
+<!-- It is availale from http://ant.apache.org                -->
 
 
 <!-- ================================================================= -->
-<!-- NOTE: all directories are relative to jakarta-log4j/tests         -->
+<!-- NOTE: all directories are relative to logging-log4j/tests         -->
 <!-- ================================================================= -->
 <project name="log4j-tests" default="usage" basedir="." >
 
@@ -58,6 +58,8 @@
       regression - Run regression tests which check large parts of log4j.
       
       runAll - run all available tests
+      
+      coverageReport - Runs all tests and generates coverage report.
     </echo>
   </target>
   
@@ -98,18 +100,37 @@
     </fail>
   </target>
   
+  <!-- Clean the parent project                                          -->
+  <!-- ================================================================= -->
+  <target name="parentClean">
+    <ant dir=".." target="clean" inheritRefs="true"/>
+  </target>
+  
+  
   
   <!-- ================================================================= -->
   <!-- Build the parent project                                          -->
   <!-- ================================================================= -->  
   <target name="parentBuild">
-    <ant dir=".." target="build" inheritRefs="true"/>
+       <!-- everything in the "build" target except examples
+              which define classes in namespaces not
+              supported by the ASF licensed clover  -->
+       <ant dir=".." target="build.core" inheritRefs="true"/>
+       <ant dir=".." target="build.xml" inheritRefs="true"/>
+       <ant dir=".." target="build.javamail" inheritRefs="true"/>
+       <ant dir=".." target="build.jms" inheritRefs="true"/>
+       <ant dir=".." target="build.jmx" inheritRefs="true"/>
+       <ant dir=".." target="build.servletAPI" inheritRefs="true"/>
+       <ant dir=".." target="build.db" inheritRefs="true"/>
+       <ant dir=".." target="build.chainsaw" inheritRefs="true"/>
   </target>
 
   <!-- ================================================================= -->
   <!-- Compile test cases and related source files.                      -->
   <!-- ================================================================= -->
   <target name="build" depends="parentBuild, prepare">
+    <!--  default value unless overriden in with.clover task -->
+    <property name="haltonfailure" value="yes"/>
     <javac srcdir="${tests.source.home}"
 	   destdir="./classes" 
             excludes="${stem}/chainsaw/receivers/*.java,
@@ -127,6 +148,10 @@
   <target name="clean">
     <delete dir="./classes/" />
     <delete dir="./output/" />
+    <delete dir="./coverage/"/>
+    <delete>
+        <fileset dir="." includes="log4j.db*"/>
+    </delete>
   </target>
   
   <target name="cleanOutputDir">
@@ -212,7 +237,7 @@
   </target>
   
   <target name="PatternLayout" depends="check, build, cleanOutputDir">
-    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+    <junit printsummary="yes" fork="yes" haltonfailure="${haltonfailure}">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
       <test name="org.apache.log4j.PatternLayoutTest" />
@@ -611,6 +636,41 @@
     </junit>
   </target>
 
+  
+   <!--
+           Coverage analysis
+
+    -->
+    <target name="with.clover">
+        <!-- some tests fail when running clover
+                setting this property will cause testing to continue  -->
+        <property name="haltonfailure" value="no"/>
+        <available resource="clovertasks" property="clover-present"/>
+
+        <fail unless="clover-present">
+
+clover.jar must be in the classpath and should alos be
+placed in the lib directory.  A version of clover 
+(http://www.cenqua.com/clover) for use with ASF projects 
+is available from the committers/donated-licenses/clover module 
+in the SVN repository. 
+
+        </fail>
+         
+       <taskdef resource="clovertasks"/>
+       <clover-setup initString="log4j.db"/>
+    </target>
+
+    <target name="coverageReport" depends="parentClean, clean, with.clover, runAll">
+         <mkdir dir="coverage"/>
+         <taskdef resource="clovertasks"/>
+         <clover-report>
+                 <current title="log4j coverage" outfile="coverage">
+                         <format type="html"/>
+                 </current>
+         </clover-report>
+
+    </target>
   
 </project>
 
