@@ -646,7 +646,6 @@ public class Category implements AppenderAttachable {
 
   /**
    * @deprecated Please use the {@link Logger#getRootLogger()} method instead.
-   * </p>
    */
   public static final Category getRoot() {
     return LogManager.getRootLogger();
