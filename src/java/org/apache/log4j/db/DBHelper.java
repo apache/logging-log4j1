@@ -21,7 +21,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Set;
 
-import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.spi.LoggingEvent;
 
 /**
@@ -51,7 +51,7 @@ public class DBHelper {
       try { 
         connection.close();
       } catch(SQLException sqle) {
-        LogLog.warn("Failed to close connection.");
+        LogManager.getLogger(DBHelper.class).warn("Failed to close connection.");
       }
     }
   }

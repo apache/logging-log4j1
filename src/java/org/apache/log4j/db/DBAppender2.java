@@ -19,7 +19,6 @@ package org.apache.log4j.db;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.db.dialect.SQLDialect;
 import org.apache.log4j.db.dialect.Util;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.location.LocationInfo;
 
@@ -77,7 +76,7 @@ public class DBAppender2 extends AppenderSkeleton {
   }
 
   public void activateOptions() {
-    LogLog.debug("DBAppender.activateOptions called");
+    getLogger().debug("DBAppender.activateOptions called");
 
     if (connectionSource == null) {
       throw new IllegalStateException(
@@ -85,8 +84,7 @@ public class DBAppender2 extends AppenderSkeleton {
     }
 
     if (connectionSource.supportsGetGeneratedKeys()) {
-      LogLog.info(
-        "****JDBC getGeneratedKeys method is supported. Will use batch mode.");
+      getLogger().info("JDBC getGeneratedKeys method supported. Will use batch mode.");
     } else {
       // if getGeneratedKeys method is not supported, we fallback to batch size
       // of one.
@@ -113,7 +111,6 @@ public class DBAppender2 extends AppenderSkeleton {
    * @param connectionSource The connectionSource to set.
    */
   public void setConnectionSource(ConnectionSource connectionSource) {
-    LogLog.debug("setConnectionSource called for DBAppender");
     this.connectionSource = connectionSource;
   }
 
@@ -121,17 +118,14 @@ public class DBAppender2 extends AppenderSkeleton {
     event.prepareForSerialization();
     eventsBuffer.add(event);
 
-    LogLog.info("=========Buffer size is "+eventsBuffer.size());
     if (eventsBuffer.size() >= batchSize) {
       flush();
     }
   }
 
   void flush() {
-    LogLog.info("=============flush called");
 
     Connection connection = null;
-    LogLog.info("Buffer size is "+eventsBuffer.size());
 
     try {
       connection = connectionSource.getConnection();
@@ -142,7 +136,6 @@ public class DBAppender2 extends AppenderSkeleton {
 
       for (int i = 0; i < eventsBuffer.size(); i++) {
         LoggingEvent event = (LoggingEvent) eventsBuffer.get(i);
-                LogLog.info("*** event message is "+event.getRenderedMessage());
         insertStatement.setLong(1, event.getSequenceNumber());
         insertStatement.setLong(2, event.getTimeStamp());
         insertStatement.setString(3, event.getRenderedMessage());
@@ -164,7 +157,7 @@ public class DBAppender2 extends AppenderSkeleton {
         insertStatement.setString(11, li.getMethodName());
         insertStatement.setString(12, li.getLineNumber());
 
-        LogLog.info("*** performing insertion.");
+        //LogLog.info("*** performing insertion.");
         insertStatement.addBatch();
       }
 
@@ -172,7 +165,7 @@ public class DBAppender2 extends AppenderSkeleton {
       
       if(r != null) {
         for(int x = 0; x < r.length; x++) {
-          LogLog.info("inserted "+r[x]);
+          //LogLog.info("inserted "+r[x]);
         }
       }
       connection.commit();
@@ -192,7 +185,7 @@ public class DBAppender2 extends AppenderSkeleton {
       
       eventsBuffer.setSize(0);
     } catch (SQLException sqle) {
-      LogLog.error("problem appending event", sqle);
+      getLogger().error("problem appending event", sqle);
     } finally {
       DBHelper.closeConnection(connection);
     }
@@ -205,19 +198,19 @@ public class DBAppender2 extends AppenderSkeleton {
       ResultSet keyRS = insertStatement.getGeneratedKeys();
 
      ResultSetMetaData rsmd = keyRS.getMetaData();
-     LogLog.info(" numberOfColumns = "+rsmd.getColumnCount());
+     //LogLog.info(" numberOfColumns = "+rsmd.getColumnCount());
      int i = 0;
       while (keyRS.next()) {
         int id = keyRS.getInt(1);
-        LogLog.info("**filling id ="+id);
+        //LogLog.info("**filling id ="+id);
         eventIDArray[i++] = id;;
       }
 
       if (i != eventsBuffer.size()) {
-        LogLog.error("Number of inserted objects do not match.");
+        getLogger().error("Number of inserted objects do not match.");
         // TODO CG better errorHandling code here
         // no point in continuing
-        LogLog.error("number of found events: "+i+" bufferSize="+eventsBuffer.size());
+        getLogger().error("number of found events: "+i+" bufferSize="+eventsBuffer.size());
         //throw new IllegalStateException("Programming error. Number of inserted objects do not match."); 
 
       }
@@ -251,8 +244,8 @@ public class DBAppender2 extends AppenderSkeleton {
             String key = (String) iterator.next();
             String value = (String) event.getProperty(key);
 
-            LogLog.info(
-              "id " + eventIDArray[i] + ", key " + key + ", value " + value);
+            //LogLog.info(
+            //  "id " + eventIDArray[i] + ", key " + key + ", value " + value);
             insertPropertiesStatement.setInt(1, eventIDArray[i]);
             insertPropertiesStatement.setString(2, key);
             insertPropertiesStatement.setString(3, value);
@@ -283,7 +276,7 @@ public class DBAppender2 extends AppenderSkeleton {
         String[] strRep = event.getThrowableStrRep();
 
         if (strRep != null) {
-          LogLog.info("Logging an exception");
+          //LogLog.info("Logging an exception");
 
           for (short k = 0; k < strRep.length; k++) {
             insertExceptionStatement.setInt(1, eventIDArray[i]);
