@@ -25,6 +25,7 @@ JSOURCES:= Shallow.java\
  UnitTestOptionConverter.java\
  SocketAppenderTest.java\
  PrintProperties.java\
+ CustomCategoryTest.java\
 
 
 ifdef $(ISJDK1)

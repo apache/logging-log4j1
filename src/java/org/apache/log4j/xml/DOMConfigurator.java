@@ -591,14 +591,21 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
   }
 
   
-
   /**
-     This is the static version of {@link #doConfigure(String, Hierarchy)}.x
-   */
+     A static version of {@link #doConfigure(String, Hierarchy)}.  */
   static
   public
   void configure(String filename) throws FactoryConfigurationError {
     new DOMConfigurator().doConfigure(filename, Category.getDefaultHierarchy());
+  }
+
+  /**
+     A static version of {@link #doConfigure(URL, Hierarchy)}.
+   */
+  static
+  public
+  void configure(URL url) throws FactoryConfigurationError {
+    new DOMConfigurator().doConfigure(url, Category.getDefaultHierarchy());
   }
 
   /**

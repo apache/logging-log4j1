@@ -71,12 +71,12 @@ import java.text.FieldPosition;
    the end of a conversion specifier when it reads a conversion
    character. In the example above the conversion specifier
    <b>%-5p</b> means the priority of the logging event should be left
-   justified to a with of five characters. 
+   justified to a width of five characters.
    
    The recognized conversion characters are
    
    <p>
-   <table border=1 CELLPADDING=8>
+   <table border="1" CELLPADDING="8">
    <th>Conversion Character</th>
    <th>Effect</th>
 
