@@ -193,7 +193,8 @@
                                      NDC,
                                      Plugins,
   									 MessageFormatter,
-                                     DateFormat"/>
+                                     CacheDateFormat,
+  	                                 CacheUtil"/>
 
 
 
@@ -623,14 +624,22 @@
     </junit>
   </target>
 
-  <target name="DateFormat" depends="check, build, cleanOutputDir">
+  <target name="CacheDateFormat" depends="check, build, cleanOutputDir">
 	<junit printsummary="yes" fork="yes" haltonfailure="yes">
 	  <classpath refid="tests.classpath"/>
 	  <formatter type="plain" usefile="false"/>
 	  <test name="org.apache.log4j.pattern.CachedDateFormatTest" />
     </junit>
   </target>
-	    
+
+  <target name="CacheUtil" depends="check, build, cleanOutputDir">
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+	  <classpath refid="tests.classpath"/>
+	  <formatter type="plain" usefile="false"/>
+	  <test name="org.apache.log4j.pattern.CacheUtilTest" />
+    </junit>
+   </target>
+	
   <!-- ================================================================= -->
   <!-- =========================   long Tests  ========================= -->
   <!-- ================================================================= -->
