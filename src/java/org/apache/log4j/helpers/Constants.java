@@ -23,4 +23,15 @@ package org.apache.log4j.helpers;
 public interface Constants {
   static final String APPLICATION_KEY = "application";
   static final String HOSTNAME_KEY = "hostname";
+  
+  /*
+   * The default property file name for automatic configuration.
+   */
+  static final String DEFAULT_CONFIGURATION_FILE = "log4j.properties";
+  /*
+   * The default XML configuration file name for automatic configuration.
+   */
+  static final String DEFAULT_XML_CONFIGURATION_FILE = "log4j.xml";
+  static final String DEFAULT_CONFIGURATION_KEY = "log4j.configuration";
+  static final String CONFIGURATOR_CLASS_KEY = "log4j.configuratorClass";
 }

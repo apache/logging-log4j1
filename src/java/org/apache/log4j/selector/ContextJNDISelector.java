@@ -1,23 +1,74 @@
 /*
+ * ============================================================================
+ *                   The Apache Software License, Version 1.1
+ * ============================================================================
+ *
+ *    Copyright (C) 1999 The Apache Software Foundation. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modifica-
+ * tion, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of  source code must  retain the above copyright  notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * 3. The end-user documentation included with the redistribution, if any, must
+ *    include  the following  acknowledgment:  "This product includes  software
+ *    developed  by the  Apache Software Foundation  (http://www.apache.org/)."
+ *    Alternately, this  acknowledgment may  appear in the software itself,  if
+ *    and wherever such third-party acknowledgments normally appear.
+ *
+ * 4. The names "log4j" and  "Apache Software Foundation"  must not be used to
+ *    endorse  or promote  products derived  from this  software without  prior
+ *    written permission. For written permission, please contact
+ *    apache@apache.org.
+ *
+ * 5. Products  derived from this software may not  be called "Apache", nor may
+ *    "Apache" appear  in their name,  without prior written permission  of the
+ *    Apache Software Foundation.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS  FOR A PARTICULAR  PURPOSE ARE  DISCLAIMED.  IN NO  EVENT SHALL  THE
+ * APACHE SOFTWARE  FOUNDATION  OR ITS CONTRIBUTORS  BE LIABLE FOR  ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL,  EXEMPLARY, OR CONSEQUENTIAL  DAMAGES (INCLU-
+ * DING, BUT NOT LIMITED TO, PROCUREMENT  OF SUBSTITUTE GOODS OR SERVICES; LOSS
+ * OF USE, DATA, OR  PROFITS; OR BUSINESS  INTERRUPTION)  HOWEVER CAUSED AND ON
+ * ANY  THEORY OF LIABILITY,  WHETHER  IN CONTRACT,  STRICT LIABILITY,  OR TORT
+ * (INCLUDING  NEGLIGENCE OR  OTHERWISE) ARISING IN  ANY WAY OUT OF THE  USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * This software  consists of voluntary contributions made  by many individuals
+ * on  behalf of the Apache Software  Foundation.  For more  information on the
+ * Apache Software Foundation, please see <http://www.apache.org/>.
+ *
+ */
+
+/*
  * Copyright 1999,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.log4j.selector;
 
 import org.apache.log4j.Hierarchy;
 import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.helpers.Constants;
+import org.apache.log4j.helpers.IntializationUtil;
 import org.apache.log4j.helpers.Loader;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
@@ -27,6 +78,7 @@ import org.apache.log4j.spi.RootCategory;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -63,7 +115,7 @@ import javax.naming.NamingException;
  * application context to look up the value of the entry. The logging context of
  * the web-application will depend on the value the env-entry.  The JNDI context
  *  which is looked up by this class is
- * <code>java:comp/env/log4j/logging-context.</code>
+ * <code>java:comp/env/log4j/context-name</code>.
  *
  * <p>Here is an example of an <code>env-entry<code>:
  * <blockquote>
@@ -117,6 +169,8 @@ public class ContextJNDISelector implements RepositorySelector {
   static String JNDI_CONTEXT_NAME = "java:comp/env/log4j/context-name";
   static String JNDI_CONFIGURATION_RESOURCE =
     "java:comp/env/log4j/configuration-resource";
+  static String JNDI_CONFIGURATOR_CLASS =
+    "java:comp/env/log4j/configurator-class";
 
   /**
    * key: name of logging context,
@@ -138,13 +192,14 @@ public class ContextJNDISelector implements RepositorySelector {
   }
 
   public void setDefaultRepository(LoggerRepository dh) {
-    if(defaultRepository == null) {
+    if (defaultRepository == null) {
       defaultRepository = dh;
     } else {
-      throw new IllegalStateException("default hierarchy has been already set.");
+      throw new IllegalStateException(
+        "default hierarchy has been already set.");
     }
   }
-  
+
   /**
    * implemented RepositorySelector interface method. The returned
    * value is guaranteed to be non-null.
@@ -180,38 +235,34 @@ public class ContextJNDISelector implements RepositorySelector {
         hierarchy = new Hierarchy(new RootCategory(Level.DEBUG));
         hierMap.put(loggingContextName, hierarchy);
 
-        // configure it
-        try {
-          String configResourceStr =
-            (String) ctx.lookup(JNDI_CONFIGURATION_RESOURCE);
-          URL url;
+        // Use automatic configration to configure the default hierarchy
+        IntializationUtil.log4jInternalConfiguration(hierarchy);
+        
+        String configResourceStr = lookup(ctx, JNDI_CONFIGURATION_RESOURCE);
+        String configuratorClassName = lookup(ctx, JNDI_CONFIGURATOR_CLASS);
 
-          try {
-            url = new URL(configResourceStr);
-          } catch (MalformedURLException ex) {
-            // so, resource is not a URL:
-            // attempt to get the resource from the class loader path
-            // please read the javadocs for Loader.getResource for the exact
-            // algorithm.
-            url = Loader.getResource(configResourceStr);
+        if (configResourceStr == null) {
+          if (
+            Loader.getResource(Constants.DEFAULT_XML_CONFIGURATION_FILE) != null) {
+            configResourceStr = Constants.DEFAULT_XML_CONFIGURATION_FILE;
+          } else if (
+            Loader.getResource(Constants.DEFAULT_CONFIGURATION_FILE) != null) {
+            configResourceStr = Constants.DEFAULT_CONFIGURATION_FILE;
           }
-
-          // If we have a non-null url, then delegate the rest of the
-          // configuration to the OptionConverter.selectAndConfigure
-          // method.
-          if (url != null) {
-            LogLog.debug(
-              "Using URL [" + url + "] for automatic log4j configuration.");
-            OptionConverter.selectAndConfigure(url, null, hierarchy);
-          } else {
-            LogLog.debug(
-              "Could not find resources to perform automatic configuration.");
-          }
-        } catch (NamingException ne) {
         }
-      }
 
+        IntializationUtil.initialConfiguration(
+          hierarchy, configResourceStr, configuratorClassName);
+      }
       return hierarchy;
+    }
+  }
+
+  String lookup(Context ctx, String name) {
+    try {
+      return (String) ctx.lookup(name);
+    } catch (NamingException e) {
+      return null;
     }
   }
 }
