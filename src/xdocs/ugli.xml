@@ -115,8 +115,13 @@
           <tr>
             <td>Built-in support</td>
 
-            <td>Log4j has built-in support for UGLI. 
-
+            <td>Log4j has built-in support for UGLI. Actually, log4j
+            internally makes extensive use of UGLI. The
+            <code>Logger</code> class in log4j directly implements
+            UGLI's <code>ULogger</code> interface. Moreover, all log4j
+            components fallback on <code>SimpleLogger</code>
+            implementation for log messages genereted internally by
+            log4j in case of incorrect configuration.
             </td>
           </tr>
 
