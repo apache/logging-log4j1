@@ -1,6 +1,5 @@
 package org.apache.log4j.helpers;
 
-import org.apache.log4j.helpers.OptionConverter;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
