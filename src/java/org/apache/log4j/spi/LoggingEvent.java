@@ -575,23 +575,28 @@ public class LoggingEvent
 
 
   /**
-   * This method creates a new properties map containing a copy of MDC context
-   * and a copy of the properites in LoggerRepository generating this event.
+   * If the properties field is null, this method creates a new properties map 
+   * containing a copy of MDC context and a copy of the properites in 
+   * LoggerRepository generating this event. If properties is non-null,
+   * this method does nothing.
    *
    * @since 1.3
    */
-  public Map createProperties() {
-    Map map = new TreeMap();
-    Map mdcMap = MDC.getContext();
+  public void initializeProperties() {
+    
+    if(properties == null) {
+      Map map = new TreeMap();
+      Map mdcMap = MDC.getContext();
 
-    if (mdcMap != null) {
-      map.putAll(mdcMap);
-    }
+      if (mdcMap != null) {
+        map.putAll(mdcMap);
+      }
 
-    if (logger != null) {
-      map.putAll(logger.getLoggerRepository().getProperties());
+      if (logger != null) {
+        map.putAll(logger.getLoggerRepository().getProperties());
+      }
+      properties = map;
     }
-    return map;
   }
 
 
@@ -640,9 +645,7 @@ public class LoggingEvent
    * @since 1.3
    */
   public Set getPropertyKeySet() {
-    if (properties == null) {
-      properties = createProperties();
-    }
+    initializeProperties();
     return Collections.unmodifiableSet(properties.keySet());
   }
 
@@ -851,7 +854,7 @@ public class LoggingEvent
   public void setProperty(String key, String value) {
     if (properties == null) {
       // create a copy of MDC and repository properties  
-      properties = createProperties();  
+      initializeProperties();  
     }
 
     if (value != null) {
@@ -861,10 +864,16 @@ public class LoggingEvent
     }
   }
 
-
-  private void writeObject(ObjectOutputStream oos)
-         throws java.io.IOException {
-    // Aside from returning the current thread name the wgetThreadName
+  /**
+   * This method should be called prior to serializing an event. It should also
+   * be called when using asynchronous logging, before writing the event on 
+   * a database, or as an XML element. 
+   * 
+   *
+   * @since 1.3
+   */
+  public void prepareForSerialization() {
+      // Aside from returning the current thread name the wgetThreadName
     // method sets the threadName variable.
     this.getThreadName();
 
@@ -877,11 +886,18 @@ public class LoggingEvent
 
     // This call has a side effect of creating a copy of MDC context information
     // as well as a copy the properties for the containing LoggerRepository.
-    this.createProperties();
-
+    if(properties == null) {
+      initializeProperties();
+    }
     // This sets the throwable sting representation of the event throwable.
     this.getThrowableStrRep();
+    
+  }
 
+  private void writeObject(ObjectOutputStream oos)
+         throws java.io.IOException {
+    
+    prepareForSerialization();
     oos.defaultWriteObject();
 
     // serialize this event's level
