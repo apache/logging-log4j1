@@ -70,6 +70,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -338,13 +340,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     final Action dockPauseAction =
       new AbstractAction("Pause") {
         public void actionPerformed(ActionEvent evt) {
-          System.out.println("trying to pause '" + ident + "'");
-
-          if (!logui.pausedList.contains(ident)) {
-            logui.pausedList.add(ident);
-          } else {
-            logui.pausedList.remove(ident);
-          }
+          logPanel.setPaused(!logPanel.isPaused());
         }
       };
 
@@ -361,14 +357,13 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
       new SmallToggleButton(dockPauseAction);
     dockPauseButton.setText("");
 
-    if (logui.pausedList.contains(ident)) {
-      dockPauseButton.getModel().setSelected(true);
-    } else {
-      dockPauseButton.getModel().setSelected(false);
-    }
+    dockPauseButton.getModel().setSelected(logPanel.isPaused());
 
-    dockPauseButton.setText("");
+    logPanel.addPropertyChangeListener("paused", new PropertyChangeListener() {
 
+		public void propertyChange(PropertyChangeEvent evt) {
+            dockPauseButton.getModel().setSelected(logPanel.isPaused());
+		}});
     toolbar.add(dockPauseButton);
 
     Action dockShowPrefsAction =
@@ -798,14 +793,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
           }
 
           String ident = logPanel.getIdentifier();
-
-          //          System.out.println("trying to pause '" + ident + "'");
-          if (!logui.pausedList.contains(ident)) {
-            logui.pausedList.add(ident);
-          } else {
-            logui.pausedList.remove(ident);
-          }
-
+          logPanel.setPaused(!logPanel.isPaused());
           scanState();
         }
       };
@@ -1020,10 +1008,11 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
       toggleDetailPaneAction.getValue(Action.NAME));
 
     logTreePaneButton.setAction(toggleLogTreeAction);
+
     //	logTreePaneButton.setText(null);
     logTreePaneButton.getActionMap().put(
-    toggleLogTreeAction.getValue(Action.NAME), toggleLogTreeAction);
-      logTreePaneButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+      toggleLogTreeAction.getValue(Action.NAME), toggleLogTreeAction);
+    logTreePaneButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
       KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.ALT_MASK),
       toggleDetailPaneAction.getValue(Action.NAME));
 
@@ -1153,13 +1142,8 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
       fileMenu.getFileSaveAction().setEnabled(true);
       findTextField.setEnabled(true);
 
-      if (logui.pausedList.contains(logPanel.getIdentifier())) {
-        pauseButton.getModel().setSelected(true);
-        logui.getStatusBar().setPaused(true);
-      } else {
-        pauseButton.getModel().setSelected(false);
-        logui.getStatusBar().setPaused(false);
-      }
+      pauseButton.getModel().setSelected(logPanel.isPaused());
+      logui.getStatusBar().setPaused(logPanel.isPaused());
 
       detailPaneButton.getModel().setSelected(logPanel.isDetailPaneVisible());
     }
