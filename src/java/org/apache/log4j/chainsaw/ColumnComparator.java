@@ -49,9 +49,9 @@
 
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.spi.LoggingEvent;
-
 import java.util.Comparator;
+
+import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
@@ -63,8 +63,10 @@ import java.util.Comparator;
 public class ColumnComparator implements Comparator {
   protected int index;
   protected boolean ascending;
+  protected String columnName;
 
-  public ColumnComparator(int index, boolean ascending) {
+  public ColumnComparator(String columnName, int index, boolean ascending) {
+    this.columnName = columnName;
     this.index = index;
     this.ascending = ascending;
   }
@@ -94,6 +96,15 @@ public class ColumnComparator implements Comparator {
         sort =
           e1.getMessage().toString().compareToIgnoreCase(
             e2.getMessage().toString());
+
+        break;
+
+      case ChainsawColumns.INDEX_NDC_COL_NAME:
+        if (e1.getNDC() != null && e2.getNDC() != null) {
+            sort =
+                e1.getNDC().compareToIgnoreCase(
+                e2.getNDC());
+        }
 
         break;
 
@@ -140,6 +151,49 @@ public class ColumnComparator implements Comparator {
        case ChainsawColumns.INDEX_THREAD_COL_NAME:
        		sort = e1.getThreadName().compareToIgnoreCase(e2.getThreadName());
        		break;
+            
+       case ChainsawColumns.INDEX_ID_COL_NAME:
+            int id1 = Integer.parseInt(e1.getProperty(ChainsawConstants.LOG4J_ID_KEY));
+            int id2 = Integer.parseInt(e2.getProperty(ChainsawConstants.LOG4J_ID_KEY)); 
+            if (id1 == id2) {
+                sort = 0;
+            } else if (id1 < id2) {
+                sort = 1;
+            } else {
+                sort = -1;
+            }
+            break;
+
+       case ChainsawColumns.INDEX_THROWABLE_COL_NAME:
+            if (e1.getThrowableStrRep() != null && e2.getThrowableStrRep() != null) {
+               String[] s1 = e1.getThrowableStrRep();
+               String[] s2 = e2.getThrowableStrRep();
+               boolean foundDiff = false;
+               for (int i = 0;i<s1.length;i++) {
+                   if (foundDiff || i > s2.length) {
+                       break;
+                   }
+                   sort = s1[i].compareToIgnoreCase(s2[i]);
+                   foundDiff = sort != 0;
+               }
+            }
+            break;
+
+       case ChainsawColumns.INDEX_LINE_COL_NAME:
+            if (
+                (e1.locationInformationExists())
+                & (e2.locationInformationExists())) {
+                sort =
+                    e1.getLocationInformation().getLineNumber().compareToIgnoreCase(
+                    e2.getLocationInformation().getLineNumber());
+            }
+            break;
+            
+      //other columns may be MDC values - see if there is an MDC value matching column name 
+      default:
+          if (e1.getMDC(columnName) != null && e2.getMDC(columnName) != null) {
+              sort = e1.getMDC(columnName).toString().compareToIgnoreCase(e2.getMDC(columnName).toString());
+          }
       }
     }
 

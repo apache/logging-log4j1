@@ -176,6 +176,10 @@ public class CyclicBufferList extends AbstractList implements List {
   public int getMaxSize() {
     return maxSize;
   }
+  
+  public int getLast() {
+      return last;
+  }
 
   /**
      Get the oldest (first) element in the buffer. The oldest element
