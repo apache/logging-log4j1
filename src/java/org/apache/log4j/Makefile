@@ -24,6 +24,7 @@ JSOURCES:=HTMLLayout.java\
 	Priority.java\
 	WriterAppender.java\
 	ConsoleAppender.java\
+        MDC.java\
 
 ifdef $(ISJDK1)
  JSOURCES:=$(JSOURCES) RollingFileAppenderBeanInfo.java
