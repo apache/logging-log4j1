@@ -58,6 +58,7 @@ public class LogManager {
     //System.out.println("**Start of LogManager static initializer");
     Hierarchy defaultHierarchy = new Hierarchy(new RootLogger(Level.DEBUG));
     defaultHierarchy.setName("default");
+    
     OptionConverter oc = new OptionConverter();
     // No point in setting the repository this early in the game
     //oc.setLoggerRepository(null);
