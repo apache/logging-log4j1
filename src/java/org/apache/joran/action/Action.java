@@ -18,6 +18,7 @@ package org.apache.joran.action;
 
 import org.apache.joran.ExecutionContext;
 import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
 
 
 /**
@@ -53,7 +54,7 @@ public abstract class Action {
    * the returned value is 'false', then child elements are ignored.
    */
   public abstract void begin(
-    ExecutionContext ec, String name, Attributes attributes);
+    ExecutionContext ec, String name, Attributes attributes, Locator locator);
 
   public abstract void end(ExecutionContext ec, String name);
 

@@ -27,6 +27,7 @@ import junit.framework.TestCase;
 
 import org.w3c.dom.Document;
 import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
 
 import java.util.List;
 
@@ -154,7 +155,7 @@ public class SimpleStoreTest extends TestCase {
   }
 
   class XAction extends Action {
-    public void begin(ExecutionContext ec, String name, Attributes attributes) {
+    public void begin(ExecutionContext ec, String name, Attributes attributes, Locator locator) {
     }
 
     public void end(ExecutionContext ec, String name) {
@@ -165,7 +166,7 @@ public class SimpleStoreTest extends TestCase {
   }
 
   class YAction extends Action {
-		public void begin(ExecutionContext ec, String name, Attributes attributes) {
+		public void begin(ExecutionContext ec, String name, Attributes attributes, Locator locator) {
 		}
 
 		public void end(ExecutionContext ec, String name) {
@@ -175,7 +176,7 @@ public class SimpleStoreTest extends TestCase {
 		}  }
 
   class ZAction extends Action {
-		public void begin(ExecutionContext ec, String name, Attributes attributes) {
+		public void begin(ExecutionContext ec, String name, Attributes attributes, Locator locator) {
 		}
 
 		public void end(ExecutionContext ec, String name) {

@@ -23,6 +23,7 @@ import org.apache.joran.helper.Option;
 import org.apache.log4j.Layout;
 import org.apache.log4j.Logger;
 import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
 
 
 public class NewRuleAction extends Action {
@@ -33,7 +34,7 @@ public class NewRuleAction extends Action {
    * Instantiates an layout of the given class and sets its name.
    *
    */
-  public void begin(ExecutionContext ec, String localName, Attributes attributes) {
+  public void begin(ExecutionContext ec, String localName, Attributes attributes, Locator locator) {
 		// Let us forget about previous errors (in this object)
 		inError = false; 
     String errorMsg;

@@ -22,8 +22,8 @@ import org.apache.joran.action.Action;
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggerRepository;
 
-import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
 
 
 public class RootLoggerAction extends Action {
@@ -35,7 +35,7 @@ public class RootLoggerAction extends Action {
   Logger logger = Logger.getLogger(RootLoggerAction.class);
   Logger root;
 
-  public void begin(ExecutionContext ec, String name, Attributes attributes) {
+  public void begin(ExecutionContext ec, String name, Attributes attributes, Locator locator) {
     inError = false;
     logger.debug("In begin method");
 

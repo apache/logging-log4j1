@@ -26,6 +26,7 @@ import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.OptionHandler;
 
 import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
 
 import java.util.HashMap;
 
@@ -39,7 +40,7 @@ public class AppenderAction extends Action {
    *
    * The appender thus generated is placed in the ExecutionContext appender bag.
    */
-  public void begin(ExecutionContext ec, String localName, Attributes attributes) {
+  public void begin(ExecutionContext ec, String localName, Attributes attributes, Locator locator) {
     String className =
       attributes.getValue(CLASS_ATTRIBUTE);
 

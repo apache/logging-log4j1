@@ -21,6 +21,7 @@ import org.apache.joran.action.*;
 import org.apache.log4j.Logger;
 
 import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.util.ArrayList;
@@ -34,7 +35,8 @@ public class JoranParser extends DefaultHandler {
   private ExecutionContext ec;
   private ArrayList implicitActions;
   Pattern pattern;
-
+  Locator locator;
+  
   JoranParser(RuleStore rs) {
     ruleStore = rs;
     ec = new ExecutionContext(this);
@@ -69,6 +71,9 @@ public class JoranParser extends DefaultHandler {
     }
   }
 
+  public void setDocumentLocator(Locator l) {
+    locator = l;
+  }
   public void endElement(String namespaceURI, String localName, String qName) {
     List applicableActionList = getapplicableActionList(pattern);
 
@@ -140,7 +145,7 @@ public class JoranParser extends DefaultHandler {
 
     while (i.hasNext()) {
       Action action = (Action) i.next();
-      action.begin(ec, tagName, atts);
+      action.begin(ec, tagName, atts, locator);
     }
   }
 
