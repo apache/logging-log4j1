@@ -577,10 +577,35 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
               });
           }
         });
+        
+ 
       lookAndFeelGroup.add(lfItemMenu);
       lookAndFeelMenu.add(lfItemMenu);
       lookAndFeelMenus.add(lfItemMenu);
     }
+    
+	try {
+	   final Class gtkLF = Class.forName("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
+	   final JRadioButtonMenuItem lfIGTK =
+		 new JRadioButtonMenuItem("GTK+ 2.0");
+		lfIGTK.addActionListener(
+		 new ActionListener() {
+		   public void actionPerformed(ActionEvent e) {
+			 SwingUtilities.invokeLater(
+			   new Runnable() {
+				 public void run() {
+				   logui.setLookAndFeel(gtkLF.getName());
+				 }
+			   });
+		   }
+		 });
+		lookAndFeelGroup.add(lfIGTK);
+		lookAndFeelMenu.add(lfIGTK);
+		lookAndFeelMenus.add(lfIGTK);
+
+   } catch (Exception e) {
+	   LogLog.debug("Can't find new GTK L&F, might be Windows, or <JDK1.4.2");
+   }
 
     levelIconMenu.add(levelDisplayIcon);
     levelIconMenu.add(levelDisplayText);
