@@ -25,16 +25,17 @@ import org.apache.log4j.util.Compare;
 import org.apache.log4j.util.LineNumberFilter;
 
 /**
-   Test case for varia/LevelMatchFilter.java.
+   Test case for varia/LevelMatchFilter.java.  Test both the accept
+   and deny cases.  Testing the accept requires the use of the
+   DenyAllFilter to prevent non-matched messages from still getting
+   logged to the appender.
  */
 public class LevelMatchFilterTestCase extends TestCase {
   
   static String ACCEPT_FILE     = "output/LevelMatchFilter_accept";
-  static String ACCEPT_FILTERED = "output/LevelMatchFilter_accept_filtered";
   static String ACCEPT_WITNESS  = "witness/LevelMatchFilter_accept";
 
   static String DENY_FILE       = "output/LevelMatchFilter_deny";
-  static String DENY_FILTERED   = "output/LevelMatchFilter_deny_filtered";
   static String DENY_WITNESS    = "witness/LevelMatchFilter_deny";
 
   Logger root; 
@@ -82,8 +83,7 @@ public class LevelMatchFilterTestCase extends TestCase {
 	     + levelArray[x].toString() + " msgs");
     }
     
-    Transformer.transform(ACCEPT_FILE, ACCEPT_FILTERED, new LineNumberFilter());
-    assertTrue(Compare.compare(ACCEPT_FILTERED, ACCEPT_WITNESS));
+    assertTrue(Compare.compare(ACCEPT_FILE, ACCEPT_WITNESS));
   }
 
   public void deny() throws Exception {
@@ -112,8 +112,7 @@ public class LevelMatchFilterTestCase extends TestCase {
               + " msgs");
     }
     
-    Transformer.transform(DENY_FILE, DENY_FILTERED, new LineNumberFilter());
-    assertTrue(Compare.compare(DENY_FILTERED, DENY_WITNESS));
+    assertTrue(Compare.compare(DENY_FILE, DENY_WITNESS));
   }
 
 
