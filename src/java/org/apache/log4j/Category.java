@@ -61,6 +61,7 @@
 //              Aaron Greenhouse <aarong@cs.cmu.edu>
 //              Beat Meier <bmeier@infovia.com.ar>
 //              Colin Sampaleanu <colinml1@exis.com>
+//              Andy McBride <andy.mcbride@pcmsgroup.com> 
 package org.apache.log4j;
 
 import org.apache.log4j.helpers.AppenderAttachableImpl;
@@ -485,6 +486,7 @@ public class Category implements AppenderAttachable {
     } else {
       result = aai.getAllAppenders();
     }
+    lock.releaseReadLock();
     return result;
   }
 
