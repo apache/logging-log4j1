@@ -16,6 +16,7 @@
 
 package org.apache.log4j.plugins;
 
+import org.apache.log4j.spi.ComponentBase;
 import org.apache.log4j.spi.LoggerRepository;
 
 import java.beans.PropertyChangeEvent;
@@ -40,12 +41,10 @@ import java.beans.PropertyChangeSupport;
   @author Paul Smith <psmith@apache.org>
   @since 1.3
 */
-public abstract class PluginSkeleton implements Plugin {
+public abstract class PluginSkeleton extends ComponentBase implements Plugin {
   /** Name of this plugin. */
   protected String name = "";
 
-  /** Repository this plugin is attached to. */
-  protected LoggerRepository repository;
   protected boolean active;
 
   /**
