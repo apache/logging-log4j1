@@ -414,7 +414,9 @@
                 ${stem}/or/sax/*.class,
                 ${stem}/or/jms/*.class,
                 ${stem}/plugins/*.class,
-                ${stem}/config/*.class"
+                ${stem}/config/*.class,
+  	            org/apache/ugli/**/*.class"
+    				
       excludes="**/UnitTest**, ${stem}/**/*BeanInfo.class">
       <manifest>
         <attribute name="Manifest-version" value="1.0"/>
