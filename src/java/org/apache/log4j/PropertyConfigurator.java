@@ -511,7 +511,6 @@ public class PropertyConfigurator extends BasicConfigurator
 		   additivity); 
       cat.setAdditivity(additivity);
     }
-    
   }
   
   /**

@@ -6,6 +6,8 @@
  * the LICENSE.APL file.
  */
 
+// Contributors:  Kitching Simon <Simon.Kitching@orange.ch>
+
 package org.apache.log4j;
 
 /**
@@ -15,7 +17,8 @@ package org.apache.log4j;
 
    <p>The <code>Priority</code> class may be subclassed to define a larger
    priority set.
-   
+
+   @author Ceki G&uuml;lc&uuml;
  */
 public class Priority {
 
@@ -134,20 +137,30 @@ public class Priority {
   }
 
   /**
-    Convert an integerq passed as argument to a priority. If the
-    conversion fails, then this method returns {@link #DEBUG}.      
+    Convert an integer passed as argument to a priority. If the
+    conversion fails, then this method returns {@link #DEBUG}.
 
   */
   public
   static
   Priority toPriority(int val) {
+    return toPriority(val, Priority.DEBUG);
+  }
+
+  /**
+    Convert an integer passed as argument to a priority. If the
+    conversion fails, then this method returns the specified default.
+  */
+  public
+  static
+  Priority toPriority(int val, Priority defaultPriority) {
     switch(val) {
     case DEBUG_INT: return DEBUG;
     case INFO_INT: return INFO;
     case WARN_INT: return WARN;
     case ERROR_INT: return ERROR;
     case FATAL_INT: return FATAL;
-    default: return DEBUG;
+    default: return defaultPriority;
     }
   }
 
@@ -171,5 +184,6 @@ public class Priority {
     if(s.equals("FATAL")) return Priority.FATAL;
     return defaultPriority;
   }
+
 
 }
