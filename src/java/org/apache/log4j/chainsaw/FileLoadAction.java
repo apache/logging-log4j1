@@ -35,121 +35,129 @@ import org.apache.log4j.helpers.Constants;
 import org.apache.log4j.spi.Decoder;
 import org.apache.log4j.spi.LoggingEvent;
 
-
 /**
- * Allows the user to specify a particular file to open
- * and import the events into a new tab.
- *
+ * Allows the user to specify a particular file to open and import the events
+ * into a new tab.
+ * 
  * @author Paul Smith <psmith@apache.org>
  * @author Scott Deboy <sdeboy@apache.org>
- *
+ *  
  */
 class FileLoadAction extends AbstractAction {
-  private static final Logger LOG = Logger.getLogger(FileLoadAction.class);
+    private static final Logger LOG = Logger.getLogger(FileLoadAction.class);
 
-  /**
-   * This action must have a reference to a LogUI
-   * window so that it can append the events it loads
-   *
-   */
-  Decoder decoder = null;
-  private LogUI parent;
-  private JFileChooser chooser = null;
-  private boolean remoteURL = false;
+    /**
+     * This action must have a reference to a LogUI window so that it can append
+     * the events it loads
+     *  
+     */
+    Decoder decoder = null;
 
-  public FileLoadAction(
-    LogUI parent, Decoder decoder, String title, boolean isRemoteURL) {
-    super(title);
-    remoteURL = isRemoteURL;
-    this.decoder = decoder;
-    this.parent = parent;
-  }
+    private LogUI parent;
 
-  /*
-   * When the user chooses the Load action,
-   * a File chooser is presented to allow them to
-   * find an XML file to load events from.
-   *
-   * Any events decoded from this file are added to
-   * one of the tabs.
-   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-   */
-  public void actionPerformed(ActionEvent e) {
-    String name = "";
-    URL url = null;
+    private JFileChooser chooser = null;
 
-    if (!remoteURL) {
-      if (chooser == null) {
-        chooser = new JFileChooser();
-      }
+    private boolean remoteURL = false;
 
-      chooser.setDialogTitle("Load Events from XML file...");
-
-      chooser.setAcceptAllFileFilterUsed(true);
-
-      chooser.setFileFilter(
-        new FileFilter() {
-          public boolean accept(File f) {
-            return (f.getName().toLowerCase().endsWith(".xml")
-            || f.isDirectory());
-          }
-
-          public String getDescription() {
-            return "XML files (*.xml)";
-          }
-        });
-
-      int i = chooser.showOpenDialog(parent);
-      if(i != JFileChooser.APPROVE_OPTION) {
-       return; 
-      }
-      File selectedFile = chooser.getSelectedFile();
-
-      
-      try {
-        url = selectedFile.toURL();
-        name = selectedFile.getName();
-      } catch (Exception ex) {
-        // TODO: handle exception
-      }
-    } else {
-      String urltext =
-        JOptionPane.showInputDialog(
-          parent,
-          "<html>Please type in the <b>complete</b> URL to the remote XML source.</html>");
-
-      if (urltext != null) {
-        try {
-          url = new URL(urltext);
-        } catch (Exception ex) {
-          JOptionPane.showMessageDialog(
-            parent, "'" + urltext + "' is not a valid URL.");
-        }
-      }
+    public FileLoadAction(LogUI parent, Decoder decoder, String title,
+            boolean isRemoteURL) {
+        super(title);
+        remoteURL = isRemoteURL;
+        this.decoder = decoder;
+        this.parent = parent;
     }
 
-    if (url != null) {
-      Map additionalProperties = new HashMap();
-      additionalProperties.put(Constants.HOSTNAME_KEY, "file");
-      additionalProperties.put(Constants.APPLICATION_KEY, name);
-      decoder.setAdditionalProperties(additionalProperties);
+    /*
+     * When the user chooses the Load action, a File chooser is presented to
+     * allow them to find an XML file to load events from.
+     * 
+     * Any events decoded from this file are added to one of the tabs.
+     * 
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    public void actionPerformed(ActionEvent e) {
+        String name = "";
+        URL url = null;
 
-      final URL urlToUse = url;
-      new Thread(
-        new Runnable() {
-          public void run() {
-            try {
-              Vector events = decoder.decode(urlToUse);
-              Iterator iter = events.iterator();
-              while (iter.hasNext()) {
-                  parent.handler.append((LoggingEvent)iter.next());
-              }
-            } catch (IOException e1) {
-              // TODO Handle the error with a nice msg
-              LOG.error(e1);
+        if (!remoteURL) {
+            if (chooser == null) {
+                chooser = new JFileChooser();
             }
-          }
+
+            chooser.setDialogTitle("Load Events from XML file...");
+
+            chooser.setAcceptAllFileFilterUsed(true);
+
+            chooser.setFileFilter(new FileFilter() {
+                public boolean accept(File f) {
+                    return (f.getName().toLowerCase().endsWith(".xml") || f
+                            .isDirectory());
+                }
+
+                public String getDescription() {
+                    return "XML files (*.xml)";
+                }
+            });
+
+            int i = chooser.showOpenDialog(parent);
+            if (i != JFileChooser.APPROVE_OPTION) {
+                return;
+            }
+            File selectedFile = chooser.getSelectedFile();
+
+            try {
+                url = selectedFile.toURL();
+                name = selectedFile.getName();
+            } catch (Exception ex) {
+                // TODO: handle exception
+            }
+        } else {
+            String urltext = JOptionPane
+                    .showInputDialog(parent,
+                            "<html>Please type in the <b>complete</b> URL to the remote XML source.</html>");
+
+            if (urltext != null) {
+                try {
+                    url = new URL(urltext);
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(parent, "'" + urltext
+                            + "' is not a valid URL.");
+                }
+            }
+        }
+
+        if (url != null) {
+            importURL(parent.handler, decoder, name, url);
+        }
+    }
+
+    /**
+     * Imports a URL into Chainsaw, by using the Decoder, and 
+     * using the name value as the Application key which (usually) determines
+     * the Tab name
+     * @param name
+     * @param url URL to import
+     */
+    public static void importURL(final ChainsawAppenderHandler handler, final Decoder decoder, String name, URL url) {
+        Map additionalProperties = new HashMap();
+        additionalProperties.put(Constants.HOSTNAME_KEY, "file");
+        additionalProperties.put(Constants.APPLICATION_KEY, name);
+        decoder.setAdditionalProperties(additionalProperties);
+
+        final URL urlToUse = url;
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    Vector events = decoder.decode(urlToUse);
+                    Iterator iter = events.iterator();
+                    while (iter.hasNext()) {
+                        handler.append((LoggingEvent) iter.next());
+                    }
+                } catch (IOException e1) {
+                    // TODO Handle the error with a nice msg
+                    LOG.error(e1);
+                }
+            }
         }).start();
     }
-  }
 }

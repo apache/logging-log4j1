@@ -769,7 +769,6 @@ class ChainsawToolBarAndMenus implements ChangeListener {
 
     if (logPanel == null) {
       activateLogPanelActions = false;
-      logui.getStatusBar().clear();
       findField.setEnabled(false);
       findPanel.removeAll();
       findPanel.add(findField);

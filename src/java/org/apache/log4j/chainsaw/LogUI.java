@@ -36,6 +36,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -63,6 +64,7 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -85,6 +87,7 @@ import javax.swing.event.HyperlinkListener;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
+import org.apache.log4j.chainsaw.dnd.FileDnDTarget;
 import org.apache.log4j.chainsaw.help.HelpManager;
 import org.apache.log4j.chainsaw.help.Tutorial;
 import org.apache.log4j.chainsaw.helper.SwingHelper;
@@ -100,7 +103,6 @@ import org.apache.log4j.chainsaw.prefs.SettingsManager;
 import org.apache.log4j.chainsaw.receivers.ReceiversPanel;
 import org.apache.log4j.chainsaw.version.VersionManager;
 import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.joran.JoranConfigurator;
 import org.apache.log4j.net.SocketNodeEventListener;
 import org.apache.log4j.plugins.Plugin;
@@ -110,7 +112,9 @@ import org.apache.log4j.plugins.PluginRegistry;
 import org.apache.log4j.plugins.Receiver;
 import org.apache.log4j.rule.ExpressionRule;
 import org.apache.log4j.rule.Rule;
+import org.apache.log4j.spi.Decoder;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.xml.XMLDecoder;
 
 
 /**
@@ -124,7 +128,6 @@ import org.apache.log4j.spi.LoggingEvent;
  *
  */
 public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
-  private static final String CONFIG_FILE_TO_USE = "config.file";
   private static final String MAIN_WINDOW_HEIGHT = "main.window.height";
   private static final String MAIN_WINDOW_WIDTH = "main.window.width";
   private static final String MAIN_WINDOW_Y = "main.window.y";
@@ -132,7 +135,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   private static ChainsawSplash splash;
   private static final double DEFAULT_MAIN_RECEIVER_SPLIT_LOCATION = .8d;
   private final JFrame preferencesFrame = new JFrame();
-  private URL configURLToUse;
   private boolean noReceiversDefined;
   private ReceiversPanel receiversPanel;
   private ChainsawTabbedPane tabbedPane;
@@ -304,24 +306,18 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     String config = model.getConfigurationURL();
     if(config!=null && (!(config.trim().equals("")))) {
         config = config.trim();
-        LogLog.info("Using '" + config + "' for auto-configuration");
         try {
-          // we temporarily swap the TCCL so that plugins can find resources
-          Thread.currentThread().setContextClassLoader(classLoader);
-          JoranConfigurator jc = new JoranConfigurator();
-          jc.doConfigure(new URL(config), LogManager.getLoggerRepository());
-          jc.logErrors();
-        } catch (MalformedURLException e) {
-          LogLog.error("Failed to use the auto-configuration file", e);
-        }finally{
-            // now switch it back...
-            Thread.currentThread().setContextClassLoader(previousTCCL);
+          LogLog.info("Using '" + config + "' for auto-configuration");
+          URL configURL = new URL(config);
+          logUI.loadConfigurationUsingPluginClassLoader(configURL);
+        }catch(MalformedURLException e) {
+            LogLog.error("Failed to convert config string to url", e);
         }
     }else {
         LogLog.info("No auto-configuration file found within the ApplicationPreferenceModel");
+        logUI.ensureChainsawAppenderHandlerAdded();
     }
     
-    LogManager.getRootLogger().addAppender(logUI.handler);
     logUI.activateViewer();
 
     logUI.getApplicationPreferenceModel().apply(model);
@@ -379,8 +375,50 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     setToolBarAndMenus(new ChainsawToolBarAndMenus(this));
     toolbar = getToolBarAndMenus().getToolbar();
     setJMenuBar(getToolBarAndMenus().getMenubar());
+    
     setTabbedPane(new ChainsawTabbedPane());
+    
+    /**
+     * This adds Drag & Drop capability to Chainsaw
+     */
+    FileDnDTarget dnDTarget = new FileDnDTarget(tabbedPane);
+    dnDTarget.addPropertyChangeListener("fileList", new PropertyChangeListener() {
 
+        public void propertyChange(PropertyChangeEvent evt) {
+            final List fileList = (List) evt.getNewValue();
+            
+            Thread thread = new Thread(new Runnable() {
+
+                public void run() {
+                    LogLog.debug("Loading files: " + fileList);
+                    for (Iterator iter = fileList.iterator(); iter.hasNext();) {
+                        File  file = (File) iter.next();
+                        final Decoder decoder = new XMLDecoder();
+                        try {
+                            getStatusBar().setMessage("Loading " + file.getAbsolutePath() + "...");
+                            FileLoadAction.importURL(handler, decoder, file
+                                    .getName(), file.toURL());
+                        } catch (Exception e) {
+                            String errorMsg = "Failed to import a file";
+                            LogLog.error(errorMsg, e);
+                            getStatusBar().setMessage(errorMsg);
+                        }
+                    }
+                    
+                }});
+            
+            thread.setPriority(Thread.MIN_PRIORITY);
+            thread.start();
+            
+        }});
+   
+    JLabel lbl  = new JLabel();
+    lbl.setEnabled(false);
+    String dndTitle = "Drag & Drop XML log files here";
+    getTabbedPane().addANewTab(dndTitle,lbl,null, "You can Drag & Drop XML log files onto the Tabbed Pane and they will be loaded into Chainsaw" );
+    getTabbedPane().setEnabledAt(getTabbedPane().indexOfTab(dndTitle), false);
+    ensureWelcomePanelVisible();
+    
     applicationPreferenceModelPanel.setOkCancelActionListener(
       new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -405,9 +443,9 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       });
 
     // TODO this should all be in a config file
-    ChainsawCentral cc = new ChainsawCentral();
-    pluginRegistry.addPlugin(cc);
-    cc.activateOptions();
+//    ChainsawCentral cc = new ChainsawCentral();
+//    pluginRegistry.addPlugin(cc);
+//    cc.activateOptions();
     
 //    TODO this should also be fixed up, as VFS bits and pieces might not be built in an Ant build when they don't have all the VFS jars local
     try {
@@ -443,6 +481,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     welcomePanel = new WelcomePanel();
 
     JToolBar tb = welcomePanel.getToolbar();
+    
+    
     tb.add(
       new SmallButton(
         new AbstractAction("Tutorial", new ImageIcon(ChainsawIcons.HELP)) {
@@ -489,6 +529,9 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
   private void ensureWelcomePanelVisible() {
       // ensure that the Welcome Panel is made visible
+      if(!getTabbedPane().containsWelcomePanel()) {
+          addWelcomePanel();
+      }
       if(getTabbedPane().getSelectedComponent()!=welcomePanel) {
           getTabbedPane().setSelectedIndex(getTabbedPane().indexOfComponent(welcomePanel));
       }
@@ -524,9 +567,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     event.saveSetting(LogUI.MAIN_WINDOW_WIDTH, getWidth());
     event.saveSetting(LogUI.MAIN_WINDOW_HEIGHT, getHeight());
 
-    if (configURLToUse != null) {
-      event.saveSetting(LogUI.CONFIG_FILE_TO_USE, configURLToUse.toString());
-    }
   }
 
   /**
@@ -536,40 +576,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    */
   public void activateViewer() {
     
-      getSettingsManager().configure(
-              new SettingsListener() {
-                public void loadSettings(LoadSettingsEvent event) {
-                  String configFile = event.getSetting(LogUI.CONFIG_FILE_TO_USE);
-
-                  //if both a config file are defined and a log4j.configuration property
-                  // are set,
-                  //don't use configFile's configuration
-                  if (
-                    (configFile != null) && !configFile.trim().equals("")
-                      && (System.getProperty("log4j.configuration") == null)) {
-                    try {
-                      URL url = new URL(configFile);
-                      OptionConverter.selectAndConfigure(
-                        url, null, LogManager.getLoggerRepository());
-
-                      if (LogUI.this.getStatusBar() != null) {
-                        MessageCenter.getInstance().getLogger().info(
-                          "Configured Log4j using remembered URL :: " + url);
-                      }
-
-                      LogUI.this.configURLToUse = url;
-                    } catch (Exception e) {
-                      MessageCenter.getInstance().getLogger().error(
-                        "error occurred initializing log4j", e);
-                    }
-                  }
-                }
-
-                public void saveSettings(SaveSettingsEvent event) {
-                  //required because of SettingsListener interface..not used during load
-                }
-              });
-
     this.pluginRegistry = LogManager.getLoggerRepository().getPluginRegistry();  
     initGUI();
 
@@ -1316,16 +1322,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
               new Thread(
                 new Runnable() {
                   public void run() {
-                    try {
-                      OptionConverter.selectAndConfigure(
-                        url, null, LogManager.getLoggerRepository());
-                    } catch (Exception e) {
-                      MessageCenter.getInstance().getLogger().error(
-                        "Error initializing Log4j", e);
-                    }
-
-                    LogManager.getLoggerRepository().getRootLogger()
-                              .addAppender(handler);
+                    loadConfigurationUsingPluginClassLoader(url);
 
                     receiversPanel.updateReceiverTreeInDispatchThread();
                   }
@@ -1348,9 +1345,9 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   }
 
   void addWelcomePanel() {
-    getTabbedPane().addANewTab(
-      "Welcome", welcomePanel, new ImageIcon(ChainsawIcons.ABOUT),
-      "Welcome/Help");
+    getTabbedPane().insertTab(
+      "Welcome",  new ImageIcon(ChainsawIcons.ABOUT),welcomePanel,
+      "Welcome/Help", 0);
   }
 
   void removeWelcomePanel() {
@@ -1590,9 +1587,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    *                    for content to show
    */
   public void showHelp(URL url) {
-    removeWelcomePanel();
-    addWelcomePanel();
-
+    ensureWelcomePanelVisible();
     //    TODO ensure the Welcome Panel is the selected tab
     getWelcomePanel().setURL(url);
   }
@@ -1781,6 +1776,9 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
     TabIconHandler iconHandler = new TabIconHandler(ident);
     thisPanel.addEventCountListener(iconHandler);
+    
+
+
     tabbedPane.addChangeListener(iconHandler);
 
     PropertyChangeListener toolbarMenuUpdateListener =
@@ -1864,6 +1862,45 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   }
 
   /**
+   * Loads the log4j configuration file specified by the url, using
+   * the PluginClassLoader instance as a TCCL, but only replacing it temporarily, with the original
+   * TCCL being restored in a finally block to ensure consitency.
+   * 
+   * @param url
+   */
+    private void loadConfigurationUsingPluginClassLoader(final URL url) {
+        ClassLoader classLoader = PluginClassLoaderFactory.getInstance().getClassLoader();
+        ClassLoader previousTCCL = Thread.currentThread().getContextClassLoader();
+        
+        if(url!=null) {
+            LogLog.info("Using '" + url.toExternalForm()+ "' for auto-configuration");
+            try {
+              // we temporarily swap the TCCL so that plugins can find resources
+              Thread.currentThread().setContextClassLoader(classLoader);
+              JoranConfigurator jc = new JoranConfigurator();
+              jc.doConfigure(url, LogManager.getLoggerRepository());
+              jc.logErrors();
+            }finally{
+                // now switch it back...
+                Thread.currentThread().setContextClassLoader(previousTCCL);
+            }
+        }else {
+            LogLog.info("auto-configuration file has not been provided");
+        }
+        ensureChainsawAppenderHandlerAdded();
+    }
+
+    /**
+     * Makes sure that the LoggerRepository has the ChainsawAppenderHandler
+     * added to the root logger so Chainsaw can receive all the events.  
+     */
+    private void ensureChainsawAppenderHandlerAdded() {
+        if(!LogManager.getLoggerRepository().getRootLogger().isAttached(handler)) {
+            LogManager.getLoggerRepository().getRootLogger().addAppender(handler);
+        }
+    }
+
+/**
    * This class handles the recption of the Event batches and creates new
    * LogPanels if the identifier is not in use otherwise it ignores the event
    * batch.
