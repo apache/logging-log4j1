@@ -11,8 +11,8 @@ import org.apache.log4j.Priority;
  */
 public class XPriority extends Priority {
 
-  static final int  TRACE_INT   = 10000 - 1;
-  static final int  LETHAL_INT  = 50000 + 1;
+  static final int  TRACE_INT   = Priority.DEBUG_INT - 1;
+  static final int  LETHAL_INT  = Priority.FATAL_INT + 1;
 
 
   private static String TRACE_STR  = "TRACE";
