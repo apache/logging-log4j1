@@ -39,7 +39,7 @@ public interface Configurator {
      parameter.
 
      @param url The URL to parse
-     @param hierarchy The hierarchy to operation upon.
+     @param repository The hierarchy to operation upon.
    */
   void doConfigure(URL url, LoggerRepository repository);
 }

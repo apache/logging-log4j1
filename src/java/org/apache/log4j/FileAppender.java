@@ -30,14 +30,14 @@ import org.apache.log4j.helpers.LogLog;
  * */
 public class FileAppender extends WriterAppender {
 
-  /** Append to or truncate the file? The default value for this
-      variable is <code>true</code>, meaning that by default a
-      <code>FileAppender</code> will append to an existing file and
-      not truncate it.
-
-      <p>This option is meaningful only if the FileAppender opens the
-      file.
-  */
+  /** Controls file truncatation. The default value for this variable
+   * is <code>true</code>, meaning that by default a
+   * <code>FileAppender</code> will append to an existing file and not
+   * truncate it.
+   *
+   * <p>This option is meaningful only if the FileAppender opens the
+   * file.
+   */
   protected boolean fileAppend = true;
 
   /**
@@ -49,7 +49,8 @@ public class FileAppender extends WriterAppender {
   protected boolean bufferedIO = false;
 
   /**
-     How big should the IO buffer be? Default is 8K. */
+   * Determines the size of IO buffer be. Default is 8K. 
+   */
   protected int bufferSize = 8*1024;
 
 

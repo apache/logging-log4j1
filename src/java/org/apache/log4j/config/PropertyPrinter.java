@@ -46,8 +46,8 @@ public class PropertyPrinter implements PropertyGetter.PropertyCallback {
   }
   
   /**
-     Returns true if the specified appender name is considered to have
-     been generated, i.e. if it is of the form A[0-9]+.
+   * Returns true if the specified appender name is considered to have
+   * been generated, that is, if it is of the form A[0-9]+.
   */
   protected
   boolean isGenAppName(String name) {

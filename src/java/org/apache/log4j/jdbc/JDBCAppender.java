@@ -14,9 +14,9 @@ import java.sql.SQLException;
 
 
 /**
-   <p><b><font color="#FF2222">WARNING: This version of JDBCAppender
-   is very likely to be completely replaced in the future. Moreoever,
-   it does not log exceptions.</font></b> </p>
+  <p><b><font color="#FF2222">WARNING: This version of JDBCAppender
+  is very likely to be completely replaced in the future. Moreoever,
+  it does not log exceptions</font></b>.
 
   The JDBCAppender provides for sending log events to a database.
   
@@ -58,7 +58,7 @@ import java.sql.SQLException;
 
     </ul>
 
-    @author: Kevin Steppe (<A HREF="mailto:ksteppe@pacbell.net">ksteppe@pacbell.net</A>)
+    @author Kevin Steppe (<A HREF="mailto:ksteppe@pacbell.net">ksteppe@pacbell.net</A>)
 
 */
 public class JDBCAppender extends org.apache.log4j.AppenderSkeleton
@@ -91,7 +91,7 @@ public class JDBCAppender extends org.apache.log4j.AppenderSkeleton
   /**
    * Stores the string given to the pattern layout for conversion into a SQL
    * statement, eg: insert into LogTable (Thread, Class, Message) values
-   * ("%t", "%c", "%m")
+   * ("%t", "%c", "%m").
    *
    * Be careful of quotes in your messages!
    *

@@ -193,7 +193,7 @@ public class NDC {
 
   /**
      <font color="#FF4040"><b>Never use this method directly, use the {@link
-     org.apache.log4j.spi.LoggingEvent#getNDC} method instead.</b></font>
+     org.apache.log4j.spi.LoggingEvent#getNDC} method instead</b></font>.
   */
   static
   public
@@ -206,10 +206,10 @@ public class NDC {
   }
   
   /**
-     Get the current nesting depth of this diagnostic context.
-
-     @see #setMaxDepth
-     @since 0.7.5
+   * Get the current nesting depth of this diagnostic context.
+   *
+   * @see #setMaxDepth
+   * @since 0.7.5
    */
   public
   static

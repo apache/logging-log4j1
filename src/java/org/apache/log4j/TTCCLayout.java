@@ -157,9 +157,7 @@ public class TTCCLayout extends DateLayout {
    <p>Time, thread, category and diagnostic context are printed
    depending on options.
 
-    @param category
-    @param level
-    @param message
+    @param event The event to format
 
   */
   public

@@ -130,16 +130,16 @@ public class LoggingEvent implements java.io.Serializable {
      <p>Except {@link #timeStamp} all the other fields of
      <code>LoggingEvent</code> are filled when actually needed.
      <p>
-     @param category The category of this event.
+     @param logger The logger generating this event.
      @param level The level of this event.
      @param message  The message of this event.
      @param throwable The throwable of this event.  */
   public LoggingEvent(String fqnOfCategoryClass, Category logger,
-		      Priority priority, Object message, Throwable throwable) {
+		      Priority level, Object message, Throwable throwable) {
     this.fqnOfCategoryClass = fqnOfCategoryClass;
     this.logger = logger;
     this.categoryName = logger.getName();
-    this.level = priority;
+    this.level = level;
     this.message = message;
     if(throwable != null) {
       this.throwableInfo = new ThrowableInformation(throwable);
@@ -153,18 +153,18 @@ public class LoggingEvent implements java.io.Serializable {
      <p>Except {@link #timeStamp} all the other fields of
      <code>LoggingEvent</code> are filled when actually needed.
      <p>
-     @param category The category of this event.
+     @param logger The logger generating this event.
      @param timeStamp the timestamp of this logging event
      @param level The level of this event.
      @param message  The message of this event.
      @param throwable The throwable of this event.  */
   public LoggingEvent(String fqnOfCategoryClass, Category logger,
-		      long timeStamp, Priority priority, Object message,
+		      long timeStamp, Priority level, Object message,
 		      Throwable throwable) {
     this.fqnOfCategoryClass = fqnOfCategoryClass;
     this.logger = logger;
     this.categoryName = logger.getName();
-    this.level = priority;
+    this.level = level;
     this.message = message;
     if(throwable != null) {
       this.throwableInfo = new ThrowableInformation(throwable);
