@@ -43,7 +43,6 @@ public class Transformer {
   
     // Initialization of input and output omitted
     while((line = input.readLine()) != null) {
-      // apply all filters
       line = filter.filter(line);
       output.println(line);
     }

@@ -48,6 +48,10 @@ public class MinimumTestCase extends TestCase {
     root.removeAllAppenders();
   }
 
+  public void tearDown() {  
+    root.getLoggerRepository().resetConfiguration();
+  }
+
   public void simple() throws Exception {
     
     Layout layout = new SimpleLayout();

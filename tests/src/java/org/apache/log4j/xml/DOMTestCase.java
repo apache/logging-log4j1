@@ -48,6 +48,10 @@ public class DOMTestCase extends TestCase {
     logger = Logger.getLogger(DOMTestCase.class);
   }
 
+  public void tearDown() {  
+    root.getLoggerRepository().resetConfiguration();
+  }
+
   public void test1() throws Exception {
     DOMConfigurator.configure("input/xml/DOMTestCase1.xml");
     common();

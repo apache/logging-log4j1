@@ -30,6 +30,10 @@ public class CustomLevelTestCase extends TestCase {
     logger = Logger.getLogger(CustomLevelTestCase.class);
   }
 
+  public void tearDown() {  
+    root.getLoggerRepository().resetConfiguration();
+  }
+
   public void test1() throws Exception {
     DOMConfigurator.configure("input/xml/customLevel1.xml");
     common();
