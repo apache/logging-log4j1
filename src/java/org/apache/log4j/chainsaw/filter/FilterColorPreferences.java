@@ -49,61 +49,87 @@
 
 package org.apache.log4j.chainsaw.filter;
 
-import org.apache.log4j.spi.LocationInfo;
-import org.apache.log4j.spi.LoggingEvent;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.util.Date;
 
-import javax.swing.event.EventListenerList;
+import javax.swing.JFrame;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.ListModel;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
- * This class is used as a Model for Filtering, and retains the unique entries that
- * come through over a set of LoggingEvents
- *
- * @author Paul Smith <psmith@apache.org>
- * @author Scott Deboy <sdeboy@apache.org>
+ * A Panel that is used for configuring which unique Event elements determine
+ * what events to display.
+ * 
+ * @author Paul Smith
  */
-public class FilterModel {
-  //  private Map eventTypeMap = new HashMap();
-  private EventTypeEntryContainer eventContainer =
-    new EventTypeEntryContainer();
-  private EventListenerList eventListenerList = new EventListenerList();
+class FilterColorPreferences extends JPanel {
+  private final FilterModel filterModel;
+  private JTabbedPane tabbedPane = new JTabbedPane();
 
-  public void processNewLoggingEvent(String eventType, LoggingEvent event) {
-    EventTypeEntryContainer container = getContainer(eventType);
+  FilterColorPreferences(FilterModel filterModel) {
+    this.filterModel = filterModel;
+    initComponents();
+  }
 
-    container.addLevel(event.getLevel());
-    container.addLogger(event.getLoggerName());
-    container.addThread(event.getThreadName());
-    container.addNDC(event.getNDC());
-    container.addMDCKeys(event.getMDCKeySet());
+  /**
+   *
+   */
+  private void initComponents() {
+    setLayout(new BorderLayout());
 
-    if (event.getLocationInformation() != null) {
-      LocationInfo info = event.getLocationInformation();
-      container.addClass(info.getClassName());
-      container.addMethod(info.getMethodName());
-      container.addFileName(info.getFileName());
+    EventTypeEntryContainer container = filterModel.getContainer();
+    ListModel[] models =
+      new ListModel[] {
+        container.getLevelListModel(), container.getLoggerListModel(),
+      };
+    String[] tabNames = new String[] { "Levels", "Loggers", };
+
+    for (int i = 0; i < tabNames.length; i++) {
+      tabbedPane.add(tabNames[i], createTabPanel(tabNames[i], models[i]));
     }
+
+    add(tabbedPane, BorderLayout.CENTER);
   }
 
-  EventTypeEntryContainer getContainer() {
-    //    if(eventTypeMap.size()>0){
-    //        return (EventTypeEntryContainer) eventTypeMap.values().iterator().next();
-    //    }   
-    return eventContainer;
+  /**
+   * @param string
+   * @param collection
+   * @return
+   */
+  private Component createTabPanel(String tabName, ListModel listModel) {
+    JPanel c = new JPanel();
+    c.setLayout(new BorderLayout());
+
+    JList list = new JList(listModel);
+    list.setVisibleRowCount(25);
+    c.add(new JScrollPane(list), BorderLayout.CENTER);
+
+    return c;
   }
 
-  EventTypeEntryContainer getContainer(String eventType) {
-    return this.eventContainer;
+  public static void main(String[] args) {
+    JFrame frame = new JFrame("test bed");
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-    //    EventTypeEntryContainer container = null;
-    //
-    //    if (eventTypeMap.containsKey(eventType)) {
-    //      container = (EventTypeEntryContainer) eventTypeMap.get(eventType);
-    //    } else {
-    //      container = new EventTypeEntryContainer();
-    //      eventTypeMap.put(eventType, container);
-    //    }
-    //
-    //    return container;
+    FilterModel model = new FilterModel();
+    LoggingEvent e =
+      new LoggingEvent(
+        "org.blah.blah", Logger.getLogger("org.blah.blah"),
+        new Date().getTime(), Level.DEBUG, "Hello World", null);
+    model.processNewLoggingEvent(null, e);
+    frame.getContentPane().add(new FilterColorPreferences(model));
+    frame.pack();
+    frame.setSize(new Dimension(320, 240));
+    frame.setVisible(true);
   }
 }
