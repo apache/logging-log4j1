@@ -30,6 +30,7 @@ import java.util.Stack;
  * @author Scott Deboy <sdeboy@apache.org>
  */
 public class InequalityRule extends AbstractRule {
+  static final long serialVersionUID = -5592986598528885122L;    
   private static final LoggingEventFieldResolver resolver = LoggingEventFieldResolver.getInstance();
   private final String field;
   private final String value;

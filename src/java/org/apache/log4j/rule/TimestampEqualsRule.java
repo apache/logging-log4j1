@@ -31,7 +31,7 @@ import org.apache.log4j.spi.LoggingEventFieldResolver;
  * @author Scott Deboy <sdeboy@apache.org>
  */
 public class TimestampEqualsRule extends AbstractRule {
-
+  static final long serialVersionUID = 1639079557187790321L;
   private static final LoggingEventFieldResolver resolver = LoggingEventFieldResolver.getInstance();
   private static final DateFormat dateFormat = new SimpleDateFormat(Constants.TIMESTAMP_RULE_FORMAT);
   private long timeStamp;

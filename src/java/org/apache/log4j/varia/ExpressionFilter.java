@@ -102,18 +102,9 @@ public class ExpressionFilter extends Filter {
      Returns {@link Filter#NEUTRAL} is there is no string match.
    */
   public int decide(LoggingEvent event) {
-    if ((expression == null)) {
-      return Filter.NEUTRAL;
-    }
-
     if (expressionRule.evaluate(event)) {
-      if (acceptOnMatch) {
-        return Filter.ACCEPT;
-      } else {
-        return Filter.DENY;
-      }
-    } else {
-      return Filter.NEUTRAL;
+      return (acceptOnMatch?Filter.ACCEPT:Filter.DENY);
     }
+    return Filter.NEUTRAL;
   }
 }

@@ -26,6 +26,7 @@ import java.util.Stack;
  * @author Scott Deboy <sdeboy@apache.org>
  */
 public class OrRule extends AbstractRule {
+  static final long serialVersionUID = 2088765995061413165L;    
   private final Rule rule1;
   private final Rule rule2;
 
@@ -48,9 +49,8 @@ public class OrRule extends AbstractRule {
           Rule p2 = (Rule) o2;
           Rule p1 = (Rule) o1;
           return new OrRule(p1, p2);
-      } else {
-          throw new IllegalArgumentException("Invalid OR rule: " + o2 + "..." + o1);
       }
+      throw new IllegalArgumentException("Invalid OR rule: " + o2 + "..." + o1);
   }
 
   public boolean evaluate(LoggingEvent event) {

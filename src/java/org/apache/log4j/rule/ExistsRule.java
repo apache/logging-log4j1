@@ -28,6 +28,7 @@ import java.util.Stack;
  * @author Scott Deboy <sdeboy@apache.org>
  */
 public class ExistsRule extends AbstractRule {
+  static final long serialVersionUID = -5386265224649967464L;    
   private static final LoggingEventFieldResolver resolver =
     LoggingEventFieldResolver.getInstance();
   private final String field;

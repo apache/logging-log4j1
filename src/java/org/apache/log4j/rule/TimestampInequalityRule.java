@@ -31,7 +31,7 @@ import org.apache.log4j.spi.LoggingEventFieldResolver;
  * @author Scott Deboy <sdeboy@apache.org>
  */
 public class TimestampInequalityRule extends AbstractRule {
-
+  static final long serialVersionUID = -4642641663914789241L;
   private static final LoggingEventFieldResolver resolver = LoggingEventFieldResolver.getInstance();
   private static final DateFormat dateFormat = new SimpleDateFormat(Constants.TIMESTAMP_RULE_FORMAT);
   private transient String inequalitySymbol;

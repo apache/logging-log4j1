@@ -28,6 +28,7 @@ import java.util.Stack;
  * @author Scott Deboy <sdeboy@apache.org>
  */
 public class EqualsRule extends AbstractRule {
+  static final long serialVersionUID = 1712851553477517245L;    
   private static final LoggingEventFieldResolver resolver =
     LoggingEventFieldResolver.getInstance();
   private final String value;
@@ -58,7 +59,7 @@ public class EqualsRule extends AbstractRule {
 
   public static Rule getRule(String p1, String p2) {
     if (p1.equalsIgnoreCase(LoggingEventFieldResolver.LEVEL_FIELD)) {
-    	return PartialTextMatchRule.getRule(p1, p2);
+    	return LevelEqualsRule.getRule(p2);
     } else if (p1.equalsIgnoreCase(LoggingEventFieldResolver.TIMESTAMP_FIELD)) {
     	return TimestampEqualsRule.getRule(p2);
     }else {
