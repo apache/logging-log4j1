@@ -19,12 +19,6 @@ import org.apache.log4j.spi.LoggerFactory;
   @author Ceki G&uuml;lc&uuml; */
 public class Logger extends Category {
 
-  /**
-     The fully qualified name of the Level class. See also the
-     getFQCN method. */
-  private static final String FQCN = Level.class.getName();
-
-
   protected
   Logger(String name) {
     super(name);

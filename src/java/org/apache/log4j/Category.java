@@ -312,7 +312,7 @@ public class Category implements AppenderAttachable {
 
      @deprecated Please use {@link LogManager#exists} instead.
 
-     @version 0.8.5 */
+     @since 0.8.5 */
   public
   static
   Logger exists(String name) {

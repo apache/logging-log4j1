@@ -7,9 +7,7 @@
 
 package org.apache.log4j;
 
-import java.util.Vector;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.spi.LoggerRepository;
 
 /**
   Defines the base class for Receiver plugins.

@@ -398,8 +398,7 @@ public class PropertyConfigurator implements Configurator {
     String thresholdStr = OptionConverter.findAndSubst(THRESHOLD_PREFIX,
 						       properties);
     if(thresholdStr != null) {
-      hierarchy.setThreshold(OptionConverter.toLevel(thresholdStr,
-						     (Level) Level.ALL));
+      hierarchy.setThreshold(OptionConverter.toLevel(thresholdStr, Level.ALL));
       LogLog.debug("Hierarchy threshold set to ["+hierarchy.getThreshold()+"].");
     }
 
@@ -585,7 +584,7 @@ public class PropertyConfigurator implements Configurator {
 	  logger.setLevel(null);
 	}
       } else {
-	logger.setLevel(OptionConverter.toLevel(levelStr, (Level) Level.DEBUG));
+	logger.setLevel(OptionConverter.toLevel(levelStr, Level.DEBUG));
       }
       LogLog.debug("Category " + loggerName + " set to " + logger.getLevel());
     }

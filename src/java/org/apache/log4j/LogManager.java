@@ -66,7 +66,7 @@ public class LogManager {
 
   static {
     // By default we use a DefaultRepositorySelector which always returns 'h'.
-    Hierarchy h = new Hierarchy(new RootCategory((Level) Level.DEBUG));
+    Hierarchy h = new Hierarchy(new RootCategory(Level.DEBUG));
     repositorySelector = new DefaultRepositorySelector(h);
 
 

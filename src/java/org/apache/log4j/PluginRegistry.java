@@ -100,7 +100,6 @@ public class PluginRegistry {
     Stops a plugin in the given logger repository. */
   public static Plugin stopPlugin(String pluginName, 
   LoggerRepository repository) {
-    String name = pluginName;
     if (pluginName == null) {
       pluginName = "";
     }
