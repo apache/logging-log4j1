@@ -30,7 +30,7 @@ import java.util.Date;
 
 /**
  *
- *
+ * 
  * If configuring programatically, do not forget to call {@link #activateOptions}
  * method before using this policy.
  * 
@@ -92,25 +92,7 @@ public class TimeBasedRollingPolicy extends RollingPolicySkeleton
       //logger.debug("Next check set to: " + nc);  
   }
 
-
-  /**
-   * 
-   * The active log file is determined by the value of the activeFileName 
-   * option if it is set. However, in case the activeFileName is left blank, 
-   * then, the active log file equals the file name for the current period
-   * as computed by the fileNamePattern.
-   *  
-   */
-  public String getActiveLogFileName() {
-    logger.debug("getActiveLogFileName called");
-    if (activeFileName == null) {
-      return fileNamePattern.convert(now);
-    } else {
-      return activeFileName;
-    }
-  }
-
-  public void rollover() {
+  public void rollover() throws RolloverFailure {
     logger.debug("rollover called");
     logger.debug("compressionMode: " + compressionMode);
 
@@ -152,6 +134,23 @@ public class TimeBasedRollingPolicy extends RollingPolicySkeleton
     }
   }
 
+  /**
+   * 
+   * The active log file is determined by the value of the activeFileName 
+   * option if it is set. However, in case the activeFileName is left blank, 
+   * then, the active log file equals the file name for the current period
+   * as computed by the fileNamePattern option.
+   * 
+   */
+  public String getActiveLogFileName() {
+    logger.debug("getActiveLogFileName called");
+    if (activeFileName == null) {
+      return fileNamePattern.convert(now);
+    } else {
+      return activeFileName;
+    }
+  }
+
   public void setFileNamePattern(String fnp) {
     fileNamePatternStr = fnp;
   }
@@ -183,10 +182,19 @@ public class TimeBasedRollingPolicy extends RollingPolicySkeleton
     }
   }
 
+  /**
+   * ActiveFileName can be null.
+   * 
+   * @see #getActiveLogFileName
+   * */
   public String getActiveFileName() {
     return activeFileName;
   }
 
+  /**
+   * ActiveFileName can be left unset, i.e. as null.
+   * @see #getActiveLogFileName
+   */
   public void setActiveFileName(String string) {
     activeFileName = string;
   }

@@ -18,6 +18,7 @@ package org.apache.log4j.rolling;
 
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.Logger;
+import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.ErrorCode;
 import org.apache.log4j.spi.LoggingEvent;
 
@@ -86,12 +87,25 @@ public class RollingFileAppender extends FileAppender {
 
    */
   public void rollover() {
-    // Note: synchronization not necessary since doAppend is already synched
-    // make sure to close the hereto active log file!!
-    this.closeWriter();
-
-    rollingPolicy.rollover();
-
+    // Note: synchronization at this point is unnecessary as the doAppend 
+    // is already synched
+    
+    //
+    // make sure to close the hereto active log file! Renaming under windows
+    // does not work for open files.
+    this.closeWriter();    
+    
+    // By default, the newly created file will be created in truncate mode.
+    // (See the setFile(fileName,...) call a few lines below.)
+    boolean append = false;
+    try { 
+      rollingPolicy.rollover();
+    } catch(RolloverFailure rf) {
+      LogLog.warn("RolloverFailure occurred. Deferring rollover.");
+      // we failed to rollover, let us not truncate and risk data loss
+      append = true;
+    }
+    
     // Although not certain, the active file name may change after roll over.
     fileName = rollingPolicy.getActiveLogFileName();
     logger.debug("Active file name is now ["+fileName+"].");
@@ -102,7 +116,7 @@ public class RollingFileAppender extends FileAppender {
     try {
       // This will also close the file. This is OK since multiple
       // close operations are safe.
-      this.setFile(fileName, false, bufferedIO, bufferSize);
+      this.setFile(fileName, append, bufferedIO, bufferSize);
     } catch (IOException e) {
       errorHandler.error(
         "setFile(" + fileName + ", false) call failed.", e,
