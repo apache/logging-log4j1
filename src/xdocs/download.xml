@@ -74,9 +74,9 @@
 	<dd><b>Chainsaw is now integrated with log4j and ships with
 	the official distribution.</b> Chainsaw is a graphical log
 	viewer and filter for the log4j package. It listens for <a
-	href="http://jakarta.apache.org/log4j/docs/api/org/apache/log4j/spi/LoggingEvent.html">LoggingEvent</a>
+	href="http://logging.apache.org/log4j/docs/api/org/apache/log4j/spi/LoggingEvent.html">LoggingEvent</a>
 	objects sent using the <a
-	href="http://jakarta.apache.org/log4j/docs/api/org/apache/log4j/net/SocketAppender.html">SocketAppender</a>
+	href="http://logging.apache.org/log4j/docs/api/org/apache/log4j/net/SocketAppender.html">SocketAppender</a>
 	and displays them in a table. Chainsaw also supports loading
 	events from files in <code>XMLLayout</code> format.
 	</dd>
