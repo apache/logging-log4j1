@@ -1,6 +1,6 @@
 deprecation=on
 
-jakarta.oro.jar=../../jakarta-oro-2.0.5/jakarta-oro-2.0.5.jar
+jakarta-oro.jar=/java/jakarta-oro-2.0.5/jakarta-oro-2.0.5.jar
 
 # normally other build related properties would be defined here, but
 # for now there are no other required properties.
