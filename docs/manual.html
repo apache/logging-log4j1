@@ -1086,10 +1086,9 @@ claims to be fast and flexible: speed first, flexibility second.
 <ol>
   <b><li>Logging performance when logging is turned off.</b>
 
-   <p>When logging is <a
-   href="api/org/apache/log4j/Hierarchy.html#disableAll()">turned
-   off entirely</a> or just for a <a
-   href="api/org/apache/log4j/Hierarchy.html#disable(org.apache.log4j.Level)">set
+   <p>When logging is turned
+   off entirely or just for a <a
+   href="api/org/apache/log4j/Hierarchy.html#setThreshold(java.lang.String)">set
    of levels</a>, the cost of a log request consists of a method
    invocation plus an integer comparison.  On a 233 MHz Pentium II
    machine this cost is typically in the 5 to 50 nanosecond range.
