@@ -1,5 +1,5 @@
 PKG_DIR :=org/apache/log4j/nt
-DEPTH   :=../../../..
+DEPTH   :=../../../../../..
 JSOURCES:=NTEventLogAppender.java
 
 SUBDIRS :=test

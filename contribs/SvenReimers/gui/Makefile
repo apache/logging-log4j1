@@ -1,6 +1,6 @@
 
 PKG_DIR :=org/apache/log4j/gui
-DEPTH   :=../../../..
+DEPTH   :=../../../../../..
 JSOURCES:= TextPaneAppender.java\
 	JListView.java\
 	JTableAppender.java\

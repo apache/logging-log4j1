@@ -125,6 +125,15 @@ public class AsyncAppender extends AppenderSkeleton
   Appender getAppender(String name) {
     return aai.getAppender(name);
   }
+
+  /**
+     Returns the current value of the <b>LocationInfo</b> option.
+  */
+  public
+  boolean getLocationInfo() {
+    return locationInfo;
+  }
+
   
   /**
      The <code>AsyncAppender</code> does not require a layout. Hence,
@@ -143,7 +152,7 @@ public class AsyncAppender extends AppenderSkeleton
   synchronized
   public
   void removeAppender(Appender appender) {
-   aai.removeAppender(appender);
+    aai.removeAppender(appender);
   }
 
   synchronized
@@ -168,13 +177,6 @@ public class AsyncAppender extends AppenderSkeleton
     locationInfo = flag;
   }
   
-  /**
-     Returns the current value of the <b>LocationInfo</b> option.
-   */
-  public
-  boolean getLocationInfo() {
-    return locationInfo;
-  }
   
   /**
      The <b>BufferSize</b> option takes a non-negative integer

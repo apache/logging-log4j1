@@ -1,6 +1,6 @@
 
 PKG_DIR :=org/apache/log4j/gui/examples
-DEPTH   :=../../../../..
+DEPTH   :=../../../../../../..
 JSOURCES:= TextPaneAppenderExample.java\
 
 ifdef FULL

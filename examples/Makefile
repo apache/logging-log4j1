@@ -1,6 +1,6 @@
 
 PKG_DIR :=org/apache/log4j/examples
-DEPTH   :=../../../..
+DEPTH   :=../../../../../..
 JSOURCES:=SortAlgo.java Sort.java Trivial.java NumberCruncher.java\
 	NumberCruncherServer.java\
 	NumberCruncherClient.java\

@@ -1,6 +1,6 @@
 
 PKG_DIR :=org/apache/log4j/xml
-DEPTH   :=../../../..
+DEPTH   :=../../../../../..
 JSOURCES:=DOMConfigurator.java\
 	XMLLayout.java\
 

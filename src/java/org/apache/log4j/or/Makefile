@@ -1,6 +1,6 @@
 
 PKG_DIR :=org/apache/log4j/or
-DEPTH   :=../../../..
+DEPTH   :=../../../../../..
 JSOURCES:= ObjectRenderer.java\
 	RendererMap.java\
 	DefaultRenderer.java\

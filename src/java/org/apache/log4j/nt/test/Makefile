@@ -1,6 +1,6 @@
 
 PKG_DIR :=org/apache/log4j/nt/test
-DEPTH   :=../../../../..
+DEPTH   :=../../../../../../..
 JSOURCES:=NTMin.java
 
 SUBDIRS :=

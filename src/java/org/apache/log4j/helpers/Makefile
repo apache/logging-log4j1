@@ -1,6 +1,6 @@
 
 PKG_DIR :=org/apache/log4j/helpers
-DEPTH   :=../../../..
+DEPTH   :=../../../../../..
 JSOURCES:=LogLog.java\
 	AppenderAttachableImpl.java\
 	TracerPrintWriter.java\

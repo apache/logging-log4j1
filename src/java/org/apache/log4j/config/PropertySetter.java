@@ -74,25 +74,38 @@ public class PropertySetter {
     new PropertySetter(obj).setProperties(properties, prefix);
   }
   
-  // driven by property map
+
+  /**
+     Set the properites for the object that match the
+     <code>prefix</code> passed as parameter.
+
+     
+   */
   public
   void setProperties(Properties properties, String prefix) {
     int len = prefix.length();
     
     for (Enumeration e = properties.keys(); e.hasMoreElements(); ) {
-      String name = (String) e.nextElement();
+      String key = (String) e.nextElement();
       
-      if (name.startsWith(prefix)) {
-        if (name.indexOf('.', len + 1) > 0) continue;
+      // handle only properties that start with the desired frefix.
+      if (key.startsWith(prefix)) {
+
+	
+	// ignore key if it contains dots after the prefix
+        if (key.indexOf('.', len + 1) > 0) {
+	  //System.err.println("----------Ignoring---["+key
+	  //	     +"], prefix=["+prefix+"].");
+	  continue;
+	}
         
-        //String value = properties.getProperty(name);
-	String value = OptionConverter.findAndSubst(name, properties);
-        name = name.substring(prefix.length());
-        if ("layout".equals(name) && obj instanceof Appender) {
+	String value = OptionConverter.findAndSubst(key, properties);
+        key = key.substring(len);
+        if ("layout".equals(key) && obj instanceof Appender) {
           continue;
         }
         
-        setProperty(name, value);
+        setProperty(key, value);
       }
     }
     activate();

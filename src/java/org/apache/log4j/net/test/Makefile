@@ -1,6 +1,6 @@
 
 PKG_DIR :=org/apache/log4j/net/test
-DEPTH   :=../../../../..
+DEPTH   :=../../../../../../..
 JSOURCES:=SyslogMin.java SocketMin.java Loop.java\
 	SMTPMin.java
 

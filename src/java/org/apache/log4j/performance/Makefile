@@ -1,6 +1,6 @@
 
 PKG_DIR :=org/apache/log4j/performance
-DEPTH   :=../../../..
+DEPTH   :=../../../../../..
 JSOURCES:=NOPWriter.java\
 	NotLogging.java\
 	Logging.java\
