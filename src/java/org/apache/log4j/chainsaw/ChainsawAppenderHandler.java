@@ -254,15 +254,15 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
            * Maybe there's a Remote Host entry?
            */
       String remoteHost = e.getProperty(ChainsawConstants.LOG4J_REMOTEHOST_KEY);
-//        int rhlength = remoteHost.indexOf(":");
-//
-//        if (rhlength == -1) {
-//          rhlength = properties.length();
-//        }
-//
-//        remoteHost = properties.substring(rhposition, rhlength);
-//      }
-
+      if(remoteHost!=null) {
+            int colonIndex = remoteHost.indexOf(":");
+    
+            if (colonIndex == -1) {
+              colonIndex = remoteHost.length();
+            }
+    
+            remoteHost = remoteHost.substring(0, colonIndex);
+      }    
       if (remoteHost != null) {
         ident.append(remoteHost);
       }
