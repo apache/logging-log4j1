@@ -178,6 +178,7 @@ Example: to display only events which are greater than or equal to level INFO, u
 <ul>
 <li>Since it is very common need to perform a case-insensitive partial-text match against the Message field, any single word or any single phrase (the phrase must be delimited by single-quote marks) will act as a rule defined using the MSG ~= syntax.</li>
 <li>Example: to search the Message field for the phrase 'logged in', instead of defining the expression <b>MSG ~= 'logged in'</b>, use <b>'logged in'</b> by itself (including the single quotes).  Instead of using <b>MSG ~= evaluation</b> to search for the word 'evaluation', use <b>evaluation</b> by itself (no need for single quotes since it's a single word).</li>
+<li><b>NOTE:</b> This shortcut syntax is designed to be used to search for <b>single words or phrases only</b>, and will not work when used in combination with other operators or expressions.  When building complex expressions, use the <B>MSG ~=</B> syntax.</li>
 </ul>
 
 <p><b>Operator limitations:</b></p>
