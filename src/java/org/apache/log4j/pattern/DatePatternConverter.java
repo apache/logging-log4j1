@@ -61,7 +61,7 @@ public class DatePatternConverter extends PatternConverter {
 
     String pattern;
     if (option == null) {
-      pattern = "yyyy-mm-dd HH:mm:ss,SSS";
+      pattern = "yyyy-MM-dd HH:mm:ss,SSS";
     } else if (
       option.equalsIgnoreCase(AbsoluteTimeDateFormat.ISO8601_DATE_FORMAT)) {
       pattern = "yyyy-MM-dd HH:mm:ss,SSS";
@@ -82,7 +82,7 @@ public class DatePatternConverter extends PatternConverter {
       logger.warn(
         "Could not instantiate SimpleDateFormat with pattern " + option, e);
       // detault for the ISO8601 format
-      df = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss,SSS");
+      df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
     }
   }
 
