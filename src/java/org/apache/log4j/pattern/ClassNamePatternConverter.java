@@ -35,7 +35,7 @@ public class ClassNamePatternConverter extends NamedPatternConverter {
   }
   
   String getFullyQualifiedName(LoggingEvent event) {
-	   return event.getLocationInformation().getClassName();
+	   return event.getLocationInformation()!=null?event.getLocationInformation().getClassName():"";
 	 }
   
 }

@@ -40,7 +40,9 @@ public class MethodLocationPatternConverter extends PatternConverter {
     buf.setLength(0);
 
 	  LocationInfo locationInfo = event.getLocationInformation();
-    buf.append(locationInfo.getMethodName());
+    if (locationInfo!=null) {
+			buf.append(locationInfo.getMethodName());
+		}
 
     return buf;
   }

@@ -39,8 +39,10 @@ public class FileLocationPatternConverter extends PatternConverter {
   public StringBuffer convert(LoggingEvent event) {
     buf.setLength(0);
 
-	  LocationInfo locationInfo = event.getLocationInformation();
-    buf.append(locationInfo.getFileName());
+	LocationInfo locationInfo = event.getLocationInformation();
+    if (locationInfo!=null) {
+    	buf.append(locationInfo.getFileName());
+    }
 
     return buf;
   }
