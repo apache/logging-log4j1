@@ -89,8 +89,7 @@ public class SocketNode implements Runnable {
     
     try {
       ois.close();
-    }
-    catch(Exception e) {
+    } catch(Exception e) {
       cat.info("Could not close connection.", e);	
     }  
   }
