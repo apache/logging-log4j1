@@ -34,6 +34,9 @@
   <!-- The jar file that the jar task will generate -->
   <property name="log4j.jar" value="log4j-${version}.jar"/>
 
+  <!-- the jar file for Chainsaw that will be generated -->
+  <property name="log4j-chainsaw.jar" value="log4j-chainsaw-${version}.jar"/>
+  
   <!-- Destination for documentation files -->
   <property name="docs.dest" value="./docs"/>
   <!-- Source directory for xml docs -->
@@ -253,6 +256,10 @@
   <target name="chainsaw" depends="log4j.jar" description="Builds and runs Chainsaw v2" >
     <ant antfile="build-chainsaw.xml" target="chainsaw"/>
   </target>	
+	
+  <target name="webstart" depends="build">
+	<ant antfile="build-chainsaw.xml" target="webstart"/>
+  </target>
 
 
  <!-- ================================================= -->
