@@ -8,6 +8,10 @@
    [D] Changes affect a method or property which was previously marked as 
        deprecated.
 
+ November 24th, 2004
+
+ - Release of version 1.3apha-1
+
  - Log4j now uses itself for its own logging. For more details refer to
    
      http://www.qos.ch//logging/internalLogging.jsp
@@ -23,7 +27,7 @@
 
  - Added new printing methods message supporiting pattern parsing. These new forms 
    avoid superflous parameter construction and yield a significant performance 
-   increase in case the log statement is disabled. [*]
+   increase in the case of disavled log statements. [*]
    
  - Added new ListAppender & ListModelAppender classes to the org.apache.log4j.varia package.  
    These are rather simplistic Appender implementations that store LoggingEvents in
@@ -37,6 +41,16 @@
    customized at row or even cell level with the help of a CSS file.
    
    The new HTMLLayout has been contributed by Steve Mactaggart.
+ 
+ - Log4j now ships with JoranConfigurator, a powerful replacement for
+   DOMConfigurator.  Joran bring a plethora of new capabilities. In
+   particular, it can be taught new parsing rules on the fly, even from
+   within the config file being processed. Moreover, with the help of
+   implicit actions, it can configure specialized sub-components of log4j
+   components. 
+
+   Many of the new components in version 1.3 can be configured thanks
+   to the new capabilitues found in JoranConfigurator.
     
  - Fixed bug #15585 relative to location information extraction on the AS400. The fix
    was contributed by Patrice Kolata. [*]
@@ -76,6 +90,10 @@
    
  - Removed support for the deprecated property "log4j.configDebug". [**/D]
 
+ - The new ContextJNDISelector allows for the possibility of managing
+   multiple logger hiearchies within the same application server while
+   only a single copy of log4j.jar is present in memory.
+   
  - Added keys() method to the MDC class as requested by Don Isenor.
  
  - Certain operations on Loggers are now made using ReaderWriterLocks which 
@@ -86,7 +104,8 @@
    log4j 1.2. However, the new architecture allows for much more variation in the 
    timing of the rollover and the actions taken during rollover (i.e on the fly 
    compression, renaming, moving). The new architecture was suggested a long time 
-   ago by James P. Cakalic. A similar design can be found in the Avalon Logkit. 
+   ago by James P. Cakalic. A similar design can be found in the Avalon Logkit 
+   package. 
 
    In order to avoid duplication, the old org.apache.log4j.RollingAppender
    and org.apache.log4j.RollingAppender classes have been removed. [**]
@@ -105,6 +124,8 @@
    exception, 
 
   - ADD: LIST OF CHAINSAW IMPROVEMENTS. 
+
+ November 2nd, 2004
  
  - Release of version 1.2.9
 

@@ -3,10 +3,9 @@
 
   <properties>
     <author email="ceki@apache.org">Ceki Gulcu</author>
-    <title>Download</title>
+    <title>Downloading log4j</title>
   </properties>
 
-    <meta name="keywords" content="java, log4j download, logging, tracing, component, framework, API, log4j"/>
       <body>
 	
       <section name="log4j version 1.2.9">
@@ -32,9 +31,16 @@
           href="http://www.qos.ch/logging/preparingFor13.jsp">preparing
           for log4j 1.3</a> for a more detailed discussion.
           </p>
-          
-          
 
+          <h2>log4j version 1.3alpha-1</h2>
+          
+          <p>An alpha version of log4j version 1.3 has been recently
+          made available. It can be downloaded from the same As the
+          alpha prefix indicates, this release is still being tested,
+          future versions may bring further radical changes, and all
+          the usual caveats apply.
+          </p>
+        
 	  <subsection name='Earlier Releases'>
 	    <p>We also maintain <a
 	      href="earlier.html">earlier
