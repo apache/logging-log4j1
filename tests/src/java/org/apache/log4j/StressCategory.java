@@ -106,7 +106,7 @@ class StressCategory {
 	if(ct[i] == null)
 	  cat[i] = null;
 	else {
-	  cat[i] = Category.getInstance(ct[i].catstr);
+	  cat[i] = Logger.getLogger(ct[i].catstr);
 	  cat[i].setLevel(ct[i].level);
 	}
       }
