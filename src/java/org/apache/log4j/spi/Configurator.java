@@ -18,6 +18,7 @@ package org.apache.log4j.spi;
 
 import org.apache.log4j.spi.LoggerRepository;
 
+import java.io.InputStream;
 import java.net.URL;
 
 
@@ -50,4 +51,19 @@ public interface Configurator {
      @param repository The repository to operate upon.
    */
   void doConfigure(URL url, LoggerRepository repository);
+  
+  /**
+     Use an InputStream as a source for configuration and set up log4j
+     accordingly.
+
+     The configuration is done relative to the <code>hierarchy</code>
+     parameter.
+
+     @since 1.3
+
+     @param stream The input stream to use for configuration data.
+     @param repository The repository to operate upon.
+   */
+  void doConfigure(InputStream stream, LoggerRepository repository);
+
 }
