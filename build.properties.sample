@@ -6,7 +6,7 @@
 # or earlier.
  
 # jaxp.home=/java/jaxp-1.1 
-# jaxp.jaxp.jar=${jaxp.home}/jaxp.jar
+# jaxp-api.jar=${jaxp.home}/jaxp.jar
 # jaxp.parser.jar=${jaxp.home}/crimson.jar
 
 # JavaMail API OPTIONAL; required to build the SMTPAppender
@@ -16,10 +16,6 @@ activation.jar=/java/jaf-1.0.1/activation.jar
 # JMS OPTIONAL; required to build the JMSAppender.
 # in order to build the JMSAppender.
 jms.jar=/java/JMQ1.1/lib/jms.jar
-
-# JMX OPTIONAL; required to build the org.apace.log4j.jmx package.
-jmx.jar=/java/jmx/lib/jmxri.jar
-jmx-extra.jar=/java/jmx/lib/jmxtools.jar
 
 # Servlet api
 servlet-api.jar=/java/servlet-api.jar
