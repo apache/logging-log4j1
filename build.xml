@@ -28,6 +28,9 @@
   <!-- Destination for compiled files -->
   <property name="javac.dest" value="dist/classes"/>
 
+  <!-- Destination for compiled files for examples/ -->
+  <property name="examples.javac.dest" value="examples/classes"/>
+
   <!-- Destination for generated jar files -->
   <property name="jar.dest" value="${basedir}"/>
 
@@ -213,9 +216,9 @@
   </target>
 
   <target name="build.examples" depends="build.core">
-    <mkdir dir="${javac.dest}" />
+    <mkdir dir="${examples.javac.dest}" />
     <javac srcdir="${basedir}"
-     destdir="${javac.dest}"
+     destdir="${examples.javac.dest}"
      includes="examples/**/*.java"
      excludes="misc/*, examples/jmx/*.java"
      deprecation="${deprecation}"
@@ -223,7 +226,7 @@
       <classpath refid="compile.classpath"/>
     </javac>
 
-    <rmic base="${javac.dest}" classname="examples.NumberCruncherServer" />
+    <rmic base="${examples.javac.dest}" classname="factor.NumberCruncherServer" />
 
     <copy todir="${javac.dest}">
       <fileset dir="." includes="examples/lf5/**/*.properties"/>
@@ -299,6 +302,7 @@
   <!-- ================================================================= -->
   <target name="clean" depends="init" description="Delete all compiled files.">
     <delete dir="${javac.dest}/" />
+    <delete dir="${examples.javac.dest}/" />
   </target>
 
   <!-- ================================================================= -->

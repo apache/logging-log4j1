@@ -47,62 +47,49 @@
  *
  */
 
-package customLevel;
+package pattern;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Priority;
-
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.PatternLayout;
+import org.apache.log4j.Logger;
+import org.apache.log4j.Layout;
 
 /**
-   This class introduces a new level level called TRACE. TRACE has
-   lower level than DEBUG.
-
+ * 
+ * Example showing how to extend PatternLayout to recognize additional 
+ * conversion characters.
+ * 
+ * <p>In this case MyPatternLayout recognizes %# conversion pattern. It outputs
+ *  the value of an internal counter which is also incremented at each call.
+ * 
+ * @see org.apache.log4j.PatternLayout
+ * @author Anders Kristensen
+ * @author Ceki G&uuml;lc&uuml;
  */
-public class XLevel extends Level {
-  public static final int TRACE_INT = Level.DEBUG_INT - 1;
-  public static final int LETHAL_INT = Level.FATAL_INT + 1;
-  private static String TRACE_STR = "TRACE";
-  private static String LETHAL_STR = "LETHAL";
-  public static final XLevel TRACE = new XLevel(TRACE_INT, TRACE_STR, 7);
-  public static final XLevel LETHAL = new XLevel(LETHAL_INT, LETHAL_STR, 0);
 
-  protected XLevel(int level, String strLevel, int syslogEquiv) {
-    super(level, strLevel, syslogEquiv);
+public class MyPatternLayout extends PatternLayout {
+  public MyPatternLayout() {
+    super();
+  }
+
+  public MyPatternLayout(String pattern) {
+    super(pattern);
   }
 
   /**
-     Convert the string passed as argument to a level. If the
-     conversion fails, then this method returns {@link #TRACE}.
+    Activates the conversion pattern. Do not forget to call this method after
+    you change the parameters of the PatternLayout instance.
   */
-  public static Level toLevel(String sArg) {
-    return (Level) toLevel(sArg, XLevel.TRACE);
+  public void activateOptions() {
+    this.addConversionRule("#", CountingPatternConverter.class.getName());
+    super.activateOptions();
   }
 
-  public static Level toLevel(String sArg, Level defaultValue) {
-    if (sArg == null) {
-      return defaultValue;
-    }
-
-    String stringVal = sArg.toUpperCase();
-
-    if (stringVal.equals(TRACE_STR)) {
-      return XLevel.TRACE;
-    } else if (stringVal.equals(LETHAL_STR)) {
-      return XLevel.LETHAL;
-    }
-
-    return Level.toLevel(sArg, (Level) defaultValue);
-  }
-
-  public static Level toLevel(int i) throws IllegalArgumentException {
-    switch (i) {
-    case TRACE_INT:
-      return XLevel.TRACE;
-
-    case LETHAL_INT:
-      return XLevel.LETHAL;
-    }
-
-    return Level.toLevel(i);
+  public static void main(String[] args) {
+    Layout layout = new MyPatternLayout("[counter=%.10#] - %m%n");
+    Logger logger = Logger.getLogger("some.cat");
+    logger.addAppender(new ConsoleAppender(layout, ConsoleAppender.SYSTEM_OUT));
+    logger.debug("Hello, log");
+    logger.info("Hello again...");
   }
 }

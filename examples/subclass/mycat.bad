@@ -1,0 +1,18 @@
+
+# The usual stuff. Note that A1 is configured in root not in "some.cat"
+log4j.rootLogger=DEBUG, A1
+log4j.appender.A1=org.apache.log4j.ConsoleAppender
+
+log4j.appender.A1.layout=org.apache.log4j.PatternLayout
+log4j.appender.A1.layout.ConversionPattern=%5p [%t] %c - %m%n
+
+# Set the priority of "some.cat" to TRACE (defined in
+# examples.customLevel.XLevel). This will actually have the side
+# effect of instanciating a logger object having the name "some.cat"
+# this will cause a ClassCastException if the logger object is cast
+# as a MyLogger object.
+
+log4j.logger.some.cat=TRACE#examples.customLevel.XLevel
+
+
+

@@ -5,7 +5,7 @@
  * License version 1.1, a copy of which has been included with this
  * distribution in the LICENSE.txt file.  */
 
-package examples.subclass;
+package subclass;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggerFactory;

@@ -47,62 +47,76 @@
  *
  */
 
-package customLevel;
+package org.apache.log4j.pattern;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 import org.apache.log4j.Level;
-import org.apache.log4j.Priority;
+import org.apache.log4j.Logger;
+import org.apache.log4j.spi.LoggingEvent;
+
+import java.io.CharArrayWriter;
+
+import java.util.HashMap;
 
 
 /**
-   This class introduces a new level level called TRACE. TRACE has
-   lower level than DEBUG.
-
+   Test case for helpers/PatternParser.java. Tests the various
+   conversion patterns supported by PatternParser. This test
+   class tests PatternParser via the PatternLayout class which
+   uses it.
  */
-public class XLevel extends Level {
-  public static final int TRACE_INT = Level.DEBUG_INT - 1;
-  public static final int LETHAL_INT = Level.FATAL_INT + 1;
-  private static String TRACE_STR = "TRACE";
-  private static String LETHAL_STR = "LETHAL";
-  public static final XLevel TRACE = new XLevel(TRACE_INT, TRACE_STR, 7);
-  public static final XLevel LETHAL = new XLevel(LETHAL_INT, LETHAL_STR, 0);
+public class PatternParserTest extends TestCase {
+  public CharArrayWriter charArrayWriter = new CharArrayWriter(1024);
+  Logger logger = Logger.getLogger(PatternParserTest.class);
 
-  protected XLevel(int level, String strLevel, int syslogEquiv) {
-    super(level, strLevel, syslogEquiv);
+  public PatternParserTest(String name) {
+    super(name);
   }
 
-  /**
-     Convert the string passed as argument to a level. If the
-     conversion fails, then this method returns {@link #TRACE}.
-  */
-  public static Level toLevel(String sArg) {
-    return (Level) toLevel(sArg, XLevel.TRACE);
+  public void setUp() {
+    charArrayWriter.reset();
   }
 
-  public static Level toLevel(String sArg, Level defaultValue) {
-    if (sArg == null) {
-      return defaultValue;
-    }
-
-    String stringVal = sArg.toUpperCase();
-
-    if (stringVal.equals(TRACE_STR)) {
-      return XLevel.TRACE;
-    } else if (stringVal.equals(LETHAL_STR)) {
-      return XLevel.LETHAL;
-    }
-
-    return Level.toLevel(sArg, (Level) defaultValue);
+  public void tearDown() {
   }
 
-  public static Level toLevel(int i) throws IllegalArgumentException {
-    switch (i) {
-    case TRACE_INT:
-      return XLevel.TRACE;
+  String convert(LoggingEvent event, PatternConverter head)
+    throws Exception {
+    PatternConverter c = head;
 
-    case LETHAL_INT:
-      return XLevel.LETHAL;
+    while (c != null) {
+      System.out.println("pc "+c);
+      c.format(charArrayWriter, event);
+      c = c.next;
     }
 
-    return Level.toLevel(i);
+    return charArrayWriter.toString();
+  }
+
+  public void testNewWord() throws Exception {
+    PatternParser patternParser = new PatternParser("%zum343");
+    HashMap ruleRegistry = new HashMap(5);
+
+    ruleRegistry.put("zum343", Num343PatternConverter.class.getName());
+    patternParser.setConverterRegistry(ruleRegistry);
+
+    PatternConverter head = patternParser.parse();
+
+    LoggingEvent event =
+      new LoggingEvent(
+        Logger.class.getName(), logger, Level.DEBUG, "msg 1", null);
+    String result = convert(event, head);
+    System.out.println("Resuls is["+result+"]");
+    assertEquals("343", result);
+  }
+
+  public static Test suite() {
+    TestSuite suite = new TestSuite();
+    suite.addTest(new PatternParserTest("testNewWord"));
+
+    return suite;
   }
 }

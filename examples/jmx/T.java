@@ -1,4 +1,4 @@
-package examples.jmx;
+package jmx;
 
 import org.apache.log4j.jmx.Agent;
 import org.apache.log4j.Category;

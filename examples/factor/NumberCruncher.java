@@ -1,5 +1,5 @@
 
-package examples;
+package factor;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

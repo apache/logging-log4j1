@@ -1,0 +1,27 @@
+# For the general syntax of property based configuration files see the
+# documenation of org.apache.log4j.PropertyConfigurator.
+
+# The root category uses the appender called A1. Since no priority is
+# specified, the root category assumes the default priority for root
+# which is DEBUG in log4j. The root category is the only category that
+# has a default priority. All other categories need not be assigned a
+# priority in which case they inherit their priority from the
+# hierarchy.
+
+log4j.rootCategory=, A1
+
+# A1 is set to be a FileAppender which outputs to the file
+# "factor.log". Start the server NumberCruncherServer and two
+# NumberCruncherClients, and ask to factor two numbers
+# near-simultaneously. Notice that the log output from these two
+# requests are logged in the file factor.log. Nevertheless, the logs
+# of these requests can still be distinguished given their distinct
+# nested diagnostic contexts.
+  
+log4j.appender.A1=org.apache.log4j.FileAppender
+log4j.appender.A1.File=factor.log
+log4j.appender.A1.layout=org.apache.log4j.PatternLayout
+
+# Note the %x conversion specifier for NDC printing.
+log4j.appender.A1.layout.ConversionPattern=%-4r %-5p [%t] (%x) - %m\n
+
