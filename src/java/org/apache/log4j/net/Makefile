@@ -8,7 +8,7 @@ JSOURCES:=SyslogAppender.java\
 	SocketAppender.java\
 	SMTPAppender.java\
 	SocketNode.java\
-
+        TelnetAppender.java\
 #	SocketServer.java\
 
 
