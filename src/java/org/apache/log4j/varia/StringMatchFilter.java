@@ -24,59 +24,13 @@ import org.apache.log4j.helpers.OptionConverter;
    {@link Filter#DENY} is returned. If there is no match, {@link
    Filter#NEUTRAL} is returned.
 
-   <p>See configuration files <a
-   href="../xml/doc-files/test6.xml">test6.xml</a>, <a
-   href="../xml/doc-files/test7.xml">test7.xml</a>, <a
-   href="../xml/doc-files/test8.xml">test8.xml</a>, <a
-   href="../xml/doc-files/test9.xml">test9.xml</a>, and <a
-   href="../xml/doc-files/test10.xml">test10.xml</a> for examples of
-   seeting up a <code>StringMatchFilter</code>.
-
-
    @author Ceki G&uuml;lc&uuml;
 
    @since 0.9.0 */
 public class StringMatchFilter extends Filter {
   
-  /**
-     @deprecated Options are now handled using the JavaBeans paradigm.
-     This constant is not longer needed and will be removed in the
-     <em>near</em> term.
-   */
-  public static final String STRING_TO_MATCH_OPTION = "StringToMatch";
-
-  /**
-     @deprecated Options are now handled using the JavaBeans paradigm.
-     This constant is not longer needed and will be removed in the
-     <em>near</em> term.
-   */
-  public static final String ACCEPT_ON_MATCH_OPTION = "AcceptOnMatch";
-  
   boolean acceptOnMatch = true;
   String stringToMatch;
-  
-  /**
-     @deprecated We now use JavaBeans introspection to configure
-     components. Options strings are no longer needed.
-  */
-  public
-  String[] getOptionStrings() {
-    return new String[] {STRING_TO_MATCH_OPTION, ACCEPT_ON_MATCH_OPTION};
-  }
-
-  /**
-     @deprecated Use the setter method for the option directly instead
-     of the generic <code>setOption</code> method. 
-  */
-  public
-  void setOption(String key, String value) { 
-    
-    if(key.equalsIgnoreCase(STRING_TO_MATCH_OPTION)) {
-      stringToMatch = value;
-    } else if (key.equalsIgnoreCase(ACCEPT_ON_MATCH_OPTION)) {
-      acceptOnMatch = OptionConverter.toBoolean(value, acceptOnMatch);
-    }
-  }
   
   public
   void setStringToMatch(String s) {
