@@ -47,61 +47,32 @@
  *
  */
 
-package org.apache.log4j;
+package org.apache.log4j.pattern;
 
-import org.apache.log4j.spi.LoggingEvent;
-
-import java.io.Writer;
+import org.apache.log4j.helpers.LogLog;
 
 
 /**
-   SimpleLayout consists of the level of the log statement,
-   followed by " - " and then the log message itself. For example,
+   FormattingInfo instances contain the information obtained when parsing
+   formatting modifiers in conversion modifiers.
 
-   <pre>
-           DEBUG - Hello world
-   </pre>
-
-   <p>
+   @author <a href=mailto:jim_cakalic@na.biomerieux.com>Jim Cakalic</a>
    @author Ceki G&uuml;lc&uuml;
-   @since version 0.7.0
 
-   <p>{@link PatternLayout} offers a much more powerful alternative.
-*/
-public class SimpleLayout extends Layout {
-  StringBuffer sbuf = new StringBuffer(128);
+   @since 0.8.2
+ */
+public class FormattingInfo {
+  int min = -1;
+  int max = 0x7FFFFFFF;
+  boolean leftAlign = false;
 
-  public SimpleLayout() {
+  void reset() {
+    min = -1;
+    max = 0x7FFFFFFF;
+    leftAlign = false;
   }
 
-  public void activateOptions() {
-  }
-
-  /**
-	 Writes the log statement in a format consisting of the
-	 <code>level</code>, followed by " - " and then the
-	 <code>message</code>. For example, <pre> INFO - "A message"
-	 </pre>
-
-	 <p>The <code>category</code> parameter is ignored.
-	 <p>
-	 @param event The LoggingEvent to format and write
-	 @param output The java.io.Writer to write to
-	*/
-  public void format(Writer output, LoggingEvent event) throws java.io.IOException {
-    output.write(event.getLevel().toString());
-    output.write(" - ");
-    output.write(event.getRenderedMessage());
-    output.write(LINE_SEP); 
-   }
-
-  /**
-       The SimpleLayout does not handle the throwable contained within
-       {@link LoggingEvent LoggingEvents}. Thus, it returns
-       <code>true</code>.
-
-       @since version 0.8.4 */
-  public boolean ignoresThrowable() {
-    return true;
+  void dump() {
+    LogLog.debug("min=" + min + ", max=" + max + ", leftAlign=" + leftAlign);
   }
 }

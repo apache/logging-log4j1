@@ -49,6 +49,10 @@
 
 package org.apache.log4j;
 
+import java.io.CharArrayWriter;
+import java.io.IOException;
+import java.io.Writer;
+
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.OptionHandler;
 
@@ -64,11 +68,25 @@ public abstract class Layout implements OptionHandler {
   // applets.
   public static final String LINE_SEP = System.getProperty("line.separator");
   public static final int LINE_SEP_LEN = LINE_SEP.length();
+  
+  final static Logger logger = Logger.getLogger(Layout.class); 
 
+  public CharArrayWriter charArrayWriter = new CharArrayWriter(1024);
   /**
      Implement this method to create your own layout format.
   */
-  public abstract String format(LoggingEvent event);
+  public String format(LoggingEvent event) {
+	  charArrayWriter.reset();
+	  try {
+  	  format(charArrayWriter, event);
+	  } catch(IOException ie) {
+	  	// There cannot be an IoException while writing to a CharArrayWriter
+	  	logger.error("Unexpected IOException while writing to CharArrayWriter", ie);
+	  }
+  	return charArrayWriter.toString();
+  }
+
+  public abstract void format(Writer output, LoggingEvent event) throws IOException; 
 
   /**
      Returns the content type output by this layout. The base class

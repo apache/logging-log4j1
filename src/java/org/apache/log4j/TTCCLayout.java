@@ -105,11 +105,12 @@ import org.apache.log4j.spi.LoggingEvent;
 
 */
 public class TTCCLayout extends DateLayout {
+	
   // Internal representation of options
   private boolean threadPrinting = true;
   private boolean categoryPrefixing = true;
   private boolean contextPrinting = true;
-  protected final StringBuffer buf = new StringBuffer(256);
+  protected final StringBuffer buf = new StringBuffer(64);
 
   /**
      Instantiate a TTCCLayout object with {@link
@@ -187,40 +188,38 @@ public class TTCCLayout extends DateLayout {
    <p>Time, thread, category and diagnostic context are printed
    depending on options.
   */
-  public String format(LoggingEvent event) {
-    // Reset buf
-    buf.setLength(0);
-
+  public void format(java.io.Writer output, LoggingEvent event) throws java.io.IOException {
+  	
+  	buf.setLength(0);
     dateFormat(buf, event);
+    output.write(buf.toString());
 
     if (this.threadPrinting) {
-      buf.append('[');
-      buf.append(event.getThreadName());
-      buf.append("] ");
+      output.write('[');
+	  output.write(event.getThreadName());
+	  output.write("] ");
     }
 
-    buf.append(event.getLevel().toString());
-    buf.append(' ');
+	output.write(event.getLevel().toString());
+	output.write(' ');
 
     if (this.categoryPrefixing) {
-      buf.append(event.getLoggerName());
-      buf.append(' ');
+		output.write(event.getLoggerName());
+		output.write(' ');
     }
 
     if (this.contextPrinting) {
       String ndc = event.getNDC();
 
       if (ndc != null) {
-        buf.append(ndc);
-        buf.append(' ');
+		output.write(ndc);
+		output.write(' ');
       }
     }
 
-    buf.append("- ");
-    buf.append(event.getRenderedMessage());
-    buf.append(LINE_SEP);
-
-    return buf.toString();
+	output.write("- ");
+	output.write(event.getRenderedMessage());
+	output.write(LINE_SEP);
   }
 
   /**

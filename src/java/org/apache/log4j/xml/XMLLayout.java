@@ -1,23 +1,70 @@
 /*
- * Copyright (C) The Apache Software Foundation. All rights reserved.
+ * ============================================================================
+ *                   The Apache Software License, Version 1.1
+ * ============================================================================
  *
- * This software is published under the terms of the Apache Software
- * License version 1.1, a copy of which has been included with this
- * distribution in the LICENSE.txt file.  */
+ *    Copyright (C) 1999 The Apache Software Foundation. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modifica-
+ * tion, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of  source code must  retain the above copyright  notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * 3. The end-user documentation included with the redistribution, if any, must
+ *    include  the following  acknowledgment:  "This product includes  software
+ *    developed  by the  Apache Software Foundation  (http://www.apache.org/)."
+ *    Alternately, this  acknowledgment may  appear in the software itself,  if
+ *    and wherever such third-party acknowledgments normally appear.
+ *
+ * 4. The names "log4j" and  "Apache Software Foundation"  must not be used to
+ *    endorse  or promote  products derived  from this  software without  prior
+ *    written permission. For written permission, please contact
+ *    apache@apache.org.
+ *
+ * 5. Products  derived from this software may not  be called "Apache", nor may
+ *    "Apache" appear  in their name,  without prior written permission  of the
+ *    Apache Software Foundation.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS  FOR A PARTICULAR  PURPOSE ARE  DISCLAIMED.  IN NO  EVENT SHALL  THE
+ * APACHE SOFTWARE  FOUNDATION  OR ITS CONTRIBUTORS  BE LIABLE FOR  ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL,  EXEMPLARY, OR CONSEQUENTIAL  DAMAGES (INCLU-
+ * DING, BUT NOT LIMITED TO, PROCUREMENT  OF SUBSTITUTE GOODS OR SERVICES; LOSS
+ * OF USE, DATA, OR  PROFITS; OR BUSINESS  INTERRUPTION)  HOWEVER CAUSED AND ON
+ * ANY  THEORY OF LIABILITY,  WHETHER  IN CONTRACT,  STRICT LIABILITY,  OR TORT
+ * (INCLUDING  NEGLIGENCE OR  OTHERWISE) ARISING IN  ANY WAY OUT OF THE  USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * This software  consists of voluntary contributions made  by many individuals
+ * on  behalf of the Apache Software  Foundation.  For more  information on the
+ * Apache Software Foundation, please see <http://www.apache.org/>.
+ *
+ */
+
 
 // Contributors:   Mathias Bogaert
-
 package org.apache.log4j.xml;
 
 import org.apache.log4j.Layout;
-import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.helpers.Transform;
-import java.util.Set;
-import java.util.Iterator;
+import org.apache.log4j.spi.LocationInfo;
+import org.apache.log4j.spi.LoggingEvent;
+
+import java.io.IOException;
+import java.io.Writer;
+
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 
 /**
  * The output of the XMLLayout consists of a series of log4j:event
@@ -32,14 +79,14 @@ import java.util.Collections;
  *
   <pre>
    &lt;?xml version="1.0" ?&gt;
- 
+
   &lt;!DOCTYPE log4j:eventSet SYSTEM "log4j.dtd" [&lt;!ENTITY data SYSTEM "abc"&gt;]&gt;
- 
+
   &lt;log4j:eventSet version="1.2" xmlns:log4j="http://jakarta.apache.org/log4j/"&gt;
- 	&nbsp;&nbsp;&data;
+         &nbsp;&nbsp;&data;
   &lt;/log4j:eventSet&gt;
   </pre>
- 
+
  * <p>This approach enforces the independence of the XMLLayout and the
  * appender where it is embedded.
  *
@@ -50,16 +97,15 @@ import java.util.Collections;
  * later.
  *
  * @author Ceki  G&uuml;lc&uuml;
- * @since 0.9.0 
+ * @since 0.9.0
  * */
 public class XMLLayout extends Layout {
-
-  private  final int DEFAULT_SIZE = 256;
+  private final int DEFAULT_SIZE = 256;
   private final int UPPER_LIMIT = 2048;
 
-  private StringBuffer buf = new StringBuffer(DEFAULT_SIZE);
+  //private StringBuffer buf = new StringBuffer(DEFAULT_SIZE);
   private boolean locationInfo = false;
- 
+
   /**
    * The <b>LocationInfo</b> option takes a boolean value. By default,
    * it is set to false which means there will be no location
@@ -74,117 +120,130 @@ public class XMLLayout extends Layout {
   public void setLocationInfo(boolean flag) {
     locationInfo = flag;
   }
-  
+
   /**
      Returns the current value of the <b>LocationInfo</b> option.
    */
   public boolean getLocationInfo() {
     return locationInfo;
   }
-  
+
   /** No options to activate. */
   public void activateOptions() {
   }
 
-
   /**
    * Formats a {@link LoggingEvent} in conformance with the log4j.dtd.
    * */
-  public String format(LoggingEvent event) {
-
-    // Reset working buffer. If the buffer is too large, then we need a new
-    // one in order to avoid the penalty of creating a large array.
-    if(buf.capacity() > UPPER_LIMIT) {
-      buf = new StringBuffer(DEFAULT_SIZE);
-    } else {
-      buf.setLength(0);
-    }
-    
+  public void format(Writer output, LoggingEvent event)
+    throws IOException {
     // We yield to the \r\n heresy.
+    output.write("<log4j:event logger=\"");
+    output.write(event.getLoggerName());
+    output.write("\" timestamp=\"");
+    output.write(Long.toString(event.timeStamp));
+    output.write("\" level=\"");
+    output.write(event.getLevel().toString());
+    output.write("\" thread=\"");
+    output.write(event.getThreadName());
+    output.write("\">\r\n");
 
-    buf.append("<log4j:event logger=\"");
-    buf.append(event.getLoggerName());
-    buf.append("\" timestamp=\"");
-    buf.append(event.timeStamp);
-    buf.append("\" level=\"");
-    buf.append(event.getLevel());
-    buf.append("\" thread=\"");
-    buf.append(event.getThreadName());
-    buf.append("\">\r\n");
+    output.write("<log4j:message><![CDATA[");
 
-    buf.append("<log4j:message><![CDATA[");
     // Append the rendered message. Also make sure to escape any
     // existing CDATA sections.
-    Transform.appendEscapingCDATA(buf, event.getRenderedMessage());
-    buf.append("]]></log4j:message>\r\n");       
-    
+    Transform.appendEscapingCDATA(output, event.getRenderedMessage());
+    output.write("]]></log4j:message>\r\n");
+
     String ndc = event.getNDC();
-    if(ndc != null) {
-      buf.append("<log4j:NDC><![CDATA[");
-      buf.append(ndc);
-      buf.append("]]></log4j:NDC>\r\n");       
+
+    if (ndc != null) {
+      output.write("<log4j:NDC><![CDATA[");
+      output.write(ndc);
+      output.write("]]></log4j:NDC>\r\n");
     }
-    
+
     Set mdcKeySet = event.getMDCKeySet();
 
-    if(mdcKeySet.size()>0)
-    {
+    if ((mdcKeySet != null) && (mdcKeySet.size() > 0)) {
       /**
-       * Normally a sort isn't required, but for Test Case purposes
-       * we need to guarantee a particular order.
-       *
-       * Besides which, from a human readable point of view, the sorting
-       * of the keys is kinda nice..
-       */
-
+      * Normally a sort isn't required, but for Test Case purposes
+      * we need to guarantee a particular order.
+      *
+      * Besides which, from a human readable point of view, the sorting
+      * of the keys is kinda nice..
+      */
       List sortedList = new ArrayList(mdcKeySet);
       Collections.sort(sortedList);
 
-      buf.append("<log4j:MDC>\n");
-      for (Iterator i = sortedList.iterator(); i.hasNext(); ) {
-        Object key = i.next();
-        Object val = event.getMDC(key.toString());
-        buf.append("    <log4j:data ");
-        buf.append("name=\"<![CDATA[");
-        Transform.appendEscapingCDATA(buf, key.toString());
-        buf.append("]]>\"");
-        buf.append(" ");
-        buf.append("value=\"<![CDATA[");
-        Transform.appendEscapingCDATA(buf, val.toString());
-        buf.append("]]>\"/>");
-        buf.append("\n");
+      output.write("<log4j:MDC>\r\n");
+
+      Iterator iter = sortedList.iterator();
+
+      while (iter.hasNext()) {
+        String propName = (String) iter.next();
+
+        output.write("    <log4j:data name=\"<![CDATA[");
+        Transform.appendEscapingCDATA(output, propName);
+        output.write("]]>\"");
+
+        String propValue = (String) event.getMDC(propName);
+        output.write(" value=\"<![CDATA[");
+        Transform.appendEscapingCDATA(output, propValue);
+        output.write("]]>\"/>\r\n");
       }
-      buf.append("</log4j:MDC>\n");
+
+      output.write("</log4j:MDC>\r\n");
     }
 
     String[] s = event.getThrowableStrRep();
-    if(s != null) {
-      buf.append("<log4j:throwable><![CDATA[");
-      for(int i = 0; i < s.length; i++) {
-	buf.append(s[i]);
-	buf.append("\r\n");
+
+    if (s != null) {
+      output.write("<log4j:throwable><![CDATA[");
+
+      for (int i = 0; i < s.length; i++) {
+        output.write(s[i]);
+        output.write("\r\n");
       }
-      buf.append("]]></log4j:throwable>\r\n");
+
+      output.write("]]></log4j:throwable>\r\n");
     }
-    
-    if(locationInfo) { 
-      LocationInfo locationInfo = event.getLocationInformation();	
-      buf.append("<log4j:locationInfo class=\"");
-      buf.append(locationInfo.getClassName());
-      buf.append("\" method=\"");
-      buf.append(Transform.escapeTags(locationInfo.getMethodName()));
-      buf.append("\" file=\"");
-      buf.append(locationInfo.getFileName());
-      buf.append("\" line=\"");
-      buf.append(locationInfo.getLineNumber());
-      buf.append("\"/>\r\n");
+
+    if (locationInfo) {
+      LocationInfo locationInfo = event.getLocationInformation();
+      output.write("<log4j:locationInfo class=\"");
+      output.write(locationInfo.getClassName());
+      output.write("\" method=\"");
+      Transform.escapeTags(locationInfo.getMethodName(), output);
+      output.write("\" file=\"");
+      output.write(locationInfo.getFileName());
+      output.write("\" line=\"");
+      output.write(locationInfo.getLineNumber());
+      output.write("\"/>\r\n");
     }
-    
-    buf.append("</log4j:event>\r\n\r\n");
-    
-    return buf.toString();
+
+    Set propertySet = event.getPropertyKeySet();
+
+    if ((propertySet != null) && (propertySet.size() > 0)) {
+      output.write("<log4j:properties>");
+
+      Iterator propIter = propertySet.iterator();
+
+      while (propIter.hasNext()) {
+        String propName = (String) propIter.next();
+        output.write("<log4j:data name=\"" + propName);
+
+        String propValue = (String) event.getProperty(propName);
+        output.write("\" value=\"" + propValue);
+        output.write("\"/>\r\n");
+      }
+
+      output.write("</log4j:properties>\r\n");
+    }
+
+    output.write("</log4j:event>\r\n\r\n");
   }
-  
+
   /**
      The XMLLayout prints and does not ignore exceptions. Hence the
      return value <code>false</code>.

@@ -47,61 +47,108 @@
  *
  */
 
-package org.apache.log4j;
+package org.apache.log4j.pattern;
 
 import org.apache.log4j.spi.LoggingEvent;
 
+import java.io.IOException;
 import java.io.Writer;
 
 
 /**
-   SimpleLayout consists of the level of the log statement,
-   followed by " - " and then the log message itself. For example,
 
-   <pre>
-           DEBUG - Hello world
-   </pre>
+   <p>PatternConverter is an abtract class that provides the
+   formatting functionality that derived classes need.
 
-   <p>
+   <p>Conversion specifiers in a conversion patterns are parsed to
+   individual PatternConverters. Each of which is responsible for
+   converting a logging event in a converter specific manner.
+
+   @author <a href="mailto:cakalijp@Maritz.com">James P. Cakalic</a>
    @author Ceki G&uuml;lc&uuml;
-   @since version 0.7.0
 
-   <p>{@link PatternLayout} offers a much more powerful alternative.
-*/
-public class SimpleLayout extends Layout {
-  StringBuffer sbuf = new StringBuffer(128);
+   @since 0.8.2
+ */
+public abstract class PatternConverter {
+  static String[] SPACES =
+  {
+    " ", "  ", "    ", "        ", //1,2,4,8 spaces
+    "                ", // 16 spaces
+    "                                " // 32 spaces
+  };
+  public PatternConverter next;
+  int min = -1;
+  int max = 0x7FFFFFFF;
+  boolean leftAlign = false;
+  String option;
 
-  public SimpleLayout() {
+  protected PatternConverter() {
   }
 
-  public void activateOptions() {
+  protected PatternConverter(FormattingInfo fi) {
+    min = fi.min;
+    max = fi.max;
+    leftAlign = fi.leftAlign;
   }
 
   /**
-	 Writes the log statement in a format consisting of the
-	 <code>level</code>, followed by " - " and then the
-	 <code>message</code>. For example, <pre> INFO - "A message"
-	 </pre>
-
-	 <p>The <code>category</code> parameter is ignored.
-	 <p>
-	 @param event The LoggingEvent to format and write
-	 @param output The java.io.Writer to write to
-	*/
-  public void format(Writer output, LoggingEvent event) throws java.io.IOException {
-    output.write(event.getLevel().toString());
-    output.write(" - ");
-    output.write(event.getRenderedMessage());
-    output.write(LINE_SEP); 
-   }
+     Derived pattern converters must override this method in order to
+     convert conversion specifiers in the correct way.
+  */
+  protected abstract StringBuffer convert(LoggingEvent event);
 
   /**
-       The SimpleLayout does not handle the throwable contained within
-       {@link LoggingEvent LoggingEvents}. Thus, it returns
-       <code>true</code>.
+     A template method for formatting in a converter specific way.
+   */
+  public void format(Writer output, LoggingEvent e) throws IOException {
+    StringBuffer s = convert(e);
 
-       @since version 0.8.4 */
-  public boolean ignoresThrowable() {
-    return true;
+    if (s == null) {
+      if (0 < min) {
+        spacePad(output, min);
+      }
+
+      return;
+    }
+
+    int len = s.length();
+
+    if (len > max) {
+      output.write(s.substring(len - max));
+    } else if (len < min) {
+      if (leftAlign) {
+        output.write(s.toString());
+        spacePad(output, min - len);
+      } else {
+        spacePad(output, min - len);
+        output.write(s.toString());
+      }
+    } else {
+      output.write(s.toString());
+    }
+  }
+
+  /**
+     Fast space padding method.
+  */
+  public void spacePad(Writer output, int length) throws IOException {
+    while (length >= 32) {
+      output.write(SPACES[5]);
+      length -= 32;
+    }
+
+    for (int i = 4; i >= 0; i--) {
+      if ((length & (1 << i)) != 0) {
+        output.write(SPACES[i]);
+      }
+    }
+  }
+
+  public String getOption() {
+    return option;
+  }
+
+  public void setOption(String string) {
+    option = string;
   }
 }

@@ -47,61 +47,63 @@
  *
  */
 
-package org.apache.log4j;
+package org.apache.log4j.pattern;
 
 import org.apache.log4j.spi.LoggingEvent;
 
-import java.io.Writer;
+import java.util.Iterator;
+import java.util.Set;
 
 
 /**
-   SimpleLayout consists of the level of the log statement,
-   followed by " - " and then the log message itself. For example,
+ * Return the events thread (usually the current thread) in a StringBuffer.
+ * This buffer is recycled!
+ *
+ * @author Ceki G&uuml;lc&uuml;
+ */
+public class MDCPatternConverter extends PatternConverter {
+  // We assume that each PatternConveter instance is unique within a layout, 
+  // which is unique within an appender. We further assume that callas to the 
+  // appender method are serialized (per appender).
+  StringBuffer buf;
 
-   <pre>
-           DEBUG - Hello world
-   </pre>
-
-   <p>
-   @author Ceki G&uuml;lc&uuml;
-   @since version 0.7.0
-
-   <p>{@link PatternLayout} offers a much more powerful alternative.
-*/
-public class SimpleLayout extends Layout {
-  StringBuffer sbuf = new StringBuffer(128);
-
-  public SimpleLayout() {
+  public MDCPatternConverter(FormattingInfo formattingInfo) {
+    super(formattingInfo);
+    this.buf = new StringBuffer(32);
   }
 
-  public void activateOptions() {
-  }
+  public StringBuffer convert(LoggingEvent event) {
+    buf.setLength(0);
 
-  /**
-	 Writes the log statement in a format consisting of the
-	 <code>level</code>, followed by " - " and then the
-	 <code>message</code>. For example, <pre> INFO - "A message"
-	 </pre>
+    /**
+      * if there is no additional options, we output every single
+      * Key/Value pair for the MDC in a similar format to Hashtable.toString()
+      */
+    if (option == null) {
+      buf.append("{");
 
-	 <p>The <code>category</code> parameter is ignored.
-	 <p>
-	 @param event The LoggingEvent to format and write
-	 @param output The java.io.Writer to write to
-	*/
-  public void format(Writer output, LoggingEvent event) throws java.io.IOException {
-    output.write(event.getLevel().toString());
-    output.write(" - ");
-    output.write(event.getRenderedMessage());
-    output.write(LINE_SEP); 
-   }
+      Set keySet = event.getMDCKeySet();
 
-  /**
-       The SimpleLayout does not handle the throwable contained within
-       {@link LoggingEvent LoggingEvents}. Thus, it returns
-       <code>true</code>.
+      for (Iterator i = keySet.iterator(); i.hasNext();) {
+        Object item = i.next();
+        Object val = event.getMDC(item.toString());
+        buf.append("{").append(item).append(",").append(val).append("}");
+      }
 
-       @since version 0.8.4 */
-  public boolean ignoresThrowable() {
-    return true;
+      buf.append("}");
+
+      return buf;
+    }
+
+    /**
+     * otherwise they just want a single key output
+     */
+    Object val = event.getMDC(option);
+
+    if (val != null) {
+      return buf.append(val);
+    }
+
+    return buf;
   }
 }
