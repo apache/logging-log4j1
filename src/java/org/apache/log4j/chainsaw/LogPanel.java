@@ -2395,7 +2395,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
                   // they stopped typing recently, but have stopped for at least
                   // 1 sample period. lets apply the filter
                   //                LogLog.debug("Typed something recently applying filter");
-                  if (filterText.getText() != lastFilterText) {
+                  if (filterText != null && (!(filterText.getText().equals(lastFilterText)))) {
                     lastFilterText = filterText.getText();
                     setFilter();
                   }
