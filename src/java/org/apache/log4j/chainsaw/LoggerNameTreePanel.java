@@ -693,18 +693,12 @@ final class LoggerNameTreePanel extends JPanel implements Rule {
         DefaultMutableTreeNode child =
           (DefaultMutableTreeNode) enumeration.nextElement();
 
-        if (child.getParent() != null) {
+        if (child.getParent() != null && child!=node) {
           TreeNode[] nodes =
             ((DefaultMutableTreeNode) child.getParent()).getPath();
 
           TreePath treePath = new TreePath(nodes);
-
-          while ((treePath != null) && (treePath.getPathCount() > 0)) {
-            DefaultMutableTreeNode potentialRoot =
-              (DefaultMutableTreeNode) treePath.getPathComponent(0);
-            logTree.collapsePath(treePath);
-            treePath = treePath.getParentPath();
-          }
+          logTree.collapsePath(treePath);
         }
       }
     }
@@ -729,15 +723,18 @@ final class LoggerNameTreePanel extends JPanel implements Rule {
     for (int i = 0; i < paths.length; i++) {
       TreePath path = paths[i];
 
-      /**
-       * Handle an expansion of the Root node by only doing the first level.
-       * Safe...
-       */
-      if (path.getPathCount() == 1) {
-        logTree.expandPath(path);
-
-        return;
-      }
+/**
+ * TODO this is commented out, right now it expands all nodes including the root, so if there is a large tree..... look out.
+ */
+//      /**
+//       * Handle an expansion of the Root node by only doing the first level.
+//       * Safe...
+//       */
+//      if (path.getPathCount() == 1) {
+//        logTree.expandPath(path);
+//
+//        return;
+//      }
 
       DefaultMutableTreeNode treeNode =
         (DefaultMutableTreeNode) path.getLastPathComponent();
