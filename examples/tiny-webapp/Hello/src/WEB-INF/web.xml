@@ -28,6 +28,13 @@
    <env-entry-type>java.lang.String</env-entry-type>
   </env-entry>
    
+  <env-entry>
+   <description>URL for configuring log4j context</description>
+   <env-entry-name>log4j/configuration-resource</env-entry-name>
+   <env-entry-value>hello-log4j.xml</env-entry-value>
+   <env-entry-type>java.lang.String</env-entry-type>
+  </env-entry>
+  
    <listener>
      <listener-class>org.apache.log4j.selector.servlet.ContextDetachingSCL</listener-class>
    </listener>

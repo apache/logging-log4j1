@@ -8,12 +8,13 @@ Steps performed on the Java Web Server (Servlet Container)
 =========================================================
 
 - Place log4j-VERSION.jar, where VERSION is 1.3 or above, in your web
-  server's (YES, server's) shared class loader directory.
+  server's (YES, server's) shared class directory.
 
-  For example, for Tomcat versions 4 or 5, that would be common/lib/,
-  for Resin version 2.1.x that would be the lib/ directory under the
-  Resin installation folder. Other Servlet containers such as Jetty
-  also have folders for shared jar files.
+  For example, for Tomcat versions 4 or 5, that would be ./common/lib/ 
+  under the Tomcat installation folder, for Resin version 2.1.x that
+  would be the ./lib/ directory under the Resin installation folder. 
+  Other Servlet containers such as Jetty also have folders for 
+  shared jar files.
 
 - When launching your java web *server*, make sure to add the
   log4j.repositorySelectorClass system property on the java command
@@ -27,17 +28,17 @@ Steps performed on the Java Web Server (Servlet Container)
   tata.war.
 
 - Optionally, you can add a configuration file such as log4j.xml or
-  log4j.properties in the class directory of your web-server. For
-  Tomcat versions 4 or 5, that would be server/classes/ directory.
+  log4j.properties in the class directory of your *web-server*. For
+  Tomcat versions 4 or 5, that would be ./server/classes/ directory.
 
   Thus, when log4j is first loaded into memory, it will configure the
   default logging repository using the configuration file found in
-  server/classes/ directory.
+  ./server/classes/ directory.
 
   For Tomcat version 5 (tested on Tomcat 5.0.19), you also need to
   tell Tomcat to use log4j by placing commons-logging.jar in
-  common/lib directory. You should also remove the
-  commons-logging-api.jar from the bin/ directory.
+  ./common/lib directory. You should also remove the
+  commons-logging-api.jar from the ./bin/ directory.
   
   This way the default (log4j) logger repository will be used by
   Tomcat for its logging and the default logger repository will be
@@ -65,19 +66,10 @@ Steps performed per web-application
  
   See also the file examples/tiny-webapp/Hello/src/WEB-INF/web.xml
 
-- Include a log4j.properties or log4j.xml configuration file in your
-  web-application's WEB-INF/classes directory.
-
-  This file will be automatically taken to configure the repository
-  instance specific for your web-application.
-
-  Alternatively, you can specify the URL for this context's
-  configuration resource.  The repository selector
-  (ContextJNDISelector) will use the specified resource to
-  automatically configure the log4j repository.
-
-  You can specify a resource other than log4j.xml or log4j.properties
-  with the "log4j/configuration-resource" environment entry.
+- Specify the URL for this context's configuration resource using 
+  the "log4j/configuration-resource" environment entry.
+  The repository selector (ContextJNDISelector) will use the 
+  specified resource to automatically configure the log4j repository.
 
   <env-entry>
    <description>URL for configuring log4j context</description>
@@ -87,13 +79,13 @@ Steps performed per web-application
   </env-entry>
   
   Note that only when "log4j/configuration-resource" environment entry 
-  is missing that the default resources log4j.xml and log4j.properties are
-  looked up.
-
+  is missing, then the logger repository for your application's logging
+  context will not be configured.
+  
   For more information on the available options see the javadoc for
-  ContextJNDISelector.
+  org.apache.log4j.selector.ContextJNDISelector.
 
-- When the web-application is recycled or shutdown, it is often useful
+- When the web-application is recycled or shutdown, it is very often useful
   to recycle the associated logging repository. This can be done by
   installing a ServletContextListener which will detach the repository
   from the repository selector and shut it down.
