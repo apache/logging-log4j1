@@ -1,0 +1,27 @@
+FATAL ERR [main] - Message 0
+ERROR ERR [main] - Message 1
+FATAL INF [main] - Message 2
+ERROR INF [main] - Message 3
+ WARN INF [main] - Message 4
+ INFO INF [main] - Message 5
+FATAL INF.UNDEF [main] - Message 6
+ERROR INF.UNDEF [main] - Message 7
+ WARN INF.UNDEF [main] - Message 8
+ INFO INF.UNDEF [main] - Message 9
+FATAL INF.ERR [main] - Message 10
+ERROR INF.ERR [main] - Message 11
+FATAL INF.ERR.UNDEF [main] - Message 12
+ERROR INF.ERR.UNDEF [main] - Message 13
+FATAL DEB [main] - Message 14
+ERROR DEB [main] - Message 15
+ WARN DEB [main] - Message 16
+ INFO DEB [main] - Message 17
+DEBUG DEB [main] - Message 18
+ERROR UNDEF [main] - Message 19
+ WARN UNDEF [main] - Message 20
+ INFO UNDEF [main] - Message 21
+DEBUG UNDEF [main] - Message 22
+java.lang.Exception: Just testing
+	at org.apache.log4j.test.Min.test1(Min.java)
+	at org.apache.log4j.test.Min.main(Min.java)
+ INFO INF [main] - Messages should bear numbers 0 through 22.

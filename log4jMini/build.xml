@@ -1,0 +1,221 @@
+
+<project name="log4jMini" default="build" basedir="." >
+
+  <property name="version" value="1.2alpha"/>
+
+  <!-- The base directory relative to which most targets are built -->
+  <property name="base" value="."/>
+ 
+  <!-- The directory where source files are stored. -->
+  <property name="java.source.dir" value="src/java/"/>
+
+  <!-- The directory where the package-list file is found, ./ or -->
+  <!-- build/ -->
+  <property name="packaging.dir" value="build"/>
+
+  <!-- Destination for compiled files -->
+  <property name="javac.dest" value="dist/classes"/>
+
+  <!-- Destination for generated jar files -->
+  <property name="jar.dest" value="${basedir}"/>
+
+  <!-- The jar file that the jar task will generate -->
+  <property name="log4jMini.jar" value="log4jMini-${version}.jar"/>
+
+  <!-- Destination for documentation files generated or not -->
+  <property name="docs" value="docs"/>
+
+  <!-- Destination for javadoc generated files -->
+  <property name="javadoc.dest" value="docs/api"/>
+
+  <!-- The stem where most log4j source code is located. -->
+  <property name="stem" value="org/apache/log4j"/>
+
+  <!-- Some targets needs a more precise stem. -->
+  <property name="BSTEM" value="${java.source.dir}/${stem}"/>
+
+  <!-- Original manifest.mf file before filtering. -->
+  <property name="manifest.src" value="build/manifest.mf"/>
+
+  <!-- Directory where release images go. -->
+  <property name="dist.images"  value="dist/images"/>
+
+  <!-- Directory for temporary files. -->
+  <property name="dist.tmp" value="dist/tmp"/>
+
+  
+  <!-- Construct compile classpath -->
+  <path id="compile.classpath">
+    <pathelement location="${build.home}/classes"/>
+  </path>
+
+  <target name="junitCheck">
+    <available classname="junit.framework.TestCase" property="junit-present"/>
+  </target>   
+  <target name="junit" depends="junitCheck" if="junit-present">
+    <echo message="JUnit is present."/>
+  </target>
+
+  <!-- ================================================================= -->
+  <!-- Initialize variables                                              -->
+  <!-- NOTE: all directories are relative to jakarta-log4j/              -->
+  <!-- ================================================================= -->
+  <target name="init">
+    <tstamp />
+  </target>
+
+  <target name="build" depends="init">
+    <mkdir dir="${javac.dest}" />
+    <javac srcdir="${java.source.dir}"
+           destdir="${javac.dest}"
+           includes="${stem}/**/*.java, ${stem}/xml/XMLLayout.java,"
+           excludes="**/examples/**, ${stem}/StressCategory.java"
+           deprecation="${deprecation}"
+           debug="on">
+     <classpath refid="compile.classpath"/>
+    </javac>
+  </target>
+
+  <!-- ================================================================= -->
+  <!-- Remove all generated (compiled) class files.                      -->
+  <!-- ================================================================= -->
+  <target name="clean" depends="init">
+    <delete dir="${javac.dest}/" />
+  </target>
+
+  <!-- ================================================================= -->
+  <!-- Create log4jMini.jar, excluding tests and other odds and ends.        -->
+  <!-- ================================================================= -->
+  <target name="jar" depends="build">
+    <delete>
+      <fileset dir="${jar.dest}">
+        <include name="${log4j.jar}"/>
+      </fileset>
+    </delete>
+
+    <jar jarfile="${jar.dest}/${log4j.jar}" basedir="${javac.dest}"
+        includes="${stem}/*.class, 
+	          ${stem}/helpers/*.class,
+                  ${stem}/spi/*.class, 
+		  ${stem}/or/*.class,
+		  ${stem}/config/PropertySetter.class
+		  ${stem}/config/PropertySetterException.class"
+      excludes="**/UnitTest**,
+                **/examples/**,
+                **/selectors/*.class,
+                **/servlet/*.class">
+
+      <manifest>
+        <attribute name="Manifest-version" value="1.0"/>
+        <section name="org/apache/log4j/">
+          <attribute name="Implementation-Title" value="log4jMini"/>
+          <attribute name="Implementation-Version" value="${version}"/>
+          <attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
+        </section>
+      </manifest>
+    </jar>
+  </target>
+
+  <!-- ================================================================= -->
+  <!-- This target builds the javadoc files.                             -->
+  <!-- ================================================================= -->
+  <target name="javadoc" depends="init">
+
+    <mkdir dir="${javadoc.dest}" />
+
+    <javadoc sourcepath="${java.source.dir}" 
+           destdir="${javadoc.dest}" 
+	   packagenames="org.apache.log4j,
+                         org.apache.log4j.helpers,
+		         org.apache.log4j.spi"
+	   version="true"
+	   protected="true"
+	   author="true"
+	   use="true"		   
+	   overview="${docs}/overview.html"
+	   doctitle="log4j MicroEdition version ${version}&lt;br&gt;API Specification"
+	   windowtitle="Log4jME Version ${version}" 
+           header="&lt;b&gt;Log4jME ${version}&lt;/b&gt;"
+	   bottom="Please &lt;a href=http://lists.sourceforge.net/mailman/listinfo/log4j-announce&gt;&lt;b&gt;notify me&lt;/b&gt;&lt;/a&gt; about new log4j releases. &lt;hr&gt;"> 
+		   
+           <link offline="true" 
+                 href="http://java.sun.com/products/jdk/1.2/docs/api"
+                 packageListLoc="${packaging.dir}"/>
+    </javadoc>		
+  </target>
+
+ <!-- ================================================================= -->
+ <!-- Build a complete distribution. Results go to ${dist.images}       -->
+ <!-- ================================================================= -->
+  <target name="dist" depends="init, clean, jar">
+
+    <delete verbose="true">
+      <fileset dir="."> 
+        <patternset>
+	   <include name="**/*.bak"/>
+	   <include name="dist/velocity.log"/>
+	   <include name="${BSTEM}/**/temp*"/>
+	   <include name="${BSTEM}/performance/test"/>
+	   <include name="${BSTEM}/test/current.*"/>
+	   <include name="${BSTEM}/test/current.*"/>
+	   <include name="${BSTEM}/examples/test"/>
+	   <include name="${BSTEM}/test/logging.*"/>
+	   <include name="${BSTEM}/test/log4j.properties"/>
+	   <include name="{$BSTEM}/test/socket.lcf"/>
+	   <include name="${BSTEM}/test/file"/>
+	   <include name="${BSTEM}/test/output.*"/>
+	   <include name="${jar.dest}/manifest.mf"/>
+	   <include name="${javac.dest}/*.class"/>
+        </patternset>
+     </fileset>         
+    </delete>
+
+    <mkdir  dir="${dist.images}" />
+
+    <mkdir  dir="${dist.tmp}/log4jME-${version}" />
+
+    <copy todir="${dist.tmp}/log4jME-${version}">
+       <fileset dir="${base}"
+                includes="make/**,
+		          src/**, 
+			  docs/**, 
+			  Makefile, 
+			  build/*, build.bat, build.sh,
+			  build/lib/*.jar,
+                          manifest.mf, 
+			  INSTALL, 
+			  LICENSE.txt, 
+			  dist/lib/*.jar, 
+		          org/**,  
+			  dist/classes/**"
+                excludes="make/make.loc, 
+		          **/*.bak, **/goEnv.bat,
+			  **/.#*"/>
+    </copy>
+
+    
+    <fixcrlf srcdir="${dist.tmp}/log4jME-${version}"  
+             includes="build.sh" cr="remove"/>
+    <fixcrlf srcdir="${dist.tmp}/log4jME-${version}"   
+             includes="build.bat" cr="add"/>
+    <chmod   dir="${dist.tmp}/log4jME-${version}"   
+             includes="build.sh" perm="+x"/>
+
+    <tar tarfile="${dist.images}/log4jME-${version}.tar" 
+         basedir="${dist.tmp}"
+         includes="log4jME-${version}/**" />
+
+    <gzip src="${dist.images}/log4jME-${version}.tar" 
+          zipfile="${dist.images}/log4jME-${version}.tar.gz" />
+
+    <zip zipfile="${dist.images}/log4jME-${version}.zip" 
+         basedir="${dist.tmp}"
+         includes="log4jME-${version}/**" />
+
+    	 
+    <delete dir="${dist.tmp}" />
+
+  </target>
+
+</project>
+

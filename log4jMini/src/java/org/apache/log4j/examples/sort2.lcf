@@ -1,0 +1,39 @@
+# An example log4j configuration file that outputs both to System.out
+# and a file named 'test'.
+
+log4j.rootCategory=, A1, A2
+
+# A1 is set to be FileAppender sending its output to System.out
+log4j.appender.A1=org.apache.log4j.FileAppender
+log4j.appender.A1.File=System.out
+
+
+# A1 uses PatternLayout.
+log4j.appender.A1.layout=org.apache.log4j.PatternLayout
+
+# The conversion pattern consists of date in ISO8601 format, priority,
+# thread name, category name truncated to its rightmost two components
+# and left justified to 17 characters, location information consisting
+# of file name (padded to 13 characters) and line number, nested
+# diagnostic context, the and the application supplied message
+
+log4j.appender.A1.layout.ConversionPattern=%d %-5p [%t] %-17c{2} (%13F:%L) %3x - %m%n
+
+# Appender A2 writes to the file "test".
+log4j.appender.A2=org.apache.log4j.FileAppender
+log4j.appender.A2.File=test
+
+# Truncate 'test' if it aleady exists.
+log4j.appender.A2.Append=false
+
+# Appender A2 uses the PatternLayout.
+log4j.appender.A2.layout=org.apache.log4j.PatternLayout
+log4j.appender.A2.layout.ConversionPattern=%-5r %-5p [%t] %c{2} - %m%n
+
+
+# In this example, we are not interested in INNER loop or SWAP
+# messages.  You might try to set INNER and SWAP to DEBUG for more
+# verbose output.
+
+log4j.category.org.apache.log4j.examples.SortAlgo.INNER=INFO
+log4j.category.org.apache.log4j.examples.SortAlgo.SWAP=INFO

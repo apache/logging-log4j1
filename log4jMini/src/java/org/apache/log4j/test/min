@@ -1,0 +1,59 @@
+#!/bin/bash
+
+# A regression test to check the option reading code and print formats.
+ 
+# Read the .functions file
+
+. .functions
+
+
+# If set, allows to skip tests 
+declare -i start=$1
+
+# ----------------------------------------------------------------------
+function testMin {
+
+ filter="$1"
+ format="$2"   
+
+ echo -n "Min test $TEST - "
+ runMin "$format" 
+ $PERL filter.pl $TEMP $OUTPUT Min $filter
+
+ if [ $? != 0 ]; then
+  echo "The output is not in expected format. See the file [$OUTPUT]."
+  exit 1   
+ fi
+
+ check witness/min.$TEST $OUTPUT; echo "OK" 
+}
+# ----------------------------------------------------------------------
+function runMin {
+ format="$1"
+ file="$2" 
+ #java -Dlog4j.configDebug org.apache.log4j.test.Shallow $confFile
+ java org.apache.log4j.test.Min "$format" > $TEMP
+}
+# ===============================================================
+
+setPERL
+
+declare -i TEST
+
+deleteFile $TEMP 
+
+TEST=1
+if [ $TEST -ge $start ]; then
+  testMin NONE "%5p %c [%t] - %m%n"
+fi
+
+
+TEST=2
+if [ $TEST -ge $start ]; then
+  testMin RELATIVE "%r [%t] %p - %m%n"
+fi
+
+
+
+
+

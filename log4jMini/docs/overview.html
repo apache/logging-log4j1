@@ -1,0 +1,61 @@
+<html>
+<head>
+
+<title>Log4jME</title>
+</head>
+<body>
+
+<p>Log4jME, or log4j MicroEdition is based on nearly the same code as
+<a href="http://jakarta.apache.org/log4j">log4j</a>. However, as the
+name indicates the micro-edition is much smaller. It offers the same
+client interface such that code compiled for log4jME is 100%
+compatible with log4j standard edition. You can choose to upgrade to
+log4j standard edition at any time by replacing
+<code>log4jME.jar</code> with <code>log4j.jar</code> in your
+classpath.
+
+<p>The features of log4jME are
+
+<ul>
+
+<li><b>Same client interface</b>
+
+<p>The <code>org.apache.log4j.Category</code> shipped with log4jME has
+the same interface except support for <code>ResourceBundles</code>,
+custom category factories and object renderers.
+
+<p><li><b>Smaller org.apache.log4j.FileAppender</b>
+
+<p>Log4jME contains a modified
+<code>org.apache.log4jFileAppender</code> which supports logging to
+files and output streams including <code>Systemout</code> and
+<code>System.err</code>. 
+
+<p><li><b>Smaller org.apache.log4j.PatternLayout</b>
+
+<p>Log4jME contains a modified
+<code>org.apache.log4j.PatternLayout</code> which supports the a
+limited set of conversion characters namely,
+<code>%p</code>,
+<code>%t</code>, 
+<code>%r</code>, 
+<code>%c</code>, 
+<code>%m</code>, 
+<code>%n</code>
+as well as literals. In particular, the <code>%d</code> ans
+<code>%x</code> conversion characters are not supported.
+
+<p><li><b>Smaller org.apache.log4j.PropertyConfigurator</b>
+
+<p>Log4jME contains a modified
+<code>org.apache.log4j.PropertyConfigurator</code> which supports the
+same configuration syntax as the <code>PropertyConfigurator</code> in
+the standard edition except support for category factories and
+renderers.
+</ul>
+
+<p>The micro edition does nor offer the same number of appenders and
+layouts as in the standard edition. The <code>DOMConfigurator</code>
+is also not supported.
+
+</body> </html>
