@@ -335,7 +335,7 @@ public class SMTPAppender extends AppenderSkeleton {
    */
   public void setExpression(String expression) {
     
-    if (!(evaluator instanceof DefaultEvaluator)) {
+    if (evaluator instanceof DefaultEvaluator) {
       this.expression = expression;
       evaluator = new DefaultEvaluator(expression);
     }
