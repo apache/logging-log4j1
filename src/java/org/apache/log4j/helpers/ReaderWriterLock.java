@@ -60,6 +60,23 @@ import java.io.PrintWriter;
  * When both readers and writers wait to obtain the lock, priority is given to 
  * waiting writers.
  *
+ * This lock is not reentrant. It is possible for a writer in possession of a writer
+ * lock to fail to obtain a reader lock. The same goes for reader in possession of a 
+ * reader lock. It can fail to obtain a writer lock.
+ * 
+ * THIS LOCK IS NOT RENTRANT.
+ * 
+ * It is the developer's responsability to retstrict the use of this lock to small segments
+ * of code where reentrancy can be avoided.
+ * 
+ * Note that the RederWriterLock is only useful in cases where a resource:
+ * 
+ * 1) Has many frequent read operations performed on it
+ * 2) Only rarely is the resource modified (written)
+ * 3) Read operations are invoked by many different threads
+ * 
+ * If any of the above conditions are not met, it is better to avoid this fancy lock.
+ * 
  * @author Ceki G&uuml;lc&uuml;
  *
  */
