@@ -18,7 +18,7 @@ import  org.apache.log4j.helpers.LogLog;
 
    <p>First, it cannot be assigned a <code>null</code>
    priority. Second, since root category cannot have a parent, the
-   {@link #getChainedPriority} method always returns the value of the
+   {@link #getChainedLevel} method always returns the value of the
    level field without walking the hierarchy.
 
    @author Ceki G&uuml;lc&uuml;

@@ -609,14 +609,14 @@ public class Category implements AppenderAttachable {
   /**
      Like {@link #getInstance(String)} except that the type of category
      instantiated depends on the type returned by the {@link
-     CategoryFactory#makeNewCategoryInstance} method of the
+     LoggerFactory#makeNewLoggerInstance} method of the
      <code>factory</code> parameter.
      
      <p>This method is intended to be used by sub-classes.
      
      @param name The name of the category to retrieve.
 
-     @param factory A {@link CategoryFactory} implementation that will
+     @param factory A {@link LoggerFactory} implementation that will
      actually create a new Instance.
 
      @since 0.8.5 */

@@ -55,7 +55,7 @@ public class LoggingEvent implements java.io.Serializable {
   /** Level of logging event. Level cannot be serializable
       because it is a flyweight.  Due to its special seralization it
       cannot be declared final either. */
-  transient public Level level;
+  transient public Priority level;
 
   /** The nested diagnostic context (NDC) of logging event. */
   private String ndc;
@@ -119,11 +119,11 @@ public class LoggingEvent implements java.io.Serializable {
      @param message  The message of this event.
      @param throwable The throwable of this event.  */
   public LoggingEvent(String fqnOfCategoryClass, Category logger, 
-		      Level level, Object message, Throwable throwable) {
+		      Priority priority, Object message, Throwable throwable) {
     this.fqnOfCategoryClass = fqnOfCategoryClass;
     this.logger = logger;
     this.loggerName = logger.getName();
-    this.level = level;
+    this.level = priority;
     this.message = message;
     if(throwable != null) {
       this.throwableInfo = new ThrowableInformation(throwable);

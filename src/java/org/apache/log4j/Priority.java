@@ -138,7 +138,7 @@ public class Priority {
      Convert the string passed as argument to a priority. If the
      conversion fails, then this method returns {@link #DEBUG}. 
 
-     @deprecated Please use the {@link Level.toPLevel(String)} method instead.}
+     @deprecated Please use the {@link Level#toLevel(String)} method instead.}
    
 
   */

@@ -94,8 +94,8 @@ public class PropertyConfigurator extends BasicConfigurator
   static final String      APPENDER_PREFIX = "log4j.appender.";  
   static final String      RENDERER_PREFIX = "log4j.renderer.";
 
-  /** Key for specifying the {@link org.apache.log4j.spi.CategoryFactory
-      CategoryFactory}.  Currently set to 
+  /** Key for specifying the {@link org.apache.log4j.spi.LoggerFactory
+      LoggerFactory}.  Currently set to 
       "<code>log4j.categoryFactory</code>".  */
   public static final String CATEGORY_FACTORY_KEY = "log4j.categoryFactory";
 
@@ -443,7 +443,7 @@ public class PropertyConfigurator extends BasicConfigurator
 
   /**
      Check the provided <code>Properties</code> object for a
-     {@link org.apache.log4j.spi.CategoryFactory CategoryFactory}
+     {@link org.apache.log4j.spi.LoggerFactory LoggerFactory}
      entry specified by {@link #CATEGORY_FACTORY_KEY}.  If such an entry
      exists, an attempt is made to create an instance using the default
      constructor.  This instance is used for subsequent Category creations
