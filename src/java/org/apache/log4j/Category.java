@@ -594,28 +594,14 @@ public class Category implements AppenderAttachable {
   }
 
   /**
-   * Retrieve a category with named as the <code>name</code> parameter. If the
-   * named category already exists, then the existing instance will be
-   * reutrned. Otherwise, a new instance is created. By default, categories
-   * do not have a set level but inherit it from the hierarchy. This is one
-   * of the central features of log4j. 
-   *
-   * @param name The name of the category to retrieve.
-   * @deprecated Please use the {@link LogManager#getLogger(String)} method 
-   * instead.
+   * @deprecated Please use the {@link Logger#getLogger(String)} method instead.
    */
   public static Category getInstance(String name) {
     return LogManager.getLogger(name);
   }
 
   /**
-   * Shorthand for <code>getInstance(clazz.getName())</code>.
-   *
-   * @param clazz The name of <code>clazz</code> will be used as the name of
-   *        the category to retrieve.  See {@link #getInstance(String)} for
-   *        more detailed information.
-   * @deprecated Please use {@link LogManager#getLogger(Class)} instead.
-   * @since 1.0
+   * @deprecated Please use {@link Logger#getLogger(Class)} instead.
    */
   public static Category getInstance(Class clazz) {
     return LogManager.getLogger(clazz);
@@ -659,18 +645,7 @@ public class Category implements AppenderAttachable {
   }
 
   /**
-   * Return the root of the default category hierrachy.
-   *
-   * <p>
-   * The root category is always instantiated and available. It's name is
-   * "root".
-   * </p>
-   *
-   * <p>
-   * Nevertheless, calling {@link #getInstance Category.getInstance("root")}
-   * does not retrieve the root category but a category just under root named
-   * "root". 
-   * @deprecated Use {@link Logger#getRootLogger()} instead.
+   * @deprecated Please use the {@link Logger#getRootLogger()} method instead.
    * </p>
    */
   public static final Category getRoot() {

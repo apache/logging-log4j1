@@ -28,31 +28,60 @@ import org.apache.log4j.spi.LoggerFactory;
   @author Ceki G&uuml;lc&uuml; 
 */
 public class Logger extends Category {
-    /**
-     * Constructor.
-     *
-     * @param name The logger instance name
-     */
-    protected Logger(String name) {
-	super(name);
-    }
 
   /**
-     Retrieve a logger by name.
+   * This constructor creates a new <code>Logger</code> instance and sets
+   * its name.
+   *
+   * <p>
+   * It is intended to be used by sub-classes only. You should not create
+   * loggers directly.
+   * </p>
+   *
+   * @param name The name of the logger.
+   */
+    protected Logger(String name) {
+      super(name);
+    }
+
+
+
+  /**
+    * Retrieve a logger by name. If the named logger already exists, then the 
+    * existing instance will be reutrned. Otherwise, a new instance is created. 
+    * 
+    * <p>By default, loggers do not have a set level but inherit it from their 
+    * ancestors. This is one of the central features of log4j.
+    * </p>
+    * 
+    * @param name The name of the logger to retrieve.
   */
   public static Logger getLogger(String name) {
     return LogManager.getLogger(name);
   }
 
   /**
-     Same as calling <code>getLogger(clazz.getName())</code>.
+   * Shorthand for <code>{@link #getLogger(Class) getLogger(clazz.getName())}</code>.
+   *
+   * @param clazz The name of <code>clazz</code> will be used as the name of
+   *        the logger to retrieve.  See {@link #getLogger(String)} for
+   *        more detailed information.
    */
   public static Logger getLogger(Class clazz) {
     return LogManager.getLogger(clazz.getName());
   }
 
   /**
-     Retrieve the root logger.
+   * Return the root of logger for the current hierarchy.
+   *
+   * <p>The root logger is always instantiated and available. It's name is
+   * "root".
+   * </p>
+   *
+   * <p>Nevertheless, note that calling <code>Logger.getLogger("root")</code>
+   * does not retrieve the root logger but a logger just under root named
+   * "root".
+   * </p>
    */
   public static Logger getRootLogger() {
     return LogManager.getRootLogger();
