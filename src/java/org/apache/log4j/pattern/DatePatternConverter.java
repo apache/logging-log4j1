@@ -25,6 +25,8 @@ import java.text.FieldPosition;
 import java.text.SimpleDateFormat;
 
 import java.util.Date;
+import java.util.TimeZone;
+import java.util.List;
 
 
 /**
@@ -86,6 +88,22 @@ public class DatePatternConverter extends PatternConverter {
     }
   }
 
+  /**
+   * Sets the date format and timezone.
+   * @param options list of options, may be null.
+   */
+  public void setOptions(List options) {
+     if (options == null || options.size() == 0) {
+         setOption(null);
+     } else {
+         setOption((String) options.get(0));
+         if (options.size() > 1) {
+             TimeZone tz = TimeZone.getTimeZone((String) options.get(1));
+             df.setTimeZone(tz);
+         }
+    }
+  }
+  
   public StringBuffer convert(LoggingEvent event) {
     buf.setLength(0);
 
