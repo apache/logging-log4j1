@@ -16,6 +16,7 @@
 
 package org.apache.log4j;
 
+import org.apache.log4j.spi.Component;
 import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.spi.LoggerRepository;
@@ -28,7 +29,7 @@ import org.apache.log4j.spi.LoggingEvent;
  *
  * @author Ceki G&uuml;lc&uuml;
  */
-public interface Appender {
+public interface Appender extends Component {
   /**
    * Add a filter to the end of the filter list.
    *
@@ -114,15 +115,7 @@ public interface Appender {
   public void setName(String name);
   
 
-  /** 
-   * Set the LoggerRepository this appender is attached to. This operation can
-   * only be performed once. Once set, the repository cannot be changed.
-   *   
-   * @param repository The repository where this appender is attached.
-   * @throws IllegalStateException If you try to change the repository after it
-   * has been set.
-   * @since 1.3
-   **/
+
   public void setLoggerRepository(LoggerRepository repository) throws IllegalStateException;
   
 }
