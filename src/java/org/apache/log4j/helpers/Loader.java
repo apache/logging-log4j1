@@ -28,7 +28,7 @@ public class Loader  {
 
      <ol>
 
-     <p><li>Search for <code>resource</code> with same the class
+     <p><li>Search for <code>resource</code> using the same class
      loader that loaded <code>clazz</code>.
 
      <p><li>Try one last time with

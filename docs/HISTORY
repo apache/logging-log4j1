@@ -5,18 +5,19 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
 
- June ??, 2001
+ June 7, 2001
 
  - Release of version 1.1.2
 
  - Corrected a problem with the static initializer of the Category
    class which would use the wrong class loader to search for the
-   log4j.properties file.  The search algorithm has been also
-   simplified. The preferred method to specify the automatic
-   configuration file is setting the log4j.configration system
-   property. [*]
+   default configuration file.  The associated search algorithm has
+   been also simplified. Nevertheless, the preferred method to specify
+   the automatic configuration file is by setting the
+   log4j.configuration system property. [*]
 
- - Documentation improvements. [*]
+ - Documentation improvements. Added a new section to the manual
+   explaining the default initialization procedure [*]
  
  - Enhancements to the org.apache.log4j.examples.appserver package. [*]
 
@@ -52,8 +53,8 @@
  - The configureAndWatch methods in Configurators did not close the
    configuration file, preventing its editing. See bug 1686. [*]
 
- - In DOMConfigurator.setParameter special charater conversion now
-   preceeds variable substitution. This change was suggested by Steven
+ - In DOMConfigurator.setParameter special character conversion now
+   precedes variable substitution. This change was suggested by Steven
    Velez. The vast majority of users should be oblivious to it. [*]
 
  - The TextPaneAppender is no longer maintained and has been
@@ -68,7 +69,7 @@
 
  - Aaron Greenhouse from Carnegie Mellon SCS found a series of
    multi-threading related bugs in Category and AsyncAppender. See bug
-   ids 1505 and 1507 in our bug database for examplary bug
+   ids 1505 and 1507 in our bug database for exemplary bug
    reports. They are worth the detour. [*]
  
  - InvalidJarIndexException is only available in JDK 1.3.  Referring

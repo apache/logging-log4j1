@@ -10,7 +10,7 @@
 
   "Ceki G&uuml;lc&uuml;" 
 
-  December 2000 <br><br>
+  June 2001 <br><br>
 </center>
 
 <hr>
@@ -39,7 +39,7 @@ href="http://www.semper.org">SEMPER</a> project decided to write its
 own tracing API. This was in early 1996. After countless enhancements,
 several incarnations and much work that API has evolved to become
 log4j, a popular logging package for Java. The package is distributed
-under the <a href=../LICENSE.APL>Apache Public License</a>, a
+under the <a href=../LICENSE.APL>Apache Software License</a>, a
 fully-fledged open source license certified by the <a
 href="http://www.opensource.org">open source</a> initiative. The
 latest log4j version, including full-source code, class files and
@@ -742,19 +742,17 @@ control of a web-server.
 
 <ol>
 
- <li>Skip default initialization if the
- <b>log4j.defaultInitOverride</b> system property is set to any value
- other than "false".
+ <li>Skip default initialization if the system property
+ <b>log4j.defaultInitOverride</b> is set to any value other than
+ "false".
 
  <p><li>Set the <code>resource</code> string variable to the value of
  the <b>log4j.configuration</b> system property.  <em>The preferred
  way to specify the default initialization file is thourough the
  <b>log4j.configuration</b> system property.</em> In case the system
- property is not defined, then set <code>resource</code> to the
- default value "log4j.properties".
-
-
- 
+ property <b>log4j.configuration</b> is not defined, then set the
+ string variable <code>resource</code> to its default value
+ "log4j.properties".
 
  <p><li>Attempt to convert the <code>resource</code> variable to a
  URL.
@@ -764,8 +762,7 @@ control of a web-server.
  the <code>resource</code> from the classpath by calling
  <code>org.apache.log4j.helpers.Loader.getResource(resource,
  Category.class)</code> which returns a URL.  Note that the string
- "log4j.properties" constitutes a malformed URL and falls into this
- case.
+ "log4j.properties" constitutes a malformed URL.
 
  <p>See <a
  href="api/org/apache/log4j/helpers/Loader.html#getResource(java.lang.String, java.lang.Class)">Loader.getResource(java.lang.String, java.lang.Class)</a>
@@ -795,9 +792,137 @@ control of a web-server.
      extension, then the <a
      href="api/org/apache/log4j/xml/DOMConfigurator.html">DOMConfigurator</a>
      will be used to parse the URL.
-
-
 </ol>
+
+<h2>Default Initialization under Tomcat</h2>
+
+<p>The default log4j initialization is particularly useful in
+web-server environments. Under Tomcat 3.x and 4.x, you should place
+the <code>log4j.properties</code> under the
+<code>WEB-INF/classes</code> directory of your web-applications. Log4j
+will find the properties file and initialize itself.
+
+<p>You can also choose to set the system property
+<b>log4j.configuration</b> before starting Tomcat. For Tomcat 3.x The
+<code>TOMCAT_OPTS</code> environment variable is used to set command
+line options. For Tomcat 4.0, set the <code>CATALINA_OPTS</code>
+environment variable instead of <code>TOMCAT_OPTS</code>.
+
+<p><b>Example 1</b>
+
+<p>The Unix shell command
+<pre>
+   export TOMCAT_OPTS="-Dlog4j.configuration=foobar.txt"
+</pre>
+
+tells log4j to use the file <code>foobar.txt</code> as the default
+configuration file. This file should be place under the
+<code>WEB-INF/classes</code> directory of your web-application. The
+file will be read using the <a
+href="api/org/apache/log4j/xml/PropertyConfigurator.html">PropertyConfigurator</a>. Each
+web-application will use a different default configuration file because
+each file is relative to a web-application.
+
+
+<p><b>Example 2</b>
+
+<p>The Unix shell command
+<pre>
+   export TOMCAT_OPTS="-Dlog4j.debug -Dlog4j.configuration=foobar.xml"
+</pre>
+
+tells log4j to output log4j-internal debugging information and to use
+the file <code>foobar.xml</code> as the default configuration
+file. This file should be place under the <code>WEB-INF/classes</code>
+directory of your web-application. Since the file ends with a
+<code>.xml</code> extension, it will read using the <a
+href="api/org/apache/log4j/xml/DOMConfigurator.html">DOMConfigurator</a>. Each
+web-application will use a different default configuration file because
+each file is relative to a web-application.
+
+<p><b>Example 3</b>
+
+<p>The Windows shell command
+<pre>
+   set TOMCAT_OPTS=-Dlog4j.configuration=foobar.lcf#com.foo.BarConfigurator
+</pre>
+
+tells log4j to use the file <code>foobar.lcf</code> as the default
+configuration file. This file should be place under the
+<code>WEB-INF/classes</code> directory of your web-application. Due to
+the extra reference part, the file will be read using the
+<code>com.foo.BarConfigurator</code> custom configurator.  Each
+web-application will use a different default configuration file because
+each file is relative to a web-application.
+
+
+<p><b>Example 4</b>
+
+<p>The Windows shell command
+<pre>
+   set TOMCAT_OPTS=-Dlog4j.configuration=file:/c:/foobar.lcf</pre>
+
+tells log4j to use the file <code>c:\foobar.xml</code> as the default
+configuration file. The configuration file is fully specified by the
+URL <code>file:/c:/foobar.lcf</code>. Thus, the same configuration
+file will be used for all web-applications -- in other words, disaster
+waiting to happen.
+
+
+<p><b>Initialization servlet</b>
+
+<p>It is also possible to use a special servlet for log4j
+initialization. Here is an example,
+
+<pre>
+package com.foo;
+
+import org.apache.log4j.PropertyConfigurator;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
+import java.io.IOException;
+
+public class Log4jInit extends HttpServlet {
+  
+  public
+  void <b>init()</b> { 
+    String prefix =  getServletContext().getRealPath("/");
+    String file = getInitParameter("log4j-init-file");
+    // if the log4j-init-file is not set, then no point in trying
+    if(file != null) {
+      PropertyConfigurator.configure(prefix+file);
+    }
+  }
+
+  public
+  void doGet(HttpServletRequest req, HttpServletResponse res) {
+  }
+}
+</pre>
+
+Define the following servlet in the web.xml file for your web-application.
+
+<pre>
+  &lt;servlet&gt;
+    &lt;servlet-name&gt;log4j-init&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;com.foo.Log4jInit&lt;/servlet-class&gt;
+
+    &lt;init-param&gt;
+      &lt;param-name&gt;log4j-init-file&lt;/param-name&gt;
+      &lt;param-value&gt;WEB-INF/classes/log4j.lcf&lt;/param-value&gt;
+    &lt;/init-param&gt;
+
+    <b>&lt;load-on-startup&gt;1&lt;/load-on-startup&gt;</b>
+  &lt;/servlet&gt;
+</pre>
+
+<p>Writing an initialization servlet is the most flexible way for
+initializing log4j. There are no constraints on the code you can place
+in the <code>init()</code> method of the servlet.
+
+
 
 <h2> Nested Diagnostic Contexts</h2>
 
@@ -1000,7 +1125,7 @@ features that are missing in JSR47. For example, log4j supports
 appender inheritance, JSR47 doesn't. In log4j categories can be
 initialized in any order, in JSR47 parents must be initialized before
 children. See also the <a
-href="http://www.qos.ch/ac2001/F11-200.html">slide</a> fromn my <a
+href="http://www.qos.ch/ac2001/F11-200.html">slides</a> from my <a
 href="http://apachecon.com/2001/US/">ApacheCon 2001</a> presentation
 on precisely this subject.
 
