@@ -52,7 +52,7 @@ import java.util.Hashtable;
    <p>The <code>PropertyConfigurator</code> does not handle the
    advanced configuration features supported by the {@link
    org.apache.log4j.xml.DOMConfigurator DOMConfigurator} such as
-   support for @link org.apache.log4j.spi.Filter Filters}, custom
+   support for {@link org.apache.log4j.spi.Filter Filters}, custom
    {@link org.apache.log4j.spi.ErrorHandler ErrorHandlers}, nested
    appenders such as the {@link org.apache.log4j.AsyncAppender
    AsyncAppender}, etc.
@@ -436,7 +436,7 @@ public class PropertyConfigurator extends BasicConfigurator
   // Internal stuff
   // --------------------------------------------------------------------------
 
-  void configureCategoryFactory(Properties props) {
+  protected void configureCategoryFactory(Properties props) {
     String factoryClassName = OptionConverter.findAndSubst(CATEGORY_FACTORY_KEY,
 							   props);    
     if(factoryClassName != null) {
