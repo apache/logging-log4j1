@@ -75,11 +75,10 @@ public class TTCCLayout extends DateLayout {
 
   /**
      Instantiate a TTCCLayout object with {@link
-     RelativeTimeDateFormat} as the date formatter in the local time
-     zone.
+     org.apache.log4j.helpers.RelativeTimeDateFormat} as the date
+     formatter in the local time zone.
 
-     @since 0.7.5
-  */
+     @since 0.7.5 */
   public TTCCLayout() {
     this.setDateFormat(RELATIVE_TIME_DATE_FORMAT, null);
   }
