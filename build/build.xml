@@ -90,6 +90,7 @@
     <tstamp />
     <property name="java.source.dir" value="." />
     <property name="javac.dest" value="classes" />
+    <property name="jar.dest" value="lib" />
     <property name="docs" value="docs" />
     <property name="javadoc.dest" value="${docs}/api" />
     <property name="stem" value="${java.source.dir}/org/apache/log4j" />
@@ -174,8 +175,9 @@
 
   <!-- Create log4j-core.jar, exluding non-core files -->
   <target name="log4j-core.jar" depends="build">
-    <delete file="log4j-core.jar"/>
-    <jar jarfile="log4j-core.jar" basedir="${javac.dest}"
+    <mkdir dir="${jar.dest}"/>
+    <delete file="${jar.dest}/log4j-core.jar"/>
+    <jar jarfile="${jar.dest}/log4j-core.jar" basedir="${javac.dest}"
 	 includes="**/log4j/*.class, **/log4j/helpers/*.class,
                   **/log4j/spi/*.class, **/log4j/or/*.class"
 	 excludes="**/StressCategory*, **/TTCC*, **/SimpleLayout.*, 
@@ -193,8 +195,9 @@
   <!-- Create log4j.jar, excluding tests and other odds and
        ends. -->
   <target name="log4j.jar" depends="build">
-    <delete file="log4j.jar"/>
-    <jar jarfile="log4j.jar" basedir="${javac.dest}"
+    <mkdir dir="${jar.dest}"/>
+    <delete file="${jar.dest}/log4j.jar"/>
+    <jar jarfile="${jar.dest}/log4j.jar" basedir="${javac.dest}"
 	includes="**/log4j/*.class, ${stem}/xml/log4j.dtd, 
 	          **/log4j/helpers/*.class, icons/**,
 		  **/log4j/spi/*.class,  **/log4j/net/*.class,
@@ -207,10 +210,12 @@
     />
   </target>
 
+
+  <!-- ================================================================= -->
+  <!-- This target builds the javadoc files.                             -->
+  <!-- ================================================================= -->
   <target name="javadoc" depends="init">
 
-
-  
     <mkdir dir="${javadoc.dest}" />
 
     <copy todir="${stem}/examples/doc-files/" >
@@ -221,7 +226,6 @@
 	    NumberCruncherClient.java, NumberCruncherServer.java, sort1.lcf,
 	    NumberCruncher.java,  factor.lcf, sort4.lcf"/>
     </copy>
-
 
     <copy todir="${stem}/xml/examples/doc-files/" >
       <fileset dir="${stem}/xml/examples/" 
@@ -263,5 +267,37 @@
                  packageListLoc="packaging"/>
     </javadoc>		
   </target>
+
+  <target name="log4j.tar" depends="jar" >
+
+  <delete>
+    <fileset dir="." 
+             includes="**/*.bak, {$stem}/**/temp*, 
+	     ${stem}/performance/test, {$stem}test/current.*
+	     {$stem}/examples/test,
+	     {$stem}/test/logging.*,
+	     {$stem}/test/log4j.properties,
+	     {$stem}/test/socket.lcf,
+	     {$stem}/test/file,
+	     {$stem}/test/output.*,
+	     {$stem}/nt/EventLogCategories.dbg,
+	     {$stem}/nt/EventLogCategories.h,
+	     {$stem}/nt/EventLogCategories.rc,
+	     {$stem}/nt/EventLogCategories.RES,
+	     {$stem}/nt/MSG00001.bin,
+	     {$stem}/nt/NTEventLogAppender.lib,
+	     {$stem}/nt/NTEventLogAppender.exp,
+	     {$stem}/nt/vc50.idb,
+	     {$stem}/net/test/loop.log,
+	     {$stem}/net/test/loop.log.1"/>
+   </delete>
+    <tar tarfile="../jakarta-log4j-${version}.tar" basedir="."
+         includes="make/**, xdocs/**, docs/**, Makefile, build/**
+                  manifest.mf, INSTALL, LICENSE.APL, ${jar.dest}/**, 
+		  org/**,  icons/**, ${javac.dest}/**" 
+         excludes="make/make.loc, **/*.bak"
+    />
+  </target>
+
 </project>
 
