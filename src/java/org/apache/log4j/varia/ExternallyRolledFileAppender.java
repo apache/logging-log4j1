@@ -20,9 +20,8 @@ import org.apache.log4j.helpers.LogLog;
    an acknowledgement message is sent back to the process initiating
    the roll over.
 
-   <p>Compared to the the {@link ResilientFileAppender}, this method
-   of triggering roll over has the advantage of being operating system
-   independent, fast and reliable.
+   <p>This method of triggering roll over has the advantage of being
+   operating system independent, fast and reliable.
    
    <p>A simple application {@link Roller} is provided to initiate the
    roll over.

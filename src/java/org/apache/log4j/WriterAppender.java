@@ -163,10 +163,8 @@ public class WriterAppender extends AppenderSkeleton {
 
 
   /**
-     Will close the stream opened by a previos {@link #setFile}
-     call. If the writer is owned by the user it remains untouched.
+     Will close this appender. The underlying stream or writer is not closed.
 
-     @see #setFile
      @see #setWriter
      @since 0.8.4
   */
@@ -180,6 +178,21 @@ public class WriterAppender extends AppenderSkeleton {
     reset();
   }
 
+  /**
+     Close the underlying {@link java.io.Writer}.
+  */
+  protected 
+  void closeWriter() {
+    if(qw != null) {
+      try {
+	qw.close();
+      } catch(IOException e) {
+	LogLog.error("Could not close " + qw, e); // do need to invoke an error handler
+	                                          // at  this late stage
+      }
+    }
+  }
+
   public
   String getOption(String key) {
     if (key.equalsIgnoreCase(IMMEDIATE_FLUSH_OPTION)) {
@@ -191,9 +204,8 @@ public class WriterAppender extends AppenderSkeleton {
 
 
   /**
-     Retuns the option names for this component, namely the string
-     array {{@link #FILE_OPTION}, {@link #APPEND_OPTION}} in addition
-     to the options of its super class {@link AppenderSkeleton}.  */
+     Retuns the option names for this component.
+  */
   public
   String[] getOptionStrings() {
     return OptionConverter.concatanateArrays(super.getOptionStrings(),
@@ -222,8 +234,22 @@ public class WriterAppender extends AppenderSkeleton {
   /**
      Set WriterAppender specific options.
           
-     The <b>ImmediateFlush</b> option is recognized on top of options
-     for the super class {@link AppenderSkeleton}.
+     <p><b>ImmediateFlush</b> If this option is set to
+     <code>true</code>, the appender will flush at the end of each
+     write. This is the default behaviour. If the option is set to
+     <code>false</code>, then the underlying stream can defer writing
+     to physical medium to a later time. 
+
+     <p>Avoiding the flush operation at the end of each append results in
+     a performance gain of 10 to 20 percent. However, there is safety
+     tradeoff invloved in skipping flushing. Indeed, when flushing is
+     skipped, then it is likely that the last few log events will not
+     be recorded on disk when the application exits. This is a high
+     price to pay even for a 20% performance gain.
+
+     <b>See</b> Options of the super class {@link
+     org.apache.log4j.AppenderSkeleton}, in particular the
+     <b>Threshold</b> option.
   */
   public
   void setOption(String key, String value) {
@@ -240,19 +266,14 @@ public class WriterAppender extends AppenderSkeleton {
     <p>Sets the Writer where the log output will go. The
     specified Writer must be opened by the user and be
     writable.
+    
+    <p>The <code>java.io.Writer</code> will be closed when the
+    appender instance is closed.
 
-
-    <p>If there was already an opened stream opened through the {@link
-    #setFile setFile} method, then the previous stream is closed
-    first. If the stream was opened by the user and passed to this
-    method, then the previous stream remains untouched. It is the
-    user's responsability to close it.
-
+    
     <p><b>WARNING:</b> Logging to an unopened Writer will fail.
     <p>  
-    @param Writer An already opened Writer.
-    @return Writer The previously attached Writer.
-  */
+    @param Writer An already opened Writer.  */
   public
   synchronized
   void setWriter(Writer writer) {
@@ -309,9 +330,10 @@ public class WriterAppender extends AppenderSkeleton {
      behaviour.  */
   protected
   void reset() {
-     this.qw = null;
-     this.tp = null;    
-  }  
+    closeWriter();
+    this.qw = null;
+    this.tp = null;    
+  }
 
   protected
   void writeFooter() {

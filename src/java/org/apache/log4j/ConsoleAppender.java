@@ -60,9 +60,22 @@ public class ConsoleAppender extends WriterAppender {
   }
 
   /**
+     Override the parent method to do nothing.
+   */
+  protected
+  final 
+  void closeWriter() {
+  }
+
+  /**
      Retuns the option names for this component, namely the string
      array {{@link #TARGET_OPTION} and the options of its super class
-     {@link WriterAppender}.  */
+     {@link WriterAppender}.  
+
+      <b>See</b> Options of the super classes {@link WriterAppender} and
+      {@link AppenderSkeleton}. In particular the <b>Threshold</b>
+      option. 
+  */
   public
   String[] getOptionStrings() {
     return OptionConverter.concatanateArrays(super.getOptionStrings(),

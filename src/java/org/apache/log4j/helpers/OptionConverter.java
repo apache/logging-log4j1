@@ -78,15 +78,15 @@ public class OptionConverter {
 
 
   /**
-     Very similar to {@link System#getProperty(String, String)} except
+     Very similar to <code>System.getProperty</code> except
      that the {@link SecurityException} is hidden.
 
      @param key The key to search for.
      @param def The default value to return.
-     @return 
+     @return the string value of the system property, or the default
+     value if there is no property with that key.
 
-     @since 1.1
-  */
+     @since 1.1 */
   public
   static
   String getSystemProperty(String key, String def) {
