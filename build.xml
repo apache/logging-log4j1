@@ -436,7 +436,7 @@
                 ${stem}/spi/*.class,
                 ${stem}/net/*.class,
                 ${stem}/jdbc/*.class,
-                ${stem}/db/*.class,
+				${stem}/db/**/*.class,
                 ${stem}/varia/*.class,
                 ${stem}/nt/*.class,
                 ${stem}/rolling/**/*.class,
