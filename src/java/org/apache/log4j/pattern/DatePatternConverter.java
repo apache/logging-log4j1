@@ -82,9 +82,11 @@ public class DatePatternConverter extends PatternConverter {
       pattern = patternOption;
     }
 
+    int maximumCacheValidity = 1000;
     SimpleDateFormat simpleFormat = null;
     try {
       simpleFormat = new SimpleDateFormat(pattern);
+      maximumCacheValidity = CachedDateFormat.getMaximumCacheValidity(pattern);
     } catch (IllegalArgumentException e) {
       logger.warn(
         "Could not instantiate SimpleDateFormat with pattern " + patternOption, e);
@@ -99,7 +101,7 @@ public class DatePatternConverter extends PatternConverter {
       simpleFormat.setTimeZone(tz);
     }
 
-    df = new CachedDateFormat(simpleFormat, 1000);
+    df = new CachedDateFormat(simpleFormat, maximumCacheValidity);
   }
   
   public StringBuffer convert(LoggingEvent event) {

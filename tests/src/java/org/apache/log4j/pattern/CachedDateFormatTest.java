@@ -102,7 +102,6 @@ public final class CachedDateFormatTest
   /**
    *  Check for interaction between caches.
    */
-
   public void test2() {
       Date jul2 = new Date(12602L * 86400000L);
       DateFormat gmtFormat = new CachedDateFormat(createAbsoluteTimeDateFormat(GMT), 1000);
@@ -360,6 +359,31 @@ public final class CachedDateFormatTest
      int millisecondStart = CachedDateFormat.findMillisecondStart(ticks, formatted, df);
      assertEquals(CachedDateFormat.UNRECOGNIZED_MILLISECONDS, millisecondStart);     
   }
+
+
+  /**
+   * Check caching when multiple SSS appear in pattern
+   */
+  public void test17() {
+      Date jul2 = new Date(12602L * 86400000L);
+      String badPattern = "HH:mm:ss,SSS HH:mm:ss,SSS";
+      SimpleDateFormat simpleFormat = new SimpleDateFormat(badPattern);
+      simpleFormat.setTimeZone(GMT);
+      DateFormat cachedFormat = new CachedDateFormat(simpleFormat, 1000);
+      String s = cachedFormat.format(jul2);
+      assertEquals("00:00:00,000 00:00:00,000", s);
+      jul2.setTime(jul2.getTime() + 120);
+      assertEquals("00:00:00,120 00:00:00,120", simpleFormat.format(jul2));
+      s = cachedFormat.format(jul2);
+      //
+      //  TODO: why is this returning ,120 ... , 120
+      //
+      //assertEquals("00:00:00,120 00:00:00,000", s) ;
+      
+      int maxValid = CachedDateFormat.getMaximumCacheValidity(badPattern);
+      assertEquals(1, maxValid);
+  }
+
   
   public static Test xsuite() {
     TestSuite suite = new TestSuite();
