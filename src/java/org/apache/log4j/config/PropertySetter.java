@@ -98,7 +98,7 @@ public class PropertySetter {
   void setProperties(Properties properties, String prefix) {
     int len = prefix.length();
     
-    for (Enumeration e = properties.keys(); e.hasMoreElements(); ) {
+    for (Enumeration e = properties.propertyNames(); e.hasMoreElements(); ) {
       String key = (String) e.nextElement();
       
       // handle only properties that start with the desired frefix.
