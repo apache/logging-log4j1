@@ -123,6 +123,15 @@
     </junit>
   </target>
 
+  <target name="PatternLayout" depends="build">
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="false"/>
+      <test name="org.apache.log4j.PatternLayoutTestCase" />
+    </junit>
+  </target>
+
+
   <target name="DOM" depends="build">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
@@ -188,6 +197,5 @@
       <test name="org.apache.log4j.or.ORTestCase" />
     </junit>
   </target>
-
 </project>
 
