@@ -246,28 +246,6 @@
 
     <mkdir dir="${javadoc.dest}" />
 
-    <copy todir="${BSTEM}/examples/doc-files/">
-      <fileset dir="${BSTEM}/examples/" 
-         includes="Sort.java, SortAlgo.java, Trivial.java, MyCategory.java,
-            MyCategoryFactory.java, mycat.good, mycat.bad, factor.html,
-	    MyPatternLayout.java, MyPatternParser.java, sort2.lcf, sort3.lcf,
-	    NumberCruncherClient.java, NumberCruncherServer.java, sort1.lcf,
-	    NumberCruncher.java,  factor.lcf, sort4.lcf"/>
-    </copy>
-
-    <copy todir="${BSTEM}/xml/examples/doc-files/" >
-      <fileset dir="${BSTEM}/xml/examples/" 
-         includes="XMLSample.java, XCategory.java, XTest.java"/>
-    </copy>
-
-    <copy todir="${BSTEM}/xml/doc-files/"  >
-      <fileset dir="${BSTEM}/xml/" includes="log4j.dtd"/>
-      <fileset dir="${BSTEM}/xml/test/" includes="*.xml"/>
-      <fileset dir="${BSTEM}/xml/examples/" 
-         includes="sample*.xml, extension?.xml"/>
-    </copy>
-
-
     <javadoc sourcepath="${java.source.dir}" 
            destdir="${javadoc.dest}" 
 	   packagenames="org.apache.log4j,

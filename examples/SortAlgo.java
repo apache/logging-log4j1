@@ -50,12 +50,12 @@ public class SortAlgo {
 
   void dump() {    
     if(! (this.intArray instanceof int[])) {
-      DUMP.error( "Tried to dump an uninitialized array.");
+      DUMP.error("Tried to dump an uninitialized array.");
       return;
     }
-    DUMP.info( "Dump of integer array:");
+    DUMP.info("Dump of integer array:");
     for(int i = 0; i < this.intArray.length; i++) {
-      DUMP.info( "Element [" + i + "]=" + this.intArray[i]);
+      DUMP.info("Element [" + i + "]=" + this.intArray[i]);
     }    
   }
 

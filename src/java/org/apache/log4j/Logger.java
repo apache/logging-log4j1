@@ -52,7 +52,6 @@ public class Logger extends Category {
     return LogManager.getLogger(name);
   }
 
-
   /**
      Same as calling {@link LogManager#getLogger(Class)}.
    */
@@ -61,6 +60,7 @@ public class Logger extends Category {
   Logger getLogger(Class clazz) {
     return LogManager.getLogger(clazz.getName());
   }
+
 
   /**
      Same as calling {@link LogManager#getRootLogger()}.     
