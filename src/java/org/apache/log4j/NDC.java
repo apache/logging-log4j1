@@ -10,6 +10,7 @@ import java.util.Stack;
 import java.util.Enumeration;
 import java.util.Vector;
 
+import org.apache.log4j.helpers.LogLog;
 
 /**
    The NDC class implements <i>nested diagnostic contexts</i> as
