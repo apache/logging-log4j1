@@ -38,7 +38,7 @@
 
   <!-- Icons source directory. -->
   <property name="icons.source" value="icons"/>
-
+  
   <!-- The stem where most log4j source code is located. -->
   <property name="stem" value="org/apache/log4j"/>
 
@@ -78,24 +78,13 @@
     <echo message="JUnit is present."/>
   </target>
 
-  <target name="xercesCheck">
-    <available classname="org.apache.xerces.parsers.DOMParser" 
-                          property="xerces-present"/>
-    <available classname="org.apache.xerces.parsers.DOMParser" 
-               property="jaxp-present"/>
+  <target name="jaxpCheck">
+    <available classname="javax.xml.parsers.DocumentBuilderFactory" 
+                          property="jaxp-present"/>
   </target>   
-  <target name="xerces" depends="xercesCheck" if="xerces-present">
-    <echo message="Xerces is present."/>
-  </target>
 
-  <target name="sunParserCheck">
-    <available classname="com.sun.xml.parser.DocumentBuilderFactoryImpl" 
-                          property="sunParser-present"/>
-    <available classname="com.sun.xml.parser.DocumentBuilderFactoryImpl" 
-               property="jaxp-present"/>
-  </target>   
-  <target name="sunParser" depends="sunParserCheck" if="sunParser-present">
-    <echo message="Sun JAXP parser is present."/>
+  <target name="jaxp" depends="jaxpCheck" if="jaxp-present">
+    <echo message="JAXP present."/>
   </target>
 
 
@@ -160,7 +149,7 @@
 	   classpath="${classpath}"/>
   </target>
 
- <target name="build.xml" depends="init, xerces, sunParser" if="jaxp-present">
+ <target name="build.xml" depends="init, jaxp" if="jaxp-present">
     <javac srcdir="${java.source.dir}"
 	   destdir="${javac.dest}"
 	   includes="${stem}/xml/**/*.java"
