@@ -14,6 +14,14 @@
  - In the Category class, the .getChainedPriority method has been
    replaced with getEffectiveLevel method. [*]
 
+ - Added the org.apache.log4j.jdbc.JDBCAppender which as the name
+   indicates sends events to a database using the JDBC API. Thanks to
+   Kevin Steppe for supplying the code. [*]
+
+ - Added SocketHubAppender class as contributed by Mark Womack. This
+   appender sends LoggingEvent objects to a set of remote a log
+   servers. [*]
+
  (beta4)
 
   - Replaced the custom class loading based on the thread context class

@@ -1,10 +1,9 @@
 /*
  * Copyright (C) The Apache Software Foundation. All rights reserved.
  *
- * This software is published under the terms of the Apache Software License
- * version 1.1, a copy of which has been included  with this distribution in
- * the LICENSE file.
- */
+ * This software is published under the terms of the Apache Software
+ * License version 1.1, a copy of which has been included with this
+ * distribution in the LICENSE.txt file.  */
 
 package org.apache.log4j.net;
 
@@ -22,59 +21,63 @@ import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.AppenderSkeleton;
 
 /**
-  Sends {@link LoggingEvent} objects to a set remote a log servers,
-  usually a {@link SocketNode}.
+  Sends {@link LoggingEvent} objects to a set of remote log servers,
+  usually a {@link SocketNode SocketNodes}.
     
-  Acts just like {@link SocketAppender} except that instead of
-  connecting to a given remote log server, SocketHubAppender
-  accepts connections from the remote log servers as clients.  It
-  can accept more than one connection, and when a log event is
-  handled, the event is sent to the set of currently connected 
-  remote log servers. Implemented this way it does not require any
-  update to the configuration file to send data to another remote
-  log server. The remote log server simple connects to the host and
-  port the SocketHubAppender is running on.
+  <p>Acts just like {@link SocketAppender} except that instead of
+  connecting to a given remote log server,
+  <code>SocketHubAppender</code> accepts connections from the remote
+  log servers as clients.  It can accept more than one connection.
+  When a log event is received, the event is sent to the set of
+  currently connected remote log servers. Implemented this way it does
+  not require any update to the configuration file to send data to
+  another remote log server. The remote log server simply connects to
+  the host and port the <code>SocketHubAppender</code> is running on.
   
-  However, given the nature of accepting connections on-the-fly, it
-  cannot be guaranteed that all events will be received while the
-  tcp connection is in process.  But once connected, it should behave
-  the same as {@link SocketAppender}.
+  <p>The <code>SocketHubAppender</code> does not store events such
+  that the remote side will events that arrived after the
+  establishment of its connection. Once connected, events arrive in
+  order as guaranteed by the TCP protocol.
 
-  This implementation borrows heavily from the {@link SocketAppender}
-  implementation as an example.
+  <p>This implementation borrows heavily from the {@link
+  SocketAppender}.
 
-  <p>The SocketHubAppender has the following properties:
+  <p>The SocketHubAppender has the following characteristics:
   
   <ul>
   
-  <p><li>If sent to a {@link SocketNode}, remote logging is
-  non-intrusive as far as the log event is concerned. In other
-  words, the event will be logged with the same time stamp, {@link
-  org.apache.log4j.NDC}, location info as if it were logged locally by
-  the client.
+  <p><li>If sent to a {@link SocketNode}, logging is non-intrusive as
+  far as the log event is concerned. In other words, the event will be
+  logged with the same time stamp, {@link org.apache.log4j.NDC},
+  location info as if it were logged locally.
   
-  <p><li>SocketHubAppenders do not use a layout. They ship a
-  serialized {@link LoggingEvent} object to the server side.
+  <p><li><code>SocketHubAppender</code> does not use a layout. It
+  ships a serialized {@link LoggingEvent} object to the remote side.
   
-  <p><li>Remote logging uses the TCP protocol. Consequently, if
-  the server is reachable, then log events will eventually arrive
-  at the server.
+  <p><li><code>SocketHubAppender</code> relies on the TCP
+  protocol. Consequently, if the remote side is reachable, then log
+  events will eventually arrive at remote client.
   
-  <p><li>If no remote servers are attached, the logging requests are
+  <p><li>If no remote clients are attached, the logging requests are
   simply dropped.
   
   <p><li>Logging events are automatically <em>buffered</em> by the
-  native TCP implementation. This means that if the link to server
-  is slow but still faster than the rate of (log) event production
-  by the client, the client will not be affected by the slow
-  network connection. However, if the network connection is slower
-  then the rate of event production, then the client can only
-  progress at the network rate. In particular, if the network link
-  to the the server is down, the client will be blocked.
+  native TCP implementation. This means that if the link to remote
+  client is slow but still faster than the rate of (log) event
+  production, the application will not be affected by the slow network
+  connection. However, if the network connection is slower then the
+  rate of event production, then the local application can only
+  progress at the network rate. In particular, if the network link to
+  the the remote client is down, the application will be blocked.
   
-  <p>On the other hand, if the network link is up, but the server
-  is down, the client will not be blocked when making log requests
-  but the log events will be lost due to server unavailability.
+  <p>On the other hand, if the network link is up, but the remote
+  client is down, the client will not be blocked when making log
+  requests but the log events will be lost due to client
+  unavailability. 
+
+  <p>The single remote client case extends to multiple clients
+  connections. The rate of logging will be determined by the slowest
+  link.
     
   <p><li>If the JVM hosting the <code>SocketHubAppender</code> exits
   before the <code>SocketHubAppender</code> is closed either
@@ -89,8 +92,9 @@ import org.apache.log4j.AppenderSkeleton;
   
   </ul>
      
-  @author  Mark Womack
+  @author Mark Womack 
 */
+
 public class SocketHubAppender extends AppenderSkeleton {
 
   /**
@@ -347,7 +351,8 @@ public class SocketHubAppender extends AppenderSkeleton {
           if (socket != null) {
             try {
               InetAddress remoteAddress = socket.getInetAddress();
-              LogLog.debug("accepting connection from " + remoteAddress.getHostName() + " (" + remoteAddress.getHostAddress() + ")");
+              LogLog.debug("accepting connection from " + remoteAddress.getHostName() 
+			   + " (" + remoteAddress.getHostAddress() + ")");
 	        	
               // create an ObjectOutputStream
               ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
