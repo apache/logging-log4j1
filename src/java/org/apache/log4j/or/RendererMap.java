@@ -16,8 +16,9 @@
 
 package org.apache.log4j.or;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.Loader;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.RendererSupport;
 
@@ -38,19 +39,29 @@ public class RendererMap {
   }
 
   /**
+   * Gets a logger named after this class. Note that the instance of the 
+   * logger may change depending on the 
+   * {@link org.apache.log4j.spi.RepositorySelector}.
+   * @return a context dependent Logger
+   */
+  private static Logger getLogger() {
+    return LogManager.getLogger(OptionConverter.class);
+  }
+  
+  /**
      Add a renderer to a hierarchy passed as parameter.
   */
   public static void addRenderer(
     RendererSupport repository, String renderedClassName,
     String renderingClassName) {
-    LogLog.debug(
-      "Rendering class: [" + renderingClassName + "], Rendered class: ["
-      + renderedClassName + "].");
+    getLogger().debug(
+      "Rendering class: [{}, Rendered class: [{}].", renderingClassName, 
+      renderedClassName);
     ObjectRenderer renderer =
       (ObjectRenderer) OptionConverter.instantiateByClassName(
         renderingClassName, ObjectRenderer.class, null);
     if (renderer == null) {
-      LogLog.error(
+      getLogger().error(
         "Could not instantiate renderer [" + renderingClassName + "].");
       return;
     } else {
@@ -58,7 +69,7 @@ public class RendererMap {
         Class renderedClass = Loader.loadClass(renderedClassName);
         repository.setRenderer(renderedClass, renderer);
       } catch (ClassNotFoundException e) {
-        LogLog.error("Could not find class [" + renderedClassName + "].", e);
+        getLogger().error("Could not find class [" + renderedClassName + "].", e);
       }
     }
   }
