@@ -46,6 +46,7 @@
  * Apache Software Foundation, please see <http://www.apache.org/>.
  *
  */
+
 package org.apache.log4j.chainsaw.help;
 
 import java.beans.PropertyChangeEvent;
@@ -55,141 +56,146 @@ import java.net.URL;
 
 import org.apache.log4j.chainsaw.ChainsawConstants;
 
+
 /**
  * Singleton help manager where objects can register to display
  * Help for something, an independant viewer can register to
  * be notified when the requested Help URL changes and can display
  * it appropriately. This class effectively decouples the help requester
  * from the help implementation (if any!)
- * 
- * @author Pau Smith <psmith@apache.org>
+ *
+ * @author Paul Smith <psmith@apache.org>
  *
  */
 public final class HelpManager {
+  private static final HelpManager instance = new HelpManager();
+  private HelpLocator helpLocator = new HelpLocator();
+  private URL helpURL;
+  private final PropertyChangeSupport propertySupport =
+    new PropertyChangeSupport(this);
 
-	private URL helpURL;
-	private final PropertyChangeSupport propertySupport = new PropertyChangeSupport(this);
-	private static final HelpManager instance = new HelpManager();
-	
-	
-	private HelpManager(){}
-	
-	/**
-	 * @return
-	 */
-	public final URL getHelpURL() {
-		return helpURL;
-	}
+  private HelpManager() {
+    
+//    TODO setup all the base URLs in the default.properties and configure in ApplicationPreferenceModel
+      helpLocator.installClassloaderLocator(this.getClass().getClassLoader());
+//      helpLocator.installLocator(new URL());
+  }
 
-	/**
-	 * The current Help URL that should be displayed, and is 
-	 * a PropertyChangeListener supported property.
-	 * 
-	 * This method ALWAYS fires property change events
-	 * even if the value is the same (the oldvalue
-	 * of the event will be null)
-	 * @param helpURL
-	 */
-	public final void setHelpURL(URL helpURL) {
-		this.helpURL = helpURL;
-		firePropertyChange("helpURL", null, this.helpURL);
-	}
+  /**
+   * @return
+   */
+  public final URL getHelpURL() {
+    return helpURL;
+  }
 
-	/**
-	 * @param listener
-	 */
-	public void addPropertyChangeListener(PropertyChangeListener listener) {
-		propertySupport.addPropertyChangeListener(listener);
-	}
+  /**
+   * The current Help URL that should be displayed, and is
+   * a PropertyChangeListener supported property.
+   *
+   * This method ALWAYS fires property change events
+   * even if the value is the same (the oldvalue
+   * of the event will be null)
+   * @param helpURL
+   */
+  public final void setHelpURL(URL helpURL) {
+    this.helpURL = helpURL;
+    firePropertyChange("helpURL", null, this.helpURL);
+  }
 
-	/**
-	 * @param propertyName
-	 * @param listener
-	 */
-	public synchronized void addPropertyChangeListener(
-		String propertyName,
-		PropertyChangeListener listener) {
-		propertySupport.addPropertyChangeListener(propertyName, listener);
-	}
+  /**
+   * @param listener
+   */
+  public void addPropertyChangeListener(PropertyChangeListener listener) {
+    propertySupport.addPropertyChangeListener(listener);
+  }
 
-	/**
-	 * @param evt
-	 */
-	public void firePropertyChange(PropertyChangeEvent evt) {
-		propertySupport.firePropertyChange(evt);
-	}
+  /**
+   * @param propertyName
+   * @param listener
+   */
+  public synchronized void addPropertyChangeListener(
+    String propertyName, PropertyChangeListener listener) {
+    propertySupport.addPropertyChangeListener(propertyName, listener);
+  }
 
-	/**
-	 * @param propertyName
-	 * @param oldValue
-	 * @param newValue
-	 */
-	public void firePropertyChange(
-		String propertyName,
-		boolean oldValue,
-		boolean newValue) {
-		propertySupport.firePropertyChange(propertyName, oldValue, newValue);
-	}
+  /**
+   * @param evt
+   */
+  public void firePropertyChange(PropertyChangeEvent evt) {
+    propertySupport.firePropertyChange(evt);
+  }
 
-	/**
-	 * @param propertyName
-	 * @param oldValue
-	 * @param newValue
-	 */
-	public void firePropertyChange(
-		String propertyName,
-		int oldValue,
-		int newValue) {
-		propertySupport.firePropertyChange(propertyName, oldValue, newValue);
-	}
+  /**
+   * @param propertyName
+   * @param oldValue
+   * @param newValue
+   */
+  public void firePropertyChange(
+    String propertyName, boolean oldValue, boolean newValue) {
+    propertySupport.firePropertyChange(propertyName, oldValue, newValue);
+  }
 
-	/**
-	 * @param propertyName
-	 * @param oldValue
-	 * @param newValue
-	 */
-	public void firePropertyChange(
-		String propertyName,
-		Object oldValue,
-		Object newValue) {
-		propertySupport.firePropertyChange(propertyName, oldValue, newValue);
-	}
+  /**
+   * @param propertyName
+   * @param oldValue
+   * @param newValue
+   */
+  public void firePropertyChange(
+    String propertyName, int oldValue, int newValue) {
+    propertySupport.firePropertyChange(propertyName, oldValue, newValue);
+  }
 
-	/**
-	 * @param listener
-	 */
-	public synchronized void removePropertyChangeListener(PropertyChangeListener listener) {
-		propertySupport.removePropertyChangeListener(listener);
-	}
+  /**
+   * @param propertyName
+   * @param oldValue
+   * @param newValue
+   */
+  public void firePropertyChange(
+    String propertyName, Object oldValue, Object newValue) {
+    propertySupport.firePropertyChange(propertyName, oldValue, newValue);
+  }
 
-	/**
-	 * @param propertyName
-	 * @param listener
-	 */
-	public synchronized void removePropertyChangeListener(
-		String propertyName,
-		PropertyChangeListener listener) {
-		propertySupport.removePropertyChangeListener(propertyName, listener);
-	}
+  /**
+   * @param listener
+   */
+  public synchronized void removePropertyChangeListener(
+    PropertyChangeListener listener) {
+    propertySupport.removePropertyChangeListener(listener);
+  }
 
-	/**
-	 * 
-	 */
-	public static HelpManager getInstance() {
-		return instance;
-		
-	}
+  /**
+   * @param propertyName
+   * @param listener
+   */
+  public synchronized void removePropertyChangeListener(
+    String propertyName, PropertyChangeListener listener) {
+    propertySupport.removePropertyChangeListener(propertyName, listener);
+  }
 
-	/**
-	 * Given a class, and that it belongs within the org.apache.log4j project,
-	 * sets the URL to the JavaDoc for that class.
-	 * 
-	 * @param class1
-	 */
-	public void showHelpForClass(Class class1) {
-		// TODO This needs to convert the FQN class name into a valid help URL.
-//		 TODO Be also nice to be able to set a BaseHelpURL or something instead of hitting the Apache server.
-		setHelpURL(ChainsawConstants.WELCOME_URL);
-	}
+  /**
+   *
+   */
+  public static HelpManager getInstance() {
+    return instance;
+  }
 
+  /**
+   * Given a class, and that it belongs within the org.apache.log4j project,
+   * sets the URL to the JavaDoc for that class.
+   *
+   * @param c
+   */
+  public void showHelpForClass(Class c) {
+    String name = c.getName();
+    name = name.replace('.', '/');
+
+    URL url = helpLocator.findResource(name);
+
+    if (url != null) {
+      setHelpURL(url);
+    } else {
+      //     TODO Create a resource not found url
+      setHelpURL(ChainsawConstants.WELCOME_URL);
+    }
+  }
 }
