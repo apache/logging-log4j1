@@ -53,6 +53,7 @@ import org.apache.log4j.joran.action.RootLoggerAction;
 import org.apache.log4j.joran.action.SubstitutionPropertyAction;
 import org.apache.log4j.spi.Configurator;
 import org.apache.log4j.spi.LoggerRepository;
+import org.apache.log4j.xml.Log4jEntityResolver;
 import org.xml.sax.SAXException;
 
 
@@ -187,6 +188,7 @@ public class JoranConfigurator
     rs.addRule(new Pattern("*/param"), new ParamAction());
 
     joranInterpreter = new Interpreter(rs);
+    joranInterpreter.setEntityResolver(new Log4jEntityResolver());
     
     // The following line adds the capability to parse nested components
     joranInterpreter.addImplcitAction(new NestComponentIA());
