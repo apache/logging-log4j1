@@ -15,7 +15,7 @@ import java.util.Properties;
    Test variable substitution code.   
    @author Ceki G&uuml;lc&uuml;
    
-   @since 0.9.2
+   @since 1.0
 */
 public class UnitTestVarSubst extends TestCase {
 

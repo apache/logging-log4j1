@@ -12,7 +12,7 @@ package org.apache.log4j.or;
    <code>toString</code> method.
 
    @author Ceki G&uuml;lc&uuml;
-   @since 0.9.2 */
+   @since 1.0 */
 class DefaultRenderer implements ObjectRenderer {
   
   DefaultRenderer() {

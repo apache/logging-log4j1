@@ -102,7 +102,7 @@ public class Category implements AppenderAttachable {
 
      <p>Note that property keys are case sensitive.  
 
-     @since 0.9.2 */
+     @since 1.0 */
      static final public String DEFAULT_CONFIGURATION_KEY="log4j.configuration";
 
   /**
@@ -271,7 +271,7 @@ public class Category implements AppenderAttachable {
   /**
      Close all attached appenders implementing the AppenderAttachable
      interface.  
-     @since 0.9.2
+     @since 1.0
   */
   synchronized
   void closeNestedAppenders() {
@@ -568,7 +568,7 @@ public class Category implements AppenderAttachable {
     name of the category to retrieve.  See {@link
     #getInstance(String)} for more detailed information.
 
-    @since 0.9.2 */
+    @since 1.0 */
   public
   static
   Category getInstance(Class clazz) {
@@ -979,7 +979,7 @@ public class Category implements AppenderAttachable {
      configurations where a regular appender is attached to a category
      and again to a nested appender.  
 
-     @since 0.9.2
+     @since 1.0
   */
   public
   static

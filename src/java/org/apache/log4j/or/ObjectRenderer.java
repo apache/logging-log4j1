@@ -11,7 +11,7 @@ package org.apache.log4j.or;
    Implement this interface in order to Render objects as strings.
 
    @author Ceki G&uuml;lc&uuml;
-   @since 0.9.2 */
+   @since 1.0 */
 public interface ObjectRenderer {
 
   /**

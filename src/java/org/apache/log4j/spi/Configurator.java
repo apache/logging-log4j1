@@ -12,7 +12,7 @@ import java.net.URL;
 /**
    Implemented by classes capable of configuring log4j using a URL.
    
-   @since 0.9.2
+   @since 1.0
    @author Anders Kristensen
    @author Ceki Gulcu
    

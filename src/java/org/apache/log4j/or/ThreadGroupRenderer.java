@@ -14,7 +14,7 @@ import org.apache.log4j.Layout;
    Render {@link ThreadGroup} objects in a format similar to the
    information output by the {@link ThreadGroup#list} method.
    @author Ceki G&uuml;lc&uuml;
-   @since 0.9.2 */
+   @since 1.0 */
 public class ThreadGroupRenderer implements ObjectRenderer {
 
   public
