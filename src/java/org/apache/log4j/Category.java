@@ -150,12 +150,12 @@ public class Category implements AppenderAttachable {
      The assigned priority of this category.  The
      <code>priority</code> variable need not be assined a value in
      which case it is inherited form the hierarchy.  */
-  protected Priority priority;
+  volatile protected Priority priority;
 
   /**
      The parent of this category. All categories have at least one
      ancestor which is the root category. */
-  protected Category parent;
+  volatile protected Category parent;
 
   /**
      The fully qualified name of the class that this Category
