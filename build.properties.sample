@@ -1,7 +1,4 @@
 
-# Required to build test cases
-junit.jar=/java/junit3.7/junit.jar
-
 # The jaxp interface and a jaxp parser are required
 # to build the DOMConfigurator
 jaxp.home=/java/jaxp-1.1

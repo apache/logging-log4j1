@@ -339,6 +339,10 @@ public class LoggingEvent implements java.io.Serializable {
     // setting ndcLookupRequired to false if not already false.
     this.getNDC();
 
+    // This call has a side effect of setting this.mdcCopy and
+    // setting mdcLookupRequired to false if not already false.
+    this.getMDCCopy();
+
     // This sets the throwable sting representation of the event throwable.
     this.getThrowableStrRep();
 
