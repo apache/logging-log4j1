@@ -16,19 +16,16 @@
 
 package org.apache.log4j.db.dialect;
 
-
 /**
+ * The Oracle dialect is untested.
  * 
  * @author ceki
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class PostgreSQLDialect
-       implements SQLDialect {
-  public static final String SELECT_CURRVAL = "SELECT currval('logging_event_id_seq')";
+public class OracleDialect implements SQLDialect {
+  public static final String SELECT_CURRVAL = "SELECT logging_event_id_seq.currval from dual";
 
   public String getSelectInsertId() {
     return SELECT_CURRVAL;
   }
+
 }
