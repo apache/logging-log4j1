@@ -54,7 +54,7 @@ public class UnitTestDRFA extends TestCase {
 		 DailyRollingFileAppender.TOP_OF_MONTH);
 
     drfa.setOption(DailyRollingFileAppender.DATE_PATTERN_OPTION, 
-		   "HH'log'");
+		   "'log'HH'log'");
     assertEquals(drfa.computeCheckPeriod(), 
 		 DailyRollingFileAppender.TOP_OF_HOUR);
 
