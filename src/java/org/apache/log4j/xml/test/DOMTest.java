@@ -10,7 +10,7 @@ package org.apache.log4j.xml.test;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.apache.log4j.Logger;
 import org.apache.log4j.LogManager;
-import org.apache.log4j.Priority;
+import org.apache.log4j.Level;
 //import org.apache.log4j.xml.examples.ReportParserError;
 //import org.apache.xerces.parsers.DOMParser;
 //import java.io.FileInputStream;
@@ -65,8 +65,8 @@ public class DOMTest {
     cat.error("Message " + ++i);
     root.error("Message " + i);
     
-    cat.log(Priority.FATAL, "Message " + ++i);
-    root.log(Priority.FATAL, "Message " + i);    
+    cat.log(Level.FATAL, "Message " + ++i);
+    root.log(Level.FATAL, "Message " + i);    
     
     Exception e = new Exception("Just testing");
     cat.debug("Message " + ++i, e);
