@@ -33,6 +33,13 @@
 
   <!-- The jar file that the jar task will generate -->
   <property name="log4j.jar" value="log4j-${version}.jar"/>
+  <property name="log4j-optional.jar" value="log4j-optional.jar"/>
+  <property name="log4j-oro.jar" value="log4j-oro.jar"/>
+  <property name="log4j-xml.jar" value="log4j-xml.jar"/>
+  <property name="log4j-jms.jar" value="log4j-jms.jar"/>
+  <property name="log4j-smtp.jar" value="log4j-smtp.jar"/>
+  <property name="log4j-db.jar" value="log4j-db.jar"/>
+
 
   <!-- Destination for documentation files -->
   <property name="docs.dest" value="./docs"/>
@@ -319,7 +326,7 @@
   </target>
 	
   <target name="log4j-xml.jar" depends="init, jaxpCheck, build.xml">
-	    <jar jarfile="log4j-xml.jar" basedir="${javac.dest}"
+	    <jar jarfile="${log4j-xml.jar}" basedir="${javac.dest}"
 	         includes="${stem}/xml/*.class,
 	    	           ${stem}/xml/*.dtd"
 	    	  excludes="${stem}/xml/DOMConfigurator.class,
@@ -349,14 +356,14 @@
 
   <target name="log4j-smtp.jar" depends="init, build.smtp"
 	          if="javamail-present">
-    <jar jarfile="log4j-smtp.jar" basedir="${javac.dest}"
+    <jar jarfile="${log4j-smtp.jar}" basedir="${javac.dest}"
            includes="${stem}/spi/TriggeringEventEvaluator.class,
     	             ${stem}/net/SMTPAppender.class,
     	             ${stem}/net/DefaultEvaluator.class"
     >
      <manifest>
         <section name="org/apache/log4j/">
-          <attribute name="Implementation-Title" value="log4j-jms"/>
+          <attribute name="Implementation-Title" value="log4j-smtp"/>
           <attribute name="Implementation-Version" value="${version}"/>
           <attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
         </section>
@@ -379,7 +386,7 @@
   </target>
 	
   <target name="log4j-oro.jar" depends="init, oroCheck, build.oro">
-    <jar jarfile="log4j-oro.jar" basedir="${javac.dest}"
+    <jar jarfile="${log4j-oro.jar}" basedir="${javac.dest}"
 	     includes="${stem}/varia/LogFilePatternReceiver*.class,
                   ${stem}/rule/LikeRule.class"
 	 	>
@@ -409,7 +416,7 @@
 	
   <target name="log4j-jms.jar" depends="init, build.jms"
 		          if="jms-present">
-      <jar jarfile="log4j-jms.jar" basedir="${javac.dest}"
+      <jar jarfile="${log4j-jms.jar}" basedir="${javac.dest}"
 	       includes="${stem}/net/JMSAppender.class,
 	  	             ${stem}/net/JMSSink.class,
 	   	             ${stem}/net/JMSReceiver.class,
@@ -446,7 +453,7 @@
   </target>
 	
   <target name="log4j-db.jar" depends="init, jdbcExtensionCheck">
-    <jar jarfile="log4j-db.jar" basedir="${javac.dest}"
+    <jar jarfile="${log4j-db.jar}" basedir="${javac.dest}"
 	     includes="${stem}/db/**.class"
   	>
       <manifest>
@@ -460,7 +467,7 @@
   </target>
   
   <target name="log4j-optional.jar" depends="init, build.core">
-    <jar jarfile="log4j-optional.jar" basedir="${javac.dest}"
+    <jar jarfile="${log4j-optional.jar}" basedir="${javac.dest}"
 	     includes="${stem}/net/Multicast*.class,
                    ${stem}/net/UDP*.class,
 	               ${stem}/net/SocketHub*.class,
@@ -468,7 +475,7 @@
 	>
 	  <manifest>
 	    <section name="org/apache/log4j/">
-	      <attribute name="Implementation-Title" value="log4j-db"/>
+	      <attribute name="Implementation-Title" value="log4j-optional"/>
 	      <attribute name="Implementation-Version" value="${version}"/>
 	      <attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
 	    </section>
