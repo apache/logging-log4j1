@@ -41,7 +41,7 @@ import java.util.TimeZone;
 
    <p>For example, if the <b>File</b> option is set to
    <code>/foo/bar.log</code> and the <b>DatePattern</b> set to
-   <code>'.'yyyy-MM-dd</code>, on 2001-02-16 at midnight, the logging
+   <code>.yyyy-MM-dd</code>, on 2001-02-16 at midnight, the logging
    file <code>/foo/bar.log</code> will be copied to
    <code>/foo/bar.log.2001-02-16</code> and logging for 2001-02-17
    will continue in <code>/foo/bar.log</code> until it rolls over
@@ -57,7 +57,7 @@ import java.util.TimeZone;
    <th>Example</th>
 
    <tr>
-   <td><code>'.'yyyy-MM</code>
+   <td><code>.yyyy-MM</code>
    <td>Rollover at the beginning of each month</td>
 
    <td>At midnight of May 31st, 2002 <code>/foo/bar.log</code> will be
@@ -66,7 +66,7 @@ import java.util.TimeZone;
    also rolled over the next month.
 
    <tr>
-   <td><code>'.'yyyy-ww</code>
+   <td><code>.yyyy-ww</code>
 
    <td>Rollover at the first day of each week. The first day of the
    week depends on the locale.</td>
@@ -78,7 +78,7 @@ import java.util.TimeZone;
    rolled over the next week.
 
    <tr>
-   <td><code>'.'yyyy-MM-dd</code>
+   <td><code>.yyyy-MM-dd</code>
 
    <td>Rollover at midnight each day.</td>
 
@@ -88,7 +88,7 @@ import java.util.TimeZone;
    is rolled over the next day.
 
    <tr>
-   <td><code>'.'yyyy-MM-dd-a</code>
+   <td><code>.yyyy-MM-dd-a</code>
 
    <td>Rollover at midnight and midday of each day.</td>
 
@@ -98,7 +98,7 @@ import java.util.TimeZone;
    until it is rolled over at midnight.
 
    <tr>
-   <td><code>'.'yyyy-MM-dd-HH</code>
+   <td><code>.yyyy-MM-dd-HH</code>
 
    <td>Rollover at the top of every hour.</td>
 
@@ -110,7 +110,7 @@ import java.util.TimeZone;
 
 
    <tr>
-   <td><code>'.'yyyy-MM-dd-HH-mm</code>
+   <td><code>.yyyy-MM-dd-HH-mm</code>
 
    <td>Rollover at the beginning of every minute.</td>
 
@@ -140,9 +140,9 @@ public class DailyRollingFileAppender extends FileAppender {
 
   /**
      The date pattern. By default, the pattern is set to
-     "'.'yyyy-MM-dd" meaning daily rollover.
+     ".yyyy-MM-dd" meaning daily rollover.
    */
-  private String datePattern = "'.'yyyy-MM-dd";
+  private String datePattern = ".yyyy-MM-dd";
 
   /**
      The log file will be renamed to the value of the
@@ -202,12 +202,15 @@ public class DailyRollingFileAppender extends FileAppender {
     if ((datePattern != null) && (fileName != null)) {
       now.setTime(System.currentTimeMillis());
 
-      //sdf = new SimpleDateFormat(datePattern);
+      sdf = new SimpleDateFormat(datePattern);
       int type = rc.computeTriggeringPeriod(datePattern);
       rc.printPeriodicity();
       rc.setType(type);
 
       File file = new File(fileName);
+      LogLog.info("fileane is "+fileName);
+      LogLog.info("sdf is "+sdf);
+      
       scheduledFilename = fileName + sdf.format(new Date(file.lastModified()));
     } else {
       LogLog.error(
@@ -221,7 +224,7 @@ public class DailyRollingFileAppender extends FileAppender {
   /**
      Rollover the current file to a new file.
   */
-  void rollOver() throws IOException {
+  public void rollOver() throws IOException {
     /* Compute filename, but only if datePattern is specified */
     if (datePattern == null) {
       errorHandler.error("Missing DatePattern option in rollOver().");
