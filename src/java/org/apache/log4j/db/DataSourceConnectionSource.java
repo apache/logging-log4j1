@@ -17,8 +17,6 @@
 package org.apache.log4j.db;
 
 
-import org.apache.log4j.helpers.LogLog;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -42,7 +40,7 @@ public class DataSourceConnectionSource extends ConnectionSourceSkeleton {
   public void activateOptions() {
     //LogLog.debug("**********DataSourceConnectionSource.activateOptions called");
     if (dataSource == null) {
-      LogLog.warn("WARNING: No data source specified");
+      getLogger().warn("WARNING: No data source specified");
       
       if (errorHandler != null) {
         errorHandler.error("WARNING: No data source specified");
@@ -52,13 +50,13 @@ public class DataSourceConnectionSource extends ConnectionSourceSkeleton {
       try {
         connection = getConnection();
       } catch(SQLException se) {
-        LogLog.warn("Could not get a connection to discover the dialect to use.", se);
+        getLogger().warn("Could not get a connection to discover the dialect to use.", se);
       }
       if(connection != null) {
         discoverConnnectionProperties();
       } 
       if(!supportsGetGeneratedKeys && dialectCode == ConnectionSource.UNKNOWN_DIALECT) {
-        LogLog.warn("Connection does not support GetGeneratedKey method and could not discover the dialect.");
+        getLogger().warn("Connection does not support GetGeneratedKey method and could not discover the dialect.");
       }
     }
   }
