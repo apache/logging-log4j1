@@ -24,8 +24,8 @@ function getShellScriptDirectory {
 
 WWW_TARGET=~/sf/groups/log4j/htdocs
 DISTRIB_TARGET=~/sf/temp
-JAR_FULL=log4j-full.jar
-JAR_LOCAL=log4j.jar
+JAR_FULL=log4j.jar
+JAR_CORE=log4j-core.jar
 
 
 if [ -z "$ANT" ]

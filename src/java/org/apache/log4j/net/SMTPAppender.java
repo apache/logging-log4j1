@@ -333,7 +333,4 @@ public class SMTPAppender extends AppenderSkeleton {
     else if (option.equals(LOCATION_INFO_OPTION))
       locationInfo = OptionConverter.toBoolean(value, locationInfo);
   }
-
-  
-  
 }

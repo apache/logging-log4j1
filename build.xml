@@ -20,6 +20,9 @@
 	        <available classname="test.framework.TestCase"
  	                   property="junit-present"/>
 
+	        <available classname="javax.mail.Message"
+ 	                   property="javamail-present"/>
+
 
 	</target>
 
@@ -27,7 +30,8 @@
 	                                compile.core,
 					compile.swing,
 					compile.unitTests,
-					compile.xml"/>
+					compile.xml,
+					compile.javamail"/>
 
 	<target name="compile.core" depends="init">
 		<mkdir dir="${classes}" />
@@ -38,6 +42,7 @@
 		       excludes="misc/*, **/UnitTest*.java,
 		                 **/doc-files/*,
                		         org/log4j/xml/**,
+               		         org/log4j/net/SMTPAppender.java,
 				 **/pending/**" 
 		       debug="on"
 		       optimize="on"/>
@@ -49,8 +54,9 @@
 	 <target name="compile.swing" depends="init" if="swing-present">   
             <echo message="Really compiling graphic components." />
 	    <mkdir dir="${classes}/icons"/>
-            <copydir src="icons"
-                     dest="${classes}/icons" />
+            <copydir todir="${classes}/icons">
+		<fileset dir="icons"/>
+            </copydir>
 	    <javac srcdir="${srcdir}"
 		   destdir="${classes}"
 		   includes="org/log4j/gui/**"
@@ -76,19 +82,30 @@
 		   classpath="${classpath}"/>
 	</target>
 
-	
-	<target name="clean" depends="init">
-		<deltree dir="${classes}" />
+         <target name="compile.javamail" depends="init" 
+                       if="javamail-present">   
+            <echo message="Really compiling org.log4j.net.SMTPAppender" />
+	    <javac 
+		   srcdir="${srcdir}"
+		   destdir="${classes}"
+		   includes="org/log4j/net/SMTPAppender.java"
+		   classpath="${classpath}"/>
 	</target>
 
-        <target name="jar" depends="log4j.jar, log4j-full.jar"/>
+
+	
+	<target name="clean" depends="init">
+		<delete dir="${classes}" />
+	</target>
+
+        <target name="jar" depends="log4j-core.jar, log4j.jar"/>
 	
 	<!-- Create log4j-core.jar, exluding non-core files -->
 	<target name="log4j-core.jar" depends="compile">
 	        <delete file="log4j-core.jar"/>
 		<jar jarfile="log4j-core.jar" basedir="${classes}"
 		includes="**/log4j/*.class, **/log4j/helpers/*.class,
-                          **/log4j/spi/*.class"
+                          **/log4j/spi/*.class, **/log4j/or/*.class"
 		excludes="**/StressCategory*, **/TTCC*, 
 		          **/SimpleLayout.*, **/AsyncAppender.*,
 			  **/Dispatcher.*, **/BoundedFIFO.*,
@@ -110,6 +127,7 @@
 			  **/log4j/spi/*.class,  **/log4j/net/*.class,
 			  **/log4j/varia/*.class, **/log4j/nt/*.class,
 			  **/log4j/xml/*.class, 
+			  **/log4j/or/*.class,
 			  **/log4j/gui/TextPaneAppender.class"
 		excludes="**/StressCategory*, **/UnitTest**"
                 manifest="manifest.mf"
