@@ -51,8 +51,11 @@ package org.apache.log4j.chainsaw;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.net.SocketAppender;
 import org.apache.log4j.net.SocketNodeEventListener;
 import org.apache.log4j.net.SocketReceiver;
+import org.apache.log4j.net.UDPAppender;
 import org.apache.log4j.net.UDPReceiver;
 import org.apache.log4j.plugins.Pauseable;
 import org.apache.log4j.plugins.PluginRegistry;
@@ -76,6 +79,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -93,6 +102,7 @@ import javax.swing.InputVerifier;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -104,6 +114,8 @@ import javax.swing.JToolBar;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -117,19 +129,19 @@ import javax.swing.tree.DefaultMutableTreeNode;
  * @author Scott Debogy <sdeboy@apache.org>
  */
 class ReceiversPanel extends JPanel {
-  private final ReceiverToolbar buttonPanel;
-  private final JTree receiversTree = new JTree();
-  private final LogUI logui;
-  private final Runnable updateReceiverTree;
-  private final JPopupMenu popupMenu = new ReceiverPopupMenu();
-  private final NewReceiverPopupMenu newReceiverPopup =
-    new NewReceiverPopupMenu();
-  private final Action startAllAction;
+  final Action editReceiverButtonAction;
+  final Action newReceiverButtonAction;
+  final Action pauseReceiverButtonAction;
   final Action playReceiverButtonAction;
   final Action shutdownReceiverButtonAction;
-  final Action pauseReceiverButtonAction;
-  final Action newReceiverButtonAction;
-  final Action editReceiverButtonAction;
+  private final Action startAllAction;
+  private final JPopupMenu popupMenu = new ReceiverPopupMenu();
+  private final JTree receiversTree = new JTree();
+  private final LogUI logui;
+  private final NewReceiverPopupMenu newReceiverPopup =
+    new NewReceiverPopupMenu();
+  private final ReceiverToolbar buttonPanel;
+  private final Runnable updateReceiverTree;
 
   ReceiversPanel(final LogUI logui) {
     super(new BorderLayout());
@@ -329,16 +341,24 @@ class ReceiversPanel extends JPanel {
   }
 
   /**
-   * Ensures that the Receiver tree is updated with the latest information
-   * and that this operation occurs in the Swing Event Dispatch thread.
    *
    */
-  private void updateReceiverTreeInDispatchThread() {
-    if (SwingUtilities.isEventDispatchThread()) {
-      updateReceiverTree.run();
-    } else {
-      SwingUtilities.invokeLater(updateReceiverTree);
-    }
+  protected void updateCurrentlySelectedNodeInDispatchThread() {
+    SwingUtilities.invokeLater(
+      new Runnable() {
+        public void run() {
+          DefaultMutableTreeNode node =
+            (DefaultMutableTreeNode) receiversTree
+            .getLastSelectedPathComponent();
+
+          if (node == null) {
+            return;
+          }
+
+          ((ReceiversTreeModel) receiversTree.getModel()).reload(node);
+          updateActions();
+        }
+      });
   }
 
   /**
@@ -383,26 +403,6 @@ class ReceiversPanel extends JPanel {
   }
 
   /**
-   * Ensures that the currently selected receiver active property is set to
-   * true
-   *
-   */
-  private void playCurrentlySelectedReceiver() {
-    new Thread(
-      new Runnable() {
-        public void run() {
-          Object obj = getCurrentlySelectedUserObject();
-
-          if ((obj != null) && obj instanceof Pauseable) {
-            ((Pauseable) obj).setPaused(false);
-
-            updateCurrentlySelectedNodeInDispatchThread();
-          }
-        }
-      }).start();
-  }
-
-  /**
    * Takes the currently selected Receiver and pauess it, effectively
    * discarding any received event BEFORE it is even posted to the logger
    * repository.
@@ -425,24 +425,23 @@ class ReceiversPanel extends JPanel {
   }
 
   /**
+   * Ensures that the currently selected receiver active property is set to
+   * true
    *
    */
-  protected void updateCurrentlySelectedNodeInDispatchThread() {
-    SwingUtilities.invokeLater(
+  private void playCurrentlySelectedReceiver() {
+    new Thread(
       new Runnable() {
         public void run() {
-          DefaultMutableTreeNode node =
-            (DefaultMutableTreeNode) receiversTree
-            .getLastSelectedPathComponent();
+          Object obj = getCurrentlySelectedUserObject();
 
-          if (node == null) {
-            return;
+          if ((obj != null) && obj instanceof Pauseable) {
+            ((Pauseable) obj).setPaused(false);
+
+            updateCurrentlySelectedNodeInDispatchThread();
           }
-
-          ((ReceiversTreeModel) receiversTree.getModel()).reload(node);
-          updateActions();
         }
-      });
+      }).start();
   }
 
   /**
@@ -506,76 +505,53 @@ class ReceiversPanel extends JPanel {
   }
 
   /**
-   * A simple Panel that has toolbar buttons for restarting,
-   * playing, pausing, and stoping receivers
-   *
-   * @author Paul Smith <psmith@apache.org>
+   * Ensures that the Receiver tree is updated with the latest information
+   * and that this operation occurs in the Swing Event Dispatch thread.
    *
    */
-  private class ReceiverToolbar extends JToolBar
-    implements TreeSelectionListener {
-    final SmallButton newReceiverButton;
+  private void updateReceiverTreeInDispatchThread() {
+    if (SwingUtilities.isEventDispatchThread()) {
+      updateReceiverTree.run();
+    } else {
+      SwingUtilities.invokeLater(updateReceiverTree);
+    }
+  }
 
-    private ReceiverToolbar() {
-      setFloatable(false);
+  /**
+   * A nice and simple 'X' style icon that is used to indicate a 'close' operation.
+   *
+   * @author Scott Deboy <sdeboy@apache.org>
+   *
+   */
+  class CloseIcon implements Icon {
+    int size;
+    int xOffSet;
+    int yOffSet;
 
-      SmallButton playReceiverButton =
-        new SmallButton(playReceiverButtonAction);
-      playReceiverButton.setText(null);
-
-      SmallButton pauseReceiverButton =
-        new SmallButton(pauseReceiverButtonAction);
-      pauseReceiverButton.setText(null);
-
-      SmallButton shutdownReceiverButton =
-        new SmallButton(shutdownReceiverButtonAction);
-      shutdownReceiverButton.setText(null);
-
-      SmallButton restartAllButton = new SmallButton(startAllAction);
-      restartAllButton.setText(null);
-
-      newReceiverButton = new SmallButton(newReceiverButtonAction);
-      newReceiverButton.setText(null);
-      newReceiverButton.addMouseListener(new PopupListener(newReceiverPopup));
-
-      SmallButton editReceiverButton =
-        new SmallButton(editReceiverButtonAction);
-      editReceiverButton.setText(null);
-
-      add(newReceiverButton);
-      add(editReceiverButton);
-      addSeparator();
-
-      add(playReceiverButton);
-      add(pauseReceiverButton);
-      add(shutdownReceiverButton);
-
-      addSeparator();
-      add(restartAllButton);
-
-      Action closeAction =
-        new AbstractAction(null, new CloseIcon(8, 1, 1)) {
-          public void actionPerformed(ActionEvent e) {
-            logui.toggleReceiversPanel();
-          }
-        };
-
-      closeAction.putValue(
-        Action.SHORT_DESCRIPTION, "Closes the Receiver panel");
-
-      add(Box.createHorizontalGlue());
-
-      add(new SmallButton(closeAction));
-
-      add(Box.createHorizontalStrut(5));
+    public CloseIcon(int size, int xOffSet, int yOffSet) {
+      this.size = size;
+      this.xOffSet = xOffSet;
+      this.yOffSet = yOffSet;
     }
 
-    /**
-     * Ensures the enabled property of the actions is set properly
-     * according to the currently selected node in the tree
-     */
-    public void valueChanged(TreeSelectionEvent e) {
-      updateActions();
+    public int getIconHeight() {
+      return size;
+    }
+
+    public int getIconWidth() {
+      return size;
+    }
+
+    public void paintIcon(Component c, Graphics g, int x, int y) {
+      Graphics2D g2D = (Graphics2D) g;
+      g2D.setStroke(new BasicStroke(1.5f));
+      g2D.setRenderingHint(
+        RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+      g2D.setColor(Color.black);
+      g2D.drawLine(
+        x + xOffSet, y + yOffSet, x + size + xOffSet, y + size + yOffSet);
+      g2D.drawLine(
+        x + xOffSet, y + size + yOffSet, x + size + xOffSet, y + yOffSet);
     }
   }
 
@@ -589,22 +565,31 @@ class ReceiversPanel extends JPanel {
    */
   class NewReceiverPopupMenu extends JPopupMenu {
     NewReceiverPopupMenu() {
-      Class[] receivers =
-        new Class[] { SocketReceiver.class, UDPReceiver.class };
+      try {
+        Class[] receivers =
+          new Class[] { SocketReceiver.class, UDPReceiver.class };
 
-      final Map dialogMap = new HashMap();
-      dialogMap.put(
-        SocketReceiver.class,
-        new CreateReceiverDialog(
-          SocketReceiver.class, "SocketReceiver", "Socket Receiver"));
+        final Map dialogMap = new HashMap();
+        dialogMap.put(
+          SocketReceiver.class,
+          new CreateReceiverDialog(
+            SocketReceiver.class,
+            "SocketReceiver",
+            "Socket Receiver",
+            new SimplePortBasedReceiverDialogPanel(SocketReceiver.class, "SocketReceiver", SocketAppender.DEFAULT_PORT)));
 
-      for (int i = 0; i < receivers.length; i++) {
-        final Class toCreate = receivers[i];
-        Package thePackage = toCreate.getPackage();
-        final String name =
-          toCreate.getName().substring(thePackage.getName().length() + 1);
-        add(
-          new AbstractAction("New " + name + "...") {
+              dialogMap.put(
+                UDPReceiver.class,
+                new CreateReceiverDialog(
+                  UDPReceiver.class, "UDPReceiver", "UDP Receiver",
+                  new SimplePortBasedReceiverDialogPanel(UDPReceiver.class, "UDPReceiver", UDPAppender.DEFAULT_PORT)));
+
+        for (int i = 0; i < receivers.length; i++) {
+          final Class toCreate = receivers[i];
+          Package thePackage = toCreate.getPackage();
+          final String name =
+            toCreate.getName().substring(thePackage.getName().length() + 1);
+          add(new AbstractAction("New " + name + "...") {
             public void actionPerformed(ActionEvent e) {
               if (dialogMap.containsKey(toCreate)) {
                 JDialog dialog = (JDialog) dialogMap.get(toCreate);
@@ -614,11 +599,26 @@ class ReceiversPanel extends JPanel {
               } else {
                 JOptionPane.showMessageDialog(
                   logui,
-                  "You wanted a " + name
-                  + " but this is not finished yet, sorry.");
+                  "You wanted a "
+                    + name
+                    + " but this is not finished yet, sorry.");
               }
             }
           });
+        }
+        addSeparator();
+        Action note = new AbstractAction("More coming in future....") {
+
+          public void actionPerformed(ActionEvent e) {
+
+          }
+        };
+        note.setEnabled(false);
+
+        add(note);
+      } catch (Exception e) {
+        e.printStackTrace();
+        throw new RuntimeException(e.getMessage());
       }
     }
   }
@@ -632,13 +632,6 @@ class ReceiversPanel extends JPanel {
    */
   class ReceiverPopupMenu extends JPopupMenu {
     ReceiverPopupMenu() {
-    }
-
-    private JMenuItem createNotDoneYet() {
-      final JMenuItem notDoneYet = new JMenuItem("Not Implemented Yet, sorry");
-      notDoneYet.setEnabled(false);
-
-      return notDoneYet;
     }
 
     /* (non-Javadoc)
@@ -724,43 +717,90 @@ class ReceiversPanel extends JPanel {
 
       add(setThresholdAction);
     }
+
+    private JMenuItem createNotDoneYet() {
+      final JMenuItem notDoneYet = new JMenuItem("Not Implemented Yet, sorry");
+      notDoneYet.setEnabled(false);
+
+      return notDoneYet;
+    }
   }
 
   /**
-   * A nice and simple 'X' style icon that is used to indicate a 'close' operation.
-   *
-   * @author Scott Deboy <sdeboy@apache.org>
+   * @author Paul Smith <psmith@apache.org>
    *
    */
-  class CloseIcon implements Icon {
-    int size;
-    int xOffSet;
-    int yOffSet;
+  private abstract static class AbstractReceiverDialogPanel extends JPanel {
+    private boolean valid;
 
-    public CloseIcon(int size, int xOffSet, int yOffSet) {
-      this.size = size;
-      this.xOffSet = xOffSet;
-      this.yOffSet = yOffSet;
+    /**
+     * @param b
+     */
+    public void setValid(boolean b) {
+      boolean oldValue = valid;
+      valid = b;
+      firePropertyChange("valid", oldValue, b);
     }
 
-    public int getIconHeight() {
-      return size;
+    /**
+     * @return
+     */
+    public boolean isValid() {
+      return valid;
     }
 
-    public int getIconWidth() {
-      return size;
+    abstract void createReceiver();
+  }
+
+  /**
+   * Verifies the defaults of a TextField by ensuring
+   * it conforms to a valid Port Number.
+   *
+   * If invalid, the text field is suffixed with " (invalid)"
+   * and all the text is selected, effectively
+   * prompting the user to enter again.
+   *
+   * @author Paul Smith <psmith@apache.org>
+   *
+   */
+  private static final class PortNumberVerifier extends InputVerifier {
+    public boolean verify(JComponent input) {
+      if (input instanceof JTextField) {
+        JTextField textField = ((JTextField) input);
+        boolean valid = validPort(textField.getText());
+
+        if (!valid) {
+          String invalidString = " (invalid)";
+
+          if (!textField.getText().endsWith(invalidString)) {
+            textField.setText(textField.getText() + invalidString);
+          }
+
+          textField.selectAll();
+        }
+
+        return valid;
+      }
+
+      return true;
     }
 
-    public void paintIcon(Component c, Graphics g, int x, int y) {
-      Graphics2D g2D = (Graphics2D) g;
-      g2D.setStroke(new BasicStroke(1.5f));
-      g2D.setRenderingHint(
-        RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
-      g2D.setColor(Color.black);
-      g2D.drawLine(
-        x + xOffSet, y + yOffSet, x + size + xOffSet, y + size + yOffSet);
-      g2D.drawLine(
-        x + xOffSet, y + size + yOffSet, x + size + xOffSet, y + yOffSet);
+    /**
+     * Returns true if string is a valid Port identifier.
+     *
+     * It must be a number, and be >0 and <32768
+     * @param string
+     * @return true/false
+     */
+    boolean validPort(String string) {
+      try {
+        int port = Integer.parseInt(string);
+
+        return (port > 0) && (port < 32768);
+      } catch (NumberFormatException e) {
+      }
+
+      return false;
     }
   }
 
@@ -768,26 +808,36 @@ class ReceiversPanel extends JPanel {
     final OkCancelPanel okCancelPanel = new OkCancelPanel();
 
     private CreateReceiverDialog(
-      Class receiver, String bundleName, String name) {
-      super(logui, "Create new " + name, true);
+      Class receiver, String bundleName, String name,
+      final AbstractReceiverDialogPanel entryPanel) throws IOException  {
+      super(logui, "Create new Receiver", true);
       setResizable(false);
       getContentPane().setLayout(new GridBagLayout());
 
       GridBagConstraints c = new GridBagConstraints();
 
       Container container = getContentPane();
-      ResourceBundle resourceBundle =
-        ResourceBundle.getBundle(
-          "org/apache/log4j/chainsaw/Details_" + bundleName);
+      URL descriptionResource =
+        this.getClass().getClassLoader().getResource("org/apache/log4j/chainsaw/Details_" + bundleName + ".html");
 
-      JLabel infoLabel = new JLabel(resourceBundle.getString("Details"));
+      JEditorPane infoArea = new JEditorPane(descriptionResource);
+      infoArea.addHyperlinkListener(new HyperlinkListener(){
 
-      infoLabel.setOpaque(true);
-      infoLabel.setForeground(Color.black);
-      infoLabel.setBackground(Color.white);
-      infoLabel.setVerticalTextPosition(JLabel.TOP);
-      infoLabel.setVerticalAlignment(JLabel.TOP);
-      infoLabel.setPreferredSize(new Dimension(320, 240));
+        public void hyperlinkUpdate(HyperlinkEvent e) {
+          if(e.getEventType() == HyperlinkEvent.EventType.ACTIVATED){
+            logui.showHelp(e.getURL());
+          }
+          
+        }
+      });
+      
+//      infoArea.setBorder(BorderFactory.createTitledBorder("Description"));
+      
+      infoArea.setOpaque(true);
+      infoArea.setEditable(false);
+      infoArea.setForeground(Color.black);
+      infoArea.setBackground(Color.white);
+      infoArea.setPreferredSize(new Dimension(320, 240));
 
       c.fill = GridBagConstraints.BOTH;
       c.anchor = GridBagConstraints.NORTHWEST;
@@ -798,55 +848,14 @@ class ReceiversPanel extends JPanel {
       c.gridwidth = 2;
 
       Box lineBox = Box.createHorizontalBox();
-      lineBox.setBorder(BorderFactory.createLineBorder(Color.gray));
+//      lineBox.setBorder(BorderFactory.createLineBorder(Color.gray));
 
-      container.add(infoLabel, c);
+      container.add(infoArea, c);
 
       c.gridy++;
       c.weighty = 0.3;
       c.fill = GridBagConstraints.HORIZONTAL;
       container.add(lineBox, c);
-
-      JLabel portNumber = new JLabel("Port Number:");
-
-      final JTextField portNumberEntry = new JTextField(5);
-      portNumberEntry.setInputVerifier(new PortNumberVerifier());
-
-      //      portNumberEntry.addKeyListener(
-      //        new KeyListener() {
-      //          public void keyTyped(KeyEvent e) {
-      //            validateKeyPress(e);
-      //          }
-      //
-      //          public void keyPressed(KeyEvent e) {
-      //            validateKeyPress(e);
-      //          }
-      //
-      //          private void validateKeyPress(KeyEvent e) {
-      //            char c = e.getKeyChar();
-      //            int keyCode = e.getKeyCode();
-      //
-      //            if ((c < '0') || (c > '9')) {
-      //              if (
-      //                (keyCode != KeyEvent.VK_BACK_SPACE) || (keyCode != KeyEvent.VK_DELETE)
-      //                  || (keyCode != KeyEvent.VK_ESCAPE)) {
-      //                e.consume();
-      //                Toolkit.getDefaultToolkit().beep();
-      //
-      //                return;
-      //              } 
-      ////              else if (portNumberEntry.getText().trim().length() >= 5) {
-      ////                e.consume();
-      ////                Toolkit.getDefaultToolkit().beep();
-      ////              }
-      //            }
-      //          }
-      //
-      //          public void keyReleased(KeyEvent e) {
-      //            validateKeyPress(e);
-      //          }
-      //        });
-      portNumber.setLabelFor(portNumberEntry);
 
       c.gridwidth = 1;
       c.gridx = 0;
@@ -855,13 +864,10 @@ class ReceiversPanel extends JPanel {
       c.insets = new Insets(10, 5, 10, 5);
       c.anchor = GridBagConstraints.WEST;
 
-      container.add(portNumber, c);
-      c.gridx++;
-      c.weightx = 0.65;
-      container.add(portNumberEntry, c);
+      container.add(entryPanel, c);
 
       Box lineBox3 = Box.createHorizontalBox();
-      lineBox3.setBorder(BorderFactory.createLineBorder(Color.gray));
+//      lineBox3.setBorder(BorderFactory.createLineBorder(Color.gray));
 
       c.gridx = 0;
       c.gridwidth = 2;
@@ -888,9 +894,10 @@ class ReceiversPanel extends JPanel {
 
       okCancelPanel.setCancelAction(closeAction);
 
-      Action okAction =
+      final Action okAction =
         new AbstractAction("Ok") {
           public void actionPerformed(ActionEvent e) {
+            entryPanel.createReceiver();
             hide();
           }
         };
@@ -898,68 +905,25 @@ class ReceiversPanel extends JPanel {
       okAction.setEnabled(false);
       okCancelPanel.setOkAction(okAction);
 
+      entryPanel.addPropertyChangeListener(
+        "valid",
+        new PropertyChangeListener() {
+          public void propertyChange(PropertyChangeEvent evt) {
+            AbstractReceiverDialogPanel component =
+              ((AbstractReceiverDialogPanel) evt.getSource());
+            okAction.setEnabled(component.isValid());
+          }
+        });
+
       getRootPane().registerKeyboardAction(
         closeAction, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
         JComponent.WHEN_IN_FOCUSED_WINDOW);
     }
-
-    /**
-     * Returns true if string is a valid Port identifier.
-     * 
-     * It must be a number, and be >0 and <32768
-     * @param string
-     * @return true/false 
-     */
-    boolean validPort(String string) {
-      try {
-        int port = Integer.parseInt(string);
-
-        return (port > 0) && (port < 32768);
-      } catch (NumberFormatException e) {
-      }
-
-      return false;
-    }
-
-  /**
-   * Verifies the defaults of a TextField by ensuring
-   * it conforms to a valid Port Number.
-   * 
-   * If invalid, the text field is suffixed with " (invalid)"
-   * and all the text is selected, effectively
-   * prompting the user to enter again.
-   * 
-   * @author Paul Smith <psmith@apache.org>
-   *
-   */
-    private final class PortNumberVerifier extends InputVerifier {
-      public boolean verify(JComponent input) {
-        if (input instanceof JTextField) {
-          JTextField textField = ((JTextField) input);
-          boolean valid = validPort(textField.getText());
-
-          if (!valid) {
-            String invalidString = " (invalid)";
-
-            if (!textField.getText().endsWith(invalidString)) {
-              textField.setText(textField.getText() + invalidString);
-            }
-
-            textField.setSelectionStart(0);
-            textField.setSelectionEnd(textField.getText().length());
-          }
-
-          return valid;
-        }
-
-        return true;
-      }
-    }
   }
 
   private static class OkCancelPanel extends JPanel {
-    final JButton okButton = new JButton("Ok");
     final JButton cancelButton = new JButton("Cancel");
+    final JButton okButton = new JButton("Ok");
 
     OkCancelPanel() {
       setLayout(new GridBagLayout());
@@ -989,6 +953,158 @@ class ReceiversPanel extends JPanel {
 
     void setOkAction(Action a) {
       okButton.setAction(a);
+    }
+  }
+
+  /**
+   * A simple Panel that has toolbar buttons for restarting,
+   * playing, pausing, and stoping receivers
+   *
+   * @author Paul Smith <psmith@apache.org>
+   *
+   */
+  private class ReceiverToolbar extends JToolBar
+    implements TreeSelectionListener {
+    final SmallButton newReceiverButton;
+
+    private ReceiverToolbar() {
+      setFloatable(false);
+
+      SmallButton playReceiverButton =
+        new SmallButton(playReceiverButtonAction);
+      playReceiverButton.setText(null);
+
+      SmallButton pauseReceiverButton =
+        new SmallButton(pauseReceiverButtonAction);
+      pauseReceiverButton.setText(null);
+
+      SmallButton shutdownReceiverButton =
+        new SmallButton(shutdownReceiverButtonAction);
+      shutdownReceiverButton.setText(null);
+
+      SmallButton restartAllButton = new SmallButton(startAllAction);
+      restartAllButton.setText(null);
+
+      newReceiverButton = new SmallButton(newReceiverButtonAction);
+      newReceiverButton.setText(null);
+      newReceiverButton.addMouseListener(new PopupListener(newReceiverPopup));
+
+      SmallButton editReceiverButton =
+        new SmallButton(editReceiverButtonAction);
+      editReceiverButton.setText(null);
+
+      add(newReceiverButton);
+      add(editReceiverButton);
+      addSeparator();
+
+      add(playReceiverButton);
+      add(pauseReceiverButton);
+      add(shutdownReceiverButton);
+
+      addSeparator();
+      add(restartAllButton);
+
+      Action closeAction =
+        new AbstractAction(null, new CloseIcon(8, 1, 1)) {
+          public void actionPerformed(ActionEvent e) {
+            logui.toggleReceiversPanel();
+          }
+        };
+
+      closeAction.putValue(
+        Action.SHORT_DESCRIPTION, "Closes the Receiver panel");
+
+      add(Box.createHorizontalGlue());
+
+      add(new SmallButton(closeAction));
+
+      add(Box.createHorizontalStrut(5));
+    }
+
+    /**
+     * Ensures the enabled property of the actions is set properly
+     * according to the currently selected node in the tree
+     */
+    public void valueChanged(TreeSelectionEvent e) {
+      updateActions();
+    }
+  }
+
+  private class SimplePortBasedReceiverDialogPanel
+    extends AbstractReceiverDialogPanel {
+    private String receiverName;
+
+    private Class receiverClass;
+
+    final JTextField portNumberEntry = new JTextField(8);
+
+    SimplePortBasedReceiverDialogPanel(Class receiverClass, String receiverName, int defaultPort) {
+      this.receiverClass = receiverClass;
+      this.receiverName = receiverName;
+      JLabel portNumber = new JLabel("Port Number:");
+
+      portNumberEntry.setInputVerifier(new PortNumberVerifier());
+      portNumberEntry.setText(defaultPort + "");
+      portNumberEntry.selectAll();
+      
+      
+      portNumberEntry.addKeyListener(
+        new KeyListener() {
+          public void keyTyped(KeyEvent e) {
+            validateKeyPress(e);
+          }
+
+          public void keyPressed(KeyEvent e) {
+            validateKeyPress(e);
+          }
+
+          private void validateKeyPress(KeyEvent e) {
+            if (portNumberEntry.getInputVerifier().verify(portNumberEntry)) {
+              setValid(true);
+            } else {
+              setValid(false);
+            }
+          }
+
+          public void keyReleased(KeyEvent e) {
+            validateKeyPress(e);
+          }
+        });
+      portNumber.setLabelFor(portNumberEntry);
+
+      add(portNumber);
+      add(portNumberEntry);
+    }
+
+    /* (non-Javadoc)
+     * @see org.apache.log4j.chainsaw.ReceiversPanel.AbstractReceiverDialogPanel#createReceiver()
+     */
+    void createReceiver() {
+      int port = Integer.parseInt(portNumberEntry.getText());
+      Receiver receiver = null;
+      try {
+        receiver = (Receiver) receiverClass.newInstance();
+        Method method = receiver.getClass().getMethod("setPort", new Class[]{int.class});
+        if(method!=null){
+          method.invoke(receiver, new Object[]{new Integer(port)});
+        }else {
+          throw new Exception("The Receiver class has no setPort method");
+        }
+      } catch (Exception e) {
+        LogLog.error("Error occurred creating the Receiver", e);
+        logui.getStatusBar().setMessage("Error occurred creating the Receiver ::" + e.getMessage());
+        return;
+      } 
+      String name = receiverName;
+      String suffix = "";
+      int index = 1;
+      while(PluginRegistry.pluginNameExists(name + suffix)){
+        suffix = index+"";
+        index++;
+      }
+      receiver.setName(name + suffix);
+      PluginRegistry.startPlugin(receiver);
+      updateReceiverTreeInDispatchThread();
     }
   }
 }
