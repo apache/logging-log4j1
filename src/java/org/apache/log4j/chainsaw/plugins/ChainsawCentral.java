@@ -118,20 +118,20 @@ public class ChainsawCentral extends GUIPluginSkeleton {
    *
    */
   private void initComponents() {
-    setLayout(new GridLayout(2, 1));
+    setLayout(new GridLayout(1, 1));
     nf.setMaximumFractionDigits(1);
     nf.setMinimumFractionDigits(1);
 
-    JPanel grid1 = new JPanel(new GridLayout(1, 2));
-    grid1.add(new JLabel("Data Rate:"));
-    grid1.add(dataRateLabel);
-
-    RateGraph rateGraph = new RateGraph();
-    rateGraph.setBorder(
-      BorderFactory.createTitledBorder(
-        BorderFactory.createEtchedBorder(), "Data Rate Graph"));
-    grid1.add(rateGraph);
-    add(grid1);
+//    JPanel grid1 = new JPanel(new GridLayout(1, 2));
+//    grid1.add(new JLabel("Data Rate:"));
+//    grid1.add(dataRateLabel);
+//
+//    RateGraph rateGraph = new RateGraph();
+//    rateGraph.setBorder(
+//      BorderFactory.createTitledBorder(
+//        BorderFactory.createEtchedBorder(), "Data Rate Graph"));
+//    grid1.add(rateGraph);
+//    add(grid1);
 
     JPanel mc = new JPanel(new BorderLayout());
     mc.setBorder(
