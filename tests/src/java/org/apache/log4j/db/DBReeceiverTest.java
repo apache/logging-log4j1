@@ -24,7 +24,6 @@ import javax.naming.InitialContext;
 
 import junit.framework.TestCase;
 
-import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.joran.JoranConfigurator;

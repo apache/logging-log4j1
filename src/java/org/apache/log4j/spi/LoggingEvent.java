@@ -201,6 +201,13 @@ public class LoggingEvent
   private LocationInfo locationInfo;
 
   /**
+   * @return The current sequenceCount for this JVM.
+   */
+  
+  public static long getSequenceCount() {
+    return sequenceCount;
+  }
+  /**
    * The no-argument constructor for LoggingEvent. This method is the recommended
    * constructor for creating LoggingEvent instances.
    *

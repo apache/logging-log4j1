@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration>
+	  
+<log4j:configuration debug="true">
+	  
+  <property file="input/db/db.properties"/>
+	    
+  <appender name="DB" class="org.apache.log4j.db.DBAppender">
+     <connectionSource class="org.apache.log4j.db.UrlConnectionSource">
+       <param name="driverClass" value="${driverClass}"/>
+       <param name="url" value="${url}"/>
+       <param name="user" value="${user}"/>
+       <param name="password" value="${password}"/>
+     </connectionSource>
+  </appender>
+
+
+  <root>
+    <level value ="debug"/>
+    <appender-ref ref="DB" />
+  </root>  
+</log4j:configuration>
+
+

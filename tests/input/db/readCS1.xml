@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration>
+
+<log4j:configuration debug="true">
+	  
+  <property file="input/db/db.properties"/>
+	  
+  <plugin name="DB1" class="org.apache.log4j.db.DBReceiver">
+     <connectionSource class="org.apache.log4j.db.UrlConnectionSource">
+       <param name="driverClass" value="${driverClass}"/>
+       <param name="url" value="${url}"/>
+       <param name="user" value="${user}"/>
+       <param name="password" value="${password}"/>
+     </connectionSource>
+  </plugin>
+
+
+  <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+     <layout class="org.apache.log4j.PatternLayout">
+       <param name="ConversionPattern" value="ZZZ %relative %level %logger - %message%n"/>
+     </layout>
+  </appender>
+  
+  <appender name="VECTOR" class="org.apache.log4j.VectorAppender">
+  </appender>
+  
+  <root>
+    <level value="debug"/>
+    <appender-ref ref="VECTOR" />
+    <appender-ref ref="CONSOLE" />
+  </root>  
+</log4j:configuration>
+
+
+
