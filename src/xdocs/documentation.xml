@@ -18,15 +18,14 @@
       
       <ul>
         <p>
-          <a
-           href="https://www.qos.ch/shop/products/log4j/log4j-Manual.jsp"><img
-           align="right" src="images/coverSmall.png"></img></a> <li><a
-           href="manual.html"><b>short manual</b></a>, 
-           </li>
+          <a href="https://www.qos.ch/shop/products/log4j/log4j-Manual.jsp">
+          <img align="right" src="images/coverSmall.png"></img>
+          </a> 
+          <li><a href="manual.html"><b>short log4j manual</b></a>, </li>
         </p>
         
         <p>
-          <li><a href="https://www.qos.ch/shop/products/log4j/log4j-Manual.jsp"><b>complete manual</b></a> (commercial), 
+          <li><a href="https://www.qos.ch/shop/products/log4j/log4j-Manual.jsp"><b>complete log4j manual</b></a> (commercial), 
           </li>
         </p>
         

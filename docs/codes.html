@@ -53,13 +53,13 @@
       <h3>Ceki  Gülcü <br />
       November 2004, last updated on November 18th, 2004</h3>
     </center>
-                                                                                                                                    
+                                                                                                                                                                                         
             
   
-                                  <hr/>
+                                        <hr/>
 
   
-                                                  <div class="big">
+                                                        <div class="big">
         <a name="log4j_dtd">
          <b>Message:</b> <span class="msg_title">The 'log4j.dtd' is no longer used nor needed.</span>
         </a>
@@ -76,23 +76,28 @@
         <p class="red big">Good:</p>
 
         <pre>&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
-<b>&lt;!DOCTYPE log4j:configuration&gt;</b>
+<b>&lt;!DOCTYPE configuration&gt;</b>
 
-&lt;log4j:configuration&gt;
+&lt;configuration xmlns='http://logging.apache.org/'&gt;
   ...
-&lt;/log4j:configuration&gt;
+&lt;/configuration&gt;
         </pre>
 
-        <p><code>JoranConfigurator</code> will no longer continue to
+        <p>However, <code>JoranConfigurator</code> will continue to
         parse your old XML configuration files which previously
-        required a reference to <code>log4j.dtd</code>. Thus, the 
-        the following form will not work.
+        required a reference to <code>log4j.dtd</code>. Thus, altough
+        deprecated, the following form will continue to be parsed
+        correctly.
         </p>
 
-        <p class="red big">Bad:</p>
+        <p class="red big">Deprecated:</p>
 
           <pre>&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
 <b>&lt;!DOCTYPE log4j:configuration SYSTEM "log4j.dtd"&gt;</b>
+
+&lt;log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'&gt;
+  ...
+&lt;/log4j:configuration&gt;
         </pre>
      
 
@@ -104,15 +109,85 @@
       </div>
                 <div class="big">
         <a name="tbr_fnp_not_set">
-         <b>Message:</b> <span class="msg_title">The FileNamePattern option must be set before using TimeBasedRollingPolicy or FixedWindowRollingPolicy.</span>
+         <b>Message:</b> <span class="msg_title">The FileNamePattern option must be set before using TimeBasedRollingPolicy.</span>
         </a>
       </div>
       <div class="msg_meaning">
         
-        <p>The <code>FileNamePattern</code> option for both
-        <code>TimeBasedRollingPolicy</code> and
-        <code>FixedWindowRollingPolicy</code> is mandatory.
+        <p>The <code>FileNamePattern</code> option for
+        <code>TimeBasedRollingPolicy</code> is mandatory.
         </p>
+      
+      </div>
+                <div class="big">
+        <a name="appender_order">
+         <b>Message:</b> <span class="msg_title">Could not find an appender named [XYZ]. Did you define it below in the config file?</span>
+        </a>
+      </div>
+      <div class="msg_meaning">
+        
+        <p>Whereas the order of declatation of appenders did not
+        matter in log4j 1.2, in log4j version 1.3 and later, any
+        appender referenced at a given point must have been already
+        declared above that point. In practice though, only
+        configuration files declaring an <code>AsyncAppender</code>
+        may be affected by this change and only if the appenders
+        embeded in th <code>AsyncAppender</code> are declared below it
+        instead of being declared above it.
+        </p>
+
+        <p>For example, the following config file will no longer work.</p>
+
+        <p class="red big">Bad:</p>
+
+        <pre class="source">&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+&lt;!DOCTYPE log4j:configuration&gt;
+
+&lt;log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'&gt;
+
+  &lt;appender name="<b class="red">ASYNC</b>" class="org.apache.log4j.AsyncAppender"&gt;
+    &lt;appender-ref ref="FILE" /&gt;
+  &lt;/appender&gt;
+
+   &lt;appender name="<b>FILE</b>" class="org.apache.log4j.FileAppender"&gt;
+    &lt;param name="File" value="myapp.log"/&gt;
+    ...
+  &lt;/appender&gt;
+
+  &lt;root&gt;
+    &lt;level value ="debug" /&gt;
+    &lt;appender-ref ref="ASYNC" /&gt;
+  &lt;/root&gt;
+
+&lt;/log4j:configuration&gt;
+        </pre>
+
+        <p>It should be changed to the following form.</p>
+
+        <p class="red big">Good:</p>
+
+        <pre class="source">&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+&lt;!DOCTYPE configuration&gt;
+
+&lt;configuration xmlns='http://logging.apache.org/'&gt;
+
+   &lt;appender name="<b class="red">FILE</b>" class="org.apache.log4j.FileAppender"&gt;
+     &lt;param name="File" value="myapp.log"/&gt;
+      ...
+   &lt;/appender&gt;
+
+  &lt;appender name="<b>ASYNC</b>" class="org.apache.log4j.AsyncAppender"&gt;
+    &lt;appender-ref ref="FILE" /&gt;
+  &lt;/appender&gt;
+
+  &lt;root&gt;
+    &lt;level value ="debug" /&gt;
+    &lt;appender-ref ref="ASYNC" /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;
+        </pre>
+
+
       
       </div>
       
