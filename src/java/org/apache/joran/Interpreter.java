@@ -17,8 +17,6 @@
 package org.apache.joran;
 
 import org.apache.joran.action.*;
-import org.apache.log4j.helpers.LogLog;
-
 //import org.apache.log4j.Logger;
 //mport org.apache.log4j.helpers.LogLog;
 
@@ -101,7 +99,6 @@ public class Interpreter extends DefaultHandler {
   }
 
   public void startDocument() {
-    LogLog.info(" in JP startDocument");
   }
 
   public void startElement(
@@ -110,7 +107,7 @@ public class Interpreter extends DefaultHandler {
 
     String tagName = getTagName(localName, qName);
 
-    LogLog.debug("in startElement <" + tagName + ">");
+    //LogLog.debug("in startElement <" + tagName + ">");
 
     pattern.push(tagName);
 
@@ -125,7 +122,7 @@ public class Interpreter extends DefaultHandler {
       String errMsg =
         "no applicable action for <" + tagName + ">, current pattern is ["
         + pattern+"]";
-      LogLog.warn(errMsg);
+      //LogLog.warn(errMsg);
       ec.addError(new ErrorItem(errMsg));
     }
   }

@@ -16,9 +16,6 @@
 
 package org.apache.log4j.helpers;
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
 import org.apache.log4j.helpers.Loader;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
@@ -38,11 +35,14 @@ public class IntializationUtil {
 
 
   public static void log4jInternalConfiguration(LoggerRepository repository) {
-    Logger logger = repository.getLogger("LOG4J");
-    logger.setAdditivity(false);
-    logger.addAppender(
-      new ConsoleAppender(
-        new PatternLayout("log4j-internal: %r %-22c{2} - %m%n")));
+    // This method does not do anoything currently. It might become useful
+    // when sub-domains are added to log4j.
+    
+//    Logger logger = repository.getLogger("LOG4J");
+//    logger.setAdditivity(false);
+//    logger.addAppender(
+//      new ConsoleAppender(
+//        new PatternLayout("log4j-internal: %r %-22c{2} - %m%n")));
   }
 
   /**

@@ -18,9 +18,12 @@ package org.apache.log4j.helpers;
 
 
 /**
- * Constants used by netwrok-based appenders and others.
+ * Constants used internally throughout log4j.
  */
 public interface Constants {
+  
+  static final String LOG4J_PACKAGE_NAME = "org.apache.log4j";
+  
   static final String APPLICATION_KEY = "application";
   static final String HOSTNAME_KEY = "hostname";
   static final String LOG4J_ID_KEY = "log4jid";
@@ -37,5 +40,8 @@ public interface Constants {
   static final String DEFAULT_CONFIGURATION_KEY = "log4j.configuration";
   static final String CONFIGURATOR_CLASS_KEY = "log4j.configuratorClass";
   
-  static String JNDI_CONTEXT_NAME = "java:comp/env/log4j/context-name";
+  static final String JNDI_CONTEXT_NAME = "java:comp/env/log4j/context-name";
+  
+  static final String TEMP_LIST_APPENDER_NAME = "TEMP_LIST_APPENDER";
+  static final String TEMP_CONSOLE_APPENDER_NAME = "TEMP_CONSOLE_APPENDER";
 }
