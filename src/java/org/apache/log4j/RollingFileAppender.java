@@ -111,7 +111,7 @@ public class RollingFileAppender extends FileAppender {
   }
 
   /**
-     Implemetns the usual roll over behaviour.
+     Implements the usual roll over behaviour.
 
      <p>If <code>MaxBackupIndex</code> is positive, then files
      {<code>File.1</code>, ..., <code>File.MaxBackupIndex -1</code>}
@@ -200,7 +200,7 @@ public class RollingFileAppender extends FileAppender {
      as 10240.
      
      <p>The <b>MaxBackupIndex</b> option determines how many backup
-     files are kept before the oldest being erased. This option takes
+     files are kept before the oldest is erased. This option takes
      a positive integer value. If set to zero, then there will be no
      backup files and the log file will be truncated when it reaches
      <code>MaxFileSize</code>.
