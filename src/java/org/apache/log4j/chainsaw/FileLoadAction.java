@@ -163,7 +163,7 @@ class FileLoadAction extends AbstractAction {
 
       try {
         url = selectedFile.toURL();
-        name = "localhost:" + selectedFile.getName();
+        name = selectedFile.getName();
       } catch (Exception ex) {
         // TODO: handle exception
       }
@@ -185,7 +185,8 @@ class FileLoadAction extends AbstractAction {
 
     if (url != null) {
       Map additionalProperties = new HashMap();
-      additionalProperties.put(Constants.HOSTNAME_KEY, name);
+      additionalProperties.put(Constants.HOSTNAME_KEY, "file");
+      additionalProperties.put(Constants.APPLICATION_KEY, name);
       decoder.setAdditionalProperties(additionalProperties);
 
       final URL urlToUse = url;
