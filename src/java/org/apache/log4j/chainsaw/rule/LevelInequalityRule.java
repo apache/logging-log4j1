@@ -97,7 +97,7 @@ class LevelInequalityRule extends AbstractRule {
     this.levelSecondParam = levelSecondParam;
   }
 
-  static Rule getRule(String inequalitySymbol, Stack stack) {
+  public static Rule getRule(String inequalitySymbol, Stack stack) {
     String p1 = stack.pop().toString();
     String p2 = stack.pop().toString();
 
@@ -109,7 +109,6 @@ class LevelInequalityRule extends AbstractRule {
     Level level2 =
       levelFirstParam.toLevel(
         resolver.getValue(levelSecondParam, event).toString());
-    System.out.println("lessthan level op " + levelFirstParam + ".." + level2);
 
     boolean result = false;
     int first = level2.toInt();
@@ -124,8 +123,6 @@ class LevelInequalityRule extends AbstractRule {
     } else if (">=".equals(inequalitySymbol)) {
       result = first >= second;
     }
-
-    System.out.println("result is " + result);
 
     return result;
   }

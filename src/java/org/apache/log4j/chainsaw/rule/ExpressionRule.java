@@ -59,8 +59,13 @@ import java.util.StringTokenizer;
  * A Rule class supporting both infix and postfix expressions, accepting any rule which 
  * is supported by the <code>RuleFactory</code>.
  * 
- * NOTE: parsing is supported through the use of <code>StringTokenizer</code>, which means 
- * all tokens in the expression must be separated by spaces. 
+ * NOTE: parsing is supported through the use of <code>StringTokenizer</code>, which 
+ * implies two limitations:
+ * 1: all tokens in the expression must be separated by spaces,
+ * 2: operands which contain spaces in the value being evaluated are not supported
+ *    (for example, attempting to perform 'msg == some other msg' will fail, since 'some other msg'
+ *    will be parsed as individual tokens in the expression instead of a single token (this is 
+ *    the next planned fix). 
  * 
  * @author Scott Deboy <sdeboy@apache.org>
  */
@@ -76,7 +81,7 @@ public class ExpressionRule extends AbstractRule {
     this.rule = rule;
   }
 
-  static Rule getRule(String expression, boolean isPostFix) {
+  public static Rule getRule(String expression, boolean isPostFix) {
     if (!isPostFix) {
       expression = convertor.convert(expression);
     }
@@ -97,7 +102,6 @@ public class ExpressionRule extends AbstractRule {
   class PostFixExpressionCompiler {
 
     Rule compileExpression(String expression) {
-      System.out.println("compiling expression: " + expression);
 
       Stack stack = new Stack();
       Enumeration tokenizer = new StringTokenizer(expression);
@@ -109,16 +113,17 @@ public class ExpressionRule extends AbstractRule {
         //if a symbol is found, pop 2 off the stack, evaluate and push the result 
         if (RuleFactory.isRule(nextToken)) {
           Rule r = (Rule) RuleFactory.getRule(nextToken, stack);
-          System.out.println("pushing rule " + r);
           stack.push(r);
         } else {
-          System.out.println("pushing token " + nextToken);
 
           //variables or constants are pushed onto the stack
           stack.push(nextToken);
         }
       }
-
-      return (Rule)stack.pop();
+      if (!(stack.peek() instanceof Rule)) {
+          throw new RuntimeException("invalid expression: " + expression);
+      } else {
+        return (Rule)stack.pop();
+      }
     }
 }

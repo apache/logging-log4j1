@@ -69,23 +69,19 @@ class PartialTextMatchRule extends AbstractRule {
     this.secondParam = secondParam;
   }
 
-  static Rule getRule(Stack stack) {
+  public static Rule getRule(Stack stack) {
     String p1 = stack.pop().toString();
     String p2 = stack.pop().toString();
-    System.out.println("get part text match op " + p1 + ".." + p2);
 
     return new PartialTextMatchRule(p1, p2);
   }
 
   public boolean evaluate(LoggingEvent event) {
     String p2 = resolver.getValue(secondParam, event).toString();
-    System.out.println(
-      "partial text match op " + firstParam + ".." + secondParam);
 
     boolean result =
       (((p2 != null) && (firstParam != null))
       && (p2.toLowerCase().indexOf(firstParam.toLowerCase()) > -1));
-    System.out.println("result is " + result);
 
     return result;
   }

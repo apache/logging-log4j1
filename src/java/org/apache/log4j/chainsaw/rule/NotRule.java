@@ -65,18 +65,15 @@ class NotRule extends AbstractRule {
     this.firstParam = firstParam;
   }
 
-  static Rule getRule(Stack stack) {
+  public static Rule getRule(Stack stack) {
     Rule p1 = (Rule) stack.pop();
-    System.out.println("get not op " + p1);
 
     return new NotRule(p1);
   }
 
   public boolean evaluate(LoggingEvent event) {
-    System.out.println("not op " + firstParam + ".." + firstParam);
 
     boolean result = !(firstParam.evaluate(event));
-    System.out.println("result is " + result);
 
     return result;
   }

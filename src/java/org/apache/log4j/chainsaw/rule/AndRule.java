@@ -67,20 +67,17 @@ class AndRule extends AbstractRule {
     this.secondParam = secondParam;
   }
 
-  static Rule getRule(Stack stack) {
+  public static Rule getRule(Stack stack) {
     Rule p1 = (Rule) stack.pop();
     Rule p2 = (Rule) stack.pop();
-    System.out.println("get and op " + p1 + ".." + p2);
 
     return new AndRule(p1, p2);
   }
 
   public boolean evaluate(LoggingEvent event) {
-    System.out.println("and op " + firstParam + ".." + secondParam);
 
     boolean result =
       (firstParam.evaluate(event) && secondParam.evaluate(event));
-    System.out.println("result is " + result);
 
     return result;
   }

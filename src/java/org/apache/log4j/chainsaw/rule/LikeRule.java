@@ -75,7 +75,7 @@ class LikeRule extends AbstractRule {
     this.secondParam = secondParam;
   }
 
-  static Rule getRule(Stack stack) {
+  public static Rule getRule(Stack stack) {
     String p1 = stack.pop().toString();
     String p2 = stack.pop().toString();
     Perl5Compiler compiler = new Perl5Compiler();
@@ -91,11 +91,8 @@ class LikeRule extends AbstractRule {
 
   public boolean evaluate(LoggingEvent event) {
     String p2 = resolver.getValue(secondParam, event).toString();
-    System.out.println(pattern + " like " + p2);
 
     boolean result = ((pattern != null) && matcher.matches(p2, pattern));
-
-    System.out.println("result: " + result);
 
     return result;
   }
