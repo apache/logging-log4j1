@@ -2588,14 +2588,10 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
         new Runnable() {
           public void run() {
             detail.setText(text2);
-          }
-        });
-      SwingUtilities.invokeLater(
-        new Runnable() {
-          public void run() {
             detail.setCaretPosition(0);
           }
         });
+        detail.revalidate();
     }
 
     /**
