@@ -50,6 +50,7 @@
 package org.apache.log4j.rolling;
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.rolling.helpers.Compress;
 import org.apache.log4j.rolling.helpers.DateTokenConverter;
 import org.apache.log4j.rolling.helpers.FileNamePattern;
 import org.apache.log4j.rolling.helpers.RollingCalendar;
@@ -66,14 +67,15 @@ import java.util.Date;
  *
  * @author Ceki G&uuml;lc&uuml;
  */
-public class TimeBasedRollingPolicy extends RollingPolicySkeleton implements TriggeringPolicy {
+public class TimeBasedRollingPolicy extends RollingPolicySkeleton
+  implements TriggeringPolicy {
   static final Logger logger = Logger.getLogger(TimeBasedRollingPolicy.class);
   FileNamePattern fileNamePattern;
   RollingCalendar rc;
   long nextCheck;
   Date now = new Date();
-  int compressionMode;
-  
+  String oldFileName = null;
+
   public void activateOptions() {
     // find out period from the filename pattern
     if (fileNamePattern != null) {
@@ -84,17 +86,21 @@ public class TimeBasedRollingPolicy extends RollingPolicySkeleton implements Tri
           "FileNamePattern [" + fileNamePattern.getPattern()
           + "] does not contain a valid DateToken");
       }
+
       rc = new RollingCalendar();
       rc.init(dtc.getDatePattern());
       logger.debug(
-             "The date pattern is [" + dtc.getDatePattern()
-             + "] from file name pattern [" + fileNamePattern.getPattern() + "].");
+        "The date pattern is [" + dtc.getDatePattern()
+        + "] from file name pattern [" + fileNamePattern.getPattern() + "].");
       rc.printPeriodicity();
+
       long n = System.currentTimeMillis();
       now.setTime(n);
       nextCheck = rc.getNextCheckMillis(now);
-      Date x = new Date(); x.setTime(nextCheck);
-      logger.debug("Next check set to: "+x);
+
+      Date x = new Date();
+      x.setTime(nextCheck);
+      logger.debug("Next check set to: " + x);
     }
   }
 
@@ -103,7 +109,24 @@ public class TimeBasedRollingPolicy extends RollingPolicySkeleton implements Tri
   }
 
   public void rollover() {
-    // nothing to do!!!     
+    
+    logger.debug("rollover called");
+    logger.debug("compressionMode: "+compressionMode);
+    if (oldFileName != null) {
+      logger.debug("oldFileName != null");
+      switch (compressionMode) {
+      case Compress.NONE:
+
+        // nothing to do;
+        break;
+
+      case Compress.GZ:
+        logger.debug("Compressing ["+oldFileName+"]");
+        Compress.GZCompress(oldFileName);
+
+        break;
+      }
+    }
   }
 
   public void setFileNamePattern(String fnp) {
@@ -111,17 +134,25 @@ public class TimeBasedRollingPolicy extends RollingPolicySkeleton implements Tri
   }
 
   public boolean isTriggeringEvent(File file) {
-    logger.debug("Is triggering event called");
+    //logger.debug("Is triggering event called");
+
     long n = System.currentTimeMillis();
 
     if (n >= nextCheck) {
       logger.debug("Time to trigger rollover");
+      
+      // we set the oldFileName before we set the 'now' variable
+      oldFileName = fileNamePattern.convert(now);
+      
       now.setTime(n);
-      logger.debug("ActiveLogFileName will return "+getActiveLogFileName());
+      logger.debug("ActiveLogFileName will return " + getActiveLogFileName());
       nextCheck = rc.getNextCheckMillis(now);
+
       //logger.debug("nextCheck is :"+nextCheck);
-      Date x = new Date(); x.setTime(nextCheck);
-      logger.debug("Next check: "+x);
+      Date x = new Date();
+      x.setTime(nextCheck);
+      logger.debug("Next check: " + x);
+
       return true;
     } else {
       return false;

@@ -72,7 +72,6 @@ public class Compress {
    
   public static void ZIPCompress(String nameOfFile2zip, String nameOfZippedFile) {
     File file2zip = new File(nameOfFile2zip);
-    File zippedFile = new File(nameOfZippedFile);
 
     if (!file2zip.exists()) {
       logger.warn(
@@ -84,7 +83,8 @@ public class Compress {
     if (!nameOfZippedFile.endsWith(".zip")) {
       nameOfZippedFile = nameOfZippedFile + ".zip";
     }
-
+    
+    File zippedFile = new File(nameOfZippedFile);
     if (zippedFile.exists()) {
       logger.warn(
         "The target compressed file named [" + nameOfZippedFile
@@ -115,10 +115,14 @@ public class Compress {
        }
   }
 
+  public static void GZCompress(String nameOfFile2gz) {
+    // Here we rely on the fact that the two argument version of GZCompress automatically
+    // add te .gz exention to the second argument 
+    GZCompress(nameOfFile2gz, nameOfFile2gz);
+  }
   public static void GZCompress(String nameOfFile2gz, String nameOfgzedFile) {
     File file2gz = new File(nameOfFile2gz);
-    File gzedFile = new File(nameOfgzedFile);
-
+    
     if (!file2gz.exists()) {
       logger.warn(
         "The file to compress named [" + nameOfFile2gz + "] does not exist.");
@@ -130,6 +134,7 @@ public class Compress {
       nameOfgzedFile = nameOfgzedFile + ".gz";
     }
 
+    File gzedFile = new File(nameOfgzedFile);
     if (gzedFile.exists()) {
       logger.warn(
         "The target compressed file named [" + nameOfgzedFile
