@@ -171,7 +171,7 @@ public class PropertyConfigurator extends BasicConfigurator
     <p>Similar to the root category syntax, each <i>appenderName</i>
     (seperated by commas) will be attached to the named category.
     
-    <p>See the <a href="../../manual.html#additivity">appender
+    <p>See the <a href="../../../../manual.html#additivity">appender
     additivity rule</a> in the user manual for the meaning of the
     <code>additivity</code> flag.
 

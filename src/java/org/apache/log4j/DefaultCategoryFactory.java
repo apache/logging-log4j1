@@ -11,13 +11,11 @@ import org.apache.log4j.spi.CategoryFactory;
 
 class DefaultCategoryFactory implements CategoryFactory {
     
-  private static final String DEFAULT_FQN = "org.apache.log4j.Category";
-
   DefaultCategoryFactory() {
   }    
     
   public
   Category makeNewCategoryInstance(String name) {
-    return new Category(name, DEFAULT_FQN);
+    return new Category(name);
   }    
 }

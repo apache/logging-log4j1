@@ -34,6 +34,8 @@ import org.apache.log4j.xml.examples.XPriority;
  */
 public class XCategory extends Category implements OptionHandler {
 
+  final private static String FQCN = XCategory.class.getName();
+
   // It's enough to instantiate a factory once and for all.
   private static XFactory factory = new XFactory();
   
@@ -44,8 +46,8 @@ public class XCategory extends Category implements OptionHandler {
   /**
      Just calls the parent constuctor.
    */
-  protected XCategory(String name, String instanceFQN) {
-    super(name, instanceFQN);
+  protected XCategory(String name) {
+    super(name);
   }
 
   /** 
@@ -105,7 +107,7 @@ public class XCategory extends Category implements OptionHandler {
     if(hierarchy.isDisabled(XPriority.LETHAL_INT)) 
       return;
     if(XPriority.LETHAL.isGreaterOrEqual(this.getChainedPriority()))
-      forcedLog(instanceFQCN, XPriority.LETHAL, message, t);
+      forcedLog(FQCN, XPriority.LETHAL, message, t);
   }
 
   /**
@@ -117,7 +119,7 @@ public class XCategory extends Category implements OptionHandler {
     if(hierarchy.isDisabled(XPriority.LETHAL_INT)) 
       return;
     if(XPriority.LETHAL.isGreaterOrEqual(this.getChainedPriority()))
-      forcedLog(instanceFQCN, XPriority.LETHAL, message, null);
+      forcedLog(FQCN, XPriority.LETHAL, message, null);
   }
 
 
@@ -155,7 +157,7 @@ public class XCategory extends Category implements OptionHandler {
     if(hierarchy.isDisabled(XPriority.TRACE_INT))
       return;   
     if(XPriority.TRACE.isGreaterOrEqual(this.getChainedPriority()))
-      forcedLog(instanceFQCN, XPriority.TRACE, message, t);
+      forcedLog(FQCN, XPriority.TRACE, message, t);
   }
 
   /**
@@ -167,7 +169,7 @@ public class XCategory extends Category implements OptionHandler {
     if(hierarchy.isDisabled(XPriority.TRACE_INT))
       return;   
     if(XPriority.TRACE.isGreaterOrEqual(this.getChainedPriority()))
-      callAppenders(new LoggingEvent(instanceFQCN, this, XPriority.TRACE, 
+      callAppenders(new LoggingEvent(FQCN, this, XPriority.TRACE, 
 				     message, null));
   }
 
@@ -177,14 +179,12 @@ public class XCategory extends Category implements OptionHandler {
   // CategoryFactory.
   public static class XFactory implements CategoryFactory {
     
-    static String INSTANCE_FQCN = XCategory.class.getName();
-
     public XFactory() {
     }
 
     public
     Category makeNewCategoryInstance(String name) {
-      return new XCategory(name, INSTANCE_FQCN);
+      return new XCategory(name);
     }
   }
 }
