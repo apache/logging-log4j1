@@ -17,6 +17,6 @@
 ./mycat || die "mycat test FAILED."
 ./l7d || die "L7D test FAILED."
 ./fqcn || die "FQCN test FAILED."
-./extTest || die "Extension support test FAILED."
+./extSupport || die "Extension support test FAILED."
 
 ./unitTest || die "unit test FAILED."
