@@ -61,9 +61,6 @@ public class FileObjectTable extends JPanel {
 					isSelected, hasFocus, row, column);
             JLabel label =((JLabel)component);
 			
-			if(isSelected) {
-				return component;   
-			}
 			switch(column) {
                 case 0:
                 	label.setHorizontalAlignment(JLabel.LEFT);
@@ -72,12 +69,13 @@ public class FileObjectTable extends JPanel {
                     label.setHorizontalAlignment(JLabel.RIGHT);
                     break;
             }
+
 			/**
 			 * Colourize based on row striping
 			 */
-			if ((row % 2) != 0) {
+			if (!isSelected && (row % 2) != 0) {
 				component.setBackground(ChainsawConstants.COLOR_ODD_ROW);
-			} else {
+			} else if(!isSelected){
 				component.setBackground(ChainsawConstants.COLOR_EVEN_ROW);
 			}
 			return component;
