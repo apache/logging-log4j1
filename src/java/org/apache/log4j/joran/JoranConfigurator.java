@@ -40,14 +40,15 @@ import org.apache.log4j.joran.action.PriorityAction;
 import org.apache.log4j.joran.action.RepositoryPropertyAction;
 import org.apache.log4j.joran.action.RootLoggerAction;
 import org.apache.log4j.joran.action.SubstitutionPropertyAction;
-import org.apache.log4j.joran.util.XMLUtil;
+import org.apache.log4j.joran.util.JoranDocument;
 import org.apache.log4j.spi.ErrorItem;
 import org.apache.log4j.spi.LoggerRepository;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
-import java.io.FileInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -56,7 +57,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
@@ -76,165 +76,154 @@ public class JoranConfigurator extends ConfiguratorBase {
   public JoranConfigurator() {
     selfInitialize();
   }
+  
+  protected interface ParseAction {
+      void parse(final SAXParser parser, final DefaultHandler handler) throws SAXException, IOException;
+  }
+  
+  final public void doConfigure(final URL url, final LoggerRepository repository) {
+      ParseAction action = new ParseAction() {
+          public void parse(final SAXParser parser, final DefaultHandler handler) throws SAXException, IOException {
+              parser.parse(url.toString(), handler);
+          }
+      };
+      doConfigure(action, repository);
+  }
+  
+  final public void doConfigure(final String filename, final LoggerRepository repository) {
+      ParseAction action = new ParseAction() {
+          public void parse(final SAXParser parser, final DefaultHandler handler) throws SAXException, IOException {
+              parser.parse(new File(filename), handler);
+          }
+      };
+      doConfigure(action, repository);
+  }
 
-  public void doConfigure(URL url, LoggerRepository repository) {
+  final public void doConfigure(final File file, final LoggerRepository repository) {
+      ParseAction action = new ParseAction() {
+          public void parse(final SAXParser parser, final DefaultHandler handler) throws SAXException, IOException {
+              parser.parse(file, handler);
+          }
+      };
+      doConfigure(action, repository);
+  }
+
+  final public void doConfigure(final InputSource source, final LoggerRepository repository) {
+      ParseAction action = new ParseAction() {
+          public void parse(final SAXParser parser, final DefaultHandler handler) throws SAXException, IOException {
+              parser.parse(source, handler);
+          }
+      };
+      doConfigure(action, repository);
+  }
+
+  final public void doConfigure(final InputStream stream, final LoggerRepository repository) {
+      ParseAction action = new ParseAction() {
+          public void parse(final SAXParser parser, final DefaultHandler handler) throws SAXException, IOException {
+              parser.parse(stream, handler);
+          }
+      };
+      doConfigure(action, repository);
+  }
+  
+  protected void doConfigure(final ParseAction action, final LoggerRepository repository) {
     // This line is needed here because there is logging from inside this method.
     this.repository = repository;
 
     ExecutionContext ec = joranInterpreter.getExecutionContext();
     List errorList = ec.getErrorList();
 
-    int result = XMLUtil.checkIfWellFormed(url, errorList);
-    switch (result) {
-    case XMLUtil.ILL_FORMED:
-    case XMLUtil.UNRECOVERABLE_ERROR:
-      errorList.add(
-        new ErrorItem(
-          "Problem parsing XML document. See previously reported errors. Abandoning all further processing."));
+    SAXParser saxParser = null;
+    try {
+        SAXParserFactory spf = SAXParserFactory.newInstance();
+        spf.setValidating(false);
+        spf.setNamespaceAware(true);
+        saxParser = spf.newSAXParser();
+    } catch (Exception pce) {
+      final String errMsg = "Parser configuration error occured";
+      getLogger(repository).error(errMsg, pce);
+      ec.addError(new ErrorItem(errMsg, pce));
       return;
     }
-
+    
+    JoranDocument document = new JoranDocument(errorList);
+    
+    try {
+        action.parse(saxParser, document);
+    } catch(IOException ie) {
+      final String errMsg = "I/O error occured while parsing xml file";
+      getLogger(repository).error(errMsg, ie);
+      ec.addError(new ErrorItem(errMsg, ie));
+    } catch (Exception ex) {
+      final String errMsg = "Problem parsing XML document. See previously reported errors. Abandoning all further processing.";
+      getLogger(repository).error(errMsg, ex);
+      errorList.add(
+        new ErrorItem(errMsg));
+      return;
+    }
+    
+    ec.pushObject(repository);
     String errMsg;
     try {
-      InputStream in = url.openStream();
-      doConfigure(in, repository);
-      in.close();
-    } catch (IOException ioe) {
-      errMsg = "Could not open [" + url + "].";
-      getLogger(repository).error(errMsg, ioe);
-      ec.addError(new ErrorItem(errMsg, ioe));
+      attachListAppender(repository);
+      
+      document.replay(joranInterpreter);
+
+      getLogger(repository).debug("Finished parsing.");
+    } catch (SAXException e) {
+      // all exceptions should have been recorded already.
+    } finally {
+      detachListAppender(repository);
     }
+    
+    
   }
 
   public List getErrorList() {
     return getExecutionContext().getErrorList();
   }
 
-  /**
-   * Configure a repository from a configuration file passed as parameter.
-   */
-  public void doConfigure(String filename, LoggerRepository repository) {
-    // This line is needed here because there is logging from inside this method.
-    this.repository = repository;
-    getLogger(repository).info(
-      "in JoranConfigurator doConfigure {}", filename);
-
-    ExecutionContext ec = joranInterpreter.getExecutionContext();
-    List errorList = ec.getErrorList();
-
-    int result = XMLUtil.checkIfWellFormed(filename, errorList);
-    switch (result) {
-    case XMLUtil.ILL_FORMED:
-    case XMLUtil.UNRECOVERABLE_ERROR:
-      errorList.add(
-        new ErrorItem(
-          "Problem parsing XML document. See previously reported errors. Abandoning all furhter processing."));
-      return;
-    }
-
-    FileInputStream fis = null;
-    try {
-      fis = new FileInputStream(filename);
-      doConfigure(fis, repository);
-    } catch (IOException ioe) {
-      String errMsg = "Could not open [" + filename + "].";
-      getLogger(repository).error(errMsg, ioe);
-      ec.addError(new ErrorItem(errMsg, ioe));
-    } finally {
-      if (fis != null) {
-        try {
-          fis.close();
-        } catch (java.io.IOException e) {
-          getLogger(repository).error(
-            "Could not close [" + filename + "].", e);
-        }
-      }
-    }
-  }
-
-  /**
-   * Configure a repository from the input stream passed as parameter
-   */
-  public void doConfigure(InputStream in, LoggerRepository repository) {
-    doConfigure(new InputSource(in), repository);
-  }
-
-  /**
-   * All doConfigure methods evenually call this form.
-   * */
-  public void doConfigure(
-    InputSource inputSource, LoggerRepository repository) {
-    this.repository = repository;
-    ExecutionContext ec = joranInterpreter.getExecutionContext();
-    ec.pushObject(repository);
-    String errMsg;
-    try {
-      attachListAppender(repository);
-
-      getLogger(repository).debug("Starting to parse input source.");
-      SAXParserFactory spf = SAXParserFactory.newInstance();
-
-      // we want non-validating parsers
-      spf.setValidating(false);
-      SAXParser saxParser = spf.newSAXParser();
-      
-      saxParser.parse(inputSource, joranInterpreter);
-      getLogger(repository).debug("Finished parsing.");
-    } catch (SAXException e) {
-      // all exceptions should have been recorded already.
-    } catch (ParserConfigurationException pce) {
-      errMsg = "Parser configuration error occured";
-      getLogger(repository).error(errMsg, pce);
-      ec.addError(new ErrorItem(errMsg, pce));
-    } catch (IOException ie) {
-      errMsg = "I/O error occured while parsing xml file";
-      ec.addError(new ErrorItem("Parser configuration error occured", ie));
-    } finally {
-      detachListAppender(repository);
-    }
-  }
 
   protected void selfInitialize() {
     RuleStore rs = new SimpleRuleStore();
-    rs.addRule(new Pattern("log4j:configuration"), new ConfigurationAction());
+    rs.addRule(new Pattern("configuration"), new ConfigurationAction());
     rs.addRule(
-      new Pattern("log4j:configuration/substitutionProperty"),
+      new Pattern("configuration/substitutionProperty"),
       new SubstitutionPropertyAction());
     rs.addRule(
-      new Pattern("log4j:configuration/repositoryProperty"),
+      new Pattern("configuration/repositoryProperty"),
       new RepositoryPropertyAction());
-    rs.addRule(new Pattern("log4j:configuration/plugin"), new PluginAction());
-    rs.addRule(new Pattern("log4j:configuration/logger"), new LoggerAction());
+    rs.addRule(new Pattern("configuration/plugin"), new PluginAction());
+    rs.addRule(new Pattern("configuration/logger"), new LoggerAction());
     rs.addRule(
-      new Pattern("log4j:configuration/logger/level"), new LevelAction());
+      new Pattern("configuration/logger/level"), new LevelAction());
     rs.addRule(
-      new Pattern("log4j:configuration/logger/priority"), new PriorityAction());
+      new Pattern("configuration/logger/priority"), new PriorityAction());
     rs.addRule(
-      new Pattern("log4j:configuration/root"), new RootLoggerAction());
+      new Pattern("configuration/root"), new RootLoggerAction());
     rs.addRule(
-      new Pattern("log4j:configuration/root/level"), new LevelAction());
+      new Pattern("configuration/root/level"), new LevelAction());
     rs.addRule(
-      new Pattern("log4j:configuration/root/priority"), new PriorityAction());
+      new Pattern("configuration/root/priority"), new PriorityAction());
     rs.addRule(
-      new Pattern("log4j:configuration/logger/appender-ref"),
+      new Pattern("configuration/logger/appender-ref"),
       new AppenderRefAction());
     rs.addRule(
-      new Pattern("log4j:configuration/root/appender-ref"),
+      new Pattern("configuration/root/appender-ref"),
       new AppenderRefAction());
     rs.addRule(
-      new Pattern("log4j:configuration/appender"), new AppenderAction());
+      new Pattern("configuration/appender"), new AppenderAction());
     rs.addRule(
-      new Pattern("log4j:configuration/appender/layout"), new LayoutAction());
+      new Pattern("configuration/appender/layout"), new LayoutAction());
     rs.addRule(
-      new Pattern("log4j:configuration/appender/layout/conversionRule"),
+      new Pattern("configuration/appender/layout/conversionRule"),
       new ConversionRuleAction());
+    rs.addRule( 
+         new Pattern("log4j:configuration/jndiSubstitutionProperty"), 
+         new JndiSubstitutionPropertyAction());
     rs.addRule(
-               new Pattern("log4j:configuration/jndiSubstitutionProperty"),
-               new JndiSubstitutionPropertyAction());
-    rs.addRule(
-      new Pattern("log4j:configuration/newRule"), new NewRuleAction());
+      new Pattern("configuration/newRule"), new NewRuleAction());
     rs.addRule(new Pattern("*/param"), new ParamAction());
-
 
     joranInterpreter = new Interpreter(rs);
 
