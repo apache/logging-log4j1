@@ -279,7 +279,6 @@ public class LogPanel extends DockablePanel implements Profileable,
                 }
             });
 
-        detailPanel.setVisible(getPreferenceModel().isDetailPaneVisible());
         detailPanel.setPreferredSize(new Dimension(320, 160));
 
         preferenceModel.addPropertyChangeListener("logTreePanelVisible",
@@ -411,7 +410,6 @@ public class LogPanel extends DockablePanel implements Profileable,
         tableModel.setDisplayRule(ruleMediator);
 
         logTreePanel = new LoggerNameTreePanel(logTreeModel);
-
         /**
          * Set the LoggerRule to be the LoggerTreePanel, as this visual component
          * is a rule itself, and the RuleMediator will automatically listen
@@ -701,16 +699,18 @@ public class LogPanel extends DockablePanel implements Profileable,
         lowerPanel.setBorder(null);
         lowerPanel.setContinuousLayout(true);
 
-        lowerPanel.setOneTouchExpandable(true);
+        detailPanel.setVisible(getPreferenceModel().isDetailPaneVisible());
+        lowerPanel.setOneTouchExpandable(getPreferenceModel().isDetailPaneVisible());
 
         nameTreeAndMainPanelSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         nameTreeAndMainPanelSplit.add(logTreePanel);
         nameTreeAndMainPanelSplit.add(lowerPanel);
-        nameTreeAndMainPanelSplit.setOneTouchExpandable(true);
         nameTreeAndMainPanelSplit.setToolTipText("Still under development....");
         nameTreeAndMainPanelSplit.setDividerLocation(-1);
 
         add(nameTreeAndMainPanelSplit, BorderLayout.CENTER);
+        nameTreeAndMainPanelSplit.setOneTouchExpandable(isLogTreePanelVisible());
+        logTreePanel.setVisible(isLogTreePanelVisible());
 
         /**
          * This listener deals with when the user hides the LogPanel,
@@ -1013,7 +1013,7 @@ public class LogPanel extends DockablePanel implements Profileable,
         tableModel.addEventCountListener(new EventCountListener() {
                 public void eventCountChanged(int currentCount, int totalCount) {
                     if (LogPanel.this.isVisible()) {
-                        statusBar.setSelectedLine(0, currentCount, totalCount);
+                        statusBar.setSelectedLine(table.getSelectedRow()+1, currentCount, totalCount);
                     }
                 }
             });
@@ -1297,7 +1297,7 @@ public class LogPanel extends DockablePanel implements Profileable,
     String getIdentifier() {
         return identifier;
     }
-
+    
     void clearModel() {
         tableModel.clearModel();
 
@@ -1697,7 +1697,7 @@ public class LogPanel extends DockablePanel implements Profileable,
     /* (non-Javadoc)
      * @see org.apache.log4j.chainsaw.EventBatchListener#receiveEventBatch(java.lang.String, java.util.List)
      */
-    public void receiveEventBatch(String identifier, List eventBatchEntrys) {
+    public void receiveEventBatch(String ident, List eventBatchEntrys) {
         /**
          * if this panel is paused, we totally ignore events
          */
@@ -2107,27 +2107,27 @@ public class LogPanel extends DockablePanel implements Profileable,
     }
 
     class ScrollToBottom  {
-        boolean scrollToBottom;
-        boolean bypassed;
+        boolean scroll;
+        boolean bypass;
 
-        public ScrollToBottom(boolean scrollToBottom) {
-            this.scrollToBottom = scrollToBottom;
+        public ScrollToBottom(boolean scrollBottom) {
+            scroll = scrollBottom;
         }
 
-        public void scroll(boolean scrollToBottom) {
-            this.scrollToBottom = scrollToBottom;
+        public void scroll(boolean scrollBottom) {
+            scroll = scrollBottom;
         }
 
         public boolean isScrolled() {
-            return scrollToBottom;
+            return scroll;
         }
 
-        public void bypass(boolean bypassed) {
-            this.bypassed = bypassed;
+        public void bypass(boolean bypassScroll) {
+            bypass = bypassScroll;
         }
 
         public boolean isBypassed() {
-            return bypassed;
+            return bypass;
         }
     }
 }

@@ -78,7 +78,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -111,7 +110,6 @@ import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Priority;
-import org.apache.log4j.UtilLoggingLevel;
 import org.apache.log4j.chainsaw.help.HelpManager;
 import org.apache.log4j.chainsaw.help.Tutorial;
 import org.apache.log4j.chainsaw.helper.SwingHelper;
@@ -166,7 +164,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   private static final String MAIN_WINDOW_X = "main.window.x";
   static final String TABLE_COLUMN_ORDER = "table.columns.order";
   static final String TABLE_COLUMN_WIDTHS = "table.columns.widths";
-  private static final String STATUS_BAR = "StatusBar";
   static final String COLUMNS_EXTENSION = ".columns";
   static final String COLORS_EXTENSION = ".colors";
   private final JFrame preferencesFrame = new JFrame();
@@ -217,7 +214,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    */
   private EventListenerList shutdownListenerList = new EventListenerList();
   private WelcomePanel welcomePanel;
-  private String lookAndFeelClassName;
 
   /**
    * Constructor which builds up all the visual elements of the frame including
@@ -533,7 +529,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     }
 
 
-    List utilList = UtilLoggingLevel.getAllPossibleLevels();
+    //List utilList = UtilLoggingLevel.getAllPossibleLevels();
 
     // TODO: Replace the array list creating with the standard way of
     // retreiving the Level set. (TBD)
@@ -1258,15 +1254,15 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       }
     }
     
-    JWindow progress = new JWindow();
+    JWindow progressWindow = new JWindow();
     final ProgressPanel panel = new ProgressPanel(1, 3, "Shutting down");
-    progress.getContentPane().add(panel);
-    progress.pack();
+    progressWindow.getContentPane().add(panel);
+    progressWindow.pack();
 
     Point p = new Point(getLocation());
     p.move((int) getSize().getWidth() >> 1, (int) getSize().getHeight() >> 1);
-    progress.setLocation(p);
-    progress.setVisible(true);
+    progressWindow.setLocation(p);
+    progressWindow.setVisible(true);
 
     Runnable runnable =
       new Runnable() {
@@ -1383,38 +1379,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     } else {
       return getTabbedPane().getTitleAt(index);
     }
-  }
-
-  /**
-   * Formats the individual elements of an LoggingEvent by ensuring that there
-   * are no null bits, replacing them with EMPTY_STRING
-   *
-   * @param v
-   * @return
-   */
-  private Vector formatFields(Vector v) {
-    for (int i = 0; i < v.size(); i++) {
-      if (v.get(i) == null) {
-        v.set(i, ChainsawConstants.EMPTY_STRING);
-      }
-    }
-
-    return v;
-  }
-
-  /**
-   * Modify the saved Look And Feel - does not update the currently used Look
-   * And Feel
-   *
-   * @param lookAndFeelClassName
-   *                    The FQN of the LookAndFeel
-   */
-  public void setLookAndFeel(String lookAndFeelClassName) {
-    this.lookAndFeelClassName = lookAndFeelClassName;
-    JOptionPane.showMessageDialog(
-      getContentPane(),
-      "Restart application for the new Look and Feel to take effect.",
-      "Look and Feel Updated", JOptionPane.INFORMATION_MESSAGE);
   }
 
   /**
@@ -1643,10 +1607,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
         return;
       }
 
-      EventContainer tableModel;
-      JSortTable table;
-      HashMap map = null;
-
       if (!isGUIFullyInitialized) {
         synchronized (initializationLock) {
           while (!isGUIFullyInitialized) {
@@ -1747,18 +1707,14 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   }
 
   class TabIconHandler implements EventCountListener {
-    private final String ident;
-    private int lastCount;
-    private int currentCount;
 
     //the tabIconHandler is associated with a new tab, and a new tab always
-    //has new events
-    private boolean hasNewEvents = true;
+    //shows the 'new events' icon
+    private boolean receivedNotification = true;
     ImageIcon NEW_EVENTS = new ImageIcon(ChainsawIcons.ANIM_RADIO_TOWER);
     ImageIcon HAS_EVENTS = new ImageIcon(ChainsawIcons.INFO);
 
     public TabIconHandler(final String ident) {
-      this.ident = ident;
 
       new Thread(
         new Runnable() {
@@ -1773,24 +1729,18 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
                 getTabbedPane().setIconAt(
                   getTabbedPane().indexOfTab(ident), null);
 
-                //reset fields so no icon will display
-                lastCount = currentCount;
-                hasNewEvents = false;
               } else {
                 //don't process undocked tabs
                 if (getTabbedPane().indexOfTab(ident) > -1) {
-                  //if the tab is not active and the counts don't match, set the
+                  //if the tab is not active and we received notification, set the
                   // new events icon
-                  if (lastCount != currentCount) {
+                  if (receivedNotification) {
                     getTabbedPane().setIconAt(
                       getTabbedPane().indexOfTab(ident), NEW_EVENTS);
-                    lastCount = currentCount;
-                    hasNewEvents = true;
+                    receivedNotification = false;
                   } else {
-                    if (hasNewEvents) {
                       getTabbedPane().setIconAt(
                         getTabbedPane().indexOfTab(ident), HAS_EVENTS);
-                    }
                   }
                 }
               }
@@ -1813,7 +1763,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
          *                    DOCUMENT ME!
          */
     public void eventCountChanged(int currentCount, int totalCount) {
-      this.currentCount = currentCount;
+      receivedNotification = true;
     }
   }
   /**

@@ -78,7 +78,6 @@ class FileMenu extends JMenu {
   private Action remoteLog4JAction;
   private Action remoteUtilLoggingAction;
   private Action saveAction;
-  private Action saveSettingsAction;
 
   public FileMenu(final LogUI logUI) {
     super("File");
