@@ -93,7 +93,7 @@
   <!-- unit tests.                                                       -->
   <!-- ================================================================= -->  
   <target name="regression" depends="Minimum, Logger, DOM, CustomLevel, 
-                                     CustomLogger"/>
+                                     CustomLogger, PatternLayout"/>
 
   <!-- ================================================================= -->
   <!-- Unit tests test small parts of log4j for logical programming      -->

@@ -28,10 +28,10 @@ public class MinimumTestCase extends TestCase {
 
   //18 fevr. 2002 20:02:41,551 [main] FATAL ERR - Message 0
 
-  static String TTCC_PAT = AbsoluteTDFFilter.ADAT_PAT+ 
+  static String TTCC_PAT = Filter.ABSOLUTE_DATE_AND_TIME_PAT+ 
               " \\[main]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - Message \\d{1,2}";
 
-  static String TTCC2_PAT = AbsoluteTDFFilter.ADAT_PAT+ 
+  static String TTCC2_PAT = Filter.ABSOLUTE_DATE_AND_TIME_PAT+ 
               " \\[main]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - Messages should bear numbers 0 through 23\\.";
 
   //18 fvr. 2002 19:49:53,456
@@ -75,7 +75,7 @@ public class MinimumTestCase extends TestCase {
 
     Transformer.transform("output/ttcc", FILTERED, new Filter[] {cf1, 
 						  new LineNumberFilter(), 
-                                     new AbsoluteTDFFilter(AbsoluteTDFFilter.ADAT_PAT)});
+						   new AbsoluteDateAndTimeFilter()});
 
     assert(Compare.compare(FILTERED, "witness/ttcc"));
   }
