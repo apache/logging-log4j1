@@ -392,11 +392,19 @@ public class PropertyConfigurator extends ConfiguratorBase {
 
       // We don't want to hold references to appenders preventing their
       // garbage collection.
-      registry.clear();
+      clearRegistry();
     } finally {
       detachListAppender(repository);
     }
   }
+
+    /**
+     * Clears the registry so that we don't hold references to Appender
+     * objects, which would prevent their garbage collection.
+     */
+    protected void clearRegistry() {
+      registry.clear();
+    }
 
   /**
      Read configuration options from url <code>configURL</code>.
