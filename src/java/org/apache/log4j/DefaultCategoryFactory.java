@@ -16,6 +16,6 @@ class DefaultCategoryFactory implements LoggerFactory {
     
   public
   Logger makeNewLoggerInstance(String name) {
-    return new Category(name);
+    return new Logger(name);
   }    
 }

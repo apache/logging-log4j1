@@ -7,10 +7,7 @@
 
 package org.apache.log4j.spi;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.Level;
-import org.apache.log4j.NDC;
-import org.apache.log4j.MDC;
+import org.apache.log4j.*;
 
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.Loader;
@@ -42,17 +39,17 @@ public class LoggingEvent implements java.io.Serializable {
 
   private static long startTime = System.currentTimeMillis();
 
-  /** Fully qualified name of the calling logger class. */
-  transient public final String fqnOfLoggerClass;
+  /** Fully qualified name of the calling category class. */
+  transient public final String fqnOfCategoryClass;
 
-  /** The logger of the logging event. The logger field is not
+  /** The category of the logging event. The category field is not
   serialized for performance reasons. 
 
   <p>It is set by the LoggingEvent constructor or set by a remote
   entity after deserialization. */
-  transient public Logger logger;
+  transient public Category logger;
 
-  /** The logger name. */
+  /** The level name. */
   public final String loggerName;
   
   /** Level of logging event. Level cannot be serializable
@@ -117,13 +114,13 @@ public class LoggingEvent implements java.io.Serializable {
      <p>Except {@link #timeStamp} all the other fields of
      <code>LoggingEvent</code> are filled when actually needed.
      <p>
-     @param logger The logger of this event.
+     @param category The category of this event.
      @param level The level of this event.
      @param message  The message of this event.
      @param throwable The throwable of this event.  */
-  public LoggingEvent(String fqnOfLoggerClass, Logger logger, 
+  public LoggingEvent(String fqnOfCategoryClass, Category logger, 
 		      Level level, Object message, Throwable throwable) {
-    this.fqnOfLoggerClass = fqnOfLoggerClass;
+    this.fqnOfCategoryClass = fqnOfCategoryClass;
     this.logger = logger;
     this.loggerName = logger.getName();
     this.level = level;
@@ -143,7 +140,7 @@ public class LoggingEvent implements java.io.Serializable {
   public
   LocationInfo getLocationInformation() {
     if(locationInfo == null) {
-      locationInfo = new LocationInfo(new Throwable(), fqnOfLoggerClass);
+      locationInfo = new LocationInfo(new Throwable(), fqnOfCategoryClass);
     }
     return locationInfo;
   }

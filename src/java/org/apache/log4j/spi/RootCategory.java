@@ -7,8 +7,7 @@
 
 package org.apache.log4j.spi;
 
-import  org.apache.log4j.Category;
-import  org.apache.log4j.Level;
+import  org.apache.log4j.*;
 import  org.apache.log4j.helpers.LogLog;
 
 // Contibutors: Mathias Bogaert
@@ -25,7 +24,7 @@ import  org.apache.log4j.helpers.LogLog;
    @author Ceki G&uuml;lc&uuml;
 
  */
-final public class RootCategory extends Category {
+final public class RootCategory extends Logger {
 
   /**
      The root category names itself as "root". However, the root
@@ -64,4 +63,12 @@ final public class RootCategory extends Category {
       this.level = level;
     }
   }
+
+  final  
+  public
+  void setPriority(Level level) {
+    setLevel(level);
+  }
+
+  
 }

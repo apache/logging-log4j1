@@ -301,9 +301,9 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
       LogLog.debug("Desired category sub-class: ["+className+']');
        try {	 
 	 Class clazz = Loader.loadClass(className);
-	 Method getInstanceMethod = clazz.getMethod("getInstance", 
+	 Method getInstanceMethod = clazz.getMethod("getLogger", 
 						    ONE_STRING_PARAM);
-	 cat = (Category) getInstanceMethod.invoke(null, new Object[] {catName});
+	 cat = (Logger) getInstanceMethod.invoke(null, new Object[] {catName});
        } catch (Exception oops) {
 	 LogLog.error("Could not retrieve category ["+catName+
 		      "]. Reported error follows.", oops);

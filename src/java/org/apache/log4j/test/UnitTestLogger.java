@@ -7,15 +7,8 @@
 
 package org.apache.log4j.test;
 
-import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.Logger;
-import org.apache.log4j.FileAppender;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Appender;
-import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.Level;
-import org.apache.log4j.Hierarchy;
-import org.apache.log4j.spi.RootCategory;
+import org.apache.log4j.*;
+import org.apache.log4j.spi.*;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -75,7 +68,7 @@ public class UnitTestLogger extends TestCase {
   */
   public
   void testAppender1() {
-    cat = Logger.getLogger("test");
+    cat = Category.getInstance("test");
     a1 = new FileAppender();
     a1.setName("testAppender1");             
     cat.addAppender(a1);
@@ -96,7 +89,7 @@ public class UnitTestLogger extends TestCase {
     a2 = new FileAppender();
     a2.setName("testAppender2.2");           
 
-    cat = Logger.getLogger("test");
+    cat = Category.getInstance("test");
     cat.addAppender(a1);
     cat.addAppender(a2);    
     cat.removeAppender("testAppender2.1");
@@ -111,8 +104,8 @@ public class UnitTestLogger extends TestCase {
    */
   public
   void testAdditivity1() {
-    Logger a = Logger.getLogger("a");
-    Logger ab = Logger.getLogger("a.b");
+    Logger a = Category.getInstance("a");
+    Logger ab = Category.getInstance("a.b");
     CountingAppender ca = new CountingAppender();
     a.addAppender(ca);
     
@@ -132,10 +125,10 @@ public class UnitTestLogger extends TestCase {
   public
   void testAdditivity2() {
     
-    Logger a = Logger.getLogger("a");
-    Logger ab = Logger.getLogger("a.b");
-    Logger abc = Logger.getLogger("a.b.c");
-    Logger x   = Logger.getLogger("x");
+    Logger a = Category.getInstance("a");
+    Logger ab = Category.getInstance("a.b");
+    Logger abc = Category.getInstance("a.b.c");
+    Logger x   = Category.getInstance("x");
 
     CountingAppender ca1 = new CountingAppender();
     CountingAppender ca2 = new CountingAppender();
@@ -166,11 +159,11 @@ public class UnitTestLogger extends TestCase {
   public
   void testAdditivity3() {
 
-    Logger root = Logger.getRootLogger();    
-    Logger a = Logger.getLogger("a");
-    Logger ab = Logger.getLogger("a.b");
-    Logger abc = Logger.getLogger("a.b.c");
-    Logger x   = Logger.getLogger("x");
+    Logger root = Category.getRoot();    
+    Logger a = Category.getInstance("a");
+    Logger ab = Category.getInstance("a.b");
+    Logger abc = Category.getInstance("a.b.c");
+    Logger x   = Category.getInstance("x");
 
     CountingAppender caRoot = new CountingAppender();
     CountingAppender caA = new CountingAppender();
@@ -208,7 +201,7 @@ public class UnitTestLogger extends TestCase {
   public
   void testDisable1() {
     CountingAppender caRoot = new CountingAppender();
-    Logger root = Logger.getRootLogger();    
+    Logger root = Category.getRoot();    
     root.addAppender(caRoot);
 
     Hierarchy h = Logger.getDefaultHierarchy();
@@ -247,14 +240,14 @@ public class UnitTestLogger extends TestCase {
 
   public
   void testRB1() {
-    Logger root = Logger.getRootLogger(); 
+    Logger root = Category.getRoot(); 
     root.setResourceBundle(rbUS);
     ResourceBundle t = root.getResourceBundle();
     assertSame(t, rbUS);
 
-    Logger x = Logger.getLogger("x");
-    Logger x_y = Logger.getLogger("x.y");
-    Logger x_y_z = Logger.getLogger("x.y.z");
+    Logger x = Category.getInstance("x");
+    Logger x_y = Category.getInstance("x.y");
+    Logger x_y_z = Category.getInstance("x.y.z");
 
     t = x.getResourceBundle();     assertSame(t, rbUS);
     t = x_y.getResourceBundle();   assertSame(t, rbUS);
@@ -263,14 +256,14 @@ public class UnitTestLogger extends TestCase {
 
   public
   void testRB2() {
-    Logger root = Logger.getRootLogger(); 
+    Logger root = Category.getRoot(); 
     root.setResourceBundle(rbUS);
     ResourceBundle t = root.getResourceBundle();
     assertSame(t, rbUS);
 
-    Logger x = Logger.getLogger("x");
-    Logger x_y = Logger.getLogger("x.y");
-    Logger x_y_z = Logger.getLogger("x.y.z");
+    Logger x = Category.getInstance("x");
+    Logger x_y = Category.getInstance("x.y");
+    Logger x_y_z = Category.getInstance("x.y.z");
 
     x_y.setResourceBundle(rbFR);
     t = x.getResourceBundle();     assertSame(t, rbUS);
@@ -281,14 +274,14 @@ public class UnitTestLogger extends TestCase {
 
   public
   void testRB3() {
-    Logger root = Logger.getRootLogger(); 
+    Logger root = Category.getRoot(); 
     root.setResourceBundle(rbUS);
     ResourceBundle t = root.getResourceBundle();
     assertSame(t, rbUS);
 
-    Logger x = Logger.getLogger("x");
-    Logger x_y = Logger.getLogger("x.y");
-    Logger x_y_z = Logger.getLogger("x.y.z");
+    Logger x = Category.getInstance("x");
+    Logger x_y = Category.getInstance("x.y");
+    Logger x_y_z = Category.getInstance("x.y.z");
 
     x_y.setResourceBundle(rbFR);
     x_y_z.setResourceBundle(rbCH);
@@ -299,9 +292,9 @@ public class UnitTestLogger extends TestCase {
 
   public
   void testExists() {
-    Logger a = Logger.getLogger("a");
-    Logger a_b = Logger.getLogger("a.b");
-    Logger a_b_c = Logger.getLogger("a.b.c");
+    Logger a = Category.getInstance("a");
+    Logger a_b = Category.getInstance("a.b");
+    Logger a_b_c = Category.getInstance("a.b.c");
     
     Logger t;
     t = Logger.exists("xx");    assertNull(t);

@@ -60,7 +60,7 @@ public class Hierarchy implements LoggerRepository {
   private Vector listeners;
 
   Hashtable ht;
-  Category root;
+  Logger root;
   RendererMap rendererMap;
   
   int enableInt;
@@ -76,7 +76,7 @@ public class Hierarchy implements LoggerRepository {
 
    */
   public
-  Hierarchy(Category root) {
+  Hierarchy(Logger root) {
     ht = new Hashtable();
     listeners = new Vector(1);
     this.root = root;
@@ -263,24 +263,24 @@ public class Hierarchy implements LoggerRepository {
   }
 
   public
-  void fireAddAppenderEvent(Logger logger, Appender appender) {
+  void fireAddAppenderEvent(Category cat, Appender appender) {
     if(listeners != null) {
       int size = listeners.size();
       HierarchyEventListener listener;
       for(int i = 0; i < size; i++) {
 	listener = (HierarchyEventListener) listeners.elementAt(i);
-	listener.addAppenderEvent(logger, appender);
+	listener.addAppenderEvent(cat, appender);
       }
     }        
   }
 
-  void fireRemoveAppenderEvent(Logger logger, Appender appender) {
+  void fireRemoveAppenderEvent(Category cat, Appender appender) {
     if(listeners != null) {
       int size = listeners.size();
       HierarchyEventListener listener;
       for(int i = 0; i < size; i++) {
 	listener = (HierarchyEventListener) listeners.elementAt(i);
-	listener.removeAppenderEvent(logger, appender);
+	listener.removeAppenderEvent(cat, appender);
       }
     }        
   }

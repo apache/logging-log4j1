@@ -16,11 +16,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.Hierarchy;
+import org.apache.log4j.*;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.Level;
-import org.apache.log4j.NDC;
 
 // Contributors:  Moses Hohman <mmhohman@rainbow.uchicago.edu>
 
@@ -42,7 +39,7 @@ public class SocketNode implements Runnable {
   Hierarchy hierarchy;
   ObjectInputStream ois;
 
-  static Logger logger = Logger.getLogger(SocketNode.class.getName());
+  static Logger logger = Category.getInstance(SocketNode.class);
 
   public 
   SocketNode(Socket socket, Hierarchy hierarchy) {

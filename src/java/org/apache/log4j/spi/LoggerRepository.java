@@ -1,9 +1,7 @@
 
 package org.apache.log4j.spi;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.Appender;
-
+import org.apache.log4j.*;
 import java.util.Enumeration;
 
 public interface LoggerRepository {
@@ -28,7 +26,7 @@ public interface LoggerRepository {
   Enumeration getCurrentLoggers();
 
   public
-  void fireAddAppenderEvent(Logger logger, Appender appender);
+  void fireAddAppenderEvent(Category cat, Appender appender);
 
   public
   void resetConfiguration();

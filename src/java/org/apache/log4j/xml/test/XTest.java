@@ -11,8 +11,8 @@ import org.apache.log4j.xml.DOMConfigurator;
 import org.apache.log4j.Category;
 import org.apache.log4j.Level;
 
-import org.apache.log4j.xml.examples.XLevel;
-import org.apache.log4j.xml.examples.XCategory;
+
+import org.apache.log4j.xml.examples.*;
 
 
 /**
@@ -21,7 +21,8 @@ import org.apache.log4j.xml.examples.XCategory;
    @author Ceki G&uuml;lc&uuml;
 */
 public class XTest {
-  static XCategory cat = (XCategory) XCategory.getInstance(XTest.class);
+
+  static XLogger cat = (XLogger) XLogger.getInstance(XTest.class.getName());
 
 
   public 
