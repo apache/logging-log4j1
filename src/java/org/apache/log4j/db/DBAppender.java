@@ -80,6 +80,9 @@ public class DBAppender
 
 
   protected void append(LoggingEvent event) {
+    Set propertiesKeys = event.getPropertyKeySet();
+    String[] throwableStrRep = event.getThrowableStrRep();
+    
     try {
       Connection connection = connectionSource.getConnection();
       connection.setAutoCommit(false);
@@ -88,23 +91,26 @@ public class DBAppender
 //      timestamp         BIGINT NOT NULL,
 //      rendered_message  TEXT NOT NULL,
 //      logger_name       VARCHAR(254) NOT NULL,
+//      level_string      VARCHAR(254) NOT NULL,
 //      ndc               TEXT,
 //      thread_name       VARCHAR(254),
 //      id                INT NOT NULL AUTO_INCREMENT PRIMARY KEY
       StringBuffer sql = new StringBuffer();
       sql.append("INSERT INTO logging_event (");
       sql.append("sequence_number, timestamp, rendered_message, ");
-      sql.append("logger_name, ndc, thread_name) ");
-      sql.append(" VALUES (?, ?, ? ,?, ?, ?)");
+      sql.append("logger_name, level_string, ndc, thread_name, flag) ");
+      sql.append(" VALUES (?, ?, ? ,?, ?, ?, ?)");
 
       PreparedStatement insertStatement = connection.prepareStatement(sql.toString());
       insertStatement.setLong(1, event.getSequenceNumber());
       insertStatement.setLong(2, event.getTimeStamp());
       insertStatement.setString(3, event.getRenderedMessage());
       insertStatement.setString(4, event.getLoggerName());
-      insertStatement.setString(5, event.getNDC());
-      insertStatement.setString(6, event.getThreadName());
-
+      insertStatement.setString(5, event.getLevel().toString());
+      insertStatement.setString(6, event.getNDC());
+      insertStatement.setString(7, event.getThreadName());
+      insertStatement.setString(8, computeFlag(event));
+      
       int updateCount = insertStatement.executeUpdate();
 
       if (updateCount != 1) {
@@ -123,15 +129,14 @@ public class DBAppender
 //      event_id        INT NOT NULL,
 //      mapped_key        VARCHAR(254) NOT NULL,
 //      mapped_value      VARCHAR(254),
-      Set mdcKeys = event.getMDCKeySet();
 
-      if (mdcKeys.size() > 0) {
-        String insertMDCSQL = "INSERT INTO mdc (event_id, mapped_key, mapped_value) VALUES (?, ?, ?)";
-        PreparedStatement insertMDCStatement = connection.prepareStatement(insertMDCSQL);
+      if (propertiesKeys.size() > 0) {
+        String insertPropertiesSQL = "INSERT INTO  logging_event_property (event_id, mapped_key, mapped_value) VALUES (?, ?, ?)";
+        PreparedStatement insertMDCStatement = connection.prepareStatement(insertPropertiesSQL);
 
-        for (Iterator i = mdcKeys.iterator(); i.hasNext();) {
+        for (Iterator i = propertiesKeys.iterator(); i.hasNext();) {
           String key = (String)i.next();
-          String value = (String)event.getMDC(key);
+          String value = (String)event.getProperty(key);
           LogLog.debug("id " + eventId + ", key " + key + ", value " + value);
           insertMDCStatement.setInt(1, eventId);
           insertMDCStatement.setString(2, key);
@@ -148,6 +153,11 @@ public class DBAppender
   }
 
 
+  short computeFlag(LoggingEvent event) {
+
+    return 0;
+  }
+  
   public void close() {
     // TODO Auto-generated method st  
   }
