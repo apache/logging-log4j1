@@ -140,16 +140,10 @@ public class PropertyConfigurator extends BasicConfigurator
     <p>This syntax means that an optional <em>priority value</em> can
     be supplied followed by appender names separated by commas.
 
-   
-
-
     <p>The priority value can consist of the string values FATAL,
-    ERROR, WARN, INFO or DEBUG. However, you can specify a custom
-    priority value in the form <code>priority#classname</code>. In
-    that case, the specified class' toPriority method is called to
-    process the specified priority string; if no '#' character is
-    present, then the default {@link Priority} class is used to
-    process the priority value.
+    ERROR, WARN, INFO, DEBUG or a <em>custom priority</em> value. A
+    custom priority value can be specified in the form
+    <code>priority#classname</code>. 
     
     <p>If one of the optional priority value is specified, then the
     root priority is set to the corresponding priority.  If no
@@ -164,15 +158,13 @@ public class PropertyConfigurator extends BasicConfigurator
 
     <p>For non-root categories the syntax is almost the same:
     <pre>
-    log4j.category.category_name=[INHERITED|FATAL|ERROR|WARN|INFO|DEBUG], appenderName, appenderName, ...
+    log4j.category.category_name=[priority|INHERITED], appenderName, appenderName, ...
     </pre>
 
-    <p>Thus, one of the usual priority values FATAL, ERROR, WARN,
-    INFO, or DEBUG can be optionally specified. For any any of these
-    values the named category is assigned the corresponding
-    priority. In addition however, the value INHERITED can be
-    optionally specified which means that named category should
-    inherit its priority from the category hierarchy.
+    <p>The meaning of the priority value is discussed above in
+    relation to the root category. In addition however, the value
+    INHERITED can be optionally specified meaning that the named
+    category should inherit its priority from the category hierarchy.
 
     <p>If no priority value is supplied, then the priority of the
     named category remains untouched.
@@ -192,7 +184,7 @@ public class PropertyConfigurator extends BasicConfigurator
     <p>The user can override any of the {@link
     Hierarchy#disable} family of methods by setting the a key
     "log4j.disableOverride" to <code>true</code> or any value other
-    than false. As in <pre> log4j.disableOverride=true </pre>
+    than false. As in <pre>log4j.disableOverride=true </pre>
 
     <h3>ObjectRenderers</h3>
     
@@ -586,8 +578,6 @@ public class PropertyConfigurator extends BasicConfigurator
       }      
     }          
   }
-
-
 
   Appender parseAppender(Properties props, String appenderName) {
     Appender appender = registryGet(appenderName);

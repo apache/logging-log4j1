@@ -13,9 +13,9 @@ function testCustomCat {
  layout=$1
  
  echo -n "Custom Priority test $TEST - "
- java org.apache.log4j.test.CustomCategoryTest $LCF
+ java -Dlog4j.debug org.apache.log4j.test.CustomCategoryTest $LCF
 
- check witness/customCat.$TEST $OUTPUT; echo "OK."
+ check witness/customCat.$TEST $TEMP; echo "OK."
 }
 
 

@@ -6,10 +6,11 @@ log4j.appender.A1=org.apache.log4j.ConsoleAppender
 log4j.appender.A1.layout=org.apache.log4j.PatternLayout
 log4j.appender.A1.layout.ConversionPattern=%c - %m%n
 
+# Set the priority of "some.cat" to TRACE (defined in
+# org.apache.log4j.xml.examples.XPriority). This will actually have
+# the side effect of instanciating a category object having the name
+# "some.cat" this will cause a ClassCastException if the category
+# object is cast as a MyCategory object.
 
-# Set the priority of "some.cat". This will have the side effect of
-# instantiating the category "some.cat" which will later cause a
-# ClassCastException.
-
-log4j.category.some.cat=DEBUG
+log4j.category.some.cat=TRACE#org.apache.log4j.xml.examples.XPriority
 
