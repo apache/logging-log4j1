@@ -386,6 +386,6 @@ class DefaultEvaluator implements TriggeringEventEvaluator {
      <code>false</code>. */
   public
   boolean isTriggeringEvent(LoggingEvent event) {
-    return event.level.isGreaterOrEqual(Level.ERROR);
+    return event.getLevel().isGreaterOrEqual(Level.ERROR);
   }
 }
