@@ -285,6 +285,8 @@ public class DOMConfigurator implements Configurator {
 	}
       }
       propSetter.activate();
+      LogLog.debug("Adding filter of type ["+filter.getClass()
+		   +"] to appender named ["+appender.getName()+"].");
       appender.addFilter(filter);
     }    
   }

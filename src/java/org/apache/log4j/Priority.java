@@ -70,6 +70,20 @@ public class Priority {
   }
 
   /**
+     Two priorities are equal if their level fields are equal.
+     @since 1.2
+   */
+  public
+  boolean equals(Object o) {
+    if(o instanceof Priority) {
+      Priority r = (Priority) o;
+      return (this.level == r.level);
+    } else {
+      return false;
+    }
+  }
+
+  /**
      Return the syslog equivalent of this priority as an integer.
    */
   public
@@ -79,25 +93,7 @@ public class Priority {
   }
 
 
-  /**
-     Returns the string representation of this priority.
-   */
-  final
-  public
-  String toString() {
-    return levelStr;
-  }
-
-  /**
-     Returns the integer representation of this level.
-   */
-  public
-  final
-  int toInt() {
-    return level;
-  }
-
-    
+   
   /**
      Returns <code>true</code> if this level has a higher or equal
      level than the level passed as argument, <code>false</code>
@@ -125,6 +121,24 @@ public class Priority {
 			   Priority.INFO, Priority.DEBUG};
   }
 
+
+  /**
+     Returns the string representation of this priority.
+   */
+  final
+  public
+  String toString() {
+    return levelStr;
+  }
+
+  /**
+     Returns the integer representation of this level.
+   */
+  public
+  final
+  int toInt() {
+    return level;
+  }
 
   /**
      Convert the string passed as argument to a priority. If the

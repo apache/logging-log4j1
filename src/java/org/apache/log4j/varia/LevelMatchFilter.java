@@ -95,11 +95,11 @@ public class LevelMatchFilter extends Filter {
     }
     
     boolean matchOccured = false;
-    if(this.levelToMatch == event.level) {
+    if(this.levelToMatch.equals(event.level)) {
       matchOccured = true;
     } 
 
-    if(matchOccured) {
+    if(matchOccured) {  
       if(this.acceptOnMatch)
 	  return Filter.ACCEPT;
       else
