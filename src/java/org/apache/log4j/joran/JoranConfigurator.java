@@ -79,6 +79,9 @@ public class JoranConfigurator
   }
 
   public void doConfigure(URL url, LoggerRepository repository) {
+    // This line is needed here because there is logging from inside this method.
+    this.repository = repository;
+
     ExecutionContext ec = joranInterpreter.getExecutionContext();
     String errMsg;
     try {
@@ -96,6 +99,9 @@ public class JoranConfigurator
    * Configure a repository from a configuration file passed as parameter.
    */
   public void doConfigure(String filename, LoggerRepository repository) {
+    // This line is needed here because there is logging from inside this method.
+    this.repository = repository;
+    
     FileInputStream fis = null;
     ExecutionContext ec = joranInterpreter.getExecutionContext();
     getLogger().info("in JoranConfigurator doConfigure "+filename);
