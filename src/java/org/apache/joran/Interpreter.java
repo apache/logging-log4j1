@@ -115,7 +115,7 @@ public class Interpreter extends DefaultHandler {
 
     pattern.push(tagName);
 
-    List applicableActionList = getapplicableActionList(pattern, atts);
+    List applicableActionList = getApplicableActionList(pattern, atts);
 
     if (applicableActionList != null) {
       actionListStack.add(applicableActionList);
@@ -160,7 +160,7 @@ public class Interpreter extends DefaultHandler {
     return tagName;
   }
 
-  public void addImplcitAction(ImplicitAction ia) {
+  public void addImplicitAction(ImplicitAction ia) {
     implicitActions.add(ia);
   }
 
@@ -189,7 +189,7 @@ public class Interpreter extends DefaultHandler {
   /**
    * Return the list of applicable patterns for this
   */
-  List getapplicableActionList(Pattern pattern, Attributes attributes) {
+  List getApplicableActionList(Pattern pattern, Attributes attributes) {
     List applicableActionList = ruleStore.matchActions(pattern);
 
     //logger.debug("set of applicable patterns: " + applicableActionList);

@@ -292,7 +292,7 @@ public class InterpreterTest extends TestCase {
     rs.addRule(new Pattern("*/param"), new ParamAction());
 
     Interpreter jp = new Interpreter(rs);
-    jp.addImplcitAction(new NestComponentIA());
+    jp.addImplicitAction(new NestComponentIA());
 
     ExecutionContext ec = jp.getExecutionContext();
     HashMap omap = ec.getObjectMap();
@@ -337,7 +337,7 @@ public class InterpreterTest extends TestCase {
     rs.addRule(new Pattern("*/param"), new ParamAction());
 
     Interpreter jp = new Interpreter(rs);
-    jp.addImplcitAction(new NestComponentIA());
+    jp.addImplicitAction(new NestComponentIA());
 
     ExecutionContext ec = jp.getExecutionContext();
     HashMap omap = ec.getObjectMap();

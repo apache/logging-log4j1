@@ -57,7 +57,7 @@ public class PrintMe {
     // --------------------------+
     // Add an implicit action.   |
     // --------------------------+
-    ji.addImplcitAction(new PrintMeImplicitAction());
+    ji.addImplicitAction(new PrintMeImplicitAction());
     
     // Create a SAX parser
     SAXParserFactory spf = SAXParserFactory.newInstance();
