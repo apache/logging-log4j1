@@ -73,9 +73,11 @@ public class ErrorItem {
 
   public String toString() {
     String str =
-      "Reported error: \"" + message + "\" at line " + lineNumber + " column "
-      + colNumber;
-
+      "Reported error: \"" + message + "\"";
+    
+    if(lineNumber != -1) {
+      str += " at line " + lineNumber + " column " + colNumber;
+    }
     if (exception != null) {
       str += (" with exception " + exception);
     }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd" [
+<!DOCTYPE log4j:configuration  [
   <!ENTITY XCategory "org.log4j.xml.examples.XCategory">
 ]>
 
