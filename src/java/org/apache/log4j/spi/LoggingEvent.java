@@ -303,7 +303,7 @@ public class LoggingEvent implements java.io.Serializable {
       } else {
 	Method m = (Method) methodCache.get(className);	
 	if(m == null) {
-	  Class clazz = Loader.loadClass(className);
+	  Class clazz = Class.forName(className);
 	  m = clazz.getDeclaredMethod(TO_LEVEL, TO_LEVEL_PARAMS);
 	  methodCache.put(className, m);
 	}      

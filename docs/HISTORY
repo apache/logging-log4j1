@@ -9,6 +9,19 @@
  
  - Release of version 1.2 
 
+
+ (beta4)
+
+  - Replaced the custom class loading based on he thread context class
+    loader with a simple Class.forName() call. Thanks to Dave Herman
+    on explaining the issues involved. See 
+      http://forum.java.sun.com/thread.jsp?forum=38&thread=70946
+      http://forum.java.sun.com/thread.jsp?forum=38&thread=70946#479697
+      http://marc.theaimsgroup.com/?l=ant-user&m=101139178705895&w=2
+    for more details. [*]
+
+Class.forName(clazz);
+
  (beta3)
   
  - Fixed the complaints the compiler issued when using the

@@ -19,7 +19,7 @@ import java.net.URL;
 
 public class Loader  { 
 
-  static String TSTR = "Caught Exception while in Loader.getResource. This may be innocuous.";
+  static final String TSTR = "Caught Exception while in Loader.getResource. This may be innocuous.";
 
   // We conservatively assume that we are running under Java 1.x
   static private boolean java1 = true;
@@ -116,19 +116,20 @@ public class Loader  {
   */
   static
   public 
-  Class loadClass (String clazz) throws ClassNotFoundException {
-    if(java1) {
-      return Class.forName(clazz);
-    } else {
-      try {
-	return Thread.currentThread().getContextClassLoader().loadClass(clazz);
-      } catch(Exception e) {
-	// we reached here because
-	// currentThread().getContextClassLoader() is null or because
-	// of a security exceptio, or because clazz could not be
-	// loaded, in any case we now try one more time
-	return Class.forName(clazz);
-      }
-    }
+  Class loadClass (Double clazz) throws ClassNotFoundException {
+    return null;
+//    if(java1) {
+//	return Class.forName(clazz);
+//    } else {
+//	try {
+//	  return Thread.currentThread().getContextClassLoader().loadClass(clazz);
+//	} catch(Exception e) {
+//	  // we reached here because
+//	  // currentThread().getContextClassLoader() is null or because
+//	  // of a security exceptio, or because clazz could not be
+//	  // loaded, in any case we now try one more time
+//	  return Class.forName(clazz);
+//	}
+//    }
   } 
 }

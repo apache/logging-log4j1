@@ -161,7 +161,7 @@ public class DOMConfigurator implements Configurator {
     String className = subst(appenderElement.getAttribute(CLASS_ATTR));
     LogLog.debug("Class name: [" + className+']');    
     try {
-      Object instance 	= Loader.loadClass(className).newInstance();
+      Object instance 	= Class.forName(className).newInstance();
       Appender appender	= (Appender)instance;
       PropertySetter propSetter = new PropertySetter(appender);
 
@@ -309,7 +309,7 @@ public class DOMConfigurator implements Configurator {
     else {
       LogLog.debug("Desired logger sub-class: ["+className+']');
        try {	 
-	 Class clazz = Loader.loadClass(className);
+	 Class clazz = Class.forName(className);
 	 Method getInstanceMethod = clazz.getMethod("getLogger", 
 						    ONE_STRING_PARAM);
 	 cat = (Logger) getInstanceMethod.invoke(null, new Object[] {catName});
@@ -440,7 +440,7 @@ public class DOMConfigurator implements Configurator {
     String className = subst(layout_element.getAttribute(CLASS_ATTR));
     LogLog.debug("Parsing layout of class: \""+className+"\"");		 
     try {
-      Object instance 	= Loader.loadClass(className).newInstance();
+      Object instance 	= Class.forName(className).newInstance();
       Layout layout   	= (Layout)instance;
       PropertySetter propSetter = new PropertySetter(layout);
       
@@ -505,7 +505,7 @@ public class DOMConfigurator implements Configurator {
       } else {
 	LogLog.debug("Desired Level sub-class: ["+className+']');
 	try {	 
-	  Class clazz = Loader.loadClass(className);
+	  Class clazz = Class.forName(className);
 	  Method toLevelMethod = clazz.getMethod("toLevel", 
 						    ONE_STRING_PARAM);
 	  Level pri = (Level) toLevelMethod.invoke(null, 
