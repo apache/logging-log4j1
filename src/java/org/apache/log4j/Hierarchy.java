@@ -15,6 +15,7 @@ package org.apache.log4j;
 import java.util.Hashtable;
 import java.util.Enumeration;
 import java.util.Vector;
+import java.util.ArrayList;
 
 import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.HierarchyEventListener;
@@ -57,8 +58,8 @@ import org.apache.log4j.helpers.LogLog;
 public class Hierarchy implements LoggerRepository, RendererSupport {
 
   private LoggerFactory defaultFactory;
-  private Vector repositoryEventListeners;
-  private Vector loggerEventListeners;
+  private ArrayList repositoryEventListeners;
+  private ArrayList loggerEventListeners;
 
   Hashtable ht;
   Logger root;
@@ -79,8 +80,8 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   public
   Hierarchy(Logger root) {
     ht = new Hashtable();
-    repositoryEventListeners = new Vector(1);
-    loggerEventListeners = new Vector(1);
+    repositoryEventListeners = new ArrayList(1);
+    loggerEventListeners = new ArrayList(1);
     this.root = root;
     // Enable all level levels by default.
     setThreshold(Level.ALL);
@@ -102,12 +103,14 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
     @since 1.3*/
   public void addLoggerRepositoryEventListener(
     LoggerRepositoryEventListener listener) {
-      
-    if(repositoryEventListeners.contains(listener)) {
-      LogLog.warn(
-        "Ignoring attempt to add a previously registerd LoggerRepositoryEventListener.");
-    } else {
-      repositoryEventListeners.addElement(listener);
+    
+    synchronized(repositoryEventListeners) {
+      if(repositoryEventListeners.contains(listener)) {
+        LogLog.warn(
+          "Ignoring attempt to add a previously registerd LoggerRepositoryEventListener.");
+      } else {
+        repositoryEventListeners.add(listener);
+      }
     }
   }
     
@@ -117,11 +120,13 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   public void removeLoggerRepositoryEventListener(
     LoggerRepositoryEventListener listener) {
     
-    if(!repositoryEventListeners.contains(listener)) {
-      LogLog.warn(
-        "Ignoring attempt to remove a non-registered LoggerRepositoryEventListener.");
-    } else {
-      repositoryEventListeners.remove(listener);
+    synchronized(repositoryEventListeners) {
+      if(!repositoryEventListeners.contains(listener)) {
+        LogLog.warn(
+          "Ignoring attempt to remove a non-registered LoggerRepositoryEventListener.");
+      } else {
+        repositoryEventListeners.remove(listener);
+      }
     }
   }
 
@@ -130,11 +135,13 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
     will be called when repository events occur.
     @since 1.3*/
   public void addLoggerEventListener(LoggerEventListener listener) {
-    if(loggerEventListeners.contains(listener)) {
-      LogLog.warn(
-        "Ignoring attempt to add a previously registerd LoggerEventListener.");
-    } else {
-      loggerEventListeners.addElement(listener);
+    synchronized(loggerEventListeners) {
+      if(loggerEventListeners.contains(listener)) {
+        LogLog.warn(
+          "Ignoring attempt to add a previously registerd LoggerEventListener.");
+      } else {
+        loggerEventListeners.add(listener);
+      }
     }
   }
     
@@ -142,12 +149,13 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
     Remove a {@link LoggerEventListener} from the repository.
     @since 1.3*/
   public void removeLoggerEventListener(LoggerEventListener listener) {
-    
-    if(!loggerEventListeners.contains(listener)) {
-      LogLog.warn(
-        "Ignoring attempt to remove a non-registered LoggerEventListener.");
-    } else {
-      loggerEventListeners.remove(listener);
+    synchronized(loggerEventListeners) {
+      if(!loggerEventListeners.contains(listener)) {
+        LogLog.warn(
+          "Ignoring attempt to remove a non-registered LoggerEventListener.");
+      } else {
+        loggerEventListeners.remove(listener);
+      }
     }
   }
 
@@ -223,13 +231,10 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
     @param appender The appender added to the logger.
     @since 1.3*/
   public void fireAddAppenderEvent(Logger logger, Appender appender) {
-    if(loggerEventListeners != null) {
-      int size = loggerEventListeners.size();
-      LoggerEventListener listener;
-      for(int i = 0; i < size; i++) {
-        listener = (LoggerEventListener)loggerEventListeners.elementAt(i);
-        listener.appenderAddedEvent(logger, appender);
-      }
+    ArrayList list = copyListenerList(loggerEventListeners);
+    int size = list.size();
+    for(int i = 0; i < size; i++) {
+      ((LoggerEventListener)list.get(i)).appenderAddedEvent(logger, appender);
     }
   }
 
@@ -240,13 +245,10 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
     @param appender The appender removed from the logger.
     @since 1.3*/
   public void fireRemoveAppenderEvent(Logger logger, Appender appender) {
-    if(loggerEventListeners != null) {
-      int size = loggerEventListeners.size();
-      LoggerEventListener listener;
-      for(int i = 0; i < size; i++) {
-        listener = (LoggerEventListener)loggerEventListeners.elementAt(i);
-        listener.appenderRemovedEvent(logger, appender);
-      }
+    ArrayList list = copyListenerList(loggerEventListeners);
+    int size = list.size();
+    for(int i = 0; i < size; i++) {
+      ((LoggerEventListener)list.get(i)).appenderRemovedEvent(logger, appender);
     }
   }
 
@@ -256,13 +258,10 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
     @param logger The logger which changed levels.
     @since 1.3*/
   public void fireLevelChangedEvent(Logger logger) {
-    if(loggerEventListeners != null) {
-      int size = loggerEventListeners.size();
-      LoggerEventListener listener;
-      for(int i = 0; i < size; i++) {
-        listener = (LoggerEventListener)loggerEventListeners.elementAt(i);
-        listener.levelChangedEvent(logger);
-      }
+    ArrayList list = copyListenerList(loggerEventListeners);
+    int size = list.size();
+    for(int i = 0; i < size; i++) {
+      ((LoggerEventListener)list.get(i)).levelChangedEvent(logger);
     }
   }
 
@@ -271,17 +270,26 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
     {@link LoggerRepositoryEventListener}. 
     @since 1.3*/
   public void fireConfigurationChangedEvent() {
-    if(repositoryEventListeners != null) {
-      int size = repositoryEventListeners.size();
-      LoggerRepositoryEventListener listener;
-      for(int i = 0; i < size; i++) {
-        listener = (LoggerRepositoryEventListener)
-          repositoryEventListeners.elementAt(i);
-        listener.configurationChangedEvent(this);
-      }
+    ArrayList list = copyListenerList(repositoryEventListeners);
+    int size = list.size();
+    for(int i = 0; i < size; i++) {
+      ((LoggerRepositoryEventListener)list.get(i)).configurationChangedEvent(this);
     }
   }
 
+  /**
+    Returns a copy of the given listener vector. */
+  private ArrayList copyListenerList(ArrayList list) {
+    ArrayList listCopy = null;
+    synchronized(list) {
+      int size = list.size();
+      listCopy = new ArrayList(size);
+      for (int x = 0; x < size; x++) {
+        listCopy.add(list.get(x));
+      }
+    }
+    return listCopy;
+  }
   /**
      Returns a {@link Level} representation of the <code>enable</code>
      state.
@@ -456,14 +464,10 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
     rendererMap.clear();
 
     // inform the listeners that the configuration has been reset
-    if(repositoryEventListeners != null) {
-      int size = repositoryEventListeners.size();
-      LoggerRepositoryEventListener listener;
-      for(int i = 0; i < size; i++) {
-        listener = 
-          (LoggerRepositoryEventListener)repositoryEventListeners.elementAt(i);
-        listener.configurationResetEvent(this);
-      }
+    ArrayList list = copyListenerList(repositoryEventListeners);
+    int size = list.size();
+    for(int i = 0; i < size; i++) {
+      ((LoggerRepositoryEventListener)list.get(i)).configurationResetEvent(this);
     }
   }
 
@@ -498,14 +502,10 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
     // let listeners know about shutdown if this is
     // not being done as part of a reset.
     if (!doingReset) {
-      if(repositoryEventListeners != null) {
-        int size = repositoryEventListeners.size();
-        LoggerRepositoryEventListener listener;
-        for(int i = 0; i < size; i++) {
-          listener = 
-            (LoggerRepositoryEventListener)repositoryEventListeners.elementAt(i);
-          listener.shutdownEvent(this);
-        }
+      ArrayList list = copyListenerList(repositoryEventListeners);
+      int size = list.size();
+      for(int i = 0; i < size; i++) {
+        ((LoggerRepositoryEventListener)list.get(i)).shutdownEvent(this);
       }
     }
     
