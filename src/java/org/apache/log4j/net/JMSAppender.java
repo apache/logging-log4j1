@@ -3,7 +3,7 @@
  *
  * This software is published under the terms of the Apache Software
  * License version 1.1, a copy of which has been included with this
- * distribution in the LICENSE.APL file.  */
+ * distribution in the LICENSE.txt file.  */
 
 package org.apache.log4j.net;
 
@@ -33,6 +33,7 @@ public class JMSAppender extends AppenderSkeleton {
   TopicPublisher  topicPublisher;
   String topicBindingName;
   String tcfBindingName;
+  boolean locationInfo;
 
   public 
   JMSAppender() {
@@ -72,6 +73,16 @@ public class JMSAppender extends AppenderSkeleton {
   public
   String getTopicBindingName() {
     return topicBindingName;
+  }
+
+
+  /**
+     Returns value of the <b>LocationInfo</b> property which
+     determines whether location (stack) info is sent to the remote
+     subscriber. */
+  public
+  boolean getLocationInfo() {
+    return locationInfo;
   }
   
   public
@@ -164,6 +175,9 @@ public class JMSAppender extends AppenderSkeleton {
 
     try {
       ObjectMessage msg = topicSession.createObjectMessage();
+      if(locationInfo) {
+	event.getLocationInformation();	
+      } 
       msg.setObject(event);
       topicPublisher.publish(msg);
     } catch(Exception e) {
@@ -171,6 +185,16 @@ public class JMSAppender extends AppenderSkeleton {
 			 ErrorCode.GENERIC_FAILURE);
     }
   }
+
+  /** 
+      If true, the information sent to the remote subscriber will include
+      location information. By default no location information is sent
+      to the subscriber.  */
+  public
+  void setLocationInfo(boolean locationInfo) {
+    this.locationInfo = locationInfo;
+  }
+  
 
   public
   boolean requiresLayout() {

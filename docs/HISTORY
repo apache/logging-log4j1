@@ -33,30 +33,12 @@
    extends Level to preserve backward compatibility. [*]
 
  - The Logger class replaced the Category class. Category class now
-   extends Logger to preserve backward compatibility. [*]
+   extends Logger to preserve backward compatibility. We proudly mark
+   this change with a single star for 100% compatibility. [*]
 
  - The Category.assert method has been replaced by
-   Category.assertLog.  This change was mecessary because assert is a
-   language reserved word in JDK 1.4. [**]
-
- - Added buffered IO capability to FileAppender and subclasses. [*]
-
- - Added event reporting capability to the Hierachy class.
- 
- - Added new system property "log4j.configuratorClass". This property
-   allows the user to specify the custom configurator at the default
-   initialization phase. This property replaces the previous
-   interpretation of the reference part of "log4j.configuration" 
-   as the custom configurator class. This interpretation was sometimes
-   erroneous and caused headaches. [*]
-   
- - Introduced the Mapped Diagnostic Context or MDC class. This class
-   is similar to the NDC except that the diagnistic context is based
-   on a map instead of a stack. Moreover the MDC is automatically
-   inherited by child threads under JDK 1.2 and above. [*]
-
- - Corrected a performance bug in the NDC class as observed by Dan
-   Milstein and independently by Ray Millard. [*]
+   Category.assertLog.  This change was necessary because assert is a
+   language reserved word in JDK 1.4. [*/**]
 
  - Removed deprecated methods setOptions and getOptionStrings defined
    in the org.apache.log4j.spi.OptionHandler interface. This interface
@@ -67,6 +49,28 @@
 
  - The disable(Level) methods in Hierarchy have been removed and been
    replaced by threshold methods. [**]
+
+ - Added buffered IO capability to FileAppender and subclasses. [*]
+ 
+ - The location information (or stack information) was not correctly
+   transmitted by JMSAppender. [*]
+
+ - Added event reporting capability to the Hierarchy class.
+ 
+ - Added new system property "log4j.configuratorClass". This property
+   allows the user to specify the custom configurator at the default
+   initialization phase. This property replaces the previous
+   interpretation of the reference part of "log4j.configuration" 
+   as the custom configurator class. This interpretation was sometimes
+   erroneous and caused headaches. [*]
+   
+ - Introduced the Mapped Diagnostic Context or MDC class. This class
+   is similar to the NDC except that the diagnostic context is based
+   on a map instead of a stack. Moreover the MDC is automatically
+   inherited by child threads under JDK 1.2 and above. [*]
+
+ - Corrected a performance bug in the NDC class as observed by Dan
+   Milstein and independently by Ray Millard. [*]
 
  - Removed deprecated methods disable(Priority), disableAll,
    disableDebug, disableInfo and enableAll in BasicConfigurator. [*]
