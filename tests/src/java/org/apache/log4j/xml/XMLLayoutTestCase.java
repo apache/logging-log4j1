@@ -119,6 +119,7 @@ public class XMLLayoutTestCase extends TestCase {
       TEMP, FILTERED,
       new Filter[] { new LineNumberFilter(), 
           new JunitTestRunnerFilter(),
+          new SunReflectFilter(),
           new XMLTimestampFilter(),  
           new XMLSequenceNumberFilter() });
     assertTrue(Compare.compare(FILTERED, "witness/xmlLayout.null"));
