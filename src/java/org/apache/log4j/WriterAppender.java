@@ -30,6 +30,20 @@ import org.apache.log4j.helpers.TracerPrintWriter;
    @author Ceki G&uuml;lc&uuml;
    @since 1.1 */
 public class WriterAppender extends AppenderSkeleton {
+
+  /**
+     A string constant used in naming the option for immediate
+     flushing of the output stream at the end of each append
+     operation. Current value of this string constant is
+     <b>ImmediateFlush</b>.
+
+     <p>Note that all option keys are case sensitive.     
+
+     @deprecated We now use JavaBeans introspection to configure
+     components. Options strings are no longer needed. 
+  */
+  public static final String IMMEDIATE_FLUSH_OPTION = "ImmediateFlush";
+
   /**
      Immediate flush means that the undelying writer or output stream
      will be flushed at the end of each append operation. Immediate

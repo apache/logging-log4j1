@@ -26,6 +26,20 @@ import org.apache.log4j.helpers.LogLog;
    @author Ceki G&uuml;lc&uuml; */
 public abstract class AppenderSkeleton implements Appender, OptionHandler {
 
+  /**
+     A string constant used in naming the option for setting the
+     threshold for the appender. See also {@link #setThreshold
+     setThreshold} method. Current value of this string constant is
+     <b>Threshold</b>.
+
+     @deprecated Options are now handled using the JavaBeans paradigm.
+     This constant is not longer needed and will be removed in the
+     <em>near</em> term.
+     
+  */
+  public static final String THRESHOLD_OPTION = "Threshold";
+
+
   /** The layout variable does not need to be set if the appender
       implementation has its own layout. */
   protected Layout layout;
@@ -53,16 +67,6 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
    */
   protected boolean closed = false;
 
-  /**
-     A string constant used in naming the option for setting the
-     threshold for the appender. See also {@link #setThreshold
-     setThreshold} method. Current value of this string constant is
-     <b>Threshold</b>.
-
-     <p>Note that all option keys are case sensitive.
-     
-  */
-  public static final String THRESHOLD_OPTION = "Threshold";
 
   /**
      Derived appenders should override this method if option structure
@@ -86,17 +90,6 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
       tailFilter = newFilter;    
     }
   }
-
-  /**
-     Returns the head Filter.
-     
-     @since 1.1
-  */
-  public
-  Filter getFilter() {
-    return headFilter;
-  }
-
 
   /**
      Subclasses of <code>AppenderSkeleton</code> should imlement this
@@ -148,6 +141,16 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
   }
 
 
+  /**
+     Returns the head Filter.
+     
+     @since 1.1
+  */
+  public
+  Filter getFilter() {
+    return headFilter;
+  }
+
   /** 
       Return the first filter in the filter chain for this
       Appender. The return value may be <code>null</code> if no is
@@ -161,6 +164,15 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
   }
 
   /**
+     Returns the layout of this appender. The value may be null.
+  */
+  public
+  Layout getLayout() {
+    return layout;
+  }
+
+
+  /**
      Returns the name of this FileAppender.
    */
   public
@@ -168,6 +180,32 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
   String getName() {
     return this.name;
   }
+
+  /**
+     Returns the string array {{@link #THRESHOLD_OPTION}}.
+
+     <p>Configurable appenders must override this method to return the
+     additional options they accept.  
+     
+     @deprecated We now use JavaBeans introspection to configure
+     components. Options strings are no longer needed. */
+  public
+  String[] getOptionStrings() {
+    return new String[] {THRESHOLD_OPTION};
+  }
+
+  
+
+  /**
+     Returns this appenders threshold priority. See the {@link
+     #setThreshold} method for the meaning of this option.
+     
+     @since 1.1 */
+  public
+  Priority getThreshold() {
+    return threshold;
+  }
+
 
   /**
      Check whether the message priority is below the appender's
@@ -239,13 +277,6 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
     this.layout = layout;
   }
 
-  /**
-     Returns the layout of this appender. The value may be null.
-  */
-  public
-  Layout getLayout() {
-    return layout;
-  }
   
   /**
      Set the name of this Appender.
@@ -257,14 +288,9 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
 
 
   /**
-     All classes derived from {@link AppenderSkeleton} admit the
-     <b>Threshold</b> option. The value of this option is a priority
-     string, such as "DEBUG", "INFO" and so on.  All log events with
-     lower priority than the threshold priority are ignored by the
-     appender.  
-
-     <p>Configurable Appenders should override this method if they
-     admit additional options.  */
+     @deprecated Use the setter method for the option directly instead
+     of the generic <code>setOption</code> method. 
+  */
   public
   void setOption(String key, String value) {
     if(key.equalsIgnoreCase(THRESHOLD_OPTION)) {
@@ -284,15 +310,5 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
   public
   void setThreshold(Priority threshold) {
     this.threshold = threshold;
-  }
-  
-  /**
-     Returns this appenders threshold priority.
-     
-     @since 1.1
-   */
-  public
-  Priority getThreshold() {
-    return threshold;
-  }
+  }  
 }
