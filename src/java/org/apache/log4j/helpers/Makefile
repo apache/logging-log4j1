@@ -23,7 +23,7 @@ JSOURCES:=LogLog.java\
         VersionHelper.java\
         VersionHelper11.java\
         VersionHelper20.java\
-
+        ThreadLocalMap.java\
 
 SUBDIRS := 
 
