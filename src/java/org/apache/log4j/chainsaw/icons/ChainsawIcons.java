@@ -109,6 +109,17 @@ public class ChainsawIcons
       BASE_ICON_PATH + "Bean16.gif");
   public static final Icon ICON_PREFERENCES = new ImageIcon(PREFERENCES);
   public static final Icon ICON_DOCK = new ImageIcon(DOCK);
+    
+  public static final URL COPY =
+    ChainsawIcons.class.getClassLoader().getResource(
+      BASE_ICON_PATH + "Copy16.gif");
+
+    public static final URL CUT =
+      ChainsawIcons.class.getClassLoader().getResource(
+        BASE_ICON_PATH + "Cut16.gif");
+    
+    public static final Icon ICON_COPY = new ImageIcon(COPY);
+    public static final Icon ICON_CUT = new ImageIcon(CUT);
   public static final Icon ICON_UNDOCK = new ImageIcon(UNDOCK);
   public static final Icon ICON_DEBUG = new ImageIcon(DEBUG);
   public static final URL WINDOW_ICON =
