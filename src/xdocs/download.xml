@@ -3,7 +3,7 @@
 
   <properties>
     <author email="cgu@apache.org">Ceki Gulcu</author>
-    <title>log4j project</title>
+    <title>Download</title>
   </properties>
 
 <body>
@@ -34,7 +34,7 @@
 
 <section name="log4j version 1.1">
 
-<p>Downlaod version 1.1 including <i>full source code</i>, class files
+<p>Download version 1.1 including <i>full source code</i>, class files
 and documentation in
 <a href="../jakarta-log4j-1.1.tar.gz"><b>TAR.GZ</b></a> format or in
 <a href="../jakarta-log4j-1.1.zip"><b>ZIP</b></a> format. You may
