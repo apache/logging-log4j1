@@ -103,7 +103,7 @@ public interface LoggerRepository {
       parameter instead of a <code>Level</code>. */
   public void setThreshold(String val);
 
-  public void emitNoAppenderWarning(Category cat);
+  public void emitNoAppenderWarning(Logger logger);
   
   /**
      Get the repository-wide threshold. See {@link
