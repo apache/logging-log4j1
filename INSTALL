@@ -44,27 +44,20 @@ log4j dependencies
 The log4j distribution comes with pre-compiled classes. Log4j is based
 on JDK 1.1 with the following exceptions:
 
+    ---------------------
     Package org.log4j.xml 
     ---------------------
+
+    The DOMConfigurator is based on the DOM Level 1 API. The
+    DOMConfigurator.configure(Element) method will work with any
+    XML parser that will pass it a DOM tree.
     
-    This package requires DOM Level 2 Java bindings. These can be
-    obtained from
-  
-    http://www.w3.org/TR/1999/WD-DOM-Level-2-19990923/java-binding.html
-  
-    To actually use the DOMConfigurator you will need an XML parser
-    based on the DOM interface. You can use the Xerces parser from
-    http://xml.apache.org/ which also includes the DOM level 2 Java
-    language bindings.
+    The DOMConfigurator.configure(String filename) method and its variants
+    require a JAXP compatible XMLparser, for example the Apache Xerces
+    parser. Compiling the DOMConfigurator requires the presence of a
+    JAXP parser in the classpath.
 
-    The DOMConfigurator needs a JAXP and DOM Level 2 compatible parser
-    to compile. We recommend the Apache Xerces compiler.
-
-    TextPaneAppender
-    ----------------
-
-    The TextPaneAppender is based on Swing. 
-
+    ------------
     SMTPAppender
     ------------
 
@@ -78,7 +71,13 @@ on JDK 1.1 with the following exceptions:
 
 	http://java.sun.com/beans/glasgow/jaf.html
 
+    ----------------
+    TextPaneAppender
+    ----------------
 
+    The TextPaneAppender is based on Swing. 
+
+    -----------------------
     JUnit testing framework
     -----------------------
 
@@ -88,7 +87,7 @@ on JDK 1.1 with the following exceptions:
 
           http://www.junit.org
 
-
+==============
 Building log4j
 ==============
     
@@ -102,4 +101,4 @@ environment included with the package. In that case, you need to
 create a make.loc file in the make directory. See the files
 make/README and make/TUTORIAL for further details.
 
-In case of problems please contact "Ceki Gulcu" <cgu@urbanet.ch>.
+In case of problems please contact "Ceki Gulcu" <ceki@apache.org>.

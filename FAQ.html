@@ -103,18 +103,29 @@ not be performed.
 
   <p><li>Log4j is JDK 1.1.x compatible.
     
-<p><li>The <code>org.log4j.xml</code> package requires the DOM level 2
-API. The <code>configure(filename)</code> method in
-<code>org.log4j.DOMConfigurator</code> requires a <a
-href="http://java.sun.com/xml/">JAXP</a> and DOM Level 2 compatible
-XML parser. We recommend the <a href="http://xml.apache.org/">Apache
-Xerces</a> parser.
+<p><li>The DOMConfigurator is based on the DOM Level 1 API. The
+    DOMConfigurator.configure(Element) method will work with any
+    XML parser that will pass it a DOM tree.
+    
+    <p>The DOMConfigurator.configure(String filename) method and its
+    variants require a JAXP compatible XML parser, for example <a
+    href="http://xml.apache.org/">Xerces</a>. Similarly, compiling the
+    DOMConfigurator requires the presence of a JAXP parser in the
+    classpath.
+
+<p><li>The <code>org.apache.log4j.net.SMTPAppender</code> relies on
+    the <a href="http://java.sun.com/products/javamail/">JavaMail
+    API</a>. It has been tested with JavaMail API version 1.2. The
+    JavaMail API requires the <a
+    href="http://java.sun.com/beans/glasgow/jaf.html">JavaBeans
+    Activation Framework</a> package. 
+    
+<p><li>The <code>org.apache.log4j.gui.TextPaneAppender</code> requries Swing.
 
 <p><li>log4j test code relies on the <a
 href="http://www.junit.org">JUnit</a> testing framework.
 
-<p><li>The <code>org.log4j.gui.TextPaneAppender</code> requries Swing.
-    
+
 </ul>    
 
 
