@@ -23,7 +23,7 @@ CREATE TABLE logging_event
     ndc               TEXT,
     thread_name       VARCHAR(254),
     reference_flag    SMALLINT,
-    id                INT NOT NULL AUTO_INCREMENT PRIMARY KEY
+    event_id          INT NOT NULL AUTO_INCREMENT PRIMARY KEY
   );
 COMMIT;
 

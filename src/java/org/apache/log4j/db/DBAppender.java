@@ -122,7 +122,7 @@ public class DBAppender
       rs.first();
 
       int eventId = rs.getInt(1);
-      LogLog.info("inserted id is " + eventId);
+//      LogLog.info("inserted id is " + eventId);
 
 //      event_id        INT NOT NULL,
 //      mapped_key        VARCHAR(254) NOT NULL,
