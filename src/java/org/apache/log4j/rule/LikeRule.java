@@ -16,15 +16,15 @@
 
 package org.apache.log4j.rule;
 
+import java.io.IOException;
+import java.util.Stack;
+
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.LoggingEventFieldResolver;
-
 import org.apache.oro.text.regex.MalformedPatternException;
 import org.apache.oro.text.regex.Pattern;
 import org.apache.oro.text.regex.Perl5Compiler;
 import org.apache.oro.text.regex.Perl5Matcher;
-
-import java.util.Stack;
 
 /**
  * A Rule class providing support for ORO-based regular expression syntax. 
@@ -32,10 +32,12 @@ import java.util.Stack;
  * @author Scott Deboy <sdeboy@apache.org>
  */
 public class LikeRule extends AbstractRule {
+  static final long serialVersionUID = -3375458885595683156L;
+
   private static final LoggingEventFieldResolver resolver = LoggingEventFieldResolver.getInstance();
-  private final Pattern pattern;
-  private final Perl5Matcher matcher = new Perl5Matcher();
-  private final String field;
+  private transient Pattern pattern;
+  private transient Perl5Matcher matcher = new Perl5Matcher();
+  private transient String field;
 
   private LikeRule(String field, Pattern pattern) {
     if (!resolver.isField(field)) {
@@ -73,4 +75,38 @@ public class LikeRule extends AbstractRule {
     Object input = resolver.getValue(field, event);
     return ((input != null) && (pattern != null) && (matcher.matches(input.toString(), pattern)));
   }
+  
+  /**
+    * Deserialize the state of the object
+    *
+    * @param in 
+    *
+    * @throws IOException 
+    * @throws ClassNotFoundException 
+    */
+   private void readObject(java.io.ObjectInputStream in)
+     throws IOException, ClassNotFoundException {
+         try {
+           field = (String)in.readObject();
+           String patternString = (String)in.readObject();
+           Perl5Compiler compiler = new Perl5Compiler();
+           matcher = new Perl5Matcher();
+           pattern = compiler.compile(patternString, Perl5Compiler.CASE_INSENSITIVE_MASK);
+         } catch (MalformedPatternException e) {
+             throw new IOException("Invalid LIKE rule - " + e.getMessage());
+         }
+   }
+
+   /**
+    * Serialize the state of the object
+    *
+    * @param out 
+    *
+    * @throws IOException 
+    */
+   private void writeObject(java.io.ObjectOutputStream out)
+     throws IOException {
+     out.writeObject(field);
+     out.writeObject(pattern.getPattern());
+   }
 }

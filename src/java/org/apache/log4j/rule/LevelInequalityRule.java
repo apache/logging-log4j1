@@ -16,14 +16,15 @@
 
 package org.apache.log4j.rule;
 
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.apache.log4j.Level;
 import org.apache.log4j.UtilLoggingLevel;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.LoggingEventFieldResolver;
-
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * A Rule class implementing inequality evaluation for Levels (log4j and util.logging) using the toInt method.
@@ -31,11 +32,13 @@ import java.util.List;
  * @author Scott Deboy <sdeboy@apache.org>
  */
 public class LevelInequalityRule extends AbstractRule {
+  static final long serialVersionUID = 851854546425717836L;
+
   private static final LoggingEventFieldResolver resolver = LoggingEventFieldResolver.getInstance();
-  private final Level level;
-  private final List utilList = new LinkedList();
-  private final List levelList = new LinkedList();
-  private final String inequalitySymbol;
+  private transient Level level;
+  private transient List utilList = new LinkedList();
+  private transient List levelList = new LinkedList();
+  private transient String inequalitySymbol;
 
   private LevelInequalityRule(
     String inequalitySymbol, String value) {
@@ -89,4 +92,40 @@ public class LevelInequalityRule extends AbstractRule {
 
     return result;
   }
+  
+  /**
+    * Deserialize the state of the object
+    *
+    * @param in 
+    *
+    * @throws IOException 
+    * @throws ClassNotFoundException 
+    */
+   private void readObject(java.io.ObjectInputStream in)
+     throws IOException, ClassNotFoundException {
+     utilList = new LinkedList();
+     levelList = new LinkedList();
+     inequalitySymbol = (String)in.readObject();
+     boolean isUtilLogging = in.readBoolean();
+     int levelInt = in.readInt();
+     if (isUtilLogging) {
+         level = UtilLoggingLevel.toLevel(levelInt);
+     } else {
+         level = Level.toLevel(levelInt);
+     }
+   }
+
+   /**
+    * Serialize the state of the object
+    *
+    * @param out 
+    *
+    * @throws IOException 
+    */
+   private void writeObject(java.io.ObjectOutputStream out)
+     throws IOException {
+     out.writeObject(inequalitySymbol);
+     out.writeBoolean(level instanceof UtilLoggingLevel);
+     out.writeInt(level.toInt());
+   }
 }
