@@ -30,7 +30,6 @@
     <pathelement location="${tests.source.home}"/>
     <pathelement location="./classes"/>
     <pathelement location="./resources"/>
-    <pathelement location="${jakarta.oro.jar}"/>
     <fileset dir="./lib/">
       <include name="*.jar"/>
     </fileset>
