@@ -75,7 +75,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
-import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
@@ -87,9 +86,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SettingsListener;
 import org.apache.log4j.helpers.LogLog;
 
 
@@ -98,9 +94,7 @@ import org.apache.log4j.helpers.LogLog;
  * @author Paul Smith <psmith@apache.org>
  * @author Scott Deboy <sdeboy@apache.org>
  */
-class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
-  private static final String SETTING_RESPONSIVENESS = "Responsiveness";
-  private static final String SETTING_TAB_PLACEMENT = "tabPlacement";
+class ChainsawToolBarAndMenus implements ChangeListener {
   private final SmallToggleButton showReceiversButton;
   final JTextField findTextField;
   private final Action changeModelAction;
@@ -131,14 +125,6 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
   private final JMenu viewMenu = new JMenu("View");
   private final JMenuBar menuBar;
   private final JCheckBoxMenuItem menuItemClose = new JCheckBoxMenuItem();
-  private final JRadioButtonMenuItem levelDisplayIcon =
-    new JRadioButtonMenuItem("Icon");
-  private final JRadioButtonMenuItem levelDisplayText =
-    new JRadioButtonMenuItem("Text");
-//  private final JRadioButtonMenuItem tabsBottom =
-//    new JRadioButtonMenuItem("Bottom");
-//  private final JRadioButtonMenuItem tabsTop = new JRadioButtonMenuItem("Top");
-  private final JSlider responsiveSlider;
   private final JToolBar toolbar;
   private LogUI logui;
   private final SmallButton clearButton = new SmallButton();
@@ -174,8 +160,6 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     showReceiversButton = new SmallToggleButton(showReceiversAction);
 
     toggleDetailPaneAction = createToggleDetailPaneAction();
-    responsiveSlider =
-      new JSlider(JSlider.VERTICAL, 0, 5000, logui.handler.getQueueInterval());
     createMenuBar();
     createToolbar();
 
@@ -244,56 +228,6 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
 
     //		TODO find an icon
     return action;
-  }
-
-  /**
-     * DOCUMENT ME!
-     *
-     * @param event DOCUMENT ME!
-     */
-  public void loadSettings(LoadSettingsEvent event) {
-    try {
-      levelDisplay = event.getSetting(ChainsawConstants.LEVEL_DISPLAY);
-
-      if (levelDisplay.equals(ChainsawConstants.LEVEL_DISPLAY_ICONS)) {
-        levelDisplayIcon.setSelected(true);
-      } else {
-        levelDisplayText.setSelected(true);
-      }
-
-      final int responsiveness =
-        event.asInt(ChainsawToolBarAndMenus.SETTING_RESPONSIVENESS);
-      final int tabPlacement =
-        event.asInt(ChainsawToolBarAndMenus.SETTING_TAB_PLACEMENT);
-
-      SwingUtilities.invokeLater(
-        new Runnable() {
-          public void run() {
-            responsiveSlider.setValue(responsiveness);
-            logui.getTabbedPane().setTabPlacement(tabPlacement);
-            scanState();
-          }
-        });
-    } catch (NullPointerException e) {
-      LogLog.error("error decoding setting", e);
-    }
-  }
-
-  /**
-   * DOCUMENT ME!
-   *
-   * @param event DOCUMENT ME!
-   */
-  public void saveSettings(SaveSettingsEvent event) {
-    event.saveSetting(
-      ChainsawToolBarAndMenus.SETTING_RESPONSIVENESS,
-      responsiveSlider.getValue());
-
-    event.saveSetting(
-      ChainsawToolBarAndMenus.SETTING_TAB_PLACEMENT,
-      logui.getTabbedPane().getTabPlacement());
-
-    event.saveSetting(ChainsawConstants.LEVEL_DISPLAY, levelDisplay);
   }
 
   /**
@@ -555,12 +489,6 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
       lookAndFeelMenus.add(lfIGTK);
     } catch (Exception e) {
       LogLog.debug("Can't find new GTK L&F, might be Windows, or <JDK1.4.2");
-    }
-
-    if (levelDisplay.equals(ChainsawConstants.LEVEL_DISPLAY_ICONS)) {
-      levelDisplayIcon.setSelected(true);
-    } else {
-      levelDisplayText.setSelected(true);
     }
 
 
