@@ -673,6 +673,15 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
           if (noReceiversWarningPanel.getModel().isManualMode()) {
             toggleReceiversPanel();
+          } else if (noReceiversWarningPanel.getModel().isSimpleSocketMode()) {
+            int port = noReceiversWarningPanel.getModel().getSimplePort();
+            SocketReceiver simpleSocketReceiver = new SocketReceiver(port);
+            simpleSocketReceiver.setName("Simple Socket Receiver");
+            PluginRegistry.startPlugin(simpleSocketReceiver);
+            receiversPanel.updateReceiverTreeInDispatchThread();
+            getStatusBar().setMessage(
+              "Simple Socket Receiver created, started, and listening on port "
+              + port);
           } else if (noReceiversWarningPanel.getModel().isLoadConfig()) {
             final URL url =
               noReceiversWarningPanel.getModel().getConfigToLoad();
@@ -1222,17 +1231,18 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
       //also add it to the unique values list
       ((Set) map.get(ChainsawConstants.LEVEL_COL_NAME)).add(level);
-      Object loggerName = v.get(
-        ChainsawColumns.getColumnsNames().indexOf(
-          ChainsawConstants.LOGGER_COL_NAME));
+
+      Object loggerName =
+        v.get(
+          ChainsawColumns.getColumnsNames().indexOf(
+            ChainsawConstants.LOGGER_COL_NAME));
       ((Set) map.get(ChainsawConstants.LOGGER_COL_NAME)).add(loggerName);
-      
-      
+
       /**
        * EventContainer is a LoggerNameModel imp, use that for notifing
        */
       tableModel.addLoggerName(loggerName.toString());
-      
+
       ((Set) map.get(ChainsawConstants.THREAD_COL_NAME)).add(
         v.get(
           ChainsawColumns.getColumnsNames().indexOf(
@@ -1358,10 +1368,13 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     Set fileSet = new HashSet();
     Set levelSet = new HashSet();
     ScrollToBottom scrollToBottom;
-    private final LogPanelLoggerTreeModel logTreeModel = new LogPanelLoggerTreeModel();
+    private final LogPanelLoggerTreeModel logTreeModel =
+      new LogPanelLoggerTreeModel();
+
     //used for consistency - stays empty - used to allow none set in the colordisplay selector and right click
     Set noneSet = new HashSet();
     Point currentPoint;
+    private final JSplitPane nameTreeAndMainPanelSplit;
 
     public LogPanel(
       final String ident, final EventContainer tableModel,
@@ -1371,9 +1384,9 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       this.scrollToBottom = scrollToBottom;
       this.tableModel = tableModel;
       this.table = table;
-      
+
       tableModel.addLoggerNameListener(logTreeModel);
-      
+
       levelSet = new HashSet((List) levelMap.get(eventType));
       map.put(ChainsawConstants.LEVEL_COL_NAME, levelSet);
 
@@ -1661,9 +1674,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       statusLabelPanel.add(upperPanel, BorderLayout.CENTER);
       eventsAndStatusPanel.add(statusLabelPanel, BorderLayout.NORTH);
 
-      final JTree logTree = new LoggerNameTree(logTreeModel);
-      final JScrollPane logTreeScroll = new JScrollPane(logTree);
-      
+      final JPanel logTreePanel = new LoggerNameTreePanel(logTreeModel);
+
       final JPanel detailPanel = new JPanel(new BorderLayout());
 
       //set valueisadjusting if holding down a key - don't process setdetail events
@@ -1707,17 +1719,16 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
           }
         });
 
-
-      JSplitPane nameTreeAndMainPanelSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-      nameTreeAndMainPanelSplit.add(logTreeScroll);
+      nameTreeAndMainPanelSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+      nameTreeAndMainPanelSplit.add(logTreePanel);
       nameTreeAndMainPanelSplit.add(lowerPanel);
       nameTreeAndMainPanelSplit.setOneTouchExpandable(true);
       nameTreeAndMainPanelSplit.setToolTipText("Still under development....");
       nameTreeAndMainPanelSplit.setDividerLocation(120);
-      
-      add(nameTreeAndMainPanelSplit, BorderLayout.CENTER);
-//      add(lowerPanel, BorderLayout.CENTER);
 
+      add(nameTreeAndMainPanelSplit, BorderLayout.CENTER);
+
+      //      add(lowerPanel, BorderLayout.CENTER);
       table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
       table.getSelectionModel().addListSelectionListener(
@@ -2100,7 +2111,9 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       setDocked(true);
       f.setVisible(false);
       removeAll();
-      add(lowerPanel, BorderLayout.CENTER);
+
+      //      add(lowerPanel, BorderLayout.CENTER);
+      add(nameTreeAndMainPanelSplit, BorderLayout.CENTER);
       panelMap.put(getIdentifier(), LogPanel.this);
       tabbedPane.addANewTab(getIdentifier(), LogPanel.this, null);
       externalPanel.setDocked(true);
@@ -2116,7 +2129,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     void undock() {
       setDocked(false);
       externalPanel.removeAll();
-      externalPanel.add(lowerPanel, BorderLayout.CENTER);
+      externalPanel.add(nameTreeAndMainPanelSplit, BorderLayout.CENTER);
       tabbedPane.remove(LogPanel.this);
       externalPanel.setDocked(false);
       panelMap.put(getIdentifier(), externalPanel);
