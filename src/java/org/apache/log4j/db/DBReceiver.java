@@ -29,6 +29,7 @@ import org.apache.log4j.plugins.Pauseable;
 import org.apache.log4j.plugins.Receiver;
 import org.apache.log4j.scheduler.Job;
 import org.apache.log4j.scheduler.Scheduler;
+import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ThrowableInformation;
@@ -137,9 +138,21 @@ public class DBReceiver
         LoggerRepository loggerRepository = getLoggerRepository();
         Connection connection = connectionSource.getConnection();
         StringBuffer sql = new StringBuffer();
-        sql.append("SELECT sequence_number, timestamp, rendered_message, ");
-        sql.append("logger_name, level_string, ndc, thread_name, ");
-        sql.append("reference_flag, event_id from logging_event ");
+        sql.append("SELECT ");
+        sql.append("sequence_number, ");
+        sql.append("timestamp, ");
+        sql.append("rendered_message, ");
+        sql.append("logger_name, ");
+        sql.append("level_string, ");
+        sql.append("ndc, ");
+        sql.append("thread_name, ");
+        sql.append("reference_flag, ");
+        sql.append("caller_filename, ");
+        sql.append("caller_class, ");
+        sql.append("caller_method, ");
+        sql.append("caller_line, ");
+        sql.append("event_id ");
+        sql.append("FROM logging_event ");
         // have subsequent SELECTs start from we left off last time
         sql.append(" WHERE event_id > "+lastId);
         sql.append(" ORDER BY event_id ASC");
@@ -164,9 +177,23 @@ public class DBReceiver
           event.setNDC(rs.getString(6));
           event.setThreadName(rs.getString(7));
 
+          
+          
           short mask = rs.getShort(8);
 
-          id = rs.getLong(9);
+          String fileName = rs.getString(9);
+          String className = rs.getString(10);
+          String methodName = rs.getString(11);
+          String lineNumber = rs.getString(12).trim();
+          
+          if(fileName.equals(LocationInfo.NA)) {
+            event.setLocationInformation(LocationInfo.NA_LOCATION_INFO);
+          } else {
+            event.setLocationInformation(new LocationInfo(fileName, className,
+                methodName, lineNumber));
+          }
+          
+          id = rs.getLong(13);
           lastId = id;
           
           //event.setProperty("id", Long.toString(id));

@@ -37,7 +37,7 @@ public interface ConnectionSource extends OptionHandler {
   final int MYSQL_DIALECT = 2;
   final int ORACLE_DIALECT = 3;
   final int MSSQL_DIALECT = 4;
-  
+  final int HSQLDB_DIALECT = 5;  
   /**
    *  Obtain a {@link java.sql.Connection} for use.  The client is
    *  responsible for closing the {@link java.sql.Connection} when it is no
@@ -60,5 +60,5 @@ public interface ConnectionSource extends OptionHandler {
    * Get the SQL dialect that should be used for this connection.
    *
    */
-  int getSQLDialect();
+  int getSQLDialectCode();
 }

@@ -507,7 +507,7 @@
 
 
   <!-- The target that performs the actual test -->
-  <target name="DB">    
+  <target name="invokeDBTestCase">    
     <junit printsummary="yes" fork="no" haltonfailure="yes"> 
       <sysproperty key="toto" value="${toto}"/>     
       <sysproperty key="appendConfigFile" value="${appendConfigFile}"/>
@@ -517,7 +517,83 @@
       <test name="org.apache.log4j.db.FullCycleDBTest" />
     </junit>
   </target>
+     
+
+  <!-- the following target is shared by MySQL and PostgreSQL targets -->
+  <target name="commonDB">
+     <property file="./input/db/db.properties"/> 
+
+    <!-- This task deletes existing entries in the database -->
+    <!-- Do not use on a table with valuable dataset        -->
+    <input
+      message="All data is going to be deleted from DB. Continue (y/n)?"
+      validargs="y,n"
+      addproperty="do.delete"
+     />
+    <condition property="do.abort">
+      <equals arg1="n" arg2="${do.delete}"/>
+    </condition>
+    <fail if="do.abort">Build aborted by user.</fail>
+    <sql driver="${driverClass}" 
+         url="${url}" 
+         userid="${user}" 
+         password="${password}"
+         src="./input/db/deleteTables.sql">
+      <classpath refid="tests.classpath"/>
+    </sql>
+
+
+   <echo message="Running test case with DriverManager config file"/>
+    <antcall target="invokeDBTestCase">
+      <param name="appendConfigFile" value="./input/db/append-with-drivermanager1.xml"/>
+      <param name="readConfigFile"   value="./input/db/read-with-drivermanager1.xml"/>
+    </antcall>
+
+    <echo message="Running test case with DataSource"/>
+    <antcall target="invokeDBTestCase">
+      <param name="appendConfigFile" value="./input/db/append-with-datasource1.xml"/>
+      <param name="readConfigFile"   value="./input/db/read-with-datasource1.xml"/>
+    </antcall>
+
+    <echo message="Running test case with a native *pooled* DataSource"/>
+    <antcall target="invokeDBTestCase">
+      <param name="appendConfigFile" value="./input/db/append-with-pooled-datasource1.xml"/>
+      <param name="readConfigFile"   value="./input/db/read-with-pooled-datasource1.xml"/>
+    </antcall>
+
+    <echo message="Running test case with a DataSource with JNDI"/>
+    <antcall target="invokeDBTestCase">
+      <param name="appendConfigFile" value="./input/db/append-with-jndi1.xml"/>
+      <param name="readConfigFile"   value="./input/db/read-with-jndi1.xml"/>
+     </antcall> 
+  </target>   
+
+  <!-- ============ hsqldb  specific tests ============== -->     
        
+       
+   <target name="hsqldbCheck">
+    <condition property="hsqldb-present">
+    <and>
+      <available file="./input/db/hsqldb.properties" />
+      <available classname="org.hsqldb.jdbcDriver">
+        <classpath refid="tests.classpath"/>
+      </available>
+    </and>
+    </condition>
+  </target>
+
+  <target name="hsqldb" depends="hsqldbCheck, build" if="hsqldb-present">
+    <delete file="./input/db/db.properties"/>
+    <echo message="hsqldb available"/>
+    <copy file="./input/db/hsqldb.properties" tofile="./input/db/db.properties"/>
+
+   <echo message="Running test case with DriverManager config file"/>
+    <antcall target="invokeDBTestCase">
+      <param name="appendConfigFile" value="./input/db/append-with-drivermanager1.xml"/>
+      <param name="readConfigFile"   value="./input/db/read-with-drivermanager1.xml"/>
+    </antcall>
+  </target>
+  
   <!-- ============ MySQL specific tests ============== -->     
   <target name="mysqlCheck">
     <condition property="mysql-present">
@@ -534,31 +610,8 @@
     <delete file="./input/db/db.properties"/>
     <echo message="MySQL available"/>
     <copy file="./input/db/mysql.properties" tofile="./input/db/db.properties"/>
-
-<!--    <echo message="Running test case with DriverManager config file"/>
-    <antcall target="DB">
-      <param name="appendConfigFile" value="./input/db/append-with-drivermanager1.xml"/>
-      <param name="readConfigFile"   value="./input/db/read-with-drivermanager1.xml"/>
-    </antcall>
-
-    <echo message="Running test case with DataSource"/>
-    <antcall target="DB">
-      <param name="appendConfigFile" value="./input/db/append-with-datasource1.xml"/>
-      <param name="readConfigFile"   value="./input/db/read-with-datasource1.xml"/>
-    </antcall>
-
-    <echo message="Running test case with a native *pooled* DataSource"/>
-    <antcall target="DB">
-      <param name="appendConfigFile" value="./input/db/append-with-pooled-datasource1.xml"/>
-      <param name="readConfigFile"   value="./input/db/read-with-pooled-datasource1.xml"/>
-    </antcall>
--->
-    <echo message="Running test case with a DataSource with JNDI"/>
-    <antcall target="DB">
-      <param name="appendConfigFile" value="./input/db/append-with-jndi1.xml"/>
-      <param name="readConfigFile"   value="./input/db/read-with-jndi1.xml"/>
-    </antcall>
-    
+ 
+    <antcall target="commonDB"/>
   </target>
 
   <!-- ============ PostgreSQL specific tests ============== -->     
@@ -578,25 +631,8 @@
     <delete file="./input/db/db.properties"/>
     <echo message="PostgreSQL available"/>
     <copy file="./input/db/postgresql.properties" tofile="./input/db/db.properties"/>
-
-    <echo message="Running test case with DriverManager config file"/>
-    <antcall target="DB">
-      <param name="appendConfigFile" value="./input/db/append-with-drivermanager1.xml"/>
-      <param name="readConfigFile"   value="./input/db/read-with-drivermanager1.xml"/>
-    </antcall>
-
-    <echo message="Running test case with DataSource"/>
-    <antcall target="DB">
-      <param name="appendConfigFile" value="./input/db/append-with-datasource1.xml"/>
-      <param name="readConfigFile"   value="./input/db/read-with-datasource1.xml"/>
-    </antcall>
-
-    <echo message="Running test case with *pooled* DataSource"/>
-    <antcall target="DB">
-      <param name="appendConfigFile" value="./input/db/append-with-pooled-datasource1.xml"/>
-      <param name="readConfigFile"   value="./input/db/read-with-pooled-datasource1.xml"/>
-    </antcall>
-  </target>
+    <antcall target="commonDB"/>
+   </target>
   
   <!-- ================================================================= -->
   <!-- =========================   long Tests  ========================= -->

@@ -6,9 +6,9 @@
 
 
 BEGIN;
-DROP TABLE IF EXISTS logging_event;
 DROP TABLE IF EXISTS logging_event_property;
 DROP TABLE IF EXISTS logging_event_exception;
+DROP TABLE IF EXISTS logging_event;
 COMMIT;
 
 
@@ -23,6 +23,10 @@ CREATE TABLE logging_event
     ndc               TEXT,
     thread_name       VARCHAR(254),
     reference_flag    SMALLINT,
+    caller_filename   VARCHAR(254) NOT NULL,
+    caller_class      VARCHAR(254) NOT NULL,
+    caller_method     VARCHAR(254) NOT NULL,
+    caller_line       CHAR(4) NOT NULL,
     event_id          INT NOT NULL AUTO_INCREMENT PRIMARY KEY
   );
 COMMIT;

@@ -25,6 +25,10 @@ CREATE TABLE logging_event
     ndc               VARCHAR2(4000),
     thread_name       VARCHAR2(254),
     reference_flag    SMALLINT,
+    caller_filename   VARCHAR2(254) NOT NULL,
+    caller_class      VARCHAR2(254) NOT NULL,
+    caller_method     VARCHAR2(254) NOT NULL,
+    caller_line       CHAR(4) NOT NULL,
     event_id          NUMBER(10) PRIMARY KEY
   );
 

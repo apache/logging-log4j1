@@ -21,6 +21,8 @@ package org.apache.log4j.spi;
 import org.apache.log4j.Layout;
 import org.apache.log4j.helpers.LogLog;
 
+import sun.security.action.GetLongAction;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -180,48 +182,38 @@ public class LocationInfo implements java.io.Serializable {
   }
 
   public boolean equals(Object o) {
+    LogLog.info("equals called");
     if (this == o) {
       return true;
     }
 
     if (!(o instanceof LocationInfo)) {
+      LogLog.info("inequality point 1");
       return false;
     }
 
     LocationInfo r = (LocationInfo) o;
 
-    if(lineNumber == null) {
-      if(r.lineNumber != null) {
-        return false;
-      }
-    } else if(!lineNumber.equals(r.lineNumber)){
-      return false;
-    }
-
-    if(fileName == null) {
-      if(r.fileName != null) {
-        return false;
-      }
-    } else if(!fileName.equals(r.fileName)){
-      return false;
-    }
-
-    if(className == null) {
-      if(r.className != null) {
-        return false;
-      }
-    } else if(!className.equals(r.className)){
-      return false;
-    }
-
-    if(methodName == null) {
-      if(r.methodName != null) {
-        return false;
-      }
-    } else if(!methodName.equals(r.methodName)){
+    if(!getClassName().equals(r.getClassName())){
+     LogLog.info("inequality point 2");
       return false;
     }
     
+    if(!getFileName().equals(r.getFileName())) {
+     LogLog.info("inequality point 3");
+      return false;
+    }
+
+    if(!getMethodName().equals(r.getMethodName())){
+     LogLog.info("inequality point 4");
+      return false;
+    }
+    
+    if(!getLineNumber().equals(r.getLineNumber())){
+     LogLog.info("inequality point 5");
+      return false;
+    }
+        
     return true;
   }
 
@@ -341,5 +333,9 @@ public class LocationInfo implements java.io.Serializable {
     }
 
     return methodName;
+  }
+  
+  public String toString() {
+    return "(class="+getClassName()+", file="+getFileName()+", line="+getLineNumber()+", methodName="+getMethodName();
   }
 }

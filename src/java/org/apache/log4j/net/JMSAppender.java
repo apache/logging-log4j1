@@ -147,9 +147,9 @@ public class JMSAppender extends AppenderSkeleton {
 
 
   /**
-     Returns value of the <b>LocationInfo</b> property which
-     determines whether location (stack) info is sent to the remote
-     subscriber. */
+   * Returns value of the <b>LocationInfo</b> property which determines whether
+   * caller's location info is sent to the remote subscriber. 
+   * */
   public
   boolean getLocationInfo() {
     return locationInfo;
@@ -380,10 +380,11 @@ public class JMSAppender extends AppenderSkeleton {
   }
 
 
-  /**
-      If true, the information sent to the remote subscriber will
-      include caller's location information. By default no location
-      information is sent to the subscriber.  */
+  /** 
+   * If true, the information sent to the remote subscriber will include 
+   * caller's location information. Due to performance concerns, by default no 
+   * location information is sent to the subscriber.  
+   * */
   public void setLocationInfo(boolean locationInfo) {
     this.locationInfo = locationInfo;
   }

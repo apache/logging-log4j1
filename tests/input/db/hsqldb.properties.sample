@@ -1,0 +1,11 @@
+# If you would like to test DBAppender/DBReceiver for HSQLDB, then set
+# the url and user parameters for your local environment and copy this
+# file to "hsqldb.properties".
+
+# The JDBC driver class for HSQLDB
+driverClass=org.hsqldb.jdbcDriver
+
+# The following parameters should be set for your machine.
+url=jdbc:hsqldb:hsql://localhost
+user=sa
+password=
