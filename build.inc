@@ -37,6 +37,16 @@
     <echo message="Xerces is present."/>
   </target>
 
+  <target name="sunParserCheck">
+    <available classname="com.sun.xml.parser.DocumentBuilderFactoryImpl" 
+                          property="sunParser-present"/>
+    <available classname="com.sun.xml.parser.DocumentBuilderFactoryImpl" property="jaxp-present"/>
+  </target>   
+  <target name="sunParser" depends="sunParserCheck" if="sunParser-present">
+    <echo message="Sun JAXP parser is present."/>
+  </target>
+
+
   <target name="jmsCheck">
     <available classname="javax.jms.Message" property="jms-present"/>
   </target>   
@@ -115,7 +125,7 @@
 	   classpath="${classpath}"/>
 </target>
 
- <target name="build.xml" depends="init, xerces" if="xerces-present">   
+ <target name="build.xml" depends="init, xerces, sunParser" if="jaxp-present">
     <echo message="Really compiling org.log4j.xml" />
     <javac 
 	   srcdir="${srcdir}"
