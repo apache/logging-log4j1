@@ -50,7 +50,7 @@
  - The structure of the distribution changed somewhat. The log4j.jar
    files can be found under dist/. The javadoc directory has been
    moved to docs/api/. We are now totally dependent on ANT to perform
-   all the steps involved in creating a release, in including
+   all the steps involved in creating a release, including
    compilation, jar file creation, generation of the javadocs, and for
    the creation of the distribution tar and zip files. [*]
 
@@ -71,6 +71,14 @@
  - Improved the search method for finding the "log4j.properties" file in
    the static initializer of Category class. Thanks to Calvin Chan for
    supplying a better method. [*]
+
+ - The code handling the FCQN (formerly instanceFQN) parameter was
+   cleaned up. There is now a well-established and simple manner for
+   sub-classes of Category (or wrapper classes) to define the FCQN
+   variable: just define a static variable, say FCQN, consisting of
+   the fully qualified class name of the subclass or wrapper, supply
+   this variable as an argument to forcedLog method if and when
+   the sub-class or wrapper invokes that method. [*]
 
  - Made the instanceFCQN an instance variable instead of a class
    static in Category.java. In related move, the Category constructor

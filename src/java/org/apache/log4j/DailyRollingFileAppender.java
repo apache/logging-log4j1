@@ -331,6 +331,26 @@ public class DailyRollingFileAppender extends FileAppender {
       datePattern = value;
     }
   }
+  
+  /**
+     This method differentiates DailyRollingFileAppender from its
+     super class.
+  */
+  protected 
+  void subAppend(LoggingEvent event) {
+    long n = System.currentTimeMillis();
+    if (n >= nextCheck) {
+      now.setTime(n);
+      nextCheck = rc.getNextCheckMillis(now);
+      try {  
+	rollOver();  
+      }
+      catch(IOException ioe) {
+	LogLog.error("rollOver() failed.", ioe);
+      }
+    }
+    super.subAppend(event);
+   }
 }  
 
 /**
