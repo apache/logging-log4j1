@@ -48,12 +48,15 @@
  */
 package org.apache.log4j.chainsaw.receivers;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.chainsaw.Generator;
+import org.apache.log4j.chainsaw.helper.TableCellEditorFactory;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.net.SocketHubReceiver;
 import org.apache.log4j.plugins.Plugin;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -69,14 +72,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.swing.AbstractCellEditor;
+import javax.swing.DefaultCellEditor;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableModel;
 
 
 /**
@@ -91,6 +101,8 @@ public class PluginPropertyEditorPanel extends JPanel {
     private final JTable propertyTable = new JTable();
 
     private Plugin plugin;
+    private TableModel defaultModel = new DefaultTableModel(
+            new String[] { "Property", "Value" }, 1);
 
     /**
      *
@@ -111,10 +123,10 @@ public class PluginPropertyEditorPanel extends JPanel {
 
         add(scrollPane, BorderLayout.CENTER);
 
-        propertyTable.setModel(new DefaultTableModel());
+        propertyTable.setModel(
+            defaultModel = new DefaultTableModel(
+                    new String[] { "Property", "Value" }, 1));
 
-//        TODO when all the correct CellEditors are in place, remove this line
-           propertyTable.setEnabled(false);
     }
 
     /**
@@ -126,16 +138,23 @@ public class PluginPropertyEditorPanel extends JPanel {
                 public void propertyChange(PropertyChangeEvent evt) {
 
                     final Plugin p = (Plugin) evt.getNewValue();
+
                     if (p != null) {
 
                         try {
-                          PluginPropertyTableModel model = new PluginPropertyTableModel(p);
+
+                            PluginPropertyTableModel model =
+                                new PluginPropertyTableModel(p);
                             propertyTable.setModel(model);
+                            propertyTable.getColumnModel().getColumn(1)
+                            .setCellEditor(new PluginTableCellEditor());
+                            propertyTable.setEnabled(true);
                         } catch (Throwable e) {
                             LogLog.error("Failed to introspect the Plugin", e);
                         }
                     } else {
-                        // TODO handle else condition
+                        propertyTable.setModel(defaultModel);
+                        propertyTable.setEnabled(false);
                     }
 
                 }
@@ -192,6 +211,61 @@ public class PluginPropertyEditorPanel extends JPanel {
         firePropertyChange("plugin", oldValue, this.plugin);
     }
 
+    /**
+     * @author psmith
+     *
+     */
+    private class PluginTableCellEditor extends AbstractCellEditor
+        implements TableCellEditor {
+
+        private Map editorMap = new HashMap();
+        private DefaultCellEditor defaultEditor = new DefaultCellEditor(
+                new JTextField());
+        private DefaultCellEditor currentEditor = defaultEditor;
+
+        private PluginTableCellEditor() {
+
+            editorMap.put(Boolean.class,
+                TableCellEditorFactory.createBooleanTableCellEditor());
+            editorMap.put(Level.class,
+                TableCellEditorFactory.createLevelTableCellEditor());
+        }
+
+        /* (non-Javadoc)
+         * @see javax.swing.table.TableCellEditor#getTableCellEditorComponent(javax.swing.JTable, java.lang.Object, boolean, int, int)
+         */
+        public Component getTableCellEditorComponent(JTable table, Object value,
+            boolean isSelected, int row, int column) {
+
+            if (editorMap.containsKey(value.getClass())) {
+
+                DefaultCellEditor editor =
+                    (DefaultCellEditor) editorMap.get(value.getClass());
+                LogLog.debug("Located CellEditor for " + value.getClass());
+                currentEditor = editor;
+
+                return currentEditor.getTableCellEditorComponent(table, value,
+                    isSelected, row, column);
+            }
+
+            currentEditor = defaultEditor;
+            LogLog.debug("Cell value class " + value.getClass() +
+                " not know, using default editor");
+
+            return defaultEditor.getTableCellEditorComponent(table, value,
+                isSelected, row, column);
+        }
+
+        /* (non-Javadoc)
+         * @see javax.swing.CellEditor#getCellEditorValue()
+         */
+        public Object getCellEditorValue() {
+
+            return currentEditor.getCellEditorValue();
+        }
+
+    }
+
     private static class PluginPropertyTableModel extends AbstractTableModel {
 
         private final PropertyDescriptor[] descriptors;
@@ -240,7 +314,7 @@ public class PluginPropertyEditorPanel extends JPanel {
 
                     if (object != null) {
 
-                        return object.toString();
+                        return object;
                     }
                 } catch (Exception e) {
                     LogLog.error(
@@ -292,6 +366,55 @@ public class PluginPropertyEditorPanel extends JPanel {
         public String getColumnName(int column) {
 
             return (column == 0) ? "Property" : "Value";
+        }
+
+        /* (non-Javadoc)
+         * @see javax.swing.table.TableModel#setValueAt(java.lang.Object, int, int)
+         */
+        public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+
+
+            if (columnIndex == 1) {
+                aValue = translateValueIfNeeded(rowIndex, aValue);
+                LogLog.debug(
+                    "setValueAt, " + rowIndex + ", " + columnIndex +
+                    ", value=" + aValue + ", valueClass" + aValue.getClass());
+
+                try {
+                    descriptors[rowIndex].getWriteMethod().invoke(plugin,
+                        new Object[] { aValue });
+                    fireTableCellUpdated(rowIndex, columnIndex);
+                } catch (IllegalArgumentException e) {
+                    // ignore
+                } catch (Exception e) {
+                    LogLog.error(
+                        "Failed to modify the Plugin because of Exception", e);
+                }
+
+            } else {
+                super.setValueAt(aValue, rowIndex, columnIndex);
+            }
+        }
+
+        /**
+         * @param columnIndex
+         * @param value
+         * @return
+         */
+        private Object translateValueIfNeeded(int row, Object value) {
+
+            if ((descriptors[row].getPropertyType() == int.class) ||
+                    (descriptors[row].getPropertyType() == Integer.class)) {
+
+                try {
+
+                    return Integer.valueOf(value.toString());
+                } catch (Exception e) {
+                    LogLog.error("Failed to convert to Integer type");
+                }
+            }
+
+            return value;
         }
     }
 }
