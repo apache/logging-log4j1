@@ -73,12 +73,12 @@ import javax.xml.parsers.DocumentBuilderFactory;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class SimpleStoreTestCase extends TestCase {
+public class SimpleStoreTest extends TestCase {
   /**
    * Constructor for SimpleStoreTestCase.
    * @param name
    */
-  public SimpleStoreTestCase(String name) {
+  public SimpleStoreTest(String name) {
     super(name);
   }
 
