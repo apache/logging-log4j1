@@ -21,7 +21,6 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.apache.log4j.*;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.joran.JoranConfigurator;
 import org.apache.log4j.util.Compare;
 
@@ -53,9 +52,8 @@ public class CustomLevelTestCase extends TestCase {
     org.apache.log4j.BasicConfigurator.configure();
     JoranConfigurator jc = new JoranConfigurator();
     jc.doConfigure("input/xml/customLevel1.xml", LogManager.getLoggerRepository());
-    LogLog.info(""+jc.getExecutionContext().getErrorList());
+    jc.dumpErrors();
     
-
     common();
     assertTrue(Compare.compare(TEMP, "witness/customLevel.1"));
   }
@@ -64,7 +62,8 @@ public class CustomLevelTestCase extends TestCase {
     org.apache.log4j.BasicConfigurator.configure();
     JoranConfigurator jc = new JoranConfigurator();
     jc.doConfigure("input/xml/customLevel2.xml", LogManager.getLoggerRepository());
-    LogLog.info(""+jc.getExecutionContext().getErrorList());
+    jc.dumpErrors();
+    
     common();
     assertTrue(Compare.compare(TEMP, "witness/customLevel.2"));
   }
@@ -73,7 +72,7 @@ public class CustomLevelTestCase extends TestCase {
     org.apache.log4j.BasicConfigurator.configure();
     JoranConfigurator jc = new JoranConfigurator();
     jc.doConfigure("input/xml/customLevel3.xml", LogManager.getLoggerRepository());
-    LogLog.info(""+jc.getExecutionContext().getErrorList());
+    jc.dumpErrors();
     
     common();
     assertTrue(Compare.compare(TEMP, "witness/customLevel.3"));
@@ -83,7 +82,7 @@ public class CustomLevelTestCase extends TestCase {
     org.apache.log4j.BasicConfigurator.configure();
     JoranConfigurator jc = new JoranConfigurator();
     jc.doConfigure("input/xml/customLevel4.xml", LogManager.getLoggerRepository());
-    LogLog.info(""+jc.getExecutionContext().getErrorList());
+    jc.dumpErrors();
 
     common();
     assertTrue(Compare.compare(TEMP, "witness/customLevel.4"));
@@ -97,7 +96,7 @@ public class CustomLevelTestCase extends TestCase {
     logger.error("Message " + ++i);
     logger.log(XLevel.TRACE, "Message " + ++i);
   }
-
+  
   public static Test suite() {
     TestSuite suite = new TestSuite();
     suite.addTest(new CustomLevelTestCase("test1"));
