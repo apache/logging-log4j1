@@ -772,8 +772,11 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   }
 
   void removeWelcomePanel() {
+    if(tabbedPane.containsWelcomePanel()) {
     tabbedPane.remove(
       tabbedPane.getComponentAt(tabbedPane.indexOfTab("Welcome")));
+        
+    }
   }
 
   void toggleReceiversPanel() {
