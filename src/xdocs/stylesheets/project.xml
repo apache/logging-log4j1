@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="Jakarta Log4j"
-         href="http://jakarta.apache.org/log4j/docs/">
+         href="http://logging.apache.org/log4j/docs/">
 
   <title>Log4j project</title>
   <logo href="images/logo.jpg">The log4j project</logo>
