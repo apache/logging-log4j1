@@ -7,11 +7,6 @@
 
  - February 18th, 2003
 
-http://nagoya.apache.org/bugzilla/show_bug.cgi?id=11570
-
-
-XML Appender throws NullPointerException when logging null
-
  - Fixed bug #11570 whereby XMLAppender would throw a
    NullPointerException if the input message was null. Many thanks to
    David Vandegrift for reporting the bug and to Hendrik Brummermann for
