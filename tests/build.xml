@@ -82,7 +82,7 @@
   </target>
 
   
-  <target name="run" depends="DOM"/>
+  <target name="run" depends="OptionConverter, BoundedFIFO, DOM, CustomLevel"/>
   
   <target name="last" depends="build">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
@@ -92,11 +92,36 @@
     </junit>
   </target>
 
+
   <target name="DOM" depends="build">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" />
       <test name="org.apache.log4j.xml.DOMTestCase" />
+    </junit>
+  </target>
+
+  <target name="CustomLevel" depends="build">
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" />
+      <test name="org.apache.log4j.xml.CustomLevelTestCase" />
+    </junit>
+  </target>
+
+  <target name="OptionConverter" depends="build">
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" />
+      <test name="org.apache.log4j.helpers.OptionConverterTestCase" />
+    </junit>
+  </target>
+
+  <target name="BoundedFIFO" depends="build">
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" />
+      <test name="org.apache.log4j.helpers.BoundedFIFOTestCase" />
     </junit>
   </target>
 

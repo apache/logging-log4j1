@@ -208,7 +208,7 @@ public class OptionConverter {
       // get a ref to the specified class' static method
       // toLevel(String, org.apache.log4j.Level)
       Class[] paramTypes = new Class[] { String.class,
-					 org.apache.log4j.Priority.class
+					 org.apache.log4j.Level.class
                                        };
       java.lang.reflect.Method toLevelMethod =
                       customLevel.getMethod("toLevel", paramTypes);
