@@ -1133,11 +1133,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
         }
       }
 
-      /**
-       * notify the status bar we received an event
-       */
-      statusBar.receivedEvent();
-
       if (!getPanelMap().containsKey(ident)) {
         final String eventType =
           ((ChainsawEventBatchEntry) eventBatchEntrys.get(0)).getEventType();
