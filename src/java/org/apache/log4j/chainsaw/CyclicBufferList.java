@@ -92,17 +92,6 @@ public class CyclicBufferList extends AbstractList implements List {
   }
 
   /**
-   * Check if the given index is in range.  If not, throw an appropriate
-   * runtime exception.
-   */
-  private void RangeCheck(int index) {
-    if ((index >= ea.length) || (index < 0)) {
-      throw new IndexOutOfBoundsException(
-        "Index: " + index + ", Size: " + ea.length);
-    }
-  }
-
-  /**
    * Removes the element at the specified position in this list.
    * Shifts any subsequent elements to the left (subtracts one from their
    * indices).

@@ -1443,7 +1443,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       return false;
     }
 
-    return getCurrentLogPanel().isLogTreePanelVisible();
+    return getCurrentLogPanel().isLogTreeVisible();
   }
 
   /*
@@ -1556,6 +1556,14 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   public ChainsawTabbedPane getTabbedPane() {
     return tabbedPane;
   }
+  
+  /**
+   * @return Returns the applicationPreferenceModel.
+   */
+  public final ApplicationPreferenceModel getApplicationPreferenceModel()
+  {
+    return applicationPreferenceModel;
+  }
 
   /**
    * DOCUMENT ME!
@@ -1641,8 +1649,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
           };
 
         thisPanel.addPropertyChangeListener(toolbarMenuUpdateListener);
-        thisPanel.getPreferenceModel().addPropertyChangeListener(
-          toolbarMenuUpdateListener);
+        thisPanel.addPreferencePropertyChangeListener(toolbarMenuUpdateListener);
 
         thisPanel.addPropertyChangeListener(
           "docked",
@@ -1708,7 +1715,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     }
   }
 
-  class TabIconHandler implements EventCountListener, ChangeListener {
+  private class TabIconHandler implements EventCountListener, ChangeListener {
 
     //the tabIconHandler is associated with a new tab, and a new tab always
     //shows the 'new events' icon
@@ -1769,12 +1776,5 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
             getTabbedPane().setIconAt(getTabbedPane().indexOfTab(ident), SELECTED);
         }
     }
-  }
-  /**
-   * @return Returns the applicationPreferenceModel.
-   */
-  public final ApplicationPreferenceModel getApplicationPreferenceModel()
-  {
-    return applicationPreferenceModel;
   }
 }
