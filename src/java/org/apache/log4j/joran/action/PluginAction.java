@@ -20,9 +20,9 @@ import org.apache.joran.action.Action;
 import org.apache.joran.helper.Option;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.config.ErrorItem;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.plugins.Plugin;
+import org.apache.log4j.spi.ErrorItem;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.OptionHandler;
 

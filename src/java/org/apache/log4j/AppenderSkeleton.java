@@ -36,7 +36,8 @@ import org.apache.log4j.spi.OptionHandler;
 public abstract class AppenderSkeleton implements Appender, OptionHandler {
   
   /*
-   * An insttance specific logger. 
+   * An instance specific logger which must be accessed through the getLogger()
+   * method. 
    */
   private Logger logger;
   

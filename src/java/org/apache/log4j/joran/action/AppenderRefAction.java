@@ -22,9 +22,9 @@ import org.apache.joran.helper.Option;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.Logger;
-import org.apache.log4j.config.ErrorItem;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.AppenderAttachable;
+import org.apache.log4j.spi.ErrorItem;
 
 import org.xml.sax.Attributes;
 

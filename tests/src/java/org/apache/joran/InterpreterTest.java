@@ -40,7 +40,6 @@ import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
-import org.apache.log4j.config.ErrorItem;
 import org.apache.log4j.joran.action.ActionConst;
 import org.apache.log4j.joran.action.AppenderAction;
 import org.apache.log4j.joran.action.AppenderRefAction;
@@ -52,6 +51,7 @@ import org.apache.log4j.joran.action.RootLoggerAction;
 import org.apache.log4j.rolling.RollingFileAppender;
 import org.apache.log4j.rolling.SizeBasedTriggeringPolicy;
 import org.apache.log4j.rolling.SlidingWindowRollingPolicy;
+import org.apache.log4j.spi.ErrorItem;
 import org.xml.sax.SAXParseException;
 
 import java.util.HashMap;
