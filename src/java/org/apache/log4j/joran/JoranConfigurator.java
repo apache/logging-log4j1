@@ -30,6 +30,8 @@ import org.apache.joran.ExecutionContext;
 import org.apache.joran.Interpreter;
 import org.apache.joran.Pattern;
 import org.apache.joran.RuleStore;
+import org.apache.joran.action.NestComponentIA;
+import org.apache.joran.action.NewRuleAction;
 import org.apache.joran.action.ParamAction;
 import org.apache.joran.helper.SimpleRuleStore;
 import org.apache.log4j.helpers.LogLog;
@@ -120,9 +122,13 @@ public class JoranConfigurator
     rs.addRule(new Pattern("log4j:configuration/appender/layout"), new LayoutAction());
     rs.addRule(new Pattern("log4j:configuration/appender/layout/conversionRule"), new ConversionRuleAction());
     rs.addRule(new Pattern("log4j:configuration/plugin"), new PluginAction());
+    rs.addRule(new Pattern("log4j:configuration/newRule"), new NewRuleAction());
     rs.addRule(new Pattern("*/param"), new ParamAction());
 
     joranInterpreter = new Interpreter(rs);
+    
+    // The following line adds the capability to parse nested components
+    joranInterpreter.addImplcitAction(new NestComponentIA());
     ExecutionContext ec = joranInterpreter.getExecutionContext();
 
     HashMap omap = ec.getObjectMap();
@@ -138,7 +144,7 @@ public class JoranConfigurator
     try {
       SAXParserFactory spf = SAXParserFactory.newInstance();
       SAXParser saxParser = spf.newSAXParser();
-      saxParser.parse("file:input/joran/parser2.xml", joranInterpreter);
+      saxParser.parse(in, joranInterpreter);
     } catch (SAXException e) {
       // all exceptions should have been recorded already.
     } catch (ParserConfigurationException pce) {

@@ -15,6 +15,8 @@
  */
 package org.apache.log4j.db;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.Hashtable;
 
 import javax.naming.Context;
@@ -25,6 +27,8 @@ import junit.framework.TestCase;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.joran.JoranConfigurator;
+
 
 /**
  * @author Ceki G&uuml;lc&uuml;
@@ -57,28 +61,44 @@ public class DBReeceiverTest
     super(arg0);
   }
 
-  public void testBasic() {
-    BasicConfigurator.configure();
-    LogLog.info("asdasd");
+  public void testBasic()
+         throws Exception {
 
-    UrlConnectionSource connectionSource = new UrlConnectionSource();
-    connectionSource.setDriverClass("com.mysql.jdbc.Driver");
-    connectionSource.setUrl("jdbc:mysql:///test");
-    connectionSource.setUser("root");
-    LogLog.info("xxxxxxx");
+    //BasicConfigurator.configure();
+    JoranConfigurator jc = new JoranConfigurator();
+    LogLog.info("----");
+    jc.doConfigure("input/db/dbReceiver1.xml", LogManager.getLoggerRepository());
 
-    DBReceiver dbReceiver = new DBReceiver();
-    dbReceiver.setLoggerRepository(LogManager.getLoggerRepository());
-    dbReceiver.setConnectionSource(connectionSource);
-    dbReceiver.activateOptions();
-    LogLog.info("after  dbReceiver.activateOptions()");
 
-    
- 
-    try { Thread.sleep(3000); } catch(Exception e) {}
-    dbReceiver.shutdown();
+//    UrlConnectionSource connectionSource = new UrlConnectionSource();
+//    connectionSource.setDriverClass("com.mysql.jdbc.Driver");
+//    connectionSource.setUrl("jdbc:mysql:///test");
+//    connectionSource.setUser("root");
+//    LogLog.info("xxxxxxx");
+//
+//    DBReceiver dbReceiver = new DBReceiver();
+//    dbReceiver.setLoggerRepository(LogManager.getLoggerRepository());
+//    dbReceiver.setConnectionSource(connectionSource);
+//    dbReceiver.activateOptions();
+//    LogLog.info("after  dbReceiver.activateOptions()");
+
+//    try {
+//      Thread.sleep(3000);
+//    } catch (Exception e) {
+//    }
+    //dbReceiver.shutdown();
     LogLog.info("after  dbReceiver.shutdown()");
-    try { Thread.sleep(3000); } catch(Exception e) {}
+
+    BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
+    while (true) {
+      System.out.println("Type a message to send to log server. Type 'q' to quit.");
+      String s = reader.readLine();
+      if (s.equals("q")) {
+        break;
+      } else {
+      }
+    }
   }
 
 
