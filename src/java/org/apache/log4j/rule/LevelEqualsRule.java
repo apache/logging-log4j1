@@ -17,7 +17,6 @@
 package org.apache.log4j.rule;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
