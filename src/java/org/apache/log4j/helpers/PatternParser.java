@@ -16,6 +16,8 @@ import org.apache.log4j.spi.LocationInfo;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Set;
+import java.util.Iterator;
 
 // Contributors:   Nelson Minar <(nelson@monkey.org>
 //                 Igor E. Poteryaev <jah@mail.ru>
@@ -452,6 +454,27 @@ public class PatternParser {
 
     public
     String convert(LoggingEvent event) {
+      /**
+       * if there is no additional options, we output every single
+       * Key/Value pair for the MDC in a similar format to Hashtable.toString()
+       */
+
+      if( key == null)
+      {
+        StringBuffer buf = new StringBuffer("{");
+        Set keySet = event.getMDCKeySet();
+        for (Iterator i = keySet.iterator(); i.hasNext(); ) {
+          Object item = i.next();
+          Object val = event.getMDC(item.toString());
+          buf.append("{").append(item).append(",").append(val).append("}");
+        }
+        buf.append("}");
+        return buf.toString();
+      }
+
+      /**
+       * otherwise they just want a single key output
+       */
       Object val = event.getMDC(key);
       if(val == null) {
 	return null;

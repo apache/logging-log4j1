@@ -293,10 +293,12 @@ import org.apache.log4j.spi.LoggingEvent;
 
      <p>Used to output the MDC (mapped diagnostic context) associated
      with the thread that generated the logging event. The <b>X</b>
-     conversion character <em>must</em> be followed by the key for the
+     conversion character can be followed by the key for the
      map placed between braces, as in <b>%X{clientNumber}</b> where
      <code>clientNumber</code> is the key. The value in the MDC
-     corresponding to the key will be output.</p>
+     corresponding to the key will be output. If no additional sub-option
+     is specified, then the entire contents of the MDC key value pair set
+     is output using a format {{key1,val1},{key2,val2}}</p>
 
      <p>See {@link MDC} class for more details.
      </p>
