@@ -57,16 +57,6 @@ public class XCategory extends Category implements OptionHandler {
     log(instanceFQCN, Priority.DEBUG, message + suffix, null);
   }
 
-  public
-  void fatal(String message) { 
-    // disable is defined in Category class
-    if(disable <=  XPriority.FATAL_INT) return;   
-    if(XPriority.FATAL.isGreaterOrEqual(this.getChainedPriority()))
-      callAppenders(new LoggingEvent(instanceFQCN, this, XPriority.FATAL, 
-				     message, null));
-  }
-  
-
   /**
      This method overrides {@link Category#getInstance} by supplying
      its own factory type as a parameter.
@@ -78,6 +68,9 @@ public class XCategory extends Category implements OptionHandler {
     return Category.getInstance(name, factory); 
   }
 
+  /**
+
+   */
   public
   String[] getOptionStrings() {
     return (new String[] {SUFFIX_OPTION});
