@@ -98,7 +98,7 @@ public class BasicConfigurator {
     } else {
       try {
 	Class renderedClass = Class.forName(renderedClassName);
-	Hierarchy._default.rendererMap.put(renderedClass, renderer);
+	Category._default.rendererMap.put(renderedClass, renderer);
       } catch(ClassNotFoundException e) {
 	LogLog.error("Could not find class ["+renderedClassName+"].", e);
       }
@@ -268,15 +268,16 @@ public class BasicConfigurator {
   public
   static
   void resetConfiguration() {
-    Hierarchy._default.getRoot().setPriority(Priority.DEBUG);
-    Hierarchy._default.getRoot().removeAllAppenders();
-    Hierarchy._default.root.setResourceBundle(null);
+
+    Category._default.getRoot().setPriority(Priority.DEBUG);
+    Category._default.getRoot().removeAllAppenders();
+    Category._default.root.setResourceBundle(null);
 
     Category.disable =  Category.DISABLE_OFF;
     
     // the synchronization is needed to prevent JDK 1.2.x hashtable
     // surprises
-    synchronized(Hierarchy._default.ht) {
+    synchronized(Category._default.ht) {
       Enumeration cats = Category.getCurrentCategories();
       while(cats.hasMoreElements()) {
 	Category c = (Category) cats.nextElement();
@@ -286,6 +287,6 @@ public class BasicConfigurator {
 	c.removeAllAppenders();
       }
     }
-    Hierarchy._default.rendererMap.clear();
+    Category._default.rendererMap.clear();
   }
 }

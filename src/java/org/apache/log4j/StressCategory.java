@@ -111,7 +111,7 @@ class StressCategory {
       }
       test();
       // Clear hash table for next round
-      Hierarchy._default.clear();
+      Category._default.clear();
     }
     else {      
       ct[n]  = null;

@@ -46,12 +46,6 @@ import org.apache.log4j.or.ObjectRenderer;
 
 */
 public class Hierarchy {
-
-  // default is a language reserved term, we exceptionally prefix with
-  // an undescore.
-  static 
-  public 
-  final Hierarchy _default =  new Hierarchy(new RootCategory(Priority.DEBUG));
   
   static 
   private
@@ -183,17 +177,6 @@ public class Hierarchy {
     }
   }
 
-
-  /**
-     Return the default Hierarchy instance.
-
-     @since 0.9.0
-   */
-  public 
-  static 
-  Hierarchy getDefaultHierarchy() {
-    return _default;
-  }
 
   /**
      Get the root of this hierarchy.
@@ -345,7 +328,7 @@ public class Hierarchy {
     // begin by closing nested appenders
     root.closeNestedAppenders();
 
-    synchronized(Hierarchy._default.ht) {
+    synchronized(ht) {
       Enumeration cats = Category.getCurrentCategories();
       while(cats.hasMoreElements()) {
 	Category c = (Category) cats.nextElement();

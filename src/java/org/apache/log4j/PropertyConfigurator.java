@@ -471,7 +471,7 @@ public class PropertyConfigurator extends BasicConfigurator
       if(key.startsWith(CATEGORY_PREFIX)) {
 	String categoryName = key.substring(CATEGORY_PREFIX.length());	
 	String value =  OptionConverter.findAndSubst(key, props);
-	Category cat = Hierarchy._default.getInstance(categoryName, 
+	Category cat = Category._default.getInstance(categoryName, 
 						     categoryFactory);
 	synchronized(cat) {
 	  parseCategory(props, cat, key, categoryName, value);
