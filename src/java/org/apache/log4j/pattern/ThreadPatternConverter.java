@@ -46,5 +46,9 @@ public class ThreadPatternConverter extends PatternConverter {
   {
       return "Thread";
   }
+  
+  public String getStyleClass(LoggingEvent e) {
+    return "thread";
+  }
 
 }
