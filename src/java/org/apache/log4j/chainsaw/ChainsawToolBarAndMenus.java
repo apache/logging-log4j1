@@ -507,7 +507,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
         }
       };
 
-    action.putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_P));
+    action.putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_C));
     action.putValue(
       Action.ACCELERATOR_KEY,
       KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, InputEvent.CTRL_MASK));
