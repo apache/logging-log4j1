@@ -39,5 +39,6 @@
     <level value="DEBUG"/>
     <appender-ref ref="FILE" />
     <appender-ref ref="TEST" />
+    <appender-ref ref="EMAIL" />
   </root>
 </configuration>
