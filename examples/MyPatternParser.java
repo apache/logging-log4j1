@@ -8,9 +8,9 @@
 package examples;
 
 import org.apache.log4j.*;
-import org.apache.log4j.helpers.FormattingInfo;
-import org.apache.log4j.helpers.PatternConverter;
-import org.apache.log4j.helpers.PatternParser;
+import org.apache.log4j.pattern.FormattingInfo;
+import org.apache.log4j.pattern.PatternConverter;
+import org.apache.log4j.pattern.PatternParser;
 import org.apache.log4j.spi.LoggingEvent;
 
 /**
@@ -34,10 +34,12 @@ import org.apache.log4j.spi.LoggingEvent;
 public class MyPatternParser extends PatternParser {
 
   int counter = 0;
+  StringBuffer buf;
 
   public
   MyPatternParser(String pattern) {
     super(pattern);
+    buf = new StringBuffer();
   }
     
   public
@@ -56,8 +58,9 @@ public class MyPatternParser extends PatternParser {
     }
 
     public
-    String convert(LoggingEvent event) {
-      return String.valueOf(++counter);
+    StringBuffer convert(LoggingEvent event) {
+      buf.setLength(0);
+      return buf.append(String.valueOf(++counter));
     }
   }  
 }

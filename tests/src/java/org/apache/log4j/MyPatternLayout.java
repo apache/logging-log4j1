@@ -6,7 +6,7 @@
  * distribution in the LICENSE.txt file.  */
 
 package org.apache.log4j;
-import org.apache.log4j.helpers.PatternParser;
+import org.apache.log4j.pattern.PatternParser;
 
 /**
 

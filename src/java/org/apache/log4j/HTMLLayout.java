@@ -49,6 +49,9 @@
 
 package org.apache.log4j;
 
+import java.io.IOException;
+import java.io.Writer;
+
 import org.apache.log4j.helpers.Transform;
 import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
@@ -144,77 +147,70 @@ public class HTMLLayout extends Layout {
   public void activateOptions() {
   }
 
-  public String format(LoggingEvent event) {
-    if (sbuf.capacity() > MAX_CAPACITY) {
-      sbuf = new StringBuffer(BUF_SIZE);
-    } else {
-      sbuf.setLength(0);
-    }
+  public void format(java.io.Writer output, LoggingEvent event) throws java.io.IOException {
+ 
+    output.write(Layout.LINE_SEP + "<tr>" + Layout.LINE_SEP);
 
-    sbuf.append(Layout.LINE_SEP + "<tr>" + Layout.LINE_SEP);
+    output.write("<td>");
+    output.write(Long.toString(event.timeStamp - LoggingEvent.getStartTime()));
+    output.write("</td>" + Layout.LINE_SEP);
 
-    sbuf.append("<td>");
-    sbuf.append(event.timeStamp - LoggingEvent.getStartTime());
-    sbuf.append("</td>" + Layout.LINE_SEP);
+    output.write("<td title=\"" + event.getThreadName() + " thread\">");
+    Transform.escapeTags(event.getThreadName(), output);
+    output.write("</td>" + Layout.LINE_SEP);
 
-    sbuf.append("<td title=\"" + event.getThreadName() + " thread\">");
-    sbuf.append(Transform.escapeTags(event.getThreadName()));
-    sbuf.append("</td>" + Layout.LINE_SEP);
-
-    sbuf.append("<td title=\"Level\">");
+    output.write("<td title=\"Level\">");
 
     if (event.getLevel().equals(Level.DEBUG)) {
-      sbuf.append("<font color=\"#339933\">");
-      sbuf.append(event.getLevel());
-      sbuf.append("</font>");
+      output.write("<font color=\"#339933\">");
+      output.write(event.getLevel().toString());
+      output.write("</font>");
     } else if (event.getLevel().isGreaterOrEqual(Level.WARN)) {
-      sbuf.append("<font color=\"#993300\"><strong>");
-      sbuf.append(event.getLevel());
-      sbuf.append("</strong></font>");
+      output.write("<font color=\"#993300\"><strong>");
+      output.write(event.getLevel().toString());
+      output.write("</strong></font>");
     } else {
-      sbuf.append(event.getLevel());
+      output.write(event.getLevel().toString());
     }
 
-    sbuf.append("</td>" + Layout.LINE_SEP);
+    output.write("</td>" + Layout.LINE_SEP);
 
-    sbuf.append("<td title=\"" + event.getLoggerName() + " category\">");
-    sbuf.append(Transform.escapeTags(event.getLoggerName()));
-    sbuf.append("</td>" + Layout.LINE_SEP);
+    output.write("<td title=\"" + event.getLoggerName() + " category\">");
+    output.write(event.getLoggerName());
+    output.write("</td>" + Layout.LINE_SEP);
 
     if (locationInfo) {
       LocationInfo locInfo = event.getLocationInformation();
-      sbuf.append("<td>");
-      sbuf.append(Transform.escapeTags(locInfo.getFileName()));
-      sbuf.append(':');
-      sbuf.append(locInfo.getLineNumber());
-      sbuf.append("</td>" + Layout.LINE_SEP);
+      output.write("<td>");
+      Transform.escapeTags(locInfo.getFileName(), output);
+      output.write(':');
+      output.write(locInfo.getLineNumber());
+      output.write("</td>" + Layout.LINE_SEP);
     }
 
-    sbuf.append("<td title=\"Message\">");
-    sbuf.append(Transform.escapeTags(event.getRenderedMessage()));
-    sbuf.append("</td>" + Layout.LINE_SEP);
-    sbuf.append("</tr>" + Layout.LINE_SEP);
+    output.write("<td title=\"Message\">");
+    Transform.escapeTags(event.getRenderedMessage(), output);
+    output.write("</td>" + Layout.LINE_SEP);
+    output.write("</tr>" + Layout.LINE_SEP);
 
     if (event.getNDC() != null) {
-      sbuf.append(
+      output.write(
         "<tr><td bgcolor=\"#EEEEEE\" style=\"font-size : xx-small;\" colspan=\"6\" title=\"Nested Diagnostic Context\">");
-      sbuf.append("NDC: " + Transform.escapeTags(event.getNDC()));
-      sbuf.append("</td></tr>" + Layout.LINE_SEP);
+      Transform.escapeTags(event.getNDC(), output);
+      output.write("</td></tr>" + Layout.LINE_SEP);
     }
 
     String[] s = event.getThrowableStrRep();
 
     if (s != null) {
-      sbuf.append(
+      output.write(
         "<tr><td bgcolor=\"#993300\" style=\"color:White; font-size : xx-small;\" colspan=\"6\">");
-      appendThrowableAsHTML(s, sbuf);
-      sbuf.append("</td></tr>" + Layout.LINE_SEP);
+      appendThrowableAsHTML(s, output);
+      output.write("</td></tr>" + Layout.LINE_SEP);
     }
-
-    return sbuf.toString();
   }
 
-  void appendThrowableAsHTML(String[] s, StringBuffer sbuf) {
+  void appendThrowableAsHTML(String[] s, Writer output) throws IOException {
     if (s != null) {
       int len = s.length;
 
@@ -222,13 +218,13 @@ public class HTMLLayout extends Layout {
         return;
       }
 
-      sbuf.append(Transform.escapeTags(s[0]));
-      sbuf.append(Layout.LINE_SEP);
+      Transform.escapeTags(s[0], output);
+      output.write(Layout.LINE_SEP);
 
       for (int i = 1; i < len; i++) {
-        sbuf.append(TRACE_PREFIX);
-        sbuf.append(Transform.escapeTags(s[i]));
-        sbuf.append(Layout.LINE_SEP);
+        output.write(TRACE_PREFIX);
+        Transform.escapeTags(s[i], output);
+        output.write(Layout.LINE_SEP);
       }
     }
   }
@@ -288,8 +284,8 @@ public class HTMLLayout extends Layout {
   public String getFooter() {
     StringBuffer sbuf = new StringBuffer();
     sbuf.append("</table>" + Layout.LINE_SEP);
-    sbuf.append("<br>" + Layout.LINE_SEP);
-    sbuf.append("</body></html>");
+	sbuf.append("<br>" + Layout.LINE_SEP);
+	sbuf.append("</body></html>");
 
     return sbuf.toString();
   }

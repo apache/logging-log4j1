@@ -47,61 +47,67 @@
  *
  */
 
-package org.apache.log4j;
+package org.apache.log4j.pattern;
 
+import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
 
-import java.io.Writer;
+import java.text.DateFormat;
+import java.text.FieldPosition;
+import java.text.SimpleDateFormat;
+
+import java.util.Date;
 
 
 /**
-   SimpleLayout consists of the level of the log statement,
-   followed by " - " and then the log message itself. For example,
+ * Return the events thread (usually the current thread) in a StringBuffer.
+ * This buffer is recycled!
+ *
+ * @author Ceki G&uuml;lc&uuml;
+ */
+public class DatePatternConverter extends PatternConverter {
+  // We assume that each PatternConveter instance is unique within a layout, 
+  // which is unique within an appender. We further assume that callas to the 
+  // appender method are serialized (per appender).
+  StringBuffer buf;
+  Logger logger = Logger.getLogger(DatePatternConverter.class);
+  private DateFormat df;
+  private Date date;
+  protected FieldPosition pos = new FieldPosition(0);
 
-   <pre>
-           DEBUG - Hello world
-   </pre>
-
-   <p>
-   @author Ceki G&uuml;lc&uuml;
-   @since version 0.7.0
-
-   <p>{@link PatternLayout} offers a much more powerful alternative.
-*/
-public class SimpleLayout extends Layout {
-  StringBuffer sbuf = new StringBuffer(128);
-
-  public SimpleLayout() {
+  public DatePatternConverter(FormattingInfo formattingInfo) {
+    super(formattingInfo);
+    this.buf = new StringBuffer(32);
+    date = new Date();
   }
 
-  public void activateOptions() {
+  public void setOption(String option) {
+    super.setOption(option);
+
+    try {
+      df = new SimpleDateFormat(option);
+      System.out.println("======="+df);
+    } catch (IllegalArgumentException e) {
+      logger.error("Could not instantiate SimpleDateFormat with " + option, e);
+
+      // detault for the IDO8601 format
+      df = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss,SSS");
+    }
   }
 
-  /**
-	 Writes the log statement in a format consisting of the
-	 <code>level</code>, followed by " - " and then the
-	 <code>message</code>. For example, <pre> INFO - "A message"
-	 </pre>
+  public StringBuffer convert(LoggingEvent event) {
+    buf.setLength(0);
 
-	 <p>The <code>category</code> parameter is ignored.
-	 <p>
-	 @param event The LoggingEvent to format and write
-	 @param output The java.io.Writer to write to
-	*/
-  public void format(Writer output, LoggingEvent event) throws java.io.IOException {
-    output.write(event.getLevel().toString());
-    output.write(" - ");
-    output.write(event.getRenderedMessage());
-    output.write(LINE_SEP); 
-   }
+    date.setTime(event.timeStamp);
 
-  /**
-       The SimpleLayout does not handle the throwable contained within
-       {@link LoggingEvent LoggingEvents}. Thus, it returns
-       <code>true</code>.
+    String converted = null;
 
-       @since version 0.8.4 */
-  public boolean ignoresThrowable() {
-    return true;
+    try {
+      df.format(date, buf, pos);
+    } catch (Exception ex) {
+      logger.error("Error occured while converting date.", ex);
+    }
+
+    return buf;
   }
 }

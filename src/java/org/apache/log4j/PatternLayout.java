@@ -49,9 +49,11 @@
 
 package org.apache.log4j;
 
-import org.apache.log4j.Layout;
-import org.apache.log4j.helpers.PatternConverter;
-import org.apache.log4j.helpers.PatternParser;
+import java.io.IOException;
+import java.io.Writer;
+
+import org.apache.log4j.pattern.PatternConverter;
+import org.apache.log4j.pattern.PatternParser;
 import org.apache.log4j.spi.LoggingEvent;
 
 
@@ -436,11 +438,7 @@ public class PatternLayout extends Layout {
       Current value is <b>%r [%t] %p %c %x - %m%n</b>. */
   public static final String TTCC_CONVERSION_PATTERN =
     "%r [%t] %p %c %x - %m%n";
-  protected static final int BUF_SIZE = 256;
-  protected static final int MAX_CAPACITY = 1024;
 
-  // output buffer appended to when format() is invoked
-  private StringBuffer sbuf = new StringBuffer(BUF_SIZE);
   private String pattern;
   private PatternConverter head;
 
@@ -450,13 +448,14 @@ public class PatternLayout extends Layout {
      The default pattern just produces the application supplied message.
   */
   public PatternLayout() {
-    this(DEFAULT_CONVERSION_PATTERN);
+    this(DEFAULT_CONVERSION_PATTERN);   
   }
 
   /**
      Constructs a PatternLayout using the supplied conversion pattern.
   */
   public PatternLayout(String pattern) {
+    //System.out.println("...PatternLayout ["+pattern+"], "+this);
     this.pattern = pattern;
     head =
       createPatternParser(
@@ -511,21 +510,11 @@ public class PatternLayout extends Layout {
   /**
      Produces a formatted string as specified by the conversion pattern.
   */
-  public String format(LoggingEvent event) {
-    // Reset working stringbuffer
-    if (sbuf.capacity() > MAX_CAPACITY) {
-      sbuf = new StringBuffer(BUF_SIZE);
-    } else {
-      sbuf.setLength(0);
-    }
-
+  public  void format(Writer output, LoggingEvent event) throws IOException { 
     PatternConverter c = head;
-
     while (c != null) {
-      c.format(sbuf, event);
+      c.format(output, event);
       c = c.next;
     }
-
-    return sbuf.toString();
   }
 }
