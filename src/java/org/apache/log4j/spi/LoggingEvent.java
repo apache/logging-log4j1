@@ -533,7 +533,8 @@ public class LoggingEvent implements java.io.Serializable {
 
   /**
    * Returns the set of of the key values in the properties
-   * for the event. The returned set is unmodifiable by the caller. 
+   * for the event or Collections.EMPTY_SET if properties do not exist.
+   * The returned set is unmodifiable by the caller. 
    * 
    * @return Set an unmodifiable set of the property keys.
    * @since 1.3

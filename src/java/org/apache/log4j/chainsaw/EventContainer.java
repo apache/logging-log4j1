@@ -65,8 +65,7 @@ import org.apache.log4j.spi.LoggingEvent;
  * @author Scott Deboy <sdeboy@apache.org>
  *
  */
-public interface EventContainer extends SortTableModel, FilterChangedListener,
-  LoggerNameModel {
+public interface EventContainer extends SortTableModel, LoggerNameModel {
   /**
    * Adds an EventCountListener, to be notified when the # of events changes
    * @param listener
@@ -144,6 +143,11 @@ public interface EventContainer extends SortTableModel, FilterChangedListener,
    * Returns the vector representing the row.
    */
   LoggingEvent getRow(int row);
+  
+  /**
+   * Return the last added row.
+   */
+  int getLastAdded();
 
   /**
    * Adds a row to the model.
@@ -153,6 +157,15 @@ public interface EventContainer extends SortTableModel, FilterChangedListener,
    */
   boolean isAddRow(LoggingEvent e, boolean valueIsAdjusting);
 
+  /**
+   * Return whether or not this container is sorting.
+   */
+  boolean isSortEnabled();
+
+  /**
+   * Fire appropriate table update events for the range.
+   */
+  void fireTableEvent(int begin, int end, int count);
   /**
    * Allow a forced notification of the EventCountListeners
    *

@@ -1708,15 +1708,15 @@ public class LogPanel extends DockablePanel implements Profileable,
         //table.getSelectionModel().setValueIsAdjusting(true);
 
         boolean rowAdded = false;
-        int currentRow = getCurrentRow();
 
+        int first = tableModel.getLastAdded() + 1;
+        
         for (Iterator iter = eventBatchEntrys.iterator(); iter.hasNext();) {
             ChainsawEventBatchEntry entry = (ChainsawEventBatchEntry) iter.next();
 
             updateOtherModels(entry);
 
-            boolean isCurrentRowAdded = tableModel.isAddRow(entry.getEvent(),
-                    true);
+            boolean isCurrentRowAdded = tableModel.isAddRow(entry.getEvent(), true);
             rowAdded = rowAdded ? true : isCurrentRowAdded;
         }
         table.getSelectionModel().setValueIsAdjusting(false);
@@ -1725,15 +1725,19 @@ public class LogPanel extends DockablePanel implements Profileable,
         tableModel.notifyCountListeners();
 
         if (rowAdded) {
-            tableModel.sort();
+            int currentRow = getCurrentRow();
+            if (tableModel.isSortEnabled()) {
+                tableModel.sort();
+            }
+            tableModel.fireTableEvent(first, tableModel.getLastAdded(), eventBatchEntrys.size());
 
             if (scrollToBottom.isScrolled() && !scrollToBottom.isBypassed()) {
                 table.scrollToBottom(table.columnAtPoint(
-                        table.getVisibleRect().getLocation()));
+                table.getVisibleRect().getLocation()));
             } else {
-                    table.scrollToRow(currentRow,
-                        table.columnAtPoint(table.getVisibleRect().getLocation()));
-                    detailPaneUpdater.setSelectedRow(currentRow);
+                table.scrollToRow(currentRow,
+                table.columnAtPoint(table.getVisibleRect().getLocation()));
+                detailPaneUpdater.setSelectedRow(currentRow);
              }
         }
     }
