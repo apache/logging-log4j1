@@ -24,10 +24,9 @@ import org.apache.log4j.spi.OptionHandler;
   a repository as if the event was sent locally. Watchdog plugins
   allow for a repository to be reconfigured when some "watched"
   configuration data changes.
-  
-  <p>Contributors: Nicko Cadell
-  
+    
   @author Mark Womack
+  @author Nicko Cadell
   @since 1.3
 */
 public interface Plugin extends OptionHandler {
