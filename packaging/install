@@ -23,7 +23,7 @@ function getShellScriptDirectory {
 }
 # ==================================================
 
-WWW_TARGET=~/sf/groups/log4j/htdocs
+WWW_TARGET=~/ASF/dump
 DISTRIB_TARGET=~/sf/temp
 JAR_FULL=log4j.jar
 JAR_CORE=log4j-core.jar
