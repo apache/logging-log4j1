@@ -58,9 +58,7 @@ import org.apache.log4j.helpers.LogLog;
   
   @since 1.3
 */
-public
-abstract
-class MatchFilterBase extends Filter {
+public abstract class MatchFilterBase extends Filter {
   
   public static final String ACCEPT_ON_MATCH    = "AcceptOnMatch";
   public static final String DENY_ON_MATCH      = "DenyOnMatch";
@@ -78,8 +76,7 @@ class MatchFilterBase extends Filter {
   /**
     Set the value to return upon a successful match. Valid
     string values are "ACCEPT", "DENY", and "NEUTRAL". */
-  public
-  void setMatchReturnValue(String filterReturnValue) {
+  public void setMatchReturnValue(String filterReturnValue) {
     if (filterReturnValue.equalsIgnoreCase("accept")) {
       matchReturnValue = ACCEPT;
     } else if (filterReturnValue.equalsIgnoreCase("deny")) {
@@ -95,8 +92,7 @@ class MatchFilterBase extends Filter {
     Set the value to return upon a successful match. Valid
     int values come from the Filter base class, ACCEPT,
     DENY, and NEUTRAL. */
-  public
-  void setMatchReturnValue(int filterReturnValue) {
+  public void setMatchReturnValue(int filterReturnValue) {
     if (filterReturnValue < DENY || filterReturnValue > ACCEPT) {
       LogLog.error("invalid matchReturnValue: " + filterReturnValue);
       return;
@@ -108,16 +104,21 @@ class MatchFilterBase extends Filter {
   /**
     Gets the value that will be returned upon a successful
     match. */
-  public
-  int getMatchReturnValue() {
-    return matchReturnValue;
+  public String getMatchReturnValue() {
+    if (matchReturnValue == ACCEPT)
+      return "accept";
+    else if (matchReturnValue == DENY)
+      return "deny";
+    else if (matchReturnValue == NEUTRAL)
+      return "neutral";
+    else
+      return "unknown"; // this one should never happen
   }
 
   /**
     Set the value to return upon a successful match. Valid
     string values are "ACCEPT", "DENY", and "NEUTRAL". */
-  public
-  void setNoMatchReturnValue(String filterReturnValue) {
+  public void setNoMatchReturnValue(String filterReturnValue) {
     if (filterReturnValue.equalsIgnoreCase("accept")) {
       noMatchReturnValue = ACCEPT;
     } else if (filterReturnValue.equalsIgnoreCase("deny")) {
@@ -128,27 +129,19 @@ class MatchFilterBase extends Filter {
       LogLog.error("invalid noMatchReturnValue: " + filterReturnValue);
     }
   }
-  
-  /**
-    Set the value to return upon an unsuccessful match. Valid
-    int values come from the Filter base class, ACCEPT,
-    DENY, and NEUTRAL. */
-  public
-  void setNoMatchReturnValue(int filterReturnValue) {
-    if (filterReturnValue < DENY || filterReturnValue > ACCEPT) {
-      LogLog.error("invalid noMatchReturnValue: " + filterReturnValue);
-      return;
-    }
     
-    noMatchReturnValue = filterReturnValue;
-  }
-  
   /**
     Gets the value that will be returned upon an unsuccessful
     match. */
-  public
-  int getNoMatchReturnValue() {
-    return noMatchReturnValue;
+  public String getNoMatchReturnValue() {
+    if (noMatchReturnValue == ACCEPT)
+      return "accept";
+    else if (noMatchReturnValue == DENY)
+      return "deny";
+    else if (noMatchReturnValue == NEUTRAL)
+      return "neutral";
+    else
+      return "unknown"; // this one should never happen
   }
   
   /**
@@ -156,8 +149,7 @@ class MatchFilterBase extends Filter {
     string.  Valid values for the policy string are defined as
     constants for this class: ACCEPT_ON_MATCH, DENY_ON_MATCH, 
     ACCEPT_ON_NOMATCH, DENY_ON_NOMATCH. */
-  public
-  void setChainPolicy(String policyStr) {
+  public void setChainPolicy(String policyStr) {
     if (policyStr.equalsIgnoreCase(ACCEPT_ON_MATCH)) {
       matchReturnValue = ACCEPT;
       noMatchReturnValue = NEUTRAL;
@@ -182,8 +174,7 @@ class MatchFilterBase extends Filter {
     or noMatchReturnValue will be returned. If no match test can
     be performed (canMatch() returned false), then Filter.NEUTRAL
     is returned. */
-  public
-  int decide(LoggingEvent event) {
+  public int decide(LoggingEvent event) {
     if (canMatch()) {
       if (match(event)) {
         return matchReturnValue;
@@ -201,8 +192,7 @@ class MatchFilterBase extends Filter {
     to a misconfiguration. This method should return true if a match
     test can be performed, and false if it cannot be performed. The
     default version always returns true. */
-  protected
-  boolean canMatch() {
+  protected boolean canMatch() {
     return true;
   }
   
@@ -210,7 +200,5 @@ class MatchFilterBase extends Filter {
     Subclasses must implement this method to perform the specific
     match test that they require. This method should return true
     if a match is made, and false if no match is made. */
-  abstract
-  protected
-  boolean match(LoggingEvent event);
+  abstract protected boolean match(LoggingEvent event);
 }
