@@ -55,6 +55,7 @@ import org.apache.log4j.helpers.AbsoluteTimeDateFormat;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
 
+import java.util.HashMap;
 import java.util.Hashtable;
 
 
@@ -93,10 +94,10 @@ public class PatternParser {
   static final int LEVEL_CONVERTER = 2002;
   static final int NDC_CONVERTER = 2003;
   static final int MESSAGE_CONVERTER = 2004;
-  static Hashtable globalRulesRegistry;
+  static HashMap globalRulesRegistry;
 
   static {
-    globalRulesRegistry = new Hashtable(17);
+    globalRulesRegistry = new HashMap(17);
     globalRulesRegistry.put("c", LoggerPatternConverter.class.getName());
     globalRulesRegistry.put("C", ClassNamePatternConverter.class.getName());
     globalRulesRegistry.put("F", FileLocationPatternConverter.class.getName());
@@ -122,7 +123,7 @@ public class PatternParser {
   PatternConverter tail;
   protected FormattingInfo formattingInfo = new FormattingInfo();
   protected String pattern;
-  Hashtable converterRegistry;
+  HashMap converterRegistry;
 
   static Logger logger  = Logger.getLogger("LOG4J."+PatternParser.class.getName());
   
@@ -437,11 +438,11 @@ public class PatternParser {
     formattingInfo.reset();
   }
 
-  public Hashtable getConverterRegistry() {
+  public HashMap getConverterRegistry() {
     return converterRegistry;
   }
 
-  public void setConverterRegistry(Hashtable hashtable) {
-    converterRegistry = hashtable;
+  public void setConverterRegistry(HashMap converterRegistry) {
+    this.converterRegistry = converterRegistry;
   }
 }

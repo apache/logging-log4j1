@@ -50,6 +50,7 @@
 package org.apache.joran.action;
 
 import org.apache.joran.ExecutionContext;
+import org.apache.joran.helper.Option;
 import org.apache.log4j.Appender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.AppenderAttachable;
@@ -84,7 +85,7 @@ public class AppenderRefAction extends Action {
 
     String appenderName = appenderRef.getAttribute(ActionConst.REF_ATTRIBUTE);
 
-    if (appenderName == null) {
+    if (Option.isEmpty(appenderName)) {
       // print a meaningful error message and return
       Node parentNode = appenderRef.getParentNode();
       String errMsg = "Missing appender ref attribute in <appender-ref> tag.";

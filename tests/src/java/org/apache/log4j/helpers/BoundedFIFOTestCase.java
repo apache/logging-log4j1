@@ -263,14 +263,5 @@ public class BoundedFIFOTestCase extends TestCase {
     }
   }
 
-  public static Test suite() {
-    TestSuite suite = new TestSuite();
-    suite.addTest(new BoundedFIFOTestCase("test1"));
-    suite.addTest(new BoundedFIFOTestCase("test2"));
-    suite.addTest(new BoundedFIFOTestCase("testResize1"));
-    suite.addTest(new BoundedFIFOTestCase("testResize2"));
-    suite.addTest(new BoundedFIFOTestCase("testResize3"));
-
-    return suite;
-  }
+ 
 }

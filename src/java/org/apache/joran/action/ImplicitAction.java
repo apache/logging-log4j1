@@ -47,15 +47,21 @@
  *
  */
 
-package org.apache.joran;
+package org.apache.joran.action;
 
-import java.util.List;
+import org.apache.joran.ExecutionContext;
+import org.w3c.dom.Element;
 
-import org.apache.joran.action.*;
+/**
+ * ImplcitActions are like normal (explicit) actions except that are applied
+ * by the parser when no other pattern applies. Since there can be many implcit 
+ * actions, each action is asked whether it applies in the given context. The 
+ * first impplcit action to respond postively will be applied. See also the
+ * {@link #isApplicable} method.
+ * 
+ * @author Ceki G&uuml;lc&uuml;
+ */
+public abstract class ImplicitAction extends Action {
 
-
-public interface RuleStore {
-  public void addRule(Pattern pattern, Action action);
-  
-  public List matchActions(Pattern pattern);
+  public abstract boolean isApplicable(Element e, ExecutionContext ec);
 }

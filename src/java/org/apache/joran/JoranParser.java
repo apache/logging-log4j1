@@ -57,6 +57,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -65,16 +66,22 @@ public class JoranParser {
   static final Logger logger = Logger.getLogger(JoranParser.class);
   private RuleStore ruleStore;
   private ExecutionContext ec;
-
+  private ArrayList implicitActions;
+  
   JoranParser(RuleStore rs) {
     ruleStore = rs;
     ec = new ExecutionContext(this);
+    implicitActions = new ArrayList(3);
   }
 
   public ExecutionContext getExecutionContext() {
     return ec;
   }
 
+  public void addImplcitAction(ImplicitAction ia) {
+    implicitActions.add(ia);
+  }
+  
   public void parse(Document document) {
     Pattern currentPattern = new Pattern();
     Element e = document.getDocumentElement();
@@ -86,19 +93,25 @@ public class JoranParser {
       return;
     }
 
-    try {
-      currentPattern.push(n.getNodeName());
 
-      if (n instanceof Element) {
+    //logger.debug("Node type is "+n.getNodeType()+", name is "+n.getNodeName()+", value "+n.getNodeValue());
+
+       
+    try {
+     // Element currentElement = (Element) n;
+            
+      currentPattern.push(n.getNodeName());
+      // only print the pattern for ELEMENT NODES
+      if(n.getNodeType() == Node.ELEMENT_NODE) {
         logger.debug("pattern is " + currentPattern);
       }
-
       List applicableActionList = ruleStore.matchActions(currentPattern);
 
       //logger.debug("set of applicable patterns: " + applicableActionList);
 
       if (applicableActionList == null) {
-        applicableActionList = lookupImplicitAction(currentPattern);
+        if(n instanceof Element)
+        applicableActionList = lookupImplicitAction((Element)n, ec);
       }
 
       if (applicableActionList != null) {
@@ -124,7 +137,17 @@ public class JoranParser {
    * action is found, it is returned. Thus, the returned list will have at most
    * one element.
    */
-  List lookupImplicitAction(Pattern p) {
+  List lookupImplicitAction(Element element, ExecutionContext ec) {
+    int len = implicitActions.size();
+    for(int i = 0; i < len; i++) {
+      ImplicitAction ia = (ImplicitAction) implicitActions.get(i);
+      if(ia.isApplicable(element, ec)) {
+        List actionList = new ArrayList(1);
+        actionList.add(ia);
+        return actionList;
+      }
+      
+    }
     return null;
   }
 

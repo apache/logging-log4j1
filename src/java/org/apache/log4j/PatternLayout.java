@@ -51,6 +51,7 @@ package org.apache.log4j;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.HashMap;
 
 import org.apache.log4j.pattern.PatternConverter;
 import org.apache.log4j.pattern.PatternParser;
@@ -439,8 +440,10 @@ public class PatternLayout extends Layout {
   public static final String TTCC_CONVERSION_PATTERN =
     "%r [%t] %p %c %x - %m%n";
 
-  private String pattern;
+  private String conversionPattern;
   private PatternConverter head;
+
+  private HashMap ruleRegistry = null;
 
   /**
      Constructs a PatternLayout using the DEFAULT_LAYOUT_PATTERN.
@@ -456,34 +459,59 @@ public class PatternLayout extends Layout {
   */
   public PatternLayout(String pattern) {
     //System.out.println("...PatternLayout ["+pattern+"], "+this);
-    this.pattern = pattern;
+    this.conversionPattern = pattern;
     head =
       createPatternParser(
         (pattern == null) ? DEFAULT_CONVERSION_PATTERN : pattern).parse();
   }
 
   /**
+   * 
+   * Add a new conversion word and associate it with a 
+   * {@link org.apache.log4j.pattern.PatternConverter PatternConverter} class.
+   * 
+   * @param conversionWord New conversion word to accept in conversion patterns
+   * @param converterClass The class name associated with the conversion word
+   * @since 1.3
+   */
+  public void addConversionRule(String conversionWord, String converterClass) {
+    if(ruleRegistry == null) {
+      ruleRegistry = new HashMap(5);
+    }
+    ruleRegistry.put(conversionWord, converterClass);
+  }
+
+  /**
+   * Returns the rule registry specific for this PatternLayout instance.
+   * @since 1.3
+   */
+  public HashMap getRuleRegistry() {
+    return ruleRegistry;
+  }
+  
+  /**
     Set the <b>ConversionPattern</b> option. This is the string which
     controls formatting and consists of a mix of literal content and
     conversion specifiers.
   */
   public void setConversionPattern(String conversionPattern) {
-    pattern = conversionPattern;
-    head = createPatternParser(conversionPattern).parse();
+    this.conversionPattern = conversionPattern;
   }
 
   /**
      Returns the value of the <b>ConversionPattern</b> option.
    */
   public String getConversionPattern() {
-    return pattern;
+    return conversionPattern;
   }
 
   /**
      Does not do anything as options become effective
   */
   public void activateOptions() {
-    // nothing to do.
+    PatternParser patternParser = createPatternParser(conversionPattern);
+    patternParser.setConverterRegistry(ruleRegistry);
+    head = patternParser.parse();
   }
 
   /**
