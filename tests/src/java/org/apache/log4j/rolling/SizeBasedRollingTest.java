@@ -65,10 +65,10 @@ import org.apache.log4j.util.Compare;
  * @author Ceki G&uuml;lc&uuml;
  *
  */
-public class SizeBasedRollingTestCase extends TestCase {
-  Logger logger = Logger.getLogger(SizeBasedRollingTestCase.class);
+public class SizeBasedRollingTest extends TestCase {
+  Logger logger = Logger.getLogger(SizeBasedRollingTest.class);
 
-  public SizeBasedRollingTestCase(String name) {
+  public SizeBasedRollingTest(String name) {
     super(name);
   }
 
@@ -212,7 +212,7 @@ public class SizeBasedRollingTestCase extends TestCase {
     TestSuite suite = new TestSuite();
 
     //suite.addTest(new SizeBasedRollingTestCase("test1"));
-    suite.addTest(new SizeBasedRollingTestCase("test2"));
+    suite.addTest(new SizeBasedRollingTest("test2"));
     //suite.addTest(new SizeBasedRollingTestCase("test3"));
 
     return suite;

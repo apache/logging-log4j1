@@ -70,11 +70,11 @@ import java.util.Calendar;
  * @author Ceki G&uuml;lc&uuml;
  *
  */
-public class TimeBasedRollingTestCase extends TestCase {
-  Logger logger = Logger.getLogger(TimeBasedRollingTestCase.class);
+public class TimeBasedRollingTest extends TestCase {
+  Logger logger = Logger.getLogger(TimeBasedRollingTest.class);
   Logger root;
 
-  public TimeBasedRollingTestCase(String name) {
+  public TimeBasedRollingTest(String name) {
     super(name);
   }
 
@@ -398,7 +398,7 @@ public class TimeBasedRollingTestCase extends TestCase {
     suite.addTest(new TimeBasedRollingTestCase("test4"));
     */
     //suite.addTest(new TimeBasedRollingTestCase("test5"));
-    suite.addTest(new TimeBasedRollingTestCase("test6"));
+    suite.addTest(new TimeBasedRollingTest("test6"));
 
     return suite;
   }
