@@ -303,7 +303,7 @@ public class Category implements AppenderAttachable {
 
     <p><b>WARNING</b> Note that passing a {@link Throwable} to this
     method will print the name of the <code>Throwable</code> but no
-    stack trace. To print a stack trace use the {@link #error(Object,
+    stack trace. To print a stack trace use the {@link #debug(Object,
     Throwable)} form instead.
     
     @param message the message object to log. */
@@ -938,7 +938,7 @@ public class Category implements AppenderAttachable {
 
   /**
      Only the Hiearchy class can set the hiearchy of a
-     category. Default package access is mandatory here.  */
+     category. Default package access is MANDATORY here.  */
   final
   void setHierarchy(Hierarchy hierarchy) {
     this.myContext = hierarchy;
