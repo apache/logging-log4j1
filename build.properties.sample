@@ -19,10 +19,11 @@ jmx.jar=/java/jmx/lib/jmxri.jar
 jmx-extra.jar=/java/jmx/lib/jmxtools.jar
 
 # Checkstyle OPTIONAL; required to run the checkstyle target
- Available from http://checkstyle.sf.net
-checkstyle.jar=/java/checkstyle-2.2/checkstyle-all-2.2.jar
+# Available from http://checkstyle.sf.net
+checkstyle.jar=/java/checkstyle-2.4/checkstyle-all-2.4.jar
 
 # Jalopy OPTIONAL; required to run the jalpoy targets
+# Available from http://jalopy.sourceforge.net/
 jalopy.lib=d:/development/code-opensource/other/jalopy-b10/lib
 
 # jakarta-site2 module is used to transform xml files to html using
