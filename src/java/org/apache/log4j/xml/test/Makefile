@@ -1,7 +1,7 @@
  
 PKG_DIR :=org/apache/log4j/xml/test
 DEPTH   :=../../../../../../..
-JSOURCES:=DOMTest.java DisableOverrideTest.java \
+JSOURCES:=DOMTest.java \
  SubClassTest.java\
  XTest.java\
 
