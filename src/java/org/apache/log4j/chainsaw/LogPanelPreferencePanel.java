@@ -386,7 +386,7 @@ public class LogPanelPreferencePanel extends AbstractPreferencePanel
       loggerFormatPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
       final JLabel precisionLabel =
-        new JLabel("Precision (package depth displayed)");
+        new JLabel("Number of package levels to hide)");
       final JLabel precisionLabel2 =
         new JLabel("leave blank to display full logger");
 
