@@ -58,6 +58,8 @@ import javax.xml.parsers.FactoryConfigurationError;
    @since 0.8.3 */
 public class DOMConfigurator implements Configurator {
 
+  static Logger logger = Logger.getLogger("LOG4J."+DOMConfigurator.class.getName());
+
   static final String CONFIGURATION_TAG = "log4j:configuration";
   static final String OLD_CONFIGURATION_TAG = "configuration";
   static final String RENDERER_TAG      = "renderer";
@@ -174,37 +176,33 @@ public class DOMConfigurator implements Configurator {
 	Node currentNode = children.item(loop);
 
 	/* We're only interested in Elements */
-	if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
-	  Element currentElement = (Element)currentNode;
+	if (!isElement(currentNode)) {
+	  continue;
+	}
+	
+	Element currentElement = (Element)currentNode;
 
-	  // Parse appender parameters 
-	  if (currentElement.getTagName().equals(PARAM_TAG)) {
-            setParameter(currentElement, propSetter);
+	// Parse appender parameters 
+	if (currentElement.getTagName().equals(PARAM_TAG)) {
+	  setParameter(currentElement, propSetter);	
+	} else if (currentElement.getTagName().equals(ERROR_HANDLER_TAG)) {
+	  parseErrorHandler(currentElement, appender);
+	} else if (currentElement.getTagName().equals(APPENDER_REF_TAG)) {
+	  String refName = subst(currentElement.getAttribute(REF_ATTR));
+	  if(appender instanceof AppenderAttachable) {
+	    AppenderAttachable aa = (AppenderAttachable) appender;
+	    LogLog.debug("Attaching appender named ["+ refName+
+			 "] to appender named ["+ appender.getName()+"].");
+	    aa.addAppender(findAppenderByReference(currentElement));
+	  } else {
+	    LogLog.error("Requesting attachment of appender named ["+
+			 refName+ "] to appender named ["+ appender.getName()+
+			 "] which does not implement org.apache.log4j.spi.AppenderAttachable.");
 	  }
-	  // Set appender layout
-	  else if (currentElement.getTagName().equals(LAYOUT_TAG)) {
-	    appender.setLayout(parseLayout(currentElement));
-	  }
-	  // Add filters
-	  else if (currentElement.getTagName().equals(FILTER_TAG)) {
-	    parseFilters(currentElement, appender);
-	  }
-	  else if (currentElement.getTagName().equals(ERROR_HANDLER_TAG)) {
-	    parseErrorHandler(currentElement, appender);
-	  }
-	  else if (currentElement.getTagName().equals(APPENDER_REF_TAG)) {
-	    String refName = subst(currentElement.getAttribute(REF_ATTR));
-	    if(appender instanceof AppenderAttachable) {
-	      AppenderAttachable aa = (AppenderAttachable) appender;
-	      LogLog.debug("Attaching appender named ["+ refName+
-			   "] to appender named ["+ appender.getName()+"].");
-	      aa.addAppender(findAppenderByReference(currentElement));
-	    } else {
-	      LogLog.error("Requesting attachment of appender named ["+
-			   refName+ "] to appender named ["+ appender.getName()+
-                "] which does not implement org.apache.log4j.spi.AppenderAttachable.");
-	    }
-	  }
+	} else {
+	  logger.debug("Handling nested <"+ currentElement.getTagName() 
+			     + "> for appender "+appender.getName());
+	  configureNestedComponent(propSetter, currentElement);	    
 	}
       }
       propSetter.activate();
@@ -217,6 +215,89 @@ public class DOMConfigurator implements Configurator {
 		   oops);
       return null;
     }
+  }
+  
+  protected void configureNestedComponent(PropertySetter parentBean, Element nestedElement) {
+    
+    String nestedElementTagName = nestedElement.getTagName();
+    
+    int containmentType = parentBean.canContainComponent(nestedElementTagName);
+    
+    if(containmentType == PropertySetter.NOT_FOUND) {
+      logger.warn("A component with tag name ["+nestedElementTagName
+		  +"] cannot be contained within an object of class ["
+		  + parentBean.getObjClass().getName()+"].");
+      return; // nothing can be done
+    }
+    
+    boolean debug = logger.isDebugEnabled();
+
+    String className = subst(nestedElement.getAttribute(CLASS_ATTR));
+    if(debug)
+      logger.debug("Will instantiate instance of class ["+className+']');    
+    
+    Object nestedComponent = null;
+    try {
+      nestedComponent = Loader.loadClass(className).newInstance();      
+    } catch(Exception e) {
+      logger.warn("Could not instantiate object of type ["+className+"].", e);
+      return;
+    } 
+
+    NodeList children	= nestedElement.getChildNodes();
+    final int length 	= children.getLength();
+    PropertySetter nestedBean = new PropertySetter(nestedComponent);	
+
+    for (int loop = 0; loop < length; loop++) {
+      Node currentNode = children.item(loop);
+
+      /* We're only interested in Elements */
+      if (!isElement(currentNode)) {
+	continue;
+      }
+
+      Element currentElement = (Element)currentNode;
+      if(hasParamTag(currentElement)) {
+	if(debug) {
+	  logger.debug("Configuring parameter ["+currentElement.getAttribute("name")
+		       + "] for <"+nestedElementTagName+">.");
+	}
+	setParameter(currentElement, nestedBean);
+      } else {
+	if(debug) {
+	  logger.debug("Configuring component "+nestedComponent+ " with tagged as <"
+		       +currentElement.getTagName()+">.");
+	}
+	configureNestedComponent(nestedBean, currentElement);
+      }
+    }
+    
+    // Now let us attach the component
+    switch(containmentType) {
+    case PropertySetter.AS_PROPERTY:  
+      parentBean.setComponent(nestedElementTagName, nestedComponent);
+      break;
+    case PropertySetter.AS_COLLECTION:  
+      parentBean.addComponent(nestedElementTagName, nestedComponent);
+      break;
+    }
+  }
+
+
+  /**
+   * Returns <code>true</code> if the node passed as parameter is an
+   * Element, returns <code>false</code> otherwise.  
+   * */
+  protected boolean isElement(Node node) {
+    return (node.getNodeType() == Node.ELEMENT_NODE);
+  }
+
+  /**
+   * Returns <code>true</code> if the element has the param tag,
+   * returns false otherwise.
+   * */
+  protected boolean hasParamTag(Element element) {
+    return element.getTagName().equals(PARAM_TAG);
   }
 
   /**
@@ -336,48 +417,10 @@ public class DOMConfigurator implements Configurator {
     }
   }
 
-
-  /**
-     Used internally to parse the category factory element.
-  */
-  protected
-  void parseCategoryFactory(Element factoryElement) {
-    String className = subst(factoryElement.getAttribute(CLASS_ATTR));
-
-    if(EMPTY_STR.equals(className)) {
-      LogLog.error("Category Factory tag " + CLASS_ATTR + " attribute not found.");
-      LogLog.debug("No Category Factory configured.");
-    }
-    else {
-      LogLog.debug("Desired category factory: ["+className+']');
-      Object catFactory = OptionConverter.instantiateByClassName(className, 
-                                                                 LoggerFactory.class, 
-                                                                 null);
-      PropertySetter propSetter = new PropertySetter(catFactory);
-
-      Element  currentElement = null;
-      Node     currentNode    = null;
-      NodeList children       = factoryElement.getChildNodes();
-      final int length        = children.getLength();
-
-      for (int loop=0; loop < length; loop++) {
-        currentNode = children.item(loop);
-	if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
-	  currentElement = (Element)currentNode;
-	  if (currentElement.getTagName().equals(PARAM_TAG)) {
-	    setParameter(currentElement, propSetter);
-	  }
-	}
-      }
-    }
-  }
-
-
   /**
      Used internally to parse the roor category element.
   */
-  protected
-  void parseRoot (Element rootElement) {
+  protected void parseRoot (Element rootElement) {
     Logger root = repository.getRootLogger();
     // category configuration needs to be atomic
     synchronized(root) {    
@@ -389,8 +432,7 @@ public class DOMConfigurator implements Configurator {
   /**
      Used internally to parse the children of a category element.
   */
-  protected
-  void parseChildrenOfLoggerElement(Element catElement,
+  protected void parseChildrenOfLoggerElement(Element catElement,
 				      Logger cat, boolean isRoot) {
     
     PropertySetter propSetter = new PropertySetter(cat);
@@ -434,44 +476,7 @@ public class DOMConfigurator implements Configurator {
     propSetter.activate();
   }
 
-  /**
-     Used internally to parse a layout element.
-  */  
-  protected
-  Layout parseLayout (Element layout_element) {
-    String className = subst(layout_element.getAttribute(CLASS_ATTR));
-    LogLog.debug("Parsing layout of class: \""+className+"\"");		 
-    try {
-      Object instance 	= Loader.loadClass(className).newInstance();
-      Layout layout   	= (Layout)instance;
-      PropertySetter propSetter = new PropertySetter(layout);
-      
-      NodeList params 	= layout_element.getChildNodes();
-      final int length 	= params.getLength();
-
-      for (int loop = 0; loop < length; loop++) {
-	Node currentNode = (Node)params.item(loop);
-	if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
-	  Element currentElement = (Element) currentNode;
-	  String tagName = currentElement.getTagName();
-	  if(tagName.equals(PARAM_TAG)) {
-            setParameter(currentElement, propSetter);
-	  }
-	}
-      }
-      
-      propSetter.activate();
-      return layout;
-    }
-    catch (Exception oops) {
-      LogLog.error("Could not create the Layout. Reported error follows.",
-		   oops);
-      return null;
-    }
-  }
-
-  protected 
-  void parseRenderer(Element element) {
+  protected void parseRenderer(Element element) {
     String renderingClass = subst(element.getAttribute(RENDERING_CLASS_ATTR));
     String renderedClass = subst(element.getAttribute(RENDERED_CLASS_ATTR));
     if(repository instanceof RendererSupport) {
@@ -483,8 +488,7 @@ public class DOMConfigurator implements Configurator {
   /**
      Used internally to parse a level  element.
   */
-  protected
-  void parseLevel(Element element, Logger logger, boolean isRoot) {
+  protected void parseLevel(Element element, Logger logger, boolean isRoot) {
     String catName = logger.getName();
     if(isRoot) {
       catName = "root";
@@ -522,8 +526,7 @@ public class DOMConfigurator implements Configurator {
     LogLog.debug(catName + " level set to " + logger.getLevel());    
   }
 
-  protected
-  void setParameter(Element elem, PropertySetter propSetter) {
+  protected void setParameter(Element elem, PropertySetter propSetter) {
     String name = subst(elem.getAttribute(NAME_ATTR));
     String value = (elem.getAttribute(VALUE_ATTR));
     value = subst(OptionConverter.convertSpecialChars(value));
@@ -536,9 +539,7 @@ public class DOMConfigurator implements Configurator {
      defined in the log4j.dtd. 
 
   */
-  static
-  public
-  void configure (Element element) {
+  static public void configure (Element element) {
     DOMConfigurator configurator = new DOMConfigurator();
     configurator.doConfigure(element,  LogManager.getLoggerRepository());
   }
@@ -551,9 +552,7 @@ public class DOMConfigurator implements Configurator {
      @param configFilename A log4j configuration file in XML format.
 
   */
-  static
-  public
-  void configureAndWatch(String configFilename) {
+  static public void configureAndWatch(String configFilename) {
     configureAndWatch(configFilename, FileWatchdog.DEFAULT_DELAY);
   }
 
@@ -568,16 +567,13 @@ public class DOMConfigurator implements Configurator {
       @param configFilename A log4j configuration file in XML format.
       @param delay The delay in milliseconds to wait between each check.
   */
-  static
-  public
-  void configureAndWatch(String configFilename, long delay) {
+  static public void configureAndWatch(String configFilename, long delay) {
     XMLWatchdog xdog = new XMLWatchdog(configFilename);
     xdog.setDelay(delay);
     xdog.start();
   }
 
-  public
-  void doConfigure(String filename, LoggerRepository repository) {
+  public void doConfigure(String filename, LoggerRepository repository) {
     FileInputStream fis = null;
     try {
       fis = new FileInputStream(filename);
@@ -596,8 +592,7 @@ public class DOMConfigurator implements Configurator {
   }
   
 
-  public
-  void doConfigure(URL url, LoggerRepository repository) {
+  public void doConfigure(URL url, LoggerRepository repository) {
     try {
       doConfigure(url.openStream(), repository);
     } catch(IOException e) {
@@ -610,8 +605,7 @@ public class DOMConfigurator implements Configurator {
      configuration file.
 
   */
-  public
-  void doConfigure(InputStream inputStream, LoggerRepository repository) 
+  public void doConfigure(InputStream inputStream, LoggerRepository repository) 
                                           throws FactoryConfigurationError {
     doConfigure(new InputSource(inputStream), repository);
   }
@@ -688,9 +682,7 @@ public class DOMConfigurator implements Configurator {
   
   /**
      A static version of {@link #doConfigure(String, LoggerRepository)}.  */
-  static
-  public
-  void configure(String filename) throws FactoryConfigurationError {
+  static public void configure(String filename) throws FactoryConfigurationError {
     new DOMConfigurator().doConfigure(filename, 
 				      LogManager.getLoggerRepository());
   }
@@ -710,8 +702,7 @@ public class DOMConfigurator implements Configurator {
      href="doc-files/log4j.dtd">log4j.dtd</a>.
      
   */
-  protected
-  void parse(Element element) {
+  protected void parse(Element element) {
 
     String rootElementName = element.getTagName();
 
@@ -736,7 +727,6 @@ public class DOMConfigurator implements Configurator {
     } else {
       LogLog.debug("Ignoring " + INTERNAL_DEBUG_ATTR + " attribute.");
     }
-
 
     String confDebug = subst(element.getAttribute(CONFIG_DEBUG_ATTR));
     if(!confDebug.equals("") && !confDebug.equals("null")) {      
@@ -768,36 +758,24 @@ public class DOMConfigurator implements Configurator {
 
     for (int loop = 0; loop < length; loop++) {
       currentNode = children.item(loop);
-      if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
-	currentElement = (Element) currentNode;
-	tagName = currentElement.getTagName();
-
-	if (tagName.equals(CATEGORY_FACTORY_TAG)) {
-	  parseCategoryFactory(currentElement);
-	}
+      if (!isElement(currentNode)) {
+	continue;
       }
-    }
-    
-    for (int loop = 0; loop < length; loop++) {
-      currentNode = children.item(loop);
-      if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
-	currentElement = (Element) currentNode;
-	tagName = currentElement.getTagName();
-
-	if (tagName.equals(CATEGORY) || tagName.equals(LOGGER)) {
-	  parseCategory(currentElement);
-	} else if (tagName.equals(ROOT_TAG)) {
-	  parseRoot(currentElement);
-	} else if(tagName.equals(RENDERER_TAG)) {
-	  parseRenderer(currentElement);
-	}
+      currentElement = (Element) currentNode;
+      tagName = currentElement.getTagName();
+      
+      if (tagName.equals(CATEGORY) || tagName.equals(LOGGER)) {
+	parseCategory(currentElement);
+      } else if (tagName.equals(ROOT_TAG)) {
+	parseRoot(currentElement);
+      } else if(tagName.equals(RENDERER_TAG)) {
+	parseRenderer(currentElement);
       }
     }
   }
 
   
-  protected
-  String subst(String value) {
+  protected String subst(String value) {
     try {
       return OptionConverter.substVars(value, props);
     } catch(IllegalArgumentException e) {
