@@ -2,10 +2,14 @@ deprecation=on
 
 jakarta.oro.jar=../../jakarta-oro-2.0.5/jakarta-oro-2.0.5.jar
 
+
 # Junit test cases
 # ================
 # junit.jar must be on the classpath or in ANT_HOME/lib. It can't  be
-# handled as a property.
+# handled as a property altough this might change in futute versions of ANT.
+
+# We use jetty for some unit tests
+jetty.jar=/java/jetty-4.2.20/lib/org.mortbay.jetty.jar
 
 
 # Database testing
