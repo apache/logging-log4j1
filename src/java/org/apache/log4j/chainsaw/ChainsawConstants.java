@@ -117,5 +117,8 @@ public class ChainsawConstants {
   static final String LEVEL_DISPLAY_TEXT = "text";  
 
   static final String DATETIME_FORMAT = "EEE MMM dd HH:mm:ss z yyyy";
+  
+//  TODO come up with a better page not found url
+  public static final URL URL_PAGE_NOT_FOUND = WELCOME_URL;
 
 }
