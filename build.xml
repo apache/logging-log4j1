@@ -300,7 +300,7 @@
     <ant antfile="build-chainsaw.xml" target="chainsaw"/>
   </target>	
 	
-  <target name="webstart" depends="build">
+  <target name="webstart" depends="build.chainsaw">
 	<ant antfile="build-chainsaw.xml" target="webstart"/>
   </target>
 
