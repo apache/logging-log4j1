@@ -247,6 +247,12 @@ public class Hierarchy {
     enable(Priority.ALL);
   }
 
+  /**
+     Enable logging for events with priority p or higher.
+
+	  @param p the minimum priority for which events are sent to
+	         their appenders.
+	  @since 1.1.3 */
   public 
   void enable(Priority p) {
     if(p != null) {
@@ -281,8 +287,8 @@ public class Hierarchy {
   }
 
   /**
-     Returns the string representation of the internal
-     <code>disable</code> state.  
+     Returns a {@link Priority} representation of the
+     <code>enable</code> state.  
 
      @since 1.2
   */
@@ -399,7 +405,7 @@ public class Hierarchy {
   }
 
   /**
-     @deprecated No replacement offered.
+     @deprecated See {@link #getEnable} for similar functionality.
    */
 
   public
