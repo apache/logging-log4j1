@@ -137,12 +137,9 @@ public final class LoggingEventFieldResolver {
       
       while (tokenizer.hasMoreTokens()) {
           String token = tokenizer.nextToken();
-          System.out.println("examining" + token);
           if (isField(token)  || (token.toUpperCase().startsWith(MDC_FIELD) || token.toUpperCase().startsWith(PROP_FIELD))) {
-              System.out.println("was token - value is " +getValue(token, event).toString()); 
               result.append(getValue(token, event).toString());
           } else { 
-              System.out.println("Was not a token - appending " + token);
               result.append(token);
           }
       }
