@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.OptionConverter;
 
 import java.util.HashMap;
+import java.util.Map;
 
 
 // Contributors:   Nelson Minar <(nelson@monkey.org>
@@ -48,7 +49,7 @@ public class PatternParser {
   private static final int MIN_STATE = 4;
   private static final int MAX_STATE = 5;
 
-  static HashMap globalRulesRegistry;
+  static Map globalRulesRegistry;
 
   static {
     // We set the global rules in the static initializer of PatternParser class
@@ -116,7 +117,7 @@ public class PatternParser {
    * key: the conversion word (as String)
    * value: the pattern converter class (as String) 
    */
-  HashMap converterRegistry;
+  Map converterRegistry;
 
   private Logger logger  = Logger.getLogger(PatternParser.class);
   
@@ -388,14 +389,14 @@ public class PatternParser {
   /**
    * Returns the converter registry for this PatternParser instance.
    */
-  public HashMap getConverterRegistry() {
+  public Map getConverterRegistry() {
     return converterRegistry;
   }
 
   /**
    * Set the converter registry for this PatternParser instance.
    */
-  public void setConverterRegistry(HashMap converterRegistry) {
+  public void setConverterRegistry(Map converterRegistry) {
     this.converterRegistry = converterRegistry;
   }
 }

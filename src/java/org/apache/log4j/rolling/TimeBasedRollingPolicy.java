@@ -28,7 +28,7 @@ import java.util.Date;
 
 
 /**
- * <code>TimeBasedRollingPolicy</code> is both easy to configure yet quite 
+ * <code>TimeBasedRollingPolicy</code> is both easy to configure and quite 
  * powerful. 
  * 
  * <p>In order to use  <code>TimeBasedRollingPolicy</code>, the 
