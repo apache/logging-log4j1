@@ -19,10 +19,10 @@ import org.apache.log4j.helpers.LogLog;
 
 /**
    This appender listens on a socket on the port specified by the
-   {@link #PORT_OPTION} for a "RollOver" message. When such a message
-   is received, the underlying log file is rolled over and an 
-   acknowledgment message is sent back to the process initiating
-   the roll over.
+   <b>Port</b> property for a "RollOver" message. When such a message
+   is received, the underlying log file is rolled over and an
+   acknowledgment message is sent back to the process initiating the
+   roll over.
 
    <p>This method of triggering roll over has the advantage of being
    operating system independent, fast and reliable.
@@ -62,9 +62,9 @@ public class ExternallyRolledFileAppender extends RollingFileAppender {
   }
   
   /**
-     The <b>Port</b> option is used for setting the port for 
-     listening to external roll over messages.
-   */
+     The <b>Port</b> [roperty is used for setting the port for
+     listening to external roll over messages.  
+  */
   public
   void setPort(int port) {
     this.port = port;
@@ -80,7 +80,7 @@ public class ExternallyRolledFileAppender extends RollingFileAppender {
   
   /**
      Start listening on the port specified by a preceding call to
-     {@link #setOption}.  */
+     {@link #setPort}.  */
   public
   void activateOptions() {
     super.activateOptions();

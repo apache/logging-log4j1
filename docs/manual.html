@@ -837,40 +837,24 @@ control of a web-server.
  "log4j.properties" constitutes a malformed URL.
 
  <p>See <a
- href="api/org/apache/log4j/helpers/Loader.html#getResource(java.lang.String, java.lang.Class)">Loader.getResource(java.lang.String, java.lang.Class)</a>
+ href="api/org/apache/log4j/helpers/Loader.html#getResource(java.lang.String)">Loader.getResource(java.lang.String)</a>
  for the list of searched locations.
 
  <p><li>If no URL could not be found, abort default
  initialization. Otherwise, configure log4j from the URL.
 
+ <p>The <a
+  href="api/org/apache/log4j/PropertyConfigurator.html">PropertyConfigurator</a>
+  will be used to parse the URL to configure log4j unless the URL ends
+  with the ".xml" extension, in which case the <a
+  href="api/org/apache/log4j/xml/DOMConfigurator.html">DOMConfigurator</a>
+  will be used. You can optionaly specify a custom configurator. The
+  value of the <b>log4j.configuratorClass</b> system property is taken
+  as the fully qualified class name of your custom configurator. The
+  custom configurator you specify <em>must</em> implement the <a
+  href="api/org/apache/log4j/spi/Configurator.html">Configurator</a>
+  interface.
 
- <p>The URL format is important. Its <em>reference</em> part is
- taken as the class name of the configurator. For example, if you
- invoke your application using the command line
-
-     <pre> java -Dlog4j.configuration=file:/temp/myconfig.xyz#com.myCompany.myConfigurator
-     </pre>
-
-     then the log4j will be configured by a new instance of
-     <code>com.myCompany.myConfigurator</code> by interpreting the
-     file referenced by <code>file:/temp/myconfig.xyz</code>.  The
-     configurator you specify <em>must</em> implement the <a
-     href="api/org/apache/log4j/spi/Configurator.html">Configurator</a>
-     interface.
-
-     <p>After the feature was introduced, it was discovered that the
-     reference part was used by application servers for their own
-     used. Consequently, we will drop support for custom categories in
-     the reference part. A new propery called <b>log4j.configutationClass</b>
-     will be introduced instead.
-     
-
-     <p>If the URL has no reference part, then the <a
-     href="api/org/apache/log4j/PropertyConfigurator.html">PropertyConfigurator</a>
-     will parse the URL. However, if the URL ends with a ".xml"
-     extension, then the <a
-     href="api/org/apache/log4j/xml/DOMConfigurator.html">DOMConfigurator</a>
-     will be used to parse the URL.
 </ol>
 
 <h2>Example Configurations</h2>

@@ -15,6 +15,18 @@
 
  - Added event reporting capability to the Hierachy class.
  
+ - Added new system property "log4j.configuratorClass". This property
+   allows the user to specify the custom configurator at the default
+   initialization phase. This property replaces the previous
+   interpretation of the reference part of "log4j.configuration" 
+   as the custom configurator class. This interpretation was sometimes
+   erroneous and caused headaches. [*]
+   
+ - Introduced the Mapped Diagnostic Context or MDC class. This class
+   is similar to the NDC except that the diagnistic context is based
+   on a map instead of a stack. Moreover the MDC is automatically
+   inherited by child threads under JDK 1.2 and above.
+
  - Corrected a performance bug in the NDC class as observed by Dan Milstein. [*]
 
  - Removed deprecated methods setOptions and getOptionStrings defined

@@ -127,16 +127,9 @@ not be performed.
 
   <p><li>Log4j is JDK 1.1.x compatible.
   
-  <p><li>Nevertheless, <code>RollingFileAppender</code> requires JDK
-  1.2 or above. This will be fixed in future releases of log4j. If you
-  need <code>RollingFileAppender</code> to run under JDK 1.1 then you
-  can simply remove <code>RollingFileAppenderBeanInfo.class</code>
-  from log4j.jar.
-
-
-<p><li>The DOMConfigurator is based on the DOM Level 1 API. The
-    DOMConfigurator.configure(Element) method will work with any
-    XML parser that will pass it a DOM tree.
+  <p><li>The DOMConfigurator is based on the DOM Level 1 API. The
+    DOMConfigurator.configure(Element) method will work with any XML
+    parser that will pass it a DOM tree.
     
     <p>The DOMConfigurator.configure(String filename) method and its
     variants require a JAXP compatible XML parser, for example <a
@@ -144,40 +137,21 @@ not be performed.
     parser. Compiling the DOMConfigurator requires the presence of a
     JAXP parser in the classpath.
 
-<p><li>The <code>org.apache.log4j.net.SMTPAppender</code> relies on
-    the <a href="http://java.sun.com/products/javamail/">JavaMail
+    <p><li>The <code>org.apache.log4j.net.SMTPAppender</code> relies
+    on the <a href="http://java.sun.com/products/javamail/">JavaMail
     API</a>. It has been tested with JavaMail API version 1.2. The
     JavaMail API requires the <a
     href="http://java.sun.com/beans/glasgow/jaf.html">JavaBeans
-    Activation Framework</a> package. 
+    Activation Framework</a> package.
     
-<p><li>The <code>org.apache.log4j.net.JMSAppender</code> requires the
-presence of the JMS API as well as JNDI.
+    <p><li>The <code>org.apache.log4j.net.JMSAppender</code> requires
+    the presence of the JMS API as well as JNDI.
 
 
-<p><li>log4j test code relies on the <a
-href="http://www.junit.org">JUnit</a> testing framework.
-
+    <p><li>log4j test code relies on the <a
+    href="http://www.junit.org">JUnit</a> testing framework.
 
 </ul>    
-
-
-<a name=javadoc><h4>Is there javadoc documentation for log4j?</h4>
-
-The javadoc <a href=api/index.html>documentation</a> is part of
-the log4j package. There is also an <b><a
-href="manual.html">introductory manual</a></b>. In case
-problems make sure to have a look at <a href="TROUBLESHOOT.html">log4j
-troubleshooting</a> document. 
-
-<a name=alternatives><h4>What other logging packages are there?</h4>
-
-There are many other logging packages out there. I know of <a
-href=http://www.homestead.com/JavaLog/>Grace Software's JavaLog</a>,
-<a href=http://www.alphaworks.ibm.com/tech/loggingtoolkit4j>JLog</a>,
-<a href=http://www.sw-zoo.org/>Software ZOO's toolkit</a>, <a
-href=http://www.eli.sdsu.edu/java-SDSU/>SDSU logging package</a>. This
-list is not exhaustive.
 
 <a name=usageExample><h4>Is there example code for using log4j?</h4>
 
@@ -452,8 +426,6 @@ this hierarchy.
 <p>Note by naming categories by locality one tends to name things by
 functionality, since in most cases the locality relates closely to
 functionality. 
-
-
 
 <a name=className><h4>How do I get the fully-qualified name of a class
 in a static block?</a></h4>
