@@ -65,6 +65,7 @@ import java.io.File;
  * */
 public class SlidingWindowRollingPolicy implements RollingPolicy,
   OptionHandler {
+    
   static Logger logger = Logger.getLogger(SlidingWindowRollingPolicy.class);
   int maxIndex;
   int minIndex;
@@ -89,7 +90,7 @@ public class SlidingWindowRollingPolicy implements RollingPolicy,
       }
 
       // Map {(maxIndex - 1), ..., minIndex} to {maxIndex, ..., minIndex+1}
-      for (int i = maxIndex - 1; i > minIndex; i--) {
+      for (int i = maxIndex - 1; i >= minIndex; i--) {
         Util.rename(
           fileNamePattern.convert(i), fileNamePattern.convert(i + 1));
       }
@@ -100,9 +101,9 @@ public class SlidingWindowRollingPolicy implements RollingPolicy,
         Util.rename(activeFileName, fileNamePattern.convert(minIndex));
       } else {
         // TODO: compress the currently active file (minIndex) into minIndex+1
-        Util.rename(
-          fileNamePattern.convert(minIndex),
-          fileNamePattern.convert(minIndex + 1));
+        //Util.rename(
+          //fileNamePattern.convert(minIndex),
+          //fileNamePattern.convert(minIndex + 1));
       }
     }
   }
@@ -157,4 +158,14 @@ public class SlidingWindowRollingPolicy implements RollingPolicy,
   public void setMinIndex(int minIndex) {
     this.minIndex = minIndex;
   }
+
+
+  public String getActiveFileName() {
+    return activeFileName;
+  }
+
+  public void setActiveFileName(String afn) {
+    activeFileName = afn;
+  }
+
 }
