@@ -17,14 +17,8 @@
 package org.apache.log4j.pattern;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.helpers.AbsoluteTimeDateFormat;
 import org.apache.log4j.spi.LoggingEvent;
-
-import java.text.DateFormat;
-import java.text.FieldPosition;
 import java.text.SimpleDateFormat;
-
-import java.util.Date;
 import java.util.TimeZone;
 import java.util.List;
 
