@@ -16,6 +16,7 @@
 
 package org.apache.log4j.joran.action;
 
+import org.apache.log4j.joran.spi.ActionException;
 import org.apache.log4j.joran.spi.ExecutionContext;
 import org.apache.log4j.joran.spi.Interpreter;
 import org.apache.log4j.spi.ComponentBase;
@@ -53,9 +54,9 @@ public abstract class Action extends ComponentBase {
    * the returned value is 'false', then child elements are ignored.
    */
   public abstract void begin(
-    ExecutionContext ec, String name, Attributes attributes);
+    ExecutionContext ec, String name, Attributes attributes) throws ActionException ;
 
-  public abstract void end(ExecutionContext ec, String name);
+  public abstract void end(ExecutionContext ec, String name) throws ActionException;
 
   public String toString() {
     return this.getClass().getName();
