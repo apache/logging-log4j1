@@ -19,10 +19,18 @@ package org.apache.log4j.helpers;
 
 /**
  * Constants used internally throughout log4j.
+ * 
+ * @since 1.3
  */
 public interface Constants {
   
   static final String LOG4J_PACKAGE_NAME = "org.apache.log4j";
+  
+  /**
+   *  The name of the default repository is "default" (without the quotes).
+   */
+  static final String DEFAULT_REPOSITORY_NAME  = "default";
+  
   
   static final String APPLICATION_KEY = "application";
   static final String HOSTNAME_KEY = "hostname";

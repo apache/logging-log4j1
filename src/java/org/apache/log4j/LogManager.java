@@ -72,7 +72,7 @@ public class LogManager {
   static {
     //System.out.println("**Start of LogManager static initializer");
     defaultLoggerRepository = new Hierarchy(new RootLogger(Level.DEBUG));
-    defaultLoggerRepository.setName("default");
+    defaultLoggerRepository.setName(Constants.DEFAULT_REPOSITORY_NAME);
     
     // temporary repository
     repositorySelector = new DefaultRepositorySelector(defaultLoggerRepository);

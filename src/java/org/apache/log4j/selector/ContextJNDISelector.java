@@ -156,7 +156,7 @@ public class ContextJNDISelector implements RepositorySelector {
       // we can't log here
     }
 
-    if (loggingContextName == null) {
+    if (loggingContextName == null || Constants.DEFAULT_REPOSITORY_NAME.equals(loggingContextName)) {
       return LogManager.defaultLoggerRepository;
     } else {
       //System.out.println("loggingContextName is ["+loggingContextName+"]");
@@ -189,11 +189,22 @@ public class ContextJNDISelector implements RepositorySelector {
     }
   }
 
-
-  
+  /**
+   * Get the logger repository with the corresponding name.
+   * 
+   * <p>Returned value can be null if the selector is unaware of the repository
+   * with the given name.
+   */
+  public LoggerRepository getLoggerRepository(String name) {
+    if( Constants.JNDI_CONTEXT_NAME.equals(name)) {
+      return LogManager.defaultLoggerRepository;
+    } else {
+      return (LoggerRepository) hierMap.get(name);  
+    }
+  }
   /** 
-   * Remove the repository with the given context name from the list of
-   * known repositories.
+   * Remove the repository with the given name from the list of known 
+   * repositories.
    * 
    * @return the detached repository
    */
