@@ -328,8 +328,12 @@ public class LoggingEvent
 
 
   /**
-   * Set the location information for this logging event. The collected
-   * information is cached for future use.
+   * Get the location information for this logging event. If location 
+   * information is null at the time of its invocation, this method extracts 
+   * location information. The collected information is cached for future use.
+   * 
+   * <p>Note that after serialisation, it is impossible to correctly extract
+   * location information. In that case null is returned.</p>
    */
   public LocationInfo getLocationInformation() {
     if (locationInfo == null && fqnOfLoggerClass != null) {

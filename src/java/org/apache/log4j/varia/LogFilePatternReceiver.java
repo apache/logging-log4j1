@@ -580,6 +580,8 @@ public class LogFilePatternReceiver extends Receiver {
         || (lineNumber != null)) {
       info =
         new LocationInfo(eventFileName, className, methodName, lineNumber);
+    } else {
+      info = LocationInfo.NA_LOCATION_INFO;
     }
 
     properties.put(Constants.HOSTNAME_KEY, "file");
