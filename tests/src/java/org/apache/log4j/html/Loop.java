@@ -42,6 +42,7 @@ public class Loop {
     root.addAppender(appender);
 
     loop(200);
+    appender.close();
   }
 
   static void loop(int len) {
