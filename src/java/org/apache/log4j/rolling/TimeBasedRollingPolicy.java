@@ -133,6 +133,7 @@ public class TimeBasedRollingPolicy extends RollingPolicySkeleton
    *  
    */
   public String getActiveLogFileName() {
+    logger.debug("getActiveLogFileName called");
     if (activeFileName == null) {
       return fileNamePattern.convert(now);
     } else {
