@@ -198,7 +198,7 @@
 
     <copy todir="${javac.dest}">
       <fileset dir="${java.source.dir}"
-	    includes="${stem}/lf5/**/*.properties"/>    
+	    includes="${stem}/lf5/**/*.properties"/>
       <fileset dir="${java.source.dir}"
 	    includes="${stem}/lf5/viewer/images/*"/>
    </copy>
@@ -208,7 +208,7 @@
     <mkdir dir="${javac.dest}" />
     <javac srcdir="${basedir}"
 	   destdir="${javac.dest}"
-	   includes="examples/**/*.java"	
+	   includes="examples/**/*.java"
 	   excludes="misc/*, examples/jmx/*.java"
 	   deprecation="${deprecation}"
            debug="on">
@@ -298,7 +298,7 @@
             convention="${jalopy.stylesheet.location}">
       <fileset refid="styled_files"/>
     </jalopy>
-  </target>  
+  </target>
 
   <!-- ================================================================= -->
   <!-- Runs jalopy preferences editor.                                   -->
@@ -307,7 +307,7 @@
     <java classname="de.hunsicker.jalopy.swing.SettingsDialog"
           classpathref="jalopy.path"
           fork="true" />
-  </target>  
+  </target>
 
   <!-- ================================================================= -->
   <!-- Runs checkstyle. Available from http://checkstyle.sf.net          -->
@@ -322,7 +322,7 @@
 		<property name="checkstyle.maxmethodlen" value="500" />
 		<property name="checkstyle.maxconstructorlen" value="500" />
 		<property name="checkstyle.ignore.public.in.interface" value="true" />
-		
+
     <!-- by default checkstyle supports the Sun coding standard. -->
     <checkstyle>
       <fileset refid="styled_files"/>
@@ -377,7 +377,7 @@
 	<attribute name="Manifest-version" value="1.0"/>
 	<section name="org/apache/log4j/">
 	  <attribute name="Implementation-Title" value="log4j"/>
-	  <attribute name="Implementation-Version" value="${version}"/> 
+	  <attribute name="Implementation-Version" value="${version}"/>
 	  <attribute name="Implementation-Vendor" value="APache Software Foundation"/>
 	</section>
       </manifest>
@@ -394,16 +394,16 @@
 				<include name="${log4j-chainsaw.jar}"/>
 			</fileset>
 		</delete>
-	
+
 		<jar jarfile="${jar.dest}/${log4j-chainsaw.jar}" basedir="${javac.dest}"
 			   includes="${stem}/chainsaw/*.class"
 	       excludes="**/UnitTest**">
-	
+
 			<manifest>
 				<attribute name="Manifest-version" value="1.0"/>
 				<section name="org/apache/log4j/">
 					<attribute name="Implementation-Title" value="log4j"/>
-					<attribute name="Implementation-Version" value="${version}"/> 
+					<attribute name="Implementation-Version" value="${version}"/>
 					<attribute name="Implementation-Vendor" value="APache Software Foundation"/>
 				</section>
 				<attribute name="Main-Class" value="org.apache.log4j.chainsaw.Main"/>
@@ -422,18 +422,18 @@
 				<include name="${log4j-lf5.jar}"/>
 			</fileset>
 		</delete>
-	
+
 		<jar jarfile="${jar.dest}/${log4j-lf5.jar}" basedir="${javac.dest}"
 			   includes="${stem}/lf5/**/*.class,
                    ${stem}/lf5/**/*.properties,
                    ${stem}/lf5/**/*.gif"
 	       excludes="**/UnitTest**">
-	
+
 			<manifest>
 				<attribute name="Manifest-version" value="1.0"/>
 				<section name="org/apache/log4j/">
 					<attribute name="Implementation-Title" value="log4j"/>
-					<attribute name="Implementation-Version" value="${version}"/> 
+					<attribute name="Implementation-Version" value="${version}"/>
 					<attribute name="Implementation-Vendor" value="APache Software Foundation"/>
 				</section>
 				<attribute name="Main-Class" value="org.apache.log4j.lf5.StartLogFactor5"/>
@@ -486,28 +486,28 @@
 
   <!-- ============================================== -->
   <!-- Build the site files using Anakia              -->
-  <!-- ============================================== -->  
-  <target name="prepareSite2">    
+  <!-- ============================================== -->
+  <target name="prepareSite2">
     <available classname="org.apache.velocity.anakia.AnakiaTask"
       property="AnakiaTask.present">
       <classpath refid="site2.classpath"/>
     </available>
   </target>
-  
+
   <target name="checkSite2" depends="prepareSite2" unless="AnakiaTask.present">
     <echo>
-      AnakiaTask is not present! Please check to make sure that 
+      AnakiaTask is not present! Please check to make sure that
       velocity.jar is in your classpath.
     </echo>
   </target>
-  
+
   <target name="site2" depends="checkSite2" if="AnakiaTask.present">
     <taskdef name="anakia" classname="org.apache.velocity.anakia.AnakiaTask">
       <classpath refid="site2.classpath"/>
     </taskdef>
 
     <anakia basedir="${xdocs.src}" destdir="${docs.dest}/"
-      extension=".html" 
+      extension=".html"
       style="site.vsl"
       projectFile="stylesheets/project.xml"
       excludes="**/stylesheets/**, empty.xml, lf5/**"
@@ -515,9 +515,9 @@
       lastModifiedCheck="true"
       templatePath="../jakarta-site2/xdocs/stylesheets">
     </anakia>
-    
+
     <anakia basedir="${xdocs.src}" destdir="${docs.dest}/"
-      extension=".html" 
+      extension=".html"
       style="site.vsl"
       projectFile="stylesheets/lf5.xml"
       excludes="**/stylesheets/**, empty.xml"
@@ -568,7 +568,7 @@
     </delete>
 
     <mkdir  dir="${dist.images}" />
-    
+
     <mkdir  dir="${dist.tmp}/jakarta-log4j-${version}" />
 
     <copy todir="${dist.tmp}/jakarta-log4j-${version}">
