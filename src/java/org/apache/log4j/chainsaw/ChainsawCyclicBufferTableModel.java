@@ -134,8 +134,8 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
   }
   
   private void reFilter() {
-    try {
-        synchronized(unfilteredList) {
+    synchronized(unfilteredList) {
+        try {
           filteredList.clear();
           Iterator iter = unfilteredList.iterator();
           while (iter.hasNext()) {
@@ -144,10 +144,11 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
                   filteredList.add(e);
               }
           }
+        } finally { 
           fireTableDataChanged();
           notifyCountListeners();
         }
-    } catch (IllegalArgumentException iae) {LogLog.warn("invalid expression", iae);}
+    }
   }
   
   /**
