@@ -536,4 +536,26 @@ public class OptionConverter  {
       ((ConfiguratorBase)configurator).dumpErrors();
     }
   }
+  
+  /**
+   * Replaces occurances of double backslashes (if any) in the
+   * source string with single backslashes.
+   * @param src source string
+   * @return source string with double backslashes replaced
+   */
+  public static String stripDuplicateBackslashes(final String src) {
+  	int i = src.lastIndexOf('\\');
+  	if (i > 0) {
+  		StringBuffer buf = new StringBuffer(src);
+  		for(; i > 0; i = src.lastIndexOf('\\', i - 1)) {
+  			if(src.charAt(i - 1) == '\\') {
+  				buf.deleteCharAt(i);
+  				i--;
+  				if (i == 0) break;
+  			}
+  		}
+  		return buf.toString();
+  	}
+  	return src;
+  }
 }

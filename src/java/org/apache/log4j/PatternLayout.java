@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999-2005 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import java.util.Map;
 import org.apache.log4j.pattern.PatternConverter;
 import org.apache.log4j.pattern.PatternParser;
 import org.apache.log4j.spi.LoggingEvent;
-
+import org.apache.log4j.helpers.OptionConverter;
 
 // Contributors:   Nelson Minar <nelson@monkey.org>
 //                 Anders Kristensen <akristensen@dynamicsoft.com>
@@ -450,7 +450,7 @@ public class PatternLayout extends Layout {
     conversion specifiers.
   */
   public void setConversionPattern(String conversionPattern) {
-    this.conversionPattern = conversionPattern;
+    this.conversionPattern = OptionConverter.convertSpecialChars(conversionPattern);
   }
 
   /**

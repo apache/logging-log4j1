@@ -127,6 +127,12 @@ public class OptionSubstitutionTest extends TestCase {
     assertEquals("HELLO John.", res);
   }
   
+  public void testStripDuplicateBackslashes() {
+     assertEquals("\\foo\\bar\\foo", OptionConverter.stripDuplicateBackslashes("\\foo\\\\bar\\foo"));
+     assertEquals("\\foo\\bar\\foo\\", OptionConverter.stripDuplicateBackslashes("\\\\foo\\\\bar\\foo\\"));
+     assertEquals("\\foo\\bar\\foo\\", OptionConverter.stripDuplicateBackslashes("\\\\foo\\\\bar\\foo\\\\"));
+//     assertTrue(false);
+  }  
   
   
   public static Test Xsuite() {
