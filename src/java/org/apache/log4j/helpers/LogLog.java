@@ -40,6 +40,7 @@ public class LogLog {
 
   private static final String PREFIX = "log4j: ";
   private static final String ERR_PREFIX = "log4j:ERROR ";
+  private static final String WARN_PREFIX = "log4j:WARN ";
 
   static {
     try {
@@ -91,7 +92,7 @@ public class LogLog {
 
   /**
      This method is used to output log4j internal error
-     statements. There is no way for disabling error statements.
+     statements. There is no way to disable error statements.
      Output goes to <code>System.err</code>.
   */
   public
@@ -102,7 +103,7 @@ public class LogLog {
 
   /**
      This method is used to output log4j internal error
-     statements. There is no way for disabling error statements.
+     statements. There is no way to disable error statements.
      Output goes to <code>System.err</code>.  
   */
   public
@@ -114,4 +115,26 @@ public class LogLog {
     }
   }  
 
+  /**
+     This method is used to output log4j internal warning
+     statements. There is no way to disable warning statements.
+     Output goes to <code>System.err</code>.  */
+  public
+  static
+  void warn(String msg) {
+    System.err.println(WARN_PREFIX+msg);
+  }  
+
+  /**
+     This method is used to output log4j internal warnings. There is
+     no way to disable warning statements.  Output goes to
+     <code>System.err</code>.  */
+  public
+  static
+  void warn(String msg, Throwable t) {
+    System.err.println(WARN_PREFIX+msg);
+    if(t != null) {
+      t.printStackTrace();
+    }
+  }
 }

@@ -95,13 +95,15 @@ public class Category implements AppenderAttachable {
 
      <p>It corresponds to name of the system property which, if set,
      specifies the name of the resource containing the properties file
-     or {@link URL} with which log4j should configure itself. 
+     or {@link URL} with which log4j should configure itself. See
+     {@link OptionConverter#selectAndConfigure} for more detailed
+     information on the processing of this options.
 
      <p>Setting the <b>log4j.configuration</b> system property
      overrides the default search for the file
      <b>log4j.properties</b>.
 
-     <p>Note that property keys are case sensitive.  
+     <p>Note that all property keys are case sensitive.  
 
      @since 1.0 */
      static final public String DEFAULT_CONFIGURATION_KEY="log4j.configuration";
@@ -109,12 +111,12 @@ public class Category implements AppenderAttachable {
   /**
       Setting the system property <b>log4j.defaultInitOverride</b> to
       "true" or any other value than "false" will skip default
-      configuration from the <code>log4j.properties</code> file.
+      configuration process.
 
-     The current value of the DEFAULT_INIT_OVERRIDE_KEY string
+     <p>The current value of the DEFAULT_INIT_OVERRIDE_KEY string
      constant is <b>log4j.defaultInitOverride</b>.
 
-     <p>Note that property keys are case sensitive.  
+     <p>Note that all property keys are case sensitive.  
 
      @since 0.8.5 */
   public static final String DEFAULT_INIT_OVERRIDE_KEY = 
@@ -155,7 +157,7 @@ public class Category implements AppenderAttachable {
       // configuration to the OptionConverter.selectAndConfigure
       // method.
       if(url != null) {
-	OptionConverter.selectAndConfigure(url);
+	OptionConverter.selectAndConfigure(url, defaultHierarchy);
       } else {
 	LogLog.debug("Could not find resource: ["+resource+"].");
       }

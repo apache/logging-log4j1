@@ -30,6 +30,8 @@ import java.util.Enumeration;
    <p>Refer to the results in {@link org.apache.log4j.performance.Logging}
    for the impact of using this appender.
 
+   <p><b>Important note:</b> The <code>AsyncAppender</code> can only
+   be script configured using the {@link org.apache.log4j.xml.DOMConfigurator}.
 
    @author Ceki G&uuml;lc&uuml;
    @since version 0.9.1 */
@@ -100,7 +102,10 @@ public class AsyncAppender extends AppenderSkeleton
      exiting. */
   public 
   void close() {
-    //cat.info("Closing appender ["+name+"].");
+    
+    if(closed) // avoid multiple close, otherwise one gets NullPointerException
+      return; 
+
     closed = true;
     dispatcher.interrupt();
     try {
@@ -162,7 +167,7 @@ public class AsyncAppender extends AppenderSkeleton
 
  
  /**
-     Set SMTPAppender specific options.
+     Set AsyncAppender specific options.
 
      <p>On top of the options of the super class {@link
      AppenderSkeleton}, the only recognized options is
@@ -171,9 +176,9 @@ public class AsyncAppender extends AppenderSkeleton
      <p>The <b>LocationInfo</b> option takes a boolean value. By
      default, it is set to false which means there will be no effort
      to extract the location information related to the event. As a
-     result, the appender and layout will ultimately log the event are
-     likely to log the wrong location information (if present in the
-     log format).
+     result, the event that will be ultimately logged will likely to
+     contain the wrong location information (if present in the log
+     format).
 
      <p>Location information extraction is comparatively very slow and
      should be avoided unless performance is not a concern.

@@ -11,6 +11,7 @@ package org.apache.log4j.helpers;
 import java.util.Properties;
 import java.net.URL;
 import org.apache.log4j.Category;
+import org.apache.log4j.Hierarchy;
 import org.apache.log4j.spi.Configurator;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.apache.log4j.PropertyConfigurator;
@@ -289,34 +290,39 @@ public class OptionConverter {
   /**
      Configure log4j given a URL. 
 
-     <p> The URL format is important. 
+     <p>The URL format is important. Its <em>reference</em> part is
+     taken as the class name of the configurator. For example, if you
+     invoke your application using the command line
 
-     <p>It's reference part is taken as the class name of the
-     configurator class. For example if you invoke your application
-     using the command line <pre> java
-     -Dlog4j.configuration=file:/temp/myconfig.xyz#com.myCompany.myConfigurator
+     <pre> java -Dlog4j.configuration=file:/temp/myconfig.xyz#com.myCompany.myConfigurator
      </pre>
 
      then the log4j will be configured by a new instance of
-     <code>com.myCompany.myConfigurator</code> using the file referenced
-     by <code>file:/temp/myconfig.xyz</code>.
+     <code>com.myCompany.myConfigurator</code> by interpreting the
+     file referenced by <code>file:/temp/myconfig.xyz</code>.  The
+     configurator you specify <em>must</em> implement the {@link
+     Configurator} interface.
 
      <p>If the URL has no reference part, then the {@link
      PropertyConfigurator} will parse the URL. However, if the URL
-     ends with a ".xml" extension then the {@link DOMConfigurator} will
-     be used to parse the URL.
+     ends with a ".xml" extension, then the {@link DOMConfigurator}
+     will be used to parse the URL.
+
+     <p>All configurations steps are taken on the
+     <code>hierarchy</code> passed as parameter.
 
      @since 1.0 */
   static
   public
-  void selectAndConfigure(URL url) {
+  void selectAndConfigure(URL url, Hierarchy hierarchy) {
     String clazz = url.getRef();
 
     Configurator configurator = null;
 
     if(clazz != null) {
       LogLog.debug("Preferred configurator class: " + clazz);
-      configurator = (Configurator) instantiateByClassName(clazz, Configurator.class,
+      configurator = (Configurator) instantiateByClassName(clazz, 
+							   Configurator.class,
 							   null);
       if(configurator == null) {
 	LogLog.error("Could not instantiate configurator ["+clazz+"].");
@@ -325,12 +331,17 @@ public class OptionConverter {
     } else {
       String filename = url.getFile();
       if(filename != null && filename.endsWith(".xml")) {
-	configurator = new DOMConfigurator();
+	try {
+	  configurator = new DOMConfigurator();
+	} catch(NoClassDefFoundError e) {
+	  LogLog.warn("Could not find DOMConfigurator!", e);
+	  return;
+	}
       } else {
 	configurator = new PropertyConfigurator();
       }
     }
 
-    configurator.doConfigure(url, Category.defaultHierarchy);
+    configurator.doConfigure(url, hierarchy);
   }
 }

@@ -238,22 +238,7 @@ public class Logging {
 		
     System.out.print((int)delta); 
 
-    // this will close all appenders atatched to root
-    //Appender a = Category.getRoot().getAppender("ASYNC");
-    //if(a != null) {
-    //LogLog.debug("Closing ASYNC.");
-    //a.close();
-    //}
-    Category.getRoot().removeAllAppenders();
-    // this will close all appenders attached to all non-root category
-    //Enumeration enum = Category.getCurrentCategories();
-    //while(enum.hasMoreElements()) {
-    //	Category c = (Category) enum.nextElement();
-    //	c.removeAllAppenders();
-    //}
-    
-    //System.out.println("Garbage collecting."); 
-    System.gc();     System.gc(); 
+    Category.shutdown();
 
   }
   

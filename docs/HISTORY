@@ -5,6 +5,25 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
 
+
+ January 12th, 2001
+ 
+ - Release of version 1.0.3 (the 20th major release)
+
+ - Displaced a number of HTML files under the docs directory. The new
+   structure is compatible with the jakarta site and results in a 
+   more consistent navigation experience. [*]
+
+ - Made a few improvements in the javadocs. [*]
+
+ - Modified the OptionConverter.selectAndConfigure method to take an
+   extra argument of type Hierarchy. This method is used internally
+   and should not affect most users. [*/**]
+
+ - Fixed a NullPointerException occuring in AsyncAppedner after
+   invoking Category.shutdown. Thanks to Frank-Olaf Lohmann for
+   reporting this bug. [*]
+
  January 11th, 2001
 
  - Release of version 1.0.2 (the 20th major release)
