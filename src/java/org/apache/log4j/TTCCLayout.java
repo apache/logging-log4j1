@@ -69,7 +69,7 @@ import org.apache.log4j.spi.LoggingEvent;
 
   @author Ceki G&uuml;lc&uuml;
   @author <A HREF="mailto:heinz.richter@ecmwf.int">Heinz Richter</a>
-
+  @deprecated Please use PatternLayout instead.
 */
 public class TTCCLayout extends DateLayout {
 	
