@@ -34,7 +34,13 @@ public class DefaultRepositorySelector implements RepositorySelector {
     }
   }
   
-  public void remove(String contextName) {
+  /**
+   * Does nothing.
+   * 
+   * @return Always null
+   */
+  public LoggerRepository detachRepository(String contextName) {
     // do nothing as the default reposiory cannot be removed
+    return null;
   }
 }

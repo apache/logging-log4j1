@@ -2,6 +2,13 @@
 <!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app>
 
+ <servlet>
+    <servlet-name>some-init-servlet</servlet-name>
+    <servlet-class>wombat.InitServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+
   <servlet>
     <servlet-name>TataServlet</servlet-name>
     <servlet-class>wombat.TataServlet</servlet-class>
@@ -18,5 +25,9 @@
    <env-entry-value>tata</env-entry-value>
    <env-entry-type>java.lang.String</env-entry-type>
   </env-entry>
-  
+
+   <listener>
+     <listener-class>org.apache.log4j.selector.servlet.ContextDetachingSCL</listener-class>
+   </listener>
+     
 </web-app>

@@ -34,4 +34,6 @@ public interface Constants {
   static final String DEFAULT_XML_CONFIGURATION_FILE = "log4j.xml";
   static final String DEFAULT_CONFIGURATION_KEY = "log4j.configuration";
   static final String CONFIGURATOR_CLASS_KEY = "log4j.configuratorClass";
+  
+  static String JNDI_CONTEXT_NAME = "java:comp/env/log4j/context-name";
 }
