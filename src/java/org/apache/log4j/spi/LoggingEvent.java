@@ -10,6 +10,7 @@ package org.apache.log4j.spi;
 import org.apache.log4j.Category;
 import org.apache.log4j.Priority;
 import org.apache.log4j.NDC;
+import org.apache.log4j.MDC;
 
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.Loader;
@@ -63,7 +64,7 @@ public class LoggingEvent implements java.io.Serializable {
   private String ndc;
 
   /** The mapped diagnostic context (MDC) of logging event. */
-  private Hashtable mdc;
+  private Hashtable mdcCopy;
 
 
   /** Have we tried to do an NDC lookup? If we did, there is no need
@@ -175,8 +176,29 @@ public class LoggingEvent implements java.io.Serializable {
     return ndc; 
   }
 
-  //public
-  //Hashtable getMDC(String key) {
+  public
+  Object getMDC(String key) {
+    Object r;
+    
+    if(mdcCopy != null) {
+      r = mdcCopy.get(key);
+      if(r != null) {
+	return r;
+      }
+    } 
+    return MDC.get(key);
+  }
+
+  protected
+  void getMDCCopy() {
+    if(mdcLookupRequired) {
+      ndcLookupRequired = false;
+      mdcCopy = MDC.getContext();
+    }
+  }
+
+  
+
   //  if(mdcLookupRequired) {
   //	mdcLookupRequired = false;
   //	mdc = MDC.getContext();
