@@ -50,6 +50,7 @@
 package org.apache.log4j.net;
 
 import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.Layout;
 import org.apache.log4j.Level;
 import org.apache.log4j.helpers.CyclicBuffer;
 import org.apache.log4j.helpers.LogLog;
@@ -267,6 +268,7 @@ public class SMTPAppender extends AppenderSkeleton {
           if (s != null) {
             for (int j = 0; j < s.length; j++) {
               sbuf.append(s[j]);
+              sbuf.append(Layout.LINE_SEP);
             }
           }
         }
