@@ -35,3 +35,9 @@ jalopy.lib=d:/development/code-opensource/other/jalopy-b10/lib
 # intend to build the log4j web site yourself.
 jakarta-site2=../jakarta-site2
 
+# ===================================================================
+# Chainsaw v2 specific
+# ===================================================================
+# describes the relative or full path to the Jakarta ORO Reg Exp jar file
+# This is required if you wish to use Chainsaw v2
+#regexp.oro.jar=../oro/jakarta-oro-2.0.6.jar
