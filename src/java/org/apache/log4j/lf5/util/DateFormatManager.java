@@ -119,7 +119,7 @@ public class DateFormatManager {
   }
 
   public synchronized void setTimeZone(TimeZone timeZone) {
-    timeZone = timeZone;
+    _timeZone = timeZone;
     configure();
   }
 
