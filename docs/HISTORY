@@ -5,16 +5,13 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
 
- September 26, 2001
+ October ??, 2001
  
- - Release of version 1.2alpha_1
+ - Release of version 1.2
 
- - This alpha release consists of documentation changes. [*]
-
- September 25, 2001
- 
- - Release of version 1.2alpha_0
-
+ - Improved error reporting in DOMConfigurator. Thanks to Thomas Tuft
+   Muller for contributing the enhancement. [*]
+	
  - Log4j is now configurable using JMX. [*]
 
  - Modified SMTPAppender to allow multiple email sessions. Thanks to

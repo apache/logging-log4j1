@@ -18,6 +18,7 @@ public class SAXErrorHandler implements ErrorHandler {
     LogLog.error("Parsing error on line "+ex.getLineNumber()+" and column "
 		 +ex.getColumnNumber());
     LogLog.error(ex.getMessage(), ex.getException());
+    //LogLog.error("pid="+ex.getPublicId()+" sid="+ex.getSystemId());
   }
   
   public
