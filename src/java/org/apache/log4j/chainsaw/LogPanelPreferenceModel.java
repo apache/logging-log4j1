@@ -53,15 +53,18 @@ package org.apache.log4j.chainsaw;
 
 import org.apache.log4j.chainsaw.prefs.SettingsManager;
 
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 
 /**
@@ -92,6 +95,7 @@ public class LogPanelPreferenceModel {
     new PropertyChangeSupport(this);
   private String dateFormatPattern = ISO8601;
   private boolean levelIcons = true;
+  private Set visibleColumns = new HashSet(ChainsawColumns.getColumnsNames());
 
   /**
    * Returns the Date Pattern string for the alternate date formatter.
@@ -154,6 +158,32 @@ public class LogPanelPreferenceModel {
   public void apply(LogPanelPreferenceModel that) {
     setDateFormatPattern(that.getDateFormatPattern());
     setLevelIcons(that.isLevelIcons());
+    
+    /**
+     * First, iterate and ADD new columns, (this means notifications of adds go out first
+     * add to the end
+     */
+    for (Iterator iter = that.visibleColumns.iterator(); iter.hasNext();) {
+		String column = (String) iter.next();
+		if(!this.visibleColumns.contains(column)){
+			setColumnVisible(column, true);
+		}
+	}
+	/**
+	 * Now go through and apply removals
+	 */
+	/**
+	 * this copy is needed to stop ConcurrentModificationException
+	 */
+	Set thisSet = new HashSet(this.visibleColumns);
+	for (Iterator iter = thisSet.iterator(); iter.hasNext();) {
+		String column = (String) iter.next();
+		if(!that.visibleColumns.contains(column)){
+			setColumnVisible(column, false);
+		}
+	}
+	
+
   }
 
   /**
@@ -179,5 +209,38 @@ public class LogPanelPreferenceModel {
     boolean oldVal = this.levelIcons;
     this.levelIcons = levelIcons;
     propertySupport.firePropertyChange("levelIcons", oldVal, this.levelIcons);
+  }
+
+  /**
+   * Returns true if the named column should be made visible otherwise
+   * false.
+   * @param columnName
+   * @return
+   */
+  public boolean isColumnVisible(String columnName) {
+    return visibleColumns.contains(columnName);
+  }
+
+  public void setColumnVisible(String columnName, boolean isVisible) {
+    boolean oldValue = visibleColumns.contains(columnName);
+    boolean newValue = isVisible;
+
+    if (isVisible) {
+      visibleColumns.add(columnName);
+    } else {
+      visibleColumns.remove(columnName);
+    }
+
+    propertySupport.firePropertyChange(
+      new PropertyChangeEvent(
+        this, "visibleColumns", new Boolean(oldValue), new Boolean(newValue)));
+  }
+
+  /**
+   * Toggles the state between visible, non-visible for a particular Column name
+   * @param string
+   */
+  public void toggleColumn(String column) {
+    setColumnVisible(column, !isColumnVisible(column));
   }
 }
