@@ -170,6 +170,8 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
       private final JRadioButton bottomPlacement = new JRadioButton("Bottom");
 
       private final JCheckBox statusBar = new JCheckBox("Show Status bar");
+      private final JCheckBox toolBar = new JCheckBox("Show Toolbar");
+      private final JCheckBox receivers = new JCheckBox("Show Receivers");
       
       private VisualsPrefPanel() {
         super("Visuals");
@@ -198,6 +200,18 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
              uncommittedPreferenceModel.setStatusBar(statusBar.isSelected());
           }});
          
+         toolBar.addActionListener(new ActionListener() {
+
+           public void actionPerformed(ActionEvent e) {
+             uncommittedPreferenceModel.setToolbar(toolBar.isSelected());
+           }});
+         
+         receivers.addActionListener(new ActionListener() {
+
+           public void actionPerformed(ActionEvent e) {
+             uncommittedPreferenceModel.setReceivers(receivers.isSelected());
+           }});
+         
          uncommittedPreferenceModel.addPropertyChangeListener("tabPlacement", new PropertyChangeListener() {
 
           public void propertyChange(PropertyChangeEvent evt) {
@@ -221,7 +235,21 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
             statusBar.setSelected(((Boolean)evt.getNewValue()).booleanValue());
             
           }});
-      }
+        
+         uncommittedPreferenceModel.addPropertyChangeListener("toolbar", new PropertyChangeListener() {
+
+           public void propertyChange(PropertyChangeEvent evt) {
+             toolBar.setSelected(((Boolean)evt.getNewValue()).booleanValue());
+             
+           }});
+        
+         uncommittedPreferenceModel.addPropertyChangeListener("receivers", new PropertyChangeListener() {
+
+           public void propertyChange(PropertyChangeEvent evt) {
+             receivers.setSelected(((Boolean)evt.getNewValue()).booleanValue());
+             
+           }});
+        }
 
       /**
        * 
@@ -246,6 +274,9 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
         
         add(tabPlacementBox);
         add(statusBar);
+        add(receivers);
+        add(toolBar);
+        
         
         
       }

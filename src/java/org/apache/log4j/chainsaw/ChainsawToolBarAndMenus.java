@@ -49,7 +49,6 @@
 
 package org.apache.log4j.chainsaw;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -193,7 +192,15 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
          boolean value = ((Boolean)evt.getNewValue()).booleanValue();
          toggleStatusBarCheck.setSelected(value);
       }});
-  }
+    
+    logui.getApplicationPreferenceModel().addPropertyChangeListener("receivers", new PropertyChangeListener() {
+
+      public void propertyChange(PropertyChangeEvent evt) {
+        boolean value = ((Boolean)evt.getNewValue()).booleanValue();
+        showReceiversButton.setSelected(value);
+        toggleShowReceiversCheck.setSelected(value);
+      }});
+   }
 
   /**
    * @return
@@ -422,14 +429,18 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
 
     viewMenu.setMnemonic('V');
 
-    JCheckBoxMenuItem lockToolbarCheck =
-      new JCheckBoxMenuItem(lockToolbarAction);
-    lockToolbarCheck.setSelected(true);
-
-    JCheckBoxMenuItem showToolbarCheck =
+    final JCheckBoxMenuItem showToolbarCheck =
       new JCheckBoxMenuItem(toggleToolbarAction);
-    showToolbarCheck.setSelected(true);
+    showToolbarCheck.setSelected(logui.getApplicationPreferenceModel().isToolbar());
 
+    logui.getApplicationPreferenceModel().addPropertyChangeListener("toolbar", new PropertyChangeListener() {
+
+      public void propertyChange(PropertyChangeEvent evt)
+      {
+        boolean value =((Boolean)evt.getNewValue()).booleanValue();
+        showToolbarCheck.setSelected(value);
+      }});
+    
     menuItemClose.setAction(closeAction);
 
     JCheckBoxMenuItem pause = new JCheckBoxMenuItem(pauseAction);
@@ -662,7 +673,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     final Action action =
       new AbstractAction("Show Receivers") {
         public void actionPerformed(ActionEvent arg0) {
-          logui.toggleReceiversPanel();
+          logui.getApplicationPreferenceModel().setReceivers(!logui.getApplicationPreferenceModel().isReceivers());
         }
       };
 
@@ -712,34 +723,9 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
      */
     final Action toggleToolbarAction =
       new AbstractAction("Show Toolbar") {
-        private boolean hide = false;
 
         public void actionPerformed(ActionEvent e) {
-          hide = !hide;
-
-          Runnable runnable = null;
-
-          if (hide) {
-            runnable =
-              new Runnable() {
-                  public void run() {
-                    logui.getContentPane().remove(toolbar);
-                    logui.getRootPane().repaint();
-                    logui.getRootPane().revalidate();
-                  }
-                };
-          } else {
-            runnable =
-              new Runnable() {
-                  public void run() {
-                    logui.getContentPane().add(toolbar, BorderLayout.NORTH);
-                    logui.getRootPane().repaint();
-                    logui.getRootPane().revalidate();
-                  }
-                };
-          }
-
-          SwingUtilities.invokeLater(runnable);
+          logui.getApplicationPreferenceModel().setToolbar(!logui.getApplicationPreferenceModel().isToolbar());
         }
       };
 
@@ -871,23 +857,12 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
   }
 
   private void scanState() {
-//    switch (logui.getTabbedPane().getTabPlacement()) {
-//    case SwingConstants.TOP:
-//      tabsTop.setSelected(true);
-//
-//      break;
-//
-//    case SwingConstants.BOTTOM:
-//      tabsBottom.setSelected(true);
-//
-//      break;
-//    }
 
     toggleStatusBarCheck.setSelected(logui.isStatusBarVisible());
-    toggleShowReceiversCheck.setSelected(logui.isReceiverPanelVisible());
+    toggleShowReceiversCheck.setSelected(logui.getApplicationPreferenceModel().isReceivers());
 
     logTreePaneButton.setSelected(logui.isLogTreePanelVisible());
-    showReceiversButton.setSelected(logui.isReceiverPanelVisible());
+    showReceiversButton.setSelected(logui.getApplicationPreferenceModel().isReceivers());
     menuItemClose.setSelected(logui.getTabbedPane().containsWelcomePanel());
 
     /**

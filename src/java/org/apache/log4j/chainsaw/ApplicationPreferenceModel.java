@@ -68,6 +68,9 @@ class ApplicationPreferenceModel implements SettingsListener {
 
     private boolean showNoReceiverWarning  ;
     private boolean statusBar;
+    private boolean toolbar;
+    private boolean receivers;
+    
     
     private int responsiveness;
     
@@ -198,6 +201,8 @@ class ApplicationPreferenceModel implements SettingsListener {
        setResponsiveness(event.asInt("Responsiveness"));
        setTabPlacement(event.asInt("tabPlacement"));
        setStatusBar(event.asBoolean("statusBar"));
+       setToolbar(event.asBoolean("toolbar"));
+       setReceivers(event.asBoolean("receivers"));
     }
 
     /* (non-Javadoc)
@@ -209,6 +214,8 @@ class ApplicationPreferenceModel implements SettingsListener {
         event.saveSetting("Responsiveness", getResponsiveness());
         event.saveSetting("tabPlacement", getTabPlacement());
         event.saveSetting("statusBar", isStatusBar());
+        event.saveSetting("toolbar", isToolbar());
+        event.saveSetting("receivers", isReceivers());
     }
 
     /**
@@ -222,6 +229,8 @@ class ApplicationPreferenceModel implements SettingsListener {
       setResponsiveness(model.getResponsiveness());
       setTabPlacement(model.getTabPlacement());
       setStatusBar(model.isStatusBar());
+      setToolbar(model.isToolbar());
+      setReceivers(model.isReceivers());
     }
     /**
      * @return Returns the responsiveness.
@@ -271,4 +280,36 @@ class ApplicationPreferenceModel implements SettingsListener {
       firePropertyChange("statusBar", oldValue, this.statusBar);
     }
 
+    /**
+     * @return Returns the receivers.
+     */
+    public final boolean isReceivers()
+    {
+      return receivers;
+    }
+    /**
+     * @param receivers The receivers to set.
+     */
+    public final void setReceivers(boolean receivers)
+    {
+      boolean oldValue = this.receivers;
+      this.receivers = receivers;
+      firePropertyChange("receivers", oldValue, this.receivers);
+    }
+    /**
+     * @return Returns the toolbar.
+     */
+    public final boolean isToolbar()
+    {
+      return toolbar;
+    }
+    /**
+     * @param toolbar The toolbar to set.
+     */
+    public final void setToolbar(boolean toolbar)
+    {
+      boolean oldValue = this.toolbar;
+      this.toolbar = toolbar;
+      firePropertyChange("toolbar", oldValue, this.toolbar);
+    }
 }
