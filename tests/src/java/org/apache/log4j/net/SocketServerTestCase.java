@@ -31,35 +31,109 @@ import java.util.Enumeration;
 */
 public class SocketServerTestCase extends TestCase {
   
-  static Logger logger = Logger.getLogger(SocketAppenderTestCase.class);
+  static String TEMP = "output/temp";
+  static String FILTERED = "output/filtered";
 
-  static public final int PORT = 12345;
-  
+  // %5p %x [%t] %c %m%n
+  // DEBUG T1 [main] org.apache.log4j.net.SocketAppenderTestCase Message 1
+  static String PAT1 = "^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) T1 \\[main]\\ "
+                       + ".* Message \\d{1,2}";
+
+  // DEBUG T2 [main] ? (?:?) Message 1
+  static String PAT2 = "^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) T2 \\[main]\\ "
+                       + "\\? \\(\\?:\\?\\) Message \\d{1,2}";
+
+
+  // DEBUG T3 [main] org.apache.log4j.net.SocketServerTestCase (SocketServerTestCase.java:121) Message 1
+  static String PAT3 = "^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) T3 \\[main]\\ "
+                       + "org.apache.log4j.net.SocketServerTestCase "
+                       + "\\(SocketServerTestCase.java:\\d{3}\\) Message \\d{1,2}";
+
+
+  // DEBUG some T4 MDC-TEST4 [main] SocketAppenderTestCase - Message 1   
+  // DEBUG some T4 MDC-TEST4 [main] SocketAppenderTestCase - Message 1 
+  static String PAT4 = "^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some T4 MDC-TEST4 \\[main]\\"
+                       + " (root|SocketServerTestCase) - Message \\d{1,2}";
+
+
+  static String EXCEPTION1 = "java.lang.Exception: Just testing";
+  static String EXCEPTION2 = "\\s*at .*\\(.*:\\d{1,4}\\)";
+  static String EXCEPTION3 = "\\s*at .*\\(Native Method\\)";
+
+
+  static Logger logger = Logger.getLogger(SocketServerTestCase.class);
+  static public final int PORT = 12345;  
   static Logger rootLogger = Logger.getRootLogger();
+  SocketAppender socketAppender;
 
   public SocketServerTestCase(String name) {
     super(name);
   }
 
   public void setUp() {
-    System.out.println("-----------------Setting up test case.");
-    SocketAppender socketAppender = new SocketAppender("localhost", PORT);
+    System.out.println("Setting up test case.");
+    socketAppender = new SocketAppender("localhost", PORT);
     rootLogger.addAppender(socketAppender);
   }
   
   public void tearDown() {
-    System.out.println("---------------Tearing down test case.");
+    System.out.println("Tearing down test case.");
+    socketAppender = null;
     rootLogger.removeAllAppenders();
   }
   
-  public void test1() {
-    common();
+  public void test1() throws Exception {
+    common("T1", "key1", "MDC-TEST1");
+    delay(1);
+    ControlFilter cf = new ControlFilter(new String[]{PAT1, EXCEPTION1, 
+						       EXCEPTION2, EXCEPTION3});
+    
+    Transformer.transform(TEMP, FILTERED, new Filter[] {cf, new LineNumberFilter()});
+
+    assertTrue(Compare.compare(FILTERED, "witness/socketServer.1"));
+  }
+
+  public void test2() throws Exception {
+    common("T2", "key2", "MDC-TEST2");
+    delay(1);
+    ControlFilter cf = new ControlFilter(new String[]{PAT2, EXCEPTION1, 
+						       EXCEPTION2, EXCEPTION3});
+    
+    Transformer.transform(TEMP, FILTERED, new Filter[] {cf, new LineNumberFilter()});
+
+    assertTrue(Compare.compare(FILTERED, "witness/socketServer.2"));
+  }
+
+  public void test3() throws Exception {
+    socketAppender.setLocationInfo(true);
+    common("T3", "key3", "MDC-TEST3");
+    delay(1);
+    ControlFilter cf = new ControlFilter(new String[]{PAT3, EXCEPTION1, 
+						       EXCEPTION2, EXCEPTION3});
+    
+    Transformer.transform(TEMP, FILTERED, new Filter[] {cf, new LineNumberFilter()});
+
+    assertTrue(Compare.compare(FILTERED, "witness/socketServer.3"));
+  }
+
+  public void test4() throws Exception {
+    socketAppender.setLocationInfo(true);
+    NDC.push("some");
+    common("T4", "key4", "MDC-TEST4");
+    delay(1);
+    ControlFilter cf = new ControlFilter(new String[]{PAT4, EXCEPTION1, 
+						       EXCEPTION2, EXCEPTION3});
+    
+    Transformer.transform(TEMP, FILTERED, new Filter[] {cf, new LineNumberFilter()});
+
+    assertTrue(Compare.compare(FILTERED, "witness/socketServer.4"));
   }
 
   static 
-  void common() {
+  void common(String dc, String key, Object o) {
     int i = -1; 
-    NDC.push("NDC"); 
+    NDC.push(dc); 
+    MDC.put(key, o);
     Logger root = Logger.getRootLogger();
 
     logger.log(XLevel.TRACE, "Message " + ++i);
@@ -72,13 +146,21 @@ public class SocketServerTestCase extends TestCase {
     Exception e = new Exception("Just testing");
     logger.debug("Message " + ++i, e);
     root.error("Message " + ++i, e);
+    NDC.pop();
+    MDC.remove(key);
   }
 
+  public void delay(int secs) {
+    try {Thread.currentThread().sleep(secs*1000);} catch(Exception e) {}
+  }
 
 
   public static Test suite() {
     TestSuite suite = new TestSuite();
     suite.addTest(new SocketServerTestCase("test1"));
+    suite.addTest(new SocketServerTestCase("test2"));
+    suite.addTest(new SocketServerTestCase("test3"));
+    suite.addTest(new SocketServerTestCase("test4"));
     return suite;
   }
 }

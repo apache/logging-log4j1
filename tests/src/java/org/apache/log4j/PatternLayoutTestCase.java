@@ -175,7 +175,7 @@ public class PatternLayoutTestCase extends TestCase {
     ControlFilter cf1 = new ControlFilter(new String[]{PAT6, EXCEPTION1, 
 						       EXCEPTION2, EXCEPTION3});
     Transformer.transform(TEMP, FILTERED, new Filter[] {cf1,   
-                                                      new LineNumberFilter(), });
+                                                      new LineNumberFilter()});
     assertTrue(Compare.compare(FILTERED, "witness/patternLayout.10"));
   }
 
@@ -185,7 +185,7 @@ public class PatternLayoutTestCase extends TestCase {
     ControlFilter cf1 = new ControlFilter(new String[]{PAT11a, PAT11b, EXCEPTION1, 
 						       EXCEPTION2, EXCEPTION3});
     Transformer.transform(TEMP, FILTERED, new Filter[] {cf1,   
-                                                      new LineNumberFilter(), });
+                                                      new LineNumberFilter()});
     assertTrue(Compare.compare(FILTERED, "witness/patternLayout.11"));
   }
 
@@ -195,7 +195,7 @@ public class PatternLayoutTestCase extends TestCase {
     ControlFilter cf1 = new ControlFilter(new String[]{PAT12, EXCEPTION1, 
 						       EXCEPTION2, EXCEPTION3});
     Transformer.transform(TEMP, FILTERED, new Filter[] {cf1,   
-                                                      new LineNumberFilter(), });
+                                                      new LineNumberFilter()});
     assertTrue(Compare.compare(FILTERED, "witness/patternLayout.12"));
   }
 
@@ -205,7 +205,7 @@ public class PatternLayoutTestCase extends TestCase {
     ControlFilter cf1 = new ControlFilter(new String[]{PAT13, EXCEPTION1, 
 						       EXCEPTION2, EXCEPTION3});
     Transformer.transform(TEMP, FILTERED, new Filter[] {cf1,   
-                                                      new LineNumberFilter(), });
+                                                      new LineNumberFilter()});
     assertTrue(Compare.compare(FILTERED, "witness/patternLayout.13"));
   }
 
