@@ -30,7 +30,7 @@
     <pathelement location="${tests.source.home}"/>
     <pathelement location="./classes"/>
     <pathelement location="./resources"/>
-    <pathelement location="${jakarta.oro.jar}"/>
+    <pathelement location="${jakarta-oro.jar}"/>
     <fileset dir="./lib/">
       <include name="*.jar"/>
     </fileset>
@@ -66,6 +66,36 @@
     <mkdir dir="./output" />
     <delete file="classes/log4j.xml"/>
     <delete file="classes/log4j.properties"/>
+  </target>
+
+  <!-- ================================================================= -->
+  <!-- Check if prerequisites are available                              -->
+  <!-- ================================================================= -->  
+
+  <target name="check" depends="junitCheck, oroCheck">
+  </target>
+    
+  <target name="oroCheck" >
+    <available classname="org.apache.oro.text.perl.Perl5Util" property="oro-present">
+     <classpath refid="tests.classpath"/>
+    </available>
+
+    <fail unless="oro-present">
+      Please make sure to that jakarta-oro.jar is available. You can either 
+      place it in the ./tests/lib/ directory or alternatively set the 
+      "jakarta-oro.jar" property to point to it.   
+    </fail>
+  </target>
+
+  <target name="junitCheck" >
+    <available classname="junit.framework.Test" property="junit-present">
+     <classpath refid="tests.classpath"/>
+    </available>
+
+    <fail unless="junit-present">
+      Is junit.jar missing? See the documentation for the
+      junit task in the Apache Ant Manual.
+    </fail>
   </target>
   
   
@@ -160,7 +190,7 @@
   <!-- ================================================================= -->
   <!-- ============== Regression and Unit Tests follow ================= -->  
   <!-- ================================================================= -->
-  <target name="Minimum" depends="build, cleanOutputDir">
+  <target name="Minimum" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
@@ -168,7 +198,7 @@
     </junit>
   </target>
   
-  <target name="Logger" depends="build, cleanOutputDir">
+  <target name="Logger" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
@@ -176,7 +206,7 @@
     </junit>
   </target>
   
-  <target name="PatternLayout" depends="build, cleanOutputDir">
+  <target name="PatternLayout" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
@@ -184,7 +214,7 @@
     </junit>
   </target>
   
-  <target name="HierarchyThreshold" depends="build, cleanOutputDir">
+  <target name="HierarchyThreshold" depends="check, build, cleanOutputDir">
     <delete file="output/temp"/>
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
@@ -193,7 +223,7 @@
     </junit>
   </target>
   
-  <target name="DOM" depends="build, cleanOutputDir">
+  <target name="DOM" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <jvmarg value="-Dlog4j.debug=TRUE"/>
       <classpath refid="tests.classpath"/>
@@ -202,7 +232,7 @@
     </junit>
   </target>
 
-  <target name="NDC" depends="build, cleanOutputDir">
+  <target name="NDC" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
@@ -210,7 +240,7 @@
     </junit>
   </target>
 
-  <target name="CustomLevel" depends="build, cleanOutputDir">
+  <target name="CustomLevel" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false" />
@@ -218,7 +248,7 @@
     </junit>
   </target>
 
-  <target name="CustomLogger" depends="build, cleanOutputDir">
+  <target name="CustomLogger" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false" />
@@ -226,7 +256,7 @@
     </junit>
   </target>
 
-  <target name="DefaultInit" depends="build, cleanOutputDir">
+  <target name="DefaultInit" depends="check, build, cleanOutputDir">
     <!-- Delete possible cruft from previous runs. -->
     <delete file="classes/log4j.xml"/>
     <delete file="classes/log4j.properties"/>
@@ -280,7 +310,7 @@
     <delete file="classes/log4j.properties"/>
   </target>
 
-  <target name="SocketServer" depends="build, cleanOutputDir">
+  <target name="SocketServer" depends="check, build, cleanOutputDir">
     <parallel>
       <java classname="org.apache.log4j.net.ShortSocketServer" fork="yes">
 	    <arg value="8"/> 
@@ -298,7 +328,7 @@
     </parallel>
   </target>
 
-  <target name="XMLLayout" depends="build, cleanOutputDir">
+  <target name="XMLLayout" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false" />
@@ -306,7 +336,7 @@
     </junit>
   </target>
 
-  <target name="AsyncAppender" depends="build, cleanOutputDir">
+  <target name="AsyncAppender" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false" />
@@ -314,7 +344,7 @@
     </junit>
   </target>
 
-  <target name="VariaLevelMatchFilter" depends="build, cleanOutputDir">
+  <target name="VariaLevelMatchFilter" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
@@ -322,7 +352,7 @@
     </junit>
   </target>
 
-  <target name="VariaLevelRangeFilter" depends="build, cleanOutputDir">
+  <target name="VariaLevelRangeFilter" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
@@ -330,7 +360,7 @@
     </junit>
   </target>
   
-  <target name="FiltersLevelMatchFilter" depends="build, cleanOutputDir">
+  <target name="FiltersLevelMatchFilter" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
@@ -338,7 +368,7 @@
     </junit>
   </target>
   
-  <target name="LevelMatchFilter" depends="build, cleanOutputDir">
+  <target name="LevelMatchFilter" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
@@ -346,7 +376,7 @@
     </junit>
   </target>
   
-  <target name="ErrorHandler" depends="build, cleanOutputDir">
+  <target name="ErrorHandler" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false" />
@@ -354,7 +384,7 @@
     </junit>
   </target>
   
-  <target name="OptionSubstitutionTest" depends="build, cleanOutputDir">
+  <target name="OptionSubstitutionTest" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
@@ -362,7 +392,7 @@
     </junit>
   </target>
 
-  <target name="LevelOptionConverterTest" depends="build, cleanOutputDir">
+  <target name="LevelOptionConverterTest" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
 	  <classpath refid="tests.classpath"/>
 	  <formatter type="plain" usefile="false"/>
@@ -370,7 +400,7 @@
 	</junit>
   </target>
 	
-  <target name="BoundedFIFO" depends="build, cleanOutputDir">
+  <target name="BoundedFIFO" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
@@ -378,7 +408,7 @@
     </junit>
   </target>
 
-  <target name="CyclicBuffer" depends="build, cleanOutputDir">
+  <target name="CyclicBuffer" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
@@ -386,7 +416,7 @@
     </junit>
   </target>
 
-  <target name="PatternParser" depends="build, cleanOutputDir">
+  <target name="PatternParser" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
@@ -394,7 +424,7 @@
     </junit>
   </target>
 
-  <target name="MazeAppender" depends="build, cleanOutputDir">
+  <target name="MazeAppender" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false" />
@@ -403,7 +433,7 @@
   </target>
 
 
-  <target name="OR" depends="build, cleanOutputDir">
+  <target name="OR" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
@@ -411,7 +441,7 @@
     </junit>
   </target>
 
-  <target name="DRFA" depends="build, cleanOutputDir">
+  <target name="DRFA" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
@@ -419,7 +449,7 @@
     </junit>
   </target>
 
-  <target name="Plugins" depends="build, cleanOutputDir">
+  <target name="Plugins" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
@@ -427,7 +457,7 @@
     </junit>
   </target>
 
-  <target name="FileNamePattern" depends="build, cleanOutputDir">
+  <target name="FileNamePattern" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
@@ -435,7 +465,7 @@
     </junit>
   </target>
   
-  <target name="SizeBasedRolling" depends="build, cleanOutputDir">
+  <target name="SizeBasedRolling" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
@@ -443,7 +473,7 @@
     </junit>
   </target>
 
-  <target name="TimeBasedRolling" depends="build, cleanOutputDir">
+  <target name="TimeBasedRolling" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
@@ -452,7 +482,7 @@
   </target>
 	
 
-	  <target name="MultiplexAppenderTest" depends="build, cleanOutputDir">
+	  <target name="MultiplexAppenderTest" depends="check, build, cleanOutputDir">
 	    <junit printsummary="yes" fork="yes" haltonfailure="yes">
 	      <classpath refid="tests.classpath"/>
 	      <formatter type="plain" usefile="false"/>
@@ -462,7 +492,7 @@
 	
 	
   
-  <target name="Compress" depends="build, cleanOutputDir">
+  <target name="Compress" depends="check, build, cleanOutputDir">
     <!-- The input files are erased as a result of compression. We -->
     <!-- need to "create" them afresh for each test.               -->         
     <copy file="input/compress1.copy" toFile="input/compress1.txt"/>
@@ -479,7 +509,7 @@
        keep the file test.log open. This tests the ability of RollingFileAppender 
        to deal with renaming of files opened by other processes.
        -->
-  <target name="Renaming" depends="build, cleanOutputDir">
+  <target name="Renaming" depends="check, build, cleanOutputDir">
      <parallel>
        <junit printsummary="yes" fork="yes" haltonfailure="yes">
          <classpath refid="tests.classpath"/>
@@ -495,7 +525,7 @@
     </parallel>
   </target>
 
-  <target name="Pattern" depends="build, cleanOutputDir">
+  <target name="Pattern" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false" />
@@ -503,7 +533,7 @@
     </junit>
   </target>
 
-  <target name="SimpleStore" depends="build, cleanOutputDir">
+  <target name="SimpleStore" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false" />
@@ -512,7 +542,7 @@
   </target>
 
 
-  <target name="Interpreter" depends="build, cleanOutputDir">
+  <target name="Interpreter" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false" />
@@ -520,7 +550,7 @@
     </junit>
   </target>
   
-  <target name="Scheduler" depends="build, cleanOutputDir">
+  <target name="Scheduler" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false" />
@@ -529,7 +559,7 @@
   </target>
   
   
-  <target name="ThrowableInformation" depends="build, cleanOutputDir">
+  <target name="ThrowableInformation" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
@@ -538,7 +568,7 @@
   </target>
   
   
-  <target name="LocationInfo" depends="build, cleanOutputDir">
+  <target name="LocationInfo" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
@@ -546,7 +576,7 @@
     </junit>
   </target>
   
-  <target name="MessageFormatter" depends="build, cleanOutputDir">
+  <target name="MessageFormatter" depends="check, build, cleanOutputDir">
 	<junit printsummary="yes" fork="yes" haltonfailure="yes">
 	  <classpath refid="tests.classpath"/>
 	  <formatter type="plain" usefile="false"/>
@@ -738,7 +768,7 @@
   <!-- ================================================================= -->
   
   
-  <target name="ReaderWriterLock" depends="build, cleanOutputDir">
+  <target name="ReaderWriterLock" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="no" haltonfailure="yes"> 
       <sysproperty key="runLen" value="100"/>     
       <classpath refid="tests.classpath"/>
