@@ -86,6 +86,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -113,7 +114,6 @@ import javax.swing.tree.TreePath;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
-import org.apache.log4j.chainsaw.LogUI;
 import org.apache.log4j.chainsaw.PopupListener;
 import org.apache.log4j.chainsaw.SmallButton;
 import org.apache.log4j.chainsaw.help.HelpManager;
@@ -152,7 +152,6 @@ public class ReceiversPanel extends JPanel {
   private final Action startAllAction;
   private final JPopupMenu popupMenu = new ReceiverPopupMenu();
   private final JTree receiversTree = new JTree();
-  private final LogUI logui;
   private final NewReceiverPopupMenu newReceiverPopup =
     new NewReceiverPopupMenu();
   private final ReceiverToolbar buttonPanel;
@@ -162,9 +161,8 @@ public class ReceiversPanel extends JPanel {
   
   private final PluginPropertyEditorPanel pluginEditorPanel = new PluginPropertyEditorPanel();
 
-  public ReceiversPanel(final LogUI logui) {
+  public ReceiversPanel() {
     super();
-    this.logui = logui;
     setLayout(new BorderLayout());
     setBorder(BorderFactory.createEtchedBorder());
 
@@ -334,7 +332,7 @@ public class ReceiversPanel extends JPanel {
           public void actionPerformed(ActionEvent e) {
             if (
               JOptionPane.showConfirmDialog(
-                  logui,
+                  null,
                   "This will cause any active Receiver to stop, and disconnect.  Is this ok?",
                   "Confirm", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
               new Thread(
@@ -564,7 +562,7 @@ public class ReceiversPanel extends JPanel {
   private void shutdownCurrentlySelectedReceiver() {
     if (
       JOptionPane.showConfirmDialog(
-          logui,
+          null,
           "Are you sure you wish to shutdown this receiver?\n\nThis will disconnect any network resources, and remove it from the PluginRegistry.",
           "Confirm stop of Receiver", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
       new Thread(
@@ -666,7 +664,7 @@ public class ReceiversPanel extends JPanel {
               public void actionPerformed(ActionEvent e) {
                 JDialog dialog = (JDialog) entry.getValue();
                 dialog.pack();
-                dialog.setLocationRelativeTo(logui);
+//                dialog.setLocationRelativeTo(logui);
                 dialog.show();
               }
             });
@@ -953,7 +951,7 @@ public class ReceiversPanel extends JPanel {
     private CreateReceiverDialog(
       Class receiver, String bundleName, String name,
       final AbstractReceiverDialogPanel entryPanel) throws IOException {
-      super(logui, "Create new Receiver", true);
+      super((JFrame)null, "Create new Receiver", true);
       setResizable(false);
       getContentPane().setLayout(new GridBagLayout());
 
@@ -969,7 +967,7 @@ public class ReceiversPanel extends JPanel {
         new HyperlinkListener() {
           public void hyperlinkUpdate(HyperlinkEvent e) {
             if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-              logui.showHelp(e.getURL());
+              HelpManager.getInstance().setHelpURL(e.getURL());
             }
           }
         });
@@ -1146,7 +1144,7 @@ public class ReceiversPanel extends JPanel {
       Action closeAction =
         new AbstractAction(null, LineIconFactory.createCloseIcon()) {
           public void actionPerformed(ActionEvent e) {
-            logui.getApplicationPreferenceModel().setReceivers(false);
+            ReceiversPanel.this.setVisible(false);
           }
         };
 
@@ -1255,4 +1253,13 @@ public class ReceiversPanel extends JPanel {
       updateReceiverTreeInDispatchThread();
     }
   }
+  /* (non-Javadoc)
+   * @see java.awt.Component#setVisible(boolean)
+   */
+  public void setVisible(boolean aFlag) {
+    boolean oldValue = isVisible();
+    super.setVisible(aFlag);
+    firePropertyChange("visible", oldValue, isVisible());
+  }
+
 }
