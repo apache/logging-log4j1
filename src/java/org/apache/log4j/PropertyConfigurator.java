@@ -12,8 +12,6 @@
 
 package org.apache.log4j;
 
-import org.apache.log4j.Category;
-import org.apache.log4j.Priority;
 import org.apache.log4j.DefaultCategoryFactory;
 import org.apache.log4j.config.PropertySetter;
 //import org.apache.log4j.config.PropertySetterException;

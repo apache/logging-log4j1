@@ -11,7 +11,6 @@
 
 package org.apache.log4j;
 
-import org.apache.log4j.Level;
 import org.apache.log4j.helpers.DateLayout;
 import org.apache.log4j.spi.LoggingEvent;
 
@@ -23,7 +22,8 @@ import org.apache.log4j.spi.LoggingEvent;
  disabled. The time format depends on the <code>DateFormat</code>
  used.
 
- <p>Here is an example TTCCLayout output with the {@link RelativeTimeDateFormat}.
+ <p>Here is an example TTCCLayout output with the
+ {@link org.apache.log4j.helpers.RelativeTimeDateFormat}.
 
  <pre>
 176 [main] INFO  org.apache.log4j.examples.Sort - Populating an array of 2 elements in reverse order.

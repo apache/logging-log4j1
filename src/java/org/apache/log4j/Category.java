@@ -178,7 +178,7 @@ public class Category implements AppenderAttachable {
      hierarchy circumventing any evaluation of whether to log or not
      to log the particular log request.
 
-     @param LoggingEvent the event to log.  */
+     @param event the event to log.  */
   public
   void callAppenders(LoggingEvent event) {
     int writes = 0;
@@ -226,7 +226,7 @@ public class Category implements AppenderAttachable {
     Level#DEBUG DEBUG} level. If this category is
     <code>DEBUG</code> enabled, then it converts the message object
     (passed as parameter) to a string by invoking the appropriate
-    {@link ObjectRenderer}. It then proceeds to call all the
+    {@link org.apache.log4j.or.ObjectRenderer}. It then proceeds to call all the
     registered appenders in this category and also higher in the
     hierarchy depending on the value of the additivity flag.
 
@@ -322,7 +322,7 @@ public class Category implements AppenderAttachable {
      returns a reference to the category, otherwise it returns
      <code>null</code>.
 
-     @deprecateed Please use {@link LogManager#exists} instead.
+     @deprecated Please use {@link LogManager#exists} instead.
 
      @version 0.8.5 */
   public
@@ -338,7 +338,8 @@ public class Category implements AppenderAttachable {
     enabled by comparing the level of this category with {@link
     Level#FATAL FATAL} Level. If the category is <code>FATAL</code>
     enabled, then it converts the message object passed as parameter
-    to a string by invoking the appropriate {@link ObjectRenderer}. It
+    to a string by invoking the appropriate
+    {@link org.apache.log4j.or.ObjectRenderer}. It
     proceeds to call all the registered appenders in this category and
     also higher in the hierarchy depending on the value of the
     additivity flag.
@@ -666,7 +667,8 @@ public class Category implements AppenderAttachable {
     enabled by comparing the level of this category with {@link
     Level#INFO INFO} Level. If the category is <code>INFO</code>
     enabled, then it converts the message object passed as parameter
-    to a string by invoking the appropriate {@link ObjectRenderer}. It
+    to a string by invoking the appropriate
+    {@link org.apache.log4j.or.ObjectRenderer}. It
     proceeds to call all the registered appenders in this category and
     also higher in the hierarchy depending on the value of the
     additivity flag.
@@ -812,8 +814,8 @@ public class Category implements AppenderAttachable {
      Log a localized and parameterized message. First, the user
      supplied <code>key</code> is searched in the resource
      bundle. Next, the resulting pattern is formatted using
-     {@link MessageFormat#format(String,Object[])} method with the user
-     supplied object array <code>params</code>.
+     {@link java.text.MessageFormat#format(String,Object[])} method with the
+     user supplied object array <code>params</code>.
 
      @since 0.8.4
   */
@@ -1009,7 +1011,8 @@ public class Category implements AppenderAttachable {
     enabled by comparing the level of this category with {@link
     Level#WARN WARN} Level. If the category is <code>WARN</code>
     enabled, then it converts the message object passed as parameter
-    to a string by invoking the appropriate {@link ObjectRenderer}. It
+    to a string by invoking the appropriate
+    {@link org.apache.log4j.or.ObjectRenderer}. It
     proceeds to call all the registered appenders in this category and
     also higher in the hieararchy depending on the value of the
     additivity flag.

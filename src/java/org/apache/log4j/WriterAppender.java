@@ -274,7 +274,7 @@ public class WriterAppender extends AppenderSkeleton {
 
     <p><b>WARNING:</b> Logging to an unopened Writer will fail.
     <p>
-    @param Writer An already opened Writer.  */
+    @param writer An already opened Writer.  */
   public
   synchronized
   void setWriter(Writer writer) {

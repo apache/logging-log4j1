@@ -10,7 +10,6 @@
 
 package org.apache.log4j;
 
-import org.apache.log4j.Category;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.helpers.BoundedFIFO;
 import org.apache.log4j.spi.AppenderAttachable;

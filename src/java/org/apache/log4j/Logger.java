@@ -37,7 +37,7 @@ public class Logger extends Category {
     Level#DEBUG DEBUG} level. If this category is
     <code>DEBUG</code> enabled, then it converts the message object
     (passed as parameter) to a string by invoking the appropriate
-    {@link ObjectRenderer}. It then proceeds to call all the
+    {@link org.apache.log4j.or.ObjectRenderer}. It then proceeds to call all the
     registered appenders in this category and also higher in the
     hierarchy depending on the value of the additivity flag.
 
