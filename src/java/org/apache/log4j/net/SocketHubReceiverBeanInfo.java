@@ -22,6 +22,7 @@ public class SocketHubReceiverBeanInfo extends SimpleBeanInfo {
         try {
 
             return new PropertyDescriptor[] {
+                new PropertyDescriptor("name", SocketHubReceiver.class),
                 new PropertyDescriptor("host", SocketHubReceiver.class),
                 new PropertyDescriptor("port", SocketHubReceiver.class),
                 new PropertyDescriptor("threshold", SocketHubReceiver.class),
