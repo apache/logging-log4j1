@@ -49,23 +49,6 @@
 
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-import org.apache.log4j.chainsaw.icons.LevelIconFactory;
-import org.apache.log4j.chainsaw.icons.LineIconFactory;
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.net.SocketAppender;
-import org.apache.log4j.net.SocketHubAppender;
-import org.apache.log4j.net.SocketHubReceiver;
-import org.apache.log4j.net.SocketNodeEventListener;
-import org.apache.log4j.net.SocketReceiver;
-import org.apache.log4j.net.UDPAppender;
-import org.apache.log4j.net.UDPReceiver;
-import org.apache.log4j.plugins.Pauseable;
-import org.apache.log4j.plugins.PluginRegistry;
-import org.apache.log4j.plugins.Receiver;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -77,16 +60,11 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.io.IOException;
-
 import java.lang.reflect.Method;
-
 import java.net.URL;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -105,7 +83,6 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.InputVerifier;
 import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
@@ -121,13 +98,34 @@ import javax.swing.JToolBar;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+import javax.swing.event.TreeExpansionEvent;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.event.TreeWillExpandListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.ExpandVetoException;
+import javax.swing.tree.TreePath;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.chainsaw.icons.LevelIconFactory;
+import org.apache.log4j.chainsaw.icons.LineIconFactory;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.net.SocketAppender;
+import org.apache.log4j.net.SocketHubAppender;
+import org.apache.log4j.net.SocketHubReceiver;
+import org.apache.log4j.net.SocketNodeEventListener;
+import org.apache.log4j.net.SocketReceiver;
+import org.apache.log4j.net.UDPAppender;
+import org.apache.log4j.net.UDPReceiver;
+import org.apache.log4j.plugins.Pauseable;
+import org.apache.log4j.plugins.PluginRegistry;
+import org.apache.log4j.plugins.Receiver;
 
 
 /**
@@ -162,7 +160,50 @@ class ReceiversPanel extends JPanel {
     setMinimumSize(getPreferredSize());
     setMaximumSize(getPreferredSize());
 
-    receiversTree.setModel(new ReceiversTreeModel());
+    final ReceiversTreeModel model = new ReceiversTreeModel();
+    PluginRegistry.addPluginListener(model);
+    receiversTree.setModel(model);
+
+    receiversTree.setExpandsSelectedPaths(true);
+    model.addTreeModelListener(
+      new TreeModelListener() {
+        public void treeNodesChanged(TreeModelEvent e) {
+          expandRoot();
+        }
+
+        public void treeNodesInserted(TreeModelEvent e) {
+          expandRoot();
+        }
+
+        public void treeNodesRemoved(TreeModelEvent e) {
+          expandRoot();
+        }
+
+        public void treeStructureChanged(TreeModelEvent e) {
+          expandRoot();
+        }
+
+        private void expandRoot() {
+          receiversTree.expandPath(
+            new TreePath(model.getPathToRoot(model.RootNode)));
+        }
+      });
+    receiversTree.expandPath(
+      new TreePath(model.getPathToRoot(model.RootNode)));
+
+    receiversTree.addTreeWillExpandListener(
+      new TreeWillExpandListener() {
+        public void treeWillCollapse(TreeExpansionEvent event)
+          throws ExpandVetoException {
+          if (event.getPath().getLastPathComponent() == model.RootNode) {
+            throw new ExpandVetoException(event);
+          }
+        }
+
+        public void treeWillExpand(TreeExpansionEvent event)
+          throws ExpandVetoException {
+        }
+      });
 
     receiversTree.setToolTipText("Allows you to manage Log4j Receivers");
     newReceiverButtonAction =
@@ -478,8 +519,6 @@ class ReceiversPanel extends JPanel {
 
             if (receiver != null) {
               PluginRegistry.stopPlugin(receiver);
-
-              updateReceiverTreeInDispatchThread();
             }
           }
         }).start();
@@ -525,11 +564,14 @@ class ReceiversPanel extends JPanel {
    *
    */
   public void updateReceiverTreeInDispatchThread() {
-    if (SwingUtilities.isEventDispatchThread()) {
-      updateReceiverTree.run();
-    } else {
-      SwingUtilities.invokeLater(updateReceiverTree);
-    }
+    LogLog.debug(
+      "updateReceiverTreeInDispatchThread, should not be needed now");
+	
+    //    if (SwingUtilities.isEventDispatchThread()) {
+    //      updateReceiverTree.run();
+    //    } else {
+    //      SwingUtilities.invokeLater(updateReceiverTree);
+    //    }
   }
 
   /**
@@ -708,37 +750,39 @@ class ReceiversPanel extends JPanel {
       add(shutdownReceiverButtonAction);
       addSeparator();
       add(editReceiverButtonAction);
-	addSeparator();
-	
-	  final Receiver r = getCurrentlySelectedReceiver();
-	  add(createLevelRadioButton(r, Level.DEBUG));
-	  add(createLevelRadioButton(r, Level.INFO));
-	  add(createLevelRadioButton(r, Level.WARN));
-	  add(createLevelRadioButton(r, Level.ERROR));
-	  addSeparator();
-	  add(createLevelRadioButton(r, Level.OFF));
-	  add(createLevelRadioButton(r, Level.ALL));
-	  
+      addSeparator();
+
+      final Receiver r = getCurrentlySelectedReceiver();
+      add(createLevelRadioButton(r, Level.DEBUG));
+      add(createLevelRadioButton(r, Level.INFO));
+      add(createLevelRadioButton(r, Level.WARN));
+      add(createLevelRadioButton(r, Level.ERROR));
+      addSeparator();
+      add(createLevelRadioButton(r, Level.OFF));
+      add(createLevelRadioButton(r, Level.ALL));
     }
 
+    private JRadioButtonMenuItem createLevelRadioButton(
+      final Receiver r, final Level l) {
+      Map levelIconMap = LevelIconFactory.getInstance().getLevelToIconMap();
 
-	private JRadioButtonMenuItem createLevelRadioButton(final Receiver r, final Level l) {
-		Map levelIconMap = LevelIconFactory.getInstance().getLevelToIconMap();
+      Action action =
+        new AbstractAction(
+          l.toString(), (Icon) levelIconMap.get(l.toString())) {
+          public void actionPerformed(ActionEvent e) {
+            if (r != null) {
+              r.setThreshold(l);
+              updateCurrentlySelectedNodeInDispatchThread();
+            }
+          }
+        };
 
-		Action action = new AbstractAction(l.toString(),(Icon)levelIconMap.get(l.toString())){
+      JRadioButtonMenuItem item = new JRadioButtonMenuItem(action);
+      item.setSelected(r.getThreshold() == l);
 
-				public void actionPerformed(ActionEvent e) {
-					if(r!=null){
-						r.setThreshold(l);
-						updateCurrentlySelectedNodeInDispatchThread();
-					}
-				}
-		};
-		JRadioButtonMenuItem item = new JRadioButtonMenuItem(action);
-		item.setSelected(r.getThreshold() == l);
-		return item;
-	}
-	
+      return item;
+    }
+
     /**
      * Builds a relevant set of menus for when the Root node in the Receiver
      * tree has been selected
