@@ -54,6 +54,8 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.chainsaw.icons.ChainsawIcons;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.net.SocketAppender;
+import org.apache.log4j.net.SocketHubAppender;
+import org.apache.log4j.net.SocketHubReceiver;
 import org.apache.log4j.net.SocketNodeEventListener;
 import org.apache.log4j.net.SocketReceiver;
 import org.apache.log4j.net.UDPAppender;
@@ -87,11 +89,15 @@ import java.lang.reflect.Method;
 
 import java.net.URL;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -147,8 +153,9 @@ class ReceiversPanel extends JPanel {
   private final Runnable updateReceiverTree;
 
   ReceiversPanel(final LogUI logui) {
-    super(new BorderLayout());
+    super();
     this.logui = logui;
+    setLayout(new BorderLayout());
     setBorder(BorderFactory.createEtchedBorder());
 
     setPreferredSize(new Dimension(250, 400));
@@ -480,7 +487,8 @@ class ReceiversPanel extends JPanel {
   }
 
   /**
-   *
+   * Sets the state of actions depending on certain conditions (i.e what is 
+   * currently selected etc.)
    */
   private void updateActions() {
     Object object = getCurrentlySelectedUserObject();
@@ -573,44 +581,34 @@ class ReceiversPanel extends JPanel {
   class NewReceiverPopupMenu extends JPopupMenu {
     NewReceiverPopupMenu() {
       try {
-        Class[] receivers =
-          new Class[] { SocketReceiver.class, UDPReceiver.class };
 
-        final Map dialogMap = new HashMap();
-        dialogMap.put(
-          SocketReceiver.class,
-          new CreateReceiverDialog(
-            SocketReceiver.class, "SocketReceiver", "Socket Receiver",
-            new SimplePortBasedReceiverDialogPanel(
-              SocketReceiver.class, "SocketReceiver",
-              SocketAppender.DEFAULT_PORT)));
-
-        dialogMap.put(
-          UDPReceiver.class,
-          new CreateReceiverDialog(
-            UDPReceiver.class, "UDPReceiver", "UDP Receiver",
-            new SimplePortBasedReceiverDialogPanel(
-              UDPReceiver.class, "UDPReceiver", UDPAppender.DEFAULT_PORT)));
-
-        for (int i = 0; i < receivers.length; i++) {
-          final Class toCreate = receivers[i];
+        final List dialogMapEntryList = createSortedDialogMapEntryList();
+        String separatorCheck = null;
+        for (Iterator iter = dialogMapEntryList.iterator(); iter.hasNext();) {
+          final Map.Entry entry = (Entry) iter.next();
+          final Class toCreate = (Class) entry.getKey();
           Package thePackage = toCreate.getPackage();
           final String name =
             toCreate.getName().substring(thePackage.getName().length() + 1);
+            
+          if(separatorCheck==null)
+          {
+            separatorCheck = name.substring(0,1);
+          }else{
+            String current = name.substring(0,1);
+            if(!current.equals(separatorCheck))
+            {
+              addSeparator();
+              separatorCheck = current;
+            }
+          }
           add(
             new AbstractAction("New " + name + "...") {
               public void actionPerformed(ActionEvent e) {
-                if (dialogMap.containsKey(toCreate)) {
-                  JDialog dialog = (JDialog) dialogMap.get(toCreate);
+                  JDialog dialog = (JDialog) entry.getValue();
                   dialog.pack();
                   dialog.setLocationRelativeTo(logui);
                   dialog.show();
-                } else {
-                  JOptionPane.showMessageDialog(
-                    logui,
-                    "You wanted a " + name
-                    + " but this is not finished yet, sorry.");
-                }
               }
             });
         }
@@ -630,6 +628,63 @@ class ReceiversPanel extends JPanel {
         e.printStackTrace();
         throw new RuntimeException(e.getMessage());
       }
+    }
+
+  /**
+   * Creates a Map of Class->CreateReceiverDialog instances
+   * which are all the Receivers that can be created via the GUI
+   * @return
+   * @throws IOException
+   */
+    private List createSortedDialogMapEntryList() throws IOException
+    {
+      final Map dialogMap = new HashMap();
+      dialogMap.put(
+        SocketReceiver.class,
+        new CreateReceiverDialog(
+          SocketReceiver.class, "SocketReceiver", "Socket Receiver",
+          new SimplePortBasedReceiverDialogPanel(
+            SocketReceiver.class, "SocketReceiver",
+            SocketAppender.DEFAULT_PORT)));
+
+      dialogMap.put(
+        SocketHubReceiver.class,
+        new CreateReceiverDialog(
+        SocketHubReceiver.class, "SocketHubReceiver", "Socket Hub Receiver",
+          new SimplePortBasedReceiverDialogPanel(
+      SocketHubReceiver.class, "SocketHubReceiver",
+            SocketHubAppender.DEFAULT_PORT)));
+      
+      dialogMap.put(
+        UDPReceiver.class,
+        new CreateReceiverDialog(
+          UDPReceiver.class, "UDPReceiver", "UDP Receiver",
+          new SimplePortBasedReceiverDialogPanel(
+            UDPReceiver.class, "UDPReceiver", UDPAppender.DEFAULT_PORT)));
+      
+      List dialogMapEntryList = new ArrayList();
+      
+      for (Iterator iter = dialogMap.entrySet().iterator(); iter.hasNext();)
+      {
+        dialogMapEntryList.add(iter.next());
+      }
+
+      /**
+       * Sort so it's in Alpha order by map.entry key
+       */      
+      Collections.sort(dialogMapEntryList, new Comparator(){
+
+        public int compare(Object o1, Object o2)
+        {
+          Comparable c1 = ((Class)((Entry) o1).getKey()).getName();
+          Comparable c2 = ((Class)((Entry) o2).getKey()).getName();
+          
+          return c1.compareTo(c2);
+
+        }
+        
+      });
+      return dialogMapEntryList;
     }
   }
 
@@ -932,7 +987,6 @@ class ReceiversPanel extends JPanel {
           }
         };
 
-      okAction.setEnabled(false);
       okCancelPanel.setOkAction(okAction);
 
       entryPanel.addPropertyChangeListener(
