@@ -68,21 +68,21 @@ import java.util.List;
  * individual types returned per field are described here:
  *
  * Field Name                Field value (String representation                Return type
- * LOGGER                    category name (logger)                                        String
- * LEVEL                     level                                                                        Level
- * CLASS                     locationInformation's class name                String
- * FILE                      locationInformation's file name                String
- * LINE                      locationInformation's line number                String
- * METHOD                    locationInformation's method name                String
- * MSG                       message                                                                Object
- * NDC                       NDC                                                                        String
- * EXCEPTION                 throwable string representation                ThrowableInformation
- * TIMESTAMP                 timestamp                                                                Long
- * THREAD                    thread                                                                        String
- * MDC.keyName               entry in the MDC hashtable                         Object
- *                                                          mapped to key 'keyName'
- * PROP.keyName              entry in the Property hashtable                 String
- *                                                          mapped to the key 'keyName'
+ * LOGGER                    category name (logger)                            String
+ * LEVEL                     level                                             Level
+ * CLASS                     locationInformation's class name                  String
+ * FILE                      locationInformation's file name                   String
+ * LINE                      locationInformation's line number                 String
+ * METHOD                    locationInformation's method name                 String
+ * MSG                       message                                           Object
+ * NDC                       NDC                                               String
+ * EXCEPTION                 throwable string representation                   ThrowableInformation
+ * TIMESTAMP                 timestamp                                         Long
+ * THREAD                    thread                                            String
+ * MDC.keyName               entry in the MDC hashtable                        Object
+ *                           mapped to key [keyName]
+ * PROP.keyName              entry in the Property hashtable                   String
+ *                           mapped to the key [keyName]
 
  * NOTE:  the values for the 'keyName' portion of the MDC and PROP mappings must
  * be an exact match to the key in the hashTable (case sensitive).
@@ -142,10 +142,6 @@ public final class LoggingEventFieldResolver {
   }
 
   public Object getValue(String fieldName, LoggingEvent event) {
-    if (fieldName == null) {
-        throw new RuntimeException("null field name");
-    }
-
     String upperField = fieldName.toUpperCase();
 
     if (LOGGER_FIELD.equals(upperField)) {
@@ -164,7 +160,6 @@ public final class LoggingEventFieldResolver {
       return event.getMessage();
     } else if (NDC_FIELD.equals(upperField)) {
       String ndcValue = event.getNDC();
-
       return ((ndcValue == null) ? "" : ndcValue);
     } else if (EXCEPTION_FIELD.equals(upperField)) {
       return event.getThrowableInformation();
@@ -180,7 +175,6 @@ public final class LoggingEventFieldResolver {
     } else if (upperField.startsWith(PROP_FIELD)) {
       //note: need to use actual fieldname since case matters
       String propValue = event.getProperty(fieldName.substring(5));
-
       return ((propValue == null) ? EMPTY_STRING : propValue);
     }
 

@@ -93,7 +93,7 @@ public class EventTypeEntryContainer {
   private static final String FILE_FIELD = "FILE";
   private static final String THREAD_FIELD = "THREAD";
   private static final String METHOD_FIELD = "METHOD";
-  private static final String MDC_FIELD = "MDC.";
+  private static final String MDC_FIELD = "MDC";
   private static final String NDC_FIELD = "NDC";
 
   public EventTypeEntryContainer() {
@@ -104,23 +104,19 @@ public class EventTypeEntryContainer {
       modelMap.put(THREAD_FIELD, threadListModel);
       modelMap.put(METHOD_FIELD, methodListModel);
       modelMap.put(NDC_FIELD, ndcListModel);
-      //mdc supported, but not in map
+      modelMap.put(MDC_FIELD, mdcListModel);
   }
   
   public boolean modelExists(String fieldName) {
       if (fieldName != null) {
-          return ((fieldName.toUpperCase().startsWith(MDC_FIELD)) || (modelMap.keySet().contains(fieldName.toUpperCase())));
+          return (modelMap.keySet().contains(fieldName.toUpperCase()));
       }
       return false;
   }
   
   public ListModel getModel(String fieldName) {
-      if (modelExists(fieldName)) {
-          if (fieldName.toUpperCase().startsWith(MDC_FIELD)) {
-              return mdcListModel;
-          } else {
-              return (ListModel)modelMap.get(fieldName.toUpperCase());
-          }
+      if (fieldName != null) {
+          return (ListModel)modelMap.get(fieldName.toUpperCase());
       }
       return null;
   } 
