@@ -6,6 +6,8 @@
  * the LICENSE.APL file.
  */
 
+// Contributors:  Georg Lundesgaard
+
 package org.apache.log4j.config;
 
 import java.beans.Introspector;
