@@ -35,10 +35,10 @@ public class ComponentBase implements Component {
   
   /**
    * Return an instance specific logger to be used by the component itself.
-   * This logger is not intended to be used by Mrs. Piggy, our proverbial user,
-   * hence the protected keyword.
+   * This logger is not intended to be accessed by the end-user, hence the 
+   * protected keyword.
    * 
-   * <p>In case the repository for this components is not correctly set,
+   * <p>In case the repository for this components is not set,
    * this implementations returns a {@link SimpleLogger} instance.
    * 
    * @return A ULogger instance.
@@ -50,10 +50,13 @@ public class ComponentBase implements Component {
       } else {
         logger = LogManager.SIMPLE_LOGGER_FA.getLogger(this.getClass().getName());
       }
+    } else if(repository != null && !(logger instanceof org.apache.log4j.Logger)){
+      // if repository is set but logger is not an instance of Logger, we
+      // could reset the logger, as in the line below. However, we chose not to
+      // do so in order to make the bigger problem more apparent.
+      
+      // logger = repository.getLogger(this.getClass().getName());
     }
     return logger;
-  }
-  
-  
-  
+  } 
 }
