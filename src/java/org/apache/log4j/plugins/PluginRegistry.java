@@ -53,12 +53,14 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.LoggerRepositoryEventListener;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.swing.event.EventListenerList;
 
 
 /**
@@ -76,6 +78,8 @@ public class PluginRegistry {
 
   /** the listener used to listen for repository events. */
   private static RepositoryListener listener = new RepositoryListener();
+  private static final EventListenerList listenerList =
+    new EventListenerList();
 
   /**
     Starts a Plugin with default logger repository.
@@ -101,31 +105,33 @@ public class PluginRegistry {
    * @param name The name to check the repository for
    * @return true if the name is already in use, otherwise false
    */
-  public static boolean pluginNameExists(String name){
+  public static boolean pluginNameExists(String name) {
     LoggerRepository repository = LogManager.getLoggerRepository();
 
     return pluginNameExists(name, repository);
   }
-  
 
   /**
    * Returns true if the specified name is already taken by
-   * an existing Plugin registered within the scope of the specified 
+   * an existing Plugin registered within the scope of the specified
    * LoggerRepository.
    * @param name The name to check the repository for
    * @param repository the repository to check the name against
    * @return true if the name is already in use, otherwise false
    */
-  public static boolean pluginNameExists(String name, LoggerRepository repository){
-    synchronized(repositoryMap){
+  public static boolean pluginNameExists(
+    String name, LoggerRepository repository) {
+    synchronized (repositoryMap) {
       Map pluginMap = (Map) repositoryMap.get(repository);
-      if( pluginMap != null && pluginMap.containsKey(name)){
+
+      if ((pluginMap != null) && pluginMap.containsKey(name)) {
         return true;
       }
     }
+
     return false;
   }
-  
+
   /**
     Starts a plugin with a given logger repository.
 
@@ -175,60 +181,102 @@ public class PluginRegistry {
 
       // start the new plugin
       plugin.activateOptions();
+      firePluginStarted(plugin);
 
       return plugin;
     }
   }
 
   /**
-    Returns all the plugins for a given repository.
-    
-    @param repository the logger repository to get the plugins from.
-    @return List list of plugins from the repository. */
+  * @param plugin
+  */
+  private static void firePluginStarted(Plugin plugin) {
+    PluginListener[] listeners =
+      (PluginListener[]) listenerList.getListeners(PluginListener.class);
+
+    PluginEvent e = null;
+
+    for (int i = 0; i < listeners.length; i++) {
+      if (e == null) {
+        e = new PluginEvent(plugin);
+      }
+
+      listeners[i].pluginStarted(e);
+    }
+  }
+
+  private static void firePluginStopped(Plugin plugin) {
+    PluginListener[] listeners =
+      (PluginListener[]) listenerList.getListeners(PluginListener.class);
+
+    PluginEvent e = null;
+
+    for (int i = 0; i < listeners.length; i++) {
+      if (e == null) {
+        e = new PluginEvent(plugin);
+      }
+
+      listeners[i].pluginStopped(e);
+    }
+  }
+
+  /**
+      Returns all the plugins for a given repository.
+
+      @param repository the logger repository to get the plugins from.
+      @return List list of plugins from the repository. */
   public static List getPlugins(LoggerRepository repository) {
     synchronized (repositoryMap) {
       // get plugin map for repository
       Map pluginMap = (Map) repositoryMap.get(repository);
+
       if (pluginMap == null) {
-      	return Collections.EMPTY_LIST;
+        return Collections.EMPTY_LIST;
       } else {
-      	List pluginList = new ArrayList(pluginMap.size());
-      	Iterator iter = pluginMap.values().iterator();
-      	while (iter.hasNext()) {
-      		pluginList.add(iter.next());
-      	}
-      	return pluginList;
+        List pluginList = new ArrayList(pluginMap.size());
+        Iterator iter = pluginMap.values().iterator();
+
+        while (iter.hasNext()) {
+          pluginList.add(iter.next());
+        }
+
+        return pluginList;
       }
     }
   }
-  
+
   /**
     Returns all the plugins for a given repository that are instances
     of a certain class.
-    
+
     @param repository the logger repository to get the plugins from.
     @param pluginClass the class the plugin must implement to be selected.
     @return List list of plugins from the repository. */
-  public static List getPlugins(LoggerRepository repository, Class pluginClass) {
+  public static List getPlugins(
+    LoggerRepository repository, Class pluginClass) {
     synchronized (repositoryMap) {
       // get plugin map for repository
       Map pluginMap = (Map) repositoryMap.get(repository);
+
       if (pluginMap == null) {
-      	return Collections.EMPTY_LIST;
+        return Collections.EMPTY_LIST;
       } else {
-      	List pluginList = new ArrayList(pluginMap.size());
-      	Iterator iter = pluginMap.values().iterator();
-      	while (iter.hasNext()) {
-      		Object plugin = iter.next();
-      		if (pluginClass.isInstance(plugin)) {
-	      		pluginList.add(plugin);
-	      	}
-      	}
-      	return pluginList;
+        List pluginList = new ArrayList(pluginMap.size());
+        Iterator iter = pluginMap.values().iterator();
+
+        while (iter.hasNext()) {
+          Object plugin = iter.next();
+
+          if (pluginClass.isInstance(plugin)) {
+            pluginList.add(plugin);
+          }
+        }
+
+        return pluginList;
       }
     }
   }
-  
+
   /**
     Stops a plugin by plugin object.
 
@@ -281,6 +329,7 @@ public class PluginRegistry {
 
       // remove it from the plugin map
       pluginMap.remove(pluginName);
+      firePluginStopped(plugin);
 
       // if no more plugins, remove the plugin map from
       // repository map
@@ -318,13 +367,35 @@ public class PluginRegistry {
       Iterator iter = pluginMap.values().iterator();
 
       while (iter.hasNext()) {
-        ((Plugin) iter.next()).shutdown();
+		Plugin plugin = (Plugin) iter.next();
+        plugin.shutdown();
+        firePluginStopped(plugin);
       }
 
       // since no more plugins, remove plugin map from
       // the repository
       repositoryMap.remove(repository);
     }
+  }
+
+  /**
+   * Adds a PluginListener to this registry to be notified
+   * of PluginEvents
+   *
+   * @param l PluginListener to add to this registry
+   */
+  public static final void addPluginListener(PluginListener l) {
+    listenerList.add(PluginListener.class, l);
+  }
+
+  /**
+   * Removes a particular PluginListener from this registry
+   * such that it will no longer be notified of PluginEvents
+   *
+   * @param l PluginListener to remove
+   */
+  public static final void removePluginListener(PluginListener l) {
+    listenerList.remove(PluginListener.class, l);
   }
 
   /**

@@ -368,6 +368,26 @@ public class PluginTestCase extends TestCase {
       Compare.compare(getOutputFile(testName), getWitnessFile(testName)));
   }
 
+	public void testPluginListeners(){
+		Plugin p = new PluginTester1("MyNewPlugin",1);
+		PluginListenerLatch l = new PluginListenerLatch();
+		PluginRegistry.stopAllPlugins();
+		PluginRegistry.addPluginListener(l);
+		PluginRegistry.startPlugin(p);
+		
+		PluginEvent e = l.LastEvent;
+		
+		assertTrue("PluginListener should have been notified of start", l.StartLatch);
+		assertTrue("PluginListener stop latch should not be activated", !l.StopLatch);
+		assertTrue("PluginListener should be given reference to Plugin", e.getPlugin() == p);
+
+		PluginRegistry.stopAllPlugins();
+		assertTrue("PluginListener should have been notified of stop", l.StopLatch);
+		assertTrue("PluginListener should not have been notified of start", !l.StartLatch);
+		assertTrue("PluginListener should be given reference to Plugin", l.LastEvent.getPlugin() == p);
+		assertTrue("PluginListener should have received a distinct event object", l.LastEvent != e);
+	}
+	
   public void testPropertyChangeListeners() {
     Plugin plugin = new PluginTester1("PluginTest1", 1);
 
@@ -456,10 +476,37 @@ public class PluginTestCase extends TestCase {
     suite.addTest(new PluginTestCase("test1"));
     suite.addTest(new PluginTestCase("test2"));
     suite.addTest(new PluginTestCase("testPropertyChangeListeners"));
+    suite.addTest(new PluginTestCase("testPluginListeners"));
 
     return suite;
   }
 
+	private static class PluginListenerLatch implements PluginListener{
+		private boolean StartLatch;
+		private boolean StopLatch;
+		private PluginEvent LastEvent;
+		/* (non-Javadoc)
+		 * @see org.apache.log4j.plugins.PluginListener#pluginStarted(org.apache.log4j.plugins.PluginEvent)
+		 */
+		public void pluginStarted(PluginEvent e) {
+			StartLatch = true;
+			LastEvent = e;
+		}
+
+		/* (non-Javadoc)
+		 * @see org.apache.log4j.plugins.PluginListener#pluginStopped(org.apache.log4j.plugins.PluginEvent)
+		 */
+		public void pluginStopped(PluginEvent e) {
+			StopLatch = true;
+			LastEvent = e;
+		}
+		void reset(){
+			StartLatch = false;
+			StopLatch = false;
+			LastEvent = null;
+		}
+	}
+	
   private static class PropertyChangeListenerLatch
     implements PropertyChangeListener {
     boolean latch = false;
