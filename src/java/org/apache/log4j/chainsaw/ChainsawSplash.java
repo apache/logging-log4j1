@@ -57,6 +57,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
 import java.util.HashSet;
 import java.util.Set;
@@ -75,8 +76,8 @@ import org.apache.log4j.chainsaw.icons.ChainsawIcons;
  *
  */
 class ChainsawSplash extends JWindow {
-  ChainsawSplash() {
-    super();
+  ChainsawSplash(Frame owner) {
+    super(owner);
 
     Container container = getContentPane();
     JPanel panel = new JPanel(new BorderLayout());

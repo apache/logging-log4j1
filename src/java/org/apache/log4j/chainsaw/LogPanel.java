@@ -146,6 +146,8 @@ import javax.swing.table.TableColumnModel;
 
 import org.apache.log4j.Layout;
 import org.apache.log4j.PatternLayout;
+import org.apache.log4j.chainsaw.color.ColorPanel;
+import org.apache.log4j.chainsaw.color.RuleColorizer;
 import org.apache.log4j.chainsaw.filter.FilterModel;
 import org.apache.log4j.chainsaw.icons.ChainsawIcons;
 import org.apache.log4j.chainsaw.icons.LineIconFactory;
@@ -172,6 +174,7 @@ import org.apache.log4j.spi.LoggingEvent;
 public class LogPanel extends DockablePanel implements SettingsListener,
   EventBatchListener {
   private final JFrame preferencesFrame = new JFrame();
+  private final JFrame colorFrame = new JFrame();
   private ThrowableRenderPanel throwableRenderPanel;
   private MouseFocusOnAdaptor mouseFocusOnAdaptor = new MouseFocusOnAdaptor();
   private boolean paused = false;
@@ -192,11 +195,11 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     new LogPanelPreferenceModel();
   private final LogPanelPreferencePanel preferencesPanel =
     new LogPanelPreferencePanel(preferenceModel);
+  private final ColorPanel colorPanel;
   private String profileName = null;
   private final JDialog detailDialog = new JDialog((JFrame) null, true);
   final JPanel detailPanel = new JPanel(new BorderLayout());
-  private final TableColorizingRenderer renderer =
-    new TableColorizingRenderer();
+  private final TableColorizingRenderer renderer;
   String identifier;
   final Map columnDisplayMap = new HashMap();
   final Map colorDisplayMap = new HashMap();
@@ -271,6 +274,25 @@ public class LogPanel extends DockablePanel implements SettingsListener,
         }
       });
     tableModel = new ChainsawCyclicBufferTableModel();
+
+    colorFrame.setTitle("'" + ident + "' Color Filter");
+    colorFrame.setIconImage(
+      ((ImageIcon) ChainsawIcons.ICON_PREFERENCES).getImage());
+    RuleColorizer colorizer = new RuleColorizer();
+    colorizer.addPropertyChangeListener(new PropertyChangeListener() {
+		public void propertyChange(PropertyChangeEvent evt) {
+			if (evt.getPropertyName().equalsIgnoreCase("colorrule")) {
+                if (table != null) {
+                    table.repaint();
+                }
+            }
+        }}
+    );
+    renderer = new TableColorizingRenderer(colorizer);
+    colorPanel = new ColorPanel(colorizer, filterModel);
+    colorFrame.getContentPane().add(colorPanel);
+
+    preferencesFrame.setSize(640, 480);
 
     table = new JSortTable(tableModel);
     table.getColumnModel().addColumnModelListener(
@@ -1022,6 +1044,16 @@ public class LogPanel extends DockablePanel implements SettingsListener,
         }
       });
 
+      JMenuItem menuItemColorPanel =
+        new JMenuItem("LogPanel Color Filter...");
+      menuItemColorPanel.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent evt) {
+            showColorPanel();
+          }
+        });
+      menuItemColorPanel.setIcon(ChainsawIcons.ICON_PREFERENCES);
+
     JMenuItem menuItemLogPanelPreferences =
       new JMenuItem("LogPanel Preferences...");
     menuItemLogPanelPreferences.addActionListener(
@@ -1171,6 +1203,7 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     //	p.add(new JSeparator());
     //    p.add(menuDefineCustomFilter);
     p.add(new JSeparator());
+    p.add(menuItemColorPanel);
     p.add(menuItemLogPanelPreferences);
 
     //    p.add(menuColumnDisplayFilter);
@@ -1491,6 +1524,11 @@ public class LogPanel extends DockablePanel implements SettingsListener,
   void showPreferences() {
     preferencesPanel.updateModel();
     preferencesFrame.show();
+  }
+
+  void showColorPanel() {
+    colorFrame.pack();
+    colorFrame.show();
   }
 
   EventContainer getModel() {

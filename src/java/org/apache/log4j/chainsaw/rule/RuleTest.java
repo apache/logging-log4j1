@@ -59,26 +59,17 @@ import org.apache.log4j.spi.LoggingEvent;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.AbstractAction;
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
@@ -151,7 +142,8 @@ public class RuleTest extends JFrame {
     final JTextField inFixTextField = new JTextField(inFixText);
     fieldPanel.add(inFixTextField);
 
-    ContextListener listener = new ContextListener(inFixTextField);
+    ExpressionRuleContext listener =
+      new ExpressionRuleContext(filterModel, inFixTextField);
     inFixTextField.addKeyListener(listener);
 
     JButton inFixButton = new JButton("Convert InFix to PostFix");
@@ -225,262 +217,5 @@ public class RuleTest extends JFrame {
         "( level ~= deb ) && ( logger like logger[1-2] || MDC.entry1 >= 234 )");
     test.pack();
     test.setVisible(true);
-  }
-
-  class ContextListener extends KeyAdapter {
-    LoggingEventFieldResolver resolver =
-      LoggingEventFieldResolver.getInstance();
-    String lastField = null;
-    JPopupMenu contextMenu = new JPopupMenu();
-    JList list = new JList();
- 
-    JScrollPane scrollPane = new JScrollPane(list);
-    final JTextField textField;
-    private DefaultListModel fieldModel = new DefaultListModel();
-    private DefaultListModel operatorModel = new DefaultListModel();
-
-    public ContextListener(final JTextField textField) {
-      this.textField = textField;
-      fieldModel.addElement("LOGGER");
-      fieldModel.addElement("LEVEL");
-      fieldModel.addElement("CLASS");
-      fieldModel.addElement("FILE");
-      fieldModel.addElement("LINE");
-      fieldModel.addElement("METHOD");
-      fieldModel.addElement("MSG");
-      fieldModel.addElement("NDC");
-      fieldModel.addElement("EXCEPTION");
-      fieldModel.addElement("TIMESTAMP");
-      fieldModel.addElement("THREAD");
-      fieldModel.addElement("MDC");
-      fieldModel.addElement("PROP");
-
-      operatorModel.addElement("&&");
-      operatorModel.addElement("||");
-      operatorModel.addElement("!");
-      operatorModel.addElement("!=");
-      operatorModel.addElement("==");
-      operatorModel.addElement("~=");
-      operatorModel.addElement("LIKE");
-      operatorModel.addElement("<");
-      operatorModel.addElement(">");
-      operatorModel.addElement("<=");
-      operatorModel.addElement(">=");
-
-      //make as large as operator list to avoid narrow list scrollbar issues
-      list.setVisibleRowCount(11);
-
-      PopupListener popupListener = new PopupListener();
-      textField.addMouseListener(popupListener);
-
-      list.addKeyListener(
-        new KeyAdapter() {
-          public void keyPressed(KeyEvent e) {
-            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-              updateField(list.getSelectedValue().toString());
-              contextMenu.setVisible(false);
-            }
-          }
-        });
-
-      list.addMouseListener(
-        new MouseAdapter() {
-          public void mouseClicked(MouseEvent e) {
-            if (e.getClickCount() == 2) {
-              updateField(list.getSelectedValue().toString());
-              contextMenu.setVisible(false);
-            }
-          }
-        });
-
-      contextMenu.insert(scrollPane, 0);
-    }
-
-    private void updateField(String value) {
-      String text = textField.getText();
-      int startPosition = textField.getSelectionStart();
-      int endPosition = textField.getSelectionEnd();
-      String spacer = "";
-
-      if (startPosition == endPosition) {
-        spacer = " ";
-      }
-
-      textField.setText(
-        text.substring(0, startPosition) + value + spacer
-        + text.substring(endPosition));
-      textField.setCaretPosition(
-        startPosition + value.length() + spacer.length());
-    }
-
-    public void keyPressed(KeyEvent e) {
-      if (
-        (e.getKeyCode() == KeyEvent.VK_SPACE)
-          && (e.getModifiers() == KeyEvent.CTRL_MASK)) {
-        displayContext();
-      }
-    }
-
-    public void displayContext() {
-      String lastField = getContextKey();
-
-      if (lastField != null) {
-        list.setModel(filterModel.getContainer().getModel(lastField));
-        list.setSelectedIndex(0);
-
-        Point p = textField.getCaret().getMagicCaretPosition();
-
-        contextMenu.show(textField, p.x, (p.y + (textField.getHeight() - 5)));
-        list.requestFocus();
-      } else {
-        if (isOperatorContextValid()) {
-          list.setModel(operatorModel);
-          list.setSelectedIndex(0);
-
-          Point p = textField.getCaret().getMagicCaretPosition();
-          contextMenu.show(
-            textField, p.x, (p.y + (textField.getHeight() - 5)));
-          list.requestFocus();
-        } else if (isFieldContextValid()) {
-          list.setModel(fieldModel);
-          list.setSelectedIndex(0);
-
-          Point p = textField.getCaret().getMagicCaretPosition();
-
-          if (p == null) {
-            p = new Point(
-                textField.getLocation().x,
-                (textField.getLocation().y - textField.getHeight() + 5));
-          }
-
-          contextMenu.show(
-            textField, p.x, (p.y + (textField.getHeight() - 5)));
-          list.requestFocus();
-        }
-      }
-    }
-
-    private boolean isFieldContextValid() {
-      String text = textField.getText();
-      int currentPosition = textField.getSelectionStart();
-
-      return ((currentPosition == 0)
-      || (text.charAt(currentPosition - 1) == ' '));
-    }
-
-    private String getContextKey() {
-      String field = getField();
-
-      if (field == null) {
-        field = getSubField();
-      }
-
-      return field;
-    }
-
-    private boolean isOperatorContextValid() {
-      String text = textField.getText();
-
-      int currentPosition = textField.getSelectionStart();
-
-      if ((currentPosition < 1) || (text.charAt(currentPosition - 1) != ' ')) {
-        return false;
-      }
-
-      int lastFieldPosition = text.lastIndexOf(" ", currentPosition - 1);
-
-      if (lastFieldPosition == -1) {
-        return false;
-      }
-
-      int lastFieldStartPosition =
-        Math.max(0, text.lastIndexOf(" ", lastFieldPosition - 1));
-      String field =
-        text.substring(lastFieldStartPosition, lastFieldPosition).toUpperCase()
-            .trim();
-
-      if (field.startsWith("MDC.")) {
-        return true;
-      }
-
-      if (resolver.isField(field)) {
-        return true;
-      }
-
-      return false;
-    }
-
-    //returns the currently active field which can be used to display a context menu
-    //the field returned is the left hand portion of an expression (for example, logger == )
-    //logger is the field that is returned
-    private String getField() {
-      String text = textField.getText();
-
-      int currentPosition = textField.getSelectionStart();
-
-      if ((currentPosition < 1) || (text.charAt(currentPosition - 1) != ' ')) {
-        return null;
-      }
-
-      int symbolPosition = text.lastIndexOf(" ", currentPosition - 1);
-
-      if (symbolPosition < 0) {
-        return null;
-      }
-
-      int lastFieldPosition = text.lastIndexOf(" ", symbolPosition - 1);
-
-      if (lastFieldPosition < 0) {
-        return null;
-      }
-
-      int lastFieldStartPosition =
-        Math.max(0, text.lastIndexOf(" ", lastFieldPosition - 1));
-      String lastSymbol =
-        text.substring(lastFieldPosition + 1, symbolPosition).trim();
-
-      String lastField =
-        text.substring(lastFieldStartPosition, lastFieldPosition).trim();
-
-      if (
-        RuleFactory.isRule(lastSymbol)
-          && filterModel.getContainer().modelExists(lastField)) {
-        return lastField;
-      }
-
-      return null;
-    }
-
-    //subfields allow the key portion of a field to provide context menu support
-    //and are available after the fieldname and a . (for example, MDC.)
-    private String getSubField() {
-      int currentPosition = textField.getSelectionStart();
-      String text = textField.getText();
-
-      if (text.substring(0, currentPosition).toUpperCase().endsWith("MDC.")) {
-        return "MDC";
-      }
-
-      return null;
-    }
-
-    class PopupListener extends MouseAdapter {
-      PopupListener() {
-      }
-
-      public void mousePressed(MouseEvent e) {
-        checkPopup(e);
-      }
-
-      public void mouseReleased(MouseEvent e) {
-        checkPopup(e);
-      }
-
-      private void checkPopup(MouseEvent e) {
-        if (e.isPopupTrigger()) {
-          displayContext();
-        }
-      }
-    }
   }
 }

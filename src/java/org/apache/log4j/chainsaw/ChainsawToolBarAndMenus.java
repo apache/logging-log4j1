@@ -47,12 +47,6 @@
  *
  */
 
-/*
- * Created on May 3, 2003
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 package org.apache.log4j.chainsaw;
 
 import org.apache.log4j.chainsaw.icons.ChainsawIcons;
@@ -123,6 +117,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
   private final Action lockToolbarAction;
   private final Action pauseAction;
   private final Action showPreferencesAction;
+  private final Action showColorPanelAction;
   private final Action showReceiversAction;
   private final Action toggleLogTreeAction;
   private final Action toggleDetailPaneAction;
@@ -176,6 +171,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     findTextField = createFindField();
     findNextAction = setupFindFieldsAndActions();
     showPreferencesAction = createShowPreferencesAction();
+    showColorPanelAction = createShowColorPanelAction();
     lockToolbarAction = createLockableToolbarAction();
     toggleToolbarAction = createToggleToolbarAction();
     toggleLogTreeAction = createToggleLogTreeAction();
@@ -232,8 +228,8 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     logPanelSpecificActions =
       new Action[] {
         pauseAction, findNextAction, clearAction, fileMenu.getFileSaveAction(),
-        toggleDetailPaneAction, showPreferencesAction, undockAction,
-        toggleLogTreeAction, changeModelAction,
+        toggleDetailPaneAction, showPreferencesAction, showColorPanelAction,
+        undockAction, toggleLogTreeAction, changeModelAction,
       };
   }
 
@@ -481,6 +477,10 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     menuPrefs.setText(
       showPreferencesAction.getValue(Action.SHORT_DESCRIPTION).toString());
 
+    JMenuItem menuShowColor = new JMenuItem(showColorPanelAction);
+    menuShowColor.setText(
+      showColorPanelAction.getValue(Action.SHORT_DESCRIPTION).toString());
+
     JMenuItem menuUndock = new JMenuItem(undockAction);
 
     showTabs = new JMenu("Display tabs");
@@ -518,6 +518,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     activeTabMenu.add(toggleLogTreeMenuItem);
     activeTabMenu.addSeparator();
     activeTabMenu.add(menuUndock);
+    activeTabMenu.add(menuShowColor);
     activeTabMenu.add(menuPrefs);
 
     activeTabMenu.addSeparator();
@@ -751,6 +752,25 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
 
     // TODO think of good mnemonics and HotKey for this action
     return showPreferences;
+  }
+
+  private Action createShowColorPanelAction() {
+    Action showColorPanel =
+      new AbstractAction("", ChainsawIcons.ICON_PREFERENCES) {
+        public void actionPerformed(ActionEvent arg0) {
+          LogPanel logPanel = logui.getCurrentLogPanel();
+
+          if (logPanel != null) {
+            logPanel.showColorPanel();
+          }
+        }
+      };
+
+    showColorPanel.putValue(
+      Action.SHORT_DESCRIPTION, "LogPanel Color Filter...");
+
+    // TODO think of good mnemonics and HotKey for this action
+    return showColorPanel;
   }
 
   /**

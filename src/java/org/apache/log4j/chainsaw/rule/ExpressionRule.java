@@ -55,32 +55,35 @@ import java.util.Enumeration;
 import java.util.Stack;
 import java.util.StringTokenizer;
 
+
 /**
- * A Rule class supporting both infix and postfix expressions, accepting any rule which 
+ * A Rule class supporting both infix and postfix expressions, accepting any rule which
  * is supported by the <code>RuleFactory</code>.
- * 
- * NOTE: parsing is supported through the use of <code>StringTokenizer</code>, which 
+ *
+ * NOTE: parsing is supported through the use of <code>StringTokenizer</code>, which
  * implies two limitations:
  * 1: all tokens in the expression must be separated by spaces,
  * 2: operands which contain spaces in the value being evaluated are not supported
  *    (for example, attempting to perform 'msg == some other msg' will fail, since 'some other msg'
- *    will be parsed as individual tokens in the expression instead of a single token (this is 
- *    the next planned fix). 
- * 
+ *    will be parsed as individual tokens in the expression instead of a single token (this is
+ *    the next planned fix).
+ *
  * @author Scott Deboy <sdeboy@apache.org>
  */
-
 public class ExpressionRule extends AbstractRule {
-  private static InFixToPostFix convertor = new InFixToPostFix();
-  private static PostFixExpressionCompiler compiler =
+  private static final InFixToPostFix convertor = new InFixToPostFix();
+  private static final PostFixExpressionCompiler compiler =
     new PostFixExpressionCompiler();
-  Rule rule = null;
-  Stack stack = new Stack();
+  private final Rule rule;
 
   private ExpressionRule(Rule rule) {
     this.rule = rule;
   }
 
+  public static Rule getRule(String expression) {
+      return getRule(expression, false);
+  }
+  
   public static Rule getRule(String expression, boolean isPostFix) {
     if (!isPostFix) {
       expression = convertor.convert(expression);
@@ -90,40 +93,44 @@ public class ExpressionRule extends AbstractRule {
   }
 
   public boolean evaluate(LoggingEvent event) {
-      return rule.evaluate(event);
+    return rule.evaluate(event);
+  }
+  
+  public String toString() {
+      return rule.toString();
   }
 }
 
 
-  /**
-   * Evaluate a boolean postfix expression.
-   *
-   */
-  class PostFixExpressionCompiler {
+/**
+ * Evaluate a boolean postfix expression.
+ *
+ */
+class PostFixExpressionCompiler {
+  Rule compileExpression(String expression) {
+    RuleFactory factory = RuleFactory.getInstance();
 
-    Rule compileExpression(String expression) {
+    Stack stack = new Stack();
+    Enumeration tokenizer = new StringTokenizer(expression);
 
-      Stack stack = new Stack();
-      Enumeration tokenizer = new StringTokenizer(expression);
+    while (tokenizer.hasMoreElements()) {
+      //examine each token
+      String nextToken = ((String) tokenizer.nextElement());
 
-      while (tokenizer.hasMoreElements()) {
-        //examine each token
-        String nextToken = ((String) tokenizer.nextElement());
-
-        //if a symbol is found, pop 2 off the stack, evaluate and push the result 
-        if (RuleFactory.isRule(nextToken)) {
-          Rule r = (Rule) RuleFactory.getRule(nextToken, stack);
-          stack.push(r);
-        } else {
-
-          //variables or constants are pushed onto the stack
-          stack.push(nextToken);
-        }
-      }
-      if (!(stack.peek() instanceof Rule)) {
-          throw new RuntimeException("invalid expression: " + expression);
+      //if a symbol is found, pop 2 off the stack, evaluate and push the result 
+      if (factory.isRule(nextToken)) {
+        Rule r = (Rule) factory.getRule(nextToken, stack);
+        stack.push(r);
       } else {
-        return (Rule)stack.pop();
+        //variables or constants are pushed onto the stack
+        stack.push(nextToken);
       }
     }
+
+    if (!(stack.peek() instanceof Rule)) {
+      throw new RuntimeException("invalid expression: " + expression);
+    } else {
+      return (Rule) stack.pop();
+    }
+  }
 }

@@ -405,7 +405,7 @@ public class LogPanelPreferencePanel extends JPanel {
           BorderFactory.createEtchedBorder(), "Logger"));
 
       final JLabel precisionLabel = new JLabel("Precision (package depth displayed)");
-      final JLabel precisionLabel2 = new JLabel("leave blank to display full logger)");
+      final JLabel precisionLabel2 = new JLabel("leave blank to display full logger");
 
       loggerFormatPanel.add(precisionLabel);
       loggerFormatPanel.add(precisionLabel2);

@@ -64,36 +64,37 @@ import java.util.Stack;
  * 
  * @author Scott Deboy <sdeboy@apache.org>
  */
-class LikeRule extends AbstractRule {
-  LoggingEventFieldResolver resolver = LoggingEventFieldResolver.getInstance();
-  Pattern pattern = null;
-  Perl5Matcher matcher = new Perl5Matcher();
-  String secondParam;
+public class LikeRule extends AbstractRule {
+  private static final LoggingEventFieldResolver resolver = LoggingEventFieldResolver.getInstance();
+  private final Pattern pattern;
+  private final Perl5Matcher matcher = new Perl5Matcher();
+  private final String field;
 
-  private LikeRule(Pattern pattern, String secondParam) {
+  private LikeRule(String field, Pattern pattern) {
+    this.field = field;
     this.pattern = pattern;
-    this.secondParam = secondParam;
   }
 
   public static Rule getRule(Stack stack) {
-    String p1 = stack.pop().toString();
-    String p2 = stack.pop().toString();
+      String p2 = stack.pop().toString();
+      String p1 = stack.pop().toString();
+      return getRule(p1, p2);
+  }
+
+  public static Rule getRule(String field, String pattern) {
     Perl5Compiler compiler = new Perl5Compiler();
     Pattern pattern1 = null;
 
     try {
-      pattern1 = compiler.compile(p1, Perl5Compiler.CASE_INSENSITIVE_MASK);
+      pattern1 = compiler.compile(pattern, Perl5Compiler.CASE_INSENSITIVE_MASK);
     } catch (MalformedPatternException e) {
     }
 
-    return new LikeRule(pattern1, p2);
+    return new LikeRule(field, pattern1);
   }
 
   public boolean evaluate(LoggingEvent event) {
-    String p2 = resolver.getValue(secondParam, event).toString();
-
-    boolean result = ((pattern != null) && matcher.matches(p2, pattern));
-
-    return result;
+    String input = resolver.getValue(field, event).toString();
+    return ((pattern != null) && matcher.matches(input, pattern));
   }
 }

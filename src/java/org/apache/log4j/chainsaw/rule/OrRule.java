@@ -58,27 +58,27 @@ import java.util.Stack;
  * 
  * @author Scott Deboy <sdeboy@apache.org>
  */
-class OrRule extends AbstractRule {
-  Rule firstParam;
-  Rule secondParam;
+public class OrRule extends AbstractRule {
+  private final Rule rule1;
+  private final Rule rule2;
 
   private OrRule(Rule firstParam, Rule secondParam) {
-    this.firstParam = firstParam;
-    this.secondParam = secondParam;
+    this.rule1 = firstParam;
+    this.rule2 = secondParam;
   }
 
+  public static Rule getRule(Rule firstParam, Rule secondParam) {
+      return new OrRule(firstParam, secondParam);
+  }
+  
   public static Rule getRule(Stack stack) {
-    Rule p1 = (Rule) stack.pop();
     Rule p2 = (Rule) stack.pop();
+    Rule p1 = (Rule) stack.pop();
 
     return new OrRule(p1, p2);
   }
 
   public boolean evaluate(LoggingEvent event) {
-
-    boolean result =
-      (firstParam.evaluate(event) || secondParam.evaluate(event));
-
-    return result;
+    return (rule1.evaluate(event) || rule2.evaluate(event));
   }
 }

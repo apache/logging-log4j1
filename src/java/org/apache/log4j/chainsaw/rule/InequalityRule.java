@@ -62,32 +62,32 @@ import java.util.Stack;
  *
  * @author Scott Deboy <sdeboy@apache.org>
  */
-class InequalityRule extends AbstractRule {
+public class InequalityRule extends AbstractRule {
   private static final String LEVEL = "LEVEL";
-  LoggingEventFieldResolver resolver = LoggingEventFieldResolver.getInstance();
-  String firstParam;
-  String secondParam;
-  String inequalitySymbol;
+  private static final LoggingEventFieldResolver resolver = LoggingEventFieldResolver.getInstance();
+  private final String field;
+  private final String value;
+  private final String inequalitySymbol;
 
   private InequalityRule(
-    String inequalitySymbol, String firstParam, String secondParam) {
+    String inequalitySymbol, String field, String value) {
     this.inequalitySymbol = inequalitySymbol;
-    this.firstParam = firstParam;
-    this.secondParam = secondParam;
+    this.field = field;
+    this.value = value;
   }
-
+  
   public static Rule getRule(String inequalitySymbol, Stack stack) {
-    String p1 = stack.pop().toString();
-    String p2 = stack.pop().toString();
-
-    if (p2.equalsIgnoreCase(LEVEL)) {
+      String p2 = stack.pop().toString();
+      String p1 = stack.pop().toString();
+      return getRule(inequalitySymbol, p1, p2);
+  }
+  
+  public static Rule getRule(String inequalitySymbol, String field, String value) {
+    if (field.equalsIgnoreCase(LEVEL)) {
       //push the value back on the stack and allow the level-specific rule pop values
-      stack.push(p2);
-      stack.push(p1);
-
-      return LevelInequalityRule.getRule(inequalitySymbol, stack);
+      return LevelInequalityRule.getRule(inequalitySymbol, field, value);
     } else {
-      return new InequalityRule(inequalitySymbol, p1, p2);
+      return new InequalityRule(inequalitySymbol, field, value);
     }
   }
 
@@ -96,7 +96,7 @@ class InequalityRule extends AbstractRule {
 
     try {
       first =
-        new Long(resolver.getValue(secondParam, event).toString()).longValue();
+        new Long(resolver.getValue(field, event).toString()).longValue();
     } catch (NumberFormatException nfe) {
       return false;
     }
@@ -104,7 +104,7 @@ class InequalityRule extends AbstractRule {
     long second = 0;
 
     try {
-      second = new Long(firstParam).longValue();
+      second = new Long(value).longValue();
     } catch (NumberFormatException nfe) {
       return false;
     }

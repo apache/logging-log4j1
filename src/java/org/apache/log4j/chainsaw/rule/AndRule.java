@@ -53,14 +53,15 @@ import org.apache.log4j.spi.LoggingEvent;
 
 import java.util.Stack;
 
+
 /**
- * A Rule class implementing a logical 'and'. 
- * 
+ * A Rule class implementing a logical 'and'.
+ *
  * @author Scott Deboy <sdeboy@apache.org>
  */
-class AndRule extends AbstractRule {
-  Rule firstParam;
-  Rule secondParam;
+public class AndRule extends AbstractRule {
+  private final Rule firstParam;
+  private final Rule secondParam;
 
   private AndRule(Rule firstParam, Rule secondParam) {
     this.firstParam = firstParam;
@@ -68,17 +69,17 @@ class AndRule extends AbstractRule {
   }
 
   public static Rule getRule(Stack stack) {
-    Rule p1 = (Rule) stack.pop();
     Rule p2 = (Rule) stack.pop();
+    Rule p1 = (Rule) stack.pop();
 
     return new AndRule(p1, p2);
   }
 
+  public static Rule getRule(Rule firstParam, Rule secondParam) {
+    return new AndRule(firstParam, secondParam);
+  }
+
   public boolean evaluate(LoggingEvent event) {
-
-    boolean result =
-      (firstParam.evaluate(event) && secondParam.evaluate(event));
-
-    return result;
+    return (firstParam.evaluate(event) && secondParam.evaluate(event));
   }
 }

@@ -59,8 +59,9 @@ import java.util.Stack;
  * 
  * @author Scott Deboy <sdeboy@apache.org>
  */
-class RuleFactory {
-  static final Collection rules = new LinkedList();
+public class RuleFactory {
+  private static final RuleFactory factory_ = new RuleFactory(); 
+  private static final Collection rules = new LinkedList();
   private static final String AND_RULE = "&&";
   private static final String OR_RULE = "||";
   private static final String NOT_RULE = "!";
@@ -86,11 +87,17 @@ class RuleFactory {
     rules.add(GREATER_THAN_EQUALS_RULE);
   }
 
-  static boolean isRule(String symbol) {
+  private RuleFactory() {}
+  
+  public static RuleFactory getInstance() {
+      return factory_;
+  }
+  
+  public boolean isRule(String symbol) {
     return ((symbol != null) && (rules.contains(symbol.toLowerCase())));
   }
 
-  static Rule getRule(String symbol, Stack stack) {
+  public Rule getRule(String symbol, Stack stack) {
     if (AND_RULE.equals(symbol)) {
       return AndRule.getRule(stack);
     }
