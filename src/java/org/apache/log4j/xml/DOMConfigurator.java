@@ -495,7 +495,7 @@ public class DOMConfigurator implements Configurator {
   }
 
   /**
-     Used internally to parse the roor category element.
+     Used internally to parse the root category element.
   */
   protected void parseRoot(Element rootElement) {
     Logger root = repository.getRootLogger();
