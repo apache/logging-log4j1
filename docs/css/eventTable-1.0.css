@@ -2,6 +2,7 @@
 table {
   margin-left: 2em;
   margin-right: 2em;
+  border-left: 2px solid #AAA;
 }
 
 TR.even {
@@ -31,19 +32,27 @@ TD {
   border-right: 2px solid #AAA;
 }
 
+/*
 TD:first-child {
   border-left: 2px solid #AAA;
-}
+} */
 
-TD.time {
+TD.time, TD.date {
   text-align: right;
   font-family: "Courier New", courier, monospace;
+  font-size: smaller;
+}
+
+TD.sn {
+  text-align: right;
+  width: 5ex;
+  font-family: "Courier New", courier, monospace;
+  font-size: smaller;
 }
 
 TD.thread {
   text-align: left;
 }
-
 
 TD.level {
   text-align: right;
