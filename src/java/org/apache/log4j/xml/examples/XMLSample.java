@@ -2,7 +2,7 @@
 package org.apache.log4j.xml.examples;
 
 import org.apache.log4j.xml.DOMConfigurator;
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import java.net.*;
 
 /**
@@ -22,7 +22,7 @@ import java.net.*;
 */
 public class XMLSample {
 
-  static Category cat = Category.getInstance(XMLSample.class.getName());
+  static Logger cat = Logger.getLogger(XMLSample.class);
 
   public
   static
@@ -51,7 +51,7 @@ public class XMLSample {
   static
   void sample() {
     int i = -1;
-    Category root = Category.getRoot();
+    Logger root = Logger.getRootLogger();
     cat.debug("Message " + ++i);
     cat.warn ("Message " + ++i);
     cat.error("Message " + ++i);

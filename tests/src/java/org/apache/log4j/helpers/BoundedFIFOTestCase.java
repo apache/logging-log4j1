@@ -15,7 +15,7 @@
 package org.apache.log4j.helpers;
 
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
 
 import org.apache.log4j.helpers.BoundedFIFO;
@@ -33,7 +33,7 @@ import junit.framework.Test;
    @author Ceki G&uuml;lc&uuml;
    @since 0.9.1 */
 public class BoundedFIFOTestCase extends TestCase {
-  static Category cat = Category.getInstance("x");
+  static Logger cat = Logger.getLogger("x");
 
   static int MAX = 1000;  
 
