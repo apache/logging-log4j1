@@ -929,7 +929,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       Map.Entry entry = (Map.Entry) iter.next();
       m.put(
         entry.getKey(),
-        Boolean.valueOf(((DockablePanel) entry.getValue()).isDocked()));
+        new Boolean(((DockablePanel) entry.getValue()).isDocked()));
     }
 
     return m;

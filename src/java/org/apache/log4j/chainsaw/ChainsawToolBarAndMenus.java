@@ -221,7 +221,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
                   ((JCheckBoxMenuItem) panelMenuMap.get(entry.getKey())).getModel()
                    .setEnabled(newEnabled);
                   panelEnabledMap.put(
-                    entry.getKey(), Boolean.valueOf(newEnabled));
+                    entry.getKey(), new Boolean(newEnabled));
                 }
               }
             }

@@ -91,7 +91,7 @@ public class RuleTest extends JFrame {
    *
    */
   public RuleTest(String booleanPostFixExpression, String inFixExpression) {
-    setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     getContentPane().setLayout(new BorderLayout());
 
 	final LoggingEventFieldResolver resolver = LoggingEventFieldResolver.getInstance();
@@ -272,10 +272,10 @@ public class RuleTest extends JFrame {
         if (booleanOperatorMap.containsKey(nextToken)) {
           BooleanOperator op = (BooleanOperator) booleanOperatorMap.get(nextToken);
 		  //the operator is responsible for popping the stack
-          stack.push(Boolean.valueOf(op.evaluate(stack)));
+          stack.push(new Boolean(op.evaluate(stack)));
         } else if (eventOperatorMap.containsKey(nextToken)) {
 			EventOperator op = (EventOperator)eventOperatorMap.get(nextToken);
-			stack.push(Boolean.valueOf(op.evaluate(stack, event)));
+			stack.push(new Boolean(op.evaluate(stack, event)));
 		} else { 
           //variables or constants are pushed onto the stack
           stack.push(nextToken);

@@ -62,6 +62,7 @@ import org.apache.log4j.util.Compare;
 import java.text.SimpleDateFormat;
 
 import java.util.Calendar;
+import java.util.Date;
 
 
 /**
@@ -359,12 +360,12 @@ public class TimeBasedRollingTest extends TestCase {
   void delayUntilNextSecond(int millis) {
     long now = System.currentTimeMillis();
     Calendar cal = Calendar.getInstance();
-    cal.setTimeInMillis(now);
+	cal.setTime(new Date(now));
 
     cal.set(Calendar.MILLISECOND, millis);
     cal.add(Calendar.SECOND, 1);
 
-    long next = cal.getTimeInMillis();
+    long next = cal.getTime().getTime();
 
     try {
       Thread.sleep(next - now);
@@ -375,12 +376,12 @@ public class TimeBasedRollingTest extends TestCase {
   void delayUntilNextMinute(int seconds) {
     long now = System.currentTimeMillis();
     Calendar cal = Calendar.getInstance();
-    cal.setTimeInMillis(now);
+	cal.setTime(new Date(now));
 
     cal.set(Calendar.SECOND, seconds);
     cal.add(Calendar.MINUTE, 1);
 
-    long next = cal.getTimeInMillis();
+	long next = cal.getTime().getTime();
 
     try {
       Thread.sleep(next - now);
