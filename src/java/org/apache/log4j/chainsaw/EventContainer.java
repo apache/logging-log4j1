@@ -49,6 +49,7 @@
 
 package org.apache.log4j.chainsaw;
 
+import org.apache.log4j.chainsaw.rule.Rule;
 import org.apache.log4j.spi.LoggingEvent;
 
 import java.util.List;
@@ -132,7 +133,7 @@ public interface EventContainer extends SortTableModel, FilterChangedListener,
    * Sets the DisplayFilter in operation
    * @param displayFilter
    */
-  void setDisplayFilter(DisplayFilter displayFilter);
+  void setDisplayRule(Rule displayRule);
 
   /**
    * Returns the index of the row
