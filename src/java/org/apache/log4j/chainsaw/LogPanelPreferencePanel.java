@@ -46,8 +46,9 @@
  * Apache Software Foundation, please see <http://www.apache.org/>.
  *
  */
-
 package org.apache.log4j.chainsaw;
+
+import org.apache.log4j.helpers.LogLog;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -56,8 +57,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
 import java.util.Iterator;
 
 import javax.swing.BorderFactory;
@@ -77,8 +80,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 
-import org.apache.log4j.helpers.LogLog;
-
 
 /**
  * GUI panel used to manipulate the PreferenceModel for a Log Panel
@@ -86,363 +87,348 @@ import org.apache.log4j.helpers.LogLog;
  * @author Paul Smith
  */
 public class LogPanelPreferencePanel extends AbstractPreferencePanel {
-  private final LogPanelPreferenceModel committedPreferenceModel;
-  private final LogPanelPreferenceModel uncommittedPreferenceModel =
-    new LogPanelPreferenceModel();
-  private JTextField loggerPrecision = new JTextField(5);
+    private final LogPanelPreferenceModel committedPreferenceModel;
+    private final LogPanelPreferenceModel uncommittedPreferenceModel = new LogPanelPreferenceModel();
+    private JTextField loggerPrecision = new JTextField(5);
 
-  public LogPanelPreferencePanel(LogPanelPreferenceModel model) {
-    this.committedPreferenceModel = model;
-    initComponents();
-    
-    getOkButton().addActionListener(
-        new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            uncommittedPreferenceModel.setLoggerPrecision(loggerPrecision.getText());
-            committedPreferenceModel.apply(uncommittedPreferenceModel);
-            hidePanel();
-          }
-        });
-    
-    getCancelButton().addActionListener(
-        new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            hidePanel();
-          }
-        });
-  }
+    public LogPanelPreferencePanel(LogPanelPreferenceModel model) {
+        this.committedPreferenceModel = model;
+        initComponents();
 
-  /**
-   * Ensures this panels DISPLAYED model is in sync with
-   * the model initially passed to the constructor.
-   *
-   */
-  public void updateModel() {
-    this.uncommittedPreferenceModel.apply(committedPreferenceModel);
-  }
+        getOkButton().addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    uncommittedPreferenceModel.setLoggerPrecision(loggerPrecision.getText());
+                    committedPreferenceModel.apply(uncommittedPreferenceModel);
+                    hidePanel();
+                }
+            });
 
-  protected TreeModel createTreeModel() {
-    final DefaultMutableTreeNode rootNode =
-      new DefaultMutableTreeNode("Preferences");
-    DefaultTreeModel model = new DefaultTreeModel(rootNode);
-
-    DefaultMutableTreeNode formatting =
-      new DefaultMutableTreeNode(new FormattingPanel());
-
-    DefaultMutableTreeNode columns =
-      new DefaultMutableTreeNode(new ColumnSelectorPanel());
-
-    rootNode.add(formatting);
-    rootNode.add(columns);
-
-    return model;
-  }
-
-  /**
-   * @return
-   */
-  private LogPanelPreferenceModel getModel() {
-    return uncommittedPreferenceModel;
-  }
-
-  public static void main(String[] args) {
-    JFrame f = new JFrame("Preferences Panel Test Bed");
-    LogPanelPreferenceModel model = new LogPanelPreferenceModel();
-    LogPanelPreferencePanel panel = new LogPanelPreferencePanel(model);
-    f.getContentPane().add(panel);
-    
-    model.addPropertyChangeListener(new PropertyChangeListener(){
-
-		public void propertyChange(PropertyChangeEvent evt) {
-			LogLog.warn(evt.toString());
-			
-		}});
-    panel.setOkCancelActionListener(
-      new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          System.exit(1);
-        }
-      });
-
-    f.setSize(640, 480);
-    f.show();
-  }
-
-  /**
-   * Provides preference gui's for all the Formatting options
-   * available for the columns etc.
-   */
-  private class FormattingPanel extends BasicPrefPanel {
-    private FormattingPanel() {
-      super("Formatting");
-      this.initComponents();
+        getCancelButton().addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    hidePanel();
+                }
+            });
     }
 
-    private void initComponents() {
-      setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+    /**
+     * Ensures this panels DISPLAYED model is in sync with
+     * the model initially passed to the constructor.
+     *
+     */
+    public void updateModel() {
+        this.uncommittedPreferenceModel.apply(committedPreferenceModel);
+    }
 
-      JPanel dateFormatPanel = new JPanel();
-      dateFormatPanel.setBorder(
-        BorderFactory.createTitledBorder(
-          BorderFactory.createEtchedBorder(), "Timestamp"));
-      dateFormatPanel.setLayout(
-        new BoxLayout(dateFormatPanel, BoxLayout.Y_AXIS));
-      dateFormatPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+    protected TreeModel createTreeModel() {
+        final DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(
+                "Preferences");
+        DefaultTreeModel model = new DefaultTreeModel(rootNode);
 
-      final JTextField  customFormatText = new JTextField("",10);
-      customFormatText.setPreferredSize(new Dimension(100,20));
-      customFormatText.setMaximumSize(customFormatText.getPreferredSize());
-      customFormatText.setMinimumSize(customFormatText.getPreferredSize());
-      customFormatText.setEnabled(false);
-      
-      final JRadioButton rdCustom =
-      new JRadioButton(
-      "Custom Format");
-      rdCustom.addActionListener(
-          new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-              customFormatText.setEnabled(rdCustom.isSelected());
-              customFormatText.setText("");
-              customFormatText.grabFocus();
-            }
-          });
-      rdCustom.setSelected(getModel().isCustomDateFormat());
-      
-      getModel().addPropertyChangeListener("dateFormatPattern", new PropertyChangeListener() {
+        DefaultMutableTreeNode formatting = new DefaultMutableTreeNode(new FormattingPanel());
 
-        public void propertyChange(PropertyChangeEvent evt)
-        {
-          /**
-           * we need to make sure we are not reacting to the user typing, so only do this
-           * if the text box is not the same as the model
-           */ 
-          
-          if(getModel().isCustomDateFormat() && !customFormatText.getText().equals(evt.getNewValue().toString()))
-          {
-            customFormatText.setText(getModel().getDateFormatPattern());
-            rdCustom.setSelected(true);
-            customFormatText.setEnabled(true);
-          }else {
-            rdCustom.setSelected(false);
-          }
-          
-        }});
-      
-      ButtonGroup bgDateFormat = new ButtonGroup();
-      final JRadioButton rdISO =
-        new JRadioButton(
-          "<html><b>Fast</b> ISO 8601 format (yyyy-MM-dd HH:mm:ss)</html>");
-      rdISO.addActionListener(
-        new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            getModel().setDateFormatPattern("ISO8601");
-            customFormatText.setEnabled(rdCustom.isSelected());
-          }
-        });
-      rdISO.setAlignmentX(0);
-      rdISO.setSelected(getModel().isUseISO8601Format());
-      getModel().addPropertyChangeListener(
-        "dateFormatPattern",
-        new PropertyChangeListener() {
-          public void propertyChange(PropertyChangeEvent evt) {
+        DefaultMutableTreeNode columns = new DefaultMutableTreeNode(new ColumnSelectorPanel());
+
+        rootNode.add(formatting);
+        rootNode.add(columns);
+
+        return model;
+    }
+
+    /**
+     * @return
+     */
+    private LogPanelPreferenceModel getModel() {
+        return uncommittedPreferenceModel;
+    }
+
+    public static void main(String[] args) {
+        JFrame f = new JFrame("Preferences Panel Test Bed");
+        LogPanelPreferenceModel model = new LogPanelPreferenceModel();
+        LogPanelPreferencePanel panel = new LogPanelPreferencePanel(model);
+        f.getContentPane().add(panel);
+
+        model.addPropertyChangeListener(new PropertyChangeListener() {
+                public void propertyChange(PropertyChangeEvent evt) {
+                    LogLog.warn(evt.toString());
+                }
+            });
+        panel.setOkCancelActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    System.exit(1);
+                }
+            });
+
+        f.setSize(640, 480);
+        f.show();
+    }
+
+    /**
+     * Provides preference gui's for all the Formatting options
+     * available for the columns etc.
+     */
+    private class FormattingPanel extends BasicPrefPanel {
+        private FormattingPanel() {
+            super("Formatting");
+            this.initComponents();
+        }
+
+        private void initComponents() {
+            setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+            JPanel dateFormatPanel = new JPanel();
+            dateFormatPanel.setBorder(BorderFactory.createTitledBorder(
+                    BorderFactory.createEtchedBorder(), "Timestamp"));
+            dateFormatPanel.setLayout(new BoxLayout(dateFormatPanel,
+                    BoxLayout.Y_AXIS));
+            dateFormatPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+            final JTextField customFormatText = new JTextField("", 10);
+            customFormatText.setPreferredSize(new Dimension(100, 20));
+            customFormatText.setMaximumSize(customFormatText.getPreferredSize());
+            customFormatText.setMinimumSize(customFormatText.getPreferredSize());
+            customFormatText.setEnabled(false);
+
+            final JRadioButton rdCustom = new JRadioButton("Custom Format");
+            rdCustom.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        customFormatText.setEnabled(rdCustom.isSelected());
+                        customFormatText.setText("");
+                        customFormatText.grabFocus();
+                    }
+                });
+            rdCustom.setSelected(getModel().isCustomDateFormat());
+
+            getModel().addPropertyChangeListener("dateFormatPattern",
+                new PropertyChangeListener() {
+                    public void propertyChange(PropertyChangeEvent evt) {
+                        /**
+                         * we need to make sure we are not reacting to the user typing, so only do this
+                         * if the text box is not the same as the model
+                         */
+                        if (getModel().isCustomDateFormat() &&
+                                !customFormatText.getText().equals(evt.getNewValue()
+                                                                          .toString())) {
+                            customFormatText.setText(getModel()
+                                                         .getDateFormatPattern());
+                            rdCustom.setSelected(true);
+                            customFormatText.setEnabled(true);
+                        } else {
+                            rdCustom.setSelected(false);
+                        }
+                    }
+                });
+
+            ButtonGroup bgDateFormat = new ButtonGroup();
+            final JRadioButton rdISO = new JRadioButton(
+                    "<html><b>Fast</b> ISO 8601 format (yyyy-MM-dd HH:mm:ss)</html>");
+            rdISO.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        getModel().setDateFormatPattern("ISO8601");
+                        customFormatText.setEnabled(rdCustom.isSelected());
+                    }
+                });
+            rdISO.setAlignmentX(0);
             rdISO.setSelected(getModel().isUseISO8601Format());
-          }
-        });
-      bgDateFormat.add(rdISO);
-      dateFormatPanel.add(rdISO);
+            getModel().addPropertyChangeListener("dateFormatPattern",
+                new PropertyChangeListener() {
+                    public void propertyChange(PropertyChangeEvent evt) {
+                        rdISO.setSelected(getModel().isUseISO8601Format());
+                    }
+                });
+            bgDateFormat.add(rdISO);
+            dateFormatPanel.add(rdISO);
 
-      for (
-        Iterator iter = LogPanelPreferenceModel.DATE_FORMATS.iterator();
-          iter.hasNext();) {
-        final String format = (String) iter.next();
-        final JRadioButton rdFormat = new JRadioButton(format);
-        rdFormat.setAlignmentX(0);
-        
-        bgDateFormat.add(rdFormat);
-        rdFormat.addActionListener(
-          new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-              getModel().setDateFormatPattern(format);
-              customFormatText.setEnabled(rdCustom.isSelected());
+            for (Iterator iter = LogPanelPreferenceModel.DATE_FORMATS.iterator();
+                    iter.hasNext();) {
+                final String format = (String) iter.next();
+                final JRadioButton rdFormat = new JRadioButton(format);
+                rdFormat.setAlignmentX(0);
+
+                bgDateFormat.add(rdFormat);
+                rdFormat.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            getModel().setDateFormatPattern(format);
+                            customFormatText.setEnabled(rdCustom.isSelected());
+                        }
+                    });
+                getModel().addPropertyChangeListener("dateFormatPattern",
+                    new PropertyChangeListener() {
+                        public void propertyChange(PropertyChangeEvent evt) {
+                            rdFormat.setSelected(getModel()
+                                                     .getDateFormatPattern()
+                                                     .equals(format));
+                        }
+                    });
+
+                dateFormatPanel.add(rdFormat);
             }
-          });
-        getModel().addPropertyChangeListener(
-          "dateFormatPattern",
-          new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent evt) {
-              rdFormat.setSelected(
-                getModel().getDateFormatPattern().equals(format));
+
+            // add a custom date format
+            if (getModel().isCustomDateFormat()) {
+                customFormatText.setText(getModel().getDateFormatPattern());
+                customFormatText.setEnabled(true);
             }
-          });
-        
-        dateFormatPanel.add(rdFormat);
-      }
-      
-      // add a custom date format
-      if(getModel().isCustomDateFormat())
-      {
-        customFormatText.setText(getModel().getDateFormatPattern());
-        customFormatText.setEnabled(true);
-      }
-      customFormatText.getDocument().addDocumentListener(new DocumentListener() {
 
-        public void textChanged()
-        {
-          getModel().setDateFormatPattern(customFormatText.getText());
-          
+            customFormatText.getDocument().addDocumentListener(new DocumentListener() {
+                    public void textChanged() {
+                        getModel().setDateFormatPattern(customFormatText.getText());
+                    }
+
+                    public void changedUpdate(DocumentEvent e) {
+                        textChanged();
+                    }
+
+                    public void insertUpdate(DocumentEvent e) {
+                        textChanged();
+                    }
+
+                    public void removeUpdate(DocumentEvent e) {
+                        textChanged();
+                    }
+                });
+
+            rdCustom.setAlignmentX(0);
+            bgDateFormat.add(rdCustom);
+
+            Box customBox = Box.createHorizontalBox();
+
+            //      Following does not work in JDK 1.3.1
+            //      customBox.setAlignmentX(0);
+            customBox.add(rdCustom);
+            customBox.add(customFormatText);
+            customBox.add(Box.createHorizontalGlue());
+            dateFormatPanel.add(customBox);
+
+            //      dateFormatPanel.add(Box.createVerticalGlue());
+            add(dateFormatPanel);
+
+            JPanel levelFormatPanel = new JPanel();
+            levelFormatPanel.setLayout(new BoxLayout(levelFormatPanel,
+                    BoxLayout.Y_AXIS));
+            levelFormatPanel.setBorder(BorderFactory.createTitledBorder(
+                    BorderFactory.createEtchedBorder(), "Level"));
+            levelFormatPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+            ButtonGroup bgLevel = new ButtonGroup();
+            final JRadioButton rdLevelIcons = new JRadioButton("Icons");
+            final JRadioButton rdLevelText = new JRadioButton("Text");
+            bgLevel.add(rdLevelIcons);
+            bgLevel.add(rdLevelText);
+
+            ActionListener levelIconListener = new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        getModel().setLevelIcons(rdLevelIcons.isSelected());
+                    }
+                };
+
+            rdLevelIcons.addActionListener(levelIconListener);
+            rdLevelText.addActionListener(levelIconListener);
+
+            getModel().addPropertyChangeListener("levelIcons",
+                new PropertyChangeListener() {
+                    public void propertyChange(PropertyChangeEvent evt) {
+                        boolean value = ((Boolean) evt.getNewValue()).booleanValue();
+                        rdLevelIcons.setSelected(value);
+                        rdLevelText.setSelected(!value);
+                    }
+                });
+            rdLevelIcons.setSelected(getModel().isLevelIcons());
+
+            levelFormatPanel.add(rdLevelIcons);
+            levelFormatPanel.add(rdLevelText);
+
+            add(levelFormatPanel);
+
+            JPanel loggerFormatPanel = new JPanel();
+            loggerFormatPanel.setLayout(new BoxLayout(loggerFormatPanel,
+                    BoxLayout.Y_AXIS));
+            loggerFormatPanel.setBorder(BorderFactory.createTitledBorder(
+                    BorderFactory.createEtchedBorder(), "Logger"));
+            loggerFormatPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+            final JLabel precisionLabel = new JLabel(
+                    "Precision (package depth displayed)");
+            final JLabel precisionLabel2 = new JLabel(
+                    "leave blank to display full logger");
+
+            loggerFormatPanel.add(precisionLabel);
+            loggerFormatPanel.add(precisionLabel2);
+
+            JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));
+
+            p.add(loggerPrecision);
+            loggerFormatPanel.add(p);
+
+            add(loggerFormatPanel);
+
+            add(Box.createVerticalGlue());
         }
-
-        public void changedUpdate(DocumentEvent e)
-        {
-          textChanged();
-          
-        }
-
-        public void insertUpdate(DocumentEvent e)
-        {
-          textChanged();
-          
-        }
-
-        public void removeUpdate(DocumentEvent e)
-        {
-          textChanged();
-          
-        }});
-      
-      rdCustom.setAlignmentX(0);
-      bgDateFormat.add(rdCustom);
-
-      Box customBox = Box.createHorizontalBox();
-//      Following does not work in JDK 1.3.1
-//      customBox.setAlignmentX(0);
-      customBox.add(rdCustom);
-      customBox.add(customFormatText);
-      customBox.add(Box.createHorizontalGlue());
-      dateFormatPanel.add(customBox);
-//      dateFormatPanel.add(Box.createVerticalGlue());
-      
-
-      add(dateFormatPanel);
-
-      JPanel levelFormatPanel = new JPanel();
-      levelFormatPanel.setLayout(
-        new BoxLayout(levelFormatPanel, BoxLayout.Y_AXIS));
-      levelFormatPanel.setBorder(
-        BorderFactory.createTitledBorder(
-          BorderFactory.createEtchedBorder(), "Level"));
-      levelFormatPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-      ButtonGroup bgLevel = new ButtonGroup();
-      final JRadioButton rdLevelIcons = new JRadioButton("Icons");
-      final JRadioButton rdLevelText = new JRadioButton("Text");
-      bgLevel.add(rdLevelIcons);
-      bgLevel.add(rdLevelText);
-
-      ActionListener levelIconListener =
-        new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            getModel().setLevelIcons(rdLevelIcons.isSelected());
-          }
-        };
-
-      rdLevelIcons.addActionListener(levelIconListener);
-      rdLevelText.addActionListener(levelIconListener);
-
-      rdLevelIcons.setSelected(getModel().isLevelIcons());
-
-      levelFormatPanel.add(rdLevelIcons);
-      levelFormatPanel.add(rdLevelText);
-
-      add(levelFormatPanel);
-
-      JPanel loggerFormatPanel = new JPanel();
-      loggerFormatPanel.setLayout(
-        new BoxLayout(loggerFormatPanel, BoxLayout.Y_AXIS));
-      loggerFormatPanel.setBorder(
-        BorderFactory.createTitledBorder(
-          BorderFactory.createEtchedBorder(), "Logger"));
-      loggerFormatPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-      final JLabel precisionLabel = new JLabel("Precision (package depth displayed)");
-      final JLabel precisionLabel2 = new JLabel("leave blank to display full logger");
-
-      loggerFormatPanel.add(precisionLabel);
-      loggerFormatPanel.add(precisionLabel2);
-      JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));
-            
-      p.add(loggerPrecision);
-      loggerFormatPanel.add(p);
-
-      add(loggerFormatPanel);
-      
-      add(Box.createVerticalGlue());
     }
 
-  }
+    /**
+     * Allows the user to choose which columns to display.
+     *
+     * @author Paul Smith
+     *
+     */
+    public class ColumnSelectorPanel extends BasicPrefPanel {
+        ColumnSelectorPanel() {
+            super("Columns");
+            initComponents();
+        }
 
-	/**
-	 * Allows the user to choose which columns to display.
-	 * 
-	 * @author Paul Smith
-	 *
-	 */
-  public class ColumnSelectorPanel extends BasicPrefPanel {
-    ColumnSelectorPanel() {
-      super("Columns");
-      initComponents();
+        private void initComponents() {
+            setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+            Box columnBox = new Box(BoxLayout.Y_AXIS);
+
+            //		columnBox.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Displayed Columns"));
+            final JList columnList = new JList();
+            columnList.setVisibleRowCount(10);
+
+            final ModifiableListModel listModel = new ModifiableListModel();
+
+            for (Iterator iter = ChainsawColumns.getColumnsNames().iterator();
+                    iter.hasNext();) {
+                String name = (String) iter.next();
+                listModel.addElement(name);
+            }
+
+            columnList.setModel(listModel);
+
+            CheckListCellRenderer cellRenderer = new CheckListCellRenderer() {
+                    protected boolean isSelected(Object value) {
+                        return LogPanelPreferencePanel.this.getModel()
+                                                           .isColumnVisible(value.toString());
+                    }
+                };
+
+            getModel().addPropertyChangeListener("visibleColumns",
+                new PropertyChangeListener() {
+                    public void propertyChange(PropertyChangeEvent evt) {
+                        listModel.fireContentsChanged();
+                    }
+                });
+
+            columnList.addMouseListener(new MouseAdapter() {
+                    public void mouseClicked(MouseEvent e) {
+                        if ((e.getClickCount() > 1) &&
+                                ((e.getModifiers() & MouseEvent.BUTTON1_MASK) > 0)) {
+                            int i = columnList.locationToIndex(e.getPoint());
+
+                            if (i >= 0) {
+                                Object column = listModel.get(i);
+                                getModel().toggleColumn(column.toString());
+                            }
+                        } else {
+                        }
+                    }
+                });
+            columnList.setCellRenderer(cellRenderer);
+            columnBox.add(new JScrollPane(columnList));
+
+            add(columnBox);
+            add(Box.createVerticalGlue());
+        }
     }
-
-    private void initComponents() {
-      setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
-      Box columnBox = new Box(BoxLayout.Y_AXIS);
-
-      //		columnBox.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Displayed Columns"));
-      final JList columnList = new JList();
-      columnList.setVisibleRowCount(10);
-
-      final ModifiableListModel listModel = new ModifiableListModel();
-
-      for (
-        Iterator iter = ChainsawColumns.getColumnsNames().iterator();
-          iter.hasNext();) {
-        String name = (String) iter.next();
-        listModel.addElement(name);
-      }
-
-      columnList.setModel(listModel);
-
-      CheckListCellRenderer cellRenderer = new CheckListCellRenderer(){
-
-		protected boolean isSelected(Object value) {
-			return LogPanelPreferencePanel.this.getModel().isColumnVisible(value.toString());
-		}};
-		
-	  getModel().addPropertyChangeListener("visibleColumns", new PropertyChangeListener(){
-
-		public void propertyChange(PropertyChangeEvent evt) {
-			listModel.fireContentsChanged();
-			
-		}});
-	   
-	  columnList.addMouseListener(new MouseAdapter(){
-	  	public void mouseClicked(MouseEvent e){
-	  		if(e.getClickCount()>1 && (e.getModifiers() & MouseEvent.BUTTON1_MASK)>0){
-	  			int i = columnList.locationToIndex(e.getPoint());
-	  			if(i>=0){
-		  			Object column = listModel.get(i);
-		  			getModel().toggleColumn(column.toString());
-	  			}
-	  		}else {
-	  		}
-	  	}
-	  });
-      columnList.setCellRenderer(cellRenderer);
-      columnBox.add(new JScrollPane(columnList));
-
-      add(columnBox);
-      add(Box.createVerticalGlue());
-    }
-  }
 }
