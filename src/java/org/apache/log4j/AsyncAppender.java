@@ -53,7 +53,7 @@ public class AsyncAppender extends AppenderSkeleton
 
   boolean interruptedWarningMessage = false;
 
-  public yncAppender() {
+  public AsyncAppender() {
     // Note: The dispatcher code assumes that the aai is set once and
     // for all.
     aai = new AppenderAttachableImpl();
@@ -286,7 +286,7 @@ class Dispatcher extends Thread {
 	  // Exit loop if interrupted but only if the the buffer is empty.
 	  if(interrupted) {
 	    //cat.info("Exiting.");
-	    return;
+	    break;
 	  }
 	  try {
 	    //LogLog.debug("Waiting for new event to dispatch.");
@@ -311,5 +311,8 @@ class Dispatcher extends Thread {
 	}
       }
     } // while
+    
+    // close and remove all appenders
+    aai.removeAllAppenders();
   }
 }

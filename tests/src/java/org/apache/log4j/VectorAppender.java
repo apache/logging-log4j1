@@ -42,6 +42,11 @@ public class VectorAppender extends AppenderSkeleton {
   */
   public void append(LoggingEvent event) {
     System.out.println("---Vector appender called with message ["+event.getRenderedMessage()+"].");
+    System.out.flush();
+    try {
+      Thread.currentThread().sleep(100);
+    } catch(Exception e) {
+    }
     vector.addElement(event);
    }
 
@@ -49,8 +54,7 @@ public class VectorAppender extends AppenderSkeleton {
     return vector;
   }
 
-  public synchronized
-  void close() {
+  public synchronized void close() {
     if(this.closed)
       return;
     this.closed = true;
@@ -58,7 +62,7 @@ public class VectorAppender extends AppenderSkeleton {
 
 
   public boolean isClosed() {
-    return this.closed;
+    return closed;
   }
 
   public boolean requiresLayout() {
