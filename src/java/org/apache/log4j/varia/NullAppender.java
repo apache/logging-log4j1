@@ -33,7 +33,7 @@ public class NullAppender extends AppenderSkeleton {
    * Whenever you can, use this method to retreive an instance instead
    * of instantiating a new one with <code>new</code>.
    * */
-  public NullAppender getInstance() {
+  static public NullAppender getInstance() {
     return instance;
   }
 
