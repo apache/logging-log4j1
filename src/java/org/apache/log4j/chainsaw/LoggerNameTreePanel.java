@@ -58,6 +58,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
@@ -215,8 +216,6 @@ final class LoggerNameTreePanel extends JPanel {
     action.putValue(
       Action.SHORT_DESCRIPTION,
       "Collapses all the children of the currently selected node");
-    action.putValue(
-      Action.SMALL_ICON, new ImageIcon(ChainsawIcons.ICON_COLLAPSE));
     action.setEnabled(false);
 
     return action;
@@ -316,8 +315,6 @@ final class LoggerNameTreePanel extends JPanel {
     action.putValue(
       Action.SHORT_DESCRIPTION,
       "Expands all the child nodes of the currently selected node, recursively");
-    action.putValue(
-      Action.SMALL_ICON, new ImageIcon(ChainsawIcons.UNDOCKED_ICON));
     action.setEnabled(false);
 
     return action;
@@ -434,11 +431,15 @@ final class LoggerNameTreePanel extends JPanel {
   private void configureToolbarPanel() {
     toolbar.setFloatable(false);
 
+    
     expandButton.setAction(expandAction);
-    expandButton.setText(null);
+    expandButton.setText("+");
     collapseButton.setAction(collapseAction);
-    collapseButton.setText(null);
+    collapseButton.setText("-");
 
+    expandButton.setFont(expandButton.getFont().deriveFont(Font.BOLD));
+    collapseButton.setFont(collapseButton.getFont().deriveFont(Font.BOLD));
+    
     editLoggerButton.setAction(editLoggerAction);
     editLoggerButton.setText(null);
     closeButton.setAction(closeAction);
