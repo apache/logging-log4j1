@@ -185,13 +185,13 @@ public class SchedulerTest extends TestCase {
     scheduler.schedule(pj, firstOn, period);
 
     int NUM_PERIODS = 10;
-    sleep(period * NUM_PERIODS);
+    sleep(period * (NUM_PERIODS+1));
 
     scheduler.shutdown();
 
     long endOfExecution = System.currentTimeMillis();
 
-    if (pj.count < 10) {
+    if (pj.count <  NUM_PERIODS) {
       fail(
         "Periodic job executed only " + pj.count + " times. Expected at least"
         + NUM_PERIODS);
