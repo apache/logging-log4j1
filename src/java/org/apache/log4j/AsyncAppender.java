@@ -6,6 +6,7 @@
  * distribution in the LICENSE.txt file.  */
 
 // Contibutors:  Aaron Greenhouse <aarong@cs.cmu.edu>
+//               Thomas Tuft Muller <ttm@online.no>
 
 package org.apache.log4j;
 
