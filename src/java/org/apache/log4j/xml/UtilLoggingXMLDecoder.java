@@ -49,25 +49,11 @@
 
 package org.apache.log4j.xml;
 
-import org.apache.log4j.Decoder;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.UtilLoggingLevel;
-import org.apache.log4j.spi.LocationInfo;
-import org.apache.log4j.spi.LoggingEvent;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import org.xml.sax.InputSource;
-
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.StringReader;
-
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -77,6 +63,17 @@ import java.util.Vector;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+
+import org.apache.log4j.Decoder;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.UtilLoggingLevel;
+import org.apache.log4j.spi.LocationInfo;
+import org.apache.log4j.spi.LoggingEvent;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 
 /**
@@ -180,12 +177,12 @@ public class UtilLoggingXMLDecoder implements Decoder {
    * @return The contents of the file as a String
    * @throws IOException if an error occurred during the loading process
    */
-  private String loadFileSource(File file) throws IOException {
+  private String loadFileSource(URL url) throws IOException {
     LineNumberReader reader = null;
     StringBuffer buf = new StringBuffer(1024);
 
     try {
-      reader = new LineNumberReader(new FileReader(file));
+      reader = new LineNumberReader(new InputStreamReader(url.openStream()));
 
       String line = null;
 
@@ -212,8 +209,8 @@ public class UtilLoggingXMLDecoder implements Decoder {
    * @return Vector of LoggingEvents
    * @throws IOException
    */
-  public Vector decode(File file) throws IOException {
-    String fileContents = loadFileSource(file);
+  public Vector decode(URL url) throws IOException {
+    String fileContents = loadFileSource(url);
     Document doc = parse(fileContents);
     
     if (doc == null) {
