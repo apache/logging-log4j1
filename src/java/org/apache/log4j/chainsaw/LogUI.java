@@ -619,7 +619,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     getContentPane().add(mainReceiverSplitPane, BorderLayout.CENTER);
 
     mainReceiverSplitPane.setOneTouchExpandable(true);
-
+    mainReceiverSplitPane.setResizeWeight(1.0);
     addWindowListener(
       new WindowAdapter() {
         public void windowClosing(WindowEvent event) {

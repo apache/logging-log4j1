@@ -928,7 +928,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
     lowerPanel.setDividerLocation(lastDetailPanelSplitLocation);
     lowerPanel.setOneTouchExpandable(true);
     dividerSize = lowerPanel.getDividerSize() + 5;
-    lowerPanel.setResizeWeight(0.5);
+    lowerPanel.setResizeWeight(1.0);
     lowerPanel.setBorder(null);
     lowerPanel.setContinuousLayout(true);
 
@@ -1056,7 +1056,6 @@ public class LogPanel extends DockablePanel implements EventBatchListener, Setti
 
     add(nameTreeAndMainPanelSplit, BorderLayout.CENTER);
     nameTreeAndMainPanelSplit.setOneTouchExpandable(true);
-
     logTreePanel.setVisible(isLogTreeVisible());
 
     /*
