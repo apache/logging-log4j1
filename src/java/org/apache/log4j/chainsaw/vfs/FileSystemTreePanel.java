@@ -72,6 +72,7 @@ class FileSystemTreePanel extends JPanel {
 			
 			public void run() {
 				rootNode.add(node);
+                ((DefaultTreeModel)tree.getModel()).reload(rootNode);
                 tree.makeVisible(new TreePath(node.getPath()));
 			}});
         
