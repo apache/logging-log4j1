@@ -584,6 +584,9 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
         c.removeAllAppenders();
       }
     }
+    
+    // log4j self configure
+    LogManager.internalConf();
   }
 
   /**

@@ -108,11 +108,8 @@ public class LogManager {
     Hierarchy h = new Hierarchy(new RootCategory(Level.DEBUG));
     repositorySelector = new DefaultRepositorySelector(h);
 
-    Logger logger = LogManager.getLoggerRepository().getLogger("LOG4J");
-    logger.setAdditivity(false);
-    logger.addAppender(
-      new ConsoleAppender(
-        new PatternLayout("log4j-internal: %r %-22c{2} - %m%n")));
+    // set appenders for the internal configuration
+    internalConf();
 
     /** Search for the properties file log4j.properties in the CLASSPATH.  */
     String override =
@@ -161,6 +158,14 @@ public class LogManager {
           "Could not find resources to perform automatic configuration.");
       }
     }
+  }
+
+  static void internalConf() {
+    Logger logger = getLoggerRepository().getLogger("LOG4J");
+    logger.setAdditivity(false);
+    logger.addAppender(
+      new ConsoleAppender(
+        new PatternLayout("log4j-internal: %r %-22c{2} - %m%n")));
   }
 
   /**
