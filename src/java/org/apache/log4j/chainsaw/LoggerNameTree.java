@@ -51,25 +51,21 @@
  */
 package org.apache.log4j.chainsaw;
 
-import java.awt.Dimension;
-
 import javax.swing.JTree;
-import javax.swing.event.TreeModelEvent;
-import javax.swing.event.TreeModelListener;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeModel;
 
 
 /**
  * LoggerNameTree is used to display a TreeModel of LoggerNames.
- * 
+ *
  * @author Paul Smith <psmith@apache.org>
  */
 public class LoggerNameTree extends JTree {
   LoggerNameTree(TreeModel model) {
     super(model);
-    setPreferredSize(new Dimension(320, 240));
+    
+    
 
     //    ============================================
     //    TODO remove this WIP node once we're statisfied
@@ -81,48 +77,9 @@ public class LoggerNameTree extends JTree {
 
     root.add(node);
 
-    //  ============================================
-    model.addTreeModelListener(
-      new TreeModelListener() {
-        public void treeNodesChanged(TreeModelEvent e) {
-          ensureRootExpanded();
-        }
+    
 
-        public void treeNodesInserted(TreeModelEvent e) {
-          ensureRootExpanded();
-        }
-
-        public void treeNodesRemoved(TreeModelEvent e) {
-          ensureRootExpanded();
-        }
-
-        private void ensureRootExpanded() {
-          expandRow(0);
-        }
-
-        public void treeStructureChanged(TreeModelEvent e) {
-          ensureRootExpanded();
-        }
-      });
-
-    setEditable(false);
-
-    setCellRenderer(new LoggerNameTreeCellRenderer());
   }
 
-  /**
-   * 
-   * @author Paul Smith <psmith@apache.org>
-   *
-   */
-  private static class LoggerNameTreeCellRenderer
-    extends DefaultTreeCellRenderer {
-    private LoggerNameTreeCellRenderer() {
-      super();
-      setLeafIcon(getDefaultOpenIcon());
-
-      //      setClosedIcon(null);
-      //      setOpenIcon(null);
-    }
-  }
+ 
 }
