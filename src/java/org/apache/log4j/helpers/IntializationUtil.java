@@ -78,10 +78,10 @@ public class IntializationUtil {
     // configuration to the OptionConverter.selectAndConfigure
     // method.
     if (url != null) {
-//      LogLog.info(
-//        "Using URL [" + url 
-//          + "] for automatic log4j configuration of repository named ["+
-//          repository.getName()+"].");
+      LogLog.info(
+        "Using URL [" + url 
+          + "] for automatic log4j configuration of repository named ["+
+          repository.getName()+"].");
       OptionConverter.selectAndConfigure(
         url, configuratorClassNameStr, repository);
     } else {
