@@ -310,7 +310,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
      */ 
     //configuration initialized here
     logUI.ensureChainsawAppenderHandlerAdded();
-    LogManager.getRootLogger().setLevel(Level.TRACE);
     logger = LogManager.getLogger(LogUI.class);
     
     String config = model.getConfigurationURL();
@@ -329,6 +328,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     } else {
       logger.info("Using '" + config + "' for auto-configuration");
     }
+    LogManager.getRootLogger().setLevel(Level.TRACE);
 
     logUI.activateViewer();
 
