@@ -17,32 +17,31 @@
 <p>In the forthcoming, still unpublished draft of JSR47, the
 <code>java.util.logging</code> API will resemble log4j even more than
 is the case now.  The way the two APIs name their components may
-differ but otherwise their degree of resemblance is quite frightening.
+differ but otherwise their degree of resemblance is quite striking.
 
 <p>Changes introduced in the latest draft include configuration order
 independence, appender inheritance, resource bundle inheritance, error
 handlers and lazy inference of caller information. In other words,
 even if the priority levels remain unchanged and equally bogus, the
-vast majority of the points raised in my <a
-href="critique.html">previous critique</a> of JSR47 are now obsolete.
-This is clearly  good news.
+majority of the points raised in my <a href="critique.html">previous
+critique</a> of JSR47 are now obsolete.  
 
-<p>It is fair to say that our campaign to influence the JSR47 API has
-handsomely bore fruit. I wish to thank the hundreds of concerned users
-who have expressed their support for log4j. My gratitude goes to Jason
-Hunter for arranging the appropriate communication channel to
-Sun. Graham Hamilton, the JSR47 specification lead, was very open and
-receptive during our exchanges.
+<p>Consequently, it is fair to say that our campaign to influence the
+JSR47 API handsomely bore fruit. I wish to thank the hundreds of
+concerned users who have expressed their support for log4j. My
+gratitude goes to Jason Hunter for arranging the appropriate
+communication channel to Sun. Graham Hamilton, the JSR47 specification
+lead, was very open and receptive during our exchanges.
 
-<p>As one of its authors, I still think that at its core log4j is a
-better API in some small ways. These differences are explained in the
-next section.
+<p>As one of its authors, I still think that at log4j core API is
+better in some small ways. These differences are explained in the next
+section.
 
 <p>There remain two critical differences however. First, JSR47
 requires JDK 1.4 whereas log4j is compatible with JDK 1.1 and
 later. Second, log4j offers much more functionality. It supports a
-rich configuration language and about a thousand appenders and layouts
-among other very useful features.
+rich configuration language, at least a dozen appenders and layouts as
+well as many other useful features.
 
 <p>Efforts to backport JSR47 to earlier JDKs are doomed to fail
 because the <code>java.util.logging</code> package is located under
@@ -53,15 +52,20 @@ the backported code will be under the threat of litigation as long as
 Sun can be expected to defend its trademark. 
 
 <p>Even without the <code>SecurityException</code> and the trademark
-issue, the backported code would need to be installed. If you are
-going to install a logging API, then why not install log4j which
-offers a lot more than JSR47 and is backward compatible with JDK 1.1?
+issue, you would need an additional logging library to fill in the
+functionality gap, the JDK compatibility gap, or both. If you are
+going to install one or more logging APIs, then why not install log4j
+which offers a lot more than JSR47 and is backward compatible with JDK
+1.1?
 
 <p>Log4j is the de facto standard logging API in Java. It has been
 ported to Python, C++ and the much maligned C#. By adopting log4j, you
 simultaneously benefit from much richer functionality and wider JDK
-compatibility. In any case, the log4j project will continue to
-innovate and lead the way.
+compatibility. 
+
+<p>In any case, the log4j project will continue to innovate and lead
+the way. As such, many of the features that you need or will need in
+the future will be first available in log4j.
 
 <h2>Remaining differences</h2>
 
@@ -155,7 +159,6 @@ contain holes in the sequence numbers.
 <p>Err... not exactly a useful feature nor consistent with the rest of
 the JSR47 API.
 
-
-
+</ol>
 
 </body> </HTML>
