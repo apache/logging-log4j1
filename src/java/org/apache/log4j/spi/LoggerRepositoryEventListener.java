@@ -23,12 +23,12 @@ package org.apache.log4j.spi;
 public interface LoggerRepositoryEventListener {
   
   /**
-    Called when the repository is started. */
-  public void startupEvent(LoggerRepository repository);
-
-  /**
     Called when the repository configuration is reset. */
   public void configurationResetEvent(LoggerRepository repository);
+
+  /**
+    Called when the repository configuration is changed. */
+  public void configurationChangedEvent(LoggerRepository repository);
 
   /**
     Called when the repository is shutdown. When this method is
