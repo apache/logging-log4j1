@@ -57,7 +57,7 @@ import java.sql.SQLException;
 
     </ul>
 
-    @author: Kevin Steppe (<A HREF="mailto:ksteppe@pacbell.net">ksteppe@pacbell.net</A>)
+    @author Kevin Steppe (<A HREF="mailto:ksteppe@pacbell.net">ksteppe@pacbell.net</A>)
 
 */
 public class JDBCAppender extends org.apache.log4j.AppenderSkeleton
