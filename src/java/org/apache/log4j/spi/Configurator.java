@@ -7,6 +7,7 @@
 
 package org.apache.log4j.spi;
 
+import org.apache.log4j.Hierarchy;
 import java.net.URL;
 
 /**
@@ -14,13 +15,16 @@ import java.net.URL;
    
    @since 1.0
    @author Anders Kristensen
-   @author Ceki Gulcu
-   
  */
 public interface Configurator {
   /**
-     Interprets the specified Properties map and configures
-     log4j accordingly.
+     Interpret a resource pointed by a URL and set up log4j accordingly.
+
+     The configuration is done relative to the <code>hierarchy</code>
+     parameter.
+
+     @param url The URL to parse
+     @param hierarchy The hierarchy to operation upon.
    */
-  void doConfigure(URL url);
+  void doConfigure(URL url, Hierarchy hierarchy);
 }

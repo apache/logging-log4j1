@@ -179,6 +179,14 @@ public class Hierarchy {
     }
   }
 
+  /**
+     Get the renderer map for this hierarchy.
+  */
+  public
+  RendererMap getRendererMap() {
+    return rendererMap;
+  }
+
 
   /**
      Get the root of this hierarchy.

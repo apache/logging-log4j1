@@ -283,7 +283,7 @@ public class PropertyConfigurator extends BasicConfigurator
 
   */
   public
-  void doConfigure(String configFileName) {
+  void doConfigure(String configFileName, Hierarchy hierarchy) {
     Properties props = new Properties();
     try {
       FileInputStream istream = new FileInputStream(configFileName);
@@ -298,7 +298,7 @@ public class PropertyConfigurator extends BasicConfigurator
     }
     // If we reach here, then the config file is alright.
     //debug("Reading configuration.");    
-    doConfigure(props);
+    doConfigure(props, hierarchy);
   }
 
   /**
@@ -306,7 +306,7 @@ public class PropertyConfigurator extends BasicConfigurator
   static
   public 
   void configure(String configFilename) {
-    new PropertyConfigurator().doConfigure(configFilename);
+    new PropertyConfigurator().doConfigure(configFilename, Category.defaultHierarchy);
   }
 
 
@@ -318,7 +318,7 @@ public class PropertyConfigurator extends BasicConfigurator
   static
   public
   void configure(Properties properties) {
-    new PropertyConfigurator().doConfigure(properties);
+    new PropertyConfigurator().doConfigure(properties, Category.defaultHierarchy);
   }
   
   /**
@@ -327,7 +327,7 @@ public class PropertyConfigurator extends BasicConfigurator
      See {@link #doConfigure(String)} for the expected format.
   */
   public
-  void doConfigure(Properties properties) {
+  void doConfigure(Properties properties, Hierarchy hierarchy) {
 
     String value = properties.getProperty(LogLog.CONFIG_DEBUG_KEY);
     if(value != null) {
@@ -339,9 +339,9 @@ public class PropertyConfigurator extends BasicConfigurator
                                     BasicConfigurator.DISABLE_OVERRIDE_KEY);
     BasicConfigurator.overrideAsNeeded(override);
     
-    configureRootCategory(properties);
+    configureRootCategory(properties, hierarchy);
     configureCategoryFactory(properties);
-    parseCatsAndRenderers(properties);
+    parseCatsAndRenderers(properties, hierarchy);
 
     LogLog.debug("Finished configuring.");    
     // We don't want to hold references to appenders preventing their
@@ -357,7 +357,7 @@ public class PropertyConfigurator extends BasicConfigurator
   public
   static
   void configure(java.net.URL configURL) {
-    new PropertyConfigurator().doConfigure(configURL);
+    new PropertyConfigurator().doConfigure(configURL, Category.defaultHierarchy);
   }
 
   /**
@@ -398,7 +398,7 @@ public class PropertyConfigurator extends BasicConfigurator
      Read configuration options from url <code>configURL</code>.
    */
   public
-  void doConfigure(java.net.URL configURL) {
+  void doConfigure(java.net.URL configURL, Hierarchy hierarchy) {
     Properties props = new Properties();
     LogLog.debug("Reading configuration from URL " + configURL);
     try {
@@ -446,12 +446,12 @@ public class PropertyConfigurator extends BasicConfigurator
   }
   
     
-  void configureRootCategory(Properties props) {
+  void configureRootCategory(Properties props, Hierarchy hierarchy) {
     String value = OptionConverter.findAndSubst(ROOT_CATEGORY_PREFIX, props);
     if(value == null) 
       LogLog.debug("Could not find root category information. Is this OK?");
     else {
-      Category root = Category.getRoot();
+      Category root = hierarchy.getRoot();
       synchronized(root) {
 	parseCategory(props, root, ROOT_CATEGORY_PREFIX, INTERNAL_ROOT_NAME, 
 		      value);
@@ -464,15 +464,14 @@ public class PropertyConfigurator extends BasicConfigurator
      Parse non-root elements, such non-root categories and renderers.
   */
   protected
-  void parseCatsAndRenderers(Properties props) {
+  void parseCatsAndRenderers(Properties props, Hierarchy hierarchy) {
     Enumeration enum = props.propertyNames();
     while(enum.hasMoreElements()) {      
       String key = (String) enum.nextElement();
       if(key.startsWith(CATEGORY_PREFIX)) {
 	String categoryName = key.substring(CATEGORY_PREFIX.length());	
 	String value =  OptionConverter.findAndSubst(key, props);
-	Category cat = Category._default.getInstance(categoryName, 
-						     categoryFactory);
+	Category cat = hierarchy.getInstance(categoryName, categoryFactory);
 	synchronized(cat) {
 	  parseCategory(props, cat, key, categoryName, value);
 	  parseAdditivityForCategory(props, cat, categoryName);
@@ -616,6 +615,6 @@ class PropertyWatchdog extends FileWatchdog {
      <code>filename</code> to reconfigure log4j. */
   public
   void doOnChange() {
-    new PropertyConfigurator().doConfigure(filename);
+    new PropertyConfigurator().doConfigure(filename, Category.defaultHierarchy);
   }
 }

@@ -10,6 +10,7 @@ package org.apache.log4j.helpers;
 
 import java.util.Properties;
 import java.net.URL;
+import org.apache.log4j.Category;
 import org.apache.log4j.spi.Configurator;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.apache.log4j.PropertyConfigurator;
@@ -330,6 +331,6 @@ public class OptionConverter {
       }
     }
 
-    configurator.doConfigure(url);
+    configurator.doConfigure(url, Category.defaultHierarchy);
   }
 }
