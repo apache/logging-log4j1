@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package org.apache.log4j.config;
+package org.apache.log4j.spi;
 
 /**
- * Used to store log4j errors which occur during configuration.
+ * Used to store special log4j errors which cannot be logged using internal
+ * logging. Such errors include thos occuring during the initial phases
+ * of log4j configuration or errors emanating from core components such as
+ * Logger or Hierarchy.
  * 
  * @author Ceki Gulcu
  */
 public class ErrorItem {
   String message;
-  int colNumber;
-  int lineNumber;
+  int colNumber = -1;
+  int lineNumber = -1;
   Throwable exception;
 
   public ErrorItem(String message, Exception e) {
