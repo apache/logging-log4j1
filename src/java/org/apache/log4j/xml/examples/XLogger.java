@@ -8,9 +8,7 @@
 package org.apache.log4j.xml.examples;
 
 
-import org.apache.log4j.Category;
-import org.apache.log4j.Logger;
-import org.apache.log4j.Level;
+import org.apache.log4j.*;
 import org.apache.log4j.spi.OptionHandler;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.LoggerFactory;
@@ -33,13 +31,13 @@ import org.apache.log4j.xml.examples.XLevel;
    <p>
    
  */
-public class XCategory extends Category implements OptionHandler {
+public class XLogger extends Logger implements OptionHandler {
   
   // It's usually a good idea to add a dot suffix to the fully
   // qualified class name. This makes caller localization to work
   // properly even from classes that have almost the same fully
-  // qualified class name as XCategory, such as XCategoryTest.
-  private static String FQCN = XCategory.class.getName() + ".";
+  // qualified class name as XLogger, such as XLogegoryTest.
+  private static String FQCN = XLogger.class.getName() + ".";
 
   // It's enough to instantiate a factory once and for all.
   private static XFactory factory = new XFactory();
@@ -51,7 +49,7 @@ public class XCategory extends Category implements OptionHandler {
   /**
      Just calls the parent constuctor.
    */
-  protected XCategory(String name) {
+  protected XLogger(String name) {
     super(name);
   }
 
@@ -71,28 +69,6 @@ public class XCategory extends Category implements OptionHandler {
     super.log(FQCN, Level.DEBUG, message + " " + suffix, null);
   }
 
-
-  /**
-     This method overrides {@link Category#getInstance} by supplying
-     its own factory type as a parameter.
-
-   */
-  public 
-  static
-  Category getInstance(String name) {
-    return Category.getInstance(name, factory); 
-  }
-
-
-  /**
-     This method overrides {@link Category#getInstance(Class)} by supplying
-     its own factory type as a parameter.
-   */
-  public 
-  static
-  Category getInstance(Class clazz) {
-    return getInstance(clazz.getName(), factory); 
-  }
 
  /**
     Retuns the option names for this component, namely the string
@@ -128,7 +104,7 @@ public class XCategory extends Category implements OptionHandler {
 
 
  /**
-     Set XCategory specific options.
+     Set XLogegory specific options.
 
      <p>The <b>Suffix</b> option is the only recognized option. It
      takes a string value.
@@ -150,6 +126,12 @@ public class XCategory extends Category implements OptionHandler {
       return this.suffix;
     }
     return null;
+  }
+
+  static
+  public
+  Logger getInstance(String name) {
+    return Category.getInstance(name, factory);
   }
 
   /**
@@ -185,7 +167,7 @@ public class XCategory extends Category implements OptionHandler {
 
     public
     Logger  makeNewLoggerInstance(String name) {
-      return new XCategory(name);
+      return new XLogger(name);
     }
   }
 }
