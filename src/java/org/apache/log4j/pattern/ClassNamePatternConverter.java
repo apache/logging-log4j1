@@ -19,17 +19,13 @@ package org.apache.log4j.pattern;
 import org.apache.log4j.spi.LoggingEvent;
 
 /**
- * 
+ * Most of the work is done in the parent class {@link NamedPatternConverter}.
+ * This class is only responsible of returning the full name name of the caller
+ * class. 
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
 public class ClassNamePatternConverter extends NamedPatternConverter {
-  // We assume that each PatternConveter instance is unique within a layout, 
-  // which is unique within an appender. We further assume that callas to the 
-  // appender method are serialized (per appender).
-  StringBuffer buf;
-  int precision;
-
   public ClassNamePatternConverter() {
     super();
   }

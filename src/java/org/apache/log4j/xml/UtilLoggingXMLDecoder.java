@@ -366,7 +366,9 @@ public class UtilLoggingXMLDecoder implements Decoder {
       LocationInfo info = null;
       if ((fileName != null) || (className != null) || (methodName != null) || (lineNumber != null)) {
           info = new LocationInfo(fileName, className, methodName, lineNumber);
-      } 
+      } else {
+        info = LocationInfo.NA_LOCATION_INFO;
+      }
       
       LoggingEvent loggingEvent = new LoggingEvent();
       loggingEvent.setLogger(logger);
