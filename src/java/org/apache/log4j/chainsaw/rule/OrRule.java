@@ -58,11 +58,11 @@ import java.util.Stack;
  * 
  * @author Scott Deboy <sdeboy@apache.org>
  */
-class OrOperator extends AbstractRule {
+class OrRule extends AbstractRule {
   Rule firstParam;
   Rule secondParam;
 
-  private OrOperator(Rule firstParam, Rule secondParam) {
+  private OrRule(Rule firstParam, Rule secondParam) {
     this.firstParam = firstParam;
     this.secondParam = secondParam;
   }
@@ -72,7 +72,7 @@ class OrOperator extends AbstractRule {
     Rule p2 = (Rule) stack.pop();
     System.out.println("get or op " + p1 + ".." + p2);
 
-    return new OrOperator(p1, p2);
+    return new OrRule(p1, p2);
   }
 
   public boolean evaluate(LoggingEvent event) {

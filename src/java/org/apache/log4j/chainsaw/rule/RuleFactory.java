@@ -89,7 +89,7 @@ class RuleFactory {
     }
 
     if (OR_RULE.equals(symbol)) {
-      return OrOperator.getRule(stack);
+      return OrRule.getRule(stack);
     }
 
     if (NOT_RULE.equals(symbol)) {
