@@ -127,8 +127,8 @@ class PostFixExpressionCompiler {
       }
     }
 
-    if (!(stack.peek() instanceof Rule)) {
-      throw new RuntimeException("invalid expression: " + expression);
+    if ((stack.size() == 0) || (!(stack.peek() instanceof Rule))) {
+      throw new IllegalArgumentException("invalid expression: " + expression);
     } else {
       return (Rule) stack.pop();
     }

@@ -79,6 +79,7 @@ public class InFixToPostFix {
     operators.add("||");
     operators.add("&&");
     operators.add("like");
+    operators.add("exists");
     operators.add("<");
     operators.add(">");
     operators.add("<=");
@@ -99,7 +100,8 @@ public class InFixToPostFix {
     precedenceMap.put("==", new Integer(3));
     precedenceMap.put("~=", new Integer(3));
     precedenceMap.put("like", new Integer(3));
-
+    precedenceMap.put("exists", new Integer(3));
+    
     precedenceMap.put("||", new Integer(2));
     precedenceMap.put("&&", new Integer(2));
 

@@ -63,11 +63,11 @@ import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
@@ -84,11 +84,12 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+
 /**
  * Panel which updates a RuleColorizer, allowing the user to build expression-based
  * color rules.
- * 
- * @author Scott Deboy <sdeboy@apache.org> 
+ *
+ * @author Scott Deboy <sdeboy@apache.org>
  */
 public class ColorPanel extends JPanel {
   private static final String ADD_TEXT = "Add-->";
@@ -104,6 +105,10 @@ public class ColorPanel extends JPanel {
     this.colorizer = colorizer;
 
     final JColorChooser chooser = new JColorChooser();
+    //setting the preview panel to an undisplayed label effectively removes the default
+    //preview panel from the chooser 
+    JLabel l = new JLabel();
+    chooser.setPreviewPanel(l);
 
     listModel = new DefaultListModel();
 
@@ -136,16 +141,13 @@ public class ColorPanel extends JPanel {
     leftCenterPanel.setLayout(
       new BoxLayout(leftCenterPanel, BoxLayout.Y_AXIS));
 
-    JPanel expressionClearPanel = new JPanel();
-    expressionClearPanel.setLayout(
-      new BoxLayout(expressionClearPanel, BoxLayout.Y_AXIS));
-
     JPanel expressionPanel = new JPanel();
     expressionPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
     leftPanel.add(new JLabel("Rule:"), BorderLayout.NORTH);
 
     final JTextField expression = new JTextField(30);
+    expression.setToolTipText("Press ctrl-space or right mouse button for expression context menu");
     final Color defaultExpressionBackground = expression.getBackground();
     final Color defaultExpressionForeground = expression.getForeground();
 
@@ -153,22 +155,12 @@ public class ColorPanel extends JPanel {
       new ExpressionRuleContext(filterModel, expression));
     expressionPanel.add(expression);
 
-    JPanel addUpdatePanel = new JPanel();
-    addUpdatePanel.setLayout(new BoxLayout(addUpdatePanel, BoxLayout.X_AXIS));
-
-    addUpdatePanel.add(new JLabel(" "));
+    JPanel addUpdatePanel = new JPanel(new GridLayout(2, 1));
 
     final JButton addUpdateButton = new JButton(ADD_TEXT);
     addUpdatePanel.add(addUpdateButton);
 
-    expressionPanel.add(addUpdatePanel);
-
-    expressionClearPanel.add(expressionPanel);
-
-    JPanel clearPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-
     JButton clearButton = new JButton("Clear");
-    clearPanel.add(clearButton);
     clearButton.addActionListener(
       new AbstractAction() {
         public void actionPerformed(ActionEvent evt) {
@@ -181,9 +173,11 @@ public class ColorPanel extends JPanel {
         }
       });
 
-    expressionClearPanel.add(clearPanel);
+    addUpdatePanel.add(clearButton);
 
-    leftCenterPanel.add(expressionClearPanel);
+    expressionPanel.add(addUpdatePanel);
+
+    leftCenterPanel.add(expressionPanel);
 
     JPanel chooserPanel = new JPanel();
     chooserPanel.add(chooser);
@@ -252,7 +246,13 @@ public class ColorPanel extends JPanel {
     updownPanel.add(updownLabelPanel);
     updownPanel.add(downPanel);
 
-    add(updownPanel);
+    JPanel centerRightPanel = new JPanel();
+    centerRightPanel.setLayout(
+      new BoxLayout(centerRightPanel, BoxLayout.X_AXIS));
+
+    centerRightPanel.setBorder(BorderFactory.createEtchedBorder());
+
+    centerRightPanel.add(updownPanel);
 
     upButton.addActionListener(
       new AbstractAction() {
@@ -330,28 +330,31 @@ public class ColorPanel extends JPanel {
     addUpdateButton.addActionListener(
       new AbstractAction() {
         public void actionPerformed(ActionEvent evt) {
-          ColorRuleHolder holder =
-            new ColorRuleHolder(
-              expression.getText(),
-              new ColorRule(
-                ExpressionRule.getRule(expression.getText()),
-                chooser.getColor()));
+          try {
+            ColorRuleHolder holder =
+              new ColorRuleHolder(
+                expression.getText(),
+                new ColorRule(
+                  ExpressionRule.getRule(expression.getText()),
+                  expression.getBackground(), expression.getForeground()));
 
-          if (addMode) {
-            listModel.addElement(holder);
-          } else {
-            int index = list.getSelectionModel().getMaxSelectionIndex();
-            listModel.remove(index);
-            listModel.add(index, holder);
+            if (addMode) {
+              listModel.addElement(holder);
+            } else {
+              int index = list.getSelectionModel().getMaxSelectionIndex();
+              listModel.remove(index);
+              listModel.add(index, holder);
+            }
+
+            int index = listModel.indexOf(holder);
+            list.getSelectionModel().setSelectionInterval(index, index);
+          } catch (IllegalArgumentException iae) {
+            //invalid expression - can't add
           }
-
-          int index = listModel.indexOf(holder);
-          list.getSelectionModel().setSelectionInterval(index, index);
         }
       });
 
     JPanel rightPanel = new JPanel(new BorderLayout());
-
     rightPanel.add(new JLabel("Rules:"), BorderLayout.NORTH);
     rightPanel.add(scrollPane, BorderLayout.CENTER);
 
@@ -367,7 +370,8 @@ public class ColorPanel extends JPanel {
         }
       });
 
-    add(rightPanel);
+    centerRightPanel.add(rightPanel);
+    add(centerRightPanel);
   }
 
   void applyRules() {
