@@ -150,7 +150,7 @@ public class LogFilePatternReceiver extends Receiver {
   
   //all lines other than first line of exception begin with tab followed by 'at' followed by text
   private static final String EXCEPTION_PATTERN = "\tat.*";
-  private static final String REGEXP_DEFAULT_WILDCARD = ".*?";
+  private static final String REGEXP_DEFAULT_WILDCARD = ".+?";
   private static final String REGEXP_GREEDY_WILDCARD = ".+";
   private static final String PATTERN_WILDCARD = "*";
   private static final String DEFAULT_GROUP = "(" + REGEXP_DEFAULT_WILDCARD + ")";
@@ -158,7 +158,6 @@ public class LogFilePatternReceiver extends Receiver {
 
   private static final String HOSTNAME_PROPERTY_VALUE = "file";
 
-  private final List matchingKeywords = new ArrayList();
   private final String newLine = System.getProperty("line.separator");
 
   private final String[] emptyException = new String[] { "" };
@@ -170,17 +169,19 @@ public class LogFilePatternReceiver extends Receiver {
   private boolean tailing;
   private String filterExpression;
 
-  private final Perl5Util util = new Perl5Util();
-  private final Perl5Compiler exceptionCompiler = new Perl5Compiler();
-  private final Perl5Matcher exceptionMatcher = new Perl5Matcher();
+  private Perl5Util util = null;
+  private Perl5Compiler exceptionCompiler = null;
+  private Perl5Matcher exceptionMatcher = null;
   private static final String VALID_DATEFORMAT_CHAR_PATTERN = "[GyMwWDdFEaHkKhmsSzZ]";
 
   private Rule expressionRule;
-  private final Map currentMap = new HashMap();
-  private final List additionalLines = new ArrayList();
+
+  private Map currentMap;
+  private List additionalLines;
+  private List matchingKeywords;
+
   private String regexp;
   private Reader reader;
-  private Set greedyKeywords = new HashSet();
   private String timestampPatternText;
 
   public LogFilePatternReceiver() {
@@ -194,8 +195,6 @@ public class LogFilePatternReceiver extends Receiver {
     keywords.add(METHOD);
     keywords.add(MESSAGE);
     keywords.add(NDC);
-    
-    greedyKeywords.add(MESSAGE);
   }
 
   /**
@@ -333,7 +332,11 @@ public class LogFilePatternReceiver extends Receiver {
     if (additionalLines.size() == 0 || exceptionLine == 0) {
       return firstMessageLine;
     }
-    StringBuffer message = new StringBuffer(firstMessageLine);
+    StringBuffer message = new StringBuffer();
+    if (firstMessageLine != null) {
+      message.append(firstMessageLine);
+    }
+      
     int linesToProcess = (exceptionLine == -1?additionalLines.size(): exceptionLine);
 
     for (int i = 0; i < linesToProcess; i++) {
@@ -504,6 +507,15 @@ public class LogFilePatternReceiver extends Receiver {
    *  
    */
   private void initialize() {
+    
+    util = new Perl5Util();
+    exceptionCompiler = new Perl5Compiler();
+    exceptionMatcher = new Perl5Matcher();
+
+    currentMap = new HashMap();
+    additionalLines = new ArrayList();
+    matchingKeywords = new ArrayList();
+    
     if (timestampFormat != null) {
       dateFormat = new SimpleDateFormat(timestampFormat);
       timestampPatternText = convertTimestamp();
@@ -522,15 +534,18 @@ public class LogFilePatternReceiver extends Receiver {
     String newPattern = logFormat;
 
     /*
-     * examine pattern, adding properties to an index-based map.
+     * examine pattern, adding properties to an index-based map where the key is the 
+     * numeric offset from the start of the pattern so that order can be preserved
      * 
      * Replaces PROP(X) definitions in the pattern with the short version X, so 
      * that the name can be used as the event property later 
      */
     int index = 0;
+    int currentPosition = 0;
     String current = newPattern;
     while (index > -1) {
       index = current.indexOf(PROP_START);
+      currentPosition = currentPosition + index;
       if (index > -1) {
         String currentProp = current.substring(current.indexOf(PROP_START));
         String prop = currentProp.substring(0,
@@ -538,7 +553,7 @@ public class LogFilePatternReceiver extends Receiver {
         current = current.substring(current.indexOf(currentProp) + 1);
         String shortProp = prop.substring(PROP_START.length(),
             prop.length() - 1);
-        keywordMap.put(new Integer(index), shortProp);
+        keywordMap.put(new Integer(currentPosition), shortProp);
         newPattern = replace(prop, shortProp, newPattern);
       }
     }
@@ -571,15 +586,18 @@ public class LogFilePatternReceiver extends Receiver {
      * group
      */
     String currentPattern = newPattern;
-    Iterator iter2 = matchingKeywords.iterator();
-    while (iter2.hasNext()) {
-      String keyword = (String) iter2.next();
-      if (TIMESTAMP.equals(keyword)) {
+    for (int i = 0;i<matchingKeywords.size();i++) {
+      String keyword = (String) matchingKeywords.get(i);
+      //make the final keyword greedy
+      if (i == (matchingKeywords.size() - 1)) {
+        currentPattern = replace(keyword, GREEDY_GROUP, currentPattern);
+      } else if (TIMESTAMP.equals(keyword)) {
         currentPattern = replace(keyword, "(" + timestampPatternText + ")", currentPattern);
       } else {
-        currentPattern = replace(keyword, greedyKeywords.contains(keyword)?GREEDY_GROUP:DEFAULT_GROUP, currentPattern);
+        currentPattern = replace(keyword, DEFAULT_GROUP, currentPattern);
       }
     }
+
     regexp = currentPattern;
     getLogger().debug("regexp is " + regexp);
   }
@@ -613,6 +631,7 @@ public class LogFilePatternReceiver extends Receiver {
     input = replace("{", "\\{", input);
     input = replace("}", "\\}", input);
     input = replace("#", "\\#", input);
+    input = replace("/", "\\/", input);
     return input;
   }
 
@@ -670,6 +689,9 @@ public class LogFilePatternReceiver extends Receiver {
     threadName = (String) fieldMap.remove(THREAD);
 
     message = (String) fieldMap.remove(MESSAGE);
+    if (message == null) {
+      message = "";
+    }
 
     ndc = (String) fieldMap.remove(NDC);
 
