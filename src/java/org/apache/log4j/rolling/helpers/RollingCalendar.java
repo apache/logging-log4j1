@@ -38,7 +38,7 @@ import java.util.TimeZone;
  *
  * */
 public class RollingCalendar extends GregorianCalendar {
-  static final Logger logger = Logger.getLogger(RollingCalendar.class);
+  final Logger logger = Logger.getLogger(RollingCalendar.class);
 
   // The gmtTimeZone is used only in computeCheckPeriod() method.
   static final TimeZone GMT_TIMEZONE = TimeZone.getTimeZone("GMT");

@@ -26,18 +26,41 @@ import java.util.zip.ZipOutputStream;
 
 
 /**
- * @author Ceki
- *
+ * The <code>Compression</code> class implements ZIP and GZ
+ * file compression/decompression methods.
+ * 
+ * @author Ceki G&uuml;lc&uuml;
+ * @since 1.3
  */
 public class Compress {
   static final Logger logger = Logger.getLogger(Compress.class);
   public static final int NONE = 0;
   public static final int GZ = 1;
   public static final int ZIP = 2;
+  /**
+   * String constant representing no compression. The value of this
+   * constant is "NONE".
+   */
   public static final String NONE_STR = "NONE";
+
+  /**
+   * String constant representing compression in the GZIP format. The
+   * value of this constant is "GZ".
+   */
   public static final String GZ_STR = "GZ";
+
+  /**
+   * String constant representing compression in the ZIP format. The
+   * value of this constant is "ZIP".
+   */
   public static final String ZIP_STR = "ZIP";
 
+  public static void ZIPCompress(String nameOfFile2zip) {
+    // Here we rely on the fact that the two argument version of ZIPCompress 
+    // automaticallys add a .zip extension to the second argument 
+    GZCompress(nameOfFile2zip, nameOfFile2zip);
+  }
+  
   public static void ZIPCompress(
     String nameOfFile2zip, String nameOfZippedFile) {
     File file2zip = new File(nameOfFile2zip);
@@ -92,8 +115,8 @@ public class Compress {
   }
 
   public static void GZCompress(String nameOfFile2gz) {
-    // Here we rely on the fact that the two argument version of GZCompress automatically
-    // add te .gz exention to the second argument 
+    // Here we rely on the fact that the two argument version of GZCompress 
+    // automatically adds a .gz extension to the second argument 
     GZCompress(nameOfFile2gz, nameOfFile2gz);
   }
 
