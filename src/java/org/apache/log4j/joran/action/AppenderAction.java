@@ -47,70 +47,66 @@
  *
  */
 
-package org.apache.joran.action;
+package org.apache.log4j.joran.action;
 
 import org.apache.joran.ExecutionContext;
+import org.apache.joran.action.Action;
 import org.apache.joran.helper.Option;
 
-import org.apache.log4j.Layout;
+import org.apache.log4j.Appender;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
+import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.spi.OptionHandler;
 
 import org.w3c.dom.Element;
 
+import java.util.HashMap;
 
-public class ConversionRuleAction extends Action {
-  static final Logger logger = Logger.getLogger(ConversionRuleAction.class);
-  Layout layout;
+
+public class AppenderAction extends Action {
+  static final Logger logger = Logger.getLogger(AppenderAction.class);
+  Appender appender;
 
   /**
-   * Instantiates an layout of the given class and sets its name.
+   * Instantiates an appender of the given class and sets its name.
    *
+   * The appender thus generated is placed in the ExecutionContext appender bag.
    */
-  public void begin(ExecutionContext ec, Element element) {
-    // Let us forget about previous errors (in this object)
-    inError = false;
-
-    String errorMsg;
-    String conversionWord =
-      element.getAttribute(ActionConst.CONVERSION_WORD_ATTRIBUTE);
-    String converterClass =
-      element.getAttribute(ActionConst.CONVERTER_CLASS_ATTRIBUTE);
-
-    if (Option.isEmpty(conversionWord)) {
-      inError = true;
-      errorMsg = "No 'conversionWord' attribute in <conversionRule>";
-      logger.warn(errorMsg);
-      ec.addError(errorMsg);
-
-      return;
-    }
-
-    if (Option.isEmpty(converterClass)) {
-      inError = true;
-      errorMsg = "No 'converterClass' attribute in <conversionRule>";
-      logger.warn(errorMsg);
-      ec.addError(errorMsg);
-
-      return;
-    }
+  public void begin(ExecutionContext ec, Element appenderElement) {
+    String className =
+      appenderElement.getAttribute(CLASS_ATTRIBUTE);
 
     try {
       logger.debug(
-        "About to add conversion rule [" + conversionWord + ", "
-        + converterClass + "] to layout");
+        "About to instantiate appender of type [" + className + "]");
 
-      Object o = ec.peekObject();
+      Object instance =
+        OptionConverter.instantiateByClassName(
+          className, org.apache.log4j.Appender.class, null);
+      appender = (Appender) instance;
 
-      if (o instanceof PatternLayout) {
-        PatternLayout patternLayout = (PatternLayout) o;
-        patternLayout.addConversionRule(conversionWord, converterClass);
+      String appenderName =
+        appenderElement.getAttribute(NAME_ATTRIBUTE);
+
+      if (Option.isEmpty(appenderName)) {
+        logger.warn(
+          "No appender name given for appender of type " + className + "].");
+      } else {
+        appender.setName(appenderName);
+        logger.debug("Appender named as [" + appenderName + "]");
       }
+
+      HashMap appenderBag =
+        (HashMap) ec.getObjectMap().get(ActionConst.APPENDER_BAG);
+      appenderBag.put(appenderName, appender);
+
+      logger.debug("Pushing appender on to the object stack.");
+      ec.pushObject(appender);
     } catch (Exception oops) {
       inError = true;
-      errorMsg = "Could not add conversion rule to PatternLayout.";
-      logger.error(errorMsg, oops);
-      ec.addError(errorMsg);
+      logger.error(
+        "Could not create an Appender. Reported error follows.", oops);
+      ec.addError("Could not create appender of type " + className + "].");
     }
   }
 
@@ -119,6 +115,26 @@ public class ConversionRuleAction extends Action {
    * the appender options.
    */
   public void end(ExecutionContext ec, Element e) {
+    if (inError) {
+      return;
+    }
+
+    if (appender instanceof OptionHandler) {
+      ((OptionHandler) appender).activateOptions();
+    }
+
+    Object o = ec.peekObject();
+
+    if (o != appender) {
+      logger.warn(
+        "The object at the of the stack is not the appender named ["
+        + appender.getName() + "] pushed earlier.");
+    } else {
+      logger.warn(
+        "Popping appender named [" + appender.getName()
+        + "] from the object stack");
+      ec.popObject();
+    }
   }
 
   public void finish(ExecutionContext ec) {

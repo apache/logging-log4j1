@@ -1,6 +1,7 @@
-package org.apache.joran.action;
+package org.apache.log4j.joran.action;
 
 import org.apache.joran.ExecutionContext;
+import org.apache.joran.action.Action;
 import org.apache.joran.helper.Option;
 
 import org.apache.log4j.Logger;
@@ -23,7 +24,7 @@ public class LoggerAction extends Action {
     LoggerRepository repository = (LoggerRepository) ec.getObject(0);
 
     // Create a new org.apache.log4j.Category object from the <category> element.
-    String loggerName = loggerElement.getAttribute(ActionConst.NAME_ATTRIBUTE);
+    String loggerName = loggerElement.getAttribute(NAME_ATTRIBUTE);
     if(Option.isEmpty(loggerName)) {
       inError = true;
 			String errorMsg = "No 'name' attribute in element "
@@ -37,9 +38,9 @@ public class LoggerAction extends Action {
 
     Logger l;
 
-    String className = loggerElement.getAttribute(ActionConst.CLASS_ATTRIBUTE);
+    String className = loggerElement.getAttribute(CLASS_ATTRIBUTE);
 
-    if (ActionConst.EMPTY_STR.equals(className)) {
+    if (Option.isEmpty(className)) {
       logger.debug("Retreiving an instance of org.apache.log4j.Logger.");
       l = repository.getLogger(loggerName);
     } else {

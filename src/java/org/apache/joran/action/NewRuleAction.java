@@ -55,7 +55,6 @@ import org.apache.joran.helper.Option;
 
 import org.apache.log4j.Layout;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
 
 import org.w3c.dom.Element;
 
@@ -72,12 +71,12 @@ public class NewRuleAction extends Action {
 		// Let us forget about previous errors (in this object)
 		inError = false; 
     String errorMsg;
-    String pattern =  element.getAttribute(ActionConst.PATTERN_ATTRIBUTE);
-    String actionClass =  element.getAttribute(ActionConst.ACTION_CLASS_ATTRIBUTE);
+    String pattern =  element.getAttribute(PATTERN_ATTRIBUTE);
+    String actionClass =  element.getAttribute(ACTION_CLASS_ATTRIBUTE);
 
     if(Option.isEmpty(pattern)) {
        inError = true;
-       errorMsg = "No 'patern' attribute in <newRule>";
+       errorMsg = "No 'pattern' attribute in <newRule>";
        logger.warn(errorMsg);
        ec.addError(errorMsg);
        return;

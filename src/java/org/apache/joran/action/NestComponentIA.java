@@ -50,6 +50,7 @@
 package org.apache.joran.action;
 
 import org.apache.joran.ExecutionContext;
+import org.apache.joran.helper.Option;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.config.PropertySetter;
@@ -99,10 +100,10 @@ public class NestComponentIA extends ImplicitAction {
   public void begin(ExecutionContext ec, Element e) {
     // inError was reset in isApplicable. It should not be touched here
 
-      String className = e.getAttribute(ActionConst.CLASS_ATTRIBUTE);
+      String className = e.getAttribute(CLASS_ATTRIBUTE);
       
       String tagName = e.getTagName();
-      if(className == null || ActionConst.EMPTY_STR.equals(className)) {
+      if(Option.isEmpty(className)) {
         inError = true;
         String errMsg = "No class name attribute in <"+tagName+">";
         logger.error(errMsg);
