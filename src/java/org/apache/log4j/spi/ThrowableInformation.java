@@ -61,19 +61,19 @@ class VectorWriter extends PrintWriter {
   
   public
   void println(Object o) {      
-    v.add(o.toString());
+    v.addElement(o.toString());
   }
   
   // JDK 1.1.x apprenly uses this form of println while in
   // printStackTrace()
   public
   void println(char[] s) {
-    v.add(new String(s));
+    v.addElement(new String(s));
   }
   
   public  
   void println(String s) {
-    v.add(s);
+    v.addElement(s);
   }
 
   public
