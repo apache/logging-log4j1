@@ -49,13 +49,14 @@
 
 package org.apache.log4j.chainsaw.help;
 
+import org.apache.log4j.chainsaw.ChainsawConstants;
+import org.apache.log4j.helpers.LogLog;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.net.URL;
 
-import org.apache.log4j.chainsaw.ChainsawConstants;
-import org.apache.log4j.helpers.LogLog;
+import java.net.URL;
 
 
 /**
@@ -69,144 +70,161 @@ import org.apache.log4j.helpers.LogLog;
  *
  */
 public final class HelpManager {
-  private static final HelpManager instance = new HelpManager();
-  private HelpLocator helpLocator = new HelpLocator();
-  private URL helpURL;
-  private final PropertyChangeSupport propertySupport =
-    new PropertyChangeSupport(this);
 
-  private HelpManager() {
-    
+    private static final HelpManager instance = new HelpManager();
+    private HelpLocator helpLocator = new HelpLocator();
+    private URL helpURL;
+    private final PropertyChangeSupport propertySupport =
+        new PropertyChangeSupport(this);
+
+    private HelpManager() {
+
 //    TODO setup all the base URLs in the default.properties and configure in ApplicationPreferenceModel
-    
-    try {
-      if (System.getProperty("log4j.chainsaw.localDocs")!=null) {
-        LogLog.info("Adding HelpLocator for localDocs property=" +System.getProperty("log4j.chainsaw.localDocs") );
-        helpLocator.installLocator(new URL(System.getProperty("log4j.chainsaw.localDocs")));
-      }
-    } catch (Exception e) {
-      // TODO: handle exception
-    }
+
+        try {
+
+            if (System.getProperty("log4j.chainsaw.localDocs") != null) {
+                LogLog.info("Adding HelpLocator for localDocs property=" +
+                    System.getProperty("log4j.chainsaw.localDocs"));
+                helpLocator.installLocator(new URL(
+                        System.getProperty("log4j.chainsaw.localDocs")));
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+
         helpLocator.installClassloaderLocator(this.getClass().getClassLoader());
 //      helpLocator.installLocator(new URL());
-  }
-
-  /**
-   * @return
-   */
-  public final URL getHelpURL() {
-    return helpURL;
-  }
-
-  /**
-   * The current Help URL that should be displayed, and is
-   * a PropertyChangeListener supported property.
-   *
-   * This method ALWAYS fires property change events
-   * even if the value is the same (the oldvalue
-   * of the event will be null)
-   * @param helpURL
-   */
-  public final void setHelpURL(URL helpURL) {
-    this.helpURL = helpURL;
-    firePropertyChange("helpURL", null, this.helpURL);
-  }
-
-  /**
-   * @param listener
-   */
-  public void addPropertyChangeListener(PropertyChangeListener listener) {
-    propertySupport.addPropertyChangeListener(listener);
-  }
-
-  /**
-   * @param propertyName
-   * @param listener
-   */
-  public synchronized void addPropertyChangeListener(
-    String propertyName, PropertyChangeListener listener) {
-    propertySupport.addPropertyChangeListener(propertyName, listener);
-  }
-
-  /**
-   * @param evt
-   */
-  public void firePropertyChange(PropertyChangeEvent evt) {
-    propertySupport.firePropertyChange(evt);
-  }
-
-  /**
-   * @param propertyName
-   * @param oldValue
-   * @param newValue
-   */
-  public void firePropertyChange(
-    String propertyName, boolean oldValue, boolean newValue) {
-    propertySupport.firePropertyChange(propertyName, oldValue, newValue);
-  }
-
-  /**
-   * @param propertyName
-   * @param oldValue
-   * @param newValue
-   */
-  public void firePropertyChange(
-    String propertyName, int oldValue, int newValue) {
-    propertySupport.firePropertyChange(propertyName, oldValue, newValue);
-  }
-
-  /**
-   * @param propertyName
-   * @param oldValue
-   * @param newValue
-   */
-  public void firePropertyChange(
-    String propertyName, Object oldValue, Object newValue) {
-    propertySupport.firePropertyChange(propertyName, oldValue, newValue);
-  }
-
-  /**
-   * @param listener
-   */
-  public synchronized void removePropertyChangeListener(
-    PropertyChangeListener listener) {
-    propertySupport.removePropertyChangeListener(listener);
-  }
-
-  /**
-   * @param propertyName
-   * @param listener
-   */
-  public synchronized void removePropertyChangeListener(
-    String propertyName, PropertyChangeListener listener) {
-    propertySupport.removePropertyChangeListener(propertyName, listener);
-  }
-
-  /**
-   *
-   */
-  public static HelpManager getInstance() {
-    return instance;
-  }
-
-  /**
-   * Given a class, and that it belongs within the org.apache.log4j project,
-   * sets the URL to the JavaDoc for that class.
-   *
-   * @param c
-   */
-  public void showHelpForClass(Class c) {
-    String name = c.getName();
-    name = name.replace('.', '/') + ".html";
-
-    URL url = helpLocator.findResource(name);
-    LogLog.debug("located help resource for '" + name +"' at " + (url==null?"":url.toExternalForm()));
-    
-    if (url != null) {
-      setHelpURL(url);
-    } else {
-      //     TODO Create a resource not found url
-      setHelpURL(ChainsawConstants.WELCOME_URL);
     }
-  }
+
+    /**
+     * @return
+     */
+    public final URL getHelpURL() {
+
+        return helpURL;
+    }
+
+    /**
+     * The current Help URL that should be displayed, and is
+     * a PropertyChangeListener supported property.
+     *
+     * This method ALWAYS fires property change events
+     * even if the value is the same (the oldvalue
+     * of the event will be null)
+     * @param helpURL
+     */
+    public final void setHelpURL(URL helpURL) {
+        this.helpURL = helpURL;
+        firePropertyChange("helpURL", null, this.helpURL);
+    }
+
+    /**
+     * @param listener
+     */
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        propertySupport.addPropertyChangeListener(listener);
+    }
+
+    /**
+     * @param propertyName
+     * @param listener
+     */
+    public synchronized void addPropertyChangeListener(String propertyName,
+        PropertyChangeListener listener) {
+        propertySupport.addPropertyChangeListener(propertyName, listener);
+    }
+
+    /**
+     * @param evt
+     */
+    public void firePropertyChange(PropertyChangeEvent evt) {
+        propertySupport.firePropertyChange(evt);
+    }
+
+    /**
+     * @param propertyName
+     * @param oldValue
+     * @param newValue
+     */
+    public void firePropertyChange(String propertyName, boolean oldValue,
+        boolean newValue) {
+        propertySupport.firePropertyChange(propertyName, oldValue, newValue);
+    }
+
+    /**
+     * @param propertyName
+     * @param oldValue
+     * @param newValue
+     */
+    public void firePropertyChange(String propertyName, int oldValue,
+        int newValue) {
+        propertySupport.firePropertyChange(propertyName, oldValue, newValue);
+    }
+
+    /**
+     * @param propertyName
+     * @param oldValue
+     * @param newValue
+     */
+    public void firePropertyChange(String propertyName, Object oldValue,
+        Object newValue) {
+        propertySupport.firePropertyChange(propertyName, oldValue, newValue);
+    }
+
+    /**
+     * @param listener
+     */
+    public synchronized void removePropertyChangeListener(
+        PropertyChangeListener listener) {
+        propertySupport.removePropertyChangeListener(listener);
+    }
+
+    /**
+     * @param propertyName
+     * @param listener
+     */
+    public synchronized void removePropertyChangeListener(String propertyName,
+        PropertyChangeListener listener) {
+        propertySupport.removePropertyChangeListener(propertyName, listener);
+    }
+
+    /**
+     *
+     */
+    public static HelpManager getInstance() {
+
+        return instance;
+    }
+
+    /**
+     * Given a class, and that it belongs within the org.apache.log4j project,
+     * sets the URL to the JavaDoc for that class.
+     *
+     * @param c
+     */
+    public void showHelpForClass(Class c) {
+
+        URL url = getHelpForClass(c);
+        setHelpURL(url);
+    }
+
+    /**
+     * Determines the most appropriate Help resource for a particular class
+     * or returns ChainsawConstants.URL_PAGE_NOT_FOUND if there is no resource located.
+     *
+     * @return
+     */
+    public URL getHelpForClass(Class c) {
+
+        String name = c.getName();
+        name = name.replace('.', '/') + ".html";
+
+        URL url = helpLocator.findResource(name);
+        LogLog.debug("located help resource for '" + name + "' at " +
+            ((url == null) ? "" : url.toExternalForm()));
+
+        return (url != null) ? url : ChainsawConstants.URL_PAGE_NOT_FOUND;
+
+    }
 }
