@@ -41,26 +41,31 @@
 	</li>
 
 	<li><b>Ceki G&#252;lc&#252;</b> 
-          <img align="right" src="images/ceki-72x101.gif"></img>
-   
 
-	  <p>Ceki is the founder the log4j project which still takes
-	  much of his time. He enjoys writing software altough he is
-	  discovering that it is far more difficult than it looks. He
-	  is also slowly building an IT services company called <a
-	  href="http://www.qos.ch">qos.ch</a>.
-	  </p>
+          <table>
+          <tr><td> <p>Ceki is the founder the log4j project which
+          continues to occupy much of his time. He enjoys writing
+          software altough he is discovering that it is far more
+          difficult than what it may seem initially. He is also
+          managing his <a href="http://www.qos.ch">IT services
+          company</a>.</p></td> 
+          <td><img src="images/ceki-72x101.gif"></img></td>
+         </tr>
+         </table>
 	</li>
 
     <li><b>Jacob Kjome</b> 
-	  <p>Jacob Kjome has been developing software since 1997 and has been playing 
-         with Java for about 4 years.  Jake joined the log4j team after being very  
-         active on the user list and contributing servlet and repository selector 
-         related code to the logj-sandbox.  He is also a committer on the (non-Apache 
-         related) XMLC, BarracudaMVC, and Prevayler projects.  Of late his free time 
-         has been squeezed with a new job and his vigorous 2 year old son, Nicholas, 
-         but he still tries to pitch in when he can. :-)
-	  </p>
+
+        <p>Jacob Kjome has been developing software
+	  since 1997 and has been playing with Java for about 4 years.
+	  Jake joined the log4j team after being very active on the
+	  user list and contributing servlet and repository selector
+	  related code to the logj-sandbox.  He is also a committer on
+	  the (non-Apache related) XMLC, BarracudaMVC, and Prevayler
+	  projects.  Of late his free time has been squeezed with a
+	  new job and his vigorous 2 year old son, Nicholas, but he
+	  still tries to pitch in when he can. :-)
+        </p>
     </li>
 
 
@@ -78,6 +83,22 @@
 	    users. 
 	  </p>
 	</li>
+
+        <li><b>Yoav Shapira</b> 
+         <table>
+          <tr><td>
+              <p>Yoav Shapira works for Millennium Pharmaceuticals and
+          is as interested in the business aspects of Open-Source
+          Software as he is in the technical aspects. Yoav contributes
+          to the Tomcat container, the Log4j logging system, and a
+          number of jakarta-commons and other open-source projects.
+              </p>
+          </td>
+          <td><img align="right" src="images/yshapira.bmp"></img></td>
+         </tr>
+         </table>
+
+        </li>
 
 	<li><b>Jon Skeet</b> 
 
@@ -113,15 +134,21 @@
 	</li>
 
 	<li><b>Mark Womack</b> 
-	
-          <img align="right" src="images/mark-72x99.gif"></img>
-                                      
-	  <p>Mark Womack has been developing software for over 12
+
+         <table>
+          <tr><td>  <p>Mark Womack has been developing software for over 12
 	  years. He has been developing in Java for the past 4 years,
 	  focusing on web application development. He has been an
 	  active committer for the Apache Jakarta log4j project since
 	  April 2002, contributing features for the upcoming v1.3
-	  release. </p>
+	  release. </p></td> 
+          <td><img src="images/mark-72x99.gif"></img></td>
+         </tr>
+         </table>
+	
+       
+                                      
+	 
     </li>
 
          
