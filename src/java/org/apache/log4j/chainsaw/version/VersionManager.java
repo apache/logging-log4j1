@@ -10,7 +10,7 @@ public class VersionManager
 
     private static final VersionManager instance = new VersionManager();
     
-    private static final String VERSION_INFO = "1.99.99";
+    private static final String VERSION_INFO = "1.99.99 (18th May 2004)";
     
     public static final VersionManager getInstance() {
         return instance;

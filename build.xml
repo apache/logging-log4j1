@@ -42,7 +42,7 @@
 
   <!-- The jar file that the jar-chainsaw task will generate -->
   <property name="log4j-chainsaw.jar" value="log4j-chainsaw-${version}.jar"/>
-
+    
   <!-- The jar file that the jar-lf5 task will generate -->
   <property name="log4j-lf5.jar" value="log4j-lf5-${version}.jar"/>
 
@@ -486,8 +486,31 @@
       <fileset dir="src/java" includes="**/chainsaw/**/LICENCE"/>   
     </copy>
 
+    <!-- JavaDoc up some Receiver and other stuff we want to be able to ship with Chainsaw-->
+    <javadoc sourcepath="${java.source.dir}"
+      destdir="${javac.dest}"
+     version="true"
+     author="true"
+     use="true"
+     overview="${jar.dest}/overview.html"
+     doctitle="log4j version ${version}&lt;br&gt;API Specification"
+     windowtitle="Log4j Version ${version}"
+           header="&lt;b&gt;Log4j ${version}&lt;/b&gt;"
+     bottom="Copyright 2000-2003 Apache Software Foundation."
+        >
+	    <fileset dir="src/java" defaultexcludes="yes">
+	      <include name="**/*Receiver.java" />
+	    </fileset>
+        <classpath refid="compile.classpath"/>
+        
+    </javadoc>        
+      
+      
     <jar jarfile="${jar.dest}/${log4j-chainsaw.jar}" basedir="${javac.dest}"
          includes="${stem}/chainsaw/*.class,
+                ${stem}/**/*.html,
+                **/*.css,
+                **/resources/*
                 ${stem}/varia/ExpressionFilter*.class,
                 ${stem}/rule/*.class,
                 ${stem}/**/*BeanInfo.class,
