@@ -123,7 +123,7 @@ public class FileAppender extends WriterAppender {
     destination for this appender.
 
     <p>If the <code>append</code> parameter is true, the file will be
-    appended to. Otherwise, the file desginated by
+    appended to. Otherwise, the file designated by
     <code>filename</code> will be truncated before being opened.
   */
   public
@@ -145,7 +145,7 @@ public class FileAppender extends WriterAppender {
   }
 
   /**
-     If the a value for {@link #FILE_OPTION} is non-null, then {@link
+     If the value of {@link #FILE_OPTION} is not <code>null</code>, then {@link
      #setFile} is called with the values of {@link #FILE_OPTION} and
      {@link #APPEND_OPTION}.
 
@@ -168,7 +168,7 @@ public class FileAppender extends WriterAppender {
   }
 
  /**
-     Close the file opened previously.
+     Closes the previously opened file.
   */
   protected
   void closeFile() {
@@ -201,8 +201,8 @@ public class FileAppender extends WriterAppender {
 
  
   /**
-     Retuns the option names for this component, namely the string
-     array {{@link #FILE_OPTION}, {@link #APPEND_OPTION}} in addition
+     Returns the option names for this component, namely the string
+     array {@link #FILE_OPTION}, {@link #APPEND_OPTION}} in addition
      to the options of its super class {@link WriterAppender}.  */
   public
   String[] getOptionStrings() {
@@ -253,7 +253,7 @@ public class FileAppender extends WriterAppender {
      The recognized options are <b>File</b> and <b>Append</b>,
      i.e. the values of the string constants. The options of the super
      class {@link WriterAppender} are also recognized. See in
-     particular the <b>Threshold</b> option on {@link
+     particular the <b>Threshold</b> option of {@link
      AppenderSkeleton}.
 
      <p>The <b>File</b> option takes a string value which should be
