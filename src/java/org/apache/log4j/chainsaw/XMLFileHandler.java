@@ -37,8 +37,6 @@ class XMLFileHandler
     private final MyTableModel mModel;
     /** the number of events in the document **/
     private int mNumEvents;
-    /** the current element being parsed **/
-    private String mCurrentElement;
 
     /** the time of the event **/
     private long mTimeStamp;
@@ -56,7 +54,8 @@ class XMLFileHandler
     private String[] mThrowableStrRep;
     /** the location details for the event **/
     private String mLocationDetails;
-
+    /** buffer for collecting text **/
+    private final StringBuffer mBuf = new StringBuffer();
 
     /**
      * Creates a new <code>XMLFileHandler</code> instance.
@@ -76,13 +75,24 @@ class XMLFileHandler
 
     /** @see DefaultHandler **/
     public void characters(char[] aChars, int aStart, int aLength) {
-        if (mCurrentElement == TAG_NDC) {
-            mNDC = new String(aChars, aStart, aLength);
-        } else if (mCurrentElement == TAG_MESSAGE) {
-            mMessage = new String(aChars, aStart, aLength);
-        } else if (mCurrentElement == TAG_THROWABLE) {
+        mBuf.append(String.valueOf(aChars, aStart, aLength));
+    }
+
+    /** @see DefaultHandler **/
+    public void endElement(String aNamespaceURI,
+                           String aLocalName,
+                           String aQName)
+    {
+        if (TAG_EVENT.equals(aQName)) {
+            addEvent();
+            resetData();
+        } else if (TAG_NDC.equals(aQName)) {
+            mNDC = mBuf.toString();
+        } else if (TAG_MESSAGE.equals(aQName)) {
+            mMessage = mBuf.toString();
+        } else if (TAG_THROWABLE.equals(aQName)) {
             final StringTokenizer st =
-                new StringTokenizer(new String(aChars, aStart, aLength), "\t");
+                new StringTokenizer(mBuf.toString(), "\n\t");
             mThrowableStrRep = new String[st.countTokens()];
             if (mThrowableStrRep.length > 0) {
                 mThrowableStrRep[0] = st.nextToken();
@@ -94,24 +104,13 @@ class XMLFileHandler
     }
 
     /** @see DefaultHandler **/
-    public void endElement(String aNamespaceURI,
-                           String aLocalName,
-                           String aQName)
-    {
-        if (TAG_EVENT.equals(aQName)) {
-            addEvent();
-            resetData();
-        } else if (mCurrentElement != TAG_EVENT) {
-            mCurrentElement = TAG_EVENT; // hack - but only thing I care about
-        }
-    }
-
-    /** @see DefaultHandler **/
     public void startElement(String aNamespaceURI,
                              String aLocalName,
                              String aQName,
                              Attributes aAtts)
     {
+        mBuf.setLength(0);
+
         if (TAG_EVENT.equals(aQName)) {
             mThreadName = aAtts.getValue("thread");
             mTimeStamp = Long.parseLong(aAtts.getValue("timestamp"));
@@ -122,12 +121,6 @@ class XMLFileHandler
                 + aAtts.getValue("method")
                 + "(" + aAtts.getValue("file") + ":" + aAtts.getValue("line")
                 + ")";
-        } else if (TAG_NDC.equals(aQName)) {
-            mCurrentElement = TAG_NDC;
-        } else if (TAG_MESSAGE.equals(aQName)) {
-            mCurrentElement = TAG_MESSAGE;
-        } else if (TAG_THROWABLE.equals(aQName)) {
-            mCurrentElement = TAG_THROWABLE;
         }
     }
 
