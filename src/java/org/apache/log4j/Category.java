@@ -124,18 +124,16 @@ public class Category implements AppenderAttachable {
 
   /** Search for the properties file log4j.properties in the CLASSPATH.  */
   static {
-    String override = null;
-    try {
-      override=System.getProperty(DEFAULT_INIT_OVERRIDE_KEY, override);
-    } catch(SecurityException e) {
-      LogLog.debug("Could not read system property \""+
-		   	   DEFAULT_INIT_OVERRIDE_KEY +"\".", e);
-    }
+
+    String override = OptionConverter.getSystemProperty(DEFAULT_INIT_OVERRIDE_KEY,
+							null);
+
     // if there is no default init override, them get the resource
     // specified by the user or the default config file.
     if(override == null || "false".equalsIgnoreCase(override)) {
-      String resource = System.getProperty(DEFAULT_CONFIGURATION_KEY, 
-					   DEFAULT_CONFIGURATION_FILE);
+      String resource = OptionConverter.getSystemProperty(
+                                                      DEFAULT_CONFIGURATION_KEY, 
+						      DEFAULT_CONFIGURATION_FILE);
       URL url = null;
       try {
 	url = new URL(resource);
@@ -391,7 +389,7 @@ public class Category implements AppenderAttachable {
      <code>null</code>.
      
      <p>Contributed by Ciaran Treanor -  ciaran@xelector.com
-     @version version 0.8.5 */
+     @version 0.8.5 */
   public
   static
   Category exists(String name) {    

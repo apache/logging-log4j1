@@ -74,7 +74,7 @@ import java.util.Hashtable;
 
 
    @author Ceki G&uuml;lc&uuml;
-   @since version 0.8.1 */
+   @since 0.8.1 */
 public class PropertyConfigurator extends BasicConfigurator
            implements Configurator {
 
@@ -291,8 +291,7 @@ public class PropertyConfigurator extends BasicConfigurator
       istream.close();
     }
     catch (IOException e) {
-      LogLog.error("Could not read configuration file [" + configFileName+
-			 "].", e);
+      LogLog.error("Could not read configuration file ["+configFileName+"].", e);
       LogLog.error("Ignoring configuration file [" + configFileName+"].");
       return;
     }
@@ -485,7 +484,7 @@ public class PropertyConfigurator extends BasicConfigurator
       } else if(key.startsWith(RENDERER_PREFIX)) {
 	String renderedClass = key.substring(RENDERER_PREFIX.length());	
 	String renderingClass = OptionConverter.findAndSubst(key, props);
-	addRenderer(renderedClass, renderingClass);
+	addRenderer(hierarchy, renderedClass, renderingClass);
       }      
     }
   }  

@@ -43,15 +43,9 @@ public class LogLog {
   private static final String WARN_PREFIX = "log4j:WARN ";
 
   static {
-    try {
-      String key = System.getProperty(CONFIG_DEBUG_KEY);
-      if(key != null) 
-	configDebugEnabled = OptionConverter.toBoolean(key, true);
-    }
-    catch(SecurityException e) {
-      System.err.println(PREFIX+"Could not read system property \""+
-			 CONFIG_DEBUG_KEY+"\".");
-    }
+    String key = OptionConverter.getSystemProperty(CONFIG_DEBUG_KEY, null);
+    if(key != null) 
+      configDebugEnabled = OptionConverter.toBoolean(key, true);
   }
 
   /**

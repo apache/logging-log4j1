@@ -69,7 +69,7 @@ public abstract class Layout implements OptionHandler {
      PatternLayout} all return <code>true</code>. The {@link
      org.apache.log4j.xml.XMLLayout} returns <code>false</code>.
 
-     @since version 0.8.4 */
+     @since 0.8.4 */
   abstract
   public
   boolean ignoresThrowable();

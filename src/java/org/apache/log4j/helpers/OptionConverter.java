@@ -17,6 +17,7 @@ import org.apache.log4j.xml.DOMConfigurator;
 import org.apache.log4j.PropertyConfigurator;
 
 // Contributors:   Avy Sharell (sharell@online.fr)
+//                 Anders Kristensen
 
 /**
    A convenience class to convert property values to specific types.
@@ -72,6 +73,29 @@ public class OptionConverter {
     }
     return sbuf.toString();
   }
+
+
+  /**
+     Very similar to {@link System#getProperty(String, String)} except
+     that the {@link SecurityException} is hidden.
+
+     @param key The key to search for.
+     @param def The default value to return.
+     @return 
+
+     @since 1.1
+  */
+  public
+  static
+  String getSystemProperty(String key, String def) {
+    try {
+      return System.getProperty(key, def);
+    } catch(SecurityException e) {
+      LogLog.debug("Was not allowed to read system property \""+key+"\".");
+      return def;
+    }
+  }
+
   
   public
   static

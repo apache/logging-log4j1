@@ -48,7 +48,7 @@ public class Priority {
 
   /**
      The <code>INFO</code> priority designates informational messages
-     that higlight the progress of the application at coarse-grained
+     that highlight the progress of the application at coarse-grained
      level.  */
   final static public Priority INFO  = new Priority(INFO_INT, "INFO",  5);
 

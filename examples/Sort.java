@@ -17,16 +17,17 @@ import org.apache.log4j.Priority;
    <p>Play around with different values in the configuration file and
    watch the changing behavior.
 
-   <p>Two example configuration files
-   <a href="doc-files/sort1.lcf">sort1.lcf</a>,
-   <a href="doc-files/sort2.lcf">sort2.lcf</a> and
-   <a href="doc-files/sort3.lcf">sort3.lcf</a> are supplied with the package.
+   <p>Example configuration files <a
+   href="doc-files/sort1.lcf">sort1.lcf</a>, 
+   <a href="doc-files/sort2.lcf">sort2.lcf</a>, 
+   <a href="doc-files/sort3.lcf">sort3.lcf</a> and 
+   <a href="doc-files/sort4.lcf">sort4.lcf</a> are supplied with the
+   package.
    
    <p>If you are interested in logging performance, then have look at
    the {@link org.apache.log4j.performance.Logging} class.
 
-   @author Ceki G&uuml;lc&uuml;
-*/
+   @author Ceki G&uuml;lc&uuml; */
 
 public class Sort {
 

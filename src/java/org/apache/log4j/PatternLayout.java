@@ -58,7 +58,7 @@ import java.text.FieldPosition;
    <pre>
    Category root = Category.getRoot();
    root.debug("Message 1");
-   root.warn("Message 2.");   
+   root.warn("Message 2");   
    </pre>
    would yield the output
    <pre>
@@ -491,7 +491,7 @@ public class PatternLayout extends Layout {
      {@link LoggingEvent LoggingEvents}. Thus, it returns
      <code>true</code>.
 
-     @since version 0.8.4 */
+     @since 0.8.4 */
   public
   boolean ignoresThrowable() {
     return true;
