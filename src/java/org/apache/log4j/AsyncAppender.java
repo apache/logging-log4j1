@@ -41,7 +41,7 @@ import java.util.Enumeration;
 
    
    @author Ceki G&uuml;lc&uuml;
-   @since version 0.9.1 */
+   @since 0.9.1 */
 public class AsyncAppender extends AppenderSkeleton 
                                             implements AppenderAttachable {
   
