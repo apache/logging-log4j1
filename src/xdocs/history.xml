@@ -25,14 +25,15 @@ collective effort.</p>
       
 <p>The first ancestor of log4j was written for the E.U. sponsored <a
 href="http://www.semper.org">SEMPER</a> project.  N. Asokan, Ceki
-Gulcu and Michael Steiner came up with the idea of
+G&#252;lc&#252; and Michael Steiner came up with the idea of
 hierarchical categories back in 1996. Their idea is still at the heart
 of log4j.</p>
 
-<p>The package was considerably improved over the years by Ceki Gulcu
-while working for the <a href="http://www.zurich.ibm.com"><b>IBM
-Zurich Research Laboratory</b></a>. Although no longer with IBM, Ceki
-will still owns and maintains log4j.</p> 
+<p>The package was considerably improved over the years by Ceki
+G&#252;lc&#252; while working for the <a
+href="http://www.zurich.ibm.com"><b>IBM Zurich Research
+Laboratory</b></a>. Although no longer with IBM, Ceki still owns and
+maintains log4j.</p>
 
 <p>Special thanks to M. Niksch from ZRL for his assistance on many
 large and small matters. The Apache members, Pier Fumagalli and Sam
