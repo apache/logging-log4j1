@@ -148,14 +148,10 @@ public class JoranConfigurator
       
       getLogger().debug("Starting to parse configuration {}", inputSource);
       SAXParserFactory spf = SAXParserFactory.newInstance();
+      // we want non-validating parsers
+      spf.setValidating(false);
       SAXParser saxParser = spf.newSAXParser();
 
-      // we change the system ID to a valid URI so that Crimson won't
-      // complain. Indeed, "log4j.dtd" alone is not a valid URI which
-      // causes Crimson to barf. The Log4jEntityResolver only cares
-      // about the "log4j.dtd" ending.
-      inputSource.setSystemId("dummy://log4j.dtd");
-      
       saxParser.parse(inputSource, joranInterpreter);
       getLogger().debug("Finished parsing.");
     } catch (SAXException e) {
@@ -215,7 +211,7 @@ public class JoranConfigurator
     }
     getLogger().warn("Errors occured while parsing the XML configuration file");
     for(int i = 0; i < errorList.size(); i++) {
-      getLogger().warn(""+errorList.get(i));
+      getLogger().warn(errorList.get(i));
     }
   }
   
@@ -254,8 +250,8 @@ public class JoranConfigurator
     Logger ll = repository.getLogger(Constants.LOG4J_PACKAGE_NAME);
     
     // FIXME: What happens if the users wanted to set the additivity flag
-    // to false in the config file? We are now potentially overriding her 
-    // wishes but I don't see any other way.
+    // for "org.apahce.log4j" to false in the config file? We are now 
+    // potentially overriding her wishes but I don't see any other way.
     ll.setAdditivity(true);
     
     ListAppender listAppender = (ListAppender) ll.getAppender(Constants.TEMP_LIST_APPENDER_NAME);
