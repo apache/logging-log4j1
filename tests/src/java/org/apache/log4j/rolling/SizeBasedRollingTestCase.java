@@ -95,7 +95,7 @@ public class SizeBasedRollingTestCase extends TestCase {
     rfa.activateOptions();
     root.addAppender(rfa);
     
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 22; i++) {
       if (i < 10) {
         logger.debug("Hello---" + i);
       } else if (i < 100) {
@@ -111,8 +111,14 @@ public class SizeBasedRollingTestCase extends TestCase {
 
   public static Test suite() {
     TestSuite suite = new TestSuite();
-    suite.addTest(new SizeBasedRollingTestCase("test1"));
-
+    
+    if(System.getProperty("os.name").indexOf("Windows") != -1) {
+      // The File.length() method is not accurate under Windows 
+      System.out.println("This test cannot be run under Windows.");
+      return suite;
+    } else {
+      suite.addTest(new SizeBasedRollingTestCase("test1"));
+    }
     return suite;
   }
 }
