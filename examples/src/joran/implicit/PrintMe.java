@@ -19,7 +19,6 @@ package joran.implicit;
 import org.apache.joran.Interpreter;
 import org.apache.joran.Pattern;
 import org.apache.joran.RuleStore;
-import org.apache.joran.action.Action;
 import org.apache.joran.helper.SimpleRuleStore;
 
 import java.util.List;
@@ -49,7 +48,7 @@ public class PrintMe {
     RuleStore ruleStore = new SimpleRuleStore();
 
     // we start with the rule for the top-most (root) element
-    ruleStore.addRule(new Pattern("*/foo"), Action.NOP_ACTION);
+    ruleStore.addRule(new Pattern("*/foo"), new NOPAction());
 
 
     // Create a new Joran Interpreter and hand it our simple rule store.
