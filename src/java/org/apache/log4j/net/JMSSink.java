@@ -14,7 +14,7 @@ import org.apache.log4j.Hierarchy;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.spi.RendererSupport;
 import org.apache.log4j.spi.LoggerRepository;
-import org.apache.log4j.or.MessageRenderer;
+import org.apache.log4j.or.jms.MessageRenderer;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.helpers.LogLog;
 
