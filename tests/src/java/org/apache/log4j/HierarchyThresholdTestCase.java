@@ -52,49 +52,49 @@ public class HierarchyThresholdTestCase extends TestCase {
   }
 
   public void test1() throws Exception {
-    PropertyConfigurator.configure("input/hierarchyThreshold1.properties");
+    PropertyConfigurator.configure("input/hierarchy/hierarchyThreshold1.properties");
     common();
     assertTrue(Compare.compare(TEMP, "witness/hierarchyThreshold.1"));
   }
 
   public void test2() throws Exception {
-    PropertyConfigurator.configure("input/hierarchyThreshold2.properties");
+    PropertyConfigurator.configure("input/hierarchy/hierarchyThreshold2.properties");
     common();
     assertTrue(Compare.compare(TEMP, "witness/hierarchyThreshold.2"));
   }
 
   public void test3() throws Exception {
-    PropertyConfigurator.configure("input/hierarchyThreshold3.properties");
+    PropertyConfigurator.configure("input/hierarchy/hierarchyThreshold3.properties");
     common();
     assertTrue(Compare.compare(TEMP, "witness/hierarchyThreshold.3"));
   }
 
   public void test4() throws Exception {
-    PropertyConfigurator.configure("input/hierarchyThreshold4.properties");
+    PropertyConfigurator.configure("input/hierarchy/hierarchyThreshold4.properties");
     common();
     assertTrue(Compare.compare(TEMP, "witness/hierarchyThreshold.4"));
   }
 
   public void test5() throws Exception {
-    PropertyConfigurator.configure("input/hierarchyThreshold5.properties");
+    PropertyConfigurator.configure("input/hierarchy/hierarchyThreshold5.properties");
     common();
     assertTrue(Compare.compare(TEMP, "witness/hierarchyThreshold.5"));
   }
 
   public void test6() throws Exception {
-    PropertyConfigurator.configure("input/hierarchyThreshold6.properties");
+    PropertyConfigurator.configure("input/hierarchy/hierarchyThreshold6.properties");
     common();
     assertTrue(Compare.compare(TEMP, "witness/hierarchyThreshold.6"));
   }
 
   public void test7() throws Exception {
-    PropertyConfigurator.configure("input/hierarchyThreshold7.properties");
+    PropertyConfigurator.configure("input/hierarchy/hierarchyThreshold7.properties");
     common();
     assertTrue(Compare.compare(TEMP, "witness/hierarchyThreshold.7"));
   }
 
   public void test8() throws Exception {
-    PropertyConfigurator.configure("input/hierarchyThreshold8.properties");
+    PropertyConfigurator.configure("input/hierarchy/hierarchyThreshold8.properties");
     common();
     assertTrue(Compare.compare(TEMP, "witness/hierarchyThreshold.8"));
   }
@@ -108,7 +108,7 @@ public class HierarchyThresholdTestCase extends TestCase {
     logger.fatal("m5");
   }
 
-  public static Test suite() {
+  public static Test XXXsuite() {
     TestSuite suite = new TestSuite();
     suite.addTest(new HierarchyThresholdTestCase("test1"));
     suite.addTest(new HierarchyThresholdTestCase("test2"));
