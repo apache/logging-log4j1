@@ -20,7 +20,7 @@ jmx-extra.jar=/java/jmx/lib/jmxtools.jar
 
 # Checkstyle OPTIONAL; required to run the checkstyle target
 # Available from http://checkstyle.sf.net
-checkstyle.jar=/java/checkstyle-2.4/checkstyle-all-2.4.jar
+checkstyle.jar=/java/checkstyle-3.0/checkstyle-all-3.0.jar
 
 # Jalopy OPTIONAL; required to run the jalpoy targets
 # Available from http://jalopy.sourceforge.net/

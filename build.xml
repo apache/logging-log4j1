@@ -287,6 +287,7 @@
   <!-- ================================================================= -->
   <fileset dir="${java.source.dir}" id="checkstyled_files">
   	<include name="org/apache/log4j/*.java"/>
+  	<include name="org/apache/log4j/spi/*.java"/>
   	<include name="**/plugins/*.java"/>
   	<include name="**/chainsaw/*.java"/>
   </fileset>
