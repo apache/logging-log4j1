@@ -1,4 +1,4 @@
-package org.apache.log4j;
+package org.apache.log4j.jdbc;
 
 import org.apache.log4j.*;
 import org.apache.log4j.spi.*;
