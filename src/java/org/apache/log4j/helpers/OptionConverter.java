@@ -10,8 +10,6 @@ package org.apache.log4j.helpers;
 
 import java.util.Properties;
 import java.net.URL;
-import org.apache.log4j.Category;
-import org.apache.log4j.Hierarchy;
 import org.apache.log4j.Level;
 import org.apache.log4j.spi.Configurator;
 import org.apache.log4j.spi.LoggerRepository;
@@ -27,19 +25,19 @@ import org.apache.log4j.PropertyConfigurator;
    @author Ceki G&uuml;lc&uuml;
    @author Simon Kitching;
    @author Anders Kristensen
-*/	
+*/
 public class OptionConverter {
 
   static String DELIM_START = "${";
   static char   DELIM_STOP  = '}';
   static int DELIM_START_LEN = 2;
   static int DELIM_STOP_LEN  = 1;
-  
+
   static StringBuffer sbuf = new StringBuffer();
 
   /** OptionConverter is a static class. */
   private OptionConverter() {}
-  
+
   public
   static
   String[] concatanateArrays(String[] l, String[] r) {
@@ -51,14 +49,14 @@ public class OptionConverter {
 
     return a;
   }
-  
+
   public
   static
   String convertSpecialChars(String s) {
     char c;
     int len = s.length();
     StringBuffer sbuf = new StringBuffer(len);
-    
+
     int i = 0;
     while(i < len) {
       c = s.charAt(i++);
@@ -68,12 +66,12 @@ public class OptionConverter {
 	else if(c == 'r') c = '\r';
 	else if(c == 't') c = '\t';
 	else if(c == 'f') c = '\f';
-	else if(c == '\b') c = '\b';					
-	else if(c == '\"') c = '\"';				
-	else if(c == '\'') c = '\'';			
-	else if(c == '\\') c = '\\';			
+	else if(c == '\b') c = '\b';
+	else if(c == '\"') c = '\"';
+	else if(c == '\'') c = '\'';
+	else if(c == '\\') c = '\\';
       }
-      sbuf.append(c);      
+      sbuf.append(c);
     }
     return sbuf.toString();
   }
@@ -94,13 +92,13 @@ public class OptionConverter {
   String getSystemProperty(String key, String def) {
     try {
       return System.getProperty(key, def);
-    } catch(Throwable e) { // MS-Java throws com.ms.security.SecurityExceptionEx 
+    } catch(Throwable e) { // MS-Java throws com.ms.security.SecurityExceptionEx
       LogLog.debug("Was not allowed to read system property \""+key+"\".");
       return def;
     }
   }
 
-  
+
   public
   static
   Object instantiateByKey(Properties props, String key, Class superClass,
@@ -130,7 +128,7 @@ public class OptionConverter {
     if(value == null)
       return dEfault;
     String trimmedVal = value.trim();
-    if("true".equalsIgnoreCase(trimmedVal)) 
+    if("true".equalsIgnoreCase(trimmedVal))
       return true;
     if("false".equalsIgnoreCase(trimmedVal))
       return false;
@@ -159,7 +157,7 @@ public class OptionConverter {
      "level#classname", then the specified class' toLevel method
      is called to process the specified level string; if no '#'
      character is present, then the default {@link org.apache.log4j.Level}
-     class is used to process the level value.  
+     class is used to process the level value.
 
      <p>As a special case, if the <code>value</code> parameter is
      equal to the string "NULL", then the value <code>null</code> will
@@ -171,7 +169,7 @@ public class OptionConverter {
 
      <p> Case of <code>value</code> is insignificant for the level level, but is
      significant for the class name part, if present.
-     
+
      @since 1.1 */
   public
   static
@@ -193,13 +191,13 @@ public class OptionConverter {
 
     String clazz = value.substring(hashIndex+1);
     String levelName = value.substring(0, hashIndex);
-    
+
     // This is degenerate case but you never know.
     if("NULL".equalsIgnoreCase(levelName)) {
 	return null;
     }
 
-    LogLog.debug("toLevel" + ":class=[" + clazz + "]" 
+    LogLog.debug("toLevel" + ":class=[" + clazz + "]"
 		 + ":pri=[" + levelName + "]");
 
     try {
@@ -238,18 +236,18 @@ public class OptionConverter {
     }
     return result;
    }
- 
+
   public
   static
   long toFileSize(String value, long dEfault) {
     if(value == null)
       return dEfault;
-    
+
     String s = value.trim().toUpperCase();
     long multiplier = 1;
     int index;
-    
-    if((index = s.indexOf("KB")) != -1) {      
+
+    if((index = s.indexOf("KB")) != -1) {
       multiplier = 1024;
       s = s.substring(0, index);
     }
@@ -260,7 +258,7 @@ public class OptionConverter {
     else if((index = s.indexOf("GB")) != -1) {
       multiplier = 1024*1024*1024;
       s = s.substring(0, index);
-    }    
+    }
     if(s != null) {
       try {
 	return Long.valueOf(s).longValue() * multiplier;
@@ -283,17 +281,17 @@ public class OptionConverter {
   static
   String findAndSubst(String key, Properties props) {
     String value = props.getProperty(key);
-    if(value == null) 
-      return null;      
-    
+    if(value == null)
+      return null;
+
     try {
       return substVars(value, props);
     } catch(IllegalArgumentException e) {
       LogLog.error("Bad option value ["+value+"].", e);
       return value;
-    }    
+    }
   }
-   
+
   /**
      Instantiate an object given a class name. Check that the
      <code>className</code> is a subclass of
@@ -314,7 +312,7 @@ public class OptionConverter {
 	if(!superClass.isAssignableFrom(classObj)) {
 	  LogLog.error("A \""+className+"\" object is not assignable to a \""+
 		       superClass.getName() + "\" variable.");
-	  return defaultValue;	  
+	  return defaultValue;
 	}
 	return classObj.newInstance();
       }
@@ -322,7 +320,7 @@ public class OptionConverter {
 	LogLog.error("Could not instantiate class [" + className + "].", e);
       }
     }
-    return defaultValue;    
+    return defaultValue;
   }
 
 
@@ -331,13 +329,13 @@ public class OptionConverter {
      values of keys found in the system propeties.
 
      <p>The variable substitution delimeters are <b>${</b> and <b>}</b>.
-     
+
      <p>For example, if the System properties contains "key=value", then
      the call
      <pre>
      String s = OptionConverter.substituteVars("Value of key is ${key}.");
      </pre>
-  
+
      will set the variable <code>s</code> to "Value of key is value.".
 
      <p>If no value could be found for the specified key, then the
@@ -350,7 +348,7 @@ public class OptionConverter {
      <pre>
      String s = OptionConverter.subsVars("Value of inexistentKey is [${inexistentKey}]");
      </pre>
-     will set <code>s</code> to "Value of inexistentKey is []"     
+     will set <code>s</code> to "Value of inexistentKey is []"
 
      <p>An {@link java.lang.IllegalArgumentException} is thrown if
      <code>val</code> contains a start delimeter "${" which is not
@@ -369,7 +367,7 @@ public class OptionConverter {
 
     int i = 0;
     int j, k;
-    
+
     while(true) {
       j=val.indexOf(DELIM_START, i);
       if(j == -1) {
@@ -385,7 +383,7 @@ public class OptionConverter {
 	k = val.indexOf(DELIM_STOP, j);
 	if(k == -1) {
 	  throw new IllegalArgumentException('"'+val+
-		      "\" has no closing brace. Opening brace at position " + j 
+		      "\" has no closing brace. Opening brace at position " + j
 					     + '.');
 	}
 	else {
@@ -398,9 +396,9 @@ public class OptionConverter {
 	    replacement =  props.getProperty(key);
 	  }
 
-	  if(replacement != null) 
+	  if(replacement != null)
 	    sbuf.append(replacement);
-	  i = k + DELIM_STOP_LEN;	    
+	  i = k + DELIM_STOP_LEN;
 	}
       }
     }
@@ -408,7 +406,7 @@ public class OptionConverter {
 
 
   /**
-     Configure log4j given a URL. 
+     Configure log4j given a URL.
 
      <p>The url must point to a file or resource which will be interpreted by
      a new instance of a log4j configurator.
@@ -427,20 +425,20 @@ public class OptionConverter {
      @param hierarchy The {@link Hierarchy} to act on.
 
      @since 1.1.4 */
-     
+
   static
   public
   void selectAndConfigure(URL url, String clazz, LoggerRepository hierarchy) {
    Configurator configurator = null;
    String filename = url.getFile();
-   
+
    if(clazz == null && filename != null && filename.endsWith(".xml")) {
      clazz = "org.apache.log4j.xml.DOMConfigurator";
    }
-   
+
    if(clazz != null) {
      LogLog.debug("Preferred configurator class: " + clazz);
-     configurator = (Configurator) instantiateByClassName(clazz, 
+     configurator = (Configurator) instantiateByClassName(clazz,
 							  Configurator.class,
 							  null);
      if(configurator == null) {
@@ -450,7 +448,7 @@ public class OptionConverter {
    } else {
      configurator = new PropertyConfigurator();
    }
-   
+
    configurator.doConfigure(url, hierarchy);
   }
 }

@@ -15,22 +15,13 @@ import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.NDC;
 import org.apache.log4j.helpers.PatternParser;
 import org.apache.log4j.helpers.PatternConverter;
-import org.apache.log4j.helpers.OptionConverter;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
-import java.util.Vector;
-import java.text.FieldPosition;
 
 // Contributors:   Nelson Minar <nelson@monkey.org>
 //                 Anders Kristensen <akristensen@dynamicsoft.com>
 
 /**
-   
+
    A flexible layout configurable with pattern string.
 
    <p>The goal of this class is to {@link #format format} a {@link
@@ -44,7 +35,7 @@ import java.text.FieldPosition;
 
    <p><i>You are free to insert any literal text within the conversion
    pattern.</i>
-   
+
    <p>Each conversion specifier starts with a percent sign (%) and is
    followed by optional <em>format modifiers</em> and a <em>conversion
    character</em>. The conversion character specifies the type of
@@ -58,12 +49,12 @@ import java.text.FieldPosition;
    <pre>
    Category root = Category.getRoot();
    root.debug("Message 1");
-   root.warn("Message 2");   
+   root.warn("Message 2");
    </pre>
    would yield the output
    <pre>
    DEBUG [main]: Message 1
-   WARN  [main]: Message 2  
+   WARN  [main]: Message 2
    </pre>
 
    <p>Note that there is no explicit separator between text and
@@ -72,9 +63,9 @@ import java.text.FieldPosition;
    character. In the example above the conversion specifier
    <b>%-5p</b> means the priority of the logging event should be left
    justified to a width of five characters.
-   
+
    The recognized conversion characters are
-   
+
    <p>
    <table border="1" CELLPADDING="8">
    <th>Conversion Character</th>
@@ -109,7 +100,7 @@ import java.text.FieldPosition;
      <p>If a precision specifier is given, then only the corresponding
      number of right most components of the class name will be
      printed. By default the class name is output in fully qualified form.
-     
+
      <p>For example, for the class name "org.apache.xyz.SomeClass", the
      pattern <b>%C{1}</b> will output "SomeClass".
 
@@ -119,7 +110,7 @@ import java.text.FieldPosition;
 
      </td>
      </tr>
-   
+
    <tr> <td align=center><b>d</b></td> <td>Used to output the date of
 	 the logging event. The date conversion specifier may be
 	 followed by a <em>date format specifier</em> enclosed between
@@ -127,7 +118,7 @@ import java.text.FieldPosition;
 	 <b>%d{dd&nbsp;MMM&nbsp;yyyy&nbsp;HH:mm:ss,SSS}</b>.  If no
 	 date format specifier is given then ISO8601 format is
 	 assumed.
-	 
+
 	 <p>The date format specifier admits the same syntax as the
 	 time pattern string of the {@link
 	 java.text.SimpleDateFormat}. Although part of the standard
@@ -161,12 +152,12 @@ import java.text.FieldPosition;
    is not an issue.
 
    </tr>
-   
+
    <tr>
    <td align=center><b>l</b></td>
 
      <td>Used to output location information of the caller which generated
-     the logging event. 
+     the logging event.
 
      <p>The location information depends on the JVM implementation but
      usually consists of the fully qualified name of the calling
@@ -176,7 +167,7 @@ import java.text.FieldPosition;
      <p>The location information can be very useful. However, it's
      generation is <em>extremely</em> slow. It's use should be avoided
      unless execution speed is not an issue.
-   
+
      </td>
    </tr>
 
@@ -192,11 +183,11 @@ import java.text.FieldPosition;
 
    </tr>
 
-   
+
    <tr>
      <td align=center><b>m</b></td>
-     <td>Used to output the application supplied message associated with 
-     the logging event.</td>   
+     <td>Used to output the application supplied message associated with
+     the logging event.</td>
    </tr>
 
    <tr>
@@ -213,47 +204,47 @@ import java.text.FieldPosition;
 
    <tr>
      <td align=center><b>n</b></td>
-     
+
      <td>Outputs the platform dependent line separator character or
-     characters. 
+     characters.
 
      <p>This conversion character offers practically the same
      performance as using non-portable line separator strings such as
      "\n", or "\r\n". Thus, it is the preferred way of specifying a
      line separator.
 
-     
+
    </tr>
-   
+
    <tr>
      <td align=center><b>p</b></td>
      <td>Used to output the priority of the logging event.</td>
    </tr>
-   
+
    <tr>
 
      <td align=center><b>r</b></td>
 
      <td>Used to output the number of milliseconds elapsed since the start
      of the application until the creation of the logging event.</td>
-   </tr>  
-   
+   </tr>
+
 
    <tr>
      <td align=center><b>t</b></td>
 
      <td>Used to output the name of the thread that generated the
      logging event.</td>
-     
+
    </tr>
-    
+
    <tr>
 
      <td align=center><b>x</b></td>
 
      <td>Used to output the NDC (nested diagnostic context) associated
      with the thread that generated the logging event.
-     </td>     
+     </td>
    </tr>
 
    <tr>
@@ -261,9 +252,9 @@ import java.text.FieldPosition;
      <td align=center><b>%</b></td>
 
      <td>The sequence %% outputs a single percent sign.
-     </td>     
+     </td>
    </tr>
-   
+
    </table>
 
    <p>By default the relevant information is output as is. However,
@@ -318,7 +309,7 @@ import java.text.FieldPosition;
    <tr> <td align=center>%-20c</td> <td align=center>true</td> <td
    align=center>20</td> <td align=center>none</td> <td>Right pad with
    spaces if the category name is less than 20 characters long.
-   
+
    <tr>
    <td align=center>%.30c</td>
    <td align=center>NA</td>
@@ -336,7 +327,7 @@ import java.text.FieldPosition;
 
    <td>Left pad with spaces if the category name is shorter than 20
    characters. However, if category name is longer than 30 characters,
-   then truncate from the beginning.   
+   then truncate from the beginning.
 
    <tr>
    <td align=center>%-20.30c</td>
@@ -346,15 +337,15 @@ import java.text.FieldPosition;
 
    <td>Right pad with spaces if the category name is shorter than 20
    characters. However, if category name is longer than 30 characters,
-   then truncate from the beginning.   
-   
+   then truncate from the beginning.
+
    </table>
 
    <p>Below are some examples of conversion patterns.
 
    <dl>
 
-   <p><dt><b>%r [%t] %-5p %c %x - %m\n</b> 
+   <p><dt><b>%r [%t] %-5p %c %x - %m\n</b>
    <p><dd>This is essentially the TTCC layout.
 
    <p><dt><b>%-6r [%15.15t] %-5p %30.30c %x - %m\n</b>
@@ -364,13 +355,13 @@ import java.text.FieldPosition;
    less than 15 characters and truncated if longer and the category
    name is left padded if shorter than 30 characters and truncated if
    longer.
-   
+
   </dl>
-   
+
    <p>The above text is largely inspired from Peter A. Darnell and
    Philip E. Margolis' highly recommended book "C -- a Software
    Engineering Approach", ISBN 0-387-97389-3.
-   
+
    @author <a href="mailto:cakalijp@Maritz.com">James P. Cakalic</a>
    @author Ceki G&uuml;lc&uuml;
 
@@ -385,27 +376,27 @@ public class PatternLayout extends Layout {
   public final static String DEFAULT_CONVERSION_PATTERN ="%m%n";
 
   /** A conversion pattern equivalent to the TTCCCLayout.
-      Current value is <b>%r [%t] %p %c %x - %m%n</b>. */  
+      Current value is <b>%r [%t] %p %c %x - %m%n</b>. */
   public final static String TTCC_CONVERSION_PATTERN
                                              = "%r [%t] %p %c %x - %m%n";
 
-  
+
   protected final int BUF_SIZE = 256;
   protected final int MAX_CAPACITY = 1024;
-  
+
 
   // output buffer appended to when format() is invoked
   private StringBuffer sbuf = new StringBuffer(BUF_SIZE);
-  
+
   private String pattern;
-  
+
   private PatternConverter head;
 
   private String timezone;
-  
+
   /**
      Constructs a PatternLayout using the DEFAULT_LAYOUT_PATTERN.
-      
+
      The default pattern just produces the application supplied message.
   */
   public PatternLayout() {
@@ -417,10 +408,10 @@ public class PatternLayout extends Layout {
   */
   public PatternLayout(String pattern) {
     this.pattern = pattern;
-    head = createPatternParser((pattern == null) ? DEFAULT_CONVERSION_PATTERN : 
+    head = createPatternParser((pattern == null) ? DEFAULT_CONVERSION_PATTERN :
 			     pattern).parse();
   }
-  
+
    /**
      Set the <b>ConversionPattern</b> option. This is the string which
      controls formatting and consists of a mix of literal content and
@@ -431,7 +422,7 @@ public class PatternLayout extends Layout {
     pattern = conversionPattern;
     head = createPatternParser(conversionPattern).parse();
   }
-  
+
   /**
      Returns the value of the <b>ConversionPattern</b> option.
    */
@@ -439,15 +430,15 @@ public class PatternLayout extends Layout {
   String getConversionPattern() {
     return pattern;
   }
-  
+
   /**
-     Does not do anything as options become effective 
+     Does not do anything as options become effective
   */
   public
   void activateOptions() {
     // nothing to do.
   }
-  
+
  /**
      The PatternLayout does not handle the throwable contained within
      {@link LoggingEvent LoggingEvents}. Thus, it returns
@@ -481,7 +472,7 @@ public class PatternLayout extends Layout {
     } else {
       sbuf.setLength(0);
     }
-    
+
     PatternConverter c = head;
 
     while(c != null) {

@@ -12,13 +12,12 @@ import java.util.TimeZone;
 import java.util.Date;
 import java.text.FieldPosition;
 import java.text.ParsePosition;
-import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 
 /**
    Formats a {@link Date} in the format "dd MMM YYYY HH:mm:ss,SSS" for example,
-   "06 Nov 1994 15:49:37,459". 
-   
+   "06 Nov 1994 15:49:37,459".
+
    @author Ceki G&uuml;lc&uuml;
    @since 0.7.5
 */
@@ -31,13 +30,13 @@ public class DateTimeDateFormat extends AbsoluteTimeDateFormat {
     super();
     shortMonths = new DateFormatSymbols().getShortMonths();
   }
-  
+
   public
   DateTimeDateFormat(TimeZone timeZone) {
     this();
     setCalendar(Calendar.getInstance(timeZone));
   }
-  
+
   /**
      Appends to <code>sbuf</code> the date in the format "dd MMM YYYY
      HH:mm:ss,SSS" for example, "06 Nov 1994 08:49:37,459".
@@ -48,15 +47,15 @@ public class DateTimeDateFormat extends AbsoluteTimeDateFormat {
   StringBuffer format(Date date, StringBuffer sbuf,
 		      FieldPosition fieldPosition) {
 
-    calendar.setTime(date);      
+    calendar.setTime(date);
 
     int day = calendar.get(Calendar.DAY_OF_MONTH);
-    if(day < 10) 
+    if(day < 10)
       sbuf.append('0');
     sbuf.append(day);
-    sbuf.append(' ');        
+    sbuf.append(' ');
     sbuf.append(shortMonths[calendar.get(Calendar.MONTH)]);
-    sbuf.append(' ');    
+    sbuf.append(' ');
 
     int year =  calendar.get(Calendar.YEAR);
     sbuf.append(year);
@@ -71,5 +70,5 @@ public class DateTimeDateFormat extends AbsoluteTimeDateFormat {
   public
   Date parse(java.lang.String s, ParsePosition pos) {
     return null;
-  }  
+  }
 }

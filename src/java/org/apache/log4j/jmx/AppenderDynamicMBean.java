@@ -21,7 +21,6 @@ import javax.management.MBeanNotificationInfo;
 import javax.management.ObjectName;
 import javax.management.MBeanInfo;
 import javax.management.Attribute;
-import javax.management.MBeanRegistration;
 import javax.management.MBeanServer;
 
 import javax.management.MBeanException;
@@ -45,7 +44,7 @@ public class AppenderDynamicMBean extends AbstractDynamicMBean {
 
   private Hashtable dynamicProps = new Hashtable(5);
   private MBeanOperationInfo[] dOperations = new MBeanOperationInfo[2];
-  private String dDescription = 
+  private String dDescription =
      "This MBean acts as a management facade for log4j appenders.";
 
   // This category instance is for logging.
@@ -59,7 +58,7 @@ public class AppenderDynamicMBean extends AbstractDynamicMBean {
     buildDynamicMBeanInfo();
   }
 
-  private 
+  private
   void buildDynamicMBeanInfo() throws IntrospectionException {
     Constructor[] constructors = this.getClass().getConstructors();
     dConstructors[0] = new MBeanConstructorInfo(
@@ -69,7 +68,7 @@ public class AppenderDynamicMBean extends AbstractDynamicMBean {
 
     BeanInfo bi = Introspector.getBeanInfo(appender.getClass());
     PropertyDescriptor[] pd = bi.getPropertyDescriptors();
-    
+
     int size = pd.length;
 
     for(int i = 0; i < size; i++) {
@@ -85,7 +84,7 @@ public class AppenderDynamicMBean extends AbstractDynamicMBean {
 	  } else {
 	    returnClassName = returnClass.getName();
 	  }
-	  
+
 	  dAttributes.add(new MBeanAttributeInfo(name,
 						 returnClassName,
 						 "Dynamic",
@@ -93,7 +92,7 @@ public class AppenderDynamicMBean extends AbstractDynamicMBean {
 						 writeMethod != null,
 						 false));
 	  dynamicProps.put(name, new MethodUnion(readMethod, writeMethod));
-	}      
+	}
       }
     }
 
@@ -101,18 +100,18 @@ public class AppenderDynamicMBean extends AbstractDynamicMBean {
 
     dOperations[0] = new MBeanOperationInfo("activateOptions",
 					    "activateOptions(): add an appender",
-					    params, 
-					    "void", 
+					    params,
+					    "void",
 					    MBeanOperationInfo.ACTION);
 
     params = new MBeanParameterInfo[1];
-    params[0] = new MBeanParameterInfo("layout class", "java.lang.String", 
+    params[0] = new MBeanParameterInfo("layout class", "java.lang.String",
 				       "layout class");
 
     dOperations[1] = new MBeanOperationInfo("setLayout",
 					    "setLayout(): add a layout",
-					    params, 
-					    "void", 
+					    params,
+					    "void",
 					    MBeanOperationInfo.ACTION);
   }
 
@@ -130,15 +129,15 @@ public class AppenderDynamicMBean extends AbstractDynamicMBean {
     if(clazz.isAssignableFrom(Priority.class)) {
       return true;
     }
-    
+
     return false;
 
-    
+
   }
 
 
 
-  public 
+  public
   MBeanInfo getMBeanInfo() {
     cat.debug("getMBeanInfo called.");
 
@@ -153,12 +152,12 @@ public class AppenderDynamicMBean extends AbstractDynamicMBean {
 			 new MBeanNotificationInfo[0]);
   }
 
-  public 
+  public
   Object invoke(String operationName, Object params[], String signature[])
     throws MBeanException,
     ReflectionException {
-   
-    if(operationName.equals("activateOptions") && 
+
+    if(operationName.equals("activateOptions") &&
                      appender instanceof OptionHandler) {
       OptionHandler oh = (OptionHandler) appender;
       oh.activateOptions();
@@ -185,14 +184,14 @@ public class AppenderDynamicMBean extends AbstractDynamicMBean {
       LayoutDynamicMBean appenderMBean = new LayoutDynamicMBean(layout);
       objectName = new ObjectName("log4j:appender="+name);
       server.registerMBean(appenderMBean, objectName);
-      
+
       dAttributes.add(new MBeanAttributeInfo("appender="+name,
 					     "javax.management.ObjectName",
 					     "The "+name+" layout.",
 					     true,
 					     true,
 					     false));
-      
+
     } catch(Exception e) {
       cat.error("Could not add DynamicLayoutMBean for ["+name+"].", e);
     }
@@ -202,20 +201,20 @@ public class AppenderDynamicMBean extends AbstractDynamicMBean {
   Logger getLogger() {
     return cat;
   }
-  
 
-  public 
-  Object getAttribute(String attributeName) throws AttributeNotFoundException, 
-                                                   MBeanException, 
+
+  public
+  Object getAttribute(String attributeName) throws AttributeNotFoundException,
+                                                   MBeanException,
                                                    ReflectionException {
 
        // Check attributeName is not null to avoid NullPointerException later on
     if (attributeName == null) {
       throw new RuntimeOperationsException(new IllegalArgumentException(
-			"Attribute name cannot be null"), 
+			"Attribute name cannot be null"),
        "Cannot invoke a getter of " + dClassName + " with null attribute name");
     }
-    
+
     cat.debug("getAttribute called with ["+attributeName+"].");
     if(attributeName.startsWith("appender="+appender.getName()+",layout")) {
       try {
@@ -240,37 +239,37 @@ public class AppenderDynamicMBean extends AbstractDynamicMBean {
 
 
     // If attributeName has not been recognized throw an AttributeNotFoundException
-    throw(new AttributeNotFoundException("Cannot find " + attributeName + 
+    throw(new AttributeNotFoundException("Cannot find " + attributeName +
 					 " attribute in " + dClassName));
 
   }
 
 
-  public 
+  public
   void setAttribute(Attribute attribute) throws AttributeNotFoundException,
                                                 InvalidAttributeValueException,
-                                                MBeanException, 
+                                                MBeanException,
                                                 ReflectionException {
-    
+
     // Check attribute is not null to avoid NullPointerException later on
     if (attribute == null) {
       throw new RuntimeOperationsException(
-                  new IllegalArgumentException("Attribute cannot be null"), 
-		  "Cannot invoke a setter of " + dClassName + 
+                  new IllegalArgumentException("Attribute cannot be null"),
+		  "Cannot invoke a setter of " + dClassName +
 		  " with null attribute");
     }
     String name = attribute.getName();
     Object value = attribute.getValue();
-    
+
     if (name == null) {
       throw new RuntimeOperationsException(
-                    new IllegalArgumentException("Attribute name cannot be null"), 
+                    new IllegalArgumentException("Attribute name cannot be null"),
 		    "Cannot invoke the setter of "+dClassName+
 		    " with null attribute name");
     }
-    
 
-    
+
+
     MethodUnion mu = (MethodUnion) dynamicProps.get(name);
 
     if(mu != null && mu.writeMethod != null) {
@@ -278,27 +277,27 @@ public class AppenderDynamicMBean extends AbstractDynamicMBean {
 
       Class[] params = mu.writeMethod.getParameterTypes();
       if(params[0] == org.apache.log4j.Priority.class) {
-	value = OptionConverter.toLevel((String) value, 
+	value = OptionConverter.toLevel((String) value,
 					(Level) getAttribute(name));
       }
       o[0] = value;
 
       try {
 	mu.writeMethod.invoke(appender,  o);
-	
+
       } catch(Exception e) {
 	cat.error("FIXME", e);
       }
     } else if(name.endsWith(".layout")) {
-      
+
     } else {
       throw(new AttributeNotFoundException("Attribute " + name +
-					   " not found in " + 
+					   " not found in " +
 					   this.getClass().getName()));
     }
-  }  
+  }
 
-  public 
+  public
   ObjectName preRegister(MBeanServer server, ObjectName name) {
     cat.debug("preRegister called. Server="+server+ ", name="+name);
     this.server = server;

@@ -10,22 +10,14 @@
 package org.apache.log4j;
 
 import java.io.IOException;
-import java.io.Writer;
-import java.io.FileWriter;
 import java.io.File;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Calendar;
 
-import org.apache.log4j.helpers.OptionConverter;
-import org.apache.log4j.helpers.QuietWriter;
-import org.apache.log4j.helpers.CountingQuietWriter;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.spi.ErrorCode;
 
 /**
    DailyRollingFileAppender extends {@link FileAppender} so that the
@@ -44,19 +36,19 @@ import org.apache.log4j.spi.ErrorCode;
    <code>/foo/bar.log.2001-02-16</code> and logging for 2001-02-17
    will continue in <code>/foo/bar.log</code> until it rolls over
    the next day.
-   
+
    <p>Is is possible to specify monthly, weekly, half-daily, daily,
    hourly, or minutely rollover schedules.
 
    <p><table border="1" cellpadding="2">
    <tr>
-   <th>DatePattern</th> 
+   <th>DatePattern</th>
    <th>Rollover schedule</th>
    <th>Example</th>
 
    <tr>
    <td><code>'.'yyyy-MM</code>
-   <td>Rollover at the beginning of each month</td>   
+   <td>Rollover at the beginning of each month</td>
 
    <td>Assuming the first day of the week is Sunday, at Sunday 00:00,
    March 25th, 2001, <code>/foo/bar.log</code> will be copied to
@@ -66,40 +58,40 @@ import org.apache.log4j.spi.ErrorCode;
 
    <tr>
    <td><code>'.'yyyy-ww</code>
-   
+
    <td>Rollover at the first day of each week. The first day of the
    week depends on the locale.</td>
-   
+
    <td>At midnight, on March 31st, 2001, <code>/foo/bar.log</code>
    will be copied to <code>/foo/bar.log.2001-08</code>. Logging for
    the 9th week of 2001 will be output to <code>/foo/bar.log</code>
    until it is rolled over the next week.
 
    <tr>
-   <td><code>'.'yyyy-MM-dd</code>   
-   
+   <td><code>'.'yyyy-MM-dd</code>
+
    <td>Rollover at midnight each day.</td>
-   
+
    <td>At midnight, on March 9th, 2001, <code>/foo/bar.log</code> will
    be copied to <code>/foo/bar.log.2001-03-08</code>. Logging for the
    9th day of March will be output to <code>/foo/bar.log</code> until
    it is rolled over the next day.
 
    <tr>
-   <td><code>'.'yyyy-MM-dd-a</code>   
-   
+   <td><code>'.'yyyy-MM-dd-a</code>
+
    <td>Rollover at midnight and midday of each day.</td>
-   
+
    <td>At noon, on March 9th, 2001, <code>/foo/bar.log</code> will be
    copied to <code>/foo/bar.log.2001-03-09-AM</code>. Logging for the
    afternoon of the 9th will be output to <code>/foo/bar.log</code>
    until it is rolled over the next morning, i.e at midnight 00:00.
 
    <tr>
-   <td><code>'.'yyyy-MM-dd-HH</code>   
-   
+   <td><code>'.'yyyy-MM-dd-HH</code>
+
    <td>Rollover at the top of every hour.</td>
-   
+
    <td>At approximately 11:00,000, on March 9th, 2001,
    <code>/foo/bar.log</code> will be copied to
    <code>/foo/bar.log.2001-03-09-10</code>. Logging for the 11th hour
@@ -108,16 +100,16 @@ import org.apache.log4j.spi.ErrorCode;
 
 
    <tr>
-   <td><code>'.'yyyy-MM-dd-HH-mm</code>   
-   
+   <td><code>'.'yyyy-MM-dd-HH-mm</code>
+
    <td>Rollover at the beginning of every minute.</td>
-   
+
    <td>At approximately 11:23,000, on March 9th, 2001,
    <code>/foo/bar.log</code> will be copied to
    <code>/foo/bar.log.2001-03-09-10-22</code>. Logging for the minute
    of 11:23 (9th of March) will be output to
    <code>/foo/bar.log</code> until it is rolled over the next minute.
-      
+
    </table>
 
    <p>Do not use the colon ":" character in anywhere in the
@@ -144,7 +136,7 @@ public class DailyRollingFileAppender extends FileAppender {
 
   /**
      The date pattern. By default, the pattern is set to
-     "'.'yyyy-MM-dd" meaning daily rollover. 
+     "'.'yyyy-MM-dd" meaning daily rollover.
    */
   private String datePattern = "'.'yyyy-MM-dd";
 
@@ -178,7 +170,7 @@ public class DailyRollingFileAppender extends FileAppender {
     become the ouput destination for this appender.
 
     */
-  public DailyRollingFileAppender (Layout layout, String filename, 
+  public DailyRollingFileAppender (Layout layout, String filename,
 				   String datePattern) throws IOException {
     super(layout, filename, true);
     this.datePattern = datePattern;
@@ -194,7 +186,7 @@ public class DailyRollingFileAppender extends FileAppender {
   void setDatePattern(String pattern) {
     datePattern = pattern;
   }
-  
+
   /** Returns the value of the <b>DatePattern</b> option. */
   public
   String getDatePattern() {
@@ -218,7 +210,7 @@ public class DailyRollingFileAppender extends FileAppender {
 		   name+"].");
     }
   }
-  
+
   void printPeriodicity(int type) {
     switch(type) {
     case TOP_OF_MINUTE:
@@ -243,13 +235,13 @@ public class DailyRollingFileAppender extends FileAppender {
     case TOP_OF_MONTH:
       LogLog.debug("Appender ["+name
 		   +"] to be rolled at start of every month.");
-      break;	    
+      break;
     default:
       LogLog.warn("Unknown periodicity for appender ["+name+"].");
     }
   }
-  
-  
+
+
   // This method computes the roll over period by looping over the
   // periods, starting with the shortest, and stopping when the r0 is
   // different from from r1, where r0 is the epoch formatted according
@@ -259,9 +251,9 @@ public class DailyRollingFileAppender extends FileAppender {
   int computeCheckPeriod() {
     RollingCalendar rollingCalendar = new RollingCalendar();
     // set sate to 1970-01-01 00:00:00 GMT
-    Date epoch = new Date(0);    
+    Date epoch = new Date(0);
     if(datePattern != null) {
-      for(int i = TOP_OF_MINUTE; i <= TOP_OF_MONTH; i++) {	
+      for(int i = TOP_OF_MINUTE; i <= TOP_OF_MONTH; i++) {
 	SimpleDateFormat simpleDateFormat = new SimpleDateFormat(datePattern);
 	String r0 = simpleDateFormat.format(epoch);
 	rollingCalendar.setType(i);
@@ -278,7 +270,7 @@ public class DailyRollingFileAppender extends FileAppender {
 
   /**
      Rollover the current file to a new file.
-  */  
+  */
   void rollOver() throws IOException {
 
     /* Compute filename, but only if datePattern is specified */
@@ -293,16 +285,16 @@ public class DailyRollingFileAppender extends FileAppender {
     }
 
     // close current file, and rename it to datedFilename
-    this.closeFile(); 
-    
-    File target  = new File(scheduledFilename);    
+    this.closeFile();
+
+    File target  = new File(scheduledFilename);
     if (target.exists()) {
       target.delete();
     }
 
     File file = new File(fileName);
-    file.renameTo(target);    
-    LogLog.debug(fileName +" -> "+ scheduledFilename);    
+    file.renameTo(target);
+    LogLog.debug(fileName +" -> "+ scheduledFilename);
 
     try {
       // This will also close the file. This is OK since multiple
@@ -312,7 +304,7 @@ public class DailyRollingFileAppender extends FileAppender {
     catch(IOException e) {
       errorHandler.error("setFile("+fileName+", false) call failed.");
     }
-    scheduledFilename = datedFilename;    
+    scheduledFilename = datedFilename;
   }
 
   /**
@@ -325,14 +317,14 @@ public class DailyRollingFileAppender extends FileAppender {
 
 
   */
-  protected 
+  protected
   void subAppend(LoggingEvent event) {
     long n = System.currentTimeMillis();
     if (n >= nextCheck) {
       now.setTime(n);
       nextCheck = rc.getNextCheckMillis(now);
-      try {  
-	rollOver();  
+      try {
+	rollOver();
       }
       catch(IOException ioe) {
 	LogLog.error("rollOver() failed.", ioe);
@@ -340,13 +332,13 @@ public class DailyRollingFileAppender extends FileAppender {
     }
     super.subAppend(event);
    }
-}  
+}
 
 /**
    RollingCalendar is a helper class to
    DailyRollingFileAppender. Using this class, it is easy to compute
    and access the next Millis().
- 
+
    It subclasses the standard {@link GregorianCalendar}-object, to
    allow access to the protected function getTimeInMillis(), which it
    then exports.
@@ -354,7 +346,7 @@ public class DailyRollingFileAppender extends FileAppender {
    @author <a HREF="mailto:eirik.lygre@evita.no">Eirik Lygre</a> */
 
 class RollingCalendar extends GregorianCalendar {
-  
+
   int type = DailyRollingFileAppender.TOP_OF_TROUBLE;
 
   void setType(int type) {
@@ -366,7 +358,7 @@ class RollingCalendar extends GregorianCalendar {
     return getNextCheckDate(now).getTime();
   }
 
-  public 
+  public
   Date getNextCheckDate(Date now) {
     this.setTime(now);
 
@@ -374,16 +366,16 @@ class RollingCalendar extends GregorianCalendar {
     case DailyRollingFileAppender.TOP_OF_MINUTE:
 	this.set(Calendar.SECOND, 0);
 	this.set(Calendar.MILLISECOND, 0);
-	this.add(Calendar.MINUTE, 1); 
+	this.add(Calendar.MINUTE, 1);
 	break;
     case DailyRollingFileAppender.TOP_OF_HOUR:
-	this.set(Calendar.MINUTE, 0); 
+	this.set(Calendar.MINUTE, 0);
 	this.set(Calendar.SECOND, 0);
 	this.set(Calendar.MILLISECOND, 0);
-	this.add(Calendar.HOUR_OF_DAY, 1); 
+	this.add(Calendar.HOUR_OF_DAY, 1);
 	break;
     case DailyRollingFileAppender.HALF_DAY:
-	this.set(Calendar.MINUTE, 0); 
+	this.set(Calendar.MINUTE, 0);
 	this.set(Calendar.SECOND, 0);
 	this.set(Calendar.MILLISECOND, 0);
 	int hour = get(Calendar.HOUR_OF_DAY);
@@ -391,15 +383,15 @@ class RollingCalendar extends GregorianCalendar {
 	  this.set(Calendar.HOUR_OF_DAY, 12);
 	} else {
 	  this.set(Calendar.HOUR_OF_DAY, 0);
-	  this.add(Calendar.DAY_OF_MONTH, 1);       
+	  this.add(Calendar.DAY_OF_MONTH, 1);
 	}
 	break;
     case DailyRollingFileAppender.TOP_OF_DAY:
-	this.set(Calendar.HOUR_OF_DAY, 0); 
-	this.set(Calendar.MINUTE, 0); 
+	this.set(Calendar.HOUR_OF_DAY, 0);
+	this.set(Calendar.MINUTE, 0);
 	this.set(Calendar.SECOND, 0);
 	this.set(Calendar.MILLISECOND, 0);
-	this.add(Calendar.DATE, 1);       
+	this.add(Calendar.DATE, 1);
 	break;
     case DailyRollingFileAppender.TOP_OF_WEEK:
 	this.set(Calendar.DAY_OF_WEEK, getFirstDayOfWeek());
@@ -413,11 +405,11 @@ class RollingCalendar extends GregorianCalendar {
 	this.set(Calendar.HOUR_OF_DAY, 0);
 	this.set(Calendar.SECOND, 0);
 	this.set(Calendar.MILLISECOND, 0);
-	this.add(Calendar.MONTH, 1); 
+	this.add(Calendar.MONTH, 1);
 	break;
     default:
 	throw new IllegalStateException("Unknown periodicity type.");
-    }      
+    }
     return getTime();
   }
 }

@@ -1,6 +1,5 @@
 package org.apache.log4j.test;
 
-import java.util.Properties;
 import org.apache.log4j.spi.*;
 import org.apache.log4j.*;
 

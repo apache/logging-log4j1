@@ -7,11 +7,8 @@
 
 package org.apache.log4j.or.sax;
 
-import org.apache.log4j.Layout;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.or.ObjectRenderer;
 
-import java.util.Enumeration;
 import org.xml.sax.Attributes;
 
 /**
@@ -25,13 +22,13 @@ public class AttributesRenderer implements ObjectRenderer {
   AttributesRenderer() {
   }
 
-   
+
   /**
      Render a {@link org.xml.sax.Attributes}.
   */
   public
   String  doRender(Object o) {
-    if(o instanceof Attributes) {  
+    if(o instanceof Attributes) {
       StringBuffer sbuf = new StringBuffer();
       Attributes a = (Attributes) o;
       int len = a.getLength();

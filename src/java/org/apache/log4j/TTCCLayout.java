@@ -6,25 +6,19 @@
  * the LICENSE.txt file.
  */
 
-// Contributors: Christopher Williams 
+// Contributors: Christopher Williams
 //               Mathias Bogaert
-       
+
 package org.apache.log4j;
 
 import org.apache.log4j.Level;
-import org.apache.log4j.helpers.OptionConverter;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.DateLayout;
-import org.apache.log4j.helpers.RelativeTimeDateFormat;
-import org.apache.log4j.helpers.AbsoluteTimeDateFormat;
-import org.apache.log4j.helpers.DateTimeDateFormat;
-import org.apache.log4j.helpers.ISO8601DateFormat;
 import org.apache.log4j.spi.LoggingEvent;
 
 /**
  TTCC layout format consists of time, thread, category and nested
  diagnostic context information, hence the name.
- 
+
  <p>Each of the four fields can be individually enabled or
  disabled. The time format depends on the <code>DateFormat</code>
  used.
@@ -66,17 +60,17 @@ import org.apache.log4j.spi.LoggingEvent;
 
   @author Ceki G&uuml;lc&uuml;
   @author <A HREF="mailto:heinz.richter@ecmwf.int">Heinz Richter</a>
-  
+
 */
 public class TTCCLayout extends DateLayout {
 
   // Internal representation of options
-  private boolean threadPrinting    = true;    
+  private boolean threadPrinting    = true;
   private boolean categoryPrefixing = true;
   private boolean contextPrinting   = true;
 
-  
-  protected final StringBuffer buf = new StringBuffer(256);   
+
+  protected final StringBuffer buf = new StringBuffer(256);
 
 
   /**
@@ -88,7 +82,7 @@ public class TTCCLayout extends DateLayout {
   */
   public TTCCLayout() {
     this.setDateFormat(RELATIVE_TIME_DATE_FORMAT, null);
-  } 
+  }
 
 
   /**
@@ -102,7 +96,7 @@ public class TTCCLayout extends DateLayout {
   public TTCCLayout(String dateFormatType) {
     this.setDateFormat(dateFormatType);
   }
-  
+
 
   /**
      The <b>ThreadPrinting</b> option specifies whether the name of the
@@ -112,7 +106,7 @@ public class TTCCLayout extends DateLayout {
   void setThreadPrinting(boolean threadPrinting) {
     this.threadPrinting = threadPrinting;
   }
-  
+
   /**
      Returns value of the <b>ThreadPrinting</b> option.
    */
@@ -120,7 +114,7 @@ public class TTCCLayout extends DateLayout {
   boolean getThreadPrinting() {
     return threadPrinting;
   }
-  
+
   /**
      The <b>CategoryPrefixing</b> option specifies whether {@link Category}
      name is part of log output or not. This is true by default.
@@ -129,7 +123,7 @@ public class TTCCLayout extends DateLayout {
   void setCategoryPrefixing(boolean categoryPrefixing) {
     this.categoryPrefixing = categoryPrefixing;
   }
-  
+
   /**
      Returns value of the <b>CategoryPrefixing</b> option.
    */
@@ -137,7 +131,7 @@ public class TTCCLayout extends DateLayout {
   boolean getCategoryPrefixing() {
     return categoryPrefixing;
   }
-  
+
   /**
      The <b>ContextPrinting</b> option specifies log output will include
      the nested context information belonging to the current thread.
@@ -147,7 +141,7 @@ public class TTCCLayout extends DateLayout {
   void setContextPrinting(boolean contextPrinting) {
     this.contextPrinting = contextPrinting;
   }
-  
+
   /**
      Returns value of the <b>ContextPrinting</b> option.
    */
@@ -160,10 +154,10 @@ public class TTCCLayout extends DateLayout {
    In addition to the level of the statement and message, the
    returned byte array includes time, thread, category and {@link NDC}
    information.
-   
+
    <p>Time, thread, category and diagnostic context are printed
    depending on options.
-   
+
     @param category
     @param level
     @param message
@@ -176,7 +170,7 @@ public class TTCCLayout extends DateLayout {
     buf.setLength(0);
 
     dateFormat(buf, event);
-    
+
     if(this.threadPrinting) {
       buf.append('[');
       buf.append(event.getThreadName());
@@ -192,19 +186,19 @@ public class TTCCLayout extends DateLayout {
 
     if(this.contextPrinting) {
        String ndc = event.getNDC();
-       
+
       if(ndc != null) {
 	buf.append(ndc);
 	buf.append(' ');
       }
-    }    
+    }
     buf.append("- ");
     buf.append(event.getRenderedMessage());
-    buf.append(LINE_SEP);    
+    buf.append(LINE_SEP);
     return buf.toString();
   }
-  
- /** 
+
+ /**
      The TTCCLayout does not handle the throwable contained within
      {@link LoggingEvent LoggingEvents}. Thus, it returns
      <code>true</code>.
@@ -214,4 +208,4 @@ public class TTCCLayout extends DateLayout {
   boolean ignoresThrowable() {
     return true;
   }
-} 
+}

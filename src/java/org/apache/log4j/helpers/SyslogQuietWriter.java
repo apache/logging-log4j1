@@ -11,8 +11,6 @@ package org.apache.log4j.helpers;
 
 
 import java.io.Writer;
-import java.io.FilterWriter;
-import java.io.IOException;
 import org.apache.log4j.spi.ErrorHandler;
 
 /**
@@ -41,7 +39,7 @@ public class SyslogQuietWriter extends QuietWriter {
   void setSyslogFacility(int syslogFacility) {
     this.syslogFacility = syslogFacility;
   }
-  
+
   public
   void write(String string) {
     super.write("<"+(syslogFacility | level)+">" + string);

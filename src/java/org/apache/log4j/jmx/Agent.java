@@ -4,7 +4,6 @@ package org.apache.log4j.jmx;
 import javax.management.ObjectName;
 import javax.management.MBeanServer;
 import javax.management.MBeanServerFactory;
-import javax.management.MalformedObjectNameException;
 import com.sun.jdmk.comm.HtmlAdaptorServer;
 
 import org.apache.log4j.Category;
@@ -13,15 +12,15 @@ import org.apache.log4j.Category;
 public class Agent {
 
   static Category log = Category.getInstance(Agent.class);
-  
-  public Agent() {    
+
+  public Agent() {
   }
 
-  
-  public 
+
+  public
   void start() {
-        
-    MBeanServer server = MBeanServerFactory.createMBeanServer();    
+
+    MBeanServer server = MBeanServerFactory.createMBeanServer();
     HtmlAdaptorServer html = new HtmlAdaptorServer();
 
     try {
@@ -30,11 +29,11 @@ public class Agent {
       log.info("Registering HierarchyDynamicMBean instance.");
       HierarchyDynamicMBean hdm = new HierarchyDynamicMBean();
       server.registerMBean(hdm, new ObjectName("log4j:hiearchy=default"));
-      
+
     } catch(Exception e) {
       log.error("Problem while regitering MBeans instances.", e);
       return;
     }
-    html.start();    
-  }   
+    html.start();
+  }
 }

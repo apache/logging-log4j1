@@ -1,4 +1,4 @@
-//      Copyright 1996-1999, International Business Machines 
+//      Copyright 1996-1999, International Business Machines
 //      Corporation. All Rights Reserved.
 
 //      Copyright 2000, Ceki Gulcu. All Rights Reserved.
@@ -8,19 +8,11 @@
 package org.apache.log4j.performance;
 
 import org.apache.log4j.Category;
-import org.apache.log4j.Layout;
 import org.apache.log4j.xml.DOMConfigurator;
-import org.apache.log4j.Appender;
-import org.apache.log4j.net.SyslogAppender;
-import org.apache.log4j.net.SocketAppender;
-import org.apache.log4j.FileAppender;
 
-import org.apache.log4j.Priority;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.NDC;
 import org.apache.log4j.performance.NOPWriter;
 
-import java.util.Enumeration;
 
 /**
    Measure the performance of logging.
@@ -32,21 +24,21 @@ import java.util.Enumeration;
 <p><table border=1>
 
 <tr>
-<th>Layout 
-<th>NullAppender 
+<th>Layout
+<th>NullAppender
 <th>FileAppender
 <th>FileAppender (no flush)
 <th>AsyncAppender (no flush)
 
 <tr>
-<td>SimpleLayout 
+<td>SimpleLayout
 <td>4
 <td>21
 <td>16
 <td>33
 
 <tr>
-<td>PatternLayout "%p - %m%n" 
+<td>PatternLayout "%p - %m%n"
 <td>4
 <td>21
 <td>16
@@ -124,7 +116,7 @@ import java.util.Enumeration;
 
 <tr>
 <td>PatternLayout "%C.%M.%L - %m%n"
-<td>267 
+<td>267
 <td>NA
 <td>NA
 <td>NA
@@ -148,7 +140,7 @@ import java.util.Enumeration;
    java.text.SimpleDateFormat} because of its poor performance. See
    the <b>%d</b> conversion character in {@link
    org.apache.log4j.PatternLayout}.
-   
+
    <p><li>Avoiding the flush operation at the end of each append
    results in a performance gain of 10 to 20 percent. However, there
    is safety tradeoff invloved in skipping flushing. Indeed, when
@@ -161,7 +153,7 @@ import java.util.Enumeration;
    performance. The performance tests done here very quickly fill up
    the bounded buffer of the <code>AsyncAppender</code> and there is
    cosiderable overhead in managing this bounded buffer.
-   
+
    <p>On the other hand, had we interleaved logging operations with
    long blocking and non CPU-intensive operations, such as I/O,
    network access, sleeping threads, then the
@@ -193,7 +185,7 @@ public class Logging {
      requests.  The default value of this constant is 100.  */
   static  int burstLen = 100;
   static int DELAY_MULT = 1000/burstLen;
-  
+
   static Category cat = Category.getInstance("A0123456789.B0123456789.C0123456789");
 
   static
@@ -228,27 +220,27 @@ public class Logging {
     else
       Usage("Wrong number of arguments.");
 
-    
+
     NDC.push("some context");
 
     double delta;
     String msg = "ABCDEGHIJKLMNOPQRSTUVWXYZabcdeghijklmnopqrstuvwxyz1234567890";
-     if(delay <= 0) 
+     if(delay <= 0)
       delta = NoDelayLoop(cat, msg);
     else
       delta = DelayedLoop(cat, msg);
-		
-    System.out.print((int)delta); 
+
+    System.out.print((int)delta);
 
     Category.shutdown();
 
   }
-  
+
   /**
     Program wide initialization method.
     */
   static
-  void init(String configFile, String runLengthStr, String delayStr, 
+  void init(String configFile, String runLengthStr, String delayStr,
 	    String burstLenStr) {
     try {
       runLength   = Integer.parseInt(runLengthStr);
@@ -257,26 +249,26 @@ public class Logging {
       }
       if(delayStr != null) {
 	burstLen = Integer.parseInt(burstLenStr);
-	DELAY_MULT = 1000/burstLen;	
-      }      
+	DELAY_MULT = 1000/burstLen;
+      }
     }
     catch(java.lang.NumberFormatException e) {
       e.printStackTrace();
-    }      
+    }
     DOMConfigurator.configure(configFile);
   }
-  
+
   static
-  double NoDelayLoop(Category category, String msg) { 
+  double NoDelayLoop(Category category, String msg) {
     long before = System.currentTimeMillis();
     for(int i = 0; i < runLength; i++) {
       category.info(msg);
     }
-    return ((System.currentTimeMillis() - before)*1000.0)/runLength;    
+    return ((System.currentTimeMillis() - before)*1000.0)/runLength;
   }
 
   static
-  double DelayedLoop(Category category, String msg) { 
+  double DelayedLoop(Category category, String msg) {
     long before = System.currentTimeMillis();
     int j = 0;
     Thread currentThread = Thread.currentThread();
@@ -286,10 +278,10 @@ public class Logging {
 	j = 0;
 	try{currentThread.sleep(delay);}catch(Exception e){}
       }
-      
+
     }
     double actualTime = ((System.currentTimeMillis()-before)*1000.0/runLength);
     System.out.println("actual time: "+actualTime);
-    return (actualTime - delay*DELAY_MULT); 
-  }  
+    return (actualTime - delay*DELAY_MULT);
+  }
 }

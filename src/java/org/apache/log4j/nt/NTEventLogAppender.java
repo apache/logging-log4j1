@@ -10,14 +10,13 @@ package org.apache.log4j.nt;
 import org.apache.log4j.*;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.Level;
-import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.helpers.LogLog;
 
 import java.io.*;
 
 
 /**
-   Append to the NT event log system. 
+   Append to the NT event log system.
 
    <p><b>WARNING</b> This appender can only be installed and used on a
    Windows system.
@@ -39,27 +38,27 @@ public class NTEventLogAppender extends AppenderSkeleton {
   private static final int WARN   = Level.WARN.toInt();
   private static final int INFO   = Level.INFO.toInt();
   private static final int DEBUG  = Level.DEBUG.toInt();
-  
+
   public NTEventLogAppender() {
     this(null, null, null);
   }
-  
+
   public NTEventLogAppender(String source) {
     this(null, source, null);
   }
-  
+
   public NTEventLogAppender(String server, String source) {
     this(server, source, null);
   }
-  
+
   public NTEventLogAppender(Layout layout) {
     this(null, null, layout);
   }
-  
+
   public NTEventLogAppender(String source, Layout layout) {
     this(null, source, layout);
   }
-  
+
   public NTEventLogAppender(String server, String source, Layout layout) {
     if (source == null) {
       source = "Log4j";
@@ -69,7 +68,7 @@ public class NTEventLogAppender extends AppenderSkeleton {
     } else {
       this.layout = layout;
     }
-    
+
     try {
       _handle = registerEventSource(server, source);
     } catch (Exception e) {
@@ -84,7 +83,7 @@ public class NTEventLogAppender extends AppenderSkeleton {
   }
 
   public
-  void activateOptions() {    
+  void activateOptions() {
     if (source != null) {
       try {
 	_handle = registerEventSource(server, source);
@@ -95,19 +94,19 @@ public class NTEventLogAppender extends AppenderSkeleton {
     }
   }
 
-  
+
   public void append(LoggingEvent event) {
 
-    StringBuffer sbuf = new StringBuffer();    
+    StringBuffer sbuf = new StringBuffer();
 
     sbuf.append(layout.format(event));
     if(layout.ignoresThrowable()) {
       String[] s = event.getThrowableStrRep();
       if (s != null) {
 	int len = s.length;
-	for(int i = 0; i < len; i++) {	
+	for(int i = 0; i < len; i++) {
 	  sbuf.append(s[i]);
-	}	
+	}
       }
     }
     // Normalize the log message level into the supported categories
@@ -119,14 +118,14 @@ public class NTEventLogAppender extends AppenderSkeleton {
     //}
     reportEvent(_handle, sbuf.toString(), nt_category);
   }
-  
-  
-  public 
+
+
+  public
   void finalize() {
     deregisterEventSource(_handle);
     _handle = 0;
   }
-  
+
   /**
      The <b>Source</b> option which names the source of the event. The
      current value of this constant is <b>Source</b>.
@@ -135,12 +134,12 @@ public class NTEventLogAppender extends AppenderSkeleton {
   void setSource(String source) {
     this.source = source.trim();
   }
-  
+
   public
   String getSource() {
     return source;
   }
-  
+
 /**
      The <code>NTEventLogAppender</code> requires a layout. Hence,
      this method always returns <code>true</code>. */
@@ -148,12 +147,12 @@ public class NTEventLogAppender extends AppenderSkeleton {
   boolean requiresLayout() {
     return true;
   }
-  
+
   native private int registerEventSource(String server, String source);
   native private void reportEvent(int handle, String message, int level);
   native private void deregisterEventSource(int handle);
-  
+
   static {
     System.loadLibrary("NTEventLogAppender");
   }
-}   
+}

@@ -8,21 +8,19 @@
 package org.apache.log4j.net.test;
 
 import org.apache.log4j.*;
-import java.io.IOException;
-import java.io.InputStreamReader;
 
 public class SMTPMin {
-  
+
   static Category cat = Category.getInstance(SMTPMin.class);
 
-  public 
-  static 
+  public
+  static
   void main(String argv[]) {
-    if(argv.length == 1) 
+    if(argv.length == 1)
       init(argv[0]);
-    else 
-      usage("Wrong number of arguments.");     
-    
+    else
+      usage("Wrong number of arguments.");
+
     NDC.push("some context");
     test();
   }
@@ -53,5 +51,5 @@ public class SMTPMin {
     Category.shutdown();
     Thread.currentThread().getThreadGroup().list();
   }
-  
+
 }

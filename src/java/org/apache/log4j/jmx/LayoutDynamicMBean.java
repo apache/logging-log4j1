@@ -8,7 +8,6 @@
 package org.apache.log4j.jmx;
 
 import java.lang.reflect.Constructor;
-import org.apache.log4j.Hierarchy;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Level;
 import org.apache.log4j.Layout;
@@ -21,11 +20,8 @@ import java.lang.reflect.Method;
 import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanConstructorInfo;
 import javax.management.MBeanNotificationInfo;
-import javax.management.ObjectName;
 import javax.management.MBeanInfo;
 import javax.management.Attribute;
-import javax.management.MBeanRegistration;
-import javax.management.MBeanServer;
 
 import javax.management.MBeanException;
 import javax.management.AttributeNotFoundException;
@@ -48,7 +44,7 @@ public class LayoutDynamicMBean extends AbstractDynamicMBean {
 
   private Hashtable dynamicProps = new Hashtable(5);
   private MBeanOperationInfo[] dOperations = new MBeanOperationInfo[1];
-  private String dDescription = 
+  private String dDescription =
      "This MBean acts as a management facade for log4j layouts.";
 
   // This category instance is for logging.
@@ -62,7 +58,7 @@ public class LayoutDynamicMBean extends AbstractDynamicMBean {
     buildDynamicMBeanInfo();
   }
 
-  private 
+  private
   void buildDynamicMBeanInfo() throws IntrospectionException {
     Constructor[] constructors = this.getClass().getConstructors();
     dConstructors[0] = new MBeanConstructorInfo(
@@ -72,7 +68,7 @@ public class LayoutDynamicMBean extends AbstractDynamicMBean {
 
     BeanInfo bi = Introspector.getBeanInfo(layout.getClass());
     PropertyDescriptor[] pd = bi.getPropertyDescriptors();
-    
+
     int size = pd.length;
 
     for(int i = 0; i < size; i++) {
@@ -88,7 +84,7 @@ public class LayoutDynamicMBean extends AbstractDynamicMBean {
 	  } else {
 	    returnClassName = returnClass.getName();
 	  }
-	  
+
 	  dAttributes.add(new MBeanAttributeInfo(name,
 						 returnClassName,
 						 "Dynamic",
@@ -96,7 +92,7 @@ public class LayoutDynamicMBean extends AbstractDynamicMBean {
 						 writeMethod != null,
 						 false));
 	  dynamicProps.put(name, new MethodUnion(readMethod, writeMethod));
-	}      
+	}
       }
     }
 
@@ -104,8 +100,8 @@ public class LayoutDynamicMBean extends AbstractDynamicMBean {
 
     dOperations[0] = new MBeanOperationInfo("activateOptions",
 					    "activateOptions(): add an layout",
-					    params, 
-					    "void", 
+					    params,
+					    "void",
 					    MBeanOperationInfo.ACTION);
   }
 
@@ -121,13 +117,13 @@ public class LayoutDynamicMBean extends AbstractDynamicMBean {
     if(clazz.isAssignableFrom(Level.class)) {
       return true;
     }
-    
+
     return false;
   }
 
 
 
-  public 
+  public
   MBeanInfo getMBeanInfo() {
     cat.debug("getMBeanInfo called.");
 
@@ -142,12 +138,12 @@ public class LayoutDynamicMBean extends AbstractDynamicMBean {
 			 new MBeanNotificationInfo[0]);
   }
 
-  public 
+  public
   Object invoke(String operationName, Object params[], String signature[])
     throws MBeanException,
     ReflectionException {
-   
-    if(operationName.equals("activateOptions") && 
+
+    if(operationName.equals("activateOptions") &&
                      layout instanceof OptionHandler) {
       OptionHandler oh = (OptionHandler) layout;
       oh.activateOptions();
@@ -160,21 +156,21 @@ public class LayoutDynamicMBean extends AbstractDynamicMBean {
   Logger  getLogger() {
     return cat;
   }
-  
 
-  public 
-  Object getAttribute(String attributeName) throws AttributeNotFoundException, 
-                                                   MBeanException, 
+
+  public
+  Object getAttribute(String attributeName) throws AttributeNotFoundException,
+                                                   MBeanException,
                                                    ReflectionException {
 
        // Check attributeName is not null to avoid NullPointerException later on
     if (attributeName == null) {
       throw new RuntimeOperationsException(new IllegalArgumentException(
-			"Attribute name cannot be null"), 
+			"Attribute name cannot be null"),
        "Cannot invoke a getter of " + dClassName + " with null attribute name");
     }
 
-    
+
     MethodUnion mu = (MethodUnion) dynamicProps.get(attributeName);
 
     cat.debug("----name="+attributeName+", mu="+mu);
@@ -190,37 +186,37 @@ public class LayoutDynamicMBean extends AbstractDynamicMBean {
 
 
     // If attributeName has not been recognized throw an AttributeNotFoundException
-    throw(new AttributeNotFoundException("Cannot find " + attributeName + 
+    throw(new AttributeNotFoundException("Cannot find " + attributeName +
 					 " attribute in " + dClassName));
 
   }
 
 
-  public 
+  public
   void setAttribute(Attribute attribute) throws AttributeNotFoundException,
                                                 InvalidAttributeValueException,
-                                                MBeanException, 
+                                                MBeanException,
                                                 ReflectionException {
-    
+
     // Check attribute is not null to avoid NullPointerException later on
     if (attribute == null) {
       throw new RuntimeOperationsException(
-                  new IllegalArgumentException("Attribute cannot be null"), 
-		  "Cannot invoke a setter of " + dClassName + 
+                  new IllegalArgumentException("Attribute cannot be null"),
+		  "Cannot invoke a setter of " + dClassName +
 		  " with null attribute");
     }
     String name = attribute.getName();
     Object value = attribute.getValue();
-    
+
     if (name == null) {
       throw new RuntimeOperationsException(
-                    new IllegalArgumentException("Attribute name cannot be null"), 
+                    new IllegalArgumentException("Attribute name cannot be null"),
 		    "Cannot invoke the setter of "+dClassName+
 		    " with null attribute name");
     }
-    
 
-    
+
+
     MethodUnion mu = (MethodUnion) dynamicProps.get(name);
 
     if(mu != null && mu.writeMethod != null) {
@@ -228,23 +224,23 @@ public class LayoutDynamicMBean extends AbstractDynamicMBean {
 
       Class[] params = mu.writeMethod.getParameterTypes();
       if(params[0] == org.apache.log4j.Priority.class) {
-	value = OptionConverter.toLevel((String) value, 
+	value = OptionConverter.toLevel((String) value,
 					(Level) getAttribute(name));
       }
       o[0] = value;
 
       try {
 	mu.writeMethod.invoke(layout,  o);
-	
+
       } catch(Exception e) {
 	cat.error("FIXME", e);
       }
     } else {
       throw(new AttributeNotFoundException("Attribute " + name +
-					   " not found in " + 
+					   " not found in " +
 					   this.getClass().getName()));
     }
-  }  
+  }
 }
 
 

@@ -7,7 +7,6 @@
 
 package org.apache.log4j.spi;
 
-import org.apache.log4j.FileAppender;
 
 /**
    A string based interface to configure package components.
@@ -35,7 +34,7 @@ public interface OptionHandler {
 
   /**
      Return list of strings that the OptionHandler instance recognizes.
-     
+
      @deprecated We now use JavaBeans style getters/setters.
    */
   //  String[] getOptionStrings();
@@ -47,7 +46,7 @@ public interface OptionHandler {
      instance. Some options may become active immediately whereas
      other may be activated only when {@link #activateOptions} is
      called.
-     
+
      @deprecated We now use JavaBeans style getters/setters.
   */
   //void setOption(String option, String value);

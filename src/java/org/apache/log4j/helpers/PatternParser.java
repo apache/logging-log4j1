@@ -11,18 +11,15 @@ import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.helpers.AbsoluteTimeDateFormat;
 import org.apache.log4j.Layout;
-import org.apache.log4j.NDC;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.LocationInfo;
-import org.apache.log4j.or.ObjectRenderer;
-import org.apache.log4j.or.RendererMap;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 // Contributors:   Nelson Minar <(nelson@monkey.org>
-//                 Igor E. Poteryaev <jah@mail.ru>  
-//                 Reinhard Deschler <reinhard.deschler@web.de> 
+//                 Igor E. Poteryaev <jah@mail.ru>
+//                 Reinhard Deschler <reinhard.deschler@web.de>
 
 /**
    Most of the work of the {@link org.apache.log4j.PatternLayout} class
@@ -30,17 +27,17 @@ import java.util.Date;
 
    <p>It is this class that parses conversion patterns and creates
    a chained list of {@link OptionConverter OptionConverters}.
-   
+
    @author <a href=mailto:"cakalijp@Maritz.com">James P. Cakalic</a>
    @author Ceki G&uuml;lc&uuml;
-   @author Anders Kristensen       
+   @author Anders Kristensen
 
    @since 0.8.2
 */
 public class PatternParser {
 
   private static final char ESCAPE_CHAR = '%';
-  
+
   private static final int LITERAL_STATE = 0;
   private static final int CONVERTER_STATE = 1;
   private static final int MINUS_STATE = 2;
@@ -52,7 +49,7 @@ public class PatternParser {
   static final int METHOD_LOCATION_CONVERTER = 1001;
   static final int CLASS_LOCATION_CONVERTER = 1002;
   static final int LINE_LOCATION_CONVERTER = 1003;
-  static final int FILE_LOCATION_CONVERTER = 1004;    
+  static final int FILE_LOCATION_CONVERTER = 1004;
 
   static final int RELATIVE_TIME_CONVERTER = 2000;
   static final int THREAD_CONVERTER = 2001;
@@ -72,7 +69,7 @@ public class PatternParser {
   public
   PatternParser(String pattern) {
     this.pattern = pattern;
-    patternLength =  pattern.length();    
+    patternLength =  pattern.length();
     state = LITERAL_STATE;
   }
 
@@ -82,14 +79,14 @@ public class PatternParser {
       head = tail = pc;
     } else {
       tail.next = pc;
-      tail = pc;    
+      tail = pc;
     }
   }
 
   protected
   String extractOption() {
     if((i < patternLength) && (pattern.charAt(i) == '{')) {
-      int end = pattern.indexOf('}', i);	
+      int end = pattern.indexOf('}', i);
       if (end > i) {
 	String r = pattern.substring(i + 1, end);
 	i = end+1;
@@ -115,29 +112,29 @@ public class PatternParser {
 	        "Precision option (" + opt + ") isn't a positive integer.");
 	    r = 0;
 	}
-      }      
+      }
       catch (NumberFormatException e) {
 	LogLog.error("Category option \""+opt+"\" not a decimal integer.", e);
-      }      
+      }
     }
-    return r;    
+    return r;
   }
-      
-  public 
+
+  public
   PatternConverter parse() {
     char c;
     i = 0;
     while(i < patternLength) {
       c = pattern.charAt(i++);
       switch(state) {
-      case LITERAL_STATE: 
+      case LITERAL_STATE:
         // In literal state, the last char is always a literal.
         if(i == patternLength) {
           currentLiteral.append(c);
           continue;
         }
-        if(c == ESCAPE_CHAR) {      
-          // peek at the next char. 
+        if(c == ESCAPE_CHAR) {
+          // peek at the next char.
           switch(pattern.charAt(i)) {
           case ESCAPE_CHAR:
             currentLiteral.append(c);
@@ -151,10 +148,10 @@ public class PatternParser {
             if(currentLiteral.length() != 0) {
               addToList(new LiteralPatternConverter(
                                                   currentLiteral.toString()));
-              //LogLog.debug("Parsed LITERAL converter: \"" 
+              //LogLog.debug("Parsed LITERAL converter: \""
               //           +currentLiteral+"\".");
             }
-            currentLiteral.setLength(0); 
+            currentLiteral.setLength(0);
             currentLiteral.append(c); // append %
             state = CONVERTER_STATE;
             formattingInfo.reset();
@@ -178,13 +175,13 @@ public class PatternParser {
 	    formattingInfo.min = c - '0';
 	    state = MIN_STATE;
 	  }
-	  else 
-	    finalizeConverter(c);	    
+	  else
+	    finalizeConverter(c);
 	} // switch
 	break;
       case MIN_STATE:
 	currentLiteral.append(c);
-	if(c >= '0' && c <= '9') 
+	if(c >= '0' && c <= '9')
 	  formattingInfo.min = formattingInfo.min*10 + (c - '0');
 	else if(c == '.')
 	  state = DOT_STATE;
@@ -206,7 +203,7 @@ public class PatternParser {
 	break;
       case MAX_STATE:
 	currentLiteral.append(c);
-	if(c >= '0' && c <= '9') 
+	if(c >= '0' && c <= '9')
 	  formattingInfo.max = formattingInfo.max*10 + (c - '0');
 	else {
 	  finalizeConverter(c);
@@ -228,16 +225,16 @@ public class PatternParser {
     switch(c) {
     case 'c':
       pc = new CategoryPatternConverter(formattingInfo,
-					extractPrecisionOption());	
+					extractPrecisionOption());
       //LogLog.debug("CATEGORY converter.");
-      //formattingInfo.dump();      
+      //formattingInfo.dump();
       currentLiteral.setLength(0);
-      break;     
+      break;
     case 'C':
       pc = new ClassNamePatternConverter(formattingInfo,
 					 extractPrecisionOption());
       //LogLog.debug("CLASS_NAME converter.");
-      //formattingInfo.dump();      
+      //formattingInfo.dump();
       currentLiteral.setLength(0);
       break;
     case 'd':
@@ -246,9 +243,9 @@ public class PatternParser {
       String dOpt = extractOption();
       if(dOpt != null)
 	dateFormatStr = dOpt;
-      
+
       if(dateFormatStr.equalsIgnoreCase(
-                                    AbsoluteTimeDateFormat.ISO8601_DATE_FORMAT)) 
+                                    AbsoluteTimeDateFormat.ISO8601_DATE_FORMAT))
 	df = new  ISO8601DateFormat();
       else if(dateFormatStr.equalsIgnoreCase(
                                    AbsoluteTimeDateFormat.ABS_TIME_DATE_FORMAT))
@@ -266,45 +263,45 @@ public class PatternParser {
 	  df = (DateFormat) OptionConverter.instantiateByClassName(
 			           "org.apache.log4j.helpers.ISO8601DateFormat",
 				   DateFormat.class, null);
-	}	
+	}
       }
       pc = new DatePatternConverter(formattingInfo, df);
       //LogLog.debug("DATE converter {"+dateFormatStr+"}.");
-      //formattingInfo.dump();      
+      //formattingInfo.dump();
       currentLiteral.setLength(0);
       break;
     case 'F':
       pc = new LocationPatternConverter(formattingInfo,
 					FILE_LOCATION_CONVERTER);
       //LogLog.debug("File name converter.");
-      //formattingInfo.dump();      
+      //formattingInfo.dump();
       currentLiteral.setLength(0);
       break;
     case 'l':
       pc = new LocationPatternConverter(formattingInfo,
 					FULL_LOCATION_CONVERTER);
       //LogLog.debug("Location converter.");
-      //formattingInfo.dump();      
+      //formattingInfo.dump();
       currentLiteral.setLength(0);
       break;
     case 'L':
       pc = new LocationPatternConverter(formattingInfo,
 					LINE_LOCATION_CONVERTER);
       //LogLog.debug("LINE NUMBER converter.");
-      //formattingInfo.dump();      
+      //formattingInfo.dump();
       currentLiteral.setLength(0);
       break;
     case 'm':
       pc = new BasicPatternConverter(formattingInfo, MESSAGE_CONVERTER);
       //LogLog.debug("MESSAGE converter.");
-      //formattingInfo.dump();      
+      //formattingInfo.dump();
       currentLiteral.setLength(0);
       break;
     case 'M':
       pc = new LocationPatternConverter(formattingInfo,
 					METHOD_LOCATION_CONVERTER);
       //LogLog.debug("METHOD converter.");
-      //formattingInfo.dump();      
+      //formattingInfo.dump();
       currentLiteral.setLength(0);
       break;
     case 'p':
@@ -314,7 +311,7 @@ public class PatternParser {
       currentLiteral.setLength(0);
       break;
     case 'r':
-      pc = new BasicPatternConverter(formattingInfo, 
+      pc = new BasicPatternConverter(formattingInfo,
 					 RELATIVE_TIME_CONVERTER);
       //LogLog.debug("RELATIVE time converter.");
       //formattingInfo.dump();
@@ -323,7 +320,7 @@ public class PatternParser {
     case 't':
       pc = new BasicPatternConverter(formattingInfo, THREAD_CONVERTER);
       //LogLog.debug("THREAD converter.");
-      //formattingInfo.dump();      
+      //formattingInfo.dump();
       currentLiteral.setLength(0);
       break;
       /*case 'u':
@@ -332,17 +329,17 @@ public class PatternParser {
 	if(cNext >= '0' && cNext <= '9') {
 	  pc = new UserFieldPatternConverter(formattingInfo, cNext - '0');
 	  LogLog.debug("USER converter ["+cNext+"].");
-	  formattingInfo.dump();      
+	  formattingInfo.dump();
 	  currentLiteral.setLength(0);
 	  i++;
 	}
-	else 
+	else
 	  LogLog.error("Unexpected char" +cNext+" at position "+i);
       }
       break;*/
     case 'x':
       pc = new BasicPatternConverter(formattingInfo, NDC_CONVERTER);
-      //LogLog.debug("NDC converter.");      
+      //LogLog.debug("NDC converter.");
       currentLiteral.setLength(0);
       break;
     case 'X':
@@ -356,7 +353,7 @@ public class PatternParser {
       pc = new LiteralPatternConverter(currentLiteral.toString());
       currentLiteral.setLength(0);
     }
-    
+
     addConverter(pc);
   }
 
@@ -374,25 +371,25 @@ public class PatternParser {
   // ---------------------------------------------------------------------
   //                      PatternConverters
   // ---------------------------------------------------------------------
-    
+
   private static class BasicPatternConverter extends PatternConverter {
     int type;
-    
+
     BasicPatternConverter(FormattingInfo formattingInfo, int type) {
-      super(formattingInfo);     
+      super(formattingInfo);
       this.type = type;
     }
 
     public
     String convert(LoggingEvent event) {
       switch(type) {
-      case RELATIVE_TIME_CONVERTER: 
+      case RELATIVE_TIME_CONVERTER:
 	return (Long.toString(event.timeStamp - LoggingEvent.getStartTime()));
       case THREAD_CONVERTER:
 	return event.getThreadName();
       case LEVEL_CONVERTER:
 	return event.level.toString();
-      case NDC_CONVERTER:  
+      case NDC_CONVERTER:
 	return event.getNDC();
       case MESSAGE_CONVERTER: {
 	return event.getRenderedMessage();
@@ -401,10 +398,10 @@ public class PatternParser {
       }
     }
   }
-  
+
   private static class LiteralPatternConverter extends PatternConverter {
     private String literal;
-  
+
     LiteralPatternConverter(String value) {
       literal = value;
     }
@@ -414,8 +411,8 @@ public class PatternParser {
     void format(StringBuffer sbuf, LoggingEvent event) {
       sbuf.append(literal);
     }
-    
-    public    
+
+    public
     String convert(LoggingEvent event) {
       return literal;
     }
@@ -424,11 +421,11 @@ public class PatternParser {
   private static class DatePatternConverter extends PatternConverter {
     private DateFormat df;
     private Date date;
-    
+
     DatePatternConverter(FormattingInfo formattingInfo, DateFormat df) {
       super(formattingInfo);
       date = new Date();
-      this.df = df;      
+      this.df = df;
     }
 
     public
@@ -447,7 +444,7 @@ public class PatternParser {
 
   private static class MDCPatternConverter extends PatternConverter {
     private String key;
-    
+
     MDCPatternConverter(FormattingInfo formattingInfo, String key) {
       super(formattingInfo);
       this.key = key;
@@ -459,7 +456,7 @@ public class PatternParser {
       if(val == null) {
 	return null;
       } else {
-	return val.toString();      
+	return val.toString();
       }
     }
   }
@@ -467,23 +464,23 @@ public class PatternParser {
 
   private class LocationPatternConverter extends PatternConverter {
     int type;
-    
+
     LocationPatternConverter(FormattingInfo formattingInfo, int type) {
       super(formattingInfo);
       this.type = type;
     }
-    
+
     public
     String convert(LoggingEvent event) {
       LocationInfo locationInfo = event.getLocationInformation();
       switch(type) {
-      case FULL_LOCATION_CONVERTER: 
+      case FULL_LOCATION_CONVERTER:
 	return locationInfo.fullInfo;
-      case METHOD_LOCATION_CONVERTER: 
+      case METHOD_LOCATION_CONVERTER:
 	return locationInfo.getMethodName();
-      case LINE_LOCATION_CONVERTER: 
+      case LINE_LOCATION_CONVERTER:
 	return locationInfo.getLineNumber();
-      case FILE_LOCATION_CONVERTER: 
+      case FILE_LOCATION_CONVERTER:
 	return locationInfo.getFileName();
       default: return null;
       }
@@ -492,15 +489,15 @@ public class PatternParser {
 
   private static abstract class NamedPatternConverter extends PatternConverter {
     int precision;
-    
+
     NamedPatternConverter(FormattingInfo formattingInfo, int precision) {
       super(formattingInfo);
-      this.precision =  precision;      
+      this.precision =  precision;
     }
 
     abstract
     String getFullyQualifiedName(LoggingEvent event);
-    
+
     public
     String convert(LoggingEvent event) {
       String n = getFullyQualifiedName(event);
@@ -511,38 +508,38 @@ public class PatternParser {
 
 	// We substract 1 from 'len' when assigning to 'end' to avoid out of
 	// bounds exception in return r.substring(end+1, len). This can happen if
-	// precision is 1 and the category name ends with a dot. 
+	// precision is 1 and the category name ends with a dot.
 	int end = len -1 ;
-	for(int i = precision; i > 0; i--) {	  
+	for(int i = precision; i > 0; i--) {
 	  end = n.lastIndexOf('.', end-1);
 	  if(end == -1)
 	    return n;
 	}
 	return n.substring(end+1, len);
-      }      
+      }
     }
   }
-  
+
   private class ClassNamePatternConverter extends NamedPatternConverter {
 
     ClassNamePatternConverter(FormattingInfo formattingInfo, int precision) {
       super(formattingInfo, precision);
     }
-    
+
     String getFullyQualifiedName(LoggingEvent event) {
       return event.getLocationInformation().getClassName();
     }
   }
-  
+
   private class CategoryPatternConverter extends NamedPatternConverter {
 
     CategoryPatternConverter(FormattingInfo formattingInfo, int precision) {
       super(formattingInfo, precision);
     }
-    
+
     String getFullyQualifiedName(LoggingEvent event) {
       return event.categoryName;
     }
-  }  
+  }
 }
 

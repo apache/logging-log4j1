@@ -9,12 +9,10 @@ package org.apache.log4j.net;
 
 import java.net.Socket;
 import java.net.ServerSocket;
-import java.io.IOException;
 
 import org.apache.log4j.Category;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.PropertyConfigurator;
-import org.apache.log4j.spi.LoggerRepository;
 
 
 /**
@@ -29,7 +27,7 @@ import org.apache.log4j.spi.LoggerRepository;
    </pre>
 
     @author  Ceki G&uuml;lc&uuml;
- 
+
     @since 0.8.4 */
 
 public class SimpleSocketServer  {
@@ -37,15 +35,15 @@ public class SimpleSocketServer  {
   static Category cat = Category.getInstance(SimpleSocketServer.class.getName());
 
   static int port;
-  
-  public 
-  static 
+
+  public
+  static
   void main(String argv[]) {
-    if(argv.length == 2) 
+    if(argv.length == 2)
       init(argv[0], argv[1]);
-    else 
-      usage("Wrong number of arguments.");     
-    
+    else
+      usage("Wrong number of arguments.");
+
     try {
       cat.info("Listening on port " + port);
       ServerSocket serverSocket = new ServerSocket(port);
@@ -53,8 +51,8 @@ public class SimpleSocketServer  {
 	cat.info("Waiting to accept a new client.");
 	Socket socket = serverSocket.accept();
 	cat.info("Connected to client at " + socket.getInetAddress());
-	cat.info("Starting new socket node.");	
-	new Thread(new SocketNode(socket, 
+	cat.info("Starting new socket node.");
+	new Thread(new SocketNode(socket,
 				  LogManager.getLoggerRepository())).start();
       }
     }
@@ -63,7 +61,7 @@ public class SimpleSocketServer  {
     }
   }
 
-  
+
   static
   void  usage(String msg) {
     System.err.println(msg);
@@ -71,16 +69,16 @@ public class SimpleSocketServer  {
       "Usage: java " +SimpleSocketServer.class.getName() + " port configFile");
     System.exit(1);
   }
-    
+
   static
   void init(String portStr, String configFile) {
     try {
-      port = Integer.parseInt(portStr);      
+      port = Integer.parseInt(portStr);
     }
     catch(java.lang.NumberFormatException e) {
       e.printStackTrace();
       usage("Could not interpret port number ["+ portStr +"].");
     }
-    PropertyConfigurator.configure(configFile);    
+    PropertyConfigurator.configure(configFile);
   }
 }

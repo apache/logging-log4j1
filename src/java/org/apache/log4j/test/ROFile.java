@@ -1,21 +1,19 @@
-package org.apache.log4j.test; 
+package org.apache.log4j.test;
 
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.Category;
-import org.apache.log4j.Priority;
-import java.io.IOException;
 
 public class ROFile {
 
   static Category cat = Category.getInstance(ROFile.class.getName());
-  
-  public 
-  static 
+
+  public
+  static
   void main(String argv[]) {
 
-    if(argv.length == 1) 
+    if(argv.length == 1)
       init(argv[0]);
-    else 
+    else
       Usage("Wrong number of arguments.");
 
     test();

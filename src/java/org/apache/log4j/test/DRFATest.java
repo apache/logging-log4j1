@@ -5,7 +5,7 @@
  * the LICENSE.txt file.
  */
 
-package org.apache.log4j.test; 
+package org.apache.log4j.test;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Category;
 import org.apache.log4j.Layout;
@@ -13,25 +13,23 @@ import org.apache.log4j.PatternLayout;
 import org.apache.log4j.Appender;
 import org.apache.log4j.DailyRollingFileAppender;
 
-import java.io.IOException;
-import java.util.Enumeration;
 
-/** 
+/**
    This class is used in testing the DailyRollingFileAppender.
    @author  Ceki G&uuml;lc&uuml;
 */
 public class DRFATest {
-  
+
   static Category cat = Category.getInstance(DRFATest.class);
 
   static int limit;
 
-  public 
-  static 
+  public
+  static
   void main(String argv[]) {
-    if(argv.length == 1) 
+    if(argv.length == 1)
       init(argv[0]);
-    else 
+    else
       usage("Wrong number of arguments.");
     test();
   }
@@ -43,7 +41,7 @@ public class DRFATest {
     System.exit(1);
   }
 
-  static 
+  static
   void init(String limitStr) {
     try {
       limit =  Integer.parseInt(limitStr);
@@ -52,12 +50,12 @@ public class DRFATest {
     }
   }
 
-  static 
+  static
   void test() {
 
     Layout layout = new PatternLayout("%d{yyyy-MM-dd-HH-mm ss:SSS} %m%n");
     try {
-      Appender appender = new DailyRollingFileAppender(layout, "test", 
+      Appender appender = new DailyRollingFileAppender(layout, "test",
 						       "'.'yyyy-MM-dd-HH-mm" );
       appender.setName("drfa");
       BasicConfigurator.configure(appender);

@@ -9,39 +9,37 @@ package org.apache.log4j.net.test;
 
 import org.apache.log4j.Category;
 import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Appender;
 import org.apache.log4j.net.SocketAppender;
 import org.apache.log4j.Priority;
 import org.apache.log4j.NDC;
-import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class SocketMin {
-  
+
   static Category cat = Category.getInstance(SyslogMin.class.getName());
   static SocketAppender s;
 
-  public 
-  static 
+  public
+  static
   void main(String argv[]) {
-    if(argv.length == 3) 
+    if(argv.length == 3)
       init(argv[0], argv[1]);
-    else 
-      usage("Wrong number of arguments.");     
-    
+    else
+      usage("Wrong number of arguments.");
+
     NDC.push("some context");
     if(argv[2].equals("true"))
       loop();
     else
       test();
-    
+
     s.close();
   }
 
   static
   void usage(String msg) {
     System.err.println(msg);
-    System.err.println("Usage: java " + SocketMin.class 
+    System.err.println("Usage: java " + SocketMin.class
 		       + " host port true|false");
     System.exit(1);
   }

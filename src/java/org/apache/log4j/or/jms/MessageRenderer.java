@@ -7,14 +7,12 @@
 
 package org.apache.log4j.or.jms;
 
-import org.apache.log4j.Layout;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.or.ObjectRenderer;
 
 import javax.jms.Message;
 import javax.jms.JMSException;
 import javax.jms.DeliveryMode;
-import java.util.Enumeration;
 
 /**
    Render <code>javax.jms.Message</code> objects.
@@ -27,22 +25,22 @@ public class MessageRenderer implements ObjectRenderer {
   MessageRenderer() {
   }
 
-   
+
   /**
      Render a {@link javax.jms.Message}.
   */
   public
   String  doRender(Object o) {
-    if(o instanceof Message) {  
+    if(o instanceof Message) {
       StringBuffer sbuf = new StringBuffer();
       Message m = (Message) o;
       try {
 	sbuf.append("DeliveryMode=");
 	switch(m.getJMSDeliveryMode()) {
-	case DeliveryMode.NON_PERSISTENT : 	
+	case DeliveryMode.NON_PERSISTENT :
 	  sbuf.append("NON_PERSISTENT");
 	  break;
-	case DeliveryMode.PERSISTENT : 	
+	case DeliveryMode.PERSISTENT :
 	  sbuf.append("PERSISTENT");
 	  break;
 	default: sbuf.append("UNKNOWN");

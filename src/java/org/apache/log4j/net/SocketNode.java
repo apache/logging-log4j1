@@ -8,10 +8,7 @@
 
 package org.apache.log4j.net;
 
-import java.net.InetAddress;
 import java.net.Socket;
-import java.net.ServerSocket;
-import java.io.InputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
@@ -28,9 +25,9 @@ import org.apache.log4j.spi.*;
 
    <p>For example, the socket node might decide to log events to a
    local file and also resent them to a second socket node.
-   
+
     @author  Ceki G&uuml;lc&uuml;
- 
+
     @since 0.8.4
 */
 public class SocketNode implements Runnable {
@@ -41,7 +38,7 @@ public class SocketNode implements Runnable {
 
   static Logger logger = Logger.getLogger(SocketNode.class);
 
-  public 
+  public
   SocketNode(Socket socket, LoggerRepository hierarchy) {
     this.socket = socket;
     this.hierarchy = hierarchy;
@@ -64,12 +61,12 @@ public class SocketNode implements Runnable {
     Logger remoteLogger;
 
     try {
-      while(true) {	
-	event = (LoggingEvent) ois.readObject();	
+      while(true) {
+	event = (LoggingEvent) ois.readObject();
 	remoteLogger = hierarchy.getLogger(event.categoryName);
 	event.logger = remoteLogger;
 	if(event.level.isGreaterOrEqual(remoteLogger.getEffectiveLevel())) {
-	  remoteLogger.callAppenders(event);	
+	  remoteLogger.callAppenders(event);
 	}
       }
     }
@@ -83,11 +80,11 @@ public class SocketNode implements Runnable {
     } catch(Exception e) {
       logger.error("Unexpected exception. Closing conneciton.", e);
     }
-    
+
     try {
       ois.close();
     } catch(Exception e) {
-      logger.info("Could not close connection.", e);	
-    }  
+      logger.info("Could not close connection.", e);
+    }
   }
 }

@@ -12,7 +12,6 @@ import java.util.Hashtable;
 
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.net.MalformedURLException;
 import java.lang.reflect.Method;
 
 /**
@@ -33,7 +32,7 @@ public class SerializationUT extends TestCase {
 
 
   static URLClassLoader classLoader113;
-  static Class class113; 
+  static Class class113;
   static Object o113;
   static Method serMethod113;
   static Method deserMethod113;
@@ -43,43 +42,43 @@ public class SerializationUT extends TestCase {
   static Object o12a7;
   static Method serMethod12a7;
   static Method deserMethod12a7;
-  
+
   public SerializationUT(String name) {
     super(name);
   }
 
   public
   void setUp() throws Exception {
-    
+
     try {
       URL urlLocal = new URL("file:T/");
 
       URL url113 = new URL("file:T/log4j-1.1.3.jar");
-   
-      classLoader113 = new URLClassLoader(new URL[] {urlLocal, url113}); 
+
+      classLoader113 = new URLClassLoader(new URL[] {urlLocal, url113});
       class113  = classLoader113.loadClass("T113");
       o113 = class113.newInstance();
-      serMethod113 = class113.getMethod("serialize", 
+      serMethod113 = class113.getMethod("serialize",
 					new Class[] {java.util.Hashtable.class});
-      
-      deserMethod113 = class113.getMethod("deserialize", 
-					  new Class[] {byte[].class}); 
-      
+
+      deserMethod113 = class113.getMethod("deserialize",
+					  new Class[] {byte[].class});
+
 
       URL url2a7 = new URL("file:T/log4j-1.2alpha7.jar");
-   
+
       classLoader12a7 = new URLClassLoader(new URL[] {urlLocal, url2a7});
       class12a7 = classLoader12a7.loadClass("T12");
       o12a7 = class12a7.newInstance();
-      serMethod12a7 = class12a7.getMethod("serialize", 
+      serMethod12a7 = class12a7.getMethod("serialize",
 					 new Class[] {java.util.Hashtable.class});
-      deserMethod12a7 = class12a7.getMethod("deserialize", 
-					   new Class[] {byte[].class});     
+      deserMethod12a7 = class12a7.getMethod("deserialize",
+					   new Class[] {byte[].class});
     } catch(Exception e) {
       e.printStackTrace();
       throw e;
     }
-    
+
     System.out.println("---Exiting setup");
   }
 
@@ -91,16 +90,16 @@ public class SerializationUT extends TestCase {
   /**
      Test writing in 1.1.3 and reading from 1.1.3. Here we are testing
      the test.  */
-  public 
+  public
   void test1() throws Exception {
-    
+
     Hashtable inHt = new Hashtable();
     Hashtable witness = new Hashtable();
 
     inHt.put("categoryName", "a.b.c");
     inHt.put("priorityStr", "DEBUG");
     inHt.put("message", "hello");
-   
+
     witness.put("categoryName", "a.b.c");
     witness.put("priorityStr", "DEBUG");
     witness.put("renderedMessage", "hello");
@@ -118,16 +117,16 @@ public class SerializationUT extends TestCase {
   /**
      Test writing 1.2 and reading from 1.2. Here we are testing the test.
   */
-  public 
+  public
   void test2() throws Exception {
-    
+
     Hashtable inHt = new Hashtable();
     Hashtable witness = new Hashtable();
 
     inHt.put("categoryName", "a.b.c");
     inHt.put("priorityStr", "DEBUG");
     inHt.put("message", "hello");
-   
+
     witness.put("categoryName", "a.b.c");
     witness.put("priorityStr", "DEBUG");
     witness.put("renderedMessage", "hello");
@@ -139,18 +138,18 @@ public class SerializationUT extends TestCase {
   }
 
   /**
-     Test writing 1.1.3 and reading from 1.2. 
+     Test writing 1.1.3 and reading from 1.2.
   */
-  public 
+  public
   void test3() throws Exception {
-    
+
     Hashtable inHt = new Hashtable();
     Hashtable witness = new Hashtable();
 
     inHt.put("categoryName", "a.b.c");
     inHt.put("priorityStr", "DEBUG");
     inHt.put("message", "hello");
-   
+
     witness.put("categoryName", "a.b.c");
     witness.put("priorityStr", "DEBUG");
     witness.put("renderedMessage", "hello");
@@ -162,9 +161,9 @@ public class SerializationUT extends TestCase {
   /**
      Test writing 1.2 and reading from 1.1.3.
   */
-  public 
+  public
   void test4() throws Exception {
-    
+
     Hashtable inHt = new Hashtable();
     Hashtable witness = new Hashtable();
 
@@ -189,7 +188,7 @@ public class SerializationUT extends TestCase {
     assertEquals(witness, outHt);
   }
 
- 
+
   public
   static
   Test suite() {
@@ -199,7 +198,7 @@ public class SerializationUT extends TestCase {
     suite.addTest(new SerializationUT("test3"));
     suite.addTest(new SerializationUT("test4"));
     return suite;
-  }   
+  }
 }
 
 class ComparableException extends Exception {
@@ -210,11 +209,11 @@ class ComparableException extends Exception {
 
   public boolean equals(Object o) {
     System.out.println("ComparableException.equals called.");
-    if(!(o instanceof ComparableException)) 
+    if(!(o instanceof ComparableException))
       return false;
 
     ComparableException r = (ComparableException) o;
-    
+
     if(r.getMessage() == null) {
       if(getMessage() != null)
 	return false;

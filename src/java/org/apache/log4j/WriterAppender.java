@@ -9,14 +9,11 @@ package org.apache.log4j;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.io.FileWriter;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
 import org.apache.log4j.spi.ErrorHandler;
-import org.apache.log4j.spi.ErrorCode;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.helpers.QuietWriter;
 import org.apache.log4j.helpers.LogLog;
 
@@ -56,11 +53,11 @@ public class WriterAppender extends AppenderSkeleton {
 
   /**
      This is the {@link QuietWriter quietWriter} where we will write
-     to. 
+     to.
   */
   protected QuietWriter qw;
 
-  
+
   /**
      This default constructor does nothing.  */
   public
@@ -75,7 +72,7 @@ public class WriterAppender extends AppenderSkeleton {
   WriterAppender(Layout layout, OutputStream os) {
     this(layout, new OutputStreamWriter(os));
   }
-  
+
   /**
      Instantiate a WriterAppender and set the output destination to
      <code>writer</code>.
@@ -93,7 +90,7 @@ public class WriterAppender extends AppenderSkeleton {
      <code>true</code>, the appender will flush at the end of each
      write. This is the default behavior. If the option is set to
      <code>false</code>, then the underlying stream can defer writing
-     to physical medium to a later time. 
+     to physical medium to a later time.
 
      <p>Avoiding the flush operation at the end of each append results in
      a performance gain of 10 to 20 percent. However, there is safety
@@ -119,13 +116,13 @@ public class WriterAppender extends AppenderSkeleton {
      Does nothing.
   */
   public
-  void activateOptions() {    
+  void activateOptions() {
   }
 
 
   /**
      This method is called by the {@link AppenderSkeleton#doAppend}
-     method. 
+     method.
 
      <p>If the output stream exists and is writable then write a log
      statement to the output stream. Otherwise, write a single warning
@@ -133,7 +130,7 @@ public class WriterAppender extends AppenderSkeleton {
 
      <p>The format of the output will depend on this appender's
      layout.
-     
+
   */
   public
   void append(LoggingEvent event) {
@@ -151,11 +148,11 @@ public class WriterAppender extends AppenderSkeleton {
       return;
     }
     subAppend(event);
-   } 
+   }
 
   /**
      This method determines if there is a sense in attempting to append.
-     
+
      <p>It checks whether there is a set output target and also if
      there is a set layout. If these checks fail, then the boolean
      value <code>false</code> is returned. */
@@ -167,11 +164,11 @@ public class WriterAppender extends AppenderSkeleton {
     }
 
     if(this.qw == null) {
-      errorHandler.error("No output stream or file set for the appender named ["+ 
+      errorHandler.error("No output stream or file set for the appender named ["+
 			name+"].");
       return false;
     }
-    
+
     if(this.layout == null) {
       errorHandler.error("No layout set for the appender named ["+ name+"].");
       return false;
@@ -183,7 +180,7 @@ public class WriterAppender extends AppenderSkeleton {
   /**
      Close this appender instance. The underlying stream or writer is
      also closed.
-     
+
      <p>Closed appenders cannot be reused.
 
      @see #setWriter
@@ -200,7 +197,7 @@ public class WriterAppender extends AppenderSkeleton {
   /**
      Close the underlying {@link java.io.Writer}.
   */
-  protected 
+  protected
   void closeWriter() {
     if(qw != null) {
       try {
@@ -218,10 +215,10 @@ public class WriterAppender extends AppenderSkeleton {
      <code>encoding</code> property.  If the encoding value is
      specified incorrectly the writer will be opened using the default
      system encoding (an error message will be printed to the loglog.  */
-  protected 
+  protected
   OutputStreamWriter createWriter(OutputStream os) {
     OutputStreamWriter retval = null;
-    
+
     String enc = getEncoding();
     if(enc != null) {
       try {
@@ -237,16 +234,16 @@ public class WriterAppender extends AppenderSkeleton {
     return retval;
   }
 
-  public 
+  public
   String getEncoding() {
     return encoding;
   }
 
-  public 
+  public
   void setEncoding(String value) {
     encoding = value;
   }
-  
+
 
 
 
@@ -254,7 +251,7 @@ public class WriterAppender extends AppenderSkeleton {
      Set the {@link ErrorHandler} for this WriterAppender and also the
      underlying {@link QuietWriter} if any. */
   public
-  synchronized 
+  synchronized
   void setErrorHandler(ErrorHandler eh) {
     if(eh == null) {
       LogLog.warn("You have tried to set a null error-handler.");
@@ -263,20 +260,20 @@ public class WriterAppender extends AppenderSkeleton {
       if(this.qw != null) {
 	this.qw.setErrorHandler(eh);
       }
-    }    
+    }
   }
 
   /**
     <p>Sets the Writer where the log output will go. The
     specified Writer must be opened by the user and be
     writable.
-    
+
     <p>The <code>java.io.Writer</code> will be closed when the
     appender instance is closed.
 
-    
+
     <p><b>WARNING:</b> Logging to an unopened Writer will fail.
-    <p>  
+    <p>
     @param Writer An already opened Writer.  */
   public
   synchronized
@@ -309,10 +306,10 @@ public class WriterAppender extends AppenderSkeleton {
 	}
       }
     }
- 
+
     if(this.immediateFlush) {
       this.qw.flush();
-    } 
+    }
   }
 
 
@@ -335,7 +332,7 @@ public class WriterAppender extends AppenderSkeleton {
   void reset() {
     closeWriter();
     this.qw = null;
-    //this.tp = null;    
+    //this.tp = null;
   }
 
 
@@ -354,7 +351,7 @@ public class WriterAppender extends AppenderSkeleton {
   /**
      Write a header as produced by the embedded layout's {@link
      Layout#getHeader} method.  */
-  protected 
+  protected
   void writeHeader() {
     if(layout != null) {
       String h = layout.getHeader();

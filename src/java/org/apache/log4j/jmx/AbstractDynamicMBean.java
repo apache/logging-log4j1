@@ -16,11 +16,10 @@ import javax.management.RuntimeOperationsException;
 import javax.management.MBeanRegistration;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
-import javax.management.NotificationBroadcasterSupport;
 
 import org.apache.log4j.Logger;
 
-public abstract class AbstractDynamicMBean implements DynamicMBean, 
+public abstract class AbstractDynamicMBean implements DynamicMBean,
                                                       MBeanRegistration {
 
   String dClassName;
@@ -29,9 +28,9 @@ public abstract class AbstractDynamicMBean implements DynamicMBean,
   /**
    * Enables the to get the values of several attributes of the Dynamic MBean.
    */
-  public 
+  public
   AttributeList getAttributes(String[] attributeNames) {
-    
+
     // Check attributeNames is not null to avoid NullPointerException later on
     if (attributeNames == null) {
       throw new RuntimeOperationsException(
@@ -40,15 +39,15 @@ public abstract class AbstractDynamicMBean implements DynamicMBean,
     }
 
     AttributeList resultList = new AttributeList();
-    
+
     // if attributeNames is empty, return an empty result list
     if (attributeNames.length == 0)
       return resultList;
-    
+
     // build the result attribute list
     for (int i=0 ; i<attributeNames.length ; i++){
-      try {        
-	Object value = getAttribute((String) attributeNames[i]);     
+      try {
+	Object value = getAttribute((String) attributeNames[i]);
 	resultList.add(new Attribute(attributeNames[i],value));
       } catch (Exception e) {
 	e.printStackTrace();
@@ -62,7 +61,7 @@ public abstract class AbstractDynamicMBean implements DynamicMBean,
    * list of attributes that have been set.
    */
   public AttributeList setAttributes(AttributeList attributes) {
-    
+
     // Check attributes is not null to avoid NullPointerException later on
     if (attributes == null) {
       throw new RuntimeOperationsException(
@@ -70,18 +69,18 @@ public abstract class AbstractDynamicMBean implements DynamicMBean,
 		    "Cannot invoke a setter of " + dClassName);
     }
     AttributeList resultList = new AttributeList();
-    
+
     // if attributeNames is empty, nothing more to do
     if (attributes.isEmpty())
       return resultList;
-    
+
     // for each attribute, try to set it and add to the result list if successfull
     for (Iterator i = attributes.iterator(); i.hasNext();) {
       Attribute attr = (Attribute) i.next();
       try {
 	setAttribute(attr);
 	String name = attr.getName();
-	Object value = getAttribute(name); 
+	Object value = getAttribute(name);
 	resultList.add(new Attribute(name,value));
       } catch(Exception e) {
 	e.printStackTrace();
@@ -93,7 +92,7 @@ public abstract class AbstractDynamicMBean implements DynamicMBean,
   protected
   abstract
   Logger getLogger();
-  
+
   public
   void postDeregister() {
     getLogger().debug("postDeregister is called.");
@@ -104,13 +103,13 @@ public abstract class AbstractDynamicMBean implements DynamicMBean,
   }
 
 
-   
-  public 
+
+  public
   void preDeregister() {
     getLogger().debug("preDeregister called.");
   }
 
-  public 
+  public
   ObjectName preRegister(MBeanServer server, ObjectName name) {
     getLogger().debug("preRegister called. Server="+server+ ", name="+name);
     this.server = server;

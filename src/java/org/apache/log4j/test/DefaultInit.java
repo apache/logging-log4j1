@@ -2,11 +2,7 @@
 package org.apache.log4j.test;
 
 import org.apache.log4j.Category;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.PropertyConfigurator;
-import org.apache.log4j.SimpleLayout;
-import org.apache.log4j.FileAppender;
-	
+
 public class DefaultInit {
 
   static Category cat = Category.getInstance(DefaultInit.class);
