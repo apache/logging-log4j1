@@ -9,7 +9,7 @@
      <connectionSource class="org.apache.log4j.db.DataSourceConnectionSource">
        
        <dataSource class="${pooledDataSourceClass}">
-         <param name="url" value="${url}"/>
+         <param name="${url-key:-url}" value="${url}"/>
          <param name="serverName" value="${serverName}"/>
          <param name="databaseName" value="${databaseName}"/>          
        </dataSource>

@@ -26,16 +26,17 @@ import java.net.URL;
 import java.util.Properties;
 
 
-// Contributors:   Avy Sharell (sharell@online.fr)
-//                 Matthieu Verbert (mve@zurich.ibm.com)
+// Contributors:   Avy Sharell 
+//                 Matthieu Verbert
 //                 Colin Sampaleanu
 
 /**
-   A convenience class to convert property values to specific types.
-
-   @author Ceki G&uuml;lc&uuml;
-   @author Simon Kitching;
-   @author Anders Kristensen
+ * A convenience class to convert property values to specific types.
+ * 
+ * @author Ceki G&uuml;lc&uuml;
+ * @author Simon Kitching;
+ * @author Anders Kristensen
+ * @author Avy Sharell
 */
 public class OptionConverter {
   static String DELIM_START = "${";
@@ -355,40 +356,39 @@ public class OptionConverter {
   }
 
   /**
-     Perform variable substitution in string <code>val</code> from the
-     values of keys found in the system propeties.
-
-     <p>The variable substitution delimeters are <b>${</b> and <b>}</b>.
-
-     <p>For example, if the System properties contains "key=value", then
-     the call
-     <pre>
-     String s = OptionConverter.substituteVars("Value of key is ${key}.");
-     </pre>
-
-     will set the variable <code>s</code> to "Value of key is value.".
-
-     <p>If no value could be found for the specified key, then the
-     <code>props</code> parameter is searched, if the value could not
-     be found there, then substitution defaults to the empty string.
-
-     <p>For example, if system propeties contains no value for the key
-     "inexistentKey", then the call
-
-     <pre>
-     String s = OptionConverter.subsVars("Value of inexistentKey is [${inexistentKey}]");
-     </pre>
-     will set <code>s</code> to "Value of inexistentKey is []"
-
-     <p>An {@link java.lang.IllegalArgumentException} is thrown if
-     <code>val</code> contains a start delimeter "${" which is not
-     balanced by a stop delimeter "}". </p>
-
-     <p><b>Author</b> Avy Sharell</a></p>
-
-     @param val The string on which variable substitution is performed.
-     @throws IllegalArgumentException if <code>val</code> is malformed.
-
+   * Perform variable substitution in string <code>val</code> from the values of
+   * keys found the properties passed as parameter or in the system propeties.
+   * 
+   * <p>The variable substitution delimeters are <b>${</b> and <b>}</b>.
+   *
+   * <p>For example, if the properties parameter contains a property "key1" set
+   * as "value1", then the call <pre>
+   *  String s = OptionConverter.substituteVars("Value of key is ${key1}.");</pre>
+   * will set the variable <code>s</code> to "Value of key is value1.".
+   * 
+   * <p>If no value could be found for the specified key, then the 
+   * system properties are searched, if the value could not be found 
+   * there, then substitution defaults to the empty string.
+   * 
+   * <p>For example, if system propeties contains no value for the key 
+   * "inexistentKey", then the call
+   * <pre>
+   * String s = OptionConverter.subsVars("Value of inexistentKey is [${inexistentKey}]"); </pre>
+   * will set <code>s</code> to "Value of inexistentKey is []".
+   * 
+   * <p>Nevertheless, it is possible to specify a default substitution value 
+   * using the ":-" operator. For example, the call
+   * <pre>
+   * String s = OptionConverter.subsVars("Value of key is [${key2:-val2}]");</pre>
+   *  will set <code>s</code> to "Value of key is [val2]" even if the "key2"
+   * property is unset.
+   * 
+   * <p>An {@link java.lang.IllegalArgumentException} is thrown if 
+   * <code>val</code> contains a start delimeter "${" which is not 
+   * balanced by a stop delimeter "}". </p>
+   * 
+   * @param val The string on which variable substitution is performed.
+   * @throws IllegalArgumentException if <code>val</code> is malformed.
   */
   public static String substVars(String val, Properties props)
     throws IllegalArgumentException {
