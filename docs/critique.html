@@ -11,7 +11,7 @@
 <H1>JSR47 vs. log4j</H1>
 <font size="+1">by Ceki G&uuml;lc&uuml;</font>
 </CENTER>
-
+ 
 <hr>
 <p>I consider it quite distasteful to criticize other people's work,
 especially in public. However, since the logging API included in JDK
@@ -271,11 +271,13 @@ talking about 90 <em>nanoseconds</em> instead of 30
 million disabled logging requests will cost under a second in both
 environments.
 
-<p>Having said that, logging statements should never be placed in
-tight loops, for example, before or after an element swap instruction
-in a sort algorithm. In common cases, the cost of parameter
-construction before invoking a logging statement will overwhelm any
-other performance consideration.
+<p>In a shipped binary, you can turn off logging entirely and both
+APIs will perform identically.  Note that if one is not careful, the
+cost of parameter construction before invoking a disabled log
+statement will overwhelm any other performance consideration.
+Regardless of the API you decide to use, logging statements should
+never be placed in tight loops, for example, before or after an
+element swap instruction in a sort algorithm.
 
 <p>In log4j, caller localization information is optional whereas in
 JSR47 it is always extracted. Since the extraction of caller
@@ -296,114 +298,124 @@ the issue.
 
 <p><b>Please direct your polite and personalized request to <a
 href="mailto:java-logging-input@eng.sun.com">java-logging-input@eng.sun.com</a>
-with a cc: to <a href="mailto:cgu@qos.ch">cgu@qos.ch</a>.</b> 
+with <em>Bcc:</em> to <a href="mailto:cgu@qos.ch">cgu@qos.ch</a>.</b>
 
-<p>By the way, the address <code>java-logging-input@eng.sun.com</code>
-is not a mailing list for the JSR47 experts group. From what I hear,
-the mailing list address for JSR47 experts group is considered
-confidential information.
+<p>By the way, e-mail to <code>java-logging-input@eng.sun.com</code>
+does not go to the JSR47 experts group but is internal to Sun
+Microsystems. <em>The address of the JSR47 experts group mailing list
+is considered confidential information.</em> I do not know it myself.
 
-<p>Below is a list of individuals who have written to Sun, with the
-vast majority pushing for the adoption of log4j. I am very grateful
-for their support. Some of these requests are quite detailed and
-insightful. 
+<p>In just five days one hundred individuals, including some from very
+large accounts, have written to Sun to express their concern; the vast
+majority pushing for the adoption of log4j. Their names and the
+content of their request are listed below. I am very grateful for
+their support. Some of these requests are quite detailed and
+insightful.
 
 <p><UL>
-<li><p><a href="pub-support/AlexBlewitt.html">AlexBlewitt</a> 
-<li><p><a href="pub-support/FrankBaxter.html">Frank Baxter</a> 
-<li><p><a href="pub-support/EllisTeer.html">Ellis Teer</a> 
-<li><p><a href="pub-support/BrentSprecher.html">Brent Sprecher</a> 
-<li><p><a href="pub-support/JasonKitcat.html">Jason Kitcat</a> 
-<li><p><a href="pub-support/AndyDePue.html">Andy DePue</a>  and his <a href="pub-support/AndyDePue2.html">follow up</a> 
-<li><p><a href="pub-support/BenjaminRussellStocum.html">Benjamin Russell Stocum</a> 
-<li><p><a href="pub-support/DanielSavarese.html">Daniel F. Savarese</a> 
+<li><p><a href="pub-support/ChristopherTaylor.html">Christopher Taylor</a> <!-- -->
 <li><p>Jon Stevens
-<li><p><a href="pub-support/RichardDallaway.html">Richard Dallaway</a> 
-<li><p><a href="pub-support/JeffTurner.html">Jeff Turner</a> 
-<li><p><a href="pub-support/GuyLichtman.html">Guy Lichtman</a> 
-<li><p><a href="pub-support/AndersKristensen.html">Anders Kristensen</a> 
-<li><p><a href="pub-support/MichaelMoser.html">Michael Moser</a> 
-<li><p><a href="pub-support/ChristopherTaylor.html">Christopher Taylor</a> 
-<li><p><a href="pub-support/PaulGrinchenko.html">Paul Grinchenko</a> 
+<li><p><a href="pub-support/PaulGrinchenko.html">Paul Grinchenko</a> <!-- -->
 <li><p><a href="pub-support/CourtDemas.html">Court Demas</a> and his <a href="pub-support/CourtDemas2.html">follow up</a>
 <li><p><a href="pub-support/NelsonMinar.html">Nelson Minar</a> 
-<li><p><a href="pub-support/RobertMahoney.html">Robert Mahoney</a> 
+<li><p><a href="pub-support/RobertMahoney.html">Robert Mahoney</a> <!-- -->
+<li><p><a href="pub-support/EllisTeer.html">Ellis Teer</a> 
+<li><p><a href="pub-support/GuyLichtman.html">Guy Lichtman</a> <!-- -->
+<li><p><a href="pub-support/MichaelMoser.html">Michael Moser</a> <!-- -->
 <li><p><a href="pub-support/HenrikLundahl.html">Henrik Lundahl</a> 
 <li><p><a href="pub-support/ThomasFenner.html">Thomas Fenner</a> 
-<li><p><a href="pub-support/EndreStolsvik.html">Endre St&oslash;lsvik</a> 
+<li><p><a href="pub-support/EndreStolsvik.html">Endre St&oslash;lsvik</a> <!-- -->
 <li><p><a href="pub-support/KnutErikBallestad.html">Knut Erik Ballestad</a> 
-<li><p><a href="pub-support/JohnVolkar.html">John Volkar </a> 
 <li><p><a href="pub-support/HenrikFredholm.html">Henrik Fredholm</a> and his <a href="pub-support/HenrikFredholm2.html">follow up</a> to Graham.
-<li><p><a href="pub-support/WilliamJaynes.html">William Jaynes</a> 
-<li><p><a href="pub-support/MichaelStacey.html">Michael Stacey</a> 
+<li><p><a href="pub-support/JohnVolkar.html">John Volkar</a> <!-- -->
+<li><p><a href="pub-support/WilliamJaynes.html">William Jaynes</a> <!-- -->
+<li><p><a href="pub-support/MichaelStacey.html">Michael Stacey</a> <!-- -->
 <li><p><a href="pub-support/StacyCurl.html">Stacy Curl</a> 
-<li><p><a href="pub-support/DavidOwens.html">David Owens</a> 
+<li><p><a href="pub-support/DavidOwens.html">David Owens</a> <!-- -->
 <li><p><a href="pub-support/EoinFlood.html">Eoin Flood </a> 
 <li><p><a href="pub-support/TonyDean.html">Tony Dean </a> 
-<li><p><a href="pub-support/JamesProkash.html">James Prokash</a> 
-<li><p><a href="pub-support/RalfHaug.html">Ralf Haug</a> 
-<li><p><a href="pub-support/CarlBacher.html">Carl Bacher</a> 
-<li><p><a href="pub-support/DanTanner.html">Dan Tanner</a> 
-<li><p><a href="pub-support/JohnMunsch.html">John Munsch</a> 
-<li><p><a href="pub-support/SteveWingfield.html">Steve Wingfield</a> 
-<li><p><a href="pub-support/AbeMirrashidi.html">Abe Mirrashidi</a> 
-<li><p><a href="pub-support/RonJacobs.html">Ron Jacobs</a> 
-<li><p><a href="pub-support/JoeLoda.html">Joe Loda</a> 
-<li><p><a href="pub-support/DavidMaharaj.html">David Maharaj</a> 
-<li><p><a href="pub-support/HenryLi.html">Henry Li</a> 
-<li><p><a href="pub-support/RichardWilliams.html">Richard Williams </a> 
-<li><p><a href="pub-support/JasonHeirtzler.html">Jason Heirtzler</a> 
+<li><p><a href="pub-support/AlexBlewitt.html">AlexBlewitt</a> 
+<li><p><a href="pub-support/JamesProkash.html">James Prokash</a> <!-- -->
+<li><p><a href="pub-support/RalfHaug.html">Ralf Haug</a> <!-- -->
+<li><p><a href="pub-support/CarlBacher.html">Carl Bacher</a> <!-- -->
+<li><p><a href="pub-support/DanTanner.html">Dan Tanner</a> <!-- -->
+<li><p><a href="pub-support/BrentSprecher.html">Brent Sprecher</a> <!-- -->
+<li><p><a href="pub-support/SteveWingfield.html">Steve Wingfield</a> <!-- -->
+<li><p><a href="pub-support/AndersKristensen.html">Anders Kristensen</a> <!--  -->
+<li><p><a href="pub-support/AbeMirrashidi.html">Abe Mirrashidi</a> <!-- -->
+<li><p><a href="pub-support/JasonKitcat.html">Jason Kitcat</a> <!-- -->
+<li><p><a href="pub-support/RonJacobs.html">Ron Jacobs</a> <!-- -->
+<li><p><a href="pub-support/AndyDePue.html">Andy DePue</a>  and his <a href="pub-support/AndyDePue2.html">follow up</a> 
+<li><p><a href="pub-support/JoeLoda.html">Joe Loda</a> <!-- -->
+<li><p><a href="pub-support/DavidMaharaj.html">David Maharaj</a> <!-- -->
+<li><p><a href="pub-support/FrankBaxter.html">Frank Baxter</a> 
+<li><p><a href="pub-support/HenryLi.html">Henry Li</a> <!-- -->
+<li><p><a href="pub-support/RichardWilliams.html">Richard Williams </a> <!-- -->
+<li><p><a href="pub-support/JasonHeirtzler.html">Jason Heirtzler</a> <!-- -->
 <li><p><a href="pub-support/ScottMiller.html">Scott Miller</a> 
-<li><p><a href="pub-support/ChandraPatni.html">Chandra Patni</a> 
-<li><p><a href="pub-support/DanielHoppe.html">Daniel Hoppe </a> 
-<li><p><a href="pub-support/SebastienGuimont.html">Sebastien Guimont</a> 
+<li><p><a href="pub-support/ChandraPatni.html">Chandra Patni</a> <!-- -->
+<li><p><a href="pub-support/DanielHoppe.html">Daniel Hoppe </a> <!-- -->
+<li><p><a href="pub-support/SebastienGuimont.html">Sebastien Guimont</a> <!-- -->
 <li><p><a href="pub-support/ThomasQuas.html">Thomas Quas</a> 
-<li><p><a href="pub-support/DelEdwards.html">Del Edwards</a> 
-<li><p><a href="pub-support/Piper.html">Piper</a> 
-<li><p><a href="pub-support/TimColson.html">Tim Colson</a> 
-<li><p><a href="pub-support/HowardShip.html">Howard Ship</a> 
-<li><p><a href="pub-support/LewisGardner.html">Lewis Gardner</a> 
-<li><p><a href="pub-support/PayamMirrashidi.html">Payam Mirrashidi</a> 
+<li><p><a href="pub-support/JeffTurner.html">Jeff Turner</a> 
+<li><p><a href="pub-support/JohnMunsch.html">John Munsch</a> 
+<li><p><a href="pub-support/DelEdwards.html">Del Edwards</a> <!-- -->
+<li><p><a href="pub-support/Piper.html">Piper</a> <!-- -->
+<li><p><a href="pub-support/TimColson.html">Tim Colson</a> <!-- -->
+<li><p><a href="pub-support/HowardShip.html">Howard Ship</a> <!-- -->
+<li><p><a href="pub-support/LewisGardner.html">Lewis Gardner</a> <!-- -->
+<li><p><a href="pub-support/DanielSavarese.html">Daniel F. Savarese</a> <!-- -->
+<li><p><a href="pub-support/PayamMirrashidi.html">Payam Mirrashidi</a> <!-- -->
 <li><p><a href="pub-support/BruceDeen.html">Bruce W. Deen</a> 
-<li><p><a href="pub-support/EmilyBache.html">Emily Bache</a> 
+<li><p><a href="pub-support/EmilyBache.html">Emily Bache</a> and her <a href="pub-support/EmilyBache2.html">follow up</a> <!-- -->
 <li><p><a href="pub-support/JulienDubois.html">Julien Dubois</a> 
 <li><p><a href="pub-support/AlefArendsen.html">Alef Arendsen</a> 
 <li><p><a href="pub-support/SorenHilmer.html">S&oslash;ren Hilmer</a> 
 <li><p><a href="pub-support/MaheshBhat.html">Mahesh Bhat</a> 
 <li><p><a href="pub-support/JeffLinwood.html">Jeff Linwood</a> 
 <li><p><a href="pub-support/PeterMeulmeester.html">Peter Meulmeester</a> 
-<li><p><a href="pub-support/MichaelDuffy.html">Michael Duffy</a> 
+<li><p><a href="pub-support/MichaelDuffy.html">Michael Duffy</a> <!-- -->
 <li><p><a href="pub-support/BillGriffith.html">Bill Griffith</a> 
-<li><p><a href="pub-support/DanielBram.html">Daniel Bram</a> 
+<li><p><a href="pub-support/DanielBram.html">Daniel Bram</a> <!-- -->
+<li><p><a href="pub-support/RichardDallaway.html">Richard Dallaway</a> <!-- -->
 <li><p><a href="pub-support/ChrisMein.html">Chris Mein</a> 
+<li><p><a href="pub-support/BenjaminRussellStocum.html">Benjamin Russell Stocum</a> <!-- -->
 <li><p><a href="pub-support/GuyNirpaz.html">Guy Nirpaz</a> 
-<li><p><a href="pub-support/GrayJones.html">Gray Jones</a> 
+<li><p><a href="pub-support/GrayJones.html">Gray Jones</a> <!-- -->
 <li><p><a href="pub-support/CarlosPerez.html">Carlos Perez</a> 
-<li><p><a href="pub-support/PaulMichaelReilly.html">Paul Michael Reilly</a> 
-<li><p><a href="pub-support/MarcusAhnve.html">Marcus Ahnve</a> 
-<li><p><a href="pub-support/DavidDuddleston.html">David Duddleston</a> 
+<li><p><a href="pub-support/PaulMichaelReilly.html">Paul Michael Reilly</a> <!-- -->
+<li><p><a href="pub-support/MarcusAhnve.html">Marcus Ahnve</a> <!-- -->
+<li><p><a href="pub-support/DavidDuddleston.html">David Duddleston</a> <!-- -->
 <li><p><a href="pub-support/BrianPaulsen.html">Brian Paulsen</a> 
 <li><p><a href="pub-support/AlexFernandez.html">Alex Fernández</a> 
-<li><p><a href="pub-support/DanielStephan.html">Daniel Stephan</a> 
+<li><p><a href="pub-support/DanielStephan.html">Daniel Stephan</a> <!-- -->
 <li><p><a href="pub-support/AlexanderEvsukov.html">Alexander Evsukov</a> 
-<li><p><a href="pub-support/StevenSagaert.html">Steven Sagaert</a> 
+<li><p><a href="pub-support/StevenSagaert.html">Steven Sagaert</a> <!-- -->
 <li><p><a href="pub-support/DougErickson.html">Doug Erickson</a> 
-<li><p><a href="pub-support/ScottGilpin.html">Scott Gilpin </a> 
-<li><p><b><a href="pub-support/NateSammons.html">Nate Sammons</a></b> author of <a href="http://protomatter.sourceforge.net">Protomatter Syslog</a>
+<li><p><a href="pub-support/ScottGilpin.html">Scott Gilpin </a> <!-- -->
+<li><p><a href="pub-support/NateSammons.html">Nate Sammons</a> author of <a href="http://protomatter.sourceforge.net">Protomatter Syslog</a> <!-- -->
 <li><p><a href="pub-support/StephanSchmidt.html">Stephan J. Schmidt</a> 
-<li><p><a href="pub-support/JochenBedersdorfer.html">Jochen Bedersdorfer</a> 
-<li><p><a href="pub-support/BalajiKithiganahalli.html">Balaji Kithiganahalli</a> 
+<li><p><a href="pub-support/JochenBedersdorfer.html">Jochen Bedersdorfer</a> <!-- -->
+<li><p><a href="pub-support/BalajiKithiganahalli.html">Balaji Kithiganahalli</a> and his <a href="pub-support/BalajiKithiganahalli2.html">follow up</a>
 <li><p><a href="pub-support/ChrisYearsley.html">Chris Yearsley</a> 
-<li><p><a href="pub-support/ScottFleming.html">Scott Fleming</a> 
-<li><p><a href="pub-support/PaulCraven.html">Paul Craven</a> 
-<li><p><a href="pub-support/BruceKroeze.html">Bruce Kroeze</a> 
-<li><p><a href="pub-support/AndrewHarris.html">Andrew Harris</a> 
+<li><p><a href="pub-support/ScottFleming.html">Scott Fleming</a> <!-- -->
+<li><p><a href="pub-support/PaulCraven.html">Paul Craven</a> <!-- -->
+<li><p><a href="pub-support/BruceKroeze.html">Bruce Kroeze</a> <!-- -->
+<li><p><a href="pub-support/AndrewHarris.html">Andrew Harris</a> <!-- -->
+<li><p><a href="pub-support/BernshtamPavel.html">Bernshtam Pavel</a> <!-- -->
+<li><p><a href="pub-support/TomJanofsky.html">Tom Janofsky</a> 
+<li><p><a href="pub-support/StephenAshcroft.html">Stephen Ashcroft</a> 
+<li><p><a href="pub-support/BradleySchatz.html">Bradley Schatz</a> <!-- -->
+<li><p><a href="pub-support/ErikBergersjo.html">Erik Bergersj&ouml;</a> <!-- -->
+<li><p><a href="pub-support/KevinHuber.html">Kevin Huber</a>  <!-- -->
+<li><p><a href="pub-support/LeeTHall.html">Lee T Hall</a> <!-- -->
+<li><p><a href="pub-support/JoelSchneider.html">Joel Schneider</a> <!-- -->
+<li><p><a href="pub-support/IvanRosero.html">Ivan Rosero</a> <!-- -->
+<li><p><a href="pub-support/ArndtSchoenewald.html">Arndt Schoenewald</a> <!-- -->
+<li><p><a href="pub-support/ScottEllsworth.html">Scott Ellsworth</a> 
+<li><p><a href="pub-support/BrettMorgan.html">Brett Morgan </a> <!-- -->
 
 <!--
-
-
-
-
 <li><p><a href="pub-support/ .html"></a> 
 <li><p><a href="pub-support/ .html"></a> 
 <li><p><a href="pub-support/ .html"></a> 
@@ -413,7 +425,13 @@ insightful.
 <li><p><a href="pub-support/ .html"></a> 
 <li><p><a href="pub-support/ .html"></a> 
 <li><p><a href="pub-support/ .html"></a> 
-
+<li><p><a href="pub-support/ .html"></a> 
+<li><p><a href="pub-support/ .html"></a> 
+<li><p><a href="pub-support/ .html"></a> 
+<li><p><a href="pub-support/ .html"></a> 
+<li><p><a href="pub-support/ .html"></a> 
+<li><p><a href="pub-support/ .html"></a> 
+<li><p><a href="pub-support/ .html"></a> 
 
 -->
 
@@ -421,9 +439,10 @@ insightful.
 
 </UL>
 
-<p>Do not hesitate to contact <a href="cgu@qos.ch">cgu@qos.ch</a> in
-case you are uncomfortable seeing your name or the contents of your
-request reproduced publicly.
+<p>Most of the e-mail notes are reproduced with permission. However,
+do not hesitate to contact <a href="cgu@qos.ch">cgu@qos.ch</a> in case
+you are uncomfortable seeing your name or the contents of your request
+reproduced publicly.
 
 <h2>Sun's response</h2>
 
@@ -437,15 +456,19 @@ explains:
   sources and we've tried to support a wide set of requirements.
 </pre>
 
-<p>Unfortunately, given the uproar that this API is generating, it is
+<p>Unfortunately, given the uproar that this API is causing, it is
 becoming increasingly clear that the resulting API is unlikely to meet
-a wide set of requirements. The apparent failure of JSR47 API may be
-the inevitable consequence of the Java Community Process. <a
+a wide set of requirements. The apparent failure of JSR47 API is also
+casting a shadow on the nature of the Java Community Process. <a
 href="http://www.zdnet.com/eweek/stories/general/0,11011,2666270,00.html">Michael
 C. Daconta</a> has some interesting comments on the JCP.  All said and
 done, Java remains a wonderful computing platform.  Sun deserves
 credit for their ongoing investment. They have also introduced a
 number of amazingly innovative APIs. However, no one gets it right
 <em>all</em> the time.
+
+<p>Given the volume and the quality of support we are receiving from
+the community, I would not be surprised to see the JSR47 API retracted
+or replaced wholesale by log4j.
 
 </body> </HTML>
