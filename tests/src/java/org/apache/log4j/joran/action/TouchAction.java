@@ -24,7 +24,8 @@ import org.xml.sax.Attributes;
 
 public class TouchAction extends Action {
 
-
+  public static String KEY = "touched";
+  
   public TouchAction() {
   }
   /**
@@ -32,7 +33,13 @@ public class TouchAction extends Action {
    *
    */
   public void begin(ExecutionContext ec, String name, Attributes attributes) {
-    ec.getObjectMap().put("touch", "x");
+    
+    Integer i = (Integer) ec.getObjectMap().get(KEY);
+    if(i == null) {
+      ec.getObjectMap().put(KEY, new Integer(1));
+    } else {
+      ec.getObjectMap().put(KEY, new Integer(i.intValue()+1));
+    }
   }
 
   /**

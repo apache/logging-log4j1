@@ -20,6 +20,7 @@ package org.apache.log4j.joran.action;
 import org.apache.log4j.Appender;
 import org.apache.log4j.helpers.Option;
 import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.joran.spi.ActionException;
 import org.apache.log4j.joran.spi.ExecutionContext;
 import org.apache.log4j.spi.ErrorItem;
 import org.apache.log4j.spi.LoggerRepository;
@@ -40,9 +41,13 @@ public class AppenderAction extends Action {
    * The appender thus generated is placed in the ExecutionContext appender bag.
    */
   public void begin(
-    ExecutionContext ec, String localName, Attributes attributes) {
+    ExecutionContext ec, String localName, Attributes attributes) throws ActionException {
     String className = attributes.getValue(CLASS_ATTRIBUTE);
 
+    // We are just beginning, reset variables
+    appender = null;
+    inError = false;
+    
     try {
       getLogger().debug("About to instantiate appender of type [{}]", className);
 
@@ -72,12 +77,13 @@ public class AppenderAction extends Action {
 
       getLogger().debug("Pushing appender on to the object stack.");
       ec.pushObject(appender);
-    } catch (Throwable oops) {
+    } catch (Exception oops) {
       inError = true;
       getLogger().error(
         "Could not create an Appender. Reported error follows.", oops);
       ec.addError(
         new ErrorItem("Could not create appender of type " + className + "]."));
+      throw new ActionException(ActionException.SKIP_CHILDREN, oops);
     }
   }
 

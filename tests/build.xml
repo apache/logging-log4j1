@@ -215,7 +215,10 @@
   <!-- ================================================================= -->
   <!-- Joran unit tests                                                 -->
   <!-- ================================================================= -->
-  <target name="Joran" depends="Pattern, SimpleStore, Interpreter, 
+  <target name="Joran" depends="Pattern, 
+  	                            SimpleStore, 
+  	                            Interpreter, 
+  	                            SkipInInterpreter,
                                 JoranConfigurator"/>
 
 
@@ -580,7 +583,15 @@
       <test name="org.apache.log4j.joran.InterpreterTest" />
     </junit>
   </target>
-  
+
+  <target name="SkipInInterpreter" depends="check, build, cleanOutputDir">
+	<junit printsummary="yes" fork="yes" haltonfailure="yes">
+	  <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="false" />
+	  <test name="org.apache.log4j.joran.SkippingInInterpreterTest" />
+    </junit>
+   </target>
+		
   <target name="JoranConfigurator" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
