@@ -74,15 +74,16 @@ import javax.swing.JSlider;
  *
  */
 final class ThresholdSlider extends JSlider {
+  final List priorityList;
   ThresholdSlider() {
     
     Priority[] priorities =
       new Level[] {
         Level.OFF, Level.FATAL, Level.ERROR, Level.WARN, Level.INFO,
-        Level.DEBUG
+        Level.DEBUG, Level.ALL
       };
 
-    List priorityList = Arrays.asList(priorities);
+    priorityList = Arrays.asList(priorities);
 
     Collections.sort(
       priorityList,
@@ -106,13 +107,13 @@ final class ThresholdSlider extends JSlider {
 
     setModel(
       new DefaultBoundedRangeModel(
-        Level.DEBUG.getSyslogEquivalent(), 0, max.getSyslogEquivalent(), min.getSyslogEquivalent()));
+        priorityList.indexOf(Level.DEBUG), 0, 0, priorityList.size() - 1));
 
         
     Hashtable labelMap = new Hashtable();
     for (Iterator iter = priorityList.iterator(); iter.hasNext();) {
       Priority item = (Priority) iter.next();
-      labelMap.put(new Integer(item.getSyslogEquivalent()), new JLabel(item.toString()));
+      labelMap.put(new Integer(priorityList.indexOf(item)), new JLabel(item.toString()));
 //      System.out.println("creating levels for :: " + item.toInt() + "," + item.toString());
     }
     
@@ -127,5 +128,22 @@ final class ThresholdSlider extends JSlider {
     
 //    setPaintTrack(true);
     
+  }
+  
+  void setChosenLevel(Level level){
+    setValue(priorityList.indexOf(level));
+  }
+  
+  /**
+   * Returns the Log4j Level that is currently selected in this slider
+   * @return
+   */
+  Level getSelectedLevel() {
+    Level level = (Level) priorityList.get(getValue());
+    
+    if(level==null){
+      level = Level.DEBUG;
+    }
+    return level;
   }
 }
