@@ -5,6 +5,7 @@
 
 
 //      Contributors:      Dan Milstein 
+//                         Ray Millard
 
 package org.apache.log4j;
 

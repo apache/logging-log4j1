@@ -9,9 +9,9 @@ package org.apache.log4j.xml.test;
 
 import org.apache.log4j.xml.DOMConfigurator;
 import org.apache.log4j.Category;
-import org.apache.log4j.Priority;
+import org.apache.log4j.Level;
 
-import org.apache.log4j.xml.examples.XPriority;
+import org.apache.log4j.xml.examples.XLevel;
 import org.apache.log4j.xml.examples.XCategory;
 
 
@@ -69,8 +69,8 @@ public class XTest {
     cat.error("Message " + ++i);
     root.error("Message " + i);
     
-    cat.log(Priority.FATAL, "Message " + ++i);
-    root.log(Priority.FATAL, "Message " + i);    
+    cat.log(Level.FATAL, "Message " + ++i);
+    root.log(Level.FATAL, "Message " + i);    
     
     Exception e = new Exception("Just testing");
     cat.debug("Message " + ++i, e);

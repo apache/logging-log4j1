@@ -17,7 +17,7 @@ import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.Category;
-import org.apache.log4j.Priority;
+import org.apache.log4j.Level;
 import org.apache.log4j.Layout;
 import org.apache.log4j.helpers.SyslogWriter;
 import org.apache.log4j.helpers.SyslogQuietWriter;
@@ -237,7 +237,7 @@ public class SyslogAppender extends AppenderSkeleton {
   public
   void append(LoggingEvent event) {
 
-    if(!isAsSevereAsThreshold(event.priority))
+    if(!isAsSevereAsThreshold(event.level))
       return;
     
     // We must not attempt to append if sqw is null.
@@ -250,7 +250,7 @@ public class SyslogAppender extends AppenderSkeleton {
     String buffer = (facilityPrinting? facilityStr : "") +
                           layout.format(event);
 
-    sqw.setPriority(event.priority.getSyslogEquivalent());    
+    sqw.setLevel(event.level.getSyslogEquivalent());    
     sqw.write(buffer);
 
     String[] s = event.getThrowableStrRep();

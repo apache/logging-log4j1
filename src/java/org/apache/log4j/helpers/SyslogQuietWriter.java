@@ -17,14 +17,14 @@ import org.apache.log4j.spi.ErrorHandler;
 
 /**
    SyslogQuietWriter extends QuietWriter by prepending the syslog
-   priority code before each printed String.
+   level code before each printed String.
 
    @since 0.7.3
 */
 public class SyslogQuietWriter extends QuietWriter {
 
   int syslogFacility;
-  int priority;
+  int level;
 
   public
   SyslogQuietWriter(Writer writer, int syslogFacility, ErrorHandler eh) {
@@ -33,8 +33,8 @@ public class SyslogQuietWriter extends QuietWriter {
   }
 
   public
-  void setPriority(int priority) {
-    this.priority = priority;
+  void setLevel(int level) {
+    this.level = level;
   }
 
   public
@@ -44,6 +44,6 @@ public class SyslogQuietWriter extends QuietWriter {
   
   public
   void write(String string) {
-    super.write("<"+(syslogFacility | priority)+">" + string);
+    super.write("<"+(syslogFacility | level)+">" + string);
   }
 }

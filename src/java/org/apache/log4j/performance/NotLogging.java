@@ -10,7 +10,7 @@ import org.apache.log4j.SimpleLayout;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Layout;
 
-import org.apache.log4j.Priority;
+import org.apache.log4j.Level;
 
 /**
    Measure the performance of evaluating whether to log or not to log,
@@ -132,8 +132,8 @@ public class NotLogging {
     } else 
       Usage();
 
-    SHORT_CAT.setPriority(Priority.INFO);      
-    Category.getRoot().setPriority(Priority.INFO);
+    SHORT_CAT.setLevel(Level.INFO);      
+    Category.getRoot().setLevel(Level.INFO);
 
   }    
   

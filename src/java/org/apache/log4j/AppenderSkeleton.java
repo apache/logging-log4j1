@@ -34,8 +34,8 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
   protected String name;
 
   /**
-     There is no priority threshold filtering by default.  */
-  protected Priority threshold;
+     There is no level threshold filtering by default.  */
+  protected Level threshold;
 
   /** 
       It is assumed and enforced that errorHandler is never null.
@@ -168,25 +168,25 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
   }
 
   /**
-     Returns this appenders threshold priority. See the {@link
+     Returns this appenders threshold level. See the {@link
      #setThreshold} method for the meaning of this option.
      
      @since 1.1 */
   public
-  Priority getThreshold() {
+  Level getThreshold() {
     return threshold;
   }
 
 
   /**
-     Check whether the message priority is below the appender's
+     Check whether the message level is below the appender's
      threshold. If there is no threshold set, then the return value is
      always <code>true</code>.
 
   */
   public
-  boolean isAsSevereAsThreshold(Priority priority) {
-    return ((threshold == null) || priority.isGreaterOrEqual(threshold));
+  boolean isAsSevereAsThreshold(Level level) {
+    return ((threshold == null) || level.isGreaterOrEqual(threshold));
   }
 
 
@@ -203,7 +203,7 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
       LogLog.error("Attempted to append to closed appender named ["+name+"].");
     }
 
-    if(!isAsSevereAsThreshold(event.priority)) {
+    if(!isAsSevereAsThreshold(event.level)) {
       return;
     }
 
@@ -259,16 +259,16 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
 
 
   /**
-     Set the threshold priority. All log events with lower priority
-     than the threshold priority are ignored by the appender.
+     Set the threshold level. All log events with lower level
+     than the threshold level are ignored by the appender.
      
      <p>In configuration files this option is specified by setting the
-     value of the <b>Threshold</b> option to a priority
+     value of the <b>Threshold</b> option to a level
      string, such as "DEBUG", "INFO" and so on.
      
      @since 0.8.3 */
   public
-  void setThreshold(Priority threshold) {
+  void setThreshold(Level threshold) {
     this.threshold = threshold;
   }  
 }

@@ -8,7 +8,7 @@
 
 package org.apache.log4j.varia;
 
-import org.apache.log4j.Priority;
+import org.apache.log4j.Level;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.helpers.LogLog;
@@ -50,8 +50,8 @@ public class PriorityRangeFilter extends Filter {
      <code>false</code>, so that later filters get run by default  */
   boolean acceptOnMatch = false;
 
-  Priority priorityMin;
-  Priority priorityMax;
+  Level priorityMin;
+  Level priorityMax;
 
  
   /**
@@ -60,14 +60,14 @@ public class PriorityRangeFilter extends Filter {
   public
   int decide(LoggingEvent event) {
     if(this.priorityMin != null) {
-      if (event.priority.isGreaterOrEqual(priorityMin) == false) {
+      if (event.level.isGreaterOrEqual(priorityMin) == false) {
         // priority of event is less than minimum
         return Filter.DENY;
       }
     }
 
     if(this.priorityMax != null) {
-      if (event.priority.toInt() > priorityMax.toInt()) {
+      if (event.level.toInt() > priorityMax.toInt()) {
         // priority of event is greater than maximum
         // Alas, there is no Priority.isGreater method. and using
         // a combo of isGreaterOrEqual && !Equal seems worse than
@@ -90,7 +90,7 @@ public class PriorityRangeFilter extends Filter {
  /**
      Get the value of the <code>PriorityMax</code> option.  */
   public
-  Priority getPriorityMax() {
+  Level getPriorityMax() {
     return priorityMax;
   }
 
@@ -98,7 +98,7 @@ public class PriorityRangeFilter extends Filter {
   /**
      Get the value of the <code>PriorityMin</code> option.  */
   public
-  Priority getPriorityMin() {
+  Level getPriorityMin() {
     return priorityMin;
   }
 
@@ -114,7 +114,7 @@ public class PriorityRangeFilter extends Filter {
      Set the <code>PriorityMax</code> option.
    */
   public
-  void setPriorityMax(Priority priorityMax) {
+  void setPriorityMax(Level priorityMax) {
     this.priorityMax =  priorityMax;
   }
 
@@ -122,7 +122,7 @@ public class PriorityRangeFilter extends Filter {
      Set the <code>PriorityMin</code> option.
    */
   public
-  void setPriorityMin(Priority priorityMin) {
+  void setPriorityMin(Level priorityMin) {
     this.priorityMin =  priorityMin;
   }
 
@@ -154,10 +154,10 @@ public class PriorityRangeFilter extends Filter {
   public
   void setOption(String key, String value) {
     if(key.equalsIgnoreCase(PRIORITY_MIN_OPTION)) {
-      priorityMin = OptionConverter.toPriority(value, null);
+      priorityMin = OptionConverter.toLevel(value, null);
     }
     else if (key.equalsIgnoreCase(PRIORITY_MAX_OPTION)) {
-      priorityMax = OptionConverter.toPriority(value, null);
+      priorityMax = OptionConverter.toLevel(value, null);
     }
     else if (key.equalsIgnoreCase(ACCEPT_ON_MATCH_OPTION)) {
       acceptOnMatch = OptionConverter.toBoolean(value, acceptOnMatch);

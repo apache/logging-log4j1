@@ -8,7 +8,7 @@
 package org.apache.log4j.spi;
 
 import org.apache.log4j.Category;
-import org.apache.log4j.Priority;
+import org.apache.log4j.Level;
 import org.apache.log4j.NDC;
 import org.apache.log4j.MDC;
 
@@ -55,10 +55,10 @@ public class LoggingEvent implements java.io.Serializable {
   /** The category name. */
   public final String categoryName;
   
-  /** Priority of logging event. Priority cannot be serializable
+  /** Level of logging event. Level cannot be serializable
       because it is a flyweight.  Due to its special seralization it
       cannot be declared final either. */
-  transient public Priority priority;
+  transient public Level level;
 
   /** The nested diagnostic context (NDC) of logging event. */
   private String ndc;
@@ -107,8 +107,8 @@ public class LoggingEvent implements java.io.Serializable {
   static final long serialVersionUID = -868428216207166145L;
 
   static final Integer[] PARAM_ARRAY = new Integer[1];
-  static final String TO_PRIORITY = "toPriority";
-  static final Class[] TO_PRIORITY_PARAMS = new Class[] {int.class};
+  static final String TO_LEVEL = "toLevel";
+  static final Class[] TO_LEVEL_PARAMS = new Class[] {int.class};
   static final Hashtable methodCache = new Hashtable(3); // use a tiny table
 
   /**
@@ -118,15 +118,15 @@ public class LoggingEvent implements java.io.Serializable {
      <code>LoggingEvent</code> are filled when actually needed.
      <p>
      @param category The category of this event.
-     @param priority The priority of this event.
+     @param level The level of this event.
      @param message  The message of this event.
      @param throwable The throwable of this event.  */
   public LoggingEvent(String fqnOfCategoryClass, Category category, 
-		      Priority priority, Object message, Throwable throwable) {
+		      Level level, Object message, Throwable throwable) {
     this.fqnOfCategoryClass = fqnOfCategoryClass;
     this.category = category;
     this.categoryName = category.getName();
-    this.priority = priority;
+    this.level = level;
     this.message = message;
     if(throwable != null) {
       this.throwableInfo = new ThrowableInformation(throwable);
@@ -263,34 +263,34 @@ public class LoggingEvent implements java.io.Serializable {
 	
 
   private 
-  void readPriority(ObjectInputStream ois) 
+  void readLevel(ObjectInputStream ois) 
                       throws java.io.IOException, ClassNotFoundException {
 
     int p = ois.readInt();
     try {
       String className = (String) ois.readObject();      
       if(className == null) {
-	priority = Priority.toPriority(p);
+	level = Level.toLevel(p);
       } else {
 	Method m = (Method) methodCache.get(className);	
 	if(m == null) {
 	  Class clazz = Loader.loadClass(className);
-	  m = clazz.getDeclaredMethod(TO_PRIORITY, TO_PRIORITY_PARAMS);
+	  m = clazz.getDeclaredMethod(TO_LEVEL, TO_LEVEL_PARAMS);
 	  methodCache.put(className, m);
 	}      
 	PARAM_ARRAY[0] = new Integer(p);
-	priority = (Priority) m.invoke(null,  PARAM_ARRAY);
+	level = (Level) m.invoke(null,  PARAM_ARRAY);
       }
     } catch(Exception e) {
-	LogLog.warn("Priority deserialization failed, reverting to default.", e);
-	priority = Priority.toPriority(p);
+	LogLog.warn("Level deserialization failed, reverting to default.", e);
+	level = Level.toLevel(p);
     }
   }
 
   private void readObject(ObjectInputStream ois)
                         throws java.io.IOException, ClassNotFoundException {
     ois.defaultReadObject();    
-    readPriority(ois);
+    readLevel(ois);
 
     // Make sure that no location info is available to Layouts
     if(locationInfo == null)
@@ -315,17 +315,17 @@ public class LoggingEvent implements java.io.Serializable {
 
     oos.defaultWriteObject();
     
-    // serialize this event's priority
-    writePriority(oos);
+    // serialize this event's level
+    writeLevel(oos);
   }
 
   private 
-  void writePriority(ObjectOutputStream oos) throws java.io.IOException {
+  void writeLevel(ObjectOutputStream oos) throws java.io.IOException {
 
-    oos.writeInt(priority.toInt());
+    oos.writeInt(level.toInt());
 
-    Class clazz = priority.getClass();
-    if(clazz == Priority.class) {
+    Class clazz = level.getClass();
+    if(clazz == Level.class) {
       oos.writeObject(null);
     } else {
       // writing directly the Class object would be nicer, except that

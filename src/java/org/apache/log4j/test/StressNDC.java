@@ -8,7 +8,7 @@ import org.apache.log4j.Category;
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.SimpleLayout;
 import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Priority;
+import org.apache.log4j.Level;
 import org.apache.log4j.NDC;
 
 
@@ -43,7 +43,6 @@ public class StressNDC extends Thread {
   public 
   static 
   void main(String args[]) {
-    root.setPriority(Priority.DEBUG);
     BasicConfigurator.configure();
 
     if(args.length != 1) {

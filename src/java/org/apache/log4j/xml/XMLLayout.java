@@ -143,8 +143,8 @@ public class XMLLayout extends Layout {
     buf.append(event.categoryName);
     buf.append("\" timestamp=\"");
     buf.append(event.timeStamp);
-    buf.append("\" priority=\"");
-    buf.append(event.priority);
+    buf.append("\" level=\"");
+    buf.append(event.level);
     buf.append("\" thread=\"");
     buf.append(event.getThreadName());
     buf.append("\">\r\n");

@@ -9,11 +9,14 @@ JSOURCES:=OptionHandler.java\
 	Filter.java\
         ErrorHandler.java\
 	ErrorCode.java\
-	CategoryFactory.java\
 	Configurator.java\
         ThrowableInformation.java\
 	TriggeringEventEvaluator.java\
         HierarchyEventListener.java\
+
+#        LoggerRepository.java\
+#        DefaultRepositorySelector.java\
+#        LoggerFactory.java\
 
 SUBDIRS := 
 

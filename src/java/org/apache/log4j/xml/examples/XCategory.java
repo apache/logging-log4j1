@@ -9,13 +9,13 @@ package org.apache.log4j.xml.examples;
 
 
 import org.apache.log4j.Category;
-import org.apache.log4j.Priority;
+import org.apache.log4j.Level;
 import org.apache.log4j.spi.OptionHandler;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.CategoryFactory;
 import org.apache.log4j.helpers.LogLog;
 
-import org.apache.log4j.xml.examples.XPriority;
+import org.apache.log4j.xml.examples.XLevel;
 
 /**
    A simple example showing Category sub-classing. It shows the
@@ -67,7 +67,7 @@ public class XCategory extends Category implements OptionHandler {
   */
   public 
   void debug(String message) {
-    super.log(FQCN, Priority.DEBUG, message + " " + suffix, null);
+    super.log(FQCN, Level.DEBUG, message + " " + suffix, null);
   }
 
 
@@ -105,24 +105,24 @@ public class XCategory extends Category implements OptionHandler {
 
   /**
      We introduce a new printing method in order to support {@link
-     XPriority#LETHAL}.  */
+     XLevel#LETHAL}.  */
   public
   void lethal(String message, Throwable t) { 
-    if(hierarchy.isDisabled(XPriority.LETHAL_INT)) 
+    if(hierarchy.isDisabled(XLevel.LETHAL_INT)) 
       return;
-    if(XPriority.LETHAL.isGreaterOrEqual(this.getChainedPriority()))
-      forcedLog(FQCN, XPriority.LETHAL, message, t);
+    if(XLevel.LETHAL.isGreaterOrEqual(this.getChainedLevel()))
+      forcedLog(FQCN, XLevel.LETHAL, message, t);
   }
 
   /**
      We introduce a new printing method in order to support {@link
-     XPriority#LETHAL}.  */
+     XLevel#LETHAL}.  */
   public
   void lethal(String message) { 
-    if(hierarchy.isDisabled(XPriority.LETHAL_INT)) 
+    if(hierarchy.isDisabled(XLevel.LETHAL_INT)) 
       return;
-    if(XPriority.LETHAL.isGreaterOrEqual(this.getChainedPriority()))
-      forcedLog(FQCN, XPriority.LETHAL, message, null);
+    if(XLevel.LETHAL.isGreaterOrEqual(this.getChainedLevel()))
+      forcedLog(FQCN, XLevel.LETHAL, message, null);
   }
 
 
@@ -152,25 +152,25 @@ public class XCategory extends Category implements OptionHandler {
   }
 
   /**
-     We introduce a new printing method that takes the TRACE priority.
+     We introduce a new printing method that takes the TRACE level.
   */
   public
   void trace(String message, Throwable t) { 
-    if(hierarchy.isDisabled(XPriority.TRACE_INT))
+    if(hierarchy.isDisabled(XLevel.TRACE_INT))
       return;   
-    if(XPriority.TRACE.isGreaterOrEqual(this.getChainedPriority()))
-      forcedLog(FQCN, XPriority.TRACE, message, t);
+    if(XLevel.TRACE.isGreaterOrEqual(this.getChainedLevel()))
+      forcedLog(FQCN, XLevel.TRACE, message, t);
   }
 
   /**
-     We introduce a new printing method that takes the TRACE priority.
+     We introduce a new printing method that takes the TRACE level.
   */
   public
   void trace(String message) { 
-    if(hierarchy.isDisabled(XPriority.TRACE_INT))
+    if(hierarchy.isDisabled(XLevel.TRACE_INT))
       return;   
-    if(XPriority.TRACE.isGreaterOrEqual(this.getChainedPriority()))
-      forcedLog(FQCN, XPriority.TRACE, message, null);
+    if(XLevel.TRACE.isGreaterOrEqual(this.getChainedLevel()))
+      forcedLog(FQCN, XLevel.TRACE, message, null);
   }
 
 

@@ -9,7 +9,7 @@ package org.apache.log4j.nt;
 
 import org.apache.log4j.*;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.Priority;
+import org.apache.log4j.Level;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.helpers.LogLog;
 
@@ -34,11 +34,11 @@ public class NTEventLogAppender extends AppenderSkeleton {
   private String source = null;
   private String server = null;
 
-  private static final int FATAL  = Priority.FATAL.toInt();
-  private static final int ERROR  = Priority.ERROR.toInt();
-  private static final int WARN   = Priority.WARN.toInt();
-  private static final int INFO   = Priority.INFO.toInt();
-  private static final int DEBUG  = Priority.DEBUG.toInt();
+  private static final int FATAL  = Level.FATAL.toInt();
+  private static final int ERROR  = Level.ERROR.toInt();
+  private static final int WARN   = Level.WARN.toInt();
+  private static final int INFO   = Level.INFO.toInt();
+  private static final int DEBUG  = Level.DEBUG.toInt();
   
   public NTEventLogAppender() {
     this(null, null, null);
@@ -110,8 +110,8 @@ public class NTEventLogAppender extends AppenderSkeleton {
 	}	
       }
     }
-    // Normalize the log message priority into the supported categories
-    int nt_category = event.priority.toInt();
+    // Normalize the log message level into the supported categories
+    int nt_category = event.level.toInt();
 
     // Anything above FATAL or below DEBUG is labeled as INFO.
     //if (nt_category > FATAL || nt_category < DEBUG) {
@@ -150,7 +150,7 @@ public class NTEventLogAppender extends AppenderSkeleton {
   }
   
   native private int registerEventSource(String server, String source);
-  native private void reportEvent(int handle, String message, int priority);
+  native private void reportEvent(int handle, String message, int level);
   native private void deregisterEventSource(int handle);
   
   static {

@@ -78,7 +78,7 @@ public class PropertyPrinter implements PropertyGetter.PropertyCallback {
   protected
   void printOptions(PrintWriter out, Category cat) {
     Enumeration appenders = cat.getAllAppenders();
-    Priority prio = cat.getPriority();
+    Level prio = cat.getLevel();
     String appenderString = (prio == null ? "" : prio.toString());
     
     while (appenders.hasMoreElements()) {
