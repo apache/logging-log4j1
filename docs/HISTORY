@@ -11,7 +11,10 @@
 
  - This minor release fixes bug #9155 reported by Nicko Cadell.
    LoggingEvent.getMDCCopy() method now sets mdcCopyLookupRequired
-   instead of ndcLookupRequired. [*]
+   instead of ndcLookupRequired.  This bug would cause the wrong MDC
+   information to appear on a log server. It could only occur if the
+   client wrapped an AsyncAppender around a SocketAppender or if the
+   server used an AsyncAppender for its logging. [*]
 
  May, 2002
  
