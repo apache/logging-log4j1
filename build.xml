@@ -319,13 +319,19 @@ later. For JDK 1.2, you can get the JNDI API from
     </javac>
   </target>
   
-  <target name="build.chainsaw" depends="init, chainsawCheck, build.core" if="chainsaw-libraries-present">
+  <target name="build.chainsaw" depends="init, chainsawCheck, build.core">
     <javac deprecation="${deprecation}"
            srcdir="${java.source.dir}"
     	   debug="${debug}"
-           destdir="${javac.dest}"
-           includes="${stem}/chainsaw/**/*.java,${stem}/rule/*.java,${stem}/varia/ExpressionFilter.java,${stem}/varia/LogFilePatternReceiver*.java"
-           excludes="${stem}/chainsaw/vfs/*.java">
+           destdir="${javac.dest}">
+  		   <patternset>
+  		   	<include name="${stem}/chainsaw/**/*.java"/>
+  		   	<include name="${stem}/rule/*.java"/>
+  		   	<include name="${stem}/varia/ExpressionFilter.java"/>
+  		    <include name="${stem}/varia/LogFilePatternReceiver*.java" if="chainsaw-libraries-present"/>
+  			<exclude name="${stem}/chainsaw/vfs/*.java"/>
+    	    <exclude name="${stem}/rule/LikeRule.java" unless="chainsaw-libraries-present"/>
+  	       </patternset>
       <classpath refid="compile.classpath"/>   
     </javac>
   </target>
@@ -358,8 +364,11 @@ later. For JDK 1.2, you can get the JNDI API from
   <target name="oroWarning" unless="chainsaw-libraries-present">	
     <echo>
       Could not find jakarta-oro classes. Did you forget to set
-      "regexp.oro.jar" property in build.properties to point to
-      a valid jakarta.oro.jar file?
+"regexp.oro.jar" property in build.properties to point to
+a valid jakarta.oro.jar file?  Chainsaw will be built but will
+not include support for:
+   the 'LIKE' (regular expression) rule
+   LogFilePatternReceiver
     </echo>
   </target>
   	
@@ -367,15 +376,11 @@ later. For JDK 1.2, you can get the JNDI API from
     <echo message="Chainsaw dependant libraries present."/>
   </target>
 
-  <target name="chainsawRunCheck" depends="chainsawCheck">
-    <fail unless="chainsaw-libraries-present" message="Chainsaw v2 needs Jakarta ORO, and it appears your are missing the Jakarta ORO package.  Please check the build.properties file."/>
-  </target>
-
   <!-- ================================================================= -->
   <!-- Runs Chainsaw                                                     -->
   <!-- ================================================================= -->
 
-  <target name="chainsaw" depends="chainsawRunCheck, build.chainsaw, log4j.jar, chainsaw.jar" description="Builds and runs Chainsaw v2" >
+  <target name="chainsaw" depends="build.chainsaw, log4j.jar, chainsaw.jar" description="Builds and runs Chainsaw v2" >
 
     <!-- Need to fork to avoid problems -->
     <java classname="org.apache.log4j.chainsaw.LogUI" fork="yes"
@@ -423,7 +428,7 @@ later. For JDK 1.2, you can get the JNDI API from
                 ${stem}/or/jms/*.class,
                 ${stem}/plugins/*.class,
                 ${stem}/config/*.class"
-      excludes="**/UnitTest**, ${stem}/**/*BeanInfo.class">
+      excludes="**/UnitTest**, ${stem}/**/*BeanInfo.class, ${stem}/varia/LogFilePatternReceiver*.class, ${stem}/varia/ExpressionFilter.class">
     	<exclude name="**/JMSReceiver*" if="webstart"/>
     	<exclude name="**/DBReceiver*" if="webstart"/>
       <manifest>
@@ -484,9 +489,10 @@ later. For JDK 1.2, you can get the JNDI API from
          includes="${stem}/chainsaw/*.class,
                 ${stem}/**/*.html,
                 **/*.css,
-                **/resources/*
+                **/resources/*,
                 ${stem}/varia/ExpressionFilter*.class,
-                ${stem}/rule/*.class,
+                ${stem}/varia/LogFilePatternReceiver*.class,
+            	${stem}/rule/*.class,
                 ${stem}/**/*BeanInfo.class,
          		${stem}/chainsaw/**/*.class, 
           		${stem}/chainsaw/layout/*, 
