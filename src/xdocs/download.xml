@@ -9,13 +9,17 @@
   <meta name="keywords" content="java, logging, tracing, component, framework, API, log4j"/>
 <body>
 
-    <section name="log4j version 1.2 (final)">
-      <p>log4j 1.2 is now available in <a
-	href="../jakarta-log4j-1.2.tar.gz"><b>TAR.GZ</b></a> format or
-	in <a href="../jakarta-log4j-1.2.zip"><b>ZIP</b></a> format.
+    <section name="log4j version 1.2.4">
+      <p>log4j 1.2.4 is available in <a
+	href="../jakarta-log4j-1.2.4.tar.gz"><b>TAR.GZ</b></a> format
+	or in <a href="../jakarta-log4j-1.2.4.zip"><b>ZIP</b></a>
+	format.
       </p>
 
-
+      <p>Release 1.2.4 fixes several relatively minor bugs. See the
+      <a href="HISTORY">HISTORY</a> file for the exact details.
+      </p>
+      
       <p>In addition to many performance improvements, bug fixes, and
 	other small enhancements, log4j 1.2 adds JMX support, Mapped
 	Diagnostic Contexts, JDBC logging, graphical log viewer
@@ -35,9 +39,10 @@
 	replacement for log4j 1.1.3. The only exception is the
 	renaming of the <code>CategoryFactory</code> class to
 	<code>LoggerFactory</code> class such that subclasses of
-	<code>Category</code> class to be modified and recompiled. By
-	the way, we strongly discourage casual users from subclassing
-	the <code>Category</code> or <code>Logger</code> classes.
+	<code>Category</code> class must be modified and
+	recompiled. By the way, <b>we strongly discourage casual users
+	from subclassing the <code>Category</code> or
+	<code>Logger</code> classes.</b>
       </p>
 
       <p>We also maintain a list of <a href="earlier.html">earlier
@@ -57,9 +62,9 @@
 	
 	<dt><a
 	href="http://logui.sourceforge.net/"><b>Chainsaw</b></a></dt>
-	<dd>Chainsaw is now integrated with log4j and ships with the
-	official distribution. Chainsaw is a graphical log viewer and
-	filter for the log4j package. It listens for <a
+	<dd><b>Chainsaw is now integrated with log4j and ships with
+	the official distribution.</b> Chainsaw is a graphical log
+	viewer and filter for the log4j package. It listens for <a
 	href="http://jakarta.apache.org/log4j/docs/api/org/apache/log4j/spi/LoggingEvent.html">LoggingEvent</a>
 	objects sent using the <a
 	href="http://jakarta.apache.org/log4j/docs/api/org/apache/log4j/net/SocketAppender.html">SocketAppender</a>

@@ -14,8 +14,13 @@ import java.sql.SQLException;
 
 
 /**
-  The JDBCAppender provides for sending log events to a database.
+   <p><b><font color="#FF2222">WARNING: This version of JDBCAppender
+   is very likely to be completely replaced in the future. Moreoever,
+   it does not log exceptions.</font></b> </p>
 
+  The JDBCAppender provides for sending log events to a database.
+  
+  
   <p>Each append call adds to an <code>ArrayList</code> buffer.  When
   the buffer is filled each log event is placed in a sql statement
   (configurable) and executed.
@@ -247,10 +252,10 @@ public class JDBCAppender extends org.apache.log4j.AppenderSkeleton
 
 
   /**
-   * JDBCAppender builds a layout internally if one is not provided.
-   */
+   * JDBCAppender requires a layout.
+   * */
   public boolean requiresLayout() {
-    return false;
+    return true;
   }
 
 

@@ -24,6 +24,12 @@
 	    <a href="api/index.html"><b>javadoc documentation</b></a>,
 	  </li>
 	</p>
+
+	<p>
+	  <li>
+	    <a href="lf5/overview.html"><b>LogFactor5 documentation</b></a>,
+	  </li>
+	</p>
 	
 	<p>
 	  <li>
@@ -58,10 +64,6 @@
 	    Add logging to your Java Applications</a> by Kevin Brown
 	</li>
 	
-	<li><a href="http://www.entwickler.com/jm/ausgaben/2001/4/artikel/17/online.shtml">
-	    Computer: captains, new entry... DasJakarta Logging-System log4j</a> by Thomas Poschmann
-	</li>
-
 	<li>
 	  <a href="http://www.opensymphony.com/guidelines/logging.jsp">OpenSymphony Logging Primer</a>
 	</li>

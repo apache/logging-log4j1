@@ -23,7 +23,7 @@ import org.apache.log4j.spi.LoggingEvent;
  */
 class LoggingReceiver extends Thread {
     /** used to log messages **/
-    private static final Logger logger = Logger.getLogger(LoggingReceiver.class);
+    private static final Logger LOG = Logger.getLogger(LoggingReceiver.class);
 
     /**
      * Helper that actually processes a client connection. It receives events
@@ -46,7 +46,7 @@ class LoggingReceiver extends Thread {
 
         /** loops getting the events **/
         public void run() {
-            logger.debug("Starting to get data");
+            LOG.debug("Starting to get data");
             try {
                 final ObjectInputStream ois =
                     new ObjectInputStream(mClient.getInputStream());
@@ -55,19 +55,19 @@ class LoggingReceiver extends Thread {
                     mModel.addEvent(new EventDetails(event));
                 }
             } catch (EOFException e) {
-                logger.info("Reached EOF, closing connection");
+                LOG.info("Reached EOF, closing connection");
             } catch (SocketException e) {
-                logger.info("Caught SocketException, closing connection");
+                LOG.info("Caught SocketException, closing connection");
             } catch (IOException e) {
-                logger.warn("Got IOException, closing connection", e);
+                LOG.warn("Got IOException, closing connection", e);
             } catch (ClassNotFoundException e) {
-                logger.warn("Got ClassNotFoundException, closing connection", e);
+                LOG.warn("Got ClassNotFoundException, closing connection", e);
             }
 
             try {
                 mClient.close();
             } catch (IOException e) {
-                logger.warn("Error closing connection", e);
+                LOG.warn("Error closing connection", e);
             }
         }
     }
@@ -93,19 +93,19 @@ class LoggingReceiver extends Thread {
 
     /** Listens for client connections **/
     public void run() {
-        logger.info("Thread started");
+        LOG.info("Thread started");
         try {
             while (true) {
-                logger.debug("Waiting for a connection");
+                LOG.debug("Waiting for a connection");
                 final Socket client = mSvrSock.accept();
-                logger.debug("Got a connection from " +
+                LOG.debug("Got a connection from " +
                           client.getInetAddress().getHostName());
                 final Thread t = new Thread(new Slurper(client));
                 t.setDaemon(true);
                 t.start();
             }
         } catch (IOException e) {
-            logger.error("Error in accepting connections, stopping.", e);
+            LOG.error("Error in accepting connections, stopping.", e);
         }
     }
 }

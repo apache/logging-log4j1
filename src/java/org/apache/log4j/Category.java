@@ -431,9 +431,10 @@ public class Category implements AppenderAttachable {
   }
 
   /**
-
-     @deprecated Has been replaced by the {@link #getEffectiveLevel}
-     method.  */
+    *
+    * @deprecated Please use the the {@link #getEffectiveLevel} method
+    * instead.  
+    * */
   public
   Priority getChainedPriority() {
     for(Category c = this; c != null; c=c.parent) {
