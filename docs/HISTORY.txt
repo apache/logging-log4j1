@@ -8,6 +8,14 @@
    [D] Changes affect a method or property which was previously marked as 
        deprecated.
 
+  November 25, 2004
+
+ - Release of version 1.3apha-2
+ 
+ - The deprecated DOMConfigrator was mistakenly left as the default
+   configrator for XML files.  This has been fixed and JoranConfigrator
+   now is the default configrator for XML files.
+ 
  November 24th, 2004
 
  - Release of version 1.3apha-1

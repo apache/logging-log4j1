@@ -4,7 +4,7 @@
   <!-- The build.properties file defines the parth to local jar files -->
   <property file="build.properties"/>
 
-  <property name="version" value="1.3alpha-1"/>
+  <property name="version" value="1.3alpha-2"/>
 
   <!-- The base directory relative to which most targets are built -->
   <property name="base" value="."/>
