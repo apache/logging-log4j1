@@ -8,6 +8,7 @@ JSOURCES:=HTMLLayout.java\
 	PatternLayout.java\
 	AsyncAppender.java\
 	NDC.java\
+	RollingFileAppenderBeanInfo.java\
 	AppenderSkeleton.java\
 	CategoryKey.java\
 	ProvisionNode.java\

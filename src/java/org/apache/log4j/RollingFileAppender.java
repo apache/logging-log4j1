@@ -153,14 +153,14 @@ public class RollingFileAppender extends FileAppender {
     return maxBackupIndex;
   }
   
-  /*
+  /**
      Set the maximum size that the output file is allowed to reach
      before being rolled over to backup files.
    */
-  //public
-  //void setMaxFileSize(long maxFileSize) {
-  //this.maxFileSize = maxFileSize;
-  //}
+  public
+  void setMaxFileSize(long maxFileSize) {
+    this.maxFileSize = maxFileSize;
+  }
 
   /**
      Set the maximum size that the output file is allowed to reach
