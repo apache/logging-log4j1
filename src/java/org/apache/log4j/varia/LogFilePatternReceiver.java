@@ -410,7 +410,7 @@ public class LogFilePatternReceiver extends Receiver {
    * @param unbufferedReader
    * @throws IOException
    */
-  private void process(Reader unbufferedReader) throws IOException {
+  protected void process(Reader unbufferedReader) throws IOException {
     BufferedReader bufferedReader = new BufferedReader(unbufferedReader);
 
     Perl5Compiler compiler = new Perl5Compiler();
@@ -508,7 +508,7 @@ public class LogFilePatternReceiver extends Receiver {
    * Build the regular expression needed to parse log entries
    *  
    */
-  private void initialize() {
+  protected void initialize() {
     
     util = new Perl5Util();
     exceptionCompiler = new Perl5Compiler();
