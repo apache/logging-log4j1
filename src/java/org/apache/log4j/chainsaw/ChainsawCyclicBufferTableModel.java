@@ -90,9 +90,11 @@ import javax.swing.table.AbstractTableModel;
 class ChainsawCyclicBufferTableModel extends AbstractTableModel
   implements EventContainer, PropertyChangeListener {
   private boolean cyclic = true;
-  private final int INITIAL_CAPACITY = 5000;
-  List unfilteredList = new CyclicBufferList(INITIAL_CAPACITY);
-  List filteredList = new CyclicBufferList(INITIAL_CAPACITY);
+  private final int DEFAULT_CAPACITY = 5000;
+  private int capacity = DEFAULT_CAPACITY;
+  private static final String PANEL_CAPACITY = "CHAINSAW_CAPACITY";
+  List unfilteredList = new CyclicBufferList(capacity);
+  List filteredList = new CyclicBufferList(capacity);
   private boolean currentSortAscending;
   private int currentSortColumn;
   private EventListenerList eventListenerList = new EventListenerList();
@@ -115,6 +117,11 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
 
   public ChainsawCyclicBufferTableModel() {
     propertySupport.addPropertyChangeListener("cyclic", new ModelChanger());
+    if (System.getProperty(PANEL_CAPACITY) != null) {
+        try {
+            capacity = Integer.parseInt(System.getProperty(PANEL_CAPACITY));
+        } catch (NumberFormatException nfe) {}
+    }
   }
 
   /**
@@ -330,7 +337,10 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
       return null;
     }
 
-    LocationInfo info = event.getLocationInformation();
+    LocationInfo info = null;
+    if (event.locationInformationExists()) {
+        info = event.getLocationInformation();
+    }
 
     if (event == null) {
       LogLog.error("Invalid rowindex=" + rowIndex);
@@ -376,16 +386,16 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
       return event.getThrowableStrRep();
 
     case ChainsawColumns.INDEX_CLASS_COL_NAME:
-      return (info != null) ? info.getClassName() : "";
+      return (info == null) ?  "" : info.getClassName();
 
     case ChainsawColumns.INDEX_FILE_COL_NAME:
-      return (info != null) ? info.getFileName() : "";
+      return (info == null) ? "" : info.getFileName();
 
     case ChainsawColumns.INDEX_LINE_COL_NAME:
-      return (info != null) ? info.getLineNumber() : "";
+      return (info == null) ? "" : info.getLineNumber();
 
     case ChainsawColumns.INDEX_METHOD_COL_NAME:
-      return (info != null) ? info.getMethodName() : "";
+      return (info == null) ? "" : info.getMethodName();
 
     default:
 
@@ -594,9 +604,9 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
         List newFilteredList = null;
 
         if (isCyclic()) {
-          newFilteredList = new CyclicBufferList(INITIAL_CAPACITY);
+          newFilteredList = new CyclicBufferList(capacity);
         } else {
-          newFilteredList = new ArrayList(INITIAL_CAPACITY);
+          newFilteredList = new ArrayList(capacity);
         }
 
         synchronized (unfilteredList) {
@@ -669,9 +679,9 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
                   List newUnfilteredList = null;
 
                   if (isCyclic()) {
-                    newUnfilteredList = new CyclicBufferList(INITIAL_CAPACITY);
+                    newUnfilteredList = new CyclicBufferList(capacity);
                   } else {
-                    newUnfilteredList = new ArrayList(INITIAL_CAPACITY);
+                    newUnfilteredList = new ArrayList(capacity);
                   }
 
                   for (Iterator iter = unfilteredList.iterator();

@@ -402,15 +402,17 @@ public class UtilLoggingXMLDecoder implements Decoder {
           properties.putAll(additionalProperties);
         }
       }
-
+      LocationInfo info = null;
+      if ((fileName != null) || (className != null) || (methodName != null) || (lineNumber != null)) {
+          info = new LocationInfo(fileName, className, methodName, lineNumber);
+      } 
       events.add(
         new LoggingEvent(
           logger.getName(), logger, timeStamp, level, threadName, message, ndc,
           mdc, exception,
-          new LocationInfo(fileName, className, methodName, lineNumber),
+          info,
           properties));
     }
-
     return events;
   }
 

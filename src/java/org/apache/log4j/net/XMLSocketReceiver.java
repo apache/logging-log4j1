@@ -49,16 +49,17 @@
 
 package org.apache.log4j.net;
 
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.plugins.Receiver;
-import org.apache.log4j.plugins.Plugin;
-import org.apache.log4j.spi.LoggerRepository;
-
 import java.net.ServerSocket;
 import java.net.Socket;
-
 import java.util.List;
 import java.util.Vector;
+
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.plugins.Pauseable;
+import org.apache.log4j.plugins.Plugin;
+import org.apache.log4j.plugins.Receiver;
+import org.apache.log4j.spi.LoggerRepository;
+import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
@@ -73,14 +74,17 @@ import java.util.Vector;
   @author Mark Womack
   @since 1.3
 */
-public class XMLSocketReceiver extends Receiver implements Runnable, PortBased {
+public class XMLSocketReceiver extends Receiver implements Runnable, PortBased, Pauseable {
   protected int port;
   protected boolean active = false;
-
+  private boolean paused;
+  private boolean shutdown;
   //default to log4j xml decoder
   protected String decoder = "org.apache.log4j.xml.XMLDecoder";
   private ServerSocket serverSocket;
   private List socketList = new Vector();
+  private Thread rThread;
+  public static int DEFAULT_PORT = 4448;
 
   public XMLSocketReceiver() {
   }
@@ -112,6 +116,14 @@ public class XMLSocketReceiver extends Receiver implements Runnable, PortBased {
 
   public void setDecoder(String _decoder) {
     decoder = _decoder;
+  }
+
+  public boolean isPaused() {
+    return paused;
+  }
+
+  public void setPaused(boolean b) {
+    paused = b;
   }
 
   /**
@@ -150,7 +162,7 @@ public class XMLSocketReceiver extends Receiver implements Runnable, PortBased {
     Starts the SocketReceiver with the current options. */
   public void activateOptions() {
     if (!isActive()) {
-      Thread rThread = new Thread(this);
+      rThread = new Thread(this);
       rThread.setDaemon(true);
       rThread.start();
       active = true;
@@ -164,32 +176,82 @@ public class XMLSocketReceiver extends Receiver implements Runnable, PortBased {
     // mark this as no longer running
     active = false;
 
-    // close the server socket
-    try {
-      if (serverSocket != null) {
-        serverSocket.close();
-      }
-    } catch (Exception e) {
-    	//ignore for now
+    if (rThread != null) {
+      rThread.interrupt();
+      rThread = null;
     }
-
-    // close all of the accepted sockets
-    for (int x = 0; x < socketList.size(); x++) {
-      try {
-        ((Socket) socketList.get(x)).close();
-      } catch (Exception e) {
-    	//ignore for now
-      }
-    }
-
-    // clear member variables
-    serverSocket = null;
-    socketList.clear();
+    doShutdown();
   }
+
+    /**
+     * Does the actual shutting down by closing the server socket
+     * and any connected sockets that have been created.
+     */
+    private synchronized void doShutdown() {
+      active = false;
+
+      LogLog.debug(getName() + " doShutdown called");
+
+      // close the server socket
+      closeServerSocket();
+
+      // close all of the accepted sockets
+      closeAllAcceptedSockets();
+
+      setShutdown(true);
+    }
+
+    /**
+     * @param b
+     */
+    private void setShutdown(boolean b) {
+      shutdown = b;
+    }
+
+
+    /**
+      * Closes the server socket, if created.
+      */
+     private void closeServerSocket() {
+       LogLog.debug(getName() + " closing server socket");
+
+       try {
+         if (serverSocket != null) {
+           serverSocket.close();
+         }
+       } catch (Exception e) {
+         // ignore for now
+       }
+
+       serverSocket = null;
+     }
+
+    /**
+      * Closes all the connected sockets in the List.
+      */
+     private synchronized void closeAllAcceptedSockets() {
+       for (int x = 0; x < socketList.size(); x++) {
+         try {
+           ((Socket) socketList.get(x)).close();
+         } catch (Exception e) {
+           // ignore for now
+         }
+       }
+
+       // clear member variables
+       socketList.clear();
+     }
 
   /**
     Loop, accepting new socket connections. */
   public void run() {
+      /**
+        * Ensure we start fresh.
+        */
+    LogLog.debug("performing socket cleanup prior to entering loop for " + name);
+    closeServerSocket();
+    closeAllAcceptedSockets();
+    LogLog.debug("socket cleanup complete for " + name);       
     active = true;
 
     // start the server socket
@@ -200,15 +262,19 @@ public class XMLSocketReceiver extends Receiver implements Runnable, PortBased {
         "error starting SocketReceiver (" + this.getName()
         + "), receiver did not start", e);
       active = false;
+      setShutdown(true);
 
       return;
     }
 
+    Socket socket = null;
+
     try {
-      Socket socket = null;
       LogLog.debug("in run-about to enter while isactiveloop");
 
-      while (isActive()) {
+      active = true;
+
+      while (!rThread.isInterrupted()) {
         // if we have a socket, start watching it
         if (socket != null) {
           LogLog.debug("socket not null - creating and starting socketnode");
@@ -236,7 +302,16 @@ public class XMLSocketReceiver extends Receiver implements Runnable, PortBased {
         "exception while watching socket server in SocketReceiver ("
         + this.getName() + "), stopping", e);
     }
-
-    active = false;
   }
+
+  /* (non-Javadoc)
+   * @see org.apache.log4j.plugins.Receiver#doPost(org.apache.log4j.spi.LoggingEvent)
+   */
+  public void doPost(LoggingEvent event) {
+    if(!isPaused()){
+      super.doPost(event);
+    }
+  }
+
+
 }

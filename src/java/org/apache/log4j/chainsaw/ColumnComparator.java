@@ -100,8 +100,8 @@ public class ColumnComparator implements Comparator {
       case ChainsawColumns.INDEX_METHOD_COL_NAME:
 
         if (
-          (e1.getLocationInformation() != null)
-            & (e2.getLocationInformation() != null)) {
+          (e1.locationInformationExists())
+            & (e2.locationInformationExists())) {
           sort =
             e1.getLocationInformation().getMethodName().compareToIgnoreCase(
               e2.getLocationInformation().getMethodName());
@@ -112,8 +112,8 @@ public class ColumnComparator implements Comparator {
       case ChainsawColumns.INDEX_CLASS_COL_NAME:
 
         if (
-          (e1.getLocationInformation() != null)
-            & (e2.getLocationInformation() != null)) {
+          (e1.locationInformationExists())
+            & (e2.locationInformationExists())) {
           sort =
             e1.getLocationInformation().getClassName().compareToIgnoreCase(
               e2.getLocationInformation().getClassName());
@@ -124,8 +124,8 @@ public class ColumnComparator implements Comparator {
       case ChainsawColumns.INDEX_FILE_COL_NAME:
 
         if (
-          (e1.getLocationInformation() != null)
-            & (e2.getLocationInformation() != null)) {
+          (e1.locationInformationExists())
+            & (e2.locationInformationExists())) {
           sort =
             e1.getLocationInformation().getFileName().compareToIgnoreCase(
               e2.getLocationInformation().getFileName());

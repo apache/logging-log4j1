@@ -219,7 +219,10 @@ public class EventDetailLayout extends Layout {
     String ndc = event.getNDC();
     Hashtable mdc = formatMDC(event);
     String[] throwableStringRep = event.getThrowableStrRep();
-    LocationInfo li = formatLocationInfo(event);
+    LocationInfo li = null;
+    if (event.locationInformationExists()) {
+        formatLocationInfo(event);
+    }
     Hashtable properties = formatProperties(event);
     LoggingEvent copy =
       new LoggingEvent(

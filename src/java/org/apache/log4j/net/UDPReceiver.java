@@ -49,20 +49,19 @@
 
 package org.apache.log4j.net;
 
-import org.apache.log4j.Decoder;
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.plugins.Receiver;
-import org.apache.log4j.spi.LoggingEvent;
-
 import java.io.IOException;
-
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import org.apache.log4j.Decoder;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.plugins.Pauseable;
+import org.apache.log4j.plugins.Receiver;
+import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
@@ -72,14 +71,15 @@ import java.util.List;
  *  @author Scott Deboy <sdeboy@apache.org>
  *
  */
-public class UDPReceiver extends Receiver implements PortBased{
-  private UDPReceiverThread receiverThread;
-
+public class UDPReceiver extends Receiver implements PortBased, Pauseable {
   private static final int PACKET_LENGTH = 16384;
+  private UDPReceiverThread receiverThread;
+  private String encoding;
 
   //default to log4j xml decoder
   private String decoder = "org.apache.log4j.xml.XMLDecoder";
   private Decoder decoderImpl;
+  protected boolean paused;
   private boolean isActive = false;
   private int port;
   private DatagramSocket socket;
@@ -93,12 +93,35 @@ public class UDPReceiver extends Receiver implements PortBased{
     this.port = port;
   }
 
+  /**
+      The <b>Encoding</b> option specifies how the bytes are encoded.  If this option is not specified,
+      the system encoding will be used.
+    */
+  public void setEncoding(String encoding) {
+    this.encoding = encoding;
+  }
+
+  /**
+     Returns value of the <b>Encoding</b> option.
+   */
+  public String getEncoding() {
+    return encoding;
+  }
+
   public String getDecoder() {
     return decoder;
   }
 
   public void setDecoder(String decoder) {
     this.decoder = decoder;
+  }
+
+  public boolean isPaused() {
+    return paused;
+  }
+
+  public void setPaused(boolean b) {
+    paused = b;
   }
 
   public synchronized void shutdown() {
@@ -114,7 +137,6 @@ public class UDPReceiver extends Receiver implements PortBased{
     return isActive;
   }
 
-
   public void activateOptions() {
     try {
       Class c = Class.forName(decoder);
@@ -124,20 +146,20 @@ public class UDPReceiver extends Receiver implements PortBased{
         this.decoderImpl = (Decoder) o;
       }
     } catch (ClassNotFoundException cnfe) {
-    	LogLog.warn("Unable to find decoder", cnfe);
+      LogLog.warn("Unable to find decoder", cnfe);
     } catch (IllegalAccessException iae) {
-    	LogLog.warn("Could not construct decoder", iae);
+      LogLog.warn("Could not construct decoder", iae);
     } catch (InstantiationException ie) {
-    	LogLog.warn("Could not construct decoder", ie);
+      LogLog.warn("Could not construct decoder", ie);
     }
 
     try {
-      isActive=true;
+      isActive = true;
       socket = new DatagramSocket(port);
       receiverThread = new UDPReceiverThread();
       receiverThread.start();
-	  handlerThread = new UDPHandlerThread();
-	  handlerThread.start();
+      handlerThread = new UDPHandlerThread();
+      handlerThread.start();
     } catch (IOException ioe) {
       ioe.printStackTrace();
     }
@@ -153,17 +175,25 @@ public class UDPReceiver extends Receiver implements PortBased{
     public void append(String data) {
       synchronized (list) {
         list.add(data);
+        list.notify();
       }
     }
 
-    public synchronized void run() {
+    public void run() {
       ArrayList list2 = new ArrayList();
 
       while (isAlive() && isActive()) {
         synchronized (list) {
-          if (list.size() > 0) {
-            list2.addAll(list);
-            list.clear();
+          try {
+            while (list.size() == 0) {
+              list.wait();
+            }
+
+            if (list.size() > 0) {
+              list2.addAll(list);
+              list.clear();
+            }
+          } catch (InterruptedException ie) {
           }
         }
 
@@ -172,12 +202,15 @@ public class UDPReceiver extends Receiver implements PortBased{
 
           while (iter.hasNext()) {
             String data = (String) iter.next();
-			List v= decoderImpl.decodeEvents(data);
+            List v = decoderImpl.decodeEvents(data);
 
             if (v != null) {
               Iterator eventIter = v.iterator();
+
               while (eventIter.hasNext()) {
-				doPost((LoggingEvent)eventIter.next());;
+                if (!isPaused()) {
+                  doPost((LoggingEvent) eventIter.next());
+                }
               }
             }
           }
@@ -185,15 +218,20 @@ public class UDPReceiver extends Receiver implements PortBased{
           list2.clear();
         } else {
           try {
-            wait(1000);
+            synchronized (this) {
+              wait(1000);
+            }
           } catch (InterruptedException ie) {
+          }
         }
       }
+
+      if (!isActive()) {
+        LogLog.debug(
+          UDPReceiver.this.getName()
+          + "'s handler thread is exiting because of shutdown");
+      }
     }
-    if(!isActive()){
-      LogLog.debug(UDPReceiver.this.getName() + "'s handler thread is exiting because of shutdown");
-    }
-  }
   }
 
   class UDPReceiverThread extends Thread {
@@ -211,15 +249,22 @@ public class UDPReceiver extends Receiver implements PortBased{
         try {
           socket.receive(p);
 
-          String data = new String(p.getData(), 0, p.getLength()).trim();
-          handlerThread.append(data);
-        }
-        catch (SocketException se) {
-        	//disconnected
+          //this string constructor which accepts a charset throws an exception if it is 
+          //null
+          if (encoding == null) {
+            handlerThread.append(
+              new String(p.getData(), 0, p.getLength()).trim());
+          } else {
+            handlerThread.append(
+              new String(p.getData(), 0, p.getLength(), encoding).trim());
+          }
+        } catch (SocketException se) {
+          //disconnected
         } catch (IOException ioe) {
           ioe.printStackTrace();
         }
       }
+
       LogLog.debug(UDPReceiver.this.getName() + "'s thread is ending.");
     }
   }

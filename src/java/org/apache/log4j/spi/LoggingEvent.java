@@ -295,6 +295,14 @@ public class LoggingEvent implements java.io.Serializable {
   }
 
   /**
+   * Check for the existence of location information without creating it (a byproduct of calling
+   * getLocationInformation).
+   */
+  public boolean locationInformationExists() {
+    return (locationInfo != null);
+  }
+  
+  /**
    * Set the location information for this logging event. The collected
    * information is cached for future use.
    */
@@ -566,8 +574,11 @@ public class LoggingEvent implements java.io.Serializable {
     if (properties == null) {
       properties = new Hashtable(5); // create a small hashtable
     }
-
-    properties.put(key, value);
+    if (value != null) { 
+        properties.put(key, value);        
+    } else {
+        properties.remove(key);
+    }
   }
 
   private void writeObject(ObjectOutputStream oos) throws java.io.IOException {

@@ -123,6 +123,7 @@ import org.apache.log4j.net.SocketNodeEventListener;
 import org.apache.log4j.net.SocketReceiver;
 import org.apache.log4j.net.UDPAppender;
 import org.apache.log4j.net.UDPReceiver;
+import org.apache.log4j.net.XMLSocketReceiver;
 import org.apache.log4j.plugins.Pauseable;
 import org.apache.log4j.plugins.PluginRegistry;
 import org.apache.log4j.plugins.Receiver;
@@ -664,6 +665,13 @@ class ReceiversPanel extends JPanel {
           new SimplePortBasedReceiverDialogPanel(
             UDPReceiver.class, "UDPReceiver", UDPAppender.DEFAULT_PORT)));
 
+        dialogMap.put(
+          XMLSocketReceiver.class,
+          new CreateReceiverDialog(
+            XMLSocketReceiver.class, "XMLSocketReceiver", "XML Socket Receiver (log4j.dtd)",
+            new SimplePortBasedReceiverDialogPanel(
+              XMLSocketReceiver.class, "XMLSocketReceiver", XMLSocketReceiver.DEFAULT_PORT)));
+
       List dialogMapEntryList = new ArrayList();
 
       for (Iterator iter = dialogMap.entrySet().iterator(); iter.hasNext();) {
@@ -715,8 +723,10 @@ class ReceiversPanel extends JPanel {
 
       if (userObject == getRootOfTree().getUserObject()) {
         buildForReceiversRoot();
-      } else {
+      } else if (getCurrentlySelectedReceiver() != null) {
         buildForReceiverNode();
+      } else {
+          return;
       }
 
       this.invalidate();

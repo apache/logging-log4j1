@@ -54,7 +54,6 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.net.SocketReceiver;
 import org.apache.log4j.plugins.PluginRegistry;
-import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
 
 import java.beans.PropertyChangeListener;
@@ -62,12 +61,8 @@ import java.beans.PropertyChangeSupport;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.Vector;
 
 import javax.swing.event.EventListenerList;
@@ -135,97 +130,6 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
     return false;
   }
 
-  /**
-   * Converts a LoggingEvent into a Vector of element (columns really).
-   * @param event
-   * @return
-   *
-   * @deprecated
-   */
-  public static Vector convert(LoggingEvent event) {
-    Vector v = new Vector();
-    LocationInfo info = event.getLocationInformation();
-    String className = "";
-    String methodName = "";
-    String fileName = "";
-    String lineNum = "";
-
-    if (info != null) {
-      try {
-        className = info.getClassName();
-        methodName = info.getMethodName();
-        fileName = info.getFileName();
-        lineNum = info.getLineNumber();
-      } catch (NullPointerException npe) {
-      }
-
-      //ignore..malformed info
-    }
-
-    StringBuffer MDC = new StringBuffer();
-    Set mdc = event.getMDCKeySet();
-    Iterator iter = mdc.iterator();
-
-    while (iter.hasNext()) {
-      if (MDC.length() != 0) {
-        MDC.append(",");
-      }
-
-      String propName = (String) iter.next();
-      MDC.append(propName);
-      MDC.append("=");
-
-      String propValue = (String) event.getMDC(propName);
-      MDC.append(propValue);
-    }
-
-    StringBuffer prop = new StringBuffer();
-    Set properties = event.getPropertyKeySet();
-
-    if (properties != null) {
-      Iterator iter2 = properties.iterator();
-
-      while (iter2.hasNext()) {
-        if (prop.length() != 0) {
-          prop.append(",");
-        }
-
-        String propName = (String) iter2.next();
-        prop.append(propName);
-        prop.append("=");
-
-        String propValue = (String) event.getProperty(propName);
-        prop.append(propValue);
-      }
-    }
-
-    v.add(event.getLoggerName());
-    v.add(new Date(event.timeStamp));
-    v.add(event.getLevel().toString());
-    v.add(event.getThreadName());
-    v.add(event.getRenderedMessage());
-    v.add(event.getNDC());
-    v.add(MDC.toString());
-
-    StringBuffer exc = new StringBuffer();
-    String[] excarray = event.getThrowableStrRep();
-
-    if (excarray != null) {
-      for (int i = 0; i < excarray.length; i++) {
-        exc.append(excarray[i]);
-      }
-    }
-
-    v.add(exc.toString());
-    v.add(className);
-    v.add(methodName);
-    v.add(fileName);
-    v.add(lineNum);
-    v.add(prop.toString());
-
-    return v;
-  }
-
   public int getQueueInterval() {
     return sleepInterval;
   }
@@ -251,9 +155,10 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
     String appname = e.getProperty(ChainsawConstants.LOG4J_APP_KEY);
 
     if (appname != null) {
-      if(ident.length()>0){
-          ident.append("-");
+      if (ident.length() > 0) {
+        ident.append("-");
       }
+
       ident.append(appname);
     }
 
@@ -378,21 +283,23 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
    */
   class WorkQueue {
     private final ArrayList queue = new ArrayList();
-    private boolean stopped = false;
+    Thread workerThread;
 
     protected WorkQueue() {
-      new WorkerThread().start();
+      workerThread = new WorkerThread();
+      workerThread.start();
     }
 
     public final void enqueue(LoggingEvent event) {
       synchronized (mutex) {
         queue.add(event);
+        mutex.notify();
       }
     }
 
     public final void stop() {
       synchronized (mutex) {
-        stopped = true;
+        workerThread.interrupt();
       }
     }
 
@@ -409,38 +316,42 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
       public void run() {
         List innerList = new ArrayList();
 
-        while (isAlive()) {
+        while (true) {
           long timeStart = System.currentTimeMillis();
 
           synchronized (mutex) {
-            if (stopped) {
-              return;
-            } else {
+            try {
+              while (queue.size() == 0) {
+                mutex.wait();
+              }
+
               if (queue.size() > 0) {
                 innerList.addAll(queue);
                 queue.clear();
               }
+            } catch (InterruptedException ie) {
             }
           }
 
           int size = innerList.size();
 
-          if (innerList.size() > 0) {
+          if (size > 0) {
             Iterator iter = innerList.iterator();
-            Map identifiersEventsMap = new HashMap();
             ChainsawEventBatch eventBatch = new ChainsawEventBatch();
 
             while (iter.hasNext()) {
               LoggingEvent e = (LoggingEvent) iter.next();
-              String eventType =
-                e.getProperty(ChainsawConstants.EVENT_TYPE_KEY);
-
-              if (eventType == null) {
-                eventType = ChainsawConstants.LOG4J_EVENT_TYPE;
+              Vector properties = new Vector();
+              Iterator iterx = e.getPropertyKeySet().iterator();
+              while (iterx.hasNext()) {
+                  String thisProp = iterx.next().toString();
+                  properties.add(thisProp +" " + e.getProperty(thisProp));
               }
-
-              String ident = getTabIdentifier(e);
-              eventBatch.addEvent(ident, eventType, e);
+              eventBatch.addEvent(
+                getTabIdentifier(e),
+                (e.getProperty(ChainsawConstants.EVENT_TYPE_KEY) == null)
+                ? ChainsawConstants.LOG4J_EVENT_TYPE
+                : e.getProperty(ChainsawConstants.EVENT_TYPE_KEY), e);
             }
 
             dispatchEventBatch(eventBatch);
@@ -448,20 +359,21 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
             innerList.clear();
           }
 
-
-
           try {
-            Thread.sleep(getQueueInterval());
+            synchronized (this) {
+              wait(getQueueInterval());
+            }
           } catch (InterruptedException ie) {
           }
-		  if (size == 0) {
-			setDataRate(0.0);
-		  } else {
-			long timeEnd = System.currentTimeMillis();
-			long diffInSeconds = (timeEnd - timeStart)/1000;
-			double rate = (((double) size) / diffInSeconds);
-			setDataRate(rate);
-		  }
+
+          if (size == 0) {
+            setDataRate(0.0);
+          } else {
+            long timeEnd = System.currentTimeMillis();
+            long diffInSeconds = (timeEnd - timeStart) / 1000;
+            double rate = (((double) size) / diffInSeconds);
+            setDataRate(rate);
+          }
         }
       }
 

@@ -214,7 +214,7 @@ public class LocationInfo implements java.io.Serializable {
      logging request.
   */
   public String getClassName() {
-    if (!locationInfoAvailable) {
+    if ((!locationInfoAvailable) || (className == null && fullInfo == null)) {
       return NA;
     }
 
@@ -259,7 +259,7 @@ public class LocationInfo implements java.io.Serializable {
      <p>This information is not always available.
   */
   public String getFileName() {
-    if (!locationInfoAvailable) {
+    if ((!locationInfoAvailable) || (fileName == null && fullInfo == null)) {
       return NA;
     }
 
@@ -283,7 +283,7 @@ public class LocationInfo implements java.io.Serializable {
      <p>This information is not always available.
   */
   public String getLineNumber() {
-    if (!locationInfoAvailable) {
+    if ((!locationInfoAvailable) || (lineNumber == null && fullInfo == null)) {
       return NA;
     }
 
@@ -305,7 +305,7 @@ public class LocationInfo implements java.io.Serializable {
      Returns the method name of the caller.
   */
   public String getMethodName() {
-    if (!locationInfoAvailable) {
+    if ((!locationInfoAvailable) || (methodName == null && fullInfo == null)) {
       return NA;
     }
 

@@ -237,7 +237,6 @@ public class XMLDecoder implements Decoder {
 			newDoc=partialEvent + newDoc;
 		}	      		
       	partialEvent=newPartialEvent;
-      	
         Document doc = parse(newDoc);
         if (doc == null) {
           return null;
@@ -407,12 +406,15 @@ public class XMLDecoder implements Decoder {
       if (levelImpl==null) {
       	levelImpl=Level.toLevel(level);
       }
-      		
+      LocationInfo info = null;
+      if ((fileName != null) || (className != null) || (methodName != null) || (lineNumber != null)) {
+          info = new LocationInfo(fileName, className, methodName, lineNumber);
+      } 
       events.add(
         new LoggingEvent(
           logger.getName(), logger, timeStamp, levelImpl, threadName, message, ndc,
           mdc, exception,
-          new LocationInfo(fileName, className, methodName, lineNumber),
+          info,
           properties));
     }
 

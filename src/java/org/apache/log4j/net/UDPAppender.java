@@ -49,16 +49,15 @@
 
 package org.apache.log4j.net;
 
-import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.spi.LoggingEvent;
-
 import java.io.IOException;
-
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+
+import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
@@ -102,6 +101,7 @@ public class UDPAppender extends AppenderSkeleton implements PortBased{
   String localMachine;
   String remoteHost;
   String log4japp;
+  String encoding;
   String overrideProperties = "true";
   InetAddress address;
   int port = DEFAULT_PORT;
@@ -243,9 +243,13 @@ public class UDPAppender extends AppenderSkeleton implements PortBased{
         if (buf.length() < PACKET_LENGTH) {        
            buf.append(new char[PACKET_LENGTH - buf.length()]);
         }
+        //the implementation of string.getBytes accepts a null encoding and uses the system charset
         DatagramPacket dp =
-           new DatagramPacket(buf.toString().getBytes("ASCII"), buf.length(), address, port);
+           new DatagramPacket(buf.toString().getBytes(encoding), buf.length(), address, port);
         outSocket.send(dp);
+        //remove these properties, in case other appenders need to set them to different values 
+        event.setProperty("log4jmachinename", null);
+        event.setProperty("log4japp", null);
       } catch (IOException e) {
         outSocket = null;
         LogLog.warn("Detected problem with UDP connection: " + e);
@@ -314,6 +318,21 @@ public class UDPAppender extends AppenderSkeleton implements PortBased{
    */
   public String getLog4JApp() {
     return log4japp;
+  }
+
+  /**
+     The <b>Encoding</b> option specifies how the bytes are encoded.  If this option is not specified, 
+     the System encoding is used.
+   */
+  public void setEncoding(String encoding) {
+    this.encoding = encoding;
+  }
+
+  /**
+     Returns value of the <b>Encoding</b> option.
+   */
+  public String getEncoding() {
+    return encoding;
   }
 
   /**

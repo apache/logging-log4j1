@@ -49,16 +49,15 @@
 
 package org.apache.log4j.net;
 
-import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.spi.LoggingEvent;
-
 import java.io.IOException;
-
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.UnknownHostException;
+
+import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
@@ -109,6 +108,7 @@ public class MulticastAppender extends AppenderSkeleton implements PortBased {
   int reconnectionDelay = DEFAULT_RECONNECTION_DELAY;
   boolean locationInfo = false;
   int count = 0;
+  private String encoding;
   
   public MulticastAppender() {
   }
@@ -232,9 +232,13 @@ public class MulticastAppender extends AppenderSkeleton implements PortBased {
         if (buf.length() < PACKET_LENGTH) {
           buf.append(new char[PACKET_LENGTH - buf.length()]);
         }
+        //the implementation of string.getBytes accepts a null encoding and uses the system charset
         DatagramPacket dp =
-          new DatagramPacket(buf.toString().getBytes("ASCII"), buf.length(), address, port);
+          new DatagramPacket(buf.toString().getBytes(encoding), buf.length(), address, port);
         outSocket.send(dp);
+        //remove these properties, in case other appenders need to set them to different values 
+        event.setProperty("log4jmachinename", null);
+        event.setProperty("log4japp", null);
       } catch (IOException e) {
         outSocket = null;
         LogLog.warn("Detected problem with Multicast connection: " + e);
@@ -277,6 +281,20 @@ public class MulticastAppender extends AppenderSkeleton implements PortBased {
     return remoteHost;
   }
 
+  /**
+      The <b>Encoding</b> option specifies how the bytes are encoded.  If this option is not specified, 
+      the System encoding is used.
+    */
+   public void setEncoding(String encoding) {
+     this.encoding = encoding;
+   }
+
+   /**
+      Returns value of the <b>Encoding</b> option.
+    */
+   public String getEncoding() {
+     return encoding;
+   }
   /**
      The <b>App</b> option takes a string value which should be the name of the application getting logged.
      If property was already set (via system property), don't set here.

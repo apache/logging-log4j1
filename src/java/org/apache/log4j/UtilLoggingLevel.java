@@ -62,14 +62,14 @@ import java.util.List;
 
 public class UtilLoggingLevel extends Level {
 
-  public static final int SEVERE_INT = 1000;
-  public static final int WARNING_INT = 900;
-  public static final int INFO_INT = 800;
-  public static final int CONFIG_INT = 700;
-  public static final int FINE_INT = 500;
-  public static final int FINER_INT = 400;
-  public static final int FINEST_INT = 300;
-  public static final int UNKNOWN_INT = 200;
+  public static final int SEVERE_INT = 17000;
+  public static final int WARNING_INT = 16000;
+  public static final int INFO_INT = 15000;
+  public static final int CONFIG_INT = 14000;
+  public static final int FINE_INT = 13000;
+  public static final int FINER_INT = 12000;
+  public static final int FINEST_INT = 11000;
+  public static final int UNKNOWN_INT = 10000;
   
   public static final UtilLoggingLevel SEVERE = new UtilLoggingLevel(SEVERE_INT, "SEVERE", 0);
   public static final UtilLoggingLevel WARNING = new UtilLoggingLevel(WARNING_INT, "WARNING", 4);

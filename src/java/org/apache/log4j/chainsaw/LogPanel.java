@@ -253,7 +253,7 @@ public class LogPanel extends DockablePanel implements SettingsListener,
           boolean newValue = ((Boolean) evt.getNewValue()).booleanValue();
 
           if (newValue) {
-            lowerPanel.setDividerLocation(150);
+            lowerPanel.setDividerLocation(400);
           }
 
           detailPanel.setVisible(newValue);
@@ -904,7 +904,7 @@ public class LogPanel extends DockablePanel implements SettingsListener,
       new JSplitPane(
         JSplitPane.VERTICAL_SPLIT, eventsAndStatusPanel, detailPanel);
     lowerPanel.setBorder(null);
-    lowerPanel.setDividerLocation(150);
+    lowerPanel.setDividerLocation(400);
     lowerPanel.setLastDividerLocation(-1);
     lowerPanel.setOneTouchExpandable(true);
 
