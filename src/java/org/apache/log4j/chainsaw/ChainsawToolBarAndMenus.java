@@ -660,7 +660,6 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     activeTabMenu.addSeparator();
     activeTabMenu.add(menuItemUseRightMouse);
 
-    viewMenu.addSeparator();
     viewMenu.add(showToolbarCheck);
     viewMenu.add(toggleStatusBarCheck);
     viewMenu.add(toggleShowReceiversCheck);
