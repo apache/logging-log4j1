@@ -18,8 +18,7 @@ package org.apache.joran.action;
 
 import org.apache.joran.ExecutionContext;
 import org.apache.joran.Interpreter;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.log4j.spi.ComponentBase;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
@@ -39,7 +38,7 @@ import org.xml.sax.Locator;
  * @author Ceki G&uuml;lc&uuml;
  *
  */
-public abstract class Action {
+public abstract class Action extends ComponentBase {
   public static final String NAME_ATTRIBUTE = "name";
   public static final String VALUE_ATTRIBUTE = "value";
   public static final String FILE_ATTRIBUTE = "file";
@@ -47,11 +46,6 @@ public abstract class Action {
   public static final String PATTERN_ATTRIBUTE = "pattern";
   public static final String ACTION_CLASS_ATTRIBUTE = "actionClass";
 
-  /*
-   * An inststance specific logger. 
-   */
-  private Logger logger;
-  
   /**
    * Called when the parser first encounters an element.
    *
@@ -83,19 +77,5 @@ public abstract class Action {
       return locator.getLineNumber();
     }
     return -1;
-  }
-  
-  /**
-   * Return an instance specifi logger to be used by the Action itself.
-   * This logger is not intended to be used by Mrs. Piggy, our proverbial user,
-   * hence the protected keyword.
-   * 
-   * @return instance specific logger
-   */
-  protected Logger getLogger() {
-    if(logger == null) {
-      logger = LogManager.getLogger(this.getClass().getName());
-    }
-    return logger;
   }
 }

@@ -465,7 +465,7 @@ public class PatternLayout extends Layout {
     you change the parameters of the PatternLayout instance.
   */
   public void activateOptions() {
-    PatternParser patternParser = new PatternParser(conversionPattern);
+    PatternParser patternParser = new PatternParser(conversionPattern, repository);
     if(this.repository != null) {
       patternParser.setConverterRegistry((Map) this.repository.getObject(PATTERN_RULE_REGISTRY));
     }

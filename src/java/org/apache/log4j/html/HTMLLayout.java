@@ -19,6 +19,7 @@ package org.apache.log4j.html;
 import org.apache.log4j.Layout;
 import org.apache.log4j.helpers.Transform;
 import org.apache.log4j.pattern.*;
+import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.LoggingEvent;
 
 import java.io.*;
@@ -102,7 +103,7 @@ public class HTMLLayout extends Layout {
    * Does not do anything as options become effective
    */
   public void activateOptions() {
-    head = createPatternParser(pattern).parse();
+    head = createPatternParser(pattern, this.repository).parse();
     chainHandlesThrowable = PatternConverter.chainHandlesThrowable(head);
   }
 
@@ -113,8 +114,8 @@ public class HTMLLayout extends Layout {
    *
    * @since 0.9.0
    */
-  protected PatternParser createPatternParser(String pattern) {
-    return new PatternParser(pattern);
+  protected PatternParser createPatternParser(String pattern, LoggerRepository repository) {
+    return new PatternParser(pattern, repository);
   }
 
   /**

@@ -16,6 +16,8 @@
 
 package org.apache.log4j.pattern;
 
+import org.apache.log4j.spi.ComponentBase;
+import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.LoggingEvent;
 
 import java.io.IOException;
@@ -38,7 +40,7 @@ import java.util.List;
 
    @since 0.8.2
  */
-public abstract class PatternConverter {
+public abstract class PatternConverter extends ComponentBase {
   static String[] SPACES =
   {
     " ", "  ", "    ", "        ", //1,2,4,8 spaces
@@ -51,6 +53,8 @@ public abstract class PatternConverter {
   boolean leftAlign = false;
   //String option;
 
+  LoggerRepository repository;
+  
   protected PatternConverter() {
   }
 
@@ -180,5 +184,4 @@ public abstract class PatternConverter {
     }
     return false;
   }
-   
 }

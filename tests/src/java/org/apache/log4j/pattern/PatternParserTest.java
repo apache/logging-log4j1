@@ -20,7 +20,9 @@ import junit.framework.TestCase;
 
 import org.apache.log4j.Layout;
 import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.LoggingEvent;
 import java.util.Date;
 import java.text.SimpleDateFormat;
@@ -42,9 +44,11 @@ public class PatternParserTest extends TestCase {
   Logger logger = Logger.getLogger("org.foobar");
   LoggingEvent event;
   long now;
-
+  LoggerRepository repository;
+  
   public PatternParserTest(String name) {
     super(name);
+    repository = LogManager.getLoggerRepository();
     now = System.currentTimeMillis() + 13;
 
     event = new LoggingEvent();
@@ -75,7 +79,7 @@ public class PatternParserTest extends TestCase {
   }
 
   public void testNewWord() throws Exception {
-    PatternParser patternParser = new PatternParser("%z343");
+    PatternParser patternParser = new PatternParser("%z343", repository);
     HashMap ruleRegistry = new HashMap(5);
 
     ruleRegistry.put("z343", Num343PatternConverter.class.getName());
@@ -92,7 +96,7 @@ public class PatternParserTest extends TestCase {
    * which was previously the case by mistake.
    */
   public void testNewWord2() throws Exception {
-    PatternParser patternParser = new PatternParser("%n343");
+    PatternParser patternParser = new PatternParser("%n343", repository);
     HashMap ruleRegistry = new HashMap(5);
 
     ruleRegistry.put("n343", Num343PatternConverter.class.getName());
@@ -106,7 +110,7 @@ public class PatternParserTest extends TestCase {
   }
 
   public void testBogusWord1() throws Exception {
-    PatternParser patternParser = new PatternParser("%, foobar");
+    PatternParser patternParser = new PatternParser("%, foobar", repository);
     PatternConverter head = patternParser.parse();
 
     String result = convert(event, head);
@@ -115,7 +119,7 @@ public class PatternParserTest extends TestCase {
   }
 
   public void testBogusWord2() throws Exception {
-    PatternParser patternParser = new PatternParser("xyz %, foobar");
+    PatternParser patternParser = new PatternParser("xyz %, foobar", repository);
     PatternConverter head = patternParser.parse();
 
     String result = convert(event, head);
@@ -124,7 +128,7 @@ public class PatternParserTest extends TestCase {
   }
 
   public void testBasic1() throws Exception {
-    PatternParser patternParser = new PatternParser("hello %-5level - %m%n");
+    PatternParser patternParser = new PatternParser("hello %-5level - %m%n", repository);
     PatternConverter head = patternParser.parse();
 
     String result = convert(event, head);
@@ -134,7 +138,7 @@ public class PatternParserTest extends TestCase {
 
   public void testBasic2() throws Exception {
     PatternParser patternParser =
-      new PatternParser("%relative %-5level [%thread] %logger - %m%n");
+      new PatternParser("%relative %-5level [%thread] %logger - %m%n", repository);
     PatternConverter head = patternParser.parse();
 
     String result = convert(event, head);
@@ -145,7 +149,7 @@ public class PatternParserTest extends TestCase {
 
   public void testMultiOption() throws Exception {
     PatternParser patternParser =
-      new PatternParser("%d{HH:mm:ss}{GMT} %d{HH:mm:ss} %c  - %m");
+      new PatternParser("%d{HH:mm:ss}{GMT} %d{HH:mm:ss} %c  - %m", repository);
     PatternConverter head = patternParser.parse();
 
     String result = convert(event, head);

@@ -70,9 +70,8 @@ import javax.xml.parsers.FactoryConfigurationError;
    @author Anders Kristensen
    @deprecated Replaced by the much more flexible {@link org.apache.log4j.joran.JoranConfigurator}.
    @since 0.8.3 */
-public class DOMConfigurator implements Configurator {
-  static Logger logger =
-    Logger.getLogger("LOG4J." + DOMConfigurator.class.getName());
+public class DOMConfigurator extends ComponentBase implements Configurator {
+
   static final String CONFIGURATION_TAG = "log4j:configuration";
   static final String OLD_CONFIGURATION_TAG = "configuration";
   static final String RENDERER_TAG = "renderer";
@@ -108,8 +107,8 @@ public class DOMConfigurator implements Configurator {
   // key: appenderName, value: appender
   Hashtable appenderBag;
   Properties props;
-  LoggerRepository repository;
-
+  OptionConverter optionConverter = new OptionConverter();
+  
   /**
      No argument constructor.
   */
@@ -217,7 +216,7 @@ public class DOMConfigurator implements Configurator {
               + "] which does not implement org.apache.log4j.spi.AppenderAttachable.");
           }
         } else {
-          logger.debug(
+          getLogger().debug(
             "Handling nested <" + currentElement.getTagName()
             + "> for appender " + appender.getName());
           configureNestedComponent(propSetter, currentElement);
@@ -247,21 +246,14 @@ public class DOMConfigurator implements Configurator {
     int containmentType = parentBean.canContainComponent(nestedElementTagName);
 
     if (containmentType == PropertySetter.NOT_FOUND) {
-      logger.warn(
-        "A component with tag name [" + nestedElementTagName
-        + "] cannot be contained within an object of class ["
-        + parentBean.getObjClass().getName() + "].");
+      getLogger().warn(
+        "A component with tag name [{}] cannot be contained within an object of class [{}].", nestedElementTagName, parentBean.getObjClass().getName());
 
       return; // nothing can be done
     }
-
-    boolean debug = logger.isDebugEnabled();
-
     String className = subst(nestedElement.getAttribute(CLASS_ATTR));
 
-    if (debug) {
-      logger.debug("Will instantiate instance of class [" + className + ']');
-    }
+    getLogger().debug("Will instantiate instance of class []", className);
 
     Object nestedComponent = null;
 
@@ -269,7 +261,7 @@ public class DOMConfigurator implements Configurator {
     try {
       nestedComponent = Loader.loadClass(className).newInstance();
     } catch (Exception e) {
-      logger.warn(
+      getLogger().warn(
         "Could not instantiate object of type [" + className + "].", e);
 
       return;
@@ -292,20 +284,12 @@ public class DOMConfigurator implements Configurator {
       Element currentElement = (Element) currentNode;
 
       if (hasParamTag(currentElement)) {
-        if (debug) {
-          LogLog.debug(
-            "***Configuring parameter [" + currentElement.getAttribute("name")
-            + "] for <" + nestedElementTagName + ">.");
-        }
-
+         getLogger().debug(
+            "***Configuring parameter [{}] for <{}>.", currentElement.getAttribute("name"), nestedElementTagName);
         setParameter(currentElement, nestedBean);
       } else {
-        if (debug) {
-          LogLog.debug(
-            "Configuring component " + nestedComponent + " with tagged as <"
-            + currentElement.getTagName() + ">.");
-        }
-
+          getLogger().debug(
+            "Configuring component {} with tagged as <{}>.", nestedComponent, currentElement.getTagName());
         configureNestedComponent(nestedBean, currentElement);
       }
     }
@@ -350,7 +334,7 @@ public class DOMConfigurator implements Configurator {
    */
   protected void parseErrorHandler(Element element, Appender appender) {
     ErrorHandler eh =
-      (ErrorHandler) OptionConverter.instantiateByClassName(
+      (ErrorHandler) optionConverter.instantiateByClassName(
         subst(element.getAttribute(CLASS_ATTR)),
         org.apache.log4j.spi.ErrorHandler.class, null);
 
@@ -397,7 +381,7 @@ public class DOMConfigurator implements Configurator {
   protected void XXparseFilters(Element element, Appender appender) {
     String clazz = subst(element.getAttribute(CLASS_ATTR));
     Filter filter =
-      (Filter) OptionConverter.instantiateByClassName(
+      (Filter) optionConverter.instantiateByClassName(
         clazz, Filter.class, null);
 
     if (filter != null) {
@@ -543,8 +527,9 @@ public class DOMConfigurator implements Configurator {
     String renderedClass = subst(element.getAttribute(RENDERED_CLASS_ATTR));
 
     if (repository instanceof RendererSupport) {
-      RendererMap.addRenderer(
-        (RendererSupport) repository, renderedClass, renderingClass);
+      RendererSupport rs = (RendererSupport) repository;
+      RendererMap rm = rs.getRendererMap();
+      rm.addRenderer(renderedClass, renderingClass);
     }
   }
 
@@ -571,7 +556,7 @@ public class DOMConfigurator implements Configurator {
       String className = subst(element.getAttribute(CLASS_ATTR));
 
       if (EMPTY_STR.equals(className)) {
-        logger.setLevel(OptionConverter.toLevel(priStr, Level.DEBUG));
+        logger.setLevel(optionConverter.toLevel(priStr, Level.DEBUG));
       } else {
         LogLog.debug("Desired Level sub-class: [" + className + ']');
 
@@ -649,35 +634,6 @@ public class DOMConfigurator implements Configurator {
     configurator.doConfigure(element, LogManager.getLoggerRepository());
   }
 
-  /**
-      Like {@link #configureAndWatch(String, long)} except that the
-      default delay as defined by {@link FileWatchdog#DEFAULT_DELAY} is
-      used.
-
-      @param configFilename A log4j configuration file in XML format.
-
-   */
-//  public static void configureAndWatch(String configFilename) {
-//    configureAndWatch(configFilename, FileWatchdog.DEFAULT_DELAY);
-//  }
-
-  /**
-     Read the configuration file <code>configFilename</code> if it
-     exists. Moreover, a thread will be created that will periodically
-     check if <code>configFilename</code> has been created or
-     modified. The period is determined by the <code>delay</code>
-     argument. If a change or file creation is detected, then
-     <code>configFilename</code> is read to configure log4j.
-
-      @param configFilename A log4j configuration file in XML format.
-      @param delay The delay in milliseconds to wait between each check.
-  */
-//  public static void configureAndWatch(String configFilename, long delay) {
-//    XMLWatchdog xdog = new XMLWatchdog(configFilename);
-//    xdog.setDelay(delay);
-//    xdog.start();
-//  }
-
   public void doConfigure(String filename, LoggerRepository repository) {
     FileInputStream fis = null;
 
@@ -737,7 +693,8 @@ public class DOMConfigurator implements Configurator {
     InputSource inputSource, LoggerRepository repository)
     throws FactoryConfigurationError {
     DocumentBuilderFactory dbf = null;
-    this.repository = repository;
+
+    setLoggerRepository(repository);
 
     try {
       LogLog.debug(

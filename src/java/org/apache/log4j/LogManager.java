@@ -57,8 +57,11 @@ public class LogManager {
     //System.out.println("**Start of LogManager static initializer");
     Hierarchy defaultHierarchy = new Hierarchy(new RootLogger(Level.DEBUG));
     defaultHierarchy.setName("default");
-
-    String repositorySelectorStr =
+    OptionConverter oc = new OptionConverter();
+    // No point in setting the repository this early in the game
+    //oc.setLoggerRepository(null);
+    
+    String repositorySelectorStr = 
       OptionConverter.getSystemProperty("log4j.repositorySelectorClass", null);
 
     if (repositorySelectorStr == null) {
@@ -71,7 +74,7 @@ public class LogManager {
       guard = new Object();
     } else {
       Object r =
-        OptionConverter.instantiateByClassName(
+        oc.instantiateByClassName(
           repositorySelectorStr, RepositorySelector.class, null);
 
       if (r instanceof RepositorySelector) {
@@ -98,11 +101,9 @@ public class LogManager {
     
     //  Attempt to perform automatic configuration of the default hierarchy
     String configuratorClassName =
-      OptionConverter.getSystemProperty(
-        Constants.CONFIGURATOR_CLASS_KEY, null);
-    String configurationOptionStr =
-      OptionConverter.getSystemProperty(
-        Constants.DEFAULT_CONFIGURATION_KEY, null);
+      OptionConverter.getSystemProperty(Constants.CONFIGURATOR_CLASS_KEY, null);
+    String configurationOptionStr = 
+      OptionConverter.getSystemProperty(Constants.DEFAULT_CONFIGURATION_KEY, null);
 
     if (configurationOptionStr == null) {
       if (Loader.getResource(Constants.DEFAULT_XML_CONFIGURATION_FILE) != null) {

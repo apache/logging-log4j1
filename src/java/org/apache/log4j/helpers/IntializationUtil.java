@@ -82,12 +82,11 @@ public class IntializationUtil {
         "Using URL [" + url 
           + "] for automatic log4j configuration of repository named ["+
           repository.getName()+"].");
-      OptionConverter.selectAndConfigure(
-        url, configuratorClassNameStr, repository);
-    } else {
-//      LogLog.debug(
-//        "Could not find resources to perform automatic configuration.");
-    }    
+      
+      OptionConverter oc = new OptionConverter();
+      oc.setLoggerRepository(repository);
+      oc.selectAndConfigure(url, configuratorClassNameStr, repository);
+    }
   }
 
   /*
