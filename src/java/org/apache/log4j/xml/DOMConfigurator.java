@@ -535,12 +535,12 @@ public class DOMConfigurator implements Configurator {
      defined in the log4j.dtd. 
 
   */
-  //static
-  //public
-  //void configure (Element element) {
-  //  DOMConfigurator configurator = new DOMConfigurator();
-  //  configurator.parse(element);
-  //}
+  static
+  public
+  void configure (Element element) {
+    DOMConfigurator configurator = new DOMConfigurator();
+    configurator.parse(element);
+  }
 
  /**
      Like {@link #configureAndWatch(String, long)} except that the
