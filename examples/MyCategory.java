@@ -27,8 +27,8 @@ public class MyCategory extends Category {
 
   // It's usually a good idea to add a dot suffix to the fully
   // qualified class name. This makes caller localization to work
-  // properly even from classes that match MyCategory such as
-  // MyCategoryTest.
+  // properly even from classes that have the almostthe same fully
+  // qualified class name as MyCategory, e.g. MyCategoryTest.
   static String FQCN = MyCategory.class.getName() + ".";
 
   // It's enough to instantiate a factory once and for all.
@@ -49,6 +49,9 @@ public class MyCategory extends Category {
     super.debug(message + " world.");    
   }
   
+  /**
+     This makes caller localization to work properly.
+   */
   protected
   String getFQCN() {
     return MyCategory.FQCN;
