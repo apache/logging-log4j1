@@ -59,6 +59,8 @@ import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
 
 import java.util.Hashtable;
+import java.util.Set;
+import java.util.Collections;
 
 
 // Contributors:   Nelson Minar <nelson@monkey.org>
@@ -354,6 +356,26 @@ public class LoggingEvent implements java.io.Serializable {
     return MDC.get(key);
   }
 
+  /**
+   * Returns the set of of the key values in the MDC for the event.
+   * The returned set is unmodifiable by the caller. 
+   * 
+   * @return Iterator an iterator to iterate over the MDC keys.
+   * @since 1.3
+   */
+  public Set getMDCKeySet() {
+    if (mdcCopy != null) {
+      return Collections.unmodifiableSet(mdcCopy.keySet());
+    } else {
+      Hashtable t = (Hashtable) MDC.getContext();
+      if (t != null) {
+        return Collections.unmodifiableSet(t.keySet());
+      } else {
+        return Collections.EMPTY_SET;
+      }
+    }
+  }
+  
   /**
    * Obtain a copy of this thread's MDC prior to serialization or asynchronous
    * logging.
