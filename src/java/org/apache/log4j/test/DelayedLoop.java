@@ -1,5 +1,9 @@
-// Copyright (c) 2000 Ceki Gulcu. All Rights Reserved.
-// See the LICENCE file for the terms of usage and distribution.
+/*
+ * Copyright (C) The Apache Software Foundation. All rights reserved.
+ *
+ * This software is published under the terms of the Apache Software
+ * License version 1.1, a copy of which has been included with this
+ * distribution in the LICENSE.APL file.  */
 
 package org.log4j.test; 
 
@@ -16,7 +20,7 @@ import org.log4j.xml.DOMConfigurator;
    @author Ceki G&uuml;lc&uuml; */
 public class DelayedLoop {
 
-  static Category cat = Category.getInstance(DelayedLoop.class.getName());
+  static Category cat = Category.getInstance(DelayedLoop.class);
   static int loopLength;
 
   public 

@@ -19,7 +19,7 @@ import java.util.Enumeration;
 */
 public class Shallow {
   
-  static Category cat = Category.getInstance(Shallow.class.getName());
+  static Category cat = Category.getInstance(Shallow.class);
   
   public 
   static 
