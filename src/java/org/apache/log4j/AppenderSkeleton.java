@@ -35,7 +35,7 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
 
   /**
      There is no level threshold filtering by default.  */
-  protected Level threshold;
+  protected Priority threshold;
 
   /** 
       It is assumed and enforced that errorHandler is never null.
@@ -173,7 +173,7 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
      
      @since 1.1 */
   public
-  Level getThreshold() {
+  Priority getThreshold() {
     return threshold;
   }
 
@@ -185,8 +185,8 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
 
   */
   public
-  boolean isAsSevereAsThreshold(Level level) {
-    return ((threshold == null) || level.isGreaterOrEqual(threshold));
+  boolean isAsSevereAsThreshold(Priority priority) {
+    return ((threshold == null) || priority.isGreaterOrEqual(threshold));
   }
 
 

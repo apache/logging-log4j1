@@ -18,7 +18,7 @@ import org.apache.log4j.xml.examples.XLevel;
 
 /**
    A simple example showing Category sub-classing. It shows the
-   minimum steps necessary to implement one's {@link CategoryFactory}.
+   minimum steps necessary to implement one's {@link LoggerFactory}.
    Note that sub-classes follow the hiearchy even if its categories
    belong to different classes.
 

@@ -9,7 +9,7 @@ import java.net.*;
 /**
    A simple example showing Category sub-classing. It shows the
    minimum steps necessary to implement one's {@link
-   org.apache.log4j.spi.CategoryFactory} and that sub-classes can follow the
+   org.apache.log4j.spi.LoggerFactory} and that sub-classes can follow the
    hiearchy
 
    See <b><a href="doc-files/XCategory.java">source
