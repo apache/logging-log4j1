@@ -53,8 +53,8 @@
       intended to serve as a simple abstraction of various logging
       APIs allowing to plug in the desired implementation at
       deployment time. Note that log4j version 1.3 and later support
-      UGLI directly as log4j itself is implemented in terms of the
-      UGLI interface.
+      UGLI directly. Log4j is implemented in terms of the UGLI
+      interfaces.
       </p>
                                                       <h2>Typical usage pattern</h2>
                                                       <pre class="source">
@@ -91,36 +91,38 @@
         Simple, JDK 1.4 logging and log4j. Log4j 1.3 ships with four
         jar files <em>ugli-nop.jar</em>, <em>ugli-simple.jar</em>,
         <em>ugli-jdk14.jar</em> and <em>log4j.jar</em>. Each of these
-        jar files are hardwired to use just one implementation, that
-        is NOP, Simple, JDK 1.4 logging and log4j, respectively.
+        jar files are hardwired <em>at compile-time</em> to use just one 
+        implementation,  that is NOP, Simple, JDK 1.4 logging and log4j, 
+        respectively.
+        </p>
+                                                      <p>Small applications where configuring log4j can be somewhat
+        of an overkill can drop in <em>ugli-simple.jar</em> in place
+        of <em>log4j.jar</em>. 
         </p>
                                                       <p>Authors of widely-distributed components and libraries may
         code against the UGLI interface in order to avoid imposing an
         logging API implementation on the end-user.  At deployment
         time, the end-user may choose the desired logging API
         implementation by inserting the corresponding jar file in her
-        classpath. This stupid, simple and relatively robust approach
-        avoids many of the painful bugs associated with dynamic
-        discovery processes based on fragile classloader hacks. Life
-        is too short to be spending it resolving classloader bugs.
-        </p>
-                                                      <p>Small applications where configuring log4j can be somewhat
-        of an overkill can drop in <em>ugli-simple.jar</em> in place
-        of <em>log4j.jar</em>. 
+        classpath. This stupid, simple but robust approach avoids many
+        of the painful bugs associated with dynamic discovery
+        processes. Life is too short to be spending it hunting down
+        class loader problems.
         </p>
                                                       <h2>Simplicity</h2>
                                                       <p>The UGLI interfaces and their various adapters are
         extremely simple. Most developers familiar with the Java
         language should be able to read and fully understand the code
-        in less than one hour.
+        in less than one hour. 
         </p>
-                                                      <p>Just as importantly, UGLI does not rely on any
-        classloader tricks. Every variant of
-        <em>ugli-&lt;impl&gt;.jar</em> is hardwired to use one
-        specific implementation.</p>
-                                                      <p>The simplicity of the UGLI interfaces and the deployment
-        model make it easy for developers of other logging APIs to
-        easily conform to the UGLI model.
+                                                      <p>As noted earlier, UGLI does not rely on any classloader
+        tricks. Every variant of <em>ugli-&lt;impl&gt;.jar</em> is
+        statically hardwired (at compile time) to use one specific
+        implementation. Thus, UGLI suffers none of the <a href="http://www.qos.ch/logging/classloader.jsp">class loader
+        problems observed when using JCL</a>.</p>
+                                                      <p>We hope that simplicity of the UGLI interfaces and the
+        deployment model will make it easy for developers of other
+        logging APIs to conform to the UGLI model.
         </p>
                                                       <h2>Built-in support in log4j</h2>
                                                       <p>The <code>Logger</code> class in log4j directly implements
@@ -135,6 +137,8 @@
         memory overhead and near-zero computational overhead. The
         computational overhead is so small as to be unobservable.
         </p>
+                                                      <h2>Where can I get UGLI?</h2>
+                                                      <p>UGLI ships with log4j version 1.3alpha-6 and later.</p>
                                                       <h2>Summary</h2>
                                                       <table class="ls" cellspacing="4" cellpadding="4">
           <tr>
@@ -151,9 +155,10 @@
 
             <p>Contrast this with
             <code>LogConfigurationException</code> thrown by
-            commons-logging which will cause your otherwise functional
-            application to fail. Commons-logging will throw a
-            <code>LogConfigurationException</code> in case the <a href="http://jakarta.apache.org/commons/logging/api/org/apache/commons/logging/Log.html">Log</a>
+            commons-logging which will cause your otherwise
+            functioning application to fail. Commons-logging will
+            throw a <code>LogConfigurationException</code> in case the
+            <a href="http://jakarta.apache.org/commons/logging/api/org/apache/commons/logging/Log.html">Log</a>
             interface and its dynamically discovered implementation
             are loaded by different class loaders.
             </p>
@@ -183,7 +188,6 @@
             <td>All UGLI adapters support parameterized log messages.</td>
           </tr>
 
-
           <tr>
             <td>Built-in support in log4j</td>
 
@@ -195,10 +199,10 @@
                           
             
   
-                                                                                                                            <hr/>
+                                                                                                                                        <hr/>
 
   
-                                                                                                                                                                                                                                        
+                                                                                                                                                                                                                                                                
 
              
                 <!-- FOOTER -->
