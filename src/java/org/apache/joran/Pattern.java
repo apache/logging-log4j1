@@ -27,6 +27,12 @@ public class Pattern {
     components = new ArrayList();
   }
 
+  /**
+   * Build a pattern from a string.
+   * 
+   * Note that "/x" is equivalent to "x" and to "x/"
+   * 
+   */
   public Pattern(String p) {
     this();
 
@@ -162,6 +168,11 @@ public class Pattern {
   }
 
   public String toString() {
-    return components.toString();
+    int size = components.size();
+    String result = "";
+    for(int i = 0; i < size; i++) {
+      result +=  "/" + components.get(i);
+    }
+    return result;
   }
 }

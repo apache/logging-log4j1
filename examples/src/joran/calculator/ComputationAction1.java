@@ -16,8 +16,6 @@
 
 package joran.calculator;
 
-import java.util.Stack;
-
 import org.apache.joran.ExecutionContext;
 import org.apache.joran.action.Action;
 import org.apache.joran.helper.Option;
@@ -29,7 +27,7 @@ import org.xml.sax.Attributes;
  * The ComputationAction will print the result of the compuration made by 
  * children elements but only if the compuration itself is named, that is if the
  * name attribute of the associated computation element is not null. In other
- * words, anonymous computation will not print their result.
+ * words, anonymous computations will not print their result.
  * 
  * @author Ceki G&uuml;lc&uuml;
  */

@@ -22,35 +22,28 @@ import org.apache.joran.Interpreter;
 import org.apache.joran.Pattern;
 import org.apache.joran.RuleStore;
 import org.apache.joran.helper.SimpleRuleStore;
-import org.apache.log4j.BasicConfigurator;
-
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 
 /**
- *
- * A hello world example using Joran.
- *
- * The first and only argument of this application must be the path to
- * the XML file to interpret.
- *
- * For example,
- *
-<pre>
-    java joran.helloWorld.HelloWorld examples/src/joran/helloWorld/hello.xml
-</pre>
- *
- * @author Ceki
+ * This examples illustrates collaboration between multiple actions through the
+ * common execution context stack.
+ * 
+ * It differs from Calculator1 in that it supoorts arbitrary nesting of 
+ * computation elements.
+ * 
+ * You can test this application with the sample XML file <em>calculator3.xml</em>.
+ * 
+ * @author Ceki G&uuml;ulc&uuml;
  */
 public class Calculator2 {
   public static void main(String[] args) throws Exception {
-    BasicConfigurator.configure();
-    // Create a simple rule store where pattern and action associations will
-    // be kept.
+
     RuleStore ruleStore = new SimpleRuleStore();
 
-    // Associate "hello-world" pattern with  HelloWorldAction
+    // Note the wild card character '*', in the paterns, signifying any level 
+    // of nesting.
     ruleStore.addRule(new Pattern("*/computation"), new ComputationAction2());
 
     ruleStore.addRule(new Pattern("*/computation/literal"), new LiteralAction());
@@ -68,11 +61,13 @@ public class Calculator2 {
     // set the SAX ContentHandler to the Joran Interpreter we just created.
     saxParser.parse(args[0], ji);
     
+    // The file has been parsed and interpreted. We now errors if any.
     List errorList = ji.getExecutionContext().getErrorList();
-    
     if(errorList.size() > 0) {
-      System.out.println("The following errors occured");
-      System.out.println(errorList);
+      System.out.println("The following errors occured:");
+      for(int i = 0; i < errorList.size(); i++) {
+        System.out.println("\t"+errorList.get(i));
+      }
     }
   }
 }
