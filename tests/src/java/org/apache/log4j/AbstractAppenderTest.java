@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,49 +28,48 @@ import junit.framework.TestSuite;
 
 /**
  * An abstract test case which can be subclassed to derived to check the
- * certain (limited) aspects of Appender implementations. 
- * 
+ * certain (limited) aspects of Appender implementations.
+ *
  * @author <a href="http://www.qos.ch/log4j/">Ceki G&uuml;lc&uuml;</a>
  *
  */
 abstract public class AbstractAppenderTest extends TestCase {
-  
+
   abstract protected Appender getAppender();
   abstract protected Appender getConfiguredAppender();
-  
+
   public class DummyLayout extends Layout {
-    public void format(Writer output, LoggingEvent event) {} 
-    public void activateOptions() {} 
-  } 
-  
+    public void format(Writer output, LoggingEvent event) {}
+    public void activateOptions() {}
+  }
+
   public void testNewAppender() {
     // new appenders whould be inactive
     Appender appender = getAppender();
     assertFalse(appender.isActive());
     assertFalse(appender.isClosed());
-    
+
     appender.close();
     assertTrue(appender.isClosed());
   }
-  
+
   public void testConfiguredAppender() {
     Appender appender = getConfiguredAppender();
     appender.activate();
     assertTrue(appender.isActive());
     assertFalse(appender.isClosed());
-    
+
     appender.close();
     assertTrue(appender.isClosed());
   }
- 
-  
+
+
   public static Test suite() {
     TestSuite suite = new TestSuite();
     suite.addTestSuite(WriterAppenderTest.class);
     suite.addTestSuite(ConsoleAppenderTest.class);
     suite.addTestSuite(FileAppenderTest.class);
-    suite.addTestSuite(SMTPAppenderTest.class);
     return suite;
   }
-  
+
 }
