@@ -8,13 +8,76 @@
 
   <body>
 
+    <section name="Workplan for log4j 1.3">
+
+      
+      <table border="1" cellpadding="3" cellspacing="2">
+	
+	<tr>
+	  <th>Label</th>
+	  <th>Comment</th>
+	  <th>Volunteer</th>
+	  <th>Status</th>
+	</tr>
+	
+	<tr bgcolor="DDDDDD">
+	  <td>More test cases</td>
+	  
+	  <td>
+	    <p>Writing test cases is not the most sexy part of
+	      software development but it is one of the most
+	      important.  Automated test cases allow us to catch bugs
+	      as early is possible.  It is strongly recommended to add
+	      a new test case with each new feature or component.</p>
+
+	    <p>
+	      Existing <em>Perl</em> language based test cases are
+	      gradually being migrated to all-Java (junit) based test
+	      cased.  The new tests are placed under the
+	      <code>tests/</code> directory.  It should be thus
+	      possible for participants in the project to understand
+	      the stucture of our tests and add tests for their
+	      components.
+	    </p>
+	  </td>
+	  
+	  <td>All committers</td>
+	  <td>ongoing effort</td>	  
+	</tr>
+
+	<tr  bgcolor="DDDDDD">
+	  <td>Review of the configure and watch architecture in configurators</td>
+	  
+	  <td>This is a very useful feature and the current architecture is not very good.
+	    
+	    <p>Contributions have been received by Mark Womack and others.</p>
+	    
+	    <p>See
+	      <pre>
+     http://www.mail-archive.com/log4j-dev@jakarta.apache.org/msg01390.html
+     http://www.mail-archive.com/log4j-user@jakarta.apache.org/msg00666.html
+     http://marc.theaimsgroup.com/?t=101010070500002&amp;r=1&amp;w=2
+              </pre>
+	    </p>
+	  </td>
+	  <td>Mark Womack</td>	  
+	  <td>initial implementation</td>
+	</tr>
+
+      </table>
+    </section>
+      
+      
+    
+      
     <section name="Workplan for log4j 1.2">
 
 
-      <p>Here is workplan for the next major log4j release. As
-	customary, there is no scheduled release date. It will be
-	ready when it is ready. Your comments and suggestions are most
-	welcome.</p>
+      <p>
+	Here is workplan for the 1.2 release. As always, there is no
+	scheduled release date. It will be ready when it is
+	ready. Your comments and suggestions are most welcome.
+      </p>
       
       <table border="1" cellpadding="3" cellspacing="2">
 	    
@@ -41,7 +104,7 @@
 	  <td>Removal of deprecated methods</td>
 	    
 	  <td>Deprecated <code>setOption</code> and <code>getOption</code>
-	    methods should be removed.</td>
+	    methods in appender and layouts should be removed.</td>
 
 	  <td>Ceki</td>
 	  <td>done</td>
@@ -50,17 +113,14 @@
 	<tr bgcolor="DDDDDD">
 	  <td>JDBCAppender</td>
 	  
-	  <td>We currently have two competing JDBCAppenders: one by
-	    Thomas Fenner and the other by Kevin Steppe. We should try
-	    to get both authors to collaborate.
-	    
-	    <p>We must be careful not to dismiss an implementation
-	      without proper testing and due study. We should include at
-	      least of one of these implemetation in the standard log4j
-	      distribution. </p>
+	  <td>
+	    <p>We currently have two competing JDBCAppenders: one by
+	    Thomas Fenner and the other by Kevin Steppe.</p>
+
+	    <p>Kevin Steppe stood up and did it.</p>	    
 	    </td>
 	  
-	  <td>?</td>
+	  <td>Kevin Steppe</td>
 	  
 	  <td>not started</td>
 	</tr>
@@ -86,7 +146,7 @@
 	  
 	  <td>Ceki</td>
 	  
-	  <td>under discussion</td>
+	  <td>On going process</td>
 	  
 	</tr>
 	
@@ -152,25 +212,7 @@
 	  <td>implemented, requires further testing</td>
 	</tr>
 	
-	<tr  bgcolor="DDDDDD">
-	  <td>Review of the configure and watch architecture in configurators</td>
-	  
-	  <td>This is a very useful feature and the current architecture is not very good.
-	    
-	    <p>Contributions have been received by Mark Womack and others.</p>
-	    
-	    <p>See
-	      <pre>
-     http://www.mail-archive.com/log4j-dev@jakarta.apache.org/msg01390.html
-     http://www.mail-archive.com/log4j-user@jakarta.apache.org/msg00666.html
-     http://marc.theaimsgroup.com/?t=101010070500002&amp;r=1&amp;w=2
-              </pre>
-	    </p>
-	  </td>
-	  <td>?</td>	  
-	  <td>not yet started</td>
-	</tr>
-
+	
 	<tr>
 	  <td>Ensure backward compatibility of LoggingEvent
 	  objects</td> 
