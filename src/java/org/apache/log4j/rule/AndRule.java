@@ -70,7 +70,7 @@ public class AndRule extends AbstractRule {
 
   public static Rule getRule(Stack stack) {
     if (stack.size() < 2) {
-        throw new IllegalArgumentException("Invalid AND rule - expected two rules but provided " + stack.size());
+        throw new IllegalArgumentException("Invalid AND rule - expected two rules but received " + stack.size());
     }  
     Object o2 = stack.pop();
     Object o1 = stack.pop();

@@ -57,8 +57,6 @@ import org.apache.log4j.spi.LoggingEventFieldResolver;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Stack;
-
 
 /**
  * A Rule class implementing inequality evaluation for Levels (log4j and util.logging) using the toInt method.
@@ -73,7 +71,7 @@ public class LevelInequalityRule extends AbstractRule {
   private final String inequalitySymbol;
 
   private LevelInequalityRule(
-    String inequalitySymbol, String field, String value) {
+    String inequalitySymbol, String value) {
     levelList.add(Level.FATAL.toString());
     levelList.add(Level.ERROR.toString());
     levelList.add(Level.WARN.toString());
@@ -95,17 +93,10 @@ public class LevelInequalityRule extends AbstractRule {
     this.inequalitySymbol = inequalitySymbol;
   }
 
-  public static Rule getRule(String inequalitySymbol, String field, String value) {
-      return new LevelInequalityRule(inequalitySymbol, field, value);
+  public static Rule getRule(String inequalitySymbol, String value) {
+      return new LevelInequalityRule(inequalitySymbol, value);
   }
   
-  public static Rule getRule(String inequalitySymbol, Stack stack) {
-    String p2 = stack.pop().toString();
-    String p1 = stack.pop().toString();
-
-    return new LevelInequalityRule(inequalitySymbol, p1, p2);
-  }
-
   public boolean evaluate(LoggingEvent event) {
     //use the type of the first level to access the static toLevel method on the second param
     Level level2 = null;

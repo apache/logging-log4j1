@@ -49,20 +49,19 @@
 
 package org.apache.log4j.net;
 
-import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.spi.LoggingEvent;
-
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.io.ObjectOutputStream;
-
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-
 import java.util.Vector;
+
+import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.helpers.CyclicBuffer;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
@@ -124,6 +123,10 @@ import java.util.Vector;
   connections. The rate of logging will be determined by the slowest
   link.
 
+  <p>The BufferSize param provides a cyclic buffer of recently appended events.
+  As new clients attach to the SocketHubAppender, the clients also receive the buffered
+  events.
+  
   <p><li>If the JVM hosting the <code>SocketHubAppender</code> exits
   before the <code>SocketHubAppender</code> is closed either
   explicitly or subsequent to garbage collection, then there might
@@ -146,6 +149,7 @@ public class SocketHubAppender extends AppenderSkeleton {
   private Vector oosList = new Vector();
   private ServerMonitor serverMonitor = null;
   private boolean locationInfo = false;
+  private CyclicBuffer buffer = null;
 
   public SocketHubAppender() {
   }
@@ -208,14 +212,19 @@ public class SocketHubAppender extends AppenderSkeleton {
   /**
     Append an event to all of current connections. */
   public void append(LoggingEvent event) {
+    if (event != null) {
+        // set up location info if requested
+        if (locationInfo) {
+          event.getLocationInformation();
+        }
+        if (buffer != null) {
+            buffer.add(event);
+        }
+    }
+    
     // if no event or no open connections, exit now
     if ((event == null) || (oosList.size() == 0)) {
       return;
-    }
-
-    // set up location info if requested
-    if (locationInfo) {
-      event.getLocationInformation();
     }
 
     // loop through the current set of open connections, appending the event to each
@@ -272,6 +281,23 @@ public class SocketHubAppender extends AppenderSkeleton {
      Returns value of the <b>Port</b> option. */
   public int getPort() {
     return port;
+  }
+
+  /**
+     The <b>BufferSize</b> option takes a positive integer representing
+     the number of events this appender will buffer and send to newly connected clients.*/
+  public void setBufferSize(int _bufferSize) {
+    buffer = new CyclicBuffer(_bufferSize);
+  }
+
+  /**
+     Returns value of the <b>bufferSize</b> option. */
+  public int getBufferSize() {
+    if (buffer == null) {
+        return 0;
+    } else {
+        return buffer.getMaxSize();
+    }
   }
 
   /**
@@ -334,6 +360,16 @@ public class SocketHubAppender extends AppenderSkeleton {
         LogLog.debug("server monitor thread shut down");
       }
     }
+    
+    private void sendCachedEvents(ObjectOutputStream stream) throws IOException {
+        if (buffer != null) {
+            for (int i=0;i<buffer.length();i++) {
+                stream.writeObject(buffer.get(i));
+            }
+            stream.flush();
+            stream.reset();
+        }
+    }
 
     /**
       Method that runs, monitoring the ServerSocket and adding connections as
@@ -388,6 +424,9 @@ public class SocketHubAppender extends AppenderSkeleton {
               // create an ObjectOutputStream
               ObjectOutputStream oos =
                 new ObjectOutputStream(socket.getOutputStream());
+              if (buffer != null && buffer.length() > 0) {
+                sendCachedEvents(oos);
+              }
 
               // add it to the oosList.  OK since Vector is synchronized.
               oosList.addElement(oos);

@@ -100,7 +100,10 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
   }
 
   public void setIdentifierExpression(String identifierExpression) {
-    this.identifierExpression = identifierExpression;
+    synchronized(mutex) {
+        this.identifierExpression = identifierExpression;
+        mutex.notify();
+    }
   }
 
   public String getIdentifierExpression() {
@@ -290,7 +293,7 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
 
           synchronized (mutex) {
             try {
-              while (queue.size() == 0) {
+              while (queue.size() == 0 || identifierExpression == null) {
                 setDataRate(0);
                 mutex.wait();
               }

@@ -864,6 +864,7 @@ public class LogPanel extends DockablePanel implements Profileable,
         menuItemFocusOn.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent evt) {
                     if (currentPoint != null) {
+                        String operator = "==";
                         int column = table.columnAtPoint(currentPoint);
                         int row = table.rowAtPoint(currentPoint);
                         String colName = table.getColumnName(column);
@@ -878,13 +879,21 @@ public class LogPanel extends DockablePanel implements Profileable,
                                 value = ((JLabel) comp).getText();
                             }
                         } else {
-                            value = table.getValueAt(row, column).toString();
+                            Object o = table.getValueAt(row, column);
+                            if (o != null) {
+                                if (o instanceof String[]) {
+                                    value = ((String[])o)[0];
+                                    operator = "~=";                                    
+                                } else {
+                                    value = o.toString();                                    
+                                }
+                            }
                         }
 
                         if (columnNameKeywordMap.containsKey(colName)) {
                             filterText.setText(columnNameKeywordMap.get(colName)
                                                                    .toString() +
-                                " == '" + value + "'");
+                                " " + operator + " '" + value + "'");
                         }
                     }
                 }
@@ -895,6 +904,7 @@ public class LogPanel extends DockablePanel implements Profileable,
         menuDefineAddCustomFilter.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent evt) {
                     if (currentPoint != null) {
+                        String operator = "==";
                         int column = table.columnAtPoint(currentPoint);
                         int row = table.rowAtPoint(currentPoint);
                         String colName = table.getColumnName(column);
@@ -909,13 +919,19 @@ public class LogPanel extends DockablePanel implements Profileable,
                                 value = ((JLabel) comp).getText();
                             }
                         } else {
-                            value = table.getValueAt(row, column).toString();
+                            Object o = table.getValueAt(row, column).toString();
+                            if (o instanceof String[]) {
+                                value = ((String[])o)[0];
+                                operator = "~=";                                    
+                            } else {
+                                value = o.toString();                                    
+                            }
                         }
 
                         if (columnNameKeywordMap.containsKey(colName)) {
                             filterText.setText(filterText.getText() + " && " +
                                 columnNameKeywordMap.get(colName).toString() +
-                                " == '" + value + "'");
+                                " " + operator + " '" + value + "'");
                         }
                     }
                 }

@@ -75,7 +75,7 @@ public class NotEqualsRule extends AbstractRule {
   
   public static Rule getRule(Stack stack) {
     if (stack.size() < 2) {
-        throw new IllegalArgumentException("Invalid NOT EQUALS rule - expected two rules but provided " + stack.size());
+        throw new IllegalArgumentException("Invalid NOT EQUALS rule - expected two parameters but received " + stack.size());
     }  
     String p2 = stack.pop().toString();
     String p1 = stack.pop().toString();
@@ -83,8 +83,8 @@ public class NotEqualsRule extends AbstractRule {
   }
 
   public boolean evaluate(LoggingEvent event) {
-    String p2 = resolver.getValue(field, event).toString();
+    Object p2 = resolver.getValue(field, event);
 
-    return ((p2 != null) && !(p2.equals(value)));
+    return ((p2 != null) && !(p2.toString().equals(value)));
   }
 }
