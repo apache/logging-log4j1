@@ -1,5 +1,5 @@
 
-package org.apache.log4j.examples;
+package examples;
 
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.Logger;
@@ -7,7 +7,7 @@ import org.apache.log4j.Priority;
 
 /**
    Example code for log4j to viewed in conjunction with the {@link
-   org.apache.log4j.examples.SortAlgo SortAlgo} class.
+   examples.SortAlgo SortAlgo} class.
    
    <p>This program expects a configuration file name as its first
    argument, and the size of the array to sort as the second and last
@@ -71,7 +71,7 @@ public class Sort {
   static
   void usage(String errMsg) {
     System.err.println(errMsg);
-    System.err.println("\nUsage: java org.apache.log4j.examples.Sort " +
+    System.err.println("\nUsage: java org.apache.examples.Sort " +
 		       "configFile ARRAY_SIZE\n"+
       "where  configFile is a configuration file\n"+
       "      ARRAY_SIZE is a positive integer.\n");
