@@ -60,6 +60,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.AbstractAction;
@@ -83,7 +84,9 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import org.apache.log4j.chainsaw.help.HelpManager;
 import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.chainsaw.receivers.ReceiversHelper;
 
 
 /**
@@ -449,6 +452,22 @@ class ChainsawToolBarAndMenus implements ChangeListener {
         startTutorial.putValue(Action.SHORT_DESCRIPTION,
             "Starts the tutorial process");
         helpMenu.add(startTutorial);
+        
+        List knownReceivers = ReceiversHelper.getInstance().getKnownReceiverClasses();
+        JMenu receiverHelp = new JMenu("Receiver JavaDoc");
+        
+        for (Iterator iter = knownReceivers.iterator(); iter.hasNext(); ) {
+          final Class clazz = (Class) iter.next();
+          receiverHelp.add(new AbstractAction(clazz.getName()) {
+
+            public void actionPerformed(ActionEvent arg0) {
+              HelpManager.getInstance().showHelpForClass(clazz);
+              
+            }});
+        }
+        
+        helpMenu.add(receiverHelp);
+        
         helpMenu.addSeparator();
         helpMenu.add(about);
 
