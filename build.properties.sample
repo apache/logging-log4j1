@@ -33,7 +33,7 @@ logging-site=../logging-site
 # ===================================================================
 # describes the relative or full path to the Jakarta ORO Reg Exp jar file
 # This is required if you wish to use Chainsaw v2
-#regexp.oro.jar=../oro/jakarta-oro-2.0.6.jar
+#regexp.oro.jar=../oro/jakarta-oro-2.0.8.jar
 
 # DBAppeder/DBReceiver OPTIONAL: 
 #
