@@ -22,6 +22,7 @@ import org.apache.joran.helper.Option;
 
 import org.apache.log4j.config.PropertySetter;
 import org.apache.log4j.helpers.Loader;
+import org.apache.log4j.spi.Component;
 import org.apache.log4j.spi.ErrorItem;
 import org.apache.log4j.spi.OptionHandler;
 
@@ -101,7 +102,9 @@ public class NestComponentIA extends ImplicitAction {
         className);
 
       actionData.nestedComponent = Loader.loadClass(className).newInstance();
-
+      if(actionData.nestedComponent instanceof Component) {
+        ((Component) actionData.nestedComponent).setLoggerRepository(this.repository);
+      }
       getLogger().debug(
         "Pushing component <{}> on top of the object stack.", localName);
       ec.pushObject(actionData.nestedComponent);
