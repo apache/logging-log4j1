@@ -746,7 +746,7 @@ public class Foo {
 	<ol>
 
 	  <li>
-	    <b>Write a test case for your contribution.</b>
+	    <p>Write a test case for your contribution.</p>
 
 	    <p>There is nothing more irritating than finding the bugs
 	    in debugging (i.e. logging) code. Writing a test case
@@ -762,23 +762,36 @@ public class Foo {
 	    <p>Stick to the existing indentation style even if you hate it.</p>
 	    
 	    <p>Alternating between indentation styles makes it hard to
-	    understand the source code. Make it hard on yourself but
-	    easier on others. Log4j follows the <a
+	    understand the source code. Make it a little harder on
+	    yourself but easier on others.
+	    </p>
+
+	    <p>Log4j has adopted a rather conservative approach by
+	    following the <a
 	    href="http://java.sun.com/docs/codeconv/">Code Conventions
-	    for the JavaTM Programming Language</a>.
+	    for the JavaTM Programming Language</a>. <b>We use 2 (two)
+	    spaces for indentation and no tabs.</b>
 	    </p>
 	  </li>
 
 	  <li>
-	    <p><b>Do not both modify the code and change the
-	    indentation in a single commit.</b>.</p>
+	    <p>Please do not both modify the code and change the
+	    indentation in a single commit.</p>
 	    
 	    <p>If you change the code and reformat it at the same time
-	    and then commit, the commit notification message will not
-	    be easy to read. It will contain many diff associated with
-	    the change in indentation plus actual changes to the code
-	    logic.
+	    and then commit, the commit notification message will be
+	    hard to read. It will contain many diffs associated with
+	    the reformatting in addition to logical changes.
 	    </p>
+
+	    <p>If you must reformat and change the code, then perform
+	    each step separately. For example, reformat the code and
+	    commit. Following that, you can change the logic and
+	    commit. The two steps can be performed in the reverse
+	    order just as well. You can first change the logic and
+	    commit and only later reformat and commit.
+	    </p>
+
 	  </li>
 	  <li>
 	    <p>Make every effort to stick to the JDK 1.1 API.</p>
@@ -796,8 +809,8 @@ public class Foo {
 	  </li>
 	  
 	  <li>
-	    <p>Identify yourself as the contributor at the top of the
-	    relevant file. 
+	    <p>Identify yourself as a contributor at the top of the
+	    relevant file.
 	    </p>
 	  </li>
 	  <li>
@@ -808,15 +821,43 @@ public class Foo {
 	    </p>
 	  </li>
 	  <li>
-	    <p>Did I mention sticking with the indentation style? </p>
+	    <p>Did we mention sticking with the indentation style? </p>
 	  </li>
-	  <li><p>Did I mention writing test cases? </p>
+	  <li><p>Did we mention writing test cases? </p>
 	  </li>
 	  
 	</ol>
       </answer>
     </question>
 
+    <question>
+      <title>How can I contribute a new question/answer to this
+      document?</title>
+      <answer>
+	<p>Log4j uses <a
+	href="http://jakarta.apache.org/velocity/anakia.html">velocity-anakia</a>
+	to generate its web-site, including this FAQ. We have devised
+	special macros to help us automatically generate labeled
+	question/answer pairs.
+	</p>
+
+	<p>If you are not a commiter, you can simply submit your new
+	question/answer pair to the log4j-dev@logging.apache.org
+	mailing list. The committers will take it from there.
+	</p>
+
+	<p>If you are a committer, then you must edit the
+	<em>/src/xdocs/faq.xml</em> file. The format of the file
+	should be self-evident. After you have made your changes, run
+	the command
+	</p>
+	<pre class="source">ant site</pre>
+
+	<p>After the appropriate transformation, your changes should
+	appear in the file <em>/docs/faq.html</em>.
+	</p>
+      </answer>
+    </question>
   </faqSection>
 </body>
 </document>
