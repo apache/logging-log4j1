@@ -51,84 +51,96 @@ package org.apache.log4j.chainsaw;
 
 import org.apache.log4j.spi.LoggingEvent;
 
+
 /**
- * A singleton helper utility which accepts a field name and a LoggingEvent and returns the 
+ * A singleton helper utility which accepts a field name and a LoggingEvent and returns the
  * String value of that field.
- * 
+ *
  * This class defines a grammar used in creation of an expression-based Rule.
- * 
- * Here is a description of the mapping of field names in the grammar 
+ *
+ * The only available method is getField(String fieldName, LoggingEvent event).
+ *
+ * Here is a description of the mapping of field names in the grammar
  * to fields on the logging event:
- * 
- * Field Name		Field value (String representation
- * LOGGER			category name (logger)
- * LEVEL			level
- * CLASS			locationInformation's class name
- * FILE				locationInformation's file name
- * LINE				locationInformation's line number
- * METHOD			locationInformation's method name
- * MSG				message
- * NDC				NDC
- * EXCEPTION		throwable string representation
- * TIMESTAMP		timestamp
- * THREAD			thread
- * MDC.keyName		entry in the MDC hashtable mapped to key 'keyName'
- * PROP.keyName		entry in the Property hashtable mapped to the key 'keyName'
- * 
- * If the passed-in field is null or does not match an entry in the above-described 
+ *
+ * Field Name                Field value (String representation
+ * LOGGER                    category name (logger)
+ * LEVEL                     level
+ * CLASS                     locationInformation's class name
+ * FILE                      locationInformation's file name
+ * LINE                      locationInformation's line number
+ * METHOD                    locationInformation's method name
+ * MSG                       message
+ * NDC                       NDC
+ * EXCEPTION                 throwable string representation
+ * TIMESTAMP                 timestamp
+ * THREAD                    thread
+ * MDC.keyName               entry in the MDC hashtable mapped to key 'keyName'
+ * PROP.keyName              entry in the Property hashtable mapped to the key 'keyName'
+
+ * NOTE:  the values for the 'keyName' portion of the MDC and PROP mappings must
+ * be an exact match to the key in the hashTable (case sensitive).
+ *
+ * If the passed-in field is null or does not match an entry in the above-described
  * mapping, an empty string is returned.
- * 
+ *
  * @author Scott Deboy <sdeboy@apache.org>
  * @author Paul Smith <psmith@apache.org>
  *
  */
-
 public final class LoggingEventFieldResolver {
-	private static final LoggingEventFieldResolver resolver = new LoggingEventFieldResolver();
-	
-	private LoggingEventFieldResolver(){}
-	
-	public static LoggingEventFieldResolver getInstance() {
-		return resolver;
-	}
+  private static final LoggingEventFieldResolver resolver =
+    new LoggingEventFieldResolver();
 
-	public String getValue(String fieldName, LoggingEvent event) {
-		if (fieldName == null) {
-			return "";
-		}
-		String lowerProp = fieldName.toUpperCase();
-		if ("LOGGER".equals(fieldName)) {
-			return event.getLoggerName();
-		} else if ("LEVEL".equals(fieldName)) {
-			return event.getLevel().toString();
-		} else if ("CLASS".equals(fieldName)) {
-			return event.getLocationInformation().getClassName();
-		} else if ("FILE".equals(fieldName)) {
-			return event.getLocationInformation().getFileName();
-		} else if ("LINE".equals(fieldName)) {
-			return event.getLocationInformation().getLineNumber();
-		} else if ("METHOD".equals(fieldName)) {
-			return event.getLocationInformation().getMethodName();
-		} else if ("MSG".equals(fieldName)) {
-			return event.getMessage().toString();
-		} else if ("NDC".equals(fieldName)) {
-			return event.getNDC();
-		} else if ("EXCEPTION".equals(fieldName)) {
-			StringBuffer buf = new StringBuffer();
-			for (int i=0;i<event.getThrowableStrRep().length;i++) {
-				buf.append(event.getThrowableStrRep()[i]);
-				buf.append("");
-			}
-			return buf.toString();
-		} else if ("TIMESTAMP".equals(fieldName)) {
-			return String.valueOf(event.timeStamp);
-		} else if ("THREAD".equals(fieldName)) {
-			return event.getThreadName();
-		} else if (fieldName.startsWith("MDC.")) {
-			return event.getMDC(fieldName.substring(4)).toString();
-		} else if (fieldName.startsWith("PROP.")) {
-			return event.getProperty(fieldName.substring(5));
-		}
-		return "";
-	}
+  private LoggingEventFieldResolver() {
+  }
+
+  public static LoggingEventFieldResolver getInstance() {
+    return resolver;
+  }
+
+  public String getValue(String fieldName, LoggingEvent event) {
+    if (fieldName == null) {
+      return "";
+    }
+
+    String lowerProp = fieldName.toUpperCase();
+
+    if ("LOGGER".equals(fieldName)) {
+      return event.getLoggerName();
+    } else if ("LEVEL".equals(fieldName)) {
+      return event.getLevel().toString();
+    } else if ("CLASS".equals(fieldName)) {
+      return event.getLocationInformation().getClassName();
+    } else if ("FILE".equals(fieldName)) {
+      return event.getLocationInformation().getFileName();
+    } else if ("LINE".equals(fieldName)) {
+      return event.getLocationInformation().getLineNumber();
+    } else if ("METHOD".equals(fieldName)) {
+      return event.getLocationInformation().getMethodName();
+    } else if ("MSG".equals(fieldName)) {
+      return event.getMessage().toString();
+    } else if ("NDC".equals(fieldName)) {
+      return event.getNDC();
+    } else if ("EXCEPTION".equals(fieldName)) {
+      StringBuffer buf = new StringBuffer();
+
+      for (int i = 0; i < event.getThrowableStrRep().length; i++) {
+        buf.append(event.getThrowableStrRep()[i]);
+        buf.append(System.getProperty("line.separator"));
+      }
+
+      return buf.toString();
+    } else if ("TIMESTAMP".equals(fieldName)) {
+      return String.valueOf(event.timeStamp);
+    } else if ("THREAD".equals(fieldName)) {
+      return event.getThreadName();
+    } else if (fieldName.startsWith("MDC.")) {
+      return event.getMDC(fieldName.substring(4)).toString();
+    } else if (fieldName.startsWith("PROP.")) {
+      return event.getProperty(fieldName.substring(5));
+    }
+
+    return "";
+  }
 }
