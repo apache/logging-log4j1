@@ -62,21 +62,21 @@ import org.apache.log4j.spi.LoggingEvent;
 //                 Anders Kristensen <akristensen@dynamicsoft.com>
 
 /**
-
-   A flexible layout configurable with pattern string.
-
-   <p>The goal of this class is to {@link #format format} a {@link
-   LoggingEvent} and return the results as a String. The results
-   depend on the <em>conversion pattern</em>.
-
-   <p>The conversion pattern is closely related to the conversion
-   pattern of the printf function in C. A conversion pattern is
-   composed of literal text and format control expressions called
-   <em>conversion specifiers</em>.
-
-   <p><i>You are free to insert any literal text within the conversion
-   pattern.</i>
-
+  * <p>A flexible layout configurable with pattern string. The goal of this class 
+  * is to {@link #format format} a {@link LoggingEvent} and return the results 
+  * in a {#link StringBuffer}. The format of the result depensd on the 
+  * <em>conversion pattern</em>.
+  * <p>
+  * 
+  * <p>The conversion pattern is closely related to the conversion 
+  * pattern of the printf function in C. A conversion pattern is 
+  * composed of literal text and format control expressions called 
+  * <em>conversion specifiers</em>.
+  *
+  * <p><i>Note that you are free to insert any literal text within the 
+  * conversion pattern.</i>
+  * </p>
+  
    <p>Each conversion specifier starts with a percent sign (%) and is
    followed by optional <em>format modifiers</em> and a <em>conversion
    character</em>. The conversion character specifies the type of

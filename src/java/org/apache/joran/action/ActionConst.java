@@ -16,7 +16,10 @@ public abstract class ActionConst {
 	public static final String VALUE_ATTRIBUTE = "value";
 	public static final String CLASS_ATTRIBUTE = "class";
   public static final String ADDITIVITY_ATTRIBUTE = "additivity";
-
+  public static final String CONVERTER_CLASS_ATTRIBUTE = "converterClass";
+  public static final String CONVERSION_WORD_ATTRIBUTE = "conversionWord";
+  public static final String PATTERN_ATTRIBUTE = "pattern";
+  public static final String ACTION_CLASS_ATTRIBUTE = "actionClass";
 
 	static final String INHERITED = "INHERITED";
 	static final String NULL = "NULL";

@@ -582,7 +582,9 @@
        org.apache.log4j.varia,
        org.apache.log4j.chainsaw,
        org.apache.log4j.xml,
-       org.apache.log4j.xml.examples"
+       org.apache.log4j.xml.examples,
+       org.apache.joran,
+       org.apache.joran.action"
      additionalparam="-breakiterator"
      version="true"
      protected="true"

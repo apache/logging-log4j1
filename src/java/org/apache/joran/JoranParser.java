@@ -195,4 +195,13 @@ public class JoranParser {
       action.end(ec, e);
     }
   }
+
+  public RuleStore getRuleStore() {
+    return ruleStore;
+  }
+
+  public void setRuleStore(RuleStore ruleStore) {
+    this.ruleStore = ruleStore;
+  }
+
 }

@@ -369,15 +369,15 @@ public class PatternParser {
 
     String converterId = extractConverter(c);
 
-    System.out.println("converter ID[" + converterId + "]");
-    System.out.println("c is [" + c + "]");
+    //System.out.println("converter ID[" + converterId + "]");
+    //System.out.println("c is [" + c + "]");
     String className = (String) findConverterClass(converterId);
 
-    System.out.println("converter class [" + className + "]");
+    //System.out.println("converter class [" + className + "]");
     
     String option = extractOption();
 
-    System.out.println("Option is [" + option + "]");
+    //System.out.println("Option is [" + option + "]");
     if (className != null) {
       pc =
         (PatternConverter) OptionConverter.instantiateByClassName(
