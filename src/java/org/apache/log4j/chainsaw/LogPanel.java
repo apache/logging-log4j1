@@ -2570,13 +2570,13 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
           public void run() {
             try {
                 detail.setText(text2);
+                detail.validate();
                 if (text2.length() > 0) {
                     detail.setCaretPosition(0);
                 }
             } catch (Exception e){} //ignore
           }
         });
-        detail.revalidate();
     }
 
     /**
