@@ -41,7 +41,7 @@ public class RollingFileAppenderBeanInfo extends SimpleBeanInfo {
     } catch(IntrospectionException e) {
       LogLog.error("Could not inspect RollingFileAppender.", e);
     } catch(NoSuchMethodException e) {
-      LogLog.error("Could find setter method for RollingFileAppender.", e);
+      LogLog.error("Could not find setter method for RollingFileAppender.", e);
     }
   }
 
