@@ -13,26 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.ugli;
+package org.apache.ugli.impl;
+
+import org.apache.ugli.ULogger;
 
 
 /**
- * A no operation (NOP) implementation of {@link Logger}.
+ * A no operation (NOP) implementation of {@link ULogger}.
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
-public class NullLogger implements Logger {
+public class NOPLogger implements ULogger {
 
   /**
-   * The unique instance of NullLogger.
+   * The unique instance of NOPLogger.
    */
-  public final static NullLogger NULL_LOGGER = new NullLogger();
+  public final static NOPLogger NOP_LOGGER = new NOPLogger();
   
   /**
    * There is no point in people creating multiple instances of NullLogger. 
    * Hence, the private access modifier. 
    */
-  private NullLogger() {
+  private NOPLogger() {
   }
   
   /* Always returns false.
@@ -53,14 +55,14 @@ public class NullLogger implements Logger {
   /* A NOP implementation.
    * @see org.apache.ugli.Logger#debug(java.lang.Object, java.lang.Object)
    */
-  public void debug(String parameterizedMsg, Object param1) {
+  public void debug(Object parameterizedMsg, Object param1) {
     // NOP
   }
 
   /* A NOP implementation.
    * @see org.apache.ugli.Logger#debug(java.lang.Object, java.lang.Object, java.lang.Object)
    */
-  public void debug(String parameterizedMsg, Object param1, Object param2) {
+  public void debug(Object parameterizedMsg, Object param1, Object param2) {
     // NOP
   }
 
@@ -89,14 +91,14 @@ public class NullLogger implements Logger {
   /* A NOP implementation.
    * @see org.apache.ugli.Logger#info(java.lang.Object, java.lang.Object)
    */
-  public void info(String parameterizedMsg, Object param1) {
+  public void info(Object parameterizedMsg, Object param1) {
     // NOP
   }
 
   /* A NOP implementation.
    * @see org.apache.ugli.Logger#info(java.lang.Object, java.lang.Object, java.lang.Object)
    */
-  public void info(String parameterizedMsg, Object param1, Object param2) {
+  public void info(Object parameterizedMsg, Object param1, Object param2) {
     // NOP
   }
 
@@ -124,14 +126,14 @@ public class NullLogger implements Logger {
   /* A NOP implementation.
    * @see org.apache.ugli.Logger#warn(java.lang.Object, java.lang.Object)
    */
-  public void warn(String parameterizedMsg, Object param1) {
+  public void warn(Object parameterizedMsg, Object param1) {
     // NOP
   }
 
   /* A NOP implementation.
    * @see org.apache.ugli.Logger#warn(java.lang.Object, java.lang.Object, java.lang.Object)
    */
-  public void warn(String parameterizedMsg, Object param1, Object param2) {
+  public void warn(Object parameterizedMsg, Object param1, Object param2) {
     // NOP
   }
 
@@ -159,14 +161,14 @@ public class NullLogger implements Logger {
   /* A NOP implementation.
    * @see org.apache.ugli.Logger#error(java.lang.Object, java.lang.Object)
    */
-  public void error(String parameterizedMsg, Object param1) {
+  public void error(Object parameterizedMsg, Object param1) {
     // NOP
   }
 
   /* A NOP implementation.
    * @see org.apache.ugli.Logger#error(java.lang.Object, java.lang.Object, java.lang.Object)
    */
-  public void error(String parameterizedMsg, Object param1, Object param2) {
+  public void error(Object parameterizedMsg, Object param1, Object param2) {
     // NOP
   }
 
