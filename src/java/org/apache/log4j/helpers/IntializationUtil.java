@@ -69,7 +69,8 @@ public class IntializationUtil {
       url = new URL(configuratonResourceStr);
     } catch (MalformedURLException ex) {
       // so, resource is not a URL:
-      // attempt to get the resource from the class path
+      // attempt to get the resource from the class loader path
+      // Please refer to Loader.getResource documentation.
       url = Loader.getResource(configuratonResourceStr);
     }
 
