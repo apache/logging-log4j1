@@ -49,91 +49,66 @@
 
 package org.apache.log4j.chainsaw.rule;
 
-import java.util.Collection;
-import java.util.LinkedList;
 import java.util.Stack;
 
+import org.apache.log4j.chainsaw.LoggingEventFieldResolver;
+import org.apache.log4j.spi.LoggingEvent;
+
 /**
- * A Factory class which, given a string representation of the rule, and a context stack, will
- * return a Rule ready for evaluation against events. 
+ * A Rule class implementing less than - expects to be able to convert two values to longs.
+ * If the field being evaluated can support inequality evaluation, the appropriate rule is returned.
+ * (For example, if the expression is Level < DEBUG, a LessThanLevelRule is returned).
  * 
  * @author Scott Deboy <sdeboy@apache.org>
  */
-class RuleFactory {
-  static final Collection rules = new LinkedList();
-  private static final String AND_RULE = "&&";
-  private static final String OR_RULE = "||";
-  private static final String NOT_RULE = "!";
-  private static final String NOT_EQUALS_RULE = "!=";
-  private static final String EQUALS_RULE = "==";
-  private static final String PARTIAL_TEXT_MATCH_RULE = "~=";
-  private static final String LIKE_RULE = "like";
-  private static final String LESS_THAN_RULE = "<";
-  private static final String GREATER_THAN_RULE = ">";
-  private static final String LESS_THAN_EQUALS_RULE = "<=";
-  private static final String GREATER_THAN_EQUALS_RULE = ">=";
-  static {
-    rules.add(AND_RULE);
-    rules.add(OR_RULE);
-    rules.add(NOT_RULE);
-    rules.add(NOT_EQUALS_RULE);
-    rules.add(EQUALS_RULE);
-    rules.add(PARTIAL_TEXT_MATCH_RULE);
-    rules.add(LIKE_RULE);
-    rules.add(LESS_THAN_RULE);
-    rules.add(GREATER_THAN_RULE);
-    rules.add(LESS_THAN_EQUALS_RULE);
-    rules.add(GREATER_THAN_EQUALS_RULE);
+
+class InequalityRule extends AbstractRule {
+    private static final String LEVEL = "LEVEL";
+
+  LoggingEventFieldResolver resolver = LoggingEventFieldResolver.getInstance();
+  String firstParam;
+  String secondParam;
+  String inequalitySymbol;
+
+  private InequalityRule(String inequalitySymbol, String firstParam, String secondParam) {
+    this.inequalitySymbol = inequalitySymbol;
+    this.firstParam = firstParam;
+    this.secondParam = secondParam;
   }
 
-  static boolean isRule(String symbol) {
-    return rules.contains(symbol.toLowerCase());
+  static Rule getRule(String inequalitySymbol, Stack stack) {
+    String p1 = stack.pop().toString();
+    String p2 = stack.pop().toString();
+    if (p2.equalsIgnoreCase(LEVEL)) {
+        //push the value back on the stack and allow the level-specific rule pop values
+        stack.push(p1);
+        stack.push(p2);
+
+        return LevelInequalityRule.getRule(inequalitySymbol, stack);
+    } else {
+        System.out.println("get equals op " + p1 + ".." + p2);
+
+        return new InequalityRule(inequalitySymbol, p1, p2);
+    }
   }
+  
+  public boolean evaluate(LoggingEvent event) {
+    long second = new Long(resolver.getValue(secondParam, event).toString()).longValue();
+    long first = new Long(firstParam).longValue();
 
-  static Rule getRule(String symbol, Stack stack) {
-    if (AND_RULE.equals(symbol)) {
-      return AndRule.getRule(stack);
+    boolean result = false;
+        
+    if ("<".equals(inequalitySymbol)) {
+        result = first < second;
+    } else if (">".equals(inequalitySymbol)) {
+        result = first > second;
+    } else if ("<=".equals(inequalitySymbol)){
+        result = first <= second;
+    } else if (">=".equals(inequalitySymbol)) {
+        result = first >= second;
     }
+    System.out.println("result is " + result);
 
-    if (OR_RULE.equals(symbol)) {
-      return OrRule.getRule(stack);
-    }
-
-    if (NOT_RULE.equals(symbol)) {
-      return NotRule.getRule(stack);
-    }
-
-    if (NOT_EQUALS_RULE.equals(symbol)) {
-      return NotEqualsRule.getRule(stack);
-    }
-
-    if (EQUALS_RULE.equals(symbol)) {
-      return EqualsRule.getRule(stack);
-    }
-
-    if (PARTIAL_TEXT_MATCH_RULE.equals(symbol)) {
-      return PartialTextMatchRule.getRule(stack);
-    }
-
-    if (LIKE_RULE.equalsIgnoreCase(symbol)) {
-      return LikeRule.getRule(stack);
-    }
-
-    if (LESS_THAN_RULE.equals(symbol)) {
-      return InequalityRule.getRule(LESS_THAN_RULE, stack);
-    }
-
-    if (GREATER_THAN_RULE.equals(symbol)) {
-      return InequalityRule.getRule(GREATER_THAN_RULE, stack);
-    }
-
-    if (LESS_THAN_EQUALS_RULE.equals(symbol)) {
-      return InequalityRule.getRule(LESS_THAN_EQUALS_RULE, stack);
-    }
-
-    if (GREATER_THAN_EQUALS_RULE.equals(symbol)) {
-      return InequalityRule.getRule(GREATER_THAN_EQUALS_RULE, stack);
-    }
-    return null;
+    return result;
   }
 }
