@@ -168,7 +168,6 @@ public class LogPanel extends DockablePanel implements SettingsListener,
   private boolean paused = false;
   private boolean logTreePanelVisible = true;
   private final FilterModel filterModel = new FilterModel();
-  final ColorFilter colorFilter = new ColorFilter();
   private final RuleMediator ruleMediator = new RuleMediator();
   final EventContainer tableModel;
   final JEditorPane detail;
@@ -289,19 +288,7 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     //      displayFilter.addFilterChangedListener(tableModel);
     SettingsManager.getInstance().addSettingsListener(renderer);
 
-    renderer.setColorFilter(colorFilter);
-
     table.setDefaultRenderer(Object.class, renderer);
-
-    //if the color filter changes, trigger the tablemodel update
-    colorFilter.addFilterChangedListener(
-      new FilterChangedListener() {
-        public void filterChanged() {
-          if (tableModel instanceof AbstractTableModel) {
-            ((AbstractTableModel) tableModel).fireTableDataChanged();
-          }
-        }
-      });
 
     final ColumnSelector columnSelector =
       new ColumnSelector(
@@ -865,15 +852,15 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     menuItemScrollBottom.setIcon(
       new ImageIcon(ChainsawIcons.SCROLL_TO_BOTTOM));
 
-    JMenuItem menuItemRemoveColorFilter =
-      new JMenuItem("Remove all color filters");
-    menuItemRemoveColorFilter.addActionListener(
-      new ActionListener() {
-        public void actionPerformed(ActionEvent evt) {
-          //            colorDisplaySelector.clearColors();
-          colorFilter.clear();
-        }
-      });
+//    JMenuItem menuItemRemoveColorFilter =
+//      new JMenuItem("Remove all color filters");
+//    menuItemRemoveColorFilter.addActionListener(
+//      new ActionListener() {
+//        public void actionPerformed(ActionEvent evt) {
+//          //            colorDisplaySelector.clearColors();
+//          colorFilter.clear();
+//        }
+//      });
 
     JMenuItem menuItemColumnSelector =
       new JMenuItem("Select display columns...");
@@ -942,7 +929,7 @@ public class LogPanel extends DockablePanel implements SettingsListener,
 
     selectSubMenu.add(menuItemColumnSelector);
 
-    removeSubMenu.add(menuItemRemoveColorFilter);
+//    removeSubMenu.add(menuItemRemoveColorFilter);
     removeSubMenu.add(menuItemRemoveDisplayFilter);
 
     p.add(selectSubMenu);
