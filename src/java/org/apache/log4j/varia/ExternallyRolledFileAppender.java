@@ -1,6 +1,10 @@
-//      Copyright 2000, Ceki Gulcu. 
-//
-//      See the LICENCE file for the terms of usage and distribution.
+/*
+ * Copyright (C) The Apache Software Foundation. All rights reserved.
+ *
+ * This software is published under the terms of the Apache Software License
+ * version 1.1, a copy of which has been included  with this distribution in
+ * the LICENSE.APL file.
+ */
 
 package org.apache.log4j.varia;
 
@@ -14,10 +18,10 @@ import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.helpers.LogLog;
 
 /**
-   This appender listen on a socket on the port specified by the
-   {@link #PORT_OPTION} for a "RollOver" message. If and and when such
-   a message is received, the underlying log file is rolled over and
-   an acknowledgement message is sent back to the process initiating
+   This appender listens on a socket on the port specified by the
+   {@link #PORT_OPTION} for a "RollOver" message. When such a message
+   is received, the underlying log file is rolled over and an 
+   acknowledgement message is sent back to the process initiating
    the roll over.
 
    <p>This method of triggering roll over has the advantage of being
@@ -61,7 +65,7 @@ public class ExternallyRolledFileAppender extends RollingFileAppender {
   HUP hup;
 
   /**
-     Thia default constructor does nothing but call its super-class
+     The default constructor does nothing but calls its super-class
      constructor.  */
   public
   ExternallyRolledFileAppender() { 
@@ -84,7 +88,7 @@ public class ExternallyRolledFileAppender extends RollingFileAppender {
   }
 
   /**
-     Retuns the option names for this component, namely {@link
+     Returns the option names for this component, namely {@link
      #PORT_OPTION} in addition to the options of its super class {@link
      RollingFileAppender#getOptionStrings FileAppender}.  */
   public
@@ -95,7 +99,15 @@ public class ExternallyRolledFileAppender extends RollingFileAppender {
   }
 
   /**
-     The <b>Port</b> options takes a 
+     Set ExternallyRolledFileAppender specific options.
+
+     In addition to {@link FileAppender#setOption FileAppender
+     options} and {@link RollingFileAppender#setOption RollingFileAppender
+     options}, ExternallyRolledFileAppender recognizes the option
+     <b>Port</b>.
+
+     <p>The <b>Port</b> option is used for setting the port for 
+     listening to external roll over messages.
 
    */
   public
@@ -181,7 +193,7 @@ class HUPNode implements Runnable {
       dos.close();
     }
     catch(Exception e) {
-      LogLog.error("Unexptected exception. Exiting HUPNode.", e);
+      LogLog.error("Unexpected exception. Exiting HUPNode.", e);
     }    
   }
 }
