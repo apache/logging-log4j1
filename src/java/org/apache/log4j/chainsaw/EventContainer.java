@@ -133,6 +133,12 @@ public interface EventContainer extends SortTableModel, FilterChangedListener,
    * Returns a copied list of all the event in the model.
    */
   List getAllEvents();
+  
+  /**
+   * Returns the total number of events currently in the model (all, not just filtered)
+   * @return
+   */
+  int size();
 
   /**
    * Returns the vector representing the row.

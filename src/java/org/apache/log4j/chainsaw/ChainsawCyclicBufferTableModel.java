@@ -92,7 +92,6 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
   private final int INITIAL_CAPACITY = 5000;
   List unfilteredList = new CyclicBufferList(INITIAL_CAPACITY);
   List filteredList = new CyclicBufferList(INITIAL_CAPACITY);
-
   private boolean currentSortAscending;
   private int currentSortColumn;
   private EventListenerList eventListenerList = new EventListenerList();
@@ -113,7 +112,7 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
     new PropertyChangeSupport(this);
 
   public ChainsawCyclicBufferTableModel() {
-    propertySupport.addPropertyChangeListener("cyclic",new ModelChanger());
+    propertySupport.addPropertyChangeListener("cyclic", new ModelChanger());
   }
 
   /**
@@ -324,6 +323,11 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
 
   public Object getValueAt(int rowIndex, int columnIndex) {
     LoggingEvent event = (LoggingEvent) filteredList.get(rowIndex);
+
+    if (event == null) {
+      return null;
+    }
+
     LocationInfo info = event.getLocationInformation();
 
     if (event == null) {
@@ -548,6 +552,21 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
     propertySupport.addPropertyChangeListener(l);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.log4j.chainsaw.EventContainer#addPropertyChangeListener(java.lang.String, java.beans.PropertyChangeListener)
+   */
+  public void addPropertyChangeListener(
+    String propertyName, PropertyChangeListener l) {
+    propertySupport.addPropertyChangeListener(propertyName, l);
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.log4j.chainsaw.EventContainer#size()
+   */
+  public int size() {
+    return unfilteredList.size();
+  }
+
   class SortExecutor implements Runnable {
     private JSortTable table;
     private int col;
@@ -641,6 +660,7 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
     public void propertyChange(PropertyChangeEvent arg0) {
       synchronized (syncLock) {
         LogLog.debug("Changing Model, isCyclic is now " + isCyclic());
+
         List oldUnfilteredList = unfilteredList;
         List oldFilteredList = filteredList;
 
@@ -655,14 +675,8 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
         unfilteredList.addAll(oldUnfilteredList);
         filteredList.addAll(oldFilteredList);
       }
+
       LogLog.debug("Model Change completed");
     }
-  }
-
-  /* (non-Javadoc)
-   * @see org.apache.log4j.chainsaw.EventContainer#addPropertyChangeListener(java.lang.String, java.beans.PropertyChangeListener)
-   */
-  public void addPropertyChangeListener(String propertyName, PropertyChangeListener l) {
-    propertySupport.addPropertyChangeListener(propertyName, l);
   }
 }
