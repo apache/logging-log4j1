@@ -1,2 +1,3 @@
 jakarta.oro.jar=../../jakarta-oro-2.0.5/jakarta-oro-2.0.5.jar
+junit.jar=/usr/local/packages/junit3.2/junit.jar
 deprecation=on

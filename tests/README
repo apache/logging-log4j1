@@ -1,0 +1,29 @@
+
+This directory contains a series of log4j test cases. 
+
+Prerequisites
+=============
+
+Jakarta-ant is used to compile and run the tests. Jakarta-ant version
+1.4.0 was used to compile and run the tests.
+
+The test cases are based on Junit version 3.2. You need to place
+junit.jar in your CLASSPATH.
+
+The test cases perform some regular expression based filtering. This
+requires jakarta-oro. Version-2.0.5 was used when writing the
+tests. You need to have jakarta.oro.jar property (found in the
+build.properties file) to point to jakarta-oro.jar. See the file
+build.properties.sample for an example of a build.properties file.
+
+Compiling
+=========
+
+ant compile
+
+Running
+=======
+
+ant run
+
+
