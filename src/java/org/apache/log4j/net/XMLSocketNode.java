@@ -18,7 +18,6 @@ package org.apache.log4j.net;
 
 import org.apache.log4j.*;
 import org.apache.log4j.helpers.Constants;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.plugins.Receiver;
 import org.apache.log4j.spi.*;
 
@@ -44,13 +43,13 @@ import java.util.List;
     @since 0.8.4
 */
 public class XMLSocketNode implements Runnable {
-  static Logger logger = Logger.getLogger(XMLSocketNode.class);
+  Logger logger = Logger.getLogger(XMLSocketNode.class);
   Socket socket;
   LoggerRepository hierarchy;
   Receiver receiver;
   Decoder decoder;
   SocketNodeEventListener listener;
-
+  
   /**
     Constructor for socket and logger repository. */
   public XMLSocketNode(
@@ -63,11 +62,11 @@ public class XMLSocketNode implements Runnable {
         this.decoder = (Decoder) o;
       }
     } catch (ClassNotFoundException cnfe) {
-    	LogLog.warn("Unable to find decoder", cnfe);
+      logger.warn("Unable to find decoder", cnfe);
     } catch (IllegalAccessException iae) {
-		LogLog.warn("Unable to construct decoder", iae);
+      logger.warn("Unable to construct decoder", iae);
     } catch (InstantiationException ie) {
-		LogLog.warn("Unable to construct decoder", ie);
+      logger.warn("Unable to construct decoder", ie);
     }
 
     this.socket = socket;
@@ -85,11 +84,11 @@ public class XMLSocketNode implements Runnable {
         this.decoder = (Decoder) o;
       }
     } catch (ClassNotFoundException cnfe) {
-    	LogLog.warn("Unable to find decoder", cnfe);
+      logger.warn("Unable to find decoder", cnfe);
     } catch (IllegalAccessException iae) {
-		LogLog.warn("Unable to construct decoder", iae);
+      logger.warn("Unable to construct decoder", iae);
     } catch (InstantiationException ie) {
-		LogLog.warn("Unable to construct decoder", ie);
+      logger.warn("Unable to construct decoder", ie);
     }
 
     this.socket = socket;
