@@ -3,6 +3,7 @@
 
   <properties>
     <author email="ceki@apache.org">Ceki Gulcu</author>
+    <author email="yoavs@apache.org">Yoav Shapira</author>
     <title>Documentation</title>
   </properties>
 
@@ -136,13 +137,15 @@
             </li>
          </p>
 
-
-
          <p><li> <a
          href="http://www-106.ibm.com/developerworks/java/library/j-instlog/">Instant logging: Harness the power of log4j with Jabber</a> by Ruth Zamorano and Rafael Luque, in developerWorks 2003
             </li>
          </p>
 
+         <p><li> <a
+         href="http://developers.sun.com/prodtech/appserver/reference/techart/log4j.html">Using Log4j in the Sun Java System Application Server</a> by Matthew Litkey, Jay Galvin, and Marina Sum, from Sun.
+            </li>
+         </p>
 
 	
       </ul> 
