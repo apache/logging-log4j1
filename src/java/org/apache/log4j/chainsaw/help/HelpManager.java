@@ -55,6 +55,7 @@ import java.beans.PropertyChangeSupport;
 import java.net.URL;
 
 import org.apache.log4j.chainsaw.ChainsawConstants;
+import org.apache.log4j.helpers.LogLog;
 
 
 /**
@@ -77,7 +78,16 @@ public final class HelpManager {
   private HelpManager() {
     
 //    TODO setup all the base URLs in the default.properties and configure in ApplicationPreferenceModel
-      helpLocator.installClassloaderLocator(this.getClass().getClassLoader());
+    
+    try {
+      if (System.getProperty("log4j.chainsaw.localDocs")!=null) {
+        LogLog.info("Adding HelpLocator for localDocs property=" +System.getProperty("log4j.chainsaw.localDocs") );
+        helpLocator.installLocator(new URL(System.getProperty("log4j.chainsaw.localDocs")));
+      }
+    } catch (Exception e) {
+      // TODO: handle exception
+    }
+        helpLocator.installClassloaderLocator(this.getClass().getClassLoader());
 //      helpLocator.installLocator(new URL());
   }
 
@@ -187,10 +197,11 @@ public final class HelpManager {
    */
   public void showHelpForClass(Class c) {
     String name = c.getName();
-    name = name.replace('.', '/');
+    name = name.replace('.', '/') + ".html";
 
     URL url = helpLocator.findResource(name);
-
+    LogLog.debug("located help resource for '" + name +"' at " + (url==null?"":url.toExternalForm()));
+    
     if (url != null) {
       setHelpURL(url);
     } else {
