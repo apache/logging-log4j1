@@ -132,11 +132,14 @@ public class DBAppender extends AppenderSkeleton {
       insertStatement.setString(12, li.getLineNumber());
 
       int updateCount = insertStatement.executeUpdate();
-
       if (updateCount != 1) {
         LogLog.warn("Failed to insert loggingEvent");
       }
 
+      // close the statement
+      insertStatement.close();
+      insertStatement = null;
+      
       Statement idStatement = connection.createStatement();
       idStatement.setMaxRows(1);
 
@@ -169,6 +172,8 @@ public class DBAppender extends AppenderSkeleton {
         }
 
         insertPropertiesStatement.executeBatch();
+        insertPropertiesStatement.close();
+        insertPropertiesStatement = null;
       }
 
       String[] strRep = event.getThrowableStrRep();
@@ -194,6 +199,8 @@ public class DBAppender extends AppenderSkeleton {
         }
 
         insertExceptionStatement.executeBatch();
+        insertExceptionStatement.close();
+        insertExceptionStatement = null;
       }
 
       connection.commit();

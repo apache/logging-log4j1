@@ -18,6 +18,7 @@ package org.apache.log4j.chainsaw;
 
 import java.util.Comparator;
 
+import org.apache.log4j.helpers.Constants;
 import org.apache.log4j.spi.LoggingEvent;
 
 
@@ -120,8 +121,8 @@ public class ColumnComparator implements Comparator {
        		break;
             
        case ChainsawColumns.INDEX_ID_COL_NAME:
-            int id1 = Integer.parseInt(e1.getProperty(ChainsawConstants.LOG4J_ID_KEY));
-            int id2 = Integer.parseInt(e2.getProperty(ChainsawConstants.LOG4J_ID_KEY)); 
+            int id1 = Integer.parseInt(e1.getProperty(Constants.LOG4J_ID_KEY));
+            int id2 = Integer.parseInt(e2.getProperty(Constants.LOG4J_ID_KEY)); 
             if (id1 == id2) {
                 sort = 0;
             } else if (id1 < id2) {

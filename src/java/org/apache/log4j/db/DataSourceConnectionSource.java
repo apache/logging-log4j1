@@ -48,12 +48,19 @@ public class DataSourceConnectionSource extends ConnectionSourceSkeleton {
         errorHandler.error("WARNING: No data source specified");
       }
     } else {
+      Connection connection = null;
       try {
-        Connection connection = getConnection();
-        dialectCode = Util.discoverSQLDialect(connection);
+        connection = getConnection();
       } catch(SQLException se) {
-        LogLog.warn("Could not discover the dialect to use.", se);
+        LogLog.warn("Could not get a connection to discover the dialect to use.", se);
       }
+      if(connection != null) {
+        dialectCode = Util.discoverSQLDialect(connection);
+      } 
+      if(dialectCode == ConnectionSource.UNKNOWN_DIALECT) {
+        LogLog.warn("Could not get a discover the dialect.");
+      }
+        
     }
   }
 
