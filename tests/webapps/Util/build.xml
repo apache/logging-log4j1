@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<project name="A very simple utility script" default="compile" basedir=".">
+
+  <property environment="env"/>
+
+  <!-- The build.properties file defines variables dependent of the host machine -->
+  <property file="build.properties"/>
+  
+  <property name="src.dir" value="${basedir}/src/java/"/>
+  <property name="javac.dest" value="${basedir}/classes"/>
+
+  <path id="compile.classpath">
+    <pathelement location="${build.home}/classes"/>
+  </path>
+ 
+  <target name="clean" depends="">
+    <delete dir="${javac.dest}/" />
+    <delete dir="./util.jar" />
+  </target>
+
+  <target name="compile">
+    <mkdir dir="${javac.dest}"/>
+    <javac srcdir="${src.dir}" destdir="${javac.dest}">
+      <classpath refid="compile.classpath"/>
+      <include name="wombat/*.java" />
+    </javac>
+  </target>
+
+
+  <target name="jar" depends="compile">
+    <jar jarfile="util.jar" basedir="${javac.dest}" includes="**/*.class"/>
+  </target>
+
+
+</project>

@@ -1,0 +1,11 @@
+# Sample build.properties file
+
+# The path to the web-server home
+webserver.home=/java/tomcat/
+
+# The deployment target directory on the web server
+target.webapp.dir=${webserver.home}/webapps
+
+# We need servlet to compile the various servlets.
+servlet.jar=/java/servlet.jar
+

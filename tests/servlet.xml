@@ -1,0 +1,98 @@
+
+<!-- This file is an ANT build script. ANT is a Java based build tool. -->
+<!-- It is availale from http://jakarta.apache.org/ant/                -->
+
+
+<!-- ================================================================= -->
+<!-- NOTE: all directories are relative to jakarta-log4j/tests         -->
+<!-- ================================================================= -->
+<project name="servlet-tests" default="runAll" basedir="." >
+
+  <property file="build.properties"/>
+
+  <!-- The base directory relative to which most targets are built -->
+  <property name="base" value="."/>
+ 
+  <!-- The directory where source files are stored. -->
+  <property name="project.source.home" value="../src/java/"/>
+  <property name="project.classes.home" value="../dist/classes/"/>
+  <property name="examples.classes" value="../examples/classes/"/>
+  
+  <property name="tests.source.home" value="./src/java/"/>
+  
+  <!-- The stem where most log4j source code is located. -->
+  <property name="stem" value="org/apache/log4j"/>
+  
+  <path id="tests.classpath">
+    <pathelement location="${project.source.home}"/>
+    <pathelement location="${project.classes.home}"/>
+    <pathelement location="${examples.classes}"/>
+    <pathelement location="${tests.source.home}"/>
+    <pathelement location="./classes"/>
+  	<pathelement location="./resources"/> 
+    <pathelement location="${jakarta.oro.jar}"/>
+    <fileset dir="./lib/">
+      <include name="*.jar"/>
+    </fileset>
+  </path>
+  
+  
+  <!-- ================================================================= -->
+  <!--                        TARGETS                                    -->
+  <!-- ================================================================= -->
+  
+ 
+  <target name="prepare">
+    <mkdir dir="./classes" />
+    <mkdir dir="./output" />
+    <delete file="classes/log4j.xml"/>
+    <delete file="classes/log4j.properties"/>
+    <copy file="resources/jetty.jndi.properties" 
+        tofile="resources/jndi.properties"/>
+  </target>
+  
+   <!-- ================================================================= -->
+   <!-- Compile test cases and related source files.                      -->
+   <!-- ================================================================= -->
+   <target name="build" depends="tata-war, titi-war, prepare">
+	  <javac srcdir="${tests.source.home}"
+		destdir="./classes" 
+	  	includes="org/apache/log4j/selector/*.java"
+   	    excludes="org/apache/log4j/chainsaw/receivers/*.java"
+		deprecation="${deprecation}"
+		debug="on">			
+	    <classpath refid="tests.classpath"/>
+	 </javac>
+  </target>
+	
+  <!-- ================================================================= -->
+  <!-- Build the parent project                                          -->
+  <!-- ================================================================= -->  
+  <target name="tata-war">
+    <ant dir="./webapps/Tata" target="war" inheritRefs="true"/>
+  </target>
+
+  <target name="titi-war">
+    <ant dir="./webapps/Titi" target="war" inheritRefs="true"/>
+  </target>
+		
+  <target name="cleanOutputDir">
+    <delete>
+	  <fileset dir="./output/" includes="**"/>
+	 </delete>
+  </target>
+ 
+	
+  <target name="runAll" depends="PassByJNDI"/>
+	
+  <target name="PassByJNDI" depends="build, cleanOutputDir">
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+	  <classpath refid="tests.classpath"/>
+	    <formatter type="plain" usefile="false"/>
+	      <test name="org.apache.log4j.selector.PassByJNDI" />
+	   </junit>
+	</target>
+	
+  
+</project>
+
