@@ -104,19 +104,21 @@ import javax.swing.event.EventListenerList;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
+import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
 import org.apache.log4j.UtilLoggingLevel;
 import org.apache.log4j.chainsaw.help.HelpManager;
 import org.apache.log4j.chainsaw.help.Tutorial;
 import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.chainsaw.messages.MessageCenter;
 import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
 import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
 import org.apache.log4j.chainsaw.prefs.SettingsListener;
 import org.apache.log4j.chainsaw.prefs.SettingsManager;
 import org.apache.log4j.chainsaw.receivers.ReceiversPanel;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.net.SocketNodeEventListener;
 import org.apache.log4j.plugins.Plugin;
@@ -124,6 +126,8 @@ import org.apache.log4j.plugins.PluginEvent;
 import org.apache.log4j.plugins.PluginListener;
 import org.apache.log4j.plugins.PluginRegistry;
 import org.apache.log4j.plugins.Receiver;
+import org.apache.log4j.spi.LoggingEvent;
+
 
 /**
  * The main entry point for Chainsaw, this class represents the first frame
@@ -144,11 +148,11 @@ import org.apache.log4j.plugins.Receiver;
  * of 500 is used.
  *
  * @author Scott Deboy <sdeboy@apache.org>
- * @author Paul Smith
- *                <psmith@apache.org>
+ * @author Paul Smith  <psmith@apache.org>
  *
  */
 public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
+  private static final Logger messageLogger = Logger.getLogger(MessageCenter.getInstance().getClass());
   private static final String CONFIG_FILE_TO_USE = "config.file";
   static final String USE_CYCLIC_BUFFER_PROP_NAME = "chainsaw.usecyclicbuffer";
   static final String CYCLIC_BUFFER_SIZE_PROP_NAME =
@@ -456,6 +460,24 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     toolbar.setVisible(applicationPreferenceModel.isToolbar());
     
     setStatusBarVisible(applicationPreferenceModel.isStatusBar());
+
+    /**
+     * We add a simple appender to the MessageCenter logger
+     * so that each message is displayed in the Status bar
+     */
+    messageLogger.addAppender(new AppenderSkeleton(){
+
+      protected void append(LoggingEvent event) {
+        getStatusBar().setMessage(event.getMessage().toString());
+      }
+
+      public void close() {
+        
+      }
+
+      public boolean requiresLayout() {
+        return false;
+      }});
     
     final SocketNodeEventListener socketListener =
       new SocketNodeEventListener() {
@@ -464,14 +486,14 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
         }
 
         public void socketClosedEvent(Exception e) {
-          statusBar.setMessage("Connection lost! :: " + e.getMessage());
+          messageLogger.info("Connection lost! :: " + e.getMessage());
         }
       };
 
     PluginListener pluginListener =
       new PluginListener() {
         public void pluginStarted(PluginEvent e) {
-          statusBar.setMessage(e.getPlugin().getName() + " started!");
+          messageLogger.info(e.getPlugin().getName() + " started!");
 
           Method method = getAddListenerMethod(e.getPlugin());
 
@@ -479,7 +501,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
             try {
               method.invoke(e.getPlugin(), new Object[] { socketListener });
             } catch (Exception ex) {
-              LogLog.error("Failed to add a SocketNodeEventListener", ex);
+              messageLogger.error("Failed to add a SocketNodeEventListener", ex);
             }
           }
         }
@@ -511,11 +533,11 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
             try {
               method.invoke(e.getPlugin(), new Object[] { socketListener });
             } catch (Exception ex) {
-              LogLog.error("Failed to remove SocketNodeEventListener", ex);
+              messageLogger.error("Failed to remove SocketNodeEventListener", ex);
             }
           }
 
-          statusBar.setMessage(e.getPlugin().getName() + " stopped!");
+          messageLogger.info(e.getPlugin().getName() + " stopped!");
         }
       };
 
@@ -538,13 +560,13 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
                 url, null, LogManager.getLoggerRepository());
 
               if (LogUI.this.getStatusBar() != null) {
-                LogUI.this.getStatusBar().setMessage(
+                messageLogger.info(
                   "Configured Log4j using remembered URL :: " + url);
               }
 
               LogUI.this.configURLToUse = url;
             } catch (Exception e) {
-              LogLog.error("error occurred initializing log4j", e);
+              messageLogger.error("error occurred initializing log4j", e);
             }
           }
         }
@@ -829,7 +851,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       tutorialArea.setPage(getWelcomePanel().getTutorialURL());
       container.add(new JScrollPane(tutorialArea), BorderLayout.CENTER);
     } catch (Exception e) {
-      LogLog.error("Error occurred loading the Tutorial", e);
+      messageLogger.error("Error occurred loading the Tutorial", e);
     }
 
     tutorialFrame.setIconImage(new ImageIcon(ChainsawIcons.HELP).getImage());
@@ -933,7 +955,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
               try {
                 tutorialArea.setPage(e.getURL());
               } catch (IOException e1) {
-                LogLog.error("Failed to change the URL for the Tutorial", e1);
+                messageLogger.error("Failed to change the URL for the Tutorial", e1);
               }
             }
           }
@@ -1032,8 +1054,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
               PluginRegistry.startPlugin(simpleReceiver);
               receiversPanel.updateReceiverTreeInDispatchThread();
             } catch (Exception e) {
-              LogLog.error("Error creating Receiver", e);
-              getStatusBar().setMessage(
+              messageLogger.error("Error creating Receiver", e);
+              MessageCenter.getInstance().getLogger().info(
                 "An error occurred creating your Receiver");
             }
           } else if (noReceiversWarningPanel.getModel().isLoadConfig()) {
@@ -1041,7 +1063,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
               noReceiversWarningPanel.getModel().getConfigToLoad();
 
             if (url != null) {
-              LogLog.debug("Initialiazing Log4j with " + url.toExternalForm());
+              messageLogger.debug("Initialiazing Log4j with " + url.toExternalForm());
 
               new Thread(
                 new Runnable() {
@@ -1050,7 +1072,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
                       OptionConverter.selectAndConfigure(
                         url, null, LogManager.getLoggerRepository());
                     } catch (Exception e) {
-                      LogLog.error("Error initializing Log4j", e);
+                      messageLogger.error("Error initializing Log4j", e);
                     }
 
                     LogManager.getLoggerRepository().getRootLogger()
@@ -1093,12 +1115,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     return receiversPanel.isVisible();
   }
 
-  /**
-   * DOCUMENT ME!
-   *
-   * @return DOCUMENT ME!
-   */
-  public ChainsawStatusBar getStatusBar() {
+  ChainsawStatusBar getStatusBar() {
     return statusBar;
   }
 
@@ -1222,7 +1239,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    *
    */
   private void performShutdownAction() {
-    LogLog.debug("Calling the shutdown Action. Goodbye!");
+    messageLogger.debug("Calling the shutdown Action. Goodbye!");
 
     shutdownAction.actionPerformed(
       new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Shutting Down"));
@@ -1249,7 +1266,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    * @param b
    */
   private void setStatusBarVisible(final boolean visible) {
-    LogLog.debug("Setting StatusBar to " + visible);
+    messageLogger.debug("Setting StatusBar to " + visible);
     SwingUtilities.invokeLater(
         new Runnable() {
           public void run() {
@@ -1320,21 +1337,21 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     if (
       UIManager.getLookAndFeel().getClass().getName().equals(
           lookAndFeelClassName)) {
-      LogLog.debug("No need to change L&F, already the same");
+      messageLogger.debug("No need to change L&F, already the same");
 
       return;
     }
 
 
     if(lookAndFeelClassName == null || lookAndFeelClassName.trim().equals("")) {
-      LogLog.info("Using System native L&F");
+      messageLogger.info("Using System native L&F");
       lookAndFeelClassName = UIManager.getSystemLookAndFeelClassName();
     }
-    LogLog.debug("Setting L&F -> " + lookAndFeelClassName);
+    messageLogger.debug("Setting L&F -> " + lookAndFeelClassName);
     try {
       UIManager.setLookAndFeel(lookAndFeelClassName);
      } catch (Exception e) {
-      LogLog.error("Failed to change L&F", e);
+      messageLogger.error("Failed to change L&F", e);
     }
   }
 
@@ -1620,8 +1637,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
           });
 
         String msg = "added tab " + ident;
-        LogLog.debug(msg);
-        statusBar.setMessage(msg);
+        messageLogger.debug(msg);
       }
     }
 

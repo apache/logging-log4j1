@@ -64,6 +64,7 @@ import org.apache.log4j.chainsaw.icons.LineIconFactory;
 import org.apache.log4j.chainsaw.layout.DefaultLayoutFactory;
 import org.apache.log4j.chainsaw.layout.EventDetailLayout;
 import org.apache.log4j.chainsaw.layout.LayoutEditorPane;
+import org.apache.log4j.chainsaw.messages.MessageCenter;
 import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
 import org.apache.log4j.chainsaw.prefs.Profileable;
 import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
@@ -380,11 +381,11 @@ public class LogPanel extends DockablePanel implements Profileable,
             new PropertyChangeListener() {
                 public void propertyChange(PropertyChangeEvent arg0) {
                     if (tableModel.isCyclic()) {
-                        statusBar.setMessage(
+                        MessageCenter.getInstance().getLogger().warn(
                             "Changed to Cyclic Mode. Maximum # events kept: " +
                             tableModel.getMaxSize());
                     } else {
-                        statusBar.setMessage(
+                      MessageCenter.getInstance().getLogger().warn(
                             "Changed to Unlimited Mode. Warning, you may run out of memory.");
                     }
                 }
@@ -1037,7 +1038,7 @@ public class LogPanel extends DockablePanel implements Profileable,
                         }
 
                         if (msg != null) {
-                            statusBar.setMessage(msg);
+                          MessageCenter.getInstance().getLogger().info(msg);
                         }
                     }
                 }
