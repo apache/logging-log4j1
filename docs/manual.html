@@ -799,8 +799,10 @@ appenders. Under certain well-defined circumstances however, the
 static inializer of the <code>Category</code> class will attempt to
 automatically configure log4j. The Java language guarantees that the
 static initializer of a class is called once and only once during the
-loading of a class into memory. (Although different classloaders may
-load distinct copies of the same class.)
+loading of a class into memory. It is important to remember that
+different classloaders may load distinct copies of the same
+class. These copies of the same class are considered as totally
+unrelated by the JVM.
 
 <p>The default initialization is very useful in environments where the
 exact entry point to the application depends on the runtime
@@ -870,6 +872,10 @@ control of a web-server.
      href="api/org/apache/log4j/xml/DOMConfigurator.html">DOMConfigurator</a>
      will be used to parse the URL.
 </ol>
+
+<h2>Example Configurations</h2>
+
+
 
 <h2>Default Initialization under Tomcat</h2>
 
@@ -945,8 +951,18 @@ log4j versions. You should not rely on this feature.</b>
 tells log4j to use the file <code>c:\foobar.xml</code> as the default
 configuration file. The configuration file is fully specified by the
 URL <code>file:/c:/foobar.lcf</code>. Thus, the same configuration
-file will be used for all web-applications -- in other words, disaster
-waiting to happen.
+file will be used for all web-applications. 
+
+
+<p>Different web-applications will load the log4j classes through
+their respective classloaderss. Thus, each image of the log4j
+environment will act independetly and without any mutual
+synchronization. For example, <code>FileAppenders</code> defined
+exactly the same way in multiple web-application configurations will
+all attempt to write the same file. The results are likely to be less
+than satisfactory. You must make sure that log4j configurations of
+different web-applications do not use the same underlying system
+resource.
 
 
 <p><b>Initialization servlet</b>
@@ -954,7 +970,7 @@ waiting to happen.
 <p>It is also possible to use a special servlet for log4j
 initialization. Here is an example,
 
-<table bgcolor="CCCCCC"><tr><td>
+<p><table bgcolor="CCCCCC"><tr><td>
 <pre>
 package com.foo;
 

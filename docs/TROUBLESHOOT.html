@@ -31,6 +31,8 @@ character.</a>
 
 <li><p><a href=#syslogd>I cannot connect to syslogd under linux.</a>
 
+<li><p><a href=#nosuchpropperty>log4j:WARN No such property [xyz] in some.appender.or.layout</a>
+
 </ul>
 
 <hr>
@@ -231,7 +233,20 @@ case "$1" in
 </pre>
 
 <li><code>/etc/rc/init.d/syslog restart</code>
+
 </ol>
+
+<p><a name=#nosuchpropperty><h3>log4j:WARN No such property [xyz] in some.appender.or.layout</h3>
+
+<p>If during log4j configuration you get a warning about an inexistent
+property, then you have probably misspelled a property or entered a
+truly unrecognized property for the component you are trying to
+configure in the configuration file.
+
+<p>Log4j version 1.0 did not complain about unrecognized properties
+whereas log4j version 1.1 and later do complain.
+
+
 
 
 </body>
