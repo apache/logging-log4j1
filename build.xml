@@ -13,10 +13,6 @@
   <!-- The build.properties file defines the parth to local jar files -->
   <property file="build.properties"/>
 
-  <!-- Read the system environment variables and stores them in properties, -->
-  <!-- prefixed with "env". -->
-  <property environment="env"/>
-
   <property name="version" value="1.3alpha"/>
 
   <!-- The base directory relative to which most targets are built -->
@@ -110,8 +106,6 @@
     jar     - build log4j-core and log4j jar files
 
     dist    - will create a complete distribution in dist/
-              Setting the env variable NO_JAVADOC will build the distribution
-              without running the javadoc target.
     </echo>
   </target>
 
@@ -545,7 +539,7 @@
   <!-- ================================================================= -->
   <!-- This target builds the javadoc files.                             -->
   <!-- ================================================================= -->
-  <target name="javadoc" depends="init" unless="env.NO_JAVADOC">
+  <target name="javadoc" depends="init">
 
     <mkdir dir="${javadoc.dest}" />
 

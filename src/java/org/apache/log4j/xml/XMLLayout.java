@@ -100,10 +100,7 @@ import java.util.Set;
  * @since 0.9.0
  * */
 public class XMLLayout extends Layout {
-  private final int DEFAULT_SIZE = 256;
-  private final int UPPER_LIMIT = 2048;
 
-  //private StringBuffer buf = new StringBuffer(DEFAULT_SIZE);
   private boolean locationInfo = false;
 
   /**
@@ -181,16 +178,12 @@ public class XMLLayout extends Layout {
       Iterator iter = sortedList.iterator();
 
       while (iter.hasNext()) {
-        String propName = (String) iter.next();
+        String propName = iter.next().toString();
+        output.write("<log4j:data name=\"" + propName);
 
-        output.write("    <log4j:data name=\"<![CDATA[");
-        Transform.appendEscapingCDATA(output, propName);
-        output.write("]]>\"");
-
-        String propValue = (String) event.getMDC(propName);
-        output.write(" value=\"<![CDATA[");
-        Transform.appendEscapingCDATA(output, propValue);
-        output.write("]]>\"/>\r\n");
+        String propValue = event.getMDC(propName).toString();
+        output.write("\" value=\"" + propValue);
+        output.write("\"/>\r\n");
       }
 
       output.write("</log4j:MDC>\r\n");
@@ -230,10 +223,10 @@ public class XMLLayout extends Layout {
       Iterator propIter = propertySet.iterator();
 
       while (propIter.hasNext()) {
-        String propName = (String) propIter.next();
+        String propName = propIter.next().toString();
         output.write("<log4j:data name=\"" + propName);
 
-        String propValue = (String) event.getProperty(propName);
+        String propValue = event.getProperty(propName).toString();
         output.write("\" value=\"" + propValue);
         output.write("\"/>\r\n");
       }

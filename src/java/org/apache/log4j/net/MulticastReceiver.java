@@ -50,6 +50,7 @@
 package org.apache.log4j.net;
 
 import org.apache.log4j.Decoder;
+import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.plugins.Receiver;
 import org.apache.log4j.spi.LoggingEvent;
 
@@ -63,8 +64,7 @@ import java.net.UnknownHostException;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Vector;
-
+import java.util.List;
 
 /**
  *  Multicast-based receiver.  Accepts LoggingEvents encoded using
@@ -132,8 +132,11 @@ public class MulticastReceiver extends Receiver implements PortBased, AddressBas
         this.decoderImpl = (Decoder) o;
       }
     } catch (ClassNotFoundException cnfe) {
+    	LogLog.warn("Unable to find decoder", cnfe);
     } catch (IllegalAccessException iae) {
+    	LogLog.warn("Could not construct decoder", iae);
     } catch (InstantiationException ie) {
+    	LogLog.warn("Could not construct decoder", ie);
     }
 
     try {
@@ -155,7 +158,7 @@ public class MulticastReceiver extends Receiver implements PortBased, AddressBas
   }
 
   class MulticastHandlerThread extends Thread {
-    private ArrayList list = new ArrayList();
+    private List list = new ArrayList();
 
     public MulticastHandlerThread() {
       setDaemon(true);
@@ -183,7 +186,7 @@ public class MulticastReceiver extends Receiver implements PortBased, AddressBas
 
           while (iter.hasNext()) {
             String data = (String) iter.next();
-			Vector v= decoderImpl.decodeEvents(data);
+			List v= decoderImpl.decodeEvents(data);
 
             if (v != null) {
               Iterator eventIter = v.iterator();
@@ -222,7 +225,7 @@ public class MulticastReceiver extends Receiver implements PortBased, AddressBas
           String data = new String(p.getData(), 0, p.getLength()).trim();
           handlerThread.append(data);
         } catch (SocketException se) {
- 	      	//disconnected
+	    	//disconnected
         } catch (IOException ioe) {
           ioe.printStackTrace();
         }
