@@ -657,9 +657,9 @@ public class DOMConfigurator implements Configurator {
       @param configFilename A log4j configuration file in XML format.
 
    */
-  public static void configureAndWatch(String configFilename) {
-    configureAndWatch(configFilename, FileWatchdog.DEFAULT_DELAY);
-  }
+//  public static void configureAndWatch(String configFilename) {
+//    configureAndWatch(configFilename, FileWatchdog.DEFAULT_DELAY);
+//  }
 
   /**
      Read the configuration file <code>configFilename</code> if it
@@ -672,11 +672,11 @@ public class DOMConfigurator implements Configurator {
       @param configFilename A log4j configuration file in XML format.
       @param delay The delay in milliseconds to wait between each check.
   */
-  public static void configureAndWatch(String configFilename, long delay) {
-    XMLWatchdog xdog = new XMLWatchdog(configFilename);
-    xdog.setDelay(delay);
-    xdog.start();
-  }
+//  public static void configureAndWatch(String configFilename, long delay) {
+//    XMLWatchdog xdog = new XMLWatchdog(configFilename);
+//    xdog.setDelay(delay);
+//    xdog.start();
+//  }
 
   public void doConfigure(String filename, LoggerRepository repository) {
     FileInputStream fis = null;
