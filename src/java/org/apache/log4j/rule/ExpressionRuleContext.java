@@ -53,6 +53,7 @@ import org.apache.log4j.chainsaw.filter.FilterModel;
 import org.apache.log4j.spi.LoggingEventFieldResolver;
 
 import java.awt.Point;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -162,7 +163,7 @@ public class ExpressionRuleContext extends KeyAdapter {
   public void keyPressed(KeyEvent e) {
     if (
       (e.getKeyCode() == KeyEvent.VK_SPACE)
-        && (e.getModifiers() == KeyEvent.CTRL_MASK)) {
+        && (e.getModifiers() == InputEvent.CTRL_MASK)) {
       displayContext();
     }
   }

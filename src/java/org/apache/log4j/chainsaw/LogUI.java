@@ -101,6 +101,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
+import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
@@ -1086,7 +1087,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
         public void run() {
           final JDialog dialog = new JDialog(LogUI.this, true);
           dialog.setTitle("Warning: You have no Receivers defined...");
-          dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+          dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
           dialog.setResizable(false);
 

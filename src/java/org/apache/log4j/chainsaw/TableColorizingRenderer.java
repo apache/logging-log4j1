@@ -67,6 +67,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 
 
@@ -99,11 +100,11 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer {
     this.colorizer = colorizer;
     idComponent.setBorder(BorderFactory.createRaisedBevelBorder());
     idComponent.setBackground(Color.gray);
-    idComponent.setHorizontalAlignment(JLabel.CENTER);
+    idComponent.setHorizontalAlignment(SwingConstants.CENTER);
     idComponent.setOpaque(true);
 
     levelComponent.setOpaque(true);
-    levelComponent.setHorizontalAlignment(JLabel.CENTER);
+    levelComponent.setHorizontalAlignment(SwingConstants.CENTER);
 
     levelComponent.setText("");
   }

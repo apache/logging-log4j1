@@ -124,7 +124,9 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -519,7 +521,7 @@ public class LogPanel extends DockablePanel implements Profileable,
         detail.setEditable(false);
 
         detailPaneUpdater = new DetailPaneUpdater(this, detail,
-                (EventContainer) tableModel);
+                tableModel);
 
         addPropertyChangeListener("detailPaneConversionPattern",
             detailPaneUpdater);
@@ -599,7 +601,7 @@ public class LogPanel extends DockablePanel implements Profileable,
 
         detailPanel.add(detailPane, BorderLayout.CENTER);
 
-        final JToolBar detailToolbar = new JToolBar(JToolBar.HORIZONTAL);
+        final JToolBar detailToolbar = new JToolBar(SwingConstants.HORIZONTAL);
         detailToolbar.setFloatable(false);
 
         final LayoutEditorPane layoutEditorPane = new LayoutEditorPane();
@@ -781,7 +783,7 @@ public class LogPanel extends DockablePanel implements Profileable,
         final JMenuItem menuItemToggleDock = new JMenuItem("Undock/dock");
 
         undockedFrame = new JFrame(ident);
-        undockedFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        undockedFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         if (ChainsawIcons.UNDOCKED_ICON != null) {
             undockedFrame.setIconImage(new ImageIcon(
@@ -1430,7 +1432,7 @@ public class LogPanel extends DockablePanel implements Profileable,
         int index = 0;
         for (Iterator iter = set.iterator(); iter.hasNext(); )
         {
-          Object logger = (Object) iter.next();
+          Object logger = iter.next();
           event.saveSetting("Logger.Ignore." + index++, logger.toString() );
         }
         saveColumnSettings();

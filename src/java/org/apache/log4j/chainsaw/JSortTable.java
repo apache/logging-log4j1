@@ -49,6 +49,7 @@
 
 package org.apache.log4j.chainsaw;
 
+import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -151,7 +152,6 @@ public class JSortTable extends JTable implements MouseListener {
           }
            //ignore..out of bounds
         }
-        ;
       });
   }
 
@@ -163,7 +163,7 @@ public class JSortTable extends JTable implements MouseListener {
   	
   	if(event.getClickCount()<2 || event.isPopupTrigger()){
   		return;
-  	}else if(event.getClickCount()>1 && ((event.getModifiers() & MouseEvent.BUTTON2_MASK)>0)){
+  	}else if(event.getClickCount()>1 && ((event.getModifiers() & InputEvent.BUTTON2_MASK)>0)){
   		return;
   	}
   	
