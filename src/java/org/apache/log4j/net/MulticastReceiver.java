@@ -193,7 +193,7 @@ public class MulticastReceiver extends Receiver implements PortBased,
 
           while (iter.hasNext()) {
             String data = (String) iter.next();
-            List v = decoderImpl.decodeEvents(data);
+            List v = decoderImpl.decodeEvents(data.trim());
 
             if (v != null) {
               Iterator eventIter = v.iterator();
@@ -238,10 +238,10 @@ public class MulticastReceiver extends Receiver implements PortBased,
           //null
             if (encoding == null) {
             handlerThread.append(
-              new String(p.getData(), 0, p.getLength()).trim());
+              new String(p.getData(), 0, p.getLength()));
           } else {
             handlerThread.append(
-              new String(p.getData(), 0, p.getLength(), encoding).trim());
+              new String(p.getData(), 0, p.getLength(), encoding));
           }
         } catch (SocketException se) {
           //disconnected

@@ -133,8 +133,8 @@ public class XMLSocketNode implements Runnable {
             //it's up to the individual decoder to handle incomplete event data
             while (true) {
                 byte[] b=new byte[1024];
-                is.read(b);
-                List v= decoder.decodeEvents(new String(b).trim());
+                int length = is.read(b);
+                List v= decoder.decodeEvents(new String(b, 0, length));
 
             if (v != null) {
               Iterator iter = v.iterator();

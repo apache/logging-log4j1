@@ -111,8 +111,6 @@ public class UtilLoggingXMLDecoder implements Decoder {
        * resetting the length of the StringBuffer is dangerous, particularly
        * on some JDK 1.4 impls, there's a known Bug that causes a memory leak
        */
-      data = data.trim();
-
       StringBuffer buf = new StringBuffer(1024);
 
       if (!data.startsWith("<?xml")) {
@@ -194,7 +192,6 @@ public class UtilLoggingXMLDecoder implements Decoder {
   public Vector decodeEvents(String document) {
   	
     if (document != null) {
-      document = document.trim();
 
       if (document.equals("")) {
         return null;
