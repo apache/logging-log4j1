@@ -361,7 +361,10 @@ class Preferences extends Properties {
     return Collections.unmodifiableList(files);
   }
 
-  /* Create the single instance */
+  /**
+   * Create the single instance
+   * @return Preference the one and only
+   */
   private static Preferences createInstance() {
     String filename = getPropertyFilename();
     File file = new File(filename);
@@ -393,7 +396,10 @@ class Preferences extends Properties {
     return sInstance;
   }
 
-  /* Determine the property file to use */
+  /**
+   * Determine the property file to use
+   * @return String property file name to load
+   */
   private static String getPropertyFilename() {
     String filename = System.getProperty(PROP_FILE);
 
@@ -416,13 +422,17 @@ class Preferences extends Properties {
     return filename;
   }
 
-  /** Load the preferences from the file. */
+  /**
+   * Load the preferences from the file.
+   */
   private void load() {
     mMaxFiles = getInteger(MAX_FILES_PROPERTY, 5);
     loadFiles();
   }
 
-  /** Load the recent files list. */
+  /**
+   * Load the recent files list.
+   */
   private void loadFiles() {
     final char[] ch = getProperty(FILES_PROPERTY, "").toCharArray();
     final StringBuffer filename = new StringBuffer(ch.length);
@@ -457,7 +467,9 @@ class Preferences extends Properties {
     }
   }
 
-  /** Rebuild the recent files list property and menu */
+  /**
+   * Rebuild the recent files list property and menu
+   */
   private void rebuildRecentFilesData() {
     StringBuffer fileList = new StringBuffer();
     boolean first = true;

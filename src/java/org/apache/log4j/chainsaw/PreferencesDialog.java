@@ -83,9 +83,25 @@ import javax.swing.text.PlainDocument;
  *  @author <a href="mailto:rdecampo@twcny.rr.com">Raymond DeCampo</a>
  */
 class PreferencesDialog extends JDialog {
+
+  /**
+   * The one and only Preferences reference
+   */
   private static final Preferences PREFS = Preferences.getInstance();
+
+  /**
+   * The ColumnModel to use to save/load stuff from
+   */
   private final MyTableColumnModel mColModel;
+
+  /**
+   * TextField to enter the max # of files available on MRU list
+   */
   private final JTextField mMaxFilesField = new JTextField(6);
+
+  /**
+   * CheckBox used to indicate whether the filters should be saved
+   */
   private final JCheckBox mSaveFilters = new JCheckBox("Save filters?");
 
   /** Map relating TableColumns to JCheckBoxes */
@@ -183,7 +199,10 @@ class PreferencesDialog extends JDialog {
     setLocationRelativeTo(owner);
   }
 
-  /* Get the columns from the model in alphabetical order */
+  /**
+   * Get the columns from the model in alphabetical order
+   * @return Iterator of available columns
+   */
   private Iterator getAvailableColumns() {
     SortedSet cols =
       new TreeSet(
@@ -201,12 +220,22 @@ class PreferencesDialog extends JDialog {
     return cols.iterator();
   }
 
-  /** OK button handler */
+  /**
+   * OK button handler
+   */
   private class OKAction extends AbstractAction {
+
+    /**
+     * Constructor
+     */
     public OKAction() {
       putValue(NAME, "OK");
     }
 
+    /**
+     * ActionPerformed handler when they press Ok
+     * @param ae ActionEvent when the button is pressed
+     */
     public void actionPerformed(ActionEvent ae) {
       // File preferences
       try {
@@ -246,12 +275,22 @@ class PreferencesDialog extends JDialog {
     }
   }
 
-  /** Cancel button handler */
+  /**
+   * Cancel button handler
+   */
   private class CancelAction extends AbstractAction {
+
+    /**
+     * Constructor for the action
+     */
     public CancelAction() {
       putValue(NAME, "Cancel");
     }
 
+    /**
+     * ActionEvent handler
+     * @param ae ActionEvent when they press Cancel
+     */
     public void actionPerformed(ActionEvent ae) {
       hide();
     }
