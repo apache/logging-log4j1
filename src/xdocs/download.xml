@@ -9,10 +9,10 @@
   <meta name="keywords" content="java, logging, tracing, component, framework, API, log4j"/>
 <body>
 
-    <section name="log4j version 1.2.1">
-      <p>log4j 1.2.1 is now available in <a
-	href="../jakarta-log4j-1.2.1.tar.gz"><b>TAR.GZ</b></a> format
-	or in <a href="../jakarta-log4j-1.2.1.zip"><b>ZIP</b></a>
+    <section name="log4j version 1.2.2">
+      <p>log4j 1.2.2 is now available in <a
+	href="../jakarta-log4j-1.2.2.tar.gz"><b>TAR.GZ</b></a> format
+	or in <a href="../jakarta-log4j-1.2.2.zip"><b>ZIP</b></a>
 	format.
       </p>
 

@@ -5,6 +5,20 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
 
+ May 22nd, 2002
+
+ - Relase of version 1.2.2
+
+ - Log4j now configurators admit NULL as a valid level value. NULL has
+   the same meaning as the previously available INHERITED value. Both
+   values are case insensitive. [*]
+
+ - When loading component classes, log4j will now first attempt to use
+   the Thread Context Loader and if that fails, it will use
+   Class.forName. In log4j 1.2 and 1.2.1, only Class.forName was used
+   and the TCL was ignored. This change is a response to bug #9305
+   opened by Scott M. Stark. [*]
+
  May 17th, 2002
 
  - Relase of version 1.2.1
