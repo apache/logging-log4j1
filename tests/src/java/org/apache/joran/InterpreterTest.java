@@ -341,8 +341,6 @@ public class InterpreterTest extends TestCase {
     Interpreter jp = new Interpreter(rs);
     ExecutionContext ec = jp.getExecutionContext();
     HashMap omap = ec.getObjectMap();
-    omap.put(ActionConst.APPENDER_BAG, new HashMap());
-    ec.pushObject(LogManager.getLoggerRepository());
 
     SAXParser saxParser = createParser();
     saxParser.parse("file:input/joran/newRule1.xml", jp);
@@ -351,7 +349,7 @@ public class InterpreterTest extends TestCase {
     assertEquals("Hello John Doe.", str);
   }
   
-  public static Test suite() {
+  public static Test xsuite() {
     TestSuite suite = new TestSuite();
     //suite.addTest(new InterpreterTest("testBasicLoop"));
     //suite.addTest(new InterpreterTest("testParsing1"));

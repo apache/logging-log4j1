@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
 
+// TODO Errors should be reported in Error objects instead of just strings.
+// TODO Interpreter should set its own ErrorHander for XML parsing errors.
 
 public class Interpreter extends DefaultHandler {
   static final Logger logger = Logger.getLogger(Interpreter.class);
