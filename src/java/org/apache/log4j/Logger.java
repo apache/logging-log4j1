@@ -17,7 +17,6 @@
 package org.apache.log4j;
 
 import org.apache.log4j.spi.LoggerFactory;
-import org.apache.ugli.ULogger;
 import org.apache.ugli.impl.MessageFormatter;
 
 
@@ -29,7 +28,7 @@ import org.apache.ugli.impl.MessageFormatter;
  * @author Ceki G&uuml;lc&uuml;
  * @since log4j 1.2
 */
-public class Logger extends Category implements ULogger {
+public class Logger extends Category {
   /**
    * The fully qualified name of the Logger class. See also the {@link #getFQCN}
    * method.

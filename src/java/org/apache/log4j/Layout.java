@@ -20,7 +20,7 @@ import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.io.Writer;
 
-import org.apache.log4j.spi.LoggerRepository;
+import org.apache.log4j.spi.ComponentBase;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.OptionHandler;
 
@@ -32,13 +32,13 @@ import org.apache.log4j.spi.OptionHandler;
    @author Chris Nokes
 
 */
-public abstract class Layout implements OptionHandler {
+public abstract class Layout extends ComponentBase implements OptionHandler {
   // Note that the line.separator property can be looked up even by
   // applets.
   public static final String LINE_SEP = System.getProperty("line.separator");
   public static final int LINE_SEP_LEN = LINE_SEP.length();
   
-  final static Logger logger = Logger.getLogger(Layout.class); 
+  
   
   
   public CharArrayWriter charArrayWriter = new CharArrayWriter(1024);
@@ -46,9 +46,6 @@ public abstract class Layout implements OptionHandler {
   String header;
   String footer;
 
-  LoggerRepository repository;
-  // Most layouts ignore the throwable. If a subclasses needs to override the 
-  // default value it should do so in its default constructor.
   protected boolean ignoresThrowable = true;
   
   /**
@@ -60,7 +57,7 @@ public abstract class Layout implements OptionHandler {
   	  format(charArrayWriter, event);
 	  } catch(IOException ie) {
 	  	// There cannot be an IoException while writing to a CharArrayWriter
-	  	logger.error("Unexpected IOException while writing to CharArrayWriter", ie);
+	  	getLogger().error("Unexpected IOException while writing to CharArrayWriter", ie);
 	  }
   	return charArrayWriter.toString();
   }
@@ -141,35 +138,4 @@ public abstract class Layout implements OptionHandler {
     this.header = header;
   }
   
-  /**
-   * Repository where this layout is attached. If not set, the
-   * returned valyue may be null.
-   * 
-   * @return The repository where this layout is attached.
-   */
-  public LoggerRepository getLoggerRepository() {
-    return repository;
-  }
-    
-  /**
-   * Set the LoggerRepository this layout is attached to indirectly through its 
-   * containing appener. This operation can only be performed once. Once set, 
-   * the repository cannot be changed.
-   *   
-   * @param repository The repository where this layout is indirectly attached.
-   * @throws IllegalStateException If you try to change the repository after it
-   * has been set.
-   * 
-   * @since 1.3
-   */
-  public void setLoggerRepository(LoggerRepository repository) throws IllegalStateException {
-    if(repository == null) {
-      throw new IllegalArgumentException("repository argument cannot be null");
-    }
-    if(this.repository == null) {
-      this.repository = repository;
-    } else {
-      throw new IllegalStateException("Repository has been already set");
-    }
-  }
 }

@@ -60,7 +60,7 @@ import org.apache.log4j.spi.LoggingEvent;
 
    @author Ceki G&uuml;lc&uuml;
    @since 0.9.0 */
-public abstract class Filter implements OptionHandler {
+public abstract class Filter extends ComponentBase implements OptionHandler {
   /**
      The log event must be dropped immediately without consulting
      with the remaining filters, if any, in the chain.  */
@@ -113,19 +113,4 @@ public abstract class Filter implements OptionHandler {
   public Filter getNext() {
         return next;
   }
-  
-  /**
-   * Return an instance specific logger to be used by the Filter itself.
-   * This logger is not intended to be used by Mrs. Piggy, our proverbial user,
-   * hence the protected keyword.
-   * 
-   * @return instance specific logger
-   */
-//  protected Logger getLogger() {
-//    if(logger == null) {
-//      logger = LogManager.getLogger(this.getClass().getName());
-//    }
-//    return logger;
-//  }
-  
 }
