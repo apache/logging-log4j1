@@ -96,7 +96,7 @@
   <!-- ================================================================= -->  
   <target name="regression" depends="Minimum, Logger, DOM, CustomLevel, 
                                      CustomLogger, PatternLayout, 
-                                     SocketServer"/>
+                                     HierarchyThreshold, SocketServer"/>
 
   <!-- ================================================================= -->
   <!-- Unit tests test small parts of log4j for logical programming      -->
@@ -137,6 +137,14 @@
     </junit>
   </target>
 
+  <target name="HierarchyThreshold" depends="build">
+    <delete file="output/temp"/>
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="false"/>
+      <test name="org.apache.log4j.HierarchyThresholdTestCase" />
+    </junit>
+  </target>
 
   <target name="DOM" depends="build">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
