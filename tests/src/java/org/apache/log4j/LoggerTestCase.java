@@ -205,8 +205,12 @@ public class LoggerTestCase extends TestCase {
     h.setThreshold((Level) Level.INFO);
     assertEquals(caRoot.counter, 0);
 
+    root.trace(MSG);
+    assertEquals(caRoot.counter, 0);
+
     root.debug(MSG);
     assertEquals(caRoot.counter, 0);
+
     root.info(MSG);
     assertEquals(caRoot.counter, 1);
     root.log(Level.WARN, MSG);
@@ -216,8 +220,13 @@ public class LoggerTestCase extends TestCase {
 
     //h.disableInfo();
     h.setThreshold((Level) Level.WARN);
+
+    root.trace(MSG);
+    assertEquals(caRoot.counter, 3);
+
     root.debug(MSG);
     assertEquals(caRoot.counter, 3);
+
     root.info(MSG);
     assertEquals(caRoot.counter, 3);
     root.log(Level.WARN, MSG);
@@ -229,30 +238,20 @@ public class LoggerTestCase extends TestCase {
 
     //h.disableAll();
     h.setThreshold(Level.OFF);
-    root.debug(MSG);
-    assertEquals(caRoot.counter, 6);
-    root.info(MSG);
-    assertEquals(caRoot.counter, 6);
-    root.log(Level.WARN, MSG);
-    assertEquals(caRoot.counter, 6);
-    root.error(MSG);
-    assertEquals(caRoot.counter, 6);
-    root.log(Level.FATAL, MSG);
-    assertEquals(caRoot.counter, 6);
-    root.log(Level.FATAL, MSG);
+
+    root.trace(MSG);
     assertEquals(caRoot.counter, 6);
 
-    //h.disable(Level.FATAL);
-    h.setThreshold(Level.OFF);
     root.debug(MSG);
     assertEquals(caRoot.counter, 6);
+
     root.info(MSG);
     assertEquals(caRoot.counter, 6);
     root.log(Level.WARN, MSG);
     assertEquals(caRoot.counter, 6);
     root.error(MSG);
     assertEquals(caRoot.counter, 6);
-    root.log(Level.ERROR, MSG);
+    root.log(Level.FATAL, MSG);
     assertEquals(caRoot.counter, 6);
     root.log(Level.FATAL, MSG);
     assertEquals(caRoot.counter, 6);
@@ -381,3 +380,5 @@ public class LoggerTestCase extends TestCase {
     }
   }
 }
+
+// End of class: LoggerTestCase.java

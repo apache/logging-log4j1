@@ -46,7 +46,8 @@ import java.util.ResourceBundle;
 /**
  * <font color="#AA2222"><b>This class has been deprecated and replaced by the
  * {@link Logger}<em>subclass</em></b></font>. It will be kept around to
- * preserve backward compatibility until mid 2003.
+ * preserve backward compatibility until such time as the Log4j team sees fit
+ * to remove it.
  *
  * <p>
  * <code>Logger</code> is a subclass of Category, i.e. it extends Category. In
@@ -78,12 +79,13 @@ import java.util.ResourceBundle;
  * </p>
  *
  * <p>
- * See the <a href="../../../../manual.html">short manual</a> for an
+ * See the <a href="../../../../manual.html">Short Manual</a> for an
  * introduction on this class.
  * </p>
  *
  * @author Ceki G&uuml;lc&uuml;
  * @author Anders Kristensen
+ * @author Yoav Shapira
  */
 public class Category implements AppenderAttachable {
   /**
@@ -95,11 +97,6 @@ public class Category implements AppenderAttachable {
   /**
    * The hierarchy where categories are attached to by default.
    */
-
-  //static
-  //public
-  //final Hierarchy defaultHierarchy = new Hierarchy(new
-  //					   RootLogger(Level.DEBUG));
 
   /**
    * The name of this category.
@@ -251,6 +248,45 @@ public class Category implements AppenderAttachable {
       }
     }
   }
+
+    /**
+     * Log a message object with the {@link Level#TRACE TRACE} level.
+     *
+     * @param message the message object to log.
+     * @see #debug(Object) for an explanation of the logic applied.
+     * @since 1.3
+     */
+    public void trace(Object message) {
+	if (repository.isDisabled(Level.TRACE_INT)) {
+	    return;
+	}
+
+	if (Level.TRACE.isGreaterOrEqual(this.getEffectiveLevel())) {
+	    forcedLog(FQCN, Level.TRACE, message, null);
+	}
+    }
+
+    /**
+     * Log a message object with the <code>TRACE</code> level including the
+     * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
+     *
+     * <p>
+     * See {@link #debug(Object)} form for more detailed information.
+     * </p>
+     *
+     * @param message the message object to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    public void trace(Object message, Throwable t) {
+	if (repository.isDisabled(Level.TRACE_INT)) {
+	    return;
+	}
+
+	if (Level.TRACE.isGreaterOrEqual(this.getEffectiveLevel())) {
+	    forcedLog(FQCN, Level.TRACE, message, t);
+	}
+    }
+
 
   /**
    * Log a message object with the {@link Level#DEBUG DEBUG} level.
@@ -1048,9 +1084,10 @@ public class Category implements AppenderAttachable {
 
   /**
    * Set the level of this Category. If you are passing any of
-   * <code>Level.DEBUG</code>, <code>Level.INFO</code>,
-   * <code>Level.WARN</code>, <code>Level.ERROR</code>,
-   * <code>Level.FATAL</code> as a parameter, you need to case them as Level.
+   * <code>Level.TRACE</code>, <code>Level.DEBUG</code>, 
+   * <code>Level.INFO</code>, <code>Level.WARN</code>,
+   * <code>Level.ERROR</code>, or <code>Level.FATAL</code>
+   *  as a parameter, you need to case them as Level.
    *
    * <p>
    * As in
@@ -1167,3 +1204,5 @@ public class Category implements AppenderAttachable {
     }
   }
 }
+
+// End of class: Category.java

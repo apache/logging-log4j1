@@ -19,7 +19,8 @@ import java.util.Random;
 
 class StressCategory {
 
-  static Level[] level = new Level[] {Level.DEBUG, 
+  static Level[] level = new Level[] {Level.TRACE,
+				      Level.DEBUG, 
 				      Level.INFO, 
 				      Level.WARN,
 				      Level.ERROR,
@@ -169,16 +170,6 @@ class StressCategory {
     }
   }
 
-  //  static
-  //void provisionNodesDump() {
-  //for (Enumeration e = CategoryFactory.ht.keys(); e.hasMoreElements() ;) {
-  //  CategoryKey key = (CategoryKey) e.nextElement();
-  //  Object c = CategoryFactory.ht.get(key);
-  //  if(c instanceof  ProvisionNode) 
-  //((ProvisionNode) c).dump(key.name);
-  //}
-  //}
-  
   static
   boolean checkCorrectness(int i) {
     CT localCT = ct[i];
@@ -240,3 +231,5 @@ class StressCategory {
     }
   }
 }
+
+// End of class: StressCategory.java
