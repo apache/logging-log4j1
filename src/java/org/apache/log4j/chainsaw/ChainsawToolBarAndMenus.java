@@ -55,6 +55,12 @@
  */
 package org.apache.log4j.chainsaw;
 
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.SettingsListener;
+import org.apache.log4j.helpers.LogLog;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -63,6 +69,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -98,12 +105,6 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SettingsListener;
-import org.apache.log4j.helpers.LogLog;
-
 
 /**
  * Encapsulates the full Toolbar, and menus and all the actions that can be performed from it.
@@ -129,6 +130,8 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
   private final Action undockAction;
   private final Collection lookAndFeelMenus = new ArrayList();
   private final JCheckBoxMenuItem toggleShowReceiversCheck =
+    new JCheckBoxMenuItem();
+  private final JCheckBoxMenuItem toggleLogTreeMenuItem =
     new JCheckBoxMenuItem();
   private final JCheckBoxMenuItem toggleDetailMenuItem =
     new JCheckBoxMenuItem();
@@ -489,8 +492,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
 
     toggleCyclicMenuItem.setSelected(true);
 
-    JCheckBoxMenuItem toggleLogTreeMenuItem =
-      new JCheckBoxMenuItem(toggleLogTreeAction);
+    toggleLogTreeMenuItem.setAction(toggleLogTreeAction);
     toggleLogTreeMenuItem.setSelected(true);
 
     final Action toggleStatusBarAction =
@@ -745,7 +747,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
       };
 
     showPreferences.putValue(
-      Action.SHORT_DESCRIPTION, "Define display and color filters...");
+      Action.SHORT_DESCRIPTION, "LogPanel Preferences...");
 
     // TODO think of good mnemonics and HotKey for this action
     return showPreferences;
@@ -981,6 +983,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
 
     toggleStatusBarCheck.setSelected(logui.isStatusBarVisible());
     toggleShowReceiversCheck.setSelected(logui.isReceiverPanelVisible());
+
     logTreePaneButton.setSelected(logui.isLogTreePanelVisible());
     showReceiversButton.setSelected(logui.isReceiverPanelVisible());
     menuItemClose.setSelected(logui.getTabbedPane().containsWelcomePanel());
@@ -1009,6 +1012,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
       toggleDetailMenuItem.setSelected(logPanel.isDetailPaneVisible());
       toggleCyclicMenuItem.setSelected(logPanel.getModel().isCyclic());
       detailPaneButton.getModel().setSelected(logPanel.isDetailPaneVisible());
+      toggleLogTreeMenuItem.setSelected(logPanel.isLogTreePanelVisible());
     }
 
     for (int i = 0; i < logPanelSpecificActions.length; i++) {
