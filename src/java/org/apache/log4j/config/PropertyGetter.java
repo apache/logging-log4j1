@@ -32,10 +32,9 @@ public class PropertyGetter {
   
   /**
     Create a new PropertySetter for the specified Object. This is done
-    in prepartion for invoking {@link #setProperty} one or more times.
+    in prepartion for invoking {@link #getProperties(PropertyCallback,String)} one or more times.
     
-    @param obj  the object for which to set properties
-   */
+    @param obj the object for which to set properties */
   public
   PropertyGetter(Object obj) throws IntrospectionException {
     BeanInfo bi = Introspector.getBeanInfo(obj.getClass());

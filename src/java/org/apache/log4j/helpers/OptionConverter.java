@@ -12,6 +12,7 @@ import java.util.Properties;
 import java.net.URL;
 import org.apache.log4j.Category;
 import org.apache.log4j.Hierarchy;
+import org.apache.log4j.Priority;
 import org.apache.log4j.spi.Configurator;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.apache.log4j.PropertyConfigurator;
@@ -25,6 +26,7 @@ import org.apache.log4j.PropertyConfigurator;
    A convenience class to convert property values to specific types.
 
    @author Ceki G&uuml;lc&uuml;
+   @author Simon Kitching;
 */	
 public class OptionConverter {
 
@@ -151,6 +153,80 @@ public class OptionConverter {
     return dEfault;
   }
 
+  /**
+     Converts a standard or custom priority level to a Priority
+     object.  <p> If <code>value</code> is of form
+     "priority#classname", then the specified class' toPriority method
+     is called to process the specified priority string; if no '#'
+     character is present, then the default {@link org.log4j.Priority}
+     class is used to process the priority value.  
+
+     <p> If any error occurs while converting the value to a priority,
+     the dflt value (which may be null) is returned.  
+
+     <p> Case of
+     value is unimportant for the priority level, but is significant
+     for any class name part present.  
+     
+     @since 1.1
+  */
+  public
+  static
+  Priority toPriority(String value, Priority defaultValue) {
+    if(value == null)
+      return defaultValue;
+
+    int hashIndex = value.indexOf('#');
+    if (hashIndex == -1) {
+      // no class name specified : use standard Priority class
+      return Priority.toPriority(value, defaultValue);
+    }
+
+    Priority result = defaultValue;
+
+    String clazz = value.substring(hashIndex+1);
+    String priorityName = value.substring(0, hashIndex);
+
+    LogLog.debug("toPriority" + ":class=[" + clazz + "]" 
+		 + ":pri=[" + priorityName + "]");
+
+    try {
+      Class customPriority = Class.forName(clazz);
+
+      // get a ref to the specified class' static method
+      // toPriority(String, org.apache.log4j.Priority)
+      Class[] paramTypes = new Class[] { String.class,
+					 org.apache.log4j.Priority.class
+                                       };
+      java.lang.reflect.Method toPriorityMethod =
+                      customPriority.getMethod("toPriority", paramTypes);
+
+      // now call the toPriority method, passing priority string + default
+      Object[] params = new Object[] {priorityName, defaultValue};
+      Object o = toPriorityMethod.invoke(null, params);
+
+      result = (Priority) o;
+    } catch(ClassNotFoundException e) {
+      LogLog.error("custom priority class [" + clazz + "] could not be added.");
+    } catch(NoSuchMethodException e) {
+      LogLog.error("custom priority class [" + clazz + "]"
+        + " does not have a constructor which takes one string parameter", e);
+    } catch(java.lang.reflect.InvocationTargetException e) {
+      LogLog.error("custom priority class [" + clazz + "]"
+		   + " could not be instantiated", e);
+    } catch(ClassCastException e) {
+      LogLog.error("class [" + clazz
+        + "] is not a subclass of org.apache.log4j.Priority", e);
+    } catch(IllegalAccessException e) {
+      LogLog.error("class ["+clazz+
+		   "] cannot be instantiated due to access restrictions", e);
+    } catch(Exception e) {
+      LogLog.error("class ["+clazz+"], priority ["+priorityName+
+		   "] conversion failed.", e);
+    }
+    return result;
+   }
+ 
   public
   static
   long toFileSize(String value, long dEfault) {

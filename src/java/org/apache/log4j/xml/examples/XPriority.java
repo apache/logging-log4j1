@@ -29,11 +29,13 @@ public class XPriority extends Priority {
     super(level, strLevel, syslogEquiv);
   }
 
+
   public
   static
-  Priority toPriority(String sArg) {
+  Priority toPriority(String sArg, Priority defaultValue) {
+    
     if(sArg == null) {
-      return XPriority.TRACE;
+      return defaultValue;
     }
     String stringVal = sArg.toUpperCase();
     
@@ -43,8 +45,9 @@ public class XPriority extends Priority {
       return XPriority.LETHAL;
     }
       
-    return Priority.toPriority(sArg);    
+    return Priority.toPriority(sArg, defaultValue);    
   }
+
 
   public
   static

@@ -22,7 +22,7 @@ JSOURCES:= Shallow.java\
  UnitTestCategory.java\
  UnitTestCyclicBuffer.java\
  UnitTestBoundedFIFO.java\
- UnitTestVarSubst.java\
+ UnitTestOptionConverter.java\
  SocketAppenderTest.java\
  PrintProperties.java\
  UnitTestOR.java\

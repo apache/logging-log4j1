@@ -5,6 +5,8 @@
 package org.apache.log4j.test;
 
 import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.Priority;
+import org.apache.log4j.xml.examples.XPriority;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -17,11 +19,11 @@ import java.util.Properties;
    
    @since 1.0
 */
-public class UnitTestVarSubst extends TestCase {
+public class UnitTestOptionConverter extends TestCase {
 
   Properties props;
   
-  public UnitTestVarSubst(String name) {
+  public UnitTestOptionConverter(String name) {
     super(name);
   }
 
@@ -32,6 +34,8 @@ public class UnitTestVarSubst extends TestCase {
     props.put("key1", "value1");
     props.put("key2", "value2");
     System.setProperties(props);
+
+
   }  
   
   public
@@ -83,14 +87,49 @@ public class UnitTestVarSubst extends TestCase {
     }
   }
 
+
+  public
+  void toPriorityTest1() {
+    String val = "INFO";
+    Priority p = OptionConverter.toPriority(val, null);
+    assertEquals(p, Priority.INFO);
+  }
+
+  public
+  void toPriorityTest2() {
+    String val = "INFO#org.apache.log4j.xml.examples.XPriority";
+    Priority p = OptionConverter.toPriority(val, null);
+    assertEquals(p, Priority.INFO);
+  }
+
+  public
+  void toPriorityTest3() {
+    String val = "TRACE#org.apache.log4j.xml.examples.XPriority";
+    Priority p = OptionConverter.toPriority(val, null);    
+    assertEquals(p, XPriority.TRACE);
+  }
+
+  public
+  void toPriorityTest4() {
+    String val = "TR#org.apache.log4j.xml.examples.XPriority";
+    Priority p = OptionConverter.toPriority(val, null);    
+    assertEquals(p, null);
+  }
+
+
   public
   static
   Test suite() {
     TestSuite suite = new TestSuite();
-    suite.addTest(new UnitTestVarSubst("varSubstTest1"));
-    suite.addTest(new UnitTestVarSubst("varSubstTest2"));
-    suite.addTest(new UnitTestVarSubst("varSubstTest3"));
-    suite.addTest(new UnitTestVarSubst("varSubstTest4"));
+    suite.addTest(new UnitTestOptionConverter("varSubstTest1"));
+    suite.addTest(new UnitTestOptionConverter("varSubstTest2"));
+    suite.addTest(new UnitTestOptionConverter("varSubstTest3"));
+    suite.addTest(new UnitTestOptionConverter("varSubstTest4"));
+
+    suite.addTest(new UnitTestOptionConverter("toPriorityTest1"));
+    suite.addTest(new UnitTestOptionConverter("toPriorityTest2"));
+    suite.addTest(new UnitTestOptionConverter("toPriorityTest3"));
+    suite.addTest(new UnitTestOptionConverter("toPriorityTest4"));
     return suite;
   }
 
