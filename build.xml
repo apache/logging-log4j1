@@ -577,7 +577,7 @@
      doctitle="log4j version ${version}&lt;br&gt;API Specification"
      windowtitle="Log4j Version ${version}"
            header="&lt;b&gt;Log4j ${version}&lt;/b&gt;"
-     bottom="Copyright 2000-2002 Apache Software Foundation.">
+     bottom="Copyright 2000-2003 Apache Software Foundation.">
 
       <link href="http://java.sun.com/products/jdk/1.3/docs/api"/>
       <link href="http://java.sun.com/j2ee/sdk_1.3/techdocs/api/"/>
