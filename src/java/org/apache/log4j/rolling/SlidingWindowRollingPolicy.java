@@ -50,6 +50,9 @@
 package org.apache.log4j.rolling;
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.rolling.helpers.FileNamePattern;
+import org.apache.log4j.rolling.helpers.Util;
+import org.apache.log4j.spi.OptionHandler;
 
 import java.io.File;
 
@@ -60,70 +63,81 @@ import java.io.File;
  * @author Ceki G&uuml;lc&uuml;
  * @since 1.3
  * */
-public class SlidingWindowRollingPolicy implements RollingPolicy {
+public class SlidingWindowRollingPolicy implements RollingPolicy,
+  OptionHandler {
   static Logger logger = Logger.getLogger(SlidingWindowRollingPolicy.class);
   int maxIndex;
   int minIndex;
-  String fileNamePattern;
+  FileNamePattern fileNamePattern;
   String activeFileName;
 
   public SlidingWindowRollingPolicy() {
     minIndex = 1;
+    maxIndex = 7;
+    activeFileName = null;
   }
 
-  public void rollover(File file) {
+  public void rollover(File f) {
+    // Inside this method it is guaranteed that the hereto active log fil is closed.
     // If maxIndex <= 0, then there is no file renaming to be done.
-    if (maxIndex > 0) {
-      String filename = file.getName();
-
+    if (maxIndex >= 0) {
       // Delete the oldest file, to keep Windows happy.
-      file = new File(filename + '.' + maxIndex);
+      File file = new File(fileNamePattern.convert(maxIndex));
 
       if (file.exists()) {
         file.delete();
       }
 
-      // Map {(maxBackupIndex - 1), ..., 2, 1} to {maxBackupIndex, ..., 3, 2}
-
-      /* for (int i = maxIndex - 1; i >= 1; i--) {
-         file = new File(filename + "." + i);
-
-        if (file.exists()) {
-          target = new File(filename + '.' + (i + 1));
-          logger.debug("Renaming file " + file + " to " + target);
-          file.renameTo(target);
-        }
+      // Map {(maxIndex - 1), ..., minIndex} to {maxIndex, ..., minIndex+1}
+      for (int i = maxIndex - 1; i > minIndex; i--) {
+        Util.rename(
+          fileNamePattern.convert(i), fileNamePattern.convert(i + 1));
       }
 
-      // Rename fileName to fileName.1
-      target = new File(fileName + "." + 1);
+      if (activeFileName != null) {
+        //move active file name to min
+        // TODO: compress the currently active file into minIndex
+        Util.rename(activeFileName, fileNamePattern.convert(minIndex));
+      } else {
+        // TODO: compress the currently active file (minIndex) into minIndex+1
+        Util.rename(
+          fileNamePattern.convert(minIndex),
+          fileNamePattern.convert(minIndex + 1));
+      }
+    }
+  }
 
-      this.closeFile(); // keep windows happy.
-      */
+  public void activateOptions() {
+    if (maxIndex < minIndex) {
+      logger.warn(
+        "maxIndex (" + maxIndex + ") cannot be smaller than minIndex ("
+        + minIndex + ").");
+      logger.warn("Setting maxIndex to equal minIndex.");
+      maxIndex = minIndex;
     }
   }
 
   /**
-   * Return the file name for the i-th file in the sliding window according
-   * to the file name pattern.
-   * */
-  protected String getFilenameInWindow(int i) {
-    return fileNamePattern + i;
-  }
-
-  public File getActiveLogFile(String old) {
-    return new File(old);
-  }
-
-  public String getActiveFileName() {
-    return activeFileName;
+   *
+   * If the <b>ActiveFileName</b> option is set, then this method simply returns the
+   * value of the option. Otherwise, it returns the value of <b>FileNamePattern</b>
+   * for <b>MaxIndex</b>. For example, if <b>ActiveFileName</b> is not set and
+   * <b>FileNamePattern</b> is set to "mylogfile.%i" and <b>MaxIndex</b> is set to 0,
+   * then this method will return "mylogfile.0".
+   *
+   */
+  public String getActiveLogFileName() {
+    if (activeFileName == null) {
+      return fileNamePattern.convert(minIndex);
+    } else {
+      return activeFileName;
+    }
   }
 
   public String getFileNamePattern() {
-    return fileNamePattern;
+    return fileNamePattern.toString();
   }
 
- 
   public int getMaxIndex() {
     return maxIndex;
   }
@@ -133,7 +147,7 @@ public class SlidingWindowRollingPolicy implements RollingPolicy {
   }
 
   public void setFileNamePattern(String fnp) {
-    fileNamePattern = fnp;
+    fileNamePattern = new FileNamePattern(fnp);
   }
 
   public void setMaxIndex(int maxIndex) {

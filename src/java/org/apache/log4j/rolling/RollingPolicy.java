@@ -70,7 +70,7 @@ public interface RollingPolicy {
   public void rollover(File oldLogFile);
 
   /**
-   * Get the new log file where logging should go.
+   * Get the new name of the active log file.
    * */  
-  public File getActiveLogFile(String filename);
+  public String getActiveLogFileName();
 }
