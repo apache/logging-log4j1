@@ -16,20 +16,10 @@
 	format.
       </p>
 
-      <p>Minor release 1.2.2 responds to bug #9305. When loading
-	component classes, log4j will now first attempt to use the
-	Thread Context Loader and if that fails, it will use
-	Class.forName. In log4j 1.2 and 1.2.1, only Class.forName was
-	used and the TCL was ignored. 
+      <p>Release 1.2.3 fixes several relatively minor bugs. See the
+      <a href="HISTORY">HISTORY</a> file for the exact details.
       </p>
-
-
-      <p>The 1.2.1 (minor release) fixed bug #9155 reported by Nicko
-	Cadell. With the exception of this bug fix and some
-	documentation improvements, it is identical to log4j 1.2
-	final.
-      </p>
-	
+      
       <p>In addition to many performance improvements, bug fixes, and
 	other small enhancements, log4j 1.2 adds JMX support, Mapped
 	Diagnostic Contexts, JDBC logging, graphical log viewer

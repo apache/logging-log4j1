@@ -6,7 +6,7 @@
  [***] Changes requiring important modifications to existing client code.
 
 
- May ??, 2002,
+ May 24th, 2002,
 
  - Release of version 1.2.3
 
@@ -15,17 +15,17 @@
    Reported by Mamoru Kadota. [*]
 
  - Fixed bug #8505 where the stack trace of exception would not be
-   properly printed on the Compaq tru64 Unix platform. [*]. Initially
-   Reported by Fabrice Claes and later Espen H. Kolstad who also
+   properly printed on the Compaq tru64 Unix platform. Initially
+   reported by Fabrice Claes and later by Espen H. Kolstad who also
    provided the fix. [*]
 
  May 22nd, 2002
 
  - Release of version 1.2.2
 
- - Log4j now configurators admit NULL as a valid level value. NULL has
-   the same meaning as the previously available INHERITED value. Both
-   values are case insensitive. [*]
+ - Log4j configurators take the "NULL" string value as a synonym for
+   "INHERITED". Both of these two strings are legal level values for
+   setting the level of a logger. Both values are case insensitive. [*]
 
  - When loading component classes, log4j will now first attempt to use
    the Thread Context Loader and if that fails, it will use
