@@ -114,6 +114,7 @@ import org.apache.log4j.Priority;
 import org.apache.log4j.UtilLoggingLevel;
 import org.apache.log4j.chainsaw.help.HelpManager;
 import org.apache.log4j.chainsaw.help.Tutorial;
+import org.apache.log4j.chainsaw.helper.SwingHelper;
 import org.apache.log4j.chainsaw.icons.ChainsawIcons;
 import org.apache.log4j.chainsaw.messages.MessageCenter;
 import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
@@ -232,12 +233,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
   private static final void showSplash(Frame owner) {
     splash = new ChainsawSplash(owner);
-
-    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    splash.setLocation(
-      (screenSize.width / 2) - (splash.getWidth() / 2),
-      (screenSize.height / 2) - (splash.getHeight() / 2));
-
+    SwingHelper.centerOnScreen(splash);
     splash.setVisible(true);
   }
 
