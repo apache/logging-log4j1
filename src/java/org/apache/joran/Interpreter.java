@@ -295,16 +295,28 @@ public class Interpreter extends DefaultHandler {
    * If a specific entityResolver is set for this Interpreter instance, then 
    * we use it to resolve entities. Otherwise, we use the default implementation
    * offered by the super class.
+   * 
+   * <p>Due to inexplicable voodoo, the original resolveEntity method in 
+   * org.xml.sax.helpers.DefaultHandler declares throwing an IOException, 
+   * whereas the org.xml.sax.helpers.DefaultHandler class included in
+   * JDK 1.4 masks this exception.
+   * 
+   * <p>In order to compile under JDK 1.4, we are forced to mask the IOException
+   * as well. Since its signatures varies, we cannot call our super class' 
+   * resolveEntity method. We are forced to implement the default behavior 
+   * ourselves, which in this case, is just returning null.
+   * 
    */
   public InputSource resolveEntity(String publicId, String systemId) throws SAXException {
     if(entityResolver == null) {
-      return super.resolveEntity(publicId, systemId);
+      // the default implementation is to return null
+      return null;
     } else {
       try {
         return entityResolver.resolveEntity(publicId, systemId);
       } catch(IOException ioe) {
-        // fall back to the default implementation
-        return super.resolveEntity(publicId, systemId);
+        // fall back to the default "implementation"
+        return null;
       }
     }
   }
