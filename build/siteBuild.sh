@@ -16,7 +16,7 @@ do
     CLASSPATH=$CLASSPATH:"$i"
 done
 # Add in the jakarta-site2 library files
-for i in ../jakarta-site2/lib/*.jar
+for i in ../../jakarta-site2/lib/*.jar
 do
     CLASSPATH=$CLASSPATH:"$i"
 done
