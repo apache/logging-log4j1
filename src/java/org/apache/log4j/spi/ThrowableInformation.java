@@ -68,6 +68,12 @@ class VectorWriter extends PrintWriter {
     v.addElement(new String(s));
   }
   
+  // Support for Orion
+  public
+  void print(String s) {
+    v.addElement(s);
+  }
+
   public
   void println(Object o) {      
     v.addElement(o.toString());

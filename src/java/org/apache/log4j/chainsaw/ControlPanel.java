@@ -26,19 +26,17 @@ import org.apache.log4j.Priority;
  *
  * @author <a href="mailto:oliver@puppycrawl.com">Oliver Burn</a>
  */
-class ControlPanel
-    extends JPanel
-{
+class ControlPanel extends JPanel {
     /** use the log messages **/
-    private static final Category LOG =
-        Category.getInstance(ControlPanel.class);
+    private static final Category LOG = 
+                                  Category.getInstance(ControlPanel.class);
 
     /**
      * Creates a new <code>ControlPanel</code> instance.
      *
      * @param aModel the model to control
      */
-    ControlPanel(final MyTableModel aModel) {
+    ControlPanel(MyTableModel aModel) {
         setBorder(BorderFactory.createTitledBorder("Controls: "));
         final GridBagLayout gridbag = new GridBagLayout();
         final GridBagConstraints c = new GridBagConstraints();
