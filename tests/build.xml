@@ -170,7 +170,7 @@
   <target name="SocketServer" depends="build">
     <parallel>
       <java classname="org.apache.log4j.net.ShortSocketServer" fork="yes">
-	<arg value="5"/> 
+	<arg value="8"/> 
 	<arg value="input/socketServer"/> 
 	<classpath refid="tests.classpath"/>
       </java>
