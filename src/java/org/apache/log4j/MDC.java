@@ -51,6 +51,7 @@ package org.apache.log4j;
 
 import org.apache.log4j.helpers.ThreadLocalMap;
 
+import java.util.Enumeration;
 import java.util.Hashtable;
 
 
@@ -143,5 +144,21 @@ public class MDC {
    * */
   public static Hashtable getContext() {
     return (Hashtable) tlm.get();
+  }
+  
+  /** 
+   * Returns the keys in the MDC as an {@link Enumeration}. The returned value can be 
+   * null.
+   * 
+   * @since version 1.3
+   */
+  public static Enumeration getKeys() {
+	  Hashtable ht = (Hashtable) tlm.get();
+
+	  if (ht != null) {
+  		return ht.keys();
+	  } else {
+	  	return null;
+	  }
   }
 }
