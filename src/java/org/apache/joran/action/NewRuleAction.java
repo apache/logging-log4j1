@@ -22,8 +22,7 @@ import org.apache.joran.helper.Option;
 
 import org.apache.log4j.Layout;
 import org.apache.log4j.Logger;
-
-import org.w3c.dom.Element;
+import org.xml.sax.Attributes;
 
 
 public class NewRuleAction extends Action {
@@ -34,12 +33,12 @@ public class NewRuleAction extends Action {
    * Instantiates an layout of the given class and sets its name.
    *
    */
-  public void begin(ExecutionContext ec, Element element) {
+  public void begin(ExecutionContext ec, String localName, Attributes attributes) {
 		// Let us forget about previous errors (in this object)
 		inError = false; 
     String errorMsg;
-    String pattern =  element.getAttribute(PATTERN_ATTRIBUTE);
-    String actionClass =  element.getAttribute(ACTION_CLASS_ATTRIBUTE);
+    String pattern =  attributes.getValue(PATTERN_ATTRIBUTE);
+    String actionClass =  attributes.getValue(ACTION_CLASS_ATTRIBUTE);
 
     if(Option.isEmpty(pattern)) {
        inError = true;
@@ -72,7 +71,7 @@ public class NewRuleAction extends Action {
    * Once the children elements are also parsed, now is the time to activate
    * the appender options.
    */
-  public void end(ExecutionContext ec, Element e) {
+  public void end(ExecutionContext ec, String n) {
   }
 
   public void finish(ExecutionContext ec) {

@@ -26,7 +26,7 @@ import org.apache.joran.action.Action;
 import junit.framework.TestCase;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import org.xml.sax.Attributes;
 
 import java.util.List;
 
@@ -154,10 +154,10 @@ public class SimpleStoreTest extends TestCase {
   }
 
   class XAction extends Action {
-    public void begin(ExecutionContext ec, Element e) {
+    public void begin(ExecutionContext ec, String name, Attributes attributes) {
     }
 
-    public void end(ExecutionContext ec, Element e) {
+    public void end(ExecutionContext ec, String name) {
     }
 
     public void finish(ExecutionContext ec) {
@@ -165,20 +165,20 @@ public class SimpleStoreTest extends TestCase {
   }
 
   class YAction extends Action {
-		public void begin(ExecutionContext ec, Element e) {
+		public void begin(ExecutionContext ec, String name, Attributes attributes) {
 		}
 
-		public void end(ExecutionContext ec, Element e) {
+		public void end(ExecutionContext ec, String name) {
 		}
 
 		public void finish(ExecutionContext ec) {
 		}  }
 
   class ZAction extends Action {
-		public void begin(ExecutionContext ec, Element e) {
+		public void begin(ExecutionContext ec, String name, Attributes attributes) {
 		}
 
-		public void end(ExecutionContext ec, Element e) {
+		public void end(ExecutionContext ec, String name) {
 		}
 
 		public void finish(ExecutionContext ec) {

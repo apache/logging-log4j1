@@ -25,7 +25,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.OptionHandler;
 
-import org.w3c.dom.Element;
+import org.xml.sax.Attributes;
 
 import java.util.HashMap;
 
@@ -39,9 +39,9 @@ public class AppenderAction extends Action {
    *
    * The appender thus generated is placed in the ExecutionContext appender bag.
    */
-  public void begin(ExecutionContext ec, Element appenderElement) {
+  public void begin(ExecutionContext ec, String localName, Attributes attributes) {
     String className =
-      appenderElement.getAttribute(CLASS_ATTRIBUTE);
+      attributes.getValue(CLASS_ATTRIBUTE);
 
     try {
       logger.debug(
@@ -52,8 +52,7 @@ public class AppenderAction extends Action {
           className, org.apache.log4j.Appender.class, null);
       appender = (Appender) instance;
 
-      String appenderName =
-        appenderElement.getAttribute(NAME_ATTRIBUTE);
+      String appenderName = attributes.getValue(NAME_ATTRIBUTE);
 
       if (Option.isEmpty(appenderName)) {
         logger.warn(
@@ -81,7 +80,7 @@ public class AppenderAction extends Action {
    * Once the children elements are also parsed, now is the time to activate
    * the appender options.
    */
-  public void end(ExecutionContext ec, Element e) {
+  public void end(ExecutionContext ec, String name) {
     if (inError) {
       return;
     }

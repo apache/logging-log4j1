@@ -17,7 +17,6 @@
 package org.apache.joran.action;
 
 import org.apache.joran.ExecutionContext;
-import org.w3c.dom.Element;
 
 /**
  * ImplcitActions are like normal (explicit) actions except that are applied
@@ -30,5 +29,5 @@ import org.w3c.dom.Element;
  */
 public abstract class ImplicitAction extends Action {
 
-  public abstract boolean isApplicable(Element e, ExecutionContext ec);
+  public abstract boolean isApplicable(ExecutionContext ec, String nestedElementTagName);
 }

@@ -24,7 +24,8 @@ import org.apache.log4j.Layout;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 
-import org.w3c.dom.Element;
+
+import org.xml.sax.Attributes;
 
 
 public class ConversionRuleAction extends Action {
@@ -35,15 +36,15 @@ public class ConversionRuleAction extends Action {
    * Instantiates an layout of the given class and sets its name.
    *
    */
-  public void begin(ExecutionContext ec, Element element) {
+  public void begin(ExecutionContext ec, String localName, Attributes attributes) {
     // Let us forget about previous errors (in this object)
     inError = false;
 
     String errorMsg;
     String conversionWord =
-      element.getAttribute(ActionConst.CONVERSION_WORD_ATTRIBUTE);
+      attributes.getValue(ActionConst.CONVERSION_WORD_ATTRIBUTE);
     String converterClass =
-      element.getAttribute(ActionConst.CONVERTER_CLASS_ATTRIBUTE);
+      attributes.getValue(ActionConst.CONVERTER_CLASS_ATTRIBUTE);
 
     if (Option.isEmpty(conversionWord)) {
       inError = true;
@@ -86,7 +87,7 @@ public class ConversionRuleAction extends Action {
    * Once the children elements are also parsed, now is the time to activate
    * the appender options.
    */
-  public void end(ExecutionContext ec, Element e) {
+  public void end(ExecutionContext ec, String n) {
   }
 
   public void finish(ExecutionContext ec) {

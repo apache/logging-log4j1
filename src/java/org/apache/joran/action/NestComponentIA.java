@@ -25,6 +25,7 @@ import org.apache.log4j.helpers.Loader;
 import org.apache.log4j.spi.OptionHandler;
 
 import org.w3c.dom.Element;
+import org.xml.sax.Attributes;
 
 
 /**
@@ -38,12 +39,10 @@ public class NestComponentIA extends ImplicitAction {
   int containmentType;
   PropertySetter parentBean;
   
-  public boolean isApplicable(Element nestedElement, ExecutionContext ec) {
+  public boolean isApplicable(ExecutionContext ec, String nestedElementTagName) {
     inError = false;
     Object o = ec.peekObject();
     parentBean = new PropertySetter(o);
-
-    String nestedElementTagName = nestedElement.getTagName();
 
     containmentType = parentBean.canContainComponent(nestedElementTagName);
 
@@ -64,37 +63,37 @@ public class NestComponentIA extends ImplicitAction {
     }
   }
 
-  public void begin(ExecutionContext ec, Element e) {
+  public void begin(ExecutionContext ec, String localName, Attributes attributes) {
     // inError was reset in isApplicable. It should not be touched here
 
-      String className = e.getAttribute(CLASS_ATTRIBUTE);
+      String className = attributes.getValue(CLASS_ATTRIBUTE);
       
-      String tagName = e.getTagName();
+     
       if(Option.isEmpty(className)) {
         inError = true;
-        String errMsg = "No class name attribute in <"+tagName+">";
+        String errMsg = "No class name attribute in <"+localName+">";
         logger.error(errMsg);
         ec.addError(errMsg);
         return;
       }
       
       try {
-        logger.debug("About to instantiate component <"+tagName+ "> of type [" + className + "]");
+        logger.debug("About to instantiate component <"+localName+ "> of type [" + className + "]");
 
         nestedComponent = Loader.loadClass(className).newInstance();
          
             
-        logger.debug("Pushing component <"+tagName+"> on top of the object stack.");
+        logger.debug("Pushing component <"+localName+"> on top of the object stack.");
         ec.pushObject(nestedComponent);
       } catch (Exception oops) {
         inError = true;      
-        String msg =  "Could not create component <"+tagName+">.";
+        String msg =  "Could not create component <"+localName+">.";
         logger.error(msg, oops);
         ec.addError(msg);
       }
   }
 
-  public void end(ExecutionContext ec, Element e) {
+  public void end(ExecutionContext ec, String tagName) {
     if (inError) {
         return;
       }
@@ -111,9 +110,7 @@ public class NestComponentIA extends ImplicitAction {
       } else {
         logger.warn("Removing component from the object stack");
         ec.popObject();
-       
-         
-        String tagName =  e.getTagName();
+
         // Now let us attach the component
         switch (containmentType) {
         case PropertySetter.AS_PROPERTY:
@@ -123,8 +120,7 @@ public class NestComponentIA extends ImplicitAction {
 
         case PropertySetter.AS_COLLECTION:
         logger.debug("Adding ["+tagName+"] to parent.");
-          parentBean.addComponent(e.getTagName(), nestedComponent);
-
+          parentBean.addComponent(tagName, nestedComponent);
           break;
         } 
       }
