@@ -150,10 +150,6 @@ public class LogManager {
         "RepositorySelector must be non-null.");
     }
 
-    if(selector.getDefaultRepository() == null) {
-      selector.setDefaultRepository(repositorySelector.getDefaultRepository());
-    }
-
     LogManager.guard = guard;
     LogManager.repositorySelector = selector;
   }
