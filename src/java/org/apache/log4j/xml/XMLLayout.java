@@ -179,7 +179,7 @@ public class XMLLayout extends Layout {
 
       while (iter.hasNext()) {
         String propName = iter.next().toString();
-        output.write("<log4j:data name=\"" + propName);
+	output.write("    <log4j:data name=\"" + propName);
 
         String propValue = event.getMDC(propName).toString();
         output.write("\" value=\"" + propValue);
