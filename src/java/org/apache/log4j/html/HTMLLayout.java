@@ -167,7 +167,7 @@ public class HTMLLayout extends Layout {
     sbuf.append(Layout.LINE_SEP);
     sbuf.append("<title>" + title + "</title>");
     sbuf.append(Layout.LINE_SEP);
-    sbuf.append("<LINK REL=StyleSheet HREF=\"http://logging.apache.org/log4j/docs/css/default0.css\" TITLE=\"Basic\">");
+    sbuf.append("<LINK REL=StyleSheet HREF=\"http://logging.apache.org/log4j/docs/css/eventTable-1.0.css\" TITLE=\"Basic\">");
     sbuf.append(Layout.LINE_SEP);
     sbuf.append("</head>");
     sbuf.append(Layout.LINE_SEP);
