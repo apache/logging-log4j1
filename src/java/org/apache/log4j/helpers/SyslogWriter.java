@@ -42,7 +42,8 @@ public class SyslogWriter extends Writer {
   private DatagramSocket ds;
 
   private Logger logger = LogManager.getLogger(SyslogWriter.class);
-
+  StringBuffer buf = new StringBuffer();
+  
   public SyslogWriter(String syslogHost) {
     this.syslogHost = syslogHost;
 
@@ -63,21 +64,26 @@ public class SyslogWriter extends Writer {
     }
   }
 
-  public void write(char[] buf, int off, int len) throws IOException {
-    this.write(new String(buf, off, len));
+  public void write(char[] charArray, int offset, int len) throws IOException {
+    buf.append(charArray, offset, len);
   }
 
-  public void write(String string) throws IOException {
-    byte[] bytes = string.getBytes();
+  public void write(String str) throws IOException {
+    buf.append(str);
+   
+  }
+
+  public void flush() throws IOException {
+    logger.debug("Writing out [{}]", buf);
+    byte[] bytes = buf.toString().getBytes();
     DatagramPacket packet =
       new DatagramPacket(bytes, bytes.length, address, SYSLOG_PORT);
 
     if (this.ds != null) {
       ds.send(packet);
     }
-  }
-
-  public void flush() {
+    // clean up for next time
+    buf.setLength(0);
   }
 
   public void close() {
