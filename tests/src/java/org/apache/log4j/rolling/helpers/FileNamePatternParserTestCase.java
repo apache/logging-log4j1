@@ -47,100 +47,77 @@
  *
  */
 
-package org.apache.log4j.rolling;
+package org.apache.log4j.rolling.helpers;
 
-import org.apache.log4j.Logger;
-
-import java.io.File;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 
 /**
- * The SlidingWindowRollingPolicy rolls over files
+ * @author Ceki
  *
- * @author Ceki G&uuml;lc&uuml;
- * @since 1.3
- * */
-public class SlidingWindowRollingPolicy implements RollingPolicy {
-  static Logger logger = Logger.getLogger(SlidingWindowRollingPolicy.class);
-  int maxIndex;
-  int minIndex;
-  String fileNamePattern;
-  String activeFileName;
-
-  public SlidingWindowRollingPolicy() {
-    minIndex = 1;
-  }
-
-  public void rollover(File file) {
-    // If maxIndex <= 0, then there is no file renaming to be done.
-    if (maxIndex > 0) {
-      String filename = file.getName();
-
-      // Delete the oldest file, to keep Windows happy.
-      file = new File(filename + '.' + maxIndex);
-
-      if (file.exists()) {
-        file.delete();
-      }
-
-      // Map {(maxBackupIndex - 1), ..., 2, 1} to {maxBackupIndex, ..., 3, 2}
-
-      /* for (int i = maxIndex - 1; i >= 1; i--) {
-         file = new File(filename + "." + i);
-
-        if (file.exists()) {
-          target = new File(filename + '.' + (i + 1));
-          logger.debug("Renaming file " + file + " to " + target);
-          file.renameTo(target);
-        }
-      }
-
-      // Rename fileName to fileName.1
-      target = new File(fileName + "." + 1);
-
-      this.closeFile(); // keep windows happy.
-      */
-    }
-  }
-
+ */
+public class FileNamePatternParserTestCase extends TestCase {
   /**
-   * Return the file name for the i-th file in the sliding window according
-   * to the file name pattern.
-   * */
-  protected String getFilenameInWindow(int i) {
-    return fileNamePattern + i;
+   * Constructor for FileNamePatternParserTestCase.
+   * @param arg0
+   */
+  public FileNamePatternParserTestCase(String arg0) {
+    super(arg0);
   }
 
-  public File getActiveLogFile(String old) {
-    return new File(old);
+  public void test1() {
+    //System.out.println("Testing [t]");
+    FileNamePatternParser pp = new FileNamePatternParser("t");
+    assertEquals("t", pp.convert(3));
+
+    //System.out.println("Testing [foo]");
+    pp = new FileNamePatternParser("foo");
+    assertEquals("foo", pp.convert(3));
+
+    //System.out.println("Testing [foo%]");
+    pp = new FileNamePatternParser("foo%");
+    assertEquals("foo%", pp.convert(3));
+
+    pp = new FileNamePatternParser("%ifoo");
+    assertEquals("3foo", pp.convert(3));
+
+    pp = new FileNamePatternParser("foo%ixixo");
+    assertEquals("foo3xixo", pp.convert(3));
+    
+    pp = new FileNamePatternParser("foo%i.log");
+    assertEquals("foo3.log", pp.convert(3));
+
+    pp = new FileNamePatternParser("foo.%i.log");
+    assertEquals("foo.3.log", pp.convert(3));
+    
+    pp = new FileNamePatternParser("%ifoo%");
+    assertEquals("3foo%", pp.convert(3));
+
+    pp = new FileNamePatternParser("%ifoo%%");
+    assertEquals("3foo%", pp.convert(3));
+
+    pp = new FileNamePatternParser("%%foo");
+    assertEquals("%foo", pp.convert(3));
+   
   }
 
-  public String getActiveFileName() {
-    return activeFileName;
+
+  public void test2() {
+    System.out.println("Testing [foo%ibar%i]");
+    FileNamePatternParser pp = new FileNamePatternParser("foo%ibar%i");
+    assertEquals("foo3bar3", pp.convert(3));
+
+    ///pp = new FileNamePatternParser("%%foo");
+    //assertEquals("%foo", pp.convert(3));
   }
 
-  public String getFileNamePattern() {
-    return fileNamePattern;
-  }
-
- 
-  public int getMaxIndex() {
-    return maxIndex;
-  }
-
-  public int getMinIndex() {
-    return minIndex;
-  }
-
-  public void setFileNamePattern(String fnp) {
-    fileNamePattern = fnp;
-  }
-
-  public void setMaxIndex(int maxIndex) {
-    this.maxIndex = maxIndex;
-  }
-
-  public void setMinIndex(int minIndex) {
-    this.minIndex = minIndex;
+  public static Test suite() {
+    TestSuite suite = new TestSuite();
+    suite.addTest(new FileNamePatternParserTestCase("test1"));
+    suite.addTest(new FileNamePatternParserTestCase("test2"));
+   
+    return suite;
   }
 }
