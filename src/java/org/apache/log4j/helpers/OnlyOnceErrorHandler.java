@@ -9,6 +9,9 @@
 package org.apache.log4j.helpers;
 
 import  org.apache.log4j.spi.ErrorHandler;
+import  org.apache.log4j.spi.LoggingEvent;
+import  org.apache.log4j.Logger;
+import  org.apache.log4j.Appender;
 
 /**
 
@@ -31,32 +34,19 @@ public class OnlyOnceErrorHandler implements ErrorHandler {
 
   boolean firstTime = true;
 
-  /**
-     Returns <code>null</code> as <code>OnlyOnceErrorHandler</code>
-     has no options. 
-     
-     @deprecated We now use JavaBeans introspection to configure
-     components. Options strings are no longer needed.
- */
-  public
-  String[] getOptionStrings() {
-    return null;
-  }
 
   /**
-     No options to set.
-     
-     @deprecated Use the setter method for the option directly instead
-     of the generic <code>setOption</code> method. 
-  */
-  public
-  void setOption(String key, String value) {
+     Does not do anything.
+   */
+  public 
+  void setLogger(String loggerName) {
   }
+
 
   /**
      No options to activate.
   */
-  public
+  public 
   void activateOptions() {
   }
 
@@ -66,44 +56,45 @@ public class OnlyOnceErrorHandler implements ErrorHandler {
      <code>System.err</code>.  */
   public
   void error(String message, Exception e, int errorCode) { 
+    error(message, e, errorCode, null);
+  }
+
+  /**
+     Prints the message and the stack trace of the exception on
+     <code>System.err</code>.
+   */
+  public
+  void error(String message, Exception e, int errorCode, LoggingEvent event) {
     if(firstTime) {
       LogLog.error(message, e);
       firstTime = false;
     }
   }
 
-  /**
-     Returns <code>null</code> as <code>OnlyOnceErrorHandler</code>
-     has no options.  
-  public
-  String[] getOptionStrings() {
-    return null;
-  }*/
-
-  /**
-     No options to set.
-  public
-  void setOption(String key, String value) {
-  }
-  */
-
-  /**
-     No options to get.
-  public
-  String getOption(String key) {
-    return null;
-  }
-  */
 
   /**
      Print a the error message passed as parameter on
      <code>System.err</code>.  
   */
-  public
+  public 
   void error(String message) {
     if(firstTime) {
       LogLog.error(message);
       firstTime = false;
     }
+  }
+  
+  /**
+     Does not do anything.
+   */
+  public
+  void setAppender(Appender appender) {
+  }
+
+  /**
+     Does not do anything.
+   */
+  public
+  void setBackupAppender(Appender appender) {
   }
 }

@@ -14,8 +14,8 @@
   <category name="org.apache.log4j.xml">
     <priority value="inherited"/>
   </category>
-  <rot>
+  <root>
     <priority value="error"/>
     <appender-ref ref="A1" />	       
-  </rot>
+  </root>
 </log4j:configuration>

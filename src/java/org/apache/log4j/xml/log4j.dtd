@@ -2,6 +2,8 @@
 
 <!-- Authors: Chris Taylor, Ceki Gulcu. -->
 
+<!-- Version: 1.2 -->
+
 <!-- A configuration element consists of optional renderer
 elements,appender elements, categories and an optional root
 element. -->
@@ -58,7 +60,7 @@ element. -->
 <!-- ErrorHandlers can be of any class. They can admit any number of -->
 <!-- parameters. -->
 
-<!ELEMENT errorHandler (param*)> 
+<!ELEMENT errorHandler (param*, appender-ref?)> 
 <!ATTLIST errorHandler
    class        CDATA   #REQUIRED 
 >

@@ -104,25 +104,22 @@ public class DOMConfigurator implements Configurator {
   }
 
   /**
-     Used internally to parse appenders by IDREF.
-   */
+     Used internally to parse appenders by IDREF name.
+  */
   protected
-  Appender findAppenderByReference(Element appenderRef) {    
-    String appenderName = subst(appenderRef.getAttribute(REF_ATTR));
-
+  Appender findAppenderByName(Document doc, String appenderName)  {      
     Appender appender = (Appender) appenderBag.get(appenderName);
+
     if(appender != null) {
       return appender;
     } else {
-      Document doc = appenderRef.getOwnerDocument();
-
       // Doesn't work on DOM Level 1 :
       // Element element = doc.getElementById(appenderName);
                         
       // Endre's hack:
       Element element = null;
       NodeList list = doc.getElementsByTagName("appender");
-      for (int t=0; t<list.getLength(); t++) {
+      for (int t=0; t < list.getLength(); t++) {
 	Node node = list.item(t);
 	NamedNodeMap map= node.getAttributes();
 	Node attrNode = map.getNamedItem("name");
@@ -142,6 +139,15 @@ public class DOMConfigurator implements Configurator {
 	return appender;
       }
     } 
+  }
+  /**
+     Used internally to parse appenders by IDREF element.
+   */
+  protected
+  Appender findAppenderByReference(Element appenderRef) {    
+    String appenderName = subst(appenderRef.getAttribute(REF_ATTR));    
+    Document doc = appenderRef.getOwnerDocument();
+    return findAppenderByName(doc, appenderName);
   }
 
   /**
@@ -221,6 +227,8 @@ public class DOMConfigurator implements Configurator {
  				       null);
     
     if(eh != null) {
+      eh.setAppender(appender);
+
       PropertySetter propSetter = new PropertySetter(eh);
       NodeList children = element.getChildNodes();
       final int length 	= children.getLength();
@@ -232,6 +240,8 @@ public class DOMConfigurator implements Configurator {
 	  String tagName = currentElement.getTagName();
 	  if(tagName.equals(PARAM_TAG)) {
             setParameter(currentElement, propSetter);
+	  } else if(tagName.equals(APPENDER_REF_TAG)) {
+	    eh.setBackupAppender(findAppenderByReference(currentElement));
 	  }
 	}
       }
@@ -261,7 +271,7 @@ public class DOMConfigurator implements Configurator {
 	  String tagName = currentElement.getTagName();
 	  if(tagName.equals(PARAM_TAG)) {
             setParameter(currentElement, propSetter);
-	  }
+	  } 
 	}
       }
       propSetter.activate();

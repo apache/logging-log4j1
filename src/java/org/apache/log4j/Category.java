@@ -714,6 +714,17 @@ public class Category implements AppenderAttachable {
   }
 
   /**
+     Is the appender passed as parameter attached to this category?
+   */
+  public 
+  boolean isAttached(Appender appender) {
+    if(appender == null || aai == null) 
+      return false;
+    else 
+      return aai.isAttached(appender);
+  }
+
+  /**
     *  Check whether this category is enabled for the <code>DEBUG</code>
     *  Level.
     *  

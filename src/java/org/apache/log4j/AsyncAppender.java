@@ -188,6 +188,14 @@ public class AsyncAppender extends AppenderSkeleton
     return locationInfo;
   }
 
+  /**
+     Is the appender passed as parameter attached to this category?
+   */
+  public 
+  boolean isAttached(Appender appender) {
+    return aai.isAttached(appender);
+  }
+
   
   /**
      The <code>AsyncAppender</code> does not require a layout. Hence,

@@ -122,6 +122,4 @@ public class Logger extends Category {
   Logger getRootLogger() {
     return LogManager.getRootLogger();
   }
-
-
 }

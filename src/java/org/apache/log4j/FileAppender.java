@@ -21,9 +21,9 @@ import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.helpers.QuietWriter;
 import org.apache.log4j.helpers.LogLog;
-//import org.apache.log4j.helpers.TracerPrintWriter;
 
 // Contibutors: Jens Uwe Pipka <jens.pipka@gmx.de>
+//              Ben Sandee
 
 /**
    FileAppender appends log events to a file. 

@@ -207,7 +207,7 @@ public class LogManager {
   public
   static 
   Logger getLogger(String name) {
-     // Delegate the actual manufacturing of the logger to the logger factory.
+     // Delegate the actual manufacturing of the logger to the logger repository.
     return repositorySelector.getLoggerRepository().getLogger(name);
   }
 
@@ -217,7 +217,7 @@ public class LogManager {
   public
   static 
   Logger getLogger(Class clazz) {
-     // Delegate the actual manufacturing of the logger to the logger factory.
+     // Delegate the actual manufacturing of the logger to the logger repository.
     return repositorySelector.getLoggerRepository().getLogger(clazz.getName());
   }
 
@@ -228,7 +228,7 @@ public class LogManager {
   public
   static 
   Logger getLogger(String name, LoggerFactory factory) {
-     // Delegate the actual manufacturing of the logger to the logger factory.
+     // Delegate the actual manufacturing of the logger to the logger repository.
     return repositorySelector.getLoggerRepository().getLogger(name, factory);
   }  
 
