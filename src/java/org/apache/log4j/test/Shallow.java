@@ -83,6 +83,7 @@ public class Shallow {
     cat.log(Priority.FATAL, "Message " + ++i, e);
     root.log(Priority.FATAL, "Message " + i, e);    
 
+    root.setPriority(Priority.FATAL);
 
     // It is always a good idea to call this method when exiting an
     // application.

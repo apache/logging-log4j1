@@ -229,4 +229,19 @@ public class Category extends Logger implements AppenderAttachable {
   Category getRoot() {
     return (Category) defaultHierarchy.getRootLogger();
   }
+
+  /**
+     Set the level of this Category.
+
+     <p>Null values are admitted.
+
+     @deprecated Please use {@link Logger#setLevel} instead.
+  */
+  public
+  void setPriority(Level level) {
+    setLevel(level);
+  }
+
+
+
 }
