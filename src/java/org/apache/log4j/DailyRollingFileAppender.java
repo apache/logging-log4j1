@@ -16,7 +16,6 @@
 
 package org.apache.log4j;
 
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.rolling.helpers.RollingCalendar;
 import org.apache.log4j.spi.LoggingEvent;
 
@@ -30,27 +29,25 @@ import java.util.TimeZone;
 
 
 /**
-   DailyRollingFileAppender extends {@link FileAppender} so that the
-   underlying file is rolled over at a user chosen frequency.
-
-   <p>The rolling schedule is specified by the <b>DatePattern</b>
-   option. This pattern should follow the {@link SimpleDateFormat}
-   conventions. In particular, you <em>must</em> escape literal text
-   within a pair of single quotes. A formatted version of the date
-   pattern is used as the suffix for the rolled file name.
-
-   <p>For example, if the <b>File</b> option is set to
-   <code>/foo/bar.log</code> and the <b>DatePattern</b> set to
-   <code>.yyyy-MM-dd</code>, on 2001-02-16 at midnight, the logging
-   file <code>/foo/bar.log</code> will be copied to
-   <code>/foo/bar.log.2001-02-16</code> and logging for 2001-02-17
-   will continue in <code>/foo/bar.log</code> until it rolls over
-   the next day.
-
-   <p>Is is possible to specify monthly, weekly, half-daily, daily,
-   hourly, or minutely rollover schedules.
-
-   <p><table border="1" cellpadding="2">
+ * DailyRollingFileAppender extends {@link FileAppender} so that the 
+ * underlying file is rolled over at a user chosen frequency.
+ * 
+ * <p>The rolling schedule is specified by the <b>DatePattern</b> option. This 
+ * pattern should follow the {@link SimpleDateFormat} conventions. In 
+ * particular, you <em>must</em> escape literal text within a pair of single 
+ * quotes. A formatted version of the date pattern is used as the suffix for 
+ * the rolled file name. 
+ * 
+ * <p>For example, if the <b>File</b> option is set to <code>/foo/bar.log</code> 
+ * and the <b>DatePattern</b> set to <code>.yyyy-MM-dd</code>, on 2001-02-16 at 
+ * midnight, the logging file <code>/foo/bar.log</code> will be copied to 
+ * <code>/foo/bar.log.2001-02-16</code> and logging for 2001-02-17 will continue
+ * in <code>/foo/bar.log</code> until it rolls over the next day.
+ * 
+ * <p>Is is possible to specify monthly, weekly, half-daily, daily, hourly, 
+ * or minutely rollover schedules.
+ * 
+ * <p><table border="1" cellpadding="2">
    <tr>
    <th>DatePattern</th>
    <th>Rollover schedule</th>
@@ -208,12 +205,12 @@ public class DailyRollingFileAppender extends FileAppender {
       rc.setType(type);
 
       File file = new File(fileName);
-      LogLog.info("fileane is "+fileName);
-      LogLog.info("sdf is "+sdf);
+      getLogger().info("fileane is {}.",fileName);
+      getLogger().info("sdf is {}.",sdf);
       
       scheduledFilename = fileName + sdf.format(new Date(file.lastModified()));
     } else {
-      LogLog.error(
+      getLogger().error(
         "Either File or DatePattern options are not set for appender [" + name
         + "].");
     }
@@ -250,16 +247,12 @@ public class DailyRollingFileAppender extends FileAppender {
       target.delete();
     }
 
-    File file = new File(fileName);
-    boolean result = file.renameTo(target);
-
-    if (result) {
-      LogLog.debug(fileName + " -> " + scheduledFilename);
-    } else {
-      LogLog.error(
-        "Failed to rename [" + fileName + "] to [" + scheduledFilename + "].");
+    try {
+      org.apache.log4j.rolling.helpers.Util.rename(fileName, scheduledFilename);
+    } catch (org.apache.log4j.rolling.RolloverFailure rfE) {
+      getLogger().error("Failed to rename ["+fileName+"] as ["+scheduledFilename+"].");
     }
-
+    
     try {
       // This will also close the file. This is OK since multiple
       // close operations are safe.
@@ -289,7 +282,7 @@ public class DailyRollingFileAppender extends FileAppender {
       try {
         rollOver();
       } catch (IOException ioe) {
-        LogLog.error("rollOver() failed.", ioe);
+        getLogger().error("rollOver() failed.", ioe);
       }
     }
 
