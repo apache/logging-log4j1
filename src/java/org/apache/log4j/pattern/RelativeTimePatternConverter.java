@@ -40,4 +40,10 @@ public class RelativeTimePatternConverter extends PatternConverter {
     buf.append(Long.toString(event.getTimeStamp() - LoggingEvent.getStartTime()));
     return buf;
   }
+  
+  public String getName()
+  {
+      return "Time";
+  }
+  
 }

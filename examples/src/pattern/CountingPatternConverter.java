@@ -21,6 +21,8 @@ import org.apache.log4j.spi.LoggingEvent;
 
 
 public class CountingPatternConverter extends PatternConverter {
+  static private final String NAME = "Count";
+  
   StringBuffer buf;
   int counter = 0;
 
@@ -36,5 +38,9 @@ public class CountingPatternConverter extends PatternConverter {
       buf.setLength(0);
     }
     return buf.append(String.valueOf(++counter));
+  }
+  
+  public String getName() {
+    return NAME;
   }
 }

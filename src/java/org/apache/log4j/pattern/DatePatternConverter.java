@@ -76,4 +76,10 @@ public class DatePatternConverter extends PatternConverter {
 
     return buf;
   }
+
+  public String getName()
+  {
+      return "Date";
+  }
+  
 }

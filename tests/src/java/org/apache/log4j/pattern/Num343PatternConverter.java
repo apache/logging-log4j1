@@ -20,6 +20,7 @@ import org.apache.log4j.spi.LoggingEvent;
 
 
 public class Num343PatternConverter extends PatternConverter {
+  static private final String NAME = "Num34";
   StringBuffer buf;
 
   public Num343PatternConverter() {
@@ -32,5 +33,9 @@ public class Num343PatternConverter extends PatternConverter {
     buf.append("343");
 
     return buf;
+  }
+  
+  public String getName() {
+    return NAME;
   }
 }

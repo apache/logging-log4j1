@@ -40,4 +40,10 @@ public class LevelPatternConverter extends PatternConverter {
 
     return buf;
   }
+  
+  public String getName()
+  {
+      return "Level";
+  }
+  
 }

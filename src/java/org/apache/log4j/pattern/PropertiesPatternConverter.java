@@ -72,4 +72,10 @@ public class PropertiesPatternConverter extends PatternConverter {
 
         return buf;
     }
+    
+    public String getName()
+    {
+        return "Property";
+    }
+    
 }

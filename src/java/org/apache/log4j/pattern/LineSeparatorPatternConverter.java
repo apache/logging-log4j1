@@ -38,4 +38,10 @@ public class LineSeparatorPatternConverter extends PatternConverter {
   public StringBuffer convert(LoggingEvent event) {
     return buf;
   }
+  
+  public String getName()
+  {
+      return "Line Sep";
+  }
+  
 }

@@ -35,4 +35,10 @@ public class LiteralPatternConverter extends PatternConverter {
     
     return buf;
   }
+  
+  public String getName()
+  {
+      return "Literal";
+  }
+  
 }

@@ -46,4 +46,10 @@ public class FileLocationPatternConverter extends PatternConverter {
 
     return buf;
   }
+  
+  public String getName()
+  {
+      return "File Location";
+  }
+  
 }

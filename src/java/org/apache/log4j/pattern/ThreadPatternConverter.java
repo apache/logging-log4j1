@@ -41,4 +41,10 @@ public class ThreadPatternConverter extends PatternConverter {
 
     return buf;
   }
+  
+  public String getName()
+  {
+      return "Thread";
+  }
+
 }

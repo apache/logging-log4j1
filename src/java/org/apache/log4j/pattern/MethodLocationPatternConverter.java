@@ -46,4 +46,10 @@ public class MethodLocationPatternConverter extends PatternConverter {
 
     return buf;
   }
+  
+  public String getName()
+  {
+      return "Method";
+  }
+  
 }
