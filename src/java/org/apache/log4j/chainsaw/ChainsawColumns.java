@@ -78,7 +78,7 @@ public class ChainsawColumns {
     //NOTE:  ID must ALWAYS be last field because the model adds this value itself as an identifier to the end of the consructed vector
     columnNames.add(ChainsawConstants.ID_COL_NAME);
   }
-  
+
   public static final int INDEX_LOGGER_COL_NAME = 1;
   public static final int INDEX_TIMESTAMP_COL_NAME = 2;
   public static final int INDEX_LEVEL_COL_NAME = 3;
@@ -93,11 +93,21 @@ public class ChainsawColumns {
   public static final int INDEX_LINE_COL_NAME = 12;
   public static final int INDEX_PROPERTIES_COL_NAME = 13;
   public static final int INDEX_ID_COL_NAME = 14;
-  
+
   private ChainsawColumns() {
   }
 
   public static List getColumnsNames() {
     return columnNames;
+  }
+
+  /**
+   * Given the index which matches one of the static constants in this class, returns the resolved
+   * Column name as a string label.
+   * @param columnIndex (not this is a 1 based collection)
+   * @return
+   */
+  public static String getColumnName(int columnIndex) {
+    return getColumnsNames().get(columnIndex - 1).toString();
   }
 }
