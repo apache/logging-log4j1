@@ -44,6 +44,7 @@ import org.apache.log4j.xml.XMLLayout;
  *
  * @author Scott Deboy <sdeboy@apache.org>
  * @author Paul Smith <psmith@apache.org>
+ * @author Stephen Pain
  */
 class FileSaveAction extends AbstractAction {
   private LogUI parent;
@@ -91,7 +92,7 @@ class FileSaveAction extends AbstractAction {
 
     if (selectedFile != null) {
       try {
-        List v = parent.getCurrentLogPanel().getEvents();
+        List v = parent.getCurrentLogPanel().getFilteredEvents();
 
         if (((v != null) && (v.size() == 0)) || (v == null)) {
           //no events to save

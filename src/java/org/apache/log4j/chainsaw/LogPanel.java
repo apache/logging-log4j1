@@ -178,6 +178,7 @@ import org.apache.log4j.spi.LoggingEventFieldResolver;
  *
  *@author Scott Deboy (sdeboy at apache.org)
  *@author Paul Smith (psmith at apache.org)
+ *@author Stephen Pain
  *
  */
 public class LogPanel extends DockablePanel implements EventBatchListener,
@@ -1492,6 +1493,15 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
     return tableModel.getAllEvents();
   }
 
+  /**
+   * Return the events that are visible with the current filter applied
+   *
+   * @return list of LoggingEvents
+   */
+  List getFilteredEvents() {
+  	return tableModel.getFilteredEvents();  
+  }
+  
   List getMatchingEvents(Rule rule) {
     return tableModel.getMatchingEvents(rule);
   }

@@ -51,6 +51,7 @@ import javax.swing.table.AbstractTableModel;
  *
  * @author Paul Smith <psmith@apache.org>
  * @author Scott Deboy <sdeboy@apache.org>
+ * @author Stephen Pain
  *
  */
 class ChainsawCyclicBufferTableModel extends AbstractTableModel
@@ -280,7 +281,18 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
 
     return list;
   }
-
+  
+  
+  public List getFilteredEvents() {
+  	List list = new ArrayList(filteredList.size());
+  	
+  	synchronized (filteredList) {
+  		list.addAll(filteredList);
+  	}
+  	
+  	return list;
+  }
+  
   public int getRowIndex(LoggingEvent e) {
     synchronized (filteredList) {
       return filteredList.indexOf(e);
