@@ -72,7 +72,6 @@ public class ChainsawConstants {
   //none is not a real column name, but is used by filters as a way to apply no filter for colors or display
   static final String NONE_COL_NAME = "None";
   static final String LOG4J_REMOTEHOST_KEY = "log4j.remoteSourceInfo";
-  public static final String LOG4J_ID_KEY = "log4jid";
   static final String UNKNOWN_TAB_NAME = "Unknown";
   static final String GLOBAL_MATCH = "*";
   public static final String DETAIL_CONTENT_TYPE = "text/html";

@@ -16,6 +16,7 @@
 
 package org.apache.log4j.chainsaw;
 
+import org.apache.log4j.helpers.Constants;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.rule.Rule;
 import org.apache.log4j.spi.LocationInfo;
@@ -337,7 +338,7 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
     switch (columnIndex + 1) {
     case ChainsawColumns.INDEX_ID_COL_NAME:
 
-      Object id = event.getProperty(ChainsawConstants.LOG4J_ID_KEY);
+      Object id = event.getProperty(Constants.LOG4J_ID_KEY);
 
       if (id != null) {
         return id;
@@ -403,11 +404,11 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
   public boolean isAddRow(LoggingEvent e, boolean valueIsAdjusting) {
     boolean rowAdded = false;
 
-    Object id = e.getProperty(ChainsawConstants.LOG4J_ID_KEY);
+    Object id = e.getProperty(Constants.LOG4J_ID_KEY);
 
     if (id == null) {
       id = new Integer(++uniqueRow);
-      e.setProperty(ChainsawConstants.LOG4J_ID_KEY, id.toString());
+      e.setProperty(Constants.LOG4J_ID_KEY, id.toString());
     }
 
     //prevent duplicate rows
@@ -439,7 +440,7 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
         Object key = iter.next();
 
         //add all keys except the 'log4jid' key
-        if (!columnNames.contains(key) && !(ChainsawConstants.LOG4J_ID_KEY.equalsIgnoreCase(key.toString()))) {
+        if (!columnNames.contains(key) && !(Constants.LOG4J_ID_KEY.equalsIgnoreCase(key.toString()))) {
           columnNames.add(key);
           LogLog.debug("Adding col '" + key + "', columNames=" + columnNames);
           fireNewKeyColumnAdded(
@@ -626,7 +627,7 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
 
                     Object o =
                       e.getProperty(
-                        e.getProperty(ChainsawConstants.LOG4J_ID_KEY));
+                        e.getProperty(Constants.LOG4J_ID_KEY));
 
                     if (o != null) {
                       newIDSet.add(o);
