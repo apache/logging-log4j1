@@ -290,8 +290,16 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     );
     renderer = new TableColorizingRenderer(colorizer);
     colorPanel = new ColorPanel(colorizer, filterModel);
+    
     colorFrame.getContentPane().add(colorPanel);
 
+    colorPanel.setCloseActionListener(
+      new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          colorFrame.setVisible(false);
+        }
+      });
+    
     preferencesFrame.setSize(640, 480);
 
     table = new JSortTable(tableModel);

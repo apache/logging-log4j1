@@ -107,6 +107,7 @@ public class JSortTable extends JTable implements MouseListener {
   	if (sortedColumn != null) {
   		try {
 	  		sortedColumnIndex = columnModel.getColumnIndex(sortedColumn);
+            getTableHeader().resizeAndRepaint();
   		} catch (IllegalArgumentException ie) {//nothing...column is not in the model
   			setSortedColumnIndex(-1);
 	  	}
@@ -115,9 +116,11 @@ public class JSortTable extends JTable implements MouseListener {
   
   public void setSortedColumnIndex(int index) {
     sortedColumnIndex = index;
-
-    SortTableModel model = (SortTableModel) getModel();
-    model.sortColumn(sortedColumnIndex, sortedColumnAscending);
+    if (sortedColumnIndex > -1) {
+        SortTableModel model = (SortTableModel) getModel();
+        model.sortColumn(sortedColumnIndex, sortedColumnAscending);
+    }
+    getTableHeader().resizeAndRepaint();
   }
 
   public void scrollToRow(final int row, final int col) {
@@ -179,6 +182,7 @@ public class JSortTable extends JTable implements MouseListener {
       sortedColumnIndex = index;
       sortedColumn = colModel.getColumn(index).getHeaderValue().toString();
       model.sortColumn(modelIndex, sortedColumnAscending);
+      getTableHeader().resizeAndRepaint();
     }
   }
 

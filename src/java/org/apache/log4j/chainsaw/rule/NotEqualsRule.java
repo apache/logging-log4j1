@@ -74,9 +74,11 @@ public class NotEqualsRule extends AbstractRule {
   }
   
   public static Rule getRule(Stack stack) {
+    if (stack.size() < 2) {
+        throw new IllegalArgumentException("Invalid NOT EQUALS rule - expected two rules but provided " + stack.size());
+    }  
     String p2 = stack.pop().toString();
     String p1 = stack.pop().toString();
-
     return new NotEqualsRule(p1, p2);
   }
 

@@ -113,8 +113,8 @@ public class ExpressionRuleContext extends KeyAdapter {
     operatorModel.addElement("<=");
     operatorModel.addElement(">=");
 
-    //make as large as operator list to avoid narrow list scrollbar issues
-    list.setVisibleRowCount(11);
+    //make long to avoid scrollbar 
+    list.setVisibleRowCount(13);
 
     PopupListener popupListener = new PopupListener();
     textField.addMouseListener(popupListener);
@@ -168,7 +168,7 @@ public class ExpressionRuleContext extends KeyAdapter {
       list.setSelectedIndex(0);
 
       Point p = textField.getCaret().getMagicCaretPosition();
-
+      contextMenu.doLayout();
       contextMenu.show(textField, p.x, (p.y + (textField.getHeight() - 5)));
       list.requestFocus();
     } else {
@@ -177,6 +177,7 @@ public class ExpressionRuleContext extends KeyAdapter {
         list.setSelectedIndex(0);
 
         Point p = textField.getCaret().getMagicCaretPosition();
+        contextMenu.doLayout();
         contextMenu.show(textField, p.x, (p.y + (textField.getHeight() - 5)));
         list.requestFocus();
       } else if (isFieldContextValid()) {
@@ -190,7 +191,7 @@ public class ExpressionRuleContext extends KeyAdapter {
               textField.getLocation().x,
               (textField.getLocation().y - textField.getHeight() + 5));
         }
-
+        contextMenu.doLayout();
         contextMenu.show(textField, p.x, (p.y + (textField.getHeight() - 5)));
         list.requestFocus();
       }

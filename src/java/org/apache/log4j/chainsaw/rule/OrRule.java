@@ -72,10 +72,18 @@ public class OrRule extends AbstractRule {
   }
   
   public static Rule getRule(Stack stack) {
-    Rule p2 = (Rule) stack.pop();
-    Rule p1 = (Rule) stack.pop();
-
-    return new OrRule(p1, p2);
+      if (stack.size() < 2) {
+          throw new IllegalArgumentException("Invalid OR rule - expected two rules but provided " + stack.size());
+      }  
+      Object o2 = stack.pop();
+      Object o1 = stack.pop();
+      if ((o2 instanceof Rule) && (o1 instanceof Rule)) { 
+          Rule p2 = (Rule) o2;
+          Rule p1 = (Rule) o1;
+          return new OrRule(p1, p2);
+      } else {
+          throw new IllegalArgumentException("Invalid OR rule: " + o2 + "..." + o1);
+      }
   }
 
   public boolean evaluate(LoggingEvent event) {

@@ -72,8 +72,7 @@ import java.util.StringTokenizer;
  */
 public class ExpressionRule extends AbstractRule {
   private static final InFixToPostFix convertor = new InFixToPostFix();
-  private static final PostFixExpressionCompiler compiler =
-    new PostFixExpressionCompiler();
+  private static final PostFixExpressionCompiler compiler = new PostFixExpressionCompiler();
   private final Rule rule;
 
   private ExpressionRule(Rule rule) {
@@ -99,38 +98,39 @@ public class ExpressionRule extends AbstractRule {
   public String toString() {
       return rule.toString();
   }
-}
 
+  /**
+   * Evaluate a boolean postfix expression.
+   *
+   */
+  static class PostFixExpressionCompiler {
+    Rule compileExpression(String expression) {
+      RuleFactory factory = RuleFactory.getInstance();
 
-/**
- * Evaluate a boolean postfix expression.
- *
- */
-class PostFixExpressionCompiler {
-  Rule compileExpression(String expression) {
-    RuleFactory factory = RuleFactory.getInstance();
+      Stack stack = new Stack();
+      Enumeration tokenizer = new StringTokenizer(expression);
 
-    Stack stack = new Stack();
-    Enumeration tokenizer = new StringTokenizer(expression);
+      while (tokenizer.hasMoreElements()) {
+        //examine each token
+        String nextToken = ((String) tokenizer.nextElement());
 
-    while (tokenizer.hasMoreElements()) {
-      //examine each token
-      String nextToken = ((String) tokenizer.nextElement());
-
-      //if a symbol is found, pop 2 off the stack, evaluate and push the result 
-      if (factory.isRule(nextToken)) {
-        Rule r = (Rule) factory.getRule(nextToken, stack);
-        stack.push(r);
-      } else {
-        //variables or constants are pushed onto the stack
-        stack.push(nextToken);
+        //if a symbol is found, pop 2 off the stack, evaluate and push the result 
+        if (factory.isRule(nextToken)) {
+          Rule r = (Rule) factory.getRule(nextToken, stack);
+          stack.push(r);
+        } else {
+          //variables or constants are pushed onto the stack
+          stack.push(nextToken);
+        }
       }
-    }
 
-    if ((stack.size() == 0) || (!(stack.peek() instanceof Rule))) {
-      throw new IllegalArgumentException("invalid expression: " + expression);
-    } else {
-      return (Rule) stack.pop();
+      if ((stack.size() == 0) || (!(stack.peek() instanceof Rule))) {
+        throw new IllegalArgumentException("invalid expression: " + expression);
+      } else {
+        return (Rule) stack.pop();
+      }
     }
   }
 }
+
+

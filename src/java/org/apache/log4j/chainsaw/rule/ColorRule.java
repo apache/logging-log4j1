@@ -74,6 +74,10 @@ public class ColorRule extends AbstractRule {
     this.foregroundColor = foregroundColor;
   }
 
+  public Rule getRule() {
+      return rule;
+  }
+  
   public Color getForegroundColor() {
     return foregroundColor;
   }
@@ -83,6 +87,10 @@ public class ColorRule extends AbstractRule {
   }
 
   public boolean evaluate(LoggingEvent event) {
-    return rule.evaluate(event);
+    return (rule != null && rule.evaluate(event));
+  }
+  
+  public String toString() {
+      return "color rule " + rule + " bg: " + backgroundColor + " fg: " + foregroundColor;
   }
 }
