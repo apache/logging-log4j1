@@ -98,7 +98,9 @@ public abstract class Receiver extends PluginSkeleton implements Thresholdable {
     @param level The threshold level events must equal or be greater
     	than before further processing can be done. */
   public void setThreshold(Level level) {
+    Level oldValue = this.thresholdLevel;
     thresholdLevel = level;
+    firePropertyChange("threshold", oldValue, this.thresholdLevel);
   }
   
   /**
