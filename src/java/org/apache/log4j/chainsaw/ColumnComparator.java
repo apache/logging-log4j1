@@ -49,12 +49,16 @@
 
 package org.apache.log4j.chainsaw;
 
-import java.util.*;
+import org.apache.log4j.spi.LoggingEvent;
+
+import java.util.Comparator;
 
 
 /**
  *
  * @author Claude Duguay
+ * @author Paul Smith <psmith@apache.org>
+ * @author Scott Deboy <sdeboy@apache.org>
 */
 public class ColumnComparator implements Comparator {
   protected int index;
@@ -65,25 +69,86 @@ public class ColumnComparator implements Comparator {
     this.ascending = ascending;
   }
 
-  public int compare(Object one, Object two) {
-    if (one instanceof Vector && two instanceof Vector) {
-      Vector vOne = (Vector) one;
-      Vector vTwo = (Vector) two;
-      Object oOne = vOne.elementAt(index);
-      Object oTwo = vTwo.elementAt(index);
+  public int compare(Object o1, Object o2) {
+    int sort = 1;
 
-      if (oOne instanceof Comparable && oTwo instanceof Comparable) {
-        Comparable cOne = (Comparable) oOne;
-        Comparable cTwo = (Comparable) oTwo;
+    if (o1 instanceof LoggingEvent && o2 instanceof LoggingEvent) {
 
-        if (ascending) {
-          return cOne.compareTo(cTwo);
-        } else {
-          return cTwo.compareTo(cOne);
+//		TODO not everything catered for here yet...
+
+      LoggingEvent e1 = (LoggingEvent) o1;
+      LoggingEvent e2 = (LoggingEvent) o2;
+
+      switch (index + 1) {
+      case ChainsawColumns.INDEX_LEVEL_COL_NAME:
+        sort = e1.getLevel().isGreaterOrEqual(e2.getLevel()) ? 1 : (-1);
+
+        break;
+
+      case ChainsawColumns.INDEX_LOGGER_COL_NAME:
+        sort = e1.getLoggerName().compareToIgnoreCase(e2.getLoggerName());
+
+        break;
+
+      case ChainsawColumns.INDEX_MESSAGE_COL_NAME:
+        sort =
+          e1.getMessage().toString().compareToIgnoreCase(
+            e2.getMessage().toString());
+
+        break;
+
+      case ChainsawColumns.INDEX_METHOD_COL_NAME:
+
+        if (
+          (e1.getLocationInformation() != null)
+            & (e2.getLocationInformation() != null)) {
+          sort =
+            e1.getLocationInformation().getMethodName().compareToIgnoreCase(
+              e2.getLocationInformation().getMethodName());
         }
+
+        break;
+
+      case ChainsawColumns.INDEX_CLASS_COL_NAME:
+
+        if (
+          (e1.getLocationInformation() != null)
+            & (e2.getLocationInformation() != null)) {
+          sort =
+            e1.getLocationInformation().getClassName().compareToIgnoreCase(
+              e2.getLocationInformation().getClassName());
+        }
+
+        break;
+
+      case ChainsawColumns.INDEX_FILE_COL_NAME:
+
+        if (
+          (e1.getLocationInformation() != null)
+            & (e2.getLocationInformation() != null)) {
+          sort =
+            e1.getLocationInformation().getFileName().compareToIgnoreCase(
+              e2.getLocationInformation().getFileName());
+        }
+
+        break;
+        
+       case ChainsawColumns.INDEX_TIMESTAMP_COL_NAME:
+       		sort = (e1.timeStamp<e2.timeStamp ? -1 : (e1.timeStamp==e2.timeStamp ? 0 : 1));
+       		break;
+       		
+       case ChainsawColumns.INDEX_THREAD_COL_NAME:
+       		sort = e1.getThreadName().compareToIgnoreCase(e2.getThreadName());
+       		break;
       }
     }
 
-    return 1;
+    sort = (sort == 0) ? 0 : ((sort < 0) ? (-1) : 1);
+
+    if (!ascending && (sort != 0)) {
+      sort = (sort < 0) ? 1 : (-1);
+    }
+
+    return sort;
   }
 }
