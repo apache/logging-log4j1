@@ -57,6 +57,8 @@
   <!-- Source directory for xml docs -->
   <property name="xdocs.src" value="./src/xdocs"/>
 
+  <!-- Javac with debug on/off. -->
+  <property name="debug" value="off"/>
 
   <!-- Destination for javadoc generated files -->
   <property name="javadoc.dest" value="docs/api"/>
@@ -253,7 +255,7 @@ later. For JDK 1.2, you can get the JNDI API from
                     ${stem}/varia/ExpressionFilter.java,
                     ${stem}/or/jms/*.java,
                     ${stem}/selector/servlet/*.java"
-      debug="on">
+      debug="${debug}">
       <classpath refid="compile.classpath"/>
     </javac>
   </target>
@@ -269,7 +271,7 @@ later. For JDK 1.2, you can get the JNDI API from
      includes="**/*.java"
      excludes="**/jmx/*.java"
      deprecation="${deprecation}"
-           debug="on">
+           debug="${debug}">
       <classpath refid="compile.classpath"/>
     </javac>
 
@@ -319,8 +321,9 @@ later. For JDK 1.2, you can get the JNDI API from
   <target name="build.jms" depends="init, jms, jndi" if="jms-present">
     <javac deprecation="${deprecation}"
            srcdir="${java.source.dir}"
-     destdir="${javac.dest}"
-     includes="${stem}/net/JMS*.java">
+    	   debug="${debug}"
+           destdir="${javac.dest}"
+           includes="${stem}/net/JMS*.java">
       <classpath refid="compile.classpath"/>
     </javac>
   </target>
@@ -328,8 +331,9 @@ later. For JDK 1.2, you can get the JNDI API from
  <target name="build.jmx" depends="init, jmx, jndi" if="jmx-present">
     <javac deprecation="${deprecation}"
            srcdir="${java.source.dir}"
-     destdir="${javac.dest}"
-     includes="${stem}/jmx/*.java"
+    	   debug="${debug}"
+           destdir="${javac.dest}"
+           includes="${stem}/jmx/*.java"
            excludes="${stem}/jmx/T.java">
       <classpath refid="compile.classpath"/>
     </javac>
@@ -338,9 +342,10 @@ later. For JDK 1.2, you can get the JNDI API from
    <target name="build.servletAPI" depends="init, servletAPI"
                 if="servletAPI-present">
     <javac srcdir="${java.source.dir}"
-     destdir="${javac.dest}"
-     deprecation="${deprecation}"
-     includes="${stem}/selector/servlet/*.java">
+           destdir="${javac.dest}"
+    	   debug="${debug}"
+           deprecation="${deprecation}"
+           includes="${stem}/selector/servlet/*.java">
       <classpath refid="compile.classpath"/>
     </javac>
   </target>
@@ -348,9 +353,10 @@ later. For JDK 1.2, you can get the JNDI API from
    <target name="build.db" depends="init, jdbcExtension"
                 if="jdbcExtension-present">
     <javac srcdir="${java.source.dir}"
-     destdir="${javac.dest}"
-     deprecation="${deprecation}"
-     includes="${stem}/db/**.java">
+          destdir="${javac.dest}"
+          deprecation="${deprecation}"
+    	  debug="${debug}"
+          includes="${stem}/db/**.java">
       <classpath refid="compile.classpath"/>
     </javac>
   </target>
@@ -358,9 +364,9 @@ later. For JDK 1.2, you can get the JNDI API from
   <target name="build.chainsaw" depends="init, chainsawCheck, build.core" if="chainsaw-libraries-present">
     <javac deprecation="${deprecation}"
            srcdir="${java.source.dir}"
-     debug="on"
-     destdir="${javac.dest}"
-     includes="${stem}/chainsaw/**/*.java,${stem}/rule/*.java,${stem}/varia/ExpressionFilter.java,${stem}/varia/LogFilePatternReceiver*.java"
+    	   debug="${debug}"
+           destdir="${javac.dest}"
+           includes="${stem}/chainsaw/**/*.java,${stem}/rule/*.java,${stem}/varia/ExpressionFilter.java,${stem}/varia/LogFilePatternReceiver*.java"
            excludes="${stem}/chainsaw/vfs/*.java">
       <classpath refid="compile.classpath"/>
       <classpath path="${regexp.oro.jar}"/>
@@ -637,6 +643,7 @@ later. For JDK 1.2, you can get the JNDI API from
        org.apache.log4j.pattern,
        org.apache.log4j.performance,
        org.apache.log4j.rolling,
+       org.apache.log4j.rolling.helper,
        org.apache.log4j.selector,
        org.apache.log4j.spi,
        org.apache.log4j.varia,
