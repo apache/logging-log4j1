@@ -58,7 +58,7 @@ public class ConsoleAppender extends WriterAppender {
      Sets the value of the <b>Target</b> option.
      
      @param value String identifying a console; recognized values are
-                  "System.err" (default) and "System.out"
+                  "System.out" (default) and "System.err"
    */
   public
   void setTarget(String value) {
@@ -80,8 +80,8 @@ public class ConsoleAppender extends WriterAppender {
   }
   
   void targetWarn(String val) {
-    LogLog.warn("["+val+"] should be one of System.out or System.err.");
-    LogLog.warn("Reverting to System.out.");
+    LogLog.warn("["+val+"] should be System.out or System.err.");
+    LogLog.warn("Using System.out (default).");
   }
  
   public
@@ -103,7 +103,7 @@ public class ConsoleAppender extends WriterAppender {
 
 
   /**
-    Retuns the option names for this component, namely the string
+    Returns the option names for this component, namely the string
     array {{@link #TARGET_OPTION} and the options of its super class
     {@link WriterAppender}.
 
