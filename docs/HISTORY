@@ -11,11 +11,11 @@
 
  - The CategoryFactory class has been replaced by the LoggerFactory
    class. The makeNewCategoryInstance method has been renamed as
-   makeNewLoggerInstance. This change requires client code make use of
-   extended Category classes to be recompiled. [**]
+   makeNewLoggerInstance. This change requires subclasses of Category
+   classes to be modified and recompiled. [**]
 
- - The Logger class replaced the Category class. Category class not
-   extends Logger for full backward compatibility. [*]
+ - The Logger class replaced the Category class. Category class now
+   extends Logger to preserve backward compatibility. [*]
 
  - The Category.assert method has been replaced by
    Category.assertLog.  This change was mecessary because assert is a
@@ -38,8 +38,7 @@
    inherited by child threads under JDK 1.2 and above.
 
  - Corrected a performance bug in the NDC class as observed by Dan
-   Milstein and independently by Ray Millard. Ain't open source is
-   cool?  [*]
+   Milstein and independently by Ray Millard. [*]
 
  - Removed deprecated methods setOptions and getOptionStrings defined
    in the org.apache.log4j.spi.OptionHandler interface. This interface
@@ -51,7 +50,6 @@
  - Added supports java.io.Reader objects in the method doConfigure(),
    instead of only InputStream. Thanks to Mark Womack for submitting
    the relevant patch. [*]
-
 
  June 19, 2001
 
