@@ -9,6 +9,11 @@
 <!-- ================================================================= -->
 <project name="log4j" default="usage" basedir="." >
 
+
+  <!-- Read the system environment variables and stores them in properties, -->
+  <!-- prefixed with "env". -->
+  <property environment="env"/>
+
   <property name="version" value="1.2alpha6"/>
 
   <!-- The base directory relative to which most targets are built -->
@@ -242,12 +247,12 @@
   <!-- ================================================================= -->
   <!-- This target builds the javadoc files.                             -->
   <!-- ================================================================= -->
-  <target name="javadoc" depends="init">
+  <target name="javadoc" depends="init" unless="env.NO_JAVADOC">
 
     <mkdir dir="${javadoc.dest}" />
-
+    
     <javadoc sourcepath="${java.source.dir}" 
-           destdir="${javadoc.dest}" 
+      destdir="${javadoc.dest}" 
 	   packagenames="org.apache.log4j,
 			 org.apache.log4j.config,
 			 org.apache.log4j.examples,
@@ -281,7 +286,7 @@
  <!-- ================================================================= -->
  <!-- Build a complete distribution. Results go to ${dist.images}       -->
  <!-- ================================================================= -->
-  <target name="dist" depends="init, clean, jar">
+  <target name="dist" depends="init, clean, javadoc, jar">
 
     <delete verbose="true">
       <fileset dir="."> 
@@ -371,5 +376,6 @@
     	 
     <delete dir="${dist.tmp}" />
   </target>
+ 
 </project>
 
