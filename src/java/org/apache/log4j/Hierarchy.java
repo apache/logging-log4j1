@@ -37,8 +37,7 @@ import org.apache.log4j.helpers.OptionConverter;
 
    <p><em>The casual user should not have to deal with this class
    directly.</em> In fact, up until version 0.9.0, this class had
-   default package access. However, if you are in an environment where
-   multiple applications run in the same VM, then read on.
+   default package access. 
 
    <p>The structure of the category hierarchy is maintained by the
    {@link #getInstance} method. The hierarchy is such that children
@@ -51,8 +50,6 @@ import org.apache.log4j.helpers.OptionConverter;
    to the provision node. Other descendants of the same ancestor add
    themselves to the previously created provision node.
 
-   <p>See the code below for further details.
-   
    @author Ceki G&uuml;lc&uuml; 
 
 */
