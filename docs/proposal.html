@@ -27,7 +27,7 @@ component names as proposed in the upcoming JSR47 API, namely,
 <h1>Levels, Loggers and the LogManager</h1>
 
 <p>It is proposed to rename the <code>Priority</code> class to
-<code>Level</code>.  To conserve backward compatibility a Priority
+<code>Level</code>.  To preserve backward compatibility a Priority
 class will be included which will extend <code>Level</code> without
 changing or adding any functionality.  Classes that contain methods
 involving priorities, say <code>setPriority</code>, will contain a
@@ -98,6 +98,8 @@ logging. There are already plenty of facilities supporting
 internationalization. It does not seem appropriate for log4j to
 re-invent the wheel.
 
+<p><li>There are no methods for attaching appenders. 
+
 </ul>
 
 <h2>LogManager</h2>
@@ -115,8 +117,8 @@ Consequently, it is hard to make a priori assumptions about the
 environment where log4j will run. The problem is particularly acute in
 embedded components (e.g. libraries) which rely on log4j for their
 logging. The author of embedded component can rarely afford to make
-restrictive assumptions about the surrounding environment, much less
-so regarding logging.
+restrictive assumptions about the surrounding environment, a fortiori
+assumtions about logging.
 
 <p>Logging in Application Servers and Servlet Containers also create
 unique problems. It is often desirable to separate logging output
@@ -126,7 +128,7 @@ possible to have different applications live in their own parallel
 universe by using a different hierarchy for each application. For more
 details, refer to my <a
 href="http://apache.org/~ceki/multHierarchy.tar.gz">hierarchy
-tutorial</a> for Servlet Containers. 
+tutorial</a> for Servlet Containers.
 
 <p>Using multiple hierarchies works well with code that is designed to
 use them. However, it does not entend to a library which uses log4j
@@ -150,7 +152,8 @@ Factory, Part II</a> to gain more insight on the problem.
 
 <p><b>Public interface</b>
 
-<p>The public interface of the LogManager class consists of one static method.
+<p>The public interface of the LogManager class consists of a few
+<em>static</em> methods.
 
 <p><table bgcolor="CCCCCC">
 <tr><td>
@@ -161,14 +164,21 @@ public class LogManager {
      // return the appropriate root Logger 
   }
 
-
   public <b>static</b> Logger getLogger(String name) {
      // return the appropriate Logger instance
   }
+
+  // The actual task of manufacturing loggers is delegated to a LoggerFactory
+  public <b>static</b> Logger getLoggerFactory(LoggerFactory factory) {
+    
+  }  
 }
 </pre>
 </td></tr>
 </table>
+
+<p>Note that altough the methods are static there is a lot of
+flexibility in the underlying implementations. See the implementation section below.
 
 <p>Typical usage:
 
@@ -200,10 +210,110 @@ oblivious to Java2 security checks. In shipped code, LogManager may be
 configured to return a <code>NOPLogger</code> which could implement
 the <code>Logger</code> (abstract) class with empty method bodies.
 
-<p>The behavior of <code>LogManager</code> may be influenced by system
-properties or by parameters passed as a result of
+<h2>Impelementation</h2>
+
+<p>The behavior of <code>LogManager</code> is mostly determined by the
+<code>LogFactory</code> it uses.  However, it may also be influenced
+by system properties or by parameters passed as a result of
 <code>LogManager</code> method invocations.
 
+<p>Here is a tentative implementation.
+
+<p><table bgcolor="CCCCCC">
+<tr><td>
+<pre>
+/*
+ * Copyright (C) The Apache Software Foundation. All rights reserved.
+ *
+ * This software is published under the terms of the Apache Software
+ * License version 1.1, a copy of which has been included with this
+ * distribution in the LICENSE.txt file.  */
+
+package org.apache.log4j;
+
+/**
+  Use the <code>LogManager</code> to retreive instances of {@link Logger}.
+
+  @author Ceki G&uuml;lc&uuml;
+*/
+public <b>final</b> class <font color="0000AA"><b>LogManager</b></font> {
+
+  static <font color="AA5555"><b>private</b></font> Object guard = null;
+  static <font color="AA5555"><b>private</b></font> LoggerFactory loggerFactory;
+
+  // By default the logger factory is set to a platform dependent
+  // default logger factory.
+  <b>static</b> {
+    if(java14) {
+      loggerFactory = new DefaultLoggerFactory14();
+    } else if (java2) {
+      loggerFactory = new DefaultLoggerFactory2();
+    } else {
+      loggerFactory = new DefaultLoggerFactory11();
+    }
+  }
+
+  /**
+     Sets <code>LoggerFactory</code> but only if the correct
+     <em>guard</em> is passed as parameter.
+     
+     Initally the guard is null.  If the guard is
+     <code>null</code>, then invoking this method sets the logger
+     factory and the guard. Following invocations will throw a {@link
+     IllegalArgumentException}, unless the previously set
+     <code>guard</code> is passed as the second parameter.
+
+     This allows a high-level component to set the logger factory to
+     be used, thus, fixing the log4j environment.
+     
+     For example, when tomcat starts it will be able to install its
+     own logger factory. However, if and when Tomcat is embedded
+     within JBoss, then JBoss will install its loggger factory and
+     Tomcat will use the factory set by its container, JBoss.
+  */
+  public
+  <b>static</b>
+  void <font color="#0000AA"><b>setLoggerFactory</b></font>(LogFactory factory, Object guard) 
+                                                 throws IllegalArgumentException {
+    if((LogManager.guard != null) && (LogManager.guard != guard)) {
+      throw new IllegalArgumentException(
+           "Attempted to reset the LoggerFactory without possessing the guard.");
+    }
+
+    if(factory == null) {
+      throw new IllegalArgumentException("LoggerFactory must be non-null.");
+    }
+
+    LogManager.guard = guard;
+    LogManager.loggerFactory = factory;
+
+  }
+
+  /**
+     Retrieve the appropriate root logger.
+   */
+  public
+  <b>static</b>
+  Logger <font color="#0000AA"><b>getRootLogger()</b></font> {
+     // Delegate the actual manufacturing of the logger to the logger factory.
+    return loggerFactory.getRootLogger();
+  }
+
+  /**
+     Retrieve the appropriate {@link Logger} instance.  
+  */
+  public
+  <b>static</b>
+  Logger <font color="#0000AA"><b>getLogger</b></font>(String name) {
+     // Delegate the actual manufacturing of the logger to the logger factory.
+    return loggerFactory.getLogger(name);
+  }
+}
+</pre>
+</td></tr>
+<table>
+
+<p>
 <h2>Backward compatibility</h2>
 
 <p>Existing users of log4j need not worry about the compatibility of
@@ -213,10 +323,21 @@ interfaces proposed in this document.
 
 <h2>Contributors</h2>
 
+The present propposal is based on discussions that were held on the
+jakarta-commons mailing list. The contributors listed below are not
+known to endorse this proposal in any way. 
+
 <ul>
 
-<li>Costin Manoloche 
-<li>Peter Donald
+<li>Costin Manolache 
+
+<li>Peter Donald (author of <a
+href="http://jakarta.apache.org/avalon/logkit/index.html">jakarta-avalon-logkit</a>)
+
+<li>Rodney Waldhoff 
+
+<li>Morgan Delagrange
+
 </ul>
 
 </body>
