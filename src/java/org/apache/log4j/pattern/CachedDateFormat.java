@@ -83,8 +83,7 @@ final class CachedDateFormat extends DateFormat {
       // be 0, thus immutable across iterations.
       milliDigits = JVM_MAX_MILLI_DIGITS;
       numberFormat = new DecimalFormat();
-      // Have numberFormat use of all available digits, it'll zero pad for
-      // smaller numbers 
+      // numberFormat will zero as necessary
       numberFormat.setMinimumIntegerDigits(JVM_MAX_MILLI_DIGITS);
     
       Date now = new Date();
