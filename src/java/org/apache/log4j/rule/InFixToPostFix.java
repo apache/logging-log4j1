@@ -61,7 +61,22 @@ import java.util.Vector;
  * Currently grouping is supported, as well as all of the Rules supported by <code>RuleFactory</code>
  * 
  * NOTE: parsing is supported through the use of <code>StringTokenizer</code>, which means 
- * all tokens in the expression must be separated by spaces. 
+ * all tokens in the expression must be separated by spaces.
+ * 
+ * Supports grouping via parens, mult-word operands using single quotes, and these operators:
+ * 
+ * !        NOT operator
+ * !=       NOT EQUALS operator
+ * ==       EQUALS operator 
+ * ~=       CASE-INSENSITIVE equals operator
+ * ||       OR operator
+ * &&       AND operator
+ * like     REGEXP operator
+ * exists   NOT NULL operator
+ * &lt      LESS THAN operator
+ * &gt      GREATER THAN operator
+ * &lt=     LESS THAN EQUALS operator
+ * &gt=     GREATER THAN EQUALS operator
  * 
  * @author Scott Deboy <sdeboy@apache.org>
  */
@@ -85,10 +100,6 @@ public class InFixToPostFix {
     operators.add("<=");
     operators.add(">=");
     
-    operators.add("*");
-    operators.add("+");
-    operators.add("-");
-
     //boolean precedence
     precedenceMap.put("<", new Integer(3));
     precedenceMap.put(">", new Integer(3));
@@ -104,10 +115,6 @@ public class InFixToPostFix {
     
     precedenceMap.put("||", new Integer(2));
     precedenceMap.put("&&", new Integer(2));
-
-    precedenceMap.put("-", new Integer(2));
-    precedenceMap.put("+", new Integer(2));
-    precedenceMap.put("*", new Integer(3));
   }
 
   public String convert(String expression) {
