@@ -15,10 +15,10 @@ import java.util.Enumeration;
 import org.xml.sax.Attributes;
 
 /**
-   Render <code>javax.jms.Message</code> objects.
+   Render <code>org.xml.sax.Attributes</code> objects.
 
    @author Ceki G&uuml;lc&uuml;
-   @since 1.0 */
+   @since 1.2 */
 public class AttributesRenderer implements ObjectRenderer {
 
   public
@@ -27,7 +27,7 @@ public class AttributesRenderer implements ObjectRenderer {
 
    
   /**
-     Render a {@link Message}.
+     Render a {@link org.xml.sax.Attributes}.
   */
   public
   String  doRender(Object o) {

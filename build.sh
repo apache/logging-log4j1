@@ -21,7 +21,7 @@ fi
 
 for l in build/lib/*.jar 
 do
-echo L=$l
+echo "Adding $l to CLASSPATH."
 CLASSPATH=${CLASSPATH}:$l
 done
 

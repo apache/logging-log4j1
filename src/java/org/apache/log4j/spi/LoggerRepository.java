@@ -45,7 +45,7 @@ public interface LoggerRepository {
   Enumeration getCurrentLoggers();
 
   /**
-     @deprecated Please use {@link getCurrentLoggers} instead.
+     @deprecated Please use {@link #getCurrentLoggers} instead.
    */
   public
   Enumeration getCurrentCategories();
