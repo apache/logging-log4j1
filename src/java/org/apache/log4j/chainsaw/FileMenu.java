@@ -32,6 +32,8 @@ import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
 import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.xml.UtilLoggingXMLDecoder;
+import org.apache.log4j.xml.XMLDecoder;
 
 
 /**
@@ -55,7 +57,7 @@ class FileMenu extends JMenu {
 
     loadLog4JAction =
       new FileLoadAction(
-        logUI, "org.apache.log4j.xml.XMLDecoder", "Load Log4J File...", false);
+        logUI, new XMLDecoder(logUI), "Load Log4J File...", false);
 
       loadLog4JAction.putValue(
         Action.ACCELERATOR_KEY,
@@ -66,16 +68,16 @@ class FileMenu extends JMenu {
 
     loadUtilLoggingAction =
       new FileLoadAction(
-        logUI, "org.apache.log4j.xml.UtilLoggingXMLDecoder",
+        logUI, new UtilLoggingXMLDecoder(logUI),
         "Load Java Util File...", false);
 
     remoteLog4JAction =
       new FileLoadAction(
-        logUI, "org.apache.log4j.xml.XMLDecoder", "Load Remote Log4J File...",
+        logUI, new XMLDecoder(logUI), "Load Remote Log4J File...",
         true);
     remoteUtilLoggingAction =
       new FileLoadAction(
-        logUI, "org.apache.log4j.xml.UtilLoggingXMLDecoder",
+        logUI, new UtilLoggingXMLDecoder(logUI),
         "Load Remote Java Util File...", true);
 
     saveAction = new FileSaveAction(logUI);
