@@ -49,7 +49,7 @@ import org.apache.log4j.spi.location.LocationInfo;
  * aware of that some of the LoggingEvent fields are initialized lazily. 
  * Therefore, an appender wishing to output data to be later correctly read
  * by a receiver, must initialize "lazy" fields prior to writing them out.   
- * See the {@link #prepareForSerialization} method for the exact list.</p>
+ * See the {@link #prepareForDeferredProcessing()} method for the exact list.</p>
  * 
  * <p>Moreover, in the absence of certain fields, receivers must set the
  * values of null fields to a default non-null value. For example, in the 

@@ -19,8 +19,8 @@ package org.apache.log4j.helpers;
 
 /**
  * Formats messages according to very simple rules. 
- * See {@link #formatt(String, Object)} and 
- * {@link #formatt(String, Object, Object)} for more details.
+ * See {@link #format(String, Object)} and 
+ * {@link #format(String, Object, Object)} for more details.
  *
  * @author Ceki G&uuml;lc&uuml;
  */

@@ -33,12 +33,12 @@ import java.net.Socket;
 
    where <em>port</em> is a part number where the server listens and
    <em>configFile</em> is a configuration file fed to the {@link
-   PropertyConfigurator} or to {@link DOMConfigurator} if an XML file.
+   PropertyConfigurator} or to {@link JoranConfigurator} if an XML file.
    </pre>
   *
   * @author  Ceki G&uuml;lc&uuml;
   *
-  *  @since 0.8.4
+  * @since 0.8.4
   * */
 public class SimpleSocketServer {
   final static Logger logger = Logger.getLogger(SimpleSocketServer.class);

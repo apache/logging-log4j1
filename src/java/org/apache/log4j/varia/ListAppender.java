@@ -37,7 +37,7 @@ import java.util.List;
  *
  */
 public final class ListAppender extends AppenderSkeleton {
-  private List model = new ArrayList();
+  private List list = new ArrayList();
 
   /**
    * Returns a writeable, BUT cloned List of all the LoggingEvents that are contained
@@ -48,8 +48,8 @@ public final class ListAppender extends AppenderSkeleton {
    * @return Modifiable List
    */
   public final List getList() {
-    synchronized (model) {
-      return new ArrayList(model);
+    synchronized (list) {
+      return new ArrayList(list);
     }
   }
 
@@ -64,8 +64,8 @@ public final class ListAppender extends AppenderSkeleton {
     // Extract location info now. Later it might not be possible.
     event.getLocationInformation();
     
-    synchronized (model) {
-      model.add(event);
+    synchronized (list) {
+      list.add(event);
     }
   }
 
@@ -81,9 +81,9 @@ public final class ListAppender extends AppenderSkeleton {
   /**
    * Removes all the Events from the model
    */
-  public void clearModel() {
-    synchronized (model) {
-      model.clear();
+  public void clearList() {
+    synchronized (list) {
+      list.clear();
     }
   }
 }

@@ -520,7 +520,7 @@ public class PatternLayout extends Layout {
   
   /**
    * Will return false if any of the conversion specifiers in the pattern
-   * handle {@link Exceptions}.
+   * handles {@link Exception Exceptions}.
    */
   public boolean ignoresThrowable() {
     return !handlesExceptions;

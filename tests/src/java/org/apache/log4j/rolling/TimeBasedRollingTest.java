@@ -337,7 +337,6 @@ public class TimeBasedRollingTest extends TestCase {
     jc.doConfigure("./input/rolling/time1.xml", LogManager.getLoggerRepository());
     jc.dumpErrors();
     
-
     String datePattern = "yyyy-MM-dd_HH_mm_ss";
 
     SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
