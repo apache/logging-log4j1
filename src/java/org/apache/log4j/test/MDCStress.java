@@ -18,13 +18,14 @@ public class MDCStress extends Thread {
 
   static int maxThreads;  
   static int threadCounter = 0;  
+  static int totalThreads = 0;  
 
 
   public 
   static 
   void main(String args[]) {
     
-    Layout layout = new PatternLayout("%r [%t] depth:%X{depth} - %m%n");
+    Layout layout = new PatternLayout("%r [%t] depth=%X{depth} total=%X{total} - %m%n");
     Appender appender = new ConsoleAppender(layout);
     root.addAppender(appender);
 
@@ -67,44 +68,47 @@ public class MDCStress extends Thread {
 
   public
   static
-  void createChildren(int n, int depth) {
+  void createChildren(int n, int currentDepth) {
     if (n <= 0)
       return;
 
     synchronized(MDCStress.class) {
       n = maxThreadsConstained(n);    
       for(int i = 0; i < n; i++) {
-	new MDCStress(depth+1).start();
+	threadCounter++;
+	totalThreads++;
+	log.debug("Creating Thread-"+(totalThreads-1));
+	new MDCStress(currentDepth+1, totalThreads-1).start();
       }
     }
   }
 
 
   int depth;
-  
-  MDCStress(int depth) {
+  int total;
+
+  MDCStress(int depth, int totalThreads) {
     this.depth = depth;
+    this.total = totalThreads;
   }
 
   public
   void run() {
-    MDC.put("depth", new Integer(depth));
     log.debug("Entered run()");
-    
-    int loopLength = randomInt(LOOP_LENGTH);
 
-    int createIndex = loopLength/2;
-    
-    for(int i = 0; i <= loopLength; i++) {
-      if(i==0) {
-	createChildren(randomInt(BRANCHING_FACTOR), depth+1);
-      }
-    } 
+    createChildren(randomInt(BRANCHING_FACTOR), depth);
+
+    MDC.put("depth", new Integer(depth));
+    MDC.put("total", new Integer(this.total));
+
+    log.debug("Set MDC variables.");   
+
+    createChildren(randomInt(BRANCHING_FACTOR), depth);
     
 
     synchronized(MDCStress.class) {
       threadCounter--;
-      root.debug( "Exiting run loop. " + threadCounter);
+      root.debug("Exiting run loop. " + threadCounter);
       if(threadCounter <= 0) {
 	MDCStress.class.notify(); // wake up the main thread
       }
