@@ -156,9 +156,17 @@ later. For JDK 1.2, you can get the JNDI API from
   </target>
 
   <target name="jmxCheck" depends="jndiCheck" if="jndi-present">
-    <available classname="javax.management.MBeanInfo" property="jmx-present">
-     <classpath refid="compile.classpath"/>
-    </available>
+    <condition property="jmxCheck">
+         <and>
+            <available classname="javax.management.MBeanInfo">
+             <classpath refid="compile.classpath"/>
+            </available>
+            <available classname="com.sun.jdmk.comm.HtmlAdaptorServer">
+             <classpath refid="compile.classpath"/>
+            </available>
+         </and>
+      </condition>
+
   </target>
   <target name="jmx" depends="jmxCheck" if="jmx-present">
     <echo message="JMX is present."/>
