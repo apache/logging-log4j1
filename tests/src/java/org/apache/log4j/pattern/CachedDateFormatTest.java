@@ -214,9 +214,11 @@ public final class CachedDateFormatTest
    */
   public void test8() {
     DateFormat baseFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
+    baseFormat.setTimeZone(GMT);
     DateFormat cachedFormat = new CachedDateFormat(baseFormat, 1000);
-    cachedFormat.setTimeZone(TimeZone.getTimeZone("GMT-6"));
     Date jul4 = new Date(12603L * 86400000L);
+    assertEquals("2004-07-04 00:00:00,000", cachedFormat.format(jul4));
+    cachedFormat.setTimeZone(TimeZone.getTimeZone("GMT-6"));
     assertEquals("2004-07-03 18:00:00,000", cachedFormat.format(jul4));
   }
 
