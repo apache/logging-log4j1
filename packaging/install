@@ -1,3 +1,4 @@
+#!/bin/bash
 
 # Usage: install [-j] [-h]
 #	 -j: jar files only

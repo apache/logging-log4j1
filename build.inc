@@ -162,6 +162,8 @@
 	          **/Syslog*, **/RelativeTimeDateFormat.*,
 		  **/gui/**/*.class, **/Loader.class,
 		  **/UnitTest*.class, 
+		  ${stem}/or/MessageRenderer.class,
+		  ${stem}/spi/TriggeringEventEvaluator.class
 		  org/apache/log4j/helpers/CyclicBuffer.class"
         manifest="manifest.mf"
     />
