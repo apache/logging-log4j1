@@ -60,9 +60,14 @@ same file?</a></p>
 
 <li><p><a href=#timestamp>If I have many process across multiple hosts
 (possibly across multiple timezones) logging to the same file using the
-method above, what happens to timestamps?
+method above, what happens to timestamps?</P>
 
-
+<LI><P><A HREF="#j2ee">Why can't Log4J find my properties file in a J2EE or WAR application?</P>
+<LI><P><A HREF="#configureandwatch">Is there a way to get Log4J to automatically reload a configuration file if it changes?</P>
+<LI><P><A HREF="#nteventlogproblems">What does the Windows NT Event Viewer complain about missing descriptions for my event messages
+when I use the NTEventLogAppender?</P>
+<LI><P><A HREF="#morenteventlogproblems">Why can't I map my category names to the categories that appear in the 
+NT Event Log when I use the NTEventLogAppender?</p>						   
 <li><p><a href=#tax>Why should I donate my log4j extensions back to the
 project?</a></p>
 <li><p><a href=#help>What should I keep in mind when contributing code?</a></p>
@@ -572,6 +577,38 @@ a bug discovery between version 1.0.4 and 1.1b1.  Versions 1.0.4 and before
 had their timestamp regenerated in the converter.  In this case the timestamps
 seen in the log file would all appear in order, generated at the time they
 arrived at the log server host according to its local clock.
+
+<p><a name=j2ee><h4>Why can't Log4J find my properties file in a J2EE or WAR application?</h4>
+The short answer: the Log4J classes and the properties file are not within the scope of the same
+classloader.<P>
+The long answer (and what to do about it):
+J2EE or Servlet containers utilize Java's class loading system.  Sun changed the way classloading
+works with the release of Java 2.  In Java 2, classloaders are arranged in a hierarchial parent-child
+relationship.  When a child classloader needs to find a class or a resource, it first delegates the request
+to the parent.  Under no circumstances does it delegate the classloading to a child.
+<P>
+Earlier releases of Log4J only used the default <CODE>Class.forName()</code> mechanism for loading classes.
+Beginning with Java 2, the preferred method for loading classes is:
+<BLOCKQUOTE>
+<CODE>Thread.currentThread().getContextClassLoader().loadClass()</CODE>
+</BLOCKQUOTE>
+Resources are handled in the same manner.  See the documentation for <CODE>java.lang.ClassLoader</CODE> for more details.  The most
+recent versions of Log4J use the Java 2 method for loading classes.
+<P>
+So, if you're having problems, try loading the class or resource yourself.  If you can't find it, neither will Log4J. ;)  
+<P><A NAME=configureandwatch><H4>Is there a way to get Log4J to automatically reload a configuration file if it changes?</H4>
+<P>Yes.  Both the DOMConfigurator and the PropertyConfigurator support automatic reloading through the <CODE>configureAndWatch</CODE> APIs.
+See the API documentation for more details.
+
+<P><A NAME=nteventlogproblems><H4>What does the Windows NT Event Viewer complain about missing descriptions for my event messages when I use the NTEventLogAppender?</H4>
+<P>The NT Event Viewer relies on <I>message resource</I> DLLs to properly view an event message.  The NTEventLogAppender.dll contains these message
+resources, but that DLL must be copied to %SYSTEMROOT%\SYSTEM32 for it to work properly.
+
+																						
+<P><A NAME=morenteventlogproblems><H4>Why can't I map my category names to the categories that appear in the NT Event Log when I use the NTEventLogAppender?</H4>
+<P>Unfotunately, the category names are hardcoded within the message resource DLL (see previous question about NTEventLogAppender), so there isn't any easy way to
+override those dynamically... in fact, I don't think it's possible to do it, as you'd have to modify the DLL resources for every application. Since
+most native applications don't use the Category column anyway...																						
 
 <p><a name=tax><h4>Why should I donate my extensions to log4j back to the
 project?</h4>
