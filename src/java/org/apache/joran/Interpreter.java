@@ -108,7 +108,6 @@ public class Interpreter extends DefaultHandler {
 
   public void startElement(
     String namespaceURI, String localName, String qName, Attributes atts) {
-    String x = null;
 
     String tagName = getTagName(localName, qName);
 
