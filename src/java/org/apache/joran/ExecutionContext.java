@@ -41,16 +41,21 @@ public class ExecutionContext {
 	Vector errorList;
 	Properties substProperties;
 	
-	Interpreter joranParser;
+	Interpreter joranInterpreter;
     
-	public ExecutionContext(Interpreter joranParser) {
-		this.joranParser = joranParser;
+	public ExecutionContext(Interpreter joranInterpreter) {
+		this.joranInterpreter = joranInterpreter;
 		objectStack = new Stack();
 		objectMap = new HashMap(5);
 		errorList = new Vector();
 	}
 	
 	public void addError(ErrorItem errorItem) {
+    Locator locator = joranInterpreter.getLocator();
+    if (locator != null) {
+      errorItem.setLineNumber(locator.getLineNumber());
+      errorItem.setColNumber(locator.getColumnNumber());
+    }
 		errorList.add(errorItem);
 	}
 
@@ -59,10 +64,10 @@ public class ExecutionContext {
   }
 
   public Locator getLocator() {
-    return joranParser.getLocator();
+    return joranInterpreter.getLocator();
   }
-  public Interpreter getJoranParser() {
-    return joranParser;
+  public Interpreter getJoranInterpreter() {
+    return joranInterpreter;
   }
 
   public Stack getObjectStack() {

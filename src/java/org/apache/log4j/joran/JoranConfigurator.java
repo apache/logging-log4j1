@@ -76,7 +76,7 @@ public class JoranConfigurator implements Configurator {
     } catch (IOException ioe) {
       errMsg = "Could not open [" + url + "].";
       LogLog.error(errMsg, ioe);
-      ec.addError(new ErrorItem(errMsg, null, ioe));
+      ec.addError(new ErrorItem(errMsg, ioe));
     }
   }
 
@@ -128,11 +128,11 @@ public class JoranConfigurator implements Configurator {
     } catch (ParserConfigurationException pce) {
       errMsg = "Parser configuration error occured";
       LogLog.error(errMsg, pce);
-      ec.addError(new ErrorItem(errMsg, null, pce));
+      ec.addError(new ErrorItem(errMsg, pce));
     } catch (IOException ie) {
       errMsg = "I/O error occured while parsing xml file";
       ec.addError(
-        new ErrorItem("Parser configuration error occured", null, ie));
+        new ErrorItem("Parser configuration error occured", ie));
     }
   }
 }

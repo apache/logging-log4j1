@@ -22,14 +22,14 @@ public class ParamAction extends Action {
     if(name==null) {
 			inError = true;
 			logger.error(NO_NAME);
-			ec.addError(new ErrorItem(NO_NAME, ec.getLocator()));	
+			ec.addError(new ErrorItem(NO_NAME));	
     	return;
     }
 
 		if(value==null) {
 			inError = true;
 			logger.error(NO_VALUE);
-			ec.addError(new ErrorItem(NO_VALUE, ec.getLocator()));	
+			ec.addError(new ErrorItem(NO_VALUE));	
 			return;
 		}
     
