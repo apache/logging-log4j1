@@ -733,9 +733,9 @@ public class DOMConfigurator implements Configurator {
     // "debug" attribute is returned as the empty string.
     if(!debugAttrib.equals("") && !debugAttrib.equals("null")) {      
       LogLog.setInternalDebugging(OptionConverter.toBoolean(debugAttrib, true));
-    }
-    else 
+    } else {
       LogLog.debug("Ignoring " + INTERNAL_DEBUG_ATTR + " attribute.");
+    }
 
 
     String confDebug = subst(element.getAttribute(CONFIG_DEBUG_ATTR));

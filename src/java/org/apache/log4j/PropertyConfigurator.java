@@ -33,8 +33,8 @@ import java.util.StringTokenizer;
 import java.util.Hashtable;
 
 /**
-   Extends {@link BasicConfigurator} to provide configuration from an
-   external file.  See <b>{@link #doConfigure(String, LoggerRepository)}</b> for the
+   Allows the configuration of log4j from an external file.  See
+   <b>{@link #doConfigure(String, LoggerRepository)}</b> for the
    expected format.
 
    <p>It is sometimes useful to see how log4j is reading configuration
@@ -100,7 +100,7 @@ public class PropertyConfigurator implements Configurator {
   /**
     Read configuration from a file. <b>The existing configuration is
     not cleared nor reset.</b> If you require a different behavior,
-    then call {@link BasicConfigurator#resetConfiguration
+    then call {@link  LogManager#resetConfiguration
     resetConfiguration} method before calling
     <code>doConfigure</code>.
 

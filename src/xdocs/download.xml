@@ -9,15 +9,17 @@
   <meta name="keywords" content="java, logging, tracing, component, framework, API, log4j"/>
 <body>
 
-    <section name="log4j version 1.2.6">
-      <p>log4j 1.2.6 is available in <a
-	href="../jakarta-log4j-1.2.6.tar.gz"><b>TAR.GZ</b></a> format
-	or in <a href="../jakarta-log4j-1.2.6.zip"><b>ZIP</b></a>
+    <section name="log4j version 1.2.7">
+      <p>log4j 1.2.7 is available in <a
+	href="../jakarta-log4j-1.2.7.tar.gz"><b>TAR.GZ</b></a> format
+	or in <a href="../jakarta-log4j-1.2.7.zip"><b>ZIP</b></a>
 	format.
       </p>
 
-      <p>Release 1.2.6 fixes minor bugs. See the <a
-      href="HISTORY">HISTORY</a> file for the exact details.
+      <p>As of release 1.2.7 log4j now searches for the file log4j.xml
+        as well as the file log4j.properties during
+        initialization. See the <a href="HISTORY">HISTORY</a> file for
+        the firther details.
       </p>
       
       <p>In addition to many performance improvements, bug fixes, and

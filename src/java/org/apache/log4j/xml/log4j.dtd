@@ -23,7 +23,7 @@ element. -->
 <!-- attribute can be misleading. The threshold field of a repository	 -->
 <!-- cannot be set to null. The "null" value for the threshold attribute -->
 <!-- simply means don't touch the threshold field, the threshold field   --> 
-<!-- keeps its old value.
+<!-- keeps its old value.                                                -->
      
 <!ATTLIST log4j:configuration
   xmlns:log4j              CDATA #FIXED "http://jakarta.apache.org/log4j/" 

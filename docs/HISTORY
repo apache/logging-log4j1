@@ -6,6 +6,13 @@
  [***] Changes requiring important modifications to existing client code.
 
 
+ October 9th, 2002
+
+ - Release of version 1.2.7
+
+ - Log4j now searches for the file log4j.xml as well as the file
+   log4j.properties during log4j initialization. [*]
+
  July 31st, 2002
 
  - Release of version 1.2.6

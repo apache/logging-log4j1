@@ -46,9 +46,6 @@ public class Loader  {
     }   
   }
 
-  /* A cache for 
-  private static Method GET_TCL_METHOD;
-
   /**
      This method will search for <code>resource</code> in different
      places. The rearch order is as follows:
@@ -67,7 +64,6 @@ public class Loader  {
      built-in class loader in JDK 1.1.
 
      </ol>
-     
   */
   static public URL getResource(String resource) {
     ClassLoader classLoader = null;

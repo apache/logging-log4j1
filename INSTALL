@@ -48,7 +48,7 @@ JAR files
 =========
 
 The log4j distribution comes with one jar file: log4j-VERSION.jar
-under the $LOG4J_HOME/dist/lib/ directory.
+under the LOG4J_HOME/dist/lib/ directory.
 
 This jar file contains all the class files of the log4j project,
 except test cases and classes from the "examples" and
