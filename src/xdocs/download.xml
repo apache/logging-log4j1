@@ -240,6 +240,12 @@
 	log4j API.</dd>
 
 	<!-- =========================================================================== -->
+
+	<dt><a
+	href="http://sourceforge.net/projects/log4cxx/"><b>log4cxx</b></a></dt>
+	<dd>Log4cxx is a port to C++ of the log4j project.</dd>
+
+	<!-- =========================================================================== -->
 	
 	<dt><a
 	href="http://goanna.sourceforge.net/"><b>log4E</b></a></dt>
