@@ -410,25 +410,25 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
 
     case ChainsawColumns.INDEX_CLASS_COL_NAME:
       return ((info == null)
-      || ((info != null) && info.getClassName().equals("?"))) ? ""
+      || ((info != null) && "?".equals(info.getClassName()))) ? ""
                                                               : info
       .getClassName();
 
     case ChainsawColumns.INDEX_FILE_COL_NAME:
       return ((info == null)
-      || ((info != null) && info.getFileName().equals("?"))) ? ""
+      || ((info != null) && "?".equals(info.getFileName()))) ? ""
                                                              : info
       .getFileName();
 
     case ChainsawColumns.INDEX_LINE_COL_NAME:
       return ((info == null)
-      || ((info != null) && info.getLineNumber().equals("?"))) ? ""
+      || ((info != null) && "?".equals(info.getLineNumber()))) ? ""
                                                                : info
       .getLineNumber();
 
     case ChainsawColumns.INDEX_METHOD_COL_NAME:
       return ((info == null)
-      || ((info != null) && info.getMethodName().equals("?"))) ? ""
+      || ((info != null) && "?".equals(info.getMethodName()))) ? ""
                                                                : info
       .getMethodName();
 
