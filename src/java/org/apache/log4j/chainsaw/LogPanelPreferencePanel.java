@@ -80,6 +80,8 @@ import javax.swing.JTree;
 import javax.swing.ListCellRenderer;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -321,6 +323,17 @@ public class LogPanelPreferencePanel extends JPanel {
       dateFormatPanel.setLayout(
         new BoxLayout(dateFormatPanel, BoxLayout.Y_AXIS));
 
+      final JTextField  customFormatText = new JTextField();
+      final JRadioButton rdCustom =
+      new JRadioButton(
+      "Custom Format");
+      rdCustom.addActionListener(
+          new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              customFormatText.setEnabled(rdCustom.isSelected());
+            }
+          });
+      
       ButtonGroup bgDateFormat = new ButtonGroup();
       final JRadioButton rdISO =
         new JRadioButton(
@@ -329,6 +342,7 @@ public class LogPanelPreferencePanel extends JPanel {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             getModel().setDateFormatPattern("ISO8601");
+            customFormatText.setEnabled(rdCustom.isSelected());
           }
         });
       rdISO.setSelected(getModel().isUseISO8601Format());
@@ -352,6 +366,7 @@ public class LogPanelPreferencePanel extends JPanel {
           new ActionListener() {
             public void actionPerformed(ActionEvent e) {
               getModel().setDateFormatPattern(format);
+              customFormatText.setEnabled(rdCustom.isSelected());
             }
           });
         getModel().addPropertyChangeListener(
@@ -362,8 +377,54 @@ public class LogPanelPreferencePanel extends JPanel {
                 getModel().getDateFormatPattern().equals(format));
             }
           });
+        
         dateFormatPanel.add(rdFormat);
       }
+      
+      // add a custom date format
+      if(getModel().isCustomDateFormat())
+      {
+        customFormatText.setText(getModel().getDateFormatPattern());
+      }
+      customFormatText.getDocument().addDocumentListener(new DocumentListener() {
+
+        public void textChanged()
+        {
+          getModel().setDateFormatPattern(customFormatText.getText());
+          
+        }
+
+        public void changedUpdate(DocumentEvent e)
+        {
+          textChanged();
+          
+        }
+
+        public void insertUpdate(DocumentEvent e)
+        {
+          textChanged();
+          
+        }
+
+        public void removeUpdate(DocumentEvent e)
+        {
+          textChanged();
+          
+        }});
+      
+      rdCustom.setSelected(getModel().isCustomDateFormat());
+      getModel().addPropertyChangeListener(
+          "dateFormatPattern",
+          new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent evt) {
+              rdCustom.setSelected(getModel().isCustomDateFormat());
+            }
+          });
+      bgDateFormat.add(rdCustom);
+
+      dateFormatPanel.add(rdCustom);
+      dateFormatPanel.add(customFormatText);
+      
 
       add(dateFormatPanel);
 

@@ -337,4 +337,12 @@ public class LogPanelPreferenceModel implements Serializable{
     propertySupport.firePropertyChange(
       "logTreePanelVisible", oldValue, this.logTreePanelVisible);
   }
+
+  /**
+   * @return
+   */
+  public boolean isCustomDateFormat()
+  {
+    return !DATE_FORMATS.contains(getDateFormatPattern()) && !isUseISO8601Format();
+  }
 }

@@ -473,7 +473,7 @@ public class LogPanel extends DockablePanel implements SettingsListener,
             (LogPanelPreferenceModel) evt.getSource();
 
           isoButton.setSelected(model.isUseISO8601Format());
-          simpleTimeButton.setSelected(!model.isUseISO8601Format());
+          simpleTimeButton.setSelected(!model.isUseISO8601Format() && !model.isCustomDateFormat());
 
           if (model.isUseISO8601Format()) {
             renderer.setDateFormatter(new ISO8601DateFormat());
