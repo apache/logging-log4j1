@@ -18,6 +18,10 @@ import org.apache.ugli.ULogger;
  */
 public class NOPLoggerFA implements LoggerFactoryAdapter {
   
+  public NOPLoggerFA() {
+    // nothing to do
+  }
+  
   public ULogger getLogger(String name) {
     return NOPLogger.NOP_LOGGER;
   }

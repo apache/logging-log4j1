@@ -110,18 +110,11 @@
   <!-- ================================================================= -->
   <!-- Build the parent project                                          -->
   <!-- ================================================================= -->  
-  <target name="parentBuild">
-       <!-- everything in the "build" target except examples
-              which define classes in namespaces not
-              supported by the ASF licensed clover  -->
-       <ant dir=".." target="build.core" inheritRefs="true"/>
-       <ant dir=".." target="build.xml" inheritRefs="true"/>
-       <ant dir=".." target="build.javamail" inheritRefs="true"/>
-       <ant dir=".." target="build.jms" inheritRefs="true"/>
-       <ant dir=".." target="build.jmx" inheritRefs="true"/>
-       <ant dir=".." target="build.servletAPI" inheritRefs="true"/>
-       <ant dir=".." target="build.db" inheritRefs="true"/>
-       <ant dir=".." target="build.chainsaw" inheritRefs="true"/>
+  <target name="parentBuild">    
+    <ant dir=".." target="build.core" inheritRefs="true"/>
+    <ant dir=".." target="build.xml" inheritRefs="true"/>
+    <ant dir=".." target="build.javamail" inheritRefs="true"/>
+    <ant dir=".." target="build.servletAPI" inheritRefs="true"/>
   </target>
 
   <!-- ================================================================= -->
@@ -132,13 +125,15 @@
     <property name="haltonfailure" value="yes"/>
     <javac srcdir="${tests.source.home}"
 	   destdir="./classes" 
-            excludes="${stem}/chainsaw/receivers/*.java,
-                      ${stem}/selector/PassByJNDI.java"
+           excludes="${stem}/chainsaw/receivers/*.java,
+                     ${stem}/selector/PassByJNDI.java,
+                     ${stem}/ugli/**.java,
+                     ${stem}/db/**.java"
 	   deprecation="${deprecation}"
 	   debug="on">
       <classpath refid="tests.classpath"/>
     </javac>
-  </target>
+  </target> 
   
   <!-- ================================================================= -->
   <!-- Remove all generated files such as compiled class files and test  -->
@@ -183,16 +178,17 @@
   	                             Scheduler, 
                                      ThrowableInformation,
                                      LocationInfo,
-                                     CyclicBuffer, OR, 
+                                     CyclicBuffer, 
+                                     OR, 
   	                             VariaLevelMatchFilter, 
                                      VariaLevelRangeFilter, PatternParser,
                                      LevelMatchFilter, DRFA, 
                                      Rolling, 
-                                     ReaderWriterLock,
                                      NDC,
                                      Plugins,
-                                     MessageFormatter,
-                                     CachedDateFormat"/>
+                                     CachedDateFormat,
+                                     ReaderWriterLock
+                                     "/>
 
 
 
@@ -614,14 +610,6 @@
     </junit>
   </target>
   
-  <target name="MessageFormatter" depends="check, build, cleanOutputDir">
-	<junit printsummary="yes" fork="yes" haltonfailure="yes">
-	  <classpath refid="tests.classpath"/>
-	  <formatter type="plain" usefile="false"/>
-	  <test name="org.apache.ugli.impl.MessageFormatterTest" />
-    </junit>
-  </target>
-
   <target name="CachedDateFormat" depends="check, build, cleanOutputDir">
 	<junit printsummary="yes" fork="yes" haltonfailure="yes">
 	  <classpath refid="tests.classpath"/>
