@@ -141,7 +141,12 @@ public class ReceiverTreeCellRenderer extends DefaultTreeCellRenderer {
     } else if (o instanceof String) {
       setText(o.toString());
       setIcon(null);
-    } else {
+    }else if(o instanceof Generator){
+    	Generator generator = (Generator) o;
+    	setText(generator.getName());
+    	setIcon(ChainsawIcons.ICON_HELP);
+    } 
+    else {
       setText("(Unknown Type) :: " + o);
     }
 
