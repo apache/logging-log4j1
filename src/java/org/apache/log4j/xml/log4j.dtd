@@ -6,25 +6,25 @@
 elements,appender elements, categories and an optional root
 element. -->
 
-<!ELEMENT logj:configuration (renderer*, appender*,category*,root?)>
+<!ELEMENT log4j:configuration (renderer*, appender*,category*,root?)>
 
-<!-- The disable attribute takes a priority value such that all
-     logging statements with a prioroty equal or below this value are
-     disabled.
+<!-- The disable attribute takes a priority value such that all -->
+<!-- logging statements with a prioroty equal or below this value are -->
+<!-- disabled. -->
 
-     The disableOverride attribute allows the user to override any
-     BasicConfigurator.disable invocations made from within the
-     application.
+<!-- The disableOverride attribute allows the user to override any   -->
+<!-- BasicConfigurator.disable invocations made from within the      -->
+<!-- application.                                                    -->
      
-     By default, disableOverride is "null", meaning that we
-     do not touch the disable flag.
+<!-- By default, disableOverride is "null", meaning that we          -->
+<!-- do not touch the disable flag.                                  -->
      
-     Setting the configDebug attribute enables the printing of 
-     internal log4j statements from within configurators.
+<!-- Setting the configDebug attribute enables the printing of       -->
+<!-- internal log4j statements from within configurators.            -->
 
-     By default, configDebug is "null", meaning that we not touch the
-     configDebug variable.     
--->
+<!-- By default, configDebug is "null", meaning that we not touch the -->
+<!-- the configDebug variable.                                        -->
+
      
 <!ATTLIST log4j:configuration
   disable                  (debug|info|warn|error|fatal|null)  "null"
@@ -32,8 +32,21 @@ element. -->
   configDebug              (true|false|null)  "null"
 >
 
-<!-- renderer elements allow the user to customize the conversion of
-message objects to String. -->
+
+<!-- DEPRECATED DEPRECATED DEPRECATED DEPRECATED DEPRECATED DEPRECATED -->
+<!-- Use "log4j:configuration" above instead of the "configuration" -->
+<!-- element. -->
+<!-- DEPRECATED DEPRECATED DEPRECATED DEPRECATED DEPRECATED DEPRECATED -->
+<!ELEMENT configuration (renderer*, appender*,category*,root?)>
+<!ATTLIST configuration
+  disable                  (debug|info|warn|error|fatal|null)  "null"
+  disableOverride          (true|false|null)  "null"
+  configDebug              (true|false|null)  "null"
+>
+
+
+<!-- renderer elements allow the user to customize the conversion of  -->
+<!-- message objects to String.                                       -->
 
 <!ELEMENT renderer EMPTY>
 <!ATTLIST renderer
@@ -43,7 +56,7 @@ message objects to String. -->
 
 <!-- Appenders must have a name and a class. -->
 <!-- Appenders may contain an error handler, a layout, optional parameters -->
-<!-- and filters. -->
+<!-- and filters. They may also reference (or include) other appenders. -->
 <!ELEMENT appender (errorHandler?, param*, layout?, filter*, appender-ref*)>
 <!ATTLIST appender
   name 		ID 	#REQUIRED
@@ -63,8 +76,8 @@ message objects to String. -->
 >
 
 
-<!-- ErrorHandlers can be of any class. They can admit any number of
-parameters. -->
+<!-- ErrorHandlers can be of any class. They can admit any number of -->
+<!-- parameters. -->
 
 <!ELEMENT errorHandler (param*)> 
 <!ATTLIST errorHandler

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<!DOCTYPE configuration SYSTEM "log4j.dtd">
 
-<log4j:configuration>
+<configuration>
 
 	<appender name="A1" class="org.apache.log4j.FileAppender">
                 <param name="Append" value="false" />
@@ -15,4 +15,4 @@
 	<root>
           <appender-ref ref="A1" />	       
 	</root>
-</log4j:configuration>
+</configuration>

@@ -58,6 +58,7 @@ import javax.xml.parsers.FactoryConfigurationError;
 public class DOMConfigurator extends BasicConfigurator implements Configurator {
 
   static final String CONFIGURATION_TAG = "log4j:configuration";
+  static final String OLD_CONFIGURATION_TAG = "configuration";
   static final String RENDERER_TAG      = "renderer";
   static final String APPENDER_TAG 	= "appender";
   static final String APPENDER_REF_TAG 	= "appender-ref";  
@@ -592,10 +593,18 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
   */
   protected
   void parse(Element element, Hierarchy hierarchy) {
-    
-    if (!element.getTagName().equals(CONFIGURATION_TAG)) {
-      LogLog.error("DOM element is not a <"+CONFIGURATION_TAG+"> element.");
-      return;
+
+    String rootElementName = element.getTagName();
+
+    if (!rootElementName.equals(CONFIGURATION_TAG)) {
+      if(rootElementName.equals(OLD_CONFIGURATION_TAG)) {
+	LogLog.warn("The <"+OLD_CONFIGURATION_TAG+
+		     "> element has been deprecated.");
+	LogLog.warn("Use the <"+CONFIGURATION_TAG+"> element instead.");
+      } else {
+	LogLog.error("DOM element is - not a <"+CONFIGURATION_TAG+"> element.");
+	return;
+      }
     }
 
     String confDebug = subst(element.getAttribute(CONFIG_DEBUG_ATTR));

@@ -52,10 +52,11 @@ root category.
 <p>The reason for observing duplicates in log4j output is either due
 to having added the same appender multiple times to the same category
 (typically root) or having added the same appender to different
-categories not knowing that appenders are inherited cumulatively.
+categories ignoring the fact that appenders are inherited
+cumulatively.
 
 <p>log4j does not eliminate appender duplicates. In other words, if
-you add the same appender to a categoty <i>n</i> times, that appender
+you add the same appender to a category <i>n</i> times, that appender
 will be invoked <i>n</i> times to append to its target. 
 
 <p>A slightly different cause is adding different appenders all
