@@ -70,6 +70,18 @@ public interface LoggerNameModel {
    */
   public Collection getLoggerNames();
   
+  /**
+   * Attempts to add the loggerName to the model, and returns
+   * true if it does, i.e that the loggerName is new, otherwise
+   * it is ignored.
+   * 
+   * If the loggerName is new for this model, all the LoggerNameListeners
+   * are notified using this thread.
+   * 
+   * @param loggerName
+   */
+  public boolean addLoggerName(String loggerName);
+  
   public void addLoggerNameListener(LoggerNameListener l);
   public void removeLoggerNameListener(LoggerNameListener l);
 }
