@@ -69,14 +69,16 @@ public class JMSAppender extends AppenderSkeleton {
       topicSession = topicConnection.createTopicSession(false,
 							Session.AUTO_ACKNOWLEDGE);
       
-      Topic topic = (Topic)ctx.lookup(topicBindingName);
+      Topic topic = (Topic) lookup(ctx, topicBindingName);
       topicPublisher = topicSession.createPublisher(topic);
+
+      ctx.close();      
     } catch(Exception e) {
       errorHandler.error("Error while activating options for appender named ["+name+
 			 "].", e, ErrorCode.GENERIC_FAILURE);
     }
   }
-
+ 
   protected
   boolean checkEntryConditions() {
     if(this.topicSession == null) {
@@ -96,14 +98,18 @@ public class JMSAppender extends AppenderSkeleton {
 
     LogLog.debug("Closing appender ["+name+"].");
     this.closed = true;
-
-    if(topicConnection != null) {
-      try {
+    
+    
+    try {
+      if(topicPublisher != null) 
+	topicPublisher.close();    
+      if(topicSession != null) 
+	topicSession.close();
+      if(topicConnection != null) 
 	topicConnection.close();
-      } catch(JMSException e) {
-	LogLog.error("Could not close ["+name+"].", e);	
-      }
-    }
+    } catch(Exception e) {
+      LogLog.error("Could not close ["+name+"].", e);	
+    }    
   }
 
   public
