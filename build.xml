@@ -617,6 +617,8 @@ later. For JDK 1.2, you can get the JNDI API from
     <javadoc sourcepath="${java.source.dir}"
       destdir="${javadoc.dest}"
      packagenames="org.apache.log4j,
+       org.apache.log4j.db,
+       org.apache.log4j.db.dialect,
        org.apache.log4j.plugins,
        org.apache.log4j.config,
        org.apache.log4j.helpers,
@@ -625,7 +627,6 @@ later. For JDK 1.2, you can get the JNDI API from
        org.apache.log4j.net,
        org.apache.log4j.nt,
        org.apache.log4j.or,
-       org.apache.log4j.jdbc,
        org.apache.log4j.or.sax,
        org.apache.log4j.or.jms,
        org.apache.log4j.pattern,
