@@ -16,7 +16,6 @@
 
 package org.apache.log4j.rolling;
 
-import org.apache.log4j.Logger;
 import org.apache.log4j.rolling.helper.Compress;
 import org.apache.log4j.rolling.helper.FileNamePattern;
 import org.apache.log4j.rolling.helper.Util;
@@ -31,12 +30,8 @@ import java.io.File;
  * @since 1.3
  * */
 public class SlidingWindowRollingPolicy extends RollingPolicySkeleton {
-  static Logger logger = Logger.getLogger(SlidingWindowRollingPolicy.class);
   int maxIndex;
   int minIndex;
-  FileNamePattern fileNamePattern;
-  String fileNamePatternStr;
-  String activeFileName;
 
   public SlidingWindowRollingPolicy() {
     minIndex = 1;
@@ -46,17 +41,17 @@ public class SlidingWindowRollingPolicy extends RollingPolicySkeleton {
 
   public void activateOptions() {
     if (activeFileName == null) {
-      logger.warn(
+      getLogger().warn(
         "The active file name option must be set before using this rolling policy.");
       throw new IllegalStateException(
         "The activeFileName option must be set.");
     }
 
     if (maxIndex < minIndex) {
-      logger.warn(
+      getLogger().warn(
         "maxIndex (" + maxIndex + ") cannot be smaller than minIndex ("
         + minIndex + ").");
-      logger.warn("Setting maxIndex to equal minIndex.");
+      getLogger().warn("Setting maxIndex to equal minIndex.");
       maxIndex = minIndex;
     }
 
