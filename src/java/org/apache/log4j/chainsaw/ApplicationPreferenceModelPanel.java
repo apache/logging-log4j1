@@ -372,6 +372,7 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
   public class GeneralAllPrefPanel extends BasicPrefPanel {
     private final JCheckBox showNoReceiverWarning =
       new JCheckBox("Prompt me on startup if there are no Receivers defined");
+    private final JCheckBox showSplash = new JCheckBox("Show Splash screen at startup");
     private final JSlider responsiveSlider =
       new JSlider(JSlider.HORIZONTAL, 1, 4, 2);
     private final JCheckBox confirmExit = new JCheckBox("Confirm Exit");
@@ -411,7 +412,17 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
       p1.add(identifierExpression);
       add(p1);
       add(p);
-      add(confirmExit);
+      
+      Box p2 = new Box(BoxLayout.X_AXIS);
+      p2.add(confirmExit);
+      p2.add(Box.createHorizontalGlue());
+      
+      Box p3 = new Box(BoxLayout.X_AXIS);
+      p3.add(showSplash);
+      p3.add(Box.createHorizontalGlue());
+      
+      add(p2);
+      add(p3);
       add(Box.createVerticalGlue());
     }
 
@@ -440,6 +451,14 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
               ((Boolean) evt.getNewValue()).booleanValue());
           }
         });
+      
+      uncommittedPreferenceModel.addPropertyChangeListener("showSplash", new PropertyChangeListener() {
+
+        public void propertyChange(PropertyChangeEvent evt) {
+          boolean value = ((Boolean)evt.getNewValue()).booleanValue();
+          showSplash.setSelected(value);
+        }});
+      
       uncommittedPreferenceModel.addPropertyChangeListener(
         "identifierExpression",
         new PropertyChangeListener() {
@@ -474,6 +493,12 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
           }
         });
 
+      showSplash.addActionListener(new ActionListener() {
+
+        public void actionPerformed(ActionEvent e) {
+          uncommittedPreferenceModel.setShowSplash(showSplash.isSelected());
+        }});
+      
       responsiveSlider.getModel().addChangeListener(
         new ChangeListener() {
           public void stateChanged(ChangeEvent e) {

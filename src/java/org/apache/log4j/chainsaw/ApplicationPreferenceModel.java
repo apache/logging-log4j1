@@ -71,7 +71,7 @@ public class ApplicationPreferenceModel implements SettingsListener {
     private boolean toolbar;
     private boolean receivers;
     private boolean confirmExit;
-    
+    private boolean showSplash;
     private String lookAndFeelClassName;
     
     
@@ -191,6 +191,7 @@ public class ApplicationPreferenceModel implements SettingsListener {
        setReceivers(event.asBoolean("receivers"));
        setLookAndFeelClassName(event.getSetting("lookAndFeelClassName"));
        setConfirmExit(event.asBoolean("confirmExit"));
+       setShowSplash(event.asBoolean("showSplash"));
     }
 
     /* (non-Javadoc)
@@ -206,6 +207,7 @@ public class ApplicationPreferenceModel implements SettingsListener {
         event.saveSetting("receivers", isReceivers());
         event.saveSetting("lookAndFeelClassName", getLookAndFeelClassName());
         event.saveSetting("confirmExit",isConfirmExit());
+        event.saveSetting("showSplash", isShowSplash());
     }
 
     /**
@@ -223,6 +225,7 @@ public class ApplicationPreferenceModel implements SettingsListener {
       setReceivers(model.isReceivers());
       setLookAndFeelClassName(model.getLookAndFeelClassName());
       setConfirmExit(model.isConfirmExit());
+      setShowSplash(model.isShowSplash());
     }
     /**
      * @return Returns the responsiveness.
@@ -336,4 +339,18 @@ public class ApplicationPreferenceModel implements SettingsListener {
       firePropertyChange("confirmExit", oldValue, this.confirmExit);
     }
 
+    /**
+     * @return Returns the showSplash.
+     */
+    public final boolean isShowSplash() {
+      return showSplash;
+    }
+    /**
+     * @param showSplash The showSplash to set.
+     */
+    public final void setShowSplash(boolean showSplash) {
+      boolean oldValue = this.showSplash;
+      this.showSplash = showSplash;
+      firePropertyChange("showSplash", oldValue,this.showSplash);
+    }
 }
