@@ -45,6 +45,11 @@ public class PopupListener extends MouseAdapter {
   public void mouseReleased(MouseEvent e) {
     checkPopup(e);
   }
+  
+  public void mouseClicked(MouseEvent e)
+  {
+      checkPopup(e);
+  }
 
   private void checkPopup(MouseEvent e) {
     if (e.isPopupTrigger()) {
