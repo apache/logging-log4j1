@@ -284,7 +284,7 @@ public class LoggingEvent implements java.io.Serializable {
      }
 
      // threadName cannot be null
-     if(!threadName.equals(rEvent.threadName)) {
+     if(!getThreadName().equals(rEvent.getThreadName())) {
        return false;
      }
 
