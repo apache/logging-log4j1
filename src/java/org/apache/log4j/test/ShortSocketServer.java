@@ -51,8 +51,7 @@ public class ShortSocketServer  {
   void  usage(String msg) {
     System.err.println(msg);
     System.err.println(
-      "Usage: java " +ShortSocketServer.class.getName() + 
-                    " port configFile delay");
+      "Usage: java " +ShortSocketServer.class.getName() + " port configFile");
     System.exit(1);
   }
     

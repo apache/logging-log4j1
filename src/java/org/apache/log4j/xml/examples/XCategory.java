@@ -23,12 +23,13 @@ import org.apache.log4j.xml.examples.XPriority;
    Note that sub-classes follow the hiearchy even if its categories
    belong to different classes.
 
-   See <b><a href="doc-files/XCategory.java">source code</a></b> for
-   more details. See also <a
+   <p>See <b><a href="doc-files/XCategory.java">source code</a></b>
+   for more details. See also <a
    href="doc-files/extension1.xml">extension1.xml</a> and <a
-   href="doc-files/extension2.xml">extension2.xml</a> XML configuration
-   files.
+   href="doc-files/extension2.xml">extension2.xml</a> XML
+   configuration files.
 
+   <p>
    
  */
 public class XCategory extends Category implements OptionHandler {
@@ -50,16 +51,20 @@ public class XCategory extends Category implements OptionHandler {
     super(name);
   }
 
+  /** 
+     Nothing to activate.
+   */
   public
   void activateOptions() {
   }
 
   /**
      Overrides the standard debug method by appending the value of
-     suffix variable to each message.  */
+     suffix variable to each message.  
+  */
   public 
   void debug(String message) {
-    log(instanceFQCN, Priority.DEBUG, message + suffix, null);
+    log(instanceFQCN, Priority.DEBUG, message + " " + suffix, null);
   }
 
   /**
@@ -74,6 +79,16 @@ public class XCategory extends Category implements OptionHandler {
   }
 
 
+  /**
+     This method overrides {@link Category#getInstance(Class)} by supplying
+     its own factory type as a parameter.
+   */
+  public 
+  static
+  Category getInstance(Class clazz) {
+    return getInstance(clazz.getName(), factory); 
+  }
+
  /**
     Retuns the option names for this component, namely the string
     {@link #SUFFIX_OPTION}.
@@ -82,6 +97,32 @@ public class XCategory extends Category implements OptionHandler {
   String[] getOptionStrings() {
     return (new String[] {SUFFIX_OPTION});
   }
+
+
+  /**
+     We introduce a new printing method in order to support {@link
+     XPriority#LETHAL}.  */
+  public
+  void lethal(String message, Throwable t) { 
+    // disable is a static variable defined in Category class
+    if(disable >=  XPriority.LETHAL_INT) 
+      return;
+    if(XPriority.LETHAL.isGreaterOrEqual(this.getChainedPriority()))
+      forcedLog(instanceFQN, XPriority.LETHAL, message, t);
+  }
+
+  /**
+     We introduce a new printing method in order to support {@link
+     XPriority#LETHAL}.  */
+  public
+  void lethal(String message) { 
+    // disable is a static variable defined in Category class
+    if(disable >=  XPriority.LETHAL_INT) 
+      return;
+    if(XPriority.LETHAL.isGreaterOrEqual(this.getChainedPriority()))
+      forcedLog(instanceFQN, XPriority.LETHAL, message, null);
+  }
+
 
  /**
      Set XCategory specific options.
@@ -104,6 +145,17 @@ public class XCategory extends Category implements OptionHandler {
      We introduce a new printing method that takes the TRACE priority.
   */
   public
+  void trace(String message, Throwable t) { 
+    // disable is defined in Category
+    if(disable <=  XPriority.TRACE_INT) return;   
+    if(XPriority.TRACE.isGreaterOrEqual(this.getChainedPriority()))
+      forcedLog(instanceFQN, XPriority.TRACE, message, t);
+  }
+
+  /**
+     We introduce a new printing method that takes the TRACE priority.
+  */
+  public
   void trace(String message) { 
     // disable is defined in Category
     if(disable <=  XPriority.TRACE_INT) return;   
@@ -113,11 +165,11 @@ public class XCategory extends Category implements OptionHandler {
   }
 
 
+
   // Any sub-class of Category must also have its own implementation of 
   // CategoryFactory.
-
-  private static class XFactory implements CategoryFactory {
-    XFactory() {
+  public static class XFactory implements CategoryFactory {
+    public XFactory() {
     }
 
     public
@@ -125,8 +177,6 @@ public class XCategory extends Category implements OptionHandler {
       return new XCategory(name);
     }
   }
-
-
 }
 
 

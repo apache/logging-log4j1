@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<!-- A sample file demonstrating the configuration of Category
+<!-- A sample file demonstrating the log4j:configuration of Category
      and Priority sub-classes.  -->
 
 
 
-<configuration>
+<log4j:configuration>
 	<appender name="STDOUT" class="org.apache.log4j.FileAppender">
            <param name="File" value="System.out" />	
            <layout class="org.apache.log4j.PatternLayout">
@@ -26,4 +26,4 @@
    	   <appender-ref ref="STDOUT" />
 	</root>
 	
-</configuration>
+</log4j:configuration>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?> 
-<!DOCTYPE configuration SYSTEM "log4j.dtd">
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 
-<configuration>
+<log4j:configuration>
 	<appender name="A1" class="org.apache.log4j.net.SocketAppender">
 		<param name="RemoteHost" value="localhost"/>
 		<param name="Port" value="5000"/>
@@ -26,4 +26,4 @@
 		<priority value="debug"/>
 		<appender-ref ref="STDOUT"/>
 	</root>
-</configuration>
+</log4j:configuration>

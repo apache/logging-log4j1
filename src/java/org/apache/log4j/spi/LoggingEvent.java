@@ -15,9 +15,10 @@ import org.apache.log4j.helpers.LogLog;
 
 import java.io.StringWriter;
 import java.io.PrintWriter;
-
+import java.lang.reflect.Method;
 import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
+import java.util.Hashtable;
 
 // Contributors:   Nelson Minar <nelson@monkey.org>
 //                 Wolf Siberski
@@ -90,6 +91,11 @@ public class LoggingEvent implements java.io.Serializable {
 
   // Damn serialization
   static final long serialVersionUID = -868428216207166145L;
+
+  static final Integer[] PARAM_ARRAY = new Integer[1];
+  static final String TO_PRIORITY = "toPriority";
+  static final Class[] TO_PRIORITY_PARAMS = new Class[] {int.class};
+  static final Hashtable methodCache = new Hashtable(3);
 
   /**
      Instantiate a LoggingEvent from the supplied parameters.
@@ -168,13 +174,58 @@ public class LoggingEvent implements java.io.Serializable {
     this.getThrowableInformation();
 
     oos.defaultWriteObject();
-    oos.writeInt(priority.toInt());    
+    
+    // serialize this event's priority
+    writePriority(oos);
+    
+
   }
+
+  private 
+  void writePriority(ObjectOutputStream oos) throws java.io.IOException {
+
+    oos.writeInt(priority.toInt());
+
+    Class clazz = priority.getClass();
+    if(clazz == Priority.class) {
+      oos.writeObject(null);
+    } else {
+      oos.writeObject(clazz.getName());
+    }
+  }
+
+  private 
+  void readPriority(ObjectInputStream ois) 
+                      throws java.io.IOException, ClassNotFoundException {
+
+    int p = ois.readInt();
+    try {
+      String className = (String) ois.readObject();      
+      if(className == null) {
+	priority = Priority.toPriority(p);
+      } else {
+	Method m = (Method) methodCache.get(className);	
+	if(m == null) {
+	  Class clazz = Class.forName(className);
+	  m = clazz.getDeclaredMethod(TO_PRIORITY, TO_PRIORITY_PARAMS);
+	  methodCache.put(className, m);
+	}      
+	PARAM_ARRAY[0] = new Integer(p);
+	priority = (Priority) m.invoke(null,  PARAM_ARRAY);
+      }
+    } catch(Exception e) {
+	LogLog.warn("Priority deserialization failed, reverting default.", e);
+	priority = Priority.toPriority(p);
+    }
+  }
+
+
 
   private void readObject(ObjectInputStream ois)
                         throws java.io.IOException, ClassNotFoundException {
     ois.defaultReadObject();    
-    priority = Priority.toPriority(ois.readInt());
+    readPriority(ois);
+    
     // Make sure that no location info is available to Layouts
     if(locationInfo == null)
       locationInfo = new LocationInfo(null, null);

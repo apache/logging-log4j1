@@ -10,17 +10,24 @@
 
  - Release of version 1.1 (the 21st major release)
 
+ - Improved the seach method for searching for the "log4j.properties" file in
+   the static initializer of Category class. Thanks to Calvin Chan for
+   supplying a better method. [*]
+
+ - The LoggingEvent class now supports serialization of priorities
+   derived from the org.apache.log4j.Priority class. [*]
+
  - Changed the name of the configuration element to log4j:configuration in the
    log4j.dtd. All configuration files written in XML need to be
    modified. [**]
 
    The following perl command can help:
 
-   > perl -p -i.bak -e "s/configuration/log4j:configuration/;" file1.xml .. fileN.xml
+   perl -p -i.bak -e "s/configuration/log4j:configuration/;" file1.xml .. fileN.xml
    
 
  - Fixed the errouneously thrown IOInterruptedException when the AsyncAppender 
-   was closed. [*]
+   was closed. Thanks to Tom Palmer for accurately reporting this bug. [*]
 
  January 12th, 2001
 

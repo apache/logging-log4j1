@@ -24,6 +24,7 @@ JSOURCES:= Shallow.java\
  UnitTestCyclicBuffer.java\
  UnitTestBoundedFIFO.java\
  UnitTestVarSubst.java\
+ SocketAppenderTest.java\
 
 SUBDIRS :=
 

@@ -14,6 +14,7 @@
 //              Ciaran Treanor <ciaran@xelector.com>
 //              Jeff Turner <jeff@socialchange.net.au>
 //              Horwitz, Michael <MHorwitz@siemens.co.za>
+//              Calvin Chan <calvin.chan@hic.gov.au>
 
 package org.apache.log4j;
 
@@ -53,7 +54,7 @@ public class Category implements AppenderAttachable {
   // DISABLE_OFF should be set to a value lower than all possible
   // priorities.
   static final int DISABLE_OFF = -1;
-  static final int DISABLE_OVERRIDE = -21;
+  static final int DISABLE_OVERRIDE = -2;
   
   private static String DEFAULT_FQN = "org.apache.log4j.Category";
 
@@ -125,29 +126,26 @@ public class Category implements AppenderAttachable {
   /** Search for the properties file log4j.properties in the CLASSPATH.  */
   static {
 
-    String override = OptionConverter.getSystemProperty(DEFAULT_INIT_OVERRIDE_KEY,
-							null);
+    String override =OptionConverter.getSystemProperty(DEFAULT_INIT_OVERRIDE_KEY,
+						       null);
 
     // if there is no default init override, them get the resource
     // specified by the user or the default config file.
     if(override == null || "false".equalsIgnoreCase(override)) {
       String resource = OptionConverter.getSystemProperty(
-                                                      DEFAULT_CONFIGURATION_KEY, 
-						      DEFAULT_CONFIGURATION_FILE);
+                                                   DEFAULT_CONFIGURATION_KEY, 
+						   DEFAULT_CONFIGURATION_FILE);
       URL url = null;
       try {
 	url = new URL(resource);
       } catch (MalformedURLException ex) {
+
 	// so, resource is not a URL:
-	// attempt to get the resource in the most generic way:
-	url = Category.class.getResource(resource);
+	// attempt to get the resource from the class path
+	url = ClassLoader.getSystemResource(resource);
 	if(url == null) {
-	  // if that doen't work, then try again in a slightly
-	  // different way
-	  ClassLoader loader = Category.class.getClassLoader();
-	  if(loader != null) {
-	    url = loader.getResource(resource);	  
-	  }
+	  // Is it under org/apache/log4j somewhere in the classpath?
+	  url = Category.class.getResource(resource);
 	}	
       }	
       
