@@ -162,6 +162,10 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   private int cyclicBufferSize;
   private static final Logger logger = LogManager.getLogger(LogUI.class);
 
+  static {
+      LogManager.getRootLogger().setLevel(Level.TRACE);
+  }
+  
   /**
    * Set to true, if and only if the GUI has completed it's full
    * initialization. Any logging events that come in must wait until this is
@@ -297,7 +301,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     logUI.handler.addFilter(propFilter);
     logUI.handler.addEventBatchListener(logUI.new NewTabEventBatchReceiver());
     
-    
     /**
      * TODO until we work out how JoranConfigurator might be able to have
      * configurable class loader, if at all.  For now we temporarily replace the
@@ -359,6 +362,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
     handler.addEventBatchListener(new NewTabEventBatchReceiver());
     LogManager.getRootLogger().addAppender(appender);
+
     setShutdownAction(
       new AbstractAction() {
         public void actionPerformed(ActionEvent e) {
@@ -582,7 +586,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    * table columns, and sets itself viewable.
    */
   public void activateViewer() {
-    
     this.pluginRegistry = LogManager.getLoggerRepository().getPluginRegistry();  
     initGUI();
 
