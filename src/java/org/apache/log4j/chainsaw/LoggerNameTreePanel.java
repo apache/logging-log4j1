@@ -20,6 +20,7 @@ package org.apache.log4j.chainsaw;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.Toolkit;
@@ -49,6 +50,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -115,6 +117,8 @@ final class LoggerNameTreePanel extends JPanel implements Rule
 
   private final JList ignoreList = new JList();
   private final JScrollPane ignoreListScroll = new JScrollPane(ignoreList);
+  private final JDialog ignoreDialog = new JDialog();
+  private final JLabel ignoreSummary = new JLabel("0 hidden loggers");
   private final SmallToggleButton ignoreLoggerButton = new SmallToggleButton();
   private final EventListenerList listenerList = new EventListenerList();
   private final JTree logTree;
@@ -231,18 +235,24 @@ final class LoggerNameTreePanel extends JPanel implements Rule
     add(toolbar, BorderLayout.NORTH);
     add(scrollTree, BorderLayout.CENTER);
 
-    add(ignoreListScroll, BorderLayout.SOUTH);
+    ignoreDialog.setTitle("Hidden/Ignored Loggers");
+    ignoreDialog.setModal(true);
+    JPanel ignoreSummaryPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    ignoreSummaryPanel.add(ignoreSummary);
+    
+    Action showIgnoreDialogAction = new AbstractAction("...") {
 
-    CheckListCellRenderer ignoreCellRenderer = new CheckListCellRenderer()
-      {
-        protected boolean isSelected(Object value)
+        public void actionPerformed(ActionEvent e)
         {
-          return true;
-        }
-      };
+            ignoreDialog.show();
+        }};
+    showIgnoreDialogAction.putValue(Action.SHORT_DESCRIPTION, "Click to view and manage your hidden/ignored loggers");
+    JButton btnShowIgnoreDialog = new SmallButton(showIgnoreDialogAction);
+    
+    ignoreSummaryPanel.add(btnShowIgnoreDialog);
+    add(ignoreSummaryPanel, BorderLayout.SOUTH);
 
-    ignoreList.setCellRenderer(ignoreCellRenderer);
-
+    ignoreList.setModel(new DefaultListModel());
     ignoreList.addMouseListener(new MouseAdapter()
       {
         public void mouseClicked(MouseEvent e)
@@ -269,6 +279,43 @@ final class LoggerNameTreePanel extends JPanel implements Rule
           }
         }
       });
+    
+    JPanel ignoreListPanel = new JPanel(new BorderLayout());
+    ignoreListScroll.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"Double click an entry to unhide it"));
+    ignoreListPanel.add(ignoreListScroll, BorderLayout.CENTER);
+    
+    Box ignoreListButtonPanel = Box.createHorizontalBox();
+    
+    JButton unhideAll = new JButton(new AbstractAction("Unhide All") {
+
+        public void actionPerformed(final ActionEvent e)
+        {
+             SwingUtilities.invokeLater(new Runnable() {
+
+                public void run()
+                {
+                    clearIgnoreListAction.actionPerformed(e);
+                }}); 
+            
+        }});
+    ignoreListButtonPanel.add(unhideAll);
+    
+    ignoreListButtonPanel.add(Box.createHorizontalGlue());
+    JButton ignoreCloseButton = new JButton(new AbstractAction("Close") {
+
+        public void actionPerformed(ActionEvent e)
+        {
+            ignoreDialog.hide();
+            
+        }});
+    ignoreListButtonPanel.add(ignoreCloseButton);
+    
+    
+    ignoreListPanel.add(ignoreListButtonPanel, BorderLayout.SOUTH);
+    
+    
+    ignoreDialog.getContentPane().add(ignoreListPanel);
+    ignoreDialog.pack();
   }
 
   //~ Methods =================================================================
@@ -990,6 +1037,7 @@ final class LoggerNameTreePanel extends JPanel implements Rule
               }
             };
           firePropertyChange("rule", null, null);
+          updateAllIgnoreStuff();
         }
       });
 
@@ -997,22 +1045,35 @@ final class LoggerNameTreePanel extends JPanel implements Rule
       {
         public void propertyChange(PropertyChangeEvent arg0)
         {
-          DefaultListModel model = new DefaultListModel();
-
-          List sortedIgnoreList = new ArrayList(getHiddenSet());
-          Collections.sort(sortedIgnoreList);
-
-          for (Iterator iter = sortedIgnoreList.iterator(); iter.hasNext();)
-          {
-            String string = (String) iter.next();
-            model.addElement(string);
-          }
-
-          ignoreList.setModel(model);
+          updateAllIgnoreStuff();
         }
       });
   }
 
+  private void updateAllIgnoreStuff() {
+      updateHiddenSetModels();
+      updateIgnoreSummary();
+  }
+  
+  private void updateHiddenSetModels() {
+      DefaultListModel model = (DefaultListModel) ignoreList.getModel();
+      model.clear();
+      List sortedIgnoreList = new ArrayList(getHiddenSet());
+      Collections.sort(sortedIgnoreList);
+
+      for (Iterator iter = sortedIgnoreList.iterator(); iter.hasNext();)
+      {
+        String string = (String) iter.next();
+        model.addElement(string);
+      }
+
+//      ignoreList.setModel(model);
+
+  }
+  private void updateIgnoreSummary() {
+      ignoreSummary.setText(ignoreList.getModel().getSize() + " hidden loggers");
+  }
+  
   private void toggleFocusOnState()
   {
     setFocusOnSelected(!isFocusOnSelected());
