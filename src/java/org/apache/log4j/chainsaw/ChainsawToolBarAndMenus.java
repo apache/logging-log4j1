@@ -58,10 +58,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -77,7 +75,6 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -101,7 +98,6 @@ class ChainsawToolBarAndMenus implements ChangeListener {
     private final Action clearAction;
     private final Action closeAction;
     private final Action findNextAction;
-    private final Action lockToolbarAction;
     private final Action pauseAction;
     private final Action showPreferencesAction;
     private final Action showColorPanelAction;
@@ -127,11 +123,7 @@ class ChainsawToolBarAndMenus implements ChangeListener {
     private final SmallToggleButton logTreePaneButton = new SmallToggleButton();
     private final SmallToggleButton pauseButton = new SmallToggleButton();
     private final SmallToggleButton toggleCyclicButton = new SmallToggleButton();
-    private String lastFind = "";
-    private String levelDisplay = ChainsawConstants.LEVEL_DISPLAY_ICONS;
     private final Action[] logPanelSpecificActions;
-    private Map panelMenuMap = new HashMap();
-    private Map panelEnabledMap = new HashMap();
     private final JMenu activeTabMenu = new JMenu("Current tab");
 
     ChainsawToolBarAndMenus(final LogUI logui) {
@@ -145,7 +137,6 @@ class ChainsawToolBarAndMenus implements ChangeListener {
         findNextAction = setupFindFieldsAndActions();
         showPreferencesAction = createShowPreferencesAction();
         showColorPanelAction = createShowColorPanelAction();
-        lockToolbarAction = createLockableToolbarAction();
         toggleToolbarAction = createToggleToolbarAction();
         toggleLogTreeAction = createToggleLogTreeAction();
         pauseAction = createPauseAction();
@@ -209,7 +200,7 @@ class ChainsawToolBarAndMenus implements ChangeListener {
         Action action = new AbstractAction() {
                 public void actionPerformed(ActionEvent e) {
                     if (logui.getCurrentLogPanel() != null) {
-                        logui.getCurrentLogPanel().toggleLogTreePanel();
+                        logui.getCurrentLogPanel().toggleLogTreeVisible();
                     }
                 }
             };
@@ -258,7 +249,7 @@ class ChainsawToolBarAndMenus implements ChangeListener {
                         return;
                     }
 
-                    logPanel.clearModel();
+                    logPanel.clearEvents();
                 }
             };
 
@@ -320,28 +311,6 @@ class ChainsawToolBarAndMenus implements ChangeListener {
         tf.setToolTipText("type in a simple string to find events");
 
         return tf;
-    }
-
-    private Action createLockableToolbarAction() {
-        final Action lockToolbarAction = new AbstractAction("Lock Toolbar") {
-                private boolean lock = true;
-
-                public void actionPerformed(ActionEvent e) {
-                    lock = !lock;
-
-                    final boolean isLocked = lock;
-                    Runnable runnable = null;
-                    runnable = new Runnable() {
-                                public void run() {
-                                    toolbar.setFloatable(!isLocked);
-                                    toolbar.repaint();
-                                }
-                            };
-                    SwingUtilities.invokeLater(runnable);
-                }
-            };
-
-        return lockToolbarAction;
     }
 
     private void createMenuBar() {
@@ -529,7 +498,7 @@ class ChainsawToolBarAndMenus implements ChangeListener {
                     LogPanel logPanel = logui.getCurrentLogPanel();
 
                     if (logPanel != null) {
-                        logPanel.showColorPanel();
+                        logPanel.showColorPreferences();
                     }
                 }
             };
@@ -574,8 +543,7 @@ class ChainsawToolBarAndMenus implements ChangeListener {
                         return;
                     }
 
-                    logPanel.getPreferenceModel().setDetailPaneVisible(!logPanel.getPreferenceModel()
-                                                                                .isDetailPaneVisible());
+                    logPanel.toggleDetailVisible();
                 }
             };
 
@@ -754,12 +722,11 @@ class ChainsawToolBarAndMenus implements ChangeListener {
             findTextField.setEnabled(true);
 
             pauseButton.getModel().setSelected(logPanel.isPaused());
-            toggleCyclicButton.setSelected(logPanel.getModel().isCyclic());
+            toggleCyclicButton.setSelected(logPanel.isCyclic());
             logui.getStatusBar().setPaused(logPanel.isPaused());
-            toggleCyclicMenuItem.setSelected(logPanel.getModel().isCyclic());
-            detailPaneButton.getModel().setSelected(logPanel.getPreferenceModel()
-                                                            .isDetailPaneVisible());
-            toggleLogTreeMenuItem.setSelected(logPanel.isLogTreePanelVisible());
+            toggleCyclicMenuItem.setSelected(logPanel.isCyclic());
+            detailPaneButton.getModel().setSelected(logPanel.isDetailVisible());
+            toggleLogTreeMenuItem.setSelected(logPanel.isLogTreeVisible());
         }
 
         for (int i = 0; i < logPanelSpecificActions.length; i++) {

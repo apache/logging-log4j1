@@ -101,13 +101,6 @@ public class ApplicationPreferenceModel implements SettingsListener {
     }
 
     /**
-     * @param evt
-     */
-    private void firePropertyChange(PropertyChangeEvent evt) {
-        propertySupport.firePropertyChange(evt);
-    }
-
-    /**
      * @param propertyName
      * @param oldValue
      * @param newValue

@@ -124,7 +124,7 @@ class FileSaveAction extends AbstractAction {
 
     if (selectedFile != null) {
       try {
-        List v = ((EventContainer)parent.getCurrentLogPanel().getModel()).getAllEvents();
+        List v = parent.getCurrentLogPanel().getEvents();
 
         if (((v != null) && (v.size() == 0)) || (v == null)) {
           //no events to save
