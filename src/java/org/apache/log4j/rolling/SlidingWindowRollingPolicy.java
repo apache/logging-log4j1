@@ -70,6 +70,7 @@ public class SlidingWindowRollingPolicy extends RollingPolicySkeleton {
   int maxIndex;
   int minIndex;
   FileNamePattern fileNamePattern;
+  String  fileNamePatternStr;
   String activeFileName;
  
   public SlidingWindowRollingPolicy() {
@@ -122,6 +123,15 @@ public class SlidingWindowRollingPolicy extends RollingPolicySkeleton {
       logger.warn("Setting maxIndex to equal minIndex.");
       maxIndex = minIndex;
     }
+    
+    switch(compressionMode) {
+      case Compress.GZ: 
+      if(!fileNamePatternStr.endsWith(".gz")) {    
+        fileNamePatternStr = fileNamePatternStr + ".gz";
+      } 
+      break;
+    }      
+    fileNamePattern = new FileNamePattern(fileNamePatternStr);
   }
 
   /**
@@ -138,7 +148,7 @@ public class SlidingWindowRollingPolicy extends RollingPolicySkeleton {
   }
 
   public String getFileNamePattern() {
-    return fileNamePattern.toString();
+    return fileNamePatternStr;
   }
 
   public int getMaxIndex() {
@@ -150,7 +160,7 @@ public class SlidingWindowRollingPolicy extends RollingPolicySkeleton {
   }
 
   public void setFileNamePattern(String fnp) {
-    fileNamePattern = new FileNamePattern(fnp);
+    fileNamePatternStr = fnp;
   }
 
   public void setMaxIndex(int maxIndex) {

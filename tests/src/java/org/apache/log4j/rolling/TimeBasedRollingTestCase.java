@@ -83,23 +83,21 @@ public class TimeBasedRollingTestCase extends TestCase {
 
   public void test1() throws Exception {
     Logger root = Logger.getRootLogger();
-    root.addAppender(new ConsoleAppender(new PatternLayout()));
+    root.addAppender(new ConsoleAppender(new PatternLayout("%d %5p %c{1} %m%n")));
 
-    // We purposefully use the \n as the line separator. 
-    // This makes the regression test system indepent.
-    PatternLayout layout = new PatternLayout("%d %m\n");
+    PatternLayout layout = new PatternLayout("%d %5p %c{1} %m%n");
     RollingFileAppender rfa = new RollingFileAppender();
     rfa.setLayout(layout);
 
     TimeBasedRollingPolicy tbrp = new TimeBasedRollingPolicy();
-    tbrp.setFileNamePattern("output/tbt%d{yyyy-MM-dd_HH_mm}");
+    tbrp.setFileNamePattern("output/test1%d{yyyy-MM-dd_HH_mm_ss}.gz");
     rfa.setRollingPolicy(tbrp);
     rfa.activateOptions();
     root.addAppender(rfa);
 
-    // Write exactly 10 bytes with each log
-    for (int i = 0; i < 30; i++) {
-      Thread.sleep(1000);
+
+    for (int i = 0; i < 5; i++) {
+      Thread.sleep(500);
       if (i < 10) {
         logger.debug("Hello---" + i);
       } else if (i < 100) {
@@ -123,15 +121,14 @@ public class TimeBasedRollingTestCase extends TestCase {
       rfa.setLayout(layout);
 
       TimeBasedRollingPolicy tbrp = new TimeBasedRollingPolicy();
-      tbrp.setFileNamePattern("output/tbt%d{yyyy-MM-dd_HH_mm}");
-      tbrp.setCompressionMode(Compress.GZ_STR);
+      tbrp.setFileNamePattern("output/test2%d{yyyy-MM-dd_HH_mm_ss}");
       rfa.setRollingPolicy(tbrp);
       rfa.activateOptions();
       root.addAppender(rfa);
 
       // Write exactly 10 bytes with each log
       for (int i = 0; i < 30; i++) {
-        Thread.sleep(1000);
+        Thread.sleep(100);
         if (i < 10) {
           logger.debug("Hello---" + i);
         } else if (i < 100) {
@@ -145,12 +142,40 @@ public class TimeBasedRollingTestCase extends TestCase {
     }
 
 
+  public void test3() throws Exception {
+      Logger root = Logger.getRootLogger();
+      root.addAppender(new ConsoleAppender(new PatternLayout()));
+
+      // We purposefully use the \n as the line separator. 
+      // This makes the regression test system indepent.
+      PatternLayout layout = new PatternLayout("%d %c %m\n");
+      RollingFileAppender rfa = new RollingFileAppender();
+      rfa.setLayout(layout);
+
+      TimeBasedRollingPolicy tbrp = new TimeBasedRollingPolicy();
+      tbrp.setFileNamePattern("output/test2%d{yyyy-MM-dd_HH_mm}.gz");
+      rfa.setRollingPolicy(tbrp);
+      rfa.activateOptions();
+      root.addAppender(rfa);
+
+      // Write exactly 10 bytes with each log
+      for (int i = 0; i < 20; i++) {
+        Thread.sleep(1000);
+        if (i < 10) {
+          logger.debug("Hello---" + i);
+        } else if (i < 100) {
+          logger.debug("Hello--" + i);
+        }
+      }
+    }
+
   public static Test suite() {
     TestSuite suite = new TestSuite();
 
     //suite.addTest(new TimeBasedRollingTestCase("test1"));
-    suite.addTest(new TimeBasedRollingTestCase("test2"));
-
+    //suite.addTest(new TimeBasedRollingTestCase("test2"));
+    suite.addTest(new TimeBasedRollingTestCase("test3"));
+    
     return suite;
   }
 }

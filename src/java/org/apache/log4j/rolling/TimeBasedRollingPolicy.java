@@ -54,7 +54,7 @@ import org.apache.log4j.rolling.helpers.Compress;
 import org.apache.log4j.rolling.helpers.DateTokenConverter;
 import org.apache.log4j.rolling.helpers.FileNamePattern;
 import org.apache.log4j.rolling.helpers.RollingCalendar;
-import org.apache.log4j.spi.OptionHandler;
+import org.apache.log4j.rolling.helpers.Util;
 
 import java.io.File;
 
@@ -69,16 +69,36 @@ import java.util.Date;
  */
 public class TimeBasedRollingPolicy extends RollingPolicySkeleton
   implements TriggeringPolicy {
+    
   static final Logger logger = Logger.getLogger(TimeBasedRollingPolicy.class);
+  
   FileNamePattern fileNamePattern;
+  String fileNamePatternStr;
   RollingCalendar rc;
   long nextCheck;
   Date now = new Date();
-  String oldFileName = null;
+  String currentFileName = null;
+  String activeFileName;
 
   public void activateOptions() {
     // find out period from the filename pattern
-    if (fileNamePattern != null) {
+    if (fileNamePatternStr != null) {
+      int len = fileNamePatternStr.length();
+      
+      if (fileNamePatternStr.endsWith(".gz")) {
+          logger.debug("Will use gz compression");
+          fileNamePattern = new FileNamePattern(fileNamePatternStr.substring(0, len -3));
+          compressionMode = Compress.GZ;
+        } else if (fileNamePatternStr.endsWith(".zip")) {
+          logger.debug("Will use zip compression");
+          fileNamePattern = new FileNamePattern(fileNamePatternStr.substring(0, len -4));
+          compressionMode = Compress.GZ;
+        } else {
+          fileNamePattern = new FileNamePattern(fileNamePatternStr);
+          compressionMode = Compress.NONE;
+        }
+      }
+      
       DateTokenConverter dtc = fileNamePattern.getDateTokenConverter();
 
       if (dtc == null) {
@@ -98,31 +118,64 @@ public class TimeBasedRollingPolicy extends RollingPolicySkeleton
       now.setTime(n);
       nextCheck = rc.getNextCheckMillis(now);
 
-      Date x = new Date();
-      x.setTime(nextCheck);
-      logger.debug("Next check set to: " + x);
+      //Date nc = new Date();
+      //nc.setTime(nextCheck);
+      //logger.debug("Next check set to: " + nc);  
+  }
+
+
+  /**
+   * 
+   * The active log file is determined by the value of the activeFileName 
+   * option if it is set. However, in case the activeFileName is left blank, 
+   * then, the active log file equals the file name for the current period
+   * as computed by the fileNamePattern.
+   *  
+   */
+  public String getActiveLogFileName() {
+    if (activeFileName == null) {
+      return fileNamePattern.convert(now);
+    } else {
+      return activeFileName;
     }
   }
 
-  public String getActiveLogFileName() {
-    return fileNamePattern.convert(now);
-  }
-
   public void rollover() {
-    
     logger.debug("rollover called");
-    logger.debug("compressionMode: "+compressionMode);
-    if (oldFileName != null) {
-      logger.debug("oldFileName != null");
+    logger.debug("compressionMode: " + compressionMode);
+
+
+    // if active file name is not set, then the active logging 
+    // file is given by the value of currentFileName variable.
+    if (activeFileName == null) {
+      if (currentFileName != null) {
+        //logger.debug("currentFileName != null");
+
+        switch (compressionMode) {
+        case Compress.NONE:
+
+          // nothing to do;
+          break;
+
+        case Compress.GZ:
+          logger.debug("Compressing [" + currentFileName + "]");
+          Compress.GZCompress(currentFileName);
+
+          break;
+        }
+      }
+    } else { // if activeFileName != null, then the value of the
+      // active logging is given by activeFileName
+
       switch (compressionMode) {
       case Compress.NONE:
+        Util.rename(activeFileName, currentFileName);
 
-        // nothing to do;
         break;
 
       case Compress.GZ:
-        logger.debug("Compressing ["+oldFileName+"]");
-        Compress.GZCompress(oldFileName);
+        logger.debug("Compressing [" + currentFileName + "]");
+        Compress.GZCompress(activeFileName, currentFileName);
 
         break;
       }
@@ -130,22 +183,23 @@ public class TimeBasedRollingPolicy extends RollingPolicySkeleton
   }
 
   public void setFileNamePattern(String fnp) {
-    fileNamePattern = new FileNamePattern(fnp);
+    fileNamePatternStr = fnp;
   }
 
   public boolean isTriggeringEvent(File file) {
     //logger.debug("Is triggering event called");
-
     long n = System.currentTimeMillis();
 
     if (n >= nextCheck) {
       logger.debug("Time to trigger rollover");
-      
-      // we set the oldFileName before we set the 'now' variable
-      oldFileName = fileNamePattern.convert(now);
-      
+
+      // We set the oldFileName before we set the 'now' variable
+      // The currentFileName is the currently active file name when
+      // the activeFileName is not set specifically by the user.
+      currentFileName = fileNamePattern.convert(now);
+
       now.setTime(n);
-      logger.debug("ActiveLogFileName will return " + getActiveLogFileName());
+      //logger.debug("ActiveLogFileName will return " + getActiveLogFileName());
       nextCheck = rc.getNextCheckMillis(now);
 
       //logger.debug("nextCheck is :"+nextCheck);
@@ -157,5 +211,13 @@ public class TimeBasedRollingPolicy extends RollingPolicySkeleton
     } else {
       return false;
     }
+  }
+
+  public String getActiveFileName() {
+    return activeFileName;
+  }
+
+  public void setActiveFileName(String string) {
+    activeFileName = string;
   }
 }
