@@ -1,170 +1,202 @@
+/*
+ * Copyright 1999,2004 The Apache Software Foundation.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.apache.log4j.lbel;
+
+import junit.framework.TestCase;
 
 import java.io.IOException;
 import java.io.StringReader;
 
-import junit.framework.TestCase;
 
 public class TokenStreamTest extends TestCase {
+  Token t;
 
-	Token t;
-	
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
+  public TokenStreamTest(String arg0) {
+    super(arg0);
+  }
 
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
+  protected void setUp() throws Exception {
+    super.setUp();
+  }
 
-	public TokenStreamTest(String arg0) {
-		super(arg0);
-	}
+  protected void tearDown() throws Exception {
+    super.tearDown();
+  }
 
-	public void testSingleDigit() throws IOException, ScanError {
-	  StringReader sr = new StringReader("9");
-	  TokenStream ts = new TokenStream(sr);
+  public void testSingleDigit() throws IOException, ScanError {
+    StringReader sr = new StringReader("9");
+    TokenStream ts = new TokenStream(sr);
 
-	  assertNull(ts.getCurrent());
+    assertNull(ts.getCurrent());
     ts.next();
-	  
-	  t = ts.getCurrent();
-	  assertEquals(TokenStream.NUMBER, t.getType());
-	  assertEquals(9, ((Long) t.getValue()).longValue());
-	  
-	  ts.next();
-	  t = ts.getCurrent();
-	  assertEquals(TokenStream.EOF, t.getType());
-	}
 
-	public void testLongerDigit() throws IOException, ScanError {
-	  StringReader sr = new StringReader(" 980 ");
-	  TokenStream ts = new TokenStream(sr);
+    t = ts.getCurrent();
+    assertEquals(Token.NUMBER, t.getType());
+    assertEquals(9, ((Long) t.getValue()).longValue());
+
     ts.next();
-	  t = ts.getCurrent();
-	  assertEquals(TokenStream.NUMBER, t.getType());
-	  assertEquals(980, ((Long) t.getValue()).longValue());
-	  
-	  ts.next(); t = ts.getCurrent();
-	  assertEquals(TokenStream.EOF, t.getType());
-	}
-	
-	public void testComparison() throws IOException, ScanError {
-	  StringReader sr = new StringReader(" time >= 17");
-	  TokenStream ts = new TokenStream(sr);
+    t = ts.getCurrent();
+    assertEquals(Token.EOF, t.getType());
+  }
+
+  public void testLongerDigit() throws IOException, ScanError {
+    StringReader sr = new StringReader(" 980 ");
+    TokenStream ts = new TokenStream(sr);
     ts.next();
-	  t = ts.getCurrent();
-	  
-	  assertEquals(TokenStream.IDENTIFIER, t.getType());
-	  assertEquals("time", t.getValue());
-	  
-	  ts.next();  t = ts.getCurrent();
-	  assertEquals(TokenStream.OPERATOR, t.getType());
-	  assertEquals(">=", t.getValue());
+    t = ts.getCurrent();
+    assertEquals(Token.NUMBER, t.getType());
+    assertEquals(980, ((Long) t.getValue()).longValue());
 
-	  ts.next();  t = ts.getCurrent();
-	  assertEquals(TokenStream.NUMBER, t.getType());
-	  assertEquals(17, ((Long) t.getValue()).longValue());
-	  		
-	  ts.next(); t = ts.getCurrent();
-	  assertEquals(TokenStream.EOF, t.getType());
-	}
-	
-	public void testFull() throws IOException, ScanError {
-	  StringReader sr = new StringReader(" time >= 19 NOT \"hello world\" ");
-	  TokenStream ts = new TokenStream(sr);
     ts.next();
-	  t = ts.getCurrent();
-	  
-	  assertEquals(TokenStream.IDENTIFIER, t.getType());
-	  assertEquals("time", t.getValue());
-	  
-	  ts.next();  t = ts.getCurrent();
-	  assertEquals(TokenStream.OPERATOR, t.getType());
-	  assertEquals(">=", t.getValue());
+    t = ts.getCurrent();
+    assertEquals(Token.EOF, t.getType());
+  }
 
-	  ts.next();  t = ts.getCurrent();
-	  assertEquals(TokenStream.NUMBER, t.getType());
-	  assertEquals(19, ((Long) t.getValue()).longValue());
-
-	  ts.next();  t = ts.getCurrent();
-	  assertEquals(TokenStream.NOT, t.getType());
-
-	  ts.next();  t = ts.getCurrent();
-	  assertEquals(TokenStream.IDENTIFIER, t.getType());
-	  assertEquals("hello world", t.getValue());
-
-	  		
-	  ts.next(); t = ts.getCurrent();
-	  assertEquals(TokenStream.EOF, t.getType());
-	}
-	
-	public void testNoSpaceFull() throws IOException, ScanError {
-	  StringReader sr = new StringReader(" time>=19 NOT \"hello world\" ");
-	  TokenStream ts = new TokenStream(sr);
+  public void testComparison() throws IOException, ScanError {
+    StringReader sr = new StringReader(" time >= 17");
+    TokenStream ts = new TokenStream(sr);
     ts.next();
-	  t = ts.getCurrent();
-	  
-	  assertEquals(TokenStream.IDENTIFIER, t.getType());
-	  assertEquals("time", t.getValue());
-	  
-	  ts.next();  t = ts.getCurrent();
-	  assertEquals(TokenStream.OPERATOR, t.getType());
-	  assertEquals(">=", t.getValue());
+    t = ts.getCurrent();
 
-	  ts.next();  t = ts.getCurrent();
-	  assertEquals(TokenStream.NUMBER, t.getType());
-	  assertEquals(19, ((Long) t.getValue()).longValue());
+    assertEquals(Token.LITERAL, t.getType());
+    assertEquals("time", t.getValue());
 
-	  ts.next();  t = ts.getCurrent();
-	  assertEquals(TokenStream.NOT, t.getType());
-
-	  ts.next();  t = ts.getCurrent();
-	  assertEquals(TokenStream.IDENTIFIER, t.getType());
-	  assertEquals("hello world", t.getValue());
-
-	  		
-	  ts.next(); t = ts.getCurrent();
-	  assertEquals(TokenStream.EOF, t.getType());
-	}
-	
-	public void testSingleQuote() throws IOException, ScanError {
-	  StringReader sr = new StringReader(" logger ~ 'hello world' ");
-	  TokenStream ts = new TokenStream(sr);
     ts.next();
-	  t = ts.getCurrent();
-	  
-	  assertEquals(TokenStream.IDENTIFIER, t.getType());
-	  assertEquals("logger", t.getValue());
-	  
-	  ts.next();  t = ts.getCurrent();
-	  assertEquals(TokenStream.OPERATOR, t.getType());
-	  assertEquals("~", t.getValue());
+    t = ts.getCurrent();
+    assertEquals(Token.OPERATOR, t.getType());
+    assertEquals(">=", t.getValue());
 
-	  ts.next();  t = ts.getCurrent();
-	  assertEquals(TokenStream.IDENTIFIER, t.getType());
-	  assertEquals("hello world", t.getValue());
+    ts.next();
+    t = ts.getCurrent();
+    assertEquals(Token.NUMBER, t.getType());
+    assertEquals(17, ((Long) t.getValue()).longValue());
 
-	  		
-	  ts.next(); t = ts.getCurrent();
-	  assertEquals(TokenStream.EOF, t.getType());
-	}
-	
-	public void testTrueOrFalse() throws IOException, ScanError {
-	  StringReader sr = new StringReader(" true OR false");
-	  TokenStream ts = new TokenStream(sr);
-   
-	  ts.next(); t = ts.getCurrent();
-	  assertEquals(TokenStream.TRUE, t.getType());
-	  
-	  ts.next();  t = ts.getCurrent();
-	  assertEquals(TokenStream.OR, t.getType());
-	  
-	  ts.next();  t = ts.getCurrent();
-	  assertEquals(TokenStream.FALSE, t.getType());
-	  		
-	  ts.next(); t = ts.getCurrent();
-	  assertEquals(TokenStream.EOF, t.getType());
-	}
-	
+    ts.next();
+    t = ts.getCurrent();
+    assertEquals(Token.EOF, t.getType());
+  }
+
+  public void testFull() throws IOException, ScanError {
+    StringReader sr = new StringReader(" time >= 19 NOT \"hello world\" ");
+    TokenStream ts = new TokenStream(sr);
+    ts.next();
+    t = ts.getCurrent();
+
+    assertEquals(Token.LITERAL, t.getType());
+    assertEquals("time", t.getValue());
+
+    ts.next();
+    t = ts.getCurrent();
+    assertEquals(Token.OPERATOR, t.getType());
+    assertEquals(">=", t.getValue());
+
+    ts.next();
+    t = ts.getCurrent();
+    assertEquals(Token.NUMBER, t.getType());
+    assertEquals(19, ((Long) t.getValue()).longValue());
+
+    ts.next();
+    t = ts.getCurrent();
+    assertEquals(Token.NOT, t.getType());
+
+    ts.next();
+    t = ts.getCurrent();
+    assertEquals(Token.LITERAL, t.getType());
+    assertEquals("hello world", t.getValue());
+
+    ts.next();
+    t = ts.getCurrent();
+    assertEquals(Token.EOF, t.getType());
+  }
+
+  public void testNoSpaceFull() throws IOException, ScanError {
+    StringReader sr = new StringReader(" time>=19 NOT \"hello world\" ");
+    TokenStream ts = new TokenStream(sr);
+    ts.next();
+    t = ts.getCurrent();
+
+    assertEquals(Token.LITERAL, t.getType());
+    assertEquals("time", t.getValue());
+
+    ts.next();
+    t = ts.getCurrent();
+    assertEquals(Token.OPERATOR, t.getType());
+    assertEquals(">=", t.getValue());
+
+    ts.next();
+    t = ts.getCurrent();
+    assertEquals(Token.NUMBER, t.getType());
+    assertEquals(19, ((Long) t.getValue()).longValue());
+
+    ts.next();
+    t = ts.getCurrent();
+    assertEquals(Token.NOT, t.getType());
+
+    ts.next();
+    t = ts.getCurrent();
+    assertEquals(Token.LITERAL, t.getType());
+    assertEquals("hello world", t.getValue());
+
+    ts.next();
+    t = ts.getCurrent();
+    assertEquals(Token.EOF, t.getType());
+  }
+
+  public void testSingleQuote() throws IOException, ScanError {
+    StringReader sr = new StringReader(" logger ~ 'hello world' ");
+    TokenStream ts = new TokenStream(sr);
+    ts.next();
+    t = ts.getCurrent();
+
+    assertEquals(Token.LOGGER, t.getType());
+
+    ts.next();
+    t = ts.getCurrent();
+    assertEquals(Token.OPERATOR, t.getType());
+    assertEquals("~", t.getValue());
+
+    ts.next();
+    t = ts.getCurrent();
+    assertEquals(Token.LITERAL, t.getType());
+    assertEquals("hello world", t.getValue());
+
+    ts.next();
+    t = ts.getCurrent();
+    assertEquals(Token.EOF, t.getType());
+  }
+
+  public void testTrueOrFalse() throws IOException, ScanError {
+    StringReader sr = new StringReader(" true OR false");
+    TokenStream ts = new TokenStream(sr);
+
+    ts.next();
+    t = ts.getCurrent();
+    assertEquals(Token.TRUE, t.getType());
+
+    ts.next();
+    t = ts.getCurrent();
+    assertEquals(Token.OR, t.getType());
+
+    ts.next();
+    t = ts.getCurrent();
+    assertEquals(Token.FALSE, t.getType());
+
+    ts.next();
+    t = ts.getCurrent();
+    assertEquals(Token.EOF, t.getType());
+  }
 }

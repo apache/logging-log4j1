@@ -25,32 +25,25 @@ import java.util.Map;
 
 
 public class TokenStream  {
-	public static final int TRUE = 1;
-	public static final int FALSE = 2;
 	
-	public static final int OR = 10;
-  public static final int AND = 11;
-  public static final int NOT = 12;
-
-  public static final int IDENTIFIER = 20;
-  public static final int NUMBER = 21;
-
-  public static final int OPERATOR = 30;
-  
-  public static final int LP = 40;
-  public static final int RP = 41;
-  public static final int EOF = 100;
-
-  static Map keywordMap = new HashMap();
+  // keywordMap contains a map of keywords
+  // key = keyword string
+  // value = token corresponding to the keyword
+  private static Map keywordMap = new HashMap();
   
   static {
-  	keywordMap.put("true", new Token(TRUE));
-  	keywordMap.put("false", new Token(FALSE));
-  	keywordMap.put("not", new Token(NOT));
-  	keywordMap.put("and", new Token(AND));
-  	keywordMap.put("or", new Token(OR));
-  	keywordMap.put("childof", new Token(OPERATOR, "childof"));
-  	
+  	keywordMap.put("true", new Token(Token.TRUE));
+  	keywordMap.put("false", new Token(Token.FALSE));
+  	keywordMap.put("not", new Token(Token.NOT));
+  	keywordMap.put("and", new Token(Token.AND));
+  	keywordMap.put("or", new Token(Token.OR));
+  	keywordMap.put("childof", new Token(Token.OPERATOR, "childof"));
+    keywordMap.put("logger", new Token(Token.LOGGER, "logger"));
+    keywordMap.put("message", new Token(Token.MESSAGE, "message"));
+    keywordMap.put("level", new Token(Token.LEVEL, "level"));
+    keywordMap.put("thread", new Token(Token.THREAD, "thread"));
+    keywordMap.put("property", new Token(Token.PROPERTY, "property"));
+    keywordMap.put("date", new Token(Token.DATE, "date"));
   }
   
   StreamTokenizer tokenizer;
@@ -86,11 +79,11 @@ public class TokenStream  {
   		token = tokenizer.nextToken();
   		switch(token) {
   		case	StreamTokenizer.TT_EOF:
-  			current = new Token(EOF);
+  			current = new Token(Token.EOF);
   			break;
   		case StreamTokenizer.TT_NUMBER:
    			double nval = tokenizer.nval;
-		    current = new Token(NUMBER, new Long((long) nval));
+		    current = new Token(Token.NUMBER, new Long((long) nval));
 		    break;
   		case StreamTokenizer.TT_WORD:
   			String key = tokenizer.sval;
@@ -98,56 +91,56 @@ public class TokenStream  {
   		  if(result != null) {
   		  	current = result;
   		  } else {
-  		  	current = new Token(IDENTIFIER, tokenizer.sval);
+  		  	current = new Token(Token.LITERAL, tokenizer.sval);
   		  }
         break;  		
   		case '"':
   	  case '\'':
-  		  current = new Token(IDENTIFIER, tokenizer.sval);
+  		  current = new Token(Token.LITERAL, tokenizer.sval);
   		  break;
   		case '>':
    			token2 = tokenizer.nextToken();
   			if(token2 == '=') {
-  			  current = new Token(OPERATOR, ">=");		
+  			  current = new Token(Token.OPERATOR, ">=");		
   			} else {
-  			  current = new Token(OPERATOR, ">");
+  			  current = new Token(Token.OPERATOR, ">");
   			  tokenizer.pushBack();
   			}
         break;
   		case '<':
   			 token2 = tokenizer.nextToken();
   			if(token2 == '=') {
-  			  current = new Token(OPERATOR, "<=");		
+  			  current = new Token(Token.OPERATOR, "<=");		
   			} else {
-  			  current = new Token(OPERATOR, "<");
+  			  current = new Token(Token.OPERATOR, "<");
   			  tokenizer.pushBack();
   			}
         break;
   		case '=':
-			  current = new Token(OPERATOR, "=");		
+			  current = new Token(Token.OPERATOR, "=");		
         break; 
   		case '~':
-			  current = new Token(OPERATOR, "~");		
+			  current = new Token(Token.OPERATOR, "~");		
         break; 
       case '!':	 
       	token2 = tokenizer.nextToken();
 			  if(token2 == '=') {
-			    current = new Token(OPERATOR, "!=");		
+			    current = new Token(Token.OPERATOR, "!=");		
 			  } else if (token2 == '~') {
-			    current = new Token(OPERATOR, "!~");
+			    current = new Token(Token.OPERATOR, "!~");
 			    tokenizer.pushBack();
 			  } else {
-			  	throw new ScanError("Unrecogized token "+token+". The ! character must be followed by = or ~.");
+			  	throw new ScanError("Unrecogized token "+token+". The '!' character must be followed by = or '~'");
 			  }
       break;
       case '(':
-      	current = new Token(LP);
+      	current = new Token(Token.LP);
       	break;
       case ')':
-      	current = new Token(RP);
+      	current = new Token(Token.RP);
       	break;
   		default:
-  		  	throw new ScanError("Unrecogized token "+token);
+  		  	throw new ScanError("Unrecogized token ["+(char)token+"]");
   		}
   		
   	}

@@ -41,6 +41,8 @@ final public class Operator {
   int code;
 
   Operator(int code) {
+    this.code = code;
+    
     switch(code) {
     case EQUAL: 
     case NOT_EQUAL: 
