@@ -116,7 +116,7 @@ public class LoggingEvent implements java.io.Serializable {
      @param message  The message of this event.
      @param throwable The throwable of this event.  */
   public LoggingEvent(String fqnOfCategoryClass, Category category, 
-		      Priority priority, String message, Throwable throwable) {
+		      Priority priority, Object message, Throwable throwable) {
     this.fqnOfCategoryClass = fqnOfCategoryClass;
     this.category = category;
     this.categoryName = category.getName();

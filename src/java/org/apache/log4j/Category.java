@@ -437,17 +437,11 @@ public class Category implements AppenderAttachable {
 
 
   /**
-     This method renders the <code>message</code> passed as a
-     oaraneter and logs immediately without further checks.  */
+     This method creates a new logging event and logs the event
+     without further checks.  */
   protected
   void forcedLog(String fqn, Priority priority, Object message, Throwable t) {
-    String s;
-    if(message instanceof String) {
-      s = (String) message;
-    } else {
-      s = hierarchy.rendererMap.findAndRender(message);
-    }
-    callAppenders(new LoggingEvent(fqn, this, priority, s, t));
+    callAppenders(new LoggingEvent(fqn, this, priority, message, t));
   }
 
 
