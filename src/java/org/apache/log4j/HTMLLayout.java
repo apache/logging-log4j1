@@ -124,7 +124,7 @@ public class HTMLLayout extends Layout {
     The <b>Title</b> option takes a String value. This option sets the
     document title of the generated HTML document.
     
-    <p>Defaults to 'Log4J Logging Statements'.
+    <p>Defaults to 'Log4J Log Messages'.
   */
   public
   void setTitle(String title) {
@@ -169,13 +169,18 @@ public class HTMLLayout extends Layout {
     sbuf.append(event.timeStamp - event.getStartTime());
     sbuf.append("</td>" + Layout.LINE_SEP);
 
-    sbuf.append("<td>");
+    sbuf.append("<td title=\"" + event.getThreadName() + " thread\">");
     sbuf.append(escapeHTMLTags(event.getThreadName()));
     sbuf.append("</td>" + Layout.LINE_SEP);
 
-    sbuf.append("<td>");
-    if(event.priority.isGreaterOrEqual(Priority.WARN)) {
-      sbuf.append("<font color=\"#FF0000\"><strong>");
+    sbuf.append("<td title=\"Priority\">");
+    if (event.priority.equals(Priority.DEBUG)) {
+      sbuf.append("<font color=\"#339933\">");
+      sbuf.append(event.priority);      
+      sbuf.append("</font>");
+    }
+    else if(event.priority.isGreaterOrEqual(Priority.WARN)) {
+      sbuf.append("<font color=\"#993300\"><strong>");
       sbuf.append(event.priority);      
       sbuf.append("</strong></font>");
     } else {
@@ -183,12 +188,8 @@ public class HTMLLayout extends Layout {
     }
     sbuf.append("</td>" + Layout.LINE_SEP);
 
-    sbuf.append("<td>");
+    sbuf.append("<td title=\"" + event.categoryName + " category\">");
     sbuf.append(escapeHTMLTags(event.categoryName));
-    sbuf.append("</td>" + Layout.LINE_SEP);
-
-    sbuf.append("<td>");
-    sbuf.append(escapeHTMLTags(event.getNDC()));
     sbuf.append("</td>" + Layout.LINE_SEP);
 
     if(locationInfo) {
@@ -200,14 +201,20 @@ public class HTMLLayout extends Layout {
       sbuf.append("</td>" + Layout.LINE_SEP);
     }
 
-    sbuf.append("<td>");
+    sbuf.append("<td title=\"Message\">");
     sbuf.append(escapeHTMLTags(event.getRenderedMessage()));
     sbuf.append("</td>" + Layout.LINE_SEP);
     sbuf.append("</tr>" + Layout.LINE_SEP);
 
+    if (event.getNDC() != null) {
+      sbuf.append("<tr><td bgcolor=\"#EEEEEE\" style=\"font-size : xx-small;\" colspan=\"6\" title=\"Nested Diagnostic Context\">");
+      sbuf.append("NDC: " + escapeHTMLTags(event.getNDC()));
+      sbuf.append("</td></tr>" + Layout.LINE_SEP);
+    }
+
     String[] s = event.getThrowableStrRep(); 
     if(s != null) {
-      sbuf.append("<tr><td bgcolor=\"#EEEEEE\" style=\"font-size : xx-small;\" colspan=\"7\">");
+      sbuf.append("<tr><td bgcolor=\"#993300\" style=\"color:White; font-size : xx-small;\" colspan=\"6\">");
       appendThrowableAsHTML(s, sbuf);
       sbuf.append("</td></tr>" + Layout.LINE_SEP);
     }
@@ -242,21 +249,21 @@ public class HTMLLayout extends Layout {
     sbuf.append("<title>" + title + "</title>" + Layout.LINE_SEP);
     sbuf.append("<style type=\"text/css\">"  + Layout.LINE_SEP);
     sbuf.append("<!--"  + Layout.LINE_SEP);
-    sbuf.append("body {font-family: arial,sans-serif; font-size: x-small;}" + Layout.LINE_SEP);
+    sbuf.append("body, table {font-family: arial,sans-serif; font-size: x-small;}" + Layout.LINE_SEP);
     sbuf.append("th {background: #336699; color: #FFFFFF; text-align: left;}" + Layout.LINE_SEP);
     sbuf.append("-->" + Layout.LINE_SEP);
     sbuf.append("</style>" + Layout.LINE_SEP);
     sbuf.append("</head>" + Layout.LINE_SEP);
     sbuf.append("<body bgcolor=\"#FFFFFF\" topmargin=\"6\" leftmargin=\"6\">" + Layout.LINE_SEP);
-    sbuf.append(new java.util.Date() + ":<br>" + Layout.LINE_SEP);
+    sbuf.append("<hr size=\"1\" noshade>" + Layout.LINE_SEP);
+    sbuf.append("Log session start time " + new java.util.Date() + "<br>" + Layout.LINE_SEP);
     sbuf.append("<br>" + Layout.LINE_SEP);
-    sbuf.append("<table cellspacing=\"0\" cellpadding=\"6\" border=\"1\" bordercolor=\"#224466\" bgcolor=\"#FFFFFF\" width=\"100%\">" + Layout.LINE_SEP);
+    sbuf.append("<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" bordercolor=\"#224466\" width=\"100%\">" + Layout.LINE_SEP);
     sbuf.append("<tr>" + Layout.LINE_SEP);
     sbuf.append("<th>Time</th>" + Layout.LINE_SEP);
     sbuf.append("<th>Thread</th>" + Layout.LINE_SEP);
     sbuf.append("<th>Priority</th>" + Layout.LINE_SEP);
     sbuf.append("<th>Category</th>" + Layout.LINE_SEP);
-    sbuf.append("<th>NDC</th>" + Layout.LINE_SEP);
     if(locationInfo) {
       sbuf.append("<th>File:Line</th>" + Layout.LINE_SEP);
     }
@@ -308,18 +315,19 @@ public class HTMLLayout extends Layout {
     StringBuffer buf = new StringBuffer(input.length() + 6);
     char ch = ' ';
     
-    for( int i=0; i < input.length(); i++ ) {
+    for(int i=0; i < input.length(); i++) {
         ch = input.charAt(i);
-        if( ch == '<' ) {
-            buf.append( "&lt;" );
+        if(ch == '<') {
+            buf.append("&lt;");
         }
-        else if( ch == '>' ) {
-            buf.append( "&gt;" );
+        else if(ch == '>') {
+            buf.append("&gt;");
         }
         else {
-            buf.append( ch );
+            buf.append(ch);
         }
     }
+
     return buf.toString();
   }
 }
