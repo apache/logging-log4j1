@@ -266,6 +266,7 @@ public class LoggingEvent
     }
 
     this.timeStamp = timeStamp;
+    sequenceNumber = sequenceCount++;
   }
 
 

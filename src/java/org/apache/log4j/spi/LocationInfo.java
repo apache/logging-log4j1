@@ -127,7 +127,7 @@ public class LocationInfo implements java.io.Serializable {
       s = sw.toString();
       sw.getBuffer().setLength(0);
     }
-
+    
     //System.out.println("s is ["+s+"].");
     int ibegin;
 

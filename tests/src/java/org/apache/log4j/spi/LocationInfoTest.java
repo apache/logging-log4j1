@@ -1,9 +1,19 @@
 /*
- * Created on Dec 6, 2003
+ * Copyright 1999,2004 The Apache Software Foundation.
  *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 package org.apache.log4j.spi;
 
 import org.apache.log4j.BasicConfigurator;
@@ -14,10 +24,11 @@ import org.apache.log4j.Logger;
 import junit.framework.TestCase;
 
 /**
- * @author ceki
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
+ * 
+ * Very simple test verifying that LocationInfo extraction works, at least in
+ * simple cases.
+ * 
+ * @author Ceki
  */
 public class LocationInfoTest extends TestCase {
 
@@ -55,21 +66,21 @@ public class LocationInfoTest extends TestCase {
     Throwable t1 = new Throwable();
     Throwable t2 = new Throwable();
     
-    LoggingEvent le = new LoggingEvent();
-    le.setLogger(logger);
-    le.setTimeStamp(System.currentTimeMillis());
-    le.setLevel(Level.DEBUG);
-    le.setMessage("toto");
     
+    LoggingEvent le = new LoggingEvent("org.apache.log4j.spi.LoggingEvent", logger, Level.DEBUG,
+        "toto", null);
+ 
+    // line extraction is done from on line 74 (following line)
+    LocationInfo li = le.getLocationInformation();
     
-    LocationInfo l1 = le.getLocationInformation();
-  
-    logger.debug("classname: "+ l1.getClassName()); 
-    logger.debug("filename: "+ l1.getFileName()); 
-    logger.debug("classname: "+ l1.getClassName()); 
-     logger.debug("filename: "+ l1.getFileName()); 
+    if(li == LocationInfo.NA_LOCATION_INFO) {
+      fail("For regular events, location info should not be LocationInfo.NA_LOCATION_INFO ");
+    }
     
-    //logger.error("toto", t1);
+    assertEquals(this.getClass().getName(), li.getClassName()); 
+    assertEquals("LocationInfoTest.java", li.getFileName()); 
+    assertEquals("74", li.getLineNumber()); 
+    assertEquals("testEqualsObject", li.getMethodName()); 
     
     /*ThrowableInformation te1 = new ThrowableInformation(e1);
     ThrowableInformation te2 = new ThrowableInformation(e2);
