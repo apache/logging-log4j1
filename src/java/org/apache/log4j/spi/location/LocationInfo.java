@@ -18,7 +18,6 @@
 // Contributors: Mathias Rupprecht <mmathias.rupprecht@fja.com>
 package org.apache.log4j.spi.location;
 
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.PlatformInfo;
 
 
@@ -113,35 +112,35 @@ public class LocationInfo implements java.io.Serializable {
   }
 
   public boolean equals(Object o) {
-    LogLog.info("equals called");
+    //LogLog.info("equals called");
     if (this == o) {
       return true;
     }
 
     if (!(o instanceof LocationInfo)) {
-      LogLog.info("inequality point 1");
+      //LogLog.info("inequality point 1");
       return false;
     }
 
     LocationInfo r = (LocationInfo) o;
 
     if(!getClassName().equals(r.getClassName())){
-     LogLog.info("inequality point 2");
+     //LogLog.info("inequality point 2");
       return false;
     }
     
     if(!getFileName().equals(r.getFileName())) {
-     LogLog.info("inequality point 3");
+     //LogLog.info("inequality point 3");
       return false;
     }
 
     if(!getMethodName().equals(r.getMethodName())){
-     LogLog.info("inequality point 4");
+     //LogLog.info("inequality point 4");
       return false;
     }
     
     if(!getLineNumber().equals(r.getLineNumber())){
-     LogLog.info("inequality point 5");
+     //LogLog.info("inequality point 5");
       return false;
     }
         
