@@ -275,15 +275,16 @@ public class LoggingEvent implements java.io.Serializable {
   public LoggingEvent(
     String fqnOfCategoryClass, Category logger, long timeStamp,
     Priority priority, String threadName, Object message, String ndc,
-    Hashtable mdc, ThrowableInformation ti, LocationInfo li, Hashtable properties) {
+    Hashtable mdc, String[] throwableStrRep, LocationInfo li, Hashtable properties) {
     ndcLookupRequired = false;
     mdcCopyLookupRequired = false;
     this.logger = logger;
     this.categoryName = logger.getName();
     this.level = priority;
     this.message = message;
-    this.throwableInfo = ti;
-     
+    if(throwableStrRep != null) {
+      this.throwableInfo = new ThrowableInformation(throwableStrRep);
+    }
     this.locationInfo = li;
     this.fqnOfCategoryClass = fqnOfCategoryClass;
     this.timeStamp = timeStamp;
