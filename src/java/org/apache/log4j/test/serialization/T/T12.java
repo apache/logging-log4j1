@@ -1,8 +1,7 @@
 
 import java.io.*;
 
-import org.apache.log4j.Category;
-import org.apache.log4j.Priority;
+import org.apache.log4j.*;
 import org.apache.log4j.spi.LoggingEvent;
 
 import java.util.Hashtable;
@@ -27,7 +26,7 @@ public class T12 {
 
       LoggingEvent event = new LoggingEvent("org.apache.log4j.Category", 
 					    category, 
-					    Priority.toPriority((String)ht.get("priorityStr")),
+					    Level.toLevel((String)ht.get("priorityStr")),
 					    ht.get("message"), 
 					    (Throwable) ht.get("throwable"));
       event.getThreadName();

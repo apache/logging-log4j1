@@ -1,5 +1,36 @@
+             =======================
+             Serialization unit test
+             =======================
 
 Running the serialization test is not for the faint of heart. It is
 complicated because we are trying to read or write two different
 versions of the same class. This requires unusual classloading
 techniques.
+
+Compiling
+=========
+
+step1)
+
+The file SerializationUT.java must be compiled with only the Java
+rt.jar and junit.jar on the class path. The compilation must be
+carried out from the directory where this README file is located.
+
+step2)
+
+Compile the files T/T113.java and T/T12.java. See the files
+compile.sample.bat and compile.sample.sh under the T/
+directory. Compilations must be carried in T/.
+
+Running
+=======
+Tests use the same classpath and are run as follows:
+
+  1) cd to $LOG4J_HOME/src/java/org/apache/log4j/test/serialization
+   
+     This is where this README file is located.
+
+  2) Run
+    
+         java junit.textui.TestRunner SerializationUT
+
