@@ -25,6 +25,7 @@ import javax.naming.NamingException;
 import javax.rmi.PortableRemoteObject;
 import javax.sql.DataSource;
 
+import org.apache.log4j.db.dialect.Util;
 import org.apache.log4j.helpers.LogLog;
 
 /**
@@ -65,7 +66,25 @@ public class JNDIConnectionSource
        extends ConnectionSourceSkeleton {
   private String jndiLocation = null;
   private DataSource dataSource = null;
+  int dialectCode = ConnectionSource.UNKNOWN_DIALECT;
 
+  /**
+   * @see org.apache.log4j.spi.OptionHandler#activateOptions()
+   */
+  public void activateOptions() {
+    if (jndiLocation == null && errorHandler != null) {
+      errorHandler.error("No JNDI location specified for JNDIConnectionSource.");
+    }
+    
+    try {
+      Connection connection = getConnection();
+      dialectCode = Util.discoverSQLDialect(connection);
+    } catch(SQLException se) {
+      LogLog.warn("Could not discover the dialect to use.", se);
+    }
+    
+  }
+  
   /**
    * @see org.apache.log4j.db.ConnectionSource#getConnection()
    */
@@ -100,17 +119,6 @@ public class JNDIConnectionSource
     return conn;
   }
 
-
-  /**
-   * @see org.apache.log4j.spi.OptionHandler#activateOptions()
-   */
-  public void activateOptions() {
-    if (jndiLocation == null && errorHandler != null) {
-      errorHandler.error("No JNDI location specified for JNDIConnectionSource.");
-    }
-  }
-
-
   /**
    * Returns the jndiLocation.
    * @return String
@@ -139,7 +147,7 @@ public class JNDIConnectionSource
 
 
   public int getSQLDialect() {
-    return 0;
+    return dialectCode;
   }
   
   private DataSource lookupDataSource()

@@ -46,6 +46,9 @@ public class FullCycleDBTest
   Vector witnessEvents;
   LoggerRepository lrWrite;
   LoggerRepository lrRead;
+  String appendConfigFile = null;
+  String readConfigFile = null;
+  
   
   /*
    * @see TestCase#setUp()
@@ -53,6 +56,11 @@ public class FullCycleDBTest
   protected void setUp()
          throws Exception {
     super.setUp();
+    appendConfigFile = System.getProperty("appendConfigFile");
+    assertNotNull("[appendConfigFile] property must be set for this test", appendConfigFile);
+    readConfigFile = System.getProperty("readConfigFile");
+    assertNotNull("[readConfigFile] property must be set for this test", readConfigFile);
+    
     witnessEvents = new Vector();
     lrWrite = new Hierarchy(new RootLogger(Level.DEBUG));
     IntializationUtil.log4jInternalConfiguration(lrWrite);
@@ -91,7 +99,7 @@ public class FullCycleDBTest
   public void testSingleOutput()
          throws Exception {
     JoranConfigurator jc1 = new JoranConfigurator();
-    jc1.doConfigure("input/db/writeCS1.xml", lrWrite);
+    jc1.doConfigure(appendConfigFile, lrWrite);
   
     long startTime = System.currentTimeMillis();
     LogLog.info("***startTime is  "+startTime);
@@ -105,33 +113,33 @@ public class FullCycleDBTest
     assertEquals(1, witnessEvents.size());    
     
     // now read it back
-    readBack("input/db/readCS1.xml", startTime);
+    readBack(readConfigFile, startTime);
 
   }
-
-  public void testDataSource()
-         throws Exception {
-
-    LogLog.setInternalDebugging(true);
-    JoranConfigurator jc1 = new JoranConfigurator();
-    jc1.doConfigure("input/db/append-with-datasource1.xml", lrWrite);
-  
-    
-    long startTime = System.currentTimeMillis();
-    LogLog.info("startTime is  "+startTime);
-    
-    // Write out just one log message
-    Logger out = lrWrite.getLogger("testSingleOutput.out");
-    out.debug("some message"+startTime);
-
-    VectorAppender witnessAppender = (VectorAppender) lrWrite.getRootLogger().getAppender("VECTOR");
-    witnessEvents = witnessAppender.getVector();
-    assertEquals(1, witnessEvents.size());    
-    
-    LogLog.info("----------------------------------------------");
-    // now read it back
-    readBack("input/db/read-with-datasource1.xml", startTime);
-  }
+//
+//  public void testDataSource()
+//         throws Exception {
+//
+//    LogLog.setInternalDebugging(true);
+//    JoranConfigurator jc1 = new JoranConfigurator();
+//    jc1.doConfigure("input/db/append-with-datasource1.xml", lrWrite);
+//  
+//    
+//    long startTime = System.currentTimeMillis();
+//    LogLog.info("startTime is  "+startTime);
+//    
+//    // Write out just one log message
+//    Logger out = lrWrite.getLogger("testSingleOutput.out");
+//    out.debug("some message"+startTime);
+//
+//    VectorAppender witnessAppender = (VectorAppender) lrWrite.getRootLogger().getAppender("VECTOR");
+//    witnessEvents = witnessAppender.getVector();
+//    assertEquals(1, witnessEvents.size());    
+//    
+//    LogLog.info("----------------------------------------------");
+//    // now read it back
+//    readBack("input/db/read-with-datasource1.xml", startTime);
+//  }
   
 
 
@@ -147,7 +155,7 @@ public class FullCycleDBTest
    */
   public void testAllFields() {
     JoranConfigurator jc1 = new JoranConfigurator();
-    jc1.doConfigure("input/db/writeCS1.xml", lrWrite);
+    jc1.doConfigure(appendConfigFile, lrWrite);
   
     long startTime = System.currentTimeMillis();
     
@@ -174,7 +182,7 @@ public class FullCycleDBTest
     witnessEvents = witnessAppender.getVector();
     assertEquals(2, witnessEvents.size());    
 
-    readBack("input/db/readCS1.xml", startTime);
+    readBack(readConfigFile, startTime);
   }
 
 
@@ -264,8 +272,9 @@ public class FullCycleDBTest
   public static Test suite() {
     TestSuite suite = new TestSuite();
     //suite.addTest(new FullCycleDBTest("test1"));
-    //suite.addTest(new FullCycleDBTest("testSingleOutput"));
-    suite.addTest(new FullCycleDBTest("testDataSource"));
+    suite.addTest(new FullCycleDBTest("testSingleOutput"));
+    //suite.addTest(new FullCycleDBTest("testAllFields"));
+    //suite.addTest(new FullCycleDBTest("testDataSource"));
 
 
     return suite;

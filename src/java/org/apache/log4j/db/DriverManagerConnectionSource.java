@@ -154,8 +154,8 @@ public class DriverManagerConnectionSource
       return ConnectionSource.MYSQL_DIALECT;
     } else if (url.indexOf(ORACLE_PART) != -1) {
       return ConnectionSource.ORACLE_DIALECT;
-    } else if (url.indexOf(ORACLE_PART) != -1) {
-      return ConnectionSource.ORACLE_DIALECT;
+    } else if (url.indexOf(MSSQL_PART) != -1) {
+      return ConnectionSource.MSSQL_DIALECT;
     } else {
       return ConnectionSource.UNKNOWN_DIALECT;
     }
