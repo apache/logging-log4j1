@@ -67,6 +67,7 @@ import java.util.Iterator;
   plugins for a repository.
 
   @author Mark Womack
+  @author Paul Smith
   @since 1.3
 */
 public class PluginRegistry {
@@ -94,6 +95,37 @@ public class PluginRegistry {
     return startPlugin(plugin, repository);
   }
 
+  /**
+   * Returns true if the specified name is already taken by
+   * an existing Plugin registered for the default Repository.
+   * @param name The name to check the repository for
+   * @return true if the name is already in use, otherwise false
+   */
+  public static boolean pluginNameExists(String name){
+    LoggerRepository repository = LogManager.getLoggerRepository();
+
+    return pluginNameExists(name, repository);
+  }
+  
+
+  /**
+   * Returns true if the specified name is already taken by
+   * an existing Plugin registered within the scope of the specified 
+   * LoggerRepository.
+   * @param name The name to check the repository for
+   * @param repository the repository to check the name against
+   * @return true if the name is already in use, otherwise false
+   */
+  public static boolean pluginNameExists(String name, LoggerRepository repository){
+    synchronized(repositoryMap){
+      Map pluginMap = (Map) repositoryMap.get(repository);
+      if( pluginMap != null && pluginMap.containsKey(name)){
+        return true;
+      }
+    }
+    return false;
+  }
+  
   /**
     Starts a plugin with a given logger repository.
 
