@@ -102,7 +102,6 @@ public class ReceiversPanel extends JPanel {
 
   public ReceiversPanel() {
     super(new BorderLayout());
-    setBorder(BorderFactory.createEtchedBorder());
 
     final ReceiversTreeModel model = new ReceiversTreeModel();
     PluginRegistry.addPluginListener(model);
@@ -297,7 +296,6 @@ public class ReceiversPanel extends JPanel {
       "Ensures that any Receiver that isn't active, is started.");
 
     receiversTree.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-
     receiversTree.setCellRenderer(new ReceiverTreeCellRenderer());
 
     buttonPanel = new ReceiverToolbar();
