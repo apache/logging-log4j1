@@ -456,7 +456,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
       Object o = ht.get(key);
 
       if (o == null) {
-        LogLog.info(
+        LogLog.debug(
             "Creating new logger ["+name+"] in repository ["+getName()+"].");
         logger = factory.makeNewLoggerInstance(name);
         logger.setHierarchy(this);
@@ -465,7 +465,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
 
         return logger;
       } else if (o instanceof Logger) {
-          LogLog.info(
+          LogLog.debug(
             "Returning existing logger ["+name+"] in repository ["+getName()+"].");
         return (Logger) o;
       } else if (o instanceof ProvisionNode) {
