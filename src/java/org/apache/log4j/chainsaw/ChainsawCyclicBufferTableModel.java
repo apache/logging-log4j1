@@ -134,17 +134,19 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
       } finally {
       	SwingUtilities.invokeLater(new Runnable() {
       		public void run() {
-      			if (previousSize == filteredList.size()) {
-      				//same - update all
-      				fireTableRowsUpdated(0, filteredList.size() - 1);
-      			} else if (previousSize > filteredList.size()) {
-      				//less now..update and delete difference
-      				fireTableRowsUpdated(0, filteredList.size() - 1);
-      				fireTableRowsDeleted(filteredList.size(), previousSize);
-      			} else if (previousSize < filteredList.size()) {
-      				//more now..update and insert difference
-      				fireTableRowsUpdated(0, previousSize - 1);
-      				fireTableRowsInserted(previousSize, filteredList.size() - 1);
+      			if (filteredList.size() > 0) {
+	      			if (previousSize == filteredList.size()) {
+	      				//same - update all
+	      				fireTableRowsUpdated(0, filteredList.size() - 1);
+	      			} else if (previousSize > filteredList.size()) {
+	      				//less now..update and delete difference
+	      				fireTableRowsUpdated(0, filteredList.size() - 1);
+	      				fireTableRowsDeleted(filteredList.size(), previousSize);
+	      			} else if (previousSize < filteredList.size() && previousSize > 0) {
+	      				//more now..update and insert difference
+	      				fireTableRowsUpdated(0, previousSize - 1);
+	      				fireTableRowsInserted(previousSize, filteredList.size() - 1);
+	      			}
       			}
 	      	notifyCountListeners();
       	}});
@@ -245,7 +247,7 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
      * @see org.apache.log4j.chainsaw.EventContainer#sort()
      */
   public void sort() {
-    if (sortEnabled) {
+    if (sortEnabled && filteredList.size() > 0) {
       synchronized (filteredList) {
         Collections.sort(
           filteredList,
@@ -254,7 +256,11 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
             currentSortAscending));
       }
 
-      fireTableRowsUpdated(0, Math.max(filteredList.size() - 1, 0));
+     	SwingUtilities.invokeLater(new Runnable() {
+     		public void run() {
+      			fireTableRowsUpdated(0, Math.max(filteredList.size() - 1, 0));
+      		}
+      	});
     }
   }
 
@@ -283,7 +289,12 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
       uniqueRow = 0;
     }
 
-    fireTableDataChanged();
+    SwingUtilities.invokeLater(new Runnable() {
+    	public void run() {
+    	    fireTableDataChanged();
+    	}
+    });
+
     notifyCountListeners();
   }
 
@@ -342,7 +353,7 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
     LoggingEvent event = null;
 
     synchronized (filteredList) {
-      if (rowIndex < filteredList.size()) {
+      if (rowIndex < filteredList.size() && rowIndex > -1) {
         event = (LoggingEvent) filteredList.get(rowIndex);
       }
     }
@@ -497,7 +508,9 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
     return last;
   }
 
-  public void fireTableEvent(int begin, int end, int count) {
+  public void fireTableEvent(final int begin, final int end, final int count) {
+  	SwingUtilities.invokeLater(new Runnable() {
+  		public void run() {
     if (cyclic) {
       if (!reachedCapacity) {
         //if we didn't loop and it's the 1st time, insert
@@ -515,6 +528,7 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
     } else {
       fireTableRowsInserted(begin, end);
     }
+  }});
   }
 
   /**

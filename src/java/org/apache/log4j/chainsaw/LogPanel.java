@@ -50,6 +50,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.io.StringReader;
 import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.NumberFormat;
@@ -107,6 +108,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import javax.swing.text.Document;
 
 import org.apache.log4j.Layout;
 import org.apache.log4j.PatternLayout;
@@ -2672,8 +2674,6 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
      * Update detail pane
      */
     private void updateDetailPane() {
-      String text = null;
-
       /*
        * Don't bother doing anything if it's not visible
        */
@@ -2681,35 +2681,42 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
         return;
       }
 
-      if (selectedRow != -1) {
-        LoggingEvent event = tableModel.getRow(selectedRow);
-
-        if (event != null) {
-          StringBuffer buf = new StringBuffer();
-          buf.append(detailLayout.getHeader())
-             .append(detailLayout.format(event)).append(
-            detailLayout.getFooter());
-          text = buf.toString();
-        }
-      }
-
-      if (!((text != null) && !text.equals(""))) {
-        text = "<html>Nothing selected</html>";
-      }
-
-      final String text2 = text;
-      SwingUtilities.invokeLater(
-        new Runnable() {
-          public void run() {
-            try {
-                detail.setText(text2);
-                detail.validate();
-                if (text2.length() > 0) {
-                    detail.setCaretPosition(0);
-                }
-            } catch (Exception e){} //ignore
-          }
-        });
+	      LoggingEvent event = null;
+	      if (selectedRow != -1) {
+	        event = tableModel.getRow(selectedRow);
+	
+	        if (event != null) {
+	          final StringBuffer buf = new StringBuffer();
+	          buf.append(detailLayout.getHeader())
+	             .append(detailLayout.format(event)).append(
+	            detailLayout.getFooter());
+	          if (buf.length() > 0) {
+		      	SwingUtilities.invokeLater(new Runnable() {
+		      		public void run() {
+			          	try {
+			          		Document doc = detail.getEditorKit().createDefaultDocument();
+			          		detail.getEditorKit().read(new StringReader(buf.toString()), doc, 0);
+			          		detail.setDocument(doc);
+			          		detail.setCaretPosition(0);
+			          	} catch (Exception e) {}
+    	      		}
+    	      	});
+	          }
+	        }
+	      }
+	
+	      if (event == null) {
+	      	SwingUtilities.invokeLater(new Runnable() {
+	      		public void run() {
+			      	try {
+			      		Document doc = detail.getEditorKit().createDefaultDocument();
+			      		detail.getEditorKit().read(new StringReader("<html>Nothing selected</html>"), doc, 0);
+			      		detail.setDocument(doc);
+			      		detail.setCaretPosition(0);
+			      	} catch (Exception e) {}
+	      		}
+	      	});
+	      }
     }
 
     /**
