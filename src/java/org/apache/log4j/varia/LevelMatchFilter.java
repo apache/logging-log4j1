@@ -33,20 +33,6 @@ import org.apache.log4j.helpers.OptionConverter;
 public class LevelMatchFilter extends Filter {
   
   /**
-     @deprecated Options are now handled using the JavaBeans paradigm.
-     This constant is not longer needed and will be removed in the
-     <em>near</em> term.
-   */
-  public static final String LEVEL_TO_MATCH_OPTION = "LevelToMatch";
-
-  /**
-     @deprecated Options are now handled using the JavaBeans paradigm.
-     This constant is not longer needed and will be removed in the
-     <em>near</em> term.
-   */
-  public static final String ACCEPT_ON_MATCH_OPTION = "AcceptOnMatch";
-  
-  /**
      Do we return ACCEPT when a match occurs. Default is
      <code>true</code>.  */
   boolean acceptOnMatch = true;
