@@ -2,104 +2,18 @@
 <project name="Jakarta Site"
         href="http://jakarta.apache.org/">
 
-    <title>Log4j project</title>
-    <logo href="images/logo.jpg">The log4j project</logo>
+  <title>Log4j project</title>
+  <logo href="images/logo.jpg">The log4j project</logo>
+  
+  <body>
     
-    <body>
-
     <menu name="Log4j Project">
-        <item name="Introduction"   href="/index.html"/>
-        <item name="Download"       href="/download.html"/>
-        <item name="Documentation"  href="/documentation.html"/>
-        <item name="Contact us"     href="/contactUs.html"/>
-        <item name="History"        href="/history.html"/>
+      <item name="Introduction"   href="/index.html"/>
+      <item name="Download"       href="/download.html"/>
+      <item name="Documentation"  href="/documentation.html"/>
+      <item name="Contact us"     href="/contactUs.html"/>
+      <item name="History"        href="/history.html"/>
     </menu>
-
-    <menu name="Get Involved">
-        <item name="Overview"              
-   	      href="http://jakarta.apache.org/site/getinvolved.html"/>
-        
-	<item name="CVS Repositories"  
-	      href="http://jakarta.apache.org/site/cvsindex.html"/>
-
-	<item name="Mailing Lists"  
-	      href="http://jakarta.apache.org/site/mail.html"/>
-        
-	<item name="Reference Library"  
-	       href="http://jakarta.apache.org/site/library.html"/>
-
-        <item name="Bug Database"       
-	      href="http://jakarta.apache.org/site/bugs.html"/>
-    </menu>
-		
-    <menu name="Other Projects">	
     
-        <item name="Ant"  
-	      href="http://jakarta.apache.org/ant/index.html"/>
-
-        <item name="Avalon"  
-	      href="http://jakarta.apache.org/avalon/index.html"/>
-
-        <item name="Commons"  
-	      href="http://jakarta.apache.org/commons/index.html"/>
-
-        <item name="ECS"                   
-	      href="http://jakarta.apache.org/ecs/index.html"/>
-
-        <item name="James"                 
-	      href="http://jakarta.apache.org/james/index.html"/>
-
-        <item name="Jetspeed"                 
-	      href="http://jakarta.apache.org/jetspeed/index.html"/>
-
-        <item name="JMeter"                 
-	      href="http://jakarta.apache.org/jmeter/index.html"/>
-
-        <item name="Log4J"                   
-	      href="http://jakarta.apache.org/log4j/index.html"/>
-
-        <item name="ORO"                   
-	      href="http://jakarta.apache.org/oro/index.html"/>
-
-        <item name="Regexp"       
-              href="http://jakarta.apache.org/regexp/index.html"/>
-
-        <item name="Slide" 
-	      href="http://jakarta.apache.org/slide/index.html"/>
-
-        <item name="Struts"  
-              href="http://jakarta.apache.org/struts/index.html"/>
-
-        <item name="Taglibs"
-              href="http://jakarta.apache.org/taglibs/index.html"/>
-
-        <item name="Tomcat" 
-              href="http://jakarta.apache.org/tomcat/index.html"/>
-
-        <item name="Turbine"                 
-	      href="http://jakarta.apache.org/turbine/index.html"/>
-
-        <item name="Velocity" 
-              href="http://jakarta.apache.org/velocity/index.html"/>
- 
-        <item name="Watchdog" 
-              href="http://jakarta.apache.org/watchdog/index.html"/>
-    </menu>					 
-						 
-    <menu name="Misc">				 
-        <item name="Who We Are"            
-	href="http://jakarta.apache.org/site/whoweare.html"/>
-        
-	<item name="Acknowledgements"      
-	href="http://jakarta.apache.org/site/acknowledgements.html"/>
-        
-	<item name="Contact"               
-	href="http://jakarta.apache.org/site/contact.html"/>
-        
-	<item name="Legal"                
-	 href="http://jakarta.apache.org/site/legal.html"/>
-    </menu>
-
-
-    </body>
+  </body>
 </project>

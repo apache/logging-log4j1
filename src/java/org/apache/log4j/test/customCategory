@@ -27,8 +27,8 @@ declare -i TEST
 TEST=1
 if [ $TEST -ge $start ]; then
   echo "LOG4J=org.apache.log4j" > $LCF
-  lecho "log4j.rootCategory=TRACE#\${LOG4J}.xml.examples.XPriority, testAppender" 
-  lecho "log4j.categoryFactory=\${LOG4J}.examples.MyCategoryFactory"
+  lecho "log4j.rootCategory=TRACE#\${LOG4J}.xml.examples.XLevel, testAppender" 
+  lecho "log4j.loggerFactory=\${LOG4J}.xml.examples.XLogger\$XFactory"
   lecho "log4j.appender.testAppender=\${LOG4J}.FileAppender"
   lecho "log4j.appender.testAppender=\${LOG4J}.FileAppender"
   lecho "log4j.appender.testAppender.File=$TEMP"
