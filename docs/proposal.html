@@ -1,0 +1,185 @@
+
+<html>
+<header>
+<title>Revised log4j interfaces</title>
+<header>
+<body>
+
+<center><h2>Revised log4j interfaces</h2></center>
+
+<p>In the current log4j code, the <code>Category</code> class is
+polluted with static methods such as <code>getInstance()</code>,
+<code>getRoot()</code>, <code>exists</code>() etc. These methods
+essentially wrap method invocations on the default hierarchy. Although
+a single hierarchy may be suitable in stand alone applications, it is
+inadequate when used within Servlet containers or Application
+Servers. Moreover, a number of users have asked for the simplication
+of the <code>Category</code> class.
+
+<p>At this juncture it also seems beneficial to adopt some of the
+component names as proposed in the upcoming JSR47 API. In particular,
+Level instead of Priority, Logger instead of Category and LogManager
+instead of Hierarchy.
+
+<h1>Levels, Loggers and the LogManager</h1>
+
+<p>It is proposed to rename the <code>Priority</code> class to
+<code>Level</code>.  To conserve backward compatibility a Priority
+class will be included which will extend <code>Level</code> without
+changing or adding any functionality.  Classes that contain methods
+involving priorities, say <code>setPriority</code>, will contain a
+method called <code>setLevel</code> and also a method called
+<code>setPriority</code> (to preserve backward compatibility).
+
+<p>The user will only deal with a simple <code>Logger</code> class
+offering few essential methods. More concretely:
+
+<p><table bgcolor="CCCCCC">
+<tr><td>
+<pre>
+public <b>abstract class</b> Logger {
+
+  protected final String  name;  
+  protected Level level;
+  protected ResourceBundle resourceBundle;
+  
+  protected Logger(String name) {
+    this.name = name;
+  }
+
+  public abstract void debug(Object message);  
+  public abstract void debug(Object message, Throwable t);  
+
+  public abstract void error(Object message);  
+  public abstract void error(Object message, Throwable t);
+
+  public abstract void fatal(Object message);  
+  public abstract void fatal(Object message, Throwable t);
+  
+  public final String getName() {
+    return name;
+  }
+    
+  public abstract void info(Object message);  
+  public abstract void info(Object message, Throwable t);
+
+  public abstract boolean isDebugEnabled(); 
+  public abstract boolean isEnabledFor(Level level);
+  public abstract boolean isInfoEnabled();
+
+  public abstract void l7dlog(Level level, String key, Throwable t);
+  public abstract void l7dlog(Level level, String key,  Object[] params, Throwable t);
+  
+  public abstract void log(Level level, Object message, Throwable t);  
+  public abstract void log(Level level, Object message);
+
+  public final Level getLevel() { return level; }
+  public abstract void setLevel(Level level);
+
+  public final ResourceBunder getResourceBundle() { return resourceBundle; }
+  public abstract void setResourceBundle(ResourceBundle bundle);
+
+  public abstract void warn(Object message);  
+  public abstract void warn(Object message, Throwable t);
+}
+</pre>
+</td></tr>
+</table>
+
+<p>Here are a few remarks on the <code>Logger</code> class.
+
+<ul>
+
+<p><li>For performance reasons, <code>Logger</code> is an abstract
+class and not an interface.
+
+<p><li>Knowledge about the <code>debug</code>, <code>info</code>,
+warn, <code>error</code>, <code>fatal</code> levels is hardcoded in
+<code>Logger</code> methods. This seems appropriate because, as far as
+I am aware, these levels are not disputed.
+
+<p><li>The <code>l7dlog</code> methods will be used for localized
+(internationalized) logging.
+</ul>
+
+<p>The <code>LogManager</code> class will be used to retreive
+<code>Logger</code> instances.
+
+
+<p><table bgcolor="CCCCCC">
+<tr><td>
+<pre>
+public class LogManager {
+
+  public Logger getLogger(String name) {
+     // return the appropriate Logger instance
+  }
+
+  public Logger getLogger(Class clazz) {
+    return getLogger(clazzz.getName());
+  }
+
+
+  static public LogManager getDefault() {
+    // returns the default LogManager 
+  }
+}
+</pre>
+</td></tr>
+</table>
+
+<p>Typical usage would be
+
+<p><table bgcolor="CCCCCC">
+<tr><td>
+<pre>
+public class Foo {
+
+ final static Logger logger = LogManager.getDefault().getLogger(Foo.class);
+
+ void bar() {
+   logger.debug("hello world.");
+ }
+}
+</pre>
+</td></tr>
+</table>
+
+
+In an environment where multiple independent logging configurations
+are needed, one can write:
+
+<p><table bgcolor="CCCCCC">
+<tr><td>
+<pre>
+public class Foo {
+
+ 
+ Logger logger;
+
+ void init() {
+    LogManger logManager = someEnvironmentDefinedContext.getLogManger();
+    logger = logManager.getLogger(Foo.class);
+ }
+
+ void bar() {
+   logger.debug("hello world.");
+ }
+}
+</pre>
+</td></tr>
+</table>
+
+<h2>Independent implementations</h2>
+
+<p>One of the advantages of the <code>LogManager</code> approach is
+that the <code>getInstance</code> method can return totally different
+<code>Logger</code> implementations. For example, under JDK 1.2 we can
+return a Logger implementation that is aware of the Java2 security
+model whereas under JDK 1.1 the returned logger implementation may be
+oblivious to Java2 security checks.
+
+
+</body>
+
+</html>
