@@ -143,7 +143,7 @@ public class BasicConfigurator {
   /**
      Reset the configuration to its default.  This removes all
      appenders from all categories, sets the priority of all non-root
-     categories to <code>null</code>, their additivity flad to
+     categories to <code>null</code>, their additivity flag to
      <code>true</code> and sets the priority of the root category to
      {@link Priority#DEBUG DEBUG}.  Moreover, message disabling is set
      its default "off" value.

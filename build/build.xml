@@ -299,7 +299,7 @@
        <fileset dir="."
                 includes="make/**, xdocs/**, docs/**, Makefile, build/**
                           manifest.mf, INSTALL, LICENSE.APL, ${jar.dest}/**, 
-		          org/**,  icons/**, ${javac.dest}/**"
+		          org/**,  icons/**, ${javac.dest}/**, contribs/**"
                 excludes="make/make.loc, **/*.bak,
 		          ${stem}/xml/Transform.java"/>
     </copy>

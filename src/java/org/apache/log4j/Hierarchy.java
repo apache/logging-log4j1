@@ -391,7 +391,7 @@ public class Hierarchy {
     
     //System.out.println("UpdateParents called for " + name);
     
-    // if name = "x.y.z", loop thourgh "x.y" and "x", but not "x.y.z"    
+    // if name = "w.x.y.z", loop thourgh "w.x.y", "w.x" and "w", but not "w.x.y.z" 
     for(int i = name.lastIndexOf('.', length-1); i >= 0; 
 	                                 i = name.lastIndexOf('.', i-1))  {
       String substr = name.substring(0, i);
@@ -404,17 +404,14 @@ public class Hierarchy {
 	//System.out.println("No parent "+substr+" found. Creating ProvisionNode.");
 	ProvisionNode pn = new ProvisionNode(cat);
 	ht.put(key, pn);
-      }
-      else if(o instanceof Category) {
+      } else if(o instanceof Category) {
 	parentFound = true;
 	cat.parent = (Category) o;
 	//System.out.println("Linking " + cat.name + " -> " + ((Category) o).name);
-	break;	
-      }
-      else if(o instanceof ProvisionNode) {
+	break; // no need to update the ancestors of the closest ancestor
+      } else if(o instanceof ProvisionNode) {
 	((ProvisionNode) o).addElement(cat);
-      }
-      else {
+      } else {
 	Exception e = new IllegalStateException("unexpected object type " + 
 					o.getClass() + " in ht.");
 	e.printStackTrace();			   
@@ -436,11 +433,8 @@ public class Hierarchy {
          If the child 'c' has been already linked to a child of
          'cat' then there is no need to update 'c'.
 
-	 Otherwise, we loop until we find the nearest parent of 'c'
-	 (not excluding 'c') below 'cat' and nearest to 'cat'.
-
-	 Say 'x' is this category. We set cat's parent field to x's
-	 parent and set x's parent field to cat.
+	 Otherwise, we set cat's parent field to c's parent and set
+	 c's parent field to cat.
 
   */
   final
@@ -449,33 +443,16 @@ public class Hierarchy {
     //System.out.println("updateChildren called for " + cat.name);
     final int last = pn.size();
 
-    childLoop:
     for(int i = 0; i < last; i++) {
       Category c = (Category) pn.elementAt(i);
       //System.out.println("Updating child " +p.name);
 
-      // Skip this child if it already points to a correct (lower) parent.
-      // In pre-0.8.4c versions we skipped this test. As a result, under certain
-      // rare circumstances the while loop below would never exit.
-
-      // Thanks to Mario Schomburg from IBM Global Services/Hannover for
-      // identifying this problem.
-      if(c.parent != null && c.parent.name.startsWith(cat.name)) {
-	continue childLoop;
+      // Unless this child already points to a correct (lower) parent,
+      // make cat.parent point to c.parent and c.parent to cat.
+      if(!c.parent.name.startsWith(cat.name)) {
+	cat.parent = c.parent;
+	c.parent = cat;      
       }
-
-      // Loop until c points to an *existing* category just below 'cat' in the
-      // hierarchy.
-      while(c.parent != null && c.parent.name.startsWith(cat.name)) {
-	c = c.parent;
-      }
-      //System.out.println("1-Linking " + cat.name + " -> " +
-      //      (p.parent != null ? p.parent.name : "null"));
-      cat.parent = c.parent;
-
-      //System.out.println("2-Linking " + p.name + " -> " +
-      //      cat.name);
-      c.parent = cat;      
     }
   }    
 
@@ -495,8 +472,8 @@ public class Hierarchy {
 
 
   /**
-     Shutting down a hiearchy will <em>safely</em> close and remove
-     all appenders in all the categories including root.
+     Shutting down a hierarchy will <em>safely</em> close and remove
+     all appenders in all categories including the root category.
      
      <p>Some appenders such as {@link org.apache.log4j.net.SocketAppender}
      and {@link AsyncAppender} need to be closed before the

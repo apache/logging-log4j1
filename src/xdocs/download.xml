@@ -76,6 +76,12 @@ paleontologist.</p>
   <dd>A log4j wrapper for JINI Jerome Bernard.</dd>
 
 
+  <dt><a href="http://support.klopotek.de/log4j/jdbc/index.html"><b>JDBCAppender</b></a></dt>
+
+  <dd>A JDBCAppender by <a href="mailto:t.fenner@klopotek.de">Thomas
+  Fenner</a>.</dd>
+
+
 
 </dl>
 
