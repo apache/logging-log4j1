@@ -32,29 +32,5 @@ public class DenyAllFilter extends Filter {
   int decide(LoggingEvent event) {
     return Filter.DENY;
   }
-  
-  /**
-     Returns <code>null</code> as there are no options.
-  */
-  public
-  String[] getOptionStrings() {
-    return null;
-  }
-
-  
-  /**
-     No options to set.
-  */
-  public
-  void setOption(String key, String value) {
-  }
-  
-  /**
-     No options to get.
-  */
-  public
-  String getOption(String key) {
-    return null;
-  }
 }
 

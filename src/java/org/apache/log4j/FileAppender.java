@@ -35,28 +35,6 @@ import org.apache.log4j.helpers.TracerPrintWriter;
    @author Ceki G&uuml;lc&uuml; */
 public class FileAppender extends WriterAppender {
 
-  /**
-     A string constant used in naming the option for setting the
-     output file. Current value of this string constant is
-     <b>File</b>.
-
-     <p>Note that all option keys are case sensitive.
-     
-  */
-  public static final String FILE_OPTION = "File";
-
-
-  /**
-     A string constant used in naming the option that determines whether 
-     the output file will be truncated or appended to. Current value
-     of this string constant is <b>Append</b>.
-
-     <p>Note that all option keys are case sensitive.
-     
-  */
-  public static final String APPEND_OPTION = "Append";
-
-  
   /** Append to or truncate the file? The default value for this
       variable is <code>true</code>, meaning that by default a
       <code>FileAppender</code> will append to an existing file and
@@ -145,6 +123,64 @@ public class FileAppender extends WriterAppender {
   }
 
   /**
+     The <b>File</b> option takes a string value which should be
+     the name of the file to append to. Special values "System.out" or
+     "System.err" are interpreted as the standard out and standard
+     error streams.
+
+     <p><font color="#DD0044"><b>Note that the "System.out" or "System.err"
+     options are deprecated. Use {@link ConsoleAppender}
+     instead.</b></font>
+
+     <p>If the option is set to "System.out" or "System.err" the
+     output will go to the corresponding stream. Otherwise, if the
+     option is set to the name of a file, then the file will be opened
+     and output will go there.
+     
+     <p>Note: Actual opening of the file is made when {@link
+     #activateOptions} is called, not when the options are set.
+   */
+  public void setFile(String file) {
+    // Trim spaces from both ends. The users probably does not want 
+    // trailing spaces in file names.
+    String val = file.trim();
+    if(val.equalsIgnoreCase("System.out")) {
+      setWriter(new OutputStreamWriter(System.out));
+    } else if(val.equalsIgnoreCase("System.err")) {
+      setWriter(new OutputStreamWriter(System.err));
+    } else {
+      fileName = val;
+    }
+  }
+  
+  /** Returns the value of the <b>File</b> option. */
+  public
+  String getFile() {
+    return fileName;
+  }
+  
+  /**
+     <The <b>Append</b> option takes a boolean value. It is set to
+     <code>true</code> by default. If true, then <code>File</code>
+     will be opened in append mode by {@link #setFile setFile} (see
+     above). Otherwise, {@link #setFile setFile} will open
+     <code>File</code> in truncate mode.
+
+     <p>Note: Actual opening of the file is made when {@link
+     #activateOptions} is called, not when the options are set.
+   */
+  public
+  void setAppend(boolean flag) {
+    fileAppend = flag;
+  }
+  
+  /** Returns the value of the <b>Append</b> option. */
+  public
+  boolean getAppend() {
+    return fileAppend;
+  }
+
+  /**
      If the value of {@link #FILE_OPTION} is not <code>null</code>, then {@link
      #setFile} is called with the values of {@link #FILE_OPTION} and
      {@link #APPEND_OPTION}.
@@ -186,32 +222,6 @@ public class FileAppender extends WriterAppender {
   }
 
   /**
-     Return an option by name.     
-   */
-  public
-  String getOption(String key) {
-    if (key.equalsIgnoreCase(FILE_OPTION)) {
-      return fileName;
-    } else if (key.equalsIgnoreCase(APPEND_OPTION)) {
-      return fileAppend ? "true" : "false";
-    } else {
-      return super.getOption(key);
-    }
-  }
-
- 
-  /**
-     Returns the option names for this component, namely the string
-     array {@link #FILE_OPTION}, {@link #APPEND_OPTION}} in addition
-     to the options of its super class {@link WriterAppender}.  */
-  public
-  String[] getOptionStrings() {
-    return OptionConverter.concatanateArrays(super.getOptionStrings(),
-          new String[] {FILE_OPTION, APPEND_OPTION});
-  }
-
-
-  /**
     <p>Sets and <i>opens</i> the file where the log output will
     go. The specified file must be writable. 
 
@@ -231,79 +241,6 @@ public class FileAppender extends WriterAppender {
     this.fileAppend = append;
     this.qwIsOurs = true;
     writeHeader();
-  }
-
-  /**
-    <p>Sets and <i>opens</i> the file where the log output will
-    go. The specified file must be writable.
-
-    <p>The open mode (append/truncate) will depend on the value of
-    FileAppend option. If undefined, append mode is used.
-
-    @param fileName The name of the log file.
-  */
-  public
-  void setFile(String fileName) throws IOException {    
-    this.setFile(fileName, fileAppend);
-  }
-  
-  /**
-     Set FileAppender specific options.
-          
-     The recognized options are <b>File</b> and <b>Append</b>,
-     i.e. the values of the string constants. The options of the super
-     class {@link WriterAppender} are also recognized. See in
-     particular the <b>Threshold</b> option of {@link
-     AppenderSkeleton}.
-
-     <p>The <b>File</b> option takes a string value which should be
-     the name of the file to append to. Special values "System.out" or
-     "System.err" are interpreted as the standard out and standard
-     error streams.
-
-     <font color="#DD0044"><b>Note that the "System.out" or "System.err"
-     options are deprecated. Use {@link ConsoleAppender}
-     instead.</b></font>
-
-     <p>If the option is set to "System.out" or "System.err" the
-     output will go to the corresponding stream. Otherwise, if the
-     option is set to the name of a file, then the file will be opened
-     and output will go there.
-     
-     <p>The <b>Append</b> option takes a boolean value. It is set to
-     <code>true</code> by default. If true, then <code>File</code>
-     will be opened in append mode by {@link #setFile setFile} (see
-     above). Otherwise, {@link #setFile setFile} will open
-     <code>File</code> in truncate mode.
-
-     <p>Note: Actual opening of the file is made when {@link
-     #activateOptions} is called, not when the options are set.
-     
-     <p>Make sure to refer to the options defined in the super classes
-     {@link WriterAppender} and in particular the <b>Threshold</b>
-     option in {@link AppenderSkeleton}.
-
-     @since 0.8.1 */
-  public
-  void setOption(String key, String value) {
-    if(value == null) return;
-    super.setOption(key, value);
-    
-    if(key.equalsIgnoreCase(FILE_OPTION)) {
-      // Trim spaces from both ends. The users probably does not want 
-      // trailing spaces in file names.
-      String val = value.trim();
-      if(val.equalsIgnoreCase("System.out")) {
-	setWriter(new OutputStreamWriter(System.out));
-      } else if(val.equalsIgnoreCase("System.err")) {
-	setWriter(new OutputStreamWriter(System.err));
-      } else {
-	fileName = val;
-      }
-    }
-    else if (key.equalsIgnoreCase(APPEND_OPTION)) {
-      fileAppend = OptionConverter.toBoolean(value, fileAppend);
-    }
   }
 
   /**

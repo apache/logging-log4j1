@@ -69,9 +69,9 @@ import org.apache.log4j.spi.LoggingEvent;
 */
 public class TTCCLayout extends DateLayout {
 
-  final static public String THREAD_PRINTING_OPTION = "ThreadPrinting";
-  final static public String CATEGORY_PREFIXING_OPTION = "CategoryPrefixing";
-  final static public String CONTEXT_PRINTING_OPTION  = "ContextPrinting";  
+  //final static public String THREAD_PRINTING_OPTION = "ThreadPrinting";
+  //final static public String CATEGORY_PREFIXING_OPTION = "CategoryPrefixing";
+  //final static public String CONTEXT_PRINTING_OPTION  = "ContextPrinting";  
 
     		
   // Internal representation of options
@@ -106,8 +106,58 @@ public class TTCCLayout extends DateLayout {
   public TTCCLayout(String dateFormatType) {
     this.setDateFormat(dateFormatType);
   }
-
   
+  /**
+     The <b>ThreadPrinting</b> option specifies whether the name of the
+     current thread is part of log output or not. This is true by default.
+   */
+  public
+  void setThreadPrinting(boolean threadPrinting) {
+    this.threadPrinting = threadPrinting;
+  }
+  
+  /**
+     Returns value of the <b>ThreadPrinting</b> option.
+   */
+  public
+  boolean getThreadPrinting() {
+    return threadPrinting;
+  }
+  
+  /**
+     The <b>CategoryPrefixing</b> option specifies whether {@link Category}
+     name is part of log output or not. This is true by default.
+   */
+  public
+  void setCategoryPrefixing(boolean categoryPrefixing) {
+    this.categoryPrefixing = categoryPrefixing;
+  }
+  
+  /**
+     Returns value of the <b>CategoryPrefixing</b> option.
+   */
+  public
+  boolean getCategoryPrefixing() {
+    return categoryPrefixing;
+  }
+  
+  /**
+     The <b>ContextPrinting</b> option specifies log output will include
+     the nested context information belonging to the current thread.
+     This is true by default.
+   */
+  public
+  void setContextPrinting(boolean contextPrinting) {
+    this.contextPrinting = contextPrinting;
+  }
+  
+  /**
+     Returns value of the <b>ContextPrinting</b> option.
+   */
+  public
+  boolean getContextPrinting() {
+    return contextPrinting;
+  }
 
   /**
    In addition to the priority of the statement and message, the
@@ -156,15 +206,7 @@ public class TTCCLayout extends DateLayout {
     buf.append(LINE_SEP);    
     return buf.toString();
   }
-
-  public
-  String[] getOptionStrings() {
-    return OptionConverter.concatanateArrays(super.getOptionStrings(),
-              new String[] {THREAD_PRINTING_OPTION, CATEGORY_PREFIXING_OPTION,
-  			    CONTEXT_PRINTING_OPTION});
-
-  }
-
+  
  /** 
      The TTCCLayout does not handle the throwable contained within
      {@link LoggingEvent LoggingEvents}. Thus, it returns
@@ -174,79 +216,5 @@ public class TTCCLayout extends DateLayout {
   public
   boolean ignoresThrowable() {
     return true;
-  }
-
-  
-  /**
-    <p>On top of the {@link DateLayout#setOption DateLayout} options
-    <code>TTCCLayout</code> specific options are:
-
-    <dl>
-
-    
-    <p><dt><b>ThreadPrinting</b>
-
-    <dd>If set to true, the printed message will include the name of
-    the current thread. Is set to true by default.
-    
-    <p><dt><b>ContextPrinting</b>
-
-    <dd>If set to true, the printed message will include the nested
-    context belonging to current thread. Is set to true by default.
-    
-    <p><dt><b>CategoryPrefixing</b>
-
-    <dd>If set to true, the printed message will include the category
-    of the satetement as prefix. Is set to true by default.
-
-
-    </dl> */
-  public
-  void setOption(String key, String value) {
-    super.setOption(key, value);    
-
-    if(key.equalsIgnoreCase(THREAD_PRINTING_OPTION)) 
-      threadPrinting = OptionConverter.toBoolean(value, threadPrinting);
-    else if(key.equalsIgnoreCase(CATEGORY_PREFIXING_OPTION))
-      categoryPrefixing = OptionConverter.toBoolean(value, categoryPrefixing);
-    else if(key.equalsIgnoreCase(CONTEXT_PRINTING_OPTION))
-      contextPrinting = OptionConverter.toBoolean(value, contextPrinting);
-  }
-  
-  public
-  String getOption(String key) {
-    if(key.equalsIgnoreCase(THREAD_PRINTING_OPTION)) {
-      return threadPrinting ? "true" : "false";
-    } else if(key.equalsIgnoreCase(CATEGORY_PREFIXING_OPTION)) {
-      return categoryPrefixing ? "true" : "false";
-    } else if(key.equalsIgnoreCase(CONTEXT_PRINTING_OPTION)) {
-      return contextPrinting ? "true" : "false";
-    } else {
-      return super.getOption(key);
-    }
-  }
-
-  /**
-     Provides an alternate method to set the
-     <code>CategoryPrefixing</code> option. Preferred method to set
-     options is through a configuration file.
-
-     <p>See also {@link PropertyConfigurator}.  */
-  public
-  void setCategoryPrefixing(boolean categoryPrefixing) {
-    this.categoryPrefixing = categoryPrefixing;    
-  }
-  
-  
-
-  /**
-     Provides an alternate method to set the
-     <code>ThreadPrinting</code> option. Preferred method to set
-     options is through the configuration file.
-
-     <p>Seel also {@link PropertyConfigurator} */
-  public
-  void setThreadPrinting(boolean threadPrinting) {
-    this.threadPrinting = threadPrinting;    
   }
 } 

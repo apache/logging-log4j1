@@ -10,7 +10,6 @@
 package org.apache.log4j.spi;
 
 /**
-
    A string based interface to configure package components.
 
    @author Ceki G&uuml;lc&uuml;
@@ -20,39 +19,17 @@ package org.apache.log4j.spi;
 public interface OptionHandler {
 
   /**
-     Activate the options that were previously set with calls to {@link
-     #setOption setOption}.
+     Activate the options that were previously set with calls to option
+     setters.
 
      <p>This allows to defer activiation of the options until all
      options have been set. This is required for components which have
      related options that remain ambigous until all are set.
 
-     <p>For example, the FileAppender has the "File" and "Append" options
-     both of which are ambigous until the other is also set.
+     <p>For example, the FileAppender has the
+     {@link FileAppender#setFile File} and
+     {@link FileAppender#setAppend Append} options both of which are
+     ambigous until the other is also set.
   */
-  void activateOptions();  
-
-  /**
-     Return list of strings that the OptionHandler instance recognizes.
-   */
-  String[] getOptionStrings();
-
-  /**
-     Set <code>option</code> to <code>value</code>.
-
-     <p>The handling of each option depends on the OptionHandler
-     instance. Some options may become active immediately whereas
-     other may be activated only when {@link #activateOptions} is
-     called.
-
-  */
-  void setOption(String option, String value);
-  
-  /**
-     Returns the current value of the specified option, or null
-     if the option name is unkown or undefined.
-     
-     @since 1.1
-  */
-  String getOption(String option);
+  void activateOptions();
 }

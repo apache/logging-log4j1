@@ -198,7 +198,7 @@ if [ $TEST -ge $start ]; then
   lecho "log4j.configDebug=false"
   lecho "log4j.appender.testAppender=org.apache.log4j.ConsoleAppender"
   lecho "log4j.appender.testAppender.Target=  System.out  "
-  lecho "log4j.appender.testAppender.Append= true  "
+#  lecho "log4j.appender.testAppender.Append= true  "
   lecho "log4j.appender.testAppender.layout=org.apache.log4j.PatternLayout"
   lecho "log4j.appender.testAppender.layout.ConversionPattern=[%t] %p - %m%n"
    echo -n " ConfigurationParsing test $TEST (can fail if anything is written to System.err) - "
@@ -225,7 +225,7 @@ rm $TEMP > /dev/null
 # Test variable subst from the config file itself
 TEST=11;
 if [ $TEST -ge $start ]; then
-  D_FLAG=""
+  D_FALG=""
   echo  "log4j.rootCategory= DEBUG , testAppender" > $LCF
   lecho "log4j.configDebug=false"
   # $TEMP will be replaced by the shell

@@ -54,25 +54,6 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
    */
   protected boolean closed = false;
 
-
-  /**
-     The variable <code>emittedWarning</code> lets us remember whether
-     we already emitted a warning to <code>System.err.</code>  */
-  //  protected boolean emittedWarning = false;
-  
-
-  /**
-     A string constant used in naming the option for setting the
-     threshold for the appender. See also {@link #setThreshold
-     setThreshold} method. Current value of this string constant is
-     <b>Threshold</b>.
-
-     <p>Note that all option keys are case sensitive.
-     
-  */
-  public static final String THRESHOLD_OPTION = "Threshold";
-
- 
   /**
      Derived appenders should override this method if option structure
      requires it.  */
@@ -179,16 +160,6 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
   }
 
   /**
-     Returns the string array {{@link #THRESHOLD_OPTION}}.
-
-     <p>Configurable Appenders must override this method to return the
-     additional options they accept.  */
-  public
-  String[] getOptionStrings() {
-    return new String[] {THRESHOLD_OPTION};
-  }
-
-  /**
      Check whether the message priority is below the appender's
      threshold. Ig there is no threshold set, then the return value is
      always <code>true</code>.
@@ -268,56 +239,33 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
   
   /**
      Set the name of this Appender.
-     
    */
   public
   void setName(String name) {
     this.name = name;
   }
-
-
-  /**
-     All classes derived from {@link AppenderSkeleton} admit the
-     <b>Threshold</b> option. The value of this option is a priority
-     string, such as "DEBUG", "INFO" and so on.  All log events with
-     lower priority than the threshold priority are ignored by the
-     appender.  
-
-     <p>Configurable Appenders should override this method if they
-     admit additional options.  */
-  public
-  void setOption(String key, String value) {
-    if(key.equalsIgnoreCase(THRESHOLD_OPTION)) {
-      threshold = Priority.toPriority(value);
-    }
-  }
   
-  /**
-     Returns the current value of the named option, or null if this
-     is not a known option.
-     
-     <p>Configurable Appenders should override this method if they admit
-     additional options.
-
-     The {@link AppenderSkeleton} returns the value of the
-     {@link #THRESHOLD_OPTION} or null.
-  */
-  public
-  String getOption(String key) {
-    if(key.equalsIgnoreCase(THRESHOLD_OPTION)) {
-      return threshold == null ? null : threshold.toString();
-    } else {
-      return null;
-    }
-  }
-
   /**
      Set the threshold priority. All log events with lower priority
      than the threshold priority are ignored by the appender.
+     
+     <p>In configuration files this option is specified by setting the
+     value of the <b>Threshold</b> option to a priority
+     string, such as "DEBUG", "INFO" and so on.
      
      @since 0.8.3 */
   public
   void setThreshold(Priority threshold) {
     this.threshold = threshold;
+  }
+  
+  /**
+     Returns this appenders threshold priority.
+     
+     @since 1.1
+   */
+  public
+  Priority getThreshold() {
+    return threshold;
   }
 }

@@ -127,42 +127,6 @@ public class SocketAppender extends AppenderSkeleton {
   //private static final int RESET_FREQUENCY = 70;
   private static final int RESET_FREQUENCY = 1;
 
-  /**
-     A string constant used in naming the option for setting the the
-     host name of the remote server.  Current value of this string
-     constant is <b>RemoteHost</b>. See the {@link #setOption} method
-     for the meaning of this option.
-
-  */
-  public static final String REMOTE_HOST_OPTION = "RemoteHost";
-
- /**
-     A string constant used in naming the option for setting the the
-     port to contect on the remote server.  Current value of this string
-     constant is <b>Port</b>.  See the {@link #setOption} method
-     for the meaning of this option.
-
-  */
-  public static final String PORT_OPTION = "Port";
-
-  /**
-     A string constant used in naming the option for setting the the
-     location information flag.  Current value of this string
-     constant is <b>LocationInfo</b>.  See the {@link #setOption} method
-     for the meaning of this option.
-
-  */
-  public static final String LOCATION_INFO_OPTION = "LocationInfo";
-
-  /**
-     A string constant used in naming the option for setting the delay
-     between each reconneciton attempt to remote server.  Current
-     value a of this string constant is <b>ReconnectionDelay</b>.  See
-     the {@link #setOption} method for the meaning of this option.
-
-  */
-  public static final String RECONNECTION_DELAY_OPTION = "ReconnectionDelay";
-
   public SocketAppender() {
   }
 
@@ -308,23 +272,6 @@ public class SocketAppender extends AppenderSkeleton {
   }
 
   /**
-     Retuns the option names for this component, namely the string
-     array consisting of {{@link #REMOTE_HOST_OPTION}, {@link
-     #PORT_OPTION}, {@link #LOCATION_INFO_OPTION}, {@link
-     #RECONNECTION_DELAY_OPTION}} in addition to the options of its
-     super class {@link AppenderSkeleton}.
-
-    */
-  public
-  String[] getOptionStrings() {
-    return OptionConverter.concatanateArrays(super.getOptionStrings(),
-                          new String[] {REMOTE_HOST_OPTION, PORT_OPTION, 
-					LOCATION_INFO_OPTION,
-					RECONNECTION_DELAY_OPTION});
-  }
-
-
-  /**
      The SocketAppender does not use a layout. Hence, this method returns
      <code>false</code>.
   */
@@ -333,76 +280,81 @@ public class SocketAppender extends AppenderSkeleton {
     return false;
   }
 
-  
   /**
-     Set SocketAppender specific options.
-     
-     <p>On top of the options of the super class {@link
-     AppenderSkeleton}, the recognized options are <b>RemoteHost</b>,
-     <b>Port</b> and <b>ReconnectionDelay</b>, i.e. the values of the
-     string constants {@link #REMOTE_HOST_OPTION}, {@link
-     #PORT_OPTION},{@link #LOCATION_INFO_OPTION} and respectively {@link
-     #RECONNECTION_DELAY_OPTION}.
-     
-     <p>The <b>RemoteHost</b> option takes a string value which should be
+     The <b>RemoteHost</b> option takes a string value which should be
      the host name of the server where a {@link SocketNode} is running.
-
-     <p>The <b>Port</b> option takes a positive integer representing
-     the port where the server is waiting for connections.
-
-     <p>The <b>LocationInfo</b> option takes a boolean value. If true,
-     the information sent to the remote host will include location
-     information. By default no location information is sent to the server.
-     
-     <p>The <b>ReconnectionDelay</b> option takes a positive integer
-     representing the number of milliseconds to wait between each
-     failed connection attempt to the server. The default value of
-     this option is 30000 which corresponds to 30 seconds. 
-     
-     <p>Setting this option to zero turns off reconnection
-     capability. 
-         
    */
   public
-  void setOption(String option, String value) {
-    if(value == null) return;
-    super.setOption(option, value);    
-
-    if(option.equals(REMOTE_HOST_OPTION)) {
-      address = getAddressByName(value);
-      remoteHost = value;
-    } else if (option.equals(PORT_OPTION)) {
-      port = OptionConverter.toInt(value, port);
-    } else if (option.equals(LOCATION_INFO_OPTION)) {
-      locationInfo = OptionConverter.toBoolean(value, locationInfo);    
-    } else if (option.equals(RECONNECTION_DELAY_OPTION)) {
-      reconnectionDelay = OptionConverter.toInt(value, reconnectionDelay);  
-    }
+  void setRemoteHost(String host) {
+    address = getAddressByName(host);
+    remoteHost = host;
   }
   
+  /**
+     Returns value of the <b>RemoteHost</b> option.
+   */
   public
-  String getOption(String key) {
-    if(key.equals(REMOTE_HOST_OPTION)) {
-      return remoteHost;
-    } else if (key.equals(PORT_OPTION)) {
-      if (port == DEFAULT_PORT) {
-        return null;
-      } else  {
-        return Integer.toString(port);
-      }
-    } else if (key.equals(LOCATION_INFO_OPTION)) {
-      return locationInfo ? "true" : "false";
-    } else if (key.equals(RECONNECTION_DELAY_OPTION)) {
-      if (reconnectionDelay == DEFAULT_RECONNECTION_DELAY) {
-        return null;
-      } else  {
-        return Integer.toString(reconnectionDelay);
-      }
-    } else {
-      return super.getOption(key);
-    }
+  String getRemoteHost() {
+    return remoteHost;
   }
-
+  
+  /**
+     The <b>Port</b> option takes a positive integer representing
+     the port where the server is waiting for connections.
+   */
+  public
+  void setPort(int port) {
+    this.port = port;
+  }
+  
+  /**
+     Returns value of the <b>Port</b> option.
+   */
+  public
+  int getPort() {
+    return port;
+  }
+  
+  /**
+     The <b>LocationInfo</b> option takes a boolean value. If true,
+     the information sent to the remote host will include location
+     information. By default no location information is sent to the server.
+   */
+  public
+  void setLocationInfo(boolean locationInfo) {
+    this.locationInfo = locationInfo;
+  }
+  
+  /**
+     Returns value of the <b>LocationInfo</b> option.
+   */
+  public
+  boolean getLocationInfo() {
+    return locationInfo;
+  }
+  
+  /**
+     The <b>ReconnectionDelay</b> option takes a positive integer
+     representing the number of milliseconds to wait between each
+     failed connection attempt to the server. The default value of
+     this option is 30000 which corresponds to 30 seconds.
+     
+     <p>Setting this option to zero turns off reconnection
+     capability.
+   */
+  public
+  void setReconnectionDelay(int delay) {
+    this.reconnectionDelay = delay;
+  }
+  
+  /**
+     Returns value of the <b>ReconnectionDelay</b> option.
+   */
+  public
+  int getReconnectionDelay() {
+    return reconnectionDelay;
+  }
+  
   /**
      The Connector will reconnect when the server becomes available
      again.  It does this by attempting to open a new connection every

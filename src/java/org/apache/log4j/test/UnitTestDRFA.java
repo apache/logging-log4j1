@@ -29,33 +29,27 @@ public class UnitTestDRFA extends TestCase {
   void testComputeCheckPeriod() {
     DailyRollingFileAppender drfa = new DailyRollingFileAppender();
     drfa.setName("testComputeCheckPeriod");
-    drfa.setOption(DailyRollingFileAppender.DATE_PATTERN_OPTION, 
-		   "yyyy-MM-dd.'log'");
+    drfa.setDatePattern("yyyy-MM-dd.'log'");
     assertEquals(drfa.computeCheckPeriod(), 
 		 DailyRollingFileAppender.TOP_OF_DAY);
 
-    drfa.setOption(DailyRollingFileAppender.DATE_PATTERN_OPTION, 
-		   "yyyy-MM-dd mm.'log'");
+    drfa.setDatePattern("yyyy-MM-dd mm.'log'");
     assertEquals(drfa.computeCheckPeriod(), 
 		 DailyRollingFileAppender.TOP_OF_MINUTE);
 
-    drfa.setOption(DailyRollingFileAppender.DATE_PATTERN_OPTION, 
-		   "yyyy-MM-dd a.'log'");
+    drfa.setDatePattern("yyyy-MM-dd a.'log'");
     assertEquals(drfa.computeCheckPeriod(), 
 		 DailyRollingFileAppender.HALF_DAY);
 
-    drfa.setOption(DailyRollingFileAppender.DATE_PATTERN_OPTION, 
-		   "yyyy-MM-dd HH.'log'");
+    drfa.setDatePattern("yyyy-MM-dd HH.'log'");
     assertEquals(drfa.computeCheckPeriod(), 
 		 DailyRollingFileAppender.TOP_OF_HOUR);
 
-    drfa.setOption(DailyRollingFileAppender.DATE_PATTERN_OPTION, 
-		   "yyyy-MM.'log'");
+    drfa.setDatePattern("yyyy-MM.'log'");
     assertEquals(drfa.computeCheckPeriod(), 
 		 DailyRollingFileAppender.TOP_OF_MONTH);
 
-    drfa.setOption(DailyRollingFileAppender.DATE_PATTERN_OPTION, 
-		   "'log'HH'log'");
+    drfa.setDatePattern("'log'HH'log'");
     assertEquals(drfa.computeCheckPeriod(), 
 		 DailyRollingFileAppender.TOP_OF_HOUR);
   }

@@ -31,12 +31,6 @@ import java.io.*;
 public class NTEventLogAppender extends AppenderSkeleton {
   private int _handle = 0;
 
-  /**
-     The string constant used in naming the source of the event. The
-     current value of this constant is <b>Source</b>.
-
-   */
-  public static final String SOURCE_OPTION = "Source";
   private String source = null;
   private String server = null;
 
@@ -130,30 +124,21 @@ public class NTEventLogAppender extends AppenderSkeleton {
     deregisterEventSource(_handle);
     _handle = 0;
   }
-
+  
   /**
-     Returns the option names for this component.
-   **/
+     The <b>Source</b> option which names the source of the event. The
+     current value of this constant is <b>Source</b>.
+   */
   public
-  String[] getOptionStrings() {
-    return OptionConverter.concatanateArrays(super.getOptionStrings(),
-          new String[] {SOURCE_OPTION});
+  void setSource(String source) {
+    this.source = source.trim();
   }
-
-
+  
   public
-  void setOption(String key, String value) {
-    if(value == null) return;
-    super.setOption(key, value);
-    
-
-    if(key.equalsIgnoreCase(SOURCE_OPTION)) {
-      // Set the source for the NT Evetns
-      source = value.trim();
-    }
+  String getSource() {
+    return source;
   }
-
-
+  
 /**
      The <code>NTEventLogAppender</code> requires a layout. Hence,
      this method always returns <code>true</code>. */

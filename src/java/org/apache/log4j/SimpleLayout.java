@@ -52,11 +52,6 @@ public class SimpleLayout extends Layout {
     return sbuf.toString();
   }
 
-  public
-  String[] getOptionStrings() {
-    return new String[0];
-  }
-
 /**
      The SimpleLayout does not handle the throwable contained within
      {@link LoggingEvent LoggingEvents}. Thus, it returns
@@ -66,14 +61,5 @@ public class SimpleLayout extends Layout {
   public
   boolean ignoresThrowable() {
     return true;
-  }  
-
-  public
-  void setOption(String option, String value) {
-  }
-  
-  public
-  String getOption(String option) {
-    return null;
   }
 }

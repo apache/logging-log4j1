@@ -40,31 +40,8 @@ import java.util.Enumeration;
    @since version 0.9.1 */
 public class AsyncAppender extends AppenderSkeleton 
                                             implements AppenderAttachable {
-
-
-  /**
-     A string constant used in naming the option for setting the
-     location information flag.  Current value of this string
-     constant is <b>LocationInfo</b>.  
-
-     <p>Note that all option keys are case sensitive.
-  */
-  public static final String LOCATION_INFO_OPTION = "LocationInfo";
-
-
-  /**
-     A string constant used in naming the option for setting the size of the
-     internal buffer where logging events are stored until they are written.
-     Current value of this string constant is <b>BufferSize</b>.  
-
-     <p>Note that all option keys are case sensitive.
-  */
-  public static final String BUFFER_SIZE_OPTION = "BufferSize";
-
-
-  /**
-     The default buffer size is set to 128 events.
-   */
+  
+  /** The default buffer size is set to 128 events. */
   public static final int DEFAULT_BUFFER_SIZE = 128;
 
   //static Category cat = Category.getInstance(AsyncAppender.class.getName());
@@ -146,17 +123,6 @@ public class AsyncAppender extends AppenderSkeleton
   Appender getAppender(String name) {
     return aai.getAppender(name);
   }
-
- /**
-     Returns the option names for this component in addition in
-     addition to the options of its super class {@link
-     AppenderSkeleton}.  */
-  public
-  String[] getOptionStrings() {
-    return OptionConverter.concatanateArrays(super.getOptionStrings(),
-          new String[] {LOCATION_INFO_OPTION});
-  }
-
   
   /**
      The <code>AsyncAppender</code> does not require a layout. Hence,
@@ -184,15 +150,32 @@ public class AsyncAppender extends AppenderSkeleton
     aai.removeAppender(name);
   }
 
- 
- /**
-     Set AsyncAppender specific options:
+  /**
+     The <b>LocationInfo</b> option takes a boolean value. By
+     default, it is set to false which means there will be no effort
+     to extract the location information related to the event. As a
+     result, the event that will be ultimately logged will likely to
+     contain the wrong location information (if present in the log
+     format).
 
-     <p>On top of the options of the super class {@link
-     AppenderSkeleton}, the only recognized options are
-     <b>BufferSize</b> and <b>LocationInfo</b>.
-     
-     <p> The <b>BufferSize</b> option takes a non-negative integer
+     <p>Location information extraction is comparatively very slow and
+     should be avoided unless performance is not a concern.
+   */
+  public
+  void setLocationInfo(boolean flag) {
+    locationInfo = flag;
+  }
+  
+  /**
+     Returns the current value of the <b>LocationInfo</b> option.
+   */
+  public
+  boolean getLocationInfo() {
+    return locationInfo;
+  }
+  
+  /**
+     The <b>BufferSize</b> option takes a non-negative integer
      value.  This integer value determines the maximum size of the
      bounded buffer. Increasing the size of the buffer is always
      safe. However, if an existing buffer holds unwritten elements,
@@ -202,31 +185,21 @@ public class AsyncAppender extends AppenderSkeleton
      {@link #DEFAULT_BUFFER_SIZE default buffer size} because
      configurators guarantee that an appender cannot be used before
      being completely configured. 
-
-     <p>The <b>LocationInfo</b> option takes a boolean value. By
-     default, it is set to false which means there will be no effort
-     to extract the location information related to the event. As a
-     result, the event that will be ultimately logged will likely to
-     contain the wrong location information (if present in the log
-     format).
-
-     <p>Location information extraction is comparatively very slow and
-     should be avoided unless performance is not a concern.
-
- */
+   */
   public
-  void setOption(String option, String value) {
-    if(value == null) return;
-    super.setOption(option, value);
-
-    if (option.equals(LOCATION_INFO_OPTION))
-      locationInfo = OptionConverter.toBoolean(value, locationInfo);
-    else if (option.equals(BUFFER_SIZE_OPTION)) {
-      int newSize = OptionConverter.toInt(value, DEFAULT_BUFFER_SIZE);
-      bf.resize(newSize);
-    }
+  void setBufferSize(int size) {
+    bf.resize(size);
   }
-
+  
+  /**
+     Returns the current value of the <b>BufferSize</b> option.
+   */
+  public
+  int getBufferSize() {
+    return bf.getMaxSize();
+  }
+  
+  /*
   public
   String getOption(String option) {
     if (option.equals(LOCATION_INFO_OPTION)) {
@@ -237,6 +210,7 @@ public class AsyncAppender extends AppenderSkeleton
       return super.getOption(option);
     }
   }
+  */
 }
 // ------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------

@@ -32,17 +32,29 @@ import org.apache.log4j.helpers.OptionConverter;
 
    @since 0.9.0 */
 public class StringMatchFilter extends Filter {
-
-  
-  public static final String STRING_TO_MATCH_OPTION = "StringToMatch";
-
-  /**
-   */
-  public static final String ACCEPT_ON_MATCH_OPTION = "AcceptOnMatch";
   
   boolean acceptOnMatch = true;
   String stringToMatch;
-
+  
+  public
+  void setStringToMatch(String s) {
+    stringToMatch = s;
+  }
+  
+  public
+  String getStringToMatch() {
+    return stringToMatch;
+  }
+  
+  public
+  void setAcceptOnMatch(boolean acceptOnMatch) {
+    this.acceptOnMatch = acceptOnMatch;
+  }
+  
+  public
+  boolean getAcceptOnMatch() {
+    return acceptOnMatch;
+  }
 
   /**
      Returns {@link Filter#NEUTRAL} is there is no string match.
@@ -63,32 +75,6 @@ public class StringMatchFilter extends Filter {
       } else {
 	return Filter.DENY;
       }
-    }
-  }
-
-  public
-  String[] getOptionStrings() {
-    return new String[] {STRING_TO_MATCH_OPTION, ACCEPT_ON_MATCH_OPTION};
-  }
-
-  public
-  void setOption(String key, String value) { 
-    
-    if(key.equalsIgnoreCase(STRING_TO_MATCH_OPTION)) {
-      stringToMatch = value;
-    } else if (key.equalsIgnoreCase(ACCEPT_ON_MATCH_OPTION)) {
-      acceptOnMatch = OptionConverter.toBoolean(value, acceptOnMatch);
-    }
-  }
-  
-  public
-  String getOption(String key) {
-    if(key.equalsIgnoreCase(STRING_TO_MATCH_OPTION)) {
-      return stringToMatch;
-    } else if (key.equalsIgnoreCase(ACCEPT_ON_MATCH_OPTION)) {
-      return acceptOnMatch ? "true" : "false";
-    } else {
-      return null;
     }
   }
 }

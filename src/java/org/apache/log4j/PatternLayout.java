@@ -378,28 +378,11 @@ import java.text.FieldPosition;
    @since 0.8.2 */
 public class PatternLayout extends Layout {
 
-   /**
-     A string constant used in naming the option for setting the
-     layout pattern. Current value of this string constant is
-     <b>ConversionPattern</b>.
-
-     <p>Note that the search for all option keys is case sensitive.
-     
-  */
-  final static public String CONVERSION_PATTERN_OPTION = "ConversionPattern";
-
   /** Default pattern string for log output. Currently set to the
       string <b>"%m%n"</b> which just prints the application supplied
       message. */
   public final static String DEFAULT_CONVERSION_PATTERN ="%m%n";
 
-  /*
-     A string constant used in naming the option for setting the time
-     zone for date output. Current value of this string constant is
-     <b>TimeZone</b>.
-  */
-  //final static public String TIMEZONE_OPTION = "TimeZone";  
-  
   /** A conversion pattern equivalent to the TTCCCLayout.
       Current value is <b>%r [%t] %p %c %x - %m%n</b>. */  
   public final static String TTCC_CONVERSION_PATTERN
@@ -436,7 +419,26 @@ public class PatternLayout extends Layout {
     head = createPatternParser((pattern == null) ? DEFAULT_CONVERSION_PATTERN : 
 			     pattern).parse();
   }
-
+  
+  /**
+     Set the <b>ConversionPattern</b> option. This is the string which
+     controls formatting and consists of a mix of literal content and
+     conversion specifiers.
+   */
+  public
+  void setConversionPattern(String conversionPattern) {
+    pattern = conversionPattern;
+    head = createPatternParser(conversionPattern).parse();
+  }
+  
+  /**
+     Returns the value of the <b>ConversionPattern</b> option.
+   */
+  public
+  String getConversionPattern() {
+    return pattern;
+  }
+  
   /**
      Does not do anything as options become effective immediately. See
      {@link #setOption} method. */
@@ -445,6 +447,16 @@ public class PatternLayout extends Layout {
     // nothing to do.
   }
   
+ /**
+     The PatternLayout does not handle the throwable contained within
+     {@link LoggingEvent LoggingEvents}. Thus, it returns
+     <code>true</code>.
+
+     @since 0.8.4 */
+  public
+  boolean ignoresThrowable() {
+    return true;
+  }
 
   /**
     Returns PatternParser used to parse the conversion string. Subclasses
@@ -476,79 +488,5 @@ public class PatternLayout extends Layout {
       c = c.next;
     }
     return sbuf.toString();
-  }
-  
-
-  /**
-     Returns the the array of option strings that {@link
-     PatternLayout} recognizes. The only recognized option string is
-     the value of {@link #CONVERSION_PATTERN_OPTION}.
-  */
-  public
-  String[] getOptionStrings() {
-    return new String[] {CONVERSION_PATTERN_OPTION};
-  }	
-
- /**
-     The PatternLayout does not handle the throwable contained within
-     {@link LoggingEvent LoggingEvents}. Thus, it returns
-     <code>true</code>.
-
-     @since 0.8.4 */
-  public
-  boolean ignoresThrowable() {
-    return true;
-  }
-  
-  /**
-     Set the conversion pattern.
-   */
-  public
-  void setConversionPattern(String conversionPattern) {
-    setOption(CONVERSION_PATTERN_OPTION, conversionPattern);
-  }
-
-  /**
-     The PatternLayout specific options are:
-
-     <p>
-     <dl>
-     <dt><b>ConversionPattern</b>
-
-     <p><dd>The value determines the conversion pattern used.
-     
-     </dl>
-   */
-  public
-  void setOption(String option, String value) {
-    if(value == null)
-      return;
-    if(option.equalsIgnoreCase(CONVERSION_PATTERN_OPTION)) {
-      pattern = value;
-      head = createPatternParser(value).parse();
-    }
-    //else if(option.equals(TIMEZONE_OPTION)) {
-    //try {
-    //timezone = OptionConverter.substituteVars(value);
-    //}
-    //catch(IllegalArgumentException e) {
-    //LogLog.error("Could not substitute variables." , e);
-    //}
-    //}
-  }
-  
-  /**
-      Returns the current value of the named option, or null if the
-      option name is unkown.
-      
-      The PatternLayout recognizes only the "ConversionPattern" option.
-  */
-  public
-  String getOption(String option) {
-    if (option.equalsIgnoreCase(CONVERSION_PATTERN_OPTION)) {
-      return pattern;
-    } else {
-      return null;
-    }
   }
 }

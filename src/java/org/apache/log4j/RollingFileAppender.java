@@ -30,20 +30,6 @@ import org.apache.log4j.spi.LoggingEvent;
    
 */
 public class RollingFileAppender extends FileAppender {
-
-  /**
-     A string constant used in naming the option for setting the
-     maximum size of the log file. Current value of this string constant is
-     <b>MaxFileSize</b>.
-   */
-  static final public String MAX_FILE_SIZE_OPTION = "MaxFileSize";
-  
-   /**
-     A string constant used in naming the option for setting the the
-     number of backup files to retain. Current value of this string
-     constant is <b>MaxBackupIndex</b>.  */
-  static final public String MAX_BACKUP_INDEX_OPTION = "MaxBackupIndex";  
-
   /**
      The default maximum file size is 10MB. 
   */
@@ -89,15 +75,49 @@ public class RollingFileAppender extends FileAppender {
   }
   
   /**
-     Retuns the option names for this component, namely {@link
-     #MAX_FILE_SIZE_OPTION} and {@link #MAX_BACKUP_INDEX_OPTION} in
-     addition to the options of {@link FileAppender#getOptionStrings
-     FileAppender}.  */
+     Set the maximum number of backup files to keep around.
+     
+     <p>The <b>MaxBackupIndex</b> option determines how many backup
+     files are kept before the oldest is erased. This option takes
+     a positive integer value. If set to zero, then there will be no
+     backup files and the log file will be truncated when it reaches
+     <code>MaxFileSize</code>.
+   */
   public
-  String[] getOptionStrings() {
+  void setMaxBackupIndex(int maxBackups) {
+    this.maxBackupIndex = maxBackups;    
+  }
+  
+  /**
+     Returns the value of the <b>MaxBackupIndex</b> option.
+   */
+  public
+  int getMaxBackupIndex() {
+    return maxBackupIndex;
+  }
 
-    return OptionConverter.concatanateArrays(super.getOptionStrings(),
-		 new String[] {MAX_FILE_SIZE_OPTION, MAX_BACKUP_INDEX_OPTION});
+  /**
+     Set the maximum size that the output file is allowed to reach
+     before being rolled over to backup files.
+     
+     <p>In configuration files, the <b>MaxFileSize</b> option takes an
+     long integer in the range 0 - 2^63. You can specify the value
+     with the suffixes "KB", "MB" or "GB" so that the integer is
+     interpreted being expressed respectively in kilobytes, megabytes
+     or gigabytes. For example, the value "10KB" will be interpreted
+     as 10240.
+   */
+  public
+  void setMaxFileSize(String value) {
+    maxFileSize = OptionConverter.toFileSize(value, maxFileSize + 1);
+  }
+  
+  /**
+     Returns the value of the <b>MaxFileSize</b> option.
+   */
+  public
+  long getMaxFileSize() {
+    return maxFileSize;
   }
 
   public
@@ -124,12 +144,14 @@ public class RollingFileAppender extends FileAppender {
      <code>File</code> is truncated with no backup files created.
      
    */
-
   public // synchronization not necessary since doAppend is alreasy synched
   void rollOver() {
     File target;    
     File file;
 
+    LogLog.debug("rolling over count=" + ((CountingQuietWriter) qw).getCount());
+    LogLog.debug("maxBackupIndex="+maxBackupIndex);
+    
     // If maxBackups <= 0, then there is no file renaming to be done.
     if(maxBackupIndex > 0) {
       // Delete the oldest file, to keep Windows happy.
@@ -142,6 +164,7 @@ public class RollingFileAppender extends FileAppender {
 	file = new File(fileName + "." + i);
 	if (file.exists()) {
 	  target = new File(fileName + '.' + (i + 1));
+	  LogLog.debug("Renaming file " + file + " to " + target);
 	  file.renameTo(target);
 	}
       }
@@ -152,6 +175,7 @@ public class RollingFileAppender extends FileAppender {
       this.closeFile(); // keep windows happy. 
 
       file = new File(fileName);
+      LogLog.debug("Renaming file " + file + " to " + target);
       file.renameTo(target);
     }
     
@@ -165,63 +189,10 @@ public class RollingFileAppender extends FileAppender {
     }
   }
 
-  /**
-     Set the maximum number of backup files to keep around.
-     
-   */
-  public
-  void setMaxBackupIndex(int maxBackups) {
-    this.maxBackupIndex = maxBackups;    
-  } 
-
-  /**
-     Set the maximum size that the output file is allowed to reach
-     before being rolled over.     
-   */
-  public
-  void setMaxFileSize(long maxFileSize) {
-    this.maxFileSize = maxFileSize;    
-  }
-
-   /**
-     Set RollingFileAppender specific options.
-
-     In addition to {@link FileAppender#setOption FileAppender
-     options} RollingFileAppender recognizes the options
-     <b>MaxFileSize</b> and <b>MaxBackupIndex</b>.
-
-     
-     <p>The <b>MaxFileSize</b> determines the size of log file
-     before it is rolled over to backup files. This option takes an
-     long integer in the range 0 - 2^63. You can specify the value
-     with the suffixes "KB", "MB" or "GB" so that the integer is
-     interpreted being expressed respectively in kilobytes, megabytes
-     or gigabytes. For example, the value "10KB" will be interpreted
-     as 10240.
-     
-     <p>The <b>MaxBackupIndex</b> option determines how many backup
-     files are kept before the oldest is erased. This option takes
-     a positive integer value. If set to zero, then there will be no
-     backup files and the log file will be truncated when it reaches
-     <code>MaxFileSize</code>.
-
-   */
-  public
-  void setOption(String key, String value) {
-    super.setOption(key, value);    
-    if(key.equalsIgnoreCase(MAX_FILE_SIZE_OPTION)) {
-      maxFileSize = OptionConverter.toFileSize(value, maxFileSize + 1);
-    }
-    else if(key.equalsIgnoreCase(MAX_BACKUP_INDEX_OPTION)) {
-      maxBackupIndex = OptionConverter.toInt(value, maxBackupIndex);
-    }
-  }
-  
   protected
   void setQWForFiles(Writer writer) {
      this.qw = new CountingQuietWriter(writer, errorHandler);
   }
-
 
   /**
      This method differentiates RollingFileAppender from its super
@@ -235,6 +206,5 @@ public class RollingFileAppender extends FileAppender {
     if((fileName != null) &&
                      ((CountingQuietWriter) qw).getCount() >= maxFileSize) 
       this.rollOver();
-   } 
-
-} 
+   }
+}
