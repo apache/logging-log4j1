@@ -203,14 +203,24 @@
 	</dd>
 	
 	<!-- =========================================================================== -->
-	
+	<dt><a
+	href="http://log4perl.sourceforge.net"><b>Log::Log4perl</b></a></dt>
+
+	<dd>Log::Log4perl is a Perl port of log4j by Kevin Goess and
+	Mike Schilli. The authors made sure that their port was as
+	close as possible to the original implementation.  Even the
+	configuration files are similar! The project is still being
+	enhanced, however the current release is stable and has been
+	released to CPAN.
+	</dd>
+	<!-- =========================================================================== -->	
 	<dt><a
 	href="http://www.neoworks.com/products/log4net/"><b>log4net</b></a></dt>
 
 	<dd>The .NET implementation of the popular log4j Java API
 	providing flexible and arbitrarily granular control over log
 	management and configuration.</dd>
-	
+
 	<!-- =========================================================================== -->
 	<dt><a
 	href="http://www.its4you.at/log4py.php"><b>log4py</b></a></dt>
