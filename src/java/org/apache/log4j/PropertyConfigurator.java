@@ -59,21 +59,20 @@ import java.util.Hashtable;
    appenders such as the {@link org.apache.log4j.AsyncAppender
    AsyncAppender}, etc.
 
-   <p><em>All option values admit variable substitution.</em> For
-   example, if <code>java.home</code> system property is set to
-   <code>/home/xyz</code> and the File option is set to the string
-   <code>${java.home}/test.log</code>, then File option will be
-   interpreted as the string <code>/home/xyz/test.log</code>.
-
-   <p>The value of the substituted variable can be defined as a system
-   property or in the configuration file file itself.
-
-   <p>The syntax of variable substitution is similar to that of UNIX
+   <p>All option <em>values</em> admit variable substitution. The
+   syntax of variable substitution is similar to that of Unix
    shells. The string between an opening <b>&quot;${&quot;</b> and
-   closing <b>&quot;}&quot;</b> is interpreted as a key. Its value is
+   closing <b>&quot;}&quot;</b> is interpreted as a key. The value of
+   the substituted variable can be defined as a system property or in
+   the configuration file itself. The value of the key is first
    searched in the system properties, and if not found there, it is
-   searched in the configuration file being parsed.  The corresponding
-   value replaces the ${variableName} sequence.
+   then searched in the configuration file being parsed.  The
+   corresponding value replaces the ${variableName} sequence. For
+   example, if <code>java.home</code> system property is set to
+   <code>/home/xyz</code>, then every occurance of the sequence
+   <code>${java.home}</code> will be interpreted as
+   <code>/home/xyz</code>.
+
 
    @author Ceki G&uuml;lc&uuml;
    @author Anders Kristensen
