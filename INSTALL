@@ -50,8 +50,8 @@ The log4j distribution comes with one jar file: log4j-VERSION.jar
 under the $LOG4J_HOME/dist/lib/ directory.
 
 This jar file contains all the class files of the log4j project,
-except classes from the "examples" and "org.apache.log4j.performance"
-packages.
+except test cases and classes from the "examples" and
+"org.apache.log4j.performance" packages.
 
 ==================   
 log4j dependencies
@@ -60,9 +60,9 @@ log4j dependencies
 The log4j distribution comes with pre-compiled classes. Log4j is based
 on JDK 1.1 with the following additional requirements:
 
-    ---------------------
-    Package org.log4j.xml 
-    ---------------------
+    ----------------------------
+    Package org.apache.log4j.xml 
+    ----------------------------
 
     The DOMConfigurator is based on the DOM Level 1 API. The
     DOMConfigurator.configure(Element) method will work with any
@@ -103,9 +103,9 @@ on JDK 1.1 with the following additional requirements:
     JUnit testing framework
     -----------------------
 
-    Log4j uses the JUnit framework for internal unit testing.  If you
-    want to compile all log4j source code, then you will need
-    JUnit. JUnit is available from:
+    Log4j uses the JUnit framework version 3.7 for internal unit
+    testing.  If you want to compile all log4j source code, then you
+    will need JUnit. JUnit is available from:
 
           http://www.junit.org
 
