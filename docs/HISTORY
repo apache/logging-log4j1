@@ -6,6 +6,24 @@
  [***] Changes requiring important modifications to existing client code.
 
 
+ - Release of version 1.2.4
+
+ - XMLLayout can now output messages which contain embedded CDATA
+   sections. This resolves bug #9750. Many thanks Michael
+   A. McAngus for supplying the relevant patch. [*]
+
+ - The dispatcher thread associated with AsyncAppender is now marked
+   as a deamon thread. This resolves bug #9750. [*]
+
+ - Added missing NTEventLogAppender.dll as reported in bug #9606. [*]
+
+ - In response to bug report 9435, the log4j.dtd was changed so that
+   <log4j:event> is now made of logger and level attributes instead of
+   category and priority. Changed XMLLayout to conform to the
+   DTD. Chainsaw was changed to adapt to the XMLLayout. [*]
+
+ - Added missing LevelRangeFilter file. [*]
+
  May 24th, 2002,
 
  - Release of version 1.2.3

@@ -118,7 +118,7 @@ public class PropertyConfigurator implements Configurator {
     </pre>
 
     <p>The level value can consist of the string values OFF, FATAL,
-    ERROR, WARN, INFO, DEBUG, ALL or a <em>custom level</e> value. A
+    ERROR, WARN, INFO, DEBUG, ALL or a <em>custom level</em> value. A
     custom level value can be specified in the form
     level#classname. By default the repository-wide threshold is set
     to the lowest possible value, namely the level <code>ALL</code>.

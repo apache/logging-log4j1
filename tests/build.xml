@@ -51,9 +51,7 @@
     build  - compile all project files, if a certain library is missing, 
 	      then the compilation of its dependents are skipped.
 
-    regression - Run regression ests which check large parts of log4j.
-    unit       - Run unit tests which check one component at a time.
-    longUnit   - Run long unit tests which check one component at a time.
+    regression - Run regression tests which check large parts of log4j.
 
     runAll     - run all available tests
     </echo>
@@ -212,6 +210,13 @@
     </junit>
   </target>
 
+  <target name="ErrorHandler" depends="build">
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="false" />
+      <test name="org.apache.log4j.varia.ErrorHandlerTestCase" />
+    </junit>
+  </target>
 
   <target name="OptionConverter" depends="build">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
