@@ -51,6 +51,10 @@ package org.apache.log4j.plugins;
 
 import org.apache.log4j.spi.LoggerRepository;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+
 
 /**
   A convienent abstract class for plugin subclasses that implements
@@ -60,7 +64,7 @@ import org.apache.log4j.spi.LoggerRepository;
 
   <p>Developers are not required to subclass PluginSkeleton to
   develop their own plugins (they are only required to implement the
-  Plugin interface), but it provides a convienent base class to start
+  Plugin interface), but it provides a convenient base class to start
   from.
 
   Contributors: Nicko Cadell
@@ -78,6 +82,13 @@ public abstract class PluginSkeleton implements Plugin {
   protected boolean active;
 
   /**
+   * This is a delegate that does all the PropertyChangeListener
+   * support.
+   */
+  private PropertyChangeSupport propertySupport =
+    new PropertyChangeSupport(this);
+
+  /**
     Gets the name of the plugin.
 
     @return String the name of the plugin. */
@@ -86,11 +97,13 @@ public abstract class PluginSkeleton implements Plugin {
   }
 
   /**
-    Sets the name of the plugin.
+    Sets the name of the plugin and notifies PropertyChangeListeners of the change
 
     @param name the name of the plugin to set. */
   public void setName(String name) {
+    String oldName = this.name;
     this.name = name;
+    propertySupport.firePropertyChange("name", oldName, this.name);
   }
 
   /**
@@ -102,20 +115,91 @@ public abstract class PluginSkeleton implements Plugin {
   }
 
   /**
-    Sets the logger repository used by this plugin. This
+    Sets the logger repository used by this plugin and notifies an relevant PropertyChangeListeners registered. This
     repository will be used by the plugin functionality.
 
     @param repository the logger repository that this plugin should affect. */
   public void setLoggerRepository(LoggerRepository repository) {
+    Object oldValue = this.repository;
     this.repository = repository;
+    firePropertyChange("loggerRepository", oldValue, this.repository);
   }
 
   /**
    * Returns whether this plugin is Active or not
-   * @return true/false 
+   * @return true/false
    */
   public synchronized boolean isActive() {
     return active;
   }
 
+  /**
+   * @param listener
+   */
+  public final void addPropertyChangeListener(PropertyChangeListener listener) {
+    propertySupport.addPropertyChangeListener(listener);
+  }
+
+  /**
+   * @param propertyName
+   * @param listener
+   */
+  public final void addPropertyChangeListener(
+    String propertyName, PropertyChangeListener listener) {
+    propertySupport.addPropertyChangeListener(propertyName, listener);
+  }
+
+  /**
+   * @param listener
+   */
+  public final void removePropertyChangeListener(
+    PropertyChangeListener listener) {
+    propertySupport.removePropertyChangeListener(listener);
+  }
+
+  /**
+   * @param propertyName
+   * @param listener
+   */
+  public final void removePropertyChangeListener(
+    String propertyName, PropertyChangeListener listener) {
+    propertySupport.removePropertyChangeListener(propertyName, listener);
+  }
+
+  /**
+   * @param evt
+   */
+  protected final void firePropertyChange(PropertyChangeEvent evt) {
+    propertySupport.firePropertyChange(evt);
+  }
+
+  /**
+   * @param propertyName
+   * @param oldValue
+   * @param newValue
+   */
+  protected final void firePropertyChange(
+    String propertyName, boolean oldValue, boolean newValue) {
+    propertySupport.firePropertyChange(propertyName, oldValue, newValue);
+  }
+
+  /**
+   * @param propertyName
+   * @param oldValue
+   * @param newValue
+   */
+  protected final void firePropertyChange(
+    String propertyName, int oldValue, int newValue) {
+    propertySupport.firePropertyChange(propertyName, oldValue, newValue);
+  }
+
+  /**
+   * @param propertyName
+   * @param oldValue
+   * @param newValue
+   */
+  protected final void firePropertyChange(
+    String propertyName, Object oldValue, Object newValue) {
+    propertySupport.firePropertyChange(propertyName, oldValue, newValue);
+  }
 }
