@@ -1,85 +1,85 @@
-[main] DEBUG org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 0
-[main] DEBUG org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 0
-[main] INFO  org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 1
-[main] INFO  org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 1
-[main] WARN  org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 2
-[main] WARN  org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 2
-[main] ERROR org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 3
-[main] ERROR org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 3
-[main] FATAL org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 4
-[main] FATAL org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 4
-[main] DEBUG org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 5
+[main] DEBUG org.apache.log4j.PatternLayoutTestCase.common(X): Message 0
+[main] DEBUG org.apache.log4j.PatternLayoutTestCase.common(X): Message 0
+[main] INFO  org.apache.log4j.PatternLayoutTestCase.common(X): Message 1
+[main] INFO  org.apache.log4j.PatternLayoutTestCase.common(X): Message 1
+[main] WARN  org.apache.log4j.PatternLayoutTestCase.common(X): Message 2
+[main] WARN  org.apache.log4j.PatternLayoutTestCase.common(X): Message 2
+[main] ERROR org.apache.log4j.PatternLayoutTestCase.common(X): Message 3
+[main] ERROR org.apache.log4j.PatternLayoutTestCase.common(X): Message 3
+[main] FATAL org.apache.log4j.PatternLayoutTestCase.common(X): Message 4
+[main] FATAL org.apache.log4j.PatternLayoutTestCase.common(X): Message 4
+[main] DEBUG org.apache.log4j.PatternLayoutTestCase.common(X): Message 5
 java.lang.Exception: Just testing
-	at org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX)
-	at org.apache.log4j.PatternLayoutTestCase.test12(PatternLayoutTestCase.java:XXX)
-	at java.lang.reflect.Method.invoke(Native Method)
-	at junit.framework.TestCase.runTest(TestCase.java:XXX)
-	at junit.framework.TestCase.runBare(TestCase.java:XXX)
-	at junit.framework.TestResult$1.protect(TestResult.java:XXX)
-	at junit.framework.TestResult.runProtected(TestResult.java:XXX)
-	at junit.framework.TestResult.run(TestResult.java:XXX)
-	at junit.framework.TestCase.run(TestCase.java:XXX)
-	at junit.framework.TestSuite.runTest(TestSuite.java:XXX)
-	at junit.framework.TestSuite.run(TestSuite.java:XXX)
-	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(JUnitTestRunner.java:XXX)
-	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.main(JUnitTestRunner.java:XXX)
-[main] INFO  org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 6
+	at org.apache.log4j.PatternLayoutTestCase.common(X)
+	at org.apache.log4j.PatternLayoutTestCase.test12(X)
+	at java.lang.reflect.Method.invoke(X)
+	at junit.framework.TestCase.runTest(X)
+	at junit.framework.TestCase.runBare(X)
+	at junit.framework.TestResult$1.protect(X)
+	at junit.framework.TestResult.runProtected(X)
+	at junit.framework.TestResult.run(X)
+	at junit.framework.TestCase.run(X)
+	at junit.framework.TestSuite.runTest(X)
+	at junit.framework.TestSuite.run(X)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(X)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.main(X)
+[main] INFO  org.apache.log4j.PatternLayoutTestCase.common(X): Message 6
 java.lang.Exception: Just testing
-	at org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX)
-	at org.apache.log4j.PatternLayoutTestCase.test12(PatternLayoutTestCase.java:XXX)
-	at java.lang.reflect.Method.invoke(Native Method)
-	at junit.framework.TestCase.runTest(TestCase.java:XXX)
-	at junit.framework.TestCase.runBare(TestCase.java:XXX)
-	at junit.framework.TestResult$1.protect(TestResult.java:XXX)
-	at junit.framework.TestResult.runProtected(TestResult.java:XXX)
-	at junit.framework.TestResult.run(TestResult.java:XXX)
-	at junit.framework.TestCase.run(TestCase.java:XXX)
-	at junit.framework.TestSuite.runTest(TestSuite.java:XXX)
-	at junit.framework.TestSuite.run(TestSuite.java:XXX)
-	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(JUnitTestRunner.java:XXX)
-	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.main(JUnitTestRunner.java:XXX)
-[main] WARN  org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 7
+	at org.apache.log4j.PatternLayoutTestCase.common(X)
+	at org.apache.log4j.PatternLayoutTestCase.test12(X)
+	at java.lang.reflect.Method.invoke(X)
+	at junit.framework.TestCase.runTest(X)
+	at junit.framework.TestCase.runBare(X)
+	at junit.framework.TestResult$1.protect(X)
+	at junit.framework.TestResult.runProtected(X)
+	at junit.framework.TestResult.run(X)
+	at junit.framework.TestCase.run(X)
+	at junit.framework.TestSuite.runTest(X)
+	at junit.framework.TestSuite.run(X)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(X)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.main(X)
+[main] WARN  org.apache.log4j.PatternLayoutTestCase.common(X): Message 7
 java.lang.Exception: Just testing
-	at org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX)
-	at org.apache.log4j.PatternLayoutTestCase.test12(PatternLayoutTestCase.java:XXX)
-	at java.lang.reflect.Method.invoke(Native Method)
-	at junit.framework.TestCase.runTest(TestCase.java:XXX)
-	at junit.framework.TestCase.runBare(TestCase.java:XXX)
-	at junit.framework.TestResult$1.protect(TestResult.java:XXX)
-	at junit.framework.TestResult.runProtected(TestResult.java:XXX)
-	at junit.framework.TestResult.run(TestResult.java:XXX)
-	at junit.framework.TestCase.run(TestCase.java:XXX)
-	at junit.framework.TestSuite.runTest(TestSuite.java:XXX)
-	at junit.framework.TestSuite.run(TestSuite.java:XXX)
-	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(JUnitTestRunner.java:XXX)
-	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.main(JUnitTestRunner.java:XXX)
-[main] ERROR org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 8
+	at org.apache.log4j.PatternLayoutTestCase.common(X)
+	at org.apache.log4j.PatternLayoutTestCase.test12(X)
+	at java.lang.reflect.Method.invoke(X)
+	at junit.framework.TestCase.runTest(X)
+	at junit.framework.TestCase.runBare(X)
+	at junit.framework.TestResult$1.protect(X)
+	at junit.framework.TestResult.runProtected(X)
+	at junit.framework.TestResult.run(X)
+	at junit.framework.TestCase.run(X)
+	at junit.framework.TestSuite.runTest(X)
+	at junit.framework.TestSuite.run(X)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(X)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.main(X)
+[main] ERROR org.apache.log4j.PatternLayoutTestCase.common(X): Message 8
 java.lang.Exception: Just testing
-	at org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX)
-	at org.apache.log4j.PatternLayoutTestCase.test12(PatternLayoutTestCase.java:XXX)
-	at java.lang.reflect.Method.invoke(Native Method)
-	at junit.framework.TestCase.runTest(TestCase.java:XXX)
-	at junit.framework.TestCase.runBare(TestCase.java:XXX)
-	at junit.framework.TestResult$1.protect(TestResult.java:XXX)
-	at junit.framework.TestResult.runProtected(TestResult.java:XXX)
-	at junit.framework.TestResult.run(TestResult.java:XXX)
-	at junit.framework.TestCase.run(TestCase.java:XXX)
-	at junit.framework.TestSuite.runTest(TestSuite.java:XXX)
-	at junit.framework.TestSuite.run(TestSuite.java:XXX)
-	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(JUnitTestRunner.java:XXX)
-	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.main(JUnitTestRunner.java:XXX)
-[main] FATAL org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 9
+	at org.apache.log4j.PatternLayoutTestCase.common(X)
+	at org.apache.log4j.PatternLayoutTestCase.test12(X)
+	at java.lang.reflect.Method.invoke(X)
+	at junit.framework.TestCase.runTest(X)
+	at junit.framework.TestCase.runBare(X)
+	at junit.framework.TestResult$1.protect(X)
+	at junit.framework.TestResult.runProtected(X)
+	at junit.framework.TestResult.run(X)
+	at junit.framework.TestCase.run(X)
+	at junit.framework.TestSuite.runTest(X)
+	at junit.framework.TestSuite.run(X)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(X)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.main(X)
+[main] FATAL org.apache.log4j.PatternLayoutTestCase.common(X): Message 9
 java.lang.Exception: Just testing
-	at org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX)
-	at org.apache.log4j.PatternLayoutTestCase.test12(PatternLayoutTestCase.java:XXX)
-	at java.lang.reflect.Method.invoke(Native Method)
-	at junit.framework.TestCase.runTest(TestCase.java:XXX)
-	at junit.framework.TestCase.runBare(TestCase.java:XXX)
-	at junit.framework.TestResult$1.protect(TestResult.java:XXX)
-	at junit.framework.TestResult.runProtected(TestResult.java:XXX)
-	at junit.framework.TestResult.run(TestResult.java:XXX)
-	at junit.framework.TestCase.run(TestCase.java:XXX)
-	at junit.framework.TestSuite.runTest(TestSuite.java:XXX)
-	at junit.framework.TestSuite.run(TestSuite.java:XXX)
-	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(JUnitTestRunner.java:XXX)
-	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.main(JUnitTestRunner.java:XXX)
+	at org.apache.log4j.PatternLayoutTestCase.common(X)
+	at org.apache.log4j.PatternLayoutTestCase.test12(X)
+	at java.lang.reflect.Method.invoke(X)
+	at junit.framework.TestCase.runTest(X)
+	at junit.framework.TestCase.runBare(X)
+	at junit.framework.TestResult$1.protect(X)
+	at junit.framework.TestResult.runProtected(X)
+	at junit.framework.TestResult.run(X)
+	at junit.framework.TestCase.run(X)
+	at junit.framework.TestSuite.runTest(X)
+	at junit.framework.TestSuite.run(X)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(X)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.main(X)
