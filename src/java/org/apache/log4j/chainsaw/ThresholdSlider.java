@@ -55,11 +55,9 @@ import org.apache.log4j.Priority;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.JLabel;
@@ -75,8 +73,8 @@ import javax.swing.JSlider;
  */
 final class ThresholdSlider extends JSlider {
   final List priorityList;
+
   ThresholdSlider() {
-    
     Priority[] priorities =
       new Level[] {
         Level.OFF, Level.FATAL, Level.ERROR, Level.WARN, Level.INFO,
@@ -109,41 +107,44 @@ final class ThresholdSlider extends JSlider {
       new DefaultBoundedRangeModel(
         priorityList.indexOf(Level.DEBUG), 0, 0, priorityList.size() - 1));
 
-        
     Hashtable labelMap = new Hashtable();
+
     for (Iterator iter = priorityList.iterator(); iter.hasNext();) {
       Priority item = (Priority) iter.next();
-      labelMap.put(new Integer(priorityList.indexOf(item)), new JLabel(item.toString()));
-//      System.out.println("creating levels for :: " + item.toInt() + "," + item.toString());
+      labelMap.put(
+        new Integer(priorityList.indexOf(item)), new JLabel(item.toString()));
+
+      //      System.out.println("creating levels for :: " + item.toInt() + "," + item.toString());
     }
-    
+
     setOrientation(JSlider.VERTICAL);
     setInverted(true);
     setLabelTable(labelMap);
 
     setPaintLabels(true);
-//    setPaintTicks(true);
+
+    //    setPaintTicks(true);
     setSnapToTicks(true);
-//    setMajorTickSpacing(10000);
-    
-//    setPaintTrack(true);
-    
+
+    //    setMajorTickSpacing(10000);
+    //    setPaintTrack(true);
   }
-  
-  void setChosenLevel(Level level){
+
+  void setChosenLevel(Level level) {
     setValue(priorityList.indexOf(level));
   }
-  
+
   /**
    * Returns the Log4j Level that is currently selected in this slider
    * @return
    */
   Level getSelectedLevel() {
     Level level = (Level) priorityList.get(getValue());
-    
-    if(level==null){
+
+    if (level == null) {
       level = Level.DEBUG;
     }
+
     return level;
   }
 }
