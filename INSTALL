@@ -73,8 +73,9 @@ Log4j is based on JDK 1.1 with the following additional requirements:
     parser. Compiling the DOMConfigurator requires the presence of a
     JAXP parser in the classpath.  
 
-    Log4j is shipped with jaxp.jar and parser.jar files under the
-    build/lib/ directory.
+    Given that Ant already ships with a compatible XML parser, you do
+    *not* need to worry about setting the parser when building,
+    i.e. compiling, log4j.
 
     ------------
     SMTPAppender
