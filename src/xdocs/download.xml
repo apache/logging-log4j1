@@ -39,9 +39,10 @@
 	replacement for log4j 1.1.3. The only exception is the
 	renaming of the <code>CategoryFactory</code> class to
 	<code>LoggerFactory</code> class such that subclasses of
-	<code>Category</code> class to be modified and recompiled. By
-	the way, we strongly discourage casual users from subclassing
-	the <code>Category</code> or <code>Logger</code> classes.
+	<code>Category</code> class must be modified and
+	recompiled. By the way, <b>we strongly discourage casual users
+	from subclassing the <code>Category</code> or
+	<code>Logger</code> classes.</b>
       </p>
 
       <p>We also maintain a list of <a href="earlier.html">earlier
