@@ -54,26 +54,25 @@
 
     </section>
 
-    <section name="log4j version 1.2 beta2">
-      <p>log4j 1.2 is now available in in <a
-	href="../jakarta-log4j-1.2beta2.tar.gz"><b>TAR.GZ</b></a>
+    <section name="log4j version 1.2 beta3">
+      <p>log4j 1.2 beta 3 is now available in <a
+	href="../jakarta-log4j-1.2beta3.tar.gz"><b>TAR.GZ</b></a>
 	format or in <a
-	href="../jakarta-log4j-1.2beta2.zip"><b>ZIP</b></a> format.
+	href="../jakarta-log4j-1.2beta3.zip"><b>ZIP</b></a> format.
       </p>
 
- 
-      <p>Log4j version 1.2 is not feature-complete, nor is the
-	documentation up to date.  Some previously deprecated APIs are
-	now removed. Moreover, users who have written sub-classes of
-	Category will need to modify their code. We have gone to great
-	lengths to ensure that version 1.2 is backward compatible with
-	earlier versions. Client source code writen for log4j 1.1.3
-	will compile without any problems using log4j version
-	1.2. Unfortunately however, code compiled for log4j 1.1.3
-	would systematically throw "java.lang.NoSuchMethodError"
-	runtime exceptions with log4j 1.2 prior to beta2. This problem
-	has been corrected in beta2.
+
+      <p>In addition to many performance improvements, bug fixes, and
+	other small enhancements, log4j 1.2 beta3 adds JMX support,
+	Mapped Diagnostic Contexts, and buffered IO capability. One
+	important change is the replacement of the Category class with
+	Logger class and the Priority with the Level in order to
+	facilitate migrating from the JDK 1.4 logging API to log4j.
       </p>
+      
+      <p>All changes except the removal of deprecated methods are backward
+	compatible such that log4j 1.2beta3 can be considered a drop in
+	replacement for log4j 1.1.3. </p>
 
     </section>
 
