@@ -28,6 +28,7 @@ element. -->
 
      
 <!ATTLIST log4j:configuration
+  xmlns:log4j              CDATA #FIXED "http://jakarta.apache.org/log4j" 
   disable                  (debug|info|warn|error|fatal|null)  "null"
   disableOverride          (true|false|null)  "null"
   debug                    (true|false|null)  "null"
@@ -36,9 +37,16 @@ element. -->
 
 
 <!-- DEPRECATED DEPRECATED DEPRECATED DEPRECATED DEPRECATED DEPRECATED -->
+<!-- WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING   -->
+<!-- DEPRECATED DEPRECATED DEPRECATED DEPRECATED DEPRECATED DEPRECATED -->
+
 <!-- Use "log4j:configuration" above instead of the "configuration" -->
 <!-- element. -->
+
 <!-- DEPRECATED DEPRECATED DEPRECATED DEPRECATED DEPRECATED DEPRECATED -->
+<!-- WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING   -->
+<!-- DEPRECATED DEPRECATED DEPRECATED DEPRECATED DEPRECATED DEPRECATED -->
+
 <!ELEMENT configuration (renderer*, appender*,category*,root?)>
 <!ATTLIST configuration
   disable                  (debug|info|warn|error|fatal|null)  "null"
