@@ -53,7 +53,10 @@ package org.apache.log4j.chainsaw;
 
 import org.apache.log4j.chainsaw.icons.ChainsawIcons;
 import org.apache.log4j.chainsaw.icons.LineIconFactory;
+import org.apache.log4j.chainsaw.rule.AbstractRule;
+import org.apache.log4j.chainsaw.rule.Rule;
 import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.spi.LoggingEvent;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -108,10 +111,12 @@ import javax.swing.tree.TreeSelectionModel;
 
 /**
  * A panel that encapsulates the Logger Name tree, with associated actions
+ * and implements the Rule interface so that it can filter in/out events
+ * that do not match the users request for refining the view based on Loggers.
  *
  * @author Paul Smith <psmith@apache.org>
  */
-final class LoggerNameTreePanel extends JPanel {
+final class LoggerNameTreePanel extends JPanel implements Rule {
   private static final int WARN_DEPTH = 4;
   private final JTree logTree;
   private final JScrollPane scrollTree;
@@ -140,6 +145,12 @@ final class LoggerNameTreePanel extends JPanel {
   private final PopupListener popupListener;
   private final Set hiddenSet = new HashSet();
   private final EventListenerList listenerList = new EventListenerList();
+  private Rule ruleDelegate =
+    new AbstractRule() {
+      public boolean evaluate(LoggingEvent e) {
+        return true;
+      }
+    };
 
   /**
    * @param logTreeModel
@@ -459,12 +470,12 @@ final class LoggerNameTreePanel extends JPanel {
             (path != null) && (node != null) && (node.getParent() != null)
             && !hiddenSet.contains(logger));
           hideAction.setEnabled(
-            (path != null) && (node != null) && (node.getParent() != null) && !isFocusOnSelected());
+            (path != null) && (node != null) && (node.getParent() != null)
+            && !isFocusOnSelected());
 
           if (!focusOnAction.isEnabled()) {
             setFocusOnSelected(false);
-          }else{
-              
+          } else {
           }
 
           expandAction.setEnabled(path != null);
@@ -502,18 +513,18 @@ final class LoggerNameTreePanel extends JPanel {
           fireChangeEvent();
         }
       });
-      
-      hideAction.addPropertyChangeListener(new PropertyChangeListener(){
 
-		public void propertyChange(PropertyChangeEvent evt) {
-            if (logTree.getSelectionPath() != null) {
-              logTreeModel.nodeChanged(
-                (TreeNode) logTree.getSelectionPath().getLastPathComponent());
-            }
+    hideAction.addPropertyChangeListener(
+      new PropertyChangeListener() {
+        public void propertyChange(PropertyChangeEvent evt) {
+          if (logTree.getSelectionPath() != null) {
+            logTreeModel.nodeChanged(
+              (TreeNode) logTree.getSelectionPath().getLastPathComponent());
+          }
 
-            fireChangeEvent();
-			
-		}});
+          fireChangeEvent();
+        }
+      });
 
     /**
      * Now add a MouseListener that fires the expansion
@@ -532,6 +543,37 @@ final class LoggerNameTreePanel extends JPanel {
             super.mouseClicked(e);
             LogLog.debug("Ignoring dbl click event " + e);
           }
+        }
+      });
+
+    /**
+     * We listen for when the FocusOn action changes, and then  translate
+     * that to a RuleChange
+     */
+    addChangeListener(
+      new ChangeListener() {
+        public void stateChanged(ChangeEvent evt) {
+          final String currentlySelectedLoggerName =
+            getCurrentlySelectedLoggerName();
+
+          ruleDelegate =
+            new AbstractRule() {
+                public boolean evaluate(LoggingEvent e) {
+                  boolean isHidden =
+                    getHiddenSet().contains(e.getLoggerName());
+                  boolean result = !isHidden;
+
+                  if (result && isFocusOnSelected()) {
+                    result =
+                      result
+                      && e.getLoggerName().startsWith(
+                        currentlySelectedLoggerName);
+                  }
+
+                  return result;
+                }
+              };
+              firePropertyChange("rule", null, null);
         }
       });
   }
@@ -786,16 +828,25 @@ final class LoggerNameTreePanel extends JPanel {
    */
   public void setFocusOn(String logger) {
     DefaultMutableTreeNode node = logTreeModel.lookupLogger(logger);
-    if(node!=null){
-		TreeNode[] nodes = node.getPath();
-		TreePath treePath = new TreePath(nodes);
-    	logTree.setSelectionPath(treePath);
-    	if(!focusOnLoggerButton.isSelected()){
-    		focusOnLoggerButton.doClick();
-    	}
-    }else{
-    	LogLog.error("failed to lookup logger " + logger);
+
+    if (node != null) {
+      TreeNode[] nodes = node.getPath();
+      TreePath treePath = new TreePath(nodes);
+      logTree.setSelectionPath(treePath);
+
+      if (!focusOnLoggerButton.isSelected()) {
+        focusOnLoggerButton.doClick();
+      }
+    } else {
+      LogLog.error("failed to lookup logger " + logger);
     }
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.log4j.chainsaw.rule.Rule#evaluate(org.apache.log4j.spi.LoggingEvent)
+   */
+  public boolean evaluate(LoggingEvent e) {
+    return ruleDelegate.evaluate(e);
   }
 
   /**
@@ -830,26 +881,28 @@ final class LoggerNameTreePanel extends JPanel {
 
       Font originalFont = component.getFont();
 
-     int style = Font.PLAIN;
+      int style = Font.PLAIN;
+
       if (sel && focusOnLoggerButton.isSelected()) {
-          style = style | Font.BOLD;
-      } 
+        style = style | Font.BOLD;
+      }
 
-
-      
-      String logger = getLoggerName(new TreePath(((DefaultMutableTreeNode) value).getPath()));
+      String logger =
+        getLoggerName(
+          new TreePath(((DefaultMutableTreeNode) value).getPath()));
 
       if (hiddenSet.contains(logger)) {
-//        component.setEnabled(false);
-//        component.setIcon(leaf?null:getDefaultOpenIcon());
+        //        component.setEnabled(false);
+        //        component.setIcon(leaf?null:getDefaultOpenIcon());
         style = style | Font.ITALIC;
-//        LogLog.debug("TreeRenderer: '" + logger + "' is in hiddenSet, italicizing");
+
+        //        LogLog.debug("TreeRenderer: '" + logger + "' is in hiddenSet, italicizing");
       } else {
-//          LogLog.debug("TreeRenderer: '" + logger + "' is NOT in hiddenSet, leaving plain");
-//        component.setEnabled(true);
+        //          LogLog.debug("TreeRenderer: '" + logger + "' is NOT in hiddenSet, leaving plain");
+        //        component.setEnabled(true);
       }
+
       component.setFont(originalFont.deriveFont(style));
-      
 
       return component;
     }
