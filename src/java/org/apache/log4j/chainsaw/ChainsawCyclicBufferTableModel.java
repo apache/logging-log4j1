@@ -16,16 +16,9 @@
 
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.helpers.Constants;
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.rule.Rule;
-import org.apache.log4j.spi.LocationInfo;
-import org.apache.log4j.spi.LoggingEvent;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -36,8 +29,15 @@ import java.util.List;
 import java.util.Set;
 
 import javax.swing.ProgressMonitor;
+import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
 import javax.swing.table.AbstractTableModel;
+
+import org.apache.log4j.helpers.Constants;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.rule.Rule;
+import org.apache.log4j.spi.LocationInfo;
+import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
@@ -118,6 +118,7 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
 
   private void reFilter() {
     synchronized (unfilteredList) {
+      final int previousSize = filteredList.size();
       try {
         filteredList.clear();
 
@@ -131,8 +132,22 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
           }
         }
       } finally {
-        fireTableDataChanged();
-        notifyCountListeners();
+      	SwingUtilities.invokeLater(new Runnable() {
+      		public void run() {
+      			if (previousSize == filteredList.size()) {
+      				//same - update all
+      				fireTableRowsUpdated(0, filteredList.size() - 1);
+      			} else if (previousSize > filteredList.size()) {
+      				//less now..update and delete difference
+      				fireTableRowsUpdated(0, filteredList.size() - 1);
+      				fireTableRowsDeleted(filteredList.size(), previousSize);
+      			} else if (previousSize < filteredList.size()) {
+      				//more now..update and insert difference
+      				fireTableRowsUpdated(0, previousSize - 1);
+      				fireTableRowsInserted(previousSize, filteredList.size() - 1);
+      			}
+	      	notifyCountListeners();
+      	}});
       }
     }
   }

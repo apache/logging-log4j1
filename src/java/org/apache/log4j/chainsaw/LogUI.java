@@ -1803,6 +1803,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
             getPanelMap().put(logPanel.getIdentifier(), logPanel);
             getTabbedPane().addANewTab(
               logPanel.getIdentifier(), logPanel, null);
+            getTabbedPane().setSelectedTab(getTabbedPane().indexOfTab(logPanel.getIdentifier()));
           } else {
             getTabbedPane().remove(logPanel);
           }

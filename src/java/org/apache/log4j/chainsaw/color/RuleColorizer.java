@@ -16,21 +16,19 @@
 
 package org.apache.log4j.chainsaw.color;
 
-import org.apache.log4j.rule.ColorRule;
-import org.apache.log4j.rule.ExpressionRule;
-import org.apache.log4j.rule.Rule;
-import org.apache.log4j.spi.LoggingEvent;
-
 import java.awt.Color;
-
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.log4j.rule.ColorRule;
+import org.apache.log4j.rule.ExpressionRule;
+import org.apache.log4j.rule.Rule;
+import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
@@ -84,7 +82,7 @@ public class RuleColorizer implements Colorizer {
     this.rules = rules;
     colorChangeSupport.firePropertyChange("colorrule", false, true);
   }
-
+  
   public Map getRules() {
     return rules;
   }
@@ -119,6 +117,7 @@ public class RuleColorizer implements Colorizer {
 
   public void clear() {
     rules.clear();
+    colorChangeSupport.firePropertyChange("colorrule", false, true);
   }
 
   public void removeRule(String ruleSetName, String expression) {
@@ -190,7 +189,7 @@ public class RuleColorizer implements Colorizer {
 
     return null;
   }
-
+  
   public void addPropertyChangeListener(PropertyChangeListener listener) {
     colorChangeSupport.addPropertyChangeListener(listener);
   }

@@ -104,6 +104,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableColumnModelEvent;
 import javax.swing.event.TableColumnModelListener;
 import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
@@ -663,8 +664,6 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
           if (table != null) {
             table.repaint();
           }
-
-          colorPanel.updateColors();
         }
       });
 
@@ -963,7 +962,12 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
         }
     });
 
-
+    tableModel.addTableModelListener(new TableModelListener() {
+		public void tableChanged(TableModelEvent e) {
+			detailPaneUpdater.setSelectedRow(table.getSelectedRow());
+		}
+    });
+    
     addPropertyChangeListener(
       "detailPaneConversionPattern", detailPaneUpdater);
 
@@ -1562,6 +1566,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
    * and placing it inside it's own JFrame.
    */
   void undock() {
+  	int row = table.getSelectedRow();
     setDocked(false);
     externalPanel.removeAll();
     findPanel.removeAll();
@@ -1577,6 +1582,9 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
     undockedFrame.setVisible(true);
     dockingAction.putValue(Action.NAME, "Dock");
     dockingAction.putValue(Action.SMALL_ICON, ChainsawIcons.ICON_DOCK);
+    if (row > -1) {
+    	table.scrollToRow(row, table.columnAtPoint(table.getVisibleRect().getLocation()));
+    }
   }
 
   /**
@@ -2046,6 +2054,8 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
    * inside the LogUI window.
    */
   private void dock() {
+  	
+  	int row = table.getSelectedRow();
     setDocked(true);
     undockedFrame.setVisible(false);
     removeAll();
@@ -2054,6 +2064,9 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
     externalPanel.setDocked(true);
     dockingAction.putValue(Action.NAME, "Undock");
     dockingAction.putValue(Action.SMALL_ICON, ChainsawIcons.ICON_UNDOCK);
+    if (row > -1) {
+    	table.scrollToRow(row, table.columnAtPoint(table.getVisibleRect().getLocation()));
+    }
   }
 
   /**
@@ -2253,12 +2266,12 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
     }
 
     SwingUtilities.invokeLater(
-      new Runnable() {
-        public void run() {
-          repaint();
-        }
-      });
-  }
+    	      new Runnable() {
+    	        public void run() {
+    	          repaint();
+    	        }
+    	      });
+    }
 
   public JTextField getFindTextField() {
     return findField;
