@@ -196,7 +196,7 @@
               ${stem}/net/SMTPAppender.java,
                     ${stem}/net/JMS*.java,
                     ${stem}/jmx/*.java,
-                    ${stem}/chainsaw/*.java,
+                    ${stem}/chainsaw/**/*.java,
                     ${stem}/varia/Log4JAvalonLogger.java,
                     ${stem}/or/jms/*.java"
         deprecation="${deprecation}"
@@ -484,6 +484,7 @@
          includes="${stem}/chainsaw/*.class,
          		${stem}/chainsaw/prefs/*.class, 
          		${stem}/chainsaw/icons/*.class, 
+          		${stem}/chainsaw/layout/*, 
          		${stem}/chainsaw/icons/*.gif, 
          		${stem}/chainsaw/*.jpg, 
          		${stem}/chainsaw/**/*.xml, 
