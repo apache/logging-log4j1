@@ -1,4 +1,4 @@
-/**
+/*
  * ============================================================================
  *                   The Apache Software License, Version 1.1
  * ============================================================================
@@ -47,28 +47,17 @@
  *
  */
 
-package org.apache.log4j.net;
+package org.apache.log4j.plugins;
 
-import java.util.EventListener;
 
 /**
-  Interface used to listen for {@link SocketNode} related
-  events. Clients register an instance of the interface and the
-  instance is called back when the various events occur.
+ * Instances of this interface can be paused, and resumed.
+ * 
+ * @author Paul Smith <psmith@apache.org>
+ *
+ */
+public interface Pauseable {
+  public void setPaused(boolean paused);
 
-  @author Mark Womack
-  @author Paul Smith <psmith@apache.org>
-  @since 1.3
-*/
-public interface SocketNodeEventListener extends EventListener{
-  
-  /**
-   * Called when the SocketNode is created and begins awaiting data.
-   *
-   */
-  public void socketOpened(String remoteInfo);
-
-  /**
-    Called when the socket the node was given has been closed. */
-  public void socketClosedEvent(Exception e);
+  public boolean isPaused();
 }

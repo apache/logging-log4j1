@@ -1,4 +1,4 @@
-/**
+/*
  * ============================================================================
  *                   The Apache Software License, Version 1.1
  * ============================================================================
@@ -47,28 +47,41 @@
  *
  */
 
-package org.apache.log4j.net;
+package org.apache.log4j.jdbc;
 
-import java.util.EventListener;
+import org.apache.log4j.spi.ErrorHandler;
+import org.apache.log4j.spi.OptionHandler;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 
 /**
-  Interface used to listen for {@link SocketNode} related
-  events. Clients register an instance of the interface and the
-  instance is called back when the various events occur.
-
-  @author Mark Womack
-  @author Paul Smith <psmith@apache.org>
-  @since 1.3
-*/
-public interface SocketNodeEventListener extends EventListener{
-  
+ *  The <code>PreparedStatementSource</code> interface provides a pluggable
+ *  means of creating {@link java.sql.PreparedStatement}s for use with the
+ *  {@link PreparedStatementAppender}.  Create an implementation of this
+ *  interface if the default {@link java.sql.PreparedStatement} created
+ *  by the appender is not sufficient.
+ *  <p>
+ *  Note that since a {@link java.sql.CallableStatement} is a
+ *  {@link java.sql.PreparedStatement} you can use this
+ *  interface to set up calls to stored procedures if desired.
+ *
+ *  @author <a href="mailto:rdecampo@twcny.rr.com">Ray DeCampo</a>
+ */
+public interface PreparedStatementSource extends OptionHandler {
   /**
-   * Called when the SocketNode is created and begins awaiting data.
-   *
+   *  Generate a {@link java.sql.PreparedStatement} for use by the client.
+   *  The client is responsible for closing the statement.
    */
-  public void socketOpened(String remoteInfo);
+  public PreparedStatement generate(
+    PreparedStatementAppender psa, Connection conn) throws SQLException;
 
   /**
-    Called when the socket the node was given has been closed. */
-  public void socketClosedEvent(Exception e);
+   *  Set the error handler.
+   *
+   *  @param errorHanlder  the new error handler
+   */
+  void setErrorHandler(ErrorHandler errorHandler);
 }

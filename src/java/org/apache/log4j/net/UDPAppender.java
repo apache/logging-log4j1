@@ -47,8 +47,6 @@
  *
  */
 
-
-// Contributors: Dan MacDonald <dan@redknee.com>
 package org.apache.log4j.net;
 
 import org.apache.log4j.AppenderSkeleton;
@@ -56,120 +54,70 @@ import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.LoggingEvent;
 
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.Socket;
 import java.net.UnknownHostException;
 
 
 /**
-    Sends {@link LoggingEvent} objects to a remote a log server,
-    usually a {@link SocketNode}.
-
-    <p>The SocketAppender has the following properties:
-
-    <ul>
-
-      <p><li>If sent to a {@link SocketNode}, remote logging is
-      non-intrusive as far as the log event is concerned. In other
-      words, the event will be logged with the same time stamp, {@link
-      org.apache.log4j.NDC}, location info as if it were logged locally by
-      the client.
-
-      <p><li>SocketAppenders do not use a layout. They ship a
-      serialized {@link LoggingEvent} object to the server side.
-
-      <p><li>Remote logging uses the TCP protocol. Consequently, if
-      the server is reachable, then log events will eventually arrive
-      at the server.
-
-      <p><li>If the remote server is down, the logging requests are
-      simply dropped. However, if and when the server comes back up,
-      then event transmission is resumed transparently. This
-      transparent reconneciton is performed by a <em>connector</em>
-      thread which periodically attempts to connect to the server.
-
-      <p><li>Logging events are automatically <em>buffered</em> by the
-      native TCP implementation. This means that if the link to server
-      is slow but still faster than the rate of (log) event production
-      by the client, the client will not be affected by the slow
-      network connection. However, if the network connection is slower
-      then the rate of event production, then the client can only
-      progress at the network rate. In particular, if the network link
-      to the the server is down, the client will be blocked.
-
-      <p>On the other hand, if the network link is up, but the server
-      is down, the client will not be blocked when making log requests
-      but the log events will be lost due to server unavailability.
-
-      <p><li>Even if a <code>SocketAppender</code> is no longer
-      attached to any category, it will not be garbage collected in
-      the presence of a connector thread. A connector thread exists
-      only if the connection to the server is down. To avoid this
-      garbage collection problem, you should {@link #close} the the
-      <code>SocketAppender</code> explicitly. See also next item.
-
-      <p>Long lived applications which create/destroy many
-      <code>SocketAppender</code> instances should be aware of this
-      garbage collection problem. Most other applications can safely
-      ignore it.
-
-      <p><li>If the JVM hosting the <code>SocketAppender</code> exits
-      before the <code>SocketAppender</code> is closed either
-      explicitly or subsequent to garbage collection, then there might
-      be untransmitted data in the pipe which might be lost. This is a
-      common problem on Windows based systems.
-
-      <p>To avoid lost data, it is usually sufficient to {@link
-      #close} the <code>SocketAppender</code> either explicitly or by
-      calling the {@link org.apache.log4j.LogManager#shutdown} method
-      before exiting the application.
-
-
-     </ul>
-
-    @author  Ceki G&uuml;lc&uuml;
-    @since 0.8.4 */
-public class SocketAppender extends AppenderSkeleton implements PortBased{
+ * 
+ * 
+ *  Sends log information as a UDP datagrams.
+ *
+ *  <p>The UDPAppender is meant to be used as a diagnostic logging tool
+ *  so that logging can be monitored by a simple UDP client.
+ *
+ *  <p>Messages are not sent as LoggingEvent objects but as text after
+ *  applying the designated Layout.
+ *
+ *  <p>The port and remoteHost properties can be set in configuration properties.
+ *  By setting the remoteHost to a broadcast address any number of clients can
+ *  listen for log messages.
+ *
+ *  <p>This was inspired and really extended/copied from {@link SocketAppender}.  Please
+ *  see the docs for the proper credit to the authors of that class.
+ *
+ *  @author  <a href="mailto:kbrown@versatilesolutions.com">Kevin Brown</a>
+ *  @author Scott Deboy <sdeboy@apache.org>
+ */
+public class UDPAppender extends AppenderSkeleton implements PortBased{
   /**
-     The default port number of remote logging server (4560).
+     The default port number for the UDP packets. (9991).
   */
-  static final int DEFAULT_PORT = 4560;
+  static final int DEFAULT_PORT = 9991;
+
+  private static final int PACKET_LENGTH = 16384;
 
   /**
      The default reconnection delay (30000 milliseconds or 30 seconds).
   */
   static final int DEFAULT_RECONNECTION_DELAY = 30000;
 
-  // reset the ObjectOutputStream every 70 calls
-  //private static final int RESET_FREQUENCY = 70;
-  private static final int RESET_FREQUENCY = 1;
-
   /**
      We remember host name as String in addition to the resolved
      InetAddress so that it can be returned via getOption().
   */
-  String remoteHost;
   String localMachine;
+  String remoteHost;
   String log4japp;
   String overrideProperties = "true";
   InetAddress address;
   int port = DEFAULT_PORT;
-  ObjectOutputStream oos;
+  DatagramSocket outSocket;
   int reconnectionDelay = DEFAULT_RECONNECTION_DELAY;
   boolean locationInfo = false;
-  private Connector connector;
-  int counter = 0;
   int count = 0;
+  private Connector connector;
 
-  public SocketAppender() {
+  public UDPAppender() {
   }
 
   /**
-     Connects to remote server at <code>address</code> and <code>port</code>.
+     Sends UDP packets to the <code>address</code> and <code>port</code>.
   */
-  public SocketAppender(InetAddress address, int port) {
+  public UDPAppender(InetAddress address, int port) {
     this.address = address;
     this.remoteHost = address.getHostName();
     this.port = port;
@@ -177,9 +125,9 @@ public class SocketAppender extends AppenderSkeleton implements PortBased{
   }
 
   /**
-     Connects to remote server at <code>host</code> and <code>port</code>.
+     Sends UDP packets to the <code>address</code> and <code>port</code>.
   */
-  public SocketAppender(String host, int port) {
+  public UDPAppender(String host, int port) {
     this.port = port;
     this.address = getAddressByName(host);
     this.remoteHost = host;
@@ -187,7 +135,7 @@ public class SocketAppender extends AppenderSkeleton implements PortBased{
   }
 
   /**
-     Connect to the specified <b>RemoteHost</b> and <b>Port</b>.
+     Open the UDP sender for the <b>RemoteHost</b> and <b>Port</b>.
   */
   public void activateOptions() {
     try {
@@ -209,15 +157,15 @@ public class SocketAppender extends AppenderSkeleton implements PortBased{
       }
     }
 
+    //if not passed in, allow null app (app property won't be set)
     connect(address, port);
   }
 
   /**
-   * Close this appender.
-   *
-   * <p>This will mark the appender as closed and call then {@link
-   * #cleanUp} method.
-   * */
+     Close this appender.
+     <p>This will mark the appender as closed and
+     call then {@link #cleanUp} method.
+  */
   public synchronized void close() {
     if (closed) {
       return;
@@ -228,37 +176,22 @@ public class SocketAppender extends AppenderSkeleton implements PortBased{
   }
 
   /**
-     The <b>App</b> option takes a string value which should be the name of the application getting logged
-     If property was already set (via system property), don't set here.
+     Close the UDP Socket and release the underlying
+     connector thread if it has been created
    */
-  public void setLog4JApp(String log4japp) {
-    this.log4japp = log4japp;
-  }
-
-  /**
-     Returns value of the <b>Log4JApp</b> option.
-   */
-  public String getLog4JApp() {
-    return log4japp;
-  }
-
-  /**
-   * Drop the connection to the remote host and release the underlying
-   * connector thread if it has been created
-   * */
   public void cleanUp() {
-    if (oos != null) {
+    if (outSocket != null) {
       try {
-        oos.close();
-      } catch (IOException e) {
-        LogLog.error("Could not close oos.", e);
+        outSocket.close();
+      } catch (Exception e) {
+        LogLog.error("Could not close outSocket.", e);
       }
 
-      oos = null;
+      outSocket = null;
     }
 
     if (connector != null) {
-      //LogLog.debug("Interrupting the connector.");
+      //LogLog.debug("Interrupting the connector.");      
       connector.interrupted = true;
       connector = null; // allow gc
     }
@@ -272,19 +205,12 @@ public class SocketAppender extends AppenderSkeleton implements PortBased{
     try {
       // First, close the previous connection if any.
       cleanUp();
-      oos =
-        new ObjectOutputStream(new Socket(address, port).getOutputStream());
+      outSocket = new DatagramSocket();
+      outSocket.connect(address, port);
     } catch (IOException e) {
-      String msg =
-        "Could not connect to remote log4j server at ["
-        + address.getHostName() + "].";
-
-      if (reconnectionDelay > 0) {
-        msg += " We will try again later.";
-        fireConnector(); // fire the connector thread
-      }
-
-      LogLog.error(msg, e);
+      LogLog.error(
+        "Could not open UDP Socket for sending. We will try again later.", e);
+      fireConnector();
     }
   }
 
@@ -295,44 +221,34 @@ public class SocketAppender extends AppenderSkeleton implements PortBased{
 
     if (address == null) {
       errorHandler.error(
-        "No remote host is set for SocketAppender named \"" + this.name
-        + "\".");
+        "No remote host is set for UDPAppender named \"" + this.name + "\".");
 
       return;
     }
 
-    if (oos != null) {
+    if (outSocket != null) {
+      //if the values already exist, don't set (useful when forwarding from a simplesocketserver
+      if (
+        (overrideProperties != null)
+          && overrideProperties.equalsIgnoreCase("true")) {
+        event.setProperty("log4jmachinename", localMachine);
+
+        if (log4japp != null) {
+          event.setProperty("log4japp", log4japp);
+        }
+      }
+
       try {
-        if (locationInfo) {
-          event.getLocationInformation();
+        StringBuffer buf=new StringBuffer(layout.format(event).trim());
+        if (buf.length() < PACKET_LENGTH) {        
+           buf.append(new char[PACKET_LENGTH - buf.length()]);
         }
-
-        if (
-          (overrideProperties != null)
-            && overrideProperties.equalsIgnoreCase("true")) {
-          event.setProperty("log4jmachinename", localMachine);
-
-          if (log4japp != null) {
-            event.setProperty("log4japp", log4japp);
-          }
-        }
-
-        oos.writeObject(event);
-
-        //LogLog.debug("=========Flushing.");
-        oos.flush();
-
-        if (++counter >= RESET_FREQUENCY) {
-          counter = 0;
-
-          // Failing to reset the object output stream every now and
-          // then creates a serious memory leak.
-          //System.err.println("Doing oos.reset()");
-          oos.reset();
-        }
+        DatagramPacket dp =
+           new DatagramPacket(buf.toString().getBytes("ASCII"), buf.length(), address, port);
+        outSocket.send(dp);
       } catch (IOException e) {
-        oos = null;
-        LogLog.warn("Detected problem with connection: " + e);
+        outSocket = null;
+        LogLog.warn("Detected problem with UDP connection: " + e);
 
         if (reconnectionDelay > 0) {
           fireConnector();
@@ -362,18 +278,17 @@ public class SocketAppender extends AppenderSkeleton implements PortBased{
   }
 
   /**
-   * The SocketAppender does not use a layout. Hence, this method
-   * returns <code>false</code>.
-   * */
+     The UDPAppender uses layouts. Hence, this method returns
+     <code>true</code>.
+  */
   public boolean requiresLayout() {
-    return false;
+    return true;
   }
 
   /**
-   * The <b>RemoteHost</b> option takes a string value which should be
-   * the host name of the server where a {@link SocketNode} is
-   * running.
-   * */
+     The <b>RemoteHost</b> option takes a string value which should be
+     the host name or ipaddress to send the UDP packets.
+   */
   public void setRemoteHost(String host) {
     address = getAddressByName(host);
     remoteHost = host;
@@ -384,6 +299,21 @@ public class SocketAppender extends AppenderSkeleton implements PortBased{
    */
   public String getRemoteHost() {
     return remoteHost;
+  }
+
+  /**
+     The <b>App</b> option takes a string value which should be the name of the application getting logged.
+     If property was already set (via system property), don't set here.
+   */
+  public void setLog4JApp(String log4japp) {
+    this.log4japp = log4japp;
+  }
+
+  /**
+     Returns value of the <b>App</b> option.
+   */
+  public String getLog4JApp() {
+    return log4japp;
   }
 
   /**
@@ -401,9 +331,9 @@ public class SocketAppender extends AppenderSkeleton implements PortBased{
     return overrideProperties;
   }
 
-  /**
+    /**
      The <b>Port</b> option takes a positive integer representing
-     the port where the server is waiting for connections.
+     the port where UDP packets will be sent.
    */
   public void setPort(int port) {
     this.port = port;
@@ -417,25 +347,9 @@ public class SocketAppender extends AppenderSkeleton implements PortBased{
   }
 
   /**
-     The <b>LocationInfo</b> option takes a boolean value. If true,
-     the information sent to the remote host will include location
-     information. By default no location information is sent to the server.
-   */
-  public void setLocationInfo(boolean locationInfo) {
-    this.locationInfo = locationInfo;
-  }
-
-  /**
-     Returns value of the <b>LocationInfo</b> option.
-   */
-  public boolean getLocationInfo() {
-    return locationInfo;
-  }
-
-  /**
      The <b>ReconnectionDelay</b> option takes a positive integer
      representing the number of milliseconds to wait between each
-     failed connection attempt to the server. The default value of
+     failed attempt to establish an outgoing socket. The default value of
      this option is 30000 which corresponds to 30 seconds.
 
      <p>Setting this option to zero turns off reconnection
@@ -453,8 +367,8 @@ public class SocketAppender extends AppenderSkeleton implements PortBased{
   }
 
   /**
-     The Connector will reconnect when the server becomes available
-     again.  It does this by attempting to open a new connection every
+     The Connector will retry the UDP socket.
+     It does this by attempting to open a new UDP socket every
      <code>reconnectionDelay</code> milliseconds.
 
      <p>It stops trying whenever a connection is established. It will
@@ -468,18 +382,17 @@ public class SocketAppender extends AppenderSkeleton implements PortBased{
     boolean interrupted = false;
 
     public void run() {
-      Socket socket;
+      DatagramSocket socket;
 
       while (!interrupted) {
         try {
           sleep(reconnectionDelay);
-          LogLog.debug("Attempting connection to " + address.getHostName());
-          socket = new Socket(address, port);
+          LogLog.debug("Attempting to establish UDP Datagram Socket");
+          socket = new DatagramSocket();
 
           synchronized (this) {
-            oos = new ObjectOutputStream(socket.getOutputStream());
+            outSocket = socket;
             connector = null;
-            LogLog.debug("Connection established. Exiting connector thread.");
 
             break;
           }
@@ -487,25 +400,13 @@ public class SocketAppender extends AppenderSkeleton implements PortBased{
           LogLog.debug("Connector interrupted. Leaving loop.");
 
           return;
-        } catch (java.net.ConnectException e) {
-          LogLog.debug(
-            "Remote host " + address.getHostName() + " refused connection.");
         } catch (IOException e) {
-          LogLog.debug(
-            "Could not connect to " + address.getHostName()
-            + ". Exception is " + e);
+          LogLog.debug("Could not establish an outgoing MulticastSocket." + e);
         }
       }
 
       //LogLog.debug("Exiting Connector.run() method.");
     }
-
-    /**
-       public
-       void finalize() {
-       LogLog.debug("Connector finalize() has been called.");
-       }
-    */
   }
 
   /* (non-Javadoc)

@@ -1,4 +1,4 @@
-/**
+/*
  * ============================================================================
  *                   The Apache Software License, Version 1.1
  * ============================================================================
@@ -47,28 +47,37 @@
  *
  */
 
-package org.apache.log4j.net;
+package org.apache.log4j.jdbc;
 
-import java.util.EventListener;
+import org.apache.log4j.spi.ErrorHandler;
+import org.apache.log4j.spi.OptionHandler;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+
 
 /**
-  Interface used to listen for {@link SocketNode} related
-  events. Clients register an instance of the interface and the
-  instance is called back when the various events occur.
-
-  @author Mark Womack
-  @author Paul Smith <psmith@apache.org>
-  @since 1.3
-*/
-public interface SocketNodeEventListener extends EventListener{
-  
+ *  The <code>ConnectionSource</code> interface provides a pluggable means of
+ *  transparently obtaining JDBC {@link java.sql.Connection}s for log4j classes
+ *  that require the use of a {@link java.sql.Connection}.
+ *
+ *  @author <a href="mailto:rdecampo@twcny.rr.com">Ray DeCampo</a>
+ */
+public interface ConnectionSource extends OptionHandler {
   /**
-   * Called when the SocketNode is created and begins awaiting data.
+   *  Obtain a {@link java.sql.Connection} for use.  The client is
+   *  responsible for closing the {@link java.sql.Connection} when it is no
+   *  longer required.
    *
+   *  @throws SQLException  if a {@link java.sql.Connection} could not be
+   *                        obtained
    */
-  public void socketOpened(String remoteInfo);
+  Connection getConnection() throws SQLException;
 
   /**
-    Called when the socket the node was given has been closed. */
-  public void socketClosedEvent(Exception e);
+   *  Set the error handler.
+   *
+   *  @param errorHanlder  the new error handler
+   */
+  void setErrorHandler(ErrorHandler errorHandler);
 }
