@@ -801,7 +801,7 @@ class ChainsawToolBarAndMenus implements ChangeListener {
     //    action.putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_F));
     action.putValue(
       Action.ACCELERATOR_KEY,
-      KeyStroke.getKeyStroke(KeyEvent.VK_F3, KeyEvent.SHIFT_DOWN_MASK));
+      KeyStroke.getKeyStroke(KeyEvent.VK_F3, KeyEvent.SHIFT_MASK));
     action.putValue(
       Action.SHORT_DESCRIPTION,
       "Find the previous occurrence of the rule from the current row");
