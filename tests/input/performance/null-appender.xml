@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
+<log4j:configuration>
 
   <appender name="NULL" class="org.apache.log4j.performance.NullAppender">
     <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="%p - %m%n"/>
+      <param name="ConversionPattern" value="${pattern}"/>
+    </layout>
+  </appender>
+
+  <appender name="F" class="org.apache.log4j.FileAppender">
+     <param name="File" value="x.log"/>
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="${pattern}"/>
     </layout>
   </appender>
   
