@@ -10,6 +10,8 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
+import org.apache.commons.vfs.FileObject;
+import org.apache.commons.vfs.FileSystemException;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.chainsaw.SortTableModel;
