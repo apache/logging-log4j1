@@ -68,7 +68,7 @@ public class Hierarchy {
   Hierarchy(Category root) {
     ht = new Hashtable();
     this.root = root;
-    this.root.myContext  = this;      
+    this.root.setHierarchy(this);
     rendererMap = new RendererMap();
   }
 
@@ -160,13 +160,12 @@ public class Hierarchy {
 	ht.put(key, category);      
 	updateParents(category);
 	return category;
-      }
-      else if(o instanceof Category) {
+      } else if(o instanceof Category) {
 	return (Category) o;
-      }
-      else if (o instanceof ProvisionNode) {
+      } else if (o instanceof ProvisionNode) {
 	//System.out.println("("+name+") ht.get(this) returned ProvisionNode");
 	category = factory.makeNewCategoryInstance(name);
+	category.setHierarchy(this); 
 	ht.put(key, category);
 	updateChildren((ProvisionNode) o, category);
 	updateParents(category);	
