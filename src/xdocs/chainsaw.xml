@@ -16,6 +16,7 @@
       Chainsaw v2 has it's roots from the original Chainsaw utility written by Oliver Burn, 
       and with inspiration from the Log Factor 5 utility contributed by ThoughtWorks Inc. </p>
    <p><b>*** Got Java Web Start installed?: <a href="http://logging.apache.org/log4j/docs/webstart/chainsaw/chainsawWebStart.jnlp">[Launch now!]</a>***</b></p>
+   <p>If you haven't got Java Web Start installed, then try this zipped distribution. <a href="http://logging.apache.org/log4j/docs/webstart/chainsaw/chainsaw-bundle.zip">[Download]</a></p>
     <ul>
      <li><a href="#WhatIsIt">So what is it really?</a></li>
      <li><a href="#QuickTour">Quick Tour of Chainsaw features</a></li>

@@ -658,8 +658,18 @@ later. For JDK 1.2, you can get the JNDI API from
 		<signjar verbose="false" keystore="${keystore}" alias="${alias}" storepass="${storepass}" keypass="${keypass}" >
 		 <fileset dir=".">
 		  <include name="*.jar"/>
+		  <exclude name="*lf5*.jar"/>
 		 </fileset>
 		</signjar>
+		
+		<zip destfile="chainsaw-bundle.zip" >
+			<zipfileset dir="."> 
+				<include name="*.jar"/>
+				<exclude name="*lf5*.jar"/>
+			</zipfileset>
+			<fileset file="${regexp.oro.jar}"/>
+			<fileset file="src/chainsaw.bat"/>
+		</zip>
   </target>
 	
   <!-- ================================================================= -->
