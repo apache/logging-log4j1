@@ -38,6 +38,10 @@ public class LikeRule extends AbstractRule {
   private final String field;
 
   private LikeRule(String field, Pattern pattern) {
+    if (!resolver.isField(field)) {
+        throw new IllegalArgumentException("Invalid LIKE rule - " + field + " is not a supported field");
+    }
+    
     this.field = field;
     this.pattern = pattern;
   }
@@ -59,6 +63,7 @@ public class LikeRule extends AbstractRule {
     try {
       pattern1 = compiler.compile(pattern, Perl5Compiler.CASE_INSENSITIVE_MASK);
     } catch (MalformedPatternException e) {
+        throw new IllegalArgumentException("Invalid LIKE rule - " + e.getMessage());
     }
 
     return new LikeRule(field, pattern1);
