@@ -62,8 +62,8 @@ public class NDCPatternConverter extends PatternConverter {
   // appender method are serialized (per appender).
   StringBuffer buf;
 
-  public NDCPatternConverter(FormattingInfo formattingInfo) {
-    super(formattingInfo);
+  public NDCPatternConverter() {
+    super();
     this.buf = new StringBuffer(32);
   }
 

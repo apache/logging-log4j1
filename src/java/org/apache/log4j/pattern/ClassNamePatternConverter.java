@@ -63,8 +63,8 @@ public class ClassNamePatternConverter extends NamedPatternConverter {
   StringBuffer buf;
   int precision;
 
-  public ClassNamePatternConverter(FormattingInfo formattingInfo) {
-    super(formattingInfo);
+  public ClassNamePatternConverter() {
+    super();
   }
   
   String getFullyQualifiedName(LoggingEvent event) {

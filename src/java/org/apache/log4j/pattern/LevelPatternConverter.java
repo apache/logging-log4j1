@@ -62,8 +62,8 @@ public class LevelPatternConverter extends PatternConverter {
   // appender method are serialized (per appender).
   StringBuffer buf;
 
-  public LevelPatternConverter(FormattingInfo formattingInfo) {
-    super(formattingInfo);
+  public LevelPatternConverter() {
+    super();
     this.buf = new StringBuffer(5);
   }
 

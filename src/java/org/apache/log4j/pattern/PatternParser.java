@@ -50,6 +50,7 @@
 package org.apache.log4j.pattern;
 
 import org.apache.log4j.Layout;
+import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.AbsoluteTimeDateFormat;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
@@ -92,6 +93,25 @@ public class PatternParser {
   static final int LEVEL_CONVERTER = 2002;
   static final int NDC_CONVERTER = 2003;
   static final int MESSAGE_CONVERTER = 2004;
+  static Hashtable globalRulesRegistry;
+
+  static {
+    globalRulesRegistry = new Hashtable(17);
+    globalRulesRegistry.put("c", LoggerPatternConverter.class.getName());
+    globalRulesRegistry.put("C", ClassNamePatternConverter.class.getName());
+    globalRulesRegistry.put("F", FileLocationPatternConverter.class.getName());
+    globalRulesRegistry.put("l", FullLocationPatternConverter.class.getName());
+    globalRulesRegistry.put("L", LineLocationPatternConverter.class.getName());
+    globalRulesRegistry.put("m", MessagePatternConverter.class.getName());
+    globalRulesRegistry.put(
+      "M", MethodLocationPatternConverter.class.getName());
+    globalRulesRegistry.put("p", LevelPatternConverter.class.getName());
+    globalRulesRegistry.put("r", RelativeTimePatternConverter.class.getName());
+    globalRulesRegistry.put("t", ThreadPatternConverter.class.getName());
+    globalRulesRegistry.put("x", NDCPatternConverter.class.getName());
+    globalRulesRegistry.put("X", MDCPatternConverter.class.getName());
+  }
+
   int state;
   protected StringBuffer currentLiteral = new StringBuffer(32);
   protected int patternLength;
@@ -102,6 +122,8 @@ public class PatternParser {
   protected String pattern;
   Hashtable converterRegistry;
 
+  static Logger logger  = Logger.getLogger("LOG4J."+PatternParser.class.getName());
+  
   public PatternParser(String pattern) {
     this.pattern = pattern;
     patternLength = pattern.length();
@@ -126,12 +148,16 @@ public class PatternParser {
    * start of a unicode identifier, the value null is returned.
    *
    */
-  protected String extractConverter() {
+  protected String extractConverter(char lastChar) {
+  	
+  	//System.out.println("lastchar is "+lastChar);
+  	
     StringBuffer convBuf = new StringBuffer(16);
-
-    if(i >= patternLength) {
-    	// the pattern converter was the last character...
-    	return null;
+	  convBuf.append(lastChar);
+	
+    if (i >= patternLength) {
+      // the pattern converter was the last character...
+      return convBuf.toString();
     }
 
     char c = pattern.charAt(i);
@@ -139,7 +165,7 @@ public class PatternParser {
     if (Character.isUnicodeIdentifierStart(c)) {
       convBuf.append(c);
     } else {
-      return null;
+      return convBuf.toString();
     }
 
     while (
@@ -301,6 +327,10 @@ public class PatternParser {
   }
 
   String findConverterClass(String converterId) {
+  	if(converterId == null) {
+  		logger.warn("converterId is null");
+  	}
+  	
     if (converterRegistry != null) {
       String r = (String) converterRegistry.get(converterId);
 
@@ -308,53 +338,44 @@ public class PatternParser {
         return r;
       }
     }
+ 
+	  String r = (String) globalRulesRegistry.get(converterId);
+	  if (r != null) {
+		  return r;
+		}
 
     return null;
   }
 
+  /**
+   * When finalizeConverter is called 'c' is the current conversion caracter
+   * and i points to the character following 'c'.
+   */
   protected void finalizeConverter(char c) {
     PatternConverter pc = null;
 
-	  //System.out.println("============================");
-    
-
-    String converterId = extractConverter();
+    //System.out.println("============================");
+    String converterId = extractConverter(c);
 
     //System.out.println("==============[" + converterId + "]");
     //System.out.println("c is [" + c + "]");
-
     String className = (String) findConverterClass(converterId);
 
     String option = extractOption();
+
     //System.out.println("Option is [" + option + "]");
-
-
     if (className != null) {
       pc =
         (PatternConverter) OptionConverter.instantiateByClassName(
           className, PatternConverter.class, null);
+
+      // formattingInfo variable is an instance variable, occasionally reset 
+      // and used over and over again
+      pc.setFormattingInfo(formattingInfo);
+      pc.setOption(option);
+      currentLiteral.setLength(0);
     } else {
       switch (c) {
-      case 'c':
-        pc = new LoggerPatternConverter(formattingInfo);
-        pc.setOption(option);
-
-        //LogLog.debug("CATEGORY converter.");
-        //formattingInfo.dump();
-        currentLiteral.setLength(0);
-
-        break;
-
-      case 'C':
-        pc = new ClassNamePatternConverter(formattingInfo);
-        pc.setOption(option);
-
-        //LogLog.debug("CLASS_NAME converter.");
-        //formattingInfo.dump();
-        currentLiteral.setLength(0);
-
-        break;
-
       case 'd':
 
         String dateFormatStr = AbsoluteTimeDateFormat.ISO8601_DATE_FORMAT;
@@ -368,6 +389,7 @@ public class PatternParser {
           dateFormatStr.equalsIgnoreCase(
               AbsoluteTimeDateFormat.ISO8601_DATE_FORMAT)) {
           option = "yyyy-mm-dd HH:mm:ss,SSS";
+
           //System.out.println("optin is " + option);
         } else if (
           dateFormatStr.equalsIgnoreCase(
@@ -384,109 +406,6 @@ public class PatternParser {
 
         //LogLog.debug("DATE converter {"+dateFormatStr+"}.");
         //formattingInfo.dump();
-        currentLiteral.setLength(0);
-
-        break;
-
-      case 'F':
-        pc = new FileLocationPatternConverter(formattingInfo);
-
-        //LogLog.debug("File name converter.");
-        //formattingInfo.dump();
-        currentLiteral.setLength(0);
-
-        break;
-
-      case 'l':
-        pc = new FullLocationPatternConverter(formattingInfo);
-
-        //LogLog.debug("Location converter.");
-        //formattingInfo.dump();
-        currentLiteral.setLength(0);
-
-        break;
-
-      case 'L':
-        pc = new LineLocationPatternConverter(formattingInfo);
-
-        //LogLog.debug("LINE NUMBER converter.");
-        //formattingInfo.dump();
-        currentLiteral.setLength(0);
-
-        break;
-
-      case 'm':
-        pc = new MessagePatternConverter(formattingInfo);
-
-        //LogLog.debug("MESSAGE converter.");
-        //formattingInfo.dump();
-        currentLiteral.setLength(0);
-
-        break;
-
-      case 'M':
-        pc = new MethodLocationPatternConverter(formattingInfo);
-
-        //LogLog.debug("METHOD converter.");
-        //formattingInfo.dump();
-        currentLiteral.setLength(0);
-
-        break;
-
-      case 'p':
-        pc = new LevelPatternConverter(formattingInfo);
-
-        //LogLog.debug("LEVEL converter.");
-        //formattingInfo.dump();
-        currentLiteral.setLength(0);
-
-        break;
-
-      case 'r':
-        pc = new RelativeTimePatternConverter(formattingInfo);
-
-        //LogLog.debug("RELATIVE time converter.");
-        //formattingInfo.dump();
-        currentLiteral.setLength(0);
-
-        break;
-
-      case 't':
-        pc = new ThreadPatternConverter(formattingInfo);
-
-        //LogLog.debug("THREAD converter.");
-        //formattingInfo.dump();
-        currentLiteral.setLength(0);
-
-        break;
-
-      /*case 'u':
-      if(i < patternLength) {
-        char cNext = pattern.charAt(i);
-        if(cNext >= '0' && cNext <= '9') {
-          pc = new UserFieldPatternConverter(formattingInfo, cNext - '0');
-          LogLog.debug("USER converter ["+cNext+"].");
-          formattingInfo.dump();
-          currentLiteral.setLength(0);
-          i++;
-        }
-        else
-          LogLog.error("Unexpected char" +cNext+" at position "+i);
-      }
-      break;*/
-      case 'x':
-        pc = new NDCPatternConverter(formattingInfo);
-
-        //LogLog.debug("NDC converter.");
-        currentLiteral.setLength(0);
-
-        break;
-
-      case 'X':
-
-        //String xOpt = extractOption(); // extractOption returns null if no argument is supplied 
-        pc = new MDCPatternConverter(formattingInfo);
-        pc.setOption(option);
         currentLiteral.setLength(0);
 
         break;

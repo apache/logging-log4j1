@@ -63,8 +63,8 @@ public class ThreadPatternConverter extends PatternConverter {
   // appender method are serialized (per appender).
   StringBuffer buf;
 
-  public ThreadPatternConverter(FormattingInfo formattingInfo) {
-    super(formattingInfo);
+  public ThreadPatternConverter() {
+    super();
     this.buf = new StringBuffer(32);
   }
 

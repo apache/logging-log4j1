@@ -92,6 +92,12 @@ public abstract class PatternConverter {
     leftAlign = fi.leftAlign;
   }
 
+  public void setFormattingInfo(FormattingInfo fi) {
+    min = fi.min;
+    max = fi.max;
+    leftAlign = fi.leftAlign;
+  }
+
   /**
      Derived pattern converters must override this method in order to
      convert conversion specifiers in the correct way.

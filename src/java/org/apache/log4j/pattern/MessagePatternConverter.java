@@ -66,8 +66,8 @@ public class MessagePatternConverter extends PatternConverter {
   // appender method are serialized (per appender).
   StringBuffer buf;
 
-  public MessagePatternConverter(FormattingInfo formattingInfo) {
-    super(formattingInfo);
+  public MessagePatternConverter() {
+    super();
     this.buf = new StringBuffer(BUF_SIZE);
   }
 
