@@ -8,16 +8,23 @@
    [D] Changes affect a method or property which was previously marked as 
        deprecated.
 
+  December XX, 2004
+ - Release of version 1.3alpha-4
+
+ - Fixed Bugzilla 15198: TelnetAppender: NullPointerException if
+   SocketHandler not initialized.
+
+
   November 25, 2004
 
- - Release of version 1.3apha-3
+ - Release of version 1.3alpha-3
  
  - Classes are built with the javac debug setting on.
  - Fixed unset activeFile bug in SlidingWindowRollingPolicy.
  
   November 25, 2004
 
- - Release of version 1.3apha-2
+ - Release of version 1.3alpha-2
  
  - The deprecated DOMConfigrator was mistakenly left as the default
    configrator for XML files.  This has been fixed and JoranConfigrator
@@ -25,7 +32,7 @@
  
  November 24th, 2004
 
- - Release of version 1.3apha-1
+ - Release of version 1.3alpha-1
 
  - Log4j now uses itself for its own logging. For more details refer to
    

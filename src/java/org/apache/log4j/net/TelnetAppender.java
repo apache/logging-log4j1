@@ -73,7 +73,7 @@ public class TelnetAppender extends AppenderSkeleton {
       sh = new SocketHandler(port);
       sh.start();
     } catch (Exception e) {
-      e.printStackTrace();
+        getLogger().error("Could not active TelnetAppender options: ", e);
     }
   }
 
@@ -87,12 +87,19 @@ public class TelnetAppender extends AppenderSkeleton {
 
   /** shuts down the appender. */
   public void close() {
-    sh.finalize();
+      if(sh != null) {
+          sh.finalize();
+      }
   }
 
   /** Handles a log event.  For this appender, that means writing the
     message to each connected client.  */
   protected void append(LoggingEvent event) {
+      if(sh == null) {
+          getLogger().warn("SocketHandler is null, not sending event.");
+          return;
+      }
+
     sh.send(this.layout.format(event));
 
     if (layout.ignoresThrowable()) {
