@@ -203,7 +203,7 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
       return;
     }
     
-    if(!isAsSevereAsThreshold(event.level)) {
+    if(!isAsSevereAsThreshold(event.getLevel())) {
       return;
     }
 

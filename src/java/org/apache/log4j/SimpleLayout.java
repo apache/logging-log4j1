@@ -49,7 +49,7 @@ public class SimpleLayout extends Layout {
   String format(LoggingEvent event) {
 
     sbuf.setLength(0);
-    sbuf.append(event.level.toString());
+    sbuf.append(event.getLevel().toString());
     sbuf.append(" - ");
     sbuf.append(event.getRenderedMessage());
     sbuf.append(LINE_SEP);

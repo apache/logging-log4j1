@@ -130,22 +130,22 @@ public class HTMLLayout extends Layout {
     sbuf.append("</td>" + Layout.LINE_SEP);
 
     sbuf.append("<td title=\"Level\">");
-    if (event.level.equals(Level.DEBUG)) {
+    if (event.getLevel().equals(Level.DEBUG)) {
       sbuf.append("<font color=\"#339933\">");
-      sbuf.append(event.level);
+      sbuf.append(event.getLevel());
       sbuf.append("</font>");
     }
-    else if(event.level.isGreaterOrEqual(Level.WARN)) {
+    else if(event.getLevel().isGreaterOrEqual(Level.WARN)) {
       sbuf.append("<font color=\"#993300\"><strong>");
-      sbuf.append(event.level);
+      sbuf.append(event.getLevel());
       sbuf.append("</strong></font>");
     } else {
-      sbuf.append(event.level);
+      sbuf.append(event.getLevel());
     }
     sbuf.append("</td>" + Layout.LINE_SEP);
 
-    sbuf.append("<td title=\"" + event.categoryName + " category\">");
-    sbuf.append(Transform.escapeTags(event.categoryName));
+    sbuf.append("<td title=\"" + event.getLoggerName() + " category\">");
+    sbuf.append(Transform.escapeTags(event.getLoggerName()));
     sbuf.append("</td>" + Layout.LINE_SEP);
 
     if(locationInfo) {

@@ -59,14 +59,14 @@ public class LevelRangeFilter extends Filter {
   public
   int decide(LoggingEvent event) {
     if(this.levelMin != null) {
-      if (event.level.isGreaterOrEqual(levelMin) == false) {
+      if (event.getLevel().isGreaterOrEqual(levelMin) == false) {
         // level of event is less than minimum
         return Filter.DENY;
       }
     }
 
     if(this.levelMax != null) {
-      if (event.level.toInt() > levelMax.toInt()) {
+      if (event.getLevel().toInt() > levelMax.toInt()) {
         // level of event is greater than maximum
         // Alas, there is no Level.isGreater method. and using
         // a combo of isGreaterOrEqual && !Equal seems worse than

@@ -310,6 +310,10 @@ public class OptionConverter {
 	if(!superClass.isAssignableFrom(classObj)) {
 	  LogLog.error("A \""+className+"\" object is not assignable to a \""+
 		       superClass.getName() + "\" variable.");
+	  LogLog.error("The class \""+ superClass.getName()+"\" was loaded by ["
+		       +superClass.getClassLoader()+"] whereas object of type\""
+		       +classObj.getClass().getName() +"\" was loaded by ["
+		       +classObj.getClass().getClassLoader()+"].");
 	  return defaultValue;
 	}
 	return classObj.newInstance();
