@@ -25,7 +25,7 @@ import java.text.DateFormatSymbols;
    <p>Refer to the <a
    href=http://www.cl.cam.ac.uk/~mgk25/iso-time.html>summary of the
    International Standard Date and Time Notation</a> for more
-   infromation on this format.
+   information on this format.
    
    @author Ceki G&uuml;lc&uuml;
    
@@ -43,10 +43,10 @@ public class ISO8601DateFormat extends AbsoluteTimeDateFormat {
   }
   
   /**
-     Appends to <code>sbuf</code> the date in the format "YYYY-mm-dd 
-     HH:mm:ss,SSS" for example, "1999-11-27 15:49:37,459".
+     Appends a date in the format "YYYY-mm-dd HH:mm:ss,SSS"
+     to <code>sbuf</code>. For example: "1999-11-27 15:49:37,459".
 
-     @param sbuf the string buffer to write to
+     @param sbuf the <code>StringBuffer</code> to write to
   */
   public
   StringBuffer format(Date date, StringBuffer sbuf,
