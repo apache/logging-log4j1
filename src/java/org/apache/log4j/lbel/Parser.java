@@ -4,10 +4,9 @@ import java.io.IOException;
 import java.util.Stack;
 
 import org.apache.log4j.Level;
-import org.apache.log4j.lbel.comparator.Comparator;
 import org.apache.log4j.lbel.comparator.LevelComparator;
 import org.apache.log4j.lbel.comparator.LoggerComparator;
-import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.lbel.comparator.MessageComparator;
 
 /**
  * 
@@ -166,7 +165,7 @@ class Parser {
       ts.next();
       operator = getOperator();
       ts.next();
-      literal = getIdentifier();
+      literal = getLiteral();
       return new Node(Node.COMPARATOR, new LoggerComparator(operator, literal));
     case Token.LEVEL:
       ts.next();
@@ -208,17 +207,17 @@ class Parser {
     }
   }
 	
-  String getIdentifier() throws ScanError {
+  String getLiteral() throws ScanError {
     Token token = ts.getCurrent();
     if(token.getType() == Token.LITERAL) {
       return (String) token.getValue();
     } else {
-      throw new ScanError("Expected identifier token but got "+token);
+      throw new ScanError("Expected LITERAL but got "+token);
     }
   }
   
   int getLevelInt() throws ScanError {
-    String levelStr = getIdentifier();
+    String levelStr = getLiteral();
 
     if("DEBUG".equalsIgnoreCase(levelStr)) {
       return Level.DEBUG_INT;
