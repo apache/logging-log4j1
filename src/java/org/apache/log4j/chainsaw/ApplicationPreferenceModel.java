@@ -199,4 +199,15 @@ class ApplicationPreferenceModel implements SettingsListener {
         event.saveSetting("showNoReceiverWarning", isShowNoReceiverWarning());
         event.saveSetting("identifierExpression", getIdentifierExpression());
     }
+
+    /**
+     * Takes another model and copies all the values into this model
+     * @param uncommittedPreferenceModel
+     */
+    public void apply(ApplicationPreferenceModel model)
+    {
+      setIdentifierExpression(model.getIdentifierExpression());
+      setShowNoReceiverWarning(model.isShowNoReceiverWarning());
+      
+    }
 }

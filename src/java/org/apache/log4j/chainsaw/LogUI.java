@@ -159,6 +159,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   private static final String LOOK_AND_FEEL = "LookAndFeel";
   private static final String STATUS_BAR = "StatusBar";
   static final String COLUMNS_EXTENSION = ".columns";
+  private final JFrame preferencesFrame = new JFrame();
+  
   private static ChainsawSplash splash;
   private URL configURLToUse;
   private boolean noReceiversDefined;
@@ -166,7 +168,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   private ChainsawTabbedPane tabbedPane;
   private JToolBar toolbar;
   private ChainsawStatusBar statusBar;
-  private ApplicationPreferenceModel appPreferenceModel = new ApplicationPreferenceModel();
+  private final ApplicationPreferenceModel applicationPreferenceModel = new ApplicationPreferenceModel();
+  private final ApplicationPreferenceModelPanel applicationPreferenceModelPanel = new ApplicationPreferenceModelPanel(applicationPreferenceModel);
   private final Map tableModelMap = new HashMap();
   private final Map tableMap = new HashMap();
   private final List filterableColumns = new ArrayList();
@@ -317,7 +320,20 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     toolbar = getToolBarAndMenus().getToolbar();
     setJMenuBar(getToolBarAndMenus().getMenubar());
     setTabbedPane(new ChainsawTabbedPane());
+    preferencesFrame.setTitle("'Application-wide Preferences");
+    preferencesFrame.setIconImage(
+        ((ImageIcon) ChainsawIcons.ICON_PREFERENCES).getImage());
+    preferencesFrame.getContentPane().add(applicationPreferenceModelPanel);
 
+    preferencesFrame.setSize(640, 480);
+
+    applicationPreferenceModelPanel.setOkCancelActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            preferencesFrame.setVisible(false);
+          }
+        });
+    
   }
 
   /**
@@ -376,7 +392,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
   public void activateViewer() {
     welcomePanel = new WelcomePanel(this);
     
-    appPreferenceModel.addPropertyChangeListener("identifierExpression", new PropertyChangeListener() {
+    applicationPreferenceModel.addPropertyChangeListener("identifierExpression", new PropertyChangeListener() {
 		public void propertyChange(PropertyChangeEvent evt) {
              handler.setIdentifierExpression(evt.getNewValue().toString());
 		}
@@ -732,7 +748,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       });
 
     getSettingsManager().addSettingsListener(this);
-    getSettingsManager().addSettingsListener(appPreferenceModel);
+    getSettingsManager().addSettingsListener(applicationPreferenceModel);
     getSettingsManager().addSettingsListener(getToolBarAndMenus());
     getSettingsManager().loadSettings();
 
@@ -745,7 +761,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       initializationLock.notifyAll();
     }
 
-    if (noReceiversDefined && appPreferenceModel.isShowNoReceiverWarning()) {
+    if (noReceiversDefined && applicationPreferenceModel.isShowNoReceiverWarning()) {
       showNoReceiversWarningPanel();
     }
     
@@ -939,7 +955,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
           dialog.dispose();
 
-          appPreferenceModel.setShowNoReceiverWarning(!noReceiversWarningPanel.isDontWarnMeAgain());
+          applicationPreferenceModel.setShowNoReceiverWarning(!noReceiversWarningPanel.isDontWarnMeAgain());
           if (noReceiversWarningPanel.getModel().isManualMode()) {
             toggleReceiversPanel();
           } else if (noReceiversWarningPanel.getModel().isSimpleReceiverMode()) {
@@ -1045,6 +1061,10 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     return statusBar;
   }
 
+  void showApplicationPreferences() {
+    applicationPreferenceModelPanel.updateModel();
+    preferencesFrame.show();  
+  }
   void showAboutBox() {
     if (aboutBox == null) {
       aboutBox = new ChainsawAbout(this);
@@ -1656,5 +1676,12 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     public void eventCountChanged(int currentCount, int totalCount) {
       this.currentCount = currentCount;
     }
+  }
+  /**
+   * @return Returns the applicationPreferenceModel.
+   */
+  public final ApplicationPreferenceModel getApplicationPreferenceModel()
+  {
+    return applicationPreferenceModel;
   }
 }
