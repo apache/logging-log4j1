@@ -40,7 +40,7 @@ class XMLFileHandler
 
     /** the time of the event **/
     private long mTimeStamp;
-    /** the priority of the event **/
+    /** the priority (level) of the event **/
     private Priority mPriority;
     /** the category of the event **/
     private String mCategoryName;
@@ -114,7 +114,7 @@ class XMLFileHandler
         if (TAG_EVENT.equals(aQName)) {
             mThreadName = aAtts.getValue("thread");
             mTimeStamp = Long.parseLong(aAtts.getValue("timestamp"));
-            mCategoryName = aAtts.getValue("category");
+            mCategoryName = aAtts.getValue("logger");
             mPriority = Priority.toPriority(aAtts.getValue("level"));
         } else if (TAG_LOCATION_INFO.equals(aQName)) {
             mLocationDetails = aAtts.getValue("class") + "."
