@@ -437,6 +437,7 @@ public class PatternLayout extends Layout {
   private PatternConverter head;
 
   private HashMap ruleRegistry = null;
+  private boolean handlesExceptions;
 
   /**
      Constructs a PatternLayout using the DEFAULT_LAYOUT_PATTERN.
@@ -503,6 +504,7 @@ public class PatternLayout extends Layout {
     PatternParser patternParser = new PatternParser(conversionPattern);
     patternParser.setConverterRegistry(ruleRegistry);
     head = patternParser.parse();
+    handlesExceptions = PatternConverter.chainHandlesTrowable(head);
   }
 
   /**
@@ -514,5 +516,13 @@ public class PatternLayout extends Layout {
       c.format(output, event);
       c = c.next;
     }
+  }
+  
+  /**
+   * Will return false if any of the conversion specifiers in the pattern
+   * handle {@link Exceptions}.
+   */
+  public boolean ignoresThrowable() {
+    return !handlesExceptions;
   }
 }
