@@ -50,15 +50,11 @@
 package org.apache.log4j.rolling;
 
 import org.apache.log4j.FileAppender;
-import org.apache.log4j.helpers.CountingQuietWriter;
 import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.LoggingEvent;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.Writer;
-
 
 /**
  * RollingFileAppender extends FileAppender to backup the log files

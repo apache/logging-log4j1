@@ -79,9 +79,9 @@ public class SimpleSocketServer  {
     }
    
     if(configFile.endsWith(".xml")) {
-      new DOMConfigurator().configure(configFile);
+      DOMConfigurator.configure(configFile);
     } else {
-      new PropertyConfigurator().configure(configFile);
+      PropertyConfigurator.configure(configFile);
     }
   }
 }

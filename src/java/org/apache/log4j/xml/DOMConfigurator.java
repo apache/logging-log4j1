@@ -26,7 +26,6 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.IOException;
-import java.net.URL;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.FactoryConfigurationError;

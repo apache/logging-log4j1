@@ -1,6 +1,5 @@
 package org.apache.log4j.jdbc;
 
-import org.apache.log4j.*;
 import org.apache.log4j.spi.*;
 import org.apache.log4j.PatternLayout;
 

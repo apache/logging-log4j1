@@ -199,7 +199,7 @@
                     **/doc-files/*,
                     ${stem}/xml/**,
                     ${stem}/test/serialization/**,
-		            ${stem}/net/SMTPAppender.java,
+	            ${stem}/net/SMTPAppender.java,
                	    ${stem}/net/JMS*.java,
                	    ${stem}/jmx/*.java,
                     ${stem}/varia/Log4JAvalonLogger.java,

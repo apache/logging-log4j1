@@ -8,15 +8,15 @@
 
 package org.apache.log4j.net;
 
-import java.net.InetAddress;
-import java.net.Socket;
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.BufferedInputStream;
+import java.net.Socket;
 
-import org.apache.log4j.*;
-import org.apache.log4j.spi.*;
+import org.apache.log4j.Logger;
 import org.apache.log4j.plugins.Receiver;
+import org.apache.log4j.spi.LoggerRepository;
+import org.apache.log4j.spi.LoggingEvent;
 
 // Contributors:  Moses Hohman <mmhohman@rainbow.uchicago.edu>
 

@@ -80,7 +80,7 @@ public class Finalize {
   static
   void delay(int amount) {
     try {
-      Thread.currentThread().sleep(amount);
+      Thread.sleep(amount);
     }
     catch(Exception e) {}
   }

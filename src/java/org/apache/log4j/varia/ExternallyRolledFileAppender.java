@@ -12,7 +12,6 @@ import java.net.Socket;
 import java.net.ServerSocket;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.RollingFileAppender;
-import org.apache.log4j.helpers.LogLog;
 
 /**
    This appender listens on a socket on the port specified by the

@@ -14,7 +14,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.io.ObjectOutputStream;
+
 
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.LoggingEvent;

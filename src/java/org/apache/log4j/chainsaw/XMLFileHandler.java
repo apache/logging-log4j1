@@ -51,6 +51,7 @@ package org.apache.log4j.chainsaw;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
+import org.apache.log4j.Level;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -183,7 +184,7 @@ class XMLFileHandler extends DefaultHandler {
         mCategoryName = aAtts.getValue("category");
       }
 
-      mPriority = Priority.toPriority(aAtts.getValue("level"));
+      mPriority = Level.toLevel(aAtts.getValue("level"));
     } else if (TAG_LOCATION_INFO.equals(aQName)) {
       mLocationDetails =
         aAtts.getValue("class") + "." + aAtts.getValue("method") + "("

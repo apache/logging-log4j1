@@ -10,7 +10,6 @@ package org.apache.log4j.varia;
 
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.helpers.OptionConverter;
 
 /**
    This is a very simple filter based on string matching.

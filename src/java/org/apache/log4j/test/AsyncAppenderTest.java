@@ -99,7 +99,7 @@ public class AsyncAppenderTest {
     }
 
     try {
-      Thread.currentThread().sleep(delayBeforeClose);
+      Thread.sleep(delayBeforeClose);
     } catch (Exception e) {
     }
 
