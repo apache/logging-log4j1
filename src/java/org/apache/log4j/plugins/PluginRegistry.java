@@ -16,12 +16,11 @@
 package org.apache.log4j.plugins;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import javax.swing.event.EventListenerList;
 
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.LoggerRepositoryEventListener;
@@ -48,7 +47,7 @@ public final class PluginRegistry {
    * the listener used to listen for repository events.
    */
   private final RepositoryListener listener = new RepositoryListener();
-  private final EventListenerList listenerList = new EventListenerList();
+  private final List listenerList = Collections.synchronizedList(new ArrayList());
 
   public PluginRegistry(LoggerRepository loggerRepository) {
     pluginMap = new HashMap();
@@ -108,17 +107,16 @@ public final class PluginRegistry {
    * @param plugin The plugin that has been started.
    */
   private void firePluginStarted(Plugin plugin) {
-    PluginListener[] listeners = (PluginListener[])listenerList.getListeners(PluginListener.class);
-
-    PluginEvent e = null;
-
-    for (int i = 0; i < listeners.length; i++) {
-      if (e == null) {
-        e = new PluginEvent(plugin);
-      }
-
-      listeners[i].pluginStarted(e);
-    }
+  	PluginEvent e = null;
+  	synchronized(listenerList){
+  		for (Iterator iter = listenerList.iterator(); iter.hasNext();) {
+  			PluginListener listener = (PluginListener) iter.next();
+  			if (e == null) {
+  				e = new PluginEvent(plugin);
+  			}
+  			listener.pluginStarted(e);
+  		}
+  	}
   }
 
 
@@ -128,17 +126,16 @@ public final class PluginRegistry {
    * @param plugin The plugin that has been stopped.
    */
   private void firePluginStopped(Plugin plugin) {
-    PluginListener[] listeners = (PluginListener[])listenerList.getListeners(PluginListener.class);
-
-    PluginEvent e = null;
-
-    for (int i = 0; i < listeners.length; i++) {
-      if (e == null) {
-        e = new PluginEvent(plugin);
-      }
-
-      listeners[i].pluginStopped(e);
-    }
+  	PluginEvent e = null;
+  	synchronized(listenerList){
+  		for (Iterator iter = listenerList.iterator(); iter.hasNext();) {
+  			PluginListener listener = (PluginListener) iter.next();
+  			if (e == null) {
+  				e = new PluginEvent(plugin);
+  			}
+  			listener.pluginStopped(e);
+  		}
+  	}
   }
 
 
@@ -239,7 +236,7 @@ public final class PluginRegistry {
    * @param l PluginListener to add to this registry
    */
   public final void addPluginListener(PluginListener l) {
-    listenerList.add(PluginListener.class, l);
+    listenerList.add(l);
   }
 
 
@@ -250,7 +247,7 @@ public final class PluginRegistry {
    * @param l PluginListener to remove
    */
   public final void removePluginListener(PluginListener l) {
-    listenerList.remove(PluginListener.class, l);
+    listenerList.remove(l);
   }
 
   /**

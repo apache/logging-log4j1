@@ -9,13 +9,15 @@ package org.apache.log4j.net;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
-import javax.swing.event.EventListenerList;
-
-import org.apache.log4j.spi.LoggerRepository;
-import org.apache.log4j.plugins.Receiver;
-import org.apache.log4j.plugins.Plugin;
 import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.plugins.Plugin;
+import org.apache.log4j.plugins.Receiver;
+import org.apache.log4j.spi.LoggerRepository;
 
 /**
   SocketHubReceiver receives a remote logging event on a configured
@@ -44,7 +46,7 @@ extends Receiver implements SocketNodeEventListener, PortBased {
   
   protected Socket socket;
   
-  private EventListenerList listenerList = new EventListenerList();
+  private List listenerList = Collections.synchronizedList(new ArrayList());
     
   public SocketHubReceiver() { }
   
@@ -65,7 +67,7 @@ extends Receiver implements SocketNodeEventListener, PortBased {
    * @param l
    */
   public void addSocketNodeEventListener(SocketNodeEventListener l){
-  	listenerList.add(SocketNodeEventListener.class, l);
+  	listenerList.add(l);
   }
   
   /**
@@ -74,7 +76,7 @@ extends Receiver implements SocketNodeEventListener, PortBased {
    * @param l
    */
   public void removeSocketNodeEventListener(SocketNodeEventListener l){
-  	listenerList.remove(SocketNodeEventListener.class, l);
+  	listenerList.remove(l);
   }
   
   /**
@@ -221,13 +223,13 @@ extends Receiver implements SocketNodeEventListener, PortBased {
     socket = _socket;
     SocketNode node = new SocketNode(socket, this);
     node.addSocketNodeEventListener(this);
-	SocketNodeEventListener[] listeners =
-	  (SocketNodeEventListener[]) listenerList.getListeners(
-		SocketNodeEventListener.class);
 
-	for (int i = 0; i < listeners.length; i++) {
-	  node.addSocketNodeEventListener(listeners[i]);
-	}
+    synchronized(listenerList){
+    	for (Iterator iter = listenerList.iterator(); iter.hasNext();) {
+    		SocketNodeEventListener listener = (SocketNodeEventListener) iter.next();
+    		node.addSocketNodeEventListener(listener);
+    	}
+    }
     new Thread(node).start();
   }
   
