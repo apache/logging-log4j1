@@ -45,6 +45,20 @@ public class PatternLayoutTestCase extends TestCase {
   static String PAT4 = Filter.RELATIVE_TIME_PAT+ " " + PAT0;
 
   static String PAT5 = "\\[main]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* : Message \\d{1,2}";
+  static String PAT6 = "\\[main]\\ (DEBUG|INFO |WARN |ERROR|FATAL) org.apache.log4j.PatternLayoutTestCase.common\\(PatternLayoutTestCase.java:\\d{1,4}\\): Message \\d{1,2}";
+
+  static String PAT11a = "^(DEBUG|INFO |WARN |ERROR|FATAL) \\[main]\\ log4j.PatternLayoutTestCase: Message \\d{1,2}";
+  static String PAT11b = "^(DEBUG|INFO |WARN |ERROR|FATAL) \\[main]\\ root: Message \\d{1,2}";
+
+  static String PAT12 = "^\\[main]\\ (DEBUG|INFO |WARN |ERROR|FATAL) "+
+    "org.apache.log4j.PatternLayoutTestCase.common\\(PatternLayoutTestCase.java:\\d{3}\\): "+
+    "Message \\d{1,2}";
+
+  static String PAT13 = "^\\[main]\\ (DEBUG|INFO |WARN |ERROR|FATAL) "+
+    "apache.log4j.PatternLayoutTestCase.common\\(PatternLayoutTestCase.java:\\d{3}\\): "+
+    "Message \\d{1,2}";
+
+  static String PAT14 = "^(DEBUG| INFO| WARN|ERROR|FATAL)\\ \\d{1,2}\\ *- Message \\d{1,2}";
 
   public PatternLayoutTestCase(String name) {
     super(name);
@@ -155,6 +169,55 @@ public class PatternLayoutTestCase extends TestCase {
     assertTrue(Compare.compare(FILTERED, "witness/patternLayout.9"));
   }
 
+  public void test10() throws Exception {
+    PropertyConfigurator.configure("input/patternLayout10.properties");
+    common();
+    ControlFilter cf1 = new ControlFilter(new String[]{PAT6, EXCEPTION1, 
+						       EXCEPTION2, EXCEPTION3});
+    Transformer.transform(TEMP, FILTERED, new Filter[] {cf1,   
+                                                      new LineNumberFilter(), });
+    assertTrue(Compare.compare(FILTERED, "witness/patternLayout.10"));
+  }
+
+  public void test11() throws Exception {
+    PropertyConfigurator.configure("input/patternLayout11.properties");
+    common();
+    ControlFilter cf1 = new ControlFilter(new String[]{PAT11a, PAT11b, EXCEPTION1, 
+						       EXCEPTION2, EXCEPTION3});
+    Transformer.transform(TEMP, FILTERED, new Filter[] {cf1,   
+                                                      new LineNumberFilter(), });
+    assertTrue(Compare.compare(FILTERED, "witness/patternLayout.11"));
+  }
+
+  public void test12() throws Exception {
+    PropertyConfigurator.configure("input/patternLayout12.properties");
+    common();
+    ControlFilter cf1 = new ControlFilter(new String[]{PAT12, EXCEPTION1, 
+						       EXCEPTION2, EXCEPTION3});
+    Transformer.transform(TEMP, FILTERED, new Filter[] {cf1,   
+                                                      new LineNumberFilter(), });
+    assertTrue(Compare.compare(FILTERED, "witness/patternLayout.12"));
+  }
+
+  public void test13() throws Exception {
+    PropertyConfigurator.configure("input/patternLayout13.properties");
+    common();
+    ControlFilter cf1 = new ControlFilter(new String[]{PAT13, EXCEPTION1, 
+						       EXCEPTION2, EXCEPTION3});
+    Transformer.transform(TEMP, FILTERED, new Filter[] {cf1,   
+                                                      new LineNumberFilter(), });
+    assertTrue(Compare.compare(FILTERED, "witness/patternLayout.13"));
+  }
+
+  public void test14() throws Exception {
+    PropertyConfigurator.configure("input/patternLayout14.properties");
+    common();
+    ControlFilter cf1 = new ControlFilter(new String[]{PAT14, EXCEPTION1, 
+						       EXCEPTION2, EXCEPTION3});
+    Transformer.transform(TEMP, FILTERED, new Filter[] {cf1,   
+                                                      new LineNumberFilter(), });
+    assertTrue(Compare.compare(FILTERED, "witness/patternLayout.14"));
+  }
 
   void common() {
     int i = -1;
@@ -194,6 +257,11 @@ public class PatternLayoutTestCase extends TestCase {
     suite.addTest(new PatternLayoutTestCase("test7"));
     suite.addTest(new PatternLayoutTestCase("test8"));
     suite.addTest(new PatternLayoutTestCase("test9"));
+    suite.addTest(new PatternLayoutTestCase("test10"));
+    suite.addTest(new PatternLayoutTestCase("test11"));
+    suite.addTest(new PatternLayoutTestCase("test12"));
+    suite.addTest(new PatternLayoutTestCase("test13"));
+    suite.addTest(new PatternLayoutTestCase("test14"));
     return suite;
   }
 

@@ -11,6 +11,15 @@
 
  (rc1)
 
+  - The ANT build script was modified to use jar files specified in
+    the build.properties file instead of the CLASSPATH environment
+    variable. The build.properties file depends on local paths and is
+    supplied by the user. The build.properties.sample file is included
+    in the distribution. The build.sh and build.bat scripts have
+    been removed. This is the way many other jakarta projects build their
+    projects. The jar files in the dist/lib directory were also removed
+    since they are no longer used. [*]
+
  - The DOMConfigurator now interprets the string after the '#'
    character in the value attribute within the <level> element as
    the fully qualified class name of a custom Level. This is consistent

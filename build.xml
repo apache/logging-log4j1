@@ -319,22 +319,22 @@
     </delete>
 
     <jar jarfile="${jar.dest}/${jar.filename}" basedir="${javac.dest}"
-	includes="${stem}/*.class, ${stem}/xml/log4j.dtd,
-		  ${stem}/config/*.class,
-	          ${stem}/helpers/*.class,
-		  ${stem}/spi/*.class,
-		  ${stem}/net/*.class,
-		  ${stem}/varia/*.class,
-		  ${stem}/chainsaw/*.class,
-		  ${stem}/nt/*.class,
-		  ${stem}/xml/*.class,
-		  ${stem}/jmx/*.class,
-		  ${stem}/or/*.class,
-		  ${stem}/or/sax/*.class,
-		  ${stem}/config/*.class,
-		  ${stem}/gui/TextPaneAppender.class"
-	excludes="**/StressCategory*, **/UnitTest**"
-        manifest="${jar.dest}/manifest.mf"
+      includes="${stem}/*.class, ${stem}/xml/log4j.dtd,
+                ${stem}/config/*.class,
+	        ${stem}/helpers/*.class,
+		${stem}/spi/*.class,
+		${stem}/net/*.class,
+		${stem}/varia/*.class,
+		${stem}/chainsaw/*.class,
+		${stem}/nt/*.class,
+		${stem}/xml/*.class,
+		${stem}/jmx/*.class,
+		${stem}/or/*.class,
+		${stem}/or/sax/*.class,
+		${stem}/config/*.class,
+		${stem}/gui/TextPaneAppender.class"
+      excludes="**/StressCategory*, **/UnitTest**"
+      manifest="${jar.dest}/manifest.mf"
     />
   </target>
 
@@ -373,9 +373,10 @@
            header="&lt;b&gt;Log4j ${version}&lt;/b&gt;"
 	   bottom="Copyright 2000-2002 Apache Software Foundation.">
 
-           <link offline="true"
-                 href="http://java.sun.com/products/jdk/1.2/docs/api"
-                 packageListLoc="${packaging.dir}"/>
+      <link offline="true"
+	     href="http://java.sun.com/products/jdk/1.2/docs/api"
+	     packageListLoc="${packaging.dir}"/>
+      <classpath refid="compile.classpath"/>
     </javadoc>
   </target>
 
@@ -428,13 +429,11 @@
 			  docs/**,
 	                  examples/**,
 			  build/*,
-	                  build.bat, build.sh,
 	                  build.xml,
                           manifest.mf,
 			  INSTALL,
-			  LICENSE.APL,
 			  LICENSE.txt,
-			  dist/lib/*.jar,
+			  dist/lib/log4j*.jar,
 			  dist/classes/**,
 			  contribs/**"
                 excludes="make/make.loc,
