@@ -11,6 +11,9 @@
 
  April, 2004 
 
+ - Added the "isPristine" falg to LoggerRepository. As soon as a configurator
+   starts configuring a repository this flag is set to false.
+   
  - Removed support for the deprecated property "log4j.configDebug". [**/D]
 
  - Added keys() method to the MDC class as requested by Don Isenor.

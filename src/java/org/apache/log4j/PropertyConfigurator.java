@@ -380,25 +380,29 @@ public class PropertyConfigurator implements Configurator {
 
      See {@link #doConfigure(String, LoggerRepository)} for the expected format.
   */
-  public void doConfigure(Properties properties, LoggerRepository hierarchy) {
+  public void doConfigure(Properties properties, LoggerRepository repository) {
     String value = properties.getProperty(LogLog.DEBUG_KEY);
 
     if (value != null) {
       LogLog.setInternalDebugging(OptionConverter.toBoolean(value, true));
     }
 
+    // As soon as we start configuration process, the pristine flag is set to 
+    // false.
+    repository.setPristine(false);
+    
     String thresholdStr =
       OptionConverter.findAndSubst(THRESHOLD_PREFIX, properties);
 
     if (thresholdStr != null) {
-      hierarchy.setThreshold(OptionConverter.toLevel(thresholdStr, Level.ALL));
+      repository.setThreshold(OptionConverter.toLevel(thresholdStr, Level.ALL));
       LogLog.debug(
-        "Hierarchy threshold set to [" + hierarchy.getThreshold() + "].");
+        "Hierarchy threshold set to [" + repository.getThreshold() + "].");
     }
 
-    configureRootCategory(properties, hierarchy);
+    configureRootCategory(properties, repository);
     configureLoggerFactory(properties);
-    parseCatsAndRenderers(properties, hierarchy);
+    parseCatsAndRenderers(properties, repository);
 
     LogLog.debug("Finished configuring.");
 
