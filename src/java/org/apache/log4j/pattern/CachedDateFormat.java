@@ -78,18 +78,18 @@ final class CachedDateFormat extends DateFormat {
     if(milliDigits == 0) {
       // millisecondStart value won't be used
       millisecondStart = 0;
-    } else if (milliDigits <= 2) {
+    } else if (milliDigits < JVM_MAX_MILLI_DIGITS) {
       // we don't deal well with these
       millisecondStart = BAD_PATTERN;
-    } else if(milliDigits >= 3) {
+    } else if(milliDigits >= JVM_MAX_MILLI_DIGITS) {
       // if the number if millisecond digits is 3 or more, we can safely reduce
       // the precision to 3, because the values for the extra digits will always
       // be 0, thus immutable across iterations.
-      milliDigits = 3;
+      milliDigits = JVM_MAX_MILLI_DIGITS;
       numberFormat = new DecimalFormat();
       // Have numberFormat use of all available digits, it'll zero pad for
       // smaller numbers 
-      numberFormat.setMinimumIntegerDigits(milliDigits);
+      numberFormat.setMinimumIntegerDigits(JVM_MAX_MILLI_DIGITS);
     
       Date now = new Date();
       long nowTime = now.getTime();
@@ -164,13 +164,16 @@ final class CachedDateFormat extends DateFormat {
     long now = date.getTime();
     if ((now < (slotBegin + 1000L)) && (now >= slotBegin)) {
       //System.out.println("Using cached val:"+date);
-      if (millisecondStart >= 0 && milliDigits > 0) {
+
+      // caching is safe only for milliDigits == 3, if milliDigits == 0
+      // we don't have to bother  with milliseonds at all.
+      if (millisecondStart >= 0 && milliDigits == JVM_MAX_MILLI_DIGITS) {
         int millis = (int) (now - slotBegin);
         int cacheLength = cache.length();
 
         milliBuf.setLength(0);
         numberFormat.format(millis, milliBuf, fieldPosition);
-        for(int j = 0; j < milliDigits; j++) {
+        for(int j = 0; j < JVM_MAX_MILLI_DIGITS; j++) {
           cache.setCharAt(millisecondStart+j, milliBuf.charAt(j));
         }
       }
