@@ -727,7 +727,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       ((ImageIcon) ChainsawIcons.ICON_PREFERENCES).getImage());
     preferencesFrame.getContentPane().add(applicationPreferenceModelPanel);
 
-    preferencesFrame.setSize(640, 480);
+    preferencesFrame.setSize(640, 520);
 
     Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
     preferencesFrame.setLocation(

@@ -17,10 +17,11 @@
 package org.apache.log4j.varia;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,10 +45,10 @@ import org.apache.log4j.spi.ThrowableInformation;
 
 /**
  * A receiver which supports the definition of the log format using keywords, the
- * contained timestamp using SimpleDateFormat's format support, and the file name
+ * contained timestamp using SimpleDateFormat's format support, and the file URL
  *
  * FEATURES:
- * specify the file to be processed
+ * specify the URL of the log file to be processed
  * specify the timestamp format (if one exists)
  * specify the layout used in the log file
  * define your file's layout using these keywords along with any text being added as delimiters
@@ -115,7 +116,7 @@ import org.apache.log4j.spi.ThrowableInformation;
  *
  * param: "timestampFormat" value="yyyy-MM-d HH:mm:ss,SSS"
  * param: "logFormat" value="RELATIVETIME [THREAD] LEVEL LOGGER * - MESSAGE"
- * param: "fileName" value="c:/logs/A4.log"
+ * param: "fileURL" value="file:///c:/events.log"
  * param: "tailing" value="true"
  *
  * The 'tailing' parameter allows the contents of the file to be continually read and new events processed.
@@ -153,7 +154,7 @@ public class LogFilePatternReceiver extends Receiver {
   private SimpleDateFormat dateFormat;
   private String timestampFormat = "yyyy-MM-d HH:mm:ss,SSS";
   private String logFormat;
-  private String fileName;
+  private String fileURL;
   private String shortFileName;
   private boolean tailing;
   private String filterExpression;
@@ -204,7 +205,7 @@ public class LogFilePatternReceiver extends Receiver {
   /**
    * Test
    *
-   * @param args file name to parse
+   * @param args file url to parse
    */
   public static void main(String[] args) {
     LogFilePatternReceiver parser = new LogFilePatternReceiver();
@@ -217,11 +218,12 @@ public class LogFilePatternReceiver extends Receiver {
     //System.out.println("Created event: " + parser.convertToEvent("2004-12-13 22:49:22,820 DEBUG SOME VALUE [Thread-0] Generator2 (Generator2.java:100) - <test>   <test2>something here</test2>   <test3 blah=something/>   <test4>       <test5>something else</test5>   </test4></test>"));
     //parser.initialize("THREAD LEVEL LOGGER - MESSAGE");
     //parser.setLogFormat("RELATIVETIME PROP(USERID) [THREAD] LEVEL LOGGER * - MESSAGE");
-    parser.setFileName(args[0]);
+    parser.setFileURL(args[0]);
     parser.initialize();
 
     try {
-      parser.process(new FileReader(new File(parser.getFileName())));
+      //expects an unbuffered reader
+      parser.process(new InputStreamReader(new URL(parser.getFileURL()).openStream()));
 
       //parser.process(new StringReader("2004-12-13 22:49:22,820 DEBUG SOME VALUE [Thread-0] Generator2 (Generator2.java:100) - <test>   <test2>something here</test2>   <test3 blah=something/>   <test4>       <test5>something else</test5>   </test4></test>\nException blah\n\tat someplace.java:555\n\tat nextline blah:55"));
     } catch (IOException ioe) {
@@ -234,20 +236,24 @@ public class LogFilePatternReceiver extends Receiver {
   /**
    * Accessor
    *
-   * @return file name
+   * @return file URL
    */
-  public String getFileName() {
-    return fileName;
+  public String getFileURL() {
+    return fileURL;
   }
 
   /**
    * Mutator
    *
-   * @param fileName
+   * @param fileURL
    */
-  public void setFileName(String fileName) {
-    this.fileName = fileName;
-    shortFileName = new File(fileName).getName();
+  public void setFileURL(String fileURL) {
+    this.fileURL = fileURL;
+    try {
+    	shortFileName = new URL(fileURL).getFile();
+    } catch (MalformedURLException mue) {
+    	shortFileName = fileURL;
+    }
   }
 
   /**
@@ -683,7 +689,7 @@ public class LogFilePatternReceiver extends Receiver {
           initialize();
 
           try {
-            process(new FileReader(new File(getFileName())));
+          	process(new InputStreamReader(new URL(getFileURL()).openStream()));
           } catch (IOException ioe) {
             ioe.printStackTrace();
           }

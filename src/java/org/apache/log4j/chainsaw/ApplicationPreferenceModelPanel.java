@@ -64,7 +64,7 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
   private JTextField identifierExpression;
   private JTextField toolTipDisplayMillis;
   private JTextField cyclicBufferSize;    
-  private final JTextField configurationURL = new JTextField(25);
+  private final JTextField configurationURL = new JTextField(35);
 
   ApplicationPreferenceModelPanel(ApplicationPreferenceModel model) {
     this.committedPreferenceModel = model;
@@ -434,7 +434,7 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
 
       JPanel p6 = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
-      p6.add(new JLabel("Automatic Configuration"));
+      p6.add(new JLabel("Automatic Configuration URL"));
       p6.add(Box.createHorizontalStrut(5));
       p6.add(configurationURL);
       add(p6);
@@ -447,7 +447,7 @@ public class ApplicationPreferenceModelPanel extends AbstractPreferencePanel {
 
       add(Box.createVerticalGlue());
       
-      configurationURL.setToolTipText("A complete and valid URL identifying the location of a valid log4.xml file to auto-configure Receivers and other Plugins");
+      configurationURL.setToolTipText("A complete and valid URL identifying the location of a valid log4 xml configuration file to auto-configure Receivers and other Plugins");
       configurationURL.setInputVerifier(new InputVerifier() {
 
         public boolean verify(JComponent input)
