@@ -39,7 +39,10 @@ log4j.appender.R.File=rolling_log_file.log
 # of backup files.
 
 log4j.appender.R.layout=org.apache.log4j.PatternLayout
-log4j.appender.R.layout.ConversionPattern=[slf5s.start]%d{DATE}[slf5s.DATE]%n%p[slf5s.PRIORITY]%n%x[slf5s.NDC]%n%t[slf5s.THREAD]%n%c[slf5s.CATEGORY]%n%l[slf5s.LOCATION]%n%m[slf5s.MESSAGE]%n%n
+# Edited to fit.
+log4j.appender.R.layout.ConversionPattern=[slf5s.start]%d{DATE}[slf5s.DATE]%n\
+  %p[slf5s.PRIORITY]%n%x[slf5s.NDC]%n%t[slf5s.THREAD]%n\
+  %c[slf5s.CATEGORY]%n%l[slf5s.LOCATION]%n%m[slf5s.MESSAGE]%n%n
 log4j.appender.R.MaxFileSize=100KB
 log4j.appender.R.MaxBackupIndex=1</font></pre>
 
@@ -170,7 +173,8 @@ log4j.appender.R.MaxBackupIndex=1</font></pre>
 	line syntax for the SocketServer is as follows: </p>
 
 <pre>
-    java org.apache.log4j.net.SocketServer portNumber configurationFile configurationDirectory 
+    java org.apache.log4j.net.SocketServer portNumber configurationFile\
+                                           configurationDirectory 
 </pre>
 
 
@@ -211,16 +215,21 @@ log4j.appender.R.MaxBackupIndex=1</font></pre>
 	the category explorer window, and choose &quot;Remove All
 	Empty Categories&quot;. If you want to get rid of this old
 	configuration information permanently, you should choose
-	Configure-&gt;Reset from the menu as well.</p> <hr/>
+	Configure-&gt;Reset from the menu as well.</p> 
 
-      <p><b>Q. I'm using Ant to build my project and one of my tasks is to execute a 
-	  series of JUnit tests. When I attempt to use the LF5Appender as an appender 
-	  I get the following exception thrown: </b></p>
+      <hr/>
+
+      <p><b>Q. I'm using Ant to build my project and one of my tasks
+	  is to execute a series of JUnit tests. When I attempt to use
+	  the LF5Appender as an appender I get the following exception
+	  thrown: </b>
+      </p>
 
 <pre>
     java.lang.NullPointerException 
-    at javax.swing.ImageIcon.&ltinit&gt(ImageIcon.java:134)
-    at org.apache.log4j.lf5.viewer.channelexplorer.ChannelNodeRenderer.&ltinit&gt(ChannelNodeRenderer.java:71) 
+    at javax.swing.ImageIcon.&lt;init&gt;(ImageIcon.java:134)
+    at org.apache.log4j.lf5.viewer.channelexplorer.ChannelNodeRenderer.
+                                       &lt;init&gt;(ChannelNodeRenderer.java:71) 
     ... etc.
 </pre>
 
