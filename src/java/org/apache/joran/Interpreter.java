@@ -49,7 +49,7 @@ import java.util.Vector;
  * &lt;a&gt; element is the string <id>"a/b"</id>.
  *
  * <p>The pattern corresponding to an &lt;b&gt; and any level of nesting is
- * "&star;/b. Thus, the &star; character placed at the beginning of a pattern
+ * "&#42;/b. Thus, the &#42; character placed at the beginning of a pattern
  * serves as a wildcard for the level of nesting.
  *
  * Conceptually, this is very similar to the API of commons-digester. Joran
@@ -115,9 +115,12 @@ public class Interpreter extends DefaultHandler {
       callBeginAction(applicableActionList, tagName, atts);
     } else {
       actionListStack.add(EMPTY_LIST);
-      String errMsg = "no applicable action for <" + tagName + ">.";
+
+      String errMsg =
+        "no applicable action for <" + tagName + ">, current pattern is ["
+        + pattern+"]";
       logger.debug(errMsg);
-      
+      ec.addError(new ErrorItem(errMsg));
     }
   }
 
@@ -206,8 +209,7 @@ public class Interpreter extends DefaultHandler {
       try {
         action.begin(ec, tagName, atts);
       } catch (Exception e) {
-        ec.addError(
-          new ErrorItem("Action threw an exception", e));
+        ec.addError(new ErrorItem("Action threw an exception", e));
       }
     }
   }

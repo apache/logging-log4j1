@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE x>
+<!DOCTYPE computation>
 
-<x>
 <computation name="total">
   <literal value="3"/>
 </computation>
-</x>

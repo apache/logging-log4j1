@@ -26,6 +26,12 @@ import org.xml.sax.Attributes;
 
 /**
  *
+ * This action converts the value attribute of the associated element to
+ * an integer and pushes the resulting Integer object on top of the execution
+ * context stack.
+ *
+ * It also illustrates usage of Joran's error handling paradigm.
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class LiteralAction extends Action {
@@ -34,11 +40,10 @@ public class LiteralAction extends Action {
   public void begin(ExecutionContext ec, String name, Attributes attributes) {
     String valueStr = attributes.getValue(VALUE_ATR);
 
-  
     if (Option.isEmpty(valueStr)) {
       ec.addError(
-        new ErrorItem(
-          "The literal element requires a value attribute"));
+        new ErrorItem("The literal action requires a value attribute"));
+      return;
     }
 
     try {
@@ -47,7 +52,7 @@ public class LiteralAction extends Action {
     } catch (NumberFormatException nfe) {
       ec.addError(
         new ErrorItem(
-          "The value [" + valueStr + "] could not be converter to an Integer",
+          "The value [" + valueStr + "] could not be converted to an Integer",
           nfe));
       throw nfe;
     }

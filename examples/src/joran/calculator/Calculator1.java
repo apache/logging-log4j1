@@ -22,14 +22,12 @@ import org.apache.joran.Interpreter;
 import org.apache.joran.Pattern;
 import org.apache.joran.RuleStore;
 import org.apache.joran.helper.SimpleRuleStore;
-import org.apache.log4j.BasicConfigurator;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 
 /**
- *
  * This examples illustrates collaboration between multiple actions through the
  * common execution context stack.
  * 
@@ -43,23 +41,25 @@ import javax.xml.parsers.SAXParserFactory;
     java joran.calculator.Calculator1 examples/src/joran/calculator/calculator1.xml
 </pre>
  *
- *
+ * Please refer to the comments in the source code for more information.
+ * 
  * @author Ceki G&uuml;ulc&uuml;
  */
 public class Calculator1 {
+  
+  
   public static void main(String[] args) throws Exception {
-
-    BasicConfigurator.configure();
     // Create a simple rule store where pattern and action associations will
-    // be kept.
+    // be kept. This is a basic requirement before invoking a Joran Interpreter.
     RuleStore ruleStore = new SimpleRuleStore();
 
-    // Associate "" pattern with  HelloWorldAction
-    ruleStore.addRule(new Pattern("computation"), new ComputationAction1());
+    // Associate "/computation" pattern with  ComputationAction1
+    ruleStore.addRule(new Pattern("/computation"), new ComputationAction1());
 
-    ruleStore.addRule(new Pattern("computation/literal"), new LiteralAction());
-    ruleStore.addRule(new Pattern("computation/add"), new AddAction());
-    ruleStore.addRule(new Pattern("computation/multiply"), new MultiplyAction());
+    // Other associations
+    ruleStore.addRule(new Pattern("/computation/literal"), new LiteralAction());
+    ruleStore.addRule(new Pattern("/computation/add"), new AddAction());
+    ruleStore.addRule(new Pattern("/computation/multiply"), new MultiplyAction());
     
     // Create a new Joran Interpreter and hand it our simple rule store.
     Interpreter ji = new Interpreter(ruleStore);
@@ -71,12 +71,14 @@ public class Calculator1 {
     // Parse the file given as the application's first argument and
     // set the SAX ContentHandler to the Joran Interpreter we just created.
     saxParser.parse(args[0], ji);
-    
+
+    // The file has been parsed and interpreted. We now errors if any.
     List errorList = ji.getExecutionContext().getErrorList();
-    
     if(errorList.size() > 0) {
-      System.out.println("The following errors occured");
-      System.out.println(errorList);
+      System.out.println("The following errors occured:");
+      for(int i = 0; i < errorList.size(); i++) {
+        System.out.println("\t"+errorList.get(i));
+      }
     }
   }
 }

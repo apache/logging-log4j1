@@ -26,19 +26,25 @@ import java.util.EmptyStackException;
 
 
 /**
- * A trivial action that writes "Hello world" on the console.
  *
- * See the HelloWorld class for integrating with Joran.
+ * This action multiplies the two integers at the top of the stack (they are removed)
+ * and pushes the result on top the stack.
  *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class MultiplyAction extends Action {
+  
+  
   public void begin(ExecutionContext ec, String name, Attributes attributes) {
     int first = fetchInteger(ec);
     int second = fetchInteger(ec);
-    ec.pushObject(new Integer(first*second));
+    ec.pushObject(new Integer(first * second));
   }
 
+  /**
+   * Pop the Integer object at the top of the stack.
+   * This code illustrates usage of Joran's error handling paradigm.
+   */
   int fetchInteger(ExecutionContext ec) {
     int result = 0;
 
@@ -56,8 +62,7 @@ public class MultiplyAction extends Action {
       }
     } catch (EmptyStackException ese) {
       ec.addError(
-        new ErrorItem(
-          "Expecting an integer on the execution stack."));
+        new ErrorItem("Expecting an integer on the execution stack."));
       throw ese;
     }
     return result;
@@ -68,6 +73,5 @@ public class MultiplyAction extends Action {
     // In general, the end() method of actions associated with elements
     // having no children do not need to perform any processing in their
     // end() method.
-    
   }
 }
