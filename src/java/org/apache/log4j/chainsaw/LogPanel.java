@@ -80,6 +80,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -139,6 +140,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -173,7 +175,7 @@ public class LogPanel extends DockablePanel implements SettingsListener,
   final DetailPaneUpdater detailPaneUpdater;
   final JPanel upperPanel;
   final JPanel eventsAndStatusPanel;
-  final JFrame f;
+  final JFrame undockedFrame;
   final DockablePanel externalPanel;
   final Action dockingAction;
   final JSortTable table;
@@ -199,6 +201,7 @@ public class LogPanel extends DockablePanel implements SettingsListener,
   private final LoggerNameTreePanel logTreePanel;
   private boolean tooltipsEnabled;
   private final ChainsawStatusBar statusBar;
+  private final JToolBar undockedToolbar;
 
   public LogPanel(
     final ChainsawStatusBar statusBar, final String ident, String eventType) {
@@ -750,20 +753,18 @@ public class LogPanel extends DockablePanel implements SettingsListener,
 
     final JMenuItem menuItemToggleDock = new JMenuItem("Undock/dock");
 
-    f = new JFrame(ident);
-    f.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    undockedFrame = new JFrame(ident);
+    undockedFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
     if (ChainsawIcons.UNDOCKED_ICON != null) {
-      f.setIconImage(new ImageIcon(ChainsawIcons.UNDOCKED_ICON).getImage());
+      undockedFrame.setIconImage(
+        new ImageIcon(ChainsawIcons.UNDOCKED_ICON).getImage());
     }
 
     externalPanel = new DockablePanel();
     externalPanel.setLayout(new BorderLayout());
-    f.getContentPane().add(externalPanel);
+    undockedFrame.getContentPane().add(externalPanel);
 
-    //	TODO undocked toolbar is broken      
-    //      f.getContentPane().add(
-    //        logUI.getToolBarAndMenus().createDockwindowToolbar(f, this), BorderLayout.NORTH);
     dockingAction =
       new AbstractAction("Undock") {
           public void actionPerformed(ActionEvent evt) {
@@ -777,7 +778,7 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     dockingAction.putValue(
       Action.SMALL_ICON, new ImageIcon(ChainsawIcons.UNDOCK));
     menuItemToggleDock.setAction(dockingAction);
-    f.addWindowListener(
+    undockedFrame.addWindowListener(
       new WindowAdapter() {
         public void windowClosing(WindowEvent e) {
           dock();
@@ -974,7 +975,170 @@ public class LogPanel extends DockablePanel implements SettingsListener,
         });
     }
 
-    f.pack();
+    undockedToolbar = createDockwindowToolbar();
+    externalPanel.add(undockedToolbar, BorderLayout.NORTH);
+    undockedFrame.pack();
+  }
+
+  private JToolBar createDockwindowToolbar() {
+    final JToolBar toolbar = new JToolBar();
+    toolbar.setFloatable(false);
+
+    final Action dockPauseAction =
+      new AbstractAction("Pause") {
+        public void actionPerformed(ActionEvent evt) {
+          setPaused(!isPaused());
+        }
+      };
+
+    dockPauseAction.putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_P));
+    dockPauseAction.putValue(
+      Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("F12"));
+    dockPauseAction.putValue(
+      Action.SHORT_DESCRIPTION,
+      "Halts the display, while still allowing events to stream in the background");
+    dockPauseAction.putValue(
+      Action.SMALL_ICON, new ImageIcon(ChainsawIcons.PAUSE));
+
+    final SmallToggleButton dockPauseButton =
+      new SmallToggleButton(dockPauseAction);
+    dockPauseButton.setText("");
+
+    dockPauseButton.getModel().setSelected(isPaused());
+
+    addPropertyChangeListener(
+      "paused",
+      new PropertyChangeListener() {
+        public void propertyChange(PropertyChangeEvent evt) {
+          dockPauseButton.getModel().setSelected(isPaused());
+        }
+      });
+    toolbar.add(dockPauseButton);
+
+    Action dockShowPrefsAction =
+      new AbstractAction("") {
+        public void actionPerformed(ActionEvent arg0) {
+          showPreferences();
+        }
+      };
+
+    dockShowPrefsAction.putValue(
+      Action.SHORT_DESCRIPTION, "Define display and color filters...");
+    dockShowPrefsAction.putValue(
+      Action.SMALL_ICON, ChainsawIcons.ICON_PREFERENCES);
+
+    Action dockToggleLogTreeAction =
+      new AbstractAction() {
+        public void actionPerformed(ActionEvent e) {
+          toggleLogTreePanel();
+        }
+      };
+
+    dockToggleLogTreeAction.putValue(Action.SMALL_ICON, null);
+
+    dockToggleLogTreeAction.putValue(Action.NAME, "Logger Tree");
+
+    dockToggleLogTreeAction.putValue(
+      Action.SHORT_DESCRIPTION, "Toggles the Log Tree panel");
+    dockToggleLogTreeAction.putValue(Action.SMALL_ICON, null);
+
+    toolbar.add(new SmallButton(dockShowPrefsAction));
+
+    SmallToggleButton toggleLogTreeButton =
+      new SmallToggleButton(dockToggleLogTreeAction);
+    toggleLogTreeButton.setSelected(isLogTreePanelVisible());
+    toolbar.add(toggleLogTreeButton);
+    toolbar.addSeparator();
+
+    final Action undockedClearAction =
+      new AbstractAction("Clear") {
+        public void actionPerformed(ActionEvent arg0) {
+          clearModel();
+        }
+      };
+
+    undockedClearAction.putValue(
+      Action.SMALL_ICON, new ImageIcon(ChainsawIcons.DELETE));
+    undockedClearAction.putValue(
+      Action.SHORT_DESCRIPTION, "Removes all the events from the current view");
+
+    final SmallButton dockClearButton = new SmallButton(undockedClearAction);
+    dockClearButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+      KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, InputEvent.CTRL_MASK),
+      undockedClearAction.getValue(Action.NAME));
+    dockClearButton.getActionMap().put(
+      undockedClearAction.getValue(Action.NAME), undockedClearAction);
+
+    dockClearButton.setText("");
+    toolbar.add(dockClearButton);
+    toolbar.addSeparator();
+
+    final JTextField findField = ChainsawToolBarAndMenus.createFindField();
+    findField.getDocument().addDocumentListener(
+      new DocumentListener() {
+        public void insertUpdate(DocumentEvent e) {
+          findInUndocked(false);
+        }
+
+        public void removeUpdate(DocumentEvent e) {
+          findInUndocked(false);
+        }
+
+        public void changedUpdate(DocumentEvent e) {
+          findInUndocked(false);
+        }
+
+        private void findInUndocked(boolean next) {
+          if (next) {
+            findNext(findField.getText());
+          } else {
+            find(findField.getText());
+          }
+        }
+      });
+
+    final Action undockedFindAction =
+      new AbstractAction() {
+        public void actionPerformed(ActionEvent e) {
+          findNext(findField.getText());
+        }
+      };
+
+    undockedFindAction.putValue(Action.NAME, "Find");
+    undockedFindAction.putValue(
+      Action.SHORT_DESCRIPTION, "Finds the next occurrence within this view");
+    undockedFindAction.putValue(
+      Action.SMALL_ICON, new ImageIcon(ChainsawIcons.FIND));
+
+    SmallButton undockedFindNextButton = new SmallButton(undockedFindAction);
+
+    undockedFindNextButton.setAction(undockedFindAction);
+    undockedFindNextButton.setText("");
+    undockedFindNextButton.getActionMap().put(
+      undockedFindAction.getValue(Action.NAME), undockedFindAction);
+    undockedFindNextButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+      KeyStroke.getKeyStroke("F3"), undockedFindAction.getValue(Action.NAME));
+
+    toolbar.add(undockedFindNextButton);
+    toolbar.add(findField);
+
+    toolbar.addSeparator();
+
+    Action redockAction =
+      new AbstractAction("", ChainsawIcons.ICON_DOCK) {
+        public void actionPerformed(ActionEvent arg0) {
+          dock();
+        }
+      };
+
+    redockAction.putValue(
+      Action.SHORT_DESCRIPTION,
+      "Docks this window back with the main Chainsaw window");
+
+    SmallButton redockButton = new SmallButton(redockAction);
+    toolbar.add(redockButton);
+
+    return toolbar;
   }
 
   public void addEventCountListener(EventCountListener l) {
@@ -1092,7 +1256,7 @@ public class LogPanel extends DockablePanel implements SettingsListener,
    */
   void dock() {
     setDocked(true);
-    f.setVisible(false);
+    undockedFrame.setVisible(false);
     removeAll();
 
     //      add(lowerPanel, BorderLayout.CENTER);
@@ -1110,13 +1274,15 @@ public class LogPanel extends DockablePanel implements SettingsListener,
   void undock() {
     setDocked(false);
     externalPanel.removeAll();
+
+    externalPanel.add(undockedToolbar, BorderLayout.NORTH);
     externalPanel.add(nameTreeAndMainPanelSplit, BorderLayout.CENTER);
     externalPanel.setDocked(false);
-    f.setSize(getSize());
+    undockedFrame.setSize(getSize());
 
-    f.setLocation(getBounds().x, getBounds().y);
+    undockedFrame.setLocation(getBounds().x, getBounds().y);
 
-    f.setVisible(true);
+    undockedFrame.setVisible(true);
     dockingAction.putValue(Action.NAME, "Dock");
     dockingAction.putValue(Action.SMALL_ICON, ChainsawIcons.ICON_DOCK);
   }

@@ -64,8 +64,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Set;
-import java.util.Vector;
 
 import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
@@ -195,13 +195,13 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
     }
   }
 
-	/**
-	 * Changes the underlying display rule in use.  If there was 
-	 * a previous Rule defined, this Model removes itself as a listener
-	 * from the old rule, and adds itself to the new rule (if the new Rule is not Null).
-	 * 
-	 * In any case, the model ensures the Filtered list is made up to date in a separate thread.
-	 */
+  /**
+   * Changes the underlying display rule in use.  If there was
+   * a previous Rule defined, this Model removes itself as a listener
+   * from the old rule, and adds itself to the new rule (if the new Rule is not Null).
+   *
+   * In any case, the model ensures the Filtered list is made up to date in a separate thread.
+   */
   public void setDisplayRule(Rule displayRule) {
     if (this.displayRule != null) {
       this.displayRule.removePropertyChangeListener(this);
@@ -258,6 +258,11 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
     notifyCountListeners();
   }
 
+  /**
+   * @deprecated - should this be replaced with a Refinement filter?
+   *
+   * If not it should be replaced with something inside LogPanel, a Finder class, it should not be in the Model.
+   */
   public int find(int startRow, String text) {
     if (text == null) {
       text = "";
@@ -269,28 +274,19 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
     String thisVal = null;
 
     synchronized (syncLock) {
-      Iterator iter = filteredList.iterator();
+      ListIterator iter = filteredList.listIterator();
 
       while (iter.hasNext()) {
         currentRow++;
 
-        Vector v2 = (Vector) iter.next();
+        LoggingEvent event = (LoggingEvent) iter.next();
 
         if (currentRow < startRow) {
           continue;
         }
 
-        Iterator iter2 = v2.iterator();
-
-        while (iter2.hasNext()) {
-          thisVal = iter2.next().toString();
-
-          boolean result =
-            ((thisVal != null) && (thisVal.toLowerCase().indexOf(text) > -1));
-
-          if (result) {
-            return currentRow;
-          }
+        if (event.getMessage().toString().toLowerCase().indexOf(text) > 0) {
+          return currentRow;
         }
       }
     }
