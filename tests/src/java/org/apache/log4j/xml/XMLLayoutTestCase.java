@@ -76,7 +76,7 @@ public class XMLLayoutTestCase extends TestCase {
     root.addAppender(new FileAppender(xmlLayout, TEMP, false));
     logger.debug("hi");
     logger.debug(null);
-    Exception e = new Exception(null);
+    Exception e = new Exception((String) null);
     logger.debug("hi", e);
     Transformer.transform(TEMP, FILTERED, new Filter[] {new LineNumberFilter(), 
 							new XMLTimestampFilter()});
