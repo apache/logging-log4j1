@@ -71,7 +71,6 @@ import java.io.IOException;
 
 import java.lang.reflect.Method;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import java.util.ArrayList;
@@ -110,7 +109,6 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
-import javax.xml.parsers.FactoryConfigurationError;
 
 
 /**
