@@ -16,6 +16,9 @@
 
  - Implemented Bugzilla 14934: MDC#setContext method added.
 
+ - Implemented Bugzilla 16883: Default ConsoleAppender constructor
+   enhanced with output sink and layout.
+
 
   November 25, 2004
 

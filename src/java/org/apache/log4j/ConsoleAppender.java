@@ -30,9 +30,10 @@ public class ConsoleAppender extends WriterAppender {
   protected String target = SYSTEM_OUT;
 
   /**
-     The default constructor does nothing.
+   * Default constructor: TTCC Pattern Layout to System.out.
    */
   public ConsoleAppender() {
+      this(new PatternLayout(PatternLayout.TTCC_CONVERSION_PATTERN));
   }
 
   public ConsoleAppender(Layout layout) {
