@@ -267,28 +267,14 @@ resulting inherited priorities according to the above rule.
 of a category instance. These printing methods are 
 
 <code>
-<a href="api/org/apache/log4j/Category.html#debug(java.lang.Object)">debug</a>
-</code>,
+<a href="api/org/apache/log4j/Category.html#debug(java.lang.Object)">debug</a>,
 
-<code>
-<a href="api/org/apache/log4j/Category.html#info(java.lang.Object)">info</a>
-</code>, 
+<a href="api/org/apache/log4j/Category.html#info(java.lang.Object)">info</a>, 
 
-<code>
-<a href="api/org/apache/log4j/Category.html#warn(java.lang.Object)">warn</a>
-</code>, 
-
-<code>
-<a href="api/org/apache/log4j/Category.html#error(java.lang.Object)">error</a>
-</code>, 
-
-<code>
+<a href="api/org/apache/log4j/Category.html#warn(java.lang.Object)">warn</a>, 
+<a href="api/org/apache/log4j/Category.html#error(java.lang.Object)">error</a>,
 <a href="api/org/apache/log4j/Category.html#fatal(java.lang.Object)">fatal</a>
-</code>, 
-and
-
-<code>
-<a href="api/org/apache/log4j/Category.html#log(org.apache.log4j.Priority, java.lang.Object)">log</a></code>. 
+ and <a href="api/org/apache/log4j/Category.html#log(org.apache.log4j.Priority, java.lang.Object)">log</a></code>. 
 
 
 By definition, the printing method determines the
@@ -1000,7 +986,7 @@ enhancement allows each virtual host to possess its own copy of the
 category hierarchy.
 
 
-<h2>Performance</h2>
+<a name="performance"><h2>Performance</h2>
 
 <p>One of the often-cited arguments against logging is its
 computational cost. This is a legitimate concern as even moderately
@@ -1011,12 +997,12 @@ claims to be fast and flexible: speed first, flexibility second.
 <p>The user should be aware of the following performance issues.
 
 <ol>
-  <li>Logging performance when logging is turned off.
+  <b><li>Logging performance when logging is turned off.</b>
 
    <p>When logging is <a
-   href="api/org/apache/log4j/BasicConfigurator.html#disableAll()">turned
+   href="api/org/apache/log4j/Hierarchy.html#disableAll()">turned
    off entirely</a> or just for a <a
-   href="api/org/apache/log4j/BasicConfigurator.html#disable(org.apache.log4j.Priority)">set
+   href="api/org/apache/log4j/Hierarchy.html#disable(org.apache.log4j.Priority)">set
    of priorities</a>, the cost of a log request consists of a method
    invocation plus an integer comparison.  On a 233 MHz Pentium II
    machine this cost is typically in the 5 to 50 nanosecond range.
@@ -1069,8 +1055,9 @@ claims to be fast and flexible: speed first, flexibility second.
    gain.
 
 
-   <p><li> The performance of deciding whether to log or not to log when
-       logging is turned on.
+   <p><b><li>The performance of deciding whether to log or not to log when
+       logging is turned on.</b>
+   </p>
 
    <p>This is essentially the performance of walking the category
    hierarchy. When logging is turned on, log4j still needs to compare
@@ -1089,10 +1076,10 @@ nonexistent <code>com</code> or <code>com.foo</code> categories. This
 significantly improves the speed of the walk, especially in "sparse"
 hierarchies.
 
-       <p>The typical cost of walking the hierarchy is in the range of
-       5 to 15 microseconds, again on a 233MHz Pentium II machine.
+       <p>The typical cost of walking the hierarchy is typically 3
+       times slower than when logging is turned off entirely.
 
-   <p><li>Actual logging.
+   <p><b><li>Actual logging.</b>
 
    <p>This is the cost of formatting the log output and sending it to
    its target destination. Here again, a serious effort was made to
