@@ -119,7 +119,10 @@ public final class LoggingEventFieldResolver {
   }
 
   public boolean isField(String fieldName) {
-    return ((fieldName != null) && (keywordList.contains(fieldName.toUpperCase())));
+    if (fieldName != null) {
+        return (keywordList.contains(fieldName.toUpperCase()) || fieldName.toUpperCase().startsWith(MDC_FIELD) || fieldName.toUpperCase().startsWith(PROP_FIELD));
+    }
+    return false;
   }
 
   public Object getValue(String fieldName, LoggingEvent event) {
