@@ -10,6 +10,7 @@ import java.util.Properties;
  * Test variable substitution code in OptionConverter.substVars method.
  * 
  * @author Ceki G&uuml;lc&uuml;
+ * @author Curt Arnold
  * 
  * @since 1.0
  */
@@ -127,11 +128,28 @@ public class OptionSubstitutionTest extends TestCase {
     assertEquals("HELLO John.", res);
   }
   
+  /**
+   * Tests OptionsConverter.stripDuplicateBackslashes
+   *
+   * @since 1.3
+   */
   public void testStripDuplicateBackslashes() {
-     assertEquals("\\foo\\bar\\foo", OptionConverter.stripDuplicateBackslashes("\\foo\\\\bar\\foo"));
-     assertEquals("\\foo\\bar\\foo\\", OptionConverter.stripDuplicateBackslashes("\\\\foo\\\\bar\\foo\\"));
-     assertEquals("\\foo\\bar\\foo\\", OptionConverter.stripDuplicateBackslashes("\\\\foo\\\\bar\\foo\\\\"));
-//     assertTrue(false);
+     assertEquals("\\foo\\bar\\foo", OptionConverter.stripDuplicateBackslashes("\\foo\\bar\\foo"));
+     assertEquals("\\foo\\bar\\foo\\", OptionConverter.stripDuplicateBackslashes("\\\\foo\\\\bar\\\\foo\\\\"));
+     assertEquals("\\foo\\bar\\foo\\", OptionConverter.stripDuplicateBackslashes("\\foo\\bar\\foo\\"));
+     //
+     //   UNC's should either start with two backslashes and contain additional singles
+     //       or four back slashes and addition doubles
+     assertEquals("\\\\foo\\bar\\foo", OptionConverter.stripDuplicateBackslashes("\\\\\\\\foo\\\\bar\\\\foo"));
+     assertEquals("\\\\foo\\bar\\foo", OptionConverter.stripDuplicateBackslashes("\\\\foo\\bar\\foo"));
+	 //
+	 //   it it starts with doubles but has no other path component
+	 //      then it is a file path
+     assertEquals("\\foo.log", OptionConverter.stripDuplicateBackslashes("\\\\foo.log"));
+	 //
+	 //   it it starts with quads but has no other path component
+	 //      then it is a UNC
+     assertEquals("\\\\foo.log", OptionConverter.stripDuplicateBackslashes("\\\\\\\\foo.log"));
   }  
   
   
