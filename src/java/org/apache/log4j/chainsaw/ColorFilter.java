@@ -57,6 +57,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.log4j.spi.LoggingEvent;
+
 
 /**
  * If there are no filters defined, null is returned for color (the table background should then be used).
@@ -147,26 +149,29 @@ public class ColorFilter {
 
   //relies on tostring correctly returning the string representation (either the row's value was
   //a string or row.get(i).tostring will return the data in a correct format - as in a date)
-  public synchronized Color getColor(List columnNames, Vector row) {
+  public synchronized Color getColor(List columnNames, LoggingEvent event) {
+      
     Color color = null;
-    Iterator iter = filters.iterator();
-
-    while (iter.hasNext()) {
-      FilterEntry entry = (FilterEntry) iter.next();
-      int colCount = columnNames.size();
-
-      for (int i = 0; i < colCount; i++) {
-        if (row.get(i) == null) {
-          //NOTE: level was in colnames but wasn't in vector 
-          return null;
-        }
-
-        if (
-          entry.matches(columnNames.get(i).toString(), row.get(i).toString())) {
-          return entry.getColor();
-        }
-      }
-    }
+    
+//    TODO this is broken while the change from Vectors -> LoggingEvents occurs
+//    Iterator iter = filters.iterator();
+//
+//    while (iter.hasNext()) {
+//      FilterEntry entry = (FilterEntry) iter.next();
+//      int colCount = columnNames.size();
+//
+//      for (int i = 0; i < colCount; i++) {
+//        if (row.get(i) == null) {
+//          //NOTE: level was in colnames but wasn't in vector 
+//          return null;
+//        }
+//
+//        if (
+//          entry.matches(columnNames.get(i).toString(), row.get(i).toString())) {
+//          return entry.getColor();
+//        }
+//      }
+//    }
 
     return color;
   }
