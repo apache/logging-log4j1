@@ -1,29 +1,30 @@
-
-# The jaxp interface and a jaxp parser are required
-# to build the DOMConfigurator
+# JAXP OPTIONAL; required to build the DOMConfigurator
 jaxp.home=/java/jaxp-1.1
 jaxp.jaxp.jar=${jaxp.home}/jaxp.jar
 jaxp.parser.jar=${jaxp.home}/crimson.jar
 
-# JavaMail API Required to build the SMTPAppender
+# JavaMail API OPTIONAL; required to build the SMTPAppender
 javamail.jar=/java/javamail-1.2/mail.jar
 activation.jar=/java/jaf-1.0.1/activation.jar
 
-
-# JMS interfaces are required to be on the classpath
+# JMS OPTIONAL; required to build the JMSAppender.
 # in order to build the JMSAppender.
 jms.jar=/java/JMQ1.1/lib/jms.jar
 
-# Required to build the org.apace.log4j.jmx package.
+# JMX OPTIONAL; required to build the org.apace.log4j.jmx package.
 jmx.jar=/java/jmx/lib/jmxri.jar
 jmx-extra.jar=/java/jmx/lib/jmxtools.jar
+
+# Checkstyle OPTIONAL; required to run the checkstyle target
+ Available from http://checkstyle.sf.net
+checkstyle.jar=/java/checkstyle-2.2/checkstyle-all-2.2.jar
+
+# Jalopy OPTIONAL; required to run the jalpoy targets
+jalopy.stylesheet.location=sunCodingConvention.xml
+jalopy.lib=d:/development/code-opensource/other/jalopy-b10/lib
 
 # jakarta-site2 module is used to transform xml files to html using
 # Anakia. You do not need to worry about this property unless you
 # intend to build the log4j web site yourself.
 jakarta-site2=../jakarta-site2
-
-# Required to run Checkstyle. Available from http://checkstyle.sf.net
-checkstyle.jar=/java/checkstyle-2.2/checkstyle-all-2.2.jar
-
 
