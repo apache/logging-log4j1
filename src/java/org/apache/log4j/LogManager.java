@@ -1,21 +1,71 @@
 /*
+ * ============================================================================
+ *                   The Apache Software License, Version 1.1
+ * ============================================================================
+ *
+ *    Copyright (C) 1999 The Apache Software Foundation. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modifica-
+ * tion, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of  source code must  retain the above copyright  notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * 3. The end-user documentation included with the redistribution, if any, must
+ *    include  the following  acknowledgment:  "This product includes  software
+ *    developed  by the  Apache Software Foundation  (http://www.apache.org/)."
+ *    Alternately, this  acknowledgment may  appear in the software itself,  if
+ *    and wherever such third-party acknowledgments normally appear.
+ *
+ * 4. The names "log4j" and  "Apache Software Foundation"  must not be used to
+ *    endorse  or promote  products derived  from this  software without  prior
+ *    written permission. For written permission, please contact
+ *    apache@apache.org.
+ *
+ * 5. Products  derived from this software may not  be called "Apache", nor may
+ *    "Apache" appear  in their name,  without prior written permission  of the
+ *    Apache Software Foundation.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS  FOR A PARTICULAR  PURPOSE ARE  DISCLAIMED.  IN NO  EVENT SHALL  THE
+ * APACHE SOFTWARE  FOUNDATION  OR ITS CONTRIBUTORS  BE LIABLE FOR  ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL,  EXEMPLARY, OR CONSEQUENTIAL  DAMAGES (INCLU-
+ * DING, BUT NOT LIMITED TO, PROCUREMENT  OF SUBSTITUTE GOODS OR SERVICES; LOSS
+ * OF USE, DATA, OR  PROFITS; OR BUSINESS  INTERRUPTION)  HOWEVER CAUSED AND ON
+ * ANY  THEORY OF LIABILITY,  WHETHER  IN CONTRACT,  STRICT LIABILITY,  OR TORT
+ * (INCLUDING  NEGLIGENCE OR  OTHERWISE) ARISING IN  ANY WAY OUT OF THE  USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * This software  consists of voluntary contributions made  by many individuals
+ * on  behalf of the Apache Software  Foundation.  For more  information on the
+ * Apache Software Foundation, please see <http://www.apache.org/>.
+ *
+ */
+
+/*
  * Copyright 1999,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.log4j;
 
+import org.apache.log4j.helpers.Constants;
+import org.apache.log4j.helpers.IntializationUtil;
 import org.apache.log4j.helpers.Loader;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.selector.ContextJNDISelector;
@@ -24,9 +74,9 @@ import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.RepositorySelector;
 import org.apache.log4j.spi.RootCategory;
-import org.apache.log4j.helpers.IntializationUtil;
 
 import java.util.Enumeration;
+
 
 /**
  * Use the <code>LogManager</code> class to retreive {@link Logger}
@@ -38,39 +88,37 @@ import java.util.Enumeration;
  *
  * @author Ceki G&uuml;lc&uuml; */
 public class LogManager {
-  private static final String DEFAULT_CONFIGURATION_FILE = "log4j.properties";
-  private static final String DEFAULT_XML_CONFIGURATION_FILE = "log4j.xml";
-  private static final String DEFAULT_CONFIGURATION_KEY = "log4j.configuration";
-  private static final String CONFIGURATOR_CLASS_KEY = "log4j.configuratorClass";
-  
   private static Object guard = null;
   private static RepositorySelector repositorySelector;
 
   static {
     Hierarchy defaultHierarchy = new Hierarchy(new RootCategory(Level.DEBUG));
     defaultHierarchy.setName("default");
-    
+
     String repositorySelectorStr =
       OptionConverter.getSystemProperty("log4j.repositorySelectorClass", null);
-   
-    if(repositorySelectorStr == null) {
+
+    if (repositorySelectorStr == null) {
       // By default we use a DefaultRepositorySelector which always returns
       // the defaultHierarchy.
       repositorySelector = new DefaultRepositorySelector();
-    } else if (repositorySelectorStr.equalsIgnoreCase("JNDI")){
+    } else if (repositorySelectorStr.equalsIgnoreCase("JNDI")) {
       System.out.println("*** Will use ContextJNDISelector **");
       repositorySelector = new ContextJNDISelector();
     } else {
-      Object r = OptionConverter.instantiateByClassName(repositorySelectorStr, 
-                                             RepositorySelector.class,
-                                             null);
-      if(r instanceof RepositorySelector) {
-        System.out.println("*** Using ["+ repositorySelectorStr 
-            +"] instance as repository selector.");
+      Object r =
+        OptionConverter.instantiateByClassName(
+          repositorySelectorStr, RepositorySelector.class, null);
+
+      if (r instanceof RepositorySelector) {
+        System.out.println(
+          "*** Using [" + repositorySelectorStr
+          + "] instance as repository selector.");
         repositorySelector = (RepositorySelector) r;
       } else {
-        System.out.println("*** Could not insantiate ["+ repositorySelectorStr 
-            +"] as repository selector.");
+        System.out.println(
+          "*** Could not insantiate [" + repositorySelectorStr
+          + "] as repository selector.");
         System.out.println("*** Using default repository selector");
         repositorySelector = new DefaultRepositorySelector();
       }
@@ -78,28 +126,31 @@ public class LogManager {
 
     // at this stage 'repositorySelector' should point to a valid selector
     repositorySelector.setDefaultRepository(defaultHierarchy);
-    
+
     // Use automatic configration to configure the default hierarchy
     IntializationUtil.log4jInternalConfiguration(defaultHierarchy);
+
     String configuratorClassName =
-            OptionConverter.getSystemProperty(CONFIGURATOR_CLASS_KEY, null);
+      OptionConverter.getSystemProperty(
+        Constants.CONFIGURATOR_CLASS_KEY, null);
     String configurationOptionStr =
-        OptionConverter.getSystemProperty(DEFAULT_CONFIGURATION_KEY, null);
+      OptionConverter.getSystemProperty(
+        Constants.DEFAULT_CONFIGURATION_KEY, null);
 
     if (configurationOptionStr == null) {
-        if(Loader.getResource(DEFAULT_XML_CONFIGURATION_FILE) != null) {
-          configurationOptionStr = DEFAULT_XML_CONFIGURATION_FILE;
-        } else if(Loader.getResource(DEFAULT_CONFIGURATION_FILE) != null) {
-          configurationOptionStr = DEFAULT_CONFIGURATION_FILE;
-        }
-    }    
-    System.out.println("configurationOptionStr="+configurationOptionStr);
+      if (Loader.getResource(Constants.DEFAULT_XML_CONFIGURATION_FILE) != null) {
+        configurationOptionStr = Constants.DEFAULT_XML_CONFIGURATION_FILE;
+      } else if (
+        Loader.getResource(Constants.DEFAULT_CONFIGURATION_FILE) != null) {
+        configurationOptionStr = Constants.DEFAULT_CONFIGURATION_FILE;
+      }
+    }
 
-    IntializationUtil.initialConfiguration(defaultHierarchy, 
-        configurationOptionStr, configuratorClassName); 
-   
+    System.out.println("configurationOptionStr=" + configurationOptionStr);
+
+    IntializationUtil.initialConfiguration(
+      defaultHierarchy, configurationOptionStr, configuratorClassName);
   }
-
 
   /**
      Sets <code>LoggerFactory</code> but only if the correct
