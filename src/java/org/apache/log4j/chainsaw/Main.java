@@ -96,7 +96,7 @@ public class Main
 
         // Create the details
         final JPanel details = new DetailPanel(table, model);
-        details.setPreferredSize(new Dimension(900, 300));
+        details.setPreferredSize(new Dimension(900, 100));
 
         // Add the table and stack trace into a splitter
         final JSplitPane jsp =
