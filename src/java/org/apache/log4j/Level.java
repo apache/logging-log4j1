@@ -7,17 +7,18 @@
  */
 
 // Contributors:  Kitching Simon <Simon.Kitching@orange.ch>
-//                Nicolas Wolff
+//                Nicholas Wolff
 
 package org.apache.log4j;
 
 /**
-   Defines the minimum set of priorities recognized by the system,
-   that is <code>FATAL</code>, <code>ERROR</code>, <code>WARN</code>,
-   <code>INFO</code> and <code>DEBUG</code>.
+   Defines the minimum set of levels recognized by the system, that is
+   <code>OFF</code>, <code>FATAL</code>, <code>ERROR</code>,
+   <code>WARN</code>, <code>INFO</code, <code>DEBUG</code> and
+   <code>ALL</code>.
 
    <p>The <code>Level</code> class may be subclassed to define a larger
-   priority set.
+   levek set.
 
    @author Ceki G&uuml;lc&uuml;
 
@@ -63,7 +64,6 @@ public class Level extends Priority {
      turn on all logging.  */
   final static public Level ALL = new Level(ALL_INT, "ALL", 7);
 
-
   /**
      Instantiate a Level object.
    */
@@ -103,11 +103,11 @@ public class Level extends Priority {
   Level toLevel(int val, Level defaultLevel) {
     switch(val) {
     case ALL_INT: return ALL;
-    case DEBUG_INT: return (Level) Level.DEBUG;
-    case INFO_INT: return (Level) Level.INFO;
-    case WARN_INT: return (Level) Level.WARN;
-    case ERROR_INT: return (Level) Level.ERROR;
-    case FATAL_INT: return (Level) Level.FATAL;
+    case DEBUG_INT: return Level.DEBUG;
+    case INFO_INT: return Level.INFO;
+    case WARN_INT: return Level.WARN;
+    case ERROR_INT: return Level.ERROR;
+    case FATAL_INT: return Level.FATAL;
     case OFF_INT: return OFF;
     default: return defaultLevel;
     }
@@ -127,12 +127,12 @@ public class Level extends Priority {
     String s = sArg.toUpperCase();
 
     if(s.equals("ALL")) return Level.ALL; 
-    if(s.equals("DEBUG")) return (Level) Level.DEBUG; 
+    if(s.equals("DEBUG")) return Level.DEBUG; 
     //if(s.equals("FINE")) return Level.FINE; 
-    if(s.equals("INFO"))  return (Level) Level.INFO;
-    if(s.equals("WARN"))  return (Level) Level.WARN;  
-    if(s.equals("ERROR")) return (Level) Level.ERROR;
-    if(s.equals("FATAL")) return (Level) Level.FATAL;
+    if(s.equals("INFO"))  return Level.INFO;
+    if(s.equals("WARN"))  return Level.WARN;  
+    if(s.equals("ERROR")) return Level.ERROR;
+    if(s.equals("FATAL")) return Level.FATAL;
     if(s.equals("OFF")) return Level.OFF;
     return defaultLevel;
   }
