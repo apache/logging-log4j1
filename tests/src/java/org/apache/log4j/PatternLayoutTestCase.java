@@ -61,6 +61,8 @@ public class PatternLayoutTestCase extends TestCase {
 
   static String PAT14 = "^(DEBUG| INFO| WARN|ERROR|FATAL)\\ \\d{1,2}\\ *- Message \\d{1,2}";
 
+  static String PAT_MDC_1 = "";
+
   public PatternLayoutTestCase(String name) {
     super(name);
   }
@@ -235,6 +237,20 @@ public class PatternLayoutTestCase extends TestCase {
     assertTrue(Compare.compare(FILTERED, "witness/patternLayout.14"));
   }
 
+  public void testMDCAllowAllKeys() throws Exception {
+    PropertyConfigurator.configure("input/patternLayout.mdc.1.properties");
+    MDC.put("key1", "va11");
+    MDC.put("key2", "va12");
+    logger.debug("Hello World");
+    MDC.clear();
+
+    Transformer.transform(TEMP, FILTERED, new Filter[] {
+                                                      new LineNumberFilter(),
+                                                      new SunReflectFilter()});
+    assertTrue(Compare.compare(FILTERED, "witness/patternLayout.mdc.1"));
+
+  }
+
   void common() {
     int i = -1;
 
@@ -278,6 +294,8 @@ public class PatternLayoutTestCase extends TestCase {
     suite.addTest(new PatternLayoutTestCase("test12"));
     suite.addTest(new PatternLayoutTestCase("test13"));
     suite.addTest(new PatternLayoutTestCase("test14"));
+    suite.addTest(new PatternLayoutTestCase("testMDCAllowAllKeys"));
+
     return suite;
   }
 
