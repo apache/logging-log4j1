@@ -5,38 +5,42 @@
 </HEAD>
 
 <BODY>
-<h2>Release Notes</h2>
+<h1>Release Notes</h2>
 
-<h2>1.99.99 (7th June 2004 08:00 GMT+10)</h2>
+<h1>1.99.99</h2>
+
+<h2>7 June 2004</h2>
 <ul>
- <li>Added filterExpression parameter to LogFilePatternReceiver.  If set, only events which match the expression are processed by the receiver.  Thanks to Jim Prewett for suggesting this feature.</ul>
-<h2>1.99.99 (6th June 2004 08:00 GMT+10)</h2>
+ <li>Added filterExpression parameter to LogFilePatternReceiver.  If set, only events which match the expression are processed by the receiver.  Thanks to Jim Prewett for suggesting this feature.</li>
+</ul>
+
+<h2>6 June 2004</h2>
 <ul>
  <li>Modified responsiveness logic used to throttle event processing.  FASTEST setting now performs a yield instead of a wait.</li>
 </ul>
-<h2>1.99.99 (28th May 2004 08:00 GMT+10)</h2>
+
+<h2>28 May 2004</h2>
 <ul>
  <li>Updated LogFilePatternReceiver to correctly process events without exceptions.</li>
 </ul>
-<h2>1.99.99 (27th May 2004 08:00 GMT+10)</h2>
+
+<h2>27 May 2004</h2>
 <ul>
  <li>Fixed 'scroll to bottom' no longer scrolling if log panel's events were cleared.  Thanks to Steven Kearns for finding this.</li>
  <li>Modified shutdown of UDPReceiver - closing socket earlier and notifying threads in order to shut down gracefully.</li>
 </ul>
-<h2>1.99.99 (26th May 2004 08:00 GMT+10)</h2>
+
+<h2>26 May 2004</h2>
 <ul>
  <li>Added the JMSReceiver to the bundled distribution of 'known' receivers.  This will require you to have it's
  dependencies in your System classpath for it to work.</li>
 </ul>
-<h2>1.99.99 (25th May 2004 11:00 GMT+10)</h2>
+
+<h2>25 May 2004</h2>
 <ul>
  <li>Fixed a bug in the SocketNode class that prevented listeners of being notified when the Socket dies.  Unfortunately one
  of the listeners is usually the Receiver, and it then does not know that it should periodically
  try to reconnect again!</li>
-</ul>
-
-<h2>1.99.99 (25th May 2004 08:00 GMT+10)</h2>
-<ul>
  <li>Fixed a bug in the Receivers tree panel where restarting a set of receivers would duplicate them visually.  The plugins where stopped and started, but duplicate tree nodes where being added.  Thanks to Stephen Pain for
  pointing it out. (we 'knew' about it, but we had forgotten...)</li>
  <li>Added a "Restart" action to restart an individual Receiver.</li>
@@ -48,6 +52,7 @@
 <ul>
  <li>Ongoing work to improve xml decoder.  Can now display a progress bar when processing files.</li>
 </ul>
+
 <h2>21 May 2004</h2>
 <ul>
  <li>Corrected a bug in XML decoders which caused a Swing exception when rendering the exception column - discovered by Stephen Pain.</li>
