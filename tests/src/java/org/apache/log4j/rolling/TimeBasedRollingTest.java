@@ -392,12 +392,12 @@ public class TimeBasedRollingTest extends TestCase {
   public static Test suite() {
     TestSuite suite = new TestSuite();
 
-    /*suite.addTest(new TimeBasedRollingTestCase("test1"));
-    suite.addTest(new TimeBasedRollingTestCase("test2"));
-    suite.addTest(new TimeBasedRollingTestCase("test3"));
-    suite.addTest(new TimeBasedRollingTestCase("test4"));
-    */
-    //suite.addTest(new TimeBasedRollingTestCase("test5"));
+    suite.addTest(new TimeBasedRollingTest("test1"));
+    suite.addTest(new TimeBasedRollingTest("test2"));
+    suite.addTest(new TimeBasedRollingTest("test3"));
+    suite.addTest(new TimeBasedRollingTest("test4"));
+    
+    suite.addTest(new TimeBasedRollingTest("test5"));
     suite.addTest(new TimeBasedRollingTest("test6"));
 
     return suite;
