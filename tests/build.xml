@@ -102,7 +102,7 @@
                                      XMLLayout, AsyncAppender, 
                                      OptionConverter, BoundedFIFO, 
                                      CyclicBuffer, OR, LevelMatchFilter, 
-                                     DRFA"/>
+                                     NDCMatchFilter, DRFA"/>
 
   <!-- ================================================================= -->
   <!-- Longer unit tests                                                 -->
@@ -212,6 +212,13 @@
     </junit>
   </target>
 
+  <target name="NDCMatchFilter" depends="build">
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="false"/>
+      <test name="org.apache.log4j.varia.NDCMatchFilterTestCase" />
+    </junit>
+  </target>
 
   <target name="OptionConverter" depends="build">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
