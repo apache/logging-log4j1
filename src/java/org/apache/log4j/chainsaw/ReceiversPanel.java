@@ -49,6 +49,23 @@
 
 package org.apache.log4j.chainsaw;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.chainsaw.icons.LevelIconFactory;
+import org.apache.log4j.chainsaw.icons.LineIconFactory;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.net.SocketAppender;
+import org.apache.log4j.net.SocketHubAppender;
+import org.apache.log4j.net.SocketHubReceiver;
+import org.apache.log4j.net.SocketNodeEventListener;
+import org.apache.log4j.net.SocketReceiver;
+import org.apache.log4j.net.UDPAppender;
+import org.apache.log4j.net.UDPReceiver;
+import org.apache.log4j.plugins.Pauseable;
+import org.apache.log4j.plugins.PluginRegistry;
+import org.apache.log4j.plugins.Receiver;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -60,11 +77,16 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
 import java.io.IOException;
+
 import java.lang.reflect.Method;
+
 import java.net.URL;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -79,9 +101,11 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.InputVerifier;
 import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
@@ -103,22 +127,6 @@ import javax.swing.event.HyperlinkListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
-
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-import org.apache.log4j.chainsaw.icons.LineIconFactory;
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.net.SocketAppender;
-import org.apache.log4j.net.SocketHubAppender;
-import org.apache.log4j.net.SocketHubReceiver;
-import org.apache.log4j.net.SocketNodeEventListener;
-import org.apache.log4j.net.SocketReceiver;
-import org.apache.log4j.net.UDPAppender;
-import org.apache.log4j.net.UDPReceiver;
-import org.apache.log4j.plugins.Pauseable;
-import org.apache.log4j.plugins.PluginRegistry;
-import org.apache.log4j.plugins.Receiver;
 
 
 /**
@@ -478,7 +486,7 @@ class ReceiversPanel extends JPanel {
   }
 
   /**
-   * Sets the state of actions depending on certain conditions (i.e what is 
+   * Sets the state of actions depending on certain conditions (i.e what is
    * currently selected etc.)
    */
   private void updateActions() {
@@ -534,34 +542,34 @@ class ReceiversPanel extends JPanel {
   class NewReceiverPopupMenu extends JPopupMenu {
     NewReceiverPopupMenu() {
       try {
-
         final List dialogMapEntryList = createSortedDialogMapEntryList();
         String separatorCheck = null;
+
         for (Iterator iter = dialogMapEntryList.iterator(); iter.hasNext();) {
           final Map.Entry entry = (Entry) iter.next();
           final Class toCreate = (Class) entry.getKey();
           Package thePackage = toCreate.getPackage();
           final String name =
             toCreate.getName().substring(thePackage.getName().length() + 1);
-            
-          if(separatorCheck==null)
-          {
-            separatorCheck = name.substring(0,1);
-          }else{
-            String current = name.substring(0,1);
-            if(!current.equals(separatorCheck))
-            {
+
+          if (separatorCheck == null) {
+            separatorCheck = name.substring(0, 1);
+          } else {
+            String current = name.substring(0, 1);
+
+            if (!current.equals(separatorCheck)) {
               addSeparator();
               separatorCheck = current;
             }
           }
+
           add(
             new AbstractAction("New " + name + "...") {
               public void actionPerformed(ActionEvent e) {
-                  JDialog dialog = (JDialog) entry.getValue();
-                  dialog.pack();
-                  dialog.setLocationRelativeTo(logui);
-                  dialog.show();
+                JDialog dialog = (JDialog) entry.getValue();
+                dialog.pack();
+                dialog.setLocationRelativeTo(logui);
+                dialog.show();
               }
             });
         }
@@ -583,60 +591,56 @@ class ReceiversPanel extends JPanel {
       }
     }
 
-  /**
-   * Creates a Map of Class->CreateReceiverDialog instances
-   * which are all the Receivers that can be created via the GUI
-   * @return
-   * @throws IOException
-   */
-    private List createSortedDialogMapEntryList() throws IOException
-    {
+    /**
+     * Creates a Map of Class->CreateReceiverDialog instances
+     * which are all the Receivers that can be created via the GUI
+     * @return
+     * @throws IOException
+     */
+    private List createSortedDialogMapEntryList() throws IOException {
       final Map dialogMap = new HashMap();
       dialogMap.put(
         SocketReceiver.class,
         new CreateReceiverDialog(
           SocketReceiver.class, "SocketReceiver", "Socket Receiver",
           new SimplePortBasedReceiverDialogPanel(
-            SocketReceiver.class, "SocketReceiver",
-            SocketAppender.DEFAULT_PORT)));
+            SocketReceiver.class, "SocketReceiver", SocketAppender.DEFAULT_PORT)));
 
       dialogMap.put(
         SocketHubReceiver.class,
         new CreateReceiverDialog(
-        SocketHubReceiver.class, "SocketHubReceiver", "Socket Hub Receiver",
+          SocketHubReceiver.class, "SocketHubReceiver", "Socket Hub Receiver",
           new SimplePortBasedReceiverDialogPanel(
-      SocketHubReceiver.class, "SocketHubReceiver",
+            SocketHubReceiver.class, "SocketHubReceiver",
             SocketHubAppender.DEFAULT_PORT)));
-      
+
       dialogMap.put(
         UDPReceiver.class,
         new CreateReceiverDialog(
           UDPReceiver.class, "UDPReceiver", "UDP Receiver",
           new SimplePortBasedReceiverDialogPanel(
             UDPReceiver.class, "UDPReceiver", UDPAppender.DEFAULT_PORT)));
-      
+
       List dialogMapEntryList = new ArrayList();
-      
-      for (Iterator iter = dialogMap.entrySet().iterator(); iter.hasNext();)
-      {
+
+      for (Iterator iter = dialogMap.entrySet().iterator(); iter.hasNext();) {
         dialogMapEntryList.add(iter.next());
       }
 
       /**
        * Sort so it's in Alpha order by map.entry key
-       */      
-      Collections.sort(dialogMapEntryList, new Comparator(){
+       */
+      Collections.sort(
+        dialogMapEntryList,
+        new Comparator() {
+          public int compare(Object o1, Object o2) {
+            Comparable c1 = ((Class) ((Entry) o1).getKey()).getName();
+            Comparable c2 = ((Class) ((Entry) o2).getKey()).getName();
 
-        public int compare(Object o1, Object o2)
-        {
-          Comparable c1 = ((Class)((Entry) o1).getKey()).getName();
-          Comparable c2 = ((Class)((Entry) o2).getKey()).getName();
-          
-          return c1.compareTo(c2);
+            return c1.compareTo(c2);
+          }
+        });
 
-        }
-        
-      });
       return dialogMapEntryList;
     }
   }
@@ -703,8 +707,37 @@ class ReceiversPanel extends JPanel {
       add(shutdownReceiverButtonAction);
       addSeparator();
       add(editReceiverButtonAction);
+	addSeparator();
+	
+	  final Receiver r = getCurrentlySelectedReceiver();
+	  add(createLevelCheckBoxMenuItem(r, Level.DEBUG));
+	  add(createLevelCheckBoxMenuItem(r, Level.INFO));
+	  add(createLevelCheckBoxMenuItem(r, Level.WARN));
+	  add(createLevelCheckBoxMenuItem(r, Level.ERROR));
+	  addSeparator();
+	  add(createLevelCheckBoxMenuItem(r, Level.OFF));
+	  add(createLevelCheckBoxMenuItem(r, Level.ALL));
+	  
     }
 
+
+	private JCheckBoxMenuItem createLevelCheckBoxMenuItem(final Receiver r, final Level l) {
+		Map levelIconMap = LevelIconFactory.getInstance().getLevelToIconMap();
+
+		Action action = new AbstractAction(l.toString(),(Icon)levelIconMap.get(l.toString())){
+
+				public void actionPerformed(ActionEvent e) {
+					if(r!=null){
+						r.setThreshold(l);
+						updateCurrentlySelectedNodeInDispatchThread();
+					}
+				}
+		};
+		JCheckBoxMenuItem item = new JCheckBoxMenuItem(action);
+		item.setSelected(r.getThreshold() == l);
+		return item;
+	}
+	
     /**
      * Builds a relevant set of menus for when the Root node in the Receiver
      * tree has been selected
@@ -718,40 +751,6 @@ class ReceiversPanel extends JPanel {
 
       addSeparator();
       add(startAll);
-
-      final JDialog dialog = new JDialog(logui, "Set Threshold", true);
-      Container container = dialog.getContentPane();
-      final ThresholdSlider thresholdSlider = new ThresholdSlider();
-      thresholdSlider.getModel().addChangeListener(
-        new ChangeListener() {
-          public void stateChanged(ChangeEvent e) {
-            if (thresholdSlider.getValueIsAdjusting()) {
-              return;
-            }
-
-            Level level = thresholdSlider.getSelectedLevel();
-            LogManager.getLoggerRepository().setThreshold(level);
-            logui.getStatusBar().setMessage(
-              "Adjusted Log4j repository threshold to " + level);
-            getReceiverTreeModel().updateRootDisplay();
-          }
-        });
-
-      container.add(thresholdSlider);
-      dialog.setResizable(false);
-      dialog.pack();
-
-      Action setThresholdAction =
-        new AbstractAction("Set Threshold...") {
-          public void actionPerformed(ActionEvent e) {
-            thresholdSlider.setChosenLevel(
-              LogManager.getLoggerRepository().getThreshold());
-            dialog.setLocationRelativeTo(receiversTree);
-            dialog.show();
-          }
-        };
-
-      add(setThresholdAction);
     }
 
     private JMenuItem createNotDoneYet() {
@@ -1148,6 +1147,7 @@ class ReceiversPanel extends JPanel {
       }
 
       receiver.setName(name + suffix);
+      receiver.setThreshold(Level.DEBUG);
       PluginRegistry.startPlugin(receiver);
       updateReceiverTreeInDispatchThread();
     }
