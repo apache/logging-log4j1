@@ -57,17 +57,15 @@ import org.apache.log4j.Logger;
  * This class helps parse file name patterns. Given a number or a date it returns
  * a file name according to the file name pattern.
  *
- * This class is not intended to be used directly but sub-classed or wrapped.
- *
  * @author Ceki G&uuml;lc&uuml;
  *
  */
-class FileNamePatternParser {
-  static Logger logger = Logger.getLogger(FileNamePatternParser.class);
+public class FileNamePattern {
+  static Logger logger = Logger.getLogger(FileNamePattern.class);
   String pattern;
   TokenConverter headTokenConverter;
 
-  protected FileNamePatternParser(String pattern) {
+  public FileNamePattern(String pattern) {
     if (pattern == null) {
       throw new IllegalArgumentException(
         "The argument to constrcutor cannot be null. ");
@@ -75,6 +73,10 @@ class FileNamePatternParser {
 
     this.pattern = pattern;
     parse();
+  }
+
+  public String toString() {
+    return pattern;
   }
 
   void parse() {
@@ -143,7 +145,7 @@ class FileNamePatternParser {
     return tc;
   }
 
-  protected String convert(int i) {
+  public String convert(int i) {
     TokenConverter p = headTokenConverter;
     StringBuffer buf = new StringBuffer();
 

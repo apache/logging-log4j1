@@ -47,93 +47,33 @@
  *
  */
 
-package org.apache.log4j.rolling;
+package org.apache.log4j.rolling.helpers;
 
-import org.apache.log4j.FileAppender;
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.Logger;
 
 import java.io.File;
-import java.io.IOException;
+
 
 /**
- * RollingFileAppender extends FileAppender to backup the log files
- * depending on rotation policy.
+ * @author Ceki
  *
- * @author Heinz Richter
- * @author Ceki G&uuml;lc&uuml;
- * @since  1.3
- * */
-public class RollingFileAppender extends FileAppender {
-  File file;
-  TriggeringPolicy triggeringPolicy;
-  RollingPolicy rollingPolicy;
+ */
+public class Util {
+  static Logger logger = Logger.getLogger(Util.class);
 
-  /**
-   * The default constructor simply calls its {@link
-   * FileAppender#FileAppender parents constructor}.
-   * */
-  public RollingFileAppender() {
-    super();
-  }
+  public static void rename(String from, String to) {
+    File fromFile = new File(from);
 
-  /**
-     Implements the usual roll over behaviour.
+    if (fromFile.exists()) {
+      File toFile = new File(to);
+      logger.debug("Renaming file [" + fromFile + "] to [" + toFile + "]");
 
-     <p>If <code>MaxBackupIndex</code> is positive, then files
-     {<code>File.1</code>, ..., <code>File.MaxBackupIndex -1</code>}
-     are renamed to {<code>File.2</code>, ...,
-     <code>File.MaxBackupIndex</code>}. Moreover, <code>File</code> is
-     renamed <code>File.1</code> and closed. A new <code>File</code> is
-     created to receive further log output.
+      boolean result = fromFile.renameTo(toFile);
 
-     <p>If <code>MaxBackupIndex</code> is equal to zero, then the
-     <code>File</code> is truncated with no backup files created.
-
-   */
-  public void rollover() {
-    // Note: synchronization not necessary since doAppend is already synched
-      
-      // make sure to close the hereto active log file!!
-      this.closeFile(); 
-            
-      rollingPolicy.rollover(file);
-
-      File activeFile = new File(rollingPolicy.getActiveLogFileName());
-
-    try {
-      // This will also close the file. This is OK since multiple
-      // close operations are safe.
-      this.setFile(fileName, false, bufferedIO, bufferSize);
-    } catch (IOException e) {
-      LogLog.error("setFile(" + fileName + ", false) call failed.", e);
-    }
-  }
-
-  public synchronized void setFile(
-    String fileName, boolean append, boolean bufferedIO, int bufferSize)
-    throws IOException {
-    super.setFile(fileName, append, this.bufferedIO, this.bufferSize);
-    file = new File(fileName);
-  }
-
-  /**
-     This method differentiates RollingFileAppender from its super
-     class.
-  */
-  protected void subAppend(LoggingEvent event) {
-    super.subAppend(event);
-
-    boolean trigger;
-
-    if (triggeringPolicy.isSizeSensitive()) {
-      trigger = triggeringPolicy.isTriggeringEvent(file.length());
-    } else {
-      trigger = triggeringPolicy.isTriggeringEvent();
-    }
-
-    if (trigger) {
-      rollover();
+      if (!result) {
+        logger.debug(
+          "Failed to rename file [" + fromFile + "] to [" + toFile + "].");
+      }
     }
   }
 }
