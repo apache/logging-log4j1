@@ -1,0 +1,162 @@
+<project name="ceki-cactus" default="build" basedir="." >
+
+  <property file="build.properties" />
+
+  <property name="project.name.file" value="sample-servlet"/>
+
+  <property name="log4j.dir" location="../.."/>
+
+  <!-- Directory layout -->
+  <property name="src.dir" location="src"/>
+  <property name="src.java.dir" location="${src.dir}/java"/>
+  <property name="src.webapp.dir" location="${src.dir}/webapp"/>
+  <property name="src.test.dir" location="test/java"/>
+
+  <property name="target.dir" location="target"/>
+  <property name="target.classes.dir" location="${target.dir}/classes"/>
+  <property name="target.classes.java.dir" location="${target.classes.dir}/java"/>
+  <property name="target.classes.cactus.dir" location="${target.classes.dir}/cactus"/>
+  <property name="target.testreports.dir" location="${target.dir}/report"/>
+
+
+  <property name="servlet.jar" location="/java/lib/servlet.jar"/>
+
+  <path id="servlet.cp">
+    <fileset dir="./otherlib/">
+      <include name="servlet*.jar"/>
+    </fileset>
+  </path>
+
+  <path id="log4j.cp">
+    <fileset dir="${log4j.dir}">
+      <include name="log4j-1.3*.jar"/>
+    </fileset>
+  </path>
+ 
+  <path id="cactus.cp">
+    <fileset dir="./lib/">
+      <include name="*.jar"/>
+    </fileset>
+  </path>
+
+  <!-- Define the Cactus tasks -->
+  <taskdef resource="cactus.tasks">
+    <classpath refid="cactus.cp"/>
+  </taskdef>
+
+  <!-- ================================================================= -->
+  <!-- Default target                                                    -->
+  <!-- ================================================================= -->
+
+  <target name="usage">
+    <echo>
+    These are the targets supported by this ANT build scpript:
+    </echo>
+  </target>
+
+  <!-- Initialize the build. Must be called by all targets -->
+  <target name="init">
+  </target>
+
+  <target name="log4j.jar">
+    <ant dir="${log4j.dir}" target="log4j.jar" inheritAll="false" inheritRefs="false"/>
+  </target>
+  
+  <!-- Compile the Java source -->
+  <target name="compile.java" depends="init">
+    <mkdir dir="${target.classes.java.dir}"/>
+    <javac destdir="${target.classes.java.dir}"
+           debug="on" deprecation="on">
+      <src path="${src.java.dir}"/>
+      <classpath refid="servlet.cp"/>
+      <classpath refid="log4j.cp"/>
+    </javac>
+  </target>
+  
+  
+  <!-- Create the war file -->
+  <target name="war" depends="compile">
+    <war warfile="${target.dir}/${project.name.file}.war"
+         webxml="${src.webapp.dir}/WEB-INF/web.xml">
+      <fileset dir="${src.webapp.dir}"/>
+      <classes dir="${target.classes.java.dir}"/>   
+    </war>
+  </target>
+
+  <!-- Compiles the Cactus test sources -->
+  <target name="compile.test" depends="compile.java">
+    <mkdir dir="${target.classes.cactus.dir}"/>
+    <javac destdir="${target.classes.cactus.dir}"
+        debug="on" deprecation="on">
+      <src path="${src.test.dir}"/>
+      <classpath refid="cactus.cp"/>
+      <classpath refid="servlet.cp"/>
+      <classpath path="${target.classes.java.dir}"/>
+      <classpath refid="log4j.cp"/>
+    </javac>
+  </target>
+
+
+  <target name="compile" depends="compile.java, compile.test">
+  </target>
+
+
+  <target name="test.prepare" depends="war, compile.test, log4j.jar">
+    
+    <!-- Cactify the web-app archive -->
+    <cactifywar srcfile="${target.dir}/${project.name.file}.war"
+                destfile="${target.dir}/test.war">
+      <classes dir="${target.classes.cactus.dir}"/>
+      <lib file="${httpunit.jar}"/>
+    </cactifywar>
+
+
+    <fail unless="tomcat5x.home">tomcat5x.home variable not set</fail>
+
+    <delete>
+      <fileset dir="${tomcat5x.home}/common/lib" includes="log4j-1.3*.jar"/>
+    </delete>
+
+    <!-- Copy log4j.jar to Server -->
+    <copy todir="${tomcat5x.home}/common/lib">
+      <fileset dir="${log4j.dir}">
+        <include name="log4j-1.3alpha*.jar"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <target  name="test" depends="test.prepare">
+
+      <!-- Run the tests -->
+      <cactus warfile="${target.dir}/test.war" fork="yes"
+              failureproperty="tests.failed">
+
+        <cactusproperty server="false" propertiesFile="client.properties"/>
+        <cactusproperty server="true" propertiesFile="server.properties"/>
+
+        <classpath>
+          <path refid="servlet.cp"/>
+          <pathelement location="${target.classes.java.dir}"/>
+          <pathelement location="${target.classes.cactus.dir}"/>
+          <fileset dir="${log4j.dir}">
+            <include name="log4j*.jar"/>
+          </fileset>
+        </classpath>
+        <containerset timeout="60000">
+          <tomcat5x if="tomcat5x.home"
+                    dir="${tomcat5x.home}"
+                    output="${target.testreports.dir}/tomcat5x.out"
+                    todir="${target.testreports.dir}/tomcat5x"/>
+        </containerset>
+        <formatter type="brief" usefile="false"/>
+        <batchtest>
+          <fileset dir="${src.test.dir}">
+            <include name="**/Test*.java"/>
+            <exclude name="**/Test*All.java"/>
+          </fileset>
+        </batchtest>
+      </cactus>
+      
+    </target>    
+
+</project> 
