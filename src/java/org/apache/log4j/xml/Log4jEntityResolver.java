@@ -23,7 +23,6 @@ import org.apache.log4j.helpers.LogLog;
  * file. 
  *
  * @author Paul Austin
- * @auhtor Ceki G&uuml;lc&uuml;
  * */
 public class Log4jEntityResolver implements EntityResolver {
 
@@ -35,22 +34,8 @@ public class Log4jEntityResolver implements EntityResolver {
 	LogLog.error("Could not find [log4j.dtd]. Used [" + clazz.getClassLoader() 
 		     + "] class loader in the search.");
 	return null;
-      }
-      
-      // Return a copy of log4j.dtd. This solves problems with not
-      // being able to remove the log4j.jar file on Windows systems.
-      try {
-	ByteArrayOutputStream bos = new ByteArrayOutputStream();
-	byte[] buf = new byte[1024];
-	int i;
-	while((i = in.read(buf)) != -1) {
-	  bos.write(buf, 0, i);
-	}
-	in.close();
-	return new InputSource(new ByteArrayInputStream(bos.toByteArray()));
-      } catch(IOException e) {
-	LogLog.error("Could not read log4j.dtd.", e);
-	return null;
+      } else {
+	return new InputSource(in);
       }
     } else {
       return null;
