@@ -49,12 +49,14 @@
 
 package org.apache.log4j.chainsaw;
 
+import java.util.EventListener;
+
 
 /**
  * Listeners can be notified when the # of events in a particular model
  * changes
  * @author Scott Deboy <sdeboy@apache.org>
  */
-public interface EventCountListener {
+public interface EventCountListener  extends EventListener{
   public void eventCountChanged(int currentCount, int totalCount);
 }
