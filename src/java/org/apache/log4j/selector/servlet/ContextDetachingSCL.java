@@ -26,26 +26,29 @@ import org.apache.log4j.spi.RepositorySelector;
 import javax.naming.Context;
 import javax.naming.NamingException;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+// WARNING
+// WARNING Since ServletContextListeners get instantiated by the application
+// WARNING server, we have no way of passing it a LoggerRepository instance.
+// WARNING It follows that this class should not log except when an LR instance
+// WARNING is available.
 
 /**
  * This is a very simple ServletContextListener which detaches a
  * {@link LoggerRepository} from {@link ContextJNDISlector} when the
  * web-application is destroyed.
  *
- * This class is highly coupled with JNDI but not necessarily
+ * <p>This class is highly coupled with JNDI but not necessarily
  * ContextJNDISlector.
- *
+ * 
  * @author Ceki G&uuml;lc&uuml;
- *
  * @since 1.3
  */
 public class ContextDetachingSCL implements ServletContextListener {
-  static Logger logger = Logger.getLogger(ContextDetachingSCL.class);
 
+  
   /**
    * When the context is destroy, detach the logging repository given by
    * the value of "log4j/context-name" environment variable.
@@ -63,13 +66,15 @@ public class ContextDetachingSCL implements ServletContextListener {
     }
 
     if (loggingContextName != null) {
-      logger.debug(
+      
+      System.out.println(
         "About to detach logger context named [" + loggingContextName + "].");
 
       RepositorySelector repositorySelector =
         LogManager.getRepositorySelector();
       LoggerRepository lr = repositorySelector.detachRepository(loggingContextName);
       if(lr != null) {
+        Logger logger = lr.getLogger(this.getClass().getName());
         logger.debug("About to shutdown logger repository named ["+lr.getName()+
             "]");
         lr.shutdown();
@@ -81,7 +86,5 @@ public class ContextDetachingSCL implements ServletContextListener {
    * Does nothing.
    */
   public void contextInitialized(ServletContextEvent sce) {
-    ServletContext sc = sce.getServletContext();
-    logger.debug("Context named ["+sc.getServletContextName()+"] initialized.");     
   }
 }

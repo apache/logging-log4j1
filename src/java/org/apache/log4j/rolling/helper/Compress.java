@@ -16,13 +16,13 @@
 
 package org.apache.log4j.rolling.helper;
 
-import org.apache.log4j.Logger;
-
 import java.io.*;
 
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import org.apache.log4j.spi.ComponentBase;
 
 
 /**
@@ -32,8 +32,7 @@ import java.util.zip.ZipOutputStream;
  * @author Ceki G&uuml;lc&uuml;
  * @since 1.3
  */
-public class Compress {
-  static final Logger logger = Logger.getLogger(Compress.class);
+public class Compress extends ComponentBase {
   public static final int NONE = 0;
   public static final int GZ = 1;
   public static final int ZIP = 2;
@@ -55,18 +54,18 @@ public class Compress {
    */
   public static final String ZIP_STR = "ZIP";
 
-  public static void ZIPCompress(String nameOfFile2zip) {
+  public void ZIPCompress(String nameOfFile2zip) {
     // Here we rely on the fact that the two argument version of ZIPCompress 
     // automaticallys add a .zip extension to the second argument 
     GZCompress(nameOfFile2zip, nameOfFile2zip);
   }
   
-  public static void ZIPCompress(
+  public void ZIPCompress(
     String nameOfFile2zip, String nameOfZippedFile) {
     File file2zip = new File(nameOfFile2zip);
 
     if (!file2zip.exists()) {
-      logger.warn(
+      getLogger().warn(
         "The file to compress named [" + nameOfFile2zip + "] does not exist.");
 
       return;
@@ -79,7 +78,7 @@ public class Compress {
     File zippedFile = new File(nameOfZippedFile);
 
     if (zippedFile.exists()) {
-      logger.warn(
+      getLogger().warn(
         "The target compressed file named [" + nameOfZippedFile
         + "] exist already.");
 
@@ -105,26 +104,26 @@ public class Compress {
       zos.close();
 
       if (!file2zip.delete()) {
-        logger.warn("Could not delete [" + nameOfFile2zip + "].");
+        getLogger().warn("Could not delete [" + nameOfFile2zip + "].");
       }
     } catch (Exception e) {
-      logger.error(
+      getLogger().error(
         "Error occured while compressing [" + nameOfFile2zip + "] into ["
         + nameOfZippedFile + "].", e);
     }
   }
 
-  public static void GZCompress(String nameOfFile2gz) {
+  public void GZCompress(String nameOfFile2gz) {
     // Here we rely on the fact that the two argument version of GZCompress 
     // automatically adds a .gz extension to the second argument 
     GZCompress(nameOfFile2gz, nameOfFile2gz);
   }
 
-  public static void GZCompress(String nameOfFile2gz, String nameOfgzedFile) {
+  public void GZCompress(String nameOfFile2gz, String nameOfgzedFile) {
     File file2gz = new File(nameOfFile2gz);
 
     if (!file2gz.exists()) {
-      logger.warn(
+      getLogger().warn(
         "The file to compress named [" + nameOfFile2gz + "] does not exist.");
 
       return;
@@ -137,7 +136,7 @@ public class Compress {
     File gzedFile = new File(nameOfgzedFile);
 
     if (gzedFile.exists()) {
-      logger.warn(
+      getLogger().warn(
         "The target compressed file named [" + nameOfgzedFile
         + "] exist already.");
 
@@ -159,10 +158,10 @@ public class Compress {
       gzos.close();
 
       if (!file2gz.delete()) {
-        logger.warn("Could not delete [" + nameOfFile2gz + "].");
+        getLogger().warn("Could not delete [" + nameOfFile2gz + "].");
       }
     } catch (Exception e) {
-      logger.error(
+      getLogger().error(
         "Error occured while compressing [" + nameOfFile2gz + "] into ["
         + nameOfgzedFile + "].", e);
     }

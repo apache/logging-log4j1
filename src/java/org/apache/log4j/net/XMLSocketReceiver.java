@@ -238,6 +238,7 @@ public class XMLSocketReceiver extends Receiver implements Runnable, PortBased, 
           socketList.add(socket);
 
           XMLSocketNode node = new XMLSocketNode(decoder, socket, this);
+          node.setLoggerRepository(this.repository);
           new Thread(node).start();
           socket = null;
         }

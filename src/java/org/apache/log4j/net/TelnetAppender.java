@@ -127,8 +127,8 @@ public class TelnetAppender extends AppenderSkeleton {
     private Vector connections = new Vector();
     private ServerSocket serverSocket;
     private int MAX_CONNECTIONS = 20;
-    private Logger logger = Logger.getLogger(SocketHandler.class);
-      private String encoding = "UTF-8";
+    
+    private String encoding = "UTF-8";
     
     public SocketHandler(int port) throws IOException {
       serverSocket = new ServerSocket(port);
@@ -200,7 +200,7 @@ public class TelnetAppender extends AppenderSkeleton {
             newClient.close();
           }
         } catch (Exception e) {
-          logger.error("Encountered error while in SocketHandler loop.", e);
+          getLogger().error("Encountered error while in SocketHandler loop.", e);
         }
       }
     }

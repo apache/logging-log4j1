@@ -145,14 +145,17 @@ public class TimeBasedRollingPolicy extends RollingPolicyBase implements Trigger
   String elapsedPeriodsFileName;
   FileNamePattern activeFileNamePattern;
   Util util = new Util();
+  Compress compress = new Compress();
   
   public void activateOptions() {
     // set the LR for our utility object
     util.setLoggerRepository(this.repository);
+    compress.setLoggerRepository(this.repository);
     
     // find out period from the filename pattern
     if (fileNamePatternStr != null) {
       fileNamePattern = new FileNamePattern(fileNamePatternStr);
+      fileNamePattern.setLoggerRepository(this.repository);
       determineCompressionMode();
     } else {
       getLogger().warn(FNP_NOT_SET);
@@ -190,7 +193,7 @@ public class TimeBasedRollingPolicy extends RollingPolicyBase implements Trigger
     getLogger().debug(
       "The date pattern is '{}' from file name pattern '{}'.",
       dtc.getDatePattern(), fileNamePattern.getPattern());
-    rc.printPeriodicity();
+    rc.printPeriodicity(getLogger());
 
     long n = System.currentTimeMillis();
     lastCheck.setTime(n);
@@ -212,11 +215,11 @@ public class TimeBasedRollingPolicy extends RollingPolicyBase implements Trigger
         break;
       case Compress.GZ:
         getLogger().debug("GZIP compressing [{}]", elapsedPeriodsFileName);
-        Compress.GZCompress(elapsedPeriodsFileName);
+        compress.GZCompress(elapsedPeriodsFileName);
         break;
       case Compress.ZIP:
         getLogger().debug("ZIP compressing [{}]", elapsedPeriodsFileName);
-        Compress.ZIPCompress(elapsedPeriodsFileName);
+        compress.ZIPCompress(elapsedPeriodsFileName);
         break;
       }
     } else {
@@ -226,11 +229,11 @@ public class TimeBasedRollingPolicy extends RollingPolicyBase implements Trigger
         break;
       case Compress.GZ:
         getLogger().debug("GZIP compressing [[}]", elapsedPeriodsFileName);
-        Compress.GZCompress(activeFileName, elapsedPeriodsFileName);
+        compress.GZCompress(activeFileName, elapsedPeriodsFileName);
         break;
       case Compress.ZIP:
         getLogger().debug("ZIP compressing [[}]", elapsedPeriodsFileName);
-        Compress.ZIPCompress(activeFileName, elapsedPeriodsFileName);
+        compress.ZIPCompress(activeFileName, elapsedPeriodsFileName);
         break;
       }
     }

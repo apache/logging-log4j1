@@ -18,7 +18,6 @@ package org.apache.log4j.pattern;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
 
 
@@ -30,9 +29,6 @@ import org.apache.log4j.spi.LoggingEvent;
  */
 abstract class NamedPatternConverter extends PatternConverter {
 	
-	
-  static Logger logger = Logger.getLogger(NamedPatternConverter.class);
-
   // We assume that each PatternConveter instance is unique within a layout, 
   // which is unique within an appender. We further assume that callas to the 
   // appender method are serialized (per appender).
@@ -63,12 +59,12 @@ abstract class NamedPatternConverter extends PatternConverter {
         precision = Integer.parseInt(option);
         //System.out.println("Precision is "+precision);
         if (precision <= 0) {
-          logger.error(
+          getLogger().error(
             "Precision option (" + option + ") isn't a positive integer.");
           precision = 0;
         }
       } catch (NumberFormatException e) {
-        logger.error(
+        getLogger().error(
           "Category option \"" + option + "\" not a decimal integer.", e);
       }
     }

@@ -16,7 +16,7 @@
 
 package org.apache.log4j.rolling.helper;
 
-import org.apache.log4j.Logger;
+import org.apache.ugli.ULogger;
 
 import java.text.SimpleDateFormat;
 
@@ -38,7 +38,6 @@ import java.util.TimeZone;
  *
  * */
 public class RollingCalendar extends GregorianCalendar {
-  final Logger logger = Logger.getLogger(RollingCalendar.class);
 
   // The gmtTimeZone is used only in computeCheckPeriod() method.
   static final TimeZone GMT_TIMEZONE = TimeZone.getTimeZone("GMT");
@@ -111,7 +110,7 @@ public class RollingCalendar extends GregorianCalendar {
     return TOP_OF_TROUBLE; // Deliberately head for trouble...
   }
 
-  public void printPeriodicity() {
+  public void printPeriodicity(ULogger logger) {
     switch (type) {
     case TOP_OF_SECOND:
       logger.debug("Rollover every second.");

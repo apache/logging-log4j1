@@ -20,14 +20,11 @@ import org.apache.joran.ExecutionContext;
 import org.apache.joran.Pattern;
 import org.apache.joran.helper.Option;
 
-import org.apache.log4j.Logger;
 import org.apache.log4j.spi.ErrorItem;
 import org.xml.sax.Attributes;
 
 
 public class NewRuleAction extends Action {
-  static final Logger logger = Logger.getLogger(NewRuleAction.class);
-
   boolean inError = false;
   
   /**
@@ -44,7 +41,7 @@ public class NewRuleAction extends Action {
     if(Option.isEmpty(pattern)) {
        inError = true;
        errorMsg = "No 'pattern' attribute in <newRule>";
-       logger.warn(errorMsg);
+       getLogger().warn(errorMsg);
        ec.addError(new ErrorItem(errorMsg));
        return;
      }
@@ -52,18 +49,18 @@ public class NewRuleAction extends Action {
      if(Option.isEmpty(actionClass)) {
          inError = true;
          errorMsg = "No 'actionClass' attribute in <newRule>";
-         logger.warn(errorMsg);
+         getLogger().warn(errorMsg);
          ec.addError(new ErrorItem(errorMsg));
          return;
      }
        
     try {
-      logger.debug("About to add new Joran parsing rule ["+pattern+","+actionClass+"].");
+      getLogger().debug("About to add new Joran parsing rule ["+pattern+","+actionClass+"].");
       ec.getJoranInterpreter().getRuleStore().addRule(new Pattern(pattern), actionClass);
     } catch (Exception oops) {
       inError = true;
       errorMsg =  "Could not add new Joran parsing rule ["+pattern+","+actionClass+"]"; 
-      logger.error(errorMsg, oops);
+      getLogger().error(errorMsg, oops);
       ec.addError(new ErrorItem(errorMsg));
     }
   }
