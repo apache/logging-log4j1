@@ -1,3 +1,18 @@
+/*
+ * Copyright 1999-2005 The Apache Software Foundation.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package org.apache.log4j.xml;
 
@@ -18,6 +33,8 @@ import org.apache.log4j.util.ControlFilter;
 import org.apache.log4j.util.ISO8601Filter;
 import org.apache.log4j.util.Transformer;
 import org.apache.log4j.util.Compare;
+import org.apache.log4j.FileAppender;
+import java.io.File;
 
 public class DOMTestCase extends TestCase {
 
@@ -83,6 +100,42 @@ public class DOMTestCase extends TestCase {
     assertTrue(Compare.compare(FILTERED_A2, "witness/xml/dom.A2.1"));
   }
 
+  /**
+   * Identical test except that backslashes are used instead of
+   * forward slashes on all file specifications.  Test is 
+   * only applicable to Windows.
+   * 
+   * @throws Exception Any exception will cause test to fail
+   */
+  public void test2() throws Exception {
+  	if (File.separatorChar == '\\') {
+ 	    JoranConfigurator jc = new JoranConfigurator();
+	    jc.doConfigure("input\\xml\\DOMTestCase2.xml", LogManager.getLoggerRepository());
+	    dumpErrors(jc.getErrorList());
+	    common();
+	
+	    ControlFilter cf1 = new ControlFilter(new String[]{TEST1_1A_PAT, TEST1_1B_PAT, 
+						       EXCEPTION1, EXCEPTION2, EXCEPTION3});
+	
+	    ControlFilter cf2 = new ControlFilter(new String[]{TEST1_2_PAT, 
+						       EXCEPTION1, EXCEPTION2, EXCEPTION3});
+	
+	    Transformer.transform(TEMP_A1 + ".2", FILTERED_A1 + ".2", new Filter[] {cf1, 
+								new LineNumberFilter(), 
+	              new SunReflectFilter(), 
+	              new JunitTestRunnerFilter()});
+	
+	    Transformer.transform(TEMP_A2 + ".2", FILTERED_A2 + ".2", new Filter[] {cf2,
+	                                      new LineNumberFilter(), new ISO8601Filter(),
+	                                      new SunReflectFilter(), new JunitTestRunnerFilter()});
+	
+	    assertTrue(Compare.compare(FILTERED_A1, "witness/xml/dom.A1.2"));
+	    assertTrue(Compare.compare(FILTERED_A2, "witness/xml/dom.A2.2"));
+  	}
+  }
+  
+  
+ 
   void common() {
     int i = -1;
  

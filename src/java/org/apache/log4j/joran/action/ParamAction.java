@@ -54,7 +54,7 @@ public class ParamAction extends Action {
 
     Object o = ec.peekObject();
     PropertySetter propSetter = new PropertySetter(o);
-    value = ec.subst(OptionConverter.convertSpecialChars(value));
+    value = ec.subst(value);
 
     // allow for variable substitution for name as well
     name = ec.subst(name);

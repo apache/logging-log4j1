@@ -19,6 +19,7 @@ package org.apache.log4j;
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import org.apache.log4j.helpers.OptionConverter;
 
 
 // Contibutors: Jens Uwe Pipka <jens.pipka@gmx.de>
@@ -122,7 +123,7 @@ public class FileAppender extends WriterAppender {
     // Trim spaces from both ends. The users probably does not want
     // trailing spaces in file names.
     String val = file.trim();
-    fileName = val;
+    fileName = OptionConverter.stripDuplicateBackslashes(val);
   }
 
   /**
