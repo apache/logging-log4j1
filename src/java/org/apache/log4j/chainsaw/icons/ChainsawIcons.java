@@ -46,6 +46,7 @@
  * Apache Software Foundation, please see <http://www.apache.org/>.
  *
  */
+
 /*
  * @author Paul Smith <psmith@apache.org>
  *
@@ -53,6 +54,7 @@
 package org.apache.log4j.chainsaw.icons;
 
 import java.net.URL;
+
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
@@ -61,11 +63,7 @@ import javax.swing.ImageIcon;
  * @author Paul Smith <psmith@apache.org>
  *
  */
-public class ChainsawIcons
-{
-  //~ Static fields/initializers ==============================================
-
-  
+public class ChainsawIcons {
   private static final String BASE_ICON_PATH =
     "org/apache/log4j/chainsaw/icons/";
   public static final URL FILE_OPEN =
@@ -110,19 +108,20 @@ public class ChainsawIcons
   public static final URL DEBUG =
     ChainsawIcons.class.getClassLoader().getResource(
       BASE_ICON_PATH + "Bean16.gif");
+  public static final URL HELP =
+    ChainsawIcons.class.getClassLoader().getResource(
+      BASE_ICON_PATH + "Help16.gif");
+  public static final Icon ICON_HELP = new ImageIcon(HELP);
   public static final Icon ICON_PREFERENCES = new ImageIcon(PREFERENCES);
   public static final Icon ICON_DOCK = new ImageIcon(DOCK);
-    
   public static final URL COPY =
     ChainsawIcons.class.getClassLoader().getResource(
       BASE_ICON_PATH + "Copy16.gif");
-
-    public static final URL CUT =
-      ChainsawIcons.class.getClassLoader().getResource(
-        BASE_ICON_PATH + "Cut16.gif");
-    
-    public static final Icon ICON_COPY = new ImageIcon(COPY);
-    public static final Icon ICON_CUT = new ImageIcon(CUT);
+  public static final URL CUT =
+    ChainsawIcons.class.getClassLoader().getResource(
+      BASE_ICON_PATH + "Cut16.gif");
+  public static final Icon ICON_COPY = new ImageIcon(COPY);
+  public static final Icon ICON_CUT = new ImageIcon(CUT);
   public static final Icon ICON_UNDOCK = new ImageIcon(UNDOCK);
   public static final Icon ICON_DEBUG = new ImageIcon(DEBUG);
   public static final URL WINDOW_ICON =
@@ -145,42 +144,30 @@ public class ChainsawIcons
   public static final URL ICON_ACTIVE_RECEIVER =
     ChainsawIcons.class.getClassLoader().getResource(
       BASE_ICON_PATH + "Play16.gif");
-
   public static final URL ICON_HOME =
     ChainsawIcons.class.getClassLoader().getResource(
       BASE_ICON_PATH + "Home16.gif");
-
   public static final URL ICON_BACK =
     ChainsawIcons.class.getClassLoader().getResource(
       BASE_ICON_PATH + "Back16.gif");
-
   public static final URL ICON_RESTART =
     ChainsawIcons.class.getClassLoader().getResource(
       BASE_ICON_PATH + "Redo16.gif");
-
   public static final URL ICON_STOP_RECEIVER =
-  ChainsawIcons.class.getClassLoader().getResource(
-    BASE_ICON_PATH + "Stop16.gif");;
-
+    ChainsawIcons.class.getClassLoader().getResource(
+      BASE_ICON_PATH + "Stop16.gif");
   public static final URL ICON_NEW_RECEIVER =
-  ChainsawIcons.class.getClassLoader().getResource(
-    BASE_ICON_PATH + "New16.gif");;
-
+    ChainsawIcons.class.getClassLoader().getResource(
+      BASE_ICON_PATH + "New16.gif");
   public static final URL ICON_EDIT_RECEIVER =
-  ChainsawIcons.class.getClassLoader().getResource(
-    BASE_ICON_PATH + "Edit16.gif");;
-
+    ChainsawIcons.class.getClassLoader().getResource(
+      BASE_ICON_PATH + "Edit16.gif");
   public static final URL ICON_RESUME_RECEIVER = ICON_ACTIVE_RECEIVER;
-      
-      
   public static final URL ICON_INACTIVE_RECEIVER = PAUSE;
-  public static final URL ICON_COLLAPSE =    ChainsawIcons.class.getClassLoader().getResource(
-  BASE_ICON_PATH + "ZoomOut16.gif");;
-;
+  public static final URL ICON_COLLAPSE =
+    ChainsawIcons.class.getClassLoader().getResource(
+      BASE_ICON_PATH + "ZoomOut16.gif");
 
-  //~ Constructors ============================================================
-
-  private ChainsawIcons()
-  {
+  private ChainsawIcons() {
   }
 }
