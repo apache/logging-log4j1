@@ -272,7 +272,6 @@ public class UtilLoggingXMLDecoder implements Decoder {
       String threadName = null;
       Object message = null;
       String ndc = null;
-      Hashtable mdc = null;
       String[] exception = null;
       String className = null;
       String methodName = null;
@@ -389,7 +388,6 @@ public class UtilLoggingXMLDecoder implements Decoder {
       threadName = null;
       message = null;
       ndc = null;
-      mdc = null;
       exception = null;
       className = null;
       methodName = null;

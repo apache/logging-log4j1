@@ -88,7 +88,7 @@ import java.util.Map;
  * is followed by a delimiter (-)
  *
  * LIMITATIONS:
- * - no support for mdc, ndc, properties or the single-line version of throwable supported by patternlayout
+ * - no support for ndc, properties or the single-line version of throwable supported by patternlayout
  * - relativetime is set as a property
  * - loggers with spaces in their names are not supported (but may work if followed by a delimiter,
  *   similar to wildcard example above)
@@ -151,7 +151,7 @@ public class LogFilePatternReceiver extends Receiver {
 
     //supported keyword replacements are expected to be single words, except for the MESSAGE keyword,
     //which is expected to appear at the end of each entry in the log file
-    //since throwable, mdc, ndc and properties can all have spaces, they're not yet supported
+    //since throwable, ndc and properties can all have spaces, they're not yet supported
     //while loggers may containspaces, only loggers without spaces are currently supported
     //fullinfo pattern is not supported directly - build from individual keywords instead
     keywords.add(TIMESTAMP);

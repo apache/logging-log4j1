@@ -75,7 +75,7 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
   //because we may be using a cyclic buffer, if an ID is not provided in the property, 
   //use and increment this row counter as the ID for each received row
   int uniqueRow;
-  private Set uniqueMDCKeys = new HashSet();
+  private Set uniquePropertyKeys = new HashSet();
   private Rule displayRule;
   private PropertyChangeSupport propertySupport =
     new PropertyChangeSupport(this);
@@ -364,14 +364,8 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
     case ChainsawColumns.INDEX_MESSAGE_COL_NAME:
       return event.getRenderedMessage();
 
-//    case ChainsawColumns.INDEX_MDC_COL_NAME:
-//      return getMDC(event);
-
     case ChainsawColumns.INDEX_NDC_COL_NAME:
       return event.getNDC();
-
-    case ChainsawColumns.INDEX_PROPERTIES_COL_NAME:
-      return getProperties(event);
 
     case ChainsawColumns.INDEX_THREAD_COL_NAME:
       return event.getThreadName();
@@ -413,48 +407,6 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
     return "";
   }
 
-//  private String getMDC(LoggingEvent event) {
-//    if (event.getMDCKeySet().size() == 0) {
-//      return "";
-//    }
-//
-//    Iterator iter = event.getMDCKeySet().iterator();
-//    StringBuffer mdc = new StringBuffer("{");
-//
-//    while (iter.hasNext()) {
-//      mdc.append("{");
-//
-//      Object key = iter.next();
-//      mdc.append(key);
-//      mdc.append(",");
-//      mdc.append(event.getMDC(key.toString()));
-//      mdc.append("}");
-//    }
-//
-//    mdc.append("}");
-//
-//    return mdc.toString();
-//  }
-
-  private String getProperties(LoggingEvent event) {
-    Iterator iter = event.getPropertyKeySet().iterator();
-    StringBuffer prop = new StringBuffer("{");
-
-    while (iter.hasNext()) {
-      prop.append("{");
-
-      Object key = iter.next();
-      prop.append(key);
-      prop.append(",");
-      prop.append(event.getProperty(key.toString()));
-      prop.append("}");
-    }
-
-    prop.append("}");
-
-    return prop.toString();
-  }
-
   public boolean isAddRow(LoggingEvent e, boolean valueIsAdjusting) {
     boolean rowAdded = false;
 
@@ -481,10 +433,10 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
     }
 
     /**
-     * Is this a new Propert key we haven't seen before?  Remeber that now MDC has been merged
-     * into the Properties collection.s
+     * Is this a new Property key we haven't seen before?  Remember that now MDC has been merged
+     * into the Properties collection
      */
-    boolean newColumn = uniqueMDCKeys.addAll(e.getPropertyKeySet());
+    boolean newColumn = uniquePropertyKeys.addAll(e.getPropertyKeySet());
 
     if (newColumn) {
       /**
@@ -493,7 +445,8 @@ class ChainsawCyclicBufferTableModel extends AbstractTableModel
       for (Iterator iter = e.getPropertyKeySet().iterator(); iter.hasNext();) {
         Object key = iter.next();
 
-        if (!columnNames.contains(key)) {
+        //add all keys except the 'log4jid' key
+        if (!columnNames.contains(key) && !(ChainsawConstants.LOG4J_ID_KEY.equalsIgnoreCase(key.toString()))) {
           columnNames.add(key);
           LogLog.debug("Adding col '" + key + "', columNames=" + columnNames);
           fireNewKeyColumnAdded(

@@ -46,7 +46,7 @@ public interface EventContainer extends SortTableModel, LoggerNameModel {
     String propertyName, PropertyChangeListener l);
 
   /**
-   * Adds a NewKeyListener to be notified when unique Key (MDC/Property keys)
+   * Adds a NewKeyListener to be notified when unique Key (Property keys)
    * arrive into this EventContainer
    * @param l
    */

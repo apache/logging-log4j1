@@ -38,7 +38,6 @@ public class EventTypeEntryContainer {
   private Set ColumnNames = new HashSet();
   private Set Methods = new HashSet();
   private Set Classes = new HashSet();
-  private Set propertyKeys = new HashSet();
   private Set NDCs = new HashSet();
   private Set Levels = new HashSet();
   private Set Loggers = new HashSet();
@@ -47,12 +46,13 @@ public class EventTypeEntryContainer {
   private DefaultListModel columnNameListModel = new DefaultListModel();
   private DefaultListModel methodListModel = new DefaultListModel();
   private DefaultListModel classesListModel = new DefaultListModel();
-  private DefaultListModel mdcListModel = new DefaultListModel();
+  private DefaultListModel propListModel = new DefaultListModel();
   private DefaultListModel ndcListModel = new DefaultListModel();
   private DefaultListModel levelListModel = new DefaultListModel();
   private DefaultListModel loggerListModel = new DefaultListModel();
   private DefaultListModel threadListModel = new DefaultListModel();
   private DefaultListModel fileNameListModel = new DefaultListModel();
+  private Map propertiesListModelMap = new HashMap();
   private Map modelMap = new HashMap();
   private static final String LOGGER_FIELD = "LOGGER";
   private static final String LEVEL_FIELD = "LEVEL";
@@ -60,7 +60,7 @@ public class EventTypeEntryContainer {
   private static final String FILE_FIELD = "FILE";
   private static final String THREAD_FIELD = "THREAD";
   private static final String METHOD_FIELD = "METHOD";
-  private static final String MDC_FIELD = "MDC";
+  private static final String PROP_FIELD = "PROP.";
   private static final String NDC_FIELD = "NDC";
 
   public EventTypeEntryContainer() {
@@ -71,19 +71,30 @@ public class EventTypeEntryContainer {
       modelMap.put(THREAD_FIELD, threadListModel);
       modelMap.put(METHOD_FIELD, methodListModel);
       modelMap.put(NDC_FIELD, ndcListModel);
-      modelMap.put(MDC_FIELD, mdcListModel);
+      modelMap.put(PROP_FIELD, propListModel);
   }
   
   public boolean modelExists(String fieldName) {
       if (fieldName != null) {
-          return (modelMap.keySet().contains(fieldName.toUpperCase()));
+        return (fieldName.toUpperCase().startsWith(PROP_FIELD) || modelMap.keySet().contains(fieldName.toUpperCase()));
       }
       return false;
   }
   
   public ListModel getModel(String fieldName) {
       if (fieldName != null) {
-          return (ListModel)modelMap.get(fieldName.toUpperCase());
+          ListModel model = (ListModel)modelMap.get(fieldName.toUpperCase());
+          if (model != null) {
+              return model;
+          }
+          //drop prop field and optional ticks around field name
+          if (fieldName.startsWith(PROP_FIELD)) {
+              fieldName = fieldName.substring(PROP_FIELD.length());
+              if ((fieldName.startsWith("'")) && (fieldName.endsWith("'"))) {
+                  fieldName = fieldName.substring(1, fieldName.length() - 1);
+              }
+          }
+          return (ListModel)propertiesListModelMap.get(fieldName);
       }
       return null;
   } 
@@ -136,79 +147,20 @@ public class EventTypeEntryContainer {
     }
   }
 
-  void addPropertyKeys(Set keySet) {
-    if (propertyKeys.addAll(keySet)) {
-      for (Iterator iter = keySet.iterator(); iter.hasNext();) {
-        Object element = iter.next();
-        mdcListModel.addElement(element);
-      }
+  void addProperties(Map properties) {
+        for (Iterator iter = properties.entrySet().iterator(); iter.hasNext();) {
+            Map.Entry entry = (Map.Entry)iter.next();
+            if (!(propListModel.contains(entry.getKey()))) {
+                propListModel.addElement(entry.getKey());
+            }
+            DefaultListModel model = (DefaultListModel)propertiesListModelMap.get(entry.getKey());
+            if (model == null) {
+                model = new DefaultListModel();
+                propertiesListModelMap.put(entry.getKey(), model);
+            }
+            if (!(model.contains(entry.getValue()))) {
+                model.addElement(entry.getValue());
+            }
+        }
     }
-  }
-
-  ListModel getColumnListModel() {
-    return columnNameListModel;
-  }
-
-  /**
-   * @return
-   */
-  DefaultListModel getClassesListModel() {
-    return classesListModel;
-  }
-
-  /**
-   * @return
-   */
-  DefaultListModel getColumnNameListModel() {
-    return columnNameListModel;
-  }
-
-  /**
-   * @return
-   */
-  DefaultListModel getFileNameListModel() {
-    return fileNameListModel;
-  }
-
-  /**
-   * @return
-   */
-  DefaultListModel getLevelListModel() {
-    return levelListModel;
-  }
-
-  /**
-   * @return
-   */
-  DefaultListModel getLoggerListModel() {
-    return loggerListModel;
-  }
-
-  /**
-   * @return
-   */
-  DefaultListModel getPropertiesListModel() {
-    return mdcListModel;
-  }
-
-  /**
-   * @return
-   */
-  DefaultListModel getMethodListModel() {
-    return methodListModel;
-  }
-
-  /**
-   * @return
-   */
-  DefaultListModel getNdcListModel() {
-    return ndcListModel;
-  }
-
-  /**
-   * @return
-   */
-  DefaultListModel getThreadListModel() {
-    return threadListModel;
-  }
 }

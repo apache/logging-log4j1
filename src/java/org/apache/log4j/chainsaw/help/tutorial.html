@@ -148,14 +148,13 @@ Example: to display only events which are greater than or equal to level INFO, u
 <li>EXCEPTION</li>
 <li>TIMESTAMP</li>
 <li>THREAD</li>
-<li>MDC.[key name]</li>
 <li>PROP.[key name]</li>
 </ul>
 
 <ul>
-<li><b>NOTE: </b>To build expressions using <b>MDC</b> or <b>PROP (properties)</b> field identifiers, the key being evaluated must be added after the field identifier and a period</li>
+<li><b>NOTE: </b>To build expressions using <b>PROP (properties)</b> field identifier, the key being evaluated must be added after the field identifier and a period</li>
  <li>Example: all events in the event table contain a '<b>log4jid</b>' property (used during import/export of events).  To refine the display to display only rows 50 through 60, the expression <b>PROP.log4jid &gt= 50 && PROP.log4jid &lt= 60</b> can be used in the 'refine focus' field</li>
-<b>NOTE:</b> MDC and PROP keys are case sensitive.  <b>PROP.log4jid</b> is <b>not</b> equivalent to <b>PROP.LOG4JID</b>
+<b>NOTE:</b> PROP keys are case sensitive.  <b>PROP.log4jid</b> is <b>not</b> equivalent to <b>PROP.LOG4JID</b>
 </ul>
 <p>
 <b>Supported operators:</b></p>
@@ -187,7 +186,7 @@ Example: to display only events which are greater than or equal to level INFO, u
 <tr><td>To display all events with a level of info or greater</td><td><b>LEVEL &gt= INFO</b></td></tr>
 <tr><td>To display all events which contain the words 'logged in' in the message</td><td> <b>MSG ~= 'logged in'</b></td></tr>
 <tr><td>To display all events which contain an exception</td><td><b>EXCEPTION EXISTS</b></td></tr>
-<tr><td>To display all events associated with an MDC key of USERID with a value of 'tester'</td><td><b>MDC.USERID == tester</b></td></tr>
+<tr><td>To display all events associated with a PROP key of USERID with a value of 'tester'</td><td><b>PROP.USERID == tester</b></td></tr>
 <tr><td>'and' the first and second examples together, 'or'd with the third</td><td><b>( LEVEL &gt= INFO && MSG ~= 'logged in' ) || EXCEPTION EXISTS</b></td></tr>
 </table>
 

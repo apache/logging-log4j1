@@ -170,7 +170,7 @@ public class RuleTest extends JFrame {
   public static void main(String[] args) {
     RuleTest test =
       new RuleTest(
-        "( level ~= deb ) && ( logger like logger[1-2] || MDC.entry1 >= 234 )");
+        "( level ~= deb ) && ( logger like logger[1-2] || PROP.entry1 >= 234 )");
     test.pack();
     test.setVisible(true);
   }

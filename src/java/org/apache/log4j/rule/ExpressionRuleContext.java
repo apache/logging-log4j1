@@ -16,9 +16,6 @@
 
 package org.apache.log4j.rule;
 
-import org.apache.log4j.chainsaw.filter.FilterModel;
-import org.apache.log4j.spi.LoggingEventFieldResolver;
-
 import java.awt.Point;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
@@ -31,6 +28,10 @@ import javax.swing.JList;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.ListModel;
+
+import org.apache.log4j.chainsaw.filter.FilterModel;
+import org.apache.log4j.spi.LoggingEventFieldResolver;
 
 /**
  * A popup menu which assists in building expression rules.  Completes event keywords, operators and 
@@ -64,8 +65,7 @@ public class ExpressionRuleContext extends KeyAdapter {
     fieldModel.addElement("EXCEPTION");
     fieldModel.addElement("TIMESTAMP");
     fieldModel.addElement("THREAD");
-    fieldModel.addElement("MDC");
-    fieldModel.addElement("PROP");
+    fieldModel.addElement("PROP.");
 
     operatorModel.addElement("&&");
     operatorModel.addElement("||");
@@ -91,7 +91,8 @@ public class ExpressionRuleContext extends KeyAdapter {
         public void keyPressed(KeyEvent e) {
           if (e.getKeyCode() == KeyEvent.VK_ENTER) {
             String value = list.getSelectedValue().toString();
-            if (getContextKey() != null) {
+            String contextKey = getContextKey();
+            if (contextKey != null && (!(contextKey.endsWith(".")))) {
               value = "'"+value+"'";
             }
                 
@@ -106,7 +107,8 @@ public class ExpressionRuleContext extends KeyAdapter {
         public void mouseClicked(MouseEvent e) {
           if (e.getClickCount() == 2) {
             String value = list.getSelectedValue().toString();
-            if (getContextKey() != null) {
+            String contextKey = getContextKey();
+            if (contextKey != null && (!(contextKey.endsWith(".")))) {
               value = "'"+value+"'";
             }
             
@@ -121,7 +123,9 @@ public class ExpressionRuleContext extends KeyAdapter {
 
   private void updateField(String value) {
     if (textField.getSelectedText() == null) {
-      value = value + " ";
+        if (!(value.endsWith("."))) {
+            value = value + " ";
+        }
     }
 
     textField.replaceSelection(value);
@@ -139,7 +143,11 @@ public class ExpressionRuleContext extends KeyAdapter {
     String lastField = getContextKey();
 
     if (lastField != null) {
-      list.setModel(filterModel.getContainer().getModel(lastField));
+      ListModel model = filterModel.getContainer().getModel(lastField);
+      if (model == null) {
+        return;
+      }
+      list.setModel(model);
       list.setSelectedIndex(0);
 
       Point p = textField.getCaret().getMagicCaretPosition();
@@ -212,10 +220,6 @@ public class ExpressionRuleContext extends KeyAdapter {
       text.substring(lastFieldStartPosition, lastFieldPosition).toUpperCase()
           .trim();
 
-    if (field.startsWith("MDC.")) {
-      return true;
-    }
-
     if (resolver.isField(field)) {
       return true;
     }
@@ -265,13 +269,13 @@ public class ExpressionRuleContext extends KeyAdapter {
   }
 
   //subfields allow the key portion of a field to provide context menu support
-  //and are available after the fieldname and a . (for example, MDC.)
+  //and are available after the fieldname and a . (for example, PROP.)
   private String getSubField() {
     int currentPosition = textField.getSelectionStart();
     String text = textField.getText();
 
-    if (text.substring(0, currentPosition).toUpperCase().endsWith("MDC.")) {
-      return "MDC";
+    if (text.substring(0, currentPosition).toUpperCase().endsWith("PROP.")) {
+      return "PROP.";
     }
     return null;
   }
