@@ -51,23 +51,15 @@
  */
 package org.apache.log4j.chainsaw;
 
-import java.awt.Container;
-import java.awt.Dimension;
-
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.StringTokenizer;
 
-import javax.swing.JFrame;
-import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
-
-import org.apache.log4j.helpers.LogLog;
-
 
 /**
  *
