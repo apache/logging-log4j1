@@ -223,7 +223,7 @@ public class PropertySetter {
         return Boolean.FALSE;
       }
     } else if (Priority.class.isAssignableFrom(type)) {
-      return OptionConverter.toPriority(v, null);
+      return OptionConverter.toPriority(v, Priority.DEBUG);
     }
     return null;
   }

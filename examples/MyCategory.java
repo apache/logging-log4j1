@@ -64,7 +64,8 @@ public class MyCategory extends Category {
     }
     try {
       MyCategory c = (MyCategory) MyCategory.getInstance("some.cat");    
-      c.debug("Hello");
+      c.trace("Hello");
+      c.debug("World.");
     } catch(ClassCastException e) {
       LogLog.error("Did you forget to set the factory in the config file?", e);
     }

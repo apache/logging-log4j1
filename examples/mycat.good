@@ -14,9 +14,11 @@ log4j.appender.A1.layout=org.apache.log4j.PatternLayout
 log4j.appender.A1.layout.ConversionPattern=[%t] %c - %m%n
 
 
-# Set the priority of "some.cat". This will actually have the side
-# effect of instanciating a MyCategory object having the name
-# "some.cat".
+# Set the priority of "some.cat" to TRACE (defined in
+# org.apache.log4j.xml.examples.XPriority). Since we specified
+# MyCategoryFactory as the category factory, the following line willl
+# also have the side effect of instanciating a MyCategory object
+# having the name "some.cat".
 
-log4j.category.some.cat=DEBUG
+log4j.category.some.cat=TRACE#org.apache.log4j.xml.examples.XPriority
 
