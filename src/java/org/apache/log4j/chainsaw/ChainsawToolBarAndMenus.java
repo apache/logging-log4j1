@@ -55,14 +55,6 @@
  */
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.chainsaw.help.*;
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SettingsListener;
-import org.apache.log4j.chainsaw.prefs.SettingsManager;
-import org.apache.log4j.helpers.LogLog;
-
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -71,7 +63,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -92,7 +83,6 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSlider;
@@ -107,6 +97,13 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.SettingsListener;
+import org.apache.log4j.chainsaw.prefs.SettingsManager;
+import org.apache.log4j.helpers.LogLog;
 
 
 /**
@@ -137,7 +134,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
   private final JCheckBoxMenuItem toggleDetailMenuItem =
     new JCheckBoxMenuItem();
   private final JCheckBoxMenuItem toggleCyclicMenuItem =
-    new JCheckBoxMenuItem();  
+    new JCheckBoxMenuItem();
   private final FileMenu fileMenu;
   private final JCheckBoxMenuItem toggleStatusBarCheck =
     new JCheckBoxMenuItem();
@@ -158,8 +155,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
   private final SmallToggleButton detailPaneButton = new SmallToggleButton();
   private final SmallToggleButton logTreePaneButton = new SmallToggleButton();
   private final SmallToggleButton pauseButton = new SmallToggleButton();
-  private final     SmallToggleButton toggleCyclicButton = new SmallToggleButton();
-
+  private final SmallToggleButton toggleCyclicButton = new SmallToggleButton();
   private String lastFind = "";
   private String levelDisplay = ChainsawConstants.LEVEL_DISPLAY_ICONS;
   private final Action[] logPanelSpecificActions;
@@ -244,16 +240,19 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
    * @return
    */
   private Action createChangeModelAction() {
-    Action action = new AbstractAction("Use Cyclic", new ImageIcon(ChainsawIcons.REFRESH)){
+    Action action =
+      new AbstractAction("Use Cyclic", new ImageIcon(ChainsawIcons.REFRESH)) {
+        public void actionPerformed(ActionEvent arg0) {
+          LogPanel logPanel = logui.getCurrentLogPanel();
+          logPanel.toggleCyclic();
+          scanState();
+        }
+      };
 
-      public void actionPerformed(ActionEvent arg0) {
-        LogPanel logPanel = logui.getCurrentLogPanel();
-        logPanel.toggleCyclic();      
-        scanState();
-      }
-    };
-    action.putValue(Action.SHORT_DESCRIPTION, "Changes between Cyclic and Unlimited mode.");
-    return action;    
+    action.putValue(
+      Action.SHORT_DESCRIPTION, "Changes between Cyclic and Unlimited mode.");
+
+    return action;
   }
 
   /**
@@ -487,11 +486,11 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
 
     toggleDetailMenuItem.setAction(toggleDetailPaneAction);
     toggleDetailMenuItem.setSelected(true);
-    
+
     toggleCyclicMenuItem.setAction(changeModelAction);
-    
+
     toggleCyclicMenuItem.setSelected(true);
-    
+
     JCheckBoxMenuItem toggleLogTreeMenuItem =
       new JCheckBoxMenuItem(toggleLogTreeAction);
     toggleLogTreeMenuItem.setSelected(true);
@@ -512,7 +511,6 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     toggleStatusBarCheck.setAction(toggleStatusBarAction);
     toggleStatusBarCheck.setSelected(true);
 
-    
     activeTabMenu.add(pause);
     activeTabMenu.add(toggleCyclicMenuItem);
     activeTabMenu.addSeparator();
@@ -608,35 +606,33 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
               });
           }
         });
-        
- 
+
       lookAndFeelGroup.add(lfItemMenu);
       lookAndFeelMenu.add(lfItemMenu);
       lookAndFeelMenus.add(lfItemMenu);
     }
-    
-	try {
-	   final Class gtkLF = Class.forName("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
-	   final JRadioButtonMenuItem lfIGTK =
-		 new JRadioButtonMenuItem("GTK+ 2.0");
-		lfIGTK.addActionListener(
-		 new ActionListener() {
-		   public void actionPerformed(ActionEvent e) {
-			 SwingUtilities.invokeLater(
-			   new Runnable() {
-				 public void run() {
-				   logui.setLookAndFeel(gtkLF.getName());
-				 }
-			   });
-		   }
-		 });
-		lookAndFeelGroup.add(lfIGTK);
-		lookAndFeelMenu.add(lfIGTK);
-		lookAndFeelMenus.add(lfIGTK);
 
-   } catch (Exception e) {
-	   LogLog.debug("Can't find new GTK L&F, might be Windows, or <JDK1.4.2");
-   }
+    try {
+      final Class gtkLF =
+        Class.forName("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
+      final JRadioButtonMenuItem lfIGTK = new JRadioButtonMenuItem("GTK+ 2.0");
+      lfIGTK.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            SwingUtilities.invokeLater(
+              new Runnable() {
+                public void run() {
+                  logui.setLookAndFeel(gtkLF.getName());
+                }
+              });
+          }
+        });
+      lookAndFeelGroup.add(lfIGTK);
+      lookAndFeelMenu.add(lfIGTK);
+      lookAndFeelMenus.add(lfIGTK);
+    } catch (Exception e) {
+      LogLog.debug("Can't find new GTK L&F, might be Windows, or <JDK1.4.2");
+    }
 
     levelIconMenu.add(levelDisplayIcon);
     levelIconMenu.add(levelDisplayText);
@@ -669,18 +665,19 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
         }
       });
 
-    
-    Action startTutorial = new AbstractAction("Start tutorial...", new ImageIcon(ChainsawIcons.HELP)){
+    Action startTutorial =
+      new AbstractAction("Tutorial...", new ImageIcon(ChainsawIcons.HELP)) {
+        public void actionPerformed(ActionEvent e) {
+          logui.setupTutorial();
+        }
+      };
 
-		public void actionPerformed(ActionEvent e) {
-				new Thread(new Tutorial()).start();	
-		}};
-		
-	startTutorial.putValue(Action.SHORT_DESCRIPTION, "Starts some pretend Receivers that generate random events for use during the Tutorial");
-	helpMenu.add(startTutorial);
-	helpMenu.addSeparator();
+    startTutorial.putValue(
+      Action.SHORT_DESCRIPTION, "Starts the tutorial process");
+    helpMenu.add(startTutorial);
+    helpMenu.addSeparator();
     helpMenu.add(about);
-    
+
     menuBar.add(fileMenu);
     menuBar.add(viewMenu);
     menuBar.add(activeTabMenu);
@@ -801,7 +798,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
       Action.SHORT_DESCRIPTION,
       "Shows the currently configured Log4j Receivers");
     action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("F6"));
-
+    action.putValue(Action.SMALL_ICON, new ImageIcon(ChainsawIcons.ANIM_NET_CONNECT));
     toggleShowReceiversCheck.setAction(action);
 
     return action;
@@ -906,7 +903,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
 
     toggleCyclicButton.setAction(changeModelAction);
     toggleCyclicButton.setText(null);
-    
+
     detailPaneButton.setAction(toggleDetailPaneAction);
     detailPaneButton.setText(null);
     detailPaneButton.getActionMap().put(
@@ -958,6 +955,7 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
 
     toolbar.addSeparator();
 
+    showReceiversButton.setText(null);
     toolbar.add(showReceiversButton);
 
     toolbar.add(Box.createHorizontalGlue());
