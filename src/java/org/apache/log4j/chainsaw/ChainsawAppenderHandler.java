@@ -57,6 +57,9 @@ import org.apache.log4j.plugins.PluginRegistry;
 import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -85,6 +88,9 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
   private final Object mutex = new Object();
   private int sleepInterval = 1000;
   private EventListenerList listenerList = new EventListenerList();
+  private double dataRate = 0.0;
+  private PropertyChangeSupport propertySupport =
+    new PropertyChangeSupport(this);
 
   public ChainsawAppenderHandler(ChainsawAppender appender) {
     this.appender = appender;
@@ -133,7 +139,7 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
    * Converts a LoggingEvent into a Vector of element (columns really).
    * @param event
    * @return
-   * 
+   *
    * @deprecated
    */
   public static Vector convert(LoggingEvent event) {
@@ -234,7 +240,7 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
    * @param v
    * @return
    */
-    private static String getTabIdentifier(LoggingEvent e) {
+  private static String getTabIdentifier(LoggingEvent e) {
     StringBuffer ident = new StringBuffer();
     String machinename = e.getProperty(ChainsawConstants.LOG4J_MACHINE_KEY);
 
@@ -243,7 +249,7 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
     }
 
     String appname = e.getProperty(ChainsawConstants.LOG4J_APP_KEY);
-    
+
     if (appname != null) {
       ident.append("-");
       ident.append(appname);
@@ -253,16 +259,19 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
       /**
            * Maybe there's a Remote Host entry?
            */
-      String remoteHost = e.getProperty(ChainsawConstants.LOG4J_REMOTEHOST_KEY);
-      if(remoteHost!=null) {
-            int colonIndex = remoteHost.indexOf(":");
-    
-            if (colonIndex == -1) {
-              colonIndex = remoteHost.length();
-            }
-    
-            remoteHost = remoteHost.substring(0, colonIndex);
-      }    
+      String remoteHost =
+        e.getProperty(ChainsawConstants.LOG4J_REMOTEHOST_KEY);
+
+      if (remoteHost != null) {
+        int colonIndex = remoteHost.indexOf(":");
+
+        if (colonIndex == -1) {
+          colonIndex = remoteHost.length();
+        }
+
+        remoteHost = remoteHost.substring(0, colonIndex);
+      }
+
       if (remoteHost != null) {
         ident.append(remoteHost);
       }
@@ -273,6 +282,91 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
     }
 
     return ident.toString();
+  }
+
+  /**
+   * A little test bed
+   * @param args
+   */
+  public static void main(String[] args) throws InterruptedException {
+    ChainsawAppenderHandler handler = new ChainsawAppenderHandler();
+    handler.addEventBatchListener(
+      new EventBatchListener() {
+        public String getInterestedIdentifier() {
+          return null;
+        }
+
+        public void receiveEventBatch(
+          String identifier, List eventBatchEntrys) {
+          LogLog.debug(
+            "received batch for '" + identifier + "', list.size()="
+            + eventBatchEntrys.size());
+          LogLog.debug(eventBatchEntrys.toString());
+        }
+      });
+    LogManager.getRootLogger().addAppender(handler);
+
+    SocketReceiver receiver = new SocketReceiver(4445);
+    PluginRegistry.startPlugin(receiver);
+
+    Thread.sleep(60000);
+  }
+
+  /**
+   * Exposes the current Data rate calculated.  This is periodically updated
+   * by an internal Thread as is the number of events that have
+   * been processed, and dispatched to all listeners since the last sample period
+   * divided by the number of seconds since the last sample period.
+   *
+   * This method fires a PropertyChange event so listeners can monitor the rate
+   * @return double # of events processed per second
+   */
+  public double getDataRate() {
+    return dataRate;
+  }
+
+  /**
+   * @param dataRate
+   */
+  private void setDataRate(double dataRate) {
+    double oldValue = this.dataRate;
+    this.dataRate = dataRate;
+    propertySupport.firePropertyChange(
+      "dataRate", new Double(oldValue), new Double(this.dataRate));
+  }
+
+  /**
+   * @param listener
+   */
+  public synchronized void addPropertyChangeListener(
+    PropertyChangeListener listener) {
+    propertySupport.addPropertyChangeListener(listener);
+  }
+
+  /**
+   * @param propertyName
+   * @param listener
+   */
+  public synchronized void addPropertyChangeListener(
+    String propertyName, PropertyChangeListener listener) {
+    propertySupport.addPropertyChangeListener(propertyName, listener);
+  }
+
+  /**
+   * @param listener
+   */
+  public synchronized void removePropertyChangeListener(
+    PropertyChangeListener listener) {
+    propertySupport.removePropertyChangeListener(listener);
+  }
+
+  /**
+   * @param propertyName
+   * @param listener
+   */
+  public synchronized void removePropertyChangeListener(
+    String propertyName, PropertyChangeListener listener) {
+    propertySupport.removePropertyChangeListener(propertyName, listener);
   }
 
   /**
@@ -314,6 +408,8 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
         List innerList = new ArrayList();
 
         while (isAlive()) {
+          long timeStart = System.currentTimeMillis();
+
           synchronized (mutex) {
             if (stopped) {
               return;
@@ -324,6 +420,8 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
               }
             }
           }
+
+          int size = innerList.size();
 
           if (innerList.size() > 0) {
             Iterator iter = innerList.iterator();
@@ -348,10 +446,20 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
             innerList.clear();
           }
 
+
+
           try {
             Thread.sleep(getQueueInterval());
           } catch (InterruptedException ie) {
           }
+		  if (size == 0) {
+			setDataRate(0.0);
+		  } else {
+			long timeEnd = System.currentTimeMillis();
+			long diffInSeconds = (timeEnd - timeStart)/1000;
+			double rate = (((double) size) / diffInSeconds);
+			setDataRate(rate);
+		  }
         }
       }
 
@@ -389,30 +497,4 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
       }
     }
   }
-  
-  /**
-   * A little test bed 
-   * @param args
-   */
-  public static void main(String[] args) throws InterruptedException {
-	
-      ChainsawAppenderHandler handler = new ChainsawAppenderHandler();
-      handler.addEventBatchListener(new EventBatchListener() {
-
-		public String getInterestedIdentifier() {
-			return null;
-		}
-
-		public void receiveEventBatch(String identifier, List eventBatchEntrys) {
-            LogLog.debug("received batch for '" + identifier + "', list.size()=" + eventBatchEntrys.size());
-            LogLog.debug(eventBatchEntrys.toString());
-			
-		}});
-      LogManager.getRootLogger().addAppender(handler);
-      
-      SocketReceiver receiver = new SocketReceiver(4445);
-      PluginRegistry.startPlugin(receiver);
-      
-      Thread.sleep(60000);
-}
 }

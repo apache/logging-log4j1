@@ -56,6 +56,7 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.text.NumberFormat;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
@@ -78,7 +79,7 @@ class ChainsawStatusBar extends JPanel {
   private final JLabel statusMsg = new JLabel(DEFAULT_MSG);
   private final JLabel pausedLabel = new JLabel("", JLabel.CENTER);
   private final JLabel lineSelectionLabel = new JLabel("", JLabel.CENTER);
-  private final JLabel receivedEventLabel = new JLabel("", JLabel.CENTER);
+  private final JLabel receivedEventLabel = new JLabel("0.0", JLabel.CENTER);
   private final JLabel receivedConnectionlabel = new JLabel("", JLabel.CENTER);
   private volatile long lastReceivedEvent = System.currentTimeMillis();
   private volatile long lastReceivedConnection = System.currentTimeMillis();
@@ -86,8 +87,10 @@ class ChainsawStatusBar extends JPanel {
   private final Thread connectionThread;
   private final Icon radioTowerIcon =
     new ImageIcon(ChainsawIcons.ANIM_RADIO_TOWER);
-  private final Icon netConnectIcon = new ImageIcon(ChainsawIcons.ANIM_NET_CONNECT);
-  
+  private final Icon netConnectIcon =
+    new ImageIcon(ChainsawIcons.ANIM_NET_CONNECT);
+    
+    private final NumberFormat nf = NumberFormat.getNumberInstance();
 
   //  private final Border statusBarComponentBorder =
   //    BorderFactory.createEmptyBorder();
@@ -99,6 +102,9 @@ class ChainsawStatusBar extends JPanel {
   ChainsawStatusBar() {
     setLayout(new GridBagLayout());
 
+	nf.setMaximumFractionDigits(1);
+	nf.setMinimumFractionDigits(1);
+	nf.setGroupingUsed(false);
     JPanel statusMsgPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 2, 2));
 
     statusMsgPanel.add(statusMsg);
@@ -115,11 +121,13 @@ class ChainsawStatusBar extends JPanel {
 
     receivedEventLabel.setBorder(statusBarComponentBorder);
     receivedEventLabel.setToolTipText(
-      "Indicates whether Chainsaw is receiving events");
+      "Indicates whether Chainsaw is receiving events, and how fast it is processing them");
     receivedEventLabel.setPreferredSize(
       new Dimension(
-        radioTowerIcon.getIconWidth() + 4,
+        radioTowerIcon.getIconWidth() + receivedEventLabel.getFontMetrics(receivedEventLabel.getFont()).stringWidth(
+	"9999.9") + 10,
         (int) receivedEventLabel.getPreferredSize().getHeight()));
+    receivedEventLabel.setMinimumSize(receivedEventLabel.getPreferredSize());
 
     receivedConnectionlabel.setBorder(statusBarComponentBorder);
     receivedConnectionlabel.setToolTipText(
@@ -128,7 +136,6 @@ class ChainsawStatusBar extends JPanel {
       new Dimension(
         netConnectIcon.getIconWidth() + 4,
         (int) receivedConnectionlabel.getPreferredSize().getHeight()));
-
 
     lineSelectionLabel.setBorder(statusBarComponentBorder);
     lineSelectionLabel.setPreferredSize(
@@ -204,7 +211,7 @@ class ChainsawStatusBar extends JPanel {
           }
         });
     receiveThread.start();
-    
+
     connectionThread =
       new Thread(
         new Runnable() {
@@ -248,6 +255,14 @@ class ChainsawStatusBar extends JPanel {
     receiveThread.interrupt();
   }
 
+  void setDataRate(final double dataRate) {
+  	SwingUtilities.invokeLater(new Runnable(){
+
+		public void run() {
+    		receivedEventLabel.setText(nf.format(dataRate) + "/s");
+		}});
+  }
+
   /**
    * Indicates a new connection has been established between
    * Chainsaw and some remote host
@@ -257,7 +272,7 @@ class ChainsawStatusBar extends JPanel {
     lastReceivedConnection = System.currentTimeMillis();
     setMessage("Connection received from " + source);
     connectionThread.interrupt();
-    
+
     //    TODO and maybe play a sound?
   }
 
@@ -309,7 +324,7 @@ class ChainsawStatusBar extends JPanel {
     SwingUtilities.invokeLater(
       new Runnable() {
         public void run() {
-          statusMsg.setText(" " +msg);
+          statusMsg.setText(" " + msg);
         }
       });
   }
