@@ -26,6 +26,7 @@ import java.util.Vector;
   * logged in the new secondary appender.
   *
   * @author Ceki G&uuml;c&uuml;
+  * @author Milind Rao
   * */
 public class FallbackErrorHandler implements ErrorHandler {
 
@@ -103,6 +104,14 @@ public class FallbackErrorHandler implements ErrorHandler {
     //}
   }
   
+  /**
+	 Return the backup appender.
+   */
+  public
+  final Appender getBackupAppender() {
+	return backup;
+  }
+
   /**
      The appender to which this error handler is attached.
    */
