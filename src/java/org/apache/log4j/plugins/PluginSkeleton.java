@@ -47,11 +47,7 @@ public abstract class PluginSkeleton implements Plugin {
     explicity set, returns the value of 
     LogManager.getLoggerRepository(). */
   public LoggerRepository getLoggerRepository() {
-    if (repository != null) {
-      return repository;
-    } else {
-      return LogManager.getLoggerRepository();
-    }
+    return repository;
   }
 
   /**
