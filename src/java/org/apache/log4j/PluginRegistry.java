@@ -10,6 +10,7 @@ package org.apache.log4j;
 import java.util.Hashtable;
 import java.util.Enumeration;
 import org.apache.log4j.spi.LoggerRepository;
+import org.apache.log4j.spi.LoggerRepositoryEventListener;
 
 /**
   This is a registry for Plugin instances. It provides methods to 
@@ -21,6 +22,7 @@ import org.apache.log4j.spi.LoggerRepository;
 */
 public class PluginRegistry {
   private static Hashtable repositoryMap = new Hashtable();
+  private static RepositoryListener listener = new RepositoryListener();
   
   /**
     Starts a Plugin with default logger repository. */
@@ -45,6 +47,7 @@ public class PluginRegistry {
       if (pluginMap == null) {
         pluginMap = new Hashtable();
         repositoryMap.put(repository, pluginMap);
+        repository.addLoggerRepositoryEventListener(listener);
       }
       
       // existing plugin exists with the
@@ -120,8 +123,10 @@ public class PluginRegistry {
       
       // if no more plugins, remove the plugin map from
       // repository map
-      if (pluginMap.isEmpty())
+      if (pluginMap.isEmpty()) {
+        repository.removeLoggerRepositoryEventListener(listener);
         repositoryMap.remove(repository);
+      }
       
       // return it for future use
       return plugin;
@@ -136,12 +141,15 @@ public class PluginRegistry {
   
   /**
     Stops all plugins in the given logger repository. */
-  public static void stopAllPlugins(LoggerRepository repository) {
+  public static void stopAllPlugins(LoggerRepository repository) {    
     synchronized(repositoryMap) {
       Hashtable pluginMap = (Hashtable)repositoryMap.get(repository);
       if (pluginMap == null)
         return;
         
+      // remove the listener for this repository
+      repository.removeLoggerRepositoryEventListener(listener);
+
       Enumeration enum = pluginMap.elements();
       while(enum.hasMoreElements()) {
         Plugin plugin = (Plugin)enum.nextElement();
@@ -151,6 +159,29 @@ public class PluginRegistry {
       // since no more plugins, remove plugin map from
       // the repository
       repositoryMap.remove(repository);
+    }
+  }
+  
+  /**
+    Internal class used to handle listener events from repositories. */
+  private static class RepositoryListener
+  implements LoggerRepositoryEventListener {
+    /**
+      Stops all plugins associated with the repository being reset. */
+    public void configurationResetEvent(LoggerRepository repository) {
+      PluginRegistry.stopAllPlugins(repository);
+    }
+  
+    /**
+      Called when the repository configuration is changed. */
+    public void configurationChangedEvent(LoggerRepository repository) {
+      // do nothing with this event
+    }
+  
+    /**
+      Stops all plugins associated with the repository being shutdown. */
+    public void shutdownEvent(LoggerRepository repository) {
+      PluginRegistry.stopAllPlugins(repository);
     }
   }
 }
