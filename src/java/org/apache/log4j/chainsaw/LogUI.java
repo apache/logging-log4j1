@@ -1330,12 +1330,14 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
         thisPanel.addEventCountListener(new TabIconHandler(ident));
 
-        thisPanel.addPropertyChangeListener(
-          new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent evt) {
-              tbms.stateChange();
-            }
-          });
+        PropertyChangeListener toolbarMenuUpdateListener = new PropertyChangeListener() {
+          public void propertyChange(PropertyChangeEvent evt) {
+            tbms.stateChange();
+          }
+        };
+        thisPanel.addPropertyChangeListener(toolbarMenuUpdateListener);
+        thisPanel.getPreferenceModel().addPropertyChangeListener(toolbarMenuUpdateListener);
+        
         thisPanel.addPropertyChangeListener(
           "docked",
           new PropertyChangeListener() {

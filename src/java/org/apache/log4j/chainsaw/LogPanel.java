@@ -180,7 +180,6 @@ public class LogPanel extends DockablePanel implements SettingsListener,
   private ThrowableRenderPanel throwableRenderPanel;
   private MouseFocusOnAdaptor mouseFocusOnAdaptor = new MouseFocusOnAdaptor();
   private boolean paused = false;
-  private boolean logTreePanelVisible = true;
   private final FilterModel filterModel = new FilterModel();
   private final RuleMediator ruleMediator = new RuleMediator();
   private final FocusOnMenu focusOnMenu = new FocusOnMenu();
@@ -213,10 +212,7 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     new LogPanelLoggerTreeModel();
   private Layout detailPaneLayout = new EventDetailLayout();
   private Layout toolTipLayout = detailPaneLayout;
-
-  //used for consistency - stays empty - used to allow none set in the colordisplay selector and right click
-  Set noneSet = new HashSet();
-  Point currentPoint;
+  private Point currentPoint;
   private final JSplitPane nameTreeAndMainPanelSplit;
   private final LoggerNameTreePanel logTreePanel;
   private boolean tooltipsEnabled;
@@ -255,6 +251,30 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     ((EventDetailLayout) toolTipLayout).setConversionPattern(
       DefaultLayoutFactory.getDefaultPatternLayout());
 
+    preferenceModel.addPropertyChangeListener(
+      "detailPaneVisible",
+      new PropertyChangeListener() {
+        public void propertyChange(PropertyChangeEvent evt) {
+          boolean newValue = ((Boolean) evt.getNewValue()).booleanValue();
+
+          if (newValue) {
+            lowerPanel.setDividerLocation(150);
+          }
+
+          detailPanel.setVisible(newValue);
+          lowerPanel.setOneTouchExpandable(newValue);
+        }
+      });
+
+    preferenceModel.addPropertyChangeListener(
+      "logTreePanelVisible",
+      new PropertyChangeListener() {
+        public void propertyChange(PropertyChangeEvent evt) {
+          boolean newValue = ((Boolean) evt.getNewValue()).booleanValue();
+
+          logTreePanel.setVisible(newValue);
+        }
+      });
     tableModel = new ChainsawCyclicBufferTableModel();
 
     table = new JSortTable(tableModel);
@@ -283,33 +303,47 @@ public class LogPanel extends DockablePanel implements SettingsListener,
         }
       });
 
+    preferenceModel.addPropertyChangeListener(
+      "visibleColumns",
+      new PropertyChangeListener() {
+        public void propertyChange(PropertyChangeEvent evt) {
+          TableColumnModel columnModel = table.getColumnModel();
 
-	preferenceModel.addPropertyChangeListener("visibleColumns", new PropertyChangeListener(){
+          for (int i = 0; i < columnModel.getColumnCount(); i++) {
+            TableColumn column = columnModel.getColumn(i);
 
-		public void propertyChange(PropertyChangeEvent evt) {
-			TableColumnModel columnModel = table.getColumnModel();
-			for (int i = 0; i < columnModel.getColumnCount(); i++) {
-				TableColumn column = columnModel.getColumn(i);
-				if(!preferenceModel.isColumnVisible(column.getHeaderValue().toString())){
-					columnModel.removeColumn(column);
-				}
-			}
-			Set columnSet = new HashSet();
-			Enumeration enumeration = columnModel.getColumns();
-			while (enumeration.hasMoreElements()) {
-				TableColumn column = (TableColumn) enumeration.nextElement();
-				columnSet.add(column.getHeaderValue());
-			}			
-			for (Iterator iter = ChainsawColumns.getColumnsNames().iterator(); iter.hasNext();) {
-				String column = (String) iter.next();
-				if(preferenceModel.isColumnVisible(column) && !columnSet.contains(column)){
-					TableColumn newCol = new TableColumn(ChainsawColumns.getColumnsNames().indexOf(column));
-					newCol.setHeaderValue(column);
-					columnModel.addColumn(newCol);
-				}
-			}
-			
-		}});
+            if (
+              !preferenceModel.isColumnVisible(
+                  column.getHeaderValue().toString())) {
+              columnModel.removeColumn(column);
+            }
+          }
+
+          Set columnSet = new HashSet();
+          Enumeration enumeration = columnModel.getColumns();
+
+          while (enumeration.hasMoreElements()) {
+            TableColumn column = (TableColumn) enumeration.nextElement();
+            columnSet.add(column.getHeaderValue());
+          }
+
+          for (
+            Iterator iter = ChainsawColumns.getColumnsNames().iterator();
+              iter.hasNext();) {
+            String column = (String) iter.next();
+
+            if (
+              preferenceModel.isColumnVisible(column)
+                && !columnSet.contains(column)) {
+              TableColumn newCol =
+                new TableColumn(
+                  ChainsawColumns.getColumnsNames().indexOf(column));
+              newCol.setHeaderValue(column);
+              columnModel.addColumn(newCol);
+            }
+          }
+        }
+      });
 
     /**
              * We listen for new Key's coming in so we can get them automatically added as columns
@@ -916,7 +950,7 @@ public class LogPanel extends DockablePanel implements SettingsListener,
         public void componentHidden(ComponentEvent e) {
           nameTreeAndMainPanelSplit.setEnabled(false);
           nameTreeAndMainPanelSplit.setOneTouchExpandable(false);
-          setLogTreePanelVisible(false);
+          getPreferenceModel().setLogTreePanelVisible(false);
         }
 
         public void componentMoved(ComponentEvent e) {
@@ -929,7 +963,7 @@ public class LogPanel extends DockablePanel implements SettingsListener,
           nameTreeAndMainPanelSplit.setEnabled(true);
           nameTreeAndMainPanelSplit.setOneTouchExpandable(true);
           nameTreeAndMainPanelSplit.setDividerLocation(-1);
-          setLogTreePanelVisible(true);
+          getPreferenceModel().setLogTreePanelVisible(true);
         }
       });
 
@@ -1080,15 +1114,14 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     //          colorFilter.clear();
     //        }
     //      });
-//    JMenuItem menuItemColumnSelector =
-//      new JMenuItem("Select display columns...");
-//    menuItemColumnSelector.addActionListener(
-//      new ActionListener() {
-//        public void actionPerformed(ActionEvent evt) {
-//          columnSelector.show();
-//        }
-//      });
-
+    //    JMenuItem menuItemColumnSelector =
+    //      new JMenuItem("Select display columns...");
+    //    menuItemColumnSelector.addActionListener(
+    //      new ActionListener() {
+    //        public void actionPerformed(ActionEvent evt) {
+    //          columnSelector.show();
+    //        }
+    //      });
     JMenuItem menuItemRemoveDisplayFilter =
       new JMenuItem("Remove all display filters");
     menuItemRemoveDisplayFilter.addActionListener(
@@ -1161,22 +1194,18 @@ public class LogPanel extends DockablePanel implements SettingsListener,
 
     //	p.add(new JSeparator());
     //    p.add(menuDefineCustomFilter);
-	p.add(new JSeparator());
+    p.add(new JSeparator());
     p.add(menuItemLogPanelPreferences);
 
     //    p.add(menuColumnDisplayFilter);
     //    p.add(menuColumnColorFilter);
-//    p.add(new JSeparator());
-
+    //    p.add(new JSeparator());
     //    JMenu removeSubMenu = new JMenu("Remove");
-//    JMenu selectSubMenu = new JMenu("Select");
-
-//    selectSubMenu.add(menuItemColumnSelector);
-
+    //    JMenu selectSubMenu = new JMenu("Select");
+    //    selectSubMenu.add(menuItemColumnSelector);
     //    removeSubMenu.add(menuItemRemoveColorFilter);
     //    removeSubMenu.add(menuItemRemoveDisplayFilter);
-//    p.add(menuItemColumnSelector);
-
+    //    p.add(menuItemColumnSelector);
     //    p.add(selectSubMenu);
     //    p.add(removeSubMenu);
     final PopupListener popupListener = new PopupListener(p);
@@ -1598,7 +1627,7 @@ public class LogPanel extends DockablePanel implements SettingsListener,
    * @return
    */
   boolean isDetailPaneVisible() {
-    return detailPanel.isVisible();
+    return getPreferenceModel().isDetailPaneVisible();
   }
 
   /**
@@ -1607,27 +1636,12 @@ public class LogPanel extends DockablePanel implements SettingsListener,
    *
    */
   void toggleDetailPanel() {
-    setDetailPaneVisible(!isDetailPaneVisible());
-  }
-
-  void setDetailPaneVisible(boolean visible) {
-    boolean oldValue = isDetailPaneVisible();
-    detailPanel.setVisible(visible);
-
-    if (visible) {
-      lowerPanel.setDividerLocation(150);
-    }
-
-    lowerPanel.setOneTouchExpandable(visible);
-    firePropertyChange("detailPanelVisible", oldValue, isDetailPaneVisible());
+    getPreferenceModel().setDetailPaneVisible(!isDetailPaneVisible());
   }
 
   void toggleLogTreePanel() {
-    LogLog.debug(
-      "Toggling logPanel, currently isVisible=" + logTreePanel.isVisible());
-    logTreePanel.setVisible(!logTreePanel.isVisible());
-    LogLog.debug(
-      "Toggling logPanel, now isVisible=" + logTreePanel.isVisible());
+    getPreferenceModel().setLogTreePanelVisible(
+      !getPreferenceModel().isLogTreePanelVisible());
   }
 
   public void saveSettings() {
@@ -1828,11 +1842,8 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     }
   }
 
-  /**
-   * @return
-   */
   public boolean isLogTreePanelVisible() {
-    return logTreePanel.isVisible();
+    return getPreferenceModel().isLogTreePanelVisible();
   }
 
   /* (non-Javadoc)
@@ -1946,20 +1957,6 @@ public class LogPanel extends DockablePanel implements SettingsListener,
   }
 
   /**
-   * @param logTreePanelVisible
-   */
-  public void setLogTreePanelVisible(boolean logTreePanelVisible) {
-    boolean oldValue = this.logTreePanelVisible;
-    this.logTreePanelVisible = logTreePanelVisible;
-    firePropertyChange(
-      "logTreePanelVisible", oldValue, this.logTreePanelVisible);
-  }
-
-  public boolean getLogTreePanelVisible() {
-    return this.logTreePanelVisible;
-  }
-
-  /**
    *
    */
   public void toggleCyclic() {
@@ -1995,6 +1992,14 @@ public class LogPanel extends DockablePanel implements SettingsListener,
           });
       }
     }
+  }
+
+  /**
+   * Returns this LogPanels Preerence model currently in Use
+   * @return
+   */
+  public final LogPanelPreferenceModel getPreferenceModel() {
+    return preferenceModel;
   }
 
   private abstract class RefinementFocusRule extends AbstractRule {

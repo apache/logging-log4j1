@@ -96,6 +96,10 @@ public class LogPanelPreferenceModel {
   private String dateFormatPattern = ISO8601;
   private boolean levelIcons = true;
   private Set visibleColumns = new HashSet(ChainsawColumns.getColumnsNames());
+  private boolean detailPaneVisible = true;
+  private boolean toolTips = false;
+  private boolean scrollToBottom = true;
+  private boolean logTreePanelVisible = true;
 
   /**
    * Returns the Date Pattern string for the alternate date formatter.
@@ -158,32 +162,34 @@ public class LogPanelPreferenceModel {
   public void apply(LogPanelPreferenceModel that) {
     setDateFormatPattern(that.getDateFormatPattern());
     setLevelIcons(that.isLevelIcons());
-    
+
     /**
      * First, iterate and ADD new columns, (this means notifications of adds go out first
      * add to the end
      */
     for (Iterator iter = that.visibleColumns.iterator(); iter.hasNext();) {
-		String column = (String) iter.next();
-		if(!this.visibleColumns.contains(column)){
-			setColumnVisible(column, true);
-		}
-	}
-	/**
-	 * Now go through and apply removals
-	 */
-	/**
-	 * this copy is needed to stop ConcurrentModificationException
-	 */
-	Set thisSet = new HashSet(this.visibleColumns);
-	for (Iterator iter = thisSet.iterator(); iter.hasNext();) {
-		String column = (String) iter.next();
-		if(!that.visibleColumns.contains(column)){
-			setColumnVisible(column, false);
-		}
-	}
-	
+      String column = (String) iter.next();
 
+      if (!this.visibleColumns.contains(column)) {
+        setColumnVisible(column, true);
+      }
+    }
+
+    /**
+     * Now go through and apply removals
+     */
+    /**
+     * this copy is needed to stop ConcurrentModificationException
+     */
+    Set thisSet = new HashSet(this.visibleColumns);
+
+    for (Iterator iter = thisSet.iterator(); iter.hasNext();) {
+      String column = (String) iter.next();
+
+      if (!that.visibleColumns.contains(column)) {
+        setColumnVisible(column, false);
+      }
+    }
   }
 
   /**
@@ -242,5 +248,72 @@ public class LogPanelPreferenceModel {
    */
   public void toggleColumn(String column) {
     setColumnVisible(column, !isColumnVisible(column));
+  }
+
+  /**
+   * @return
+   */
+  public final boolean isDetailPaneVisible() {
+    return detailPaneVisible;
+  }
+
+  /**
+   * @param detailPaneVisible
+   */
+  public final void setDetailPaneVisible(boolean detailPaneVisible) {
+    boolean oldValue = this.detailPaneVisible;
+    this.detailPaneVisible = detailPaneVisible;
+    propertySupport.firePropertyChange(
+      "detailPaneVisible", oldValue, this.detailPaneVisible);
+  }
+
+  /**
+   * @return
+   */
+  public final boolean isScrollToBottom() {
+    return scrollToBottom;
+  }
+
+  /**
+   * @param scrollToBottom
+   */
+  public final void setScrollToBottom(boolean scrollToBottom) {
+    boolean oldValue = this.scrollToBottom;
+    this.scrollToBottom = scrollToBottom;
+    propertySupport.firePropertyChange(
+      "scrollToBottom", oldValue, this.scrollToBottom);
+  }
+
+  /**
+   * @return
+   */
+  public final boolean isToolTips() {
+    return toolTips;
+  }
+
+  /**
+   * @param toolTips
+   */
+  public final void setToolTips(boolean toolTips) {
+    boolean oldValue = this.toolTips;
+    this.toolTips = toolTips;
+    propertySupport.firePropertyChange("toolTips", oldValue, this.toolTips);
+  }
+
+  /**
+   * @return
+   */
+  public final boolean isLogTreePanelVisible() {
+    return logTreePanelVisible;
+  }
+
+  /**
+   * @param logTreePanelVisible
+   */
+  public final void setLogTreePanelVisible(boolean logTreePanelVisible) {
+    boolean oldValue = this.logTreePanelVisible;
+    this.logTreePanelVisible = logTreePanelVisible;
+    propertySupport.firePropertyChange(
+      "logTreePanelVisible", oldValue, this.logTreePanelVisible);
   }
 }
