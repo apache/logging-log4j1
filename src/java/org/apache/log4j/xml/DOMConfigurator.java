@@ -68,7 +68,7 @@ import javax.xml.parsers.FactoryConfigurationError;
    @author Christopher Taylor
    @author Ceki G&uuml;lc&uuml;
    @author Anders Kristensen
-
+   @deprecated Replaced by the much more flexible {@link org.apache.log4j.joran.JoranConfigrator}.
    @since 0.8.3 */
 public class DOMConfigurator implements Configurator {
   static Logger logger =
