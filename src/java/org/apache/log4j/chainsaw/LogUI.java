@@ -1268,18 +1268,23 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
    *
    */
   public void setupTutorial() {
+    SwingUtilities.invokeLater(new Runnable(){
+
+      public void run() {
     Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
     setLocation(0, getLocation().y);
 
     double chainsawwidth = 0.7;
     double tutorialwidth = 1 - chainsawwidth;
     setSize((int) (screen.width * chainsawwidth), getSize().height);
-
+    invalidate();
+    validate();    
     Dimension size = getSize();
     Point loc = getLocation();
     tutorialFrame.setSize((int) (screen.width * tutorialwidth), size.height);
     tutorialFrame.setLocation(loc.x + size.width, loc.y);
     tutorialFrame.setVisible(true);
+      }});
   }
 
   /**
