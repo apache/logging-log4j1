@@ -24,6 +24,7 @@ import java.io.StringReader;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 
@@ -34,7 +35,6 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.UtilLoggingLevel;
 import org.apache.log4j.spi.Decoder;
 import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
@@ -350,27 +350,24 @@ public class XMLDecoder implements Decoder {
 
         /**
          * We add all the additional properties to the properties
-         * hashtable
+         * hashtable.  Don't override properties that already exist
          */
         if (additionalProperties.size() > 0) {
           if (properties == null) {
             properties = new Hashtable(additionalProperties);
           } else {
-            properties.putAll(additionalProperties);
+            Iterator i = additionalProperties.entrySet().iterator();
+            while (i.hasNext()) {
+              Map.Entry e = (Map.Entry) i.next();
+              if (!(properties.containsKey(e.getKey()))) {
+              	properties.put(e.getKey(), e.getValue());
+              }
+            }
           }
         }
       }
-      Level levelImpl = null;
-      if ((properties != null)  && (properties.get("log4j.eventtype") != null)) {
-      	String s = (String)properties.get("log4j.eventtype");
-		if ("util-logging".equalsIgnoreCase(s)) {
-			levelImpl=UtilLoggingLevel.toLevel(level);
-		}
-      }
+      Level levelImpl = Level.toLevel(level);
       
-      if (levelImpl==null) {
-      	levelImpl=Level.toLevel(level);
-      }
       LocationInfo info = null;
       if ((fileName != null) || (className != null) || (methodName != null) || (lineNumber != null)) {
           info = new LocationInfo(fileName, className, methodName, lineNumber);
