@@ -19,6 +19,8 @@
  - Implemented Bugzilla 16883: Default ConsoleAppender constructor
    enhanced with output sink and layout.
 
+ - Fixed Bugzilla 12112: CountingQuietWriter miscounts bytes.
+
 
   November 25, 2004
 
