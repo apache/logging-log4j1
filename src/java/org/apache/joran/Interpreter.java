@@ -18,10 +18,14 @@ package org.apache.joran;
 
 import org.apache.joran.action.*;
 
+
 import org.apache.log4j.Logger;
 
 import org.xml.sax.Attributes;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.util.ArrayList;
@@ -30,28 +34,58 @@ import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
 
+
 // TODO Errors should be reported in Error objects instead of just strings.
 // TODO Interpreter should set its own ErrorHander for XML parsing errors.
-
+/**
+ * <id>Interpreter</id> is Joran's main driving class. It acts as a SAX 
+ * {@link ContentHandler} which invokes various 
+ * {@link Action actions} according to predefined patterns. 
+ * 
+ * <p>Patterns are kept in a {@link RuleStore} which is programmed to store and
+ * then later produce the applicable actions for a given pattern.
+ * 
+ * <p>The pattern corresponding to a top level &lt;a&gt; element is the string 
+ * <id>"a"</id>.
+ * 
+ * <p>The pattern corresponding to an element &lt;b&gt; embeded within a top level 
+ * &lt;a&gt; element is the string <id>"a/b"</id>.
+ * 
+ * <p>The pattern corresponding to an &lt;b&gt; and any level of nesting is
+ * "&star;/b. Thus, the &star; character placed at the beginning of a pattern
+ * serves as a wildcard for the level of nesting.  
+ * 
+ * Conceptually, this is very similar to the API of commons-digester. Joran 
+ * offers several small advantages. First and foremost, it offers support for
+ * implicit actions which result in a significant leap in flexibility. Second,
+ * in our opinion better error reporting capability. Third, it is self-reliant.
+ * It does not depend on other APIs, in particular commons-logging which is
+ * a big no-no for log4j. Last but not least, joran is quite tiny and is 
+ * expected to remain so.  
+ *   
+ * @author Ceki G&uuml;lcu&uuml;
+ *
+ */
 public class Interpreter extends DefaultHandler {
   static final Logger logger = Logger.getLogger(Interpreter.class);
   private static List EMPTY_LIST = new Vector(0);
-  
   private RuleStore ruleStore;
   private ExecutionContext ec;
   private ArrayList implicitActions;
   Pattern pattern;
   Locator locator;
+  ErrorHandler saxExceptionHandler;
+  
   /**
-   * The <code>actionListStack</code> contains a list of actions that are 
+   * The <id>actionListStack</id> contains a list of actions that are
    * executing for the given XML element.
-   * 
+   *
    * A list of actions is pushed by the {link #startElement} and popped by
-   * {@link #endElement}. 
-   * 
+   * {@link #endElement}.
+   *
    */
   Stack actionListStack;
-  
+
   Interpreter(RuleStore rs) {
     ruleStore = rs;
     ec = new ExecutionContext(this);
@@ -71,11 +105,11 @@ public class Interpreter extends DefaultHandler {
   public void startElement(
     String namespaceURI, String localName, String qName, Attributes atts) {
     String x = null;
- 
+
     String tagName = getTagName(localName, qName);
 
     logger.debug("in startElement <" + tagName + ">");
-      
+
     pattern.push(tagName);
 
     List applicableActionList = getapplicableActionList(pattern);
@@ -85,7 +119,7 @@ public class Interpreter extends DefaultHandler {
       callBeginAction(applicableActionList, tagName, atts);
     } else {
       actionListStack.add(EMPTY_LIST);
-      logger.debug("no applicable action for <"+tagName+">.");
+      logger.debug("no applicable action for <" + tagName + ">.");
     }
   }
 
@@ -100,14 +134,14 @@ public class Interpreter extends DefaultHandler {
     pattern.pop();
   }
 
-
-  public Locator getDocumentLocator() {
+  public Locator getLocator() {
     return locator;
   }
+
   public void setDocumentLocator(Locator l) {
     locator = l;
   }
-  
+
   String getTagName(String localName, String qName) {
     String tagName = localName;
 
@@ -192,5 +226,45 @@ public class Interpreter extends DefaultHandler {
 
   public void setRuleStore(RuleStore ruleStore) {
     this.ruleStore = ruleStore;
+  }
+
+  public void endDocument() {
+  }
+
+  public void error(SAXParseException spe) throws SAXException {
+    if(saxExceptionHandler != null) {
+      saxExceptionHandler.error(spe);  
+    }
+  }
+  
+  public void fatalError(SAXParseException spe)  throws SAXException {
+    if(saxExceptionHandler != null) {
+      saxExceptionHandler.fatalError(spe);  
+    }
+  }
+  
+  public void warning(SAXParseException spe) throws SAXException {
+    if(saxExceptionHandler != null) {
+      saxExceptionHandler.warning(spe);  
+    }
+  } 
+
+
+
+  public void endPrefixMapping(java.lang.String prefix) {
+  }
+
+  public void ignorableWhitespace(char[] ch, int start, int length) {
+  }
+
+  public void processingInstruction(
+    java.lang.String target, java.lang.String data) {
+  }
+
+  public void skippedEntity(java.lang.String name) {
+  }
+
+  public void startPrefixMapping(
+    java.lang.String prefix, java.lang.String uri) {
   }
 }

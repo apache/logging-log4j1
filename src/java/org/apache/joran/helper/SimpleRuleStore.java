@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-package org.apache.joran;
+package org.apache.joran.helper;
 
+import org.apache.joran.*;
+import org.apache.joran.RuleStore;
 import org.apache.joran.action.*;
 
 import org.apache.log4j.Logger;

@@ -1,5 +1,6 @@
 package org.apache.joran.action;
 
+import org.apache.joran.ErrorItem;
 import org.apache.joran.ExecutionContext;
 
 import org.apache.log4j.Logger;
@@ -21,14 +22,14 @@ public class ParamAction extends Action {
     if(name==null) {
 			inError = true;
 			logger.error(NO_NAME);
-			ec.addError(NO_NAME);	
+			ec.addError(new ErrorItem(NO_NAME, ec.getLocator()));	
     	return;
     }
 
 		if(value==null) {
 			inError = true;
 			logger.error(NO_VALUE);
-			ec.addError(NO_VALUE);	
+			ec.addError(new ErrorItem(NO_VALUE, ec.getLocator()));	
 			return;
 		}
     

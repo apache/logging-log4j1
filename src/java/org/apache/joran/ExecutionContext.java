@@ -24,6 +24,7 @@ import java.util.Vector;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.OptionConverter;
+import org.xml.sax.Locator;
 
 
 /**
@@ -49,14 +50,17 @@ public class ExecutionContext {
 		errorList = new Vector();
 	}
 	
-	public void addError(String error) {
-		errorList.add(error);
+	public void addError(ErrorItem errorItem) {
+		errorList.add(errorItem);
 	}
 
   public List getErrorList() {
     return errorList;
   }
 
+  public Locator getLocator() {
+    return joranParser.getLocator();
+  }
   public Interpreter getJoranParser() {
     return joranParser;
   }
