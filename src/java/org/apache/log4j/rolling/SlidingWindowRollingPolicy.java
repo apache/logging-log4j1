@@ -49,92 +49,53 @@
 
 package org.apache.log4j.rolling;
 
-import org.apache.log4j.FileAppender;
-import org.apache.log4j.helpers.CountingQuietWriter;
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.helpers.OptionConverter;
-import org.apache.log4j.spi.LoggingEvent;
-
 import java.io.File;
-import java.io.IOException;
-import java.io.Writer;
+
+import org.apache.log4j.Logger;
 
 
 /**
- * RollingFileAppender extends FileAppender to backup the log files
- * depending on rotation policy.
  *
- * @author Heinz Richter
  * @author Ceki G&uuml;lc&uuml;
- * @since  1.3
+ * @since 1.3
  * */
-public class RollingFileAppender extends FileAppender {
-  File file;
-  TriggeringPolicy triggeringPolicy;
-  RollingPolicy rollingPolicy;
+public class SlidingWindowRollingPolicy implements RollingPolicy {
+ 
+  static Logger logger = Logger.getLogger(SlidingWindowRollingPolicy.class); 
+  int maxIndex;
 
-  /**
-   * The default constructor simply calls its {@link
-   * FileAppender#FileAppender parents constructor}.
-   * */
-  public RollingFileAppender() {
-    super();
-  }
-
-  /**
-     Implements the usual roll over behaviour.
-
-     <p>If <code>MaxBackupIndex</code> is positive, then files
-     {<code>File.1</code>, ..., <code>File.MaxBackupIndex -1</code>}
-     are renamed to {<code>File.2</code>, ...,
-     <code>File.MaxBackupIndex</code>}. Moreover, <code>File</code> is
-     renamed <code>File.1</code> and closed. A new <code>File</code> is
-     created to receive further log output.
-
-     <p>If <code>MaxBackupIndex</code> is equal to zero, then the
-     <code>File</code> is truncated with no backup files created.
-
-   */
-  public void rollover() {
-    // Note: synchronization not necessary since doAppend is already synched
+  public void rollover(File file) {
+    // If maxIndex <= 0, then there is no file renaming to be done.
   
-      rollingPolicy.rollover(file);
+    if (maxIndex > 0) {
+        String filename = file.getName();
+      // Delete the oldest file, to keep Windows happy.
+      file = new File(filename + '.' + maxIndex);
 
-      file = rollingPolicy.getLogFile(fileName);
+      if (file.exists()) {
+        file.delete();
+      }
 
-    try {
-      // This will also close the file. This is OK since multiple
-      // close operations are safe.
-      this.setFile(fileName, false, bufferedIO, bufferSize);
-    } catch (IOException e) {
-      LogLog.error("setFile(" + fileName + ", false) call failed.", e);
+      // Map {(maxBackupIndex - 1), ..., 2, 1} to {maxBackupIndex, ..., 3, 2}
+      /* for (int i = maxIndex - 1; i >= 1; i--) {
+         file = new File(filename + "." + i);
+
+        if (file.exists()) {
+          target = new File(filename + '.' + (i + 1));
+          logger.debug("Renaming file " + file + " to " + target);
+          file.renameTo(target);
+        }
+      }
+
+      // Rename fileName to fileName.1
+      target = new File(fileName + "." + 1);
+
+      this.closeFile(); // keep windows happy.
+      */
     }
   }
 
-  public synchronized void setFile(
-    String fileName, boolean append, boolean bufferedIO, int bufferSize)
-    throws IOException {
-    super.setFile(fileName, append, this.bufferedIO, this.bufferSize);
-    file = new File(fileName);
-  }
-
-  /**
-     This method differentiates RollingFileAppender from its super
-     class.
-  */
-  protected void subAppend(LoggingEvent event) {
-    super.subAppend(event);
-
-    boolean trigger;
-
-    if (triggeringPolicy.isSizeSensitive()) {
-      trigger = triggeringPolicy.isTriggeringEvent(file.length());
-    } else {
-      trigger = triggeringPolicy.isTriggeringEvent();
-    }
-
-    if (trigger) {
-      rollover();
-    }
+  public File getLogFile(String old) {
+    return new File(old);
   }
 }
