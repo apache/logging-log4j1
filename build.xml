@@ -401,7 +401,6 @@ later. For JDK 1.2, you can get the JNDI API from
                 ${stem}/helpers/*.class,
                 ${stem}/spi/**/*.class,
                 ${stem}/net/*.class,
-                ${stem}/jdbc/*.class,
 				${stem}/db/**/*.class,
 		        ${stem}/html/**/*.class,
                 ${stem}/varia/*.class,
