@@ -28,7 +28,9 @@ public class ComponentBase implements Component {
   public void setLoggerRepository(LoggerRepository repository) {
     if(this.repository == null) {
       this.repository = repository;
-    } else {
+    } else if(this.repository == repository) {
+      // Nothing to do. Someone is trying to set the repository once again.
+    } else { 
       throw new IllegalStateException("Repository has been already set");
     }
   }
@@ -38,7 +40,7 @@ public class ComponentBase implements Component {
    * This logger is not intended to be accessed by the end-user, hence the 
    * protected keyword.
    * 
-   * <p>In case the repository for this components is not set,
+   * <p>In case the repository for this component is not set,
    * this implementations returns a {@link SimpleLogger} instance.
    * 
    * @return A ULogger instance.
