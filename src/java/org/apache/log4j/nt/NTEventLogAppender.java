@@ -103,6 +103,7 @@ public class NTEventLogAppender extends AppenderSkeleton {
 	int len = s.length;
 	for(int i = 0; i < len; i++) {
 	  sbuf.append(s[i]);
+      sbuf.append(Layout.LINE_SEP);
 	}
       }
     }
