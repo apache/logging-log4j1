@@ -129,8 +129,10 @@ public class SocketHubAppender extends AppenderSkeleton {
 
   /**
      Set up the socket server on the specified port.  */
-  public void activateOptions() {
+  public void activate() {
     startServer();
+    
+    super.activate();
   }
 
   /**
