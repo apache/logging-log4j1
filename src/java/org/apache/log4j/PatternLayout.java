@@ -504,7 +504,7 @@ public class PatternLayout extends Layout {
     PatternParser patternParser = new PatternParser(conversionPattern);
     patternParser.setConverterRegistry(ruleRegistry);
     head = patternParser.parse();
-    handlesExceptions = PatternConverter.chainHandlesTrowable(head);
+    handlesExceptions = PatternConverter.chainHandlesThrowable(head);
   }
 
   /**

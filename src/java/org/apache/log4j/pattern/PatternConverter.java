@@ -152,13 +152,31 @@ public abstract class PatternConverter {
    * Normally pattern converters are now meant to handle Exceptions although
    * few pattern converters might. 
    * 
-   * By examining the return values for this methd, the containing layouy will
-   * determine whether it ignores throwables or not.
+   * By examining the return values for this methd, the containing layout will
+   * determine whether it handles throwables or not.
 
-   * @return false if this object handles throwables
+   * @return true if this PatternConverter handles throwables
    */
-  public boolean ignoresThrowable() {
-    return true;
+  public boolean handlesThrowable() {
+    return false;
+  }
+  
+  /**
+   * This method computes whether a chain of converters handles exceptions
+   * or not.
+   * 
+   * @param head The first element of the chain
+   * @return
+   */
+  public static boolean chainHandlesThrowable(PatternConverter head) {
+    PatternConverter c = head;
+    while (c != null) {
+      if (c.handlesThrowable()) {
+        return true;
+      }
+      c = c.next;
+    }
+    return false;
   }
    
 }
