@@ -53,11 +53,11 @@ public abstract class Receiver extends PluginSkeleton {
     // get the "local" logger for this event from the
     // configured repository.
   	Logger localLogger = 
-      getLoggerRepository().getLogger(event.categoryName);
+      getLoggerRepository().getLogger(event.getLoggerName());
   	
   	// if the logger level is greater or equal to the level
   	// of the event, use the logger to append the event.
-  	if(event.level.isGreaterOrEqual(localLogger.getEffectiveLevel())) {
+  	if(event.getLevel().isGreaterOrEqual(localLogger.getEffectiveLevel())) {
       // set the logger for the event 
       // event.logger = localLogger;
       

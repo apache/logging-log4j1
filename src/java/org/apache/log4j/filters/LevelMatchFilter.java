@@ -53,11 +53,10 @@ public class LevelMatchFilter extends MatchFilterBase {
   protected boolean canMatch() {
     return (levelToMatch != null);
   }
-  
   /**
     Returns true if the levelToMatch matches the level of the
     logging event. */
   protected boolean match(LoggingEvent event) {
-    return (levelToMatch.equals(event.level));
+    return (levelToMatch.equals(event.getLevel()));
   }
 }
