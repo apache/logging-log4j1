@@ -1,6 +1,9 @@
 # The jaxp interface and a jaxp parser are required to build the
 # JoranConfigurator. However, these are already available since Ant
-# needs them too.
+# needs them too.  Note also that these are required to run Chainsaw.
+# They are commented out by default but may be commented in for
+# customizations, e.g. when running Chainsaw from Ant version 1.4
+# or earlier.
  
 # jaxp.home=/java/jaxp-1.1 
 # jaxp.jaxp.jar=${jaxp.home}/jaxp.jar

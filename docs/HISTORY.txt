@@ -39,6 +39,8 @@
  - Changed converter register accessors in PatternParser to take/return Map instead
    of HashMap, a cleaner abstraction allowing for different implementation types. [*]
 
+ - Fixed Bugzilla 26658: modify build.xml chainsaw target with respect to crimson.jar [*]
+
   November 25, 2004
 
  - Release of version 1.3alpha-3
