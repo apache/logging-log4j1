@@ -96,7 +96,7 @@ public class RollingFileAppender extends FileAppender {
   
       rollingPolicy.rollover(file);
 
-      file = rollingPolicy.getLogFile(fileName);
+      file = rollingPolicy.getActiveLogFile(fileName);
 
     try {
       // This will also close the file. This is OK since multiple

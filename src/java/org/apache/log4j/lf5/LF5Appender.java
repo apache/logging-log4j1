@@ -8,7 +8,6 @@
 
 package org.apache.log4j.lf5;
 
-import org.apache.log4j.lf5.util.Resource;
 import org.apache.log4j.lf5.viewer.LogBrokerMonitor;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.spi.LocationInfo;
