@@ -45,4 +45,6 @@ public abstract class ImplicitAction extends Action {
    */
   public abstract boolean isApplicable(
     Pattern currentPattern, Attributes attributes, ExecutionContext ec);
+  
+  
 }

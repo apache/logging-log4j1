@@ -24,7 +24,6 @@ import org.apache.joran.helper.Option;
 import org.apache.log4j.Logger;
 import org.apache.log4j.config.PropertySetter;
 import org.apache.log4j.helpers.Loader;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.OptionHandler;
 
 import org.xml.sax.Attributes;
@@ -51,7 +50,6 @@ public class NestComponentIA extends ImplicitAction {
   public boolean isApplicable(
     Pattern pattern, Attributes attributes, ExecutionContext ec) {
     //LogLog.debug("in NestComponentIA.isApplicable <" + pattern + ">");
-
     String nestedElementTagName = pattern.peekLast();
 
     Object o = ec.peekObject();
@@ -66,17 +64,14 @@ public class NestComponentIA extends ImplicitAction {
     // we only push action data if NestComponentIA is applicable
     case PropertySetter.AS_COLLECTION:
     case PropertySetter.AS_PROPERTY:
-
       ActionData ad = new ActionData(parentBean, containmentType);
       actionDataStack.push(ad);
 
       return true;
-
     default:
       ec.addError(
         new ErrorItem(
           "PropertySetter.canContainComponent returned " + containmentType));
-
       return false;
     }
   }
@@ -84,7 +79,6 @@ public class NestComponentIA extends ImplicitAction {
   public void begin(
     ExecutionContext ec, String localName, Attributes attributes) {
     //LogLog.debug("in NestComponentIA begin method");
-
     // get the action data object pushed in isApplicable() method call
     ActionData actionData = (ActionData) actionDataStack.peek();
 
@@ -104,20 +98,20 @@ public class NestComponentIA extends ImplicitAction {
     }
 
     try {
-      LogLog.debug(
-        "About to instantiate component <" + localName + "> of type ["
-        + className + "]");
+      getLogger().debug(
+        "About to instantiate component <{}> of type [{}]", localName,
+        className);
 
       actionData.nestedComponent = Loader.loadClass(className).newInstance();
 
-      LogLog.debug(
-        "Pushing component <" + localName + "> on top of the object stack.");
+      getLogger().debug(
+        "Pushing component <{}> on top of the object stack.", localName);
       ec.pushObject(actionData.nestedComponent);
     } catch (Exception oops) {
       actionData.inError = true;
 
       String msg = "Could not create component <" + localName + ">.";
-      LogLog.error(msg, oops);
+      getLogger().error(msg, oops);
       ec.addError(new ErrorItem(msg));
     }
   }
@@ -149,18 +143,17 @@ public class NestComponentIA extends ImplicitAction {
       // Now let us attach the component
       switch (actionData.containmentType) {
       case PropertySetter.AS_PROPERTY:
-        LogLog.debug(
-          "Setting [" + tagName + "] to parent of type ["
-          + actionData.parentBean.getObjClass() + "]");
+        getLogger().debug(
+          "Setting [{}] to parent of type [{}]", tagName,
+          actionData.parentBean.getObjClass());
         actionData.parentBean.setComponent(
           tagName, actionData.nestedComponent);
 
         break;
-
       case PropertySetter.AS_COLLECTION:
-        LogLog.debug(
-          "Adding [" + tagName + "] to parent of type ["
-          + actionData.parentBean.getObjClass() + "]");
+        getLogger().debug(
+          "Adding [{}] to parent of type [{}]", tagName,
+          actionData.parentBean.getObjClass());
         actionData.parentBean.addComponent(
           tagName, actionData.nestedComponent);
 

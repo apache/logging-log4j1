@@ -17,8 +17,6 @@
 package org.apache.joran;
 
 import org.apache.joran.action.*;
-//import org.apache.log4j.Logger;
-//mport org.apache.log4j.helpers.LogLog;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.EntityResolver;
@@ -66,7 +64,6 @@ import java.util.Vector;
  *
  */
 public class Interpreter extends DefaultHandler {
-  //static final Logger logger = Logger.getLogger(Interpreter.class);
   private static List EMPTY_LIST = new Vector(0);
   private RuleStore ruleStore;
   private ExecutionContext ec;
