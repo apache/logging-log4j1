@@ -222,8 +222,6 @@ public class PropertyConfigurator extends BasicConfigurator
     log4j.loggerFactory=fully.qualified.name.of.loggerFactory.class
     </pre>
 
-    See {@link org.apache.log4j.examples.MyLogger} for an example.
-    
     <h3>Example</h3>
 
     <p>An example configuration is given below. Other configuration

@@ -109,6 +109,7 @@ public class LogManager {
   static private RepositorySelector repositorySelector;
 
   static {
+    // By default we use a DefaultRepositorySelector which always returns 'h'.
     Hierarchy h = new Hierarchy(new RootCategory(Level.DEBUG));
     repositorySelector = new DefaultRepositorySelector(h);
 
@@ -159,14 +160,14 @@ public class LogManager {
      IllegalArgumentException}, unless the previously set
      <code>guard</code> is passed as the second parameter.
 
-     <p>This allows a high-level component to set the logger factory to
-     be used. Thus, fixing the log4j environment.
+     <p>This allows a high-level component to set the {@link
+     RepositorySelector} used by the <code>LogManager</code>.
      
      <p>For example, when tomcat starts it will be able to install its
-     own logger factory. However, if and when Tomcat is embedded
-     within JBoss, then JBoss will install its loggger factory and
-     Tomcat will use the factory set by its container, JBoss.
-  */
+     own repository selector. However, if and when Tomcat is embedded
+     within JBoss, then JBoss will install its own repository selector
+     and Tomcat will use the repository selector set by its container,
+     JBoss.  */
   static
   public
   void setRepositorySelector(RepositorySelector selector, Object guard) 
@@ -182,7 +183,6 @@ public class LogManager {
 
     LogManager.guard = guard;
     LogManager.repositorySelector = selector;
-
   }
 
   static
