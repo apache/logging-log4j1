@@ -98,11 +98,11 @@ public class AsyncAppender extends AppenderSkeleton
   public static final int DEFAULT_BUFFER_SIZE = 128;
 
   //static Category cat = Category.getInstance(AsyncAppender.class.getName());
-  BoundedFIFO bf = new BoundedFIFO(DEFAULT_BUFFER_SIZE);
+  private BoundedFIFO bf = new BoundedFIFO(DEFAULT_BUFFER_SIZE);
   AppenderAttachableImpl aai;
-  Dispatcher dispatcher;
-  boolean locationInfo = false;
-  boolean interruptedWarningMessage = false;
+  private Dispatcher dispatcher;
+  private boolean locationInfo = false;
+  private boolean interruptedWarningMessage = false;
 
   public AsyncAppender() {
     // Note: The dispatcher code assumes that the aai is set once and
@@ -284,9 +284,9 @@ public class AsyncAppender extends AppenderSkeleton
 // ------------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 class Dispatcher extends Thread {
-  BoundedFIFO bf;
-  AppenderAttachableImpl aai;
-  boolean interrupted = false;
+  private BoundedFIFO bf;
+  private AppenderAttachableImpl aai;
+  private boolean interrupted = false;
   AsyncAppender container;
 
   Dispatcher(BoundedFIFO bf, AsyncAppender container) {

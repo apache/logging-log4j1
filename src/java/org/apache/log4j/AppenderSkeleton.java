@@ -124,7 +124,8 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
    */
   public void addFilter(Filter newFilter) {
     if (headFilter == null) {
-      headFilter = tailFilter = newFilter;
+      headFilter = newFilter;
+      tailFilter = newFilter;
     } else {
       tailFilter.next = newFilter;
       tailFilter = newFilter;
@@ -146,7 +147,8 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
    * @since 0.9.0
    */
   public void clearFilters() {
-    headFilter = tailFilter = null;
+    headFilter = null;
+    tailFilter = null;
   }
 
   /**

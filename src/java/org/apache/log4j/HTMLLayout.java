@@ -1,15 +1,58 @@
 /*
- * Copyright (C) The Apache Software Foundation. All rights reserved.
+ * ============================================================================
+ *                   The Apache Software License, Version 1.1
+ * ============================================================================
  *
- * This software is published under the terms of the Apache Software
- * License version 1.1, a copy of which has been included with this
- * distribution in the LICENSE.txt file.  */
+ *    Copyright (C) 1999 The Apache Software Foundation. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modifica-
+ * tion, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of  source code must  retain the above copyright  notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * 3. The end-user documentation included with the redistribution, if any, must
+ *    include  the following  acknowledgment:  "This product includes  software
+ *    developed  by the  Apache Software Foundation  (http://www.apache.org/)."
+ *    Alternately, this  acknowledgment may  appear in the software itself,  if
+ *    and wherever such third-party acknowledgments normally appear.
+ *
+ * 4. The names "log4j" and  "Apache Software Foundation"  must not be used to
+ *    endorse  or promote  products derived  from this  software without  prior
+ *    written permission. For written permission, please contact
+ *    apache@apache.org.
+ *
+ * 5. Products  derived from this software may not  be called "Apache", nor may
+ *    "Apache" appear  in their name,  without prior written permission  of the
+ *    Apache Software Foundation.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS  FOR A PARTICULAR  PURPOSE ARE  DISCLAIMED.  IN NO  EVENT SHALL  THE
+ * APACHE SOFTWARE  FOUNDATION  OR ITS CONTRIBUTORS  BE LIABLE FOR  ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL,  EXEMPLARY, OR CONSEQUENTIAL  DAMAGES (INCLU-
+ * DING, BUT NOT LIMITED TO, PROCUREMENT  OF SUBSTITUTE GOODS OR SERVICES; LOSS
+ * OF USE, DATA, OR  PROFITS; OR BUSINESS  INTERRUPTION)  HOWEVER CAUSED AND ON
+ * ANY  THEORY OF LIABILITY,  WHETHER  IN CONTRACT,  STRICT LIABILITY,  OR TORT
+ * (INCLUDING  NEGLIGENCE OR  OTHERWISE) ARISING IN  ANY WAY OUT OF THE  USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * This software  consists of voluntary contributions made  by many individuals
+ * on  behalf of the Apache Software  Foundation.  For more  information on the
+ * Apache Software Foundation, please see <http://www.apache.org/>.
+ *
+ */
 
 package org.apache.log4j;
 
-import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.helpers.Transform;
+import org.apache.log4j.spi.LocationInfo;
+import org.apache.log4j.spi.LoggingEvent;
+
 
 /**
    This layout outputs events in a HTML table.
@@ -17,14 +60,7 @@ import org.apache.log4j.helpers.Transform;
    @author Ceki G&uuml;lc&uuml;
  */
 public class HTMLLayout extends Layout {
-
-  protected final int BUF_SIZE = 256;
-  protected final int MAX_CAPACITY = 1024;
-
-  static String TRACE_PREFIX = "<br>&nbsp;&nbsp;&nbsp;&nbsp;";
-
-  // output buffer appended to when format() is invoked
-  private StringBuffer sbuf = new StringBuffer(BUF_SIZE);
+  static final String TRACE_PREFIX = "<br>&nbsp;&nbsp;&nbsp;&nbsp;";
 
   /**
      A string constant used in naming the option for setting the the
@@ -46,10 +82,14 @@ public class HTMLLayout extends Layout {
      constant is <b>Title</b>.
   */
   public static final String TITLE_OPTION = "Title";
+  protected static final int BUF_SIZE = 256;
+  protected static final int MAX_CAPACITY = 1024;
+
+  // output buffer appended to when format() is invoked
+  private StringBuffer sbuf = new StringBuffer(BUF_SIZE);
 
   // Print no location info by default
   boolean locationInfo = false;
-
   String title = "Log4J Log Messages";
 
   /**
@@ -63,16 +103,14 @@ public class HTMLLayout extends Layout {
      org.apache.log4j.net.SMTPAppender} then make sure to set the
      <b>LocationInfo</b> option of that appender as well.
    */
-  public
-  void setLocationInfo(boolean flag) {
+  public void setLocationInfo(boolean flag) {
     locationInfo = flag;
   }
 
   /**
      Returns the current value of the <b>LocationInfo</b> option.
    */
-  public
-  boolean getLocationInfo() {
+  public boolean getLocationInfo() {
     return locationInfo;
   }
 
@@ -82,38 +120,32 @@ public class HTMLLayout extends Layout {
 
     <p>Defaults to 'Log4J Log Messages'.
   */
-  public
-  void setTitle(String title) {
+  public void setTitle(String title) {
     this.title = title;
   }
 
   /**
      Returns the current value of the <b>Title</b> option.
   */
-  public
-  String getTitle() {
+  public String getTitle() {
     return title;
   }
 
- /**
-     Returns the content type output by this layout, i.e "text/html".
-  */
-  public
-  String getContentType() {
+  /**
+      Returns the content type output by this layout, i.e "text/html".
+   */
+  public String getContentType() {
     return "text/html";
   }
 
   /**
      No options to activate.
   */
-  public
-  void activateOptions() {
+  public void activateOptions() {
   }
 
-  public
-  String format(LoggingEvent event) {
-
-    if(sbuf.capacity() > MAX_CAPACITY) {
+  public String format(LoggingEvent event) {
+    if (sbuf.capacity() > MAX_CAPACITY) {
       sbuf = new StringBuffer(BUF_SIZE);
     } else {
       sbuf.setLength(0);
@@ -130,25 +162,26 @@ public class HTMLLayout extends Layout {
     sbuf.append("</td>" + Layout.LINE_SEP);
 
     sbuf.append("<td title=\"Level\">");
+
     if (event.getLevel().equals(Level.DEBUG)) {
       sbuf.append("<font color=\"#339933\">");
       sbuf.append(event.getLevel());
       sbuf.append("</font>");
-    }
-    else if(event.getLevel().isGreaterOrEqual(Level.WARN)) {
+    } else if (event.getLevel().isGreaterOrEqual(Level.WARN)) {
       sbuf.append("<font color=\"#993300\"><strong>");
       sbuf.append(event.getLevel());
       sbuf.append("</strong></font>");
     } else {
       sbuf.append(event.getLevel());
     }
+
     sbuf.append("</td>" + Layout.LINE_SEP);
 
     sbuf.append("<td title=\"" + event.getLoggerName() + " category\">");
     sbuf.append(Transform.escapeTags(event.getLoggerName()));
     sbuf.append("</td>" + Layout.LINE_SEP);
 
-    if(locationInfo) {
+    if (locationInfo) {
       LocationInfo locInfo = event.getLocationInformation();
       sbuf.append("<td>");
       sbuf.append(Transform.escapeTags(locInfo.getFileName()));
@@ -163,14 +196,17 @@ public class HTMLLayout extends Layout {
     sbuf.append("</tr>" + Layout.LINE_SEP);
 
     if (event.getNDC() != null) {
-      sbuf.append("<tr><td bgcolor=\"#EEEEEE\" style=\"font-size : xx-small;\" colspan=\"6\" title=\"Nested Diagnostic Context\">");
+      sbuf.append(
+        "<tr><td bgcolor=\"#EEEEEE\" style=\"font-size : xx-small;\" colspan=\"6\" title=\"Nested Diagnostic Context\">");
       sbuf.append("NDC: " + Transform.escapeTags(event.getNDC()));
       sbuf.append("</td></tr>" + Layout.LINE_SEP);
     }
 
     String[] s = event.getThrowableStrRep();
-    if(s != null) {
-      sbuf.append("<tr><td bgcolor=\"#993300\" style=\"color:White; font-size : xx-small;\" colspan=\"6\">");
+
+    if (s != null) {
+      sbuf.append(
+        "<tr><td bgcolor=\"#993300\" style=\"color:White; font-size : xx-small;\" colspan=\"6\">");
       appendThrowableAsHTML(s, sbuf);
       sbuf.append("</td></tr>" + Layout.LINE_SEP);
     }
@@ -179,16 +215,20 @@ public class HTMLLayout extends Layout {
   }
 
   void appendThrowableAsHTML(String[] s, StringBuffer sbuf) {
-    if(s != null) {
+    if (s != null) {
       int len = s.length;
-      if(len == 0)
-	return;
+
+      if (len == 0) {
+        return;
+      }
+
       sbuf.append(Transform.escapeTags(s[0]));
       sbuf.append(Layout.LINE_SEP);
-      for(int i = 1; i < len; i++) {
-	sbuf.append(TRACE_PREFIX);
-	sbuf.append(Transform.escapeTags(s[i]));
-	sbuf.append(Layout.LINE_SEP);
+
+      for (int i = 1; i < len; i++) {
+        sbuf.append(TRACE_PREFIX);
+        sbuf.append(Transform.escapeTags(s[i]));
+        sbuf.append(Layout.LINE_SEP);
       }
     }
   }
@@ -196,55 +236,68 @@ public class HTMLLayout extends Layout {
   /**
      Returns appropriate HTML headers.
   */
-  public
-  String getHeader() {
+  public String getHeader() {
     StringBuffer sbuf = new StringBuffer();
-    sbuf.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">"  + Layout.LINE_SEP);
+    sbuf.append(
+      "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">"
+      + Layout.LINE_SEP);
     sbuf.append("<html>" + Layout.LINE_SEP);
     sbuf.append("<head>" + Layout.LINE_SEP);
     sbuf.append("<title>" + title + "</title>" + Layout.LINE_SEP);
-    sbuf.append("<style type=\"text/css\">"  + Layout.LINE_SEP);
-    sbuf.append("<!--"  + Layout.LINE_SEP);
-    sbuf.append("body, table {font-family: arial,sans-serif; font-size: x-small;}" + Layout.LINE_SEP);
-    sbuf.append("th {background: #336699; color: #FFFFFF; text-align: left;}" + Layout.LINE_SEP);
+    sbuf.append("<style type=\"text/css\">" + Layout.LINE_SEP);
+    sbuf.append("<!--" + Layout.LINE_SEP);
+    sbuf.append(
+      "body, table {font-family: arial,sans-serif; font-size: x-small;}"
+      + Layout.LINE_SEP);
+    sbuf.append(
+      "th {background: #336699; color: #FFFFFF; text-align: left;}"
+      + Layout.LINE_SEP);
     sbuf.append("-->" + Layout.LINE_SEP);
     sbuf.append("</style>" + Layout.LINE_SEP);
     sbuf.append("</head>" + Layout.LINE_SEP);
-    sbuf.append("<body bgcolor=\"#FFFFFF\" topmargin=\"6\" leftmargin=\"6\">" + Layout.LINE_SEP);
+    sbuf.append(
+      "<body bgcolor=\"#FFFFFF\" topmargin=\"6\" leftmargin=\"6\">"
+      + Layout.LINE_SEP);
     sbuf.append("<hr size=\"1\" noshade>" + Layout.LINE_SEP);
-    sbuf.append("Log session start time " + new java.util.Date() + "<br>" + Layout.LINE_SEP);
+    sbuf.append(
+      "Log session start time " + new java.util.Date() + "<br>"
+      + Layout.LINE_SEP);
     sbuf.append("<br>" + Layout.LINE_SEP);
-    sbuf.append("<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" bordercolor=\"#224466\" width=\"100%\">" + Layout.LINE_SEP);
+    sbuf.append(
+      "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" bordercolor=\"#224466\" width=\"100%\">"
+      + Layout.LINE_SEP);
     sbuf.append("<tr>" + Layout.LINE_SEP);
     sbuf.append("<th>Time</th>" + Layout.LINE_SEP);
     sbuf.append("<th>Thread</th>" + Layout.LINE_SEP);
     sbuf.append("<th>Level</th>" + Layout.LINE_SEP);
     sbuf.append("<th>Category</th>" + Layout.LINE_SEP);
-    if(locationInfo) {
+
+    if (locationInfo) {
       sbuf.append("<th>File:Line</th>" + Layout.LINE_SEP);
     }
+
     sbuf.append("<th>Message</th>" + Layout.LINE_SEP);
     sbuf.append("</tr>" + Layout.LINE_SEP);
+
     return sbuf.toString();
   }
 
   /**
      Returns the appropriate HTML footers.
   */
-  public
-  String getFooter() {
+  public String getFooter() {
     StringBuffer sbuf = new StringBuffer();
     sbuf.append("</table>" + Layout.LINE_SEP);
     sbuf.append("<br>" + Layout.LINE_SEP);
     sbuf.append("</body></html>");
+
     return sbuf.toString();
   }
 
   /**
      The HTML layout handles the throwable contained in logging
      events. Hence, this method return <code>false</code>.  */
-  public
-  boolean ignoresThrowable() {
+  public boolean ignoresThrowable() {
     return false;
   }
 }
