@@ -1667,7 +1667,6 @@ public class LogPanel extends DockablePanel implements SettingsListener,
   }
 
   void loadColorSettings(String ident) {
-    System.out.println("loading colors for " + ident);
 	File f =
 	  new File(
 		SettingsManager.getInstance().getSettingsDirectory() + File.separator
