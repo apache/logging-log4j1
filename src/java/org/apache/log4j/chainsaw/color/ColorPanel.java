@@ -75,6 +75,8 @@ import org.apache.log4j.rule.Rule;
 /**
  * Panel which updates a RuleColorizer, allowing the user to build expression-based
  * color rules.
+ * 
+ * TODO: examine ColorPanel/RuleColorizer/LogPanel listeners and interactions
  *
  * @author Scott Deboy <sdeboy@apache.org>
  */
@@ -311,7 +313,6 @@ public class ColorPanel extends JPanel {
 
   void applyRules(String ruleSet) {
     table.getColumnModel().getColumn(0).getCellEditor().stopCellEditing();
-    colorizer.clear();
 
     List list = new ArrayList();
     Vector vector = tableModel.getDataVector();
@@ -356,7 +357,7 @@ public class ColorPanel extends JPanel {
     Map map = new HashMap();
     map.put(ruleSet, list);
 
-    colorizer.addRules(map);
+    colorizer.setRules(map);
   }
 
   JPanel buildClosePanel() {
