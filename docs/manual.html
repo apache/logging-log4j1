@@ -10,7 +10,7 @@
 
   <font size="+2">Ceki G&uuml;lc&uuml;</font>
   <br><br>
-  February 2002
+  March 2002
   <br>
 </center>
 
@@ -41,7 +41,7 @@ href="http://www.semper.org">SEMPER</a> project decided to write its
 own tracing API. This was in early 1996. After countless enhancements,
 several incarnations and much work that API has evolved to become
 log4j, a popular logging package for Java. The package is distributed
-under the <a href=../LICENSE.APL>Apache Software License</a>, a
+under the <a href=../LICENSE.txt>Apache Software License</a>, a
 fully-fledged open source license certified by the <a
 href="http://www.opensource.org">open source</a> initiative. The
 latest log4j version, including full-source code, class files and
@@ -80,11 +80,11 @@ book <i>"The Practice of Programming"</i>
   debugging sessions are transient.
 </pre>
 
-<p>Logging does have its drawbacks. It can slow down an application. If
-too verbose, it can cause scrolling blindness. To alleviate these
-concerns, log4j is designed to be fast and flexible. Since logging is
-rarely the main focus of an application, log4j API strives to be
-simple to understand and to use.
+<p>Logging does have its drawbacks. It can slow down an
+application. If too verbose, it can cause scrolling blindness. To
+alleviate these concerns, log4j is designed to be reliable, fast and
+extensible. Since logging is rarely the main focus of an application,
+log4j API strives to be simple to understand and to use.
 
 <h2>Loggers, Appenders and Layouts</h2>
 
@@ -101,14 +101,12 @@ messages are formatted and where they are reported.
 certain log statements while allowing others to print unhindered. This
 capability assumes that the logging space, that is, the space of all
 possible logging statements, is categorized according to some
-developer-chosen criteria. 
-
-
-This observation had previously led us to choose <em>category</em> as
-the central concept of the package. However, since log4j version 1.2,
-Logger class has replaced the Category class. For those familiar with
-earlier versions of log4j, the logger class can be considered as a
-mere alias to the category class.
+developer-chosen criteria. This observation had previously led us to
+choose <em>category</em> as the central concept of the
+package. However, since log4j version 1.2, <code>Logger</code> class
+has replaced the <code>Category</code> class. For those familiar with
+earlier versions of log4j, the <code>Logger</code> class can be
+considered as a mere alias to the <code>Category</code> class.
 
 <p> Loggers are named entities. Logger names are case-sensitive and
 they follow the hierarchical naming rule:
