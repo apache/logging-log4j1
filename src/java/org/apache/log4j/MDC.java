@@ -20,7 +20,7 @@ import org.apache.log4j.helpers.ThreadLocalMap;
    near-simultaneously.
 
    <p><b><em>The MDC is managed on a per thread basis</em></b>. A
-   child thread automatically inherits an <em>copy</em> of the mapped
+   child thread automatically inherits a <em>copy</em> of the mapped
    diagnostic context of its parent which is managed independently of
    the parent's context.
 
@@ -31,7 +31,8 @@ import org.apache.log4j.helpers.ThreadLocalMap;
 
    @author Ceki G&uuml;lc&uuml; */
 public class MDC {
-
+  
+  
   final static ThreadLocalMap context = new ThreadLocalMap();
   
   static final int HT_SIZE = 7;
