@@ -15,9 +15,8 @@ import org.apache.log4j.spi.OptionHandler;
   
   <p>A plugin implements some specific functionality to extend
   the log4j framework.  Each plugin is associated with a specific
-  LoggerRepository, which it then uses/acts upon. If no
-  repository is specified, the default repository from
-  LogManager.getLoggerRepository() is used.
+  LoggerRepository, which it then uses/acts upon.  The functionality
+  of the plugin is up to the developer.
   
   <p>Examples of plugins are Receiver and Watchdog. Receiver plugins
   allow for remote logging events to be received and processed by
@@ -32,26 +31,35 @@ import org.apache.log4j.spi.OptionHandler;
 public interface Plugin extends OptionHandler {
     
   /**
-    Gets the name of the plugin. */
+    Gets the name of the plugin. 
+    
+    @return String the name of the plugin. */
   public String getName();
   
   /**
-    Sets the name of the plugin. */
-  public void setName(String _name);
+    Sets the name of the plugin. 
+    
+    @param name the name of the plugin. */
+  public void setName(String name);
       
   /**
-    Gets the logger repository for this plugin. If not
-    explicity set, returns the value of 
-    LogManager.getLoggerRepository(). */
+    Gets the logger repository for this plugin. 
+    
+    @return LoggerRepository the logger repository this plugin is
+      attached to. */
   public LoggerRepository getLoggerRepository();
 
   /**
     Sets the logger repository used by this plugin. This
-    repository will be used by the plugin functionality. */
-  public void setLoggerRepository(LoggerRepository _repository);
+    repository will be used by the plugin functionality. 
+    
+    @param repository the logger repository to attach this plugin to. */
+  public void setLoggerRepository(LoggerRepository repository);
       
   /**
-    True if the plugin is active and running. */
+    True if the plugin is active and running. 
+    
+    @return boolean true if the plugin is currently active. */
   public boolean isActive();
     
   /**

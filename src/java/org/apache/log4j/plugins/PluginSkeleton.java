@@ -11,7 +11,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.spi.LoggerRepository;
 
 /**
-  A convienent abstract class for receiver classes that implements
+  A convienent abstract class for plugin subclasses that implements
   the basic methods of the Plugin interface. Subclasses are required
   to implement the isActive(), activateOptions(), and shutdown()
   methods.
@@ -43,9 +43,7 @@ public abstract class PluginSkeleton implements Plugin {
   }
       
   /**
-    Gets the logger repository for this plugin. If not
-    explicity set, returns the value of 
-    LogManager.getLoggerRepository(). */
+    Gets the logger repository for this plugin. */
   public LoggerRepository getLoggerRepository() {
     return repository;
   }
