@@ -190,26 +190,6 @@ public final class CachedDateFormatTest extends TestCase {
   }
 
   /**
-   * Attempt to cache a RelativeTimeDateFormat which isn't compatible
-   * with caching.  Should just delegate to the RelativeTimeDateFormat.
-   */
-//  public void test7() {
-//    DateFormat baseFormat = new RelativeTimeDateFormat();
-//    DateFormat cachedFormat = new CachedDateFormat(baseFormat);
-//    long ticks = 12603L * 86400000L;
-//    Date jul3 = new Date(ticks);
-//    assertEquals(baseFormat.format(jul3), cachedFormat.format(jul3));
-//    Date plus8ms = new Date(ticks + 8);
-//    assertEquals(baseFormat.format(plus8ms), cachedFormat.format(plus8ms));
-//    Date plus17ms = new Date(ticks + 17);
-//    assertEquals(baseFormat.format(plus17ms), cachedFormat.format(plus17ms));
-//    Date plus237ms = new Date(ticks + 237);
-//    assertEquals(baseFormat.format(plus237ms), cachedFormat.format(plus237ms));
-//    Date plus1415ms = new Date(ticks + 1415);
-//    assertEquals(baseFormat.format(plus1415ms), cachedFormat.format(plus1415ms));
-//  }
-
-  /**
    * Set time zone on cached and check that it is effective.
    */
   public void test8() {
