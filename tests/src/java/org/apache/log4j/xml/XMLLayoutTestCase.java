@@ -17,6 +17,7 @@ import org.apache.log4j.util.LineNumberFilter;
 import org.apache.log4j.util.SunReflectFilter;
 import org.apache.log4j.util.Transformer;
 import org.apache.log4j.util.Compare;
+import org.apache.log4j.MDC;
 
 public class XMLLayoutTestCase extends TestCase {
 
@@ -87,6 +88,41 @@ public class XMLLayoutTestCase extends TestCase {
     assertTrue(Compare.compare(FILTERED, "witness/xmlLayout.null"));
   }
 
+  /**
+   * Tests the format of the MDC portion of the layout to ensure
+   * the KVP's we put in turn up in the output file.
+   * @throws Exception
+   */
+  public void testMDC() throws Exception {
+    XMLLayout xmlLayout = new XMLLayout();
+    root.addAppender(new FileAppender(xmlLayout, TEMP, false));
+
+    MDC.clear();
+    MDC.put("key1", "val1");
+    MDC.put("key2", "val2");
+
+    logger.debug("Hello");
+    Transformer.transform(TEMP, FILTERED, new Filter[] {new LineNumberFilter(),
+                                                      new XMLTimestampFilter()});
+    assertTrue(Compare.compare(FILTERED, "witness/xmlLayout.mdc.1"));
+
+  }
+
+  public void testMDCEscaped() throws Exception {
+    XMLLayout xmlLayout = new XMLLayout();
+    root.addAppender(new FileAppender(xmlLayout, TEMP, false));
+
+    MDC.clear();
+    MDC.put("blahAttribute", "<blah value=\"blah\">");
+    MDC.put("<blahKey value=\"blah\"/>", "blahValue");
+
+    logger.debug("Hello");
+    Transformer.transform(TEMP, FILTERED, new Filter[] {new LineNumberFilter(),
+                                                      new XMLTimestampFilter()});
+    assertTrue(Compare.compare(FILTERED, "witness/xmlLayout.mdc.2"));
+
+  }
+
   void common() {
     int i = -1;
  
@@ -121,6 +157,9 @@ public class XMLLayoutTestCase extends TestCase {
     suite.addTest(new XMLLayoutTestCase("locationInfo"));
     suite.addTest(new XMLLayoutTestCase("testCDATA"));
     suite.addTest(new XMLLayoutTestCase("testNull"));
+    suite.addTest(new XMLLayoutTestCase("testMDC"));
+    suite.addTest(new XMLLayoutTestCase("testMDCEscaped"));
+
     return suite;
   }
 
