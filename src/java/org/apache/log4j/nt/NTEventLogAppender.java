@@ -110,7 +110,7 @@ public class NTEventLogAppender extends AppenderSkeleton {
       }
     }
     // Normalize the log message level into the supported categories
-    int nt_category = event.level.toInt();
+    int nt_category = event.getLevel().toInt();
 
     // Anything above FATAL or below DEBUG is labeled as INFO.
     //if (nt_category > FATAL || nt_category < DEBUG) {

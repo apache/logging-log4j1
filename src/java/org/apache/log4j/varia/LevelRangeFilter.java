@@ -59,14 +59,14 @@ public class LevelRangeFilter extends Filter {
   public
   int decide(LoggingEvent event) {
     if(this.levelMin != null) {
-      if (event.level.isGreaterOrEqual(levelMin) == false) {
+      if (event.getLevel().isGreaterOrEqual(levelMin) == false) {
         // level of event is less than minimum
         return Filter.DENY;
       }
     }
 
     if(this.levelMax != null) {
-      if (event.level.toInt() > levelMax.toInt()) {
+      if (event.getLevel().toInt() > levelMax.toInt()) {
         // level of event is greater than maximum
         // Alas, there is no Level.isGreater method. and using
         // a combo of isGreaterOrEqual && !Equal seems worse than
@@ -132,44 +132,5 @@ public class LevelRangeFilter extends Filter {
   void setAcceptOnMatch(boolean acceptOnMatch) {
     this.acceptOnMatch = acceptOnMatch;
   }
-
-
-  /**
-     @deprecated We now use JavaBeans introspection to configure
-     components. 
-   */
-  public
-  String[] getOptionStrings() {
-    return new String[] {
-      LEVEL_MIN_OPTION,
-      LEVEL_MAX_OPTION,
-      ACCEPT_ON_MATCH_OPTION};
-  }
-
-  /**
-     @deprecated We now use JavaBeans introspection to configure
-     components. 
-   */
-  public
-  void setOption(String key, String value) {
-    if(key.equalsIgnoreCase(LEVEL_MIN_OPTION)) {
-      levelMin = OptionConverter.toLevel(value, null);
-    }
-    else if (key.equalsIgnoreCase(LEVEL_MAX_OPTION)) {
-      levelMax = OptionConverter.toLevel(value, null);
-    }
-    else if (key.equalsIgnoreCase(ACCEPT_ON_MATCH_OPTION)) {
-      acceptOnMatch = OptionConverter.toBoolean(value, acceptOnMatch);
-    }
-  }
-
-  /** See class comments  */
-  public static final String LEVEL_MIN_OPTION = "LevelMin";
-
-  /** See class comments  */
-  public static final String LEVEL_MAX_OPTION = "LevelMax";
-
-  /** See class comments  */
-  public static final String ACCEPT_ON_MATCH_OPTION = "AcceptOnMatch";
 }
 

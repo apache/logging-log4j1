@@ -128,8 +128,7 @@ public class SocketAppender extends AppenderSkeleton {
   /**
      Connects to remote server at <code>address</code> and <code>port</code>.
   */
-  public
-  SocketAppender(InetAddress address, int port) {
+  public SocketAppender(InetAddress address, int port) {
     this.address = address;
     this.remoteHost = address.getHostName();
     this.port = port;
@@ -139,8 +138,7 @@ public class SocketAppender extends AppenderSkeleton {
   /**
      Connects to remote server at <code>host</code> and <code>port</code>.
   */
-  public
-  SocketAppender(String host, int port) {
+  public SocketAppender(String host, int port) {
     this.port = port;
     this.address = getAddressByName(host);
     this.remoteHost = host;
@@ -150,19 +148,17 @@ public class SocketAppender extends AppenderSkeleton {
   /**
      Connect to the specified <b>RemoteHost</b> and <b>Port</b>.
   */
-  public
-  void activateOptions() {
+  public void activateOptions() {
     connect(address, port);
   }
 
   /**
-     Close this appender.
-     <p>This will mark the appender as closed and
-     call then {@link #cleanUp} method.
-  */
-  synchronized
-  public
-  void close() {
+   * Close this appender.  
+   *
+   * <p>This will mark the appender as closed and call then {@link
+   * #cleanUp} method.
+   * */
+  synchronized public void close() {
     if(closed)
       return;
 
@@ -171,16 +167,14 @@ public class SocketAppender extends AppenderSkeleton {
   }
 
   /**
-     Drop the connection to the remote host and release the underlying
-     connector thread if it has been created
-   */
-  public
-  void cleanUp() {
+   * Drop the connection to the remote host and release the underlying
+   * connector thread if it has been created 
+   * */
+  public void cleanUp() {
     if(oos != null) {
       try {
 	oos.close();
-      }
-      catch(IOException e) {
+      } catch(IOException e) {
 	LogLog.error("Could not close oos.", e);
       }
       oos = null;
@@ -199,8 +193,7 @@ public class SocketAppender extends AppenderSkeleton {
       // First, close the previous connection if any.
       cleanUp();
       oos = new ObjectOutputStream(new Socket(address, port).getOutputStream());
-    }
-    catch(IOException e) {
+    } catch(IOException e) {
       LogLog.error("Could not connect to remote log4j server at ["
 		   +address.getHostName()+"]. We will try again later.", e);
       fireConnector();
@@ -208,8 +201,7 @@ public class SocketAppender extends AppenderSkeleton {
   }
 
 
-  public
-  void append(LoggingEvent event) {
+  public void append(LoggingEvent event) {
     if(event == null)
       return;
 
@@ -234,8 +226,7 @@ public class SocketAppender extends AppenderSkeleton {
 	  //System.err.println("Doing oos.reset()");
 	  oos.reset();
 	}
-      }
-      catch(IOException e) {
+      } catch(IOException e) {
 	oos = null;
 	LogLog.warn("Detected problem with connection: "+e);
 	if(reconnectionDelay > 0) {
@@ -259,28 +250,26 @@ public class SocketAppender extends AppenderSkeleton {
   InetAddress getAddressByName(String host) {
     try {
       return InetAddress.getByName(host);
-    }
-    catch(Exception e) {
+    } catch(Exception e) {
       LogLog.error("Could not find address of ["+host+"].", e);
       return null;
     }
   }
 
   /**
-     The SocketAppender does not use a layout. Hence, this method returns
-     <code>false</code>.
-  */
-  public
-  boolean requiresLayout() {
+   * The SocketAppender does not use a layout. Hence, this method
+   * returns <code>false</code>.  
+   * */
+  public boolean requiresLayout() {
     return false;
   }
 
   /**
-     The <b>RemoteHost</b> option takes a string value which should be
-     the host name of the server where a {@link SocketNode} is running.
-   */
-  public
-  void setRemoteHost(String host) {
+   * The <b>RemoteHost</b> option takes a string value which should be
+   * the host name of the server where a {@link SocketNode} is
+   * running.
+   * */
+  public void setRemoteHost(String host) {
     address = getAddressByName(host);
     remoteHost = host;
   }
@@ -288,8 +277,7 @@ public class SocketAppender extends AppenderSkeleton {
   /**
      Returns value of the <b>RemoteHost</b> option.
    */
-  public
-  String getRemoteHost() {
+  public String getRemoteHost() {
     return remoteHost;
   }
 
@@ -297,16 +285,14 @@ public class SocketAppender extends AppenderSkeleton {
      The <b>Port</b> option takes a positive integer representing
      the port where the server is waiting for connections.
    */
-  public
-  void setPort(int port) {
+  public void setPort(int port) {
     this.port = port;
   }
 
   /**
      Returns value of the <b>Port</b> option.
    */
-  public
-  int getPort() {
+  public int getPort() {
     return port;
   }
 
@@ -315,16 +301,14 @@ public class SocketAppender extends AppenderSkeleton {
      the information sent to the remote host will include location
      information. By default no location information is sent to the server.
    */
-  public
-  void setLocationInfo(boolean locationInfo) {
+  public void setLocationInfo(boolean locationInfo) {
     this.locationInfo = locationInfo;
   }
 
   /**
      Returns value of the <b>LocationInfo</b> option.
    */
-  public
-  boolean getLocationInfo() {
+  public boolean getLocationInfo() {
     return locationInfo;
   }
 
@@ -337,16 +321,14 @@ public class SocketAppender extends AppenderSkeleton {
      <p>Setting this option to zero turns off reconnection
      capability.
    */
-  public
-  void setReconnectionDelay(int delay) {
+  public void setReconnectionDelay(int delay) {
     this.reconnectionDelay = delay;
   }
 
   /**
      Returns value of the <b>ReconnectionDelay</b> option.
    */
-  public
-  int getReconnectionDelay() {
+  public int getReconnectionDelay() {
     return reconnectionDelay;
   }
 
@@ -377,18 +359,16 @@ public class SocketAppender extends AppenderSkeleton {
 	  synchronized(this) {
 	    oos = new ObjectOutputStream(socket.getOutputStream());
 	    connector = null;
+	    LogLog.debug("Connection established. Exiting connector thread.");
 	    break;
 	  }
-	}
-	catch(InterruptedException e) {
+	} catch(InterruptedException e) {
 	  LogLog.debug("Connector interrupted. Leaving loop.");
 	  return;
-	}
-	catch(java.net.ConnectException e) {
+	} catch(java.net.ConnectException e) {
 	  LogLog.debug("Remote host "+address.getHostName()
 		       +" refused connection.");
-	}
-	catch(IOException e) {
+	} catch(IOException e) {
 	  LogLog.debug("Could not connect to " + address.getHostName()+
 		       ". Exception is " + e);
 	}

@@ -51,9 +51,7 @@
     build  - compile all project files, if a certain library is missing, 
 	      then the compilation of its dependents are skipped.
 
-    regression - Run regression ests which check large parts of log4j.
-    unit       - Run unit tests which check one component at a time.
-    longUnit   - Run long unit tests which check one component at a time.
+    regression - Run regression tests which check large parts of log4j.
 
     runAll     - run all available tests
     </echo>
@@ -98,12 +96,12 @@
   <!-- ================================================================= -->  
   <target name="regression" depends="Minimum, Logger, DOM, CustomLevel, 
                                      CustomLogger, PatternLayout, 
-                                     HierarchyThreshold, SocketServer, 
-                                     XMLLayout, AsyncAppender, 
+                                     HierarchyThreshold, DefaultInit, SocketServer, 
+                                     XMLLayout, AsyncAppender, ErrorHandler,
                                      OptionConverter, BoundedFIFO, 
                                      CyclicBuffer, OR, VariaLevelMatchFilter, 
-                                     VariaLevelRangeFilter, 
-                                     FiltersLevelMatchFilter, DRFA"/>
+                                     VariaLevelRangeFilter, PatternParser,
+                                     LevelMatchFilter, FiltersLevelMatchFilter, DRFA"/>
 
   <!-- ================================================================= -->
   <!-- Longer unit tests                                                 -->
@@ -170,10 +168,60 @@
     </junit>
   </target>
 
+  <target name="DefaultInit" depends="build">
+    <!-- Delete possible cruft from previous runs. -->
+    <delete file="classes/log4j.xml"/>
+    <delete file="classes/log4j.properties"/>
+
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="false"/>
+      <test fork="true" name="org.apache.log4j.defaultInit.TestCase1" />
+    </junit>
+
+    <copy file="input/xml/defaultInit.xml" tofile="classes/log4j.xml"/>
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="false"/>
+      <test fork="true" name="org.apache.log4j.defaultInit.TestCase2" />      
+    </junit>
+    <delete file="classes/log4j.xml"/>
+
+    <!-- test handling of log4j.defaultInitOverride system property -->
+    <copy file="input/xml/defaultInit.xml" tofile="classes/log4j.xml"/>
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+      <jvmarg value="-Dlog4j.defaultInitOverride=true"/>
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="false"/>
+      <test fork="true" name="org.apache.log4j.defaultInit.TestCase1" />
+    </junit>
+    <delete file="classes/log4j.xml"/>
+
+    <!-- test default initialization from log4j.xml -->
+    <copy file="input/defaultInit3.properties" tofile="classes/log4j.properties"/>
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="false"/>
+      <test fork="true" name="org.apache.log4j.defaultInit.TestCase3" />      
+    </junit>
+    <delete file="classes/log4j.properties"/>
+
+    <!-- test default initialization from log4j.properties -->
+    <copy file="input/xml/defaultInit.xml" tofile="classes/log4j.xml"/>
+    <copy file="input/defaultInit3.properties" tofile="classes/log4j.properties"/>
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="false"/>
+      <test fork="true" name="org.apache.log4j.defaultInit.TestCase4" />      
+    </junit>
+    <delete file="classes/log4j.xml"/>
+    <delete file="classes/log4j.properties"/>
+  </target>
+
   <target name="SocketServer" depends="build">
     <parallel>
       <java classname="org.apache.log4j.net.ShortSocketServer" fork="yes">
-	<arg value="4"/> 
+	<arg value="8"/> 
 	<arg value="input/socketServer"/> 
 	<classpath refid="tests.classpath"/>
       </java>
@@ -229,6 +277,22 @@
     </junit>
   </target>
 
+  <target name="LevelMatchFilter" depends="build">
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="false"/>
+      <test name="org.apache.log4j.varia.LevelMatchFilterTestCase" />
+    </junit>
+  </target>
+
+  <target name="ErrorHandler" depends="build">
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="false" />
+      <test name="org.apache.log4j.varia.ErrorHandlerTestCase" />
+    </junit>
+  </target>
+
   <target name="OptionConverter" depends="build">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
@@ -250,6 +314,14 @@
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
       <test name="org.apache.log4j.helpers.CyclicBufferTestCase" />
+    </junit>
+  </target>
+
+  <target name="PatternParser" depends="build">
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="false"/>
+      <test name="org.apache.log4j.helpers.PatternParserTestCase" />
     </junit>
   </target>
 

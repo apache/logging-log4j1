@@ -175,11 +175,11 @@ public class TTCCLayout extends DateLayout {
       buf.append(event.getThreadName());
       buf.append("] ");
     }
-    buf.append(event.level.toString());
+    buf.append(event.getLevel().toString());
     buf.append(' ');
 
     if(this.categoryPrefixing) {
-      buf.append(event.categoryName);
+      buf.append(event.getLoggerName());
       buf.append(' ');
     }
 

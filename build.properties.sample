@@ -18,6 +18,12 @@ jms.jar=/java/JMQ1.1/lib/jms.jar
 jmx.jar=/java/jmx/lib/jmxri.jar
 jmx-extra.jar=/java/jmx/lib/jmxtools.jar
 
+# jakarta-site2 module is used to transform xml files to html using
+# Anakia. You do not need to worry about this property unless you
+# intend to build the log4j web site yourself.
+jakarta-site2=../jakarta-site2
+
 # Required to run Checkstyle. Available from http://checkstyle.sf.net
 checkstyle.jar=/java/checkstyle-2.2/checkstyle-all-2.2.jar
+
 

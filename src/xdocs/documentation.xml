@@ -15,13 +15,25 @@
       
       <ul>
 	<p>
+	  <a href="http://www.flashline.com/components/view.jsp?prodid=4702&amp;affiliateid=657173"><img align="right" src="images/coverSmall.png"></img></a>
 	  <li><a href="manual.html"><b>short manual</b></a>,
+	  </li>
+	</p>
+
+	<p>
+	  <li><a href="http://www.flashline.com/components/view.jsp?prodid=4702&amp;affiliateid=657173"><b>complete manual</b></a> (commercial), 
 	  </li>
 	</p>
 	
 	<p>
 	  <li>
 	    <a href="api/index.html"><b>javadoc documentation</b></a>,
+	  </li>
+	</p>
+
+	<p>
+	  <li>
+	    <a href="lf5/overview.html"><b>LogFactor5 documentation</b></a>,
 	  </li>
 	</p>
 	
@@ -50,21 +62,38 @@
     <section name="Articles on log4j">
       <ul>
 
-	<li><a href="http://www.vipan.com/htdocs/log4jhelp.html">Don't Use System.out.println!
+	<p>
+	  <li><a href="http://www.vipan.com/htdocs/log4jhelp.html">Don't Use System.out.println!
 	    Use Log4j</a> by Vipan Singla
-	</li>
+	  </li>
+	</p>
 
-	<li><a href="http://builder.com.com/article.jhtml?id=u00820020124kev01.htm">
+	<p><li><a href="http://www.onjava.com/pub/a/onjava/2002/08/07/log4j.html?page=1">
+	    Build Flexible Logs With log4j</a> by Vikram Goyal
+	</li></p>
+
+
+	<p><li><a href="http://www.builder.com.com/article.jhtml?id=u00820020124kev01.htm">
 	    Add logging to your Java Applications</a> by Kevin Brown
-	</li>
+	</li></p>
 	
-	<li><a href="http://www.entwickler.com/jm/ausgaben/2001/4/artikel/17/online.shtml">
-	    Computer: captains, new entry... DasJakarta Logging-System log4j</a> by Thomas Poschmann
-	</li>
+	<p><li><a href="http://www.builder.com.com/article.jhtml?id=u00220020724kev01.htm">
+	    How does the Java logging API stack up against log4j?</a> by Kevin Brown
+	</li></p>
 
-	<li>
+	<p><li>
 	  <a href="http://www.opensymphony.com/guidelines/logging.jsp">OpenSymphony Logging Primer</a>
-	</li>
+	</li></p>
+
+	<p><li>
+	  <a href="http://www.jguru.com/faq/Log4j">log4j FAQ</a> at jGuru
+	</li></p>
+
+	<p><li>
+	  <a href="http://qos.ch/logging/thinkAgain.html">Think Again</a> by Ceki G&#252;lc&#252;
+
+	</li></p>
+
       </ul>
 
       <p>If you would like your log4j-relateed article to be listed

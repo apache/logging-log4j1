@@ -251,6 +251,56 @@ if [ $TEST -ge $start ]; then
    multiRun xml/logging$TEST.xml 8 "PatternLayout \"$format\""  $SHORTRUN   
 fi
 
+echo -------------------------------------
+echo "FileAppender: BufferedIO=true"
+echo -------------------------------------
+
+TEST=220
+if [ $TEST -ge $start ]; then
+   multiRun xml/logging$TEST.xml 8 "SimpleLayout"  $LONGRUN 
+fi
+
+TEST=221
+if [ $TEST -ge $start ]; then
+   format="%p - %m%n"
+   multiRun xml/logging$TEST.xml 8 "PatternLayout \"$format\""  $LONGRUN    
+fi
+
+TEST=222
+if [ $TEST -ge $start ]; then
+   multiRun xml/logging$TEST.xml 8 "TTCC/RELATIVE" $LONGRUN 
+fi
+
+TEST=223
+if [ $TEST -ge $start ]; then
+   format="%r [%t] %-5p %c - %m%n"
+   multiRun xml/logging$TEST.xml 8 "PatternLayout \"$format\""  $LONGRUN 
+fi
+
+TEST=224
+if [ $TEST -ge $start ]; then
+   multiRun xml/logging$TEST.xml 8 "TTCCLayout/ISO8601"  $LONGRUN 
+fi
+
+TEST=225
+if [ $TEST -ge $start ]; then
+   format="%d{ISO8601} [%t] %-5p %c %x - %m%n"
+   multiRun xml/logging$TEST.xml 8 "PatternLayout \"$format\""  $LONGRUN 
+fi
+
+TEST=226
+if [ $TEST -ge $start ]; then
+   format="%d{yyyy-MM-dd HH:mm:ss,SSS} [%t] %-5p %c %x - %m%n"
+   multiRun xml/logging$TEST.xml 8 "PatternLayout \"$format\""  $LONGRUN    
+fi
+
+TEST=227
+if [ $TEST -ge $start ]; then
+   format="%l - %m%n"
+   multiRun xml/logging$TEST.xml 8 "PatternLayout \"$format\""  $SHORTRUN   
+fi
+
+
 echo ==================================
 echo Async appender
 echo ==================================

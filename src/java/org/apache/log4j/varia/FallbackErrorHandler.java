@@ -16,16 +16,17 @@ import  org.apache.log4j.helpers.LogLog;
 import java.util.Vector;
  
 /**
-
-   The <code>FallbackErrorHandler</code> implements the ErrorHandler
-   interface such that a secondary appender may be specified.  This
-   secondary appender takes over if the primary appender fails for
-   whatever reason.
-
-   <p>The error message is printed on <code>System.err</code>, and
-   logged in the new secondary appender.
-
-*/
+  *
+  * The <code>FallbackErrorHandler</code> implements the ErrorHandler
+  * interface such that a secondary appender may be specified.  This
+  * secondary appender takes over if the primary appender fails for
+  * whatever reason.
+  *
+  * <p>The error message is printed on <code>System.err</code>, and
+  * logged in the new secondary appender.
+  *
+  * @author Ceki G&uuml;c&uuml;
+  * */
 public class FallbackErrorHandler implements ErrorHandler {
 
 
@@ -73,13 +74,15 @@ public class FallbackErrorHandler implements ErrorHandler {
    */
   public
   void error(String message, Exception e, int errorCode, LoggingEvent event) {
+    LogLog.debug("FB: The following error reported: " + message, e);
+    LogLog.debug("FB: INITIATING FALLBACK PROCEDURE.");
     for(int i = 0; i < loggers.size(); i++) {
       Logger l = (Logger) loggers.elementAt(i);
-      LogLog.debug("FB: Searching for ["+primary.getName()+"] in logger"
-		   +l.getName());
+      LogLog.debug("FB: Searching for ["+primary.getName()+"] in logger ["
+		   +l.getName() + "].");
       //if(l.isAttached(primary)) {
       LogLog.debug("FB: Replacing ["+primary.getName()+"] by ["
-		   + backup.getName() + " in logger"+ l);
+		   + backup.getName() + "] in logger ["+ l.getName() +"].");
       l.removeAppender(primary);
       LogLog.debug("FB: Adding appender ["+backup.getName()+"] to logger "
 		   +  l.getName());

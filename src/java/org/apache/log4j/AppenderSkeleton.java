@@ -17,13 +17,14 @@ import org.apache.log4j.helpers.LogLog;
 
 
 /** 
-   Abstract superclass of the other appenders in the package.
-   
-   This class provides the code for common functionality, such as
-   support for threshold filtering and support for general filters.
-
-   @since 0.8.1
-   @author Ceki G&uuml;lc&uuml; */
+ * Abstract superclass of the other appenders in the package.
+ *  
+ *  This class provides the code for common functionality, such as
+ *  support for threshold filtering and support for general filters.
+ *
+ * @since 0.8.1
+ * @author Ceki G&uuml;lc&uuml; 
+ * */
 public abstract class AppenderSkeleton implements Appender, OptionHandler {
 
   /** The layout variable does not need to be set if the appender
@@ -99,11 +100,10 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
   }
 
   /**
-     Finalize this appender by calling the imlenentation's
+     Finalize this appender by calling the derived class'
      <code>close</code> method.
 
-     @since 0.8.4
-  */
+     @since 0.8.4 */
   public
   void finalize() {
     // An appender might be closed then garbage collected. There is no
@@ -191,11 +191,10 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
 
 
   /**
-     This method performs threshold checks and invokes filters before
-     delegating actual logging to the subclasses specific {@link
-     AppenderSkeleton#append} method.
-
-   */
+    * This method performs threshold checks and invokes filters before
+    * delegating actual logging to the subclasses specific {@link
+    * AppenderSkeleton#append} method.
+    * */
   public
   synchronized 
   void doAppend(LoggingEvent event) {
@@ -204,7 +203,7 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
       return;
     }
     
-    if(!isAsSevereAsThreshold(event.level)) {
+    if(!isAsSevereAsThreshold(event.getLevel())) {
       return;
     }
 

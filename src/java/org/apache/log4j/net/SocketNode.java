@@ -76,6 +76,7 @@ public class SocketNode implements Runnable {
 
     try {
       while(true) {
+	// read an event from the wire
       	event = (LoggingEvent) ois.readObject();
       	
       	// if configured with a receiver, tell it to post the event
@@ -83,15 +84,18 @@ public class SocketNode implements Runnable {
           receiver.doPost(event);
         // else post it via the hierarchy
         } else {
+	  // get a logger from the hierarchy. The name of the logger
+	  // is taken to be the name contained in the event.
           remoteLogger = hierarchy.getLogger(event.categoryName);
-          event.logger = remoteLogger;
+          //event.logger = remoteLogger;
+	  // apply the logger-level filter
           if(event.level.isGreaterOrEqual(remoteLogger.getEffectiveLevel())) {
+	    // finally log the event as if was generated locally
             remoteLogger.callAppenders(event);
           }
         }
       }
-    }
-    catch(java.io.EOFException e) {
+    } catch(java.io.EOFException e) {
       logger.info("Caught java.io.EOFException closing conneciton.");
     } catch(java.net.SocketException e) {
       logger.info("Caught java.net.SocketException closing conneciton.");
