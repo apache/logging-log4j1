@@ -88,12 +88,14 @@
    an object renderer for a given object type. When the given object
    needs to be logged log4j will invoke the corresponding renderer to
    transform the object into a String.
- 
+
    As a result of this enhancement, all the String forms of all the
    printing methods such as debug(String), info(String) have been
    removed as they are no longer necessary. This change should be
-   perfectly backward compatible. [*]
-
+   backward compatible but requires recompilation of old client
+   code. Thanks to Michael Smith for noting the recompilation
+   requirement. [**]
+ 
  - Added support for user defined category factories in the
    PropertyConfigurator. Thus, it is now possible to configure log4j
    with a properties file and still use custem Category
