@@ -87,13 +87,13 @@ import java.util.Date;
  *       the file <code>/wombat/foo.2004-11-23</code>. However, at midnight that
  *       file will be compressed to become <code>/wombat/foo.2004-11-23.gz</code>.
  *       For the 24th of November, logging output will be directed to 
- *       <code>/some/folder/foo.2004-11-24</code> until its rolled over at the
+ *       <code>/wombat/folder/foo.2004-11-24</code> until its rolled over at the
  *       beginning of the next day.
  *     </td>
  *   </tr>
  * </table>
  * 
- * <h2>Decoupling the location of the active log file and the archived files</h2>
+ * <h2>Decoupling the location of the active log file and the archived log files</h2>
  * <p>The <em>active file</em> is defined as the log file for the current period 
  * whereas <em>archived files</em> are thos files which have been rolled over
  * in previous periods.
@@ -101,7 +101,7 @@ import java.util.Date;
  * <p>By setting the <b>ActiveFileName</b> option you can decouple the location 
  * of the active log file and the location of the archived log files.
  * <p> 
- *  * <table cellspacing="5px" border="1">
+ *  <table cellspacing="5px" border="1">
  *   <tr>
  *     <th><code>FileNamePattern</code> value</th>
  *     <th>ActiveFileName</th>
