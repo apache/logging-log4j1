@@ -1,13 +1,15 @@
 TODO
 
+- Clean up the association of renderers and hierarchies
+- log4j: namespace in DTD
+- Allow the message object to be seen by Appenders and Layouts.
 - Mapped Diagnostic Contexts
 - FailOverAppender
-- Complete multiple hierachy support, give an a Sink example
+
 - Graceful congiguration merging
 
 - Integrate tons of GUI code.
 - JDBCAppender.
-- SAX configurator?
 - Time based rolling.
 - SSL logging.
 - Authenticated logging.
@@ -21,6 +23,7 @@ ONGOING TASKS
 	
 DONE
 
+- Complete multiple hierachy support.
 - JMSAppender.
 - SMTPAppender.
 - Automatic configuration file reloading.

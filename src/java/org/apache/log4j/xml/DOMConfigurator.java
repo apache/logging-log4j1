@@ -304,8 +304,11 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
     // to protect potential log operations while category
     // configuration is in progress.
     synchronized(cat) {
-      cat.setAdditivity(OptionConverter.toBoolean(
-                  categoryElement.getAttribute(ADDITIVITY_ATTR), true));
+      boolean additivity = OptionConverter.toBoolean(
+                           categoryElement.getAttribute(ADDITIVITY_ATTR), true);
+    
+      LogLog.debug("Setting ["+cat.getName()+"] additivity to ["+additivity+"].");
+      cat.setAdditivity(additivity);
       parseChildrenOfCategoryElement(categoryElement, cat, false);
     }
   }
