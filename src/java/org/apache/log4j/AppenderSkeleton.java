@@ -96,6 +96,16 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
     }
   }
 
+  /**
+     Returns the head Filter.
+     
+     @since 1.1
+  */
+  public
+  Filter getFilter() {
+    return headFilter;
+  }
+
 
   /**
      Subclasses of <code>AppenderSkeleton</code> should imlement this

@@ -19,7 +19,6 @@ import org.apache.log4j.spi.LoggingEvent;
 */
 public interface Appender {
 
-
   /**
      Add a filter to the end of the filter list.
 
@@ -27,6 +26,15 @@ public interface Appender {
    */
   void addFilter(Filter newFilter);
 
+  /**
+     Returns the head Filter. The Filters are organized in a linked list
+     and so all Filters on this Appender are available through the result.
+     
+     @return the head Filter or null, if no Filters are present
+     @since 1.1
+  */
+  public
+  Filter getFilter();
 
   /**
      Clear the list of filters by removing all the filters in it.
@@ -60,7 +68,6 @@ public interface Appender {
   String getName();
 
 
-  
   /**
      Set the {@link ErrorHandler} for this appender.
 
@@ -69,6 +76,13 @@ public interface Appender {
   public
   void setErrorHandler(ErrorHandler errorHandler);
 
+  /**
+     Returns the {@link ErrorHandler} for this appender.
+
+     @since 1.1
+   */
+  public
+  ErrorHandler getErrorHandler();
 
   /**
      Set the {@link Layout} for this appender.
