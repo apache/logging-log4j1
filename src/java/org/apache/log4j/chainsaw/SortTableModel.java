@@ -60,6 +60,5 @@ import javax.swing.table.TableModel;
 public interface SortTableModel extends TableModel {
   public boolean isSortable(int col);
 
-  public void sortColumn(
-    JSortTable table, int col, int row, boolean ascending);
+  public void sortColumn(int col, boolean ascending);
 }
