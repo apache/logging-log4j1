@@ -5,7 +5,7 @@ import org.apache.joran.ExecutionContext;
 import org.apache.log4j.Logger;
 import org.apache.log4j.config.PropertySetter;
 import org.apache.log4j.helpers.OptionConverter;
-import org.w3c.dom.Element;
+import org.xml.sax.Attributes;
 
 
 public class ParamAction extends Action {
@@ -15,9 +15,9 @@ public class ParamAction extends Action {
 	static String NO_NAME = "No name attribute in <param> element";
 	static String NO_VALUE = "No name attribute in <param> element";
 	
-  public void begin(ExecutionContext ec, Element element) {
-		String name = element.getAttribute(NAME_ATTRIBUTE);
-		String value = (element.getAttribute(VALUE_ATTRIBUTE));
+  public void begin(ExecutionContext ec, String localName, Attributes attributes) {
+		String name = attributes.getValue(NAME_ATTRIBUTE);
+		String value = attributes.getValue(VALUE_ATTRIBUTE);
 
     if(name==null) {
 			inError = true;
@@ -40,7 +40,7 @@ public class ParamAction extends Action {
 		propSetter.setProperty(name, value);
   }
 
-  public void end(ExecutionContext ec, Element e) {
+  public void end(ExecutionContext ec, String localName) {
   }
 
   public void finish(ExecutionContext ec) {

@@ -7,7 +7,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.Loader;
 import org.apache.log4j.helpers.OptionConverter;
-import org.w3c.dom.Element;
+import org.xml.sax.Attributes;
 
 import java.lang.reflect.Method;
 
@@ -23,7 +23,7 @@ public class LevelAction extends Action {
 
   static final Class[] ONE_STRING_PARAM = new Class[] { String.class };
 
-  public void begin(ExecutionContext ec, Element element) {
+  public void begin(ExecutionContext ec, String name, Attributes attributes) {
     
 		Object o = ec.peekObject();
 		
@@ -35,21 +35,21 @@ public class LevelAction extends Action {
 		}
     Logger l = (Logger) o;
     
-    
     String loggerName = l.getName();
 
-    String levelStr = element.getAttribute(VALUE_ATTR);
+    String levelStr = attributes.getValue(VALUE_ATTR);
     logger.debug(
-      "Level value for logger [" + loggerName + "] is  [" + levelStr + "].");
+      "Encapsulating logger name is [" + loggerName + "], levelvalue is  [" 
+      + levelStr + "].");
 
     if (INHERITED.equalsIgnoreCase(levelStr)
       || NULL.equalsIgnoreCase(levelStr)) {
       l.setLevel(null);
     } else {
 
-      String className = element.getAttribute(CLASS_ATTR);
+      String className = attributes.getValue(CLASS_ATTR);
 
-      if (EMPTY_STR.equals(className)) {
+      if (className == null || EMPTY_STR.equals(className)) {
         l.setLevel(OptionConverter.toLevel(levelStr, Level.DEBUG));
       } else {
         logger.debug("Desired Level sub-class: [" + className + ']');
@@ -73,7 +73,7 @@ public class LevelAction extends Action {
 
   }
 
-  public void end(ExecutionContext ec, Element e) {
+  public void end(ExecutionContext ec, String e) {
   }
 
   public void finish(ExecutionContext ec) {

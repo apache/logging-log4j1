@@ -23,20 +23,20 @@ import org.apache.log4j.Logger;
 import org.xml.sax.Attributes;
 
 
-public class HelloAction extends Action {
+public class StackCounterAction extends Action {
   static final Logger logger = Logger.getLogger(HelloAction.class);
   Layout layout;
 
 
-  public HelloAction() {
+  public StackCounterAction() {
   }
   /**
    * Instantiates an layout of the given class and sets its name.
    *
    */
   public void begin(ExecutionContext ec, String name, Attributes attributes) {
-    String str = "Hello "+name+".";
-    ec.getObjectMap().put("hello", str);
+    String str = "Pushing "+name+"-begin";
+    ec.pushObject(name+"-begin");
   }
 
   /**
@@ -44,6 +44,8 @@ public class HelloAction extends Action {
    * the appender options.
    */
   public void end(ExecutionContext ec, String name) {
+    String str = "Pushing "+name+"-end";
+    ec.pushObject(name+"-end");    
   }
 
   public void finish(ExecutionContext ec) {

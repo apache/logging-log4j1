@@ -22,14 +22,18 @@
  */
 package org.apache.joran;
 
+import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 import org.apache.joran.action.NestComponentIA;
 import org.apache.joran.action.NewRuleAction;
 import org.apache.joran.action.ParamAction;
+import org.apache.joran.action.StackCounterAction;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
@@ -42,12 +46,11 @@ import org.apache.log4j.joran.action.LevelAction;
 import org.apache.log4j.joran.action.LoggerAction;
 import org.apache.log4j.joran.action.RootLoggerAction;
 
-import org.w3c.dom.Document;
-
 import java.util.HashMap;
+import java.util.Stack;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 
 /**
@@ -86,17 +89,42 @@ public class JoranParserTest extends TestCase {
     LogManager.shutdown();
   }
 
-  public void xtestLoop() throws Exception {
+  SAXParser createParser() throws Exception {
+    SAXParserFactory spf = SAXParserFactory.newInstance();
+    return spf.newSAXParser();
+  }
+  public void testBasicLoop() throws Exception {
+    
+    RuleStore rs = new SimpleRuleStore();
+    rs.addRule(
+        new Pattern("log4j:configuration"), new StackCounterAction());
+    rs.addRule(
+        new Pattern("log4j:configuration/root"), new StackCounterAction());
+    rs.addRule(
+      new Pattern("log4j:configuration/root/level"), new StackCounterAction());
+
+    JoranParser jp = new JoranParser(rs);
+    ExecutionContext ec = jp.getExecutionContext();
+    SAXParser saxParser = createParser();
+    saxParser.parse("file:input/joran/basicLoop.xml", jp);
+    
+    Stack witness = new Stack();
+    witness.push("log4j:configuration-begin");
+    witness.push("root-begin");
+    witness.push("level-begin");
+    witness.push("level-end");
+    witness.push("root-end");
+    witness.push("log4j:configuration-end");
+    assertEquals(witness, ec.getObjectStack());
+  }
+  
+  /**
+   * This test verifies that <logger>, <root> and embedded <level> elements
+   * are handled correctly.  
+   */
+  public void testLoop() throws Exception {
     logger.debug("Starting testLoop");
 
-    DocumentBuilderFactory dbf = null;
-
-    dbf = DocumentBuilderFactory.newInstance();
-
-    DocumentBuilder docBuilder = dbf.newDocumentBuilder();
-
-    //inputSource.setSystemId("dummy://log4j.dtd");
-    Document doc = docBuilder.parse("file:input/joran/parser1.xml");
     RuleStore rs = new SimpleRuleStore();
     logger.debug("pattern: " + new Pattern("log4j:configuration/logger"));
     rs.addRule(new Pattern("log4j:configuration/logger"), new LoggerAction());
@@ -105,27 +133,35 @@ public class JoranParserTest extends TestCase {
     rs.addRule(
       new Pattern("log4j:configuration/root"), new RootLoggerAction());
     rs.addRule(
-      new Pattern("log4j:configuration/root"), new RootLoggerAction());
+        new Pattern("log4j:configuration/root/level"), new LevelAction());
 
     JoranParser jp = new JoranParser(rs);
     ExecutionContext ec = jp.getExecutionContext();
     HashMap omap = ec.getObjectMap();
     omap.put(ActionConst.APPENDER_BAG, new HashMap());
     ec.pushObject(LogManager.getLoggerRepository());
-    jp.parse(doc);
+    SAXParser saxParser = createParser();
+    saxParser.parse("file:input/joran/parser1.xml", jp);
+    
+    Logger rootLogger = LogManager.getLoggerRepository().getRootLogger();
+    assertSame(Level.WARN, rootLogger.getLevel());
+ 
+    Logger asdLogger = LogManager.getLoggerRepository().getLogger("asd");
+    assertSame(Level.DEBUG, asdLogger.getLevel());
+ 
+    assertEquals(2, ec.getErrorList().size());
+    String e0 = (String) ec.getErrorList().get(0);
+    if(!e0.startsWith("No 'name' attribute in element")) {
+      fail("Expected error string [No 'name' attribute in element]");
+    }
+    String e1 = (String) ec.getErrorList().get(1);
+    if(!e1.startsWith("For element <level>")) {
+      fail("Expected error string [For element <level>]");
+    }
   }
 
   public void xtestLoop2() throws Exception {
     logger.debug("Starting testLoop2");
-
-    DocumentBuilderFactory dbf = null;
-
-    dbf = DocumentBuilderFactory.newInstance();
-
-    DocumentBuilder docBuilder = dbf.newDocumentBuilder();
-
-    //inputSource.setSystemId("dummy://log4j.dtd");
-    Document doc = docBuilder.parse("file:input/joran/parser2.xml");
     RuleStore rs = new SimpleRuleStore();
     rs.addRule(new Pattern("log4j:configuration/logger"), new LoggerAction());
     rs.addRule(
@@ -151,20 +187,13 @@ public class JoranParserTest extends TestCase {
     HashMap omap = ec.getObjectMap();
     omap.put(ActionConst.APPENDER_BAG, new HashMap());
     ec.pushObject(LogManager.getLoggerRepository());
-    jp.parse(doc);
+    SAXParser saxParser = createParser();
+    saxParser.parse("file:input/joran/parser2.xml", jp);
   }
 
   public void xtestLoop3() throws Exception {
     logger.debug("Starting testLoop3");
 
-    DocumentBuilderFactory dbf = null;
-
-    dbf = DocumentBuilderFactory.newInstance();
-
-    DocumentBuilder docBuilder = dbf.newDocumentBuilder();
-
-    //inputSource.setSystemId("dummy://log4j.dtd");
-    Document doc = docBuilder.parse("file:input/joran/parser3.xml");
     RuleStore rs = new SimpleRuleStore();
     rs.addRule(new Pattern("log4j:configuration/logger"), new LoggerAction());
     rs.addRule(
@@ -194,20 +223,15 @@ public class JoranParserTest extends TestCase {
     omap.put(ActionConst.APPENDER_BAG, new HashMap());
     ec.pushObject(LogManager.getLoggerRepository());
     logger.debug("About to parse doc");
-    jp.parse(doc);
+   
+    SAXParser saxParser = createParser();
+    saxParser.parse("file:input/joran/parser3.xml", jp);
+
   }
 
   public void testNewConversionWord() throws Exception {
     logger.debug("Starting testNewConversionWord");
 
-    DocumentBuilderFactory dbf = null;
-
-    dbf = DocumentBuilderFactory.newInstance();
-
-    DocumentBuilder docBuilder = dbf.newDocumentBuilder();
-
-    //inputSource.setSystemId("dummy://log4j.dtd");
-    Document doc = docBuilder.parse("file:input/joran/conversionRule.xml");
     RuleStore rs = new SimpleRuleStore();
     rs.addRule(
       new Pattern("log4j:configuration/appender"), new AppenderAction());
@@ -226,7 +250,9 @@ public class JoranParserTest extends TestCase {
     HashMap omap = ec.getObjectMap();
     omap.put(ActionConst.APPENDER_BAG, new HashMap());
     ec.pushObject(LogManager.getLoggerRepository());
-    jp.parse(doc);
+
+    SAXParser saxParser = createParser();
+    saxParser.parse("file:input/joran/conversionRule.xml", jp);
 
     HashMap appenderBag =
       (HashMap) ec.getObjectMap().get(ActionConst.APPENDER_BAG);
@@ -237,15 +263,7 @@ public class JoranParserTest extends TestCase {
   
   public void testNewRule1() throws Exception {
     logger.debug("Starting testNewConversionWord");
-
-    DocumentBuilderFactory dbf = null;
-
-    dbf = DocumentBuilderFactory.newInstance();
-
-    DocumentBuilder docBuilder = dbf.newDocumentBuilder();
-
-    //inputSource.setSystemId("dummy://log4j.dtd");
-    Document doc = docBuilder.parse("file:input/joran/newRule1.xml");
+  
     RuleStore rs = new SimpleRuleStore();
     rs.addRule(
       new Pattern("log4j:configuration/newRule"),
@@ -256,9 +274,19 @@ public class JoranParserTest extends TestCase {
     HashMap omap = ec.getObjectMap();
     omap.put(ActionConst.APPENDER_BAG, new HashMap());
     ec.pushObject(LogManager.getLoggerRepository());
-    jp.parse(doc);
+
+    SAXParser saxParser = createParser();
+    saxParser.parse("file:input/joran/newRule1.xml", jp);
 
     String str = (String) ec.getObjectMap().get("hello");
     assertEquals("Hello John Doe.", str);
   }
+  
+  public static Test suite() {
+    TestSuite suite = new TestSuite();
+    //suite.addTest(new JoranParserTest("testBasicLoop"));
+    suite.addTest(new JoranParserTest("testLoop"));
+    return suite;
+  }
+
 }

@@ -1,12 +1,12 @@
 /*
  * Copyright 1999,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,7 +17,7 @@
 package org.apache.joran.action;
 
 import org.apache.joran.ExecutionContext;
-import org.w3c.dom.Element;
+import org.xml.sax.Attributes;
 
 
 /**
@@ -30,37 +30,36 @@ import org.w3c.dom.Element;
  * project of the Apache Software Foundation.
  *
  * @author Craig McClanahan
- * @authro Christopher Lenz
+ * @author Christopher Lenz
  * @author Ceki G&uuml;lc&uuml;
  *
  */
 public abstract class Action {
-	
   public static final String NAME_ATTRIBUTE = "name";
   public static final String VALUE_ATTRIBUTE = "value";
   public static final String CLASS_ATTRIBUTE = "class";
   public static final String PATTERN_ATTRIBUTE = "pattern";
   public static final String ACTION_CLASS_ATTRIBUTE = "actionClass";
 
-  
-	/** 
-	 * When actions encounter an error condition they set this variable to true. 
-	 */
-	protected boolean inError = false;
-	
-	
-	/**
-	 * Called when the parser first encounters an element.
-	 * 
-	 * The return value indicates whether child elements should be processed. If 
-	 * the returned value is 'false', then child elements are ignored.
-	 */
-  public abstract void begin(ExecutionContext ec, Element e);
-  public abstract void end(ExecutionContext ec, Element e);
+  /**
+   * When actions encounter an error condition they set this variable to true.
+   */
+  protected boolean inError = false;
+
+  /**
+   * Called when the parser first encounters an element.
+   *
+   * The return value indicates whether child elements should be processed. If
+   * the returned value is 'false', then child elements are ignored.
+   */
+  public abstract void begin(
+    ExecutionContext ec, String name, Attributes attributes);
+
+  public abstract void end(ExecutionContext ec, String name);
+
   public abstract void finish(ExecutionContext ec);
-	
-	public String toString() {
-	  return this.getClass().getName();
-	}
-		
+
+  public String toString() {
+    return this.getClass().getName();
+  }
 }

@@ -23,6 +23,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggerRepository;
 
 import org.w3c.dom.Element;
+import org.xml.sax.Attributes;
 
 
 public class RootLoggerAction extends Action {
@@ -34,7 +35,7 @@ public class RootLoggerAction extends Action {
   Logger logger = Logger.getLogger(RootLoggerAction.class);
   Logger root;
 
-  public void begin(ExecutionContext ec, Element loggerElement) {
+  public void begin(ExecutionContext ec, String name, Attributes attributes) {
     inError = false;
     logger.debug("In begin method");
 
@@ -45,7 +46,7 @@ public class RootLoggerAction extends Action {
     ec.pushObject(root);
   }
 
-  public void end(ExecutionContext ec, Element e) {
+  public void end(ExecutionContext ec, String name) {
     logger.debug("end() called.");
 
     if (inError) {

@@ -25,7 +25,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.OptionHandler;
 
-import org.w3c.dom.Element;
+import org.xml.sax.Attributes;
 
 
 public class LayoutAction extends Action {
@@ -36,12 +36,12 @@ public class LayoutAction extends Action {
    * Instantiates an layout of the given class and sets its name.
    *
    */
-  public void begin(ExecutionContext ec, Element appenderElement) {
+  public void begin(ExecutionContext ec, String name, Attributes attributes) {
 		// Let us forget about previous errors (in this object)
 		inError = false; 
 
     String className =
-      appenderElement.getAttribute(CLASS_ATTRIBUTE);
+      attributes.getValue(CLASS_ATTRIBUTE);
     try {
       logger.debug("About to instantiate layout of type [" + className + "]");
 
@@ -64,7 +64,7 @@ public class LayoutAction extends Action {
    * Once the children elements are also parsed, now is the time to activate
    * the appender options.
    */
-  public void end(ExecutionContext ec, Element e) {
+  public void end(ExecutionContext ec, String e) {
     if (inError) {
       return;
     }

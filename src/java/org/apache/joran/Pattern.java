@@ -76,6 +76,15 @@ public class Pattern {
       components.remove(components.size() - 1);
     }
   }
+  
+  String peekLast() {
+    if (!components.isEmpty()) {
+      int size = components.size();
+      return (String) components.get(size - 1);
+    } else {
+     return null;
+    }
+  }
 
   /**
    * Returns the number of "tail" components that this pattern has in common
