@@ -41,6 +41,11 @@ public class LegacyExtractor {
   }
 
   static void extract(LocationInfo li, Throwable t, String fqnOfCallingClass) {
+    // on AS400, package path separator in stack trace is not dot '.', 
+    // but slash '/'
+    if (PlatformInfo.isOnAS400()) {
+      fqnOfCallingClass = fqnOfCallingClass.replace('.', '/');
+    }
     String s;
 
     // Protect against multiple access to sw.
@@ -84,8 +89,8 @@ public class LegacyExtractor {
     }
 
     // VA has a different stack trace format which doesn't
-    // need to skip the inital 'at'
-    if (!PlatformInfo.isInVisualAge()) {
+    // need to skip the inital 'at'. The same applied to AS400.
+    if ((!PlatformInfo.isInVisualAge()) && (!PlatformInfo.isOnAS400())) {
       // back up to first blank character
       ibegin = s.lastIndexOf("at ", iend);
 

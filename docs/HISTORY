@@ -8,6 +8,9 @@
    [D] Changes affect a method or property which was previously marked as 
        deprecated.
  
+ - Fixed bug #15585 relative to location information extraction on the AS400. The fix
+   was contributed by Patrice Kolata. [*]
+  
  - Log4j will now automatically include stack traces for nested
    exceptions. Log4j extends the automatic nested exception printing
    available in JDK 1.4 to nested exceptions accessible through methods
