@@ -19,10 +19,18 @@ public class Compare {
     while((b1 = in1.read()) != -1) {
       int b2 = in2.read();
       if(b2 != b1) {
+	System.out.println("Files ["+file1+"] and ["+file2+"] differ.");
 	return false;
       }
     }
     
+    // the second file is longer
+    if(in2.read() != -1) {
+      System.out.println("File ["+file2+"] longer than file ["+file1+"].");
+      return false;
+    }
+    
+
     return true;
   }
 
