@@ -317,10 +317,11 @@ public class LoggingEvent
 
   /**
    * The hashcode is computed as XOR of the lower 32 bits of sequenceNumber and
-   * the higher 32 bits of timeStamp;
+   * bits 21 to 53 of timeStamp;
    */
   public int hashCode() {
-    return (int)((timeStamp >> 32) ^ (sequenceNumber & 0xFFFFFFFF));
+    // 2^20 millis corresponds to 17 minutes
+    return (int)((timeStamp >> 20) ^ (sequenceNumber & 0xFFFFFFFF));
   }
 
 
@@ -513,78 +514,6 @@ public class LoggingEvent
     ndcLookupRequired = false;
     ndc = ndcString;
   }
-
-
-  /**
-   * Returns the the context corresponding to the <code>key</code> parameter.
-   * If there is a local MDC copy, possibly because we are in a logging
-   * server or running inside AsyncAppender, then we search for the key in
-   * MDC copy, if a value is found it is returned. Otherwise, if the search
-   * in MDC copy returns a null result, then the current thread's
-   * <code>MDC</code> is used.
-   *
-   * <p>
-   * Note that <em>both</em> the local MDC copy and the current thread's MDC
-   * are searched.
-   * </p>
-   */
-//  public Object XXgetMDC(String key) {
-//    Object r;
-
-//    // Note the mdcCopy is used if it exists. Otherwise we use the MDC
-//    // that is associated with the thread.
-//    if ( mdcCopy != null ) {
-//      r = mdcCopy.get( key );
-//
-//      if ( r != null ) {
-//        return r;
-//      }
-//    }
-//    return MDC.get(key);
-//  }
-
-
-  /**
-   * Returns the set of of the key values in the MDC for the event.
-   * The returned set is unmodifiable by the caller.
-   *
-   * @return Set an unmodifiable set of the MDC keys.
-   * @since 1.3
-   */
-//  public Set XXgetMDCKeySet() {
-//    if ( mdcCopy != null ) {
-//      return Collections.unmodifiableSet( mdcCopy.keySet(  ) );
-//    } else {
-//      Hashtable t = (Hashtable)MDC.getContext(  );
-//
-//      if ( t != null ) {
-//        return Collections.unmodifiableSet( t.keySet(  ) );
-//      } else {
-//        return Collections.EMPTY_SET;
-//      }
-//    }
-//    return null;
-//  }
-
-
-  /**
-   * Obtain a copy of this thread's MDC prior to serialization or asynchronous
-   * logging.
-   */
-//  public void xgetMDCCopy() {
-//    if ( mdcCopyLookupRequired ) {
-//      mdcCopyLookupRequired = false;
-//
-//      // the clone call is required for asynchronous logging.
-//      // See also bug #5932.
-//      Hashtable t = (Hashtable)MDC.getContext(  );
-//
-//      if ( t != null ) {
-//        mdcCopy = (Hashtable)t.clone(  );
-//      }
-//    }
-//  }
-
 
   /**
    * If the properties field is null, this method creates a new properties map 
