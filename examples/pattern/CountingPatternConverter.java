@@ -63,8 +63,11 @@ public class CountingPatternConverter extends PatternConverter {
   }
 
   public StringBuffer convert(LoggingEvent event) {
-    buf.setLength(0);
-
+    if(buf.capacity() > 64) {
+      buf = new StringBuffer(5);
+    } else {
+      buf.setLength(0);
+    }
     return buf.append(String.valueOf(++counter));
   }
 }
