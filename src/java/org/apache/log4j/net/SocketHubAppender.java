@@ -98,7 +98,7 @@ public class SocketHubAppender extends AppenderSkeleton {
 
   /**
      The default port number of the ServerSocket will be created on. */
-  static final int DEFAULT_PORT = 4560;
+  public static final int DEFAULT_PORT = 4560;
   
   private int port = DEFAULT_PORT;
   private Vector oosList = new Vector();
