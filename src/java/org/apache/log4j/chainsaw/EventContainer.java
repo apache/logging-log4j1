@@ -31,6 +31,7 @@ import java.util.List;
  *
  * @author Paul Smith <psmith@apache.org>
  * @author Scott Deboy <sdeboy@apache.org>
+ * @author Stephen Pain
  *
  */
 public interface EventContainer extends SortTableModel, LoggerNameModel {
@@ -106,6 +107,11 @@ public interface EventContainer extends SortTableModel, LoggerNameModel {
    */
   List getAllEvents();
 
+  /**
+   * Returns a copied list containing the events in the model with filter applied
+   */
+  List getFilteredEvents();
+  
   /**
    * Returns the total number of events currently in the model (all, not just filtered)
    * @return
