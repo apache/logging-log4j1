@@ -40,6 +40,13 @@ public final class ListAppender extends AppenderSkeleton {
   private List list = new ArrayList();
 
   /**
+   *   Constructs a new ListAppender.
+   */
+  public ListAppender() {
+     super(true);
+  }
+  
+  /**
    * Returns a writeable, BUT cloned List of all the LoggingEvents that are contained
    * in the internal model.  You are free to modify this list without
   * worry of synchronization, but note that any modifications to the returned list

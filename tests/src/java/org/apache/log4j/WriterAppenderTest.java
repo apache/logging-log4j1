@@ -26,11 +26,11 @@ import java.io.CharArrayWriter;
  * @author <a href="http://www.qos.ch/log4j/">Ceki G&uuml;lc&uuml;</a>
  */
 public class WriterAppenderTest extends AbstractAppenderTest {
-  protected Appender getAppender() {
+  protected AppenderSkeleton getAppender() {
     return new WriterAppender();
   }
 
-  protected Appender getConfiguredAppender() {
+  protected AppenderSkeleton getConfiguredAppender() {
     WriterAppender wa = new WriterAppender();
 
     // set a bogus writer

@@ -32,6 +32,13 @@ import javax.swing.ListModel;
  */
 public final class ListModelAppender extends AppenderSkeleton {
   private final DefaultListModel model = new DefaultListModel();
+  
+  /**
+   *   Constructs a ListModelAppender.
+   */
+  public ListModelAppender() {
+     super(true);
+  }
 
   /**
    * Returns a reference to the ListModel that contains all the LoggingEvents

@@ -34,32 +34,36 @@ import junit.framework.TestSuite;
  */
 abstract public class AbstractAppenderTest extends TestCase {
 
-  abstract protected Appender getAppender();
-  abstract protected Appender getConfiguredAppender();
+  abstract protected AppenderSkeleton getAppender();
+  abstract protected AppenderSkeleton getConfiguredAppender();
 
   public class DummyLayout extends Layout {
     public void format(Writer output, LoggingEvent event) {}
     public void activateOptions() {}
   }
 
+  protected boolean isImmediatelyActive() {
+      return false;
+  }
+
   public void testNewAppender() {
-    // new appenders whould be inactive
-    Appender appender = getAppender();
-//    assertFalse(appender.isActive());
-//    assertFalse(appender.isClosed());
+    // most newly constructed appenders whould be inactive
+    AppenderSkeleton appender = getAppender();
+    assertEquals(isImmediatelyActive(), appender.isActive());
+    assertFalse(appender.isClosed());
 
     appender.close();
-//    assertTrue(appender.isClosed());
+    assertTrue(appender.isClosed());
   }
 
   public void testConfiguredAppender() {
-    Appender appender = getConfiguredAppender();
-//    appender.activate();
-//    assertTrue(appender.isActive());
-//    assertFalse(appender.isClosed());
+    AppenderSkeleton appender = getConfiguredAppender();
+    appender.activate();
+    assertTrue(appender.isActive());
+    assertFalse(appender.isClosed());
 
     appender.close();
-//    assertTrue(appender.isClosed());
+    assertTrue(appender.isClosed());
   }
 
 
