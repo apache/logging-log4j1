@@ -81,13 +81,12 @@
     <pathelement location="${jmx-extra.jar}"/>
   </path>
 
-  <!-- Construct compile classpath -->
-  <path id="site2.classpath">
-    <fileset dir="${jakarta-site2}/lib">
+  <!-- Construct classpath for building the html pages-->
+  <path id="site.classpath">
+    <fileset dir="${logging-site}/lib">
       <include name="*.jar"/>
     </fileset>
   </path>
-
 
   <!-- ================================================================= -->
   <!-- Default target                                                    -->
@@ -395,51 +394,47 @@
   <!-- ============================================== -->
   <!-- Build the site files using Anakia              -->
   <!-- ============================================== -->  
-  <target name="prepareSite2">    
+  <!-- ============================================== -->
+  <!-- Build the site files using Anakia              -->
+  <!-- ============================================== -->
+  <target name="prepareSite">
     <available classname="org.apache.velocity.anakia.AnakiaTask"
       property="AnakiaTask.present">
-      <classpath refid="site2.classpath"/>
+      <classpath refid="site.classpath"/>
     </available>
   </target>
-  
-  <target name="checkSite2" depends="prepareSite2" unless="AnakiaTask.present">
+
+  <target name="checkSite" depends="prepareSite" unless="AnakiaTask.present">
     <echo>
-      AnakiaTask is not present! Please check to make sure that 
+      AnakiaTask is not present! Please check to make sure that
       velocity.jar is in your classpath.
     </echo>
   </target>
-  
-  <target name="site2" depends="checkSite2" if="AnakiaTask.present">
-    <taskdef name="anakia" classname="org.apache.velocity.anakia.AnakiaTask">
-      <classpath refid="site2.classpath"/>
-    </taskdef>
 
+  <target name="site" depends="checkSite" if="AnakiaTask.present">
+    <taskdef name="anakia" classname="org.apache.velocity.anakia.AnakiaTask">
+      <classpath refid="site.classpath"/>
+    </taskdef>
+ 
+    <mkdir dir="${docs.dest}/css"/>  
+    <copy file="${logging-site}/docs/css/site.css" tofile="${docs.dest}/css/site.css"/>
+    
     <anakia basedir="${xdocs.src}" destdir="${docs.dest}/"
-      extension=".html" 
+      extension=".html"
       style="site.vsl"
       projectFile="stylesheets/project.xml"
       excludes="**/stylesheets/**, empty.xml, lf5/**"
       includes="**/*.xml"
       lastModifiedCheck="true"
-      templatePath="../jakarta-site2/xdocs/stylesheets">
+      templatePath="${logging-site}/src/xdocs/stylesheets">
     </anakia>
-    
-    <anakia basedir="${xdocs.src}" destdir="${docs.dest}/"
-      extension=".html" 
-      style="site.vsl"
-      projectFile="stylesheets/lf5.xml"
-      excludes="**/stylesheets/**, empty.xml"
-      includes="lf5/*.xml"
-      lastModifiedCheck="true"
-      templatePath="../jakarta-site2/xdocs/stylesheets">
-    </anakia>
-  </target>
 
+  </target>
 
  <!-- ================================================================= -->
  <!-- Build a complete distribution. Results go to ${dist.images}       -->
  <!-- ================================================================= -->
-  <target name="dist" depends="init, clean, javadoc, jar, site2">
+  <target name="dist" depends="init, clean, javadoc, jar, site">
 
     <delete verbose="true">
       <fileset dir=".">
@@ -477,9 +472,9 @@
 
     <mkdir  dir="${dist.images}" />
     
-    <mkdir  dir="${dist.tmp}/jakarta-log4j-${version}" />
+    <mkdir  dir="${dist.tmp}/logging-log4j-${version}" />
 
-    <copy todir="${dist.tmp}/jakarta-log4j-${version}">
+    <copy todir="${dist.tmp}/logging-log4j-${version}">
        <fileset dir="${base}"
                 includes="src/java/**,
 			  docs/**,
@@ -503,23 +498,23 @@
     </copy>
 
 
-    <fixcrlf srcdir="${dist.tmp}/jakarta-log4j-${version}"
+    <fixcrlf srcdir="${dist.tmp}/logging-log4j-${version}"
              includes="build.sh" cr="remove"/>
-    <fixcrlf srcdir="${dist.tmp}/jakarta-log4j-${version}"
+    <fixcrlf srcdir="${dist.tmp}/logging-log4j-${version}"
              includes="build.bat" cr="add"/>
-    <chmod   dir="${dist.tmp}/jakarta-log4j-${version}"
+    <chmod   dir="${dist.tmp}/logging-log4j-${version}"
              includes="build.sh" perm="+x"/>
 
-    <tar tarfile="${dist.images}/jakarta-log4j-${version}.tar"
+    <tar tarfile="${dist.images}/logging-log4j-${version}.tar"
          basedir="${dist.tmp}"
-         includes="jakarta-log4j-${version}/**" />
+         includes="logging-log4j-${version}/**" />
 
-    <gzip src="${dist.images}/jakarta-log4j-${version}.tar"
-          zipfile="${dist.images}/jakarta-log4j-${version}.tar.gz" />
+    <gzip src="${dist.images}/logging-log4j-${version}.tar"
+          zipfile="${dist.images}/logging-log4j-${version}.tar.gz" />
 
-    <zip zipfile="${dist.images}/jakarta-log4j-${version}.zip"
+    <zip zipfile="${dist.images}/logging-log4j-${version}.zip"
          basedir="${dist.tmp}"
-         includes="jakarta-log4j-${version}/**" />
+         includes="logging-log4j-${version}/**" />
 
 
     <delete dir="${dist.tmp}" />
