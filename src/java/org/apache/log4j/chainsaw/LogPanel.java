@@ -197,7 +197,9 @@ public class LogPanel extends DockablePanel implements SettingsListener,
   final Map columnDisplayMap = new HashMap();
   final Map colorDisplayMap = new HashMap();
   final Map columnNameKeywordMap = new HashMap();
-
+  final JMenuItem menuItemFocusOn =
+  new JMenuItem("Focus on");
+  
   //    final ColorDisplaySelector colorDisplaySelector;
   ScrollToBottom scrollToBottom;
   private final LogPanelLoggerTreeModel logTreeModel =
@@ -504,35 +506,7 @@ public class LogPanel extends DockablePanel implements SettingsListener,
 
 
     table.addMouseMotionListener(
-      new MouseMotionAdapter() {
-        int currentRow = -1;
-
-        public void mouseMoved(MouseEvent evt) {
-          currentPoint = evt.getPoint();
-
-          if (tooltipsEnabled) {
-            int row = table.rowAtPoint(evt.getPoint());
-
-            if ((row == currentRow) || (row == -1)) {
-              return;
-            }
-
-            currentRow = row;
-
-            LoggingEvent event = tableModel.getRow(currentRow);
-            Layout layout = getToolTipLayout();
-
-            if (event != null) {
-              StringBuffer buf = new StringBuffer();
-              buf.append(layout.getHeader()).append(layout.format(event))
-                 .append(layout.getFooter());
-              table.setToolTipText(buf.toString());
-            }
-          } else {
-            table.setToolTipText(null);
-          }
-        }
-      });
+      new TableColumnDetailMouseListener(table, tableModel));
 
     //HACK - fix the way columns are sized..should be saved off and loaded later
     table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -907,9 +881,9 @@ public class LogPanel extends DockablePanel implements SettingsListener,
       });
     menuItemToggleToolTips.setIcon(new ImageIcon(ChainsawIcons.TOOL_TIP));
 
-    final JMenuItem menuDefineCustomFilter =
-      new JMenuItem("Focus on");
-    menuDefineCustomFilter.addActionListener(
+    
+    
+    menuItemFocusOn.addActionListener(
       new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
           if (currentPoint != null) {
@@ -1029,7 +1003,7 @@ public class LogPanel extends DockablePanel implements SettingsListener,
         }
       });
     p.add(clearFocusAction);
-    p.add(menuDefineCustomFilter);
+    p.add(menuItemFocusOn);
     p.add(menuDefineAddCustomFilter);
     p.add(new JSeparator());
 
@@ -1855,6 +1829,44 @@ public class LogPanel extends DockablePanel implements SettingsListener,
    */
   public final LogPanelPreferenceModel getPreferenceModel() {
     return preferenceModel;
+  }
+
+  private final class TableColumnDetailMouseListener extends MouseMotionAdapter
+  {
+    int currentRow = -1;
+    private final JSortTable table;
+    private final EventContainer tableModel;
+    private TableColumnDetailMouseListener(JSortTable table, EventContainer tableModel)
+    {
+      super();
+      this.table = table;
+      this.tableModel = tableModel;
+    }
+    public void mouseMoved(MouseEvent evt) {
+      currentPoint = evt.getPoint();
+
+      if (tooltipsEnabled) {
+        int row = table.rowAtPoint(evt.getPoint());
+
+        if ((row == currentRow) || (row == -1)) {
+          return;
+        }
+
+        currentRow = row;
+
+        LoggingEvent event = tableModel.getRow(currentRow);
+        Layout layout = getToolTipLayout();
+
+        if (event != null) {
+          StringBuffer buf = new StringBuffer();
+          buf.append(layout.getHeader()).append(layout.format(event))
+             .append(layout.getFooter());
+          table.setToolTipText(buf.toString());
+        }
+      } else {
+        table.setToolTipText(null);
+      }
+    }
   }
 
   private abstract class RefinementFocusRule extends AbstractRule {

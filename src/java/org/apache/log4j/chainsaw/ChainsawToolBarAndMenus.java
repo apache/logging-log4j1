@@ -440,6 +440,15 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
       showColorPanelAction.getValue(Action.SHORT_DESCRIPTION).toString());
 
     JMenuItem menuUndock = new JMenuItem(undockAction);
+    
+    JMenuItem showAppPrefs = new JMenuItem("Show Application-wide Preferences...");
+    
+    showAppPrefs.addActionListener(new ActionListener() {
+
+      public void actionPerformed(ActionEvent e)
+      {
+          logui.showApplicationPreferences();
+      }});
 
     toggleDetailMenuItem.setAction(toggleDetailPaneAction);
     toggleDetailMenuItem.setSelected(true);
@@ -578,7 +587,9 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
     viewMenu.add(tabMenu);
     viewMenu.add(responsiveNess);
     viewMenu.add(lookAndFeelMenu);
-
+    viewMenu.addSeparator();
+    viewMenu.add(showAppPrefs);
+    
     JMenu helpMenu = new JMenu("Help");
     helpMenu.setMnemonic('H');
 
