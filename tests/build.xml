@@ -382,7 +382,7 @@
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
-      <test name="org.apache.log4j.rolling.SizeBasedRollingTestCase" />
+      <test name="org.apache.log4j.rolling.SizeBasedRollingTest" />
     </junit>
   </target>
 
@@ -390,7 +390,7 @@
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
-      <test name="org.apache.log4j.rolling.TimeBasedRollingTestCase" />
+      <test name="org.apache.log4j.rolling.TimeBasedRollingTest" />
     </junit>
   </target>
   
