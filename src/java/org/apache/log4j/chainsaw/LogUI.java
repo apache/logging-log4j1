@@ -78,6 +78,8 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ContainerEvent;
+import java.awt.event.ContainerListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -326,73 +328,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     setJMenuBar(getToolBarAndMenus().getMenubar());
     setTabbedPane(new ChainsawTabbedPane());
 
-    //    getTabbedPane().addChangeListener(getToolBarAndMenus().getPanelListener());
-    final JPopupMenu tabPopup = new JPopupMenu();
-    Action hideCurrentTabAction =
-      new AbstractAction("Hide") {
-        public void actionPerformed(ActionEvent e) {
-          displayPanel(getCurrentLogPanel().getIdentifier(), false);
-          tbms.stateChange();
-        }
-      };
-
-    Action hideOtherTabsAction =
-      new AbstractAction("Hide Others") {
-        public void actionPerformed(ActionEvent e) {
-          String currentName = getCurrentLogPanel().getIdentifier();
-
-          int count = getTabbedPane().getTabCount();
-          int index = 0;
-
-          for (int i = 0; i < count; i++) {
-            String name = getTabbedPane().getTitleAt(index);
-
-            if (
-              getPanelMap().keySet().contains(name)
-                && !name.equals(currentName)) {
-              displayPanel(name, false);
-              tbms.stateChange();
-            } else {
-              index++;
-            }
-          }
-        }
-      };
-
-    Action showHiddenTabsAction =
-      new AbstractAction("Show All Hidden") {
-        public void actionPerformed(ActionEvent e) {
-          for (Iterator iter = getPanels().keySet().iterator();
-              iter.hasNext();) {
-            String identifier = (String) iter.next();
-            int count = getTabbedPane().getTabCount();
-            boolean found = false;
-
-            for (int i = 0; i < count; i++) {
-              String name = getTabbedPane().getTitleAt(i);
-
-              if (name.equals(identifier)) {
-                found = true;
-
-                break;
-              }
-            }
-
-            if (!found) {
-              displayPanel(identifier, true);
-              tbms.stateChange();
-            }
-          }
-        }
-      };
-
-    tabPopup.add(hideCurrentTabAction);
-    tabPopup.add(hideOtherTabsAction);
-    tabPopup.addSeparator();
-    tabPopup.add(showHiddenTabsAction);
-
-    final PopupListener tabPopupListener = new PopupListener(tabPopup);
-    getTabbedPane().addMouseListener(tabPopupListener);
   }
 
   /**
@@ -703,7 +638,94 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       });
 
     pack();
+    
+    final JPopupMenu tabPopup = new JPopupMenu();
+    final Action hideCurrentTabAction =
+      new AbstractAction("Hide") {
+        public void actionPerformed(ActionEvent e) {
+          displayPanel(getCurrentLogPanel().getIdentifier(), false);
+          tbms.stateChange();
+        }
+      };
 
+    final Action hideOtherTabsAction =
+      new AbstractAction("Hide Others") {
+        public void actionPerformed(ActionEvent e) {
+          String currentName = getCurrentLogPanel().getIdentifier();
+
+          int count = getTabbedPane().getTabCount();
+          int index = 0;
+
+          for (int i = 0; i < count; i++) {
+            String name = getTabbedPane().getTitleAt(index);
+
+            if (
+              getPanelMap().keySet().contains(name)
+                && !name.equals(currentName)) {
+              displayPanel(name, false);
+              tbms.stateChange();
+            } else {
+              index++;
+            }
+          }
+        }
+      };
+
+    Action showHiddenTabsAction =
+      new AbstractAction("Show All Hidden") {
+        public void actionPerformed(ActionEvent e) {
+          for (Iterator iter = getPanels().keySet().iterator();
+              iter.hasNext();) {
+            String identifier = (String) iter.next();
+            int count = getTabbedPane().getTabCount();
+            boolean found = false;
+
+            for (int i = 0; i < count; i++) {
+              String name = getTabbedPane().getTitleAt(i);
+
+              if (name.equals(identifier)) {
+                found = true;
+
+                break;
+              }
+            }
+
+            if (!found) {
+              displayPanel(identifier, true);
+              tbms.stateChange();
+            }
+          }
+        }
+      };
+
+    tabPopup.add(hideCurrentTabAction);
+    tabPopup.add(hideOtherTabsAction);
+    tabPopup.addSeparator();
+    tabPopup.add(showHiddenTabsAction);
+
+    final PopupListener tabPopupListener = new PopupListener(tabPopup);
+    getTabbedPane().addMouseListener(tabPopupListener);
+
+    final ChangeListener actionEnabler = new ChangeListener(){
+
+    public void stateChanged(ChangeEvent arg0) {
+      boolean enabled = getCurrentLogPanel()!=null;
+      hideCurrentTabAction.setEnabled(enabled);
+      hideOtherTabsAction.setEnabled(enabled);    
+    }};
+
+    getTabbedPane().addChangeListener(actionEnabler);   
+    
+    getTabbedPane().addContainerListener(new ContainerListener(){
+
+      public void componentAdded(ContainerEvent arg0) {
+        actionEnabler.stateChanged(null);        
+      }
+
+      public void componentRemoved(ContainerEvent arg0) {
+        actionEnabler.stateChanged(null);        
+      }});
+     
     this.handler.addPropertyChangeListener(
       "dataRate",
       new PropertyChangeListener() {
@@ -761,7 +783,7 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
           }
         }
       };
-
+      
     final Action stopTutorial =
       new AbstractAction(
         "Stop Tutorial", new ImageIcon(ChainsawIcons.ICON_STOP_RECEIVER)) {
@@ -810,6 +832,19 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
     startTutorial.addPropertyChangeListener(pcl);
     stopTutorial.addPropertyChangeListener(pcl);
+    
+    PluginRegistry.addPluginListener(new PluginListener(){
+
+      public void pluginStarted(PluginEvent e) {
+        
+      }
+
+      public void pluginStopped(PluginEvent e) {
+        List list = PluginRegistry.getPlugins(LogManager.getLoggerRepository(), Generator.class);
+        if (list.size() == 0) {
+          startTutorial.putValue("TutorialStarted", Boolean.FALSE);
+        }        
+      }});
 
     final SmallButton stopButton = new SmallButton(stopTutorial);
 
