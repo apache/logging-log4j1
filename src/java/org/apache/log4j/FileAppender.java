@@ -1,20 +1,63 @@
 /*
- * Copyright (C) The Apache Software Foundation. All rights reserved.
+ * ============================================================================
+ *                   The Apache Software License, Version 1.1
+ * ============================================================================
  *
- * This software is published under the terms of the Apache Software
- * License version 1.1, a copy of which has been included with this
- * distribution in the LICENSE.txt file.  */
+ *    Copyright (C) 1999 The Apache Software Foundation. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modifica-
+ * tion, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of  source code must  retain the above copyright  notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * 3. The end-user documentation included with the redistribution, if any, must
+ *    include  the following  acknowledgment:  "This product includes  software
+ *    developed  by the  Apache Software Foundation  (http://www.apache.org/)."
+ *    Alternately, this  acknowledgment may  appear in the software itself,  if
+ *    and wherever such third-party acknowledgments normally appear.
+ *
+ * 4. The names "log4j" and  "Apache Software Foundation"  must not be used to
+ *    endorse  or promote  products derived  from this  software without  prior
+ *    written permission. For written permission, please contact
+ *    apache@apache.org.
+ *
+ * 5. Products  derived from this software may not  be called "Apache", nor may
+ *    "Apache" appear  in their name,  without prior written permission  of the
+ *    Apache Software Foundation.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS  FOR A PARTICULAR  PURPOSE ARE  DISCLAIMED.  IN NO  EVENT SHALL  THE
+ * APACHE SOFTWARE  FOUNDATION  OR ITS CONTRIBUTORS  BE LIABLE FOR  ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL,  EXEMPLARY, OR CONSEQUENTIAL  DAMAGES (INCLU-
+ * DING, BUT NOT LIMITED TO, PROCUREMENT  OF SUBSTITUTE GOODS OR SERVICES; LOSS
+ * OF USE, DATA, OR  PROFITS; OR BUSINESS  INTERRUPTION)  HOWEVER CAUSED AND ON
+ * ANY  THEORY OF LIABILITY,  WHETHER  IN CONTRACT,  STRICT LIABILITY,  OR TORT
+ * (INCLUDING  NEGLIGENCE OR  OTHERWISE) ARISING IN  ANY WAY OUT OF THE  USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * This software  consists of voluntary contributions made  by many individuals
+ * on  behalf of the Apache Software  Foundation.  For more  information on the
+ * Apache Software Foundation, please see <http://www.apache.org/>.
+ *
+ */
 
 package org.apache.log4j;
 
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.helpers.QuietWriter;
+import org.apache.log4j.spi.ErrorCode;
+
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Writer;
-import java.io.FileOutputStream;
-import java.io.BufferedWriter;
 
-import org.apache.log4j.spi.ErrorCode;
-import org.apache.log4j.helpers.QuietWriter;
-import org.apache.log4j.helpers.LogLog;
 
 // Contibutors: Jens Uwe Pipka <jens.pipka@gmx.de>
 //              Ben Sandee
@@ -26,10 +69,9 @@ import org.apache.log4j.helpers.LogLog;
  *  has been deprecated and then removed. See the replacement
  *  solutions: {@link WriterAppender} and {@link ConsoleAppender}.
  *
- * @author Ceki G&uuml;lc&uuml; 
+ * @author Ceki G&uuml;lc&uuml;
  * */
 public class FileAppender extends WriterAppender {
-
   /** Append to or truncate the file? The default value for this
       variable is <code>true</code>, meaning that by default a
       <code>FileAppender</code> will append to an existing file and
@@ -50,14 +92,12 @@ public class FileAppender extends WriterAppender {
 
   /**
      How big should the IO buffer be? Default is 8K. */
-  protected int bufferSize = 8*1024;
-
+  protected int bufferSize = 8 * 1024;
 
   /**
      The default constructor does not do anything.
   */
-  public
-  FileAppender() {
+  public FileAppender() {
   }
 
   /**
@@ -73,9 +113,9 @@ public class FileAppender extends WriterAppender {
     then buffered IO will be used to write to the output file.
 
   */
-  public
-  FileAppender(Layout layout, String filename, boolean append, boolean bufferedIO,
-	       int bufferSize) throws IOException {
+  public FileAppender(
+    Layout layout, String filename, boolean append, boolean bufferedIO,
+    int bufferSize) throws IOException {
     this.layout = layout;
     this.setFile(filename, append, bufferedIO, bufferSize);
   }
@@ -89,9 +129,8 @@ public class FileAppender extends WriterAppender {
     appended to. Otherwise, the file designated by
     <code>filename</code> will be truncated before being opened.
   */
-  public
-  FileAppender(Layout layout, String filename, boolean append)
-                                                             throws IOException {
+  public FileAppender(Layout layout, String filename, boolean append)
+    throws IOException {
     this.layout = layout;
     this.setFile(filename, append, false, bufferSize);
   }
@@ -102,8 +141,7 @@ public class FileAppender extends WriterAppender {
     destination for this appender.
 
     <p>The file will be appended to.  */
-  public
-  FileAppender(Layout layout, String filename) throws IOException {
+  public FileAppender(Layout layout, String filename) throws IOException {
     this(layout, filename, true);
   }
 
@@ -126,15 +164,12 @@ public class FileAppender extends WriterAppender {
   /**
       Returns the value of the <b>Append</b> option.
    */
-  public
-  boolean getAppend() {
+  public boolean getAppend() {
     return fileAppend;
   }
 
-
   /** Returns the value of the <b>File</b> option. */
-  public
-  String getFile() {
+  public String getFile() {
     return fileName;
   }
 
@@ -144,36 +179,33 @@ public class FileAppender extends WriterAppender {
      <b>Append</b> properties.
 
      @since 0.8.1 */
-  public
-  void activateOptions() {
-    if(fileName != null) {
+  public void activateOptions() {
+    if (fileName != null) {
       try {
-	setFile(fileName, fileAppend, bufferedIO, bufferSize);
-      }
-      catch(java.io.IOException e) {
-	errorHandler.error("setFile("+fileName+","+fileAppend+") call failed.",
-			   e, ErrorCode.FILE_OPEN_FAILURE);
+        setFile(fileName, fileAppend, bufferedIO, bufferSize);
+      } catch (java.io.IOException e) {
+        errorHandler.error(
+          "setFile(" + fileName + "," + fileAppend + ") call failed.", e,
+          ErrorCode.FILE_OPEN_FAILURE);
       }
     } else {
       //LogLog.error("File option not set for appender ["+name+"].");
-      LogLog.warn("File option not set for appender ["+name+"].");
+      LogLog.warn("File option not set for appender [" + name + "].");
       LogLog.warn("Are you using FileAppender instead of ConsoleAppender?");
     }
   }
 
- /**
-     Closes the previously opened file.
-  */
-  protected
-  void closeFile() {
-    if(this.qw != null) {
+  /**
+      Closes the previously opened file.
+   */
+  protected void closeFile() {
+    if (this.qw != null) {
       try {
-	this.qw.close();
-      }
-      catch(java.io.IOException e) {
-	// Exceptionally, it does not make sense to delegate to an
-	// ErrorHandler. Since a closed appender is basically dead.
-	LogLog.error("Could not close " + qw, e);
+        this.qw.close();
+      } catch (java.io.IOException e) {
+        // Exceptionally, it does not make sense to delegate to an
+        // ErrorHandler. Since a closed appender is basically dead.
+        LogLog.error("Could not close " + qw, e);
       }
     }
   }
@@ -185,21 +217,16 @@ public class FileAppender extends WriterAppender {
      loaded systems.
 
   */
-  public
-  boolean getBufferedIO() {
+  public boolean getBufferedIO() {
     return this.bufferedIO;
   }
-
 
   /**
      Get the size of the IO buffer.
   */
-  public
-  int getBufferSize() {
+  public int getBufferSize() {
     return this.bufferSize;
   }
-
-
 
   /**
      The <b>Append</b> option takes a boolean value. It is set to
@@ -211,8 +238,7 @@ public class FileAppender extends WriterAppender {
      <p>Note: Actual opening of the file is made when {@link
      #activateOptions} is called, not when the options are set.
    */
-  public
-  void setAppend(boolean flag) {
+  public void setAppend(boolean flag) {
     fileAppend = flag;
   }
 
@@ -226,20 +252,18 @@ public class FileAppender extends WriterAppender {
      loaded systems.
 
   */
-  public
-  void setBufferedIO(boolean bufferedIO) {
+  public void setBufferedIO(boolean bufferedIO) {
     this.bufferedIO = bufferedIO;
-    if(bufferedIO) {
+
+    if (bufferedIO) {
       immediateFlush = false;
     }
   }
 
-
   /**
      Set the size of the IO buffer.
   */
-  public
-  void setBufferSize(int bufferSize) {
+  public void setBufferSize(int bufferSize) {
     this.bufferSize = bufferSize;
   }
 
@@ -257,22 +281,24 @@ public class FileAppender extends WriterAppender {
     @param fileName The path to the log file.
     @param append   If true will append to fileName. Otherwise will
         truncate fileName.  */
-  public
-  synchronized
-  void setFile(String fileName, boolean append, boolean bufferedIO, int bufferSize)
-                                                            throws IOException {
-    LogLog.debug("setFile called: "+fileName+", "+append);
+  public synchronized void setFile(
+    String fileName, boolean append, boolean bufferedIO, int bufferSize)
+    throws IOException {
+    LogLog.debug("setFile called: " + fileName + ", " + append);
 
     // It does not make sense to have immediate flush and bufferedIO.
-    if(bufferedIO) {
+    if (bufferedIO) {
       setImmediateFlush(false);
     }
 
     reset();
+
     Writer fw = createWriter(new FileOutputStream(fileName, append));
-    if(bufferedIO) {
+
+    if (bufferedIO) {
       fw = new BufferedWriter(fw, bufferSize);
     }
+
     this.setQWForFiles(fw);
     this.fileName = fileName;
     this.fileAppend = append;
@@ -282,26 +308,21 @@ public class FileAppender extends WriterAppender {
     LogLog.debug("setFile ended");
   }
 
-
   /**
      Sets the quiet writer being used.
 
      This method is overriden by {@link RollingFileAppender}.
    */
-  protected
-  void setQWForFiles(Writer writer) {
-     this.qw = new QuietWriter(writer, errorHandler);
+  protected void setQWForFiles(Writer writer) {
+    this.qw = new QuietWriter(writer, errorHandler);
   }
-
 
   /**
      Close any previously opened file and call the parent's
      <code>reset</code>.  */
-  protected
-  void reset() {
+  protected void reset() {
     closeFile();
     this.fileName = null;
     super.reset();
   }
 }
-
