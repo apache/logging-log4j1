@@ -16,8 +16,8 @@
 
 package org.apache.log4j.xml;
 
-import org.apache.log4j.helpers.LogLog;
-
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 
@@ -34,16 +34,19 @@ import java.io.InputStream;
  * */
 public class Log4jEntityResolver implements EntityResolver {
   public InputSource resolveEntity(String publicId, String systemId) {
-    LogLog.debug("Log4jEntityResolver.resolveEntity("+publicId+","+systemId+") called");
+    Logger logger = LogManager.getLogger(Log4jEntityResolver.class);
+
+    logger.debug(
+      "Log4jEntityResolver.resolveEntity({}, {}) called", publicId, systemId);
     if (systemId.endsWith("log4j.dtd")) {
       Class clazz = getClass();
       InputStream in =
         clazz.getResourceAsStream("/org/apache/log4j/xml/log4j.dtd");
 
       if (in == null) {
-        LogLog.error(
-          "Could not find [log4j.dtd]. Used [" + clazz.getClassLoader()
-          + "] class loader in the search.");
+        logger.error(
+          "Could not find [log4j.dtd]. Used [{}] class loader in the search.",
+          clazz.getClassLoader());
 
         return null;
       } else {

@@ -10,7 +10,6 @@ package subclass;
 import org.apache.log4j.*;
 
 import org.apache.log4j.PropertyConfigurator;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.joran.JoranConfigurator;
 
 /**
@@ -62,7 +61,8 @@ public class MyLoggerTest {
       c.trace("Hello");
       c.debug("Hello");
     } catch(ClassCastException e) {
-      LogLog.error("Did you forget to set the factory in the config file?", e);
+      System.err.println("Did you forget to set the factory in the config file?");
+      e.printStackTrace(System.err);
     }
   }
 
