@@ -88,8 +88,8 @@
   </path>
 
   <!-- Construct classpath for building the html pages-->
-  <path id="site2.classpath">
-    <fileset dir="${jakarta-site2}/lib">
+  <path id="site.classpath">
+    <fileset dir="${logging-site}/lib">
       <include name="*.jar"/>
     </fileset>
   </path>
@@ -625,23 +625,23 @@
   <!-- ============================================== -->
   <!-- Build the site files using Anakia              -->
   <!-- ============================================== -->
-  <target name="prepareSite2">
+  <target name="prepareSite">
     <available classname="org.apache.velocity.anakia.AnakiaTask"
       property="AnakiaTask.present">
-      <classpath refid="site2.classpath"/>
+      <classpath refid="site.classpath"/>
     </available>
   </target>
 
-  <target name="checkSite2" depends="prepareSite2" unless="AnakiaTask.present">
+  <target name="checkSite" depends="prepareSite" unless="AnakiaTask.present">
     <echo>
       AnakiaTask is not present! Please check to make sure that
       velocity.jar is in your classpath.
     </echo>
   </target>
 
-  <target name="site2" depends="checkSite2" if="AnakiaTask.present">
+  <target name="site" depends="checkSite" if="AnakiaTask.present">
     <taskdef name="anakia" classname="org.apache.velocity.anakia.AnakiaTask">
-      <classpath refid="site2.classpath"/>
+      <classpath refid="site.classpath"/>
     </taskdef>
  
     <mkdir dir="${docs.dest}/css"/>  
@@ -657,22 +657,13 @@
       templatePath="${logging-site}/src/xdocs/stylesheets">
     </anakia>
 
-    <anakia basedir="${xdocs.src}" destdir="${docs.dest}/"
-      extension=".html"
-      style="site.vsl"
-      projectFile="stylesheets/lf5.xml"
-      excludes="**/stylesheets/**, empty.xml"
-      includes="lf5/*.xml"
-      lastModifiedCheck="true"
-      templatePath="${jakarta-site2}/xdocs/stylesheets">
-    </anakia>
   </target>
 
 
  <!-- ================================================================= -->
  <!-- Build a complete distribution. Results go to ${dist.images}       -->
  <!-- ================================================================= -->
-  <target name="dist" depends="init, clean, javadoc, jar, site2">
+  <target name="dist" depends="init, clean, javadoc, jar, site">
 
     <delete verbose="true">
       <fileset dir=".">
