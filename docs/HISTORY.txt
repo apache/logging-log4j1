@@ -14,8 +14,6 @@
  - Fixed Bugzilla 15198: TelnetAppender: NullPointerException if
    SocketHandler not initialized. [*]
 
- - Implemented Bugzilla 14934: MDC#setContext method added. [*]
-
  - Implemented Bugzilla 16883: Default ConsoleAppender constructor
    enhanced with output sink and layout. [*]
 
