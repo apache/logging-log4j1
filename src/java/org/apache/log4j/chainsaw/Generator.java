@@ -136,6 +136,7 @@ public class Generator extends Receiver implements Runnable {
    */
   public void activateOptions() {
     thread = new Thread(this);
+    thread.setPriority(Thread.MIN_PRIORITY);
     thread.start();
   }
 }
