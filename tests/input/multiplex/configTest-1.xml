@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE log4j:configuration>
 	  
-<log4j:configuration debug="true">
+<log4j:configuration xmlns:log4j='http://logging.apache.org/' debug="true">
 	  
 	    
   <appender name="Multiplex" class="org.apache.log4j.multiplex.MultiplexAppender">

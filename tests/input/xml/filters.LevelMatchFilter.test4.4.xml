@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE log4j:configuration >
 
-<log4j:configuration>
+<log4j:configuration xmlns:log4j='http://logging.apache.org/'>
   <appender name="A1" class="org.apache.log4j.FileAppender">
     <param name="File"   value="output/filters.LevelMatchFilter.test4.txt" />
     <param name="Append" value="true" />
