@@ -43,8 +43,7 @@
 and documentation in
 <a href="../jakarta-log4j-1.1.3.tar.gz"><b>TAR.GZ</b></a> format or in
 <a href="../jakarta-log4j-1.1.3.zip"><b>ZIP</b></a> format. You may
-elect to browse log4j <a
-href="documentation.html"><b>documentation</b></a> online. 
+elect to browse log4j <a href="documentation.html"><b>documentation</b></a> online. 
 </p>
 
  
@@ -83,27 +82,21 @@ paleontologist.</p>
   </dt>
   <dd>A custom log tag from the <a href="http://jakarta.apache.org/taglibs/index.html">Jakarta Taglibs</a> project.</dd>
 
-  <dt><a href="http://www.epesh.com/logtags.jsp"><b>The Log Tag Library</b></a></dt>
+  <dt><a href="http://www.adjacency.org/logtags.jsp"><b>The Log Tag Library</b></a></dt>
   <dd>Yet another tag library designed to give JSP tag-level access to log4j.</dd>
 
   <dt><a href="http://www.japhy.de/configLog4j"><b>configLog4j</b></a></dt>
   <dd>A visual log4j configuration file editor by Tobias Dezulian.</dd>
-
     
-  <dt><a href="http://developer.jini.org/exchange/projects/log"><b>JINI logging service</b></a></dt>
+  <dt><a href="http://developer.jini.org/exchange/projects/log"><b>JINI logging service</b></a> (registration required)</dt>
   <dd>A log4j wrapper for JINI Jerome Bernard.</dd>
-
-
-
   
 </dl>
 
 
-<p>If you would like your software to be listed here, then send a note
-to the <a
+<p>If you would like your software to be listed here, then send a note to the <a
 href="mailto:log4j-user@jakarta.apache.org">log4j-user@jakarta.apache.org</a>
 list.</p>
-
 
 </section>
 
