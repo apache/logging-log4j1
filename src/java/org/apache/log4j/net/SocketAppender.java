@@ -201,6 +201,7 @@ public class SocketAppender extends AppenderSkeleton {
      <p>This will mark the appender as closed and
      call then {@link #cleanUp} method.
   */
+  synchronized
   public
   void close() {
     if(closed)
