@@ -128,9 +128,7 @@
   <target name="avalonFrameworkCheck">
     <available classname="org.apache.avalon.framework.logger.Logger"
         property="avalonFramework-present">
-      <classpath>
-        <pathelement location="${avalon-framework.jar}"/>
-      </classpath>
+         <classpath refid="compile.classpath"/>
     </available>
   </target>
   <target name="avalonFramework" depends="avalonFrameworkCheck" if="avalonFramework-present">
@@ -139,21 +137,16 @@
 
   <target name="jmxCheck">
     <available classname="javax.management.MBeanInfo" property="jmx-present">
-      <classpath>
-  <pathelement location="${jmx.jar}"/>
-      </classpath>
+     <classpath refid="compile.classpath"/>
     </available>
   </target>
   <target name="jmx" depends="jmxCheck" if="jmx-present">
     <echo message="JMX is present."/>
   </target>
 
-
   <target name="jmsCheck">
     <available classname="javax.jms.Message" property="jms-present">
-      <classpath>
-  <pathelement location="${jms.jar}"/>
-      </classpath>
+     <classpath refid="compile.classpath"/>
     </available>
   </target>
   <target name="jms" depends="jmsCheck" if="jms-present">
@@ -169,15 +162,21 @@
 
   <target name="javamailCheck">
     <available classname="javax.mail.Message" property="javamail-present">
-      <classpath>
-  <pathelement location="${javamail.jar}"/>
-      </classpath>
+      <classpath refid="compile.classpath"/>
     </available>
   </target>
   <target name="javamail" depends="javamailCheck" if="javamail-present">
     <echo message="JAVAMAIL is present."/>
   </target>
 
+  <target name="servletAPICheck">
+    <available classname="javax.servlet.ServletContext" property="servletAPI-present">
+     <classpath refid="compile.classpath"/>
+    </available>
+  </target>
+  <target name="servletAPI" depends="servletAPICheck" if="servletAPI-present">
+    <echo message="Servlet API is present."/>
+  </target>
   <!-- ================================================================= -->
   <!-- Initialize variables                                              -->
   <!-- NOTE: all directories are relative to jakarta-log4j/              -->
@@ -188,7 +187,7 @@
 
   <target name="build" description="Compile all log4j components."
          depends="init, build.core, build.lf5, build.chainsaw, build.examples, build.xml,
-         build.javamail, build.jms, build.jmx, build.avalonFramework"/>
+         build.javamail, build.jms, build.jmx, build.avalonFramework, build.servletAPI"/>
 
   <target name="build.core" depends="init">
     <mkdir dir="${javac.dest}" />
@@ -209,7 +208,8 @@
                     ${stem}/rule/*.java,
                     ${stem}/varia/Log4JAvalonLogger.java,
                     ${stem}/varia/ExpressionFilter.java,
-                    ${stem}/or/jms/*.java"
+                    ${stem}/or/jms/*.java,
+                    ${stem}/selector/servlet/*.java"
         deprecation="${deprecation}"
       debug="on">
       <classpath refid="compile.classpath"/>
@@ -278,8 +278,8 @@
     </javac>
   </target>
 
- <target name="build.javamail" depends="init, javamail"
-               if="javamail-present">
+  <target name="build.javamail" depends="init, javamail"
+                if="javamail-present">
     <javac srcdir="${java.source.dir}"
      destdir="${javac.dest}"
      deprecation="${deprecation}"
@@ -307,7 +307,17 @@
     </javac>
   </target>
 
- <target name="build.chainsaw" depends="init, chainsawCheck, build.core" if="chainsaw-libraries-present">
+   <target name="build.servletAPI" depends="init, servletAPI"
+                if="servletAPI-present">
+    <javac srcdir="${java.source.dir}"
+     destdir="${javac.dest}"
+     deprecation="${deprecation}"
+     includes="${stem}/selector/servlet/*.java">
+      <classpath refid="compile.classpath"/>
+    </javac>
+  </target>
+  
+  <target name="build.chainsaw" depends="init, chainsawCheck, build.core" if="chainsaw-libraries-present">
     <javac deprecation="${deprecation}"
            srcdir="${java.source.dir}"
      destdir="${javac.dest}"
