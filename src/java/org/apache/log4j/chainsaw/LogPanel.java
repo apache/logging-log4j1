@@ -1782,15 +1782,17 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
       KeyStroke.getKeyStroke(KeyEvent.VK_F3, KeyEvent.SHIFT_MASK),
       undockedFindPreviousAction.getValue(Action.NAME));
 
-    Dimension findSize = new Dimension(132, 28);
-    Dimension findPanelSize = new Dimension(144, 28);
+    Dimension findSize = new Dimension(170, 22);
+    Dimension findPanelSize = new Dimension(175, 30);
     findPanel.setPreferredSize(findPanelSize);
     findPanel.setMaximumSize(findPanelSize);
     findPanel.setMinimumSize(findPanelSize);
     findField.setPreferredSize(findSize);
     findField.setMaximumSize(findSize);
     findField.setMinimumSize(findSize);
-
+    findPanel.setAlignmentY(Component.CENTER_ALIGNMENT);
+    findField.setAlignmentY(Component.CENTER_ALIGNMENT);
+    
     toolbar.add(findPanel);
     toolbar.add(undockedFindNextButton);
     toolbar.add(undockedFindPreviousButton);

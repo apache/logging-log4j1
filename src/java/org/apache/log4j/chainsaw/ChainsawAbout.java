@@ -20,12 +20,13 @@
 */
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -35,6 +36,8 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
 
 
 /**
@@ -60,17 +63,32 @@ class ChainsawAbout extends JDialog {
     c.gridx = 0;
     c.gridy = 0;
 
-    JLabel info =
-      new JLabel("TODO");
-//        TODO insert the appropriate text
-    panel.add(info, c);
+    final JLabel info =
+      new JLabel("<html>Chainsaw 2.0alpha<p><p>" +
+        "Brought to you by the Log4J team:<p>" +
+        "<b>http://logging.apache.org/log4j</b><p><p>" +
+      "Bug report, mailing list and wiki information:<p>" +
+      "<b>http://logging.apache.org/site/bugreport.html</b><p><p>" +
+      "<b>Contributors:</b><ul><li>Scott Deboy &lt;sdeboy@apache.org&gt;</li><li>Paul Smith &lt;psmith@apache.org&gt;</li><li>Ceki G&uuml;lc&uuml; &lt;ceki@apache.org&gt;</li></ul></html>");
+
+      JButton button = new JButton("Copy bug report link to clipboard");
+      button.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent event) {
+              Toolkit tk = getToolkit();
+              Clipboard cb = tk.getSystemClipboard();
+              cb.setContents(new StringSelection("http://logging.apache.org/site/bugreport.html"), null);
+              }});
+              panel.add(info, c);
 
     JLabel title = new JLabel(ChainsawIcons.ICON_LOG4J);
     c.gridy = 1;
 
-    panel.add(title, c);
+    panel.add(button, c);
 
     c.gridy = 2;
+    panel.add(title, c);
+
+    c.gridy = 3;
     c.anchor = GridBagConstraints.EAST;
 
     JButton closeButton = new JButton("Close");
