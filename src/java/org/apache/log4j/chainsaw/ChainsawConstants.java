@@ -49,6 +49,7 @@
 
 package org.apache.log4j.chainsaw;
 
+import java.awt.Color;
 import java.net.URL;
 
 /**
@@ -61,6 +62,9 @@ import java.net.URL;
  */
 public class ChainsawConstants {
   private ChainsawConstants(){}
+  
+  public static final Color COLOR_ODD_ROW = new Color(230, 230, 230);
+  public static final Color COLOR_EVEN_ROW = new Color(255,255,255);
   
   public static final URL WELCOME_URL = ChainsawConstants.class.getClassLoader().getResource(
   "org/apache/log4j/chainsaw/WelcomePanel.html");
@@ -113,4 +117,5 @@ public class ChainsawConstants {
   static final String LEVEL_DISPLAY_TEXT = "text";  
 
   static final String DATETIME_FORMAT = "EEE MMM dd HH:mm:ss z yyyy";
+
 }
