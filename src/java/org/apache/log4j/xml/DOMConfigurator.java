@@ -539,7 +539,7 @@ public class DOMConfigurator implements Configurator {
   public
   void configure (Element element) {
     DOMConfigurator configurator = new DOMConfigurator();
-    configurator.parse(element);
+    configurator.doConfigure(element,  LogManager.getLoggerRepository());
   }
 
  /**
