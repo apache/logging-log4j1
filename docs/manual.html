@@ -728,7 +728,7 @@ environment. In particular, there are no default log4j
 appenders. Under certain well-defined circumstances however, the
 static inializer of the <code>Category</code> class will attempt to
 automatically configure log4j. The Java language guarantees that the
-static initializer of a class is called once and only during the
+static initializer of a class is called once and only once during the
 loading of a class into memory. (Although different classloaders may
 load distinct copies of the same class.)
 
@@ -758,17 +758,17 @@ control of a web-server.
  example due to a <code>MalformedURLException</code>, then search for
  the <code>resource</code> from the classpath by calling
  <code>org.apache.log4j.helpers.Loader.getResource(resource,
- Category.class)</code>. Note that "log4j.properties" is a a malformed
- URL and hence it falls to this case.
+ Category.class)</code> which returns a URL.  Note that
+ "log4j.properties" is a malformed URL and hence it falls to this
+ case.
 
  <p>See <a
  href="api/org/apache/log4j/helpers/Loader.html#getResource(java.lang.String, java.lang.Class)">Loader.getResource(java.lang.String, java.lang.Class)</a>
  for the list of searched locations which is rather complex in
  itself..
 
- <p><li>If the URL could not be found, abort default initialization.
-
- <p><li>Otherwise, configure log4j from the URL.
+ <p><li>If no URL could not be found, abort default
+ initialization. Otherwise, configure log4j from the URL.
 
 
  <p>The URL format is important. Its <em>reference</em> part is
