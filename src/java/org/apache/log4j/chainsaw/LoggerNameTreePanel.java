@@ -51,15 +51,22 @@
  */
 package org.apache.log4j.chainsaw;
 
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.chainsaw.icons.LineIconFactory;
+import org.apache.log4j.helpers.LogLog;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -73,12 +80,14 @@ import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.JTree;
 import javax.swing.ToolTipManager;
-import javax.swing.UIManager;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionEvent;
@@ -89,9 +98,6 @@ import javax.swing.tree.DefaultTreeSelectionModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
-
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-import org.apache.log4j.helpers.LogLog;
 
 
 /**
@@ -107,17 +113,30 @@ final class LoggerNameTreePanel extends JPanel {
   private final JButton expandButton = new SmallButton();
   private final JButton collapseButton = new SmallButton();
   private final JButton closeButton = new SmallButton();
+  private final SmallToggleButton focusOnLoggerButton =
+    new SmallToggleButton();
   private final JButton editLoggerButton = new SmallButton();
   private final Action expandAction;
   private final Action collapseAction;
   private final Action closeAction;
   private final Action editLoggerAction;
+  private final Action focusOnAction;
+
+  //  private final EventListenerList focusOnActionListeners =
+  //    new EventListenerList();
+  private final LogPanelLoggerTreeModel logTreeModel;
+  private LoggerNameTreeCellRenderer cellRenderer =
+    new LoggerNameTreeCellRenderer();
+  private final LoggerTreePopupMenu popupMenu;
+  private final PopupListener popupListener;
 
   /**
    * @param logTreeModel
    */
   LoggerNameTreePanel(LogPanelLoggerTreeModel logTreeModel) {
     super();
+    this.logTreeModel = logTreeModel;
+
     setLayout(new BorderLayout());
     setBorder(BorderFactory.createEtchedBorder());
 
@@ -130,28 +149,12 @@ final class LoggerNameTreePanel extends JPanel {
 
             TreePath path = logTree.getPathForLocation(ev.getX(), ev.getY());
 
-            if (path != null) {
-              Object[] objects = path.getPath();
-              StringBuffer buf = new StringBuffer();
-
-              for (int i = 1; i < objects.length; i++) {
-                buf.append(objects[i].toString());
-
-                if (i < (objects.length - 1)) {
-                  buf.append(".");
-                }
-              }
-
-              //				TODO output the Level filter details
-              return buf.toString();
-            }
-
-            return null;
+            return getLoggerName(path);
           }
         };
 
     ToolTipManager.sharedInstance().registerComponent(logTree);
-    logTree.setCellRenderer(new LoggerNameTreeCellRenderer());
+    logTree.setCellRenderer(cellRenderer);
 
     //	============================================
     logTreeModel.addTreeModelListener(
@@ -189,6 +192,11 @@ final class LoggerNameTreePanel extends JPanel {
     editLoggerAction = createEditLoggerAction();
     closeAction = createCloseAction();
     collapseAction = createCollapseAction();
+    focusOnAction = createFocusOnAction();
+
+    popupMenu = new LoggerTreePopupMenu();
+    popupListener = new PopupListener(popupMenu);
+
     setupListeners();
     configureToolbarPanel();
 
@@ -196,6 +204,112 @@ final class LoggerNameTreePanel extends JPanel {
     add(scrollTree, BorderLayout.CENTER);
   }
 
+  /**
+  * @return
+  */
+  private Action createFocusOnAction() {
+    final Action action =
+      new AbstractAction() {
+        public void actionPerformed(ActionEvent e) {
+          toggleFocusOnState();
+        }
+      };
+
+    action.putValue(Action.NAME, "Focus");
+    action.putValue(
+      Action.SHORT_DESCRIPTION,
+      "Allows you to Focus on the selected logger by setting a filter that discards all but this Logger");
+    action.putValue(
+      Action.SMALL_ICON, new ImageIcon(ChainsawIcons.WINDOW_ICON));
+
+    action.setEnabled(false);
+
+    return action;
+  }
+
+  private void toggleFocusOnState() {
+    Object checked = focusOnAction.getValue("checked");
+
+    if (checked == null) {
+      focusOnAction.putValue("checked", Boolean.TRUE);
+    } else {
+      focusOnAction.putValue("checked", null);
+    }
+  }
+
+  //  /**
+  //   * @param e
+  //   */
+  //  private void fireFocusOnEvent(ActionEvent e) {
+  //    ActionListener[] listeners =
+  //      (ActionListener[]) focusOnActionListeners.getListeners(
+  //        ActionListener.class);
+  //
+  //    for (int i = 0; i < listeners.length; i++) {
+  //      ActionListener listener = listeners[i];
+  //      listener.actionPerformed(e);
+  //    }
+  //  }
+  //  /**
+  //   * Interested parties register themselves here to be notified when the FocusOn action
+  //   * has been invoked.
+  //   * @param l
+  //   */
+  //  void addFocusOnActionListener(ActionListener l) {
+  //    focusOnActionListeners.add(ActionListener.class, l);
+  //  }
+
+  /**
+   * Returns the full name of the Logger that is represented by
+   * the currently selected Logger node in the tree.
+   *
+   * This is the dotted name, of the current node including all it's parents.
+   *
+   * If multiple Nodes are selected, the first path is used
+   * @return Logger Name or null if nothing selected
+   */
+  String getCurrentlySelectedLoggerName() {
+    TreePath[] paths = logTree.getSelectionPaths();
+
+    if ((paths == null) || (paths.length == 0)) {
+      return null;
+    }
+
+    TreePath firstPath = paths[0];
+
+    return getLoggerName(firstPath);
+  }
+
+  /**
+   * Returns the full
+   * @return
+   */
+  String getLoggerName(TreePath path) {
+    if (path != null) {
+      Object[] objects = path.getPath();
+      StringBuffer buf = new StringBuffer();
+
+      for (int i = 1; i < objects.length; i++) {
+        buf.append(objects[i].toString());
+
+        if (i < (objects.length - 1)) {
+          buf.append(".");
+        }
+      }
+
+      return buf.toString();
+    }
+
+    return null;
+  }
+
+  //  /**
+  //   * Can remove a listener from being notified of FocusOn events
+  //   * @param l
+  //   */
+  //  void removeFocusOnActionListener(ActionListener l) {
+  //    focusOnActionListeners.remove(ActionListener.class, l);
+  //  }
   private void ensureRootExpanded() {
     logTree.expandRow(0);
   }
@@ -211,7 +325,8 @@ final class LoggerNameTreePanel extends JPanel {
         }
       };
 
-    action.putValue(Action.NAME, "Collapse");
+    action.putValue(Action.SMALL_ICON, LineIconFactory.createCollapseIcon());
+    action.putValue(Action.NAME, "Collapse Branch");
     action.putValue(
       Action.SHORT_DESCRIPTION,
       "Collapses all the children of the currently selected node");
@@ -234,7 +349,7 @@ final class LoggerNameTreePanel extends JPanel {
 
     action.putValue(Action.NAME, "Close");
     action.putValue(Action.SHORT_DESCRIPTION, "Closes the Logger panel");
-    action.putValue(Action.SMALL_ICON, new CloseIcon(8, 1, 1));
+    action.putValue(Action.SMALL_ICON, LineIconFactory.createCloseIcon());
 
     return action;
   }
@@ -252,8 +367,28 @@ final class LoggerNameTreePanel extends JPanel {
         public void valueChanged(TreeSelectionEvent e) {
           TreePath path = e.getNewLeadSelectionPath();
           expandAction.setEnabled(path != null);
-//          editLoggerAction.setEnabled(path != null);
+          TreeNode node = (TreeNode) path.getLastPathComponent();
+          //          editLoggerAction.setEnabled(path != null);
+          focusOnAction.setEnabled(path != null && node.getParent()!=null);
           collapseAction.setEnabled(path != null);
+          
+          reconfigureFocusOnText();
+        }
+      });
+
+    logTree.addMouseListener(popupListener);
+
+    /**
+     * This listener ensures the Tool bar toggle button and popup menu check box
+     * stay in sync
+     */
+    focusOnAction.addPropertyChangeListener(
+      new PropertyChangeListener() {
+        public void propertyChange(PropertyChangeEvent evt) {
+          popupMenu.focusOnCheck.setSelected(isFocusOnSelected());
+          focusOnLoggerButton.setSelected(isFocusOnSelected());
+          logTreeModel.nodeChanged(
+            (TreeNode) logTree.getSelectionPath().getLastPathComponent());
         }
       });
 
@@ -278,6 +413,35 @@ final class LoggerNameTreePanel extends JPanel {
       });
   }
 
+
+    private void reconfigureFocusOnText() {
+        String logger = getCurrentlySelectedLoggerName();
+        if(logger == null || logger.length()==0) {
+            focusOnAction.putValue(Action.NAME, "Focus On...");
+        } else {
+            focusOnAction.putValue(Action.NAME, "Focus On '" + logger + "'");
+        }
+        
+        // need to ensure the button doens't update itself with the text, looks stupid otherwise
+        focusOnLoggerButton.setText(null);
+    }
+    
+    /**
+     * Returns true if the FocusOn element has been selected
+     * @return true if the FocusOn action/lement has been selected
+     */
+  boolean isFocusOnSelected() {
+    return focusOnAction.getValue("checked") != null;
+  }
+  
+  void addFocusOnPropertyChangeListener(PropertyChangeListener l) {
+      focusOnAction.addPropertyChangeListener(l);
+  }
+
+  void removeFocusOnPropertyChangeListener(PropertyChangeListener l) {
+    focusOnAction.removePropertyChangeListener(l);    
+  }
+  
   private Action createEditLoggerAction() {
     Action action =
       new AbstractAction() {
@@ -286,9 +450,9 @@ final class LoggerNameTreePanel extends JPanel {
         }
       };
 
-//    TODO enable this when it's ready.
+    //    TODO enable this when it's ready.
     action.putValue("enabled", Boolean.FALSE);
-    
+
     action.putValue(Action.NAME, "Edit filters/colors");
     action.putValue(
       Action.SHORT_DESCRIPTION,
@@ -313,6 +477,7 @@ final class LoggerNameTreePanel extends JPanel {
         }
       };
 
+    action.putValue(Action.SMALL_ICON, LineIconFactory.createExpandIcon());
     action.putValue(Action.NAME, "Expand branch");
     action.putValue(
       Action.SHORT_DESCRIPTION,
@@ -433,15 +598,16 @@ final class LoggerNameTreePanel extends JPanel {
   private void configureToolbarPanel() {
     toolbar.setFloatable(false);
 
-    
     expandButton.setAction(expandAction);
-    expandButton.setText("+");
+    expandButton.setText(null);
     collapseButton.setAction(collapseAction);
-    collapseButton.setText("-");
+    collapseButton.setText(null);
+    focusOnLoggerButton.setAction(focusOnAction);
+    focusOnLoggerButton.setText(null);
 
     expandButton.setFont(expandButton.getFont().deriveFont(Font.BOLD));
     collapseButton.setFont(collapseButton.getFont().deriveFont(Font.BOLD));
-    
+
     editLoggerButton.setAction(editLoggerAction);
     editLoggerButton.setText(null);
     closeButton.setAction(closeAction);
@@ -449,6 +615,8 @@ final class LoggerNameTreePanel extends JPanel {
 
     toolbar.add(expandButton);
     toolbar.add(collapseButton);
+    toolbar.addSeparator();
+    toolbar.add(focusOnLoggerButton);
     toolbar.add(editLoggerButton);
     toolbar.addSeparator();
 
@@ -462,20 +630,17 @@ final class LoggerNameTreePanel extends JPanel {
         * @author Paul Smith <psmith@apache.org>
         *
         */
-  private static class LoggerNameTreeCellRenderer
-    extends DefaultTreeCellRenderer {
-    private JPanel panel = new JPanel();
-
+  private class LoggerNameTreeCellRenderer extends DefaultTreeCellRenderer {
+    //    private JPanel panel = new JPanel();
     private LoggerNameTreeCellRenderer() {
       super();
-      panel.setBackground(UIManager.getColor("Tree.textBackground"));
 
+      //      panel.setBackground(UIManager.getColor("Tree.textBackground"));
       Icon leafIcon = getDefaultLeafIcon();
       Icon icon = new ImageIcon(ChainsawIcons.WINDOW_ICON);
 
-      panel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
-      panel.add(this);
-
+      //      panel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+      //      panel.add(this);
       setLeafIcon(null);
       setOpaque(false);
     }
@@ -486,15 +651,53 @@ final class LoggerNameTreePanel extends JPanel {
     public Component getTreeCellRendererComponent(
       JTree tree, Object value, boolean sel, boolean expanded, boolean leaf,
       int row, boolean hasFocus) {
-      Component component =
-        super.getTreeCellRendererComponent(
+      JLabel component =
+        (JLabel) super.getTreeCellRendererComponent(
           tree, value, sel, expanded, leaf, row, hasFocus);
 
-      if (row == 0) {
+      Font originalFont = component.getFont();
+
+      if (sel && focusOnLoggerButton.isSelected()) {
+        component.setFont(originalFont.deriveFont(Font.BOLD));
       } else {
+        component.setFont(originalFont.deriveFont(Font.PLAIN));
       }
 
-      return panel;
+      return component;
+    }
+  }
+
+  private class LoggerTreePopupMenu extends JPopupMenu {
+    JCheckBoxMenuItem focusOnCheck = new JCheckBoxMenuItem();
+
+    private LoggerTreePopupMenu() {
+      initMenu();
+    }
+
+    /**
+       *
+       */
+    private void initMenu() {
+      add(expandAction);
+      add(collapseAction);
+      addSeparator();
+      focusOnCheck.setAction(focusOnAction);
+      add(focusOnCheck);
+      add(editLoggerAction);
+    }
+
+    /* (non-Javadoc)
+    * @see javax.swing.JPopupMenu#show(java.awt.Component, int, int)
+    */
+    public void show(Component invoker, int x, int y) {
+      DefaultMutableTreeNode node =
+        (DefaultMutableTreeNode) logTree.getLastSelectedPathComponent();
+
+      if (node == null) {
+        return;
+      }
+
+      super.show(invoker, x, y);
     }
   }
 }
