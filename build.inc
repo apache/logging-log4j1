@@ -104,6 +104,9 @@
                	    ${stem}/or/MessageRenderer.java,
 		    **/pending/**" 
 	    debug="on"/>			
+    <rmic base="${classes}" 
+	  classname="org.apache.log4j.examples.NumberCruncherServer"
+	/>
   </target>
 
   <target name="build.swing" depends="init, swing" if="swing-present">   
