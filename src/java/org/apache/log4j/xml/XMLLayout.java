@@ -31,7 +31,7 @@ import org.apache.log4j.helpers.DateLayout;
 
    &lt;!DOCTYPE log4j:eventSet SYSTEM "log4j.dtd" [&lt;!ENTITY data SYSTEM "abc"&gt;]&gt;
 
-   &lt;log4j:eventSet xmlns:log4j="http://jakarta.apache.org/log4j"&gt;
+   &lt;log4j:eventSet xmlns:log4j="http://jakarta.apache.org/log4j/"&gt;
        &nbsp;&nbsp;&data;
    &lt;/log4j:eventSet&gt;
    </pre>

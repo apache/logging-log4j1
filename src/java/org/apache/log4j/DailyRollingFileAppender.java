@@ -211,11 +211,8 @@ public class DailyRollingFileAppender extends FileAppender {
       printPeriodicity(type);
       rc.setType(type);
       File file = new File(fileName);
-      if(file.exists()) {
-	scheduledFilename = fileName+sdf.format(new Date(file.lastModified()));
-      } else {
-	scheduledFilename = fileName+sdf.format(now);
-      }
+      scheduledFilename = fileName+sdf.format(new Date(file.lastModified()));
+
     } else {
       LogLog.error("Either Filename or DatePattern options are not set for ["+
 		   name+"].");
