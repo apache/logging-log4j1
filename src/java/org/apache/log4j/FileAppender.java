@@ -373,7 +373,7 @@ public class FileAppender extends AppenderSkeleton {
 	setWriter(new OutputStreamWriter(System.err));
       else {
 	fileName = value;
-      }
+      } 
     }
     else if (key.equalsIgnoreCase(APPEND_OPTION)) {
       fileAppend = OptionConverter.toBoolean(value, fileAppend);
