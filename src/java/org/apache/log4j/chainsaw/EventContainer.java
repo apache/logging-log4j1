@@ -49,7 +49,9 @@
 
 package org.apache.log4j.chainsaw;
 
-import java.util.Vector;
+import java.util.List;
+
+import org.apache.log4j.spi.LoggingEvent;
 
 /**
  * To allow pluggable TableModel implementations for Chainsaw, this interface has been factored out.
@@ -88,14 +90,14 @@ public interface EventContainer extends SortTableModel, FilterChangedListener, L
   int find(int startRow, String text);
 
   /**
-   * Returns every event in the model.
+   * Returns a copied list of all the event in the model.
    */
-  Vector getAllEvents();
+  List getAllEvents();
 
   /**
    * Returns the vector representing the row.
    */
-  Vector getRow(int row);
+  LoggingEvent getRow(int row);
 
   /**
    * Adds a row to the model.
@@ -103,7 +105,7 @@ public interface EventContainer extends SortTableModel, FilterChangedListener, L
    * @param valueIsAdjusting
    * @return flag representing whether or not the row is being displayed (not filtered)
    */
-  boolean isAddRow(Vector row, boolean valueIsAdjusting);
+  boolean isAddRow(LoggingEvent e, boolean valueIsAdjusting);
 
   /**
    * Allow a forced notification of the EventCountListeners
@@ -121,15 +123,11 @@ public interface EventContainer extends SortTableModel, FilterChangedListener, L
    * Returns the index of the row
    * @param row
    */
-  int getRowIndex(Vector v);
+  int getRowIndex(LoggingEvent e);
 
   /**
    * Causes the EventContainer to sort according to it's configured attributes
    */
   void sort();
 
-  /**
-   * Return the detail text - uses the selected columns defined in the display filter
-   */
-  String getDetailText(int selectedRow);
 }
