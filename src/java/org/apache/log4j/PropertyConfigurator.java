@@ -136,51 +136,51 @@ public class PropertyConfigurator extends BasicConfigurator
     log4j.appender.appenderName.layout.optionN=valueN
     </pre>
     
-    <h3>Configuring categories</h3>
+    <h3>Configuring loggers</h3>
 
-    <p>The syntax for configuring the root category is:
+    <p>The syntax for configuring the root logger is:
     <pre>
-      log4j.rootCategory=[priority], appenderName, appenderName, ...
+      log4j.rootLogger=[level], appenderName, appenderName, ...
     </pre>
 
-    <p>This syntax means that an optional <em>priority value</em> can
-    be supplied followed by appender names separated by commas.
+    <p>This syntax means that an optional <em>level</em> can be
+    supplied followed by appender names separated by commas.
 
-    <p>The priority value can consist of the string values FATAL,
-    ERROR, WARN, INFO, DEBUG or a <em>custom priority</em> value. A
-    custom priority value can be specified in the form
-    <code>priority#classname</code>. 
+    <p>The level value can consist of the string values FATAL,
+    ERROR, WARN, INFO, DEBUG or a <em>custom level</em> value. A
+    custom level value can be specified in the form
+    <code>level#classname</code>. 
     
-    <p>If a priority value is specified, then the root priority is set
-    to the corresponding priority.  If no priority value is specified,
-    then the root priority remains untouched.
+    <p>If a level value is specified, then the root level is set
+    to the corresponding level.  If no level value is specified,
+    then the root level remains untouched.
 
-    <p>The root category can be assigned multiple appenders.
+    <p>The root logger can be assigned multiple appenders.
     
     <p>Each <i>appenderName</i> (separated by commas) will be added to
-    the root category. The named appender is defined using the
+    the root logger. The named appender is defined using the
     appender syntax defined above.
 
     <p>For non-root categories the syntax is almost the same:
     <pre>
-    log4j.category.category_name=[priority|INHERITED], appenderName, appenderName, ...
+    log4j.logger.logger_name=[level|INHERITED], appenderName, appenderName, ...
     </pre>
 
-    <p>The meaning of the optional priority value is discussed above
-    in relation to the root category. In addition however, the value
-    INHERITED can be specified meaning that the named category should
-    inherit its priority from the category hierarchy.
+    <p>The meaning of the optional level value is discussed above
+    in relation to the root logger. In addition however, the value
+    INHERITED can be specified meaning that the named logger should
+    inherit its level from the logger hierarchy.
 
-    <p>If no priority value is supplied, then the priority of the
-    named category remains untouched.
+    <p>If no level value is supplied, then the level of the
+    named logger remains untouched.
 
-    <p>By default categories inherit their priority from the
-    hierarchy. However, if you set the priority of a category and
-    later decide that that category should inherit its priority, then
-    you should specify INHERITED as the value for the priority value.
+    <p>By default categories inherit their level from the
+    hierarchy. However, if you set the level of a logger and
+    later decide that that logger should inherit its level, then
+    you should specify INHERITED as the value for the level value.
     
-    <p>Similar to the root category syntax, each <i>appenderName</i>
-    (separated by commas) will be attached to the named category.
+    <p>Similar to the root logger syntax, each <i>appenderName</i>
+    (separated by commas) will be attached to the named logger.
     
     <p>See the <a href="../../../../manual.html#additivity">appender
     additivity rule</a> in the user manual for the meaning of the
@@ -212,17 +212,17 @@ public class PropertyConfigurator extends BasicConfigurator
     <h3>Class Factories</h3>
 
     In case you are using your own subtypes of the
-    <code>Category</code> class and wish to use configuration files,
-    then you <em>must</em> set the <code>categoryFactory</code> for
+    <code>Logger</code> class and wish to use configuration files,
+    then you <em>must</em> set the <code>loggerFactory</code> for
     the subtype that you are using.
     
     <p>The syntax is:
 
     <pre>
-    log4j.categoryFactory=fully.qualified.name.of.categoryFactory.class
+    log4j.loggerFactory=fully.qualified.name.of.loggerFactory.class
     </pre>
 
-    See {@link org.apache.log4j.examples.MyCategory} for an example.
+    See {@link org.apache.log4j.examples.MyLogger} for an example.
     
     <h3>Example</h3>
 
@@ -242,8 +242,8 @@ public class PropertyConfigurator extends BasicConfigurator
     # A1's layout is a PatternLayout, using the conversion pattern 
     # <b>%r %-5p %c{2} %M.%L %x - %m\n</b>. Thus, the log output will
     # include # the relative time since the start of the application in
-    # milliseconds, followed by the priority of the log request,
-    # followed by the two rightmost components of the category name,
+    # milliseconds, followed by the level of the log request,
+    # followed by the two rightmost components of the logger name,
     # followed by the callers method name, followed by the line number,
     # the nested disgnostic context and finally the message itself.
     # Refer to the documentation of {@link PatternLayout} for further information
@@ -262,24 +262,24 @@ public class PropertyConfigurator extends BasicConfigurator
     log4j.appender.A2.layout.ContextPrinting=enabled
     log4j.appender.A2.layout.DateFormat=ISO8601
 
-    # Root category set to DEBUG using the A2 appender defined above.
-    log4j.rootCategory=DEBUG, A2
+    # Root logger set to DEBUG using the A2 appender defined above.
+    log4j.rootLogger=DEBUG, A2
 
-    # Category definitions:
-    # The SECURITY category inherits is priority from root. However, it's output
+    # Logger definitions:
+    # The SECURITY logger inherits is level from root. However, it's output
     # will go to A1 appender defined above. It's additivity is non-cumulative.
-    log4j.category.SECURITY=INHERIT, A1
+    log4j.logger.SECURITY=INHERIT, A1
     log4j.additivity.SECURITY=false
 
-    # Only warnings or above will be logged for the category "SECURITY.access".
+    # Only warnings or above will be logged for the logger "SECURITY.access".
     # Output will go to A1.
-    log4j.category.SECURITY.access=WARN
+    log4j.logger.SECURITY.access=WARN
 
     
-    # The category "class.of.the.day" inherits its priority from the
-    # category hierarchy.  Output will go to the appender's of the root
-    # category, A2 in this case.
-    log4j.category.class.of.the.day=INHERIT
+    # The logger "class.of.the.day" inherits its level from the
+    # logger hierarchy.  Output will go to the appender's of the root
+    # logger, A2 in this case.
+    log4j.logger.class.of.the.day=INHERIT
     </pre>
 
     <p>Refer to the <b>setOption</b> method in each Appender and
@@ -570,7 +570,7 @@ public class PropertyConfigurator extends BasicConfigurator
     StringTokenizer st = new StringTokenizer(value, ",");
      
     // If value is not in the form ", appender.." or "", then we should set
-    // the priority of the loggeregory.
+    // the level of the loggeregory.
     
     if(!(value.startsWith(",") || value.equals(""))) {
 
@@ -578,20 +578,20 @@ public class PropertyConfigurator extends BasicConfigurator
       if(!st.hasMoreTokens())
 	return;
     
-      String priorityStr = st.nextToken();
-      LogLog.debug("Priority token is [" + priorityStr + "].");
+      String levelStr = st.nextToken();
+      LogLog.debug("Level token is [" + levelStr + "].");
 
-      // If the priority value is inherited, set category priority value to
+      // If the level value is inherited, set category level value to
       // null. We also check that the user has not specified inherited for the
       // root category.
-      if(priorityStr.equalsIgnoreCase(BasicConfigurator.INHERITED) &&
+      if(levelStr.equalsIgnoreCase(BasicConfigurator.INHERITED) &&
                                 	 !loggerName.equals(INTERNAL_ROOT_NAME)) {
 	logger.setLevel(null);
       } else {
-	logger.setLevel(OptionConverter.toLevel(priorityStr, 
-					     Priority.DEBUG));
+	logger.setLevel(OptionConverter.toLevel(levelStr, 
+					     Level.DEBUG));
       }
-      LogLog.debug("Category " + loggerName + " set to " + logger.getPriority());
+      LogLog.debug("Category " + loggerName + " set to " + logger.getLevel());
     }
 
     // Remove all existing appenders. They will be reconstructed below.
