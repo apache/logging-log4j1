@@ -116,10 +116,13 @@
   <target name="jaxpCheck">
     <available classname="javax.xml.parsers.DocumentBuilderFactory"
                           property="jaxp-present"/>
-  </target>
+  	 <fail unless="jaxp-present">
 
-  <target name="jaxp" depends="jaxpCheck" if="jaxp-present">
-    <echo message="JAXP present."/>
+  	 	  Could not find the JAXP API.
+
+  	 	  Please set the jaxp-api.jar property in the build.properties file.
+  	 </fail>
+
   </target>
 	
   <target name="jndiCheck">
@@ -150,24 +153,35 @@
     <echo message="ORO is present."/>
   </target>
 	  	
-  <target name="jmsCheck" depends="jndiCheck" if="jndi-present">
+  <target name="jmsCheck" depends="jndiCheck">
     <available classname="javax.jms.Message" property="jms-present">
      <classpath refid="compile.classpath"/>
     </available>
-  </target>
-  	
-  <target name="jms" depends="jmsCheck" if="jms-present">
-    <echo message="JMS is present."/>
+  	<fail unless="jms-present">
+  		
+        Missing java.jms.* classes.
+  		
+        Please make sure to that the "jms.jar" poperty in build.properties 
+        file is set correctly.
+  		
+  	</fail>
   </target>
 
   <target name="javamailCheck">
     <available classname="javax.mail.Message" property="javamail-present">
       <classpath refid="compile.classpath"/>
     </available>
+  	<fail unless="javamail-present">
+  		
+        Missing java.mail.* classes.
+  		
+        Please make sure to that the "jms.jar" poperty in build.properties 
+        file is set correctly.
+  		
+  	</fail>
+
   </target>
-  <target name="javamail" depends="javamailCheck" if="javamail-present">
-    <echo message="JAVAMAIL is present."/>
-  </target>
+
 
   <target name="servletAPICheck">
     <available classname="javax.servlet.ServletContext" property="servletAPI-present">
@@ -189,12 +203,15 @@
 
   <target name="init">
     <tstamp />
+	<mkdir dir="${javac.dest}/"/>
+  	<mkdir dir="${examples.javac.dest}/" />
   </target>
 
   <target name="build.log4j" description="Compile log4j, but not chainsaw or examples."
 	      depends="init, build.core,  
-	               build.xml, build.javamail, build.jms,
-	               build.servletAPI, build.db, build.oro"/>
+	               build.xml, 
+  	               build.servletAPI, 
+  	               build.oro"/>
 
 
   <target name="build" description="Compile all log4j components."
@@ -221,8 +238,7 @@
     </fail>	
   </target>
 
-  <target name="build.core" depends="init, jndiCheck" if="jndi-present" >
-    <mkdir dir="${javac.dest}" />
+  <target name="build.core" depends="init, jndiCheck, jaxpCheck">
     <javac srcdir="${java.source.dir}"
            destdir="${javac.dest}"
            includes="org/apache/ugli/**/*.java,
@@ -286,7 +302,7 @@
     <rmic base="${examples.javac.dest}" classname="factor.NumberCruncherServer" />
   </target>
 
- <target name="build.xml" depends="init, jaxp" if="jaxp-present">
+ <target name="build.xml" depends="init, jaxpCheck">
     <javac srcdir="${java.source.dir}"
            destdir="${javac.dest}"
            includes="${stem}/xml/**/*.java"
@@ -303,8 +319,7 @@
     tofile="${javac.dest}/${stem}/xml/logger.dtd" />
   </target>
 
-  <target name="build.javamail" depends="init, javamail"
-          if="javamail-present">
+  <target name="build.smtp" depends="init, javamailCheck">
     <javac srcdir="${java.source.dir}"
            destdir="${javac.dest}"
     	   debug="${debug}"
@@ -314,7 +329,18 @@
       <classpath refid="compile.classpath"/>
     </javac>
   </target>
-  
+
+  <target name="log4j-smtp.jar" depends="init, build.smtp"
+	          if="javamail-present">
+    <jar jarfile="log4j-smtp-${version}.jar" basedir="${javac.dest}"
+           includes="${stem}/spi/TriggeringEventEvaluator.class,
+    	             ${stem}/net/SMTPAppender.class,
+    	             ${stem}/net/DefaultEvaluator.class"
+    	>
+  	</jar>
+  </target>
+	  
+	
   <target name="build.oro" depends="init, oro" if="oro-present">
     <javac srcdir="${java.source.dir}"
            destdir="${javac.dest}"
@@ -327,7 +353,7 @@
     </javac>
   </target>
   
-  <target name="build.jms" depends="init, jms, jndi" if="jms-present">
+  <target name="build.jms" depends="init, jmsCheck, jndi">
     <javac srcdir="${java.source.dir}"
            debug="${debug}"
     	   deprecation="${deprecation}"
@@ -336,6 +362,17 @@
     >
       <classpath refid="compile.classpath"/>
     </javac>
+  </target>
+	
+  <target name="log4j-jms.jar" depends="init, build.jms"
+		          if="jms-present">
+      <jar jarfile="log4j-jms-${version}.jar" basedir="${javac.dest}"
+	       includes="${stem}/net/JMSAppender.class,
+	  	             ${stem}/net/JMSSink.class,
+	   	             ${stem}/net/JMSReceiver.class,
+	   	             ${stem}/or/jms/*.class"
+	  >
+	  </jar>
   </target>
 
   <target name="build.servletAPI" depends="init, servletAPI"
@@ -359,13 +396,21 @@
       <classpath refid="compile.classpath"/>
     </javac>
   </target>
+	
+  <target name="log4j-db.jar" depends="init, jdbcExtension"
+			          if="jdbcExtension-present">
+     <jar jarfile="log4j-db-${version}.jar" basedir="${javac.dest}"
+	       includes="${stem}/db/**.class"/>
+  </target>
   
   <!-- ================================================================= -->
   <!-- Remove all generated (compiled) class files.                      -->
   <!-- ================================================================= -->
   <target name="clean" depends="init" description="Delete all compiled files.">
-    <delete dir="${javac.dest}/" />
-    <delete dir="${examples.javac.dest}/" />
+    <delete>
+  	 <fileset dir="${javac.dest}/" includes="**/*"/>
+   	 <fileset dir="${examples.javac.dest}/" includes="**/*"/>
+    </delete>	
   </target>
 
   <!-- ================================================================= -->
@@ -393,18 +438,15 @@
                 ${stem}/*.class, 
     	        ${stem}/xml/log4j.dtd, 
     	        ${stem}/xml/logger.dtd,
-                org/apache/joran/**/*.class,
                 ${stem}/joran/**/*.class,
                 ${stem}/config/*.class,
                 ${stem}/helpers/*.class,
                 ${stem}/spi/**/*.class,
                 ${stem}/net/*.class,
-                ${stem}/db/**/*.class,
                 ${stem}/html/**/*.class,
                 ${stem}/varia/*.class,
                 ${stem}/filter/*.class,    	
                 ${stem}/rule/*.class,    	    	
-                ${stem}/nt/*.class,
                 ${stem}/rolling/**/*.class,
                 ${stem}/xml/*.class,
     	        ${stem}/scheduler/*.class,        
@@ -413,11 +455,16 @@
                 ${stem}/pattern/*.class,
                 ${stem}/or/*.class,
                 ${stem}/or/sax/*.class,
-                ${stem}/or/jms/*.class,
                 ${stem}/plugins/*.class,
                 ${stem}/config/*.class"
       excludes="org/apache/ugli/**/JDK14*.class,
     	         **/UnitTest**, 
+    	        ${stem}/net/SMTPAppender.class,
+    	        ${stem}/net/DefaultEvaluator.class,
+    	        ${stem}/spi/TriggeringEventEvaluator.class,
+    	        ${stem}/net/JMSAppender.class,
+    		    ${stem}/net/JMSSink.class,
+    		    ${stem}/net/JMSReceiver.class,
     	        ${stem}/**/*BeanInfo.class,"
     	>
       <manifest>
