@@ -65,6 +65,7 @@ package org.apache.log4j;
 
 import org.apache.log4j.helpers.AppenderAttachableImpl;
 import org.apache.log4j.helpers.NullEnumeration;
+import org.apache.log4j.helpers.ReaderWriterLock;
 import org.apache.log4j.spi.AppenderAttachable;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.LoggingEvent;
@@ -78,7 +79,7 @@ import java.util.ResourceBundle;
  * <font color="#AA2222"><b>This class has been deprecated and replaced by the
  * {@link Logger}<em>subclass</em>.</b></font> It will be kept around to
  * preserve backward compatibility until mid 2003.
- * 
+ *
  * <p>
  * <code>Logger</code> is a subclass of Category, i.e. it extends Category. In
  * other words, a logger <em>is</em> a category. Thus, all operations that
@@ -87,7 +88,7 @@ import java.util.ResourceBundle;
  * Logger object. However, methods that previously accepted category objects
  * still continue to accept category objects.
  * </p>
- * 
+ *
  * <p>
  * For example, the following are all legal and will work as expected.
  * <pre>
@@ -97,17 +98,17 @@ import java.util.ResourceBundle;
  *  &nbsp;&nbsp;&nbsp;Logger logger = Logger.getLogger("foo.bar")
  *  </pre>
  * </p>
- * 
+ *
  * <p>
  * The first form is deprecated and should be avoided.
  * </p>
- * 
+ *
  * <p>
  * <b>There is absolutely no need for new client code to use or refer to the
  * <code>Category</code> class.</b> Whenever possible, please avoid referring
  * to it or using it.
  * </p>
- * 
+ *
  * <p>
  * See the <a href="../../../../manual.html">short manual</a> for an
  * introduction on this class.
@@ -150,6 +151,7 @@ public class Category implements AppenderAttachable {
    */
   protected volatile Category parent;
   protected ResourceBundle resourceBundle;
+  protected ReaderWriterLock lock;
 
   // Categories need to know what Hierarchy they are in
   protected LoggerRepository repository;
@@ -168,7 +170,7 @@ public class Category implements AppenderAttachable {
   /**
    * This constructor created a new <code>Category</code> instance and sets
    * its name.
-   * 
+   *
    * <p>
    * It is intended to be used by sub-classes only. You should not create
    * categories directly.
@@ -178,30 +180,37 @@ public class Category implements AppenderAttachable {
    */
   protected Category(String name) {
     this.name = name;
+    lock = new ReaderWriterLock();
   }
 
   /**
    * Add <code>newAppender</code> to the list of appenders of this Category
    * instance.
-   * 
+   *
    * <p>
    * If <code>newAppender</code> is already in the list of appenders, then it
    * won't be added again.
    * </p>
    */
-  public synchronized void addAppender(Appender newAppender) {
+  public void addAppender(Appender newAppender) {
+    // BEGIN - WRITE LOCK
+    lock.getWriteLock();
+
     if (aai == null) {
       aai = new AppenderAttachableImpl();
     }
 
     aai.addAppender(newAppender);
+    lock.releaseWriteLock();
+
+    //	END - WRITE LOCK
     repository.fireAddAppenderEvent((Logger) this, newAppender);
   }
 
   /**
    * If <code>assertion</code> parameter is <code>false</code>, then logs
    * <code>msg</code> as an {@link #error(Object) error} statement.
-   * 
+   *
    * <p>
    * The <code>assert</code> method has been renamed to <code>assertLog</code>
    * because <code>assert</code> is a language reserved word in JDK 1.4.
@@ -221,7 +230,7 @@ public class Category implements AppenderAttachable {
   /**
    * Call the appenders in the hierrachy starting at <code>this</code>.  If no
    * appenders could be found, emit a warning.
-   * 
+   *
    * <p>
    * This method calls all the appenders inherited from the hierarchy
    * circumventing any evaluation of whether to log or not to log the
@@ -234,16 +243,20 @@ public class Category implements AppenderAttachable {
     int writes = 0;
 
     for (Category c = this; c != null; c = c.parent) {
-      // Protected against simultaneous call to addAppender, removeAppender,...
-      synchronized (c) {
+      try {
+  	  	// Protect against simultaneous writes operations such as 
+	   	  // addAppender, removeAppender,...
+        c.lock.getReadLock();
+
         if (c.aai != null) {
           writes += c.aai.appendLoopOnAppenders(event);
         }
-
-        if (!c.additive) {
-          break;
-        }
-      }
+	     } finally {
+			   c.lock.releaseReadLock();
+			 }
+       if (!c.additive) {
+         break;
+       }      
     }
 
     if (writes == 0) {
@@ -257,7 +270,7 @@ public class Category implements AppenderAttachable {
    *
    * @since 1.0
    */
-  synchronized void closeNestedAppenders() {
+  void closeNestedAppenders() {
     Enumeration enum = this.getAllAppenders();
 
     if (enum != null) {
@@ -273,7 +286,7 @@ public class Category implements AppenderAttachable {
 
   /**
    * Log a message object with the {@link Level#DEBUG DEBUG} level.
-   * 
+   *
    * <p>
    * This method first checks if this category is <code>DEBUG</code> enabled
    * by comparing the level of this category with the {@link Level#DEBUG
@@ -284,7 +297,7 @@ public class Category implements AppenderAttachable {
    * also higher in the hierarchy depending on the value of the additivity
    * flag.
    * </p>
-   * 
+   *
    * <p>
    * <b>WARNING</b> Note that passing a {@link Throwable} to this method will
    * print the name of the <code>Throwable</code> but no stack trace. To
@@ -307,7 +320,7 @@ public class Category implements AppenderAttachable {
   /**
    * Log a message object with the <code>DEBUG</code> level including the
    * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
-   * 
+   *
    * <p>
    * See {@link #debug(Object)} form for more detailed information.
    * </p>
@@ -327,7 +340,7 @@ public class Category implements AppenderAttachable {
 
   /**
    * Log a message object with the {@link Level#ERROR ERROR} Level.
-   * 
+   *
    * <p>
    * This method first checks if this category is <code>ERROR</code> enabled
    * by comparing the level of this category with {@link Level#ERROR ERROR}
@@ -337,7 +350,7 @@ public class Category implements AppenderAttachable {
    * call all the registered appenders in this category and also higher in
    * the hierarchy depending on the value of the additivity flag.
    * </p>
-   * 
+   *
    * <p>
    * <b>WARNING</b> Note that passing a {@link Throwable} to this method will
    * print the name of the <code>Throwable</code> but no stack trace. To
@@ -360,7 +373,7 @@ public class Category implements AppenderAttachable {
   /**
    * Log a message object with the <code>ERROR</code> level including the
    * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
-   * 
+   *
    * <p>
    * See {@link #error(Object)} form for more detailed information.
    * </p>
@@ -391,7 +404,7 @@ public class Category implements AppenderAttachable {
 
   /**
    * Log a message object with the {@link Level#FATAL FATAL} Level.
-   * 
+   *
    * <p>
    * This method first checks if this category is <code>FATAL</code> enabled
    * by comparing the level of this category with {@link Level#FATAL FATAL}
@@ -401,7 +414,7 @@ public class Category implements AppenderAttachable {
    * call all the registered appenders in this category and also higher in
    * the hierarchy depending on the value of the additivity flag.
    * </p>
-   * 
+   *
    * <p>
    * <b>WARNING</b> Note that passing a {@link Throwable} to this method will
    * print the name of the Throwable but no stack trace. To print a stack
@@ -423,7 +436,7 @@ public class Category implements AppenderAttachable {
   /**
    * Log a message object with the <code>FATAL</code> level including the
    * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
-   * 
+   *
    * <p>
    * See {@link #fatal(Object)} for more detailed information.
    * </p>
@@ -464,34 +477,41 @@ public class Category implements AppenderAttachable {
    *
    * @return Enumeration An enumeration of the appenders in this category.
    */
-  public synchronized Enumeration getAllAppenders() {
+  public Enumeration getAllAppenders() {
+	  Enumeration result;
+  	lock.getReadLock();
     if (aai == null) {
-      return NullEnumeration.getInstance();
+      result = NullEnumeration.getInstance();
     } else {
-      return aai.getAllAppenders();
+      result = aai.getAllAppenders();
     }
+    return result;
   }
 
   /**
    * Look for the appender named as <code>name</code>.
-   * 
+   *
    * <p>
    * Return the appender with that name if in the list. Return
    * <code>null</code> otherwise.
    * </p>
    */
-  public synchronized Appender getAppender(String name) {
+  public Appender getAppender(String name) {
+  	lock.getReadLock();
     if ((aai == null) || (name == null)) {
       return null;
     }
-
-    return aai.getAppender(name);
+	
+	  Appender appender = aai.getAppender(name);
+	  lock.releaseReadLock();
+	
+    return appender;
   }
 
   /**
    * Starting from this category, search the category hierarchy for a non-null
    * level and return it. Otherwise, return the level of the root category.
-   * 
+   *
    * <p>
    * The Category class is designed so that this method executes as quickly as
    * possible.
@@ -523,7 +543,7 @@ public class Category implements AppenderAttachable {
   /**
    * Returns all the currently defined categories in the default hierarchy as
    * an {@link java.util.Enumeration Enumeration}.
-   * 
+   *
    * <p>
    * The root category is <em>not</em> included in the returned {@link
    * Enumeration}.
@@ -604,7 +624,7 @@ public class Category implements AppenderAttachable {
   /**
    * Returns the parent of this category. Note that the parent of a given
    * category may change during the lifetime of the category.
-   * 
+   *
    * <p>
    * The root category will return <code>null</code>.
    * </p>
@@ -633,12 +653,12 @@ public class Category implements AppenderAttachable {
 
   /**
    * Return the root of the default category hierrachy.
-   * 
+   *
    * <p>
    * The root category is always instantiated and available. It's name is
    * "root".
    * </p>
-   * 
+   *
    * <p>
    * Nevertheless, calling {@link #getInstance Category.getInstance("root")}
    * does not retrieve the root category but a category just under root named
@@ -651,7 +671,7 @@ public class Category implements AppenderAttachable {
 
   /**
    * Return the <em>inherited</em>{@link ResourceBundle} for this category.
-   * 
+   *
    * <p>
    * This method walks the hierarchy to find the appropriate resource bundle.
    * It will return the resource bundle attached to the closest ancestor of
@@ -676,7 +696,7 @@ public class Category implements AppenderAttachable {
    * Returns the string resource coresponding to <code>key</code> in this
    * category's inherited resource bundle. See also {@link
    * #getResourceBundle}.
-   * 
+   *
    * <p>
    * If the resource cannot be found, then an {@link #error error} message
    * will be logged complaining about the missing resource.
@@ -706,7 +726,7 @@ public class Category implements AppenderAttachable {
 
   /**
    * Log a message object with the {@link Level#INFO INFO} Level.
-   * 
+   *
    * <p>
    * This method first checks if this category is <code>INFO</code> enabled by
    * comparing the level of this category with {@link Level#INFO INFO} Level.
@@ -716,7 +736,7 @@ public class Category implements AppenderAttachable {
    * call all the registered appenders in this category and also higher in
    * the hierarchy depending on the value of the additivity flag.
    * </p>
-   * 
+   *
    * <p>
    * <b>WARNING</b> Note that passing a {@link Throwable} to this method will
    * print the name of the Throwable but no stack trace. To print a stack
@@ -738,7 +758,7 @@ public class Category implements AppenderAttachable {
   /**
    * Log a message object with the <code>INFO</code> level including the stack
    * trace of the {@link Throwable}<code>t</code> passed as parameter.
-   * 
+   *
    * <p>
    * See {@link #info(Object)} for more detailed information.
    * </p>
@@ -760,42 +780,49 @@ public class Category implements AppenderAttachable {
    * Is the appender passed as parameter attached to this category?
    */
   public boolean isAttached(Appender appender) {
+  	boolean result;
+
+    lock.getReadLock();
+    
     if ((appender == null) || (aai == null)) {
-      return false;
+      result = false;
     } else {
-      return aai.isAttached(appender);
+      result = aai.isAttached(appender);
     }
+    
+    lock.releaseReadLock();
+    return result;
   }
 
   /**
    * Check whether this category is enabled for the <code>DEBUG</code> Level.
-   * 
+   *
    * <p>
    * This function is intended to lessen the computational cost of disabled
    * log debug statements.
    * </p>
-   * 
+   *
    * <p>
    * For some <code>cat</code> Category object, when you write,
    * <pre>
    *      cat.debug("This is entry number: " + i );
    *  </pre>
    * </p>
-   * 
+   *
    * <p>
    * You incur the cost constructing the message, concatenatiion in this case,
    * regardless of whether the message is logged or not.
    * </p>
-   * 
+   *
    * <p>
    * If you are worried about speed, then you should write
    * <pre>
-   * 	 if(cat.isDebugEnabled()) {
-   * 	   cat.debug("This is entry number: " + i );
-   * 	 }
+   *          if(cat.isDebugEnabled()) {
+   *            cat.debug("This is entry number: " + i );
+   *          }
    *  </pre>
    * </p>
-   * 
+   *
    * <p>
    * This way you will not incur the cost of parameter construction if
    * debugging is disabled for <code>cat</code>. On the other hand, if the
@@ -951,26 +978,32 @@ public class Category implements AppenderAttachable {
    * <p>Removed appenders are closed.</p>
    * <p>This is useful when re-reading configuration information.</p>
    */
-  public synchronized void removeAllAppenders() {
+  public void removeAllAppenders() {
+    lock.getWriteLock();
+    
     if (aai != null) {
       aai.removeAllAppenders();
       aai = null;
     }
+    lock.releaseWriteLock();
   }
 
   /**
    * Remove the appender passed as parameter form the list of appenders.
-   * 
+   *
    * <p>Does <em>not</em> close the appender.</p>
-   * 
+   *
    * @since 0.8.2
    */
-  public synchronized void removeAppender(Appender appender) {
+  public void removeAppender(Appender appender) {
+	  lock.getWriteLock();
+    
     if ((appender == null) || (aai == null)) {
-      return;
+      // Nothing to do
+    } else {
+  		aai.removeAppender(appender);
     }
-
-    aai.removeAppender(appender);
+    lock.releaseWriteLock();
   }
 
   /**
@@ -981,12 +1014,15 @@ public class Category implements AppenderAttachable {
    *
    * @since 0.8.2
    */
-  public synchronized void removeAppender(String name) {
+  public void removeAppender(String name) {
+	  lock.getWriteLock();
+	  
     if ((name == null) || (aai == null)) {
-      return;
+      // nothing to do
+    } else {
+      aai.removeAppender(name);
     }
-
-    aai.removeAppender(name);
+    lock.releaseWriteLock();
   }
 
   /**
@@ -1011,12 +1047,12 @@ public class Category implements AppenderAttachable {
    * <code>Level.DEBUG</code>, <code>Level.INFO</code>,
    * <code>Level.WARN</code>, <code>Level.ERROR</code>,
    * <code>Level.FATAL</code> as a parameter, you need to case them as Level.
-   * 
+   *
    * <p>
    * As in
    * <pre> &nbsp;&nbsp;&nbsp;logger.setLevel((Level) Level.DEBUG); </pre>
    * </p>
-   * 
+   *
    * <p>
    * Null values are admitted.
    * </p>
@@ -1027,7 +1063,7 @@ public class Category implements AppenderAttachable {
 
   /**
    * Set the level of this Category.
-   * 
+   *
    * <p>
    * Null values are admitted.
    * </p>
@@ -1052,13 +1088,13 @@ public class Category implements AppenderAttachable {
   /**
    * Calling this method will <em>safely</em> close and remove all appenders
    * in all the categories including root contained in the default hierachy.
-   * 
+   *
    * <p>
    * Some appenders such as {@link org.apache.log4j.net.SocketAppender} and
    * {@link AsyncAppender} need to be closed before the application exists.
    * Otherwise, pending logging events might be lost.
    * </p>
-   * 
+   *
    * <p>
    * The <code>shutdown</code> method is careful to close nested appenders
    * before closing regular appenders. This is allows configurations where a
@@ -1075,7 +1111,7 @@ public class Category implements AppenderAttachable {
 
   /**
    * Log a message object with the {@link Level#WARN WARN} Level.
-   * 
+   *
    * <p>
    * This method first checks if this category is <code>WARN</code> enabled by
    * comparing the level of this category with {@link Level#WARN WARN} Level.
@@ -1085,13 +1121,13 @@ public class Category implements AppenderAttachable {
    * call all the registered appenders in this category and also higher in
    * the hieararchy depending on the value of the additivity flag.
    * </p>
-   * 
+   *
    * <p>
    * <b>WARNING</b> Note that passing a {@link Throwable} to this method will
    * print the name of the Throwable but no stack trace. To print a stack
    * trace use the {@link #warn(Object, Throwable)} form instead.
    * </p>
-   * 
+   *
    * <p></p>
    *
    * @param message the message object to log.
@@ -1109,7 +1145,7 @@ public class Category implements AppenderAttachable {
   /**
    * Log a message with the <code>WARN</code> level including the stack trace
    * of the {@link Throwable}<code>t</code> passed as parameter.
-   * 
+   *
    * <p>
    * See {@link #warn(Object)} for more detailed information.
    * </p>
