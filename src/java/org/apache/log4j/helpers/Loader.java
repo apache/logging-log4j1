@@ -43,8 +43,10 @@ public class Loader  {
      <ol>
 
      <p><li>Search for <code>resource</code> using the thread context
-     class loader under Java2 and using the class loader that loaded
-     this class (<code>Loader</code>) under JDK 1.1.
+     class loader under Java2. If that fails, search for
+     <code>resource</code> using the class loader that loaded this
+     class (<code>Loader</code>). Under JDK 1.1, only the the class
+     loader that loaded this class (<code>Loader</code>) is used.
 
      <p><li>Try one last time with
      <code>ClassLoader.getSystemResource(resource)</code>, that is is
@@ -63,10 +65,19 @@ public class Loader  {
     try {
       if(!java1) {
 	classLoader = Thread.currentThread().getContextClassLoader();	
+	if(classLoader != null) {
+	  LogLog.debug("Trying to find ["+resource+"] using context classloader "
+		       +classLoader+".");
+	  url = classLoader.getResource(resource);      
+	  if(url != null) {
+	    return url;
+	  }
+	}
       }
       
-      if(classLoader == null)
-	classLoader = Loader.class.getClassLoader(); 
+      // We could not find resource. Ler us now try with the
+      // classloader that loaded this class.
+      classLoader = Loader.class.getClassLoader(); 
 
       LogLog.debug("Trying to find ["+resource+"] using "+classLoader
 		   +" class loader.");
@@ -78,9 +89,10 @@ public class Loader  {
       LogLog.warn(TSTR, t);
     }
 
-    // Attempt to get the resource from the class path. It may be the
-    // case that clazz was loaded by the Extentsion class loader which
-    // the parent of the system class loader. Hence the code below.
+    // Last ditch attempt: get the resource from the class path. It
+    // may be the case that clazz was loaded by the Extentsion class
+    // loader which the parent of the system class loader. Hence the
+    // code below.
     LogLog.debug("Trying to find ["+resource+
 		 "] using ClassLoader.getSystemResource().");
     return ClassLoader.getSystemResource(resource);
