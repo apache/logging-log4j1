@@ -46,16 +46,16 @@ import javax.mail.internet.MimeUtility;
    @author Ceki G&uuml;lc&uuml;
    @since 1.0 */
 public class SMTPAppender extends AppenderSkeleton {
-  String to;
-  String from;
-  String subject;
-  String smtpHost;
-  int bufferSize = 512;
+  private String to;
+  private String from;
+  private String subject;
+  private String smtpHost;
+  private int bufferSize = 512;
+  private boolean locationInfo = false;
 
-  CyclicBuffer cb = new CyclicBuffer(bufferSize);
-  Session session;
-  Message msg;
-  boolean locationInfo = false;
+  protected CyclicBuffer cb = new CyclicBuffer(bufferSize);
+  protected Message msg;
+
 
 
  /**
@@ -192,9 +192,10 @@ public class SMTPAppender extends AppenderSkeleton {
     if (smtpHost != null)
       props.put("mail.smtp.host", smtpHost);
 
-     session = Session.getDefaultInstance(props, null);
-     //session.setDebug(true);
-     msg = new MimeMessage(session);
+    
+    Session session = Session.getDefaultInstance(props, null);
+    //session.setDebug(true);
+    msg = new MimeMessage(session);
      
      try {
        if (from != null)
@@ -412,8 +413,6 @@ public class SMTPAppender extends AppenderSkeleton {
   void setFrom(String from) {
     this.from = from;
   }
-
-
   
   /**
      The <b>Subject</b> option takes a string value which should be a

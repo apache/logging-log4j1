@@ -145,10 +145,9 @@ public class PropertyConfigurator extends BasicConfigurator
     custom priority value can be specified in the form
     <code>priority#classname</code>. 
     
-    <p>If one of the optional priority value is specified, then the
-    root priority is set to the corresponding priority.  If no
-    priority value is specified, then the root priority remains
-    untouched.
+    <p>If a priority value is specified, then the root priority is set
+    to the corresponding priority.  If no priority value is specified,
+    then the root priority remains untouched.
 
     <p>The root category can be assigned multiple appenders.
     
@@ -161,10 +160,10 @@ public class PropertyConfigurator extends BasicConfigurator
     log4j.category.category_name=[priority|INHERITED], appenderName, appenderName, ...
     </pre>
 
-    <p>The meaning of the priority value is discussed above in
-    relation to the root category. In addition however, the value
-    INHERITED can be optionally specified meaning that the named
-    category should inherit its priority from the category hierarchy.
+    <p>The meaning of the optional priority value is discussed above
+    in relation to the root category. In addition however, the value
+    INHERITED can be specified meaning that the named category should
+    inherit its priority from the category hierarchy.
 
     <p>If no priority value is supplied, then the priority of the
     named category remains untouched.
