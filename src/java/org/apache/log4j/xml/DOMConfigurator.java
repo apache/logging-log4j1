@@ -522,7 +522,11 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
       LogLog.error("Could not open ["+filename+"].", e);
     } finally {
       if (fis != null) {
-        fis.close();
+	try {
+	  fis.close();
+	} catch(java.io.IOException e) {
+	  LogLog.error("Could not close ["+filename+"].", e);
+	}
       }
     }
   }
