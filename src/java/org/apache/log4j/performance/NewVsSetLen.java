@@ -97,7 +97,7 @@ package org.apache.log4j.performance;
    </tr>
 
    <caption ALIGN="BOTTOM">Performance comparisons of new buffer
-   creation versus setLengh(0) approach for various message sizes and
+   creation versus setLength(0) approach for various message sizes and
    secondary loop lengths.
    </caption>
    </table>

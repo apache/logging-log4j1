@@ -53,7 +53,7 @@ public class SortAlgo {
       DUMP.error( "Tried to dump an uninitialized array.");
       return;
     }
-    DUMP.info( "Dump of interger array:");
+    DUMP.info( "Dump of integer array:");
     for(int i = 0; i < this.intArray.length; i++) {
       DUMP.info( "Element [" + i + "]=" + this.intArray[i]);
     }    

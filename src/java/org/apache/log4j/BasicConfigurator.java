@@ -60,14 +60,9 @@ public class BasicConfigurator {
   // static variable Category.disable to Category.DISABLE_OVERRIDE.
 
   static {
-    String override = null;
-    String propertyName = DISABLE_OVERRIDE_KEY;    
-    try {
-      override=System.getProperty(propertyName, override);
-    } catch(SecurityException e) {
-      LogLog.debug("Could not read system property \""+
-		   propertyName+"\".", e);
-    }
+    String propertyName = DISABLE_OVERRIDE_KEY;
+    String override = OptionConverter.getSystemProperty(propertyName, null);
+
     if(override != null) {
       if(OptionConverter.toBoolean(override, true)) {
 	LogLog.debug("Overriding disable. Non-null system property " + 
@@ -82,10 +77,11 @@ public class BasicConfigurator {
   }
 
   /**
-     Used by subclasses to add a renderer to the default hieararchy.
+     Used by subclasses to add a renderer to the hierarchy passed as parameter.
    */
   protected
-  void addRenderer(String renderedClassName, String renderingClassName) {
+  void addRenderer(Hierarchy hierarchy, String renderedClassName, 
+		   String renderingClassName) {
     LogLog.debug("Rendering class: ["+renderingClassName+"], Rendered class: ["+
 		 renderedClassName+"].");
     ObjectRenderer renderer = (ObjectRenderer) 
@@ -93,12 +89,12 @@ public class BasicConfigurator {
 						    ObjectRenderer.class,
 						    null);
     if(renderer == null) {
-      LogLog.error("Could not isntantiate renderer ["+renderingClassName+"].");
+      LogLog.error("Could not instantiate renderer ["+renderingClassName+"].");
       return;
     } else {
       try {
 	Class renderedClass = Class.forName(renderedClassName);
-	Category.defaultHierarchy.rendererMap.put(renderedClass, renderer);
+	hierarchy.rendererMap.put(renderedClass, renderer);
       } catch(ClassNotFoundException e) {
 	LogLog.error("Could not find class ["+renderedClassName+"].", e);
       }

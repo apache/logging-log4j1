@@ -169,10 +169,9 @@ import java.util.Enumeration;
    of logging in terms of overall application runtime.
 
    <p>In a variant of this test, we have inserted a short sleep
-   operation between every 10 log operations. When the total sleept
-   time was substracted, logging with the <code>AsyncLogger</code>
-   took up no time at all. In other words, logging was done for
-   "free".
+   operation between every 10 log operations. When the total slept
+   time is substracted, logging with the <code>AsyncLogger</code>
+   takes no time at all. In other words, logging is done for "free".
 
    <p><li>Extracting location information is (comparatively) very
    slow. It should be avoided unless performace is not a concern.

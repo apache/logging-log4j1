@@ -19,11 +19,11 @@ import org.apache.log4j.helpers.LogLog;
 /** 
    Abstract super-class of the other appenders in the package.
    
-   This class provides threashold filtering 
+   This class provides the code for common functionality, such as
+   support for threshold filtering and support for general filters.
 
    @since 0.8.1
-   @author Ceki G&uuml;lc&uuml;
- */
+   @author Ceki G&uuml;lc&uuml; */
 public abstract class AppenderSkeleton implements Appender, OptionHandler {
 
   /** The layout variable does not need to be set if the appender

@@ -102,12 +102,11 @@ public class AsyncAppender extends AppenderSkeleton
      exiting. */
   public 
   void close() {
-    
     if(closed) // avoid multiple close, otherwise one gets NullPointerException
       return; 
 
     closed = true;
-    dispatcher.interrupt();
+    dispatcher.interrupted = true;
     try {
       dispatcher.join();
     } catch(InterruptedException e) {
@@ -201,7 +200,8 @@ class Dispatcher extends Thread {
 
   BoundedFIFO bf;
   AppenderAttachableImpl aai;
-  
+  boolean interrupted = false;
+
   Dispatcher(BoundedFIFO bf, AppenderAttachableImpl aai) {
     this.bf = bf;
     this.aai = aai;
@@ -237,7 +237,7 @@ class Dispatcher extends Thread {
 	if(bf.length() == 0) {
 	  // exit loop if we are interrupted but only if the the
 	  // buffer is empty.
-	  if(interrupted()) { 
+	  if(interrupted) { 
 	    //cat.info("Exiting.");
 	    return;
 	  }

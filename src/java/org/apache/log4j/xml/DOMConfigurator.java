@@ -409,10 +409,10 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
   }
 
   protected 
-  void parserRenderer(Element element) {
+  void parseRenderer(Element element, Hierarchy hierarchy) {
     String renderingClass = element.getAttribute(RENDERING_CLASS_ATTR);
     String renderedClass = element.getAttribute(RENDERED_CLASS_ATTR);
-    addRenderer(renderedClass, renderingClass);
+    addRenderer(hierarchy, renderedClass, renderingClass);
   }
 
   /**
@@ -536,7 +536,8 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
                                           throws FactoryConfigurationError {
     DocumentBuilderFactory dbf = null;
     try { 
-      LogLog.debug("System property is :"+System.getProperty(dbfKey));      
+      LogLog.debug("System property is :"+
+  	                        OptionConverter.getSystemProperty(dbfKey, null)); 
       dbf = DocumentBuilderFactory.newInstance();
       LogLog.debug("Standard DocumentBuilderFactory search succeded.");
       LogLog.debug("DocumentBuilderFactory is: "+dbf.getClass().getName());
@@ -637,7 +638,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
 	} else if (tagName.equals(ROOT_TAG)) {
 	  parseRoot(currentElement, hierarchy);
 	} else if(tagName.equals(RENDERER_TAG)) {
-	  parserRenderer(currentElement);
+	  parseRenderer(currentElement, hierarchy);
 	}
       }
     }

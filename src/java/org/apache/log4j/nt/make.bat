@@ -10,7 +10,7 @@ MC EventLogCategories.mc
 RC -r -fo EventLogCategories.res EventLogCategories.rc
 
 SET JDK=c:\java\jdk1.1.7B\
-#SET JDK=c:\java\jdk1.3\
+rem SET JDK=c:\java\jdk1.3\
 
 @echo "Compiling"
 CL /nologo  /I %JDK%\include /I %JDK%\include\win32 /MD /W3 /GX /O2 /FD /c /D "NDEBUG" -DWINVER=0x400  -D_DLL -DWIN32 /D "_WINDOWS"  nteventlog.cpp
