@@ -49,6 +49,9 @@
 
 package org.apache.log4j.chainsaw;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.spi.LoggingEvent;
 
 
@@ -93,62 +96,88 @@ import org.apache.log4j.spi.LoggingEvent;
  *
  */
 public final class LoggingEventFieldResolver {
+  private static final List keywordList = new ArrayList();
+    
+  private static final String LOGGER_FIELD = "LOGGER";
+  private static final String LEVEL_FIELD = "LEVEL";
+  private static final String CLASS_FIELD = "CLASS";
+  private static final String FILE_FIELD = "FILE";
+  private static final String LINE_FIELD = "LINE";
+  private static final String METHOD_FIELD = "METHOD";
+  private static final String MSG_FIELD = "MSG";
+  private static final String NDC_FIELD = "NDC";
+  private static final String EXCEPTION_FIELD = "EXCEPTION";
+  private static final String TIMESTAMP_FIELD = "TIMESTAMP";
+  private static final String THREAD_FIELD = "THREAD";
+  private static final String MDC_FIELD = "MDC.";
+  private static final String PROP_FIELD = "PROP.";
+  
+  private static final String EMPTY_STRING = "";
+
   private static final LoggingEventFieldResolver resolver =
     new LoggingEventFieldResolver();
-
+  
   private LoggingEventFieldResolver() {
+    keywordList.add(LOGGER_FIELD);
+    keywordList.add(LEVEL_FIELD);
+    keywordList.add(CLASS_FIELD);
+    keywordList.add(FILE_FIELD);
+    keywordList.add(LINE_FIELD);
+    keywordList.add(METHOD_FIELD);
+    keywordList.add(MSG_FIELD);
+    keywordList.add(NDC_FIELD);
+    keywordList.add(EXCEPTION_FIELD);
+    keywordList.add(TIMESTAMP_FIELD);
+    keywordList.add(THREAD_FIELD);
+    keywordList.add(MDC_FIELD);
+    keywordList.add(PROP_FIELD);
   }
 
   public static LoggingEventFieldResolver getInstance() {
     return resolver;
   }
 
+  public List getKeywords() {
+    return keywordList;
+  }
+
   public boolean isField(String fieldName) {
-  	if (fieldName == null) {
-  		return false;
-  	}
-  	String upperField = fieldName.toUpperCase();
-  	
-  	return (upperField != null && ("LOGGER".equals(upperField) || "LEVEL".equals(upperField) || 
-  	"CLASS".equals(upperField) || "FILE".equals(upperField) || "LINE".equals(upperField) ||
-  	"METHOD".equals(upperField) || "MSG".equals(upperField) || "NDC".equals(upperField) || 
-  	"EXCEPTION".equals(upperField) || "TIMESTAMP".equals(upperField) || "THREAD".equals(upperField) ||
-	upperField.startsWith("MDC.") || upperField.startsWith("PROP.")));
+    return keywordList.contains(fieldName);
   }
   
   public Object getValue(String fieldName, LoggingEvent event) {
     if (fieldName == null) {
-      return "";
+      return EMPTY_STRING;
     }
 
     String upperField = fieldName.toUpperCase();
 
-    if ("LOGGER".equals(upperField)) {
+    if (LOGGER_FIELD.equals(upperField)) {
       return event.getLoggerName();
-    } else if ("LEVEL".equals(upperField)) {
+    } else if (LEVEL_FIELD.equals(upperField)) {
       return event.getLevel();
-    } else if ("CLASS".equals(upperField)) {
+    } else if (CLASS_FIELD.equals(upperField)) {
       return event.getLocationInformation().getClassName();
-    } else if ("FILE".equals(upperField)) {
+    } else if (FILE_FIELD.equals(upperField)) {
       return event.getLocationInformation().getFileName();
-    } else if ("LINE".equals(upperField)) {
+    } else if (LINE_FIELD.equals(upperField)) {
       return event.getLocationInformation().getLineNumber();
-    } else if ("METHOD".equals(upperField)) {
+    } else if (METHOD_FIELD.equals(upperField)) {
       return event.getLocationInformation().getMethodName();
-    } else if ("MSG".equals(upperField)) {
+    } else if (MSG_FIELD.equals(upperField)) {
       return event.getMessage();
-    } else if ("NDC".equals(upperField)) {
+    } else if (NDC_FIELD.equals(upperField)) {
       return event.getNDC();
-    } else if ("EXCEPTION".equals(upperField)) {
+    } else if (EXCEPTION_FIELD.equals(upperField)) {
 	  return event.getThrowableInformation();
-    } else if ("TIMESTAMP".equals(upperField)) {
+    } else if (TIMESTAMP_FIELD.equals(upperField)) {
       return new Long(event.timeStamp);
-    } else if ("THREAD".equals(upperField)) {
+    } else if (THREAD_FIELD.equals(upperField)) {
       return event.getThreadName();
-    } else if (upperField.startsWith("MDC.")) {
+    } else if (upperField.startsWith(MDC_FIELD)) {
       //note: need to use actual fieldname since case matters
       return event.getMDC(fieldName.substring(4));
-    } else if (upperField.startsWith("PROP.")) {
+    } else if (upperField.startsWith(PROP_FIELD)) {
 		//note: need to use actual fieldname since case matters
       return event.getProperty(fieldName.substring(5));
     }

@@ -52,9 +52,6 @@ package org.apache.log4j.chainsaw.rule;
 import org.apache.log4j.spi.LoggingEvent;
 
 import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Stack;
 import java.util.StringTokenizer;
 
@@ -72,11 +69,11 @@ public class ExpressionRule extends AbstractRule {
   private static InFixToPostFix convertor = new InFixToPostFix();
   private static PostFixExpressionCompiler compiler =
     new PostFixExpressionCompiler();
-  List list = null;
+  Rule rule = null;
   Stack stack = new Stack();
 
-  private ExpressionRule(List list) {
-    this.list = list;
+  private ExpressionRule(Rule rule) {
+    this.rule = rule;
   }
 
   static Rule getRule(String expression, boolean isPostFix) {
@@ -88,30 +85,7 @@ public class ExpressionRule extends AbstractRule {
   }
 
   public boolean evaluate(LoggingEvent event) {
-    stack.clear();
-
-    boolean result = false;
-    Iterator iter = list.iterator();
-
-    while (iter.hasNext()) {
-      //examine each token
-      Object nextItem = iter.next();
-
-      //if a symbol is found, pop 2 off the stack, evaluate and push the result 
-      if (nextItem instanceof Rule) {
-        Rule r = (Rule) nextItem;
-        stack.push(new Boolean(r.evaluate(event)));
-      } else {
-        //variables or constants are pushed onto the stack
-        stack.push(nextItem);
-      }
-    }
-
-    if (stack.size() > 0) {
-      result = new Boolean(stack.pop().toString()).booleanValue();
-    }
-
-    return result;
+      return rule.evaluate(event);
   }
 }
 
@@ -122,10 +96,9 @@ public class ExpressionRule extends AbstractRule {
  */
 class PostFixExpressionCompiler {
 
-  List compileExpression(String expression) {
+  Rule compileExpression(String expression) {
     System.out.println("compiling expression: " + expression);
 
-    List list = new LinkedList();
     Stack stack = new Stack();
     Enumeration tokenizer = new StringTokenizer(expression);
 
@@ -146,10 +119,6 @@ class PostFixExpressionCompiler {
       }
     }
 
-    while (!stack.isEmpty()) {
-      list.add(stack.pop());
-    }
-
-    return list;
+    return (Rule)stack.pop();
   }
 }
