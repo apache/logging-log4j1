@@ -30,11 +30,6 @@ checkstyle.jar=/java/checkstyle-3.0/checkstyle-all-3.0.jar
 # Available from http://jalopy.sourceforge.net/
 jalopy.lib=d:/development/code-opensource/other/jalopy-b10/lib
 
-# jakarta-site2 module is used to transform xml files to html using
-# Anakia. You do not need to worry about this property unless you
-# intend to build the log4j web site yourself.
-jakarta-site2=../jakarta-site2
-
 # The templates for the creation of the web-pages are inherited 
 # from the parent project.
 logging-site=../logging-site
