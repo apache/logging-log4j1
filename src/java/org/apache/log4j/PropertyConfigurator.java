@@ -419,6 +419,31 @@ public class PropertyConfigurator extends ConfiguratorBase {
 
     doConfigure(props, repository);
   }
+  
+  /**
+   * Read configuration options from input stream <code>configStream</code>.
+   * @since 1.3
+   * @param configStream
+   * @param repository
+   */
+  public void doConfigure(InputStream configStream,
+  LoggerRepository repository) {
+    Properties props = new Properties();
+    getLogger(repository).debug(
+      "Reading configuration from input stream");
+
+    try {
+      props.load(configStream);
+    } catch (java.io.IOException e) {
+      String errMsg =
+        "Could not read configuration file from input stream.";
+      addError(new ErrorItem(errMsg, e));
+      getLogger(repository).error(errMsg, e);
+      return;
+    }
+
+    doConfigure(props, repository);
+  }
 
   // --------------------------------------------------------------------------
   // Internal stuff
