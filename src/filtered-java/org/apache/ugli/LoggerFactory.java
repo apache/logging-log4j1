@@ -16,12 +16,10 @@
 
 package org.apache.ugli;
 
-import org.apache.ugli.impl.NOPLoggerFA;
-
-import java.io.InputStream;
-
-import java.util.Properties;
-
+// WARNING
+// WARNING Modifications MUST be made to the original file found at
+// WARNING $LOG4J_HOME/src/filtered-java/org/apache/ugli/LoggerFactory.java
+// WARNING
 
 /**
  * The <code>LoggerFactory</code> can produce Loggers for various logging APIs,
@@ -34,23 +32,20 @@ import java.util.Properties;
 public class LoggerFactory {
   static LoggerFactoryAdapter adapter;
 
+  //WARNING Modify the original in
+  //        $LOG4J_HOME/src/filtered-java/org/apache/ugli/
+  
   static {
-    String adapterClassStr = "@ADAPTER_CLASS@";
-    System.out.println("Built for "+adapterClassStr);
+    String adapterClassStr = "org.apache.ugli.impl.@IMPL@LoggerFA";
+    System.out.println("UGLI built for "+adapterClassStr);
     try {
-      adapter = new @ADAPTER_CLASS@();
-    } catch (ClassNotFoundException cnfe) {
-      System.err.println("Could not find class [" + adapterClassStr + "]");
-      cnfe.printStackTrace();
+      adapter = new org.apache.ugli.impl.@IMPL@LoggerFA();
     } catch (Exception e) {
+      // unless there was a problem with the build or the JVM we will never
+      // get exceptions
       System.err.println(
         "Could not instantiate instance of class [" + adapterClassStr + "]");
       e.printStackTrace();
-    }
-
-    if (adapter == null) {
-      // TODO consider falling back on something more meaningful
-      adapter = new NOPLoggerFA();
     }
   }
 
