@@ -342,7 +342,7 @@ ordered. For the standard levels, we have <code>DEBUG &lt; INFO
    // Now set its level. Normally you do not need to set the 
    // level of a logger progamitcally. This is usually done 
    // in configuration files.
-   <strong>cat</strong>.setLevel(<font
+   <strong>logger</strong>.setLevel(<font
    color="0000AA"><strong>Level.INFO</strong></font>);
 
    Logger barlogger = Logger.getLogger(<strong>"com.foo.Bar"</strong>);
@@ -372,8 +372,8 @@ always return a reference to the exact same logger object.
 <table bgcolor="CCCCCC">
 <tr><td>
 <pre>
-   Categoty x = Logger.getLogger("wombat");
-   Categoty y = Logger.getLogger("wombat");</pre>
+   Logger x = Logger.getLogger("wombat");
+   Logger y = Logger.getLogger("wombat");</pre>
 </td>
 </table>
 <code>x</code> and <code>y</code> refer to <em>exactly</em> the same
@@ -911,19 +911,16 @@ each file is relative to a web-application.
 
 <p>The Windows shell command
 <pre>
-   set TOMCAT_OPTS=-Dlog4j.configuration=foobar.lcf#com.foo.BarConfigurator
+   set TOMCAT_OPTS=-Dlog4j.configuration=foobar.lcf -Dlog4j.configuratorClass=com.foo.BarConfigurator
 </pre>
 
 tells log4j to use the file <code>foobar.lcf</code> as the default
 configuration file. This file should be place under the
 <code>WEB-INF/classes</code> directory of your web-application. Due to
-the extra reference part, the file will be read using the
+the second system property, the file will be read using the
 <code>com.foo.BarConfigurator</code> custom configurator.  Each
 web-application will use a different default configuration file
-because each file is relative to a web-application. <b>Support for
-custom configurators in the reference part will be dropped in future
-log4j versions. You should not rely on this feature.</b>
-
+because each file is relative to a web-application. 
 
 <p><b>Example 4</b>
 
@@ -931,7 +928,7 @@ log4j versions. You should not rely on this feature.</b>
 <pre>
    set TOMCAT_OPTS=-Dlog4j.configuration=file:/c:/foobar.lcf</pre>
 
-tells log4j to use the file <code>c:\foobar.xml</code> as the default
+tells log4j to use the file <code>c:\foobar.lcf</code> as the default
 configuration file. The configuration file is fully specified by the
 URL <code>file:/c:/foobar.lcf</code>. Thus, the same configuration
 file will be used for all web-applications. 
@@ -1169,7 +1166,7 @@ hierarchies.
        <p>The typical cost of walking the hierarchy is typically 3
        times slower than when logging is turned off entirely.
 
-   <p><b><li>Actual logging.</b>
+   <p><b><li>Actually outputting log messages</b>
 
    <p>This is the cost of formatting the log output and sending it to
    its target destination. Here again, a serious effort was made to
