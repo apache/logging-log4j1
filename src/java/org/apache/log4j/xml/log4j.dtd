@@ -155,7 +155,7 @@ element. -->
     level      CDATA #REQUIRED
     thread     CDATA #REQUIRED
     timestamp  CDATA #REQUIRED
-    sequenceNumber CDATA
+    sequenceNumber CDATA #IMPLIED
 >
 
 <!ELEMENT log4j:message (#PCDATA)>
