@@ -26,9 +26,8 @@ import org.apache.log4j.lbel.Operator;
 import org.apache.log4j.lbel.ScanError;
 import org.apache.log4j.spi.LoggingEvent;
 
-
 /**
- * Compare the message of an event passed as parameter to the logger name and
+ * Compare a property of an event passed as parameter to the string value and
  * comparison operator set in the constructor.
  *
  * <p>Allowed comparison operators are '=', '!=', '>', '>=', '<', '<=', '~' and
@@ -37,13 +36,20 @@ import org.apache.log4j.spi.LoggingEvent;
  * @author <a href="http://www.qos.ch/log4j/">Ceki G&uuml;lc&uuml;</a>
  * @author Scott Deboy
  */
-public class MessageComparator extends StringComparator {
-  public MessageComparator(final Operator operator, String rightSide)
+public class PropertyComparator extends StringComparator {
+  String key;
+
+  public PropertyComparator(final Operator operator, String key, String rightSide)
     throws ScanError {
     super(operator, rightSide);
+    this.key = key;
   }
-
+  
   protected String getLeftSide(LoggingEvent event) {
-    return event.getRenderedMessage();
+    return  event.getProperty(key);
+  }
+  
+  public String toString() {
+    return "PropertyComparator("+key+","+operator+", "+rightSide+")";
   }
 }

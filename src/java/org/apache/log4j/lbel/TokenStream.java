@@ -37,12 +37,11 @@ class TokenStream  {
   	keywordMap.put("not", new Token(Token.NOT));
   	keywordMap.put("and", new Token(Token.AND));
   	keywordMap.put("or", new Token(Token.OR));
-  	keywordMap.put("childof", new Token(Token.OPERATOR, "childof"));
+    keywordMap.put("childof", new Token(Token.OPERATOR, "childof"));
     keywordMap.put("logger", new Token(Token.LOGGER, "logger"));
     keywordMap.put("message", new Token(Token.MESSAGE, "message"));
     keywordMap.put("level", new Token(Token.LEVEL, "level"));
     keywordMap.put("thread", new Token(Token.THREAD, "thread"));
-    keywordMap.put("property", new Token(Token.PROPERTY, "property"));
     keywordMap.put("date", new Token(Token.DATE, "date"));
   }
   
@@ -86,13 +85,19 @@ class TokenStream  {
 		    current = new Token(Token.NUMBER, new Long((long) nval));
 		    break;
   		case StreamTokenizer.TT_WORD:
-  			String key = tokenizer.sval;
-  		  Token result = (Token) keywordMap.get(key.toLowerCase());
-  		  if(result != null) {
-  		  	current = result;
-  		  } else {
-  		  	current = new Token(Token.LITERAL, tokenizer.sval);
-  		  }
+  			String txt = tokenizer.sval;
+        String lowerCaseTxt = txt.toLowerCase();
+
+        if(txt.startsWith("property.")) {
+          current = extractPropertyToken(txt);  
+        } else {
+    		  Token result = (Token) keywordMap.get(lowerCaseTxt);
+  		    if(result != null) {
+  		  	  current = result;
+  		    } else {
+  		  	 current = new Token(Token.LITERAL, tokenizer.sval);
+  		    }
+        }
         break;  		
   		case '"':
   	  case '\'':
@@ -143,5 +148,17 @@ class TokenStream  {
   		}
   		
   	}
+  }
+  
+  Token extractPropertyToken(String txt) throws ScanError {
+    int point = txt.indexOf('.');
+    String key = txt.substring(point+1);
+    // Is the key empty? (An empty key is the only thing that can go wrong at
+    // this stage.
+    if(key == null || key.length() == 0) {
+      throw new ScanError("["+txt+"] has zero-legnth key.");
+    } else {
+      return new Token(Token.PROPERTY, key);
+    }
   }
 }
