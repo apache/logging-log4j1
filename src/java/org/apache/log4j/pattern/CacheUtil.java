@@ -65,11 +65,17 @@ public class CacheUtil {
    * a non-sensical pattern, but unsafe nonetheless.
    */
   public static boolean isPatternSafeForCaching(String pattern) {
-    // this code assumes that literals have been removed from the pattern
-    if(pattern.indexOf("EEEE") != -1 && pattern.indexOf("MMMM") != -1) {
+ 
+    String cleanedPattern = CacheUtil.removeLiterals(pattern);
+ 
+    if(cleanedPattern.indexOf("EEEE") != -1 && cleanedPattern.indexOf("MMMM") != -1) {
       return false;
     }
-    if(disjointS(pattern)) {
+    if(disjointS(cleanedPattern)) {
+      return false;
+    }
+    int successiveS = CacheUtil.computeSuccessiveS(cleanedPattern);
+    if(successiveS == 1 || successiveS == 2) {
       return false;
     }
     return true;

@@ -22,6 +22,7 @@ import org.apache.log4j.spi.LoggingEvent;
 
 import java.text.DateFormat;
 import java.text.FieldPosition;
+import java.text.SimpleDateFormat;
 
 import java.util.Date;
 import java.util.TimeZone;
@@ -39,7 +40,7 @@ public class DatePatternConverter extends PatternConverter {
   // appender method are serialized (per appender).
   StringBuffer buf;
   Logger logger = Logger.getLogger(DatePatternConverter.class);
-  private DateFormat cdf;
+  private DateFormat df;
   private Date date;
   protected FieldPosition pos = new FieldPosition(0);
   long lastTimestamp = 0;
@@ -89,19 +90,26 @@ public class DatePatternConverter extends PatternConverter {
     }
 
     try {
-      cdf = new CachedDateFormat(pattern);
+      df = new SimpleDateFormat(pattern);
     } catch (IllegalArgumentException e) {
       logger.warn(
         "Could not instantiate SimpleDateFormat with pattern " + patternOption, e);
       // detault for the ISO8601 format
-      cdf = new CachedDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
+      pattern = "yyyy-MM-dd HH:mm:ss,SSS";
+      df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
     }
-
+  
+     
     // if the option list contains a TZ option, then set it.
     if (optionList != null && optionList.size() > 1) {
       TimeZone tz = TimeZone.getTimeZone((String) optionList.get(1));
-      cdf.setTimeZone(tz);
+      df.setTimeZone(tz);
     }
+    
+    // if we can cache, so much the better
+    if(CacheUtil.isPatternSafeForCaching(pattern)) {
+      df = new CachedDateFormat(df);
+    }     
   }
   
   public StringBuffer convert(LoggingEvent event) {
@@ -115,7 +123,7 @@ public class DatePatternConverter extends PatternConverter {
       lastTimestamp = timestamp;
       date.setTime(timestamp);
       try {
-        cdf.format(date, buf, pos);
+        df.format(date, buf, pos);
         lastTimestamp = timestamp;
       } catch (Exception ex) {
         // this should never happen

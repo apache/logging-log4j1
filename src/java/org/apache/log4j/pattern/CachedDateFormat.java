@@ -21,10 +21,8 @@ import java.text.DecimalFormat;
 import java.text.FieldPosition;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
 
 import java.util.Date;
-import java.util.Locale;
 import java.util.TimeZone;
 
 
@@ -35,6 +33,7 @@ import java.util.TimeZone;
  */
 final class CachedDateFormat extends DateFormat {
   private static final int BAD_PATTERN = -1;
+  private static final int NO_MILLISECONDS = -2;
   
   // Given that the JVM precision is 1/1000 of a second, 3 digit millisecond
   // precision is the best we can ever expect.
@@ -49,59 +48,30 @@ final class CachedDateFormat extends DateFormat {
   private StringBuffer milliBuf = new StringBuffer(JVM_MAX_MILLI_DIGITS);
   private NumberFormat numberFormat;
   
-  public CachedDateFormat(String pattern) {
-    this(pattern, null);
-  }
+ 
 
-  public CachedDateFormat(String pattern, Locale locale) {
-    if (pattern == null) {
-      throw new IllegalArgumentException("Pattern cannot be null");
+  public CachedDateFormat(DateFormat dateFormat) {
+    if (dateFormat == null) {
+      throw new IllegalArgumentException("dateFormat cannot be null");
     }
-    if (locale == null) {
-      this.formatter = new SimpleDateFormat(pattern);
-    } else {
-      this.formatter = new SimpleDateFormat(pattern, locale);
-    }
+    formatter = dateFormat;
     
-    String cleanedPattern = CacheUtil.removeLiterals(pattern);
-    milliDigits = CacheUtil.computeSuccessiveS(cleanedPattern);
-   
-    if(!CacheUtil.isPatternSafeForCaching(cleanedPattern)) {
-      millisecondStart = BAD_PATTERN;
-      return;
-    }
+    numberFormat = new DecimalFormat();
+    // numberFormat will zero as necessary
+    numberFormat.setMinimumIntegerDigits(JVM_MAX_MILLI_DIGITS);
     
-    if(milliDigits == 0) {
-      // millisecondStart value won't be used
-      millisecondStart = 0;
-    } else if (milliDigits < JVM_MAX_MILLI_DIGITS) {
-      // we don't deal well with these
-      millisecondStart = BAD_PATTERN;
-    } else if(milliDigits >= JVM_MAX_MILLI_DIGITS) {
-      // if the number if millisecond digits is 3 or more, we can safely reduce
-      // the precision to 3, because the values for the extra digits will always
-      // be 0, thus immutable across iterations.
-      milliDigits = JVM_MAX_MILLI_DIGITS;
-      numberFormat = new DecimalFormat();
-      // numberFormat will zero as necessary
-      numberFormat.setMinimumIntegerDigits(JVM_MAX_MILLI_DIGITS);
-    
-      Date now = new Date();
-      long nowTime = now.getTime();
-      slotBegin = (nowTime / 1000L) * 1000L;
+    Date now = new Date();
+    long nowTime = now.getTime();
+    slotBegin = (nowTime / 1000L) * 1000L;
 
-      slotBeginDate = new Date(slotBegin);
-      String formatted = formatter.format(slotBeginDate);
-      cache.append(formatted);
-      millisecondStart = findMillisecondStart(slotBegin, formatted, formatter);
-    } 
+    slotBeginDate = new Date(slotBegin);
+    String formatted = formatter.format(slotBeginDate);
+    cache.append(formatted);
+    millisecondStart = findMillisecondStart(slotBegin, formatted, formatter);
+    System.out.println("millisecondStart="+millisecondStart);
+  } 
     
-//    if(millisecondStart == BAD_PATTERN) {
-//      System.out.println("BAD PATTERN");
-//    } else {
-//      System.out.println("millisecondStart="+millisecondStart);
-//    }
-  }
+
 
   /**
    * Finds start of millisecond field in formatted time.
@@ -116,25 +86,23 @@ final class CachedDateFormat extends DateFormat {
     final long time, final String formatted, final DateFormat formatter) {
     String plus987 = formatter.format(new Date(time + 987));
 
-    //
-    //    find first difference between values
-    //
+    System.out.println("-formatted="+formatted);
+    System.out.println("plus987="+plus987);
+    // find first difference between values
     for (int i = 0; i < formatted.length(); i++) {
       if (formatted.charAt(i) != plus987.charAt(i)) {
-        //
         //   if one string has "000" and the other "987"
         //      we have found the millisecond field
-        //
         if (i + 3 <= formatted.length() 
-            && formatted.substring(i, i + JVM_MAX_MILLI_DIGITS) == "000" 
-            && plus987.substring(i, i + JVM_MAX_MILLI_DIGITS) == "987") {
+            && "000".equals(formatted.substring(i, i + JVM_MAX_MILLI_DIGITS))  
+            && "987".equals(plus987.substring(i, i + JVM_MAX_MILLI_DIGITS))) {
           return i;
         } else {
           return BAD_PATTERN;  
         }
       }
     }
-    return BAD_PATTERN;
+    return  NO_MILLISECONDS;
   }
 
   /**
@@ -154,22 +122,22 @@ final class CachedDateFormat extends DateFormat {
     
     long now = date.getTime();
     if ((now < (slotBegin + 1000L)) && (now >= slotBegin)) {
-      //System.out.println("Using cached val:"+date);
+      System.out.println("Using cached val:"+date);
 
-      // caching is safe only for milliDigits == 3, if milliDigits == 0
-      // we don't have to bother  with milliseonds at all.
-      if (millisecondStart >= 0 && milliDigits == JVM_MAX_MILLI_DIGITS) {
+      // If there are NO_MILLISECONDS we don't bother computing the millisecs.
+      if (millisecondStart >= 0) {
         int millis = (int) (now - slotBegin);
         int cacheLength = cache.length();
 
         milliBuf.setLength(0);
         numberFormat.format(millis, milliBuf, fieldPosition);
+        System.out.println("milliBuf="+milliBuf);
         for(int j = 0; j < JVM_MAX_MILLI_DIGITS; j++) {
           cache.setCharAt(millisecondStart+j, milliBuf.charAt(j));
         }
       }
     } else {
-      //System.out.println("Refreshing the cache: "+date+","+(date.getTime()%1000));
+      System.out.println("Refreshing the cache: "+date+","+(date.getTime()%1000));
       slotBegin = (now / 1000L) * 1000L;
       int prevLength = cache.length();
       cache.setLength(0);
@@ -178,8 +146,8 @@ final class CachedDateFormat extends DateFormat {
       //   if the length changed then
       //      recalculate the millisecond position
       if (cache.length() != prevLength && (milliDigits > 0)) {
-        //System.out.println("Recomputing cached len changed oldLen="+prevLength
-        //      +", newLen="+cache.length());
+        System.out.println("Recomputing cached len changed oldLen="+prevLength
+              +", newLen="+cache.length());
         //
         //    format the previous integral second
         StringBuffer tempBuffer = new StringBuffer(cache.length());
