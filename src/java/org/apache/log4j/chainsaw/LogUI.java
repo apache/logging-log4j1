@@ -16,37 +16,6 @@
 
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.chainsaw.help.HelpManager;
-import org.apache.log4j.chainsaw.help.Tutorial;
-import org.apache.log4j.chainsaw.helper.SwingHelper;
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-import org.apache.log4j.chainsaw.icons.LineIconFactory;
-import org.apache.log4j.chainsaw.messages.MessageCenter;
-import org.apache.log4j.chainsaw.plugins.ChainsawCentral;
-import org.apache.log4j.chainsaw.plugins.PluginClassLoaderFactory;
-import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SettingsListener;
-import org.apache.log4j.chainsaw.prefs.SettingsManager;
-import org.apache.log4j.chainsaw.receivers.ReceiversPanel;
-import org.apache.log4j.chainsaw.version.VersionManager;
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.helpers.OptionConverter;
-import org.apache.log4j.joran.JoranConfigurator;
-import org.apache.log4j.net.SocketNodeEventListener;
-import org.apache.log4j.plugins.Plugin;
-import org.apache.log4j.plugins.PluginEvent;
-import org.apache.log4j.plugins.PluginListener;
-import org.apache.log4j.plugins.PluginRegistry;
-import org.apache.log4j.plugins.Receiver;
-import org.apache.log4j.rule.ExpressionRule;
-import org.apache.log4j.rule.Rule;
-import org.apache.log4j.spi.LoggingEvent;
-
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
@@ -65,18 +34,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
-import java.io.File;
 import java.io.IOException;
-
 import java.lang.reflect.Method;
-
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import java.security.AllPermission;
 import java.security.CodeSource;
 import java.security.PermissionCollection;
@@ -118,6 +81,36 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+
+import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.chainsaw.help.HelpManager;
+import org.apache.log4j.chainsaw.help.Tutorial;
+import org.apache.log4j.chainsaw.helper.SwingHelper;
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.chainsaw.icons.LineIconFactory;
+import org.apache.log4j.chainsaw.messages.MessageCenter;
+import org.apache.log4j.chainsaw.plugins.ChainsawCentral;
+import org.apache.log4j.chainsaw.plugins.PluginClassLoaderFactory;
+import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.SettingsListener;
+import org.apache.log4j.chainsaw.prefs.SettingsManager;
+import org.apache.log4j.chainsaw.receivers.ReceiversPanel;
+import org.apache.log4j.chainsaw.version.VersionManager;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.joran.JoranConfigurator;
+import org.apache.log4j.net.SocketNodeEventListener;
+import org.apache.log4j.plugins.Plugin;
+import org.apache.log4j.plugins.PluginEvent;
+import org.apache.log4j.plugins.PluginListener;
+import org.apache.log4j.plugins.PluginRegistry;
+import org.apache.log4j.plugins.Receiver;
+import org.apache.log4j.rule.ExpressionRule;
+import org.apache.log4j.rule.Rule;
+import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
@@ -779,26 +772,30 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
     Action showHiddenTabsAction =
       new AbstractAction("Show All Hidden") {
         public void actionPerformed(ActionEvent e) {
-          for (Iterator iter = getPanels().keySet().iterator();
+          for (Iterator iter = getPanels().entrySet().iterator();
               iter.hasNext();) {
-            String identifier = (String) iter.next();
-            int count = getTabbedPane().getTabCount();
-            boolean found = false;
-
-            for (int i = 0; i < count; i++) {
-              String name = getTabbedPane().getTitleAt(i);
-
-              if (name.equals(identifier)) {
-                found = true;
-
-                break;
-              }
-            }
-
-            if (!found) {
-              displayPanel(identifier, true);
-              tbms.stateChange();
-            }
+          	Map.Entry entry = (Map.Entry)iter.next();
+          	Boolean docked = (Boolean)entry.getValue();
+          	if (docked.booleanValue()) {
+	            String identifier = (String) entry.getKey();
+	            int count = getTabbedPane().getTabCount();
+	            boolean found = false;
+	
+	            for (int i = 0; i < count; i++) {
+	              String name = getTabbedPane().getTitleAt(i);
+	
+	              if (name.equals(identifier)) {
+	                found = true;
+	
+	                break;
+	              }
+	            }
+	
+	            if (!found) {
+	              displayPanel(identifier, true);
+	              tbms.stateChange();
+	            }
+          	}
           }
         }
       };

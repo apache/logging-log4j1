@@ -788,9 +788,13 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
     throwableRenderPanel.addActionListener(
       new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          Object o =
-            table.getValueAt(
-              table.getSelectedRow(), table.getSelectedColumn());
+          Object o = table.getValueAt(
+            table.getSelectedRow(), table.getSelectedColumn());
+          if (o == null) {
+            //no row selected - ignore
+          	LogLog.debug("no row selected - unable to display throwable popup");
+            return;
+          }
           detailDialog.setTitle(
             table.getColumnName(table.getSelectedColumn()) + " detail...");
 
@@ -808,7 +812,7 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
             detailArea.setText((o == null) ? "" : o.toString());
           }
 
-          detailDialog.setLocation(LogPanel.this.getLocationOnScreen());
+          detailDialog.setLocation(lowerPanel.getLocationOnScreen());
           SwingUtilities.invokeLater(
             new Runnable() {
               public void run() {
@@ -1739,18 +1743,25 @@ public class LogPanel extends DockablePanel implements EventBatchListener,
         }
       };
 
-    dockToggleLogTreeAction.putValue(Action.SMALL_ICON, null);
-
-    dockToggleLogTreeAction.putValue(Action.NAME, "Logger Tree");
-
-    dockToggleLogTreeAction.putValue(
-      Action.SHORT_DESCRIPTION, "Toggles the Log Tree panel");
-    dockToggleLogTreeAction.putValue(Action.SMALL_ICON, null);
+      dockToggleLogTreeAction.putValue(Action.SHORT_DESCRIPTION, "Toggles the Logger Tree Pane");
+      dockToggleLogTreeAction.putValue("enabled", Boolean.TRUE);
+      dockToggleLogTreeAction.putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_T));
+      dockToggleLogTreeAction.putValue(
+        Action.ACCELERATOR_KEY,
+        KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.ALT_MASK));
+      dockToggleLogTreeAction.putValue(
+        Action.SMALL_ICON, new ImageIcon(ChainsawIcons.WINDOW_ICON));
 
     toolbar.add(new SmallButton(dockShowPrefsAction));
 
-    SmallToggleButton toggleLogTreeButton =
+    final SmallToggleButton toggleLogTreeButton =
       new SmallToggleButton(dockToggleLogTreeAction);
+    preferenceModel.addPropertyChangeListener("logTreePanelVisible", new PropertyChangeListener() {
+    	public void propertyChange(PropertyChangeEvent evt) {
+    	    toggleLogTreeButton.setSelected(preferenceModel.isLogTreePanelVisible());    		
+    	}
+    });
+    		
     toggleLogTreeButton.setSelected(isLogTreeVisible());
     toolbar.add(toggleLogTreeButton);
     toolbar.addSeparator();
