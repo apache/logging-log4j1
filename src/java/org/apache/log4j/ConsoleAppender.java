@@ -47,9 +47,9 @@ public class ConsoleAppender extends WriterAppender {
     this.layout = layout;
 
     if (SYSTEM_OUT.equals(target)) {
-      setWriter(new OutputStreamWriter(System.out));
+      setWriter(createWriter(System.out));
     } else if (SYSTEM_ERR.equalsIgnoreCase(target)) {
-      setWriter(new OutputStreamWriter(System.err));
+      setWriter(createWriter(System.err));
     } else {
       targetWarn(target);
     }
@@ -89,9 +89,9 @@ public class ConsoleAppender extends WriterAppender {
 
   public void activateOptions() {
     if (target.equals(SYSTEM_OUT)) {
-      setWriter(new OutputStreamWriter(System.out));
+      setWriter(createWriter(System.out));
     } else {
-      setWriter(new OutputStreamWriter(System.err));
+      setWriter(createWriter(System.err));
     }
   }
 
