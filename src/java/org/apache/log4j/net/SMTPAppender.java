@@ -251,7 +251,7 @@ public class SMTPAppender extends AppenderSkeleton {
     return OptionConverter.concatanateArrays(super.getOptionStrings(),
           new String[] {TO_OPTION, FROM_OPTION, SUBJECT_OPTION, 
 			  SMTP_HOST_OPTION, BUFFER_SIZE_OPTION,  
-			  LOCATION_INFO_OPTION });
+			  EVALUATOR_CLASS_OPTION, LOCATION_INFO_OPTION });
   }
   
   InternetAddress[] parseAddress(String addressStr) {
