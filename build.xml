@@ -224,28 +224,27 @@
   <target name="build.core" depends="init, jndiCheck" if="jndi-present" >
     <mkdir dir="${javac.dest}" />
     <javac srcdir="${java.source.dir}"
-     destdir="${javac.dest}"
-     deprecation="on"
-     includes="org/apache/ugli/**/*.java,
-    	       ${stem}/**/*.java, 
-    	       org/apache/joran/**/*.java, 
-    	       ${stem}/xml/XMLLayout.java,"
-     excludes="org/apache/ugli/impl/JDK14*.java,
-    	            **/UnitTest*.java,
-                    **/StressCategory.java,
-                    **/doc-files/*,
-                    ${stem}/chainsaw/**,
-                    ${stem}/db/**,
-                    ${stem}/xml/**,
-                    ${stem}/test/serialization/**,
-                    ${stem}/net/SMTPAppender.java,
-                    ${stem}/net/JMS*.java,
-    	            ${stem}/varia/LogFilePatternReceiver*.java,
-    	            ${stem}/rule/LikeRule.java,
-                    ${stem}/jmx/*.java,
-                    ${stem}/or/jms/*.java,
-                    ${stem}/selector/servlet/*.java"
-      debug="${debug}">
+           destdir="${javac.dest}"
+           includes="org/apache/ugli/**/*.java,
+    	            ${stem}/**/*.java, 
+    	            ${stem}/xml/XMLLayout.java,"
+           excludes="org/apache/ugli/impl/JDK14*.java,
+    	             **/UnitTest*.java,
+                     **/StressCategory.java,
+                     **/doc-files/*,
+                     ${stem}/chainsaw/**,
+                     ${stem}/db/**,
+                     ${stem}/xml/**,
+                     ${stem}/test/serialization/**,
+                     ${stem}/net/SMTPAppender.java,
+                     ${stem}/net/JMS*.java,
+    	             ${stem}/varia/LogFilePatternReceiver*.java,
+    	             ${stem}/rule/LikeRule.java,
+                     ${stem}/or/jms/*.java,
+                     ${stem}/selector/servlet/*.java"
+    	   deprecation="on"
+    	   debug="${debug}"
+    	>
       <classpath refid="compile.classpath"/>
     </javac>
   </target>
@@ -275,11 +274,11 @@
   <target name="build.examples" depends="build.core">
     <mkdir dir="${examples.javac.dest}" />
     <javac srcdir="${examples.src}"
-     destdir="${examples.javac.dest}"
-     includes="**/*.java"
-     excludes="**/jmx/*.java"
-     deprecation="${deprecation}"
-     debug="${debug}"
+           destdir="${examples.javac.dest}"
+           includes="**/*.java"
+           excludes="**/jmx/*.java"
+           deprecation="${deprecation}"
+           debug="${debug}"
      >
       <classpath refid="compile.classpath"/>
     </javac>
@@ -289,11 +288,13 @@
 
  <target name="build.xml" depends="init, jaxp" if="jaxp-present">
     <javac srcdir="${java.source.dir}"
-     destdir="${javac.dest}"
-     includes="${stem}/xml/**/*.java"
+           destdir="${javac.dest}"
+           includes="${stem}/xml/**/*.java"
            excludes="${stem}/xml/examples/doc-files/**.java,
-               ${stem}/xml/Transform.java"
-     deprecation="${deprecation}">
+                     ${stem}/xml/Transform.java"
+           deprecation="${deprecation}"
+           debug="${debug}"
+    >
       <classpath refid="compile.classpath"/>
     </javac>
     <copy file="${BSTEM}/xml/log4j.dtd"
@@ -306,8 +307,10 @@
           if="javamail-present">
     <javac srcdir="${java.source.dir}"
            destdir="${javac.dest}"
+    	   debug="${debug}"
            deprecation="${deprecation}"
-           includes="${stem}/net/SMTPAppender.java">
+           includes="${stem}/net/SMTPAppender.java"
+    >
       <classpath refid="compile.classpath"/>
     </javac>
   </target>
@@ -317,17 +320,20 @@
            destdir="${javac.dest}"
            deprecation="${deprecation}"
            includes="${stem}/varia/LogFilePatternReceiver*.java,
-           ${stem}/rule/LikeRule.java">
+                     ${stem}/rule/LikeRule.java"
+    	   debug="${debug}"
+    >
       <classpath refid="compile.classpath"/>
     </javac>
   </target>
   
   <target name="build.jms" depends="init, jms, jndi" if="jms-present">
-    <javac deprecation="${deprecation}"
-           srcdir="${java.source.dir}"
+    <javac srcdir="${java.source.dir}"
            debug="${debug}"
+    	   deprecation="${deprecation}"
            destdir="${javac.dest}"
-           includes="${stem}/net/JMS*.java">
+           includes="${stem}/net/JMS*.java"
+    >
       <classpath refid="compile.classpath"/>
     </javac>
   </target>
