@@ -47,116 +47,75 @@
  *
  */
 
-package org.apache.log4j.rolling.helpers;
+package org.apache.log4j.rolling;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.LogManager;
-
-import java.util.Calendar;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
+import org.apache.log4j.util.Compare;
 
 
 /**
- * @author Ceki
+ *
+ * @author Ceki G&uuml;lc&uuml;
  *
  */
-public class FileNamePatternTestCase extends TestCase {
-  /**
-   * Constructor for FileNamePatternParserTestCase.
-   * @param arg0
-   */
-  public FileNamePatternTestCase(String arg0) {
-    super(arg0);
+public class TimeBasedRollingTestCase extends TestCase {
+  Logger logger = Logger.getLogger(TimeBasedRollingTestCase.class);
+
+  public TimeBasedRollingTestCase(String name) {
+    super(name);
   }
 
-  public void setUp() throws Exception {
-    BasicConfigurator.configure();
-
-    //Logger root = Logger.getRootLogger();
-    //Appender appender =
-    //  new FileAppender(new PatternLayout(), "filenamepattern.log");
-    //root.addAppender(appender);
+  public void setUp() {
   }
 
   public void tearDown() {
     LogManager.shutdown();
   }
 
-  public void test1() {
-    //System.out.println("Testing [t]");
-    FileNamePattern pp = new FileNamePattern("t");
-    assertEquals("t", pp.convert(3));
+  public void test1() throws Exception {
+    Logger root = Logger.getRootLogger();
+    root.addAppender(new ConsoleAppender(new PatternLayout()));
 
-    //System.out.println("Testing [foo]");
-    pp = new FileNamePattern("foo");
-    assertEquals("foo", pp.convert(3));
+    // We purposefully use the \n as the line separator. 
+    // This makes the regression test system indepent.
+    PatternLayout layout = new PatternLayout("%d %m\n");
+    RollingFileAppender rfa = new RollingFileAppender();
+    rfa.setLayout(layout);
 
-    //System.out.println("Testing [foo%]");
-    pp = new FileNamePattern("foo%");
-    assertEquals("foo%", pp.convert(3));
+    TimeBasedRollingPolicy tbrp = new TimeBasedRollingPolicy();
+    tbrp.setFileNamePattern("output/tbt%d{yyyy-MM-dd_HH_mm}");
+    rfa.setRollingPolicy(tbrp);
+    rfa.activateOptions();
+    root.addAppender(rfa);
 
-    pp = new FileNamePattern("%ifoo");
-    assertEquals("3foo", pp.convert(3));
+    // Write exactly 10 bytes with each log
+    for (int i = 0; i < 30; i++) {
+      Thread.sleep(1000);
+      if (i < 10) {
+        logger.debug("Hello---" + i);
+      } else if (i < 100) {
+        logger.debug("Hello--" + i);
+      } else {
+        logger.debug("Hello-" + i);
+      }
+    }
 
-    pp = new FileNamePattern("foo%ixixo");
-    assertEquals("foo3xixo", pp.convert(3));
-
-    pp = new FileNamePattern("foo%i.log");
-    assertEquals("foo3.log", pp.convert(3));
-
-    pp = new FileNamePattern("foo.%i.log");
-    assertEquals("foo.3.log", pp.convert(3));
-
-    pp = new FileNamePattern("%ifoo%");
-    assertEquals("3foo%", pp.convert(3));
-
-    pp = new FileNamePattern("%ifoo%%");
-    assertEquals("3foo%", pp.convert(3));
-
-    pp = new FileNamePattern("%%foo");
-    assertEquals("%foo", pp.convert(3));
+    // The File.length() method is not accurate under Windows    
   }
 
-  public void test2() {
-    System.out.println("Testing [foo%ibar%i]");
-
-    FileNamePattern pp = new FileNamePattern("foo%ibar%i");
-    assertEquals("foo3bar3", pp.convert(3));
-
-    ///pp = new FileNamePattern("%%foo");
-    //assertEquals("%foo", pp.convert(3));
-  }
-
-  public void test3() {
-    Calendar cal = Calendar.getInstance();
-    cal.set(2003, 4, 20, 17, 55);
-
-    FileNamePattern pp = new FileNamePattern("foo%d{yyyy.MM.dd}");
-    assertEquals("foo2003.05.20", pp.convert(cal.getTime()));
-
-    pp = new FileNamePattern("foo%d{yyyy.MM.dd HH:mm}");
-    assertEquals("foo2003.05.20 17:55", pp.convert(cal.getTime()));
-
-    pp = new FileNamePattern("%d{yyyy.MM.dd HH:mm} foo");
-     assertEquals("2003.05.20 17:55 foo", pp.convert(cal.getTime()));
-
-
-    // Degenerate cases:
-    pp = new FileNamePattern("foo%dyyyy.MM.dd}");
-    assertEquals("foo%dyyyy.MM.dd}", pp.convert(cal.getTime()));
-    
-    pp = new FileNamePattern("foo%d{yyyy.MM.dd");
-    assertEquals("foo%d{yyyy.MM.dd", pp.convert(cal.getTime()));
-  }
 
   public static Test suite() {
     TestSuite suite = new TestSuite();
-    suite.addTest(new FileNamePatternTestCase("test1"));
-    suite.addTest(new FileNamePatternTestCase("test2"));
-    suite.addTest(new FileNamePatternTestCase("test3"));
+
+    suite.addTest(new TimeBasedRollingTestCase("test1"));
+    //suite.addTest(new TimeBasedRollingTestCase("test2"));
 
     return suite;
   }

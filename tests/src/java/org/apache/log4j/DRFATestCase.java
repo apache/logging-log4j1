@@ -56,6 +56,8 @@ import junit.framework.TestSuite;
 import java.util.Calendar;
 import java.util.TimeZone;
 
+import org.apache.log4j.rolling.helpers.RollingCalendar;
+
 
 /**
    Exhaustive test of the DailyRollingFileAppender compute algorithm.
@@ -68,39 +70,36 @@ public class DRFATestCase extends TestCase {
   }
 
   public void testComputeCheckPeriod() {
-    DailyRollingFileAppender drfa = new DailyRollingFileAppender();
-    drfa.setName("testComputeCheckPeriod");
-    drfa.setDatePattern("yyyy-MM-dd.'log'");
-    drfa.activateOptions();
+    RollingCalendar rc = new RollingCalendar();
+    
+    //DailyRollingFileAppender drfa = new DailyRollingFileAppender();
+    //drfa.setName("testComputeCheckPeriod");
+    //rc.setsetDatePattern("yyyy-MM-dd.'log'");
+    //drfa.activateOptions();
 
-    int x = drfa.computeCheckPeriod();
-    int y = DailyRollingFileAppender.TOP_OF_DAY;
+    //int x = rc.computeTriggeringPeriod("yyyy-MM-dd.'log'");
+    //int y = RollingCalendar.TOP_OF_DAY;
     assertEquals(
-      drfa.computeCheckPeriod(), DailyRollingFileAppender.TOP_OF_DAY);
+    rc.computeTriggeringPeriod("yyyy-MM-dd.'log'"), RollingCalendar.TOP_OF_DAY);
 
-    drfa.setDatePattern("yyyy-MM-dd mm.'log'");
+    assertEquals(rc.computeTriggeringPeriod("yyyy-MM-dd mm.'log'"), RollingCalendar.TOP_OF_MINUTE);
+
+    assertEquals(rc.computeTriggeringPeriod("yyyy-MM-dd a.'log'"), RollingCalendar.HALF_DAY);
+
     assertEquals(
-      drfa.computeCheckPeriod(), DailyRollingFileAppender.TOP_OF_MINUTE);
+      rc.computeTriggeringPeriod("yyyy-MM-dd HH.'log'"), RollingCalendar.TOP_OF_HOUR);
 
-    drfa.setDatePattern("yyyy-MM-dd a.'log'");
-    assertEquals(drfa.computeCheckPeriod(), DailyRollingFileAppender.HALF_DAY);
-
-    drfa.setDatePattern("yyyy-MM-dd HH.'log'");
     assertEquals(
-      drfa.computeCheckPeriod(), DailyRollingFileAppender.TOP_OF_HOUR);
+      rc.computeTriggeringPeriod("yyyy-MM.'log'"), RollingCalendar.TOP_OF_MONTH);
 
-    drfa.setDatePattern("yyyy-MM.'log'");
-    assertEquals(
-      drfa.computeCheckPeriod(), DailyRollingFileAppender.TOP_OF_MONTH);
 
-    drfa.setDatePattern("'log'HH'log'");
     assertEquals(
-      drfa.computeCheckPeriod(), DailyRollingFileAppender.TOP_OF_HOUR);
+      rc.computeTriggeringPeriod("'log'HH'log'"), RollingCalendar.TOP_OF_HOUR);
   }
 
   public void testRC1() {
     RollingCalendar rc = new RollingCalendar();
-    rc.setType(DailyRollingFileAppender.TOP_OF_DAY);
+    rc.setType(RollingCalendar.TOP_OF_DAY);
 
     Calendar c = Calendar.getInstance();
 
@@ -142,7 +141,7 @@ public class DRFATestCase extends TestCase {
   public void testRC2() {
     RollingCalendar rc = new RollingCalendar();
 
-    rc.setType(DailyRollingFileAppender.TOP_OF_HOUR);
+    rc.setType(RollingCalendar.TOP_OF_HOUR);
 
     Calendar c = Calendar.getInstance();
     TimeZone tz = c.getTimeZone();
@@ -206,7 +205,7 @@ public class DRFATestCase extends TestCase {
   public void testRC3() {
     RollingCalendar rc = new RollingCalendar();
 
-    rc.setType(DailyRollingFileAppender.TOP_OF_MINUTE);
+    rc.setType(RollingCalendar.TOP_OF_MINUTE);
 
     int[] S = { 0, 1, 5, 10, 21, 30, 59 };
     int[] M = { 0, 1, 5, 10, 21, 30, 59 };

@@ -66,7 +66,10 @@ public class Compress {
   public static final int NONE = 0;
   public static final int GZ = 1;
   public static final int ZIP = 2;
-
+  public static final String NONE_STR = "NONE";
+  public static final String GZ_STR = "GZ";
+  public static final String ZIP_STR = "ZIP";
+   
   public static void ZIPCompress(String nameOfFile2zip, String nameOfZippedFile) {
     File file2zip = new File(nameOfFile2zip);
     File zippedFile = new File(nameOfZippedFile);
