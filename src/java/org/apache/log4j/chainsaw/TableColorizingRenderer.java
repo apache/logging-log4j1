@@ -49,33 +49,27 @@
 
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
-import org.apache.log4j.chainsaw.prefs.SettingsListener;
-import org.apache.log4j.helpers.ISO8601DateFormat;
-import org.apache.log4j.spi.LoggingEvent;
-
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Image;
-
 import java.text.DateFormat;
-
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JTable;
-import javax.swing.UIManager;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
+
+import org.apache.log4j.chainsaw.icons.LevelIconFactory;
+import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
+import org.apache.log4j.chainsaw.prefs.SettingsListener;
+import org.apache.log4j.helpers.ISO8601DateFormat;
+import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
@@ -91,7 +85,7 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
   implements SettingsListener {
   private static final DateFormat DATE_FORMATTER =
     new ISO8601DateFormat(Calendar.getInstance().getTimeZone());
-  private Map iconMap = new HashMap();
+  private Map iconMap = LevelIconFactory.getInstance().getLevelToIconMap();
   private ColorFilter colorFilter;
   private JTable table;
   private Color background = new Color(255, 255, 254);
@@ -112,30 +106,7 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer
     levelComponent.setOpaque(true);
     levelComponent.setHorizontalAlignment(JLabel.CENTER);
 
-    //    Image warningImage = ((IconUIResource)UIManager.getIcon("OptionPane.warningIcon")).getImage().getScaledInstance(16,16, Image.SCALE_FAST);
-    String[] iconFileNames =
-      new String[] { "Warn.gif", "Inform.gif", "Error.gif" };
-    String[] iconLabels = new String[] { "WARN", "INFO", "ERROR" };
-
-    for (int i = 0; i < iconLabels.length; i++) {
-      final ImageIcon icon =
-        new ImageIcon(
-          UIManager.getLookAndFeel().getClass().getResource(
-            "icons/" + iconFileNames[i]));
-      double scalex = .5;
-      double scaley = .5;
-      final int newWidth = (int) (scalex * icon.getIconWidth());
-      final int newHeight = (int) (scaley * icon.getIconHeight());
-      Image iconImage =
-        icon.getImage().getScaledInstance(
-          newWidth, newHeight, Image.SCALE_SMOOTH);
-      iconMap.put(iconLabels[i], new ImageIcon(iconImage));
-    }
-
-    /**
-     * finally, add the debug icon...
-     */
-    iconMap.put("DEBUG", ChainsawIcons.ICON_DEBUG);
+ 
 
     levelComponent.setText("");
   }
