@@ -36,6 +36,8 @@ public class AbsoluteTimeDateFormat extends SimpleDateFormat {
      value is <b>ABSOLUTE</b>.  */
   public static final String ABS_TIME_DATE_FORMAT = "ABSOLUTE";
 
+  public static final String ABS_TIME_DATE_PATTERN = "HH:mm:ss,SSS";
+  
   /**
      String constant used to specify {@link
      org.apache.log4j.helpers.DateTimeDateFormat} in layouts.  Current

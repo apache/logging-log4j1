@@ -76,7 +76,8 @@ public final class CachedDateFormatTest
     //   subsequent calls within one minute
     //     are optimized to reuse previous formatted value
     //     make a couple of nearly spaced calls
-    DateFormat gmtFormat = new CachedDateFormat(new AbsoluteTimeDateFormat(GMT));
+    DateFormat gmtFormat = new CachedDateFormat(AbsoluteTimeDateFormat.ABS_TIME_DATE_PATTERN);
+    gmtFormat.setTimeZone(GMT);
     long ticks = 12601L * 86400000L;
     Date jul1 = new Date(ticks);
     assertEquals("00:00:00,000", gmtFormat.format(jul1));
@@ -96,8 +97,10 @@ public final class CachedDateFormatTest
 
   public void test2() {
       Date jul2 = new Date(12602L * 86400000L);
-      DateFormat gmtFormat = new CachedDateFormat(new AbsoluteTimeDateFormat(GMT));
-      DateFormat chicagoFormat = new CachedDateFormat(new AbsoluteTimeDateFormat(CHICAGO));
+      DateFormat gmtFormat = new CachedDateFormat(AbsoluteTimeDateFormat.ABS_TIME_DATE_PATTERN);
+      gmtFormat.setTimeZone(GMT);
+      DateFormat chicagoFormat = new CachedDateFormat(AbsoluteTimeDateFormat.ABS_TIME_DATE_PATTERN);
+      chicagoFormat.setTimeZone(CHICAGO);
       assertEquals("00:00:00,000", gmtFormat.format(jul2));
       assertEquals("19:00:00,000", chicagoFormat.format(jul2));
       assertEquals("00:00:00,000", gmtFormat.format(jul2));
@@ -110,8 +113,8 @@ public final class CachedDateFormatTest
     //   subsequent calls within one minute
     //     are optimized to reuse previous formatted value
     //     make a couple of nearly spaced calls
-    DateFormat gmtFormat = new CachedDateFormat(
-       new AbsoluteTimeDateFormat(GMT));
+    DateFormat gmtFormat = new CachedDateFormat(AbsoluteTimeDateFormat.ABS_TIME_DATE_PATTERN);
+    gmtFormat.setTimeZone(GMT);
     long ticks = -7L * 86400000L;
     Date jul1 = new Date(ticks);
     assertEquals("00:00:00,000", gmtFormat.format(jul1));
@@ -130,8 +133,10 @@ public final class CachedDateFormatTest
     //     are optimized to reuse previous formatted value
     //     make a couple of nearly spaced calls
     SimpleDateFormat baseFormat =
-         new SimpleDateFormat("EEE, MMM dd, HH:mm:ss.SSS Z", Locale.ENGLISH);
-    DateFormat cachedFormat = new CachedDateFormat(baseFormat);
+         new SimpleDateFormat("EEE, MMM dd, HH:mm:ss.SSS Z");
+    //     new SimpleDateFormat("EEE, MMM dd, HH:mm:ss.SSS Z", Locale.ENGLISH);
+
+    DateFormat cachedFormat = new CachedDateFormat("EEE, MMM dd, HH:mm:ss.SSS Z");
     //
     //   use a date in 2000 to attempt to confuse the millisecond locator
     long ticks = 11141L * 86400000L;
@@ -154,9 +159,10 @@ public final class CachedDateFormatTest
     //     are optimized to reuse previous formatted value
     //     make a couple of nearly spaced calls
     Locale thai = new Locale("th");
+    String pattern = "EEE, MMM dd, HH:mm:ss.SSS Z";
     SimpleDateFormat baseFormat =
          new SimpleDateFormat("EEE, MMM dd, HH:mm:ss.SSS Z", thai);
-    DateFormat cachedFormat = new CachedDateFormat(baseFormat);
+    DateFormat cachedFormat = new CachedDateFormat(pattern, thai);
     //
     //   use a date in 2000 to attempt to confuse the millisecond locator
     long ticks = 11141L * 86400000L;
@@ -176,7 +182,7 @@ public final class CachedDateFormatTest
    * Checks that getNumberFormat does not return null.
    */
   public void test6() {
-    assertNotNull(new CachedDateFormat(new SimpleDateFormat()).getNumberFormat());
+    assertNotNull(new SimpleDateFormat().getNumberFormat());
   }
 
   /**
@@ -203,8 +209,9 @@ public final class CachedDateFormatTest
    * Set time zone on cached and check that it is effective.
    */
   public void test8() {
-    DateFormat baseFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
-    DateFormat cachedFormat = new CachedDateFormat(baseFormat);
+    String pattern = "yyyy-MM-dd HH:mm:ss,SSS";
+    DateFormat baseFormat = new SimpleDateFormat(pattern);
+    DateFormat cachedFormat = new CachedDateFormat(pattern);
     cachedFormat.setTimeZone(TimeZone.getTimeZone("GMT-6"));
     Date jul4 = new Date(12603L * 86400000L);
     assertEquals("2004-07-03 18:00:00,000", cachedFormat.format(jul4));
@@ -215,8 +222,9 @@ public final class CachedDateFormatTest
    * Test of caching when less than three millisecond digits are specified.
    */
   public void test9() {
-    DateFormat baseFormat = new SimpleDateFormat("yyyy-MMMM-dd HH:mm:ss,SS Z", Locale.US);
-    DateFormat cachedFormat = new CachedDateFormat(baseFormat);
+    String pattern = "yyyy-MMMM-dd HH:mm:ss,SS Z";
+    DateFormat baseFormat = new SimpleDateFormat(pattern, Locale.US);
+    DateFormat cachedFormat = new CachedDateFormat(pattern);
     TimeZone cet = TimeZone.getTimeZone("GMT+1");
     cachedFormat.setTimeZone(cet);
     
@@ -242,8 +250,9 @@ public final class CachedDateFormatTest
    * Test when millisecond position moves but length remains constant.
    */
   public void test10() {
+    String pattern = "MMMM SSS EEEEEE";
     DateFormat baseFormat = new SimpleDateFormat("MMMM SSS EEEEEE", Locale.US);
-    DateFormat cachedFormat = new CachedDateFormat(baseFormat);
+    DateFormat cachedFormat = new CachedDateFormat(pattern);
     TimeZone cet = TimeZone.getTimeZone("GMT+1");
     cachedFormat.setTimeZone(cet);
     
