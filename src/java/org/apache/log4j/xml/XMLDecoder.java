@@ -52,8 +52,10 @@ package org.apache.log4j.xml;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.StringReader;
+import java.net.URL;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Map;
@@ -168,12 +170,12 @@ public class XMLDecoder implements Decoder {
    * @return The contents of the file as a String
    * @throws IOException if an error occurred during the loading process
    */
-  private String loadFileSource(File file) throws IOException {
+  private String loadFileSource(URL url) throws IOException {
     LineNumberReader reader = null;
     StringBuffer buf = new StringBuffer(1024);
 
     try {
-      reader = new LineNumberReader(new FileReader(file));
+      reader = new LineNumberReader(new InputStreamReader(url.openStream()));
 
       String line = null;
 
@@ -200,8 +202,8 @@ public class XMLDecoder implements Decoder {
    * @return Vector of LoggingEvents
    * @throws IOException
    */
-  public Vector decode(File file) throws IOException {
-    String fileContents = loadFileSource(file);
+  public Vector decode(URL url) throws IOException {
+    String fileContents = loadFileSource(url);
     Document doc = parse(fileContents);
 
     if (doc == null) {

@@ -32,7 +32,7 @@ public class XMLDecoderTest extends TestCase {
    */
   public void testDecodeFile() throws Exception {
     XMLDecoder xmlDecoder = new XMLDecoder();
-    List events = xmlDecoder.decode(new File("tests/witness/eventSet.1.xml"));
+    List events = xmlDecoder.decode(new File("tests/witness/eventSet.1.xml").toURL());
     assertTrue("Should have returned at least 418 events: " + events.size(), events.size()==418);
     
   }

@@ -49,8 +49,8 @@
 
 package org.apache.log4j;
 
-import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Map;
 import java.util.Vector;
 
@@ -65,6 +65,6 @@ import org.apache.log4j.spi.LoggingEvent;
 public interface Decoder {
 	Vector decodeEvents(String document);
 	LoggingEvent decode(String event);
-    Vector decode(File file) throws IOException;
+    Vector decode(URL url) throws IOException;
     void setAdditionalProperties(Map additionalProperties);
 }
