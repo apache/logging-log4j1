@@ -127,10 +127,10 @@ class XMLFileHandler extends DefaultHandler {
   private final StringBuffer mBuf = new StringBuffer();
 
   /**
- * Creates a new <code>XMLFileHandler</code> instance.
- *
- * @param aModel where to add the events
- */
+  * Creates a new <code>XMLFileHandler</code> instance.
+  *
+  * @param aModel where to add the events
+  */
   XMLFileHandler(EventDetailSink aEventSink) {
     mEventSink = aEventSink;
   }
@@ -233,13 +233,13 @@ class XMLFileHandler extends DefaultHandler {
   }
 
   /**
- * Loads the contents of file into the model
- *
- * @param aFile the file to extract events from
- * @return the number of events loaded
- * @throws SAXException if an error occurs
- * @throws IOException if an error occurs
- */
+  * Loads the contents of file into the model
+  *
+  * @param aFile the file to extract events from
+  * @return the number of events loaded
+  * @throws SAXException if an error occurs
+  * @throws IOException if an error occurs
+  */
   private int loadFile(String aFile)
     throws SAXException, IOException, ParserConfigurationException {
     final XMLReader parser =

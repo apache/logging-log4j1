@@ -46,20 +46,20 @@
  * Apache Software Foundation, please see <http://www.apache.org/>.
  *
  */
- 
+
 package org.apache.log4j.chainsaw;
+
 
 /**
   Chainsaw compatible gui viewers must implement this interface
   in order to be opened and configured by the ChainsawAppender class.
-  
+
   @author Mark Womack
 */
 public interface ChainsawViewer {
-  
   /**
     Called when the viewer should activate.
-    
+
     @param model The ChainsawAppender model instance the viewer should use. */
   void activateViewer(ChainsawAppender model);
 }

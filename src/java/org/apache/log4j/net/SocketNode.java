@@ -89,10 +89,10 @@ public class SocketNode implements Runnable {
           } else {
             // get a logger from the hierarchy. The name of the logger
             // is taken to be the name contained in the event.
-            remoteLogger = hierarchy.getLogger(event.categoryName);
+            remoteLogger = hierarchy.getLogger(event.getLoggerName());
             //event.logger = remoteLogger;
             // apply the logger-level filter
-            if(event.level.isGreaterOrEqual(remoteLogger.getEffectiveLevel())) {
+            if(event.getLevel().isGreaterOrEqual(remoteLogger.getEffectiveLevel())) {
               // finally log the event as if was generated locally
               remoteLogger.callAppenders(event);
             }

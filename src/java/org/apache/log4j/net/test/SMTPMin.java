@@ -48,7 +48,7 @@ public class SMTPMin {
     cat.warn( "Message " + i++);
     cat.error( "Message " + i++);
     cat.log(Priority.FATAL, "Message " + i++);
-    Category.shutdown();
+    LogManager.shutdown();
     Thread.currentThread().getThreadGroup().list();
   }
 

@@ -83,7 +83,6 @@ import javax.swing.text.PlainDocument;
  *  @author <a href="mailto:rdecampo@twcny.rr.com">Raymond DeCampo</a>
  */
 class PreferencesDialog extends JDialog {
-
   /**
    * The one and only Preferences reference
    */
@@ -224,7 +223,6 @@ class PreferencesDialog extends JDialog {
    * OK button handler
    */
   private class OKAction extends AbstractAction {
-
     /**
      * Constructor
      */
@@ -279,7 +277,6 @@ class PreferencesDialog extends JDialog {
    * Cancel button handler
    */
   private class CancelAction extends AbstractAction {
-
     /**
      * Constructor for the action
      */
