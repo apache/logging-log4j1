@@ -7,6 +7,9 @@
 
 package org.apache.log4j.net;
 
+import java.io.FileInputStream;
+import java.util.Properties;
+
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TopicConnection;
@@ -40,6 +43,8 @@ import org.apache.log4j.plugins.Receiver;
   implementation.
   
   @author Mark Womack
+  @author Paul Smith
+  @author Stephen Pain
   @since 1.3
 */
 public class JMSReceiver extends Receiver implements MessageListener {
@@ -53,20 +58,38 @@ public class JMSReceiver extends Receiver implements MessageListener {
   protected String userId;
   protected String password;
   protected TopicConnection topicConnection;
+  protected String jndiPath;
   
   private String remoteInfo;
+  private String providerUrl;
 
   public JMSReceiver() { }
 
   public JMSReceiver(String _topicFactoryName, String _topicName,
-    String _userId, String _password) {
-      
+          String _userId, String _password, String _jndiPath) {      
       topicFactoryName = _topicFactoryName;
       topicName = _topicName;
       userId = _userId;
       password = _password;
+      jndiPath = _jndiPath;
   }
 
+  /**
+         * Sets the path to a properties file containing
+         * the initial context and jndi provider url
+         */
+    public void setJndiPath(String _jndiPath) {
+          jndiPath = _jndiPath;
+    }
+  
+     /**
+         * Gets the path to a properties file containing
+         * the initial context and jndi provider url
+         */
+     public String getJndiPath() {
+          return jndiPath;
+     }
+  
   /**
     Sets the JMS topic factory name to use when creating the 
     JMS connection. */
@@ -165,8 +188,18 @@ public class JMSReceiver extends Receiver implements MessageListener {
     if (!isActive()) {
       try {
         remoteInfo = topicFactoryName + ":" + topicName;
-        
-        Context ctx = new InitialContext();
+
+        Context ctx = null;
+        if (jndiPath == null || jndiPath.equals("")) {
+                ctx = new InitialContext();
+        } else {
+                Properties p = new Properties();
+                p.load(new FileInputStream(jndiPath));
+                ctx = new InitialContext(p);
+        }
+
+        // give some more flexibility about the choice of a tab name
+        providerUrl = (String)ctx.getEnvironment().get(Context.PROVIDER_URL);
         TopicConnectionFactory topicConnectionFactory;
         topicConnectionFactory = 
           (TopicConnectionFactory) lookup(ctx, topicFactoryName);
@@ -233,7 +266,8 @@ public class JMSReceiver extends Receiver implements MessageListener {
       	
       	// store the known remote info in an event property
       	event.setProperty("log4j.remoteSourceInfo", remoteInfo);
-      	
+        event.setProperty("log4j.jmsProviderUrl", providerUrl);
+        
       	doPost(event);
       } else {
       	logger.warn("Received message is of type "+message.getJMSType()
