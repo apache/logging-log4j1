@@ -39,6 +39,12 @@ public class SimpleRuleStore implements RuleStore {
     this.repository = repository;
   }
   
+  /**
+   * Add a new rule, i.e. a pattern, action pair to the rule store.
+   * <p>
+   * Note that the added action's LoggerRepository will be set in the
+   * process.
+   */
   public void addRule(Pattern pattern, Action action) {
     action.setLoggerRepository(repository);
     

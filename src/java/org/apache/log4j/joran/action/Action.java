@@ -81,22 +81,4 @@ public abstract class Action extends ComponentBase {
     }
     return -1;
   }
-  
-  /**
-   * Helper method to return the LoggerRepository of the  execution context.
-   *
-   * @param ec The ExecutionContext that contains the reference to the
-   *   LoggerRepository
-   * @return The LoggerRepository
-   */
-  protected LoggerRepository getLoggerRepository(ExecutionContext ec) {
-    Object o = ec.getObject(0);
-    if(o instanceof LoggerRepository) {
-      return (LoggerRepository) o;
-    } else {
-      String errMsg = "There is no LoggerRepository at the top of the object stack.";
-      ec.addError(new ErrorItem(errMsg));
-      throw new IllegalStateException(errMsg);
-    }
-  }
 }

@@ -18,7 +18,6 @@ package org.apache.log4j.joran.action;
 import java.util.Properties;
 
 import org.apache.log4j.joran.spi.ExecutionContext;
-import org.apache.log4j.spi.ErrorItem;
 import org.apache.log4j.spi.LoggerRepository;
 
 /**
@@ -30,13 +29,16 @@ import org.apache.log4j.spi.LoggerRepository;
 public class RepositoryPropertyAction extends PropertyAction {
   
   public void setProperties(ExecutionContext ec, Properties props) {
-    LoggerRepository repository = getLoggerRepository(ec);
+    LoggerRepository repository = getLoggerRepository();
+    if(repository == null) {
+      
+    }
+    
     repository.getProperties().putAll(props);
   }
   
   public void setProperty(ExecutionContext ec, String key, String value) {
-    LoggerRepository repository = getLoggerRepository(ec);
+    LoggerRepository repository = getLoggerRepository();
     repository.setProperty(key, value);
-  
   }
 }
