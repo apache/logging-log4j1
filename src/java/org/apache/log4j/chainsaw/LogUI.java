@@ -420,11 +420,19 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
 
           if (newURL != null) {
             welcomePanel.setURL(newURL);
+            ensureWelcomePanelVisible();
           }
         }
       });
   }
 
+  private void ensureWelcomePanelVisible() {
+      // ensure that the Welcome Panel is made visible
+      if(getTabbedPane().getSelectedComponent()!=welcomePanel) {
+          getTabbedPane().setSelectedIndex(getTabbedPane().indexOfComponent(welcomePanel));
+      }
+  }
+  
   /**
    * Given the load event, configures the size/location of the main window etc
    * etc.
