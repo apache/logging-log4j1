@@ -164,7 +164,7 @@ public class JDBCAppender extends org.apache.log4j.AppenderSkeleton
     stmt.close();
     closeConnection(con);
 
-    System.out.println("Execute: " + sql);
+    //System.out.println("Execute: " + sql);
   }
 
 
