@@ -122,7 +122,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   public 
   void emitNoAppenderWarning(Category cat) {
     // No appenders in hierarchy, warn user only once.
-    if(this.emittedNoAppenderWarning) {
+    if(!this.emittedNoAppenderWarning) {
       LogLog.error("No appenders could be found for logger (" +
 		   cat.getName() + ").");
       LogLog.error("Please initialize the log4j system properly.");
