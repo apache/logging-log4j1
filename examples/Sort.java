@@ -18,10 +18,10 @@ import org.apache.log4j.Priority;
    watch the changing behavior.
 
    <p>Example configuration files can be found in <a
-   href="doc-files/sort1.lcf">sort1.lcf</a>, <a
-   href="doc-files/sort2.lcf">sort2.lcf</a>, <a
-   href="doc-files/sort3.lcf">sort3.lcf</a> and <a
-   href="doc-files/sort4.lcf">sort4.lcf</a> are supplied with the
+   href="doc-files/sort1.properties">sort1.properties</a>, <a
+   href="doc-files/sort2.properties">sort2.properties</a>, <a
+   href="doc-files/sort3.properties">sort3.properties</a> and <a
+   href="doc-files/sort4.properties">sort4.properties</a> are supplied with the
    package.
    
    <p>If you are also interested in logging performance, then have
