@@ -1,6 +1,6 @@
 
 PKG_DIR :=org/
-DEPTH   :=..
+DEPTH   :=../../..
 JSOURCES:=
 
 SUBDIRS := apache
