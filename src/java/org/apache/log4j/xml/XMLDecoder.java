@@ -383,7 +383,7 @@ public class XMLDecoder implements Decoder {
         info = LocationInfo.NA_LOCATION_INFO;
       }
       if (exception == null) {
-          exception = new String[]{};
+          exception = new String[]{""};
       }
       
       LoggingEvent loggingEvent = new LoggingEvent();

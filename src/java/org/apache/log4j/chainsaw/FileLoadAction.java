@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 
@@ -32,6 +33,7 @@ import javax.swing.filechooser.FileFilter;
 import org.apache.log4j.Decoder;
 import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.Constants;
+import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
@@ -147,7 +149,10 @@ class FileLoadAction extends AbstractAction {
           public void run() {
             try {
               Vector events = decoder.decode(urlToUse);
-              parent.handler.appendBatch(events);
+              Iterator iter = events.iterator();
+              while (iter.hasNext()) {
+                  parent.handler.append((LoggingEvent)iter.next());
+              }
             } catch (IOException e1) {
               // TODO Handle the error with a nice msg
               LOG.error(e1);

@@ -16,6 +16,17 @@
 
 package org.apache.log4j.chainsaw;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
+import javax.swing.event.EventListenerList;
+
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.helpers.LogLog;
@@ -24,19 +35,6 @@ import org.apache.log4j.rule.ExpressionRule;
 import org.apache.log4j.rule.Rule;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.LoggingEventFieldResolver;
-
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-
-import javax.swing.event.EventListenerList;
 
 
 /**
@@ -98,16 +96,6 @@ public class ChainsawAppenderHandler extends AppenderSkeleton {
 
   public void append(LoggingEvent event) {
     worker.enqueue(event);
-  }
-
-  /**
-   * Allows a Collection of events to be posted into this handler
-   */
-  public void appendBatch(Collection events) {
-    for (Iterator iter = events.iterator(); iter.hasNext();) {
-      LoggingEvent element = (LoggingEvent) iter.next();
-      append(element);
-    }
   }
 
   public void close() {

@@ -368,8 +368,9 @@ public class UtilLoggingXMLDecoder implements Decoder {
       } else {
         info = LocationInfo.NA_LOCATION_INFO;
       }
+
       if (exception == null) {
-        exception = new String[]{};
+          exception = new String[]{""};
       }
       
       LoggingEvent loggingEvent = new LoggingEvent();
