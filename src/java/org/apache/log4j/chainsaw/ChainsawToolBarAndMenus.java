@@ -55,6 +55,7 @@
  */
 package org.apache.log4j.chainsaw;
 
+import org.apache.log4j.chainsaw.help.*;
 import org.apache.log4j.chainsaw.icons.ChainsawIcons;
 import org.apache.log4j.chainsaw.prefs.LoadSettingsEvent;
 import org.apache.log4j.chainsaw.prefs.SaveSettingsEvent;
@@ -91,6 +92,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSlider;
@@ -667,8 +669,18 @@ class ChainsawToolBarAndMenus implements ChangeListener, SettingsListener {
         }
       });
 
-    helpMenu.add(about);
+    
+    Action startTutorial = new AbstractAction("Start tutorial...", new ImageIcon(ChainsawIcons.HELP)){
 
+		public void actionPerformed(ActionEvent e) {
+				new Thread(new Tutorial()).start();	
+		}};
+		
+	startTutorial.putValue(Action.SHORT_DESCRIPTION, "Starts some pretend Receivers that generate random events for use during the Tutorial");
+	helpMenu.add(startTutorial);
+	helpMenu.addSeparator();
+    helpMenu.add(about);
+    
     menuBar.add(fileMenu);
     menuBar.add(viewMenu);
     menuBar.add(activeTabMenu);

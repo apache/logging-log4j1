@@ -49,9 +49,12 @@
 
 package org.apache.log4j.chainsaw;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 import org.apache.log4j.NDC;
+import org.apache.log4j.plugins.Receiver;
+import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
@@ -61,23 +64,31 @@ import org.apache.log4j.NDC;
  * @author Scott Deboy <sdeboy@apache.org>
  *
  */
-public class Generator extends Thread {
-  private static final Logger logger1 = Logger.getLogger("first logger");
-  private static final Logger logger2 = Logger.getLogger("some other logger");
-  private static final Logger logger3 = Logger.getLogger("another logger");
+public class Generator extends Receiver implements Runnable {
+  private static final Logger logger1 =
+    Logger.getLogger("com.mycompany.mycomponentA");
+  private static final Logger logger2 =
+    Logger.getLogger("com.mycompany.mycomponentB");
+  private static final Logger logger3 =
+    Logger.getLogger("com.someothercompany.corecomponent");
   private final String baseString_;
+  private Thread thread;
+  private boolean shutdown;
 
-  public Generator(String baseString) {
-    baseString_ = baseString;
+  public Generator(String name) {
+    setName(name);
+    baseString_ = name;
   }
 
-  public static void main(String[] args) {
-    Thread t1 = new Generator("first");
-    Thread t2 = new Generator("second");
-    Thread t3 = new Generator("third");
-    t1.start();
-    t2.start();
-    t3.start();
+  private LoggingEvent createEvent(
+    Level level, Logger logger, String msg, Throwable t) {
+    LoggingEvent e =
+      new LoggingEvent(
+        logger.getClass().getName(), logger, System.currentTimeMillis(), level,
+        msg, t);
+    e.setProperty(ChainsawConstants.LOG4J_APP_KEY, getName());
+
+    return e;
   }
 
   public synchronized void run() {
@@ -86,38 +97,87 @@ public class Generator extends Thread {
 
     int i = 0;
 
-    while (i < 5000) {
-      logger1.debug(
-        "debugmsg " + i++
-        + " g dg sdfa sadf sdf safd fsda asfd sdfa sdaf asfd asdf fasd fasd adfs fasd adfs fads afds afds afsd afsd afsd afsd afsd fasd asfd asfd afsd fasd afsd",
-        new Exception("someexception-" + baseString_));
-      logger1.info(
-        "infomsg " + i++, new Exception("someexception-" + baseString_));
-      logger1.warn(
-        "warnmsg " + i++, new Exception("someexception-" + baseString_));
-      logger1.error(
-        "errormsg " + i++, new Exception("someexception-" + baseString_));
-      logger2.debug(
-        "debugmsg " + i++, new Exception("someexception-" + baseString_));
-      logger2.info(
-        "infomsg " + i++, new Exception("someexception-" + baseString_));
-      logger2.warn(
-        "warnmsg " + i++, new Exception("someexception-" + baseString_));
-      logger2.error(
-        "errormsg " + i++, new Exception("someexception-" + baseString_));
-      logger3.debug(
-        "debugmsg " + i++, new Exception("someexception-" + baseString_));
-      logger3.info(
-        "infomsg " + i++, new Exception("someexception-" + baseString_));
-      logger3.warn(
-        "warnmsg " + i++, new Exception("someexception-" + baseString_));
-      logger3.error(
-        "errormsg " + i++, new Exception("someexception-" + baseString_));
+    while (!shutdown) {
+      doPost(
+        createEvent(
+          Level.DEBUG, logger1,
+          "debugmsg " + i++
+          + " g dg sdfa sadf sdf safd fsda asfd sdfa sdaf asfd asdf fasd fasd adfs fasd adfs fads afds afds afsd afsd afsd afsd afsd fasd asfd asfd afsd fasd afsd",
+          new Exception("someexception-" + baseString_)));
 
+      //      if (isAsSevereAsThreshold(Level.INFO)) {
+      //        logger1.info(
+      //          "infomsg " + i++, new Exception("someexception-" + baseString_));
+      //      }
+      //
+      //      if (isAsSevereAsThreshold(Level.WARN)) {
+      //        logger1.warn(
+      //          "warnmsg " + i++, new Exception("someexception-" + baseString_));
+      //      }
+      //
+      //      if (isAsSevereAsThreshold(Level.ERROR)) {
+      //        logger1.error(
+      //          "errormsg " + i++, new Exception("someexception-" + baseString_));
+      //      }
+      //
+      //      if (isAsSevereAsThreshold(Level.DEBUG)) {
+      //        logger2.debug(
+      //          "debugmsg " + i++, new Exception("someexception-" + baseString_));
+      //      }
+      //
+      //      if (isAsSevereAsThreshold(Level.INFO)) {
+      //        logger2.info(
+      //          "infomsg " + i++, new Exception("someexception-" + baseString_));
+      //      }
+      //
+      //      if (isAsSevereAsThreshold(Level.WARN)) {
+      //        logger2.warn(
+      //          "warnmsg " + i++, new Exception("someexception-" + baseString_));
+      //      }
+      //
+      //      if (isAsSevereAsThreshold(Level.ERROR)) {
+      //        logger2.error(
+      //          "errormsg " + i++, new Exception("someexception-" + baseString_));
+      //      }
+      //
+      //      if (isAsSevereAsThreshold(Level.DEBUG)) {
+      //        logger3.debug(
+      //          "debugmsg " + i++, new Exception("someexception-" + baseString_));
+      //      }
+      //
+      //      if (isAsSevereAsThreshold(Level.INFO)) {
+      //        logger3.info(
+      //          "infomsg " + i++, new Exception("someexception-" + baseString_));
+      //      }
+      //
+      //      if (isAsSevereAsThreshold(Level.WARN)) {
+      //        logger3.warn(
+      //          "warnmsg " + i++, new Exception("someexception-" + baseString_));
+      //      }
+      //
+      //      if (isAsSevereAsThreshold(Level.ERROR)) {
+      //        logger3.error(
+      //          "errormsg " + i++, new Exception("someexception-" + baseString_));
+      //      }
       try {
         Thread.sleep(1000);
       } catch (InterruptedException ie) {
       }
     }
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.log4j.plugins.Plugin#shutdown()
+   */
+  public void shutdown() {
+    shutdown = true;
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.log4j.spi.OptionHandler#activateOptions()
+   */
+  public void activateOptions() {
+    thread = new Thread(this);
+    thread.start();
   }
 }
