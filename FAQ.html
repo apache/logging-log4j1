@@ -111,9 +111,9 @@ not be performed.
     
     <p>The DOMConfigurator.configure(String filename) method and its
     variants require a JAXP compatible XML parser, for example <a
-    href="http://xml.apache.org/">Xerces</a>. Similarly, compiling the
-    DOMConfigurator requires the presence of a JAXP parser in the
-    classpath.
+    href="http://xml.apache.org/">Xerces</a> or Sun's
+    parser. Ccompiling the DOMConfigurator requires the presence of a
+    JAXP parser in the classpath.
 
 <p><li>The <code>org.apache.log4j.net.SMTPAppender</code> relies on
     the <a href="http://java.sun.com/products/javamail/">JavaMail
@@ -138,9 +138,9 @@ href="http://www.junit.org">JUnit</a> testing framework.
 
 The javadoc <a href=javadoc/index.html>documentation</a> is part of
 the log4j package. There is also an <b><a
-href="doc/manual.html">introductory manual</a></b>. In case problems
-make sure to have a look at <a href="TROUBLESHOOT.html">log4j
-troubleshooting</a> document.
+href="javadoc/manual.html">introductory manual</a></b>. In case
+problems make sure to have a look at <a href="TROUBLESHOOT.html">log4j
+troubleshooting</a> document. 
 
 <a name=alternatives><h4>What other logging packages are there?</h4>
 
@@ -159,7 +159,7 @@ alphaWorks, although, as of April 2000, log4j moved to <a
 href="http://www.log4j.org">greener pastures</a>.
 
 <p>Please note that log4j is not an IBM controlled nor IBM sponsored
-project. It carries the IBM Public License for historical reasons.
+project. 
 
 <a name=usageExample><h4>Is there example code for using log4j?</h4>
 
@@ -184,14 +184,13 @@ project. It carries the IBM Public License for historical reasons.
       
   <p><li>log4j is designed to handle Java Exceptions from the start.
       
-  <p><li>log4j can direct its output to a file, an
+  <p><li>log4j can direct its output to a file, the console, an
       <code>java.io.OutputStream</code>, <code>java.io.Writer</code>,
-      a remote server using TCP, a remote syslog daemon or to the NT
-      EventLog.
+      a remote server using TCP, a remote Unix Syslog daemon, to a
+      remote listener using JMS, to the NT EventLog or even send e-mail.
 
-  <p><li>log4j has the same priority levels as the Unix
-      syslog. However, log4j strongly encourages the use of a subset
-      of priorities, namely DEBUG, INFO, WARN and ERROR.
+  <p><li>log4j uses 5 priority levels, namely DEBUG, INFO, WARN, ERROR
+  and FATAL.
 
   <p><li>The format of the log output can be easily changed by
       extending the Layout class.
@@ -247,9 +246,8 @@ statements are printed or not.
 <p>Categories are assigned priorities. A log statement is printed
 depending on its priority <em>and</em> its category.
 
-<p>Make sure to read the <a
-href=javadoc/overview-summary.html>log4j overview</a> and
-understand Rules 1, 2 and 3 defined there.
+<p>Make sure to read the <a href=javadoc/manual.html>log4j manual</a>
+for more information.
 
 <a name=behavior><h4 id="">How can I change log behavior at runtime?</h4>
 
@@ -279,9 +277,9 @@ debug and info statements?</h4>
 <codeI>BasicConfigurator.disable(pri)</code> method will disable
 all messages of priority <code>pri</code> and below.
 
-<p>In cases of problems with an application, technical support re-able
-logging by defining the <b>log4j.disableOverride</b> system property
-without changing the binary at the client's site.
+<p>In cases of problems with an application, technical support can
+re-enable logging by setting the <b>log4j.disableOverride</b> system
+property without changing the binary at the client's site.
 
 <a name=fastLogging><h4>What is the fastest way of (not) logging?</h4>
 
@@ -330,15 +328,14 @@ higher ranking, then computed the hash of "x.y" and checked whether it
 was defined (costing another equality check). So on, until a valid
 category was found or there were no possible categories left.
 
-<p>It turns out that for long strings hierarchy parsing, hash
-computations and an equality checks are computationally expensive
-operations. 
+<p>It turns out that for long strings, hash computations and an
+equality checks are computationally expensive operations.
 
 <p>The new Category class retains the flexibility of the former
 implementation and offers much much better performance. I would go as
 far as to claim that the performance cannot be improved upon without
-loosing functionality. Please do not hesitate to debunk this
-assertion. Contributions from <a
+loosing functionality. <em>Please do not hesitate to debunk this
+assertion</em>. Contributions from <a
 href="mailto:Alex.Blewitt@ioshq.com">Alex Blewitt</a>, F. Hoering and
 M. Oestreicher were instrumental to these performance improvements.
 
@@ -508,32 +505,35 @@ href="javadoc/org/log4j/AppenderSkeleton.html">AppenderSkeleton</a>,
 events with <em>lower</em> priority than the value of the threshold
 option. 
 
-<p>For example, setting the threshold of an appender to DEBUG will not
-filter out INFO, WARN, ERROR not FATAL messages (DEBUG is the lowest
-priority). This is usually acceptable as there is little use for DEBUG
-messages without the surrounding INFO, WARN, ERROR and FATAL
-messages. Similarly, setting the threshold of an appender to ERROR
-will filter out DEBUG, INFO and ERROR messages but not FATAL
-messages. This policy usually best encapsulates what the user actually
-wants to do, as opposed to her mind-projected solution.
+<p>For example, setting the threshold of an appender to DEBUG also
+allow INFO, WARN, ERROR and FATAL messages to log along with DEBUG
+messages. (DEBUG is the lowest priority). This is usually acceptable
+as there is little use for DEBUG messages without the surrounding
+INFO, WARN, ERROR and FATAL messages. Similarly, setting the threshold
+of an appender to ERROR will filter out DEBUG, INFO and ERROR messages
+but not FATAL messages. 
+
+<p>This policy usually best encapsulates what the user actually wants
+to do, as opposed to her mind-projected solution.
 
 <p>See <a
-href="javadoc/org/log4j/examples/doc-files/sort4.lcf">sort4.lcf</a>
+href="javadoc/org/apache/log4j/examples/doc-files/sort4.lcf">sort4.lcf</a>
 for an example threshold configuration.
 
 <p>If you must filter events by exact priority match, then you can
 attach a <a
-href="javadoc/org/log4j/varia/PriorityMatchFilter.html">PriorityMatchFilter</a>
+href="javadoc/org/apache/log4j/varia/PriorityMatchFilter.html">PriorityMatchFilter</a>
 to any appender to filter out logging events by exact priority match.
 
 
 <a name=tax><h4>Why should I donate my extensions to log4j back to the
 project?</h4>
 
-Contrary to the GNU Public License (GPL) our license does not make any
-claims to your extensions. <em>You are free to do whatever you wish
-with your proprietary log4j extensions.</em> In particlular, you may
-choose to never release your extensions to the wider public.
+Contrary to the GNU Public License (GPL) the Apache Public License
+does not make any claims over your extensions. <em>You are free to do
+whatever you wish with your proprietary log4j extensions.</em> In
+particlular, you may choose to never release your extensions to the
+wider public.
 
 <p>We are very careful not to change the log4j client API so that
 newer log4j releases are backward compatible with previous
@@ -588,6 +588,8 @@ code?</h4>
 	
 	<p>Authoring software is like parenting. It takes many
 	years to raise a child. 
+
+    <p><li>Did I mention sticking with the indentation style? 
 	
 </ol>
 
@@ -605,15 +607,15 @@ following the initial bug report.
 
 The first ancestor of log4j was written for the <a
 href="http://www.semper.org">SEMPER</a> project. Jose-Luis Abad-Peiro
-wrote the very first version which was picked up by Ceki
-G&uuml;lc&uuml; and enhanced by Andreas Fleuti.  <a Michael Steiner,
+wrote the initial 30 liner version that was picked up by Ceki
+G&uuml;lc&uuml; and enhanced by Andreas Fleuti.  Michael Steiner,
 N. Asokan, Ceki G&uuml;lc&uuml proposed category/priority based
-evaluation which has remained essentially the same since 1996.
+evaluation which has remained conceptually the same since 1996.
 
 <a name=bugs><h4 id="bugs">How do I report bugs?</h4>
 
-Report bugs using our <a
-href=http://sourceforge.net/bugs/?group_id=2666>bug tracking</a> system.
+Report bugs using the <a
+href=http://nagoya.apache.org/bugzilla>Apache Bug Database</a>.
 
 <p>Please specify the version of log4j you are using. It is helpful to
 include log configurations files if any, plus source code. A short
