@@ -101,8 +101,9 @@
                                      HierarchyThreshold, SocketServer, 
                                      XMLLayout, AsyncAppender, 
                                      OptionConverter, BoundedFIFO, 
-                                     CyclicBuffer, OR, LevelMatchFilter, 
-                                     LevelRangeFilter, NDCMatchFilter, DRFA"/>
+                                     CyclicBuffer, OR, VariaLevelMatchFilter, 
+                                     VariaLevelRangeFilter, VariaNDCMatchFilter, 
+                                     FiltersLevelMatchFilter, DRFA"/>
 
   <!-- ================================================================= -->
   <!-- Longer unit tests                                                 -->
@@ -204,7 +205,7 @@
     </junit>
   </target>
 
-  <target name="LevelMatchFilter" depends="build">
+  <target name="VariaLevelMatchFilter" depends="build">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
@@ -212,7 +213,7 @@
     </junit>
   </target>
 
-  <target name="LevelRangeFilter" depends="build">
+  <target name="VariaLevelRangeFilter" depends="build">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
@@ -220,11 +221,19 @@
     </junit>
   </target>
 
-  <target name="NDCMatchFilter" depends="build">
+  <target name="VariaNDCMatchFilter" depends="build">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
       <test name="org.apache.log4j.varia.NDCMatchFilterTestCase" />
+    </junit>
+  </target>
+  
+  <target name="FiltersLevelMatchFilter" depends="build">
+    <junit printsummary="yes" fork="yes" haltonfailure="yes">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="false"/>
+      <test name="org.apache.log4j.filters.LevelMatchFilterTestCase" />
     </junit>
   </target>
 
