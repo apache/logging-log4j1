@@ -16,8 +16,6 @@
 
 package org.apache.log4j.db;
 
-import org.apache.log4j.spi.ErrorCode;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -75,19 +73,12 @@ public class DriverManagerConnectionSource extends ConnectionSourceSkeleton {
       if (driverClass != null) {
         Class.forName(driverClass);
         discoverConnnectionProperties();
-      } else if (errorHandler != null) {
-        errorHandler.error(
-          "WARNING: No JDBC driver specified for log4j "
-          + "DriverManagerConnectionSource.");
+      } else {
+        getLogger().error(
+          "WARNING: No JDBC driver specified for log4j DriverManagerConnectionSource.");
       }
     } catch (final ClassNotFoundException cnfe) {
-      if (errorHandler != null) {
-        errorHandler.error(
-          "Could not load JDBC driver class: " + driverClass, cnfe,
-          ErrorCode.GENERIC_FAILURE);
-      } else {
-        cnfe.printStackTrace();
-      }
+     getLogger().error("Could not load JDBC driver class: " + driverClass, cnfe);
     }
   }
 

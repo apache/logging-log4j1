@@ -17,14 +17,10 @@
 package org.apache.log4j;
 
 import org.apache.log4j.Layout;
-import org.apache.log4j.helpers.OnlyOnceErrorHandler;
 import org.apache.log4j.spi.ComponentBase;
-import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.OptionHandler;
-import org.apache.ugli.ULogger;
-
 
 /**
  * Abstract superclass of the other appenders in the package. This class
@@ -36,12 +32,6 @@ import org.apache.ugli.ULogger;
  * @since 0.8.1
  */
 public abstract class AppenderSkeleton extends ComponentBase implements Appender, OptionHandler {
-  
-  /*
-   * An instance specific logger which must be accessed through the getLogger()
-   * method. 
-   */
-  private ULogger logger;
   
   /**
    * The layout variable does not need to be set if the appender
@@ -62,7 +52,7 @@ public abstract class AppenderSkeleton extends ComponentBase implements Appender
   /**
    * It is assumed and enforced that errorHandler is never null.
    */
-  protected ErrorHandler errorHandler = new OnlyOnceErrorHandler();
+  //protected ErrorHandler errorHandler = new OnlyOnceErrorHandler();
 
   /**
    * The first filter in the filter chain. Set to <code>null</code> initially.
@@ -148,9 +138,9 @@ public abstract class AppenderSkeleton extends ComponentBase implements Appender
    *
    * @since 0.9.0
    */
-  public ErrorHandler getErrorHandler() {
-    return this.errorHandler;
-  }
+//  public ErrorHandler getErrorHandler() {
+//    return this.errorHandler;
+//  }
 
   /**
    * Returns the head Filter.
@@ -257,15 +247,15 @@ FILTER_LOOP:
    *
    * @since 0.9.0
    */
-  public synchronized void setErrorHandler(ErrorHandler eh) {
-    if (eh == null) {
-      // We do not throw exception here since the cause is probably a
-      // bad config file.
-      getLogger().warn("You have tried to set a null error-handler.");
-    } else {
-      this.errorHandler = eh;
-    }
-  }
+//  public synchronized void setErrorHandler(ErrorHandler eh) {
+//    if (eh == null) {
+//      // We do not throw exception here since the cause is probably a
+//      // bad config file.
+//      getLogger().warn("You have tried to set a null error-handler.");
+//    } else {
+//      this.errorHandler = eh;
+//    }
+//  }
 
   /**
    * Set the layout for this appender. Note that some appenders have their own

@@ -17,6 +17,7 @@
 package org.apache.log4j.pattern;
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.helpers.Constants;
 import org.apache.log4j.spi.LoggingEvent;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
@@ -35,10 +36,7 @@ public class DatePatternConverter extends PatternConverter {
   Logger logger = Logger.getLogger(DatePatternConverter.class);
   private CachedDateFormat df;
   private final StringBuffer buf = new StringBuffer(30); 
-  public static final String ISO8601_PATTERN = "yyyy-MM-dd HH:mm:ss,SSS";
-  public static final String ABSOLUTE_PATTERN = "HH:mm:ss,SSS";
-  public static final String DATE_AND_TIME_PATTERN = "dd MMM yyyy HH:mm:ss,SSS";
-  
+
   //  public DatePatternConverter(FormattingInfo formattingInfo) {
   //    super(formattingInfo);
   //    this.buf = new StringBuffer(32);
@@ -64,14 +62,14 @@ public class DatePatternConverter extends PatternConverter {
     }
     
     String pattern;
-    if (patternOption == null || patternOption.equalsIgnoreCase("ISO8601")) {
-      pattern = ISO8601_PATTERN;
+    if (patternOption == null || patternOption.equalsIgnoreCase(Constants.ISO8601_FORMAT)) {
+      pattern = Constants.ISO8601_PATTERN;
     } else if (
-      patternOption.equalsIgnoreCase("ABSOLUTE")) {
-      pattern = ABSOLUTE_PATTERN;
+      patternOption.equalsIgnoreCase(Constants.ABSOLUTE_FORMAT)) {
+      pattern = Constants.ABSOLUTE_TIME_PATTERN;
     } else if (
-      patternOption.equalsIgnoreCase("DATE")) {
-      pattern = DATE_AND_TIME_PATTERN;
+      patternOption.equalsIgnoreCase(Constants.DATE_AND_TIME_FORMAT)) {
+      pattern = Constants.DATE_AND_TIME_PATTERN;
     } else {
       pattern = patternOption;
     }
@@ -85,9 +83,9 @@ public class DatePatternConverter extends PatternConverter {
       logger.warn(
         "Could not instantiate SimpleDateFormat with pattern " + patternOption, e);
       // default to the ISO8601 format
-      simpleFormat = new SimpleDateFormat(ISO8601_PATTERN);
+      simpleFormat = new SimpleDateFormat(Constants.ISO8601_PATTERN);
     }
-  
+   
      
     // if the option list contains a TZ option, then set it.
     if (optionList != null && optionList.size() > 1) {

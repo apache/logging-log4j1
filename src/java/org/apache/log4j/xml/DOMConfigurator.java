@@ -198,8 +198,8 @@ public class DOMConfigurator extends ComponentBase implements Configurator {
         // Parse appender parameters 
         if (currentElement.getTagName().equals(PARAM_TAG)) {
           setParameter(currentElement, propSetter);
-        } else if (currentElement.getTagName().equals(ERROR_HANDLER_TAG)) {
-          parseErrorHandler(currentElement, appender);
+        //} else if (currentElement.getTagName().equals(ERROR_HANDLER_TAG)) {
+          //parseErrorHandler(currentElement, appender);
         } else if (currentElement.getTagName().equals(APPENDER_REF_TAG)) {
           String refName = subst(currentElement.getAttribute(REF_ATTR));
 
@@ -332,48 +332,48 @@ public class DOMConfigurator extends ComponentBase implements Configurator {
   /**
      Used internally to parse an {@link ErrorHandler} element.
    */
-  protected void parseErrorHandler(Element element, Appender appender) {
-    ErrorHandler eh =
-      (ErrorHandler) optionConverter.instantiateByClassName(
-        subst(element.getAttribute(CLASS_ATTR)),
-        org.apache.log4j.spi.ErrorHandler.class, null);
-
-    if (eh != null) {
-      eh.setAppender(appender);
-
-      PropertySetter propSetter = new PropertySetter(eh);
-      NodeList children = element.getChildNodes();
-      final int length = children.getLength();
-
-      for (int loop = 0; loop < length; loop++) {
-        Node currentNode = children.item(loop);
-
-        if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
-          Element currentElement = (Element) currentNode;
-          String tagName = currentElement.getTagName();
-
-          if (tagName.equals(PARAM_TAG)) {
-            setParameter(currentElement, propSetter);
-          } else if (tagName.equals(APPENDER_REF_TAG)) {
-            eh.setBackupAppender(findAppenderByReference(currentElement));
-          } else if (tagName.equals(LOGGER_REF)) {
-            String loggerName = currentElement.getAttribute(REF_ATTR);
-            Logger logger = repository.getLogger(loggerName);
-            eh.setLogger(logger);
-          } else if (tagName.equals(ROOT_REF)) {
-            Logger root = repository.getRootLogger();
-            eh.setLogger(root);
-          }
-        }
-      }
-
-      if (eh instanceof OptionHandler) {
-        ((OptionHandler) eh).activateOptions();
-      }
-
-      appender.setErrorHandler(eh);
-    }
-  }
+//  protected void parseErrorHandler(Element element, Appender appender) {
+//    ErrorHandler eh =
+//      (ErrorHandler) optionConverter.instantiateByClassName(
+//        subst(element.getAttribute(CLASS_ATTR)),
+//        org.apache.log4j.spi.ErrorHandler.class, null);
+//
+//    if (eh != null) {
+//      eh.setAppender(appender);
+//
+//      PropertySetter propSetter = new PropertySetter(eh);
+//      NodeList children = element.getChildNodes();
+//      final int length = children.getLength();
+//
+//      for (int loop = 0; loop < length; loop++) {
+//        Node currentNode = children.item(loop);
+//
+//        if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
+//          Element currentElement = (Element) currentNode;
+//          String tagName = currentElement.getTagName();
+//
+//          if (tagName.equals(PARAM_TAG)) {
+//            setParameter(currentElement, propSetter);
+//          } else if (tagName.equals(APPENDER_REF_TAG)) {
+//            eh.setBackupAppender(findAppenderByReference(currentElement));
+//          } else if (tagName.equals(LOGGER_REF)) {
+//            String loggerName = currentElement.getAttribute(REF_ATTR);
+//            Logger logger = repository.getLogger(loggerName);
+//            eh.setLogger(logger);
+//          } else if (tagName.equals(ROOT_REF)) {
+//            Logger root = repository.getRootLogger();
+//            eh.setLogger(root);
+//          }
+//        }
+//      }
+//
+//      if (eh instanceof OptionHandler) {
+//        ((OptionHandler) eh).activateOptions();
+//      }
+//
+//      appender.setErrorHandler(eh);
+//    }
+//  }
 
   /**
      Used internally to parse a filter element.

@@ -17,7 +17,6 @@
 package org.apache.log4j.joran.util;
 
 import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.Constants;
 import org.apache.log4j.spi.ErrorItem;
 import org.apache.log4j.spi.LoggerRepository;

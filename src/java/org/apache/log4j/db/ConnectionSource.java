@@ -17,7 +17,6 @@
 package org.apache.log4j.db;
 
 import org.apache.log4j.spi.Component;
-import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.OptionHandler;
 
 import java.sql.Connection;
@@ -49,13 +48,6 @@ public interface ConnectionSource extends Component, OptionHandler {
    */
   Connection getConnection() throws SQLException;
 
-  /**
-   *  Set the error handler.
-   *
-   *  @param errorHandler  the new error handler
-   */
-  void setErrorHandler(ErrorHandler errorHandler);
-  
   /**
    * Get the SQL dialect that should be used for this connection. Note that the
    * dialect is not needed if the JDBC driver supports the getGeneratedKeys 

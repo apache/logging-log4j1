@@ -96,6 +96,14 @@ public class MulticastAppender extends AppenderSkeleton implements PortBased {
       }
     }
 
+    if(remoteHost != null) {
+      address = getAddressByName(remoteHost);
+    } else {
+      String err = "The RemoteHost property is required for SocketAppender named "+ name;
+      getLogger().error(err);
+      throw new IllegalStateException(err);
+    }
+    
     connect();
   }
 
@@ -139,19 +147,13 @@ public class MulticastAppender extends AppenderSkeleton implements PortBased {
       cleanUp();
       outSocket = new MulticastSocket();
       outSocket.setTimeToLive(timeToLive);
-    } catch (IOException e) {e.printStackTrace();
+    } catch (IOException e) {
+      getLogger().error("Error in connect method of MulticastAppender named "+name, e);
     }
   }
 
   public void append(LoggingEvent event) {
     if (event == null) {
-      return;
-    }
-
-    if (address == null) {
-      errorHandler.error(
-        "No remote host is set for MulticastAppender named \"" + this.name + "\".");
-
       return;
     }
 
@@ -196,20 +198,10 @@ public class MulticastAppender extends AppenderSkeleton implements PortBased {
   }
 
   /**
-     The MulticastAppender uses layouts (should be configured with XMLLayout to use MulticastReceiver.
-      Hence, this method returns
-     <code>true</code>.
-  */
-  public boolean requiresLayout() {
-    return true;
-  }
-
-  /**
      The <b>RemoteHost</b> option takes a string value which should be
      the host name or ipaddress to send the multicast packets.
    */
   public void setRemoteHost(String host) {
-    address = getAddressByName(host);
     remoteHost = host;
   }
 

@@ -1,12 +1,12 @@
 /*
  * Copyright 1999,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-
 // Contributors: Christopher Williams
 //               Mathias Bogaert
 package org.apache.log4j;
 
-import org.apache.log4j.helpers.DateLayout;
+import org.apache.log4j.helpers.Constants;
 import org.apache.log4j.spi.LoggingEvent;
+
+import java.text.DateFormat;
+import java.text.FieldPosition;
+import java.text.SimpleDateFormat;
+
+import java.util.Date;
 
 
 /**
@@ -60,45 +65,31 @@ import org.apache.log4j.spi.LoggingEvent;
   first two statements. The text after the '-' is the message of the
   statement.
 
-  <p><b>WARNING</b> Do not use the same TTCCLayout instance from
-  within different appenders. The TTCCLayout is not thread safe when
-  used in his way. However, it is perfectly safe to use a TTCCLayout
-  instance from just one appender.
-
   <p>{@link PatternLayout} offers a much more flexible alternative.
 
   @author Ceki G&uuml;lc&uuml;
   @author <A HREF="mailto:heinz.richter@ecmwf.int">Heinz Richter</a>
-  @deprecated Please use PatternLayout instead.
+  @deprecated Please use {@link PatternLayout} instead.
 */
-public class TTCCLayout extends DateLayout {
-	
+public class TTCCLayout extends Layout {
   // Internal representation of options
   private boolean threadPrinting = true;
   private boolean categoryPrefixing = true;
   private boolean contextPrinting = true;
   protected final StringBuffer buf = new StringBuffer(64);
+  Date date = new Date();
+  DateFormat formatter;
+  protected FieldPosition pos = new FieldPosition(0);
 
   /**
-     Instantiate a TTCCLayout object with {@link
-     org.apache.log4j.helpers.RelativeTimeDateFormat} as the date
-     formatter in the local time zone.
-
-     @since 0.7.5 */
+   * Instantiate a TTCCLayout object with in the ISO8601 format as the date
+   * formatter.
+   * */
   public TTCCLayout() {
-    this.setDateFormat(RELATIVE_TIME_DATE_FORMAT, null);
+    this.setDateFormat(Constants.ISO8601_FORMAT);
   }
 
-  /**
-     Instantiate a TTCCLayout object using the local time zone. The
-     DateFormat used will depend on the <code>dateFormatType</code>.
-
-     <p>This constructor just calls the {@link
-     DateLayout#setDateFormat} method.
-
-     */
-  public TTCCLayout(String dateFormatType) {
-    this.setDateFormat(dateFormatType);
+  public void activateOptions() {
   }
 
   /**
@@ -147,6 +138,31 @@ public class TTCCLayout extends DateLayout {
     return contextPrinting;
   }
 
+  public void setDateFormat(String dateFormatStr) {
+    if (dateFormatStr == null) {
+      this.formatter = null;
+      return;
+    }
+    String dateFormatPattern = null;
+
+    if (dateFormatStr.equalsIgnoreCase("NULL")) {
+      dateFormatPattern = null;
+    } else if (dateFormatStr.equalsIgnoreCase(Constants.ABSOLUTE_FORMAT)) {
+      dateFormatPattern = Constants.ABSOLUTE_TIME_PATTERN;
+    } else if (
+      dateFormatStr.equalsIgnoreCase(Constants.DATE_AND_TIME_FORMAT)) {
+      dateFormatPattern = Constants.DATE_AND_TIME_PATTERN;
+    } else if (dateFormatStr.equalsIgnoreCase(Constants.ISO8601_FORMAT)) {
+      dateFormatPattern = Constants.ISO8601_PATTERN;
+    } else {
+      dateFormatPattern = dateFormatStr;
+    }
+
+    if (dateFormatPattern != null) {
+      formatter = new SimpleDateFormat(dateFormatPattern);
+    }
+  }
+
   /**
    In addition to the level of the statement and message, the
    returned byte array includes time, thread, category and {@link NDC}
@@ -155,37 +171,41 @@ public class TTCCLayout extends DateLayout {
    <p>Time, thread, category and diagnostic context are printed
    depending on options.
   */
-  public void format(java.io.Writer output, LoggingEvent event) throws java.io.IOException {
-  	
-  	buf.setLength(0);
-    dateFormat(buf, event);
+  public void format(java.io.Writer output, LoggingEvent event)
+    throws java.io.IOException {
+    buf.setLength(0);
+    if (formatter != null) {
+      date.setTime(event.getTimeStamp());
+      formatter.format(date, buf, this.pos);
+      buf.append(' ');
+    }
     output.write(buf.toString());
 
     if (this.threadPrinting) {
       output.write('[');
-	  output.write(event.getThreadName());
-	  output.write("] ");
+      output.write(event.getThreadName());
+      output.write("] ");
     }
 
-	output.write(event.getLevel().toString());
-	output.write(' ');
+    output.write(event.getLevel().toString());
+    output.write(' ');
 
     if (this.categoryPrefixing) {
-		output.write(event.getLoggerName());
-		output.write(' ');
+      output.write(event.getLoggerName());
+      output.write(' ');
     }
 
     if (this.contextPrinting) {
       String ndc = event.getNDC();
 
       if (ndc != null) {
-		output.write(ndc);
-		output.write(' ');
+        output.write(ndc);
+        output.write(' ');
       }
     }
 
-	output.write("- ");
-	output.write(event.getRenderedMessage());
-	output.write(LINE_SEP);
+    output.write("- ");
+    output.write(event.getRenderedMessage());
+    output.write(LINE_SEP);
   }
 }

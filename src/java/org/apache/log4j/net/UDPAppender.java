@@ -23,7 +23,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.LogManager;
 import org.apache.log4j.helpers.*;
 import org.apache.log4j.spi.LoggingEvent;
 
@@ -119,8 +118,14 @@ public class UDPAppender extends AppenderSkeleton implements PortBased{
       }
     }
 
-    //if not passed in, allow null app (app property won't be set)
-    connect(address, port);
+    if(remoteHost != null) {
+      address = getAddressByName(remoteHost);
+      connect(address, port);
+    } else {
+      String err = "The RemoteHost property is required for SocketAppender named "+ name;
+      getLogger().error(err);
+      throw new IllegalStateException(err);
+    }
   }
 
   /**
@@ -180,8 +185,6 @@ public class UDPAppender extends AppenderSkeleton implements PortBased{
     }
 
     if (address == null) {
-      errorHandler.error(
-        "No remote host is set for UDPAppender named \"" + this.name + "\".");
       return;
     }
 
@@ -219,12 +222,11 @@ public class UDPAppender extends AppenderSkeleton implements PortBased{
     return !inError;
   }
   
-  static InetAddress getAddressByName(String host) {
+  InetAddress getAddressByName(String host) {
     try {
       return InetAddress.getByName(host);
     } catch (Exception e) {
-      LogManager.getLogger(UDPAppender.class).error("Could not find address of [" + host + "].", e);
-
+      getLogger().error("Could not find address of [" + host + "].", e);
       return null;
     }
   }
@@ -242,7 +244,6 @@ public class UDPAppender extends AppenderSkeleton implements PortBased{
      the host name or ipaddress to send the UDP packets.
    */
   public void setRemoteHost(String host) {
-    address = getAddressByName(host);
     remoteHost = host;
   }
 

@@ -16,10 +16,9 @@
 
 package org.apache.log4j.rolling;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.apache.log4j.rolling.helper.Compress;
 import org.apache.log4j.rolling.helper.FileNamePattern;
+import org.apache.log4j.spi.ComponentBase;
 
 
 /**
@@ -30,12 +29,11 @@ import org.apache.log4j.rolling.helper.FileNamePattern;
  * @author Ceki G&uuml;lc&uuml;
  * @since 1.3
  */
-public abstract class RollingPolicyBase implements RollingPolicy {
+public abstract class RollingPolicyBase extends ComponentBase implements RollingPolicy {
   protected int compressionMode = Compress.NONE;
   protected FileNamePattern fileNamePattern;
   protected String fileNamePatternStr;
   protected String activeFileName;
-  private Logger logger;
 
   /*
    * @see org.apache.log4j.spi.OptionHandler#activateOptions()
@@ -76,17 +74,5 @@ public abstract class RollingPolicyBase implements RollingPolicy {
    */
   public void setActiveFileName(String afn) {
     activeFileName = afn;
-  }
-
-  /**
-   * Return an instance specific logger to be used by the policy itself.
-   *
-   * @return instance specific logger
-   */
-  protected Logger getLogger() {
-    if (logger == null) {
-      logger = LogManager.getLogger(this.getClass().getName());
-    }
-    return logger;
   }
 }

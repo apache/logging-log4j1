@@ -64,6 +64,7 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
     "See also http://logging.apache.org/log4j/codes.html#tbr_fnp_not_set";
   int maxIndex;
   int minIndex;
+  Util util = new Util();
   
   /**
    * It's almost always a bad idea to have a large window size, say over 12. 
@@ -77,6 +78,9 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
   }
 
   public void activateOptions() {
+    // set the LR for our utility object
+    util.setLoggerRepository(this.repository);
+    
     if (fileNamePatternStr != null) {
       fileNamePattern = new FileNamePattern(fileNamePatternStr);
       determineCompressionMode();
@@ -132,7 +136,7 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
 	  File toRename = new File(toRenameStr);
 	  // no point in trying to rename an inexistent file
 	  if(toRename.exists()) {
-	      Util.rename(toRenameStr, fileNamePattern.convert(i + 1));
+	      util.rename(toRenameStr, fileNamePattern.convert(i + 1));
 	  } else {
 	      getLogger().info("Skipping rollover for inexistent file {}", toRenameStr); 
           }
@@ -142,7 +146,7 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
       //move active file name to min
       switch (compressionMode) {
       case Compress.NONE:
-          Util.rename(activeFileName, fileNamePattern.convert(minIndex));
+          util.rename(activeFileName, fileNamePattern.convert(minIndex));
           break;
       case Compress.GZ:
           Compress.GZCompress(activeFileName, fileNamePattern.convert(minIndex));

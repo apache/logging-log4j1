@@ -134,8 +134,7 @@ import java.util.Date;
  * @author Ceki G&uuml;lc&uuml;
  * @since 1.3
  */
-public class TimeBasedRollingPolicy extends RollingPolicyBase
-  implements TriggeringPolicy {
+public class TimeBasedRollingPolicy extends RollingPolicyBase implements TriggeringPolicy {
   static final String FNP_NOT_SET =
     "The FileNamePattern option must be set before using TimeBasedRollingPolicy. ";
   static final String SEE_FNP_NOT_SET =
@@ -145,8 +144,12 @@ public class TimeBasedRollingPolicy extends RollingPolicyBase
   Date lastCheck = new Date();
   String elapsedPeriodsFileName;
   FileNamePattern activeFileNamePattern;
+  Util util = new Util();
   
   public void activateOptions() {
+    // set the LR for our utility object
+    util.setLoggerRepository(this.repository);
+    
     // find out period from the filename pattern
     if (fileNamePatternStr != null) {
       fileNamePattern = new FileNamePattern(fileNamePatternStr);
@@ -219,7 +222,7 @@ public class TimeBasedRollingPolicy extends RollingPolicyBase
     } else {
       switch (compressionMode) {
       case Compress.NONE:
-        Util.rename(activeFileName, elapsedPeriodsFileName);
+        util.rename(activeFileName, elapsedPeriodsFileName);
         break;
       case Compress.GZ:
         getLogger().debug("GZIP compressing [[}]", elapsedPeriodsFileName);

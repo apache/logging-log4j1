@@ -20,7 +20,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.log4j.helpers.AbsoluteTimeDateFormat;
+import org.apache.log4j.helpers.Constants;
 import org.apache.log4j.util.*;
 
 
@@ -73,8 +73,10 @@ public class MinimumTest extends TestCase {
   }
 
   public void ttcc() throws Exception {
-    Layout layout =
-      new TTCCLayout(AbsoluteTimeDateFormat.DATE_AND_TIME_DATE_FORMAT);
+    TTCCLayout layout = new TTCCLayout();
+    layout.setDateFormat(Constants.DATE_AND_TIME_FORMAT);
+    layout.activateOptions();
+    
     Appender appender = new FileAppender(layout, "output/ttcc", false);
     root.addAppender(appender);
     common();

@@ -16,9 +16,8 @@
 
 package org.apache.log4j.rolling.helper;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.apache.log4j.rolling.RolloverFailure;
+import org.apache.log4j.spi.ComponentBase;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,11 +28,8 @@ import java.io.IOException;
  * Utility class to help solving problems encontered while renameing files.
  * @author Ceki Gulcu  
  */
-public class Util {
+public class Util extends ComponentBase {
 
-  private static Logger getLogger() {
-    return LogManager.getLogger(Util.class);
-  }
   
   /**
    * A robust file renaming method which in case of failure falls back to
@@ -45,7 +41,7 @@ public class Util {
    * @param to
    * @throws RolloverFailure
    */
-  public static void rename(String from, String to) throws RolloverFailure {
+  public void rename(String from, String to) throws RolloverFailure {
     File fromFile = new File(from);
     boolean success = false;
 
@@ -56,9 +52,8 @@ public class Util {
       boolean result = fromFile.renameTo(toFile);
 
       if (!result) {
-        Logger logger = getLogger();
-        logger.warn("Failed to rename file [{}] to [{}].", fromFile, toFile);
-        logger.warn("Attemting to rename by copying.");
+        getLogger().warn("Failed to rename file [{}] to [{}].", fromFile, toFile);
+        getLogger().warn("Attemting to rename by copying.");
         renameByCopying(from, to);
       }
     } else {
@@ -66,7 +61,7 @@ public class Util {
     }
   }
 
-  public static void renameByCopying(String from, String to)
+  public void renameByCopying(String from, String to)
       throws RolloverFailure {
     try {
       FileInputStream fis = new FileInputStream(from);
