@@ -38,10 +38,10 @@ public interface EventBatchListener extends EventListener {
   public String getInterestedIdentifier();
 
   /**
-   * Implementations receive a list of ChainsawEventBatchEntry instances only if they are interested,
+   * Implementations receive a list of LoggingEvent instances only if they are interested,
    * that is, if the source of the eventBatch matches this instances interested identifier
-   * @param eventBatchEntries List of ChainsawEventBatchEntry instances
-   * @param identifier the identifier this list of eventBatchEntrys is associated with
+   * @param events List of LoggingEvent instances
+   * @param identifier the identifier this list of LoggingEvents is associated with
    */
-  public void receiveEventBatch(String identifier, List eventBatchEntries);
+  public void receiveEventBatch(String identifier, List events);
 }

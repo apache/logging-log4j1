@@ -23,6 +23,14 @@
       <param name="Address" value="224.1.1.1"/>      
    </plugin>
 
+   <plugin name="LogFileReceiver" class="org.apache.log4j.varia.LogFilePatternReceiver">
+     <param name="fileURL" value="file:///c:/sample.log"/>
+     <param name="timestampFormat" value="yyyy-MM-dd HH:mm:ss,SSS"/> 
+     <param name="logFormat" value="TIMESTAMP LEVEL [LOGGER] MESSAGE"/> 
+     <param name="name" value="sampleLogFileReceiver"/>
+     <param name="tailing" value="true"/> 
+   </plugin>
+
    <root>
       <level value="debug"/>
    </root>

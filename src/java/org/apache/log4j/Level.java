@@ -22,7 +22,7 @@ package org.apache.log4j;
 /**
    Defines the minimum set of levels recognized by the system, that is
    <code>OFF</code>, <code>FATAL</code>, <code>ERROR</code>,
-   <code>WARN</code>, <code>INFO</code, <code>DEBUG</code>,
+   <code>WARN</code>, <code>INFO</code>, <code>DEBUG</code>,
    <code>TRACE</code>, and <code>ALL</code>.
 
    <p>The <code>Level</code> class may be subclassed to define a larger

@@ -722,6 +722,7 @@ public class ReceiversPanel extends JPanel {
       addSeparator();
 
       final Receiver r = getCurrentlySelectedReceiver();
+      add(createLevelRadioButton(r, Level.TRACE));
       add(createLevelRadioButton(r, Level.DEBUG));
       add(createLevelRadioButton(r, Level.INFO));
       add(createLevelRadioButton(r, Level.WARN));
