@@ -3,53 +3,42 @@
 package org.apache.log4j;
 
 import java.util.Hashtable;
+import org.apache.log4j.helpers.ThreadLocalMap;
 
 public class MDC {
 
-  final static MappedContext context = new MappedContext();
+  final static ThreadLocalMap context = new ThreadLocalMap();
   
   static final int HT_SIZE = 11;
 
   static
   public
   void put(String key, Object o) {
-    Hashtable ht = getMap();
+    Hashtable ht = (Hashtable) context.get();
+    if(ht == null) {
+      System.out.println("Creating new ht. [" + Thread.currentThread().getName()+
+			 "]");
+      ht = new Hashtable(HT_SIZE);
+      context.set(ht);
+    }    
     ht.put(key, o);
   }
   
   static 
   public
   Object get(String key) {
-    Hashtable ht = getMap();
-    return ht.get(key);
-  }
-
-  private
-  static
-  Hashtable getMap() {
     Hashtable ht = (Hashtable) context.get();
-    if(ht == null) {
-      System.out.println("getMap creating new ht. [" + Thread.currentThread().getName()+
-			 "]");
-      ht = new Hashtable(HT_SIZE);
-      context.set(ht);
+    if(ht != null) {
+      return ht.get(key);
+    } else {
+      return null;
     }
-    return ht;
   }
-}
-
-class MappedContext extends InheritableThreadLocal {
 
   public
-  Object childValue(Object parentValue) {
-    Hashtable ht = (Hashtable) parentValue;
-    System.out.println("childValue called. ["+Thread.currentThread().getName()+"]");
-    return ht.clone();
+  static
+  Hashtable getContext() {
+    return (Hashtable) context.get();
   }
 
-  public 
-  void finalize() throws Throwable {
-    System.out.println("finalize called. ["+Thread.currentThread().getName()+"]");
-    super.finalize();
-  }
 }

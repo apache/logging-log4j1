@@ -174,6 +174,6 @@ public class StressNDC extends Thread {
   public
   static
   String randomID() {
-    return Integer.toHexString(random.nextInt()& 0xFFFFFF);
+    return Integer.toString(random.nextInt()& 0xFFFFFF);
   }
 }

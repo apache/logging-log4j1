@@ -12,6 +12,7 @@ import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.helpers.AbsoluteTimeDateFormat;
 import org.apache.log4j.Layout;
 import org.apache.log4j.NDC;
+import org.apache.log4j.MDC;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.or.ObjectRenderer;
@@ -345,6 +346,11 @@ public class PatternParser {
       //LogLog.debug("NDC converter.");      
       currentLiteral.setLength(0);
       break;
+    case 'X':
+      String xOpt = extractOption();
+      pc = new MDCPatternConverter(formattingInfo, xOpt);
+      currentLiteral.setLength(0);
+      break;
     default:
       LogLog.error("Unexpected char [" +c+"] at position "+i
 		   +" in conversion patterrn.");
@@ -439,6 +445,26 @@ public class PatternParser {
       return converted;
     }
   }
+
+  private static class MDCPatternConverter extends PatternConverter {
+    private String key;
+    
+    MDCPatternConverter(FormattingInfo formattingInfo, String key) {
+      super(formattingInfo);
+      this.key = key;
+    }
+
+    public
+    String convert(LoggingEvent event) {
+      Object val = MDC.get(key);
+      if(val == null) {
+	return null;
+      } else {
+	return val.toString();      
+      }
+    }
+  }
+
 
   private class LocationPatternConverter extends PatternConverter {
     int type;
