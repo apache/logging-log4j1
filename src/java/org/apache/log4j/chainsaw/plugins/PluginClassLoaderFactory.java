@@ -74,7 +74,7 @@ public class PluginClassLoaderFactory {
         try {
 			list.add(pluginDirectory.toURL());
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new RuntimeException(e.getMessage());
 		}
         if (strings !=null) {
 			for (int i = 0; i < strings.length; i++) {
@@ -87,7 +87,7 @@ public class PluginClassLoaderFactory {
 				} catch (Exception e) {
 					logger.error("Failed to retrieve the URL for file: "
 							+ file.getAbsolutePath());
-					throw new RuntimeException(e);
+					throw new RuntimeException(e.getMessage());
 				}
 			}
 		}
