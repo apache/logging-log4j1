@@ -5,12 +5,12 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import junit.framework.Test;
 import java.util.Properties;
+import org.apache.log4j.FileAppender;
 
 /**
  * Test variable substitution code in OptionConverter.substVars method.
  * 
  * @author Ceki G&uuml;lc&uuml;
- * @author Curt Arnold
  * 
  * @since 1.0
  */
@@ -129,27 +129,28 @@ public class OptionSubstitutionTest extends TestCase {
   }
   
   /**
-   * Tests OptionsConverter.stripDuplicateBackslashes
-   *
+   * Tests FileAppender.stripDuplicateBackslashes.
+   * @remarks This should be moved to a FileAppenderTestCase
+   *  
    * @since 1.3
    */
   public void testStripDuplicateBackslashes() {
-     assertEquals("\\foo\\bar\\foo", OptionConverter.stripDuplicateBackslashes("\\foo\\bar\\foo"));
-     assertEquals("\\foo\\bar\\foo\\", OptionConverter.stripDuplicateBackslashes("\\\\foo\\\\bar\\\\foo\\\\"));
-     assertEquals("\\foo\\bar\\foo\\", OptionConverter.stripDuplicateBackslashes("\\foo\\bar\\foo\\"));
+     assertEquals("\\foo\\bar\\foo", FileAppender.stripDuplicateBackslashes("\\foo\\bar\\foo"));
+     assertEquals("\\foo\\bar\\foo\\", FileAppender.stripDuplicateBackslashes("\\\\foo\\\\bar\\\\foo\\\\"));
+     assertEquals("\\foo\\bar\\foo\\", FileAppender.stripDuplicateBackslashes("\\foo\\bar\\foo\\"));
      //
      //   UNC's should either start with two backslashes and contain additional singles
      //       or four back slashes and addition doubles
-     assertEquals("\\\\foo\\bar\\foo", OptionConverter.stripDuplicateBackslashes("\\\\\\\\foo\\\\bar\\\\foo"));
-     assertEquals("\\\\foo\\bar\\foo", OptionConverter.stripDuplicateBackslashes("\\\\foo\\bar\\foo"));
+     assertEquals("\\\\foo\\bar\\foo", FileAppender.stripDuplicateBackslashes("\\\\\\\\foo\\\\bar\\\\foo"));
+     assertEquals("\\\\foo\\bar\\foo", FileAppender.stripDuplicateBackslashes("\\\\foo\\bar\\foo"));
 	 //
 	 //   it it starts with doubles but has no other path component
 	 //      then it is a file path
-     assertEquals("\\foo.log", OptionConverter.stripDuplicateBackslashes("\\\\foo.log"));
+     assertEquals("\\foo.log", FileAppender.stripDuplicateBackslashes("\\\\foo.log"));
 	 //
 	 //   it it starts with quads but has no other path component
 	 //      then it is a UNC
-     assertEquals("\\\\foo.log", OptionConverter.stripDuplicateBackslashes("\\\\\\\\foo.log"));
+     assertEquals("\\\\foo.log", FileAppender.stripDuplicateBackslashes("\\\\\\\\foo.log"));
   }  
   
   
