@@ -106,7 +106,8 @@ public class AsyncAppender extends AppenderSkeleton
       return; 
 
     closed = true;
-    dispatcher.interrupted = true;
+
+    dispatcher.close();
     try {
       dispatcher.join();
     } catch(InterruptedException e) {
@@ -213,6 +214,13 @@ class Dispatcher extends Thread {
     //+ (Thread.MAX_PRIORITY > Thread.MIN_PRIORITY ? 1 : -1)*2);
 
   }
+
+  synchronized 
+  void close() {
+    interrupted = true;
+    bf.notify();
+  }
+
 
 
   /**
