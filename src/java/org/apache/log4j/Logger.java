@@ -16,8 +16,8 @@
 
 package org.apache.log4j;
 
-import org.apache.log4j.helpers.MessageFormatter;
 import org.apache.log4j.spi.LoggerFactory;
+import org.apache.ugli.impl.MessageFormatter;
 
 
 /**

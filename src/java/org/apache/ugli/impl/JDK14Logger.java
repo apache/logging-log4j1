@@ -22,7 +22,6 @@
  */
 package org.apache.ugli.impl;
 
-import org.apache.log4j.helpers.MessageFormatter;
 
 import org.apache.ugli.ULogger;
 
@@ -31,10 +30,10 @@ import java.util.logging.Logger;
 
 
 /**
- * @author ceki
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
+ * A wrapper over @{link java.utill.Logger} which conforms to the 
+ * {@link ULogger} interface.
+ * 
+ * @author Ceki G&uuml;lc&uuml;
  */
 public class JDK14Logger implements ULogger {
   final Logger logger;

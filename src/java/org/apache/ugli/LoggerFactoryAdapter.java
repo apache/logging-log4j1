@@ -19,6 +19,17 @@ package org.apache.ugli;
  */
 public interface LoggerFactoryAdapter {
   
+  /**
+   * Return the appropriate named {@link ULogger} instance.
+   */
   public ULogger getLogger(String name);
-  public ULogger getLogger(String domainName, String subDomainName);  
+  
+  /**
+   * Return a {@link ULogger} instance in <code>domain</code>, <code>subDomain</code>. 
+   *
+   * @param domain
+   * @param subDomain
+   * @return ULogger instance
+   */
+  public ULogger getLogger(String domain, String subDomain);  
 }

@@ -32,12 +32,12 @@
 package org.apache.log4j;
 
 import org.apache.log4j.helpers.AppenderAttachableImpl;
-import org.apache.log4j.helpers.MessageFormatter;
 import org.apache.log4j.helpers.NullEnumeration;
 import org.apache.log4j.helpers.ReaderWriterLock;
 import org.apache.log4j.spi.AppenderAttachable;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.ugli.impl.MessageFormatter;
 
 import java.util.Enumeration;
 import java.util.MissingResourceException;

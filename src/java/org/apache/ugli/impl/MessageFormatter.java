@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.apache.log4j.helpers;
+package org.apache.ugli.impl;
 
 
 /**
