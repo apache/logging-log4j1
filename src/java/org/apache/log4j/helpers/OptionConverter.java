@@ -252,7 +252,7 @@ public class OptionConverter {
     } catch (ClassNotFoundException e) {
       getLogger().warn("custom level class [" + clazz + "] not found.");
     } catch (NoSuchMethodException e) {
-      LogLog.warn(
+      getLogger().warn(
         "custom level class [" + clazz + "]"
         + " does not have a constructor which takes one string parameter", e);
     } catch (java.lang.reflect.InvocationTargetException e) {
@@ -361,7 +361,7 @@ public class OptionConverter {
   
         return classObj.newInstance();
       } catch (Exception e) {
-        LogLog.error("Could not instantiate class [" + className + "].", e);
+        getLogger().error("Could not instantiate class [" + className + "].", e);
       }
     }
   
@@ -518,12 +518,12 @@ public class OptionConverter {
     }
 
     if (clazz != null) {
-      LogLog.debug("Preferred configurator class: " + clazz);
+      getLogger().info("Preferred configurator class: " + clazz);
       configurator =
         (Configurator) instantiateByClassName(clazz, Configurator.class, null);
 
       if (configurator == null) {
-        LogLog.error("Could not instantiate configurator [" + clazz + "].");
+        getLogger().error("Could not instantiate configurator [" + clazz + "].");
 
         return;
       }
