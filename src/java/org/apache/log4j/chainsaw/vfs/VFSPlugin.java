@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.swing.JSplitPane;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
@@ -44,6 +45,9 @@ public class VFSPlugin extends GUIPluginSkeleton {
 	 * @see org.apache.log4j.plugins.Plugin#shutdown()
 	 */
 	public void shutdown() {
+        if(fileSystemManager!=null) {
+         fileSystemManager.close();   
+        }
 	}
 	
 	/* (non-Javadoc)
@@ -73,9 +77,12 @@ public class VFSPlugin extends GUIPluginSkeleton {
 	 */
 	private void loadLocalFileSystem() {
 		try {
-			FileObject fileObject = this.fileSystemManager.createVirtualFileSystem(new File("").toURL().toExternalForm());
+			FileObject fileObject = this.fileSystemManager.resolveFile(new File("").toURL().toExternalForm());
 			
-			this.fileSystemTree.addFileObject("local", fileObject);
+			DefaultMutableTreeNode node = this.fileSystemTree.addFileObject("local", fileObject);
+            
+            VFSUtils.lookForChildren(this.fileSystemTree.getTree(), node);
+            
 		} catch (Exception e) {
 			LogLog.error("error creating local VFS",e);
 		}
