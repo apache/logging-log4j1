@@ -87,7 +87,7 @@ public class Hierarchy {
     disable = DISABLE_OFF;
     this.root.setHierarchy(this);
     rendererMap = new RendererMap();
-	 defaultFactory = new DefaultCategoryFactory();
+    defaultFactory = new DefaultCategoryFactory();
   }
 
   /**
@@ -260,7 +260,7 @@ public class Hierarchy {
      
      <p>If a category of that name already exists, then it will be
      returned.  Otherwise, a new category will be instantiated and
-     lthen inked with its existing ancestors as well as children.
+     then linked with its existing ancestors as well as children.
      
      @param name The name of the category to retrieve.
 
@@ -410,10 +410,10 @@ public class Hierarchy {
 
      @since 1.1
    */
-  public void setCategoryFactory(CategoryFactory factory)
-  {
-    if (factory != null)
+  public void setCategoryFactory(CategoryFactory factory) {
+    if (factory != null) {
       defaultFactory = factory;
+    }
   }
 
   /**

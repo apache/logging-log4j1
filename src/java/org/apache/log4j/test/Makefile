@@ -21,6 +21,7 @@ JSOURCES:= Shallow.java\
  SysoutConfigurator.java\
  UnitTestCategory.java\
  UnitTestCyclicBuffer.java\
+ UnitTestOR.java\
  UnitTestBoundedFIFO.java\
  UnitTestOptionConverter.java\
  SocketAppenderTest.java\
