@@ -451,8 +451,7 @@ public class Category implements AppenderAttachable {
 
   /**
      Get the appenders contained in this category as an
-     Enumeration. If there are no appenders in this category
-     <code>null</code> is returned.
+     Enumeration.
      
      @return Enumeration An enumeration of the appenders in this category.  
   */
