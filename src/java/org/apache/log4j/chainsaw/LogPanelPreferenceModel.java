@@ -137,4 +137,16 @@ public class LogPanelPreferenceModel {
 		propertySupport.removePropertyChangeListener(propertyName, listener);
 	}
 
+	/**
+	 * Applies all the properties of another model to this model
+	 * 
+	 * @param uncommitedPreferenceModel the model to copy
+	 * all the properties from
+	 */
+	public void apply(LogPanelPreferenceModel that) {
+		setAlternateDateFormatPattern(that.getAlternateDateFormatPattern());
+		setUseISO8601Format(that.isUseISO8601Format());
+		
+	}
+
 }
