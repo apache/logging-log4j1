@@ -36,22 +36,21 @@
 &lt;/log4j:configuration>
         </pre>
 
-        <p>However, <code>JoranConfigurator</code> will continue to
+        <p><code>JoranConfigurator</code> will no longer continue to
         parse your old XML configuration files which previously
-        required a reference to <code>log4j.dtd</code>. Thus, altough
-        deprecated, the following form will continue to be parsed
-        correctly.
+        required a reference to <code>log4j.dtd</code>. Thus, the 
+        the following form will not work.
         </p>
 
-        <p class="red big">Deprecated:</p>
+        <p class="red big">Bad:</p>
 
           <pre>&lt;?xml version="1.0" encoding="UTF-8" ?>
-<b>&lt;!DOCTYPE log4j:configuration SYSTEM "log4j.dtd" ></b>
+<b>&lt;!DOCTYPE log4j:configuration SYSTEM "log4j.dtd"></b>
         </pre>
      
 
-        <p>Using the deprecated form will generate the above mentioned
-        warning message.
+        <p>Using this deprecated form will generate the above mentioned
+        error message along with an error from the XML parser.
         </p>
 
       </explanation>
