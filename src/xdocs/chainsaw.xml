@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<document>
+
+  <properties>
+    <author email="psmith@apache.org">Paul Smith</author>
+    <title>Chainsaw v2 Documentation</title>
+  </properties>
+
+<body>
+		<section name="Chainsaw v2 - Introduction/Table of Contents">
+    	<p>Welcome to the home of Chainsaw v2!</p>
+      
+      <p>Chainsaw v2 is a companion application to Log4j written by members of the Log4j development
+      community. Like a number of Open Source
+      projects, this new version was built upon inspirations, ideas and creations of others. 
+      Chainsaw v2 has it's roots from the original Chainsaw utility written by Oliver Burn, 
+      and with inspiration from the Log Factor 5 utility contributed by ThoughtWorks Inc. </p>
+    <ul>
+     <li><a href="#WhatIsIt">So what is it really?</a></li>
+     <li><a href="#QuickTour">Quick Tour of Chainsaw features</a></li>
+     <li><a href="#ProjectStatus">Project Status/Support/Feedback</a></li>
+     <li><a href="#GettingStarted">Getting Started</a></li>
+     <li><a href="#Tutorial">Tutorial and User Manual</a></li>
+    </ul>
+      
+    
+    </section>
+    <section name="So what is it really?">
+      <p><a name="WhatIsIt"/>It's a GUI-based Log viewer. Pictures tell a thousand words...</p>
+      
+      <p><img src="api/org/apache/log4j/chainsaw/doc-files/Chainsawv2.gif" width="873" height="492"/></p>
+
+      <p>These screen shots were taken on Windows 2000, running Sun JDK 1.4.2.</p>
+      
+      <p>Rather than rely on a combination of tail/grep/vi or equivalent to view/query/trace-through
+      a huge trail of logging events, you can use Chainsaw.  Chainsaw can read log files formatted in Log4j's XMLLayout, receive
+      events from remote locations, read events from a DB, it can even work with the JDK 1.4 logging events.</p>
+    </section>
+    
+    <section name="Project Status/Support/Feedback">
+      <p><a name="ProjectStatus"/>Currently Chainsaw v2 is not in official release status, more
+      Alpha level, but a number of developers
+      are actively using it to assist in the management of production environments.  A number
+      of changes and features are still being added at this time, but it is scheduled to be officially
+      released with the Log4j 1.3 release in the very near future.</p>
+      
+      <p>Feel free to monitor and participate in discussing Chainsaw on the <a href="mailto:log4j-user@jakarta.apache.org">Log4j User</a> mailing list.
+      
+      Support for the product will also be provided through this forum.</p>
+      
+    </section>
+    
+        
+    <section name="Quick Tour of Chainsaw features">
+			<p><a name="QuickTour"/></p>
+      <ul>
+       <li><b>View remote events</b> - Remote events are "received" by Chainsaw using Log4j's new Receiver concept.</li>
+       <li><b>Responsive</b> - When events are screaming in, you don't want the GUI to meltdown.  You can control 
+       how responsive the GUI is and determine the frequency of updates.</li>
+       <li><b>Tabs/Docking</b> - Chainsaw routes separate applications/remote hosts' events to a unique Tab within the GUI.  
+       These tabs can be undocked from the main window.  Using these features you can manage multiple application logs using the one GUI.</li>
+       <li><b>Coloring</b> - You can specify your own rules to color each event row depending on the attributes of a LoggingEvent to 
+       help you locate important events.</li>
+       <li><b>Dynamic and powerful filtering</b> - Helps you locate stuff. There's support for quick-and-dirty filtering, right through to advanced expression-based filtering.</li>
+       <li><b>Cyclic</b> - A tab view can support a Cyclic-based model, which constrains it's view to the last
+       X events, ensuring you don't hog memory.  This is great for monitoring live applications.</li>
+       <li><b>Built-in documentation and tutorial</b> - HTML-based documentation included in the package.</li>
+      </ul>
+    </section>
+
+    <section name="Getting Started">
+			<p><a name="GettingStarted"/> </p>    
+    </section>
+   
+    <section name="Tutorial and User Manual">
+			<p><a name="ExtraDocs"/>Chainsaw includes help with
+      with a Quick Reference, Tutorial, and User Manual, all viewable from within the GUI. </p>    
+    </section>
+    
+</body>
+</document>
