@@ -22,11 +22,11 @@
  */
 package org.apache.joran;
 
-import joran.implicit.NOPAction;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.apache.joran.action.Action;
 import org.apache.joran.action.NestComponentIA;
 import org.apache.joran.action.NewRuleAction;
 import org.apache.joran.action.ParamAction;
@@ -163,9 +163,9 @@ public class InterpreterTest extends TestCase {
 
     RuleStore rs = new SimpleRuleStore();
     
-    rs.addRule(new Pattern("log4j:configuration"), new NOPAction());
+    rs.addRule(new Pattern("log4j:configuration"), Action.NOP_ACTION);
     rs.addRule(new Pattern("log4j:configuration/logger"), new LoggerAction());
-    rs.addRule(new Pattern("*/appender-ref"), new NOPAction());
+    rs.addRule(new Pattern("*/appender-ref"), Action.NOP_ACTION);
     rs.addRule(
       new Pattern("log4j:configuration/logger/level"), new LevelAction());
     rs.addRule(
@@ -209,7 +209,7 @@ public class InterpreterTest extends TestCase {
   public void testParsing2() throws Exception {
     logger.debug("Starting testLoop2");
     RuleStore rs = new SimpleRuleStore();
-    rs.addRule(new Pattern("log4j:configuration"), new NOPAction());
+    rs.addRule(new Pattern("log4j:configuration"), Action.NOP_ACTION);
     rs.addRule(new Pattern("log4j:configuration/logger"), new LoggerAction());
     rs.addRule(
       new Pattern("log4j:configuration/logger/level"), new LevelAction());
