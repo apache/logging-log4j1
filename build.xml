@@ -370,6 +370,7 @@ later. For JDK 1.2, you can get the JNDI API from
   <target name="build.chainsaw" depends="init, chainsawCheck, build.core" if="chainsaw-libraries-present">
     <javac deprecation="${deprecation}"
            srcdir="${java.source.dir}"
+     debug="on"
      destdir="${javac.dest}"
      includes="${stem}/chainsaw/**/*.java,${stem}/rule/*.java,${stem}/varia/ExpressionFilter.java,${stem}/varia/LogFilePatternReceiver*.java"
            excludes="${stem}/chainsaw/vfs/*.java">

@@ -149,8 +149,10 @@ public class LogFilePatternReceiver extends Receiver {
   private static final String LINE = "LINE";
   private static final String METHOD = "METHOD";
 
-  private static final String EXCEPTION_PATTERN = "\t.*";
-  private static final String REGEXP_WILDCARD = ".+";
+  
+  //all lines other than first line of exception begin with tab followed by 'at' followed by text
+  private static final String EXCEPTION_PATTERN = "\tat.*";
+  private static final String REGEXP_WILDCARD = ".*";
   private static final String PATTERN_WILDCARD = "*";
   private static final String GROUP = "(" + REGEXP_WILDCARD + ")";
 
@@ -581,6 +583,7 @@ public class LogFilePatternReceiver extends Receiver {
     input = replace("]", "\\]", input);
     input = replace("{", "\\{", input);
     input = replace("}", "\\}", input);
+    input = replace("#", "\\#", input);
     return input;
   }
 

@@ -9,6 +9,16 @@
 
 <h1>1.99.99</h2>
 
+<h2>10 September 2004</h2>
+<ul>
+<li>Modified file, line, method and class checks in tablemodel to avoid null pointers</li>
+<li>Added PRE tags around message to display multiline messages correctly in detail/tooltips</li>
+<li>LogFilePatternReceiver is now more accurate when checking exception lines</li>
+<li>LogFilePatternReceiver now escapes # characters by default in the pattern so that regular expression matching succeeds</li>
+<li>LogFilePatternReceiver matches now work with empty strings (.* instead of .+)</li>
+<li>Build now provides debug information for Chainsaw classes</li>
+</ul>
+
 <h2>9 September 2004</h2>
 <ul>
 <li>Rewrote LogFilePatternReceiver to add support for multi-line messages and improved parsing logic.  To use this receiver you must now have the ORO library in your classpath (ORO is included in the WebStart version).</li>
