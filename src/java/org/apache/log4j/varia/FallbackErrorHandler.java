@@ -5,7 +5,7 @@
  * version 1.1, a copy of which has been included  with this distribution in
  * the LICENSE.txt file.
  */
-
+ 
 package org.apache.log4j.varia;
 
 import  org.apache.log4j.spi.ErrorHandler;
@@ -14,7 +14,7 @@ import  org.apache.log4j.Appender;
 import  org.apache.log4j.Logger;
 import  org.apache.log4j.helpers.LogLog;
 import java.util.Vector;
-
+ 
 /**
 
    The <code>FallbackErrorHandler</code> implements the ErrorHandler
