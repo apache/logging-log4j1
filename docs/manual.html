@@ -10,7 +10,7 @@
 
   <font size="+2">Ceki G&uuml;lc&uuml;</font>
   <br><br>
-  June 2001
+  July 2001
   <br>
 </center>
 
@@ -116,7 +116,7 @@ concept of the package.  The category notion is embodied in the
 <code><a
 href="api/org/apache/log4j/Category.html">org.apache.log4j.Category</a></code>
 class. Categories are named entities. Category names are
-case-sensitive. They follow the hierarchical naming rule:
+case-sensitive and they follow the hierarchical naming rule:
 
 <p>
 <table bgcolor="#EEEE99">
@@ -140,7 +140,7 @@ case-sensitive. They follow the hierarchical naming rule:
 of the category named <code>"com.foo.Bar"</code>.  Similarly,
 <code>"java"</code> is a parent of <code>"java.util"</code> and an
 ancestor of <code>"java.util.Vector"</code>.  This naming scheme
-should be familiar to Java developers.
+should be familiar to most developers.
 
 <p>The root category resides at the top of the category hierarchy. It
 is exceptional in two ways: 
@@ -158,10 +158,13 @@ method. This method takes the name of the desired category as a
 parameter. Some of the basic methods in the Category class are listed
 below.
 
+<p><table>
+<tr bgcolor="CCCCCC">
+<td>
 <pre>
   package org.apache.log4j;
   
-  public Category class {
+  public <b>Category</b> class {
   
     // Creation & retrieval methods:
     public static Category getRoot();
@@ -177,23 +180,23 @@ below.
     public void log(Priority p, Object message);
 }
 </pre>
+</td>
+</table>
 
 <p>Categories <em>may</em> be assigned priorities. The set of possible
 priorities, that is 
 
 <a href="api/org/apache/log4j/Priority.html#DEBUG">DEBUG</a>, 
-<a href="api/org/apache/log4j/Priority.html#DEBUG">INFO</a>, 
-<a href="api/org/apache/log4j/Priority.html#DEBUG">WARN</a>, 
-<a href="api/org/apache/log4j/Priority.html#DEBUG">ERROR</a> and 
-<a href="api/org/apache/log4j/Priority.html#DEBUG">FATAL</a> 
+<a href="api/org/apache/log4j/Priority.html#INFO">INFO</a>, 
+<a href="api/org/apache/log4j/Priority.html#WARN">WARN</a>, 
+<a href="api/org/apache/log4j/Priority.html#ERROR">ERROR</a> and 
+<a href="api/org/apache/log4j/Priority.html#FATAL">FATAL</a> 
 
 are defined in the <code><a
 href="api/org/apache/log4j/Priority.html">org.apache.log4j.Priority</a></code>
-class. The rationale behind this seemingly restricted set
-is to promote the use of the more flexible category hierarchy rather
-than a static (even if large) set of priorities.  One may however
-define one's own priorities by sub-classing the <code>Priority</code>
-class.  
+class. Although we do not encourage you from doing so, you may define
+your own priorities by sub-classing the <code>Priority</code> class. A
+perhaps better approach is will be explained later on.
 
 <p>If a given category is not assigned a priority, then it inherits
 one from its closest ancestor with an assigned priority. More
@@ -222,18 +225,24 @@ the root category always has an assigned priority.
 resulting inherited priorities according to the above rule.
 
 <p>
-<table align=center cellpadding=15 width="80%">
-  <tr><td><table border=1>
-    <tr><th>Category<br>name</th><th>Assigned<br>priority</th>
+<table border="1" >
+  <tr><th>Category<br>name</th><th>Assigned<br>priority</th>
     <th>Inherited<br>priority</th></tr>
     <tr align=left><td>root</td>    <td>Proot</td> <td>Proot</td></tr>
     <tr align=left><td>X </td>      <td>none</td>  <td>Proot</td></tr>
     <tr align=left><td>X.Y </td>    <td>none</td>  <td>Proot</td></tr>
     <tr align=left><td>X.Y.Z</td>   <td>none</td>  <td>Proot</td></tr>
-    <caption align=bottom>Example 1</caption>
-</table></td>
+    <caption align=bottom>Example 1</caption>    
+</table>
 
-<td><table border=1>
+<p>In example 1 above, only the root category is assinged a
+priority. This priority value, <code>Proot</code>, is inherited by the
+other categories <code>X</code>, <code>X.Y</code> and
+<code>X.Y.Z</code>.
+
+
+<p>
+<table border="1">
     <tr><th>Category<br>name</th><th>Assigned<br>priority</th>
     <th>Inherited<br>priority</th></tr>
     <tr align=left><td>root</td>    <td>Proot</td> <td>Proot</td></tr>
@@ -241,8 +250,12 @@ resulting inherited priorities according to the above rule.
     <tr align=left><td>X.Y </td>    <td>Pxy</td>   <td>Pxy</td></tr>
     <tr align=left><td>X.Y.Z</td>   <td>Pxyz</td>  <td>Pxyz</td></tr>
     <caption align=bottom>Example 2</caption>
-</table></td></tr>
-  <tr><td><table border=1>
+  </table>
+
+<p>In example 2, all categories have an assigned priority value. There
+is no need for priority inheritence.
+
+<p><table border="1">
     <tr><th>Category<br>name</th><th>Assigned<br>priority</th>
     <th>Inherited<br>priority</th></tr>
     <tr align=left><td>root</td>    <td>Proot</td> <td>Proot</td></tr>
@@ -250,9 +263,15 @@ resulting inherited priorities according to the above rule.
     <tr align=left><td>X.Y </td>    <td>none</td>  <td>Px</td></tr>
     <tr align=left><td>X.Y.Z</td>   <td>Pxyz</td>  <td>Pxyz</td></tr>
     <caption align=bottom>Example 3</caption>
-</table></td>
+</table>
 
-<td><table border=1>
+<p>In example 3, the categories <code>root</code>, <code>X</code> and
+<code>X.Y.Z</code> are assigned the priorities <code>Proot</code>,
+<code>Px</code> and <code>Pxyz</code> respectively. The category
+<code>X.Y</code> inherits its priority value from its parent
+<code>X</code>.
+
+<table border=1>
     <tr><th>Category<br>name</th><th>Assigned<br>priority</th>
     <th>Inherited<br>priority</th></tr>
     <tr align=left><td>root</td>    <td>Proot</td> <td>Proot</td></tr>
@@ -260,8 +279,14 @@ resulting inherited priorities according to the above rule.
     <tr align=left><td>X.Y </td>    <td>none</td>  <td>Px</td></tr>
     <tr align=left><td>X.Y.Z</td>   <td>none</td>  <td>Px</td></tr>
     <caption align=bottom>Example 4</caption>
-</table></td></tr>
 </table>
+
+<p>In example 4, the categories <code>root</code> and <code>X</code>
+and are assigned the priorities <code>Proot</code> and <code>Px</code>
+respectively. The categories <code>X.Y</code> and <code>X.Y.Z</code>
+inherits their priority value from their nearest parent <code>X</code>
+having an assigned priority..
+
 
 <p>Logging requests are made by invoking one of the printing methods
 of a category instance. These printing methods are 
@@ -277,10 +302,10 @@ of a category instance. These printing methods are
  and <a href="api/org/apache/log4j/Category.html#log(org.apache.log4j.Priority, java.lang.Object)">log</a></code>. 
 
 
-By definition, the printing method determines the
-priority of a logging request. For example, if <code>c</code> is a
-category instance, then the statement <code>c.info("..")</code> is a
-logging request of priority INFO.
+<p>By definition, the printing method determines the priority of a
+logging request. For example, if <code>c</code> is a category
+instance, then the statement <code>c.info("..")</code> is a logging
+request of priority INFO.
 
 <p>A logging request is said to be <em>enabled</em> if its priority is
 higher than or equal to the priority of its category. Otherwise, the
@@ -296,23 +321,30 @@ summarized below.
       <dl>
 	<dt><b>Basic Selection Rule</b>
 
-	<dd><p>A log statement of priority <i>p</i> in a category with
+	<dd><p>A log request of priority <i>p</i> in a category with
 	inherited priority <i>q</i>, is enabled if <i> p &gt;=
 	q</i>. 	
       </dl>
 </table>
 
-<p>This rule assumes that priorities are ordered as follows: <code>DEBUG
-&lt; INFO &lt; WARN &lt; ERROR &lt; FATAL</code>.
+<p>This rule is at the heart of log4j. It assumes that priorities are
+ordered. For the standard priorities, we have <code>DEBUG &lt; INFO
+&lt; WARN &lt; ERROR &lt; FATAL</code>.
 
-<p>Here is an example of this rule.
+<p>Here is an example of this rule. 
 
+<p><table bgcolor="CCCCCC">
+<tr><td>
 <pre>
+
    // get a category instance named "com.foo"
    Category  cat = Category.getInstance(<strong>"com.foo"</strong>);
 
-   // Now set its priority.
-   <strong>cat</strong>.setPriority(<font color="0000AA"><strong>Priority.INFO</strong></font>);
+   // Now set its priority. Normally you do not need to set the 
+   // priority of a category progamitcally. This is usually done 
+   // in configuration files.
+   <strong>cat</strong>.setPriority(<font
+   color="0000AA"><strong>Priority.INFO</strong></font>);
 
    Category barcat = Category.getInstance(<strong>"com.foo.Bar"</strong>);
  
@@ -331,14 +363,30 @@ summarized below.
    // This request is disabled, because <font color="00AA00"><strong>DEBUG</strong></font> &lt; <font color="0000AA"><strong>INFO</strong></font>.
    barcat.<font color="00AA00"><strong>debug</strong></font>("Exiting gas station search"); 
 </pre>
-  
+</table>  
+
 <p>Calling the <code>getInstance</code> method with the same name will
-always return a reference to the exact same category object. Thus, it
-is possible to configure a category and then to retrieve the same
-instance somewhere else in the code without passing around
-references. Categories can be created and configured in any order. In
-particular, a category will find and link to its descendants even
-if it is instantiated after them. 
+always return a reference to the exact same category object. 
+
+<p>For example, in 
+
+<table bgcolor="CCCCCC">
+<tr><td>
+<pre>
+   Categoty x = Category.getInstance("wombat");
+   Categoty y = Category.getInstance("wombat");</pre>
+</td>
+</table>
+<code>x</code> and <code>y</code> refer to <em>exactly</em> the same
+category object.
+
+<p>Thus, it is possible to configure a category and then to retrieve
+the same instance somewhere else in the code without passing around
+references. In fundamental contradiction to biological parenthood,
+where parents always preceed their children, log4j categories can be
+created and configured in any order. In particular, a "parent"
+category will find and link to its descendants even if it is
+instantiated after them.
 
 <p>Configuration of the log4j environment is typically done at
 application initialization. The preferred way is by reading a
@@ -356,7 +404,7 @@ the possible set of categories. The developer is free to name the
 categories as desired.
 
 <p>Nevertheless, naming categories after the class where they are
-defined seems to be the best strategy known so far.
+located seems to be the best strategy known so far.
 
 <h2>Appenders and Layouts</h2>
 
@@ -368,18 +416,23 @@ for the <a href="api/org/apache/log4j/ConsoleAppender.html">console</a>, <a
 href="api/org/apache/log4j/FileAppender.html">files</a>, GUI
 components, <a
 href="api/org/apache/log4j/net/SocketAppender.html">remote socket</a>
-servers, <a href="api/org/apache/log4j/nt/NTEventLogAppender.html"> NT
+servers,  <a
+href="api/org/apache/log4j/net/JMSAppender.html">JMS</a>,
+
+<a href="api/org/apache/log4j/nt/NTEventLogAppender.html"> NT
 Event Loggers</a>, and remote UNIX <a
 href="api/org/apache/log4j/net/SyslogAppender.html">Syslog</a>
 daemons. It is also possible to log <a href="api/org/apache/log4j/AsyncAppender.html">asynchronously</a>.
  
-<p>A category may refer to multiple appenders. The <a
+<p>More than one appender can be attached to a category.
+
+<p>The <a
 href="api/org/apache/log4j/Category.html#addAppender(org.apache.log4j.Appender)">addAppender</a>
 method adds an appender to a given category.
 
-Each enabled logging
+<b>Each enabled logging
 request for a given category will be forwarded to all the appenders in
-that category as well as the appenders higher in the hierarchy. In
+that category as well as the appenders higher in the hierarchy.</b> In
 other words, appenders are inherited additively from the category
 hierarchy. For example, if a console appender is added to the root
 category, then all enabled logging requests will at least print on the
@@ -423,11 +476,13 @@ the additivity flag</a> to <code>false</code>.
   <th>Category<br>Name <th>Added<br>Appenders <th>Additivity<br>Flag <th>Output Targets <th>Comment
 
 <tr><td>root    <td>A1         <td>not applicable <td>A1
-    <td>The root category is anonymous but can be accessed with the 
-        Category.getRoot() method.
+
+    <td>The root category is anonymous but can be accessed with the
+        Category.getRoot() method. There is no default appender
+        attached to root.
 
 <tr><td>x       <td>A-x1, A-x2 <td>true <td>A1, A-x1, A-x2
-    <td>Appenders in root are added to appenders in "x".    
+    <td>Appenders of "x" and root.
 
 <tr><td>x.y     <td>none       <td>true <td>A1, A-x1, A-x2
     <td>Appenders of "x" and root.
@@ -438,11 +493,11 @@ the additivity flag</a> to <code>false</code>.
 <tr><td>security        <td>A-sec	   <td><font color="blue">false</font> 
                                            <td>A-sec
 
-    <td>No appender accumulation as the additivity flag is set to
+    <td>No appender accumulation since the additivity flag is set to
         <code>false</code>. 
 
 <tr><td>security.access <td>none <td> true <td> A-sec <td>Only
-    appenders of "security" as the additivity flag in "security" is
+    appenders of "security" because the additivity flag in "security" is
     set to <code>false</code>.
 
 </table>
@@ -453,9 +508,12 @@ destination but also the output format. This is accomplished by
 associating a <em>layout</em> with an appender. The layout is
 responsible for formatting the logging request according to the user's
 wishes, whereas an appender takes care of sending the formatted output
-to its destination. The <code>PatternLayout</code>, part of the
-standard log4j distribution, lets the user specify the output format
-according to conversion patterns similar to the C language
+to its destination. 
+
+The <a
+href="api/org/apache/log4j/PatternLayout.html">PatternLayout</a>, part
+of the standard log4j distribution, lets the user specify the output
+format according to conversion patterns similar to the C language
 <code>printf</code> function.
 
 <p>For example, the PatternLayout with the conversion pattern "%r [%t]
@@ -506,6 +564,7 @@ XML or in Java properties (key=value) format.
 <p>Let us give a taste of how this is done with the help of an
 imaginary application <code>MyApp</code> that uses log4j.
 
+<p><table bgcolor="CCCCCC"><tr><td>
 <pre>
  import com.foo.Bar;
 
@@ -517,7 +576,7 @@ imaginary application <code>MyApp</code> that uses log4j.
 
    // Define a static category variable so that it references the
    // Category instance named "MyApp".
-   <strong>static</strong> Category cat = <strong>Category.getInstance(MyApp.class.getName());</strong>
+   <strong>static</strong> Category cat = <strong>Category.getInstance(MyApp.class);</strong>
 
    public static void main(String[] args) {
 
@@ -531,6 +590,7 @@ imaginary application <code>MyApp</code> that uses log4j.
    }
  }
 </pre>
+</table>
 
 <p><code>MyApp</code> begins by importing log4j related classes.  It
 then defines a static category variable with the name
@@ -540,26 +600,29 @@ class.
 <p><code>MyApp</code> uses the <code>Bar</code> class defined in the
 package <code>com.foo</code>.
 
+<p><table bgcolor="CCCCCC"><tr><td>
 <pre>
  <b>package com.foo;</b>
  import org.apache.log4j.Category;
  
  public class Bar {
-   <strong>static</strong> Category cat = <strong>Category.getInstance(Bar.class.getName());</strong>
+   <strong>static</strong> Category cat = <strong>Category.getInstance(Bar.class);</strong>
   
    public void doIt() {
      cat.debug("Did it again!");    
    }
  }
 </pre>
-
+</table>
 
 <p>The invocation of the <a
 href="api/org/apache/log4j/BasicConfigurator.html#configure()">BasicConfigurator.configure</a>
 method creates a rather simple log4j setup. This method is hardwired
-to add to the root category a ConsoleAppender printing on the
-console. The output will be formatted using a PatternLayout set to the
-pattern "%-4r [%t] %-5p %c %x - %m%n".
+to add to the root category a <a
+href="api/org/apache/log4j/ConsoleAppender.html">
+ConsoleAppender</a>. The output will be formatted using a <a
+href="api/org/apache/log4j/PatternLayout.html">PatternLayout</a> set
+to the pattern "%-4r [%t] %-5p %c %x - %m%n".
 
 <p>Note that by default, the root category is assigned to
 <code>Priority.DEBUG</code>. 
@@ -573,23 +636,32 @@ pattern "%-4r [%t] %-5p %c %x - %m%n".
 
 <p>The figure below depicts the object diagram of <code>MyApp</code>
 after just having called the <code>BasicConfigurator.configure</code>
-method.
+method. 
 
 <p>
 <center>
 <img src="od.gif" align="center" >
 </center>
 
+<p>As a side note, let me mention that in log4j child categories link
+only to their existing ancestors. In particular, the category named
+<code>com.foo.Bar</code> is linked directly to the <code>root</code>
+category, thereby circumventing the unused <code>com</code> or
+<code>com.foo</code> categories. This significantly increases
+performance and reduces log4j's memory footprint.
+
+
 <p>The <code>MyApp</code> class configures log4j by invoking
 <code>BasicConfigurator.configure</code> method.  Other classes only
-need to import the <code>org.apache.log4j.Category</code> class, retrieve the
-categories they wish to use, and log away.
+need to import the <code>org.apache.log4j.Category</code> class,
+retrieve the categories they wish to use, and log away.
 
 <p>The previous example always outputs the same log information.
 Fortunately, it is easy to modify <code>MyApp</code> so that the log
 output can be controlled at run-time. Here is a slightly modified
 version.  
 
+<p><table bgcolor="CCCCCC"><tr><td>
 <pre>
  import com.foo.Bar;
 
@@ -613,14 +685,16 @@ version.
    }
  }
 </pre>
+</table>
 
-This version of <code>MyApp</code> instructs
+<p>This version of <code>MyApp</code> instructs
 <code>PropertyConfigurator</code> to parse a configuration file and
 set up logging accordingly.
 
 <p>Here is a sample configuration file that results in exactly same
 output as the previous <code>BasicConfigurator</code> based example.
 
+<p><table bgcolor="CCAAAA"><tr><td>
 <pre>
 # Set root category priority to DEBUG and its only appender to A1.
 log4j.rootCategory=DEBUG, A1
@@ -632,17 +706,18 @@ log4j.appender.A1=org.apache.log4j.ConsoleAppender
 log4j.appender.A1.layout=org.apache.log4j.PatternLayout
 log4j.appender.A1.layout.ConversionPattern=%-4r [%t] %-5p %c %x - %m%n
 </pre>
-
-<p>Please note that if you copy and paste the examples, then result is
+</table>
+<!-- <p>Please note that if you copy and paste the examples, then result is
 likely to include trailing spaces on some lines. These trailing spaces
 are not trimmed out but interpreted by the PropertyConfigurator.  By
 the time you read this article the problem should be corrected.
-
+-->
 
 <p>Suppose we are no longer interested in seeing the output of any
 component belonging to the <code>com.foo</code> package. The following
 configuration file shows one possible way of achieving this.
 
+<p><table bgcolor="CCAAAA"><tr><td>
 <pre>
 log4j.rootCategory=DEBUG, A1
 log4j.appender.A1=org.apache.log4j.ConsoleAppender
@@ -654,8 +729,9 @@ log4j.appender.A1.layout.ConversionPattern=<strong>%d</strong> [%t] %-5p %c - %m
 # Print only messages of priority WARN or above in the package com.foo.
 <strong>log4j.category.com.foo=WARN</strong>
 </pre>
+</table>
 
-The output of <code>MyApp</code> configured with this file is shown below.
+<p>The output of <code>MyApp</code> configured with this file is shown below.
 
 <pre>
 <strong>2000-09-07 14:07:41,508</strong> [main] INFO  MyApp - Entering application.
@@ -666,11 +742,12 @@ The output of <code>MyApp</code> configured with this file is shown below.
 priority, it inherits its priority from <code>com.foo</code>, which
 was set to WARN in the configuration file. The log statement from the
 <code>Bar.doIt</code> method has the priority DEBUG, lower than the
-category priority WARN. Consequently, <code>doIt</code>'s log request
-is suppressed.
+category priority WARN. Consequently, <code>doIt()</code> method's log
+request is suppressed.
 
 <p>Here is another configuration file that uses multiple appenders.
 
+<p><table bgcolor="CCAAAA"><tr><td>
 <pre>
 log4j.rootCategory=debug, <strong>stdout, R</strong>
 
@@ -690,8 +767,9 @@ log4j.appender.R.MaxBackupIndex=1
 log4j.appender.R.layout=org.apache.log4j.PatternLayout
 log4j.appender.R.layout.ConversionPattern=%p %t %c - %m%n
 </pre>
+</table>
 
-Calling the enhanced MyApp with the this configuration file will
+<p>Calling the enhanced MyApp with the this configuration file will
 output the following on the console.
 
 <pre>
@@ -778,6 +856,13 @@ control of a web-server.
      href="api/org/apache/log4j/spi/Configurator.html">Configurator</a>
      interface.
 
+     <p>After the feature was introduced, it was discovered that the
+     reference part was used by application servers for their own
+     used. Consequently, we will drop support for custom categories in
+     the reference part. A new propery called <b>log4j.configutationClass</b>
+     will be introduced instead.
+     
+
      <p>If the URL has no reference part, then the <a
      href="api/org/apache/log4j/PropertyConfigurator.html">PropertyConfigurator</a>
      will parse the URL. However, if the URL ends with a ".xml"
@@ -792,7 +877,8 @@ control of a web-server.
 web-server environments. Under Tomcat 3.x and 4.x, you should place
 the <code>log4j.properties</code> under the
 <code>WEB-INF/classes</code> directory of your web-applications. Log4j
-will find the properties file and initialize itself.
+will find the properties file and initialize itself. This is easy to
+do and it works.
 
 <p>You can also choose to set the system property
 <b>log4j.configuration</b> before starting Tomcat. For Tomcat 3.x The
@@ -844,8 +930,10 @@ configuration file. This file should be place under the
 <code>WEB-INF/classes</code> directory of your web-application. Due to
 the extra reference part, the file will be read using the
 <code>com.foo.BarConfigurator</code> custom configurator.  Each
-web-application will use a different default configuration file because
-each file is relative to a web-application.
+web-application will use a different default configuration file
+because each file is relative to a web-application. <b>Support for
+custom configurators in the reference part will be dropped in future
+log4j versions. You should not rely on this feature.</b>
 
 
 <p><b>Example 4</b>
@@ -866,6 +954,7 @@ waiting to happen.
 <p>It is also possible to use a special servlet for log4j
 initialization. Here is an example,
 
+<table bgcolor="CCCCCC"><tr><td>
 <pre>
 package com.foo;
 
@@ -893,9 +982,11 @@ public class Log4jInit extends HttpServlet {
   }
 }
 </pre>
+</table>
 
-Define the following servlet in the web.xml file for your web-application.
+<p>Define the following servlet in the web.xml file for your web-application.
 
+<p><table bgcolor="CCAAAA"><tr><td>
 <pre>
   &lt;servlet&gt;
     &lt;servlet-name&gt;log4j-init&lt;/servlet-name&gt;
@@ -909,6 +1000,7 @@ Define the following servlet in the web.xml file for your web-application.
     <b>&lt;load-on-startup&gt;1&lt;/load-on-startup&gt;</b>
   &lt;/servlet&gt;
 </pre>
+</table>
 
 <p>Writing an initialization servlet is the most flexible way for
 initializing log4j. There are no constraints on the code you can place
