@@ -35,13 +35,18 @@ public class LevelEqualsRule extends AbstractRule {
 
     private transient Level level;
 
-    private static List utilList = new LinkedList();
-
     private static List levelList = new LinkedList();
 
     static {
+        populateLevels();
+    }
+    
+    private LevelEqualsRule(Level level) {
+        this.level = level;
+    }
+
+    private static void populateLevels() {
         levelList = new LinkedList();
-        utilList = new LinkedList();
 
         levelList.add(Level.FATAL.toString());
         levelList.add(Level.ERROR.toString());
@@ -49,28 +54,17 @@ public class LevelEqualsRule extends AbstractRule {
         levelList.add(Level.INFO.toString());
         levelList.add(Level.DEBUG.toString());
         levelList.add(Level.TRACE.toString());
-
-        Iterator iter = UtilLoggingLevel.getAllPossibleLevels().iterator();
-
-        while (iter.hasNext()) {
-            utilList.add(((UtilLoggingLevel) iter.next()).toString());
-        }
-    }
-
-    private LevelEqualsRule(Level level) {
-        this.level = level;
     }
 
     public static Rule getRule(String value) {
-        //return new LevelInequalityRule(inequalitySymbol, value);
-        Level level = null;
+        Level thisLevel = null;
         if (levelList.contains(value.toUpperCase())) {
-            level = Level.toLevel(value.toUpperCase());
+            thisLevel = Level.toLevel(value.toUpperCase());
           } else {
-            level = UtilLoggingLevel.toLevel(value.toUpperCase());
+              thisLevel = UtilLoggingLevel.toLevel(value.toUpperCase());
           }
 
-        return new LevelEqualsRule(level);
+        return new LevelEqualsRule(thisLevel);
     }
 
     public boolean evaluate(LoggingEvent event) {
@@ -85,8 +79,7 @@ public class LevelEqualsRule extends AbstractRule {
      * @throws IOException
      */
     private void readObject(java.io.ObjectInputStream in) throws IOException {
-        utilList = new LinkedList();
-        levelList = new LinkedList();
+        populateLevels();
         boolean isUtilLogging = in.readBoolean();
         int levelInt = in.readInt();
         if (isUtilLogging) {
