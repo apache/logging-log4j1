@@ -19,9 +19,6 @@ package org.apache.log4j.scheduler;
 import java.util.List;
 import java.util.Vector;
 
-import org.apache.log4j.helpers.LogLog;
-
-
 /**
  * A simple but still useful implementation of a Scheduler (in memory only).
  * 
@@ -184,7 +181,8 @@ public class Scheduler extends Thread {
     try {
       job.execute();
     } catch(Exception e) {
-      LogLog.error("The execution of the job threw an exception", e);
+      System.err.println("The execution of the job threw an exception");
+      e.printStackTrace(System.err);
     }
   }
   
