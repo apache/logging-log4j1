@@ -431,7 +431,6 @@ public class OptionConverter {
   static
   public
   void selectAndConfigure(URL url, String clazz, LoggerRepository hierarchy) {
-
    Configurator configurator = null;
    String filename = url.getFile();
    

@@ -6,14 +6,13 @@
 # If set, allows to skip tests 
 declare -i start=$1
 
-WITNESS=witness/enableFlagTest
+WITNESS=witness/thresholdFlagTest
 
 function testSCF {
-  type=$1
-  d=$2
+  file=$1
   deleteFile $TEMP
-  echo -n "EnableFlagTest $TEST "
-  java $d org.apache.log4j.test.EnableFlagTest $type 
+  echo -n "ThresholdFlagTest $TEST "
+  java org.apache.log4j.test.ThresholdFlagTest $file
   check $WITNESS.$TEST $TEMP; echo " - OK."  
 }
 
@@ -21,7 +20,7 @@ function testSCF {
 TEST=1
 if [ $TEST -ge $start ]; then
   echo "log4j.rootCategory=,A" > $LCF
-  lecho "log4j.enable=OFF"
+  lecho "log4j.threshold=OFF"
   lecho "log4j.appender.A=org.apache.log4j.FileAppender"
   lecho "log4j.appender.A.File=$TEMP"
   lecho "log4j.appender.A.layout=org.apache.log4j.PatternLayout"
@@ -32,7 +31,7 @@ fi
 TEST=2
 if [ $TEST -ge $start ]; then
   echo "log4j.rootCategory=,A" > $LCF
-  lecho "log4j.enable=FATAL"
+  lecho "log4j.threshold=FATAL"
   lecho "log4j.appender.A=org.apache.log4j.FileAppender"
   lecho "log4j.appender.A.File=$TEMP"
   lecho "log4j.appender.A.layout=org.apache.log4j.PatternLayout"
@@ -43,7 +42,7 @@ fi
 TEST=3
 if [ $TEST -ge $start ]; then
   echo "log4j.rootCategory=,A" > $LCF
-  lecho "log4j.enable=ERROR"
+  lecho "log4j.threshold=ERROR"
   lecho "log4j.appender.A=org.apache.log4j.FileAppender"
   lecho "log4j.appender.A.File=$TEMP"
   lecho "log4j.appender.A.layout=org.apache.log4j.PatternLayout"
@@ -54,7 +53,7 @@ fi
 TEST=4
 if [ $TEST -ge $start ]; then
   echo "log4j.rootCategory=,A" > $LCF
-  lecho "log4j.enable=WARN"
+  lecho "log4j.threshold=WARN"
   lecho "log4j.appender.A=org.apache.log4j.FileAppender"
   lecho "log4j.appender.A.File=$TEMP"
   lecho "log4j.appender.A.layout=org.apache.log4j.PatternLayout"
@@ -65,7 +64,7 @@ fi
 TEST=5
 if [ $TEST -ge $start ]; then
   echo "log4j.rootCategory=,A" > $LCF
-  lecho "log4j.enable=INFO"
+  lecho "log4j.threshold=INFO"
   lecho "log4j.appender.A=org.apache.log4j.FileAppender"
   lecho "log4j.appender.A.File=$TEMP"
   lecho "log4j.appender.A.layout=org.apache.log4j.PatternLayout"
@@ -76,7 +75,7 @@ fi
 TEST=6
 if [ $TEST -ge $start ]; then
   echo "log4j.rootCategory=,A" > $LCF
-  lecho "log4j.enable=DEBUG"
+  lecho "log4j.threshold=DEBUG"
   lecho "log4j.appender.A=org.apache.log4j.FileAppender"
   lecho "log4j.appender.A.File=$TEMP"
   lecho "log4j.appender.A.layout=org.apache.log4j.PatternLayout"
@@ -88,7 +87,7 @@ fi
 TEST=7
 if [ $TEST -ge $start ]; then
   echo "log4j.rootCategory=,A" > $LCF
-  lecho "log4j.enable=ALL"
+  lecho "log4j.threshold=ALL"
   lecho "log4j.appender.A=org.apache.log4j.FileAppender"
   lecho "log4j.appender.A.File=$TEMP"
   lecho "log4j.appender.A.layout=org.apache.log4j.PatternLayout"

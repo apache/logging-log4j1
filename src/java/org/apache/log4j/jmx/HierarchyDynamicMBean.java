@@ -45,7 +45,7 @@ public class HierarchyDynamicMBean extends AbstractDynamicMBean
                                               NotificationBroadcaster {
  
   static final String ADD_APPENDER = "addAppender."; 
-  static final String ENABLE = "enable"; 
+  static final String THRESHOLD = "threshold"; 
 
   private MBeanConstructorInfo[] dConstructors = new MBeanConstructorInfo[1];
   private MBeanOperationInfo[] dOperations = new MBeanOperationInfo[1];
@@ -74,9 +74,9 @@ public class HierarchyDynamicMBean extends AbstractDynamicMBean
          "HierarchyDynamicMBean(): Constructs a HierarchyDynamicMBean instance",
 	 constructors[0]);
 
-    vAttributes.add(new MBeanAttributeInfo("enable",
+    vAttributes.add(new MBeanAttributeInfo(THRESHOLD,
 					   "java.lang.String",
-					   "The \"enable\" state of the hiearchy.",
+					   "The \"threshold\" state of the hiearchy.",
 					   true,
 					   true,
 					   false));
@@ -204,8 +204,8 @@ public class HierarchyDynamicMBean extends AbstractDynamicMBean
     log.debug("Called getAttribute with ["+attributeName+"].");
     
     // Check for a recognized attributeName and call the corresponding getter
-    if (attributeName.equals(ENABLE)) {
-      return hierarchy.getEnable();
+    if (attributeName.equals(THRESHOLD)) {
+      return hierarchy.getThreshold();
     } else if(attributeName.startsWith("logger")) {
       int k = attributeName.indexOf("%3D");
       String val = attributeName;
@@ -280,10 +280,10 @@ public class HierarchyDynamicMBean extends AbstractDynamicMBean
 	       " with null attribute name");
     }
 
-    if(name.equals(ENABLE)) {
+    if(name.equals(THRESHOLD)) {
       Level l = OptionConverter.toLevel((String) value, 
-					   hierarchy.getEnable());
-      hierarchy.enable(l);
+					   hierarchy.getThreshold());
+      hierarchy.setThreshold(l);
     }
     
 	   

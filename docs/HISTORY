@@ -62,7 +62,7 @@
    moved to JavaBeans style configuration in log4j 1.1. [**]
 
  - The disable(Level) methods in Hierarchy have been removed and been
-   replaced by enable counterparts. [**]
+   replaced by threshold methods. [**]
 
  - Removed deprecated methods disable(Priority), disableAll,
    disableDebug, disableInfo and enableAll in BasicConfigurator. [*]

@@ -29,7 +29,7 @@ JSOURCES:= Shallow.java\
  FQCNTest.java\
  DRFATest.java\
  MDCStress.java\
- EnableFlagTest.java\
+ ThresholdFlagTest.java\
 
 # HeavyLoad.java\
 

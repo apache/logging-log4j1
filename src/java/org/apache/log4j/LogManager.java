@@ -141,7 +141,7 @@ public class LogManager {
       // configuration to the OptionConverter.selectAndConfigure
       // method.
       if(url != null) {
-	LogLog.debug("Using URL ["+url+"] for automatic log4j configuration.");
+	LogLog.debug("Using URL ["+url+"] for automatic log4j configuration.");        
 	OptionConverter.selectAndConfigure(url, configuratorClassName, 
 					   LogManager.getLoggerRepository());
       } else {

@@ -63,8 +63,8 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   Logger root;
   RendererMap rendererMap;
 
-  int enableInt;
-  Level enable;
+  int thresholdInt;
+  Level threshold;
 
   boolean emittedNoAppenderWarning = false;
   boolean emittedNoResourceBundleWarning = false;  
@@ -81,7 +81,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
     listeners = new Vector(1);
     this.root = root;
     // Enable all level levels by default.
-    enable(Level.ALL);
+    setThreshold(Level.ALL);
     this.root.setHierarchy(this);
     rendererMap = new RendererMap();
     defaultFactory = new DefaultCategoryFactory();
@@ -123,9 +123,9 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   void emitNoAppenderWarning(Category cat) {
     // No appenders in hierarchy, warn user only once.
     if(!this.emittedNoAppenderWarning) {
-      LogLog.error("No appenders could be found for logger (" +
+      LogLog.warn("No appenders could be found for logger (" +
 		   cat.getName() + ").");
-      LogLog.error("Please initialize the log4j system properly.");
+      LogLog.warn("Please initialize the log4j system properly.");
       this.emittedNoAppenderWarning = true;
     }
   }
@@ -147,122 +147,25 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
     }
   }
 
-
+ 
   /**
-     Similar to {@link #disable(Level)} except that the level
-     argument is given as a String.  
-
-     @deprecated Replaced with the {@link #enable(Level)} familiy
-     of methods
-  */
-  public
-  void disable(String levelStr) {
-    Level p = Level.toLevel(levelStr, null);
-    if(p != null) {
-      disable(p);
-    } else {
-      LogLog.warn("Could not convert ["+levelStr+"] to Level.");
-    }
-  }
-
-
-  /**
-     Disable all logging requests of level <em>equal to or below</em>
-     the level parameter <code>p</code>, for <em>all</em> loggers in
-     this hierarchy. Logging requests of higher level then
-     <code>p</code> remain unaffected.
-
-     <p>The "disable" family of methods are there for speed. They
-     allow printing methods such as debug, info, etc. to return
-     immediately after an integer comparison without walking the
-     logger hierarchy. In most modern computers an integer comparison
-     is measured in nanoseconds where as a logger walk is measured in
-     units of microseconds.
-
-     <p>Other configurators define alternate ways of overriding the
-     disable override flag. See {@link PropertyConfigurator} and
-     {@link org.apache.log4j.xml.DOMConfigurator}.
-
-     @deprecated Please use the {@link #enable} family of methods instead.
-
-     @since 0.8.5 */
-  public
-  void disable(Level p) {
-    if(p != null) {    
-      switch(p.level) {
-      case Level.ALL_INT: enable(Level.ALL); break;      
-      case Level.DEBUG_INT: enable(Level.INFO); break;      
-      case Level.INFO_INT: enable(Level.WARN); break;
-      case Level.WARN_INT: enable(Level.ERROR); break;      
-      case Level.ERROR_INT: enable(Level.FATAL); break;      
-      case Level.FATAL_INT: enable(Level.OFF); break;      
-      case Level.OFF_INT: enable(Level.OFF); break;      
-      default: 
-      }
-    }
-  }
-  
-  /**
-     Disable all logging requests regardless of logger and level.
-     This method is equivalent to calling {@link #disable} with the
-     argument {@link Level#FATAL}, the highest possible level.
-
-     @deprecated Please use the {@link #enable} family of methods instead.
-
-     @since 0.8.5 */
-  public
-  void disableAll() {
-    disable(Level.FATAL);
-  }
-
-
-  /**
-     Disable all logging requests of level DEBUG regardless of the
-     logger.  Invoking this method is equivalent to calling {@link
-     #disable} with the argument {@link Level#DEBUG}.
-
-     @deprecated Please use the {@link #enable} family of methods instead.
-  */
-  public
-  void disableDebug() {
-    disable(Level.DEBUG);
-  }
-
-
-  /**
-     Disable all logging requests of level INFO and below
-     regardless of logger. Note that DEBUG messages are also
-     disabled.  
-
-     <p>Invoking this method is equivalent to calling {@link
-     #disable(Level)} with the argument {@link Level#INFO}.
-
-     @deprecated Please use the {@link #enable} family of methods instead.
-
-     @since 0.8.5 */
-  public
-  void disableInfo() {
-    disable(Level.INFO);
-  }  
-
-  /**
-     Equivalent to calling <code>enable(Level.ALL)</code>.
+     Equivalent to calling <code>threshold(Level.ALL)</code>.
      
-     By default all levels are enabled.
+     By default all levels are thresholdd.
   */
-  public
-  void enableAll() {
-    enable(Level.ALL);
-  }
+  //public
+  //void enableAll() {
+  //enable(Level.ALL);
+  //}
 
   /**
      The string form of {@link enable(Level)}.
    */
   public 
-  void enable(String levelStr) {
+  void setThreshold(String levelStr) {
     Level l = Level.toLevel(levelStr, null);
     if(l != null) {
-      enable(l);
+      setThreshold(l);
     } else {
       LogLog.warn("Could not convert ["+levelStr+"] to Level.");
     }
@@ -276,10 +179,10 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
      @param l The minimum level for which logging requests are sent to
      their appenders.  */
   public 
-  void enable(Level l) {
+  void setThreshold(Level l) {
     if(l != null) {
-      enableInt = l.level;
-      enable = l;
+      thresholdInt = l.level;
+      threshold = l;
     }
   }
 
@@ -312,19 +215,19 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
 
      @since 1.2 */
   public
-  Level getEnable() {
-    return enable;
+  Level getThreshold() {
+    return threshold;
   }
 
   /**
      Returns an integer representation of the this repository's
-     <code>enable</code> state.
+     threshold.
 
      @since 1.2 */
-  public
-  int getEnableInt() {
-    return enableInt;
-  }
+  //public
+  //int getThresholdInt() {
+  //  return thresholdInt;
+  //}
 
 
   /**
@@ -443,12 +346,13 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   }
 
   /**
-     This methid will Return <code>true</code> if this repository is
-     disabled for <code>level</code> passes as parameter and false otherwise.     
-  */
+     This method will return <code>true</code> if this repository is
+     disabled for <code>level</code> object passed as parameter and
+     <code>false</code> otherwise. See also the {@link
+     #threshold(org.apache.log4j.Level) threshold} emthod.  */
   public
   boolean isDisabled(int level) {    
-    return enableInt > level;
+    return thresholdInt > level;
   }
 
   /**
@@ -478,7 +382,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
 
     getRootLogger().setLevel(Level.DEBUG);
     root.setResourceBundle(null);
-    enableAll();
+    setThreshold(Level.ALL);
     
     // the synchronization is needed to prevent JDK 1.2.x hashtable
     // surprises

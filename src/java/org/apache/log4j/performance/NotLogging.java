@@ -128,7 +128,7 @@ public class NotLogging {
       // nothing to do
     } else if ("true".equals(args[0])) {
       System.out.println("Flagging as shipped code.");
-      Category.getDefaultHierarchy().enable(Level.WARN);
+      Category.getDefaultHierarchy().setThreshold(Level.WARN);
     } else 
       Usage();
 

@@ -21,7 +21,7 @@ public class DisableOverrideTest {
       Usage("Wrong number of arguments.");
      
     DOMConfigurator.configure(configFile);
-    Category.getDefaultHierarchy().enable(Level.WARN);       
+    Category.getDefaultHierarchy().setThreshold(Level.WARN);       
     CAT.debug("Hello world");
   }
 

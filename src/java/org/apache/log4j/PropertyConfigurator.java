@@ -94,7 +94,7 @@ public class PropertyConfigurator implements Configurator {
   static final String ROOT_LOGGER_PREFIX   = "log4j.rootLogger";
   static final String      APPENDER_PREFIX = "log4j.appender.";  
   static final String      RENDERER_PREFIX = "log4j.renderer.";
-  static final String      ENABLE_PREFIX   = "log4j.enable";
+  static final String      THRESHOLD_PREFIX = "log4j.threshold";
 
   /** Key for specifying the {@link org.apache.log4j.spi.LoggerFactory
       LoggerFactory}.  Currently set to "<code>log4j.loggerFactory</code>".  */
@@ -396,10 +396,10 @@ public class PropertyConfigurator implements Configurator {
       LogLog.setInternalDebugging(OptionConverter.toBoolean(value, true));
     }
 
-    String enableStr = properties.getProperty(ENABLE_KEY);
-    if(enableStr != null) {
-      LogLog.debug("Parsing enable string ["+enableStr+"]");
-      hierarchy.enable(enableStr);
+    String thresholdStr = properties.getProperty(THRESHOLD_PREFIX);
+    if(thresholdStr != null) {
+      LogLog.debug("Parsing threshold string ["+thresholdStr+"]");
+      hierarchy.setThreshold(thresholdStr);
     }
 
     configureRootCategory(properties, hierarchy);

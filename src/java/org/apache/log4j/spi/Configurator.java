@@ -27,7 +27,7 @@ public interface Configurator {
      Hierarchy#disable} method with the corresponding level.
 
      @since 1.2 */
-     public static final String ENABLE_KEY = "log4j.enable";
+  // public static final String ENABLE_KEY = "log4j.enable";
 
 
   /**

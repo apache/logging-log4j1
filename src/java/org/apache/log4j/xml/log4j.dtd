@@ -30,8 +30,7 @@ element. -->
      
 <!ATTLIST log4j:configuration
   xmlns:log4j              CDATA #FIXED "http://jakarta.apache.org/log4j/" 
-  disable                  (debug|info|warn|error|fatal|null)  "null"
-  disableOverride          (true|false|null)  "null"
+  threshold                (all|debug|info|warn|error|fatal|off|null)  "null"
   debug                    (true|false|null)  "null"
   configDebug              (true|false|null)  "null"
 >

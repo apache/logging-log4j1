@@ -17,7 +17,6 @@ function testPropConfig {
  fi
 
  java $* org.apache.log4j.test.DefaultInit > $TEMP
-
  check witness/propCfg.$TEST $TEMP; echo "OK."
 }
 # ==================================================
@@ -44,13 +43,12 @@ if [ $TEST -ge $start ]; then
   testPropConfig
 fi
 
-
-
 #org.apache.log4j.test.SysoutConfigurator
 
 TEST=2
 if [ $TEST -ge $start ]; then
-  testPropConfig -Dlog4j.configuration=file:$LCF -Dlog4j.configuratorClass=org.apache.log4j.test.SysoutConfigurator
+  testPropConfig -Dlog4j=debug -Dlog4j.configuration=file:$LCF -Dlog4j.configuratorClass=org.apache.log4j.test.SysoutConfigurator
 fi 
+
 
 rm $LCF

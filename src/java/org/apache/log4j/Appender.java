@@ -12,10 +12,10 @@ import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.LoggingEvent;
 
 /**
-   Implement this interface for your own strategies for printing log
-   statements. 
+   Implement this interface for your own strategies for outputting log
+   statements.
 
-   @author Ceki G&uuml;lc&uuml;
+   @author Ceki G&uuml;lc&uuml; 
 */
 public interface Appender {
 
