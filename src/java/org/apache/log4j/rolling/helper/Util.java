@@ -51,7 +51,7 @@ public class Util {
 
     if (fromFile.exists()) {
       File toFile = new File(to);
-      getLogger().debug("Renaming file [" + fromFile + "] to [" + toFile + "]");
+      getLogger().debug("Renaming file [{} to [{}]", fromFile, toFile);
 
       boolean result = fromFile.renameTo(toFile);
 
