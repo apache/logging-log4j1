@@ -33,6 +33,7 @@ import org.apache.joran.action.StackCounterAction;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.FileAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -93,6 +94,13 @@ public class JoranParserTest extends TestCase {
     SAXParserFactory spf = SAXParserFactory.newInstance();
     return spf.newSAXParser();
   }
+  
+  /** 
+   * Tests the basic looping contruct in JoranParser.
+   * 
+   * The parser is set up to push 2 string objects for each element encountered.
+   * The results are compared with a witness stack.
+   */
   public void testBasicLoop() throws Exception {
     
     RuleStore rs = new SimpleRuleStore();
@@ -122,7 +130,7 @@ public class JoranParserTest extends TestCase {
    * This test verifies that <logger>, <root> and embedded <level> elements
    * are handled correctly.  
    */
-  public void testLoop() throws Exception {
+  public void testParsing1() throws Exception {
     logger.debug("Starting testLoop");
 
     RuleStore rs = new SimpleRuleStore();
@@ -160,7 +168,15 @@ public class JoranParserTest extends TestCase {
     }
   }
 
-  public void xtestLoop2() throws Exception {
+  /**
+   * This tests verifies the handling of logger, logger/level, root, root/level
+   * logger/appender-ref, root/appender-ref, appender, appender/layout,
+   * and param actions.
+   * 
+   * These cover a fairly significant part of log4j configuration directives.
+   * 
+   * */
+  public void testParsing2() throws Exception {
     logger.debug("Starting testLoop2");
     RuleStore rs = new SimpleRuleStore();
     rs.addRule(new Pattern("log4j:configuration/logger"), new LoggerAction());
@@ -189,6 +205,36 @@ public class JoranParserTest extends TestCase {
     ec.pushObject(LogManager.getLoggerRepository());
     SAXParser saxParser = createParser();
     saxParser.parse("file:input/joran/parser2.xml", jp);
+
+    // the following assertions depend on the contensts of parser2.xml
+    Logger rootLogger = LogManager.getLoggerRepository().getRootLogger();
+    assertSame(Level.DEBUG, rootLogger.getLevel());
+ 
+    Logger asdLogger = LogManager.getLoggerRepository().getLogger("asd");
+    assertSame(Level.INFO, asdLogger.getLevel());
+    
+    FileAppender a1Back = (FileAppender) asdLogger.getAppender("A1");  
+    assertFalse("a1.append should be false", a1Back.getAppend());
+    assertEquals("output/temp.A1", a1Back.getFile());
+    PatternLayout plBack = (PatternLayout) a1Back.getLayout();
+    assertEquals("%-5p %c{2} - %m%n", plBack.getConversionPattern());
+    
+    a1Back = (FileAppender) rootLogger.getAppender("A1");  
+    
+    assertEquals(3, ec.getErrorList().size());
+    String e0 = (String) ec.getErrorList().get(0);
+    if(!e0.startsWith("No 'name' attribute in element")) {
+      fail("Expected error string [No 'name' attribute in element]");
+    }
+    String e1 = (String) ec.getErrorList().get(1);
+    if(!e1.startsWith("For element <level>")) {
+      fail("Expected error string [For element <level>]");
+    }
+    String e2 = (String) ec.getErrorList().get(2);
+    if(!e2.startsWith("Could not find an AppenderAttachable at the top of execution stack. Near")) {
+      fail("Expected error string [Could not find an AppenderAttachable at the top of execution stack. Near]");
+    }
+    
   }
 
   public void xtestLoop3() throws Exception {
@@ -285,7 +331,7 @@ public class JoranParserTest extends TestCase {
   public static Test suite() {
     TestSuite suite = new TestSuite();
     //suite.addTest(new JoranParserTest("testBasicLoop"));
-    suite.addTest(new JoranParserTest("testLoop"));
+    suite.addTest(new JoranParserTest("testParsing2"));
     return suite;
   }
 

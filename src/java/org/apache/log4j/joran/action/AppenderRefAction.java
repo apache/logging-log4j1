@@ -25,6 +25,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.spi.AppenderAttachable;
 
 import org.xml.sax.Attributes;
+
 import java.util.HashMap;
 
 
@@ -32,7 +33,7 @@ public class AppenderRefAction extends Action {
   static final Logger logger = Logger.getLogger(AppenderRefAction.class);
 
   public void begin(
-    ExecutionContext ec, String localName, Attributes attributes) {
+    ExecutionContext ec, String tagName, Attributes attributes) {
     // Let us forget about previous errors (in this object)
     inError = false;
 
@@ -41,11 +42,13 @@ public class AppenderRefAction extends Action {
     Object o = ec.peekObject();
 
     if (!(o instanceof AppenderAttachable)) {
-      logger.warn(
-        "Could not find an AppenderAttachable object at the top of execution stack.");
+      String errMsg =
+        "Could not find an AppenderAttachable at the top of execution stack. Near <"
+        + tagName + "> line " + getLineNumber(ec);
+
+      logger.warn(errMsg);
       inError = true;
-      ec.addError(
-        "For element <appender-ref>, could not find a  AppenderAttachable object at the top of execution stack.");
+      ec.addError(errMsg);
 
       return;
     }

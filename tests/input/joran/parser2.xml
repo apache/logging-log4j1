@@ -20,7 +20,7 @@
   </logger>
   
    <logger name="asd">
-    <level value ="debug" />
+    <level value ="info" />
     <appender-ref ref="A1" />
   </logger>
     
