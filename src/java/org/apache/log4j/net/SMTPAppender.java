@@ -58,10 +58,11 @@ public class SMTPAppender extends AppenderSkeleton {
   private String from;
   private String subject;
   private String smtpHost;
+    private String charset = "ISO-8859-1";
   private int bufferSize = 512;
   private boolean locationInfo = false;
   protected CyclicBuffer cb = new CyclicBuffer(bufferSize);
-  protected Message msg;
+  protected MimeMessage msg;
   protected TriggeringEventEvaluator evaluator;
 
   /**
@@ -104,7 +105,7 @@ public class SMTPAppender extends AppenderSkeleton {
       msg.setRecipients(Message.RecipientType.TO, parseAddress(to));
 
       if (subject != null) {
-        msg.setSubject(subject);
+        msg.setSubject(subject, charset);
       }
     } catch (MessagingException e) {
       getLogger().error("Could not activate SMTPAppender options.", e);
@@ -246,7 +247,7 @@ public class SMTPAppender extends AppenderSkeleton {
         sbuf.append(t);
       }
 
-      part.setContent(sbuf.toString(), layout.getContentType());
+      part.setContent(sbuf.toString(), layout.getContentType() + ";charset=" + charset);
 
       Multipart mp = new MimeMultipart();
       mp.addBodyPart(part);
@@ -372,6 +373,24 @@ public class SMTPAppender extends AppenderSkeleton {
   public boolean getLocationInfo() {
     return locationInfo;
   }
+
+    /**
+     * Set charset for messages: ensure the charset
+     * you are using is available on your platform.
+     */
+    public void setCharset(String charset) {
+        this.charset = charset;
+    }
+
+    /**
+     * Returns the charset for messages.  The default
+     * is "ISO-8859-1."  This method should not return
+     * null.
+     */
+    public String getCharset() {
+        return charset;
+     }
+
 }
 
 
