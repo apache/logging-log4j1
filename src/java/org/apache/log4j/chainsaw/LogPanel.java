@@ -74,6 +74,7 @@ import org.apache.log4j.spi.LoggingEvent;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -86,8 +87,11 @@ import java.awt.event.ComponentListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -172,6 +176,7 @@ import javax.swing.table.TableColumnModel;
 public class LogPanel extends DockablePanel implements SettingsListener,
   EventBatchListener {
   private ThrowableRenderPanel throwableRenderPanel;
+  private MouseFocusOnAdaptor mouseFocusOnAdaptor = new MouseFocusOnAdaptor();
   private boolean paused = false;
   private boolean logTreePanelVisible = true;
   private final FilterModel filterModel = new FilterModel();
@@ -273,6 +278,10 @@ public class LogPanel extends DockablePanel implements SettingsListener,
           }
         }
       });
+
+    table.addMouseListener(mouseFocusOnAdaptor);
+    table.addMouseMotionListener(mouseFocusOnAdaptor);
+
     table.setRowHeight(20);
     table.setShowGrid(false);
 
@@ -1821,6 +1830,37 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     getModel().setCyclic(!getModel().isCyclic());
   }
 
+  /**
+   *
+   * @param column the column index matching those in ChainsawColumns class
+   * @param value the value to focus on
+   */
+  private void focusOnColumnValue(int column, final Object value) {
+    if ((column) == ChainsawColumns.INDEX_LOGGER_COL_NAME) {
+      logTreePanel.setFocusOn(value.toString());
+    } else {
+      if (value == null) {
+        ruleMediator.setRefinementRule(null);
+      } else {
+        ruleMediator.setRefinementRule(
+          new RefinementFocusRule(
+            ChainsawColumns.getColumnName(column), value.toString()) {
+            public boolean evaluate(LoggingEvent e) {
+              Object object =
+                LoggingEventFieldResolver.getInstance().getValue(
+                  getColumnName(), e);
+
+              if (object == null) {
+                return false;
+              }
+
+              return object.equals(value);
+            }
+          });
+      }
+    }
+  }
+
   private abstract class RefinementFocusRule extends AbstractRule {
     private String expression;
     private String columnName;
@@ -1839,6 +1879,63 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     }
   }
 
+  private class MouseFocusOnAdaptor extends MouseAdapter
+    implements MouseListener, MouseMotionListener {
+    boolean isFocusableColumn(int columnIndex) {
+      TableColumn column = table.getColumnModel().getColumn(columnIndex);
+
+      switch (column.getModelIndex() + 1) {
+      case ChainsawColumns.INDEX_LEVEL_COL_NAME:
+      case ChainsawColumns.INDEX_THREAD_COL_NAME:
+      case ChainsawColumns.INDEX_LOGGER_COL_NAME:
+
+        //			TODO ensure these columns are refine focus filters
+        //			case ChainsawColumns.INDEX_CLASS_COL_NAME:
+        //			case ChainsawColumns.INDEX_FILE_COL_NAME:
+        //			case ChainsawColumns.INDEX_METHOD_COL_NAME:
+        return true;
+
+      default:
+        return false;
+      }
+    }
+
+    public void mouseMoved(MouseEvent e) {
+      int col = table.columnAtPoint(e.getPoint());
+
+      if (
+        ((e.getModifiers() & InputEvent.CTRL_MASK) > 0)
+          && isFocusableColumn(col)) {
+        table.setCursor(ChainsawColumns.CURSOR_FOCUS_ON);
+      } else {
+        table.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+      }
+    }
+
+    /* (non-Javadoc)
+     * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
+     */
+    public void mouseClicked(MouseEvent e) {
+      if (
+        (e.getClickCount() > 1)
+          && ((e.getModifiers() & InputEvent.CTRL_MASK) > 0)) {
+        int row = table.rowAtPoint(e.getPoint());
+        int col = table.columnAtPoint(e.getPoint());
+        TableColumn column = table.getColumnModel().getColumn(col);
+        Object value = getModel().getValueAt(row, column.getModelIndex());
+
+        if (isFocusableColumn(col)) {
+          LogLog.debug(
+            "Wanted to focus on Column " + col + ", value=" + value);
+          focusOnColumnValue(column.getModelIndex() + 1, value);
+        }
+      }
+    }
+
+    public void mouseDragged(MouseEvent e) {
+    }
+  }
+
   /**
    * This class provides a Sub menu so Users can Focus on specific elements of a LoggingEvent.
    *
@@ -1853,38 +1950,25 @@ public class LogPanel extends DockablePanel implements SettingsListener,
       new AbstractAction("...logger...") {
         public void actionPerformed(ActionEvent e) {
           if (event != null) {
-            logTreePanel.setFocusOn(event.getLoggerName());
+            focusOnColumnValue(
+              ChainsawColumns.INDEX_LOGGER_COL_NAME, event.getLoggerName());
           }
         }
       };
 
     private Action focusOnThreadAction =
-      new AbstractAction("...Thread...") {
-        public void actionPerformed(ActionEvent e) {
-          if (event == null) {
-            ruleMediator.setRefinementRule(null);
-          } else {
-            final String threadName = event.getThreadName();
-            ruleMediator.setRefinementRule(
-              new RefinementFocusRule(
-                ChainsawColumns.getColumnName(
-                  ChainsawColumns.INDEX_THREAD_COL_NAME), threadName) {
-                public boolean evaluate(LoggingEvent e) {
-                  return e.getThreadName().equals(threadName);
-                }
-              });
-          }
-        }
-      };
-
+      new FocusOnAction(ChainsawColumns.INDEX_THREAD_COL_NAME);
+    private Action focusOnLevelAction =
+      new FocusOnAction(ChainsawColumns.INDEX_LEVEL_COL_NAME);
     private Action[] allActions =
-      new Action[] { focusOnLoggerAction, focusOnThreadAction };
+      new Action[] { focusOnLoggerAction, focusOnThreadAction, focusOnLevelAction };
     private LoggingEvent event;
 
     private FocusOnMenu() {
       super("Refine focus on...");
       setIcon(new ImageIcon(ChainsawIcons.WINDOW_ICON));
       add(focusOnThreadAction);
+      add(focusOnLevelAction);
 
       //      TODO add the other refinement focus stuff
       focusOnLoggerAction.putValue(Action.SMALL_ICON, getIcon());
@@ -1914,6 +1998,28 @@ public class LogPanel extends DockablePanel implements SettingsListener,
         Action.NAME,
         (event == null) ? "Thread..." : ("Thread '" + event.getThreadName()
         + "'"));
+
+      focusOnLevelAction.putValue(
+        Action.NAME,
+        (event == null) ? "Level..." : ("Level '" + event.getLevel() + "'"));
+    }
+
+    private class FocusOnAction extends AbstractAction {
+      private int column;
+      private String columnName;
+
+      private FocusOnAction(int column) {
+        this.column = column;
+        this.columnName = ChainsawColumns.getColumnName(this.column);
+      }
+
+      public void actionPerformed(ActionEvent e) {
+        Object value =
+          (event == null) ? null
+                          : LoggingEventFieldResolver.getInstance().getValue(
+            columnName, event);
+        focusOnColumnValue(column, value);
+      }
     }
   }
 
