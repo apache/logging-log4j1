@@ -20,10 +20,10 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
+import org.apache.log4j.joran.JoranConfigurator;
 import org.apache.log4j.util.Compare;
 
 import java.text.SimpleDateFormat;
@@ -39,20 +39,19 @@ import java.util.Date;
  */
 public class TimeBasedRollingTest extends TestCase {
   Logger logger = Logger.getLogger(TimeBasedRollingTest.class);
-  Logger root;
 
   public TimeBasedRollingTest(String name) {
     super(name);
   }
 
   public void setUp() {
-    root = Logger.getRootLogger();
-    root.addAppender(
-      new ConsoleAppender(new PatternLayout("%d{ABSOLUTE} %c{1} - %m%n")));
+    //root = Logger.getRootLogger();
+    //root.addAppender(
+      //new ConsoleAppender(new PatternLayout("%d{ABSOLUTE} [%t] %level %c - %m%n")));
   }
 
   public void tearDown() {
-    LogManager.shutdown();
+    //LogManager.shutdown();
   }
 
   /**
@@ -86,9 +85,9 @@ public class TimeBasedRollingTest extends TestCase {
       cal.add(Calendar.SECOND, 1);
     }
 
-    root.debug("Waiting until next second and 100 millis.");
+    System.out.println("Waiting until next second and 100 millis.");
     delayUntilNextSecond(100);
-    root.debug("Done waiting.");
+    System.out.println("Done waiting.");
 
     for (int i = 0; i < 5; i++) {
       logger.debug("Hello---" + i);
@@ -135,9 +134,9 @@ public class TimeBasedRollingTest extends TestCase {
       cal.add(Calendar.SECOND, 1);
     }
 
-    root.debug("Waiting until next second and 100 millis.");
+    System.out.println("Waiting until next second and 100 millis.");
     delayUntilNextSecond(100);
-    root.debug("Done waiting.");
+    System.out.println("Done waiting.");
 
     for (int i = 0; i <= 2; i++) {
       logger.debug("Hello---" + i);
@@ -201,9 +200,9 @@ public class TimeBasedRollingTest extends TestCase {
 
     filenames[3] = "output/test3-" + sdf.format(cal.getTime());
 
-    root.debug("Waiting until next second and 100 millis.");
+    System.out.println("Waiting until next second and 100 millis.");
     delayUntilNextSecond(100);
-    root.debug("Done waiting.");
+    System.out.println("Done waiting.");
 
     for (int i = 0; i < 5; i++) {
       logger.debug("Hello---" + i);
@@ -265,9 +264,9 @@ public class TimeBasedRollingTest extends TestCase {
 
     filenames[3] = "output/test5.log";
 
-    root.debug("Waiting until next second and 100 millis.");
+    System.out.println("Waiting until next second and 100 millis.");
     delayUntilNextSecond(100);
-    root.debug("Done waiting.");
+    System.out.println("Done waiting.");
 
     for (int i = 0; i < 5; i++) {
       logger.debug("Hello---" + i);
@@ -313,9 +312,9 @@ public class TimeBasedRollingTest extends TestCase {
 
     filenames[3] = "output/test6.log";
 
-    root.debug("Waiting until next second and 100 millis.");
+    System.out.println("Waiting until next second and 100 millis.");
     delayUntilNextSecond(100);
-    root.debug("Done waiting.");
+    System.out.println("Done waiting.");
 
     for (int i = 0; i < 5; i++) {
       logger.debug("Hello---" + i);
@@ -333,6 +332,42 @@ public class TimeBasedRollingTest extends TestCase {
     assertTrue(Compare.compare(filenames[3], "witness/rolling/tbr-test6.3"));
   }
 
+  public void testWithJoran1() throws Exception {
+    JoranConfigurator jc = new JoranConfigurator();
+    jc.doConfigure("./input/rolling/time1.xml", LogManager.getLoggerRepository());
+    jc.dumpErrors();
+    
+
+    String datePattern = "yyyy-MM-dd_HH_mm_ss";
+
+    SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
+    String[] filenames = new String[4];
+
+    Calendar cal = Calendar.getInstance();
+
+    for (int i = 0; i < 4; i++) {
+      filenames[i] = "output/test1-" + sdf.format(cal.getTime());
+      cal.add(Calendar.SECOND, 1);
+    }
+
+    System.out.println("Waiting until next second and 100 millis.");
+    delayUntilNextSecond(100);
+    System.out.println("Done waiting.");
+
+    for (int i = 0; i < 5; i++) {
+      logger.debug("Hello---" + i);
+      Thread.sleep(500);
+    }
+
+    for (int i = 0; i < 4; i++) {
+      //System.out.println(i + " expected filename [" + filenames[i] + "].");
+    }
+
+    for (int i = 0; i < 4; i++) {
+      assertTrue(Compare.compare(filenames[i], "witness/rolling/tbr-test1." + i));
+    }
+    
+  }
   void delayUntilNextSecond(int millis) {
     long now = System.currentTimeMillis();
     Calendar cal = Calendar.getInstance();
@@ -372,10 +407,12 @@ public class TimeBasedRollingTest extends TestCase {
 //    suite.addTest(new TimeBasedRollingTest("test2"));
 //    suite.addTest(new TimeBasedRollingTest("test3"));
 //    suite.addTest(new TimeBasedRollingTest("test4"));
-
-    suite.addTest(new TimeBasedRollingTest("test5"));
+//
+//    suite.addTest(new TimeBasedRollingTest("test5"));
 //    suite.addTest(new TimeBasedRollingTest("test6"));
-
+    suite.addTest(new TimeBasedRollingTest("testWithJoran1"));
+    
+    
     return suite;
   }
 }

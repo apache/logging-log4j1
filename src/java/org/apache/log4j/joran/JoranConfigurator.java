@@ -34,7 +34,6 @@ import org.apache.joran.action.NestComponentIA;
 import org.apache.joran.action.NewRuleAction;
 import org.apache.joran.action.ParamAction;
 import org.apache.joran.helper.SimpleRuleStore;
-//import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.config.ConfiguratorBase;
 import org.apache.log4j.joran.action.ActionConst;
 import org.apache.log4j.joran.action.AppenderAction;
@@ -49,6 +48,7 @@ import org.apache.log4j.joran.action.PriorityAction;
 import org.apache.log4j.joran.action.RepositoryPropertyAction;
 import org.apache.log4j.joran.action.RootLoggerAction;
 import org.apache.log4j.joran.action.SubstitutionPropertyAction;
+import org.apache.log4j.joran.util.XMLUtil;
 import org.apache.log4j.spi.ErrorItem;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.xml.Log4jEntityResolver;
@@ -126,7 +126,18 @@ public class JoranConfigurator extends ConfiguratorBase {
    * Configure a repository from the input stream passed as parameter
    */
   public void doConfigure(InputStream in, LoggerRepository repository) {
-    doConfigure(new InputSource(in), repository);
+    List errorList = getErrorList();
+   
+    int result =  XMLUtil.checkIfWellFormed(in, errorList);
+    switch(result) {
+      case XMLUtil.ILL_FORMED:
+        errorList.add(new ErrorItem("Ill formed XML document. Abandoning all furhter processing."));
+        break;
+      case XMLUtil.CANT_SAY:
+      case XMLUtil.WELL_FORMED:
+        doConfigure(new InputSource(in), repository);
+    }
+    
   }
 
   /**
@@ -140,7 +151,7 @@ public class JoranConfigurator extends ConfiguratorBase {
     try {
       attachListAppender(repository);
       
-      getLogger(repository).debug("Starting to parse configuration {}", inputSource);
+      getLogger(repository).debug("Starting to parse input source.");
       SAXParserFactory spf = SAXParserFactory.newInstance();
       // we want non-validating parsers
       spf.setValidating(false);
@@ -163,6 +174,7 @@ public class JoranConfigurator extends ConfiguratorBase {
   }
 
 
+  
   protected void selfInitialize() {
     RuleStore rs = new SimpleRuleStore();
     rs.addRule(new Pattern("log4j:configuration"), new ConfigurationAction());
