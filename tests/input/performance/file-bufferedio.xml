@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<log4j:configuration>
+
+  <appender name="FILE" class="org.apache.log4j.FileAppender">
+    <param name="File" value="output/temp.${build.number}"/>
+    <param name="BufferedIO" value="true"/>
+    <param name="Append" value="false"/>
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="${pattern}"/>
+    </layout>
+  </appender>
+  
+  <root>
+    <level value="debug" />
+    <appender-ref ref="FILE" />
+  </root>
+  
+</log4j:configuration>
+
