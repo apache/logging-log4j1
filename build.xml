@@ -322,7 +322,7 @@
            srcdir="${java.source.dir}"
      destdir="${javac.dest}"
      includes="${stem}/chainsaw/**/*.java,${stem}/rule/*.java,${stem}/varia/ExpressionFilter.java"
-           excludes="">
+           excludes="${stem}/chainsaw/vfs/*.java">
       <classpath refid="compile.classpath"/>
       <classpath path="${regexp.oro.jar}"/>
     </javac>
