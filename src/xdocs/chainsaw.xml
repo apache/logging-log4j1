@@ -64,12 +64,12 @@
 			by <a href="install-chainsaw.xml">clicking here</a>.</p>    
 			<P>You will need the following installed to utilise this installation script:</P>
 			<UL>
-			 <li>JDK 1.3+</li>
+			 <li>JDK 1.3+ (1.4.2 is <b><i>strongly</i></b> recommeded)</li>
 			 <li>Ant 1.5+</li>
-			 <li>CVS</li>
+			 <li>CVS (<a href="http://www.cygwin.com/">Cygwin</a> is handy for Windows users)</li>
 			</UL>
 			<P>Once you have downloaded and placed this script in a directory where you want Chainsaw v2 installed, you can type:</P>
-			<pre>ant</pre>
+			<pre>ant -f install-chansaw.xml</pre>
 			<P>This will download everything you need to build and run Chainsaw v2.</P>
 			<P>When finally released, we plan to have Chainsaw v2 available via Java WebStart.</P>
     </section>
