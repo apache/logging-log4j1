@@ -1,0 +1,267 @@
+
+<!-- This file is an ANT build script. ANT is a Java based build tool. -->
+<!-- It is availale from http://jakarta.apache.org/ant/                -->
+
+
+<!-- ================================================================= -->
+<!-- NOTE: all directories are relative to the parent of build/        -->
+<!-- ================================================================= -->
+<project name="log4j" default="usage" basedir=".." >
+
+  
+  <target name="usage">
+    <echo>
+    ant build   - compile all project files, if a certain library is missing, 
+	          then the compilation of its dependents is skipped.
+
+    ant compile - compile files in local directory only
+
+    ant javadoc - build project javadoc files
+
+    ant jar     - build log4j-core and log4j jar files
+
+    </echo>
+  </target>
+
+
+  <target name="swingCheck">
+    <available classname="javax.swing.JTextPane" property="swing-present"/>
+  </target>   
+  <target name="swing" depends="swingCheck" if="swing-present">
+    <echo message="Swing is present."/>
+  </target>
+
+  <target name="junitCheck">
+    <available classname="junit.framework.TestCase" property="junit-present"/>
+  </target>   
+  <target name="junit" depends="junitCheck" if="junit-present">
+    <echo message="JUnit is present."/>
+  </target>
+
+  <target name="xercesCheck">
+    <available classname="org.apache.xerces.parsers.DOMParser" 
+                          property="xerces-present"/>
+    <available classname="org.apache.xerces.parsers.DOMParser" 
+               property="jaxp-present"/>
+  </target>   
+  <target name="xerces" depends="xercesCheck" if="xerces-present">
+    <echo message="Xerces is present."/>
+  </target>
+
+  <target name="sunParserCheck">
+    <available classname="com.sun.xml.parser.DocumentBuilderFactoryImpl" 
+                          property="sunParser-present"/>
+    <available classname="com.sun.xml.parser.DocumentBuilderFactoryImpl" 
+               property="jaxp-present"/>
+  </target>   
+  <target name="sunParser" depends="sunParserCheck" if="sunParser-present">
+    <echo message="Sun JAXP parser is present."/>
+  </target>
+
+
+  <target name="jmsCheck">
+    <available classname="javax.jms.Message" property="jms-present"/>
+  </target>   
+  <target name="jms" depends="jmsCheck" if="jms-present">
+    <echo message="JMS is present."/>
+  </target>
+
+  <target name="jndiCheck">
+    <available classname="javax.naming.Context" property="jndi-present"/>
+  </target>   
+  <target name="jndi" depends="jndiCheck" if="jndi-present">
+    <echo message="JNDI is present."/>
+  </target>
+
+  <target name="javamailCheck">
+    <available classname="javax.mail.Message" property="javamail-present"/>
+  </target>   
+  <target name="javamail" depends="javamailCheck" if="javamail-present">
+    <echo message="JAVAMAIL is present."/>
+  </target>
+
+
+
+  <!-- ================================================================= -->
+  <!-- Initialize variables                                              -->
+  <!-- NOTE: all directories are relative to ../build                    -->
+  <!-- ================================================================= -->
+  <target name="init">
+    <tstamp />
+    <property name="java.source.dir" value="." />
+    <property name="javac.dest" value="classes" />
+    <property name="docs" value="docs" />
+    <property name="javadoc.dest" value="${docs}/api" />
+    <property name="stem" value="${java.source.dir}/org/apache/log4j" />
+    <property name="version" value="1.1"/>  
+  </target>
+
+  <target name="build" depends="init, build.core, build.swing, build.xml,
+                                build.unitTests, build.javamail, build.jms"/>
+
+  <target name="build.core" depends="init">
+    <mkdir dir="${javac.dest}" />
+    <javac srcdir="${java.source.dir}"
+	   destdir="${javac.dest}"
+	   includes="${stem}/**/*.java, ${stem}/xml/XMLLayout.java,"
+	   classpath="${classpath}"
+	   excludes="misc/*, **/UnitTest*.java,
+	            **/doc-files/*,
+                    ${stem}/xml/**,
+                    ${stem}/gui/**,
+		    ${stem}/net/SMTPAppender.java,
+               	    ${stem}/net/JMS*.java,
+               	    ${stem}/or/MessageRenderer.java,
+		    **/pending/**" 
+	    debug="on"/>			
+    <rmic base="${javac.dest}" 
+	  classname="org.apache.log4j.examples.NumberCruncherServer"
+	/>
+  </target>
+
+  <target name="build.swing" depends="init, swing" if="swing-present">   
+    <mkdir dir="${javac.dest}/icons"/>
+    <copy todir="${javac.dest}/icons">
+      <fileset dir="icons"/>
+    </copy>
+    <javac srcdir="${java.source.dir}"
+	   destdir="${javac.dest}"
+	   includes="${stem}/gui/*.java"
+           excludes="**/JListView.java, **/JTableAppender.java"
+           classpath="${classpath}"/>
+  </target>
+	
+  <target name="build.unitTests" depends="init, junit" if="junit-present">   
+    <javac srcdir="${java.source.dir}"
+	   destdir="${javac.dest}"
+	   includes="**/UnitTest*.java"
+	   classpath="${classpath}"/>
+</target>
+
+ <target name="build.xml" depends="init, xerces, sunParser" if="jaxp-present">
+    <javac srcdir="${java.source.dir}"
+	   destdir="${javac.dest}"
+	   includes="${stem}/xml/**/*.java"
+           excludes="${stem}/xml/examples/doc-files/**.java,
+	             ${stem}/xml/Transform.java"
+	   classpath="${classpath}"/>
+    <copy file="${stem}/xml/log4j.dtd"
+	  tofile="${javac.dest}/${stem}/xml/log4j.dtd" />
+</target>
+
+ <target name="build.javamail" depends="init, javamail" 
+               if="javamail-present">   
+    <javac srcdir="${java.source.dir}"
+	   destdir="${javac.dest}"
+	   includes="${stem}/net/SMTPAppender.java"
+	   classpath="${classpath}"/>
+  </target>
+
+  <target name="build.jms" depends="init, jms, jndi" if="jms-present">   
+    <javac srcdir="${java.source.dir}"
+	   destdir="${javac.dest}"
+	   includes="${stem}/net/JMS*.java"
+	   classpath="${classpath}"/>
+  </target>
+
+
+
+  <target name="clean" depends="init">
+    <delete dir="${javac.dest}/" />
+  </target>
+
+  <target name="jar" depends="log4j-core.jar, log4j.jar"/>
+
+  <!-- Create log4j-core.jar, exluding non-core files -->
+  <target name="log4j-core.jar" depends="build">
+    <delete file="log4j-core.jar"/>
+    <jar jarfile="log4j-core.jar" basedir="${javac.dest}"
+	 includes="**/log4j/*.class, **/log4j/helpers/*.class,
+                  **/log4j/spi/*.class, **/log4j/or/*.class"
+	 excludes="**/StressCategory*, **/TTCC*, **/SimpleLayout.*, 
+	          **/AsyncAppender.*, **/Dispatcher.*, **/BoundedFIFO.*,
+	          **/Syslog*, **/RelativeTimeDateFormat.*,
+		  **/gui/**/*.class, **/Loader.class,
+		  **/UnitTest*.class, 
+		  ${stem}/or/MessageRenderer.class,
+		  ${stem}/spi/TriggeringEventEvaluator.class
+		  org/apache/log4j/helpers/CyclicBuffer.class"
+        manifest="manifest.mf"
+    />
+  </target>
+
+  <!-- Create log4j.jar, excluding tests and other odds and
+       ends. -->
+  <target name="log4j.jar" depends="build">
+    <delete file="log4j.jar"/>
+    <jar jarfile="log4j.jar" basedir="${javac.dest}"
+	includes="**/log4j/*.class, ${stem}/xml/log4j.dtd, 
+	          **/log4j/helpers/*.class, icons/**,
+		  **/log4j/spi/*.class,  **/log4j/net/*.class,
+		  **/log4j/varia/*.class, **/log4j/nt/*.class,
+		  **/log4j/xml/*.class, 
+		  **/log4j/or/*.class,
+		  **/log4j/gui/TextPaneAppender.class"
+	excludes="**/StressCategory*, **/UnitTest**"
+        manifest="manifest.mf"
+    />
+  </target>
+
+  <target name="javadoc" depends="init">
+
+
+  
+    <mkdir dir="${javadoc.dest}" />
+
+    <copy todir="${stem}/examples/doc-files/" >
+      <fileset dir="${stem}/examples/" 
+         includes="Sort.java, SortAlgo.java, Trivial.java, MyCategory.java,
+            MyCategoryFactory.java, mycat.good, mycat.bad, factor.html,
+	    MyPatternLayout.java, MyPatternParser.java, sort2.lcf, sort3.lcf,
+	    NumberCruncherClient.java, NumberCruncherServer.java, sort1.lcf,
+	    NumberCruncher.java,  factor.lcf, sort4.lcf"/>
+    </copy>
+
+
+    <copy todir="${stem}/xml/examples/doc-files/" >
+      <fileset dir="${stem}/xml/examples/" 
+         includes="XMLSample.java, sample1.xml, sample2.xml, extension1.xml, 
+	     extension2.xml, XCategory.java,XTest.java"/>
+    </copy>
+
+    <copy todir="${stem}/xml/doc-files/" >
+      <fileset dir="${stem}/xml/" includes="log4j.dtd"/>
+    </copy>
+
+
+    <javadoc sourcepath="${java.source.dir}" 
+           destdir="${javadoc.dest}" 
+	   packagenames="org.apache.log4j,
+		         org.apache.log4j.spi,
+		         org.apache.log4j.or,
+                         org.apache.log4j.helpers,
+	                 org.apache.log4j.performance,
+		         org.apache.log4j.xml,
+			 org.apache.log4j.examples,
+			 org.apache.log4j.examples.appserver,
+		         org.apache.log4j.net,
+			 org.apache.log4j.nt,
+			 org.apache.log4j.varia,
+		         org.apache.log4j.xml.examples"
+	   protected="true"				       
+	   version="true"
+	   author="true"
+	   use="true"		   
+	   overview="${docs}/overview.html"
+	   doctitle="log4j version ${version}&lt;br&gt;API Specification"
+	   windowtitle="Log4j Version ${version}" 
+           header="&lt;b&gt;Log4j ${version}&lt;/b&gt;"
+	   bottom="Please &lt;a href=http://lists.sourceforge.net/mailman/listinfo/log4j-announce&gt;&lt;b&gt;notify me&lt;/b&gt;&lt;/a&gt; about new log4j releases. &lt;hr&gt;"> 
+		   
+           <link offline="true" 
+                 href="http://java.sun.com/products/jdk/1.2/docs/api"
+                 packageListLoc="packaging"/>
+    </javadoc>		
+  </target>
+</project>
+
