@@ -38,6 +38,8 @@ import java.util.logging.Logger;
 public class JDK14Logger implements ULogger {
   final Logger logger;
 
+  // WARN: JDK14Logger constructor should have only package access so that
+  // only JDK14LoggerFA be able to create one.
   JDK14Logger(Logger logger) {
     this.logger = logger;
   }

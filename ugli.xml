@@ -1,4 +1,4 @@
-<project name="ugli" default="build.core" basedir="." >
+<project name="ugli" default="ussage" basedir="." >
 
   <!-- The directory where source files are stored. -->
   <property name="java.source.dir" value="./src/java/"/>
@@ -16,6 +16,23 @@
   <property name="UGLI_STEM" value="org/apache/ugli"/>
   
   <property name="ugli.properties" value="dist/classes/ugli.properties"/>
+
+    <!-- ================================================================= -->
+  <!-- Default target                                                    -->
+  <!-- ================================================================= -->
+  <target name="usage">
+    <echo>      
+      These are some of the targets supported by this ANT build scpript:
+      
+      build.core - compile core UGLI files.
+
+      ugli-nop.jar - build the jar file of the same name.
+      ugli-simple.jar - build the jar file of the same name.
+      ugli-jdk14.jar - build the jar file of the same name.
+      
+    </echo>
+  </target>
+
 
   <!-- ================================================================= -->
   <!-- Remove all generated (compiled) class files.                      -->

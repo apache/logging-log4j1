@@ -23,7 +23,7 @@ public class SimpleLoggerFA implements LoggerFactoryAdapter {
 
   Map map;
   
-  SimpleLoggerFA() {
+  public SimpleLoggerFA() {
     map = new HashMap();
   }
 

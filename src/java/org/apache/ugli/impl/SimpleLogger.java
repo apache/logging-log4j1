@@ -49,16 +49,15 @@ public class SimpleLogger implements ULogger {
    */
   static private long startTime = System.currentTimeMillis();
   
-  static private String LINE_SEPARATOR;
+  public static final String LINE_SEPARATOR = System.getProperty("line.separator");
   
   static private String INFO_STR = "INFO";
   static private String WARN_STR = "WARN";
   static private String ERROR_STR = "ERROR";
   
   /**
-   * Package access allows {@link SimpleLoggerFA} to instantiate SimpleLogger
-   * instances.
-   * 
+   * Package access allows only {@link SimpleLoggerFA} to instantiate 
+   * SimpleLogger instances.
    */
   SimpleLogger(String name) {
     this.loggerName = name;
@@ -128,10 +127,10 @@ public class SimpleLogger implements ULogger {
     buf.append(LINE_SEPARATOR);
     
     System.out.print(buf.toString());
-    
     if(t != null) {
       t.printStackTrace(System.out);
     }
+    System.out.flush();
   }
   /**
    * For parameterized messages, first substitute parameters and then log.
