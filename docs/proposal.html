@@ -273,7 +273,7 @@ public <b>final</b> class <font color="0000AA"><b>LogManager</b></font> {
   */
   public
   <b>static</b>
-  void <font color="#0000AA"><b>setLoggerFactory</b></font>(LogFactory factory, Object guard) 
+  void <font color="#0000AA"><b>setLoggerFactory</b></font>(LoggerFactory factory, Object guard) 
                                                  throws IllegalArgumentException {
     if((LogManager.guard != null) && (LogManager.guard != guard)) {
       throw new IllegalArgumentException(

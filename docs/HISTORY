@@ -13,6 +13,8 @@
    Category.assertLog.  This change was mecessary because assert is a
    language reserved word in JDK 1.4. [**]
 
+ - Added buffered IO capability to FileAppender and subclasses. [*]
+
  - Added event reporting capability to the Hierachy class.
  
  - Added new system property "log4j.configuratorClass". This property
@@ -27,7 +29,9 @@
    on a map instead of a stack. Moreover the MDC is automatically
    inherited by child threads under JDK 1.2 and above.
 
- - Corrected a performance bug in the NDC class as observed by Dan Milstein. [*]
+ - Corrected a performance bug in the NDC class as observed by Dan
+   Milstein and independently by Ray Millard. Ain't open source is
+   cool?  [*]
 
  - Removed deprecated methods setOptions and getOptionStrings defined
    in the org.apache.log4j.spi.OptionHandler interface. This interface

@@ -141,6 +141,7 @@
                     ${stem}/gui/**,
 		    ${stem}/net/SMTPAppender.java,
                	    ${stem}/net/JMS*.java,
+               	    ${stem}/jmx/*.java,
                	    ${stem}/or/MessageRenderer.java,
 		    **/pending/**" 
 	    debug="on"/>			
