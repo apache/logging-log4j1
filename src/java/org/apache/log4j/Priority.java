@@ -27,7 +27,7 @@ public class Priority {
   public final static int WARN_INT  = 30000;
   public final static int INFO_INT  = 20000;
   public final static int DEBUG_INT = 10000;
-  public final static int FINE_INT = DEBUG_INT;
+    //public final static int FINE_INT = DEBUG_INT;
   public final static int ALL_INT = Integer.MIN_VALUE;
 
 
@@ -62,7 +62,7 @@ public class Priority {
   /**
      The <code>FINE</code> level is an alias for the
      <code>DEBUG</code> level.  */
-  final static public Level FINE = new Level(FINE_INT, "FINE", 7);
+    //final static public Level FINE = new Level(FINE_INT, "FINE", 7);
 
 
   /**
