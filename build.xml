@@ -1,4 +1,4 @@
-<project name="log4j" default="build" basedir="." >
+<project name="log4j" default="usage" basedir="." >
 
 
   <!-- The build.properties file defines the parth to local jar files -->
@@ -99,22 +99,25 @@
 
     These are the targets supported by this ANT build scpript:
 
-    build.core - compile core log4j classes
+    build.core - compile core log4j classes. This target is dependent on JAXP, JNDI.
     
     build.jms - build classes dependent on the JMS API.
     build.db - build classes dependent on JDBC API
     build.smtp - build classes dependent on Java Mail API
-    build.xml - 	
+    build.xml - build classes in the org.apache.log4j.xml package	
     build   - compile all project files
     
     log4j.jar - build the core log4j jar
-    log4j-'dep'.jar - where 'dep' is one of "jms", "db", "smtp" and "xml".
+    log4j-'dep'.jar - where 'dep' is one of "optional", "jms", "db", "smtp" and "xml".
     jar     - build all jar files
     	
+    build.chainsaw - build chainsaw classes
+    chainsaw.har - build chainsaw.jar	
+    chainsaw - run chainsaw
+
     javadoc - build project javadoc files
-    	
+
     dist    - will create a complete distribution in dist/
-    	
     </echo>
   </target>
 
@@ -229,7 +232,7 @@
 
 
   <target name="build" description="Compile all log4j components."
-	      depends="build.core, build.oro, build.jms, build.smtp, 
+	      depends="build.core, build.oro, build.jms, build.smtp, build.db,
   	               build.examples, build.chainsaw"/>
 
   <target name="requiredepsCheck" 
