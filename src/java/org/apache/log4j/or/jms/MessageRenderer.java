@@ -29,7 +29,7 @@ public class MessageRenderer implements ObjectRenderer {
 
    
   /**
-     Render a {@link Message}.
+     Render a {@link javax.jms.Message}.
   */
   public
   String  doRender(Object o) {
