@@ -109,7 +109,7 @@ The default layout uses a PatternLayout with HTML formatting.
 <p>
 
 <A NAME="expressions"><h3>Expressions</h3>
-Expressions are used to define color and display rules in Chainsaw.  An expression is a textual representation of a rule, and provides the ability to perform queries against a collection of logging events.  As each logging event is examined by the rule, if the event passes the rule's evaluation, the operation associated with the rule is performed (for example, the event may be assigned a color or added to the display).  Log4J's rule expression syntax provides access to all of the logging event's fields, a number of operators, and the ability to control precedence.
+Expressions are used to define color and display rules in Chainsaw.  An expression is a textual representation of a rule, and provides the ability to perform queries against a collection of logging events.  As each logging event is examined by the rule, the operation associated with the rule is performed providing the event passes the rule's evaluation. For example, the event may be assigned a color or added to the display.  Log4J's rule expression syntax provides access to all of the logging event's fields, a number of operators, and the ability to control precedence.
 
 <ul>
 <li>Precedence can be controlled by applying parentheses to groups of expressions (usually used in combination with logical operators)</li>
@@ -200,7 +200,7 @@ Each log panel can define color rules which can be used to colorize events in th
 <li>Open the color filter panel by selecting the 'current tab, log panel color filter' menu items, or by using the context (right-click mouse) menu in the events panel and selecting 'log panel color filter'</li>
 <li>Select 'new' to add a row</li>
 <li>Double-click on the 'expression' column</li>
-<li>Enter an expression (see <a href="#expressions">Expressions</a> section below)</li>
+<li>Enter an expression (see <a href="#expressions">Expressions</a>)</li>
 <li>Select a color from the list or use the 'browse' button at the bottom of the color list to define a custom color</li>
 <li>Repeat steps 2 - 5 as needed</li>
 <li>Order the rules - rules are evaluated in order.  Select a color rule entry and press the UP or DOWN icons on the panel as needed</li>
@@ -218,7 +218,7 @@ Events displayed in the event panel can be filtered in two ways: by focusing on 
 <b>Define display rules:</b></p>
 <ol>
 <li>Move the cursor to the 'refine focus on' field</li>
-<li>Enter an expression (see <a href="#expressions">Expressions</a> section below)</li>
+<li>Enter an expression (see <a href="#expressions">Expressions</a>)</li>
 <li>Alternatively, use the context (mouse right click) menu (available when the mouse pointer is over the events table) to modify the 'refine focus' field's expression based on the field and value under the mouse pointer.  For example, if the mouse pointer is over the THREAD cell of an event which has a value of Thread-1, selecting <b>set 'refine focus' field</b> will assign the expression <b>THREAD == 'Thread-1'</b> to the refine focus field.</li>
 <li>The display will be updated automatically if the expression is valid and the contents of the 'refine focus' field have not changed for 1 second, showing only events which match the expression</li>
 <li>If the expression entered is invalid, an error message will available as the 'refine focus on' field's tooltip</li>
