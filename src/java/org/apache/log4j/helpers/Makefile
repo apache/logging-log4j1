@@ -21,7 +21,6 @@ JSOURCES:=LogLog.java\
 	FileWatchdog.java\
 	Loader.java\
         ThreadLocalMap.java\
-        ITLContext.java\
 
 SUBDIRS := 
 
