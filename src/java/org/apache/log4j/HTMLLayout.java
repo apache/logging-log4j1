@@ -119,7 +119,7 @@ public class HTMLLayout extends Layout {
     output.write(Layout.LINE_SEP + "<tr>" + Layout.LINE_SEP);
 
     output.write("<td>");
-    output.write(Long.toString(event.timeStamp - LoggingEvent.getStartTime()));
+    output.write(Long.toString(event.getTimeStamp() - LoggingEvent.getStartTime()));
     output.write("</td>" + Layout.LINE_SEP);
 
     output.write("<td title=\"" + event.getThreadName() + " thread\">");

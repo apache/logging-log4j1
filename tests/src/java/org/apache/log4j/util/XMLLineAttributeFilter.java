@@ -23,6 +23,9 @@ public class XMLLineAttributeFilter implements Filter {
   Perl5Util util = new Perl5Util();
 
   public String filter(String in) {
+    if(in == null) {
+      return null;
+    }
     if (util.match("/line=\"\\d{1,3}\"/", in)) {
       return util.substitute("s/line=\"\\d{1,3}\"/line=\"X\"/", in);
     } else if (util.match("/line=\"?\"/", in)) {

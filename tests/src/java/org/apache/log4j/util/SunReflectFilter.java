@@ -23,6 +23,9 @@ public class SunReflectFilter implements Filter {
   Perl5Util util = new Perl5Util();
 
   public String filter(String in) {
+    if(in == null) {
+      return null;
+    }
     if (util.match("/at sun.reflect/", in)) {
       return null;
     } else {
