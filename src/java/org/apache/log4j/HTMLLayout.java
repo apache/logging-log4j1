@@ -88,10 +88,10 @@ public class HTMLLayout extends Layout {
   void setOption(String key, String value) {
     if(value == null) return;
 
-    if (key.equals(LOCATION_INFO_OPTION)) {
+    if (key.equalsIgnoreCase(LOCATION_INFO_OPTION)) {
       locationInfo = OptionConverter.toBoolean(value, locationInfo);
     }
-    else if (key.equals(TITLE_OPTION)) {
+    else if (key.equalsIgnoreCase(TITLE_OPTION)) {
       title = value;
     }
   }
