@@ -3,7 +3,7 @@
     <!-- Initialization properties -->
     <property name="project.name"   value="log4j.site"/>
     
-    <property name="docs.src" value="xdocs"/>
+    <property name="docs.src" value="src/xdocs"/>
     <property name="docs.dest" value="docs"/>
 
     <target name="prepare">    
