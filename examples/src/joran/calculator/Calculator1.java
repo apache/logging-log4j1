@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-package joran.helloWorld;
+package joran.calculator;
+
+import java.util.List;
 
 import org.apache.joran.Interpreter;
 import org.apache.joran.Pattern;
 import org.apache.joran.RuleStore;
 import org.apache.joran.helper.SimpleRuleStore;
+import org.apache.log4j.BasicConfigurator;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -27,28 +30,37 @@ import javax.xml.parsers.SAXParserFactory;
 
 /**
  *
- * A hello world example using Joran.
- *
+ * This examples illustrates collaboration between multiple actions through the
+ * common execution context stack.
+ * 
  * The first and only argument of this application must be the path to
- * the XML file to interpret.
+ * the XML file to interpret. There are sample XML files in the 
+ * <em>examples/src/joran/calculator/</em> directory. 
  *
  * For example,
  *
 <pre>
-    java joran.helloWorld.HelloWorld examples/src/joran/helloWorld/hello.xml
+    java joran.calculator.Calculator1 examples/src/joran/calculator/calculator1.xml
 </pre>
  *
- * @author Ceki
+ *
+ * @author Ceki G&uuml;ulc&uuml;
  */
-public class HelloWorld {
+public class Calculator1 {
   public static void main(String[] args) throws Exception {
+
+    BasicConfigurator.configure();
     // Create a simple rule store where pattern and action associations will
     // be kept.
     RuleStore ruleStore = new SimpleRuleStore();
 
-    // Associate "hello-world" pattern with  HelloWorldAction
-    ruleStore.addRule(new Pattern("hello-world"), new HelloWorldAction());
+    // Associate "" pattern with  HelloWorldAction
+    ruleStore.addRule(new Pattern("computation"), new ComputationAction1());
 
+    ruleStore.addRule(new Pattern("computation/literal"), new LiteralAction());
+    ruleStore.addRule(new Pattern("computation/add"), new AddAction());
+    ruleStore.addRule(new Pattern("computation/multiply"), new MultiplyAction());
+    
     // Create a new Joran Interpreter and hand it our simple rule store.
     Interpreter ji = new Interpreter(ruleStore);
 
@@ -59,5 +71,12 @@ public class HelloWorld {
     // Parse the file given as the application's first argument and
     // set the SAX ContentHandler to the Joran Interpreter we just created.
     saxParser.parse(args[0], ji);
+    
+    List errorList = ji.getExecutionContext().getErrorList();
+    
+    if(errorList.size() > 0) {
+      System.out.println("The following errors occured");
+      System.out.println(errorList);
+    }
   }
 }
