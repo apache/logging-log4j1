@@ -27,15 +27,13 @@ import  org.apache.log4j.helpers.LogLog;
  */
 final public class RootCategory extends Category {
 
-  final private static String FQCN = RootCategory.class.getName();
-
   /**
      The root category names itself as "root". However, the root
      category cannot be retrieved by name.  
   */
   public
   RootCategory(Priority priority) {
-    super("root", FQCN);
+    super("root");
     setPriority(priority);
   }
 

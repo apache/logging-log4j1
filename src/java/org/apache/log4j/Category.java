@@ -160,7 +160,7 @@ public class Category implements AppenderAttachable {
   /**
      The fully qualified name of the class that this Category
      object. Subclasses should override this variable.  */
-  public final String instanceFQCN;
+  private static final String FQCN = Category.class.getName();
   
   protected ResourceBundle resourceBundle;
   
@@ -187,13 +187,10 @@ public class Category implements AppenderAttachable {
      create categories directly.
 
      @param name The name of the category.  
-     @param instanceFQCN The fully qualified name of the class that this
-                 category instance belongs to. Subclasses of Category
-                 must specify their own fully qualified class name. */
+  */
   protected 
-  Category(String name, String instanceFQCN) {
+  Category(String name) {
     this.name = name;
-    this.instanceFQCN = instanceFQCN;
   }
 
   /**
@@ -303,7 +300,7 @@ public class Category implements AppenderAttachable {
     if(hierarchy.disable >=  Priority.DEBUG_INT) 
       return;    
     if(Priority.DEBUG.isGreaterOrEqual(this.getChainedPriority())) {
-      forcedLog(instanceFQCN, Priority.DEBUG, message, null);
+      forcedLog(FQCN, Priority.DEBUG, message, null);
     }
   }
   
@@ -321,8 +318,7 @@ public class Category implements AppenderAttachable {
   void debug(Object message, Throwable t) {
     if(hierarchy.disable >=  Priority.DEBUG_INT) return;
     if(this.isEnabledFor(Priority.DEBUG))
-      forcedLog(instanceFQCN, Priority.DEBUG, message, t);
-    
+      forcedLog(FQCN, Priority.DEBUG, message, t);    
   }
 
   //public
@@ -356,7 +352,7 @@ public class Category implements AppenderAttachable {
   void error(Object message) {
     if(hierarchy.disable >=  Priority.ERROR_INT) return;
     if(this.isEnabledFor(Priority.ERROR))
-      forcedLog(instanceFQCN, Priority.ERROR, message, null);
+      forcedLog(FQCN, Priority.ERROR, message, null);
   }
 
   /** 
@@ -372,7 +368,7 @@ public class Category implements AppenderAttachable {
   void error(Object message, Throwable t) {
     if(hierarchy.disable >=  Priority.ERROR_INT) return;
     if(this.isEnabledFor(Priority.ERROR))
-      forcedLog(instanceFQCN, Priority.ERROR, message, t);
+      forcedLog(FQCN, Priority.ERROR, message, t);
     
   }
 
@@ -412,7 +408,7 @@ public class Category implements AppenderAttachable {
   void fatal(Object message) {
     if(hierarchy.disable >=  Priority.FATAL_INT) return;    
     if(Priority.FATAL.isGreaterOrEqual(this.getChainedPriority()))
-      forcedLog(instanceFQCN, Priority.FATAL, message, null);
+      forcedLog(FQCN, Priority.FATAL, message, null);
   }
   
   /** 
@@ -428,7 +424,7 @@ public class Category implements AppenderAttachable {
   void fatal(Object message, Throwable t) {
     if(hierarchy.disable >=  Priority.FATAL_INT) return;   
     if(Priority.FATAL.isGreaterOrEqual(this.getChainedPriority()))
-      forcedLog(instanceFQCN, Priority.FATAL, message, t);
+      forcedLog(FQCN, Priority.FATAL, message, t);
   }
 
 
@@ -436,8 +432,8 @@ public class Category implements AppenderAttachable {
      This method creates a new logging event and logs the event
      without further checks.  */
   protected
-  void forcedLog(String FQCN, Priority priority, Object message, Throwable t) {
-    callAppenders(new LoggingEvent(FQCN, this, priority, message, t));
+  void forcedLog(String fqcn, Priority priority, Object message, Throwable t) {
+    callAppenders(new LoggingEvent(fqcn, this, priority, message, t));
   }
 
 
@@ -525,7 +521,7 @@ public class Category implements AppenderAttachable {
      attached.
 
      @since 1.1 */
-  public 
+  public  
   Hierarchy getHierarchy() {
     return hierarchy;
   }
@@ -686,7 +682,7 @@ public class Category implements AppenderAttachable {
   void info(Object message) {
     if(hierarchy.disable >=  Priority.INFO_INT) return;    
     if(Priority.INFO.isGreaterOrEqual(this.getChainedPriority()))
-      forcedLog(instanceFQCN, Priority.INFO, message, null);
+      forcedLog(FQCN, Priority.INFO, message, null);
   }
   
   /** 
@@ -702,7 +698,7 @@ public class Category implements AppenderAttachable {
   void info(Object message, Throwable t) {
     if(hierarchy.disable >=  Priority.INFO_INT) return;   
     if(Priority.INFO.isGreaterOrEqual(this.getChainedPriority()))
-      forcedLog(instanceFQCN, Priority.INFO, message, t);
+      forcedLog(FQCN, Priority.INFO, message, t);
   }
 
   /**
@@ -798,7 +794,7 @@ public class Category implements AppenderAttachable {
       if(msg == null) {
 	msg = key;
       }
-      forcedLog(instanceFQCN, priority, msg, t);
+      forcedLog(FQCN, priority, msg, t);
     }
   }
   /**
@@ -822,7 +818,7 @@ public class Category implements AppenderAttachable {
 	msg = key;
       else 
 	msg = java.text.MessageFormat.format(pattern, params);
-      forcedLog(instanceFQCN, priority, msg, t);
+      forcedLog(FQCN, priority, msg, t);
     }
   }
   
@@ -835,11 +831,11 @@ public class Category implements AppenderAttachable {
       return;
     }
     if(priority.isGreaterOrEqual(this.getChainedPriority())) 
-      forcedLog(instanceFQCN, priority, message, t);
+      forcedLog(FQCN, priority, message, t);
   }
   
  /**
-    This generic form is intended to be used by wrappers.
+    This generic form is intended to be used by wrappers. 
  */
   public
   void log(Priority priority, Object message) {
@@ -847,19 +843,18 @@ public class Category implements AppenderAttachable {
       return;
     }
     if(priority.isGreaterOrEqual(this.getChainedPriority()))
-      forcedLog(instanceFQCN, priority, message, null);
+      forcedLog(FQCN, priority, message, null);
   }
 
   /**
      
      This is the most generic printing method. It is intended to be
-     invoked by wrapper classes.
+     invoked by <b>wrapper</b> classes.
           
      @param callerFQCN The wrapper class' fully qualified class name.
      @param priority The priority of the logging request.
      @param message The message of the logging request.
-     @param t The throwable of the logging request, may be null.
-  */
+     @param t The throwable of the logging request, may be null.  */
   public
   void log(String callerFQCN, Priority priority, Object message, Throwable t) {
     if(hierarchy.disable >= priority.level) {
@@ -996,7 +991,7 @@ public class Category implements AppenderAttachable {
   public
   void warn(Object message) {
     if(this.isEnabledFor(Priority.WARN))
-      forcedLog(instanceFQCN, Priority.WARN, message, null);
+      forcedLog(FQCN, Priority.WARN, message, null);
   }
   
   /** 
@@ -1011,6 +1006,6 @@ public class Category implements AppenderAttachable {
   public
   void warn(Object message, Throwable t) {
     if(this.isEnabledFor(Priority.WARN))
-      forcedLog(instanceFQCN, Priority.WARN, message, t);
+      forcedLog(FQCN, Priority.WARN, message, t);
   }
 }

@@ -18,8 +18,6 @@ import org.apache.log4j.spi.CategoryFactory;
 
    @author Ceki G&uuml;lc&uuml; */
 public class MyCategoryFactory implements CategoryFactory {
-  
-  private static String FQCN = MyCategory.class.getName();
 
   /**
      The constructor should be public as it will be called by
@@ -30,6 +28,6 @@ public class MyCategoryFactory implements CategoryFactory {
 
   public
   Category makeNewCategoryInstance(String name) {
-    return new MyCategory(name, FQCN);
+    return new MyCategory(name);
   }
 }

@@ -27,6 +27,8 @@ import org.apache.log4j.helpers.LogLog;
  */
 public class MyCategory extends Category {
 
+  private static String FQCN = MyCategory.class.getName();
+
   // It's enough to instantiate a factory once and for all.
   private static MyCategoryFactory myFactory = new MyCategoryFactory();
 
@@ -80,8 +82,8 @@ public class MyCategory extends Category {
   /**
      Just calls the parent constuctor.
    */
-  public MyCategory(String name, String instanceFQCN) {
-    super(name, instanceFQCN);
+  public MyCategory(String name) {
+    super(name);
   }
 
 

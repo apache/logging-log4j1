@@ -107,9 +107,9 @@ public class XMLLayout extends Layout {
 
        String t = event.getThrowableInformation();
        if(t != null) {
-	 buf.append("<log4j:throwable>");
+	 buf.append("<log4j:throwable><![CDATA[");
 	 buf.append(t);
-	 buf.append("</log4j:throwable>\r\n");
+	 buf.append("]]></log4j:throwable>\r\n");
        }
 
        if(locationInfo) { 
