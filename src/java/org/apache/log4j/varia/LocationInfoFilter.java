@@ -39,6 +39,9 @@ public class LocationInfoFilter extends Filter {
   boolean convertInFixToPostFix = true;
   String expression;
   Rule expressionRule;
+  //HACK: Category is the last of the internal layers - pass this in as the class name
+  //in order for parsing to work correctly
+  private String className = "org.apache.log4j.Category";
 
   public void activateOptions() {
     expressionRule =
@@ -74,7 +77,7 @@ public class LocationInfoFilter extends Filter {
     if (!event.locationInformationExists()) {
       if (expressionRule.evaluate(event)) {
 	      Throwable t = new Exception();
-	      event.setLocationInformation(new LocationInfo(t, getClass().getName()));
+	      event.setLocationInformation(new LocationInfo(t, className));
       }
     }
     return Filter.NEUTRAL;
