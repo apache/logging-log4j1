@@ -53,12 +53,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.log4j.LogManager;
-
-import org.apache.oro.text.perl.Perl5Util;
-
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.PipedReader;
 import java.io.PipedWriter;
 import java.io.PrintWriter;
@@ -75,17 +70,24 @@ import java.io.PrintWriter;
  *
  */
 public class ReaderWriterLockTestCase extends TestCase {
+  static final int NUM_READERS = 120; //120;
+  static final int NUM_WRITERS = 4; //4;
+  static long WLOOP; // number of repetitions for writer threads
+  static long RLOOP; // number of repetitions for reader threads
   double value1 = 0;
   double value2 = 0;
-  ReaderWriterLock lock = new ReaderWriterLock();
+
+  // this is the object we are testing:
+  ReaderWriterLock lock;
+
+  // The bufferedReader will be passed to the VerifierThread
   BufferedReader bufferedReader;
+
+  // This is wehere readers and writers send their output
   PrintWriter printWriter;
- 
-  static int WLOOP = 30000;
-  static int RLOOP = WLOOP*2;
 
   /**
-   * Constructor for ReaderWriterLockTestCasae.
+   * Constructor for ReaderWriterLockTestCase.
    * @param arg0
    */
   public ReaderWriterLockTestCase(String arg0) {
@@ -93,52 +95,59 @@ public class ReaderWriterLockTestCase extends TestCase {
   }
 
   protected void setUp() throws Exception {
+    // We write to a piped buffer so that a verifer thread can check the output
     PipedWriter pipedWriter = new PipedWriter();
     PipedReader pipedReader = new PipedReader();
     bufferedReader = new BufferedReader(pipedReader);
     pipedReader.connect(pipedWriter);
 
-    //pipedWriter.connect(pipedReader);
     printWriter = new PrintWriter(pipedWriter);
+	  lock = new ReaderWriterLock(printWriter);
   }
 
   protected void tearDown() throws Exception {
   }
 
-  public void test1() {
-    int maxReaders = 120;
-    int maxWriters = 4;
-    Thread[] threads = new Thread[maxReaders + maxWriters];
+  public void test1() throws Exception {
+    WLOOP = Long.parseLong(System.getProperty("runLen"));
+    RLOOP = (long) (WLOOP * (1.0)); // readers loop longer
 
-    VerifierThread vt = new VerifierThread(bufferedReader, maxReaders, maxWriters);
+    Thread[] threads = new Thread[NUM_READERS + NUM_WRITERS];
+
+    VerifierThread vt =
+      new VerifierThread(bufferedReader, NUM_READERS, NUM_WRITERS);
     vt.start();
 
-    for (int i = 0; i < maxReaders; i++) {
-      threads[i] = new ReaderThread(i);
+    for (int i = 0; i < NUM_READERS; i++) {
+      threads[i] = new ReaderThread(i, vt);
     }
 
-    for (int i = 0; i < maxWriters; i++) {
-      threads[maxReaders + i] = new WriterThread(i);
+    for (int i = 0; i < NUM_WRITERS; i++) {
+      threads[NUM_READERS + i] = new WriterThread(i, vt);
     }
 
-    for (int i = 0; i < (maxWriters + maxReaders); i++) {
+    for (int i = 0; i < (NUM_WRITERS + NUM_READERS); i++) {
       threads[i].start();
     }
 
-    for (int i = 0; i < (maxWriters + maxReaders); i++) {
+    for (int i = 0; i < (NUM_WRITERS + NUM_READERS); i++) {
       try {
         threads[i].join();
       } catch (InterruptedException e) {
       }
     }
+
+    Exception e = vt.getException();
+
+    if (e != null) {
+      throw e;
+    }
   }
 
-  void printMessage(String msg) {
-    synchronized (printWriter) {
-      //printWriter.print("[");
-      printWriter.print(Thread.currentThread().getName());
-      printWriter.print(" ");
-      printWriter.println(msg);
+  void delay(long delay) {
+    try {
+      Thread.sleep(delay);
+    } catch (InterruptedException e) {
     }
   }
 
@@ -149,62 +158,77 @@ public class ReaderWriterLockTestCase extends TestCase {
     return suite;
   }
 
+  void printMessage(String msg) {
+	  //printWriter.print("[");      
+	  printWriter.println(Thread.currentThread().getName()+" "+msg);
+  }
+
+
   class ReaderThread extends Thread {
-    ReaderThread(int i) {
+    int tNum;
+    VerifierThread vt;
+
+    ReaderThread(int i, VerifierThread vt) {
       super("R-" + i);
+      tNum = i;
+      this.vt = vt;
     }
 
     public void run() {
       printMessage("In run()");
 
-      for (int l = 0; l < RLOOP; l++) {
-        printMessage("Asking for read lock.");
+      for (int t = 0; t < RLOOP; t++) {
+        if (vt.getInterrupt()) {
+          return;
+        }
+
+        //printMessage("Asking for read lock.");
         lock.getReadLock();
-        printMessage("Got read lock.");
+        //printMessage("Got read lock.");
         printMessage("Value1 is " + value1);
         printMessage("Value2 is " + value2);
 
-        try {
-          sleep(10);
-        } catch (InterruptedException e) {
-        }
+        delay(10);
 
-        printMessage("About to release read lock.");
+        //printMessage("About to release read lock.");
         lock.releaseReadLock();
       }
     }
   }
-  
+
   class WriterThread extends Thread {
-    WriterThread(int i) {
+    int tNum;
+    VerifierThread vt;
+
+    WriterThread(int i, VerifierThread vt) {
       super("W-" + i);
+      tNum = i;
+      this.vt = vt;
     }
 
     public void run() {
       printMessage("In run");
 
-      for (int i = 0; i < WLOOP; i++) {
-        try {
-          sleep(30);
-        } catch (InterruptedException e) {
+      for (int t = 0; t < WLOOP; t++) {
+        if (vt.getInterrupt()) {
+          return;
         }
 
-        printMessage("Asking for write lock.");
+        // on average, the wait is (3.5)*30
+        delay((((tNum * 13) + t) % 7) * 30);
+
+        //printMessage("Asking for write lock.");
         lock.getWriteLock();
-        printMessage("Got write lock.");
+        //printMessage("Got write lock.");
         printMessage("About to increment values.");
         value1 += 1;
         value2 += 10;
 
-        try {
-          sleep(10);
-        } catch (InterruptedException e) {
-        }
+        delay(10);
 
-        printMessage("About to release write lock.");
+        //printMessage("About to release write lock.");
         lock.releaseWriteLock();
       }
     }
   }
-
 }

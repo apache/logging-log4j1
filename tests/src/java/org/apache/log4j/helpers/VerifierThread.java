@@ -49,6 +49,8 @@
 
 package org.apache.log4j.helpers;
 
+import junit.framework.TestCase;
+
 import org.apache.oro.text.perl.Perl5Util;
 
 import java.io.BufferedReader;
@@ -66,43 +68,61 @@ class VerifierThread extends Thread {
   boolean[] readLockWaiters;
   boolean[] writerLockWaiters;
   BufferedReader bufferedReader;
+  double v1 = 0;
+  double v2 = 0;
+  Perl5Util regex;
+  Exception exception;
+  boolean interrupt;
 
   VerifierThread(BufferedReader br, int numberOfReaders, int numberOfWriters) {
     bufferedReader = br;
     readLockHolders = new boolean[numberOfReaders];
     readLockWaiters = new boolean[numberOfReaders];
     writerLockWaiters = new boolean[numberOfWriters];
+    regex = new Perl5Util();
   }
 
- 
+  boolean getInterrupt() {
+    return interrupt;
+  }
+
   public void run() {
     System.out.println("In run of VerifThread");
-
-    Perl5Util regex = new Perl5Util();
-
+	  String line = null;
+	  
     while (true) {
       try {
-        String line = bufferedReader.readLine();
-		    System.out.println(line); 		    
-     
-        if (regex.match("/([RW])-(\\d{1,2}) (.*)/", line)) {
+        line = bufferedReader.readLine();
+        if(!interrupt) {
+          System.out.println(line);
+        } 
+        if (regex.match("/([RW])-(\\d{1,3}) (.*)/", line)) {
           String type = regex.group(1);
           int num = Integer.parseInt(regex.group(2));
           String msg = regex.group(3);
 
+		      //System.out.println(type +"_"+num+ " "+msg);
           if (type.equals("R")) {
             readerMsg(num, msg);
           } else if (type.equals("W")) {
+            writerMsg(num, msg);
           }
         } else {
           System.out.println(
             "[" + line + "] does not match expected pattern.");
         }
-
-        //System.out.println("."+type+"-"+num+" "+msg); 		    
-      } catch (IOException e) {
+      } catch (Exception e) {
+      	if(exception == null) {
+          exception = e;
+      	}
+        interrupt = true;
+        System.out.println("====Offending line ["+line+"].");
       }
     }
+  }
+
+  public Exception getException() {
+    return exception;
   }
 
   void readerMsg(int num, String msg) {
@@ -110,8 +130,10 @@ class VerifierThread extends Thread {
       askReadLock(num);
     } else if (msg.equals("Got read lock.")) {
       gotReadLock(num);
-    } else if (msg.startsWith("Value")) {
-      //releaseReadLock(num);
+    } else if (msg.startsWith("Value1")) {
+      value1Message(num, msg);
+    } else if (msg.startsWith("Value2")) {
+      value2Message(num, msg);
     } else if (msg.equals("About to release read lock.")) {
       releaseReadLock(num);
     }
@@ -122,8 +144,9 @@ class VerifierThread extends Thread {
       askWriterLock(num);
     } else if (msg.equals("Got write lock.")) {
       gotWriteLock(num);
-    } else if (msg.startsWith("Value")) {
-      //releaseReadLock(num);
+    } else if (msg.equals("About to increment values.")) {
+      v1 += 1;
+      v2 += 10.0;
     } else if (msg.equals("About to release write lock.")) {
       releaseWriteLock(num);
     }
@@ -139,6 +162,7 @@ class VerifierThread extends Thread {
         return true;
       }
     }
+
     return false;
   }
 
@@ -206,5 +230,27 @@ class VerifierThread extends Thread {
     }
 
     writeLockHolder = -1;
+  }
+
+  void value1Message(int num, String msg) {
+    if (regex.match("/Value1 is (\\d*)/", msg)) {
+      double r = Double.parseDouble(regex.group(1));
+
+      if (r != v1) {
+        throw new IllegalStateException(
+          "Reported value is " + r + " was expecting " + v1);
+      }
+    }
+  }
+
+  void value2Message(int num, String msg) {
+    if (regex.match("/Value1 is (\\d*)/", msg)) {
+      double r = Double.parseDouble(regex.group(1));
+
+      if (r != v2) {
+        throw new IllegalStateException(
+          "Reported value is " + r + " was expecting " + v2);
+      }
+    }
   }
 }

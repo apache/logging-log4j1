@@ -46,49 +46,100 @@
  * Apache Software Foundation, please see <http://www.apache.org/>.
  *
  */
+
 package org.apache.log4j.helpers;
 
+import java.io.PrintWriter;
+
+
 /**
- * 
+ *
  * A RederWriterLock allows multiple readers to obtain the lock at the same time
  * but allows only one writer at a time.
- * 
- * Priority is given to waiting writers
- * 
+ *
+ * When both readers and writers wait to obtain the lock, priority is given to 
+ * waiting writers.
+ *
  * @author Ceki G&uuml;lc&uuml;
  *
  */
 public class ReaderWriterLock {
+  int readers = 0;
+  int writers = 0;
+  int waitingWriters = 0;
+  PrintWriter printWriter;
 
-   int readers = 0;
-   int writers = 0;
-   int waitingWriters = 0;
-   
-   public synchronized void  getReadLock() {     
-     while(writers > 0 || waitingWriters > 0) {
-       try {wait();} catch (InterruptedException ie) {} 
-     }     
-     readers++;     
-   }
-   
-   public synchronized void releaseReadLock() {
-     readers --;
-     if(waitingWriters >0)
-       notifyAll();
-   }
-   
-   public synchronized void getWriteLock() {
-     waitingWriters++;
-     while(readers > 0 || writers > 0) {
-       try {wait();} catch (InterruptedException ie) {} 
-     }
-     waitingWriters--;
-     writers++;
-   }
-   
-  public synchronized void releaseWriteLock() { 
-     writers--;
-     notifyAll();
-   }
-   
+  public ReaderWriterLock() {
+  }
+
+  public ReaderWriterLock(PrintWriter pw) {
+    printWriter = pw;
+  }
+
+  public synchronized void getReadLock() {
+    if (printWriter != null) {
+      printMessage("Asking for read lock.");
+    }
+
+    while ((writers > 0) || (waitingWriters > 0)) {
+      try {
+        wait();
+      } catch (InterruptedException ie) {
+      }
+    }
+
+    if (printWriter != null) {
+      printMessage("Got read lock.");
+    }
+
+    readers++;
+  }
+
+  public synchronized void releaseReadLock() {
+    if (printWriter != null) {
+      printMessage("About to release read lock.");
+    }
+
+    readers--;
+
+    if (waitingWriters > 0) {
+      notifyAll();
+    }
+  }
+
+  public synchronized void getWriteLock() {
+    if (printWriter != null) {
+      printMessage("Asking for write lock.");
+    }
+
+    waitingWriters++;
+
+    while ((readers > 0) || (writers > 0)) {
+      try {
+        wait();
+      } catch (InterruptedException ie) {
+      }
+    }
+
+    if (printWriter != null) {
+      printMessage("Got write lock.");
+    }
+
+    waitingWriters--;
+    writers++;
+  }
+
+  public synchronized void releaseWriteLock() {
+    if (printWriter != null) {
+      printMessage("About to release write lock.");
+    }
+
+    writers--;
+    notifyAll();
+  }
+
+  void printMessage(String msg) {
+    //printWriter.print("[");      
+    printWriter.println(Thread.currentThread().getName() + " " + msg);
+  }
 }
