@@ -16,6 +16,7 @@ import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ErrorCode;
 import org.apache.log4j.spi.ErrorHandler;
+import org.apache.log4j.spi.TriggeringEventEvaluator;
 import java.util.Properties;
 import java.util.Date;
 
@@ -117,6 +118,27 @@ public class SMTPAppender extends AppenderSkeleton {
   Session session;
   Message msg;
   boolean locationInfo = false;
+  
+  TriggeringEventEvaluator evaluator;
+
+  /**
+     The default constructor will instantiate the appedner with a
+     {@link TriggerEventEvaluator} that will tirgger on events with
+     priority ERROR or higher.*/
+  public
+  SMTPAppender() {
+    this(new DefaultEvaluator());
+  }
+
+  
+  /**
+     Use <code>evaluator</code> passed as parameter as the {@link
+     TriggeringEventEvaluator} for this SMTPAppender.  */
+  public 
+  SMTPAppender(TriggeringEventEvaluator evaluator) {
+    this.evaluator = evaluator;
+  }
+
 
   public
   void activateOptions() {
@@ -159,7 +181,7 @@ public class SMTPAppender extends AppenderSkeleton {
       event.setLocationInformation();	
     }
     cb.add(event);    
-    if(isTrigger(event)) {
+    if(evaluator.isTriggeringEvent(event)) {
       sendBuffer();
     }
   }
@@ -176,6 +198,13 @@ public class SMTPAppender extends AppenderSkeleton {
       errorHandler.error("Message object not configureed.");
       return false;
     }
+
+    if(this.evaluator == null) {
+      errorHandler.error("No TriggeringEventEvaluator is set for appender ["+
+			 name+"].");
+      return false;
+    }
+
     
     if(this.layout == null) {
       errorHandler.error("No layout set for appender named ["+name+"].");
@@ -210,18 +239,6 @@ public class SMTPAppender extends AppenderSkeleton {
           new String[] {TO_OPTION, FROM_OPTION, SUBJECT_OPTION, 
 			  SMTP_HOST_OPTION, BUFFER_SIZE_OPTION,  
 			  LOCATION_INFO_OPTION });
-  }
-
-  
-  /**
-     Is this <code>event</code> the e-mail triggering event?
-     
-     <p>This method returns <code>true</code>, if the event priority
-     is error or higher. Override this method for a more elaborate
-     triggering strategy. */
-  protected
-  boolean isTrigger(LoggingEvent event) {
-    return event.priority.isGreaterOrEqual(Priority.ERROR);
   }
   
   InternetAddress[] parseAddress(String addressStr) {
@@ -332,5 +349,18 @@ public class SMTPAppender extends AppenderSkeleton {
     }
     else if (option.equals(LOCATION_INFO_OPTION))
       locationInfo = OptionConverter.toBoolean(value, locationInfo);
+  }
+}
+
+class DefaultEvaluator implements TriggeringEventEvaluator {
+  /**
+     Is this <code>event</code> the e-mail triggering event?
+     
+     <p>This method returns <code>true</code>, if the event priority
+     has ERROR priority or higher. Otherwisem it returns
+     <code>false</code>. */
+  public 
+  boolean isTriggeringEvent(LoggingEvent event) {
+    return event.priority.isGreaterOrEqual(Priority.ERROR); 
   }
 }
