@@ -215,16 +215,12 @@ public class FileAppender extends WriterAppender {
     <p>Sets and <i>opens</i> the file where the log output will
     go. The specified file must be writable. 
 
-    <p>If there was already an opened stream opened through this
-    method, then the previous stream is closed first. If the stream
-    was opened by the user and passed to {@link #setWriter
-    setWriter}, then the previous stream remains
-    untouched. It is the users responsability to close it.
+    <p>If there was already an opened file, then the previous file
+    is closed first. 
 
     @param fileName The path to the log file.
     @param append   If true will append to fileName. Otherwise will
-        truncate fileName.
-  */
+        truncate fileName.  */
   public
   synchronized
   void setFile(String fileName, boolean append) throws IOException {
@@ -283,10 +279,9 @@ public class FileAppender extends WriterAppender {
      <p>Note: Actual opening of the file is made when {@link
      #activateOptions} is called, not when the options are set.
      
-     <b>See</b> Options of the super class {@link WriterAppender}. 
-     <b>See</b> Options of the super class {@link
-     org.apache.log4j.AppenderSkeleton}, in particular the
-     <b>Threshold</b> option.
+     <p>Make sure to refer to the options defined in the super classes
+     {@link WriterAppender} and in particular the <b>Threshold</b>
+     option in {@link AppenderSkeleton}.
 
      @since 0.8.1 */
   public
@@ -329,7 +324,12 @@ public class FileAppender extends WriterAppender {
   void reset() {
     closeFile();
     this.fileName = null;
-    super.reset();    
+    if(qwIsOurs) {
+      super.reset();    
+    } else {
+      this.qw = null;
+      this.tp = null;    
+    }
   }  
 }
 
