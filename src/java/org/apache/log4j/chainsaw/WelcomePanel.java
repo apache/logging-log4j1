@@ -49,6 +49,7 @@
 
 package org.apache.log4j.chainsaw;
 
+import org.apache.log4j.chainsaw.help.Tutorial;
 import org.apache.log4j.chainsaw.icons.ChainsawIcons;
 
 import java.awt.BorderLayout;
@@ -73,6 +74,7 @@ import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
@@ -93,6 +95,7 @@ public class WelcomePanel extends JPanel {
   private final URLToolbar urlToolbar =  new URLToolbar();
   private final URL helpURL;
   private final URL exampleConfigURL;
+  private final URL tutorialURL;
   
   private WelcomePanel() {
     setLayout(new BorderLayout());
@@ -107,6 +110,9 @@ public class WelcomePanel extends JPanel {
     getClass().getClassLoader().getResource(
       "org/apache/log4j/chainsaw/log4j-receiver-sample.xml");
 
+	tutorialURL =    getClass().getClassLoader().getResource(
+	"org/apache/log4j/chainsaw/help/tutorial.html");
+ 
     if (helpURL != null) {
       textInfo.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
       textInfo.setEditable(false);
@@ -122,6 +128,9 @@ public class WelcomePanel extends JPanel {
           new HyperlinkListener() {
             public void hyperlinkUpdate(HyperlinkEvent e) {
               if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+				if(e.getDescription().equals("StartTutorial")){
+					new Thread(new Tutorial()).start();	
+				}else{
                 urlStack.add(textInfo.getPage());
 
                 try {
@@ -130,6 +139,7 @@ public class WelcomePanel extends JPanel {
                 } catch (IOException e1) {
                   e1.printStackTrace();
                 }
+				}
               }
             }
           });
@@ -155,7 +165,7 @@ public class WelcomePanel extends JPanel {
     
   }
 
-  private class URLToolbar extends JPanel {
+  private class URLToolbar extends JToolBar {
     private final Action previousAction =
       new AbstractAction(null, new ImageIcon(ChainsawIcons.ICON_BACK)) {
         public void actionPerformed(ActionEvent e) {
@@ -176,35 +186,27 @@ public class WelcomePanel extends JPanel {
       };
 
     private URLToolbar() {
-      setLayout(new GridBagLayout());
+    	setFloatable(false);
       updateToolbar();
       previousAction.putValue(Action.SHORT_DESCRIPTION, "Back");
       homeAction.putValue(Action.SHORT_DESCRIPTION, "Home");
 
-      GridBagConstraints c = new GridBagConstraints();
-      c.weightx = 0.0;
-      c.weighty = 0.0;
-      c.ipadx = 1;
-      c.ipady = 1;
-//      c.gridx = 0;
-//      c.gridy = 0;
-      
-      c.fill = GridBagConstraints.NONE;
-      c.anchor = GridBagConstraints.WEST;
-      
       JButton home = new SmallButton(homeAction);
-      add(home, c);
+      add(home);
       
-      add(new JSeparator(), c);
-      
-//      c.gridx = 1;
+	  addSeparator();      
       JButton previous = new SmallButton(previousAction);
       previous.setEnabled(false);
-      add(previous, c);
+      add(previous);
       
-      add(new JSeparator(), c);
+      addSeparator();
+      add(new SmallButton(new AbstractAction("Tutorial"){
 
-//      c.gridx = 2;
+		public void actionPerformed(ActionEvent e) {
+			setURL(tutorialURL);
+			
+		}}));
+	addSeparator();
       final Action exampleConfigAction = new AbstractAction("View example Receiver configuration"){
 
         public void actionPerformed(ActionEvent e) {
@@ -214,12 +216,10 @@ public class WelcomePanel extends JPanel {
       exampleConfigAction.putValue(Action.SHORT_DESCRIPTION, "Displays an example Log4j configuration file with several Receivers defined.");
       
       JButton exampleButton = new SmallButton(exampleConfigAction);
-      add(exampleButton, c);
+      add(exampleButton);
 
-//      c.gridx = 3;
-      c.weightx = 1;
       JPanel p = new JPanel();
-      add(p, c);
+      add(p);
     }
 
     void updateToolbar() {
