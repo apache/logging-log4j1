@@ -277,6 +277,26 @@ public class NDC {
   }
 
   /**
+     Looks at the {@link DiagnosticContext} at the top of this NDC without removing it.
+
+     <p>The returned value is the value that was pushed last. If no
+     context is available, then the empty string "" is returned.
+     
+     @return String The innermost diagnostic context.
+     
+     */
+  public
+  static
+  String peek() {
+    Thread key = Thread.currentThread();
+    Stack stack = (Stack) ht.get(key);
+    if(stack != null && !stack.isEmpty())
+      return ((DiagnosticContext) stack.peek()).message;
+    else
+      return "";
+  }
+  
+  /**
      Push new diagnostic context information for the current thread.
 
      <p>The contents of the <code>message</code> parameter is
