@@ -313,7 +313,7 @@ public class LoggerTestCase extends TestCase {
     Logger a0 = h.getLogger("a");
     assertEquals("a", a0.getName());
     assertNull(a0.getLevel());
-    assertSame(Level.ERROR, a0.getChainedLevel());
+    assertSame(Level.ERROR, a0.getEffectiveLevel());
 
     Logger a1 = h.getLogger("a");
     assertSame(a0, a1);
