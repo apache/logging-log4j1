@@ -32,10 +32,10 @@ import org.apache.log4j.helpers.Constants;
 import org.apache.log4j.helpers.IntializationUtil;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.joran.JoranConfigurator;
-import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.RootLogger;
+import org.apache.log4j.spi.location.LocationInfo;
 
 
 /**

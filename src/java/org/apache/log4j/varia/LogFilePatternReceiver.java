@@ -38,9 +38,9 @@ import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.plugins.Receiver;
 import org.apache.log4j.rule.ExpressionRule;
 import org.apache.log4j.rule.Rule;
-import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ThrowableInformation;
+import org.apache.log4j.spi.location.LocationInfo;
 
 
 /**

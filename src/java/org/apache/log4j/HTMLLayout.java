@@ -20,8 +20,8 @@ import java.io.IOException;
 import java.io.Writer;
 
 import org.apache.log4j.helpers.Transform;
-import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.location.LocationInfo;
 
 /**
  * This layout outputs events in a HTML table.

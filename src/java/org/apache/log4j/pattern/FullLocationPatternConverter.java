@@ -16,8 +16,8 @@
 
 package org.apache.log4j.pattern;
 
-import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.location.LocationInfo;
 
 /**
  * Return the event's line location information in a StringBuffer.
@@ -41,7 +41,7 @@ public class FullLocationPatternConverter extends PatternConverter {
 
 	  LocationInfo locationInfo = event.getLocationInformation();
     if (locationInfo!=null) {
-			buf.append(locationInfo.fullInfo);
+			buf.append(locationInfo.getFullInfo());
 		}
 
     return buf;
