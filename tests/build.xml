@@ -77,7 +77,7 @@
   <!-- ================================================================= -->
   <target name="build" depends="parentBuild, prepare">
     <javac srcdir="${tests.source.home}"
-	   destdir="./classes" excludes="${tests.source.home}${stem}/chainsaw/receivers/*.java"
+	   destdir="./classes" excludes="${stem}/chainsaw/receivers/*.java"
            deprecation="${deprecation}"
            debug="on">			
       <classpath refid="tests.classpath"/>
