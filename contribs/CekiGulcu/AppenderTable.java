@@ -43,7 +43,7 @@ import java.awt.Container;
    number does not depend on the size of the buffer. It takes as much
    (or as little) time to insert one million elements to a buffer of
    size 10 as to a buffer of size 10'000. It takes about 4 seconds to
-   insert a totaal of 100'000 elements.
+   insert a total of 100'000 elements into the table.
 
    <p>On windows NT the test will run about twice as fast if you give
    the focus to the window that runs "java AppenderTable" and not the
