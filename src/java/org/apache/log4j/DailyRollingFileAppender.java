@@ -130,7 +130,7 @@ import java.util.TimeZone;
 
    @author Eirik Lygre
    @author Ceki G&uuml;lc&uuml;
-   * @deprecated Has been replaced by {@link org.apache.log4j.rolling.RollingFileAppender RollingFileAppender}
+   @deprecated Has been replaced by {@link org.apache.log4j.rolling.RollingFileAppender RollingFileAppender}
    * and {@link org.apache.log4j.rolling.TimeBasedRollingPolicy TimeBasedRollingPolicy}.
    *
    * */
