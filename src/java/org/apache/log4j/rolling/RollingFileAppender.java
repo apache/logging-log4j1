@@ -55,7 +55,9 @@ public class RollingFileAppender extends FileAppender {
     }
 
     if (rollingPolicy != null) {
-      rollingPolicy.activateOptions();
+      // Sub components must be activated separately
+      //rollingPolicy.activateOptions();
+      
       String afn = rollingPolicy.getActiveLogFileName();
       activeFile = new File(afn);
       logger.debug("Active log file name: "+afn);
