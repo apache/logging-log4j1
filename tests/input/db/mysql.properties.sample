@@ -1,0 +1,7 @@
+# The JDBC driver class for MySQL
+driverClass=com.mysql.jdbc.Driver
+# The DataSource class for MySQL
+dataSourceClass=com.mysql.jdbc.jdbc2.optional.MysqlDataSource
+url=jdbc:mysql:///test
+user=root
+password=
