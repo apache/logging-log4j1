@@ -66,6 +66,7 @@ import java.io.Writer;
 
    @author <a href="mailto:cakalijp@Maritz.com">James P. Cakalic</a>
    @author Ceki G&uuml;lc&uuml;
+   @author Chris Nokes
 
    @since 0.8.2
  */
