@@ -28,7 +28,7 @@ import org.apache.log4j.helpers.LogLog;
    
    <b>Support for java.io.Writer and console appending has been
    deprecated and will be removed in the near future.</b> You are
-   stongly encouraged to use the replacement solutions: {@link
+   strongly encouraged to use the replacement solutions: {@link
    WriterAppender} and {@link ConsoleAppender}.
    
 
@@ -123,7 +123,7 @@ public class FileAppender extends WriterAppender {
 
   /**
     Instantiate a FileAppender and open the file designated by
-    <code>filename</code>. The opened filename will become the ouput
+    <code>filename</code>. The opened filename will become the output
     destination for this appender.
 
     <p>If the <code>append</code> parameter is true, the file will be
@@ -211,7 +211,7 @@ public class FileAppender extends WriterAppender {
 
 
   /**
-     <The <b>Append</b> option takes a boolean value. It is set to
+     The <b>Append</b> option takes a boolean value. It is set to
      <code>true</code> by default. If true, then <code>File</code>
      will be opened in append mode by {@link #setFile setFile} (see
      above). Otherwise, {@link #setFile setFile} will open
