@@ -87,7 +87,7 @@ class RuleFactory {
   }
 
   static boolean isRule(String symbol) {
-    return rules.contains(symbol.toLowerCase());
+    return ((symbol != null) && (rules.contains(symbol.toLowerCase())));
   }
 
   static Rule getRule(String symbol, Stack stack) {

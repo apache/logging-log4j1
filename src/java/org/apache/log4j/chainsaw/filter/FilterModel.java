@@ -85,7 +85,7 @@ public class FilterModel {
     }
   }
 
-  EventTypeEntryContainer getContainer() {
+  public EventTypeEntryContainer getContainer() {
     //    if(eventTypeMap.size()>0){
     //        return (EventTypeEntryContainer) eventTypeMap.values().iterator().next();
     //    }   

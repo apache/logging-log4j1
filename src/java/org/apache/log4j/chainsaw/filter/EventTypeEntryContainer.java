@@ -51,8 +51,10 @@
  */
 package org.apache.log4j.chainsaw.filter;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.DefaultListModel;
@@ -65,7 +67,7 @@ import javax.swing.ListModel;
  * @author Paul Smith 
  *
  */
-class EventTypeEntryContainer {
+public class EventTypeEntryContainer {
   private Set ColumnNames = new HashSet();
   private Set Methods = new HashSet();
   private Set Classes = new HashSet();
@@ -84,7 +86,45 @@ class EventTypeEntryContainer {
   private DefaultListModel loggerListModel = new DefaultListModel();
   private DefaultListModel threadListModel = new DefaultListModel();
   private DefaultListModel fileNameListModel = new DefaultListModel();
+  private Map modelMap = new HashMap();
+  private static final String LOGGER_FIELD = "LOGGER";
+  private static final String LEVEL_FIELD = "LEVEL";
+  private static final String CLASS_FIELD = "CLASS";
+  private static final String FILE_FIELD = "FILE";
+  private static final String THREAD_FIELD = "THREAD";
+  private static final String METHOD_FIELD = "METHOD";
+  private static final String MDC_FIELD = "MDC.";
+  private static final String NDC_FIELD = "NDC";
 
+  public EventTypeEntryContainer() {
+      modelMap.put(LOGGER_FIELD, loggerListModel);
+      modelMap.put(LEVEL_FIELD, levelListModel);
+      modelMap.put(CLASS_FIELD, classesListModel);
+      modelMap.put(FILE_FIELD, fileNameListModel);
+      modelMap.put(THREAD_FIELD, threadListModel);
+      modelMap.put(METHOD_FIELD, methodListModel);
+      modelMap.put(NDC_FIELD, ndcListModel);
+      //mdc supported, but not in map
+  }
+  
+  public boolean modelExists(String fieldName) {
+      if (fieldName != null) {
+          return ((fieldName.toUpperCase().startsWith(MDC_FIELD)) || (modelMap.keySet().contains(fieldName.toUpperCase())));
+      }
+      return false;
+  }
+  
+  public ListModel getModel(String fieldName) {
+      if (modelExists(fieldName)) {
+          if (fieldName.toUpperCase().startsWith(MDC_FIELD)) {
+              return mdcListModel;
+          } else {
+              return (ListModel)modelMap.get(fieldName.toUpperCase());
+          }
+      }
+      return null;
+  } 
+  
   void addLevel(Object level) {
     if (Levels.add(level)) {
       levelListModel.addElement(level);

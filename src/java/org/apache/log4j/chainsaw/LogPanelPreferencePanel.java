@@ -75,6 +75,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.ListCellRenderer;
 import javax.swing.UIManager;
@@ -112,10 +113,11 @@ public class LogPanelPreferencePanel extends JPanel {
   private final JLabel titleLabel = new JLabel("Selected Pref Panel");
   private final JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
   private final JPanel selectedPrefPanel = new JPanel(new BorderLayout(0, 3));
-  private final LogPanelPreferenceModel uncommitedPreferenceModel =
+  private final LogPanelPreferenceModel uncommittedPreferenceModel =
     new LogPanelPreferenceModel();
   private ActionListener okCancelListener;
   private Component currentlyDisplayedPanel = null;
+  private JTextField loggerPrecision = new JTextField();
 
   public LogPanelPreferencePanel(LogPanelPreferenceModel model) {
     this.committedPreferenceModel = model;
@@ -158,7 +160,8 @@ public class LogPanelPreferencePanel extends JPanel {
     okButton.addActionListener(
       new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          committedPreferenceModel.apply(uncommitedPreferenceModel);
+          uncommittedPreferenceModel.setLoggerPrecision(loggerPrecision.getText());
+          committedPreferenceModel.apply(uncommittedPreferenceModel);
           hidePanel();
         }
       });
@@ -236,7 +239,7 @@ public class LogPanelPreferencePanel extends JPanel {
    *
    */
   public void updateModel() {
-    this.uncommitedPreferenceModel.apply(committedPreferenceModel);
+    this.uncommittedPreferenceModel.apply(committedPreferenceModel);
   }
 
   private TreeModel createTreeModel() {
@@ -260,7 +263,7 @@ public class LogPanelPreferencePanel extends JPanel {
    * @return
    */
   private LogPanelPreferenceModel getModel() {
-    return uncommitedPreferenceModel;
+    return uncommittedPreferenceModel;
   }
 
   public static void main(String[] args) {
@@ -393,6 +396,23 @@ public class LogPanelPreferencePanel extends JPanel {
       levelFormatPanel.add(rdLevelText);
 
       add(levelFormatPanel);
+
+      JPanel loggerFormatPanel = new JPanel();
+      loggerFormatPanel.setLayout(
+        new BoxLayout(loggerFormatPanel, BoxLayout.Y_AXIS));
+      loggerFormatPanel.setBorder(
+        BorderFactory.createTitledBorder(
+          BorderFactory.createEtchedBorder(), "Logger"));
+
+      final JLabel precisionLabel = new JLabel("Precision (package depth displayed)");
+      final JLabel precisionLabel2 = new JLabel("leave blank to display full logger)");
+
+      loggerFormatPanel.add(precisionLabel);
+      loggerFormatPanel.add(precisionLabel2);
+      loggerFormatPanel.add(loggerPrecision);
+
+      add(loggerFormatPanel);
+      
       add(Box.createVerticalGlue());
     }
 

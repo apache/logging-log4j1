@@ -100,6 +100,7 @@ public class LogPanelPreferenceModel {
   private boolean toolTips = false;
   private boolean scrollToBottom = true;
   private boolean logTreePanelVisible = true;
+  private String loggerPrecision = "";
 
   /**
    * Returns the Date Pattern string for the alternate date formatter.
@@ -160,6 +161,7 @@ public class LogPanelPreferenceModel {
    * all the properties from
    */
   public void apply(LogPanelPreferenceModel that) {
+    setLoggerPrecision(that.getLoggerPrecision());
     setDateFormatPattern(that.getDateFormatPattern());
     setLevelIcons(that.isLevelIcons());
 
@@ -215,6 +217,24 @@ public class LogPanelPreferenceModel {
     boolean oldVal = this.levelIcons;
     this.levelIcons = levelIcons;
     propertySupport.firePropertyChange("levelIcons", oldVal, this.levelIcons);
+  }
+
+  /**
+   * @param loggerPrecision - an integer representing the number of packages to display, 
+   * or an empty string representing 'display all packages' 
+   */
+  public void setLoggerPrecision(String loggerPrecision) {
+    String oldVal = this.loggerPrecision;
+    this.loggerPrecision = loggerPrecision;
+    propertySupport.firePropertyChange("loggerPrecision", oldVal, this.loggerPrecision);      
+  }
+  
+  /**
+   * Returns the Logger precision.
+   * @return
+   */
+  public final String getLoggerPrecision() {
+    return loggerPrecision;
   }
 
   /**
