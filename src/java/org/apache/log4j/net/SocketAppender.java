@@ -189,6 +189,9 @@ public class SocketAppender extends AppenderSkeleton {
   */
   public
   void close() {
+    if(closed)
+      return;
+
     this.closed = true;
     cleanUp();
   }
@@ -210,7 +213,7 @@ public class SocketAppender extends AppenderSkeleton {
     }
     if(connector != null) {
       //LogLog.debug("Interrupting the connector.");      
-      connector.interrupt();
+      connector.interrupted = true;
       connector = null;  // allow gc
     }
   }
@@ -243,7 +246,7 @@ public class SocketAppender extends AppenderSkeleton {
     if(oos != null) {
       try {
 	if(locationInfo) {
-	   event.setLocationInformation();	
+	   event.getLocationInformation();	
 	} 
 	oos.writeObject(event);
 	//LogLog.debug("=========Flushing.");
@@ -258,8 +261,10 @@ public class SocketAppender extends AppenderSkeleton {
       }
       catch(IOException e) {
 	oos = null;
-	LogLog.debug("Detected problem with connection: "+e);
-	fireConnector();
+	LogLog.warn("Detected problem with connection: "+e);
+	if(reconnectionDelay > 0) {
+	  fireConnector();
+	}
       }
     }
   }
@@ -334,7 +339,10 @@ public class SocketAppender extends AppenderSkeleton {
      <p>The <b>ReconnectionDelay</b> option takes a positive integer
      representing the number of milliseconds to wait between each
      failed connection attempt to the server. The default value of
-     this option is 30000 which corresponds to 30 seconds.
+     this option is 30000 which corresponds to 30 seconds. 
+     
+     <p>Setting this option to zero turns off reconnection
+     capability. 
          
    */
   public
@@ -367,10 +375,12 @@ public class SocketAppender extends AppenderSkeleton {
   */
   class Connector extends Thread {
 
+    boolean interrupted = false;
+
     public
     void run() {
       Socket socket;      
-      while(!isInterrupted()) {
+      while(!interrupted) {
 	try {
 	  sleep(reconnectionDelay);
 	  LogLog.debug("Attempting connection to "+address.getHostName());

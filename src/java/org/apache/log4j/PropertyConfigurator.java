@@ -383,6 +383,13 @@ public class PropertyConfigurator extends BasicConfigurator
     String override = properties.getProperty(
                                     BasicConfigurator.DISABLE_OVERRIDE_KEY);
     BasicConfigurator.overrideAsNeeded(override);
+
+    if(override == null) {
+      String disableStr = properties.getProperty(BasicConfigurator.DISABLE_KEY);
+      if(disableStr != null)
+	BasicConfigurator.disableAsNeeded(disableStr);      
+    }
+    
     
     configureRootCategory(properties, hierarchy);
     configureCategoryFactory(properties);

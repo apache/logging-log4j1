@@ -29,18 +29,39 @@ import java.util.Enumeration;
 public class BasicConfigurator {
 
   /**
-     Setting the system property <b>log4j.disableOverride</b> to
+     <p><code>DISABLE_OVERRIDE_KEY</code> is the name of the constant
+     holding the string value <b>log4j.disableOverride</b>.
+
+     <p>Setting the system property <b>log4j.disableOverride</b> to
      "true" or any other value than "false" overrides the effects of
      all methods {@link #disable}, {@link #disableAll}, {@link
      #disableDebug} and {@link #disableInfo}. Thus, enabling normal
      evaluation of logging requests, i.e. according to the <a
      href="../../manual.html#selectionRule">Basic Selection Rule</a>.
 
-     <p><code>DISABLE_OVERRIDE_KEY</code> is the name of the constant
-     holding the string value <b>log4j.disableOverride</b>.
+     <p>If both <code>log4j.disableOverride</code> and a
+     <code>log4j.disable</code> options are present, then
+     <code>log4j.disableOverride</code> as the name indicates
+     overrides any <code>log4j.disable</code> options.
      
      @since 0.8.5 */ 
      public static final String DISABLE_OVERRIDE_KEY = "log4j.disableOverride";
+
+  /**
+     <p><code>DISABLE_KEY</code> is the name of the constant
+     holding the string value <b>log4j.disable</b>.
+
+     <p>Setting the system property <b>log4j.disable</b> to DEBUG,
+     INFO, WARN, ERROR or FATAL is equivalent to calling the {@link
+     #disable} method with the corresponding priority.
+
+     <p>If both <code>log4j.disableOverride</code> and a
+     <code>log4j.disable</code> options are present, then
+     <code>log4j.disableOverride</code> as the name indicates
+     overrides any <code>log4j.disable</code> options.
+     
+     @since 1.1 */
+     public static final String DISABLE_KEY = "log4j.disable";
 
 
   /**
@@ -50,24 +71,22 @@ public class BasicConfigurator {
   */
   public static final String INHERITED = "inherited";
 
-  // This variable will be set to true if some configuration file sets
-  // log4j.shippedCodeFlagOverride or an equivalent variable to true
-  // (or any other valeu than false).
-  // protected static boolean SCFOverride = false;
 
   // Check if value of(DISABLE_OVERRIDE_KEY) system property is set.
   // If it is set to "true" or any value other than "false", then set
   // static variable Category.disable to Category.DISABLE_OVERRIDE.
-
-  static {
-    String propertyName = DISABLE_OVERRIDE_KEY;
-    String override = OptionConverter.getSystemProperty(propertyName, null);
-
+  static {    
+    String override = OptionConverter.getSystemProperty(DISABLE_OVERRIDE_KEY, null);
     if(override != null) {
       if(OptionConverter.toBoolean(override, true)) {
 	LogLog.debug("Overriding disable. Non-null system property " + 
 		     DISABLE_OVERRIDE_KEY + "=[" + override +"].");
 	Category.disable = Category.DISABLE_OVERRIDE;
+      }
+    } else { // check for log4j.disable only in absence of log4j.disableOverride
+      String disableStr = OptionConverter.getSystemProperty(DISABLE_KEY, null);
+      if(disableStr != null) {
+	disableAsNeeded(disableStr);
       }
     }
   }
@@ -126,7 +145,21 @@ public class BasicConfigurator {
   }
 
 
-/**
+  static
+  protected
+  void disableAsNeeded(String disableStr) {
+    if((disableStr != null) && (Category.disable != Category.DISABLE_OVERRIDE)) {
+      Priority p = Priority.toPriority(disableStr, null);
+      if(p != null) {
+	disable(p);
+      } else {
+	LogLog.warn("Could not convert ["+disableStr+"] to Priority.");
+      }
+    }
+  }
+
+
+  /**
      Disable all logging requests of priority <em>equal to or
      below</em> the priority parameter <code>p</code>, regardless of
      the request category. Logging requests of higher priority then

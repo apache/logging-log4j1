@@ -143,10 +143,10 @@ public class TTCCLayout extends DateLayout {
     }
 
     if(this.contextPrinting) {
-       event.getNDC();
-
-      if(event.ndc != null) {
-	buf.append(event.ndc);
+       String ndc = event.getNDC();
+       
+      if(ndc != null) {
+	buf.append(ndc);
 	buf.append(' ');
       }
     }    

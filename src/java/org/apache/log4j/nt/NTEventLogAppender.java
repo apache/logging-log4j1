@@ -93,9 +93,9 @@ public class NTEventLogAppender extends AppenderSkeleton {
     int nt_category = event.priority.toInt();
 
     // Anything above FATAL or below DEBUG is labeled as INFO.
-    if (nt_category > FATAL || nt_category < DEBUG) {
-      nt_category = INFO;
-    }
+    //if (nt_category > FATAL || nt_category < DEBUG) {
+    //  nt_category = INFO;
+    //}
     reportEvent(_handle, sw_writer.toString(), nt_category);
   }
   

@@ -7,7 +7,7 @@
 $INPUT=$ARGV[0];
 $OUTPUT=$ARGV[1];
 $EXSTR=$ARGV[2];
-$LAYOUT=$ARGV[3];
+$LAYOUT=$ARGV[3];  # filtering type
 
 
 open(IN, $INPUT) || die "Could not open $INPUT";

@@ -79,7 +79,7 @@ public class AsyncAppender extends AppenderSkeleton
     event.getNDC();
     event.getThreadName();
     if(locationInfo) {
-      event.setLocationInformation();	
+      event.getLocationInformation();	
     }
     synchronized(bf) {
       if(bf.isFull()) {

@@ -13,6 +13,7 @@ import org.apache.log4j.helpers.AbsoluteTimeDateFormat;
 import org.apache.log4j.Layout;
 import org.apache.log4j.NDC;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.or.ObjectRenderer;
 import org.apache.log4j.or.RendererMap;
 import java.text.DateFormat;
@@ -440,16 +441,16 @@ public class PatternParser {
     
     public
     String convert(LoggingEvent event) {
-      event.setLocationInformation();
+      LocationInfo locationInfo = event.getLocationInformation();
       switch(type) {
       case FULL_LOCATION_CONVERTER: 
-	return event.locationInfo.fullInfo;
+	return locationInfo.fullInfo;
       case METHOD_LOCATION_CONVERTER: 
-	return event.locationInfo.getMethodName();
+	return locationInfo.getMethodName();
       case LINE_LOCATION_CONVERTER: 
-	return event.locationInfo.getLineNumber();
+	return locationInfo.getLineNumber();
       case FILE_LOCATION_CONVERTER: 
-	return event.locationInfo.getFileName();
+	return locationInfo.getFileName();
       default: return null;
       }
     }
@@ -495,8 +496,7 @@ public class PatternParser {
     }
     
     String getFullyQualifiedName(LoggingEvent event) {
-      event.setLocationInformation();
-      return event.locationInfo.getClassName();
+      return event.getLocationInformation().getClassName();
     }
   }
   
