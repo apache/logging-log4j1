@@ -49,19 +49,24 @@
 
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-import org.apache.log4j.net.AddressBased;
-import org.apache.log4j.net.NetworkBased;
-import org.apache.log4j.net.PortBased;
-import org.apache.log4j.plugins.Pauseable;
-
+import java.awt.BorderLayout;
 import java.awt.Component;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
+
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.chainsaw.icons.LevelIconFactory;
+import org.apache.log4j.net.AddressBased;
+import org.apache.log4j.net.NetworkBased;
+import org.apache.log4j.net.PortBased;
+import org.apache.log4j.plugins.Pauseable;
+import org.apache.log4j.spi.Thresholdable;
 
 
 /**
@@ -76,9 +81,15 @@ public class ReceiverTreeCellRenderer extends DefaultTreeCellRenderer {
   private Icon inactiveReceiverIcon =
     new ImageIcon(ChainsawIcons.ICON_INACTIVE_RECEIVER);
   private Icon rootIcon = new ImageIcon(ChainsawIcons.ANIM_NET_CONNECT);
+  private JPanel panel = new JPanel();
+  private JLabel levelLabel = new JLabel();
 
   public ReceiverTreeCellRenderer() {
     super();
+    panel.setOpaque(false);
+    panel.setLayout(new BorderLayout());
+    panel.add(this, BorderLayout.CENTER);
+    panel.add(levelLabel, BorderLayout.WEST);
   }
 
   public Component getTreeCellRendererComponent(
@@ -90,8 +101,9 @@ public class ReceiverTreeCellRenderer extends DefaultTreeCellRenderer {
     DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
     Object o = node.getUserObject();
     setText(o.toString());
+
     String tooltip = "";
-    
+
     /**
      * Deal with Text
      */
@@ -110,9 +122,18 @@ public class ReceiverTreeCellRenderer extends DefaultTreeCellRenderer {
         buf.append("::").append(portBased.getPort());
       }
 
-      buf.append(" ").append("(")
-         .append(networkBased.isActive() ? "active" : "inactive").append(")");
+      buf.append("\n ").append("(").append(
+        networkBased.isActive() ? "active" : "inactive");
 
+      if (o instanceof Thresholdable) {
+        Thresholdable t = (Thresholdable) o;
+
+        if (t.getThreshold() != null) {
+          buf.append(",").append(t.getThreshold());
+        }
+      }
+
+      buf.append(")");
       setText(buf.toString());
     } else if (
       o == ((ReceiversTreeModel) tree.getModel()).getRootNode().getUserObject()) {
@@ -133,13 +154,11 @@ public class ReceiverTreeCellRenderer extends DefaultTreeCellRenderer {
       if (networkBased.isActive()) {
         if ((o instanceof Pauseable) && !((Pauseable) o).isPaused()) {
           setIcon(activeReceiverIcon);
-          tooltip +="This item is active, and can be paused";
-        } 
-        else if ((o instanceof Pauseable) && ((Pauseable) o).isPaused()) {
+          tooltip += "This item is active, and can be paused";
+        } else if ((o instanceof Pauseable) && ((Pauseable) o).isPaused()) {
           setIcon(inactiveReceiverIcon);
           tooltip += "This item is paused, and can be resumed";
-        }
-        else {
+        } else {
           setIcon(null);
           tooltip += " This item cannot be Paused/Resumed";
         }
@@ -149,7 +168,26 @@ public class ReceiverTreeCellRenderer extends DefaultTreeCellRenderer {
       o == ((ReceiversTreeModel) tree.getModel()).getRootNode().getUserObject()) {
       setIcon(rootIcon);
     }
+
+    levelLabel.setText(null);
+    levelLabel.setIcon(null);
+
+    if (o instanceof Thresholdable) {
+      Thresholdable t = (Thresholdable) o;
+
+      if (t.getThreshold() != null) {
+        levelLabel.setIcon(
+          (Icon) LevelIconFactory.getInstance().getLevelToIconMap().get(
+            t.getThreshold().toString()));
+
+        if (levelLabel.getIcon() == null) {
+          levelLabel.setText(t.getThreshold().toString());
+        }
+      }
+    }
+
     setToolTipText(tooltip);
-    return this;
+
+    return panel;
   }
 }

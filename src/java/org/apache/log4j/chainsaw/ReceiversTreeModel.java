@@ -49,16 +49,16 @@
 
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.net.SocketReceiver;
-import org.apache.log4j.plugins.PluginRegistry;
-import org.apache.log4j.plugins.Receiver;
-
 import java.util.Collection;
 import java.util.Iterator;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+
+import org.apache.log4j.LogManager;
+import org.apache.log4j.net.SocketReceiver;
+import org.apache.log4j.plugins.PluginRegistry;
+import org.apache.log4j.plugins.Receiver;
 
 
 /**
@@ -126,8 +126,7 @@ public class ReceiversTreeModel extends DefaultTreeModel {
    */
   void updateRootDisplay() {
     getRootNode().setUserObject(
-      ROOTNODE_LABEL + " (" + LogManager.getLoggerRepository().getThreshold()
-      + ")");
+      ROOTNODE_LABEL );
     nodeChanged(getRootNode());
   }
 
