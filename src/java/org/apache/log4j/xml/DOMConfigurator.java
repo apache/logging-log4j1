@@ -18,6 +18,7 @@ import org.apache.log4j.spi.OptionHandler;
 import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.AppenderAttachable;
 import org.apache.log4j.spi.Configurator;
+import org.apache.log4j.spi.CategoryFactory;
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.Priority;
@@ -73,6 +74,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
   static final String PARAM_TAG    	= "param";
   static final String LAYOUT_TAG	= "layout";
   static final String CATEGORY		= "category";
+  static final String CATEGORY_FACTORY_TAG  = "categoryFactory";
   static final String NAME_ATTR		= "name";
   static final String CLASS_ATTR        = "class";
   static final String VALUE_ATTR	= "value";
@@ -316,6 +318,42 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
       LogLog.debug("Setting ["+cat.getName()+"] additivity to ["+additivity+"].");
       cat.setAdditivity(additivity);
       parseChildrenOfCategoryElement(categoryElement, cat, false);
+    }
+  }
+
+
+  /**
+     Used internally to parse the category factory element.
+  */
+  protected
+  void parseCategoryFactory(Element factoryElement, Hierarchy hierarchy) {
+    String className = subst(factoryElement.getAttribute(CLASS_ATTR));
+
+    if(EMPTY_STR.equals(className)) {
+      LogLog.error("Category Factory tag " + CLASS_ATTR + " attribute not found.");
+      LogLog.debug("No Category Factory configured.");
+    }
+    else {
+      LogLog.debug("Desired category factory: ["+className+']');
+      Object catFactory = OptionConverter.instantiateByClassName(className, 
+                                                                 CategoryFactory.class, 
+                                                                 null);
+      PropertySetter propSetter = new PropertySetter(catFactory);
+
+      Element  currentElement = null;
+      Node     currentNode    = null;
+      NodeList children       = factoryElement.getChildNodes();
+      final int length        = children.getLength();
+
+      for (int loop=0; loop < length; loop++) {
+        currentNode = children.item(loop);
+	if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
+	  currentElement = (Element)currentNode;
+	  if (currentElement.getTagName().equals(PARAM_TAG)) {
+	    setParameter(currentElement, propSetter);
+	  }
+	}
+      }
     }
   }
 
@@ -679,14 +717,34 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
 
     /* Building Appender objects, placing them in a local namespace
        for future reference */
+
+    // First configure each category factory under the root element.
+    // Category factories need to be configured before any of
+    // categories they support.
+    //
+    String   tagName = null;
+    Element  currentElement = null;
+    Node     currentNode = null;
     NodeList children = element.getChildNodes();
     final int length = children.getLength();
+
+    for (int loop = 0; loop < length; loop++) {
+      currentNode = children.item(loop);
+      if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
+	currentElement = (Element) currentNode;
+	tagName = currentElement.getTagName();
+
+	if (tagName.equals(CATEGORY_FACTORY_TAG)) {
+	  parseCategoryFactory(currentElement, hierarchy);
+	}
+      }
+    }
     
     for (int loop = 0; loop < length; loop++) {
-      Node currentNode = children.item(loop);
+      currentNode = children.item(loop);
       if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
-	Element currentElement = (Element) currentNode;
-	String tagName = currentElement.getTagName();
+	currentElement = (Element) currentNode;
+	tagName = currentElement.getTagName();
 
 	if (tagName.equals(CATEGORY)) {
 	  parseCategory(currentElement, hierarchy);

@@ -6,7 +6,7 @@
 elements,appender elements, categories and an optional root
 element. -->
 
-<!ELEMENT log4j:configuration (renderer*, appender*,category*,root?)>
+<!ELEMENT log4j:configuration (renderer*, appender*,category*,root?,categoryFactory?)>
 
 <!-- The disable attribute takes a priority value such that all -->
 <!-- logging statements with a prioroty equal or below this value are -->
@@ -47,7 +47,7 @@ element. -->
 <!-- WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING   -->
 <!-- DEPRECATED DEPRECATED DEPRECATED DEPRECATED DEPRECATED DEPRECATED -->
 
-<!ELEMENT configuration (renderer*, appender*,category*,root?)>
+<!ELEMENT configuration (renderer*, appender*,category*,root?,categoryFactory?)>
 <!ATTLIST configuration
   disable                  (debug|info|warn|error|fatal|null)  "null"
   disableOverride          (true|false|null)  "null"
@@ -117,6 +117,10 @@ element. -->
   name		CDATA	#REQUIRED
   additivity	(true|false) "true"  
 >
+
+<!ELEMENT categoryFactory (param*)>
+<!ATTLIST categoryFactory 
+   class        CDATA #REQUIRED>
 
 <!ELEMENT appender-ref EMPTY>
 <!ATTLIST appender-ref
