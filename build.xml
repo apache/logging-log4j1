@@ -202,14 +202,14 @@
     <mkdir dir="${javac.dest}" />
     <javac srcdir="${basedir}"
 	   destdir="${javac.dest}"
-	   includes="examples/**/*.java"
-	   classpath="${classpath}"
-	   excludes="misc/*"
+	   includes="examples/**/*.java"	
+	   excludes="misc/*, examples/jmx/*.java"
 	   deprecation="${deprecation}"
-           debug="on"/>
-    <rmic base="${javac.dest}"
-      classname="examples.NumberCruncherServer"
-      />
+           debug="on">
+      <classpath refid="compile.classpath"/>
+    </javac>
+
+    <rmic base="${javac.dest}" classname="examples.NumberCruncherServer" />
 
     <copy todir="${javac.dest}">
       <fileset dir="." includes="examples/lf5/**/*.properties"/>
@@ -224,8 +224,7 @@
 	   includes="${stem}/xml/**/*.java"
            excludes="${stem}/xml/examples/doc-files/**.java,
 	             ${stem}/xml/Transform.java"
-	   deprecation="${deprecation}"
-	   classpath="${classpath}">
+	   deprecation="${deprecation}">
       <classpath refid="compile.classpath"/>
     </javac>
     <copy file="${BSTEM}/xml/log4j.dtd"
