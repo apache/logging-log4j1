@@ -1,12 +1,6 @@
-<!-- This build file is intended to be launched from $LOG4J_HOME/tests -->
-
-	<project name="log4j-tests" default="usage" basedir="." >
-
-  <property file="build.properties"/>
-  
-	
-  <!-- The base directory relative to which most targets are built -->
-  <property name="base" value="."/>
+<!-- This build file is intended to be launched from $LOG4J_HOME/tests 
+     which is six levels up from the build file -->
+<project name="log4j-tests" default="usage" basedir="../../../../../../" >
  
   <!-- The directory where source files are stored. -->
 	
@@ -15,8 +9,8 @@
   <property name="examples.classes" value="../examples/classes/"/>
   <property name="tests.source.home" value="${base}/tests/src/java/"/>
 
-  <property name="longrun" value="1000000"/>
-  <property name="shortrun" value="10000"/>
+  <property name="longrun"  value="100000"/>
+  <property name="shortrun" value="20000"/>
 
   <path id="perf.classpath">
     <pathelement location="${project.source.home}"/>
@@ -37,8 +31,9 @@
 	  </target>
 		
 	<target name="loop">
+	    <echo message="Pattern is ${pattern}"/> 	
 		<java classname="org.apache.log4j.performance.Loop" 
-			  fork="yes" failonerror="yes">
+			  fork="yes" failonerror="true">
 			<classpath refid="perf.classpath"/>
 			<sysproperty key="pattern" value="${pattern}"/>
 			<arg line="${runLen} ${configFile}"/>
@@ -46,11 +41,10 @@
 	</target>
 
  	<target name="null-loop">
- 	  <echo message="Pattern is ${pattern}"/> 	
       <antcall target="loop">
    	    <param name="pattern" value="${pattern}"/>
    	    <param name="runLen" value="${longrun}"/>
- 	    <param name="configFile" value="input/performance/null-appender1.xml"/>
+ 	    <param name="configFile" value="input/performance/null-appender.xml"/>
      </antcall>
 	</target>	
 		
@@ -59,14 +53,11 @@
 	  <antcall target="loop">
 	  <param name="pattern" value="${pattern}"/>
 	  <param name="runLen" value="${shortrun}"/>
-	  <param name="configFile" value="input/performance/null-appender.xml"/>
+	  <param name="configFile" value="input\\performance\\null-appender.xml"/>
 	 </antcall>
 	</target>		
 		
 	<target name="null">
-		 <antcall target="null-loop">
-		   <param name="pattern" value=""/>
-		 </antcall>
 		 <antcall target="null-loop">
 		   <param name="pattern" value="%p - %m%n"/>
 		 </antcall>

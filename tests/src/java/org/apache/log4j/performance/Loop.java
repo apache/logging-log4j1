@@ -16,8 +16,13 @@
 
 package org.apache.log4j.performance;
 
+import org.apache.log4j.Appender;
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Layout;
+import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
 import org.apache.log4j.joran.JoranConfigurator;
 
 /**
@@ -32,12 +37,23 @@ public class Loop {
   final static Logger logger = Logger.getLogger(Loop.class);
 
   public static void main(String[] args) throws Exception {
+    
+    Logger j = Logger.getLogger("org.apache.log4j.joran");
+    j.setAdditivity(false);
+    j.setLevel(Level.WARN);
+    ConsoleAppender a = new ConsoleAppender();
+    a.setLayout(new PatternLayout("%d %level %c - %m%n"));
+    a.setName("console");
+    a.activateOptions();
+    j.addAppender(a);
+    
     if (args.length == 2)
       init(args[0], args[1]);
     else
       usage("Wrong number of arguments.");
 
-    long res = loop(logger, "Some fix message of medium length.");
+    loop(1000, logger, "Some fix message of medium length.");
+    long res = loop(runLength, logger, "Some fix message of medium length.");
     double average = (res * 1000.0) / runLength;
     System.out.println("Loop completed in [" + res + "] milliseconds, or ["
         + average + "] microseconds per log.");
@@ -60,9 +76,9 @@ public class Loop {
     jc.doConfigure(configFile, LogManager.getLoggerRepository());
   }
 
-  static long loop(Logger logger, String msg) {
+  static long loop(long len, Logger logger, String msg) {
     long before = System.currentTimeMillis();
-    for (int i = 0; i < runLength; i++) {
+    for (int i = 0; i < len; i++) {
       logger.debug(msg);
     }
     return (System.currentTimeMillis() - before);
