@@ -533,44 +533,6 @@ class ReceiversPanel extends JPanel {
   }
 
   /**
-   * A nice and simple 'X' style icon that is used to indicate a 'close' operation.
-   *
-   * @author Scott Deboy <sdeboy@apache.org>
-   *
-   */
-  class CloseIcon implements Icon {
-    int size;
-    int xOffSet;
-    int yOffSet;
-
-    public CloseIcon(int size, int xOffSet, int yOffSet) {
-      this.size = size;
-      this.xOffSet = xOffSet;
-      this.yOffSet = yOffSet;
-    }
-
-    public int getIconHeight() {
-      return size;
-    }
-
-    public int getIconWidth() {
-      return size;
-    }
-
-    public void paintIcon(Component c, Graphics g, int x, int y) {
-      Graphics2D g2D = (Graphics2D) g;
-      g2D.setStroke(new BasicStroke(1.5f));
-      g2D.setRenderingHint(
-        RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
-      g2D.setColor(Color.black);
-      g2D.drawLine(
-        x + xOffSet, y + yOffSet, x + size + xOffSet, y + size + yOffSet);
-      g2D.drawLine(
-        x + xOffSet, y + size + yOffSet, x + size + xOffSet, y + yOffSet);
-    }
-  }
-
-  /**
    * A popup menu that allows the user to choose which
    * style of Receiver to create, which spawns a relevant Dialog
    * to enter the information and create the Receiver
