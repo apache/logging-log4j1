@@ -138,14 +138,18 @@ public class AsyncAppender extends AppenderSkeleton
      dispatcher thread which will process all pending events before
      exiting. 
   */
-  synchronized
   public 
   void close() {
-    if(closed) // avoid multiple close, otherwise one gets NullPointerException
-      return; 
-
-    closed = true;
-
+    synchronized(this) {
+      if(closed) // avoid multiple close, otherwise one gets NullPointerException
+	return; 
+      closed = true;
+    }
+    
+    // The following cannot be synchronized on "this" because the
+    // dispatcher synchronizes with "this" in its while loop. If we
+    // did synhcronize we would systematically get deadlocks when
+    // close was called.
     dispatcher.close();
     try {
       dispatcher.join();
@@ -333,7 +337,7 @@ class Dispatcher extends Thread {
     this.aai = container.aai;
     // set the dispatcher priority to lowest possible value
     this.setPriority(Thread.MIN_PRIORITY);
-    
+    this.setName(container.getName()+"Dispatcher");
     // set the dispatcher priority to MIN_PRIORITY plus or minus 2
     // depending on the direction of MIN to MAX_PRIORITY.
     //+ (Thread.MAX_PRIORITY > Thread.MIN_PRIORITY ? 1 : -1)*2);
@@ -379,17 +383,16 @@ class Dispatcher extends Thread {
 	    return;
 	  }
 	  try {
-	    //cat.debug("Waiting for new event to dispatch.");
+	    //LogLog.debug("Waiting for new event to dispatch.");
 	    bf.wait();
 	  } catch(InterruptedException e) {
 	    LogLog.error("The dispathcer should not be interrupted.");
 	    break;
 	  }
 	}
-	//cat.debug("About to get new event.");
 	event = bf.get();
 	if(bf.wasFull()) {
-	  //cat.debug("Notifying AsyncAppender about freed space.");
+	  //LogLog.debug("Notifying AsyncAppender about freed space.");
 	  bf.notify();
 	}
       } // synchronized
