@@ -55,7 +55,7 @@ public class LocationInfo implements java.io.Serializable {
 
   // Check if we are running in IBM's visual age.
   static boolean inVisualAge = false;
-  {
+  static {
     try {
       Class dummy = Class.forName("com.ibm.uvm.tools.DebugSupport");
       inVisualAge = true;
