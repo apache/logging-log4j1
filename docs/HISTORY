@@ -9,6 +9,10 @@
 
  - Release of version 1.2alpha_0
 
+ - The Category.assert method has been replaced by
+   Category.assertLog.  This change was mecessary because assert is a
+   language reserved word in JDK 1.4. [**]
+
  - Added event reporting capability to the Hierachy class.
  
  - Corrected a performance bug in the NDC class as observed by Dan Milstein. [*]
