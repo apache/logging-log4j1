@@ -291,6 +291,8 @@ public class WriterAppender extends AppenderSkeleton {
     } 
   }
 
+
+
   /**
      The WriterAppender requires a layout. Hence, this method returns
      <code>true</code>.
@@ -300,10 +302,11 @@ public class WriterAppender extends AppenderSkeleton {
     return true;
   }
 
-
   /**
      Clerar internal references to the writer and other variables.
-   */
+
+     Sub-classes can override this method for an alternate closing
+     behaviour.  */
   protected
   void reset() {
      this.qw = null;
