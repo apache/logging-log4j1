@@ -667,7 +667,7 @@ class ChainsawToolBarAndMenus implements ChangeListener {
     scrollToBottomButton.getActionMap().put(
       toggleScrollToBottomAction.getValue(Action.NAME), toggleScrollToBottomAction);
     scrollToBottomButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-      KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.ALT_MASK),
+      KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.CTRL_MASK),
       toggleScrollToBottomAction.getValue(Action.NAME));
     scrollToBottomButton.setText(null);
 
