@@ -82,7 +82,7 @@ public class SyslogAppender extends AppenderSkeleton {
   final static public int LOG_LOCAL7 = 23<<3; 
 
    /**
-     A string constant used in naming the option for setting the the
+     A string constant used in naming the option for setting the
      syslog server.  Current value of this string constant is
      <b>SyslogHost</b>.
      @since 0.8.1 */
@@ -295,7 +295,7 @@ public class SyslogAppender extends AppenderSkeleton {
 
   
   /**
-     Retuns the option names for this component, namely the string
+     Returns the option names for this component, namely the string
      array consisting of {{@link #SYSLOG_HOST_OPTION}, {@link
      #FACILITY_OPTION}, {@link #FACILITY_PRINTING_OPTION}}.
 
@@ -308,7 +308,7 @@ public class SyslogAppender extends AppenderSkeleton {
   }
   
   /**
-     The SyslogAppender requires a layout. Hence, this method return
+     The SyslogAppender requires a layout. Hence, this method returns
      <code>true</code>.
 
      @since 0.8.4 */
