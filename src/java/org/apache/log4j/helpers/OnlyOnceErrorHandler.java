@@ -70,8 +70,8 @@ public class OnlyOnceErrorHandler implements ErrorHandler {
   public void error(
     String message, Exception e, int errorCode, LoggingEvent event) {
     if (firstTime) {
-      logger.error(message, e);
       firstTime = false;
+      logger.error(message, e);
     }
   }
 
@@ -81,8 +81,8 @@ public class OnlyOnceErrorHandler implements ErrorHandler {
   */
   public void error(String message) {
     if (firstTime) {
-      logger.error(message);
       firstTime = false;
+      logger.error(message);
     }
   }
 

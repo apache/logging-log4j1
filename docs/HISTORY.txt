@@ -21,6 +21,7 @@
 
  - Fixed Bugzilla 12112: CountingQuietWriter miscounts bytes.
 
+ - Fixed Bugzilla 18076: setting of firstTime in OnlyOnceErrorHandler.
 
   November 25, 2004
 
