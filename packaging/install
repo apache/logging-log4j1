@@ -77,42 +77,42 @@ ZIP_FILE=${PKG_NAME}.zip
 echo "Deleting \"core\" files."
 find . -type f -name core -exec rm {} \;
 
-deleteFile $PKG_DIR/org/log4j/performance/test
-deleteFile $PKG_DIR/org/log4j/test/temp
-deleteFile $PKG_DIR/org/log4j/test/temp.A1
-deleteFile $PKG_DIR/org/log4j/test/temp.A2
-deleteFile $PKG_DIR/org/log4j/test/temp.x
-deleteFile $PKG_DIR/org/log4j/test/temp.1
-deleteFile $PKG_DIR/org/log4j/test/temp.2
-deleteFile $PKG_DIR/org/log4j/test/temp.3
-deleteFile $PKG_DIR/org/log4j/test/logging.lcf
-deleteFile $PKG_DIR/org/log4j/test/logging.cat
-deleteFile $PKG_DIR/org/log4j/test/current.reg
-deleteFile $PKG_DIR/org/log4j/test/current.reg.A1
-deleteFile $PKG_DIR/org/log4j/test/current.reg.A2
-deleteFile $PKG_DIR/org/log4j/test/log4j.properties
-deleteFile $PKG_DIR/org/log4j/test/socket.lcf
-deleteFile $PKG_DIR/org/log4j/test/file
-deleteFile $PKG_DIR/org/log4j/test/output.A1
+deleteFile $PKG_DIR/org/apache/log4j/performance/test
+deleteFile $PKG_DIR/org/apache/log4j/test/temp
+deleteFile $PKG_DIR/org/apache/log4j/test/temp.A1
+deleteFile $PKG_DIR/org/apache/log4j/test/temp.A2
+deleteFile $PKG_DIR/org/apache/log4j/test/temp.x
+deleteFile $PKG_DIR/org/apache/log4j/test/temp.1
+deleteFile $PKG_DIR/org/apache/log4j/test/temp.2
+deleteFile $PKG_DIR/org/apache/log4j/test/temp.3
+deleteFile $PKG_DIR/org/apache/log4j/test/logging.lcf
+deleteFile $PKG_DIR/org/apache/log4j/test/logging.cat
+deleteFile $PKG_DIR/org/apache/log4j/test/current.reg
+deleteFile $PKG_DIR/org/apache/log4j/test/current.reg.A1
+deleteFile $PKG_DIR/org/apache/log4j/test/current.reg.A2
+deleteFile $PKG_DIR/org/apache/log4j/test/log4j.properties
+deleteFile $PKG_DIR/org/apache/log4j/test/socket.lcf
+deleteFile $PKG_DIR/org/apache/log4j/test/file
+deleteFile $PKG_DIR/org/apache/log4j/test/output.A1
 
-deleteFile $PKG_DIR/org/log4j/examples/test
-deleteFile $PKG_DIR/org/log4j/xml/test/output.A1
-deleteFile $PKG_DIR/org/log4j/xml/test/output.A2
-deleteFile $PKG_DIR/org/log4j/xml/test/temp.A1
-deleteFile $PKG_DIR/org/log4j/xml/test/temp.A2
-deleteFile $PKG_DIR/org/log4j/xml/test/current.reg
-deleteFile $PKG_DIR/org/log4j/nt/EventLogCategories.dbg
-deleteFile $PKG_DIR/org/log4j/nt/EventLogCategories.h
-deleteFile $PKG_DIR/org/log4j/nt/EventLogCategories.rc
-deleteFile $PKG_DIR/org/log4j/nt/EventLogCategories.RES
-deleteFile $PKG_DIR/org/log4j/nt/MSG00001.bin
-deleteFile $PKG_DIR/org/log4j/nt/NTEventLogAppender.lib
-deleteFile $PKG_DIR/org/log4j/nt/NTEventLogAppender.exp
-deleteFile $PKG_DIR/org/log4j/nt/vc50.idb
-deleteFile $PKG_DIR/org/log4j/net/test/loop.log
-deleteFile $PKG_DIR/org/log4j/net/test/loop.log.1
-deleteFile $PKG_DIR/classes/org/log4j/UnitTestCategory.class
-deleteFile $PKG_DIR/org/log4j/varia/test/temp
+deleteFile $PKG_DIR/org/apache/log4j/examples/test
+deleteFile $PKG_DIR/org/apache/log4j/xml/test/output.A1
+deleteFile $PKG_DIR/org/apache/log4j/xml/test/output.A2
+deleteFile $PKG_DIR/org/apache/log4j/xml/test/temp.A1
+deleteFile $PKG_DIR/org/apache/log4j/xml/test/temp.A2
+deleteFile $PKG_DIR/org/apache/log4j/xml/test/current.reg
+deleteFile $PKG_DIR/org/apache/log4j/nt/EventLogCategories.dbg
+deleteFile $PKG_DIR/org/apache/log4j/nt/EventLogCategories.h
+deleteFile $PKG_DIR/org/apache/log4j/nt/EventLogCategories.rc
+deleteFile $PKG_DIR/org/apache/log4j/nt/EventLogCategories.RES
+deleteFile $PKG_DIR/org/apache/log4j/nt/MSG00001.bin
+deleteFile $PKG_DIR/org/apache/log4j/nt/NTEventLogAppender.lib
+deleteFile $PKG_DIR/org/apache/log4j/nt/NTEventLogAppender.exp
+deleteFile $PKG_DIR/org/apache/log4j/nt/vc50.idb
+deleteFile $PKG_DIR/org/apache/log4j/net/test/loop.log
+deleteFile $PKG_DIR/org/apache/log4j/net/test/loop.log.1
+deleteFile $PKG_DIR/classes/org/apache/log4j/UnitTestCategory.class
+deleteFile $PKG_DIR/org/apache/log4j/varia/test/temp
 
 echo "Cleaning \"classes\" directory."
 find .  -type d -path "./classes/exercise" -exec rm -r {} \;

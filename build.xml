@@ -9,7 +9,7 @@
 		<property name="srcdir" value="." />
 		<property name="classes" value="classes" />
 		<property name="build.compiler" value="jikes"/>	
-		<property name="version" value="0.9.2"/>
+		<property name="version" value="1.0"/>
 
 		<available classname="javax.swing.JTextPane"
  	                   property="swing-present"/>
@@ -46,17 +46,17 @@
 				 **/pending/**" 
 		       debug="on"
 		       optimize="on"/>
-		<copyfile src="org/log4j/xml/log4j.dtd"
-		          dest="${classes}/org/log4j/xml/log4j.dtd" />
+		<copy file="org/log4j/xml/log4j.dtd"
+		          tofile="${classes}/org/log4j/xml/log4j.dtd" />
 		
          </target>
 
 	 <target name="compile.swing" depends="init" if="swing-present">   
             <echo message="Really compiling graphic components." />
 	    <mkdir dir="${classes}/icons"/>
-            <copydir todir="${classes}/icons">
+            <copy todir="${classes}/icons">
 		<fileset dir="icons"/>
-            </copydir>
+            </copy>
 	    <javac srcdir="${srcdir}"
 		   destdir="${classes}"
 		   includes="org/log4j/gui/**"
@@ -139,36 +139,39 @@
 	<target name="javadoc" depends="init">
 		<mkdir dir="javadoc" />
 
-		<copyfile src="doc/od.gif"
-		          dest="javadoc/od.gif" />
+		<copy file="doc/od.gif"
+		      tofile="javadoc/od.gif" />
 
-		<copyfile src="doc/manual.html"
-		          dest="javadoc/manual.html" />
+		<copy file="doc/manual.html"
+		      tofile="javadoc/manual.html" />
 
 		<javadoc sourcepath="${srcdir}" 
 		   destdir="javadoc" 
-		   packagenames="org.log4j,
-			         org.log4j.spi,
-			         org.log4j.or,
-                                 org.log4j.helpers,
-		                 org.log4j.performance,
-			         org.log4j.xml,
-				 org.log4j.examples,
-			         org.log4j.net,
-				 org.log4j.nt,
-				 org.log4j.varia,
-			         org.log4j.xml.examples"
+		   packagenames="org.apache.log4j,
+			         org.apache.log4j.spi,
+			         org.apache.log4j.or,
+                                 org.apache.log4j.helpers,
+		                 org.apache.log4j.performance,
+			         org.apache.log4j.xml,
+				 org.apache.log4j.examples,
+			         org.apache.log4j.net,
+				 org.apache.log4j.nt,
+				 org.apache.log4j.varia,
+			         org.apache.log4j.xml.examples"
 		   protected="true"				       
 		   version="true"
 		   author="true"
-		   use="true"
-		   linkoffline='http://java.sun.com/products/jdk/1.2/docs/api" "packaging'
+		   use="true"		   
 		   overview="doc/overview.html"
 		   doctitle="log4j version ${version}&lt;br&gt;API Specification"
 		   windowtitle="Log4j Version ${version}" 
                    header="&lt;b&gt;Log4j ${version}&lt;/b&gt;"
-  		   bottom="Please &lt;a href=http://lists.sourceforge.net/mailman/listinfo/log4j-announce&gt;&lt;b&gt;notify me&lt;/b&gt;&lt;/a&gt; about new log4j releases. &lt;hr&gt;" 
-		/>
+  		   bottom="Please &lt;a href=http://lists.sourceforge.net/mailman/listinfo/log4j-announce&gt;&lt;b&gt;notify me&lt;/b&gt;&lt;/a&gt; about new log4j releases. &lt;hr&gt;"> 
+		   
+		   <link offline="true" 
+		         href="http://java.sun.com/products/jdk/1.2/docs/api"
+                         packageListLoc="packaging"/>
+		</javadoc>
 		
 	</target>
 

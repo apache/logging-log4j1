@@ -1,7 +1,7 @@
 # This script creates directories and links that are not created by
 # CVS checkout.
 
-STEM=org/log4j
+STEM=org/apache/log4j
 	
 # +=============================================+
 # Strip the filename, retain the directory only.|
