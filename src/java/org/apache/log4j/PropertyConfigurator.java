@@ -383,15 +383,6 @@ public class PropertyConfigurator implements Configurator {
   public void doConfigure(Properties properties, LoggerRepository hierarchy) {
     String value = properties.getProperty(LogLog.DEBUG_KEY);
 
-    if (value == null) {
-      value = properties.getProperty(LogLog.CONFIG_DEBUG_KEY);
-
-      if (value != null) {
-        LogLog.warn(
-          "[log4j.configDebug] is deprecated. Use [log4j.debug] instead.");
-      }
-    }
-
     if (value != null) {
       LogLog.setInternalDebugging(OptionConverter.toBoolean(value, true));
     }
