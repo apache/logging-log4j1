@@ -49,25 +49,37 @@
 
 package org.apache.log4j.chainsaw.messages;
 
-import java.awt.Component;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JList;
-import javax.swing.JScrollPane;
-import javax.swing.ListCellRenderer;
-import javax.swing.ListModel;
-
 import org.apache.log4j.Layout;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.TTCCLayout;
+import org.apache.log4j.chainsaw.ChainsawConstants;
+import org.apache.log4j.chainsaw.PopupListener;
 import org.apache.log4j.chainsaw.icons.ChainsawIcons;
 import org.apache.log4j.spi.LoggingEvent;
+
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JList;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JToolBar;
+import javax.swing.ListCellRenderer;
+import javax.swing.ListModel;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
 
 /**
@@ -102,17 +114,50 @@ public class MessageCenter {
     new PropertyChangeSupport(this);
   private JFrame window = new JFrame("Message Center");
   private JScrollPane pane = new JScrollPane(messageList);
+  private final JToolBar toolbar = new JToolBar();
+  private JPopupMenu popupMenu = new JPopupMenu();
+  private PopupListener popupListener = new PopupListener(popupMenu);
+  private Action clearAction;
 
   private MessageCenter() {
-    messageList.setModel(appender.getModel());
-    messageList.setCellRenderer(listCellRenderer);
-    window.getContentPane().add(pane);
-    window.setSize(480, 240);
-    window.setIconImage(new ImageIcon(ChainsawIcons.WINDOW_ICON).getImage());
-    logger.addAppender(appender);
-    logger.setAdditivity(false);
-    logger.setLevel(Level.DEBUG);
-    
+    setupActions();
+    setupFrame();
+    setupLogger();
+    setupListeners();
+    setupPopMenu();
+    setupToolbar();
+  }
+
+  /**
+   *
+   */
+  private void setupPopMenu() {
+    popupMenu.add(clearAction);
+  }
+
+  /**
+   *
+   */
+  private void setupToolbar() {
+    JButton clearButton = new JButton(clearAction);
+    clearButton.setText(null);
+    toolbar.add(clearButton);
+
+    toolbar.setFloatable(false);
+  }
+
+  private void setupActions() {
+    clearAction =
+      new AbstractAction("Clear") {
+          public void actionPerformed(ActionEvent e) {
+            appender.clearModel();
+          }
+        };
+    clearAction.putValue(
+      Action.SMALL_ICON, new ImageIcon(ChainsawIcons.DELETE));
+  }
+
+  private void setupListeners() {
     propertySupport.addPropertyChangeListener(
       "visible",
       new PropertyChangeListener() {
@@ -130,12 +175,50 @@ public class MessageCenter {
           messageList.setCellRenderer(new LayoutListCellRenderer(layout));
         }
       });
+    messageList.addMouseListener(popupListener);
+
+    appender.getModel().addListDataListener(
+      new ListDataListener() {
+        public void contentsChanged(ListDataEvent e) {
+          updateActions();
+        }
+
+        public void intervalAdded(ListDataEvent e) {
+          updateActions();
+        }
+
+        public void intervalRemoved(ListDataEvent e) {
+          updateActions();
+        }
+      });
   }
 
-  public static void main(String[] args) {
-    MessageCenter center = MessageCenter.getInstance();
+  /**
+   *
+   */
+  private void updateActions() {
+    clearAction.putValue(
+      "enabled",
+      (appender.getModel().getSize() > 0) ? Boolean.TRUE : Boolean.FALSE);
+  }
 
-    center.addMessage("Hello World");
+  private void setupLogger() {
+    logger.addAppender(appender);
+    logger.setAdditivity(false);
+    logger.setLevel(Level.DEBUG);
+  }
+
+  private void setupFrame() {
+    window.getContentPane().setLayout(new BorderLayout());
+
+    messageList.setModel(appender.getModel());
+    messageList.setCellRenderer(listCellRenderer);
+
+    window.getContentPane().add(pane, BorderLayout.CENTER);
+    window.getContentPane().add(toolbar, BorderLayout.NORTH);
+
+    window.setSize(480, 240);
+    window.setIconImage(new ImageIcon(ChainsawIcons.WINDOW_ICON).getImage());
   }
 
   public ListModel getModel() {
@@ -148,19 +231,6 @@ public class MessageCenter {
 
   public void addMessage(String message) {
     logger.info(message);
-  }
-
-  /* (non-Javadoc)
-   * @see org.apache.log4j.Appender#close()
-   */
-  public void close() {
-  }
-
-  /* (non-Javadoc)
-   * @see org.apache.log4j.Appender#requiresLayout()
-   */
-  public boolean requiresLayout() {
-    return false;
   }
 
   public void setVisible(boolean vis) {
@@ -193,6 +263,19 @@ public class MessageCenter {
   }
 
   /**
+   * Returns the logger that can be used to log
+   * messages to display within the Message Center.
+   * @return
+   */
+  public final Logger getLogger() {
+    return this.logger;
+  }
+
+  /**
+   * This class simply renders an event by delegating the effort to a
+   * Log4j layout instance.
+   * 
+   * @author Paul Smith <psmith@apache.org>
    */
   private static class LayoutListCellRenderer extends DefaultListCellRenderer
     implements ListCellRenderer {
@@ -214,17 +297,14 @@ public class MessageCenter {
       boolean cellHasFocus) {
       value = layout.format((LoggingEvent) value);
 
-      return super.getListCellRendererComponent(
-        list, value, index, isSelected, cellHasFocus);
-    }
-  }
+      Component c =
+        super.getListCellRendererComponent(
+          list, value, index, isSelected, cellHasFocus);
+      c.setBackground(
+        ((index % 2) == 0) ? ChainsawConstants.COLOR_EVEN_ROW
+                           : ChainsawConstants.COLOR_ODD_ROW);
 
-  /**
-   * Returns the logger that can be used to log
-   * messages to display within the Message Center.
-   * @return
-   */
-  public final Logger getLogger() {
-    return this.logger;
+      return c;
+    }
   }
 }
