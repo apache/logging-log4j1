@@ -50,6 +50,7 @@
 package org.apache.log4j.chainsaw;
 
 import org.apache.log4j.Decoder;
+import org.apache.log4j.Logger;
 import org.apache.log4j.chainsaw.icons.ChainsawIcons;
 
 import java.awt.event.ActionEvent;
@@ -59,6 +60,8 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 
+import java.net.URL;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
@@ -67,6 +70,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
 
@@ -77,9 +81,11 @@ import javax.swing.filechooser.FileFilter;
  *
  * @author Paul Smith <psmith@apache.org>
  * @author Scott Deboy <sdeboy@apache.org>
- * 
+ *
  */
 class FileLoadAction extends AbstractAction {
+  private static final Logger LOG = Logger.getLogger(FileLoadAction.class);
+
   /**
    * This action must have a reference to a LogUI
    * window so that it can append the events it loads
@@ -88,10 +94,12 @@ class FileLoadAction extends AbstractAction {
   Decoder decoder = null;
   private LogUI parent;
   private JFileChooser chooser = null;
+  private boolean remoteURL = false;
 
-  public FileLoadAction(LogUI parent, String decoder, String title) {
+  public FileLoadAction(
+    LogUI parent, String decoder, String title, boolean isRemoteURL) {
     super(title);
-
+    remoteURL = isRemoteURL;
 
     try {
       Class c = Class.forName(decoder);
@@ -124,43 +132,75 @@ class FileLoadAction extends AbstractAction {
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   public void actionPerformed(ActionEvent e) {
-    if( chooser == null ){
-      chooser = new JFileChooser();
-    }
+    String name = "";
+    URL url = null;
 
-    chooser.setDialogTitle("Load Events from XML file...");
+    if (!remoteURL) {
+      if (chooser == null) {
+        chooser = new JFileChooser();
+      }
 
-    chooser.setAcceptAllFileFilterUsed(true);
+      chooser.setDialogTitle("Load Events from XML file...");
 
-    chooser.setFileFilter(
-      new FileFilter() {
-        public boolean accept(File f) {
-          return (f.getName().toLowerCase().endsWith(".xml")|| f.isDirectory());
-        }
+      chooser.setAcceptAllFileFilterUsed(true);
 
-        public String getDescription() {
-          return "XML files (*.xml)";
-        }
-      });
+      chooser.setFileFilter(
+        new FileFilter() {
+          public boolean accept(File f) {
+            return (f.getName().toLowerCase().endsWith(".xml")
+            || f.isDirectory());
+          }
 
-    chooser.showOpenDialog(parent);
+          public String getDescription() {
+            return "XML files (*.xml)";
+          }
+        });
 
-    File selectedFile = chooser.getSelectedFile();
+      chooser.showOpenDialog(parent);
 
-    if (selectedFile != null) {
-      Map additionalProperties = new HashMap();
-      additionalProperties.put(
-        ChainsawConstants.LOG4J_MACHINE_KEY,
-        "localhost:" + selectedFile.getName());
-      decoder.setAdditionalProperties(additionalProperties);
+      File selectedFile = chooser.getSelectedFile();
 
       try {
-        Vector events = decoder.decode(selectedFile);
-        parent.handler.appendBatch(events);
-      } catch (IOException e1) {
-        // TODO Handle the error with a nice msg
-        e1.printStackTrace();
+        url = selectedFile.toURL();
+        name = "localhost:" + selectedFile.getName();
+      } catch (Exception ex) {
+        // TODO: handle exception
       }
+    } else {
+      String urltext =
+        JOptionPane.showInputDialog(
+          parent,
+          "<html>Please type in the <b>complete</b> URL to the remote XML source.</html>",
+          "file://");
+
+      if (urltext != null) {
+        try {
+          url = new URL(urltext);
+        } catch (Exception ex) {
+          JOptionPane.showMessageDialog(
+            parent, "'" + urltext + "' is not a valid URL.");
+        }
+      }
+    }
+
+    if (url != null) {
+      Map additionalProperties = new HashMap();
+      additionalProperties.put(ChainsawConstants.LOG4J_MACHINE_KEY, name);
+      decoder.setAdditionalProperties(additionalProperties);
+
+      final URL urlToUse = url;
+      new Thread(
+        new Runnable() {
+          public void run() {
+            try {
+              Vector events = decoder.decode(urlToUse);
+              parent.handler.appendBatch(events);
+            } catch (IOException e1) {
+              // TODO Handle the error with a nice msg
+              LOG.error(e1);
+            }
+          }
+        }).start();
     }
   }
 }
