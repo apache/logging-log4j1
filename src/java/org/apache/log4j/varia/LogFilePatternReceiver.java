@@ -102,7 +102,10 @@ import java.util.Map;
  * param: "timestampFormat" value="yyyy-MM-d HH:mm:ss,SSS"
  * param: "logFormat" value="RELATIVETIME [THREAD] LEVEL LOGGER * - MESSAGE"
  * param: "fileName" value="c:/logs/A4.log"
+ * param: "tailing" value="true"
  *
+ * The 'tailing' parameter allows the contents of the file to be continually read and new events processed.
+ * 
  * NOTE: in our example file content below, the timestampFormat entry defined above
  * is not required, but included as an example of how to specify the format.  See SimpleDateFormat
  * for more information.
@@ -136,7 +139,7 @@ public class LogFilePatternReceiver extends Receiver {
   private String logFormat;
   private String fileName;
   private String shortFileName;
-  private boolean looping;
+  private boolean tailing;
 
   /**
    * Creates a new LogFilePatternReceiver object.
@@ -232,19 +235,19 @@ public class LogFilePatternReceiver extends Receiver {
   /**
    * Accessor
    *
-   * @return looping
+   * @return tailing
    */
-  public boolean isLooping() {
-    return looping;
+  public boolean isTailing() {
+    return tailing;
   }
 
   /**
    * Mutator
    *
-   * @param looping
+   * @param tailing
    */
-  public void setLooping(boolean looping) {
-    this.looping = looping;
+  public void setTailing(boolean tailing) {
+    this.tailing = tailing;
   }
 
   /**
@@ -390,7 +393,7 @@ public class LogFilePatternReceiver extends Receiver {
         }
       } catch (InterruptedException ie) {
       }
-    } while (looping);
+    } while (tailing);
   }
 
   /**

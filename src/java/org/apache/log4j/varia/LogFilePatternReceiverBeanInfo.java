@@ -38,7 +38,7 @@ public class LogFilePatternReceiverBeanInfo extends SimpleBeanInfo {
                 new PropertyDescriptor("timestampFormat", LogFilePatternReceiver.class),
                 new PropertyDescriptor("logFormat", LogFilePatternReceiver.class),
                 new PropertyDescriptor("name", LogFilePatternReceiver.class),
-                new PropertyDescriptor("looping", LogFilePatternReceiver.class),
+                new PropertyDescriptor("tailing", LogFilePatternReceiver.class),
             };
         } catch (Exception e) {
         }

@@ -111,17 +111,16 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer {
         break;
       } else {
         String logger = value.toString();
-        int startPos = logger.length();
+        int startPos = -1;
 
         for (int i = 0; i < loggerPrecision; i++) {
-          startPos = logger.lastIndexOf(".", startPos - 1);
+          startPos = logger.indexOf(".", startPos + 1);
+          if (startPos < 0) {
+              break;
+          }
         }
 
-        if (startPos < 0) {
-          break;
-        } else {
-          ((JLabel) c).setText(logger.substring(startPos + 1));
-        }
+        ((JLabel) c).setText(logger.substring(startPos + 1));
       }
       break;
 
@@ -205,6 +204,7 @@ public class TableColorizingRenderer extends DefaultTableCellRenderer {
     try {
       loggerPrecision = Integer.parseInt(loggerPrecisionText);
     } catch (NumberFormatException nfe) {
+        loggerPrecision = 0;
     }
   }
 
