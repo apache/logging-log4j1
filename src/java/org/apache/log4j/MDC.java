@@ -124,6 +124,17 @@ public class MDC {
   public static Hashtable getContext() {
     return (Hashtable) tlm.get();
   }
+
+    /**
+     * Sets the current thread's MDC as a hashtable.  This
+     * method <strong>OVERWRITES</strong> the existing MDC
+     * values, if any are present.
+     *
+     * @param ht The table
+     */
+    public static void setContext(Hashtable ht) {
+        tlm.set(ht);
+    }
   
   /** 
    * Returns the keys in the MDC as an {@link Enumeration}. The returned value can be 

@@ -14,6 +14,8 @@
  - Fixed Bugzilla 15198: TelnetAppender: NullPointerException if
    SocketHandler not initialized.
 
+ - Implemented Bugzilla 14934: MDC#setContext method added.
+
 
   November 25, 2004
 
