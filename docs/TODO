@@ -1,13 +1,16 @@
 TODO
 
+
+- Add support for string options in SocketAppender
+
 - Add a properties file option to log4j:configure in XML.
+
 - Really quiet mode for LogLog.
+
 - Deprecate configure element in DTD.
-- Add priority#priorityClass to Configurators
+
 - Support for duplicate appender suppression in configurators.
 - Clean up the association of renderers and hierarchies
-- log4j: namespace in DTD
-- Mapped Diagnostic Contexts
 - FailOverAppender
 
 - Graceful congiguration merging
@@ -27,6 +30,9 @@ ONGOING TASKS
 	
 DONE
 
+- Add priority#priorityClass to Configurators
+- log4j: namespace in DTD
+- Mapped Diagnostic Contexts
 - Allow the raw message object to be seen by Appenders and Layouts.
 - Complete multiple hierachy support.
 - JMSAppender.

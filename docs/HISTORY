@@ -12,7 +12,8 @@
  - Improved error reporting in DOMConfigurator. Thanks to Thomas Tuft
    Muller for contributing the enhancement. [*]
 	
- - Log4j is now configurable using JMX. [*]
+ - Log4j is now configurable using JMX. JMX support is not of
+   production quality. [*]
 
  - Added support for different encodings in WriterAppender. Thanks to
    Ben Sandee for submitting the relevant patch. [*]

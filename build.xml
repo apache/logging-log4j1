@@ -32,7 +32,7 @@
 
   <!-- Destination for documentation files generated or not -->
   <property name="docs" value="docs"/>
-
+ 
   <!-- Destination for javadoc generated files -->
   <property name="javadoc.dest" value="docs/api"/>
 
@@ -340,6 +340,8 @@
 			  contribs/**"
                 excludes="make/make.loc, 
 		          **/*.bak, **/goEnv.bat,
+	                  src/docbook/docbkx412/**,
+	                  src/docbook/docbook-xsl-1.45/**,
 			  **/.#*"/>
     </copy>
 
