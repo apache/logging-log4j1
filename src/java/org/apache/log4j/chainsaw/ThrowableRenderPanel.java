@@ -52,9 +52,8 @@ class ThrowableRenderPanel extends AbstractCellEditor
   private Color background = new Color(255, 255, 254);
   private final Color COLOR_ODD = new Color(230, 230, 230);
   private final Action showStackTraceAction;
-  private JTable table;
 
-  ThrowableRenderPanel(JTable table) {
+  ThrowableRenderPanel() {
     panel.setLayout(new BorderLayout());
     panel.add(lbl, BorderLayout.CENTER);
     panel.add(btn, BorderLayout.EAST);
@@ -65,7 +64,6 @@ class ThrowableRenderPanel extends AbstractCellEditor
           public void actionPerformed(ActionEvent e) {
           }
         };
-    this.table = table;
     showStackTraceAction.putValue(
       Action.SHORT_DESCRIPTION, "Display the full stack trace in a popup");
     btn.setAction(showStackTraceAction);
@@ -75,10 +73,6 @@ class ThrowableRenderPanel extends AbstractCellEditor
 		btn.addActionListener(l);
 	}
 	
-  private void setText(String text) {
-    lbl.setText(text);
-  }
-
   /* (non-Javadoc)
    * @see javax.swing.table.TableCellEditor#getTableCellEditorComponent(javax.swing.JTable, java.lang.Object, boolean, int, int)
    */

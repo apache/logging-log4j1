@@ -394,6 +394,13 @@ public class LogFilePatternReceiver extends Receiver {
       } catch (InterruptedException ie) {
       }
     } while (tailing);
+    try {
+      if (reader != null) {
+          reader.close();
+      }
+    } catch (IOException ioe) {
+      ioe.printStackTrace();
+    }
   }
 
   /**

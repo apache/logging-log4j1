@@ -41,10 +41,6 @@ import org.apache.log4j.spi.Thresholdable;
  * @author Paul Smith <psmith@apache.org>
  */
 public class ReceiverTreeCellRenderer extends DefaultTreeCellRenderer {
-  private Icon activeReceiverIcon =
-    new ImageIcon(ChainsawIcons.ICON_ACTIVE_RECEIVER);
-  private Icon inactiveReceiverIcon =
-    new ImageIcon(ChainsawIcons.ICON_INACTIVE_RECEIVER);
   private Icon rootIcon = new ImageIcon(ChainsawIcons.ANIM_NET_CONNECT);
   private JPanel panel = new JPanel();
   private JLabel levelLabel = new JLabel();
@@ -58,10 +54,10 @@ public class ReceiverTreeCellRenderer extends DefaultTreeCellRenderer {
   }
 
   public Component getTreeCellRendererComponent(
-    JTree tree, Object value, boolean selected, boolean expanded, boolean leaf,
-    int row, boolean hasFocus) {
+    JTree tree, Object value, boolean sel, boolean expanded, boolean leaf,
+    int row, boolean focus) {
     super.getTreeCellRendererComponent(
-      tree, value, selected, expanded, leaf, row, hasFocus);
+      tree, value, sel, expanded, leaf, row, focus);
 
     DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
     Object o = node.getUserObject();

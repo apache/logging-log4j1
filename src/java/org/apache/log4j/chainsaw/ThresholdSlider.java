@@ -67,9 +67,6 @@ final class ThresholdSlider extends JSlider {
         }
       });
 
-    Level min = (Level) priorityList.get(0);
-    Level max = (Level) priorityList.get(priorityList.size() - 1);
-
     setModel(
       new DefaultBoundedRangeModel(
         priorityList.indexOf(Level.DEBUG), 0, 0, priorityList.size() - 1));

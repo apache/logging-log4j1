@@ -335,11 +335,11 @@ class NoReceiversWarningPanel extends JPanel {
                     if (value instanceof Class) {
 
                         Class receiverClass = (Class) value;
-                        JLabel label = (JLabel) c;
+                        JLabel cellLabel = (JLabel) c;
                         String shortenedName = receiverClass.getName()
                             .substring(
                                 receiverClass.getName().lastIndexOf('.') + 1);
-                        label.setText(shortenedName);
+                        cellLabel.setText(shortenedName);
                     }
 
                     return c;
@@ -528,7 +528,6 @@ class NoReceiversWarningPanel extends JPanel {
      */
     class PanelModel {
 
-        private URL fileUrl;
         private URL configUrl;
 
         boolean isLoadLogFile() {

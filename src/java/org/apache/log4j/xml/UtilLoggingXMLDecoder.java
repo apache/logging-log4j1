@@ -95,7 +95,7 @@ public class UtilLoggingXMLDecoder implements Decoder {
    * @return
    */
   private Document parse(String data) {
-    if (docBuilder == null) {
+    if (docBuilder == null || data == null) {
       return null;
     }
 
@@ -111,9 +111,7 @@ public class UtilLoggingXMLDecoder implements Decoder {
        * resetting the length of the StringBuffer is dangerous, particularly
        * on some JDK 1.4 impls, there's a known Bug that causes a memory leak
        */
-      if (data != null) {
-        data = data.trim();
-      }
+      data = data.trim();
 
       StringBuffer buf = new StringBuffer(1024);
 
@@ -164,6 +162,7 @@ public class UtilLoggingXMLDecoder implements Decoder {
           reader.close();
         }
       } catch (Exception e) {
+        e.printStackTrace();
       }
     }
 

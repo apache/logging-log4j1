@@ -78,11 +78,11 @@ class LogPanelLoggerTreeModel extends DefaultTreeModel
 outerFor: 
     for (int i = 0; i < packages.length; i++) {
       String packageName = packages[i];
-      Enumeration enum = current.children();
+      Enumeration enumeration = current.children();
 
-      while (enum.hasMoreElements()) {
+      while (enumeration.hasMoreElements()) {
         DefaultMutableTreeNode child =
-          (DefaultMutableTreeNode) enum.nextElement();
+          (DefaultMutableTreeNode) enumeration.nextElement();
         String childName = child.getUserObject().toString();
 
         if (childName.equals(packageName)) {

@@ -16,6 +16,7 @@
 package org.apache.log4j.chainsaw.receivers;
 
 
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.net.URL;
@@ -48,9 +49,10 @@ public class ReceiversHelper {
         URL url = this.getClass().getClassLoader().getResource(
             this.getClass().getPackage().getName().replace('.','/') + "/known.receivers");
 
+        LineNumberReader stream = null;
         try {
 
-            LineNumberReader stream = new LineNumberReader(new InputStreamReader(url.openStream()));
+            stream = new LineNumberReader(new InputStreamReader(url.openStream()));
             String line;
 
             while ((line = stream.readLine()) != null) {
@@ -68,8 +70,15 @@ public class ReceiversHelper {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (IOException ioe) {
+                    ioe.printStackTrace();
+                }
+            }
         }
-
     }
 
 

@@ -129,8 +129,8 @@ public class MessageCenter {
       "layout",
       new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
-          Layout layout = (Layout) evt.getNewValue();
-          messageList.setCellRenderer(new LayoutListCellRenderer(layout));
+          Layout newLayout = (Layout) evt.getNewValue();
+          messageList.setCellRenderer(new LayoutListCellRenderer(newLayout));
         }
       });
     messageList.addMouseListener(popupListener);

@@ -17,17 +17,9 @@
  */
 package org.apache.log4j.chainsaw;
 
-import org.apache.log4j.chainsaw.icons.ChainsawIcons;
-import org.apache.log4j.chainsaw.icons.LineIconFactory;
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.rule.AbstractRule;
-import org.apache.log4j.rule.Rule;
-import org.apache.log4j.spi.LoggingEvent;
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Cursor;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.Toolkit;
@@ -37,10 +29,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -56,7 +46,6 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
@@ -82,6 +71,13 @@ import javax.swing.tree.DefaultTreeSelectionModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
+
+import org.apache.log4j.chainsaw.icons.ChainsawIcons;
+import org.apache.log4j.chainsaw.icons.LineIconFactory;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.rule.AbstractRule;
+import org.apache.log4j.rule.Rule;
+import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
@@ -217,7 +213,6 @@ final class LoggerNameTreePanel extends JPanel implements Rule
 
     logTree.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
     scrollTree = new JScrollPane(logTree);
-    scrollTree.setMinimumSize(new Dimension(150, 400));
     toolbar.setLayout(new BoxLayout(toolbar, BoxLayout.X_AXIS));
 
     expandAction = createExpandAction();
@@ -239,7 +234,7 @@ final class LoggerNameTreePanel extends JPanel implements Rule
 
     add(ignoreListScroll, BorderLayout.SOUTH);
 
-    CheckListCellRenderer cellRenderer = new CheckListCellRenderer()
+    CheckListCellRenderer ignoreCellRenderer = new CheckListCellRenderer()
       {
         protected boolean isSelected(Object value)
         {
@@ -247,7 +242,7 @@ final class LoggerNameTreePanel extends JPanel implements Rule
         }
       };
 
-    ignoreList.setCellRenderer(cellRenderer);
+    ignoreList.setCellRenderer(ignoreCellRenderer);
 
     ignoreList.addMouseListener(new MouseAdapter()
       {
@@ -1045,10 +1040,6 @@ final class LoggerNameTreePanel extends JPanel implements Rule
     {
       super();
 
-      //      panel.setBackground(UIManager.getColor("Tree.textBackground"));
-      Icon leafIcon = getDefaultLeafIcon();
-      Icon icon = new ImageIcon(ChainsawIcons.WINDOW_ICON);
-
       //      panel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
       //      panel.add(this);
       setLeafIcon(null);
@@ -1069,17 +1060,17 @@ final class LoggerNameTreePanel extends JPanel implements Rule
      * @param expanded DOCUMENT ME!
      * @param leaf DOCUMENT ME!
      * @param row DOCUMENT ME!
-     * @param hasFocus DOCUMENT ME!
+     * @param focus DOCUMENT ME!
      *
      * @return DOCUMENT ME!
      */
     public Component getTreeCellRendererComponent(
       JTree tree, Object value, boolean sel, boolean expanded, boolean leaf,
-      int row, boolean hasFocus)
+      int row, boolean focus)
     {
       JLabel component =
         (JLabel) super.getTreeCellRendererComponent(
-          tree, value, sel, expanded, leaf, row, hasFocus);
+          tree, value, sel, expanded, leaf, row, focus);
 
       Font originalFont = component.getFont();
 

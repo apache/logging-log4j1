@@ -14,7 +14,6 @@ import java.util.List;
  */
 public class FavouritesRegistry{
   
-  private final FavouritesRegistry instance = new FavouritesRegistry();
   private final List favourites = new ArrayList();
   
   /**
