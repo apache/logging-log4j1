@@ -25,6 +25,9 @@
 
  - Fixed Bugzilla 13900: SMTPAppender doesn't use errorHandler when sending error occurs.
 
+ - Implemented Bugzilla 20500: separate registry clearing from doConfigure in PropertyConfigurator
+   to allow to easier extension.
+
   November 25, 2004
 
  - Release of version 1.3alpha-3
