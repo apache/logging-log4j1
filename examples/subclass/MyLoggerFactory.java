@@ -11,23 +11,23 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggerFactory;
 
 /**
-   A factory that makes new {@link MyCategory} objects.
+   A factory that makes new {@link MyLogger} objects.
 
-   See <b><a href="doc-files/MyCategoryFactory.java">source
+   See <b><a href="doc-files/MyLoggerFactory.java">source
    code</a></b> for more details.
 
    @author Ceki G&uuml;lc&uuml; */
-public class MyCategoryFactory implements LoggerFactory {
+public class MyLoggerFactory implements LoggerFactory {
 
   /**
      The constructor should be public as it will be called by
      configurators in different packages.  */
   public
-  MyCategoryFactory() {
+  MyLoggerFactory() {
   }
 
   public
   Logger makeNewLoggerInstance(String name) {
-    return new MyCategory(name);
+    return new MyLogger(name);
   }
 }

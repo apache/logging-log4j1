@@ -15,7 +15,7 @@ import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.helpers.LogLog;
 
 /**
-   A simple example showing category subclassing. 
+   A simple example showing logger subclassing. 
 
    <p>The example should make it clear that subclasses follow the
    hierarchy. You should also try running this example with a <a
@@ -23,9 +23,9 @@ import org.apache.log4j.helpers.LogLog;
    href="doc-files/mycat.good">good</a> configuration file samples.
 
    <p>See <b><a
-   href="doc-files/MyCategory.java">source code</a></b> for more details.
+   href="doc-files/MyLogger.java">source code</a></b> for more details.
 */
-public class MyCategoryTest {
+public class MyLoggerTest {
 
   /**
      When called wihtout arguments, this program will just print 
@@ -42,9 +42,9 @@ public class MyCategoryTest {
     
     if(args.length == 0) {
       // Note that the appender is added to root but that the log
-      // request is made to an instance of MyCategory. The output still
+      // request is made to an instance of MyLogger. The output still
       // goes to System.out.
-      Category root = Category.getRoot();
+      Logger root = Logger.getRoot();
       Layout layout = new PatternLayout("%p [%t] %c (%F:%L) - %m%n");
       root.addAppender(new ConsoleAppender(layout, ConsoleAppender.SYSTEM_OUT));
     }
@@ -58,7 +58,7 @@ public class MyCategoryTest {
       usage("Incorrect number of parameters.");
     }
     try {
-      MyCategory c = (MyCategory) MyCategory.getInstance("some.cat");    
+      MyLogger c = (MyLogger) MyLogger.getInstance("some.cat");    
       c.trace("Hello");
       c.debug("Hello");
     } catch(ClassCastException e) {
@@ -69,7 +69,7 @@ public class MyCategoryTest {
   static
   void usage(String errMsg) {
     System.err.println(errMsg);
-    System.err.println("\nUsage: "+MyCategory.class.getName() + "[configFile]\n"
+    System.err.println("\nUsage: "+MyLogger.class.getName() + "[configFile]\n"
                 + " where *configFile* is an optional configuration file, "+
 		       "either in properties or XML format.");
     System.exit(1);
