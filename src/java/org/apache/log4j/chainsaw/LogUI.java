@@ -417,6 +417,22 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
           boolean value = ((Boolean)evt.getNewValue()).booleanValue();
           setStatusBarVisible(value);
       }});
+
+    applicationPreferenceModel.addPropertyChangeListener("receivers", new PropertyChangeListener() {
+
+      public void propertyChange(PropertyChangeEvent evt) {
+        boolean value = ((Boolean)evt.getNewValue()).booleanValue();
+        receiversPanel.setVisible(value);
+      }});
+    receiversPanel.setVisible(applicationPreferenceModel.isReceivers());
+    
+    applicationPreferenceModel.addPropertyChangeListener("toolbar", new PropertyChangeListener() {
+
+      public void propertyChange(PropertyChangeEvent evt) {
+        boolean value = ((Boolean)evt.getNewValue()).booleanValue();
+        toolbar.setVisible(value);
+      }});
+    toolbar.setVisible(applicationPreferenceModel.isToolbar());
     
     setStatusBarVisible(applicationPreferenceModel.isStatusBar());
     
@@ -660,7 +676,11 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
         ((ImageIcon) ChainsawIcons.ICON_PREFERENCES).getImage());
     preferencesFrame.getContentPane().add(applicationPreferenceModelPanel);
 
-    preferencesFrame.setSize(640, 480);
+    preferencesFrame.setSize(640, 340);
+    
+    Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
+    preferencesFrame.setLocation(new Point((screenDimension.width/2)-(preferencesFrame.getSize().width/2),  (screenDimension.height/2)-(preferencesFrame.getSize().height/2)  ));
+    
     getSettingsManager().configure(
       new SettingsListener() {
         public void loadSettings(LoadSettingsEvent event) {
@@ -983,8 +1003,8 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
           dialog.dispose();
 
           applicationPreferenceModel.setShowNoReceiverWarning(!noReceiversWarningPanel.isDontWarnMeAgain());
-          if (noReceiversWarningPanel.getModel().isManualMode()) {
-            toggleReceiversPanel();
+          if (noReceiversWarningPanel.getModel().isManualMode() ) {
+            applicationPreferenceModel.setReceivers(true);
           } else if (noReceiversWarningPanel.getModel().isSimpleReceiverMode()) {
             int port = noReceiversWarningPanel.getModel().getSimplePort();
             Class receiverClass =
@@ -1060,19 +1080,6 @@ public class LogUI extends JFrame implements ChainsawViewer, SettingsListener {
       getTabbedPane().remove(
         getTabbedPane().getComponentAt(getTabbedPane().indexOfTab("Welcome")));
     }
-  }
-
-  void toggleReceiversPanel() {
-    SwingUtilities.invokeLater(
-      new Runnable() {
-        public void run() {
-          receiversPanel.setVisible(!receiversPanel.isVisible());
-          receiversPanel.invalidate();
-          receiversPanel.validate();
-
-          getToolBarAndMenus().stateChange();
-        }
-      });
   }
 
   boolean isReceiverPanelVisible() {
