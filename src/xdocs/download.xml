@@ -58,7 +58,7 @@
 
     </section>
 
-    <section name="log4j version 1.2 beta1">
+<!--    <section name="log4j version 1.2 beta1">
       <p>An alpha version of log4j 1.2 is now available in in <a
 	href="../jakarta-log4j-1.2beta1.tar.gz"><b>TAR.GZ</b></a>
 	format or in <a
@@ -79,7 +79,7 @@
       </p>
 
     </section>
-
+-->
     <section name="Third-party extensions">
 
       <dl>

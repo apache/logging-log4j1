@@ -39,7 +39,7 @@ public class SocketNode implements Runnable {
   LoggerRepository hierarchy;
   ObjectInputStream ois;
 
-  static Logger logger = Category.getInstance(SocketNode.class);
+  static Logger logger = Logger.getLogger(SocketNode.class);
 
   public 
   SocketNode(Socket socket, LoggerRepository hierarchy) {
