@@ -34,7 +34,7 @@ extends Receiver implements SocketNodeEventListener, PortBased {
 
   protected String host;
   protected int port;
-  protected int reconnectionDelay;
+  protected int reconnectionDelay = DEFAULT_RECONNECTION_DELAY;
   protected boolean active = false;
   protected Connector connector;
   
@@ -210,7 +210,7 @@ extends Receiver implements SocketNodeEventListener, PortBased {
         try {
        	  if (doDelay) {
        	    LogLog.debug("waiting for " + reconnectionDelay + 
-       	      " seconds before reconnecting.");
+       	      " milliseconds before reconnecting.");
        	    sleep(reconnectionDelay);
        	  }
        	  doDelay = true;
