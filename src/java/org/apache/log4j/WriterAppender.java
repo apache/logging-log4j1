@@ -286,7 +286,7 @@ public class WriterAppender extends AppenderSkeleton {
   /**
      Actual writing occurs here.
 
-     <p>Most subclasses of <code>FileAppender</code> will need to
+     <p>Most subclasses of <code>WriterAppender</code> will need to
      override this method.
 
      @since 0.9.0 */

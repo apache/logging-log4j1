@@ -47,6 +47,9 @@ import org.apache.log4j.helpers.LogLog;
      current thread, this method will create it.
 
      <p><li>When leaving a context, call <code>NDC.pop</code>.
+
+     <p><li><b>When exiting a thread make sure to call {@link #remove
+     NDC.remove()}</b>.  
    </ul>
    
    <p>There is no penalty for forgetting to match each
@@ -64,11 +67,11 @@ import org.apache.log4j.helpers.LogLog;
 
    <p>Heavy duty systems should call the {@link #remove} method when
    leaving the run method of a thread. This ensures that the memory
-   used by the thread can be freed by the Java garbage collector. In
-   version 0.8.5, we have added a mechanism to lazily remove
-   references to dead threads. In practice, this means that you can be
-   a little sloppy and sometimes forget to call {@link #remove} before
-   exiting a thread.
+   used by the thread can be freed by the Java garbage
+   collector. There is a mechanism to lazily remove references to dead
+   threads. In practice, this means that you can be a little sloppy
+   and sometimes forget to call {@link #remove} before exiting a
+   thread.
    
    <p>A thread may inherit the nested diagnostic context of another
    (possibly parent) thread using the {@link #inherit inherit}
@@ -328,9 +331,9 @@ public class NDC {
      Remove the diagnostic context for this thread.
 
      <p>Each thread that created a diagnostic context by calling
-     {@link #pop} should call this method before exiting. Otherwise,
-     the memory used by the diagnostic context for the <b>thread</b>
-     cannot be reclaimed by the VM.
+     {@link #psuh} should call this method before exiting. Otherwise,
+     the memory used by the <b>thread</b> cannot be reclaimed by the
+     VM.
 
      <p>As this is such an important problem in heavy duty systems and
      because it is difficult to always guarantee that the remove
@@ -338,7 +341,9 @@ public class NDC {
      augmented to lazily remove references to dead threads. In
      practice, this means that you can be a little sloppy and
      occasionally forget to call {@link #remove} before exiting a
-     thread.
+     thread. However, you must call <code>remove</code> sometime. If
+     you never call it, then your application is sure to run out of
+     memory.
      
   */
   static
