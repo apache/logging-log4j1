@@ -154,6 +154,7 @@ public class DOMTest extends TestCase {
   public void test3() throws Exception {
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     factory.setNamespaceAware(true);
+    factory.setValidating(false);
 
     DocumentBuilder builder = factory.newDocumentBuilder();
     org.w3c.dom.Document doc =
