@@ -90,7 +90,7 @@ public class FileNamePattern {
 
       if (i == -1) {
         String remainingStr = pattern.substring(lastIndex);
-        System.out.println("adding the identity token");
+        //System.out.println("adding the identity token");
         addTokenConverter(tc, new IdentityTokenConverter(remainingStr));
 
         break;
@@ -103,7 +103,7 @@ public class FileNamePattern {
           break;
         }
 
-        System.out.println("2adding the identity token");
+        //System.out.println("2adding the identity token");
         tc =
           addTokenConverter(
             tc, new IdentityTokenConverter(pattern.substring(lastIndex, i)));

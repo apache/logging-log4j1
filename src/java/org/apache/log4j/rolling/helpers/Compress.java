@@ -53,6 +53,8 @@ import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.util.zip.GZIPOutputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 
 /**
@@ -61,8 +63,53 @@ import java.util.zip.GZIPOutputStream;
  */
 public class Compress {
   static final Logger logger = Logger.getLogger(Compress.class);
+  public static final int NONE = 0;
+  public static final int GZ = 1;
+  public static final int ZIP = 2;
 
-  public static void ZIPcompress(String file2zip, String zippedFile) {
+  public static void ZIPCompress(String nameOfFile2zip, String nameOfZippedFile) {
+    File file2zip = new File(nameOfFile2zip);
+    File zippedFile = new File(nameOfZippedFile);
+
+    if (!file2zip.exists()) {
+      logger.warn(
+        "The file to compress named [" + nameOfFile2zip + "] does not exist.");
+
+      return;
+    }
+
+    if (!nameOfZippedFile.endsWith(".zip")) {
+      nameOfZippedFile = nameOfZippedFile + ".zip";
+    }
+
+    if (zippedFile.exists()) {
+      logger.warn(
+        "The target compressed file named [" + nameOfZippedFile
+        + "] exist already.");
+
+      return;
+    }
+    
+    try {
+         FileOutputStream fos = new FileOutputStream(nameOfZippedFile);
+         ZipOutputStream zos = new ZipOutputStream(fos);
+         FileInputStream fis = new FileInputStream(nameOfFile2zip);
+      
+         ZipEntry zipEntry = new ZipEntry(file2zip.getName());
+         zos.putNextEntry(zipEntry);  
+         byte[] inbuf = new byte[8102];
+         int n;
+         while ((n = fis.read(inbuf)) != -1) {
+           zos.write(inbuf, 0, n);
+         }
+
+         fis.close();
+         zos.close();
+       } catch (Exception e) {
+         logger.error(
+           "Error occured while compressing [" + nameOfFile2zip + "] into ["
+           + nameOfZippedFile + "].", e);
+       }
   }
 
   public static void GZCompress(String nameOfFile2gz, String nameOfgzedFile) {
@@ -76,9 +123,13 @@ public class Compress {
       return;
     }
 
+    if (!nameOfgzedFile.endsWith(".gz")) {
+      nameOfgzedFile = nameOfgzedFile + ".gz";
+    }
+
     if (gzedFile.exists()) {
       logger.warn(
-        "The target compressed file named [" + nameOfFile2gz
+        "The target compressed file named [" + nameOfgzedFile
         + "] exist already.");
 
       return;
@@ -94,6 +145,7 @@ public class Compress {
       while ((n = fis.read(inbuf)) != -1) {
         gzos.write(inbuf, 0, n);
       }
+
       fis.close();
       gzos.close();
     } catch (Exception e) {

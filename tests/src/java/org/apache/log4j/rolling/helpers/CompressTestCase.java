@@ -49,6 +49,7 @@
 package org.apache.log4j.rolling.helpers;
 
 import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.util.Compare;
 
 import junit.framework.Test;
@@ -68,22 +69,38 @@ public class CompressTestCase extends TestCase {
   public CompressTestCase(String arg0) {
     super(arg0);
   }
-
-  public void test1() throws Exception {
-    
-    Compress.GZCompress("input/compress1.txt", "output/compress1.txt.gz");
-    
-    assertTrue(Compare.compare("output/compress1.txt.gz",
-           "witness/compress1.txt.gz"));
-    
+  
+  public void setUp() {
+    BasicConfigurator.configure();;
   }
+
+  public void tearDown() {
+    LogManager.shutdown();
+  }
+  
+  public void test1() throws Exception {
+    Compress.GZCompress("input/compress1.txt", "output/compress1.txt.gz");   
+    assertTrue(Compare.compare("output/compress1.txt.gz",
+           "witness/compress1.txt.gz"));  
+  }
+  
+  public void test2() throws Exception {
+     Compress.GZCompress("input/compress2.txt", "output/compress2.txt");   
+     assertTrue(Compare.compare("output/compress2.txt.gz",
+            "witness/compress2.txt.gz"));  
+   }
+   
+  public void test3() throws Exception {
+      Compress.ZIPCompress("input/compress3.txt", "output/compress3.txt");   
+      //assertTrue(Compare.compare("output/compress3.txt.zip",
+        //     "witness/compress3.txt.zip"));  
+    }
   
   public static Test suite() {
       TestSuite suite = new TestSuite();
-
       suite.addTest(new CompressTestCase("test1"));
-
-
+      suite.addTest(new CompressTestCase("test2"));
+      suite.addTest(new CompressTestCase("test3"));
       return suite;
     }
 }

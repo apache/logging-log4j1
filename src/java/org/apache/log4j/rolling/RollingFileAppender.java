@@ -90,7 +90,7 @@ public class RollingFileAppender extends FileAppender {
 
     if (rollingPolicy != null) {
       rollingPolicy.activateOptions();
-      System.out.println("Actibe log file name"+rollingPolicy.getActiveLogFileName());
+      //System.out.println("Actibe log file name"+rollingPolicy.getActiveLogFileName());
       setFile(rollingPolicy.getActiveLogFileName());
       activeFile = new File(rollingPolicy.getActiveLogFileName());
       super.activateOptions();
