@@ -115,7 +115,7 @@ public class JMSAppender extends AppenderSkeleton {
   }
 
   /**
-     Close this JMSAppender. Closing relases all resources used by the
+     Close this JMSAppender. Closing releases all resources used by the
      appender. A closed appender cannot be re-opened. */
   public 
   synchronized // avoid concurrent append and close operations
@@ -180,12 +180,12 @@ public class JMSAppender extends AppenderSkeleton {
      recognized.
 
      <p>The <b>TopicConnectionFactoryBindingName</b> option takes a
-     string value. Its value will be used to lookup the approprtate
-     <code>TopicConnectionFactory</code> fron the JNDI context.
+     string value. Its value will be used to lookup the appropriate
+     <code>TopicConnectionFactory</code> from the JNDI context.
 
      <p>The <b>TopicBindingName</b> option takes a
-     string value. Its value will be used to lookup the approprtate
-     <code>Topic</code> fron the JNDI context.         
+     string value. Its value will be used to lookup the appropriate
+     <code>Topic</code> from the JNDI context.         
      
  */
 
