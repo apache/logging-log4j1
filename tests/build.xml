@@ -127,8 +127,8 @@
                                      CyclicBuffer, OR, VariaLevelMatchFilter, 
                                      VariaLevelRangeFilter, PatternParser,
                                      LevelMatchFilter, DRFA, 
-                                     SizeBasedRolling, Compress, 
-                                     TimeBasedRolling, ReaderWriterLock,
+                                     Rolling, 
+                                     ReaderWriterLock,
                                      NDC,
                                      Plugins"/>
 
@@ -138,6 +138,13 @@
   <!-- Longer unit tests                                                 -->
   <!-- ================================================================= -->
   <target name="longUnit" depends=""/>
+
+  <!-- ================================================================= -->
+  <!-- Rolling unit tests                                                 -->
+  <!-- ================================================================= -->
+  <target name="Rolling" depends="SizeBasedRolling, Compress, 
+                                  TimeBasedRolling, Renaming"/>
+
 
   <!-- ================================================================= -->
   <!-- Joran unit tests                                                 -->
@@ -272,7 +279,7 @@
     <parallel>
       <java classname="org.apache.log4j.net.ShortSocketServer" fork="yes">
 	    <arg value="8"/> 
-	    <arg value="input/socketServer"/> 
+	    <arg value="input/net/socketServer"/> 
 	    <classpath refid="tests.classpath"/>
       </java>
       <sequential>
@@ -442,6 +449,26 @@
       <formatter type="plain" usefile="false"/>
       <test name="org.apache.log4j.rolling.helpers.CompressTestCase" />
     </junit>
+  </target>
+
+  <!-- Start Renaming test and FileOpener near simultaneously. Have FileOpener
+       keep the file test.log open. This tests the ability of RollingFileAppender 
+       to deal with renaming of files opened by other processes.
+       -->
+  <target name="Renaming" depends="build, cleanOutputDir">
+     <parallel>
+       <junit printsummary="yes" fork="yes" haltonfailure="yes">
+         <classpath refid="tests.classpath"/>
+	     <formatter type="plain" usefile="false" />
+	     <test name="org.apache.log4j.rolling.RenamingTest" />
+	    </junit>
+      <sequential>
+	    <sleep seconds="1"/>
+	    <java classname="org.apache.log4j.rolling.FileOpener" fork="yes">
+	      <classpath refid="tests.classpath"/>
+        </java>
+      </sequential>
+    </parallel>
   </target>
 
   <target name="Pattern" depends="build, cleanOutputDir">
