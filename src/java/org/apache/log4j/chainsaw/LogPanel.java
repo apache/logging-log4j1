@@ -235,8 +235,17 @@ public class LogPanel extends DockablePanel implements SettingsListener,
     table.getSelectionModel().addListSelectionListener(
       new ListSelectionListener() {
         public void valueChanged(ListSelectionEvent e) {
+          if (e.getValueIsAdjusting() || !isVisible()) {
+            return;
+          }
+
           LoggingEvent event = null;
-          event = tableModel.getRow(e.getFirstIndex());
+          int row = table.getSelectedRow();
+
+          if (row > -1) {
+            event = tableModel.getRow(row);
+          }
+
           rebuildFocusOnMenuFromEvent(event);
         }
       });
