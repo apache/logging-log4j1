@@ -111,12 +111,5 @@ public interface Appender {
    * @since 0.8.1
    */
   public void setName(String name);
-
-  /**
-   * This method is no longer used nor needed.
-   *
-   * @deprecated Will be removed with no replacement.
-   */
-  public boolean requiresLayout();
   
 }
