@@ -52,7 +52,7 @@ public class CacheUtilTest extends TestCase {
     assertEquals("ZZZEEE", result);
   }
 
-  public void testIsPatternSafeForCachingRemoveLiteral() {
+  public void testIsPatternSafeForCaching() {
     boolean result;
     result = CacheUtil.isPatternSafeForCaching("a");
     assertEquals(true, result);
