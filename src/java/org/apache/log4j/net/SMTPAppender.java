@@ -329,13 +329,14 @@ public class SMTPAppender extends AppenderSkeleton {
     }
   }
   
+
+
   /**
-     The <b>From</b> option takes a string value which should be a
-     e-mail address of the sender.
+     Returns value of the <b>EvaluatorClass</b> option.
    */
   public
-  void setFrom(String from) {
-    this.from = from;
+  String getEvaluatorClass() {
+    return evaluator == null ? null : evaluator.getClass().getName();
   }
   
   /**
@@ -344,6 +345,14 @@ public class SMTPAppender extends AppenderSkeleton {
   public
   String getFrom() {
     return from;
+  }
+
+  /**
+     Returns value of the <b>Subject</b> option.
+   */
+  public
+  String getSubject() {
+    return subject;
   }
 
 
@@ -375,14 +384,16 @@ public class SMTPAppender extends AppenderSkeleton {
       locationInfo = OptionConverter.toBoolean(value, locationInfo);
   }
 
+
   /**
-     The <b>To</b> option takes a string value which should be a
-     comma separated list of e-mail address of the recipients.
+     The <b>From</b> option takes a string value which should be a
+     e-mail address of the sender.
    */
   public
-  void setTo(String to) {
-    this.to = to;
+  void setFrom(String from) {
+    this.from = from;
   }
+
 
   
   /**
@@ -394,12 +405,18 @@ public class SMTPAppender extends AppenderSkeleton {
     this.subject = subject;
   }
   
+
   /**
-     Returns value of the <b>Subject</b> option.
+     The <b>BufferSize</b>option takes a positive integer
+     representing the maximum number of logging events to collect in a
+     cyclic buffer. When the <code>BufferSize</code> is reached,
+     oldest events are deleted as new events are added to the
+     buffer. By default the size of the cyclic buffer is 512 events.
    */
   public
-  String getSubject() {
-    return subject;
+  void setBufferSize(int bufferSize) {
+    this.bufferSize = bufferSize;
+    cb.resize(bufferSize);
   }
   
   /**
@@ -418,19 +435,17 @@ public class SMTPAppender extends AppenderSkeleton {
   String getSMTPHost() {
     return smtpHost;
   }
-  
+
   /**
-     The <b>BufferSize</b>option takes a positive integer
-     representing the maximum number of logging events to collect in a
-     cyclic buffer. When the <code>BufferSize</code> is reached,
-     oldest events are deleted as new events are added to the
-     buffer. By default the size of the cyclic buffer is 512 events.
+     The <b>To</b> option takes a string value which should be a
+     comma separated list of e-mail address of the recipients.
    */
   public
-  void setBufferSize(int bufferSize) {
-    this.bufferSize = bufferSize;
-    cb.resize(bufferSize);
+  void setTo(String to) {
+    this.to = to;
   }
+
+  
 
   /**
      Returns value of the <b>BufferSize</b> option.
@@ -455,13 +470,6 @@ public class SMTPAppender extends AppenderSkeleton {
 						       evaluator);    
   }
   
-  /**
-     Returns value of the <b>EvaluatorClass</b> option.
-   */
-  public
-  String getEvaluatorClass() {
-    return evaluator == null ? null : evaluator.getClass().getName();
-  }
   
   /**
      The <b>LocationInfo</b> option takes a boolean value. By

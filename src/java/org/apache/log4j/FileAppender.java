@@ -35,6 +35,32 @@ import org.apache.log4j.helpers.TracerPrintWriter;
    @author Ceki G&uuml;lc&uuml; */
 public class FileAppender extends WriterAppender {
 
+ /**
+     A string constant used in naming the option for setting the
+     output file. Current value of this string constant is
+     <b>File</b>.
+
+     <p>Note that all option keys are case sensitive.
+     
+     @deprecated We now use JavaBeans introspection to configure
+     components. Options strings are no longer needed.
+  */
+  public static final String FILE_OPTION = "File";
+
+
+  /**
+     A string constant used in naming the option that determines whether 
+     the output file will be truncated or appended to. Current value
+     of this string constant is <b>Append</b>.
+
+     <p>Note that all option keys are case sensitive.
+
+     @deprecated We now use JavaBeans introspection to configure
+     components. Options strings are no longer needed.     
+  */
+  public static final String APPEND_OPTION = "Append";
+
+
   /** Append to or truncate the file? The default value for this
       variable is <code>true</code>, meaning that by default a
       <code>FileAppender</code> will append to an existing file and
@@ -152,6 +178,15 @@ public class FileAppender extends WriterAppender {
       fileName = val;
     }
   }
+
+  /** 
+      Returns the value of the <b>Append</b> option. 
+   */
+  public
+  boolean getAppend() {
+    return fileAppend;
+  }
+
   
   /** Returns the value of the <b>File</b> option. */
   public
@@ -159,6 +194,22 @@ public class FileAppender extends WriterAppender {
     return fileName;
   }
   
+  /**
+     Returns the option names for this component, namely the string
+     array {@link #FILE_OPTION}, {@link #APPEND_OPTION}} in addition
+     to the options of its super class {@link WriterAppender}.  
+
+     @deprecated We now use JavaBeans introspection to configure
+     components. Options strings are no longer needed.
+
+  */
+  public
+  String[] getOptionStrings() {
+    return OptionConverter.concatanateArrays(super.getOptionStrings(),
+          new String[] {FILE_OPTION, APPEND_OPTION});
+  }
+
+
   /**
      <The <b>Append</b> option takes a boolean value. It is set to
      <code>true</code> by default. If true, then <code>File</code>
@@ -174,11 +225,6 @@ public class FileAppender extends WriterAppender {
     fileAppend = flag;
   }
   
-  /** Returns the value of the <b>Append</b> option. */
-  public
-  boolean getAppend() {
-    return fileAppend;
-  }
 
   /**
      If the value of {@link #FILE_OPTION} is not <code>null</code>, then {@link
@@ -241,6 +287,32 @@ public class FileAppender extends WriterAppender {
     this.fileAppend = append;
     this.qwIsOurs = true;
     writeHeader();
+  }
+
+
+  /**
+     @deprecated Use the setter method for the option directly instead
+     of the generic <code>setOption</code> method.  */
+  public
+  void setOption(String key, String value) {
+    if(value == null) return;
+    super.setOption(key, value);
+    
+    if(key.equalsIgnoreCase(FILE_OPTION)) {
+      // Trim spaces from both ends. The users probably does not want 
+      // trailing spaces in file names.
+      String val = value.trim();
+      if(val.equalsIgnoreCase("System.out")) {
+	setWriter(new OutputStreamWriter(System.out));
+      } else if(val.equalsIgnoreCase("System.err")) {
+	setWriter(new OutputStreamWriter(System.err));
+      } else {
+	fileName = val;
+      }
+    }
+    else if (key.equalsIgnoreCase(APPEND_OPTION)) {
+      fileAppend = OptionConverter.toBoolean(value, fileAppend);
+    }
   }
 
   /**

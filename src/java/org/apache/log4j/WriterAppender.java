@@ -223,6 +223,20 @@ public class WriterAppender extends AppenderSkeleton {
       }
     }
   }
+
+
+  /**
+     Retuns the option names for this component.
+
+     @deprecated We now use JavaBeans introspection to configure
+     components. Options strings are no longer needed.
+  */
+  public
+  String[] getOptionStrings() {
+    return OptionConverter.concatanateArrays(super.getOptionStrings(),
+           new String[] {IMMEDIATE_FLUSH_OPTION});
+  }
+
   
   /**
      Set the {@link ErrorHandler} for this FileAppender and also the
@@ -239,7 +253,20 @@ public class WriterAppender extends AppenderSkeleton {
       }
     }    
   }
-  
+
+  /**
+     @deprecated Use the setter method for the option directly instead
+     of the generic <code>setOption</code> method. 
+   */
+ public
+  void setOption(String key, String value) {
+    if(value == null) return;
+    super.setOption(key, value);
+    
+    if (key.equalsIgnoreCase(IMMEDIATE_FLUSH_OPTION)) {
+      immediateFlush = OptionConverter.toBoolean(value, immediateFlush);
+    }
+  }  
   
   /**
     <p>Sets the Writer where the log output will go. The

@@ -13,7 +13,8 @@ import org.apache.log4j.helpers.OptionConverter;
 
 /**
    ConsoleAppender appends log events to <code>System.err</code> or
-   <code>System.out</code> using a layout specified by the user.
+   <code>System.out</code> using a layout specified by the
+   user. The default target is <code>System.out</code>.
 
    @author Ceki G&uuml;lc&uuml;
    @since 1.1 */
@@ -22,7 +23,12 @@ public class ConsoleAppender extends WriterAppender {
   public static final String SYSTEM_OUT = "System.out";
   public static final String SYSTEM_ERR = "System.err";
 
-  protected String target = SYSTEM_ERR;
+  /**
+    @deprecated We now use JavaBeans introspection to configure
+    components. Options strings are no longer needed.  */
+  public static final String TARGET_OPTION = "Target";
+
+  protected String target = SYSTEM_OUT;
 
   /**
      The default constructor does nothing.
@@ -31,7 +37,7 @@ public class ConsoleAppender extends WriterAppender {
   }
 
   public ConsoleAppender(Layout layout) {
-    this(layout, SYSTEM_ERR);
+    this(layout, SYSTEM_OUT);
   }
 
   public ConsoleAppender(Layout layout, String target) {
@@ -73,7 +79,7 @@ public class ConsoleAppender extends WriterAppender {
   
   void targetWarn(String val) {
     LogLog.warn("["+val+"] should be one of System.out or System.err.");
-    LogLog.warn("Reverting to System.err.");
+    LogLog.warn("Reverting to System.out.");
   }
  
   public
@@ -92,4 +98,50 @@ public class ConsoleAppender extends WriterAppender {
   final 
   void closeWriter() {
   }
+
+
+  /**
+    Retuns the option names for this component, namely the string
+    array {{@link #TARGET_OPTION} and the options of its super class
+    {@link WriterAppender}.
+
+    <b>See</b> Options of the super classes {@link WriterAppender} and
+    {@link AppenderSkeleton}. In particular the <b>Threshold</b>
+    option.
+      
+    @deprecated We now use JavaBeans introspection to configure
+    components. Options strings are no longer needed.  
+  */
+  public
+  String[] getOptionStrings() {
+    return OptionConverter.concatanateArrays(super.getOptionStrings(),
+          new String[] {TARGET_OPTION});
+  }
+
+  /**
+     Set ConsoleAppender specific options.
+          
+     The <b>Target</b> option is recognized on top of options
+     for the super class {@link WriterAppender}.
+     
+     @deprecated Use the setter method for the option directly instead
+     of the generic <code>setOption</code> method. 
+  */
+  public
+  void setOption(String key, String value) {
+    if(value == null) return;
+    super.setOption(key, value);
+    
+    if (key.equalsIgnoreCase(TARGET_OPTION)) {
+      String v = value.trim();
+      if(SYSTEM_OUT.equalsIgnoreCase(v)) {
+	target = SYSTEM_OUT;
+      } else {
+	if(!SYSTEM_ERR.equalsIgnoreCase(v)) {
+	  targetWarn(value);
+	}  
+      }
+    }
+  }
+
 }
