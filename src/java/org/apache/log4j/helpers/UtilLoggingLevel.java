@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package org.apache.log4j;
+package org.apache.log4j.helpers;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.log4j.Level;
 
 /**
  *  An extension of the Level class that provides support for java.util.logging 

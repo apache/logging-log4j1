@@ -22,7 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.log4j.Level;
-import org.apache.log4j.UtilLoggingLevel;
+import org.apache.log4j.helpers.UtilLoggingLevel;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.LoggingEventFieldResolver;
 
