@@ -74,7 +74,7 @@
 
   <!-- Construct compile classpath -->
   <path id="compile.classpath">
-    <pathelement location="${build.home}/classes"/>
+    <pathelement location="${javac.dest}/classes"/>
     <pathelement location="${javamail.jar}"/>
     <pathelement location="${activation.jar}"/>
     <pathelement location="${jaxp.jaxp.jar}"/>
@@ -274,6 +274,46 @@
   </target>
 
   <!-- ================================================================= -->
+  <!-- Define Jalopy code formatting task.                               -->
+  <!-- ================================================================= -->
+  <path id="jalopy.path">
+    <fileset dir="${jalopy.lib}">
+      <include name="*.jar" />
+    </fileset>
+  </path>
+  
+  <!-- ================================================================= -->
+  <!-- Define the set of files current styled                            -->
+  <!-- ================================================================= -->
+  <fileset dir="${java.source.dir}" id="styled_files">
+  	<include name="**/plugins/*.java"/>
+  </fileset>
+
+  <taskdef name="jalopy"
+           classname="de.hunsicker.jalopy.plugin.ant.AntPlugin"
+           classpathref="jalopy.path" />
+
+  <!-- ================================================================= -->
+  <!-- Runs jalopy.  Available from http://jalopy.sourceforge.net        -->
+  <!-- ================================================================= -->
+  <target name="runJalopy">
+    <jalopy backup="true"
+            classpathref="compile.classpath"
+            convention="${jalopy.stylesheet.location}">
+      <fileset refid="styled_files"/>
+    </jalopy>
+  </target>  
+
+  <!-- ================================================================= -->
+  <!-- Runs jalopy preferences editor.                                   -->
+  <!-- ================================================================= -->
+  <target name="editJalopyPreferences">
+    <java classname="de.hunsicker.jalopy.swing.SettingsDialog"
+          classpathref="jalopy.path"
+          fork="true" />
+  </target>  
+
+  <!-- ================================================================= -->
   <!-- Runs checkstyle. Available from http://checkstyle.sf.net          -->
   <!-- ================================================================= -->
   <target name="checkstyle" depends="init">
@@ -289,8 +329,7 @@
 		
     <!-- by default checkstyle supports the Sun coding standard. -->
     <checkstyle>
-      <fileset dir="src/java/org/apache/log4j/chainsaw" includes="**/*.java"/>
-      <fileset dir="src/java/org/apache/log4j/plugins" includes="**/*.java"/>
+      <fileset refid="styled_files"/>
     </checkstyle>
   </target>
 
