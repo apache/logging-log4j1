@@ -164,14 +164,15 @@ public class DailyRollingFileAppender extends FileAppender {
     // set sate to 1970-01-01 00:00:00 GMT
     Date epoch = new Date(0);
     
+    
     if(datePattern != null) {
-      System.err.println("DatePattern = "+datePattern);
       for(int i = TOP_OF_MINUTE; i <= TOP_OF_MONTH; i++) {
 	
 	String r0 = sdf.format(epoch);
 	c.setType(i);
-	Date next = new Date(c.getNextCheckTime(epoch));
+	Date next = new Date(c.getNextCheckMillis(epoch));
 	String r1 = sdf.format(next);
+	//LogLog.debug("Type = "+i+", r0 = "+r0+", r1 = "+r1);
 	if(r0 != null && r1 != null && !r0.equals(r1)) {
 	  return i;
 	}
@@ -205,7 +206,6 @@ public class DailyRollingFileAppender extends FileAppender {
 
     String datedFilename = fileName+sdf.format(now);
     if (lastDatedFilename.equals(datedFilename)) {
-      LogLog.debug(lastDatedFilename+"="+datedFilename+"==================");
       return;
     }
 
@@ -249,7 +249,7 @@ public class DailyRollingFileAppender extends FileAppender {
     long n = System.currentTimeMillis();
     if (n >= nextCheck) {
       now.setTime(n);
-      nextCheck = rc.getNextCheckTime(now);
+      nextCheck = rc.getNextCheckMillis(now);
       try {
         rollOver();
       } catch(IOException e) {
@@ -286,6 +286,7 @@ public class DailyRollingFileAppender extends FileAppender {
       rc.setType(type);
     }
   }
+}  
 
 /**
    RollingCalendar is a helper class to
@@ -298,62 +299,72 @@ public class DailyRollingFileAppender extends FileAppender {
 
    @author <a HREF="mailto:eirik.lygre@evita.no">Eirik Lygre</a> */
 
-  class RollingCalendar extends GregorianCalendar {
+class RollingCalendar extends GregorianCalendar {
   
-    int type;
+  int type;
 
-    void setType(int type) {
-      this.type = type;
-      LogLog.debug("Type = "+type);
-    }
+  void setType(int type) {
+    this.type = type;
+  }
 
-    public 
-    long getNextCheckTime(Date now) {
-      this.setTime(now);
+  public
+  long getNextCheckMillis(Date now) {
+    return getNextCheckDate(now).getTime();
+  }
 
-      switch(type) {
-      case TOP_OF_MINUTE:
+  public 
+  Date getNextCheckDate(Date now) {
+    this.setTime(now);
+
+    switch(type) {
+    case DailyRollingFileAppender.TOP_OF_MINUTE:
 	this.set(Calendar.SECOND, 0);
 	this.set(Calendar.MILLISECOND, 0);
 	this.add(Calendar.MINUTE, +1); 
 	break;
-      case TOP_OF_HOUR:
+    case DailyRollingFileAppender.TOP_OF_HOUR:
 	this.set(Calendar.MINUTE, 0); 
 	this.set(Calendar.SECOND, 0);
 	this.set(Calendar.MILLISECOND, 0);
-	this.add(Calendar.HOUR, +1); 
+	this.add(Calendar.HOUR_OF_DAY, +1); 
 	break;
-      case HALF_DAY:
+    case DailyRollingFileAppender.HALF_DAY:
 	this.set(Calendar.MINUTE, 0); 
 	this.set(Calendar.SECOND, 0);
 	this.set(Calendar.MILLISECOND, 0);
-	this.add(Calendar.HOUR, (get(Calendar.HOUR_OF_DAY)/12)*12); 
+	int hour = get(Calendar.HOUR_OF_DAY);
+	if(hour < 12) {
+	  this.set(Calendar.HOUR_OF_DAY, 12);
+	} else {
+	  this.set(Calendar.HOUR_OF_DAY, 0);
+	  this.add(Calendar.DAY_OF_MONTH, +1);       
+	}
 	break;
-      case TOP_OF_DAY:
-	this.set(Calendar.HOUR, 0); 
+    case DailyRollingFileAppender.TOP_OF_DAY:
+	this.set(Calendar.HOUR_OF_DAY, 0); 
 	this.set(Calendar.MINUTE, 0); 
 	this.set(Calendar.SECOND, 0);
 	this.set(Calendar.MILLISECOND, 0);
-	this.add(Calendar.DAY_OF_MONTH, +1);       
+	this.add(Calendar.DATE, +1);       
 	break;
-      case TOP_OF_WEEK:
+    case DailyRollingFileAppender.TOP_OF_WEEK:
 	this.set(Calendar.DAY_OF_WEEK, getFirstDayOfWeek());
-	this.set(Calendar.HOUR, 0);
+	this.set(Calendar.HOUR_OF_DAY, 0);
 	this.set(Calendar.SECOND, 0);
 	this.set(Calendar.MILLISECOND, 0);
 	this.add(Calendar.WEEK_OF_YEAR, 1);
 	break;
-      case TOP_OF_MONTH:
+    case DailyRollingFileAppender.TOP_OF_MONTH:
 	this.set(Calendar.DATE, 1);
-	this.set(Calendar.HOUR, 0);
+	this.set(Calendar.HOUR_OF_DAY, 0);
 	this.set(Calendar.SECOND, 0);
 	this.set(Calendar.MILLISECOND, 0);
 	this.add(Calendar.MONTH, +1); 
 	break;
-      default:
+    default:
 	throw new IllegalStateException("Unknown periodicity type.");
-      }      
-      return super.getTimeInMillis();
-    }
-  }  
+    }      
+    return getTime();
+  }
 }  
+
