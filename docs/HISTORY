@@ -8,6 +8,9 @@
    [D] Changes affect a method or property which was previously marked as 
        deprecated.
 
+ - Log4j now uses itself for its own logging. For more details refer to
+   
+     http://www.qos.ch//logging/internalLogging.jsp
 
  - The Appender.requiresLayout() method is no longer needed.
 
@@ -79,13 +82,14 @@
    allows simultaneous read operations but only one write operation. This should 
    significantly improve logging throughput in heavily loaded server environments. 
 
- - LIST OF CHAINSAW IMPROVEMENTS. 
-
  - Rolling can now be triggered based on time or size as was already the case in 
    log4j 1.2. However, the new architecture allows for much more variation in the 
    timing of the rollover and the actions taken during rollover (i.e on the fly 
    compression, renaming, moving). The new architecture was suggested a long time 
    ago by James P. Cakalic. A similar design can be found in the Avalon Logkit. 
+
+   In order to avoid duplication, the old org.apache.log4j.RollingAppender
+   and org.apache.log4j.RollingAppender classes have been removed. [**]
 
  - LoggingEvent was extended to allow properties. Properties are meant to be set 
    by Layout and Appender classes as they output/process logging events. 
@@ -99,6 +103,8 @@
 
  - Fixed bug #10706. The %X pattern without a key no longer causes a NullPointer 
    exception, 
+
+  - ADD: LIST OF CHAINSAW IMPROVEMENTS. 
  
  - Release of version 1.2.9
 
