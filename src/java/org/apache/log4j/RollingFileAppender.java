@@ -254,7 +254,7 @@ public class RollingFileAppender extends FileAppender {
      <code>String</code> argument by the JavaBeans {@link
      java.beans.Introspector Introspector}.
 
-     @see setMaxFileSize(String)
+     @see #setMaxFileSize(String)
  */
   public
   void setMaximumFileSize(long maxFileSize) {
