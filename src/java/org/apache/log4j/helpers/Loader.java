@@ -14,13 +14,28 @@ import java.net.URL;
 /**
    Load resources (or images) from various sources.
  
-  @author Sven Reimers
   @author Ceki G&uuml;lc&uuml;
  */
 
 public class Loader  { 
 
   static String TSTR = "Caught Exception while in Loader.getResource. This may be innocuous.";
+
+  // We conservatively assume that we are running under Java 1.x
+  static private boolean java1 = true;
+
+  static {
+    String prop = OptionConverter.getSystemProperty("java.version", null);
+    
+    if(prop != null) {
+      int i = prop.indexOf('.');
+      if(i != -1) {	
+	if(prop.charAt(i+1) != '1')
+	  java1 = false;
+      } 
+    }
+  }
+
   
   /**
      This method will search for <code>resource</code> in different
@@ -109,6 +124,26 @@ public class Loader  {
     return resource;
   }
 
+
+  /**
+     Are we running under JDK 1.x? 
+          
+   */
+  public
+  static
+  boolean java1() {
+    return java1;
+  }
+
+  static
+  public 
+  Class loadClass (String clazz) throws ClassNotFoundException {
+    if(java1) {
+      return Class.forName(clazz);
+    } else {
+      return Thread.currentThread().getContextClassLoader().loadClass(clazz);
+    }
+  }
 
   //public static Image getGIF_Image ( String path ) {
   //  Image img = null;

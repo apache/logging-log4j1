@@ -20,9 +20,6 @@ JSOURCES:=LogLog.java\
 	BoundedFIFO.java\
 	FileWatchdog.java\
 	Loader.java\
-        VersionHelper.java\
-        VersionHelper11.java\
-        VersionHelper20.java\
         ThreadLocalMap.java\
 
 SUBDIRS := 

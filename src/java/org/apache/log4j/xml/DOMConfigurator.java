@@ -24,12 +24,12 @@ import org.apache.log4j.Layout;
 import org.apache.log4j.Priority;
 import org.apache.log4j.Hierarchy;
 import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.Filter;
+import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.config.PropertySetter;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.helpers.FileWatchdog;
-import org.apache.log4j.helpers.VersionHelper;
+import org.apache.log4j.helpers.Loader;
 import org.xml.sax.InputSource;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -159,7 +159,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
     String className = subst(appenderElement.getAttribute(CLASS_ATTR));
     LogLog.debug("Class name: [" + className+']');    
     try {
-      Object instance 	= VersionHelper.getInstance().loadClass(className).newInstance();
+      Object instance 	= Loader.loadClass(className).newInstance();
       Appender appender	= (Appender)instance;
       PropertySetter propSetter = new PropertySetter(appender);
 
@@ -296,7 +296,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
     else {
       LogLog.debug("Desired category sub-class: ["+className+']');
        try {	 
-	 Class clazz = VersionHelper.getInstance().loadClass(className);
+	 Class clazz = Loader.loadClass(className);
 	 Method getInstanceMethod = clazz.getMethod("getInstance", 
 						    ONE_STRING_PARAM);
 	 cat = (Category) getInstanceMethod.invoke(null, new Object[] {catName});
@@ -425,7 +425,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
     String className = subst(layout_element.getAttribute(CLASS_ATTR));
     LogLog.debug("Parsing layout of class: \""+className+"\"");		 
     try {
-      Object instance 	= VersionHelper.getInstance().loadClass(className).newInstance();
+      Object instance 	= Loader.loadClass(className).newInstance();
       Layout layout   	= (Layout)instance;
       PropertySetter propSetter = new PropertySetter(layout);
       
@@ -487,7 +487,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
       } else {
 	LogLog.debug("Desired Priority sub-class: ["+className+']');
 	try {	 
-	  Class clazz = VersionHelper.getInstance().loadClass(className);
+	  Class clazz = Loader.loadClass(className);
 	  Method toPriorityMethod = clazz.getMethod("toPriority", 
 						    ONE_STRING_PARAM);
 	  Priority pri = (Priority) toPriorityMethod.invoke(null, 

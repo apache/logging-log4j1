@@ -13,7 +13,7 @@ import java.io.StringWriter;
 import java.io.PrintWriter;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.Layout;
-import org.apache.log4j.helpers.VersionHelper;
+import org.apache.log4j.helpers.Loader;
 
 /**
    The internal representation of caller location information.
@@ -60,7 +60,7 @@ public class LocationInfo implements java.io.Serializable {
   static boolean inVisualAge = false;
   static {
     try {
-      Class dummy = VersionHelper.getInstance().loadClass("com.ibm.uvm.tools.DebugSupport");
+      Class dummy = Loader.loadClass("com.ibm.uvm.tools.DebugSupport");
       inVisualAge = true;
       LogLog.debug("Detected IBM VisualAge environment.");
     } catch(Throwable e) { 
