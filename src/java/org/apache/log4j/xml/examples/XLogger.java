@@ -3,7 +3,7 @@
  *
  * This software is published under the terms of the Apache Software
  * License version 1.1, a copy of which has been included with this
- * distribution in the LICENSE.APL file.  */
+ * distribution in the LICENSE.txt file.  */
 
 package org.apache.log4j.xml.examples;
 
@@ -17,19 +17,10 @@ import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.xml.examples.XLevel;
 
 /**
-   A simple example showing Category sub-classing. It shows the
+   A simple example showing Logger sub-classing. It shows the
    minimum steps necessary to implement one's {@link LoggerFactory}.
-   Note that sub-classes follow the hiearchy even if its categories
+   Note that sub-classes follow the hiearchy even if its loggers
    belong to different classes.
-
-   <p>See <b><a href="doc-files/XCategory.java">source code</a></b>
-   for more details. See also <a
-   href="doc-files/extension1.xml">extension1.xml</a> and <a
-   href="doc-files/extension2.xml">extension2.xml</a> XML
-   configuration files.
-
-   <p>
-   
  */
 public class XLogger extends Logger implements OptionHandler {
   
@@ -42,8 +33,6 @@ public class XLogger extends Logger implements OptionHandler {
   // It's enough to instantiate a factory once and for all.
   private static XFactory factory = new XFactory();
   
-  public static final String SUFFIX_OPTION = "Suffix";
-
   String suffix = "";
 
   /**
@@ -69,17 +58,6 @@ public class XLogger extends Logger implements OptionHandler {
     super.log(FQCN, Level.DEBUG, message + " " + suffix, null);
   }
 
-
- /**
-    Retuns the option names for this component, namely the string
-    {@link #SUFFIX_OPTION}.
- */
-  public
-  String[] getOptionStrings() {
-    return (new String[] {SUFFIX_OPTION});
-  }
-
-
   /**
      We introduce a new printing method in order to support {@link
      XLevel#LETHAL}.  */
@@ -102,36 +80,27 @@ public class XLogger extends Logger implements OptionHandler {
       forcedLog(FQCN, XLevel.LETHAL, message, null);
   }
 
-
- /**
-     Set XLogegory specific options.
-
-     <p>The <b>Suffix</b> option is the only recognized option. It
-     takes a string value.
-     */
+  static
   public
-  void setOption(String option, String value) {
-    if(option == null) {
-      return;
-    }
-    if(option.equalsIgnoreCase(SUFFIX_OPTION)) {
-      this.suffix = value;
-      LogLog.debug("Setting suffix to"+suffix);
-    }
-  }
-  
-  public
-  String getOption(String option) {
-    if(option.equalsIgnoreCase(SUFFIX_OPTION)) {
-      return this.suffix;
-    }
-    return null;
+  Logger getLogger(String name) {
+    return LogManager.getLogger(name, factory);
   }
 
   static
   public
-  Logger getInstance(String name) {
-    return Category.getInstance(name, factory);
+  Logger getLogger(Class clazz) {
+    return XLogger.getLogger(clazz.getName());
+  }
+
+
+  public
+  String getSuffix() {
+    return suffix;
+  }
+
+  public
+  void setSuffix(String suffix) {
+    this.suffix = suffix;
   }
 
   /**
@@ -158,7 +127,7 @@ public class XLogger extends Logger implements OptionHandler {
 
 
 
-  // Any sub-class of Category must also have its own implementation of 
+  // Any sub-class of Logger must also have its own implementation of 
   // CategoryFactory.
   public static class XFactory implements LoggerFactory {
     

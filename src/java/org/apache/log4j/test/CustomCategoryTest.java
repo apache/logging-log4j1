@@ -24,8 +24,7 @@ import java.util.Enumeration;
 
 public class CustomCategoryTest {
   
-  static XLogger cat = (XLogger) 
-                          XLogger.getInstance(CustomCategoryTest.class);
+  static XLogger cat = (XLogger) XLogger.getLogger(CustomCategoryTest.class);
   
   public 
   static 
@@ -44,7 +43,7 @@ public class CustomCategoryTest {
 			+" configFile");
     System.exit(1);
   }
-
+ 
   static 
   void init(String configFile) {
     if(configFile.endsWith(".xml"))

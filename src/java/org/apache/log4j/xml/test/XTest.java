@@ -22,7 +22,7 @@ import org.apache.log4j.xml.examples.*;
 */
 public class XTest {
 
-  static XLogger cat = (XLogger) XLogger.getInstance(XTest.class.getName());
+  static XLogger cat = (XLogger) XLogger.getLogger(XTest.class.getName());
 
 
   public 
