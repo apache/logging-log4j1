@@ -68,7 +68,7 @@
     <echo message="JAVAMAIL is present."/>
   </target>
 
-  <!--    <property name="build.compiler" value="jikes"/>	-->
+
 
   <target name="init">
     <tstamp />

@@ -11,6 +11,7 @@ import  org.apache.log4j.Category;
 import  org.apache.log4j.Priority;
 import  org.apache.log4j.helpers.LogLog;
 
+// Contibutors: Mathias Bogaert
 
 /**
    RootCategory sits at the top of the category hierachy. It is a
@@ -35,7 +36,7 @@ final public class RootCategory extends Category {
   public
   RootCategory(Priority priority) {
     super("root", FQCN);
-    this.priority = priority;
+    setPriority(priority);
   }
 
   
@@ -50,7 +51,7 @@ final public class RootCategory extends Category {
   }
 
   /**
-     Setting a null value to the root category may have catastrophic
+     Setting a null value to the priority of the root category may have catastrophic
      results. We prevent this here.
 
      @since 0.8.3 */
@@ -65,5 +66,4 @@ final public class RootCategory extends Category {
       this.priority = priority;
     }
   }
-
 }

@@ -6,6 +6,8 @@
  * the LICENSE.APL file.
  */
 
+// Contributors:     Mathias Bogaert
+
 package org.apache.log4j.helpers;
 
 import org.apache.log4j.spi.LoggingEvent;
@@ -99,6 +101,13 @@ public class BoundedFIFO {
     return a < b ? a : b;
   }
 
+
+  /**
+     Resize the buffer to a new size. If the new size is smaller than
+     the old size events might be lost.
+     
+     @since 1.1
+   */
   synchronized
   public 
   void resize(int newSize) {
@@ -121,7 +130,7 @@ public class BoundedFIFO {
    // Copy from buf starting a first, to tmp, starting at position 0, len1 elements.
    System.arraycopy(buf, first, tmp, 0, len1);
    
-   // Are there remain uncopied elements and there is still space in the new array?
+   // Are there any uncopied elements and is there still space in the new array?
    int len2 = 0;
    if((len1 < numElements) && (len1 < newSize)) {
      len2 = numElements - len1;
@@ -134,7 +143,7 @@ public class BoundedFIFO {
    this.first=0;   
    this.numElements = len1+len2;
    this.next = this.numElements;
-   if(this.next == this.maxSize) 
+   if(this.next == this.maxSize) // this should never happen, but again, it just might.
      this.next = 0;
   }
 
@@ -149,7 +158,7 @@ public class BoundedFIFO {
   }
 
   /**
-      Returns <code>true</code> if there the number of elements in the
+      Returns <code>true</code> if the number of elements in the
       buffer plus 1 equals the maximum buffer size, returns
       <code>false</code> otherwise. */
   public
