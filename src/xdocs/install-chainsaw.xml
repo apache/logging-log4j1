@@ -1,0 +1,85 @@
+<project name="install-chainsaw" default="install" basedir="." >
+
+	<property name="module.dir" location="${basedir}"/>
+  <property name="oro.file.name" value="jakarta-oro-2.0.7.zip" />
+	<property name="oro.location" location="${module.dir}/${oro.file.name}" />
+	<property name="oro.unzip.location" location="${module.dir}/" />
+
+	<target name="install" depends="confirm,cvs,get-oro,create-build-properties, success-msg"/>
+
+	<target name="confirm" depends="">
+		<echo>
+============================================================
+CHAINSAW v2 installer
+============================================================
+This Ant build script will perform the following:
+   * Download the jakarta-log4j module from the Apache CVS
+   * Dowload the latest binary version of the Jakarta ORO project from www.ibiblio.org
+
+It will create the following artifacts in the current directory (whereever this Ant script is)
+   * a jarkarta-log4j directory, containing the log4j source tree
+   * a jakarta-oro-2.0.7.zip file
+   * a jakarta-oro-2.0.7 directory containing the unpacked ORO jar from the aforementioned zip file
+    </echo>
+    <input
+      message="Are you OK with all of this?"
+      validargs="y,n"
+      addproperty="confirm"
+    />
+    <condition property="do.abort">
+      <equals arg1="n" arg2="${confirm}"/>
+    </condition>
+    <fail if="do.abort">Installation aborted by user.</fail>
+  </target>
+
+  <target name="cvs" depends="">
+    <cvs cvsRoot=":pserver:anoncvs@cvs.apache.org:/home/cvspublic"
+        package="jakarta-log4j"
+        dest="${module.dir}"
+        quiet="true"
+    />
+  </target>
+
+	<target name="get-oro" depends="">
+    <!-- <echo>${oro.location}</echo> -->
+		  <get src="http://www.ibiblio.org/pub/mirrors/apache/jakarta/oro/${oro.file.name}"
+    dest="${oro.location}"
+    verbose="true"
+    usetimestamp="true"/>
+
+    <unzip src="${oro.location}"
+          dest="${oro.unzip.location}">
+        <patternset>
+            <include name="jakarta-oro-2.0.7/jakarta-oro-2.0.7.jar"/>
+        </patternset>
+    </unzip>
+  </target>
+
+
+	<target name="create-build-properties" depends="">
+    <copy file="${module.dir}/jakarta-log4j/build.properties.sample" tofile="${module.dir}/jakarta-log4j/build.properties">
+    </copy>
+    <replace file="${module.dir}/jakarta-log4j/build.properties">
+      <replacetoken><![CDATA[#regexp.oro.jar=../oro/jakarta-oro-2.0.6.jar]]></replacetoken>
+      <replacevalue><![CDATA[regexp.oro.jar=../jakarta-oro-2.0.7/jakarta-oro-2.0.7.jar]]>
+</replacevalue>
+    </replace>
+  </target>
+
+	<!--<target name="clean" depends="">
+
+  </target>-->
+
+  <target name="success-msg" depends="">
+		<echo>
+Installation completed successfully.
+
+You should now be able to do the following to run Chainsaw v2:
+
+  cd jakarta-log4j
+  ant chainsaw
+
+GOOD LUCK!
+    </echo>
+  </target>
+</project>
