@@ -27,6 +27,9 @@ public class XMLSequenceNumberFilter implements Filter {
    * replace the number 123 by XXX and return the result.
    */
   public String filter(String in) {
+    if(in == null) {
+      return null;
+    }
     if (util.match("/sequenceNumber=\"\\d{1,13}\"/", in)) {
       return util.substitute(
         "s/sequenceNumber=\"\\d{1,13}\"/sequenceNumber=\"XXX\"/", in);
