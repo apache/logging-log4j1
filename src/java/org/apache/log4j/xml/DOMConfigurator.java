@@ -3,7 +3,7 @@
  *
  * This software is published under the terms of the Apache Software
  * License version 1.1, a copy of which has been included with this
- * distribution in the LICENSE.APL file.  */
+ * distribution in the LICENSE.txt file.  */
 
 package org.apache.log4j.xml;
 
@@ -15,6 +15,7 @@ import org.w3c.dom.*;
 import java.lang.reflect.Method;
 import org.apache.log4j.*;
 import org.apache.log4j.spi.*;
+import org.apache.log4j.or.RendererMap;
 import org.apache.log4j.helpers.*;
 import org.apache.log4j.config.PropertySetter;
 
@@ -55,7 +56,7 @@ import javax.xml.parsers.FactoryConfigurationError;
    @author Anders Kristensen
 
    @since 0.8.3 */
-public class DOMConfigurator extends BasicConfigurator implements Configurator {
+public class DOMConfigurator implements Configurator {
 
   static final String CONFIGURATION_TAG = "log4j:configuration";
   static final String OLD_CONFIGURATION_TAG = "configuration";
@@ -77,8 +78,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
   static final String ERROR_HANDLER_TAG	= "errorHandler";
   static final String REF_ATTR		= "ref";
   static final String ADDITIVITY_ATTR    = "additivity";  
-  static final String DISABLE_OVERRIDE_ATTR = "disableOverride";
-  static final String DISABLE_ATTR       = "disable";
+  static final String ENABLE_ATTR       = "enable";
   static final String CONFIG_DEBUG_ATTR  = "configDebug";
   static final String INTERNAL_DEBUG_ATTR  = "debug";
   static final String RENDERING_CLASS_ATTR = "renderingClass";
@@ -453,7 +453,8 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
     String renderingClass = subst(element.getAttribute(RENDERING_CLASS_ATTR));
     String renderedClass = subst(element.getAttribute(RENDERED_CLASS_ATTR));
     if(hierarchy instanceof RendererSupport) {
-      addRenderer((RendererSupport) hierarchy, renderedClass, renderingClass);
+      RendererMap.addRenderer((RendererSupport) hierarchy, renderedClass, 
+			      renderingClass);
     }
   }
 
@@ -470,7 +471,7 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
     String priStr = subst(element.getAttribute(VALUE_ATTR));
     LogLog.debug("Level value for "+catName+" is  ["+priStr+"].");
     
-    if(BasicConfigurator.INHERITED.equals(priStr)) {
+    if(INHERITED.equals(priStr)) {
       if(isRoot) {
 	LogLog.error("Root level cannot be inherited. Ignoring directive.");
       } else {
@@ -712,19 +713,10 @@ public class DOMConfigurator extends BasicConfigurator implements Configurator {
       LogLog.setInternalDebugging(OptionConverter.toBoolean(confDebug, true));
     }
 
-    String override = subst(element.getAttribute(DISABLE_OVERRIDE_ATTR));
-    LogLog.debug("Disable override=\"" + override +"\".");
-    // if the log4j.dtd is not specified in the XML file, then the
-    // DISABLE_OVERRIDE attribute is returned as the empty string when
-    // it is not specified in the XML file.
-    if(!override.equals("") && !override.equals("null")) {
-      //hierarchy.overrideAsNeeded(override);
-    }
-
-    String disableStr = subst(element.getAttribute(DISABLE_ATTR));
-    LogLog.debug("Disable =\"" + disableStr +"\".");
-    if(!"".equals(disableStr) && !"null".equals(disableStr)) {
-      hierarchy.disable(disableStr);
+    String enableStr = subst(element.getAttribute(ENABLE_ATTR));
+    LogLog.debug("Enable =\"" + enableStr +"\".");
+    if(!"".equals(enableStr) && !"null".equals(enableStr)) {
+      hierarchy.enable(enableStr);
     }
     
 

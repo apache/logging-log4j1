@@ -12,12 +12,12 @@ public interface LoggerRepository {
 
   boolean isDisabled(int level);
 
-  public
-  void disable(String val);
-
   public 
   void enable(Level level);
 
+  public 
+  void enable(String val);
+  
   public
   void emitNoAppenderWarning(Category cat);
   
