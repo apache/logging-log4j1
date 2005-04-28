@@ -8,6 +8,7 @@
 package org.apache.log4j;
 
 import org.apache.log4j.spi.LoggerFactory;
+import org.slf4j.ULogger;
 
 
 /**
@@ -17,7 +18,7 @@ import org.apache.log4j.spi.LoggerFactory;
   @since log4j 1.2
 
   @author Ceki G&uuml;lc&uuml; */
-public class Logger extends Category {
+public class Logger extends Category implements ULogger {
 
   /**
      The fully qualified name of the Level class. See also the
