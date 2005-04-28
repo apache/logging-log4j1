@@ -67,9 +67,6 @@
   <!-- Directory for temporary files. -->
   <property name="dist.tmp" value="dist/tmp"/>
 
-  <!-- Note that this property is duplicated in ugli.xml -->
-  <property name="path2ugli.properties" value="./classes/ugli.properties"/>
-
   <!-- Construct compile classpath -->
   <path id="compile.classpath">
     <pathelement location="${javac.dest}"/>
@@ -120,7 +117,7 @@
     dist    - will create a complete distribution in dist/
     </echo>
   </target>
-
+	
   <target name="jaxpCheck" unless="jaxp-present">
     <available classname="javax.xml.parsers.DocumentBuilderFactory"
                           property="jaxp-present"/>
@@ -209,6 +206,19 @@
   	</fail>
   </target>
 
+  <target name="slf4jCheck">
+    <available file="${java.source.dir}/org/slf4j/ULogger.java"
+	            property="slf4j-present"/>
+  	
+	<fail unless="slf4j-present">
+       Missing src/java/org/slf4j/*.java source files.
+  	  		
+       Just run the refresh-slf4j target with the command:
+
+	     ant refresh-slf4j		
+  	</fail>
+  </target>
+
 
   <target name="jdbcExtensionCheck">
     <available classname="javax.sql.DataSource" property="jdbcExtension-present">
@@ -228,12 +238,14 @@
     <tstamp />
 	<mkdir dir="${javac.dest}/"/>
   	<mkdir dir="${examples.javac.dest}/" />
-  	<!-- copy required UGLI files into log4j -->
-    <ant antfile="ugli.xml" target="copy-into-log4j"/>
-  	
   </target>
 
-
+  <target name="refresh-slf4j">
+    <echo>Fecthing required source files from SLF4J.ORG</echo> 
+	<!-- copy required SLF4J files into log4j -->
+	<ant antfile="slf4j.xml" target="refresh-slf4j"/>
+  </target>
+	
   <target name="build" description="Compile all log4j components."
 	      depends="init, build.core, build.oro, build.jms, build.smtp, build.db,
   	               build.examples"/>
@@ -259,12 +271,19 @@
     </fail>	
   </target>
 
-  <target name="build.core" depends="init, jndiCheck, jaxpCheck">
+  <target name="copy-slf4j-into-log4j" unless="slf4j-present">
+     <echo>Fecthing required source files from SLF4J.ORG</echo> 
+	 <!-- copy required SLF4J files into log4j -->
+	 <ant antfile="slf4j.xml" target="copy-into-log4j"/>
+  </target>
+
+	
+  <target name="build.core" depends="init, slf4jCheck, jndiCheck, jaxpCheck">
     <javac srcdir="${java.source.dir}"
            destdir="${javac.dest}"
-           includes="org/apache/ugli/**/*.java,
+           includes="org/slf4j/**/*.java,
     	            ${stem}/**/*.java"
-           excludes="org/apache/ugli/impl/JDK14*.java,
+           excludes="org/slf4j/impl/JDK14*.java,
     	             **/UnitTest*.java,
                      **/StressCategory.java,
                      **/doc-files/*,
@@ -305,10 +324,6 @@
     <rmic base="${examples.javac.dest}" classname="factor.NumberCruncherServer" />
   </target>
 
-  <target name="ugli.jar">
-    <ant antfile="ugli.xml" target="jar"/> 
-  </target>	  
-	
  <target name="build.xml" depends="init, jaxpCheck">
     <javac srcdir="${java.source.dir}"
            destdir="${javac.dest}"
@@ -494,14 +509,13 @@
   	 <fileset dir="${javac.dest}/" includes="**/*"/>
    	 <fileset dir="${examples.javac.dest}/" includes="**/*"/>
      <fileset dir="." includes="log4j*.jar"/>
-     <fileset dir="." includes="ugli-*.jar"/>
     </delete>	
   </target>
 
   <!-- ================================================================= -->
   <!-- Actual work is done in the dependencies.                         -->
   <!-- ================================================================= -->
-  <target name="jar" depends="ugli.jar, log4j.jar, log4j-optional.jar, 
+  <target name="jar" depends="log4j.jar, log4j-optional.jar, 
   	                          log4j-jms.jar,  log4j-smtp.jar, 
   	                          log4j-db.jar, log4j-oro.jar, log4j-xml.jar">
   </target>
@@ -512,16 +526,9 @@
   <target name="log4j.jar" depends="build.core, build.servletAPI">
     
     <delete file="${log4j.jar}" verbose="true"/>
-    <delete file="${path2ugli.properties}"/>
-
-    <!-- Much depends on setting up ugli.properties file correctly -->
-    <propertyfile file="${path2ugli.properties}" comment="log4j implementation">
-      <entry key="ugli.factoryAdapterClass" value="org.apache.ugli.impl.Log4jLoggerFA"/>
-    </propertyfile>
 
     <jar jarfile="${jar.dest}/${log4j.jar}" basedir="${javac.dest}"
-         includes="ugli.properties,
-                org/apache/ugli/**/*.class
+         includes="org/slf4j/**/*.class,
                 ${stem}/*.class, 
                 ${stem}/joran/**/*.class,
                 ${stem}/config/*.class,
@@ -542,7 +549,7 @@
     	        ${stem}/varia/List*Appender.class
     	        ${stem}/plugins/*.class,
                 ${stem}/config/*.class"
-      excludes="org/apache/ugli/**/JDK14*.class,
+      excludes="org/slf4j/**/JDK14*.class,
     	         **/UnitTest**, 
     	        ${stem}/xml/Log4jEntityResolver.class,
     	        ${stem}/xml/UtilLoggingEntityResolver.class,
@@ -574,9 +581,6 @@
         </section>
       </manifest>
     </jar>
-
-    <!-- remove ugli.properties when done -->
-    <delete file="${path2ugli.properties}"/>
 
   </target>
   
@@ -614,9 +618,7 @@
                  org.apache.joran,
                  org.apache.joran.action,
                  org.apache.log4j.joran,
-                 org.apache.log4j.joran.action,
-                 org.apache.ugli,
-                 org.apache.ugli.impl"
+                 org.apache.log4j.joran.action"
              additionalparam="-breakiterator"
              version="true"
              protected="true"
@@ -710,7 +712,6 @@
                build.properties.sample,
                INSTALL.txt,
                LICENSE.txt,
-      	       ugli-*.jar,
       	       log4j-*.jar"
                excludes="**/*.bak, 
                **/goEnv.bat,
