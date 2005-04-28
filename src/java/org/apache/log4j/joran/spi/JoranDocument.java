@@ -21,7 +21,7 @@ import org.apache.log4j.helpers.Constants;
 import org.apache.log4j.spi.ErrorItem;
 import org.apache.log4j.spi.LoggerRepository;
 
-import org.apache.ugli.ULogger;
+import org.slf4j.ULogger;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;

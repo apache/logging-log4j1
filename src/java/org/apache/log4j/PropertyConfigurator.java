@@ -371,7 +371,6 @@ public class PropertyConfigurator extends ConfiguratorBase {
       repository.setPristine(false);
 
       
-      
       String thresholdStr =
         OptionConverter.findAndSubst(THRESHOLD_PREFIX, properties);
 
