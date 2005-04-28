@@ -426,7 +426,7 @@
            debug="${debug}"
     	   deprecation="${deprecation}"
            destdir="${javac.dest}"
-           includes="${stem}/net/JMS*.java"
+    	   includes="${stem}/net/JMS*.java, ${stem}/or/jms/*.java"
     >
       <classpath refid="compile.classpath"/>
     </javac>
