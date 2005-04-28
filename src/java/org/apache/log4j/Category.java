@@ -37,8 +37,8 @@ import org.apache.log4j.helpers.ReaderWriterLock;
 import org.apache.log4j.spi.AppenderAttachable;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.ugli.ULogger;
-import org.apache.ugli.impl.MessageFormatter;
+import org.slf4j.ULogger;
+import org.slf4j.impl.MessageFormatter;
 
 import java.util.Enumeration;
 import java.util.MissingResourceException;

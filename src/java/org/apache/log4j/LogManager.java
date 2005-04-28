@@ -26,7 +26,7 @@ import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.RepositorySelector;
 import org.apache.log4j.spi.RootLogger;
-import org.apache.ugli.impl.SimpleLoggerFA;
+import org.slf4j.impl.SimpleLoggerFA;
 
 import java.util.Enumeration;
 

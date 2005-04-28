@@ -7,8 +7,8 @@
 package org.apache.log4j.spi;
 
 import org.apache.log4j.LogManager;
-import org.apache.ugli.ULogger;
-import org.apache.ugli.impl.NOPLogger;
+import org.slf4j.ULogger;
+import org.slf4j.impl.NOPLogger;
 
 
 /**
