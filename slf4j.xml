@@ -25,9 +25,8 @@
       
       svnCheckout - get SLF4J files into src/filtered-java
 
-      copy-into-log4j - copy into the log4j source tree, including variable
-    	                substitution
-      
+      refresh-slf4j - copy source files into the log4j source tree, using
+    	              variable substitution
     </echo>
   </target>
 
@@ -48,9 +47,13 @@
   <!-- building log4j. However, it needs to be done whenever code in SLF4J -->
   <!-- changes, that is seldom                                             -->
   <!-- =================================================================== -->
-  <target name="copy-into-log4j" depends="init, svnCheckout">	
+  <target name="refresh-slf4j" depends="init, svnCheckout">	
   	<!-- delete any stale copy of LoggerFactory.java -->
- 	<delete><fileset dir="src/java/org/slf4j" includes="LoggerFactory.java"/></delete>
+ 	<delete>
+ 		<fileset dir="src/java/org/slf4j" 
+ 		         includes="**/*.java"
+	             excludes="impl/Log4jLoggerFA.java"/>
+ 	</delete>
   	
    	<!-- copy a filtered version of slf4j to tmp/src -->
   	<copy todir="src/java">
