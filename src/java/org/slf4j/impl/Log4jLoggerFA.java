@@ -17,8 +17,8 @@
 package org.slf4j.impl;
 
 import org.apache.log4j.LogManager;
-import org.apache.ugli.LoggerFactoryAdapter;
-import org.apache.ugli.ULogger;
+import org.slf4j.LoggerFactoryAdapter;
+import org.slf4j.ULogger;
 
 /**
  * This factory adapter relies on log4's {@link LogManager} to do its job.
