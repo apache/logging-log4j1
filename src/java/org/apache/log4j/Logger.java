@@ -8,6 +8,7 @@
 package org.apache.log4j;
 
 import org.apache.log4j.spi.LoggerFactory;
+import org.slf4j.ULogger;
 
 
 /**
@@ -17,7 +18,7 @@ import org.apache.log4j.spi.LoggerFactory;
   @since log4j 1.2
 
   @author Ceki G&uuml;lc&uuml; */
-public class Logger extends Category {
+public class Logger extends Category implements ULogger {
 
   /**
      The fully qualified name of the Level class. See also the
@@ -77,7 +78,16 @@ public class Logger extends Category {
   //}
 
   /**
-     Retrieve a logger by name.
+   * Retrieve a logger named according to the value of the
+   * <code>name</code> parameter. If the named logger already exists,
+   * then the existing instance will be returned. Otherwise, a new
+   * instance is created.  
+   *
+   * <p>By default, loggers do not have a set level but inherit it
+   * from their neareast ancestor with a set level. This is one of the
+   * central features of log4j.
+   *
+   * @param name The name of the logger to retrieve.  
   */
   static
   public
@@ -86,7 +96,11 @@ public class Logger extends Category {
   }
 
   /**
-     Same as calling <code>getLogger(clazz.getName())</code>.
+   * Shorthand for <code>getLogger(clazz.getName())</code>.
+   *
+   * @param clazz The name of <code>clazz</code> will be used as the
+   * name of the logger to retrieve.  See {@link #getLogger(String)}
+   * for more detailed information.
    */
   static
   public
@@ -96,7 +110,15 @@ public class Logger extends Category {
 
 
   /**
-     Retrieve the root logger.
+   * Return the root logger for the current logger repository.
+   * <p>
+   * The {@link #getName Logger.getName()} method for the root logger always returns
+   * stirng value: "root". However, calling
+   * <code>Logger.getLogger("root")</code> does not retrieve the root
+   * logger but a logger just under root named "root".
+   * <p>
+   * In other words, calling this method is the only way to retrieve the 
+   * root logger.
    */
   public
   static

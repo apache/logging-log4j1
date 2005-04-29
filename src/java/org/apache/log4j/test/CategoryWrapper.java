@@ -12,11 +12,11 @@ import org.apache.log4j.*;
 public class CategoryWrapper {
 
 
-  Category c;
+  Logger c;
   static String FQCN = CategoryWrapper.class.getName();
 
   CategoryWrapper(String name) {
-    c = Category.getInstance(name);
+    c = Logger.getLogger(name);
   }
 
   public 
@@ -39,7 +39,7 @@ public class CategoryWrapper {
   void print(String msg) {
 
     // You have to supply the fully qualified named of the wrapper
-    // class to the specially tailored category.log method for
+    // class to the specially tailored logger.log method for
     // PatternLayout's %C conversion pattern to work.
 
     // We have to add the ".print" string because the invocation of

@@ -31,42 +31,50 @@ import java.util.Enumeration;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import org.slf4j.impl.MessageFormatter;
 
 /**
-   <font color="#AA2222"><b>This class has been deprecated and
-   replaced by the {@link Logger} <em>subclass</em>.</b></font> It
-   will be kept around to preserve backward compatibility until mid
-   2003.
-
-   <p><code>Logger</code> is a subclass of Category, i.e. it extends
-   Category. In other words, a logger <em>is</em> a category. Thus,
-   all operations that can be performed on a category can be performed
-   on a logger. Whenever log4j is asked to produce a Category object,
-   it will instead produce a Logger object. However, methods that
-   previously accepted category objects still continue to accept
-   category objects.
-
-   <p>For example, the following are all legal and will work as expected.
-
+  * <font color="#AA2222"><b>This class has been deprecated and
+  * replaced by the {@link Logger} <em>subclass</em></b></font>. It
+  * will be kept around to preserve backward compatibility until mid
+  * 2003.
+  * 
+  * <p><code>Logger</code> is a subclass of Category, i.e. it extends
+  * Category. In other words, a logger <em>is</em> a category. Thus,
+  * all operations that can be performed on a category can be
+  * performed on a logger. Internally, whenever log4j is asked to
+  * produce a Category object, it will instead produce a Logger
+  * object. Log4j 1.2 will <em>never</em> produce Category objects but
+  * only <code>Logger</code> instances. In order to preserve backward
+  * compatibility, methods that previously accepted category objects
+  * still continue to accept category objects.
+  * 
+  * <p>For example, the following are all legal and will work as
+  * expected.
+  * 
    <pre>
-   &nbsp;&nbsp;&nbsp;// Deprecated form:
-   &nbsp;&nbsp;&nbsp;Category cat = Category.getInstance("foo.bar")
-
-   &nbsp;&nbsp;&nbsp;// Preferred form for retrieving loggers:
-   &nbsp;&nbsp;&nbsp;Logger logger = Logger.getLogger("foo.bar")
+    &nbsp;&nbsp;&nbsp;// Deprecated form:
+    &nbsp;&nbsp;&nbsp;Category cat = Category.getInstance("foo.bar")
+   
+    &nbsp;&nbsp;&nbsp;// Preferred form for retrieving loggers:
+    &nbsp;&nbsp;&nbsp;Logger logger = Logger.getLogger("foo.bar")
    </pre>
-
-   <p>The first form is deprecated and should be avoided.
-
-   <p><b>There is absolutely no need for new client code to use or
-   refer to the <code>Category</code> class.</b> Whenever possible,
-   please avoid referring to it or using it.
-
-  <p>See the <a href="../../../../manual.html">short manual</a> for an
-  introduction on this class.
-
-  @author Ceki G&uuml;lc&uuml;
-  @author Anders Kristensen */
+   
+  *  <p>The first form is deprecated and should be avoided.
+  * 
+  *  <p><b>There is absolutely no need for new client code to use or
+  *  refer to the <code>Category</code> class.</b> Whenever possible,
+  *  please avoid referring to it or using it.
+  * 
+  * <p>See the <a href="../../../../manual.html">short manual</a> for an
+  * introduction on this class.
+  * <p>
+  * See the document entitled <a href="http://www.qos.ch/logging/preparingFor13.html">preparing
+  *  for log4j 1.3</a> for a more detailed discussion.
+  *
+  * @author Ceki G&uuml;lc&uuml;
+  * @author Anders Kristensen 
+  */
 public class Category implements AppenderAttachable {
 
   /**
@@ -76,9 +84,6 @@ public class Category implements AppenderAttachable {
   //public
   //final Hierarchy defaultHierarchy = new Hierarchy(new
   //					   RootCategory(Level.DEBUG));
-
-
-  static int nooptimize;
 
   /**
      The name of this category.
@@ -207,10 +212,10 @@ public class Category implements AppenderAttachable {
   */
   synchronized
   void closeNestedAppenders() {
-    Enumeration enum = this.getAllAppenders();
-    if(enum != null) {
-      while(enum.hasMoreElements()) {
-	Appender a = (Appender) enum.nextElement();
+    Enumeration enumeration = this.getAllAppenders();
+    if(enumeration != null) {
+      while(enumeration.hasMoreElements()) {
+	Appender a = (Appender) enumeration.nextElement();
 	if(a instanceof AppenderAttachable) {
 	  a.close();
 	}
@@ -245,6 +250,60 @@ public class Category implements AppenderAttachable {
     }
   }
 
+  /**
+   * Log a message with the <code>DEBUG</code> level with message formatting
+   * done according to the value of <code>messagePattern</code> and 
+   * <code>arg</code> parameters.
+   * <p>
+   * This form avoids superflous parameter construction. Whenever possible,
+   * you should use this form instead of constructing the message parameter 
+   * using string concatenation.
+   * 
+   * @param messagePattern The message pattern which will be parsed and formatted
+   * @param arg The argument to replace the formatting element, i,e, 
+   * the '{}' pair within <code>messagePattern</code>.
+   * @since 1.2.10
+   */
+  public void debug(Object messagePattern, Object arg) {
+    if (repository.isDisabled(Level.DEBUG_INT)) {
+      return;
+    }
+    
+    if (Level.DEBUG.isGreaterOrEqual(this.getEffectiveLevel())) {
+      if (messagePattern instanceof String){
+        String msgStr = (String) messagePattern;
+        msgStr = MessageFormatter.format(msgStr, arg);
+        forcedLog(FQCN, Level.DEBUG, msgStr, null);
+      } else {
+        // To be failsafe, we handle the case where 'messagePattern' is not
+        // a String. Unless the user makes a mistake, this should never happen.
+        forcedLog(FQCN, Level.DEBUG, messagePattern, null);
+      }
+    }
+  }
+
+  /**
+   * Log a message with the <code>DEBUG</code> level with message formatting
+   * done according to the messagePattern and the arguments arg1 and arg2.
+   * <p>
+   * This form avoids superflous parameter construction. Whenever possible,
+   * you should use this form instead of constructing the message parameter 
+   * using string concatenation.
+   * 
+   * @param messagePattern The message pattern which will be parsed and formatted
+   * @param arg1 The first argument to replace the first formatting element
+   * @param arg2 The second argument to replace the second formatting element
+   * @since 1.2.10
+   */
+  public void debug(String messagePattern, Object arg1, Object arg2) {
+    if (repository.isDisabled(Level.DEBUG_INT)) {
+      return;
+    }
+    if (Level.DEBUG.isGreaterOrEqual(this.getEffectiveLevel())) {
+      messagePattern = MessageFormatter.format(messagePattern, arg1, arg2);
+      forcedLog(FQCN, Level.DEBUG, messagePattern, null);
+    }
+  }
 
   /**
    Log a message object with the <code>DEBUG</code> level including
@@ -289,6 +348,62 @@ public class Category implements AppenderAttachable {
       forcedLog(FQCN, Level.ERROR, message, null);
   }
 
+
+/**
+   * Log a message with the <code>ERROR</code> level with message formatting
+   * done according to the value of <code>messagePattern</code> and 
+   * <code>arg</code> parameters.
+   * <p>
+   * This form avoids superflous parameter construction. Whenever possible,
+   * you should use this form instead of constructing the message parameter 
+   * using string concatenation.
+   * 
+   * @param messagePattern The message pattern which will be parsed and formatted
+   * @param arg The argument to replace the formatting element, i,e, 
+   * the '{}' pair within <code>messagePattern</code>.
+   * @since 1.2.10
+   */
+  public void error(Object messagePattern, Object arg) {
+    if (repository.isDisabled(Level.ERROR_INT)) {
+      return;
+    }
+
+    if (Level.ERROR.isGreaterOrEqual(this.getEffectiveLevel())) {
+      if (messagePattern instanceof String){
+        String msgStr = (String) messagePattern;
+        msgStr = MessageFormatter.format(msgStr, arg);
+        forcedLog(FQCN, Level.ERROR, msgStr, null);
+      } else {
+        // To be failsafe, we handle the case where 'messagePattern' is not
+        // a String. Unless the user makes a mistake, this should never happen.
+        forcedLog(FQCN, Level.ERROR, messagePattern, null);
+      }
+    }
+  }
+  
+  /**
+   * Log a message with the <code>ERROR</code> level with message formatting
+   * done according to the messagePattern and the arguments arg1 and arg2.
+   * <p>
+   * This form avoids superflous parameter construction. Whenever possible,
+   * you should use this form instead of constructing the message parameter 
+   * using string concatenation.
+   *
+   * @param messagePattern The message pattern which will be parsed and formatted
+   * @param arg1 The first argument to replace the first formatting element
+   * @param arg2 The second argument to replace the second formatting element
+   * @since 1.2.10
+   */
+  public void error(String messagePattern, Object arg1, Object arg2) {
+    if (repository.isDisabled(Level.ERROR_INT)) {
+      return;
+    }
+    if (Level.ERROR.isGreaterOrEqual(this.getEffectiveLevel())) {
+      messagePattern = MessageFormatter.format(messagePattern, arg1, arg2);
+      forcedLog(FQCN, Level.ERROR, messagePattern, null);
+    }
+  }
+
   /**
    Log a message object with the <code>ERROR</code> level including
    the stack trace of the {@link Throwable} <code>t</code> passed as
@@ -315,7 +430,7 @@ public class Category implements AppenderAttachable {
 
      @deprecated Please use {@link LogManager#exists} instead.
 
-     @version 0.8.5 */
+     @since 0.8.5 */
   public
   static
   Logger exists(String name) {
@@ -431,9 +546,10 @@ public class Category implements AppenderAttachable {
   }
 
   /**
-
-     @deprecated Has been replaced by the {@link #getEffectiveLevel}
-     method.  */
+    *
+    * @deprecated Please use the the {@link #getEffectiveLevel} method
+    * instead.  
+    * */
   public
   Priority getChainedPriority() {
     for(Category c = this; c != null; c=c.parent) {
@@ -497,40 +613,20 @@ public class Category implements AppenderAttachable {
 
 
  /**
-     Retrieve a category with named as the <code>name</code>
-     parameter. If the named category already exists, then the
-     existing instance will be reutrned. Otherwise, a new instance is
-     created.
-
-     By default, categories do not have a set level but inherit
-     it from the hierarchy. This is one of the central features of
-     log4j.
-
-     <b>Deprecated</b> Please use {@link Logger#getLogger(String)}
-     instead.
-
-     @param name The name of the category to retrieve.  */
+  * @deprecated Make sure to use {@link Logger#getLogger(String)} instead.
+  */
   public
   static
   Category getInstance(String name) {
-     nooptimize++;
     return LogManager.getLogger(name);
   }
 
  /**
-    Shorthand for <code>getInstance(clazz.getName())</code>.
-
-    @param clazz The name of <code>clazz</code> will be used as the
-    name of the category to retrieve.  See {@link
-    #getInstance(String)} for more detailed information.
-
-    <b>Deprecated</b> Please use {@link Logger#getLogger(Class)} instead.
-
-    @since 1.0 */
+  * @deprecated Please make sure to use {@link Logger#getLogger(Class)} instead.
+  */ 
   public
   static
   Category getInstance(Class clazz) {
-    nooptimize++;
     return LogManager.getLogger(clazz);
   }
 
@@ -581,16 +677,7 @@ public class Category implements AppenderAttachable {
 
 
   /**
-     Return the root of the default category hierrachy.
-
-     <p>The root category is always instantiated and available. It's
-     name is "root".
-
-     <p>Nevertheless, calling {@link #getInstance
-     Category.getInstance("root")} does not retrieve the root category
-     but a category just under root named "root".
-
-     <b>Deprecated</b> Use {@link Logger#getRootLogger()} instead.
+   *  @deprecated Please use {@link Logger#getRootLogger()} instead.
    */
   final
   public
@@ -678,6 +765,60 @@ public class Category implements AppenderAttachable {
       forcedLog(FQCN, Level.INFO, message, null);
   }
 
+  /**
+   * Log a message with the <code>INFO</code> level with message formatting
+   * done according to the value of <code>messagePattern</code> and 
+   * <code>arg</code> parameters.
+   * <p>
+   * This form avoids superflous parameter construction. Whenever possible,
+   * you should use this form instead of constructing the message parameter 
+   * using string concatenation.
+   * 
+   * @param messagePattern The message pattern which will be parsed and formatted
+   * @param arg The argument to replace the formatting element, i,e, 
+   * the '{}' pair within <code>messagePattern</code>.
+   * @since 1.2.10
+   */
+  public void info(Object messagePattern, Object arg) {
+    if (repository.isDisabled(Level.INFO_INT)) {
+      return;
+    }
+
+    if (Level.INFO.isGreaterOrEqual(this.getEffectiveLevel())) {
+      if (messagePattern instanceof String){
+        String msgStr = (String) messagePattern;
+        msgStr = MessageFormatter.format(msgStr, arg);
+        forcedLog(FQCN, Level.INFO, msgStr, null);
+      } else {
+        // To be failsafe, we handle the case where 'messagePattern' is not
+        // a String. Unless the user makes a mistake, this should never happen.
+        forcedLog(FQCN, Level.INFO, messagePattern, null);
+      }
+    }
+  }
+  
+  /**
+   * Log a message with the <code>INFO</code> level with message formatting
+   * done according to the messagePattern and the arguments arg1 and arg2.
+   * <p>
+   * This form avoids superflous parameter construction. Whenever possible,
+   * you should use this form instead of constructing the message parameter 
+   * using string concatenation.
+   *
+   * @param messagePattern The message pattern which will be parsed and formatted
+   * @param arg1 The first argument to replace the first formatting element
+   * @param arg2 The second argument to replace the second formatting element
+   * @since 1.2.10
+   */
+  public void info(String messagePattern, Object arg1, Object arg2) {
+    if (repository.isDisabled(Level.INFO_INT)) {
+      return;
+    }
+    if (Level.INFO.isGreaterOrEqual(this.getEffectiveLevel())) {
+      messagePattern = MessageFormatter.format(messagePattern, arg1, arg2);
+      forcedLog(FQCN, Level.INFO, messagePattern, null);
+    }
+  }
   /**
    Log a message object with the <code>INFO</code> level including
    the stack trace of the {@link Throwable} <code>t</code> passed as
@@ -777,6 +918,33 @@ public class Category implements AppenderAttachable {
     return Level.INFO.isGreaterOrEqual(this.getEffectiveLevel());
   }
 
+  /**
+    Check whether this category is enabled for the info Level.
+    See also {@link #isDebugEnabled}.
+
+    @return boolean - <code>true</code> if this category is enabled
+    for level WARN, <code>false</code> otherwise.
+    @since 1.2.10
+  */
+  public boolean isWarnEnabled() {
+    if(repository.isDisabled(Level.WARN_INT))
+      return false;
+    return Level.WARN.isGreaterOrEqual(this.getEffectiveLevel());
+  }
+
+  /**
+    Check whether this category is enabled for the info Level.
+    See also {@link #isDebugEnabled}.
+
+    @return boolean - <code>true</code> if this category is enabled
+    for level ERROR, <code>false</code> otherwise.
+    @since 1.2.10
+  */
+  public boolean isErrorEnabled() {
+    if(repository.isDisabled(Level.ERROR_INT))
+      return false;
+    return Level.ERROR.isGreaterOrEqual(this.getEffectiveLevel());
+  }
 
   /**
      Log a localized message. The user supplied parameter
@@ -1021,6 +1189,60 @@ public class Category implements AppenderAttachable {
 
     if(Level.WARN.isGreaterOrEqual(this.getEffectiveLevel()))
       forcedLog(FQCN, Level.WARN, message, null);
+  }
+
+ /**
+   * Log a message with the <code>WARN</code> level with message formatting
+   * done according to the value of <code>messagePattern</code> and 
+   * <code>arg</code> parameters.
+   * <p>
+   * This form avoids superflous parameter construction. Whenever possible,
+   * you should use this form instead of constructing the message parameter 
+   * using string concatenation.
+   * 
+   * @param messagePattern The message pattern which will be parsed and formatted
+   * @param arg The argument to replace the formatting element, i,e, 
+   * the '{}' pair within <code>messagePattern</code>.
+   * @since 1.2.10
+   */
+  public void warn(Object messagePattern, Object arg) {
+    if (repository.isDisabled(Level.WARN_INT)) {
+      return;
+    }
+
+    if (Level.WARN.isGreaterOrEqual(this.getEffectiveLevel())) {
+      if (messagePattern instanceof String){
+        String msgStr = (String) messagePattern;
+        msgStr = MessageFormatter.format(msgStr, arg);
+        forcedLog(FQCN, Level.WARN, msgStr, null);
+      } else {
+        // To be failsafe, we handle the case where 'messagePattern' is not
+        // a String. Unless the user makes a mistake, this should never happen.
+        forcedLog(FQCN, Level.WARN, messagePattern, null);
+      }
+    }
+  }
+  /**
+   * Log a message with the <code>WARN</code> level with message formatting
+   * done according to the messagePattern and the arguments arg1 and arg2.
+   * <p>
+   * This form avoids superflous parameter construction. Whenever possible,
+   * you should use this form instead of constructing the message parameter 
+   * using string concatenation.
+   *
+   * @param messagePattern The message pattern which will be parsed and formatted
+   * @param arg1 The first argument to replace the first formatting element
+   * @param arg2 The second argument to replace the second formatting element
+   * @since 1.2.10
+   */
+  public void warn(String messagePattern, Object arg1, Object arg2) {
+    if (repository.isDisabled(Level.WARN_INT)) {
+      return;
+    }
+    if (Level.WARN.isGreaterOrEqual(this.getEffectiveLevel())) {
+      messagePattern = MessageFormatter.format(messagePattern, arg1, arg2);
+      forcedLog(FQCN, Level.WARN, messagePattern, null);
+    }
   }
 
   /**

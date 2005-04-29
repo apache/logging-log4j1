@@ -29,8 +29,6 @@ public class MRUFileManager {
   //--------------------------------------------------------------------------
   private static final String CONFIG_FILE_NAME = "mru_file_manager";
   private static final int DEFAULT_MAX_SIZE = 3;
-  public static final String UNIX_SEPARATOR = "/";
-  public static final String DOS_SEPARATOR = "\\";
 
   //--------------------------------------------------------------------------
   //   Protected Variables:
@@ -74,7 +72,6 @@ public class MRUFileManager {
       // do nothing
       e.printStackTrace();
     }
-
   }
 
   /**
@@ -111,7 +108,6 @@ public class MRUFileManager {
     }
     return null;
   }
-
 
   /**
    * Adds a file name to the MRU file list.
@@ -168,7 +164,7 @@ public class MRUFileManager {
    */
   public static void createConfigurationDirectory() {
     String home = System.getProperty("user.home");
-    String sep = (home.startsWith(UNIX_SEPARATOR)) ? UNIX_SEPARATOR : DOS_SEPARATOR;
+    String sep = System.getProperty("file.separator");
     File f = new File(home + sep + "lf5");
     if (!f.exists()) {
       try {
@@ -253,7 +249,7 @@ public class MRUFileManager {
 
   protected String getFilename() {
     String home = System.getProperty("user.home");
-    String sep = (home.startsWith(UNIX_SEPARATOR)) ? UNIX_SEPARATOR : DOS_SEPARATOR;
+    String sep = System.getProperty("file.separator");
 
     return home + sep + "lf5" + sep + CONFIG_FILE_NAME;
   }
@@ -264,7 +260,7 @@ public class MRUFileManager {
   protected void setMaxSize(int maxSize) {
     if (maxSize < _mruFileList.size()) {
       for (int i = 0; i < _mruFileList.size() - maxSize; i++) {
-        _mruFileList.removeFirst();
+        _mruFileList.removeLast();
       }
     }
 

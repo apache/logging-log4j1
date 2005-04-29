@@ -15,12 +15,15 @@ element. -->
 <!-- logging statements with a level equal or below this value are -->
 <!-- disabled. -->
 
-<!-- Setting the "debug" or "configDebug" attributes enable the printing --> 
-<!-- of internal log4j logging statements.                               -->
+<!-- Setting the "debug" enable the printing of internal log4j logging   -->
+<!-- statements.                                                         -->
 
-<!-- By default, debug attribute is "null", meaning that we not touch    --> 
-<!-- internal log4j logging settings.                                    --> 
-
+<!-- By default, debug attribute is "null", meaning that we not do touch -->
+<!-- internal log4j logging settings. The "null" value for the threshold -->
+<!-- attribute can be misleading. The threshold field of a repository	 -->
+<!-- cannot be set to null. The "null" value for the threshold attribute -->
+<!-- simply means don't touch the threshold field, the threshold field   --> 
+<!-- keeps its old value.                                                -->
      
 <!ATTLIST log4j:configuration
   xmlns:log4j              CDATA #FIXED "http://jakarta.apache.org/log4j/" 
@@ -143,8 +146,8 @@ element. -->
 
 <!-- The timestamp format is application dependent. -->
 <!ATTLIST log4j:event
-    category   CDATA #REQUIRED
-    priority   CDATA #REQUIRED
+    logger     CDATA #REQUIRED
+    level      CDATA #REQUIRED
     thread     CDATA #REQUIRED
     timestamp  CDATA #REQUIRED
 >

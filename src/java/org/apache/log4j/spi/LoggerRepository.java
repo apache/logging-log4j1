@@ -31,9 +31,10 @@ public interface LoggerRepository {
   void addHierarchyEventListener(HierarchyEventListener listener);
 
   /**
-     Is the repository disabled for a given level? The answer depends
-     on the repository threshold and the <code>level</code>
-     parameter. See also {@link #setThreshold} method.  */
+     Returns whether this repository is disabled for a given
+     level. The answer depends on the repository threshold and the
+     <code>level</code> parameter. See also {@link #setThreshold}
+     method.  */
   boolean isDisabled(int level);
 
   /**

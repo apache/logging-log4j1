@@ -8,6 +8,10 @@
 package org.apache.log4j.helpers;
 
 import java.net.URL;
+import java.lang.IllegalAccessException;
+import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
+
 //import java.awt.Image;
 //import java.awt.Toolkit;
 
@@ -23,7 +27,9 @@ public class Loader  {
 
   // We conservatively assume that we are running under Java 1.x
   static private boolean java1 = true;
-
+  
+  static private boolean ignoreTCL = false;
+  
   static {
     String prop = OptionConverter.getSystemProperty("java.version", null);
     
@@ -34,6 +40,10 @@ public class Loader  {
 	  java1 = false;
       } 
     }
+    String ignoreTCLProp = OptionConverter.getSystemProperty("log4j.ignoreTCL", null);
+    if(ignoreTCLProp != null) {
+      ignoreTCL = OptionConverter.toBoolean(ignoreTCLProp, true);      
+    }   
   }
 
   /**
@@ -54,43 +64,37 @@ public class Loader  {
      built-in class loader in JDK 1.1.
 
      </ol>
-     
   */
-  static
-  public
-  URL getResource(String resource) {
+  static public URL getResource(String resource) {
     ClassLoader classLoader = null;
     URL url = null;
     
     try {
-      if(!java1) {
-	classLoader = Thread.currentThread().getContextClassLoader();	
-	if(classLoader != null) {
-	  LogLog.debug("Trying to find ["+resource+"] using context classloader "
-		       +classLoader+".");
-	  url = classLoader.getResource(resource);      
-	  if(url != null) {
-	    return url;
-	  }
-	}
-      }
-      
-      // We could not find resource. Ler us now try with the
-      // classloader that loaded this class.
-      classLoader = Loader.class.getClassLoader(); 
-      if(classLoader == null) {
-	LogLog.warn("Loader.class.getClassLoader returned null!");
-      } else {
-	
-	LogLog.debug("Trying to find ["+resource+"] using "+classLoader
-		     +" class loader.");
-	url = classLoader.getResource(resource);
-	if(url != null) {
-	  return url;
-	}
-      }
+  	if(!java1) {
+  	  classLoader = getTCL();
+  	  if(classLoader != null) {
+  	    LogLog.debug("Trying to find ["+resource+"] using context classloader "
+  			 +classLoader+".");
+  	    url = classLoader.getResource(resource);      
+  	    if(url != null) {
+  	      return url;
+  	    }
+  	  }
+  	}
+  	
+  	// We could not find resource. Ler us now try with the
+  	// classloader that loaded this class.
+  	classLoader = Loader.class.getClassLoader(); 
+  	if(classLoader != null) {
+  	  LogLog.debug("Trying to find ["+resource+"] using "+classLoader
+  		       +" class loader.");
+  	  url = classLoader.getResource(resource);
+  	  if(url != null) {
+  	    return url;
+  	  }
+  	}
     } catch(Throwable t) {
-      LogLog.warn(TSTR, t);
+  	LogLog.warn(TSTR, t);
     }
     
     // Last ditch attempt: get the resource from the class path. It
@@ -98,7 +102,7 @@ public class Loader  {
     // loader which the parent of the system class loader. Hence the
     // code below.
     LogLog.debug("Trying to find ["+resource+
-		 "] using ClassLoader.getSystemResource().");
+  		   "] using ClassLoader.getSystemResource().");
     return ClassLoader.getSystemResource(resource);
   } 
   
@@ -111,28 +115,50 @@ public class Loader  {
     return java1;
   }
   
+  /**
+    * Get the Thread Context Loader which is a JDK 1.2 feature. If we
+    * are running under JDK 1.1 or anything else goes wrong the method
+    * returns <code>null<code>.
+    *
+    *  */
+  private static ClassLoader getTCL() throws IllegalAccessException, 
+    InvocationTargetException {
+
+    // Are we running on a JDK 1.2 or later system?
+    Method method = null;
+    try {
+      method = Thread.class.getMethod("getContextClassLoader", null);
+    } catch (NoSuchMethodException e) {
+      // We are running on JDK 1.1
+      return null;
+    }
+    
+    return (ClassLoader) method.invoke(Thread.currentThread(), null);
+  }
+
+
   
   /**
-     Load the specified class using the <code>Thread</code>
-     <code>contextClassLoader</code> if running under Java2 or current
-     class loader if running under JDK 1.1.
-  */
-  static
-  public 
-  Class loadClass (Double clazz) throws ClassNotFoundException {
-    return null;
-    //    if(java1) {
-    //	return Class.forName(clazz);
-    //    } else {
-    //	try {
-    //	  return Thread.currentThread().getContextClassLoader().loadClass(clazz);
-    //	} catch(Exception e) {
-    //	  // we reached here because
-    //	  // currentThread().getContextClassLoader() is null or because
-    //	  // of a security exceptio, or because clazz could not be
-    //	  // loaded, in any case we now try one more time
-    //	  return Class.forName(clazz);
-    //	}
-    //    }
+   * If running under JDK 1.2 load the specified class using the
+   *  <code>Thread</code> <code>contextClassLoader</code> if that
+   *  fails try Class.forname. Under JDK 1.1 only Class.forName is
+   *  used.
+   *
+   */
+  static public Class loadClass (String clazz) throws ClassNotFoundException {
+    // Just call Class.forName(clazz) if we are running under JDK 1.1
+    // or if we are instructed to ignore the TCL.
+    if(java1 || ignoreTCL) {
+      return Class.forName(clazz);
+    } else {
+      try {
+	return getTCL().loadClass(clazz);
+      } catch(Throwable e) {
+	// we reached here because tcl was null or because of a
+	// security exception, or because clazz could not be loaded...
+	// In any case we now try one more time
+	return Class.forName(clazz);
+      }
+    }
   } 
 }

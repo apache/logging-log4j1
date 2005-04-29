@@ -75,7 +75,7 @@ public class SocketServer  {
   static String GENERIC = "generic";
   static String CONFIG_FILE_EXT = ".lcf";
 
-  static Category cat = Category.getInstance(SocketServer.class);
+  static Logger cat = Logger.getLogger(SocketServer.class);
   static SocketServer server;
   static int port;
 
@@ -167,7 +167,7 @@ public class SocketServer  {
 
       File configFile = new File(dir, key+CONFIG_FILE_EXT);
       if(configFile.exists()) {
-	Hierarchy h = new Hierarchy(new RootCategory((Level) Priority.DEBUG));
+	Hierarchy h = new Hierarchy(new RootLogger((Level) Priority.DEBUG));
 	hierarchyMap.put(inetAddress, h);
 
 	new PropertyConfigurator().doConfigure(configFile.getAbsolutePath(), h);
@@ -184,7 +184,7 @@ public class SocketServer  {
     if(genericHierarchy == null) {
       File f = new File(dir, GENERIC+CONFIG_FILE_EXT);
       if(f.exists()) {
-	genericHierarchy = new Hierarchy(new RootCategory((Level) Priority.DEBUG));
+	genericHierarchy = new Hierarchy(new RootLogger((Level) Priority.DEBUG));
 	new PropertyConfigurator().doConfigure(f.getAbsolutePath(), genericHierarchy);
       } else {
 	cat.warn("Could not find config file ["+f+

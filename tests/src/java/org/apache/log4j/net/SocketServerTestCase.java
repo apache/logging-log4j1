@@ -55,6 +55,20 @@ public class SocketServerTestCase extends TestCase {
   static String PAT4 = "^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some T4 MDC-TEST4 \\[main]\\"
                        + " (root|SocketServerTestCase) - Message \\d{1,2}";
 
+  static String PAT5 = "^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some5 T5 MDC-TEST5 \\[main]\\"
+                       + " (root|SocketServerTestCase) - Message \\d{1,2}";
+
+  static String PAT6 = "^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some6 T6 client-test6 MDC-TEST6"
+                       + " \\[main]\\ (root|SocketServerTestCase) - Message \\d{1,2}";
+
+  static String PAT7 = "^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some7 T7 client-test7 MDC-TEST7"
+                       + " \\[main]\\ (root|SocketServerTestCase) - Message \\d{1,2}";
+
+  // DEBUG some8 T8 shortSocketServer MDC-TEST7 [main] SocketServerTestCase - Message 1
+  static String PAT8 = "^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some8 T8 shortSocketServer"
+                       + " MDC-TEST8 \\[main]\\ (root|SocketServerTestCase) - Message \\d{1,2}";
+
+
 
   static String EXCEPTION1 = "java.lang.Exception: Just testing";
   static String EXCEPTION2 = "\\s*at .*\\(.*:\\d{1,4}\\)";
@@ -72,8 +86,6 @@ public class SocketServerTestCase extends TestCase {
 
   public void setUp() {
     System.out.println("Setting up test case.");
-    socketAppender = new SocketAppender("localhost", PORT);
-    rootLogger.addAppender(socketAppender);
   }
   
   public void tearDown() {
@@ -81,8 +93,15 @@ public class SocketServerTestCase extends TestCase {
     socketAppender = null;
     rootLogger.removeAllAppenders();
   }
-  
+
+  /**
+   * The pattern on the server side: %5p %x [%t] %c %m%n     
+   *
+   * We are testing NDC functionality across the wire.  
+   */
   public void test1() throws Exception {
+    socketAppender = new SocketAppender("localhost", PORT);
+    rootLogger.addAppender(socketAppender);
     common("T1", "key1", "MDC-TEST1");
     delay(1);
     ControlFilter cf = new ControlFilter(new String[]{PAT1, EXCEPTION1, 
@@ -93,7 +112,16 @@ public class SocketServerTestCase extends TestCase {
     assertTrue(Compare.compare(FILTERED, "witness/socketServer.1"));
   }
 
+  /**
+   * The pattern on the server side: %5p %x [%t] %C (%F:%L) %m%n
+   *
+   * We are testing NDC across the wire. Localization is turned off by
+   * default so it is not tested here even if the conversion pattern
+   * uses localization. */
   public void test2() throws Exception {
+    socketAppender = new SocketAppender("localhost", PORT);
+    rootLogger.addAppender(socketAppender);
+
     common("T2", "key2", "MDC-TEST2");
     delay(1);
     ControlFilter cf = new ControlFilter(new String[]{PAT2, EXCEPTION1, 
@@ -104,8 +132,15 @@ public class SocketServerTestCase extends TestCase {
     assertTrue(Compare.compare(FILTERED, "witness/socketServer.2"));
   }
 
+  /**
+   *  The pattern on the server side: %5p %x [%t] %C (%F:%L) %m%n
+   *  meaning that we are testing NDC and locatization functionality
+   *  across the wire.  */
   public void test3() throws Exception {
+    socketAppender = new SocketAppender("localhost", PORT);
     socketAppender.setLocationInfo(true);
+    rootLogger.addAppender(socketAppender);
+
     common("T3", "key3", "MDC-TEST3");
     delay(1);
     ControlFilter cf = new ControlFilter(new String[]{PAT3, EXCEPTION1, 
@@ -116,10 +151,19 @@ public class SocketServerTestCase extends TestCase {
     assertTrue(Compare.compare(FILTERED, "witness/socketServer.3"));
   }
 
+  /**
+   *  The pattern on the server side: %5p %x %X{key1}%X{key4} [%t] %c{1} - %m%n 
+   *  meaning that we are testing NDC, MDC and localization functionality across 
+   *  the wire.  
+  */
   public void test4() throws Exception {
+    socketAppender = new SocketAppender("localhost", PORT);
     socketAppender.setLocationInfo(true);
+    rootLogger.addAppender(socketAppender);
+
     NDC.push("some");
     common("T4", "key4", "MDC-TEST4");
+    NDC.pop();
     delay(1);
     ControlFilter cf = new ControlFilter(new String[]{PAT4, EXCEPTION1, 
 						       EXCEPTION2, EXCEPTION3});
@@ -127,6 +171,110 @@ public class SocketServerTestCase extends TestCase {
     Transformer.transform(TEMP, FILTERED, new Filter[] {cf, new LineNumberFilter()});
 
     assertTrue(Compare.compare(FILTERED, "witness/socketServer.4"));
+  }
+
+  /**
+   * The pattern on the server side: %5p %x %X{key1}%X{key5} [%t] %c{1} - %m%n 
+   *
+   * The test case uses wraps an AsyncAppender around the
+   * SocketAppender. This tests was written specifically for bug
+   * report #9155.
+
+   * Prior to the bug fix the output on the server did not contain the
+   * MDC-TEST5 string because the MDC clone operation (in getMDCCopy
+   * method) operation is performed twice, once from the main thread
+   * which is correct, and a second time from the AsyncAppender's
+   * dispatch thread which is incrorrect.
+
+   */
+  public void test5() throws Exception {
+    socketAppender = new SocketAppender("localhost", PORT);
+    socketAppender.setLocationInfo(true);
+    AsyncAppender asyncAppender = new AsyncAppender();
+    asyncAppender.setLocationInfo(true);
+    asyncAppender.addAppender(socketAppender);
+    rootLogger.addAppender(asyncAppender);
+
+    NDC.push("some5");
+    common("T5", "key5", "MDC-TEST5");
+    NDC.pop();
+    delay(2);
+    ControlFilter cf = new ControlFilter(new String[]{PAT5, EXCEPTION1, 
+						       EXCEPTION2, EXCEPTION3});
+    
+    Transformer.transform(TEMP, FILTERED, new Filter[] {cf, new LineNumberFilter()});
+    assertTrue(Compare.compare(FILTERED, "witness/socketServer.5"));
+  }
+
+  /**
+   * The pattern on the server side: %5p %x %X{hostID}${key6} [%t] %c{1} - %m%n 
+   *
+   * This test checks whether client-side MDC overrides the server side.
+   * It uses an AsyncAppender encapsulating a SocketAppender
+   */
+  public void test6() throws Exception {
+    socketAppender = new SocketAppender("localhost", PORT);
+    socketAppender.setLocationInfo(true);
+    AsyncAppender asyncAppender = new AsyncAppender();
+    asyncAppender.setLocationInfo(true);
+    asyncAppender.addAppender(socketAppender);
+    rootLogger.addAppender(asyncAppender);
+
+    NDC.push("some6");
+    MDC.put("hostID", "client-test6");
+    common("T6", "key6", "MDC-TEST6");
+    NDC.pop();
+    MDC.remove("hostID");
+    delay(2);
+    ControlFilter cf = new ControlFilter(new String[]{PAT6, EXCEPTION1, 
+						       EXCEPTION2, EXCEPTION3});
+    
+    Transformer.transform(TEMP, FILTERED, new Filter[] {cf, new LineNumberFilter()});
+    assertTrue(Compare.compare(FILTERED, "witness/socketServer.6"));
+  }
+
+  /**
+   * The pattern on the server side: %5p %x %X{hostID}${key7} [%t] %c{1} - %m%n 
+   *
+   * This test checks whether client-side MDC overrides the server side.
+   */
+  public void test7() throws Exception {
+    socketAppender = new SocketAppender("localhost", PORT);
+    socketAppender.setLocationInfo(true);
+    rootLogger.addAppender(socketAppender);
+
+    NDC.push("some7");
+    MDC.put("hostID", "client-test7");
+    common("T7", "key7", "MDC-TEST7");
+    NDC.pop();
+    MDC.remove("hostID"); 
+    delay(2);
+    ControlFilter cf = new ControlFilter(new String[]{PAT7, EXCEPTION1, 
+						       EXCEPTION2, EXCEPTION3});
+    
+    Transformer.transform(TEMP, FILTERED, new Filter[] {cf, new LineNumberFilter()});
+    assertTrue(Compare.compare(FILTERED, "witness/socketServer.7"));
+  }
+
+  /**
+   * The pattern on the server side: %5p %x %X{hostID}${key7} [%t] %c{1} - %m%n 
+   *
+   * This test checks whether server side MDC works.
+   */
+  public void test8() throws Exception {
+    socketAppender = new SocketAppender("localhost", PORT);
+    socketAppender.setLocationInfo(true);
+    rootLogger.addAppender(socketAppender);
+
+    NDC.push("some8");
+    common("T8", "key8", "MDC-TEST8");
+    NDC.pop();
+    delay(2);
+    ControlFilter cf = new ControlFilter(new String[]{PAT8, EXCEPTION1, 
+						       EXCEPTION2, EXCEPTION3});
+    
+    Transformer.transform(TEMP, FILTERED, new Filter[] {cf, new LineNumberFilter()});
+    assertTrue(Compare.compare(FILTERED, "witness/socketServer.8"));
   }
 
   static 
@@ -161,6 +309,10 @@ public class SocketServerTestCase extends TestCase {
     suite.addTest(new SocketServerTestCase("test2"));
     suite.addTest(new SocketServerTestCase("test3"));
     suite.addTest(new SocketServerTestCase("test4"));
+    suite.addTest(new SocketServerTestCase("test5"));
+    suite.addTest(new SocketServerTestCase("test6"));
+    suite.addTest(new SocketServerTestCase("test7"));
+    suite.addTest(new SocketServerTestCase("test8"));
     return suite;
   }
 }

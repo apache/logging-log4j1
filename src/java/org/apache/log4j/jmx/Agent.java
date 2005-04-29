@@ -6,12 +6,12 @@ import javax.management.MBeanServer;
 import javax.management.MBeanServerFactory;
 import com.sun.jdmk.comm.HtmlAdaptorServer;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 
 public class Agent {
 
-  static Category log = Category.getInstance(Agent.class);
+  static Logger log = Logger.getLogger(Agent.class);
 
   public Agent() {
   }

@@ -13,16 +13,7 @@ import  org.apache.log4j.helpers.LogLog;
 // Contibutors: Mathias Bogaert
 
 /**
-   RootCategory sits at the top of the category hierachy. It is a
-   regular category except that it provides several guarantees.
-
-   <p>First, it cannot be assigned a <code>null</code>
-   priority. Second, since root category cannot have a parent, the
-   {@link #getChainedLevel} method always returns the value of the
-   level field without walking the hierarchy.
-
-   @author Ceki G&uuml;lc&uuml;
-
+ * @deprecated Replaced by {@link RootLogger}.  
  */
 final public class RootCategory extends Logger {
 

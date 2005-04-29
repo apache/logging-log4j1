@@ -1,7 +1,7 @@
 
 package org.apache.log4j.varia.test; 
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 /**
@@ -12,7 +12,7 @@ import org.apache.log4j.PropertyConfigurator;
    @author Ceki G&uuml;lc&uuml; */
 public class Loop {
 
-  static Category cat = Category.getInstance(Loop.class.getName());
+  static Logger cat = Logger.getLogger(Loop.class);
   static int loopLength;
 
   public 

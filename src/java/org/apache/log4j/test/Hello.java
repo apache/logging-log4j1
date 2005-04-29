@@ -7,7 +7,7 @@
 
 package org.apache.log4j.test; 
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import org.apache.log4j.BasicConfigurator;
 
 /**
@@ -17,7 +17,7 @@ import org.apache.log4j.BasicConfigurator;
  */
 public class Hello {
 
-  static Category cat = Category.getInstance(Hello.class);
+  static Logger cat = Logger.getLogger(Hello.class);
 
   public 
   static 

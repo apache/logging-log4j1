@@ -18,7 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
 
 /**
@@ -28,8 +28,8 @@ import org.apache.log4j.Priority;
  */
 class ControlPanel extends JPanel {
     /** use the log messages **/
-    private static final Category LOG = 
-                                  Category.getInstance(ControlPanel.class);
+    private static final Logger LOG = 
+                                  Logger.getLogger(ControlPanel.class);
 
     /**
      * Creates a new <code>ControlPanel</code> instance.
@@ -61,7 +61,7 @@ class ControlPanel extends JPanel {
         add(label);
 
         c.gridy++;
-        label = new JLabel("Filter Category:");
+        label = new JLabel("Filter Logger:");
         gridbag.setConstraints(label, c);
         add(label);
 
