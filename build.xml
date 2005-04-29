@@ -270,7 +270,7 @@
     <javac deprecation="${deprecation}"
            srcdir="${java.source.dir}"
 	   destdir="${javac.dest}"
-	   includes="${stem}/net/JMS*.java">
+           includes="${stem}/net/JMS*.java, ${stem}/or/jms/*.java">
       <classpath refid="compile.classpath"/>
     </javac>
   </target>
@@ -411,6 +411,7 @@
 
       <link href="http://java.sun.com/products/jdk/1.3/docs/api/"/>
       <link href="http://java.sun.com/j2ee/sdk_1.3/techdocs/api/"/>
+      <link href="http://www.slf4j.org/api/"/>
       <classpath refid="compile.classpath"/>
     </javadoc>
   </target>
