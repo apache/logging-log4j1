@@ -8,7 +8,7 @@
 
       <body>
 	
-      <section name="log4j version 1.2.9">
+      <section name="log4j version 1.2.10">
 	<p>Log4j is <a
 	      href="http://logging.apache.org/site/binindex.cgi"><b>available
 	      for download</b></a> from a number of mirrors. Please
@@ -16,9 +16,11 @@
 	      bandwidth.
 	  </p>
 	  
-	  <p>Log4j version 1.2.9, is identical to version 1.2.8,
-	  except that several key methods have been deprecated in
-	  preparation for version 1.3.0, the next major release of
+	  <p>Log4j version 1.2.10 adds support for <a
+	  href="http://www.slf4j.org">SLF4J</a>. It also fixes several
+	  relatively minor bugs. Version 1.2.9 is identical to version
+	  1.2.8, except that several key methods have been deprecated
+	  in preparation for version 1.3.0, the next major release of
 	  log4j. These changes are intended to enforce the rule that
 	  client code should never refer to the <code>Category</code>
 	  class directly, but use the <code>Logger</code> class
@@ -35,21 +37,11 @@
           <h2>log4j version 1.3 (alpha)</h2>
           
           <p>An alpha version of log4j version 1.3 has been recently
-          made available. It can be downloaded from the same As the
-          alpha prefix indicates, this release is still being tested,
-          future versions may bring further radical changes, and all
-          the usual caveats apply.
+          made available. As the alpha prefix indicates, this release
+          is still being tested, future versions may bring further
+          radical changes, and all the usual caveats apply.
           </p>
         
-	  <subsection name='Earlier Releases'>
-	    <p>We also maintain <a
-	      href="earlier.html">earlier
-	      versions of log4j</a> for download, intended for the
-	      curious paleontologist -- there seems to be quite a few
-	      of them!
-	    </p>
-	  </subsection>
-
 	</section>
 
 

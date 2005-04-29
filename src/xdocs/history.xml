@@ -10,10 +10,11 @@
 
     <section name="Project history">
 
+      
       <p>The <a href="HISTORY.txt"><b>project history</b></a> gives a
-	brief summary of changes and additions. Users frequently
-	report bugs that are solved in newer versions of log4j. Please
-	have a look at the history file before asking for help.
+      brief summary of changes and additions. Users frequently report
+      bugs that are solved in newer versions of log4j. Please have a
+      look at the history file before asking for help.
       </p>
 
       <p>The project's official URL is <a

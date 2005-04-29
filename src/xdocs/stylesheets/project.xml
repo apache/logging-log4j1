@@ -11,8 +11,9 @@
       <item name="Introduction"   href="/index.html"/>
       <item name="Download"       href="/download.html"/>
       <item name="Documentation"  href="/documentation.html"/>
+      <item name="Contact us"     href="/contactUs.html"/>
+      <item name="Contributors"   href="/contributors.html"/>
       <item name="Chainsaw"       href="/chainsaw.html"/>
-      <item name="UGLI"           href="/ugli.html"/>
       <item name="History"        href="/history.html"/>
     </menu>
 
@@ -21,6 +22,10 @@
       <item name="CVS Repositories" href="http://logging.apache.org/site/cvs-repositories.html"/>
       <item name="Mailing Lists" href="http://logging.apache.org/site/mailing-lists.html"/>
       <item name="Bug Reporting" href="http://logging.apache.org/site/bugreport.html"/>
+    </menu>
+
+    <menu name="Related Projects">
+      <item name="SLF4J"          href="http://www.slf4j.org"/>
     </menu>
 
     <menu name="Translations">
