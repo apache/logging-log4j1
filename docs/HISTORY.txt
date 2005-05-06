@@ -15,9 +15,9 @@
 
  - Release of version 1.2.10
 
- - Version 1.2.10 was not following the accepted rules and process of the
-   log4j project and Logging Services Project and was recalled and removed.
-   Please do not use version 1.2.10.
+ - Version 1.2.10 was not released following the accepted rules and process of
+   the log4j project and Logging Services Project and was recalled and removed.
+   Please do not use version 1.2.10, it is not an official log4j release.
 
  November 1st, 2004
 
