@@ -12,27 +12,15 @@
 
       <hr/> 
       
-      <p><b>BEWARE:</b> For some reason Internet Explorer decides to
-	rename ".tar.gz" files as ".tar". You should rename the files back to
+      <p><b>BEWARE:</b>Certain Internet Explorer versions rename .tar.gz downloads
+        as .tar.  You should rename the files back to
 	<code>tar.gz</code> after the download completes.
       </p> 
       <hr/>
 
-      <dl>
-	<dt><b>jakarta-log4j-1.0.4</b></dt>
-	<dd>
-	  Download full package in <a href="../jakarta-log4j-1.0.4.tar.gz">TAR.GZ</a> 
-	  format. 
-	</dd>
+      <a href="http://archive.apache.org/dist/logging/log4j/">Log4j Archives</a>
 
-	<dt><b>jakarta-log4j-1.1.3</b></dt>
-	<dd>
-	  Download full package in <a href="../jakarta-log4j-1.1.3.tar.gz">TAR.GZ</a> 
-	  format.
-	</dd>
-      </dl>
-
-</section>
+    </section>
 
 </body>
 </document>
