@@ -17,7 +17,7 @@
   <!-- prefixed with "env". -->
   <property environment="env"/>
 
-  <property name="version" value="1.2.10"/>
+  <property name="version" value="1.2.11prerelease"/>
 
   <!-- The base directory relative to which most targets are built -->
   <property name="base" value="."/>
@@ -161,19 +161,6 @@
     <echo message="JAVAMAIL is present."/>
   </target>
 
-  <target name="slf4jCheck">
-    <available file="${java.source.dir}/org/slf4j/ULogger.java"
-               property="slf4j-present"/>
-    
-    <fail unless="slf4j-present">
-       Missing src/java/org/slf4j/*.java source files.
-  	  		
-       Just run the refresh-slf4j target with the command:
-
-       ant refresh-slf4j		
-    </fail>
-  </target>
-
   <!-- ================================================================= -->
   <!-- Initialize variables                                              -->
   <!-- NOTE: all directories are relative to jakarta-log4j/              -->
@@ -182,22 +169,14 @@
     <tstamp />
   </target>
 
-
-  <target name="refresh-slf4j">
-    <echo>Fecthing required source files from SLF4J.ORG</echo> 
-    <!-- copy required SLF4J files into log4j -->
-    <ant antfile="slf4j.xml" target="refresh-slf4j"/>
-  </target>
-
   <target name="build" depends="init, build.core, build.examples, build.xml,
                                 build.javamail, build.jms, build.jmx"/>
 
-  <target name="build.core" depends="init, slf4jCheck">
+  <target name="build.core" depends="init">
     <mkdir dir="${javac.dest}" />
     <javac srcdir="${java.source.dir}"
 	   destdir="${javac.dest}"
-	   includes="org/slf4j/**/*.java,
-                     ${stem}/**/*.java, 
+	   includes="${stem}/**/*.java, 
                      ${stem}/xml/XMLLayout.java"
 	   excludes="misc/*, **/UnitTest*.java,
                     **/StressCategory.java,
@@ -347,8 +326,7 @@
     </delete>
 
     <jar jarfile="${jar.dest}/${jar.filename}" basedir="${javac.dest}"
-      includes="org/slf4j/**/*.class,
-                ${stem}/*.class, 
+      includes="${stem}/*.class, 
                 ${stem}/xml/log4j.dtd,
                 ${stem}/config/*.class,
 	        ${stem}/helpers/*.class,
@@ -411,7 +389,6 @@
 
       <link href="http://java.sun.com/products/jdk/1.3/docs/api/"/>
       <link href="http://java.sun.com/j2ee/sdk_1.3/techdocs/api/"/>
-      <link href="http://www.slf4j.org/api/"/>
       <classpath refid="compile.classpath"/>
     </javadoc>
   </target>

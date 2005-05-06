@@ -5,23 +5,19 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
 
+ Current cvs v1_2-branch (1.2.11 prerelease)
 
+ - Fixed bug #34491 whereby the class o.a.log4j.or.jms.MessageRenderer
+   would not be compiled in the build.jms target. Bug reported by Andy
+   McBride. http://issues.apache.org/bugzilla/show_bug.cgi?id=34491
+ 
  April 28th, 2005
 
  - Release of version 1.2.10
 
- - Added support for the SLF4J project. The Logger class now
-   implements the ULogger interface defined by the SLF4J. See
-   
-    http://www.slf4j.org
-   
-   for more detailed information.
-
- - Fixed bug #34491 whereby the class o.a.log4j.or.jms.MessageRenderer
-   would not be compiled in the build.jms target. Bug reported by Andy
-   McBride.
-  
- http://issues.apache.org/bugzilla/show_bug.cgi?id=34491
+ - Version 1.2.10 was not following the accepted rules and process of the
+   log4j project and Logging Services Project and was recalled and removed.
+   Please do not use version 1.2.10.
 
  November 1st, 2004
 

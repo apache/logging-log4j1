@@ -346,8 +346,9 @@
 	  remote Unix Syslog daemon, to a remote listener using JMS,
 	  to the NT EventLog or even send e-mail.  </p></li>
 
-	  <li><p>log4j uses 6 levels, namely TRACE, DEBUG, INFO, WARN,
-	  ERROR and FATAL.  </p></li>
+	  <li><p>log4j uses 5 levels, namely DEBUG, INFO, WARN, ERROR and
+	  FATAL.
+	  </p></li>
 
 	  <li><p>The format of the log output can be easily changed by
 	  extending the <code>Layout</code>
@@ -444,7 +445,7 @@
 
         <p>The open and collaborative way in which log4j is developped
         ensures that it continues to preserve and even widen its
-        competitive edge. At some point, input from bright developpers
+        competitive edge. At some point, input from bright developers
         from all over the world is bound to make a difference.
         </p>
       
@@ -535,44 +536,6 @@
 	statement.
 	</p>
 	
-        <h3>Better alternative based on message patterns</h3>
-        <p>As of log4j version 1.3, there exists a significantly more
-        convenient alternative based on message patterns. Assuming
-        <code>entry</code> is an object, you can write:
-        </p>
-
-	<p class="source">
-          l.debug("The new entry is {}.", entry);
-	</p>
-
-        <p>After evaluting whether to log or not, and only if the
-        decision is positive, will the logger instace format the
-        message and replace the '{}' pair with the string value of
-        <code>entry</code>. In other words, the paramerized form does
-        not incur the cost of parameter construction in case the log
-        statement is disabled.
-        </p>
-        
-        <p>Thus, the following two lines will yield the exact same
-        output. However, the second form will perform at least 30
-        (thirty) times faster in case of a <em>disabled</em> logging
-        statement.
-        </p>
-        
-	<p class="source">
-          l.debug("The new entry is "+entry+"."); <br />
-          l.debug("The new entry is {}.", entry);
-	</p>
-        
-        <p>A two argument variant is also availalble. For example, you
-        can write:
-        </p>
-	<p class="source">
-          l.debug("The new entry is {}. It replaces {}.", entry, oldEntry);
-	</p>
-        
-     
-
       
                                  <div class="question">
              <a name="2.4">2.4  Are there any suggested ways for naming loggers?</a>
@@ -1079,7 +1042,7 @@ public class Foo {
 	appear in the file <em>/docs/faq.html</em>.
 	</p>
       
-                                                                
+                    
 
              
                 <!-- FOOTER -->
