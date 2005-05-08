@@ -22,9 +22,10 @@ import org.apache.log4j.rolling.helper.FileNamePattern;
 import org.apache.log4j.rolling.helper.RollingCalendar;
 import org.apache.log4j.rolling.helper.Util;
 import org.apache.log4j.spi.LoggingEvent;
-import java.io.File;
+import org.apache.log4j.Appender;
 
 import java.util.Date;
+import java.io.File;
 
 
 /**
@@ -256,7 +257,10 @@ public class TimeBasedRollingPolicy extends RollingPolicyBase implements Trigger
     }
   }
 
-  public boolean isTriggeringEvent(File file, final LoggingEvent event) {
+  public boolean isTriggeringEvent(final Appender appender,
+                                   final LoggingEvent event,
+                                   final File file,
+                                   final long fileLength) {
     //getLogger().debug("Is triggering event called");
     long n = System.currentTimeMillis();
 

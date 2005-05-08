@@ -28,7 +28,7 @@ import org.apache.log4j.spi.OptionHandler;
  * @author Ceki G&uuml;lc&uuml;
  * @since 1.3
  * */
-public interface RollingPolicy extends OptionHandler {
+public interface RollingPolicy {
   
   /**
    * Rolls over log files according to implementation policy.  

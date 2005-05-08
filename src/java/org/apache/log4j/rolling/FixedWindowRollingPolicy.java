@@ -141,7 +141,7 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
 	  if(toRename.exists()) {
 	      util.rename(toRenameStr, fileNamePattern.convert(i + 1));
 	  } else {
-	      getLogger().info("Skipping rollover for inexistent file {}", toRenameStr); 
+	      getLogger().info("Skipping rollover for non-existent file {}", toRenameStr); 
           }
       }
 
