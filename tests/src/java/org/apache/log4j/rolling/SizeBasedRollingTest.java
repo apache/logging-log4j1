@@ -117,17 +117,12 @@ public class SizeBasedRollingTest extends TestCase {
     assertTrue(new File("output/sizeBased-test2.0").exists());
     assertTrue(new File("output/sizeBased-test2.1").exists());
 
-    // The File.length() method is not accurate under Windows
-
-     if(!isWindows()) {
-
-      assertTrue(Compare.compare("output/sizeBased-test2.log",
-         "witness/rolling/sbr-test2.log"));
-      assertTrue(Compare.compare("output/sizeBased-test2.0",
-         "witness/rolling/sbr-test2.0"));
-      assertTrue(Compare.compare("output/sizeBased-test2.1",
-         "witness/rolling/sbr-test2.1"));
-     }
+    assertTrue(Compare.compare("output/sizeBased-test2.log",
+     "witness/rolling/sbr-test2.log"));
+    assertTrue(Compare.compare("output/sizeBased-test2.0",
+     "witness/rolling/sbr-test2.0"));
+    assertTrue(Compare.compare("output/sizeBased-test2.1",
+     "witness/rolling/sbr-test2.1"));
   }
 
     /**
@@ -165,14 +160,9 @@ public class SizeBasedRollingTest extends TestCase {
     assertTrue(new File("output/sbr-test3.0.gz").exists());
     assertTrue(new File("output/sbr-test3.1.gz").exists());
 
-     if(!isWindows()) {
-
-      assertTrue(Compare.compare("output/sbr-test3.log",  "witness/rolling/sbr-test3.log"));
-      assertTrue(Compare.gzCompare("output/sbr-test3.0.gz", "witness/rolling/sbr-test3.0.gz"));
-      assertTrue(Compare.gzCompare("output/sbr-test3.1.gz", "witness/rolling/sbr-test3.1.gz"));
-     }
-
-
+    assertTrue(Compare.compare("output/sbr-test3.log",  "witness/rolling/sbr-test3.log"));
+    assertTrue(Compare.gzCompare("output/sbr-test3.0.gz", "witness/rolling/sbr-test3.0.gz"));
+    assertTrue(Compare.gzCompare("output/sbr-test3.1.gz", "witness/rolling/sbr-test3.1.gz"));
   }
 
   boolean isWindows() {

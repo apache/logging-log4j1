@@ -16,8 +16,10 @@
 
 package org.apache.log4j.rolling;
 
-import java.io.File;
+import org.apache.log4j.Appender;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.OptionHandler;
+import java.io.File;
 
 
 /**
@@ -27,8 +29,9 @@ import org.apache.log4j.spi.LoggingEvent;
  * @author Ceki G&uuml;lc&uuml;
  *
  */
-public class SizeBasedTriggeringPolicy implements TriggeringPolicy {
+public class SizeBasedTriggeringPolicy implements TriggeringPolicy, OptionHandler {
   long maxFileSize = 10 * 1024 * 1024; // let 10 MB the default max size
+
 
   public SizeBasedTriggeringPolicy() {
   }
@@ -38,9 +41,12 @@ public class SizeBasedTriggeringPolicy implements TriggeringPolicy {
   }
 
 
-  public boolean isTriggeringEvent(final File file, final LoggingEvent event) {
+  public boolean isTriggeringEvent(final Appender appender,
+                                   final LoggingEvent event,
+                                   final File file,
+                                   final long fileLength) {
     //System.out.println("Size"+file.length());
-    return (file.length() >= maxFileSize);
+    return (fileLength >= maxFileSize);
   }
 
   public long getMaxFileSize() {

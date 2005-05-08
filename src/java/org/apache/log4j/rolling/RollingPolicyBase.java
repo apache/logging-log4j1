@@ -19,6 +19,7 @@ package org.apache.log4j.rolling;
 import org.apache.log4j.rolling.helper.Compress;
 import org.apache.log4j.rolling.helper.FileNamePattern;
 import org.apache.log4j.spi.ComponentBase;
+import org.apache.log4j.spi.OptionHandler;
 
 
 /**
@@ -29,7 +30,8 @@ import org.apache.log4j.spi.ComponentBase;
  * @author Ceki G&uuml;lc&uuml;
  * @since 1.3
  */
-public abstract class RollingPolicyBase extends ComponentBase implements RollingPolicy {
+public abstract class RollingPolicyBase extends ComponentBase
+        implements RollingPolicy, OptionHandler {
   protected int compressionMode = Compress.NONE;
   protected FileNamePattern fileNamePattern;
   protected String fileNamePatternStr;
