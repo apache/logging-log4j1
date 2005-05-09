@@ -168,7 +168,7 @@
   <!-- created witness file.                                             -->
   <!-- ================================================================= -->  
   
-  <target name="regression" depends="Minimum, Logger, AppenderContract,
+  <target name="regression" depends="Core, Minimum, Logger, AppenderContract,
   	                                 DOM, CustomLevel, 
                                      CustomLogger, PatternLayout, 
                                      HierarchyThreshold, DefaultInit, 
@@ -253,6 +253,16 @@
   <!-- ================================================================= -->
   <!-- ============== Regression and Unit Tests follow ================= -->  
   <!-- ================================================================= -->
+  
+  <target name="Core" depends="check, build, cleanOutputDir">
+	<junit printsummary="yes" fork="yes" haltonfailure="yes">
+	  <classpath refid="tests.classpath"/>
+	  <formatter type="plain" usefile="false"/>
+	  <test name="org.apache.log4j.CoreTestSuite" />
+    </junit>
+  </target>
+  
+  
   <target name="Minimum" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
