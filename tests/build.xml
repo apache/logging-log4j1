@@ -151,6 +151,7 @@
   </target>
   
   <target name="cleanOutputDir">
+    <mkdir dir="output"/>
     <delete>
       <fileset dir="./output/" includes="**"/>
     </delete>
@@ -192,7 +193,8 @@
                                      NDC,
                                      Plugins,
                                      CachedDateFormat,
-  	                                 Schema
+  	                                 Schema,
+  	                                 Encoding
                                      "/>
 
 
@@ -711,6 +713,14 @@
 	  <jvmarg value="-Djavax.xml.parsers.SAXParserFactory=org.apache.xerces.jaxp.SAXParserFactoryImpl"/>		
 	  <formatter type="plain" usefile="false"/>
 	  <test name="org.apache.log4j.xml.SchemaTestCase" />
+    </junit>
+  </target>
+
+  <target name="Encoding" depends="check, build, cleanOutputDir">
+	<junit printsummary="yes" fork="yes" haltonfailure="yes">
+	  <classpath refid="tests.classpath"/>
+	  <formatter type="plain" usefile="false"/>
+	  <test name="org.apache.log4j.EncodingTest" />
     </junit>
   </target>
 
