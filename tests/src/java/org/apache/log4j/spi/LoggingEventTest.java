@@ -69,7 +69,7 @@ public class LoggingEventTest extends TestCase {
               root, Level.INFO, "Hello, world.", ex);
       event.prepareForDeferredProcessing();
       int[] skip = new int[] { 358, 359, 360, 361, 362, 600, 735, 1511};
-      assertSerializationEquals("witness/serialization/exception.bin", event, skip, 1522);
+      assertSerializationEquals("witness/serialization/exception.bin", event, skip, 1089);
    }
 
     /**
