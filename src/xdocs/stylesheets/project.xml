@@ -24,10 +24,6 @@
       <item name="Bug Reporting" href="http://logging.apache.org/site/bugreport.html"/>
     </menu>
 
-    <menu name="Related Projects">
-      <item name="SLF4J"          href="http://www.slf4j.org"/>
-    </menu>
-
     <menu name="Translations">
       <item name="Korean" href="http://jakarta.apache-korea.org/log4j/index.html"/>
       <item name="Japanese" href="http://www.ingrid.org/jajakarta/log4j/"/>

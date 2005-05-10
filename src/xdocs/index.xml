@@ -51,8 +51,7 @@
 
       <p>The target of the log output can be a file, an
 	<code>OutputStream</code>, a <code>java.io.Writer</code>, a
-	remote log4j server, a remote Unix Syslog daemon, or even a NT
-	Event logger among many other output targets.</p>
+	remote log4j server, a remote Unix Syslog daemon, or many other output targets.</p>
 
       <p>On an AMD Duron clocked at 800Mhz running JDK 1.3.1, it costs
 	about 5 nanoseconds to determine if a logging statement should

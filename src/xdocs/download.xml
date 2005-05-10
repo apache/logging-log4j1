@@ -8,7 +8,7 @@
 
       <body>
 	
-      <section name="log4j version 1.2.10">
+      <section name="log4j version 1.2.9">
 	<p>Log4j is <a
 	      href="http://logging.apache.org/site/binindex.cgi"><b>available
 	      for download</b></a> from a number of mirrors. Please
@@ -16,11 +16,9 @@
 	      bandwidth.
 	  </p>
 	  
-	  <p>Log4j version 1.2.10 adds support for <a
-	  href="http://www.slf4j.org">SLF4J</a>. It also fixes several
-	  relatively minor bugs. Version 1.2.9 is identical to version
-	  1.2.8, except that several key methods have been deprecated
-	  in preparation for version 1.3.0, the next major release of
+	  <p>Log4j version 1.2.9, is identical to version 1.2.8,
+	  except that several key methods have been deprecated in
+	  preparation for version 1.3.0, the next major release of
 	  log4j. These changes are intended to enforce the rule that
 	  client code should never refer to the <code>Category</code>
 	  class directly, but use the <code>Logger</code> class
@@ -37,28 +35,31 @@
           <h2>log4j version 1.3 (alpha)</h2>
           
           <p>An alpha version of log4j version 1.3 has been recently
-          made available. As the alpha prefix indicates, this release
-          is still being tested, future versions may bring further
-          radical changes, and all the usual caveats apply.
+          made available. It can be downloaded from the same As the
+          alpha prefix indicates, this release is still being tested,
+          future versions may bring further radical changes, and all
+          the usual caveats apply.
           </p>
         
+          
+     <h2>Chainsaw v2 (NEW!)</h2>
+     
+     <p><a href="chainsaw.html">Chainsaw</a> is GUI-based log viewer from the log4j subproject.</p> 
+	  <subsection name='Earlier Releases'>
+	    <p>We also maintain <a
+	      href="earlier.html">earlier
+	      versions of log4j</a> for download, intended for the
+	      curious paleontologist -- there seems to be quite a few
+	      of them!
+	    </p>
+	  </subsection>
+
 	</section>
 
 
     <section name="Third-party extensions (listed in alphabetical order)">
 
       <dl>
-
-	<!-- ============================================================================== -->
-	
-	<dt><a
-	href="chainsaw.html"><b>Chainsaw v2 (NEW!)</b></a></dt>
-
-	<dd>A new and improved version of the venerable Chainsaw
-	utility, now being written by the log4j development team is
-	getting closer to release.  You can see screen shots of it and
-	install it and run over <A href="chainsaw.html">here</A>
-	</dd>
 
 	<!-- ============================================================================== -->
 	<dt><a href="http://minaret.biz/tips/datedFileAppender.html"><b>DatedFileAppender</b></a></dt>
@@ -94,6 +95,19 @@
 	  this JDBCAppender more suitable then the one that ships with
 	  log4j 1.2. 
 	</dd>
+	
+	<!-- ============================================================================== -->
+
+
+	<dt><a href="http://jakarta.apache.org/commons/logging/">
+	    <b>Jakarta Commons Logging (JCL)</b></a>
+	</dt>
+
+	<dd>The Jakarta Commons Logging package is an ultra-thin bridge between different logging libraries. 
+	The Logging API may be used to remove compile-time and run-time dependencies 
+	on any particular logging package.
+	</dd>
+
 
        <!-- ============================================================================== -->
 
@@ -177,6 +191,20 @@
 	<dd>LogWeb is a web interface for configuring log4j at runtime
 	within a servlet container.  Every log4j feature of is
 	configurable through this interface.
+	</dd>
+
+
+	<!-- ============================================================================== -->
+
+
+	<dt><a href="http://www.slf4j.org">
+	    <b>Simple Logging Facade for Java (SLF4J)</b></a>
+	</dt>
+
+	<dd>The Simple Logging Facade for Java or (SLF4J) is intended to  serve as a simple facade for various 
+	  logging APIs allowing to the  end-user to plug in the desired implementation at 
+	  deployment time.  SLF4J is a continuation of the Universal and Generic Logging Interface 
+	  (UGLI) effort of the log4j project.
 	</dd>
 
 	<!-- ============================================================================== -->
