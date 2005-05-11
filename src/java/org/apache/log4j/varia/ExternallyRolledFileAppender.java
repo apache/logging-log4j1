@@ -62,7 +62,14 @@ public final class ExternallyRolledFileAppender extends RollingFileAppender {
       this string constant is <b>OK</b>.
   */
   public static final String OK = "OK";
+  /**
+   * The port to listen on for rollover requests. 
+   * The default value is <code>0</code> which disables listening for requests.
+   */  
   private int port = 0;
+  /**
+   *  Request listening thread.
+   */
   private HUP hup;
 
 
@@ -74,15 +81,15 @@ public final class ExternallyRolledFileAppender extends RollingFileAppender {
   }
 
   /**
-     The <b>Port</b> [roperty is used for setting the port for
-     listening to external roll over messages.
-  */
+    * Sets the port monitored for rollover requests.
+   */
   public void setPort(int port) {
     this.port = port;
   }
 
   /**
-     Returns value of the <b>Port</b> option.
+    * Gets the port monitored for rollover requests.  A value of <code>0</code>
+    * indicates no monitoring.
    */
   public int getPort() {
     return port;
