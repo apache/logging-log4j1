@@ -37,7 +37,7 @@ import java.io.IOException;
  * @author Curt Arnold
  * @deprecated Replaced by {@link org.apache.log4j.rolling.RollingFileAppender}
 */
-public final class RollingFileAppender implements Appender, OptionHandler {
+public class RollingFileAppender implements Appender, OptionHandler {
   /**
      The default maximum file size is 10MB.
   */
@@ -367,4 +367,24 @@ public final class RollingFileAppender implements Appender, OptionHandler {
   public void setBufferSize(final int bufferSize) {
     rfa.setBufferSize(bufferSize);
   }
+
+    /**
+       Implements the usual roll over behaviour.
+
+       <p>If <code>MaxBackupIndex</code> is positive, then files
+       {<code>File.1</code>, ..., <code>File.MaxBackupIndex -1</code>}
+       are renamed to {<code>File.2</code>, ...,
+       <code>File.MaxBackupIndex</code>}. Moreover, <code>File</code> is
+       renamed <code>File.1</code> and closed. A new <code>File</code> is
+       created to receive further log output.
+
+       <p>If <code>MaxBackupIndex</code> is equal to zero, then the
+       <code>File</code> is truncated with no backup files created.
+
+     */
+    public // synchronization not necessary since doAppend is alreasy synched
+    void rollOver() {
+        rfa.rollover();
+    }
+
 }
