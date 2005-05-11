@@ -157,7 +157,7 @@
   	  		
   	        Missing org.apache.oro.* classes.
   	  		
-  	        Please make sure to that the "jakarta-oro.jar" poperty in build.properties 
+  	        Please make sure to that the "jakarta-oro.jar" property in build.properties 
   	        file is set correctly.
   	  		
   	  	</fail>
@@ -172,7 +172,7 @@
   		
         Missing javax.jms.* classes.
   		
-        Please make sure to that the "jms.jar" poperty in build.properties 
+        Please make sure to that the "jms.jar" property in build.properties 
         file is set correctly.
   		
   	</fail>
@@ -186,7 +186,7 @@
   		
         Missing java.mail.* classes.
   		
-        Please make sure to that the "jms.jar" poperty in build.properties 
+        Please make sure to that the "jms.jar" property in build.properties 
         file is set correctly.
   		
   	</fail>
@@ -200,7 +200,7 @@
   	<fail unless="servletAPI-present">
        Missing javax.servlet.* classes.
   	  		
-       Please make sure to that the "servlet-api.jar" poperty in build.properties 
+       Please make sure to that the "servlet-api.jar" property in build.properties 
        file is set correctly.
   	  		
   	</fail>
@@ -227,7 +227,7 @@
   	<fail unless="jdbcExtension-present">
   	    Missing javax.sql.* classes.
   	  	  		
-  	    Please make sure to that the "jdbc-stdext.jar" poperty in build.properties 
+  	    Please make sure to that the "jdbc-stdext.jar" property in build.properties 
   	    file is set correctly.
   	  	  		
   	</fail>
