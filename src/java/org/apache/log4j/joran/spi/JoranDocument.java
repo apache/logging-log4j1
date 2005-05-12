@@ -16,12 +16,12 @@
 
 package org.apache.log4j.joran.spi;
 
-import org.apache.log4j.LogManager;
+import org.apache.log4j.spi.SimpleULogger;
 import org.apache.log4j.helpers.Constants;
 import org.apache.log4j.spi.ErrorItem;
 import org.apache.log4j.spi.LoggerRepository;
 
-import org.slf4j.ULogger;
+import org.apache.log4j.ULogger;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -163,7 +163,7 @@ public final class JoranDocument extends DefaultHandler {
     if (repository != null) {
       return repository.getLogger(this.getClass().getName());
     } else {
-      return LogManager.SIMPLE_LOGGER_FA.getLogger(this.getClass().getName());
+      return SimpleULogger.getLogger(this.getClass().getName());
     }
   }
 

@@ -88,6 +88,11 @@ public class Roller {
     }
   }
 
+  /**
+   * Sends a roll request on the specified port.
+   *
+   * @deprecated Deprecated since ExternallyRolledFileAppender is deprecated
+   */
   static
   void roll() {
     try {

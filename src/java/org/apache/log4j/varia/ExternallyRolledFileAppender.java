@@ -16,8 +16,6 @@
 
 package org.apache.log4j.varia;
 
-import org.apache.log4j.RollingFileAppender;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -49,7 +47,7 @@ import java.net.Socket;
    @since version 0.9.0
    @deprecated version 1.3
  */
-public final class ExternallyRolledFileAppender extends RollingFileAppender {
+public final class ExternallyRolledFileAppender extends org.apache.log4j.RollingFileAppender {
   /**
      The string constant sent to initiate a roll over.   Current value of
      this string constant is <b>RollOver</b>.

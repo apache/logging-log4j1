@@ -16,13 +16,13 @@
 
 package org.apache.log4j.joran.spi;
 
-import org.apache.log4j.LogManager;
+import org.apache.log4j.spi.SimpleULogger;
 import org.apache.log4j.joran.action.Action;
 import org.apache.log4j.joran.action.ImplicitAction;
 import org.apache.log4j.spi.Component;
 import org.apache.log4j.spi.ErrorItem;
 import org.apache.log4j.spi.LoggerRepository;
-import org.slf4j.ULogger;
+import org.apache.log4j.ULogger;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.EntityResolver;
@@ -402,7 +402,7 @@ public class Interpreter extends DefaultHandler implements Component  {
     if(repository != null) {
       return repository.getLogger(this.getClass().getName());
     } else {
-      return LogManager.SIMPLE_LOGGER_FA.getLogger(this.getClass().getName());
+      return SimpleULogger.getLogger(this.getClass().getName());
     }
   } 
 }

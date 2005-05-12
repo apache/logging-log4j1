@@ -30,6 +30,11 @@
 
   <!-- Destination for generated jar files -->
   <property name="jar.dest" value="${basedir}"/>
+  
+  <!--  
+      Specifies if log4j should be build implementing slf4j interfaces
+      Required slf4j-api.jar property to be set  -->
+  <property name="slf4j" value="false"/>
 
   <!-- The jar file that the jar task will generate -->
   <property name="log4j.jar" value="log4j-${version}.jar"/>
@@ -81,6 +86,7 @@
     <pathelement location="${jdbc-stdext.jar}"/>
     <pathelement location="${jndi.jar}"/>
     <pathelement location="${jakarta-oro.jar}"/>
+    <pathelement location="${slf4j-api.jar}"/>
   </path>
 
   <!-- Construct classpath for building the html pages-->
@@ -114,7 +120,13 @@
 
     javadoc - build project javadoc files
 
-    dist    - will create a complete distribution in dist/
+    dist    - will create a complete distribution in dist
+    
+    For an SLF4J enabled build:
+
+        ant jar -Dslf4j=true 
+                -Dslf4j-api.jar=../slf4j-1.0-beta2/slf4j-nop.jar
+            
     </echo>
   </target>
 	
@@ -200,24 +212,40 @@
   	<fail unless="servletAPI-present">
        Missing javax.servlet.* classes.
   	  		
-       Please make sure to that the "servlet-api.jar" property in build.properties 
+       Please make sure that the "servlet-api.jar" property in build.properties 
        file is set correctly.
   	  		
   	</fail>
   </target>
-
+  
   <target name="slf4jCheck">
-    <available file="${java.source.dir}/org/slf4j/ULogger.java"
-	            property="slf4j-present"/>
-  	
-	<fail unless="slf4j-present">
-       Missing src/java/org/slf4j/*.java source files.
-  	  		
-       Just run the refresh-slf4j target with the command:
+    <condition property="implement-slf4j" value="true">
+        <istrue value="${slf4j}"/>
+    </condition>
 
-	     ant refresh-slf4j		
+    <condition property="missing-slf4j" value="true">
+    	<and>
+    		<isset property="implement-slf4j"/>
+    		<not>
+    		    <and>
+    		    	<available classname="org.slf4j.ULogger">
+                        <classpath refid="compile.classpath"/>
+                    </available>
+    		    	<available file="${slf4j-api.jar}"/>
+    		    </and>
+            </not>
+         </and>
+    </condition>
+    
+  	<fail if="missing-slf4j">
+  	    Missing org.slf4j.* classes.
+  	  	  		
+  	    Please make sure that "slf4j" is false or "slf4j-api.jar" property in build.properties 
+  	    file is set correctly.
   	</fail>
   </target>
+  
+
 
 
   <target name="jdbcExtensionCheck">
@@ -240,18 +268,12 @@
   	<mkdir dir="${examples.javac.dest}/" />
   </target>
 
-  <target name="refresh-slf4j">
-    <echo>Fecthing required source files from SLF4J.ORG</echo> 
-	<!-- copy required SLF4J files into log4j -->
-	<ant antfile="slf4j.xml" target="refresh-slf4j"/>
-  </target>
-	
   <target name="build" description="Compile all log4j components."
 	      depends="init, build.core, build.oro, build.jms, build.smtp, build.db,
   	               build.examples"/>
 
   <target name="requiredepsCheck" 
-  	depends="jndiCheck,jmsCheck,oroCheck,javamailCheck,servletAPICheck,jdbcExtensionCheck,jaxpCheck"
+  	depends="jndiCheck,jmsCheck,oroCheck,javamailCheck,servletAPICheck,jdbcExtensionCheck,jaxpCheck,slf4jCheck"
   	description="Compile all log4j components - fail if dependencies do not exist"
   	>
     <condition property="alldeps.exist">
@@ -271,23 +293,20 @@
     </fail>	
   </target>
 
-  <target name="copy-slf4j-into-log4j" unless="slf4j-present">
-     <echo>Fecthing required source files from SLF4J.ORG</echo> 
-	 <!-- copy required SLF4J files into log4j -->
-	 <ant antfile="slf4j.xml" target="copy-into-log4j"/>
-  </target>
+  <target name="build.core" depends="init, jndiCheck, jaxpCheck, slf4jCheck">
+    <condition property="slf4j.src.dir" value="src/slf4j">
+    	<isset property="implement-slf4j"/>
+    </condition>
+    <property name="slf4j.src.dir" value="src/slf4j"/>
 
-	
-  <target name="build.core" depends="init, slf4jCheck, jndiCheck, jaxpCheck">
-    <javac srcdir="${java.source.dir}"
-           destdir="${javac.dest}"
-           includes="org/slf4j/**/*.java,
-    	            ${stem}/**/*.java"
-           excludes="org/slf4j/impl/JDK14*.java,
-    	             **/UnitTest*.java,
+    <javac destdir="${javac.dest}"
+           includes="${stem}/**/*.java,
+                     org/slf4j/*.java"
+           excludes="**/UnitTest*.java,
                      **/StressCategory.java,
                      **/doc-files/*,
                      ${stem}/db/**,
+                     ${stem}/ULogger.java,
                      ${stem}/test/serialization/**,
                      ${stem}/net/SMTPAppender.java,
                      ${stem}/net/JMS*.java,
@@ -299,6 +318,8 @@
     	   deprecation="on"
     	   debug="${debug}"
     	>
+    	<src path="${java.source.dir}"/>
+    	<src path="${slf4j.src.dir}"/>
       <classpath refid="compile.classpath"/>
     </javac>
   </target>
@@ -523,12 +544,30 @@
   <!-- ================================================================= -->
   <!-- Create log4j.jar, excluding tests and other odds and ends.        -->
   <!-- ================================================================= -->
-  <target name="log4j.jar" depends="build.core, build.servletAPI">
+  
+  <!--  
+     if implementing SLF4J, expand the interface classes from the slf4j-api.jar
+     to be included in the log4j.jar 
+   -->
+  <target name="slf4jExtract" depends="slf4jCheck" if="implement-slf4j">
+      <unjar src="${slf4j-api.jar}" dest="${javac.dest}">
+      	<patternset>
+      		<include name="org/slf4j/ULogger.class"/>
+      	</patternset>
+      </unjar>
+      <property name="slf4j.exclude.pattern" value="bogus.bogus"/>
+  </target>
+
+  
+  <target name="log4j.jar" depends="build.core, build.servletAPI, slf4jExtract">
     
     <delete file="${log4j.jar}" verbose="true"/>
+ 
+    <!--  if not a SLF4J build, exclude any stray SLF4J classes  -->
+    <property name="slf4j.exclude.pattern" value="org/slf4j/**/*.class"/>
 
     <jar jarfile="${jar.dest}/${log4j.jar}" basedir="${javac.dest}"
-         includes="org/slf4j/**/*.class,
+         includes="org/slf4j/*.class,
                 ${stem}/*.class, 
                 ${stem}/joran/**/*.class,
                 ${stem}/config/*.class,
@@ -549,8 +588,7 @@
     	        ${stem}/varia/List*Appender.class
     	        ${stem}/plugins/*.class,
                 ${stem}/config/*.class"
-      excludes="org/slf4j/**/JDK14*.class,
-    	         **/UnitTest**, 
+      excludes="**/UnitTest**, 
     	        ${stem}/xml/Log4jEntityResolver.class,
     	        ${stem}/xml/UtilLoggingEntityResolver.class,
     	        ${stem}/xml/SAXErrorHandler.class,
@@ -570,7 +608,8 @@
     	        ${stem}/net/SocketHub*.class,
     	        ${stem}/net/Telnet*.class,
     	        ${stem}/pattern/StackPatternConverter.class,
-    	        ${stem}/DUMMY.java"
+    	        ${stem}/DUMMY.java,
+    	        ${slf4j.exclude.pattern}"
     	>
       <manifest>
         <attribute name="Manifest-version" value="1.0"/>

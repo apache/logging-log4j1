@@ -16,7 +16,7 @@
 
 package org.apache.log4j.rolling.helper;
 
-import org.slf4j.ULogger;
+import org.apache.log4j.ULogger;
 
 import java.text.SimpleDateFormat;
 
