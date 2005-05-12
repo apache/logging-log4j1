@@ -131,7 +131,8 @@
            excludes="${stem}/chainsaw/receivers/*.java,
                      ${stem}/selector/PassByJNDI.java,
                      ${stem}/ugli/**.java,
-                     ${stem}/db/**.java"
+                     ${stem}/db/**.java,
+                     org/apache/ugli/**/*.java"
 	   deprecation="${deprecation}"
 	   debug="on">
       <classpath refid="tests.classpath"/>
