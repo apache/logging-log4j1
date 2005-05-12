@@ -96,7 +96,6 @@ public interface LoggerRepository {
    * 
    * <p>The repository-wide threshold is a deprecated feature.
    * 
-   * @deprecated Will be removed with no replacement. 
    * */
   public void setThreshold(Level level);
   
