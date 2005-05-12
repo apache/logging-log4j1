@@ -9,13 +9,13 @@
   <!-- The directory where source files are stored. -->
   <property name="version" value="1.0alpha"/>
 
-  <!-- Deprecation warning? --> 
+  <!-- Deprecation warning? -->
   <property name="deprecation" value="on"/>
-  
+
   <!-- Destination for compiled files -->
   <property name="javac.dest" value="classes"/>
 
-  
+
   <path id="basic.classpath">
     <pathelement location="${tests.source.home}"/>
     <pathelement location="${javac.dest}"/>
@@ -26,7 +26,7 @@
     <path refid="basic.classpath"/>
     <pathelement location="${slf4j-api.jar}"/>
   </path>
-  
+
    <path id="log4j.classpath">
      <path refid="basic.classpath"/>
      <fileset dir="..">
@@ -40,51 +40,52 @@
   <!-- Default target                                                    -->
   <!-- ================================================================= -->
   <target name="usage">
-    <echo>      
+    <echo>
       These are some of the targets supported by this ANT build scpript:
-      
-      build - compile all project files, if a certain library is missing, 
+
+      build - compile all project files, if a certain library is missing,
               then the compilation of its dependents are skipped.
 
       runAll - run all available tests
-      
+
     </echo>
   </target>
 
   <target name="build">
+    <mkdir dir="${javac.dest}"/>
     <javac srcdir="${tests.source.home}"
-           destdir="${javac.dest}" 
+           destdir="${javac.dest}"
            includes="org/apache/ugli/**.java"
-	   deprecation="${deprecation}"
-	   debug="on">
+           deprecation="${deprecation}"
+           debug="on">
       <classpath refid="compile.classpath"/>
     </javac>
   </target>
-  
-  
+
+
   <target name="log4j.jar">
     <!-- The main build is big enough to have its own properties -->
     <ant  dir=".." antfile="build.xml" target="log4j.jar" inheritAll="false">
-    	<property name="slf4j" value="true"/>
-    </ant> 
+        <property name="slf4j" value="true"/>
+    </ant>
   </target>
-  
+
   <!-- ================================================================= -->
   <!-- Run all tests                                                     -->
-  <!-- ================================================================= -->  
+  <!-- ================================================================= -->
   <target name="runAll" depends="regression"/>
-  
+
   <!-- ================================================================= -->
   <!-- Tests multiple parts of log4j. These tests are much more fragile  -->
   <!-- unit tests. Regression tests compare output with a previously     -->
   <!-- created witness file.                                             -->
-  <!-- ================================================================= -->  
+  <!-- ================================================================= -->
   <target name="regression" depends="InvokeLog4J"/>
 
 
 
   <target name="InvokeLog4J" depends="build, log4j.jar">
-    
+
     <copy file="input/ugli/basic.xml" tofile="${javac.dest}/log4j.xml"/>
 
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
