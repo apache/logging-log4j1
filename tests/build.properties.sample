@@ -1,6 +1,20 @@
 deprecation=on
 
-jakarta-oro.jar=/java/jakarta-oro-2.0.5/jakarta-oro-2.0.5.jar
+#
+#   by default assume that all necessary dependencies
+#      are relative to the user's home directory
+#
+lib.home.dir=${user.home}
+
+jakarta-oro.jar=${lib.home.dir}/jakarta-oro-2.0.8/jakarta-oro-2.0.8.jar
+# JavaMail API OPTIONAL; required to build the SMTPAppender
+javamail.jar=${lib.home.dir}/javamail-1.3.2/mail.jar
+activation.jar=${lib.home.dir}/jaf-1.0.2/activation.jar
+
+# SLF4J api
+slf4j-api.jar=${lib.home.dir}/slf4j-1.0-beta2/slf4j-nop.jar
+
+
 
 # normally other build related properties would be defined here, but
 # for now there are no other required properties.
