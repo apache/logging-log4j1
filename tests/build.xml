@@ -33,6 +33,8 @@
     <pathelement location="${javac.dest}"/>
     <pathelement location="./resources"/>
     <pathelement location="${jakarta-oro.jar}"/>
+    <pathelement location="${javamail.jar}"/>
+    <pathelement location="${activation.jar}"/>
     <fileset dir="./lib/">
       <include name="*.jar"/>
     </fileset>

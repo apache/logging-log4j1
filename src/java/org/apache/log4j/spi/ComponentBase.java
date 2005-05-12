@@ -6,9 +6,9 @@
  */
 package org.apache.log4j.spi;
 
-import org.apache.log4j.LogManager;
-import org.slf4j.ULogger;
-import org.slf4j.impl.NOPLogger;
+import org.apache.log4j.ULogger;
+import org.apache.log4j.spi.NOPULogger;
+import org.apache.log4j.spi.SimpleULogger;
 
 
 /**
@@ -69,7 +69,7 @@ public class ComponentBase implements Component {
       if(repository != null) {
         logger = repository.getLogger(this.getClass().getName());
       } else {
-        logger = LogManager.SIMPLE_LOGGER_FA.getLogger(this.getClass().getName());
+        logger = SimpleULogger.getLogger(this.getClass().getName());
       }
     } else if(repository != null && !(logger instanceof org.apache.log4j.Logger)){
       // if repository is set but logger is not an instance of Logger, we
@@ -89,7 +89,7 @@ public class ComponentBase implements Component {
    */
   protected ULogger getNonFloodingLogger() {
     if(errorCount++ >= ERROR_COUNT_LIMIT) {
-      return NOPLogger.NOP_LOGGER;
+      return NOPULogger.NOP_LOGGER;
     } else {
       return getLogger();
     }

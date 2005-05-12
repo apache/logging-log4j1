@@ -122,6 +122,12 @@ public class ExternallyRolledFileAppenderTest extends TestCase {
         assertTrue(new File("output/obsoleteERFA-test2.log.1").exists());
     }
 
+    /**
+     * Sends a roll request to the appender.
+     *
+     * @deprecated Class under test is deprecated.
+     * @throws java.io.IOException
+     */
     private void roll() throws java.io.IOException {
         Socket socket = new Socket(InetAddress.getLocalHost(), portNo);
         DataOutputStream dos = new DataOutputStream(socket.getOutputStream());

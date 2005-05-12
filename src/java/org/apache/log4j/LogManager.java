@@ -26,7 +26,6 @@ import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.RepositorySelector;
 import org.apache.log4j.spi.RootLogger;
-import org.slf4j.impl.SimpleLoggerFA;
 
 import java.util.Enumeration;
 
@@ -52,12 +51,6 @@ public class LogManager {
    */
   public final static LoggerRepository defaultLoggerRepository;
   
-  /**
-   * Log4j components resort to this instance of {@link SimpleLoggerFA} in case 
-   * an appropriate LoggerRepository was not set or could not be found. It is
-   * used only in exceptional cases.
-   */
-  public final static SimpleLoggerFA  SIMPLE_LOGGER_FA = new SimpleLoggerFA();
 
   
   // The following static initializer gets invoked immediately after a call to 

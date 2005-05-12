@@ -165,9 +165,6 @@ public class SizeBasedRollingTest extends TestCase {
     assertTrue(Compare.gzCompare("output/sbr-test3.1.gz", "witness/rolling/sbr-test3.1.gz"));
   }
 
-  boolean isWindows() {
-    return System.getProperty("os.name").indexOf("Windows") != -1;
-  }
 
     /**
      * Build test suite using this class and ObsoleteRollingFileAppenderTest.

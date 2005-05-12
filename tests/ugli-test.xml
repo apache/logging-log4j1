@@ -1,5 +1,8 @@
 <project name="testing-UGLI" default="usage" basedir="." >
 
+  <!-- The build.properties file defines the parth to local jar files -->
+  <property file="build.properties"/>
+
   <!-- The directory where source files are stored. -->
   <property name="tests.source.home" value="./src/java/"/>
 
@@ -21,24 +24,9 @@
 
   <path id="compile.classpath">
     <path refid="basic.classpath"/>
-    <pathelement location="../ugli-nop.jar"/>
+    <pathelement location="${slf4j-api.jar}"/>
   </path>
   
-  <path id="nop.classpath">
-    <path refid="basic.classpath"/>
-    <pathelement location="../ugli-nop.jar"/>
-  </path>
-
-  <path id="simple.classpath">
-    <path refid="basic.classpath"/>
-    <pathelement location="../ugli-simple.jar"/>
-  </path>
-
-   <path id="jdk14.classpath">
-    <path refid="basic.classpath"/>
-    <pathelement location="../ugli-jdk14.jar"/>
-  </path>
-
    <path id="log4j.classpath">
      <path refid="basic.classpath"/>
      <fileset dir="..">
@@ -63,15 +51,10 @@
     </echo>
   </target>
 
-  <target name="siblingBuild">
-    <ant antfile="build.xml" target="build"/>
-  </target>
-
-
-  <target name="build" depends="siblingBuild">
+  <target name="build">
     <javac srcdir="${tests.source.home}"
            destdir="${javac.dest}" 
-           includes="${stem}/ugli/**.java"
+           includes="org/apache/ugli/**.java"
 	   deprecation="${deprecation}"
 	   debug="on">
       <classpath refid="compile.classpath"/>
@@ -79,27 +62,11 @@
   </target>
   
   
-  <target name="cleanOutputDir">
-    <ant antfile="build.xml" target="cleanOutputDir"/>
-  </target>
-
-  <target name="ugli-nop.jar">
-    <!-- Invoke ugli.xml located one directory up -->
-    <ant  dir=".." antfile="ugli.xml" target="ugli-nop.jar"/> 
-  </target>
-
-  <target name="ugli-simple.jar">
-    <!-- Invoke ugli.xml located one directory up -->
-    <ant  dir=".." antfile="ugli.xml" target="ugli-simple.jar"/> 
-  </target>
-
-  <target name="ugli-jdk14.jar">
-    <ant  dir=".." antfile="ugli.xml" target="ugli-jdk14.jar"/> 
-  </target>
-
   <target name="log4j.jar">
     <!-- The main build is big enough to have its own properties -->
-    <ant  dir=".." antfile="build.xml" target="log4j.jar" inheritAll="false"/> 
+    <ant  dir=".." antfile="build.xml" target="log4j.jar" inheritAll="false">
+    	<property name="slf4j" value="true"/>
+    </ant> 
   </target>
   
   <!-- ================================================================= -->
@@ -112,46 +79,11 @@
   <!-- unit tests. Regression tests compare output with a previously     -->
   <!-- created witness file.                                             -->
   <!-- ================================================================= -->  
-  <target name="regression" depends="MessageFormatter,
-                                     InvokeNOP,
-                                     InvokeSimple,
-                                     InvokeJDK14"
-                                     />
-
-  <target name="MessageFormatter" depends="build, cleanOutputDir">
-    <junit printsummary="yes" fork="yes" haltonfailure="yes">
-      <classpath refid="compile.classpath"/>
-      <formatter type="plain" usefile="false"/>
-      <test name="org.apache.ugli.impl.MessageFormatterTest" />
-    </junit>
-  </target> 
-
-  <target name="InvokeNOP" depends="build, ugli-nop.jar, cleanOutputDir">
-    <junit printsummary="yes" fork="yes" haltonfailure="yes">
-      <classpath refid="nop.classpath"/>
-      <formatter type="plain" usefile="false"/>
-      <test name="org.apache.ugli.InvokingUGLI" />
-    </junit>
-  </target>
-
-  <target name="InvokeSimple" depends="build, ugli-simple.jar, cleanOutputDir">
-    <junit printsummary="yes" fork="yes" haltonfailure="yes">
-      <classpath refid="simple.classpath"/>
-      <formatter type="plain" usefile="false"/>
-      <test name="org.apache.ugli.InvokingUGLI" />
-    </junit>
-  </target>
-
-  <target name="InvokeJDK14" depends="build, ugli-jdk14.jar, cleanOutputDir">
-    <junit printsummary="yes" fork="yes" haltonfailure="yes">
-      <classpath refid="jdk14.classpath"/>
-      <formatter type="plain" usefile="false"/>
-      <test name="org.apache.ugli.InvokingUGLI" />
-    </junit>
-  </target>
+  <target name="regression" depends="InvokeLog4J"/>
 
 
-  <target name="InvokeLog4j" depends="build, log4j.jar, cleanOutputDir">
+
+  <target name="InvokeLog4J" depends="build, log4j.jar">
     
     <copy file="input/ugli/basic.xml" tofile="${javac.dest}/log4j.xml"/>
 
