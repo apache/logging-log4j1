@@ -15,7 +15,6 @@
  */
 
 package org.slf4j;
-import org.apache.log4j.Logger;
 
 
 
@@ -30,19 +29,19 @@ public class LoggerFactory {
   }
 
   
-  static public ULogger getLogger(final String name) {
-    return Logger.getLogger(name);
+  static public Logger getLogger(final String name) {
+    return org.apache.log4j.Logger.getLogger(name);
   }
   
-  static public ULogger getLogger(final String domainName, final String subDomainName) {
-    return Logger.getLogger(domainName);
+  static public Logger getLogger(final String domainName, final String subDomainName) {
+    return org.apache.log4j.Logger.getLogger(domainName);
   }
   
-  static public ULogger getLogger(final Class clazz) {
-    return Logger.getLogger(clazz.getName());
+  static public Logger getLogger(final Class clazz) {
+    return org.apache.log4j.Logger.getLogger(clazz.getName());
   }
-  static public ULogger getLogger(final Class clazz, final String subDomainName) {
-    return Logger.getLogger(clazz.getName());
+  static public Logger getLogger(final Class clazz, final String subDomainName) {
+    return org.apache.log4j.Logger.getLogger(clazz.getName());
   }
   
 }

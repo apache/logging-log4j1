@@ -125,7 +125,7 @@
     For an SLF4J enabled build:
 
         ant jar -Dslf4j=true 
-                -Dslf4j-api.jar=../slf4j-1.0-beta2/slf4j-nop.jar
+                -Dslf4j-api.jar=../slf4j-1.0-beta3/slf4j-nop.jar
             
     </echo>
   </target>
@@ -228,7 +228,7 @@
     		<isset property="implement-slf4j"/>
     		<not>
     		    <and>
-    		    	<available classname="org.slf4j.ULogger">
+    		    	<available classname="org.slf4j.Logger">
                         <classpath refid="compile.classpath"/>
                     </available>
     		    	<available file="${slf4j-api.jar}"/>
@@ -308,7 +308,6 @@
                      **/StressCategory.java,
                      **/doc-files/*,
                      ${stem}/db/**,
-                     ${stem}/ULogger.java,
                      ${stem}/test/serialization/**,
                      ${stem}/net/SMTPAppender.java,
                      ${stem}/net/JMS*.java,
@@ -554,7 +553,7 @@
   <target name="slf4jExtract" depends="slf4jCheck" if="implement-slf4j">
       <unjar src="${slf4j-api.jar}" dest="${javac.dest}">
       	<patternset>
-      		<include name="org/slf4j/ULogger.class"/>
+      		<include name="org/slf4j/Logger.class"/>
       	</patternset>
       </unjar>
       <property name="slf4j.exclude.pattern" value="bogus.bogus"/>
