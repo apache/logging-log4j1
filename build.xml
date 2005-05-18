@@ -492,7 +492,7 @@
     </javac>
   </target>
 	
-  <target name="log4j-db.jar" depends="init, jdbcExtensionCheck">
+  <target name="log4j-db.jar" depends="init, jdbcExtensionCheck, build.db">
     <jar jarfile="${log4j-db.jar}" basedir="${javac.dest}"
 	     includes="${stem}/db/**.class"
   	>
