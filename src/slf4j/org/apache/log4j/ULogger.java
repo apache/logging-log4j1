@@ -18,11 +18,11 @@ package org.apache.log4j;
 
 
 /**
- * A proxy for org.slf4j.ULogger.  In slf4j implementing builds, this
- *     interface will extend org.slf4j.ULogger and add no additional methods.
+ * A proxy for org.slf4j.Logger.  In slf4j implementing builds, this
+ *     interface will extend org.slf4j.Logger and add no additional methods.
  * 
  * @author Ceki G&uuml;lc&uuml;
  * @author Curt Arnold
  */
- public interface ULogger extends org.slf4j.ULogger {
+ public interface ULogger extends org.slf4j.Logger {
  }
