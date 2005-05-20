@@ -21,7 +21,7 @@
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 package org.apache.ugli;
-import org.slf4j.ULogger;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import junit.framework.TestCase;
@@ -57,12 +57,12 @@ public class InvokingUGLI extends TestCase {
   }
   
   public void test1() {
-    ULogger logger = LoggerFactory.getLogger("test1");
+    Logger logger = LoggerFactory.getLogger("test1");
     logger.debug("Hello world.");
   }
   
   public void test2() {
-    ULogger logger = LoggerFactory.getLogger("test2");
+    Logger logger = LoggerFactory.getLogger("test2");
     logger.debug("Hello world 1.");
     logger.info("Hello world 2.");
   }
