@@ -1,131 +1,137 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
- * 
+ * Copyright 1999,2005 The Apache Software Foundation.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.log4j.rolling.helper;
 
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.rolling.helper.FileNamePattern;
 
 import java.util.Calendar;
 
 
 /**
+ * Tests for FileNamePattern.
+ *
  * @author Ceki
+ * @author Curt Arnold
  *
  */
-public class FileNamePatternTestCase extends TestCase {
-  /**
-   * Constructor for FileNamePatternParserTestCase.
-   * @param arg0
-   */
-  public FileNamePatternTestCase(String arg0) {
-    super(arg0);
-  }
+public final class FileNamePatternTestCase extends TestCase {
+    /**
+     * Construct new test.
+     * @param name test name
+     */
+    public FileNamePatternTestCase(final String name) {
+        super(name);
+    }
 
-  public void setUp() throws Exception {
-    BasicConfigurator.configure();
+    private void assertDatePattern(final String pattern, final int year,
+        final int month, final int day, final int hour, final int min,
+        final String expected) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(year, month, day, hour, min);
+        assertEquals(expected,
+            new FileNamePattern(pattern).convert(cal.getTime()));
+    }
 
-    //Logger root = Logger.getRootLogger();
-    //Appender appender =
-    //  new FileAppender(new PatternLayout(), "filenamepattern.log");
-    //root.addAppender(appender);
-  }
+    private void assertIntegerPattern(final String pattern, final int value,
+        final String expected) {
+        assertEquals(expected, new FileNamePattern(pattern).convert(value));
+    }
 
-  public void tearDown() {
-    LogManager.shutdown();
-  }
+    public void testFormatInteger1() {
+        assertIntegerPattern("t", 3, "t");
+    }
 
-  public void test1() {
-    //System.out.println("Testing [t]");
-    FileNamePattern pp = new FileNamePattern("t");
-    assertEquals("t", pp.convert(3));
+    public void testFormatInteger2() {
+        assertIntegerPattern("foo", 3, "foo");
+    }
 
-    //System.out.println("Testing [foo]");
-    pp = new FileNamePattern("foo");
-    assertEquals("foo", pp.convert(3));
+    public void testFormatInteger3() {
+        assertIntegerPattern("foo%", 3, "foo%");
+    }
 
-    //System.out.println("Testing [foo%]");
-    pp = new FileNamePattern("foo%");
-    assertEquals("foo%", pp.convert(3));
+    public void testFormatInteger4() {
+        assertIntegerPattern("%ifoo", 3, "3foo");
+    }
 
-    pp = new FileNamePattern("%ifoo");
-    assertEquals("3foo", pp.convert(3));
+    public void testFormatInteger5() {
+        assertIntegerPattern("foo%ixixo", 3, "foo3xixo");
+    }
 
-    pp = new FileNamePattern("foo%ixixo");
-    assertEquals("foo3xixo", pp.convert(3));
+    public void testFormatInteger6() {
+        assertIntegerPattern("foo%i.log", 3, "foo3.log");
+    }
 
-    pp = new FileNamePattern("foo%i.log");
-    assertEquals("foo3.log", pp.convert(3));
+    public void testFormatInteger7() {
+        assertIntegerPattern("foo.%i.log", 3, "foo.3.log");
+    }
 
-    pp = new FileNamePattern("foo.%i.log");
-    assertEquals("foo.3.log", pp.convert(3));
+    public void testFormatInteger8() {
+        assertIntegerPattern("%ifoo%", 3, "3foo%");
+    }
 
-    pp = new FileNamePattern("%ifoo%");
-    assertEquals("3foo%", pp.convert(3));
+    public void testFormatInteger9() {
+        assertIntegerPattern("%ifoo%%", 3, "3foo%");
+    }
 
-    pp = new FileNamePattern("%ifoo%%");
-    assertEquals("3foo%", pp.convert(3));
+    public void testFormatInteger10() {
+        assertIntegerPattern("%%foo", 3, "%foo");
+    }
 
-    pp = new FileNamePattern("%%foo");
-    assertEquals("%foo", pp.convert(3));
-  }
+    public void testFormatInteger11() {
+        assertIntegerPattern("foo%ibar%i", 3, "foo3bar3");
+    }
 
-  public void test2() {
-    System.out.println("Testing [foo%ibar%i]");
+    public void testFormatDate1() {
+        assertDatePattern("foo%d{yyyy.MM.dd}", 2003, 4, 20, 17, 55,
+            "foo2003.05.20");
+    }
 
-    FileNamePattern pp = new FileNamePattern("foo%ibar%i");
-    assertEquals("foo3bar3", pp.convert(3));
+    public void testFormatDate2() {
+        assertDatePattern("foo%d{yyyy.MM.dd HH:mm}", 2003, 4, 20, 17, 55,
+            "foo2003.05.20 17:55");
+    }
 
-    ///pp = new FileNamePattern("%%foo");
-    //assertEquals("%foo", pp.convert(3));
-  }
+    public void testFormatDate3() {
+        assertDatePattern("%d{yyyy.MM.dd HH:mm} foo", 2003, 4, 20, 17, 55,
+            "2003.05.20 17:55 foo");
+    }
 
-  public void test3() {
-    Calendar cal = Calendar.getInstance();
-    cal.set(2003, 4, 20, 17, 55);
+    /**
+     * A %d is treated as %d{yyyy-MM-dd} if followed by a malformed format specifier.
+     *
+     */
+    public void testFormatDate4() {
+        assertDatePattern("foo%dyyyy.MM.dd}", 2003, 4, 20, 17, 55,
+            "foo2003-05-20yyyy.MM.dd}");
+    }
 
-    FileNamePattern pp = new FileNamePattern("foo%d{yyyy.MM.dd}");
-    assertEquals("foo2003.05.20", pp.convert(cal.getTime()));
+    /**
+     * A %d is treated as %d{yyyy-MM-dd} if followed by a malformed format specifier.
+     *
+     */
+    public void testFormatDate5() {
+        assertDatePattern("foo%d{yyyy.MM.dd", 2003, 4, 20, 17, 55,
+            "foo2003-05-20{yyyy.MM.dd");
+    }
 
-    pp = new FileNamePattern("foo%d{yyyy.MM.dd HH:mm}");
-    assertEquals("foo2003.05.20 17:55", pp.convert(cal.getTime()));
-
-    pp = new FileNamePattern("%d{yyyy.MM.dd HH:mm} foo");
-     assertEquals("2003.05.20 17:55 foo", pp.convert(cal.getTime()));
-
-
-    // Degenerate cases:
-    pp = new FileNamePattern("foo%dyyyy.MM.dd}");
-    assertEquals("foo%dyyyy.MM.dd}", pp.convert(cal.getTime()));
-    
-    pp = new FileNamePattern("foo%d{yyyy.MM.dd");
-    assertEquals("foo%d{yyyy.MM.dd", pp.convert(cal.getTime()));
-  }
-
-  public static Test suite() {
-    TestSuite suite = new TestSuite();
-    suite.addTest(new FileNamePatternTestCase("test1"));
-    suite.addTest(new FileNamePatternTestCase("test2"));
-    suite.addTest(new FileNamePatternTestCase("test3"));
-
-    return suite;
-  }
+    public void testNullFormat() {
+        try {
+            new FileNamePattern(null);
+            fail();
+        } catch (IllegalArgumentException ex) {
+        }
+    }
 }
