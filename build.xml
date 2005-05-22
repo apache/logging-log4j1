@@ -626,6 +626,43 @@
   
   
   <!-- ================================================================= -->
+  <!-- This target reformats the source with Jalopy.                      -->
+  <!-- ================================================================= -->
+
+  <target name="jalopy" depends="init" description="Reformat source code using Jalopy">
+        <fail unless="jalopy.files">
+Specify files to reformat with -Djalopy.files=PATTERN.
+</fail>
+		<taskdef name="jalopy"
+         	classname="de.hunsicker.jalopy.plugin.ant.AntPlugin">
+  		    <classpath>
+    	        <fileset dir="${jalopy-ant.dir}/lib">
+                    <include name="*.jar" />
+                </fileset>
+            </classpath>
+        </taskdef>
+        <jalopy backup="no" 
+             convention="src/log4j-coding-convention.xml"
+             classpathref="compile.classpath">
+            <fileset dir="${java.source.dir}" includes="${jalopy.files}"/>
+        </jalopy>
+          
+  </target>
+
+  <!-- ================================================================= -->
+  <!-- This target reformats the source with Jalopy.                      -->
+  <!-- ================================================================= -->
+
+  <target name="checkstyle" depends="init" description="Check source code using checkstyle">
+        <property name="checkstyle.files" value="**/*.java"/>
+        <taskdef resource="checkstyletask.properties"
+         classpath="${checkstyle.jar}"/>
+        <checkstyle config="src/sun_checks.xml">
+            <fileset dir="${java.source.dir}" includes="${checkstyle.files}"/>
+        </checkstyle>          
+  </target>
+  
+  <!-- ================================================================= -->
   <!-- This target builds the javadoc files.                             -->
   <!-- ================================================================= -->
   <target name="javadoc" depends="init, slf4jCheck">

@@ -48,7 +48,11 @@
 
     <!-- standard whitespace settings -->
     <module name="ParenPad"/>
-    <module name="NoWhitespaceAfter"/>
+    <!--  default conflicts with jalopy configuration which
+              places a space after the opening brace of an array initialization  -->
+    <module name="NoWhitespaceAfter">
+        <property name="tokens" value="BNOT, DEC, DOT, INC, LNOT, UNARY_MINUS, UNARY_PLUS"/>
+    </module>
     <module name="NoWhitespaceBefore"/>
     <module name="WhitespaceAfter"/>
     <module name="WhitespaceAround"/>
@@ -56,11 +60,9 @@
 
 
     <!--                       JavaDoc guidelines -->
-    <!--
     <module name="JavadocMethod"/>
     <module name="JavadocType"/>
     <module name="JavadocVariable"/>
-    -->
 
 
     <!--                                        JLS -->

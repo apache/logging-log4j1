@@ -66,6 +66,14 @@ jakarta-oro.jar=${lib.home.dir}/jakarta-oro-2.0.8/jakarta-oro-2.0.8.jar
 
 #jndi.jar=/java/lib/jndi.jar
 
+#
+#   Jalopy source code reformatter
+#
+#
+jalopy-ant.dir=${lib.home.dir}/jalopy-ant-0.6.2
 
-
+#
+#   Checkstyle coding convention checker
+#
+checkstyle.jar=${lib.home.dir}/checkstyle-4.0-beta2/checkstyle-all-4.0-beta2.jar
 
