@@ -515,7 +515,7 @@
       <test name="org.apache.log4j.or.ORTestCase" />
     </junit>
   </target>
-
+  
   <target name="DRFA" depends="check, build, cleanOutputDir">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
@@ -816,6 +816,44 @@
         </current>
       </clover-report>
     </target>
+    
+  <!-- ================================================================= -->
+  <!-- This target reformats the source with Jalopy.                      -->
+  <!-- ================================================================= -->
+
+  <target name="jalopy" description="Reformat source code using Jalopy">
+        <fail unless="jalopy.files">
+Specify files to reformat with -Djalopy.files=PATTERN.
+</fail>
+		<taskdef name="jalopy"
+         	classname="de.hunsicker.jalopy.plugin.ant.AntPlugin">
+  		    <classpath>
+    	        <fileset dir="${jalopy-ant.dir}/lib">
+                    <include name="*.jar" />
+                </fileset>
+            </classpath>
+        </taskdef>
+        <jalopy backup="no" 
+             convention="../src/log4j-coding-convention.xml"
+             classpathref="tests.classpath">
+            <fileset dir="${tests.source.home}" includes="${jalopy.files}"/>
+        </jalopy>
+          
+  </target>
+
+  <!-- ================================================================= -->
+  <!-- This target reformats the source with Jalopy.                      -->
+  <!-- ================================================================= -->
+
+  <target name="checkstyle" description="Check source code using checkstyle">
+        <property name="checkstyle.files" value="**/*.java"/>
+        <taskdef resource="checkstyletask.properties"
+         classpath="${checkstyle.jar}"/>
+        <checkstyle config="../src/sun_checks.xml">
+            <fileset dir="${tests.source.home}" includes="${checkstyle.files}"/>
+        </checkstyle>          
+  </target>
+    
   
 </project>
 
