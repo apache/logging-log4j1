@@ -19,10 +19,14 @@ package org.apache.log4j.html;
 import org.apache.log4j.Layout;
 import org.apache.log4j.helpers.Transform;
 import org.apache.log4j.pattern.*;
-import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.LoggingEvent;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -41,18 +45,25 @@ public class HTMLLayout extends Layout {
    * Default pattern string for log output. Currently set to the string
    * <b>"%m" </b> which just prints the application supplied message.
    */
-  public static final String DEFAULT_CONVERSION_PATTERN = "%m";
+  private static final String DEFAULT_CONVERSION_PATTERN = "%m";
 
   /**
    * A conversion pattern equivalent to the TTCCCLayout. Current value is
    * <b>%r%t%p%c%x%m</b>.
    */
-  public static final String TTCC_CONVERSION_PATTERN = "%r%t%p%c%x%m";
-  static String TRACE_PREFIX = "<br>&nbsp;&nbsp;&nbsp;&nbsp;";
+  private static final String TTCC_CONVERSION_PATTERN = "%r%t%p%c%x%m";
+    /**
+     * Customized pattern conversion rules are stored under this key in the
+     * {@link LoggerRepository} object store.
+     */
+  private static final String PATTERN_RULE_REGISTRY = "PATTERN_RULE_REGISTRY";
+
+  private static final String TRACE_PREFIX = "<br>&nbsp;&nbsp;&nbsp;&nbsp;";
   protected final int BUF_SIZE = 256;
   protected final int MAX_CAPACITY = 1024;
   private String pattern;
-  private PatternConverter head;
+  private LoggingEventPatternConverter[] patternConverters;
+  private FormattingInfo[] patternFields;
   private String timezone;
   private String title = "Log4J Log Messages";
 
@@ -103,20 +114,38 @@ public class HTMLLayout extends Layout {
    * Does not do anything as options become effective
    */
   public void activateOptions() {
-    head = createPatternParser(pattern, this.repository).parse();
-    chainHandlesThrowable = PatternConverter.chainHandlesThrowable(head);
+      List converters = new ArrayList();
+      List fields = new ArrayList();
+      Map converterRegistry = null;
+      if(this.repository != null) {
+          converterRegistry = (Map) this.repository.getObject(PATTERN_RULE_REGISTRY);
+      }
+      PatternParser.parse(pattern, converters, fields,
+              converterRegistry, PatternParser.getPatternLayoutRules(), getLogger());
+
+      patternConverters = new LoggingEventPatternConverter[converters.size()];
+      patternFields = new FormattingInfo[converters.size()];
+
+      int i = 0;
+      Iterator converterIter = converters.iterator();
+      Iterator fieldIter = fields.iterator();
+      while(converterIter.hasNext()) {
+          Object converter = converterIter.next();
+          if (converter instanceof LoggingEventPatternConverter) {
+              patternConverters[i] = (LoggingEventPatternConverter) converter;
+              chainHandlesThrowable |= patternConverters[i].handlesThrowable();
+          } else {
+              patternConverters[i] = new LiteralPatternConverter("");
+          }
+          if (fieldIter.hasNext()) {
+              patternFields[i]  = (FormattingInfo) fieldIter.next();
+          } else {
+              patternFields[i] = FormattingInfo.getDefault();
+          }
+          i++;
+      }
   }
 
-  /**
-   * Returns PatternParser used to parse the conversion string. Subclasses may
-   * override this to return a subclass of PatternParser which recognize
-   * custom conversion characters.
-   *
-   * @since 0.9.0
-   */
-  protected PatternParser createPatternParser(String pattern, LoggerRepository repository) {
-    return new PatternParser(pattern, repository);
-  }
 
   /**
    * The <b>Title </b> option takes a String value. This option sets the
@@ -240,16 +269,14 @@ public class HTMLLayout extends Layout {
 
     sbuf.append("<tr class=\"header\">");
     sbuf.append(Layout.LINE_SEP);
-    PatternConverter c = head;
-    while (c != null) {
-      sbuf.append("<td class=\"");
-      sbuf.append(c.getStyleClass(null).toLowerCase());
-      sbuf.append("\">");
-      sbuf.append(c.getName());
-      sbuf.append("</td>");
-      sbuf.append(Layout.LINE_SEP);
-
-      c = c.next;
+    for (int i = 0; i < patternConverters.length; i++) {
+        PatternConverter c = patternConverters[i];
+        sbuf.append("<td class=\"");
+        sbuf.append(c.getStyleClass(null).toLowerCase());
+        sbuf.append("\">");
+        sbuf.append(c.getName());
+        sbuf.append("</td>");
+        sbuf.append(Layout.LINE_SEP);
     }
     sbuf.append("</tr>");
     sbuf.append(Layout.LINE_SEP);
@@ -287,32 +314,34 @@ public class HTMLLayout extends Layout {
       odd = false;
     }
     
-    String level = event.getLevel().toString().toLowerCase(); 
-    
-    output.write(Layout.LINE_SEP);
-    output.write("<tr class=\"");
-    output.write(level);
-    if(odd) {
-      output.write(" odd\">");
-    } else {
-      output.write(" even\">");
-    }
-    output.write(Layout.LINE_SEP);
-   
+    String level = event.getLevel().toString().toLowerCase();
 
-    PatternConverter c = head;
-    while (c != null) {
-      output.write("<td class=\"");
-      output.write(c.getStyleClass(event).toLowerCase());
-      output.write("\">");      
-      c.format(output, event);
-      output.write("</td>");
-      output.write(Layout.LINE_SEP);
-      c = c.next;
+    StringBuffer buf = new StringBuffer();
+    buf.append(Layout.LINE_SEP);
+    buf.append("<tr class=\"");
+    buf.append(level);
+    if(odd) {
+      buf.append(" odd\">");
+    } else {
+      buf.append(" even\">");
     }
-    output.write("</tr>");
-    output.write(Layout.LINE_SEP);
-    
+    buf.append(Layout.LINE_SEP);
+   
+    for(int i = 0; i < patternConverters.length; i++) {
+        PatternConverter c = patternConverters[i];
+        buf.append("<td class=\"");
+        buf.append(c.getStyleClass(event).toLowerCase());
+        buf.append("\">");
+        int fieldStart = buf.length();
+        c.format(event, buf);
+        patternFields[i].format(fieldStart, buf);
+        buf.append("</td>");
+        buf.append(Layout.LINE_SEP);
+    }
+    buf.append("</tr>");
+    buf.append(Layout.LINE_SEP);
+    output.write(buf.toString());
+
     // if the pattern chain handles throwables then no need to do it again here.
     if(!chainHandlesThrowable) {
       String[] s = event.getThrowableStrRep();

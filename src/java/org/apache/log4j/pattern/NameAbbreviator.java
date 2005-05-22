@@ -30,12 +30,15 @@ public abstract class NameAbbreviator {
   /**
    * Default (no abbreviation) abbreviator.
    */
-  private static final NameAbbreviator defaultAbbreviator =
-    new NOPAbbreviator();
+  private static final NameAbbreviator DEFAULT = new NOPAbbreviator();
 
   /**
    * Gets an abbreviator.
    *
+   * For example, "%logger{2}" will output only 2 elements of the logger name,
+   * "%logger{1.}" will output only the first character of the non-final elements in the name,
+   * "%logger(1~.2~} will output the first character of the first element, two characters of
+   * the second and subsequent elements and will use a tilde to indicate abbreviated characters.
    *
    * @param pattern abbreviation pattern.
    * @return abbreviator, will not be null.
@@ -47,16 +50,16 @@ public abstract class NameAbbreviator {
       String trimmed = pattern.trim();
 
       if (trimmed.length() == 0) {
-        return defaultAbbreviator;
+        return DEFAULT;
       }
 
       int i = 0;
 
-      for (
-        ;
-          (i < trimmed.length()) && (trimmed.charAt(i) >= '0')
-          && (trimmed.charAt(i) <= '9'); i++)
-        ;
+      while (
+        (i < trimmed.length()) && (trimmed.charAt(i) >= '0')
+          && (trimmed.charAt(i) <= '9')) {
+        i++;
+      }
 
       //
       //  if all blanks and digits
@@ -111,7 +114,7 @@ public abstract class NameAbbreviator {
     //
     //  no matching abbreviation, return defaultAbbreviator
     //
-    return defaultAbbreviator;
+    return DEFAULT;
   }
 
   /**
@@ -120,28 +123,31 @@ public abstract class NameAbbreviator {
    * @return default abbreviator.
    */
   public static NameAbbreviator getDefaultAbbreviator() {
-    return defaultAbbreviator;
+    return DEFAULT;
   }
 
   /**
-   * Appends abbreviated name to StringBuffer.
+   * Abbreviates a name in a StringBuffer.
    *
-   *
+   * @param nameStart starting position of name in buf.
    * @param buf buffer, may not be null.
-   * @param name name, may not be null.
-   *
    */
-  public abstract void abbreviate(final StringBuffer buf, String name);
+  public abstract void abbreviate(final int nameStart, final StringBuffer buf);
 
   /**
    * Abbreviator that simply appends full name to buffer.
    */
   private static class NOPAbbreviator extends NameAbbreviator {
+    /**
+     * Constructor.
+     */
     public NOPAbbreviator() {
     }
 
-    public void abbreviate(final StringBuffer buf, String name) {
-      buf.append(name);
+    /**
+     * {@inheritDoc}
+     */
+    public void abbreviate(final int nameStart, final StringBuffer buf) {
     }
   }
 
@@ -149,6 +155,9 @@ public abstract class NameAbbreviator {
    * Abbreviator that drops starting path elements.
    */
   private static class MaxElementAbbreviator extends NameAbbreviator {
+    /**
+     * Maximum number of path elements to output.
+     */
     private final int count;
 
     /**
@@ -162,30 +171,25 @@ public abstract class NameAbbreviator {
     /**
      * Abbreviate name.
      * @param buf buffer to append abbreviation.
-     * @param name name to abbreviate.
+     * @param nameStart start of name to abbreviate.
      */
-    public void abbreviate(final StringBuffer buf, String name) {
-      int len = name.length();
+    public void abbreviate(final int nameStart, final StringBuffer buf) {
+      int len = buf.length() - nameStart;
 
       // We substract 1 from 'len' when assigning to 'end' to avoid out of
       // bounds exception in return r.substring(end+1, len). This can happen if
       // precision is 1 and the category name ends with a dot.
-      int end = len - 1;
+      int end = buf.length() - 1;
 
       for (int i = count; i > 0; i--) {
-        end = name.lastIndexOf('.', end - 1);
+        end = buf.lastIndexOf(".", end - 1);
 
-        if (end == -1) {
-          // not enough dot characters. The whole string should be returned
-          buf.append(name);
-
+        if ((end == -1) || (end < nameStart)) {
           return;
         }
       }
 
-      // The end variable should point to the left-most dot character to
-      // the right of which all character should be returned.
-      buf.append(name.substring(end + 1, len));
+      buf.delete(nameStart, end + 1);
     }
   }
 
@@ -220,35 +224,27 @@ public abstract class NameAbbreviator {
     /**
      * Abbreviate element of name.
      * @param buf buffer to receive element.
-     * @param name name.
      * @param startPos starting index of name element.
      * @return starting index of next element.
      */
-    public int abbreviate(
-      final StringBuffer buf, final String name, final int startPos) {
-      int nextDot = name.indexOf(".", startPos);
+    public int abbreviate(final StringBuffer buf, final int startPos) {
+      int nextDot = buf.indexOf(".", startPos);
 
       if (nextDot != -1) {
         if ((nextDot - startPos) > charCount) {
-          if (charCount > 0) {
-            buf.append(name.substring(startPos, startPos + charCount));
-          }
+          buf.delete(startPos + charCount, nextDot);
+          nextDot = startPos + charCount;
 
           if (ellipsis != '\0') {
-            buf.append(ellipsis);
+            buf.insert(nextDot, ellipsis);
+            nextDot++;
           }
-
-          buf.append('.');
-        } else {
-          buf.append(name.substring(startPos, nextDot + 1));
         }
 
-        return nextDot + 1;
+        nextDot++;
       }
 
-      buf.append(name.substring(startPos));
-
-      return name.length();
+      return nextDot;
     }
   }
 
@@ -281,17 +277,17 @@ public abstract class NameAbbreviator {
     /**
      * Abbreviate name.
      * @param buf buffer that abbreviated name is appended.
-     * @param name name.
+     * @param nameStart start of name.
      */
-    public void abbreviate(final StringBuffer buf, final String name) {
+    public void abbreviate(final int nameStart, final StringBuffer buf) {
       //
       //  all non-terminal patterns are executed once
       //
-      int pos = 0;
+      int pos = nameStart;
 
-      for (int i = 0; (i < (fragments.length - 1)) && (pos < name.length());
+      for (int i = 0; (i < (fragments.length - 1)) && (pos < buf.length());
           i++) {
-        pos = fragments[i].abbreviate(buf, name, pos);
+        pos = fragments[i].abbreviate(buf, pos);
       }
 
       //
@@ -300,8 +296,8 @@ public abstract class NameAbbreviator {
       PatternAbbreviatorFragment terminalFragment =
         fragments[fragments.length - 1];
 
-      while (pos < name.length()) {
-        pos = terminalFragment.abbreviate(buf, name, pos);
+      while ((pos < buf.length()) && (pos >= 0)) {
+        pos = terminalFragment.abbreviate(buf, pos);
       }
     }
   }

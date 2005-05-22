@@ -191,7 +191,7 @@
                                      OR, 
   	                                 VariaLevelMatchFilter, 
                                      VariaLevelRangeFilter, PatternParser,
-                                     LevelMatchFilter, DRFA, 
+                                     LevelMatchFilter,  
                                      Rolling, 
                                      NDC,
                                      Plugins,
@@ -513,14 +513,6 @@
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
       <test name="org.apache.log4j.or.ORTestCase" />
-    </junit>
-  </target>
-  
-  <target name="DRFA" depends="check, build, cleanOutputDir">
-    <junit printsummary="yes" fork="yes" haltonfailure="yes">
-      <classpath refid="tests.classpath"/>
-      <formatter type="plain" usefile="false"/>
-      <test name="org.apache.log4j.DRFATestCase" />
     </junit>
   </target>
 

@@ -17,9 +17,13 @@
 package org.apache.log4j.rolling;
 
 import org.apache.log4j.rolling.helper.Compress;
-import org.apache.log4j.rolling.helper.FileNamePattern;
+import org.apache.log4j.pattern.PatternParser;
 import org.apache.log4j.spi.ComponentBase;
 import org.apache.log4j.spi.OptionHandler;
+import org.apache.log4j.pattern.PatternConverter;
+import org.apache.log4j.pattern.FormattingInfo;
+import java.util.List;
+import java.util.ArrayList;
 
 
 /**
@@ -33,7 +37,8 @@ import org.apache.log4j.spi.OptionHandler;
 public abstract class RollingPolicyBase extends ComponentBase
         implements RollingPolicy, OptionHandler {
   protected int compressionMode = Compress.NONE;
-  protected FileNamePattern fileNamePattern;
+  protected PatternConverter[] patternConverters;
+  protected FormattingInfo[] patternFields;
   protected String fileNamePatternStr;
   protected String activeFileName;
 
@@ -76,5 +81,27 @@ public abstract class RollingPolicyBase extends ComponentBase
    */
   public void setActiveFileName(String afn) {
     activeFileName = afn;
+  }
+
+  protected final void parseFileNamePattern() {
+      List converters = new ArrayList();
+      List fields = new ArrayList();
+
+      PatternParser.parse(fileNamePatternStr, converters, fields, null,
+              PatternParser.getFileNamePatternRules(), getLogger());
+      patternConverters = new PatternConverter[converters.size()];
+      patternConverters = (PatternConverter[]) converters.toArray(patternConverters);
+      patternFields = new FormattingInfo[converters.size()];
+      patternFields = (FormattingInfo[]) fields.toArray(patternFields);
+  }
+
+  protected final void formatFileName(final Object obj, final StringBuffer buf) {
+      for(int i = 0; i < patternConverters.length; i++) {
+          int fieldStart = buf.length();
+          patternConverters[i].format(obj, buf);
+          if (patternFields[i] != null) {
+              patternFields[i].format(fieldStart, buf);
+          }
+      }
   }
 }

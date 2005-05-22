@@ -17,44 +17,36 @@
 package org.apache.log4j.pattern;
 
 import org.apache.log4j.ULogger;
-import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
- * Return the event's NDC in a StringBuffer.
+ * Formats an date by delegating to DatePatternConverter.  The default
+ * date pattern for a %d specifier in a file name is different than
+ * the %d pattern in pattern layout.
  *
- * @author Ceki G&uuml;lc&uuml;
+ * @author Curt Arnold
  * @since 1.3
  */
-public final class NDCPatternConverter extends LoggingEventPatternConverter {
-  /**
-   *   Singleton.
-   */
-  private static final NDCPatternConverter INSTANCE =
-    new NDCPatternConverter();
-
+public final class FileDatePatternConverter {
   /**
    * Private constructor.
    */
-  private NDCPatternConverter() {
-    super("NDC", "ndc");
+  private FileDatePatternConverter() {
   }
 
   /**
-   * Obtains an instance of NDCPatternConverter.
+   * Obtains an instance of pattern converter.
    * @param options options, may be null.
    * @param logger  logger, current ignored, may be null.
-   * @return instance of NDCPatternConverter.
+   * @return instance of pattern converter.
    */
-  public static NDCPatternConverter newInstance(
+  public static PatternConverter newInstance(
     final String[] options, final ULogger logger) {
-    return INSTANCE;
-  }
+    if ((options == null) || (options.length == 0)) {
+      return DatePatternConverter.newInstance(
+        new String[] { "yyyy-MM-dd" }, logger);
+    }
 
-  /**
-   * {@inheritDoc}
-   */
-  public void format(final LoggingEvent event, final StringBuffer toAppendTo) {
-    toAppendTo.append(event.getNDC());
+    return DatePatternConverter.newInstance(options, logger);
   }
 }

@@ -16,23 +16,16 @@
 
 package org.apache.log4j.pattern;
 
-import junit.framework.TestCase;
 import junit.framework.Test;
+import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
-import org.apache.log4j.Layout;
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.log4j.*;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.LoggingEvent;
-import java.util.Date;
+
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
-import java.util.TimeZone;
-
-import java.io.CharArrayWriter;
-
-import java.util.HashMap;
+import java.util.*;
 
 
 /**
@@ -42,7 +35,6 @@ import java.util.HashMap;
    uses it.
  */
 public class PatternParserTest extends TestCase {
-  public CharArrayWriter charArrayWriter = new CharArrayWriter(1024);
   Logger logger = Logger.getLogger("org.foobar");
   LoggingEvent event;
   long now;
@@ -60,37 +52,33 @@ public class PatternParserTest extends TestCase {
     event.setMessage("msg 1");
   }
 
-  public void setUp() {
-    charArrayWriter.reset();
-  }
+  private static String convert(
+                 String pattern,
+                 Map registry,
+                 LoggingEvent event) {
+    List converters = new ArrayList();
+    List fields = new ArrayList();
+    PatternParser.parse(pattern, converters, fields,
+            registry,
+            PatternParser.getPatternLayoutRules(),
+            null);
+    assertEquals(converters.size(), fields.size());
 
-  public void tearDown() {
-  }
-
-  String convert(LoggingEvent event, PatternConverter head)
-    throws Exception {
-    PatternConverter c = head;
-
-    while (c != null) {
-      System.out.println("pc " + c);
-      c.format(charArrayWriter, event);
-      c = c.next;
+    StringBuffer buf = new StringBuffer();
+    Iterator converterIter = converters.iterator();
+    Iterator fieldIter = fields.iterator();
+    while(converterIter.hasNext()) {
+        int fieldStart = buf.length();
+        ((PatternConverter) converterIter.next()).format(event, buf);
+        ((FormattingInfo) fieldIter.next()).format(fieldStart, buf);
     }
-
-    return charArrayWriter.toString();
+    return buf.toString();
   }
 
   public void testNewWord() throws Exception {
-    PatternParser patternParser = new PatternParser("%z343", repository);
     HashMap ruleRegistry = new HashMap(5);
-
     ruleRegistry.put("z343", Num343PatternConverter.class.getName());
-    patternParser.setConverterRegistry(ruleRegistry);
-
-    PatternConverter head = patternParser.parse();
-
-    String result = convert(event, head);
-    System.out.println("Result is[" + result + "]");
+    String result = convert("%z343", ruleRegistry, event);
     assertEquals("343", result);
   }
 
@@ -98,64 +86,37 @@ public class PatternParserTest extends TestCase {
    * which was previously the case by mistake.
    */
   public void testNewWord2() throws Exception {
-    PatternParser patternParser = new PatternParser("%n343", repository);
     HashMap ruleRegistry = new HashMap(5);
-
     ruleRegistry.put("n343", Num343PatternConverter.class.getName());
-    patternParser.setConverterRegistry(ruleRegistry);
-
-    PatternConverter head = patternParser.parse();
-
-    String result = convert(event, head);
-    System.out.println("Result is[" + result + "]");
+    String result = convert("%n343", ruleRegistry, event);
     assertEquals("343", result);
   }
 
   public void testBogusWord1() throws Exception {
-    PatternParser patternParser = new PatternParser("%, foobar", repository);
-    PatternConverter head = patternParser.parse();
-
-    String result = convert(event, head);
-    System.out.println("Result is[" + result + "]");
+    String result = convert("%, foobar", null, event);
     assertEquals("%, foobar", result);
   }
 
   public void testBogusWord2() throws Exception {
-    PatternParser patternParser = new PatternParser("xyz %, foobar", repository);
-    PatternConverter head = patternParser.parse();
-
-    String result = convert(event, head);
-    System.out.println("Result is[" + result + "]");
+    String result = convert("xyz %, foobar", null, event);
     assertEquals("xyz %, foobar", result);
   }
 
   public void testBasic1() throws Exception {
-    PatternParser patternParser = new PatternParser("hello %-5level - %m%n", repository);
-    PatternConverter head = patternParser.parse();
-
-    String result = convert(event, head);
-    System.out.println("Result is[" + result + "]");
+    String result = convert("hello %-5level - %m%n", null, event);
     assertEquals("hello INFO  - msg 1" + Layout.LINE_SEP, result);
   }
 
   public void testBasic2() throws Exception {
-    PatternParser patternParser =
-      new PatternParser("%relative %-5level [%thread] %logger - %m%n", repository);
-    PatternConverter head = patternParser.parse();
+    String result = convert("%relative %-5level [%thread] %logger - %m%n", null, event);
 
-    String result = convert(event, head);
     long expectedRelativeTime = now - LoggingEvent.getStartTime();
-    System.out.println("Result is[" + result + "]");
     assertEquals(expectedRelativeTime + " INFO  [main] "+logger.getName()+" - msg 1" + Layout.LINE_SEP, result);
   }
 
   public void testMultiOption() throws Exception {
-    PatternParser patternParser =
-      new PatternParser("%d{HH:mm:ss}{GMT} %d{HH:mm:ss} %c  - %m", repository);
-    PatternConverter head = patternParser.parse();
+    String result = convert("%d{HH:mm:ss}{GMT} %d{HH:mm:ss} %c  - %m", null, event);
 
-    String result = convert(event, head);
-    System.out.println("Result is[" + result + "]");
     SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
     String localTime = dateFormat.format(new Date(event.getTimeStamp()));
     dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -167,11 +128,46 @@ public class PatternParserTest extends TestCase {
     assertEquals(buf.toString(), result);
   }
 
+  public void testBogus() throws Exception {
+      String result = convert("%bogus", null, event);
+      assertEquals("%bogus", result);
+    }
 
-  public static Test suite() {
-    TestSuite suite = new TestSuite();
-    suite.addTestSuite(PatternParserTest.class);
-    suite.addTestSuite(NameAbbreviatorTest.class);
-    return suite;
+  public void testMore() throws Exception {
+        String result = convert("%more", null, event);
+        assertEquals("msg 1ore", result);
   }
+
+    /**
+     * Options with missing close braces will be treated as a literal.
+     * Endless looped with earlier code.
+     *
+     */
+    public void testMalformedOption() {
+        String result = convert("foo%m{yyyy.MM.dd", null, event);
+        assertEquals("foomsg 1{yyyy.MM.dd", result);
+    }
+
+
+  private void assertFactories(Map rules) throws Exception {
+      assertTrue(rules.size() > 0);
+      Iterator iter = rules.values().iterator();
+      Class[] factorySig = new Class[] { Class.forName("[Ljava.lang.String;"), ULogger.class };
+      Object[] factoryArg = new Object[] { null, null };
+      while(iter.hasNext()) {
+          Class ruleClass = (Class) iter.next();
+          Method factory =  ruleClass.getMethod("newInstance", factorySig);
+          Object converter = factory.invoke(null, factoryArg);
+          assertTrue(converter != null);
+      }
+  }
+
+  public void testPatternLayoutFactories() throws Exception {
+      assertFactories(PatternParser.getPatternLayoutRules());
+  }
+
+  public void testFileNamePatternFactories() throws Exception {
+        assertFactories(PatternParser.getFileNamePatternRules());
+  }
+
 }

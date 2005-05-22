@@ -16,41 +16,54 @@
 
 package org.apache.log4j.pattern;
 
+import org.apache.log4j.ULogger;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.location.LocationInfo;
 
 
 /**
- * Most of the work is done in the parent class {@link
- * org.apache.log4j.pattern.NamedPatternConverter NamedPatternConverter}.
- * This class is only responsible of returning the full name name of the caller
- * class.
+ * Formats the class name of the site of the logging request.
  *
  * @author Ceki G&uuml;lc&uuml;
+ * @since 1.3
  */
-public class ClassNamePatternConverter extends NamedPatternConverter {
-  private static final String NAME = "Class Name";
-  private static final String STYLE_CLASS = NAME.toLowerCase();
-
-  public ClassNamePatternConverter() {
-    super();
+public final class ClassNamePatternConverter extends NamedPatternConverter {
+  /**
+   * Private constructor.
+   * @param options options, may be null.
+   * @param logger logger for diagnostic messages, may be null.
+   */
+  private ClassNamePatternConverter(
+    final String[] options, final ULogger logger) {
+    super("Class Name", "class name", options);
   }
 
-  protected String getFullyQualifiedName(LoggingEvent event) {
+  /**
+   * Gets an instance of ClassNamePatternConverter.
+   * @param options options, may be null.
+   * @param logger logger for diagnostic messages, may be null.
+   * @return instance of pattern converter.
+   */
+  public static ClassNamePatternConverter newInstance(
+    final String[] options, final ULogger logger) {
+    return new ClassNamePatternConverter(options, logger);
+  }
+
+  /**
+   * Format a logging event.
+    * @param event event to format.
+   * @param toAppendTo string buffer to which class name will be appended.
+   */
+  public void format(final LoggingEvent event, final StringBuffer toAppendTo) {
+    final int initialLength = toAppendTo.length();
     LocationInfo li = event.getLocationInformation();
 
     if (li == null) {
-      return LocationInfo.NA;
+      toAppendTo.append(LocationInfo.NA);
     } else {
-      return li.getClassName();
+      toAppendTo.append(li.getClassName());
     }
-  }
 
-  public String getName() {
-    return NAME;
-  }
-
-  public String getStyleClass(LoggingEvent e) {
-    return STYLE_CLASS;
+    abbreviate(initialLength, toAppendTo);
   }
 }

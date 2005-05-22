@@ -16,14 +16,17 @@
 
 package org.apache.log4j.pattern;
 
-import org.apache.log4j.helpers.OptionConverter;
-import org.apache.log4j.spi.ComponentBase;
-import org.apache.log4j.spi.LoggerRepository;
+import org.apache.log4j.ULogger;
+import org.apache.log4j.helpers.Loader;
+
+import java.lang.reflect.Method;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 // Contributors:   Nelson Minar <(nelson@monkey.org>
@@ -34,7 +37,7 @@ import java.util.Map;
  * Most of the work of the {@link org.apache.log4j.PatternLayout} class
  * is delegated to the PatternParser class.
  * <p>It is this class that parses conversion patterns and creates
- * a chained list of {@link OptionConverter OptionConverters}.
+ * a chained list of {@link PatternConverter PatternConverters}.
  *
  * @author James P. Cakalic
  * @author Ceki G&uuml;lc&uuml;
@@ -42,104 +45,127 @@ import java.util.Map;
  * @author Paul Smith
  * @author Curt Arnold
  *
- * @since 0.8.2
+ * @since 1.3
 */
-public final class PatternParser extends ComponentBase {
+public final class PatternParser {
+  /**
+   * Escape character for format specifier.
+   */
   private static final char ESCAPE_CHAR = '%';
+
+  /**
+   * Literal state.
+   */
   private static final int LITERAL_STATE = 0;
+
+  /**
+   * In converter name state.
+   */
   private static final int CONVERTER_STATE = 1;
-  private static final int MINUS_STATE = 2;
+
+  /**
+   * Dot state.
+   */
   private static final int DOT_STATE = 3;
+
+  /**
+   * Min state.
+   */
   private static final int MIN_STATE = 4;
+
+  /**
+   * Max state.
+   */
   private static final int MAX_STATE = 5;
-  private static Map globalRulesRegistry;
+
+  /**
+   * Standard format specifiers for PatternLayout.
+   */
+  private static final Map PATTERN_LAYOUT_RULES;
+
+  /**
+   * Standard format specifiers for rolling file appenders.
+   */
+  private static final Map FILENAME_PATTERN_RULES;
 
   static {
     // We set the global rules in the static initializer of PatternParser class
-    globalRulesRegistry = new HashMap(17);
-    globalRulesRegistry.put("c", LoggerPatternConverter.class);
-    globalRulesRegistry.put("logger", LoggerPatternConverter.class);
+    Map rules = new HashMap(17);
+    rules.put("c", LoggerPatternConverter.class);
+    rules.put("logger", LoggerPatternConverter.class);
 
-    globalRulesRegistry.put("C", ClassNamePatternConverter.class);
-    globalRulesRegistry.put("class", ClassNamePatternConverter.class);
+    rules.put("C", ClassNamePatternConverter.class);
+    rules.put("class", ClassNamePatternConverter.class);
 
-    globalRulesRegistry.put("d", DatePatternConverter.class);
-    globalRulesRegistry.put("date", DatePatternConverter.class);
+    rules.put("d", DatePatternConverter.class);
+    rules.put("date", DatePatternConverter.class);
 
-    globalRulesRegistry.put("F", FileLocationPatternConverter.class);
-    globalRulesRegistry.put("file", FileLocationPatternConverter.class);
+    rules.put("F", FileLocationPatternConverter.class);
+    rules.put("file", FileLocationPatternConverter.class);
 
-    globalRulesRegistry.put("l", FullLocationPatternConverter.class);
+    rules.put("l", FullLocationPatternConverter.class);
 
-    globalRulesRegistry.put("L", LineLocationPatternConverter.class);
-    globalRulesRegistry.put("line", LineLocationPatternConverter.class);
+    rules.put("L", LineLocationPatternConverter.class);
+    rules.put("line", LineLocationPatternConverter.class);
 
-    globalRulesRegistry.put("m", MessagePatternConverter.class);
-    globalRulesRegistry.put("message", MessagePatternConverter.class);
+    rules.put("m", MessagePatternConverter.class);
+    rules.put("message", MessagePatternConverter.class);
 
-    globalRulesRegistry.put("n", LineSeparatorPatternConverter.class);
+    rules.put("n", LineSeparatorPatternConverter.class);
 
-    globalRulesRegistry.put("M", MethodLocationPatternConverter.class);
-    globalRulesRegistry.put("method", MethodLocationPatternConverter.class);
+    rules.put("M", MethodLocationPatternConverter.class);
+    rules.put("method", MethodLocationPatternConverter.class);
 
-    globalRulesRegistry.put("p", LevelPatternConverter.class);
-    globalRulesRegistry.put("level", LevelPatternConverter.class);
+    rules.put("p", LevelPatternConverter.class);
+    rules.put("level", LevelPatternConverter.class);
 
-    globalRulesRegistry.put("r", RelativeTimePatternConverter.class);
-    globalRulesRegistry.put("relative", RelativeTimePatternConverter.class);
+    rules.put("r", RelativeTimePatternConverter.class);
+    rules.put("relative", RelativeTimePatternConverter.class);
 
-    globalRulesRegistry.put("t", ThreadPatternConverter.class);
-    globalRulesRegistry.put("thread", ThreadPatternConverter.class);
+    rules.put("t", ThreadPatternConverter.class);
+    rules.put("thread", ThreadPatternConverter.class);
 
-    globalRulesRegistry.put("x", NDCPatternConverter.class);
-    globalRulesRegistry.put("ndc", NDCPatternConverter.class);
+    rules.put("x", NDCPatternConverter.class);
+    rules.put("ndc", NDCPatternConverter.class);
 
-    globalRulesRegistry.put("X", PropertiesPatternConverter.class);
-    globalRulesRegistry.put("properties", PropertiesPatternConverter.class);
+    rules.put("X", PropertiesPatternConverter.class);
+    rules.put("properties", PropertiesPatternConverter.class);
 
-    globalRulesRegistry.put("sn", SequenceNumberPatternConverter.class);
-    globalRulesRegistry.put(
-      "sequenceNumber", SequenceNumberPatternConverter.class);
+    rules.put("sn", SequenceNumberPatternConverter.class);
+    rules.put("sequenceNumber", SequenceNumberPatternConverter.class);
 
-    globalRulesRegistry.put(
-      "throwable", ThrowableInformationPatternConverter.class);
+    rules.put("throwable", ThrowableInformationPatternConverter.class);
+    PATTERN_LAYOUT_RULES = new ReadOnlyMap(rules);
+
+    Map fnameRules = new HashMap(4);
+    fnameRules.put("d", FileDatePatternConverter.class);
+    fnameRules.put("date", FileDatePatternConverter.class);
+    fnameRules.put("i", IntegerPatternConverter.class);
+    fnameRules.put("index", IntegerPatternConverter.class);
+
+    FILENAME_PATTERN_RULES = new ReadOnlyMap(fnameRules);
   }
-
-  private int state;
-  private StringBuffer currentLiteral = new StringBuffer(32);
-  private int patternLength;
-  private int i;
-  private PatternConverter head;
-  private PatternConverter tail;
-  private FormattingInfo formattingInfo = new FormattingInfo();
-  private String pattern;
 
   /**
-   * Additional rules for this particular instance.
-   * key: the conversion word (as String)
-   * value: the pattern converter class (as String)
+   * Private constructor.
    */
-  private Map converterRegistry;
-
-  public PatternParser(
-    final String pattern, final LoggerRepository repository) {
-    if (pattern == null) {
-      throw new NullPointerException("pattern");
-    }
-
-    this.pattern = pattern;
-    this.repository = repository;
-    patternLength = pattern.length();
-    state = LITERAL_STATE;
+  private PatternParser() {
   }
 
-  private void addToList(PatternConverter pc) {
-    if (head == null) {
-      head = tail = pc;
-    } else {
-      tail.next = pc;
-      tail = pc;
-    }
+  /**
+   * Get standard format specifiers for PatternLayout.
+   * @return read-only map of format converter classes keyed by format specifier strings.
+   */
+  public static Map getPatternLayoutRules() {
+    return PATTERN_LAYOUT_RULES;
+  }
+
+  /**
+   * Get standard format specifiers for rolling file appender file specification.
+   * @return read-only map of format converter classes keyed by format specifier strings.
+   */
+  public static Map getFileNamePatternRules() {
+    return FILENAME_PATTERN_RULES;
   }
 
   /** Extract the converter identifier found at position i.
@@ -150,58 +176,89 @@ public final class PatternParser extends ComponentBase {
    * If i points to a char which is not a character acceptable at the
    * start of a unicode identifier, the value null is returned.
    *
+   * @param lastChar last processed character.
+   * @param pattern format string.
+   * @param i current index into pattern format.
+   * @param convBuf buffer to receive conversion specifier.
+   * @param currentLiteral literal to be output in case format specifier in unrecognized.
+   * @return position in pattern after converter.
    */
-  private String extractConverter(char lastChar) {
+  private static int extractConverter(
+    char lastChar, final String pattern, int i, final StringBuffer convBuf,
+    final StringBuffer currentLiteral) {
+    convBuf.setLength(0);
+
     // When this method is called, lastChar points to the first character of the
-    // conersion word. For example:
+    // conversion word. For example:
     // For "%hello"     lastChar = 'h'
     // For "%-5hello"   lastChar = 'h'
     //System.out.println("lastchar is "+lastChar);
     if (!Character.isUnicodeIdentifierStart(lastChar)) {
-      return null;
+      return i;
     }
 
-    StringBuffer convBuf = new StringBuffer(16);
     convBuf.append(lastChar);
 
     while (
-      (i < patternLength)
+      (i < pattern.length())
         && Character.isUnicodeIdentifierPart(pattern.charAt(i))) {
       convBuf.append(pattern.charAt(i));
+      currentLiteral.append(pattern.charAt(i));
 
       //System.out.println("conv buffer is now ["+convBuf+"].");
       i++;
     }
 
-    return convBuf.toString();
+    return i;
   }
 
   /**
-   * Returns the option, null if not in the expected format.
+   * Extract options.
+   * @param pattern conversion pattern.
+   * @param i start of options.
+   * @param options array to receive extracted options
+   * @return position in pattern after options.
    */
-  private List extractOptions() {
-    ArrayList options = null;
-
-    while ((i < patternLength) && (pattern.charAt(i) == '{')) {
+  private static int extractOptions(String pattern, int i, List options) {
+    while ((i < pattern.length()) && (pattern.charAt(i) == '{')) {
       int end = pattern.indexOf('}', i);
 
-      if (end > i) {
-        if (options == null) {
-          options = new ArrayList();
-        }
-
-        String r = pattern.substring(i + 1, end);
-        options.add(r);
-        i = end + 1;
+      if (end == -1) {
+        break;
       }
+
+      String r = pattern.substring(i + 1, end);
+      options.add(r);
+      i = end + 1;
     }
 
-    return options;
+    return i;
   }
 
-  public PatternConverter parse() {
+  /**
+   * Parse a format specifier.
+   * @param pattern pattern to parse.
+   * @param patternConverters list to receive pattern converters.
+   * @param formattingInfos list to receive field specifiers corresponding to pattern converters.
+   * @param converterRegistry map of user-supported pattern converters keyed by format specifier, may be null.
+   * @param rules map of stock pattern converters keyed by format specifier.
+   * @param logger logger to receive parser warnings, may be null.
+   */
+  public static void parse(
+    final String pattern, final List patternConverters,
+    final List formattingInfos, final Map converterRegistry, final Map rules,
+    final ULogger logger) {
+    if (pattern == null) {
+      throw new NullPointerException("pattern");
+    }
+
+    StringBuffer currentLiteral = new StringBuffer(32);
+
+    int patternLength = pattern.length();
+    int state = LITERAL_STATE;
     char c;
-    i = 0;
+    int i = 0;
+    FormattingInfo formattingInfo = FormattingInfo.getDefault();
 
     while (i < patternLength) {
       c = pattern.charAt(i++);
@@ -228,17 +285,15 @@ public final class PatternParser extends ComponentBase {
           default:
 
             if (currentLiteral.length() != 0) {
-              addToList(
+              patternConverters.add(
                 new LiteralPatternConverter(currentLiteral.toString()));
-
-              //LogLog.debug("Parsed LITERAL converter: \""
-              //           +currentLiteral+"\".");
+              formattingInfos.add(FormattingInfo.getDefault());
             }
 
             currentLiteral.setLength(0);
             currentLiteral.append(c); // append %
             state = CONVERTER_STATE;
-            formattingInfo.reset();
+            formattingInfo = FormattingInfo.getDefault();
           }
         } else {
           currentLiteral.append(c);
@@ -251,7 +306,10 @@ public final class PatternParser extends ComponentBase {
 
         switch (c) {
         case '-':
-          formattingInfo.leftAlign = true;
+          formattingInfo =
+            new FormattingInfo(
+              true, formattingInfo.getMinLength(),
+              formattingInfo.getMaxLength());
 
           break;
 
@@ -263,10 +321,20 @@ public final class PatternParser extends ComponentBase {
         default:
 
           if ((c >= '0') && (c <= '9')) {
-            formattingInfo.min = c - '0';
+            formattingInfo =
+              new FormattingInfo(
+                formattingInfo.isLeftAligned(), c - '0',
+                formattingInfo.getMaxLength());
             state = MIN_STATE;
           } else {
-            finalizeConverter(c);
+            i = finalizeConverter(
+                c, pattern, i, logger, currentLiteral, formattingInfo,
+                converterRegistry, rules, patternConverters, formattingInfos);
+
+            // Next pattern is assumed to be a literal.
+            state = LITERAL_STATE;
+            formattingInfo = FormattingInfo.getDefault();
+            currentLiteral.setLength(0);
           }
         } // switch
 
@@ -276,11 +344,20 @@ public final class PatternParser extends ComponentBase {
         currentLiteral.append(c);
 
         if ((c >= '0') && (c <= '9')) {
-          formattingInfo.min = (formattingInfo.min * 10) + (c - '0');
+          formattingInfo =
+            new FormattingInfo(
+              formattingInfo.isLeftAligned(),
+              (formattingInfo.getMinLength() * 10) + (c - '0'),
+              formattingInfo.getMaxLength());
         } else if (c == '.') {
           state = DOT_STATE;
         } else {
-          finalizeConverter(c);
+          i = finalizeConverter(
+              c, pattern, i, logger, currentLiteral, formattingInfo,
+              converterRegistry, rules, patternConverters, formattingInfos);
+          state = LITERAL_STATE;
+          formattingInfo = FormattingInfo.getDefault();
+          currentLiteral.setLength(0);
         }
 
         break;
@@ -289,12 +366,18 @@ public final class PatternParser extends ComponentBase {
         currentLiteral.append(c);
 
         if ((c >= '0') && (c <= '9')) {
-          formattingInfo.max = c - '0';
+          formattingInfo =
+            new FormattingInfo(
+              formattingInfo.isLeftAligned(), formattingInfo.getMinLength(),
+              c - '0');
           state = MAX_STATE;
         } else {
-          getLogger().error(
-            "Error occured in position " + i
-            + ".\n Was expecting digit, instead got char \"" + c + "\".");
+          if (logger != null) {
+            logger.error(
+              "Error occured in position " + i
+              + ".\n Was expecting digit, instead got char \"" + c + "\".");
+          }
+
           state = LITERAL_STATE;
         }
 
@@ -304,10 +387,17 @@ public final class PatternParser extends ComponentBase {
         currentLiteral.append(c);
 
         if ((c >= '0') && (c <= '9')) {
-          formattingInfo.max = (formattingInfo.max * 10) + (c - '0');
+          formattingInfo =
+            new FormattingInfo(
+              formattingInfo.isLeftAligned(), formattingInfo.getMinLength(),
+              (formattingInfo.getMaxLength() * 10) + (c - '0'));
         } else {
-          finalizeConverter(c);
+          i = finalizeConverter(
+              c, pattern, i, logger, currentLiteral, formattingInfo,
+              converterRegistry, rules, patternConverters, formattingInfos);
           state = LITERAL_STATE;
+          formattingInfo = FormattingInfo.getDefault();
+          currentLiteral.setLength(0);
         }
 
         break;
@@ -316,69 +406,164 @@ public final class PatternParser extends ComponentBase {
 
     // while
     if (currentLiteral.length() != 0) {
-      addToList(new LiteralPatternConverter(currentLiteral.toString()));
-
-      //LogLog.debug("Parsed LITERAL converter: \""+currentLiteral+"\".");
+      patternConverters.add(
+        new LiteralPatternConverter(currentLiteral.toString()));
+      formattingInfos.add(FormattingInfo.getDefault());
     }
-
-    return head;
   }
 
   /**
-   * Creates a new pattern converter.
-   * @param converterId converter identifier.
-   * @param formattingInfo formatting info.
-   * @param options options.
-   * @return pattern converter, may be null.
+   * Creates a new PatternConverter.
+   *
+   *
+   * @param converterId converterId.
+   * @param currentLiteral literal to be used if converter is unrecognized or following converter
+   *    if converterId contains extra characters.
+   * @param converterRegistry map of user-supported pattern converters keyed by format specifier, may be null.
+   * @param rules map of stock pattern converters keyed by format specifier.
+   * @param logger logger to receive parser warnings, may be null.
+   * @param options converter options.
+   * @return  converter or null.
    */
-  private PatternConverter createConverter(
-    final String converterId, final FormattingInfo formattingInfo,
-    final List options) {
-    PatternConverter converter = null;
+  private static PatternConverter createConverter(
+    final String converterId, final StringBuffer currentLiteral,
+    final Map converterRegistry, final Map rules, final List options,
+    final ULogger logger) {
+    String converterName = converterId;
+    Object converterObj = null;
 
-    if (converterId == null) {
-      getLogger().warn("converterId is null");
-    } else {
+    for (int i = converterId.length(); (i > 0) && (converterObj == null);
+        i--) {
+      converterName = converterName.substring(0, i);
+
       if (converterRegistry != null) {
-        String r = (String) converterRegistry.get(converterId);
-
-        if (r != null) {
-          converter =
-            (PatternConverter) OptionConverter.instantiateByClassName(
-              r, PatternConverter.class, null);
-        }
+        converterObj = converterRegistry.get(converterName);
       }
 
-      Class converterClass = (Class) globalRulesRegistry.get(converterId);
+      if ((converterObj == null) && (rules != null)) {
+        converterObj = rules.get(converterName);
+      }
+    }
 
-      if (converterClass != null) {
+    if (converterObj == null) {
+      if (logger != null) {
+        logger.error("Unrecognized format specifier [{}]", converterId);
+      }
+
+      return null;
+    }
+
+    Class converterClass = null;
+
+    if (converterObj instanceof Class) {
+      converterClass = (Class) converterObj;
+    } else {
+      if (converterObj instanceof String) {
         try {
-          converter = (PatternConverter) converterClass.newInstance();
-        } catch (Exception ex) {
-          getLogger().error("Error creating converter for " + converterId, ex);
+          converterClass = Loader.loadClass((String) converterObj);
+        } catch (ClassNotFoundException ex) {
+          if (logger != null) {
+            logger.warn(
+              "Class for conversion pattern %" + converterName + " not found",
+              ex);
+          }
+
+          return null;
+        }
+      } else {
+        if (logger != null) {
+          logger.warn(
+            "Bad map entry for conversion pattern %{}.", converterName);
+        }
+
+        return null;
+      }
+    }
+
+    try {
+      Method factory =
+        converterClass.getMethod(
+          "newInstance",
+          new Class[] {
+            Class.forName("[Ljava.lang.String;"),
+            org.apache.log4j.ULogger.class
+          });
+      String[] optionsArray = new String[options.size()];
+      optionsArray = (String[]) options.toArray(optionsArray);
+
+      Object newObj =
+        factory.invoke(null, new Object[] { optionsArray, logger });
+
+      if (newObj instanceof PatternConverter) {
+        currentLiteral.delete(
+          0,
+          currentLiteral.length()
+          - (converterId.length() - converterName.length()));
+
+        return (PatternConverter) newObj;
+      } else {
+        if (logger != null) {
+          logger.warn(
+            "Class " + converterClass.getName()
+            + " does not extend PatternConverter.");
+        }
+      }
+    } catch (Exception ex) {
+      if (logger != null) {
+        logger.error("Error creating converter for " + converterId, ex);
+      }
+
+      try {
+        //
+        //  try default constructor
+        PatternConverter pc = (PatternConverter) converterClass.newInstance();
+        currentLiteral.delete(
+          0,
+          currentLiteral.length()
+          - (converterId.length() - converterName.length()));
+
+        return pc;
+      } catch (Exception ex2) {
+        if (logger != null) {
+          logger.error("Error creating converter for " + converterId, ex2);
         }
       }
     }
 
-    if (converter != null) {
-      converter.setFormattingInfo(formattingInfo);
-      converter.setOptions(options);
-    }
-
-    return converter;
+    return null;
   }
 
   /**
-   * When finalizeConverter is called 'c' is the current conversion caracter
-   * and i points to the character following 'c'.
+   * Processes a format specifier sequence.
+   *
+   * @param c initial character of format specifier.
+   * @param pattern conversion pattern
+   * @param i current position in conversion pattern.
+   * @param logger logger to receive warnings, may be null.
+   * @param currentLiteral current literal.
+   * @param formattingInfo current field specifier.
+   * @param converterRegistry map of user-provided pattern converters keyed by format specifier, may be null.
+   * @param rules map of stock pattern converters keyed by format specifier.
+   * @param patternConverters list to receive parsed pattern converter.
+   * @param formattingInfos list to receive corresponding field specifier.
+   * @return position after format specifier sequence.
    */
-  private void finalizeConverter(char c) {
-    String converterId = extractConverter(c);
+  private static int finalizeConverter(
+    char c, String pattern, int i, final ULogger logger,
+    final StringBuffer currentLiteral, final FormattingInfo formattingInfo,
+    final Map converterRegistry, final Map rules, final List patternConverters,
+    final List formattingInfos) {
+    StringBuffer convBuf = new StringBuffer();
+    i = extractConverter(c, pattern, i, convBuf, currentLiteral);
 
-    List options = extractOptions();
+    String converterId = convBuf.toString();
+
+    List options = new ArrayList();
+    i = extractOptions(pattern, i, options);
 
     PatternConverter pc =
-      createConverter(converterId, formattingInfo, options);
+      createConverter(
+        converterId, currentLiteral, converterRegistry, rules, options, logger);
 
     if (pc == null) {
       StringBuffer msg;
@@ -394,51 +579,129 @@ public final class PatternParser extends ComponentBase {
 
       msg.append(Integer.toString(i));
       msg.append(" in conversion pattern.");
-      getLogger().error(msg.toString());
-      pc = new LiteralPatternConverter(currentLiteral.toString());
-    }
 
-    // setting the logger repository is an important configuration step.
-    pc.setLoggerRepository(this.repository);
+      if (logger != null) {
+        logger.error(msg.toString());
+      }
 
-    currentLiteral.setLength(0);
-    addConverter(pc);
-  }
-
-  private void addConverter(final PatternConverter pc) {
-    currentLiteral.setLength(0);
-
-    // Add the pattern converter to the list.
-    addToList(pc);
-
-    // Next pattern is assumed to be a literal.
-    state = LITERAL_STATE;
-
-    // Reset formatting info
-    formattingInfo.reset();
-  }
-
-  /**
-   * Returns the converter registry for this PatternParser instance.
-   * @return map of custom pattern converters, may be null.
-   */
-  public Map getConverterRegistry() {
-    if (converterRegistry == null) {
-      return null;
-    }
-
-    return new HashMap(converterRegistry);
-  }
-
-  /**
-   * Set the converter registry for this PatternParser instance.
-   * @param converterRegistry map of format specifiers to class names, may be null.
-   */
-  public void setConverterRegistry(final Map converterRegistry) {
-    if (converterRegistry == null) {
-      this.converterRegistry = null;
+      patternConverters.add(
+        new LiteralPatternConverter(currentLiteral.toString()));
+      formattingInfos.add(FormattingInfo.getDefault());
     } else {
-      this.converterRegistry = new HashMap(converterRegistry);
+      patternConverters.add(pc);
+      formattingInfos.add(formattingInfo);
+
+      if (currentLiteral.length() > 0) {
+        patternConverters.add(
+          new LiteralPatternConverter(currentLiteral.toString()));
+        formattingInfos.add(FormattingInfo.getDefault());
+      }
+    }
+
+    currentLiteral.setLength(0);
+
+    return i;
+  }
+
+  /**
+   * The class wraps another Map but throws exceptions on any attempt to modify the map.
+   */
+  private static class ReadOnlyMap implements Map {
+    /**
+     * Wrapped map.
+     */
+    private final Map map;
+
+    /**
+     * Constructor
+     * @param src source map.
+     */
+    public ReadOnlyMap(Map src) {
+      map = src;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void clear() {
+      throw new UnsupportedOperationException();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean containsKey(Object key) {
+      return map.containsKey(key);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean containsValue(Object value) {
+      return map.containsValue(value);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Set entrySet() {
+      return map.entrySet();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Object get(Object key) {
+      return map.get(key);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isEmpty() {
+      return map.isEmpty();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Set keySet() {
+      return map.keySet();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Object put(Object key, Object value) {
+      throw new UnsupportedOperationException();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void putAll(Map t) {
+      throw new UnsupportedOperationException();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Object remove(Object key) {
+      throw new UnsupportedOperationException();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int size() {
+      return map.size();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Collection values() {
+      return map.values();
     }
   }
 }

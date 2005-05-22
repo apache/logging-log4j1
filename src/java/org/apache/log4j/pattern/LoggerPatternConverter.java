@@ -16,31 +16,54 @@
 
 package org.apache.log4j.pattern;
 
+import org.apache.log4j.ULogger;
 import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
- *
+ * Formats a logger name.
  *
  * @author Ceki G&uuml;lc&uuml;
+ *
+ * @since 1.3
  */
-public class LoggerPatternConverter extends NamedPatternConverter {
-  // We assume that each PatternConveter instance is unique within a layout, 
-  // which is unique within an appender. We further assume that callas to the 
-  // appender method are serialized (per appender).
-  public LoggerPatternConverter() {
-    super();
+public final class LoggerPatternConverter extends NamedPatternConverter {
+  /**
+   * Singleton.
+   */
+  private static final LoggerPatternConverter INSTANCE =
+    new LoggerPatternConverter(null, null);
+
+  /**
+   * Private constructor.
+   * @param options options, may be null.
+   * @param logger logger for diagnostic messages, may be null.
+   */
+  private LoggerPatternConverter(final String[] options, final ULogger logger) {
+    super("Logger", "logger", options);
   }
 
-  protected String getFullyQualifiedName(LoggingEvent event) {
-    return event.getLoggerName();
+  /**
+   * Obtains an instance of pattern converter.
+   * @param options options, may be null.
+   * @param logger  logger, current ignored, may be null.
+   * @return instance of pattern converter.
+   */
+  public static LoggerPatternConverter newInstance(
+    final String[] options, final ULogger logger) {
+    if ((options == null) || (options.length == 0)) {
+      return INSTANCE;
+    }
+
+    return new LoggerPatternConverter(options, logger);
   }
 
-  public String getName() {
-    return "Logger";
-  }
-
-  public String getStyleClass(LoggingEvent e) {
-    return "logger";
+  /**
+   * {@inheritDoc}
+   */
+  public void format(final LoggingEvent event, final StringBuffer toAppendTo) {
+    final int initialLength = toAppendTo.length();
+    toAppendTo.append(event.getLoggerName());
+    abbreviate(initialLength, toAppendTo);
   }
 }

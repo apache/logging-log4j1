@@ -17,9 +17,9 @@
 package org.apache.log4j.rolling;
 
 import org.apache.log4j.rolling.helper.Compress;
-import org.apache.log4j.rolling.helper.IntegerTokenConverter;
+import org.apache.log4j.pattern.IntegerPatternConverter;
 import org.apache.log4j.rolling.helper.Util;
-import org.apache.log4j.rolling.helper.FileNamePattern;
+import org.apache.log4j.pattern.PatternConverter;
 
 import java.io.File;
 
@@ -57,16 +57,16 @@ import java.io.File;
  * @author Ceki G&uuml;lc&uuml;
  * @since 1.3
  * */
-public class FixedWindowRollingPolicy extends RollingPolicyBase {
-  static final String FNP_NOT_SET =
+public final class FixedWindowRollingPolicy extends RollingPolicyBase {
+  static private final String FNP_NOT_SET =
     "The FileNamePattern option must be set before using FixedWindowRollingPolicy. ";
-  static final String SEE_FNP_NOT_SET =
+  static private final String SEE_FNP_NOT_SET =
     "See also http://logging.apache.org/log4j/codes.html#tbr_fnp_not_set";
-  int maxIndex;
-  int minIndex;
-  Util util = new Util();
-  Compress compress = new Compress();
-  
+  private int maxIndex;
+  private int minIndex;
+  private final Util util = new Util();
+  private final Compress compress = new Compress();
+
   /**
    * It's almost always a bad idea to have a large window size, say over 12. 
    */
@@ -84,8 +84,7 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
     compress.setLoggerRepository(this.repository);
     
     if (fileNamePatternStr != null) {
-      fileNamePattern = new FileNamePattern(fileNamePatternStr);
-      fileNamePattern.setLoggerRepository(this.repository);
+      parseFileNamePattern();
       determineCompressionMode();
     } else {
       getLogger().warn(FNP_NOT_SET);
@@ -113,12 +112,18 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
       getLogger().warn("MaxIndex reduced to {}.", new Integer(maxIndex));
     }
 
-    IntegerTokenConverter itc = fileNamePattern.getIntegerTokenConverter();
+    PatternConverter itc = null;
+    for (int i = 0; i < patternConverters.length; i++) {
+        if (patternConverters[i] instanceof IntegerPatternConverter) {
+            itc = patternConverters[i];
+            break;
+        }
+    }
 
     if (itc == null) {
       throw new IllegalStateException(
-        "FileNamePattern [" + fileNamePattern.getPattern()
-        + "] does not contain a valid IntegerToken");
+        "FileNamePattern [" + fileNamePatternStr
+        + "] does not contain a valid integer format specifier");
     }
   }
 
@@ -127,7 +132,9 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
     // If maxIndex <= 0, then there is no file renaming to be done.
     if (maxIndex >= 0) {
       // Delete the oldest file, to keep Windows happy.
-      File file = new File(fileNamePattern.convert(maxIndex));
+      StringBuffer buf = new StringBuffer();
+      formatFileName(new Integer(maxIndex), buf);
+      File file = new File(buf.toString());
 
       if (file.exists()) {
         file.delete();
@@ -135,27 +142,33 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
 
       // Map {(maxIndex - 1), ..., minIndex} to {maxIndex, ..., minIndex+1}
       for (int i = maxIndex - 1; i >= minIndex; i--) {
-	  String toRenameStr = fileNamePattern.convert(i);  
+          buf.setLength(0);
+          formatFileName(new Integer(i), buf);
+	  String toRenameStr = buf.toString();
 	  File toRename = new File(toRenameStr);
 	  // no point in trying to rename an inexistent file
 	  if(toRename.exists()) {
-	      util.rename(toRenameStr, fileNamePattern.convert(i + 1));
+          buf.setLength(0);
+          formatFileName(new Integer(i + 1), buf);
+	      util.rename(toRenameStr, buf.toString());
 	  } else {
 	      getLogger().info("Skipping rollover for non-existent file {}", toRenameStr); 
           }
       }
 
+      buf.setLength(0);
+      formatFileName(new Integer(minIndex), buf);
 
       //move active file name to min
       switch (compressionMode) {
       case Compress.NONE:
-          util.rename(activeFileName, fileNamePattern.convert(minIndex));
+          util.rename(activeFileName, buf.toString());
           break;
       case Compress.GZ:
-          compress.GZCompress(activeFileName, fileNamePattern.convert(minIndex));
+          compress.GZCompress(activeFileName, buf.toString());
           break;	  
       case Compress.ZIP:
-	  compress.ZIPCompress(activeFileName, fileNamePattern.convert(minIndex));
+	  compress.ZIPCompress(activeFileName, buf.toString());
 	  break;
       }
     }

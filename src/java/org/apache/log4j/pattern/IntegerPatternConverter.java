@@ -17,36 +17,37 @@
 package org.apache.log4j.pattern;
 
 import org.apache.log4j.ULogger;
-import org.apache.log4j.spi.LoggingEvent;
+
+import java.util.Date;
 
 
 /**
- * Return the event's NDC in a StringBuffer.
+ * Formats an integer.
  *
- * @author Ceki G&uuml;lc&uuml;
+ * @author Curt Arnold
  * @since 1.3
  */
-public final class NDCPatternConverter extends LoggingEventPatternConverter {
+public final class IntegerPatternConverter extends PatternConverter {
   /**
-   *   Singleton.
+   * Singleton.
    */
-  private static final NDCPatternConverter INSTANCE =
-    new NDCPatternConverter();
+  private static final IntegerPatternConverter INSTANCE =
+    new IntegerPatternConverter();
 
   /**
    * Private constructor.
    */
-  private NDCPatternConverter() {
-    super("NDC", "ndc");
+  private IntegerPatternConverter() {
+    super("Integer", "integer");
   }
 
   /**
-   * Obtains an instance of NDCPatternConverter.
+   * Obtains an instance of pattern converter.
    * @param options options, may be null.
    * @param logger  logger, current ignored, may be null.
-   * @return instance of NDCPatternConverter.
+   * @return instance of pattern converter.
    */
-  public static NDCPatternConverter newInstance(
+  public static IntegerPatternConverter newInstance(
     final String[] options, final ULogger logger) {
     return INSTANCE;
   }
@@ -54,7 +55,13 @@ public final class NDCPatternConverter extends LoggingEventPatternConverter {
   /**
    * {@inheritDoc}
    */
-  public void format(final LoggingEvent event, final StringBuffer toAppendTo) {
-    toAppendTo.append(event.getNDC());
+  public void format(Object obj, final StringBuffer toAppendTo) {
+    if (obj instanceof Integer) {
+      toAppendTo.append(obj.toString());
+    }
+
+    if (obj instanceof Date) {
+      toAppendTo.append(Long.toString(((Date) obj).getTime()));
+    }
   }
 }

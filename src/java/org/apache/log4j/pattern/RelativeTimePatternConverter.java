@@ -1,62 +1,108 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
- * 
+ * Copyright 1999,2005 The Apache Software Foundation.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.log4j.pattern;
 
+import org.apache.log4j.ULogger;
 import org.apache.log4j.spi.LoggingEvent;
 
-/*
- * Return the relative time in milliseconds since loading of the LoggingEvent 
+
+/**
+ * Return the relative time in milliseconds since loading of the LoggingEvent
  * class.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
+ * @since 1.3
  */
-public class RelativeTimePatternConverter extends PatternConverter {
-	
-	// We assume that each PatternConveter instance is unique within a layout, 
-	// which is unique within an appender. We further assume that callas to the 
-	// appender method are serialized (per appender).
-  StringBuffer buf;
-  long lastTimestamp = 0;
-  
-  
+public class RelativeTimePatternConverter extends LoggingEventPatternConverter {
+  /**
+   * Cached formatted timestamp.
+   */
+  private CachedTimestamp lastTimestamp = new CachedTimestamp(0, "");
+
+  /**
+   * Private constructor.
+   */
   public RelativeTimePatternConverter() {
-    super();
-    this.buf = new StringBuffer(9);
+    super("Time", "time");
   }
 
-  public StringBuffer convert(LoggingEvent event) {
+  /**
+   * Obtains an instance of RelativeTimePatternConverter.
+   * @param options options, currently ignored, may be null.
+   * @param logger  logger, current ignored, may be null.
+   * @return instance of RelativeTimePatternConverter.
+   */
+  public static RelativeTimePatternConverter newInstance(
+    final String[] options, final ULogger logger) {
+    return new RelativeTimePatternConverter();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public void format(final LoggingEvent event, final StringBuffer toAppendTo) {
     long timestamp = event.getTimeStamp();
-    // if called multiple times within the same milliseconds
-    // return old value
-    if(timestamp == lastTimestamp) {
-      return buf;
-    } else {
-      buf.setLength(0);
-      lastTimestamp = timestamp;
-      buf.append(Long.toString(timestamp - LoggingEvent.getStartTime()));
+
+    if (!lastTimestamp.format(timestamp, toAppendTo)) {
+      final String formatted =
+        Long.toString(timestamp - LoggingEvent.getStartTime());
+      toAppendTo.append(formatted);
+      lastTimestamp = new CachedTimestamp(timestamp, formatted);
     }
-    return buf;
   }
-  
-  public String getName() {
-      return "Time";
+
+  /**
+   * Cached timestamp and formatted value.
+   */
+  private static final class CachedTimestamp {
+    /**
+     * Cached timestamp.
+     */
+    private final long timestamp;
+
+    /**
+     * Cached formatted timestamp.
+     */
+    private final String formatted;
+
+    /**
+     * Creates a new instance.
+     * @param timestamp timestamp.
+     * @param formatted formatted timestamp.
+     */
+    public CachedTimestamp(long timestamp, final String formatted) {
+      this.timestamp = timestamp;
+      this.formatted = formatted;
+    }
+
+    /**
+     * Appends the cached formatted timestamp to the buffer if timestamps match.
+     * @param newTimestamp requested timestamp.
+     * @param toAppendTo buffer to append formatted timestamp.
+     * @return true if requested timestamp matched cached timestamp.
+     */
+    public boolean format(long newTimestamp, final StringBuffer toAppendTo) {
+      if (newTimestamp == timestamp) {
+        toAppendTo.append(formatted);
+
+        return true;
+      }
+
+      return false;
+    }
   }
-  
-  public String getStyleClass(LoggingEvent e) {
-    return "time";
-  }
-  
 }
