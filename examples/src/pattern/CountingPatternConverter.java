@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2005 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,36 +16,20 @@
 
 package pattern;
 
-import org.apache.log4j.pattern.PatternConverter;
+import org.apache.log4j.pattern.LoggingEventPatternConverter;
 import org.apache.log4j.spi.LoggingEvent;
 
 
-public class CountingPatternConverter extends PatternConverter {
-  static private final String NAME = "Count";
-  static private final String STYLE_CLASS = NAME.toLowerCase();
+public final class CountingPatternConverter extends LoggingEventPatternConverter {
   
-  StringBuffer buf;
-  int counter = 0;
-
+  private int counter = 0;
+  
   public CountingPatternConverter() {
-    super();
-    this.buf = new StringBuffer(5);
+     super("Count", "count");
   }
 
-  public StringBuffer convert(LoggingEvent event) {
-    if(buf.capacity() > 64) {
-      buf = new StringBuffer(5);
-    } else {
-      buf.setLength(0);
-    }
-    return buf.append(String.valueOf(++counter));
+  public void format(final LoggingEvent event, final StringBuffer toAppendTo) {
+    toAppendTo.append(String.valueOf(++counter));
   }
   
-  public String getName() {
-    return NAME;
-  }
-  
-  public String getStyleClass(LoggingEvent e) {
-    return STYLE_CLASS;
-  }
 }

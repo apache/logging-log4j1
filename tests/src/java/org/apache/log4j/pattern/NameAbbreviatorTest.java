@@ -52,7 +52,9 @@ public class NameAbbreviatorTest extends TestCase {
   public void testZero() {
     NameAbbreviator abbrev = NameAbbreviator.getAbbreviator("0");
     StringBuffer buf = new StringBuffer("DEBUG - ");
-    abbrev.abbreviate(buf, "org.example.foo.bar");
+    int fieldStart = buf.length();
+    buf.append("org.example.foo.bar");
+    abbrev.abbreviate(fieldStart, buf);
     assertEquals("DEBUG - ", buf.toString());
   }
 
@@ -73,15 +75,22 @@ public class NameAbbreviatorTest extends TestCase {
   public void testOne() {
     NameAbbreviator abbrev = NameAbbreviator.getAbbreviator("1");
     StringBuffer buf = new StringBuffer("DEBUG - ");
-    abbrev.abbreviate(buf, "org.example.foo.bar");
+    int fieldStart = buf.length();
+    buf.append("org.example.foo.bar");
+    abbrev.abbreviate(fieldStart, buf);
     assertEquals("DEBUG - bar", buf.toString());
+
     buf.setLength(0);
     buf.append("DEBUG - ");
-    abbrev.abbreviate(buf, "bar");
+    fieldStart = buf.length();
+    buf.append("bar");
+    abbrev.abbreviate(fieldStart, buf);
     assertEquals("DEBUG - bar", buf.toString());
+
     buf.setLength(0);
     buf.append("DEBUG - ");
-    abbrev.abbreviate(buf, "");
+    fieldStart = buf.length();
+    abbrev.abbreviate(fieldStart, buf);
     assertEquals("DEBUG - ", buf.toString());
   }
 
@@ -91,15 +100,22 @@ public class NameAbbreviatorTest extends TestCase {
   public void testBlankOne() {
     NameAbbreviator abbrev = NameAbbreviator.getAbbreviator(" 1 ");
     StringBuffer buf = new StringBuffer("DEBUG - ");
-    abbrev.abbreviate(buf, "org.example.foo.bar");
+    int fieldStart = buf.length();
+    buf.append("org.example.foo.bar");
+    abbrev.abbreviate(fieldStart, buf);
     assertEquals("DEBUG - bar", buf.toString());
+
     buf.setLength(0);
     buf.append("DEBUG - ");
-    abbrev.abbreviate(buf, "bar");
+    fieldStart = buf.length();
+    buf.append("bar");
+    abbrev.abbreviate(fieldStart, buf);
     assertEquals("DEBUG - bar", buf.toString());
+
     buf.setLength(0);
     buf.append("DEBUG - ");
-    abbrev.abbreviate(buf, "");
+    fieldStart = buf.length();
+    abbrev.abbreviate(fieldStart, buf);
     assertEquals("DEBUG - ", buf.toString());
   }
 
@@ -110,15 +126,23 @@ public class NameAbbreviatorTest extends TestCase {
   public void testTwo() {
     NameAbbreviator abbrev = NameAbbreviator.getAbbreviator("2");
     StringBuffer buf = new StringBuffer("DEBUG - ");
-    abbrev.abbreviate(buf, "org.example.foo.bar");
+    int fieldStart = buf.length();
+    buf.append("org.example.foo.bar");
+    abbrev.abbreviate(fieldStart, buf);
     assertEquals("DEBUG - foo.bar", buf.toString());
+
     buf.setLength(0);
     buf.append("DEBUG - ");
-    abbrev.abbreviate(buf, "foo.bar");
+    fieldStart = buf.length();
+    buf.append("foo.bar");
+    abbrev.abbreviate(fieldStart, buf);
     assertEquals("DEBUG - foo.bar", buf.toString());
+
     buf.setLength(0);
     buf.append("DEBUG - ");
-    abbrev.abbreviate(buf, "bar");
+    fieldStart = buf.length();
+    buf.append("bar");
+    abbrev.abbreviate(fieldStart, buf);
     assertEquals("DEBUG - bar", buf.toString());
   }
 
@@ -130,27 +154,44 @@ public class NameAbbreviatorTest extends TestCase {
   public void testOneDot() {
     NameAbbreviator abbrev = NameAbbreviator.getAbbreviator("1.");
     StringBuffer buf = new StringBuffer("DEBUG - ");
-    abbrev.abbreviate(buf, "org.example.foo.bar");
+    int fieldStart = buf.length();
+    buf.append("org.example.foo.bar");
+    abbrev.abbreviate(fieldStart, buf);
     assertEquals("DEBUG - o.e.f.bar", buf.toString());
+
     buf.setLength(0);
     buf.append("DEBUG - ");
-    abbrev.abbreviate(buf, "org.example.foo.");
+    fieldStart = buf.length();
+    buf.append("org.example.foo.");
+    abbrev.abbreviate(fieldStart, buf);
     assertEquals("DEBUG - o.e.f.", buf.toString());
+
+
     buf.setLength(0);
     buf.append("DEBUG - ");
-    abbrev.abbreviate(buf, "foo.bar");
+    fieldStart = buf.length();
+    buf.append("foo.bar");
+    abbrev.abbreviate(fieldStart, buf);
     assertEquals("DEBUG - f.bar", buf.toString());
+
     buf.setLength(0);
     buf.append("DEBUG - ");
-    abbrev.abbreviate(buf, "bar");
+    fieldStart = buf.length();
+    buf.append("bar");
+    abbrev.abbreviate(fieldStart, buf);
     assertEquals("DEBUG - bar", buf.toString());
+
     buf.setLength(0);
     buf.append("DEBUG - ");
-    abbrev.abbreviate(buf, "");
+    fieldStart = buf.length();
+    abbrev.abbreviate(fieldStart, buf);
     assertEquals("DEBUG - ", buf.toString());
+
     buf.setLength(0);
     buf.append("DEBUG - ");
-    abbrev.abbreviate(buf, ".");
+    fieldStart = buf.length();
+    buf.append(".");
+    abbrev.abbreviate(fieldStart, buf);
     assertEquals("DEBUG - .", buf.toString());
   }
 
@@ -162,31 +203,52 @@ public class NameAbbreviatorTest extends TestCase {
   public void testOneTildeDot() {
     NameAbbreviator abbrev = NameAbbreviator.getAbbreviator("1~.");
     StringBuffer buf = new StringBuffer("DEBUG - ");
-    abbrev.abbreviate(buf, "org.example.foo.bar");
+    int fieldStart = buf.length();
+    buf.append("org.example.foo.bar");
+    abbrev.abbreviate(fieldStart, buf);
     assertEquals("DEBUG - o~.e~.f~.bar", buf.toString());
+
     buf.setLength(0);
     buf.append("DEBUG - ");
-    abbrev.abbreviate(buf, "org.example.foo.");
+    fieldStart = buf.length();
+    buf.append("org.example.foo.");
+    abbrev.abbreviate(fieldStart, buf);
     assertEquals("DEBUG - o~.e~.f~.", buf.toString());
+
     buf.setLength(0);
     buf.append("DEBUG - ");
-    abbrev.abbreviate(buf, "foo.bar");
+    fieldStart = buf.length();
+    buf.append("foo.bar");
+    abbrev.abbreviate(fieldStart, buf);
     assertEquals("DEBUG - f~.bar", buf.toString());
+
     buf.setLength(0);
     buf.append("DEBUG - ");
-    abbrev.abbreviate(buf, "bar");
+    fieldStart = buf.length();
+    buf.append("bar");
+    abbrev.abbreviate(fieldStart, buf);
     assertEquals("DEBUG - bar", buf.toString());
+
     buf.setLength(0);
     buf.append("DEBUG - ");
-    abbrev.abbreviate(buf, "");
+    fieldStart = buf.length();
+    abbrev.abbreviate(fieldStart, buf);
     assertEquals("DEBUG - ", buf.toString());
+
+
     buf.setLength(0);
     buf.append("DEBUG - ");
-    abbrev.abbreviate(buf, ".");
+    fieldStart = buf.length();
+    buf.append(".");
+    abbrev.abbreviate(fieldStart, buf);
     assertEquals("DEBUG - .", buf.toString());
+
+
     buf.setLength(0);
     buf.append("DEBUG - ");
-    abbrev.abbreviate(buf, "o.e.f.bar");
+    fieldStart = buf.length();
+    buf.append("o.e.f.bar");
+    abbrev.abbreviate(fieldStart, buf);
     assertEquals("DEBUG - o.e.f.bar", buf.toString());
   }
 
@@ -199,27 +261,43 @@ public class NameAbbreviatorTest extends TestCase {
   public void testMulti() {
     NameAbbreviator abbrev = NameAbbreviator.getAbbreviator("1.*.2");
     StringBuffer buf = new StringBuffer("DEBUG - ");
-    abbrev.abbreviate(buf, "org.example.foo.bar");
+    int fieldStart = buf.length();
+    buf.append("org.example.foo.bar");
+    abbrev.abbreviate(fieldStart, buf);
     assertEquals("DEBUG - o.example.fo.bar", buf.toString());
+
     buf.setLength(0);
     buf.append("DEBUG - ");
-    abbrev.abbreviate(buf, "org.example.foo.");
+    fieldStart = buf.length();
+    buf.append("org.example.foo.");
+    abbrev.abbreviate(fieldStart, buf);
     assertEquals("DEBUG - o.example.fo.", buf.toString());
+
     buf.setLength(0);
     buf.append("DEBUG - ");
-    abbrev.abbreviate(buf, "foo.bar");
+    fieldStart = buf.length();
+    buf.append("foo.bar");
+    abbrev.abbreviate(fieldStart, buf);
     assertEquals("DEBUG - f.bar", buf.toString());
+
     buf.setLength(0);
     buf.append("DEBUG - ");
-    abbrev.abbreviate(buf, "bar");
+    fieldStart = buf.length();
+    buf.append("bar");
+    abbrev.abbreviate(fieldStart, buf);
     assertEquals("DEBUG - bar", buf.toString());
+
     buf.setLength(0);
     buf.append("DEBUG - ");
-    abbrev.abbreviate(buf, "");
+    fieldStart = buf.length();
+    abbrev.abbreviate(fieldStart, buf);
     assertEquals("DEBUG - ", buf.toString());
+
     buf.setLength(0);
     buf.append("DEBUG - ");
-    abbrev.abbreviate(buf, ".");
+    fieldStart = buf.length();
+    buf.append(".");
+    abbrev.abbreviate(fieldStart, buf);
     assertEquals("DEBUG - .", buf.toString());
   }
 }

@@ -1,12 +1,12 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
- * 
+ * Copyright 1999,2005 The Apache Software Foundation.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,172 +16,72 @@
 
 package org.apache.log4j.pattern;
 
-import org.apache.log4j.spi.ComponentBase;
-import org.apache.log4j.spi.LoggerRepository;
-import org.apache.log4j.spi.LoggingEvent;
-
-import java.io.IOException;
-import java.io.Writer;
-import java.util.List;
-
 
 /**
 
-   <p>PatternConverter is an abtract class that provides the
+   <p>PatternConverter is an abstract class that provides the
    formatting functionality that derived classes need.
 
    <p>Conversion specifiers in a conversion patterns are parsed to
    individual PatternConverters. Each of which is responsible for
-   converting a logging event in a converter specific manner.
+   converting an object in a converter specific manner.
 
    @author <a href="mailto:cakalijp@Maritz.com">James P. Cakalic</a>
    @author Ceki G&uuml;lc&uuml;
    @author Chris Nokes
+   @author Curt Arnold
 
-   @since 0.8.2
+   @since 1.3
  */
-public abstract class PatternConverter extends ComponentBase {
-  static String[] SPACES =
-  {
-    " ", "  ", "    ", "        ", //1,2,4,8 spaces
-    "                ", // 16 spaces
-    "                                " // 32 spaces
-  };
-  public PatternConverter next;
-  int min = -1;
-  int max = 0x7FFFFFFF;
-  boolean leftAlign = false;
-  //String option;
-
-  LoggerRepository repository;
-  
-  protected PatternConverter() {
-  }
-
-  protected PatternConverter(FormattingInfo fi) {
-    min = fi.min;
-    max = fi.max;
-    leftAlign = fi.leftAlign;
-  }
-
-  public void setFormattingInfo(FormattingInfo fi) {
-    min = fi.min;
-    max = fi.max;
-    leftAlign = fi.leftAlign;
-  }
-
+public abstract class PatternConverter {
   /**
-     Derived pattern converters must override this method in order to
-     convert conversion specifiers in the correct way.
-     
-     IMPORTANT: Note that an implementing class may always return the same
-     StringBuffer instance in order to avoid superflous object creation.
-  */
-  protected abstract StringBuffer convert(LoggingEvent event);
-
-  /**
-     A template method for formatting in a converter specific way.
+   * Converter name.
    */
-  public void format(Writer output, LoggingEvent e) throws IOException {
-    StringBuffer s = convert(e);
-
-    if (s == null) {
-      if (0 < min) {
-        spacePad(output, min);
-      }
-
-      return;
-    }
-
-    int len = s.length();
-
-    if (len > max) {
-      output.write(s.substring(len - max));
-    } else if (len < min) {
-      if (leftAlign) {
-        output.write(s.toString());
-        spacePad(output, min - len);
-      } else {
-        spacePad(output, min - len);
-        output.write(s.toString());
-      }
-    } else {
-      output.write(s.toString());
-    }
-  }
+  private final String name;
 
   /**
-     Fast space padding method.
-  */
-  public void spacePad(Writer output, int length) throws IOException {
-    while (length >= 32) {
-      output.write(SPACES[5]);
-      length -= 32;
-    }
-
-    for (int i = 4; i >= 0; i--) {
-      if ((length & (1 << i)) != 0) {
-        output.write(SPACES[i]);
-      }
-    }
-  }
-  
-  /**
-   *    Sets multiple options for the converter.
-   *    @param options list of options, may be null.
+   * Converter style name.
    */
-  public void setOptions(List options) {
-    // NOP implementation. Most PC's do not deal with options.
+  private final String style;
+
+  /**
+   * Create a new pattern converter.
+   * @param name name for pattern converter.
+   * @param style CSS style for formatted output.
+   */
+  protected PatternConverter(final String name, final String style) {
+    this.name = name;
+    this.style = style;
   }
-  
+
+  /**
+   * Formats an object into a string buffer.
+   * @param obj event to format, may not be null.
+   * @param toAppendTo string buffer to which the formatted event will be appended.  May not be null.
+   */
+  public abstract void format(final Object obj, final StringBuffer toAppendTo);
+
   /**
    * This method returns the name of the conversion pattern.
-   * 
+   *
    * The name can be useful to certain Layouts such as HTMLLayout.
-   * 
-   * @return	the name of the conversion pattern
+   *
+   * @return        the name of the conversion pattern
    */
-  public abstract String getName();
- 
+  public final String getName() {
+    return name;
+  }
+
   /**
    * This method returns the CSS style class that should be applied to
-   * the LoggingEvent passed as parameter, which can be null. 
-   * 
+   * the LoggingEvent passed as parameter, which can be null.
+   *
    * This information is currently used only by HTMLLayout.
-   * 
+   *
    * @param e null values are accepted
    * @return  the name of the conversion pattern
    */
-  public abstract String getStyleClass(LoggingEvent e);
-  
-  /**
-   * Normally pattern converters are now meant to handle Exceptions although
-   * few pattern converters might. 
-   * 
-   * By examining the return values for this methd, the containing layout will
-   * determine whether it handles throwables or not.
-
-   * @return true if this PatternConverter handles throwables
-   */
-  public boolean handlesThrowable() {
-    return false;
-  }
-  
-  /**
-   * This method computes whether a chain of converters handles exceptions
-   * or not.
-   * 
-   * @param head The first element of the chain
-   * @return true if can handle the throwable contained in logging events
-   */
-  public static boolean chainHandlesThrowable(PatternConverter head) {
-    PatternConverter c = head;
-    while (c != null) {
-      if (c.handlesThrowable()) {
-        return true;
-      }
-      c = c.next;
-    }
-    return false;
+  public String getStyleClass(Object e) {
+    return style;
   }
 }

@@ -17,31 +17,23 @@
 package org.apache.log4j.pattern;
 
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.ULogger;
 
 
-public class Num343PatternConverter extends PatternConverter {
-  static private final String NAME = "Num34";
-  static private final String STYLE_CLASS = NAME.toLowerCase();
+public class Num343PatternConverter extends LoggingEventPatternConverter {
   
-  StringBuffer buf;
-
-  public Num343PatternConverter() {
-    super();
-    this.buf = new StringBuffer(5);
+  private Num343PatternConverter() {
+      super("Num34", "num34");
   }
+  private static final Num343PatternConverter INSTANCE = new Num343PatternConverter();
 
-  public StringBuffer convert(LoggingEvent event) {
-    buf.setLength(0);
-    buf.append("343");
-
-    return buf;
+  public static PatternConverter newInstance(final String[] options,
+                                      final ULogger logger) {
+      return INSTANCE;
   }
-  
-  public String getName() {
-    return NAME;
+    
+  public void format(LoggingEvent event, StringBuffer toAppendTo) {
+    toAppendTo.append("343");
   }
   
-  public String getStyleClass(LoggingEvent e) {
-    return STYLE_CLASS;
-  }
 }

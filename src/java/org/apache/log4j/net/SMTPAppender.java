@@ -41,6 +41,7 @@ import org.apache.log4j.rule.Rule;
 import org.apache.log4j.spi.ComponentBase;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.TriggeringEventEvaluator;
+import org.apache.log4j.PatternLayout;
 
 
 /**
@@ -86,8 +87,8 @@ public class SMTPAppender extends AppenderSkeleton {
   protected CyclicBuffer cb = new CyclicBuffer(bufferSize);
   protected MimeMessage msg;
   protected TriggeringEventEvaluator evaluator;
-  private PatternConverter subjectConverterHead;
-  
+  private PatternLayout subjectLayout;
+
   /**
      The default constructor will instantiate the appender with a
      {@link TriggeringEventEvaluator} that will trigger on events with
@@ -134,9 +135,12 @@ public class SMTPAppender extends AppenderSkeleton {
     }
 
     if (subjectStr != null) {
-      subjectConverterHead = new PatternParser(subjectStr, this.repository).parse();
+        subjectLayout = new PatternLayout();
+        subjectLayout.setConversionPattern(subjectStr);
+        subjectLayout.setLoggerRepository(this.repository);
+        subjectLayout.activateOptions();
     }
-    
+
     if (this.evaluator == null) {
       errorCount++;
       String errMsg = "No TriggeringEventEvaluator is set for appender ["+getName()+"].";
@@ -299,19 +303,12 @@ public class SMTPAppender extends AppenderSkeleton {
   }
 
   String computeSubject(LoggingEvent triggeringEvent) {
-    PatternConverter c = this.subjectConverterHead;
-    StringWriter sw = new StringWriter();
-    try {
-      while (c != null) {
-        c.format(sw, triggeringEvent);
-        c = c.next;
+      if (subjectLayout != null) {
+          return subjectLayout.format(triggeringEvent);
       }
-    } catch(java.io.IOException ie) {
-      // this should not happen
-    }
-    return sw.toString();
+      return null;
   }
-  
+
   /**
      Returns value of the <b>EvaluatorClass</b> option.
    */

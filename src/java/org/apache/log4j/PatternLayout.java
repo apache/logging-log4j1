@@ -1,12 +1,12 @@
 /*
- * Copyright 1999-2005 The Apache Software Foundation.
- * 
+ * Copyright 1999,2005 The Apache Software Foundation.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,34 +16,41 @@
 
 package org.apache.log4j;
 
-import java.io.IOException;
-import java.io.Writer;
-import java.util.Map;
-
-import org.apache.log4j.pattern.PatternConverter;
+import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.pattern.FormattingInfo;
+import org.apache.log4j.pattern.LiteralPatternConverter;
+import org.apache.log4j.pattern.LoggingEventPatternConverter;
 import org.apache.log4j.pattern.PatternParser;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.helpers.OptionConverter;
+
+import java.io.IOException;
+import java.io.Writer;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 
 // Contributors:   Nelson Minar <nelson@monkey.org>
 //                 Anders Kristensen <akristensen@dynamicsoft.com>
 
 /**
-  * <p>A flexible layout configurable with pattern string. The goal of this class 
-  * is to {@link #format format} a {@link LoggingEvent} and return the results 
-  * in a {#link StringBuffer}. The format of the result depends on the 
+  * <p>A flexible layout configurable with pattern string. The goal of this class
+  * is to {@link #format format} a {@link LoggingEvent} and return the results
+  * in a {#link StringBuffer}. The format of the result depends on the
   * <em>conversion pattern</em>.
   * <p>
-  * 
-  * <p>The conversion pattern is closely related to the conversion 
-  * pattern of the printf function in C. A conversion pattern is 
-  * composed of literal text and format control expressions called 
+  *
+  * <p>The conversion pattern is closely related to the conversion
+  * pattern of the printf function in C. A conversion pattern is
+  * composed of literal text and format control expressions called
   * <em>conversion specifiers</em>.
   *
-  * <p><i>Note that you are free to insert any literal text within the 
+  * <p><i>Note that you are free to insert any literal text within the
   * conversion pattern.</i>
   * </p>
-  
+
    <p>Each conversion specifier starts with a percent sign (%) and is
    followed by optional <em>format modifiers</em> and a <em>conversion
    character</em>. The conversion character specifies the type of
@@ -122,7 +129,7 @@ import org.apache.log4j.helpers.OptionConverter;
    <tr> <td align=center><b>d</b></td> <td>Used to output the date of
          the logging event. The date conversion specifier may be
          followed by a set of braces containing a
-         date and time pattern strings {@link java.text.SimpleDateFormat}, 
+         date and time pattern strings {@link java.text.SimpleDateFormat},
          <em>ABSOLUTE</em>, <em>DATE</em> or <em>ISO8601</em>.
          For example, <b>%d{HH:mm:ss,SSS}</b>,
          <b>%d{dd&nbsp;MMM&nbsp;yyyy&nbsp;HH:mm:ss,SSS}</b> or
@@ -278,7 +285,7 @@ import org.apache.log4j.helpers.OptionConverter;
 
      <td>
      <p>Used to output the Throwable trace that has been bound to the LoggingEvent, by
-     default this will output the full trace as one would normally find by a call to Throwable.printStackTrace(). 
+     default this will output the full trace as one would normally find by a call to Throwable.printStackTrace().
      The throwable conversion word can be followed by an option in the form <b>%throwable{short}</b>
      which will only output the first line of the ThrowableInformation.</p>
      </td>
@@ -420,11 +427,30 @@ public class PatternLayout extends Layout {
    * {@link LoggerRepository} object store.
    */
   public static final String PATTERN_RULE_REGISTRY = "PATTERN_RULE_REGISTRY";
-  
+
+  /**
+   * Conversion pattern.
+   */
   private String conversionPattern;
-  private PatternConverter head;
 
+  /**
+   * Pattern converters.
+   */
+  private LoggingEventPatternConverter[] patternConverters;
 
+  /**
+   * Field widths and alignment corresponding to pattern converters.
+   */
+  private FormattingInfo[] patternFields;
+
+  /**
+   * String buffer used in formatting.
+   */
+  private StringBuffer buf = new StringBuffer();
+
+  /**
+   * True if any element in pattern formats information from exceptions.
+   */
   private boolean handlesExceptions;
 
   /**
@@ -433,28 +459,33 @@ public class PatternLayout extends Layout {
      The default pattern just produces the application supplied message.
   */
   public PatternLayout() {
-    this(DEFAULT_CONVERSION_PATTERN);   
+    this(DEFAULT_CONVERSION_PATTERN);
   }
 
   /**
-     Constructs a PatternLayout using the supplied conversion pattern.
+    * Constructs a PatternLayout using the supplied conversion pattern.
+   * @param pattern conversion pattern.
   */
   public PatternLayout(String pattern) {
     this.conversionPattern = pattern;
     activateOptions();
   }
-  
+
   /**
-    Set the <b>ConversionPattern</b> option. This is the string which
-    controls formatting and consists of a mix of literal content and
-    conversion specifiers.
+   * Set the <b>ConversionPattern</b> option. This is the string which
+   * controls formatting and consists of a mix of literal content and
+   * conversion specifiers.
+   *
+   * @param conversionPattern conversion pattern.
   */
   public void setConversionPattern(String conversionPattern) {
-    this.conversionPattern = OptionConverter.convertSpecialChars(conversionPattern);
+    this.conversionPattern =
+      OptionConverter.convertSpecialChars(conversionPattern);
   }
 
   /**
-     Returns the value of the <b>ConversionPattern</b> option.
+   *  Returns the value of the <b>ConversionPattern</b> option.
+   * @return conversion pattern.
    */
   public String getConversionPattern() {
     return conversionPattern;
@@ -465,28 +496,70 @@ public class PatternLayout extends Layout {
     you change the parameters of the PatternLayout instance.
   */
   public void activateOptions() {
-    PatternParser patternParser = new PatternParser(conversionPattern, repository);
-    if(this.repository != null) {
-      patternParser.setConverterRegistry((Map) this.repository.getObject(PATTERN_RULE_REGISTRY));
+    List converters = new ArrayList();
+    List fields = new ArrayList();
+    Map converterRegistry = null;
+
+    if (this.repository != null) {
+      converterRegistry =
+        (Map) this.repository.getObject(PATTERN_RULE_REGISTRY);
     }
-    head = patternParser.parse();
-    handlesExceptions = PatternConverter.chainHandlesThrowable(head);
+
+    PatternParser.parse(
+      conversionPattern, converters, fields, converterRegistry,
+      PatternParser.getPatternLayoutRules(), getLogger());
+
+    patternConverters = new LoggingEventPatternConverter[converters.size()];
+    patternFields = new FormattingInfo[converters.size()];
+
+    int i = 0;
+    Iterator converterIter = converters.iterator();
+    Iterator fieldIter = fields.iterator();
+
+    while (converterIter.hasNext()) {
+      Object converter = converterIter.next();
+
+      if (converter instanceof LoggingEventPatternConverter) {
+        patternConverters[i] = (LoggingEventPatternConverter) converter;
+        handlesExceptions |= patternConverters[i].handlesThrowable();
+      } else {
+        patternConverters[i] = new LiteralPatternConverter("");
+      }
+
+      if (fieldIter.hasNext()) {
+        patternFields[i] = (FormattingInfo) fieldIter.next();
+      } else {
+        patternFields[i] = FormattingInfo.getDefault();
+      }
+
+      i++;
+    }
   }
 
   /**
-     Produces a formatted string as specified by the conversion pattern.
+   *  Formats a logging event to a writer.
+   * @param output writer to receive output.
+   * @param event logging event to be formatted.
+   * @throws IOException if unable to write content.
   */
-  public  void format(Writer output, LoggingEvent event) throws IOException { 
-    PatternConverter c = head;
-    while (c != null) {
-      c.format(output, event);
-      c = c.next;
+  public void format(Writer output, LoggingEvent event)
+    throws IOException {
+    buf.setLength(0);
+
+    for (int i = 0; i < patternConverters.length; i++) {
+      int startField = buf.length();
+      patternConverters[i].format(event, buf);
+      patternFields[i].format(startField, buf);
     }
+
+    output.write(buf.toString());
+    buf.setLength(0);
   }
-  
+
   /**
    * Will return false if any of the conversion specifiers in the pattern
    * handles {@link Exception Exceptions}.
+   * @return true if the pattern formats any information from exceptions.
    */
   public boolean ignoresThrowable() {
     return !handlesExceptions;

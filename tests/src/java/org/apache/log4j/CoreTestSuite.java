@@ -34,6 +34,8 @@ public class CoreTestSuite {
     public static Test suite() {
         TestSuite s = new TestSuite();
         s.addTestSuite(LoggingEventTest.class);
+        s.addTestSuite(org.apache.log4j.pattern.NameAbbreviatorTest.class);
+        s.addTestSuite(org.apache.log4j.pattern.PatternParserTest.class);
         s.addTestSuite(org.apache.log4j.rolling.helper.FileNamePatternTestCase.class);
         return s;
     }

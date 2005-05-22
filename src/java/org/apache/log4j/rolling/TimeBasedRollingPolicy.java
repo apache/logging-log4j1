@@ -17,9 +17,8 @@
 package org.apache.log4j.rolling;
 
 import org.apache.log4j.rolling.helper.Compress;
-import org.apache.log4j.rolling.helper.DateTokenConverter;
-import org.apache.log4j.rolling.helper.FileNamePattern;
-import org.apache.log4j.rolling.helper.RollingCalendar;
+import org.apache.log4j.pattern.DatePatternConverter;
+import org.apache.log4j.pattern.PatternConverter;
 import org.apache.log4j.rolling.helper.Util;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.Appender;
@@ -140,11 +139,9 @@ public class TimeBasedRollingPolicy extends RollingPolicyBase implements Trigger
     "The FileNamePattern option must be set before using TimeBasedRollingPolicy. ";
   static final String SEE_FNP_NOT_SET =
     "See also http://logging.apache.org/log4j/codes.html#tbr_fnp_not_set";
-  RollingCalendar rc;
   long nextCheck;
   Date lastCheck = new Date();
   String elapsedPeriodsFileName;
-  FileNamePattern activeFileNamePattern;
   Util util = new Util();
   Compress compress = new Compress();
   
@@ -155,8 +152,7 @@ public class TimeBasedRollingPolicy extends RollingPolicyBase implements Trigger
     
     // find out period from the filename pattern
     if (fileNamePatternStr != null) {
-      fileNamePattern = new FileNamePattern(fileNamePatternStr);
-      fileNamePattern.setLoggerRepository(this.repository);
+      parseFileNamePattern();
       determineCompressionMode();
     } else {
       getLogger().warn(FNP_NOT_SET);
@@ -164,41 +160,25 @@ public class TimeBasedRollingPolicy extends RollingPolicyBase implements Trigger
       throw new IllegalStateException(FNP_NOT_SET + SEE_FNP_NOT_SET);
     }
 
-    DateTokenConverter dtc = fileNamePattern.getDateTokenConverter();
+    PatternConverter dtc = null;
+    for (int i = 0; i < patternConverters.length; i++) {
+        if (patternConverters[i] instanceof DatePatternConverter) {
+            dtc = patternConverters[i];
+            break;
+        }
+    }
 
     if (dtc == null) {
       throw new IllegalStateException(
-        "FileNamePattern [" + fileNamePattern.getPattern()
-        + "] does not contain a valid DateToken");
+        "FileNamePattern [" + fileNamePatternStr
+        + "] does not contain a valid date format specifier");
     }
 
-    int len = fileNamePatternStr.length();
-    switch(compressionMode) {
-    case Compress.GZ:
-      activeFileNamePattern =
-        new FileNamePattern(fileNamePatternStr.substring(0, len - 3));
-      break;
-      case Compress.ZIP:
-        activeFileNamePattern =
-          new FileNamePattern(fileNamePatternStr.substring(0, len - 4));
-        break;
-       case Compress.NONE:
-        activeFileNamePattern = fileNamePattern;
-     }
-     getLogger().info("Will use the pattern {} for the active file", activeFileNamePattern);
-    
-    
-   
-    rc = new RollingCalendar();
-    rc.init(dtc.getDatePattern());
-    getLogger().debug(
-      "The date pattern is '{}' from file name pattern '{}'.",
-      dtc.getDatePattern(), fileNamePattern.getPattern());
-    rc.printPeriodicity(getLogger());
 
+   
     long n = System.currentTimeMillis();
     lastCheck.setTime(n);
-    nextCheck = rc.getNextCheckMillis(lastCheck);
+    nextCheck = (n/1000 + 1) * 1000;
 
     //Date nc = new Date();
     //nc.setTime(nextCheck);
@@ -251,10 +231,29 @@ public class TimeBasedRollingPolicy extends RollingPolicyBase implements Trigger
   public String getActiveFileName() {
     getLogger().debug("getActiveLogFileName called");
     if (activeFileName == null) {
-      return activeFileNamePattern.convert(lastCheck);
+      return formatActiveFileName(lastCheck);
     } else {
       return activeFileName;
     }
+  }
+
+  private String formatActiveFileName(Date date) {
+      StringBuffer buf = new StringBuffer();
+      formatFileName(date, buf);
+      switch(compressionMode) {
+      case Compress.GZ:
+        if (buf.length() > 3) {
+           buf.setLength(buf.length() - 3);
+        }
+        break;
+
+      case Compress.ZIP:
+        if (buf.length() > 4) {
+            buf.setLength(buf.length() - 4);
+        }
+        break;
+      }
+      return buf.toString();
   }
 
   public boolean isTriggeringEvent(final Appender appender,
@@ -265,22 +264,28 @@ public class TimeBasedRollingPolicy extends RollingPolicyBase implements Trigger
     long n = System.currentTimeMillis();
 
     if (n >= nextCheck) {
+      //
+      //   next check on next integral second
+      nextCheck = (n/1000 + 1) * 1000;
+
+      StringBuffer buf = new StringBuffer();
+      formatFileName(lastCheck, buf);
+      String lastName = buf.toString();
+      buf.setLength(0);
+      formatFileName(new Date(n), buf);
+      String newName = buf.toString();
+      if (lastName.equals(newName)) return false;
+
       getLogger().debug("Time to trigger rollover");
 
       // We set the elapsedPeriodsFileName before we set the 'lastCheck' variable
       // The elapsedPeriodsFileName corresponds to the file name of the period
       // that just elapsed.
-      elapsedPeriodsFileName = activeFileNamePattern.convert(lastCheck);
+      elapsedPeriodsFileName = formatActiveFileName(lastCheck);
       getLogger().debug(
         "elapsedPeriodsFileName set to {}", elapsedPeriodsFileName);
 
       lastCheck.setTime(n);
-      //getLogger().debug("ActiveLogFileName will return " + getActiveLogFileName());
-      nextCheck = rc.getNextCheckMillis(lastCheck);
-
-      Date x = new Date();
-      x.setTime(nextCheck);
-      getLogger().debug("Next check on {}", x);
 
       return true;
     } else {

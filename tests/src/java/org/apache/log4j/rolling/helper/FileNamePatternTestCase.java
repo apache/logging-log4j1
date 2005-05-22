@@ -15,9 +15,12 @@
  */
 package org.apache.log4j.rolling.helper;
 
+import org.apache.log4j.rolling.RollingPolicyBase;
+
 import junit.framework.TestCase;
 
 import java.util.Calendar;
+import org.apache.log4j.ULogger;
 
 
 /**
@@ -36,18 +39,43 @@ public final class FileNamePatternTestCase extends TestCase {
         super(name);
     }
 
+    private static class FileNameTestRollingPolicy extends RollingPolicyBase {
+        public FileNameTestRollingPolicy(final String pattern) {
+            fileNamePatternStr = pattern;
+            parseFileNamePattern();
+        }
+
+        public void activateOptions() {
+        }
+        public String getActiveFileName() {
+            return null;
+        }
+        public void rollover() {
+        }
+        public ULogger getLogger() {
+            return null;
+        }
+        public String format(Object obj) {
+            StringBuffer buf = new StringBuffer();
+            formatFileName(obj, buf);
+            return buf.toString();
+        }
+    }
+
     private void assertDatePattern(final String pattern, final int year,
         final int month, final int day, final int hour, final int min,
         final String expected) {
         Calendar cal = Calendar.getInstance();
         cal.set(year, month, day, hour, min);
+        FileNameTestRollingPolicy policy = new FileNameTestRollingPolicy(pattern);
         assertEquals(expected,
-            new FileNamePattern(pattern).convert(cal.getTime()));
+            policy.format(cal.getTime()));
     }
 
     private void assertIntegerPattern(final String pattern, final int value,
         final String expected) {
-        assertEquals(expected, new FileNamePattern(pattern).convert(value));
+        FileNameTestRollingPolicy policy = new FileNameTestRollingPolicy(pattern);
+        assertEquals(expected, policy.format(new Integer(value)));
     }
 
     public void testFormatInteger1() {
@@ -127,11 +155,4 @@ public final class FileNamePatternTestCase extends TestCase {
             "foo2003-05-20{yyyy.MM.dd");
     }
 
-    public void testNullFormat() {
-        try {
-            new FileNamePattern(null);
-            fail();
-        } catch (IllegalArgumentException ex) {
-        }
-    }
 }

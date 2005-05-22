@@ -16,10 +16,6 @@
 
 package org.apache.log4j.pattern;
 
-import org.apache.log4j.spi.LoggingEvent;
-
-import java.util.List;
-
 
 /**
  *
@@ -27,52 +23,39 @@ import java.util.List;
  *
  * @author Ceki G&uuml;lc&uuml;
  * @author Curt Arnold
+ *
+ * @since 1.3
  */
-public abstract class NamedPatternConverter extends PatternConverter {
-  // We assume that each PatternConveter instance is unique within a layout, 
-  // which is unique within an appender. We further assume that callas to the 
-  // appender method are serialized (per appender).
-  private final StringBuffer buf = new StringBuffer(32);
-  private NameAbbreviator abbreviator =
-    NameAbbreviator.getDefaultAbbreviator();
-
-  protected NamedPatternConverter() {
-  }
+public abstract class NamedPatternConverter
+  extends LoggingEventPatternConverter {
+  /**
+   * Abbreviator.
+   */
+  private final NameAbbreviator abbreviator;
 
   /**
-   * Gets fully qualified name from event.
-   * @param event event, will not be null.
-   * @return name, must not be null.
+   * Constructor.
+   * @param name name of converter.
+   * @param style style name for associated output.
+   * @param options options, may be null, first element will be interpreted as an abbreviation pattern.
    */
-  protected abstract String getFullyQualifiedName(final LoggingEvent event);
+  protected NamedPatternConverter(
+    final String name, final String style, final String[] options) {
+    super(name, style);
 
-  /**
-   * Sets converter options.
-   *
-   * NamedPatternConverter interprets the first parameter as an
-   * abbreviation specification.
-   *
-   * @param optionList option list.
-   */
-  public void setOptions(final List optionList) {
-    if ((optionList != null) && (optionList.size() > 0)) {
-      String option = (String) optionList.get(0);
-      abbreviator = NameAbbreviator.getAbbreviator(option);
+    if ((options != null) && (options.length > 0)) {
+      abbreviator = NameAbbreviator.getAbbreviator(options[0]);
+    } else {
+      abbreviator = NameAbbreviator.getDefaultAbbreviator();
     }
   }
 
   /**
-   * Convert event.
-   *
-   * @param event event, may not be null.
-   * @return string buffer used in conversion.
+   * Abbreviate name in string buffer.
+   * @param nameStart starting position of name to abbreviate.
+   * @param buf string buffer containing name.
    */
-  public StringBuffer convert(final LoggingEvent event) {
-    buf.setLength(0);
-
-    String n = getFullyQualifiedName(event);
-    abbreviator.abbreviate(buf, n);
-
-    return buf;
+  protected final void abbreviate(final int nameStart, final StringBuffer buf) {
+    abbreviator.abbreviate(nameStart, buf);
   }
 }
