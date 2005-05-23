@@ -16,11 +16,9 @@
 
 package org.apache.log4j.rolling;
 
+import org.apache.log4j.Appender;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.spi.LoggingEvent;
-
-import org.apache.log4j.Appender;
-import java.io.File;
 
 
 /**
@@ -50,17 +48,12 @@ public final class FilterBasedTriggeringPolicy implements TriggeringPolicy {
   }
 
   /**
-   *  Determines if the event should trigger a rollover.
-   *  @param appender appender, ignored.
-   *  @param fileLength file length in bytes, ignored.
-   *  @param event logging event.
-   *  @return true if event should trigger a rollover.
+   * {@inheritDoc}
    *
    */
-  public boolean isTriggeringEvent(final Appender appender,
-                                   final LoggingEvent event,
-                                   final File file,
-                                   final long fileLength) {
+  public boolean isTriggeringEvent(
+    final Appender appender, final LoggingEvent event, final String file,
+    final long fileLength) {
     //
     //   in the abnormal case of no contained filters
     //     always return true to avoid each logging event 
@@ -110,6 +103,7 @@ public final class FilterBasedTriggeringPolicy implements TriggeringPolicy {
 
   /**
    * Returns the head Filter.
+   * @return head of filter chain, may be null.
    *
    */
   public Filter getFilter() {
@@ -117,7 +111,7 @@ public final class FilterBasedTriggeringPolicy implements TriggeringPolicy {
   }
 
   /**
-   *  Prepares the instance for use.
+   *  {@inheritDoc}
    */
   public void activateOptions() {
     for (Filter f = headFilter; f != null; f = f.getNext()) {

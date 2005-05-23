@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,14 @@
 
 package org.apache.log4j.rolling;
 
-import org.apache.log4j.rolling.helper.Compress;
+import org.apache.log4j.pattern.FormattingInfo;
+import org.apache.log4j.pattern.PatternConverter;
 import org.apache.log4j.pattern.PatternParser;
 import org.apache.log4j.spi.ComponentBase;
 import org.apache.log4j.spi.OptionHandler;
-import org.apache.log4j.pattern.PatternConverter;
-import org.apache.log4j.pattern.FormattingInfo;
-import java.util.List;
+
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -32,45 +32,48 @@ import java.util.ArrayList;
  * getter/setter.
  *
  * @author Ceki G&uuml;lc&uuml;
+ * @author Curt Arnold
  * @since 1.3
  */
 public abstract class RollingPolicyBase extends ComponentBase
-        implements RollingPolicy, OptionHandler {
-  protected int compressionMode = Compress.NONE;
+  implements RollingPolicy, OptionHandler {
+  /**
+   * File name pattern converters.
+   */
   protected PatternConverter[] patternConverters;
+
+  /**
+   * File name field specifiers.
+   */
   protected FormattingInfo[] patternFields;
+
+  /**
+   * File name pattern.
+   */
   protected String fileNamePatternStr;
+
+  /**
+   * Active file name may be null.
+   */
   protected String activeFileName;
 
-  /*
-   * @see org.apache.log4j.spi.OptionHandler#activateOptions()
+  /**
+   * {@inheritDoc}
    */
   public abstract void activateOptions();
 
   /**
-   * Given the FileNamePattern string, this method determines the compression
-   * mode depending on last letters of the fileNamePatternStr. Patterns
-   * ending with .gz imply GZIP compression, endings with '.zip' imply
-   * ZIP compression. Otherwise and by default, there is no compression.
-   *
+   * Set file name pattern.
+   * @param fnp file name pattern.
    */
-  protected void determineCompressionMode() {
-     if (fileNamePatternStr.endsWith(".gz")) {
-      getLogger().debug("Will use gz compression");
-      compressionMode = Compress.GZ;
-    } else if (fileNamePatternStr.endsWith(".zip")) {
-      getLogger().debug("Will use zip compression");
-      compressionMode = Compress.ZIP;
-    } else {
-      getLogger().debug("No compression will be used");
-      compressionMode = Compress.NONE;
-    }
-  }
-
   public void setFileNamePattern(String fnp) {
     fileNamePatternStr = fnp;
   }
 
+  /**
+   * Get file name pattern.
+   * @return file name pattern.
+   */
   public String getFileNamePattern() {
     return fileNamePatternStr;
   }
@@ -83,25 +86,46 @@ public abstract class RollingPolicyBase extends ComponentBase
     activeFileName = afn;
   }
 
-  protected final void parseFileNamePattern() {
-      List converters = new ArrayList();
-      List fields = new ArrayList();
-
-      PatternParser.parse(fileNamePatternStr, converters, fields, null,
-              PatternParser.getFileNamePatternRules(), getLogger());
-      patternConverters = new PatternConverter[converters.size()];
-      patternConverters = (PatternConverter[]) converters.toArray(patternConverters);
-      patternFields = new FormattingInfo[converters.size()];
-      patternFields = (FormattingInfo[]) fields.toArray(patternFields);
+  /**
+   * Return the value of the <b>ActiveFile</b> option.
+   * @return active file name.
+  */
+  public String getActiveFileName() {
+    return activeFileName;
   }
 
-  protected final void formatFileName(final Object obj, final StringBuffer buf) {
-      for(int i = 0; i < patternConverters.length; i++) {
-          int fieldStart = buf.length();
-          patternConverters[i].format(obj, buf);
-          if (patternFields[i] != null) {
-              patternFields[i].format(fieldStart, buf);
-          }
+  /**
+   *   Parse file name pattern.
+   */
+  protected final void parseFileNamePattern() {
+    List converters = new ArrayList();
+    List fields = new ArrayList();
+
+    PatternParser.parse(
+      fileNamePatternStr, converters, fields, null,
+      PatternParser.getFileNamePatternRules(), getLogger());
+    patternConverters = new PatternConverter[converters.size()];
+    patternConverters =
+      (PatternConverter[]) converters.toArray(patternConverters);
+    patternFields = new FormattingInfo[converters.size()];
+    patternFields = (FormattingInfo[]) fields.toArray(patternFields);
+  }
+
+  /**
+   * Format file name.
+   *
+   * @param obj object to be evaluted in formatting, may not be null.
+   * @param buf string buffer to which formatted file name is appended, may not be null.
+   */
+  protected final void formatFileName(
+    final Object obj, final StringBuffer buf) {
+    for (int i = 0; i < patternConverters.length; i++) {
+      int fieldStart = buf.length();
+      patternConverters[i].format(obj, buf);
+
+      if (patternFields[i] != null) {
+        patternFields[i].format(fieldStart, buf);
       }
+    }
   }
 }

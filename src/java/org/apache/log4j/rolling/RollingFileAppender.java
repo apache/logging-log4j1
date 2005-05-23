@@ -13,15 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.log4j.rolling;
 
 import org.apache.log4j.FileAppender;
+import org.apache.log4j.rolling.helper.Action;
+import org.apache.log4j.rolling.helper.CompositeAction;
 import org.apache.log4j.spi.LoggingEvent;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.*;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 
 /**
@@ -70,199 +74,395 @@ import java.io.OutputStreamWriter;
  * @since  1.3
  * */
 public final class RollingFileAppender extends FileAppender {
-    private File activeFile;
-    private TriggeringPolicy triggeringPolicy;
-    private RollingPolicy rollingPolicy;
-    private long fileLength = 0;
+  /**
+   * Triggering policy.
+   */
+  private TriggeringPolicy triggeringPolicy;
 
-    /**
-     * The default constructor simply calls its {@link
-     * FileAppender#FileAppender parents constructor}.
-     * */
-    public RollingFileAppender() {
+  /**
+   * Rolling policy.
+   */
+  private RollingPolicy rollingPolicy;
+
+  /**
+   * Length of current active log file.
+   */
+  private long fileLength = 0;
+
+  /**
+   * Thread for any asynchronous actions from last rollover.
+   */
+  private Thread rollingThread = null;
+
+  /**
+   * Construct a new instance.
+   */
+  public RollingFileAppender() {
+  }
+
+  /**
+   * Prepare instance of use.
+   */
+  public void activateOptions() {
+    if (rollingPolicy == null) {
+      getLogger().warn(
+        "Please set a rolling policy for the RollingFileAppender named '{}'",
+        getName());
     }
 
-    public void activateOptions() {
-        if (triggeringPolicy == null) {
-            getLogger().warn("Please set a TriggeringPolicy for the RollingFileAppender named '{}'",
-                getName());
+    //
+    //  if no explicit triggering policy and rolling policy is both.
+    //
+    if (
+      (triggeringPolicy == null) && rollingPolicy instanceof TriggeringPolicy) {
+      triggeringPolicy = (TriggeringPolicy) rollingPolicy;
+    }
 
-            return;
+    if (triggeringPolicy == null) {
+      getLogger().warn(
+        "Please set a TriggeringPolicy for the RollingFileAppender named '{}'",
+        getName());
+
+      return;
+    }
+
+    IOException ioException = null;
+
+    synchronized (this) {
+      triggeringPolicy.activateOptions();
+      rollingPolicy.activateOptions();
+
+      StringBuffer activeFileName = new StringBuffer();
+      List synchronousActions = new ArrayList();
+      List asynchronousActions = new ArrayList();
+
+      try {
+        if (
+          rollingPolicy.rollover(
+              activeFileName, synchronousActions, asynchronousActions)) {
+          performActions(synchronousActions, asynchronousActions);
         }
 
-        if (rollingPolicy != null) {
-            String afn = rollingPolicy.getActiveFileName();
-            activeFile = new File(afn);
-            getLogger().debug("Active log file name: " + afn);
-            setFile(afn);
+        String afn = activeFileName.toString();
+        setFile(afn);
 
-            // the activeFile variable is used by the triggeringPolicy.isTriggeringEvent method
-            activeFile = new File(afn);
+        File activeFile = new File(afn);
 
-            if (this.getAppend()) {
-                fileLength = activeFile.length();
-            } else {
-                fileLength = 0;
-            }
-
-            super.activateOptions();
+        if (getAppend()) {
+          fileLength = activeFile.length();
         } else {
-            getLogger().warn("Please set a rolling policy");
+          fileLength = 0;
         }
+
+        super.activateOptions();
+      } catch (IOException ex) {
+        ioException = ex;
+      }
     }
 
-    /**
-       Implements the usual roll over behaviour.
+    if (ioException != null) {
+      getLogger().warn(
+        "IOException while preparing while initializing RollingFileAppender named '"
+        + getName() + "'", ioException);
+    }
+  }
 
-       <p>If <code>MaxBackupIndex</code> is positive, then files
-       {<code>File.1</code>, ..., <code>File.MaxBackupIndex -1</code>}
-       are renamed to {<code>File.2</code>, ...,
-       <code>File.MaxBackupIndex</code>}. Moreover, <code>File</code> is
-       renamed <code>File.1</code> and closed. A new <code>File</code> is
-       created to receive further log output.
+  /**
+   * Perform any actions specified by triggering policy.
+   * @param synchronousActions list of Action instances to be performed after active file close.
+   * @param asynchronousActions list of Action instances to be performed asynchronously after file close
+   * and synchronous actions.
+   * @return true if all synchronous actions were successful.
+   * @throws IOException if IO error during synchronous actions.
+   */
+  private boolean performActions(
+    final List synchronousActions, final List asynchronousActions)
+    throws IOException {
+    Iterator syncIterator = synchronousActions.iterator();
 
-       <p>If <code>MaxBackupIndex</code> is equal to zero, then the
-       <code>File</code> is truncated with no backup files created.
+    while (syncIterator.hasNext()) {
+      if (!((Action) syncIterator.next()).execute()) {
+        return false;
+      }
+    }
 
-     */
-    public void rollover() {
-        // Note: synchronization at this point is unnecessary as the doAppend 
-        // is already synched
-        //
-        // make sure to close the hereto active log file! Renaming under windows
-        // does not work for open files.
-        this.closeWriter();
+    if (asynchronousActions.size() > 0) {
+      Runnable action = null;
 
-        // By default, the newly created file will be created in truncate mode.
-        // (See the setFile(fileName,...) call a few lines below.)
-        boolean append = false;
+      if (asynchronousActions.size() > 1) {
+        action = new CompositeAction(asynchronousActions, false, getLogger());
+      } else {
+        action = (Runnable) asynchronousActions.get(0);
+      }
 
+      rollingThread = new Thread(action);
+      rollingThread.start();
+    }
+
+    return true;
+  }
+
+  /**
+     Implements the usual roll over behaviour.
+
+     <p>If <code>MaxBackupIndex</code> is positive, then files
+     {<code>File.1</code>, ..., <code>File.MaxBackupIndex -1</code>}
+     are renamed to {<code>File.2</code>, ...,
+     <code>File.MaxBackupIndex</code>}. Moreover, <code>File</code> is
+     renamed <code>File.1</code> and closed. A new <code>File</code> is
+     created to receive further log output.
+
+     <p>If <code>MaxBackupIndex</code> is equal to zero, then the
+     <code>File</code> is truncated with no backup files created.
+
+   */
+  public void rollover() {
+    if (rollingPolicy != null) {
+      Exception exception = null;
+
+      synchronized (this) {
         try {
-            rollingPolicy.rollover();
-            fileLength = 0;
-        } catch (RolloverFailure rf) {
-            getLogger().warn("RolloverFailure occurred. Deferring rollover.");
+          //
+          //  if we have some in-process compression, etc
+          //     from the previous rollover, wait till they are finished.
+          //
+          if (rollingThread != null) {
+            rollingThread.join();
+            rollingThread = null;
+          }
 
-            // we failed to rollover, let us not truncate and risk data loss
-            append = true;
+          StringBuffer activeFileName = new StringBuffer(super.getFile());
+          List synchronousActions = new ArrayList();
+          List asynchronousActions = new ArrayList();
+
+          try {
+            boolean doRollover =
+              rollingPolicy.rollover(
+                activeFileName, synchronousActions, asynchronousActions);
+
+            if (doRollover) {
+              String oldFileName = getFile();
+              String newFileName = activeFileName.toString();
+
+              //
+              //  if the file names are the same then we
+              //     have to close, do actions, then reopen
+              if (newFileName.equals(oldFileName)) {
+                closeWriter();
+
+                try {
+                  if (!performActions(synchronousActions, asynchronousActions)) {
+                    throw new IOException(
+                      "Unable to complete action after active file close.");
+                  }
+                } catch (IOException ex) {
+                  setFile(oldFileName, true, bufferedIO, bufferSize);
+                  throw ex;
+                }
+
+                fileLength = 0;
+                setFile(newFileName, false, bufferedIO, bufferSize);
+              } else {
+                //
+                //  if not the same, we can try opening new file before
+                //     closing old file
+                if (bufferedIO) {
+                  setImmediateFlush(false);
+                }
+
+                Writer newWriter =
+                  createWriter(new FileOutputStream(newFileName, false));
+                closeWriter();
+
+                try {
+                  performActions(synchronousActions, asynchronousActions);
+                  fileLength = 0;
+
+                  if (bufferedIO) {
+                    this.writer = new BufferedWriter(newWriter, bufferSize);
+                  } else {
+                    this.writer = newWriter;
+                  }
+                } catch (IOException ex) {
+                  setFile(oldFileName, true, bufferedIO, bufferSize);
+                  throw ex;
+                }
+
+                writeHeader();
+              }
+            }
+          } catch (IOException ex) {
+            exception = ex;
+          }
+        } catch (InterruptedException ex) {
+          exception = ex;
         }
+      }
 
-        // Although not certain, the active file name may change after roll over.
-        fileName = rollingPolicy.getActiveFileName();
-        getLogger().debug("Active file name is now [{}].", fileName);
+      if (exception != null) {
+        getLogger().warn(
+          "Exception during rollover, rollover deferred.", exception);
+      }
+    }
+  }
 
-        // the activeFile variable is used by the triggeringPolicy.isTriggeringEvent method
-        activeFile = new File(fileName);
-
-        try {
-            // This will also close the file. This is OK since multiple
-            // close operations are safe.
-            this.setFile(fileName, append, bufferedIO, bufferSize);
-        } catch (IOException e) {
-            getLogger().error("setFile(" + fileName + ", false) call failed.", e);
-        }
+  /**
+   * {@inheritDoc}
+  */
+  protected void subAppend(final LoggingEvent event) {
+    // The rollover check must precede actual writing. This is the 
+    // only correct behavior for time driven triggers. 
+    if (
+      triggeringPolicy.isTriggeringEvent(
+          this, event, getFile(), getFileLength())) {
+      rollover();
     }
 
+    super.subAppend(event);
+  }
+
+  /**
+   * Get rolling policy.
+   * @return rolling policy.
+   */
+  public RollingPolicy getRollingPolicy() {
+    return rollingPolicy;
+  }
+
+  /**
+   * Get triggering policy.
+   * @return triggering policy.
+   */
+  public TriggeringPolicy getTriggeringPolicy() {
+    return triggeringPolicy;
+  }
+
+  /**
+   * Sets the rolling policy.
+   * @param policy rolling policy.
+   */
+  public void setRollingPolicy(final RollingPolicy policy) {
+    rollingPolicy = policy;
+  }
+
+  /**
+   * Set triggering policy.
+   * @param policy triggering policy.
+   */
+  public void setTriggeringPolicy(final TriggeringPolicy policy) {
+    triggeringPolicy = policy;
+  }
+
+  /**
+   * Close appender.  Waits for any asynchronous file compression actions to be completed.
+   */
+  public void close() {
+    if (rollingThread != null) {
+      try {
+        rollingThread.join();
+      } catch (InterruptedException ex) {
+        getLogger().info(
+          "Interrupted while waiting for completion of rollover actions.", ex);
+      }
+
+      rollingThread = null;
+    }
+
+    super.close();
+  }
+
+  /**
+     Returns an OutputStreamWriter when passed an OutputStream.  The
+     encoding used will depend on the value of the
+     <code>encoding</code> property.  If the encoding value is
+     specified incorrectly the writer will be opened using the default
+     system encoding (an error message will be printed to the loglog.
+   @param os output stream, may not be null.
+   @return new writer.
+   */
+  protected OutputStreamWriter createWriter(final OutputStream os) {
+    return super.createWriter(new CountingOutputStream(os, this));
+  }
+
+  /**
+   * Get byte length of current active log file.
+   * @return byte length of current active log file.
+   */
+  public long getFileLength() {
+    return fileLength;
+  }
+
+  /**
+   * Increments estimated byte length of current active log file.
+   * @param increment additional bytes written to log file.
+   */
+  public void incrementFileLength(int increment) {
+    fileLength += increment;
+  }
+
+  /**
+   * Wrapper for OutputStream that will report all write
+   * operations back to this class for file length calculations.
+   */
+  private static class CountingOutputStream extends OutputStream {
     /**
-       This method differentiates RollingFileAppender from its super
-       class.
-    */
-    protected void subAppend(final LoggingEvent event) {
-        // The rollover check must precede actual writing. This is the 
-        // only correct behavior for time driven triggers. 
-        if (triggeringPolicy.isTriggeringEvent(this, event, activeFile,
-                    getFileLength())) {
-            getLogger().debug("About to rollover");
-            rollover();
-        }
-
-        super.subAppend(event);
-    }
-
-    public RollingPolicy getRollingPolicy() {
-        return rollingPolicy;
-    }
-
-    public TriggeringPolicy getTriggeringPolicy() {
-        return triggeringPolicy;
-    }
-
-    /**
-     * Sets the rolling policy. In case the 'policy' argument also implements
-     * {@link TriggeringPolicy}, then the triggering policy for this appender
-     * is automatically set to be the policy argument.
-     * @param policy
+     * Wrapped output stream.
      */
-    public void setRollingPolicy(final RollingPolicy policy) {
-        rollingPolicy = policy;
-
-        if (rollingPolicy instanceof TriggeringPolicy) {
-            triggeringPolicy = (TriggeringPolicy) policy;
-        }
-    }
-
-    public void setTriggeringPolicy(final TriggeringPolicy policy) {
-        triggeringPolicy = policy;
-
-        if (policy instanceof RollingPolicy) {
-            rollingPolicy = (RollingPolicy) policy;
-        }
-    }
+    private final OutputStream os;
 
     /**
-       Returns an OutputStreamWriter when passed an OutputStream.  The
-       encoding used will depend on the value of the
-       <code>encoding</code> property.  If the encoding value is
-       specified incorrectly the writer will be opened using the default
-       system encoding (an error message will be printed to the loglog.  */
-    protected OutputStreamWriter createWriter(final OutputStream os) {
-        return super.createWriter(new CountingOutputStream(os, this));
-    }
-
-    public long getFileLength() {
-        return fileLength;
-    }
-
-    public void incrementFileLength(int increment) {
-        fileLength += increment;
-    }
-
-    /**
-     * Wrapper for OutputStream that will report all write
-     * operations back to this class for file length calculations.
+     * Rolling file appender to inform of stream writes.
      */
-    private static class CountingOutputStream extends OutputStream {
-        private final OutputStream os;
-        private final RollingFileAppender rfa;
+    private final RollingFileAppender rfa;
 
-        public CountingOutputStream(final OutputStream os,
-            final RollingFileAppender rfa) {
-            this.os = os;
-            this.rfa = rfa;
-        }
-
-        public void close() throws IOException {
-            os.close();
-        }
-
-        public void flush() throws IOException {
-            os.flush();
-        }
-
-        public void write(final byte[] b) throws IOException {
-            os.write(b);
-            rfa.incrementFileLength(b.length);
-        }
-
-        public void write(final byte[] b, final int off, final int len)
-            throws IOException {
-            os.write(b, off, len);
-            rfa.incrementFileLength(len);
-        }
-
-        public void write(final int b) throws IOException {
-            os.write(b);
-            rfa.incrementFileLength(1);
-        }
+    /**
+     * Constructor.
+     * @param os output stream to wrap.
+     * @param rfa rolling file appender to inform.
+     */
+    public CountingOutputStream(
+      final OutputStream os, final RollingFileAppender rfa) {
+      this.os = os;
+      this.rfa = rfa;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void close() throws IOException {
+      os.close();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void flush() throws IOException {
+      os.flush();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void write(final byte[] b) throws IOException {
+      os.write(b);
+      rfa.incrementFileLength(b.length);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void write(final byte[] b, final int off, final int len)
+      throws IOException {
+      os.write(b, off, len);
+      rfa.incrementFileLength(len);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void write(final int b) throws IOException {
+      os.write(b);
+      rfa.incrementFileLength(1);
+    }
+  }
 }

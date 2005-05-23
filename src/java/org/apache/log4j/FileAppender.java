@@ -16,9 +16,8 @@
 
 package org.apache.log4j;
 
-import java.io.BufferedWriter;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+
 import org.apache.log4j.helpers.OptionConverter;
 
 
@@ -275,4 +274,5 @@ public class FileAppender extends WriterAppender {
     writeHeader();
     getLogger().debug("setFile ended");
   }
+
 }

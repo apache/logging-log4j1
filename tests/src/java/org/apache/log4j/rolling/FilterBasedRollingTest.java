@@ -19,10 +19,7 @@ package org.apache.log4j.rolling;
 import junit.framework.TestCase;
 
 
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
+import org.apache.log4j.*;
 import org.apache.log4j.filter.LevelRangeFilter;
 import org.apache.log4j.joran.JoranConfigurator;
 import org.apache.log4j.util.Compare;
@@ -42,6 +39,9 @@ public class FilterBasedRollingTest extends TestCase {
   }
 
   public void setUp() {
+      Appender ca = new ConsoleAppender(new PatternLayout("%d %level %c -%m%n"));
+      ca.setName("CONSOLE");
+      Logger.getRootLogger().addAppender(ca);
   }
 
   public void tearDown() {
@@ -62,7 +62,7 @@ public class FilterBasedRollingTest extends TestCase {
 
   /**
    * Test basic rolling functionality using explicit configuration.
-   * @remarks Test fails when run immediately after test1.
+   * Test fails when run immediately after test1.
    */
   public void xtest2() throws Exception {
     PatternLayout layout = new PatternLayout("%m\n");
@@ -88,6 +88,7 @@ public class FilterBasedRollingTest extends TestCase {
     rfa.setTriggeringPolicy(fbtp);
     rfa.activateOptions();
     Logger.getRootLogger().addAppender(rfa);
+    Logger.getRootLogger().setLevel(Level.DEBUG);
 
     common("output/filterBased-test2");
   }

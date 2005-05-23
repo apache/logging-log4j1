@@ -170,6 +170,8 @@ public class TimeBasedRollingTest extends TestCase {
       Thread.sleep(500);
     }
 
+    rfa2.close();
+
     for (int i = 0; i < 4; i++) {
       assertTrue(Compare.compare(filenames[i], "witness/rolling/tbr-test2." + i));
     }
@@ -216,6 +218,8 @@ public class TimeBasedRollingTest extends TestCase {
     for (int i = 0; i < 4; i++) {
       //System.out.println(i + " expected filename [" + filenames[i] + "].");
     }
+
+    rfa.close();
 
     for (int i = 0; i < 3; i++) {
       assertTrue(Compare.gzCompare(filenames[i], "witness/rolling/tbr-test3." + i + ".gz"));
@@ -281,6 +285,8 @@ public class TimeBasedRollingTest extends TestCase {
       logger.debug("Hello---" + i);
       Thread.sleep(500);
     }
+
+    rfa2.close();
 
     for (int i = 0; i < 4; i++) {
       assertTrue(Compare.compare(filenames[i], "witness/rolling/tbr-test4." + i));
@@ -373,6 +379,8 @@ public class TimeBasedRollingTest extends TestCase {
     for (int i = 0; i < 4; i++) {
       //System.out.println(i + " expected filename [" + filenames[i] + "].");
     }
+
+    rfa.close();
 
     for (int i = 0; i < 3; i++) {
       assertTrue(Compare.gzCompare(filenames[i], "witness/rolling/tbr-test6." + i + ".gz"));

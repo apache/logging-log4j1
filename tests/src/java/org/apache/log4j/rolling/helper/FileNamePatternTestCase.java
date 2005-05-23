@@ -21,6 +21,7 @@ import junit.framework.TestCase;
 
 import java.util.Calendar;
 import org.apache.log4j.ULogger;
+import java.util.List;
 
 
 /**
@@ -50,7 +51,10 @@ public final class FileNamePatternTestCase extends TestCase {
         public String getActiveFileName() {
             return null;
         }
-        public void rollover() {
+        public boolean rollover(final StringBuffer activeName,
+                                final List synchronousActions,
+                                final List asynchronousActions) {
+            return false;
         }
         public ULogger getLogger() {
             return null;
