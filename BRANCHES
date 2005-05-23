@@ -1,0 +1,61 @@
+
+Given that log4j 1.3 is not likely to be released before a few months,
+I have created a branch called v1_2-branch in our CVS repository. The
+branch was created by issuing the following command:
+
+cvs -d :ext:ceki@cvs.apache.org:/home/cvs rtag -b -r v1_2final v1_2-branch jakarta-log4j
+
+Using the 1.2 branch, we can incorporate patches to log4j version 1.2
+while version 1.3 continues to be developed on the main trunk. For
+example, we can officially release LogFactor5 (including
+documentation) already in log4j 1.2.1.
+
+The command to access the v1_2-branch is:
+
+cvs -d XYZ checkout -r v1_2-branch jakarta-log4j
+
+where XYZ is the remote repository name, that is
+":ext:ceki@cvs.apache.org:/home/cvs" for me.
+
+Alternatively, you can issue following update command from within any
+existing work copy.
+
+  cvs update -r v1_2-branch
+
+Working with branches is not completely trivial and requires a little
+coordination between committers, in particular in relation with branch
+merge operations. In order to avoid multiple merge conflicts, each
+time we merge from the 1.2 branch to the main trunk, we should tag the
+merged version on the 1.2 branch. Subsequent merges should use the tag
+referring to the latest merged version of the branch. Also do not
+forget to publicly announce a merge operation.
+
+I am suggesting that (1.2 -> trunk) merge operations be done in a
+concerted manner. Before doing a merge you tell everyone that you are
+going to do a merge, you execute the merge operation, and then tag the
+merged version on the 1.2 branch, for example v_1_2_-merged-bug666
+
+The *next* merge operation would be performed as
+
+  cvs update -j v_1_2_-merged-bug666 -j v1_2-branch
+
+from within a working copy of the *trunk*. This merge operation would
+obviously also need to be tagged. According to the CVS manual, this
+procedure eliminates the side effects of merging already merged
+changes.
+
+Bug fixes should and documentation improvements, should be made to the
+1.2 branch, not the trunk. I'll take care of merging the changes to
+the main trunk.
+
+If this sounds like mambo jumbo, I urge you to consult the CVS
+documentation and experiment with branches before hitting the log4j
+repository. Branches are not that complicated really although they
+require slightly more discipline on the part of committers. Do not
+hesitate to shout if you need help.
+
+If you have a better alternative for working with branches please let
+us know.
+
+--
+Ceki

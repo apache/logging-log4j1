@@ -388,7 +388,7 @@ public class PatternParser {
       case THREAD_CONVERTER:
 	return event.getThreadName();
       case LEVEL_CONVERTER:
-	return event.level.toString();
+	return event.getLevel().toString();
       case NDC_CONVERTER:
 	return event.getNDC();
       case MESSAGE_CONVERTER: {
@@ -538,7 +538,7 @@ public class PatternParser {
     }
 
     String getFullyQualifiedName(LoggingEvent event) {
-      return event.categoryName;
+      return event.getLoggerName();
     }
   }
 }

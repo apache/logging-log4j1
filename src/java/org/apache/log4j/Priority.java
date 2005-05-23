@@ -9,10 +9,10 @@
 // Contributors:  Kitching Simon <Simon.Kitching@orange.ch>
 
 package org.apache.log4j;
-
+  
 /**
    <font color="#AA4444">Refrain from using this class directly, use
-   the {@link Level} class instead.</font>
+   the {@link Level} class instead</font>.
 
    @author Ceki G&uuml;lc&uuml; */
 public class Priority {
@@ -31,31 +31,28 @@ public class Priority {
   public final static int ALL_INT = Integer.MIN_VALUE;
 
   /**
-     The <code>FATAL</code> level designates very severe error
-     events that will presumably lead the application to abort.
+   * @deprecated Use {@link Level#FATAL} instead.
    */
   final static public Priority FATAL = new Level(FATAL_INT, "FATAL", 0);
 
   /**
-     The <code>ERROR</code> level designates error events that
-     might still allow the application to continue running.  */
+   * @deprecated Use {@link Level#ERROR} instead.
+   */
   final static public Priority ERROR = new Level(ERROR_INT, "ERROR", 3);
 
   /**
-     The <code>WARN</code> level designates potentially harmful situations.
-  */
+   * @deprecated Use {@link Level#WARN} instead.
+   */
   final static public Priority WARN  = new Level(WARN_INT, "WARN",  4);
 
   /**
-     The <code>INFO</code> level designates informational messages
-     that highlight the progress of the application at coarse-grained
-     level.  */
+   * @deprecated Use {@link Level#INFO} instead.
+   */
   final static public Priority INFO  = new Level(INFO_INT, "INFO",  6);
 
   /**
-     The <code>DEBUG</code> priority designates fine-grained
-     informational events that are most useful to debug an
-     application.  */
+   * @deprecated Use {@link Level#DEBUG} instead.
+   */
   final static public Priority DEBUG = new Level(DEBUG_INT, "DEBUG", 7);
 
   
@@ -141,12 +138,7 @@ public class Priority {
   }
 
   /**
-     Convert the string passed as argument to a priority. If the
-     conversion fails, then this method returns {@link #DEBUG}. 
-
-     @deprecated Please use the {@link Level#toLevel(String)} method instead.}
-   
-
+   * @deprecated Please use the {@link Level#toLevel(String)} method instead.
   */
   public
   static
@@ -155,10 +147,8 @@ public class Priority {
   }
 
   /**
-    Convert an integer passed as argument to a priority. If the
-    conversion fails, then this method returns {@link #DEBUG}.
-
-  */
+   * @deprecated Please use the {@link Level#toLevel(int)} method instead.   
+   */
   public
   static
   Priority toPriority(int val) {
@@ -166,8 +156,7 @@ public class Priority {
   }
 
   /**
-    Convert an integer passed as argument to a priority. If the
-    conversion fails, then this method returns the specified default.
+   * @deprecated Please use the {@link Level#toLevel(int, Level)} method instead.   
   */
   public
   static
@@ -176,10 +165,8 @@ public class Priority {
   }
 
   /**
-     Convert the string passed as argument to a priority. If the
-     conversion fails, then this method returns the value of
-     <code>defaultPriority</code>.  
-  */
+   * @deprecated Please use the {@link Level#toLevel(String, Level)} method instead.   
+   */
   public
   static
   Priority toPriority(String sArg, Priority defaultPriority) {                  

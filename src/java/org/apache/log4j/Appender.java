@@ -73,7 +73,7 @@ public interface Appender {
   /**
      Set the {@link ErrorHandler} for this appender.
 
-     @ since 0.9.0
+     @since 0.9.0
    */
   public
   void setErrorHandler(ErrorHandler errorHandler);

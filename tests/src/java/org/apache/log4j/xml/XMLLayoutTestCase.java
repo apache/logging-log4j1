@@ -58,6 +58,31 @@ public class XMLLayoutTestCase extends TestCase {
     assertTrue(Compare.compare(FILTERED, "witness/xmlLayout.2"));
   }
 
+  public void testCDATA() throws Exception {
+    XMLLayout xmlLayout = new XMLLayout();
+    xmlLayout.setLocationInfo(true);
+    root.addAppender(new FileAppender(xmlLayout, TEMP, false));
+    
+    logger.debug("Message with embedded <![CDATA[<hello>hi</hello>]]>.");
+
+    Transformer.transform(TEMP, FILTERED, new Filter[] {new LineNumberFilter(),
+    						  new XMLTimestampFilter(),
+    						  new XMLLineAttributeFilter()});
+    assertTrue(Compare.compare(FILTERED, "witness/xmlLayout.3"));
+  }
+
+  public void testNull() throws Exception {
+    XMLLayout xmlLayout = new XMLLayout();
+    root.addAppender(new FileAppender(xmlLayout, TEMP, false));
+    logger.debug("hi");
+    logger.debug(null);
+    Exception e = new Exception((String) null);
+    logger.debug("hi", e);
+    Transformer.transform(TEMP, FILTERED, new Filter[] {new LineNumberFilter(), 
+							new XMLTimestampFilter()});
+    assertTrue(Compare.compare(FILTERED, "witness/xmlLayout.null"));
+  }
+  
   void common() {
     int i = -1;
  
@@ -71,7 +96,7 @@ public class XMLLayoutTestCase extends TestCase {
 
     logger.warn ("Message " + ++i);
     root.warn("Message " + i);        
-
+ 
     logger.error("Message " + ++i);
     root.error("Message " + i);
     
@@ -84,13 +109,14 @@ public class XMLLayoutTestCase extends TestCase {
     
     logger.error("Message " + ++i, e);
     root.error("Message " + i, e);    
-
   }
 
   public static Test suite() {
     TestSuite suite = new TestSuite();
     suite.addTest(new XMLLayoutTestCase("basic"));
     suite.addTest(new XMLLayoutTestCase("locationInfo"));
+    suite.addTest(new XMLLayoutTestCase("testCDATA"));
+    suite.addTest(new XMLLayoutTestCase("testNull"));
     return suite;
   }
 

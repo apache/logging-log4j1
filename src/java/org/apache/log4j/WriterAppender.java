@@ -194,17 +194,18 @@ public class WriterAppender extends AppenderSkeleton {
     writeFooter();
     reset();
   }
+
   /**
-     Close the underlying {@link java.io.Writer}.
-  */
-  protected
-  void closeWriter() {
+   * Close the underlying {@link java.io.Writer}.
+   * */
+  protected void closeWriter() {
     if(qw != null) {
       try {
 	qw.close();
       } catch(IOException e) {
-	LogLog.error("Could not close " + qw, e); // do need to invoke an error handler
-	                                          // at  this late stage
+	// There is do need to invoke an error handler at this late
+	// stage.
+	LogLog.error("Could not close " + qw, e);
       }
     }
   }
@@ -234,13 +235,11 @@ public class WriterAppender extends AppenderSkeleton {
     return retval;
   }
 
-  public
-  String getEncoding() {
+  public String getEncoding() {
     return encoding;
   }
 
-  public
-  void setEncoding(String value) {
+  public void setEncoding(String value) {
     encoding = value;
   }
 
@@ -250,9 +249,7 @@ public class WriterAppender extends AppenderSkeleton {
   /**
      Set the {@link ErrorHandler} for this WriterAppender and also the
      underlying {@link QuietWriter} if any. */
-  public
-  synchronized
-  void setErrorHandler(ErrorHandler eh) {
+  public synchronized void setErrorHandler(ErrorHandler eh) {
     if(eh == null) {
       LogLog.warn("You have tried to set a null error-handler.");
     } else {
@@ -275,9 +272,7 @@ public class WriterAppender extends AppenderSkeleton {
     <p><b>WARNING:</b> Logging to an unopened Writer will fail.
     <p>
     @param writer An already opened Writer.  */
-  public
-  synchronized
-  void setWriter(Writer writer) {
+  public synchronized void setWriter(Writer writer) {
     reset();
     this.qw = new QuietWriter(writer, errorHandler);
     //this.tp = new TracerPrintWriter(qw);

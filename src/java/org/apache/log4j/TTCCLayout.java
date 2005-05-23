@@ -157,9 +157,7 @@ public class TTCCLayout extends DateLayout {
    <p>Time, thread, category and diagnostic context are printed
    depending on options.
 
-    @param category
-    @param level
-    @param message
+    @param event The event to format
 
   */
   public
@@ -175,11 +173,11 @@ public class TTCCLayout extends DateLayout {
       buf.append(event.getThreadName());
       buf.append("] ");
     }
-    buf.append(event.level.toString());
+    buf.append(event.getLevel().toString());
     buf.append(' ');
 
     if(this.categoryPrefixing) {
-      buf.append(event.categoryName);
+      buf.append(event.getLoggerName());
       buf.append(' ');
     }
 

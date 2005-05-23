@@ -17,7 +17,7 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 /**
  * A panel for showing a stack trace.
@@ -29,8 +29,8 @@ class DetailPanel
     implements ListSelectionListener
 {
     /** used to log events **/
-    private static final Category LOG =
-        Category.getInstance(DetailPanel.class);
+    private static final Logger LOG =
+        Logger.getLogger(DetailPanel.class);
 
     /** used to format the logging event **/
     private static final MessageFormat FORMATTER = new MessageFormat(
@@ -38,7 +38,7 @@ class DetailPanel
         "&nbsp;&nbsp;<b>Priority:</b> <code>{1}</code>" +
         "&nbsp;&nbsp;<b>Thread:</b> <code>{2}</code>" +
         "&nbsp;&nbsp;<b>NDC:</b> <code>{3}</code>" +
-        "<br><b>Category:</b> <code>{4}</code>" +
+        "<br><b>Logger:</b> <code>{4}</code>" +
         "<br><b>Location:</b> <code>{5}</code>" +
         "<br><b>Message:</b>" +
         "<pre>{6}</pre>" +

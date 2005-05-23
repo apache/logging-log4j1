@@ -241,9 +241,9 @@ public class CategoryNodeEditor extends CategoryAbstractCellEditor {
   protected int removeUnusedNodes() {
     int count = 0;
     CategoryNode root = _categoryModel.getRootCategoryNode();
-    Enumeration enum = root.depthFirstEnumeration();
-    while (enum.hasMoreElements()) {
-      CategoryNode node = (CategoryNode) enum.nextElement();
+    Enumeration enumeration = root.depthFirstEnumeration();
+    while (enumeration.hasMoreElements()) {
+      CategoryNode node = (CategoryNode) enumeration.nextElement();
       if (node.isLeaf() && node.getNumberOfContainedRecords() == 0
           && node.getParent() != null) {
         _categoryModel.removeNodeFromParent(node);

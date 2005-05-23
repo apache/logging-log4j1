@@ -12,7 +12,6 @@ import org.apache.log4j.lf5.LogRecord;
 import org.apache.log4j.lf5.LogRecordFilter;
 import org.apache.log4j.lf5.util.DateFormatManager;
 import org.apache.log4j.lf5.util.LogFileParser;
-import org.apache.log4j.lf5.util.ProductProperties;
 import org.apache.log4j.lf5.util.StreamUtils;
 import org.apache.log4j.lf5.viewer.categoryexplorer.CategoryExplorerTree;
 import org.apache.log4j.lf5.viewer.categoryexplorer.CategoryPath;
@@ -475,8 +474,6 @@ public class LogBrokerMonitor {
     //
     // Configure the Frame.
     //
-    ProductProperties props = ProductProperties.getInstance();
-
     _logMonitorFrame = new JFrame("LogFactor5");
 
     _logMonitorFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -1070,8 +1067,6 @@ public class LogBrokerMonitor {
     JMenu helpMenu = new JMenu("Help");
     helpMenu.setMnemonic('h');
     helpMenu.add(createHelpProperties());
-    helpMenu.addSeparator();
-    helpMenu.add(createHelpAbout());
     return helpMenu;
   }
 
@@ -1094,25 +1089,6 @@ public class LogBrokerMonitor {
         title,
         JOptionPane.PLAIN_MESSAGE
     );
-  }
-
-  protected JMenuItem createHelpAbout() {
-    JMenuItem aboutMI = new JMenuItem("About LogFactor5...");
-    aboutMI.setMnemonic('a');
-    //aboutMI.setAccelerator( KeyStroke.getKeyStroke("control A") );
-
-    aboutMI.addActionListener(
-        new ActionListener() {
-          protected LogFactor5AboutDialog dialog =
-              new LogFactor5AboutDialog(_logMonitorFrame);
-
-          public void actionPerformed(ActionEvent e) {
-            dialog.show();
-          }
-        }
-
-    );
-    return aboutMI;
   }
 
   protected JMenu createEditMenu() {
@@ -1216,7 +1192,10 @@ public class LogBrokerMonitor {
     _fontSizeCombo = fontSizeCombo;
 
     ClassLoader cl = this.getClass().getClassLoader();
-    URL newIconURL = cl.getResource("org/apache/log4j/viewer/" +
+    if(cl == null) {
+        cl = ClassLoader.getSystemClassLoader();
+    }
+    URL newIconURL = cl.getResource("org/apache/log4j/lf5/viewer/" +
         "images/channelexplorer_new.gif");
 
     ImageIcon newIcon = null;

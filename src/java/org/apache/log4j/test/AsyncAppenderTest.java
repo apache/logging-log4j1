@@ -1,13 +1,13 @@
 /* Copyright (C) The Apache Software Foundation. All rights reserved.
  *
- * This software is published under the terms of the Apache Software License
- * version 1.1, a copy of which has been included  with this distribution in
- * the LICENSE.APL file.
- */
+ * This software is published under the terms of the Apache Software
+ * License version 1.1, a copy of which has been included with this
+ * distribution in the LICENSE.txt file.  */
 
 package org.apache.log4j.test;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.xml.DOMConfigurator;
 
 /**
@@ -16,7 +16,7 @@ import org.apache.log4j.xml.DOMConfigurator;
 */
 public class AsyncAppenderTest {
 
-  static Category cat = Category.getInstance(AsyncAppenderTest.class);
+  static Logger cat = Logger.getLogger(AsyncAppenderTest.class);
   static int delayBeforeClose;
   
 
@@ -54,13 +54,13 @@ public class AsyncAppenderTest {
 
   static
   void test() {    
-    Category root = Category.getRoot();    
+    Logger root = Logger.getRootLogger();    
     for(int i = 0; i < 100; i++) {      
       root.debug("Message " + i);        
     }
 
     try{Thread.currentThread().sleep(delayBeforeClose);}catch(Exception e){}
-    Category.shutdown();
+    LogManager.shutdown();
   }
 
   

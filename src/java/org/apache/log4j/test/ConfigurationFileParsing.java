@@ -3,12 +3,13 @@
  *
  * This software is published under the terms of the Apache Software
  * License version 1.1, a copy of which has been included with this
- * distribution in the LICENSE.APL file.  */
+ * distribution in the LICENSE.txt file.  */
 
 package org.apache.log4j.test; 
 
 import org.apache.log4j.PropertyConfigurator;
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.NDC;
 
 public class ConfigurationFileParsing {
@@ -20,11 +21,11 @@ public class ConfigurationFileParsing {
     if(argv.length == 1) {
       NDC.push("testing");
       PropertyConfigurator.configure(argv[0]);
-      Category root = Category.getRoot();
+      Logger root = Logger.getRootLogger();
       root.debug("Message 1");
       root.debug("Message 2");      
       NDC.pop();
-      Category.shutdown();
+      LogManager.shutdown();
     }
     else {
       Usage("Wrong number of arguments.");

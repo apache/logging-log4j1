@@ -58,7 +58,7 @@ public class MyLoggerTest {
       usage("Incorrect number of parameters.");
     }
     try {
-      MyLogger c = (MyLogger) MyLogger.getInstance("some.cat");    
+      MyLogger c = (MyLogger) MyLogger.getLogger("some.cat");    
       c.trace("Hello");
       c.debug("Hello");
     } catch(ClassCastException e) {

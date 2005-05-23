@@ -1,11 +1,11 @@
 package org.apache.log4j.test;
 
 import org.apache.log4j.PropertyConfigurator;
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 public class ROFile {
 
-  static Category cat = Category.getInstance(ROFile.class.getName());
+  static Logger cat = Logger.getLogger(ROFile.class);
 
   public
   static

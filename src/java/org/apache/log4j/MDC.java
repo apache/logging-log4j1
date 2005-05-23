@@ -88,11 +88,10 @@ public class MDC {
 
 
   /**
-     Get the current thread's MDC as a hashtable.
-   */
-  public
-  static
-  Hashtable getContext() {
+   * Get the current thread's MDC as a hashtable. This method is
+   * intended to be used internally.  
+   * */
+  public static Hashtable getContext() {
     return mdc.getContext0();
   }
 
@@ -104,8 +103,8 @@ public class MDC {
     } else {
       Hashtable ht = (Hashtable) ((ThreadLocalMap)tlm).get();
       if(ht == null) {
-	ht = new Hashtable(HT_SIZE);
-	((ThreadLocalMap)tlm).set(ht);
+        ht = new Hashtable(HT_SIZE);
+        ((ThreadLocalMap)tlm).set(ht);
       }    
       ht.put(key, o);
     }
@@ -117,10 +116,10 @@ public class MDC {
       return null;
     } else {       
       Hashtable ht = (Hashtable) ((ThreadLocalMap)tlm).get();
-      if(ht != null) {
-	return ht.get(key);
+      if(ht != null && key != null) {
+        return ht.get(key);
       } else {
-	return null;
+        return null;
       }
     }
   }
@@ -130,7 +129,7 @@ public class MDC {
     if(!java1) {
       Hashtable ht = (Hashtable) ((ThreadLocalMap)tlm).get();
       if(ht != null) {
-	ht.remove(key);
+        ht.remove(key);
       } 
     }
   }

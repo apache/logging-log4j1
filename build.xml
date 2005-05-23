@@ -4,7 +4,7 @@
 
 
 <!-- ================================================================= -->
-<!-- NOTE: all directories are relative to jakarta-log4j/              -->
+<!-- NOTE: all directories are relative to logging-log4j/              -->
 <!-- the parent of build/                                              -->
 <!-- ================================================================= -->
 <project name="log4j" default="usage" basedir="." >
@@ -17,10 +17,13 @@
   <!-- prefixed with "env". -->
   <property environment="env"/>
 
-  <property name="version" value="1.2"/>
+  <property name="version" value="1.2.11rc1"/>
 
   <!-- The base directory relative to which most targets are built -->
   <property name="base" value="."/>
+
+
+  <property name="deprecation" value="on"/>
 
   <!-- The directory where source files are stored. -->
   <property name="java.source.dir" value="src/java/"/>
@@ -29,17 +32,23 @@
   <!-- build/ -->
   <property name="packaging.dir" value="build"/>
 
+  <!-- distribution directory -->
+  <property name="dist.dir" value="dist"/>
+  
   <!-- Destination for compiled files -->
-  <property name="javac.dest" value="dist/classes"/>
+  <property name="javac.dest" value="${dist.dir}/classes"/>
 
   <!-- Destination for generated jar files -->
-  <property name="jar.dest" value="dist/lib"/>
+  <property name="jar.dest" value="${dist.dir}/lib"/>
 
+  <!-- The jar file that the jar task will generate -->
   <property name="jar.filename" value="log4j-${version}.jar"/>
 
+  <!-- Destination for documentation files -->
+  <property name="docs.dest" value="./docs"/>
+  <!-- Source directory for xml docs -->
+  <property name="xdocs.src" value="./src/xdocs"/>
 
-  <!-- Destination for documentation files generated or not -->
-  <property name="docs" value="docs"/>
 
   <!-- Destination for javadoc generated files -->
   <property name="javadoc.dest" value="docs/api"/>
@@ -57,10 +66,10 @@
   <property name="manifest.src" value="build/manifest.mf"/>
 
   <!-- Directory where release images go. -->
-  <property name="dist.images"  value="dist/images"/>
+  <property name="dist.images"  value="${dist.dir}/images"/>
 
   <!-- Directory for temporary files. -->
-  <property name="dist.tmp" value="dist/tmp"/>
+  <property name="dist.tmp" value="${dist.dir}/tmp"/>
 
 
   <!-- Construct compile classpath -->
@@ -75,6 +84,12 @@
     <pathelement location="${jmx-extra.jar}"/>
   </path>
 
+  <!-- Construct classpath for building the html pages-->
+  <path id="site.classpath">
+    <fileset dir="${logging-site}/lib">
+      <include name="*.jar"/>
+    </fileset>
+  </path>
 
   <!-- ================================================================= -->
   <!-- Default target                                                    -->
@@ -164,7 +179,8 @@
     <mkdir dir="${javac.dest}" />
     <javac srcdir="${java.source.dir}"
 	   destdir="${javac.dest}"
-	   includes="${stem}/**/*.java, ${stem}/xml/XMLLayout.java,"
+	   includes="${stem}/**/*.java, 
+                     ${stem}/xml/XMLLayout.java"
 	   excludes="misc/*, **/UnitTest*.java,
                     **/StressCategory.java,
                     **/doc-files/*,
@@ -179,6 +195,13 @@
       <classpath refid="compile.classpath"/>
     </javac>
     
+    <copy todir="${javac.dest}">
+      <fileset dir="${java.source.dir}"
+	includes="${stem}/lf5/**/*.properties"/>    
+      <fileset dir="${java.source.dir}"
+	includes="${stem}/lf5/viewer/images/*"/>
+   </copy>
+
   </target>
 
   <target name="build.examples" depends="build.core">
@@ -193,6 +216,12 @@
     <rmic base="${javac.dest}"
       classname="examples.NumberCruncherServer"
       />
+
+    <copy todir="${javac.dest}">
+      <fileset dir="." includes="examples/lf5/**/*.properties"/>
+      <fileset dir="." includes="examples/lf5/**/*.xml"/>
+   </copy>
+
   </target>
 
  <target name="build.xml" depends="init, jaxp" if="jaxp-present">
@@ -223,7 +252,7 @@
     <javac deprecation="${deprecation}"
            srcdir="${java.source.dir}"
 	   destdir="${javac.dest}"
-	   includes="${stem}/net/JMS*.java">
+           includes="${stem}/net/JMS*.java, ${stem}/or/jms/*.java">
       <classpath refid="compile.classpath"/>
     </javac>
   </target>
@@ -243,7 +272,7 @@
   <!-- Remove all generated (compiled) class files.                      -->
   <!-- ================================================================= -->
   <target name="clean" depends="init">
-    <delete dir="${javac.dest}/" />
+    <delete dir="${dist.dir}/" />
   </target>
 
   <!-- ================================================================= -->
@@ -251,7 +280,7 @@
   <!-- ================================================================= -->
   <target name="checkstyle" depends="init">
     <taskdef resource="checkstyletask.properties"
-             classpath="build/lib/checkstyle-all-2.1.jar"/>
+             classpath="${checkstyle.jar}"/>
 
     <!-- by default checkstyle supports the Sun coding standard. -->
     <checkstyle lcurlyMethod="nlow"
@@ -270,7 +299,7 @@
   <target name="chainsaw" depends="build">
     <!-- Need to fork to avoid problems -->
     <java classname="org.apache.log4j.chainsaw.Main" fork="yes"
-          classpath="${javac.dest}">
+          classpath="${javac.dest};${ant.home}/lib/crimson.jar">
     </java>
   </target>
 
@@ -300,7 +329,8 @@
     </delete>
 
     <jar jarfile="${jar.dest}/${jar.filename}" basedir="${javac.dest}"
-      includes="${stem}/*.class, ${stem}/xml/log4j.dtd,
+      includes="${stem}/*.class, 
+                ${stem}/xml/log4j.dtd,
                 ${stem}/config/*.class,
 	        ${stem}/helpers/*.class,
 		${stem}/spi/*.class,
@@ -308,6 +338,9 @@
 		${stem}/jdbc/*.class,
 		${stem}/varia/*.class,
 		${stem}/chainsaw/*.class,
+		${stem}/lf5/**/*.class,
+		${stem}/lf5/**/*.properties,
+		${stem}/lf5/**/*.gif,
 		${stem}/nt/*.class,
 		${stem}/xml/*.class,
 		${stem}/jmx/*.class,
@@ -334,6 +367,7 @@
 			 org.apache.log4j.config,
                          org.apache.log4j.helpers,
 		         org.apache.log4j.jmx,
+		         org.apache.log4j.lf5,
 		         org.apache.log4j.net,
 			 org.apache.log4j.nt,
 		         org.apache.log4j.or,
@@ -350,29 +384,68 @@
 	   protected="true"
 	   author="true"
 	   use="true"
-	   overview="${docs}/overview.html"
+	   overview="${docs.dest}/overview.html"
 	   doctitle="log4j version ${version}&lt;br&gt;API Specification"
 	   windowtitle="Log4j Version ${version}"
            header="&lt;b&gt;Log4j ${version}&lt;/b&gt;"
-	   bottom="Copyright 2000-2002 Apache Software Foundation.">
+	   bottom="Copyright 2000-2005 Apache Software Foundation.">
 
-      <link offline="true"
-	     href="http://java.sun.com/products/jdk/1.2/docs/api"
-	     packageListLoc="${packaging.dir}"/>
+      <link href="http://java.sun.com/products/jdk/1.3/docs/api/"/>
+      <link href="http://java.sun.com/j2ee/sdk_1.3/techdocs/api/"/>
       <classpath refid="compile.classpath"/>
     </javadoc>
+  </target>
+
+  <!-- ============================================== -->
+  <!-- Build the site files using Anakia              -->
+  <!-- ============================================== -->  
+  <!-- ============================================== -->
+  <!-- Build the site files using Anakia              -->
+  <!-- ============================================== -->
+  <target name="prepareSite">
+    <available classname="org.apache.velocity.anakia.AnakiaTask"
+      property="AnakiaTask.present">
+      <classpath refid="site.classpath"/>
+    </available>
+  </target>
+
+  <target name="checkSite" depends="prepareSite" unless="AnakiaTask.present">
+    <echo>
+      AnakiaTask is not present! Please check to make sure that
+      velocity.jar is in your classpath.
+    </echo>
+  </target>
+
+  <target name="site" depends="checkSite" if="AnakiaTask.present">
+    <taskdef name="anakia" classname="org.apache.velocity.anakia.AnakiaTask">
+      <classpath refid="site.classpath"/>
+    </taskdef>
+ 
+    <mkdir dir="${docs.dest}/css"/>  
+    <copy file="${logging-site}/docs/css/site.css" tofile="${docs.dest}/css/site.css"/>
+    
+    <anakia basedir="${xdocs.src}" destdir="${docs.dest}/"
+      extension=".html"
+      style="site.vsl"
+      projectFile="stylesheets/project.xml"
+      excludes="**/stylesheets/**, empty.xml, lf5/**"
+      includes="**/*.xml"
+      lastModifiedCheck="true"
+      templatePath="${logging-site}/src/xdocs/stylesheets">
+    </anakia>
+
   </target>
 
  <!-- ================================================================= -->
  <!-- Build a complete distribution. Results go to ${dist.images}       -->
  <!-- ================================================================= -->
-  <target name="dist" depends="init, clean, javadoc, jar">
+  <target name="dist" depends="init, clean, javadoc, jar, site">
 
     <delete verbose="true">
       <fileset dir=".">
         <patternset>
 	   <include name="**/*.bak"/>
-	   <include name="dist/velocity.log"/>
+	   <include name="${dist.dir}/velocity.log"/>
 	   <include name="${BSTEM}/**/temp*"/>
 	   <include name="${BSTEM}/performance/test"/>
 	   <include name="${BSTEM}/test/current.*"/>
@@ -403,48 +476,50 @@
     </delete>
 
     <mkdir  dir="${dist.images}" />
+    
+    <mkdir  dir="${dist.tmp}/logging-log4j-${version}" />
 
-    <mkdir  dir="${dist.tmp}/jakarta-log4j-${version}" />
-
-    <copy todir="${dist.tmp}/jakarta-log4j-${version}">
+    <copy todir="${dist.tmp}/logging-log4j-${version}">
        <fileset dir="${base}"
                 includes="src/java/**,
 			  docs/**,
 	                  examples/**,
 			  build/*,
 	                  build.xml,
+	                  build.properties.sample,
                           manifest.mf,
 			  INSTALL,
 			  LICENSE.txt,
-			  dist/lib/log4j*.jar,
-			  dist/classes/**,
+			  ${dist.dir}/lib/log4j*.jar,
+			  ${dist.dir}/classes/**,
 			  contribs/**"
                 excludes="make/make.loc,
 		          **/*.bak, **/goEnv.bat,
 		          **/Makefile, **/goEnv.bat,
 	                  docs/pub-support/*,
+	                  ${dist.dir}/classes/org/**,
 	                  src/java/org/apache/log4j/test/**/*,	
 			  **/.#*"/>
     </copy>
 
 
-    <fixcrlf srcdir="${dist.tmp}/jakarta-log4j-${version}"
+    <fixcrlf srcdir="${dist.tmp}/logging-log4j-${version}"
              includes="build.sh" cr="remove"/>
-    <fixcrlf srcdir="${dist.tmp}/jakarta-log4j-${version}"
+    <fixcrlf srcdir="${dist.tmp}/logging-log4j-${version}"
              includes="build.bat" cr="add"/>
-    <chmod   dir="${dist.tmp}/jakarta-log4j-${version}"
+    <chmod   dir="${dist.tmp}/logging-log4j-${version}"
              includes="build.sh" perm="+x"/>
 
-    <tar tarfile="${dist.images}/jakarta-log4j-${version}.tar"
+    <tar tarfile="${dist.images}/logging-log4j-${version}.tar"
          basedir="${dist.tmp}"
-         includes="jakarta-log4j-${version}/**" />
+         includes="logging-log4j-${version}/**" />
 
-    <gzip src="${dist.images}/jakarta-log4j-${version}.tar"
-          zipfile="${dist.images}/jakarta-log4j-${version}.tar.gz" />
+    <gzip src="${dist.images}/logging-log4j-${version}.tar"
+          zipfile="${dist.images}/logging-log4j-${version}.tar.gz" />
 
-    <zip zipfile="${dist.images}/jakarta-log4j-${version}.zip"
+    <zip zipfile="${dist.images}/logging-log4j-${version}.zip"
          basedir="${dist.tmp}"
-         includes="jakarta-log4j-${version}/**" />
+         includes="logging-log4j-${version}/**" />
 
 
     <delete dir="${dist.tmp}" />
