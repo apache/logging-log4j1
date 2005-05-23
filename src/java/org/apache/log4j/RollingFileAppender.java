@@ -172,12 +172,6 @@ public class RollingFileAppender implements Appender, OptionHandler {
     rfa.activateOptions();
   }
 
-  /**
-   * An appender must be activated before it can be used.
-   */
-  public void activate() {
-    activateOptions();
-  }
 
   /**
    * Add a filter to the end of the filter list.
