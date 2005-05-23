@@ -32,11 +32,14 @@
   <!-- build/ -->
   <property name="packaging.dir" value="build"/>
 
+  <!-- distribution directory -->
+  <property name="dist.dir" value="dist"/>
+  
   <!-- Destination for compiled files -->
-  <property name="javac.dest" value="dist/classes"/>
+  <property name="javac.dest" value="${dist.dir}/classes"/>
 
   <!-- Destination for generated jar files -->
-  <property name="jar.dest" value="dist/lib"/>
+  <property name="jar.dest" value="${dist.dir}/lib"/>
 
   <!-- The jar file that the jar task will generate -->
   <property name="jar.filename" value="log4j-${version}.jar"/>
@@ -63,10 +66,10 @@
   <property name="manifest.src" value="build/manifest.mf"/>
 
   <!-- Directory where release images go. -->
-  <property name="dist.images"  value="dist/images"/>
+  <property name="dist.images"  value="${dist.dir}/images"/>
 
   <!-- Directory for temporary files. -->
-  <property name="dist.tmp" value="dist/tmp"/>
+  <property name="dist.tmp" value="${dist.dir}/tmp"/>
 
 
   <!-- Construct compile classpath -->
@@ -269,7 +272,7 @@
   <!-- Remove all generated (compiled) class files.                      -->
   <!-- ================================================================= -->
   <target name="clean" depends="init">
-    <delete dir="${javac.dest}/" />
+    <delete dir="${dist.dir}/" />
   </target>
 
   <!-- ================================================================= -->
@@ -442,7 +445,7 @@
       <fileset dir=".">
         <patternset>
 	   <include name="**/*.bak"/>
-	   <include name="dist/velocity.log"/>
+	   <include name="${dist.dir}/velocity.log"/>
 	   <include name="${BSTEM}/**/temp*"/>
 	   <include name="${BSTEM}/performance/test"/>
 	   <include name="${BSTEM}/test/current.*"/>
@@ -487,14 +490,14 @@
                           manifest.mf,
 			  INSTALL,
 			  LICENSE.txt,
-			  dist/lib/log4j*.jar,
-			  dist/classes/**,
+			  ${dist.dir}/lib/log4j*.jar,
+			  ${dist.dir}/classes/**,
 			  contribs/**"
                 excludes="make/make.loc,
 		          **/*.bak, **/goEnv.bat,
 		          **/Makefile, **/goEnv.bat,
 	                  docs/pub-support/*,
-	                  dist/classes/org/**,
+	                  ${dist.dir}/classes/org/**,
 	                  src/java/org/apache/log4j/test/**/*,	
 			  **/.#*"/>
     </copy>
