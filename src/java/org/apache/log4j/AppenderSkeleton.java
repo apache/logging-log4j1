@@ -109,15 +109,6 @@ public abstract class AppenderSkeleton extends ComponentBase implements Appender
     this.active = true;
   }
   
-  /**
-   *   Synonym for activateOptions.
-   *   @deprecated TODO: this weird signature is an attempt to flush
-   * out the remaining uses of activate since mixing activate and
-   * activateOptions can lead to very bad things.
-   */
-  public final void activate() throws org.xml.sax.SAXException {
-     activateOptions();
-  }
 
   /**
    * Add a filter to end of the filter list.
