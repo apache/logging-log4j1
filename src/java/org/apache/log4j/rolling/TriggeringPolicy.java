@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.log4j.rolling;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.OptionHandler;
-
-import java.io.File;
 
 
 /**
@@ -28,18 +27,22 @@ import java.io.File;
  * external event, the log request or a combination thereof.
  *
  * @author Ceki G&uuml;lc&uuml;
+ * @author Curt Arnold
  * @since 1.3
  * */
-public interface TriggeringPolicy {
-    /**
-     * Should rolllover be triggered at this time?
-     *
-     * @param appender A reference to the appender.
-     * @param event A reference to the currently event.
-     * @param file A reference to the currently active log file.
-     * @param fileLength Length of the file in bytes.
-     * @return true if a rollover should occur.
-     */
-    public boolean isTriggeringEvent(final Appender appender,
-        final LoggingEvent event, final File file, final long fileLength);
+public interface TriggeringPolicy extends OptionHandler {
+  /**
+   * Determines if a rollover may be appropriate at this time.  If
+   * true is returned, RolloverPolicy.rollover will be called but it
+   * can determine that a rollover is not warranted.
+   *
+   * @param appender A reference to the appender.
+   * @param event A reference to the currently event.
+   * @param filename The filename for the currently active log file.
+   * @param fileLength Length of the file in bytes.
+   * @return true if a rollover should occur.
+   */
+  public boolean isTriggeringEvent(
+    final Appender appender, final LoggingEvent event, final String filename,
+    final long fileLength);
 }
