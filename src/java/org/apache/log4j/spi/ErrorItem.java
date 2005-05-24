@@ -20,7 +20,7 @@ import java.io.PrintStream;
 
 /**
  * Used to store special log4j errors which cannot be logged using internal
- * logging. Such errors include thos occuring during the initial phases
+ * logging. Such errors include those occurring during the initial phases
  * of log4j configuration or errors emanating from core components such as
  * Logger or Hierarchy.
  * 

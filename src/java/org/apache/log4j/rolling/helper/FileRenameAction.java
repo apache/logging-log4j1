@@ -81,7 +81,7 @@ public final class FileRenameAction implements Action {
   }
 
   /**
-   * @{inheritDoc}
+   * @inheritDoc
    */
   public void run() {
     execute();

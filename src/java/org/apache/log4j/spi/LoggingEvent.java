@@ -761,7 +761,7 @@ public class LoggingEvent
         }
 
         PARAM_ARRAY[0] = new Integer(p);
-        level = (Level)m.invoke(null, PARAM_ARRAY);
+        level = (Level)m.invoke(null, (Object[]) PARAM_ARRAY);
       }
     } catch (Exception e) {
       //LogLog.warn("Level deserialization failed, reverting to default.", e);

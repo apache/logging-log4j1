@@ -60,7 +60,7 @@ public class ComponentBase implements Component {
    * protected keyword.
    * 
    * <p>In case the repository for this component is not set,
-   * this implementations returns a {@link SimpleLogger} instance.
+   * this implementations returns a {@link SimpleULogger} instance.
    * 
    * @return A ULogger instance.
    */

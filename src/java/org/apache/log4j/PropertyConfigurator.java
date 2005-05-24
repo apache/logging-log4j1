@@ -63,8 +63,7 @@ import java.util.Vector;
    <p>The <code>PropertyConfigurator</code> does not handle the
    advanced configuration features supported by the {@link
    org.apache.log4j.xml.DOMConfigurator DOMConfigurator} such as
-   support for {@link org.apache.log4j.spi.Filter Filters}, custom
-   {@link org.apache.log4j.spi.ErrorHandler ErrorHandlers}, nested
+   support for {@link org.apache.log4j.spi.Filter Filters}, nested
    appenders such as the {@link org.apache.log4j.AsyncAppender
    AsyncAppender}, etc.
 

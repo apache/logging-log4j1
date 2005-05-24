@@ -424,7 +424,7 @@ public class PatternLayout extends Layout {
 
   /**
    * Customized pattern conversion rules are stored under this key in the
-   * {@link LoggerRepository} object store.
+   * {@link org.apache.log4j.spi.LoggerRepository LoggerRepository} object store.
    */
   public static final String PATTERN_RULE_REGISTRY = "PATTERN_RULE_REGISTRY";
 
