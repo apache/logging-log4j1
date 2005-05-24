@@ -804,7 +804,8 @@ Specify files to reformat with -Djalopy.files=PATTERN.
     
     <tar tarfile="${dist.images}/logging-log4j-${version}.tar"
          basedir="${dist.tmp}"
-         includes="logging-log4j-${version}/**" />
+         includes="logging-log4j-${version}/**"
+         longfile="gnu" />
     
     <gzip src="${dist.images}/logging-log4j-${version}.tar"
           zipfile="${dist.images}/logging-log4j-${version}.tar.gz" />
