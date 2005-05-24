@@ -39,10 +39,9 @@ public class Transform {
    * &lt;b&gt;, &lt;table&gt;, etc) and replaces any '<' and '>'
    * characters with respective predefined entity references.
    *
-   * @param input The text to be converted.
-   * @return The input string with the characters '<' and '>' replaced with
-   *  &amp;lt; and &amp;gt; respectively.
-   * */
+   * @param input The text to be converted. 
+   * @param output the writer to which to write the modified input
+   */
   public static void escapeTags(String input, Writer output) throws IOException {
     //Check if the string is null or zero length -- if so, return
     //what was sent in.

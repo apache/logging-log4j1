@@ -206,14 +206,16 @@ public interface LoggerRepository {
   public void setProperty(String key, String value);
   
   /**
-   * Errors which cannot be logged, go to the error list,
+   * Errors which cannot be logged, go to the error list
+   * 
    * @return List
    */
   public List getErrorList();
 
   /**
-   * Errors which cannot be logged, go to the error list,
-   * @return List
+   * Errors which cannot be logged, go to the error list
+   * 
+   * @param errorItem an ErrorItem to add to the error list
    */
   public void addErrorItem(ErrorItem errorItem);
   

@@ -20,9 +20,6 @@ import org.apache.log4j.joran.spi.ActionException;
 import org.apache.log4j.joran.spi.ExecutionContext;
 import org.apache.log4j.joran.spi.Interpreter;
 import org.apache.log4j.spi.ComponentBase;
-import org.apache.log4j.spi.LoggerRepository;
-import org.apache.log4j.spi.ErrorItem;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 

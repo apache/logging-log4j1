@@ -71,7 +71,7 @@ public class JndiSubstitutionPropertyAction extends Action {
   }
 
   /**
-   * @see org.apache.joran.Action#begin.
+   * @see Action#begin
    */
   public void begin(
     final ExecutionContext ec, final String name, final Attributes attributes) {
@@ -112,7 +112,7 @@ public class JndiSubstitutionPropertyAction extends Action {
   }
 
   /**
-   * @see org.apache.joran.Action#end.
+   * @see Action#end
    */
   public void end(final ExecutionContext ec, final String name) {
   }

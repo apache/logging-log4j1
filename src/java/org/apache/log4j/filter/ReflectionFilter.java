@@ -60,9 +60,9 @@ public class ReflectionFilter extends Filter {
 				props = Introspector.getBeanInfo(event.getMessage().getClass(), Object.class).getPropertyDescriptors();
 				for (int i=0;i<props.length;i++) {
 					if ("message".equalsIgnoreCase(props[i].getName())) {
-						event.setRenderedMessage(props[i].getReadMethod().invoke(event.getMessage(), null).toString());
+						event.setRenderedMessage(props[i].getReadMethod().invoke(event.getMessage(), (Object[]) null).toString());
 					} else {
-						eventProps.put(props[i].getName(), props[i].getReadMethod().invoke(event.getMessage(), null).toString());
+						eventProps.put(props[i].getName(), props[i].getReadMethod().invoke(event.getMessage(), (Object[]) null).toString());
 					}
 				}
 				event.setProperties(eventProps);

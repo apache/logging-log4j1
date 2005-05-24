@@ -62,7 +62,7 @@ public class RelativeTimeDateFormat extends DateFormat {
 
   /**
    * Sets the timezone.
-   * @remarks Ignored by this formatter, but intercepted to prevent
+   * Ignored by this formatter, but intercepted to prevent
    * NullPointerException in superclass.
    * @param tz TimeZone timezone
    */
