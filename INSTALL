@@ -7,9 +7,9 @@ Using log4j
 
 2) Assuming you chose to extract the distribution in to the
    PATH_OF_YOUR_CHOICE, untarring the distribution file should create
-   a jakarta-log4j-VERSION directory, where VERSION is the log4j
+   a logging-log4j-VERSION directory, where VERSION is the log4j
    version number, under PATH_OF_YOUR_CHOICE. We will refer to the
-   directory PATH_OF_YOUR_CHOICE/jakarta-log4j-VERSION/ as $LOG4J_HOME/.
+   directory PATH_OF_YOUR_CHOICE/logging-log4j-VERSION/ as $LOG4J_HOME/.
 
 3) Assuming you are using log4j version 1.2, add
    $LOG4J_HOME/dist/lib/log4j-1.2.jar to your CLASSPATH,
@@ -115,14 +115,14 @@ Building log4j
 ==============
     
 Like most java appilicatios today, log4j relies on ANT as its build
-tool. ANT is availale from "http://jakarta.apache.org/ant/".  ANT
+tool. ANT is availale from "http://ant.apache.org/".  ANT
 requires a build file called build.xml which is part of this
 distribution. Required components from other projects are specified in
 the build.properties and example of which is supplied in the
 build.properties.sample file.
 
 In case of problems send an e-mail note to
-log4j-user@jakarta.apache.org.  Please do not directly e-mail any
+log4j-user@logging.apache.org.  Please do not directly e-mail any
 log4j developers. The answer to your question might be useful to other
 users. Moreover, there are many knowledgeable users on the log4j-user
 mailing lists who can quickly answer your questions.
