@@ -82,7 +82,7 @@ public final class FilterBasedTriggeringPolicy implements TriggeringPolicy {
    * Add a filter to end of the filter list.
    * @param newFilter filter to add to end of list.
    */
-  public void addFilter(Filter newFilter) {
+  public void addFilter(final Filter newFilter) {
     if (headFilter == null) {
       headFilter = newFilter;
       tailFilter = newFilter;

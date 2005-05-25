@@ -18,14 +18,13 @@ package org.apache.log4j.rolling;
 
 import org.apache.log4j.pattern.IntegerPatternConverter;
 import org.apache.log4j.pattern.PatternConverter;
+import org.apache.log4j.rolling.helper.Action;
 import org.apache.log4j.rolling.helper.FileRenameAction;
 import org.apache.log4j.rolling.helper.GZCompressAction;
 import org.apache.log4j.rolling.helper.ZipCompressAction;
 
 import java.io.File;
 import java.io.IOException;
-
-import java.util.List;
 
 
 /**
@@ -151,9 +150,20 @@ public final class FixedWindowRollingPolicy extends RollingPolicyBase {
   /**
    * {@inheritDoc}
    */
-  public boolean rollover(
-    final StringBuffer activeFile, List synchronousActions,
-    List asynchronousActions) throws IOException {
+  public RolloverDescription initialize(
+    final String file, final boolean append) {
+    if (activeFileName != null) {
+      return new RolloverDescriptionImpl(activeFileName, append, null, null);
+    }
+
+    return null;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public RolloverDescription rollover(final String currentFileName)
+    throws IOException {
     if (maxIndex >= 0) {
       // Delete the oldest file, to keep Windows happy.
       StringBuffer buf = new StringBuffer();
@@ -225,39 +235,34 @@ public final class FixedWindowRollingPolicy extends RollingPolicyBase {
         higherFileName = lowerFileName;
       }
 
-      activeFile.setLength(0);
-      activeFile.append(activeFileName);
-
       File currentFile = new File(activeFileName);
 
-      if (currentFile.exists()) {
-        //
-        //    add renaming of active file as something to be done
-        //       after closing active file
-        //
-        synchronousActions.add(
-          new FileRenameAction(
-            new File(activeFileName), new File(higherBaseName), false));
-
-        if (suffixLength == 3) {
-          asynchronousActions.add(
-            new GZCompressAction(
-              new File(higherBaseName), new File(higherFileName), true,
-              getLogger()));
-        }
-
-        if (suffixLength == 4) {
-          asynchronousActions.add(
-            new ZipCompressAction(
-              new File(higherBaseName), new File(higherFileName), true,
-              getLogger()));
-        }
+      if (!currentFile.exists()) {
+        return new RolloverDescriptionImpl(activeFileName, false, null, null);
       }
 
-      return true;
+      FileRenameAction renameAction =
+        new FileRenameAction(
+          new File(activeFileName), new File(higherBaseName), false);
+      Action compressAction = null;
+
+      if (suffixLength == 3) {
+        compressAction =
+          new GZCompressAction(
+            new File(higherBaseName), new File(higherFileName), true,
+            getLogger());
+      } else if (suffixLength == 4) {
+        compressAction =
+          new ZipCompressAction(
+            new File(higherBaseName), new File(higherFileName), true,
+            getLogger());
+      }
+
+      return new RolloverDescriptionImpl(
+        activeFileName, false, renameAction, compressAction);
     }
 
-    return false;
+    return null;
   }
 
   /**

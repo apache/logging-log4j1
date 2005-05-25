@@ -20,8 +20,6 @@ import org.apache.log4j.spi.OptionHandler;
 
 import java.io.IOException;
 
-import java.util.List;
-
 
 /**
  * A <code>RollingPolicy</code> specifies the actions taken
@@ -33,26 +31,29 @@ import java.util.List;
  * */
 public interface RollingPolicy extends OptionHandler {
   /**
-   * Prepare for a rollover.  This method is called prior to
-   * closing the active log file and performs any necessary
-   * preliminary actions.  The rolling file appender will then
-   * close the active log file, perform the synchronous actions
-   * and dispatch the asynchronous files before returning
-   * control to its caller.
+   * Initialize the policy and return any initial actions for rolling file appender..
    *
-   * @param activeFile buffer containing name of the active log file on entry,
-   * and name of future active file on exit.
-   * @param synchronousActions list to which instances of Runnable
-   * are appended for actions to be performed after closing the active file.
-   * @param asynchronousActions list to which instances of Runnable
-   * are appended for actions to be performed asynchronously
-   * after closing the active file and executing the synchronous actions
-   * @return true if rollover should proceed.  If false rollover will
-   * silently be skipped.
+   * @param file current value of RollingFileAppender.getFile().
+   * @param append current value of RollingFileAppender.getAppend().
+   * @return Description of the initialization, may be null to indicate
+   * no initialization needed.
+   * @throws IOException on failure.
+   */
+  public RolloverDescription initialize(
+    final String file, final boolean append) throws IOException;
+
+  /**
+   * Prepare for a rollover.  This method is called prior to
+   * closing the active log file, performs any necessary
+   * preliminary actions and describes actions needed
+   * after close of current log file.
+   *
+   * @param activeFile file name for current active log file.
+   * @return Description of pending rollover, may be null to indicate no rollover
+   * at this time.
    * @throws IOException on failure to prepare for rollover.  Rollover
    * will be suppressed if an exception is thrown.
    */
-  public boolean rollover(
-    StringBuffer activeFile, List synchronousActions, List asynchronousActions)
+  public RolloverDescription rollover(final String activeFile)
     throws IOException;
 }

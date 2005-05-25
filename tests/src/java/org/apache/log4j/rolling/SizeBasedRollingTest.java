@@ -64,6 +64,7 @@ public class SizeBasedRollingTest extends TestCase {
     // This makes the regression test system independent.
     PatternLayout layout = new PatternLayout("%m\n");
     RollingFileAppender rfa = new RollingFileAppender();
+    rfa.setAppend(false);
     rfa.setLayout(layout);
 
     FixedWindowRollingPolicy fwrp = new FixedWindowRollingPolicy();
@@ -85,7 +86,8 @@ public class SizeBasedRollingTest extends TestCase {
   public void test2() throws Exception {
     PatternLayout layout = new PatternLayout("%m\n");
     RollingFileAppender rfa = new RollingFileAppender();
-    rfa.setName("ROLLING"); 
+    rfa.setName("ROLLING");
+    rfa.setAppend(false);
     rfa.setLayout(layout);
 
     FixedWindowRollingPolicy swrp = new FixedWindowRollingPolicy();
@@ -131,6 +133,7 @@ public class SizeBasedRollingTest extends TestCase {
   public void test3() throws Exception {
      PatternLayout layout = new PatternLayout("%m\n");
      RollingFileAppender rfa = new RollingFileAppender();
+     rfa.setAppend(false);
      rfa.setLayout(layout);
 
      FixedWindowRollingPolicy  fwrp = new FixedWindowRollingPolicy();

@@ -32,7 +32,7 @@ import java.util.zip.GZIPOutputStream;
  * @author Curt Arnold
  * @since 1.3
  */
-public final class GZCompressAction implements Action {
+public final class GZCompressAction extends ActionBase {
   /**
    * Source file.
    */
@@ -128,17 +128,16 @@ public final class GZCompressAction implements Action {
     return false;
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  public void run() {
-    try {
-      execute();
-    } catch (IOException ex) {
-      if (logger != null) {
-        logger.info(
-          "Exception while compressing '" + source.toString() + "'.", ex);
-      }
+
+    /**
+     * Capture exception.
+     *
+     * @param ex exception.
+     */
+    protected void reportException(final Exception ex) {
+        if (logger != null) {
+            logger.info("Exception during compression of '" + source.toString() + "'.", ex);
+        }
     }
-  }
+
 }

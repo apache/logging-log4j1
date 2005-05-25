@@ -29,7 +29,7 @@ import org.apache.log4j.ULogger;
  * @since 1.3
  *
  */
-public class CompositeAction implements Action {
+public class CompositeAction extends ActionBase {
   /**
    * Actions to perform.
    */
