@@ -24,7 +24,9 @@ import org.apache.log4j.rolling.helper.GZCompressAction;
 import org.apache.log4j.rolling.helper.ZipCompressAction;
 
 import java.io.File;
-import java.io.IOException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -89,12 +91,18 @@ public final class FixedWindowRollingPolicy extends RollingPolicyBase {
   private int minIndex;
 
   /**
+   *  if true, then an explicit name for the active file was
+   * specified using RollingFileAppender.file or the
+   * redundent RollingPolicyBase.setActiveFile
+   */
+  private boolean explicitActiveFile;
+
+  /**
    * Constructs a new instance.
    */
   public FixedWindowRollingPolicy() {
     minIndex = 1;
     maxIndex = 7;
-    activeFileName = null;
   }
 
   /**
@@ -107,13 +115,6 @@ public final class FixedWindowRollingPolicy extends RollingPolicyBase {
       getLogger().warn(FNP_NOT_SET);
       getLogger().warn(SEE_FNP_NOT_SET);
       throw new IllegalStateException(FNP_NOT_SET + SEE_FNP_NOT_SET);
-    }
-
-    if (activeFileName == null) {
-      getLogger().warn(
-        "The ActiveFile name option must be set before using this rolling policy.");
-      throw new IllegalStateException(
-        "The ActiveFileName option must be set.");
     }
 
     if (maxIndex < minIndex) {
@@ -152,114 +153,68 @@ public final class FixedWindowRollingPolicy extends RollingPolicyBase {
    */
   public RolloverDescription initialize(
     final String file, final boolean append) {
+    String newActiveFile = file;
+    explicitActiveFile = false;
+
     if (activeFileName != null) {
-      return new RolloverDescriptionImpl(activeFileName, append, null, null);
+      explicitActiveFile = true;
+      newActiveFile = activeFileName;
     }
 
-    return null;
+    if (file != null) {
+      explicitActiveFile = true;
+      newActiveFile = file;
+    }
+
+    if (!explicitActiveFile) {
+      StringBuffer buf = new StringBuffer();
+      formatFileName(new Integer(minIndex), buf);
+      newActiveFile = buf.toString();
+    }
+
+    return new RolloverDescriptionImpl(newActiveFile, append, null, null);
   }
 
   /**
    * {@inheritDoc}
    */
-  public RolloverDescription rollover(final String currentFileName)
-    throws IOException {
+  public RolloverDescription rollover(final String currentFileName) {
     if (maxIndex >= 0) {
-      // Delete the oldest file, to keep Windows happy.
+      int purgeStart = minIndex;
+
+      if (!explicitActiveFile) {
+        purgeStart++;
+      }
+
+      if (!purge(purgeStart, maxIndex)) {
+        return null;
+      }
+
       StringBuffer buf = new StringBuffer();
-      formatFileName(new Integer(maxIndex), buf);
+      formatFileName(new Integer(purgeStart), buf);
 
-      String higherFileName = buf.toString();
-      File higherFile = new File(higherFileName);
+      String renameTo = buf.toString();
+      String compressedName = renameTo;
+      Action compressAction = null;
 
-      if (higherFile.exists()) {
-        if (!higherFile.delete()) {
-          throw new IOException("Unable to delete " + higherFileName);
-        }
-      }
-
-      int suffixLength = 0;
-
-      if (higherFileName.endsWith(".gz")) {
-        suffixLength = 3;
-      } else if (higherFileName.endsWith(".zip")) {
-        suffixLength = 4;
-      }
-
-      String higherBaseName = higherFileName;
-
-      if (suffixLength > 0) {
-        higherBaseName =
-          higherFileName.substring(0, higherFileName.length() - suffixLength);
-
-        File baseFile = new File(higherBaseName);
-
-        if (baseFile.exists()) {
-          if (!baseFile.delete()) {
-            throw new IOException("Unable to delete " + higherBaseName);
-          }
-        }
-      }
-
-      // Map {(maxIndex - 1), ..., minIndex} to {maxIndex, ..., minIndex+1}
-      for (int i = maxIndex - 1; i >= minIndex; i--) {
-        buf.setLength(0);
-        formatFileName(new Integer(i), buf);
-
-        String lowerFileName = buf.toString();
-        File toRename = new File(lowerFileName);
-
-        // no point in trying to rename an non-existent file
-        if (toRename.exists()) {
-          if (!toRename.renameTo(new File(higherFileName))) {
-            throw new IOException("Unable to rename " + lowerFileName);
-          }
-        }
-
-        if (suffixLength > 0) {
-          String lowerBaseName =
-            lowerFileName.substring(0, lowerFileName.length() - suffixLength);
-          File baseFile = new File(lowerBaseName);
-
-          if (baseFile.exists()) {
-            if (!baseFile.renameTo(new File(higherBaseName))) {
-              throw new IOException("Unable to rename " + lowerBaseName);
-            }
-          }
-
-          higherBaseName = lowerBaseName;
-        } else {
-          higherBaseName = lowerFileName;
-        }
-
-        higherFileName = lowerFileName;
-      }
-
-      File currentFile = new File(activeFileName);
-
-      if (!currentFile.exists()) {
-        return new RolloverDescriptionImpl(activeFileName, false, null, null);
+      if (renameTo.endsWith(".gz")) {
+        renameTo = renameTo.substring(0, renameTo.length() - 3);
+        compressAction =
+          new GZCompressAction(
+            new File(renameTo), new File(compressedName), true, getLogger());
+      } else if (renameTo.endsWith(".zip")) {
+        renameTo = renameTo.substring(0, renameTo.length() - 4);
+        compressAction =
+          new ZipCompressAction(
+            new File(renameTo), new File(compressedName), true, getLogger());
       }
 
       FileRenameAction renameAction =
         new FileRenameAction(
-          new File(activeFileName), new File(higherBaseName), false);
-      Action compressAction = null;
-
-      if (suffixLength == 3) {
-        compressAction =
-          new GZCompressAction(
-            new File(higherBaseName), new File(higherFileName), true,
-            getLogger());
-      } else if (suffixLength == 4) {
-        compressAction =
-          new ZipCompressAction(
-            new File(higherBaseName), new File(higherFileName), true,
-            getLogger());
-      }
+          new File(currentFileName), new File(renameTo), false);
 
       return new RolloverDescriptionImpl(
-        activeFileName, false, renameAction, compressAction);
+        currentFileName, false, renameAction, compressAction);
     }
 
     return null;
@@ -295,5 +250,100 @@ public final class FixedWindowRollingPolicy extends RollingPolicyBase {
    */
   public void setMinIndex(int minIndex) {
     this.minIndex = minIndex;
+  }
+
+  /**
+   * Purge and rename old log files in preparation for rollover
+   * @param lowIndex low index
+   * @param highIndex high index.  Log file associated with high
+   * index will be deleted if needed.
+   * @return true if purge was successful and rollover should be attempted.
+   */
+  private boolean purge(final int lowIndex, final int highIndex) {
+    int suffixLength = 0;
+
+    List renames = new ArrayList();
+    StringBuffer buf = new StringBuffer();
+    formatFileName(new Integer(lowIndex), buf);
+
+    String lowFilename = buf.toString();
+
+    if (lowFilename.endsWith(".gz")) {
+      suffixLength = 3;
+    } else if (lowFilename.endsWith(".zip")) {
+      suffixLength = 4;
+    }
+
+    for (int i = lowIndex; i <= highIndex; i++) {
+      File toRename = new File(lowFilename);
+      boolean isBase = false;
+
+      if (suffixLength > 0) {
+        File toRenameBase =
+          new File(
+            lowFilename.substring(0, lowFilename.length() - suffixLength));
+
+        if (toRename.exists()) {
+          if (toRenameBase.exists()) {
+            toRenameBase.delete();
+          }
+        } else {
+          toRename = toRenameBase;
+          isBase = true;
+        }
+      }
+
+      if (toRename.exists()) {
+        //
+        //    if at upper index then
+        //        attempt to delete last file
+        //        if that fails then abandon purge
+        if (i == highIndex) {
+          if (!toRename.delete()) {
+            return false;
+          }
+
+          break;
+        }
+
+        //
+        //   if intermediate index
+        //     add a rename action to the list
+        buf.setLength(0);
+        formatFileName(new Integer(i + 1), buf);
+
+        String highFilename = buf.toString();
+        String renameTo = highFilename;
+
+        if (isBase) {
+          renameTo =
+            highFilename.substring(0, highFilename.length() - suffixLength);
+        }
+
+        renames.add(new FileRenameAction(toRename, new File(renameTo), true));
+        lowFilename = highFilename;
+      } else {
+        break;
+      }
+    }
+
+    //
+    //   work renames backwards
+    //
+    for (int i = renames.size() - 1; i >= 0; i--) {
+      Action action = (Action) renames.get(i);
+
+      try {
+        if (!action.execute()) {
+          return false;
+        }
+      } catch (Exception ex) {
+        getLogger().info("Exception during purge in RollingFileAppender", ex);
+
+        return false;
+      }
+    }
+
+    return true;
   }
 }

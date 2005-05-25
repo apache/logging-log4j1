@@ -30,9 +30,10 @@ import java.io.IOException;
 /**
  * org.apache.log4j.RollingFileAppender emulates earlier implementations
  * by delegating to general purpose org.apache.log4j.rollling.RollingFileAppender
- * introduced in log4j 1.3.  This class is provided for compatibility with
- * existing code and should not be used except when compatibility with version
- * of log4j prior to 1.3 is a concern.
+ * introduced in log4j 1.3.    This class is provided for compatibility with
+ * existing configuration files but is not intended to be compatible with
+ * existing extensions of the prior RollingFileAppender and is marked final
+ * to prevent such use.
  *
  * @author Curt Arnold
  * @deprecated Replaced by {@link org.apache.log4j.rolling.RollingFileAppender}
@@ -164,7 +165,7 @@ public class RollingFileAppender implements Appender, OptionHandler {
     FixedWindowRollingPolicy rolling = new FixedWindowRollingPolicy();
     rolling.setMinIndex(1);
     rolling.setMaxIndex(maxBackupIndex);
-    rolling.setActiveFileName(rfa.getFile());
+    rfa.setFile(rfa.getFile());
     rolling.setFileNamePattern(rfa.getFile() + ".%i");
     rolling.activateOptions();
     rfa.setRollingPolicy(rolling);

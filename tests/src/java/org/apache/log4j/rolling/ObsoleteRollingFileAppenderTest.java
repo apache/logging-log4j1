@@ -52,8 +52,6 @@ public class ObsoleteRollingFileAppenderTest extends TestCase {
 
     // Write exactly 10 bytes with each log
     for (int i = 0; i < 25; i++) {
-      Thread.sleep(100);
-
       if (i < 10) {
         logger.debug("Hello---" + i);
       } else if (i < 100) {
@@ -83,8 +81,6 @@ public class ObsoleteRollingFileAppenderTest extends TestCase {
 
     // Write exactly 10 bytes with each log
     for (int i = 0; i < 25; i++) {
-      Thread.sleep(100);
-
       if (i < 10) {
         logger.debug("Hello---" + i);
       } else if (i < 100) {
