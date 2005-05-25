@@ -121,7 +121,7 @@ public final class RollingFileAppender extends FileAppender {
       return;
     }
 
-    IOException ioException = null;
+    Exception exception = null;
 
     synchronized (this) {
       triggeringPolicy.activateOptions();
@@ -157,15 +157,15 @@ public final class RollingFileAppender extends FileAppender {
         }
 
         super.activateOptions();
-      } catch (IOException ex) {
-        ioException = ex;
+      } catch (Exception ex) {
+        exception = ex;
       }
     }
 
-    if (ioException != null) {
+    if (exception != null) {
       getLogger().warn(
-        "IOException while initializing RollingFileAppender named '"
-        + getName() + "'", ioException);
+        "Exception while initializing RollingFileAppender named '" + getName()
+        + "'", exception);
     }
   }
 
@@ -288,8 +288,10 @@ public final class RollingFileAppender extends FileAppender {
 
               writeHeader();
             }
+
+            return true;
           }
-        } catch (IOException ex) {
+        } catch (Exception ex) {
           exception = ex;
         }
       }
@@ -312,7 +314,16 @@ public final class RollingFileAppender extends FileAppender {
     if (
       triggeringPolicy.isTriggeringEvent(
           this, event, getFile(), getFileLength())) {
-      rollover();
+      //
+      //   wrap rollover request in try block since
+      //    rollover may fail in case read access to directory
+      //    is not provided.  However appender should still be in good
+      //     condition and the append should still happen.
+      try {
+        rollover();
+      } catch (Exception ex) {
+          getLogger().info("Exception during rollover attempt.", ex);
+      }
     }
 
     super.subAppend(event);

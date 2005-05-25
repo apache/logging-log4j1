@@ -54,7 +54,7 @@ public abstract class RollingPolicyBase extends ComponentBase
 
   /**
    * Active file name may be null.
-   * @deprecated duplicates FileAppender.file and should be removed.
+   * Duplicates FileAppender.file and should be removed.
    */
   protected String activeFileName;
 
@@ -81,8 +81,8 @@ public abstract class RollingPolicyBase extends ComponentBase
 
   /**
    * ActiveFileName can be left unset, i.e. as null.
-   * @deprecated duplicates FileAppender.file and should be removed
-   * @see #getActiveFileName
+   * @param afn active file name.
+   * @deprecated Duplicates FileAppender.file and should be removed
    */
   public void setActiveFileName(String afn) {
     activeFileName = afn;
@@ -90,7 +90,7 @@ public abstract class RollingPolicyBase extends ComponentBase
 
   /**
    * Return the value of the <b>ActiveFile</b> option.
-   * @deprecated duplicates FileAppender.file and should be removed
+   * @deprecated Duplicates FileAppender.file and should be removed
    * @return active file name.
   */
   public String getActiveFileName() {

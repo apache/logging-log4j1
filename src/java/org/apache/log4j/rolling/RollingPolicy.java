@@ -18,8 +18,6 @@ package org.apache.log4j.rolling;
 
 import org.apache.log4j.spi.OptionHandler;
 
-import java.io.IOException;
-
 
 /**
  * A <code>RollingPolicy</code> specifies the actions taken
@@ -37,10 +35,10 @@ public interface RollingPolicy extends OptionHandler {
    * @param append current value of RollingFileAppender.getAppend().
    * @return Description of the initialization, may be null to indicate
    * no initialization needed.
-   * @throws IOException on failure.
+   * @throws SecurityException if denied access to log files.
    */
   public RolloverDescription initialize(
-    final String file, final boolean append) throws IOException;
+    final String file, final boolean append) throws SecurityException;
 
   /**
    * Prepare for a rollover.  This method is called prior to
@@ -51,9 +49,7 @@ public interface RollingPolicy extends OptionHandler {
    * @param activeFile file name for current active log file.
    * @return Description of pending rollover, may be null to indicate no rollover
    * at this time.
-   * @throws IOException on failure to prepare for rollover.  Rollover
-   * will be suppressed if an exception is thrown.
+   * @throws SecurityException if denied access to log files.
    */
-  public RolloverDescription rollover(final String activeFile)
-    throws IOException;
+  public RolloverDescription rollover(final String activeFile) throws SecurityException;
 }

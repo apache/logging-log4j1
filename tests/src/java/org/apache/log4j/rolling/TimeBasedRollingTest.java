@@ -239,7 +239,7 @@ public class TimeBasedRollingTest extends TestCase {
     rfa1.setLayout(layout1);
 
     TimeBasedRollingPolicy tbrp1 = new TimeBasedRollingPolicy();
-    tbrp1.setActiveFileName("output/test4.log");
+    rfa1.setFile("output/test4.log");
     tbrp1.setFileNamePattern("output/test4-%d{" + datePattern + "}");
     tbrp1.activateOptions();
     rfa1.setRollingPolicy(tbrp1);
@@ -275,7 +275,7 @@ public class TimeBasedRollingTest extends TestCase {
 
     TimeBasedRollingPolicy tbrp2 = new TimeBasedRollingPolicy();
     tbrp2.setFileNamePattern("output/test4-%d{" + datePattern + "}");
-    tbrp2.setActiveFileName("output/test4.log");
+    rfa2.setFile("output/test4.log");
     tbrp2.activateOptions();
     rfa2.setRollingPolicy(tbrp2);
     rfa2.activateOptions();
@@ -305,7 +305,7 @@ public class TimeBasedRollingTest extends TestCase {
 
     TimeBasedRollingPolicy tbrp = new TimeBasedRollingPolicy();
     tbrp.setFileNamePattern("output/test5-%d{" + datePattern + "}");
-    tbrp.setActiveFileName("output/test5.log");
+    rfa.setFile("output/test5.log");
     tbrp.activateOptions();
     rfa.setRollingPolicy(tbrp);
     rfa.activateOptions();
@@ -349,7 +349,7 @@ public class TimeBasedRollingTest extends TestCase {
 
     TimeBasedRollingPolicy tbrp = new TimeBasedRollingPolicy();
     tbrp.setFileNamePattern("output/test6-%d{" + datePattern + "}.gz");
-    tbrp.setActiveFileName("output/test6.log");
+    rfa.setFile("output/test6.log");
     tbrp.activateOptions();
     rfa.setRollingPolicy(tbrp);
     rfa.activateOptions();
