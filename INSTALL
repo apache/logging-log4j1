@@ -114,8 +114,8 @@ Log4j is based on JDK 1.1 with the following additional requirements:
 Building log4j
 ==============
     
-Like most java appilicatios today, log4j relies on ANT as its build
-tool. ANT is availale from "http://ant.apache.org/".  ANT
+Like most Java applications today, log4j relies on ANT as its build
+tool. ANT is available from "http://ant.apache.org/".  ANT
 requires a build file called build.xml which is part of this
 distribution. Required components from other projects are specified in
 the build.properties and example of which is supplied in the
