@@ -25,7 +25,7 @@ import java.io.File;
  * @author Curt Arnold
  * @since 1.3
  */
-public final class FileRenameAction implements Action {
+public final class FileRenameAction extends ActionBase {
   /**
    * Source.
    */
@@ -78,12 +78,5 @@ public final class FileRenameAction implements Action {
     }
 
     return source.delete();
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public void run() {
-    execute();
   }
 }

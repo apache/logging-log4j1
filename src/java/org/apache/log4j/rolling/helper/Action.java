@@ -36,4 +36,15 @@ public interface Action extends Runnable {
    * to be aborted if possible.
    */
   boolean execute() throws IOException;
+
+    /**
+     * Cancels the action if not already initialized or waits till completion.
+     */
+  void close();
+
+  /**
+   * Determines if action has been completed.
+    * @return true if action is complete.
+   */
+  boolean isComplete();
 }

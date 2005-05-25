@@ -16,12 +16,12 @@
 package org.apache.log4j.rolling.helper;
 
 import org.apache.log4j.rolling.RollingPolicyBase;
+import org.apache.log4j.rolling.RolloverDescription;
 
 import junit.framework.TestCase;
 
 import java.util.Calendar;
 import org.apache.log4j.ULogger;
-import java.util.List;
 
 
 /**
@@ -51,10 +51,11 @@ public final class FileNamePatternTestCase extends TestCase {
         public String getActiveFileName() {
             return null;
         }
-        public boolean rollover(final StringBuffer activeName,
-                                final List synchronousActions,
-                                final List asynchronousActions) {
-            return false;
+        public RolloverDescription initialize(final String activeName, final boolean append) {
+            return null;
+        }
+        public RolloverDescription rollover(final String activeName) {
+            return null;
         }
         public ULogger getLogger() {
             return null;

@@ -25,7 +25,6 @@ import org.apache.log4j.spi.LoggingEvent;
 import java.io.File;
 
 import java.util.Date;
-import java.util.List;
 
 
 /**
@@ -217,9 +216,35 @@ public final class TimeBasedRollingPolicy extends RollingPolicyBase
   /**
    * {@inheritDoc}
    */
-  public boolean rollover(
-    final StringBuffer activeFile, final List synchronousActions,
-    final List asynchronousActions) {
+  public RolloverDescription initialize(
+    final String currentActiveFile, final boolean append) {
+    long n = System.currentTimeMillis();
+    nextCheck = ((n / 1000) + 1) * 1000;
+
+    StringBuffer buf = new StringBuffer();
+    formatFileName(new Date(n), buf);
+    lastFileName = buf.toString();
+
+    //
+    //  RollingPolicyBase.activeFileName duplicates RollingFileAppender.file
+    //    and should be removed.
+    //
+    if (activeFileName != null) {
+      return new RolloverDescriptionImpl(activeFileName, append, null, null);
+    } else if (currentActiveFile != null) {
+      return new RolloverDescriptionImpl(
+        currentActiveFile, append, null, null);
+    } else {
+      return new RolloverDescriptionImpl(
+        lastFileName.substring(0, lastFileName.length() - suffixLength), append,
+        null, null);
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public RolloverDescription rollover(final String currentActiveFile) {
     long n = System.currentTimeMillis();
     nextCheck = ((n / 1000) + 1) * 1000;
 
@@ -232,63 +257,43 @@ public final class TimeBasedRollingPolicy extends RollingPolicyBase
     //  if file names haven't changed, no rollover
     //
     if (newFileName.equals(lastFileName)) {
-      activeFile.setLength(0);
-
-      if (activeFileName == null) {
-        activeFile.append(
-          newFileName.substring(0, newFileName.length() - suffixLength));
-      } else {
-        activeFile.append(activeFileName);
-      }
-
-      return false;
+      return null;
     }
 
-    File lastBaseFile =
-      new File(
-        lastFileName.substring(0, lastFileName.length() - suffixLength));
-
-    boolean lastFileExists = false;
+    Action renameAction = null;
+    Action compressAction = null;
+    String lastBaseName =
+      lastFileName.substring(0, lastFileName.length() - suffixLength);
+    String nextActiveFile =
+      newFileName.substring(0, newFileName.length() - suffixLength);
 
     //
-    //   if no explicit active file name then
-    //      change active file name to new name
-    //
-    if (activeFileName == null) {
-      lastFileExists = lastBaseFile.exists();
-      activeFile.setLength(0);
-      activeFile.append(newFileName);
-
-      if (suffixLength > 0) {
-        activeFile.setLength(activeFile.length() - suffixLength);
-      }
-    } else {
-      activeFile.setLength(0);
-      activeFile.append(activeFileName);
-
-      File currentActiveFile = new File(activeFileName);
-      lastFileExists = currentActiveFile.exists();
-      synchronousActions.add(
-        new FileRenameAction(currentActiveFile, lastBaseFile, true));
+    //   if currentActiveFile is not lastBaseName then
+    //        active file name is not following file pattern
+    //        and requires a rename plus maintaining the same name
+    if (!currentActiveFile.equals(lastBaseName)) {
+      renameAction =
+        new FileRenameAction(
+          new File(currentActiveFile), new File(lastBaseName), true);
+      nextActiveFile = currentActiveFile;
     }
 
-    if ((suffixLength > 0) && lastFileExists) {
-      File compressedFile = new File(lastFileName);
+    if (suffixLength == 3) {
+      compressAction =
+        new GZCompressAction(
+          new File(lastBaseName), new File(lastFileName), true, getLogger());
+    }
 
-      if (suffixLength == 3) {
-        asynchronousActions.add(
-          new GZCompressAction(
-            lastBaseFile, compressedFile, true, getLogger()));
-      } else if (suffixLength == 4) {
-        asynchronousActions.add(
-          new ZipCompressAction(
-            lastBaseFile, compressedFile, true, getLogger()));
-      }
+    if (suffixLength == 4) {
+      compressAction =
+        new ZipCompressAction(
+          new File(lastBaseName), new File(lastFileName), true, getLogger());
     }
 
     lastFileName = newFileName;
 
-    return true;
+    return new RolloverDescriptionImpl(
+      nextActiveFile, false, renameAction, compressAction);
   }
 
   /**

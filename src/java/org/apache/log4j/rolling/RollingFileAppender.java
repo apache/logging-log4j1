@@ -18,14 +18,9 @@ package org.apache.log4j.rolling;
 
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.rolling.helper.Action;
-import org.apache.log4j.rolling.helper.CompositeAction;
 import org.apache.log4j.spi.LoggingEvent;
 
 import java.io.*;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 
 /**
@@ -90,9 +85,9 @@ public final class RollingFileAppender extends FileAppender {
   private long fileLength = 0;
 
   /**
-   * Thread for any asynchronous actions from last rollover.
+   * Asynchronous action (like compression) from previous rollover.
    */
-  private Thread rollingThread = null;
+  private Action lastRolloverAsyncAction = null;
 
   /**
    * Construct a new instance.
@@ -132,21 +127,28 @@ public final class RollingFileAppender extends FileAppender {
       triggeringPolicy.activateOptions();
       rollingPolicy.activateOptions();
 
-      StringBuffer activeFileName = new StringBuffer();
-      List synchronousActions = new ArrayList();
-      List asynchronousActions = new ArrayList();
-
       try {
-        if (
-          rollingPolicy.rollover(
-              activeFileName, synchronousActions, asynchronousActions)) {
-          performActions(synchronousActions, asynchronousActions);
+        RolloverDescription rollover =
+          rollingPolicy.initialize(getFile(), getAppend());
+
+        if (rollover != null) {
+          Action syncAction = rollover.getSynchronous();
+
+          if (syncAction != null) {
+            syncAction.execute();
+          }
+
+          setFile(rollover.getActiveFileName());
+          setAppend(rollover.getAppend());
+          lastRolloverAsyncAction = rollover.getAsynchronous();
+
+          if (lastRolloverAsyncAction != null) {
+            Thread runner = new Thread(lastRolloverAsyncAction);
+            runner.start();
+          }
         }
 
-        String afn = activeFileName.toString();
-        setFile(afn);
-
-        File activeFile = new File(afn);
+        File activeFile = new File(getFile());
 
         if (getAppend()) {
           fileLength = activeFile.length();
@@ -162,44 +164,9 @@ public final class RollingFileAppender extends FileAppender {
 
     if (ioException != null) {
       getLogger().warn(
-        "IOException while preparing while initializing RollingFileAppender named '"
+        "IOException while initializing RollingFileAppender named '"
         + getName() + "'", ioException);
     }
-  }
-
-  /**
-   * Perform any actions specified by triggering policy.
-   * @param synchronousActions list of Action instances to be performed after active file close.
-   * @param asynchronousActions list of Action instances to be performed asynchronously after file close
-   * and synchronous actions.
-   * @return true if all synchronous actions were successful.
-   * @throws IOException if IO error during synchronous actions.
-   */
-  private boolean performActions(
-    final List synchronousActions, final List asynchronousActions)
-    throws IOException {
-    Iterator syncIterator = synchronousActions.iterator();
-
-    while (syncIterator.hasNext()) {
-      if (!((Action) syncIterator.next()).execute()) {
-        return false;
-      }
-    }
-
-    if (asynchronousActions.size() > 0) {
-      Runnable action = null;
-
-      if (asynchronousActions.size() > 1) {
-        action = new CompositeAction(asynchronousActions, false, getLogger());
-      } else {
-        action = (Runnable) asynchronousActions.get(0);
-      }
-
-      rollingThread = new Thread(action);
-      rollingThread.start();
-    }
-
-    return true;
   }
 
   /**
@@ -215,86 +182,114 @@ public final class RollingFileAppender extends FileAppender {
      <p>If <code>MaxBackupIndex</code> is equal to zero, then the
      <code>File</code> is truncated with no backup files created.
 
+   * @return true if rollover performed.
    */
-  public void rollover() {
+  public boolean rollover() {
+    //
+    //   can't roll without a policy
+    //
     if (rollingPolicy != null) {
       Exception exception = null;
 
       synchronized (this) {
+        //
+        //   if a previous async task is still running
+        //}
+        if (lastRolloverAsyncAction != null) {
+          //
+          //  block until complete
+          //
+          lastRolloverAsyncAction.close();
+
+          //
+          //    or don't block and return to rollover later
+          //
+          //if (!lastRolloverAsyncAction.isComplete()) return false;
+        }
+
         try {
-          //
-          //  if we have some in-process compression, etc
-          //     from the previous rollover, wait till they are finished.
-          //
-          if (rollingThread != null) {
-            rollingThread.join();
-            rollingThread = null;
-          }
+          RolloverDescription rollover = rollingPolicy.rollover(getFile());
 
-          StringBuffer activeFileName = new StringBuffer(super.getFile());
-          List synchronousActions = new ArrayList();
-          List asynchronousActions = new ArrayList();
+          if (rollover != null) {
+            if (rollover.getActiveFileName().equals(getFile())) {
+              closeWriter();
 
-          try {
-            boolean doRollover =
-              rollingPolicy.rollover(
-                activeFileName, synchronousActions, asynchronousActions);
+              boolean success = true;
 
-            if (doRollover) {
-              String oldFileName = getFile();
-              String newFileName = activeFileName.toString();
-
-              //
-              //  if the file names are the same then we
-              //     have to close, do actions, then reopen
-              if (newFileName.equals(oldFileName)) {
-                closeWriter();
+              if (rollover.getSynchronous() != null) {
+                success = false;
 
                 try {
-                  if (!performActions(synchronousActions, asynchronousActions)) {
-                    throw new IOException(
-                      "Unable to complete action after active file close.");
-                  }
-                } catch (IOException ex) {
-                  setFile(oldFileName, true, bufferedIO, bufferSize);
-                  throw ex;
+                  success = rollover.getSynchronous().execute();
+                } catch (Exception ex) {
+                  exception = ex;
                 }
-
-                fileLength = 0;
-                setFile(newFileName, false, bufferedIO, bufferSize);
-              } else {
-                //
-                //  if not the same, we can try opening new file before
-                //     closing old file
-                if (bufferedIO) {
-                  setImmediateFlush(false);
-                }
-
-                Writer newWriter =
-                  createWriter(new FileOutputStream(newFileName, false));
-                closeWriter();
-
-                try {
-                  performActions(synchronousActions, asynchronousActions);
-                  fileLength = 0;
-
-                  if (bufferedIO) {
-                    this.writer = new BufferedWriter(newWriter, bufferSize);
-                  } else {
-                    this.writer = newWriter;
-                  }
-                } catch (IOException ex) {
-                  setFile(oldFileName, true, bufferedIO, bufferSize);
-                  throw ex;
-                }
-
-                writeHeader();
               }
+
+              if (success) {
+                if (rollover.getAppend()) {
+                  fileLength = new File(rollover.getActiveFileName()).length();
+                } else {
+                  fileLength = 0;
+                }
+
+                if (rollover.getAsynchronous() != null) {
+                  lastRolloverAsyncAction = rollover.getAsynchronous();
+                  new Thread(lastRolloverAsyncAction).start();
+                }
+
+                setFile(
+                  rollover.getActiveFileName(), rollover.getAppend(),
+                  bufferedIO, bufferSize);
+              } else {
+                setFile(
+                  rollover.getActiveFileName(), true, bufferedIO, bufferSize);
+
+                if (exception == null) {
+                  getLogger().warn("Failure in post-close rollover action");
+                } else {
+                  getLogger().warn(
+                    "Exception in post-close rollover action", exception);
+                }
+              }
+            } else {
+              Writer newWriter =
+                createWriter(
+                  new FileOutputStream(
+                    rollover.getActiveFileName(), rollover.getAppend()));
+              closeWriter();
+              setFile(rollover.getActiveFileName());
+              this.writer = newWriter;
+
+              boolean success = true;
+
+              if (rollover.getSynchronous() != null) {
+                success = false;
+
+                try {
+                  success = rollover.getSynchronous().execute();
+                } catch (Exception ex) {
+                  exception = ex;
+                }
+              }
+
+              if (success) {
+                if (rollover.getAppend()) {
+                  fileLength = new File(rollover.getActiveFileName()).length();
+                } else {
+                  fileLength = 0;
+                }
+
+                if (rollover.getAsynchronous() != null) {
+                  lastRolloverAsyncAction = rollover.getAsynchronous();
+                  new Thread(lastRolloverAsyncAction).start();
+                }
+              }
+
+              writeHeader();
             }
-          } catch (IOException ex) {
-            exception = ex;
           }
-        } catch (InterruptedException ex) {
+        } catch (IOException ex) {
           exception = ex;
         }
       }
@@ -304,6 +299,8 @@ public final class RollingFileAppender extends FileAppender {
           "Exception during rollover, rollover deferred.", exception);
       }
     }
+
+    return false;
   }
 
   /**
@@ -357,15 +354,10 @@ public final class RollingFileAppender extends FileAppender {
    * Close appender.  Waits for any asynchronous file compression actions to be completed.
    */
   public void close() {
-    if (rollingThread != null) {
-      try {
-        rollingThread.join();
-      } catch (InterruptedException ex) {
-        getLogger().info(
-          "Interrupted while waiting for completion of rollover actions.", ex);
+    synchronized (this) {
+      if (lastRolloverAsyncAction != null) {
+        lastRolloverAsyncAction.close();
       }
-
-      rollingThread = null;
     }
 
     super.close();
