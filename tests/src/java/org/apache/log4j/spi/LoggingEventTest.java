@@ -83,7 +83,7 @@ public class LoggingEventTest extends TestCase {
               root, Level.INFO, "Hello, world.", null);
       LocationInfo info = event.getLocationInformation();
       event.prepareForDeferredProcessing();
-      int[] skip = new int[] { 358, 359, 360, 361, 362 };
+      int[] skip = new int[] { 354, 355, 356, 357, 358, 359, 360, 361, 362 };
       assertSerializationEquals("witness/serialization/location.bin", event, skip, Integer.MAX_VALUE);
    }
 
@@ -97,7 +97,7 @@ public class LoggingEventTest extends TestCase {
       LoggingEvent event = new LoggingEvent(root.getClass().getName(),
               root, Level.INFO, "Hello, world.", null);
       event.prepareForDeferredProcessing();
-      int[] skip = new int[] { 358, 359, 360, 361, 362 };
+      int[] skip = new int[] { 354, 355, 356, 357, 358, 359, 360, 361, 362 };
       assertSerializationEquals("witness/serialization/ndc.bin", event, skip, Integer.MAX_VALUE);
    }
 
@@ -111,7 +111,7 @@ public class LoggingEventTest extends TestCase {
       LoggingEvent event = new LoggingEvent(root.getClass().getName(),
               root, Level.INFO, "Hello, world.", null);
       event.prepareForDeferredProcessing();
-      int[] skip = new int[] { 358, 359, 360, 361, 362 };
+      int[] skip = new int[] { 354, 355, 356, 357, 358, 359, 360, 361, 362 };
       assertSerializationEquals("witness/serialization/mdc.bin", event, skip, Integer.MAX_VALUE);
    }
 
