@@ -108,6 +108,7 @@
     <module name="UnusedImports"/>
     <module name="SimplifyBooleanExpression"/>
     <module name="SimplifyBooleanReturn"/>
+    <module name="AvoidStarImport"/>
 
     <!-- flag reminder comments -->
     <module name="TodoComment"/>

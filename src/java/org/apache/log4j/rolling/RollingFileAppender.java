@@ -20,7 +20,12 @@ import org.apache.log4j.FileAppender;
 import org.apache.log4j.rolling.helper.Action;
 import org.apache.log4j.spi.LoggingEvent;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 
 
 /**
