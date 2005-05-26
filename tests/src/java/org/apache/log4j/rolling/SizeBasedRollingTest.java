@@ -16,6 +16,9 @@
 
 package org.apache.log4j.rolling;
 
+import java.io.File;
+import java.io.FileOutputStream;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -26,10 +29,6 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.util.Compare;
-import java.io.FileOutputStream;
-import java.io.*;
-
-import java.io.File;
 
 
 /**
