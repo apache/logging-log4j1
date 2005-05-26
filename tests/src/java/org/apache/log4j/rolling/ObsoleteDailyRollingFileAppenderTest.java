@@ -17,8 +17,10 @@
 package org.apache.log4j.rolling;
 
 import junit.framework.TestCase;
-
-import org.apache.log4j.*;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
+import org.apache.log4j.PropertyConfigurator;
 
 import java.io.File;
 

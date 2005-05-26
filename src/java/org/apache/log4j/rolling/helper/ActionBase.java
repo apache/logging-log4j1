@@ -36,7 +36,6 @@ public abstract class ActionBase implements Action {
    */
   private boolean interrupted = false;
 
-
   /**
    * Constructor.
    */
@@ -46,6 +45,7 @@ public abstract class ActionBase implements Action {
   /**
    * Perform action.
    *
+   * @throws IOException if IO error.
    * @return true if successful.
    */
   public abstract boolean execute() throws IOException;
@@ -55,29 +55,30 @@ public abstract class ActionBase implements Action {
    */
   public synchronized void run() {
     if (!interrupted) {
-        try {
-           execute();
-        } catch(IOException ex) {
-           reportException(ex);
-        }
-        complete = true;
-        interrupted = true;
+      try {
+        execute();
+      } catch (IOException ex) {
+        reportException(ex);
+      }
+
+      complete = true;
+      interrupted = true;
     }
   }
 
-    /**
-     * {@inheritDoc}
-     */
+  /**
+   * {@inheritDoc}
+   */
   public synchronized void close() {
-      interrupted = true;
+    interrupted = true;
   }
 
-    /**
-     * Tests if the action is complete.
-     * @return true if action is complete.
-     */
+  /**
+   * Tests if the action is complete.
+   * @return true if action is complete.
+   */
   public boolean isComplete() {
-      return complete;
+    return complete;
   }
 
   /**
@@ -85,6 +86,6 @@ public abstract class ActionBase implements Action {
    *
    * @param ex exception.
    */
-  protected void reportException(final Exception ex) {      
+  protected void reportException(final Exception ex) {
   }
 }

@@ -17,9 +17,12 @@
 package org.apache.log4j.rolling;
 
 import junit.framework.TestCase;
-
-
-import org.apache.log4j.*;
+import org.apache.log4j.Appender;
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
 import org.apache.log4j.filter.LevelRangeFilter;
 import org.apache.log4j.joran.JoranConfigurator;
 import org.apache.log4j.util.Compare;
