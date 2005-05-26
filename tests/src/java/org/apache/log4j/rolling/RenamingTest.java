@@ -25,6 +25,7 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.util.Compare;
+import java.io.File;
 
 
 /**
@@ -61,15 +62,15 @@ public class RenamingTest extends TestCase {
   
     RollingFileAppender rfa = new RollingFileAppender();
     rfa.setLayout(layout);
+    rfa.setAppend(false);
 
     // rollover by the second
     String datePattern = "yyyy-MM-dd_HH_mm_ss";
     SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
-    String[] filenames = new String[2];
 
     TimeBasedRollingPolicy tbrp = new TimeBasedRollingPolicy();
     tbrp.setFileNamePattern("output/test-%d{" + datePattern + "}");
-    tbrp.setActiveFileName("output/test.log");
+    rfa.setFile("output/test.log");
     tbrp.activateOptions();
     rfa.setRollingPolicy(tbrp);
     rfa.activateOptions();
@@ -81,11 +82,21 @@ public class RenamingTest extends TestCase {
     Thread.sleep(5000);
     logger.debug("Hello   " + 1);
     
-    filenames[0] = "output/test-" + sdf.format(cal.getTime());
-    filenames[1] = "output/test.log";
+    String rolledFile = "output/test-" + sdf.format(cal.getTime());
 
-    for (int i = 0; i < filenames.length; i++) {
-      assertTrue(Compare.compare(filenames[i], "witness/rolling/renaming." + i));
+    //
+    //   if the rolled file exists
+    //       either the test wasn't run from the Ant script
+    //            which opens test.log in another process or
+    //              the test is running on a platform that allows open files to be renamed
+    if (new File(rolledFile).exists()) {
+        assertTrue(Compare.compare(rolledFile, "witness/rolling/renaming.0"));
+        assertTrue(Compare.compare("output/test.log", "witness/rolling/renaming.1"));
+    } else {
+        //
+        //   otherwise the rollover should have been blocked
+        //
+        assertTrue(Compare.compare("output/test.log", "witness/rolling/renaming.2"));
     }
   }
 }
