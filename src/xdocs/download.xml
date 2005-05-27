@@ -9,29 +9,27 @@
     <meta name="keywords" content="java, log4j download, logging, tracing, component, framework, API, log4j"/>
       <body>
 	
-      <section name="log4j version 1.2.9">
-	<p>Log4j is <a
+      <section name="log4j version 1.2.11">
+	  <p>Log4j is <a
 	      href="http://logging.apache.org/site/binindex.cgi"><b>available
 	      for download</b></a> from a number of mirrors. Please
 	      use these mirrors as they improve download time and save
 	      bandwidth.
 	  </p>
 	  
-	  <p>Log4j version 1.2.9, is identical to version 1.2.8,
-	  except that several key methods have been deprecated in
-	  preparation for version 1.3.0, the next major release of
-	  log4j. These changes are intended to enforce the rule that
-	  client code should never refer to the <code>Category</code>
-	  class directly, but use the <code>Logger</code> class
-	  instead. Similarly, client code should not refer to the
-	  <code>Priority</code> class but to the <code>Level</code>
-	  class instead.
-          </p>
+	  <p>Log4j version 1.2.11, is identical to version 1.2.9,
+	  except that the class org.apache.log4j.or.jms.MessageRenderer is now
+    explicitly contained in the 1.2.11.jar.  In previous releases of the 1.2
+    branch it was sometimes include and sometimes left out
+    (<a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=34491">bug #34491</a>).
+    </p>
 
-          <p>See the document entitled <a
-          href="http://www.qos.ch/logging/preparingFor13.jsp">preparing
-          for log4j 1.3</a> for a more detailed discussion.
-          </p>
+    <p>The next major release of log4j will be version 1.3.  It will contain
+    many new features and changes, and if you have written custom code, it may
+    need to be modified to work with it.  Please see the document entitled <a
+    href="http://www.qos.ch/logging/preparingFor13.jsp">preparing
+    for log4j 1.3</a> for a more detailed discussion.
+    </p>
           
           
 
@@ -52,17 +50,6 @@
       <dl>
 
 	<!-- ============================================================================== -->
-	
-	<dt><a
-	href="chainsaw.html"><b>Chainsaw v2 (NEW!)</b></a></dt>
-
-	<dd>A new and improved version of the venerable Chainsaw
-	utility, now being written by the log4j development team is
-	getting closer to release.  You can see screen shots of it and
-	install it and run over <A href="chainsaw.html">here</A>
-	</dd>
-
-	<!-- ============================================================================== -->
 	<dt><a href="http://minaret.biz/tips/datedFileAppender.html"><b>DatedFileAppender</b></a></dt>
 
 	<dd><code>DatedFileAppender</code> works in the same manner as
@@ -77,13 +64,6 @@
 	midnight.
 	</dd>
 
-	<!-- ============================================================================== -->
-
-<!--	<dt><a href="http://www.japhy.de/configLog4j"><b>configLog4j</b></a></dt>
-
-	<dd>A graphical log4j configuration editor by Tobias
-	Dezulian.</dd>
--->
 	<!-- ============================================================================== -->
 
 	<dt>
