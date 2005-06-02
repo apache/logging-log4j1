@@ -109,13 +109,7 @@ public final class FixedWindowRollingPolicy extends RollingPolicyBase {
    * {@inheritDoc}
    */
   public void activateOptions() {
-    if (fileNamePatternStr != null) {
-      parseFileNamePattern();
-    } else {
-      getLogger().warn(FNP_NOT_SET);
-      getLogger().warn(SEE_FNP_NOT_SET);
-      throw new IllegalStateException(FNP_NOT_SET + SEE_FNP_NOT_SET);
-    }
+    super.activateOptions();
 
     if (maxIndex < minIndex) {
       getLogger().warn(
@@ -131,19 +125,11 @@ public final class FixedWindowRollingPolicy extends RollingPolicyBase {
       getLogger().warn("MaxIndex reduced to {}.", new Integer(maxIndex));
     }
 
-    PatternConverter itc = null;
-
-    for (int i = 0; i < patternConverters.length; i++) {
-      if (patternConverters[i] instanceof IntegerPatternConverter) {
-        itc = patternConverters[i];
-
-        break;
-      }
-    }
+    PatternConverter itc = getIntegerPatternConverter();
 
     if (itc == null) {
       throw new IllegalStateException(
-        "FileNamePattern [" + fileNamePatternStr
+        "FileNamePattern [" + getFileNamePattern()
         + "] does not contain a valid integer format specifier");
     }
   }

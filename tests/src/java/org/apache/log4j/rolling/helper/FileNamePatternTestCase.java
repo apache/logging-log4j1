@@ -42,14 +42,11 @@ public final class FileNamePatternTestCase extends TestCase {
 
     private static class FileNameTestRollingPolicy extends RollingPolicyBase {
         public FileNameTestRollingPolicy(final String pattern) {
-            fileNamePatternStr = pattern;
+            setFileNamePattern(pattern);
             parseFileNamePattern();
         }
 
         public void activateOptions() {
-        }
-        public String getActiveFileName() {
-            return null;
         }
         public RolloverDescription initialize(final String activeName, final boolean append) {
             return null;

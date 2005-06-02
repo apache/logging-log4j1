@@ -139,17 +139,6 @@ import java.util.Date;
  */
 public final class TimeBasedRollingPolicy extends RollingPolicyBase
   implements TriggeringPolicy {
-  /**
-   * Error message.
-   */
-  private static final String FNP_NOT_SET =
-    "The FileNamePattern option must be set before using TimeBasedRollingPolicy. ";
-
-  /**
-   *   Reference for error message.
-   */
-  private static final String SEE_FNP_NOT_SET =
-    "See also http://logging.apache.org/log4j/codes.html#tbr_fnp_not_set";
 
   /**
    * Time for next determination if time for rollover.
@@ -176,28 +165,13 @@ public final class TimeBasedRollingPolicy extends RollingPolicyBase
    * Prepares instance of use.
    */
   public void activateOptions() {
-    // find out period from the filename pattern
-    if (fileNamePatternStr != null) {
-      parseFileNamePattern();
-    } else {
-      getLogger().warn(FNP_NOT_SET);
-      getLogger().warn(SEE_FNP_NOT_SET);
-      throw new IllegalStateException(FNP_NOT_SET + SEE_FNP_NOT_SET);
-    }
+    super.activateOptions();
 
-    PatternConverter dtc = null;
-
-    for (int i = 0; i < patternConverters.length; i++) {
-      if (patternConverters[i] instanceof DatePatternConverter) {
-        dtc = patternConverters[i];
-
-        break;
-      }
-    }
+    PatternConverter dtc = getDatePatternConverter();
 
     if (dtc == null) {
       throw new IllegalStateException(
-        "FileNamePattern [" + fileNamePatternStr
+        "FileNamePattern [" + getFileNamePattern()
         + "] does not contain a valid date format specifier");
     }
 

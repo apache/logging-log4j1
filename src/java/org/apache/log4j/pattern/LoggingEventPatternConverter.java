@@ -20,19 +20,12 @@ import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
-
-   <p>PatternConverter is an abtract class that provides the
-   formatting functionality that derived classes need.
-
-   <p>Conversion specifiers in a conversion patterns are parsed to
-   individual PatternConverters. Each of which is responsible for
-   converting a logging event in a converter specific manner.
-
-   @author <a href="mailto:cakalijp@Maritz.com">James P. Cakalic</a>
-   @author Ceki G&uuml;lc&uuml;
-   @author Chris Nokes
-
-   @since 1.3
+ * LoggingEventPatternConverter is a base class for pattern converters
+ * that can format information from instances of LoggingEvent.
+ *
+ * @author Curt Arnold
+ *
+ *  @since 1.3
  */
 public abstract class LoggingEventPatternConverter extends PatternConverter {
   /**
