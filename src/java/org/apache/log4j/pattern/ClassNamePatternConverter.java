@@ -27,7 +27,7 @@ import org.apache.log4j.spi.location.LocationInfo;
  * @author Ceki G&uuml;lc&uuml;
  * @since 1.3
  */
-public final class ClassNamePatternConverter extends NamedPatternConverter {
+public final class ClassNamePatternConverter extends NamePatternConverter {
   /**
    * Private constructor.
    * @param options options, may be null.

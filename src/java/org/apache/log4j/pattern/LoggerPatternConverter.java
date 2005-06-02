@@ -27,7 +27,7 @@ import org.apache.log4j.spi.LoggingEvent;
  *
  * @since 1.3
  */
-public final class LoggerPatternConverter extends NamedPatternConverter {
+public final class LoggerPatternConverter extends NamePatternConverter {
   /**
    * Singleton.
    */

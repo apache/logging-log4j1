@@ -26,7 +26,7 @@ package org.apache.log4j.pattern;
  *
  * @since 1.3
  */
-public abstract class NamedPatternConverter
+public abstract class NamePatternConverter
   extends LoggingEventPatternConverter {
   /**
    * Abbreviator.
@@ -39,7 +39,7 @@ public abstract class NamedPatternConverter
    * @param style style name for associated output.
    * @param options options, may be null, first element will be interpreted as an abbreviation pattern.
    */
-  protected NamedPatternConverter(
+  protected NamePatternConverter(
     final String name, final String style, final String[] options) {
     super(name, style);
 

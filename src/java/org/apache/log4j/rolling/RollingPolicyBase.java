@@ -19,6 +19,8 @@ package org.apache.log4j.rolling;
 import org.apache.log4j.pattern.FormattingInfo;
 import org.apache.log4j.pattern.PatternConverter;
 import org.apache.log4j.pattern.PatternParser;
+import org.apache.log4j.pattern.IntegerPatternConverter;
+import org.apache.log4j.pattern.DatePatternConverter;
 import org.apache.log4j.spi.ComponentBase;
 import org.apache.log4j.spi.OptionHandler;
 
@@ -37,20 +39,32 @@ import java.util.List;
  */
 public abstract class RollingPolicyBase extends ComponentBase
   implements RollingPolicy, OptionHandler {
+    /**
+     * Error message.
+     */
+    private static final String FNP_NOT_SET =
+      "The FileNamePattern option must be set before using RollingPolicy. ";
+
+    /**
+     *   Reference for error message.
+     */
+    private static final String SEE_FNP_NOT_SET =
+      "See also http://logging.apache.org/log4j/codes.html#tbr_fnp_not_set";
+
   /**
    * File name pattern converters.
    */
-  protected PatternConverter[] patternConverters;
+  private PatternConverter[] patternConverters;
 
   /**
    * File name field specifiers.
    */
-  protected FormattingInfo[] patternFields;
+  private FormattingInfo[] patternFields;
 
   /**
    * File name pattern.
    */
-  protected String fileNamePatternStr;
+  private String fileNamePatternStr;
 
   /**
    * Active file name may be null.
@@ -61,7 +75,17 @@ public abstract class RollingPolicyBase extends ComponentBase
   /**
    * {@inheritDoc}
    */
-  public abstract void activateOptions();
+  public void activateOptions() {
+      // find out period from the filename pattern
+      if (fileNamePatternStr != null) {
+        parseFileNamePattern();
+      } else {
+        getLogger().warn(FNP_NOT_SET);
+        getLogger().warn(SEE_FNP_NOT_SET);
+        throw new IllegalStateException(FNP_NOT_SET + SEE_FNP_NOT_SET);
+      }
+
+  }
 
   /**
    * Set file name pattern.
@@ -131,4 +155,24 @@ public abstract class RollingPolicyBase extends ComponentBase
       }
     }
   }
+
+  protected final PatternConverter getDatePatternConverter() {
+      for (int i = 0; i < patternConverters.length; i++) {
+        if (patternConverters[i] instanceof DatePatternConverter) {
+          return patternConverters[i];
+        }
+      }
+      return null;
+
+  }
+
+  protected final PatternConverter getIntegerPatternConverter() {
+      for (int i = 0; i < patternConverters.length; i++) {
+        if (patternConverters[i] instanceof IntegerPatternConverter) {
+          return patternConverters[i];
+        }
+      }
+      return null;
+  }
+
 }

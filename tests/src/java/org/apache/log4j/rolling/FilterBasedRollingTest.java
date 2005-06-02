@@ -48,7 +48,7 @@ public class FilterBasedRollingTest extends TestCase {
   }
 
   public void tearDown() {
-    LogManager.shutdown();
+    LogManager.getLoggerRepository().resetConfiguration();
   }
 
   /**
@@ -67,7 +67,7 @@ public class FilterBasedRollingTest extends TestCase {
    * Test basic rolling functionality using explicit configuration.
    * Test fails when run immediately after test1.
    */
-  public void xtest2() throws Exception {
+  public void test2() throws Exception {
     PatternLayout layout = new PatternLayout("%m\n");
     RollingFileAppender rfa = new RollingFileAppender();
     rfa.setName("ROLLING");
@@ -82,7 +82,8 @@ public class FilterBasedRollingTest extends TestCase {
     fbtp.activateOptions();
 
     swrp.setMinIndex(0);
-    swrp.setActiveFileName("output/filterBased-test2.log");
+    rfa.setFile("output/filterBased-test2.log");
+    rfa.setAppend(false);
 
     swrp.setFileNamePattern("output/filterBased-test2.%i");
     swrp.activateOptions();

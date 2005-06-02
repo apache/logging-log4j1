@@ -108,6 +108,8 @@ public final class RollingFileAppender extends FileAppender {
       getLogger().warn(
         "Please set a rolling policy for the RollingFileAppender named '{}'",
         getName());
+
+        return;
     }
 
     //
