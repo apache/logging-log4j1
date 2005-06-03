@@ -23,7 +23,6 @@
 
   <property name="tests.source.home" value="./src/java/"/>
 
-
   <path id="tests.classpath">
     <pathelement location="${project.source.home}"/>
     <pathelement location="${project.classes.home}"/>
@@ -31,6 +30,8 @@
     <pathelement location="./classes"/>
     <pathelement location="./resources"/>
     <pathelement location="${jakarta.oro.jar}"/>
+    <pathelement location="${xml-api.jar}"/>
+    <pathelement location="${xml-impl.jar}"/>
   </path>
 
   <!-- ================================================================= -->
@@ -68,8 +69,9 @@
   <!-- ================================================================= -->
   <target name="build" depends="prepare">
     <javac srcdir="${tests.source.home}"
-	   destdir="./classes"
+	         destdir="./classes"
            deprecation="${deprecation}"
+           target="1.1"
            debug="on">			
       <classpath refid="tests.classpath"/>
     </javac>
