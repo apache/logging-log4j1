@@ -22,6 +22,7 @@ java.lang.Exception: Just testing
 	at junit.framework.TestSuite.runTest(TestSuite.java:XXX)
 	at junit.framework.TestSuite.run(TestSuite.java:XXX)
 	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(JUnitTestRunner.java:XXX)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.launch(JUnitTestRunner.java:XXX)
 	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.main(JUnitTestRunner.java:XXX)
 [main] INFO  apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 6
 java.lang.Exception: Just testing
@@ -37,6 +38,7 @@ java.lang.Exception: Just testing
 	at junit.framework.TestSuite.runTest(TestSuite.java:XXX)
 	at junit.framework.TestSuite.run(TestSuite.java:XXX)
 	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(JUnitTestRunner.java:XXX)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.launch(JUnitTestRunner.java:XXX)
 	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.main(JUnitTestRunner.java:XXX)
 [main] WARN  apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 7
 java.lang.Exception: Just testing
@@ -52,6 +54,7 @@ java.lang.Exception: Just testing
 	at junit.framework.TestSuite.runTest(TestSuite.java:XXX)
 	at junit.framework.TestSuite.run(TestSuite.java:XXX)
 	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(JUnitTestRunner.java:XXX)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.launch(JUnitTestRunner.java:XXX)
 	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.main(JUnitTestRunner.java:XXX)
 [main] ERROR apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 8
 java.lang.Exception: Just testing
@@ -67,6 +70,7 @@ java.lang.Exception: Just testing
 	at junit.framework.TestSuite.runTest(TestSuite.java:XXX)
 	at junit.framework.TestSuite.run(TestSuite.java:XXX)
 	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(JUnitTestRunner.java:XXX)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.launch(JUnitTestRunner.java:XXX)
 	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.main(JUnitTestRunner.java:XXX)
 [main] FATAL apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 9
 java.lang.Exception: Just testing
@@ -82,4 +86,5 @@ java.lang.Exception: Just testing
 	at junit.framework.TestSuite.runTest(TestSuite.java:XXX)
 	at junit.framework.TestSuite.run(TestSuite.java:XXX)
 	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(JUnitTestRunner.java:XXX)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.launch(JUnitTestRunner.java:XXX)
 	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.main(JUnitTestRunner.java:XXX)
