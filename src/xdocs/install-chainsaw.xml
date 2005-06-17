@@ -112,6 +112,9 @@ You should now be able to do the following to run Chainsaw v2
   
   2. execute logging-chainsaw's ant target
      * cd logging-chainsaw
+	 * mkdir lib
+	 * copy all jars in the logging-log4j directory to lib
+	 * copy other dependencies (vfs, commons-logging) (but not ORO) to lib
      * ant chainsaw
 
 GOOD LUCK!
