@@ -15,8 +15,10 @@
         <head>
             <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
 
-                                                    <meta name="author" value="Ceki Gulcu">
-            <meta name="email" value="ceki@apache.org">
+                                                    <meta name="author" value="Ceki Gülcü">
+            <meta name="email" value="not@disclosed">
+                                        <meta name="author" value="Mark Womack">
+            <meta name="email" value="mwomack@apache.org">
             
             
                                     
@@ -24,7 +26,7 @@
             <link href="./css/site.css" rel="stylesheet" type="text/css"/>
                                    
 
-            <title>Log4j project - Release plan for log4j 1.3</title>
+            <title>Log4j project - Release roadmap for log4j</title>
         </head>
 
         <body bgcolor="#ffffff" text="#000000" link="#525D76">        
@@ -48,31 +50,62 @@
 	   <div class="centercol">
              <hr noshade="" size="1"/>
 		       
-                                         <h1>Plan? What plan?</strong></h1>
-                                    <p>The following paragragh was adapted from the <a href="http://jakarta.apache.org/cactus/">Cactus</a> project's
-      roadmap with the author's permission.
+                                         <h1>The Roadmap</strong></h1>
+                                    <p>The log4j committers have adopted a roadmap for future releases
+      of log4j.  This page documents that roadmap and gives you an idea of what
+      to expect from future versions and timeframes for release.
       </p>
                                                 <p>Our users keep inventing better ways and adding new
-	requirements. The downside is that our todo list keeps
-	growing. The upside is that there is plenty of work to go
-	around. If you are interested in participating, send an email
-	on the log4j-dev@ mailing list stating your interest. You'll
-	be promptly enrolled. We're always looking for help!  Don't be
-	put off if in the "Volunteer" column already has a person
-	listed. Programming is fun, especially if it is done in a
-	team.
+      requirements. The downside is that our todo list keeps
+      growing. The upside is that there is plenty of work to go
+      around. If you are interested in participating, send an email
+      on the log4j-dev@ mailing list stating your interest. You'll
+      be promptly enrolled.  We're always looking for help!  Don't be
+      put off if in the "Volunteer" column already has a person
+      listed. Programming is fun, especially if it is done in a
+      team.
       </p>
-                                                <p>
-	
+                                                                           <h1>Release 1.2.12</strong></h1>
+                                    <p>Expected timeframe: End of July, 2005</p>
+                                                <p>Version 1.2.12 is planned primarily as a bug fix release.  It will be
+      addressing major bugs where the fixes do not require api changes.  If you
+      have a bug or problem that you feel should be addressed, please make sure
+      that is reported in the log4j bug database and highlight it as a candidate
+      for the 1.2.12 release.
       </p>
-                                                                           <h1>Workplan for log4j 1.3</strong></h1>
-                                    <p>The workplan for log4j 1.3 is not final. It is included here
-	to give you an idea of the future. The items are not listed in
-	any particular order.  As always, there is no scheduled
-	release date. The lack of schedule suprises and disturbs some
-	people. Writing good software, like good cooking, takes
-	time. If we make you wait, it is to create a better and more
-	reliable product.
+                                                <p>The log4j committers did decide to include one change in the 1.2 api
+      for the 1.2.12 release: adding the TRACE level as a level choice with
+      supporting methods to log messages for that level and check if the level
+      is enabled.  The change is minor and should not cause problems with
+      existing deployments that use version 1.2.12 throughout.  However, the
+      committers reserve the right to not include it if it appears to break too
+      much.
+      </p>
+                                                <p>It is expected that version 1.2.12 will be the last release for the
+      1.2 branch, the next major release being version 1.3.  However, if a
+      critical bug fix is needed, another version will be released.
+      </p>
+                                                                           <h1>Release 1.3</strong></h1>
+                                    <p>Expected timeframe: October, 2005</p>
+                                                <p>The work for version 1.3 has been ongoing for a long time now, and it
+      is time to button it up and let others take it for a ride.  Reviewing,
+      stablizing, and testing the 1.3 code for release is the major goal for
+      the log4j committers for this year.
+      </p>
+                                                <p>Version 1.3 is going to contain some very extensive changes and new
+      features.  You should expect a number of api changes.  Early release
+      alpha versions have been available for a while, and the releases will be
+      accelerating as the committers review and cleanup the current code base
+      for release.  As part of those releases, the committers plan to include
+      jDiff reports that will clearly outline the changes and additions to the
+      log4j code since the most recent 1.2.X release.  This should help you in
+      seeing what might need to be reviewed or fixed in your own code related
+      to log4j.
+      </p>
+                                                <p>Below is a table from previous documentation about the 1.3 work plan
+      and it is somewhat out of date.  The committers will be updating this page
+      with more and better documentation about what has changed, what has been
+      reviewed, and what tasks remain as we work toward the 1.3 release.
       </p>
                                                 <table class="ls" cellpadding="3" cellspacing="2">
 	
@@ -121,12 +154,14 @@
 	      are configured separately.
 	    </p>
 
-	    <p>The new JoranConfigurator being created by Ceki will be based on
-	    a new 'module' know as Joran, which can convert XML files into other objects based
-	    on rules.  You can read more abouth Joran <b><u><a href="http://www.qos.ch/logging/JoranConfigurator.html">here</a></u></b>
+	    <p>The new JoranConfigurator being created by Ceki Gülcü will be based on
+	    a new 'module' know as Joran, which can convert XML files into other
+      objects based on rules.  You can read more abouth Joran <b><u>
+      <a href="http://www.qos.ch/logging/JoranConfigurator.html">here</a>
+      </u></b>
 	    </p>	      
 	  </td>
-	  <td>Ceki</td>	  
+	  <td>Ceki Gülcü</td>	  
 	  <td>Significantly progressed</td>
 	</tr>
 
@@ -140,7 +175,7 @@
 	    first suggested to me by Scott Stark of <a href="http://www.jboss.org">JBoss</a> fame.
 	    </p>
 	  </td>
-	  <td>Ceki</td>	  
+	  <td>Ceki Gülcü</td>	  
 	  <td>design board</td>
 	</tr>
 
@@ -166,11 +201,14 @@
 	  
 	  <td>
 	    <p>A Plugin framework has been designed and implemented.</p>
-	    <p>All of the currently developed plugins are "Receivers", which can be thought of as the reverse of an appender; something
+	    <p>All of the currently developed plugins are "Receivers", which can be
+      thought of as the reverse of an appender; something
 	    that <b>accepts</b> LoggingEvents from some external source.
 	    </p>
-	    <p>This has proven particulaly useful with the log4j ports, with the addition of the XML-based Receivers able to accept
-	    LoggingEvents generated from other languages (see "Overture to other programming languages" below)
+	    <p>This has proven particulaly useful with the log4j ports, with the
+      addition of the XML-based Receivers able to accept
+	    LoggingEvents generated from other languages (see "Overture to other
+      programming languages" below)
 	    </p>
 
 	  </td>
@@ -182,8 +220,10 @@
 	  <td>Improvements to Chainsaw</td>
 	  
 	  <td>
-	    <p><a href="chainsaw.html">Chainsaw v2</a> development has now progressed to the point where the main developers of it
-	    and many other members of the logging community are using it daily.  It's still pre-alpha but only
+	    <p><a href="chainsaw.html">Chainsaw v2</a> development has now progressed 
+      to the point where the main developers of it
+	    and many other members of the logging community are using it daily.  It's 
+      still pre-alpha but only
 	    because we keep thinking up things to add. 
 	    </p>
 	    
@@ -200,7 +240,7 @@
 	  extensions to XML configuration language mentioned
 	  above.</td>
 
-	  <td>Ceki</td> 
+	  <td>Ceki Gülcü</td> 
 	  <td>Completed, still testing</td>
 	</tr>
 	
@@ -210,13 +250,16 @@
 	  <td><p>It is higly desriable to allow log4j ports in other languages 
 	    to access log4j services in a language independent way. </p>
 	  
-	  <p>The use of a standard XML format to represent a LoggingEvent has been established and many of the related logging projects from 
-	  non-Java languages have begun to support it.   In fact, a number of the log4j ports have volunteered to join Apache!</p>
+	  <p>The use of a standard XML format to represent a LoggingEvent has been 
+    established and many of the related logging projects from 
+	  non-Java languages have begun to support it.   In fact, a number of the 
+    log4j ports have volunteered to join Apache!</p>
 	  
 	  <p>Scott Deboy has completed work to create a fex XML-based Receiver
-	  classes that can accept logging events from an external source, and 'import' them into the local log4j environment.  </p> </td> 
+	  classes that can accept logging events from an external source, and 
+    'import' them into the local log4j environment.  </p> </td> 
 
-	  <td>Ceki, Scott Deboy</td>
+	  <td>Ceki Gülcü, Scott Deboy</td>
 	  <td>Significantly Progressed (if not completed)</td>
 	</tr>
 
@@ -237,7 +280,7 @@
 	    scripts.
 	    </p>
 	  </td>
-	  <td>Ceki</td>	  
+	  <td>Ceki Gülcü</td>	  
 	  <td>Significantly Progressed</td>
 	</tr>
 
@@ -247,7 +290,8 @@
 	  <td>Redesign of configure and watch architecture in
 	  configurators</td>
 	  
-	  <td>This is a very useful feature and the current architecture is not very good.
+	  <td>This is a very useful feature and the current architecture is not 
+    very good.
 	    
 	    <p>Contributions have been received by Mark Womack and others.</p>
 	    
@@ -282,10 +326,10 @@
                                              
             
   
-                            <hr/>
+                                  <hr/>
 
   
-                                        
+                                                    
 
              
                 <!-- FOOTER -->
@@ -304,6 +348,8 @@
               	 <div class="menu_item">        <a href="./download.html">Download</a>
   </div>
               	 <div class="menu_item">        <a href="./documentation.html">Documentation</a>
+  </div>
+              	 <div class="menu_item">        <a href="./plan.html">Roadmap</a>
   </div>
               	 <div class="menu_item">        <a href="./contactUs.html">Contact us</a>
   </div>
