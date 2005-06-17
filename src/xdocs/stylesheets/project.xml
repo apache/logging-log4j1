@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="iso-8859-1"?>
 <project name="Logging Services Log4j"
          href="http://logging.apache.org/log4j/docs/">
 
@@ -11,6 +11,7 @@
       <item name="Introduction"   href="/index.html"/>
       <item name="Download"       href="/download.html"/>
       <item name="Documentation"  href="/documentation.html"/>
+      <item name="Roadmap"        href="/plan.html"/>
       <item name="Contact us"     href="/contactUs.html"/>
       <item name="Contributors"   href="/contributors.html"/>
       <item name="Chainsaw"       href="/chainsaw.html"/>
