@@ -1,8 +1,8 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="iso-8859-1"?>
 <document>
 
   <properties>
-    <author email="">Ceki Gulcu</author>
+    <author email="ceki@apache.org">Ceki Gülcü</author>
     <author email="yoavs@apache.org">Yoav Shapira</author>
     <title>Documentation</title>
   </properties>
@@ -69,6 +69,7 @@
          href="http://www.vimeworks.com/~mauricio/manualLog4J.html">Spanish
          translation</a> of the short manual Mauricio Santacruz (<a href="http://www.vimeworks.com/~mauricio/manualLog4J.pdf">PDF</a>, <a href="http://www.vimeworks.com/~mauricio/manualLog4J.html">HTML</a>)</li>
          <li><a href="http://www.javacore.de/jumpToDownload.php?id=8&amp;url=tutorials/schnelle/log4jmanual.pdf">German translation</a> of the short manual, courtesy of Dirk Schnelle. (PDF only at this time)</li>
+         <li><a href="http://www.jaxwiki.org/zh/project/logging.apache.org/log4j/docs/manual.html">Simplified Chinese</a> and <a href="http://www.jaxwiki.org/hk/project/logging.apache.org/log4j/docs/manual.html">traditional Chinese</a> translation of the short manual (HTML only) by Jaxwiki.org.</li>
       </ul>
     </section>
     
