@@ -13,11 +13,12 @@
 CHAINSAW v2 installer
 ============================================================
 This Ant build script will perform the following:
-   * Download the jakarta-log4j module from the Apache CVS
+   * Download the logging-chainsaw and logging-log4j modules from the Apache CVS
    * Dowload the latest binary version of the Jakarta ORO project from www.ibiblio.org
 
 It will create the following artifacts in the current directory (whereever this Ant script is)
-   * a jarkarta-log4j directory, containing the log4j source tree
+   * a logging-chainsaw directory, containing the chainsaw source tree
+   * a logging-log4j directory, containing the log4j source tree
    * a jakarta-oro-2.0.8.zip file
    * a jakarta-oro-2.0.8 directory containing the unpacked ORO jar from the aforementioned zip file
     </echo>
@@ -34,13 +35,21 @@ It will create the following artifacts in the current directory (whereever this 
 
   <target name="cvs" depends="">
     <cvs cvsRoot=":pserver:anoncvs@cvs.apache.org:/home/cvspublic"
+        package="logging-chainsaw"
+        dest="${module.dir}"
+        compression="true"
+        compressionlevel="6"
+        quiet="true"
+    />
+    <cvs cvsRoot=":pserver:anoncvs@cvs.apache.org:/home/cvspublic"
         package="logging-log4j"
         dest="${module.dir}"
         compression="true"
         compressionlevel="6"
         quiet="true"
     />
-     <!--<taskdef name="cvsgrab" classname="net.sourceforge.cvsgrab.CVSGrabTask">
+
+  	<!--<taskdef name="cvsgrab" classname="net.sourceforge.cvsgrab.CVSGrabTask">
         <classpath>
             <pathelement location="lib/cvsgrab-2.0.3.jar"/>
             <pathelement location="lib/commons-cli-1.0-patched.jar"/>
@@ -54,7 +63,7 @@ It will create the following artifacts in the current directory (whereever this 
         </classpath>
      </taskdef>
      <cvsgrab rootUrl="http://cvs.apache.org/viewcvs/"
-        packagePath="logging-log4j"
+        packagePath="logging-chainsaw"
         destDir="."
         pruneEmptyDirs="true"/>-->
   </target>
@@ -76,11 +85,11 @@ It will create the following artifacts in the current directory (whereever this 
 
 
 	<target name="create-build-properties" depends="">
-    <copy file="${module.dir}/logging-log4j/build.properties.sample" tofile="${module.dir}/logging-log4j/build.properties">
+    <copy file="${module.dir}/logging-chainsaw/build.properties.sample" tofile="${module.dir}/logging-chainsaw/build.properties">
     </copy>
-    <replace file="${module.dir}/logging-log4j/build.properties">
-      <replacetoken><![CDATA[#regexp.oro.jar=../oro/jakarta-oro-2.0.6.jar]]></replacetoken>
-      <replacevalue><![CDATA[regexp.oro.jar=../jakarta-oro-2.0.8/jakarta-oro-2.0.8.jar]]>
+    <replace file="${module.dir}/logging-chainsaw/build.properties">
+      <replacetoken><![CDATA[#jakarta.oro.jar=../oro/jakarta-oro-2.0.6.jar]]></replacetoken>
+      <replacevalue><![CDATA[jakarta.oro.jar=../jakarta-oro-2.0.8/jakarta-oro-2.0.8.jar]]>
 </replacevalue>
     </replace>
   </target>
@@ -91,12 +100,19 @@ It will create the following artifacts in the current directory (whereever this 
 
   <target name="success-msg" depends="">
 		<echo>
-Installation completed successfully.
+Download of files completed successfully.
 
-You should now be able to do the following to run Chainsaw v2:
-
-  cd logging-log4j
-  ant chainsaw
+You should now be able to do the following to run Chainsaw v2
+	
+  1. execute logging-log4j's jar target
+	 * cd logging-log4j
+	 * copy sample.build.properties to build.properties
+	 * modify build.properties file to specify servlet path at a minimum
+	 * run the 'jar' ant target: ant jar
+  
+  2. execute logging-chainsaw's ant target
+     * cd logging-chainsaw
+     * ant chainsaw
 
 GOOD LUCK!
     </echo>
