@@ -1,8 +1,8 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="iso-8859-1"?>
 <document>
 
   <properties>
-    <author email="">Ceki Gulcu</author>
+    <author email="ceki@apache.org">Ceki Gülcü</author>
     <author email="yoavs@apache.org">Yoav Shapira</author>
     <title>Documentation</title>
   </properties>
