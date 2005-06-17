@@ -2,7 +2,7 @@
 <document>
 
   <properties>
-    <author>Ceki Gulcu</author>
+    <author email="not@disclosed">Ceki Gulcu</author>
     <title>Universal and Generic Logging Interface (UGLI)</title>
   </properties>
 
@@ -11,7 +11,7 @@
     <h1>Universal and Generic Logging Interface (UGLI)</h1>
 
       <p>The Universal and Generic Logging Interface effort has been
-      renamed as SLF4J and assumed by <a href="http://www.slf4j.org">slf4j.org</a>.</p>
+      renamed as SLF4J and moved to <a href="http://www.slf4j.org">slf4j.org</a>.</p>
         
   </body>  
 
