@@ -2,7 +2,7 @@
 <document>
 
   <properties>
-    <author email="ceki@apache.org">Ceki Gülcü</author>
+    <author>Ceki Gülcü</author>
     <author email="mwomack@apache.org">Mark Womack</author>
     <title>Release roadmap for log4j</title>
   </properties>
