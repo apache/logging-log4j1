@@ -88,8 +88,8 @@ It will create the following artifacts in the current directory (whereever this 
     <copy file="${module.dir}/logging-chainsaw/build.properties.sample" tofile="${module.dir}/logging-chainsaw/build.properties">
     </copy>
     <replace file="${module.dir}/logging-chainsaw/build.properties">
-      <replacetoken><![CDATA[#jakarta.oro.jar=../oro/jakarta-oro-2.0.6.jar]]></replacetoken>
-      <replacevalue><![CDATA[jakarta.oro.jar=../jakarta-oro-2.0.8/jakarta-oro-2.0.8.jar]]>
+      <replacetoken><![CDATA[#jakarta-oro.jar=../oro/jakarta-oro-2.0.8.jar]]></replacetoken>
+      <replacevalue><![CDATA[jakarta-oro.jar=../jakarta-oro-2.0.8/jakarta-oro-2.0.8.jar]]>
 </replacevalue>
     </replace>
   </target>
