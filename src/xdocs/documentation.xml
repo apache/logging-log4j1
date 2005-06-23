@@ -3,73 +3,49 @@
 
   <properties>
     <author email="not@disclosed">Ceki Gülcü</author>
-    <author email="yoavs@apache.org">Yoav Shapira</author>
+    <author email="not@disclosed">Yoav Shapira</author>
     <title>Documentation</title>
   </properties>
 
   <body>
 
-    <section name="Official log4j documentation">
+    <section name="log4j documentation">
       
-      <p>With the exception of the complete manual, the following
-      documentation is included with the standard log4j distribution
-      and also browsable online:
-      </p>
-      
+          <a
+           href="http://www.qos.ch/shop/products/eclm/"><img
+           align="right" src="images/coverSmall.png"></img></a>
       <ul>
         <p>
-          <a href="https://www.qos.ch/shop/products/log4j/log4j-Manual.jsp">
-          <img align="right" src="images/coverSmall.png"></img>
-          </a> 
-          <li><a href="manual.html"><b>short log4j manual</b></a>, </li>
+            <li><a href="manual.html"><b>Short introduction to log4j</b></a> 
+           </li>
         </p>
         
         <p>
-          <li><a href="https://www.qos.ch/shop/products/log4j/log4j-Manual.jsp"><b>complete log4j manual</b></a> (commercial), 
+          <li><a href="http://www.qos.ch/shop/products/eclm/"><b>log4j: The complete manual</b></a> (commercial) 
           </li>
         </p>
         
         <p>
           <li>
-            <a href="api/index.html"><b>javadoc documentation</b></a>,
-          </li>
-        </p>
-        
-        <p>
-          <li> 
-            <a href="chainsaw.html"><b>Chainsaw documentation</b></a>,
+            <b>javadoc: <a href="api/index.html">1.2.11</a>, <a href="api13/index.html">1.3 alpha 6</a></b>
           </li>
         </p>
         
         <p>
           <li>
-            <a href="HISTORY.txt"><b>project history</b></a>,
+            <a href="http://wiki.apache.org/logging-log4j/Log4JProjectPages"><b>Wiki</b></a>
           </li>
         </p>
-	
-	
-	<p>
-	  <li>
-	    <a href="faq.html"><b>FAQ</b></a>,
-	  </li>
-	</p>
-	
-	<p>
-	  <li>
-	    <a href="TROUBLESHOOT.html"><b>troubleshooting guide</b></a>.
-	  </li>
-	</p>
 	
       </ul>
     </section>
 
-    <section name="Translations to other languages">
+    <section name="Translations">
        <ul>
          <li><a
          href="http://www.vimeworks.com/~mauricio/manualLog4J.html">Spanish
          translation</a> of the short manual Mauricio Santacruz (<a href="http://www.vimeworks.com/~mauricio/manualLog4J.pdf">PDF</a>, <a href="http://www.vimeworks.com/~mauricio/manualLog4J.html">HTML</a>)</li>
          <li><a href="http://www.javacore.de/jumpToDownload.php?id=8&amp;url=tutorials/schnelle/log4jmanual.pdf">German translation</a> of the short manual, courtesy of Dirk Schnelle. (PDF only at this time)</li>
-         <li><a href="http://www.jaxwiki.org/zh/project/logging.apache.org/log4j/docs/manual.html">Simplified Chinese</a> and <a href="http://www.jaxwiki.org/hk/project/logging.apache.org/log4j/docs/manual.html">traditional Chinese</a> translation of the short manual (HTML only) by Jaxwiki.org.</li>
       </ul>
     </section>
     
@@ -99,12 +75,22 @@
         How does the Java logging API stack up against log4j?</a> by Kevin Brown
         </li></p>
         
+        <p>
+          <li>
+            <a href="http://www.opensymphony.com/guidelines/logging.jsp">OpenSymphony Logging Primer</a>
+          </li>
+        </p>
+        
+        <p><li>
+	  <a href="http://www.jguru.com/faq/Log4j">log4j FAQ</a> at jGuru
+	</li></p>
+
 	<p><li>
-	  <a href="http://www.qos.ch/logging/thinkAgain.jsp">Think Again</a> by Ceki G&#252;lc&#252;
+	  <a href="http://www.qos.ch/logging/thinkAgain.html">Think Again</a> by Ceki G&#252;lc&#252;
 
 	</li></p>
 
-	<p><li> <a href="http://www.qos.ch/logging/sc.jsp">Supporting the
+	<p><li> <a href="http://www.qos.ch/logging/sc.html">Supporting the
 	  log4j <code>RepositorySelector</code></a> by Ceki
 	  G&#252;lc&#252;
 	</li></p>
@@ -153,10 +139,18 @@
     <section name="Log4j presentations">
        <ul>
 
+
+         <p><li> <a href="http://www.jug-l.org/log4j.html">Advanced
+         Log4j</a> Louisville JUG presentation by Jonathan Cowherd </li></p>
+         
          <p><li><a href="http://www.johnmunsch.com/projects/Presentations/">Log4J
          In 30 Minutes Or Less</a> by John Munsch</li></p>
          
          <p><li><a href="https://www.qos.ch/ac2001/F11-10.html">Log4j, a logging package for the Java language</a> by Ceki G&#252;lc&#252;</li></p>
+         
+         <p><li><a
+         href="http://www.ejug.org/OpenSource%20Log4j2_files/frame.htm">Log4j presentation by the</a>
+         Edmonton Java Users Group</li></p>
          
          <p><li><a href="http://www.ociweb.com/javasig/knowledgebase/January2001/Log4J.ppt">Log4j</a> by Brent Twenter
          </li></p>
