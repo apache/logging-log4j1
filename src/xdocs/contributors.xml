@@ -46,11 +46,10 @@
           <tr><td> <p>Ceki is the founder the log4j project which
           continues to occupy much of his time. He enjoys writing
           software altough he is discovering that it is far more
-          difficult than what it may seem initially. He is also the
-          author of <a
-          href="https://www.qos.ch/shop/products/log4j/log4j-Manual.jsp">The
-          complete log4j manual</a>.</p></td> <td><img
-          src="images/ceki-72x101.gif"></img></td>
+          difficult than what it may seem initially. He is also
+          managing his <a href="http://www.qos.ch">IT services
+          company</a>.</p></td> 
+          <td><img src="images/ceki-72x101.gif"></img></td>
          </tr>
          </table>
 	</li>
@@ -140,24 +139,20 @@
 	</li>
 
 	<li><b>Mark Womack</b> 
-
-         <table>
-          <tr><td>  <p>Mark Womack has been developing software for over 12
-	  years. He has been developing in Java for the past 4 years,
+  <table>
+  <tr>
+  <td>
+    <p>Mark Womack has been developing software for over 13
+	  years. He has been developing in Java for the past 5 years,
 	  focusing on web application development. He has been an
-	  active committer for the Apache Jakarta log4j project since
-	  April 2002, contributing features for the upcoming v1.3
-	  release. </p></td> 
-          <td><img src="images/mark-72x99.gif"></img></td>
-         </tr>
-         </table>
-	
-       
-                                      
-	 
+	  active committer for the log4j project since April 2002, contributing
+    features for the upcoming v1.3 release.  He is also a member of the Logging
+    Services PMC.</p>
+  </td> 
+  <td></td>
+  </tr>
+  </table>
     </li>
-
-         
       </ul>
     </section>
     
