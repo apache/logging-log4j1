@@ -12,17 +12,15 @@
       <item name="Download"       href="/download.html"/>
       <item name="Documentation"  href="/documentation.html"/>
       <item name="Roadmap"        href="/plan.html"/>
-      <item name="Contact us"     href="/contactUs.html"/>
-      <item name="Contributors"   href="/contributors.html"/>
-      <item name="Chainsaw"       href="/chainsaw.html"/>
+      <item name="Wiki"           href="http://wiki.apache.org/logging-log4j/Log4JProjectPages"/>
       <item name="History"        href="/history.html"/>
     </menu>
 
-    <menu name="Support">
-      <item name="Binary distributions" href="http://logging.apache.org/site/binindex.cgi"/>
-      <item name="CVS Repositories" href="http://logging.apache.org/site/cvs-repositories.html"/>
-      <item name="Mailing Lists" href="http://logging.apache.org/site/mailing-lists.html"/>
-      <item name="Bug Reporting" href="http://logging.apache.org/site/bugreport.html"/>
+    <menu name="Logging Services">
+      <item name="Home page" href="http://logging.apache.org/"/>
+      <item name="News" href="http://logging.apache.org/site/news.html"/>
+      <item name="Mailing Lists"   href="http://logging.apache.org/site/mailing-lists.html"/>
+      <item name="Bug Reporting"   href="http://logging.apache.org/site/bugreport.html"/>
     </menu>
 
     <menu name="Translations">
