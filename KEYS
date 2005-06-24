@@ -129,19 +129,21 @@ CWYBgAAKCRC+FsldLhFDIjnoAJ9ECOIrTH3adnVLOkHZnewyp2ssxwCgtLjlwZ7/
 =9ut1
 -----END PGP PUBLIC KEY BLOCK-----
 
-pub  1024D/47C4113E 2004-06-24 Jacob Kjome <hoju@visi.com>
-     Key fingerprint = 2503 F500 644F DECD C5DC  C38D B35E 96D7 47C4 113E
-sig 3       47C4113E 2005-06-24   Jacob Kjome <hoju@visi.com>
-uid                            Jacob Kjome <hoju@apache.org>
-sig 3       47C4113E 2005-06-24   Jacob Kjome <hoju@visi.com>
-uid                            Jacob Kjome <Jacob.Kjome@hotpop.com>
-sig         47C4113E 2004-06-24   Jacob Kjome <hoju@visi.com>
-sig 3       47C4113E 2004-10-02   Jacob Kjome <hoju@visi.com>
-sub  4096g/4E44B60C 2004-06-24
-sig         47C4113E 2004-06-24   Jacob Kjome <hoju@visi.com>
+pub   1024D/47C4113E 2004-06-24
+      Key fingerprint = 2503 F500 644F DECD C5DC  C38D B35E 96D7 47C4 113E
+uid                  Jacob Kjome <hoju@visi.com>
+sig 3        47C4113E 2005-06-24  Jacob Kjome <hoju@visi.com>
+uid                  Jacob Kjome <hoju@apache.org>
+sig 3        47C4113E 2005-06-24  Jacob Kjome <hoju@visi.com>
+uid                  Jacob Kjome <Jacob.Kjome@hotpop.com>
+sig          47C4113E 2004-06-24  Jacob Kjome <hoju@visi.com>
+sig 3        47C4113E 2004-10-02  Jacob Kjome <hoju@visi.com>
+sub   4096g/4E44B60C 2004-06-24
+sig          47C4113E 2004-06-24  Jacob Kjome <hoju@visi.com>
 
 -----BEGIN PGP PUBLIC KEY BLOCK-----
-Version: GnuPG v1.2.5 (MingW32)
+Version: GnuPG v1.4.1 (MingW32)
+Comment: GnuPT 2.6.2.1 by EQUIPMENTE.DE
 
 mQGiBEDaU1cRBADahTOIBOcOb0gR9bH1CNUvkv4tyz+Dmeju1hhjOo0xz9JRyDal
 2lo7IoKH7OkS4emv+rDVEVtAs2xuA0POR7L4kf8hiEfHVcSFi20NewcosKBWzdQ/
