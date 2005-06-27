@@ -31,6 +31,8 @@ import org.apache.log4j.util.XMLLineAttributeFilter;
 import org.apache.log4j.util.LineNumberFilter;
 import org.apache.log4j.util.Transformer;
 import org.apache.log4j.util.Compare;
+import org.apache.log4j.util.JunitTestRunnerFilter;
+import org.apache.log4j.util.SunReflectFilter;
 
 public class XMLLayoutTestCase extends TestCase {
 
@@ -57,8 +59,14 @@ public class XMLLayoutTestCase extends TestCase {
     XMLLayout xmlLayout = new XMLLayout();
     root.addAppender(new FileAppender(xmlLayout, TEMP, false));
     common();
-    Transformer.transform(TEMP, FILTERED, new Filter[] {new LineNumberFilter(), 
-							new XMLTimestampFilter()});
+    Transformer.transform(
+      TEMP, FILTERED,
+      new Filter[] {
+        new LineNumberFilter(),
+        new XMLTimestampFilter(),
+        new JunitTestRunnerFilter(),
+        new SunReflectFilter()
+      });
     assertTrue(Compare.compare(FILTERED, "witness/xmlLayout.1"));
   }
 
@@ -67,9 +75,15 @@ public class XMLLayoutTestCase extends TestCase {
     xmlLayout.setLocationInfo(true);
     root.addAppender(new FileAppender(xmlLayout, TEMP, false));
     common();
-    Transformer.transform(TEMP, FILTERED, new Filter[] {new LineNumberFilter(),
-                                                        new XMLTimestampFilter(),
-                                                        new XMLLineAttributeFilter()});
+    Transformer.transform(
+      TEMP, FILTERED,
+      new Filter[] {
+        new LineNumberFilter(),
+        new XMLTimestampFilter(), 
+        new XMLLineAttributeFilter(),
+        new JunitTestRunnerFilter(),
+        new SunReflectFilter()
+      });
     assertTrue(Compare.compare(FILTERED, "witness/xmlLayout.2"));
   }
 
@@ -80,6 +94,16 @@ public class XMLLayoutTestCase extends TestCase {
     
     logger.debug("Message with embedded <![CDATA[<hello>hi</hello>]]>.");
 
+    Transformer.transform(
+      TEMP, FILTERED,
+      new Filter[] {
+        new LineNumberFilter(), 
+        new XMLTimestampFilter(),
+        new XMLLineAttributeFilter(), 
+        new SunReflectFilter(),
+        new JunitTestRunnerFilter()
+
+      });
     Transformer.transform(TEMP, FILTERED, new Filter[] {new LineNumberFilter(),
     						  new XMLTimestampFilter(),
     						  new XMLLineAttributeFilter()});
@@ -93,8 +117,12 @@ public class XMLLayoutTestCase extends TestCase {
     logger.debug(null);
     Exception e = new Exception((String) null);
     logger.debug("hi", e);
-    Transformer.transform(TEMP, FILTERED, new Filter[] {new LineNumberFilter(), 
-							new XMLTimestampFilter()});
+    Transformer.transform(
+      TEMP, FILTERED,
+      new Filter[] { new LineNumberFilter(),
+          new XMLTimestampFilter(),  
+          new JunitTestRunnerFilter(),
+          new SunReflectFilter()});
     assertTrue(Compare.compare(FILTERED, "witness/xmlLayout.null"));
   }
   

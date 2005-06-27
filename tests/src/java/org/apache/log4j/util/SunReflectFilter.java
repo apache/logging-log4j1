@@ -32,8 +32,10 @@ public class SunReflectFilter implements Filter {
     }
     if (util.match("/at sun.reflect/", in)) {
       return null;
-    } else {
-      return in;
     }
+    if (util.match("/\\(Method.java:.*\\)/", in)) {
+      return util.substitute("s/\\(Method.java:.*\\)/(Native Method)/", in);
+    }
+    return in;
   }
 }

@@ -34,7 +34,4 @@ java.lang.Exception: Just testing.
 	at junit.framework.TestCase.run(TestCase.java:XXX)
 	at junit.framework.TestSuite.runTest(TestSuite.java:XXX)
 	at junit.framework.TestSuite.run(TestSuite.java:XXX)
-	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(JUnitTestRunner.java:XXX)
-	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.launch(JUnitTestRunner.java:XXX)
-	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.main(JUnitTestRunner.java:XXX)
  [main] INFO INF - Messages should bear numbers 0 through 23.
