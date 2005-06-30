@@ -23,7 +23,7 @@ import junit.framework.Test;
 import java.util.Vector;
 
 import org.apache.log4j.*;
-import org.apache.log4j.performance.NullAppender;
+import org.apache.log4j.varia.NullAppender;
 
 /**
    A superficial but general test of log4j.

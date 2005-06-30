@@ -23,7 +23,6 @@ import junit.framework.Test;
 import java.util.Vector;
 
 import org.apache.log4j.*;
-import org.apache.log4j.performance.NullAppender;
 
 public class TestCase1 extends TestCase {
 
