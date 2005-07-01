@@ -89,6 +89,19 @@ public class TTCCLayout extends Layout {
     this.setDateFormat(Constants.ISO8601_FORMAT);
   }
 
+  /**
+     Instantiate a TTCCLayout object using the local time zone. The
+     DateFormat used will depend on the <code>dateFormatType</code>.
+
+     <p>This constructor just calls the {@link
+     DateLayout#setDateFormat} method.
+
+     */
+  public TTCCLayout(String dateFormatType) {
+    this.setDateFormat(dateFormatType);
+  }
+
+
   public void activateOptions() {
   }
 
