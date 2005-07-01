@@ -1,13 +1,11 @@
-jakarta.oro.jar=../../jakarta-oro-2.0.5/jakarta-oro-2.0.5.jar
-xml-api.jar=../../xerces-2_6_2/xml-apis.jar
-xml-impl.jar=../../erces-2_6_2/xercesImpl.jar
+#
+#   by default assume that all necessary dependencies
+#      are relative to the user's home directory
+#
+lib.home.dir=${user.home}
+jakarta.oro.jar=${lib.home.dir}/jakarta-oro-2.0.8/jakarta-oro-2.0.8.jar
+clover.jar="${lib.home.dir}/clover-1.3.8/lib/clover.jar
 deprecation=on
 
 # junit must be on the classpath! It can't be handled as a property.
 
-# The current test files require:
-#   Ant 1.6.4 running in
-#   Sun JDK 1.3
-#   with jUnit 3.8.1
-# This is because of the format of the exceptions recorded in the test
-# witness files is particular to these versions.
