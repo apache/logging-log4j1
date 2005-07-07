@@ -16,17 +16,15 @@
 
 package org.apache.log4j.rolling;
 
-import org.apache.log4j.pattern.IntegerPatternConverter;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.pattern.PatternConverter;
 import org.apache.log4j.rolling.helper.Action;
 import org.apache.log4j.rolling.helper.FileRenameAction;
 import org.apache.log4j.rolling.helper.GZCompressAction;
 import org.apache.log4j.rolling.helper.ZipCompressAction;
-
-import java.io.File;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
