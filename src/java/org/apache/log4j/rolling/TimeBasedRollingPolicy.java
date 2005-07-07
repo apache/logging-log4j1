@@ -16,17 +16,16 @@
 
 package org.apache.log4j.rolling;
 
+import java.io.File;
+import java.util.Date;
+
 import org.apache.log4j.Appender;
-import org.apache.log4j.pattern.DatePatternConverter;
 import org.apache.log4j.pattern.PatternConverter;
 import org.apache.log4j.rolling.helper.Action;
 import org.apache.log4j.rolling.helper.FileRenameAction;
 import org.apache.log4j.rolling.helper.GZCompressAction;
 import org.apache.log4j.rolling.helper.ZipCompressAction;
 import org.apache.log4j.spi.LoggingEvent;
-
-import java.io.File;
-import java.util.Date;
 
 
 /**
