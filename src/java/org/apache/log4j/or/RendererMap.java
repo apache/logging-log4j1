@@ -38,8 +38,11 @@ public class RendererMap extends ComponentBase {
   }
 
   /**
-     Add a renderer to a hierarchy passed as parameter.
-  */
+   * Add a renderer to the current logger repository
+   * 
+   * @param renderedClassName
+   * @param renderingClassName
+   */
   public void addRenderer(String renderedClassName,
     String renderingClassName) {
     getLogger().debug(
@@ -62,6 +65,31 @@ public class RendererMap extends ComponentBase {
         }
       } catch (ClassNotFoundException e) {
         getLogger().error("Could not find class [" + renderedClassName + "].", e);
+      }
+    }
+  }
+
+  /**
+   * Add a renderer to a hierarchy passed as parameter
+   * 
+   * @deprecated As of release 1.3, replaced by {@link #addRenderer(String,String)}.  Left here only to provide binary compatibility with 1.2.xx and will be removed in a future release.
+   */
+  static public void addRenderer(RendererSupport repository, String renderedClassName,
+           String renderingClassName) {
+    ObjectRenderer renderer =
+      (ObjectRenderer) OptionConverter.instantiateByClassName(
+          renderingClassName, ObjectRenderer.class, null);
+      
+    if (renderer == null) {
+      return;
+    } else {
+      try {
+        Class renderedClass = Loader.loadClass(renderedClassName);
+        if(repository != null) {
+          repository.setRenderer(renderedClass, renderer);
+        }
+      } catch (ClassNotFoundException e) {
+        ;
       }
     }
   }
