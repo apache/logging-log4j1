@@ -79,8 +79,10 @@ public abstract class Filter extends ComponentBase implements OptionHandler {
 
   /**
      Points to the next filter in the filter chain.
+     
+     @deprecated As of 1.3, use {@link #getNext} and {@link #setNext} instead
    */
-  private Filter next;
+  public Filter next;
 
   /**
      Usually filters options become active when set. We provide a
