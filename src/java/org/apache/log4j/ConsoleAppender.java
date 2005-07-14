@@ -100,6 +100,16 @@ public class ConsoleAppender extends WriterAppender {
         super.activateOptions();
     }
 
+  /**
+   *  {@inheritDoc}
+   */
+  protected
+  final
+  void closeWriter() {
+     super.closeWriter();
+  }
+
+
     /**
      * An implementation of OutputStream that redirects to the
      * current System.err.
