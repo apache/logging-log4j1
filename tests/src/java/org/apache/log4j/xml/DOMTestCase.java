@@ -96,6 +96,37 @@ public class DOMTestCase extends TestCase {
     assertTrue(Compare.compare(FILTERED_A1, "witness/dom.A1.1"));
     assertTrue(Compare.compare(FILTERED_A2, "witness/dom.A2.1"));
   }
+  
+  /**
+   *   Tests processing of external entities in XML file.
+   */
+  public void test4() throws Exception {
+    DOMConfigurator.configure("input/xml/DOMTest4.xml");
+    common();
+
+    ControlFilter cf1 = new ControlFilter(new String[]{TEST1_1A_PAT, TEST1_1B_PAT, 
+					       EXCEPTION1, EXCEPTION2, EXCEPTION3});
+
+    ControlFilter cf2 = new ControlFilter(new String[]{TEST1_2_PAT, 
+					       EXCEPTION1, EXCEPTION2, EXCEPTION3});
+
+    Transformer.transform(
+      TEMP_A1 + ".4", FILTERED_A1 + ".4",
+      new Filter[] {
+        cf1, new LineNumberFilter(), new SunReflectFilter(),
+        new JunitTestRunnerFilter()
+      });
+
+    Transformer.transform(
+      TEMP_A2 + ".4", FILTERED_A2 + ".4",
+      new Filter[] {
+        cf2, new LineNumberFilter(), new ISO8601Filter(),
+        new SunReflectFilter(), new JunitTestRunnerFilter()
+      });
+
+    assertTrue(Compare.compare(FILTERED_A1 + ".4", "witness/dom.A1.4"));
+    assertTrue(Compare.compare(FILTERED_A2 + ".4", "witness/dom.A2.4"));
+  }
 
   void common() {
     int i = -1;
@@ -123,11 +154,4 @@ public class DOMTestCase extends TestCase {
     root.error("Message " + i, e);    
 
   }
-
-  public static Test suite() {
-    TestSuite suite = new TestSuite();
-    suite.addTest(new DOMTestCase("test1"));
-    return suite;
-  }
-
 }
