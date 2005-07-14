@@ -11,6 +11,7 @@
       <item name="Introduction"   href="/index.html"/>
       <item name="Download"       href="/download.html"/>
       <item name="Documentation"  href="/documentation.html"/>
+      <item name="Chainsaw"       href="/chainsaw.html"/>      
       <item name="Roadmap"        href="/plan.html"/>
       <item name="Wiki"           href="http://wiki.apache.org/logging-log4j/Log4JProjectPages"/>
       <item name="History"        href="/history.html"/>
