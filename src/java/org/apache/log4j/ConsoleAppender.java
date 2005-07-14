@@ -16,7 +16,8 @@
 
 package org.apache.log4j;
 
-import java.io.OutputStreamWriter;
+import java.io.IOException;
+import java.io.OutputStream;
 import org.apache.log4j.helpers.LogLog;
 
 /**
@@ -25,6 +26,7 @@ import org.apache.log4j.helpers.LogLog;
   * default target is <code>System.out</code>.
   *
   * @author Ceki G&uuml;lc&uuml; 
+  * @author Curt Arnold
   * @since 1.1 */
 public class ConsoleAppender extends WriterAppender {
 
@@ -34,25 +36,29 @@ public class ConsoleAppender extends WriterAppender {
   protected String target = SYSTEM_OUT;
 
   /**
-     The default constructor does nothing.
-   */
+    * Constructs an unconfigured appender.
+    */
   public ConsoleAppender() {
   }
 
+    /**
+     * Creates a configured appender.
+     *
+     * @param layout layout, may not be null.
+     */
   public ConsoleAppender(Layout layout) {
     this(layout, SYSTEM_OUT);
   }
 
+    /**
+     *   Creates a configured appender.
+     * @param layout layout, may not be null.
+     * @param targetStr target, either "System.err" or "System.out".
+     */
   public ConsoleAppender(Layout layout, String target) {
-    this.layout = layout;
-
-    if (SYSTEM_OUT.equals(target)) {
-      setWriter(new OutputStreamWriter(System.out));
-    } else if (SYSTEM_ERR.equalsIgnoreCase(target)) {
-      setWriter(new OutputStreamWriter(System.err));
-    } else {
-      targetWarn(target);
-    }
+    setLayout(layout);
+    setTarget(target);
+    activateOptions();
   }
 
   /**
@@ -89,22 +95,77 @@ public class ConsoleAppender extends WriterAppender {
     LogLog.warn("Using previously set target, System.out by default.");
   }
 
-  public
-  void activateOptions() {
-    if(target.equals(SYSTEM_OUT)) {
-      setWriter(new OutputStreamWriter(System.out));
-    } else {
-      setWriter(new OutputStreamWriter(System.err));
-    }
+  /**
+    *   Prepares the appender for use.
+    */
+   public void activateOptions() {
+        if (target.equals(SYSTEM_ERR)) {
+            setWriter(createWriter(new SystemErrStream()));
+        } else {
+            setWriter(createWriter(new SystemOutStream()));
+        }
+
+        super.activateOptions();
   }
 
-  /**
-   *  This method overrides the parent {@link
-   *  WriterAppender#closeWriter} implementation to do nothing because
-   *  the console stream is not ours to close.
-   * */
-  protected
-  final
-  void closeWriter() {
-  }
+    /**
+     * An implementation of OutputStream that redirects to the
+     * current System.err.
+     *
+     */
+    private static class SystemErrStream extends OutputStream {
+        public SystemErrStream() {
+        }
+
+        public void close() {
+        }
+
+        public void flush() {
+            System.err.flush();
+        }
+
+        public void write(final byte[] b) throws IOException {
+            System.err.write(b);
+        }
+
+        public void write(final byte[] b, final int off, final int len)
+            throws IOException {
+            System.err.write(b, off, len);
+        }
+
+        public void write(final int b) throws IOException {
+            System.err.write(b);
+        }
+    }
+
+    /**
+     * An implementation of OutputStream that redirects to the
+     * current System.out.
+     *
+     */
+    private static class SystemOutStream extends OutputStream {
+        public SystemOutStream() {
+        }
+
+        public void close() {
+        }
+
+        public void flush() {
+            System.out.flush();
+        }
+
+        public void write(final byte[] b) throws IOException {
+            System.out.write(b);
+        }
+
+        public void write(final byte[] b, final int off, final int len)
+            throws IOException {
+            System.out.write(b, off, len);
+        }
+
+        public void write(final int b) throws IOException {
+            System.out.write(b);
+        }
+    }
+
 }
