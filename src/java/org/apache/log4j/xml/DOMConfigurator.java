@@ -29,7 +29,8 @@ import org.apache.log4j.helpers.*;
 import org.apache.log4j.config.PropertySetter;
 
 import org.xml.sax.InputSource;
-import java.io.FileInputStream;
+import org.xml.sax.SAXException;
+import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.IOException;
@@ -584,34 +585,37 @@ public class DOMConfigurator implements Configurator {
     xdog.setDelay(delay);
     xdog.start();
   }
+  
+  private interface ParseAction {
+      Document parse(final DocumentBuilder parser) throws SAXException, IOException;
+  }
+
 
   public
-  void doConfigure(String filename, LoggerRepository repository) {
-    FileInputStream fis = null;
-    try {
-      fis = new FileInputStream(filename);
-      doConfigure(fis, repository);
-    } catch(IOException e) {
-      LogLog.error("Could not open ["+filename+"].", e);
-    } finally {
-      if (fis != null) {
-	try {
-	  fis.close();
-	} catch(java.io.IOException e) {
-	  LogLog.error("Could not close ["+filename+"].", e);
-	}
-      }
-    }
+  void doConfigure(final String filename, LoggerRepository repository) {
+    ParseAction action = new ParseAction() {
+          public Document parse(final DocumentBuilder parser) throws SAXException, IOException {
+              return parser.parse(new File(filename));
+          }
+          public String toString() { 
+              return "file [" + filename + "]"; 
+          }
+    };
+    doConfigure(action, repository);
   }
   
 
   public
-  void doConfigure(URL url, LoggerRepository repository) {
-    try {
-      doConfigure(url.openStream(), repository);
-    } catch(IOException e) {
-      LogLog.error("Could not open ["+url+"].", e);
-    }
+  void doConfigure(final URL url, LoggerRepository repository) {
+      ParseAction action = new ParseAction() {
+          public Document parse(final DocumentBuilder parser) throws SAXException, IOException {
+              return parser.parse(url.toString());
+          }
+          public String toString() { 
+              return "url [" + url.toString() + "]"; 
+          }
+      };
+      doConfigure(action, repository);
   }
 
   /**
@@ -620,9 +624,19 @@ public class DOMConfigurator implements Configurator {
 
   */
   public
-  void doConfigure(InputStream inputStream, LoggerRepository repository) 
+  void doConfigure(final InputStream inputStream, LoggerRepository repository) 
                                           throws FactoryConfigurationError {
-    doConfigure(new InputSource(inputStream), repository);
+      ParseAction action = new ParseAction() {
+          public Document parse(final DocumentBuilder parser) throws SAXException, IOException {
+              InputSource inputSource = new InputSource(inputStream);
+              inputSource.setSystemId("dummy://log4j.dtd");
+              return parser.parse(inputSource);
+          }
+          public String toString() { 
+              return "input stream [" + inputStream.toString() + "]"; 
+          }
+      };
+      doConfigure(action, repository);
   }
 
   /**
@@ -631,9 +645,19 @@ public class DOMConfigurator implements Configurator {
 
   */
   public
-  void doConfigure(Reader reader, LoggerRepository repository) 
+  void doConfigure(final Reader reader, LoggerRepository repository) 
                                           throws FactoryConfigurationError {
-    doConfigure(new InputSource(reader), repository);
+      ParseAction action = new ParseAction() {
+          public Document parse(final DocumentBuilder parser) throws SAXException, IOException {
+              InputSource inputSource = new InputSource(reader);
+              inputSource.setSystemId("dummy://log4j.dtd");
+              return parser.parse(inputSource);
+          }
+          public String toString() { 
+              return "reader [" + reader.toString() + "]"; 
+          }
+      };
+    doConfigure(action, repository);
   }
 
   /**
@@ -642,8 +666,25 @@ public class DOMConfigurator implements Configurator {
 
   */
   protected
-  void doConfigure(InputSource inputSource, LoggerRepository repository) 
+  void doConfigure(final InputSource inputSource, LoggerRepository repository) 
                                           throws FactoryConfigurationError {
+      if (inputSource.getSystemId() == null) {
+          inputSource.setSystemId("dummy://log4j.dtd");
+      }
+      ParseAction action = new ParseAction() {
+          public Document parse(final DocumentBuilder parser) throws SAXException, IOException {
+              return parser.parse(inputSource);
+          }
+          public String toString() { 
+              return "input source [" + inputSource.toString() + "]"; 
+          }
+      };
+      doConfigure(action, repository);
+    }
+    
+    
+  private final void doConfigure(final ParseAction action, final LoggerRepository repository)
+         throws FactoryConfigurationError {
     DocumentBuilderFactory dbf = null;
     this.repository = repository;
     try { 
@@ -665,17 +706,13 @@ public class DOMConfigurator implements Configurator {
       DocumentBuilder docBuilder = dbf.newDocumentBuilder();
 
       docBuilder.setErrorHandler(new SAXErrorHandler());      
-      docBuilder.setEntityResolver(new Log4jEntityResolver());        
-      // we change the system ID to a valid URI so that Crimson won't
-      // complain. Indeed, "log4j.dtd" alone is not a valid URI which
-      // causes Crimson to barf. The Log4jEntityResolver only cares
-      // about the "log4j.dtd" ending.
-      inputSource.setSystemId("dummy://log4j.dtd");
-      Document doc = docBuilder.parse(inputSource); 
+      docBuilder.setEntityResolver(new Log4jEntityResolver());
+         
+      Document doc = action.parse(docBuilder);     
       parse(doc.getDocumentElement());
     } catch (Exception e) {
       // I know this is miserable...
-      LogLog.error("Could not parse input source ["+inputSource+"].", e);
+      LogLog.error("Could not parse "+ action.toString() + ".", e);
     }
   }
 
