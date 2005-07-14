@@ -194,6 +194,45 @@ public class DOMTest extends TestCase {
     assertTrue(Compare.compare(FILTERED_A1 + ".3", "witness/xml/dom.A1.3"));
     assertTrue(Compare.compare(FILTERED_A2 + ".3", "witness/xml/dom.A2.3"));
   }
+  
+  /**
+   *   Tests processing of external entities in XML file.
+   */  
+  public void test4() throws Exception {
+    //org.apache.log4j.BasicConfigurator.configure();
+    JoranConfigurator jc = new JoranConfigurator();
+    jc.doConfigure("input/xml/DOMTest4.xml", LogManager.getLoggerRepository());
+    dumpErrors(jc.getErrorList());
+    common();
+
+    ControlFilter cf1 =
+      new ControlFilter(
+        new String[] {
+          TEST1_1A_PAT, TEST1_1B_PAT, EXCEPTION1, EXCEPTION2, EXCEPTION3
+        });
+
+    ControlFilter cf2 =
+      new ControlFilter(
+        new String[] { TEST1_2_PAT, EXCEPTION1, EXCEPTION2, EXCEPTION3 });
+
+    Transformer.transform(
+      TEMP_A1 + ".4", FILTERED_A1 + ".4",
+      new Filter[] {
+        cf1, new LineNumberFilter(), new SunReflectFilter(),
+        new JunitTestRunnerFilter()
+      });
+
+    Transformer.transform(
+      TEMP_A2 + ".4", FILTERED_A2 + ".4",
+      new Filter[] {
+        cf2, new LineNumberFilter(), new ISO8601Filter(),
+        new SunReflectFilter(), new JunitTestRunnerFilter()
+      });
+
+    assertTrue(Compare.compare(FILTERED_A1 + ".4", "witness/xml/dom.A1.4"));
+    assertTrue(Compare.compare(FILTERED_A2 + ".4", "witness/xml/dom.A2.4"));
+  }
+
 
   void common() {
     int i = -1;

@@ -1,0 +1,7 @@
+  <appender name="A2" class="org.apache.log4j.FileAppender">
+    <param name="File" value="output/temp.A2.4" />
+    <param name="Append" value="false" />
+    <layout class="org.apache.log4j.TTCCLayout">
+      <param name="DateFormat" value="ISO8601" />
+    </layout>
+  </appender>
