@@ -396,9 +396,30 @@
     </javadoc>
   </target>
 
-  <!-- ============================================== -->
-  <!-- Build the site files using Anakia              -->
-  <!-- ============================================== -->  
+  <!-- ================================================================= -->
+  <!-- Compare the current API with a previous release                   -->
+  <!-- ================================================================= -->
+  <target name="jdiff" description="Generate comparison to reference API">
+       <property name="reference-api.version" value="1.2.9"/>
+       <property name="reference-api.dir" location="${user.home}/logging-log4j-${reference-api.version}"/>
+       <property name="reference-api.source.dir" location="${user.home}/logging-log4j-${reference-api.version}/src/java"/>
+
+       <!-- Must be set to the root of where JDiff is installed. -->
+       <property name="JDIFF_HOME" value="${user.home}/jdiff"/>
+       <!-- Just one simple way to tell Ant about the JDiff task -->
+       <taskdef name="jdiff" classname="jdiff.JDiffAntTask" 
+           classpath="${JDIFF_HOME}/lib/antjdiff.jar"/>    
+           
+       <jdiff verbose="on" destdir="build/jdiff">
+            <old name="Version ${reference-api.version}">
+              <dirset dir="${reference-api.source.dir}" includes="org/**"/>
+            </old>
+            <new name="Version ${version}">
+              <dirset dir="${java.source.dir}" includes="org/**" excludes="org/apache/log4j/test/**"/>
+            </new>
+       </jdiff>
+  </target>  
+
   <!-- ============================================== -->
   <!-- Build the site files using Anakia              -->
   <!-- ============================================== -->
