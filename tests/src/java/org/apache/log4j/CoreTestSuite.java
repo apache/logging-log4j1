@@ -38,6 +38,7 @@ public class CoreTestSuite {
         s.addTestSuite(org.apache.log4j.pattern.PatternParserTest.class);
         s.addTestSuite(org.apache.log4j.rolling.helper.FileNamePatternTestCase.class);
         s.addTestSuite(org.apache.log4j.pattern.FormattingInfoTest.class);
+        s.addTestSuite(org.apache.log4j.LevelTest.class);
         return s;
     }
 }

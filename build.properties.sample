@@ -29,7 +29,7 @@ jms.jar=${lib.home.dir}/jms1.1/lib/jms.jar
 servlet-api.jar=${lib.home.dir}/jakarta-tomcat-5.5.9/common/lib/servlet-api.jar
 
 # SLF4J api
-slf4j-api.jar=${lib.home.dir}/slf4j-1.0-beta3/slf4j-nop.jar
+slf4j-api.jar=${lib.home.dir}/slf4j-1.0-beta4/slf4j-nop.jar
 
 # The templates for the creation of the web-pages are inherited 
 # from the parent project.
