@@ -116,7 +116,7 @@
   <!-- unit tests. Regression tests compare output with a previously     -->
   <!-- created witness file.                                             -->
   <!-- ================================================================= -->  
-  <target name="regression" depends="Minimum, Logger, DOM, CustomLevel, 
+  <target name="regression" depends="Core, Minimum, Logger, DOM, CustomLevel, 
                                      CustomLogger,  
                                      HierarchyThreshold, DefaultInit, SocketServer, 
                                      XMLLayout, AsyncAppender, 
@@ -133,6 +133,15 @@
   <!-- ================================================================= -->
   <!-- ============== Regression and Unit Tests follow ================= -->  
   <!-- ================================================================= -->
+    <target name="Core" depends="build">
+      <junit printsummary="yes" fork="yes" haltonfailure="yes">
+        <classpath refid="tests.classpath"/>
+        <formatter type="plain" usefile="false"/>
+        <test name="org.apache.log4j.CoreTestSuite" />
+      </junit>
+    </target>
+
+
   <target name="Minimum" depends="build">
     <junit printsummary="yes" fork="yes" haltonfailure="yes">
       <classpath refid="tests.classpath"/>
