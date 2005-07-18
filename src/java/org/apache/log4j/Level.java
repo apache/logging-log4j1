@@ -18,6 +18,11 @@
 //                Nicholas Wolff
 
 package org.apache.log4j;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.ObjectStreamException;
+import java.io.Serializable;
 
 /**
    Defines the minimum set of levels recognized by the system, that is
@@ -31,7 +36,7 @@ package org.apache.log4j;
    @author Ceki G&uuml;lc&uuml;
 
  */
-public class Level extends Priority {
+public class Level extends Priority implements Serializable {
 
 
   /**
@@ -71,6 +76,11 @@ public class Level extends Priority {
      The <code>ALL</code> has the lowest possible rank and is intended to
      turn on all logging.  */
   final static public Level ALL = new Level(ALL_INT, "ALL", 7);
+
+  /**
+   * Serialization version id.
+   */
+  static final long serialVersionUID = 3491141966387921974L;
 
   /**
      Instantiate a Level object.
@@ -144,4 +154,52 @@ public class Level extends Priority {
     if(s.equals("OFF")) return Level.OFF;
     return defaultLevel;
   }
+
+    /**
+     * Custom deserialization of Level.
+     * @param s serialization stream.
+     * @throws IOException if IO exception.
+     * @throws ClassNotFoundException if class not found.
+     */
+    private void readObject(final ObjectInputStream s) throws IOException, ClassNotFoundException {
+      s.defaultReadObject();
+      level = s.readInt();
+      syslogEquivalent = s.readInt();
+      levelStr = s.readUTF();
+      if (levelStr == null) {
+          levelStr = "";
+      }
+    }
+
+    /**
+     * Serialize level.
+     * @param s serialization stream.
+     * @throws IOException if exception during serialization.
+     */
+    private void writeObject(final ObjectOutputStream s) throws IOException {
+        s.defaultWriteObject();
+        s.writeInt(level);
+        s.writeInt(syslogEquivalent);
+        s.writeUTF(levelStr);
+    }
+
+    /**
+     * Resolved deserialized level to one of the stock instances.
+     * May be overriden in classes derived from Level.
+     * @return resolved object.
+     * @throws ObjectStreamException if exception during resolution.
+     */
+    private Object readResolve() throws ObjectStreamException {
+        //
+        //  if the deserizalized object is exactly an instance of Level
+        //
+        if (getClass() == Level.class) {
+            return toLevel(level);
+        }
+        //
+        //   extension of Level can't substitute stock item
+        //
+        return this;
+    }
+
 }

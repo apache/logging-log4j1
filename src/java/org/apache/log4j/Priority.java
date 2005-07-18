@@ -17,7 +17,7 @@
 // Contributors:  Kitching Simon <Simon.Kitching@orange.ch>
 
 package org.apache.log4j;
-  
+
 /**
    <font color="#AA4444">Refrain from using this class directly, use
    the {@link Level} class instead</font>.
@@ -25,9 +25,9 @@ package org.apache.log4j;
    @author Ceki G&uuml;lc&uuml; */
 public class Priority {
 
-  int level;
-  String levelStr;
-  int syslogEquivalent;
+  transient int level;
+  transient String levelStr;
+  transient int syslogEquivalent;
 
   public final static int OFF_INT = Integer.MAX_VALUE;
   public final static int FATAL_INT = 50000;
@@ -63,7 +63,16 @@ public class Priority {
    */
   final static public Priority DEBUG = new Level(DEBUG_INT, "DEBUG", 7);
 
-  
+
+  /**
+    * Default constructor for deserialization.
+    */
+  protected Priority() {
+      level = DEBUG_INT;
+      levelStr = "DEBUG";
+      syslogEquivalent = 7;
+  }
+
   /**
      Instantiate a level object.
    */
