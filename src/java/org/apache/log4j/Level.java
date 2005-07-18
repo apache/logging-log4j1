@@ -17,6 +17,11 @@
 // Contributors:  Kitching Simon <Simon.Kitching@orange.ch>
 //                Nicholas Wolff
 package org.apache.log4j;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.ObjectStreamException;
+import java.io.Serializable;
 
 
 /**
@@ -31,7 +36,7 @@ package org.apache.log4j;
    @author Ceki G&uuml;lc&uuml;
    @author Yoav Shapira
  */
-public class Level {
+public class Level implements Serializable {
   /**
    * OFF level integer value.
    */
@@ -124,17 +129,23 @@ public class Level {
   /**
    * The integer value of this Level instance.
    */
-  int level;
+  transient int level;
 
   /**
    * The label of this Level instance.
    */
-  String levelStr;
+  transient String levelStr;
 
   /**
    * The UNIX SysLog equivalent value of this Level instance.
    */
-  int syslogEquivalent;
+  transient int syslogEquivalent;
+
+  /**
+   * Serialization version id.
+   */
+  static final long serialVersionUID = 3491141966387921974L;
+
 
   /**
    * Instantiate a level object.
@@ -215,6 +226,8 @@ public class Level {
    *
    *  <p>You should think twice before overriding the default
    *  implementation of <code>isGreaterOrEqual</code> method.</p>
+   * @param r other level, may not be null.
+   * @return true if this level is equal or higher to other level.
    */
   public boolean isGreaterOrEqual(Level r) {
     return level >= r.level;
@@ -245,6 +258,7 @@ public class Level {
 
   /**
    * Returns the integer representation of this level.
+   * @return integer representation of level.
    */
   public final int toInt() {
     return level;
@@ -330,6 +344,53 @@ public class Level {
     }
 
     return defaultLevel;
+  }
+
+  /**
+   * Custom deserialization of Level.
+   * @param s serialization stream.
+   * @throws IOException if IO exception.
+   * @throws ClassNotFoundException if class not found.
+   */
+  private void readObject(final ObjectInputStream s) throws IOException, ClassNotFoundException {
+    s.defaultReadObject();
+    level = s.readInt();
+    syslogEquivalent = s.readInt();
+    levelStr = s.readUTF();
+    if (levelStr == null) {
+        levelStr = "";
+    }
+  }
+
+  /**
+   * Serialize level.
+   * @param s serialization stream.
+   * @throws IOException if exception during serialization.
+   */
+  private void writeObject(final ObjectOutputStream s) throws IOException {
+      s.defaultWriteObject();
+      s.writeInt(level);
+      s.writeInt(syslogEquivalent);
+      s.writeUTF(levelStr);
+  }
+
+  /**
+   * Resolved deserialized level to one of the stock instances.
+   * May be overriden in classes derived from Level.
+   * @return resolved object.
+   * @throws ObjectStreamException if exception during resolution.
+   */
+  private Object readResolve() throws ObjectStreamException {
+      //
+      //  if the deserizalized object is exactly an instance of Level
+      //
+      if (getClass() == Level.class) {
+          return toLevel(level);
+      }
+      //
+      //   extension of Level can't substitute stock item
+      //
+      return this;
   }
 }
 
