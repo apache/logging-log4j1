@@ -184,7 +184,7 @@ public class XMLLayout extends Layout {
     if (locationInfo) {
       LocationInfo locationInfo = event.getLocationInformation();
       output.write("<log4j:locationInfo class=\"");
-      output.write(locationInfo.getClassName());
+      Transform.escapeTags(locationInfo.getClassName(), output);
       output.write("\" method=\"");
       Transform.escapeTags(locationInfo.getMethodName(), output);
       output.write("\" file=\"");
