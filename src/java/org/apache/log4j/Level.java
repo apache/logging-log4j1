@@ -38,6 +38,11 @@ import java.io.Serializable;
  */
 public class Level extends Priority implements Serializable {
 
+   /**
+    * TRACE level integer value.
+    * @since 1.2.12
+    */
+  public static final int TRACE_INT = 5000;
 
   /**
      The <code>OFF</code> has the highest possible rank and is
@@ -71,6 +76,14 @@ public class Level extends Priority implements Serializable {
      informational events that are most useful to debug an
      application.  */
   final static public Level DEBUG = new Level(DEBUG_INT, "DEBUG", 7);
+
+  /**
+    * The <code>TRACE</code> Level designates finer-grained
+    * informational events than the <code>DEBUG</code level.
+   *  @since 1.2.12
+    */
+  public static final Level TRACE = new Level(TRACE_INT, "TRACE", 7);
+
 
   /**
      The <code>ALL</code> has the lowest possible rank and is intended to
@@ -127,6 +140,7 @@ public class Level extends Priority implements Serializable {
     case ERROR_INT: return Level.ERROR;
     case FATAL_INT: return Level.FATAL;
     case OFF_INT: return OFF;
+    case TRACE_INT: return Level.TRACE;
     default: return defaultLevel;
     }
   }
@@ -146,12 +160,12 @@ public class Level extends Priority implements Serializable {
 
     if(s.equals("ALL")) return Level.ALL; 
     if(s.equals("DEBUG")) return Level.DEBUG; 
-    //if(s.equals("FINE")) return Level.FINE; 
     if(s.equals("INFO"))  return Level.INFO;
     if(s.equals("WARN"))  return Level.WARN;  
     if(s.equals("ERROR")) return Level.ERROR;
     if(s.equals("FATAL")) return Level.FATAL;
     if(s.equals("OFF")) return Level.OFF;
+    if(s.equals("TRACE")) return Level.TRACE;
     return defaultLevel;
   }
 
