@@ -22,6 +22,8 @@ import junit.framework.TestSuite;
 
 import java.util.Vector;
 
+import org.apache.log4j.spi.LoggingEvent;
+
 
 /**
    A superficial but general test of log4j.
@@ -93,13 +95,44 @@ public class AsyncAppenderTestCase extends TestCase {
     assertTrue(vectorAppender.isClosed());
   }
 
-  // rename the method to suite() to have all tests executed. Rebame the method
-  // to Xsuite to have only selected tests executed.
-  public static Test XXsuite() {
-    TestSuite suite = new TestSuite();
-    suite.addTest(new AsyncAppenderTestCase("test1"));
-    //suite.addTest(new AsyncAppenderTestCase("closeTest"));
+  private static class NullPointerAppender extends AppenderSkeleton {
+        public NullPointerAppender() {
+          super(true);
+        }
 
-    return suite;
+
+        /**
+           This method is called by the {@link AppenderSkeleton#doAppend}
+           method.
+
+        */
+        public void append(LoggingEvent event) {
+            throw new NullPointerException();
+        }
+
+        public void close() {
+        }
+
+        public boolean requiresLayout() {
+          return false;
+        }
   }
+
+
+  public void testBadAppender() throws Exception {
+      Appender nullPointerAppender = new NullPointerAppender();
+      asyncAppender.addAppender(nullPointerAppender);
+      asyncAppender.setBufferSize(5);
+      asyncAppender.activateOptions();
+      root.addAppender(nullPointerAppender);
+      try {
+         root.info("Message");
+         Thread.sleep(10);
+         root.info("Message");
+         fail("Should have thrown exception");
+      } catch(NullPointerException ex) {
+
+      }
+  }
+
 }
