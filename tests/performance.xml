@@ -29,7 +29,8 @@
       file-noflush - run performance tests using FileAppender without immediate flush	
       file-bufferedio - run performance tests using FileAppender without buffered IO
       telnet - run performace tests with TelnetAppender
-      
+      getLogger - run getLogger performance test
+
     </echo>
   </target>
 
@@ -152,5 +153,17 @@
 	      <param name="configFile" value="input/performance/null-appender-info.xml"/>
 	    </antcall>
     </target>
-		
+
+    <target name="getLogger">
+      <property name="passes" value="10"/>
+      <property name="nameCount" value="1000"/>
+      <property name="nameLength" value="200"/>
+      <java classname="org.apache.log4j.performance.GetLoggerTest"
+          fork="yes" failonerror="true">
+          <classpath refid="perf.classpath"/>
+          <arg line="${passes} ${nameCount} ${nameLength}"/>
+       </java>
+     </target>
+
+
 </project>
