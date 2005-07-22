@@ -35,6 +35,7 @@ public class CoreTestSuite {
         TestSuite s = new TestSuite();
         s.addTestSuite(LoggingEventTest.class);
         s.addTestSuite(org.apache.log4j.LevelTest.class);
+        s.addTestSuite(org.apache.log4j.FileAppenderTest.class);
         return s;
     }
 }
