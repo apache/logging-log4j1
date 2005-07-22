@@ -78,6 +78,16 @@ public class AsyncAppender extends AppenderSkeleton
   }
 
   public void append(LoggingEvent event) {
+    //
+    //   if dispatcher thread has died then
+    //      append subsequent events synchronously
+    //   See bug 23021
+    if (!dispatcher.isAlive()) {
+        synchronized(aai) {
+          aai.appendLoopOnAppenders(event);
+        }
+        return;
+    }
     // Set the NDC and thread name for the calling thread as these
     // LoggingEvent fields were not set at event creation time.
     event.getNDC();
