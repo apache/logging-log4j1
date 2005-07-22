@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.io.Writer;
 import java.io.FileOutputStream;
 import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.File;
 
 import org.apache.log4j.spi.ErrorCode;
 import org.apache.log4j.helpers.QuietWriter;
@@ -279,7 +281,26 @@ public class FileAppender extends WriterAppender {
     }
 
     reset();
-    Writer fw = createWriter(new FileOutputStream(fileName, append));
+    FileOutputStream ostream = null;
+    try {
+          //
+          //   attempt to create file
+          //
+          ostream = new FileOutputStream(fileName, append);
+    } catch(FileNotFoundException ex) {
+          //
+          //   if parent directory does not exist then
+          //      attempt to create it and try to create file
+          //      see bug 9150
+          //
+          File parentDir = new File(new File(fileName).getParent());
+          if(!parentDir.exists() && parentDir.mkdirs()) {
+              ostream = new FileOutputStream(fileName, append);
+          } else {
+              throw ex;
+          }
+    }
+    Writer fw = createWriter(ostream);
     if(bufferedIO) {
       fw = new BufferedWriter(fw, bufferSize);
     }

@@ -16,37 +16,16 @@
 
 package org.apache.log4j;
 import java.io.File;
+import junit.framework.TestCase;
 
 
 /**
  *
- * Test if WriterAppender honors the Appender contract.
+ * FileAppender tests.
  *
- * @author <a href="http://www.qos.ch/log4j/">Ceki G&uuml;lc&uuml;</a>
  * @author Curt Arnold
  */
-public class FileAppenderTest extends AbstractAppenderTest {
-  protected AppenderSkeleton getAppender() {
-    return new FileAppender();
-  }
-
-  protected AppenderSkeleton getConfiguredAppender() {
-    FileAppender wa = new FileAppender();
-    wa.setFile("output/temp");
-    wa.setLayout(new DummyLayout());
-    return wa;
-  }
-
-  public void testPartiallyConfiguredAppender() {
-    FileAppender wa1 = new FileAppender();
-    wa1.setFile("output/temp");
-    assertFalse(wa1.isActive());
-
-    FileAppender wa2 = new FileAppender();
-    wa2.setLayout(new DummyLayout());
-    assertFalse(wa2.isActive());
-  }
-
+public class FileAppenderTest extends TestCase {
   /**
    * Tests that any necessary directories are attempted to
    * be created if they don't exist.  See bug 9150.
@@ -58,9 +37,9 @@ public class FileAppenderTest extends AbstractAppenderTest {
       File newDir = new File("output/newdir");
       newDir.delete();
 
-      FileAppender wa = new FileAppender();
+      org.apache.log4j.FileAppender wa = new org.apache.log4j.FileAppender();
       wa.setFile("output/newdir/temp.log");
-      wa.setLayout(new DummyLayout());
+      wa.setLayout(new PatternLayout("%m%n"));
       wa.activateOptions();
 
       assertTrue(new File("output/newdir/temp.log").exists());
