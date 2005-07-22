@@ -26,7 +26,7 @@ class CategoryKey {
   int hashCache;
 
   CategoryKey(String name) {
-    this.name = name.intern();
+    this.name = name;
     hashCache = name.hashCode();
   }
 
@@ -40,7 +40,7 @@ class CategoryKey {
     }
 
     if ((rArg != null) && (CategoryKey.class == rArg.getClass())) {
-      return name == ((CategoryKey) rArg).name;
+      return name.equals(((CategoryKey) rArg).name);
     } else {
       return false;
     }
