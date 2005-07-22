@@ -17,6 +17,7 @@
 package org.apache.log4j;
 
 import org.apache.log4j.spi.LoggerFactory;
+import org.apache.log4j.Level;
 
 
 /**
@@ -153,5 +154,59 @@ public class Logger extends Category {
   Logger getLogger(String name, LoggerFactory factory) {
     return LogManager.getLogger(name, factory);
   }
+
+    /**
+     * Log a message object with the {@link org.apache.log4j.Level#TRACE TRACE} level.
+     *
+     * @param message the message object to log.
+     * @see #debug(Object) for an explanation of the logic applied.
+     * @since 1.2.12
+     */
+    public void trace(Object message) {
+      if (repository.isDisabled(Level.TRACE_INT)) {
+        return;
+      }
+
+      if (Level.TRACE.isGreaterOrEqual(this.getEffectiveLevel())) {
+        forcedLog(FQCN, Level.TRACE, message, null);
+      }
+    }
+
+    /**
+     * Log a message object with the <code>TRACE</code> level including the
+     * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
+     *
+     * <p>
+     * See {@link #debug(Object)} form for more detailed information.
+     * </p>
+     *
+     * @param message the message object to log.
+     * @param t the exception to log, including its stack trace.
+     * @since 1.2.12
+     */
+    public void trace(Object message, Throwable t) {
+      if (repository.isDisabled(Level.TRACE_INT)) {
+        return;
+      }
+
+      if (Level.TRACE.isGreaterOrEqual(this.getEffectiveLevel())) {
+        forcedLog(FQCN, Level.TRACE, message, t);
+      }
+    }
+
+    /**
+     * Check whether this category is enabled for the TRACE  Level.
+     * @since 1.2.12
+     *
+     * @return boolean - <code>true</code> if this category is enabled for level
+     *         TRACE, <code>false</code> otherwise.
+     */
+    public boolean isTraceEnabled() {
+        if (repository.isDisabled(Level.TRACE_INT)) {
+            return false;
+          }
+
+          return Level.TRACE.isGreaterOrEqual(this.getEffectiveLevel());
+    }
 
 }
