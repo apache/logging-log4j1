@@ -75,7 +75,7 @@ public class LoggingEventTest extends TestCase {
 
     int[] skip = new int[] { 352, 353, 354, 355, 356 };
     SerializationTestHelper.assertSerializationEquals(
-      "witness/serialization/exception.bin", event, skip, 1089);
+      "witness/serialization/exception.bin", event, skip, 945);
   }
 
   /**

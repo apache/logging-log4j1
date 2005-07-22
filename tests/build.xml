@@ -91,6 +91,7 @@
 	         destdir="./classes"
            deprecation="${deprecation}"
            target="1.1"
+           source="1.3"
            debug="on"
            excludes="${excludes}">			
       <classpath refid="tests.classpath"/>
