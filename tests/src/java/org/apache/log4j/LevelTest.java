@@ -25,7 +25,7 @@ import org.apache.log4j.util.SerializationTestHelper;
  * Tests of Level.
  *
  * @author Curt Arnold
- * @since 1.3
+ * @since 1.2.12
  */
 public class LevelTest extends TestCase {
   /**
@@ -89,4 +89,26 @@ public class LevelTest extends TestCase {
         Level.INFO.level, Level.INFO.levelStr, Level.INFO.syslogEquivalent);
     }
   }
+
+    public void testTraceInt() {
+        assertEquals(5000, Level.TRACE_INT);
+    }
+
+    public void testTrace() {
+        assertEquals("TRACE", Level.TRACE.toString());
+        assertEquals(5000, Level.TRACE.toInt());
+        assertEquals(7, Level.TRACE.getSyslogEquivalent());
+    }
+
+    public void testIntToTrace() {
+        Level trace = Level.toLevel(5000);
+        assertEquals("TRACE", trace.toString());
+    }
+
+    public void testStringToTrace() {
+          Level trace = Level.toLevel("TRACE");
+          assertEquals("TRACE", trace.toString());
+    }
+
+
 }
