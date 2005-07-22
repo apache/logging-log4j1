@@ -261,7 +261,26 @@ public class FileAppender extends WriterAppender {
 
     closeWriter();
 
-    this.writer = createWriter(new FileOutputStream(filename, append));
+    FileOutputStream ostream = null;
+    try {
+        //
+        //   attempt to create file
+        //
+        ostream = new FileOutputStream(filename, append);
+    } catch(FileNotFoundException ex) {
+        //
+        //   if parent directory does not exist then
+        //      attempt to create it and try to create file
+        //      see bug 9150
+        //
+        File parentDir = new File(new File(filename).getParent());
+        if(!parentDir.exists() && parentDir.mkdirs()) {
+            ostream = new FileOutputStream(filename, append);
+        } else {
+            throw ex;
+        }
+    }
+    this.writer = createWriter(ostream);
 
     if (bufferedIO) {
       this.writer = new BufferedWriter(this.writer, bufferSize);
