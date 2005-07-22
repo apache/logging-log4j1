@@ -69,6 +69,7 @@ public class Level implements Serializable {
 
   /**
    * TRACE level integer value.
+   * @since 1.2.12
    */
   public static final int TRACE_INT = 5000;
 
@@ -117,6 +118,7 @@ public class Level implements Serializable {
   /**
    * The <code>TRACE</code> Level designates finer-grained
    * informational events than the <code>DEBUG</code level.
+   * @since 1.2.12
    */
   public static final Level TRACE = new Level(TRACE_INT, "TRACE", 7);
 

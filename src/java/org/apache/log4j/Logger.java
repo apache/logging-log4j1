@@ -114,7 +114,7 @@ public class Logger extends Category {
    *
    * @param message the message object to log.
    * @see #debug(Object) for an explanation of the logic applied.
-   * @since 1.3
+   * @since 1.2.12
    */
   public void trace(Object message) {
     if (repository.isDisabled(Level.TRACE_INT)) {
@@ -136,6 +136,7 @@ public class Logger extends Category {
    *
    * @param message the message object to log.
    * @param t the exception to log, including its stack trace.
+   * @since 1.2.12
    */
   public void trace(Object message, Throwable t) {
     if (repository.isDisabled(Level.TRACE_INT)) {
