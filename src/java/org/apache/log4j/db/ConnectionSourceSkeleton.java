@@ -28,13 +28,13 @@ import java.sql.SQLException;
  * @author Ceki G&uuml;lc&uuml;
  */
 public abstract class ConnectionSourceSkeleton extends ComponentBase implements ConnectionSource {
-  protected String user = null;
-  protected String password = null;
+  private String user = null;
+  private String password = null;
 
   // initially we have an unkonw dialect
-  protected int dialectCode = UNKNOWN_DIALECT;
-  protected boolean supportsGetGeneratedKeys = false;
-  protected boolean supportsBatchUpdates = false;
+  private int dialectCode = UNKNOWN_DIALECT;
+  private boolean supportsGetGeneratedKeys = false;
+  private boolean supportsBatchUpdates = false;
 
 
   /**
@@ -62,18 +62,18 @@ public abstract class ConnectionSourceSkeleton extends ComponentBase implements 
   /**
    * Does this connection support the JDBC Connection.getGeneratedKeys method?
    */
-  public boolean supportsGetGeneratedKeys() {
+  public final boolean supportsGetGeneratedKeys() {
     return supportsGetGeneratedKeys;
   }
 
-  public int getSQLDialectCode() {
+  public final int getSQLDialectCode() {
     return dialectCode;
   }
 
   /**
    * Get the password for this connection source.
    */
-  public String getPassword() {
+  public final String getPassword() {
     return password;
   }
 
@@ -81,14 +81,14 @@ public abstract class ConnectionSourceSkeleton extends ComponentBase implements 
    * Sets the password.
    * @param password The password to set
    */
-  public void setPassword(String password) {
+  public final void setPassword(final String password) {
     this.password = password;
   }
 
   /**
    * Get the user for this connection source.
    */
-  public String getUser() {
+  public final String getUser() {
     return user;
   }
 
@@ -96,14 +96,14 @@ public abstract class ConnectionSourceSkeleton extends ComponentBase implements 
    * Sets the username.
    * @param username The username to set
    */
-  public void setUser(String username) {
+  public final void setUser(final String username) {
     this.user = username;
   }
 
   /**
    * Does this connection support batch updates?
    */
-  public boolean supportsBatchUpdates() {
+  public final boolean supportsBatchUpdates() {
     return supportsBatchUpdates;
   }
 }

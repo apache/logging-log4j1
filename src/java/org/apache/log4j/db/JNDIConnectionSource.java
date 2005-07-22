@@ -65,7 +65,6 @@ public class JNDIConnectionSource
        extends ConnectionSourceSkeleton {
   private String jndiLocation = null;
   private DataSource dataSource = null;
-  int dialectCode = ConnectionSource.UNKNOWN_DIALECT;
 
   /**
    * @see org.apache.log4j.spi.OptionHandler#activateOptions()
@@ -90,10 +89,10 @@ public class JNDIConnectionSource
       if(dataSource == null) {
         dataSource = lookupDataSource();
       }
-      if (user == null) {
+      if (getUser() == null) {
         conn = dataSource.getConnection();
       } else {
-        conn = dataSource.getConnection(user, password);
+        conn = dataSource.getConnection(getUser(), getPassword());
       }
     } catch (final NamingException ne) {
          getLogger().error("Error while getting data source", ne);
@@ -124,19 +123,6 @@ public class JNDIConnectionSource
   }
 
 
-  /**
-   * Sets the password.
-   * @param password The password to set
-   */
-  public void setPassword(String password) {
-    this.password = password;
-  }
-
-
-  public int getSQLDialectCode() {
-    return dialectCode;
-  }
-  
   private DataSource lookupDataSource()
          throws NamingException, SQLException {
     DataSource ds;

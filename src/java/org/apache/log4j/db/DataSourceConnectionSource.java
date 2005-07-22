@@ -51,7 +51,7 @@ public class DataSourceConnectionSource extends ConnectionSourceSkeleton {
       if(connection != null) {
         discoverConnnectionProperties();
       } 
-      if(!supportsGetGeneratedKeys && dialectCode == ConnectionSource.UNKNOWN_DIALECT) {
+      if(!supportsGetGeneratedKeys() && getSQLDialectCode() == ConnectionSource.UNKNOWN_DIALECT) {
         getLogger().warn("Connection does not support GetGeneratedKey method and could not discover the dialect.");
       }
     }
@@ -66,10 +66,10 @@ public class DataSourceConnectionSource extends ConnectionSourceSkeleton {
       return null;
     }
 
-    if (user == null) {
+    if (getUser() == null) {
       return dataSource.getConnection();
     } else {
-      return dataSource.getConnection(user, password);
+      return dataSource.getConnection(getUser(), getPassword());
     }
   }
 
