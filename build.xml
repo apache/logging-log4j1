@@ -124,11 +124,20 @@
 
 
   <target name="jmxCheck">
-    <available classname="javax.management.MBeanInfo" property="jmx-present">
-      <classpath>
-	<pathelement location="${jmx.jar}"/>
-      </classpath>
-    </available>
+    <condition property="jmx-present" value="true">
+        <and>
+            <available classname="javax.management.MBeanInfo">
+                <classpath>
+	                <pathelement location="${jmx.jar}"/>
+                </classpath>
+            </available>
+            <available classname="com.sun.jdmk.comm.HtmlAdaptorServer">
+                <classpath>
+	                <pathelement location="${jmx.jar}"/>
+                </classpath>
+            </available>
+        </and>
+    </condition>
   </target>
   <target name="jmx" depends="jmxCheck" if="jmx-present">
     <echo message="JMX is present."/>
@@ -191,6 +200,7 @@
                     ${stem}/jmx/*.java,
                     ${stem}/or/jms/*.java"
            target="1.1"
+           source="1.3"
            deprecation="${deprecation}"
            debug="on">
       <classpath refid="compile.classpath"/>
@@ -211,6 +221,7 @@
            classpath="${classpath}"
            excludes="misc/*"
            target="1.1"
+           source="1.3"
            deprecation="${deprecation}"
            debug="on"/>
     <rmic base="${javac.dest}" classname="examples.NumberCruncherServer"/>
@@ -229,6 +240,7 @@
            excludes="${stem}/xml/examples/doc-files/**.java,
                      ${stem}/xml/Transform.java"
            target="1.1"
+           source="1.3"
            deprecation="${deprecation}"
            classpath="${classpath}">
       <classpath refid="compile.classpath"/>
@@ -242,6 +254,7 @@
            destdir="${javac.dest}"
            includes="${stem}/net/SMTPAppender.java"
            target="1.1"
+           source="1.3"
            deprecation="${deprecation}">
       <classpath refid="compile.classpath"/>
     </javac>
@@ -252,6 +265,7 @@
            destdir="${javac.dest}"
            includes="${stem}/net/JMS*.java, ${stem}/or/jms/*.java"
            target="1.1"
+           source="1.3"
            deprecation="${deprecation}">
       <classpath refid="compile.classpath"/>
     </javac>
@@ -263,6 +277,7 @@
            includes="${stem}/jmx/*.java"
            excludes="${stem}/jmx/T.java"
            target="1.1"
+           source="1.3"
            deprecation="${deprecation}">
       <classpath refid="compile.classpath"/>
     </javac>
