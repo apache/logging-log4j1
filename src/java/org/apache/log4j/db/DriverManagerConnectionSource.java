@@ -66,7 +66,7 @@ import java.sql.SQLException;
  */
 public class DriverManagerConnectionSource extends ConnectionSourceSkeleton {
   private String driverClass = null;
-  protected String url = null;
+  private String url = null;
 
   public void activateOptions() {
     try {
@@ -87,10 +87,10 @@ public class DriverManagerConnectionSource extends ConnectionSourceSkeleton {
    * @see org.apache.log4j.db.ConnectionSource#getConnection()
    */
   public Connection getConnection() throws SQLException {
-    if (user == null) {
+    if (getUser() == null) {
       return DriverManager.getConnection(url);
     } else {
-      return DriverManager.getConnection(url, user, password);
+      return DriverManager.getConnection(url, getUser(), getPassword());
     }
   }
 
