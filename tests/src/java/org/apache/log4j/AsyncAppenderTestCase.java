@@ -105,13 +105,50 @@ public class AsyncAppenderTestCase extends TestCase {
     assertTrue(vectorAppender.isClosed());
   }
 
+    private static class NullPointerAppender extends AppenderSkeleton {
+          public NullPointerAppender() {
+          }
 
-  public static Test suite() {
-    TestSuite suite = new TestSuite();
-    suite.addTest(new AsyncAppenderTestCase("closeTest"));
-    suite.addTest(new AsyncAppenderTestCase("test2"));
-    suite.addTest(new AsyncAppenderTestCase("test3"));
-    return suite;
-  }
 
+          /**
+             This method is called by the {@link org.apache.log4j.AppenderSkeleton#doAppend}
+             method.
+
+          */
+          public void append(org.apache.log4j.spi.LoggingEvent event) {
+              throw new NullPointerException();
+          }
+
+          public void close() {
+          }
+
+          public boolean requiresLayout() {
+            return false;
+          }
+    }
+
+
+    /**
+     * Tests that a bad appender will switch async back to sync.
+     * See bug 23021
+     * @since 1.2.12
+     * @throws Exception thrown if Thread.sleep is interrupted
+     */
+    public void testBadAppender() throws Exception {
+        Appender nullPointerAppender = new NullPointerAppender();
+        AsyncAppender asyncAppender = new AsyncAppender();
+        asyncAppender.addAppender(nullPointerAppender);
+        asyncAppender.setBufferSize(5);
+        asyncAppender.activateOptions();
+        Logger root = Logger.getRootLogger();
+        root.addAppender(nullPointerAppender);
+        try {
+           root.info("Message");
+           Thread.sleep(10);
+           root.info("Message");
+           fail("Should have thrown exception");
+        } catch(NullPointerException ex) {
+
+        }
+    }
 }
