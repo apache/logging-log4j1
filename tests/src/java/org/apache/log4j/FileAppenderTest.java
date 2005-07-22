@@ -15,6 +15,7 @@
  */
 
 package org.apache.log4j;
+import java.io.File;
 
 
 /**
@@ -22,6 +23,7 @@ package org.apache.log4j;
  * Test if WriterAppender honors the Appender contract.
  *
  * @author <a href="http://www.qos.ch/log4j/">Ceki G&uuml;lc&uuml;</a>
+ * @author Curt Arnold
  */
 public class FileAppenderTest extends AbstractAppenderTest {
   protected AppenderSkeleton getAppender() {
@@ -43,5 +45,24 @@ public class FileAppenderTest extends AbstractAppenderTest {
     FileAppender wa2 = new FileAppender();
     wa2.setLayout(new DummyLayout());
     assertFalse(wa2.isActive());
+  }
+
+  /**
+   * Tests that any necessary directories are attempted to
+   * be created if they don't exist.  See bug 9150.
+   *
+   */
+  public void testDirectoryCreation() {
+      File newFile = new File("output/newdir/temp.log");
+      newFile.delete();
+      File newDir = new File("output/newdir");
+      newDir.delete();
+
+      FileAppender wa = new FileAppender();
+      wa.setFile("output/newdir/temp.log");
+      wa.setLayout(new DummyLayout());
+      wa.activateOptions();
+
+      assertTrue(new File("output/newdir/temp.log").exists());
   }
 }
