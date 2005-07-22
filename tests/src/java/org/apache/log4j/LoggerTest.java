@@ -16,15 +16,15 @@
 
 package org.apache.log4j;
 
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-import org.apache.log4j.spi.*;
+import org.apache.log4j.spi.LoggerRepository;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.RootLogger;
 
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.Vector;
 
 
 /**
@@ -350,22 +350,75 @@ public class LoggerTest extends TestCase {
     assertSame(a0, a1);
   }
 
-  public static Test DISABLEDsuite() {
-    TestSuite suite = new TestSuite();
-    suite.addTest(new LoggerTest("testAppender1"));
-    suite.addTest(new LoggerTest("testAppender2"));
-    suite.addTest(new LoggerTest("testAdditivity1"));
-    suite.addTest(new LoggerTest("testAdditivity2"));
-    suite.addTest(new LoggerTest("testAdditivity3"));
-    suite.addTest(new LoggerTest("testDisable1"));
-    suite.addTest(new LoggerTest("testRB1"));
-    suite.addTest(new LoggerTest("testRB2"));
-    suite.addTest(new LoggerTest("testRB3"));
-    suite.addTest(new LoggerTest("testExists"));
-    suite.addTest(new LoggerTest("testHierarchy1"));
 
-    return suite;
-  }
+    /**
+     * Tests logger.trace(Object).
+     * @since 1.2.12
+     */
+    public void testTrace() {
+        VectorAppender appender = new VectorAppender();
+        appender.activateOptions();
+        Logger root = Logger.getRootLogger();
+        root.addAppender(appender);
+        root.setLevel(Level.INFO);
+
+        Logger tracer = Logger.getLogger("com.example.Tracer");
+        tracer.setLevel(Level.TRACE);
+
+        tracer.trace("Message 1");
+        root.trace("Discarded Message");
+        root.trace("Discarded Message");
+
+        Vector msgs = appender.getVector();
+        assertEquals(1, msgs.size());
+        LoggingEvent event = (LoggingEvent) msgs.get(0);
+        assertEquals(Level.TRACE, event.getLevel());
+        assertEquals("Message 1", event.getMessage());
+    }
+
+      /**
+       * Tests logger.trace(Object, Exception).
+       * @since 1.2.12
+       */
+      public void testTraceWithException() {
+          VectorAppender appender = new VectorAppender();
+          appender.activateOptions();
+          Logger root = Logger.getRootLogger();
+          root.addAppender(appender);
+          root.setLevel(Level.INFO);
+
+          Logger tracer = Logger.getLogger("com.example.Tracer");
+          tracer.setLevel(Level.TRACE);
+          NullPointerException ex = new NullPointerException();
+
+          tracer.trace("Message 1", ex);
+          root.trace("Discarded Message", ex);
+          root.trace("Discarded Message", ex);
+
+          Vector msgs = appender.getVector();
+          assertEquals(1, msgs.size());
+          LoggingEvent event = (LoggingEvent) msgs.get(0);
+          assertEquals(Level.TRACE, event.getLevel());
+          assertEquals("Message 1", event.getMessage());
+      }
+
+      /**
+       * Tests isTraceEnabled.
+       * @since 1.2.12
+       */
+      public void testIsTraceEnabled() {
+          VectorAppender appender = new VectorAppender();
+          appender.activateOptions();
+          Logger root = Logger.getRootLogger();
+          root.addAppender(appender);
+          root.setLevel(Level.INFO);
+
+          Logger tracer = Logger.getLogger("com.example.Tracer");
+          tracer.setLevel(Level.TRACE);
+
+          assertTrue(tracer.isTraceEnabled());
+          assertFalse(root.isTraceEnabled());
+      }
 
   private static class CountingAppender extends AppenderSkeleton {
     int counter;
