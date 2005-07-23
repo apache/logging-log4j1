@@ -16,11 +16,9 @@
 
 package org.apache.log4j;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 import java.util.Vector;
+
+import junit.framework.TestCase;
 
 import org.apache.log4j.spi.LoggingEvent;
 
