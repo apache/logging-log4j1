@@ -51,8 +51,10 @@ public abstract class AppenderSkeleton extends ComponentBase implements Appender
 
   /**
    * It is assumed and enforced that errorHandler is never null.
+   * 
+   * @deprecated as of 1.3
    */
-  //protected ErrorHandler errorHandler = new OnlyOnceErrorHandler();
+  private final org.apache.log4j.spi.ErrorHandler errorHandler = new org.apache.log4j.helpers.OnlyOnceErrorHandler();
 
   /**
    * The first filter in the filter chain. Set to <code>null</code> initially.
@@ -162,13 +164,15 @@ public abstract class AppenderSkeleton extends ComponentBase implements Appender
   }
 
   /**
-   * Return the currently set {@link ErrorHandler} for this Appender.
+   * Return the hardcoded <code>OnlyOnceErrorHandler</code> for this Appender.
+   * <code>ErrorHandler</code>'s are no longer utilized as of version 1.3.
    *
    * @since 0.9.0
+   * @deprecated As of 1.3
    */
-//  public ErrorHandler getErrorHandler() {
-//    return this.errorHandler;
-//  }
+  public final org.apache.log4j.spi.ErrorHandler getErrorHandler() {
+    return this.errorHandler;
+  }
 
   /**
    * Returns the head Filter.
@@ -292,6 +296,16 @@ FILTER_LOOP:
     return (active && !closed);
   }
 
+  /**
+   * Ignored as of 1.3
+   *
+   * @since 0.9.0
+   * @deprecated As of 1.3
+   */
+  public final void setErrorHandler(org.apache.log4j.spi.ErrorHandler eh) {
+    ; //ignore
+  }
+  
   /**
    * Set the layout for this appender. Note that some appenders have their own
    * (fixed) layouts or do not use one. For example, the {@link
