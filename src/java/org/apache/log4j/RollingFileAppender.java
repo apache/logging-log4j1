@@ -39,6 +39,14 @@ import java.io.IOException;
  * @deprecated Replaced by {@link org.apache.log4j.rolling.RollingFileAppender}
 */
 public class RollingFileAppender implements Appender, OptionHandler {
+
+  /**
+   * It is assumed and enforced that errorHandler is never null.
+   * 
+   * @deprecated as of 1.3
+   */
+  private final org.apache.log4j.spi.ErrorHandler errorHandler = new org.apache.log4j.helpers.OnlyOnceErrorHandler();
+
   /**
      The default maximum file size is 10MB.
   */
@@ -380,6 +388,27 @@ public class RollingFileAppender implements Appender, OptionHandler {
     public // synchronization not necessary since doAppend is alreasy synched
     void rollOver() {
         rfa.rollover();
+    }
+
+    /**
+     * Return the hardcoded <code>OnlyOnceErrorHandler</code> for this Appender.
+     * <code>ErrorHandler</code>'s are no longer utilized as of version 1.3.
+     *
+     * @since 0.9.0
+     * @deprecated As of 1.3
+     */
+    public final org.apache.log4j.spi.ErrorHandler getErrorHandler() {
+      return this.errorHandler;
+    }
+
+    /**
+     * Ignored as of 1.3
+     *
+     * @since 0.9.0
+     * @deprecated As of 1.3
+     */
+    public final void setErrorHandler(org.apache.log4j.spi.ErrorHandler eh) {
+      ; //ignore
     }
 
 }

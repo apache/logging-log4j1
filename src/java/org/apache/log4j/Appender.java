@@ -78,18 +78,20 @@ public interface Appender extends Component {
   public String getName();
 
   /**
-   * Set the {@link ErrorHandler} for this appender.
+   * Set the {@link org.apache.log4j.spi.ErrorHandler} for this appender.
    *
    * @since 0.9.0
+   * @deprecated As of 1.3
    */
-  //public void setErrorHandler(ErrorHandler errorHandler);
+  public void setErrorHandler(org.apache.log4j.spi.ErrorHandler errorHandler);
 
   /**
-   * Returns the {@link ErrorHandler} for this appender.
+   * Returns the {@link org.apache.log4j.spi.ErrorHandler} for this appender.
    *
    * @since 1.1
+   * @deprecated As of 1.3
    */
-  //public ErrorHandler getErrorHandler();
+  public org.apache.log4j.spi.ErrorHandler getErrorHandler();
 
   /**
    * Set the {@link Layout} for this appender.
