@@ -78,7 +78,7 @@ public abstract class Filter extends ComponentBase implements OptionHandler {
   /**
      Points to the next filter in the filter chain.
      
-     @deprecated As of 1.2.11, use {@link #getNext} and {@link #setNext} instead
+     @deprecated As of 1.2.12, use {@link #getNext} and {@link #setNext} instead
    */
   public Filter next;
 
