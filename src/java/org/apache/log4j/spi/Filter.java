@@ -62,6 +62,8 @@ public abstract class Filter implements OptionHandler {
 
   /**
      Points to the next filter in the filter chain.
+
+     @deprecated As of 1.2.11, use {@link #getNext} and {@link #setNext} instead
    */
   public Filter next;
 
@@ -104,5 +106,19 @@ public abstract class Filter implements OptionHandler {
   abstract
   public
   int decide(LoggingEvent event);
+
+  /**
+   * Set the next filter pointer.
+   */ 
+  public void setNext(Filter next) {
+    this.next = next;
+  }
+ 
+  /**
+   * Return the pointer to the next filter;
+   */ 
+  public Filter getNext() {
+        return next;
+  }
 
 }
