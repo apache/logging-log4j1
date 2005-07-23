@@ -16,8 +16,6 @@
 
 package org.apache.log4j.spi;
 
-//import org.apache.log4j.LogManager;
-//import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
 
 
@@ -80,7 +78,7 @@ public abstract class Filter extends ComponentBase implements OptionHandler {
   /**
      Points to the next filter in the filter chain.
      
-     @deprecated As of 1.3, use {@link #getNext} and {@link #setNext} instead
+     @deprecated As of 1.2.11, use {@link #getNext} and {@link #setNext} instead
    */
   public Filter next;
 
@@ -115,4 +113,5 @@ public abstract class Filter extends ComponentBase implements OptionHandler {
   public Filter getNext() {
         return next;
   }
+
 }
