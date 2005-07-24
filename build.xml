@@ -23,6 +23,9 @@
 
   <property name="version" value="1.3alpha-7"/>
 
+  <property name="target" value="1.2"/>
+  <property name="source" value="1.3"/>
+
   <!-- The base directory relative to which most targets are built -->
   <property name="base" value="."/>
 
@@ -333,8 +336,10 @@
                      ${stem}/or/jms/*.java,
                      ${stem}/selector/servlet/*.java,
                      ${stem}/lbel/**/*.java"
-    	   deprecation="on"
+    	   deprecation="${deprecation}"
     	   debug="${debug}"
+    	   target="${target}"
+    	   source="${source}"
     	>
     	<src path="${java.source.dir}"/>
     	<src path="${slf4j.source.dir}"/>
@@ -356,6 +361,8 @@
            excludes="**/jmx/*.java"
            deprecation="${deprecation}"
            debug="${debug}"
+           target="${target}"
+    	   source="${source}"
      >
       <classpath refid="compile.classpath"/>
     </javac>
@@ -371,6 +378,8 @@
     	             ${stem}/xml/examples/doc-files/**.java"
            deprecation="${deprecation}"
            debug="${debug}"
+           target="${target}"
+    	   source="${source}"
     >
       <classpath refid="compile.classpath"/>
     </javac>
@@ -404,6 +413,8 @@
     	   debug="${debug}"
            deprecation="${deprecation}"
            includes="${stem}/net/SMTPAppender.java"
+           target="${target}"
+    	   source="${source}"
     >
       <classpath refid="compile.classpath"/>
     </javac>
@@ -436,6 +447,8 @@
                      ${stem}/rule/LikeRule.java,
                      ${stem}/lbel/**/*.java"
     	   debug="${debug}"
+    	   target="${target}"
+    	   source="${source}"
     >
       <classpath refid="compile.classpath"/>
     </javac>
@@ -466,6 +479,8 @@
     	   deprecation="${deprecation}"
            destdir="${javac.dest}"
     	   includes="${stem}/net/JMS*.java, ${stem}/or/jms/*.java"
+    	   target="${target}"
+    	   source="${source}"
     >
       <classpath refid="compile.classpath"/>
     </javac>
@@ -494,7 +509,9 @@
            destdir="${javac.dest}"
            debug="${debug}"
            deprecation="${deprecation}"
-           includes="${stem}/selector/servlet/*.java">
+           includes="${stem}/selector/servlet/*.java"
+           target="${target}"
+    	   source="${source}">
       <classpath refid="compile.classpath"/>
     </javac>
   </target>
@@ -504,7 +521,9 @@
            destdir="${javac.dest}"
            deprecation="${deprecation}"
            debug="${debug}"
-           includes="${stem}/db/**.java">
+           includes="${stem}/db/**.java"
+           target="${target}"
+    	   source="${source}">
       <classpath refid="compile.classpath"/>
     </javac>
   </target>
