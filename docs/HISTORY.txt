@@ -4,6 +4,36 @@
   [**] Changes that requiring little or no modification to existing
        client code. 
  [***] Changes requiring important modifications to existing client code.
+ 
+ July ??th, 2005
+ 
+ - Release of version 1.2.12
+  
+ - Added o.a.log4j.Logger.trace(), o.a.log4j.Logger.isTraceEnabled() and 
+   o.a.log4j.Level.TRACE per bug 35711. [*]
+ 
+ - Fixed bug 31056 whereby o.a.log4j.ConsoleAppender would ignore redirections
+   of System.out and System.err that occurred after configuration.  [*]
+ 
+ - Fixed bug 23705 whereby o.a.log4j.xml.DOMConfigurator would not properly
+   interpret relative path names in external entity declarations.  [*]
+
+ - Fixed bug 35691 whereby o.a.log4j.xml.XmlLayout would not properly escape
+   class names that contained '<' or '>'.  [*]
+ 
+ - Fixed bug 35052 whereby use of String.intern() in o.a.log4j.CategoryKey
+   would cause application to slow down.  [*]
+ 
+ - Fixed bug 9150 whereby o.a.log4j.FileAppender would not create log file 
+   if parent directory did not exist.  [*]
+ 
+ - Fixed bug 23021 whereby o.a.log4j.AsycnAppender would deadlock if a
+   unchecked exception occurred in the attached appender causing the
+   dispatch thread to die.  [*]
+ 
+ - Added jdiff target to build.xml (bug 35516).  [*]
+ 
+ - Fixed bug 35831 whereby log4j would not build with a JDK 1.5 javac.  [*]
 
  June 18th, 2005
  
