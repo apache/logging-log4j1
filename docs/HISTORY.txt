@@ -15,6 +15,8 @@
  
  - Added o.a.log4j.Logger.trace(), o.a.log4j.Logger.isTraceEnabled() and 
    o.a.log4j.Level.TRACE per bug 35711. [*]
+   
+ - Implemented serialization for Level per bug 34758. [*]
  
  - Fixed bug 31056 whereby o.a.log4j.ConsoleAppender would ignore redirections
    of System.out and System.err that occurred after configuration.  [*]
