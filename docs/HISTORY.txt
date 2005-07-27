@@ -8,7 +8,11 @@
  July ??th, 2005
  
  - Release of version 1.2.12
-  
+ 
+ - Added getNext/setNext methods to org.apache.log4j.spi.Filter and deprecated
+   public "next" field. This mirrors the same change in the upcoming 1.3
+   version and, hence, provides a migration path. [*]
+ 
  - Added o.a.log4j.Logger.trace(), o.a.log4j.Logger.isTraceEnabled() and 
    o.a.log4j.Level.TRACE per bug 35711. [*]
  
