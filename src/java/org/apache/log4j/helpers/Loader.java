@@ -21,8 +21,6 @@ import java.lang.IllegalAccessException;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
 
-//import java.awt.Image;
-//import java.awt.Toolkit;
 
 /**
    Load resources (or images) from various sources.
@@ -54,10 +52,21 @@ public class Loader  {
       ignoreTCL = OptionConverter.toBoolean(ignoreTCLProp, true);      
     }   
   }
+  
+  /**
+   *  Get a resource by delegating to getResource(String).
+   *  @param resource resource name
+   *  @param clazz class, ignored.
+   *  @return URL to resource or null.
+   *  @deprecated as of 1.2.
+   */
+  public static URL getResource(String resource, Class clazz) {
+      return getResource(resource);
+  }
 
   /**
      This method will search for <code>resource</code> in different
-     places. The rearch order is as follows:
+     places. The search order is as follows:
 
      <ol>
 
