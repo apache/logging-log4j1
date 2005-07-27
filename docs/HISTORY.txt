@@ -9,18 +9,35 @@
        deprecated.
 
    ??, 2005
-  - Release of version 1.3alpha-7
+ - Release of version 1.3alpha-7
  
-  - Chatty output about Logger creation or retrieval events is now
-    suppressed by default.  They can be enabled by explicitly setting the
-    log4j.coreDebug system property. [*]
+ - Added target="1.2" and source="1.3" attributes to all usages of <javac>
+   to make sure that classes are compatible with JDK1.2+ no matter the JDK
+   under which the compilation is done. This mirrors what was done to the
+   1.2 branch while taking into account usage of JDK1.2 features where the
+   1.2 branch needs to stay compatible with JDk1.1.
  
-  - The log4j.debug system property no longer has any affect as all
-    log4j output is done through regular Logger objects. However, in
-    configuration file in properties format, the log4j.debug property will
-    cause PropertyConfigurator to *temporarily* output logs generated
-    during the configuration process. This is very similar to the way the
-    debug attribute works in configuration files in XML format. [*]
+ - Added back org.apache.log4j.spi.ErrorHandler and its implementations to
+   help make 1.3 binary compatible with 1.2.xx. Implementations are all NOP
+   and clearly marked as deprecated in the Javadoc. Same goes for get/set
+   methods for error handlers in appenders. This change allows applications
+   such as LogWeb, which make heavy use of Log4j internals, to compile and
+   run against Log4j-1.3 where it was only compatible with 1.2.xx previously.
+ 
+ - Made private "next" variable in org.apache.log4j.spi.Filter public to
+   make it binary-compatible with the 1.2 branch. Also marked it as
+   deprecated (which I also did for the 1.2.12 release) [*]
+ 
+ - Chatty output about Logger creation or retrieval events is now
+   suppressed by default.  They can be enabled by explicitly setting the
+   log4j.coreDebug system property. [*]
+ 
+ - The log4j.debug system property no longer has any affect as all
+   log4j output is done through regular Logger objects. However, in
+   configuration file in properties format, the log4j.debug property will
+   cause PropertyConfigurator to *temporarily* output logs generated
+   during the configuration process. This is very similar to the way the
+   debug attribute works in configuration files in XML format. [*]
  
   
   January 20th, 2005
