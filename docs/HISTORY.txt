@@ -40,6 +40,8 @@
  - Added jdiff target to build.xml (bug 35516).  [*]
  
  - Fixed bug 35831 whereby log4j would not build with a JDK 1.5 javac.  [*]
+ 
+ - Fixed bug 35893 by adding log4j 1.1 compatibility method to o.a.l.helpers.Loader. [*]
 
  June 18th, 2005
  
