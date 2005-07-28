@@ -28,11 +28,11 @@ import org.apache.log4j.spi.LoggingEvent;
    <p>The filter admits two options <b>LevelToMatch</b> and
    <b>AcceptOnMatch</b>. If there is an exact match between the value
    of the <b>LevelToMatch</b> option and the level of the {@link
-   LoggingEvent}, then the {@link #decide} method returns {@link
-   Filter#ACCEPT} in case the <b>AcceptOnMatch</b> option value is set
+   org.apache.log4j.spi.LoggingEvent}, then the {@link #decide} method returns {@link
+   org.apache.log4j.spi.Filter#ACCEPT} in case the <b>AcceptOnMatch</b> option value is set
    to <code>true</code>, if it is <code>false</code> then {@link
-   Filter#DENY} is returned. If there is no match, {@link
-   Filter#NEUTRAL} is returned.
+   org.apache.log4j.spi.Filter#DENY} is returned. If there is no match, {@link
+   org.apache.log4j.spi.Filter#NEUTRAL} is returned.
 
    @author Ceki G&uuml;lc&uuml;
 

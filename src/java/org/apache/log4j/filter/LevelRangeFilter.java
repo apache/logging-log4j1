@@ -18,12 +18,12 @@ import org.apache.log4j.spi.LoggingEvent;
    <p>The filter admits three options <b>LevelMin</b>, <b>LevelMax</b>
    and <b>AcceptOnMatch</b>.
 
-   <p>If the level of the {@link LoggingEvent} is not between Min and Max
-   (inclusive), then {@link Filter#DENY} is returned.
+   <p>If the level of the {@link org.apache.log4j.spi.LoggingEvent} is not between Min and Max
+   (inclusive), then {@link org.apache.log4j.spi.Filter#DENY} is returned.
    
    <p> If the Logging event level is within the specified range, then if
-   <b>AcceptOnMatch</b> is true, {@link Filter#ACCEPT} is returned, and if
-   <b>AcceptOnMatch</b> is false, {@link Filter#NEUTRAL} is returned.
+   <b>AcceptOnMatch</b> is true, {@link org.apache.log4j.spi.Filter#ACCEPT} is returned, and if
+   <b>AcceptOnMatch</b> is false, {@link org.apache.log4j.spi.Filter#NEUTRAL} is returned.
    
    <p>If <code>LevelMin</code>w is not defined, then there is no
    minimum acceptable level (ie a level is never rejected for

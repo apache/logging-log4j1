@@ -93,10 +93,8 @@ public class TTCCLayout extends Layout {
      Instantiate a TTCCLayout object using the local time zone. The
      DateFormat used will depend on the <code>dateFormatType</code>.
 
-     <p>This constructor just calls the {@link
-     DateLayout#setDateFormat} method.
-
-     */
+     <p>This constructor just calls the {@link #setDateFormat} method.
+  */
   public TTCCLayout(String dateFormatType) {
     this.setDateFormat(dateFormatType);
   }

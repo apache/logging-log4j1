@@ -18,31 +18,13 @@ package org.apache.log4j.varia;
 
 
 /**
-   This is a very simple filter based on string matching.
-
-
-   <p>The filter admits two options <b>StringToMatch</b> and
-   <b>AcceptOnMatch</b>. If there is a match between the value of the
-   StringToMatch option and the message of the {@link LoggingEvent},
-   then the {@link #decide} method returns {@link Filter#ACCEPT} if
-   the <b>AcceptOnMatch</b> option value is true, if it is false then
-   {@link Filter#DENY} is returned. If there is no match, {@link
-   Filter#NEUTRAL} is returned.
-
-   <p>See configuration files <a
-   href="../xml/doc-files/test6.xml">test6.xml</a>, <a
-   href="../xml/doc-files/test7.xml">test7.xml</a>, <a
-   href="../xml/doc-files/test8.xml">test8.xml</a>, <a
-   href="../xml/doc-files/test9.xml">test9.xml</a>, and <a
-   href="../xml/doc-files/test10.xml">test10.xml</a> for examples of
-   seeting up a <code>StringMatchFilter</code>.
-
-
-   @author Ceki G&uuml;lc&uuml;
-
-   @since 0.9.0
-   @deprecated org.apache.log4j.filter.StringMatchFilter
-   */
+ * <font color="red>Don't use this class.  Use
+ *  {@link org.apache.log4j.filter.StringMatchFilter} instead.</font>
+ *
+ * @author Ceki G&uuml;lc&uuml;
+ * @since 0.9.0
+ * @deprecated org.apache.log4j.filter.StringMatchFilter
+ */
 public class StringMatchFilter
   extends org.apache.log4j.filter.StringMatchFilter {
 }

@@ -39,22 +39,17 @@ import java.util.TimeZone;
 */
 public class AbsoluteTimeDateFormat extends DateFormat {
   /**
-     String constant used to specify {@link
-     org.apache.log4j.helpers.AbsoluteTimeDateFormat} in layouts. Current
-     value is <b>ABSOLUTE</b>.  */
+     String constant used to specify the Absolute time and date format.
+  */
   public static final String ABS_TIME_DATE_FORMAT = "ABSOLUTE";
 
   /**
-     String constant used to specify {@link
-     org.apache.log4j.helpers.DateTimeDateFormat} in layouts.  Current
-     value is <b>DATE</b>.
+     String constant used to specify the "Date and Time" date format.
   */
   public static final String DATE_AND_TIME_DATE_FORMAT = "DATE";
 
   /**
-     String constant used to specify {@link
-     org.apache.log4j.helpers.ISO8601DateFormat} in layouts. Current
-     value is <b>ISO8601</b>.
+     String constant used to specify the ISO8601 format.
   */
   public static final String ISO8601_DATE_FORMAT = "ISO8601";
 
