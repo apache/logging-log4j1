@@ -18,21 +18,12 @@ package org.apache.log4j.varia;
 
 
 /**
-   This is a very simple filter based on level matching.
-
-   <p>The filter admits two options <b>LevelToMatch</b> and
-   <b>AcceptOnMatch</b>. If there is an exact match between the value
-   of the <b>LevelToMatch</b> option and the level of the {@link
-   LoggingEvent}, then the {@link #decide} method returns {@link
-   Filter#ACCEPT} in case the <b>AcceptOnMatch</b> option value is set
-   to <code>true</code>, if it is <code>false</code> then {@link
-   Filter#DENY} is returned. If there is no match, {@link
-   Filter#NEUTRAL} is returned.
-
-   @author Ceki G&uuml;lc&uuml;
-
-   @since 1.2
-   @deprecated moved to org.apache.log4j.filter.LevelMatchFilter
-   */
+ * <font color="red>Don't use this class.  Use
+ * {@link org.apache.log4j.filter.LevelMatchFilter} instead.</font>
+ *
+ * @author Ceki G&uuml;lc&uuml;
+ * @since 1.2
+ * @deprecated moved to org.apache.log4j.filter.LevelMatchFilter
+ */
 public class LevelMatchFilter extends org.apache.log4j.filter.LevelMatchFilter {
 }

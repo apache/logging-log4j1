@@ -1,9 +1,17 @@
 /*
- * Copyright (C) The Apache Software Foundation. All rights reserved.
- *
- * This software is published under the terms of the Apache Software License
- * version 1.1, a copy of which has been included  with this distribution in
- * the LICENSE.txt file.
+ * Copyright 1999,2004-2005 The Apache Software Foundation.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.apache.log4j.filter;
@@ -12,20 +20,21 @@ import org.apache.log4j.spi.Filter;
 import org.apache.log4j.spi.LoggingEvent;
 
 /**
-   This is a very simple filter based on string matching.
-   
+   This is a very simple filter based on string matching.<br/>
 
    <p>The filter admits two options <b>StringToMatch</b> and
    <b>AcceptOnMatch</b>. If there is a match between the value of the
    StringToMatch option and the message of the {@link LoggingEvent},
-   then the {@link #decide} method returns {@link Filter#ACCEPT} if
+   then the {@link #decide(LoggingEvent)} method returns 
+   {@link org.apache.log4j.spi.Filter#ACCEPT} if
    the <b>AcceptOnMatch</b> option value is true, if it is false then
-   {@link Filter#DENY} is returned. If there is no match, {@link
-   Filter#NEUTRAL} is returned.
+   {@link org.apache.log4j.spi.Filter#DENY} is returned. If there is no match, {@link
+   org.apache.log4j.spi.Filter#NEUTRAL} is returned.
 
    @author Ceki G&uuml;lc&uuml;
 
-   @since 0.9.0 */
+   @since 0.9.0 
+*/
 public class StringMatchFilter extends Filter {
   
   boolean acceptOnMatch = true;
