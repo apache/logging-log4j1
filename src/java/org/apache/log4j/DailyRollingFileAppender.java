@@ -86,7 +86,10 @@ public final class DailyRollingFileAppender implements Appender, OptionHandler {
     datePattern = pattern;
   }
 
-  /** Returns the value of the <b>DatePattern</b> option. */
+  /** 
+   * Returns the value of the <b>DatePattern</b> option. 
+   * By default, the pattern is set to ".yyyy-MM-dd" meaning daily rollover.
+   */
   public String getDatePattern() {
     return datePattern;
   }

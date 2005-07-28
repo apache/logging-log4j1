@@ -53,7 +53,9 @@
 
  - Fixed Bugzilla 30853: made System.out printing conditional upon
    log4j.debug system property. [*]
-   
+ 
+ - Fixed Bugzilla 30623, better JavaDoc for DailyRollingFileAppender#getDatePattern.
+   http://issues.apache.org/bugzilla/show_bug.cgi?id=30623 [*]
  
   
   January 20th, 2005
