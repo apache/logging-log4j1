@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2005 The Apache Software Foundation.
+ * Copyright 1999,2004-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ import javax.xml.parsers.SAXParser;
    Use this class to initialize the log4j environment using a DOM tree.
 
    <p>The DTD is specified in <a
-   href="doc-files/log4j.dtd"><b>log4j.dtd</b></a>.
+   href="log4j.dtd"><b>log4j.dtd</b></a>.
 
    <p>Sometimes it is useful to see how log4j is reading configuration
    files. You can enable log4j internal logging by defining the
