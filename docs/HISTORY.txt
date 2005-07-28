@@ -50,6 +50,10 @@
  - Closed Bugzilla 34163, missing chainsaw module in xdocs/install-chainsaw.xml,
    which had been previously fixed.
    http://issues.apache.org/bugzilla/show_bug.cgi?id=34163 [*]
+
+ - Fixed Bugzilla 30853: made System.out printing conditional upon
+   log4j.debug system property. [*]
+   
  
   
   January 20th, 2005
