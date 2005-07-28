@@ -28,7 +28,7 @@ import org.apache.log4j.helpers.Transform;
 /**
  * The output of the XMLLayout consists of a series of log4j:event
  * elements as defined in the <a
- * href="doc-files/log4j.dtd">log4j.dtd</a>. It does not output a
+ * href="log4j.dtd">log4j.dtd</a>. It does not output a
  * complete well-formed XML file. The output is designed to be
  * included as an <em>external entity</em> in a separate file to form
  * a correct XML file.
@@ -94,7 +94,7 @@ public class XMLLayout extends Layout {
 
 
   /**
-   * Formats a {@link LoggingEvent} in conformance with the log4j.dtd.
+   * Formats a {@link org.apache.log4j.spi.LoggingEvent} in conformance with the log4j.dtd.
    * */
   public String format(LoggingEvent event) {
 

@@ -5,6 +5,15 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
  
+ [FILL IN DATE, 2005]
+ 
+ - Release of versions 1.2.12rc2
+
+ - Fixed Bugzilla 14551 and its duplicates by fixing the JavaDoc links
+   for the XML sample files. 
+   http://issues.apache.org/bugzilla/show_bug.cgi?id=14551 [*]
+
+
  July 27th, 2005
  
  - Release of version 1.2.12rc1
