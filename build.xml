@@ -218,8 +218,8 @@
   		
         Missing java.mail.* classes.
   		
-        Please make sure to that the "jms.jar" property in build.properties 
-        file is set correctly.
+        Please make sure that the "javamail.jar" and "activation.jar"
+        properties in the build.properties file are set correctly.
   		
   	</fail>
 
@@ -752,6 +752,16 @@ Specify files to reformat with -Djalopy.files=PATTERN.
       <classpath refid="compile.classpath"/>
       <classpath path="${regexp.oro.jar}"/>
     </javadoc>
+
+    <!-- Extra files referenced by JavaDocs -->
+    <copy file="${java.source.dir}/org/apache/log4j/xml/log4j.dtd"
+          tofile="${javadoc.dest}/org/apache/log4j/xml/log4j.dtd" />
+    <copy todir="${javadoc.dest}/org/apache/log4j/xml/examples">
+      <fileset dir="${java.source.dir}/org/apache/log4j/xml/examples">
+        <include name="sample*.xml" />
+        <include name="XMLSample.java" />
+      </fileset>
+    </copy>
   </target>
   
   

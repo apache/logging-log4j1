@@ -39,6 +39,9 @@
    cause PropertyConfigurator to *temporarily* output logs generated
    during the configuration process. This is very similar to the way the
    debug attribute works in configuration files in XML format. [*]
+
+ - Fixed Bugzilla 14551, misplaces sample.xml links in JavaDocs.
+   http://issues.apache.org/bugzilla/show_bug.cgi?id=14551 [*]
  
   
   January 20th, 2005
