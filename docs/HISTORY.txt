@@ -5,9 +5,9 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
  
- July ??th, 2005
+ July 27th, 2005
  
- - Release of version 1.2.12
+ - Release of version 1.2.12rc1
  
  - Added getNext/setNext methods to org.apache.log4j.spi.Filter and deprecated
    public "next" field. This mirrors the same change in the upcoming 1.3
@@ -41,7 +41,8 @@
  
  - Fixed bug 35831 whereby log4j would not build with a JDK 1.5 javac.  [*]
  
- - Fixed bug 35893 by adding log4j 1.1 compatibility method to o.a.l.helpers.Loader. [*]
+ - Fixed bug 35893 by adding log4j 1.1 compatibility method 
+   to o.a.l.helpers.Loader. [*]
 
  June 18th, 2005
  
