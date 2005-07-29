@@ -52,6 +52,9 @@
  
  - Fixed bug 35893 by adding log4j 1.1 compatibility method 
    to o.a.l.helpers.Loader. [*]
+ 
+ - Fixed bug 34026, SyslogAppender now checks Layout.ignoresThrowable() just
+   like every other appender.
 
  June 18th, 2005
  

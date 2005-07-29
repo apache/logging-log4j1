@@ -253,17 +253,17 @@ public class SyslogAppender extends AppenderSkeleton {
     sqw.setLevel(event.getLevel().getSyslogEquivalent());
     sqw.write(buffer);
 
-    String[] s = event.getThrowableStrRep();
-    if (s != null) {
-      int len = s.length;
-      if(len > 0) {
-	sqw.write(s[0]);
-
-	for(int i = 1; i < len; i++) {
-	    sqw.write(TAB+s[i].substring(1));
-	}
+    if (layout.ignoresThrowable()) {
+      String[] s = event.getThrowableStrRep();
+      if (s != null) {
+        int len = s.length;
+        if(len > 0) {
+          sqw.write(s[0]);
+          for(int i = 1; i < len; i++) {
+            sqw.write(TAB+s[i].substring(1));
+          }
+        }
       }
-
     }
   }
 
