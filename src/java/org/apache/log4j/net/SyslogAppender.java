@@ -281,19 +281,21 @@ public class SyslogAppender extends AppenderSkeleton {
       writeInitialParts(event);
       layout.format(sw, event);
       sw.flush();
-//      String[] s = event.getThrowableStrRep();
-//
-//      if (s != null) {
-//        int len = s.length;
-//
-//        if (len > 0) {
-//          sw.write(s[0]);
-//
-//          for (int i = 1; i < len; i++) {
-//            sw.write(TAB + s[i].substring(1));
-//          }
-//        }
-//      }
+
+/*
+      if (layout.ignoresThrowable()) {
+        String[] s = event.getThrowableStrRep();
+        if (s != null) {
+          int len = s.length;
+          if(len > 0) {
+            sqw.write(s[0]);
+            for(int i = 1; i < len; i++) {
+              sqw.write(TAB+s[i].substring(1));
+            }
+          }
+        }
+      }
+*/
     } catch (IOException ioe) {
     }
   }
