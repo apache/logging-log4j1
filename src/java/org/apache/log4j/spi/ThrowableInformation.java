@@ -174,7 +174,7 @@ class VectorWriter extends PrintWriter {
   }
 
   public void println(Object o) {
-    v.addElement(o.toString());
+      v.addElement(String.valueOf(o));
   }
 
   // JDK 1.1.x apprenly uses this form of println while in
