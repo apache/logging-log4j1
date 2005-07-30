@@ -56,6 +56,9 @@
  
  - Fixed Bugzilla 30623, better JavaDoc for DailyRollingFileAppender#getDatePattern.
    http://issues.apache.org/bugzilla/show_bug.cgi?id=30623 [*]
+
+ - Fixed Bugzilla 34747: DBAppender reused Statement objects inappropriately.
+   http://issues.apache.org/bugzilla/show_bug.cgi?id=34747 [*]
  
   
   January 20th, 2005

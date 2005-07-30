@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2004-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -183,120 +183,132 @@ public class DBAppender extends AppenderSkeleton {
   }
 
   protected void append(LoggingEvent event) {
-    Connection connection = null;
-    try {
-      connection = connectionSource.getConnection();
-      connection.setAutoCommit(false);
-
-      PreparedStatement insertStatement =
-        connection.prepareStatement(insertSQL);
-      insertStatement.setLong(1, event.getSequenceNumber());
-      insertStatement.setLong(2, event.getTimeStamp());
-      insertStatement.setString(3, event.getRenderedMessage());
-      insertStatement.setString(4, event.getLoggerName());
-      insertStatement.setString(5, event.getLevel().toString());
-      insertStatement.setString(6, event.getNDC());
-      insertStatement.setString(7, event.getThreadName());
-      insertStatement.setShort(8, DBHelper.computeReferenceMask(event));
-
-      LocationInfo li;
-
-      if (event.locationInformationExists() || locationInfo) {
-        li = event.getLocationInformation();
-      } else {
-        li = LocationInfo.NA_LOCATION_INFO;
-      }
-
-      insertStatement.setString(9, li.getFileName());
-      insertStatement.setString(10, li.getClassName());
-      insertStatement.setString(11, li.getMethodName());
-      insertStatement.setString(12, li.getLineNumber());
-
-      int updateCount = insertStatement.executeUpdate();
-      if (updateCount != 1) {
-        getLogger().warn("Failed to insert loggingEvent");
-      }
-
-      Statement idStatement = connection.createStatement();
-      idStatement.setMaxRows(1);
-
-      ResultSet rs = null;
-      if (cnxSupportsGetGeneratedKeys) {
-        rs = insertStatement.getGeneratedKeys();
-      } else {
-        rs = idStatement.executeQuery(sqlDialect.getSelectInsertId());
-      }
-
-      // A ResultSet cursor is initially positioned before the first row; the 
-      // first call to the method next makes the first row the current row
-      rs.next();
-      int eventId = rs.getInt(1);
-
-      // we no longer need the insertStatement
-      insertStatement.close();
-      insertStatement = null;
-
-      Set propertiesKeys = event.getPropertyKeySet();
-
-      if (propertiesKeys.size() > 0) {
-        PreparedStatement insertPropertiesStatement =
-          connection.prepareStatement(insertPropertiesSQL);
-
-        for (Iterator i = propertiesKeys.iterator(); i.hasNext();) {
-          String key = (String) i.next();
-          String value = (String) event.getProperty(key);
-
-          //LogLog.info("id " + eventId + ", key " + key + ", value " + value);
-          insertPropertiesStatement.setInt(1, eventId);
-          insertPropertiesStatement.setString(2, key);
-          insertPropertiesStatement.setString(3, value);
-
-          if (cnxSupportsBatchUpdates) {
-            insertPropertiesStatement.addBatch();
+      Connection connection = null;
+      try {
+          connection = connectionSource.getConnection();
+          connection.setAutoCommit(false);
+          
+          PreparedStatement insertStatement =
+              connection.prepareStatement(insertSQL);
+          insertStatement.setLong(1, event.getSequenceNumber());
+          insertStatement.setLong(2, event.getTimeStamp());
+          insertStatement.setString(3, event.getRenderedMessage());
+          insertStatement.setString(4, event.getLoggerName());
+          insertStatement.setString(5, event.getLevel().toString());
+          insertStatement.setString(6, event.getNDC());
+          insertStatement.setString(7, event.getThreadName());
+          insertStatement.setShort(8, DBHelper.computeReferenceMask(event));
+          
+          LocationInfo li;
+          
+          if (event.locationInformationExists() || locationInfo) {
+              li = event.getLocationInformation();
           } else {
-            insertPropertiesStatement.execute();
+              li = LocationInfo.NA_LOCATION_INFO;
           }
-        }
-
-        if (cnxSupportsBatchUpdates) {
-          insertPropertiesStatement.executeBatch();
-        }
-
-        insertPropertiesStatement.close();
-        insertPropertiesStatement = null;
-      }
-
-      String[] strRep = event.getThrowableStrRep();
-
-      if (strRep != null) {
-        getLogger().debug("Logging an exception");
-
-        PreparedStatement insertExceptionStatement =
-          connection.prepareStatement(insertExceptionSQL);
-
-        for (short i = 0; i < strRep.length; i++) {
-          insertExceptionStatement.setInt(1, eventId);
-          insertExceptionStatement.setShort(2, i);
-          insertExceptionStatement.setString(3, strRep[i]);
-          if (cnxSupportsBatchUpdates) {
-            insertExceptionStatement.addBatch();
+          
+          insertStatement.setString(9, li.getFileName());
+          insertStatement.setString(10, li.getClassName());
+          insertStatement.setString(11, li.getMethodName());
+          insertStatement.setString(12, li.getLineNumber());
+          
+          int updateCount = insertStatement.executeUpdate();
+          if (updateCount != 1) {
+              getLogger().warn("Failed to insert loggingEvent");
+          }
+          
+          ResultSet rs = null;
+          Statement idStatement = null;
+          if (cnxSupportsGetGeneratedKeys) {
+              rs = insertStatement.getGeneratedKeys();
           } else {
-            insertExceptionStatement.execute();
+              insertStatement.close();
+              insertStatement = null;
+              
+              idStatement = connection.createStatement();
+              idStatement.setMaxRows(1);
+              rs = idStatement.executeQuery(sqlDialect.getSelectInsertId());
           }
-        }
-        if (cnxSupportsBatchUpdates) {
-          insertExceptionStatement.executeBatch();
-        }
-        insertExceptionStatement.close();
-        insertExceptionStatement = null;
-      }
+          
+          // A ResultSet cursor is initially positioned before the first row; the 
+          // first call to the method next makes the first row the current row
+          rs.next();
+          int eventId = rs.getInt(1);
+          
+          rs.close();
 
-      connection.commit();
-    } catch (SQLException sqle) {
-      getLogger().error("problem appending event", sqle);
-    } finally {
-      DBHelper.closeConnection(connection);
-    }
+          // we no longer need the insertStatement
+          if(insertStatement != null) {
+              insertStatement.close();
+              insertStatement = null;
+          }
+
+          if(idStatement != null) {
+              idStatement.close();
+              idStatement = null;
+          }
+
+          Set propertiesKeys = event.getPropertyKeySet();
+          
+          if (propertiesKeys.size() > 0) {
+              PreparedStatement insertPropertiesStatement =
+                  connection.prepareStatement(insertPropertiesSQL);
+              
+              for (Iterator i = propertiesKeys.iterator(); i.hasNext();) {
+                  String key = (String) i.next();
+                  String value = (String) event.getProperty(key);
+                  
+                  //LogLog.info("id " + eventId + ", key " + key + ", value " + value);
+                  insertPropertiesStatement.setInt(1, eventId);
+                  insertPropertiesStatement.setString(2, key);
+                  insertPropertiesStatement.setString(3, value);
+                  
+                  if (cnxSupportsBatchUpdates) {
+                      insertPropertiesStatement.addBatch();
+                  } else {
+                      insertPropertiesStatement.execute();
+                  }
+              }
+              
+              if (cnxSupportsBatchUpdates) {
+                  insertPropertiesStatement.executeBatch();
+              }
+              
+              insertPropertiesStatement.close();
+              insertPropertiesStatement = null;
+          }
+          
+          String[] strRep = event.getThrowableStrRep();
+          
+          if (strRep != null) {
+              getLogger().debug("Logging an exception");
+              
+              PreparedStatement insertExceptionStatement =
+                  connection.prepareStatement(insertExceptionSQL);
+              
+              for (short i = 0; i < strRep.length; i++) {
+                  insertExceptionStatement.setInt(1, eventId);
+                  insertExceptionStatement.setShort(2, i);
+                  insertExceptionStatement.setString(3, strRep[i]);
+                  if (cnxSupportsBatchUpdates) {
+                      insertExceptionStatement.addBatch();
+                  } else {
+                      insertExceptionStatement.execute();
+                  }
+        }
+              if (cnxSupportsBatchUpdates) {
+                  insertExceptionStatement.executeBatch();
+              }
+              insertExceptionStatement.close();
+              insertExceptionStatement = null;
+          }
+          
+          connection.commit();
+      } catch (SQLException sqle) {
+          getLogger().error("problem appending event", sqle);
+      } finally {
+          DBHelper.closeConnection(connection);
+      }
   }
 
   public void close() {
