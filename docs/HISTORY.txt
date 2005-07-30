@@ -60,6 +60,9 @@
  - Fixed Bugzilla 34747: DBAppender reused Statement objects inappropriately.
    http://issues.apache.org/bugzilla/show_bug.cgi?id=34747 [*]
  
+ - Fixed Bugzilla 35324: VectorWriter#println NPE on null argument.
+   http://issues.apache.org/bugzilla/show_bug.cgi?id=35324 [*]
+
   
   January 20th, 2005
  - Release of version 1.3alpha-6
