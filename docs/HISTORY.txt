@@ -56,6 +56,10 @@
  - Fixed bug 34026, SyslogAppender now checks Layout.ignoresThrowable() just
    like every other appender.
 
+ - Fixed bug 35947 whereby DOMConfigurator would call LogLog.error to report 
+   XML validation errors that caused no problems in the interpretation of the 
+   configuration file. 
+
  June 18th, 2005
  
  - Release of version 1.2.11

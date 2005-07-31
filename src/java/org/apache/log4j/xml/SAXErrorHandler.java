@@ -23,24 +23,23 @@ import org.apache.log4j.helpers.LogLog;
 public class SAXErrorHandler implements ErrorHandler {
 
   public
-  void error(SAXParseException ex) {
-    LogLog.error("Parsing error on line "+ex.getLineNumber()+" and column "
-		 +ex.getColumnNumber());
-    LogLog.error(ex.getMessage(), ex.getException());
-    //LogLog.error("pid="+ex.getPublicId()+" sid="+ex.getSystemId());
+  void error(final SAXParseException ex) {
+    emitMessage("Continuable parsing error ", ex);
   }
   
   public
-  void fatalError(SAXParseException ex) {
-    error(ex);
+  void fatalError(final SAXParseException ex) {
+    emitMessage("Fatal parsing error ", ex);
   }
    
   public
-  void warning(SAXParseException ex) {
-    LogLog.warn("Parsing error on line "+ex.getLineNumber()+" and column "
-		+ex.getColumnNumber());
+  void warning(final SAXParseException ex) {
+    emitMessage("Parsing warning ", ex);
+  }
+  
+  private static void emitMessage(final String msg, final SAXParseException ex) {
+    LogLog.warn(msg +ex.getLineNumber()+" and column "
+		 +ex.getColumnNumber());
     LogLog.warn(ex.getMessage(), ex.getException());
   }
-
-
 }
