@@ -5,14 +5,20 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
  
- [FILL IN DATE, 2005]
+ August 1st, 2005
  
  - Release of versions 1.2.12rc2
+ 
+ - Fixed bug 34026, SyslogAppender now checks Layout.ignoresThrowable() just
+   like every other appender. [*]
+
+ - Fixed bug 35947 whereby DOMConfigurator would call LogLog.error to report 
+   XML validation errors that caused no problems in the interpretation of the 
+   configuration file. [*]
 
  - Fixed Bugzilla 14551 and its duplicates by fixing the JavaDoc links
    for the XML sample files. 
    http://issues.apache.org/bugzilla/show_bug.cgi?id=14551 [*]
-
 
  July 27th, 2005
  
@@ -50,15 +56,8 @@
  
  - Fixed bug 35831 whereby log4j would not build with a JDK 1.5 javac.  [*]
  
- - Fixed bug 35893 by adding log4j 1.1 compatibility method 
+ - Fixed bug 35893 by adding log4j 1.1 compatibility method
    to o.a.l.helpers.Loader. [*]
- 
- - Fixed bug 34026, SyslogAppender now checks Layout.ignoresThrowable() just
-   like every other appender.
-
- - Fixed bug 35947 whereby DOMConfigurator would call LogLog.error to report 
-   XML validation errors that caused no problems in the interpretation of the 
-   configuration file. 
 
  June 18th, 2005
  
