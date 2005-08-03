@@ -397,11 +397,34 @@ public class JMSAppender extends AppenderSkeleton {
     this.locationInfo = locationInfo;
   }
 
+  /**
+   * Returns the TopicConnection used for this appender.  Only valid after
+   * activateOptions() method has been invoked.
+   */
+  protected TopicConnection  getTopicConnection() {
+    return topicConnection;
+  }
 
+  /**
+   * Returns the TopicSession used for this appender.  Only valid after
+   * activateOptions() method has been invoked.
+   */
+  protected TopicSession  getTopicSession() {
+    return topicSession;
+  }
+
+  /**
+   * Returns the TopicPublisher used for this appender.  Only valid after
+   * activateOptions() method has been invoked.
+   */
+  protected TopicPublisher  getTopicPublisher() {
+    return topicPublisher;
+  }
+  
   /** 
    * The JMSAppender sends serialized events and consequently does not
    * require a layout.
-   * */
+   */
   public boolean requiresLayout() {
     return false;
   }

@@ -5,9 +5,16 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
  
+ ???, 2005
+ 
+ - Release of version 1.2.12rc3
+ 
+ - Fixed bug 35965 by adding protected accessors for member variables
+   topicConnection, topicSession, and topicPublisher. [*]
+   
  August 1st, 2005
  
- - Release of versions 1.2.12rc2
+ - Release of version 1.2.12rc2
  
  - Fixed bug 34026, SyslogAppender now checks Layout.ignoresThrowable() just
    like every other appender. [*]
