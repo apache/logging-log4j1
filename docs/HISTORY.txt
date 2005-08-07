@@ -5,7 +5,7 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
  
- ???, 2005
+ August 7th, 2005
  
  - Release of version 1.2.12rc3
  
