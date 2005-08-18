@@ -82,11 +82,11 @@ class LoggingReceiver extends Thread {
     }
 
     /** where to put the events **/
-    private final MyTableModel mModel;
+    private MyTableModel mModel;
 
     /** server for listening for connections **/
-    private final ServerSocket mSvrSock;
-
+    private ServerSocket mSvrSock;
+    
     /**
      * Creates a new <code>LoggingReceiver</code> instance.
      *
