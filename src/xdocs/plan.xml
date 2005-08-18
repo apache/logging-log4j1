@@ -194,7 +194,7 @@
 	  <td>Improvements to Chainsaw</td>
 	  
 	  <td>
-	    <p><a href="chainsaw.html">Chainsaw v2</a> development has now progressed 
+	    <p><a href="http://logging.apache.org/log4j/docs/chainsaw.html">Chainsaw v2</a> development has now progressed 
       to the point where the main developers of it
 	    and many other members of the logging community are using it daily.  It's 
       still pre-alpha but only
