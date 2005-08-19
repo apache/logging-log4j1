@@ -114,6 +114,9 @@
     dist    - will create a complete distribution in dist/
               Setting the env variable NO_JAVADOC will build the distribution
               without running the javadoc target.
+
+    release - will create a complete distribution in dist/
+              using stricter settings for public distribution.
     </echo>
   </target>
 
@@ -183,6 +186,9 @@
   <!-- ================================================================= -->
   <target name="init">
     <tstamp />
+    <property name="javac.includeAntRuntime" value="true"/>
+    <property name="javac.includeJavaRuntime" value="false"/>
+    <property name="javac.fork" value="false"/>
   </target>
 
   <target name="build" depends="init, build.core, build.examples, build.xml,
@@ -205,6 +211,9 @@
                     ${stem}/or/jms/*.java"
            target="${javac.target}"
            source="${javac.source}"
+           includeAntRuntime="${javac.includeAntRuntime}"
+           includeJavaRuntime="${javac.includeJavaRuntime}"
+           fork="${javac.fork}"
            deprecation="${deprecation}"
            debug="on">
       <classpath refid="compile.classpath"/>
@@ -226,6 +235,9 @@
            excludes="misc/*"
            target="${javac.target}"
            source="${javac.source}"
+           includeAntRuntime="${javac.includeAntRuntime}"
+           includeJavaRuntime="${javac.includeJavaRuntime}"
+           fork="${javac.fork}"
            deprecation="${deprecation}"
            debug="on"/>
     <rmic base="${javac.dest}" classname="examples.NumberCruncherServer"/>
@@ -245,6 +257,9 @@
                      ${stem}/xml/Transform.java"
            target="${javac.target}"
            source="${javac.source}"
+           includeAntRuntime="${javac.includeAntRuntime}"
+           includeJavaRuntime="${javac.includeJavaRuntime}"
+           fork="${javac.fork}"
            deprecation="${deprecation}"
            classpath="${classpath}">
       <classpath refid="compile.classpath"/>
@@ -259,6 +274,9 @@
            includes="${stem}/net/SMTPAppender.java"
            target="${javac.target}"
            source="${javac.source}"
+           includeAntRuntime="${javac.includeAntRuntime}"
+           includeJavaRuntime="${javac.includeJavaRuntime}"
+           fork="${javac.fork}"
            deprecation="${deprecation}">
       <classpath refid="compile.classpath"/>
     </javac>
@@ -270,6 +288,9 @@
            includes="${stem}/net/JMS*.java, ${stem}/or/jms/*.java"
            target="${javac.target}"
            source="${javac.source}"
+           includeAntRuntime="${javac.includeAntRuntime}"
+           includeJavaRuntime="${javac.includeJavaRuntime}"
+           fork="${javac.fork}"
            deprecation="${deprecation}">
       <classpath refid="compile.classpath"/>
     </javac>
@@ -282,6 +303,9 @@
            excludes="${stem}/jmx/T.java"
            target="${javac.target}"
            source="${javac.source}"
+           includeAntRuntime="${javac.includeAntRuntime}"
+           includeJavaRuntime="${javac.includeJavaRuntime}"
+           fork="${javac.fork}"
            deprecation="${deprecation}">
       <classpath refid="compile.classpath"/>
     </javac>
@@ -575,5 +599,17 @@
     <delete dir="${dist.tmp}" />
   </target>
 
+
+    <!-- ================================================================= -->
+    <!-- Build a complete distribution for release.                        -->
+    <!-- ================================================================= -->
+   <target name="release">
+        <property name="javac.includeAntRuntime" value="false"/>
+        <property name="javac.includeJavaRuntime" value="false"/>
+        <property name="javac.fork" value="true"/>
+        <property name="build.compiler" value="classic"/>
+
+        <antcall target="dist"/>
+   </target>
 </project>
 

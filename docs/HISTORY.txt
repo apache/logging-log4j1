@@ -13,7 +13,9 @@
    in org.apache.log4j.chainsaw.LoggingReceiver which would cause
    spurious compiler errors with JDK 1.1 and 1.2 javac compilers.
 
- - Fixed bug 36267 by adding a jndi.jar property to the build file.
+ - Fixed bug 36267 by adding a jndi.jar property to the build.xml.
+
+ - Fixed bug 37268 by adding "release" target to build.xml. 
 
  - Fixed bug 36213 by removing references to obsolete documentation.
  
