@@ -81,7 +81,6 @@
     <pathelement location="${javamail.jar}"/>
     <pathelement location="${activation.jar}"/>
     <pathelement location="${jaxp.jaxp.jar}"/>
-    <pathelement location="${jaxp.parser.jar}"/>
     <pathelement location="${jms.jar}"/>
     <pathelement location="${jmx.jar}"/>
     <pathelement location="${jmx-extra.jar}"/>
@@ -231,7 +230,6 @@
     <javac srcdir="${basedir}"
            destdir="${javac.dest}"
            includes="examples/**/*.java"
-           classpath="${classpath}"
            excludes="misc/*"
            target="${javac.target}"
            source="${javac.source}"
@@ -239,7 +237,12 @@
            includeJavaRuntime="${javac.includeJavaRuntime}"
            fork="${javac.fork}"
            deprecation="${deprecation}"
-           debug="on"/>
+           debug="on">
+           <classpath>
+               <pathelement path="${classpath}"/>
+               <fileset file="${jaxp.jaxp.jar}"/>
+           </classpath>
+    </javac>
     <rmic base="${javac.dest}" classname="examples.NumberCruncherServer"/>
 
     <copy todir="${javac.dest}">
@@ -490,6 +493,17 @@
     </echo>
   </target>
 
+  <target name="clean-site">
+     <delete>
+         <fileset dir="${docs.dest}" includes="**/*.html">
+             <exclude name="FAQ.html"/>
+             <exclude name="TROUBLESHOOT.html"/>
+             <exclude name="manual.html"/>
+             <exclude name="overview.html"/>
+         </fileset>
+     </delete>
+  </target>
+
   <target name="site" depends="checkSite" if="AnakiaTask.present">
     <taskdef name="anakia" classname="org.apache.velocity.anakia.AnakiaTask">
       <classpath refid="site.classpath"/>
@@ -502,7 +516,7 @@
       extension=".html"
       style="site.vsl"
       projectFile="stylesheets/project.xml"
-      excludes="**/stylesheets/**, empty.xml, lf5/**"
+      excludes="**/stylesheets/**, empty.xml"
       includes="**/*.xml"
       lastModifiedCheck="true"
       templatePath="${logging-site}/src/xdocs/stylesheets">
@@ -608,7 +622,7 @@
         <property name="javac.includeJavaRuntime" value="false"/>
         <property name="javac.fork" value="true"/>
         <property name="build.compiler" value="classic"/>
-
+        <antcall target="clean-site"/>
         <antcall target="dist"/>
    </target>
 </project>
