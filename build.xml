@@ -85,6 +85,7 @@
     <pathelement location="${jms.jar}"/>
     <pathelement location="${jmx.jar}"/>
     <pathelement location="${jmx-extra.jar}"/>
+    <pathelement location="${jndi.jar}"/>
   </path>
 
   <!-- Construct classpath for building the html pages-->
