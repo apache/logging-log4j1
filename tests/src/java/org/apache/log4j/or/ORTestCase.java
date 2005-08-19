@@ -147,9 +147,16 @@ public class ORTestCase extends TestCase {
   // Add: Comparable
   // Expect: Comparable
   public
-  void test7() {
+  void test7() throws Exception {
     RendererMap map = new RendererMap();
-    map.put(Comparable.class, cor);
+    Class comparable = null; 
+    try {
+        comparable = getClass().forName("java.lang.Comparable");
+    } catch(Exception ex) {
+        //  likely JDK 1.1
+        return;
+    }
+    map.put(comparable, cor);
     ObjectRenderer r = map.get(Integer.class);
     assertEquals(r, cor);
   }

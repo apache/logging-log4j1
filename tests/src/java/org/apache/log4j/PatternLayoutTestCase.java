@@ -48,7 +48,7 @@ public class PatternLayoutTestCase extends TestCase {
   static String EXCEPTION1 = "java.lang.Exception: Just testing";
   static String EXCEPTION2 = "\\s*at .*\\(.*:\\d{1,4}\\)";
   static String EXCEPTION3 = "\\s*at .*\\(Native Method\\)";
-  static String EXCEPTION4 = "\\s*at .*\\(.*, Compiled Code\\)";
+  static String EXCEPTION4 = "\\s*at .*\\(.*Compiled Code\\)";
 
   static String PAT0 = "\\[main]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - Message \\d{1,2}";
   static String PAT1 = Filter.ISO8601_PAT + " " + PAT0;

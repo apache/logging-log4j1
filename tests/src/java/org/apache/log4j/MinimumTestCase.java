@@ -34,7 +34,7 @@ public class MinimumTestCase extends TestCase {
   static String EXCEPTION1 = "java.lang.Exception: Just testing";
   static String EXCEPTION2 = "\\s*at .*\\(.*:\\d{1,4}\\)";
   static String EXCEPTION3 = "\\s*at .*\\(Native Method\\)";
-  static String EXCEPTION4 = "\\s*at .*\\(.*, Compiled Code\\)";
+  static String EXCEPTION4 = "\\s*at .*\\(.*Compiled Code\\)";
 
   //18 fevr. 2002 20:02:41,551 [main] FATAL ERR - Message 0
 

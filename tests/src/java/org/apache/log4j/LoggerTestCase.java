@@ -348,7 +348,7 @@ public class LoggerTestCase extends TestCase {
 
       Vector msgs = appender.getVector();
       assertEquals(1, msgs.size());
-      LoggingEvent event = (LoggingEvent) msgs.get(0);
+      LoggingEvent event = (LoggingEvent) msgs.elementAt(0);
       assertEquals(Level.TRACE, event.getLevel());
       assertEquals("Message 1", event.getMessage());
   }
@@ -374,7 +374,7 @@ public class LoggerTestCase extends TestCase {
 
         Vector msgs = appender.getVector();
         assertEquals(1, msgs.size());
-        LoggingEvent event = (LoggingEvent) msgs.get(0);
+        LoggingEvent event = (LoggingEvent) msgs.elementAt(0);
         assertEquals(Level.TRACE, event.getLevel());
         assertEquals("Message 1", event.getMessage());
     }

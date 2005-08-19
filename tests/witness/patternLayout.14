@@ -12,7 +12,6 @@ DEBUG 11   - Message 5
 java.lang.Exception: Just testing
 	at org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX)
 	at org.apache.log4j.PatternLayoutTestCase.test14(PatternLayoutTestCase.java:XXX)
-	at java.lang.reflect.Method.invoke(Native Method)
 	at junit.framework.TestCase.runTest(TestCase.java:XXX)
 	at junit.framework.TestCase.runBare(TestCase.java:XXX)
 	at junit.framework.TestResult$1.protect(TestResult.java:XXX)
@@ -25,7 +24,6 @@ java.lang.Exception: Just testing
 java.lang.Exception: Just testing
 	at org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX)
 	at org.apache.log4j.PatternLayoutTestCase.test14(PatternLayoutTestCase.java:XXX)
-	at java.lang.reflect.Method.invoke(Native Method)
 	at junit.framework.TestCase.runTest(TestCase.java:XXX)
 	at junit.framework.TestCase.runBare(TestCase.java:XXX)
 	at junit.framework.TestResult$1.protect(TestResult.java:XXX)
@@ -38,7 +36,6 @@ java.lang.Exception: Just testing
 java.lang.Exception: Just testing
 	at org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX)
 	at org.apache.log4j.PatternLayoutTestCase.test14(PatternLayoutTestCase.java:XXX)
-	at java.lang.reflect.Method.invoke(Native Method)
 	at junit.framework.TestCase.runTest(TestCase.java:XXX)
 	at junit.framework.TestCase.runBare(TestCase.java:XXX)
 	at junit.framework.TestResult$1.protect(TestResult.java:XXX)
@@ -51,7 +48,6 @@ ERROR 14   - Message 8
 java.lang.Exception: Just testing
 	at org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX)
 	at org.apache.log4j.PatternLayoutTestCase.test14(PatternLayoutTestCase.java:XXX)
-	at java.lang.reflect.Method.invoke(Native Method)
 	at junit.framework.TestCase.runTest(TestCase.java:XXX)
 	at junit.framework.TestCase.runBare(TestCase.java:XXX)
 	at junit.framework.TestResult$1.protect(TestResult.java:XXX)
@@ -64,7 +60,6 @@ FATAL 15   - Message 9
 java.lang.Exception: Just testing
 	at org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX)
 	at org.apache.log4j.PatternLayoutTestCase.test14(PatternLayoutTestCase.java:XXX)
-	at java.lang.reflect.Method.invoke(Native Method)
 	at junit.framework.TestCase.runTest(TestCase.java:XXX)
 	at junit.framework.TestCase.runBare(TestCase.java:XXX)
 	at junit.framework.TestResult$1.protect(TestResult.java:XXX)
