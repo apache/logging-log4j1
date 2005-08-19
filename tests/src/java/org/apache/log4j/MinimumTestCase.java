@@ -34,6 +34,7 @@ public class MinimumTestCase extends TestCase {
   static String EXCEPTION1 = "java.lang.Exception: Just testing";
   static String EXCEPTION2 = "\\s*at .*\\(.*:\\d{1,4}\\)";
   static String EXCEPTION3 = "\\s*at .*\\(Native Method\\)";
+  static String EXCEPTION4 = "\\s*at .*\\(.*, Compiled Code\\)";
 
   //18 fevr. 2002 20:02:41,551 [main] FATAL ERR - Message 0
 
@@ -84,7 +85,7 @@ public class MinimumTestCase extends TestCase {
     common();
 
     ControlFilter cf1 = new ControlFilter(new String[]{TTCC_PAT, TTCC2_PAT, EXCEPTION1, 
-						       EXCEPTION2, EXCEPTION3});
+						       EXCEPTION2, EXCEPTION3, EXCEPTION4});
 
     Transformer.transform(
       "output/ttcc", FILTERED,
