@@ -34,8 +34,8 @@
     <pathelement location="./classes"/>
     <pathelement location="./resources"/>
     <pathelement location="${jakarta.oro.jar}"/>
-    <pathelement location="${xml-api.jar}"/>
-    <pathelement location="${xml-impl.jar}"/>
+    <pathelement location="${jaxp.jaxp.jar}"/>
+    <pathelement location="${jaxp.parser.jar}"/>
     <pathelement location="${clover.jar}"/>
   </path>
 

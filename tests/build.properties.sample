@@ -2,7 +2,17 @@
 #   by default assume that all necessary dependencies
 #      are relative to the user's home directory
 #
-lib.home.dir=${user.home}
+lib.home.dir=/java
+
+# The jaxp interface and a jaxp parser are required
+# to build the DOMConfigurator.
+#
+#   modern equivalents are xml-commons-apis.jar
+#     and xercesImpl.jar
+jaxp.home=${lib.home.dir}/crimson-1.1.3
+jaxp.jaxp.jar=${jaxp.home}/crimson.jar
+jaxp.parser.jar=${jaxp.home}/crimson.jar
+
 jakarta.oro.jar=${lib.home.dir}/jakarta-oro-2.0.8/jakarta-oro-2.0.8.jar
 clover.jar="${lib.home.dir}/clover-1.3.8/lib/clover.jar
 deprecation=on
