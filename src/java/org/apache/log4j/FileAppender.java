@@ -293,11 +293,16 @@ public class FileAppender extends WriterAppender {
           //      attempt to create it and try to create file
           //      see bug 9150
           //
-          File parentDir = new File(new File(fileName).getParent());
-          if(!parentDir.exists() && parentDir.mkdirs()) {
-              ostream = new FileOutputStream(fileName, append);
+          String parentName = new File(fileName).getParent();
+          if (parentName != null) {
+             File parentDir = new File(parentName);
+             if(!parentDir.exists() && parentDir.mkdirs()) {
+                ostream = new FileOutputStream(fileName, append);
+             } else {
+                throw ex;
+             }
           } else {
-              throw ex;
+             throw ex;
           }
     }
     Writer fw = createWriter(ostream);
