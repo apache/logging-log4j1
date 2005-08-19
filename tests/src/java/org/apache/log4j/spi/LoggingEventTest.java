@@ -56,7 +56,7 @@ public class LoggingEventTest extends TestCase {
 
     int[] skip = new int[] { 352, 353, 354, 355, 356 };
     SerializationTestHelper.assertSerializationEquals(
-      "witness/serialization/simple.bin", event, skip, 365);
+      "witness/serialization/simple.bin", event, skip, 237);
   }
 
   /**
@@ -75,7 +75,7 @@ public class LoggingEventTest extends TestCase {
 
     int[] skip = new int[] { 352, 353, 354, 355, 356 };
     SerializationTestHelper.assertSerializationEquals(
-      "witness/serialization/exception.bin", event, skip, 365);
+      "witness/serialization/exception.bin", event, skip, 237);
   }
 
   /**
@@ -94,7 +94,7 @@ public class LoggingEventTest extends TestCase {
 
     int[] skip = new int[] { 352, 353, 354, 355, 356 };
     SerializationTestHelper.assertSerializationEquals(
-      "witness/serialization/location.bin", event, skip, 431);
+      "witness/serialization/location.bin", event, skip, 237);
   }
 
   /**
@@ -113,7 +113,7 @@ public class LoggingEventTest extends TestCase {
 
     int[] skip = new int[] { 352, 353, 354, 355, 356 };
     SerializationTestHelper.assertSerializationEquals(
-      "witness/serialization/ndc.bin", event, skip, 365);
+      "witness/serialization/ndc.bin", event, skip, 237);
     }
 
   /**
@@ -132,7 +132,7 @@ public class LoggingEventTest extends TestCase {
 
     int[] skip = new int[] { 352, 353, 354, 355, 356 };
     SerializationTestHelper.assertSerializationEquals(
-      "witness/serialization/mdc.bin", event, skip, 465);
+      "witness/serialization/mdc.bin", event, skip, 237);
   }
 
   /**
