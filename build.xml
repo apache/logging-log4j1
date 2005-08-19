@@ -70,6 +70,9 @@
 
   <!-- Directory for temporary files. -->
   <property name="dist.tmp" value="${dist.dir}/tmp"/>
+  
+  <property name="javac.source" value="1.1"/>
+  <property name="javac.target" value="1.1"/>
 
 
   <!-- Construct compile classpath -->
@@ -199,8 +202,8 @@
                     ${stem}/net/JMS*.java,
                     ${stem}/jmx/*.java,
                     ${stem}/or/jms/*.java"
-           target="1.1"
-           source="1.3"
+           target="${javac.target}"
+           source="${javac.source}"
            deprecation="${deprecation}"
            debug="on">
       <classpath refid="compile.classpath"/>
@@ -220,8 +223,8 @@
            includes="examples/**/*.java"
            classpath="${classpath}"
            excludes="misc/*"
-           target="1.1"
-           source="1.3"
+           target="${javac.target}"
+           source="${javac.source}"
            deprecation="${deprecation}"
            debug="on"/>
     <rmic base="${javac.dest}" classname="examples.NumberCruncherServer"/>
@@ -239,8 +242,8 @@
            includes="${stem}/xml/**/*.java"
            excludes="${stem}/xml/examples/doc-files/**.java,
                      ${stem}/xml/Transform.java"
-           target="1.1"
-           source="1.3"
+           target="${javac.target}"
+           source="${javac.source}"
            deprecation="${deprecation}"
            classpath="${classpath}">
       <classpath refid="compile.classpath"/>
@@ -253,8 +256,8 @@
     <javac srcdir="${java.source.dir}"
            destdir="${javac.dest}"
            includes="${stem}/net/SMTPAppender.java"
-           target="1.1"
-           source="1.3"
+           target="${javac.target}"
+           source="${javac.source}"
            deprecation="${deprecation}">
       <classpath refid="compile.classpath"/>
     </javac>
@@ -264,8 +267,8 @@
     <javac srcdir="${java.source.dir}"
            destdir="${javac.dest}"
            includes="${stem}/net/JMS*.java, ${stem}/or/jms/*.java"
-           target="1.1"
-           source="1.3"
+           target="${javac.target}"
+           source="${javac.source}"
            deprecation="${deprecation}">
       <classpath refid="compile.classpath"/>
     </javac>
@@ -276,8 +279,8 @@
            destdir="${javac.dest}"
            includes="${stem}/jmx/*.java"
            excludes="${stem}/jmx/T.java"
-           target="1.1"
-           source="1.3"
+           target="${javac.target}"
+           source="${javac.source}"
            deprecation="${deprecation}">
       <classpath refid="compile.classpath"/>
     </javac>
