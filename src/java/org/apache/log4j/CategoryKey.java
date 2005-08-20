@@ -17,8 +17,7 @@
 package org.apache.log4j;
 
 /**
-   CategoryKey is a wrapper for String that apparently accellerated
-   hash table lookup in early JVM's.
+   CategoryKey is heavily used internally to accelerate hash table searches.
    @author Ceki G&uuml;lc&uuml; 
 */
 class CategoryKey {
@@ -27,7 +26,7 @@ class CategoryKey {
   int hashCache;
 
   CategoryKey(String name) {
-    this.name = name;
+    this.name = name.intern();
     hashCache = name.hashCode();
   }
 
@@ -44,7 +43,7 @@ class CategoryKey {
       return true;
     
     if(rArg != null && CategoryKey.class == rArg.getClass()) 
-      return  name.equals(((CategoryKey)rArg ).name);
+      return  name == ((CategoryKey)rArg ).name;
     else 
       return false;
   }
