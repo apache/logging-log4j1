@@ -5,7 +5,7 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
 
- TODO -
+ August 26th, 2005
 
  - Release of version 1.2.12
 
@@ -19,17 +19,9 @@
 
  - Fixed bug 36213 by removing references to obsolete documentation.
  
- August 7th, 2005
- 
- - Release of version 1.2.12rc3
- 
  - Fixed bug 35965 by adding protected accessors for member variables
    topicConnection, topicSession, and topicPublisher. [*]
    
- August 1st, 2005
- 
- - Release of version 1.2.12rc2
- 
  - Fixed bug 34026, SyslogAppender now checks Layout.ignoresThrowable() just
    like every other appender. [*]
 
@@ -41,10 +33,6 @@
    for the XML sample files. 
    http://issues.apache.org/bugzilla/show_bug.cgi?id=14551 [*]
 
- July 27th, 2005
- 
- - Release of version 1.2.12rc1
- 
  - Added getNext/setNext methods to org.apache.log4j.spi.Filter and deprecated
    public "next" field. This mirrors the same change in the upcoming 1.3
    version and, hence, provides a migration path. [*]
@@ -83,7 +71,7 @@
  June 18th, 2005
  
  - Release of version 1.2.11
- 
+
  - Fixed bug #34491 whereby the class o.a.log4j.or.jms.MessageRenderer
    would not be compiled in the build.jms target. Bug reported by Andy
    McBride. http://issues.apache.org/bugzilla/show_bug.cgi?id=34491 [*]
