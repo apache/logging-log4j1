@@ -132,14 +132,12 @@
   <target name="jmxCheck">
     <condition property="jmx-present" value="true">
         <and>
-            <available classname="javax.management.MBeanInfo">
-                <classpath>
-	                <pathelement location="${jmx.jar}"/>
-                </classpath>
-            </available>
+            <available classname="javax.management.MBeanInfo"
+                       classpath="${jmx.jar}"/>
             <available classname="com.sun.jdmk.comm.HtmlAdaptorServer">
                 <classpath>
-	                <pathelement location="${jmx.jar}"/>
+                    <pathelement location="${jmx.jar}"/>
+                    <pathelement location="${jmx-extra.jar}"/>
                 </classpath>
             </available>
         </and>
@@ -624,6 +622,26 @@
         <property name="build.compiler" value="classic"/>
         <antcall target="clean-site"/>
         <antcall target="dist"/>
+
+        <!--  check that jar file is not missing
+                 classes due to missing dependencies   -->
+        <available property="jaxp-found"
+                   classname="org.apache.log4j.xml.DOMConfigurator"
+                   classpath="${jar.dest}/${jar.filename}"/>
+        <fail unless="jaxp-found" message="JAXP was not found."/>
+        <available property="jmx-found"
+                   classname="org.apache.log4j.jmx.Agent"
+                   classpath="${jar.dest}/${jar.filename}"/>
+        <fail unless="jmx-found" message="JMX was not found."/>
+        <available property="jms-found"
+                   classname="org.apache.log4j.net.JMSAppender"
+                   classpath="${jar.dest}/${jar.filename}"/>
+        <fail unless="jms-found" message="JMS or JNDI was not found."/>
+        <available property="javamail-found"
+                   classname="org.apache.log4j.net.SMTPAppender"
+                   classpath="${jar.dest}/${jar.filename}"/>
+        <fail unless="javamail-found" message="JAVAMAIL was not found."/>
+
    </target>
 </project>
 
