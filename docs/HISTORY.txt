@@ -5,7 +5,7 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
 
- August 26th, 2005
+ August TBD, 2005
 
  - Release of version 1.2.12
 
@@ -67,6 +67,9 @@
  
  - Fixed bug 35893 by adding log4j 1.1 compatibility method
    to o.a.l.helpers.Loader. [*]
+   
+ - Fixed bug 34981 dealing with additional null terminating character in Windows
+   nteventlog.cpp code. No effect on Java related code. [*]
 
  June 18th, 2005
  

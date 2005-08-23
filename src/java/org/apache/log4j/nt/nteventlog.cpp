@@ -129,7 +129,7 @@ HKEY regGetKey(TCHAR *subkey, DWORD *disposition) {
 }
 
 void regSetString(HKEY hkey, TCHAR *name, TCHAR *value) {
-  RegSetValueEx(hkey, name, 0, REG_SZ, (LPBYTE)value, lstrlen(value));
+  RegSetValueEx(hkey, name, 0, REG_SZ, (LPBYTE)value, lstrlen(value) + sizeof(TCHAR));
 }
 
 void regSetDword(HKEY hkey, TCHAR *name, DWORD value) {
