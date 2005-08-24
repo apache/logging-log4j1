@@ -70,6 +70,8 @@
    
  - Fixed bug 34981 dealing with additional null terminating character in Windows
    nteventlog.cpp code. No effect on Java related code. [*]
+   
+ - Fixed bug 36332, broken links to J2SE classes in javadocs.  [*]
 
  June 18th, 2005
  

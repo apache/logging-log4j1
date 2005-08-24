@@ -1,6 +1,6 @@
 
 <!-- This file is an ANT build script. ANT is a Java based build tool. -->
-<!-- It is availale from http://jakarta.apache.org/ant/                -->
+<!-- It is available from http://ant.apache.org                        -->
 
 
 <!-- ================================================================= -->
@@ -17,7 +17,7 @@
   <!-- prefixed with "env". -->
   <property environment="env"/>
 
-  <property name="version" value="1.2.12rc5"/>
+  <property name="version" value="1.2.12rc6"/>
 
   <!-- The base directory relative to which most targets are built -->
   <property name="base" value="."/>
@@ -434,7 +434,7 @@
              header="&lt;b&gt;Log4j ${version}&lt;/b&gt;"
              bottom="Copyright 2000-2005 Apache Software Foundation.">
 
-      <link href="http://java.sun.com/products/jdk/1.3/docs/api/"/>
+      <link href="http://java.sun.com/j2se/1.3/docs/api/"/>
       <link href="http://java.sun.com/j2ee/sdk_1.3/techdocs/api/"/>
       <classpath refid="compile.classpath"/>
     </javadoc>
