@@ -56,7 +56,13 @@ public class LevelTest extends TestCase {
       SerializationTestHelper.deserializeStream(
         "witness/serialization/info.bin");
     assertTrue(obj instanceof Level);
-    assertTrue(obj == Level.INFO);
+    Level info = (Level) obj;
+    assertEquals("INFO", info.toString());
+    //
+    //  JDK 1.1 doesn't support readResolve necessary for the assertion
+    if (!System.getProperty("java.version").startsWith("1.1.")) {
+       assertTrue(obj == Level.INFO);
+    }
   }
 
   /**

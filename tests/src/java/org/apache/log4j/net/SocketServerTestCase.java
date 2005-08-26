@@ -187,16 +187,21 @@ public class SocketServerTestCase extends TestCase {
     common("T4", "key4", "MDC-TEST4");
     NDC.pop();
     delay(1);
-    ControlFilter cf = new ControlFilter(new String[]{PAT4, EXCEPTION1, 
-						       EXCEPTION2, EXCEPTION3, EXCEPTION4});
+    //
+    //  These tests check MDC operation which
+    //    requires JDK 1.2 or later
+    if(!System.getProperty("java.version").startsWith("1.1.")) {
     
-    Transformer.transform(
-      TEMP, FILTERED,
-      new Filter[] { cf, new LineNumberFilter(), 
-          new JunitTestRunnerFilter(),
-          new SunReflectFilter() });
+        ControlFilter cf = new ControlFilter(new String[]{PAT4, EXCEPTION1, 
+						           EXCEPTION2, EXCEPTION3, EXCEPTION4});
+        Transformer.transform(
+          TEMP, FILTERED,
+          new Filter[] { cf, new LineNumberFilter(), 
+              new JunitTestRunnerFilter(),
+              new SunReflectFilter() });
 
-    assertTrue(Compare.compare(FILTERED, "witness/socketServer.4"));
+        assertTrue(Compare.compare(FILTERED, "witness/socketServer.4"));
+    }
   }
 
   /**
@@ -225,16 +230,21 @@ public class SocketServerTestCase extends TestCase {
     common("T5", "key5", "MDC-TEST5");
     NDC.pop();
     delay(2);
-    ControlFilter cf = new ControlFilter(new String[]{PAT5, EXCEPTION1, 
-						       EXCEPTION2, EXCEPTION3, EXCEPTION4});
+    //
+    //  These tests check MDC operation which
+    //    requires JDK 1.2 or later
+    if(!System.getProperty("java.version").startsWith("1.1.")) {
+        ControlFilter cf = new ControlFilter(new String[]{PAT5, EXCEPTION1, 
+						           EXCEPTION2, EXCEPTION3, EXCEPTION4});
     
-    Transformer.transform(
-      TEMP, FILTERED,
-      new Filter[] { cf, new LineNumberFilter(), 
-          new JunitTestRunnerFilter(),
-          new SunReflectFilter() });
+        Transformer.transform(
+          TEMP, FILTERED,
+          new Filter[] { cf, new LineNumberFilter(), 
+              new JunitTestRunnerFilter(),
+              new SunReflectFilter() });
 
-    assertTrue(Compare.compare(FILTERED, "witness/socketServer.5"));
+        assertTrue(Compare.compare(FILTERED, "witness/socketServer.5"));
+    }
   }
 
   /**
@@ -257,16 +267,21 @@ public class SocketServerTestCase extends TestCase {
     NDC.pop();
     MDC.remove("hostID");
     delay(2);
-    ControlFilter cf = new ControlFilter(new String[]{PAT6, EXCEPTION1, 
-						       EXCEPTION2, EXCEPTION3, EXCEPTION4});
+    //
+    //  These tests check MDC operation which
+    //    requires JDK 1.2 or later
+    if(!System.getProperty("java.version").startsWith("1.1.")) {
+        ControlFilter cf = new ControlFilter(new String[]{PAT6, EXCEPTION1, 
+						           EXCEPTION2, EXCEPTION3, EXCEPTION4});
     
-    Transformer.transform(
-      TEMP, FILTERED,
-      new Filter[] { cf, new LineNumberFilter(), 
-          new JunitTestRunnerFilter(),
-          new SunReflectFilter() });
+        Transformer.transform(
+          TEMP, FILTERED,
+          new Filter[] { cf, new LineNumberFilter(), 
+              new JunitTestRunnerFilter(),
+              new SunReflectFilter() });
 
-    assertTrue(Compare.compare(FILTERED, "witness/socketServer.6"));
+        assertTrue(Compare.compare(FILTERED, "witness/socketServer.6"));
+    }
   }
 
   /**
@@ -285,15 +300,20 @@ public class SocketServerTestCase extends TestCase {
     NDC.pop();
     MDC.remove("hostID"); 
     delay(2);
-    ControlFilter cf = new ControlFilter(new String[]{PAT7, EXCEPTION1, 
-						       EXCEPTION2, EXCEPTION3, EXCEPTION4});
+    //
+    //  These tests check MDC operation which
+    //    requires JDK 1.2 or later
+    if(!System.getProperty("java.version").startsWith("1.1.")) {
+        ControlFilter cf = new ControlFilter(new String[]{PAT7, EXCEPTION1, 
+						           EXCEPTION2, EXCEPTION3, EXCEPTION4});
     
-    Transformer.transform(
-      TEMP, FILTERED,
-      new Filter[] { cf, new LineNumberFilter(), 
-          new JunitTestRunnerFilter(),
-          new SunReflectFilter() });
-    assertTrue(Compare.compare(FILTERED, "witness/socketServer.7"));
+        Transformer.transform(
+          TEMP, FILTERED,
+          new Filter[] { cf, new LineNumberFilter(), 
+              new JunitTestRunnerFilter(),
+              new SunReflectFilter() });
+        assertTrue(Compare.compare(FILTERED, "witness/socketServer.7"));
+    }
   }
 
   /**
@@ -310,15 +330,20 @@ public class SocketServerTestCase extends TestCase {
     common("T8", "key8", "MDC-TEST8");
     NDC.pop();
     delay(2);
-    ControlFilter cf = new ControlFilter(new String[]{PAT8, EXCEPTION1, 
-						       EXCEPTION2, EXCEPTION3, EXCEPTION4});
+    //
+    //  These tests check MDC operation which
+    //    requires JDK 1.2 or later
+    if(!System.getProperty("java.version").startsWith("1.1.")) {
+        ControlFilter cf = new ControlFilter(new String[]{PAT8, EXCEPTION1, 
+						           EXCEPTION2, EXCEPTION3, EXCEPTION4});
     
-    Transformer.transform(
-      TEMP, FILTERED,
-      new Filter[] { cf, new LineNumberFilter(), 
-          new JunitTestRunnerFilter(),
-          new SunReflectFilter() });
-    assertTrue(Compare.compare(FILTERED, "witness/socketServer.8"));
+        Transformer.transform(
+          TEMP, FILTERED,
+          new Filter[] { cf, new LineNumberFilter(), 
+              new JunitTestRunnerFilter(),
+              new SunReflectFilter() });
+        assertTrue(Compare.compare(FILTERED, "witness/socketServer.8"));
+    }
   }
 
   static 

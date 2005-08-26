@@ -123,7 +123,12 @@ public class PatternParserTestCase extends TestCase {
 
   public static Test suite() {
     TestSuite suite = new TestSuite();
-    suite.addTest(new PatternParserTestCase("mdcPattern"));
+    //
+    //   MDC requires JDK 1.2+
+    //
+    if (!System.getProperty("java.version").startsWith("1.1.")) {
+       suite.addTest(new PatternParserTestCase("mdcPattern"));
+    }
     return suite;
   }
 
