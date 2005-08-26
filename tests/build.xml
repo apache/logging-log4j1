@@ -1,6 +1,6 @@
 
 <!-- This file is an ANT build script. ANT is a Java based build tool. -->
-<!-- It is availale from http://jakarta.apache.org/ant/                -->
+<!-- It is availale from http://ant.apache.org/                -->
 
 
 <!-- ================================================================= -->
@@ -28,6 +28,7 @@
   <property name="javac.target" value="1.1"/>
 
   <path id="tests.classpath">
+    <pathelement location="${log4j.jar}"/>
     <pathelement location="${project.source.home}"/>
     <pathelement location="${project.classes.home}"/>
     <pathelement location="${tests.source.home}"/>
@@ -37,6 +38,8 @@
     <pathelement location="${jaxp.jaxp.jar}"/>
     <pathelement location="${jaxp.parser.jar}"/>
     <pathelement location="${clover.jar}"/>
+    <pathelement location="${junit.jar}"/>
+    <pathelement path="${java.class.path}"/>
   </path>
 
   <!-- ================================================================= -->
@@ -60,6 +63,9 @@
     regression - Run regression tests which check large parts of log4j.
 
     runAll     - run all available tests
+
+    Specify the log4j.jar property to test an arbitrary jar,
+        otherwise the parent log4j will be built and tested.
     </echo>
   </target>
 
@@ -70,7 +76,7 @@
 
   <!-- Clean the parent project                                          -->
   <!-- ================================================================= -->
-  <target name="parentClean">
+  <target name="parentClean" unless="log4j.jar">
     <ant dir=".." target="clean" inheritRefs="true"/>
   </target>
   
@@ -79,7 +85,7 @@
   <!-- ================================================================= -->
   <!-- Build the parent project                                          -->
   <!-- ================================================================= -->  
-  <target name="parentBuild">    
+  <target name="parentBuild" unless="log4j.jar">    
     <ant dir=".." target="build.core" inheritRefs="true"/>
     <ant dir=".." target="build.xml" inheritRefs="true"/>
   </target>
