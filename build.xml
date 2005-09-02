@@ -622,7 +622,8 @@
                 ${stem}/pattern/*.class,
                 ${stem}/or/*.class,
                 ${stem}/or/sax/*.class,
-    	        ${stem}/varia/List*Appender.class
+    	        ${stem}/varia/List*Appender.class,
+		        ${stem}/varia/SoundAppender.class,
     	        ${stem}/plugins/*.class,
                 ${stem}/config/*.class"
       excludes="**/UnitTest**, 
@@ -637,7 +638,7 @@
     	        ${stem}/net/JMSAppender.class,
     		    ${stem}/net/JMSSink.class,
     		    ${stem}/net/JMSReceiver.class,
-    	        ${stem}/**/*BeanInfo.class
+    	        ${stem}/**/*BeanInfo.class,
                 ${stem}/varia/LogFilePatternReceiver*.class,
 	            ${stem}/rule/LikeRule.class,
     	        ${stem}/net/Multicast*.class,
