@@ -17,13 +17,15 @@
 	      bandwidth.
 	  </p>
 	  
-	  <p>Log4j version 1.2.12 contains a number of bug fixes, the inclusion of
-    the long awaited TRACE level, and is (again) compilation and runtime
-    compatible with earlier JDK's (1.1 and 1.2; this compatibility was
-    inadvertently broken in the version 1.2.11 of log4j).  Even though the new
-    TRACE level is now built-in, the log4j classes are still serializably
-    compatible, though it is recommended that you use the same version of
-    log4j when sending logging events through sockets.
+	  <p>Log4j version 1.2.12 contains a number of bug fixes, the addition of
+    the long awaited built-in TRACE level, and is compilation and runtime
+    compatible with the earlier JDK's 1.1 and 1.2 (this compatibility was
+    inadvertently broken in version 1.2.11 of log4j).  Even with the addition
+    of the TRACE level, the log4j classes appear to be serializable compatible,
+    though it is recommended that you use the same version of log4j for the sender
+    and receiver when sending logging events remotely such as with SocketAppender.
+    Other than the addition of the TRACE level, the api is identical to 
+    previous versions of 1.2.X.
     </p>
 
     <p>The next major release of log4j will be version 1.3.  It will contain
