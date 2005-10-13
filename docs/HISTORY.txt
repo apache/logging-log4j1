@@ -8,7 +8,7 @@
    [D] Changes affect a method or property which was previously marked as 
        deprecated.
 
-   ??, 2005
+   October 12th, 2005
  - Release of version 1.3alpha-7
  
  - Added target="1.2" and source="1.3" attributes to all usages of <javac>
