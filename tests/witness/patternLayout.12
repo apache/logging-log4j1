@@ -1,14 +1,16 @@
-[main] DEBUG org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 0
-[main] DEBUG org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 0
-[main] INFO  org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 1
-[main] INFO  org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 1
-[main] WARN  org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 2
-[main] WARN  org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 2
-[main] ERROR org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 3
-[main] ERROR org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 3
-[main] FATAL org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 4
-[main] FATAL org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 4
-[main] DEBUG org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 5
+[main] TRACE org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 0
+[main] TRACE org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 0
+[main] DEBUG org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 1
+[main] DEBUG org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 1
+[main] INFO  org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 2
+[main] INFO  org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 2
+[main] WARN  org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 3
+[main] WARN  org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 3
+[main] ERROR org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 4
+[main] ERROR org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 4
+[main] FATAL org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 5
+[main] FATAL org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 5
+[main] TRACE org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 6
 java.lang.Exception: Just testing
 	at org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX)
 	at org.apache.log4j.PatternLayoutTestCase.test12(PatternLayoutTestCase.java:XXX)
@@ -20,7 +22,7 @@ java.lang.Exception: Just testing
 	at junit.framework.TestCase.run(TestCase.java:XXX)
 	at junit.framework.TestSuite.runTest(TestSuite.java:XXX)
 	at junit.framework.TestSuite.run(TestSuite.java:XXX)
-[main] INFO  org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 6
+[main] DEBUG org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 7
 java.lang.Exception: Just testing
 	at org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX)
 	at org.apache.log4j.PatternLayoutTestCase.test12(PatternLayoutTestCase.java:XXX)
@@ -32,7 +34,7 @@ java.lang.Exception: Just testing
 	at junit.framework.TestCase.run(TestCase.java:XXX)
 	at junit.framework.TestSuite.runTest(TestSuite.java:XXX)
 	at junit.framework.TestSuite.run(TestSuite.java:XXX)
-[main] WARN  org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 7
+[main] INFO  org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 8
 java.lang.Exception: Just testing
 	at org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX)
 	at org.apache.log4j.PatternLayoutTestCase.test12(PatternLayoutTestCase.java:XXX)
@@ -44,7 +46,7 @@ java.lang.Exception: Just testing
 	at junit.framework.TestCase.run(TestCase.java:XXX)
 	at junit.framework.TestSuite.runTest(TestSuite.java:XXX)
 	at junit.framework.TestSuite.run(TestSuite.java:XXX)
-[main] ERROR org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 8
+[main] WARN  org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 9
 java.lang.Exception: Just testing
 	at org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX)
 	at org.apache.log4j.PatternLayoutTestCase.test12(PatternLayoutTestCase.java:XXX)
@@ -56,7 +58,19 @@ java.lang.Exception: Just testing
 	at junit.framework.TestCase.run(TestCase.java:XXX)
 	at junit.framework.TestSuite.runTest(TestSuite.java:XXX)
 	at junit.framework.TestSuite.run(TestSuite.java:XXX)
-[main] FATAL org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 9
+[main] ERROR org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 10
+java.lang.Exception: Just testing
+	at org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX)
+	at org.apache.log4j.PatternLayoutTestCase.test12(PatternLayoutTestCase.java:XXX)
+	at junit.framework.TestCase.runTest(TestCase.java:XXX)
+	at junit.framework.TestCase.runBare(TestCase.java:XXX)
+	at junit.framework.TestResult$1.protect(TestResult.java:XXX)
+	at junit.framework.TestResult.runProtected(TestResult.java:XXX)
+	at junit.framework.TestResult.run(TestResult.java:XXX)
+	at junit.framework.TestCase.run(TestCase.java:XXX)
+	at junit.framework.TestSuite.runTest(TestSuite.java:XXX)
+	at junit.framework.TestSuite.run(TestSuite.java:XXX)
+[main] FATAL org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX): Message 11
 java.lang.Exception: Just testing
 	at org.apache.log4j.PatternLayoutTestCase.common(PatternLayoutTestCase.java:XXX)
 	at org.apache.log4j.PatternLayoutTestCase.test12(PatternLayoutTestCase.java:XXX)
