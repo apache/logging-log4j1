@@ -30,9 +30,9 @@ import org.apache.log4j.Level;
 public class Logger extends Category {
 
   /**
-     The fully qualified name of the Level class. See also the
+     The fully qualified name of the Logger class. See also the
      getFQCN method. */
-  private static final String FQCN = Level.class.getName();
+  private static final String FQCN = Logger.class.getName();
 
 
   protected
