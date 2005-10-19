@@ -33,6 +33,13 @@ public class ConsoleAppender extends WriterAppender {
     protected String target = SYSTEM_OUT;
 
     /**
+     *  Determines if the appender honors reassignments of System.out
+     *  or System.err made after configuration.
+     */
+    private boolean honorReassignment = false;
+
+
+    /**
      * Constructs an unconfigured appender.
      */
     public ConsoleAppender() {
@@ -87,14 +94,45 @@ public class ConsoleAppender extends WriterAppender {
         return target;
     }
 
+   /**
+    *  Sets whether the appender honors reassignments of System.out
+    *  or System.err made after configuration.
+    *  @param newValue if true, appender will use value of System.out or
+    *  System.err in force at the time when logging events are appended.
+    *  @since 1.2.13
+    */
+    public final void setHonorReassignment(final boolean newValue) {
+       honorReassignment = newValue;
+    }
+  
+   /**
+    *  Gets whether the appender honors reassignments of System.out
+    *  or System.err made after configuration.
+    *  @return true if appender will use value of System.out or
+    *  System.err in force at the time when logging events are appended.
+    *  @since 1.2.13
+    */
+    public final boolean getHonorReassignment() {
+         return honorReassignment;
+    }
+
+
     /**
      *   Prepares the appender for use.
      */
     public void activateOptions() {
-        if (target.equals(SYSTEM_ERR)) {
-            setWriter(createWriter(new SystemErrStream()));
+        if (honorReassignment) {
+            if (target.equals(SYSTEM_ERR)) {
+               setWriter(createWriter(new SystemErrStream()));
+            } else {
+               setWriter(createWriter(new SystemOutStream()));
+            }
         } else {
-            setWriter(createWriter(new SystemOutStream()));
+            if (target.equals(SYSTEM_ERR)) {
+               setWriter(createWriter(System.err));
+            } else {
+               setWriter(createWriter(System.out));
+            }
         }
 
         super.activateOptions();
@@ -106,7 +144,9 @@ public class ConsoleAppender extends WriterAppender {
   protected
   final
   void closeWriter() {
-     super.closeWriter();
+     if (honorReassignment) {
+        super.closeWriter();
+     }
   }
 
 
