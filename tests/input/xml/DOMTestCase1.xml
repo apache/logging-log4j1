@@ -21,12 +21,12 @@
   </appender>
   
   <logger name="org.apache.log4j.xml">
-    <level value="debug" />
+    <level value="trace" />
     <appender-ref ref="A1" />
   </logger>
   
   <root>
-    <priority value ="debug" />
+    <priority value ="trace" />
     <appender-ref ref="A1" />
     <appender-ref ref="A2" />
   </root>

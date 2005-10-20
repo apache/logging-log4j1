@@ -45,12 +45,12 @@ public class DOMTestCase extends TestCase {
   static String EXCEPTION4 = "\\s*at .*\\(.*Compiled Code\\)";
 
   static String TEST1_1A_PAT = 
-                       "(DEBUG|INFO |WARN |ERROR|FATAL) \\w*\\.\\w* - Message \\d";
+                       "(TRACE|DEBUG|INFO |WARN |ERROR|FATAL) \\w*\\.\\w* - Message \\d";
 
-  static String TEST1_1B_PAT = "(DEBUG|INFO |WARN |ERROR|FATAL) root - Message \\d";
+  static String TEST1_1B_PAT = "(TRACE|DEBUG|INFO |WARN |ERROR|FATAL) root - Message \\d";
 
   static String TEST1_2_PAT = "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3} "+
-                        "\\[main]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - Message \\d";
+                        "\\[main]\\ (TRACE|DEBUG|INFO|WARN|ERROR|FATAL) .* - Message \\d";
 
 
 
@@ -131,6 +131,9 @@ public class DOMTestCase extends TestCase {
 
   void common() {
     int i = -1;
+ 
+    logger.trace("Message " + ++i);
+    root.trace("Message " + i);  
  
     logger.debug("Message " + ++i);
     root.debug("Message " + i);        

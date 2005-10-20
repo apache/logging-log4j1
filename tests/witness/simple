@@ -22,6 +22,12 @@ ERROR - Message 20
 WARN - Message 21
 INFO - Message 22
 DEBUG - Message 23
+TRACE - Message 24
+FATAL - Message 25
+ERROR - Message 26
+WARN - Message 27
+INFO - Message 28
+DEBUG - Message 29
 java.lang.Exception: Just testing.
 	at org.apache.log4j.MinimumTestCase.common(MinimumTestCase.java:XXX)
 	at org.apache.log4j.MinimumTestCase.simple(MinimumTestCase.java:XXX)
@@ -33,4 +39,4 @@ java.lang.Exception: Just testing.
 	at junit.framework.TestCase.run(TestCase.java:XXX)
 	at junit.framework.TestSuite.runTest(TestSuite.java:XXX)
 	at junit.framework.TestSuite.run(TestSuite.java:XXX)
-INFO - Messages should bear numbers 0 through 23.
+INFO - Messages should bear numbers 0 through 29.

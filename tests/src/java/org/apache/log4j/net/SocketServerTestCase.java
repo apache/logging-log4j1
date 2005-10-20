@@ -45,36 +45,36 @@ public class SocketServerTestCase extends TestCase {
 
   // %5p %x [%t] %c %m%n
   // DEBUG T1 [main] org.apache.log4j.net.SocketAppenderTestCase Message 1
-  static String PAT1 = "^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) T1 \\[main]\\ "
+  static String PAT1 = "^(TRACE|DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) T1 \\[main]\\ "
                        + ".* Message \\d{1,2}";
 
   // DEBUG T2 [main] ? (?:?) Message 1
-  static String PAT2 = "^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) T2 \\[main]\\ "
+  static String PAT2 = "^(TRACE|DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) T2 \\[main]\\ "
                        + "\\? \\(\\?:\\?\\) Message \\d{1,2}";
 
 
   // DEBUG T3 [main] org.apache.log4j.net.SocketServerTestCase (SocketServerTestCase.java:121) Message 1
-  static String PAT3 = "^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) T3 \\[main]\\ "
+  static String PAT3 = "^(TRACE|DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) T3 \\[main]\\ "
                        + "org.apache.log4j.net.SocketServerTestCase "
                        + "\\(SocketServerTestCase.java:\\d{3}\\) Message \\d{1,2}";
 
 
   // DEBUG some T4 MDC-TEST4 [main] SocketAppenderTestCase - Message 1   
   // DEBUG some T4 MDC-TEST4 [main] SocketAppenderTestCase - Message 1 
-  static String PAT4 = "^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some T4 MDC-TEST4 \\[main]\\"
+  static String PAT4 = "^(TRACE|DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some T4 MDC-TEST4 \\[main]\\"
                        + " (root|SocketServerTestCase) - Message \\d{1,2}";
 
-  static String PAT5 = "^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some5 T5 MDC-TEST5 \\[main]\\"
+  static String PAT5 = "^(TRACE|DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some5 T5 MDC-TEST5 \\[main]\\"
                        + " (root|SocketServerTestCase) - Message \\d{1,2}";
 
-  static String PAT6 = "^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some6 T6 client-test6 MDC-TEST6"
+  static String PAT6 = "^(TRACE|DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some6 T6 client-test6 MDC-TEST6"
                        + " \\[main]\\ (root|SocketServerTestCase) - Message \\d{1,2}";
 
-  static String PAT7 = "^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some7 T7 client-test7 MDC-TEST7"
+  static String PAT7 = "^(TRACE|DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some7 T7 client-test7 MDC-TEST7"
                        + " \\[main]\\ (root|SocketServerTestCase) - Message \\d{1,2}";
 
   // DEBUG some8 T8 shortSocketServer MDC-TEST7 [main] SocketServerTestCase - Message 1
-  static String PAT8 = "^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some8 T8 shortSocketServer"
+  static String PAT8 = "^(TRACE|DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some8 T8 shortSocketServer"
                        + " MDC-TEST8 \\[main]\\ (root|SocketServerTestCase) - Message \\d{1,2}";
 
 
@@ -353,7 +353,16 @@ public class SocketServerTestCase extends TestCase {
     MDC.put(key, o);
     Logger root = Logger.getRootLogger();
 
+    logger.setLevel(Level.DEBUG);
+    rootLogger.setLevel(Level.DEBUG);
+    
     logger.log(XLevel.TRACE, "Message " + ++i);
+
+    logger.setLevel(Level.TRACE);
+    rootLogger.setLevel(Level.TRACE);
+    
+    logger.trace("Message " + ++i);
+    root.trace("Message " + ++i);
     logger.debug("Message " + ++i);
     root.debug("Message " + ++i);
     logger.info("Message " + ++i);

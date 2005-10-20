@@ -48,7 +48,9 @@ public class XMLLayoutTestCase extends TestCase {
 
   public void setUp() {
     root = Logger.getRootLogger();
+    root.setLevel(Level.TRACE);
     logger = Logger.getLogger(XMLLayoutTestCase.class);
+    logger.setLevel(Level.TRACE);
   }
 
   public void tearDown() {  
@@ -92,6 +94,7 @@ public class XMLLayoutTestCase extends TestCase {
     xmlLayout.setLocationInfo(true);
     root.addAppender(new FileAppender(xmlLayout, TEMP, false));
     
+    logger.trace("Message with embedded <![CDATA[<hello>hi</hello>]]>.");
     logger.debug("Message with embedded <![CDATA[<hello>hi</hello>]]>.");
 
     Transformer.transform(
@@ -131,10 +134,13 @@ public class XMLLayoutTestCase extends TestCase {
  
     X x = new X();
 
+    logger.trace("Message " + ++i);
+    root.trace("Message " + i);    
+
     logger.debug("Message " + ++i);
     root.debug("Message " + i);        
 
-    logger.info ("Message " + ++i);
+    logger.info("Message " + ++i);
     root.info("Message " + i);        
 
     logger.warn ("Message " + ++i);

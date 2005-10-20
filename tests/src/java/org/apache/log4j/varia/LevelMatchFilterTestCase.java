@@ -80,9 +80,9 @@ public class LevelMatchFilterTestCase extends TestCase {
         
     // set appender on root and set level to debug
     root.addAppender(appender);
-    root.setLevel(Level.DEBUG);
+    root.setLevel(Level.TRACE);
     
-    Level[] levelArray = new Level[] {Level.DEBUG, Level.INFO, Level.WARN, 
+    Level[] levelArray = new Level[] {Level.TRACE, Level.DEBUG, Level.INFO, Level.WARN, 
 				      Level.ERROR, Level.FATAL};
     for (int x = 0; x < levelArray.length; x++) {
       // set the level to match
@@ -110,9 +110,9 @@ public class LevelMatchFilterTestCase extends TestCase {
            
     // set appender on root and set level to debug
     root.addAppender(appender);
-    root.setLevel(Level.DEBUG);
+    root.setLevel(Level.TRACE);
     
-    Level[] levelArray = new Level[] {Level.DEBUG, Level.INFO, Level.WARN,
+    Level[] levelArray = new Level[] {Level.TRACE, Level.DEBUG, Level.INFO, Level.WARN,
 				      Level.ERROR, Level.FATAL};
     for (int x = 0; x < levelArray.length; x++) {
       // set the level to match
@@ -128,6 +128,7 @@ public class LevelMatchFilterTestCase extends TestCase {
 
   void common(String msg) {
     Logger logger = Logger.getLogger("test");
+    logger.trace(msg);
     logger.debug(msg);
     logger.info(msg);
     logger.warn(msg);
