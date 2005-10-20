@@ -1,9 +1,11 @@
-DEBUG T1 [main] org.apache.log4j.net.SocketServerTestCase Message 1
-DEBUG T1 [main] root Message 2
- INFO T1 [main] org.apache.log4j.net.SocketServerTestCase Message 3
- WARN T1 [main] org.apache.log4j.net.SocketServerTestCase Message 4
-LETHAL T1 [main] org.apache.log4j.net.SocketServerTestCase Message 5
-DEBUG T1 [main] org.apache.log4j.net.SocketServerTestCase Message 6
+TRACE T1 [main] org.apache.log4j.net.SocketServerTestCase Message 1
+TRACE T1 [main] root Message 2
+DEBUG T1 [main] org.apache.log4j.net.SocketServerTestCase Message 3
+DEBUG T1 [main] root Message 4
+ INFO T1 [main] org.apache.log4j.net.SocketServerTestCase Message 5
+ WARN T1 [main] org.apache.log4j.net.SocketServerTestCase Message 6
+LETHAL T1 [main] org.apache.log4j.net.SocketServerTestCase Message 7
+DEBUG T1 [main] org.apache.log4j.net.SocketServerTestCase Message 8
 java.lang.Exception: Just testing
 	at org.apache.log4j.net.SocketServerTestCase.common(SocketServerTestCase.java:XXX)
 	at org.apache.log4j.net.SocketServerTestCase.test1(SocketServerTestCase.java:XXX)
@@ -15,7 +17,7 @@ java.lang.Exception: Just testing
 	at junit.framework.TestCase.run(TestCase.java:XXX)
 	at junit.framework.TestSuite.runTest(TestSuite.java:XXX)
 	at junit.framework.TestSuite.run(TestSuite.java:XXX)
-ERROR T1 [main] root Message 7
+ERROR T1 [main] root Message 9
 java.lang.Exception: Just testing
 	at org.apache.log4j.net.SocketServerTestCase.common(SocketServerTestCase.java:XXX)
 	at org.apache.log4j.net.SocketServerTestCase.test1(SocketServerTestCase.java:XXX)

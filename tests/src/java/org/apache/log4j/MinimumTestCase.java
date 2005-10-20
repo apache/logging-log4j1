@@ -39,10 +39,10 @@ public class MinimumTestCase extends TestCase {
   //18 fevr. 2002 20:02:41,551 [main] FATAL ERR - Message 0
 
   static String TTCC_PAT = Filter.ABSOLUTE_DATE_AND_TIME_PAT+ 
-              " \\[main]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - Message \\d{1,2}";
+              " \\[main]\\ (TRACE|DEBUG|INFO|WARN|ERROR|FATAL) .* - Message \\d{1,2}";
 
   static String TTCC2_PAT = Filter.ABSOLUTE_DATE_AND_TIME_PAT+ 
-              " \\[main]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - Messages should bear numbers 0 through 23\\.";
+              " \\[main]\\ (TRACE|DEBUG|INFO|WARN|ERROR|FATAL) .* - Messages should bear numbers 0 through 29\\.";
 
   //18 fvr. 2002 19:49:53,456
 
@@ -115,6 +115,8 @@ public class MinimumTestCase extends TestCase {
     INF_ERR.setLevel(Level.ERROR);
     Logger DEB = Logger.getLogger("DEB");
     DEB.setLevel(Level.DEBUG);
+    Logger TRC = Logger.getLogger("TRC");
+    TRC.setLevel(Level.TRACE);
     
     // Note: categories with undefined level 
     Logger INF_UNDEF = Logger.getLogger("INF.UNDEF");
@@ -136,26 +138,33 @@ public class MinimumTestCase extends TestCase {
     INF_UNDEF.warn ( "Message " + i); i++; 
     INF_UNDEF.info ( "Message " + i); i++; 
     
-    
     INF_ERR.log(Level.FATAL, "Message " + i); i++;  // 10
     INF_ERR.error( "Message " + i); i++;  
 
-     INF_ERR_UNDEF.log(Level.FATAL, "Message " + i); i++; 
+    INF_ERR_UNDEF.log(Level.FATAL, "Message " + i); i++; 
     INF_ERR_UNDEF.error( "Message " + i); i++;             
 
     DEB.log(Level.FATAL, "Message " + i); i++;  //14
     DEB.error( "Message " + i); i++;         
     DEB.warn ( "Message " + i); i++; 
     DEB.info ( "Message " + i); i++; 
-    DEB.debug( "Message " + i); i++; 
+    DEB.debug( "Message " + i); i++;             
 
+    TRC.log(Level.FATAL, "Message " + i); i++;  //14
+    TRC.error( "Message " + i); i++;         
+    TRC.warn ( "Message " + i); i++; 
+    TRC.info ( "Message " + i); i++; 
+    TRC.debug( "Message " + i); i++; 
+    TRC.trace( "Message " + i); i++; 
     
     // defaultLevel=DEBUG
     UNDEF.log(Level.FATAL, "Message " + i); i++;  // 19
     UNDEF.error("Message " + i); i++;         
     UNDEF.warn ("Message " + i); i++; 
     UNDEF.info ("Message " + i); i++; 
-    UNDEF.debug("Message " + i, new Exception("Just testing.")); i++;    
+    UNDEF.debug("Message " + i, new Exception("Just testing."));
+    int printCount = i;
+    i++;
 
     // -------------------------------------------------
     // The following should not log
@@ -173,9 +182,11 @@ public class MinimumTestCase extends TestCase {
     INF_ERR_UNDEF.warn("Message " + i);  i++; 
     INF_ERR_UNDEF.info("Message " + i);  i++; 
     INF_ERR_UNDEF.debug("Message " + i); i++; 
+    
+    UNDEF.trace("Message " + i, new Exception("Just testing.")); i++;
     // -------------------------------------------------
       
-    INF.info("Messages should bear numbers 0 through 23.");
+    INF.info("Messages should bear numbers 0 through "+printCount+".");
   }
 
   public static Test suite() {
