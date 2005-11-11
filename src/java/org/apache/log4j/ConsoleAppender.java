@@ -36,7 +36,7 @@ public class ConsoleAppender extends WriterAppender {
      *  Determines if the appender honors reassignments of System.out
      *  or System.err made after configuration.
      */
-    private boolean honorReassignment = false;
+    private boolean follow = false;
 
 
     /**
@@ -101,8 +101,8 @@ public class ConsoleAppender extends WriterAppender {
     *  System.err in force at the time when logging events are appended.
     *  @since 1.2.13
     */
-    public final void setHonorReassignment(final boolean newValue) {
-       honorReassignment = newValue;
+    public final void setFollow(final boolean newValue) {
+       follow = newValue;
     }
   
    /**
@@ -112,8 +112,8 @@ public class ConsoleAppender extends WriterAppender {
     *  System.err in force at the time when logging events are appended.
     *  @since 1.2.13
     */
-    public final boolean getHonorReassignment() {
-         return honorReassignment;
+    public final boolean getFollow() {
+         return follow;
     }
 
 
@@ -121,7 +121,7 @@ public class ConsoleAppender extends WriterAppender {
      *   Prepares the appender for use.
      */
     public void activateOptions() {
-        if (honorReassignment) {
+        if (follow) {
             if (target.equals(SYSTEM_ERR)) {
                setWriter(createWriter(new SystemErrStream()));
             } else {
@@ -144,7 +144,7 @@ public class ConsoleAppender extends WriterAppender {
   protected
   final
   void closeWriter() {
-     if (honorReassignment) {
+     if (follow) {
         super.closeWriter();
      }
   }
