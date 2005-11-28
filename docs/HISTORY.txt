@@ -5,6 +5,12 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
 
+ November 27th, 2005
+ 
+ - Release of version 1.2.13rc2
+ 
+ - Bug 37122, renamed "honorReassignment" to "follow".
+ 
  October 19th, 2005
  
  - Release of version 1.2.13rc1
