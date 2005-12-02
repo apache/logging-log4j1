@@ -860,6 +860,8 @@ Specify files to reformat with -Djalopy.files=PATTERN.
     <copy todir="${dist.tmp}/logging-log4j-${version}">
       <fileset dir="${base}"
                includes="src/java/**,
+               src/no-slf4j/**,
+               src/slf4j/**,
                docs/**,
                examples/**,
                build.xml,
@@ -875,13 +877,11 @@ Specify files to reformat with -Djalopy.files=PATTERN.
                />
     </copy>
     
-    <tar tarfile="${dist.images}/logging-log4j-${version}.tar"
+    <tar tarfile="${dist.images}/logging-log4j-${version}.tar.gz"
          basedir="${dist.tmp}"
          includes="logging-log4j-${version}/**"
+         compression="gzip"
          longfile="gnu" />
-    
-    <gzip src="${dist.images}/logging-log4j-${version}.tar"
-          zipfile="${dist.images}/logging-log4j-${version}.tar.gz" />
     
     <zip zipfile="${dist.images}/logging-log4j-${version}.zip"
          basedir="${dist.tmp}"
