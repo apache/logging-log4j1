@@ -5,23 +5,17 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
 
- November 27th, 2005
+ December 4th, 2005
  
- - Release of version 1.2.13rc2
- 
- - Bug 37122, renamed "honorReassignment" to "follow".
- 
- October 19th, 2005
- 
- - Release of version 1.2.13rc1
+ - Release of version 1.2.13
  
  - Fixed bug 36800.  Location related info now emitted for TRACE level log
-   messages.
+   messages. [*]
    
  - Fixed bug 37122.  Console appender now behaves as before to fix
    compatibility problem with JBoss introduced in 1.2.12 release due to fix
    for bug 31056.  Can still be configured to detect changes in the System.out
-   and System.err streams as needed by setting the honorReassignment property.
+   and System.err streams as needed by setting the follow property. [*]
    
  August 29th, 2005
 
