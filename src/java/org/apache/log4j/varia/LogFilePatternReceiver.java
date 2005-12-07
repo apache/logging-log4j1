@@ -21,6 +21,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.Constants;
@@ -64,6 +66,8 @@ import org.apache.oro.text.regex.Perl5Matcher;
  * - specify the pattern (logFormat) used in the log file using keywords, a wildcard character (*) and fixed text<br>
  * - 'tail' the file (allows the contents of the file to be continually read and new events processed)<br>
  * - supports the parsing of multi-line messages and exceptions
+ * - 'hostname' property set to URL host (or 'file' if not available)
+ * - 'application' property set to URL path (or value of fileURL if not available) 
  *<p>
  * <b>Keywords:</b><br>
  * TIMESTAMP<br>
@@ -148,7 +152,8 @@ public class LogFilePatternReceiver extends Receiver {
   private static final String FILE = "FILE";
   private static final String LINE = "LINE";
   private static final String METHOD = "METHOD";
-
+  
+  private static final String DEFAULT_HOST = "file";
   
   //all lines other than first line of exception begin with tab followed by 'at' followed by text
   private static final String EXCEPTION_PATTERN = "\tat.*";
@@ -158,8 +163,6 @@ public class LogFilePatternReceiver extends Receiver {
   private static final String DEFAULT_GROUP = "(" + REGEXP_DEFAULT_WILDCARD + ")";
   private static final String GREEDY_GROUP = "(" + REGEXP_GREEDY_WILDCARD + ")";
 
-  private static final String HOSTNAME_PROPERTY_VALUE = "file";
-
   private final String newLine = System.getProperty("line.separator");
 
   private final String[] emptyException = new String[] { "" };
@@ -168,6 +171,8 @@ public class LogFilePatternReceiver extends Receiver {
   private String timestampFormat = "yyyy-MM-d HH:mm:ss,SSS";
   private String logFormat;
   private String fileURL;
+  private String host;
+  private String path;
   private boolean tailing;
   private String filterExpression;
 
@@ -509,7 +514,22 @@ public class LogFilePatternReceiver extends Receiver {
    *  
    */
   protected void initialize() {
-    
+
+	try {
+		URL url = new URL(fileURL);
+		host = url.getHost();
+		path = url.getPath();
+	} catch (MalformedURLException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	}
+	if (host == null || host.trim().equals("")) {
+		host = DEFAULT_HOST; 
+	}
+	if (path == null || path.trim().equals("")) {
+		path = fileURL;
+	}
+	
     util = new Perl5Util();
     exceptionCompiler = new Perl5Compiler();
     exceptionMatcher = new Perl5Matcher();
@@ -705,8 +725,8 @@ public class LogFilePatternReceiver extends Receiver {
 
     lineNumber = (String) fieldMap.remove(LINE);
 
-    properties.put(Constants.HOSTNAME_KEY, HOSTNAME_PROPERTY_VALUE);
-    properties.put(Constants.APPLICATION_KEY, fileURL);
+    properties.put(Constants.HOSTNAME_KEY, host);
+    properties.put(Constants.APPLICATION_KEY, path);
 
     //all remaining entries in fieldmap are properties
     properties.putAll(fieldMap);
