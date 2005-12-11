@@ -775,7 +775,7 @@ Specify files to reformat with -Djalopy.files=PATTERN.
        <property name="reference-api.source.dir" location="${user.home}/logging-log4j-${reference-api.version}/src/java"/>
 
        <!-- Must be set to the root of where JDiff is installed. -->
-       <property name="JDIFF_HOME" value="${user.home}/jdiff"/>
+       <property name="JDIFF_HOME" value="${jdiff.home.dir}"/>
        <!-- Just one simple way to tell Ant about the JDiff task -->
        <taskdef name="jdiff" classname="jdiff.JDiffAntTask" 
            classpath="${JDIFF_HOME}/lib/antjdiff.jar"/>    
@@ -791,6 +791,28 @@ Specify files to reformat with -Djalopy.files=PATTERN.
        </jdiff>
   </target>  
 
+	
+	 
+	  <!-- ================================================================= -->
+	  <!-- Compare the current API with a previous release                   -->
+	  <!-- ================================================================= -->
+	  <target name="clirr" depends="jar" description="Check binary compatibility with arbitrary release">
+	  	   <fail unless="clirr-core-uber.jar">-Dclirr-core-uber.jar=PATH must be specified.</fail>
+	  	   <fail unless="reference.jar">-Dreference.jar=PATH must be specified.</fail>
+	       <taskdef resource="clirrtask.properties" 
+	           classpath="${clirr-core-uber.jar}"/>    
+        <!--  fails with NullPointerException with stock clirr 0.6
+                 see http://sourceforge.net/tracker/index.php?func=detail&aid=1377978&group_id=89627&atid=590799  -->
+	  	<clirr failOnBinError="no" failOnSrcError="no">
+	  	        <origfiles file="${reference.jar}"/>
+	  	        <newfiles dir="${jar.dest}" includes="*.jar"/>
+	  	  	    <formatter type="xml" outfile="${docs.dest}/compatibility.xml"/>
+	  	  </clirr>
+	  	  <xslt in="${docs.dest}/compatibility.xml"
+	  	        out="${docs.dest}/compatibility.html"
+	  	        style="${basedir}/src/xdocs/stylesheets/compatibility.xslt"/>
+	  </target>  
+	
   <!-- ============================================== -->
   <!-- Build the site files using Anakia              -->
   <!-- ============================================== -->

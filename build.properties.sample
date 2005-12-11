@@ -77,3 +77,13 @@ jalopy-ant.dir=${lib.home.dir}/jalopy-ant-0.6.2
 #
 checkstyle.jar=${lib.home.dir}/checkstyle-4.0-beta2/checkstyle-all-4.0-beta2.jar
 
+
+#
+#   CLIRR binary compatibility checker
+#      http://clirr.sourceforge.net
+clirr-core-uber.jar=${lib.home.dir}/clirr-core-0.6-uber.jar
+
+#
+#   JDIFF API change documentation generator
+#       http://jdiff.sourceforge.net
+jdiff.home.dir=${lib.home.dir}/jdiff
