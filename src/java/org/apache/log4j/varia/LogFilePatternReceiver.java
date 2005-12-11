@@ -508,20 +508,29 @@ public class LogFilePatternReceiver extends Receiver {
   private String convertTimestamp() {
     return util.substitute("s/("+VALID_DATEFORMAT_CHAR_PATTERN+")+/\\\\w+/g", timestampFormat);
   }
+  
+  protected void setHost(String host) {
+	  this.host = host;
+  }
+  
+  protected void setPath(String path) {
+	  this.path = path;
+  }
 
   /**
    * Build the regular expression needed to parse log entries
    *  
    */
   protected void initialize() {
-
-	try {
-		URL url = new URL(fileURL);
-		host = url.getHost();
-		path = url.getPath();
-	} catch (MalformedURLException e1) {
-		// TODO Auto-generated catch block
-		e1.printStackTrace();
+	if (host == null && path == null) {
+		try {
+			URL url = new URL(fileURL);
+			host = url.getHost();
+			path = url.getPath();
+		} catch (MalformedURLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 	}
 	if (host == null || host.trim().equals("")) {
 		host = DEFAULT_HOST; 
