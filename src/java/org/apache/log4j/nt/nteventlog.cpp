@@ -16,6 +16,11 @@
 
 #ifndef NtEventLogAppender_h
 #define NtEventLogAppender_h
+
+#ifdef __GNUC__
+typedef long long __int64;
+#endif
+
 #include "org_apache_log4j_Priority.h"
 #include "org_apache_log4j_nt_NTEventLogAppender.h"
 #include <windows.h>
