@@ -104,7 +104,7 @@
     These are the targets supported by this ANT build scpript:
 
     build   - compile all project files, if a certain library is missing,
-	      then the compilation of its dependents are skipped.
+         then the compilation of its dependents are skipped.
 
     javadoc - build project javadoc files
 
@@ -151,7 +151,7 @@
   <target name="jmsCheck">
     <available classname="javax.jms.Message" property="jms-present">
       <classpath>
-	<pathelement location="${jms.jar}"/>
+   <pathelement location="${jms.jar}"/>
       </classpath>
     </available>
   </target>
@@ -169,7 +169,7 @@
   <target name="javamailCheck">
     <available classname="javax.mail.Message" property="javamail-present">
       <classpath>
-	<pathelement location="${javamail.jar}"/>
+   <pathelement location="${javamail.jar}"/>
       </classpath>
     </available>
   </target>
@@ -312,6 +312,48 @@
     </javac>
   </target>
 
+ <target name="build.nt" depends="log4j.jar" description="Build NTEventLogAppender.dll">
+    <javah class="org.apache.log4j.nt.NTEventLogAppender,org.apache.log4j.Priority"
+           destdir="${javac.dest}"
+           classpath="${jar.dest}/${jar.filename}"/>
+    <exec executable="mc">
+      <arg value="-h"/>
+      <arg file="${javac.dest}"/>
+      <arg value="-r"/>
+      <arg file="${javac.dest}"/>
+      <arg file="${java.source.dir}org/apache/log4j/nt/EventLogCategories.mc"/>
+    </exec>
+    
+    <exec executable="windres">
+      <arg value="-o"/>
+      <arg file="${javac.dest}/EventLogCategories.o"/>
+        <arg value="--include-dir=${javac.dest}"/>
+      <arg file="${javac.dest}/EventLogCategories.rc"/>
+    </exec>
+
+    <exec executable="windres">
+      <arg value="-o"/>
+      <arg file="${javac.dest}/NTEventLogAppender.o"/>
+      <arg file="${java.source.dir}org/apache/log4j/nt/NTEventLogAppender.rc"/>
+    </exec>
+    
+    <property name="jni.include.dir" location="${java.home}\..\include"/>
+    <exec executable="gcc">
+      <arg value="-Wall"/>
+      <arg value="-D_JNI_IMPLEMENTATION_"/>
+      <arg value="-Wl,--kill-at"/>
+      <arg value="-I${jni.include.dir}"/>
+      <arg value="-I${jni.include.dir}\win32"/>
+      <arg value="-I${javac.dest}"/>
+      <arg value="-shared"/>
+      <arg file="${java.source.dir}org/apache/log4j/nt/nteventlog.cpp"/>
+      <arg file="${javac.dest}/NTEventLogAppender.o"/>
+      <arg file="${javac.dest}/EventLogCategories.o"/>
+      <arg value="-o"/>
+      <arg file="${jar.dest}/NTEventLogAppender.dll"/>
+    </exec>
+    
+  </target>
 
   <!-- ================================================================= -->
   <!-- Remove all generated (compiled) class files.                      -->
@@ -369,7 +411,7 @@
   <target name="log4j.jar" depends="prejar">
     <delete>
       <fileset dir="${jar.dest}">
-	<include name="*.jar"/>
+   <include name="*.jar"/>
       </fileset>
     </delete>
 
@@ -525,38 +567,27 @@
  <!-- ================================================================= -->
  <!-- Build a complete distribution. Results go to ${dist.images}       -->
  <!-- ================================================================= -->
-  <target name="dist" depends="init, clean, javadoc, jar, site">
+  <target name="dist" depends="init, clean, javadoc, jar, site, build.nt">
 
     <delete verbose="true">
       <fileset dir=".">
         <patternset>
-	   <include name="**/*.bak"/>
-	   <include name="${dist.dir}/velocity.log"/>
-	   <include name="${BSTEM}/**/temp*"/>
-	   <include name="${BSTEM}/performance/test"/>
-	   <include name="${BSTEM}/test/current.*"/>
-	   <include name="${BSTEM}/test/current.*"/>
-	   <include name="${BSTEM}/examples/test"/>
-	   <include name="${BSTEM}/test/logging.*"/>
-	   <include name="${BSTEM}/test/log4j.properties"/>
-	   <include name="{$BSTEM}/test/socket.lcf"/>
-	   <include name="${BSTEM}/test/file"/>
-	   <include name="${BSTEM}/test/output.*"/>
-	   <include name="${BSTEM}/nt/EventLogCategories.dbg"/>
-	   <include name="${BSTEM}/nt/*.h"/>
-	   <include name="${BSTEM}/nt/*.obj"/>
-	   <include name="${BSTEM}/nt/*.idb"/>
-	   <include name="${BSTEM}/nt/EventLogCategories.rc"/>
-	   <include name="${BSTEM}/nt/EventLogCategories.RES"/>
-	   <include name="${BSTEM}/nt/EventLogCategories.res"/>
-	   <include name="${BSTEM}/nt/MSG00001.bin"/>
-	   <include name="${BSTEM}/nt/NTEventLogAppender.lib"/>
-	   <include name="${BSTEM}/nt/NTEventLogAppender.exp"/>
-	   <include name="${BSTEM}/nt/vc50.idb"/>
-	   <include name="${BSTEM}/net/test/loop.log"/>
-	   <include name="${BSTEM}/net/test/loop.log.1"/>
-	   <include name="${jar.dest}/manifest.mf"/>
-	   <include name="${javac.dest}/*.class"/>
+      <include name="**/*.bak"/>
+      <include name="${dist.dir}/velocity.log"/>
+      <include name="${BSTEM}/**/temp*"/>
+      <include name="${BSTEM}/performance/test"/>
+      <include name="${BSTEM}/test/current.*"/>
+      <include name="${BSTEM}/test/current.*"/>
+      <include name="${BSTEM}/examples/test"/>
+      <include name="${BSTEM}/test/logging.*"/>
+      <include name="${BSTEM}/test/log4j.properties"/>
+      <include name="{$BSTEM}/test/socket.lcf"/>
+      <include name="${BSTEM}/test/file"/>
+      <include name="${BSTEM}/test/output.*"/>
+      <include name="${BSTEM}/net/test/loop.log"/>
+      <include name="${BSTEM}/net/test/loop.log.1"/>
+      <include name="${jar.dest}/manifest.mf"/>
+      <include name="${javac.dest}/*.class"/>
         </patternset>
      </fileset>
     </delete>
@@ -568,24 +599,26 @@
     <copy todir="${dist.tmp}/logging-log4j-${version}">
        <fileset dir="${base}"
                 includes="src/java/**,
-			  docs/**,
-	                  examples/**,
-			  build/*,
-	                  build.xml,
-	                  build.properties.sample,
+           docs/**,
+                     examples/**,
+           build/*,
+                     build.xml,
+                     build.properties.sample,
                           manifest.mf,
-			  INSTALL,
-			  LICENSE.txt,
-			  ${dist.dir}/lib/log4j*.jar,
-			  ${dist.dir}/classes/**,
-			  contribs/**"
+           INSTALL,
+           LICENSE.txt,
+           ${dist.dir}/lib/log4j*.jar,
+           ${dist.dir}/lib/NTEventLogAppender.dll,
+           ${dist.dir}/classes/**,
+           contribs/**"
                 excludes="make/make.loc,
-		          **/*.bak, **/goEnv.bat,
-		          **/Makefile, **/goEnv.bat,
-	                  docs/pub-support/*,
-	                  ${dist.dir}/classes/org/**,
-	                  src/java/org/apache/log4j/test/**/*,	
-			  **/.#*"/>
+                **/*.bak, **/goEnv.bat,
+                **/Makefile, **/goEnv.bat,
+                     docs/pub-support/*,
+                     ${dist.dir}/classes/org/**,
+                     src/java/org/apache/log4j/test/**/*,   
+           **/.#*,
+              **/*.o, **/*.res, **/*.bin, **/*.h, **/EventLogCategories.rc"/>
     </copy>
 
 
@@ -596,12 +629,10 @@
     <chmod   dir="${dist.tmp}/logging-log4j-${version}"
              includes="build.sh" perm="+x"/>
 
-    <tar tarfile="${dist.images}/logging-log4j-${version}.tar"
+    <tar tarfile="${dist.images}/logging-log4j-${version}.tar.gz"
          basedir="${dist.tmp}"
-         includes="logging-log4j-${version}/**" />
-
-    <gzip src="${dist.images}/logging-log4j-${version}.tar"
-          zipfile="${dist.images}/logging-log4j-${version}.tar.gz" />
+         includes="logging-log4j-${version}/**"
+         compression="gzip" />
 
     <zip zipfile="${dist.images}/logging-log4j-${version}.zip"
          basedir="${dist.tmp}"
@@ -643,5 +674,14 @@
         <fail unless="javamail-found" message="JAVAMAIL was not found."/>
 
    </target>
+
+<target name="fixcrlf" depends="init"
+    description="Fixes CR-LF and tabs in source files">
+    <fixcrlf srcDir="."
+       includes="**/*.java **/build.xml"
+       tab="remove"
+       tablength="3"/>
+</target>
+
 </project>
 

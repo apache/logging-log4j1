@@ -95,10 +95,10 @@ public class NTEventLogAppender extends AppenderSkeleton {
   void activateOptions() {
     if (source != null) {
       try {
-	_handle = registerEventSource(server, source);
+   _handle = registerEventSource(server, source);
       } catch (Exception e) {
-	LogLog.error("Could not register event source.", e);
-	_handle = 0;
+   LogLog.error("Could not register event source.", e);
+   _handle = 0;
       }
     }
   }
@@ -112,10 +112,10 @@ public class NTEventLogAppender extends AppenderSkeleton {
     if(layout.ignoresThrowable()) {
       String[] s = event.getThrowableStrRep();
       if (s != null) {
-	int len = s.length;
-	for(int i = 0; i < len; i++) {
-	  sbuf.append(s[i]);
-	}
+   int len = s.length;
+   for(int i = 0; i < len; i++) {
+     sbuf.append(s[i]);
+   }
       }
     }
     // Normalize the log message level into the supported categories
