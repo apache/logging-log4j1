@@ -51,11 +51,6 @@
   <!-- Destination for generated jar files -->
   <property name="jar.dest" value="${basedir}"/>
   
-  <!--  
-      Specifies if log4j should be build implementing slf4j interfaces
-      Required slf4j-api.jar property to be set  -->
-  <property name="slf4j" value="false"/>
-
   <!-- The jar file that the jar task will generate -->
   <property name="log4j.jar" value="log4j-${version}.jar"/>
   <property name="log4j-optional.jar" value="log4j-optional.jar"/>
@@ -106,7 +101,6 @@
     <pathelement location="${jdbc-stdext.jar}"/>
     <pathelement location="${jndi.jar}"/>
     <pathelement location="${jakarta-oro.jar}"/>
-    <pathelement location="${slf4j-api.jar}"/>
   </path>
 
   <!-- Construct classpath for building the html pages-->
@@ -142,10 +136,6 @@
 
     dist    - will create a complete distribution in dist
     
-    For an SLF4J enabled build:
-
-        ant jar -Dslf4j=true 
-                -Dslf4j-api.jar=../slf4j-1.0-beta3/slf4j-nop.jar
             
     </echo>
   </target>
@@ -238,38 +228,6 @@
   	</fail>
   </target>
   
-  <target name="slf4jCheck">
-    <condition property="implement-slf4j" value="true">
-        <istrue value="${slf4j}"/>
-    </condition>
-
-    <condition property="missing-slf4j" value="true">
-    	<and>
-    		<isset property="implement-slf4j"/>
-    		<not>
-    		    <and>
-    		    	<available classname="org.slf4j.Logger">
-                        <classpath refid="compile.classpath"/>
-                    </available>
-    		    	<available file="${slf4j-api.jar}"/>
-    		    </and>
-            </not>
-         </and>
-    </condition>
-    
-  	<fail if="missing-slf4j">
-  	    Missing org.slf4j.* classes.
-  	  	  		
-  	    Please make sure that "slf4j" is false or "slf4j-api.jar" property in build.properties 
-  	    file is set correctly.
-  	</fail>
-
-    <condition property="slf4j.source.dir" value="src/slf4j">
-    	<isset property="implement-slf4j"/>
-    </condition>
-    <property name="slf4j.source.dir" value="src/no-slf4j"/>
-
-  </target>
   
 
 
@@ -299,7 +257,7 @@
   	               build.examples"/>
 
   <target name="requiredepsCheck" 
-  	depends="jndiCheck,jmsCheck,oroCheck,javamailCheck,servletAPICheck,jdbcExtensionCheck,jaxpCheck,slf4jCheck"
+  	depends="jndiCheck,jmsCheck,oroCheck,javamailCheck,servletAPICheck,jdbcExtensionCheck,jaxpCheck"
   	description="Compile all log4j components - fail if dependencies do not exist"
   	>
     <condition property="alldeps.exist">
@@ -319,11 +277,10 @@
     </fail>	
   </target>
 
-  <target name="build.core" depends="init, jndiCheck, jaxpCheck, slf4jCheck">
+  <target name="build.core" depends="init, jndiCheck, jaxpCheck">
 
     <javac destdir="${javac.dest}"
-           includes="${stem}/**/*.java,
-                     org/slf4j/*.java"
+           includes="${stem}/**/*.java"
            excludes="**/UnitTest*.java,
                      **/StressCategory.java,
                      **/doc-files/*,
@@ -342,7 +299,6 @@
     	   source="${source}"
     	>
     	<src path="${java.source.dir}"/>
-    	<src path="${slf4j.source.dir}"/>
       <classpath refid="compile.classpath"/>
     </javac>
   </target>
@@ -582,30 +538,13 @@
   <!-- Create log4j.jar, excluding tests and other odds and ends.        -->
   <!-- ================================================================= -->
   
-  <!--  
-     if implementing SLF4J, expand the interface classes from the slf4j-api.jar
-     to be included in the log4j.jar 
-   -->
-  <target name="slf4jExtract" depends="slf4jCheck" if="implement-slf4j">
-      <unjar src="${slf4j-api.jar}" dest="${javac.dest}">
-      	<patternset>
-      		<include name="org/slf4j/Logger.class"/>
-      	</patternset>
-      </unjar>
-      <property name="slf4j.exclude.pattern" value="bogus.bogus"/>
-  </target>
-
   
-  <target name="log4j.jar" depends="build.core, build.servletAPI, slf4jExtract">
+  <target name="log4j.jar" depends="build.core, build.servletAPI">
     
     <delete file="${log4j.jar}" verbose="true"/>
  
-    <!--  if not a SLF4J build, exclude any stray SLF4J classes  -->
-    <property name="slf4j.exclude.pattern" value="org/slf4j/**/*.class"/>
-
     <jar jarfile="${jar.dest}/${log4j.jar}" basedir="${javac.dest}"
-         includes="org/slf4j/*.class,
-                ${stem}/*.class, 
+         includes="${stem}/*.class, 
                 ${stem}/joran/**/*.class,
                 ${stem}/config/*.class,
                 ${stem}/helpers/*.class,
@@ -646,8 +585,7 @@
     	        ${stem}/net/SocketHub*.class,
     	        ${stem}/net/Telnet*.class,
     	        ${stem}/pattern/StackPatternConverter.class,
-    	        ${stem}/DUMMY.java,
-    	        ${slf4j.exclude.pattern}"
+    	        ${stem}/DUMMY.java"
     	>
       <manifest>
         <attribute name="Manifest-version" value="1.0"/>
@@ -702,7 +640,7 @@ Specify files to reformat with -Djalopy.files=PATTERN.
   <!-- ================================================================= -->
   <!-- This target builds the javadoc files.                             -->
   <!-- ================================================================= -->
-  <target name="javadoc" depends="init, slf4jCheck">
+  <target name="javadoc" depends="init">
     
     <mkdir dir="${javadoc.dest}" />
     
@@ -745,7 +683,6 @@ Specify files to reformat with -Djalopy.files=PATTERN.
              bottom="Copyright 2000-2005 Apache Software Foundation.">
       <sourcepath>
          <pathelement path="${java.source.dir}"/>
-         <pathelement path="${slf4j.source.dir}"/>
       </sourcepath>
       
       <link href="http://java.sun.com/products/j2se/1.3/docs/api/"/>
@@ -769,7 +706,7 @@ Specify files to reformat with -Djalopy.files=PATTERN.
   <!-- ================================================================= -->
   <!-- Compare the current API with a previous release                   -->
   <!-- ================================================================= -->
-  <target name="jdiff" depends="slf4jCheck" description="Generate comparison to reference API">
+  <target name="jdiff" depends="init" description="Generate comparison to reference API">
        <property name="reference-api.version" value="1.2.11"/>
        <property name="reference-api.dir" location="${user.home}/logging-log4j-${reference-api.version}"/>
        <property name="reference-api.source.dir" location="${user.home}/logging-log4j-${reference-api.version}/src/java"/>
@@ -786,7 +723,6 @@ Specify files to reformat with -Djalopy.files=PATTERN.
             </old>
             <new name="Version ${version}">
               <dirset dir="${java.source.dir}" includes="org/**"/>
-              <dirset dir="${slf4j.source.dir}"/>
             </new>
        </jdiff>
   </target>  
@@ -882,8 +818,6 @@ Specify files to reformat with -Djalopy.files=PATTERN.
     <copy todir="${dist.tmp}/logging-log4j-${version}">
       <fileset dir="${base}"
                includes="src/java/**,
-               src/no-slf4j/**,
-               src/slf4j/**,
                docs/**,
                examples/**,
                build.xml,
