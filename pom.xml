@@ -11,13 +11,73 @@ org.apache.log4j
 <artifactId>
 log4j
 </artifactId>
-
+<name>log4j</name>
 <version>
 1.3
 </version>
-
+<description>Logging services for Java</description>
+<url>http://logging.apache.org/log4j</url>
+<issueManagement>
+  <system>Bugzilla</system>
+  <url>http://issues.apache.org/bugzilla</url>
+</issueManagement>
+<inceptionYear>1999</inceptionYear>
+<mailingLists>
+	<mailingList>
+		<name>log4j-user</name>
+		<subscribe>log4j-user-subscribe@logging.apache.org</subscribe>
+		<unsubscribe>log4j-user-unsubscribe@logging.apache.org</unsubscribe>
+		<post>log4j-user@logging.apache.org</post>
+		<archive>http://mail-archives.apache.org/mod_mbox/logging-log4j-dev/</archive>
+		<otherArchives>
+			<archive>http://marc.theaimsgroup.com/?l=log4j-user&amp;r=1&amp;w=2</archive>
+		    <archive>http://dir.gmane.org/gmane.comp.jakarta.log4j.user</archive>
+		</otherArchives>
+	</mailingList>
+	<mailingList>
+		<name>log4j-dev</name>
+		<subscribe>log4j-dev-subscribe@logging.apache.org</subscribe>
+		<unsubscribe>log4j-dev-unsubscribe@logging.apache.org</unsubscribe>
+		<post>log4j-dev@logging.apache.org</post>
+		<archive>http://mail-archives.apache.org/mod_mbox/logging-log4j-dev/</archive>
+		<otherArchives>
+		    <archive>http://marc.theaimsgroup.com/?l=log4j-dev&amp;r=1&amp;w=2</archive>
+		    <archive>http://dir.gmane.org/gmane.comp.jakarta.log4j.devel</archive>
+		</otherArchives>
+	</mailingList>
+</mailingLists>
+<developers>
+   <developer>
+   	   <id>mwomack</id>
+   	   <name>Mark Womack</name>
+   	   <email>mwomack@apache.org</email>
+   	</developer>
+   <developer>
+   	   <id>carnold</id>
+   	   <name>Curt Arnold</name>
+   	   <email>carnold@apache.org</email>
+   	</developer>
+   	<!--  TODO: Many more need to be here -->
+</developers>
+<licenses>
+	<license>
+		<name>Apache License, Version 2.0</name>
+		<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		<distribution>repo</distribution>
+	</license>
+</licenses>
+<scm>
+	<connection>svn:http://svn.apache.org/repos/asf/logging/log4j/trunk</connection>
+	<developerConnection>svn:https://svn.apache.org/repos/asf/logging/log4j/trunk</developerConnection>
+	<url>http://svn.apache.org/viewcvs.cgi/logging/log4j/trunk</url>
+</scm>
+<organization>
+    <name>Apache Software Foundation</name>
+    <url>http://www.apache.org</url>
+</organization>
 <build>
-  <sourceDirectory>src/java</sourceDirectory>
+    <sourceDirectory>src/java</sourceDirectory>
+    <testSourceDirectory>tests/src/java</testSourceDirectory>
 </build>
 <dependencies>
   <dependency>
@@ -26,9 +86,9 @@ log4j
     <version>1.0.2</version>
   </dependency>
   <dependency>
-    <groupId>javax.javamail</groupId>
-    <artifactId>javamail</artifactId>
-    <version>1.3.2</version>
+    <groupId>javax.mail</groupId>
+    <artifactId>mail</artifactId>
+    <version>1.3.3</version>
   </dependency>
   <dependency>
     <groupId>javax.jms</groupId>
@@ -36,8 +96,8 @@ log4j
     <version>1.1</version>
   </dependency>
   <dependency>
-    <groupId>javax.jmx</groupId>
-    <artifactId>jmx</artifactId>
+    <groupId>com.sun.jmx</groupId>
+    <artifactId>jmxri</artifactId>
     <version>1.2.1</version>
   </dependency>
   <dependency>
@@ -46,9 +106,24 @@ log4j
     <version>2.0.8</version>
   </dependency>
   <dependency>
-    <groupId>servletapi</groupId>
-    <artifactId>servletapi</artifactId>
-    <version>2.3</version>
+    <groupId>javax.servlet</groupId>
+    <artifactId>servlet-api</artifactId>
+    <version>2.4</version>
+  </dependency>
+  <dependency>
+    <groupId>junit</groupId>
+    <artifactId>junit</artifactId>
+    <version>3.8.1</version>
+  </dependency>
+  <dependency>
+    <groupId>jetty</groupId>
+    <artifactId>org.mortbay.jetty.plus</artifactId>
+    <version>5.1.9</version>
+  </dependency>
+  <dependency>
+    <groupId>jetty</groupId>
+    <artifactId>org.mortbay.jetty</artifactId>
+    <version>5.1.9</version>
   </dependency>
 </dependencies>
 </project>
