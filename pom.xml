@@ -30,8 +30,8 @@ log4j
 		<post>log4j-user@logging.apache.org</post>
 		<archive>http://mail-archives.apache.org/mod_mbox/logging-log4j-dev/</archive>
 		<otherArchives>
-			<archive>http://marc.theaimsgroup.com/?l=log4j-user&amp;r=1&amp;w=2</archive>
-		    <archive>http://dir.gmane.org/gmane.comp.jakarta.log4j.user</archive>
+			<otherArchive>http://marc.theaimsgroup.com/?l=log4j-user&amp;r=1&amp;w=2</otherArchive>
+		    <otherArchive>http://dir.gmane.org/gmane.comp.jakarta.log4j.user</otherArchive>
 		</otherArchives>
 	</mailingList>
 	<mailingList>
@@ -41,8 +41,8 @@ log4j
 		<post>log4j-dev@logging.apache.org</post>
 		<archive>http://mail-archives.apache.org/mod_mbox/logging-log4j-dev/</archive>
 		<otherArchives>
-		    <archive>http://marc.theaimsgroup.com/?l=log4j-dev&amp;r=1&amp;w=2</archive>
-		    <archive>http://dir.gmane.org/gmane.comp.jakarta.log4j.devel</archive>
+		    <otherArchive>http://marc.theaimsgroup.com/?l=log4j-dev&amp;r=1&amp;w=2</otherArchive>
+		    <otherArchive>http://dir.gmane.org/gmane.comp.jakarta.log4j.devel</otherArchive>
 		</otherArchives>
 	</mailingList>
 </mailingLists>
@@ -67,8 +67,8 @@ log4j
 	</license>
 </licenses>
 <scm>
-	<connection>svn:http://svn.apache.org/repos/asf/logging/log4j/trunk</connection>
-	<developerConnection>svn:https://svn.apache.org/repos/asf/logging/log4j/trunk</developerConnection>
+	<connection>scm:svn:http://svn.apache.org/repos/asf/logging/log4j/trunk</connection>
+	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/logging/log4j/trunk</developerConnection>
 	<url>http://svn.apache.org/viewcvs.cgi/logging/log4j/trunk</url>
 </scm>
 <organization>
@@ -126,4 +126,28 @@ log4j
     <version>5.1.9</version>
   </dependency>
 </dependencies>
+  <reporting>
+    <plugins>
+      <!--  generates a Class org.apache.commons.logging.impl.Jdk14Logger does not implement Log msg -->
+      <!-- plugin>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+      </plugin -->
+      <plugin>
+        <artifactId>maven-pmd-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </reporting>
+<distributionManagement>
+  <site>
+    <id>website</id>
+    <url>scp://people.apache.org/public_html/log4j_13/</url>
+  </site>
+</distributionManagement>
 </project>
