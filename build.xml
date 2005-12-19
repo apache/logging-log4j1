@@ -105,9 +105,8 @@
 
   <!-- Construct classpath for building the html pages-->
   <path id="site.classpath">
-    <fileset dir="${logging-site}/lib">
-      <include name="*.jar"/>
-    </fileset>
+    <pathelement location="${velocity.jar}"/>
+    <pathelement location="${jdom.jar}"/>
   </path>
 
 
@@ -762,7 +761,7 @@ Specify files to reformat with -Djalopy.files=PATTERN.
   <target name="checkSite" depends="prepareSite" unless="AnakiaTask.present">
     <echo>
       AnakiaTask is not present! Please check to make sure that
-      velocity.jar is in your classpath.
+      the velocity.jar property is specified and contains the correct path. 
     </echo>
   </target>
 
@@ -772,7 +771,7 @@ Specify files to reformat with -Djalopy.files=PATTERN.
     </taskdef>
     
     <mkdir dir="${docs.dest}/css"/>  
-    <copy file="${logging-site}/docs/css/site.css" tofile="${docs.dest}/css/site.css"/>
+    <copy file="docs/css/site.css" tofile="${docs.dest}/css/site.css"/>
     
     <anakia basedir="${xdocs.src}" destdir="${docs.dest}/"
             extension=".html"
@@ -781,7 +780,7 @@ Specify files to reformat with -Djalopy.files=PATTERN.
             excludes="**/stylesheets/**, empty.xml"
             includes="**/*.xml"
             lastModifiedCheck="true"
-            templatePath="${logging-site}/src/xdocs/stylesheets">
+            templatePath="${xdocs.src}/stylesheets">
     </anakia>
     
   </target>

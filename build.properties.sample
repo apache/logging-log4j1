@@ -28,19 +28,20 @@ jms.jar=${lib.home.dir}/jms1.1/lib/jms.jar
 # Servlet api
 servlet-api.jar=${lib.home.dir}/jakarta-tomcat-5.5.9/common/lib/servlet-api.jar
 
-# SLF4J api
-slf4j-api.jar=${lib.home.dir}/slf4j-1.0-beta4/slf4j-nop.jar
-
-# The templates for the creation of the web-pages are inherited 
-# from the parent project.
-logging-site=../logging-site
+# Velocity's Anakia task is used in the generation of the documentation
+# download from http://jakarta.apache.org
+velocity.jar=${lib.home.dir}/velocity-1.4/velocity-dep-1.4.jar
+# Velocity's Anakia task requires JDOM, 
+# but Velocity 1.4 is not compatible with JDOM 1.0, but beta 8 works okay
+# download for http://www.jdom.org/dist/binary/archive
+jdom.jar=${lib.home.dir}/jdom-b8/build/jdom.jar
 
 # Describes the relative or full path to the Jakarta ORO Reg Exp jar file
 # Required if you wish to use LogFilePatternReceiver or LikeRule (regexp)
 jakarta-oro.jar=${lib.home.dir}/jakarta-oro-2.0.8/jakarta-oro-2.0.8.jar
 
 
-# DBAppeder/DBReceiver OPTIONAL: 
+# DBAppender/DBReceiver OPTIONAL: 
 #
 # The org.apache.log4j.db package makes use of the
 # javax.sql.DataSource interface which is included part of the JDBC
