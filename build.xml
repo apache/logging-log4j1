@@ -732,15 +732,14 @@ Specify files to reformat with -Djalopy.files=PATTERN.
 	  <!-- Compare the current API with a previous release                   -->
 	  <!-- ================================================================= -->
 	  <target name="clirr" depends="jar" description="Check binary compatibility with arbitrary release">
-	  	   <fail unless="clirr-core-uber.jar">-Dclirr-core-uber.jar=PATH must be specified.</fail>
+	  	   <fail unless="clirr-core.jar">-Dclirr-core.jar=PATH must be specified.</fail>
+	  	   <fail unless="bcel.jar">-Dbcel.jar=PATH must be specified.</fail>
 	  	   <fail unless="reference.jar">-Dreference.jar=PATH must be specified.</fail>
 	       <taskdef resource="clirrtask.properties" 
-	           classpath="${clirr-core-uber.jar}"/>    
-        <!--  fails with NullPointerException with stock clirr 0.6
-                 see http://sourceforge.net/tracker/index.php?func=detail&aid=1377978&group_id=89627&atid=590799  -->
+	           classpath="${clirr-core.jar};${bcel.jar}"/>
 	  	<clirr failOnBinError="no" failOnSrcError="no">
 	  	        <origfiles file="${reference.jar}"/>
-	  	        <newfiles dir="${jar.dest}" includes="*.jar"/>
+	  	        <newfiles file="${jar.dest}/${log4j.jar}"/>
 	  	  	    <formatter type="xml" outfile="${docs.dest}/compatibility.xml"/>
 	  	  </clirr>
 	  	  <xslt in="${docs.dest}/compatibility.xml"
