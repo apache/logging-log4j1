@@ -197,7 +197,8 @@
                                      Plugins,
                                      CachedDateFormat,
   	                                 Schema,
-  	                                 Encoding
+  	                                 Encoding,
+  	                                 Syslog
                                      "/>
 
 
@@ -737,6 +738,13 @@
     </junit>
   </target>
 
+  <target name="Syslog" depends="build">
+      <junit printsummary="yes" fork="yes" haltonfailure="${haltonfailure}">
+        <classpath refid="tests.classpath"/>
+        <formatter type="plain" usefile="false"/>
+        <test name="org.apache.log4j.net.SyslogAppenderTest" />
+      </junit>
+  </target>
 
 	
   <!-- ================================================================= -->
