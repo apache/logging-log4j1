@@ -54,7 +54,7 @@ public abstract class AppenderSkeleton extends ComponentBase implements Appender
    * 
    * @deprecated as of 1.3
    */
-  private final org.apache.log4j.spi.ErrorHandler errorHandler = new org.apache.log4j.helpers.OnlyOnceErrorHandler();
+  protected org.apache.log4j.spi.ErrorHandler errorHandler = new org.apache.log4j.helpers.OnlyOnceErrorHandler();
 
   /**
    * The first filter in the filter chain. Set to <code>null</code> initially.
@@ -89,7 +89,7 @@ public abstract class AppenderSkeleton extends ComponentBase implements Appender
    * to indicate whether appender is ready upon construction.
    *
    */
-  protected AppenderSkeleton() {
+  public AppenderSkeleton() {
       active = true;
   }
 
@@ -170,7 +170,7 @@ public abstract class AppenderSkeleton extends ComponentBase implements Appender
    * @since 0.9.0
    * @deprecated As of 1.3
    */
-  public final org.apache.log4j.spi.ErrorHandler getErrorHandler() {
+  public org.apache.log4j.spi.ErrorHandler getErrorHandler() {
     return this.errorHandler;
   }
 
@@ -302,7 +302,7 @@ FILTER_LOOP:
    * @since 0.9.0
    * @deprecated As of 1.3
    */
-  public final void setErrorHandler(org.apache.log4j.spi.ErrorHandler eh) {
+  public void setErrorHandler(org.apache.log4j.spi.ErrorHandler eh) {
     ; //ignore
   }
   

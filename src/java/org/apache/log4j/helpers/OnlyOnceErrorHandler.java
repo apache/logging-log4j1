@@ -32,7 +32,7 @@ import org.apache.log4j.spi.LoggingEvent;
    @since 0.9.0
    @deprecated As of 1.3
  */
-public final class OnlyOnceErrorHandler implements ErrorHandler {
+public class OnlyOnceErrorHandler implements ErrorHandler {
   public void setLogger(Logger logger) {}
   public void activateOptions() {}
   public void error(String message, Exception e, int errorCode) {}
