@@ -28,7 +28,7 @@ package org.apache.log4j;
  */
 public class Priority extends Level {
   
-  private Priority(int level, String levelStr, int syslogEquivalent) {
+  public Priority(int level, String levelStr, int syslogEquivalent) {
     super(level, levelStr, syslogEquivalent);
   }
 

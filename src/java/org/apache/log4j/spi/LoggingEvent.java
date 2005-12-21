@@ -112,12 +112,13 @@ public class LoggingEvent
   private transient LoggerRepository loggerRepository;
 
  
-   // The logger name.
-   //
-   // the 'logger name' variable name ("categoryName") must remain the same 
-   // as prior versions in order to maintain serialization compatibility with 
-   // log4j 1.2.8
-   private String categoryName;
+   /** The logger name.
+    *
+    * the 'logger name' variable name ("categoryName") must remain the same 
+    * as prior versions in order to maintain serialization compatibility with 
+    * log4j 1.2.8
+    */
+   public String categoryName;
 
   /**
    * Level of logging event. Level cannot be serializable because it is a
@@ -182,7 +183,7 @@ public class LoggingEvent
    * The number of milliseconds elapsed from 1/1/1970 until logging event was
    * created.
    */
-  private long timeStamp;
+  public long timeStamp;
 
   /**
    *
