@@ -45,33 +45,122 @@ import java.util.Locale;
  * @author Ceki G&uuml;lc&uuml;
  * @author Anders Kristensen
  * @author Hermod Opstvedt
+ * @author Curt Arnold
  */
 public class SyslogAppender extends AppenderSkeleton {
+    // The following constants are extracted from a syslog.h file
+    // copyrighted by the Regents of the University of California
+    // I hope nobody at Berkley gets offended.
+
+    /** Kernel messages */
+    final static public int LOG_KERN     = 0;
+    /** Random user-level messages */
+    final static public int LOG_USER     = 1<<3;
+    /** Mail system */
+    final static public int LOG_MAIL     = 2<<3;
+    /** System daemons */
+    final static public int LOG_DAEMON   = 3<<3;
+    /** security/authorization messages */
+    final static public int LOG_AUTH     = 4<<3;
+    /** messages generated internally by syslogd */
+    final static public int LOG_SYSLOG   = 5<<3;
+
+    /** line printer subsystem */
+    final static public int LOG_LPR      = 6<<3;
+    /** network news subsystem */
+    final static public int LOG_NEWS     = 7<<3;
+    /** UUCP subsystem */
+    final static public int LOG_UUCP     = 8<<3;
+    /** clock daemon */
+    final static public int LOG_CRON     = 9<<3;
+    /** security/authorization  messages (private) */
+    final static public int LOG_AUTHPRIV = 10<<3;
+    /** ftp daemon */
+    final static public int LOG_FTP      = 11<<3;
+
+    // other codes through 15 reserved for system use
+    /** reserved for local use */
+    final static public int LOG_LOCAL0 = 16<<3;
+    /** reserved for local use */
+    final static public int LOG_LOCAL1 = 17<<3;
+    /** reserved for local use */
+    final static public int LOG_LOCAL2 = 18<<3;
+    /** reserved for local use */
+    final static public int LOG_LOCAL3 = 19<<3;
+    /** reserved for local use */
+    final static public int LOG_LOCAL4 = 20<<3;
+    /** reserved for local use */
+    final static public int LOG_LOCAL5 = 21<<3;
+    /** reserved for local use */
+    final static public int LOG_LOCAL6 = 22<<3;
+    /** reserved for local use*/
+    final static public int LOG_LOCAL7 = 23<<3;
+
+    /**
+     * Names of facilities.
+     */
+    private static final String[] FACILITIES =
+            new String[] {
+                    "kern", "user", "mail", "daemon",
+                    "auth", "syslog", "lpr", "news",
+                    "uucp", "cron", "authpriv","ftp",
+                    null, null, null, null,
+                    "local0", "local1", "local2", "local3",
+                    "local4", "local5", "local6", "local7"
+
+            };
+
+
   protected static final int SYSLOG_HOST_OI = 0;
   protected static final int FACILITY_OI = 1;
   static final String TAB = "    ";
-  int facility;
-  String facilityStr;
+  int syslogFacility = LOG_USER;
+  String facilityStr = "user";
+    /**
+     * In log4j 1.2, controlled whether facility name was included in message,
+     * but has no effect in current code.
+     * @deprecated since 1.3
+     */
+  boolean facilityPrinting = false;
+
   String localHostname;
   String syslogHost;
 
   //SyslogTracerPrintWriter stp;
-  SyslogWriter sw;
-  Calendar calendar = Calendar.getInstance();
-  long now = -1;
-  Date date = new Date();
-  StringBuffer timestamp = new StringBuffer();
-  protected FieldPosition pos = new FieldPosition(0);
+  private SyslogWriter sw;
+  private final Calendar calendar = Calendar.getInstance();
+  private long now = -1;
+  private Date date = new Date();
+  private StringBuffer timestamp = new StringBuffer();
+  private FieldPosition pos = new FieldPosition(0);
 
   // We must use US locale to get the correct month abreviation  
   private SimpleDateFormat sdf =
     new SimpleDateFormat("MMM dd hh:mm:ss", new DateFormatSymbols(Locale.US));
 
-  Layout layout;
+  private Layout layout;
   
   public SyslogAppender() {
       super(false);
   }
+
+  public
+  SyslogAppender(final Layout layout, final int syslogFacility) {
+      super(false);
+      this.layout = layout;
+      this.syslogFacility = syslogFacility;
+      String newFacilityStr = getFacilityString(syslogFacility);
+      if (newFacilityStr != null) {
+          facilityStr = newFacilityStr;
+      }
+  }
+
+   public
+   SyslogAppender(final Layout layout, final String syslogHost, final int syslogFacility) {
+      this(layout, syslogFacility);
+      setSyslogHost(syslogHost);
+   }
+
 
   /**
    * Release any resources held by this SyslogAppender.
@@ -103,55 +192,41 @@ public class SyslogAppender extends AppenderSkeleton {
     }
   }
 
+    /**
+      * Returns the specified syslog facility as a lower-case String,
+      * e.g. "kern", "user", etc.
+      * @deprecated since 1.3
+    */
+    public
+    static
+    String getFacilityString(final int syslogFacility) {
+        String facilityStr = null;
+        if((syslogFacility & 0x7) == 0) {
+           int index = syslogFacility >> 3;
+           if(index >= 0 && index < FACILITIES.length) {
+               facilityStr = FACILITIES[index];
+           }
+        }
+        return facilityStr;
+    }
+
+
   /**
    * Returns the integer value corresponding to the named syslog facility,
    * or -1 if it couldn't be recognized.
    *
    * */
-  static int facilityStringToint(String facilityStr) {
-    if ("KERN".equalsIgnoreCase(facilityStr)) {
-      return SyslogConstants.LOG_KERN;
-    } else if ("USER".equalsIgnoreCase(facilityStr)) {
-      return SyslogConstants.LOG_USER;
-    } else if ("MAIL".equalsIgnoreCase(facilityStr)) {
-      return SyslogConstants.LOG_MAIL;
-    } else if ("DAEMON".equalsIgnoreCase(facilityStr)) {
-      return SyslogConstants.LOG_DAEMON;
-    } else if ("AUTH".equalsIgnoreCase(facilityStr)) {
-      return SyslogConstants.LOG_AUTH;
-    } else if ("SYSLOG".equalsIgnoreCase(facilityStr)) {
-      return SyslogConstants.LOG_SYSLOG;
-    } else if ("LPR".equalsIgnoreCase(facilityStr)) {
-      return SyslogConstants.LOG_LPR;
-    } else if ("NEWS".equalsIgnoreCase(facilityStr)) {
-      return SyslogConstants.LOG_NEWS;
-    } else if ("UUCP".equalsIgnoreCase(facilityStr)) {
-      return SyslogConstants.LOG_UUCP;
-    } else if ("CRON".equalsIgnoreCase(facilityStr)) {
-      return SyslogConstants.LOG_CRON;
-    } else if ("AUTHPRIV".equalsIgnoreCase(facilityStr)) {
-      return SyslogConstants.LOG_AUTHPRIV;
-    } else if ("FTP".equalsIgnoreCase(facilityStr)) {
-      return SyslogConstants.LOG_FTP;
-    } else if ("LOCAL0".equalsIgnoreCase(facilityStr)) {
-      return SyslogConstants.LOG_LOCAL0;
-    } else if ("LOCAL1".equalsIgnoreCase(facilityStr)) {
-      return SyslogConstants.LOG_LOCAL1;
-    } else if ("LOCAL2".equalsIgnoreCase(facilityStr)) {
-      return SyslogConstants.LOG_LOCAL2;
-    } else if ("LOCAL3".equalsIgnoreCase(facilityStr)) {
-      return SyslogConstants.LOG_LOCAL3;
-    } else if ("LOCAL4".equalsIgnoreCase(facilityStr)) {
-      return SyslogConstants.LOG_LOCAL4;
-    } else if ("LOCAL5".equalsIgnoreCase(facilityStr)) {
-      return SyslogConstants.LOG_LOCAL5;
-    } else if ("LOCAL6".equalsIgnoreCase(facilityStr)) {
-      return SyslogConstants.LOG_LOCAL6;
-    } else if ("LOCAL7".equalsIgnoreCase(facilityStr)) {
-      return SyslogConstants.LOG_LOCAL7;
-    } else {
-      return -1;
+  public static int getFacility(final String facilityStr) {
+    int code = -1;
+    if (facilityStr != null) {
+        for(int i = 0; i < FACILITIES.length; i++) {
+            if (facilityStr.equalsIgnoreCase(FACILITIES[i])) {
+                code = i << 3;
+                break;
+            }
+        }
     }
+    return code;
   }
 
   /**
@@ -167,10 +242,10 @@ public class SyslogAppender extends AppenderSkeleton {
     }
     facilityStr = facilityStr.trim();
     getLogger().debug("Facility string set to be {}.", facilityStr);
-    facility = facilityStringToint(facilityStr);
-    getLogger().debug("Facility set to be "+ facility);
+    syslogFacility = getFacility(facilityStr);
+    getLogger().debug("Facility set to be "+ syslogFacility);
     
-    if (facility == -1) {
+    if (syslogFacility == -1) {
       String errMsg =
         "Unrecognized Facility option \"" + facilityStr
         + "\" SyslogAppender named [" + name + "].";
@@ -180,7 +255,7 @@ public class SyslogAppender extends AppenderSkeleton {
 
     if (syslogHost == null) {
       String errMsg =
-        "No syslog host is set for SyslogAppedender named \"" + this.name
+        "No syslog host is set for SyslogAppender named \"" + this.name
         + "\".";
       getLogger().error(errMsg);
       throw new IllegalStateException(errMsg);
@@ -188,7 +263,7 @@ public class SyslogAppender extends AppenderSkeleton {
 
     if (layout == null) {
       String errMsg =
-        "No Layout is set for SyslogAppedender named \"" + this.name
+        "No Layout is set for SyslogAppender named \"" + this.name
         + "\".";
       getLogger().error(errMsg);
       throw new IllegalStateException(errMsg);
@@ -197,7 +272,19 @@ public class SyslogAppender extends AppenderSkeleton {
     localHostname = getLocalHostname();
 
     sw = new SyslogWriter(syslogHost);
+    super.activateOptions();
   }
+
+    /**
+       The SyslogAppender requires a layout. Hence, this method returns
+       <code>true</code>.
+
+       @since 0.8.4 */
+    public
+    boolean requiresLayout() {
+      return true;
+    }
+
 
   /**
    * The <b>SyslogHost</b> option is the name of the the syslog host where log
@@ -224,11 +311,19 @@ public class SyslogAppender extends AppenderSkeleton {
    * NTP, AUDIT, ALERT, CLOCK, LOCAL0, LOCAL1, LOCAL2, LOCAL3, LOCAL4, LOCAL5,
    * LOCAL6, LOCAL7. Case is not important.
    *
-   * See {@link SyslogConstants} and RFC 3164 for more information about the
+   * See RFC 3164 for more information about the
    * <b>Facility</b> option.
    * */
-  public void setFacility(String facility) {
-    this.facilityStr = facility;
+  public void setFacility(final String facility) {
+    if (facility != null) {
+        syslogFacility = getFacility(facility);
+        if (syslogFacility == -1) {
+          System.err.println("["+facility +
+                      "] is an unknown syslog facility. Defaulting to [USER].");
+          syslogFacility = LOG_USER;
+        }
+        facilityStr = getFacilityString(syslogFacility);
+    }
   }
 
   /**
@@ -260,7 +355,7 @@ public class SyslogAppender extends AppenderSkeleton {
   }
 
   void writeInitialParts(LoggingEvent event) throws IOException {
-    int pri = facility+event.getLevel().getSyslogEquivalent();
+    int pri = syslogFacility +event.getLevel().getSyslogEquivalent();
     System.out.println(""+pri);
     sw.write("<");
     sw.write(String.valueOf(pri));
@@ -305,4 +400,27 @@ public class SyslogAppender extends AppenderSkeleton {
   public void setLayout(Layout layout) {
     this.layout = layout;
   }
+
+    /**
+     * If the <b>FacilityPrinting</b> option is set to true, the printed
+     * message will include the facility name of the application. It is
+     * <em>false</em> by default.
+     *
+     * @deprecated No effect in log4j 1.3
+     */
+    public
+    void setFacilityPrinting(boolean on) {
+      facilityPrinting = on;
+    }
+
+    /**
+     * Returns the value of the <b>FacilityPrinting</b> option.
+     *
+     * @deprecated No effect in log4j 1.3
+     */
+    public
+    boolean getFacilityPrinting() {
+      return facilityPrinting;
+    }
+
 }
