@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,6 +40,38 @@ import java.util.Enumeration;
  *
  * @author Ceki G&uuml;lc&uuml; */
 public class LogManager {
+
+  /**
+   * @deprecated This variable is for internal use only. It will
+   * become package protected in future versions.
+   * */
+  static public final String DEFAULT_CONFIGURATION_FILE = "log4j.properties";
+  
+  /**
+   * @deprecated This variable is for internal use only. It will
+   * become package protected in future versions.
+   * */
+  static final String DEFAULT_XML_CONFIGURATION_FILE = "log4j.xml";  
+   
+  /**
+   * @deprecated This variable is for internal use only. It will
+   * become private in future versions.
+   * */
+  static final public String DEFAULT_CONFIGURATION_KEY="log4j.configuration";
+
+  /**
+   * @deprecated This variable is for internal use only. It will
+   * become private in future versions.
+   * */
+  static final public String CONFIGURATOR_CLASS_KEY="log4j.configuratorClass";
+
+  /**
+  * @deprecated This variable is for internal use only. It will
+  * become private in future versions.
+  */
+  public static final String DEFAULT_INIT_OVERRIDE_KEY = 
+                                                 "log4j.defaultInitOverride";
+
     /**
      * Concurrency guard.
      */
