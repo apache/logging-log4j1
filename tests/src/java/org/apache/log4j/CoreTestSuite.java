@@ -24,7 +24,6 @@ import org.apache.log4j.spi.LoggingEventTest;
  * Suite of log4j class level unit tests.
  *
  * @author Curt Arnold
- * @since 1.3
  */
 public class CoreTestSuite {
     /**
@@ -36,6 +35,8 @@ public class CoreTestSuite {
         s.addTestSuite(LoggingEventTest.class);
         s.addTestSuite(org.apache.log4j.LevelTest.class);
         s.addTestSuite(org.apache.log4j.FileAppenderTest.class);
+        s.addTestSuite(org.apache.log4j.LogManagerTest.class);
+        s.addTestSuite(org.apache.log4j.helpers.LogLogTest.class);
         return s;
     }
 }
