@@ -737,9 +737,31 @@ Specify files to reformat with -Djalopy.files=PATTERN.
 	  	   <fail unless="reference.jar">-Dreference.jar=PATH must be specified.</fail>
 	       <taskdef resource="clirrtask.properties" 
 	           classpath="${clirr-core.jar};${bcel.jar}"/>
-	  	<clirr failOnBinError="no" failOnSrcError="no">
-	  	        <origfiles file="${reference.jar}"/>
-	  	        <newfiles file="${jar.dest}/${log4j.jar}"/>
+	       <delete dir="build/clirr"/>
+	       <mkdir dir="build/clirr/orig"/>
+	       <mkdir dir="build/clirr/new"/>
+	       <copy todir="build/clirr/orig">	       
+	       	    <fileset file="${jms.jar}"/>
+	       	    <fileset file="${jmx.jar}"/>
+	       </copy>
+	       <copy todir="build/clirr/new">
+	       	    <fileset dir="build/clirr/orig"/>
+	       	    <fileset dir="${jar.dest}">
+	  	            <include name="${log4j.jar}"/>
+	  	            <include name="${log4j-db.jar}"/>
+	  	            <include name="${log4j-jms.jar}"/>
+	  	            <include name="${log4j-optional.jar}"/>
+	  	            <include name="${log4j-oro.jar}"/>
+	  	            <include name="${log4j-smtp.jar}"/>
+	  	            <include name="${log4j-xml.jar}"/>
+	  	        </fileset>	       	    	
+	       </copy>
+	       <copy todir="build/clirr/orig">
+	       		<fileset file="${reference.jar}"/>
+	       </copy>
+	  	   <clirr failOnBinError="no" failOnSrcError="no">
+	  	        <origfiles dir="build/clirr/orig" includes="*.jar"/>
+	  	        <newfiles dir="build/clirr/new" includes="*.jar"/>
 	  	  	    <formatter type="xml" outfile="${docs.dest}/compatibility.xml"/>
 	  	  </clirr>
 	  	  <xslt in="${docs.dest}/compatibility.xml"

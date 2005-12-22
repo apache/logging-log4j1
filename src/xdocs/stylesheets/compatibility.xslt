@@ -31,7 +31,7 @@
   
   <xsl:template match="diffreport">
      <table border="1" summary="Source and binary compatibility errors">
-     	<xsl:apply-templates select="difference[@srcseverity='ERROR' or @binseverity='ERROR']"/>
+     	<xsl:apply-templates select="difference[(@srcseverity='ERROR' or @binseverity='ERROR') and not(starts-with(@class, 'org.apache.log4j.lf5'))]"/>
 	 </table>
   </xsl:template>
   
