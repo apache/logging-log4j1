@@ -37,6 +37,12 @@ public class CoreTestSuite {
         s.addTestSuite(org.apache.log4j.FileAppenderTest.class);
         s.addTestSuite(org.apache.log4j.LogManagerTest.class);
         s.addTestSuite(org.apache.log4j.helpers.LogLogTest.class);
+        s.addTestSuite(org.apache.log4j.LayoutTest.class);
+        s.addTestSuite(org.apache.log4j.helpers.DateLayoutTest.class);
+        s.addTestSuite(org.apache.log4j.TTCCLayoutTest.class);
+        s.addTestSuite(org.apache.log4j.xml.XMLLayoutTest.class);
+        s.addTestSuite(org.apache.log4j.HTMLLayoutTest.class);
+        s.addTestSuite(org.apache.log4j.PatternLayoutTest.class);
         return s;
     }
 }
