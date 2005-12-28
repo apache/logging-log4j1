@@ -40,30 +40,26 @@ public class Transform {
    * characters with respective predefined entity references.
    *
    * @param input The text to be converted. 
-   * @param output the writer to which to write the modified input
    */
-  public static void escapeTags(String input, Writer output) throws IOException {
+  public static String escapeTags(final String input) {
     //Check if the string is null or zero length -- if so, return
     //what was sent in.
-    if ((input == null) || (input.length() == 0)) {
-      return;
+    if ((input == null)
+            || (input.length() == 0)
+            || (input.indexOf("<") == -1 && input.indexOf(">") == -1)) {
+      return input;
     }
 
-    char ch = ' ';
-
-    int len = input.length();
-
-    for (int i = 0; i < len; i++) {
-      ch = input.charAt(i);
-
-      if (ch == '<') {
-        output.write("&lt;");
-      } else if (ch == '>') {
-		    output.write("&gt;");
-      } else {
-		output.write(ch);
-      }
+    StringBuffer buf = new StringBuffer(input);
+    for(int i = 0;i < buf.length(); i++) {
+        char ch = buf.charAt(i);
+        if (ch == '<') {
+            buf.replace(i, i + 1, "&lt;");
+        } else if (ch == '>') {
+            buf.replace(i, i + 1, "&gt;");
+        }
     }
+    return buf.toString();
   }
 
   //public static void appendEscapingCDATA(StringBuffer buf, String str) {
@@ -80,8 +76,7 @@ public class Transform {
   * 
   * @param str The String that is inserted into an existing CDATA Section.
   * */
-  public static void appendEscapingCDATA(Writer output, String str)
-    throws IOException {
+  public static void appendEscapingCDATA(StringBuffer output, String str) {
     if (str == null) {
       return;
     }
@@ -89,7 +84,7 @@ public class Transform {
     int end = str.indexOf(CDATA_END);
 
     if (end < 0) {
-      output.write(str);
+      output.append(str);
 
       return;
     }
@@ -97,8 +92,8 @@ public class Transform {
     int start = 0;
 
     while (end > -1) {
-      output.write(str.substring(start, end));
-      output.write(CDATA_EMBEDED_END);
+      output.append(str.substring(start, end));
+      output.append(CDATA_EMBEDED_END);
       start = end + CDATA_END_LEN;
 
       if (start < str.length()) {
@@ -108,6 +103,6 @@ public class Transform {
       }
     }
 
-    output.write(str.substring(start));
+    output.append(str.substring(start));
   }
 }

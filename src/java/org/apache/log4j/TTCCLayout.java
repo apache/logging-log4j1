@@ -21,11 +21,6 @@ package org.apache.log4j;
 import org.apache.log4j.helpers.Constants;
 import org.apache.log4j.spi.LoggingEvent;
 
-import java.text.DateFormat;
-import java.text.FieldPosition;
-import java.text.SimpleDateFormat;
-
-import java.util.Date;
 
 
 /**
@@ -71,15 +66,12 @@ import java.util.Date;
   @author <A HREF="mailto:heinz.richter@ecmwf.int">Heinz Richter</a>
   @deprecated Please use {@link PatternLayout} instead.
 */
-public class TTCCLayout extends Layout {
+public class TTCCLayout extends org.apache.log4j.helpers.DateLayout {
   // Internal representation of options
   private boolean threadPrinting = true;
   private boolean categoryPrefixing = true;
   private boolean contextPrinting = true;
   protected final StringBuffer buf = new StringBuffer(64);
-  Date date = new Date();
-  DateFormat formatter;
-  protected FieldPosition pos = new FieldPosition(0);
 
   /**
    * Instantiate a TTCCLayout object with in the ISO8601 format as the date
@@ -149,30 +141,6 @@ public class TTCCLayout extends Layout {
     return contextPrinting;
   }
 
-  public void setDateFormat(String dateFormatStr) {
-    if (dateFormatStr == null) {
-      this.formatter = null;
-      return;
-    }
-    String dateFormatPattern = null;
-
-    if (dateFormatStr.equalsIgnoreCase("NULL")) {
-      dateFormatPattern = null;
-    } else if (dateFormatStr.equalsIgnoreCase(Constants.ABSOLUTE_FORMAT)) {
-      dateFormatPattern = Constants.ABSOLUTE_TIME_PATTERN;
-    } else if (
-      dateFormatStr.equalsIgnoreCase(Constants.DATE_AND_TIME_FORMAT)) {
-      dateFormatPattern = Constants.DATE_AND_TIME_PATTERN;
-    } else if (dateFormatStr.equalsIgnoreCase(Constants.ISO8601_FORMAT)) {
-      dateFormatPattern = Constants.ISO8601_PATTERN;
-    } else {
-      dateFormatPattern = dateFormatStr;
-    }
-
-    if (dateFormatPattern != null) {
-      formatter = new SimpleDateFormat(dateFormatPattern);
-    }
-  }
 
   /**
    In addition to the level of the statement and message, the
@@ -182,41 +150,36 @@ public class TTCCLayout extends Layout {
    <p>Time, thread, category and diagnostic context are printed
    depending on options.
   */
-  public void format(java.io.Writer output, LoggingEvent event)
-    throws java.io.IOException {
+  public String format(final LoggingEvent event) {
     buf.setLength(0);
-    if (formatter != null) {
-      date.setTime(event.getTimeStamp());
-      formatter.format(date, buf, this.pos);
-      buf.append(' ');
-    }
-    output.write(buf.toString());
+    dateFormat(buf, event);
 
     if (this.threadPrinting) {
-      output.write('[');
-      output.write(event.getThreadName());
-      output.write("] ");
+      buf.append('[');
+      buf.append(event.getThreadName());
+      buf.append("] ");
     }
 
-    output.write(event.getLevel().toString());
-    output.write(' ');
+    buf.append(event.getLevel().toString());
+    buf.append(' ');
 
     if (this.categoryPrefixing) {
-      output.write(event.getLoggerName());
-      output.write(' ');
+      buf.append(event.getLoggerName());
+      buf.append(' ');
     }
 
     if (this.contextPrinting) {
       String ndc = event.getNDC();
 
       if (ndc != null) {
-        output.write(ndc);
-        output.write(' ');
+        buf.append(ndc);
+        buf.append(' ');
       }
     }
 
-    output.write("- ");
-    output.write(event.getRenderedMessage());
-    output.write(LINE_SEP);
+    buf.append("- ");
+    buf.append(event.getRenderedMessage());
+    buf.append(LINE_SEP);
+    return buf.toString();
   }
 }

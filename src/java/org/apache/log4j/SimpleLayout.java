@@ -53,12 +53,12 @@ public class SimpleLayout extends Layout {
 	 <p>The <code>category</code> parameter is ignored.
 	 <p>
 	 @param event The LoggingEvent to format and write
-	 @param output The java.io.Writer to write to
 	*/
-  public void format(Writer output, LoggingEvent event) throws java.io.IOException {
-    output.write(event.getLevel().toString());
-    output.write(" - ");
-    output.write(event.getRenderedMessage());
-    output.write(LINE_SEP); 
+  public String format(final LoggingEvent event) {
+    StringBuffer sbuf = new StringBuffer(event.getLevel().toString());
+    sbuf.append(" - ");
+    sbuf.append(event.getRenderedMessage());
+    sbuf.append(LINE_SEP);
+    return sbuf.toString();
    }
 }

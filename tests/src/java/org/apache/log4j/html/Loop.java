@@ -19,6 +19,7 @@ package org.apache.log4j.html;
 
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.Logger;
+import org.apache.log4j.HTMLLayout;
 
 import java.util.Random;
 

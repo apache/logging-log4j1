@@ -109,33 +109,34 @@ public class XMLLayout extends Layout {
   /**
    * Formats a {@link LoggingEvent}in conformance with the log4j.dtd.
    */
-  public void format(Writer output, LoggingEvent event) throws IOException {
+  public String format(LoggingEvent event) {
+    StringBuffer buf = new StringBuffer();
     // We yield to the \r\n heresy.
-    output.write("<log4j:event logger=\"");
-    output.write(event.getLoggerName());
-    output.write("\" timestamp=\"");
-    output.write(Long.toString(event.getTimeStamp()));
-    output.write("\" sequenceNumber=\"");
-    output.write(Long.toString(event.getSequenceNumber()));
-    output.write("\" level=\"");
-    output.write(event.getLevel().toString());
-    output.write("\" thread=\"");
-    output.write(event.getThreadName());
-    output.write("\">\r\n");
+    buf.append("<log4j:event logger=\"");
+    buf.append(event.getLoggerName());
+    buf.append("\" timestamp=\"");
+    buf.append(Long.toString(event.getTimeStamp()));
+    buf.append("\" sequenceNumber=\"");
+    buf.append(Long.toString(event.getSequenceNumber()));
+    buf.append("\" level=\"");
+    buf.append(event.getLevel().toString());
+    buf.append("\" thread=\"");
+    buf.append(event.getThreadName());
+    buf.append("\">\r\n");
 
-    output.write("<log4j:message><![CDATA[");
+    buf.append("<log4j:message><![CDATA[");
 
     // Append the rendered message. Also make sure to escape any
     // existing CDATA sections.
-    Transform.appendEscapingCDATA(output, event.getRenderedMessage());
-    output.write("]]></log4j:message>\r\n");
+    Transform.appendEscapingCDATA(buf, event.getRenderedMessage());
+    buf.append("]]></log4j:message>\r\n");
 
     String ndc = event.getNDC();
 
     if (ndc != null) {
-      output.write("<log4j:NDC><![CDATA[");
-      output.write(ndc);
-      output.write("]]></log4j:NDC>\r\n");
+      buf.append("<log4j:NDC><![CDATA[");
+      buf.append(ndc);
+      buf.append("]]></log4j:NDC>\r\n");
     }
 
     //    Set mdcKeySet = event.getMDCKeySet();
@@ -151,7 +152,7 @@ public class XMLLayout extends Layout {
     //      List sortedList = new ArrayList(mdcKeySet);
     //      Collections.sort(sortedList);
     //
-    //      output.write("<log4j:MDC>\r\n");
+    //      buf.append("<log4j:MDC>\r\n");
     //
     //      Iterator iter = sortedList.iterator();
     //
@@ -171,49 +172,50 @@ public class XMLLayout extends Layout {
       String[] s = event.getThrowableStrRep();
 
       if (s != null) {
-        output.write("<log4j:throwable><![CDATA[");
+        buf.append("<log4j:throwable><![CDATA[");
 
         for (int i = 0; i < s.length; i++) {
-          output.write(s[i]);
-          output.write("\r\n");
+          buf.append(s[i]);
+          buf.append("\r\n");
         }
 
-        output.write("]]></log4j:throwable>\r\n");
+        buf.append("]]></log4j:throwable>\r\n");
       }
     }
 
     if (locationInfo) {
       LocationInfo locationInfo = event.getLocationInformation();
-      output.write("<log4j:locationInfo class=\"");
-      Transform.escapeTags(locationInfo.getClassName(), output);
-      output.write("\" method=\"");
-      Transform.escapeTags(locationInfo.getMethodName(), output);
-      output.write("\" file=\"");
-      output.write(locationInfo.getFileName());
-      output.write("\" line=\"");
-      output.write(locationInfo.getLineNumber());
-      output.write("\"/>\r\n");
+      buf.append("<log4j:locationInfo class=\"");
+      buf.append(Transform.escapeTags(locationInfo.getClassName()));
+      buf.append("\" method=\"");
+      buf.append(Transform.escapeTags(locationInfo.getMethodName()));
+      buf.append("\" file=\"");
+      buf.append(locationInfo.getFileName());
+      buf.append("\" line=\"");
+      buf.append(locationInfo.getLineNumber());
+      buf.append("\"/>\r\n");
     }
 
     Set propertySet = event.getPropertyKeySet();
 
     if ((propertySet != null) && (propertySet.size() > 0)) {
-      output.write("<log4j:properties>\r\n");
+      buf.append("<log4j:properties>\r\n");
 
       Iterator propIter = propertySet.iterator();
 
       while (propIter.hasNext()) {
         String propName = propIter.next().toString();
-        output.write("    <log4j:data name=\"" + propName);
+        buf.append("    <log4j:data name=\"" + propName);
 
         String propValue = event.getProperty(propName).toString();
-        output.write("\" value=\"" + propValue);
-        output.write("\"/>\r\n");
+        buf.append("\" value=\"" + propValue);
+        buf.append("\"/>\r\n");
       }
 
-      output.write("</log4j:properties>\r\n");
+      buf.append("</log4j:properties>\r\n");
     }
 
-    output.write("</log4j:event>\r\n\r\n");
+    buf.append("</log4j:event>\r\n\r\n");
+    return buf.toString();
   }
 }
