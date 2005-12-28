@@ -374,7 +374,8 @@ public class SyslogAppender extends AppenderSkeleton {
 
     try {
       writeInitialParts(event);
-      layout.format(sw, event);
+      String msg = layout.format(event);
+      sw.write(msg);
       sw.flush();
 
 /*

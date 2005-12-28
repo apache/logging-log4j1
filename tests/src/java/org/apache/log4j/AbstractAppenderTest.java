@@ -40,7 +40,7 @@ abstract public class AbstractAppenderTest extends TestCase {
 
 
   public class DummyLayout extends Layout {
-    public void format(Writer output, LoggingEvent event) {} 
+    public String format(LoggingEvent event) { return ""; }
     public void activateOptions() {} 
   }
 

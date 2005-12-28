@@ -422,6 +422,18 @@ public class PatternLayout extends Layout {
   public static final String TTCC_CONVERSION_PATTERN =
     "%r [%t] %p %c %x - %m%n";
 
+    /**
+     * Initial size of internal buffer, no longer used.
+     * @deprecated since 1.3
+     */
+  protected final int BUF_SIZE = 256;
+
+    /**
+     * Maximum capacity of internal buffer, no longer used.
+     * @deprecated since 1.3
+     */
+  protected final int MAX_CAPACITY = 1024;
+
   /**
    * Customized pattern conversion rules are stored under this key in the
    * {@link org.apache.log4j.spi.LoggerRepository LoggerRepository} object store.
@@ -538,12 +550,9 @@ public class PatternLayout extends Layout {
 
   /**
    *  Formats a logging event to a writer.
-   * @param output writer to receive output.
    * @param event logging event to be formatted.
-   * @throws IOException if unable to write content.
   */
-  public void format(Writer output, LoggingEvent event)
-    throws IOException {
+  public String format(final LoggingEvent event) {
     buf.setLength(0);
 
     for (int i = 0; i < patternConverters.length; i++) {
@@ -552,8 +561,9 @@ public class PatternLayout extends Layout {
       patternFields[i].format(startField, buf);
     }
 
-    output.write(buf.toString());
+    String retval = buf.toString();
     buf.setLength(0);
+    return retval;
   }
 
   /**

@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-package org.apache.log4j.html;
+package org.apache.log4j;
 
-import org.apache.log4j.Layout;
 import org.apache.log4j.helpers.Transform;
 import org.apache.log4j.pattern.*;
 import org.apache.log4j.spi.LoggingEvent;
 
-import java.io.IOException;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -58,6 +55,31 @@ public class HTMLLayout extends Layout {
      */
   private static final String PATTERN_RULE_REGISTRY = "PATTERN_RULE_REGISTRY";
 
+    /**
+       A string constant used in naming the option for setting the the
+       location information flag.  Current value of this string
+       constant is <b>LocationInfo</b>.
+
+       <p>Note that all option keys are case sensitive.
+
+       @deprecated Options are now handled using the JavaBeans paradigm.
+       This constant is not longer needed and will be removed in the
+       <em>near</em> term.
+
+    */
+    public static final String LOCATION_INFO_OPTION = "LocationInfo";
+
+    /**
+       A string constant used in naming the option for setting the the
+       HTML document title.  Current value of this string
+       constant is <b>Title</b>.
+     @deprecated Options are now handled using the JavaBeans paradigm.
+     This constant is not longer needed and will be removed in the
+     <em>near</em> term.
+    */
+    public static final String TITLE_OPTION = "Title";
+
+
   private static final String TRACE_PREFIX = "<br>&nbsp;&nbsp;&nbsp;&nbsp;";
   protected final int BUF_SIZE = 256;
   protected final int MAX_CAPACITY = 1024;
@@ -66,6 +88,7 @@ public class HTMLLayout extends Layout {
   private FormattingInfo[] patternFields;
   private String timezone;
   private String title = "Log4J Log Messages";
+  private boolean locationInfo;
 
   private boolean internalCSS = false;
   private String url2ExternalCSS = "http://logging.apache.org/log4j/docs/css/eventTable-1.0.css";
@@ -93,6 +116,31 @@ public class HTMLLayout extends Layout {
     this.pattern = pattern;
     activateOptions();
   }
+
+    /**
+       The <b>LocationInfo</b> option takes a boolean value. By
+       default, it is set to false which means there will be no location
+       information output by this layout. If the the option is set to
+       true, then the file name and line number of the statement
+       at the origin of the log statement will be output.
+
+       <p>If you are embedding this layout within an {@link
+       org.apache.log4j.net.SMTPAppender} then make sure to set the
+       <b>LocationInfo</b> option of that appender as well.
+     */
+    public
+    void setLocationInfo(boolean flag) {
+      locationInfo = flag;
+    }
+
+    /**
+       Returns the current value of the <b>LocationInfo</b> option.
+     */
+    public
+    boolean getLocationInfo() {
+      return locationInfo;
+    }
+
 
   /**
    * Set the <b>ConversionPattern </b> option. This is the string which
@@ -215,18 +263,18 @@ public class HTMLLayout extends Layout {
     return "text/html";
   }
 
-  void appendThrowableAsHTML(String[] s, Writer sbuf) throws IOException {
+  void appendThrowableAsHTML(final String[] s, final StringBuffer sbuf) {
     if (s != null) {
       int len = s.length;
       if (len == 0) {
         return;
       }
-      Transform.escapeTags(s[0], sbuf);
-      sbuf.write(Layout.LINE_SEP);
+      sbuf.append(Transform.escapeTags(s[0]));
+      sbuf.append(Layout.LINE_SEP);
       for (int i = 1; i < len; i++) {
-        sbuf.write(TRACE_PREFIX);
-        Transform.escapeTags(s[i], sbuf);
-        sbuf.write(Layout.LINE_SEP);
+        sbuf.append(TRACE_PREFIX);
+        sbuf.append(Transform.escapeTags(s[i]));
+        sbuf.append(Layout.LINE_SEP);
       }
     }
   }
@@ -304,10 +352,9 @@ public class HTMLLayout extends Layout {
   }
 
   /**
-   * @see org.apache.log4j.Layout#format(java.io.Writer, org.apache.log4j.spi.LoggingEvent)
+   * @{inheritDoc}
    */
-  public void format(Writer output, LoggingEvent event)
-    throws IOException {
+  public String format(LoggingEvent event) {
     
     boolean odd = true;
     if(((counter++) & 1) == 0) {
@@ -340,17 +387,18 @@ public class HTMLLayout extends Layout {
     }
     buf.append("</tr>");
     buf.append(Layout.LINE_SEP);
-    output.write(buf.toString());
 
     // if the pattern chain handles throwables then no need to do it again here.
     if(!chainHandlesThrowable) {
       String[] s = event.getThrowableStrRep();
       if (s != null) {
-        output.write("<tr><td class=\"exception\" colspan=\"6\">");
-        appendThrowableAsHTML(s, output);
-        output.write("</td></tr>" + Layout.LINE_SEP);
+        buf.append("<tr><td class=\"exception\" colspan=\"6\">");
+        appendThrowableAsHTML(s, buf);
+        buf.append("</td></tr>");
+        buf.append(Layout.LINE_SEP);
       }
     }
+    return buf.toString();
   }
   
   /**

@@ -38,11 +38,6 @@ public abstract class Layout extends ComponentBase implements OptionHandler {
   public static final String LINE_SEP = System.getProperty("line.separator");
   public static final int LINE_SEP_LEN = LINE_SEP.length();
   
-  
-  
-  
-  public CharArrayWriter charArrayWriter = new CharArrayWriter(1024);
-
   String header;
   String footer;
 
@@ -51,18 +46,7 @@ public abstract class Layout extends ComponentBase implements OptionHandler {
   /**
    * Implement this method to create your own layout format.
    * */
-  public String format(LoggingEvent event) {
-	  charArrayWriter.reset();
-	  try {
-  	  format(charArrayWriter, event);
-	  } catch(IOException ie) {
-	  	// There cannot be an IoException while writing to a CharArrayWriter
-	  	getLogger().error("Unexpected IOException while writing to CharArrayWriter", ie);
-	  }
-  	return charArrayWriter.toString();
-  }
-
-  public abstract void format(Writer output, LoggingEvent event) throws IOException; 
+  public abstract String format(LoggingEvent event);
 
   /**
      Returns the content type output by this layout. The base class
