@@ -352,7 +352,7 @@ public class HTMLLayout extends Layout {
   }
 
   /**
-   * @{inheritDoc}
+   * {@inheritDoc}
    */
   public String format(LoggingEvent event) {
     
