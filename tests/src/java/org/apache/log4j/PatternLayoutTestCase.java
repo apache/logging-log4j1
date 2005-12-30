@@ -48,18 +48,18 @@ public class PatternLayoutTestCase extends TestCase {
   static String PAT5 =
     "\\[main]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* : Message \\d{1,2}";
   static String PAT6 =
-    "\\[main]\\ (DEBUG|INFO |WARN |ERROR|FATAL) org.apache.log4j.PatternLayoutTest.common\\(PatternLayoutTest.java:\\d{1,4}\\): Message \\d{1,2}";
+    "\\[main]\\ (DEBUG|INFO |WARN |ERROR|FATAL) org.apache.log4j.PatternLayoutTestCase.common\\(PatternLayoutTestCase.java:\\d{1,4}\\): Message \\d{1,2}";
   static String PAT11a =
     "^(DEBUG|INFO |WARN |ERROR|FATAL) \\[main]\\ log4j.PatternLayoutTest: Message \\d{1,2}";
   static String PAT11b =
     "^(DEBUG|INFO |WARN |ERROR|FATAL) \\[main]\\ root: Message \\d{1,2}";
   static String PAT12 =
     "^\\[main]\\ (DEBUG|INFO |WARN |ERROR|FATAL) "
-    + "org.apache.log4j.PatternLayoutTest.common\\(PatternLayoutTest.java:\\d{3}\\): "
+    + "org.apache.log4j.PatternLayoutTestCase.common\\(PatternLayoutTestCase.java:\\d{3}\\): "
     + "Message \\d{1,2}";
   static String PAT13 =
     "^\\[main]\\ (DEBUG|INFO |WARN |ERROR|FATAL) "
-    + "apache.log4j.PatternLayoutTest.common\\(PatternLayoutTest.java:\\d{3}\\): "
+    + "apache.log4j.PatternLayoutTestCase.common\\(PatternLayoutTestCase.java:\\d{3}\\): "
     + "Message \\d{1,2}";
   static String PAT14 =
     "^(DEBUG| INFO| WARN|ERROR|FATAL)\\ \\d{1,2}\\ *- Message \\d{1,2}";
