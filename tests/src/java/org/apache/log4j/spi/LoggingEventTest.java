@@ -24,6 +24,8 @@ import org.apache.log4j.MDC;
 import org.apache.log4j.NDC;
 import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.util.SerializationTestHelper;
+import org.apache.log4j.Priority;
+import org.apache.log4j.Category;
 
 
 /**
@@ -182,4 +184,35 @@ public class LoggingEventTest extends TestCase {
     assertEquals("Hello, world.", event.getMessage());
     assertEquals(Level.INFO, event.getLevel());
   }
+
+    /**
+     * Tests LoggingEvent.fqnOfCategoryClass.
+     */
+  public void testFQNOfCategoryClass() {
+      Category root = Logger.getRootLogger();
+      Priority info = Level.INFO;
+      String catName = Logger.class.toString();
+      LoggingEvent event =
+        new LoggingEvent(
+          catName, root, info, "Hello, world.", null);
+      assertEquals(catName, event.fqnOfCategoryClass);
+  }
+
+    /**
+     * Tests LoggingEvent.level.
+     * @deprecated
+     */
+  public void testLevel() {
+      Category root = Logger.getRootLogger();
+      Priority info = Level.INFO;
+      String catName = Logger.class.toString();
+      LoggingEvent event =
+        new LoggingEvent(
+          catName, root, 0L,  info, "Hello, world.", null);
+      Priority error = Level.ERROR;
+      event.level = error;
+      assertEquals(Level.ERROR, event.level);
+  }
+
+
 }
