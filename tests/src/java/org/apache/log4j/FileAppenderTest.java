@@ -15,7 +15,10 @@
  */
 
 package org.apache.log4j;
+
 import java.io.File;
+
+import java.lang.reflect.Method;
 
 
 /**
@@ -34,6 +37,7 @@ public class FileAppenderTest extends AbstractAppenderTest {
     FileAppender wa = new FileAppender();
     wa.setFile("output/temp");
     wa.setLayout(new DummyLayout());
+
     return wa;
   }
 
@@ -53,16 +57,48 @@ public class FileAppenderTest extends AbstractAppenderTest {
    *
    */
   public void testDirectoryCreation() {
-      File newFile = new File("output/newdir/temp.log");
-      newFile.delete();
-      File newDir = new File("output/newdir");
-      newDir.delete();
+    File newFile = new File("output/newdir/temp.log");
+    newFile.delete();
 
-      FileAppender wa = new FileAppender();
-      wa.setFile("output/newdir/temp.log");
-      wa.setLayout(new DummyLayout());
-      wa.activateOptions();
+    File newDir = new File("output/newdir");
+    newDir.delete();
 
-      assertTrue(new File("output/newdir/temp.log").exists());
+    FileAppender wa = new FileAppender();
+    wa.setFile("output/newdir/temp.log");
+    wa.setLayout(new DummyLayout());
+    wa.activateOptions();
+
+    assertTrue(new File("output/newdir/temp.log").exists());
+  }
+
+  /**
+   * Tests that the return type of getThreshold is Priority.
+   * @throws Exception
+   */
+  public void testGetThresholdReturnType() throws Exception {
+    Method method = FileAppender.class.getMethod("getThreshold", null);
+    assertTrue(method.getReturnType() == Priority.class);
+  }
+
+  /**
+   * Tests getThreshold and setThreshold.
+   */
+  public void testgetSetThreshold() {
+    FileAppender appender = new FileAppender();
+    Priority debug = Level.DEBUG;
+    Priority all = Level.ALL;
+    assertNull(appender.getThreshold());
+    appender.setThreshold(debug);
+    assertTrue(appender.getThreshold() == debug);
+  }
+
+  /**
+   * Tests isAsSevereAsThreshold.
+   * @deprecated
+   */
+  public void testIsAsSevereAsThreshold() {
+    FileAppender appender = new FileAppender();
+    Priority debug = Level.DEBUG;
+    assertTrue(appender.isAsSevereAsThreshold(debug));
   }
 }

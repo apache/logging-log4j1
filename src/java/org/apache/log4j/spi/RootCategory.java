@@ -61,4 +61,11 @@ public final class RootCategory extends Logger {
     }
   }
 
+    final
+    public
+    void setPriority(Level level) {
+      setLevel(level);
+    }
+    
+
 }

@@ -17,7 +17,6 @@
 package org.apache.log4j.spi;
 
 import junit.framework.TestCase;
-
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
@@ -54,7 +53,7 @@ public class LoggingEventTest extends TestCase {
         root.getClass().getName(), root, Level.INFO, "Hello, world.", null);
     event.prepareForDeferredProcessing();
 
-    int[] skip = new int[] { 358, 359, 360, 361, 362 };
+    int[] skip = new int[] { 354, 355, 356, 357, 358, 359, 360, 361, 362 };
     SerializationTestHelper.assertSerializationEquals(
       "witness/serialization/simple.bin", event, skip, Integer.MAX_VALUE);
   }
@@ -73,7 +72,7 @@ public class LoggingEventTest extends TestCase {
         root.getClass().getName(), root, Level.INFO, "Hello, world.", ex);
     event.prepareForDeferredProcessing();
 
-    int[] skip = new int[] { 358, 359, 360, 361, 362, 600, 734, 735, 1511 };
+    int[] skip = new int[] { 354, 355, 356, 357, 358, 359, 360, 361, 362, 600, 734, 735, 1511 };
     SerializationTestHelper.assertSerializationEquals(
       "witness/serialization/exception.bin", event, skip, 1089);
   }
@@ -182,4 +181,35 @@ public class LoggingEventTest extends TestCase {
     assertEquals("Hello, world.", event.getMessage());
     assertEquals(Level.INFO, event.getLevel());
   }
+
+    /**
+     * Tests LoggingEvent.fqnOfCategoryClass.
+     */
+  public void testFQNOfCategoryClass() {
+      org.apache.log4j.Category root = Logger.getRootLogger();
+      org.apache.log4j.Priority info = Level.INFO;
+      String catName = Logger.class.toString();
+      LoggingEvent event =
+        new LoggingEvent(
+          catName, root, info, "Hello, world.", null);
+      assertEquals(catName, event.fqnOfCategoryClass);
+  }
+
+    /**
+     * Tests LoggingEvent.level.
+     * @deprecated
+     */
+  public void testLevel() {
+      org.apache.log4j.Category root = Logger.getRootLogger();
+      org.apache.log4j.Priority info = Level.INFO;
+      String catName = Logger.class.toString();
+      LoggingEvent event =
+        new LoggingEvent(
+          catName, root, 0L,  info, "Hello, world.", null);
+      org.apache.log4j.Priority error = Level.ERROR;
+      event.level = error;
+      assertEquals(Level.ERROR, event.level);
+  }
+
+
 }

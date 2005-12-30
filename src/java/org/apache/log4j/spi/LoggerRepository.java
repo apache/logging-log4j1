@@ -104,7 +104,7 @@ public interface LoggerRepository {
       parameter instead of a <code>Level</code>. */
   public void setThreshold(String val);
 
-  public void emitNoAppenderWarning(Logger logger);
+  public void emitNoAppenderWarning(Category logger);
   
   /**
      Get the repository-wide threshold. See {@link
@@ -148,9 +148,8 @@ public interface LoggerRepository {
     Requests that a appender added event be sent to any registered
     {@link LoggerEventListener}.
     @param logger The logger to which the appender was added.
-    @param appender The appender added to the logger.
-    @since 1.3*/
-  public abstract void fireAddAppenderEvent(Logger logger, Appender appender);
+    @param appender The appender added to the logger.*/
+  public abstract void fireAddAppenderEvent(Category logger, Appender appender);
 
   /**
     Requests that a appender removed event be sent to any registered
@@ -159,7 +158,7 @@ public interface LoggerRepository {
     @param appender The appender removed from the logger.
     @since 1.3*/
   public abstract void fireRemoveAppenderEvent(
-    Logger logger, Appender appender);
+    Category logger, Appender appender);
 
   /**
     Requests that a level changed event be sent to any registered
