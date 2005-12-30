@@ -47,7 +47,7 @@ public abstract class AppenderSkeleton extends ComponentBase implements Appender
   /**
    * There is no level threshold filtering by default.
    */
-  protected Level threshold;
+  protected Priority threshold;
 
   /**
    * It is assumed and enforced that errorHandler is never null.
@@ -211,7 +211,7 @@ public abstract class AppenderSkeleton extends ComponentBase implements Appender
    *
    * @since 1.1
    */
-  public Level getThreshold() {
+  public Priority getThreshold() {
     return threshold;
   }
 
@@ -219,10 +219,20 @@ public abstract class AppenderSkeleton extends ComponentBase implements Appender
    * Check whether the message level is below the appender's threshold. If
    * there is no threshold set, then the return value is always
    * <code>true</code>.
+   * @deprecated
    */
-  public boolean isAsSevereAsThreshold(Level level) {
+  public boolean isAsSevereAsThreshold(final Priority level) {
     return ((threshold == null) || level.isGreaterOrEqual(threshold));
   }
+
+    /**
+     * Check whether the message level is below the appender's threshold. If
+     * there is no threshold set, then the return value is always
+     * <code>true</code>.
+     */
+    public boolean isAsSevereAsThreshold(final Level level) {
+      return ((threshold == null) || level.isGreaterOrEqual(threshold));
+    }
 
   /**
    * This method performs threshold checks and invokes filters before
@@ -334,7 +344,8 @@ FILTER_LOOP:
    *
    * @since 0.8.3
    */
-  public void setThreshold(Level threshold) {
+  public void setThreshold(final Priority threshold) {
     this.threshold = threshold;
   }
+
 }

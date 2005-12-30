@@ -583,7 +583,7 @@ public class Category implements ULogger, AppenderAttachable {
    * further checks.
    */
   protected void forcedLog(
-    String fqcn, Level level, Object message, Throwable t) {
+    String fqcn, Priority level, Object message, Throwable t) {
     callAppenders(new LoggingEvent(fqcn, (Logger) this, level, message, t));
   }
 
@@ -657,7 +657,7 @@ public class Category implements ULogger, AppenderAttachable {
   /**
    * @deprecated Please use the the {@link #getEffectiveLevel} method instead.
    */
-  public Level getChainedPriority() {
+  public Priority getChainedPriority() {
     for (Category c = this; c != null; c = c.parent) {
       if (c.level != null) {
         return c.level;
@@ -1060,7 +1060,7 @@ public class Category implements ULogger, AppenderAttachable {
    * @see #setResourceBundle
    * @since 0.8.4
    */
-  public void l7dlog(Level level, String key, Throwable t) {
+  public void l7dlog(final Priority level, String key, Throwable t) {
     if (repository.isDisabled(level.level)) {
       return;
     }
@@ -1088,7 +1088,7 @@ public class Category implements ULogger, AppenderAttachable {
    * @since 0.8.4
    */
   public void l7dlog(
-    Level level, String key, Object[] params, Throwable t) {
+    Priority level, String key, Object[] params, Throwable t) {
     if (repository.isDisabled(level.level)) {
       return;
     }
@@ -1268,18 +1268,18 @@ public class Category implements ULogger, AppenderAttachable {
     this.level = level;
   }
 
-//  /**
-//   * Set the level of this Category.
-//   *
-//   * <p>
-//   * Null values are admitted.
-//   * </p>
-//   *
-//   * @deprecated Please use {@link #setLevel} instead.
-//   */
-//  public void setPriority(Priority priority) {
-//    this.level = (Level) priority;
-//  }
+  /**
+   * Set the level of this Category.
+   *
+   * <p>
+   * Null values are admitted.
+   * </p>
+   *
+   * @deprecated Please use {@link #setLevel} instead.
+   */
+  public void setPriority(Priority priority) {
+    this.level = (Level) priority;
+  }
 
   /**
    * Set the resource bundle to be used with localized logging methods {@link

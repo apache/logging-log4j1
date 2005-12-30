@@ -25,6 +25,8 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.log4j.Level;
+import org.apache.log4j.Priority;
+import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 import org.apache.log4j.NDC;
@@ -88,7 +90,7 @@ public class LoggingEvent
    * 
    * <p>Note that the getLocationInfo() method relies on this fact.
    */
-  transient String fqnOfLoggerClass;
+  public transient String fqnOfCategoryClass;
 
   /**
    * The category of the logging event. This field is not serialized for
@@ -98,11 +100,8 @@ public class LoggingEvent
    * It is set by the LoggingEvent constructor or set by a remote entity after
    * deserialization.
    * </p>
-   *
-   * @deprecated This field will be marked as private or be completely removed
-   *             in future releases. Please do not use it.
    */
-  private transient Logger logger;
+  private transient Category logger;
 
   /**
    * The LoggerRepository in which this event was created.
@@ -131,7 +130,7 @@ public class LoggingEvent
    * </p>
    *
    */
-  private transient Level level;
+  public transient Priority level;
 
   /**
    * The nested diagnostic context (NDC) of logging event.
@@ -228,8 +227,8 @@ public class LoggingEvent
    * @param message The message of this event.
    * @param throwable The throwable of this event.
    */
-  public LoggingEvent(String fqnOfLoggerClass, Logger logger, Level level, Object message, Throwable throwable) {
-    this.fqnOfLoggerClass = fqnOfLoggerClass;
+  public LoggingEvent(String fqnOfLoggerClass, Category logger, Priority level, Object message, Throwable throwable) {
+    this.fqnOfCategoryClass = fqnOfLoggerClass;
     this.logger = logger;
     this.categoryName = logger.getName();
     this.level = level;
@@ -264,9 +263,9 @@ public class LoggingEvent
    * @deprecated Please use the no argument constructor and the setter methods
    * instead.
    */
-  public LoggingEvent(String fqnOfCategoryClass, Logger logger, long timeStamp, Level level, Object message,
+  public LoggingEvent(String fqnOfCategoryClass, Category logger, long timeStamp, Priority level, Object message,
     Throwable throwable) {
-    this.fqnOfLoggerClass = fqnOfCategoryClass;
+    this.fqnOfCategoryClass = fqnOfCategoryClass;
     this.logger = logger;
     this.categoryName = logger.getName();
     this.level = level;
@@ -359,8 +358,8 @@ public class LoggingEvent
   public LocationInfo getLocationInformation() {
     // we rely on the fact that fqnOfLoggerClass does not survive
     // serialization
-    if (locationInfo == null && fqnOfLoggerClass != null) {
-      locationInfo = new LocationInfo(new Throwable(), fqnOfLoggerClass);
+    if (locationInfo == null && fqnOfCategoryClass != null) {
+      locationInfo = new LocationInfo(new Throwable(), fqnOfCategoryClass);
     }
     return locationInfo;
   }
@@ -408,7 +407,10 @@ public class LoggingEvent
    * @since 1.3
    **/
   public Logger getLogger() {
-    return logger;
+    if (logger instanceof Logger) {
+        return (Logger) logger;
+    }
+    return null;
   }
 
 
@@ -901,7 +903,7 @@ public class LoggingEvent
    * @since 1.3
    */
   public String getFQNOfLoggerClass() {
-    return fqnOfLoggerClass;
+    return fqnOfCategoryClass;
   }
 
 
@@ -912,6 +914,6 @@ public class LoggingEvent
    * @param fqnOfLoggerClass
    */
   public void setFQNOfLoggerClass(String fqnOfLoggerClass) {
-    this.fqnOfLoggerClass = fqnOfLoggerClass;
+    this.fqnOfCategoryClass = fqnOfLoggerClass;
   }
 }

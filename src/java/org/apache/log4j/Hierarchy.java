@@ -207,7 +207,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
     ht.clear();
   }
 
-  public void emitNoAppenderWarning(Logger cat) {
+  public void emitNoAppenderWarning(Category cat) {
     // No appenders in hierarchy, warn user only once.
     if (!this.emittedNoAppenderWarning) {
       //LogLog.warn(
@@ -316,21 +316,48 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
    }
    return pluginRegistry;
   }
-  
-  /**
-    Requests that a appender added event be sent to any registered
-    {@link LoggerEventListener}.
-    @param logger The logger to which the appender was added.
-    @param appender The appender added to the logger.
-    @since 1.3*/
-  public void fireAddAppenderEvent(Logger logger, Appender appender) {
-    ArrayList list = copyListenerList(loggerEventListeners);
-    int size = list.size();
 
-    for (int i = 0; i < size; i++) {
-      ((LoggerEventListener) list.get(i)).appenderAddedEvent(logger, appender);
+
+    /**
+      Requests that a appender added event be sent to any registered
+      {@link LoggerEventListener}.
+      @param logger The logger to which the appender was added.
+      @param appender The appender added to the logger.
+     */
+    public void fireAddAppenderEvent(final Category logger, Appender appender) {
+        if (logger instanceof Logger) {
+            fireAddAppenderEvent((Logger) logger, appender);
+        }
     }
-  }
+
+    /**
+      Requests that a appender added event be sent to any registered
+      {@link LoggerEventListener}.
+      @param logger The logger to which the appender was added.
+      @param appender The appender added to the logger.
+      @since 1.3
+     */
+    public void fireAddAppenderEvent(final Logger logger, Appender appender) {
+        ArrayList list = copyListenerList(loggerEventListeners);
+        int size = list.size();
+
+        for (int i = 0; i < size; i++) {
+          ((LoggerEventListener) list.get(i)).appenderAddedEvent(logger, appender);
+        }
+    }
+
+
+    /**
+      Requests that a appender removed event be sent to any registered
+      {@link LoggerEventListener}.
+      @param logger The logger from which the appender was removed.
+      @param appender The appender removed from the logger.
+      */
+    public void fireRemoveAppenderEvent(Category logger, Appender appender) {
+       if (logger instanceof Logger) {
+           fireRemoveAppenderEvent((Logger) logger, appender);
+       }
+    }
 
   /**
     Requests that a appender removed event be sent to any registered

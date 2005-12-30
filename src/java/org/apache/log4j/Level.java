@@ -35,37 +35,9 @@ import java.io.Serializable;
 
    @author Ceki G&uuml;lc&uuml;
    @author Yoav Shapira
+   @author Curt Arnold
  */
-public class Level implements Serializable {
-  /**
-   * OFF level integer value.
-   */
-  public static final int OFF_INT = Integer.MAX_VALUE;
-
-  /**
-   * FATAL level integer value.
-   */
-  public static final int FATAL_INT = 50000;
-
-  /**
-   * ERROR level integer value.
-   */
-  public static final int ERROR_INT = 40000;
-
-  /**
-   * WARN level integer value.
-   */
-  public static final int WARN_INT = 30000;
-
-  /**
-   * INFO level integer value.
-   */
-  public static final int INFO_INT = 20000;
-
-  /**
-   * DEBUG level integer value.
-   */
-  public static final int DEBUG_INT = 10000;
+public class Level extends Priority implements Serializable {
 
   /**
    * TRACE level integer value.
@@ -73,10 +45,6 @@ public class Level implements Serializable {
    */
   public static final int TRACE_INT = 5000;
 
-  /**
-   * ALL level integer value.
-   */
-  public static final int ALL_INT = Integer.MIN_VALUE;
 
   /**
    * The <code>OFF</code> has the highest possible rank and is
@@ -128,20 +96,6 @@ public class Level implements Serializable {
    */
   public static final Level ALL = new Level(ALL_INT, "ALL", 7);
 
-  /**
-   * The integer value of this Level instance.
-   */
-  transient int level;
-
-  /**
-   * The label of this Level instance.
-   */
-  transient String levelStr;
-
-  /**
-   * The UNIX SysLog equivalent value of this Level instance.
-   */
-  transient int syslogEquivalent;
 
   /**
    * Serialization version id.
@@ -157,9 +111,7 @@ public class Level implements Serializable {
    * @param syslogEquivalent The UNIX SystLog level equivalent
    */
   protected Level(int level, String levelStr, int syslogEquivalent) {
-    this.level = level;
-    this.levelStr = levelStr;
-    this.syslogEquivalent = syslogEquivalent;
+    super(level, levelStr, syslogEquivalent);
   }
 
   /**
@@ -212,59 +164,8 @@ public class Level implements Serializable {
     return level;
   }
 
-  /**
-   * Return the syslog equivalent of this priority as an integer.
-   *
-   * @return The UNIX SysLog equivalent
-   */
-  public final int getSyslogEquivalent() {
-    return syslogEquivalent;
-  }
 
-  /**
-   *  Returns <code>true</code> if this level has a higher or equal
-   *  level than the level passed as argument, <code>false</code>
-   *  otherwise.
-   *
-   *  <p>You should think twice before overriding the default
-   *  implementation of <code>isGreaterOrEqual</code> method.</p>
-   * @param r other level, may not be null.
-   * @return true if this level is equal or higher to other level.
-   */
-  public boolean isGreaterOrEqual(Level r) {
-    return level >= r.level;
-  }
 
-  /**
-   * Return all possible priorities as an array of Level objects in
-   * descending order.
-   *
-   * @return Level[] All the Levels
-   * @deprecated This method will be removed with no replacement.
-   */
-  public static Level[] getAllPossiblePriorities() {
-    return new Level[] {
-      Level.FATAL, Level.ERROR, Level.WARN, Level.INFO, Level.DEBUG,
-      Level.TRACE
-    };
-  }
-
-  /**
-   * Returns the string representation of this Level.
-   *
-   * @return String The Level name
-   */
-  public final String toString() {
-    return levelStr;
-  }
-
-  /**
-   * Returns the integer representation of this level.
-   * @return integer representation of level.
-   */
-  public final int toInt() {
-    return level;
-  }
 
   /**
    * Convert an integer passed as argument to a level. If the
@@ -359,9 +260,6 @@ public class Level implements Serializable {
     level = s.readInt();
     syslogEquivalent = s.readInt();
     levelStr = s.readUTF();
-    if (levelStr == null) {
-        levelStr = "";
-    }
   }
 
   /**
@@ -373,27 +271,20 @@ public class Level implements Serializable {
       s.defaultWriteObject();
       s.writeInt(level);
       s.writeInt(syslogEquivalent);
-      s.writeUTF(levelStr);
+      if (levelStr == null) {
+          s.writeUTF("");
+      } else {
+          s.writeUTF(levelStr);
+      }
   }
 
   /**
-   * Resolved deserialized level to one of the stock instances.
-   * May be overriden in classes derived from Level.
+   * Resolved deserialized level to one of the stock instances
+   * if possible.
    * @return resolved object.
    * @throws ObjectStreamException if exception during resolution.
    */
   private Object readResolve() throws ObjectStreamException {
-      //
-      //  if the deserizalized object is exactly an instance of Level
-      //
-      if (getClass() == Level.class) {
-          return toLevel(level);
-      }
-      //
-      //   extension of Level can't substitute stock item
-      //
-      return this;
+      return toLevel(level, this);
   }
 }
-
-// End of class: Level.java

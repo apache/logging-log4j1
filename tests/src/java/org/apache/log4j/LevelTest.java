@@ -90,25 +90,148 @@ public class LevelTest extends TestCase {
     }
   }
 
+    /**
+     * Tests Level.TRACE_INT.
+     */
     public void testTraceInt() {
         assertEquals(5000, Level.TRACE_INT);
     }
 
+    /**
+     * Tests Level.TRACE.
+     */
     public void testTrace() {
         assertEquals("TRACE", Level.TRACE.toString());
         assertEquals(5000, Level.TRACE.toInt());
         assertEquals(7, Level.TRACE.getSyslogEquivalent());
     }
 
+    /**
+     * Tests Level.toLevel(Level.TRACE_INT).
+     */
     public void testIntToTrace() {
         Level trace = Level.toLevel(5000);
         assertEquals("TRACE", trace.toString());
     }
 
+    /**
+     * Tests Level.toLevel("TRACE");
+     */
     public void testStringToTrace() {
           Level trace = Level.toLevel("TRACE");
           assertEquals("TRACE", trace.toString());
     }
+
+    /**
+     * Tests that Level extends Priority.
+     */
+  public void testLevelExtendsPriority() {
+      assertTrue(Priority.class.isAssignableFrom(Level.class));
+  }
+
+    /**
+     * Tests Level.OFF.
+     */
+  public void testOFF() {
+    assertTrue(Level.OFF instanceof Level);
+  }
+
+    /**
+     * Tests Level.FATAL.
+     */
+    public void testFATAL() {
+      assertTrue(Level.FATAL instanceof Level);
+    }
+
+    /**
+     * Tests Level.ERROR.
+     */
+    public void testERROR() {
+      assertTrue(Level.ERROR instanceof Level);
+    }
+
+    /**
+     * Tests Level.WARN.
+     */
+    public void testWARN() {
+      assertTrue(Level.WARN instanceof Level);
+    }
+
+    /**
+     * Tests Level.INFO.
+     */
+    public void testINFO() {
+      assertTrue(Level.INFO instanceof Level);
+    }
+
+    /**
+     * Tests Level.DEBUG.
+     */
+    public void testDEBUG() {
+      assertTrue(Level.DEBUG instanceof Level);
+    }
+
+    /**
+     * Tests Level.TRACE.
+     */
+    public void testTRACE() {
+      assertTrue(Level.TRACE instanceof Level);
+    }
+
+    /**
+     * Tests Level.ALL.
+     */
+    public void testALL() {
+      assertTrue(Level.ALL instanceof Level);
+    }
+
+    /**
+     * Tests Level.serialVersionUID.
+     */
+    public void testSerialVersionUID() {
+      assertEquals(3491141966387921974L, Level.serialVersionUID);
+    }
+
+    /**
+     * Tests Level.toLevel(Level.All_INT).
+     */
+  public void testIntToAll() {
+      Level level = Level.toLevel(Level.ALL_INT);
+      assertEquals("ALL", level.toString());
+  }
+
+    /**
+     * Tests Level.toLevel(Level.FATAL_INT).
+     */
+  public void testIntToFatal() {
+      Level level = Level.toLevel(Level.FATAL_INT);
+      assertEquals("FATAL", level.toString());
+  }
+
+
+    /**
+     * Tests Level.toLevel(Level.OFF_INT).
+     */
+  public void testIntToOff() {
+      Level level = Level.toLevel(Level.OFF_INT);
+      assertEquals("OFF", level.toString());
+  }
+
+    /**
+     * Tests Level.toLevel(17, Level.FATAL).
+     */
+  public void testToLevelUnrecognizedInt() {
+      Level level = Level.toLevel(17, Level.FATAL);
+      assertEquals("FATAL", level.toString());
+  }
+
+    /**
+     * Tests Level.toLevel(null, Level.FATAL).
+     */
+  public void testToLevelNull() {
+      Level level = Level.toLevel(null, Level.FATAL);
+      assertEquals("FATAL", level.toString());
+  }
 
 
 }

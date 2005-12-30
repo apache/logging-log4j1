@@ -40,6 +40,8 @@ public class CoreTestSuite {
         s.addTestSuite(org.apache.log4j.rolling.helper.FileNamePatternTestCase.class);
         s.addTestSuite(org.apache.log4j.pattern.FormattingInfoTest.class);
         s.addTestSuite(org.apache.log4j.LevelTest.class);
+        s.addTestSuite(org.apache.log4j.PriorityTest.class);
+        s.addTestSuite(org.apache.log4j.CategoryTest.class);
         s.addTestSuite(org.apache.log4j.LogManagerTest.class);
         s.addTestSuite(org.apache.log4j.helpers.LogLogTest.class);
         s.addTestSuite(org.apache.log4j.LayoutTest.class);
@@ -48,6 +50,7 @@ public class CoreTestSuite {
         s.addTestSuite(org.apache.log4j.xml.XMLLayoutTest.class);
         s.addTestSuite(org.apache.log4j.HTMLLayoutTest.class);
         s.addTestSuite(org.apache.log4j.PatternLayoutTest.class);
+        s.addTestSuite(org.apache.log4j.spi.LoggingEventTest.class);
         return s;
     }
 }
