@@ -31,7 +31,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 import org.apache.log4j.NDC;
 import org.apache.log4j.helpers.Loader;
-import org.apache.log4j.spi.location.LocationInfo;
+import org.apache.log4j.spi.LocationInfo;
 
 
 // Contributors:   Nelson Minar <nelson@monkey.org>
@@ -56,7 +56,7 @@ import org.apache.log4j.spi.location.LocationInfo;
  * <p>Moreover, in the absence of certain fields, receivers must set the
  * values of null fields to a default non-null value. For example, in the 
  * absence of the locationInfo data, the locationInfo field should be
- * set to {@link org.apache.log4j.spi.location.LocationInfo#NA_LOCATION_INFO 
+ * set to {@link org.apache.log4j.spi.LocationInfo#NA_LOCATION_INFO
  * LocationInfo.NA_LOCATION_INFO}.
  * 
  * 

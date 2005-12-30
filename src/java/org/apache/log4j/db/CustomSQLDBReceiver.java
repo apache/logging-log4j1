@@ -31,7 +31,7 @@ import org.apache.log4j.scheduler.Job;
 import org.apache.log4j.scheduler.Scheduler;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ThrowableInformation;
-import org.apache.log4j.spi.location.LocationInfo;
+import org.apache.log4j.spi.LocationInfo;
 
 /**
  * Converts log data stored in a database into LoggingEvents.

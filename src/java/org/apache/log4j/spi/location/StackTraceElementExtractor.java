@@ -15,6 +15,7 @@
  */
 
 package org.apache.log4j.spi.location;
+import org.apache.log4j.spi.LocationInfo;
 
 import java.lang.reflect.Method;
 
@@ -57,7 +58,7 @@ public class StackTraceElementExtractor {
     } 
   }
 
-  static void extract(LocationInfo li, Throwable t, String fqnOfInvokingClass) {
+  static public void extract(LocationInfo li, Throwable t, String fqnOfInvokingClass) {
     if (t == null) {
       return;
     }

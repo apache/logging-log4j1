@@ -24,7 +24,7 @@ import org.apache.log4j.spi.ComponentBase;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ThrowableInformation;
-import org.apache.log4j.spi.location.LocationInfo;
+import org.apache.log4j.spi.LocationInfo;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

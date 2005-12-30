@@ -18,7 +18,7 @@ package org.apache.log4j.pattern;
 
 import org.apache.log4j.ULogger;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.spi.location.LocationInfo;
+import org.apache.log4j.spi.LocationInfo;
 
 
 /**

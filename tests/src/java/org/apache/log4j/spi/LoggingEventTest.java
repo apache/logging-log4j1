@@ -21,7 +21,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 import org.apache.log4j.NDC;
-import org.apache.log4j.spi.location.LocationInfo;
+import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.util.SerializationTestHelper;
 
 
@@ -53,7 +53,7 @@ public class LoggingEventTest extends TestCase {
         root.getClass().getName(), root, Level.INFO, "Hello, world.", null);
     event.prepareForDeferredProcessing();
 
-    int[] skip = new int[] { 354, 355, 356, 357, 358, 359, 360, 361, 362 };
+    int[] skip = new int[] { 343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 362 };
     SerializationTestHelper.assertSerializationEquals(
       "witness/serialization/simple.bin", event, skip, Integer.MAX_VALUE);
   }
@@ -72,7 +72,7 @@ public class LoggingEventTest extends TestCase {
         root.getClass().getName(), root, Level.INFO, "Hello, world.", ex);
     event.prepareForDeferredProcessing();
 
-    int[] skip = new int[] { 354, 355, 356, 357, 358, 359, 360, 361, 362, 600, 734, 735, 1511 };
+    int[] skip = new int[] { 343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 362, 600, 734, 735, 1511 };
     SerializationTestHelper.assertSerializationEquals(
       "witness/serialization/exception.bin", event, skip, 1089);
   }
@@ -91,7 +91,7 @@ public class LoggingEventTest extends TestCase {
     LocationInfo info = event.getLocationInformation();
     event.prepareForDeferredProcessing();
 
-    int[] skip = new int[] { 354, 355, 356, 357, 358, 359, 360, 361, 362 };
+    int[] skip = new int[] { 343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 362 };
     SerializationTestHelper.assertSerializationEquals(
       "witness/serialization/location.bin", event, skip, Integer.MAX_VALUE);
   }
@@ -110,7 +110,7 @@ public class LoggingEventTest extends TestCase {
         root.getClass().getName(), root, Level.INFO, "Hello, world.", null);
     event.prepareForDeferredProcessing();
 
-    int[] skip = new int[] { 354, 355, 356, 357, 358, 359, 360, 361, 362 };
+    int[] skip = new int[] { 343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353,354, 355, 356, 357, 358, 359, 360, 361, 362 };
     SerializationTestHelper.assertSerializationEquals(
       "witness/serialization/ndc.bin", event, skip, Integer.MAX_VALUE);
   }
@@ -129,7 +129,7 @@ public class LoggingEventTest extends TestCase {
         root.getClass().getName(), root, Level.INFO, "Hello, world.", null);
     event.prepareForDeferredProcessing();
 
-    int[] skip = new int[] { 354, 355, 356, 357, 358, 359, 360, 361, 362 };
+    int[] skip = new int[] { 343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353,354, 355, 356, 357, 358, 359, 360, 361, 362 };
     SerializationTestHelper.assertSerializationEquals(
       "witness/serialization/mdc.bin", event, skip, Integer.MAX_VALUE);
   }
