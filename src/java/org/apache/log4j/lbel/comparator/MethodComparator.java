@@ -19,7 +19,7 @@ package org.apache.log4j.lbel.comparator;
 import org.apache.log4j.lbel.Operator;
 import org.apache.log4j.lbel.ScanError;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.spi.location.LocationInfo;
+import org.apache.log4j.spi.LocationInfo;
 
 
 /**

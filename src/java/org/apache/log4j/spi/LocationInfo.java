@@ -16,9 +16,10 @@
 
 
 // Contributors: Mathias Rupprecht <mmathias.rupprecht@fja.com>
-package org.apache.log4j.spi.location;
-
+package org.apache.log4j.spi;
 import org.apache.log4j.helpers.PlatformInfo;
+import org.apache.log4j.spi.location.LegacyExtractor;
+import org.apache.log4j.spi.location.StackTraceElementExtractor;
 
 
 /**
@@ -48,28 +49,28 @@ public class LocationInfo implements java.io.Serializable {
   /**
      Caller's line number.
   */
-  String lineNumber;
+  public String lineNumber;
 
   /**
      Caller's file name.
   */
-  String fileName;
+  public String fileName;
 
   /**
      Caller's fully qualified class name.
   */
-  String className;
+  public String className;
 
   /**
      Caller's method name.
   */
-  String methodName;
+  public String methodName;
 
   /**
      All available caller information, in the format
      <code>fully.qualified.classname.of.caller.methodName(Filename.java:line)</code>
     */
-  transient String fullInfo;
+  public transient String fullInfo;
 
   public LocationInfo(
     String fileName, String className, String methodName, String lineNumber) {

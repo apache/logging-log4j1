@@ -20,7 +20,7 @@ import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.db.dialect.SQLDialect;
 import org.apache.log4j.db.dialect.Util;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.spi.location.LocationInfo;
+import org.apache.log4j.spi.LocationInfo;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

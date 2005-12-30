@@ -22,6 +22,7 @@ import org.apache.log4j.helpers.PlatformInfo;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import org.apache.log4j.spi.LocationInfo;
 
 
 /**
@@ -40,7 +41,7 @@ public class LegacyExtractor {
   private LegacyExtractor() {
   }
 
-  static void extract(LocationInfo li, Throwable t, String fqnOfInvokingClass) {
+  static public void extract(LocationInfo li, Throwable t, String fqnOfInvokingClass) {
     // on AS400, package path separator in stack trace is not dot '.', 
     // but slash '/'
     if (PlatformInfo.isOnAS400()) {

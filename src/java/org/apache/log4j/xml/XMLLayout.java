@@ -19,7 +19,7 @@ package org.apache.log4j.xml;
 import org.apache.log4j.Layout;
 import org.apache.log4j.helpers.Transform;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.spi.location.LocationInfo;
+import org.apache.log4j.spi.LocationInfo;
 
 import java.io.IOException;
 import java.io.Writer;
