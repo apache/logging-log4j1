@@ -34,6 +34,8 @@ public class CoreTestSuite {
         TestSuite s = new TestSuite();
         s.addTestSuite(LoggingEventTest.class);
         s.addTestSuite(org.apache.log4j.LevelTest.class);
+        s.addTestSuite(org.apache.log4j.PriorityTest.class);
+        s.addTestSuite(org.apache.log4j.CategoryTest.class);
         s.addTestSuite(org.apache.log4j.FileAppenderTest.class);
         s.addTestSuite(org.apache.log4j.LogManagerTest.class);
         s.addTestSuite(org.apache.log4j.helpers.LogLogTest.class);
@@ -43,6 +45,7 @@ public class CoreTestSuite {
         s.addTestSuite(org.apache.log4j.xml.XMLLayoutTest.class);
         s.addTestSuite(org.apache.log4j.HTMLLayoutTest.class);
         s.addTestSuite(org.apache.log4j.PatternLayoutTest.class);
+        s.addTestSuite(org.apache.log4j.spi.LoggingEventTest.class);
         return s;
     }
 }
