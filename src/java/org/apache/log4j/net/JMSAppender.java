@@ -419,4 +419,13 @@ public class JMSAppender extends AppenderSkeleton {
   protected TopicPublisher  getTopicPublisher() {
     return topicPublisher;
   }
+
+    /**
+     * Gets whether appender requires a layout.
+     * @return false
+     */
+  public boolean requiresLayout() {
+      return false;
+  }
+
 }

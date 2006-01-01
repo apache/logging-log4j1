@@ -434,6 +434,15 @@ public class LoggerTest extends TestCase {
     public void append(LoggingEvent event) {
       counter++;
     }
+
+      /**
+       * Gets whether appender requires a layout.
+       * @return false
+       */
+    public boolean requiresLayout() {
+        return false;
+    }
+
   }
 }
 

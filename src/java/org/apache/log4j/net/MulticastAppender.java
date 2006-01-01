@@ -298,4 +298,13 @@ public class MulticastAppender extends AppenderSkeleton implements PortBased {
     // TODO handle active/inactive
     return true;
   }
+
+    /**
+     * Gets whether appender requires a layout.
+     * @return false
+     */
+  public boolean requiresLayout() {
+      return true;
+  }
+
 }
