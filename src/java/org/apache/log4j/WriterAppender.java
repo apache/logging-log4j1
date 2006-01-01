@@ -374,4 +374,13 @@ public class WriterAppender extends AppenderSkeleton {
       }
     }
   }
+
+    /**
+     * Gets whether appender requires a layout.
+     * @return false
+     */
+  public boolean requiresLayout() {
+      return true;
+  }
+
 }

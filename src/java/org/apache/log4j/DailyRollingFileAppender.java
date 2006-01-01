@@ -344,4 +344,13 @@ public final class DailyRollingFileAppender implements Appender, OptionHandler {
     ; //ignore
   }
 
+    /**
+     * Gets whether appender requires a layout.
+     * @return false
+     */
+  public boolean requiresLayout() {
+      return true;
+  }
+
+
 }

@@ -93,4 +93,12 @@ public final class ListAppender extends AppenderSkeleton {
       list.clear();
     }
   }
+
+    /**
+     * Gets whether appender requires a layout.
+     * @return false
+     */
+  public boolean requiresLayout() {
+      return false;
+  }
 }

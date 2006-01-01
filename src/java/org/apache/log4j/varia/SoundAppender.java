@@ -99,4 +99,13 @@ public final class SoundAppender extends AppenderSkeleton {
 	public void close() {
 		//nothing to do
 	}
+
+    /**
+     * Gets whether appender requires a layout.
+     * @return false
+     */
+  public boolean requiresLayout() {
+      return false;
+  }
+
 }

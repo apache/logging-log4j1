@@ -55,5 +55,13 @@ public class NullAppender extends AppenderSkeleton {
    * */
   protected void append(LoggingEvent event) {
   }
+    /**
+     * Gets whether appender requires a layout.
+     * @return false
+     */
+  public boolean requiresLayout() {
+      return false;
+  }
+
 
 }

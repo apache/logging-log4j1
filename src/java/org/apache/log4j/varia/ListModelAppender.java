@@ -69,4 +69,13 @@ public final class ListModelAppender extends AppenderSkeleton {
   public void clearModel() {
     model.clear();
   }
+
+    /**
+     * Gets whether appender requires a layout.
+     * @return false
+     */
+  public boolean requiresLayout() {
+      return false;
+  }
+
 }

@@ -331,4 +331,13 @@ public class DBAppender extends AppenderSkeleton {
   public void setLocationInfo(boolean locationInfo) {
     this.locationInfo = locationInfo;
   }
+
+    /**
+     * Gets whether appender requires a layout.
+     * @return false
+     */
+  public boolean requiresLayout() {
+      return false;
+  }
+    
 }
