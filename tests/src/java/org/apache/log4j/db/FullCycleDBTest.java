@@ -33,7 +33,7 @@ import org.apache.log4j.joran.JoranConfigurator;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.RootLogger;
-import org.apache.log4j.spi.location.LocationInfo;
+import org.apache.log4j.spi.LocationInfo;
 
 
 /**
