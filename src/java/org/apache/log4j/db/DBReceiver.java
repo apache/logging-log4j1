@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import org.apache.log4j.plugins.Pauseable;
 import org.apache.log4j.plugins.Receiver;
 import org.apache.log4j.scheduler.Scheduler;
 import org.apache.log4j.spi.LoggerRepository;
+import org.apache.log4j.spi.LoggerRepositoryEx;
 
 /**
  *
@@ -54,10 +55,12 @@ public class DBReceiver extends Receiver implements Pauseable {
       "DBAppender cannot function without a reference to its owning repository");
     }
 
-    Scheduler scheduler = this.repository.getScheduler();
+    if (repository instanceof LoggerRepositoryEx) {
+        Scheduler scheduler = ((LoggerRepositoryEx) repository).getScheduler();
     
-    scheduler.schedule(
-        receiverJob, System.currentTimeMillis() + 500, refreshMillis);
+        scheduler.schedule(
+            receiverJob, System.currentTimeMillis() + 500, refreshMillis);
+    }
    
   }
 
@@ -92,8 +95,8 @@ public class DBReceiver extends Receiver implements Pauseable {
   public void shutdown() {
     getLogger().info("removing receiverJob from the Scheduler.");
 
-    if(this.repository != null) {
-      Scheduler scheduler = repository.getScheduler();
+    if(this.repository instanceof LoggerRepositoryEx) {
+      Scheduler scheduler = ((LoggerRepositoryEx) repository).getScheduler();
       scheduler.delete(receiverJob);
     }
   }

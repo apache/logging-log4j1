@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,13 @@
 package org.apache.log4j;
 
 import org.apache.log4j.helpers.Transform;
-import org.apache.log4j.pattern.*;
+import org.apache.log4j.pattern.FormattingInfo;
+import org.apache.log4j.pattern.LiteralPatternConverter;
+import org.apache.log4j.pattern.LoggingEventPatternConverter;
+import org.apache.log4j.pattern.PatternConverter;
+import org.apache.log4j.pattern.PatternParser;
+import org.apache.log4j.spi.LoggerRepository;
+import org.apache.log4j.spi.LoggerRepositoryEx;
 import org.apache.log4j.spi.LoggingEvent;
 
 import java.util.ArrayList;
@@ -35,7 +41,6 @@ import java.util.Map;
  * 
  * @author Ceki G&uuml;lc&uuml;
  * @author Steve Mactaggart
- * @version 1.3
  */
 public class HTMLLayout extends Layout {
   /**
@@ -165,8 +170,8 @@ public class HTMLLayout extends Layout {
       List converters = new ArrayList();
       List fields = new ArrayList();
       Map converterRegistry = null;
-      if(this.repository != null) {
-          converterRegistry = (Map) this.repository.getObject(PATTERN_RULE_REGISTRY);
+      if(this.repository instanceof LoggerRepositoryEx) {
+          converterRegistry = (Map) ((LoggerRepositoryEx) repository).getObject(PATTERN_RULE_REGISTRY);
       }
       PatternParser.parse(pattern, converters, fields,
               converterRegistry, PatternParser.getPatternLayoutRules(), getLogger());
@@ -291,12 +296,16 @@ public class HTMLLayout extends Layout {
     sbuf.append(Layout.LINE_SEP);
     sbuf.append("<head>");
     sbuf.append(Layout.LINE_SEP);
-    sbuf.append("<title>" + title + "</title>");
+    sbuf.append("<title>");
+    sbuf.append(title);
+    sbuf.append("</title>");
     sbuf.append(Layout.LINE_SEP);
     if(internalCSS) {
       getInternalCSS(sbuf);
     } else {
-      sbuf.append("<LINK REL=StyleSheet HREF=\""+url2ExternalCSS+"\" TITLE=\"Basic\">");
+      sbuf.append("<LINK REL=StyleSheet HREF=\"");
+      sbuf.append(url2ExternalCSS);
+      sbuf.append("\" TITLE=\"Basic\">");
     }
     sbuf.append(Layout.LINE_SEP);
     sbuf.append("</head>");
@@ -307,7 +316,9 @@ public class HTMLLayout extends Layout {
     sbuf.append("<hr size=\"1\" noshade>");
     sbuf.append(Layout.LINE_SEP);
     
-    sbuf.append("Log session start time " + new java.util.Date() + "<br>");
+    sbuf.append("Log session start time ");
+    sbuf.append(new java.util.Date());
+    sbuf.append("<br>");
     sbuf.append(Layout.LINE_SEP);
     sbuf.append("<br>");
     sbuf.append(Layout.LINE_SEP);
@@ -337,8 +348,10 @@ public class HTMLLayout extends Layout {
    */
   public String getFooter() {
     StringBuffer sbuf = new StringBuffer();
-    sbuf.append("</table>" + Layout.LINE_SEP);
-    sbuf.append("<br>" + Layout.LINE_SEP);
+    sbuf.append("</table>");
+    sbuf.append(Layout.LINE_SEP);
+    sbuf.append("<br>");
+    sbuf.append(Layout.LINE_SEP);
     sbuf.append("</body></html>");
     return sbuf.toString();
   }
@@ -352,7 +365,7 @@ public class HTMLLayout extends Layout {
   }
 
   /**
-   * {@inheritDoc}
+   * @{inheritDoc}
    */
   public String format(LoggingEvent event) {
     

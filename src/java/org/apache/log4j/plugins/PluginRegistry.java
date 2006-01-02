@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.spi.LoggerRepository;
+import org.apache.log4j.spi.LoggerRepositoryEx;
 import org.apache.log4j.spi.LoggerRepositoryEventListener;
 
 
@@ -41,7 +42,7 @@ public final class PluginRegistry {
    * key=plugin.getName, value=plugin
    */
   private final Map pluginMap;
-  private final LoggerRepository loggerRepository;
+  private final LoggerRepositoryEx loggerRepository;
 
   /**
    * the listener used to listen for repository events.
@@ -49,13 +50,13 @@ public final class PluginRegistry {
   private final RepositoryListener listener = new RepositoryListener();
   private final List listenerList = Collections.synchronizedList(new ArrayList());
 
-  public PluginRegistry(LoggerRepository loggerRepository) {
+  public PluginRegistry(LoggerRepositoryEx loggerRepository) {
     pluginMap = new HashMap();
     this.loggerRepository = loggerRepository;
     this.loggerRepository.addLoggerRepositoryEventListener(listener);
   }
 
-  public LoggerRepository getLoggerRepository() {
+  public LoggerRepositoryEx getLoggerRepository() {
     return loggerRepository;
   }
 
@@ -77,7 +78,7 @@ public final class PluginRegistry {
   /**
    * Adds a plugin to the plugin registry. If a plugin with the same name exists
    * already, it is shutdown and removed.
-   *  
+   *
    * @param plugin the plugin to add.
    * */
   public void addPlugin(Plugin plugin) {
@@ -87,7 +88,7 @@ public final class PluginRegistry {
 
       // make sure the plugin has reference to repository
       plugin.setLoggerRepository(getLoggerRepository());
-      
+
       Plugin existingPlugin = (Plugin)pluginMap.get(name);
       if (existingPlugin != null) {
         existingPlugin.shutdown();

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2006 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import org.apache.log4j.plugins.Receiver;
 import org.apache.log4j.scheduler.Job;
 import org.apache.log4j.scheduler.Scheduler;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.LoggerRepositoryEx;
 import org.apache.log4j.spi.ThrowableInformation;
 import org.apache.log4j.spi.LocationInfo;
 
@@ -175,11 +176,13 @@ public class CustomSQLDBReceiver extends Receiver implements Pauseable {
       }
      
     
+
+      if (repository instanceof LoggerRepositoryEx) {
+        Scheduler scheduler = ((LoggerRepositoryEx) repository).getScheduler();
       
-      Scheduler scheduler = this.repository.getScheduler();
-      
-      scheduler.schedule(
+        scheduler.schedule(
           customReceiverJob, System.currentTimeMillis() + 500, refreshMillis);
+      }
 
     }
 
@@ -241,8 +244,8 @@ public class CustomSQLDBReceiver extends Receiver implements Pauseable {
     public void shutdown() {
         getLogger().info("removing receiverJob from the Scheduler.");
 
-        if(this.repository != null) {
-          Scheduler scheduler = repository.getScheduler();
+        if(this.repository instanceof LoggerRepositoryEx) {
+          Scheduler scheduler = ((LoggerRepositoryEx) repository).getScheduler();
           scheduler.delete(customReceiverJob);
         }
 

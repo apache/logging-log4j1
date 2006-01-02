@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import java.util.Properties;
 
 import org.apache.log4j.joran.spi.ExecutionContext;
 import org.apache.log4j.spi.LoggerRepository;
+import org.apache.log4j.spi.LoggerRepositoryEx;
 
 /**
  * @author ceki
@@ -33,12 +34,15 @@ public class RepositoryPropertyAction extends PropertyAction {
     if(repository == null) {
       
     }
-    
-    repository.getProperties().putAll(props);
+    if (repository instanceof LoggerRepositoryEx) {
+        ((LoggerRepositoryEx) repository).getProperties().putAll(props);
+    }
   }
   
   public void setProperty(ExecutionContext ec, String key, String value) {
     LoggerRepository repository = getLoggerRepository();
-    repository.setProperty(key, value);
+    if (repository instanceof LoggerRepositoryEx) {
+        ((LoggerRepositoryEx) repository).setProperty(key, value);
+    }
   }
 }

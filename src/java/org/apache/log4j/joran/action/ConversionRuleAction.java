@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2006 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import org.apache.log4j.helpers.Option;
 import org.apache.log4j.joran.spi.ExecutionContext;
 import org.apache.log4j.spi.ErrorItem;
 import org.apache.log4j.spi.LoggerRepository;
+import org.apache.log4j.spi.LoggerRepositoryEx;
 
 
 import org.xml.sax.Attributes;
@@ -73,10 +74,12 @@ public class ConversionRuleAction extends Action {
 
       LoggerRepository repository = (LoggerRepository) ec.getObjectStack().get(0);
 
-      Map ruleRegistry = (Map) repository.getObject(PatternLayout.PATTERN_RULE_REGISTRY);
+      //
+      //   cast may fail with user supplied repository
+      Map ruleRegistry = (Map) ((LoggerRepositoryEx) repository).getObject(PatternLayout.PATTERN_RULE_REGISTRY);
       if(ruleRegistry == null) {
         ruleRegistry = new HashMap();
-        repository.putObject(PatternLayout.PATTERN_RULE_REGISTRY, ruleRegistry);
+        ((LoggerRepositoryEx) repository).putObject(PatternLayout.PATTERN_RULE_REGISTRY, ruleRegistry);
       }
       // put the new rule into the rule registry
       ruleRegistry.put(conversionWord, converterClass);

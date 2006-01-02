@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2006 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,8 @@ package org.apache.log4j.watchdog;
 import java.net.URL;
 
 import org.apache.log4j.scheduler.Job;
-import org.apache.log4j.watchdog.WatchdogSkeleton;
+import org.apache.log4j.spi.LoggerRepository;
+import org.apache.log4j.spi.LoggerRepositoryEx;
 
 /**
   Implements functionality of a watchdog that periodically checks a URL for
@@ -133,10 +134,15 @@ public abstract class TimedURLWatchdog extends WatchdogSkeleton implements Job {
     
     // get the current modification time of the watched source
     lastModTime = getModificationTime();
-    
-    // schedule this Wathdog as a Job with the Scheduler
-    getLoggerRepository().getScheduler().schedule(this,
+
+    LoggerRepository repo = getLoggerRepository();
+    if (repo instanceof LoggerRepositoryEx) {
+        ((LoggerRepositoryEx) repo).getScheduler().schedule(this,
       System.currentTimeMillis() + interval, interval);
+    } else {
+        this.getLogger().error("{} watchdog requires repository that supports LoggerRepositoryEx",
+          this.getName());
+    }
   }
   
   /**
@@ -144,6 +150,9 @@ public abstract class TimedURLWatchdog extends WatchdogSkeleton implements Job {
    * simply removes the watchdog from the Scheduler.
    */
   public void shutdown() {
-    getLoggerRepository().getScheduler().delete(this);
+    LoggerRepository repo = getLoggerRepository();
+    if (repo instanceof LoggerRepositoryEx) {
+        ((LoggerRepositoryEx) repo).getScheduler().delete(this);
+    }
   }
 }

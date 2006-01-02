@@ -20,7 +20,6 @@
 // WARNING directly nor indirectly.
 package org.apache.log4j;
 
-import org.apache.log4j.Appender;
 import org.apache.log4j.helpers.IntializationUtil;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.or.ObjectRenderer;
@@ -30,7 +29,7 @@ import org.apache.log4j.scheduler.Scheduler;
 import org.apache.log4j.spi.ErrorItem;
 import org.apache.log4j.spi.LoggerEventListener;
 import org.apache.log4j.spi.LoggerFactory;
-import org.apache.log4j.spi.LoggerRepository;
+import org.apache.log4j.spi.LoggerRepositoryEx;
 import org.apache.log4j.spi.LoggerRepositoryEventListener;
 import org.apache.log4j.spi.RendererSupport;
 
@@ -71,10 +70,10 @@ import java.util.Vector;
    @author Mark Womack
 
 */
-public class Hierarchy implements LoggerRepository, RendererSupport {
+public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
   private LoggerFactory defaultFactory;
-  private ArrayList repositoryEventListeners;
-  private ArrayList loggerEventListeners;
+  private final ArrayList repositoryEventListeners;
+  private final ArrayList loggerEventListeners;
   String name;
   Hashtable ht;
   Logger root;
@@ -84,16 +83,16 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   PluginRegistry pluginRegistry;
   Map properties;
   private Scheduler scheduler;
-  
+
   // The repository can also be used as an object store for various objects used
   // by log4j components
   private Map objectMap;
-  
+
   // the internal logger used by this instance of Hierarchy for its own reporting
   private Logger myLogger;
-  
+
   private List errorList = new Vector();
-  
+
   boolean emittedNoAppenderWarning = false;
   boolean emittedNoResourceBundleWarning = false;
   boolean pristine = true;
@@ -135,7 +134,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
     synchronized (repositoryEventListeners) {
       if (repositoryEventListeners.contains(listener)) {
         getMyLogger().warn(
-          "Ignoring attempt to add a previously registerd LoggerRepositoryEventListener.");
+          "Ignoring attempt to add a previously registered LoggerRepositoryEventListener.");
       } else {
         repositoryEventListeners.add(listener);
       }
@@ -148,7 +147,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
     }
     return myLogger;
   }
-  
+
   /**
     Remove a {@link LoggerRepositoryEventListener} from the repository.
     @since 1.3*/
@@ -178,6 +177,16 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
       }
     }
   }
+
+    /**
+       Add a {@link org.apache.log4j.spi.HierarchyEventListener} event to the repository.
+       @deprecated Superceded by addLoggerEventListener
+    */
+    public
+    void addHierarchyEventListener(final org.apache.log4j.spi.HierarchyEventListener listener) {
+        addLoggerEventListener(new org.apache.log4j.spi.HierarchyEventListenerAdapter(listener));
+    }
+
 
   /**
     Remove a {@link LoggerEventListener} from the repository.
@@ -255,9 +264,9 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
     }
   }
 
-  /* 
+  /*
    * Get the properties for this repository.
-   * 
+   *
    * @see org.apache.log4j.spi.LoggerRepository#getProperties()
    *
    */
@@ -265,7 +274,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
     return properties;
   }
 
-  /* 
+  /*
    * Get a property of this repository.
    * @see org.apache.log4j.spi.LoggerRepository#getProperty(java.lang.String)
    */
@@ -273,7 +282,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
      return (String) properties.get(key);
   }
 
-  /* 
+  /*
    * Set a property by key and value. The property will be shared by all
    * events in this repository.
    */
@@ -542,15 +551,15 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   public List getErrorList() {
     return errorList;
   }
-  
+
   /**
    * Add an error item to the list of previously encountered errors.
-   * @since 1.3 
+   * @since 1.3
    */
   public void addErrorItem(ErrorItem errorItem) {
     getErrorList().add(errorItem);
   }
-  
+
   /**
      @deprecated Please use {@link #getCurrentLoggers} instead.
    */
@@ -671,13 +680,13 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   }
 
   private void shutdown(boolean doingReset) {
-    
+
     // stop this repo's scheduler if it has one
      if(scheduler != null) {
        scheduler.shutdown();
        scheduler = null;
      }
-    
+
     // let listeners know about shutdown if this is
     // not being done as part of a reset.
     if (!doingReset) {
