@@ -578,10 +578,10 @@ public class LoggingEvent
     }
 
     // if the key was not found in this even't properties, try the MDC
-    value = MDC.get(key);
+    Object mdcvalue = MDC.get(key);
 
-    if (value != null) {
-      return value;
+    if (mdcvalue != null) {
+      return mdcvalue.toString();
     }
 
     // if still not found try, the properties in the logger repository

@@ -84,7 +84,7 @@ public class MDC {
    *
    *  <p>This method has no side effects.
    * */
-  public static String get(String key) {
+  public static Object get(String key) {
     Hashtable ht = (Hashtable) tlm.get();
 
     if ((ht != null) && (key != null)) {
