@@ -22,9 +22,8 @@ import org.apache.log4j.pattern.LiteralPatternConverter;
 import org.apache.log4j.pattern.LoggingEventPatternConverter;
 import org.apache.log4j.pattern.PatternParser;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.LoggerRepositoryEx;
 
-import java.io.IOException;
-import java.io.Writer;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -513,8 +512,10 @@ public class PatternLayout extends Layout {
     Map converterRegistry = null;
 
     if (this.repository != null) {
-      converterRegistry =
-        (Map) this.repository.getObject(PATTERN_RULE_REGISTRY);
+      if (repository instanceof LoggerRepositoryEx) {
+        converterRegistry =
+            (Map) ((LoggerRepositoryEx) repository).getObject(PATTERN_RULE_REGISTRY);
+      }
     }
 
     PatternParser.parse(

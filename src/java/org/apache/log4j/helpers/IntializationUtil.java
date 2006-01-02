@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2006 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,8 @@
 
 package org.apache.log4j.helpers;
 
-import org.apache.log4j.helpers.Loader;
-import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.LoggerRepository;
+import org.apache.log4j.spi.LoggerRepositoryEx;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -78,11 +77,17 @@ public class IntializationUtil {
     // configuration to the OptionConverter.selectAndConfigure
     // method.
     if (url != null) {
-      LogLog.info(
-        "Using URL [" + url 
-          + "] for automatic log4j configuration of repository named ["+
-          repository.getName()+"].");
-      
+      if (repository instanceof LoggerRepositoryEx) {
+        LogLog.info(
+            "Using URL [" + url
+            + "] for automatic log4j configuration of repository named ["+
+            ((LoggerRepositoryEx) repository).getName()+"].");
+      } else {
+          LogLog.info(
+              "Using URL [" + url
+              + "] for automatic log4j configuration of unnamed repository.");
+      }
+
       OptionConverter.selectAndConfigure(url, configuratorClassNameStr, repository);
     }
   }

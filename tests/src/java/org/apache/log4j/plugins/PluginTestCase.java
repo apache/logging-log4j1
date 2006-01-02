@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2006 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
 import org.apache.log4j.spi.LoggerRepository;
+import org.apache.log4j.spi.LoggerRepositoryEx;
 import org.apache.log4j.spi.RootLogger;
 import org.apache.log4j.util.Compare;
 
@@ -52,7 +53,7 @@ public class PluginTestCase extends TestCase {
     }
 
     public void setUp() {
-        pluginRegistry = LogManager.getLoggerRepository().getPluginRegistry(); 
+        pluginRegistry = ((LoggerRepositoryEx) LogManager.getLoggerRepository()).getPluginRegistry();
         
         // delete the output file if they happen to exist
         File file = new File(getOutputFile("test1"));

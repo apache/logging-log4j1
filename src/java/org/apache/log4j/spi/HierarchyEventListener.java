@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2006 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,8 @@
 
 package org.apache.log4j.spi;
 
-import org.apache.log4j.*;
+import org.apache.log4j.Appender;
+import org.apache.log4j.Category;
 
 
 /**
@@ -25,6 +26,7 @@ import org.apache.log4j.*;
 
    @author Ceki G&uuml;lc&uuml;
    @since 1.2
+   @deprecated Superceded by LoggerEventListener.
 
  */
 public interface HierarchyEventListener {

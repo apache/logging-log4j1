@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2005 The Apache Software Foundation.
+ * Copyright 1999,2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -117,8 +117,9 @@ public class LogManager {
             System.out.println("**Start of LogManager static initializer");
         }
 
-        defaultLoggerRepository = new Hierarchy(new RootLogger(Level.DEBUG));
-        defaultLoggerRepository.setName(Constants.DEFAULT_REPOSITORY_NAME);
+        Hierarchy hierarchy =  new Hierarchy(new RootLogger(Level.DEBUG));
+        defaultLoggerRepository = hierarchy;
+        hierarchy.setName(Constants.DEFAULT_REPOSITORY_NAME);
         
         // temporary repository
         repositorySelector = new DefaultRepositorySelector(defaultLoggerRepository);

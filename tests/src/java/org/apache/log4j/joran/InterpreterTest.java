@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2006 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,6 +56,7 @@ import org.apache.log4j.rolling.SizeBasedTriggeringPolicy;
 import org.apache.log4j.rolling.FixedWindowRollingPolicy;
 import org.apache.log4j.spi.ErrorItem;
 import org.apache.log4j.spi.LoggerRepository;
+import org.apache.log4j.spi.LoggerRepositoryEx;
 import org.xml.sax.SAXParseException;
 
 import java.util.HashMap;
@@ -358,7 +359,7 @@ public class InterpreterTest extends TestCase {
     Appender appender = (Appender) appenderBag.get("A1");
     PatternLayout pl = (PatternLayout) appender.getLayout();
     
-    Map ruleRegistry = (Map) repository.getObject(PatternLayout.PATTERN_RULE_REGISTRY);
+    Map ruleRegistry = (Map) ((LoggerRepositoryEx) repository).getObject(PatternLayout.PATTERN_RULE_REGISTRY);
     assertEquals("org.apache.log4j.toto", ruleRegistry.get("toto"));
   }
   

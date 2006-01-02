@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import org.apache.log4j.joran.spi.ExecutionContext;
 import org.apache.log4j.plugins.Plugin;
 import org.apache.log4j.spi.ErrorItem;
 import org.apache.log4j.spi.LoggerRepository;
+import org.apache.log4j.spi.LoggerRepositoryEx;
 import org.apache.log4j.spi.OptionHandler;
 
 import org.xml.sax.Attributes;
@@ -59,9 +60,12 @@ public class PluginAction extends Action {
       }
 
       LoggerRepository repository = (LoggerRepository) ec.getObject(0);
-      
-      repository.getPluginRegistry().addPlugin(plugin);
-	    plugin.setLoggerRepository(repository);
+
+      //
+      //   cast may fail when using user supplied repository
+      //
+      ((LoggerRepositoryEx) repository).getPluginRegistry().addPlugin(plugin);
+	  plugin.setLoggerRepository(repository);
       
       getLogger().debug("Pushing plugin on to the object stack.");
       ec.pushObject(plugin);

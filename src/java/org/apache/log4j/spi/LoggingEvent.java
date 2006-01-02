@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -549,7 +549,10 @@ public class LoggingEvent
       }
 
       if (logger != null) {
-        properties.putAll(logger.getLoggerRepository().getProperties());
+        LoggerRepository repo = logger.getLoggerRepository();
+        if (repo instanceof LoggerRepositoryEx) {
+            properties.putAll(((LoggerRepositoryEx) repo).getProperties());
+        }
       }
     }
   }
@@ -583,7 +586,10 @@ public class LoggingEvent
 
     // if still not found try, the properties in the logger repository
     if (logger != null) {
-      value = logger.getLoggerRepository().getProperty(key);
+      LoggerRepository repo = logger.getLoggerRepository();
+      if (repo instanceof LoggerRepositoryEx) {
+        value = ((LoggerRepositoryEx) repo).getProperty(key);
+      }
     }
 
     return value;

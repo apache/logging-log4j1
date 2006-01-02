@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,8 @@
 
 package org.apache.log4j.spi;
 
-import org.apache.log4j.*;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 
 // Contibutors: Mathias Bogaert
@@ -58,8 +59,8 @@ public final class RootLogger extends Logger {
      @since 0.8.3 */
   public final void setLevel(Level level) {
     if (level == null) {
-      if (repository != null) {
-        repository.addErrorItem(
+      if (repository instanceof LoggerRepositoryEx) {
+        ((LoggerRepositoryEx) repository).addErrorItem(
           new ErrorItem(
             "You have tried to set a null level to root.", new Exception()));
       }

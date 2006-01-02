@@ -19,7 +19,6 @@
 //               Anders Kristensen <akristensen@dynamicsoft.com>
 package org.apache.log4j;
 
-import org.apache.log4j.DefaultCategoryFactory;
 import org.apache.log4j.config.ConfiguratorBase;
 import org.apache.log4j.config.PropertySetter;
 import org.apache.log4j.helpers.OptionConverter;
@@ -28,6 +27,7 @@ import org.apache.log4j.spi.Configurator;
 import org.apache.log4j.spi.ErrorItem;
 import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.LoggerRepository;
+import org.apache.log4j.spi.LoggerRepositoryEx;
 
 //import org.apache.log4j.config.PropertySetterException;
 import org.apache.log4j.spi.OptionHandler;
@@ -367,7 +367,9 @@ public class PropertyConfigurator extends ConfiguratorBase {
 
       // As soon as we start configuration process, the pristine flag is set to 
       // false.
-      repository.setPristine(false);
+      if(repository instanceof LoggerRepositoryEx) {
+        ((LoggerRepositoryEx) repository).setPristine(false);
+      }
 
       
       String thresholdStr =
