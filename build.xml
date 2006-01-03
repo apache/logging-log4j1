@@ -36,11 +36,14 @@
   <!-- build/ -->
   <property name="packaging.dir" value="build"/>
 
+  <!-- distribution directory -->
+  <property name="dist.dir" value="dist"/>
+  
   <!-- Deprecation warning? --> 
   <property name="deprecation" value="on"/>
 	
   <!-- Destination for compiled files -->
-  <property name="javac.dest" value="classes"/>
+  <property name="javac.dest" value="${dist.dir}/classes"/>
 
   <!-- Source directory for the examples/ -->
   <property name="examples.src" value="examples/src"/>
@@ -49,16 +52,16 @@
   <property name="examples.javac.dest" value="examples/classes"/>
 
   <!-- Destination for generated jar files -->
-  <property name="jar.dest" value="${basedir}"/>
+  <property name="jar.dest" value="${dist.dir}/lib"/>
   
   <!-- The jar file that the jar task will generate -->
   <property name="log4j.jar" value="log4j-${version}.jar"/>
-  <property name="log4j-optional.jar" value="log4j-optional.jar"/>
-  <property name="log4j-oro.jar" value="log4j-oro.jar"/>
-  <property name="log4j-xml.jar" value="log4j-xml.jar"/>
-  <property name="log4j-jms.jar" value="log4j-jms.jar"/>
-  <property name="log4j-smtp.jar" value="log4j-smtp.jar"/>
-  <property name="log4j-db.jar" value="log4j-db.jar"/>
+  <property name="log4j-optional.jar" value="log4j-optional-${version}.jar"/>
+  <property name="log4j-oro.jar" value="log4j-oro-${version}.jar"/>
+  <property name="log4j-xml.jar" value="log4j-xml-${version}.jar"/>
+  <property name="log4j-jms.jar" value="log4j-jms-${version}.jar"/>
+  <property name="log4j-smtp.jar" value="log4j-smtp-${version}.jar"/>
+  <property name="log4j-db.jar" value="log4j-db-${version}.jar"/>
 
 
   <!-- Destination for documentation files -->
@@ -70,7 +73,8 @@
   <property name="debug" value="on"/>
 
   <!-- Destination for javadoc generated files -->
-  <property name="javadoc.dest" value="docs/api"/>
+  <property name="javadoc.dest" value="${dist.dir}/docs"/>
+  <property name="javadoc.api.dest" value="${dist.dir}/docs/api"/>
 
   <!-- Icons source directory. -->
   <property name="icons.source" value="icons"/>
@@ -82,10 +86,10 @@
   <property name="BSTEM" value="${java.source.dir}/${stem}"/>
 
   <!-- Directory where release images go. -->
-  <property name="dist.images"  value="dist/images"/>
+  <property name="dist.images"  value="${dist.dir}/images"/>
 
   <!-- Directory for temporary files. -->
-  <property name="dist.tmp" value="dist/tmp"/>
+  <property name="dist.tmp" value="${dist.dir}/tmp"/>
 
   <!-- Construct compile classpath -->
   <path id="compile.classpath">
@@ -247,8 +251,6 @@
 
   <target name="init">
     <tstamp />
-	<mkdir dir="${javac.dest}/"/>
-  	<mkdir dir="${examples.javac.dest}/" />
   </target>
 
   <target name="build" description="Compile all log4j components."
@@ -277,7 +279,7 @@
   </target>
 
   <target name="build.core" depends="init, jndiCheck, jaxpCheck">
-
+	<mkdir dir="${javac.dest}/"/>
     <javac destdir="${javac.dest}"
            includes="${stem}/**/*.java"
            excludes="**/UnitTest*.java,
@@ -326,6 +328,7 @@
   </target>
 
  <target name="build.xml" depends="init, jaxpCheck">
+	<mkdir dir="${javac.dest}/"/>
     <javac srcdir="${java.source.dir}"
            destdir="${javac.dest}"
            includes="${stem}/xml/**/*.java"
@@ -345,7 +348,8 @@
   </target>
 	
   <target name="log4j-xml.jar" depends="init, jaxpCheck, build.xml">
-	    <jar jarfile="${log4j-xml.jar}" basedir="${javac.dest}"
+        <mkdir dir="${jar.dest}/"/>
+	    <jar jarfile="${jar.dest}/${log4j-xml.jar}" basedir="${javac.dest}"
 	         includes="${stem}/xml/*.class,
 	    	           ${stem}/xml/*.dtd"
 	    	  excludes="${stem}/xml/DOMConfigurator.class,
@@ -363,6 +367,7 @@
 	
 
   <target name="build.smtp" depends="init, javamailCheck">
+	<mkdir dir="${javac.dest}/"/>
     <javac srcdir="${java.source.dir}"
            destdir="${javac.dest}"
     	   debug="${debug}"
@@ -377,7 +382,8 @@
 
   <target name="log4j-smtp.jar" depends="init, build.smtp"
 	          if="javamail-present">
-    <jar jarfile="${log4j-smtp.jar}" basedir="${javac.dest}"
+    <mkdir dir="${jar.dest}/"/>
+    <jar jarfile="${jar.dest}/${log4j-smtp.jar}" basedir="${javac.dest}"
            includes="${stem}/spi/TriggeringEventEvaluator.class,
     	             ${stem}/net/SMTPAppender.class,
     	             ${stem}/net/DefaultEvaluator.class"
@@ -395,6 +401,7 @@
   <!-- Jakarta-ORO dependencies -->	 
 	
   <target name="build.oro" depends="init, oroCheck">
+	<mkdir dir="${javac.dest}/"/>
     <javac srcdir="${java.source.dir}"
            destdir="${javac.dest}"
            deprecation="${deprecation}"
@@ -410,7 +417,8 @@
   </target>
 	
   <target name="log4j-oro.jar" depends="init, oroCheck, build.oro">
-    <jar jarfile="${log4j-oro.jar}" basedir="${javac.dest}"
+    <mkdir dir="${jar.dest}/"/>
+    <jar jarfile="${jar.dest}/${log4j-oro.jar}" basedir="${javac.dest}"
 	     includes="${stem}/varia/LogFilePatternReceiver*.class,
                   ${stem}/rule/LikeRule.class,
                   ${stem}/lbel/**/*.class"
@@ -429,6 +437,7 @@
   <!-- JMS API dependencies -->	 
 	
   <target name="build.jms" depends="init, jmsCheck, jndi">
+	<mkdir dir="${javac.dest}/"/>
     <javac srcdir="${java.source.dir}"
            debug="${debug}"
     	   deprecation="${deprecation}"
@@ -443,23 +452,25 @@
 	
   <target name="log4j-jms.jar" depends="init, build.jms"
 		          if="jms-present">
-      <jar jarfile="${log4j-jms.jar}" basedir="${javac.dest}"
-	       includes="${stem}/net/JMSAppender.class,
-	  	             ${stem}/net/JMSSink.class,
-	   	             ${stem}/net/JMSReceiver.class,
-	   	             ${stem}/or/jms/*.class"
-	  >
-        <manifest>
-          <section name="org/apache/log4j/">
-            <attribute name="Implementation-Title" value="log4j-jms"/>
-            <attribute name="Implementation-Version" value="${version}"/>
-            <attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
-          </section>
-        </manifest>
-	  </jar>
+    <mkdir dir="${jar.dest}/"/>
+    <jar jarfile="${jar.dest}/${log4j-jms.jar}" basedir="${javac.dest}"
+       includes="${stem}/net/JMSAppender.class,
+                 ${stem}/net/JMSSink.class,
+                 ${stem}/net/JMSReceiver.class,
+                 ${stem}/or/jms/*.class"
+    >
+    <manifest>
+      <section name="org/apache/log4j/">
+        <attribute name="Implementation-Title" value="log4j-jms"/>
+        <attribute name="Implementation-Version" value="${version}"/>
+        <attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
+      </section>
+    </manifest>
+    </jar>
   </target>
 
   <target name="build.servletAPI" depends="init, servletAPICheck">
+	<mkdir dir="${javac.dest}/"/>
     <javac srcdir="${java.source.dir}"
            destdir="${javac.dest}"
            debug="${debug}"
@@ -472,6 +483,7 @@
   </target>
 
   <target name="build.db" depends="init, jdbcExtensionCheck">
+	<mkdir dir="${javac.dest}/"/>
     <javac srcdir="${java.source.dir}"
            destdir="${javac.dest}"
            deprecation="${deprecation}"
@@ -484,7 +496,8 @@
   </target>
 	
   <target name="log4j-db.jar" depends="init, jdbcExtensionCheck, build.db">
-    <jar jarfile="${log4j-db.jar}" basedir="${javac.dest}"
+    <mkdir dir="${jar.dest}/"/>
+    <jar jarfile="${jar.dest}/${log4j-db.jar}" basedir="${javac.dest}"
 	     includes="${stem}/db/**/*.class"
   	>
       <manifest>
@@ -498,7 +511,8 @@
   </target>
   
   <target name="log4j-optional.jar" depends="init, build.core">
-    <jar jarfile="${log4j-optional.jar}" basedir="${javac.dest}"
+    <mkdir dir="${jar.dest}/"/>
+    <jar jarfile="${jar.dest}/${log4j-optional.jar}" basedir="${javac.dest}"
 	     includes="${stem}/net/Multicast*.class,
                    ${stem}/net/UDP*.class,
 	               ${stem}/net/SocketHub*.class,
@@ -517,12 +531,15 @@
   <!-- ================================================================= -->
   <!-- Remove all generated (compiled) class files.                      -->
   <!-- ================================================================= -->
-  <target name="clean" depends="init" description="Delete all compiled files.">
+  <target name="clean" description="Delete all compiled or generated files.">
+    <delete dir="${dist.dir}/" />
+    <!--
     <delete>
   	 <fileset dir="${javac.dest}/" includes="**/*"/>
    	 <fileset dir="${examples.javac.dest}/" includes="**/*"/>
      <fileset dir="." includes="log4j*.jar"/>
-    </delete>	
+    </delete>
+    -->
   </target>
 
   <!-- ================================================================= -->
@@ -541,7 +558,8 @@
   <target name="log4j.jar" depends="build.core, build.servletAPI">
     
     <delete file="${log4j.jar}" verbose="true"/>
- 
+    <mkdir dir="${jar.dest}/"/>
+    
     <jar jarfile="${jar.dest}/${log4j.jar}" basedir="${javac.dest}"
          includes="${stem}/*.class, 
                 ${stem}/joran/**/*.class,
@@ -675,7 +693,7 @@ Specify files to reformat with -Djalopy.files=PATTERN.
              protected="true"
              author="true"
              use="true"
-             overview="${docs.dest}/overview.html"
+             overview="${javadoc.dest}/overview.html"
              doctitle="log4j version ${version}&lt;br&gt;API Specification"
              windowtitle="Log4j Version ${version}"
              header="&lt;b&gt;Log4j ${version}&lt;/b&gt;"
@@ -844,7 +862,7 @@ Specify files to reformat with -Djalopy.files=PATTERN.
                build.properties.sample,
                INSTALL.txt,
                LICENSE.txt,
-      	       log4j-*.jar"
+      	       ${jar.dest}/**"
                excludes="**/*.bak, 
                **/goEnv.bat,
                docs/pub-support/*,
