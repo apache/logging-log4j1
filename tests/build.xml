@@ -13,9 +13,13 @@
   <!-- The base directory relative to which most targets are built -->
   <property name="base" value="."/>
  
+  <!-- distribution directory -->
+  <property name="project.home" value=".."/>
+  <property name="project.dist.dir" value="${project.home}/dist"/>
+  
   <!-- The directory where source files are stored. -->
-  <property name="project.source.home" value="../src/java/"/>
-  <property name="project.classes.home" value="../classes/"/>
+  <property name="project.source.home" value="${project.home}/src/java/"/>
+  <property name="project.classes.home" value="${project.dist.dir}/classes/"/>
   
   <property name="tests.source.home" value="./src/java/"/>
   
@@ -116,8 +120,8 @@
   <!-- Build the parent project                                          -->
   <!-- ================================================================= -->  
   <target name="parentBuild">    
-    <ant dir=".." target="build.core" inheritRefs="true"/>
-    <ant dir=".." target="build.servletAPI" inheritRefs="true"/>
+    <ant dir=".." target="build.core" inheritAll="false" inheritRefs="false"/>
+    <ant dir=".." target="build.servletAPI" inheritAll="false" inheritRefs="false"/>
   </target>
 
   <!-- ================================================================= -->
