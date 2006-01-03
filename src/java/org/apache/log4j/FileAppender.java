@@ -16,11 +16,14 @@
 
 package org.apache.log4j;
 
-import java.io.*;
-import org.apache.log4j.spi.*;
-import org.apache.log4j.helpers.*;
-
 import org.apache.log4j.helpers.OptionConverter;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.Writer;
 
 
 // Contibutors: Jens Uwe Pipka <jens.pipka@gmx.de>
