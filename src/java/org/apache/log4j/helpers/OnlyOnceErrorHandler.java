@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2005 The Apache Software Foundation.
+ * Copyright 1999-2006 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.apache.log4j.helpers;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.Logger;
-import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.LoggingEvent;
 
 /**
@@ -32,7 +31,7 @@ import org.apache.log4j.spi.LoggingEvent;
    @since 0.9.0
    @deprecated As of 1.3
  */
-public class OnlyOnceErrorHandler implements ErrorHandler {
+public class OnlyOnceErrorHandler implements org.apache.log4j.spi.ErrorHandler {
   public void setLogger(Logger logger) {}
   public void activateOptions() {}
   public void error(String message, Exception e, int errorCode) {}

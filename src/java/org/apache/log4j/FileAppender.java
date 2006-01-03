@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2005 The Apache Software Foundation.
+ * Copyright 1999,2006 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@
 package org.apache.log4j;
 
 import java.io.*;
+import org.apache.log4j.spi.*;
+import org.apache.log4j.helpers.*;
 
 import org.apache.log4j.helpers.OptionConverter;
 
@@ -144,22 +146,17 @@ public class FileAppender extends WriterAppender {
 
      @since 0.8.1 */
   public void activateOptions() {
-    int errors = 0;
     if (fileName != null) {
       try {
         setFile(fileName, fileAppend, bufferedIO, bufferSize);
+        super.activateOptions();
       } catch (java.io.IOException e) {
-        errors++;
         getLogger().error(
           "setFile(" + fileName + "," + fileAppend + ") call failed.", e);
       }
     } else {
-      errors++;
       getLogger().error("File option not set for appender [{}].", name);
       getLogger().warn("Are you using FileAppender instead of ConsoleAppender?");
-    }
-    if(errors == 0) {
-      super.activateOptions();
     }
   }
 
@@ -280,11 +277,12 @@ public class FileAppender extends WriterAppender {
             throw ex;
         }
     }
-    this.writer = createWriter(ostream);
+    Writer fw = createWriter(ostream);
 
     if (bufferedIO) {
-      this.writer = new BufferedWriter(this.writer, bufferSize);
+      fw = new BufferedWriter(this.qw, bufferSize);
     }
+    setQWForFiles(fw);
 
     this.fileAppend = append;
     this.bufferedIO = bufferedIO;
@@ -293,5 +291,29 @@ public class FileAppender extends WriterAppender {
     writeHeader();
     getLogger().debug("setFile ended");
   }
+
+    /**
+       Sets the quiet writer being used.
+
+       This method is overriden by {@link RollingFileAppender}.
+     */
+    protected
+    void setQWForFiles(final Writer writer) {
+       this.qw = createQuietWriter(writer);
+    }
+
+
+    /**
+       Close any previously opened file and call the parent's
+       <code>reset</code>.
+     @deprecated
+     */
+    protected
+    void reset() {
+      closeFile();
+      this.fileName = null;
+      super.reset();
+    }
+
 
 }
