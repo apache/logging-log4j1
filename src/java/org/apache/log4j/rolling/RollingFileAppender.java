@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2005 The Apache Software Foundation.
+ * Copyright 1999,2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -266,7 +266,7 @@ public final class RollingFileAppender extends FileAppender {
                     rollover.getActiveFileName(), rollover.getAppend()));
               closeWriter();
               setFile(rollover.getActiveFileName());
-              this.writer = newWriter;
+              this.qw = createQuietWriter(newWriter);
 
               boolean success = true;
 

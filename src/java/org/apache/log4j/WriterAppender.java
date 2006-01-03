@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2006 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,14 @@
 package org.apache.log4j;
 
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.ErrorHandler;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-
+import org.apache.log4j.helpers.QuietWriter;
+import org.apache.log4j.helpers.LogLog;
 
 // Contibutors: Jens Uwe Pipka <jens.pipka@gmx.de>
 //              Ben Sandee
@@ -59,9 +61,9 @@ public class WriterAppender extends AppenderSkeleton {
   protected String encoding;
 
   /**
-   * This is the {@link Writer Writer} where we will write to.
+   * This is the {@link QuietWriter quietWriter} where we will write to.
   */
-  protected Writer writer;
+  protected QuietWriter qw;
 
   /**
    * The default constructor does nothing.  
@@ -135,7 +137,7 @@ public class WriterAppender extends AppenderSkeleton {
       errors++;
     }
     
-    if(this.writer == null) {
+    if(this.qw == null) {
       getLogger().error("No writer set for the appender named [{}].", name);
       errors++;
     }
@@ -187,7 +189,7 @@ public class WriterAppender extends AppenderSkeleton {
       return false;
     }
 
-    if (this.writer == null) {
+    if (this.qw == null) {
       getNonFloodingLogger().error(
         "No output stream or file set for the appender named [{}].", name);
 
@@ -218,12 +220,12 @@ public class WriterAppender extends AppenderSkeleton {
    * Close the underlying {@link java.io.Writer}.
    * */
   protected void closeWriter() {
-    if (this.writer != null) {
+    if (this.qw != null) {
       try {
         // before closing we have to output out layout's footer
         writeFooter();
-        this.writer.close();
-        this.writer = null;
+        this.qw.close();
+        this.qw = null;
       } catch (IOException e) {
         getLogger().error("Could not close writer for WriterAppener named "+name, e);
       }
@@ -266,6 +268,64 @@ public class WriterAppender extends AppenderSkeleton {
     encoding = value;
   }
 
+    /**
+     * Set the {@link org.apache.log4j.spi.ErrorHandler} for this WriterAppender and also the
+     * underlying {@link QuietWriter} if any.
+     * @deprecated
+     */
+    public synchronized void setErrorHandler(org.apache.log4j.spi.ErrorHandler eh) {
+      if(eh == null) {
+        getLogger().warn("You have tried to set a null error-handler.");
+      } else {
+        this.errorHandler = eh;
+        if(this.qw != null) {
+           this.qw.setErrorHandler(eh);
+        }
+      }
+    }
+
+    private static final class DefaultErrorHandler implements ErrorHandler {
+        private final WriterAppender appender;
+        public DefaultErrorHandler(final WriterAppender appender) {
+            this.appender = appender;
+        }
+        /**@since 1.2*/
+        public void setLogger(Logger logger) {
+
+        }
+        public void error(String message, Exception ioe, int errorCode) {
+          appender.active = false;
+          appender.getNonFloodingLogger().error("IO failure for appender named "+ appender.getName(), ioe);
+        }
+        public void error(String message) {
+
+        }
+        /**@since 1.2*/
+        public void error(String message, Exception e, int errorCode, LoggingEvent event) {
+
+        }
+        /**@since 1.2*/
+        public void setAppender(Appender appender) {
+
+        }
+        /**@since 1.2*/
+        public void setBackupAppender(Appender appender) {
+
+        }
+
+        public void activateOptions() {
+        }
+
+    }
+
+    protected QuietWriter createQuietWriter(final Writer writer) {
+        ErrorHandler handler = errorHandler;
+        if (handler == null) {
+            handler = new DefaultErrorHandler(this);
+        }
+        return new QuietWriter(writer, handler);
+    }
+
   /**
     <p>Sets the Writer where the log output will go. The
     specified Writer must be opened by the user and be
@@ -281,9 +341,8 @@ public class WriterAppender extends AppenderSkeleton {
   public synchronized void setWriter(Writer writer) {
     // close any previously opened writer
     closeWriter();
-    
-    this.writer = writer;
-    //this.tp = new TracerPrintWriter(qw);
+
+    this.qw = createQuietWriter(writer);
     writeHeader();
   }
 
@@ -299,8 +358,7 @@ public class WriterAppender extends AppenderSkeleton {
       return;
     }
     
-    try {
-      this.writer.write(this.layout.format(event));
+      this.qw.write(this.layout.format(event));
 
       if (layout.ignoresThrowable()) {
         String[] s = event.getThrowableStrRep();
@@ -309,19 +367,23 @@ public class WriterAppender extends AppenderSkeleton {
           int len = s.length;
 
           for (int i = 0; i < len; i++) {
-            this.writer.write(s[i]);
-            this.writer.write(Layout.LINE_SEP);
+            this.qw.write(s[i]);
+            this.qw.write(Layout.LINE_SEP);
           }
         }
       }
 
       if (this.immediateFlush) {
-        this.writer.flush();
+        this.qw.flush();
       }
-    } catch(IOException ioe) {
-      this.active = false;
-      getNonFloodingLogger().error("IO failure for appender named "+name, ioe);
-    }
+  }
+
+    /**
+     * Gets whether appender requires a layout.
+     * @return false
+     */
+  public boolean requiresLayout() {
+      return true;
   }
 
   /**
@@ -332,8 +394,9 @@ public class WriterAppender extends AppenderSkeleton {
    * 
    * @deprecated Use {@link #closeWriter} method instead.  
    * */
-  protected void xreset() {
+  protected void reset() {
     closeWriter();
+    this.qw = null;
   }
 
   /**
@@ -344,14 +407,9 @@ public class WriterAppender extends AppenderSkeleton {
     if (layout != null) {
       String f = layout.getFooter();
 
-      if ((f != null) && (this.writer != null)) {
-        try {
-          this.writer.write(f);
-          this.writer.flush();
-        } catch(IOException ioe) {
-          active = false;
-          getLogger().error("Failed to write footer for Appender named "+name, ioe);
-        }
+      if ((f != null) && (this.qw != null)) {
+          this.qw.write(f);
+          this.qw.flush();
       }
     }
   }
@@ -364,23 +422,11 @@ public class WriterAppender extends AppenderSkeleton {
     if (layout != null) {
       String h = layout.getHeader();
 
-      if ((h != null) && (this.writer != null)) {
-        try {
-          this.writer.write(h);
-        } catch(IOException ioe) {
-          this.active = false;
-          getLogger().error("Failed to write header for WriterAppender named "+name, ioe);
-        }
+      if ((h != null) && (this.qw != null)) {
+          this.qw.write(h);
       }
     }
   }
 
-    /**
-     * Gets whether appender requires a layout.
-     * @return false
-     */
-  public boolean requiresLayout() {
-      return true;
-  }
 
 }
