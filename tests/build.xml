@@ -122,6 +122,8 @@
   <target name="parentBuild">    
     <ant dir=".." target="build.core" inheritAll="false" inheritRefs="false"/>
     <ant dir=".." target="build.servletAPI" inheritAll="false" inheritRefs="false"/>
+    <ant dir=".." target="build.oro" inheritAll="false" inheritRefs="false"/>
+    <ant dir=".." target="build.smtp" inheritAll="false" inheritRefs="false"/>
   </target>
 
   <!-- ================================================================= -->
