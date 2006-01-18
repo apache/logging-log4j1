@@ -27,9 +27,13 @@ import org.apache.log4j.Logger;
    Check every now and then that a certain file has not changed. If it
    has, then call the {@link #doOnChange} method.
 
-
+   This class has been deprecated and is no longer used by either
+   PropertyConfigurator or DOMConfigurator.
+   
    @author Ceki G&uuml;lc&uuml;
-   @since version 0.9.1 */
+   @since version 0.9.1
+   @deprecated Use org.apache.log4j.watchdog.FileWatchdog instead.
+*/
 public abstract class FileWatchdog extends Thread {
   /**
      The default delay between every file modification check, set to 60
