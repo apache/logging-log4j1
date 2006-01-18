@@ -19,7 +19,6 @@ package org.apache.log4j.watchdog;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.net.URL;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -28,7 +27,7 @@ import junit.framework.TestSuite;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
-import org.apache.log4j.spi.Configurator;
+import org.apache.log4j.util.Compare;
 import org.apache.log4j.spi.LoggerRepositoryEx;
 import org.apache.log4j.joran.JoranConfigurator;
 
@@ -39,7 +38,7 @@ public class FileWatchdogTestCase extends TestCase {
     
     static String SOURCE_CONFIG = "input/watchdog/watchdog.FileWatchdog";
     static String FILE = "output/watchdog.FileWatchdog";
-    static String WITNESS = "witness/watchdog.FileWatchdog";
+    static String WITNESS = "witness/watchdog/watchdog.FileWatchdog";
 
     public FileWatchdogTestCase(String name) {
         super(name);
@@ -52,10 +51,10 @@ public class FileWatchdogTestCase extends TestCase {
     }
 
     private void copyFile(File src, File dst) throws Exception {
-      FileInputStream in = in = new FileInputStream(src);
+      FileInputStream in = new FileInputStream(src);
       FileOutputStream out = new FileOutputStream(dst);
       byte[] buffer = new byte[1024];
-      int size = 0;
+      int size;
       do {
         size = in.read(buffer);
         if (size > 0) out.write(buffer,0,size);
@@ -129,16 +128,15 @@ public class FileWatchdogTestCase extends TestCase {
       copyFile(sourceFile1, configFile);
       assertTrue(configFile.exists());
       
-      URL configURL = new URL("file:"+configFile.getAbsolutePath());
-      
       // configure environment to first config file
-      Configurator configurator = new JoranConfigurator();
-      configurator.doConfigure(configURL, LogManager.getLoggerRepository());
+      JoranConfigurator configurator = new JoranConfigurator();
+      configurator.doConfigure(configFile.getAbsolutePath(),
+          LogManager.getLoggerRepository());
       
       // now watch the file for changes
       FileWatchdog watchdog = new FileWatchdog();
-      watchdog.setURL(configURL);
-      watchdog.setInterval(2000);
+      watchdog.setFile(configFile.getAbsolutePath());
+      watchdog.setInterval(1000);
       watchdog.setConfigurator(JoranConfigurator.class.getName());
       ((LoggerRepositoryEx) LogManager.getLoggerRepository()).getPluginRegistry().addPlugin(watchdog);
       watchdog.activateOptions();
@@ -154,7 +152,7 @@ public class FileWatchdogTestCase extends TestCase {
       copyFile(sourceFile2, configFile);
       
       // wait a few seconds for the watchdog to react
-      Thread.sleep(4000);
+      Thread.sleep(2000);
       
       // output some test messages
       logger.debug("debug message");
@@ -163,10 +161,8 @@ public class FileWatchdogTestCase extends TestCase {
       logger.error("error message");
       logger.fatal("fatal message");
       
-      /*
-      assertTrue(Compare.compare(getOutputFile("test1"), 
+      assertTrue(Compare.compare(getOutputFile("test1"),
         getWitnessFile("test1")));
-      */
     }
     
     // basic test of plugin in standalone mode with PropertyConfigurator
@@ -184,16 +180,15 @@ public class FileWatchdogTestCase extends TestCase {
       copyFile(sourceFile1, configFile);
       assertTrue(configFile.exists());
       
-      URL configURL = new URL("file:"+configFile.getAbsolutePath());
-      
       // configure environment to first config file
-      Configurator configurator = new PropertyConfigurator();
-      configurator.doConfigure(configURL, LogManager.getLoggerRepository());
+      PropertyConfigurator configurator = new PropertyConfigurator();
+      configurator.doConfigure(configFile.getAbsolutePath(),
+          LogManager.getLoggerRepository());
       
       // now watch the file for changes
       FileWatchdog watchdog = new FileWatchdog();
-      watchdog.setURL(configURL);
-      watchdog.setInterval(2000);
+      watchdog.setFile(configFile.getAbsolutePath());
+      watchdog.setInterval(1000);
       watchdog.setConfigurator(PropertyConfigurator.class.getName());
       ((LoggerRepositoryEx) LogManager.getLoggerRepository()).getPluginRegistry().addPlugin(watchdog);
       watchdog.activateOptions();
@@ -209,7 +204,7 @@ public class FileWatchdogTestCase extends TestCase {
       copyFile(sourceFile2, configFile);
       
       // wait a few seconds for the watchdog to react
-      Thread.sleep(4000);
+      Thread.sleep(2000);
       
       // output some test messages
       logger.debug("debug message");
@@ -218,10 +213,8 @@ public class FileWatchdogTestCase extends TestCase {
       logger.error("error message");
       logger.fatal("fatal message");
       
-      /*
-      assertTrue(Compare.compare(getOutputFile("test2"), 
+      assertTrue(Compare.compare(getOutputFile("test2"),
         getWitnessFile("test2")));
-      */
     }
 
     public static Test suite() {
