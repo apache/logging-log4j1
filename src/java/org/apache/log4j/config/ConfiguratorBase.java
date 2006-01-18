@@ -119,7 +119,7 @@ abstract public class ConfiguratorBase implements Configurator {
       (ConsoleAppender) ll.getAppender(Constants.TEMP_CONSOLE_APPENDER_NAME);
     if (consoleAppender == null) {
       String errMsg =
-        "Could not find appender " + Constants.TEMP_LIST_APPENDER_NAME;
+        "Could not find appender " + Constants.TEMP_CONSOLE_APPENDER_NAME;
       errorList.add(new ErrorItem(errMsg));
       return;
     }
