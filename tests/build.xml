@@ -201,6 +201,7 @@
                                      Rolling, 
                                      NDC,
                                      Plugins,
+                                     FileWatchdog,
                                      CachedDateFormat,
   	                                 Schema,
   	                                 Encoding,
