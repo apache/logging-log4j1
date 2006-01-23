@@ -20,9 +20,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -30,6 +28,7 @@ import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.util.Compare;
 import org.apache.log4j.spi.LoggerRepositoryEx;
 import org.apache.log4j.joran.JoranConfigurator;
+import org.apache.log4j.Level;
 
 
 public class FileWatchdogTestCase extends TestCase {
@@ -44,15 +43,12 @@ public class FileWatchdogTestCase extends TestCase {
         super(name);
     }
 
-    public void setUp() {
-        // delete the output file if they happen to exist
-        File file = new File(getOutputFile("test1"));
-        file.delete();
-    }
-
     private void copyFile(File src, File dst) throws Exception {
+      if (dst.exists()) {
+          assertTrue(dst.delete());
+      }
+      FileOutputStream out = new FileOutputStream(dst, false);
       FileInputStream in = new FileInputStream(src);
-      FileOutputStream out = new FileOutputStream(dst);
       byte[] buffer = new byte[1024];
       int size;
       do {
@@ -73,11 +69,6 @@ public class FileWatchdogTestCase extends TestCase {
       }
     }
     
-    private String getSourceXMLConfigFile(String caseName) {
-
-        return SOURCE_CONFIG + "." + caseName + ".xml";
-    }
-
     private String getSourceXMLConfigFile(String caseName, int index) {
 
         return SOURCE_CONFIG + "." + caseName + "_" + index + ".xml";
@@ -88,11 +79,6 @@ public class FileWatchdogTestCase extends TestCase {
       return FILE + "." + caseName + ".xml";
     }
     
-    private String getSourceConfigFile(String caseName) {
-
-        return SOURCE_CONFIG + "." + caseName + ".properties";
-    }
-
     private String getSourceConfigFile(String caseName, int index) {
 
         return SOURCE_CONFIG + "." + caseName + "_" + index + ".properties";
@@ -115,6 +101,11 @@ public class FileWatchdogTestCase extends TestCase {
     
     // basic test of plugin in standalone mode
     public void test1() throws Exception {
+      File outFile = new File(getOutputFile("test1"));
+      if (outFile.exists()) {
+          assertTrue(outFile.delete());
+      }
+
       
       // set up the needed file references
       File sourceFile1 = new File(getSourceXMLConfigFile("test1", 1));
@@ -148,26 +139,36 @@ public class FileWatchdogTestCase extends TestCase {
       logger.error("error message");
       logger.fatal("fatal message");
 
+      Thread.sleep(2000);
       // copy over a new version of the config file
       copyFile(sourceFile2, configFile);
       
       // wait a few seconds for the watchdog to react
-      Thread.sleep(2000);
-      
-      // output some test messages
-      logger.debug("debug message");
-      logger.info("info message");
-      logger.warn("warn message");
-      logger.error("error message");
-      logger.fatal("fatal message");
-      
-      assertTrue(Compare.compare(getOutputFile("test1"),
-        getWitnessFile("test1")));
+      for (int i = 0; i < 40; i++) {
+          Thread.sleep(500);
+          if (logger.getLevel() == Level.INFO) {
+              // output some test messages
+              logger.debug("debug message");
+              logger.info("info message");
+              logger.warn("warn message");
+              logger.error("error message");
+              logger.fatal("fatal message");
+
+              assertTrue(Compare.compare(getOutputFile("test1"),
+                getWitnessFile("test1")));
+              return;
+          }
+      }
+      fail("Expected change in level did not occur within 20 seconds.");
     }
     
     // basic test of plugin in standalone mode with PropertyConfigurator
     public void test2() throws Exception {
-      
+      File outFile = new File(getOutputFile("test2"));
+      if (outFile.exists()) {
+            assertTrue(outFile.delete());
+      }
+
       // set up the needed file references
       File sourceFile1 = new File(getSourceConfigFile("test2", 1));
       File sourceFile2 = new File(getSourceConfigFile("test2", 2));
@@ -200,29 +201,26 @@ public class FileWatchdogTestCase extends TestCase {
       logger.error("error message");
       logger.fatal("fatal message");
 
+      Thread.sleep(2000);
       // copy over a new version of the config file
       copyFile(sourceFile2, configFile);
       
       // wait a few seconds for the watchdog to react
-      Thread.sleep(2000);
+      for (int i = 0; i < 40; i++) {
+          Thread.sleep(500);
+          if (logger.getLevel() == Level.INFO) {
+            // output some test messages
+            logger.debug("debug message");
+            logger.info("info message");
+            logger.warn("warn message");
+            logger.error("error message");
+            logger.fatal("fatal message");
       
-      // output some test messages
-      logger.debug("debug message");
-      logger.info("info message");
-      logger.warn("warn message");
-      logger.error("error message");
-      logger.fatal("fatal message");
-      
-      assertTrue(Compare.compare(getOutputFile("test2"),
-        getWitnessFile("test2")));
-    }
-
-    public static Test suite() {
-
-        TestSuite suite = new TestSuite();
-        suite.addTest(new FileWatchdogTestCase("test1"));
-        suite.addTest(new FileWatchdogTestCase("test2"));
-
-        return suite;
+            assertTrue(Compare.compare(getOutputFile("test2"),
+                getWitnessFile("test2")));
+            return;
+          }
+      }
+      fail("Expected change in level did not occur within 20 seconds.");
     }
 }
