@@ -27,18 +27,19 @@
   <property name="stem" value="org/apache/log4j"/>
 
   <!-- Destination for compiled files -->
-  <property name="javac.dest" value="./classes"/>
+  <property name="tests.javac.dest" value="./classes"/>
 
   
   <path id="tests.classpath">
     <pathelement location="${project.source.home}"/>
     <pathelement location="${project.classes.home}"/>
     <pathelement location="${tests.source.home}"/>
-    <pathelement location="${javac.dest}"/>
+    <pathelement location="${tests.javac.dest}"/>
     <pathelement location="./resources"/>
     <pathelement location="${jakarta-oro.jar}"/>
     <pathelement location="${javamail.jar}"/>
     <pathelement location="${activation.jar}"/>
+    <pathelement location="${clover.jar}"/>
     <fileset dir="./lib/">
       <include name="*.jar"/>
     </fileset>
@@ -72,7 +73,7 @@
   </target>
   
   <target name="prepare">
-    <mkdir dir="${javac.dest}" />
+    <mkdir dir="${tests.javac.dest}" />
     <mkdir dir="./output" />
     <delete file="classes/log4j.xml"/>
     <delete file="classes/log4j.properties"/>
@@ -120,10 +121,10 @@
   <!-- Build the parent project                                          -->
   <!-- ================================================================= -->  
   <target name="parentBuild">    
-    <ant dir=".." target="build.core" inheritAll="false" inheritRefs="false"/>
-    <ant dir=".." target="build.servletAPI" inheritAll="false" inheritRefs="false"/>
-    <ant dir=".." target="build.oro" inheritAll="false" inheritRefs="false"/>
-    <ant dir=".." target="build.smtp" inheritAll="false" inheritRefs="false"/>
+    <ant dir=".." target="build.core" inheritRefs="false"/>
+    <ant dir=".." target="build.servletAPI" inheritRefs="false"/>
+    <ant dir=".." target="build.oro" inheritRefs="false"/>
+    <ant dir=".." target="build.smtp" inheritRefs="false"/>
   </target>
 
   <!-- ================================================================= -->
@@ -133,7 +134,7 @@
     <!--  default value unless overriden in with.clover task -->
     <property name="haltonfailure" value="yes"/>
     <javac srcdir="${tests.source.home}"
-	   destdir="${javac.dest}" 
+	   destdir="${tests.javac.dest}" 
            excludes="${stem}/chainsaw/receivers/*.java,
                      ${stem}/selector/PassByJNDI.java,
                      ${stem}/ugli/**.java,
@@ -149,14 +150,14 @@
   <!-- Remove all generated files such as compiled class files and test  -->
   <!-- case output.                                                     -->
   <!-- ================================================================= -->
-  <target name="clean">
-    <delete dir="${javac.dest}/" />
+  <target name="clean" depends="parentClean">
+    <delete dir="${tests.javac.dest}/" />
     <delete dir="./output/" />
     <delete dir="./coverage/"/>
     <delete>
         <fileset dir="." includes="log4j.db*"/>
     </delete>
-    <delete dir="${javac.dest}/log4j.xml" />
+    <delete dir="${tests.javac.dest}/log4j.xml" />
   </target>
   
   <target name="cleanOutputDir">
@@ -719,7 +720,7 @@
   	<fail unless="xerces-available" message="Schema tests require Xerces-J 2.x on class path."/>
 	<junit printsummary="yes" fork="yes" haltonfailure="${haltonfailure}">
 	  <classpath>
-	    <pathelement path="${javac.dest}"/>
+	    <pathelement path="${tests.javac.dest}"/>
 	  	<pathelement path="${java.class.path}"/>
 	  </classpath>
 	  <jvmarg value="-Djavax.xml.parsers.SAXParserFactory=org.apache.xerces.jaxp.SAXParserFactoryImpl"/>		
