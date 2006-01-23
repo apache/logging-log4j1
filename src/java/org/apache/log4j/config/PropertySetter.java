@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,19 +17,21 @@
 // Contributors:  Georg Lundesgaard
 package org.apache.log4j.config;
 
-import org.apache.log4j.*;
+import org.apache.log4j.Appender;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.ComponentBase;
+import org.apache.log4j.spi.OptionHandler;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.MethodDescriptor;
 import java.beans.PropertyDescriptor;
-
-import java.lang.reflect.*;
-
-import java.util.*;
+import java.lang.reflect.Method;
+import java.util.Enumeration;
+import java.util.Properties;
 
 
 /**
@@ -60,7 +62,7 @@ public class PropertySetter extends ComponentBase {
   Logger logger;
   protected Object obj;
   protected Class objClass;
-  protected PropertyDescriptor[] propertyDescriptors;
+  protected PropertyDescriptor[] props;
   protected MethodDescriptor[] methodDescriptors;
 
   /**
@@ -81,15 +83,32 @@ public class PropertySetter extends ComponentBase {
   protected void introspect() {
     try {
       BeanInfo bi = Introspector.getBeanInfo(obj.getClass());
-      propertyDescriptors = bi.getPropertyDescriptors();
+      props = bi.getPropertyDescriptors();
       methodDescriptors = bi.getMethodDescriptors();
     } catch (IntrospectionException ex) {
       getLogger().error(
         "Failed to introspect " + obj + ": " + ex.getMessage());
-      propertyDescriptors = new PropertyDescriptor[0];
+      props = new PropertyDescriptor[0];
       methodDescriptors = new MethodDescriptor[0];
     }
   }
+
+    /**
+       Set the properties of an object passed as a parameter in one
+       go. The <code>properties</code> are parsed relative to a
+       <code>prefix</code>.
+
+       @param obj The object to configure.
+       @param properties A java.util.Properties containing keys and values.
+       @param prefix Only keys having the specified prefix will be set.
+     @deprecated
+    */
+    public
+    static
+    void setProperties(Object obj, Properties properties, String prefix) {
+      new PropertySetter(obj).setProperties(properties, prefix);
+    }
+
 
   /**
    * Set the properites for the object that match the <code>prefix</code> 
@@ -373,16 +392,27 @@ public class PropertySetter extends ComponentBase {
   }
 
   protected PropertyDescriptor getPropertyDescriptor(String name) {
-    if (propertyDescriptors == null) {
+    if (props == null) {
       introspect();
     }
 
-    for (int i = 0; i < propertyDescriptors.length; i++) {
-      if (name.equals(propertyDescriptors[i].getName())) {
-        return propertyDescriptors[i];
+    for (int i = 0; i < props.length; i++) {
+      if (name.equals(props[i].getName())) {
+        return props[i];
       }
     }
 
     return null;
   }
+
+    /**
+     * @deprecated
+     */
+    public
+    void activate() {
+      if (obj instanceof OptionHandler) {
+        ((OptionHandler) obj).activateOptions();
+      }
+    }
+
 }
