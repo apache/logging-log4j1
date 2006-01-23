@@ -1,20 +1,33 @@
 /*
- * Copyright (C) The Apache Software Foundation. All rights reserved.
- *
- * This software is published under the terms of the Apache Software
- * License version 1.1, a copy of which has been included with this
- * distribution in the LICENSE.txt file.
+ * Copyright 1999-2006 The Apache Software Foundation.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.apache.log4j.config;
 
-import java.io.*;
-import java.util.*;
-import org.apache.log4j.*;
+import org.apache.log4j.Appender;
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
+import java.io.PrintWriter;
+import java.util.Enumeration;
+import java.util.Hashtable;
 
 /**
    Prints the configuration of the log4j default hierarchy
-   (which needs to be auto-initialized) as a propoperties file
+   (which needs to be auto-initialized) as a properties file
    on a {@link PrintWriter}.
    
    @author  Anders Kristensen
@@ -36,7 +49,7 @@ public class PropertyPrinter implements PropertyGetter.PropertyCallback {
     this.out = out;
     this.doCapitalize = doCapitalize;
     
-    //print(out);
+    print(out);
     out.flush();
   }
   
@@ -46,8 +59,8 @@ public class PropertyPrinter implements PropertyGetter.PropertyCallback {
   }
   
   /**
-     Returns true if the specified appender name is considered to have
-     been generated, i.e. if it is of the form A[0-9]+.
+   * Returns true if the specified appender name is considered to have
+   * been generated, that is, if it is of the form A[0-9]+.
   */
   protected
   boolean isGenAppName(String name) {
@@ -65,14 +78,15 @@ public class PropertyPrinter implements PropertyGetter.PropertyCallback {
    * 
    * <p>N.B. print() can be invoked only once!
    */
-  //public void print(PrintWriter out) {
-  //printOptions(out, Category.getRoot());
-  //
-  //  Enumeration cats = Category.getCurrentCategories();
-  //while (cats.hasMoreElements()) {
-  //  printOptions(out, (Category) cats.nextElement());
-  //}
-  //}
+  public
+  void print(PrintWriter out) {
+    printOptions(out, Logger.getRootLogger());
+    
+    Enumeration cats = LogManager.getCurrentLoggers();
+    while (cats.hasMoreElements()) {
+      printOptions(out, (Logger) cats.nextElement());
+    }
+  }
   
   protected
   void printOptions(PrintWriter out, Logger cat) {
@@ -100,8 +114,8 @@ public class PropertyPrinter implements PropertyGetter.PropertyCallback {
       appenderString += ", " + name;
     }
     String catKey = (cat == Logger.getRootLogger())
-        ? "log4j.rootCategory"
-        : "log4j.category." + cat.getName();
+        ? "log4j.rootLogger"
+        : "log4j.logger." + cat.getName();
     if (appenderString != "") {
       out.println(catKey + "=" + appenderString);
     }
