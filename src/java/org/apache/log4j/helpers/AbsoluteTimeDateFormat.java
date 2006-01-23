@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2005 The Apache Software Foundation.
+ * Copyright 1999,2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,6 +54,11 @@ public class AbsoluteTimeDateFormat extends DateFormat {
   public static final String ISO8601_DATE_FORMAT = "ISO8601";
 
   /**
+     Equivalent SimpleDateFormat pattern.
+   */
+  public static final String PATTERN = "HH:mm:ss,SSS";
+
+  /**
    * SimpleDateFormat used to perform format requests.
    */
   private final SimpleDateFormat format;
@@ -62,17 +67,36 @@ public class AbsoluteTimeDateFormat extends DateFormat {
    *  Create a new instance of AbsoluteTimeDateFormat.
    */
   public AbsoluteTimeDateFormat() {
-    format = new SimpleDateFormat("HH:mm:ss,SSS");
+    format = new SimpleDateFormat(PATTERN);
   }
 
   /**
    *   Create a new instance of AbsoluteTimeDateFormat.
    *   @param timeZone time zone used in conversion, may not be null.
    */
-  public AbsoluteTimeDateFormat(TimeZone timeZone) {
-    format = new SimpleDateFormat("HH:mm:ss,SSS");
+  public AbsoluteTimeDateFormat(final TimeZone timeZone) {
+    format = new SimpleDateFormat(PATTERN);
     format.setTimeZone(timeZone);
   }
+
+    /**
+     *   Create a new instance of AbsoluteTimeDateFormat.
+     *   @param pattern SimpleDateFormat pattern.
+     */
+   protected AbsoluteTimeDateFormat(final String pattern) {
+      format = new SimpleDateFormat(pattern);
+    }
+
+    /**
+     *   Create a new instance of AbsoluteTimeDateFormat.
+     *   @param pattern SimpleDateFormat pattern.
+     *   @param timeZone time zone used in conversion, may not be null.
+     */
+   protected AbsoluteTimeDateFormat(final String pattern,
+                                    final TimeZone timeZone) {
+      format = new SimpleDateFormat(pattern);
+      format.setTimeZone(timeZone);
+    }
 
   /**
    * {@inheritDoc}
