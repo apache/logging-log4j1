@@ -18,7 +18,7 @@ package org.apache.log4j.spi;
 
 import org.apache.log4j.helpers.Constants;
 
-public class DefaultRepositorySelector implements RepositorySelector {
+public class DefaultRepositorySelector implements RepositorySelectorEx {
   LoggerRepository defaultRepository;
 
   public DefaultRepositorySelector(final LoggerRepository repository) {
@@ -27,14 +27,6 @@ public class DefaultRepositorySelector implements RepositorySelector {
 
   public LoggerRepository  getLoggerRepository() {
     return defaultRepository;
-  }
-  
-  public LoggerRepository getLoggerRepository(final String name) {
-    if(Constants.DEFAULT_REPOSITORY_NAME.equals(name)) {
-      return defaultRepository;
-    } else {
-      return null;
-    }
   }
   
   /**

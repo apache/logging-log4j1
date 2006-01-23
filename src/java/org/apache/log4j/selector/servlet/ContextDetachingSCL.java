@@ -23,6 +23,7 @@ import org.apache.log4j.helpers.JNDIUtil;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.LoggerRepositoryEx;
 import org.apache.log4j.spi.RepositorySelector;
+import org.apache.log4j.spi.RepositorySelectorEx;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
@@ -73,16 +74,19 @@ public class ContextDetachingSCL implements ServletContextListener {
 
       RepositorySelector repositorySelector =
         LogManager.getRepositorySelector();
-      LoggerRepository lr = repositorySelector.detachRepository(loggingContextName);
-      if(lr != null) {
-        Logger logger = lr.getLogger(this.getClass().getName());
-        if (lr instanceof LoggerRepositoryEx) {
-            logger.debug("About to shutdown logger repository named [{}]",
+      if (repositorySelector instanceof RepositorySelectorEx) {
+        LoggerRepository lr =
+                ((RepositorySelectorEx) repositorySelector).detachRepository(loggingContextName);
+        if(lr != null) {
+            Logger logger = lr.getLogger(this.getClass().getName());
+            if (lr instanceof LoggerRepositoryEx) {
+                logger.debug("About to shutdown logger repository named [{}]",
                     ((LoggerRepositoryEx) lr).getName());
-        } else {
-            logger.debug("About to shutdown unnamed logger repository");
+            } else {
+                logger.debug("About to shutdown unnamed logger repository");
+            }
+            lr.shutdown();
         }
-        lr.shutdown();
       }
     }
   }

@@ -34,34 +34,9 @@ package org.apache.log4j.spi;
 public interface RepositorySelector {
 
   /**
-   * Get a {@link LoggerRepository} by name. If the named repository does not 
-   * exists or is unknown to this selector, then <code>null</code> is returned.
-   *
-   * @since 1.3
-  */
-  public LoggerRepository getLoggerRepository(String name);
-  
-  /**
    * Returns a {@link LoggerRepository} depending on the context. Implementors 
    * must make sure that under all circumstances a valid (non-null) 
    * LoggerRepository is returned.
   */
   public LoggerRepository getLoggerRepository();
-  
-  /**
-   * Remove the repository with the given name from the list maintained by the 
-   * respository selector.
-   * 
-   * <p>When applications are stopped or recycled, this method should be called 
-   * to ensure that the associated repository is recycled as well. After the 
-   * repository is detached from this selector, the returned value, i.e. the 
-   * detached repository, can be used to shutdown the repository.
-   * 
-   * <p>If more than one application share the same logging context, then the
-   * applications need to coordinate their actions.  
-   * 
-   * @return The LoggerRepository instance that was detached.
-   * @since 1.3
-   */
-  public LoggerRepository detachRepository(String name);
 }
