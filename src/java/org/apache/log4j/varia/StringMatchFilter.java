@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2005 The Apache Software Foundation.
+ * Copyright 1999,2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,4 +27,42 @@ package org.apache.log4j.varia;
  */
 public class StringMatchFilter
   extends org.apache.log4j.filter.StringMatchFilter {
+    /**
+       @deprecated Options are now handled using the JavaBeans paradigm.
+       This constant is not longer needed and will be removed in the
+       <em>near</em> term.
+     */
+    public static final String STRING_TO_MATCH_OPTION = "StringToMatch";
+
+    /**
+       @deprecated Options are now handled using the JavaBeans paradigm.
+       This constant is not longer needed and will be removed in the
+       <em>near</em> term.
+     */
+    public static final String ACCEPT_ON_MATCH_OPTION = "AcceptOnMatch";
+
+    /**
+       @deprecated We now use JavaBeans introspection to configure
+       components. Options strings are no longer needed.
+    */
+    public
+    String[] getOptionStrings() {
+      return new String[] {STRING_TO_MATCH_OPTION, ACCEPT_ON_MATCH_OPTION};
+    }
+
+    /**
+       @deprecated Use the setter method for the option directly instead
+       of the generic <code>setOption</code> method.
+    */
+    public
+    void setOption(String key, String value) {
+
+      if(key.equalsIgnoreCase(STRING_TO_MATCH_OPTION)) {
+        this.setStringToMatch(value);
+      } else if (key.equalsIgnoreCase(ACCEPT_ON_MATCH_OPTION)) {
+        this.setAcceptOnMatch(new Boolean(value).booleanValue());
+      }
+    }
+
+
 }

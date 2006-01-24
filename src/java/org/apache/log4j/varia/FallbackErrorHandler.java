@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2005 The Apache Software Foundation.
+ * Copyright 1999-2006 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import org.apache.log4j.spi.LoggingEvent;
    @author Ceki G&uuml;lc&uuml;
    @deprecated As of 1.3
  */
-public final class FallbackErrorHandler implements ErrorHandler {
+public class FallbackErrorHandler implements ErrorHandler {
   public void setLogger(Logger logger) {}
   public void activateOptions() {}
   public void error(String message, Exception e, int errorCode) {}

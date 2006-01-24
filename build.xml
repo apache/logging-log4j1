@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?> 
 <!--
-  Copyright 2002, 2005 The Apache Software Foundation.
+  Copyright 2002, 2006 The Apache Software Foundation.
   
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -578,8 +578,7 @@
                 ${stem}/pattern/*.class,
                 ${stem}/or/*.class,
                 ${stem}/or/sax/*.class,
-    	        ${stem}/varia/List*Appender.class,
-		        ${stem}/varia/SoundAppender.class,
+    	        ${stem}/varia/*.class,
     	        ${stem}/plugins/*.class,
                 ${stem}/config/*.class"
       excludes="**/UnitTest**, 
