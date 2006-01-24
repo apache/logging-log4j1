@@ -531,6 +531,47 @@ public class LoggingEvent
     ndc = ndcString;
   }
 
+    /**
+        Returns the the context corresponding to the <code>key</code>
+        parameter. If there is a local MDC copy, possibly because we are
+        in a logging server or running inside AsyncAppender, then we
+        search for the key in MDC copy, if a value is found it is
+        returned. Otherwise, if the search in MDC copy returns a null
+        result, then the current thread's <code>MDC</code> is used.
+
+        <p>Note that <em>both</em> the local MDC copy and the current
+        thread's MDC are searched.
+
+        @deprecated use getProperty(String) instead.
+
+    */
+    public Object getMDC(final String key) {
+      //
+      //  could potentially return a LoggerRepository property value
+      //     when there is not an MDC property value
+      //     but the negative consequences should be minimal.
+      if(properties != null) {
+        Object r = properties.get(key);
+        if(r != null) {
+          return r;
+        }
+      }
+      return MDC.get(key);
+    }
+
+    /**
+     *  Obtain a copy of this thread's MDC prior to serialization or
+     *  asynchronous logging.
+     *
+     *  @deprecated use initializeProperties().
+    */
+    public
+    void getMDCCopy() {
+        initializeProperties();
+    }
+
+
+
   /**
    * If the properties field is null, this method creates a new properties map 
    * containing a copy of MDC context and a copy of the properites in 
@@ -556,6 +597,7 @@ public class LoggingEvent
       }
     }
   }
+
 
 
   /**
