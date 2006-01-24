@@ -488,7 +488,7 @@
            destdir="${javac.dest}"
            deprecation="${deprecation}"
            debug="${debug}"
-           includes="${stem}/db/**.java"
+           includes="${stem}/db/**.java ${stem}/jdbc/**.java"
            target="${target}"
     	   source="${source}">
       <classpath refid="compile.classpath"/>
@@ -498,7 +498,7 @@
   <target name="log4j-db.jar" depends="init, jdbcExtensionCheck, build.db">
     <mkdir dir="${jar.dest}/"/>
     <jar jarfile="${jar.dest}/${log4j-db.jar}" basedir="${javac.dest}"
-	     includes="${stem}/db/**/*.class"
+	     includes="${stem}/db/**/*.class ${stem}/jdbc/**/*.class"
   	>
       <manifest>
         <section name="org/apache/log4j/">
