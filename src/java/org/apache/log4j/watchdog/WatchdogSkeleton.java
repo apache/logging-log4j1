@@ -129,37 +129,4 @@ extends PluginSkeleton implements Watchdog {
         this.getName());
 	  }
   }
-  
-  /**
-   * Helper method to reconfigure using an InputStream.
-   * The input parameter, configurationStream, should be a stream
-   * of configuration data in a format expected by the configurator.
-   *
-   * @param srcStream The input stream that contains the data to be used
-   *   reconfiguration.
-   */
-   protected void reconfigureByInputStream(InputStream srcStream) {
-    if (this.getLogger().isDebugEnabled()) {
-      this.getLogger().debug("watchdog \"{}\" reconfiguring from InputStream");
-    }
-    
-    // create an instance of the configurator class
-    Configurator configurator = getConfiguratorInstance();
-    
-    // if able to create configurator, then reconfigure using input stream
-    if (configurator != null) {
-      try {
-        configurator.doConfigure(srcStream, this.getLoggerRepository());
-	    } catch (Exception e) {
-	  	  getLogger().error(
-        "watchdog " + this.getName() + " error working with configurator," +
-        " ignoring new configuration settings", e);
-	    }
-	  }
-	  else {
-	  	  getLogger().error(
-          "watchdog \"{}\" could not create configurator, ignoring new configuration settings",
-          this.getName());
-	  }
-  }  
 }
