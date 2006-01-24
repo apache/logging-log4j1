@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2005 The Apache Software Foundation.
+ * Copyright 1999,2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -279,11 +279,20 @@ public class JMSAppender extends AppenderSkeleton {
     topicConnection = null;
   }
 
+    /**
+     * Gets whether appender is properly configured to append messages.
+     * @return true if properly configured.
+     */
+    protected boolean checkEntryConditions() {
+        return inOrder;
+    }
+
+
   /**
      This method called by {@link AppenderSkeleton#doAppend} method to
      do most of the real appending work.  */
   public void append(LoggingEvent event) {
-    if (!inOrder) {
+    if (!checkEntryConditions()) {
       return;
     }
 
