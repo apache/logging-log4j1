@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,18 +34,17 @@ import org.apache.log4j.helpers.PlatformInfo;
  * subsequent elements correspond the stack trace with the top most entry of the
  * stack corresponding to the second entry of the 'rep' array that is rep[1].
  *
- * Note that ThrowableInformation does not store the throwable it represents.
- *
  * @author Ceki G&uuml;lc&uuml;
  *
  */
 public class ThrowableInformation implements java.io.Serializable {
   static final long serialVersionUID = -4748765566864322735L;
 
-  //private transient Throwable throwable;
+  private transient Throwable throwable = null;
   private String[] rep;
 
-  public ThrowableInformation(Throwable throwable) {
+  public ThrowableInformation(final Throwable throwable) {
+    this.throwable = throwable;
     VectorWriter vw = new VectorWriter();
     extractStringRep(throwable, vw);
     rep = vw.toStringArray();
@@ -55,9 +54,14 @@ public class ThrowableInformation implements java.io.Serializable {
     this.rep = rep;
   }
 
-  // public Throwable getThrowable() {
-  // return throwable;
-  //}
+    /**
+     * Gets throwable.
+     * @return throwable, may be null.
+     * @deprecated
+     */
+  public Throwable getThrowable() {
+     return throwable;
+  }
 
   public void extractStringRep(Throwable t, VectorWriter vw) {
     t.printStackTrace(vw);
