@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2005 The Apache Software Foundation.
+ * Copyright 1999,2006 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -84,7 +84,7 @@ public class SMTPAppender extends AppenderSkeleton {
   private int bufferSize = 512;
   private boolean locationInfo = false;
   protected CyclicBuffer cb = new CyclicBuffer(bufferSize);
-  protected MimeMessage msg;
+  protected Message msg;
   protected TriggeringEventEvaluator evaluator;
   private PatternLayout subjectLayout;
 
@@ -253,8 +253,10 @@ public class SMTPAppender extends AppenderSkeleton {
     try {
       MimeBodyPart part = new MimeBodyPart();
       
-      String computedSubject = computeSubject(triggeringEvent);
-      msg.setSubject(computedSubject, charset);
+      if (msg instanceof MimeMessage) {
+        String computedSubject = computeSubject(triggeringEvent);
+        ((MimeMessage) msg).setSubject(computedSubject, charset);
+      }
       
       StringBuffer sbuf = new StringBuffer();
       String t = layout.getHeader();
