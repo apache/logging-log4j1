@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2006 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,7 @@
 package org.apache.log4j.watchdog;
 
 import java.io.File;
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.net.URL;
 
 /**
  * Implements a watchdog to watch a file.  When the file changes, determined by
@@ -32,6 +30,7 @@ public class FileWatchdog extends TimedLocationWatchdog {
 
   /** The file being watched. */
   private File watchedFile;
+  private URL watchedURL;
 
   /**
    * Sets the path of the file to use and watch for configuration changes.
@@ -63,6 +62,20 @@ public class FileWatchdog extends TimedLocationWatchdog {
     }
 
     watchedFile = new File(filePath);
+    try {
+        //
+        //   attempt to invoke JDK 1.4's File.toURI and URI.toURL methods
+        //       which do a better job of escaping file names than File.toURL.
+        Object uri = File.class.getMethod("toURI", null).invoke(watchedFile, null);
+        watchedURL = (URL) uri.getClass().getMethod("toURL", null).invoke(uri, null);
+    } catch(Exception ex) {
+        try {
+            watchedURL = watchedFile.toURL();
+        } catch(java.net.MalformedURLException ex2) {
+            this.getLogger().error("Watchdog {} unable to express filename {} as a URL",
+              this.getName(), watchedFile.getName());
+        }
+    }
     super.activateOptions();
   }
 
@@ -80,10 +93,9 @@ public class FileWatchdog extends TimedLocationWatchdog {
    * configuration data.
    */
   public void reconfigure() {
-    try {
-      reconfigureByInputStream(new BufferedInputStream(
-        new FileInputStream(watchedFile)));
-    } catch (FileNotFoundException e) {
+    if (watchedFile.exists() && watchedURL != null) {
+        reconfigureByURL(watchedURL);
+    } else {
         this.getLogger().error("{} watchdog cannot find file {}",
           this.getName(), watchedFile.getName());
     }
