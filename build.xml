@@ -930,6 +930,7 @@ Specify files to reformat with -Djalopy.files=PATTERN.
     <copy todir="${dist.tmp}/logging-log4j-${version}">
       <fileset dir="${base}"
                includes="src/java/**,
+               src/xdocs/**,
                docs/**,
                examples/**,
                build.xml,

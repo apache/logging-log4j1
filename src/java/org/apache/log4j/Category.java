@@ -1283,8 +1283,8 @@ public class Category implements ULogger, AppenderAttachable {
 
   /**
    * Set the resource bundle to be used with localized logging methods {@link
-   * #l7dlog(Level,String,Throwable)} and {@link
-   * #l7dlog(Level,String,Object[],Throwable)}.
+   * #l7dlog(Priority,String,Throwable)} and {@link
+   * #l7dlog(Priority,String,Object[],Throwable)}.
    *
    * @since 0.8.4
    */
