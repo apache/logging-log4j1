@@ -63,6 +63,7 @@
   <property name="log4j-smtp.jar" value="log4j-smtp-${version}.jar"/>
   <property name="log4j-db.jar" value="log4j-db-${version}.jar"/>
   <property name="log4j-nt.jar" value="log4j-nt-${version}.jar"/>
+  <property name="log4j-jmx.jar" value="log4j-jmx-${version}.jar"/>
 
 
 	<!-- Destination for documentation files -->
@@ -126,13 +127,15 @@
     build.core - compile core log4j classes. This target is dependent on JAXP, JNDI.
     
     build.jms - build classes dependent on the JMS API.
+    build.jmx - build classes dependent on the JMX API.
     build.db - build classes dependent on JDBC API
+    build.nt - build classes specific to the Windows platform
     build.smtp - build classes dependent on Java Mail API
     build.xml - build classes in the org.apache.log4j.xml package	
     build   - compile all project files
     
     log4j.jar - build the core log4j jar
-    log4j-'dep'.jar - where 'dep' is one of "optional", "jms", "db", "smtp" and "xml".
+    log4j-'dep'.jar - where 'dep' is one of "optional", "jms", "jmx", "nt", "db", "smtp" and "xml".
     jar     - build all jar files
     	
 
@@ -189,6 +192,30 @@
   	  	</fail>
     	
   </target>
+  
+
+  <target name="jmxCheck">
+    <condition property="jmx-present" value="true">
+        <and>
+            <available classname="javax.management.MBeanInfo"
+                       classpath="${jmx.jar}"/>
+            <available classname="com.sun.jdmk.comm.HtmlAdaptorServer">
+                <classpath>
+                    <pathelement location="${jmx.jar}"/>
+                    <pathelement location="${jmx-extra.jar}"/>
+                </classpath>
+            </available>
+        </and>
+    </condition>
+  	<fail unless="jmx-present">
+  		
+        Missing javax.management.* amd com.sun.jdmk.comm.HtmlAdaptorServer classes.
+  		
+        Please make sure to that the "jmx.jar" and "jmx-extra.jar" properties in build.properties 
+        file are set correctly.
+  	</fail>
+  </target>
+  
 
   <target name="jmsCheck" depends="jndiCheck">
     <available classname="javax.jms.Message" property="jms-present">
@@ -256,10 +283,10 @@
 
   <target name="build" description="Compile all log4j components."
 	      depends="init, build.core, build.oro, build.jms, build.smtp, build.db, build.nt,
-  	               build.examples"/>
+  	               build.jmx, build.examples"/>
 
   <target name="requiredepsCheck" 
-  	depends="jndiCheck,jmsCheck,oroCheck,javamailCheck,servletAPICheck,jdbcExtensionCheck,jaxpCheck"
+  	depends="jndiCheck,jmsCheck,oroCheck,javamailCheck,servletAPICheck,jdbcExtensionCheck,jaxpCheck,jmxCheck"
   	description="Compile all log4j components - fail if dependencies do not exist"
   	>
     <condition property="alldeps.exist">
@@ -271,6 +298,7 @@
         <isset property="servletAPI-present"/>         	
         <isset property="jdbcExtension-present"/>       	
         <isset property="jaxp-present"/>
+        <isset property="jmx-present"/>
       </and>
     </condition>
     <fail unless="alldeps.exist">
@@ -295,7 +323,8 @@
                      ${stem}/or/jms/*.java,
                      ${stem}/selector/servlet/*.java,
                      ${stem}/lbel/**/*.java,
-					 ${stem}/nt/**/*.java"
+					 ${stem}/nt/**/*.java.
+					 ${stem}/jmx/**.java"
     	   deprecation="${deprecation}"
     	   debug="${debug}"
     	   target="${target}"
@@ -471,6 +500,39 @@
     </jar>
   </target>
 
+
+  <!-- JMX API dependencies -->	 
+	
+  <target name="build.jmx" depends="init, jmxCheck">
+	<mkdir dir="${javac.dest}/"/>
+    <javac srcdir="${java.source.dir}"
+           debug="${debug}"
+    	   deprecation="${deprecation}"
+           destdir="${javac.dest}"
+    	   includes="${stem}/jmx/*.java"
+    	   target="${target}"
+    	   source="${source}"
+    >
+      <classpath refid="compile.classpath"/>
+    </javac>
+  </target>
+	
+  <target name="log4j-jmx.jar" depends="build.jmx"
+		          if="jmx-present">
+    <mkdir dir="${jar.dest}/"/>
+    <jar jarfile="${jar.dest}/${log4j-jmx.jar}" basedir="${javac.dest}"
+       includes="${stem}/jmx/*.class"
+    >
+    <manifest>
+      <section name="org/apache/log4j/">
+        <attribute name="Implementation-Title" value="log4j-jmx"/>
+        <attribute name="Implementation-Version" value="${version}"/>
+        <attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
+      </section>
+    </manifest>
+    </jar>
+  </target>
+
   <target name="build.servletAPI" depends="init, servletAPICheck">
 	<mkdir dir="${javac.dest}/"/>
     <javac srcdir="${java.source.dir}"
@@ -621,7 +683,7 @@
   <!-- ================================================================= -->
   <target name="jar" depends="log4j.jar, log4j-optional.jar, 
   	                          log4j-jms.jar,  log4j-smtp.jar, 
-  	                          log4j-db.jar, log4j-oro.jar, log4j-xml.jar, log4j-nt.jar">
+  	                          log4j-db.jar, log4j-oro.jar, log4j-xml.jar, log4j-nt.jar, log4j-jmx.jar">
   </target>
 
   <!-- ================================================================= -->
@@ -748,6 +810,7 @@ Specify files to reformat with -Djalopy.files=PATTERN.
                  org.apache.log4j.or,
                  org.apache.log4j.or.sax,
                  org.apache.log4j.or.jms,
+                 org.apache.log4j.jmx,
                  org.apache.log4j.pattern,
                  org.apache.log4j.rolling,
                  org.apache.log4j.rolling.helper,
@@ -842,6 +905,7 @@ Specify files to reformat with -Djalopy.files=PATTERN.
 	  	            <include name="${log4j.jar}"/>
 	  	            <include name="${log4j-db.jar}"/>
 	  	            <include name="${log4j-jms.jar}"/>
+	  	            <include name="${log4j-jmx.jar}"/>
 	  	            <include name="${log4j-nt.jar}"/>
 	  	            <include name="${log4j-optional.jar}"/>
 	  	            <include name="${log4j-oro.jar}"/>

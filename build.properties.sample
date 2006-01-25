@@ -25,6 +25,12 @@ activation.jar=${lib.home.dir}/jaf-1.0.2/activation.jar
 # API jar can be downloaded from http://java.sun.com/products/jms/docs.html
 jms.jar=${lib.home.dir}/jms1.1/lib/jms.jar
 
+# Required to build the org.apache.log4j.jmx package.
+jmx.home.dir=${lib.home.dir}/jmx-1_2_1-bin
+jmx.jar=${jmx.home.dir}/lib/jmxri.jar
+jmx-extra.jar=${jmx.home.dir}/lib/jmxtools.jar
+
+
 # Servlet api
 servlet-api.jar=${lib.home.dir}/jakarta-tomcat-5.5.9/common/lib/servlet-api.jar
 
