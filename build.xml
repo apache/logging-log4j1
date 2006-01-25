@@ -684,7 +684,8 @@
   <!-- ================================================================= -->
   <target name="jar" depends="log4j.jar, log4j-optional.jar, 
   	                          log4j-jms.jar,  log4j-smtp.jar, 
-  	                          log4j-db.jar, log4j-oro.jar, log4j-xml.jar, log4j-nt.jar, log4j-jmx.jar">
+  	                          log4j-db.jar, log4j-oro.jar, log4j-xml.jar, 
+                              log4j-nt.jar, log4j-jmx.jar, log4j-all.jar">
   </target>
 
   <!-- ================================================================= -->
