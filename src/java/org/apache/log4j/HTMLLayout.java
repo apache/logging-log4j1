@@ -219,7 +219,7 @@ public class HTMLLayout extends Layout {
   }
 
   /**
-   * Returns the value of the internalCSS option. See {@link setInternalCSS} 
+   * Returns the value of the internalCSS option. See {@link #setInternalCSS} 
    * method for details about the meaning of this option.
    * 
    * @return boolean Value of internalCSS option
@@ -365,7 +365,7 @@ public class HTMLLayout extends Layout {
   }
 
   /**
-   * @{inheritDoc}
+   * {@inheritDoc}
    */
   public String format(LoggingEvent event) {
     
