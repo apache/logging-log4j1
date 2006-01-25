@@ -32,8 +32,8 @@
   <!-- distribution directory -->
   <property name="project.home" value=".."/>
   <property name="project.dist.dir" value="${project.home}/dist"/>
-  
-  <!-- The directory where source files are stored. -->
+
+    <!-- The directory where source files are stored. -->
   <property name="project.source.home" value="${project.home}/src/java/"/>
   <property name="project.classes.home" value="${project.dist.dir}/classes/"/>
   
@@ -141,6 +141,7 @@
     <ant dir=".." target="build.servletAPI" inheritRefs="false"/>
     <ant dir=".." target="build.oro" inheritRefs="false"/>
     <ant dir=".." target="build.smtp" inheritRefs="false"/>
+    <ant dir=".." target="build.nt" inheritRefs="false"/>
   </target>
 
   <!-- ================================================================= -->
@@ -221,6 +222,7 @@
                                      FileWatchdog,
                                      CachedDateFormat,
   	                                 Encoding,
+                                     NTEventLogAppender,
   	                                 Syslog
                                      "/>
 
@@ -747,7 +749,31 @@
     </junit>
   </target>
 
-  <target name="Syslog" depends="build">
+    <target name="build.nt.init">
+        <available file="${project.dist.dir}/lib/NTEventLogAppender.dll" property="nt.dll.available"/>
+        <condition property="is-windows" value="true">
+            <os family="windows"/>
+        </condition>
+    </target>
+
+    <target name="build.nt.dll" if="is-windows" unless="nt.dll.available" depends="build.nt.init">
+        <ant dir=".." target="build.nt.dll" inheritRefs="false"/>
+    </target>
+
+  <target name="NTEventLogAppender" depends="build, build.nt.dll" if="is-windows">
+        <junit printsummary="yes" 
+            fork="yes" 
+            haltonfailure="${haltonfailure}"
+            dir="${project.dist.dir}/lib">
+            <classpath refid="tests.classpath"/>
+            <formatter type="plain" usefile="false"/>
+            <test name="org.apache.log4j.nt.NTEventLogAppenderTest" />
+        </junit>
+   </target>
+
+
+
+    <target name="Syslog" depends="build">
       <junit printsummary="yes" fork="yes" haltonfailure="${haltonfailure}">
         <classpath refid="tests.classpath"/>
         <formatter type="plain" usefile="false"/>
