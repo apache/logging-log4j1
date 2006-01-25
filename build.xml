@@ -62,9 +62,10 @@
   <property name="log4j-jms.jar" value="log4j-jms-${version}.jar"/>
   <property name="log4j-smtp.jar" value="log4j-smtp-${version}.jar"/>
   <property name="log4j-db.jar" value="log4j-db-${version}.jar"/>
+  <property name="log4j-nt.jar" value="log4j-nt-${version}.jar"/>
 
 
-  <!-- Destination for documentation files -->
+	<!-- Destination for documentation files -->
   <property name="docs.dest" value="./docs"/>
   <!-- Source directory for xml docs -->
   <property name="xdocs.src" value="./src/xdocs"/>
@@ -254,7 +255,7 @@
   </target>
 
   <target name="build" description="Compile all log4j components."
-	      depends="init, build.core, build.oro, build.jms, build.smtp, build.db,
+	      depends="init, build.core, build.oro, build.jms, build.smtp, build.db, build.nt,
   	               build.examples"/>
 
   <target name="requiredepsCheck" 
@@ -269,13 +270,13 @@
         <isset property="javamail-present"/>
         <isset property="servletAPI-present"/>         	
         <isset property="jdbcExtension-present"/>       	
-        <isset property="jaxp-present"/>         	
+        <isset property="jaxp-present"/>
       </and>
     </condition>
     <fail unless="alldeps.exist">
       Some jar files required to perform a full compile of log4j are not 
        available on the classpath.  Update build.properties as needed.
-    </fail>	
+    </fail>
   </target>
 
   <target name="build.core" depends="init, jndiCheck, jaxpCheck">
@@ -293,7 +294,8 @@
     	             ${stem}/rule/LikeRule.java,
                      ${stem}/or/jms/*.java,
                      ${stem}/selector/servlet/*.java,
-                     ${stem}/lbel/**/*.java"
+                     ${stem}/lbel/**/*.java,
+					 ${stem}/nt/**/*.java"
     	   deprecation="${deprecation}"
     	   debug="${debug}"
     	   target="${target}"
@@ -509,8 +511,80 @@
       </manifest>
     </jar>	
   </target>
-  
-  <target name="log4j-optional.jar" depends="init, build.core">
+
+	<target name="build.nt" depends="init">
+		<mkdir dir="${javac.dest}/"/>
+		<javac srcdir="${java.source.dir}"
+			   destdir="${javac.dest}"
+			   deprecation="${deprecation}"
+			   debug="${debug}"
+			   includes="${stem}/nt/**.java"
+			   target="${target}"
+			   source="${source}">
+			<classpath refid="compile.classpath"/>
+		</javac>
+	</target>
+
+    <target name="log4j-nt.jar" depends="build.nt">
+        <mkdir dir="${jar.dest}/"/>
+        <jar jarfile="${jar.dest}/${log4j-nt.jar}" basedir="${javac.dest}"
+			 includes="${stem}/nt/**/*.class">
+            <manifest>
+                <section name="org/apache/log4j/">
+                    <attribute name="Implementation-Title" value="log4j-nt"/>
+                    <attribute name="Implementation-Version" value="${version}"/>
+                    <attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
+                </section>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="build.nt.dll" depends="log4j.jar,log4j-nt.jar" description="Build NTEventLogAppender.dll">
+		<javah class="org.apache.log4j.nt.NTEventLogAppender,org.apache.log4j.Priority"
+			   destdir="${javac.dest}"
+			   classpath="${jar.dest}/${log4j.jar};${jar.dest}/${log4j-nt.jar}"/>
+		<exec executable="mc">
+			<arg value="-h"/>
+			<arg file="${javac.dest}"/>
+			<arg value="-r"/>
+			<arg file="${javac.dest}"/>
+			<arg file="${java.source.dir}org/apache/log4j/nt/EventLogCategories.mc"/>
+		</exec>
+
+		<exec executable="windres">
+			<arg value="-o"/>
+			<arg file="${javac.dest}/EventLogCategories.o"/>
+			<arg value="--include-dir=${javac.dest}"/>
+			<arg file="${javac.dest}/EventLogCategories.rc"/>
+		</exec>
+
+		<exec executable="windres">
+			<arg value="-o"/>
+			<arg file="${javac.dest}/NTEventLogAppender.o"/>
+			<arg file="${java.source.dir}org/apache/log4j/nt/NTEventLogAppender.rc"/>
+		</exec>
+
+		<property name="jni.include.dir" location="${java.home}\..\include"/>
+		<exec executable="gcc">
+			<arg value="-Wall"/>
+			<arg value="-D_JNI_IMPLEMENTATION_"/>
+			<arg value="-Wl,--kill-at"/>
+			<arg value="-I${jni.include.dir}"/>
+			<arg value="-I${jni.include.dir}\win32"/>
+			<arg value="-I${javac.dest}"/>
+			<arg value="-shared"/>
+			<arg file="${java.source.dir}org/apache/log4j/nt/nteventlog.cpp"/>
+			<arg file="${javac.dest}/NTEventLogAppender.o"/>
+			<arg file="${javac.dest}/EventLogCategories.o"/>
+			<arg value="-o"/>
+			<arg file="${jar.dest}/NTEventLogAppender.dll"/>
+		</exec>
+
+	</target>
+
+
+
+	<target name="log4j-optional.jar" depends="init, build.core">
     <mkdir dir="${jar.dest}/"/>
     <jar jarfile="${jar.dest}/${log4j-optional.jar}" basedir="${javac.dest}"
 	     includes="${stem}/net/Multicast*.class,
@@ -547,7 +621,7 @@
   <!-- ================================================================= -->
   <target name="jar" depends="log4j.jar, log4j-optional.jar, 
   	                          log4j-jms.jar,  log4j-smtp.jar, 
-  	                          log4j-db.jar, log4j-oro.jar, log4j-xml.jar">
+  	                          log4j-db.jar, log4j-oro.jar, log4j-xml.jar, log4j-nt.jar">
   </target>
 
   <!-- ================================================================= -->
@@ -601,7 +675,8 @@
     	        ${stem}/net/SocketHub*.class,
     	        ${stem}/net/Telnet*.class,
     	        ${stem}/pattern/StackPatternConverter.class,
-    	        ${stem}/DUMMY.java"
+    	        ${stem}/DUMMY.java,
+				${stem}/nt/*.class"
     	>
       <manifest>
         <attribute name="Manifest-version" value="1.0"/>
@@ -827,7 +902,7 @@ Specify files to reformat with -Djalopy.files=PATTERN.
  <!-- ================================================================= -->
  <!-- Build a complete distribution. Results go to ${dist.images}       -->
  <!-- ================================================================= -->
-  <target name="dist" depends="init, clean, requiredepsCheck, javadoc, jar, site">
+  <target name="dist" depends="init, clean, requiredepsCheck, javadoc, jar, site, build.nt.dll">
 
     <delete verbose="true">
       <fileset dir=".">
