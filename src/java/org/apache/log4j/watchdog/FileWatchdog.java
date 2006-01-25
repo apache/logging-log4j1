@@ -96,7 +96,7 @@ public class FileWatchdog extends TimedLocationWatchdog {
     if (watchedFile.exists() && watchedURL != null) {
         reconfigureByURL(watchedURL);
     } else {
-        this.getLogger().error("{} watchdog cannot find file {}",
+        this.getLogger().warn("{} watchdog cannot find file {}",
           this.getName(), watchedFile.getName());
     }
   }
