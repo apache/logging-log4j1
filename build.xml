@@ -842,6 +842,7 @@ Specify files to reformat with -Djalopy.files=PATTERN.
 	  	            <include name="${log4j.jar}"/>
 	  	            <include name="${log4j-db.jar}"/>
 	  	            <include name="${log4j-jms.jar}"/>
+	  	            <include name="${log4j-nt.jar}"/>
 	  	            <include name="${log4j-optional.jar}"/>
 	  	            <include name="${log4j-oro.jar}"/>
 	  	            <include name="${log4j-smtp.jar}"/>
