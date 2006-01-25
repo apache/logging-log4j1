@@ -20,6 +20,10 @@
   <logger name="org.apache.log4j.watchdog.FileWatchdogTestCase">
     <level value="debug"/>
   </logger>
+
+  <logger name="org.apache.log4j.watchdog.FileWatchdog">
+    <level value="error"/>
+  </logger>
   
   <root>
     <appender-ref ref="A1" />	       
