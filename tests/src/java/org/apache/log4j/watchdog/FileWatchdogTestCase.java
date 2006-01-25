@@ -127,7 +127,7 @@ public class FileWatchdogTestCase extends TestCase {
       // now watch the file for changes
       FileWatchdog watchdog = new FileWatchdog();
       watchdog.setFile(configFile.getAbsolutePath());
-      watchdog.setInterval(1000);
+      watchdog.setInterval(500);
       watchdog.setConfigurator(JoranConfigurator.class.getName());
       ((LoggerRepositoryEx) LogManager.getLoggerRepository()).getPluginRegistry().addPlugin(watchdog);
       watchdog.activateOptions();
@@ -139,13 +139,13 @@ public class FileWatchdogTestCase extends TestCase {
       logger.error("error message");
       logger.fatal("fatal message");
 
-      Thread.sleep(2000);
       // copy over a new version of the config file
       copyFile(sourceFile2, configFile);
+      configFile.setLastModified(System.currentTimeMillis());
       
-      // wait a few seconds for the watchdog to react
-      for (int i = 0; i < 40; i++) {
-          Thread.sleep(500);
+      // wait until it appears the watchdog reacts to the file change
+      for (int i = 0; i < 20; i++) {
+          Thread.sleep(1000);
           if (logger.getLevel() == Level.INFO) {
               // output some test messages
               logger.debug("debug message");
@@ -189,7 +189,7 @@ public class FileWatchdogTestCase extends TestCase {
       // now watch the file for changes
       FileWatchdog watchdog = new FileWatchdog();
       watchdog.setFile(configFile.getAbsolutePath());
-      watchdog.setInterval(1000);
+      watchdog.setInterval(500);
       watchdog.setConfigurator(PropertyConfigurator.class.getName());
       ((LoggerRepositoryEx) LogManager.getLoggerRepository()).getPluginRegistry().addPlugin(watchdog);
       watchdog.activateOptions();
@@ -201,13 +201,13 @@ public class FileWatchdogTestCase extends TestCase {
       logger.error("error message");
       logger.fatal("fatal message");
 
-      Thread.sleep(2000);
       // copy over a new version of the config file
       copyFile(sourceFile2, configFile);
-      
+      configFile.setLastModified(System.currentTimeMillis());
+
       // wait a few seconds for the watchdog to react
-      for (int i = 0; i < 40; i++) {
-          Thread.sleep(500);
+      for (int i = 0; i < 20; i++) {
+          Thread.sleep(1000);
           if (logger.getLevel() == Level.INFO) {
             // output some test messages
             logger.debug("debug message");
