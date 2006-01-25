@@ -64,6 +64,7 @@
   <property name="log4j-db.jar" value="log4j-db-${version}.jar"/>
   <property name="log4j-nt.jar" value="log4j-nt-${version}.jar"/>
   <property name="log4j-jmx.jar" value="log4j-jmx-${version}.jar"/>
+  <property name="log4j-all.jar" value="log4j-all-${version}.jar"/>
 
 
 	<!-- Destination for documentation files -->
@@ -744,6 +745,27 @@
         <attribute name="Manifest-version" value="1.0"/>
         <section name="org/apache/log4j/">
           <attribute name="Implementation-Title" value="log4j"/>
+          <attribute name="Implementation-Version" value="${version}"/>
+          <attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
+        </section>
+      </manifest>
+    </jar>
+
+  </target>
+
+  <target name="log4j-all.jar" depends="build">
+    
+    <delete file="${log4j-all.jar}" verbose="true"/>
+    <mkdir dir="${jar.dest}/"/>
+    
+    <jar jarfile="${jar.dest}/${log4j-all.jar}" basedir="${javac.dest}"
+         includes="${stem}/**/*.class" 
+         excludes="**/UnitTest**,
+    	        ${stem}/xml/test/*.class">
+      <manifest>
+        <attribute name="Manifest-version" value="1.0"/>
+        <section name="org/apache/log4j/">
+          <attribute name="Implementation-Title" value="log4j with all features"/>
           <attribute name="Implementation-Version" value="${version}"/>
           <attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
         </section>
