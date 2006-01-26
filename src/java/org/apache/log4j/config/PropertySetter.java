@@ -177,7 +177,7 @@ public class PropertySetter extends ComponentBase {
       } catch (PropertySetterException ex) {
         getLogger().warn(
           "Failed to set property [" + name + "] to value \"" + value + "\". ",
-          ex.rootCause);
+          ex.rootCause != null ? ex.rootCause : ex);
       }
     }
   }
