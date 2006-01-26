@@ -8,6 +8,27 @@
    [D] Changes affect a method or property which was previously marked as 
        deprecated.
 
+   TBD
+ - Release of version 1.3alpha-8
+ 
+ - Bugs 35452, 37965, 38304, 38395, 37740: Substantial modifications to restore 
+   binary compatibility with log4j 1.2.xx.  Restored NTEventLogAppender,
+   org.apache.log4j.jmx classes, org.apache.log4j.varia filters and
+   org.apache.log4j.helpers date formats.
+   
+ - Bug 38394: enhanced diagnostic message on configuration errors.
+ 
+ - Bug 38304: fixed incorrect error message if console appender
+   used during configuration is missing at cleanup.
+   
+ - Bug 38104: Consolidated locations of generated files.
+ 
+ - Bug 37864: Generation of binary compatibility report.
+ 
+ - Bug 37960: Updated documentation generation to use Velocity 1.4 and 
+   eliminated dependency on logging-site module.
+   
+
    October 12th, 2005
  - Release of version 1.3alpha-7
  
@@ -1335,7 +1356,7 @@ Corrected a bug where the internal prtar tzvf iority integer
  
  - Added support for the ANT build tool. Thanks to Christopher Taylor
    for supplying the build.xml file. ANT is available form
-   http://jakarta.apache.org. [*]
+   http://ant.apache.org. [*]
  
  - FileAppender's File option now accepts the values "System.out" or
    "System.err". If one these values is suppiled in a configuration
