@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004-2005 The Apache Software Foundation.
+ * Copyright 1999,2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import java.sql.Statement;
 
 import java.util.Iterator;
 import java.util.Set;
+import java.lang.reflect.*;
 
 
 /**
@@ -116,6 +117,8 @@ public class DBAppender extends AppenderSkeleton {
   static final String insertExceptionSQL =
     "INSERT INTO  logging_event_exception (event_id, i, trace_line) VALUES (?, ?, ?)";
   static final String insertSQL;
+  private static final Method GET_GENERATED_KEYS_METHOD;
+
 
   static {
     StringBuffer sql = new StringBuffer();
@@ -134,6 +137,16 @@ public class DBAppender extends AppenderSkeleton {
     sql.append("caller_line) ");
     sql.append(" VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?, ?, ?)");
     insertSQL = sql.toString();
+    //
+    //   PreparedStatement.getGeneratedKeys added in JDK 1.4
+    //
+    Method getGeneratedKeysMethod;
+    try {
+        getGeneratedKeysMethod = PreparedStatement.class.getMethod("getGeneratedKeys", null);
+    } catch(Exception ex) {
+        getGeneratedKeysMethod = null;
+    }
+    GET_GENERATED_KEYS_METHOD = getGeneratedKeysMethod;
   }
 
   ConnectionSource connectionSource;
@@ -141,6 +154,7 @@ public class DBAppender extends AppenderSkeleton {
   boolean cnxSupportsBatchUpdates = false;
   SQLDialect sqlDialect;
   boolean locationInfo = false;
+  
 
   public DBAppender() {
       super(false);
@@ -155,7 +169,11 @@ public class DBAppender extends AppenderSkeleton {
     }
 
     sqlDialect = Util.getDialectFromCode(connectionSource.getSQLDialectCode());
-    cnxSupportsGetGeneratedKeys = connectionSource.supportsGetGeneratedKeys();
+    if (GET_GENERATED_KEYS_METHOD != null) {
+        cnxSupportsGetGeneratedKeys = connectionSource.supportsGetGeneratedKeys();
+    } else {
+        cnxSupportsGetGeneratedKeys = false;
+    }
     cnxSupportsBatchUpdates = connectionSource.supportsBatchUpdates();
     if (!cnxSupportsGetGeneratedKeys && (sqlDialect == null)) {
       throw new IllegalStateException(
@@ -219,9 +237,23 @@ public class DBAppender extends AppenderSkeleton {
           
           ResultSet rs = null;
           Statement idStatement = null;
+          boolean gotGeneratedKeys = false;
           if (cnxSupportsGetGeneratedKeys) {
-              rs = insertStatement.getGeneratedKeys();
-          } else {
+              try {
+                  rs = (ResultSet) GET_GENERATED_KEYS_METHOD.invoke(insertStatement, null);
+                  gotGeneratedKeys = true;
+              } catch(InvocationTargetException ex) {
+                  Throwable target = ex.getTargetException();
+                  if (target instanceof SQLException) {
+                      throw (SQLException) target;
+                  }
+                  throw ex; 
+              } catch(IllegalAccessException ex) {
+                  getLogger().warn("IllegalAccessException invoking PreparedStatement.getGeneratedKeys", ex);
+              }
+          }
+          
+          if (!gotGeneratedKeys) {
               insertStatement.close();
               insertStatement = null;
               
@@ -295,7 +327,7 @@ public class DBAppender extends AppenderSkeleton {
                   } else {
                       insertExceptionStatement.execute();
                   }
-        }
+              }
               if (cnxSupportsBatchUpdates) {
                   insertExceptionStatement.executeBatch();
               }
@@ -304,7 +336,7 @@ public class DBAppender extends AppenderSkeleton {
           }
           
           connection.commit();
-      } catch (SQLException sqle) {
+      } catch (Throwable sqle) {
           getLogger().error("problem appending event", sqle);
       } finally {
           DBHelper.closeConnection(connection);
