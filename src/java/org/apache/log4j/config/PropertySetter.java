@@ -19,6 +19,7 @@ package org.apache.log4j.config;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.Level;
+import org.apache.log4j.Priority;
 import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.ComponentBase;
@@ -370,7 +371,7 @@ public class PropertySetter extends ComponentBase {
       } else if ("false".equalsIgnoreCase(v)) {
         return Boolean.FALSE;
       }
-    } else if (Level.class.isAssignableFrom(type)) {
+    } else if (Priority.class.isAssignableFrom(type)) {
       return OptionConverter.toLevel(v, (Level) Level.DEBUG);
     }
 
