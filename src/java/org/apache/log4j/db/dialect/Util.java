@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
+ * Copyright 1999,2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -98,10 +98,12 @@ public class Util extends ComponentBase {
    */
   public boolean supportsGetGeneratedKeys(DatabaseMetaData meta) {
     try {
-      return meta.supportsGetGeneratedKeys();
+      //
+      //   invoking JDK 1.4 method by reflection
+      //
+      return ((Boolean) DatabaseMetaData.class.getMethod("supportsGetGeneratedKeys", null).invoke(meta, null)).booleanValue();
     } catch(Throwable e) {
-      getLogger().warn("The following warning is only informative.");
-      getLogger().warn("Could not call supportsGetGeneratedKeys method. This may be recoverable");
+      getLogger().info("Could not call supportsGetGeneratedKeys method. This may be recoverable");
       return false;
     }
   }
@@ -115,7 +117,7 @@ public class Util extends ComponentBase {
     try {
       return meta.supportsBatchUpdates();
     } catch(Throwable e) {
-      getLogger().warn("Missing DatabaseMetaData.supportsBatchUpdates method.");
+      getLogger().info("Missing DatabaseMetaData.supportsBatchUpdates method.");
       return false;
     }
   }

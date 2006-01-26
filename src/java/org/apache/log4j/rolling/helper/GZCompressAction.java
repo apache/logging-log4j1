@@ -1,5 +1,5 @@
 /*
- * Copyright 1999,2005 The Apache Software Foundation.
+ * Copyright 1999,2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -104,7 +104,7 @@ public final class GZCompressAction extends ActionBase {
     final ULogger logger) throws IOException {
     if (source.exists()) {
       FileInputStream fis = new FileInputStream(source);
-      FileOutputStream fos = new FileOutputStream(destination, false);
+      FileOutputStream fos = new FileOutputStream(destination);
       GZIPOutputStream gzos = new GZIPOutputStream(fos);
       byte[] inbuf = new byte[8102];
       int n;
