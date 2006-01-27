@@ -819,9 +819,10 @@ Specify files to reformat with -Djalopy.files=PATTERN.
   <target name="javadoc" depends="init">
     
     <mkdir dir="${javadoc.dest}" />
+    <mkdir dir="${javadoc.api.dest}" />
     
     <javadoc
-             destdir="${javadoc.dest}"
+             destdir="${javadoc.api.dest}"
              packagenames="org.apache.log4j,
                  org.apache.log4j.db,
                  org.apache.log4j.db.dialect,
@@ -870,8 +871,8 @@ Specify files to reformat with -Djalopy.files=PATTERN.
 
     <!-- Extra files referenced by JavaDocs -->
     <copy file="${java.source.dir}/org/apache/log4j/xml/log4j.dtd"
-          tofile="${javadoc.dest}/org/apache/log4j/xml/log4j.dtd" />
-    <copy todir="${javadoc.dest}/org/apache/log4j/xml/examples">
+          tofile="${javadoc.api.dest}/org/apache/log4j/xml/log4j.dtd" />
+    <copy todir="${javadoc.api.dest}/org/apache/log4j/xml/examples">
       <fileset dir="${java.source.dir}/org/apache/log4j/xml/examples">
         <include name="sample*.xml" />
         <include name="XMLSample.java" />
@@ -1017,21 +1018,25 @@ Specify files to reformat with -Djalopy.files=PATTERN.
     
     <copy todir="${dist.tmp}/logging-log4j-${version}">
       <fileset dir="${base}"
-               includes="src/java/**,
-               src/xdocs/**,
-               docs/**,
-               examples/**,
-               build.xml,
-               build.properties.sample,
-               INSTALL.txt,
-               LICENSE.txt,
-      	       ${jar.dest}/**"
-               excludes="**/*.bak, 
-               **/goEnv.bat,
-               docs/pub-support/*,
-               src/java/org/apache/log4j/test/**/*,
-               **/.#*"
-               />
+         includes="src/java/**,
+         src/xdocs/**,
+         docs/**,
+         examples/**,
+         build.xml,
+         build.properties.sample,
+         INSTALL.txt,
+         LICENSE.txt"
+         excludes="**/*.bak,
+         **/goEnv.bat,
+         docs/pub-support/*,
+         src/java/org/apache/log4j/test/**/*,
+         **/.#*,
+         examples/classes/**"
+         />
+      <fileset dir="${dist.dir}"
+        includes="docs/**,
+        lib/**"
+        />
     </copy>
     
     <tar tarfile="${dist.images}/logging-log4j-${version}.tar.gz"
