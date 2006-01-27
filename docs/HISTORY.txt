@@ -27,7 +27,8 @@
  
  - Bug 37960: Updated documentation generation to use Velocity 1.4 and 
    eliminated dependency on logging-site module.
-   
+
+ - Bug 38406: Removed inadvertent JDK 1.4 dependencies.   
 
    October 12th, 2005
  - Release of version 1.3alpha-7
