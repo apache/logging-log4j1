@@ -602,30 +602,40 @@
         </jar>
     </target>
 
+    <!--
+        Regenerates resource files from EventLogCategories.mc.  Avoids
+        need for Microsoft Platform SDK unless you are modifying EventLogCategories.mc
+    -->
+    <target name="update.nt.msg" description="Update EventLogCategories.rc from .mc">
+        <property name="msg.out.dir" location="${java.source.dir}org/apache/log4j/nt"/>
+        <exec executable="mc">
+            <arg value="-h"/>
+            <arg file="${msg.out.dir}"/>
+            <arg value="-r"/>
+            <arg file="${msg.out.dir}"/>
+            <arg file="${java.source.dir}org/apache/log4j/nt/EventLogCategories.mc"/>
+        </exec>
+    </target>
+    
     <target name="build.nt.dll" depends="log4j.jar,log4j-nt.jar" description="Build NTEventLogAppender.dll">
-		<javah class="org.apache.log4j.nt.NTEventLogAppender,org.apache.log4j.Priority"
+        <!--  requires MinGW on path.  If cygwin is on path, MinGW must be before it -->
+        <exec executable="windres" dir="${java.source.dir}/org/apache/log4j/nt/">
+            <arg value="-o"/>
+            <arg file="${javac.dest}/EventLogCategories.o"/>
+            <arg value="--include-dir=${javac.dest}"/>
+            <arg file="${java.source.dir}/org/apache/log4j/nt/EventLogCategories.rc"/>
+        </exec>
+
+        <exec executable="windres">
+            <arg value="-o"/>
+            <arg file="${javac.dest}/NTEventLogAppender.o"/>
+            <arg file="${java.source.dir}org/apache/log4j/nt/NTEventLogAppender.rc"/>
+        </exec>
+
+        <javah class="org.apache.log4j.nt.NTEventLogAppender,org.apache.log4j.Priority"
 			   destdir="${javac.dest}"
 			   classpath="${jar.dest}/${log4j.jar};${jar.dest}/${log4j-nt.jar}"/>
-		<exec executable="mc">
-			<arg value="-h"/>
-			<arg file="${javac.dest}"/>
-			<arg value="-r"/>
-			<arg file="${javac.dest}"/>
-			<arg file="${java.source.dir}org/apache/log4j/nt/EventLogCategories.mc"/>
-		</exec>
 
-		<exec executable="windres">
-			<arg value="-o"/>
-			<arg file="${javac.dest}/EventLogCategories.o"/>
-			<arg value="--include-dir=${javac.dest}"/>
-			<arg file="${javac.dest}/EventLogCategories.rc"/>
-		</exec>
-
-		<exec executable="windres">
-			<arg value="-o"/>
-			<arg file="${javac.dest}/NTEventLogAppender.o"/>
-			<arg file="${java.source.dir}org/apache/log4j/nt/NTEventLogAppender.rc"/>
-		</exec>
 
 		<property name="jni.include.dir" location="${java.home}\..\include"/>
 		<exec executable="gcc">
@@ -991,7 +1001,7 @@ Specify files to reformat with -Djalopy.files=PATTERN.
  <!-- ================================================================= -->
  <!-- Build a complete distribution. Results go to ${dist.images}       -->
  <!-- ================================================================= -->
-  <target name="dist" depends="init, clean, requiredepsCheck, javadoc, jar, site">
+  <target name="dist" depends="init, clean, requiredepsCheck, javadoc, jar, site, build.nt.dll">
 
     <delete verbose="true">
       <fileset dir=".">
