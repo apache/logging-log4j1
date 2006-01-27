@@ -407,8 +407,8 @@ public class LogFilePatternReceiver extends Receiver {
   }
 
   /**
-   * Read, parse and optionally tail the log file, converting entries into logging events
-   * <p>
+   * Read, parse and optionally tail the log file, converting entries into logging events.
+   * 
    * A runtimeException is thrown if the logFormat pattern is malformed 
    * according to ORO's Perl5Compiler.
    * 
