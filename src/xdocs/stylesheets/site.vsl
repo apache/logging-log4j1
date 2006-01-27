@@ -124,11 +124,6 @@
          <a href="http://logging.apache.org/">
            <img src="http://logging.apache.org/images/ls-logo.jpg" border="0"/>
          </a>
-         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-         <a href="http://apachecon.com/2005/US/">
-           <img src="http://apache.org/images/ac2005us_blue_184x90.jpg" />
-         </a>
        <td align="right">
            #if ($project.getChild("logo"))
              #set ( $logoString = $project.getChild("logo").getAttributeValue("href") )
@@ -304,7 +299,7 @@
              
                 <!-- FOOTER -->
               <div align="center"><font color="$bodylink" size="-1"><em>
-                 Copyright &#169; 1999-2005, Apache Software Foundation
+                 Copyright &#169; 1999-2006, Apache Software Foundation
                </em></font></div>
 
            <!-- END main table --> 

@@ -868,7 +868,7 @@ Specify files to reformat with -Djalopy.files=PATTERN.
              doctitle="log4j version ${version}&lt;br&gt;API Specification"
              windowtitle="Log4j Version ${version}"
              header="&lt;b&gt;Log4j ${version}&lt;/b&gt;"
-             bottom="Copyright 2000-2005 Apache Software Foundation.">
+             bottom="Copyright 2000-2006 Apache Software Foundation.">
       <sourcepath>
          <pathelement path="${java.source.dir}"/>
       </sourcepath>
