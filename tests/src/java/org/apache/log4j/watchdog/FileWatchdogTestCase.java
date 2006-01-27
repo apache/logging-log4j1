@@ -47,7 +47,7 @@ public class FileWatchdogTestCase extends TestCase {
       if (dst.exists()) {
           assertTrue(dst.delete());
       }
-      FileOutputStream out = new FileOutputStream(dst, false);
+      FileOutputStream out = new FileOutputStream(dst);
       FileInputStream in = new FileInputStream(src);
       byte[] buffer = new byte[1024];
       int size;
