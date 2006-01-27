@@ -8,13 +8,16 @@
    [D] Changes affect a method or property which was previously marked as 
        deprecated.
 
-   TBD
+   January 26th, 2006
  - Release of version 1.3alpha-8
- 
+   
  - Bugs 35452, 37965, 38304, 38395, 37740: Substantial modifications to restore 
    binary compatibility with log4j 1.2.xx.  Restored NTEventLogAppender,
    org.apache.log4j.jmx classes, org.apache.log4j.varia filters and
-   org.apache.log4j.helpers date formats.
+   org.apache.log4j.helpers date formats. (Please note that the
+   NTEventLogAppender dll is not packaged with this release, but the build
+   target (build.nt.dll) is available to build it locally if needed.  The next
+   release will contain the build dll.)
    
  - Bug 38394: enhanced diagnostic message on configuration errors.
  
@@ -28,7 +31,13 @@
  - Bug 37960: Updated documentation generation to use Velocity 1.4 and 
    eliminated dependency on logging-site module.
 
- - Bug 38406: Removed inadvertent JDK 1.4 dependencies.   
+ - Bug 38406: Removed inadvertent JDK 1.4 dependencies.
+ 
+ - Removed org.apache.log4j.watchdog.TimedURLWatchdog in favor of
+   org.apache.log4j.watchdog.TimedLocationWatchdog.  TimedLocationWatchdog is
+   more generic in that is uses a String to describe the location instead of a
+   URL.  FileWatchdog inherits from this class and the future HttpWatchdog will
+   as well.
 
    October 12th, 2005
  - Release of version 1.3alpha-7
