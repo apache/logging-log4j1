@@ -222,7 +222,6 @@
                                      FileWatchdog,
                                      CachedDateFormat,
   	                                 Encoding,
-                                     NTEventLogAppender,
   	                                 Syslog
                                      "/>
 
