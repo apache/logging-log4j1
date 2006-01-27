@@ -48,7 +48,7 @@ import org.apache.log4j.spi.LoggingEvent;
  */
 public class UDPAppender extends AppenderSkeleton implements PortBased{
   /**
-     The default port number for the UDP packets. (9991).
+    * The default port number for the UDP packets, 9991.
   */
   public static final int DEFAULT_PORT = 9991;
 

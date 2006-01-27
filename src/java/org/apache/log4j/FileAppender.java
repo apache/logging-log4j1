@@ -40,7 +40,8 @@ import java.io.Writer;
  * */
 public class FileAppender extends WriterAppender {
   /** 
-   * Append to or truncate the file? The default value for this variable is 
+   * Controls whether to append to or truncate an existing file. 
+   * The default value for this variable is 
    * <code>true</code>, meaning that by default a <code>FileAppender</code> will
    *  append to an existing file and not truncate it. 
    * 

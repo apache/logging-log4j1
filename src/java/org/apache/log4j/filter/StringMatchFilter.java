@@ -20,7 +20,7 @@ import org.apache.log4j.spi.Filter;
 import org.apache.log4j.spi.LoggingEvent;
 
 /**
-   This is a very simple filter based on string matching.<br/>
+   This is a very simple filter based on string matching.
 
    <p>The filter admits two options <b>StringToMatch</b> and
    <b>AcceptOnMatch</b>. If there is a match between the value of the
