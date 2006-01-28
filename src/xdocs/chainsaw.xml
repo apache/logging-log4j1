@@ -25,7 +25,7 @@
  		<li><a href="http://logging.apache.org/log4j/docs/webstart/chainsaw/chainsaw.dmg">OS X 'native' distribution</a> <font size="-1">(uses Java still, but looks like a real OSX application)</font></li>
  		<li><a href="http://logging.apache.org/log4j/docs/webstart/chainsaw/chainsaw-bundle.zip">Unix/Dos standalone</a> <font size="-1">(.bat/.sh)</font></li>
  		 <p/>	<ul>
- 				<li><font size="-1"><a href="#VFSNotes">Important Distribution notes</a></font></li>
+ 				<li><font size="-1"><a href="#VFSNotes"><b>Important Distribution notes!!/Using VFS with Chainsaw</b></a></font></li>
  			</ul>
  	</ul>
  </p>
@@ -85,7 +85,9 @@
 		Several VFS filestore implementation jars cannot be shipped with Chainsaw because of licensing issues.  The log4j dev team has chosen to not distribute VFS
 		with the Web Start version, however you can follow these steps to enable the VFS components inside Chainsaw.
 		<ol>
-			<li>Download VFS &amp; Commons Logging Jars</li>
+			<li>Download the <a href="http://logging.apache.org/log4j/docs/webstart/chainsaw/log4j-chainsaw-vfs.jar">VFS extension</a> to Chainsaw</li>
+			<li>Download <a href="http://cvs.apache.org/builds/jakarta-commons/nightly/commons-vfs/">VFS</a></li>
+			<li>Download <a href="http://jakarta.apache.org/site/downloads/downloads_commons-logging.cgi">Commons Logging</a> Jars</li>
 			<li>Download the VFS <a href="http://jakarta.apache.org/commons/vfs/download.html">filestore implementation jars</a> you wish to use</li>
 			<li>Place all these jars in your .chainsaw/plugins directory (the .chainsaw directory is in your home directory)</li>
 			<li>Start Chainsaw, which should now recognize the existence of VFS components and allow you to use such things as the VFSLogFilePatternReceiver</li>
