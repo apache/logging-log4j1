@@ -1,0 +1,280 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<!-- Content Stylesheet for Site -->
+
+    
+    
+    
+        
+<!-- start the processing -->
+    <!-- ====================================================================== -->
+    <!-- GENERATED FILE, DO NOT EDIT, EDIT THE XML FILE IN xdocs INSTEAD! -->
+    <!-- Main Page Section -->
+    <!-- ====================================================================== -->
+    <html>
+        <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+
+                                                    <meta name="author" value="Ceki Gülcü">
+            <meta name="email" value="not@disclosed">
+            
+            
+                                    
+                         
+            <link href="./css/site.css" rel="stylesheet" type="text/css"/>
+                                   
+
+            <title>Log4j project - Log4j error codes</title>
+        </head>
+
+        <body bgcolor="#ffffff" text="#000000" link="#525D76">        
+           <!-- START Header table --> 
+                     <table class="banner" border="0">
+     <tr>
+       <td valign="top">
+         <a href="http://logging.apache.org/">
+           <img src="http://logging.apache.org/images/ls-logo.jpg" border="0"/>
+         </a>
+       <td align="right">
+                              	       <a href="http://logging.apache.org/log4j/docs/">
+                 <img src="./images/logo.jpg" alt="The log4j project" border="0"/>
+      	       </a>
+                               </td>
+     </tr>
+   </table>
+              <!-- END Header table --> 
+
+	   <div class="centercol">
+             <hr noshade="" size="1"/>
+		       
+                                       <center>
+      <h2>Log4j error messages and their meanings</h2>
+      <h3>Ceki  Gülcü <br />
+      November 2004, last updated on December 17th, 2004</h3>
+    </center>
+                                                                                                                                                                                         
+            
+  
+                                        <hr/>
+
+  
+                                                        <div class="big">
+        <a name="log4j_dtd">
+         <table>
+            <tr>
+             <td valign="top"><b>Message:</b></td>
+             <td class="msg_title">The 'log4j.dtd' is no longer used nor needed.</td>
+            </tr>
+         </table> 
+        </a>
+      </div>
+      <div class="msg_meaning">
+        
+        <p>Given syntactical flexiblilty that
+        <code>JoranConfigrator</code> supports, it is no longer
+        possible to express this syntatical range with a DTD. Thus,
+        new log4j configuration files in XML should follow the general
+        template.
+        </p>
+
+        <p class="red big">Good:</p>
+
+        <pre>&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+<b>&lt;!DOCTYPE configuration&gt;</b>
+
+&lt;configuration xmlns='http://logging.apache.org/'&gt;
+  ...
+&lt;/configuration&gt;
+        </pre>
+
+        <p>However, <code>JoranConfigurator</code> will continue to
+        parse your old XML configuration files which previously
+        required a reference to <code>log4j.dtd</code>. Thus, altough
+        deprecated, the following form will continue to be parsed
+        correctly.
+        </p>
+
+        <p class="red big">Deprecated:</p>
+
+          <pre>&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+<b>&lt;!DOCTYPE log4j:configuration SYSTEM "log4j.dtd"&gt;</b>
+
+&lt;log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'&gt;
+  ...
+&lt;/log4j:configuration&gt;
+        </pre>
+     
+
+        <p>Using this deprecated form will generate the above mentioned
+        error message along with an error from the XML parser.
+        </p>
+
+      
+      </div>
+                <div class="big">
+        <a name="tbr_fnp_not_set">
+         <table>
+            <tr>
+             <td valign="top"><b>Message:</b></td>
+             <td class="msg_title">The <b>FileNamePattern</b> option must be set before
+             using <code>TimeBasedRollingPolicy</code> or
+             <code>FixedWindowRollingPolicy</code>.
+      </td>
+            </tr>
+         </table> 
+        </a>
+      </div>
+      <div class="msg_meaning">
+        
+        <p>The <b>FileNamePattern</b> option for both
+        <code>TimeBasedRollingPolicy</code> and
+        <code>FixedWindowRollingPolicy</code> is mandatory.
+        </p>
+      
+      </div>
+                <div class="big">
+        <a name="appender_order">
+         <table>
+            <tr>
+             <td valign="top"><b>Message:</b></td>
+             <td class="msg_title">Could not find an appender named [XYZ]. Did you define it below in the config file?</td>
+            </tr>
+         </table> 
+        </a>
+      </div>
+      <div class="msg_meaning">
+        
+        <p>Whereas the order of declatation of appenders did not
+        matter in log4j 1.2, in log4j version 1.3 and later, any
+        appender referenced at a given point must have been already
+        declared above that point. In practice though, only
+        configuration files declaring an <code>AsyncAppender</code>
+        may be affected by this change and only if the appenders
+        embeded in th <code>AsyncAppender</code> are declared below it
+        instead of being declared above it.
+        </p>
+
+        <p>For example, the following config file will no longer work.</p>
+
+        <p class="red big">Bad:</p>
+
+        <pre class="source">&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+&lt;!DOCTYPE log4j:configuration&gt;
+
+&lt;log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'&gt;
+
+  &lt;appender name="<b class="red">ASYNC</b>" class="org.apache.log4j.AsyncAppender"&gt;
+    &lt;appender-ref ref="FILE" /&gt;
+  &lt;/appender&gt;
+
+   &lt;appender name="<b>FILE</b>" class="org.apache.log4j.FileAppender"&gt;
+    &lt;param name="File" value="myapp.log"/&gt;
+    ...
+  &lt;/appender&gt;
+
+  &lt;root&gt;
+    &lt;level value ="debug" /&gt;
+    &lt;appender-ref ref="ASYNC" /&gt;
+  &lt;/root&gt;
+
+&lt;/log4j:configuration&gt;
+        </pre>
+
+        <p>It should be changed to the following form.</p>
+
+        <p class="red big">Good:</p>
+
+        <pre class="source">&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+&lt;!DOCTYPE configuration&gt;
+
+&lt;configuration xmlns='http://logging.apache.org/'&gt;
+
+   &lt;appender name="<b class="red">FILE</b>" class="org.apache.log4j.FileAppender"&gt;
+     &lt;param name="File" value="myapp.log"/&gt;
+      ...
+   &lt;/appender&gt;
+
+  &lt;appender name="<b>ASYNC</b>" class="org.apache.log4j.AsyncAppender"&gt;
+    &lt;appender-ref ref="FILE" /&gt;
+  &lt;/appender&gt;
+
+  &lt;root&gt;
+    &lt;level value ="debug" /&gt;
+    &lt;appender-ref ref="ASYNC" /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;
+        </pre>
+
+
+      
+      </div>
+      
+
+             
+                <!-- FOOTER -->
+              <div align="center"><font color="#525D76" size="-1"><em>
+                 Copyright &#169; 1999-2006, Apache Software Foundation.<br />
+Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.
+               </em></font></div>
+
+           <!-- END main table --> 
+
+           <!-- LEFT SIDE NAVIGATION -->
+             <!-- ============================================================ -->
+  <div class="leftcol">
+               <div class="menu_header">Log4j Project</div>
+              	 <div class="menu_item">        <a href="./index.html">Introduction</a>
+  </div>
+              	 <div class="menu_item">        <a href="./download.html">Download</a>
+  </div>
+              	 <div class="menu_item">        <a href="./documentation.html">Documentation</a>
+  </div>
+              	 <div class="menu_item">        <a href="./chainsaw.html">Chainsaw</a>
+  </div>
+              	 <div class="menu_item">        <a href="./plan.html">Roadmap</a>
+  </div>
+              	 <div class="menu_item">        <a href="http://wiki.apache.org/logging-log4j/Log4JProjectPages">Wiki</a>
+  </div>
+              	 <div class="menu_item">        <a href="./history.html">History</a>
+  </div>
+                  <div class="menu_header">Logging Services</div>
+              	 <div class="menu_item">        <a href="http://logging.apache.org/">Home page</a>
+  </div>
+              	 <div class="menu_item">        <a href="http://logging.apache.org/site/news.html">News</a>
+  </div>
+              	 <div class="menu_item">        <a href="http://logging.apache.org/site/mailing-lists.html">Mailing Lists</a>
+  </div>
+              	 <div class="menu_item">        <a href="http://logging.apache.org/site/bugreport.html">Bug Reporting</a>
+  </div>
+                  <div class="menu_header">Translations</div>
+              	 <div class="menu_item">        <a href="http://jakarta.apache-korea.org/log4j/index.html">Korean</a>
+  </div>
+              	 <div class="menu_item">        <a href="http://www.ingrid.org/jajakarta/log4j/">Japanese</a>
+  </div>
+             </div> 
+   
+
+        </body>
+    </html>
+<!-- end the processing -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
