@@ -8,7 +8,7 @@
    [D] Changes affect a method or property which was previously marked as 
        deprecated.
 
-   January 26th, 2006
+   January 30th, 2006
  - Release of version 1.3alpha-8
    
  - Bugs 35452, 37965, 38304, 38395, 37740: Substantial modifications to restore 
