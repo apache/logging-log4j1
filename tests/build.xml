@@ -56,6 +56,8 @@
     <pathelement location="${javamail.jar}"/>
     <pathelement location="${activation.jar}"/>
     <pathelement location="${clover.jar}"/>
+    <pathelement location="${xml-api.jar}"/>
+    <pathelement location="${xml-impl.jar}"/>
     <fileset dir="./lib/">
       <include name="*.jar"/>
     </fileset>
@@ -222,7 +224,8 @@
                                      FileWatchdog,
                                      CachedDateFormat,
   	                                 Encoding,
-  	                                 Syslog
+  	                                 Syslog,
+                                     NTEventLogAppender
                                      "/>
 
 
