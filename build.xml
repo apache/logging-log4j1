@@ -99,8 +99,8 @@
     <pathelement location="${javac.dest}"/>
     <pathelement location="${javamail.jar}"/>
     <pathelement location="${activation.jar}"/>
-    <pathelement location="${jaxp.jaxp.jar}"/>
-    <pathelement location="${jaxp.parser.jar}"/>
+    <pathelement location="${xml-api.jar}"/>
+    <pathelement location="${xml-impl.jar}"/>
     <pathelement location="${jms.jar}"/>
     <pathelement location="${jmx.jar}"/>
     <pathelement location="${jmx-extra.jar}"/>
