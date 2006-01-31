@@ -1,0 +1,175 @@
+
+===========
+Using log4j
+===========
+	
+1) First untar or unzip the distribution file.
+
+2) Assuming you chose to extract the distribution in to the
+   PATH_OF_YOUR_CHOICE, untarring the distribution file should create
+   a logging-log4j-VERSION directory, where VERSION is the log4j
+   version number, under PATH_OF_YOUR_CHOICE. We will refer to the
+   directory PATH_OF_YOUR_CHOICE/logging-log4j-VERSION/ as $LOG4J_HOME/.
+
+3) Assuming you are using log4j version 1.3, add
+   $LOG4J_HOME/log4j-1.3.jar to your CLASSPATH,
+   
+4) You can now test your installation by first compiling the following
+   simple program.
+
+    import org.apache.log4j.Logger;
+    import org.apache.log4j.BasicConfigurator;
+    
+    public class Hello {
+    
+      static Logger logger = Logger.getLogger(Hello.class);
+    
+      public static void main(String argv[]) {
+    	BasicConfigurator.configure();
+    	logger.debug("Hello world.");
+    	logger.info("What a beatiful day.");
+      }
+    }
+
+
+   After compilation, try it out by issuing the command
+
+      java Hello
+  
+   You should see log statements appearing on the console.
+
+5) Refer to the javadoc documentation and the user manual on how to
+   include log statements in your own code.
+
+=========
+JAR files
+=========
+
+The log4j distribution comes with several jar files under the
+LOG4J_HOME/ directory.
+
+* log4j-VERSION.jar  
+
+  Contains the core log4j classes. It also includes UGLI API hardwired
+  to use log4j.
+
+* log4j-smtp.jar
+
+  Contains SMTPAppender and associated classes.
+
+* log4j-oro.jar
+
+  Contains LogFilePatternReceiver and LikeRule classes which are
+  dependent on jakarta-oro.
+
+ SMTPAppender and associated classes.
+
+* log4j-xml.jar      
+  
+  Contains several optional classes from the org.apache.log4j.xml package.
+
+* log4j-optional.jar      
+
+  Contains several optional appenders/receivers from the
+  org.apache.log4j.net package.
+
+* log4j-db.jar
+
+  Contains DBAppender/DBReceiver and associated classes.
+
+* log4j-jms.jar
+
+  Contains JMSAppender/JMSReceiver and associated classes.
+
+* ugli-nop.jar 
+
+  UGLI hardwired to use the NOP implementation.
+
+* ugli-simple.jar 
+
+  UGLI hardwired to use the SimpleLogger implementation.
+
+* ugli-jdk14.jar 
+
+  UGLI hardwired to use the java.util.logger package.
+
+
+==================   
+log4j dependencies
+==================
+   
+Log4j is based on JDK 1.2 with the following additional requirements:
+
+    ----------------------------
+    Package org.apache.log4j.xml 
+    ----------------------------
+
+    The DOMConfigurator is based on the DOM Level 1 API. The
+    DOMConfigurator.configure(Element) method will work with any
+    XML parser that will pass it a DOM tree.
+    
+    The DOMConfigurator.configure(String filename) method and its variants
+    require a JAXP compatible XMLparser, for example the Apache Xerces
+    parser. Compiling the DOMConfigurator requires the presence of a
+    JAXP parser in the classpath.  
+
+    Given that Ant already ships with a compatible XML parser, you do
+    *not* need to worry about setting the parser when building,
+    i.e. compiling, log4j.
+
+    ------------
+    SMTPAppender
+    ------------
+
+    The SMTPAppender relies on the JavaMail API. It has been tested with
+    JavaMail API version 1.2. The JavaMail API requires the
+    JavaBeans Activation Framework package. You can download the
+    JavaMail API at:
+
+	http://java.sun.com/products/javamail/
+
+    and the JavaBeans Activation Framework at:
+
+	http://java.sun.com/beans/glasgow/jaf.html
+
+    ----------------------
+    DBAppender/DB Receiver
+    ----------------------
+    
+    DBAppender/DB Receiver have a dependency on the JDBC API.
+    
+    -----------
+    JMSAppender
+    -----------
+  
+    The JMSAppender requires the JMS API as well as JNDI. The JMS API
+    is usually bundled with the products of the vendors listed under
+
+       http://java.sun.com/products/jms/vendors.html
+
+    -----------------------
+    JUnit testing framework
+    -----------------------
+
+    Log4j uses the JUnit framework version 3.7 for internal unit
+    testing.  If you want to compile the source code in the tests/
+    directory, then you will need JUnit. JUnit is available from:
+
+          http://www.junit.org
+
+==============
+Building log4j
+==============
+    
+Like most java appilicatios today, log4j relies on ANT as its build
+tool. ANT is availale from "http://logging.apache.org/ant/".  ANT
+requires a build file called build.xml which is part of this
+distribution. Required components from other projects are specified in
+the build.properties and example of which is supplied in the
+build.properties.sample file.
+
+In case of problems send an e-mail note to
+log4j-user@logging.apache.org.  Please do not directly e-mail log4j
+developers. The answer to your question might be useful to other
+users. Moreover, there are many knowledgeable users on the log4j-user
+mailing lists who can quickly answer your questions.

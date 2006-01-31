@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration >
+
+<log4j:configuration xmlns:log4j="http://logging.apache.org/">
+
+  <appender name="A1" class="org.apache.log4j.FileAppender">
+  
+    <param name="Append" value="false" />
+    <param name="File"   value="output/watchdog.FileWatchdog.test1.txt" />
+    
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%p - %m%n"/>
+    </layout>
+  </appender>
+  
+  <logger name="org.apache.log4j">
+    <level value="warn"/>
+  </logger>
+  
+  <logger name="org.apache.log4j.watchdog.FileWatchdogTestCase">
+    <level value="debug"/>
+  </logger>
+
+  <logger name="org.apache.log4j.watchdog.FileWatchdog">
+    <level value="error"/>
+  </logger>
+  
+  <root>
+    <appender-ref ref="A1" />	       
+    <level value="debug" />
+  </root>
+  
+</log4j:configuration>

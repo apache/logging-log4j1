@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration>
+
+<configuration debug="false" xmlns='http://logging.apache.org/'>
+  
+  <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%-5p %c - %m%n"/>
+    </layout>     
+
+    <filter class="org.apache.log4j.filter.StringMatchFilter">
+      <param name="StringToMatch" value="enter"/>
+      <param name="AcceptOnMatch" value="false"/>
+    </filter>
+
+  </appender>
+
+  <logger name="org.apache.log4j.joran.action"> <level value="INFO"/></logger>
+  <logger name="org.apache.commons.httpclient.HttpParser"> <level value="INFO"/></logger>
+  <logger name="org.apache.commons.httpclient.HttpConnection"> <level value="INFO"/></logger>
+  <logger name="org.apache.cactus.internal"> <level value="INFO"/></logger>
+
+
+  <root>
+    <level value="DEBUG"/>
+    <appender-ref ref="CONSOLE" />
+  </root>
+</configuration>

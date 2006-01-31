@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration >
+
+<log4j:configuration debug="true" xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+
+  <appender name="PRIMARY" class="org.apache.log4j.FileAppender">
+    <errorHandler class="org.apache.log4j.varia.FallbackErrorHandler">
+      <root-ref/>
+      <appender-ref ref="FALLBACK" />
+    </errorHandler>
+
+    <param name="File" value="/xyz/x.log" />
+    <param name="Append" value="false" />	    
+    
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%-5p %c{2} - %m\n"/>
+    </layout>	    
+  </appender>
+  
+  <appender name="FALLBACK" class="org.apache.log4j.FileAppender">
+    <param name="File" value="temp.A2" />
+    <param name="Append" value="false" />
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="FALLBACK - %c - %m\n"/>
+    </layout>	    
+  </appender>
+	
+  
+  <root>
+    <priority value ="debug" />
+    <appender-ref ref="PRIMARY" />
+  </root>
+	
+</log4j:configuration>

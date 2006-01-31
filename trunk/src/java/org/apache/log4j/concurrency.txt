@@ -1,0 +1,30 @@
+
+This document describes the concurrency model used in some of the
+log4j core classes such as Logger (i.e. Category) and Hierarchy.
+
+Concurrency primitives in these classes must be studied carefully
+because concurrency problems are usually hard to reproduce.  Moreover,
+since log4j is a tool to diagnose problems, the correctness of the
+diagnosis tool (i.e log4j) must be guaranteed.
+
+We must also recognize that the data in Logger and Hierarchy are read
+frequently and written to rarely. Up to and including log4j 1.2, we
+did not differentiate between read and write operations. Instead, a
+coarse object-wide locks were used which treated reads the same as
+writes. This serializes some logging operations. A better approach
+would be to allow simultaneous reads but exclusive writes.
+
+For this purpose log4j 1.3 includes a ReaderWriterLock that allow
+simultaneous reads but exclusive writes. When readers and writers
+compete for the lock, preference is given to writers. See
+o.a.l.helpers.ReaderWriterLock.java for source code which is
+remarkably simple.
+
+The ReaderWriterLock is not reentrant. Thus, we must make sure that a
+writer owning the lock does try to reacquire the lock because any such
+attempt would result in a deadlock. Similarly, it is not safe for a
+reader owning the lock to try to reacquire it. This condition can be
+verified only if few simple instructions are allowed between the line
+acquiring the lock and the line releasing it.  If the code inside a
+protected block is complex, then either it is wrong or our model needs
+to be changed.

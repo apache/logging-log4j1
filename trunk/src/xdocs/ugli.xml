@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<document>
+
+  <properties>
+    <author email="not@disclosed">Ceki Gülcü</author>
+    <title>Universal and Generic Logging Interface (UGLI)</title>
+  </properties>
+
+  <body>
+
+    <h1>Universal and Generic Logging Interface (UGLI)</h1>
+
+      <p>The Universal and Generic Logging Interface effort has been
+      renamed as SLF4J and moved to <a href="http://www.slf4j.org">slf4j.org</a>.</p>
+        
+  </body>  
+
+</document>

@@ -1,0 +1,5 @@
+
+# Copy an appropriately modified version of  this file 
+# as 'build.properties'
+
+tomcat5x.home=/java/jakarta-tomcat-5.0.27

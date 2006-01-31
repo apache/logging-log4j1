@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration>
+
+<log4j:configuration xmlns:log4j='http://logging.apache.org/' debug="true">
+
+  <appender name="ROLLING" class="org.apache.log4j.rolling.RollingFileAppender">
+    <rollingPolicy class="org.apache.log4j.rolling.FixedWindowRollingPolicy">
+       <param name="activeFileName" value="output/filterBased-test1.log"/>
+       <param name="fileNamePattern" value="output/filterBased-test1.%i"/>
+       <param name="minIndex" value="0"/>
+    </rollingPolicy>
+    <triggeringPolicy class="org.apache.log4j.rolling.FilterBasedTriggeringPolicy">
+		<filter class="org.apache.log4j.filter.LevelRangeFilter">
+                  <param name="levelMin" value="info" />
+		</filter>
+    </triggeringPolicy>
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%m%n"/>
+    </layout>	    
+  </appender>
+  
+  <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%m%n"/>
+    </layout>
+  </appender>	    
+
+  <logger name="org.apache.log4j.rolling.FilterBasedRollingTest" additivity="false">
+    <appender-ref ref="ROLLING"/>
+    <level value="debug"/>
+  </logger>
+ 
+  <root>
+      <level value="info"/>
+      <appender-ref ref="CONSOLE"/>
+  </root>
+</log4j:configuration>

@@ -1,0 +1,143 @@
+/*
+ * Copyright 1999,2004 The Apache Software Foundation.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+===========
+Using log4j
+===========
+	
+1) First untar or unzip the distribution file.
+
+2) Assuming you chose to extract the distribution in to the
+   PATH_OF_YOUR_CHOICE, untarring the distribution file should create
+   a jakarta-log4j-VERSION directory, where VERSION is the log4j
+   version number, under PATH_OF_YOUR_CHOICE. We will refer to the
+   directory PATH_OF_YOUR_CHOICE/jakarta-log4j-VERSION/ as $LOG4J_HOME/.
+
+3) Assuming you are using log4j version 1.2, add
+   $LOG4J_HOME/dist/lib/log4j-1.2.jar to your CLASSPATH,
+   
+4) You can now test your installation by first compiling the following
+   simple program.
+
+    import org.apache.log4j.Logger;
+    import org.apache.log4j.BasicConfigurator;
+    
+    public class Hello {
+    
+      static Logger logger = Logger.getLogger(Hello.class);
+    
+      public
+      static
+      void main(String argv[]) {
+    	BasicConfigurator.configure();
+    	logger.debug("Hello world.");
+    	logger.info("What a beatiful day.");
+      }
+    }
+
+
+   After compilation, try it out by issuing the command
+
+      java Hello
+  
+   You should see log statements appearing on the console.
+
+5) Refer to the javadoc documentation and the user manual on how to
+   include log statements in your own code.
+
+=========
+JAR files
+=========
+
+The log4j distribution comes with one jar file: log4j-VERSION.jar
+under the LOG4J_HOME/dist/lib/ directory.
+
+This jar file contains all the class files of the log4j project,
+except test cases and classes from the "examples" and
+"org.apache.log4j.performance" packages.
+
+==================   
+log4j dependencies
+==================
+   
+Log4j is based on JDK 1.1 with the following additional requirements:
+
+    ----------------------------
+    Package org.apache.log4j.xml 
+    ----------------------------
+
+    The DOMConfigurator is based on the DOM Level 1 API. The
+    DOMConfigurator.configure(Element) method will work with any
+    XML parser that will pass it a DOM tree.
+    
+    The DOMConfigurator.configure(String filename) method and its variants
+    require a JAXP compatible XMLparser, for example the Apache Xerces
+    parser. Compiling the DOMConfigurator requires the presence of a
+    JAXP parser in the classpath.  
+
+    Given that Ant already ships with a compatible XML parser, you do
+    *not* need to worry about setting the parser when building,
+    i.e. compiling, log4j.
+
+    ------------
+    SMTPAppender
+    ------------
+
+    The SMTPAppender relies on the JavaMail API. It has been tested with
+    JavaMail API version 1.2. The JavaMail API requires the
+    JavaBeans Activation Framework package. You can download the
+    JavaMail API at:
+
+	http://java.sun.com/products/javamail/
+
+    and the JavaBeans Activation Framework at:
+
+	http://java.sun.com/beans/glasgow/jaf.html
+
+    -----------
+    JMSAppender
+    -----------
+  
+    The JMSAppender requires the JMS API as well as JNDI. The JMS API
+    is usually bundled with the products of the vendors listed under
+
+       http://java.sun.com/products/jms/vendors.html
+
+    -----------------------
+    JUnit testing framework
+    -----------------------
+
+    Log4j uses the JUnit framework version 3.7 for internal unit
+    testing.  If you want to compile the source code in the tests/
+    directory, then you will need JUnit. JUnit is available from:
+
+          http://www.junit.org
+
+==============
+Building log4j
+==============
+    
+Like most java appilicatios today, log4j relies on ANT as its build
+tool. ANT is availale from "http://jakarta.apache.org/ant/".  ANT
+requires a build file called build.xml which is part of this
+distribution. Required components from other projects are specified in
+the build.properties and example of which is supplied in the
+build.properties.sample file.
+
+In case of problems send an e-mail note to
+log4j-user@jakarta.apache.org.  Please do not directly e-mail any
+log4j developers. The answer to your question might be useful to other
+users. Moreover, there are many knowledgeable users on the log4j-user
+mailing lists who can quickly answer your questions.

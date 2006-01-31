@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<log4j:configuration xmlns:log4j='http://logging.apache.org/'>
+
+  <appender name="TELNET" class="org.apache.log4j.net.TelnetAppender">
+    <param name="port" value="7023"/>
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="${pattern}"/>
+    </layout>
+  </appender>
+
+  <root>
+    <level value="debug" />
+    <appender-ref ref="TELNET" />
+  </root>
+
+</log4j:configuration>

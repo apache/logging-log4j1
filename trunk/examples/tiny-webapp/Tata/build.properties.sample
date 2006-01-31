@@ -1,0 +1,14 @@
+# Sample build.properties file
+
+# The path to the web-server home
+webserver.home=/java/tomcat/
+
+# The deployment target directory on the web server
+target.webapp.dir=${webserver.home}/webapps
+
+# We need servlet to compile the various servlets.
+servlet.jar=/java/servlet.jar
+
+
+# We need log4j-x.jar to run these examples
+log4j.jar=../../../log4j-1.3alpha.jar

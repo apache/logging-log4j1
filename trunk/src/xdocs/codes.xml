@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<document>
+
+  <properties>
+    <author email="not@disclosed">Ceki Gülcü</author>
+    <title>Log4j error codes</title>
+  </properties>
+
+  <body>
+
+    <center>
+      <h2>Log4j error messages and their meanings</h2>
+      <h3>Ceki  G&#252;lc&#252; <br/>
+      November 2004, last updated on December 17th, 2004</h3>
+    </center>
+    
+    <message ref="log4j_dtd">
+      <title>The 'log4j.dtd' is no longer used nor needed.</title>
+      
+      <explanation>
+        <p>Given syntactical flexiblilty that
+        <code>JoranConfigrator</code> supports, it is no longer
+        possible to express this syntatical range with a DTD. Thus,
+        new log4j configuration files in XML should follow the general
+        template.
+        </p>
+
+        <p class="red big">Good:</p>
+
+        <pre>&lt;?xml version="1.0" encoding="UTF-8" ?>
+<b>&lt;!DOCTYPE configuration></b>
+
+&lt;configuration xmlns='http://logging.apache.org/'>
+  ...
+&lt;/configuration>
+        </pre>
+
+        <p>However, <code>JoranConfigurator</code> will continue to
+        parse your old XML configuration files which previously
+        required a reference to <code>log4j.dtd</code>. Thus, altough
+        deprecated, the following form will continue to be parsed
+        correctly.
+        </p>
+
+        <p class="red big">Deprecated:</p>
+
+          <pre>&lt;?xml version="1.0" encoding="UTF-8" ?>
+<b>&lt;!DOCTYPE log4j:configuration SYSTEM "log4j.dtd"></b>
+
+&lt;log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
+  ...
+&lt;/log4j:configuration>
+        </pre>
+     
+
+        <p>Using this deprecated form will generate the above mentioned
+        error message along with an error from the XML parser.
+        </p>
+
+      </explanation>
+    </message>
+
+
+    <message ref="tbr_fnp_not_set">
+
+      <title>The <b>FileNamePattern</b> option must be set before
+             using <code>TimeBasedRollingPolicy</code> or
+             <code>FixedWindowRollingPolicy</code>.
+      </title>
+
+      <explanation>
+        <p>The <b>FileNamePattern</b> option for both
+        <code>TimeBasedRollingPolicy</code> and
+        <code>FixedWindowRollingPolicy</code> is mandatory.
+        </p>
+      </explanation>
+
+    </message>
+
+  <message ref="appender_order">
+      <title>Could not find an appender named [XYZ]. Did you define it below in the config file?</title>
+
+      <explanation>
+        <p>Whereas the order of declatation of appenders did not
+        matter in log4j 1.2, in log4j version 1.3 and later, any
+        appender referenced at a given point must have been already
+        declared above that point. In practice though, only
+        configuration files declaring an <code>AsyncAppender</code>
+        may be affected by this change and only if the appenders
+        embeded in th <code>AsyncAppender</code> are declared below it
+        instead of being declared above it.
+        </p>
+
+        <p>For example, the following config file will no longer work.</p>
+
+        <p class="red big">Bad:</p>
+
+        <pre class="source">&lt;?xml version="1.0" encoding="UTF-8" ?>
+&lt;!DOCTYPE log4j:configuration>
+
+&lt;log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
+
+  &lt;appender name="<b class="red">ASYNC</b>" class="org.apache.log4j.AsyncAppender">
+    &lt;appender-ref ref="FILE" />
+  &lt;/appender>
+
+   &lt;appender name="<b>FILE</b>" class="org.apache.log4j.FileAppender">
+    &lt;param name="File" value="myapp.log"/>
+    ...
+  &lt;/appender>
+
+  &lt;root>
+    &lt;level value ="debug" />
+    &lt;appender-ref ref="ASYNC" />
+  &lt;/root>
+
+&lt;/log4j:configuration>
+        </pre>
+
+        <p>It should be changed to the following form.</p>
+
+        <p class="red big">Good:</p>
+
+        <pre class="source">&lt;?xml version="1.0" encoding="UTF-8" ?>
+&lt;!DOCTYPE configuration>
+
+&lt;configuration xmlns='http://logging.apache.org/'>
+
+   &lt;appender name="<b class="red">FILE</b>" class="org.apache.log4j.FileAppender">
+     &lt;param name="File" value="myapp.log"/>
+      ...
+   &lt;/appender>
+
+  &lt;appender name="<b>ASYNC</b>" class="org.apache.log4j.AsyncAppender">
+    &lt;appender-ref ref="FILE" />
+  &lt;/appender>
+
+  &lt;root>
+    &lt;level value ="debug" />
+    &lt;appender-ref ref="ASYNC" />
+  &lt;/root>
+&lt;/configuration>
+        </pre>
+
+
+      </explanation>
+
+    </message>
+  </body>
+</document>

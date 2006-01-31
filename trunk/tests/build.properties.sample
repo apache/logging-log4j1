@@ -1,0 +1,31 @@
+deprecation=on
+
+#
+#   by default assume that all necessary dependencies
+#      are relative to the user's home directory
+#
+lib.home.dir=${user.home}
+
+xml.home=/java/xerces-2_6_2 
+xml-api.jar=${xml.home}/xml-apis.jar
+xml-impl.jar=${xml.home}/xercesImpl.jar
+
+jakarta-oro.jar=${lib.home.dir}/jakarta-oro-2.0.8/jakarta-oro-2.0.8.jar
+# JavaMail API OPTIONAL; required to build the SMTPAppender
+javamail.jar=${lib.home.dir}/javamail-1.3.2/mail.jar
+activation.jar=${lib.home.dir}/jaf-1.0.2/activation.jar
+
+# SLF4J api
+slf4j-api.jar=${lib.home.dir}/slf4j-1.0-beta2/slf4j-nop.jar
+
+
+#
+#   Jalopy source code reformatter
+#
+#
+jalopy-ant.dir=${lib.home.dir}/jalopy-ant-0.6.2
+
+#
+#   Checkstyle coding convention checker
+#
+checkstyle.jar=${lib.home.dir}/checkstyle-4.0-beta2/checkstyle-all-4.0-beta2.jar

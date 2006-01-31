@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration >
+
+<log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
+
+	<appender name="A1" class="org.apache.log4j.FileAppender">
+                <param name="Append" value="false" />
+		<param name="File"   value="temp" />
+		<layout class="org.apache.log4j.PatternLayout">
+ 		    <param name="ConversionPattern"
+		           value="%-5p %c{2} - %m\n"/>
+		</layout>
+                <!-- Accept all LoggingEvents containing the string
+                "1" in the message field. -->
+		<filter class="org.apache.log4j.varia.StringMatchFilter">
+                  <param name="StringToMatch" value="1" />
+		</filter>
+                <!-- Accept all LoggingEvents containing the string
+                "2" in its message field. -->
+		<filter class="org.apache.log4j.varia.StringMatchFilter">
+                  <param name="StringToMatch" value="2" />
+		</filter>
+		<!-- Deny (filter out) everything else. -->
+		<filter class="org.apache.log4j.varia.DenyAllFilter"/>
+	</appender>
+
+	<root>
+          <appender-ref ref="A1" />	       
+	</root>
+</log4j:configuration>

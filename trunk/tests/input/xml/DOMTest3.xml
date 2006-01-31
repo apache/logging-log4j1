@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<log4j:configuration xmlns:log4j='http://logging.apache.org/'>
+  <appender name="A1" class="org.apache.log4j.FileAppender">
+
+    <param name="File"   value="output/temp.A1.3" />
+    <param name="Append" value="false" />
+
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%-5p %c{2} - %m%n"/>
+    </layout>
+  </appender>
+
+  <appender name="A2" class="org.apache.log4j.FileAppender">
+    <param name="File" value="output/temp.A2.3" />
+    <param name="Append" value="false" />
+    <layout class="org.apache.log4j.TTCCLayout">
+      <param name="DateFormat" value="ISO8601" />
+    </layout>
+  </appender>
+
+  <!-- Prevent internal log4j DEBUG messages from polluting the output. -->
+  <logger name="org.apache.log4j.joran"><level value="INFO" /></logger>
+  <logger name="org.apache.log4j.joran.action.PriorityAction"><level value="ERROR" /></logger>
+  <logger name="org.apache.log4j.config"><level value="INFO" /></logger>
+  <logger name="org.apache.log4j.FileAppender"><level value="INFO" /></logger>
+  <logger name="org.apache.log4j.xml.DOMConfigurator"><level value="INFO" /></logger>
+
+  <logger name="org.apache.log4j.xml">
+    <level value="debug" />
+    <appender-ref ref="A1" />
+  </logger>
+
+  <root>
+    <priority value ="debug" />
+    <appender-ref ref="A1" />
+    <appender-ref ref="A2" />
+  </root>
+
+</log4j:configuration>

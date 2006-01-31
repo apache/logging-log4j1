@@ -1,0 +1,89 @@
+INFO - test 1.1 - basic starting/stopping
+INFO - starting plugin1-id1
+DEBUG - plugin1-id1 is inactive
+DEBUG - plugin1-id1 activated
+INFO - stopping plugin1-id1 using plugin object
+DEBUG - plugin1-id1 shutdown
+INFO - test 1.2 - restarting and starting when already started
+INFO - restarting plugin1-id1
+DEBUG - plugin1-id1 is inactive
+DEBUG - plugin1-id1 activated
+INFO - restarting plugin1-id1 again
+DEBUG - plugin1-id1 is active
+INFO - test 1.3- stopping and stopping when already stopped
+INFO - stopping plugin1-id1
+DEBUG - plugin1-id1 shutdown
+INFO - stopping plugin1-id1 again
+INFO - test 1.4 - restarting then stopping by plugin name
+INFO - starting plugin1-id1
+DEBUG - plugin1-id1 is inactive
+DEBUG - plugin1-id1 activated
+INFO - stopping plugin1-id1 using plugin name
+DEBUG - plugin1-id1 shutdown
+INFO - test 1.5 - starting of an "equal" plugin
+INFO - starting plugin1-id1
+DEBUG - plugin1-id1 is inactive
+DEBUG - plugin1-id1 activated
+INFO - returned plugin is plugin1-id1
+INFO - starting plugin1-id2
+DEBUG - plugin1-id2 is inactive
+DEBUG - plugin equal
+DEBUG - plugin1-id1 is active
+INFO - returned plugin is plugin1-id1
+INFO - stopping plugin1-id1
+DEBUG - plugin1-id1 shutdown
+INFO - test 1.6 - starting an "equal" plugin after original stopped
+INFO - starting plugin1-id2
+DEBUG - plugin1-id2 is inactive
+DEBUG - plugin1-id2 activated
+INFO - returned plugin is plugin1-id2
+INFO - stopping plugin1-id2
+DEBUG - plugin1-id2 shutdown
+INFO - test 1.7 - starting of an "unequal" plugin with same name
+INFO - starting plugin1-id1
+DEBUG - plugin1-id1 is inactive
+DEBUG - plugin1-id1 activated
+INFO - returned plugin is plugin1-id1
+INFO - starting plugin1-id3
+DEBUG - plugin1-id3 is inactive
+DEBUG - plugin not equal, different class: org.apache.log4j.plugins.PluginTestCase$PluginTester1 != org.apache.log4j.plugins.PluginTestCase$PluginTester2
+DEBUG - plugin1-id1 shutdown
+DEBUG - plugin1-id3 activated
+INFO - returned plugin is plugin1-id3
+INFO - stopping plugin1-id3
+DEBUG - plugin1-id3 shutdown
+INFO - test 1.8 - starting of multiple plugins and stopAll
+INFO - starting plugin1-id1
+DEBUG - plugin1-id1 is inactive
+DEBUG - plugin1-id1 activated
+INFO - returned plugin is plugin1-id1
+INFO - starting plugin2-id4
+DEBUG - plugin2-id4 is inactive
+DEBUG - plugin2-id4 activated
+INFO - returned plugin is plugin2-id4
+INFO - stopping all plugins
+DEBUG - plugin in default repository shutdown
+DEBUG - plugin in default repository shutdown
+DEBUG - plugin1-id1 is inactive
+INFO - plugin1-id1 is inactive
+DEBUG - plugin2-id4 is inactive
+INFO - plugin2-id4 is inactive
+INFO - stopping all plugins again
+INFO - test 1.9 - starting of multiple plugins, stopping, and stopAll
+INFO - starting plugin1-id1
+DEBUG - plugin1-id1 is inactive
+DEBUG - plugin1-id1 activated
+INFO - returned plugin is plugin1-id1
+INFO - starting plugin2-id4
+DEBUG - plugin2-id4 is inactive
+DEBUG - plugin2-id4 activated
+INFO - returned plugin is plugin2-id4
+INFO - stopping plugin1-id1 using plugin object
+DEBUG - plugin1-id1 shutdown
+INFO - stopping all plugins
+DEBUG - plugin in default repository shutdown
+DEBUG - plugin1-id1 is inactive
+INFO - plugin1-id1 is inactive
+DEBUG - plugin2-id4 is inactive
+INFO - plugin2-id4 is inactive
+INFO - stopping all plugins again

@@ -1,0 +1,19 @@
+<!DOCTYPE html 
+  PUBLIC "-//W3C//DTD HTML 4.01//EN" 
+  "http://www.w3.org/TR/html401/strict.dtd">
+<html lang="en-US">
+<head>
+  <title>org.apache.log4j.selector package</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<body>
+    This package contains classes useful for working with Log4j in a container
+    environment where many applications need to share Log4j without stepping
+    on each other's logging configuration.
+  <p>Each of these classes implements
+    the <code>RepositorySelector</code> interface.  Only one class may be used
+    per instance of Log4j.  The container normally sets the repository selector,
+    but one may assign the selector themselves using the InitContextListener in
+    the <code>org.apache.log4j.serlvet</code> package as well.</p>
+</body>
+</html>

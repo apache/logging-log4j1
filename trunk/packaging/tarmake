@@ -1,0 +1,72 @@
+# use v as argument for verbose tar output
+
+# Note: the ${pkg}.tgz file is output in $scriptDir/../..
+
+#. .functions > /dev/null
+
+pushd $PWD > /dev/null
+
+scriptDir=$(getShellScriptDirectory)
+echo "tarmake script  directory found to be [$scriptDir]."
+
+tmp0=${scriptDir%/packaging}
+pkg=${tmp0##/*/}
+echo "Package version name found to be [$pkg]."
+
+cd $scriptDir/../..
+
+echo "tarmake current directory is [$PWD]"
+
+if [ ! -s $pkg/packaging/package-list ]
+then
+  echo "Could not find file \"package-list\" in directory $pkg/packaging."
+  echo "Current direcotry is [$PWD]."
+  exit 1
+fi
+
+
+echo;echo "Making tar file $pkg.tgz in $PWD"
+find $pkg -name "*CVS*" -o -name ".#*" -o -name "*~" -o -name \
+  "*util.old*" -o -name "*misc*" -o -name TAGS -o -name "*.avaj" \
+  -o -name make.loc  -o -name "*pending*"\
+  -o -path "*nt/Readme.txt" -o -name goEtags -o -name "JListView*"  \
+  -o -name "JTableAppender*" > $scriptDir/tar-exclude
+  
+if [ $? -ne 0 ]; then
+   echo "Find failed with exit code $?."; exit 1;
+fi 
+tar -cz${1}f ${pkg}.tgz -X $scriptDir/tar-exclude \
+ $pkg/make/\
+ $pkg/doc/\
+ $pkg/xdocs/\
+ $pkg/Makefile\
+ $pkg/build.xml\
+ $pkg/build.inc\
+ $pkg/manifest.mf\
+ $pkg/INSTALL\
+ $pkg/LICENSE.APL\
+ $pkg/*.jar\
+ $pkg/org/ \
+ $pkg/icons\
+ $pkg/classes/ \
+ $pkg/javadoc/ \
+ $pkg/packaging/package-list \
+ $pkg/packaging/.functions \
+ $pkg/packaging/initialize \
+ $pkg/packaging/install \
+ $pkg/packaging/tarmake \
+ 
+
+if [ $? -ne 0 ]; then
+   echo "tar failed with exit code $?."; exit 1;
+fi 
+
+popd > /dev/null
+
+echo "tarmake successful."
+exit 0
+
+
+
+
+

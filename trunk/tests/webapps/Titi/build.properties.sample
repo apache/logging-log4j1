@@ -1,0 +1,6 @@
+# Sample build.properties file
+
+# We need servlet to compile the various servlets.
+servlet.jar=../../lib/javax.servlet.jar
+
+

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration >
+
+<!-- This test XML file
+   - references an INEXISTENT appender in root
+   - has no appender set for root
+   - appender A1 has no output target
+-->   
+<log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
+
+	<appender name="A1" class="org.apache.log4j.FileAppender">
+                <param name="Append" value="false" />	  	
+		<layout class="org.apache.log4j.PatternLayout">
+ 		    <param name="ConversionPattern"
+		           value="---%-5p %c{2} - %m\n"/>
+		</layout>
+	</appender>
+	<category name="org.apache.log4j.xml">
+		<priority value="inherited"/>
+		<appender-ref ref="A1" />
+	</category>
+	<root>
+	       <priority value="error"/>
+	       <appender-ref ref="INEXISTENT" />	       
+	</root>
+</log4j:configuration>

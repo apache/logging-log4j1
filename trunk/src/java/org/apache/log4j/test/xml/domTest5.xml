@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration >
+
+<configuration>
+
+	<appender name="A1" class="org.apache.log4j.FileAppender">
+                <param name="Append" value="false" />
+		<param name="File"   value="temp" />
+		<layout class="org.apache.log4j.PatternLayout">
+ 		    <param name="ConversionPattern"
+		           value="%-5p %c{2} - %m\n"/>
+		</layout>
+	</appender>
+ 
+	<root>
+          <appender-ref ref="A1" />	       
+	</root>
+</configuration>

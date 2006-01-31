@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<project name="Webapp Build Script" default="compile" basedir=".">
+
+  <property environment="env"/>
+
+  <!-- The build.properties file defines variables dependent of the host machine -->
+  <property file="build.properties"/>
+  
+  <property name="log4j.home" value="${basedir}/../../.."/>
+  <property name="src.dir" value="${basedir}/src/java/"/>
+  <property name="javac.dest" value="${basedir}/classes"/>
+
+  <property name="webapp-name" value="tata"/>
+
+  <path id="compile.classpath">
+    <pathelement location="${build.home}/classes"/>
+    <pathelement location="${servlet.jar}"/>
+  </path>
+ 
+  <target name="clean" depends="">
+    <delete dir="${javac.dest}/" />
+    <delete dir="./${webapp-name}.war" />
+  </target>
+
+  <target name="compile">
+    <mkdir dir="${javac.dest}"/>
+    <javac srcdir="${src.dir}" destdir="${javac.dest}">
+      <classpath refid="compile.classpath"/>
+      <include name="wombat/*.java" />
+    </javac>
+  </target>
+
+  <target name="war" depends="compile">
+    <war warfile="${webapp-name}.war" webxml="src/WEB-INF/web.xml">
+      <classes dir="classes"/>
+      <zipfileset dir="src/html" prefix=""/>
+    </war>
+  </target>
+
+
+</project>

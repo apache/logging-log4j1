@@ -1,0 +1,50 @@
+DEBUG NDC [main] org.apache.log4j.test.Shallow Message 0
+DEBUG NDC [main] root Message 0
+ INFO NDC [main] org.apache.log4j.test.Shallow Message 1
+ INFO NDC [main] root Message 1
+ WARN NDC [main] org.apache.log4j.test.Shallow Message 2
+ WARN NDC [main] root Message 2
+ERROR NDC [main] org.apache.log4j.test.Shallow Message 3
+ERROR NDC [main] root Message 3
+FATAL NDC [main] org.apache.log4j.test.Shallow Message 4
+FATAL NDC [main] root Message 4
+DEBUG NDC [main] org.apache.log4j.test.Shallow Message 5
+java.lang.Exception: Just testing
+	at org.apache.log4j.test.Shallow.test(Shallow.java:XXX)
+	at org.apache.log4j.test.Shallow.main(Shallow.java:XXX)
+DEBUG NDC [main] root Message 5
+java.lang.Exception: Just testing
+	at org.apache.log4j.test.Shallow.test(Shallow.java:XXX)
+	at org.apache.log4j.test.Shallow.main(Shallow.java:XXX)
+ INFO NDC [main] org.apache.log4j.test.Shallow Message 6
+java.lang.Exception: Just testing
+	at org.apache.log4j.test.Shallow.test(Shallow.java:XXX)
+	at org.apache.log4j.test.Shallow.main(Shallow.java:XXX)
+ INFO NDC [main] root Message 6
+java.lang.Exception: Just testing
+	at org.apache.log4j.test.Shallow.test(Shallow.java:XXX)
+	at org.apache.log4j.test.Shallow.main(Shallow.java:XXX)
+ WARN NDC [main] org.apache.log4j.test.Shallow Message 7
+java.lang.Exception: Just testing
+	at org.apache.log4j.test.Shallow.test(Shallow.java:XXX)
+	at org.apache.log4j.test.Shallow.main(Shallow.java:XXX)
+ WARN NDC [main] root Message 7
+java.lang.Exception: Just testing
+	at org.apache.log4j.test.Shallow.test(Shallow.java:XXX)
+	at org.apache.log4j.test.Shallow.main(Shallow.java:XXX)
+ERROR NDC [main] org.apache.log4j.test.Shallow Message 8
+java.lang.Exception: Just testing
+	at org.apache.log4j.test.Shallow.test(Shallow.java:XXX)
+	at org.apache.log4j.test.Shallow.main(Shallow.java:XXX)
+ERROR NDC [main] root Message 8
+java.lang.Exception: Just testing
+	at org.apache.log4j.test.Shallow.test(Shallow.java:XXX)
+	at org.apache.log4j.test.Shallow.main(Shallow.java:XXX)
+FATAL NDC [main] org.apache.log4j.test.Shallow Message 9
+java.lang.Exception: Just testing
+	at org.apache.log4j.test.Shallow.test(Shallow.java:XXX)
+	at org.apache.log4j.test.Shallow.main(Shallow.java:XXX)
+FATAL NDC [main] root Message 9
+java.lang.Exception: Just testing
+	at org.apache.log4j.test.Shallow.test(Shallow.java:XXX)
+	at org.apache.log4j.test.Shallow.main(Shallow.java:XXX)

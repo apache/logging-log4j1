@@ -1,0 +1,8 @@
+goEnv
+build.properties
+output
+classes
+lib
+coverage
+log4j.db*
+

@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<document>
+
+  <properties>
+    <author email="not@disclosed">Ceki Gülcü</author>
+    <author email="not@disclosed">Yoav Shapira</author>
+    <title>Documentation</title>
+  </properties>
+
+  <body>
+
+    <section name="log4j documentation">
+      
+          <a
+           href="http://www.qos.ch/shop/products/eclm/"><img
+           align="right" src="images/coverSmall.png"></img></a>
+      <ul>
+        <p>
+            <li><a href="manual.html"><b>Short introduction to log4j</b></a> 
+           </li>
+        </p>
+        
+        <p>
+          <li><a href="http://www.qos.ch/shop/products/eclm/"><b>log4j: The complete manual</b></a> (commercial) 
+          </li>
+        </p>
+        
+        <p>
+          <li>
+            <b>javadoc: <a href="http://logging.apache.org/log4j/docs/api/index.html">1.2.13</a>, <a href="api/index.html">1.3 alpha 8</a></b>
+          </li>
+        </p>
+        
+        <p>
+          <li>
+            <a href="http://wiki.apache.org/logging-log4j/Log4JProjectPages"><b>Wiki</b></a>
+          </li>
+        </p>
+	
+      </ul>
+    </section>
+
+    <section name="Translations">
+       <ul>
+         <li><a
+         href="http://www.vimeworks.com/~mauricio/manualLog4J.html">Spanish
+         translation</a> of the short manual Mauricio Santacruz (<a href="http://www.vimeworks.com/~mauricio/manualLog4J.pdf">PDF</a>, <a href="http://www.vimeworks.com/~mauricio/manualLog4J.html">HTML</a>)</li>
+         <li><a href="http://www.javacore.de/jumpToDownload.php?id=8&amp;url=tutorials/schnelle/log4jmanual.pdf">German translation</a> of the short manual, courtesy of Dirk Schnelle. (PDF only at this time)</li>
+      </ul>
+    </section>
+    
+    
+    <section name="Articles on log4j">
+      <ul>
+        
+        <p>
+          <li><a href="http://www.vipan.com/htdocs/log4jhelp.html">Don't Use System.out.println!
+          Use Log4j</a> by Vipan Singla
+          </li>
+        </p>
+        
+        <p><li><a href="http://www.onjava.com/pub/a/onjava/2002/08/07/log4j.html?page=1">
+        Build Flexible Logs With log4j</a> by Vikram Goyal
+        </li></p>
+        
+        <p><li><a
+        href="http://supportweb.cs.bham.ac.uk/documentation/tutorials/docsystem/build/tutorials/log4j/log4j.html">log4j</a>
+        by Ashley J.S Mills, University Of Birmingham</li></p>
+        
+        <p><li><a href="http://www.builder.com.com/article.jhtml?id=u00820020124kev01.htm">
+        Add logging to your Java Applications</a> by Kevin Brown
+        </li></p>
+        
+        <p><li><a href="http://www.builder.com.com/article.jhtml?id=u00220020724kev01.htm">
+        How does the Java logging API stack up against log4j?</a> by Kevin Brown
+        </li></p>
+        
+        <p>
+          <li>
+            <a href="http://www.opensymphony.com/guidelines/logging.jsp">OpenSymphony Logging Primer</a>
+          </li>
+        </p>
+        
+        <p><li>
+	  <a href="http://www.jguru.com/faq/Log4j">log4j FAQ</a> at jGuru
+	</li></p>
+
+	<p><li>
+	  <a href="http://www.qos.ch/logging/thinkAgain.html">Think Again</a> by Ceki G&#252;lc&#252;
+
+	</li></p>
+
+	<p><li> <a href="http://www.qos.ch/logging/sc.html">Supporting the
+	  log4j <code>RepositorySelector</code></a> by Ceki
+	  G&#252;lc&#252;
+	</li></p>
+
+         <p><li> <a href="http://rei1.m-plify.net/log4j/">Log4j class
+         diagrams</a>, courtesy of David Tonhofer
+            </li>
+         </p>
+
+         <p><li> <a
+         href="http://www.onjava.com/pub/a/onjava/2003/04/02/log4j_ejb.html">Understanding
+         Classloaders: log4j in a J2EE Environment</a> by Vikram Goyal
+            </li>
+         </p>
+
+
+         <p><li> <a
+         href="http://www.linux-magazin.de/Artikel/ausgabe/2002/04/coffee/coffee.html">Logging
+         f&#252;r Java-Programme, Zu den Akten</a> by Bernhard Bablok
+         in Linux Magazine, 04/2002.
+            </li>
+         </p>
+
+         <p><li> <a
+         href="http://www-106.ibm.com/developerworks/java/library/j-instlog/">Instant logging: Harness the power of log4j with Jabber</a> by Ruth Zamorano and Rafael Luque, in developerWorks 2003
+         </li>
+         </p>
+
+         <p>
+           <li> <a
+           href="http://developers.sun.com/prodtech/appserver/reference/techart/log4j.html">Using Log4j in the Sun Java System Application Server</a> by Matthew Litkey, Jay Galvin, and Marina Sum, from Sun.
+           </li>
+         </p>
+         
+         <p>
+           <li> <a
+           href="http://www.onjava.com/pub/a/onjava/2004/09/29/smtp-logging.html">Reporting
+           Application Errors by Email</a> by Sean C. Sullivan,
+           2004-09-24, published by O'Reilly.
+           </li>
+         </p>
+         
+      </ul> 
+    </section>
+   
+    <section name="Log4j presentations">
+       <ul>
+
+
+         <p><li> <a href="http://www.jug-l.org/log4j.html">Advanced
+         Log4j</a> Louisville JUG presentation by Jonathan Cowherd </li></p>
+         
+         <p><li><a href="http://www.johnmunsch.com/projects/Presentations/">Log4J
+         In 30 Minutes Or Less</a> by John Munsch</li></p>
+         
+         <p><li><a href="https://www.qos.ch/ac2001/F11-10.html">Log4j, a logging package for the Java language</a> by Ceki G&#252;lc&#252;</li></p>
+         
+         <p><li><a
+         href="http://www.ejug.org/OpenSource%20Log4j2_files/frame.htm">Log4j presentation by the</a>
+         Edmonton Java Users Group</li></p>
+         
+         <p><li><a href="http://www.ociweb.com/javasig/knowledgebase/January2001/Log4J.ppt">Log4j</a> by Brent Twenter
+         </li></p>
+      </ul>
+    </section>
+    
+    
+    <section name="Training &amp; Professional support">
+      <p>The following organisations offer log4j-related consultancy
+      and training services. Their inclusion on this page does
+      not imply endorsement by the Apache Software Foundation.	  
+      </p>
+      
+      <ul>
+        <li><a
+        href="https://www.qos.ch/shop/products/profSupport/">QOS.ch,
+        Switzerland</a> proposes professional support contracts.
+        </li>
+      </ul>
+      
+      <ul>
+        <li><a
+        href="http://www.thegoodsoftwarecompany.com/log4jTraining.do">The
+        Good Software Company</a> proposes log4j training courses.
+        </li>
+      </ul>
+      
+      <p><b>If you would like your log4j-related article or service
+      to be listed here, then please send a note to the <a
+      href="mailto:log4j-user@logging.apache.org">log4j-user@logging.apache.org</a>
+      list.</b>
+      </p>
+    </section>
+
+  </body>
+</document>
+

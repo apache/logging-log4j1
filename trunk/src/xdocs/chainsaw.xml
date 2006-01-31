@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<document>
+
+  <properties>
+    <author email="psmith@apache.org">Paul Smith</author>
+    <title>Chainsaw v2 Documentation</title>
+  </properties>
+
+<body>
+		<section name="Chainsaw v2 - Introduction/Table of Contents">
+    	<p>Welcome to the home of Chainsaw v2!</p>
+      
+      <p>Chainsaw v2 is a companion application to Log4j written by members of the Log4j development
+      community. Like a number of Open Source
+      projects, this new version was built upon inspirations, ideas and creations of others. 
+      Chainsaw v2 has it's roots from the original Chainsaw utility written by Oliver Burn, 
+      and with inspiration from the Log Factor 5 utility contributed by ThoughtWorks Inc. </p>
+</section>
+
+ <section name="Download">
+ <p>
+ 	<ul>
+ 		<li><a href="http://logging.apache.org/log4j/docs/webstart/chainsaw/chainsawWebStart.jnlp">Java Web Start <img alt="WebStart distribution" src="http://java.sun.com/products/jfc/tsc/sightings/images/webstart.small.jpg" border="0"/></a></li>
+
+ 		<li><a href="http://logging.apache.org/log4j/docs/webstart/chainsaw/chainsaw.dmg">OS X 'native' distribution</a> <font size="-1">(uses Java still, but looks like a real OSX application)</font></li>
+ 		<li><a href="http://logging.apache.org/log4j/docs/webstart/chainsaw/chainsaw-bundle.zip">Unix/Dos standalone</a> <font size="-1">(.bat/.sh)</font></li>
+ 		 <p/>	<ul>
+ 				<li><font size="-1"><a href="#VFSNotes"><b>Important Distribution notes!!/Using VFS with Chainsaw</b></a></font></li>
+ 			</ul>
+ 	</ul>
+ </p>
+ </section>
+ <section name="Table of Contents">
+   <ul>
+     <li><a href="#WhatIsIt">So what is it really?</a></li>
+     <li><a href="#QuickTour">Quick Tour of Chainsaw features</a></li>
+     <li><a href="#ProjectStatus">Project Status/Support/Feedback</a></li>
+     <li><a href="#Installation">Installation</a></li>
+     <li><a href="#GettingStarted">Getting Started</a></li>
+     <li><a href="#Tutorial">Tutorial and User Manual</a></li>
+     <!--<li><a href="#Screenshots">Screenshots</a></li>-->
+     </ul>
+    </section>
+    
+<section name="So what is it really?">
+      <p><a name="WhatIsIt">&#160;</a>It's a GUI-based Log viewer. A picture tells a thousand words...</p>
+      
+      <p><a href="images/chainsaw-fullscreen.jpg" target="_new"><img src="images/chainsaw-fullscreen-small.jpg" /></a></p>
+      <p><a href="images/chainsaw-fullscreen.jpg" target="_new">[zoom image]</a></p>
+
+      <p>These screen shots were taken on Windows 2000, running Sun JDK 1.4.2.</p>
+      
+      <p>Rather than rely on a combination of tail/grep/vi or equivalent to view/query/trace-through
+      a huge trail of logging events, you can use Chainsaw.  Chainsaw can read log files formatted in Log4j's XMLLayout, receive
+      events from remote locations, read events from a DB, it can even work with the JDK 1.4 logging events.</p>
+      <!--<p>You can see some more screenshots <a href="#Screenshots">here</a>.</p>-->
+    </section>
+    
+    <section name="Quick Tour of Chainsaw features">
+			<p><a name="QuickTour">&#160;</a> Heres just a <b>brief</b> run down of some of the features of Chainsaw v2:</p>
+      <ul>
+       <li><b>View remote events</b> - Remote events are "received" by Chainsaw using Log4j 1.3's new Receiver concept.</li>
+       <li><b>Saved Preferences</b> - You can fully customize each Tab the way you want it, and it will restore it's state the next time.</li>
+
+       <li><b>Responsive</b> - When events are screaming in, you don't want the GUI to meltdown.  You can control 
+       how responsive the GUI is and determine the frequency of updates.</li>
+       <li><b>Tabs/Docking</b> - Chainsaw routes separate applications/remote hosts' events to a unique Tab within the GUI.  
+       These tabs can be undocked from the main window.  Using these features you can manage multiple application logs using the one GUI.</li>
+       <li><b>Coloring</b> - You can specify your own rules to color each event row depending on the attributes of a LoggingEvent to 
+       help you locate important events.</li>
+       <li><b>Dynamic and powerful filtering</b> - Helps you locate stuff. There's support for quick-and-dirty filtering, right through to advanced expression-based filtering (e.g. <code> "LOGGER == 'com.mycompany' &amp;&amp; LEVEL == ERROR" </code>).</li>
+       <li><b>Cyclic</b> - A tab view can support a Cyclic-based model, which constrains it's view to the last
+       X events, ensuring you don't hog memory.  This is great for monitoring live applications.</li>
+       <li><b>Built-in documentation and tutorial</b> - HTML-based documentation included in the package.</li>
+      </ul>
+    </section>
+   
+    <section name="Tutorial and User Manual">
+			<p><a name="ExtraDocs">&#160;</a>Chainsaw already includes help with
+      with a Quick Reference and a Tutorial to get you started, all viewable from <b>within the GUI</b>!. A User Manual will be made available around release time. </p>    
+    </section>
+
+	<section name="Distribution Notes">
+		<p><a name="VFSNotes"/>Due to Java Web Start's classloading rules, it is impossible to ship the <a href="http://jakarta.apache.org/commons/vfs">Jakarta Commons VFS</a> extension to Chainsaw.
+		Several VFS filestore implementation jars cannot be shipped with Chainsaw because of licensing issues.  The log4j dev team has chosen to not distribute VFS
+		with the Web Start version, however you can follow these steps to enable the VFS components inside Chainsaw.
+		<ol>
+			<li>Download the <a href="http://logging.apache.org/log4j/docs/webstart/chainsaw/log4j-chainsaw-vfs.jar">VFS extension</a> to Chainsaw</li>
+			<li>Download <a href="http://cvs.apache.org/builds/jakarta-commons/nightly/commons-vfs/">VFS</a></li>
+			<li>Download <a href="http://jakarta.apache.org/site/downloads/downloads_commons-logging.cgi">Commons Logging</a> Jars</li>
+			<li>Download the VFS <a href="http://jakarta.apache.org/commons/vfs/download.html">filestore implementation jars</a> you wish to use</li>
+			<li>Place all these jars in your .chainsaw/plugins directory (the .chainsaw directory is in your home directory)</li>
+			<li>Start Chainsaw, which should now recognize the existence of VFS components and allow you to use such things as the VFSLogFilePatternReceiver</li>
+		</ol>
+		</p>
+		<p>The Unix/DOS batch file and OSX distribution already include the base VFS component jars, so you just need to download the filestore implementation jars and place them 
+		in the plugins directory.</p>
+	</section>
+    <!--<section name="Screenshots">
+			<p><a name="Screenshots"/>Here's a few more screenshots to whet your appetite:</p>    
+    </section>-->
+    
+</body>
+</document>

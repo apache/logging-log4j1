@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration >
+
+<configuration debug="true" xmlns='http://logging.apache.org/'>
+
+  <appender name="FILE" class="org.apache.log4j.FileAppender">
+    <param name="File" value="tata.log"/>
+    <param name="Append" value="false"/>
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="TATA %r %-5p %c - %m%n"/>
+    </layout>	    
+  </appender>
+
+  <root>
+    <level value="debug"/>
+    <appender-ref ref="FILE" />    
+  </root>
+</configuration>

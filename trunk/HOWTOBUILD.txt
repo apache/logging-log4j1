@@ -1,0 +1,31 @@
+HOWTOBUILD.txt
+==============
+
+This document outlines the steps required to build and run the log4j sandbox classes.
+
+Comments/Changes/Bugs for this document and build process: 
+  * Log4j Developers list (log4j-dev@logging.apache.org)
+
+
+Assumptions
+===========
+* Familiar with Ant, and have it installed (http://ant.apache.org/) 
+  (requires the 1.5.x series of Ant, including Conditions support)
+
+Step-by-Step to build Log4j-Sandbox
+======================================
+
+1. Download logging-log4j (you've probably already done this if you're reading
+   this...)
+
+2. Copy the build.properties.sample file -> build.properties
+
+3. Edit the build.properties file and modify to suit your needs.  In particular
+  * Ensure the "Library Path Stuff" section contains correct relative/full paths to the
+    relevant libraries (You might need to source these from the 'Net)
+  
+4. From the logging-log4j root directory, type:
+
+      ant jar
+    
+   That's it ;)

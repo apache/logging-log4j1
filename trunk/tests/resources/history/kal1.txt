@@ -1,0 +1,67 @@
+KAL is an Intel Pentium 4 clocked at 2.53 GHz running XP and Sun's JDK 1.4.1.
+
+Results are in microseconds.
+
+Tests are based on new LocationInfo extraction code optimized for JDK
+1.4 and later. Note the significant improvement in speed wrt to
+location info extraction.
+
+NullAppender:
+
+   3.97 PatternLayout "%p - %m%n"
+   3.87 PatternLayout "%-5p - %m%n"
+  10.68 PatternLayout "%r [%t] %-5p %c{2} %x - %m%n"
+  10.48 PatternLayout "%r [%t] %-5p %.10c %x - %m%n"
+  10.41 PatternLayout "%r [%t] %-5p %.20c %x - %m%n"
+   9.18 PatternLayout "%r [%t] %-5p %c - %m%n"
+  17.92 PatternLayout "%d{ISO8601} [%t] %-5p %c %x - %m%n"
+  17.92 PatternLayout "%d{yyyy-MM-dd HH:mm:ss,SSS} [%t] %-5p %c %x - %m%n"
+  68.13 PatternLayout "%l - %m%n"        
+  75.67 PatternLayout "%C.%M.%L - %m%n"
+
+FileAppender:
+
+  10.41 PatternLayout "%p - %m%n"					   
+  10.34 PatternLayout "%-5p - %m%n"					   
+  22.16 PatternLayout "%r [%t] %-5p %c{2} %x - %m%n"			   
+  18.39 PatternLayout "%r [%t] %-5p %.10c %x - %m%n"			   
+  18.72 PatternLayout "%r [%t] %-5p %.20c %x - %m%n"			   
+  17.42 PatternLayout "%r [%t] %-5p %c - %m%n"				   
+  28.61 PatternLayout "%d{ISO8601} [%t] %-5p %c %x - %m%n"		   
+  27.94 PatternLayout "%d{yyyy-MM-dd HH:mm:ss,SSS} [%t] %-5p %c %x - %m%n"
+  87.69 PatternLayout "%l - %m%n"					   
+  93.16 PatternLayout "%C.%M.%L - %m%n"                                     
+
+FileAppender: (ImmediateFlush=false)
+
+   5.80 PatternLayout "%p - %m%n"					   
+   5.87 PatternLayout "%-5p - %m%n"					   
+  13.82 PatternLayout "%r [%t] %-5p %c{2} %x - %m%n"			   
+  13.48 PatternLayout "%r [%t] %-5p %.10c %x - %m%n"			   
+  13.82 PatternLayout "%r [%t] %-5p %.20c %x - %m%n"			   
+  12.75 PatternLayout "%r [%t] %-5p %c - %m%n"				   
+  23.03 PatternLayout "%d{ISO8601} [%t] %-5p %c %x - %m%n"		   
+  22.46 PatternLayout "%d{yyyy-MM-dd HH:mm:ss,SSS} [%t] %-5p %c %x - %m%n"
+  81.98 PatternLayout "%l - %m%n"					   
+  88.12 PatternLayout "%C.%M.%L - %m%n"                                     
+
+FileAppender: (BufferedIO=true)
+
+   5.74 PatternLayout "%p - %m%n"					   
+   5.84 PatternLayout "%-5p - %m%n"					   
+  13.85 PatternLayout "%r [%t] %-5p %c{2} %x - %m%n"			   
+  13.61 PatternLayout "%r [%t] %-5p %.10c %x - %m%n"			   
+  13.62 PatternLayout "%r [%t] %-5p %.20c %x - %m%n"			   
+  12.18 PatternLayout "%r [%t] %-5p %c - %m%n"				   
+  21.83 PatternLayout "%d{ISO8601} [%t] %-5p %c %x - %m%n"		   
+  22.1] PatternLayout "%d{yyyy-MM-dd HH:mm:ss,SSS} [%t] %-5p %c %x - %m%n"
+  81.01 PatternLayout "%l - %m%n"					   
+  87.79 PatternLayout "%C.%M.%L - %m%n"                                     
+
+
+
+Notice the small but noticable performance gain when
+ImmediateFlush=false
+
+Note also that BufferedIO yeilds similar performance to the
+ImmediateFlush case.

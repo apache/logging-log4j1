@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- This config file has the root logger set to the "info" level. It is
+     used by the ANT build file "performance.xml". 
+-->
+
+
+<log4j:configuration xmlns:log4j='http://logging.apache.org/'>
+
+  <appender name="NULL" class="org.apache.log4j.performance.NullAppender">
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="${pattern}"/>
+    </layout>
+  </appender>
+
+  <appender name="CON" class="org.apache.log4j.ConsoleAppender">
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%d %c - %m%n"/>
+    </layout>
+  </appender>
+  
+  <root>
+    <level value="info" />
+    <appender-ref ref="NULL" />
+    <appender-ref ref="CON" />
+  </root>
+  
+</log4j:configuration>

@@ -1,0 +1,266 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title>Praise from log4j users</title>
+</head>
+
+<body bgcolor="white">
+<h2>Praise from log4j users</h2>
+
+<hr><blockquote>
+Log4J was named as a finalist in the "Most Useful New or Revised Java API/Technology" 
+category, and Tomcat 3.2 was named as a finalist in the "Most Innovative Java Product" category.
+</blockquote>
+<p align=right><a href="http://www.javaworld.com" target="_blank">JavaWorld</a>,  April 2001
+
+<hr><blockquote>
+<p>Log4j is an incredibly well designed and functional logging tool. I
+caught the religion last summer and with every project I work on, most
+everyone agrees it's a must know/have tool. Previously I was using
+another Java logging library developed internally within my company
+which I liked. I had no desire to learn another but did so for the
+sake of due diligence. Log4j has the following features which set it
+apart from others I have seen.
+
+<p><b>Highly configurable</b> - the ability to configure the
+properties of your loggers (called Categories in log4j) from within a
+property file is indispensible. This allows you to change the
+characteristics of your logging without changing code. You can change
+the logging level, the format of the output and the output targets
+very easily.  One can also use XML files (though I haven't).
+
+<p><b>Unobtrusive</b> - I'm finishing a project where we started using another
+logging tool. The log statements were clumsily long and required using
+predefined constants that were hard to remember. When writing the
+initial code, "System.out.println" was so much easier to type that
+people did this for tracing with the best of intentions to place
+legitimate logging in later. You know the story. It never
+happened. Log4j statements are shorter than "System.out.println"
+statements. This encourages people to actually use it rather than
+simply agreeing to.
+
+<p><b>Easy configuration</b> - With just one statement, log4j will
+configure itself with a set of defaults that are useful until you get
+around to actually writing your property file, XML file or
+whatever. Like the point just made before, this allows log4j to be
+used at the outset of coding rather than having to wait because you
+haven't considered how you wish logging to be configured. The
+application code itself does not have to know how logging will be
+configured. 
+
+<p><b>Performance Concerns</b> - Since Java does not use pre-processor
+macros, most Java tracing is always compiled into the code. That means
+that the decision to compile is made at runtime.  There are times when
+performance is so paramount that even checking whether to log is a
+concern. There are other extremes where other delays make this
+insignificant so that the performance is easily sacrificed for the
+increased amount of information logged (such as method name, class
+name and line number in source code). The log4j javadoc documentation
+explains which information elements are quickly logged and which may
+compromise performance. It also includes benchmarks that demonstrate
+how fast certain statements are logged for a few sample machine
+configurations.
+
+<p><b>Hierarchical Categories</b> - This is highly useful in component
+based development. Each component has its own set of logging
+categories. When individually tested, the properties of these
+categories may be set however the developer wishes. When combined with
+other components, the categories inherit the properties determined by
+the integrator of the components. One can selectively elevate logging
+priorities on one component without affecting the other
+components. This is useful when you need a detailed trace from just a
+single component without crowding the trace file with messages from
+other components. All this can be done with property files - no change
+in the code is required.
+
+<p><b>Easily specified output format</b> - Some Java and OO purist
+disagree with me on this, but allowing one to use printf-style output
+format specification is powerful, convenient and compact. Log4j
+provides a Layout class with this capability. Of course, for those who
+wish, you may implement the Layout interface yourself with something
+"more OO". Naturally, the printf-style pattern can be specified in a
+property file.
+
+<p><b>Customization</b> - Like other loggers, log4j is interface-based
+making it possible to extend. Log4j supplies useful implementations
+that are extended easily without having to implement the interface
+from scratch.
+</blockquote>
+
+<p align=right>Paul Glezen (pglezen at atdial.net), December 3rd, 2000
+
+<hr><blockquote>
+This Java package is probably one of the best and most reliable packages
+around, and really helps development and maintenance of quality software.
+Thanks to all contributors who have made such a good work.
+</blockquote>
+
+<p align=right>Denis Balazuc (denis.balazuc at trader.com), December 8th,  2000
+
+<hr><blockquote> This is just a quick note of thanks for publishing
+your article in Javaworld.  Log4j is really easy to use.  While I was
+initially skeptical of the idea, code like this makes me a believer in
+the concept of Open Source.  
+</blockquote>
+
+<p align=right>Paul Hyndman (PaulHyndman at mynd.com),  November 29th, 2000
+
+<hr><blockquote>
+I just recently became aware of log4j and am just now begining to use
+it. I want to thank you and the rest of the log4j development team for
+making this functionality available. You are providing an outstanding
+service to the development community. Please pass my regards on to the
+other team members.
+</blockquote>
+
+<p align=right>Rich Coco (racoco at celoxnetworks.com), November 16th, 2000
+
+
+
+<hr><blockquote>
+
+Just thought I'd let you know that I am using your log4j as a part of
+an e-commerce application (<a
+href="http://www.consumerd.com">www.consumerd.com</a>).  I am using
+the XML configuration classes and have to say that I am most
+impressed.
+</blockquote>
+
+<p align=right>Richard King (Richard.King at capgemini.co.uk), October 25th, 2000 
+
+<hr><blockquote>
+
+You should see what we've used log4j for at work... I put together
+this Servlet that can interpret SOAP messages and invoke little
+"handlers".  Logging is pervasive through out the system, and the
+handler developers can "create" their own Categories dynamically using
+the getInstance method of Category.  
+
+<p>It's funny when I get an email from someone at work who's using the
+toolkit with a "it didn't work" question, and I ask them to check out
+the log... due to the coolness of log4j, they can track down their
+mistake immediately.
+
+</blockquote>
+<p align=right>Christopher Taylor (cstaylor at pacbell.net), September 2nd, 2000
+
+<hr><blockquote> 
+I am using log4j for a project I am currently working on. The
+simplicity and ease with which new appenders can be written makes it
+one of the best logging systems I have ever used.
+</blockquote>
+
+<p  align=right> Manish Balsara (manishb at aumsoft.com) August 28th, 2000
+
+<hr><blockquote>
+Thank you for writing this incredibly effective piece of software. You
+have made my and my team's lives much easier.
+</blockquote>
+
+<p align=right>Guy Nirpaz, Java Architect (guyn at tantian.com) August
+14th, 2000
+
+<hr><blockquote>
+Thank you <em>so</em> much for developing such a
+sleek package.  I think it's going to be a part of many of my projects in
+the future :)
+</blockquote>
+
+<p align=right>Alice Nakajima (alice.t.nakajima at saic.com) May 10th,
+2000
+
+
+<hr><blockquote>
+Thank you very much for your great work on log4j, which is really
+powerful and flexible logging system.  Log4j is now playing an
+important role in our project.
+</blockquote>
+
+<p align=right> Zeng Qiang (zeng.qiang at europeloan.com) April 26th, 2000
+
+<hr>
+<blockquote> Thank you and your team giving us a excellent tool to
+help us to develop our Java applications.  After evaluation, our team
+is ready to use log4j as our eCare product's diagnostic strategy.
+</blockquote> <p align=right>Jianbo Wang (jiwang at Daleen.com) April
+25th, 2000
+
+<hr>
+<blockquote> <!-- OK -->
+Was trying to use the log4j tracer ... great job, by the way !
+
+<p>Actually I'm evaluating the log4j package for use in our commercial
+projects. We have our own tracer package which is by far less
+powerfull and less configurable than yours.
+</blockquote> 
+<p align=right>Joerg Palmer (Joerg.Palmer at Compart.net) April 14th, 2000
+
+
+<hr>
+<blockquote><!-- OK -->
+Hooray, log4j! It's now all over my current project, and my colleagues
+were pleasantly surprised at the ease of debugging. I gave them my
+jarfile, it didn't work, I said "oh, just change this configuration
+file" and <em>presto</em>, logging to a file. They're happy.
+</blockquote>
+<p align=right>Nelson Minar CTO, Popular Power, Inc. (nelson at popularpower.com) April 14th, 2000
+
+<hr>
+<blockquote><!-- OK -->
+I really dig your log4j package... just started using it on our linux
+and os390 boxes for the java servlets we run in websphere.  Still
+trying to get the hang of it properly, but what I do have working is
+working great.  (Not to mention your makefile tutorial which has
+improved my life significantly!  :-)
+</blockquote>
+<p align=right>Anthony (ant at sanlam.co.za) April 13th, 2000
+
+
+<hr><!-- OK -->
+<blockquote>
+Thanks for providing log4j: it's a very useful package. 
+</blockquote>
+<p align=right>Andrew Harris (Andrew.Harris at capgemini.co.uk) April 10th, 2000
+
+<hr>
+<blockquote><!-- OK -->
+I just started using log4j v.0.8.1. It is quite what I was looking for.
+<p>So here is my <b>"THANK  YOU"</b> to all the contributors.
+I think I'll join the club.
+</blockquote>
+<p align=right>Avy Sharell (asharell at club-internet.fr) March 8th, 2000
+
+
+<hr>
+<blockquote><!-- OK -->
+I just wanted to thank you for log4j which is a great piece of software!
+
+<p>We are using it in the FREE e-democracy project
+<a href="http://www.thecouch.org/free/">http://www.thecouch.org/free/</a> to provide an effective security audit
+trail in our electronic voting software.
+</blockquote>
+<p align=right> Jason Kitcat (jeep at thecouch.org) March 29th, 2000 
+
+
+<hr>
+<blockquote>
+Thanks for making log4j available.
+I like the changes in v0.8 and am using it in all my java projects.
+</blockquote>
+<p align=right>Steven Marcus (srnm at awaretechnologies.com) February 19th, 2000
+
+<hr>
+<blockquote><!-- OK -->
+First congratulation for your great job on the Log mechanism log4j,
+it's really valuable.
+</blockquote>
+<p align=right>Sebastien Sahuc (ssahuc at imediation.com) January 4th, 2000
+
+
+<hr> <blockquote> Just a few remarks to your log4j Logging-Tool. First
+of all, in my opinion, it is exactly what many Java programmers need:
+A small but very useful tool complementing the debugger ;-) The logs
+help me to debug results generated on a distant client.  <p
+align=right>Jens Uwe Pipka (jens.pipka at gmx.de) October 25th, 1999
+
+<hr>
+</body> </html>
