@@ -90,7 +90,7 @@ public class BoundedFIFO {
   }
 
   /**
-     Return <code>true</code> if the buffer is full, i.e. of the
+     Return <code>true</code> if the buffer is full, that is the
      number of elements in the buffer equals the buffer size. */
   public 
   boolean isFull() {

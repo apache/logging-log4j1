@@ -35,11 +35,6 @@
          <a href="http://logging.apache.org/">
            <img src="http://logging.apache.org/images/ls-logo.jpg" border="0"/>
          </a>
-         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-         <a href="http://apachecon.com/2005/US/">
-           <img src="http://apache.org/images/ac2005us_blue_184x90.jpg" />
-         </a>
        <td align="right">
                               	       <a href="http://logging.apache.org/log4j/docs/">
                  <img src="./images/logo.jpg" alt="The log4j project" border="0"/>
@@ -59,9 +54,20 @@
       projects, this new version was built upon inspirations, ideas and creations of others. 
       Chainsaw v2 has it's roots from the original Chainsaw utility written by Oliver Burn, 
       and with inspiration from the Log Factor 5 utility contributed by ThoughtWorks Inc. </p>
-                                                <p><b>*** Got Java Web Start installed?: <a href="http://logging.apache.org/log4j/docs/webstart/chainsaw/chainsawWebStart.jnlp">[Launch now!]</a>***</b></p>
-                                                <p>If you haven't got Java Web Start installed, then try this zipped distribution. <a href="http://logging.apache.org/log4j/docs/webstart/chainsaw/chainsaw-bundle.zip">[Download]</a></p>
-                                                <ul>
+                                                                           <h1>Download</strong></h1>
+                                    <p>
+ 	<ul>
+ 		<li><a href="http://logging.apache.org/log4j/docs/webstart/chainsaw/chainsawWebStart.jnlp">Java Web Start <img alt="WebStart distribution" src="http://java.sun.com/products/jfc/tsc/sightings/images/webstart.small.jpg" border="0" /></a></li>
+
+ 		<li><a href="http://logging.apache.org/log4j/docs/webstart/chainsaw/chainsaw.dmg">OS X 'native' distribution</a> <font size="-1">(uses Java still, but looks like a real OSX application)</font></li>
+ 		<li><a href="http://logging.apache.org/log4j/docs/webstart/chainsaw/chainsaw-bundle.zip">Unix/Dos standalone</a> <font size="-1">(.bat/.sh)</font></li>
+ 		 <p />	<ul>
+ 				<li><font size="-1"><a href="#VFSNotes"><b>Important Distribution notes!!/Using VFS with Chainsaw</b></a></font></li>
+ 			</ul>
+ 	</ul>
+ </p>
+                                                                           <h1>Table of Contents</strong></h1>
+                                    <ul>
      <li><a href="#WhatIsIt">So what is it really?</a></li>
      <li><a href="#QuickTour">Quick Tour of Chainsaw features</a></li>
      <li><a href="#ProjectStatus">Project Status/Support/Feedback</a></li>
@@ -95,42 +101,37 @@
        X events, ensuring you don't hog memory.  This is great for monitoring live applications.</li>
        <li><b>Built-in documentation and tutorial</b> - HTML-based documentation included in the package.</li>
       </ul>
-                                                                           <h1>Installation</strong></h1>
-                                    <a name="Installation"> </a>
-                                                <p><b>*** Got Java Web Start installed?: <a href="http://logging.apache.org/log4j/docs/webstart/chainsaw/chainsawWebStart.jnlp">[Launch now!]</a>***</b></p>
-                                                <p>Otherwise, if the above link does not work, then you will need to check out the jakarta-log4j module from the Apache CVS server
-			to build and run Chainsaw v2.  To make this easier, we have created an installation Ant script, you can download this 
-			by <a href="install-chainsaw.xml">clicking here</a>.</p>
-                                                <P>You will need the following installed to utilise this installation script:</P>
-                                                <UL>
-			 <li>JDK 1.3+ (1.4.2 is <b><i>strongly</i></b> recommeded)</li>
-			 <li>Ant 1.5+</li>
-			 <li>CVS (<a href="http://www.cygwin.com/">Cygwin</a> is handy for Windows users)</li>
-			</UL>
-                                                <P>Once you have downloaded and placed this script in a directory where you want Chainsaw v2 installed, you can type:</P>
-                                                <pre>ant -f install-chainsaw.xml</pre>
-                                                <P>This will download everything you need to build and run Chainsaw v2.</P>
-                                                <P>When finally released, we plan to have Chainsaw v2 available via Java WebStart.</P>
-                                                                           <h1>Getting Started</strong></h1>
-                                    <p><a name="GettingStarted"> </a>If you launched via Java Web Start, you should be ROCKING!  However, if you have used the above installer, you can <code>cd</code> to tho <code>jakarta-log4j</code> sub-directory and
-			type:</p>
-                                                <pre>ant chainsaw</pre>
-                                                <P>Chainsaw v2 will be built and run!</P>
                                                                            <h1>Tutorial and User Manual</strong></h1>
                                     <p><a name="ExtraDocs"> </a>Chainsaw already includes help with
       with a Quick Reference and a Tutorial to get you started, all viewable from <b>within the GUI</b>!. A User Manual will be made available around release time. </p>
+                                                                           <h1>Distribution Notes</strong></h1>
+                                    <p><a name="VFSNotes" />Due to Java Web Start's classloading rules, it is impossible to ship the <a href="http://jakarta.apache.org/commons/vfs">Jakarta Commons VFS</a> extension to Chainsaw.
+		Several VFS filestore implementation jars cannot be shipped with Chainsaw because of licensing issues.  The log4j dev team has chosen to not distribute VFS
+		with the Web Start version, however you can follow these steps to enable the VFS components inside Chainsaw.
+		<ol>
+			<li>Download the <a href="http://logging.apache.org/log4j/docs/webstart/chainsaw/log4j-chainsaw-vfs.jar">VFS extension</a> to Chainsaw</li>
+			<li>Download <a href="http://cvs.apache.org/builds/jakarta-commons/nightly/commons-vfs/">VFS</a></li>
+			<li>Download <a href="http://jakarta.apache.org/site/downloads/downloads_commons-logging.cgi">Commons Logging</a> Jars</li>
+			<li>Download the VFS <a href="http://jakarta.apache.org/commons/vfs/download.html">filestore implementation jars</a> you wish to use</li>
+			<li>Place all these jars in your .chainsaw/plugins directory (the .chainsaw directory is in your home directory)</li>
+			<li>Start Chainsaw, which should now recognize the existence of VFS components and allow you to use such things as the VFSLogFilePatternReceiver</li>
+		</ol>
+		</p>
+                                                <p>The Unix/DOS batch file and OSX distribution already include the base VFS component jars, so you just need to download the filestore implementation jars and place them 
+		in the plugins directory.</p>
                                              
             
   
-                                                    <hr/>
+                                                          <hr/>
 
   
-                                                                                        
+                                                                                                    
 
              
                 <!-- FOOTER -->
               <div align="center"><font color="#525D76" size="-1"><em>
-                 Copyright &#169; 1999-2005, Apache Software Foundation
+                 Copyright &#169; 1999-2006, Apache Software Foundation.<br />
+Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.
                </em></font></div>
 
            <!-- END main table --> 

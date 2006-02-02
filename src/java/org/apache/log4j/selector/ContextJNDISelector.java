@@ -37,9 +37,9 @@ import javax.naming.NamingException;
 
 
 /**
- * Log4j JNDI based Repository selector
+ * Defines a unique logger repository for each web-application in a J2EE environment.
  *
- * <p>based primarily on Ceki G&uuml;lc&uuml;'s article <h3>Supporting the Log4j
+ * This implementation is <p>based primarily on Ceki G&uuml;lc&uuml;'s article <h3>Supporting the Log4j
  * <code>RepositorySelector</code> in Servlet Containers</h3> at:
  * http://qos.ch/logging/sc.html</p>
  *

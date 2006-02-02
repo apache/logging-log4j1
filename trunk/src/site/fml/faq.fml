@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<faqs title="Log4j FAQ">
-<part id="log4j">
-    <faq>
-    <question>Where are the FAQs?</question>
-    <answer>Currently just testing the Maven site generation.</answer>
-    </faq>
-</part>
-</faqs>
