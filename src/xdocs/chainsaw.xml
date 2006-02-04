@@ -81,7 +81,7 @@
     </section>
 
 	<section name="Distribution Notes">
-		<p><a name="VFSNotes"/>Due to Java Web Start's classloading rules, it is impossible to ship the <a href="http://jakarta.apache.org/commons/vfs">Jakarta Commons VFS</a> extension to Chainsaw.
+		<p><a name="VFSNotes"/>Due to Java classloading rules, it is impossible to ship the <a href="http://jakarta.apache.org/commons/vfs">Jakarta Commons VFS</a> extension to Chainsaw.
 		Several VFS filestore implementation jars cannot be shipped with Chainsaw because of licensing issues.  The log4j dev team has chosen to not distribute VFS
 		with the Web Start version, however you can follow these steps to enable the VFS components inside Chainsaw.
 		<ol>
@@ -93,8 +93,7 @@
 			<li>Start Chainsaw, which should now recognize the existence of VFS components and allow you to use such things as the VFSLogFilePatternReceiver</li>
 		</ol>
 		</p>
-		<p>The Unix/DOS batch file and OSX distribution already include the base VFS component jars, so you just need to download the filestore implementation jars and place them 
-		in the plugins directory.</p>
+		<p>This applies to distributions.</p>
 	</section>
     <!--<section name="Screenshots">
 			<p><a name="Screenshots"/>Here's a few more screenshots to whet your appetite:</p>    
