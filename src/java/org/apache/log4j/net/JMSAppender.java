@@ -234,10 +234,14 @@ public class JMSAppender extends AppenderSkeleton {
        "Error while activating options for appender named [" + name + "].", e);
     }
     
-    if (this.topicConnection != null && this.topicSession != null && this.topicPublisher == null) {
+    
+    if (this.topicConnection != null && this.topicSession != null && this.topicPublisher != null) {
       inOrder = true;
     } else {
       inOrder = false;
+    }
+    if(inOrder) {
+        super.activateOptions();
     }
   }
 
