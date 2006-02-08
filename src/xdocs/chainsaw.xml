@@ -18,6 +18,8 @@
 </section>
 
  <section name="Download">
+ <p>Latest Build Date: 2006-02-09 (SVN tag 'release_20060209')
+ </p>
  <p>
  	<ul>
  		<li><a href="http://logging.apache.org/log4j/docs/webstart/chainsaw/chainsawWebStart.jnlp">Java Web Start <img alt="WebStart distribution" src="http://java.sun.com/products/jfc/tsc/sightings/images/webstart.small.jpg" border="0"/></a></li>
