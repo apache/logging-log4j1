@@ -39,6 +39,11 @@ import java.io.Writer;
  * @author Ceki G&uuml;lc&uuml;
  * */
 public class FileAppender extends WriterAppender {
+
+  /**
+   * The default size of the IO buffer. 
+   */
+  private static final int DEFAULT_BUFFER_SIZE = 8 * 1024;
   /** 
    * Controls whether to append to or truncate an existing file. 
    * The default value for this variable is 
@@ -59,7 +64,7 @@ public class FileAppender extends WriterAppender {
 
   /**
      The size of the IO buffer. Default is 8K. */
-  protected int bufferSize = 8 * 1024;
+  protected int bufferSize = DEFAULT_BUFFER_SIZE;
 
   /**
      The default constructor does not do anything.
@@ -176,7 +181,7 @@ public class FileAppender extends WriterAppender {
   /**
      Get the value of the <b>BufferedIO</b> option.
 
-     <p>BufferedIO will significatnly increase performance on heavily
+     <p>BufferedIO will significantly increase performance on heavily
      loaded systems.
 
   */
@@ -211,7 +216,7 @@ public class FileAppender extends WriterAppender {
      will be opened and the resulting {@link java.io.Writer} wrapped
      around a {@link BufferedWriter}.
 
-     BufferedIO will significatnly increase performance on heavily
+     BufferedIO will significantly increase performance on heavily
      loaded systems.
 
   */
