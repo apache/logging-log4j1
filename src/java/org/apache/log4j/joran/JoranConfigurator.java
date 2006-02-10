@@ -69,9 +69,8 @@ import javax.xml.parsers.SAXParserFactory;
  * @author <a href="http://www.qos.ch/log4j/">Ceki G&uuml;lc&uuml;</a>
  */
 public class JoranConfigurator extends ConfiguratorBase {
-  Interpreter joranInterpreter;
-  LoggerRepository repository;
-  boolean listAppnderAttached = false;
+  private Interpreter joranInterpreter;
+  private LoggerRepository repository;
 
   public JoranConfigurator() {
   }
