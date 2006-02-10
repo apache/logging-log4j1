@@ -205,10 +205,11 @@ public class XMLLayout extends Layout {
 
       while (propIter.hasNext()) {
         String propName = propIter.next().toString();
-        buf.append("    <log4j:data name=\"" + propName);
+        buf.append("    <log4j:data name=\"");
+        buf.append(propName);
 
-        String propValue = event.getProperty(propName).toString();
-        buf.append("\" value=\"" + propValue);
+        buf.append("\" value=\"");
+        buf.append(event.getProperty(propName));
         buf.append("\"/>\r\n");
       }
 

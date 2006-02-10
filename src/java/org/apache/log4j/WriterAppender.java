@@ -24,7 +24,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import org.apache.log4j.helpers.QuietWriter;
-import org.apache.log4j.helpers.LogLog;
 
 // Contibutors: Jens Uwe Pipka <jens.pipka@gmx.de>
 //              Ben Sandee

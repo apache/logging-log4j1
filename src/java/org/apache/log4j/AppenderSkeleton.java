@@ -165,7 +165,7 @@ public abstract class AppenderSkeleton extends ComponentBase implements Appender
 
   /**
    * Return the hardcoded <code>OnlyOnceErrorHandler</code> for this Appender.
-   * <code>ErrorHandler</code>'s are no longer utilized as of version 1.3.
+   * <code>ErrorHandler</code>s are no longer utilized as of version 1.3.
    *
    * @since 0.9.0
    * @deprecated As of 1.3
@@ -199,7 +199,7 @@ public abstract class AppenderSkeleton extends ComponentBase implements Appender
   }
 
   /**
-   * Returns the name of this FileAppender.
+   * Returns the name of this appender.
    */
   public final String getName() {
     return this.name;

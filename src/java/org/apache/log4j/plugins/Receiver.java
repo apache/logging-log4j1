@@ -59,11 +59,6 @@ import org.apache.log4j.spi.Thresholdable;
 public abstract class Receiver extends PluginSkeleton implements Thresholdable {
 	protected Level thresholdLevel;
   
-  /*
-   * An instance specific logger which must be accessed through the getLogger()
-   * method. 
-   */
-  private Logger logger;
   
   
   

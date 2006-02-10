@@ -30,7 +30,6 @@ import java.text.DateFormatSymbols;
 import java.text.FieldPosition;
 import java.text.SimpleDateFormat;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -128,7 +127,6 @@ public class SyslogAppender extends AppenderSkeleton {
 
   //SyslogTracerPrintWriter stp;
   private SyslogWriter sw;
-  private final Calendar calendar = Calendar.getInstance();
   private long now = -1;
   private Date date = new Date();
   private StringBuffer timestamp = new StringBuffer();
