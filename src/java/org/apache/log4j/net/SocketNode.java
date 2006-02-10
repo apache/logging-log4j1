@@ -53,7 +53,6 @@ public class SocketNode extends ComponentBase implements Runnable, Pauseable {
   private boolean paused;
   private Socket socket;
   private Receiver receiver;
-  private SocketNodeEventListener listener;
   private List listenerList = Collections.synchronizedList(new ArrayList());
 
   /**
@@ -186,7 +185,7 @@ public class SocketNode extends ComponentBase implements Runnable, Pauseable {
     }
 
     // send event to listener, if configured
-    if (listener != null || listenerList.size()>0) {
+    if (listenerList.size()>0) {
       fireSocketClosedEvent(listenerException);
     }
   }
