@@ -56,6 +56,15 @@ public abstract class TimedLocationWatchdog  extends WatchdogSkeleton
   }
 
   /**
+   * Returns the last modification time.
+   * 
+   * @return the last modification time
+   */
+  public long getLastModificationTime() {
+    return lastModTime;
+  }
+
+  /**
    * Returns the current modification time for the watched location.  Subclasses
    * must implement specifically for the type of source they are watching.
    *
@@ -71,11 +80,17 @@ public abstract class TimedLocationWatchdog  extends WatchdogSkeleton
    * watched source for the configuration data.
    */
   public void execute() {
-    long newModTime = getModificationTime();
+    long curModTime = getModificationTime();
 
-    if (lastModTime != newModTime) {
+    getLogger().debug("Checking times for watchdog " + this.getName() + 
+    " :(lastModTime - " + lastModTime + ") ?? (curModTime - " + curModTime + ")");
+    if (lastModTime != curModTime) {
+      getLogger().debug("Times did not match, reconfiguring with watchdog " +
+                        this.getName());
       reconfigure();
-      lastModTime = newModTime;
+      lastModTime = curModTime;
+    } else {
+      getLogger().debug("Times matched, doing nothing");
     }
   }
 
@@ -83,6 +98,8 @@ public abstract class TimedLocationWatchdog  extends WatchdogSkeleton
    * Called to activate the watchdog and start the watching of the source.
    */
   public void activateOptions() {
+    getLogger().debug("activateOptions called for watchdog " + this.getName());
+    
     // get the current modification time of the watched source
     lastModTime = getModificationTime();
 
