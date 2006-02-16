@@ -3,7 +3,7 @@
 
 <log4j:configuration xmlns:log4j="http://logging.apache.org/">
   
-  <logger name="org.apache.log4j.watchdog.FileWatchdogTestCase">
+  <logger name="test.FileWatchdogTestCase">
     <level value="info"/>
   </logger>
   

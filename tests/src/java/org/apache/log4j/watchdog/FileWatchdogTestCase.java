@@ -33,7 +33,8 @@ import org.apache.log4j.Level;
 
 public class FileWatchdogTestCase extends TestCase {
 
-    private Logger logger = Logger.getLogger(FileWatchdogTestCase.class);
+    private Logger testLogger = Logger.getLogger(FileWatchdogTestCase.class);
+    private Logger logger = Logger.getLogger("test.FileWatchdogTestCase");
 
     static String SOURCE_CONFIG = "input/watchdog/watchdog.FileWatchdog";
     static String FILE = "output/watchdog.FileWatchdog";
@@ -101,11 +102,12 @@ public class FileWatchdogTestCase extends TestCase {
 
     // basic test of plugin in standalone mode
     public void test1() throws Exception {
+      LogManager.getLoggerRepository().resetConfiguration();
+      
       File outFile = new File(getOutputFile("test1"));
       if (outFile.exists()) {
           assertTrue(outFile.delete());
       }
-
 
       // set up the needed file references
       File sourceFile1 = new File(getSourceXMLConfigFile("test1", 1));
@@ -118,19 +120,26 @@ public class FileWatchdogTestCase extends TestCase {
       // move the first config file into place
       copyFile(sourceFile1, configFile);
       assertTrue(configFile.exists());
+      
+      testLogger.debug("first config file in place: " + configFile.getAbsolutePath());
 
       // configure environment to first config file
       JoranConfigurator configurator = new JoranConfigurator();
       configurator.doConfigure(configFile.getAbsolutePath(),
           LogManager.getLoggerRepository());
+      
+      testLogger.debug("log4j configured with configFile");
 
       // now watch the file for changes
       FileWatchdog watchdog = new FileWatchdog();
+      watchdog.setName("test1");
       watchdog.setFile(configFile.getAbsolutePath());
       watchdog.setInterval(1000);
       watchdog.setConfigurator(JoranConfigurator.class.getName());
       ((LoggerRepositoryEx) LogManager.getLoggerRepository()).getPluginRegistry().addPlugin(watchdog);
       watchdog.activateOptions();
+      
+      testLogger.debug("watchdog activated");
 
       // output some test messages
       logger.debug("debug message");
@@ -138,14 +147,23 @@ public class FileWatchdogTestCase extends TestCase {
       logger.warn("warn message");
       logger.error("error message");
       logger.fatal("fatal message");
+      
+      testLogger.debug("first set of test messages output");
 
       Thread.sleep(2000);
+      
+      testLogger.debug("about to copy second config file");
+      
       // copy over a new version of the config file
       copyFile(sourceFile2, configFile);
+      
+      testLogger.debug("second config file copied");
 
       // wait a few seconds for the watchdog to react
       for (int i = 0; i < 40; i++) {
+          testLogger.debug("sleeping for 500 ms");
           Thread.sleep(500);
+          testLogger.debug("level for logger " + logger.getName() + " is " + logger.getLevel());
           if (logger.getLevel() == Level.INFO) {
               // output some test messages
               logger.debug("debug message");
@@ -153,17 +171,22 @@ public class FileWatchdogTestCase extends TestCase {
               logger.warn("warn message");
               logger.error("error message");
               logger.fatal("fatal message");
+              
+              testLogger.debug("second set of test messages output");
 
               assertTrue(Compare.compare(getOutputFile("test1"),
                 getWitnessFile("test1")));
               return;
           }
+          testLogger.debug("looping for level check");
       }
       fail("Expected change in level did not occur within 20 seconds.");
     }
 
     // basic test of plugin in standalone mode with PropertyConfigurator
     public void test2() throws Exception {
+      LogManager.getLoggerRepository().resetConfiguration();
+      
       File outFile = new File(getOutputFile("test2"));
       if (outFile.exists()) {
             assertTrue(outFile.delete());
@@ -180,19 +203,26 @@ public class FileWatchdogTestCase extends TestCase {
       // move the first config file into place
       copyFile(sourceFile1, configFile);
       assertTrue(configFile.exists());
+      
+      testLogger.debug("first config file in place: " + configFile.getAbsolutePath());
 
       // configure environment to first config file
       PropertyConfigurator configurator = new PropertyConfigurator();
       configurator.doConfigure(configFile.getAbsolutePath(),
           LogManager.getLoggerRepository());
+      
+      testLogger.debug("log4j configured with configFile");
 
       // now watch the file for changes
       FileWatchdog watchdog = new FileWatchdog();
+      watchdog.setName("test2");
       watchdog.setFile(configFile.getAbsolutePath());
       watchdog.setInterval(1000);
       watchdog.setConfigurator(PropertyConfigurator.class.getName());
       ((LoggerRepositoryEx) LogManager.getLoggerRepository()).getPluginRegistry().addPlugin(watchdog);
       watchdog.activateOptions();
+      
+      testLogger.debug("watchdog activated");
 
       // output some test messages
       logger.debug("debug message");
@@ -200,26 +230,38 @@ public class FileWatchdogTestCase extends TestCase {
       logger.warn("warn message");
       logger.error("error message");
       logger.fatal("fatal message");
+      
+      testLogger.debug("first set of test messages output");
 
       Thread.sleep(2000);
+      
+      testLogger.debug("about to copy second config file");
+      
       // copy over a new version of the config file
       copyFile(sourceFile2, configFile);
+      
+      testLogger.debug("second config file copied");
 
       // wait a few seconds for the watchdog to react
       for (int i = 0; i < 40; i++) {
+          testLogger.debug("sleeping for 500 ms");
           Thread.sleep(500);
+          testLogger.debug("level for logger " + logger.getName() + " is " + logger.getLevel());
           if (logger.getLevel() == Level.INFO) {
-            // output some test messages
-            logger.debug("debug message");
-            logger.info("info message");
-            logger.warn("warn message");
-            logger.error("error message");
-            logger.fatal("fatal message");
+              // output some test messages
+              logger.debug("debug message");
+              logger.info("info message");
+              logger.warn("warn message");
+              logger.error("error message");
+              logger.fatal("fatal message");
+              
+              testLogger.debug("second set of test messages output");
 
-            assertTrue(Compare.compare(getOutputFile("test2"),
+              assertTrue(Compare.compare(getOutputFile("test2"),
                 getWitnessFile("test2")));
-            return;
+              return;
           }
+          testLogger.debug("looping for level check");
       }
       fail("Expected change in level did not occur within 20 seconds.");
     }
