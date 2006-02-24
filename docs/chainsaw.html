@@ -76,7 +76,8 @@
      <li><a href="#Installation">Installation</a></li>
      <li><a href="#GettingStarted">Getting Started</a></li>
      <li><a href="#Tutorial">Tutorial and User Manual</a></li>
-     <!--<li><a href="#Screenshots">Screenshots</a></li>-->
+     <li><a href="#ZeroConf">ZeroConf - Zero Configuration</a></li>
+ <!--<li><a href="#Screenshots">Screenshots</a></li>-->
      </ul>
                                                                            <h1>So what is it really?</strong></h1>
                                     <p><a name="WhatIsIt"> </a>It's a GUI-based Log viewer. A picture tells a thousand words...</p>
@@ -120,13 +121,37 @@
 		</ol>
 		</p>
                                                 <p>This applies to distributions.</p>
+                                                                           <h1>ZeroConf - Zero Configuration</strong></h1>
+                                    <p><a name="ZeroConf" />Chainsaw has ZeroConf elements embedded within it, but you'll need to add a few things
+		to your application to enable <b>your</b> application.</p>
+                                                <p>Download:</p>
+                                                <ol>
+			<li><a href="http://logging.apache.org/log4j/docs/webstart/chainsaw/log4j-zeroconf.zip">log4j ZeroConf extension</a></li>
+			<li><a href="http://sourceforge.net/projects/jmdns/">JmDNS bundle</a></li>
+			<li>Add the <code>log4j-zeroconf.jar</code> and the <code>jmdns.jar</code> from these bundles and add them to your 
+				application's classpath. </li>
+			<li>Modify your log4j configuration so that it use the ZeroConfSocketHubAppender.  Here is a complete log4j.xml file that you can use as a base:
+							<pre>
+&lt;log4j:configuration debug="false" threshold="debug"  xmlns:log4j="http://jakarta.apache.org/log4j/&gt;
+    &lt;appender name="zeroconf" class="org.apache.log4j.net.ZeroConfSocketHubAppender"&gt;
+        &lt;param name="Name" value="MyZeroConfSockeHubAppender" /&gt;
+    &lt;/appender&gt;
+    &lt;!--ROOT Logger--&gt;
+    &lt;root&gt;
+        &lt;level value="INFO" /&gt;
+        &lt;appender-ref ref="zeroconf" /&gt;
+    &lt;/root&gt;
+&lt;/log4j:configuration&gt;
+				</pre>
+			</li>
+		</ol>
                                              
             
   
-                                                          <hr/>
+                                                                <hr/>
 
   
-                                                                                                    
+                                                                                                                
 
              
                 <!-- FOOTER -->
