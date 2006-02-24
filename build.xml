@@ -735,6 +735,7 @@
     	        ${stem}/xml/SAXErrorHandler.class,
                 ${stem}/xml/UtilLoggingXMLDecoder.class,
                 ${stem}/xml/XMLDecoder.class,
+    		    ${stem}/xml/LogFileXMLReceiver*.class,
     	        ${stem}/net/SMTPAppender.class,
     	        ${stem}/net/DefaultEvaluator.class,
     	        ${stem}/spi/TriggeringEventEvaluator.class,
