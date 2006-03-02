@@ -13,11 +13,7 @@
     </layout>
   </appender>
 
-  <appender name="A2" class="org.apache.log4j.FileAppender">
-  
-    <param name="Append" value="false" />
-    <param name="File"   value="output/watchdog.FileWatchdog.test1.output.txt" />
-    
+  <appender name="A2" class="org.apache.log4j.ConsoleAppender">
     <layout class="org.apache.log4j.PatternLayout">
       <param name="ConversionPattern" value="%d{ABSOLUTE} %c [%p] - %m%n"/>
     </layout>
