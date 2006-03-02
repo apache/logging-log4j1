@@ -8,10 +8,11 @@
    [D] Changes affect a method or property which was previously marked as 
        deprecated.
 
- - Release of version 1.3-alpha9
-   TBD
+ - Release of version 1.3-alpha-9
+   Release date: TBD
 
- - Bug
+ - Bug 17862: Added a Version class to provide log4j version information.
+
    January 30th, 2006
  - Release of version 1.3alpha-8
    
