@@ -1,0 +1,4 @@
+version=@version@
+apiVersion=@apiVersion@
+milestone=@milestone@
+milestoneVersion=@milestoneVersion@
