@@ -751,14 +751,6 @@
     </junit>
   </target>
 
-  <target name="Version" depends="check, build, cleanOutputDir">
-    <junit printsummary="yes" fork="yes" haltonfailure="${haltonfailure}">
-      <classpath refid="tests.classpath"/>
-      <formatter type="plain" usefile="false"/>
-      <test name="org.apache.log4j.VersionTest" />
-    </junit>
-  </target>
-
     <target name="build.nt.init">
         <available file="${project.dist.dir}/lib/NTEventLogAppender.dll" property="nt.dll.available"/>
         <condition property="is-windows" value="true">
