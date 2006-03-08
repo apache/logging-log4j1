@@ -17,18 +17,9 @@
 package org.apache.log4j;
 
 import org.apache.log4j.helpers.OptionConverter;
-import org.apache.log4j.pattern.FormattingInfo;
-import org.apache.log4j.pattern.LiteralPatternConverter;
-import org.apache.log4j.pattern.LoggingEventPatternConverter;
-import org.apache.log4j.pattern.PatternParser;
+import org.apache.log4j.helpers.PatternConverter;
+import org.apache.log4j.pattern.BridgePatternConverter;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.spi.LoggerRepositoryEx;
-
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 
 // Contributors:   Nelson Minar <nelson@monkey.org>
@@ -439,25 +430,16 @@ public class PatternLayout extends Layout {
    */
   public static final String PATTERN_RULE_REGISTRY = "PATTERN_RULE_REGISTRY";
 
+
+  /**
+    *  Initial converter for pattern.
+    */
+  private PatternConverter head;
+
   /**
    * Conversion pattern.
    */
   private String conversionPattern;
-
-  /**
-   * Pattern converters.
-   */
-  private LoggingEventPatternConverter[] patternConverters;
-
-  /**
-   * Field widths and alignment corresponding to pattern converters.
-   */
-  private FormattingInfo[] patternFields;
-
-  /**
-   * String buffer used in formatting.
-   */
-  private StringBuffer buf = new StringBuffer();
 
   /**
    * True if any element in pattern formats information from exceptions.
@@ -477,9 +459,15 @@ public class PatternLayout extends Layout {
     * Constructs a PatternLayout using the supplied conversion pattern.
    * @param pattern conversion pattern.
   */
-  public PatternLayout(String pattern) {
+  public PatternLayout(final String pattern) {
     this.conversionPattern = pattern;
-    activateOptions();
+    head = createPatternParser(
+            (pattern == null) ? DEFAULT_CONVERSION_PATTERN : pattern).parse();
+    if (head instanceof BridgePatternConverter) {
+        handlesExceptions = !((BridgePatternConverter) head).ignoresThrowable();
+    } else {
+        handlesExceptions = false;
+    }
   }
 
   /**
@@ -489,9 +477,15 @@ public class PatternLayout extends Layout {
    *
    * @param conversionPattern conversion pattern.
   */
-  public void setConversionPattern(String conversionPattern) {
+  public void setConversionPattern(final String conversionPattern) {
     this.conversionPattern =
       OptionConverter.convertSpecialChars(conversionPattern);
+      head = createPatternParser(this.conversionPattern).parse();
+      if (head instanceof BridgePatternConverter) {
+          handlesExceptions = !((BridgePatternConverter) head).ignoresThrowable();
+      } else {
+          handlesExceptions = false;
+      }
   }
 
   /**
@@ -502,69 +496,41 @@ public class PatternLayout extends Layout {
     return conversionPattern;
   }
 
+
+    /**
+      Returns PatternParser used to parse the conversion string. Subclasses
+      may override this to return a subclass of PatternParser which recognize
+      custom conversion characters.
+
+      @since 0.9.0
+    */
+    protected org.apache.log4j.helpers.PatternParser createPatternParser(String pattern) {
+      return new org.apache.log4j.pattern.BridgePatternParser(pattern,
+              repository, getLogger());
+    }
+
+
   /**
     Activates the conversion pattern. Do not forget to call this method after
     you change the parameters of the PatternLayout instance.
   */
   public void activateOptions() {
-    List converters = new ArrayList();
-    List fields = new ArrayList();
-    Map converterRegistry = null;
-
-    if (this.repository != null) {
-      if (repository instanceof LoggerRepositoryEx) {
-        converterRegistry =
-            (Map) ((LoggerRepositoryEx) repository).getObject(PATTERN_RULE_REGISTRY);
-      }
-    }
-
-    PatternParser.parse(
-      conversionPattern, converters, fields, converterRegistry,
-      PatternParser.getPatternLayoutRules(), getLogger());
-
-    patternConverters = new LoggingEventPatternConverter[converters.size()];
-    patternFields = new FormattingInfo[converters.size()];
-
-    int i = 0;
-    Iterator converterIter = converters.iterator();
-    Iterator fieldIter = fields.iterator();
-
-    while (converterIter.hasNext()) {
-      Object converter = converterIter.next();
-
-      if (converter instanceof LoggingEventPatternConverter) {
-        patternConverters[i] = (LoggingEventPatternConverter) converter;
-        handlesExceptions |= patternConverters[i].handlesThrowable();
-      } else {
-        patternConverters[i] = new LiteralPatternConverter("");
-      }
-
-      if (fieldIter.hasNext()) {
-        patternFields[i] = (FormattingInfo) fieldIter.next();
-      } else {
-        patternFields[i] = FormattingInfo.getDefault();
-      }
-
-      i++;
-    }
+      // nothing to do.
   }
+
 
   /**
    *  Formats a logging event to a writer.
    * @param event logging event to be formatted.
   */
   public String format(final LoggingEvent event) {
-    buf.setLength(0);
-
-    for (int i = 0; i < patternConverters.length; i++) {
-      int startField = buf.length();
-      patternConverters[i].format(event, buf);
-      patternFields[i].format(startField, buf);
-    }
-
-    String retval = buf.toString();
-    buf.setLength(0);
-    return retval;
+      StringBuffer buf = new StringBuffer();
+      for(PatternConverter c = head;
+          c != null;
+          c = c.next) {
+          c.format(buf, event);
+      }
+      return buf.toString();
   }
 
   /**
