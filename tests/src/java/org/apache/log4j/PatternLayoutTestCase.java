@@ -39,6 +39,8 @@ public class PatternLayoutTestCase extends TestCase {
   static String EXCEPTION1 = "java.lang.Exception: Just testing";
   static String EXCEPTION2 = "\\s*at .*\\(.*:\\d{1,4}\\)";
   static String EXCEPTION3 = "\\s*at .*\\(Native Method\\)";
+  static String EXCEPTION4 = "\\s*at .*\\(.*Compiled Code\\)";
+
   static String PAT0 =
     "\\[main]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - Message \\d{1,2}";
   static String PAT1 = Filter.ISO8601_PAT + " " + PAT0;
@@ -62,7 +64,7 @@ public class PatternLayoutTestCase extends TestCase {
     + "apache.log4j.PatternLayoutTestCase.common\\(PatternLayoutTestCase.java:\\d{3}\\): "
     + "Message \\d{1,2}";
   static String PAT14 =
-    "^(DEBUG| INFO| WARN|ERROR|FATAL)\\ \\d{1,2}\\ *- Message \\d{1,2}";
+    "^(TRACE|DEBUG| INFO| WARN|ERROR|FATAL)\\ \\d{1,2}\\ *- Message \\d{1,2}";
   static String PAT_MDC_1 = "";
   Logger root;
   Logger logger;
@@ -322,6 +324,26 @@ public class PatternLayoutTestCase extends TestCase {
     assertTrue(Compare.compare(FILTERED, "witness/pattern/patternLayout.mdc.1"));
   }
 
+    /**
+     * Tests log4j 1.2 style extension of PatternLayout.
+     * Was test14 in log4j 1.2.
+     * @throws Exception
+     */
+    public void test15() throws Exception {
+      PropertyConfigurator.configure("input/pattern/patternLayout15.properties");
+      common();
+      ControlFilter cf1 = new ControlFilter(new String[]{PAT14, EXCEPTION1,
+                                 EXCEPTION2, EXCEPTION3, EXCEPTION4});
+      Transformer.transform(
+        TEMP, FILTERED,
+        new Filter[] {
+          cf1, new LineNumberFilter(), new SunReflectFilter(),
+          new JunitTestRunnerFilter()
+        });
+      assertTrue(Compare.compare(FILTERED, "witness/pattern/patternLayout.15"));
+    }
+
+
   void common() {
     int i = -1;
 
@@ -341,6 +363,7 @@ public class PatternLayoutTestCase extends TestCase {
     root.log(Level.FATAL, "Message " + i);
 
     Exception e = new Exception("Just testing");
+
     logger.debug("Message " + ++i, e);
     logger.info("Message " + ++i, e);
     logger.warn("Message " + ++i, e);
@@ -422,28 +445,5 @@ public class PatternLayoutTestCase extends TestCase {
     root.debug("finished mdc pattern test");
 
     assertTrue(Compare.compare(OUTPUT_FILE, WITNESS_FILE));
-  }
-
-  public static Test XXXsuite() {
-    TestSuite suite = new TestSuite();
-    suite.addTest(new PatternLayoutTest("test1"));
-
-    suite.addTest(new PatternLayoutTest("test2"));
-    suite.addTest(new PatternLayoutTest("test3"));
-    suite.addTest(new PatternLayoutTest("test4"));
-    suite.addTest(new PatternLayoutTest("test5"));
-    suite.addTest(new PatternLayoutTest("test6"));
-    suite.addTest(new PatternLayoutTest("test7"));
-    suite.addTest(new PatternLayoutTest("test8"));
-    suite.addTest(new PatternLayoutTest("test9"));
-    suite.addTest(new PatternLayoutTest("test10"));
-    suite.addTest(new PatternLayoutTest("test11"));
-    suite.addTest(new PatternLayoutTest("test12"));
-    suite.addTest(new PatternLayoutTest("test13"));
-    suite.addTest(new PatternLayoutTest("test14"));
-    suite.addTest(new PatternLayoutTest("testMDC1"));
-    suite.addTest(new PatternLayoutTest("testMDC2"));
-    
-    return suite;
   }
 }
