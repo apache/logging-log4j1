@@ -51,7 +51,7 @@ public class CategoryTest extends TestCase {
    * @throws Exception thrown if Category.getChainedPriority can not be found.
    */
   public void testGetChainedPriorityReturnType() throws Exception {
-    Method method = Category.class.getMethod("getChainedPriority", null);
+    Method method = Category.class.getMethod("getChainedPriority", (Class[]) null);
     assertTrue(method.getReturnType() == Priority.class);
   }
 
