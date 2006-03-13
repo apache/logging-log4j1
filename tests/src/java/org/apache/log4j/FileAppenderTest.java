@@ -76,7 +76,7 @@ public class FileAppenderTest extends AbstractAppenderTest {
    * @throws Exception
    */
   public void testGetThresholdReturnType() throws Exception {
-    Method method = FileAppender.class.getMethod("getThreshold", null);
+    Method method = FileAppender.class.getMethod("getThreshold", (Class[]) null);
     assertTrue(method.getReturnType() == Priority.class);
   }
 
