@@ -120,7 +120,7 @@ public final class AsyncAppenderTestCase extends TestCase {
     //  NullPointerException should kill dispatching thread
     //     before sleep returns.
     root.info("Message");
-    Thread.sleep(100);
+    Thread.sleep(200);
 
     try {
       //
@@ -233,9 +233,7 @@ public final class AsyncAppenderTestCase extends TestCase {
     }
 
     greeter.join();
-
-    Vector events = blockableAppender.getVector();
-    assertEquals(7, events.size());
+    closer.join();
   }
 
   /**
