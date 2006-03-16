@@ -27,6 +27,8 @@ import java.util.Vector;
 /**
  *  Tests for AsyncAppender.
  *
+ * @author Curt Arnold
+ *
  */
 public final class AsyncAppenderTestCase extends TestCase {
   /**
@@ -100,7 +102,7 @@ public final class AsyncAppenderTestCase extends TestCase {
     root.debug("m2");
 
     Vector v = vectorAppender.getVector();
-    assertEquals(v.size(), 1);
+    assertEquals(1, v.size());
     assertTrue(vectorAppender.isClosed());
   }
 
@@ -120,7 +122,7 @@ public final class AsyncAppenderTestCase extends TestCase {
     //  NullPointerException should kill dispatching thread
     //     before sleep returns.
     root.info("Message");
-    Thread.sleep(200);
+    Thread.sleep(100);
 
     try {
       //
@@ -146,7 +148,7 @@ public final class AsyncAppenderTestCase extends TestCase {
     //
     final int threadCount = 10;
     Thread[] threads = new Thread[threadCount];
-    final int repetitions = 100;
+    final int repetitions = 20;
     Greeter greeter = new Greeter(root, repetitions);
 
     for (int i = 0; i < threads.length; i++) {
@@ -188,19 +190,14 @@ public final class AsyncAppenderTestCase extends TestCase {
     Thread greeter = new Thread(new Greeter(root, 100));
 
     synchronized (blockableAppender.getMonitor()) {
+      //  Start greeter
       greeter.start();
+
+      //   Give it enough time to fill buffer
       Thread.sleep(100);
 
       //
-      //   Undesirable behavior: Interrupts are swallowed by
-      //   AsycnAppender which could interfere with expected
-      //   response to interrupts if the client code called wait or
-      //   sleep.
-      //
-      greeter.interrupt();
-      Thread.sleep(10);
-      greeter.interrupt();
-      Thread.sleep(10);
+      //   Interrupt should stop greeter after next logging event
       greeter.interrupt();
     }
 
@@ -208,7 +205,12 @@ public final class AsyncAppenderTestCase extends TestCase {
     asyncAppender.close();
 
     Vector events = blockableAppender.getVector();
-    assertEquals(100, events.size());
+
+    //
+    //   1 popped off of buffer by dispatcher before being blocked
+    //   5 in buffer before it filled up
+    //   1 before Thread.sleep in greeter
+    assertEquals(7, events.size());
   }
 
   /**
@@ -257,13 +259,16 @@ public final class AsyncAppenderTestCase extends TestCase {
     assertNotNull(dispatcher);
     dispatcher.interrupt();
     Thread.sleep(50);
+    root.info("Hello, World");
 
     //
-    //   Undesirable action: interrupting the dispatch thread
-    //        removes all appenders.
-    //
+    //  interrupting the dispatch thread should
+    //     degrade to synchronous dispatching of logging requests
     Enumeration iter = asyncAppender.getAllAppenders();
-    assertTrue((iter == null) || !iter.hasMoreElements());
+    assertTrue(iter.hasMoreElements());
+    assertSame(blockableAppender, iter.nextElement());
+    assertFalse(iter.hasMoreElements());
+    assertEquals(2, blockableAppender.getVector().size());
   }
 
   /**
@@ -281,16 +286,16 @@ public final class AsyncAppenderTestCase extends TestCase {
   public void testSetBufferSizeZero() {
     VectorAppender vectorAppender = createDelayedAppender();
     asyncAppender = createAsyncAppender(vectorAppender, 0);
-    assertEquals(0, asyncAppender.getBufferSize());
+    assertEquals(1, asyncAppender.getBufferSize());
 
     //
     //   any logging request will deadlock.
-    //root.debug("m1");
-    //root.debug("m2");
+    root.debug("m1");
+    root.debug("m2");
     asyncAppender.close();
 
     Vector v = vectorAppender.getVector();
-    assertEquals(v.size(), 0);
+    assertEquals(2, v.size());
   }
 
   /**
@@ -408,6 +413,40 @@ public final class AsyncAppenderTestCase extends TestCase {
     assertFalse(asyncAppender.getAllAppenders().hasMoreElements());
   }
 
+    /**
+     * Tests discarding of messages when buffer is full.
+     */
+    public void testDiscard() {
+        BlockableVectorAppender blockableAppender = new BlockableVectorAppender();
+        asyncAppender = createAsyncAppender(blockableAppender, 5);
+        assertTrue(asyncAppender.getBlocking());
+        asyncAppender.setBlocking(false);
+        assertFalse(asyncAppender.getBlocking());
+        Greeter greeter = new Greeter(root, 100);
+        synchronized(blockableAppender.getMonitor()) {
+            greeter.run();
+            root.error("That's all folks.");
+        }
+        asyncAppender.close();
+        Vector events = blockableAppender.getVector();
+        //
+        //  1 event pulled from buffer by dispatcher before blocking
+        //  5 events in buffer
+        //  1 summary event
+        //
+        assertEquals(7, events.size());
+        //
+        //  last message should start with "Discarded"
+        LoggingEvent event = (LoggingEvent) events.get(events.size() - 1);
+        assertEquals("Discarded", event.getMessage().toString().substring(0, 9));
+        assertSame(Level.ERROR, event.getLevel());
+        for (int i = 0; i < events.size() - 1; i++) {
+            event = (LoggingEvent) events.get(i);
+            assertEquals("Hello, World", event.getMessage().toString());
+        }
+    }
+
+
   /**
    * Appender that throws a NullPointerException on calls to append.
    * Used to test behavior of AsyncAppender when dispatching to
@@ -474,10 +513,13 @@ public final class AsyncAppenderTestCase extends TestCase {
      * {@inheritDoc}
      */
     public void run() {
-      synchronized (this) {
-        for (int i = 0; (i < repetitions) && !Thread.interrupted(); i++) {
+      try {
+        for (int i = 0; i < repetitions; i++) {
           logger.info("Hello, World");
+          Thread.sleep(1);
         }
+      } catch (InterruptedException ex) {
+        Thread.currentThread().interrupt();
       }
     }
   }

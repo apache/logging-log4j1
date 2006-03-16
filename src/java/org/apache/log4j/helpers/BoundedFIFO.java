@@ -23,10 +23,14 @@ import org.apache.log4j.spi.LoggingEvent;
 
 /**
    <code>BoundedFIFO</code> serves as the bounded first-in-first-out
-   buffer heavily used by the {@link org.apache.log4j.AsyncAppender}.
+   buffer previously used by the {@link org.apache.log4j.AsyncAppender}.
    
    @author Ceki G&uuml;lc&uuml; 
-   @since version 0.9.1 */
+   @since version 0.9.1
+
+   @deprecated Since 1.3.
+
+ */
 public class BoundedFIFO {
   
   LoggingEvent[] buf;
