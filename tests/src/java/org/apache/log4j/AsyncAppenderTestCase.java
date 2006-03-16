@@ -207,10 +207,10 @@ public final class AsyncAppenderTestCase extends TestCase {
     Vector events = blockableAppender.getVector();
 
     //
-    //   1 popped off of buffer by dispatcher before being blocked
+    //   0-1 popped off of buffer by dispatcher before being blocked
     //   5 in buffer before it filled up
     //   1 before Thread.sleep in greeter
-    assertEquals(7, events.size());
+    assertEquals(3, events.size()/2);
   }
 
   /**
@@ -430,11 +430,11 @@ public final class AsyncAppenderTestCase extends TestCase {
         asyncAppender.close();
         Vector events = blockableAppender.getVector();
         //
-        //  1 event pulled from buffer by dispatcher before blocking
+        //  0-1 event pulled from buffer by dispatcher before blocking
         //  5 events in buffer
         //  1 summary event
         //
-        assertEquals(7, events.size());
+        assertEquals(3, events.size()/2);
         //
         //  last message should start with "Discarded"
         LoggingEvent event = (LoggingEvent) events.get(events.size() - 1);
