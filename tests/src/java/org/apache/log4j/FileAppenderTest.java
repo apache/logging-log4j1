@@ -101,4 +101,13 @@ public class FileAppenderTest extends AbstractAppenderTest {
     Priority debug = Level.DEBUG;
     assertTrue(appender.isAsSevereAsThreshold(debug));
   }
+
+    /**
+     * Test for bug 38993.
+     * @throws java.io.IOException if IOException
+     */
+  public void testSetFileBuffered() throws java.io.IOException {
+      FileAppender appender = new FileAppender();
+      appender.setFile("output/setFileBuffered.log", false, true, 100);
+  }
 }
