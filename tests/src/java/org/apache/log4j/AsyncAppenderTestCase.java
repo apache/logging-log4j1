@@ -446,6 +446,30 @@ public final class AsyncAppenderTestCase extends TestCase {
         }
     }
 
+    /**
+     * Tests behavior when wrapped appender
+     *    makes log request on dispatch thread.
+     *
+     * See bug 30106
+     */
+    public void testLoggingInDispatcher() throws InterruptedException {
+        BlockableVectorAppender appender = new BlockableVectorAppender();
+        asyncAppender =
+          createAsyncAppender(appender, 2);
+        //
+        //   triggers several log requests on dispatch thread
+        //
+        root.fatal("Anybody up there...");
+        Thread.sleep(100);
+        asyncAppender.close();
+
+        Vector events = appender.getVector();
+        //
+        //  last message should start with "Discarded"
+        LoggingEvent event = (LoggingEvent) events.get(events.size() - 1);
+        assertEquals("Discarded", event.getMessage().toString().substring(0, 9));
+    }
+
 
   /**
    * Appender that throws a NullPointerException on calls to append.
@@ -552,6 +576,16 @@ public final class AsyncAppenderTestCase extends TestCase {
       synchronized (monitor) {
         dispatcher = Thread.currentThread();
         super.append(event);
+          //
+          //   if fatal, echo messages for testLoggingInDispatcher
+          //
+          if (event.getLevel() == Level.FATAL) {
+              Logger logger = event.getLogger();
+              logger.error(event.getMessage().toString());
+              logger.warn(event.getMessage().toString());
+              logger.info(event.getMessage().toString());
+              logger.debug(event.getMessage().toString());
+          }
       }
     }
 
