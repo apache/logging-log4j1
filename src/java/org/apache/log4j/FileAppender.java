@@ -289,7 +289,7 @@ public class FileAppender extends WriterAppender {
     Writer fw = createWriter(ostream);
 
     if (bufferedIO) {
-      fw = new BufferedWriter(this.qw, bufferSize);
+      fw = new BufferedWriter(fw, bufferSize);
     }
     setQWForFiles(fw);
 
