@@ -182,10 +182,12 @@ public class AsyncAppender extends AppenderSkeleton
         //
         //
         //   if blocking and thread is not already interrupted
+        //      and not the dispatcher then
         //      wait for a buffer notification
         boolean discard = true;
-
-        if (blocking && !Thread.interrupted()) {
+        if (blocking
+                && !Thread.interrupted()
+                && Thread.currentThread() != dispatcher) {
           try {
             buffer.wait();
             discard = false;
