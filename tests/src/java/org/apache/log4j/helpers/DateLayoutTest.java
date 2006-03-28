@@ -24,6 +24,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import java.util.TimeZone;
+import java.util.Date;
 
 
 /**
@@ -214,6 +215,27 @@ public class DateLayoutTest extends LayoutTest {
     DateFormat format = new SimpleDateFormat("HH:mm");
     DateLayout layout = (DateLayout) createLayout();
     layout.setDateFormat(format, TimeZone.getDefault());
+  }
+
+
+    /**
+     * Tests IS08601DateFormat class.
+     * @deprecated since ISO8601DateFormat is deprecated
+     */
+  public void testISO8601Format() {
+      DateFormat format = new ISO8601DateFormat();
+      String actual = format.format(new Date(-TimeZone.getDefault().getOffset(0)));
+      assertEquals("1970-01-01 00:00:00,000", actual);
+  }
+
+    /**
+     * Tests DateTimeDateFormat class.
+     * @deprecated since DateTimeDateFormat is deprecated
+     */
+  public void testDateTimeFormat() {
+      DateFormat format = new DateTimeDateFormat();
+      String actual = format.format(new Date(-TimeZone.getDefault().getOffset(0)));
+      assertEquals("01 Jan 1970 00:00:00,000", actual);
   }
 
   /**
