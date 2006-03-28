@@ -21,7 +21,7 @@ import java.util.TimeZone;
 // Contributors: Arndt Schoenewald <arndt@ibm23093i821.mc.schoenewald.de>
 
 /**
- * Formats a {@link java.util.Date} in the format "YYYY-mm-dd HH:mm:ss,SSS" for example
+ * Formats a {@link java.util.Date} in the format "yyyy-MM-dd HH:mm:ss,SSS" for example
  * "1999-11-27 15:49:37,459".
  * <p/>
  * <p>Refer to the <a
@@ -38,7 +38,7 @@ public class ISO8601DateFormat extends AbsoluteTimeDateFormat {
     /**
      * Equivalent format string for SimpleDateFormat.
      */
-    private static final String FORMAT = "YYYY-mm-dd HH:mm:ss,SSS";
+    private static final String FORMAT = "yyyy-MM-dd HH:mm:ss,SSS";
 
     /**
      * Create a new instance of ISO8601DateFormat.
@@ -52,7 +52,7 @@ public class ISO8601DateFormat extends AbsoluteTimeDateFormat {
      *
      * @param timeZone time zone used in conversion, may not be null.
      */
-    public ISO8601DateFormat(TimeZone timeZone) {
+    public ISO8601DateFormat(final TimeZone timeZone) {
         super(FORMAT, timeZone);
     }
 
