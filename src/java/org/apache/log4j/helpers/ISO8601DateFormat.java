@@ -25,7 +25,7 @@ import java.text.ParsePosition;
 // Contributors: Arndt Schoenewald <arndt@ibm23093i821.mc.schoenewald.de>
 
 /**
-   Formats a {@link Date} in the format "YYYY-mm-dd HH:mm:ss,SSS" for example
+   Formats a {@link Date} in the format "yyyy-MM-dd HH:mm:ss,SSS" for example
    "1999-11-27 15:49:37,459".
 
    <p>Refer to the <a

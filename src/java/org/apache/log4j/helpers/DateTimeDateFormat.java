@@ -24,7 +24,7 @@ import java.text.ParsePosition;
 import java.text.DateFormatSymbols;
 
 /**
-   Formats a {@link Date} in the format "dd MMM YYYY HH:mm:ss,SSS" for example,
+   Formats a {@link Date} in the format "dd MMM yyyy HH:mm:ss,SSS" for example,
    "06 Nov 1994 15:49:37,459".
 
    @author Ceki G&uuml;lc&uuml;
@@ -47,7 +47,7 @@ public class DateTimeDateFormat extends AbsoluteTimeDateFormat {
   }
 
   /**
-     Appends to <code>sbuf</code> the date in the format "dd MMM YYYY
+     Appends to <code>sbuf</code> the date in the format "dd MMM yyyy
      HH:mm:ss,SSS" for example, "06 Nov 1994 08:49:37,459".
 
      @param sbuf the string buffer to write to
