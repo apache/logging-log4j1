@@ -21,7 +21,7 @@ import java.util.Date;
 import java.text.DateFormatSymbols;
 
 /**
- * Formats a {@link Date} in the format "dd MMM YYYY HH:mm:ss,SSS" for example,
+ * Formats a {@link Date} in the format "dd MMM yyyy HH:mm:ss,SSS" for example,
  * "06 Nov 1994 15:49:37,459".
  *
  * @author Ceki G&uuml;lc&uuml;
@@ -32,7 +32,7 @@ public class DateTimeDateFormat extends AbsoluteTimeDateFormat {
     /**
      * Equivalent format string for SimpleDateFormat.
      */
-    private final static String PATTERN = "dd MMM YYYY HH:mm:ss,SSS";
+    private final static String PATTERN = "dd MMM yyyy HH:mm:ss,SSS";
     /** Short names for the months. */
     String[] shortMonths = new DateFormatSymbols().getShortMonths();
 
