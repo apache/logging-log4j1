@@ -23,6 +23,7 @@ import org.apache.log4j.spi.LoggingEvent;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+import java.util.Calendar;
 import java.util.TimeZone;
 import java.util.Date;
 
@@ -236,7 +237,10 @@ public class DateLayoutTest extends LayoutTest {
      */
   public void testISO8601Format() {
       DateFormat format = new ISO8601DateFormat();
-      String actual = format.format(new Date(-TimeZone.getDefault().getOffset(0)));
+      Calendar calendar = Calendar.getInstance();
+      calendar.clear();
+      calendar.set(1970, 0, 1, 0, 0, 0);
+      String actual = format.format(calendar.getTime());
       assertEquals("1970-01-01 00:00:00,000", actual);
   }
 
@@ -246,7 +250,10 @@ public class DateLayoutTest extends LayoutTest {
      */
   public void testDateTimeFormat() {
       DateFormat format = new DateTimeDateFormat();
-      String actual = format.format(new Date(-TimeZone.getDefault().getOffset(0)));
+      Calendar calendar = Calendar.getInstance();
+      calendar.clear();
+      calendar.set(1970, 0, 1, 0, 0, 0);
+      String actual = format.format(calendar.getTime());
       assertEquals("01 Jan 1970 00:00:00,000", actual);
   }
 
