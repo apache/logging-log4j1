@@ -18,12 +18,15 @@ package org.apache.log4j.watchdog;
 
 
 import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.config.ConfiguratorBase;
 import org.apache.log4j.spi.Configurator;
+import org.apache.log4j.spi.ConfiguratorEx;
 import org.apache.log4j.plugins.PluginSkeleton;
 import org.apache.log4j.helpers.OptionConverter;
 
-import java.io.InputStream;
 import java.net.URL;
+import java.io.InputStream;
+import java.util.List;
 
 /**
   Implements the required interface for Watchdog objects.
@@ -34,7 +37,7 @@ import java.net.URL;
   required.  Developers may choose to implement their own version of the
   Watchdog interface (which extends the base Plugin interface) if they so 
   choose.
-  
+
   <p>This implementation provides two helper methods, reconfigureByURL and
   reconfigureByInputStream.  Either of these methods can be called from the
   implemented reconfigure method, as required by the specific type of data
@@ -42,18 +45,18 @@ import java.net.URL;
   that can be described by a URL (ie file, url).  The rconfigureByInputStream
   method is meant for sources where onl a stream of data is available
   (ie socket).
-  
+
   <p>Subclasses of this implementation are required to implement their own
   version of the abstract reconfigure method.
 
   @author Mark Womack <mwomack@apache.org>
   @since 1.3
 */
-public abstract class WatchdogSkeleton 
+public abstract class WatchdogSkeleton
 extends PluginSkeleton implements Watchdog {
-  
+
   protected String configuratorClassName;
-  
+
   /**
    * Sets the Configurator class used for reconfiguration.
    *
@@ -63,7 +66,7 @@ extends PluginSkeleton implements Watchdog {
    public void setConfigurator(String configuratorClassName) {
      this.configuratorClassName = configuratorClassName;
    }
-  
+
   /**
    * Returns the configurator class used for reconfiguration.
    *
@@ -77,8 +80,8 @@ extends PluginSkeleton implements Watchdog {
    * Called to reconfigure the log4j environment when the monitored data
    * source has been updated.  Must be implemented by subclasses.
    */
-  public abstract void reconfigure();
-  
+  public abstract boolean reconfigure();
+
   /**
    * Helper method to get an instance of the configurator class.
    *
@@ -87,21 +90,21 @@ extends PluginSkeleton implements Watchdog {
    */
   protected Configurator getConfiguratorInstance() {
     // create an instance of the configurator class
-    Configurator configurator = null;
-    
+    Configurator configurator;
+
     // if we were configured with a configurator class name, use it
     if (configuratorClassName != null) {
       configurator = (Configurator) OptionConverter.instantiateByClassName(
-      	configuratorClassName, Configurator.class, null);
+        configuratorClassName, Configurator.class, null);
     }
     // otherwise, default to PropertyConfigurator
     else {
       configurator = new PropertyConfigurator();
     }
-    
+
     return configurator;
   }
-  
+
   /**
    * Helper method to reconfigure using a URL.
    * The input parameter, configurationURL, should be a URL pointing to
@@ -109,24 +112,88 @@ extends PluginSkeleton implements Watchdog {
    *
    * @param srcURL The url that contains the data to be used for
    *   reconfiguration.
+   * @return True if the reconfiguration was without error
    */
-  protected void reconfigureByURL(URL srcURL) {
+  protected boolean reconfigureByURL(URL srcURL) {
     if (this.getLogger().isDebugEnabled()) {
       this.getLogger().debug("watchdog \"{}\" reconfiguring from url: {}",
         this.getName(), srcURL);
     }
-    
+
     // create an instance of the configurator class
     Configurator configurator = getConfiguratorInstance();
-    
+
     // if able to create configurator, then reconfigure using input stream
     if (configurator != null) {
       configurator.doConfigure(srcURL, this.getLoggerRepository());
+      if (configurator instanceof ConfiguratorBase) {
+        ConfiguratorBase baseConfigurator = (ConfiguratorBase)configurator;
+        List errorList = baseConfigurator.getErrorList();
+        getLogger().error("errors reported during reconfiguration: ");
+        if (errorList.size() != 0) {
+          for (int x = 0; x < errorList.size(); x++) {
+            getLogger().debug("error " + x + ": " + errorList.get(x));
+          }
+          return false;
+        }
+      }
     }
-	  else {
-	    getLogger().error(
+    else {
+      getLogger().error(
         "watchdog \"{}\" could not create configurator, ignoring new configuration settings",
         this.getName());
-	  }
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
+   * Helper method to reconfigure using an InputStream.
+   *
+   * @param stream The stream of data to be used for reconfiguration.
+   * @return True if the reconfiguration was without error
+   */
+  protected boolean reconfigureByStream(InputStream stream) {
+    if (this.getLogger().isDebugEnabled()) {
+      this.getLogger().debug("watchdog \"{}\" reconfiguring by stream",
+        this.getName());
+    }
+
+    // create an instance of the configurator class
+    Configurator configurator = getConfiguratorInstance();
+    ConfiguratorEx configuratorEx = null;
+
+    if (configurator instanceof ConfiguratorEx) {
+      configuratorEx = (ConfiguratorEx)configurator;
+    } else {
+      getLogger().error(
+        "watchdog \"{}\" could not create configurator, configurator class is not of type ConfiguratorEx",
+        this.getName());
+    }
+
+    // if able to create configurator, then reconfigure using input stream
+    if (configuratorEx != null) {
+      configuratorEx.doConfigure(stream, this.getLoggerRepository());
+      if (configuratorEx instanceof ConfiguratorBase) {
+        ConfiguratorBase baseConfigurator = (ConfiguratorBase)configuratorEx;
+        List errorList = baseConfigurator.getErrorList();
+        getLogger().error("errors reported during reconfiguration: ");
+        if (errorList.size() != 0) {
+          for (int x = 0; x < errorList.size(); x++) {
+            getLogger().debug("error " + x + ": " + errorList.get(x));
+          }
+          return false;
+        }
+      }
+    }
+    else {
+      getLogger().error(
+        "watchdog \"{}\" could not create configurator, ignoring new configuration settings",
+        this.getName());
+      return false;
+    }
+
+    return true;
   }
 }

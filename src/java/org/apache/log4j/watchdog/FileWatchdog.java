@@ -16,21 +16,28 @@
 
 package org.apache.log4j.watchdog;
 
-import java.io.File;
-import java.net.URL;
+import org.apache.log4j.spi.LoggerRepository;
+import org.apache.log4j.spi.LoggerRepositoryEx;
+import org.apache.log4j.scheduler.Job;
+
+import java.io.*;
 
 /**
  * Implements a watchdog to watch a file.  When the file changes, determined by
  * a change in the file's modification date, the contents of the file are use to
  * reconfigure the log4j environment.
  */
-public class FileWatchdog extends TimedLocationWatchdog {
+public class FileWatchdog extends WatchdogSkeleton implements Job {
+
+  public static final long DEFAULT_INTERVAL = 60000;
 
   private String filePath;
+  private long interval = DEFAULT_INTERVAL;
+  private boolean initialConfigure = false;
 
   /** The file being watched. */
   private File watchedFile;
-  private URL watchedURL;
+  private long lastModTime = -1;
 
   /**
    * Sets the path of the file to use and watch for configuration changes.
@@ -49,11 +56,60 @@ public class FileWatchdog extends TimedLocationWatchdog {
   public String getFile() {
     return filePath;
   }
+
+  /**
+   * Sets the interval of time between checks for file modifications.
+   *
+   * @param interval
+   */
+  public void setInterval(long interval) {
+    this.interval = interval;
+  }
+
+  /**
+   * Returns the interval of time between checks for file modifications.
+   *
+   * @return interval of time
+   */
+  public long getInterval() {
+    return interval;
+  }
+
+  /**
+   * Set to true if watchdog should configure with file before starting watch
+   * in activateOptions.
+   *
+   * @param initialConfigure
+   */
+  public void setInitialConfigure(boolean initialConfigure) {
+    this.initialConfigure = initialConfigure;
+  }
+
+  /**
+   * Returns true if watchdog will configure before starting watch in
+   * activateOptions.
+   *
+   * @return
+   */
+  public boolean getInitialConfigure() {
+    return initialConfigure;
+  }
+
+  /**
+   * Returns the last modification time of the watched file.
+   * 
+   * @return
+   */
+  public long getLastModTime() {
+    return lastModTime;
+  }
+
   /**
    * Sets up the reference to the file being watched, then calls the version
    * in the super class.
    */
   public void activateOptions() {
+    getLogger().debug("activateOptions called for watchdog " + this.getName());
 
     if (filePath == null) {
       getLogger().error("watchdog \"{}\" not configured with path to watch",
@@ -62,42 +118,83 @@ public class FileWatchdog extends TimedLocationWatchdog {
     }
 
     watchedFile = new File(filePath);
-    try {
-        //
-        //   attempt to invoke JDK 1.4's File.toURI and URI.toURL methods
-        //       which do a better job of escaping file names than File.toURL.
-        Object uri = File.class.getMethod("toURI", null).invoke(watchedFile, null);
-        watchedURL = (URL) uri.getClass().getMethod("toURL", null).invoke(uri, null);
-    } catch(Exception ex) {
-        try {
-            watchedURL = watchedFile.toURL();
-        } catch(java.net.MalformedURLException ex2) {
-            this.getLogger().error("Watchdog {} unable to express filename {} as a URL",
-              this.getName(), watchedFile.getName());
-        }
+
+    // do an initial configure or record the current mod time
+    if (initialConfigure) {
+      execute();
+    } else if (watchedFile.exists()) {
+      lastModTime = watchedFile.lastModified();
     }
-    super.activateOptions();
+
+    LoggerRepository repo = getLoggerRepository();
+    if (repo instanceof LoggerRepositoryEx) {
+        ((LoggerRepositoryEx) repo).getScheduler().schedule(this,
+      System.currentTimeMillis() + interval, interval);
+    } else {
+        this.getLogger().error("{} watchdog requires repository that supports LoggerRepositoryEx",
+          this.getName());
+    }
   }
 
-  /**
-   * Returns the modification of the file being watched.
-   * 
-   * @return The modification time of the file.
+    /**
+   * Implements the Job interface for the Scheduler.  When this method is called
+   * by the Scheduler it checks the current modification time of the watched
+   * source with the last recorded modification time.  If the modification times
+   * are different, then the log4j environment is reconfigured using the
+   * watched source for the configuration data.
    */
-  public long getModificationTime() {
-    return watchedFile.lastModified();
+  public void execute() {
+    getLogger().debug("FileWatchdog \"{}\" executing", this.getName());
+    if (watchedFile.exists()) {
+      long curModTime = watchedFile.lastModified();
+      getLogger().debug("Checking times for watchdog " + this.getName() +
+        " :(lastModTime - " + lastModTime + ") ?? (curModTime - " +
+        curModTime + ")");
+      if (curModTime != lastModTime) {
+        if (reconfigure()) {
+          lastModTime = curModTime;
+          getLogger().debug("Reconfiguration successful for watchdog " +
+            this.getName());
+        } else {
+          getLogger().debug("Reconfiguration not successful for watchdog " +
+            this.getName() + ", not updating mod time");
+        }
+      } else {
+        getLogger().debug("Times matched, doing nothing");
+      }
+    } else {
+      getLogger().debug("File does not exist, doing nothing");
+    }
   }
-
+  /**
+   * Shutdown this watchdog.  Since implemented as a scheduled Job, this method
+   * simply removes the watchdog from the Scheduler.
+   */
+  public void shutdown() {
+    LoggerRepository repo = getLoggerRepository();
+    if (repo instanceof LoggerRepositoryEx) {
+        ((LoggerRepositoryEx) repo).getScheduler().delete(this);
+    }
+  }
   /**
    * Reconfigures the log4j environment using the file as the source of the
    * configuration data.
    */
-  public void reconfigure() {
-    if (watchedFile.exists() && watchedURL != null) {
-        reconfigureByURL(watchedURL);
-    } else {
-        this.getLogger().warn("{} watchdog cannot find file {}",
-          this.getName(), watchedFile.getName());
+  public boolean reconfigure() {
+    InputStream stream = null;
+    try {
+      stream = new FileInputStream(watchedFile);
+      return reconfigureByStream(stream);
+    } catch (FileNotFoundException e) {
+      return false;
+    } finally {
+      if (stream != null) {
+        try {
+          stream.close();
+        } catch (IOException e2) {
+          // ignore
+        }
+      }
     }
   }
 }

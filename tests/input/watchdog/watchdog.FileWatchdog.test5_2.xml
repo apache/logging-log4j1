@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration >
+
+<log4j:configuration xmlns:log4j="http://logging.apache.org/">
+  
+  <logger name="test.FileWatchdogTestCase">
+    <level value="info"/>
+  </logger>
+  
+</log4j:configuration>
