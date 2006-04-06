@@ -42,6 +42,7 @@ import org.apache.log4j.joran.spi.RuleStore;
 import org.apache.log4j.joran.spi.SimpleRuleStore;
 import org.apache.log4j.spi.ErrorItem;
 import org.apache.log4j.spi.LoggerRepository;
+import org.apache.log4j.spi.ConfiguratorEx;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -68,7 +69,8 @@ import javax.xml.parsers.SAXParserFactory;
  * @author Curt Arnold
  * @author <a href="http://www.qos.ch/log4j/">Ceki G&uuml;lc&uuml;</a>
  */
-public class JoranConfigurator extends ConfiguratorBase {
+public class JoranConfigurator extends ConfiguratorBase
+    implements ConfiguratorEx {
   private Interpreter joranInterpreter;
   private LoggerRepository repository;
 

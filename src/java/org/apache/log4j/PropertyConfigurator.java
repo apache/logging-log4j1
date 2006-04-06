@@ -22,16 +22,13 @@ package org.apache.log4j;
 import org.apache.log4j.config.ConfiguratorBase;
 import org.apache.log4j.config.PropertySetter;
 import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.helpers.Constants;
 import org.apache.log4j.or.RendererMap;
-import org.apache.log4j.spi.Configurator;
-import org.apache.log4j.spi.ErrorItem;
-import org.apache.log4j.spi.LoggerFactory;
-import org.apache.log4j.spi.LoggerRepository;
-import org.apache.log4j.spi.LoggerRepositoryEx;
 
 //import org.apache.log4j.config.PropertySetterException;
-import org.apache.log4j.spi.OptionHandler;
-import org.apache.log4j.spi.RendererSupport;
+import org.apache.log4j.spi.*;
+import org.apache.log4j.watchdog.FileWatchdog;
+import org.apache.log4j.plugins.PluginRegistry;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -43,6 +40,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.net.URL;
+import java.net.MalformedURLException;
 
 
 /**
@@ -85,7 +84,8 @@ import java.util.Vector;
    @author Ceki G&uuml;lc&uuml;
    @author Anders Kristensen
    @since 0.8.1 */
-public class PropertyConfigurator extends ConfiguratorBase {
+public class PropertyConfigurator extends ConfiguratorBase
+    implements ConfiguratorEx {
   static final String CATEGORY_PREFIX = "log4j.category.";
   static final String LOGGER_PREFIX = "log4j.logger.";
   static final String FACTORY_PREFIX = "log4j.factory";
@@ -100,6 +100,9 @@ public class PropertyConfigurator extends ConfiguratorBase {
       LoggerFactory}.  Currently set to "<code>log4j.loggerFactory</code>".  */
   public static final String LOGGER_FACTORY_KEY = "log4j.loggerFactory";
   private static final String INTERNAL_ROOT_NAME = "root";
+
+  private static Object watchdogLock = new Object();
+  private static FileWatchdog fileWatchdog = null;
 
   /**
      Used internally to keep track of configured appenders.
@@ -348,6 +351,57 @@ public class PropertyConfigurator extends ConfiguratorBase {
   }
 
   /**
+    Like {@link #configureAndWatch(String, long)} except that the
+    default delay of 60 seconds is used.
+
+    @deprecated Use org.apache.log4j.watchdog.FileWatchdog directly.
+
+    @param configFilename A log4j configuration file in XML format.
+
+  */
+  static public void configureAndWatch(String configFilename) {
+    configureAndWatch(configFilename, 60000);
+  }
+
+  /**
+    Read the configuration file <code>configFilename</code> if it
+    exists. Moreover, a thread will be created that will periodically
+    check if <code>configFilename</code> has been created or
+    modified. The period is determined by the <code>delay</code>
+    argument. If a change or file creation is detected, then
+    <code>configFilename</code> is read to configure log4j.
+
+    @deprecated Use org.apache.log4j.watchdog.FileWatchdog directly.
+
+    @param configFilename A log4j configuration file in XML format.
+    @param delay The delay in milliseconds to wait between each check.
+  */
+  static public void configureAndWatch(String configFilename, long delay) {
+    synchronized(watchdogLock) {
+      PluginRegistry pluginRegistry =
+        ((LoggerRepositoryEx)LogManager.getLoggerRepository()).getPluginRegistry();
+
+      // stop existing watchdog
+      if (fileWatchdog != null) {
+        pluginRegistry.stopPlugin(fileWatchdog.getName());
+        fileWatchdog = null;
+      }
+
+      // create the watchdog
+      fileWatchdog = new FileWatchdog();
+      fileWatchdog.setName("PropertyConfigurator.FileWatchdog");
+      fileWatchdog.setConfigurator(PropertyConfigurator.class.getName());
+      fileWatchdog.setFile(configFilename);
+      fileWatchdog.setInterval(delay);
+      fileWatchdog.setInitialConfigure(true);
+
+      // register and start the watchdog
+      pluginRegistry.addPlugin(fileWatchdog);
+      fileWatchdog.activateOptions();
+    }
+  }
+
+  /**
      Read configuration options from <code>properties</code>.
 
      See {@link #doConfigure(String, LoggerRepository)} for the expected format.
@@ -358,20 +412,20 @@ public class PropertyConfigurator extends ConfiguratorBase {
     try {
       // we start by attaching a temporary list appender
       attachListAppender(repository);
-      
+
       boolean attachedConsoleApepnder = false;
       if ((value != null) && OptionConverter.toBoolean(value, true)) {
         attachTemporaryConsoleAppender(repository);
         attachedConsoleApepnder = true;
       }
-
+      
       // As soon as we start configuration process, the pristine flag is set to 
       // false.
       if(repository instanceof LoggerRepositoryEx) {
         ((LoggerRepositoryEx) repository).setPristine(false);
       }
 
-      
+
       String thresholdStr =
         OptionConverter.findAndSubst(THRESHOLD_PREFIX, properties);
 
@@ -430,7 +484,7 @@ public class PropertyConfigurator extends ConfiguratorBase {
 
     doConfigure(props, repository);
   }
-  
+
   /**
    * Read configuration options from input stream <code>configStream</code>.
    * @since 1.3
@@ -438,7 +492,7 @@ public class PropertyConfigurator extends ConfiguratorBase {
    * @param repository
    */
   public void doConfigure(InputStream configStream,
-  LoggerRepository repository) {
+                          LoggerRepository repository) {
     Properties props = new Properties();
     getLogger(repository).debug(
       "Reading configuration from input stream");
@@ -679,7 +733,7 @@ public class PropertyConfigurator extends ConfiguratorBase {
           PropertySetter layoutPS = new PropertySetter(layout);
           layoutPS.setLoggerRepository(repository);
           layoutPS.setProperties(props, layoutPrefix + ".");
-          
+
           activateOptions(layout);
           getLogger(repository).debug(
             "End of parsing for \"" + appenderName + "\".");

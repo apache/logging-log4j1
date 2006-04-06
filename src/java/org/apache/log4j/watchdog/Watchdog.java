@@ -62,7 +62,9 @@ public interface Watchdog extends Plugin {
   /**
    * Called to reconfigure the log4j environment when the monitored data
    * source has been updated.
+   *
+   * @return True if reconfiguration was without errors
    */
-  public void reconfigure();
+  public boolean reconfigure();
   
 }
