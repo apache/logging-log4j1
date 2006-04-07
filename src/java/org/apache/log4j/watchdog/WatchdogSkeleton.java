@@ -129,8 +129,8 @@ extends PluginSkeleton implements Watchdog {
       if (configurator instanceof ConfiguratorBase) {
         ConfiguratorBase baseConfigurator = (ConfiguratorBase)configurator;
         List errorList = baseConfigurator.getErrorList();
-        getLogger().error("errors reported during reconfiguration: ");
         if (errorList.size() != 0) {
+          getLogger().error("errors reported during reconfiguration: ");
           for (int x = 0; x < errorList.size(); x++) {
             getLogger().debug("error " + x + ": " + errorList.get(x));
           }
