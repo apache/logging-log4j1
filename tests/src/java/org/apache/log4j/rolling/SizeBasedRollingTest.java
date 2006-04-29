@@ -360,16 +360,4 @@ public class SizeBasedRollingTest extends TestCase {
   }
 
 
-    /**
-     * Build test suite using this class and ObsoleteRollingFileAppenderTest.
-     *
-     * @deprecated Marked deprecated since suite contains tests of deprecated classes
-     * @return test suite.
-     */
-  public static Test suite() {
-    TestSuite suite = new TestSuite();
-    suite.addTestSuite(SizeBasedRollingTest.class);
-    suite.addTestSuite(ObsoleteRollingFileAppenderTest.class);
-    return suite;
-  }
 }

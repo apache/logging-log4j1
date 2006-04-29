@@ -225,7 +225,10 @@
                                      CachedDateFormat,
   	                                 Encoding,
   	                                 Syslog,
-                                     NTEventLogAppender
+                                     NTEventLogAppender,
+                                     RFA,
+                                     ERFA,
+                                     DRFA
                                      "/>
 
 
@@ -772,6 +775,30 @@
             <test name="org.apache.log4j.nt.NTEventLogAppenderTest" />
         </junit>
    </target>
+
+  <target name="DRFA" depends="build">
+    <junit printsummary="yes" fork="yes" haltonfailure="${haltonfailure}">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="false"/>
+      <test name="org.apache.log4j.DRFATestCase" />
+    </junit>
+  </target>
+
+  <target name="RFA" depends="build">
+    <junit printsummary="yes" fork="yes" haltonfailure="${haltonfailure}">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="false"/>
+      <test name="org.apache.log4j.RFATestCase" />
+    </junit>
+  </target>
+
+  <target name="ERFA" depends="build">
+    <junit printsummary="yes" fork="yes" haltonfailure="${haltonfailure}">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="false"/>
+      <test name="org.apache.log4j.varia.ERFATestCase" />
+    </junit>
+  </target>
 
 
 

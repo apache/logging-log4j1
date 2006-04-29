@@ -483,17 +483,4 @@ public class TimeBasedRollingTest extends TestCase {
     }
   }
 
-  /**
-   * Build test suite using this class and ObsoleteDailyRollingFileAppenderTest.
-   *
-   * @deprecated Marked deprecated since suite contains tests of deprecated classes
-   * @return test suite.
-   */
-  public static Test suite() {
-    TestSuite suite = new TestSuite();
-    suite.addTestSuite(TimeBasedRollingTest.class);
-    suite.addTestSuite(ObsoleteDailyRollingFileAppenderTest.class);
-
-    return suite;
-  }
 }

@@ -1,12 +1,12 @@
 /*
- * Copyright 1999,2005 The Apache Software Foundation.
- *
+ * Copyright 1999-2005 The Apache Software Foundation.
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,13 +16,12 @@
 
 package org.apache.log4j.varia;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.ServerSocket;
+import java.io.*;
 import java.net.Socket;
-
+import java.net.ServerSocket;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.RollingFileAppender;
+import org.apache.log4j.helpers.LogLog;
 
 /**
    This appender listens on a socket on the port specified by the
@@ -43,162 +42,139 @@ import java.net.Socket;
 
 
    @author Ceki G&uuml;lc&uuml;
-   @author Curt Arnold
    @since version 0.9.0
-   @deprecated version 1.3
+   @deprecated since 1.3, use org.apache.log4j.rolling.RollingFileAppender.
  */
-public final class ExternallyRolledFileAppender extends org.apache.log4j.RollingFileAppender {
+public class ExternallyRolledFileAppender extends RollingFileAppender {
+
   /**
      The string constant sent to initiate a roll over.   Current value of
      this string constant is <b>RollOver</b>.
   */
-  public static final String ROLL_OVER = "RollOver";
-
+  static final public String ROLL_OVER = "RollOver";
 
   /**
      The string constant sent to acknowledge a roll over.   Current value of
       this string constant is <b>OK</b>.
   */
-  public static final String OK = "OK";
-  /**
-   * The port to listen on for rollover requests. 
-   * The default value is <code>0</code> which disables listening for requests.
-   */  
-  private int port = 0;
-  /**
-   *  Request listening thread.
-   */
-  private HUP hup;
+  static final public String OK = "OK";
 
-
+  int port = 0;
+  HUP hup;
 
   /**
      The default constructor does nothing but calls its super-class
      constructor.  */
-  public ExternallyRolledFileAppender() {
+  public
+  ExternallyRolledFileAppender() {
   }
 
   /**
-    * Sets the port monitored for rollover requests.
-   */
-  public void setPort(int port) {
+     The <b>Port</b> [roperty is used for setting the port for
+     listening to external roll over messages.
+  */
+  public
+  void setPort(int port) {
     this.port = port;
   }
 
   /**
-    * Gets the port monitored for rollover requests.  A value of <code>0</code>
-    * indicates no monitoring.
+     Returns value of the <b>Port</b> option.
    */
-  public int getPort() {
+  public
+  int getPort() {
     return port;
   }
 
   /**
      Start listening on the port specified by a preceding call to
      {@link #setPort}.  */
-  public void activateOptions() {
+  public
+  void activateOptions() {
     super.activateOptions();
-    if (port != 0) {
-        hup =  new HUP(this, port);
-        hup.setDaemon(true);
-        hup.start();
+    if(port != 0) {
+      if(hup != null) {
+	hup.interrupt();
+      }
+      hup = new HUP(this, port);
+      hup.setDaemon(true);
+      hup.start();
+    }
+  }
+}
+
+/**
+ * @deprecated since log4j 1.3.
+ */
+class HUP extends Thread {
+
+  int port;
+  ExternallyRolledFileAppender er;
+
+  HUP(ExternallyRolledFileAppender er, int port) {
+    this.er = er;
+    this.port = port;
+  }
+
+  public
+  void run() {
+    while(!isInterrupted()) {
+      try {
+	ServerSocket serverSocket = new ServerSocket(port);
+	while(true) {
+	  Socket socket = serverSocket.accept();
+	  LogLog.debug("Connected to client at " + socket.getInetAddress());
+	  new Thread(new HUPNode(socket, er)).start();
+	}
+      }
+      catch(Exception e) {
+	e.printStackTrace();
+      }
+    }
+  }
+}
+
+/**
+ * @deprecated since log4j 1.3.
+ */
+class HUPNode implements Runnable {
+
+  Socket socket;
+  DataInputStream dis;
+  DataOutputStream dos;
+  ExternallyRolledFileAppender er;
+
+  public
+  HUPNode(Socket socket, ExternallyRolledFileAppender er) {
+    this.socket = socket;
+    this.er = er;
+    try {
+      dis = new DataInputStream(socket.getInputStream());
+      dos = new DataOutputStream(socket.getOutputStream());
+    }
+    catch(Exception e) {
+      e.printStackTrace();
     }
   }
 
-     /**
-       *  Close this appender instance. The underlying stream or writer is
-       *  also closed.
-       *
-       *  <p>Closed appenders cannot be reused.
-      */
-      public void close() {
-        HUP dying = null;
-        synchronized(this) {
-            dying = hup;
-            hup = null;
-        }
-        if (dying != null) {
-            dying.interrupt();
-            try {
-               new Socket(InetAddress.getLocalHost(), port);
-               dying.join();
-            } catch (Exception ex) {
-            }
-        }
-        super.close();
+  public void run() {
+    try {
+      String line = dis.readUTF();
+      LogLog.debug("Got external roll over signal.");
+      if(ExternallyRolledFileAppender.ROLL_OVER.equals(line)) {
+	synchronized(er) {
+	  er.rollOver();
+	}
+	dos.writeUTF(ExternallyRolledFileAppender.OK);
       }
-
-
-
-  private static class HUP extends Thread {
-     private final ExternallyRolledFileAppender er;
-     private final int port;
-      /**
-       * Use of loggers within this code is a deadlock waiting to happen.
-       *
-       */
-//     private static final Logger logger = LogManager.getLogger("org.apache.log4j.varia.HUP");
-  
-     public HUP(final ExternallyRolledFileAppender er, int port) {
-        this.er = er;
-        this.port = port;
-     }
-
-     public void run() {
-        ServerSocket serverSocket = null;
-        IOException ioex = null;
-        //
-        //   try to establish connection for 10 attempts
-        //     since configuration may have just been reset
-        //     and the previous HUP hasn't released the socket.
-        for(int i = 0; i < 10; i++) {
-            try {
-                serverSocket = new ServerSocket(port);
-                break;
-            } catch(IOException ex) {
-                ioex = ex;
-                try {
-                    Thread.sleep(100);
-                } catch(InterruptedException intex) {
-                }
-            }
-        }
-        if (serverSocket != null) {
-           try {
-               while (true) {
-                  Socket socket = serverSocket.accept();
-                   if (isInterrupted()) {
-                       break;
-                   }
-    //              logger.debug("Connected to client at " + socket.getInetAddress());
-                   DataInputStream dis = new DataInputStream(socket.getInputStream());
-                   DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-                   try {
-                     String line = dis.readUTF();
-    //               logger.debug("Got external roll over signal.");
-                     if (ExternallyRolledFileAppender.ROLL_OVER.equals(line)) {
-                        synchronized(er) {
-                            er.rollOver();
-                        }
-                        dos.writeUTF(ExternallyRolledFileAppender.OK);
-                     } else {
-                        dos.writeUTF("Expecting [RollOver] string.");
-                     }
-                   } catch (IOException ex) {
-                   }
-               }
-            } catch (Exception e) {
-               e.printStackTrace();
-            }
-            try {
-                serverSocket.close();
-            } catch(IOException ex) {
-            }
-        } else {
-            if (ioex != null) {
-                ioex.printStackTrace();
-            }
-        }
-     }
-   }
+      else {
+	dos.writeUTF("Expecting [RollOver] string.");
+      }
+      dos.close();
+    }
+    catch(Exception e) {
+      LogLog.error("Unexpected exception. Exiting HUPNode.", e);
+    }
+  }
 }
+
