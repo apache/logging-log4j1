@@ -103,7 +103,7 @@ public class HTMLLayout extends Layout {
   
   
   // counter keeping track of the rows output
-  private long counter = 0;
+  private boolean odd = true;
   
   /**
    * Constructs a PatternLayout using the DEFAULT_LAYOUT_PATTERN.
@@ -367,11 +367,9 @@ public class HTMLLayout extends Layout {
   /**
    * {@inheritDoc}
    */
-  public String format(LoggingEvent event) {
-    
-    boolean odd = true;
-    if(((counter++) & 1) == 0) {
-      odd = false;
+  public String format(final LoggingEvent event) {
+    synchronized(this) {
+       odd = !odd;
     }
     
     String level = event.getLevel().toString().toLowerCase();
