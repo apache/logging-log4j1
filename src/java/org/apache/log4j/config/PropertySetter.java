@@ -60,7 +60,6 @@ public class PropertySetter extends ComponentBase {
   public static final int NOT_FOUND = 0;
   public static final int AS_PROPERTY = 1;
   public static final int AS_COLLECTION = 2;
-  Logger logger;
   protected Object obj;
   protected Class objClass;
   protected PropertyDescriptor[] props;

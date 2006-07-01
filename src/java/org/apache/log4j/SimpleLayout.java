@@ -32,10 +32,16 @@ import java.io.Writer;
    <p>
    @author Ceki G&uuml;lc&uuml;
    @since version 0.7.0
+   @deprecated since 1.3
 
    <p>{@link PatternLayout} offers a much more powerful alternative.
 */
 public class SimpleLayout extends Layout {
+  /**
+   *   Result of previous format request.  Not reliable if not
+   *       layout is not externally synchronized.
+   *   @deprecated since 1.3
+   */
   StringBuffer sbuf = new StringBuffer(128);
 
   public SimpleLayout() {
@@ -55,10 +61,13 @@ public class SimpleLayout extends Layout {
 	 @param event The LoggingEvent to format and write
 	*/
   public String format(final LoggingEvent event) {
-    StringBuffer sbuf = new StringBuffer(event.getLevel().toString());
-    sbuf.append(" - ");
-    sbuf.append(event.getRenderedMessage());
-    sbuf.append(LINE_SEP);
-    return sbuf.toString();
+    StringBuffer sb = new StringBuffer(event.getLevel().toString());
+    sb.append(" - ");
+    sb.append(event.getRenderedMessage());
+    sb.append(LINE_SEP);
+    String s = sb.toString();
+    sbuf.setLength(0);
+    sbuf.append(s);
+    return s;
    }
 }

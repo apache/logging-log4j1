@@ -111,7 +111,9 @@ public final class DatePatternConverter extends LoggingEventPatternConverter {
    * {@inheritDoc}
    */
   public void format(final LoggingEvent event, final StringBuffer output) {
-    df.format(event.getTimeStamp(), output);
+    synchronized(this) {
+    	df.format(event.getTimeStamp(), output);
+    }
   }
 
   /**
@@ -131,6 +133,8 @@ public final class DatePatternConverter extends LoggingEventPatternConverter {
    * @param toAppendTo buffer to which formatted date is appended.
    */
   public void format(final Date date, final StringBuffer toAppendTo) {
-    df.format(date.getTime(), toAppendTo);
+    synchronized(this) {
+    	df.format(date.getTime(), toAppendTo);
+    }
   }
 }
