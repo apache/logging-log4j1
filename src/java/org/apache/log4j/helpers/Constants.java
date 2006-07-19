@@ -34,6 +34,7 @@ public interface Constants {
   
   static final String APPLICATION_KEY = "application";
   static final String HOSTNAME_KEY = "hostname";
+  static final String RECEIVER_NAME_KEY = "receiver";
   static final String LOG4J_ID_KEY = "log4jid";
   public static final String TIMESTAMP_RULE_FORMAT = "yyyy/MM/dd HH:mm:ss";
 
