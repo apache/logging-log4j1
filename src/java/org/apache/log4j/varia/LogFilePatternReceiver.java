@@ -719,7 +719,7 @@ public class LogFilePatternReceiver extends Receiver {
 
     threadName = (String) fieldMap.remove(THREAD);
 
-    message = (String) fieldMap.remove(MESSAGE);
+    message = fieldMap.remove(MESSAGE);
     if (message == null) {
       message = "";
     }
@@ -736,6 +736,7 @@ public class LogFilePatternReceiver extends Receiver {
 
     properties.put(Constants.HOSTNAME_KEY, host);
     properties.put(Constants.APPLICATION_KEY, path);
+    properties.put(Constants.RECEIVER_NAME_KEY, getName());
 
     //all remaining entries in fieldmap are properties
     properties.putAll(fieldMap);
