@@ -162,7 +162,8 @@ public class LogFilePatternReceiver extends Receiver {
   private static final String PATTERN_WILDCARD = "*";
   private static final String DEFAULT_GROUP = "(" + REGEXP_DEFAULT_WILDCARD + ")";
   private static final String GREEDY_GROUP = "(" + REGEXP_GREEDY_WILDCARD + ")";
-
+  private static final String MULTIPLE_SPACES_REGEXP = "[ ]+";
+  
   private final String newLine = System.getProperty("line.separator");
 
   private final String[] emptyException = new String[] { "" };
@@ -590,6 +591,10 @@ public class LogFilePatternReceiver extends Receiver {
     }
 
     newPattern = replaceMetaChars(newPattern);
+
+    //compress one or more spaces in the pattern into the [ ]+ regexp
+    //(supports padding of level in log files)
+    newPattern = util.substitute("s/" + MULTIPLE_SPACES_REGEXP +"/" + MULTIPLE_SPACES_REGEXP + "/g", newPattern);
     newPattern = replace(PATTERN_WILDCARD, REGEXP_DEFAULT_WILDCARD, newPattern);
 
     /*
