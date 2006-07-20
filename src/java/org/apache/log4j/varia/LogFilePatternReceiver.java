@@ -720,7 +720,7 @@ public class LogFilePatternReceiver extends Receiver {
     }
 
     level = (String) fieldMap.remove(LEVEL);
-    Level levelImpl = Level.toLevel(level);
+    Level levelImpl = Level.toLevel(level.trim());
 
     threadName = (String) fieldMap.remove(THREAD);
 
