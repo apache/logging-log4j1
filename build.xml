@@ -728,7 +728,8 @@
                 ${stem}/or/sax/*.class,
     	        ${stem}/varia/*.class,
     	        ${stem}/plugins/*.class,
-                ${stem}/config/*.class"
+                ${stem}/config/*.class,
+                ${stem}/concurrent/*.class"
       excludes="**/UnitTest**, 
     	        ${stem}/xml/Log4jEntityResolver.class,
     	        ${stem}/xml/UtilLoggingEntityResolver.class,
