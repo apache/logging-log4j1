@@ -136,7 +136,7 @@ public class HierarchyDynamicMBean extends AbstractDynamicMBean
 					     false));
 
     } catch(Exception e) {
-      log.error("Couls not add loggerMBean for ["+name+"].");
+      log.error("Could not add loggerMBean for ["+name+"].", e);
     }
     return objectName;
   }
