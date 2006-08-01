@@ -119,6 +119,9 @@ public class PropertyPrinter implements PropertyGetter.PropertyCallback {
     if (appenderString != "") {
       out.println(catKey + "=" + appenderString);
     }
+    if (!cat.getAdditivity() && cat != Logger.getRootLogger()) {
+    	out.println("log4j.additivity." + cat.getName() + "=false");    
+    }    
   }
   
   protected
