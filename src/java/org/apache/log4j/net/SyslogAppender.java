@@ -354,7 +354,6 @@ public class SyslogAppender extends AppenderSkeleton {
 
   void writeInitialParts(LoggingEvent event) throws IOException {
     int pri = syslogFacility +event.getLevel().getSyslogEquivalent();
-    System.out.println(""+pri);
     sw.write("<");
     sw.write(String.valueOf(pri));
     sw.write(">");
