@@ -84,17 +84,18 @@ public class FallbackErrorHandler implements ErrorHandler {
   void error(String message, Exception e, int errorCode, LoggingEvent event) {
     LogLog.debug("FB: The following error reported: " + message, e);
     LogLog.debug("FB: INITIATING FALLBACK PROCEDURE.");
-    for(int i = 0; i < loggers.size(); i++) {
-      Logger l = (Logger) loggers.elementAt(i);
-      LogLog.debug("FB: Searching for ["+primary.getName()+"] in logger ["
-		   +l.getName() + "].");
-      //if(l.isAttached(primary)) {
-      LogLog.debug("FB: Replacing ["+primary.getName()+"] by ["
-		   + backup.getName() + "] in logger ["+ l.getName() +"].");
-      l.removeAppender(primary);
-      LogLog.debug("FB: Adding appender ["+backup.getName()+"] to logger "
-		   +  l.getName());
-      l.addAppender(backup);
+    if (loggers != null) {
+    	for(int i = 0; i < loggers.size(); i++) {
+      		Logger l = (Logger) loggers.elementAt(i);
+      		LogLog.debug("FB: Searching for ["+primary.getName()+"] in logger ["
+		   		+l.getName() + "].");
+      		LogLog.debug("FB: Replacing ["+primary.getName()+"] by ["
+		   		+ backup.getName() + "] in logger ["+ l.getName() +"].");
+      		l.removeAppender(primary);
+      		LogLog.debug("FB: Adding appender ["+backup.getName()+"] to logger "
+		   		+  l.getName());
+      		l.addAppender(backup);
+        }
     }    
   }
 
