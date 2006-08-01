@@ -73,7 +73,7 @@ public class SyslogWriter extends Writer {
     DatagramPacket packet = new DatagramPacket(bytes, bytes.length,
 					       address, SYSLOG_PORT);
 
-    if(this.ds != null)
+    if(this.ds != null && this.address != null)
       ds.send(packet);
     
   }
