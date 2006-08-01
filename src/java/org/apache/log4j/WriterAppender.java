@@ -53,7 +53,7 @@ public class WriterAppender extends AppenderSkeleton {
   protected boolean immediateFlush = true;
 
   /**
-     The encoding to use when opening an InputStream.  <p>The
+     The encoding to use when writing.  <p>The
      <code>encoding</code> variable is set to <code>null</null> by
      default which results in the utilization of the system's default
      encoding.  */
