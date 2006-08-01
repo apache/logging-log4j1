@@ -77,7 +77,7 @@
 
   <!-- Destination for javadoc generated files -->
   <property name="javadoc.dest" value="${dist.dir}/docs"/>
-  <property name="javadoc.api.dest" value="${dist.dir}/docs/api"/>
+  <property name="javadoc.api.dest" value="${dist.dir}/docs/api-${version}"/>
 
   <!-- Icons source directory. -->
   <property name="icons.source" value="icons"/>
