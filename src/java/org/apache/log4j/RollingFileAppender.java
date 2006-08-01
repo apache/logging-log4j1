@@ -120,7 +120,9 @@ public class RollingFileAppender extends FileAppender {
     File target;
     File file;
 
-    LogLog.debug("rolling over count=" + ((CountingQuietWriter) qw).getCount());
+    if (qw != null) {
+    	LogLog.debug("rolling over count=" + ((CountingQuietWriter) qw).getCount());
+    }
     LogLog.debug("maxBackupIndex="+maxBackupIndex);
 
     // If maxBackups <= 0, then there is no file renaming to be done.
