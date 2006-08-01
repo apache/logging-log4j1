@@ -175,6 +175,8 @@ element. -->
 
 <!ELEMENT log4j:properties (log4j:data*)>
 
+<!ELEMENT log4j:data EMPTY>
+
 <!ATTLIST log4j:data
   name 		CDATA  #REQUIRED
   value 	CDATA  #REQUIRED
