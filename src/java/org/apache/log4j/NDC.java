@@ -124,6 +124,17 @@ public class NDC {
   
   // No instances allowed.
   private NDC() {}
+  
+  /**
+   *   Get NDC stack for current thread.
+   *   @return NDC stack for current thread.
+   */
+  private static Stack getCurrentStack() {
+      if (ht != null) {
+          return (Stack) ht.get(Thread.currentThread());
+      }
+      return null;
+  }
 
 
   /**
@@ -138,7 +149,7 @@ public class NDC {
   public
   static
   void clear() {
-    Stack stack = (Stack) ht.get(Thread.currentThread());    
+    Stack stack = getCurrentStack();    
     if(stack != null) 
       stack.setSize(0);    
   }
@@ -161,11 +172,10 @@ public class NDC {
   public
   static
   Stack cloneStack() {
-    Object o = ht.get(Thread.currentThread());
-    if(o == null)
+    Stack stack = getCurrentStack();
+    if(stack == null)
       return null;
     else {
-      Stack stack = (Stack) o;
       return (Stack) stack.clone();
     }
   }
@@ -206,7 +216,7 @@ public class NDC {
   static
   public
   String get() {
-    Stack s = (Stack) ht.get(Thread.currentThread());
+    Stack s = getCurrentStack();
     if(s != null && !s.isEmpty()) 
       return ((DiagnosticContext) s.peek()).fullMessage;
     else
@@ -222,7 +232,7 @@ public class NDC {
   public
   static
   int getDepth() {
-    Stack stack = (Stack) ht.get(Thread.currentThread());          
+    Stack stack = getCurrentStack();          
     if(stack == null)
       return 0;
     else
@@ -232,6 +242,7 @@ public class NDC {
   private
   static
   void lazyRemove() {
+    if (ht == null) return;
      
     // The synchronization on ht is necessary to prevent JDK 1.2.x from
     // throwing ConcurrentModificationExceptions at us. This sucks BIG-TIME.
@@ -286,8 +297,7 @@ public class NDC {
   public
   static
   String pop() {
-    Thread key = Thread.currentThread();
-    Stack stack = (Stack) ht.get(key);
+    Stack stack = getCurrentStack();
     if(stack != null && !stack.isEmpty()) 
       return ((DiagnosticContext) stack.pop()).message;
     else
@@ -307,8 +317,7 @@ public class NDC {
   public
   static
   String peek() {
-    Thread key = Thread.currentThread();
-    Stack stack = (Stack) ht.get(key);
+    Stack stack = getCurrentStack();
     if(stack != null && !stack.isEmpty())
       return ((DiagnosticContext) stack.peek()).message;
     else
@@ -325,12 +334,12 @@ public class NDC {
   public
   static
   void push(String message) {
-    Thread key = Thread.currentThread();
-    Stack stack = (Stack) ht.get(key);
+    Stack stack = getCurrentStack();
       
     if(stack == null) {
       DiagnosticContext dc = new DiagnosticContext(message, null);      
       stack = new Stack();
+      Thread key = Thread.currentThread();
       ht.put(key, stack);
       stack.push(dc);
     } else if (stack.isEmpty()) {
@@ -400,7 +409,7 @@ public class NDC {
   static
   public
   void setMaxDepth(int maxDepth) {
-    Stack stack = (Stack) ht.get(Thread.currentThread());    
+    Stack stack = getCurrentStack();    
     if(stack != null && maxDepth < stack.size()) 
       stack.setSize(maxDepth);
   }
