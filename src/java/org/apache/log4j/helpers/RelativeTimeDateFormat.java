@@ -24,7 +24,7 @@ import java.text.DateFormat;
 
 /**
    Formats a {@link Date} by printing the number of milliseconds
-   elapsed since the start of the application.  This is the fastest
+   elapsed since the construction of the format.  This is the fastest
    printing DateFormat in the package.
    
    @author Ceki G&uuml;lc&uuml;
