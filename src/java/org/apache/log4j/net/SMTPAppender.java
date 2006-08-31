@@ -23,6 +23,8 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.Session;
+import javax.mail.Authenticator;
+import javax.mail.PasswordAuthentication;
 import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -88,6 +90,9 @@ public class SMTPAppender extends AppenderSkeleton {
   private String from;
   private String subjectStr = "";
   private String smtpHost;
+  private String smtpUsername;
+  private String smtpPassword;
+  private boolean smtpDebug = false;
   private String charset = "ISO-8859-1";
   private int bufferSize = 512;
   private boolean locationInfo = false;
@@ -117,15 +122,7 @@ public class SMTPAppender extends AppenderSkeleton {
      recipient, from, etc. */
   public void activateOptions() {
     int errorCount = 0;
-    Properties props = new Properties(System.getProperties());
-
-    if (smtpHost != null) {
-      props.put("mail.smtp.host", smtpHost);
-    }
-
-    Session session = Session.getInstance(props, null);
-
-    //session.setDebug(true);
+    Session session = createSession();
     msg = new MimeMessage(session);
 
     try {
@@ -186,6 +183,32 @@ public class SMTPAppender extends AppenderSkeleton {
 	  if (bcc != null && bcc.length() > 0) {
 		msg.setRecipients(Message.RecipientType.BCC, parseAddress(bcc));
 	  }
+  }
+
+  /**
+   *  Create mail session.
+   *  @param mail session, may not be null.
+   */
+  protected Session createSession() {
+    Properties props = new Properties (System.getProperties());
+    if (smtpHost != null) {
+      props.put("mail.smtp.host", smtpHost);
+    }
+    
+    Authenticator auth = null;
+    if(smtpPassword != null && smtpUsername != null) {
+      props.put("mail.smtp.auth", "true");
+      auth = new Authenticator() {
+        protected PasswordAuthentication getPasswordAuthentication() {
+          return new PasswordAuthentication(smtpUsername, smtpPassword);
+        }
+      };
+    }
+    Session session = Session.getInstance(props, auth);
+    if (smtpDebug) {
+        session.setDebug(smtpDebug);
+    }
+    return session;
   }
 
 
@@ -522,6 +545,57 @@ public class SMTPAppender extends AppenderSkeleton {
      return bcc;
     }
 
+  /**
+   * The <b>SmtpPassword</b> option takes a string value which should be the password required to authenticate against
+   * the mail server.
+   * @param password password, may be null.
+   */
+  public void setSMTPPassword(final String password) {
+    this.smtpPassword = password;
+  }
+ 
+  /**
+   * The <b>SmtpUsername</b> option takes a string value which should be the username required to authenticate against
+   * the mail server.
+   * @param username user name, may be null.
+   */
+  public void setSMTPUsername(final String username) {
+    this.smtpUsername = username;
+  }
+
+  /**
+   * Setting the <b>SmtpDebug</b> option to true will cause the mail session to log its server interaction to stdout.
+   * This can be useful when debuging the appender but should not be used during production because username and
+   * password information is included in the output.
+   * @param debug debug flag.
+   */
+  public void setSMTPDebug(final boolean debug) {
+    this.smtpDebug = debug;
+  }
+  
+  /**
+   * Get SMTP password.
+   * @return SMTP password, may be null.
+   */
+  public String getSMTPPassword() {
+    return smtpPassword;
+  }
+ 
+  /**
+   * Get SMTP user name.
+   * @return SMTP user name, may be null.
+   */
+  public String getSMTPUsername() {
+    return smtpUsername;
+  }
+
+  /**
+   * Get SMTP debug.
+   * @return SMTP debug flag.
+   */
+  public boolean getSMTPDebug() {
+    return smtpDebug;
+  }
 }
 
 
