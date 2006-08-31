@@ -351,4 +351,47 @@ public class SyslogAppenderTest extends TestCase {
       "Expected message from log4j unit test SyslogAppenderTest.testAppend.", e);
     assertEquals(0, errorHandler.size());
   }
+
+  /**
+    *  Tests SyslogAppender with IPv6 address.
+    */  
+  public void testIPv6() {
+      SyslogAppender appender = new SyslogAppender();
+      appender.setSyslogHost("::1");
+  }
+
+  /**
+    *  Tests SyslogAppender with IPv6 address enclosed in square brackets.
+    */  
+  public void testIPv6InBrackets() {
+      SyslogAppender appender = new SyslogAppender();
+      appender.setSyslogHost("[::1]");
+  }
+
+  /**
+    *  Tests SyslogAppender with IPv6 address enclosed in square brackets
+    *     followed by port specification.
+    */  
+  public void testIPv6AndPort() {
+      SyslogAppender appender = new SyslogAppender();
+      appender.setSyslogHost("[::1]:1514");
+  }
+
+  /**
+    *  Tests SyslogAppender with host name enclosed in square brackets
+    *     followed by port specification.
+    */  
+  public void testHostNameAndPort() {
+      SyslogAppender appender = new SyslogAppender();
+      appender.setSyslogHost("localhost:1514");
+  }
+
+
+  /**
+    *  Tests SyslogAppender with IPv4 address followed by port specification.
+    */  
+  public void testIPv4AndPort() {
+      SyslogAppender appender = new SyslogAppender();
+      appender.setSyslogHost("127.0.0.1:1514");
+  }
 }
