@@ -148,7 +148,12 @@ public class SMTPAppender extends AppenderSkeleton {
    *  @param mail session, may not be null.
    */
   protected Session createSession() {
-    Properties props = new Properties (System.getProperties());
+    Properties props = null;
+    try {
+        props = new Properties (System.getProperties());
+    } catch(SecurityException ex) {
+        props = new Properties();
+    }
     if (smtpHost != null) {
       props.put("mail.smtp.host", smtpHost);
     }
