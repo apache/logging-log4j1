@@ -77,6 +77,14 @@ import org.apache.log4j.spi.TriggeringEventEvaluator;
    @since 1.0 */
 public class SMTPAppender extends AppenderSkeleton {
   private String to;
+  /**
+   * Comma separated list of cc recipients.
+   */
+  private String cc;  
+  /**
+   * Comma separated list of bcc recipients.
+   */
+  private String bcc;
   private String from;
   private String subjectStr = "";
   private String smtpHost;
@@ -121,13 +129,7 @@ public class SMTPAppender extends AppenderSkeleton {
     msg = new MimeMessage(session);
 
     try {
-      if (from != null) {
-        msg.setFrom(getAddress(from));
-      } else {
-        msg.setFrom();
-      }
-
-      msg.setRecipients(Message.RecipientType.TO, parseAddress(to));
+       addressMessage(msg);
     } catch (MessagingException e) {
       errorCount++;
       getLogger().error("Could not activate SMTPAppender options.", e);
@@ -158,6 +160,34 @@ public class SMTPAppender extends AppenderSkeleton {
       super.activateOptions();
     }
   }
+  
+  /**
+   *   Address message.
+   *   @param msg message, may not be null.
+   *   @throws MessagingException thrown if error addressing message. 
+   */
+  protected void addressMessage(final Message msg) throws MessagingException {
+       if (from != null) {
+	 		msg.setFrom(getAddress(from));
+       } else {
+	 		msg.setFrom();
+	   }
+
+       if (to != null && to.length() > 0) {
+             msg.setRecipients(Message.RecipientType.TO, parseAddress(to));
+       }
+
+      //Add CC receipients if defined.
+	  if (cc != null && cc.length() > 0) {
+		msg.setRecipients(Message.RecipientType.CC, parseAddress(cc));
+	  }
+
+      //Add BCC receipients if defined.
+	  if (bcc != null && bcc.length() > 0) {
+		msg.setRecipients(Message.RecipientType.BCC, parseAddress(bcc));
+	  }
+  }
+
 
   /**
      Perform SMTPAppender specific appending actions, mainly adding
@@ -459,6 +489,38 @@ public class SMTPAppender extends AppenderSkeleton {
     public String getCharset() {
         return charset;
      }
+
+   /**
+      Set the cc recipient addresses.
+      @param addresses recipient addresses as comma separated string, may be null.
+    */
+   public void setCc(final String addresses) {
+     this.cc = addresses;
+   }
+
+   /**
+      Get the cc recipient addresses.
+      @return recipient addresses as comma separated string, may be null.
+    */
+    public String getCc() {
+     return cc;
+    }
+
+   /**
+      Set the bcc recipient addresses.
+      @param addresses recipient addresses as comma separated string, may be null.
+    */
+   public void setBcc(final String addresses) {
+     this.bcc = addresses;
+   }
+
+   /**
+      Get the bcc recipient addresses.
+      @return recipient addresses as comma separated string, may be null.
+    */
+    public String getBcc() {
+     return bcc;
+    }
 
 }
 
