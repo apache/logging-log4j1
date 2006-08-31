@@ -207,7 +207,8 @@ public class OptionConverter  {
     if (value == null) {
       return defaultValue;
     }
-
+    
+    value = value.trim();
     int hashIndex = value.indexOf('#');
 
     if (hashIndex == -1) {
