@@ -24,6 +24,8 @@ import java.net.DatagramPacket;
 import java.net.UnknownHostException;
 import java.net.SocketException;
 import java.io.IOException;
+import java.net.URL;
+import java.net.MalformedURLException;
 
 /**
    SyslogWriter is a wrapper around the java.net.DatagramSocket class
@@ -34,20 +36,64 @@ import java.io.IOException;
 public class SyslogWriter extends Writer {
 
   final int SYSLOG_PORT = 514;
+  /**
+   *  Host string from last constructed SyslogWriter.
+   *  @deprecated
+   */
   static String syslogHost;
   
   private InetAddress address;
+  private final int port;
   private DatagramSocket ds;
 
+  /**
+   *  Constructs a new instance of SyslogWriter.
+   *  @param syslogHost host name, may not be null.  A port
+   *  may be specified by following the name or IPv4 literal address with
+   *  a colon and a decimal port number.  To specify a port with an IPv6
+   *  address, enclose the IPv6 address in square brackets before appending
+   *  the colon and decimal port number.
+   */
   public
-  SyslogWriter(String syslogHost) {
+  SyslogWriter(final String syslogHost) {
     this.syslogHost = syslogHost;
+    if (syslogHost == null) {
+        throw new NullPointerException("syslogHost");
+    }
+    
+    String host = syslogHost;
+    int urlPort = -1;
+    
+    //
+    //  If not an unbracketed IPv6 address then
+    //      parse as a URL
+    //
+    if (host.indexOf("[") != -1 || host.indexOf(':') == host.lastIndexOf(':')) {
+        try {
+            URL url = new URL("http://" + host);
+            if (url.getHost() != null) {
+                host = url.getHost();
+                //   if host is a IPv6 literal, strip off the brackets
+                if(host.startsWith("[") && host.charAt(host.length() - 1) == ']') {
+                    host = host.substring(1, host.length() - 1);
+                }
+                urlPort = url.getPort();
+            }
+        } catch(MalformedURLException e) {
+      		LogLog.error("Malformed URL: will attempt to interpret as InetAddress.", e);
+        }
+    }
+    
+    if (urlPort == -1) {
+        urlPort = SYSLOG_PORT;
+    }
+    port = urlPort;
 
     try {      
-      this.address = InetAddress.getByName(syslogHost);
+      this.address = InetAddress.getByName(host);
     }
     catch (UnknownHostException e) {
-      LogLog.error("Could not find " + syslogHost +
+      LogLog.error("Could not find " + host +
 			 ". All logging will FAIL.", e);
     }
 
@@ -56,9 +102,10 @@ public class SyslogWriter extends Writer {
     }
     catch (SocketException e) {
       e.printStackTrace(); 
-      LogLog.error("Could not instantiate DatagramSocket to " + syslogHost +
+      LogLog.error("Could not instantiate DatagramSocket to " + host +
 			 ". All logging will FAIL.", e);
     }
+    
   }
 
 
@@ -71,7 +118,7 @@ public class SyslogWriter extends Writer {
   void write(String string) throws IOException {
     byte[] bytes = string.getBytes();
     DatagramPacket packet = new DatagramPacket(bytes, bytes.length,
-					       address, SYSLOG_PORT);
+					       address, port);
 
     if(this.ds != null && this.address != null)
       ds.send(packet);
