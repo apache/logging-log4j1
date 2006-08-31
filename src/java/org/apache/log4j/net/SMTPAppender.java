@@ -200,7 +200,7 @@ public class SMTPAppender extends AppenderSkeleton {
 
     event.getThreadName();
     event.getNDC();
-
+    event.getMDCCopy();
     if (locationInfo) {
       event.getLocationInformation();
     }
