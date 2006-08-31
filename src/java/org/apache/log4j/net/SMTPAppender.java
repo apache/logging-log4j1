@@ -293,6 +293,7 @@ public class SMTPAppender extends AppenderSkeleton {
 	  if (s != null) {
 	    for(int j = 0; j < s.length; j++) {
 	      sbuf.append(s[j]);
+	      sbuf.append(Layout.LINE_SEP);
 	    }
 	  }
 	}
