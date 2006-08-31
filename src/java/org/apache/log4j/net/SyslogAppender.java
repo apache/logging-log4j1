@@ -286,7 +286,9 @@ public class SyslogAppender extends AppenderSkeleton {
 
   /**
    * The <b>SyslogHost</b> option is the name of the the syslog host where log
-   * output should go.
+   * output should go.  A non-default port can be specified by
+   * appending a colon and port number to a host name,
+   * an IPv4 address or an IPv6 address enclosed in square brackets.
    *
    * <b>WARNING</b> If the SyslogHost is not set, then this appender will fail.
    */
