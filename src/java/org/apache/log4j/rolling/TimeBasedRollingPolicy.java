@@ -184,7 +184,7 @@ public final class TimeBasedRollingPolicy extends RollingPolicyBase
     if (lastFileName.endsWith(".gz")) {
       suffixLength = 3;
     } else if (lastFileName.endsWith(".zip")) {
-      suffixLength = 3;
+      suffixLength = 4;
     }
   }
 
