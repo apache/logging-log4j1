@@ -106,6 +106,7 @@ public class MulticastAppender extends AppenderSkeleton implements PortBased {
     }
     
     connect();
+    super.activateOptions();
   }
 
   /**
