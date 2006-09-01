@@ -129,6 +129,7 @@ public class UDPAppender extends AppenderSkeleton implements PortBased{
       getLogger().error(err);
       throw new IllegalStateException(err);
     }
+    super.activateOptions();
   }
 
   /**
