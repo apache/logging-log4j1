@@ -1,7 +1,7 @@
 This is the build information for the current log4j release.  It contains the
 versions of tools and jars used to build this version of the log4j library.
 
-Ant - v1.6.4; Available from http://ant.apache.org
+Ant - v1.6.5; Available from http://ant.apache.org
 JDK - jdk1.3.1_16; Available from http://java.sun.com/j2se/1.3/index.jsp
 
 
