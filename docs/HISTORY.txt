@@ -4,6 +4,39 @@
   [**] Changes that requiring little or no modification to existing
        client code. 
  [***] Changes requiring important modifications to existing client code.
+ 
+ September 7th, 2006
+ 
+ - Release of version 1.2.14
+ 
+ - Rewrite of AsyncAppender to eliminate reported deadlocks (bugs 26224, 28006, 37904, 38137), 
+   and to add an option to not block if the event queue becomes full (bug 38982).
+   
+ - Added support for specifying a port for SyslogAppender (bug 39687).
+ 
+ - Added cc and bcc addresses to SMTPAppender (bug 18246) and password authentication (bug 24969).
+ 
+ - Fixed following bugs:
+       40159: NullPointerException in org.apache.log4j.NDC.get.
+       36787: org.apache.log4j.lf5.util.DateFormatManager.setTimeZone assignment error.
+       38559: Monthly logs not generated at midnight with DailyRollingFileAppender.
+       40145: PatternLayout specifier %r is not consistent with documentation.
+       37119: Space after log level causes default level to be used.
+       39135: Bad patterns in ISO8601DateFormat and DateTimeDateFormat.
+       39687: Enabling configuring port for SyslogAppender.
+       35743: SyslogAppender throws NullPointerException upon misconfiguration.
+       15501: FallbackErrorHandler throws NullPointerException if no loggers are set.
+       38564: Bad documentation for WriterAppender.encoding.
+       37866: NTEventLogAppender not build, tested and placed in distribution.
+       38662: SMTPAppender does not output newlines between stack trace lines.
+       30294: SMTPAppender will not run within sandbox.
+       16922: MDC with SMTPAppender doesn't work.
+       31507: Misspelling in HierarchyDynamicMBean.
+       35123: Additivity not exported by PropertyPrinter.
+       31003: RollingFileAppender, if removed, can cause NullPointerExceptions.
+       38982: Add non-blocking option for AsyncAppender.
+       23021: AsyncAppender blocks on thread death.
+        
 
  December 4th, 2005
  
