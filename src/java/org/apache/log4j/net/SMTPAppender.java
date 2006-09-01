@@ -18,6 +18,7 @@ package org.apache.log4j.net;
 
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Level;
+import org.apache.log4j.Layout;
 import org.apache.log4j.helpers.CyclicBuffer;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.helpers.LogLog;
