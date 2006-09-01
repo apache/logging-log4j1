@@ -82,7 +82,7 @@ public class Scheduler extends Thread {
       // if the job is the first on the list, then notify the scheduler thread
       // to schedule a new job
       if(i == 0) {
-        this.notify();
+        this.notifyAll();
       }
       return true;
     } else {
@@ -154,11 +154,11 @@ public class Scheduler extends Thread {
     jobList.add(i, newSJE);
     // if the jobList was empty, then notify the scheduler thread
     if(i == 0) {
-      this.notify();
+      this.notifyAll();
     }
   }
   
-  public void shutdown() {
+  public synchronized void shutdown() {
     shutdown = true;
   }
   

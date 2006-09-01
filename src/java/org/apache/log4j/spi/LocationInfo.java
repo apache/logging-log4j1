@@ -42,7 +42,7 @@ public class LocationInfo implements java.io.Serializable {
    * without real location info available.
    * @since 1.3
    */
-  public static LocationInfo NA_LOCATION_INFO = new LocationInfo(NA, NA, NA, NA);
+  public static final LocationInfo NA_LOCATION_INFO = new LocationInfo(NA, NA, NA, NA);
  
 
   
