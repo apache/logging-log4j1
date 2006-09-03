@@ -5,7 +5,7 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
  
- September 7th, 2006
+ September 8th, 2006
  
  - Release of version 1.2.14
  
@@ -14,7 +14,7 @@
    
  - Added support for specifying a port for SyslogAppender (bug 39687).
  
- - Added cc and bcc addresses to SMTPAppender (bug 18246) and password authentication (bug 24969).
+ - Added cc and bcc addresses to SMTPAppender (bug 19125) and password authentication (bug 24969).
  
  - Fixed following bugs:
        40159: NullPointerException in org.apache.log4j.NDC.get.
@@ -23,7 +23,6 @@
        40145: PatternLayout specifier %r is not consistent with documentation.
        37119: Space after log level causes default level to be used.
        39135: Bad patterns in ISO8601DateFormat and DateTimeDateFormat.
-       39687: Enabling configuring port for SyslogAppender.
        35743: SyslogAppender throws NullPointerException upon misconfiguration.
        15501: FallbackErrorHandler throws NullPointerException if no loggers are set.
        38564: Bad documentation for WriterAppender.encoding.
@@ -34,7 +33,6 @@
        31507: Misspelling in HierarchyDynamicMBean.
        35123: Additivity not exported by PropertyPrinter.
        31003: RollingFileAppender, if removed, can cause NullPointerExceptions.
-       38982: Add non-blocking option for AsyncAppender.
        23021: AsyncAppender blocks on thread death.
         
 
